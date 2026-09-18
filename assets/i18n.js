@@ -43,6 +43,110 @@
   };
 
   var BILLIONAIRES = {
+    /* 国名与行业是榜单的筛选/标注维度，属界面，翻；人名与公司名是数据，不翻。
+       两张表逐条对着 apps/billionaires/data.json 的实际取值补齐，实测无遗漏。 */
+    "美国": "United States",
+    "中国": "China",
+    "印度": "India",
+    "德国": "Germany",
+    "俄罗斯": "Russia",
+    "香港": "Hong Kong SAR",
+    "台湾": "Taiwan",
+    "意大利": "Italy",
+    "巴西": "Brazil",
+    "加拿大": "Canada",
+    "法国": "France",
+    "英国": "United Kingdom",
+    "澳大利亚": "Australia",
+    "瑞士": "Switzerland",
+    "瑞典": "Sweden",
+    "日本": "Japan",
+    "韩国": "South Korea",
+    "新加坡": "Singapore",
+    "西班牙": "Spain",
+    "以色列": "Israel",
+    "印度尼西亚": "Indonesia",
+    "土耳其": "Türkiye",
+    "泰国": "Thailand",
+    "墨西哥": "Mexico",
+    "荷兰": "Netherlands",
+    "挪威": "Norway",
+    "丹麦": "Denmark",
+    "芬兰": "Finland",
+    "奥地利": "Austria",
+    "比利时": "Belgium",
+    "爱尔兰": "Ireland",
+    "波兰": "Poland",
+    "捷克": "Czechia",
+    "匈牙利": "Hungary",
+    "希腊": "Greece",
+    "葡萄牙": "Portugal",
+    "罗马尼亚": "Romania",
+    "保加利亚": "Bulgaria",
+    "克罗地亚": "Croatia",
+    "斯洛伐克": "Slovakia",
+    "爱沙尼亚": "Estonia",
+    "冰岛": "Iceland",
+    "卢森堡": "Luxembourg",
+    "摩纳哥": "Monaco",
+    "列支敦士登": "Liechtenstein",
+    "塞浦路斯": "Cyprus",
+    "马来西亚": "Malaysia",
+    "菲律宾": "Philippines",
+    "越南": "Vietnam",
+    "哈萨克斯坦": "Kazakhstan",
+    "乌克兰": "Ukraine",
+    "格鲁吉亚": "Georgia",
+    "亚美尼亚": "Armenia",
+    "阿联酋": "United Arab Emirates",
+    "沙特阿拉伯": "Saudi Arabia",
+    "卡塔尔": "Qatar",
+    "阿曼": "Oman",
+    "黎巴嫩": "Lebanon",
+    "埃及": "Egypt",
+    "摩洛哥": "Morocco",
+    "阿尔及利亚": "Algeria",
+    "尼日利亚": "Nigeria",
+    "南非": "South Africa",
+    "津巴布韦": "Zimbabwe",
+    "坦桑尼亚": "Tanzania",
+    "斯威士兰": "Eswatini",
+    "智利": "Chile",
+    "阿根廷": "Argentina",
+    "秘鲁": "Peru",
+    "哥伦比亚": "Colombia",
+    "委内瑞拉": "Venezuela",
+    "乌拉圭": "Uruguay",
+    "巴巴多斯": "Barbados",
+    "伯利兹": "Belize",
+    "圣基茨和尼维斯": "Saint Kitts and Nevis",
+    "新西兰": "New Zealand",
+    "巴基斯坦": "Pakistan",
+    "尼泊尔": "Nepal",
+    "阿富汗": "Afghanistan",
+    "阿尔巴尼亚": "Albania",
+    "根西": "Guernsey",
+    "科技": "Technology",
+    "金融投资": "Finance & Investments",
+    "时尚零售": "Fashion & Retail",
+    "制造业": "Manufacturing",
+    "多元化": "Diversified",
+    "食品饮料": "Food & Beverage",
+    "医疗健康": "Healthcare",
+    "房地产": "Real Estate",
+    "能源": "Energy",
+    "汽车": "Automotive",
+    "传媒娱乐": "Media & Entertainment",
+    "电信": "Telecom",
+    "金属矿业": "Metals & Mining",
+    "物流": "Logistics",
+    "博彩": "Gambling & Casinos",
+    "体育": "Sports",
+    "服务业": "Services",
+    "建筑工程": "Construction & Engineering",
+    "页": "Page",
+    "数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。榜单覆盖全部亿万富豪（净值 ≥ 10 亿美元），其中 2883 人有中文名对照，其余显示福布斯英文原名。仅供参考，不构成任何建议。":
+      "Data comes from the Forbes real-time billionaire ranking and refreshes daily. Net worth is in billions of U.S. dollars (B), and the daily change is an estimate against the previous reference point. The ranking covers every billionaire (net worth of at least US$1 billion); 2,883 of them have a verified Chinese name, and the rest display the Forbes original. For reference only; not advice.",
     "🏆 福布斯亿万富翁实时排行榜": "🏆 Forbes Real-Time Billionaires",
     "全球全部亿万富豪 · 身价与当日变动 · 每日自动更新": "All global billionaires · Net worth and daily moves · Updated daily",
     "按身价": "Net Worth",
@@ -53,6 +157,7 @@
     "示例数据 · 待每日任务刷新": "Sample data · Waiting for daily refresh",
     "没有匹配的人物，换个关键词试试 🙂": "No matching people. Try another keyword 🙂",
     "分页导航": "Pagination",
+    "跳转到指定页": "Jump to page",
     "关于本页数据": "About this data",
     "本页追踪全球全部亿万富豪（净值 ≥ 10 亿美元，当前约 3400 位）及其当日变动，数据来源 Forbes 实时富豪榜，每日自动更新，实际人数以页面顶部显示的当日数字为准。身价以美元计，主要随其持有的上市公司股价波动，因此「当日变动」更多反映市场行情，而非真实可动用现金。多数人物提供中文名对照，少数无法确认对应汉字的（多为中日韩越等汉字圈人物的罗马化拼写）保留福布斯英文原名，不做音译臆造。榜单仅供了解全球财富格局参考。": "This page tracks all global billionaires with net worth of at least US$1 billion (currently about 3,400 people) and their daily changes. Data comes from the Forbes real-time billionaire ranking and is updated daily; the live count shown above is authoritative for each update. Net worth is shown in US dollars and moves mainly with the market value of listed-company holdings, so daily changes reflect market pricing rather than immediately spendable cash. The ranking is provided for research on global wealth distribution."
   };
@@ -278,7 +383,8 @@
   var textOrig = new WeakMap(), textTouched = [];
   var attrOrig = new WeakMap(), attrTouched = [];
   var htmlOrig = new WeakMap(), htmlTouched = [];
-  var ATTRS = ["placeholder", "aria-label", "title"];
+  /* 加进 alt：榜单头像/图标的 alt 存的是中文名，读屏用户此前一直读到中文。 */
+  var ATTRS = ["placeholder", "aria-label", "title", "alt"];
 
   function regexTranslate(s) {
     var m;
@@ -290,6 +396,16 @@
       if ((m = /^([\d,]+) 位亿万富豪 总财富$/.exec(s))) return m[1] + " billionaires · Total wealth";
       if ((m = /^▲ 今日领涨 (.+)$/.exec(s))) return "▲ Top gainer today " + m[1];
       if ((m = /^▼ 今日领跌 (.+)$/.exec(s))) return "▼ Top decliner today " + m[1];
+      // 「🇺🇸美国 · Tesla, SpaceX · 科技 · 55岁」：国旗、公司名与年龄原样带回，
+      // 只查国名与行业；查不到就保留原文，不臆造。
+      if ((m = /^(\S*?)([\u4e00-\u9fff]+) · (.+?) · ([\u4e00-\u9fff]+) · (\d+)岁$/.exec(s))) {
+        return m[1] + (dict[m[2]] || m[2]) + " · " + m[3] + " · " + (dict[m[4]] || m[4]) + " · " + m[5] + " yrs";
+      }
+      if ((m = /^(\S*?)([\u4e00-\u9fff]+) · (.+?) · ([\u4e00-\u9fff]+)$/.exec(s))) {
+        return m[1] + (dict[m[2]] || m[2]) + " · " + m[3] + " · " + (dict[m[4]] || m[4]);
+      }
+      if (s === "· 数据日期") return "· Date";
+      if ((m = /^· 更新于 (.+)$/.exec(s))) return "· Updated " + m[1];
     }
     if (path.indexOf("/apps/macro-radar/") === 0) {
       if ((m = /^数据更新 · (.+)$/.exec(s))) return "Updated · " + m[1];
@@ -400,8 +516,39 @@
         var nm = names[i], en = nm.querySelector(".en");
         if (!en || !en.textContent.trim()) continue;
         if (!htmlOrig.has(nm)) { htmlOrig.set(nm, nm.innerHTML); htmlTouched.push(nm); }
-        nm.textContent = en.textContent.trim();
+        var enName = en.textContent.trim();
+        nm.textContent = enName;
+        /* 头像的 alt 存的是中文名，屏幕阅读器读到的还是中文。名字在 .en 里现成有，
+           顺手一并换掉；走 attrOrig 记账，切回中文时和其他属性一起还原。 */
+        var card = nm.closest && nm.closest(".rowcard");
+        var img = card && card.querySelector(".ava img");
+        if (img && img.getAttribute("alt") && img.getAttribute("alt") !== enName) {
+          var saved = attrOrig.get(img);
+          if (!saved) { saved = {}; attrOrig.set(img, saved); attrTouched.push(img); }
+          if (!("alt" in saved)) saved.alt = img.getAttribute("alt");
+          img.setAttribute("alt", enName);
+        }
       }
+    }
+    if (path.indexOf("/apps/billionaires/") === 0) {
+      /* 「▲ 今日领涨 埃隆·马斯克 +$23.32B」里只有中文名。榜单行里本来就有中英对照，
+         借它建一张映射把 KPI 也换成英文名；映射里没有的（福布斯本就只给英文名、
+         或该人不在当前页）一律保留原文，不音译、不臆造。 */
+      var zhToEn = {};
+      document.querySelectorAll(".rowcard .nm").forEach(function (nmEl) {
+        var src = htmlOrig.has(nmEl) ? htmlOrig.get(nmEl) : nmEl.innerHTML;
+        var tmp = document.createElement("div");
+        tmp.innerHTML = src;
+        var te = tmp.querySelector(".en");
+        var zh = tmp.firstChild && tmp.firstChild.nodeType === 3 ? tmp.firstChild.nodeValue.trim() : "";
+        if (zh && te && te.textContent.trim()) zhToEn[zh] = te.textContent.trim();
+      });
+      document.querySelectorAll(".lead").forEach(function (el) {
+        var mm = /^([\u25B2\u25BC] .+?) ([\u4e00-\u9fff\u00B7]+) (.+)$/.exec(el.textContent.trim());
+        if (!mm || !zhToEn[mm[2]]) return;
+        if (!htmlOrig.has(el)) { htmlOrig.set(el, el.innerHTML); htmlTouched.push(el); }
+        el.textContent = mm[1] + " " + zhToEn[mm[2]] + " " + mm[3];
+      });
     }
     if (path.indexOf("/apps/macro-radar/") === 0) {
       var cn = document.querySelector(".head h1 .cn"), enTitle = document.querySelector(".head h1 .en");
@@ -442,7 +589,7 @@
     var w = document.createTreeWalker(base, NodeFilter.SHOW_TEXT, null);
     var n;
     while ((n = w.nextNode())) translateText(n);
-    var els = base.querySelectorAll ? base.querySelectorAll("[placeholder],[aria-label],[title]") : [];
+    var els = base.querySelectorAll ? base.querySelectorAll("[placeholder],[aria-label],[title],[alt]") : [];
     for (var i = 0; i < els.length; i++) translateAttrs(els[i]);
   }
 

@@ -10,7 +10,8 @@
   var textOrig = new WeakMap(), textTouched = [];
   var attrOrig = new WeakMap(), attrTouched = [];
   var htmlOrig = new WeakMap(), htmlTouched = [];
-  var ATTRS = ["placeholder", "aria-label", "title"];
+  /* 加进 alt：榜单头像/图标的 alt 存的是中文名，读屏用户此前一直读到中文。 */
+  var ATTRS = ["placeholder", "aria-label", "title", "alt"];
 
   function readLang() {
     try {
@@ -49,6 +50,12 @@
     "🌍 全球大类资产收益率": "🌍 Global Asset Returns",
     "一图看尽 股市 · 商品 · 外汇 · 债券 的收益率表现": "One view of returns across equities · commodities · FX · bonds",
     "图表": "Chart",
+    "📊 图表": "📊 Chart",
+    "📋 数据表": "📋 Table",
+    "数据来自 Yahoo Finance 公开行情，每日自动更新；涨跌幅为各标的自身价格变动。LME 金属以全球期货代理、债券以国债 ETF 代理（详见各条备注）。仅供参考，非投资建议。":
+      "Data comes from Yahoo Finance public quotes and refreshes daily; the percentage is each instrument's own price change. LME metals are proxied by global futures and bonds by Treasury ETFs (see each instrument's note). For reference only; not investment advice.",
+    "本页把全球主要大类资产——股票指数、商品、外汇、债券——的近期收益率放在同一张表里横向对比，帮你快速看清「最近什么在涨、什么在跌」。数值为区间涨跌幅，绿涨红跌；数据来源 Yahoo Finance，每日自动刷新。提示：历史收益率不代表未来表现，本页仅供参考，不构成任何投资建议。":
+      "This page puts recent returns for the major asset classes — equity indices, commodities, FX and bonds — into one comparable table, so you can see at a glance what has been rising and what has been falling. Values are the change over the period, green for up and red for down; data comes from Yahoo Finance and refreshes daily. Past returns do not predict future performance; for reference only, not investment advice.",
     "表格": "Table",
     "日频行情 · 每日自动更新": "Daily market data · Updated daily",
     "示例数据 · 合并后转真实行情": "Sample data · Live source after merge",
@@ -70,6 +77,73 @@
   };
 
   var COMPANIES = {
+    /* 国名与板块是行卡的标注维度，属界面；公司名走 specialEnglish 拿数据里的 nameEn。
+       两张表逐条对着 apps/companies/data.json 的实际取值补齐，实测无遗漏。 */
+    "美国": "United States",
+    "中国": "China",
+    "日本": "Japan",
+    "德国": "Germany",
+    "英国": "United Kingdom",
+    "法国": "France",
+    "印度": "India",
+    "意大利": "Italy",
+    "加拿大": "Canada",
+    "韩国": "South Korea",
+    "台湾": "Taiwan",
+    "荷兰": "Netherlands",
+    "瑞士": "Switzerland",
+    "瑞典": "Sweden",
+    "丹麦": "Denmark",
+    "爱尔兰": "Ireland",
+    "比利时": "Belgium",
+    "西班牙": "Spain",
+    "澳大利亚": "Australia",
+    "新加坡": "Singapore",
+    "沙特": "Saudi Arabia",
+    "萨尔瓦多": "El Salvador",
+    "百慕大": "Bermuda",
+    "塞舌尔": "Seychelles",
+    "纳米比亚": "Namibia",
+    "科技": "Technology",
+    "软件": "Software",
+    "半导体": "Semiconductors",
+    "互联网": "Internet",
+    "人工智能": "Artificial Intelligence",
+    "AI数据": "AI Data",
+    "数据与AI": "Data & AI",
+    "数据中心": "Data Centers",
+    "数据存储": "Data Storage",
+    "机器人": "Robotics",
+    "自动驾驶": "Autonomous Driving",
+    "电商": "E-commerce",
+    "游戏": "Gaming",
+    "教育科技": "Education Technology",
+    "通信服务": "Communication Services",
+    "电信": "Telecom",
+    "金融": "Financials",
+    "金融科技": "Fintech",
+    "支付": "Payments",
+    "保险经纪": "Insurance Brokerage",
+    "加密货币": "Crypto",
+    "医疗健康": "Healthcare",
+    "可选消费": "Consumer Discretionary",
+    "必需消费": "Consumer Staples",
+    "消费品": "Consumer Goods",
+    "食品": "Food",
+    "零售": "Retail",
+    "品牌授权": "Brand Licensing",
+    "体育": "Sports",
+    "工业": "Industrials",
+    "基建": "Infrastructure",
+    "国防": "Defense",
+    "国防科技": "Defense Technology",
+    "能源": "Energy",
+    "新能源": "Clean Energy",
+    "原材料": "Materials",
+    "公用事业": "Utilities",
+    "房地产": "Real Estate",
+    "上市公司市值/股价/当日涨跌每日自动更新（来源 Yahoo Finance，本币市值按汇率折美元）；末段为知名非上市公司（标「未上市」，最近一轮公开估值、非实时）。仅供参考，不构成投资建议。":
+      "Market cap, share price and the daily move for listed companies refresh daily (source: Yahoo Finance; local-currency market caps are converted to USD at the prevailing rate). The tail of the list is well-known private companies, marked “Private”, carrying their most recent publicly reported valuation rather than a live figure. For reference only; not investment advice.",
     "🏢 全球公司市值榜": "🏢 Global Companies by Market Cap",
     "全球市值前 500 强 · 上市与非上市 · 实时股价与当日涨跌 · 每日自动更新": "Global top 500 · Public and private companies · Prices and daily moves · Updated daily",
     "标普500热力图 →": "S&P 500 Heatmap →",
@@ -80,7 +154,9 @@
     "未上市": "Private",
     "最新估值": "Latest valuation",
     "上轮融资": "Last round",
-    "示例数据 · 待每日任务刷新": "Sample data · Awaiting daily refresh"
+    "示例数据 · 待每日任务刷新": "Sample data · Awaiting daily refresh",
+    "本页按市值排列全球前 500 大公司（含部分知名非上市公司），展示实时股价、当日涨跌与市值，数据来源 Financial Modeling Prep，每日自动更新。市值 = 股价 × 总股本，会随股价变化；非上市公司市值为估值参考。本页仅供研究参考，不构成投资建议。":
+      "This page ranks the world's 500 largest companies by market cap, including a number of well-known private ones, showing live share price, the daily move and market cap. Data comes from Financial Modeling Prep and refreshes daily. Market cap = share price × shares outstanding, so it moves with the price; for private companies the figure is a reference valuation. For research reference only; not investment advice."
   };
 
   var AI = {
@@ -447,7 +523,17 @@
   function regexTranslate(s) {
     var m;
     if ((m = /^数据加载失败：(.+)$/.exec(s))) return "Failed to load data: " + m[1];
-    if ((m = /^实时数据 · 更新于 (.+)$/.exec(s))) return "Live data · Updated " + m[1];
+    /* 尾巴上的相对时间也要一起翻。原先只翻前半截、把「12 小时前」原样带回，
+       结果下一层（wave3）会再翻一次这个半成品，并把半成品记成它的「原文」——
+       切回中文时 wave3 后还原，就把页面又改回了 "Live data · Updated 12 小时前"。 */
+    if ((m = /^实时数据 · 更新于 (.+)$/.exec(s))) {
+      var rel = m[1], rm;
+      if ((rm = /^(\d+) 分钟前$/.exec(rel))) rel = rm[1] + " min ago";
+      else if ((rm = /^(\d+) 小时前$/.exec(rel))) rel = rm[1] + " hr ago";
+      else if ((rm = /^(\d+) 天前$/.exec(rel))) rel = rm[1] + " d ago";
+      else if (rel === "刚刚") rel = "just now";
+      return "Live data · Updated " + rel;
+    }
     if ((m = /^更新于 (\d+) 分钟前$/.exec(s))) return "Updated " + m[1] + " min ago";
     if ((m = /^更新于 (\d+) 小时前$/.exec(s))) return "Updated " + m[1] + " hr ago";
     if ((m = /^更新于 (\d+) 天前$/.exec(s))) return "Updated " + m[1] + " d ago";
@@ -457,11 +543,29 @@
     if ((m = /^· 更新于 (.+)$/.exec(s))) return "· Updated " + m[1];
 
     if (path.indexOf("/apps/asset-tracker/") === 0) {
+      // 标的名在数据里只有中文（无 nameEn），按既有口径不翻，只翻包住它的固定部分。
+      if ((m = /^(.+) · 现价 (\S+)$/.exec(s))) return m[1] + " · last " + m[2];
+      if ((m = /^▲ Top gainer (.+)$/.exec(s))) return "▲ Top gainer " + m[1];
       if ((m = /^(.+) · (\d+) 项$/.exec(s))) return (dict[m[1]] || m[1]) + " · " + m[2] + " assets";
       if ((m = /^▲ 领涨 (.+)$/.exec(s))) return "▲ Top gainer " + m[1];
       if ((m = /^▼ 领跌 (.+)$/.exec(s))) return "▼ Top decliner " + m[1];
     }
     if (path.indexOf("/apps/companies/") === 0) {
+      /* 行卡第二行是「🇺🇸美国 · 科技 · NVDA」这类 · 拼串，段数不定（非上市公司
+         第三段是「上轮融资 May 2026」）。逐段查表，查不到原样留下。 */
+      if (s.indexOf(" · ") > 0 && /[\u4e00-\u9fff]/.test(s)) {
+        var segs = s.split(" · "), hit = false;
+        var joined = segs.map(function (seg) {
+          var flag = "", body = seg;
+          var fm = /^([^\u4e00-\u9fffA-Za-z0-9]+)(.+)$/.exec(seg);
+          if (fm) { flag = fm[1]; body = fm[2]; }
+          if (dict[body]) { hit = true; return flag + dict[body]; }
+          var lm = /^上轮融资 (.+)$/.exec(body);
+          if (lm) { hit = true; return flag + "Last round " + lm[1]; }
+          return seg;
+        }).join(" · ");
+        if (hit) return joined;
+      }
       if ((m = /^前 (\d+) 总市值$/.exec(s))) return "Top " + m[1] + " total market cap";
       if ((m = /^(\d+) 上市 · (\d+) 未上市$/.exec(s))) return m[1] + " public · " + m[2] + " private";
       if ((m = /^▲ 今日领涨 (.+)$/.exec(s))) return "▲ Top gainer today " + m[1];
@@ -573,6 +677,16 @@
         var label = en.textContent.trim();
         nm.textContent = label;
         if (pri) { var b = pri.cloneNode(true); b.textContent = "Private"; nm.appendChild(b); }
+        /* logo 的 alt 存的是公司中文名，读屏用户此前读到的还是中文。英文名在 .en 里
+           现成有，一并换掉；走 attrOrig 记账，切回中文时和其他属性一起还原。 */
+        var card = nm.closest && nm.closest(".rowcard");
+        var img = card && card.querySelector("img");
+        if (img && img.getAttribute("alt") && img.getAttribute("alt") !== label) {
+          var saved = attrOrig.get(img);
+          if (!saved) { saved = {}; attrOrig.set(img, saved); attrTouched.push(img); }
+          if (!("alt" in saved)) saved.alt = img.getAttribute("alt");
+          img.setAttribute("alt", label);
+        }
       });
     }
     if (path.indexOf("/apps/university-rankings/") === 0) {
@@ -619,11 +733,14 @@
     if (!base) return;
     if (base.nodeType === 3) { translateText(base); return; }
     if (base.nodeType === 1) translateAttrs(base);
+    /* 和 i18n.js 同理：specialEnglish 对整块元素做 innerHTML 备份，必须跑在逐节点
+       翻译**之前**，否则它备下来的「原文」已经是英文。公司榜的「未上市」徽标就在
+       .nm 里，先翻后备份的话，切回中文时它会停在 "Private"。 */
+    specialEnglish();
     var w = document.createTreeWalker(base, NodeFilter.SHOW_TEXT, null), n;
     while ((n = w.nextNode())) translateText(n);
-    var els = base.querySelectorAll ? base.querySelectorAll("[placeholder],[aria-label],[title]") : [];
+    var els = base.querySelectorAll ? base.querySelectorAll("[placeholder],[aria-label],[title],[alt]") : [];
     for (var i = 0; i < els.length; i++) translateAttrs(els[i]);
-    specialEnglish();
   }
 
   function restore() {
