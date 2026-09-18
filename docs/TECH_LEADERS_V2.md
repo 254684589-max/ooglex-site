@@ -120,8 +120,25 @@ The first verified V3 cohort adds eight new leaders:
 - Albert Bourla — Pfizer — @AlbertBourla
 - Mary Barra — General Motors — @mtbarra
 
-After de-duplicating against the existing catalog and tagging existing qualifying entries, the 标普500 CEO layer currently contains 21 profiles.
+After de-duplicating against the existing catalog and tagging existing qualifying entries, the 标普500 CEO layer currently contains 24 profiles; the broader S&P 500 decision-maker layer contains 26 CEO/founder profiles.
 
 Each qualifying entry can include ticker, sp500_ceo=true, index_tags, verified_personal_x=true, verified_at, and categories[].
 
 The Free Embed path remains the default. Expanding this catalog does not itself increase X API cost.
+
+
+## V4 S&P 500 decision-maker audit — 2026-09-19
+
+V4 changes the index layer from a CEO-only boolean into a decision-maker model while keeping backward compatibility with `sp500_ceo`.
+
+- Catalog: 109 active production leaders; capacity 180.
+- S&P 500 CEOs: 24.
+- S&P 500 decision makers (CEO and/or founder): 26.
+- Jensen Huang now uses the verified personal handle `@JensenHuang`, not the NVIDIA company account.
+- Adena Friedman (`@adenatfriedman`, Nasdaq / NDAQ) is added as a verified S&P 500 Chair & CEO.
+- Brian Chesky, Dara Khosrowshahi, Vlad Tenev, Jack Dorsey and Jeff Bezos are explicitly tagged with S&P 500 membership/leader-type metadata.
+- Tony Xu remains `candidate`; Adam Foroughi remains `hold`. Neither is exposed in the production leader list until personal-X verification meets the same threshold.
+- New fields include `sp500_member`, `sp500_ticker`, `leader_types`, `sector`, `themes`, `x_identity_verified`, `admission_status`, plus verification timestamps on audited records.
+- Audit policy: role review every 90 days; downgrade after 180 days without substantive X activity; archive from the default flow after 365 days of inactivity.
+- The frontend S&P filter is now “标普500 决策者” and distinguishes CEO vs Founder badges.
+- Data mode checks the Worker-supported leader list before making a feed request, preventing an avoidable paid X API call for unprovisioned profiles.

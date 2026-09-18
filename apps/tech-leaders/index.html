@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>科技领袖 X 动态 · Ooglex</title>
-  <meta name="description" content="免费浏览 100+ 位科技领袖与上市公司 CEO 的公开 X 时间线，新增标普500 CEO 动态层，并支持 AI、芯片、云计算、网络安全、软件、汽车、工业、消费零售、金融、医疗、能源、航空航天、VC 分类筛选。默认使用 X 官方 Embed，不调用 Ooglex X API。">
+  <title>全球公司领袖 X 动态 · Ooglex</title>
+  <meta name="description" content="免费浏览 100+ 位全球公司领袖、上市公司 CEO 与创始人的公开 X 时间线，新增标普500决策者动态层，并支持 AI、芯片、云计算、网络安全、软件、汽车、工业、消费零售、金融、医疗、能源、航空航天、VC 分类筛选。默认使用 X 官方 Embed，不调用 Ooglex X API。">
   <link rel="canonical" href="https://www.ooglex.com/apps/tech-leaders/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="科技领袖 X 动态 · Ooglex">
-  <meta property="og:description" content="100+ 位科技领袖与上市公司 CEO 官方 X 时间线，支持标普500 CEO 与十三大行业分类；默认零 X API Credits。">
+  <meta property="og:title" content="全球公司领袖 X 动态 · Ooglex">
+  <meta property="og:description" content="100+ 位全球公司领袖、上市公司 CEO 与创始人官方 X 时间线，支持标普500决策者与十三大行业分类；默认零 X API Credits。">
   <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -145,13 +145,13 @@
   <main class="page">
     <header class="top">
       <a class="back" href="../../">← Ooglex</a>
-      <span class="tag">TECH LEADERS · X</span>
+      <span class="tag">PUBLIC COMPANY LEADERS · X</span>
     </header>
 
     <section class="hero">
-      <span class="kicker">Official X Embed · Free V3</span>
-      <h1>科技领袖 X 动态</h1>
-      <p class="lead">聚合科技领袖与上市公司 CEO 的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；新增标普500 CEO 动态层并保持手动数据模式。</p>
+      <span class="kicker">Official X Embed · Free V4</span>
+      <h1>全球公司领袖 X 动态</h1>
+      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
         <span class="fact" id="source-badge">X 官方 Embed · $0 API</span>
@@ -171,7 +171,7 @@
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
       <div class="catalog-actions">
-        <span>V3 · 科技领袖 + 上市公司 CEO 动态层</span>
+        <span>V4 · 全球公司领袖 + 上市公司决策者层</span>
         <button class="fold-btn" id="leader-fold" type="button" hidden>展开全部</button>
       </div>
     </div>
@@ -220,7 +220,7 @@
   var CATALOG_URL="./leaders.json";
   var FALLBACK_PEOPLE=[
     {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],category:"航天",note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
-    {id:"huang",name:"Jensen Huang / NVIDIA",zh:"黄仁勋 / NVIDIA",handle:"nvidia",role:"NVIDIA 官方账号 · 黄仁勋相关动态",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",avatar_url:"https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205",note:"为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",title:"JENSEN HUANG / NVIDIA · OFFICIAL X"},
+    {id:"huang",name:"Jensen Huang",zh:"黄仁勋",handle:"JensenHuang",role:"NVIDIA Founder & CEO",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",avatar_url:"https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205",note:"现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",title:"JENSEN HUANG · OFFICIAL X TIMELINE",sp500_ceo:true,sp500_member:true,ticker:"NVDA",leader_types:["ceo","founder"],x_identity_verified:true},
     {id:"altman",name:"Sam Altman",zh:"Sam Altman",handle:"sama",role:"OpenAI",chips:["OpenAI","AI","Models"],category:"AI",note:"个人公开 X 账号。",title:"SAM ALTMAN · OFFICIAL X TIMELINE"},
     {id:"su",name:"Lisa Su",zh:"苏姿丰",handle:"LisaSu",role:"AMD Chair & CEO",chips:["AMD","AI","CPU","GPU"],category:"芯片",note:"个人公开 X 账号。",title:"LISA SU · OFFICIAL X TIMELINE"},
     {id:"pichai",name:"Sundar Pichai",zh:"桑达尔·皮查伊",handle:"sundarpichai",role:"Google · Alphabet",chips:["GOOGL","Google","Gemini","AI"],category:"AI",note:"个人公开 X 账号。",title:"SUNDAR PICHAI · OFFICIAL X TIMELINE"},
@@ -279,7 +279,19 @@
     return raw.slice(0,2).toUpperCase();
   }
   function verifiedBadgeMarkup(extraClass){
-    return '<span class="verified-badge '+(extraClass||'')+'" title="公开账号已核验" aria-label="公开账号已核验"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified-blue" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path class="verified-check" d="M7.35 12.35 10.1 15.1 16.65 8.55"/></svg></span>';
+    return '<span class="verified-badge '+(extraClass||'')+'" title="Ooglex 已确认本人公开账号" aria-label="Ooglex 已确认本人公开账号"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified-blue" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path class="verified-check" d="M7.35 12.35 10.1 15.1 16.65 8.55"/></svg></span>';
+  }
+  function isVerifiedPerson(p){
+    return !!(p&&(p.x_identity_verified===true||p.verified_personal_x===true||String(p.note||"").indexOf("个人公开 X 账号")!==-1));
+  }
+  function sp500Labels(p){
+    if(!p||!(p.sp500_member||p.sp500_ceo))return [];
+    var types=Array.isArray(p.leader_types)?p.leader_types:[];
+    var out=[];
+    if(p.sp500_ceo||types.indexOf("ceo")!==-1)out.push("S&P 500 CEO");
+    if(types.indexOf("founder")!==-1)out.push("S&P 500 Founder");
+    if(!out.length)out.push("S&P 500");
+    return out;
   }
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
@@ -288,13 +300,13 @@
   }
   function updateProfile(p){
     document.getElementById("profile-name").textContent=p.name_zh||p.zh||p.name;
-    document.getElementById("profile-verified").innerHTML=verifiedBadgeMarkup("profile-verified");
+    document.getElementById("profile-verified").innerHTML=isVerifiedPerson(p)?verifiedBadgeMarkup("profile-verified"):"";
     profileNameEn.textContent=p.name_en||p.name||"";
     document.getElementById("profile-handle").textContent="@"+p.handle;
     profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
     profilePosition.textContent=p.position_zh||"";
     var profileTags=[];
-    if(p.sp500_ceo)profileTags.push("S&P 500 CEO");
+    sp500Labels(p).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     (p.categories||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
@@ -307,7 +319,7 @@
     profileAvatar.src=avatarUrl(p);
   }
   function searchableText(p){
-    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.role,p.company_zh,p.company_en,p.position_zh,p.category,p.ticker].concat(p.categories||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
+    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.role,p.company_zh,p.company_en,p.position_zh,p.category,p.ticker,p.sp500_ticker,p.sector].concat(p.categories||[],p.themes||[],p.leader_types||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
   }
   function renderCategories(){
     var counts={};
@@ -315,12 +327,12 @@
     people.forEach(function(p){
       (p.categories||[p.category]).forEach(function(c){counts[c]=(counts[c]||0)+1;});
     });
-    var sp500Count=people.filter(function(p){return p.sp500_ceo;}).length;
+    var sp500Count=people.filter(function(p){return p.sp500_member||p.sp500_ceo;}).length;
     var valid=activeCategory==="全部"||activeCategory==="sp500"||counts[activeCategory];
     if(!valid)activeCategory="全部";
     var buttons=[
       '<button class="category-btn'+(activeCategory==="全部"?' on':'')+'" type="button" data-category="全部">全部<span>'+people.length+'</span></button>',
-      '<button class="category-btn'+(activeCategory==="sp500"?' on':'')+'" type="button" data-category="sp500">标普500 CEO<span>'+sp500Count+'</span></button>'
+      '<button class="category-btn'+(activeCategory==="sp500"?' on':'')+'" type="button" data-category="sp500">标普500 决策者<span>'+sp500Count+'</span></button>'
     ];
     buttons=buttons.concat(catalogCategories.filter(function(c){return counts[c];}).map(function(c){
       return '<button class="category-btn'+(activeCategory===c?' on':'')+'" type="button" data-category="'+escapeHtml(c)+'">'+escapeHtml(c)+'<span>'+counts[c]+'</span></button>';
@@ -330,7 +342,7 @@
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
     var filtered=people.filter(function(p){
-      var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&p.sp500_ceo)||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
+      var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&(p.sp500_member||p.sp500_ceo))||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
       return categoryOk&&searchOk;
     });
@@ -342,7 +354,7 @@
         visible=visible.slice(0,COLLAPSED_LIMIT-1).concat([current]);
       }
     }
-    var activeLabel=activeCategory==="全部"?"全部分类":(activeCategory==="sp500"?"标普500 CEO":activeCategory);
+    var activeLabel=activeCategory==="全部"?"全部分类":(activeCategory==="sp500"?"标普500 决策者":activeCategory);
     count.textContent="已收录 "+people.length+" 位 · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
     foldBtn.hidden=!canFold;
     if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开 "+filtered.length+" 位 ↓";
@@ -355,11 +367,11 @@
       var en=p.name_en||p.name||"";
       var company=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
       var role=[company,p.position_zh||""].filter(Boolean).join(" · ");
-      var indexBadge=p.sp500_ceo?'<span class="index-badge">S&P 500 CEO</span>':"";
+      var indexBadge=sp500Labels(p).map(function(x){return '<span class="index-badge">'+escapeHtml(x)+'</span>';}).join("");
       return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
         '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
         '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
-        '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+verifiedBadgeMarkup("")+'</div><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
+        '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+(isVerifiedPerson(p)?verifiedBadgeMarkup(""):"")+'</div><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
         '<div class="leader-role">'+indexBadge+'<strong>'+escapeHtml(role)+'</strong></div></button>';
     }).join("");
   }
@@ -369,7 +381,7 @@
       if(!res.ok)throw new Error("catalog_http_"+res.status);
       var data=await res.json();
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
-        people=data.leaders.slice();
+        people=data.leaders.filter(function(p){return !p.admission_status||p.admission_status==="active";});
         capacity=Number(data.capacity)||people.length;
         if(Array.isArray(data.categories)&&data.categories.length)catalogCategories=data.categories.slice();
       }
@@ -537,7 +549,7 @@
       var who=document.createElement("div");who.className="post-who";
       var nameLine=document.createElement("div");nameLine.className="post-name-line";
       var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
-      var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);
+      if(isVerifiedPerson(current)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
       var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
       var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
@@ -562,6 +574,8 @@
       var statusRes=await fetch(API_BASE+"/v1/tech-leaders/status",{cache:"no-store"});
       var status=await statusRes.json();
       if(!statusRes.ok||!status||!status.configured)throw new Error("api_not_configured");
+      var apiLeaders=Array.isArray(status.leaders)?status.leaders:[];
+      if(!apiLeaders.some(function(x){return x&&x.id===current.id;}))throw new Error("leader_not_provisioned_in_data_mode");
       var ctl=new AbortController();
       var timer=setTimeout(function(){ctl.abort();},15000);
       try{
