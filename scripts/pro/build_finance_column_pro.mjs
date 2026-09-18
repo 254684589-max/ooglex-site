@@ -60,6 +60,14 @@ function buildArchPreview(full) {
   }
 
   const fullTerms = countTerms(source);
+  for (const layer of source.layers || []) {
+    layer.ooglexFullTerms = (layer.modules || []).reduce(
+      (sum, mod) => sum + (mod.terms || []).length, 0
+    );
+    for (const mod of layer.modules || []) {
+      mod.ooglexFullTerms = (mod.terms || []).length;
+    }
+  }
   const target = Math.max(1, Math.ceil(fullTerms * RATIO));
 
   // Keep the entire 8-layer / 48-module map visible, but reveal only ~10% of
