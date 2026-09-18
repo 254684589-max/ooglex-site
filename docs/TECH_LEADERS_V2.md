@@ -78,3 +78,19 @@ The public page includes these primary filters:
 - VC
 
 The selected category is reflected in the URL via the `category` query parameter and combines with text search. The category filter is purely client-side and does not call the paid X API.
+
+
+## Roster UI
+
+The 100-profile directory is collapsed by default to 18 cards when viewing the unfiltered "全部" catalog. Users can expand all 100 or collapse back to 18. Category filters and text search show their matching results directly, so smaller result sets do not require an extra fold step.
+
+Each leader card now shows:
+
+- public X avatar when available
+- deterministic initials fallback when the avatar cannot be loaded
+- public X handle
+- company / institution and title descriptor from the catalog `role` field
+
+Avatar images are requested lazily from Unavatar's X avatar endpoint and use `referrerpolicy="no-referrer"`. This does not consume Ooglex X API credits. Unavatar attribution is included in the Tech Leaders footer, and the privacy page discloses the third-party avatar request.
+
+The selected-profile panel also displays the same avatar/fallback and company/title descriptor.
