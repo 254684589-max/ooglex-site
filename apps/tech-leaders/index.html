@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>科技领袖 X 动态 · Ooglex</title>
-  <meta name="description" content="免费浏览 100 位科技领袖公开 X 时间线，支持 AI、芯片、云计算、机器人、航天、消费科技、软件、金融科技、VC 分类筛选。默认使用 X 官方 Embed，不调用 Ooglex X API。">
+  <meta name="description" content="免费浏览 100+ 位科技领袖与上市公司 CEO 的公开 X 时间线，新增标普500 CEO 动态层，并支持 AI、芯片、云计算、网络安全、软件、汽车、工业、消费零售、金融、医疗、能源、航空航天、VC 分类筛选。默认使用 X 官方 Embed，不调用 Ooglex X API。">
   <link rel="canonical" href="https://www.ooglex.com/apps/tech-leaders/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖 X 动态 · Ooglex">
-  <meta property="og:description" content="100 位科技领袖官方 X 时间线，支持九大科技分类筛选；默认零 X API Credits。">
+  <meta property="og:description" content="100+ 位科技领袖与上市公司 CEO 官方 X 时间线，支持标普500 CEO 与十三大行业分类；默认零 X API Credits。">
   <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -100,6 +100,7 @@
     .position-line{margin-top:2px;color:var(--dim)}
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
+    .index-badge{display:inline-flex;align-items:center;padding:3px 6px;border:1px solid rgba(57,135,229,.35);border-radius:999px;background:rgba(57,135,229,.08);color:var(--blue);font:9px/1.1 var(--mono);white-space:nowrap;margin-right:6px}
     .openx{display:flex;align-items:center;justify-content:center;height:42px;margin-top:18px;border-radius:8px;background:#f2f4f7;color:#111;font-size:13px;font-weight:700}
     .note{margin-top:14px;font-size:11.5px;color:var(--faint);line-height:1.65}
     .feed{overflow:hidden}
@@ -148,14 +149,14 @@
     </header>
 
     <section class="hero">
-      <span class="kicker">Official X Embed · Free V2</span>
+      <span class="kicker">Official X Embed · Free V3</span>
       <h1>科技领袖 X 动态</h1>
-      <p class="lead">默认使用 X 官方单人物时间线，按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits。现有 API 后端保留为手动数据模式。</p>
+      <p class="lead">聚合科技领袖与上市公司 CEO 的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；新增标普500 CEO 动态层并保持手动数据模式。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
         <span class="fact" id="source-badge">X 官方 Embed · $0 API</span>
         <span class="fact">单账号按需加载</span>
-        <span class="fact">100 位 · 九大分类</span>
+        <span class="fact" id="catalog-fact">100+ 位 · 十三大分类</span>
       </div>
     </section>
 
@@ -170,7 +171,7 @@
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
       <div class="catalog-actions">
-        <span>分类与人物目录由 leaders.json 驱动</span>
+        <span>V3 · 科技领袖 + 上市公司 CEO 动态层</span>
         <button class="fold-btn" id="leader-fold" type="button" hidden>展开全部</button>
       </div>
     </div>
@@ -227,7 +228,8 @@
   ];
 
   var people=FALLBACK_PEOPLE.slice();
-  var capacity=100;
+  var capacity=180;
+  var catalogCategories=["AI","芯片","云计算","网络安全","软件","汽车","工业","消费零售","金融","医疗","能源","航空航天","VC"];
   var current=null;
   var leaders=document.getElementById("leaders");
   var timeline=document.getElementById("timeline");
@@ -235,6 +237,7 @@
   var sourceBadge=document.getElementById("source-badge");
   var search=document.getElementById("leader-search");
   var count=document.getElementById("catalog-count");
+  var catalogFact=document.getElementById("catalog-fact");
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
   var profileAvatar=document.getElementById("profile-avatar");
@@ -290,7 +293,11 @@
     document.getElementById("profile-handle").textContent="@"+p.handle;
     profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
     profilePosition.textContent=p.position_zh||"";
-    document.getElementById("profile-chips").innerHTML=(p.chips||[]).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
+    var profileTags=[];
+    if(p.sp500_ceo)profileTags.push("S&P 500 CEO");
+    (p.categories||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
+    (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
+    document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
     document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
@@ -300,22 +307,30 @@
     profileAvatar.src=avatarUrl(p);
   }
   function searchableText(p){
-    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.role,p.company_zh,p.company_en,p.position_zh,p.category].concat(p.chips||[]).join(" ").toLowerCase();
+    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.role,p.company_zh,p.company_en,p.position_zh,p.category,p.ticker].concat(p.categories||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
   }
   function renderCategories(){
-    var order=["AI","芯片","云计算","机器人","航天","消费科技","软件","金融科技","VC"];
     var counts={};
-    people.forEach(function(p){counts[p.category]=(counts[p.category]||0)+1;});
-    if(activeCategory!=="全部"&&!counts[activeCategory])activeCategory="全部";
-    categoryBar.innerHTML=['<button class="category-btn'+(activeCategory==="全部"?' on':'')+'" type="button" data-category="全部">全部<span>'+people.length+'</span></button>']
-      .concat(order.filter(function(c){return counts[c];}).map(function(c){
-        return '<button class="category-btn'+(activeCategory===c?' on':'')+'" type="button" data-category="'+escapeHtml(c)+'">'+escapeHtml(c)+'<span>'+counts[c]+'</span></button>';
-      })).join("");
+    catalogCategories.forEach(function(c){counts[c]=0;});
+    people.forEach(function(p){
+      (p.categories||[p.category]).forEach(function(c){counts[c]=(counts[c]||0)+1;});
+    });
+    var sp500Count=people.filter(function(p){return p.sp500_ceo;}).length;
+    var valid=activeCategory==="全部"||activeCategory==="sp500"||counts[activeCategory];
+    if(!valid)activeCategory="全部";
+    var buttons=[
+      '<button class="category-btn'+(activeCategory==="全部"?' on':'')+'" type="button" data-category="全部">全部<span>'+people.length+'</span></button>',
+      '<button class="category-btn'+(activeCategory==="sp500"?' on':'')+'" type="button" data-category="sp500">标普500 CEO<span>'+sp500Count+'</span></button>'
+    ];
+    buttons=buttons.concat(catalogCategories.filter(function(c){return counts[c];}).map(function(c){
+      return '<button class="category-btn'+(activeCategory===c?' on':'')+'" type="button" data-category="'+escapeHtml(c)+'">'+escapeHtml(c)+'<span>'+counts[c]+'</span></button>';
+    }));
+    categoryBar.innerHTML=buttons.join("");
   }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
     var filtered=people.filter(function(p){
-      var categoryOk=activeCategory==="全部"||p.category===activeCategory;
+      var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&p.sp500_ceo)||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
       return categoryOk&&searchOk;
     });
@@ -327,7 +342,8 @@
         visible=visible.slice(0,COLLAPSED_LIMIT-1).concat([current]);
       }
     }
-    count.textContent="已收录 "+people.length+" / "+capacity+" 位 · "+(activeCategory==="全部"?"全部分类":activeCategory)+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
+    var activeLabel=activeCategory==="全部"?"全部分类":(activeCategory==="sp500"?"标普500 CEO":activeCategory);
+    count.textContent="已收录 "+people.length+" 位 · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
     foldBtn.hidden=!canFold;
     if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开 "+filtered.length+" 位 ↓";
     if(!filtered.length){
@@ -339,11 +355,12 @@
       var en=p.name_en||p.name||"";
       var company=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
       var role=[company,p.position_zh||""].filter(Boolean).join(" · ");
+      var indexBadge=p.sp500_ceo?'<span class="index-badge">S&P 500 CEO</span>':"";
       return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
         '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
         '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
         '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+verifiedBadgeMarkup("")+'</div><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
-        '<div class="leader-role"><strong>'+escapeHtml(role)+'</strong></div></button>';
+        '<div class="leader-role">'+indexBadge+'<strong>'+escapeHtml(role)+'</strong></div></button>';
     }).join("");
   }
   async function loadCatalog(){
@@ -352,13 +369,15 @@
       if(!res.ok)throw new Error("catalog_http_"+res.status);
       var data=await res.json();
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
-        people=data.leaders.slice(0,100);
-        capacity=Math.min(100,Number(data.capacity)||100);
+        people=data.leaders.slice();
+        capacity=Number(data.capacity)||people.length;
+        if(Array.isArray(data.categories)&&data.categories.length)catalogCategories=data.categories.slice();
       }
     }catch(e){
       people=FALLBACK_PEOPLE.slice();
-      capacity=100;
+      capacity=180;
     }
+    catalogFact.textContent=people.length+" 位 · "+catalogCategories.length+" 大分类";
     current=currentFromCatalog();
     updateProfile(current);
     renderCategories();
