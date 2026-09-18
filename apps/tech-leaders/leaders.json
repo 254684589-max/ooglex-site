@@ -1,6 +1,6 @@
 {
-  "schema_version": 3,
-  "capacity": 100,
+  "schema_version": 4,
+  "capacity": 180,
   "leaders": [
     {
       "id": "musk",
@@ -16,12 +16,22 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "ELON MUSK · OFFICIAL X TIMELINE",
-      "category": "航天",
+      "category": "汽车",
       "name_zh": "马斯克",
       "name_en": "Elon Musk",
       "company_zh": "特斯拉 / SpaceX / xAI / X",
       "company_en": "Tesla / SpaceX / xAI / X",
-      "position_zh": "创始人 / CEO"
+      "position_zh": "创始人 / CEO",
+      "categories": [
+        "汽车",
+        "AI",
+        "航空航天"
+      ],
+      "sp500_ceo": true,
+      "ticker": "TSLA",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "huang",
@@ -44,7 +54,12 @@
       "company_en": "NVIDIA",
       "position_zh": "创始人兼 CEO",
       "avatar_url": "https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205",
-      "avatar_source": "NVIDIA Newsroom official headshot"
+      "avatar_source": "NVIDIA Newsroom official headshot",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "altman",
@@ -64,7 +79,11 @@
       "name_en": "Sam Altman",
       "company_zh": "OpenAI",
       "company_en": "OpenAI",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "su",
@@ -85,7 +104,16 @@
       "name_en": "Lisa Su",
       "company_zh": "AMD",
       "company_en": "AMD",
-      "position_zh": "董事长兼 CEO"
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "AMD",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "pichai",
@@ -106,7 +134,16 @@
       "name_en": "Sundar Pichai",
       "company_zh": "谷歌 / Alphabet",
       "company_en": "Google / Alphabet",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "AI",
+        "云计算"
+      ],
+      "sp500_ceo": true,
+      "ticker": "GOOGL",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "nadella",
@@ -127,7 +164,17 @@
       "name_en": "Satya Nadella",
       "company_zh": "微软",
       "company_en": "Microsoft",
-      "position_zh": "董事长兼 CEO"
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "云计算",
+        "AI",
+        "软件"
+      ],
+      "sp500_ceo": true,
+      "ticker": "MSFT",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "cook",
@@ -143,12 +190,21 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "TIM COOK · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "蒂姆·库克",
       "name_en": "Tim Cook",
       "company_zh": "苹果",
       "company_en": "Apple",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "消费零售",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "AAPL",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "bezos",
@@ -164,12 +220,17 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "JEFF BEZOS · OFFICIAL X TIMELINE",
-      "category": "航天",
+      "category": "航空航天",
       "name_zh": "杰夫·贝索斯",
       "name_en": "Jeff Bezos",
       "company_zh": "亚马逊 / 蓝色起源",
       "company_en": "Amazon / Blue Origin",
-      "position_zh": "创始人"
+      "position_zh": "创始人",
+      "categories": [
+        "航空航天",
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "jassy",
@@ -190,7 +251,16 @@
       "name_en": "Andy Jassy",
       "company_zh": "亚马逊",
       "company_en": "Amazon",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "云计算",
+        "消费零售"
+      ],
+      "sp500_ceo": true,
+      "ticker": "AMZN",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "hassabis",
@@ -211,7 +281,11 @@
       "name_en": "Demis Hassabis",
       "company_zh": "谷歌 DeepMind",
       "company_en": "Google DeepMind",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "amodei",
@@ -232,7 +306,11 @@
       "name_en": "Dario Amodei",
       "company_zh": "Anthropic",
       "company_en": "Anthropic",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "suleyman",
@@ -253,7 +331,12 @@
       "name_en": "Mustafa Suleyman",
       "company_zh": "微软 AI",
       "company_en": "Microsoft AI",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "AI",
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "lecun",
@@ -274,7 +357,11 @@
       "name_en": "Yann LeCun",
       "company_zh": "纽约大学",
       "company_en": "NYU",
-      "position_zh": "AI 研究员"
+      "position_zh": "AI 研究员",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "andrew-ng",
@@ -295,7 +382,11 @@
       "name_en": "Andrew Ng",
       "company_zh": "DeepLearning.AI / AI Fund",
       "company_en": "DeepLearning.AI / AI Fund",
-      "position_zh": "创始人"
+      "position_zh": "创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "fei-fei-li",
@@ -316,7 +407,12 @@
       "name_en": "Fei-Fei Li",
       "company_zh": "World Labs / 斯坦福大学",
       "company_en": "World Labs / Stanford",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI",
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "sutskever",
@@ -337,7 +433,11 @@
       "name_en": "Ilya Sutskever",
       "company_zh": "Safe Superintelligence",
       "company_en": "Safe Superintelligence",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "murati",
@@ -358,7 +458,11 @@
       "name_en": "Mira Murati",
       "company_zh": "Thinking Machines Lab",
       "company_en": "Thinking Machines Lab",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "brockman",
@@ -379,7 +483,11 @@
       "name_en": "Greg Brockman",
       "company_zh": "OpenAI",
       "company_en": "OpenAI",
-      "position_zh": "总裁兼联合创始人"
+      "position_zh": "总裁兼联合创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "srinivas",
@@ -400,7 +508,11 @@
       "name_en": "Aravind Srinivas",
       "company_zh": "Perplexity",
       "company_en": "Perplexity",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "karpathy",
@@ -421,7 +533,11 @@
       "name_en": "Andrej Karpathy",
       "company_zh": "Eureka Labs",
       "company_en": "Eureka Labs",
-      "position_zh": "AI 研究员 / 创始人"
+      "position_zh": "AI 研究员 / 创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "field",
@@ -442,7 +558,11 @@
       "name_en": "Dylan Field",
       "company_zh": "Figma",
       "company_en": "Figma",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "patrick-collison",
@@ -458,12 +578,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "PATRICK COLLISON · OFFICIAL X TIMELINE",
-      "category": "金融科技",
+      "category": "金融",
       "name_zh": "帕特里克·科里森",
       "name_en": "Patrick Collison",
       "company_zh": "Stripe",
       "company_en": "Stripe",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "chesky",
@@ -479,12 +603,20 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "BRIAN CHESKY · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "布莱恩·切斯基",
       "name_en": "Brian Chesky",
       "company_zh": "Airbnb",
       "company_en": "Airbnb",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": true,
+      "ticker": "ABNB",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "mohan",
@@ -500,12 +632,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "NEAL MOHAN · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "尼尔·莫汉",
       "name_en": "Neal Mohan",
       "company_zh": "YouTube",
       "company_en": "YouTube",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "ek",
@@ -521,12 +657,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "DANIEL EK · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "丹尼尔·埃克",
       "name_en": "Daniel Ek",
       "company_zh": "Spotify / Prima Materia",
       "company_en": "Spotify / Prima Materia",
-      "position_zh": "创始人"
+      "position_zh": "创始人",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "benioff",
@@ -547,7 +687,16 @@
       "name_en": "Marc Benioff",
       "company_zh": "Salesforce",
       "company_en": "Salesforce",
-      "position_zh": "董事长兼 CEO"
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "软件",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "CRM",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "dell",
@@ -568,7 +717,16 @@
       "name_en": "Michael Dell",
       "company_zh": "戴尔科技",
       "company_en": "Dell Technologies",
-      "position_zh": "董事长兼 CEO"
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "云计算",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "DELL",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "andreessen",
@@ -589,7 +747,11 @@
       "name_en": "Marc Andreessen",
       "company_zh": "Andreessen Horowitz",
       "company_en": "Andreessen Horowitz",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "luckey",
@@ -605,12 +767,17 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "PALMER LUCKEY · OFFICIAL X TIMELINE",
-      "category": "机器人",
+      "category": "工业",
       "name_zh": "帕尔默·拉奇",
       "name_en": "Palmer Luckey",
       "company_zh": "Anduril",
       "company_en": "Anduril",
-      "position_zh": "创始人"
+      "position_zh": "创始人",
+      "categories": [
+        "工业",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "lutke",
@@ -631,7 +798,11 @@
       "name_en": "Tobias Lütke",
       "company_zh": "Shopify",
       "company_en": "Shopify",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "hoffman",
@@ -652,7 +823,11 @@
       "name_en": "Reid Hoffman",
       "company_zh": "LinkedIn / Greylock",
       "company_en": "LinkedIn / Greylock",
-      "position_zh": "联合创始人 / 投资人"
+      "position_zh": "联合创始人 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "khosla",
@@ -673,7 +848,11 @@
       "name_en": "Vinod Khosla",
       "company_zh": "Khosla Ventures",
       "company_en": "Khosla Ventures",
-      "position_zh": "创始人"
+      "position_zh": "创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "levie",
@@ -694,7 +873,11 @@
       "name_en": "Aaron Levie",
       "company_zh": "Box",
       "company_en": "Box",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "dorsey",
@@ -710,12 +893,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "JACK DORSEY · OFFICIAL X TIMELINE",
-      "category": "金融科技",
+      "category": "金融",
       "name_zh": "杰克·多西",
       "name_en": "Jack Dorsey",
       "company_zh": "Block / Twitter",
       "company_en": "Block / Twitter",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "paul-graham",
@@ -736,7 +923,11 @@
       "name_en": "Paul Graham",
       "company_zh": "Y Combinator",
       "company_en": "Y Combinator",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "garry-tan",
@@ -757,7 +948,11 @@
       "name_en": "Garry Tan",
       "company_zh": "Y Combinator",
       "company_en": "Y Combinator",
-      "position_zh": "总裁兼 CEO"
+      "position_zh": "总裁兼 CEO",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "alexandr-wang",
@@ -778,7 +973,11 @@
       "name_en": "Alexandr Wang",
       "company_zh": "Meta 超级智能团队",
       "company_en": "Meta Superintelligence",
-      "position_zh": "AI 高管 / 创业者"
+      "position_zh": "AI 高管 / 创业者",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "delangue",
@@ -799,7 +998,11 @@
       "name_en": "Clément Delangue",
       "company_zh": "Hugging Face",
       "company_en": "Hugging Face",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "jeff-dean",
@@ -820,7 +1023,11 @@
       "name_en": "Jeff Dean",
       "company_zh": "谷歌",
       "company_en": "Google",
-      "position_zh": "AI 研究负责人"
+      "position_zh": "AI 研究负责人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "gomez",
@@ -841,7 +1048,11 @@
       "name_en": "Aidan Gomez",
       "company_zh": "Cohere",
       "company_en": "Cohere",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "bret-taylor",
@@ -862,7 +1073,11 @@
       "name_en": "Bret Taylor",
       "company_zh": "Sierra / OpenAI",
       "company_en": "Sierra / OpenAI",
-      "position_zh": "联合创始人兼 CEO / 董事"
+      "position_zh": "联合创始人兼 CEO / 董事",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "masad",
@@ -883,7 +1098,11 @@
       "name_en": "Amjad Masad",
       "company_zh": "Replit",
       "company_en": "Replit",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "rauch",
@@ -904,7 +1123,11 @@
       "name_en": "Guillermo Rauch",
       "company_zh": "Vercel",
       "company_en": "Vercel",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "friedman",
@@ -925,7 +1148,11 @@
       "name_en": "Nat Friedman",
       "company_zh": "科技投资",
       "company_en": "Technology Investing",
-      "position_zh": "投资人 / 前 GitHub CEO"
+      "position_zh": "投资人 / 前 GitHub CEO",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "krishna",
@@ -946,7 +1173,16 @@
       "name_en": "Arvind Krishna",
       "company_zh": "IBM",
       "company_en": "IBM",
-      "position_zh": "董事长兼 CEO"
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "云计算",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "IBM",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "amon",
@@ -967,7 +1203,16 @@
       "name_en": "Cristiano Amon",
       "company_zh": "高通",
       "company_en": "Qualcomm",
-      "position_zh": "总裁兼 CEO"
+      "position_zh": "总裁兼 CEO",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "QCOM",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "peter-beck",
@@ -983,12 +1228,17 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "PETER BECK · OFFICIAL X TIMELINE",
-      "category": "航天",
+      "category": "航空航天",
       "name_zh": "彼得·贝克",
       "name_en": "Peter Beck",
       "company_zh": "火箭实验室",
       "company_en": "Rocket Lab",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "航空航天",
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "adcock",
@@ -1004,12 +1254,17 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "BRETT ADCOCK · OFFICIAL X TIMELINE",
-      "category": "机器人",
+      "category": "工业",
       "name_zh": "布雷特·阿德科克",
       "name_en": "Brett Adcock",
       "company_zh": "Figure AI",
       "company_en": "Figure AI",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "工业",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "jim-keller",
@@ -1030,7 +1285,12 @@
       "name_en": "Jim Keller",
       "company_zh": "Tenstorrent",
       "company_en": "Tenstorrent",
-      "position_zh": "CEO / 芯片架构师"
+      "position_zh": "CEO / 芯片架构师",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "koduri",
@@ -1051,7 +1311,12 @@
       "name_en": "Raja Koduri",
       "company_zh": "半导体 / AI 硬件",
       "company_en": "Semiconductors / AI Hardware",
-      "position_zh": "芯片架构师"
+      "position_zh": "芯片架构师",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "dhh",
@@ -1072,7 +1337,11 @@
       "name_en": "David Heinemeier Hansson",
       "company_zh": "37signals / Ruby on Rails",
       "company_en": "37signals / Ruby on Rails",
-      "position_zh": "共同所有人 / 创始作者"
+      "position_zh": "共同所有人 / 创始作者",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "mullenweg",
@@ -1093,7 +1362,11 @@
       "name_en": "Matt Mullenweg",
       "company_zh": "Automattic / WordPress",
       "company_en": "Automattic / WordPress",
-      "position_zh": "CEO / 联合创始人"
+      "position_zh": "CEO / 联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "houston",
@@ -1114,7 +1387,11 @@
       "name_en": "Drew Houston",
       "company_zh": "Dropbox",
       "company_en": "Dropbox",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "armstrong",
@@ -1130,12 +1407,20 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "BRIAN ARMSTRONG · OFFICIAL X TIMELINE",
-      "category": "金融科技",
+      "category": "金融",
       "name_zh": "布莱恩·阿姆斯特朗",
       "name_en": "Brian Armstrong",
       "company_zh": "Coinbase",
       "company_en": "Coinbase",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": true,
+      "ticker": "COIN",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "buterin",
@@ -1151,12 +1436,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "VITALIK BUTERIN · OFFICIAL X TIMELINE",
-      "category": "金融科技",
+      "category": "金融",
       "name_zh": "维塔利克·布特林",
       "name_en": "Vitalik Buterin",
       "company_zh": "以太坊",
       "company_en": "Ethereum",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "son",
@@ -1177,7 +1466,12 @@
       "name_en": "Masayoshi Son",
       "company_zh": "软银集团",
       "company_en": "SoftBank Group",
-      "position_zh": "董事长兼 CEO"
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "VC",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "schmidt",
@@ -1198,7 +1492,11 @@
       "name_en": "Eric Schmidt",
       "company_zh": "谷歌 / 科技投资",
       "company_en": "Google / Technology Investing",
-      "position_zh": "前 CEO / 投资人"
+      "position_zh": "前 CEO / 投资人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "durov",
@@ -1214,12 +1512,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "PAVEL DUROV · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "帕维尔·杜罗夫",
       "name_en": "Pavel Durov",
       "company_zh": "Telegram",
       "company_en": "Telegram",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "lei-jun",
@@ -1235,12 +1537,17 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "LEI JUN · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "雷军",
       "name_en": "Lei Jun",
       "company_zh": "小米",
       "company_en": "Xiaomi",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "消费零售",
+        "汽车"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "fadell",
@@ -1256,12 +1563,16 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "TONY FADELL · OFFICIAL X TIMELINE",
-      "category": "消费科技",
+      "category": "消费零售",
       "name_zh": "托尼·法德尔",
       "name_en": "Tony Fadell",
       "company_zh": "Nest",
       "company_en": "Nest",
-      "position_zh": "创始人"
+      "position_zh": "创始人",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "zuckerberg",
@@ -1275,14 +1586,19 @@
         "AI",
         "Social"
       ],
-      "category": "消费科技",
+      "category": "消费零售",
       "note": "个人公开 X 账号。",
       "title": "MARK ZUCKERBERG · OFFICIAL X TIMELINE",
       "name_zh": "马克·扎克伯格",
       "name_en": "Mark Zuckerberg",
       "company_zh": "Meta",
       "company_en": "Meta",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "消费零售",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "mosseri",
@@ -1296,14 +1612,18 @@
         "Social",
         "Creators"
       ],
-      "category": "消费科技",
+      "category": "消费零售",
       "note": "个人公开 X 账号。",
       "title": "ADAM MOSSERI · OFFICIAL X TIMELINE",
       "name_zh": "亚当·莫塞里",
       "name_en": "Adam Mosseri",
       "company_zh": "Instagram",
       "company_en": "Instagram",
-      "position_zh": "负责人"
+      "position_zh": "负责人",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "boz",
@@ -1324,7 +1644,12 @@
       "name_en": "Andrew Bosworth",
       "company_zh": "Meta",
       "company_en": "Meta",
-      "position_zh": "CTO"
+      "position_zh": "CTO",
+      "categories": [
+        "AI",
+        "消费零售"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "prince",
@@ -1345,7 +1670,11 @@
       "name_en": "Matthew Prince",
       "company_zh": "Cloudflare",
       "company_en": "Cloudflare",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "zatlyn",
@@ -1366,7 +1695,11 @@
       "name_en": "Michelle Zatlyn",
       "company_zh": "Cloudflare",
       "company_en": "Cloudflare",
-      "position_zh": "联合创始人兼总裁"
+      "position_zh": "联合创始人兼总裁",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "vogels",
@@ -1387,7 +1720,11 @@
       "name_en": "Werner Vogels",
       "company_zh": "亚马逊",
       "company_en": "Amazon",
-      "position_zh": "CTO"
+      "position_zh": "CTO",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "selipsky",
@@ -1408,7 +1745,11 @@
       "name_en": "Adam Selipsky",
       "company_zh": "云计算 / 企业科技",
       "company_en": "Cloud & Enterprise Technology",
-      "position_zh": "科技高管"
+      "position_zh": "科技高管",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "gelsinger",
@@ -1429,7 +1770,11 @@
       "name_en": "Pat Gelsinger",
       "company_zh": "半导体行业",
       "company_en": "Semiconductors",
-      "position_zh": "科技高管"
+      "position_zh": "科技高管",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "rene-haas",
@@ -1450,7 +1795,11 @@
       "name_en": "Rene Haas",
       "company_zh": "Arm",
       "company_en": "Arm",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "lip-bu-tan",
@@ -1471,7 +1820,11 @@
       "name_en": "Lip-Bu Tan",
       "company_zh": "英特尔",
       "company_en": "Intel",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "hock-tan",
@@ -1492,7 +1845,11 @@
       "name_en": "Hock Tan",
       "company_zh": "博通",
       "company_en": "Broadcom",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "fouquet",
@@ -1513,7 +1870,11 @@
       "name_en": "Christophe Fouquet",
       "company_zh": "阿斯麦",
       "company_en": "ASML",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "mehrotra",
@@ -1534,7 +1895,11 @@
       "name_en": "Sanjay Mehrotra",
       "company_zh": "美光科技",
       "company_en": "Micron",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "pabbeel",
@@ -1548,14 +1913,18 @@
         "Embodied AI",
         "Research"
       ],
-      "category": "机器人",
+      "category": "工业",
       "note": "个人公开 X 账号。",
       "title": "PIETER ABBEEL · OFFICIAL X TIMELINE",
       "name_zh": "彼得·阿比尔",
       "name_en": "Pieter Abbeel",
       "company_zh": "Covariant / 加州大学伯克利分校",
       "company_en": "Covariant / UC Berkeley",
-      "position_zh": "机器人与 AI 研究员"
+      "position_zh": "机器人与 AI 研究员",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "rodney-brooks",
@@ -1569,14 +1938,18 @@
         "Rethink Robotics",
         "Research"
       ],
-      "category": "机器人",
+      "category": "工业",
       "note": "个人公开 X 账号。",
       "title": "RODNEY BROOKS · OFFICIAL X TIMELINE",
       "name_zh": "罗德尼·布鲁克斯",
       "name_en": "Rodney Brooks",
       "company_zh": "机器人产业",
       "company_en": "Robotics",
-      "position_zh": "机器人学家 / 创业者"
+      "position_zh": "机器人学家 / 创业者",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "sergey-levine",
@@ -1590,14 +1963,18 @@
         "Reinforcement Learning",
         "Research"
       ],
-      "category": "机器人",
+      "category": "工业",
       "note": "个人公开 X 账号。",
       "title": "SERGEY LEVINE · OFFICIAL X TIMELINE",
       "name_zh": "谢尔盖·莱文",
       "name_en": "Sergey Levine",
       "company_zh": "加州大学伯克利分校",
       "company_en": "UC Berkeley",
-      "position_zh": "机器人与 AI 研究员"
+      "position_zh": "机器人与 AI 研究员",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "chelsea-finn",
@@ -1611,14 +1988,18 @@
         "Foundation Models",
         "Research"
       ],
-      "category": "机器人",
+      "category": "工业",
       "note": "个人公开 X 账号。",
       "title": "CHELSEA FINN · OFFICIAL X TIMELINE",
       "name_zh": "切尔西·芬恩",
       "name_en": "Chelsea Finn",
       "company_zh": "斯坦福大学",
       "company_en": "Stanford",
-      "position_zh": "AI 与机器人研究员"
+      "position_zh": "AI 与机器人研究员",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "boston-dynamics",
@@ -1632,14 +2013,19 @@
         "Atlas",
         "Automation"
       ],
-      "category": "机器人",
+      "category": "工业",
       "note": "官方 X 账号，用于跟踪 Boston Dynamics 机器人动态。",
       "title": "BOSTON DYNAMICS · OFFICIAL X TIMELINE",
       "name_zh": "波士顿动力",
       "name_en": "Boston Dynamics",
       "company_zh": "波士顿动力",
       "company_en": "Boston Dynamics",
-      "position_zh": "机器人公司"
+      "position_zh": "机器人公司",
+      "categories": [
+        "工业",
+        "AI"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "tory-bruno",
@@ -1653,14 +2039,19 @@
         "Launch",
         "Vulcan"
       ],
-      "category": "航天",
+      "category": "航空航天",
       "note": "个人公开 X 账号。",
       "title": "TORY BRUNO · OFFICIAL X TIMELINE",
       "name_zh": "托里·布鲁诺",
       "name_en": "Tory Bruno",
       "company_zh": "联合发射联盟",
       "company_en": "United Launch Alliance",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "航空航天",
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "tim-ellis",
@@ -1674,14 +2065,19 @@
         "Launch",
         "Manufacturing"
       ],
-      "category": "航天",
+      "category": "航空航天",
       "note": "个人公开 X 账号。",
       "title": "TIM ELLIS · OFFICIAL X TIMELINE",
       "name_zh": "蒂姆·埃利斯",
       "name_en": "Tim Ellis",
       "company_zh": "Relativity Space",
       "company_en": "Relativity Space",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "航空航天",
+        "工业"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "isaacman",
@@ -1695,14 +2091,18 @@
         "Commercial Spaceflight",
         "Aerospace"
       ],
-      "category": "航天",
+      "category": "航空航天",
       "note": "个人公开 X 账号。",
       "title": "JARED ISAACMAN · OFFICIAL X TIMELINE",
       "name_zh": "贾里德·艾萨克曼",
       "name_en": "Jared Isaacman",
       "company_zh": "商业航天",
       "company_en": "Commercial Spaceflight",
-      "position_zh": "航天企业家"
+      "position_zh": "航天企业家",
+      "categories": [
+        "航空航天"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "stewart",
@@ -1723,7 +2123,11 @@
       "name_en": "Stewart Butterfield",
       "company_zh": "Slack",
       "company_en": "Slack",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "perkins",
@@ -1744,7 +2148,11 @@
       "name_en": "Melanie Perkins",
       "company_zh": "Canva",
       "company_en": "Canva",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "yuan",
@@ -1765,7 +2173,11 @@
       "name_en": "Eric Yuan",
       "company_zh": "Zoom",
       "company_en": "Zoom",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "dara",
@@ -1779,14 +2191,23 @@
         "Mobility",
         "Platform"
       ],
-      "category": "消费科技",
+      "category": "消费零售",
       "note": "个人公开 X 账号。",
       "title": "DARA KHOSROWSHAHI · OFFICIAL X TIMELINE",
       "name_zh": "达拉·科斯罗萨西",
       "name_en": "Dara Khosrowshahi",
       "company_zh": "Uber",
       "company_en": "Uber",
-      "position_zh": "CEO"
+      "position_zh": "CEO",
+      "categories": [
+        "消费零售",
+        "汽车"
+      ],
+      "sp500_ceo": true,
+      "ticker": "UBER",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "kevin-rose",
@@ -1807,7 +2228,11 @@
       "name_en": "Kevin Rose",
       "company_zh": "科技创业 / 投资",
       "company_en": "Technology / Investing",
-      "position_zh": "创业者 / 投资人"
+      "position_zh": "创业者 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "ohanian",
@@ -1828,7 +2253,11 @@
       "name_en": "Alexis Ohanian",
       "company_zh": "Reddit / Seven Seven Six",
       "company_en": "Reddit / Seven Seven Six",
-      "position_zh": "联合创始人 / 投资人"
+      "position_zh": "联合创始人 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "evan-you",
@@ -1849,7 +2278,11 @@
       "name_en": "Evan You",
       "company_zh": "Vue.js",
       "company_en": "Vue.js",
-      "position_zh": "创始作者"
+      "position_zh": "创始作者",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "hashimoto",
@@ -1870,7 +2303,11 @@
       "name_en": "Mitchell Hashimoto",
       "company_zh": "HashiCorp / Ghostty",
       "company_en": "HashiCorp / Ghostty",
-      "position_zh": "联合创始人 / 开发者"
+      "position_zh": "联合创始人 / 开发者",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "sijbrandij",
@@ -1891,7 +2328,11 @@
       "name_en": "Sid Sijbrandij",
       "company_zh": "GitLab",
       "company_en": "GitLab",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "preston-werner",
@@ -1912,7 +2353,11 @@
       "name_en": "Tom Preston-Werner",
       "company_zh": "GitHub",
       "company_en": "GitHub",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "wanstrath",
@@ -1933,7 +2378,11 @@
       "name_en": "Chris Wanstrath",
       "company_zh": "GitHub",
       "company_en": "GitHub",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "levchin",
@@ -1947,14 +2396,18 @@
         "Payments",
         "Fintech"
       ],
-      "category": "金融科技",
+      "category": "金融",
       "note": "个人公开 X 账号。",
       "title": "MAX LEVCHIN · OFFICIAL X TIMELINE",
       "name_zh": "马克斯·列夫琴",
       "name_en": "Max Levchin",
       "company_zh": "Affirm",
       "company_en": "Affirm",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "tenev",
@@ -1968,14 +2421,18 @@
         "Brokerage",
         "Fintech"
       ],
-      "category": "金融科技",
+      "category": "金融",
       "note": "个人公开 X 账号。",
       "title": "VLAD TENEV · OFFICIAL X TIMELINE",
       "name_zh": "弗拉德·特内夫",
       "name_en": "Vlad Tenev",
       "company_zh": "Robinhood",
       "company_en": "Robinhood",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "david-marcus",
@@ -1989,14 +2446,18 @@
         "Payments",
         "Fintech"
       ],
-      "category": "金融科技",
+      "category": "金融",
       "note": "个人公开 X 账号。",
       "title": "DAVID MARCUS · OFFICIAL X TIMELINE",
       "name_zh": "大卫·马库斯",
       "name_en": "David Marcus",
       "company_zh": "Lightspark",
       "company_en": "Lightspark",
-      "position_zh": "联合创始人兼 CEO"
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "naval",
@@ -2017,7 +2478,11 @@
       "name_en": "Naval Ravikant",
       "company_zh": "AngelList",
       "company_en": "AngelList",
-      "position_zh": "联合创始人 / 投资人"
+      "position_zh": "联合创始人 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "gurley",
@@ -2038,7 +2503,11 @@
       "name_en": "Bill Gurley",
       "company_zh": "Benchmark",
       "company_en": "Benchmark",
-      "position_zh": "科技投资人"
+      "position_zh": "科技投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "chamath",
@@ -2059,7 +2528,11 @@
       "name_en": "Chamath Palihapitiya",
       "company_zh": "Social Capital",
       "company_en": "Social Capital",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "fred-wilson",
@@ -2080,7 +2553,11 @@
       "name_en": "Fred Wilson",
       "company_zh": "Union Square Ventures",
       "company_en": "Union Square Ventures",
-      "position_zh": "联合创始人"
+      "position_zh": "联合创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false
     },
     {
       "id": "gerstner",
@@ -2101,18 +2578,250 @@
       "name_en": "Brad Gerstner",
       "company_zh": "Altimeter",
       "company_en": "Altimeter",
-      "position_zh": "创始人兼 CEO"
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "VC",
+        "AI"
+      ],
+      "sp500_ceo": false
+    },
+    {
+      "id": "jim-farley",
+      "name": "Jim Farley",
+      "zh": "吉姆·法利",
+      "handle": "jimfarley98",
+      "role": "Ford CEO",
+      "chips": [
+        "F",
+        "Ford",
+        "EV",
+        "Auto"
+      ],
+      "note": "现任 Ford CEO，本人公开 X 账号。",
+      "title": "JIM FARLEY · OFFICIAL X TIMELINE",
+      "category": "汽车",
+      "categories": [
+        "汽车",
+        "工业"
+      ],
+      "name_zh": "吉姆·法利",
+      "name_en": "Jim Farley",
+      "company_zh": "福特",
+      "company_en": "Ford",
+      "position_zh": "CEO",
+      "ticker": "F",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
+    },
+    {
+      "id": "chuck-robbins",
+      "name": "Chuck Robbins",
+      "zh": "查克·罗宾斯",
+      "handle": "ChuckRobbins",
+      "role": "Cisco Chair & CEO",
+      "chips": [
+        "CSCO",
+        "Cisco",
+        "Networking",
+        "AI Infrastructure"
+      ],
+      "note": "现任 Cisco 董事长兼 CEO，本人公开 X 账号。",
+      "title": "CHUCK ROBBINS · OFFICIAL X TIMELINE",
+      "category": "网络安全",
+      "categories": [
+        "网络安全",
+        "云计算"
+      ],
+      "name_zh": "查克·罗宾斯",
+      "name_en": "Chuck Robbins",
+      "company_zh": "思科",
+      "company_en": "Cisco",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "CSCO",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
+    },
+    {
+      "id": "bill-mcdermott",
+      "name": "Bill McDermott",
+      "zh": "比尔·麦克德莫特",
+      "handle": "BillRMcDermott",
+      "role": "ServiceNow Chair & CEO",
+      "chips": [
+        "NOW",
+        "ServiceNow",
+        "Enterprise Software",
+        "AI"
+      ],
+      "note": "现任 ServiceNow 董事长兼 CEO，本人公开 X 账号。",
+      "title": "BILL MCDERMOTT · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "categories": [
+        "软件",
+        "AI"
+      ],
+      "name_zh": "比尔·麦克德莫特",
+      "name_en": "Bill McDermott",
+      "company_zh": "ServiceNow",
+      "company_en": "ServiceNow",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "NOW",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
+    },
+    {
+      "id": "marvin-ellison",
+      "name": "Marvin Ellison",
+      "zh": "马文·埃里森",
+      "handle": "MarvinREllison",
+      "role": "Lowe's Chair, President & CEO",
+      "chips": [
+        "LOW",
+        "Lowe's",
+        "Retail",
+        "Home Improvement"
+      ],
+      "note": "现任 Lowe's 董事长、总裁兼 CEO，本人公开 X 账号。",
+      "title": "MARVIN ELLISON · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "categories": [
+        "消费零售"
+      ],
+      "name_zh": "马文·埃里森",
+      "name_en": "Marvin Ellison",
+      "company_zh": "劳氏",
+      "company_en": "Lowe's",
+      "position_zh": "董事长、总裁兼 CEO",
+      "ticker": "LOW",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
+    },
+    {
+      "id": "george-kurtz",
+      "name": "George Kurtz",
+      "zh": "乔治·库尔茨",
+      "handle": "George_Kurtz",
+      "role": "CrowdStrike CEO & Founder",
+      "chips": [
+        "CRWD",
+        "CrowdStrike",
+        "Cybersecurity",
+        "AI"
+      ],
+      "note": "现任 CrowdStrike CEO 兼创始人，本人公开 X 账号。",
+      "title": "GEORGE KURTZ · OFFICIAL X TIMELINE",
+      "category": "网络安全",
+      "categories": [
+        "网络安全",
+        "AI"
+      ],
+      "name_zh": "乔治·库尔茨",
+      "name_en": "George Kurtz",
+      "company_zh": "CrowdStrike",
+      "company_en": "CrowdStrike",
+      "position_zh": "CEO 兼创始人",
+      "ticker": "CRWD",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
+    },
+    {
+      "id": "nikesh-arora",
+      "name": "Nikesh Arora",
+      "zh": "尼克什·阿罗拉",
+      "handle": "nikesharora",
+      "role": "Palo Alto Networks Chair & CEO",
+      "chips": [
+        "PANW",
+        "Palo Alto Networks",
+        "Cybersecurity",
+        "AI"
+      ],
+      "note": "现任 Palo Alto Networks 董事长兼 CEO，本人公开 X 账号。",
+      "title": "NIKESH ARORA · OFFICIAL X TIMELINE",
+      "category": "网络安全",
+      "categories": [
+        "网络安全",
+        "AI"
+      ],
+      "name_zh": "尼克什·阿罗拉",
+      "name_en": "Nikesh Arora",
+      "company_zh": "Palo Alto Networks",
+      "company_en": "Palo Alto Networks",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "PANW",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
+    },
+    {
+      "id": "albert-bourla",
+      "name": "Albert Bourla",
+      "zh": "艾伯乐",
+      "handle": "AlbertBourla",
+      "role": "Pfizer Chair & CEO",
+      "chips": [
+        "PFE",
+        "Pfizer",
+        "Healthcare",
+        "Pharma"
+      ],
+      "note": "现任 Pfizer 董事长兼 CEO，本人公开 X 账号。",
+      "title": "ALBERT BOURLA · OFFICIAL X TIMELINE",
+      "category": "医疗",
+      "categories": [
+        "医疗"
+      ],
+      "name_zh": "艾伯乐",
+      "name_en": "Albert Bourla",
+      "company_zh": "辉瑞",
+      "company_en": "Pfizer",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "PFE",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
     }
   ],
   "categories": [
     "AI",
     "芯片",
     "云计算",
-    "机器人",
-    "航天",
-    "消费科技",
+    "网络安全",
     "软件",
-    "金融科技",
+    "汽车",
+    "工业",
+    "消费零售",
+    "金融",
+    "医疗",
+    "能源",
+    "航空航天",
     "VC"
-  ]
+  ],
+  "catalog_version": "V3"
 }
