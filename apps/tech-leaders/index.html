@@ -55,7 +55,11 @@
     .category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
     .category-btn span{margin-left:5px;color:var(--faint)}
     .catalog-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;color:var(--faint);font:10.5px/1.4 var(--mono)}
-    .catalog-actions{display:flex;align-items:center;gap:9px}
+    .catalog-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+    .avatar-audit{display:flex;align-items:center;gap:6px}
+    .avatar-audit-btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:6px 9px;border-radius:999px;cursor:pointer;font:10px/1 var(--mono);white-space:nowrap}
+    .avatar-audit-btn.on{border-color:rgba(57,135,229,.65);background:rgba(57,135,229,.10);color:var(--ink)}
+    .avatar-audit-btn:disabled{opacity:.5;cursor:default}
     .fold-btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:7px 11px;border-radius:8px;cursor:pointer;font:10.5px/1 var(--mono);white-space:nowrap}
     .fold-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
     .leaders{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 12px}
@@ -171,7 +175,11 @@
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
       <div class="catalog-actions">
-        <span>V4 · 全球公司领袖 + 上市公司决策者层</span>
+        <span>V4.1 · 全球公司领袖 + 头像资产标准化</span>
+        <div class="avatar-audit" id="avatar-audit">
+          <button class="avatar-audit-btn on" type="button" data-avatar-filter="all">头像 0/0</button>
+          <button class="avatar-audit-btn" type="button" data-avatar-filter="missing">待补 0</button>
+        </div>
         <button class="fold-btn" id="leader-fold" type="button" hidden>展开全部</button>
       </div>
     </div>
@@ -240,6 +248,7 @@
   var catalogFact=document.getElementById("catalog-fact");
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
+  var avatarAudit=document.getElementById("avatar-audit");
   var profileAvatar=document.getElementById("profile-avatar");
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var profileNameEn=document.getElementById("profile-name-en");
@@ -249,6 +258,7 @@
   var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
   var activeCategory=params.get("category")||"全部";
+  var avatarFilter=params.get("avatar")==="missing"?"missing":"all";
   var requested=params.get("leader");
   var MODE=params.get("mode")==="api"?"api":"free";
   var DEBUG=params.get("debug")==="1";
@@ -270,7 +280,23 @@
   }
   function avatarUrl(p){
     if(p&&p.avatar_url)return p.avatar_url;
-    return "https://unavatar.io/x/"+encodeURIComponent(p.handle)+"?fallback=false";
+    if(p&&p.handle)return "https://unavatar.io/x/"+encodeURIComponent(p.handle)+"?fallback=false";
+    return avatarFallbackDataUrl(p||{});
+  }
+  function avatarFallbackDataUrl(p){
+    var initials=initialsFor(p||{});
+    var safe=String(initials).replace(/[<>&"]/g,"");
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="64" fill="#e8e0d7"/><circle cx="64" cy="46" r="22" fill="#8a8178"/><path d="M27 110c6-25 20-37 37-37s31 12 37 37" fill="#8a8178"/><text x="64" y="121" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#5f5750">'+safe+'</text></svg>';
+    return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+  }
+  function hasConfiguredAvatar(p){
+    return !!(p&&p.avatar_url&&p.avatar_status==="confirmed");
+  }
+  function applyAvatarFallback(img,p){
+    if(!img||img.dataset.avatarFallbackApplied==="1")return;
+    img.dataset.avatarFallbackApplied="1";
+    img.src=avatarFallbackDataUrl(p||{});
+    img.hidden=false;
   }
   function initialsFor(p){
     var raw=String(p.zh||p.name||p.handle||"?").replace(/\s*\/.*$/,"").trim();
@@ -311,7 +337,8 @@
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
-    document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
+    var avatarNote=hasConfiguredAvatar(p)?"头像源已配置":"头像使用本地兜底";
+    document.getElementById("profile-note").textContent=(p.note||"公开 X 账号。")+" · "+avatarNote;
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
     profileAvatarFallback.textContent=initialsFor(p);
     profileAvatar.hidden=false;
@@ -339,12 +366,30 @@
     }));
     categoryBar.innerHTML=buttons.join("");
   }
+  function renderAvatarAudit(){
+    if(!avatarAudit)return;
+    var total=people.length;
+    var confirmed=people.filter(hasConfiguredAvatar).length;
+    var missing=total-confirmed;
+    var allBtn=avatarAudit.querySelector('[data-avatar-filter="all"]');
+    var missingBtn=avatarAudit.querySelector('[data-avatar-filter="missing"]');
+    if(allBtn){
+      allBtn.textContent="头像 "+confirmed+"/"+total;
+      allBtn.classList.toggle("on",avatarFilter==="all");
+    }
+    if(missingBtn){
+      missingBtn.textContent="待补 "+missing;
+      missingBtn.classList.toggle("on",avatarFilter==="missing");
+      missingBtn.disabled=missing===0;
+    }
+  }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
     var filtered=people.filter(function(p){
       var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&(p.sp500_member||p.sp500_ceo))||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
-      return categoryOk&&searchOk;
+      var avatarOk=avatarFilter==="all"||!hasConfiguredAvatar(p);
+      return categoryOk&&searchOk&&avatarOk;
     });
     var canFold=filtered.length>COLLAPSED_LIMIT;
     var visible=filtered;
@@ -355,7 +400,8 @@
       }
     }
     var activeLabel=activeCategory==="全部"?"全部分类":(activeCategory==="sp500"?"标普500 决策者":activeCategory);
-    count.textContent="已收录 "+people.length+" 位 · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
+    var avatarConfirmed=people.filter(hasConfiguredAvatar).length;
+    count.textContent="已收录 "+people.length+" 位 · 头像 "+avatarConfirmed+"/"+people.length+" · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
     foldBtn.hidden=!canFold;
     if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开 "+filtered.length+" 位 ↓";
     if(!filtered.length){
@@ -393,6 +439,7 @@
     current=currentFromCatalog();
     updateProfile(current);
     renderCategories();
+    renderAvatarAudit();
     renderLeaderButtons("");
   }
 
@@ -545,7 +592,7 @@
       var card=document.createElement("article");card.className="post-card";
       var head=document.createElement("div");head.className="post-head";
       var postAvatarSrc=current.avatar_url||(feed.leader&&feed.leader.profile_image_url)||avatarUrl(current);
-      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.src=postAvatarSrc;head.appendChild(img);}
+      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
       var who=document.createElement("div");who.className="post-who";
       var nameLine=document.createElement("div");nameLine.className="post-name-line";
       var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
@@ -599,10 +646,26 @@
   }
 
   leaders.addEventListener("click",function(e){var btn=e.target.closest(".leader");if(!btn)return;var id=btn.getAttribute("data-id");if(!current||id!==current.id)navigateLeader(id);});
-  leaders.addEventListener("error",function(e){if(e.target&&e.target.matches&&e.target.matches("img[data-avatar]"))e.target.hidden=true;},true);
-  profileAvatar.addEventListener("error",function(){profileAvatar.hidden=true;});
+  leaders.addEventListener("error",function(e){
+    if(e.target&&e.target.matches&&e.target.matches("img[data-avatar]")){
+      var btn=e.target.closest(".leader");
+      var p=btn?people.find(function(x){return x.id===btn.getAttribute("data-id");}):null;
+      applyAvatarFallback(e.target,p||{});
+    }
+  },true);
+  profileAvatar.addEventListener("error",function(){applyAvatarFallback(profileAvatar,current||{});});
   foldBtn.addEventListener("click",function(){isExpanded=!isExpanded;renderLeaderButtons(search.value);});
   search.addEventListener("input",function(){isExpanded=false;renderLeaderButtons(search.value);});
+  avatarAudit.addEventListener("click",function(e){
+    var btn=e.target.closest("[data-avatar-filter]");if(!btn||btn.disabled)return;
+    avatarFilter=btn.getAttribute("data-avatar-filter")==="missing"?"missing":"all";
+    isExpanded=false;
+    var next=new URL(location.href);
+    if(avatarFilter==="all")next.searchParams.delete("avatar");else next.searchParams.set("avatar","missing");
+    history.replaceState(null,"",next.toString());
+    renderAvatarAudit();
+    renderLeaderButtons(search.value);
+  });
   categoryBar.addEventListener("click",function(e){
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
