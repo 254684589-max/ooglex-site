@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "capacity": 180,
   "leaders": [
     {
@@ -31,22 +31,36 @@
       "ticker": "TSLA",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "汽车",
+        "AI",
+        "航空航天"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "TSLA"
     },
     {
       "id": "huang",
-      "name": "Jensen Huang / NVIDIA",
-      "zh": "黄仁勋 / NVIDIA",
-      "handle": "nvidia",
-      "role": "NVIDIA 官方账号 · 黄仁勋相关动态",
+      "name": "Jensen Huang",
+      "zh": "黄仁勋",
+      "handle": "JensenHuang",
+      "role": "NVIDIA Founder & CEO",
       "chips": [
         "NVDA",
         "AI",
         "GPU",
         "Data Center"
       ],
-      "note": "为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",
-      "title": "JENSEN HUANG / NVIDIA · OFFICIAL X",
+      "note": "现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",
+      "title": "JENSEN HUANG · OFFICIAL X TIMELINE",
       "category": "芯片",
       "name_zh": "黄仁勋",
       "name_en": "Jensen Huang",
@@ -59,7 +73,30 @@
         "芯片",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": true,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "芯片",
+        "数据中心"
+      ],
+      "sp500_member": true,
+      "ticker": "NVDA",
+      "sp500_ticker": "NVDA",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "x_identity_verified": true,
+      "x_verified_at": "2026-09-19",
+      "role_verified_at": "2026-09-19",
+      "sp500_verified_at": "2026-09-19"
     },
     {
       "id": "altman",
@@ -83,7 +120,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "su",
@@ -113,7 +160,20 @@
       "ticker": "AMD",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AMD"
     },
     {
       "id": "pichai",
@@ -143,7 +203,19 @@
       "ticker": "GOOGL",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "GOOGL"
     },
     {
       "id": "nadella",
@@ -174,7 +246,21 @@
       "ticker": "MSFT",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "MSFT"
     },
     {
       "id": "cook",
@@ -204,7 +290,19 @@
       "ticker": "AAPL",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AAPL"
     },
     {
       "id": "bezos",
@@ -230,7 +328,24 @@
         "航空航天",
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AMZN",
+      "ticker": "AMZN",
+      "sp500_verified_at": "2026-09-19",
+      "index_tags": [
+        "S&P 500 Founder"
+      ]
     },
     {
       "id": "jassy",
@@ -260,7 +375,19 @@
       "ticker": "AMZN",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AMZN"
     },
     {
       "id": "hassabis",
@@ -285,7 +412,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "amodei",
@@ -310,7 +447,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "suleyman",
@@ -336,7 +483,17 @@
         "AI",
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "lecun",
@@ -361,7 +518,16 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "andrew-ng",
@@ -386,7 +552,16 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "fei-fei-li",
@@ -412,7 +587,18 @@
         "AI",
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "sutskever",
@@ -437,7 +623,16 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "murati",
@@ -462,7 +657,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "brockman",
@@ -487,7 +692,16 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "srinivas",
@@ -512,7 +726,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "karpathy",
@@ -537,7 +761,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "researcher"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "field",
@@ -562,7 +796,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "patrick-collison",
@@ -587,7 +831,17 @@
       "categories": [
         "金融"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "chesky",
@@ -616,7 +870,20 @@
       "ticker": "ABNB",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "ABNB",
+      "sp500_verified_at": "2026-09-19"
     },
     {
       "id": "mohan",
@@ -641,7 +908,16 @@
       "categories": [
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "ek",
@@ -666,7 +942,16 @@
       "categories": [
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "benioff",
@@ -696,7 +981,20 @@
       "ticker": "CRM",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "CRM"
     },
     {
       "id": "dell",
@@ -726,7 +1024,20 @@
       "ticker": "DELL",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "DELL"
     },
     {
       "id": "andreessen",
@@ -751,7 +1062,16 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "luckey",
@@ -777,7 +1097,17 @@
         "工业",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "lutke",
@@ -802,7 +1132,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "hoffman",
@@ -827,7 +1167,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "khosla",
@@ -852,7 +1202,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "levie",
@@ -877,7 +1237,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "dorsey",
@@ -902,7 +1272,23 @@
       "categories": [
         "金融"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "XYZ",
+      "ticker": "XYZ",
+      "sp500_verified_at": "2026-09-19",
+      "index_tags": [
+        "S&P 500 Founder"
+      ]
     },
     {
       "id": "paul-graham",
@@ -927,7 +1313,16 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "garry-tan",
@@ -952,7 +1347,16 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "alexandr-wang",
@@ -977,7 +1381,14 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "delangue",
@@ -1002,7 +1413,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "jeff-dean",
@@ -1027,7 +1448,16 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "gomez",
@@ -1052,7 +1482,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "bret-taylor",
@@ -1077,7 +1517,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "masad",
@@ -1102,7 +1552,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "rauch",
@@ -1127,7 +1587,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "friedman",
@@ -1152,7 +1622,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "krishna",
@@ -1182,7 +1662,20 @@
       "ticker": "IBM",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "IBM"
     },
     {
       "id": "amon",
@@ -1212,7 +1705,19 @@
       "ticker": "QCOM",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "QCOM"
     },
     {
       "id": "peter-beck",
@@ -1238,7 +1743,18 @@
         "航空航天",
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "adcock",
@@ -1264,7 +1780,18 @@
         "工业",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "jim-keller",
@@ -1290,7 +1817,17 @@
         "芯片",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "koduri",
@@ -1316,7 +1853,15 @@
         "芯片",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "dhh",
@@ -1341,7 +1886,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "mullenweg",
@@ -1366,7 +1920,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "houston",
@@ -1391,7 +1955,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "armstrong",
@@ -1420,7 +1994,19 @@
       "ticker": "COIN",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "COIN"
     },
     {
       "id": "buterin",
@@ -1445,7 +2031,16 @@
       "categories": [
         "金融"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "son",
@@ -1471,7 +2066,18 @@
         "VC",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "schmidt",
@@ -1496,7 +2102,17 @@
       "categories": [
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "investor"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "durov",
@@ -1521,7 +2137,17 @@
       "categories": [
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "lei-jun",
@@ -1547,7 +2173,18 @@
         "消费零售",
         "汽车"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "汽车"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "fadell",
@@ -1572,7 +2209,16 @@
       "categories": [
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "zuckerberg",
@@ -1598,7 +2244,18 @@
         "消费零售",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "mosseri",
@@ -1623,7 +2280,14 @@
       "categories": [
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "boz",
@@ -1649,7 +2313,15 @@
         "AI",
         "消费零售"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "消费零售"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "prince",
@@ -1674,7 +2346,17 @@
       "categories": [
         "云计算"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "zatlyn",
@@ -1699,7 +2381,16 @@
       "categories": [
         "云计算"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "vogels",
@@ -1724,7 +2415,14 @@
       "categories": [
         "云计算"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "selipsky",
@@ -1749,7 +2447,14 @@
       "categories": [
         "云计算"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "gelsinger",
@@ -1774,7 +2479,14 @@
       "categories": [
         "芯片"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "rene-haas",
@@ -1799,7 +2511,16 @@
       "categories": [
         "芯片"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "lip-bu-tan",
@@ -1824,7 +2545,15 @@
       "categories": [
         "芯片"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ]
     },
     {
       "id": "hock-tan",
@@ -1849,7 +2578,15 @@
       "categories": [
         "芯片"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ]
     },
     {
       "id": "fouquet",
@@ -1874,7 +2611,15 @@
       "categories": [
         "芯片"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ]
     },
     {
       "id": "mehrotra",
@@ -1899,7 +2644,15 @@
       "categories": [
         "芯片"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ]
     },
     {
       "id": "pabbeel",
@@ -1924,7 +2677,16 @@
       "categories": [
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "rodney-brooks",
@@ -1949,7 +2711,16 @@
       "categories": [
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "sergey-levine",
@@ -1974,7 +2745,16 @@
       "categories": [
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "chelsea-finn",
@@ -1999,7 +2779,16 @@
       "categories": [
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "boston-dynamics",
@@ -2025,7 +2814,14 @@
         "工业",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Industrials",
+      "themes": [
+        "工业",
+        "AI"
+      ]
     },
     {
       "id": "tory-bruno",
@@ -2051,7 +2847,17 @@
         "航空航天",
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "tim-ellis",
@@ -2077,7 +2883,17 @@
         "航空航天",
         "工业"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "工业"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "isaacman",
@@ -2102,7 +2918,14 @@
       "categories": [
         "航空航天"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "stewart",
@@ -2127,7 +2950,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "perkins",
@@ -2152,7 +2984,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "yuan",
@@ -2177,7 +3019,17 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "dara",
@@ -2207,7 +3059,20 @@
       "ticker": "UBER",
       "index_tags": [
         "S&P 500 CEO"
-      ]
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "汽车"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "UBER",
+      "sp500_verified_at": "2026-09-19"
     },
     {
       "id": "kevin-rose",
@@ -2232,7 +3097,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "ohanian",
@@ -2257,7 +3132,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "evan-you",
@@ -2282,7 +3167,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "hashimoto",
@@ -2307,7 +3201,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "sijbrandij",
@@ -2332,7 +3235,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "preston-werner",
@@ -2357,7 +3269,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "wanstrath",
@@ -2382,7 +3303,16 @@
       "categories": [
         "软件"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "levchin",
@@ -2407,7 +3337,17 @@
       "categories": [
         "金融"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "tenev",
@@ -2432,7 +3372,24 @@
       "categories": [
         "金融"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": true,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "HOOD",
+      "ticker": "HOOD",
+      "sp500_verified_at": "2026-09-19",
+      "index_tags": [
+        "S&P 500 CEO"
+      ]
     },
     {
       "id": "david-marcus",
@@ -2457,7 +3414,17 @@
       "categories": [
         "金融"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "naval",
@@ -2482,7 +3449,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "gurley",
@@ -2507,7 +3484,16 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "chamath",
@@ -2532,7 +3518,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "fred-wilson",
@@ -2557,7 +3553,17 @@
       "categories": [
         "VC"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "gerstner",
@@ -2583,7 +3589,18 @@
         "VC",
         "AI"
       ],
-      "sp500_ceo": false
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC",
+        "AI"
+      ],
+      "x_identity_verified": true
     },
     {
       "id": "jim-farley",
@@ -2615,7 +3632,19 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "汽车",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "F"
     },
     {
       "id": "chuck-robbins",
@@ -2647,7 +3676,20 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "网络安全",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "CSCO"
     },
     {
       "id": "bill-mcdermott",
@@ -2679,7 +3721,20 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "NOW"
     },
     {
       "id": "marvin-ellison",
@@ -2710,7 +3765,19 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "LOW"
     },
     {
       "id": "george-kurtz",
@@ -2742,7 +3809,20 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "网络安全",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "CRWD"
     },
     {
       "id": "nikesh-arora",
@@ -2774,7 +3854,20 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "网络安全",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "PANW"
     },
     {
       "id": "albert-bourla",
@@ -2805,7 +3898,19 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Health Care",
+      "themes": [
+        "医疗"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "PFE"
     },
     {
       "id": "mary-barra",
@@ -2837,7 +3942,68 @@
         "S&P 500 CEO"
       ],
       "verified_personal_x": true,
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "汽车",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "GM"
+    },
+    {
+      "id": "adena-friedman",
+      "name": "Adena Friedman",
+      "zh": "阿迪娜·弗里德曼",
+      "handle": "adenatfriedman",
+      "role": "Nasdaq Chair & CEO",
+      "chips": [
+        "NDAQ",
+        "Nasdaq",
+        "Capital Markets",
+        "Fintech"
+      ],
+      "note": "现任 Nasdaq 董事长兼 CEO，本人公开 X 账号。",
+      "title": "ADENA FRIEDMAN · OFFICIAL X TIMELINE",
+      "category": "金融",
+      "categories": [
+        "金融"
+      ],
+      "name_zh": "阿迪娜·弗里德曼",
+      "name_en": "Adena Friedman",
+      "company_zh": "纳斯达克",
+      "company_en": "Nasdaq",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "NDAQ",
+      "sp500_ceo": true,
+      "sp500_member": true,
+      "sp500_ticker": "NDAQ",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "x_identity_verified": true,
+      "x_verified_at": "2026-09-19",
+      "role_verified_at": "2026-09-19",
+      "sp500_verified_at": "2026-09-19",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "资本市场",
+        "金融科技",
+        "交易基础设施"
+      ],
+      "admission_status": "active"
     }
   ],
   "categories": [
@@ -2855,5 +4021,42 @@
     "航空航天",
     "VC"
   ],
-  "catalog_version": "V3"
+  "catalog_version": "V4",
+  "last_audited_at": "2026-09-19",
+  "audit_policy": {
+    "role_reverify_days": 90,
+    "x_inactive_downgrade_days": 180,
+    "x_archive_days": 365,
+    "rule": "active profiles require a confirmed public personal X identity; company accounts are not substitutes for a person's account"
+  },
+  "candidates": [
+    {
+      "id": "tony-xu",
+      "name": "Tony Xu",
+      "company": "DoorDash",
+      "ticker": "DASH",
+      "role": "Co-Founder & CEO",
+      "sp500_member": true,
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "admission_status": "candidate",
+      "reason": "Company/role are confirmed; personal X direct-profile identity/activity still requires final verification before production admission."
+    },
+    {
+      "id": "adam-foroughi",
+      "name": "Adam Foroughi",
+      "company": "AppLovin",
+      "ticker": "APP",
+      "role": "CEO & Co-Founder",
+      "sp500_member": true,
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "admission_status": "hold",
+      "reason": "Company/role are confirmed; no sufficiently strong personal X identity evidence in the 2026-09-19 audit."
+    }
+  ]
 }
