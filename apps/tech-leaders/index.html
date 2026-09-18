@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>科技领袖 X 动态 · Ooglex</title>
-  <meta name="description" content="免费浏览科技领袖公开 X 时间线。默认使用 X 官方 Embed，不调用 Ooglex X API；可手动切换数据模式。">
+  <meta name="description" content="免费浏览 100 位科技领袖公开 X 时间线，支持 AI、芯片、云计算、机器人、航天、消费科技、软件、金融科技、VC 分类筛选。默认使用 X 官方 Embed，不调用 Ooglex X API。">
   <link rel="canonical" href="https://www.ooglex.com/apps/tech-leaders/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖 X 动态 · Ooglex">
-  <meta property="og:description" content="单人物官方 X 时间线，默认零 X API Credits；目录架构可扩展至 100 位科技领袖。">
+  <meta property="og:description" content="100 位科技领袖官方 X 时间线，支持九大科技分类筛选；默认零 X API Credits。">
   <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -49,6 +49,11 @@
     .mode:last-child{border-right:0}
     .mode.on{background:rgba(57,135,229,.12);color:var(--ink)}
     .mode.api{color:var(--warn)}
+    .category-bar{display:flex;gap:7px;overflow-x:auto;padding:0 0 12px;margin-top:2px;scrollbar-width:thin}
+    .category-btn{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:8px 11px;border-radius:999px;cursor:pointer;font:11px/1 var(--mono);white-space:nowrap}
+    .category-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
+    .category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
+    .category-btn span{margin-left:5px;color:var(--faint)}
     .catalog-meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;color:var(--faint);font:10.5px/1.4 var(--mono)}
     .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:0 0 18px}
     .leader{
@@ -124,7 +129,7 @@
         <span class="fact live">● 免费模式默认开启</span>
         <span class="fact" id="source-badge">X 官方 Embed · $0 API</span>
         <span class="fact">单账号按需加载</span>
-        <span class="fact">目录容量 100 人</span>
+        <span class="fact">100 位 · 九大分类</span>
       </div>
     </section>
 
@@ -135,9 +140,10 @@
         <button class="mode api" id="mode-api" type="button">数据模式 · Credits</button>
       </div>
     </section>
+    <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
-      <span>新增人物只需维护 leaders.json，无需改页面逻辑</span>
+      <span>分类与人物目录由 leaders.json 驱动</span>
     </div>
     <div class="leaders" id="leaders"></div>
 
@@ -176,12 +182,12 @@
   var API_BASE="https://pro-api.ooglex.com";
   var CATALOG_URL="./leaders.json";
   var FALLBACK_PEOPLE=[
-    {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
-    {id:"huang",name:"Jensen Huang / NVIDIA",zh:"黄仁勋 / NVIDIA",handle:"nvidia",role:"NVIDIA 官方账号 · 黄仁勋相关动态",chips:["NVDA","AI","GPU","Data Center"],note:"为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",title:"JENSEN HUANG / NVIDIA · OFFICIAL X"},
-    {id:"altman",name:"Sam Altman",zh:"Sam Altman",handle:"sama",role:"OpenAI",chips:["OpenAI","AI","Models"],note:"个人公开 X 账号。",title:"SAM ALTMAN · OFFICIAL X TIMELINE"},
-    {id:"su",name:"Lisa Su",zh:"苏姿丰",handle:"LisaSu",role:"AMD Chair & CEO",chips:["AMD","AI","CPU","GPU"],note:"个人公开 X 账号。",title:"LISA SU · OFFICIAL X TIMELINE"},
-    {id:"pichai",name:"Sundar Pichai",zh:"桑达尔·皮查伊",handle:"sundarpichai",role:"Google · Alphabet",chips:["GOOGL","Google","Gemini","AI"],note:"个人公开 X 账号。",title:"SUNDAR PICHAI · OFFICIAL X TIMELINE"},
-    {id:"nadella",name:"Satya Nadella",zh:"萨提亚·纳德拉",handle:"satyanadella",role:"Microsoft",chips:["MSFT","Microsoft","Copilot","AI"],note:"个人公开 X 账号。",title:"SATYA NADELLA · OFFICIAL X TIMELINE"}
+    {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],category:"航天",note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
+    {id:"huang",name:"Jensen Huang / NVIDIA",zh:"黄仁勋 / NVIDIA",handle:"nvidia",role:"NVIDIA 官方账号 · 黄仁勋相关动态",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",note:"为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",title:"JENSEN HUANG / NVIDIA · OFFICIAL X"},
+    {id:"altman",name:"Sam Altman",zh:"Sam Altman",handle:"sama",role:"OpenAI",chips:["OpenAI","AI","Models"],category:"AI",note:"个人公开 X 账号。",title:"SAM ALTMAN · OFFICIAL X TIMELINE"},
+    {id:"su",name:"Lisa Su",zh:"苏姿丰",handle:"LisaSu",role:"AMD Chair & CEO",chips:["AMD","AI","CPU","GPU"],category:"芯片",note:"个人公开 X 账号。",title:"LISA SU · OFFICIAL X TIMELINE"},
+    {id:"pichai",name:"Sundar Pichai",zh:"桑达尔·皮查伊",handle:"sundarpichai",role:"Google · Alphabet",chips:["GOOGL","Google","Gemini","AI"],category:"AI",note:"个人公开 X 账号。",title:"SUNDAR PICHAI · OFFICIAL X TIMELINE"},
+    {id:"nadella",name:"Satya Nadella",zh:"萨提亚·纳德拉",handle:"satyanadella",role:"Microsoft",chips:["MSFT","Microsoft","Copilot","AI"],category:"云计算",note:"个人公开 X 账号。",title:"SATYA NADELLA · OFFICIAL X TIMELINE"}
   ];
 
   var people=FALLBACK_PEOPLE.slice();
@@ -193,6 +199,8 @@
   var sourceBadge=document.getElementById("source-badge");
   var search=document.getElementById("leader-search");
   var count=document.getElementById("catalog-count");
+  var categoryBar=document.getElementById("category-bar");
+  var activeCategory=params.get("category")||"全部";
   var freeBtn=document.getElementById("mode-free");
   var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
@@ -228,12 +236,26 @@
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
   }
   function searchableText(p){
-    return [p.id,p.name,p.zh,p.handle,p.role].concat(p.chips||[]).join(" ").toLowerCase();
+    return [p.id,p.name,p.zh,p.handle,p.role,p.category].concat(p.chips||[]).join(" ").toLowerCase();
+  }
+  function renderCategories(){
+    var order=["AI","芯片","云计算","机器人","航天","消费科技","软件","金融科技","VC"];
+    var counts={};
+    people.forEach(function(p){counts[p.category]=(counts[p.category]||0)+1;});
+    if(activeCategory!=="全部"&&!counts[activeCategory])activeCategory="全部";
+    categoryBar.innerHTML=['<button class="category-btn'+(activeCategory==="全部"?' on':'')+'" type="button" data-category="全部">全部<span>'+people.length+'</span></button>']
+      .concat(order.filter(function(c){return counts[c];}).map(function(c){
+        return '<button class="category-btn'+(activeCategory===c?' on':'')+'" type="button" data-category="'+escapeHtml(c)+'">'+escapeHtml(c)+'<span>'+counts[c]+'</span></button>';
+      })).join("");
   }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
-    var filtered=q?people.filter(function(p){return searchableText(p).indexOf(q)!==-1;}):people;
-    count.textContent="已收录 "+people.length+" / "+capacity+" 位 · 当前显示 "+filtered.length+" 位";
+    var filtered=people.filter(function(p){
+      var categoryOk=activeCategory==="全部"||p.category===activeCategory;
+      var searchOk=!q||searchableText(p).indexOf(q)!==-1;
+      return categoryOk&&searchOk;
+    });
+    count.textContent="已收录 "+people.length+" / "+capacity+" 位 · "+(activeCategory==="全部"?"全部分类":activeCategory)+" · 当前显示 "+filtered.length+" 位";
     if(!filtered.length){
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
       return;
@@ -257,6 +279,7 @@
     }
     current=currentFromCatalog();
     updateProfile(current);
+    renderCategories();
     renderLeaderButtons("");
   }
 
@@ -459,6 +482,15 @@
 
   leaders.addEventListener("click",function(e){var btn=e.target.closest(".leader");if(!btn)return;var id=btn.getAttribute("data-id");if(!current||id!==current.id)navigateLeader(id);});
   search.addEventListener("input",function(){renderLeaderButtons(search.value);});
+  categoryBar.addEventListener("click",function(e){
+    var btn=e.target.closest("[data-category]");if(!btn)return;
+    activeCategory=btn.getAttribute("data-category")||"全部";
+    var next=new URL(location.href);
+    if(activeCategory==="全部")next.searchParams.delete("category");else next.searchParams.set("category",activeCategory);
+    history.replaceState(null,"",next.toString());
+    renderCategories();
+    renderLeaderButtons(search.value);
+  });
   freeBtn.addEventListener("click",function(){if(MODE!=="free")navigateMode("free");});
   apiBtn.addEventListener("click",function(){if(MODE!=="api")navigateMode("api");});
   timeline.addEventListener("click",function(e){
