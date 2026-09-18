@@ -80,17 +80,24 @@
     const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+    function renderFinanceColumn() {
+      const A = window.ARCH;
+      if (!A || !Array.isArray(A.layers)) return;
+      const preview = A.ooglexAccess && A.ooglexAccess.mode === "preview";
+
     document.getElementById("lead").textContent =
       "一套自下而上、层层递进的金融认知地图——从数学基础到专业纵深与监管合规，覆盖华尔街前台 / 中台 / 后台、危机机制与认知元层的完整知识体系。";
-    document.getElementById("intro").textContent = ARCH.meta.intro;
-    document.getElementById("ver").textContent = ARCH.meta.version;
-    document.getElementById("st-layer").textContent = ARCH.layers.length;
-    document.getElementById("st-mod").textContent = ARCH.moduleCount();
-    document.getElementById("st-term").textContent = ARCH.termCount() + "+";
+    document.getElementById("intro").textContent = A.meta.intro;
+    document.getElementById("ver").textContent = A.meta.version;
+    document.getElementById("st-layer").textContent = A.layers.length;
+    document.getElementById("st-mod").textContent = A.moduleCount();
+    document.getElementById("st-term").textContent = (preview && A.ooglexAccess.fullTerms ? A.ooglexAccess.fullTerms : A.termCount()) + "+";
 
     // 架构总览：8 个层级卡片
-    document.getElementById("layers").innerHTML = ARCH.layers.map((l) => {
-      const terms = ARCH.layerTermCount(l);
+    document.getElementById("layers").innerHTML = A.layers.map((l) => {
+      const terms = A.layerTermCount(l);
+      const fullTerms = Number(l.ooglexFullTerms || terms);
+      const termsLabel = preview && fullTerms > terms ? `${terms} / ${fullTerms} 术语` : `${terms} 术语`;
       const mods = l.modules.map((m) =>
         `<span class="mchip${m.isNew ? " new" : ""}">${esc(m.cn)}${m.isNew ? " ★" : ""}</span>`).join("");
       return `<a class="layer-card" href="layer.html?id=${l.id}" style="--mc:${l.accent}">
@@ -103,16 +110,17 @@
         <p class="lc-tag">${esc(l.tag)}</p>
         <div class="lc-mods">${mods}</div>
         <div class="lc-foot">
-          <span>${l.modules.length} 模块 · ${terms} 术语</span>
+          <span>${l.modules.length} 模块 · ${termsLabel}</span>
           <span class="go">展开 →</span>
         </div>
       </a>`;
     }).join("");
 
     // ---- 全局检索 ----
-    const FLAT = ARCH.flatTerms();
+    const FLAT = A.flatTerms();
     const q = document.getElementById("q");
     const box = document.getElementById("results");
+    q.placeholder = preview ? "🔍 在 FREE 10% 预览中检索术语（中文 / English / 缩写）" : "🔍 检索 560+ 术语（中文 / English / 缩写，如 VaR、波动率、CLO、Basel…）";
     function hl(text, kw) {
       if (!kw) return esc(text);
       const i = text.toLowerCase().indexOf(kw.toLowerCase());
@@ -136,8 +144,12 @@
             <div class="r-loc">${t.layer.icon} ${esc(t.layer.cn)} · ${esc(t.module.cn)}</div>
           </a>`).join("");
     }
-    q.addEventListener("input", search);
-    q.addEventListener("focus", search);
+    q.oninput = search;
+    q.onfocus = search;
+    if (q.value.trim()) search();
+    }
+    renderFinanceColumn();
+    window.addEventListener("ooglex:finance-full-ready", renderFinanceColumn);
   </script>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
