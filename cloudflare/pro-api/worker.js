@@ -32,6 +32,12 @@ const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
 
+const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
+const TECH_AVATAR_CACHE_CONTROL = "public, max-age=604800, stale-while-revalidate=2592000";
+const TECH_AVATAR_OVERRIDES = Object.freeze({
+  jensenhuang: "https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205"
+});
+
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
     status,
@@ -139,6 +145,95 @@ function boundedInt(value, min, max, fallback) {
   const n = Number.parseInt(String(value || ""), 10);
   if (!Number.isFinite(n)) return fallback;
   return Math.min(max, Math.max(min, n));
+}
+
+
+function normalizeXHandle(value) {
+  const handle = String(value || "").trim().replace(/^@/, "");
+  return /^[A-Za-z0-9_]{1,15}$/.test(handle) ? handle : "";
+}
+
+async function getTechLeaderAvatar(handle, env) {
+  const normalized = normalizeXHandle(handle);
+  if (!normalized) {
+    const err = new Error("invalid_avatar_handle");
+    err.code = "invalid_avatar_handle";
+    err.status = 400;
+    throw err;
+  }
+
+  const key = `tech-leaders/avatars/${normalized.toLowerCase()}.bin`;
+  const cached = await env.PRO_DATA.get(key);
+  if (cached) {
+    const headers = new Headers({
+      "cache-control": TECH_AVATAR_CACHE_CONTROL,
+      "x-ooglex-avatar-source": "r2",
+      "x-ooglex-avatar-handle": normalized
+    });
+    const type = cached.httpMetadata && cached.httpMetadata.contentType
+      ? cached.httpMetadata.contentType
+      : "image/jpeg";
+    headers.set("content-type", type);
+    if (cached.etag) headers.set("etag", cached.etag);
+    return { body: cached.body, headers };
+  }
+
+  const lower = normalized.toLowerCase();
+  const upstreamUrl = TECH_AVATAR_OVERRIDES[lower]
+    || `https://unavatar.io/x/${encodeURIComponent(normalized)}?fallback=false`;
+  const upstream = await fetch(upstreamUrl, {
+    redirect: "follow",
+    headers: {
+      accept: "image/avif,image/webp,image/png,image/jpeg,image/*,*/*;q=0.8",
+      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2"
+    }
+  });
+
+  if (!upstream.ok) {
+    const err = new Error("avatar_upstream_unavailable");
+    err.code = "avatar_upstream_unavailable";
+    err.status = upstream.status || 502;
+    throw err;
+  }
+
+  const contentType = String(upstream.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (!contentType.startsWith("image/")) {
+    const err = new Error("avatar_upstream_not_image");
+    err.code = "avatar_upstream_not_image";
+    err.status = 502;
+    throw err;
+  }
+
+  const bytes = await upstream.arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) {
+    const err = new Error("avatar_upstream_invalid_size");
+    err.code = "avatar_upstream_invalid_size";
+    err.status = 502;
+    throw err;
+  }
+
+  const source = TECH_AVATAR_OVERRIDES[lower] ? "official_override" : "x_profile";
+  await env.PRO_DATA.put(key, bytes, {
+    httpMetadata: {
+      contentType,
+      cacheControl: TECH_AVATAR_CACHE_CONTROL
+    },
+    customMetadata: {
+      handle: normalized,
+      source,
+      fetched_at: new Date().toISOString()
+    }
+  });
+
+  return {
+    body: bytes,
+    headers: new Headers({
+      "content-type": contentType,
+      "cache-control": TECH_AVATAR_CACHE_CONTROL,
+      "x-ooglex-avatar-source": "upstream-r2",
+      "x-ooglex-avatar-handle": normalized
+    })
+  };
 }
 
 async function xApiGet(path, env) {
@@ -361,6 +456,21 @@ export default {
       if (!PRODUCTS[product]) return json({ error: "unknown_product" }, 400, cors);
       const access = await getAccess(product, token, env);
       return json({ product, ...access }, 200, { ...cors, "cache-control": "no-store" });
+    }
+
+    if (url.pathname === "/v1/tech-leaders/avatar") {
+      const handle = normalizeXHandle(url.searchParams.get("handle"));
+      if (!handle) return json({ error: "invalid_avatar_handle" }, 400, cors);
+      try {
+        const avatar = await getTechLeaderAvatar(handle, env);
+        const headers = new Headers(cors);
+        avatar.headers.forEach((value, name) => headers.set(name, value));
+        return new Response(avatar.body, { status: 200, headers });
+      } catch (err) {
+        const code = err && err.code ? err.code : "avatar_unavailable";
+        const status = err && Number.isInteger(err.status) ? err.status : 502;
+        return json({ error: code, handle }, status, { ...cors, "cache-control": "no-store" });
+      }
     }
 
     if (url.pathname === "/v1/tech-leaders/status") {

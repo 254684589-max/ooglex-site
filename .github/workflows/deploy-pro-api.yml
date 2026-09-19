@@ -17,6 +17,7 @@ on:
       - 'apps/supply-chain/**'
       - 'apps/finance-column/**'
       - 'apps/tech-leaders/**'
+      - 'scripts/tech-leaders/**'
       - '.github/workflows/deploy-pro-api.yml'
 
 permissions:
@@ -114,3 +115,11 @@ jobs:
           body="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/status")"
           echo "$body" | grep -q '"service":"tech-leaders"'
           echo "Tech Leaders backend ready: $body"
+
+      - name: Warm and verify Tech Leaders avatar cache
+        run: |
+          python scripts/tech-leaders/warm_avatars.py \
+            --catalog apps/tech-leaders/leaders.json \
+            --base-url https://pro-api.ooglex.com \
+            --workers 12 \
+            --retries 3
