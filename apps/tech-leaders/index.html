@@ -157,12 +157,12 @@
     </header>
 
     <section class="hero">
-      <span class="kicker">Free Native Feed Trial · X Embed Fallback</span>
+      <span class="kicker">Free Native Feed · Hard $0 X API</span>
       <h1>科技领袖实时动态流</h1>
-      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。郑翊账号正在试运行免费原生时间线：优先读取 X 公开 syndication 并由 Ooglex 原生渲染，不调用 X API；其他账号暂时保持 X 官方 Embed。关注数、正在关注与加入时间使用后端缓存资料，优先公共源，必要时低频刷新 X 用户资料。标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
+      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。郑翊、马斯克、黄仁勋与 Sam Altman 率先使用 Ooglex 原生动态流；其余账号暂时保留 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
-        <span class="fact" id="source-badge">免费公开时间线 · $0 X API</span>
+        <span class="fact" id="source-badge">免费模式 · 0 X API Credits</span>
         <span class="fact">单账号按需加载</span>
         <span class="fact" id="catalog-fact">100+ 位 · 十三大分类</span>
       </div>
@@ -213,7 +213,7 @@
     </section>
 
     <div class="about">
-      <b>免费模式：</b>优先由 Ooglex 后端读取 X 公开 syndication 并缓存后原生展示，不调用 X API、不消耗 X API Credits；公开源不可用时自动回退官方 Embed。<br>
+      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；原生公开源不可用时自动回退官方 Embed。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
       <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
@@ -269,6 +269,9 @@
   var activeCategory=params.get("category")||"全部";
   var requested=params.get("leader");
   var MODE=params.get("mode")==="api"?"api":"free";
+  var FREE_NATIVE_IDS=new Set(["zhengyi-temp","musk","huang","altman"]);
+  function usesNativeFreeFeed(p){return MODE==="free"&&!!p&&FREE_NATIVE_IDS.has(p.id);}
+
   var DEBUG=params.get("debug")==="1";
   var EMBED_TIMEOUT_MS=25000;
   var activeTimeout=null;
@@ -335,7 +338,7 @@
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
     apiBtn.classList.toggle("on",MODE==="api");
-    sourceBadge.textContent=MODE==="free"?"免费公开时间线 · $0 X API":"Ooglex 后端 · X API";
+    sourceBadge.textContent=MODE==="free"?"免费模式 · 0 X API Credits":"Ooglex 后端 · X API";
   }
   function formatFollowingCount(value){
     var n=Number(value);
@@ -391,7 +394,8 @@
     if(!p||!p.handle)return;
     try{
       var q=new URLSearchParams({handle:p.handle,name:p.name_en||p.name||p.name_zh||p.zh||""});
-      var res=await fetch(API_BASE+"/v1/tech-leaders/profile?"+q.toString(),{cache:"no-store"});
+      var profileEndpoint=MODE==="free"?"/v1/tech-leaders/free-profile":"/v1/tech-leaders/profile";
+      var res=await fetch(API_BASE+profileEndpoint+"?"+q.toString(),{cache:"no-store"});
       if(!res.ok)throw new Error("profile_http_"+res.status);
       var data=await res.json();
       if(seq!==profileRequestSeq||!current||current.id!==p.id)return;
@@ -434,7 +438,10 @@
     if(p.handle){openX.href="https://x.com/"+encodeURIComponent(p.handle);openX.style.display="flex";}
     else{openX.removeAttribute("href");openX.style.display="none";}
     document.getElementById("profile-note").textContent=p.note||(p.handle?"公开 X 账号。":"临时人物资料。");
-    document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
+    var liveName=(p.name_en||p.name||p.handle||"").toUpperCase();
+    document.getElementById("feed-title").textContent=usesNativeFreeFeed(p)
+      ? (liveName+" · LIVE FEED")
+      : (p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE"));
     profileAvatarFallback.textContent=initialsFor(p);
     profileAvatar.hidden=false;
     profileAvatar.alt=(p.name_zh||p.zh||p.name)+" 头像";
@@ -707,7 +714,7 @@
 
   function renderFreeFeed(feed){
     clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
-    sourceBadge.textContent="免费公开时间线 · $0 X API";
+    sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
     var posts=Array.isArray(feed&&feed.posts)?feed.posts:[];
@@ -750,7 +757,7 @@
   async function bootFreeNativeFeed(){
     if(!current||!current.handle){renderNoXTimeline();return;}
     clearWatchers();rendered=false;activeIframe=null;xdiag.hidden=true;
-    sourceBadge.textContent="免费公开时间线 · $0 X API";
+    sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","loading");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
     var loading=document.createElement("div");loading.className="api-state";loading.innerHTML="<b>正在读取免费公开时间线</b><div>不调用 X API，不消耗 X API Credits。</div>";timeline.appendChild(loading);
@@ -873,7 +880,7 @@
     setModeUi();
     await loadCatalog();
     if(MODE==="api")bootApi();
-    else if(current&&current.id==="zhengyi-temp")bootFreeNativeFeed();
+    else if(usesNativeFreeFeed(current))bootFreeNativeFeed();
     else bootEmbed();
   })();
 })();
