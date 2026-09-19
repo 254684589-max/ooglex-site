@@ -503,8 +503,34 @@
     "桑达尔·皮查伊": "Sundar Pichai",
     "萨提亚·纳德拉": "Satya Nadella",
     "NVIDIA 官方账号 · 黄仁勋相关动态": "Official NVIDIA account · Jensen Huang coverage",
+    /* 「Intel CEO · Intel 官方账号」这类 role 由 ` · ` 分段规则逐段翻，补上后半段。 */
+    "Intel 官方账号": "official Intel account",
+    "Broadcom 官方账号": "official Broadcom account",
+    "ASML 官方账号": "official ASML account",
+    "Micron 官方账号": "official Micron account",
     "在 X 打开原主页 ↗": "Open the profile on X ↗",
     "个人公开 X 账号。": "Personal public X account.",
+    /* V4.3 的人物备注与头像核验状态：备注逐条取自 leaders.json 的 note 字段，
+       核验状态取自 index.html 里 avatarNote 的三个分支。 */
+    "现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。": "Founder and CEO of NVIDIA; personal public X account.",
+    "本页以 Intel 官方 X 账号作为陈立武相关动态入口。": "This page uses Intel's official X account as the entry point for Lip-Bu Tan coverage.",
+    "本页以 Broadcom 官方 X 账号作为陈福阳相关动态入口。": "This page uses Broadcom's official X account as the entry point for Hock Tan coverage.",
+    "本页以 ASML 官方 X 账号作为 CEO 相关动态入口。": "This page uses ASML's official X account as the entry point for CEO coverage.",
+    "本页以 Micron 官方 X 账号作为 Sanjay Mehrotra 相关动态入口。": "This page uses Micron's official X account as the entry point for Sanjay Mehrotra coverage.",
+    "官方 X 账号，用于跟踪 Boston Dynamics 机器人动态。": "Official X account, used to follow Boston Dynamics robotics news.",
+    "现任 Ford CEO，本人公开 X 账号。": "CEO of Ford; personal public X account.",
+    "现任 Cisco 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of Cisco; personal public X account.",
+    "现任 ServiceNow 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of ServiceNow; personal public X account.",
+    "现任 Lowe's 董事长、总裁兼 CEO，本人公开 X 账号。": "Chair, President and CEO of Lowe's; personal public X account.",
+    "现任 CrowdStrike CEO 兼创始人，本人公开 X 账号。": "CEO and co-founder of CrowdStrike; personal public X account.",
+    "现任 Palo Alto Networks 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of Palo Alto Networks; personal public X account.",
+    "现任 Pfizer 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of Pfizer; personal public X account.",
+    "现任 General Motors 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of General Motors; personal public X account.",
+    "现任 Nasdaq 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of Nasdaq; personal public X account.",
+    "公开 X 账号。": "Public X account.",
+    "头像：X 原版已核验": "Avatar: X original verified",
+    "头像：待核验 / 本地兜底": "Avatar: pending verification / local fallback",
+    "头像：正在核验 X 原版": "Avatar: verifying the X original",
     "为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。":
       "To avoid listing an unverified personal account, this page uses NVIDIA's official X account as the entry point for Jensen Huang coverage.",
     "当前无法显示 X 时间线": "The X timeline cannot be shown right now",
@@ -835,6 +861,20 @@
           (dict[m[4]] || m[4]) + " · showing " + m[5] + " of " + m[6];
       }
       if ((m = /^自托管头像 (\d+)\/(\d+)$/.exec(s))) return m[1] + "/" + m[2] + " avatars self-hosted";
+      /* V4.3 把「自托管头像」改成了「X 原版头像核验」，统计条、两个筛选按钮与
+         详情卡的说明一起换了措辞；旧规则全部失配。新旧都留着——上游还在迭代，
+         回滚到 V4.2 时不至于又变回中文。 */
+      if ((m = /^已收录 (\d+) 位 · X原版头像 (\d+)\/(\d+)(（核验中）)? · (.+?) · 当前显示 (\d+)(?: \/ (\d+))? 位$/.exec(s))) {
+        return m[1] + " leaders listed · " + m[2] + "/" + m[3] + " X-original avatars" +
+          (m[4] ? " (verifying)" : "") + " · " + (dict[m[5]] || m[5]) +
+          " · showing " + m[6] + (m[7] ? " of " + m[7] : "");
+      }
+      if ((m = /^X原版 (\d+)\/(\d+)$/.exec(s))) return "X original " + m[1] + "/" + m[2];
+      if ((m = /^核验中 (\d+)\/(\d+)$/.exec(s))) return "Verifying " + m[1] + "/" + m[2];
+      if ((m = /^待核验 (\d+)$/.exec(s))) return m[1] + " to verify";
+      if ((m = /^V([\d.]+) · 全球公司领袖 \+ X 原版头像核验$/.exec(s))) {
+        return "V" + m[1] + " · Global corporate leaders + X-original avatar verification";
+      }
       if ((m = /^待补 (\d+)$/.exec(s))) return m[1] + " outstanding";
       if ((m = /^展开 (\d+) 位 ↓$/.exec(s))) return "Show all " + m[1] + " ↓";
       if ((m = /^收起 ↑$/.exec(s))) return "Collapse ↑";
@@ -985,6 +1025,11 @@
           else if (r.type === "characterData") translateText(r.target);
           else Array.prototype.forEach.call(r.addedNodes || [], function (n) { walk(n); });
         });
+        /* 头像首字母必须在整批处理完之后再跑一次：详情卡换人时 textContent 被整体替换，
+           到达这里的是一个纯文本节点，walk() 对文本节点会提前 return，
+           挂在 walk() 末尾的那次调用根本不会执行；而且它要读同一个 shell 里
+           已经翻好的 img[alt]，那条属性也在这一批里。 */
+        leaderInitials();
       });
     });
     /* 也盯 ATTRS 里那几个属性：原先只盯 childList/characterData，
