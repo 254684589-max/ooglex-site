@@ -153,6 +153,108 @@ function normalizeXHandle(value) {
   return /^[A-Za-z0-9_]{1,15}$/.test(handle) ? handle : "";
 }
 
+function twitterProfileImageLarge(urlValue) {
+  try {
+    const u = new URL(urlValue);
+    u.pathname = u.pathname.replace(/_(normal|bigger|mini|200x200)\.(jpg|jpeg|png|webp)$/i, "_400x400.$2");
+    return u.toString();
+  } catch {
+    return String(urlValue || "");
+  }
+}
+
+function findProfileImageUrl(value, depth = 0) {
+  if (depth > 14 || value == null) return "";
+  if (typeof value === "string") {
+    return /^https:\/\/pbs\.twimg\.com\/profile_images\//i.test(value)
+      ? twitterProfileImageLarge(value)
+      : "";
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found = findProfileImageUrl(item, depth + 1);
+      if (found) return found;
+    }
+    return "";
+  }
+  if (typeof value === "object") {
+    const preferred = Object.keys(value).filter((key) => /profile.*image|image.*profile|avatar/i.test(key));
+    for (const key of preferred) {
+      const found = findProfileImageUrl(value[key], depth + 1);
+      if (found) return found;
+    }
+    for (const key of Object.keys(value)) {
+      const found = findProfileImageUrl(value[key], depth + 1);
+      if (found) return found;
+    }
+  }
+  return "";
+}
+
+async function fetchAvatarImage(url, source) {
+  const res = await fetch(url, {
+    redirect: "follow",
+    headers: {
+      accept: "image/avif,image/webp,image/png,image/jpeg,image/*,*/*;q=0.8",
+      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/4.2)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source };
+  const contentType = String(res.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (!contentType.startsWith("image/")) return { ok: false, status: res.status, source };
+  const bytes = await res.arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) return { ok: false, status: 502, source };
+  return { ok: true, bytes, contentType, source };
+}
+
+async function fetchAvatarViaSyndication(handle) {
+  const url = `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}`;
+  const res = await fetch(url, {
+    redirect: "follow",
+    headers: {
+      accept: "text/html,application/xhtml+xml",
+      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/4.2)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source: "x_syndication" };
+  const html = await res.text();
+  let imageUrl = "";
+  const next = html.match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
+  if (next && next[1]) {
+    try { imageUrl = findProfileImageUrl(JSON.parse(next[1])); } catch {}
+  }
+  if (!imageUrl) {
+    const normalized = html.replace(/\\u002F/gi, "/").replace(/\\\//g, "/").replace(/&amp;/g, "&");
+    const m = normalized.match(/https:\/\/pbs\.twimg\.com\/profile_images\/[^"'<>\s\\]+/i);
+    if (m) imageUrl = twitterProfileImageLarge(m[0]);
+  }
+  if (!imageUrl) return { ok: false, status: 404, source: "x_syndication" };
+  return fetchAvatarImage(imageUrl, "x_syndication");
+}
+
+async function resolveTechLeaderAvatar(handle) {
+  const lower = handle.toLowerCase();
+
+  if (TECH_AVATAR_OVERRIDES[lower]) {
+    const official = await fetchAvatarImage(TECH_AVATAR_OVERRIDES[lower], "official_override");
+    if (official.ok) return official;
+  }
+
+  const legacyProfile = await fetchAvatarImage(
+    `https://twitter.com/${encodeURIComponent(handle)}/profile_image?size=original`,
+    "x_profile_redirect"
+  );
+  if (legacyProfile.ok) return legacyProfile;
+
+  const syndicated = await fetchAvatarViaSyndication(handle);
+  if (syndicated.ok) return syndicated;
+
+  return fetchAvatarImage(
+    `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
+    "unavatar_x"
+  );
+}
+
 async function getTechLeaderAvatar(handle, env) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
@@ -178,59 +280,32 @@ async function getTechLeaderAvatar(handle, env) {
     return { body: cached.body, headers };
   }
 
-  const lower = normalized.toLowerCase();
-  const upstreamUrl = TECH_AVATAR_OVERRIDES[lower]
-    || `https://unavatar.io/x/${encodeURIComponent(normalized)}?fallback=false`;
-  const upstream = await fetch(upstreamUrl, {
-    redirect: "follow",
-    headers: {
-      accept: "image/avif,image/webp,image/png,image/jpeg,image/*,*/*;q=0.8",
-      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2"
-    }
-  });
-
-  if (!upstream.ok) {
+  const resolved = await resolveTechLeaderAvatar(normalized);
+  if (!resolved.ok) {
     const err = new Error("avatar_upstream_unavailable");
     err.code = "avatar_upstream_unavailable";
-    err.status = upstream.status || 502;
+    err.status = resolved.status || 502;
     throw err;
   }
 
-  const contentType = String(upstream.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
-  if (!contentType.startsWith("image/")) {
-    const err = new Error("avatar_upstream_not_image");
-    err.code = "avatar_upstream_not_image";
-    err.status = 502;
-    throw err;
-  }
-
-  const bytes = await upstream.arrayBuffer();
-  if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) {
-    const err = new Error("avatar_upstream_invalid_size");
-    err.code = "avatar_upstream_invalid_size";
-    err.status = 502;
-    throw err;
-  }
-
-  const source = TECH_AVATAR_OVERRIDES[lower] ? "official_override" : "x_profile";
-  await env.PRO_DATA.put(key, bytes, {
+  await env.PRO_DATA.put(key, resolved.bytes, {
     httpMetadata: {
-      contentType,
+      contentType: resolved.contentType,
       cacheControl: TECH_AVATAR_CACHE_CONTROL
     },
     customMetadata: {
       handle: normalized,
-      source,
+      source: resolved.source,
       fetched_at: new Date().toISOString()
     }
   });
 
   return {
-    body: bytes,
+    body: resolved.bytes,
     headers: new Headers({
-      "content-type": contentType,
+      "content-type": resolved.contentType,
       "cache-control": TECH_AVATAR_CACHE_CONTROL,
-      "x-ooglex-avatar-source": "upstream-r2",
+      "x-ooglex-avatar-source": resolved.source + "-r2",
       "x-ooglex-avatar-handle": normalized
     })
   };
