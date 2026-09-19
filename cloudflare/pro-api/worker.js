@@ -31,6 +31,8 @@ const TECH_LEADERS = Object.freeze({
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
+const TECH_FREE_FEED_TTL_MS = 10 * 60 * 1000;
+const TECH_FREE_FEED_MAX_STALE_MS = 24 * 60 * 60 * 1000;
 const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -803,6 +805,211 @@ async function getTechLeaderAvatarAudit(handles, env) {
   };
 }
 
+function normalizeSyndicationEntities(value) {
+  const src = value && typeof value === "object" ? value : {};
+  const urls = Array.isArray(src.urls) ? src.urls.map((item) => {
+    const indices = Array.isArray(item && item.indices) ? item.indices : [];
+    return {
+      start: Number.isFinite(Number(item && item.start)) ? Number(item.start) : Number(indices[0]),
+      end: Number.isFinite(Number(item && item.end)) ? Number(item.end) : Number(indices[1]),
+      url: item && item.url ? String(item.url) : "",
+      expanded_url: item && (item.expanded_url || item.expandedUrl) ? String(item.expanded_url || item.expandedUrl) : "",
+      display_url: item && (item.display_url || item.displayUrl) ? String(item.display_url || item.displayUrl) : ""
+    };
+  }).filter((item) => Number.isFinite(item.start) && Number.isFinite(item.end)) : [];
+  return { urls };
+}
+
+function normalizeSyndicationMedia(legacy) {
+  const ext = legacy && legacy.extended_entities && Array.isArray(legacy.extended_entities.media)
+    ? legacy.extended_entities.media
+    : legacy && legacy.entities && Array.isArray(legacy.entities.media)
+      ? legacy.entities.media
+      : [];
+  return ext.map((item) => {
+    if (!item || typeof item !== "object") return null;
+    const preview = item.media_url_https || item.media_url || "";
+    let videoUrl = "";
+    const variants = item.video_info && Array.isArray(item.video_info.variants) ? item.video_info.variants : [];
+    const mp4 = variants
+      .filter((v) => v && v.content_type === "video/mp4" && v.url)
+      .sort((a, b) => Number(b.bitrate || 0) - Number(a.bitrate || 0))[0];
+    if (mp4) videoUrl = mp4.url;
+    return {
+      media_key: item.media_key || item.id_str || null,
+      type: item.type || "photo",
+      url: item.type === "photo" ? preview : null,
+      preview_image_url: preview || null,
+      video_url: videoUrl || null,
+      width: item.original_info && item.original_info.width ? item.original_info.width : null,
+      height: item.original_info && item.original_info.height ? item.original_info.height : null
+    };
+  }).filter(Boolean);
+}
+
+function syndicationTweetAuthor(candidate) {
+  const paths = [
+    candidate && candidate.core && candidate.core.user_results && candidate.core.user_results.result,
+    candidate && candidate.user_results && candidate.user_results.result,
+    candidate && candidate.user
+  ];
+  for (const user of paths) {
+    if (!user || typeof user !== "object") continue;
+    const legacy = user.legacy && typeof user.legacy === "object" ? user.legacy : user;
+    const screen = String(legacy.screen_name || legacy.username || user.username || "").replace(/^@/, "");
+    if (screen) return screen;
+  }
+  return "";
+}
+
+function normalizeSyndicationTweet(candidate, handle) {
+  if (!candidate || typeof candidate !== "object") return null;
+  const legacy = candidate.legacy && typeof candidate.legacy === "object" ? candidate.legacy : candidate;
+  const text = String(legacy.full_text || legacy.text || candidate.full_text || candidate.text || "").trim();
+  const id = String(candidate.rest_id || legacy.id_str || candidate.id_str || candidate.id || "");
+  if (!text || !/^\d{10,25}$/.test(id)) return null;
+
+  const author = syndicationTweetAuthor(candidate);
+  if (author && String(author).toLowerCase() !== String(handle || "").toLowerCase()) return null;
+
+  const createdAt = legacy.created_at || candidate.created_at || null;
+  const metrics = {
+    reply_count: Number(legacy.reply_count || 0),
+    repost_count: Number(legacy.retweet_count || 0),
+    retweet_count: Number(legacy.retweet_count || 0),
+    like_count: Number(legacy.favorite_count || legacy.favourite_count || 0),
+    quote_count: Number(legacy.quote_count || 0)
+  };
+  return {
+    id,
+    text,
+    created_at: createdAt,
+    lang: legacy.lang || candidate.lang || null,
+    metrics,
+    entities: normalizeSyndicationEntities(legacy.entities || candidate.entities),
+    media: normalizeSyndicationMedia(legacy),
+    url: `https://x.com/${encodeURIComponent(handle)}/status/${id}`
+  };
+}
+
+function collectSyndicationTweets(value, handle, out, seenObjects, depth = 0) {
+  if (depth > 22 || value == null) return;
+  if (typeof value !== "object") return;
+  if (seenObjects.has(value)) return;
+  seenObjects.add(value);
+
+  const normalized = normalizeSyndicationTweet(value, handle);
+  if (normalized && !out.some((item) => item.id === normalized.id)) out.push(normalized);
+
+  if (Array.isArray(value)) {
+    for (const item of value) collectSyndicationTweets(item, handle, out, seenObjects, depth + 1);
+    return;
+  }
+  for (const key of Object.keys(value)) {
+    collectSyndicationTweets(value[key], handle, out, seenObjects, depth + 1);
+  }
+}
+
+function parseSyndicationTimeline(html, handle, limit) {
+  const posts = [];
+  const next = String(html || "").match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
+  if (next && next[1]) {
+    try {
+      const payload = JSON.parse(next[1]);
+      collectSyndicationTweets(payload, handle, posts, new WeakSet());
+    } catch {}
+  }
+
+  if (!posts.length) {
+    const normalized = String(html || "")
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&amp;/g, "&")
+      .replace(/\\u002F/gi, "/")
+      .replace(/\\\//g, "/");
+    const scriptBlocks = normalized.match(/<script[^>]*>[\s\S]*?<\/script>/gi) || [];
+    for (const block of scriptBlocks) {
+      const body = block.replace(/^<script[^>]*>/i, "").replace(/<\/script>$/i, "").trim();
+      if (!body || (body[0] !== "{" && body[0] !== "[")) continue;
+      try { collectSyndicationTweets(JSON.parse(body), handle, posts, new WeakSet()); } catch {}
+    }
+  }
+
+  posts.sort((a, b) => {
+    const ta = Date.parse(a.created_at || "") || Number(a.id) || 0;
+    const tb = Date.parse(b.created_at || "") || Number(b.id) || 0;
+    return tb - ta;
+  });
+  return posts.slice(0, limit);
+}
+
+async function fetchFreeTechLeaderFeed(handle, limit) {
+  const url = `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}`;
+  const res = await fetch(url, {
+    redirect: "follow",
+    headers: {
+      accept: "text/html,application/xhtml+xml",
+      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Free-Feed/1.0)"
+    }
+  });
+  if (!res.ok) {
+    const err = new Error("x_public_syndication_error");
+    err.code = "x_public_syndication_error";
+    err.status = res.status;
+    throw err;
+  }
+  const html = await res.text();
+  const posts = parseSyndicationTimeline(html, handle, limit);
+  if (!posts.length) {
+    const err = new Error("x_public_feed_empty");
+    err.code = "x_public_feed_empty";
+    err.status = 502;
+    throw err;
+  }
+  return {
+    schema_version: 1,
+    source: "x_public_syndication",
+    uses_x_api: false,
+    handle,
+    fetched_at: new Date().toISOString(),
+    posts
+  };
+}
+
+async function getFreeTechLeaderFeed(handle, limit, env) {
+  const normalized = normalizeXHandle(handle);
+  if (!normalized) {
+    const err = new Error("invalid_free_feed_handle");
+    err.code = "invalid_free_feed_handle";
+    err.status = 400;
+    throw err;
+  }
+  const key = `tech-leaders/free-feed/v1/${normalized.toLowerCase()}.json`;
+  const cached = await readJson(env.PRO_DATA, key);
+  const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
+  const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
+  const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+
+  if (cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS) {
+    return { ...cached, posts: cachedPosts.slice(0, limit), cache: { status: "fresh", age_ms: age } };
+  }
+
+  try {
+    const fresh = await fetchFreeTechLeaderFeed(normalized, Math.max(limit, TECH_FEED_FETCH_SIZE));
+    await writeJson(env.PRO_DATA, key, fresh);
+    return { ...fresh, posts: fresh.posts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
+  } catch (err) {
+    if (cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS) {
+      return {
+        ...cached,
+        posts: cachedPosts.slice(0, limit),
+        cache: { status: "stale", age_ms: age, reason: err && err.code ? err.code : "x_public_feed_error" }
+      };
+    }
+    throw err;
+  }
+}
+
 async function xApiGet(path, env) {
   if (!env.X_BEARER_TOKEN) {
     const err = new Error("x_api_not_configured");
@@ -1029,6 +1236,30 @@ export default {
       return json({ product, ...access }, 200, { ...cors, "cache-control": "no-store" });
     }
 
+    if (url.pathname === "/v1/tech-leaders/free-feed") {
+      const handle = normalizeXHandle(url.searchParams.get("handle"));
+      const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FEED_FETCH_SIZE, 8);
+      if (!handle) return json({ error: "invalid_free_feed_handle" }, 400, cors);
+      try {
+        const feed = await getFreeTechLeaderFeed(handle, limit, env);
+        return json(feed, 200, {
+          ...cors,
+          "cache-control": "public, max-age=120, stale-while-revalidate=600",
+          "x-ooglex-source": "x-public-syndication",
+          "x-ooglex-x-api": "unused"
+        });
+      } catch (err) {
+        const code = err && err.code ? err.code : "x_public_feed_unavailable";
+        const status = err && Number.isInteger(err.status) ? err.status : 502;
+        return json({
+          error: code,
+          handle,
+          uses_x_api: false,
+          upstream_status: err && err.status ? err.status : null
+        }, status, { ...cors, "cache-control": "no-store", "x-ooglex-x-api": "unused" });
+      }
+    }
+
     if (url.pathname === "/v1/tech-leaders/profile") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
@@ -1078,6 +1309,12 @@ export default {
         service: "tech-leaders",
         source: "x_api",
         configured: Boolean(env.X_BEARER_TOKEN),
+        free_feed: {
+          enabled: true,
+          source: "x_public_syndication",
+          uses_x_api: false,
+          cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000)
+        },
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
         avatar_policy: TECH_AVATAR_POLICY,
         avatar_cache_version: TECH_AVATAR_CACHE_VERSION,
