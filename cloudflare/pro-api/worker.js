@@ -297,6 +297,61 @@ async function fetchAvatarViaWikipedia(name, company) {
   return { ok: false, status: 404, source: "wikipedia" };
 }
 
+function commonsTitleMatchesPerson(title, name) {
+  const t = normalizeWikiText(title);
+  const n = normalizeWikiText(name);
+  const tokens = n.split(/\s+/).filter((x) => x.length >= 2);
+  if (!t || tokens.length < 2) return false;
+  const first = tokens[0];
+  const last = tokens[tokens.length - 1];
+  return t.includes(first) && t.includes(last);
+}
+
+async function fetchAvatarViaCommons(name) {
+  const cleanName = String(name || "").trim().slice(0, 120);
+  if (!cleanName) return { ok: false, status: 400, source: "wikimedia_commons" };
+
+  const params = new URLSearchParams({
+    action: "query",
+    generator: "search",
+    gsrsearch: cleanName,
+    gsrnamespace: "6",
+    gsrlimit: "12",
+    prop: "imageinfo",
+    iiprop: "url|mime",
+    iiurlwidth: "500",
+    iilimit: "1",
+    format: "json",
+    formatversion: "2",
+    origin: "*"
+  });
+  const res = await fetch(`https://commons.wikimedia.org/w/api.php?${params.toString()}`, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2 (https://ooglex.com)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source: "wikimedia_commons" };
+
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  const pages = payload && payload.query && Array.isArray(payload.query.pages)
+    ? payload.query.pages
+    : [];
+
+  for (const page of pages) {
+    if (!page || !commonsTitleMatchesPerson(page.title, cleanName)) continue;
+    const info = Array.isArray(page.imageinfo) ? page.imageinfo[0] : null;
+    if (!info) continue;
+    const src = info.thumburl || info.url || "";
+    const mime = String(info.mime || "").toLowerCase();
+    if (!src || (mime && !mime.startsWith("image/"))) continue;
+    const image = await fetchAvatarImage(src, "wikimedia_commons");
+    if (image.ok) return image;
+  }
+  return { ok: false, status: 404, source: "wikimedia_commons" };
+}
+
 async function resolveTechLeaderAvatar(handle, name, company) {
   const lower = handle.toLowerCase();
 
@@ -316,6 +371,9 @@ async function resolveTechLeaderAvatar(handle, name, company) {
 
   const wikipedia = await fetchAvatarViaWikipedia(name, company);
   if (wikipedia.ok) return wikipedia;
+
+  const commons = await fetchAvatarViaCommons(name);
+  if (commons.ok) return commons;
 
   return fetchAvatarImage(
     `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
