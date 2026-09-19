@@ -277,6 +277,7 @@
     );
   }
   function usesNativeFreeFeed(p){return MODE==="free"&&isConfirmedPersonalX(p);}
+  function usesLocalOnlyTimeline(p){return !!p&&p.timeline_mode==="local_only";}
 
 
   var DEBUG=params.get("debug")==="1";
@@ -688,6 +689,8 @@
   }
   function renderLocalPosts(p,target){
     var posts=p&&Array.isArray(p.local_posts)?p.local_posts:[];
+    var localLimit=Math.max(0,Number(p&&p.local_post_limit)||posts.length);
+    if(localLimit)posts=posts.slice(0,localLimit);
     if(!posts.length)return false;
     var wrap=document.createElement("div");wrap.className="api-feed local-feed";
     posts.forEach(function(post){
@@ -817,6 +820,11 @@
     sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","loading");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
+    if(usesLocalOnlyTimeline(current)){
+      rendered=true;
+      timeline.setAttribute("data-state","ready");
+      return;
+    }
     var loading=document.createElement("div");loading.className="api-state";loading.innerHTML="<b>正在读取免费公开时间线</b><div>不调用 X API，不消耗 X API Credits。</div>";timeline.appendChild(loading);
     try{
       var ctl=new AbortController();
@@ -865,6 +873,13 @@
   }
   async function bootApi(){
     if(!current||!current.handle){renderNoXTimeline();return;}
+    if(usesLocalOnlyTimeline(current)){
+      clearWatchers();rendered=true;activeIframe=null;xdiag.hidden=true;
+      sourceBadge.textContent="仅显示站内首条动态";
+      timeline.setAttribute("data-state","ready");timeline.innerHTML="";
+      renderLocalPosts(current,timeline);
+      return;
+    }
     apiState("正在读取 Ooglex 数据模式","只在手动选择数据模式时才会调用 X API。");
     try{
       var statusRes=await fetch(API_BASE+"/v1/tech-leaders/status",{cache:"no-store"});
