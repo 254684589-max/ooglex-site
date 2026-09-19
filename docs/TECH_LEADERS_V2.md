@@ -255,3 +255,15 @@ Changes:
 - Retry the original direct URL if the proxy fails, then show a clean original-post fallback instead of a broken image icon.
 - The media proxy is allowlisted to known media hosts and never calls `api.x.com`.
 - Deployment smoke tests verify a live @sundarpichai media asset through the proxy when a media item is available.
+
+
+## Free Feed Progressive Display — 2026-09-19
+
+The native free timeline now follows a progressive display policy:
+
+- Show the latest 10 posts by default.
+- If more are available, show one `加载更多 10 条` / `Load 10 more` button.
+- A single page session displays at most 20 posts per selected account.
+- The browser requests at most 20 free-feed items for the selected account; media for the second batch is not inserted into the DOM until the user clicks the button.
+- No permanent post archive is created. R2 remains a replaceable cache, with the existing 30-minute fresh TTL and 48-hour stale fallback.
+- Zheng Yi's `local_only` profile remains unchanged and continues to display only the first local Macro Pulse post.

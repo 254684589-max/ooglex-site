@@ -138,6 +138,7 @@
     .post-media{display:grid;gap:8px;margin-top:12px}.post-media img,.post-media video{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}.post-media video{object-fit:contain}.post-media-item{min-width:0}.post-media-fallback{display:none;padding:16px;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}.post-media-fallback a{color:var(--blue)}
     .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
     .post-source{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:rgba(57,135,229,.06);color:var(--blue);font:10px/1 var(--mono)}
+    .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
@@ -213,7 +214,7 @@
     </section>
 
     <div class="about">
-      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；原生公开源不可用时自动回退官方 Embed。<br>
+      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；默认显示最新 10 条，点击“加载更多 10 条”后单次会话最多显示 20 条，不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
       <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
@@ -781,16 +782,18 @@
     sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
-    var posts=Array.isArray(feed&&feed.posts)?feed.posts:[];
+    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).slice(0,20);
     if(!posts.length){
       var empty=document.createElement("div");empty.className="api-state";
       empty.innerHTML="<b>公开时间线暂时没有可展示内容</b><div>正在回退到 X 官方 Embed。</div>";
       timeline.appendChild(empty);
       return false;
     }
+
     var wrap=document.createElement("div");wrap.className="api-feed free-native-feed";
-    posts.forEach(function(post){
+    function appendPost(post){
       var card=document.createElement("article");card.className="post-card";
+      card.setAttribute("data-post-id",String(post.id||""));
       var head=document.createElement("div");head.className="post-head";
       var postAvatarSrc=avatarUrl(current);
       if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
@@ -809,8 +812,20 @@
       var source=document.createElement("span");source.className="post-source";source.textContent="公开源 · $0 X API";foot.appendChild(source);
       var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
       card.appendChild(foot);wrap.appendChild(card);
-    });
+    }
+
+    posts.slice(0,10).forEach(appendPost);
     timeline.appendChild(wrap);
+
+    if(posts.length>10){
+      var more=document.createElement("div");more.className="feed-more";
+      var btn=document.createElement("button");btn.type="button";btn.textContent="加载更多 10 条";
+      btn.addEventListener("click",function(){
+        posts.slice(10,20).forEach(appendPost);
+        more.remove();
+      },{once:true});
+      more.appendChild(btn);timeline.appendChild(more);
+    }
     return true;
   }
 
@@ -830,7 +845,7 @@
       var ctl=new AbortController();
       var timer=setTimeout(function(){ctl.abort();},12000);
       try{
-        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit=8",{signal:ctl.signal,cache:"no-store"});
+        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit=20",{signal:ctl.signal,cache:"no-store"});
         var data=await res.json().catch(function(){return {};});
         if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
         renderFreeFeed(data);
