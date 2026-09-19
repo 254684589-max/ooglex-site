@@ -121,5 +121,5 @@ jobs:
           python scripts/tech-leaders/warm_avatars.py \
             --catalog apps/tech-leaders/leaders.json \
             --base-url https://pro-api.ooglex.com \
-            --workers 12 \
-            --retries 3
+            --workers 2 \
+            --retries 5
