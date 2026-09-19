@@ -107,11 +107,18 @@
     var page = document.querySelector(".page");
     if (!page || !page.parentNode) return;
 
+    // FREE preview: the base page keeps 80px bottom padding for standalone pages.
+    // Once the paywall is appended that padding becomes a visible dead gap, especially
+    // on mobile. Compact it only for preview mode so the dark wall follows the footer.
+    var isMobile = !!(window.matchMedia && window.matchMedia("(max-width: 560px)").matches);
+    page.style.paddingBottom = isMobile ? "12px" : "20px";
+
     var fade = document.createElement("div");
     fade.id = "ooglex-preview-fade";
     fade.setAttribute("aria-hidden", "true");
+    var fadeHeight = isMobile ? 78 : 104;
     fade.style.cssText = [
-      "height:120px","margin-top:-120px","position:relative","z-index:5","pointer-events:none",
+      "height:" + fadeHeight + "px","margin-top:-" + fadeHeight + "px","position:relative","z-index:5","pointer-events:none",
       "background:linear-gradient(to bottom,rgba(15,15,18,0),rgba(23,23,23,.96))"
     ].join(";");
 
