@@ -1,17 +1,17 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-19T06:10:41Z",
+  "checked_at": "2026-09-19T06:28:44Z",
   "catalog": "apps/tech-leaders/leaders.json",
-  "total_checked": 109,
+  "total_checked": 110,
   "usable": 109,
   "x_original": 0,
   "x_original_proxy": 16,
   "official_fallback": 6,
   "public_fallback": 87,
   "fallback": 93,
-  "pending_review": 0,
-  "missing_handle": 0,
+  "pending_review": 1,
+  "missing_handle": 1,
   "invalid_handle": 0,
   "items": [
     {
@@ -1539,6 +1539,16 @@
       "response_handle": "zoink",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan+Field&company=Figma",
       "origin_url": "https://x.com/zoink"
+    },
+    {
+      "id": "zhengyi-temp",
+      "name": "Zheng Yi",
+      "company": "VC",
+      "handle": "",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "missing_handle"
     }
   ]
 }
