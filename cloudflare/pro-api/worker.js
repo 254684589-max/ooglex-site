@@ -31,6 +31,7 @@ const TECH_LEADERS = Object.freeze({
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
+const TECH_FREE_FEED_MAX_ITEMS = 20;
 const TECH_FREE_FEED_TTL_MS = 30 * 60 * 1000;
 const TECH_FREE_FEED_MAX_STALE_MS = 48 * 60 * 60 * 1000;
 const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -1296,15 +1297,21 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
   const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+  const cachedRequestedLimit = Math.max(
+    cachedPosts.length,
+    Number(cached && cached.requested_limit) || 0
+  );
 
-  if (cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS) {
+  if (cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS && cachedRequestedLimit >= limit) {
     return { ...cached, posts: cachedPosts.slice(0, limit), cache: { status: "fresh", age_ms: age } };
   }
 
   try {
-    const fresh = await fetchFreeTechLeaderFeed(normalized, Math.max(limit, TECH_FEED_FETCH_SIZE));
-    await writeJson(env.PRO_DATA, key, fresh);
-    return { ...fresh, posts: fresh.posts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
+    const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
+    const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
+    const persisted = { ...fresh, requested_limit: requestedLimit };
+    await writeJson(env.PRO_DATA, key, persisted);
+    return { ...persisted, posts: persisted.posts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
     if (cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS) {
       return {
@@ -1647,7 +1654,7 @@ async function proxyTechLeaderMedia(request, target, cors) {
 
     if (url.pathname === "/v1/tech-leaders/free-feed") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
-      const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FEED_FETCH_SIZE, 8);
+      const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FREE_FEED_MAX_ITEMS, 10);
       if (!handle) return json({ error: "invalid_free_feed_handle" }, 400, cors);
       try {
         const feed = await getFreeTechLeaderFeed(handle, limit, env);
