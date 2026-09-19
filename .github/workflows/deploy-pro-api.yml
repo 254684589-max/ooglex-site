@@ -164,29 +164,10 @@ jobs:
             fi
           done
 
-          media_url="$(python - <<'PY'
-import json, urllib.request
-url="https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=8"
-try:
-    data=json.load(urllib.request.urlopen(url, timeout=20))
-except Exception:
-    print("")
-    raise SystemExit
-for post in data.get("posts", []):
-    for m in post.get("media", []) or []:
-        candidate=m.get("url") or m.get("preview_image_url") or m.get("video_url")
-        if candidate:
-            print(candidate)
-            raise SystemExit
-print("")
-PY
-)"
+          feed_json="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=8" || true)"
+          media_url="$(printf '%s' "$feed_json" | python -c 'import json,sys; d=json.load(sys.stdin) if not sys.stdin.isatty() else {}; print(next((m.get("url") or m.get("preview_image_url") or m.get("video_url") for p in d.get("posts",[]) for m in (p.get("media") or []) if (m.get("url") or m.get("preview_image_url") or m.get("video_url"))),""))' 2>/dev/null || true)"
           if [ -n "$media_url" ]; then
-            proxy_url="$(python - "$media_url" <<'PY'
-import sys, urllib.parse
-print("https://pro-api.ooglex.com/v1/tech-leaders/media?url="+urllib.parse.quote(sys.argv[1], safe=""))
-PY
-)"
+            proxy_url="$(python -c 'import sys,urllib.parse; print("https://pro-api.ooglex.com/v1/tech-leaders/media?url="+urllib.parse.quote(sys.argv[1],safe=""))' "$media_url")"
             mcode="$(curl -sS -L --connect-timeout 5 --max-time 25 -o /tmp/ooglex-media-smoke.bin -w '%{http_code}' "$proxy_url")"
             mtype="$(file -b --mime-type /tmp/ooglex-media-smoke.bin 2>/dev/null || true)"
             rm -f /tmp/ooglex-media-smoke.bin
