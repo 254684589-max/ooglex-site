@@ -42,7 +42,8 @@ const TECH_AVATAR_POLICY = "x_original_then_verified_fallback";
 const TECH_AVATAR_OFFICIAL_OVERRIDES = Object.freeze({
   rajaxg: "https://d1io3yog0oux5.cloudfront.net/_3ccf9cf30376bf77bbb27f582e51d00d/intel/news/193/1779/image.jpeg",
   sytses: "https://res.cloudinary.com/about-gitlab-com/image/upload/v1755613184/abfz99qjcfcvo6em0sgm.webp",
-  svlevine: "https://vcresearch.berkeley.edu/sites/default/files/styles/faculty_photo_thumbnail/public/2023-04/sergey_levin_20200122_AVL_0050.jpg?h=726b1c9d&itok=Aa7Rxyv2"
+  svlevine: "https://vcresearch.berkeley.edu/sites/default/files/styles/faculty_photo_thumbnail/public/2023-04/sergey_levin_20200122_AVL_0050.jpg?h=726b1c9d&itok=Aa7Rxyv2",
+  thetimellis: "https://images.squarespace-cdn.com/content/v1/59a8fb50d2b8575fad311abb/32f80d6d-e088-4fa8-a0d8-76db4966ac46/Tim_Ellis_Web.png"
 });
 
 function json(data, status = 200, headers = {}) {
