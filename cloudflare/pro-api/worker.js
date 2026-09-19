@@ -35,7 +35,7 @@ const TECH_FEED_FETCH_SIZE = 10;
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
 const TECH_AVATAR_CACHE_CONTROL = "public, max-age=21600, stale-while-revalidate=86400";
 const TECH_AVATAR_CACHE_VERSION = "v6-x-current-first";
-const TECH_AVATAR_POLICY = "x_current_original_then_proxy_then_verified_fallback";
+const TECH_AVATAR_POLICY = "x_original_then_verified_fallback";
 const TECH_AVATAR_REFRESH_X_MS = 72 * 60 * 60 * 1000;
 const TECH_AVATAR_REFRESH_PROXY_MS = 24 * 60 * 60 * 1000;
 const TECH_AVATAR_REFRESH_FALLBACK_MS = 6 * 60 * 60 * 1000;
