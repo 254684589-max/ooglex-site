@@ -59,10 +59,10 @@
     .category-btn span{margin-left:5px;color:var(--faint)}
     .leader-fold{appearance:none;flex:0 0 auto;margin-top:2px;border:1.5px solid #4f9bf5;background:#eaf3ff;color:#0b63ce;padding:9px 14px;border-radius:999px;cursor:pointer;font:800 13px/1 var(--mono);letter-spacing:.02em;white-space:nowrap;box-shadow:0 0 0 1px rgba(57,135,229,.08) inset}
     .leader-fold:hover{border-color:#1d7eea;background:#dcecff;color:#064f9f}
-    .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:1fr;gap:10px;width:100%;margin:0 0 10px}
+    .leaders{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:1fr;gap:10px;width:100%;margin:0 0 10px}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
-      padding:9px 10px;border-radius:11px;cursor:pointer;text-align:left;min-width:0;min-height:78px;transition:.18s ease;
+      padding:10px 11px;border-radius:11px;cursor:pointer;text-align:left;min-width:0;min-height:80px;transition:.18s ease;
     }
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
@@ -86,7 +86,7 @@
     .leader-en{display:block;margin-top:1px;font:9.5px/1.2 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .leader-role{margin-top:6px;color:var(--dim);font-size:9.5px;line-height:1.3;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .empty-search{grid-column:1/-1;padding:24px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--faint);font-size:13px}
-    .panel{display:grid;grid-template-columns:calc((100% - 20px)/3) minmax(0,1fr);gap:10px;align-items:start;width:100%;margin:0}
+    .panel{display:grid;grid-template-columns:calc(40% - 6px) minmax(0,1fr);gap:10px;align-items:start;width:100%;margin:0}
     .profile,.feed{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px}
     .profile{padding:16px;position:sticky;top:18px}
     .eyebrow{display:none}
@@ -436,7 +436,7 @@
   function collapsedLeaderLimit(){
     if(window.matchMedia("(max-width:560px)").matches)return 1;
     if(window.matchMedia("(max-width:980px)").matches)return 3;
-    return 6;
+    return 5;
   }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
