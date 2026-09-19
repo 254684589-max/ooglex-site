@@ -457,8 +457,8 @@
     "高通 · Qualcomm · 总裁兼 CEO": "Qualcomm · President & CEO",
     "黄仁勋": "Jensen Huang",
     "科技领袖实时动态流": "Tech Leaders Live Feed",
-    "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。郑翊、马斯克、黄仁勋与 Sam Altman 率先使用 Ooglex 原生动态流；其余账号暂时保留 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。":
-      "Public X posts from global corporate leaders, listed-company CEOs and founders. Free mode is hard-isolated from api.x.com: it never calls the X Developer API and consumes no X API credits. Zheng Yi, Elon Musk, Jensen Huang and Sam Altman are the first accounts on Ooglex's native live feed; remaining accounts temporarily retain the official X embed. Public profile data in free mode likewise comes only from public sources and cache.",
+    "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。原生免费动态流现已扩展到 24 位高关注科技领袖；其余账号暂时保留 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。":
+      "Public X posts from global corporate leaders, listed-company CEOs and founders. Free mode is hard-isolated from api.x.com: it never calls the X Developer API and consumes no X API credits. The native free feed has now expanded to 24 high-interest technology leaders; remaining accounts temporarily retain the official X embed. Public profile data in free mode likewise comes only from public sources and cache.",
     "● 免费模式默认开启": "● Free mode on by default",
     "X 官方 Embed · $0 API": "Official X embed · $0 API",
     "免费模式 · 0 X API Credits": "Free mode · 0 X API credits",
