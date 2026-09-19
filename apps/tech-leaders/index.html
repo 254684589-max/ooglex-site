@@ -51,12 +51,15 @@
     .mode:last-child{border-right:0}
     .mode.on{background:rgba(57,135,229,.12);color:var(--ink)}
     .mode.api{color:var(--warn)}
-    .category-bar{display:flex;gap:7px;overflow-x:auto;padding:0 0 12px;margin-top:2px;scrollbar-width:thin}
+    .catalog-toolbar{display:flex;align-items:flex-start;gap:8px;min-width:0}
+    .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;padding:0 0 10px;margin-top:2px;scrollbar-width:thin}
     .category-btn{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:8px 11px;border-radius:999px;cursor:pointer;font:11px/1 var(--mono);white-space:nowrap}
     .category-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
     .category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
     .category-btn span{margin-left:5px;color:var(--faint)}
-    .leaders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+    .leader-fold{appearance:none;flex:0 0 auto;margin-top:2px;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:8px 11px;border-radius:999px;cursor:pointer;font:11px/1 var(--mono);white-space:nowrap}
+    .leader-fold:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
+    .leaders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 8px}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
       padding:11px 13px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;min-height:92px;transition:.18s ease;
@@ -134,7 +137,7 @@
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
     @media(max-width:980px){.leaders{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
-    @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}}
+    @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.leader-fold{padding:8px 9px}}
     @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:1fr}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.leader{min-height:88px}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
@@ -167,7 +170,10 @@
         <button class="mode api" id="mode-api" type="button">数据模式 · Credits</button>
       </div>
     </section>
-    <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
+    <div class="catalog-toolbar">
+      <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
+      <button class="leader-fold" id="leader-fold" type="button" hidden>展开全部 ↓</button>
+    </div>
     <div class="leaders" id="leaders"></div>
 
     <section class="panel">
@@ -231,6 +237,8 @@
   var search=document.getElementById("leader-search");
   var catalogFact=document.getElementById("catalog-fact");
   var categoryBar=document.getElementById("category-bar");
+  var foldBtn=document.getElementById("leader-fold");
+  var isExpanded=false;
   var profileAvatar=document.getElementById("profile-avatar");
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var profileNameEn=document.getElementById("profile-name-en");
@@ -349,15 +357,28 @@
     }));
     categoryBar.innerHTML=buttons.join("");
   }
-  function renderLeaderButtons(query){
+  function collapsedLeaderLimit(){
+    if(window.matchMedia("(max-width:560px)").matches)return 1;
+    if(window.matchMedia("(max-width:980px)").matches)return 2;
+    return 3;
+  }
+    function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
     var filtered=people.filter(function(p){
       var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&(p.sp500_member||p.sp500_ceo))||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
       return categoryOk&&searchOk;
     });
-    var visible=filtered;
+    var limit=collapsedLeaderLimit();
+    var canFold=filtered.length>limit;
+    var visible=isExpanded?filtered:filtered.slice(0,limit);
+    if(!isExpanded&&current&&filtered.some(function(p){return p.id===current.id;})&&!visible.some(function(p){return p.id===current.id;})){
+      visible=visible.slice(0,Math.max(0,limit-1)).concat([current]);
+    }
+    foldBtn.hidden=!canFold;
+    if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开全部 ↓";
     if(!filtered.length){
+      foldBtn.hidden=true;
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
       return;
     }
@@ -605,10 +626,19 @@
     }
   },true);
   profileAvatar.addEventListener("error",function(){applyAvatarFallback(profileAvatar,current||{});});
-  search.addEventListener("input",function(){renderLeaderButtons(search.value);});
+  foldBtn.addEventListener("click",function(){isExpanded=!isExpanded;renderLeaderButtons(search.value);});
+  var lastFoldLimit=collapsedLeaderLimit();
+  window.addEventListener("resize",function(){
+    var nextLimit=collapsedLeaderLimit();
+    if(nextLimit===lastFoldLimit)return;
+    lastFoldLimit=nextLimit;
+    if(!isExpanded)renderLeaderButtons(search.value);
+  });
+  search.addEventListener("input",function(){isExpanded=false;renderLeaderButtons(search.value);});
   categoryBar.addEventListener("click",function(e){
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
+    isExpanded=false;
     var next=new URL(location.href);
     if(activeCategory==="全部")next.searchParams.delete("category");else next.searchParams.set("category",activeCategory);
     history.replaceState(null,"",next.toString());
