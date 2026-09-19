@@ -9,8 +9,12 @@ import urllib.parse
 import urllib.request
 
 
-def fetch_one(base_url, handle, retries):
-    url = f"{base_url.rstrip('/')}/v1/tech-leaders/avatar?handle={urllib.parse.quote(handle)}"
+def fetch_one(base_url, leader, retries):
+    handle = str(leader.get("handle") or "").lstrip("@")
+    name = str(leader.get("name_en") or leader.get("name") or "")
+    company = str(leader.get("company_en") or leader.get("company_zh") or "")
+    query = urllib.parse.urlencode({"handle": handle, "name": name, "company": company})
+    url = f"{base_url.rstrip('/')}/v1/tech-leaders/avatar?{query}"
     last = None
     for attempt in range(1, retries + 1):
         try:
@@ -47,12 +51,12 @@ def main():
         p for p in data.get("leaders", [])
         if (not p.get("admission_status") or p.get("admission_status") == "active") and p.get("handle")
     ]
-    handles = sorted({str(p["handle"]).lstrip("@") for p in leaders}, key=str.lower)
-    print(f"Warming {len(handles)} Tech Leaders avatars via {args.base_url}")
+    leaders = sorted(leaders, key=lambda p: str(p.get("handle") or "").lower())
+    print(f"Warming {len(leaders)} Tech Leaders avatars via {args.base_url}")
 
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
-        futs = [pool.submit(fetch_one, args.base_url, h, max(1, args.retries)) for h in handles]
+        futs = [pool.submit(fetch_one, args.base_url, p, max(1, args.retries)) for p in leaders]
         for fut in concurrent.futures.as_completed(futs):
             result = fut.result()
             results.append(result)
