@@ -461,8 +461,8 @@
     "免费模式展示 X 原文。如需简体中文，可使用 Microsoft Edge / Chrome 网页翻译，或沉浸式翻译等浏览器扩展。":
       "Free mode displays the original X posts. For Simplified Chinese, use Microsoft Edge or Chrome page translation, or a browser translation extension such as Immersive Translate.",
 
-    "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。原生免费动态流现已覆盖全部 105 个已确认个人 X 账号；5 个公司官号或特殊入口继续使用 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。":
-      "Public X posts from global corporate leaders, listed-company CEOs and founders. Free mode is hard-isolated from api.x.com: it never calls the X Developer API and consumes no X API credits. The native free feed now covers all 105 confirmed personal X accounts; five official-company or special-entry accounts continue to use the official X embed. Public profile data in free mode likewise comes only from public sources and cache.",
+    "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。":
+      "Public X posts from global corporate leaders, listed-company CEOs and founders.",
     "● 免费模式默认开启": "● Free mode on by default",
     "X 官方 Embed · $0 API": "Official X embed · $0 API",
     "免费模式 · 0 X API Credits": "Free mode · 0 X API credits",
