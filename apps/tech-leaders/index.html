@@ -159,7 +159,7 @@
     <section class="hero">
       <span class="kicker">Free Native Feed · Hard $0 X API</span>
       <h1>科技领袖实时动态流</h1>
-      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。郑翊、马斯克、黄仁勋与 Sam Altman 率先使用 Ooglex 原生动态流；其余账号暂时保留 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。</p>
+      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。原生免费动态流现已扩展到 24 位高关注科技领袖；其余账号暂时保留 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
         <span class="fact" id="source-badge">免费模式 · 0 X API Credits</span>
@@ -269,7 +269,7 @@
   var activeCategory=params.get("category")||"全部";
   var requested=params.get("leader");
   var MODE=params.get("mode")==="api"?"api":"free";
-  var FREE_NATIVE_IDS=new Set(["zhengyi-temp","musk","huang","altman"]);
+  var FREE_NATIVE_IDS=new Set(["zhengyi-temp","musk","huang","altman","su","pichai","nadella","cook","bezos","jassy","hassabis","amodei","suleyman","lecun","andrew-ng","fei-fei-li","sutskever","murati","brockman","srinivas","karpathy","benioff","dell","andreessen"]);
   function usesNativeFreeFeed(p){return MODE==="free"&&!!p&&FREE_NATIVE_IDS.has(p.id);}
 
   var DEBUG=params.get("debug")==="1";
