@@ -1,0 +1,61 @@
+name: Tech Leaders Avatar Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/tech-leaders/leaders.json'
+      - 'scripts/tech-leaders/sync_avatars.py'
+      - '.github/workflows/tech-leaders-avatar-audit.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tech-leaders-avatar-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Audit and synchronize avatars
+        run: |
+          python scripts/tech-leaders/sync_avatars.py \
+            --catalog apps/tech-leaders/leaders.json \
+            --base-url https://pro-api.ooglex.com \
+            --audit-out apps/tech-leaders/avatar-audit.json \
+            --write-catalog \
+            --workers 4 \
+            --retries 3
+
+      - name: Validate generated JSON
+        run: |
+          python -m json.tool apps/tech-leaders/leaders.json >/dev/null
+          python -m json.tool apps/tech-leaders/avatar-audit.json >/dev/null
+
+      - name: Commit audit metadata
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/tech-leaders/leaders.json apps/tech-leaders/avatar-audit.json
+          if git diff --cached --quiet; then
+            echo "No avatar metadata changes."
+            exit 0
+          fi
+          git commit -m "chore: sync Tech Leaders avatar audit [skip ci]"
+          git push
