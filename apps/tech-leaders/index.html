@@ -137,6 +137,7 @@
     .post-text{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.72}
     .post-media{display:grid;gap:8px;margin-top:12px}.post-media img{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
     .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
+    .post-source{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:rgba(57,135,229,.06);color:var(--blue);font:10px/1 var(--mono)}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
@@ -582,17 +583,20 @@
     setDiag("IFRAME",frame?"✓":"✕");
     if(diagState["FRAME LOAD"]!=="✓")setDiag("FRAME LOAD","✕");
     setDiag("RENDER","✕");
-    timeline.innerHTML=
+    timeline.innerHTML="";
+    renderLocalPosts(current,timeline);
+    timeline.insertAdjacentHTML("beforeend",
       '<div class="fallback"><b>当前网络无法完成 X 官方时间线渲染</b>'+
-      '<div>免费模式本身没有产生 X API 费用。可以重试，或直接打开该账号的 X 原主页。</div>'+
+      '<div>上方 Ooglex 站内动态仍可正常查看。可以重试，或直接打开该账号的 X 原主页。</div>'+
       '<div class="fallback-actions"><button type="button" data-retry-x="1">重新加载</button>'+
       '<a href="https://x.com/'+escapeHtml(current.handle)+'" target="_blank" rel="noopener noreferrer">打开 @'+escapeHtml(current.handle)+' ↗</a></div>'+
       '<div class="fallback-diag">'+diagHtml()+'</div>'+
-      '<small>诊断码：'+escapeHtml(reason)+' · 免费 Embed 依赖访问者网络连接 X。</small></div>';
+      '<small>诊断码：'+escapeHtml(reason)+' · 免费 Embed 依赖访问者网络连接 X。</small></div>');
     timeline.setAttribute("data-state","fallback");
   }
   function buildOfficialAnchor(){
     timeline.innerHTML="";
+    renderLocalPosts(current,timeline);
     var a=document.createElement("a");
     a.className="twitter-timeline";
     a.href="https://twitter.com/"+current.handle+"?ref_src=twsrc%5Etfw";
@@ -668,6 +672,39 @@
     });
     box.appendChild(document.createTextNode(text.slice(cursor)));
   }
+  function renderLocalPosts(p,target){
+    var posts=p&&Array.isArray(p.local_posts)?p.local_posts:[];
+    if(!posts.length)return false;
+    var wrap=document.createElement("div");wrap.className="api-feed local-feed";
+    posts.forEach(function(post){
+      var card=document.createElement("article");card.className="post-card";
+      var head=document.createElement("div");head.className="post-head";
+      var avatar=avatarUrl(p);
+      if(avatar){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(p.name_zh||p.zh||p.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,p||{});};img.src=avatar;head.appendChild(img);}
+      var who=document.createElement("div");who.className="post-who";
+      var nameLine=document.createElement("div");nameLine.className="post-name-line";
+      var b=document.createElement("b");b.textContent=p.name_zh||p.zh||p.name;nameLine.appendChild(b);
+      if(isVerifiedPerson(p)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
+      var h=document.createElement("span");h.textContent=p.handle?"@"+p.handle:"Ooglex";
+      who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
+      var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
+
+      var body=document.createElement("div");body.className="post-text";body.textContent=String(post.text||"");card.appendChild(body);
+
+      if(Array.isArray(post.media)&&post.media.length){
+        var media=document.createElement("div");media.className="post-media";
+        post.media.forEach(function(m){if(!m||!m.url)return;var im=document.createElement("img");im.loading="lazy";im.alt=m.alt||m.type||"media";im.src=m.url;media.appendChild(im);});
+        if(media.childNodes.length)card.appendChild(media);
+      }
+
+      var foot=document.createElement("div");foot.className="post-foot";
+      var source=document.createElement("span");source.className="post-source";source.textContent="Ooglex 站内发布";foot.appendChild(source);
+      card.appendChild(foot);wrap.appendChild(card);
+    });
+    target.appendChild(wrap);
+    return true;
+  }
+
   function renderApiFeed(feed){
     clearWatchers();rendered=true;xdiag.hidden=true;sourceBadge.textContent="Ooglex 后端 · X API";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
