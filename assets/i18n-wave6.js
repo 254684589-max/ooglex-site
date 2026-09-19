@@ -38,7 +38,7 @@
     "📚 参考与延伸阅读": "📚 References & Further Reading"
   };
 
-  /* --------------------------------------------------------- 科技领袖 X 动态
+  /* --------------------------------------------------------- 全球科技领袖动态流
      人名用榜单已有的英文原名，不另行音译；@handle、帖子正文与诊断码保持原文。 */
   var TECH_LEADERS = {
     /* V4.2（2026-09-19 上游改版）：人名、公司、职位与分类逐条取自
@@ -456,7 +456,7 @@
     "高通 · Qualcomm": "Qualcomm",
     "高通 · Qualcomm · 总裁兼 CEO": "Qualcomm · President & CEO",
     "黄仁勋": "Jensen Huang",
-    "全球公司领袖 X 动态": "Global Corporate Leaders on X",
+    "全球科技领袖动态流": "Global Tech Leaders Feed",
     "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；标普500决策者层严格区分 CEO、Founder 与公司官号。":
       "Public X posts from global corporate leaders, listed-company CEOs and founders. By default only the selected account is loaded on demand, with no call to the Ooglex X API, so it consumes no X API credits; within the S&P 500 decision-maker tier, CEO, founder and official company accounts are kept strictly distinct.",
     "● 免费模式默认开启": "● Free mode on by default",
@@ -488,7 +488,7 @@
     "搜索姓名、@账号、公司或股票代码…": "Search name, @handle, company or ticker…",
     "科技领袖分类筛选": "Leader category filter",
     "Ooglex 已确认本人公开账号": "Ooglex has verified this is the person's own public account",
-    "科技领袖 X 动态": "Tech Leaders on X",
+    "全球科技领袖动态流": "Global Tech Leaders Feed",
     "优先通过 Ooglex Cloudflare 后端读取科技领袖公开 X 原文并由本站自主渲染；X API 尚未配置时自动退回官方嵌入模式，不影响现有页面.":
       "Reads tech leaders' public X posts through the Ooglex Cloudflare backend and renders them on this site; when the X API is not configured it falls back to the official embed, leaving the existing page untouched.",
     "优先通过 Ooglex Cloudflare 后端读取科技领袖公开 X 原文并由本站自主渲染；X API 尚未配置时自动退回官方嵌入模式，不影响现有页面。":
