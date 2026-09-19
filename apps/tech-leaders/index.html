@@ -135,7 +135,7 @@
     .post-who{min-width:0}.post-who b{display:block;font-size:13px;line-height:1.25}.post-who span{display:block;margin-top:2px;font:10.5px/1.25 var(--mono);color:var(--faint)}
     .post-time{margin-left:auto;white-space:nowrap;font:10.5px/1.3 var(--mono);color:var(--faint)}
     .post-text{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.72}
-    .post-media{display:grid;gap:8px;margin-top:12px}.post-media img{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+    .post-media{display:grid;gap:8px;margin-top:12px}.post-media img,.post-media video{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}.post-media video{object-fit:contain}.post-media-item{min-width:0}.post-media-fallback{display:none;padding:16px;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}.post-media-fallback a{color:var(--blue)}
     .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
     .post-source{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:rgba(57,135,229,.06);color:var(--blue);font:10px/1 var(--mono)}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
@@ -719,6 +719,60 @@
     return true;
   }
 
+  function mediaProxyUrl(raw){
+    if(!raw)return "";
+    return API_BASE+"/v1/tech-leaders/media?url="+encodeURIComponent(raw);
+  }
+
+  function appendPostMedia(card,post){
+    var list=post&&Array.isArray(post.media)?post.media:[];
+    if(!list.length)return;
+    var media=document.createElement("div");media.className="post-media";
+    list.forEach(function(m){
+      if(!m)return;
+      var type=String(m.type||"photo").toLowerCase();
+      var imageRaw=m.url||m.preview_image_url||"";
+      var videoRaw=m.video_url||"";
+      if(!imageRaw&&!videoRaw)return;
+
+      var item=document.createElement("div");item.className="post-media-item";
+      var fallback=document.createElement("div");fallback.className="post-media-fallback";
+      fallback.innerHTML='媒体暂时无法加载 · <a target="_blank" rel="noopener noreferrer">查看原文 ↗</a>';
+      var fa=fallback.querySelector("a");fa.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));
+
+      function addImage(raw){
+        if(!raw)return false;
+        var im=document.createElement("img");
+        im.loading="lazy";im.decoding="async";im.referrerPolicy="no-referrer";
+        im.alt=m.alt_text||m.alt||type||"media";
+        var direct=raw,proxied=mediaProxyUrl(raw),triedDirect=false;
+        im.onerror=function(){
+          if(!triedDirect&&direct&&im.src!==direct){triedDirect=true;im.src=direct;return;}
+          im.style.display="none";fallback.style.display="block";
+        };
+        im.src=proxied||direct;item.appendChild(im);return true;
+      }
+
+      if((type==="video"||type==="animated_gif"||type==="gif")&&videoRaw){
+        var v=document.createElement("video");
+        v.playsInline=true;v.muted=true;v.preload="metadata";
+        if(type==="animated_gif"||type==="gif"){v.autoplay=true;v.loop=true;v.controls=false;}else{v.controls=true;}
+        if(imageRaw)v.poster=mediaProxyUrl(imageRaw);
+        var directVideo=videoRaw,proxiedVideo=mediaProxyUrl(videoRaw),triedDirectVideo=false;
+        v.onerror=function(){
+          if(!triedDirectVideo&&directVideo&&v.src!==directVideo){triedDirectVideo=true;v.src=directVideo;v.load();return;}
+          v.style.display="none";
+          if(!addImage(imageRaw))fallback.style.display="block";
+        };
+        v.src=proxiedVideo||directVideo;item.appendChild(v);
+      }else{
+        addImage(imageRaw||videoRaw);
+      }
+      item.appendChild(fallback);media.appendChild(item);
+    });
+    if(media.childNodes.length)card.appendChild(media);
+  }
+
   function renderFreeFeed(feed){
     clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
     sourceBadge.textContent="免费模式 · 0 X API Credits";
@@ -745,11 +799,7 @@
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
 
       var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
-      if(Array.isArray(post.media)&&post.media.length){
-        var media=document.createElement("div");media.className="post-media";
-        post.media.forEach(function(m){var src=m.url||m.preview_image_url;if(!src)return;var im=document.createElement("img");im.loading="lazy";im.alt=m.type||"media";im.src=src;media.appendChild(im);});
-        if(media.childNodes.length)card.appendChild(media);
-      }
+      appendPostMedia(card,post);
       var foot=document.createElement("div");foot.className="post-foot";
       var pm=post.metrics||{};
       ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
@@ -802,11 +852,7 @@
       var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
       var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
-      if(Array.isArray(post.media)&&post.media.length){
-        var media=document.createElement("div");media.className="post-media";
-        post.media.forEach(function(m){var src=m.url||m.preview_image_url;if(!src)return;var im=document.createElement("img");im.loading="lazy";im.alt=m.type||"media";im.src=src;media.appendChild(im);});
-        if(media.childNodes.length)card.appendChild(media);
-      }
+      appendPostMedia(card,post);
       var foot=document.createElement("div");foot.className="post-foot";var pm=post.metrics||{};
       ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
       var link=document.createElement("a");link.href=post.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);card.appendChild(foot);wrap.appendChild(card);
