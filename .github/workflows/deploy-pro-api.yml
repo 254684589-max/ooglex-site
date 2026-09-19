@@ -120,7 +120,7 @@ jobs:
         run: |
           set +e
           failed=0
-          for handle in ZLQ6600E elonmusk JensenHuang sama; do
+          for handle in ZLQ6600E elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook demishassabis karpathy; do
             tmp="$(mktemp)"
             code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$handle&limit=3")"
             body="$(cat "$tmp")"
