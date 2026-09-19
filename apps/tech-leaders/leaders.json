@@ -296,16 +296,19 @@
       "zh": "郑翊",
       "name_zh": "郑翊",
       "name_en": "Zheng Yi",
-      "role": "VC",
+      "role": "Independent Investor · VC",
       "chips": [
-        "VC"
+        "VC",
+        "AI",
+        "科技投资",
+        "全球市场"
       ],
-      "note": "临时加入的测试人物资料。",
-      "title": "郑翊 · 临时资料",
+      "note": "独立投资人，关注 AI、半导体、云计算、航天与全球科技产业趋势。",
+      "title": "郑翊 · VC / 科技投资",
       "category": "VC",
-      "company_zh": "",
-      "company_en": "",
-      "position_zh": "VC",
+      "company_zh": "独立投资 / VC",
+      "company_en": "Independent Investment / VC",
+      "position_zh": "投资人",
       "categories": [
         "VC"
       ],
@@ -316,12 +319,15 @@
       ],
       "sector": "Financials",
       "themes": [
-        "VC"
+        "VC",
+        "AI",
+        "科技投资",
+        "全球市场"
       ],
       "static_profile": true,
       "temporary": true,
       "static_avatar_url": "./assets/zhengyi-temp.svg",
-      "followers_count": 10000000,
+      "followers_count": 12000000,
       "following_count": 120,
       "avatar_audited_at": "2026-09-19T06:28:44Z",
       "avatar_source_type": "pending_review",
