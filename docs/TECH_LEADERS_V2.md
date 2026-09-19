@@ -153,3 +153,22 @@ Source priority: explicit official portrait; public X profile avatar via Unavata
 The frontend no longer hides a broken avatar image. If the remote avatar fails, the image is replaced with a local data-URI fallback, so cards, selected profile and API timeline always retain a visible avatar.
 
 The roster UI includes an avatar audit control showing configured/total avatars and a 待补 filter. Expected configured count in this release: 109/109.
+
+
+## V4.2 self-hosted avatar delivery — 2026-09-19
+
+V4.2 removes the browser's runtime dependency on Unavatar for leader portraits.
+
+Delivery path:
+
+1. Browser requests `https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=...`.
+2. The Ooglex Cloudflare Worker checks the private `PRO_DATA` R2 bucket.
+3. On cache miss, the Worker fetches the public X-profile portrait server-side (or an explicit official override such as Jensen Huang), validates that the response is an image and is within the size limit, then stores the bytes in R2.
+4. Subsequent visitors receive the portrait from Ooglex/R2 rather than directly from the third-party avatar host.
+5. If a portrait cannot be fetched, the page still falls back to the local initials/silhouette SVG.
+
+The catalog now points all 109 production leaders at the Ooglex avatar endpoint and records `avatar_status: "self_hosted"`.
+
+The PRO API deployment workflow runs `scripts/tech-leaders/warm_avatars.py` after deployment. The warmup checks every active leader and fails the workflow unless all avatar endpoints return a real image. This turns the old metadata-only 109/109 count into a deployment-time HTTP verification.
+
+The avatar endpoint is deliberately limited to valid X-style handles and only fetches from the fixed Unavatar X-profile endpoint plus explicit hard-coded official overrides; it does not accept arbitrary upstream URLs.
