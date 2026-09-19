@@ -35,10 +35,7 @@ const TECH_FEED_FETCH_SIZE = 10;
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
 const TECH_AVATAR_CACHE_CONTROL = "public, max-age=604800, stale-while-revalidate=2592000";
 const TECH_AVATAR_OVERRIDES = Object.freeze({
-  jensenhuang: "https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205",
-  rajaxg: "https://d1io3yog0oux5.cloudfront.net/_3ccf9cf30376bf77bbb27f582e51d00d/intel/news/193/1779/image.jpeg",
-  sytses: "https://res.cloudinary.com/about-gitlab-com/image/upload/v1755613184/abfz99qjcfcvo6em0sgm.webp",
-  svlevine: "https://vcresearch.berkeley.edu/sites/default/files/styles/faculty_photo_thumbnail/public/2023-04/sergey_levin_20200122_AVL_0050.jpg?h=726b1c9d&itok=Aa7Rxyv2"
+  jensenhuang: "https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205"
 });
 
 function json(data, status = 200, headers = {}) {
@@ -156,235 +153,7 @@ function normalizeXHandle(value) {
   return /^[A-Za-z0-9_]{1,15}$/.test(handle) ? handle : "";
 }
 
-function twitterProfileImageLarge(urlValue) {
-  try {
-    const u = new URL(urlValue);
-    u.pathname = u.pathname.replace(/_(normal|bigger|mini|200x200)\.(jpg|jpeg|png|webp)$/i, "_400x400.$2");
-    return u.toString();
-  } catch {
-    return String(urlValue || "");
-  }
-}
-
-function findProfileImageUrl(value, depth = 0) {
-  if (depth > 14 || value == null) return "";
-  if (typeof value === "string") {
-    return /^https:\/\/pbs\.twimg\.com\/profile_images\//i.test(value)
-      ? twitterProfileImageLarge(value)
-      : "";
-  }
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const found = findProfileImageUrl(item, depth + 1);
-      if (found) return found;
-    }
-    return "";
-  }
-  if (typeof value === "object") {
-    const preferred = Object.keys(value).filter((key) => /profile.*image|image.*profile|avatar/i.test(key));
-    for (const key of preferred) {
-      const found = findProfileImageUrl(value[key], depth + 1);
-      if (found) return found;
-    }
-    for (const key of Object.keys(value)) {
-      const found = findProfileImageUrl(value[key], depth + 1);
-      if (found) return found;
-    }
-  }
-  return "";
-}
-
-async function fetchAvatarImage(url, source) {
-  const res = await fetch(url, {
-    redirect: "follow",
-    headers: {
-      accept: "image/avif,image/webp,image/png,image/jpeg,image/*,*/*;q=0.8",
-      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/4.2)"
-    }
-  });
-  if (!res.ok) return { ok: false, status: res.status, source };
-  const contentType = String(res.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
-  if (!contentType.startsWith("image/")) return { ok: false, status: res.status, source };
-  const bytes = await res.arrayBuffer();
-  if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) return { ok: false, status: 502, source };
-  return { ok: true, bytes, contentType, source };
-}
-
-async function fetchAvatarViaSyndication(handle) {
-  const url = `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}`;
-  const res = await fetch(url, {
-    redirect: "follow",
-    headers: {
-      accept: "text/html,application/xhtml+xml",
-      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/4.2)"
-    }
-  });
-  if (!res.ok) return { ok: false, status: res.status, source: "x_syndication" };
-  const html = await res.text();
-  let imageUrl = "";
-  const next = html.match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
-  if (next && next[1]) {
-    try { imageUrl = findProfileImageUrl(JSON.parse(next[1])); } catch {}
-  }
-  if (!imageUrl) {
-    const normalized = html.replace(/\\u002F/gi, "/").replace(/\\\//g, "/").replace(/&amp;/g, "&");
-    const m = normalized.match(/https:\/\/pbs\.twimg\.com\/profile_images\/[^"'<>\s\\]+/i);
-    if (m) imageUrl = twitterProfileImageLarge(m[0]);
-  }
-  if (!imageUrl) return { ok: false, status: 404, source: "x_syndication" };
-  return fetchAvatarImage(imageUrl, "x_syndication");
-}
-
-function normalizeWikiText(value) {
-  return String(value || "")
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function wikiTitleMatchesPerson(title, name) {
-  const t = normalizeWikiText(title);
-  const n = normalizeWikiText(name);
-  if (!t || !n) return false;
-  const tokens = n.split(/\s+/).filter(Boolean);
-  if (!tokens.length) return false;
-  const suffixes = new Set(["jr", "sr", "ii", "iii", "iv"]);
-  let key = tokens[tokens.length - 1];
-  if (suffixes.has(key) && tokens.length > 1) key = tokens[tokens.length - 2];
-  if (key.length < 2) return false;
-  return t.split(/\s+/).includes(key);
-}
-
-async function fetchAvatarViaWikipedia(name, company) {
-  const cleanName = String(name || "").trim().slice(0, 120);
-  const cleanCompany = String(company || "").trim().slice(0, 120);
-  if (!cleanName) return { ok: false, status: 400, source: "wikipedia" };
-
-  const search = [cleanName, cleanCompany].filter(Boolean).join(" ");
-  const params = new URLSearchParams({
-    action: "query",
-    generator: "search",
-    gsrsearch: search,
-    gsrnamespace: "0",
-    gsrlimit: "5",
-    prop: "pageimages",
-    pithumbsize: "500",
-    pilimit: "5",
-    format: "json",
-    formatversion: "2",
-    origin: "*"
-  });
-
-  const res = await fetch(`https://en.wikipedia.org/w/api.php?${params.toString()}`, {
-    headers: {
-      accept: "application/json",
-      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2 (https://ooglex.com)"
-    }
-  });
-  if (!res.ok) return { ok: false, status: res.status, source: "wikipedia" };
-
-  let payload = null;
-  try { payload = await res.json(); } catch {}
-  const pages = payload && payload.query && Array.isArray(payload.query.pages)
-    ? payload.query.pages
-    : [];
-
-  for (const page of pages) {
-    if (!page || !page.thumbnail || !page.thumbnail.source) continue;
-    if (!wikiTitleMatchesPerson(page.title, cleanName)) continue;
-    const image = await fetchAvatarImage(page.thumbnail.source, "wikipedia");
-    if (image.ok) return image;
-  }
-  return { ok: false, status: 404, source: "wikipedia" };
-}
-
-function commonsTitleMatchesPerson(title, name) {
-  const t = normalizeWikiText(title);
-  const n = normalizeWikiText(name);
-  const tokens = n.split(/\s+/).filter((x) => x.length >= 2);
-  if (!t || tokens.length < 2) return false;
-  const first = tokens[0];
-  const last = tokens[tokens.length - 1];
-  return t.includes(first) && t.includes(last);
-}
-
-async function fetchAvatarViaCommons(name) {
-  const cleanName = String(name || "").trim().slice(0, 120);
-  if (!cleanName) return { ok: false, status: 400, source: "wikimedia_commons" };
-
-  const params = new URLSearchParams({
-    action: "query",
-    generator: "search",
-    gsrsearch: cleanName,
-    gsrnamespace: "6",
-    gsrlimit: "12",
-    prop: "imageinfo",
-    iiprop: "url|mime",
-    iiurlwidth: "500",
-    iilimit: "1",
-    format: "json",
-    formatversion: "2",
-    origin: "*"
-  });
-  const res = await fetch(`https://commons.wikimedia.org/w/api.php?${params.toString()}`, {
-    headers: {
-      accept: "application/json",
-      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2 (https://ooglex.com)"
-    }
-  });
-  if (!res.ok) return { ok: false, status: res.status, source: "wikimedia_commons" };
-
-  let payload = null;
-  try { payload = await res.json(); } catch {}
-  const pages = payload && payload.query && Array.isArray(payload.query.pages)
-    ? payload.query.pages
-    : [];
-
-  for (const page of pages) {
-    if (!page || !commonsTitleMatchesPerson(page.title, cleanName)) continue;
-    const info = Array.isArray(page.imageinfo) ? page.imageinfo[0] : null;
-    if (!info) continue;
-    const src = info.thumburl || info.url || "";
-    const mime = String(info.mime || "").toLowerCase();
-    if (!src || (mime && !mime.startsWith("image/"))) continue;
-    const image = await fetchAvatarImage(src, "wikimedia_commons");
-    if (image.ok) return image;
-  }
-  return { ok: false, status: 404, source: "wikimedia_commons" };
-}
-
-async function resolveTechLeaderAvatar(handle, name, company) {
-  const lower = handle.toLowerCase();
-
-  if (TECH_AVATAR_OVERRIDES[lower]) {
-    const official = await fetchAvatarImage(TECH_AVATAR_OVERRIDES[lower], "official_override");
-    if (official.ok) return official;
-  }
-
-  const legacyProfile = await fetchAvatarImage(
-    `https://twitter.com/${encodeURIComponent(handle)}/profile_image?size=original`,
-    "x_profile_redirect"
-  );
-  if (legacyProfile.ok) return legacyProfile;
-
-  const syndicated = await fetchAvatarViaSyndication(handle);
-  if (syndicated.ok) return syndicated;
-
-  const wikipedia = await fetchAvatarViaWikipedia(name, company);
-  if (wikipedia.ok) return wikipedia;
-
-  const commons = await fetchAvatarViaCommons(name);
-  if (commons.ok) return commons;
-
-  return fetchAvatarImage(
-    `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
-    "unavatar_x"
-  );
-}
-
-async function getTechLeaderAvatar(handle, name, company, env) {
+async function getTechLeaderAvatar(handle, env) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
     const err = new Error("invalid_avatar_handle");
@@ -409,32 +178,59 @@ async function getTechLeaderAvatar(handle, name, company, env) {
     return { body: cached.body, headers };
   }
 
-  const resolved = await resolveTechLeaderAvatar(normalized, name, company);
-  if (!resolved.ok) {
+  const lower = normalized.toLowerCase();
+  const upstreamUrl = TECH_AVATAR_OVERRIDES[lower]
+    || `https://unavatar.io/x/${encodeURIComponent(normalized)}?fallback=false`;
+  const upstream = await fetch(upstreamUrl, {
+    redirect: "follow",
+    headers: {
+      accept: "image/avif,image/webp,image/png,image/jpeg,image/*,*/*;q=0.8",
+      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2"
+    }
+  });
+
+  if (!upstream.ok) {
     const err = new Error("avatar_upstream_unavailable");
     err.code = "avatar_upstream_unavailable";
-    err.status = resolved.status || 502;
+    err.status = upstream.status || 502;
     throw err;
   }
 
-  await env.PRO_DATA.put(key, resolved.bytes, {
+  const contentType = String(upstream.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (!contentType.startsWith("image/")) {
+    const err = new Error("avatar_upstream_not_image");
+    err.code = "avatar_upstream_not_image";
+    err.status = 502;
+    throw err;
+  }
+
+  const bytes = await upstream.arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) {
+    const err = new Error("avatar_upstream_invalid_size");
+    err.code = "avatar_upstream_invalid_size";
+    err.status = 502;
+    throw err;
+  }
+
+  const source = TECH_AVATAR_OVERRIDES[lower] ? "official_override" : "x_profile";
+  await env.PRO_DATA.put(key, bytes, {
     httpMetadata: {
-      contentType: resolved.contentType,
+      contentType,
       cacheControl: TECH_AVATAR_CACHE_CONTROL
     },
     customMetadata: {
       handle: normalized,
-      source: resolved.source,
+      source,
       fetched_at: new Date().toISOString()
     }
   });
 
   return {
-    body: resolved.bytes,
+    body: bytes,
     headers: new Headers({
-      "content-type": resolved.contentType,
+      "content-type": contentType,
       "cache-control": TECH_AVATAR_CACHE_CONTROL,
-      "x-ooglex-avatar-source": resolved.source + "-r2",
+      "x-ooglex-avatar-source": "upstream-r2",
       "x-ooglex-avatar-handle": normalized
     })
   };
@@ -664,11 +460,9 @@ export default {
 
     if (url.pathname === "/v1/tech-leaders/avatar") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
-      const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
-      const company = String(url.searchParams.get("company") || "").trim().slice(0, 120);
       if (!handle) return json({ error: "invalid_avatar_handle" }, 400, cors);
       try {
-        const avatar = await getTechLeaderAvatar(handle, name, company, env);
+        const avatar = await getTechLeaderAvatar(handle, env);
         const headers = new Headers(cors);
         avatar.headers.forEach((value, name) => headers.set(name, value));
         return new Response(avatar.body, { status: 200, headers });
