@@ -1,16 +1,16 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-19T05:15:44Z",
+  "checked_at": "2026-09-19T05:18:16Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 109,
-  "usable": 107,
+  "usable": 109,
   "x_original": 0,
   "x_original_proxy": 23,
-  "official_fallback": 4,
+  "official_fallback": 6,
   "public_fallback": 80,
-  "fallback": 84,
-  "pending_review": 2,
+  "fallback": 86,
+  "pending_review": 0,
   "missing_handle": 0,
   "invalid_handle": 0,
   "items": [
@@ -447,6 +447,20 @@
       "response_handle": "AravSrinivas",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AravSrinivas&name=Aravind+Srinivas&company=Perplexity",
       "origin_url": "https://x.com/AravSrinivas"
+    },
+    {
+      "id": "selipsky",
+      "name": "Adam Selipsky",
+      "company": "Helix Digital Infrastructure",
+      "handle": "aselipsky",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "official_fallback",
+      "source_transport": "official_override-r2",
+      "content_type": "image/webp",
+      "response_handle": "aselipsky",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam+Selipsky&company=Helix+Digital+Infrastructure",
+      "origin_url": "https://x.com/aselipsky"
     },
     {
       "id": "fouquet",
@@ -967,6 +981,20 @@
       "origin_url": "https://x.com/LisaSu"
     },
     {
+      "id": "marvin-ellison",
+      "name": "Marvin Ellison",
+      "company": "Lowe's",
+      "handle": "MarvinREllison",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "official_fallback",
+      "source_transport": "official_override-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "MarvinREllison",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison&name=Marvin+Ellison&company=Lowe%27s",
+      "origin_url": "https://x.com/MarvinREllison"
+    },
+    {
       "id": "son",
       "name": "Masayoshi Son",
       "company": "SoftBank Group",
@@ -1380,7 +1408,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "official_fallback",
-      "source_transport": "official_override-r2",
+      "source_transport": "official_override-r2-cache",
       "content_type": "image/webp",
       "response_handle": "thetimellis",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=thetimellis&name=Tim+Ellis&company=Relativity+Space",
@@ -1511,30 +1539,6 @@
       "response_handle": "zoink",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan+Field&company=Figma",
       "origin_url": "https://x.com/zoink"
-    },
-    {
-      "id": "selipsky",
-      "name": "Adam Selipsky",
-      "company": "Helix Digital Infrastructure",
-      "handle": "aselipsky",
-      "ok": false,
-      "status": "pending_review",
-      "source_type": "pending_review",
-      "reason": "http_404:Not Found",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam+Selipsky&company=Helix+Digital+Infrastructure",
-      "origin_url": "https://x.com/aselipsky"
-    },
-    {
-      "id": "marvin-ellison",
-      "name": "Marvin Ellison",
-      "company": "Lowe's",
-      "handle": "MarvinREllison",
-      "ok": false,
-      "status": "pending_review",
-      "source_type": "pending_review",
-      "reason": "http_404:Not Found",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison&name=Marvin+Ellison&company=Lowe%27s",
-      "origin_url": "https://x.com/MarvinREllison"
     }
   ]
 }
