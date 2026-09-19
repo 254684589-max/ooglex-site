@@ -368,7 +368,13 @@
     var seq=++profileRequestSeq;
     resetPublicProfile();
     if(p&&p.static_profile){
-      profileWeb.style.display="none";
+      if(p.website_url){
+        profileWeb.href=p.website_url;
+        profileWeb.textContent=p.website_label||p.website_url.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"");
+        profileWeb.style.display="block";
+      }else{
+        profileWeb.style.display="none";
+      }
       profileJoined.style.display="none";
       profileFollowing.textContent=formatFollowingCount(p.following_count);
       profileFollowers.textContent=formatFollowerCount(p.followers_count);
