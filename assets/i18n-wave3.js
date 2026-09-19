@@ -49,6 +49,9 @@
     /* 资产名、品类名与计量口径全部逐条取自 apps/asset-ranking/data.json 的
        `nameEn` / `en` / `unit` 字段（数据里本来就中英双写），生成而非手译，
        不会和数据源分叉。既有词条在后面覆盖同名键，保持原有措辞优先。 */
+    /* 上游新增标的（合并 main 后补齐，仍取自 data.json 的 nameEn） */
+    "康明斯": "Cummins",
+    "阿波罗全球管理": "Apollo Global Management",
     "全球房地产": "Real Estate",
     "石油": "Crude Oil",
     "煤炭": "Coal",

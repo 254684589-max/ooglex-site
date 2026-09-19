@@ -145,8 +145,6 @@
     "服务业": "Services",
     "建筑工程": "Construction & Engineering",
     "页": "Page",
-    "数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。榜单覆盖全部亿万富豪（净值 ≥ 10 亿美元），其中 2883 人有中文名对照，其余显示福布斯英文原名。仅供参考，不构成任何建议。":
-      "Data comes from the Forbes real-time billionaire ranking and refreshes daily. Net worth is in billions of U.S. dollars (B), and the daily change is an estimate against the previous reference point. The ranking covers every billionaire (net worth of at least US$1 billion); 2,883 of them have a verified Chinese name, and the rest display the Forbes original. For reference only; not advice.",
     "🏆 福布斯亿万富翁实时排行榜": "🏆 Forbes Real-Time Billionaires",
     "全球全部亿万富豪 · 身价与当日变动 · 每日自动更新": "All global billionaires · Net worth and daily moves · Updated daily",
     "按身价": "Net Worth",
@@ -200,6 +198,13 @@
     "MOVE 债券波动率": "MOVE Bond Volatility",
     "SKEW 偏度": "SKEW Index",
     "VVIX 波动之波动": "VVIX (volatility of volatility)",
+    /* 波动率全景新增的期限结构行（build_radar.py 的 VOL_SYMBOLS 与 VIX/VIX3M 比值） */
+    "VIX 9 日": "VIX 9-Day",
+    "VIX 3 月": "VIX 3-Month",
+    "VIX 6 月": "VIX 6-Month",
+    "VIX/VIX3M 期限结构": "VIX/VIX3M term structure",
+    "倒挂": "Inverted",
+    "正向": "Normal",
     /* 时光机上的危机事件标签 */
     "2008 全球金融危机": "2008 Global Financial Crisis",
     "2011 欧债·美债降级": "2011 Euro Debt Crisis · U.S. Downgrade",
@@ -1207,6 +1212,12 @@
       if ((m = /^第 ([\d,]+) – ([\d,]+) 名 · 共 ([\d,]+) 人$/.exec(s))) return "Ranks " + m[1] + "–" + m[2] + " · " + m[3] + " people";
       if ((m = /^第 ([\d,]+) 页$/.exec(s))) return "Page " + m[1];
       if ((m = /^([\d,]+) 位亿万富豪 总财富$/.exec(s))) return m[1] + " billionaires · Total wealth";
+      /* 「其中 2887 人有中文名对照」里的人数随每日取数变化，死词条会一夜失效，
+         改成两端锚定的规则，数字原样带回（补上千分位）。 */
+      if ((m = /^数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。榜单覆盖全部亿万富豪（净值 ≥ 10 亿美元），其中 (\d+) 人有中文名对照，其余显示福布斯英文原名。仅供参考，不构成任何建议。$/.exec(s))) {
+        return "Data comes from the Forbes real-time billionaire ranking and refreshes daily. Net worth is in billions of U.S. dollars (B), and the daily change is an estimate against the previous reference point. The ranking covers every billionaire (net worth of at least US$1 billion); " +
+          m[1].replace(/\B(?=(\d{3})+$)/g, ",") + " of them have a verified Chinese name, and the rest display the Forbes original. For reference only; not advice.";
+      }
       if ((m = /^▲ 今日领涨 (.+)$/.exec(s))) return "▲ Top gainer today " + m[1];
       if ((m = /^▼ 今日领跌 (.+)$/.exec(s))) return "▼ Top decliner today " + m[1];
       // 「🇺🇸美国 · Tesla, SpaceX · 科技 · 55岁」：国旗、公司名与年龄原样带回，
@@ -1429,7 +1440,11 @@
           (m[3] ? ", CNH−CNY basis " + m[3] + " pips" : "");
       }
       if ((m = /^等权\/市值加权广度：存量近两年 (\S+?)% 分位，近 13 周(.+)$/.exec(s))) {
-        return "Equal- vs. cap-weighted breadth: " + m[1] + "th percentile of the past two years, " + m[2] + " over 13 weeks";
+        /* 尾巴只有「走扩」「更集中」两种取值（build_radar.py），认不出就整句不翻，
+           不把中文原样塞进英文句子里。 */
+        var brd = { "走扩": "broadening", "更集中": "more concentrated" }[m[2]];
+        if (!brd) return null;
+        return "Equal- vs. cap-weighted breadth: " + m[1] + "th percentile of the past two years, " + brd + " over 13 weeks";
       }
       if ((m = /^(.+?)走弱压制风险偏好；(.+?)相对稳健，(.+?)。$/.exec(s))) {
         return sig(m[1]) + " weakening weighs on risk appetite, while " + sig(m[2]) +
@@ -1518,9 +1533,13 @@
       });
       document.querySelectorAll(".lead").forEach(function (el) {
         var mm = /^([\u25B2\u25BC] .+?) ([\u4e00-\u9fff\u00B7]+) (.+)$/.exec(el.textContent.trim());
-        if (!mm || !zhToEn[mm[2]]) return;
+        if (!mm) return;
+        /* 领涨/领跌的人常常不在当前这一页的榜单行里（榜单按身价排，KPI 按当日变动排），
+           所以优先读 app.js 从 data.json 带过来的 data-en，取不到再退回本页的中英对照。 */
+        var en = el.getAttribute("data-en") || zhToEn[mm[2]];
+        if (!en) return;
         if (!htmlOrig.has(el)) { htmlOrig.set(el, el.innerHTML); htmlTouched.push(el); }
-        el.textContent = mm[1] + " " + zhToEn[mm[2]] + " " + mm[3];
+        el.textContent = mm[1] + " " + en + " " + mm[3];
       });
     }
     if (path.indexOf("/apps/macro-radar/") === 0) {

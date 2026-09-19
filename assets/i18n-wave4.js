@@ -366,10 +366,6 @@
     "使用条款": "Terms",
     "Ooglex · 标普500热力图 · 数据每日自动更新，非实时行情 · 仅供参考，非投资建议 ·":
       "Ooglex · S&P 500 Heatmap · Refreshed daily, not live quotes · For reference only, not investment advice ·",
-    "标普500成分股的当日市值与涨跌，与全球公司榜同一次取数、同一来源。成分名单取自 datahub 公开数据集，站内按 Yahoo 的代码写法归一化后匹配；名单里站内没有行情的成分股逐个列在 missing 里，不用别的公司顶替、也不静默丢弃。市值为「最新价 × 流通股数」，与指数公司自己按自由流通量加权的口径不同，因此这里只用于相对大小的可视化，不是指数权重。名单共 503 个成分代码，站内当日取到行情的 495 家；未覆盖 8 家：ECHO、FERG、FOX、GOOG、HONA、NWS、RDDT、VMRK。":
-      "Market cap and the daily move for S&P 500 constituents, from the same fetch and the same source as the Global Companies board. The constituent list comes from a public datahub dataset and is matched after normalising tickers to Yahoo's spelling; constituents with no on-site quote are listed individually under “missing” rather than substituted with another company or silently dropped. Market cap here is latest price × shares outstanding, which differs from the index provider's own free-float weighting, so it is used only to size the tiles and is not an index weight. The list holds 503 tickers; 495 had quotes on the day and 8 did not: ECHO, FERG, FOX, GOOG, HONA, NWS, RDDT, VMRK.",
-    "纵向是当日涨跌，横向按行业分列，气泡面积正比于市值；共画出 300 家。纵轴按第2–98百分位取范围（-10% ~ 15%）而不是按极值——按极值定范围会被个别极端值撑开，其余几百家挤成一条线。有 3 家的真实涨跌在这个范围之外，贴边显示并描了虚线圈，真实数值见悬浮读数与数据表。":
-      "The vertical axis is the daily change, the horizontal axis splits by sector, and bubble area is proportional to market cap; 300 companies are drawn. The vertical range is the 2nd–98th percentile (−10% to 15%) rather than the extremes — using the extremes lets a couple of outliers stretch the axis and squash the other few hundred into a line. Three companies fall outside that range; they are pinned to the edge with a dashed outline, and their true values are in the hover readout and the data table.",
     "全球市场行情": "Global Markets",
     "全球公司榜": "Global Companies",
     "金融终端": "Finance Terminal",
@@ -1628,7 +1624,9 @@
     "访问日志与分析：": "Access logs and analytics:",
     "第三方数据展示：": "Third-party data display:",
     "X 第三方嵌入：": "X third-party embeds:",
+    "科技领袖头像：": "Tech-leader avatars:",
     "「科技领袖 X 动态」使用 X 官方网页嵌入组件直接展示公开时间线。加载该组件时，X 可能接收你访问的网页、IP 地址、浏览器类型、操作系统及 Cookie 等信息；相关处理受 X 自身隐私政策与 X for Websites 规则约束。若当前网络无法连接 X，本页会降级为原主页跳转入口。": "Tech Leaders on X uses X's official web embed to display public timelines directly. When the component loads, X may receive the page you visited, IP address, browser type, operating system and cookie information. That processing is governed by X's own privacy policy and X for Websites rules. If X is unreachable on the current network, the page falls back to a direct profile link.",
+    "「科技领袖 X 动态」可能通过 Unavatar 获取公开 X 头像。加载头像时，该第三方服务可能接收必要的网络请求信息（如 IP 地址、浏览器请求头和所请求的公开账号标识）。头像服务不可用时，本站会回退为本地生成的姓名首字母头像。": "Tech Leaders on X may fetch public X avatars through Unavatar. When an avatar loads, that third-party service may receive the network request information it needs (such as IP address, browser request headers and the requested public account identifier). If the avatar service is unavailable, the site falls back to locally generated initials avatars.",
     "3. 广告与 Cookie（Google AdSense）": "3. Advertising and Cookies (Google AdSense)",
     /* 整段那几条只在段里没有 <strong>/<a> 时成立；实际 DOM 是拆开的，按节点各配一条。 */
     "本站是一个托管于 GitHub Pages 的静态网站，聚合实时金融数据、实用工具与网页小游戏。本站":
@@ -1762,6 +1760,24 @@
         var unit = { "万亿": "T", "亿": "00M", "万": "0K" }[m[6]];
         return (dict[m[1]] || m[1]) + " (" + m[2] + "), " + (dict[m[3]] || m[3]) +
           (m[4] ? ", price " + m[4] : "") + ", market cap $" + m[5] + unit + ", today " + m[7];
+      }
+      /* 方法学长句结尾的成分代码数、取到行情的家数与未覆盖名单每天都会变，同样改成规则；
+         代码表原样带回（只把顿号换成英文逗号），不改动任何一个代码。 */
+      if ((m = /^标普500成分股的当日市值与涨跌，与全球公司榜同一次取数、同一来源。成分名单取自 datahub 公开数据集，站内按 Yahoo 的代码写法归一化后匹配；名单里站内没有行情的成分股逐个列在 missing 里，不用别的公司顶替、也不静默丢弃。市值为「最新价 × 流通股数」，与指数公司自己按自由流通量加权的口径不同，因此这里只用于相对大小的可视化，不是指数权重。名单共 ([\d,]+) 个成分代码，站内当日取到行情的 ([\d,]+) 家；未覆盖 ([\d,]+) 家：(.+?)。$/.exec(s))) {
+        return "Market cap and the daily move for S&P 500 constituents, from the same fetch and the same source as the Global Companies board. " +
+          "The constituent list comes from a public datahub dataset and is matched after normalising tickers to Yahoo's spelling; " +
+          "constituents with no on-site quote are listed individually under \u201cmissing\u201d rather than substituted with another company or silently dropped. " +
+          "Market cap here is latest price \u00d7 shares outstanding, which differs from the index provider's own free-float weighting, " +
+          "so it is used only to size the tiles and is not an index weight. The list holds " + m[1] + " tickers; " + m[2] +
+          " had quotes on the day and " + m[3] + " did not: " + m[4].replace(/\u3001/g, ", ") + ".";
+      }
+      /* 气泡图说明里的家数、百分位区间与越界家数每天取数都会变，死词条一夜就失效，
+         改成两端锚定的规则：数字原样带回，任何一段对不上就整句放弃、保留中文。 */
+      if ((m = /^纵向是当日涨跌，横向按行业分列，气泡面积正比于市值；共画出 ([\d,]+) 家。纵轴按第2–98百分位取范围（(.+?)）而不是按极值——按极值定范围会被个别极端值撑开，其余几百家挤成一条线。有 ([\d,]+) 家的真实涨跌在这个范围之外，贴边显示并描了虚线圈，真实数值见悬浮读数与数据表。$/.exec(s))) {
+        return "The vertical axis is the daily change, the horizontal axis splits by sector, and bubble area is proportional to market cap; " +
+          m[1] + " companies are drawn. The vertical range is the 2nd–98th percentile (" + m[2].replace(/-/g, "\u2212") +
+          ") rather than the extremes — using the extremes lets a couple of outliers stretch the axis and squash the other few hundred into a line. " +
+          m[3] + " companies fall outside that range; they are pinned to the edge with a dashed outline, and their true values are in the hover readout and the data table.";
       }
       if (s === "标普500成分股气泡图：横向按行业分列，纵向是当日，气泡面积正比于市值，共 300 家。完整读数见下方数据表。") {
         return "Bubble chart of S&P 500 constituents: split by sector horizontally, daily change vertically, bubble area proportional to market cap, 300 companies in all. Full readings are in the data table below.";

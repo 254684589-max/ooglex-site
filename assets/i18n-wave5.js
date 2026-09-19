@@ -216,23 +216,15 @@
     "Yahoo Finance · 约30分钟 · 非实时": "Yahoo Finance · about 30 minutes · not real time",
     "FRED · EIA · Yahoo Finance · 交易所行情 · 日频": "FRED · EIA · Yahoo Finance · exchange quotes · daily",
     "FRED / U.S. Treasury H.15 · 日频": "FRED / U.S. Treasury H.15 · daily",
+    /* 取数失败时行上会挂一个「沿用上次」的徽标与悬浮说明（index.html / security.html）。
+       这是状态提示不是数据，必须跟着界面走英文，否则英文读者看不出这一行是旧值。 */
+    "沿用上次": "Carried over",
+    "本轮取数失败，这一行是上一轮的值（上游标 stale）":
+      "This fetch failed; the row shows the previous value (flagged stale upstream)",
+    "本轮未取到新值，沿用上次快照": "No new value this round; the previous snapshot is carried over",
     "来源 宏观风险监测的异动判定 · 阈值与口径见 MACR":
       "Source: the mutation detection of the Macro Risk Monitor · thresholds and definitions are under MACR",
-    "以 德国10年期国债 为基准，单位基点（1bp = 0.01 个百分点）。只在与基准同一个数据日（2026-08-01）的国家之间算 —— 基准取这个月的观测、对手取另一个月的观测，两者之差不是利差，是两个时点的混合。数据日与基准不同、已摘出 4 条（智利10年期国债 2026-07-01、葡萄牙10年期国债 2026-07-01、波兰10年期国债 2026-07-01、欧元区AAA国债曲线10年 2026-09-16）。 收益率是水平值不是价格：差值只报基点，不报百分比。":
-      "Benchmarked against the German 10-year government bond, in basis points (1bp = 0.01 percentage points). Spreads are computed only between countries sharing the benchmark's data date (2026-08-01) — taking the benchmark from one month and the counterpart from another does not give a spread, it gives a blend of two points in time. Four entries whose data date differs from the benchmark have been pulled out (Chile 10-year 2026-07-01, Portugal 10-year 2026-07-01, Poland 10-year 2026-07-01, Euro Area AAA government curve 10-year 2026-09-16). Yields are levels, not prices: differences are reported in basis points only, never as percentages.",
-    "布油近1个月 +14.36% · WTI +19.17% · 按 −15% ~ +15% 线性映射，超出取端点":
-      "Brent over the past month +14.36% · WTI +19.17% · mapped linearly over −15% to +15%, clipped at the endpoints",
-    "黄金 -0.91% − 标普500 -0.70% = -0.21个百分点 · 按 −15 ~ +15 个百分点线性映射，超出取端点":
-      "Gold −0.91% − S&P 500 −0.70% = −0.21 percentage points · mapped linearly over −15 to +15 percentage points, clipped at the endpoints",
-    "宏观风险监测波动率信号 81/100（支持） · 风险方向 = 100 − 信号分，与首屏风险雷达同一取向":
-      "Macro Risk Monitor volatility signal 81/100 (supportive) · risk direction = 100 − the signal score, the same orientation as the risk radar on the home screen",
-    "OFR FSI -2.24，处于站内 261 个观测的第 65 百分位 · 百分位取自该文件自己保存的观测窗口，不设人为阈值":
-      "OFR FSI −2.24, at the 65th percentile of the 261 observations held on site · the percentile comes from the observation window the file itself keeps; no threshold is imposed",
     "收益率曲线周环比 -12bp（走平）": "Yield curve, week over week −12bp (flattening)",
-    "广度代理处于近两年 9% 分位，涨势集中":
-      "The breadth proxy sits at the 9th percentile of the past two years, with gains concentrated",
-    "高收益/投资级比价周环比 -0.6%，信用走弱":
-      "High-yield vs. investment-grade ratio, week over week −0.6% — credit weakening",
     "跨资产强弱 Cross Asset · YTD":
       "Cross Asset · YTD",
     "股票 EQUITY":
@@ -255,8 +247,6 @@
       "GBP Retail Sales MoM",
     "EUR 欧央行行长讲话":
       "EUR ECB President Speaks",
-    "来源 Yahoo Finance · AS OF 2026-09-17 · 日频收盘 · 状态 部分缺失 · LAST 为盘中快照（约 30 分钟刷新、非实时），1M/YTD 为收盘口径":
-      "Source: Yahoo Finance · AS OF 2026-09-17 · daily close · status partially missing · LAST is an intraday snapshot (refreshed about every 30 minutes, not real time); 1M and YTD are on a close basis",
     "来源 FRED · EIA · Yahoo Finance · 交易所行情 · 判定阈值：分位 <35 STRESS / <48 RISK / <58 WATCH / ≥58 NORMAL；Z-Score |z|≥2 STRESS / ≥1.5 RISK / ≥1 WATCH（Z 由站内原始日序列现算，窗口见括号） · US10Y 与 DXY-FED 点进独立行情页（DGS10 / DTWEXBGS 两条逐日序列）；8 条合成信号点名称就地展开历史分位（周频回溯序列，没有单指标行情页，不做成假链接）；最后 9 条只有现值、站内无序列，因此不可点。完整指标页见宏观风险监测。":
       "Source: FRED · EIA · Yahoo Finance · exchange quotes · Thresholds: percentile <35 STRESS / <48 RISK / <58 WATCH / ≥58 NORMAL; Z-score |z|≥2 STRESS / ≥1.5 RISK / ≥1 WATCH (Z is computed live from the on-site raw daily series; the window is in parentheses) · US10Y and DXY-FED open their own quote pages (the DGS10 and DTWEXBGS daily series); the 8 composite signals expand their historical percentile in place when you click the name (weekly backtest series — there is no single-indicator quote page, and no fake link is offered); the last 9 have a current value only with no on-site series and are therefore not clickable. The full indicator page is the Macro Risk Monitor.",
     "十一个期限各取一条 FRED 官方序列、共享日期轴；某期限当日无观测即留空，不插值、不用相邻期限顶替。当前这两条利差都不倒挂。 30Y-5Y 由曲线现算，其余为数据源直接给出。":
@@ -269,18 +259,8 @@
       "FRED (OECD Main Economic Indicators) / ECB Data Portal · monthly, 400 periods",
     "本模型读的是市场为地缘风险付出的价格：能源溢价、避险需求、波动率制度、金融压力四条轴等权，全部由站内已在日更的公开管道逐日复算。它不统计、不解读地缘政治事件本身，也不使用任何 AI 生成的文本作为数据来源。":
       "This model reads the price the market pays for geopolitical risk: four equally weighted axes — energy premium, safe-haven demand, volatility regime and financial stress — all recomputed daily from public pipelines this site already refreshes every day. It neither counts nor interprets geopolitical events themselves, and it uses no AI-generated text as a data source.",
-    "来源 Yahoo Finance · FRED · EIA · Yahoo Finance · 交易所行情 · U.S. Office of Financial Research (OFR) · AS OF 2026-09-15 · 四条轴各 25% 等权，任一条缺失即不给等级":
-      "Source: Yahoo Finance · FRED · EIA · Yahoo Finance · exchange quotes · U.S. Office of Financial Research (OFR) · AS OF 2026-09-15 · The four axes are weighted 25% each; if any one is missing, no grade is given",
     "按跨资产管道的 category 字段汇总只数与涨跌宽度，完整的可搜索看板见 /apps/markets/ —— 这里不复制第二份看板。":
       "Counts and advance/decline breadth are aggregated from the cross-asset pipeline's category field. The full searchable board is at /apps/markets/ — no second copy of it is kept here.",
-    "来源 Yahoo Finance · AS OF 2026-09-17 · 日频收盘 · 状态 部分缺失 · 只数与涨跌宽度按跨资产管道的 category 字段汇总 · 完整的可搜索看板见 /apps/markets/":
-      "Source: Yahoo Finance · AS OF 2026-09-17 · daily close · status partially missing · Counts and breadth are aggregated from the cross-asset pipeline's category field · The full searchable board is at /apps/markets/",
-    "来源 Forex Factory 经济日历 · AS OF 2026-09-17 · 周历 · 每日刷新 · 状态 — · A=实际 F=预测":
-      "Source: Forex Factory economic calendar · AS OF 2026-09-17 · weekly schedule · refreshed daily · status — · A = actual, F = forecast",
-    "来源 Google News · Yahoo Finance · AS OF 2026-09-18 · 日内多次 · 状态 —":
-      "Source: Google News · Yahoo Finance · AS OF 2026-09-18 · several times a day · status —",
-    "来源 Yahoo Finance · AS OF 2026-09-17 · 日频收盘 · 状态 部分缺失 · P = ETF 代理 · 加密为 24h 口径，与股票当日口径不同":
-      "Source: Yahoo Finance · AS OF 2026-09-17 · daily close · status partially missing · P = ETF proxy · Crypto is on a 24-hour basis, which differs from the same-day basis used for equities",
     "来源 Yahoo Finance · 年初至今，各标的自身价格变动，未做汇率或再投资调整":
       "Source: Yahoo Finance · Year to date, each instrument's own price change, with no FX or reinvestment adjustment",
     "本终端不显示 BID / ASK / VOL / 日内高低 / 财务报表 / 评级 / 券级现金流 / 持仓：站内没有这些来源，也不用占位数字冒充。":
@@ -824,9 +804,149 @@
 
   /* 两端锚定的规则：整串进不了字典的拼接句（国债名、来源行、走势详情的 aria-label）。
      数字、日期与代码原样带回，国名查字典，查不到就保留原文。 */
+  /* 出处行逐段词表：源名、频率口径、状态词、附注。取值来自
+     assets/terminal/core.js 的 fmt.statusZh()、assets/terminal/overview.js 的
+     sources[] 频率标注，以及 apps/finance-terminal/index.html 的 srcLine(extra)。 */
+  var FOOTER_SEG = {
+    /* 源 */
+    "交易所行情": "exchange quotes",
+    "Forex Factory 经济日历": "Forex Factory economic calendar",
+    /* 频率口径 */
+    "日频收盘": "daily close",
+    "日频": "daily",
+    "约30分钟": "about every 30 minutes",
+    "非实时": "not real time",
+    "周历": "weekly schedule",
+    "每日刷新": "refreshed daily",
+    "日内多次": "several times a day",
+    "24h 口径": "on a 24-hour basis",
+    "34条月频 + 1条日频": "34 monthly series + 1 daily",
+    "月频 400 期": "monthly, 400 periods",
+    "季/年频": "quarterly / annual",
+    /* 状态词（fmt.statusZh 的全部取值） */
+    "正常": "ok",
+    "部分缺失": "partially missing",
+    "数据过期": "stale",
+    "读取失败": "read failed",
+    "降级": "degraded",
+    "由提供方标注": "as flagged by the provider",
+    "未加载": "not loaded",
+    "不可用": "unavailable",
+    /* 附注 */
+    "LAST 为盘中快照（约 30 分钟刷新、非实时），1M/YTD 为收盘口径":
+      "LAST is an intraday snapshot (refreshed about every 30 minutes, not real time); 1M and YTD are on a close basis",
+    "A=实际 F=预测": "A = actual, F = forecast",
+    "四条轴各 25% 等权，任一条缺失即不给等级":
+      "the four axes are weighted 25% each; if any one is missing, no grade is given",
+    "只数与涨跌宽度按跨资产管道的 category 字段汇总":
+      "counts and breadth are aggregated from the cross-asset pipeline's category field",
+    "完整的可搜索看板见 /apps/markets/": "the full searchable board is at /apps/markets/",
+    "P = ETF 代理": "P = ETF proxy",
+    "加密为 24h 口径，与股票当日口径不同":
+      "crypto is on a 24-hour basis, which differs from the same-day basis used for equities",
+    "* 在岸 CNY，非离岸 CNH": "* onshore CNY, not offshore CNH",
+    "均为期货合约代理": "all are futures-contract proxies",
+    "年初至今，各标的自身价格变动，未做汇率或再投资调整":
+      "year to date, each instrument's own price change, with no FX or reinvestment adjustment",
+    "某期限当日无观测即留空，不插值": "a tenor with no observation that day is left blank, never interpolated",
+    "30Y-5Y 由曲线现算": "30Y\u22125Y is computed from the curve"
+  };
+
+  function ord(n) {
+    var v = parseInt(n, 10), t = v % 100;
+    if (t >= 11 && t <= 13) return v + "th";
+    return v + ({ 1: "st", 2: "nd", 3: "rd" }[v % 10] || "th");
+  }
+
   function termRegex(s, dict) {
     var m;
     if (!isTerminal()) return null;
+
+    /* —— 以下几条原本是把当日数值写死的词条。上游每天取一次数，数值一变整条就失配，
+       页面一夜之间又冒出中文。改成两端锚定的规则：数字、日期、代号原样带回，
+       语义词查表；任何一段查不到就返回 null，整句保留中文，绝不半中半英。 —— */
+    var TONE = {
+      "支持": "supportive", "承压": "under pressure", "中性": "neutral",
+      "涨势集中": "with gains concentrated", "涨势扩散": "with gains broadening",
+      "信用走弱": "credit weakening", "信用改善": "credit improving",
+      "走平": "flattening", "走陡": "steepening"
+    };
+    /* 主权债面板的方法学长句是 index.html 现拼的：基准名、数据日、被摘出的国家清单、
+       「沿用上次」的条数每轮取数都不同，还有「这一轮所有国家都与基准同期」的分支。
+       按结构拆开逐段翻，国名走词典；任一段翻不出来就整句放弃、保留中文。 */
+    if ((m = /^以 (.+?) 为基准，单位基点（1bp = 0\.01 个百分点）。只在与基准同一个数据日（(.+?)）的国家之间算 —— 基准取这个月的观测、对手取另一个月的观测，两者之差不是利差，是两个时点的混合。(.*?) 收益率是水平值不是价格：差值只报基点，不报百分比。$/.exec(s))) {
+      var bench = dict[m[1]] || termRegex(m[1], dict);
+      if (!bench) return null;
+      var mid = m[3], stale = "", sm;
+      if ((sm = /^(.*?) 其中 (\d+) 条本轮取数失败、沿用上次，已在行上标出。$/.exec(mid))) {
+        mid = sm[1];
+        stale = " Of those, " + sm[2] + " row(s) failed this fetch and carry the previous value; they are flagged in the table.";
+      }
+      var midEn;
+      if (mid === "这一轮所有国家都与基准同期。") {
+        midEn = "Every country shares the benchmark's period this round.";
+      } else {
+        var names = function (list, withDate) {
+          return list.split("、").map(function (one) {
+            var t = one.trim(), dm;
+            if (withDate && (dm = /^(.+?) (\d{4}-\d{2}-\d{2}|无日期)$/.exec(t))) {
+              var nm = dict[dm[1]] || termRegex(dm[1], dict);
+              return nm ? nm + " " + (dm[2] === "无日期" ? "no date" : dm[2]) : t;
+            }
+            return dict[t] || termRegex(t, dict) || t;
+          }).join(", ");
+        };
+        midEn = mid.replace(/。$/, "").split("；").map(function (part) {
+          var pm;
+          if ((pm = /^数据日与基准不同、已摘出 (\d+) 条（(.+)）$/.exec(part))) {
+            return pm[1] + " entries whose data date differs from the benchmark have been pulled out (" +
+              names(pm[2], true) + ")";
+          }
+          if ((pm = /^无有效读数 (\d+) 条（(.+)）$/.exec(part))) {
+            return pm[1] + " entries have no valid reading (" + names(pm[2], false) + ")";
+          }
+          return part;
+        }).join("; ") + ".";
+      }
+      if (/[\u4e00-\u9fff]/.test(midEn)) return null;
+      return "Benchmarked against the " + bench + ", in basis points (1bp = 0.01 percentage points). " +
+        "Spreads are computed only between countries sharing the benchmark's data date (" + m[2] + ") \u2014 " +
+        "taking the benchmark from one month and the counterpart from another does not give a spread, " +
+        "it gives a blend of two points in time. " + midEn + stale +
+        " Yields are levels, not prices: differences are reported in basis points only, never as percentages.";
+    }
+    if ((m = /^布油近1个月 (\S+?) · WTI (\S+?) · 按 (\S+?) ~ (\S+?) 线性映射，超出取端点$/.exec(s))) {
+      return "Brent over the past month " + m[1] + " · WTI " + m[2] +
+        " · mapped linearly over " + m[3] + " to " + m[4] + ", clipped at the endpoints";
+    }
+    if ((m = /^黄金 (\S+?) \u2212 标普500 (\S+?) = (\S+?)个百分点 · 按 (\S+?) ~ (\S+?) 个百分点线性映射，超出取端点$/.exec(s))) {
+      var mn = function (x) { return x.replace(/^-/, "\u2212"); };
+      return "Gold " + mn(m[1]) + " \u2212 S&P 500 " + mn(m[2]) + " = " + mn(m[3]) +
+        " percentage points · mapped linearly over " + m[4] + " to " + m[5] +
+        " percentage points, clipped at the endpoints";
+    }
+    if ((m = /^宏观风险监测波动率信号 (\d+)\/100（(.+?)） · 风险方向 = 100 \u2212 信号分，与首屏风险雷达同一取向$/.exec(s))) {
+      if (!TONE[m[2]]) return null;
+      return "Macro Risk Monitor volatility signal " + m[1] + "/100 (" + TONE[m[2]] +
+        ") · risk direction = 100 \u2212 the signal score, the same orientation as the risk radar on the home screen";
+    }
+    if ((m = /^OFR FSI (\S+?)，处于站内 ([\d,]+) 个观测的第 (\d+) 百分位 · 百分位取自该文件自己保存的观测窗口，不设人为阈值$/.exec(s))) {
+      return "OFR FSI " + m[1].replace(/^-/, "\u2212") + ", at the " + ord(m[3]) + " percentile of the " +
+        m[2] + " observations held on site · the percentile comes from the observation window the file itself keeps; no threshold is imposed";
+    }
+    if ((m = /^广度代理处于近两年 (\d+)% 分位，(.+)$/.exec(s))) {
+      if (!TONE[m[2]]) return null;
+      return "The breadth proxy sits at the " + ord(m[1]) + " percentile of the past two years, " + TONE[m[2]];
+    }
+    if ((m = /^高收益\/投资级比价周环比 (\S+?)，(.+)$/.exec(s))) {
+      if (!TONE[m[2]]) return null;
+      return "High-yield vs. investment-grade ratio, week over week " + m[1].replace(/^-/, "\u2212") +
+        " \u2014 " + TONE[m[2]];
+    }
+    if ((m = /^收益率曲线周环比 (\S+?)bp（(.+?)）$/.exec(s))) {
+      if (!TONE[m[2]]) return null;
+      return "Yield curve, week over week " + m[1].replace(/^-/, "\u2212") + "bp (" + TONE[m[2]] + ")";
+    }
     if ((m = /^(.+?)(\d+)年期国债$/.exec(s))) return (dict[m[1]] || m[1]) + " " + m[2] + "-Year Government Bond";
     if ((m = /^基准 (.+?)(\d+)年期国债（(.+?)）$/.exec(s))) {
       return "Benchmark: " + (dict[m[1]] || m[1]) + " " + m[2] + "-Year Government Bond (" + m[3] + ")";
@@ -882,15 +1002,32 @@
               : m[3] === "贴现率回落、利好久期资产" ? "discount rates falling; supportive for long-duration assets" : m[3]) + ")";
     }
     if ((m = /^(\d+) 个标的 · (.+)$/.exec(s))) return m[1] + " instruments · " + m[2];
-    if ((m = /^来源 (.+?) · AS OF (.+?) · 日频收盘 · 状态 (.+?)(?: · (.+))?$/.exec(s))) {
-      var tail = m[4] ? " · " + m[4]
-        .replace(/LAST 为盘中快照（约 30 分钟刷新、非实时）/, "LAST is an intraday snapshot (refreshed about every 30 minutes, not real time)")
-        .replace(/\* 在岸 CNY，非离岸 CNH/, "* onshore CNY, not offshore CNH")
-        .replace(/均为期货合约代理/, "all are futures-contract proxies") : "";
-      if (!/[\u4e00-\u9fff]/.test(tail)) {
-        return "Source: " + m[1] + " · AS OF " + m[2] + " · daily close · status " +
-          (dict[m[3]] || m[3]) + tail;
+    /* 出处行由 assets/terminal/core.js 的 srcLine() 现拼：
+         来源 <源> · AS OF <日期> · <频率> · 状态 <状态> [· <附注>]
+       源名、频率、附注本身还可能带 ` · `，所以不按固定段数写死，改成逐段翻译：
+       每一段查表，全部翻得出来才交出整行；只要有一段还带中文就整行放弃、保留中文。
+       这样上游改日期、改状态、换一条附注都不会让整行一夜变回中文。 */
+    if (s.indexOf("来源 ") === 0 && s.indexOf(" · ") > 0) {
+      var segs = s.split(" · "), outSeg = [];
+      for (var i = 0; i < segs.length; i++) {
+        var seg = segs[i].trim(), t;
+        if (i === 0) {
+          var src0 = seg.slice(3).trim();
+          t = "Source: " + (src0 ? (FOOTER_SEG[src0] || dict[src0] || src0) : "");
+        } else if (/^AS OF /.test(seg)) {
+          t = seg;
+        } else if (seg.indexOf("状态 ") === 0) {
+          var st = seg.slice(3).trim();
+          t = "status " + (FOOTER_SEG[st] || dict[st] || st);
+        } else if (seg.indexOf("数据日 ") === 0) {
+          t = "data date " + (FOOTER_SEG[seg.slice(4).trim()] || seg.slice(4).trim());
+        } else {
+          t = FOOTER_SEG[seg] || dict[seg] || seg;
+        }
+        outSeg.push(t);
       }
+      var joined = outSeg.join(" · ").replace(/ · $/, " · ");
+      if (!/[\u4e00-\u9fff]/.test(joined)) return joined;
     }
     return null;
   }
