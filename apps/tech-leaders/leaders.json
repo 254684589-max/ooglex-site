@@ -46,7 +46,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "TSLA",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&name=Elon%20Musk&company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -73,7 +73,7 @@
       "company_zh": "英伟达",
       "company_en": "NVIDIA",
       "position_zh": "创始人兼 CEO",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JensenHuang",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JensenHuang&name=Jensen%20Huang&company=NVIDIA",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "categories": [
         "芯片",
@@ -141,7 +141,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sama",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sama&name=Sam%20Altman&company=OpenAI",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -190,7 +190,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "AMD",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LisaSu",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LisaSu&name=Lisa%20Su&company=AMD",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -238,7 +238,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "GOOGL",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sundarpichai",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sundarpichai&name=Sundar%20Pichai&company=Google%20%2F%20Alphabet",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -289,7 +289,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "MSFT",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=satyanadella",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=satyanadella&name=Satya%20Nadella&company=Microsoft",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -337,7 +337,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "AAPL",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tim_cook",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tim_cook&name=Tim%20Cook&company=Apple",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -386,7 +386,7 @@
       "index_tags": [
         "S&P 500 Founder"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffBezos",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffBezos&name=Jeff%20Bezos&company=Amazon%20%2F%20Blue%20Origin",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -434,7 +434,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "AMZN",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ajassy",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ajassy&name=Andy%20Jassy&company=Amazon",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -475,7 +475,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=demishassabis",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=demishassabis&name=Demis%20Hassabis&company=Google%20DeepMind",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -516,7 +516,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DarioAmodei",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DarioAmodei&name=Dario%20Amodei&company=Anthropic",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -558,7 +558,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mustafasuleyman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mustafasuleyman&name=Mustafa%20Suleyman&company=Microsoft%20AI",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -598,7 +598,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ylecun",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ylecun&name=Yann%20LeCun&company=NYU",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -638,7 +638,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AndrewYNg",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AndrewYNg&name=Andrew%20Ng&company=DeepLearning.AI%20%2F%20AI%20Fund",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -681,7 +681,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drfeifei",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drfeifei&name=Fei-Fei%20Li&company=World%20Labs%20%2F%20Stanford",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -721,7 +721,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilyasut",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilyasut&name=Ilya%20Sutskever&company=Safe%20Superintelligence",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -762,7 +762,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=miramurati",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=miramurati&name=Mira%20Murati&company=Thinking%20Machines%20Lab",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -802,7 +802,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gdb",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gdb&name=Greg%20Brockman&company=OpenAI",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -843,7 +843,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AravSrinivas",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AravSrinivas&name=Aravind%20Srinivas&company=Perplexity",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -884,7 +884,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karpathy",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karpathy&name=Andrej%20Karpathy&company=Eureka%20Labs",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -925,7 +925,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan%20Field&company=Figma",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -966,7 +966,7 @@
         "金融"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=patrickc",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=patrickc&name=Patrick%20Collison&company=Stripe",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1014,7 +1014,7 @@
       "sp500_member": true,
       "sp500_ticker": "ABNB",
       "sp500_verified_at": "2026-09-19",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bchesky",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bchesky&name=Brian%20Chesky&company=Airbnb",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1054,7 +1054,7 @@
         "消费零售"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nealmohan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nealmohan&name=Neal%20Mohan&company=YouTube",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1094,7 +1094,7 @@
         "消费零售"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eldsjal",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eldsjal&name=Daniel%20Ek&company=Spotify%20%2F%20Prima%20Materia",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1143,7 +1143,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "CRM",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Benioff",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Benioff&name=Marc%20Benioff&company=Salesforce",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1192,7 +1192,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "DELL",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelDell",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelDell&name=Michael%20Dell&company=Dell%20Technologies",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1232,7 +1232,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pmarca",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pmarca&name=Marc%20Andreessen&company=Andreessen%20Horowitz",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1274,7 +1274,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PalmerLuckey",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PalmerLuckey&name=Palmer%20Luckey&company=Anduril",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1315,7 +1315,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi&name=Tobias%20L%C3%BCtke&company=Shopify",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1356,7 +1356,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=reidhoffman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=reidhoffman&name=Reid%20Hoffman&company=LinkedIn%20%2F%20Greylock",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1397,7 +1397,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vkhosla",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vkhosla&name=Vinod%20Khosla&company=Khosla%20Ventures",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1438,7 +1438,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=levie",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=levie&name=Aaron%20Levie&company=Box",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1485,7 +1485,7 @@
       "index_tags": [
         "S&P 500 Founder"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack&name=Jack%20Dorsey&company=Block%20%2F%20Twitter",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1525,7 +1525,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paulg",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paulg&name=Paul%20Graham&company=Y%20Combinator",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1565,7 +1565,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=garrytan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=garrytan&name=Garry%20Tan&company=Y%20Combinator",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1603,7 +1603,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexandr_wang",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexandr_wang&name=Alexandr%20Wang&company=Meta%20Superintelligence",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1644,7 +1644,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ClemDelangue",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ClemDelangue&name=Cl%C3%A9ment%20Delangue&company=Hugging%20Face",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1684,7 +1684,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffDean",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffDean&name=Jeff%20Dean&company=Google",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1725,7 +1725,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aidangomez",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aidangomez&name=Aidan%20Gomez&company=Cohere",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1766,7 +1766,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=btaylor",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=btaylor&name=Bret%20Taylor&company=Sierra%20%2F%20OpenAI",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1807,7 +1807,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=amasad",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=amasad&name=Amjad%20Masad&company=Replit",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1848,7 +1848,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rauchg",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rauchg&name=Guillermo%20Rauch&company=Vercel",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1889,7 +1889,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=natfriedman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=natfriedman&name=Nat%20Friedman&company=Technology%20Investing",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1938,7 +1938,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "IBM",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ArvindKrishna",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ArvindKrishna&name=Arvind%20Krishna&company=IBM",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -1986,7 +1986,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "QCOM",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cristianoamon",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cristianoamon&name=Cristiano%20Amon&company=Qualcomm",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2029,7 +2029,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck&name=Peter%20Beck&company=Rocket%20Lab",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2072,7 +2072,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adcock_brett",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adcock_brett&name=Brett%20Adcock&company=Figure%20AI",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2114,7 +2114,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimkxa",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimkxa&name=Jim%20Keller&company=Tenstorrent",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2154,7 +2154,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RajaXg",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RajaXg&name=Raja%20Koduri&company=Semiconductors%20%2F%20AI%20Hardware",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2194,7 +2194,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dhh",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dhh&name=David%20Heinemeier%20Hansson&company=37signals%20%2F%20Ruby%20on%20Rails",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2235,7 +2235,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=photomatt",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=photomatt&name=Matt%20Mullenweg&company=Automattic%20%2F%20WordPress",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2276,7 +2276,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drewhouston",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drewhouston&name=Drew%20Houston&company=Dropbox",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2323,7 +2323,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "COIN",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=brian_armstrong",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=brian_armstrong&name=Brian%20Armstrong&company=Coinbase",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2363,7 +2363,7 @@
         "金融"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin&name=Vitalik%20Buterin&company=Ethereum",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2406,7 +2406,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=masason",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=masason&name=Masayoshi%20Son&company=SoftBank%20Group",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2447,7 +2447,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericschmidt",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericschmidt&name=Eric%20Schmidt&company=Google%20%2F%20Technology%20Investing",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2488,7 +2488,7 @@
         "消费零售"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=durov",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=durov&name=Pavel%20Durov&company=Telegram",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2531,7 +2531,7 @@
         "汽车"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=leijun",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=leijun&name=Lei%20Jun&company=Xiaomi",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2571,7 +2571,7 @@
         "消费零售"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tfadell",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tfadell&name=Tony%20Fadell&company=Nest",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2614,7 +2614,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=finkd",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=finkd&name=Mark%20Zuckerberg&company=Meta",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2652,7 +2652,7 @@
         "消费零售"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mosseri",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mosseri&name=Adam%20Mosseri&company=Instagram",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2692,7 +2692,7 @@
         "消费零售"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=boztank",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=boztank&name=Andrew%20Bosworth&company=Meta",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2733,7 +2733,7 @@
         "云计算"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eastdakota",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eastdakota&name=Matthew%20Prince&company=Cloudflare",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2773,7 +2773,7 @@
         "云计算"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zatlyn",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zatlyn&name=Michelle%20Zatlyn&company=Cloudflare",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2811,7 +2811,7 @@
         "云计算"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Werner",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Werner&name=Werner%20Vogels&company=Amazon",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2849,7 +2849,7 @@
         "云计算"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam%20Selipsky&company=Cloud%20%26%20Enterprise%20Technology",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2887,7 +2887,7 @@
         "芯片"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PGelsinger",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PGelsinger&name=Pat%20Gelsinger&company=Semiconductors",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2927,7 +2927,7 @@
         "芯片"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=renehaas237",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=renehaas237&name=Rene%20Haas&company=Arm",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -2966,7 +2966,7 @@
       "themes": [
         "芯片"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=intel",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=intel&name=Lip-Bu%20Tan&company=Intel",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3005,7 +3005,7 @@
       "themes": [
         "芯片"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Broadcom",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Broadcom&name=Hock%20Tan&company=Broadcom",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3044,7 +3044,7 @@
       "themes": [
         "芯片"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ASMLcompany",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ASMLcompany&name=Christophe%20Fouquet&company=ASML",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3083,7 +3083,7 @@
       "themes": [
         "芯片"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MicronTech",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MicronTech&name=Sanjay%20Mehrotra&company=Micron",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3123,7 +3123,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pabbeel",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pabbeel&name=Pieter%20Abbeel&company=Covariant%20%2F%20UC%20Berkeley",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3163,7 +3163,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rodneyabrooks",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rodneyabrooks&name=Rodney%20Brooks&company=Robotics",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3203,7 +3203,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=svlevine",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=svlevine&name=Sergey%20Levine&company=UC%20Berkeley",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3243,7 +3243,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chelseabfinn",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chelseabfinn&name=Chelsea%20Finn&company=Stanford",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3282,7 +3282,7 @@
         "工业",
         "AI"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BostonDynamics",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BostonDynamics&name=Boston%20Dynamics&company=Boston%20Dynamics",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3324,7 +3324,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=torybruno",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=torybruno&name=Tory%20Bruno&company=United%20Launch%20Alliance",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3366,7 +3366,7 @@
         "工业"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=thetimellis",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=thetimellis&name=Tim%20Ellis&company=Relativity%20Space",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3404,7 +3404,7 @@
         "航空航天"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rookisaacman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rookisaacman&name=Jared%20Isaacman&company=Commercial%20Spaceflight",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3444,7 +3444,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=stewart",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=stewart&name=Stewart%20Butterfield&company=Slack",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3485,7 +3485,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MelanieCanva",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MelanieCanva&name=Melanie%20Perkins&company=Canva",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3526,7 +3526,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericsyuan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericsyuan&name=Eric%20Yuan&company=Zoom",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3575,7 +3575,7 @@
       "sp500_member": true,
       "sp500_ticker": "UBER",
       "sp500_verified_at": "2026-09-19",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos&name=Dara%20Khosrowshahi&company=Uber",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3616,7 +3616,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=kevinrose",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=kevinrose&name=Kevin%20Rose&company=Technology%20%2F%20Investing",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3657,7 +3657,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexisohanian",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexisohanian&name=Alexis%20Ohanian&company=Reddit%20%2F%20Seven%20Seven%20Six",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3697,7 +3697,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=youyuxi",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=youyuxi&name=Evan%20You&company=Vue.js",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3737,7 +3737,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mitchellh",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mitchellh&name=Mitchell%20Hashimoto&company=HashiCorp%20%2F%20Ghostty",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3777,7 +3777,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sytses",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sytses&name=Sid%20Sijbrandij&company=GitLab",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3817,7 +3817,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mojombo",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mojombo&name=Tom%20Preston-Werner&company=GitHub",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3857,7 +3857,7 @@
         "软件"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=defunkt",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=defunkt&name=Chris%20Wanstrath&company=GitHub",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3898,7 +3898,7 @@
         "金融"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mlevchin",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mlevchin&name=Max%20Levchin&company=Affirm",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3946,7 +3946,7 @@
       "index_tags": [
         "S&P 500 CEO"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vladtenev",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vladtenev&name=Vlad%20Tenev&company=Robinhood",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -3987,7 +3987,7 @@
         "金融"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidmarcus",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidmarcus&name=David%20Marcus&company=Lightspark",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4028,7 +4028,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=naval",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=naval&name=Naval%20Ravikant&company=AngelList",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4068,7 +4068,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgurley",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgurley&name=Bill%20Gurley&company=Benchmark",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4109,7 +4109,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chamath",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chamath&name=Chamath%20Palihapitiya&company=Social%20Capital",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4150,7 +4150,7 @@
         "VC"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred%20Wilson&company=Union%20Square%20Ventures",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4193,7 +4193,7 @@
         "AI"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=altcap",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=altcap&name=Brad%20Gerstner&company=Altimeter",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4243,7 +4243,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "F",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimfarley98",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimfarley98&name=Jim%20Farley&company=Ford",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4294,7 +4294,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "CSCO",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ChuckRobbins",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ChuckRobbins&name=Chuck%20Robbins&company=Cisco",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4345,7 +4345,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "NOW",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BillRMcDermott",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BillRMcDermott&name=Bill%20McDermott&company=ServiceNow",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4394,7 +4394,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "LOW",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison&name=Marvin%20Ellison&company=Lowe's",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4445,7 +4445,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "CRWD",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=George_Kurtz",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=George_Kurtz&name=George%20Kurtz&company=CrowdStrike",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4496,7 +4496,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "PANW",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikesharora",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikesharora&name=Nikesh%20Arora&company=Palo%20Alto%20Networks",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4545,7 +4545,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "PFE",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AlbertBourla",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AlbertBourla&name=Albert%20Bourla&company=Pfizer",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4596,7 +4596,7 @@
       "x_identity_verified": true,
       "sp500_member": true,
       "sp500_ticker": "GM",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mtbarra",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mtbarra&name=Mary%20Barra&company=General%20Motors",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4650,7 +4650,7 @@
         "交易基础设施"
       ],
       "admission_status": "active",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adenatfriedman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adenatfriedman&name=Adena%20Friedman&company=Nasdaq",
       "avatar_source": "Ooglex R2 self-hosted avatar cache",
       "avatar_status": "self_hosted",
       "avatar_fallback": "local_initials_svg",
@@ -4716,9 +4716,11 @@
     "source_priority": [
       "explicit_official_override",
       "x_public_profile_via_server",
+      "wikimedia_portrait",
+      "unavatar_last_resort",
       "local_initials_fallback"
     ],
-    "endpoint": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle={handle}",
+    "endpoint": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle={handle}&name={name_en}&company={company_en}",
     "fallback": "local_initials_svg",
     "warmed_by": "GitHub Actions",
     "audited_at": "2026-09-19"
