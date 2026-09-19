@@ -116,6 +116,16 @@ jobs:
           echo "$body" | grep -q '"service":"tech-leaders"'
           echo "Tech Leaders backend ready: $body"
 
+      - name: Smoke test zero-X-API free timeline
+        run: |
+          set +e
+          body="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=ZLQ6600E&limit=3" 2>/dev/null)"
+          if echo "$body" | grep -q '"uses_x_api":false'; then
+            echo "Free timeline public-source path is responding without X API: $body"
+          else
+            echo "::warning::Free timeline public source did not return posts yet; frontend will fall back to X Embed. Response: $body"
+          fi
+
       - name: Warm and verify Tech Leaders avatar cache
         run: |
           python scripts/tech-leaders/warm_avatars.py \
