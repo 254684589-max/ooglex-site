@@ -291,6 +291,40 @@
       "avatar_is_substitute": true
     },
     {
+      "id": "zhengyi-temp",
+      "name": "Zheng Yi",
+      "zh": "郑翊",
+      "name_zh": "郑翊",
+      "name_en": "Zheng Yi",
+      "role": "VC",
+      "chips": [
+        "VC"
+      ],
+      "note": "临时加入的测试人物资料。",
+      "title": "郑翊 · 临时资料",
+      "category": "VC",
+      "company_zh": "",
+      "company_en": "",
+      "position_zh": "VC",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "static_profile": true,
+      "temporary": true,
+      "static_avatar_url": "./assets/zhengyi-temp.svg",
+      "followers_count": 10000000,
+      "following_count": 120
+    },
+    {
       "id": "nadella",
       "name": "Satya Nadella",
       "zh": "萨提亚·纳德拉",

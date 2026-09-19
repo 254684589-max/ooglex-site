@@ -284,6 +284,8 @@
     return people.find(function(p){return p.id===requested;})||people[0];
   }
   function avatarUrl(p){
+    // Temporary/local profiles can provide an explicit static avatar asset.
+    if(p&&p.static_avatar_url)return p.static_avatar_url;
     // One canonical image endpoint. The backend owns source priority:
     // X original -> X proxy -> verified official/public substitute -> local initials.
     if(p&&p.handle){
@@ -365,6 +367,14 @@
   async function loadPublicProfile(p){
     var seq=++profileRequestSeq;
     resetPublicProfile();
+    if(p&&p.static_profile){
+      profileWeb.style.display="none";
+      profileJoined.style.display="none";
+      profileFollowing.textContent=formatFollowingCount(p.following_count);
+      profileFollowers.textContent=formatFollowerCount(p.followers_count);
+      profileStats.style.display="flex";
+      return;
+    }
     if(!p||!p.handle)return;
     try{
       var q=new URLSearchParams({handle:p.handle,name:p.name_en||p.name||p.name_zh||p.zh||""});
@@ -397,7 +407,9 @@
     document.getElementById("profile-name").textContent=p.name_zh||p.zh||p.name;
     document.getElementById("profile-verified").innerHTML=isVerifiedPerson(p)?verifiedBadgeMarkup("profile-verified"):"";
     profileNameEn.textContent=p.name_en||p.name||"";
-    document.getElementById("profile-handle").textContent="@"+p.handle;
+    var profileHandle=document.getElementById("profile-handle");
+    if(p.handle){profileHandle.textContent="@"+p.handle;profileHandle.style.display="block";}
+    else{profileHandle.textContent="";profileHandle.style.display="none";}
     profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
     profilePosition.textContent=p.position_zh||"";
     var profileTags=[];
@@ -405,8 +417,10 @@
     (p.categories||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
-    document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
-    document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
+    var openX=document.getElementById("open-x");
+    if(p.handle){openX.href="https://x.com/"+encodeURIComponent(p.handle);openX.style.display="flex";}
+    else{openX.removeAttribute("href");openX.style.display="none";}
+    document.getElementById("profile-note").textContent=p.note||(p.handle?"公开 X 账号。":"临时人物资料。");
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
     profileAvatarFallback.textContent=initialsFor(p);
     profileAvatar.hidden=false;
@@ -577,7 +591,17 @@
     a.textContent="Posts by @"+current.handle;
     timeline.appendChild(a);
   }
+  function renderNoXTimeline(){
+    clearWatchers();
+    rendered=true;
+    activeIframe=null;
+    xdiag.hidden=true;
+    sourceBadge.textContent="临时资料";
+    timeline.setAttribute("data-state","fallback");
+    timeline.innerHTML='<div class="api-state"><b>临时人物资料</b><div>该条目未绑定 X 账号，因此暂不加载 X 时间线。</div></div>';
+  }
   function bootEmbed(){
+    if(!current||!current.handle){renderNoXTimeline();return;}
     rendered=false;
     activeIframe=null;
     sourceBadge.textContent="X 时间线 Embed · $0 API";
@@ -666,6 +690,7 @@
     timeline.innerHTML='<div class="api-state"><b>'+escapeHtml(title)+'</b><div>'+escapeHtml(detail)+'</div><small>数据模式会调用 X API，并可能消耗 Credits。</small></div>';
   }
   async function bootApi(){
+    if(!current||!current.handle){renderNoXTimeline();return;}
     apiState("正在读取 Ooglex 数据模式","只在手动选择数据模式时才会调用 X API。");
     try{
       var statusRes=await fetch(API_BASE+"/v1/tech-leaders/status",{cache:"no-store"});
