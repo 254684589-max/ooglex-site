@@ -31,6 +31,8 @@ const TECH_LEADERS = Object.freeze({
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
+const TECH_PROFILE_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
 const TECH_AVATAR_CACHE_CONTROL = "public, max-age=21600, stale-while-revalidate=86400";
@@ -273,6 +275,169 @@ async function fetchTechAvatarViaSyndication(handle) {
   }
   if (!imageUrl) return { ok: false, status: 404, source: "x_syndication" };
   return fetchTechAvatarImage(imageUrl, "x_syndication");
+}
+
+function xProfileExpandedUrl(value) {
+  if (!value || typeof value !== "object") return "";
+  const direct = String(value.expanded_url || value.expandedUrl || value.url || "").trim();
+  if (/^https?:\/\//i.test(direct) && !/^(https?:\/\/)?t\.co\//i.test(direct)) return direct;
+  const entities = value.entities && value.entities.url && Array.isArray(value.entities.url.urls)
+    ? value.entities.url.urls
+    : [];
+  for (const item of entities) {
+    const expanded = String(item && (item.expanded_url || item.expandedUrl) || "").trim();
+    if (/^https?:\/\//i.test(expanded)) return expanded;
+  }
+  return "";
+}
+
+function normalizePublicXProfile(candidate, handle) {
+  if (!candidate || typeof candidate !== "object") return null;
+  const screenName = String(candidate.screen_name || candidate.username || candidate.handle || "").replace(/^@/, "");
+  if (screenName && screenName.toLowerCase() !== String(handle || "").toLowerCase()) return null;
+  const metrics = candidate.public_metrics && typeof candidate.public_metrics === "object" ? candidate.public_metrics : {};
+  const followers = candidate.followers_count ?? metrics.followers_count;
+  const following = candidate.friends_count ?? candidate.following_count ?? metrics.following_count;
+  const createdAt = candidate.created_at || candidate.createdAt || null;
+  const url = xProfileExpandedUrl(candidate);
+  const profileImage = candidate.profile_image_url_https || candidate.profile_image_url || "";
+  const name = String(candidate.name || "").trim();
+  const description = String(candidate.description || "").trim();
+  const hasUseful = followers != null || following != null || createdAt || url || profileImage || description;
+  if (!hasUseful) return null;
+  return {
+    handle: screenName || String(handle || ""),
+    name,
+    followers_count: followers == null ? null : Number(followers),
+    following_count: following == null ? null : Number(following),
+    created_at: createdAt || null,
+    url: url || null,
+    display_url: url ? url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "") : null,
+    description: description || null,
+    profile_image_url: profileImage || null
+  };
+}
+
+function findPublicXProfile(value, handle, depth = 0) {
+  if (depth > 16 || value == null) return null;
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found = findPublicXProfile(item, handle, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  }
+  if (typeof value !== "object") return null;
+
+  const normalized = normalizePublicXProfile(value, handle);
+  const candidateHandle = String(value.screen_name || value.username || value.handle || "").replace(/^@/, "");
+  if (normalized && (!candidateHandle || candidateHandle.toLowerCase() === String(handle || "").toLowerCase())) return normalized;
+
+  const keys = Object.keys(value);
+  const preferred = keys.filter((key) => /user|profile|account|author/i.test(key));
+  for (const key of [...preferred, ...keys.filter((key) => !preferred.includes(key))]) {
+    const found = findPublicXProfile(value[key], handle, depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function mergePublicXProfiles(primary, secondary, handle, name) {
+  const a = primary || {};
+  const b = secondary || {};
+  return {
+    schema_version: 1,
+    source: "x_public_syndication",
+    uses_x_api: false,
+    handle: a.handle || b.handle || handle,
+    name: a.name || b.name || name || "",
+    followers_count: a.followers_count ?? b.followers_count ?? null,
+    following_count: a.following_count ?? b.following_count ?? null,
+    created_at: a.created_at || b.created_at || null,
+    url: a.url || b.url || null,
+    display_url: a.display_url || b.display_url || null,
+    description: a.description || b.description || null,
+    profile_image_url: a.profile_image_url || b.profile_image_url || null,
+    fetched_at: new Date().toISOString()
+  };
+}
+
+async function fetchPublicXProfile(handle, name) {
+  let followProfile = null;
+  let syndicationProfile = null;
+
+  try {
+    const res = await fetch(
+      `https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=${encodeURIComponent(handle)}`,
+      {
+        redirect: "follow",
+        headers: {
+          accept: "application/json,text/plain,*/*",
+          "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Profile/1.0)"
+        }
+      }
+    );
+    if (res.ok) {
+      const payload = await res.json();
+      followProfile = findPublicXProfile(payload, handle);
+    }
+  } catch {}
+
+  try {
+    const res = await fetch(
+      `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}`,
+      {
+        redirect: "follow",
+        headers: {
+          accept: "text/html,application/xhtml+xml",
+          "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Profile/1.0)"
+        }
+      }
+    );
+    if (res.ok) {
+      const html = await res.text();
+      const next = html.match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
+      if (next && next[1]) {
+        try { syndicationProfile = findPublicXProfile(JSON.parse(next[1]), handle); } catch {}
+      }
+    }
+  } catch {}
+
+  const merged = mergePublicXProfiles(syndicationProfile, followProfile, handle, name);
+  const usable = merged.followers_count != null || merged.following_count != null || merged.created_at || merged.url;
+  if (!usable) {
+    const err = new Error("x_public_profile_unavailable");
+    err.code = "x_public_profile_unavailable";
+    err.status = 502;
+    throw err;
+  }
+  return merged;
+}
+
+async function getPublicXProfile(handle, name, env) {
+  const normalized = normalizeXHandle(handle);
+  if (!normalized) {
+    const err = new Error("invalid_profile_handle");
+    err.code = "invalid_profile_handle";
+    err.status = 400;
+    throw err;
+  }
+  const key = `tech-leaders/profiles/v1/${normalized.toLowerCase()}.json`;
+  const cached = await readJson(env.PRO_DATA, key);
+  const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
+  const age = Number.isFinite(cachedAt) ? Date.now() - cachedAt : Infinity;
+  if (cached && age <= TECH_PROFILE_CACHE_TTL_MS) return { ...cached, cache: { status: "fresh", age_ms: age } };
+
+  try {
+    const fresh = await fetchPublicXProfile(normalized, name);
+    await writeJson(env.PRO_DATA, key, fresh);
+    return { ...fresh, cache: { status: "refreshed", age_ms: 0 } };
+  } catch (err) {
+    if (cached && age <= TECH_PROFILE_MAX_STALE_MS) {
+      return { ...cached, cache: { status: "stale", age_ms: age, reason: err && err.code ? err.code : "x_public_profile_error" } };
+    }
+    throw err;
+  }
 }
 
 function normalizeWikiText(value) {
@@ -634,7 +799,9 @@ function normalizeTechFeed(profile, user, payload) {
       user_id: user.id,
       profile_image_url: user.profile_image_url || null,
       verified: Boolean(user.verified),
-      public_metrics: user.public_metrics || {}
+      public_metrics: user.public_metrics || {},
+      created_at: user.created_at || null,
+      url: user.url || null
     },
     fetched_at: new Date().toISOString(),
     posts
@@ -654,14 +821,16 @@ async function fetchTechLeaderFeed(profile, env, cached = null) {
       id: cached.leader.user_id,
       profile_image_url: cached.leader.profile_image_url || null,
       verified: Boolean(cached.leader.verified),
-      public_metrics: cached.leader.public_metrics || {}
+      public_metrics: cached.leader.public_metrics || {},
+      created_at: cached.leader.created_at || null,
+      url: cached.leader.url || null
     };
   }
 
   if (!user) {
     const username = encodeURIComponent(profile.handle);
     const userPayload = await xApiGet(
-      `/2/users/by/username/${username}?user.fields=profile_image_url,verified,public_metrics,description`,
+      `/2/users/by/username/${username}?user.fields=profile_image_url,verified,public_metrics,description,created_at,url`,
       env
     );
     if (!userPayload || !userPayload.data || !userPayload.data.id) {
@@ -786,6 +955,24 @@ export default {
       if (!PRODUCTS[product]) return json({ error: "unknown_product" }, 400, cors);
       const access = await getAccess(product, token, env);
       return json({ product, ...access }, 200, { ...cors, "cache-control": "no-store" });
+    }
+
+    if (url.pathname === "/v1/tech-leaders/profile") {
+      const handle = normalizeXHandle(url.searchParams.get("handle"));
+      const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
+      if (!handle) return json({ error: "invalid_profile_handle" }, 400, cors);
+      try {
+        const profile = await getPublicXProfile(handle, name, env);
+        return json(profile, 200, {
+          ...cors,
+          "cache-control": "public, max-age=300, stale-while-revalidate=3600",
+          "x-ooglex-source": "x-public-syndication"
+        });
+      } catch (err) {
+        const code = err && err.code ? err.code : "x_public_profile_unavailable";
+        const status = err && Number.isInteger(err.status) ? err.status : 502;
+        return json({ error: code, handle, uses_x_api: false }, status, { ...cors, "cache-control": "no-store" });
+      }
     }
 
     if (url.pathname === "/v1/tech-leaders/avatar-audit") {
