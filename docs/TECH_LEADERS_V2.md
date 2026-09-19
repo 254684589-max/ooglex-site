@@ -224,3 +224,20 @@ After successful production validation on the initial four accounts, the native 
 `Zheng Yi, Elon Musk, Jensen Huang, Sam Altman, Lisa Su, Sundar Pichai, Satya Nadella, Tim Cook, Jeff Bezos, Andy Jassy, Demis Hassabis, Dario Amodei, Mustafa Suleyman, Yann LeCun, Andrew Ng, Fei-Fei Li, Ilya Sutskever, Mira Murati, Greg Brockman, Aravind Srinivas, Andrej Karpathy, Marc Benioff, Michael Dell, Marc Andreessen`.
 
 The architecture remains on-demand: only the selected person's feed is fetched. Failure of the native public-source path still falls back to the official X Embed. Free mode remains hard-isolated from `api.x.com`.
+
+
+## Native Free Feed Full Personal-Account Rollout — 2026-09-19
+
+The native free-feed selection is no longer maintained as a hand-written allowlist. Free mode now automatically enables the Ooglex native feed for every catalog row that is active, has an X handle, and is explicitly confirmed as a personal X account (`x_identity_verified`, `verified_personal_x`, or the catalog's confirmed-personal-account note).
+
+Current catalog coverage: 105 confirmed personal X accounts.
+
+Five non-personal/special entries remain on the official X Embed path:
+
+- Lip-Bu Tan → `@intel` company account
+- Hock Tan → `@Broadcom` company account
+- Christophe Fouquet → `@ASMLcompany` company account
+- Sanjay Mehrotra → `@MicronTech` company account
+- Boston Dynamics → `@BostonDynamics` official company account
+
+Only the selected profile is fetched on demand, so enabling all 105 accounts does not trigger 105 upstream requests on page load. Production smoke tests sample 20 representative personal accounts while the catalog coverage check validates the full selection rule. Free mode remains hard-isolated from `api.x.com`.
