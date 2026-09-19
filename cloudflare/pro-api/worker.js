@@ -474,6 +474,69 @@ async function fetchPublicXProfile(handle, name) {
   return merged;
 }
 
+async function getFreePublicXProfile(handle, name, env) {
+  const normalized = normalizeXHandle(handle);
+  if (!normalized) {
+    const err = new Error("invalid_profile_handle");
+    err.code = "invalid_profile_handle";
+    err.status = 400;
+    throw err;
+  }
+
+  const key = `tech-leaders/profiles/free/v1/${normalized.toLowerCase()}.json`;
+  const cached = await readJson(env.PRO_DATA, key);
+  const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
+  const age = Number.isFinite(cachedAt) ? Date.now() - cachedAt : Infinity;
+
+  if (cached && age <= TECH_PROFILE_CACHE_TTL_MS) {
+    return {
+      ...cached,
+      uses_x_api: false,
+      cache: { status: "fresh", age_ms: age }
+    };
+  }
+
+  try {
+    const publicProfile = await fetchPublicXProfile(normalized, name);
+    const fresh = {
+      ...(publicProfile || {}),
+      handle: publicProfile && publicProfile.handle ? publicProfile.handle : normalized,
+      name: publicProfile && publicProfile.name ? publicProfile.name : (name || ""),
+      source: publicProfile && publicProfile.source ? publicProfile.source : "x_public_sources",
+      uses_x_api: false,
+      fetched_at: new Date().toISOString()
+    };
+    const usable = fresh && (
+      fresh.followers_count != null ||
+      fresh.following_count != null ||
+      fresh.created_at ||
+      fresh.url ||
+      fresh.profile_image_url
+    );
+    if (!usable) {
+      const err = new Error("x_public_profile_unavailable");
+      err.code = "x_public_profile_unavailable";
+      err.status = 502;
+      throw err;
+    }
+    await writeJson(env.PRO_DATA, key, fresh);
+    return { ...fresh, cache: { status: "refreshed", age_ms: 0 } };
+  } catch (err) {
+    if (cached && age <= TECH_PROFILE_MAX_STALE_MS) {
+      return {
+        ...cached,
+        uses_x_api: false,
+        cache: {
+          status: "stale",
+          age_ms: age,
+          reason: err && err.code ? err.code : "x_public_profile_error"
+        }
+      };
+    }
+    throw err;
+  }
+}
+
 async function getPublicXProfile(handle, name, env) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
@@ -1409,6 +1472,29 @@ export default {
       }
     }
 
+    if (url.pathname === "/v1/tech-leaders/free-profile") {
+      const handle = normalizeXHandle(url.searchParams.get("handle"));
+      const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
+      if (!handle) return json({ error: "invalid_profile_handle" }, 400, cors);
+      try {
+        const profile = await getFreePublicXProfile(handle, name, env);
+        return json(profile, 200, {
+          ...cors,
+          "cache-control": "public, max-age=300, stale-while-revalidate=3600",
+          "x-ooglex-source": profile.source || "x-public-sources",
+          "x-ooglex-x-api": "unused"
+        });
+      } catch (err) {
+        const code = err && err.code ? err.code : "x_public_profile_unavailable";
+        const status = err && Number.isInteger(err.status) ? err.status : 502;
+        return json({
+          error: code,
+          handle,
+          uses_x_api: false
+        }, status, { ...cors, "cache-control": "no-store", "x-ooglex-x-api": "unused" });
+      }
+    }
+
     if (url.pathname === "/v1/tech-leaders/profile") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
@@ -1464,6 +1550,11 @@ export default {
           sources: ["x_public_syndication", "fxtwitter_public_api"],
           uses_x_api: false,
           cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000)
+        },
+        free_mode_contract: {
+          calls_api_x_com: false,
+          free_profile_endpoint: "/v1/tech-leaders/free-profile",
+          free_feed_endpoint: "/v1/tech-leaders/free-feed"
         },
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
         avatar_policy: TECH_AVATAR_POLICY,
