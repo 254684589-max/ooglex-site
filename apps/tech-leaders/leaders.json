@@ -3439,7 +3439,10 @@
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
+      "leader_types": [
+        "founder",
+        "ceo"
+      ],
       "sector": "Information Technology",
       "themes": [
         "云计算",
@@ -3447,7 +3450,7 @@
         "数据中心"
       ],
       "x_identity_verified": true,
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam+Selipsky&company=Cloud+%26+Enterprise+Technology",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam+Selipsky&company=Helix+Digital+Infrastructure",
       "avatar_source": "Pending review · no verified portrait available",
       "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
