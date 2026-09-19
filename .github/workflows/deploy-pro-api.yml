@@ -164,6 +164,42 @@ jobs:
             fi
           done
 
+          media_url="$(python - <<'PY'
+import json, urllib.request
+url="https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=8"
+try:
+    data=json.load(urllib.request.urlopen(url, timeout=20))
+except Exception:
+    print("")
+    raise SystemExit
+for post in data.get("posts", []):
+    for m in post.get("media", []) or []:
+        candidate=m.get("url") or m.get("preview_image_url") or m.get("video_url")
+        if candidate:
+            print(candidate)
+            raise SystemExit
+print("")
+PY
+)"
+          if [ -n "$media_url" ]; then
+            proxy_url="$(python - "$media_url" <<'PY'
+import sys, urllib.parse
+print("https://pro-api.ooglex.com/v1/tech-leaders/media?url="+urllib.parse.quote(sys.argv[1], safe=""))
+PY
+)"
+            mcode="$(curl -sS -L --connect-timeout 5 --max-time 25 -o /tmp/ooglex-media-smoke.bin -w '%{http_code}' "$proxy_url")"
+            mtype="$(file -b --mime-type /tmp/ooglex-media-smoke.bin 2>/dev/null || true)"
+            rm -f /tmp/ooglex-media-smoke.bin
+            if [ "$mcode" = "200" ] || [ "$mcode" = "206" ]; then
+              echo "Media proxy OK for @sundarpichai (HTTP $mcode, $mtype)"
+            else
+              echo "::error::Media proxy failed for @sundarpichai (HTTP $mcode)"
+              failed=1
+            fi
+          else
+            echo "::warning::No media found in current @sundarpichai sample; media proxy smoke skipped."
+          fi
+
           status="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/status")"
           echo "$status" | grep -q '"calls_api_x_com":false' || failed=1
           if [ "$failed" -ne 0 ]; then
