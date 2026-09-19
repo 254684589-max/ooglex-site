@@ -188,3 +188,14 @@ Flow:
 6. If public syndication yields no usable posts, the browser automatically falls back to the existing official X Embed.
 
 This is intentionally an experimental free path because X public syndication is not a contractual API and its HTML/JSON structure can change. The paid `/v1/tech-leaders/feed` path remains separate and unchanged.
+
+
+## Free Native Feed V2 — 2026-09-19
+
+The first Cloudflare-to-X syndication smoke test returned HTTP 429, so the free experiment now uses a source ladder:
+
+1. X public syndication (official embed data, no X API credentials).
+2. FxEmbed/FxTwitter public API as a server-side fallback.
+3. Existing X official Embed in the browser if both native sources fail.
+
+The native route still never calls `api.x.com` and continues to return `uses_x_api: false`. The trial remains scoped to `@ZLQ6600E` before broader rollout.

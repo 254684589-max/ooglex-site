@@ -943,7 +943,114 @@ function parseSyndicationTimeline(html, handle, limit) {
   return posts.slice(0, limit);
 }
 
-async function fetchFreeTechLeaderFeed(handle, limit) {
+function normalizeFxTwitterMedia(status) {
+  const media = status && status.media && typeof status.media === "object" ? status.media : {};
+  const out = [];
+
+  const photos = Array.isArray(media.photos) ? media.photos : [];
+  for (const item of photos) {
+    if (!item || !item.url) continue;
+    out.push({
+      media_key: item.id || null,
+      type: "photo",
+      url: String(item.url),
+      preview_image_url: String(item.url),
+      width: item.width || null,
+      height: item.height || null
+    });
+  }
+
+  const videos = [];
+  if (Array.isArray(media.videos)) videos.push(...media.videos);
+  if (media.video && typeof media.video === "object") videos.push(media.video);
+  if (Array.isArray(media.gifs)) videos.push(...media.gifs);
+
+  for (const item of videos) {
+    if (!item || typeof item !== "object") continue;
+    const variants = Array.isArray(item.variants) ? item.variants : [];
+    const best = variants
+      .filter((v) => v && (v.src || v.url))
+      .sort((a, b) => Number(b.bitrate || 0) - Number(a.bitrate || 0))[0];
+    const poster = item.poster || item.thumbnail_url || item.preview_image_url || "";
+    out.push({
+      media_key: item.id || null,
+      type: item.contentType === "image/gif" || item.type === "gif" ? "animated_gif" : "video",
+      url: null,
+      preview_image_url: poster ? String(poster) : null,
+      video_url: best ? String(best.src || best.url) : null,
+      width: item.width || null,
+      height: item.height || null
+    });
+  }
+
+  return out;
+}
+
+function normalizeFxTwitterStatus(status, handle) {
+  if (!status || typeof status !== "object") return null;
+  const id = String(status.id || status.rest_id || "");
+  const text = String(status.text || status.full_text || "").trim();
+  if (!/^\d{10,25}$/.test(id) || !text) return null;
+  let createdAt = status.created_at || null;
+  if (!createdAt && Number.isFinite(Number(status.created_timestamp))) {
+    createdAt = new Date(Number(status.created_timestamp) * 1000).toISOString();
+  }
+  return {
+    id,
+    text,
+    created_at: createdAt,
+    lang: status.lang || null,
+    metrics: {
+      reply_count: Number(status.replies || 0),
+      repost_count: Number(status.reposts || status.retweets || 0),
+      retweet_count: Number(status.reposts || status.retweets || 0),
+      like_count: Number(status.likes || 0),
+      quote_count: Number(status.quotes || 0)
+    },
+    entities: { urls: [] },
+    media: normalizeFxTwitterMedia(status),
+    url: String(status.url || `https://x.com/${encodeURIComponent(handle)}/status/${id}`)
+  };
+}
+
+async function fetchFxTwitterFreeFeed(handle, limit) {
+  const count = Math.max(3, Math.min(20, limit || TECH_FEED_FETCH_SIZE));
+  const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?count=${count}`;
+  const res = await fetch(url, {
+    redirect: "follow",
+    headers: {
+      accept: "application/json",
+      "user-agent": "Ooglex-Tech-Leaders-Free-Feed/2.0"
+    }
+  });
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  if (!res.ok || !payload || Number(payload.code || res.status) >= 400) {
+    const err = new Error("fxtwitter_public_feed_error");
+    err.code = "fxtwitter_public_feed_error";
+    err.status = res.status || Number(payload && payload.code) || 502;
+    throw err;
+  }
+  const results = Array.isArray(payload.results) ? payload.results : [];
+  const posts = results.map((item) => normalizeFxTwitterStatus(item, handle)).filter(Boolean).slice(0, limit);
+  if (!posts.length) {
+    const err = new Error("fxtwitter_public_feed_empty");
+    err.code = "fxtwitter_public_feed_empty";
+    err.status = 502;
+    throw err;
+  }
+  return {
+    schema_version: 2,
+    source: "fxtwitter_public_api",
+    third_party: "FxEmbed/FxTwitter",
+    uses_x_api: false,
+    handle,
+    fetched_at: new Date().toISOString(),
+    posts
+  };
+}
+
+async function fetchOfficialSyndicationFreeFeed(handle, limit) {
   const params = new URLSearchParams({
     dnt: "true",
     frame: "false",
@@ -991,6 +1098,30 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
     fetched_at: new Date().toISOString(),
     posts
   };
+}
+
+async function fetchFreeTechLeaderFeed(handle, limit) {
+  let officialError = null;
+  try {
+    return await fetchOfficialSyndicationFreeFeed(handle, limit);
+  } catch (err) {
+    officialError = err;
+  }
+
+  try {
+    return await fetchFxTwitterFreeFeed(handle, limit);
+  } catch (fxErr) {
+    const err = new Error("free_public_feed_sources_unavailable");
+    err.code = "free_public_feed_sources_unavailable";
+    err.status = fxErr && Number.isInteger(fxErr.status) ? fxErr.status : 502;
+    err.detail = {
+      official_source: officialError && officialError.code ? officialError.code : "unknown",
+      official_status: officialError && officialError.status ? officialError.status : null,
+      fallback_source: fxErr && fxErr.code ? fxErr.code : "unknown",
+      fallback_status: fxErr && fxErr.status ? fxErr.status : null
+    };
+    throw err;
+  }
 }
 
 async function getFreeTechLeaderFeed(handle, limit, env) {
@@ -1262,7 +1393,7 @@ export default {
         return json(feed, 200, {
           ...cors,
           "cache-control": "public, max-age=120, stale-while-revalidate=600",
-          "x-ooglex-source": "x-public-syndication",
+          "x-ooglex-source": feed.source || "public-source",
           "x-ooglex-x-api": "unused"
         });
       } catch (err) {
@@ -1329,7 +1460,8 @@ export default {
         configured: Boolean(env.X_BEARER_TOKEN),
         free_feed: {
           enabled: true,
-          source: "x_public_syndication",
+          source: "public_source_ladder",
+          sources: ["x_public_syndication", "fxtwitter_public_api"],
           uses_x_api: false,
           cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000)
         },
