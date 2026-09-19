@@ -1,33 +1,33 @@
 {
   "contractVersion": 1,
   "dataset": "econ-calendar",
-  "generatedAt": "2026-09-19T15:59:47Z",
-  "status": "failed",
+  "generatedAt": "2026-09-19T21:43:26Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-19T15:59:47Z",
-  "lastSuccessfulAt": "2026-09-18T21:50:05Z",
-  "consecutiveFailures": 1,
-  "publishedSnapshotAt": "2026-09-18T21:50:05Z",
-  "snapshotPreserved": true,
-  "failureReason": "Forex Factory取数失败：ConnectionError",
+  "lastAttemptAt": "2026-09-19T21:43:26Z",
+  "lastSuccessfulAt": "2026-09-19T21:43:26Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-09-19T21:43:26Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
   "coverage": {
     "expectedComponents": 1,
     "publishedComponents": 1,
-    "refreshedComponents": 0,
+    "refreshedComponents": 1,
     "fallbackComponents": 0,
-    "unavailableComponents": 1,
+    "unavailableComponents": 0,
     "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "failed",
-    "published": false,
-    "refreshedComponents": [],
-    "fallbackComponents": [],
-    "unavailableComponents": [
+    "status": "success",
+    "published": true,
+    "refreshedComponents": [
       "weekly-calendar"
     ],
+    "fallbackComponents": [],
+    "unavailableComponents": [],
     "unknownComponents": []
   },
   "components": [
@@ -37,11 +37,11 @@
       "role": "primary",
       "frequency": "daily",
       "requiredForTerminal": true,
-      "status": "failed",
-      "mode": "unavailable",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-19T15:59:47Z",
-      "lastSuccessAt": "2026-09-18T21:50:05Z"
+      "lastAttemptAt": "2026-09-19T21:43:26Z",
+      "lastSuccessAt": "2026-09-19T21:43:26Z"
     }
   ],
   "policy": {
