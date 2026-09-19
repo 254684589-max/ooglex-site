@@ -157,12 +157,12 @@
     </header>
 
     <section class="hero">
-      <span class="kicker">Official X Embed · Free V4</span>
+      <span class="kicker">Native Free Feed · X Embed Fallback</span>
       <h1>科技领袖实时动态流</h1>
-      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。时间线默认使用 X 官方 Embed，不消耗时间线 API Credits；关注数、正在关注与加入时间使用后端缓存资料，优先公共源，必要时低频刷新 X 用户资料。标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
+      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。时间线默认优先读取 X 公开 syndication 并由 Ooglex 原生渲染，不调用 X API；公开源不可用时才回退 X 官方 Embed。关注数、正在关注与加入时间使用后端缓存资料，优先公共源，必要时低频刷新 X 用户资料。标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
-        <span class="fact" id="source-badge">X 时间线 Embed · $0 API</span>
+        <span class="fact" id="source-badge">免费公开时间线 · $0 X API</span>
         <span class="fact">单账号按需加载</span>
         <span class="fact" id="catalog-fact">100+ 位 · 十三大分类</span>
       </div>
@@ -213,7 +213,7 @@
     </section>
 
     <div class="about">
-      <b>免费模式：</b>X 时间线由官方 Embed 在浏览器中直接展示，不消耗时间线 API Credits；关注数、正在关注与加入时间由后端缓存资料提供，优先公共源，必要时每日最多刷新一次 X 用户资料。<br>
+      <b>免费模式：</b>优先由 Ooglex 后端读取 X 公开 syndication 并缓存后原生展示，不调用 X API、不消耗 X API Credits；公开源不可用时自动回退官方 Embed。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
       <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
@@ -335,7 +335,7 @@
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
     apiBtn.classList.toggle("on",MODE==="api");
-    sourceBadge.textContent=MODE==="free"?"X 时间线 Embed · $0 API":"Ooglex 后端 · X API";
+    sourceBadge.textContent=MODE==="free"?"免费公开时间线 · $0 X API":"Ooglex 后端 · X API";
   }
   function formatFollowingCount(value){
     var n=Number(value);
@@ -620,7 +620,7 @@
     if(!current||!current.handle){renderNoXTimeline();return;}
     rendered=false;
     activeIframe=null;
-    sourceBadge.textContent="X 时间线 Embed · $0 API";
+    sourceBadge.textContent="X Embed 回退 · $0 API";
     drawDiag();probeSyndication();buildOfficialAnchor();
     timeline.setAttribute("data-state","loading");
     activeObserver=new MutationObserver(function(){var frame=timeline.querySelector("iframe");if(frame)attachIframe(frame);});
@@ -703,6 +703,71 @@
     });
     target.appendChild(wrap);
     return true;
+  }
+
+  function renderFreeFeed(feed){
+    clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
+    sourceBadge.textContent="免费公开时间线 · $0 X API";
+    timeline.setAttribute("data-state","ready");timeline.innerHTML="";
+    renderLocalPosts(current,timeline);
+    var posts=Array.isArray(feed&&feed.posts)?feed.posts:[];
+    if(!posts.length){
+      var empty=document.createElement("div");empty.className="api-state";
+      empty.innerHTML="<b>公开时间线暂时没有可展示内容</b><div>正在回退到 X 官方 Embed。</div>";
+      timeline.appendChild(empty);
+      return false;
+    }
+    var wrap=document.createElement("div");wrap.className="api-feed free-native-feed";
+    posts.forEach(function(post){
+      var card=document.createElement("article");card.className="post-card";
+      var head=document.createElement("div");head.className="post-head";
+      var postAvatarSrc=avatarUrl(current);
+      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
+      var who=document.createElement("div");who.className="post-who";
+      var nameLine=document.createElement("div");nameLine.className="post-name-line";
+      var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
+      if(isVerifiedPerson(current)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
+      var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
+      var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
+
+      var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
+      if(Array.isArray(post.media)&&post.media.length){
+        var media=document.createElement("div");media.className="post-media";
+        post.media.forEach(function(m){var src=m.url||m.preview_image_url;if(!src)return;var im=document.createElement("img");im.loading="lazy";im.alt=m.type||"media";im.src=src;media.appendChild(im);});
+        if(media.childNodes.length)card.appendChild(media);
+      }
+      var foot=document.createElement("div");foot.className="post-foot";
+      var pm=post.metrics||{};
+      ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      var source=document.createElement("span");source.className="post-source";source.textContent="公开源 · $0 X API";foot.appendChild(source);
+      var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
+      card.appendChild(foot);wrap.appendChild(card);
+    });
+    timeline.appendChild(wrap);
+    return true;
+  }
+
+  async function bootFreeNativeFeed(){
+    if(!current||!current.handle){renderNoXTimeline();return;}
+    clearWatchers();rendered=false;activeIframe=null;xdiag.hidden=true;
+    sourceBadge.textContent="免费公开时间线 · $0 X API";
+    timeline.setAttribute("data-state","loading");timeline.innerHTML="";
+    renderLocalPosts(current,timeline);
+    var loading=document.createElement("div");loading.className="api-state";loading.innerHTML="<b>正在读取免费公开时间线</b><div>不调用 X API，不消耗 X API Credits。</div>";timeline.appendChild(loading);
+    try{
+      var ctl=new AbortController();
+      var timer=setTimeout(function(){ctl.abort();},12000);
+      try{
+        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit=8",{signal:ctl.signal,cache:"no-store"});
+        var data=await res.json().catch(function(){return {};});
+        if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
+        renderFreeFeed(data);
+        return;
+      }finally{clearTimeout(timer);}
+    }catch(e){
+      sourceBadge.textContent="X Embed 回退 · $0 API";
+      bootEmbed();
+    }
   }
 
   function renderApiFeed(feed){
@@ -807,7 +872,7 @@
   (async function start(){
     setModeUi();
     await loadCatalog();
-    if(MODE==="api")bootApi();else bootEmbed();
+    if(MODE==="api")bootApi();else bootFreeNativeFeed();
   })();
 })();
 </script>
