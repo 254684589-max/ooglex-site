@@ -195,6 +195,8 @@
     "云计算 / 企业科技": "Cloud & Enterprise Technology",
     "云计算 / 企业科技 · Cloud & Enterprise Technology": "Cloud & Enterprise Technology",
     "云计算 / 企业科技 · Cloud & Enterprise Technology · 科技高管": "Cloud & Enterprise Technology · Technology executive",
+    "Helix 数字基础设施 · Helix Digital Infrastructure": "Helix Digital Infrastructure",
+    "Helix 数字基础设施 · Helix Digital Infrastructure · 联合创始人兼 CEO": "Helix Digital Infrastructure · Co-founder & CEO",
     "亚伦·莱维": "Aaron Levie",
     "亚历克西斯·奥哈尼安": "Alexis Ohanian",
     "亚历山大·王": "Alexandr Wang",
