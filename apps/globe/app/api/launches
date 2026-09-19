@@ -1,5 +1,5 @@
 {
- "count": 27,
+ "count": 28,
  "next": null,
  "previous": null,
  "results": [
@@ -118,11 +118,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 95,
+    "total_launch_count": 96,
     "consecutive_successful_launches": 54,
     "successful_launches": 91,
     "failed_launches": 4,
-    "pending_launches": 43,
+    "pending_launches": 42,
     "consecutive_successful_landings": 4,
     "successful_landings": 7,
     "failed_landings": 2,
@@ -221,11 +221,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 95,
+      "total_launch_count": 96,
       "consecutive_successful_launches": 54,
       "successful_launches": 91,
       "failed_launches": 4,
-      "pending_launches": 43,
+      "pending_launches": 42,
       "consecutive_successful_landings": 4,
       "successful_landings": 7,
       "failed_landings": 2,
@@ -274,11 +274,11 @@
      "sso_capacity": 225.0,
      "to_thrust": 162.0,
      "apogee": null,
-     "total_launch_count": 95,
+     "total_launch_count": 96,
      "consecutive_successful_launches": 54,
      "successful_launches": 91,
      "failed_launches": 4,
-     "pending_launches": 40,
+     "pending_launches": 39,
      "attempted_landings": 9,
      "successful_landings": 7,
      "failed_landings": 2,
@@ -556,8 +556,8 @@
      "nationality_name_composed": "Kiwi"
     },
     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_185_20200803143540.jpg",
-    "total_launch_count": 39,
-    "orbital_launch_attempt_count": 39,
+    "total_launch_count": 40,
+    "orbital_launch_attempt_count": 40,
     "fastest_turnaround": "P7DT3H27M",
     "location": {
      "response_mode": "normal",
@@ -594,8 +594,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -630,7 +630,7 @@
      "longitude": 177.86586,
      "latitude": -39.26085,
      "timezone_name": "Pacific/Auckland",
-     "total_launch_count": 82,
+     "total_launch_count": 83,
      "total_landing_count": 17
     }
    },
@@ -1016,7 +1016,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -1203,7 +1203,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -1310,7 +1310,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -1397,7 +1397,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -1584,7 +1584,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -1671,7 +1671,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -1951,7 +1951,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -2176,7 +2176,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -2426,8 +2426,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -3088,7 +3088,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -3275,7 +3275,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -3382,7 +3382,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -3469,7 +3469,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -3656,7 +3656,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -3743,7 +3743,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -4023,7 +4023,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -4248,7 +4248,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -4424,8 +4424,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -4921,9 +4921,9 @@
   {
    "id": "458e2e52-87b0-4707-96d8-6899f92e53ee",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/458e2e52-87b0-4707-96d8-6899f92e53ee/",
-   "name": "Soyuz 2.1b/Fregat | Glonass-K1 No. 19",
+   "name": "Soyuz 2.1b/Fregat | Glonass-K1 No. 23 (Kosmos 2619)",
    "response_mode": "detailed",
-   "slug": "soyuz-21bfregat-glonass-k1-no-19",
+   "slug": "soyuz-21bfregat-glonass-k1-no-23-kosmos-2619",
    "launch_designator": "2026-194",
    "status": {
     "id": 3,
@@ -4931,7 +4931,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-09-13T02:06:10Z",
+   "last_updated": "2026-09-19T00:21:33Z",
    "net": "2026-08-24T02:40:00Z",
    "net_precision": {
     "id": 1,
@@ -5133,11 +5133,11 @@
        "description": "",
        "active": true,
        "maiden_flight": "1965-12-27",
-       "total_launch_count": 1042,
-       "consecutive_successful_launches": 138,
-       "successful_launches": 1011,
+       "total_launch_count": 1043,
+       "consecutive_successful_launches": 139,
+       "successful_launches": 1012,
        "failed_launches": 31,
-       "pending_launches": 5,
+       "pending_launches": 4,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -5268,11 +5268,11 @@
        "description": "",
        "active": true,
        "maiden_flight": "2004-11-08",
-       "total_launch_count": 209,
-       "consecutive_successful_launches": 138,
-       "successful_launches": 202,
+       "total_launch_count": 210,
+       "consecutive_successful_launches": 139,
+       "successful_launches": 203,
        "failed_launches": 7,
-       "pending_launches": 5,
+       "pending_launches": 4,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -5397,9 +5397,9 @@
    },
    "mission": {
     "id": 6707,
-    "name": "Glonass-K1 No. 19",
+    "name": "Glonass-K1 No. 23 (Kosmos 2619)",
     "type": "Navigation",
-    "description": "Note: Payload identity not confirmed.\r\n\r\nGlonass-K are the third generation of satellite design for GLONASS satellite navigation system. GLONASS is a Russian space-based navigation system comparable to the similar GPS and Galileo systems. This generation improves on accuracy, power consumption and design life. Each satellite is unpressurized and weighs 935 kg,  and has an operational lifetime of 10 years.",
+    "description": "Glonass-K are the third generation of satellite design for GLONASS satellite navigation system. GLONASS is a Russian space-based navigation system comparable to the similar GPS and Galileo systems. This generation improves on accuracy, power consumption and design life. Each satellite is unpressurized and weighs 935 kg,  and has an operational lifetime of 10 years.",
     "image": null,
     "orbit": {
      "id": 12,
@@ -5613,8 +5613,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -5831,7 +5831,7 @@
     "consecutive_successful_launches": 5,
     "successful_launches": 598,
     "failed_launches": 16,
-    "pending_launches": 9,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -5935,7 +5935,7 @@
          "consecutive_successful_launches": 5,
          "successful_launches": 598,
          "failed_launches": 16,
-         "pending_launches": 9,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -5959,7 +5959,7 @@
        "consecutive_successful_launches": 5,
        "successful_launches": 647,
        "failed_launches": 20,
-       "pending_launches": 9,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -6046,7 +6046,7 @@
          "consecutive_successful_launches": 5,
          "successful_launches": 598,
          "failed_launches": 16,
-         "pending_launches": 9,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -6150,7 +6150,7 @@
        "consecutive_successful_launches": 43,
        "successful_launches": 43,
        "failed_launches": 0,
-       "pending_launches": 0,
+       "pending_launches": 1,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -6237,7 +6237,7 @@
       "consecutive_successful_launches": 5,
       "successful_launches": 598,
       "failed_launches": 16,
-      "pending_launches": 9,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -6395,8 +6395,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -6589,7 +6589,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -6776,7 +6776,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -6883,7 +6883,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -6970,7 +6970,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -7157,7 +7157,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -7244,7 +7244,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -7524,7 +7524,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -7749,7 +7749,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -7999,8 +7999,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -8296,17 +8296,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -8328,17 +8328,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -8612,7 +8612,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -8799,7 +8799,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -8906,7 +8906,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -8993,7 +8993,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -9180,7 +9180,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -9267,7 +9267,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -9547,7 +9547,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -9772,7 +9772,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -9948,8 +9948,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -10240,17 +10240,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -10884,7 +10884,7 @@
        "consecutive_successful_launches": 29,
        "successful_launches": 258,
        "failed_launches": 12,
-       "pending_launches": 27,
+       "pending_launches": 31,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -11192,7 +11192,7 @@
        "consecutive_successful_launches": 9,
        "successful_launches": 9,
        "failed_launches": 0,
-       "pending_launches": 27,
+       "pending_launches": 31,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -11497,76 +11497,20 @@
       "featured": false,
       "country": [
        {
-        "id": 11,
-        "name": "Austria",
-        "alpha_2_code": "AT",
-        "alpha_3_code": "AUT",
-        "nationality_name": "Austrian",
-        "nationality_name_composed": "Austro"
-       },
-       {
-        "id": 20,
-        "name": "Belgium",
-        "alpha_2_code": "BE",
-        "alpha_3_code": "BEL",
-        "nationality_name": "Belgian",
-        "nationality_name_composed": "Belgo"
-       },
-       {
-        "id": 40,
-        "name": "Bulgaria",
-        "alpha_2_code": "BG",
-        "alpha_3_code": "BGR",
-        "nationality_name": "Bulgarian",
-        "nationality_name_composed": "Bulgaro"
-       },
-       {
-        "id": 54,
-        "name": "Croatia",
-        "alpha_2_code": "HR",
-        "alpha_3_code": "HRV",
-        "nationality_name": "Croatian",
-        "nationality_name_composed": "Croatian"
-       },
-       {
-        "id": 46,
-        "name": "Czechia",
-        "alpha_2_code": "CZ",
-        "alpha_3_code": "CZE",
-        "nationality_name": "Czech",
-        "nationality_name_composed": "Czech"
-       },
-       {
-        "id": 45,
-        "name": "Denmark",
-        "alpha_2_code": "DK",
-        "alpha_3_code": "DNK",
-        "nationality_name": "Danish",
-        "nationality_name_composed": "Dano"
-       },
-       {
-        "id": 80,
-        "name": "Estonia",
-        "alpha_2_code": "EE",
-        "alpha_3_code": "EST",
-        "nationality_name": "Estonian",
-        "nationality_name_composed": "Estonian"
-       },
-       {
-        "id": 77,
-        "name": "Finland",
-        "alpha_2_code": "FI",
-        "alpha_3_code": "FIN",
-        "nationality_name": "Finnish",
-        "nationality_name_composed": "Finno"
-       },
-       {
         "id": 1,
         "name": "France",
         "alpha_2_code": "FR",
         "alpha_3_code": "FRA",
         "nationality_name": "French",
         "nationality_name_composed": "Franco"
+       },
+       {
+        "id": 3,
+        "name": "Italy",
+        "alpha_2_code": "IT",
+        "alpha_3_code": "ITA",
+        "nationality_name": "Italian",
+        "nationality_name_composed": "Italo"
        },
        {
         "id": 4,
@@ -11577,12 +11521,76 @@
         "nationality_name_composed": "Germano"
        },
        {
-        "id": 78,
-        "name": "Greece",
-        "alpha_2_code": "GR",
-        "alpha_3_code": "GRC",
-        "nationality_name": "Greek",
-        "nationality_name_composed": "Greco"
+        "id": 7,
+        "name": "Spain",
+        "alpha_2_code": "ES",
+        "alpha_3_code": "ESP",
+        "nationality_name": "Spanish",
+        "nationality_name_composed": "Hispano"
+       },
+       {
+        "id": 8,
+        "name": "Switzerland",
+        "alpha_2_code": "CH",
+        "alpha_3_code": "CHE",
+        "nationality_name": "Swiss",
+        "nationality_name_composed": "Swiss"
+       },
+       {
+        "id": 10,
+        "name": "United Kingdom",
+        "alpha_2_code": "GB",
+        "alpha_3_code": "GBR",
+        "nationality_name": "British",
+        "nationality_name_composed": "Brito"
+       },
+       {
+        "id": 11,
+        "name": "Austria",
+        "alpha_2_code": "AT",
+        "alpha_3_code": "AUT",
+        "nationality_name": "Austrian",
+        "nationality_name_composed": "Austro"
+       },
+       {
+        "id": 15,
+        "name": "Sweden",
+        "alpha_2_code": "SE",
+        "alpha_3_code": "SWE",
+        "nationality_name": "Swedish",
+        "nationality_name_composed": "Swedo"
+       },
+       {
+        "id": 18,
+        "name": "Turkey",
+        "alpha_2_code": "TR",
+        "alpha_3_code": "TUR",
+        "nationality_name": "Turkish",
+        "nationality_name_composed": "Turco"
+       },
+       {
+        "id": 20,
+        "name": "Belgium",
+        "alpha_2_code": "BE",
+        "alpha_3_code": "BEL",
+        "nationality_name": "Belgian",
+        "nationality_name_composed": "Belgo"
+       },
+       {
+        "id": 23,
+        "name": "Portugal",
+        "alpha_2_code": "PT",
+        "alpha_3_code": "PRT",
+        "nationality_name": "Portuguese",
+        "nationality_name_composed": "Luso"
+       },
+       {
+        "id": 27,
+        "name": "Netherlands",
+        "alpha_2_code": "NL",
+        "alpha_3_code": "NLD",
+        "nationality_name": "Dutch",
+        "nationality_name_composed": "Dutch"
        },
        {
         "id": 31,
@@ -11591,6 +11599,94 @@
         "alpha_3_code": "HUN",
         "nationality_name": "Hungarian",
         "nationality_name_composed": "Hungarian"
+       },
+       {
+        "id": 39,
+        "name": "Poland",
+        "alpha_2_code": "PL",
+        "alpha_3_code": "POL",
+        "nationality_name": "Polish",
+        "nationality_name_composed": "Polono"
+       },
+       {
+        "id": 40,
+        "name": "Bulgaria",
+        "alpha_2_code": "BG",
+        "alpha_3_code": "BGR",
+        "nationality_name": "Bulgarian",
+        "nationality_name_composed": "Bulgaro"
+       },
+       {
+        "id": 43,
+        "name": "Slovakia",
+        "alpha_2_code": "SK",
+        "alpha_3_code": "SVK",
+        "nationality_name": "Slovak",
+        "nationality_name_composed": "Slovak"
+       },
+       {
+        "id": 45,
+        "name": "Denmark",
+        "alpha_2_code": "DK",
+        "alpha_3_code": "DNK",
+        "nationality_name": "Danish",
+        "nationality_name_composed": "Dano"
+       },
+       {
+        "id": 46,
+        "name": "Czechia",
+        "alpha_2_code": "CZ",
+        "alpha_3_code": "CZE",
+        "nationality_name": "Czech",
+        "nationality_name_composed": "Czech"
+       },
+       {
+        "id": 47,
+        "name": "Romania",
+        "alpha_2_code": "RO",
+        "alpha_3_code": "ROU",
+        "nationality_name": "Romanian",
+        "nationality_name_composed": "Romanian"
+       },
+       {
+        "id": 49,
+        "name": "Norway",
+        "alpha_2_code": "NO",
+        "alpha_3_code": "NOR",
+        "nationality_name": "Norwegian",
+        "nationality_name_composed": "Norwegian"
+       },
+       {
+        "id": 54,
+        "name": "Croatia",
+        "alpha_2_code": "HR",
+        "alpha_3_code": "HRV",
+        "nationality_name": "Croatian",
+        "nationality_name_composed": "Croatian"
+       },
+       {
+        "id": 77,
+        "name": "Finland",
+        "alpha_2_code": "FI",
+        "alpha_3_code": "FIN",
+        "nationality_name": "Finnish",
+        "nationality_name_composed": "Finno"
+       },
+       {
+        "id": 78,
+        "name": "Greece",
+        "alpha_2_code": "GR",
+        "alpha_3_code": "GRC",
+        "nationality_name": "Greek",
+        "nationality_name_composed": "Greco"
+       },
+       {
+        "id": 80,
+        "name": "Estonia",
+        "alpha_2_code": "EE",
+        "alpha_3_code": "EST",
+        "nationality_name": "Estonian",
+        "nationality_name_composed": "Estonian"
        },
        {
         "id": 81,
@@ -11607,14 +11703,6 @@
         "alpha_3_code": "ISL",
         "nationality_name": "Icelander",
         "nationality_name_composed": "Icelandic"
-       },
-       {
-        "id": 3,
-        "name": "Italy",
-        "alpha_2_code": "IT",
-        "alpha_3_code": "ITA",
-        "nationality_name": "Italian",
-        "nationality_name_composed": "Italo"
        },
        {
         "id": 83,
@@ -11641,100 +11729,12 @@
         "nationality_name_composed": "Luxembourgish"
        },
        {
-        "id": 27,
-        "name": "Netherlands",
-        "alpha_2_code": "NL",
-        "alpha_3_code": "NLD",
-        "nationality_name": "Dutch",
-        "nationality_name_composed": "Dutch"
-       },
-       {
-        "id": 49,
-        "name": "Norway",
-        "alpha_2_code": "NO",
-        "alpha_3_code": "NOR",
-        "nationality_name": "Norwegian",
-        "nationality_name_composed": "Norwegian"
-       },
-       {
-        "id": 39,
-        "name": "Poland",
-        "alpha_2_code": "PL",
-        "alpha_3_code": "POL",
-        "nationality_name": "Polish",
-        "nationality_name_composed": "Polono"
-       },
-       {
-        "id": 23,
-        "name": "Portugal",
-        "alpha_2_code": "PT",
-        "alpha_3_code": "PRT",
-        "nationality_name": "Portuguese",
-        "nationality_name_composed": "Luso"
-       },
-       {
-        "id": 47,
-        "name": "Romania",
-        "alpha_2_code": "RO",
-        "alpha_3_code": "ROU",
-        "nationality_name": "Romanian",
-        "nationality_name_composed": "Romanian"
-       },
-       {
-        "id": 43,
-        "name": "Slovakia",
-        "alpha_2_code": "SK",
-        "alpha_3_code": "SVK",
-        "nationality_name": "Slovak",
-        "nationality_name_composed": "Slovak"
-       },
-       {
         "id": 86,
         "name": "Slovenia",
         "alpha_2_code": "SI",
         "alpha_3_code": "SVN",
         "nationality_name": "Slovenian",
         "nationality_name_composed": "Slovenian"
-       },
-       {
-        "id": 7,
-        "name": "Spain",
-        "alpha_2_code": "ES",
-        "alpha_3_code": "ESP",
-        "nationality_name": "Spanish",
-        "nationality_name_composed": "Hispano"
-       },
-       {
-        "id": 15,
-        "name": "Sweden",
-        "alpha_2_code": "SE",
-        "alpha_3_code": "SWE",
-        "nationality_name": "Swedish",
-        "nationality_name_composed": "Swedo"
-       },
-       {
-        "id": 8,
-        "name": "Switzerland",
-        "alpha_2_code": "CH",
-        "alpha_3_code": "CHE",
-        "nationality_name": "Swiss",
-        "nationality_name_composed": "Swiss"
-       },
-       {
-        "id": 18,
-        "name": "Turkey",
-        "alpha_2_code": "TR",
-        "alpha_3_code": "TUR",
-        "nationality_name": "Turkish",
-        "nationality_name_composed": "Turco"
-       },
-       {
-        "id": 10,
-        "name": "United Kingdom",
-        "alpha_2_code": "GB",
-        "alpha_3_code": "GBR",
-        "nationality_name": "British",
-        "nationality_name_composed": "Brito"
        }
       ],
       "description": "The European Organisation for the Exploitation of Meteorological Satellites (EUMETSAT) is an intergovernmental organisation created through an international convention agreed by a current total of 30 European Member States.\r\n\r\nEUMETSAT's primary objective is to establish, maintain and exploit European systems of operational meteorological satellites. EUMETSAT is responsible for the launch and operation of the satellites and for delivering satellite data to end-users as well as contributing to the operational monitoring of climate and the detection of global climate changes.",
@@ -12083,8 +12083,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -12542,7 +12542,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -12729,7 +12729,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -12836,7 +12836,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -12923,7 +12923,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -13843,8 +13843,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -14931,8 +14931,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -15160,7 +15160,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -15347,7 +15347,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -15454,7 +15454,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -15541,7 +15541,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -15728,7 +15728,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -15815,7 +15815,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -16095,7 +16095,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -16320,7 +16320,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -16496,8 +16496,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -16817,17 +16817,17 @@
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
@@ -17097,11 +17097,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 95,
+    "total_launch_count": 96,
     "consecutive_successful_launches": 54,
     "successful_launches": 91,
     "failed_launches": 4,
-    "pending_launches": 43,
+    "pending_launches": 42,
     "consecutive_successful_landings": 4,
     "successful_landings": 7,
     "failed_landings": 2,
@@ -17200,11 +17200,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 95,
+      "total_launch_count": 96,
       "consecutive_successful_launches": 54,
       "successful_launches": 91,
       "failed_launches": 4,
-      "pending_launches": 43,
+      "pending_launches": 42,
       "consecutive_successful_landings": 4,
       "successful_landings": 7,
       "failed_landings": 2,
@@ -17253,11 +17253,11 @@
      "sso_capacity": 225.0,
      "to_thrust": 162.0,
      "apogee": null,
-     "total_launch_count": 95,
+     "total_launch_count": 96,
      "consecutive_successful_launches": 54,
      "successful_launches": 91,
      "failed_launches": 4,
-     "pending_launches": 40,
+     "pending_launches": 39,
      "attempted_landings": 9,
      "successful_landings": 7,
      "failed_landings": 2,
@@ -17493,8 +17493,8 @@
      "nationality_name_composed": "Kiwi"
     },
     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_185_20200803143540.jpg",
-    "total_launch_count": 39,
-    "orbital_launch_attempt_count": 39,
+    "total_launch_count": 40,
+    "orbital_launch_attempt_count": 40,
     "fastest_turnaround": "P7DT3H27M",
     "location": {
      "response_mode": "normal",
@@ -17531,8 +17531,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -17567,7 +17567,7 @@
      "longitude": 177.86586,
      "latitude": -39.26085,
      "timezone_name": "Pacific/Auckland",
-     "total_launch_count": 82,
+     "total_launch_count": 83,
      "total_landing_count": 17
     }
    },
@@ -18564,8 +18564,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -19387,8 +19387,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -19989,7 +19989,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -20176,7 +20176,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -20283,7 +20283,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -20370,7 +20370,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -20557,7 +20557,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -20644,7 +20644,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -20924,7 +20924,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -21149,7 +21149,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -21325,8 +21325,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -21609,17 +21609,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -21641,17 +21641,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -21925,7 +21925,7 @@
     "consecutive_successful_launches": 5,
     "successful_launches": 598,
     "failed_launches": 16,
-    "pending_launches": 9,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -22029,7 +22029,7 @@
          "consecutive_successful_launches": 5,
          "successful_launches": 598,
          "failed_launches": 16,
-         "pending_launches": 9,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -22053,7 +22053,7 @@
        "consecutive_successful_launches": 5,
        "successful_launches": 647,
        "failed_launches": 20,
-       "pending_launches": 9,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -22140,7 +22140,7 @@
          "consecutive_successful_launches": 5,
          "successful_launches": 598,
          "failed_launches": 16,
-         "pending_launches": 9,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -22331,7 +22331,7 @@
       "consecutive_successful_launches": 5,
       "successful_launches": 598,
       "failed_launches": 16,
-      "pending_launches": 9,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -22489,8 +22489,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -22691,7 +22691,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -22878,7 +22878,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -22985,7 +22985,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -23072,7 +23072,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -23259,7 +23259,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -23346,7 +23346,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -23626,7 +23626,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -23930,8 +23930,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -24403,11 +24403,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 95,
+    "total_launch_count": 96,
     "consecutive_successful_launches": 54,
     "successful_launches": 91,
     "failed_launches": 4,
-    "pending_launches": 43,
+    "pending_launches": 42,
     "consecutive_successful_landings": 4,
     "successful_landings": 7,
     "failed_landings": 2,
@@ -24506,11 +24506,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 95,
+      "total_launch_count": 96,
       "consecutive_successful_launches": 54,
       "successful_launches": 91,
       "failed_launches": 4,
-      "pending_launches": 43,
+      "pending_launches": 42,
       "consecutive_successful_landings": 4,
       "successful_landings": 7,
       "failed_landings": 2,
@@ -24559,11 +24559,11 @@
      "sso_capacity": 225.0,
      "to_thrust": 162.0,
      "apogee": null,
-     "total_launch_count": 95,
+     "total_launch_count": 96,
      "consecutive_successful_launches": 54,
      "successful_launches": 91,
      "failed_launches": 4,
-     "pending_launches": 40,
+     "pending_launches": 39,
      "attempted_landings": 9,
      "successful_landings": 7,
      "failed_landings": 2,
@@ -24820,8 +24820,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -24856,7 +24856,7 @@
      "longitude": 177.86586,
      "latitude": -39.26085,
      "timezone_name": "Pacific/Auckland",
-     "total_launch_count": 82,
+     "total_launch_count": 83,
      "total_landing_count": 17
     }
    },
@@ -25059,7 +25059,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -25246,7 +25246,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -25353,7 +25353,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -25440,7 +25440,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -25627,7 +25627,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -25714,7 +25714,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -25994,7 +25994,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -26344,8 +26344,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -26609,17 +26609,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -27544,6 +27544,14 @@
         "nationality_name_composed": "Swedo"
        },
        {
+        "id": 20,
+        "name": "Belgium",
+        "alpha_2_code": "BE",
+        "alpha_3_code": "BEL",
+        "nationality_name": "Belgian",
+        "nationality_name_composed": "Belgo"
+       },
+       {
         "id": 23,
         "name": "Portugal",
         "alpha_2_code": "PT",
@@ -27646,14 +27654,6 @@
         "alpha_3_code": "LUX",
         "nationality_name": "Luxembourger",
         "nationality_name_composed": "Luxembourgish"
-       },
-       {
-        "id": 20,
-        "name": "Belgium",
-        "alpha_2_code": "BE",
-        "alpha_3_code": "BEL",
-        "nationality_name": "Belgian",
-        "nationality_name_composed": "Belgo"
        },
        {
         "id": 86,
@@ -28010,8 +28010,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -28993,8 +28993,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -29480,8 +29480,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -29770,11 +29770,11 @@
        "description": "",
        "active": true,
        "maiden_flight": "1965-12-27",
-       "total_launch_count": 1042,
-       "consecutive_successful_launches": 138,
-       "successful_launches": 1011,
+       "total_launch_count": 1043,
+       "consecutive_successful_launches": 139,
+       "successful_launches": 1012,
        "failed_launches": 31,
-       "pending_launches": 5,
+       "pending_launches": 4,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -29905,11 +29905,11 @@
        "description": "",
        "active": true,
        "maiden_flight": "2004-11-08",
-       "total_launch_count": 209,
-       "consecutive_successful_launches": 138,
-       "successful_launches": 202,
+       "total_launch_count": 210,
+       "consecutive_successful_launches": 139,
+       "successful_launches": 203,
        "failed_launches": 7,
-       "pending_launches": 5,
+       "pending_launches": 4,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -30218,8 +30218,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -30670,7 +30670,7 @@
     "consecutive_successful_launches": 5,
     "successful_launches": 598,
     "failed_launches": 16,
-    "pending_launches": 9,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -30774,7 +30774,7 @@
          "consecutive_successful_launches": 5,
          "successful_launches": 598,
          "failed_launches": 16,
-         "pending_launches": 9,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -30798,7 +30798,7 @@
        "consecutive_successful_launches": 5,
        "successful_launches": 647,
        "failed_launches": 20,
-       "pending_launches": 9,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -30885,7 +30885,7 @@
          "consecutive_successful_launches": 5,
          "successful_launches": 598,
          "failed_launches": 16,
-         "pending_launches": 9,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -31076,7 +31076,7 @@
       "consecutive_successful_launches": 5,
       "successful_launches": 598,
       "failed_launches": 16,
-      "pending_launches": 9,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -31220,8 +31220,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -31452,7 +31452,7 @@
     "consecutive_successful_launches": 214,
     "successful_launches": 714,
     "failed_launches": 15,
-    "pending_launches": 125,
+    "pending_launches": 128,
     "consecutive_successful_landings": 22,
     "successful_landings": 673,
     "failed_landings": 29,
@@ -31639,7 +31639,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -31746,7 +31746,7 @@
        "consecutive_successful_launches": 337,
        "successful_launches": 700,
        "failed_launches": 7,
-       "pending_launches": 121,
+       "pending_launches": 124,
        "attempted_landings": 680,
        "successful_landings": 662,
        "failed_landings": 19,
@@ -31833,7 +31833,7 @@
          "consecutive_successful_launches": 214,
          "successful_launches": 714,
          "failed_launches": 15,
-         "pending_launches": 125,
+         "pending_launches": 128,
          "consecutive_successful_landings": 22,
          "successful_landings": 673,
          "failed_landings": 29,
@@ -32020,7 +32020,7 @@
        "consecutive_successful_launches": 334,
        "successful_launches": 685,
        "failed_launches": 4,
-       "pending_launches": 108,
+       "pending_launches": 111,
        "attempted_landings": 653,
        "successful_landings": 639,
        "failed_landings": 15,
@@ -32107,7 +32107,7 @@
       "consecutive_successful_launches": 214,
       "successful_launches": 714,
       "failed_launches": 15,
-      "pending_launches": 125,
+      "pending_launches": 128,
       "consecutive_successful_landings": 22,
       "successful_landings": 673,
       "failed_landings": 29,
@@ -32387,7 +32387,7 @@
      "consecutive_successful_launches": 334,
      "successful_launches": 631,
      "failed_launches": 1,
-     "pending_launches": 108,
+     "pending_launches": 111,
      "attempted_landings": 622,
      "successful_landings": 617,
      "failed_landings": 5,
@@ -32691,8 +32691,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -32935,17 +32935,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -33457,8 +33457,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -33535,9 +33535,9 @@
   {
    "id": "ab3c1e6c-03fe-48a7-b6ce-30c79569bdfb",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/ab3c1e6c-03fe-48a7-b6ce-30c79569bdfb/",
-   "name": "Soyuz 2.1b/Fregat | Kosmos (Unknown Payload)",
+   "name": "Soyuz 2.1b/Fregat | Glonass-K1 No. 20 (?)",
    "response_mode": "detailed",
-   "slug": "soyuz-21bfregat-kosmos-unknown-payload",
+   "slug": "soyuz-21bfregat-glonass-k1-no-20",
    "launch_designator": "2026-216",
    "status": {
     "id": 3,
@@ -33545,7 +33545,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-09-18T07:36:15Z",
+   "last_updated": "2026-09-18T13:37:26Z",
    "net": "2026-09-17T16:50:00Z",
    "net_precision": {
     "id": 2,
@@ -33747,11 +33747,11 @@
        "description": "",
        "active": true,
        "maiden_flight": "1965-12-27",
-       "total_launch_count": 1042,
-       "consecutive_successful_launches": 138,
-       "successful_launches": 1011,
+       "total_launch_count": 1043,
+       "consecutive_successful_launches": 139,
+       "successful_launches": 1012,
        "failed_launches": 31,
-       "pending_launches": 5,
+       "pending_launches": 4,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -33882,11 +33882,11 @@
        "description": "",
        "active": true,
        "maiden_flight": "2004-11-08",
-       "total_launch_count": 209,
-       "consecutive_successful_launches": 138,
-       "successful_launches": 202,
+       "total_launch_count": 210,
+       "consecutive_successful_launches": 139,
+       "successful_launches": 203,
        "failed_launches": 7,
-       "pending_launches": 5,
+       "pending_launches": 4,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -34011,21 +34011,113 @@
    },
    "mission": {
     "id": 7705,
-    "name": "Kosmos (Unknown Payload)",
-    "type": "Government/Top Secret",
-    "description": "Note: Launch vehicle and payload identities not confirmed. Launch time is approximate.\r\n\r\nUnknown classified satellite(s) for the Russian military.",
+    "name": "Glonass-K1 No. 20 (?)",
+    "type": "Navigation",
+    "description": "Note: Satellite serial number and Cosmos designation not confirmed.\r\n\r\nGlonass-K are the third generation of satellite design for GLONASS satellite navigation system. GLONASS is a Russian space-based navigation system comparable to the similar GPS and Galileo systems. This generation improves on accuracy, power consumption and design life. Each satellite is unpressurized and weighs 935 kg,  and has an operational lifetime of 10 years.",
     "image": null,
     "orbit": {
-     "id": 25,
-     "name": "Unknown",
-     "abbrev": "N/A",
+     "id": 12,
+     "name": "Medium Earth Orbit",
+     "abbrev": "MEO",
      "celestial_body": {
       "response_mode": "list",
       "id": 1,
       "name": "Earth"
      }
     },
-    "agencies": [],
+    "agencies": [
+     {
+      "response_mode": "normal",
+      "id": 193,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/193/",
+      "name": "Russian Space Forces",
+      "abbrev": "VKS",
+      "type": {
+       "id": 1,
+       "name": "Government"
+      },
+      "featured": false,
+      "country": [
+       {
+        "id": 5,
+        "name": "Russia",
+        "alpha_2_code": "RU",
+        "alpha_3_code": "RUS",
+        "nationality_name": "Russian",
+        "nationality_name_composed": "Russo"
+       }
+      ],
+      "description": "The Russian Space Forces are a branch of the Russian Aerospace Forces, that provides aerospace warning, air sovereignty, and protection for Russia. Having been reestablished following August 1, 2015 merger between the Russian Air Force and the Russian Aerospace Defence Forces after a 2011 dissolving of the branch. The Russian Space Forces were originally formed on August 10, 1992 and the creation of the Russian Armed Forces.",
+      "administrator": "Commander: Aleksandr Golovko",
+      "founding_year": 1992,
+      "launchers": "",
+      "spacecraft": "",
+      "parent": "Russian Federal Space Agency (ROSCOSMOS)",
+      "image": {
+       "id": 26,
+       "name": "[AUTO] Russian Space Forces - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_image_20191210085547.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184656.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 178,
+       "name": "[AUTO] Russian Space Forces - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_logo_20200805185824.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185120.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 90,
+       "name": "[AUTO] Russian Space Forces - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_nation_20230805154528.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184843.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 158,
+      "consecutive_successful_launches": 70,
+      "successful_launches": 150,
+      "failed_launches": 8,
+      "pending_launches": 0,
+      "consecutive_successful_landings": 0,
+      "successful_landings": 0,
+      "failed_landings": 0,
+      "attempted_landings": 0,
+      "successful_landings_spacecraft": 0,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 0,
+      "successful_landings_payload": 0,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 0,
+      "info_url": null,
+      "wiki_url": "https://en.wikipedia.org/wiki/Russian_Aerospace_Forces",
+      "social_media_links": []
+     }
+    ],
     "info_urls": [],
     "vid_urls": []
    },
@@ -34135,8 +34227,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7620,
-      "successful_launches": 7063,
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
       "failed_launches": 557,
       "total_attempted_landings": 1368,
       "successful_landings": 1319,
@@ -34225,6 +34317,858 @@
    "timeline": [],
    "pad_turnaround": "P24DT14H10M",
    "mission_patches": []
+  },
+  {
+   "id": "f4c720ce-0cfd-43e6-b8dd-00273073bc01",
+   "url": "https://ll.thespacedevs.com/2.3.0/launches/f4c720ce-0cfd-43e6-b8dd-00273073bc01/",
+   "name": "Electron | Owl By The Dozen (StriX Launch 12)",
+   "response_mode": "detailed",
+   "slug": "electron-owl-by-the-dozen-strix-launch-12",
+   "launch_designator": null,
+   "status": {
+    "id": 9,
+    "name": "Payload Deployed",
+    "abbrev": "Deployed",
+    "description": "Deployment of the payload(s) has been confirmed."
+   },
+   "last_updated": "2026-09-19T04:18:59Z",
+   "net": "2026-09-19T03:22:00Z",
+   "net_precision": {
+    "id": 1,
+    "name": "Minute",
+    "abbrev": "MIN",
+    "description": "The T-0 is accurate to the minute."
+   },
+   "window_end": "2026-09-19T03:22:00Z",
+   "window_start": "2026-09-19T03:22:00Z",
+   "image": {
+    "id": 1727,
+    "name": "[AUTO] Electron - image",
+    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/electron_image_20190705175640.jpeg",
+    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193613.jpeg",
+    "credit": null,
+    "license": {
+     "id": 1,
+     "name": "Unknown",
+     "priority": 9,
+     "link": null
+    },
+    "single_use": true,
+    "variants": []
+   },
+   "infographic": null,
+   "probability": 85,
+   "weather_concerns": null,
+   "failreason": "",
+   "hashtag": null,
+   "launch_service_provider": {
+    "response_mode": "normal",
+    "id": 147,
+    "url": "https://ll.thespacedevs.com/2.3.0/agencies/147/",
+    "name": "Rocket Lab",
+    "abbrev": "RL",
+    "type": {
+     "id": 3,
+     "name": "Commercial"
+    },
+    "featured": true,
+    "country": [
+     {
+      "id": 2,
+      "name": "United States of America",
+      "alpha_2_code": "US",
+      "alpha_3_code": "USA",
+      "nationality_name": "American",
+      "nationality_name_composed": "Americano"
+     }
+    ],
+    "description": "Rocket Lab is an American aerospace manufacturer with a wholly owned New Zealand subsidiary. The company develops lightweight, cost-effective commercial rocket launch services. The Electron Program was founded on the premise that small payloads such as CubeSats require dedicated small launch vehicles and flexibility not currently offered by traditional rocket systems. Its rocket, the Electron, is a light-weight rocket and is now operating commercially. The company is also producing a variety of spacecrafts and spacecrafts components.",
+    "administrator": "CEO: Peter Beck",
+    "founding_year": 2006,
+    "launchers": "Electron",
+    "spacecraft": "",
+    "parent": null,
+    "image": {
+     "id": 24,
+     "name": "[AUTO] Rocket Lab - image",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_image_20190207032456.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184649.jpeg",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "logo": {
+     "id": 176,
+     "name": "[AUTO] Rocket Lab - logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_logo_20220218075411.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185115.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "social_logo": {
+     "id": 88,
+     "name": "[AUTO] Rocket Lab - social_logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_nation_20230531050352.jpg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184840.jpeg",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "total_launch_count": 96,
+    "consecutive_successful_launches": 54,
+    "successful_launches": 91,
+    "failed_launches": 4,
+    "pending_launches": 42,
+    "consecutive_successful_landings": 4,
+    "successful_landings": 7,
+    "failed_landings": 2,
+    "attempted_landings": 9,
+    "successful_landings_spacecraft": 0,
+    "failed_landings_spacecraft": 0,
+    "attempted_landings_spacecraft": 0,
+    "successful_landings_payload": 0,
+    "failed_landings_payload": 0,
+    "attempted_landings_payload": 0,
+    "info_url": "https://rocketlabcorp.com",
+    "wiki_url": "https://en.wikipedia.org/wiki/Rocket_Lab",
+    "social_media_links": []
+   },
+   "rocket": {
+    "id": 8268,
+    "configuration": {
+     "response_mode": "detailed",
+     "id": 26,
+     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/26/",
+     "name": "Electron",
+     "families": [],
+     "full_name": "Electron",
+     "variant": "",
+     "active": true,
+     "is_placeholder": false,
+     "manufacturer": {
+      "response_mode": "normal",
+      "id": 147,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/147/",
+      "name": "Rocket Lab",
+      "abbrev": "RL",
+      "type": {
+       "id": 3,
+       "name": "Commercial"
+      },
+      "featured": true,
+      "country": [
+       {
+        "id": 2,
+        "name": "United States of America",
+        "alpha_2_code": "US",
+        "alpha_3_code": "USA",
+        "nationality_name": "American",
+        "nationality_name_composed": "Americano"
+       }
+      ],
+      "description": "Rocket Lab is an American aerospace manufacturer with a wholly owned New Zealand subsidiary. The company develops lightweight, cost-effective commercial rocket launch services. The Electron Program was founded on the premise that small payloads such as CubeSats require dedicated small launch vehicles and flexibility not currently offered by traditional rocket systems. Its rocket, the Electron, is a light-weight rocket and is now operating commercially. The company is also producing a variety of spacecrafts and spacecrafts components.",
+      "administrator": "CEO: Peter Beck",
+      "founding_year": 2006,
+      "launchers": "Electron",
+      "spacecraft": "",
+      "parent": null,
+      "image": {
+       "id": 24,
+       "name": "[AUTO] Rocket Lab - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_image_20190207032456.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184649.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 176,
+       "name": "[AUTO] Rocket Lab - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_logo_20220218075411.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185115.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 88,
+       "name": "[AUTO] Rocket Lab - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_nation_20230531050352.jpg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184840.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 96,
+      "consecutive_successful_launches": 54,
+      "successful_launches": 91,
+      "failed_launches": 4,
+      "pending_launches": 42,
+      "consecutive_successful_landings": 4,
+      "successful_landings": 7,
+      "failed_landings": 2,
+      "attempted_landings": 9,
+      "successful_landings_spacecraft": 0,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 0,
+      "successful_landings_payload": 0,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 0,
+      "info_url": "https://rocketlabcorp.com",
+      "wiki_url": "https://en.wikipedia.org/wiki/Rocket_Lab",
+      "social_media_links": []
+     },
+     "program": [],
+     "reusable": false,
+     "image": {
+      "id": 1727,
+      "name": "[AUTO] Electron - image",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/electron_image_20190705175640.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193613.jpeg",
+      "credit": null,
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": true,
+      "variants": []
+     },
+     "info_url": "https://www.rocketlabusa.com/electron/",
+     "wiki_url": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
+     "description": "Electron is a two-stage orbital expendable launch vehicle (with an optional third stage) developed by the American aerospace company Rocket Lab. Electron is a small-lift launch vehicle designed to launch small satellites and cubesats to sun-synchronous orbit and low earth orbit. The Electron is the first orbital class rocket to use electric-pump-fed engines, powered by the 9 Rutherford engines on the first stage. It is also used as a suborbital testbed (called HASTE) for hypersonics research.",
+     "alias": "",
+     "min_stage": 2,
+     "max_stage": 3,
+     "length": 18.0,
+     "diameter": 1.2,
+     "maiden_flight": "2017-05-25",
+     "launch_cost": 6000000,
+     "launch_mass": 13.0,
+     "leo_capacity": 300.0,
+     "gto_capacity": null,
+     "geo_capacity": null,
+     "sso_capacity": 225.0,
+     "to_thrust": 162.0,
+     "apogee": null,
+     "total_launch_count": 96,
+     "consecutive_successful_launches": 54,
+     "successful_launches": 91,
+     "failed_launches": 4,
+     "pending_launches": 39,
+     "attempted_landings": 9,
+     "successful_landings": 7,
+     "failed_landings": 2,
+     "consecutive_successful_landings": 4,
+     "fastest_turnaround": "PT21H55M"
+    },
+    "launcher_stage": [],
+    "spacecraft_stage": [],
+    "payloads": []
+   },
+   "mission": {
+    "id": 6849,
+    "name": "Owl By The Dozen (StriX Launch 12)",
+    "type": "Earth Science",
+    "description": "Synthetic aperture radar satellite for Japanese Earth imaging company Synspective.",
+    "image": null,
+    "orbit": {
+     "id": 8,
+     "name": "Low Earth Orbit",
+     "abbrev": "LEO",
+     "celestial_body": {
+      "response_mode": "list",
+      "id": 1,
+      "name": "Earth"
+     }
+    },
+    "agencies": [
+     {
+      "response_mode": "normal",
+      "id": 1071,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/1071/",
+      "name": "Synspective",
+      "abbrev": "",
+      "type": {
+       "id": 5,
+       "name": "Private"
+      },
+      "featured": false,
+      "country": [
+       {
+        "id": 28,
+        "name": "Japan",
+        "alpha_2_code": "JP",
+        "alpha_3_code": "JPN",
+        "nationality_name": "Japanese",
+        "nationality_name_composed": "Nippo"
+       }
+      ],
+      "description": "Synspective was established with the aim to integrate SAR satellite technology in society through the agility of a start-up company. Synspective derives its name from the company concept of “Synthetic Data for Perspective on Sustainable Development.",
+      "administrator": "CEO: Dr. Motoyuki Arai",
+      "founding_year": 2018,
+      "launchers": "",
+      "spacecraft": "",
+      "parent": null,
+      "image": null,
+      "logo": {
+       "id": 2029,
+       "name": "Synspective logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/synspective_log_image_20240325082018.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/synspective_log_image_thumbnail_20240325082018.png",
+       "credit": "Synspective",
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": [
+        {
+         "id": 7,
+         "type": {
+          "id": 1,
+          "name": "transparent for light background"
+         },
+         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/image_variants/lightbg.png_tra_image_20240325082021.png"
+        },
+        {
+         "id": 8,
+         "type": {
+          "id": 2,
+          "name": "transparent for dark background"
+         },
+         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/image_variants/darkbg.png_tran_image_20240325082023.png"
+        }
+       ]
+      },
+      "social_logo": {
+       "id": 95,
+       "name": "Synspective social logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/synspective_nation_20240228091738.jpg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184850.jpeg",
+       "credit": "Synspective",
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 0,
+      "consecutive_successful_launches": 0,
+      "successful_launches": 0,
+      "failed_launches": 0,
+      "pending_launches": 0,
+      "consecutive_successful_landings": 0,
+      "successful_landings": 0,
+      "failed_landings": 0,
+      "attempted_landings": 0,
+      "successful_landings_spacecraft": 0,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 0,
+      "successful_landings_payload": 0,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 0,
+      "info_url": "https://synspective.com/",
+      "wiki_url": null,
+      "social_media_links": []
+     }
+    ],
+    "info_urls": [],
+    "vid_urls": []
+   },
+   "pad": {
+    "id": 185,
+    "url": "https://ll.thespacedevs.com/2.3.0/pads/185/",
+    "active": true,
+    "agencies": [
+     {
+      "response_mode": "normal",
+      "id": 147,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/147/",
+      "name": "Rocket Lab",
+      "abbrev": "RL",
+      "type": {
+       "id": 3,
+       "name": "Commercial"
+      },
+      "featured": true,
+      "country": [
+       {
+        "id": 2,
+        "name": "United States of America",
+        "alpha_2_code": "US",
+        "alpha_3_code": "USA",
+        "nationality_name": "American",
+        "nationality_name_composed": "Americano"
+       }
+      ],
+      "description": "Rocket Lab is an American aerospace manufacturer with a wholly owned New Zealand subsidiary. The company develops lightweight, cost-effective commercial rocket launch services. The Electron Program was founded on the premise that small payloads such as CubeSats require dedicated small launch vehicles and flexibility not currently offered by traditional rocket systems. Its rocket, the Electron, is a light-weight rocket and is now operating commercially. The company is also producing a variety of spacecrafts and spacecrafts components.",
+      "administrator": "CEO: Peter Beck",
+      "founding_year": 2006,
+      "launchers": "Electron",
+      "spacecraft": "",
+      "parent": null,
+      "image": {
+       "id": 24,
+       "name": "[AUTO] Rocket Lab - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_image_20190207032456.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184649.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 176,
+       "name": "[AUTO] Rocket Lab - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_logo_20220218075411.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185115.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 88,
+       "name": "[AUTO] Rocket Lab - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket2520lab2520ltd_nation_20230531050352.jpg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184840.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      }
+     }
+    ],
+    "name": "Rocket Lab Launch Complex 1B",
+    "image": {
+     "id": 1358,
+     "name": "Electron on LC-1B (CAPSTONE)",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/electron25202_image_20231125062347.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192519.jpeg",
+     "credit": "Rocket Lab",
+     "license": {
+      "id": 7,
+      "name": "Rocket Lab Image Use Policy",
+      "priority": 3,
+      "link": "https://www.rocketlabusa.com/about/gallery/"
+     },
+     "single_use": false,
+     "variants": []
+    },
+    "description": "",
+    "info_url": null,
+    "wiki_url": "https://en.wikipedia.org/wiki/Rocket_Lab_Launch_Complex_1",
+    "map_url": "https://www.google.com/maps?q=-39.262833,177.864469",
+    "latitude": -39.262833,
+    "longitude": 177.864469,
+    "country": {
+     "id": 51,
+     "name": "New Zealand",
+     "alpha_2_code": "NZ",
+     "alpha_3_code": "NZL",
+     "nationality_name": "Kiwi",
+     "nationality_name_composed": "Kiwi"
+    },
+    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_185_20200803143540.jpg",
+    "total_launch_count": 40,
+    "orbital_launch_attempt_count": 40,
+    "fastest_turnaround": "P7DT3H27M",
+    "location": {
+     "response_mode": "normal",
+     "id": 10,
+     "url": "https://ll.thespacedevs.com/2.3.0/locations/10/",
+     "name": "Rocket Lab Launch Complex 1, Mahia Peninsula, New Zealand",
+     "celestial_body": {
+      "response_mode": "normal",
+      "id": 1,
+      "name": "Earth",
+      "type": {
+       "id": 1,
+       "name": "Planet"
+      },
+      "diameter": 12742000.0,
+      "mass": 5.972168e+24,
+      "gravity": 9.80655,
+      "length_of_day": "1 00:00:00",
+      "atmosphere": true,
+      "image": {
+       "id": 2040,
+       "name": "Earth (Apollo 17)",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
+       "credit": "NASA",
+       "license": {
+        "id": 4,
+        "name": "NASA Image and Media Guidelines",
+        "priority": 0,
+        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
+      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
+      "total_attempted_launches": 7621,
+      "successful_launches": 7064,
+      "failed_launches": 557,
+      "total_attempted_landings": 1368,
+      "successful_landings": 1319,
+      "failed_landings": 49
+     },
+     "active": true,
+     "country": {
+      "id": 51,
+      "name": "New Zealand",
+      "alpha_2_code": "NZ",
+      "alpha_3_code": "NZL",
+      "nationality_name": "Kiwi",
+      "nationality_name_composed": "Kiwi"
+     },
+     "description": "Rocket Lab Launch Complex 1 is a commercial spaceport located close to Ahuriri Point at the southern tip of Māhia Peninsula, on the east coast of New Zealand's North Island. It is owned and operated by private spaceflight company Rocket Lab and supports launches of the company's Electron rocket for small satellites. With the launch of Electron on 25 May 2017, it became the first private spaceport to host an orbital launch attempt, and the first site in New Zealand to host an orbital launch attempt. With the Electron launch of 21 January 2018, it became the first private spaceport to host a successful orbital launch.",
+     "image": {
+      "id": 2206,
+      "name": "Rocket Lab Launch Complex 1",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket_lab_laun_image_20240918164228.jpg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/rocket_lab_laun_image_thumbnail_20240918164228.jpeg",
+      "credit": "Rocket Lab",
+      "license": {
+       "id": 7,
+       "name": "Rocket Lab Image Use Policy",
+       "priority": 3,
+       "link": "https://www.rocketlabusa.com/about/gallery/"
+      },
+      "single_use": true,
+      "variants": []
+     },
+     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_10_20200803142509.jpg",
+     "longitude": 177.86586,
+     "latitude": -39.26085,
+     "timezone_name": "Pacific/Auckland",
+     "total_launch_count": 83,
+     "total_landing_count": 17
+    }
+   },
+   "webcast_live": false,
+   "program": [],
+   "orbital_launch_attempt_count": 7398,
+   "location_launch_attempt_count": 83,
+   "pad_launch_attempt_count": 40,
+   "agency_launch_attempt_count": 96,
+   "orbital_launch_attempt_count_year": 225,
+   "location_launch_attempt_count_year": 14,
+   "pad_launch_attempt_count_year": 6,
+   "agency_launch_attempt_count_year": 17,
+   "flightclub_url": null,
+   "updates": [
+    {
+     "id": 16163,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Spacecraft separation.",
+     "info_url": "https://www.youtube.com/watch?v=AnN8Pj8WvSo",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-09-19T04:18:00Z"
+    },
+    {
+     "id": 16162,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Liftoff.",
+     "info_url": "https://www.youtube.com/watch?v=AnN8Pj8WvSo",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-09-19T03:23:00Z"
+    },
+    {
+     "id": 16161,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/ll2_profile_20230311134739.png",
+     "comment": "Official Webcast by Rocket Lab has started",
+     "info_url": "https://www.youtube.com/watch?v=AnN8Pj8WvSo",
+     "created_by": "LL2",
+     "created_on": "2026-09-19T02:57:00Z"
+    },
+    {
+     "id": 16160,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Updated T-0 and launch weather.",
+     "info_url": "https://x.com/RocketLab/status/2101119632136716413",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-09-19T01:26:00Z"
+    },
+    {
+     "id": 16149,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Launch pad assigned.",
+     "info_url": "https://x.com/RocketLab/status/2100799384908902533",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-09-18T04:11:00Z"
+    },
+    {
+     "id": 16121,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "GO for launch.",
+     "info_url": "https://x.com/RocketLab/status/2099976145798373495",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-09-15T21:43:00Z"
+    },
+    {
+     "id": 14459,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "NET October.",
+     "info_url": "https://contents.xj-storage.jp/xcontents/AS04951/4d97286f/e868/435a/bcb6/5c12a41a25b0/S100XUO9.pdf",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-03-27T00:32:00Z"
+    },
+    {
+     "id": 7861,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
+     "comment": "Adding launch TBD 2025-2027",
+     "info_url": "https://www.businesswire.com/news/home/20240617700318/en/Rocket-Lab-Signs-Record-Deal-for-10-Electron-Launches-with-Synspective",
+     "created_by": "Nosu",
+     "created_on": "2024-06-18T07:46:11Z"
+    }
+   ],
+   "info_urls": [
+    {
+     "priority": 10,
+     "source": "rocketlabcorp.com",
+     "title": "Owl By The Dozen",
+     "description": "Electron will launch a dedicated mission to a 572km low Earth orbit with a single Earth-observation satellite for Synspective, a Japan-based commercial constellation operator.",
+     "feature_image": null,
+     "url": "https://rocketlabcorp.com/missions/launches/owl-by-the-dozen/",
+     "type": {
+      "id": 1,
+      "name": "Official Page"
+     },
+     "language": {
+      "id": 1,
+      "name": "English",
+      "code": "en"
+     }
+    }
+   ],
+   "vid_urls": [
+    {
+     "priority": 10,
+     "source": "youtube.com",
+     "publisher": "Rocket Lab",
+     "title": "Rocket Lab - 'Owl By The Dozen' Launch",
+     "description": "",
+     "feature_image": "https://i.ytimg.com/vi/AnN8Pj8WvSo/maxresdefault.jpg",
+     "url": "https://www.youtube.com/watch?v=AnN8Pj8WvSo",
+     "type": {
+      "id": 1,
+      "name": "Official Webcast"
+     },
+     "language": {
+      "id": 1,
+      "name": "English",
+      "code": "en"
+     },
+     "start_time": "2026-09-19T02:57:24Z",
+     "end_time": "2026-09-19T04:17:55Z",
+     "live": false
+    }
+   ],
+   "timeline": [
+    {
+     "type": {
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
+     },
+     "relative_time": "-PT2M"
+    },
+    {
+     "type": {
+      "id": 9,
+      "abbrev": "Ignition",
+      "description": "Start of the engine ignition sequence"
+     },
+     "relative_time": "-PT2S"
+    },
+    {
+     "type": {
+      "id": 10,
+      "abbrev": "Liftoff",
+      "description": "First upwards movement of the rocket"
+     },
+     "relative_time": "P0D"
+    },
+    {
+     "type": {
+      "id": 25,
+      "abbrev": "Supersonic",
+      "description": "Vehicle is supersonic"
+     },
+     "relative_time": "PT52S"
+    },
+    {
+     "type": {
+      "id": 11,
+      "abbrev": "Max-Q",
+      "description": "Maximum dynamic pressure"
+     },
+     "relative_time": "PT1M7S"
+    },
+    {
+     "type": {
+      "id": 12,
+      "abbrev": "MECO",
+      "description": "Cut-off of the main engine"
+     },
+     "relative_time": "PT2M37S"
+    },
+    {
+     "type": {
+      "id": 13,
+      "abbrev": "Stage 2 Separation",
+      "description": "Separation of the second stage from the first"
+     },
+     "relative_time": "PT2M40S"
+    },
+    {
+     "type": {
+      "id": 31,
+      "abbrev": "SES",
+      "description": "Start of the second engine"
+     },
+     "relative_time": "PT2M44S"
+    },
+    {
+     "type": {
+      "id": 15,
+      "abbrev": "Fairing Separation",
+      "description": "Separation of the payload fairing"
+     },
+     "relative_time": "PT3M21S"
+    },
+    {
+     "type": {
+      "id": 72,
+      "abbrev": "Battery Hotswap",
+      "description": "Electron Second stages switches to a new set of batteries and jettisons the depleted ones."
+     },
+     "relative_time": "PT6M37S"
+    },
+    {
+     "type": {
+      "id": 24,
+      "abbrev": "SECO",
+      "description": "Cut-off of the second engine"
+     },
+     "relative_time": "PT9M14S"
+    },
+    {
+     "type": {
+      "id": 30,
+      "abbrev": "Kick Stage Separation",
+      "description": "Separation of the kick stage from the previous stage"
+     },
+     "relative_time": "PT9M18S"
+    },
+    {
+     "type": {
+      "id": 32,
+      "abbrev": "Kick Stage Ignition",
+      "description": "Start of the kick stage engine"
+     },
+     "relative_time": "PT49M20S"
+    },
+    {
+     "type": {
+      "id": 33,
+      "abbrev": "Kick Stage Cut-off",
+      "description": "Cut-off of the kick stage engine"
+     },
+     "relative_time": "PT52M26S"
+    },
+    {
+     "type": {
+      "id": 35,
+      "abbrev": "Payload Separation",
+      "description": "Final deployment of the payload from the rocket"
+     },
+     "relative_time": "PT53M16S"
+    }
+   ],
+   "pad_turnaround": "P16DT15H21M",
+   "mission_patches": [
+    {
+     "id": 1343,
+     "name": "Owl By The Dozen Patch",
+     "priority": 10,
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/mission_patch_images/owl2520by2520_mission_patch_20260915214247.png",
+     "agency": {
+      "response_mode": "list",
+      "id": 147,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/147/",
+      "name": "Rocket Lab",
+      "abbrev": "RL",
+      "type": {
+       "id": 3,
+       "name": "Commercial"
+      }
+     },
+     "response_mode": "normal"
+    }
+   ]
   }
  ]
 }
