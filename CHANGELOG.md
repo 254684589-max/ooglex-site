@@ -11,6 +11,16 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-09-19，**金融终端旧版页：跳转链接不再被废弃提示条挤到第二位（键盘可访问性）**。**未部署。**
+  - **现象**：`apps/finance-terminal/legacy.html` 的第一个可聚焦元素是顶部「这是改版前的旧版终端」提示条里的「打开新版终端 →」，`.skip-link`（跳到主要内容）排在它后面。键盘用户按第一下 Tab 拿不到跳转链接，必须先 Tab 过这条提示条。页面自身的回归契约 `finance-terminal-regression.mjs` 的 `focusOrder` 正是断言这一点，因此 `Finance Terminal Quality` 这道 PR 门一直是红的。
+  - **根因**：那条废弃提示条是后加的，插在了 `<body>` 里 `.skip-link` 的**上面**。
+  - **改法**：把 `.skip-link` 移回 `<body>` 的第一个子元素。`.skip-link` 是 `position:fixed` 且默认 `translateY(-160%)`，**视觉上零变化**——只改 Tab 顺序。改动 1 个文件、4 行。
+  - **不是本次引入的**：已用独立工作树在 `c5bf289`（这道门开始变红之前的 `main`）上跑同一个工作流，失败信息与像素坐标逐字符相同（运行 [#200](https://github.com/254684589-max/ooglex-site/actions/runs/35420277563)），是 `main` 上的既有问题。
+  - **实测**：`focusOrder` 判定由 FAIL 转 PASS，可聚焦元素总数 113、卡片 0 与改动前完全相同；另按键盘用户的真实路径在 360 / 768 / 1280px 各验一遍——第一次 Tab 焦点落在跳转链接上且**可见**（`top=10,left=10`，聚焦时滑出），回车后 `hash=#main-content` 且目标滚入视口。`validate_asset_versions.py` 296 处一致，`git diff --check` 无空白错误。
+  - **未能在本环境跑的**：`scripts/validate_finance_terminal_browser.mjs` 全量在本沙箱里跑不完（Chromium 的 DevTools 连接在 deferred-loading 探针之后即断开，属环境限制）。因此改用 Playwright 复刻了该契约里 `focusOrder` 那一条判定逐字验证；完整回归交由 PR 上的 CI。
+
 ### 新增
 
 - 2026-09-19，**合并上游 47 个提交后的英文界面修复：把「把当日数值写死成词条」这个系统性隐患改掉，并上线**。**已部署。**
