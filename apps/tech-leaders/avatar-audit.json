@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-19T06:28:44Z",
+  "checked_at": "2026-09-19T06:33:24Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 109,
@@ -1543,7 +1543,7 @@
     {
       "id": "zhengyi-temp",
       "name": "Zheng Yi",
-      "company": "VC",
+      "company": "Independent Investment / VC",
       "handle": "",
       "ok": false,
       "status": "pending_review",
