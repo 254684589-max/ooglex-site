@@ -529,6 +529,14 @@
     "现任 Nasdaq 董事长兼 CEO，本人公开 X 账号。": "Chair and CEO of Nasdaq; personal public X account.",
     "公开 X 账号。": "Public X account.",
     "头像：X 原版已核验": "Avatar: X original verified",
+    /* V5.1 把头像状态从 2 个分支扩到 5 个（index.html 的 avatarNote）。 */
+    "头像：正在核验": "Avatar: verifying",
+    "头像：X 原版": "Avatar: X original",
+    "头像：X 原图代理": "Avatar: X original via proxy",
+    "头像：替代肖像": "Avatar: substitute portrait",
+    "头像：待补 / 本地兜底": "Avatar: outstanding / local fallback",
+    "优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。":
+      "The person's current X avatar is used first. When the X original cannot be retrieved, the page tries, in order, an X avatar proxy, an official company or institutional portrait, and a public Wikipedia/Wikimedia portrait; only when none can be confirmed does it fall back to an initials avatar.",
     "头像：待核验 / 本地兜底": "Avatar: pending verification / local fallback",
     "头像：正在核验 X 原版": "Avatar: verifying the X original",
     "为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。":
@@ -869,13 +877,32 @@
           (m[4] ? " (verifying)" : "") + " · " + (dict[m[5]] || m[5]) +
           " · showing " + m[6] + (m[7] ? " of " + m[7] : "");
       }
-      if ((m = /^X原版 (\d+)\/(\d+)$/.exec(s))) return "X original " + m[1] + "/" + m[2];
-      if ((m = /^核验中 (\d+)\/(\d+)$/.exec(s))) return "Verifying " + m[1] + "/" + m[2];
-      if ((m = /^待核验 (\d+)$/.exec(s))) return m[1] + " to verify";
+      /* 这三个筛选按钮的英文措辞是压短过的（X orig / Sub / Missing）：
+         按钮带 white-space:nowrap，而 .avatar-audit 这一行不换行，
+         直译成 "0 X originals · 0 substitutes" 会在 360px 下把整页顶出视口
+         （实测 scrollWidth 428 对 360）。页面另配了一条只在英文下生效的换行兜底。 */
+      /* V5.1 又改了一版措辞：统计条从「X原版 a/b」变成「X原版 a · 替代 b · 待补 c」，
+         筛选按钮多出「替代图 N」，详情卡的头像状态从 2 个分支变成 5 个。
+         这个页面在一次会话里已经连跳 V4.2 / V4.3 / V5.1，所以新旧写法一律留着，
+         上游回滚到哪一版都不会变回中文。 */
+      if ((m = /^已收录 (\d+) 位 · X原版 (\d+) · 替代 (\d+) · 待补 (\d+)(（核验中）)? · (.+?) · 当前显示 (\d+)(?: \/ (\d+))? 位$/.exec(s))) {
+        return m[1] + " leaders listed · " + m[2] + " X originals · " + m[3] + " substitutes · " +
+          m[4] + " outstanding" + (m[5] ? " (verifying)" : "") + " · " + (dict[m[6]] || m[6]) +
+          " · showing " + m[7] + (m[8] ? " of " + m[8] : "");
+      }
+      if ((m = /^X原版 (\d+) · 替代 (\d+)$/.exec(s))) return "X orig " + m[1] + " \u00b7 sub " + m[2];
+      if ((m = /^替代图 (\d+)$/.exec(s))) return "Sub " + m[1];
+      if ((m = /^全部头像 (\d+)\/(\d+)$/.exec(s))) return "All " + m[1] + "/" + m[2];
+      if ((m = /^V([\d.]+) · X 原版优先 \+ 替代头像$/.exec(s))) {
+        return "V" + m[1] + " · X originals first, substitute portraits second";
+      }
+      if ((m = /^X原版 (\d+)\/(\d+)$/.exec(s))) return "X orig " + m[1] + "/" + m[2];
+      if ((m = /^核验中 (\d+)\/(\d+)$/.exec(s))) return "Checking " + m[1] + "/" + m[2];
+      if ((m = /^待核验 (\d+)$/.exec(s))) return "Check " + m[1];
       if ((m = /^V([\d.]+) · 全球公司领袖 \+ X 原版头像核验$/.exec(s))) {
         return "V" + m[1] + " · Global corporate leaders + X-original avatar verification";
       }
-      if ((m = /^待补 (\d+)$/.exec(s))) return m[1] + " outstanding";
+      if ((m = /^待补 (\d+)$/.exec(s))) return "Missing " + m[1];
       if ((m = /^展开 (\d+) 位 ↓$/.exec(s))) return "Show all " + m[1] + " ↓";
       if ((m = /^收起 ↑$/.exec(s))) return "Collapse ↑";
       if ((m = /^V([\d.]+) · 全球公司领袖 \+ Ooglex 自托管头像$/.exec(s))) {

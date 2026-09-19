@@ -20,7 +20,7 @@
   </script>
   <script src="/assets/theme.js?v=2ae26043" defer></script>
   <script src="/assets/i18n.js?v=c83b60c1" defer></script>
-  <script src="/assets/i18n-wave6.js?v=8ba3e75e" defer></script>
+  <script src="/assets/i18n-wave6.js?v=cb3fb961" defer></script>
   <style>
     :root{
       --bg:#0b0e13;--panel:#10141b;--panel2:#141924;--line:rgba(255,255,255,.08);
@@ -59,6 +59,10 @@
     .catalog-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;color:var(--faint);font:10.5px/1.4 var(--mono)}
     .catalog-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
     .avatar-audit{display:flex;align-items:center;gap:6px}
+    /* 英文计数标签比中文宽，按钮又是 white-space:nowrap，360px 下这一行会把整页顶出
+       视口（实测 scrollWidth 428 对 360）。只在英文下允许换行；中文本来就放得下，
+       渲染完全不变。 */
+    html[data-lang="en"] .avatar-audit{flex-wrap:wrap}
     .avatar-audit-btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:6px 9px;border-radius:999px;cursor:pointer;font:10px/1 var(--mono);white-space:nowrap}
     .avatar-audit-btn.on{border-color:rgba(57,135,229,.65);background:rgba(57,135,229,.10);color:var(--ink)}
     .avatar-audit-btn:disabled{opacity:.5;cursor:default}
