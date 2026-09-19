@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-19T06:43:39Z",
+  "checked_at": "2026-09-19T06:53:47Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 110,
@@ -1534,7 +1534,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "ZLQ6600E",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ZLQ6600E&name=Zheng+Yi&company=Independent+Investment+%2F+VC",
