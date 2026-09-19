@@ -135,7 +135,7 @@ def main() -> None:
         text = (SITE / rel).read_text(encoding="utf-8")
         if '<script src="/assets/pro-access.js?v=6"></script>' not in text:
             fail("Finance Column pro-access missing from: " + rel)
-        if '<script src="/assets/pro-finance-column.js?v=1"></script>' not in text:
+        if '<script src="/assets/pro-finance-column.js?v=2"></script>' not in text:
             fail("Finance Column adapter missing from: " + rel)
         if "ooglex:finance-full-ready" not in text:
             fail("Finance Column full-data rerender hook missing from: " + rel)
