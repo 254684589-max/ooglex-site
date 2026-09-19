@@ -9,6 +9,8 @@ on:
     paths:
       - 'apps/tech-leaders/leaders.json'
       - 'scripts/tech-leaders/sync_avatars.py'
+      - 'scripts/tech-leaders/warm_avatars.py'
+      - 'cloudflare/pro-api/worker.js'
       - '.github/workflows/tech-leaders-avatar-audit.yml'
 
 permissions:
@@ -31,6 +33,25 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+
+      - name: Wait for avatar policy deployment
+        run: |
+          set -e
+          ready=0
+          for i in $(seq 1 60); do
+            body="$(curl -fsS --connect-timeout 5 --max-time 12 https://pro-api.ooglex.com/v1/tech-leaders/status 2>/dev/null || true)"
+            if echo "$body" | grep -q '"avatar_policy":"x_original_then_verified_fallback"'; then
+              echo "Avatar backend policy ready."
+              ready=1
+              break
+            fi
+            echo "Waiting for avatar backend V5.1 ($i/60)..."
+            sleep 5
+          done
+          if [ "$ready" != "1" ]; then
+            echo "::error::Avatar backend V5.1 did not become ready in time"
+            exit 1
+          fi
 
       - name: Audit and synchronize avatars
         run: |
