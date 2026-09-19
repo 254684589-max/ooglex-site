@@ -375,7 +375,13 @@
       }else{
         profileWeb.style.display="none";
       }
-      profileJoined.style.display="none";
+      var staticJoined=formatJoinedDate(p.created_at);
+      if(staticJoined){
+        profileJoinedText.textContent=staticJoined;
+        profileJoined.style.display="flex";
+      }else{
+        profileJoined.style.display="none";
+      }
       profileFollowing.textContent=formatFollowingCount(p.following_count);
       profileFollowers.textContent=formatFollowerCount(p.followers_count);
       profileStats.style.display="flex";
