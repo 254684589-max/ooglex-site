@@ -228,7 +228,7 @@
   var CATALOG_URL="./leaders.json";
   var FALLBACK_PEOPLE=[
     {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],category:"航天",note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
-    {id:"huang",name:"Jensen Huang",zh:"黄仁勋",handle:"JensenHuang",role:"NVIDIA Founder & CEO",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",avatar_url:"https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205",note:"现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",title:"JENSEN HUANG · OFFICIAL X TIMELINE",sp500_ceo:true,sp500_member:true,ticker:"NVDA",leader_types:["ceo","founder"],x_identity_verified:true},
+    {id:"huang",name:"Jensen Huang",zh:"黄仁勋",handle:"JensenHuang",role:"NVIDIA Founder & CEO",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",note:"现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",title:"JENSEN HUANG · OFFICIAL X TIMELINE",sp500_ceo:true,sp500_member:true,ticker:"NVDA",leader_types:["ceo","founder"],x_identity_verified:true},
     {id:"altman",name:"Sam Altman",zh:"Sam Altman",handle:"sama",role:"OpenAI",chips:["OpenAI","AI","Models"],category:"AI",note:"个人公开 X 账号。",title:"SAM ALTMAN · OFFICIAL X TIMELINE"},
     {id:"su",name:"Lisa Su",zh:"苏姿丰",handle:"LisaSu",role:"AMD Chair & CEO",chips:["AMD","AI","CPU","GPU"],category:"芯片",note:"个人公开 X 账号。",title:"LISA SU · OFFICIAL X TIMELINE"},
     {id:"pichai",name:"Sundar Pichai",zh:"桑达尔·皮查伊",handle:"sundarpichai",role:"Google · Alphabet",chips:["GOOGL","Google","Gemini","AI"],category:"AI",note:"个人公开 X 账号。",title:"SUNDAR PICHAI · OFFICIAL X TIMELINE"},
@@ -281,7 +281,9 @@
     return people.find(function(p){return p.id===requested;})||people[0];
   }
   function avatarUrl(p){
-    if(p&&p.avatar_url)return p.avatar_url;
+    // One canonical portrait path: X handle -> Ooglex/R2 avatar endpoint.
+    // Ignore arbitrary catalog/external avatar_url values so company press photos
+    // or stale third-party images can never override the current X portrait.
     if(p&&p.handle)return API_BASE+"/v1/tech-leaders/avatar?handle="+encodeURIComponent(p.handle);
     return avatarFallbackDataUrl(p||{});
   }
@@ -620,7 +622,7 @@
     posts.forEach(function(post){
       var card=document.createElement("article");card.className="post-card";
       var head=document.createElement("div");head.className="post-head";
-      var postAvatarSrc=current.avatar_url||(feed.leader&&feed.leader.profile_image_url)||avatarUrl(current);
+      var postAvatarSrc=avatarUrl(current)||(feed.leader&&feed.leader.profile_image_url)||"";
       if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
       var who=document.createElement("div");who.className="post-who";
       var nameLine=document.createElement("div");nameLine.className="post-name-line";
