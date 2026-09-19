@@ -488,7 +488,7 @@
     "搜索姓名、@账号、公司或股票代码…": "Search name, @handle, company or ticker…",
     "科技领袖分类筛选": "Leader category filter",
     "Ooglex 已确认本人公开账号": "Ooglex has verified this is the person's own public account",
-    "科技领袖 X 动态": "Tech Leaders on X",
+    "全球科技领袖动态流": "Global Tech Leaders Feed",
     "优先通过 Ooglex Cloudflare 后端读取科技领袖公开 X 原文并由本站自主渲染；X API 尚未配置时自动退回官方嵌入模式，不影响现有页面.":
       "Reads tech leaders' public X posts through the Ooglex Cloudflare backend and renders them on this site; when the X API is not configured it falls back to the official embed, leaving the existing page untouched.",
     "优先通过 Ooglex Cloudflare 后端读取科技领袖公开 X 原文并由本站自主渲染；X API 尚未配置时自动退回官方嵌入模式，不影响现有页面。":
