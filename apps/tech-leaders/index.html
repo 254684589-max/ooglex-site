@@ -175,10 +175,10 @@
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
       <div class="catalog-actions">
-        <span>V4.2 · 全球公司领袖 + Ooglex 自托管头像</span>
+        <span>V4.3 · 全球公司领袖 + X 原版头像核验</span>
         <div class="avatar-audit" id="avatar-audit">
-          <button class="avatar-audit-btn on" type="button" data-avatar-filter="all">头像 0/0</button>
-          <button class="avatar-audit-btn" type="button" data-avatar-filter="missing">待补 0</button>
+          <button class="avatar-audit-btn on" type="button" data-avatar-filter="all">X原版 0/0</button>
+          <button class="avatar-audit-btn" type="button" data-avatar-filter="missing">待核验 0</button>
         </div>
         <button class="fold-btn" id="leader-fold" type="button" hidden>展开全部</button>
       </div>
@@ -249,6 +249,8 @@
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
   var avatarAudit=document.getElementById("avatar-audit");
+  var avatarAuditByHandle={};
+  var avatarAuditLoaded=false;
   var profileAvatar=document.getElementById("profile-avatar");
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var profileNameEn=document.getElementById("profile-name-en");
@@ -289,8 +291,13 @@
     var svg='<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="64" fill="#e8e0d7"/><circle cx="64" cy="46" r="22" fill="#8a8178"/><path d="M27 110c6-25 20-37 37-37s31 12 37 37" fill="#8a8178"/><text x="64" y="121" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#5f5750">'+safe+'</text></svg>';
     return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
   }
+  function avatarAuditItem(p){
+    var key=String(p&&p.handle||"").toLowerCase();
+    return key?avatarAuditByHandle[key]||null:null;
+  }
   function hasConfiguredAvatar(p){
-    return !!(p&&p.avatar_url&&(p.avatar_status==="confirmed"||p.avatar_status==="self_hosted"));
+    var item=avatarAuditItem(p);
+    return !!(item&&item.status==="x_original");
   }
   function applyAvatarFallback(img,p){
     if(!img||img.dataset.avatarFallbackApplied==="1")return;
@@ -337,7 +344,7 @@
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
-    var avatarNote=hasConfiguredAvatar(p)?"头像由 Ooglex R2 自托管":"头像使用本地兜底";
+    var avatarNote=hasConfiguredAvatar(p)?"头像：X 原版已核验":(avatarAuditLoaded?"头像：待核验 / 本地兜底":"头像：正在核验 X 原版");
     document.getElementById("profile-note").textContent=(p.note||"公开 X 账号。")+" · "+avatarNote;
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
     profileAvatarFallback.textContent=initialsFor(p);
@@ -374,13 +381,13 @@
     var allBtn=avatarAudit.querySelector('[data-avatar-filter="all"]');
     var missingBtn=avatarAudit.querySelector('[data-avatar-filter="missing"]');
     if(allBtn){
-      allBtn.textContent="自托管头像 "+confirmed+"/"+total;
+      allBtn.textContent=(avatarAuditLoaded?"X原版 ":"核验中 ")+confirmed+"/"+total;
       allBtn.classList.toggle("on",avatarFilter==="all");
     }
     if(missingBtn){
-      missingBtn.textContent="待补 "+missing;
+      missingBtn.textContent="待核验 "+missing;
       missingBtn.classList.toggle("on",avatarFilter==="missing");
-      missingBtn.disabled=missing===0;
+      missingBtn.disabled=!avatarAuditLoaded||missing===0;
     }
   }
   function renderLeaderButtons(query){
@@ -401,7 +408,7 @@
     }
     var activeLabel=activeCategory==="全部"?"全部分类":(activeCategory==="sp500"?"标普500 决策者":activeCategory);
     var avatarConfirmed=people.filter(hasConfiguredAvatar).length;
-    count.textContent="已收录 "+people.length+" 位 · 自托管头像 "+avatarConfirmed+"/"+people.length+" · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
+    count.textContent="已收录 "+people.length+" 位 · X原版头像 "+avatarConfirmed+"/"+people.length+(avatarAuditLoaded?"":"（核验中）")+" · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
     foldBtn.hidden=!canFold;
     if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开 "+filtered.length+" 位 ↓";
     if(!filtered.length){
@@ -421,6 +428,27 @@
         '<div class="leader-role">'+indexBadge+'<strong>'+escapeHtml(role)+'</strong></div></button>';
     }).join("");
   }
+  async function loadAvatarAudit(){
+    var handles=people.map(function(p){return p&&p.handle?p.handle:"";}).filter(Boolean);
+    if(!handles.length){avatarAuditLoaded=true;renderAvatarAudit();return;}
+    try{
+      var res=await fetch(API_BASE+"/v1/tech-leaders/avatar-audit?handles="+encodeURIComponent(handles.join(",")),{cache:"no-store"});
+      if(!res.ok)throw new Error("avatar_audit_http_"+res.status);
+      var data=await res.json();
+      var next={};
+      (Array.isArray(data&&data.items)?data.items:[]).forEach(function(item){
+        if(item&&item.handle)next[String(item.handle).toLowerCase()]=item;
+      });
+      avatarAuditByHandle=next;
+    }catch(e){
+      avatarAuditByHandle={};
+    }
+    avatarAuditLoaded=true;
+    renderAvatarAudit();
+    renderLeaderButtons(search.value);
+    if(current)updateProfile(current);
+  }
+
   async function loadCatalog(){
     try{
       var res=await fetch(CATALOG_URL,{cache:"no-store"});
@@ -441,6 +469,7 @@
     renderCategories();
     renderAvatarAudit();
     renderLeaderButtons("");
+    loadAvatarAudit();
   }
 
   function diagClass(v){return v==="✓"?"ok":v==="✕"?"bad":"wait";}
