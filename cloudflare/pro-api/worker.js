@@ -31,8 +31,8 @@ const TECH_LEADERS = Object.freeze({
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
-const TECH_FREE_FEED_TTL_MS = 10 * 60 * 1000;
-const TECH_FREE_FEED_MAX_STALE_MS = 24 * 60 * 60 * 1000;
+const TECH_FREE_FEED_TTL_MS = 30 * 60 * 1000;
+const TECH_FREE_FEED_MAX_STALE_MS = 48 * 60 * 60 * 1000;
 const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -944,17 +944,33 @@ function parseSyndicationTimeline(html, handle, limit) {
 }
 
 async function fetchFreeTechLeaderFeed(handle, limit) {
-  const url = `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}`;
+  const params = new URLSearchParams({
+    dnt: "true",
+    frame: "false",
+    hideBorder: "true",
+    hideFooter: "true",
+    hideHeader: "true",
+    lang: "en",
+    limit: String(Math.max(3, Math.min(20, limit || TECH_FEED_FETCH_SIZE))),
+    origin: "https://www.ooglex.com/",
+    showHeader: "false",
+    showReplies: "false",
+    theme: "light",
+    transparent: "true"
+  });
+  const url = `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}?${params.toString()}`;
   const res = await fetch(url, {
     redirect: "follow",
     headers: {
-      accept: "text/html,application/xhtml+xml",
-      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Free-Feed/1.0)"
+      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "accept-language": "en-US,en;q=0.9",
+      referer: "https://publish.twitter.com/",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   });
   if (!res.ok) {
-    const err = new Error("x_public_syndication_error");
-    err.code = "x_public_syndication_error";
+    const err = new Error(res.status === 429 ? "x_public_syndication_rate_limited" : "x_public_syndication_error");
+    err.code = res.status === 429 ? "x_public_syndication_rate_limited" : "x_public_syndication_error";
     err.status = res.status;
     throw err;
   }
@@ -964,10 +980,11 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
     const err = new Error("x_public_feed_empty");
     err.code = "x_public_feed_empty";
     err.status = 502;
+    err.detail = { html_bytes: html.length, has_next_data: /__NEXT_DATA__/.test(html) };
     throw err;
   }
   return {
-    schema_version: 1,
+    schema_version: 2,
     source: "x_public_syndication",
     uses_x_api: false,
     handle,
@@ -1255,7 +1272,8 @@ export default {
           error: code,
           handle,
           uses_x_api: false,
-          upstream_status: err && err.status ? err.status : null
+          upstream_status: err && err.status ? err.status : null,
+          diagnostic: err && err.detail ? err.detail : null
         }, status, { ...cors, "cache-control": "no-store", "x-ooglex-x-api": "unused" });
       }
     }

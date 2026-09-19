@@ -119,11 +119,14 @@ jobs:
       - name: Smoke test zero-X-API free timeline
         run: |
           set +e
-          body="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=ZLQ6600E&limit=3" 2>/dev/null)"
-          if echo "$body" | grep -q '"uses_x_api":false'; then
-            echo "Free timeline public-source path is responding without X API: $body"
+          tmp="$(mktemp)"
+          code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=ZLQ6600E&limit=3")"
+          body="$(cat "$tmp")"
+          rm -f "$tmp"
+          if [ "$code" = "200" ] && echo "$body" | grep -q '"uses_x_api":false'; then
+            echo "Free timeline public-source path is responding without X API (HTTP $code): $body"
           else
-            echo "::warning::Free timeline public source did not return posts yet; frontend will fall back to X Embed. Response: $body"
+            echo "::warning::Free timeline trial returned HTTP $code; frontend will fall back to X Embed. Response: $body"
           fi
 
       - name: Warm and verify Tech Leaders avatar cache
