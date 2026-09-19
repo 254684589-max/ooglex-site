@@ -321,13 +321,7 @@
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
-    var avatarStatus=avatarAuditStatus(p);
-    var avatarNote=!avatarAuditLoaded?"头像：正在核验":
-      (avatarStatus==="x_original"?"头像：X 原版":
-      (avatarStatus==="x_original_proxy"?"头像：X 原图代理":
-      (avatarStatus==="fallback"?"头像：替代肖像":
-      "头像：待补 / 本地兜底")));
-    document.getElementById("profile-note").textContent=(p.note||"公开 X 账号。")+" · "+avatarNote;
+    document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
     profileAvatarFallback.textContent=initialsFor(p);
     profileAvatar.hidden=false;
