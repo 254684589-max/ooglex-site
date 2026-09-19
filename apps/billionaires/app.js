@@ -207,6 +207,11 @@
     return m ? parseInt(m[1], 10) : 1;
   }
 
+  function enAttr(p) {
+    var en = p && p.nameEn ? String(p.nameEn).trim() : "";
+    return en && en !== p.name ? ' data-en="' + esc(en) + '"' : "";
+  }
+
   function renderSummary() {
     var ppl = DATA.people || [], el = $("summary");
     var withChg = ppl.filter(function (p) { return isNum(p.change); });
@@ -216,8 +221,11 @@
     var n = DATA.count || ppl.length;
     var html = '<span class="pill-i">📅 ' + (DATA.asOf || "—") + "</span>" +
       '<span class="pill-i">' + fmtInt(n) + ' 位亿万富豪 总财富 <b class="big">' + totalT + "</b></span>";
-    if (top && top.change > 0) html += '<span class="lead up">▲ 今日领涨 ' + esc(top.name) + " " + fmtChange(top.change) + "</span>";
-    if (bot && bot.change < 0) html += '<span class="lead down">▼ 今日领跌 ' + esc(bot.name) + " " + fmtChange(bot.change) + "</span>";
+    /* data-en 只是把数据里现成的 nameEn 带到 DOM 上，给英文界面层取用：
+       领涨/领跌的人不一定在当前这一页的榜单行里，取不到中英对照就只能留中文名。
+       中文渲染不读这个属性，行为完全不变。 */
+    if (top && top.change > 0) html += '<span class="lead up"' + enAttr(top) + '>▲ 今日领涨 ' + esc(top.name) + " " + fmtChange(top.change) + "</span>";
+    if (bot && bot.change < 0) html += '<span class="lead down"' + enAttr(bot) + '>▼ 今日领跌 ' + esc(bot.name) + " " + fmtChange(bot.change) + "</span>";
     el.innerHTML = html;
   }
 

@@ -18,8 +18,8 @@
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
 <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
-<script src="/assets/theme.js?v=7bf48c7c" defer></script>
-<script src="/assets/i18n.js?v=72e8d1ca" defer></script>
+<script src="/assets/theme.js?v=2ae26043" defer></script>
+<script src="/assets/i18n.js?v=c83b60c1" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -339,6 +339,9 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
 .exprow .rch { flex:0 1 auto; min-width:96px; text-align:right; font-family:var(--mono);
   font-size:11px; color:var(--faint); white-space:nowrap; }
 .exprow .rch s { text-decoration:none; }
+/* 英文比中文宽：「· 均不在池内」这类尾注在 768px 以下会把整行顶出视口。
+   只在英文下放开这一格换行——中文渲染与页面契约（跑的是中文）完全不受影响。 */
+html[data-lang="en"] .exprow .rch { white-space:normal; }
 /* 受涵盖国家的标记。**这一格不是装饰**：它说明该行为什么值得看第二眼。
    用文字而不是纯色块——颜色对色觉障碍读者与灰度打印都会消失。 */
 /* 名单变动行。新增用涨色、消失用跌色——与站内行情同一套语义，读者不必

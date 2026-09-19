@@ -40,7 +40,10 @@ import os
 import re
 import sys
 
-ROOT_DIRS = ("apps", "games", ".")
+# account/ 与 privacy/ 也引用 /assets/ 下的公共脚本，早先不在扫描范围里，
+# 结果这两页的 ?v= 会停在旧哈希——回头客拿到的是浏览器缓存里的旧脚本，
+# 正是这道闸门要防的那种事故。一并纳入。
+ROOT_DIRS = ("apps", "games", "account", "privacy", ".")
 # 两类引用都管：
 #   · 与 HTML 同目录的（company.js）——最初那次事故就出在这类；
 #   · 跨目录的根绝对路径（/assets/theme.js、/assets/terminal/core.js）。
