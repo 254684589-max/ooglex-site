@@ -189,3 +189,8 @@ Resolution order on an R2 miss:
 Wikipedia results are accepted only when the returned page title matches the person's surname/name token, reducing the chance of assigning a similarly named but unrelated portrait. The browser still receives the final image from the Ooglex Worker/R2 endpoint.
 
 The warmup verifier now passes each catalog entry's name and company metadata to the resolver.
+
+
+### Wikimedia Commons file search
+
+If the English Wikipedia article has no page thumbnail, V4.2 now searches Wikimedia Commons files by the leader's English name. A Commons file is accepted only when its filename contains both the first and last name tokens. This fallback still runs before Unavatar and the selected image is cached in Ooglex R2.
