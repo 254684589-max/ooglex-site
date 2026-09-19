@@ -31,7 +31,7 @@ const TECH_LEADERS = Object.freeze({
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
-const TECH_PROFILE_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
@@ -362,6 +362,70 @@ function mergePublicXProfiles(primary, secondary, handle, name) {
   };
 }
 
+function normalizeXApiPublicProfile(data, handle, name) {
+  if (!data || typeof data !== "object") return null;
+  const metrics = data.public_metrics && typeof data.public_metrics === "object" ? data.public_metrics : {};
+  const url = String(data.url || "").trim();
+  return {
+    schema_version: 1,
+    source: "x_api_profile_cache",
+    uses_x_api: true,
+    handle: String(data.username || handle || ""),
+    name: String(data.name || name || ""),
+    followers_count: metrics.followers_count == null ? null : Number(metrics.followers_count),
+    following_count: metrics.following_count == null ? null : Number(metrics.following_count),
+    created_at: data.created_at || null,
+    url: url || null,
+    display_url: url ? url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "") : null,
+    description: data.description || null,
+    profile_image_url: data.profile_image_url || null,
+    verified: Boolean(data.verified),
+    fetched_at: new Date().toISOString()
+  };
+}
+
+async function fetchXApiPublicProfile(handle, name, env) {
+  if (!env.X_BEARER_TOKEN) return null;
+  const username = encodeURIComponent(handle);
+  const payload = await xApiGet(
+    `/2/users/by/username/${username}?user.fields=created_at,public_metrics,url,description,profile_image_url,verified`,
+    env
+  );
+  if (!payload || !payload.data) return null;
+  return normalizeXApiPublicProfile(payload.data, handle, name);
+}
+
+function publicProfileComplete(profile) {
+  return Boolean(
+    profile &&
+    profile.followers_count != null &&
+    profile.following_count != null &&
+    profile.created_at
+  );
+}
+
+function mergeProfileSupplement(primary, supplement, handle, name) {
+  const a = primary || {};
+  const b = supplement || {};
+  return {
+    schema_version: 1,
+    source: b.uses_x_api ? "x_public_then_api_cache" : (a.source || b.source || "x_public_syndication"),
+    uses_x_api: Boolean(b.uses_x_api),
+    handle: a.handle || b.handle || handle,
+    name: a.name || b.name || name || "",
+    followers_count: a.followers_count ?? b.followers_count ?? null,
+    following_count: a.following_count ?? b.following_count ?? null,
+    created_at: a.created_at || b.created_at || null,
+    url: a.url || b.url || null,
+    display_url: a.display_url || b.display_url || null,
+    description: a.description || b.description || null,
+    profile_image_url: a.profile_image_url || b.profile_image_url || null,
+    verified: Boolean(a.verified || b.verified),
+    fetched_at: new Date().toISOString()
+  };
+}
+
+
 async function fetchPublicXProfile(handle, name) {
   let followProfile = null;
   let syndicationProfile = null;
@@ -404,13 +468,7 @@ async function fetchPublicXProfile(handle, name) {
   } catch {}
 
   const merged = mergePublicXProfiles(syndicationProfile, followProfile, handle, name);
-  const usable = merged.followers_count != null || merged.following_count != null || merged.created_at || merged.url;
-  if (!usable) {
-    const err = new Error("x_public_profile_unavailable");
-    err.code = "x_public_profile_unavailable";
-    err.status = 502;
-    throw err;
-  }
+  if (publicProfileComplete(merged)) return merged;
   return merged;
 }
 
@@ -429,12 +487,24 @@ async function getPublicXProfile(handle, name, env) {
   if (cached && age <= TECH_PROFILE_CACHE_TTL_MS) return { ...cached, cache: { status: "fresh", age_ms: age } };
 
   try {
-    const fresh = await fetchPublicXProfile(normalized, name);
+    const publicProfile = await fetchPublicXProfile(normalized, name);
+    let fresh = publicProfile;
+    if (!publicProfileComplete(publicProfile)) {
+      const apiProfile = await fetchXApiPublicProfile(normalized, name, env);
+      if (apiProfile) fresh = mergeProfileSupplement(publicProfile, apiProfile, normalized, name);
+    }
+    const usable = fresh && (fresh.followers_count != null || fresh.following_count != null || fresh.created_at || fresh.url);
+    if (!usable) {
+      const err = new Error("x_profile_metrics_unavailable");
+      err.code = "x_profile_metrics_unavailable";
+      err.status = 502;
+      throw err;
+    }
     await writeJson(env.PRO_DATA, key, fresh);
     return { ...fresh, cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
     if (cached && age <= TECH_PROFILE_MAX_STALE_MS) {
-      return { ...cached, cache: { status: "stale", age_ms: age, reason: err && err.code ? err.code : "x_public_profile_error" } };
+      return { ...cached, cache: { status: "stale", age_ms: age, reason: err && err.code ? err.code : "x_profile_error" } };
     }
     throw err;
   }
@@ -966,12 +1036,12 @@ export default {
         return json(profile, 200, {
           ...cors,
           "cache-control": "public, max-age=300, stale-while-revalidate=3600",
-          "x-ooglex-source": "x-public-syndication"
+          "x-ooglex-source": profile.uses_x_api ? "x-profile-cache" : "x-public-syndication"
         });
       } catch (err) {
         const code = err && err.code ? err.code : "x_public_profile_unavailable";
         const status = err && Number.isInteger(err.status) ? err.status : 502;
-        return json({ error: code, handle, uses_x_api: false }, status, { ...cors, "cache-control": "no-store" });
+        return json({ error: code, handle }, status, { ...cors, "cache-control": "no-store" });
       }
     }
 
