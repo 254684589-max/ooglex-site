@@ -141,7 +141,7 @@ def inject_rich_access_adapter() -> None:
     finance_snippet = (
         '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
         '<script src="/assets/pro-access.js?v=6"></script>\n'
-        '<script src="/assets/pro-finance-column.js?v=1"></script>\n'
+        '<script src="/assets/pro-finance-column.js?v=2"></script>\n'
     )
     for relpath in (
         "apps/finance-column/index.html",
