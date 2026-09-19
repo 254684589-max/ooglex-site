@@ -53,6 +53,7 @@
     "Quick Links": "Quick Links",
     "监控": "Monitor",
     "证券描述": "Security Description",
+    "条件选股": "Equity Screener",
     "榜单与趋势": "Rankings & Trends",
     "多标的比较": "Multi-Asset Compare",
     "行情详情": "Quote Details",
@@ -81,6 +82,361 @@
   };
 
   var TERMINAL = {
+    "汇总视图": "Summary view",
+    "规划中：站内无任何账户数据；汇率需另接官方来源；风险指标依赖持仓协方差":
+      "Planned: the site holds no account data; exchange rates would need a separate official source; risk metrics depend on a holdings covariance matrix",
+    "规划中：无免费公开来源，现阶段这四组字段一律不显示，也不用占位数字冒充":
+      "Planned: no free public source exists, so these four field groups are simply not shown — no placeholder numbers stand in for them",
+    "规划中：站内债券数据是主权收益率序列，没有券级现金流（票息、付息频率、到期日）":
+      "Planned: the site's bond data is sovereign yield series, with no bond-level cash flows (coupon, payment frequency, maturity)",
+    "规划中：无来源": "Planned: no source",
+    "规划中：无免费公开来源": "Planned: no free public source",
+    "规划中：纯静态站无后端；浏览器本地只能在打开时评估":
+      "Planned: a purely static site has no backend, and a browser can only evaluate it while the page is open",
+    "规划中：需要先把数据口径做成可检索的结构，否则会答出站内没有的数字":
+      "Planned: the data definitions must first be made searchable as structure, or it would answer with numbers the site does not hold",
+    "行情报价":
+      "Market Quotes",
+    "宏观风险":
+      "Macro Risk",
+    "新闻事件":
+      "News & Events",
+    "分析研究":
+      "Analysis & Research",
+    "产业链":
+      "Supply Chain",
+    "榜单数据":
+      "Rankings & Data",
+    "工具计算":
+      "Tools & Calculators",
+    "系统":
+      "System",
+    "行情详情":
+      "Quote Detail",
+    "美债收益率曲线":
+      "Treasury Yield Curve",
+    "要闻":
+      "News",
+    "多标的比较":
+      "Multi-Instrument Comparison",
+    "榜单与趋势":
+      "Rankings & Trends",
+    "证券描述":
+      "Security Description",
+    "功能目录":
+      "Function Catalog",
+    "旧版终端":
+      "Legacy Terminal",
+    "六大品类逐项报价；盘中快照约 30 分钟刷新，非实时":
+      "Per-instrument quotes across six categories; the intraday snapshot refreshes about every 30 minutes and is not real time",
+    "133 个标的的日/周/月/年初至今收益，收盘口径":
+      "Daily, weekly, monthly and year-to-date returns for 133 instruments, on a close basis",
+    "500 家上市与非上市公司；非美元报价按上市地本币":
+      "500 listed and private companies; non-USD quotes are in the local currency of the listing venue",
+    "商品报价在全球市场行情页的六大品类里（品类切换是页内筛选，没有独立锚点）；apps/commodities/ 目前只有数据文件，还没有独立页面":
+      "Commodity quotes live in the six categories of the Global Markets page (switching category filters within the page; there is no separate anchor). apps/commodities/ currently holds data files only, with no page of its own yet",
+    "35 国 10 年期在全球市场行情页的债券品类里，按地区分组（美洲4/欧洲25/亚洲3/大洋洲2/非洲1），每行可点进自己的历史图；34 条月频、1 条日频，涨跌是「较前一观测」的基点变化不是当日。apps/bonds/ 目前只有数据文件，还没有独立页面 —— 品类切换是页内筛选，没有独立锚点。国与国之间的利差在监控页 SOVR 面板":
+      "The 10-year yields of 35 countries sit in the Bonds category of the Global Markets page, grouped by region (Americas 4 / Europe 25 / Asia 3 / Oceania 2 / Africa 1), each row opening its own history chart; 34 series are monthly and 1 daily, and the change is the basis-point move versus the previous observation, not versus today. apps/bonds/ currently holds data files only, with no page of its own — switching category filters within the page and has no separate anchor. Country-to-country spreads are in the SOVR panel of the monitor page",
+    "按板块与市值分块着色":
+      "Tiled and coloured by sector and market cap",
+    "单标的完整走势：日线 1 个月至全部区间，有小时观测的另有 4 小时线":
+      "The full history of a single instrument: daily bars from one month to the entire range, plus 4-hour bars where hourly observations exist",
+    "机制读数 + 七类信号 + 五组官方序列":
+      "Regime reading + seven signal families + five groups of official series",
+    "11 个期限共享日期轴；当日无观测即留空，不插值":
+      "11 tenors on a shared date axis; a day with no observation is left blank, never interpolated",
+    "OFR 五大监测":
+      "The five OFR monitors",
+    "CNN 七项情绪指标合成":
+      "Composited from CNN's seven sentiment indicators",
+    "各国经济状况概览":
+      "An overview of each country's economic condition",
+    "主要国家房价走势":
+      "House price trends in major economies",
+    "日内多次刷新":
+      "Refreshed several times a day",
+    "央行决议 / CPI / 非农；逐条标注是否已回填实际值":
+      "Central-bank decisions / CPI / payrolls, each marked with whether the actual value has been backfilled",
+    "六项比率（PE/PB/PS/ROE/净利率/负债率）筛选与排序，外加同业对比、板块分布与覆盖面。比率由本站按写明的公式从 SEC XBRL 报表项现算；逐条带报表期末与价格日期两个日期；分母非正不给比率，缺的字段是 null 不是 0":
+      "Screen and sort on six ratios (PE, PB, PS, ROE, net margin, debt ratio), with peer comparison, sector distribution and coverage. The ratios are computed here from SEC XBRL statement items using the stated formulas; each row carries both the statement period end and the price date; a non-positive denominator yields no ratio, and a missing field is null, not 0",
+    "与 SCRN 同一张表的另一种用法：筛选是加阈值，相对估值是和同业中位比。板块中位用中位数而非平均，样本不足 5 家不给中位。不另开一页重复同一份数据":
+      "The same table as SCRN used a different way: screening applies thresholds, relative valuation compares against the peer median. Sector medians use the median rather than the mean, and no median is given below a sample of 5. No second page duplicates the same data",
+    "证券描述页 15) 分页：该公司的报表原始项（营收/净利/EPS/权益/资产/负债）与六项比率，并与本板块中位对比。现金流表、信用评级、期权链仍无来源，菜单里保持置灰":
+      "A sub-page of the Security Description page (15): the company's raw statement items (revenue, net income, EPS, equity, assets, liabilities) and the six ratios, compared with the sector median. Cash-flow statements, credit ratings and option chains still have no source and stay greyed out in the menu",
+    "各国十年期相对任选基准国的利差（基点），外加当前利差最宽四国的月频利差历史（400 期）。只在与基准同一个数据日的国家之间算，跨期的逐条摘出；收益率是水平值，差值只报基点不报百分比":
+      "Each country's 10-year yield spread against a benchmark country of your choosing (in basis points), plus the monthly spread history (400 periods) of the four countries with the widest current spreads. Spreads are computed only between countries sharing the benchmark's data date, with cross-period entries pulled out one by one; yields are levels, so differences are reported in basis points, never as percentages",
+    "终端首页：一屏挂 13 个功能面板，跨品类总览":
+      "The terminal's home page: 13 function panels on one screen, a cross-category overview",
+    "单证券的发行人、证券、标识、收益、走势与口径分页":
+      "Sub-pages for a single security: issuer, instrument, identifiers, returns, history and methodology",
+    "按日期对齐、共同窗口内重基到 100 叠加比较；另给价差比值、回撤与区间总回报":
+      "Aligned by date and rebased to 100 within a common window for overlay comparison, with the spread ratio, drawdown and total return over the range",
+    "可切六个维度的排行表，编号行 + 相对强弧 + 迷你走势":
+      "A ranking table switchable across six dimensions, with numbered rows, relative strength and sparklines",
+    "可切六个维度的排行表，编号行 + 相对强弱 + 迷你走势":
+      "A ranking table switchable across six dimensions, with numbered rows, relative strength and sparklines",
+    "13F 与政治人物交易，周频":
+      "13F filings and political trades, weekly",
+    "12 个价值链环节 × 27 条产业链":
+      "12 value-chain stages × 27 industry chains",
+    "不限品类前 250":
+      "Top 250 across all asset classes",
+    "Forbes，日频":
+      "Forbes, daily",
+    "全部数据应用的聚合入口":
+      "The aggregated entry point to every data app",
+    "纯前端计算，不读数据":
+      "Pure front-end computation; reads no data",
+    "全市场知识图谱":
+      "A knowledge graph of the whole market",
+    "本注册表本身，列出已接入与规划中的全部功能":
+      "The registry itself, listing every function that is live and every one that is planned",
+    "键盘与命令行说明":
+      "Keyboard and command-line reference",
+    "改版前的终端页，保留可用；其品类看板与地缘风险模块尚未迁入新版":
+      "The pre-redesign terminal page, kept usable; its category board and geopolitical-risk module have not yet moved to the new version",
+    "CNN Business Fear & Greed Index · 日频":
+      "CNN Business Fear & Greed Index · daily",
+    "U.S. Office of Financial Research (OFR) · 日频":
+      "U.S. Office of Financial Research (OFR) · daily",
+    "Forex Factory 经济日历 · 周历 · 每日刷新":
+      "Forex Factory economic calendar · weekly schedule · refreshed daily",
+    "Google News · Yahoo Finance · 日内多次":
+      "Google News · Yahoo Finance · several times a day",
+    "CoinGecko · 日频 · 24h 口径":
+      "CoinGecko · daily · 24-hour basis",
+    "站内全部为公开来源的定时快照；任何一源失败只影响对应面板，不以零值静默覆盖":
+      "Everything here is a scheduled snapshot of a public source; a failure in any one source affects only its own panel and never silently overwrites with zeros",
+    "信用与加密 Credit & Crypto": "Credit & Crypto",
+    "功能注册表 Function Registry": "Function Registry",
+    "彩色功能键条、功能目录、命令行解析、建议功能条都从":
+      "The colour function-key bar, the function catalog, command-line parsing and the suggested-function strip are all generated from ",
+    "生成：加一个金融功能 = 加一条记录。划掉的是规划中，缺什么写在功能目录里。":
+      ": adding a financial function means adding one record. Struck-through entries are planned; what is missing is stated in the catalog.",
+    "Yahoo Finance · 约30分钟 · 非实时": "Yahoo Finance · about 30 minutes · not real time",
+    "FRED · EIA · Yahoo Finance · 交易所行情 · 日频": "FRED · EIA · Yahoo Finance · exchange quotes · daily",
+    "FRED / U.S. Treasury H.15 · 日频": "FRED / U.S. Treasury H.15 · daily",
+    "来源 宏观风险监测的异动判定 · 阈值与口径见 MACR":
+      "Source: the mutation detection of the Macro Risk Monitor · thresholds and definitions are under MACR",
+    "以 德国10年期国债 为基准，单位基点（1bp = 0.01 个百分点）。只在与基准同一个数据日（2026-08-01）的国家之间算 —— 基准取这个月的观测、对手取另一个月的观测，两者之差不是利差，是两个时点的混合。数据日与基准不同、已摘出 4 条（智利10年期国债 2026-07-01、葡萄牙10年期国债 2026-07-01、波兰10年期国债 2026-07-01、欧元区AAA国债曲线10年 2026-09-16）。 收益率是水平值不是价格：差值只报基点，不报百分比。":
+      "Benchmarked against the German 10-year government bond, in basis points (1bp = 0.01 percentage points). Spreads are computed only between countries sharing the benchmark's data date (2026-08-01) — taking the benchmark from one month and the counterpart from another does not give a spread, it gives a blend of two points in time. Four entries whose data date differs from the benchmark have been pulled out (Chile 10-year 2026-07-01, Portugal 10-year 2026-07-01, Poland 10-year 2026-07-01, Euro Area AAA government curve 10-year 2026-09-16). Yields are levels, not prices: differences are reported in basis points only, never as percentages.",
+    "布油近1个月 +14.36% · WTI +19.17% · 按 −15% ~ +15% 线性映射，超出取端点":
+      "Brent over the past month +14.36% · WTI +19.17% · mapped linearly over −15% to +15%, clipped at the endpoints",
+    "黄金 -0.91% − 标普500 -0.70% = -0.21个百分点 · 按 −15 ~ +15 个百分点线性映射，超出取端点":
+      "Gold −0.91% − S&P 500 −0.70% = −0.21 percentage points · mapped linearly over −15 to +15 percentage points, clipped at the endpoints",
+    "宏观风险监测波动率信号 81/100（支持） · 风险方向 = 100 − 信号分，与首屏风险雷达同一取向":
+      "Macro Risk Monitor volatility signal 81/100 (supportive) · risk direction = 100 − the signal score, the same orientation as the risk radar on the home screen",
+    "OFR FSI -2.24，处于站内 261 个观测的第 65 百分位 · 百分位取自该文件自己保存的观测窗口，不设人为阈值":
+      "OFR FSI −2.24, at the 65th percentile of the 261 observations held on site · the percentile comes from the observation window the file itself keeps; no threshold is imposed",
+    "收益率曲线周环比 -12bp（走平）": "Yield curve, week over week −12bp (flattening)",
+    "广度代理处于近两年 9% 分位，涨势集中":
+      "The breadth proxy sits at the 9th percentile of the past two years, with gains concentrated",
+    "高收益/投资级比价周环比 -0.6%，信用走弱":
+      "High-yield vs. investment-grade ratio, week over week −0.6% — credit weakening",
+    "跨资产强弱 Cross Asset · YTD":
+      "Cross Asset · YTD",
+    "股票 EQUITY":
+      "Equity",
+    "商品 COMMODITY":
+      "Commodity",
+    "债券 BOND":
+      "Bond",
+    "USD 申请失业金人数":
+      "USD Initial Jobless Claims",
+    "AUD 澳央行行长讲话":
+      "AUD RBA Governor Speaks",
+    "JPY 货币政策声明":
+      "JPY Monetary Policy Statement",
+    "JPY 央行利率决议":
+      "JPY BoJ Policy Rate",
+    "JPY 新闻发布会":
+      "JPY Press Conference",
+    "GBP 零售销售 环比":
+      "GBP Retail Sales MoM",
+    "EUR 欧央行行长讲话":
+      "EUR ECB President Speaks",
+    "来源 Yahoo Finance · AS OF 2026-09-17 · 日频收盘 · 状态 部分缺失 · LAST 为盘中快照（约 30 分钟刷新、非实时），1M/YTD 为收盘口径":
+      "Source: Yahoo Finance · AS OF 2026-09-17 · daily close · status partially missing · LAST is an intraday snapshot (refreshed about every 30 minutes, not real time); 1M and YTD are on a close basis",
+    "来源 FRED · EIA · Yahoo Finance · 交易所行情 · 判定阈值：分位 <35 STRESS / <48 RISK / <58 WATCH / ≥58 NORMAL；Z-Score |z|≥2 STRESS / ≥1.5 RISK / ≥1 WATCH（Z 由站内原始日序列现算，窗口见括号） · US10Y 与 DXY-FED 点进独立行情页（DGS10 / DTWEXBGS 两条逐日序列）；8 条合成信号点名称就地展开历史分位（周频回溯序列，没有单指标行情页，不做成假链接）；最后 9 条只有现值、站内无序列，因此不可点。完整指标页见宏观风险监测。":
+      "Source: FRED · EIA · Yahoo Finance · exchange quotes · Thresholds: percentile <35 STRESS / <48 RISK / <58 WATCH / ≥58 NORMAL; Z-score |z|≥2 STRESS / ≥1.5 RISK / ≥1 WATCH (Z is computed live from the on-site raw daily series; the window is in parentheses) · US10Y and DXY-FED open their own quote pages (the DGS10 and DTWEXBGS daily series); the 8 composite signals expand their historical percentile in place when you click the name (weekly backtest series — there is no single-indicator quote page, and no fake link is offered); the last 9 have a current value only with no on-site series and are therefore not clickable. The full indicator page is the Macro Risk Monitor.",
+    "十一个期限各取一条 FRED 官方序列、共享日期轴；某期限当日无观测即留空，不插值、不用相邻期限顶替。当前这两条利差都不倒挂。 30Y-5Y 由曲线现算，其余为数据源直接给出。":
+      "Eleven tenors each take one official FRED series on a shared date axis; a tenor with no observation that day is left blank — never interpolated, never substituted with an adjacent tenor. Neither of these two spreads is currently inverted. 30Y−5Y is computed from the curve; the rest come straight from the source.",
+    "来源 FRED (OECD Main Economic Indicators) / ECB Data Portal · 34 条月频 + 1 条日频，涨跌一律「较前一观测」不是当日 · 水平表在「全球市场行情」债券品类，这里只做利差":
+      "Source: FRED (OECD Main Economic Indicators) / ECB Data Portal · 34 monthly series + 1 daily; changes are always “versus the previous observation”, not versus today · The level table lives in the Bonds category of Global Markets; this panel covers spreads only",
+    "FRED (OECD Main Economic Indicators) / ECB Data Portal · 34条月频 + 1条日频":
+      "FRED (OECD Main Economic Indicators) / ECB Data Portal · 34 monthly series + 1 daily",
+    "FRED (OECD Main Economic Indicators) / ECB Data Portal · 月频 400 期":
+      "FRED (OECD Main Economic Indicators) / ECB Data Portal · monthly, 400 periods",
+    "本模型读的是市场为地缘风险付出的价格：能源溢价、避险需求、波动率制度、金融压力四条轴等权，全部由站内已在日更的公开管道逐日复算。它不统计、不解读地缘政治事件本身，也不使用任何 AI 生成的文本作为数据来源。":
+      "This model reads the price the market pays for geopolitical risk: four equally weighted axes — energy premium, safe-haven demand, volatility regime and financial stress — all recomputed daily from public pipelines this site already refreshes every day. It neither counts nor interprets geopolitical events themselves, and it uses no AI-generated text as a data source.",
+    "来源 Yahoo Finance · FRED · EIA · Yahoo Finance · 交易所行情 · U.S. Office of Financial Research (OFR) · AS OF 2026-09-15 · 四条轴各 25% 等权，任一条缺失即不给等级":
+      "Source: Yahoo Finance · FRED · EIA · Yahoo Finance · exchange quotes · U.S. Office of Financial Research (OFR) · AS OF 2026-09-15 · The four axes are weighted 25% each; if any one is missing, no grade is given",
+    "按跨资产管道的 category 字段汇总只数与涨跌宽度，完整的可搜索看板见 /apps/markets/ —— 这里不复制第二份看板。":
+      "Counts and advance/decline breadth are aggregated from the cross-asset pipeline's category field. The full searchable board is at /apps/markets/ — no second copy of it is kept here.",
+    "来源 Yahoo Finance · AS OF 2026-09-17 · 日频收盘 · 状态 部分缺失 · 只数与涨跌宽度按跨资产管道的 category 字段汇总 · 完整的可搜索看板见 /apps/markets/":
+      "Source: Yahoo Finance · AS OF 2026-09-17 · daily close · status partially missing · Counts and breadth are aggregated from the cross-asset pipeline's category field · The full searchable board is at /apps/markets/",
+    "来源 Forex Factory 经济日历 · AS OF 2026-09-17 · 周历 · 每日刷新 · 状态 — · A=实际 F=预测":
+      "Source: Forex Factory economic calendar · AS OF 2026-09-17 · weekly schedule · refreshed daily · status — · A = actual, F = forecast",
+    "来源 Google News · Yahoo Finance · AS OF 2026-09-18 · 日内多次 · 状态 —":
+      "Source: Google News · Yahoo Finance · AS OF 2026-09-18 · several times a day · status —",
+    "来源 Yahoo Finance · AS OF 2026-09-17 · 日频收盘 · 状态 部分缺失 · P = ETF 代理 · 加密为 24h 口径，与股票当日口径不同":
+      "Source: Yahoo Finance · AS OF 2026-09-17 · daily close · status partially missing · P = ETF proxy · Crypto is on a 24-hour basis, which differs from the same-day basis used for equities",
+    "来源 Yahoo Finance · 年初至今，各标的自身价格变动，未做汇率或再投资调整":
+      "Source: Yahoo Finance · Year to date, each instrument's own price change, with no FX or reinvestment adjustment",
+    "本终端不显示 BID / ASK / VOL / 日内高低 / 财务报表 / 评级 / 券级现金流 / 持仓：站内没有这些来源，也不用占位数字冒充。":
+      "This terminal does not show BID / ASK / VOL / intraday high-low / financial statements / ratings / bond-level cash flows / holdings: the site has no source for them, and placeholder numbers are not used to stand in.",
+    /* 主权债面板的国名 */
+    "美国": "United States", "欧元区": "Euro Area", "德国": "Germany", "法国": "France",
+    "意大利": "Italy", "西班牙": "Spain", "英国": "United Kingdom", "日本": "Japan",
+    "加拿大": "Canada", "澳大利亚": "Australia", "新西兰": "New Zealand", "瑞士": "Switzerland",
+    "瑞典": "Sweden", "挪威": "Norway", "丹麦": "Denmark", "芬兰": "Finland",
+    "荷兰": "Netherlands", "比利时": "Belgium", "奥地利": "Austria", "爱尔兰": "Ireland",
+    "葡萄牙": "Portugal", "希腊": "Greece", "卢森堡": "Luxembourg", "斯洛伐克": "Slovakia",
+    "斯洛文尼亚": "Slovenia", "捷克": "Czechia", "波兰": "Poland", "匈牙利": "Hungary",
+    "罗马尼亚": "Romania", "韩国": "South Korea", "以色列": "Israel", "墨西哥": "Mexico",
+    "南非": "South Africa", "智利": "Chile", "哥伦比亚": "Colombia", "冰岛": "Iceland",
+    "新建标签：打开功能目录": "New tab: open the function catalog",
+    "打开功能目录，挑一个功能开新标签": "Open the function catalog and pick a function for a new tab",
+    "全屏": "Fullscreen",
+    "功能键条由 chrome/registry.js 生成：加一个功能就是加一条记录":
+      "The function-key bar is generated by chrome/registry.js — adding a function means adding one record",
+    "风险信号 · 0–100 相对分位（滚动 2 年）· 点名称看历史分位":
+      "Risk signals · 0–100 relative percentile (rolling 2 years) · click a name for its history",
+    "监测指标 · 仅现值与日变动（站内无历史序列，不给分位与判定）":
+      "Monitored indicators · current value and daily change only (no on-site history, so no percentile or verdict)",
+    "报价为数据源直接给出的对美元或对欧元的盘中快照（约 30 分钟刷新、非实时）。CNY 是在岸价，不是离岸 CNH。":
+      "Quotes are intraday snapshots against the dollar or the euro exactly as the source gives them (refreshed about every 30 minutes, not real time). CNY is the onshore rate, not offshore CNH.",
+    "来源 FRED / U.S. Treasury H.15 · 日频 · 某期限当日无观测即留空，不插值":
+      "Source: FRED / U.S. Treasury H.15 · daily · a tenor with no observation that day is left blank, never interpolated",
+    "来源 FRED / U.S. Treasury H.15 · 30Y-5Y 由曲线现算 · 历史窗口 260 个交易日":
+      "Source: FRED / U.S. Treasury H.15 · 30Y−5Y computed from the curve · 260-session history window",
+    "十一个期限各取一条 FRED 官方序列、共享日期轴；某期限当日无观测即留空，不插值、不用相邻期限顶替。当前这两条利差都不倒挂。 30Y-5Y 由曲线现算，其余读数直接取官方序列。":
+      "Eleven tenors each take one official FRED series on a shared date axis; a tenor with no observation that day is left blank — never interpolated, never substituted with an adjacent tenor. Neither of these two spreads is currently inverted. 30Y−5Y is computed from the curve; every other reading is taken straight from the official series.",
+    /* 指数、汇率、商品与信号名都是行业通行叫法（页面里本来就并排着 SPX / DXY / CL
+       这类规范代码），按通行英文名写。国债与国名下面用锚定规则拼，不逐国入典。 */
+    "终端监控": "Terminal Monitor",
+    "宏观风险监测": "Macro Risk Monitor",
+    "全球市场行情": "Global Markets",
+    "全球监控 ·": "Global Monitor ·",
+    "轴": "Axis",
+    "分数": "Score",
+    "读数": "Reading",
+    "信号": "Signal",
+    "品类": "Category",
+    "指数贡献": "Index Contribution",
+    "国别与板块": "Country & Sector",
+    "只数": "Count",
+    "涨": "Up",
+    "跌": "Down",
+    "无值": "No value",
+    "中位当日": "Median daily",
+    "前五 / 后五": "Top 5 / Bottom 5",
+    "横截面汇总 Cross-Section": "Cross-Section",
+    "经济日历 Event Calendar": "Event Calendar",
+    "要闻 News": "News",
+    "风险提示 Risk Alerts": "Risk Alerts",
+    "数据来源 Data Sources": "Data Sources",
+    "建议功能 Suggested": "Suggested",
+    "来源 / 数据日期 / 状态": "Source / data date / status",
+    "帮助": "Help",
+    "待公布": "Pending",
+    "© 2026 OOGLEX 金融终端": "© 2026 OOGLEX Finance Terminal",
+    "标普500": "S&P 500",
+    "纳斯达克综合": "Nasdaq Composite",
+    "罗素2000": "Russell 2000",
+    "欧元区斯托克50": "Euro Stoxx 50",
+    "德国DAX": "DAX",
+    "英国富时100": "FTSE 100",
+    "日经225": "Nikkei 225",
+    "恒生指数": "Hang Seng",
+    "沪深300": "CSI 300",
+    "标普500波动率": "VIX",
+    "美元指数": "Dollar Index",
+    "欧元兑美元": "EUR/USD",
+    "美元兑日元": "USD/JPY",
+    "英镑兑美元": "GBP/USD",
+    "美元兑人民币": "USD/CNY",
+    "WTI 原油": "WTI Crude",
+    "布伦特原油": "Brent Crude",
+    "黄金": "Gold",
+    "白银": "Silver",
+    "铜": "Copper",
+    "天然气": "Natural Gas",
+    "美国长期国债": "U.S. Long Treasuries",
+    "投资级公司债": "Investment-Grade Corporates",
+    "高收益债": "High Yield",
+    "新兴市场美元主权债": "EM USD Sovereigns",
+    "比特币（24h 口径）": "Bitcoin (24h basis)",
+    "以太坊（24h 口径）": "Ethereum (24h basis)",
+    "流动性": "Liquidity",
+    "波动率": "Volatility",
+    "期限溢价": "Term Premium",
+    "实际利率": "Real Rates",
+    "信用利差": "Credit Spreads",
+    "增长动能": "Growth Momentum",
+    "美元汇率": "Dollar",
+    "市场广度": "Market Breadth",
+    "能源溢价": "Energy Premium",
+    "避险需求": "Safe-Haven Demand",
+    "波动率制度": "Volatility Regime",
+    "金融压力": "Financial Stress",
+    "中性": "Neutral",
+    "高": "High",
+    "低": "Low",
+    "偏高": "Elevated",
+    "偏低": "Subdued",
+    "10 年期美债收益率": "10-Year Treasury Yield",
+    "美联储广义美元指数": "Nominal Broad U.S. Dollar Index",
+    "债券波动率": "Bond Volatility",
+    "股指波动率": "Equity Volatility",
+    "高收益债 OAS": "High-Yield OAS",
+    "投资级债 OAS": "Investment-Grade OAS",
+    "担保隔夜融资利率": "SOFR",
+    "财政部一般账户": "Treasury General Account",
+    "隔夜逆回购用量": "Overnight Reverse Repo Volume",
+    "芝加哥联储金融状况": "Chicago Fed Financial Conditions",
+    "10Y−2Y 期限利差": "10Y−2Y Term Spread",
+    "·计算": "· computed",
+    "利率": "rates",
+    "大类资产收益": "Asset-Class Returns",
+    "全球公司股价": "Global Company Prices",
+    "商品行情": "Commodities",
+    "主权债收益率": "Sovereign Yields",
+    "标普热力图": "S&P Heatmap",
+    "金融风险监测": "Financial Risk Monitor",
+    "恐慌与贪婪": "Fear & Greed",
+    "全球经济图谱": "World Economy Map",
+    "全球房价": "Global House Prices",
+    "全球经济日历": "Global Economic Calendar",
+    "相对估值": "Relative Valuation",
+    "财务分析": "Financial Analysis",
+    "主权利差": "Sovereign Spreads",
+    "超级投资者持仓": "Superinvestor Holdings",
+    "全球产业链": "Global Supply Chain",
+    "全球市值排行": "Global Market-Cap Ranking",
+    "福布斯亿万富翁实时排行榜": "Forbes Real-Time Billionaires",
+    "数据中心": "Data Center",
+    "金融计算器": "Financial Calculators",
+    "金融知识架构": "Finance Knowledge Map",
+    "组合与持仓": "Portfolios & Holdings",
+    "逐笔报价与深度": "Tick Data & Depth",
+    "资产互换分析": "Asset-Swap Analysis",
+    "期权链与隐含波动": "Option Chains & Implied Vol",
+    "资金流向": "Fund Flows",
+    "条件告警": "Conditional Alerts",
+    "终端问答": "Terminal Q&A",
+    "行情（收盘）": "Quotes (close)",
+    "行情（盘中快照）": "Quotes (intraday snapshot)",
+    "Yahoo Finance · 日频收盘": "Yahoo Finance · daily close",
+    "部分缺失": "Partially missing",
+    "美债曲线": "Treasury Curve",
+    "恐慌贪婪": "Fear & Greed",
+    "OFR 金融风险": "OFR Financial Risk",
+    "经济日历": "Economic Calendar",
+    "加密（CoinGecko）": "Crypto (CoinGecko)",
+    "公司（个股）": "Companies (single stocks)",
+    "各国主权债收益率": "Sovereign Yields by Country",
+    "主权债观测历史": "Sovereign Yield Observation History",
     "证券描述 · Ooglex金融终端": "Security Description · Ooglex Finance Terminal",
     "榜单与趋势 · Ooglex金融终端": "Rankings & Trends · Ooglex Finance Terminal",
     "多标的比较 · Ooglex金融终端": "Multi-Asset Compare · Ooglex Finance Terminal",
@@ -466,10 +822,85 @@
     return [];
   }
 
+  /* 两端锚定的规则：整串进不了字典的拼接句（国债名、来源行、走势详情的 aria-label）。
+     数字、日期与代码原样带回，国名查字典，查不到就保留原文。 */
+  function termRegex(s, dict) {
+    var m;
+    if (!isTerminal()) return null;
+    if ((m = /^(.+?)(\d+)年期国债$/.exec(s))) return (dict[m[1]] || m[1]) + " " + m[2] + "-Year Government Bond";
+    if ((m = /^基准 (.+?)(\d+)年期国债（(.+?)）$/.exec(s))) {
+      return "Benchmark: " + (dict[m[1]] || m[1]) + " " + m[2] + "-Year Government Bond (" + m[3] + ")";
+    }
+    if ((m = /^基准 欧元区AAA国债曲线(\d+)年（(.+?)）$/.exec(s))) {
+      return "Benchmark: Euro Area AAA government curve, " + m[1] + "-year (" + m[2] + ")";
+    }
+    if ((m = /^欧元区AAA国债曲线(\d+)年$/.exec(s))) return "Euro Area AAA government curve, " + m[1] + "-year";
+    if ((m = /^盘中 (.+)$/.exec(s))) return "Intraday " + m[1];
+    if ((m = /^打开 (.+?) 的走势详情$/.exec(s))) return "Open the chart detail for " + (dict[m[1]] || m[1]);
+    if ((m = /^打开 (.+?) 期美债收益率的走势详情$/.exec(s))) return "Open the chart detail for the " + m[1] + " Treasury yield";
+    if ((m = /^(\d+) 条$/.exec(s))) return m[1] + " alerts";
+    if ((m = /^已接入 (\d+) · 规划中 (\d+)$/.exec(s))) return m[1] + " live · " + m[2] + " planned";
+    if ((m = /^(\d+) \/ 100 · (.+)$/.exec(s))) return m[1] + " / 100 · " + (dict[m[2]] || m[2]);
+    if ((m = /^权重 (\d+%)$/.exec(s))) return "Weight " + m[1];
+    if ((m = /^就地展开 (.+?) 的历史分位（([\d,]+) 点）$/.exec(s))) {
+      return "Expand the historical percentile of " + (dict[m[1]] || m[1]) + " in place (" + m[2] + " points)";
+    }
+    /* 功能目录的两种写法：「CODE 名称 · 类别\n说明」与「名称 · 说明」。
+       三段都查字典，任何一段查不到就整条放弃，不交出半中半英。 */
+    if ((m = /^([A-Z]{2,5}) (.+?) · (.+?)\n([\s\S]+)$/.exec(s))) {
+      if (dict[m[2]] && dict[m[3]] && dict[m[4]]) {
+        return m[1] + " " + dict[m[2]] + " · " + dict[m[3]] + "\n" + dict[m[4]];
+      }
+    }
+    if ((m = /^(.+?) · ([\s\S]+)$/.exec(s)) && dict[m[1]] && dict[m[2]]) {
+      return dict[m[1]] + " · " + dict[m[2]];
+    }
+    if ((m = /^(.+?)(\d+)年期国债 收益率历史$/.exec(s))) {
+      return (dict[m[1]] || m[1]) + " " + m[2] + "-Year Government Bond yield history";
+    }
+    if ((m = /^欧元区AAA国债曲线(\d+)年 收益率历史$/.exec(s))) {
+      return "Euro Area AAA government curve, " + m[1] + "-year — yield history";
+    }
+    if ((m = /^([+\-−][\d.,]+bp) (高|低|中)$/.exec(s))) {
+      return m[1] + " " + ({ "高": "high", "低": "low", "中": "mid" })[m[2]];
+    }
+    if ((m = /^综合 (\d+) \/ 100 · 等级「(.+?)」· 四条轴等权 · AS OF (.+)$/.exec(s))) {
+      return "Composite " + m[1] + " / 100 · grade “" + (dict[m[2]] || m[2]) +
+        "” · four equally weighted axes · AS OF " + m[3];
+    }
+    if ((m = /^合计 (\d+) 个标的 · 有当日值 (\d+) 个 · 涨 (\d+) \/ 跌 (\d+)$/.exec(s))) {
+      return m[1] + " instruments in total · " + m[2] + " with a value today · " + m[3] + " up / " + m[4] + " down";
+    }
+    if ((m = /^(\S+) 短端利率周环比 (\S+)（(.+?)）$/.exec(s))) {
+      return m[1] + " short-rate change, week over week " + m[2] +
+        " (" + (m[3] === "加息定价升温、边际收紧" ? "more tightening priced in; marginally tighter"
+              : m[3] === "降息定价升温、边际宽松" ? "more easing priced in; marginally looser" : m[3]) + ")";
+    }
+    if ((m = /^(\S+) 实际利率周环比 (\S+)（(.+?)）$/.exec(s))) {
+      return m[1] + " real-rate change, week over week " + m[2] +
+        " (" + (m[3] === "贴现率急升、压制久期资产" ? "discount rates jumping; pressure on long-duration assets"
+              : m[3] === "贴现率回落、利好久期资产" ? "discount rates falling; supportive for long-duration assets" : m[3]) + ")";
+    }
+    if ((m = /^(\d+) 个标的 · (.+)$/.exec(s))) return m[1] + " instruments · " + m[2];
+    if ((m = /^来源 (.+?) · AS OF (.+?) · 日频收盘 · 状态 (.+?)(?: · (.+))?$/.exec(s))) {
+      var tail = m[4] ? " · " + m[4]
+        .replace(/LAST 为盘中快照（约 30 分钟刷新、非实时）/, "LAST is an intraday snapshot (refreshed about every 30 minutes, not real time)")
+        .replace(/\* 在岸 CNY，非离岸 CNH/, "* onshore CNY, not offshore CNH")
+        .replace(/均为期货合约代理/, "all are futures-contract proxies") : "";
+      if (!/[\u4e00-\u9fff]/.test(tail)) {
+        return "Source: " + m[1] + " · AS OF " + m[2] + " · daily close · status " +
+          (dict[m[3]] || m[3]) + tail;
+      }
+    }
+    return null;
+  }
+
   function translateRaw(raw) {
     if (raw == null) return raw;
     var dict = dictionary();
     if (Object.prototype.hasOwnProperty.call(dict, raw)) return dict[raw];
+    var rx = termRegex(raw, dict);
+    if (rx) return rx;
     var out = raw;
     phrases().forEach(function (pair) { if (out.indexOf(pair[0]) >= 0) out = out.split(pair[0]).join(pair[1]); });
     return out;
