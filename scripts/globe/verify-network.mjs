@@ -65,8 +65,20 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
 }
 async function verifyVisibleEarth(page, frame) {
   // Sample the rendered center, not HTTP responses: a 600 m view of low-res land is one solid color.
-  const canvas = await frame.$('.cesium-widget canvas');
-  const screenshot = await canvas.screenshot({ type: 'png', encoding: 'base64' });
+  /* 读 WebGL 画布本身，而不是给画布元素截图。
+     元素截图截的是页面合成结果，任何盖在画布上的 DOM 浮层都会被算成「地图颜色」——
+     首屏引导弹窗 #first-run-launcher 正好盖住取样区（1280px 实测弹窗占
+     x[368,912] y[224,682]，取样区 x[486,794] y[272,634]，完全被盖住），
+     于是这里量到的一直是那块浮层：landFraction 恒为 0，colors 只有 29。
+     改成 toDataURL 读 GL 缓冲区之后浮层进不来，同一帧实测
+     colors=111 / ocean=0.52 / land=0.33 / edge=2.59。
+     读之前先强制出一帧，避免拿到还没画的缓冲区。 */
+  const screenshot = await frame.evaluate(async () => {
+    const canvas = document.querySelector('.cesium-widget canvas');
+    if (!canvas) throw new Error('找不到 .cesium-widget canvas');
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    return canvas.toDataURL('image/png');
+  });
   const stats = await page.evaluate(async src => {
     const img = new Image(); img.src = src; await img.decode();
     const buffer = document.createElement('canvas');
@@ -97,11 +109,14 @@ async function verifyVisibleEarth(page, frame) {
     }
     return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples,
       edge: pairs ? Number((sum / pairs).toFixed(2)) : 0 };
-  }, 'data:image/png;base64,' + screenshot);
+  }, screenshot);
   console.log('EARTH PIXELS ' + JSON.stringify(stats));
   // The camera is deliberately centred over the Pacific, so the sampled centre
   // can contain ocean only.  Texture diversity plus a meaningful ocean share is
   // enough to distinguish a rendered globe from the old solid-green close-up.
+  /* 画布读空（全透明/全黑）会让 colors 掉到 1、edge 掉到 0，那不是「地球没画出来」
+     而是「这次没读到」。两者都该失败，但要能从数值上分辨，所以单独断言一次。 */
+  assert(stats.colors > 1, '未能从 WebGL 画布读到像素：' + JSON.stringify(stats));
   const visible = stats.colors > 35 && stats.oceanFraction > .03 && stats.edge > 1;
   if (process.env.GLOBE_VERIFY_PREVIEW || !visible) {
     console.log('GLOBE_PREVIEW ' + await page.screenshot({ type: 'jpeg', quality: 35, encoding: 'base64' }));
