@@ -122,4 +122,4 @@ jobs:
             --catalog apps/tech-leaders/leaders.json \
             --base-url https://pro-api.ooglex.com \
             --workers 2 \
-            --retries 5
+            --retries 1

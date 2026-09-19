@@ -172,25 +172,3 @@ The catalog now points all 109 production leaders at the Ooglex avatar endpoint 
 The PRO API deployment workflow runs `scripts/tech-leaders/warm_avatars.py` after deployment. The warmup checks every active leader and fails the workflow unless all avatar endpoints return a real image. This turns the old metadata-only 109/109 count into a deployment-time HTTP verification.
 
 The avatar endpoint is deliberately limited to valid X-style handles and only fetches from the fixed Unavatar X-profile endpoint plus explicit hard-coded official overrides; it does not accept arbitrary upstream URLs.
-
-
-### V4.2 Wikimedia fallback
-
-The avatar resolver now has an additional free portrait source before the final Unavatar fallback.
-
-Resolution order on an R2 miss:
-
-1. explicit official portrait override
-2. public X profile-image redirect
-3. X public syndication page
-4. English Wikipedia / Wikimedia page-image search using the catalog's English name and company
-5. Unavatar as the last resort
-
-Wikipedia results are accepted only when the returned page title matches the person's surname/name token, reducing the chance of assigning a similarly named but unrelated portrait. The browser still receives the final image from the Ooglex Worker/R2 endpoint.
-
-The warmup verifier now passes each catalog entry's name and company metadata to the resolver.
-
-
-### Wikimedia Commons file search
-
-If the English Wikipedia article has no page thumbnail, V4.2 now searches Wikimedia Commons files by the leader's English name. A Commons file is accepted only when its filename contains both the first and last name tokens. This fallback still runs before Unavatar and the selected image is cached in Ooglex R2.
