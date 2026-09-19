@@ -1095,41 +1095,51 @@ function parseSyndicationTimeline(html, handle, limit) {
 function normalizeFxTwitterMedia(status) {
   const media = status && status.media && typeof status.media === "object" ? status.media : {};
   const out = [];
+  const seen = new Set();
 
-  const photos = Array.isArray(media.photos) ? media.photos : [];
-  for (const item of photos) {
-    if (!item || !item.url) continue;
+  function push(item) {
+    if (!item || typeof item !== "object") return;
+    const rawType = String(item.type || "").toLowerCase();
+    const isVideo = rawType === "video" || rawType === "gif" || rawType === "animated_gif";
+    const directUrl = item.url ? String(item.url) : "";
+    const thumb = item.thumbnail_url || item.poster || item.preview_image_url || "";
+    const formats = Array.isArray(item.formats)
+      ? item.formats
+      : Array.isArray(item.variants)
+        ? item.variants
+        : [];
+    const best = formats
+      .filter((v) => v && (v.url || v.src))
+      .sort((a, b) => Number(b.bitrate || 0) - Number(a.bitrate || 0))[0];
+    const videoUrl = isVideo
+      ? String((best && (best.url || best.src)) || directUrl || "")
+      : "";
+    const imageUrl = isVideo
+      ? String(thumb || "")
+      : String(directUrl || thumb || "");
+    const key = String(item.id || item.media_key || imageUrl || videoUrl || "");
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+
     out.push({
-      media_key: item.id || null,
-      type: "photo",
-      url: String(item.url),
-      preview_image_url: String(item.url),
+      media_key: item.id || item.media_key || null,
+      type: isVideo ? (rawType === "gif" || rawType === "animated_gif" ? "animated_gif" : "video") : "photo",
+      url: isVideo ? null : (imageUrl || null),
+      preview_image_url: imageUrl || null,
+      video_url: videoUrl || null,
       width: item.width || null,
-      height: item.height || null
+      height: item.height || null,
+      alt_text: item.altText || item.alt_text || null
     });
   }
 
-  const videos = [];
-  if (Array.isArray(media.videos)) videos.push(...media.videos);
-  if (media.video && typeof media.video === "object") videos.push(media.video);
-  if (Array.isArray(media.gifs)) videos.push(...media.gifs);
-
-  for (const item of videos) {
-    if (!item || typeof item !== "object") continue;
-    const variants = Array.isArray(item.variants) ? item.variants : [];
-    const best = variants
-      .filter((v) => v && (v.src || v.url))
-      .sort((a, b) => Number(b.bitrate || 0) - Number(a.bitrate || 0))[0];
-    const poster = item.poster || item.thumbnail_url || item.preview_image_url || "";
-    out.push({
-      media_key: item.id || null,
-      type: item.contentType === "image/gif" || item.type === "gif" ? "animated_gif" : "video",
-      url: null,
-      preview_image_url: poster ? String(poster) : null,
-      video_url: best ? String(best.src || best.url) : null,
-      width: item.width || null,
-      height: item.height || null
-    });
+  if (Array.isArray(media.all) && media.all.length) {
+    media.all.forEach(push);
+  } else {
+    (Array.isArray(media.photos) ? media.photos : []).forEach(push);
+    (Array.isArray(media.videos) ? media.videos : []).forEach(push);
+    if (media.video && typeof media.video === "object") push(media.video);
+    (Array.isArray(media.gifs) ? media.gifs : []).forEach(push);
   }
 
   return out;
@@ -1533,6 +1543,108 @@ export default {
       return json({ product, ...access }, 200, { ...cors, "cache-control": "no-store" });
     }
 
+function techLeaderMediaHostAllowed(hostname) {
+  const host = String(hostname || "").toLowerCase();
+  const exact = new Set([
+    "pbs.twimg.com",
+    "video.twimg.com",
+    "abs.twimg.com",
+    "ton.twimg.com",
+    "syndication.twitter.com",
+    "fxtwitter.com",
+    "api.fxtwitter.com",
+    "media.tenor.com"
+  ]);
+  if (exact.has(host)) return true;
+  return host.endsWith(".fxtwitter.com") ||
+    host.endsWith(".twittpr.com") ||
+    host.endsWith(".fixupx.com");
+}
+
+function parseTechLeaderMediaUrl(raw) {
+  if (!raw) return null;
+  try {
+    const target = new URL(String(raw));
+    if (target.protocol !== "https:") return null;
+    if (target.username || target.password) return null;
+    if (!techLeaderMediaHostAllowed(target.hostname)) return null;
+    return target;
+  } catch {
+    return null;
+  }
+}
+
+async function proxyTechLeaderMedia(request, target, cors) {
+  const reqHeaders = new Headers();
+  reqHeaders.set("accept", request.headers.get("accept") || "image/avif,image/webp,image/apng,image/svg+xml,image/*,video/*,*/*;q=0.8");
+  reqHeaders.set("user-agent", "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Media/1.0)");
+  reqHeaders.set("referer", "https://x.com/");
+  const range = request.headers.get("range");
+  if (range) reqHeaders.set("range", range);
+
+  const upstream = await fetch(target.toString(), {
+    method: request.method === "HEAD" ? "HEAD" : "GET",
+    redirect: "follow",
+    headers: reqHeaders
+  });
+
+  if (!upstream.ok && upstream.status !== 206) {
+    return json({
+      error: "media_upstream_error",
+      upstream_status: upstream.status,
+      uses_x_api: false
+    }, upstream.status >= 400 && upstream.status < 600 ? upstream.status : 502, {
+      ...cors,
+      "cache-control": "no-store",
+      "x-ooglex-x-api": "unused"
+    });
+  }
+
+  const headers = new Headers(cors);
+  const contentType = upstream.headers.get("content-type") || "application/octet-stream";
+  headers.set("content-type", contentType);
+  headers.set("cache-control", range ? "public, max-age=3600" : "public, max-age=86400, stale-while-revalidate=604800");
+  headers.set("x-ooglex-x-api", "unused");
+  headers.set("x-ooglex-media-proxy", "1");
+  headers.set("accept-ranges", upstream.headers.get("accept-ranges") || "bytes");
+  const contentRange = upstream.headers.get("content-range");
+  const contentLength = upstream.headers.get("content-length");
+  if (contentRange) headers.set("content-range", contentRange);
+  if (contentLength) headers.set("content-length", contentLength);
+
+  return new Response(request.method === "HEAD" ? null : upstream.body, {
+    status: upstream.status,
+    headers
+  });
+}
+
+    if (url.pathname === "/v1/tech-leaders/media") {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return json({ error: "method_not_allowed", uses_x_api: false }, 405, {
+          ...cors,
+          allow: "GET, HEAD",
+          "x-ooglex-x-api": "unused"
+        });
+      }
+      const target = parseTechLeaderMediaUrl(url.searchParams.get("url"));
+      if (!target) {
+        return json({ error: "invalid_media_url", uses_x_api: false }, 400, {
+          ...cors,
+          "cache-control": "no-store",
+          "x-ooglex-x-api": "unused"
+        });
+      }
+      try {
+        return await proxyTechLeaderMedia(request, target, cors);
+      } catch {
+        return json({ error: "media_proxy_unavailable", uses_x_api: false }, 502, {
+          ...cors,
+          "cache-control": "no-store",
+          "x-ooglex-x-api": "unused"
+        });
+      }
+    }
+
     if (url.pathname === "/v1/tech-leaders/free-feed") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FEED_FETCH_SIZE, 8);
@@ -1640,7 +1752,8 @@ export default {
         free_mode_contract: {
           calls_api_x_com: false,
           free_profile_endpoint: "/v1/tech-leaders/free-profile",
-          free_feed_endpoint: "/v1/tech-leaders/free-feed"
+          free_feed_endpoint: "/v1/tech-leaders/free-feed",
+          media_proxy_endpoint: "/v1/tech-leaders/media"
         },
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
         avatar_policy: TECH_AVATAR_POLICY,

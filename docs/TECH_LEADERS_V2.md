@@ -241,3 +241,17 @@ Five non-personal/special entries remain on the official X Embed path:
 - Boston Dynamics → `@BostonDynamics` official company account
 
 Only the selected profile is fetched on demand, so enabling all 105 accounts does not trigger 105 upstream requests on page load. Production smoke tests sample 20 representative personal accounts while the catalog coverage check validates the full selection rule. Free mode remains hard-isolated from `api.x.com`.
+
+
+## Tech Leaders Media Rendering Repair — 2026-09-19
+
+Native free-feed media now uses a dedicated same-origin Cloudflare Worker proxy at `/v1/tech-leaders/media`.
+
+Changes:
+
+- Correct FxEmbed/FxTwitter media normalization to match its current API schema: photos use direct `url`; videos/GIFs use direct `url`, `thumbnail_url`, and `formats[]`.
+- Proxy approved X/FxEmbed media hosts through `pro-api.ooglex.com` so visitors do not need direct browser access to `pbs.twimg.com` / `video.twimg.com`.
+- Render photos as images and GIF/video media as HTML5 video with poster fallback.
+- Retry the original direct URL if the proxy fails, then show a clean original-post fallback instead of a broken image icon.
+- The media proxy is allowlisted to known media hosts and never calls `api.x.com`.
+- Deployment smoke tests verify a live @sundarpichai media asset through the proxy when a media item is available.
