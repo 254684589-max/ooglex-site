@@ -480,11 +480,13 @@ async function getPublicXProfile(handle, name, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/profiles/v1/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/profiles/v2/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Date.now() - cachedAt : Infinity;
-  if (cached && age <= TECH_PROFILE_CACHE_TTL_MS) return { ...cached, cache: { status: "fresh", age_ms: age } };
+  if (cached && publicProfileComplete(cached) && age <= TECH_PROFILE_CACHE_TTL_MS) {
+    return { ...cached, cache: { status: "fresh", age_ms: age } };
+  }
 
   try {
     const publicProfile = await fetchPublicXProfile(normalized, name);
@@ -503,7 +505,7 @@ async function getPublicXProfile(handle, name, env) {
     await writeJson(env.PRO_DATA, key, fresh);
     return { ...fresh, cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
-    if (cached && age <= TECH_PROFILE_MAX_STALE_MS) {
+    if (cached && publicProfileComplete(cached) && age <= TECH_PROFILE_MAX_STALE_MS) {
       return { ...cached, cache: { status: "stale", age_ms: age, reason: err && err.code ? err.code : "x_profile_error" } };
     }
     throw err;
