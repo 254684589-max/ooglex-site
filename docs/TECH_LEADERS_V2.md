@@ -172,3 +172,19 @@ The catalog now points all 109 production leaders at the Ooglex avatar endpoint 
 The PRO API deployment workflow runs `scripts/tech-leaders/warm_avatars.py` after deployment. The warmup checks every active leader and fails the workflow unless all avatar endpoints return a real image. This turns the old metadata-only 109/109 count into a deployment-time HTTP verification.
 
 The avatar endpoint is deliberately limited to valid X-style handles and only fetches from the fixed Unavatar X-profile endpoint plus explicit hard-coded official overrides; it does not accept arbitrary upstream URLs.
+
+
+## Free Native Feed V1 — 2026-09-19
+
+Free mode now tries a zero-X-API native timeline before loading the official X Embed.
+
+Flow:
+
+1. Browser requests `/v1/tech-leaders/free-feed?handle=...`.
+2. The Cloudflare Worker requests X's public syndication timeline HTML.
+3. The Worker extracts public timeline items from embedded JSON, normalizes text/media/metrics, and stores the result in R2.
+4. All visitors reuse the cached result for 10 minutes; stale data may be served for up to 24 hours when the public source is temporarily unavailable.
+5. This route never calls `api.x.com` and returns `uses_x_api: false`.
+6. If public syndication yields no usable posts, the browser automatically falls back to the existing official X Embed.
+
+This is intentionally an experimental free path because X public syndication is not a contractual API and its HTML/JSON structure can change. The paid `/v1/tech-leaders/feed` path remains separate and unchanged.
