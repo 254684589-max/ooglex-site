@@ -120,7 +120,29 @@ jobs:
         run: |
           set +e
           failed=0
-          for handle in ZLQ6600E elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook demishassabis karpathy; do
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("apps/tech-leaders/leaders.json").read_text())
+          people=data if isinstance(data,list) else data.get("leaders",data.get("people",[]))
+          eligible=[
+              p for p in people
+              if p.get("handle")
+              and p.get("admission_status")=="active"
+              and (
+                  p.get("x_identity_verified") is True
+                  or p.get("verified_personal_x") is True
+                  or "个人公开 X 账号" in str(p.get("note",""))
+              )
+          ]
+          excluded=[p for p in people if p not in eligible]
+          print(f"Native free-feed catalog coverage: {len(eligible)} personal accounts; {len(excluded)} excluded/special entries")
+          print("Excluded:", ", ".join(f"{p.get('id')}(@{p.get('handle','')})" for p in excluded))
+          if len(eligible) < 100:
+              raise SystemExit("Expected at least 100 confirmed personal X accounts")
+          PY
+          for handle in ZLQ6600E elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
             tmp="$(mktemp)"
             code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$handle&limit=3")"
             body="$(cat "$tmp")"
