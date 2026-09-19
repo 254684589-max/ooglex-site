@@ -34,7 +34,16 @@ const TECH_FEED_FETCH_SIZE = 10;
 
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
 const TECH_AVATAR_CACHE_CONTROL = "public, max-age=604800, stale-while-revalidate=2592000";
-const TECH_AVATAR_CACHE_VERSION = "v3-x-original";
+const TECH_AVATAR_CACHE_VERSION = "v4-priority-fallback";
+const TECH_AVATAR_POLICY = "x_original_then_verified_fallback";
+
+// Only use explicit fallback portraits from first-party company/institution sources.
+// These are consulted only after all X-avatar routes fail.
+const TECH_AVATAR_OFFICIAL_OVERRIDES = Object.freeze({
+  rajaxg: "https://d1io3yog0oux5.cloudfront.net/_3ccf9cf30376bf77bbb27f582e51d00d/intel/news/193/1779/image.jpeg",
+  sytses: "https://res.cloudinary.com/about-gitlab-com/image/upload/v1755613184/abfz99qjcfcvo6em0sgm.webp",
+  svlevine: "https://vcresearch.berkeley.edu/sites/default/files/styles/faculty_photo_thumbnail/public/2023-04/sergey_levin_20200122_AVL_0050.jpg?h=726b1c9d&itok=Aa7Rxyv2"
+});
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -57,7 +66,7 @@ function corsHeaders(request, env) {
     "access-control-allow-origin": allow,
     "access-control-allow-headers": "authorization,content-type",
     "access-control-allow-methods": "GET,OPTIONS",
-    "access-control-expose-headers": "x-ooglex-avatar-source,x-ooglex-avatar-handle",
+    "access-control-expose-headers": "x-ooglex-avatar-source,x-ooglex-avatar-source-type,x-ooglex-avatar-handle",
     "vary": "Origin"
   };
 }
@@ -123,7 +132,6 @@ async function readDataset(binding, key) {
   return { body: obj.body, headers };
 }
 
-
 async function readJson(binding, key) {
   const obj = await binding.get(key);
   if (!obj) return null;
@@ -146,7 +154,6 @@ function boundedInt(value, min, max, fallback) {
   return Math.min(max, Math.max(min, n));
 }
 
-
 function normalizeXHandle(value) {
   const handle = String(value || "").trim().replace(/^@/, "");
   return /^[A-Za-z0-9_]{1,15}$/.test(handle) ? handle : "";
@@ -164,6 +171,15 @@ function twitterProfileImageLarge(urlValue) {
   } catch {
     return String(urlValue || "");
   }
+}
+
+function avatarSourceType(sourceValue) {
+  const source = String(sourceValue || "").toLowerCase().replace(/-r2(?:-cache)?$/, "");
+  if (source === "x_profile_redirect" || source === "x_syndication") return "x_original";
+  if (source === "unavatar_x") return "x_original_proxy";
+  if (source === "official_override") return "official_fallback";
+  if (source === "wikipedia" || source === "wikimedia_commons") return "public_fallback";
+  return "unknown";
 }
 
 function findXProfileImageUrl(value, depth = 0) {
@@ -200,7 +216,7 @@ async function fetchTechAvatarImage(url, source) {
     redirect: "follow",
     headers: {
       accept: "image/avif,image/webp,image/png,image/jpeg,image/*,*/*;q=0.8",
-      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/4.3)"
+      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/5.1)"
     }
   });
   if (!res.ok) return { ok: false, status: res.status, source };
@@ -208,7 +224,7 @@ async function fetchTechAvatarImage(url, source) {
   if (!contentType.startsWith("image/")) return { ok: false, status: 502, source };
   const bytes = await res.arrayBuffer();
   if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) return { ok: false, status: 502, source };
-  return { ok: true, bytes, contentType, source };
+  return { ok: true, bytes, contentType, source, sourceType: avatarSourceType(source) };
 }
 
 async function fetchTechAvatarViaSyndication(handle) {
@@ -217,7 +233,7 @@ async function fetchTechAvatarViaSyndication(handle) {
     redirect: "follow",
     headers: {
       accept: "text/html,application/xhtml+xml",
-      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/4.3)"
+      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/5.1)"
     }
   });
   if (!res.ok) return { ok: false, status: res.status, source: "x_syndication" };
@@ -236,7 +252,113 @@ async function fetchTechAvatarViaSyndication(handle) {
   return fetchTechAvatarImage(imageUrl, "x_syndication");
 }
 
-async function resolveTechLeaderXAvatar(handle) {
+function normalizeWikiText(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function wikiTitleMatchesPerson(title, name) {
+  const t = normalizeWikiText(title);
+  const n = normalizeWikiText(name);
+  if (!t || !n) return false;
+  const tokens = n.split(/\s+/).filter((x) => x.length >= 2);
+  if (!tokens.length) return false;
+  if (tokens.length === 1) return t.split(/\s+/).includes(tokens[0]);
+  const first = tokens[0];
+  const last = tokens[tokens.length - 1];
+  return t.includes(first) && t.includes(last);
+}
+
+async function fetchTechAvatarViaWikipedia(name, company) {
+  const cleanName = String(name || "").trim().slice(0, 120);
+  const cleanCompany = String(company || "").trim().slice(0, 120);
+  if (!cleanName) return { ok: false, status: 400, source: "wikipedia" };
+
+  const params = new URLSearchParams({
+    action: "query",
+    generator: "search",
+    gsrsearch: [cleanName, cleanCompany].filter(Boolean).join(" "),
+    gsrnamespace: "0",
+    gsrlimit: "5",
+    prop: "pageimages",
+    pithumbsize: "500",
+    pilimit: "5",
+    format: "json",
+    formatversion: "2",
+    origin: "*"
+  });
+
+  const res = await fetch(`https://en.wikipedia.org/w/api.php?${params.toString()}`, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "Ooglex-Tech-Leaders-Avatar/5.1 (https://ooglex.com)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source: "wikipedia" };
+
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  const pages = payload && payload.query && Array.isArray(payload.query.pages) ? payload.query.pages : [];
+
+  for (const page of pages) {
+    if (!page || !page.thumbnail || !page.thumbnail.source) continue;
+    if (!wikiTitleMatchesPerson(page.title, cleanName)) continue;
+    const image = await fetchTechAvatarImage(page.thumbnail.source, "wikipedia");
+    if (image.ok) return image;
+  }
+  return { ok: false, status: 404, source: "wikipedia" };
+}
+
+async function fetchTechAvatarViaCommons(name) {
+  const cleanName = String(name || "").trim().slice(0, 120);
+  if (!cleanName) return { ok: false, status: 400, source: "wikimedia_commons" };
+
+  const params = new URLSearchParams({
+    action: "query",
+    generator: "search",
+    gsrsearch: cleanName,
+    gsrnamespace: "6",
+    gsrlimit: "12",
+    prop: "imageinfo",
+    iiprop: "url|mime",
+    iiurlwidth: "500",
+    iilimit: "1",
+    format: "json",
+    formatversion: "2",
+    origin: "*"
+  });
+
+  const res = await fetch(`https://commons.wikimedia.org/w/api.php?${params.toString()}`, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "Ooglex-Tech-Leaders-Avatar/5.1 (https://ooglex.com)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source: "wikimedia_commons" };
+
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  const pages = payload && payload.query && Array.isArray(payload.query.pages) ? payload.query.pages : [];
+
+  for (const page of pages) {
+    if (!page || !wikiTitleMatchesPerson(page.title, cleanName)) continue;
+    const info = Array.isArray(page.imageinfo) ? page.imageinfo[0] : null;
+    if (!info) continue;
+    const src = info.thumburl || info.url || "";
+    const mime = String(info.mime || "").toLowerCase();
+    if (!src || (mime && !mime.startsWith("image/"))) continue;
+    const image = await fetchTechAvatarImage(src, "wikimedia_commons");
+    if (image.ok) return image;
+  }
+  return { ok: false, status: 404, source: "wikimedia_commons" };
+}
+
+async function resolveTechLeaderAvatar(handle, name, company) {
+  // 1) Prefer the actual X profile image.
   const direct = await fetchTechAvatarImage(
     `https://twitter.com/${encodeURIComponent(handle)}/profile_image?size=original`,
     "x_profile_redirect"
@@ -246,10 +368,36 @@ async function resolveTechLeaderXAvatar(handle) {
   const syndicated = await fetchTechAvatarViaSyndication(handle);
   if (syndicated.ok) return syndicated;
 
-  return { ok: false, status: syndicated.status || direct.status || 502, source: "x_original_unavailable" };
+  // 2) Try an X-avatar proxy before using non-X portraits.
+  const xProxy = await fetchTechAvatarImage(
+    `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
+    "unavatar_x"
+  );
+  if (xProxy.ok) return xProxy;
+
+  // 3) Verified first-party company / institution portrait.
+  const officialUrl = TECH_AVATAR_OFFICIAL_OVERRIDES[String(handle || "").toLowerCase()];
+  if (officialUrl) {
+    const official = await fetchTechAvatarImage(officialUrl, "official_override");
+    if (official.ok) return official;
+  }
+
+  // 4) Conservative public portrait fallbacks.
+  const wikipedia = await fetchTechAvatarViaWikipedia(name, company);
+  if (wikipedia.ok) return wikipedia;
+
+  const commons = await fetchTechAvatarViaCommons(name);
+  if (commons.ok) return commons;
+
+  return {
+    ok: false,
+    status: commons.status || wikipedia.status || xProxy.status || syndicated.status || direct.status || 502,
+    source: "avatar_unavailable",
+    sourceType: "unknown"
+  };
 }
 
-async function getTechLeaderAvatar(handle, env) {
+async function getTechLeaderAvatar(handle, name, company, env) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
     const err = new Error("invalid_avatar_handle");
@@ -263,10 +411,14 @@ async function getTechLeaderAvatar(handle, env) {
   if (cached) {
     const source = cached.customMetadata && cached.customMetadata.source
       ? String(cached.customMetadata.source)
-      : "x_original_unknown";
+      : "unknown";
+    const sourceType = cached.customMetadata && cached.customMetadata.source_type
+      ? String(cached.customMetadata.source_type)
+      : avatarSourceType(source);
     const headers = new Headers({
       "cache-control": TECH_AVATAR_CACHE_CONTROL,
       "x-ooglex-avatar-source": source + "-r2-cache",
+      "x-ooglex-avatar-source-type": sourceType,
       "x-ooglex-avatar-handle": normalized
     });
     const type = cached.httpMetadata && cached.httpMetadata.contentType
@@ -277,14 +429,15 @@ async function getTechLeaderAvatar(handle, env) {
     return { body: cached.body, headers };
   }
 
-  const resolved = await resolveTechLeaderXAvatar(normalized);
+  const resolved = await resolveTechLeaderAvatar(normalized, name, company);
   if (!resolved.ok) {
-    const err = new Error("x_original_avatar_unavailable");
-    err.code = "x_original_avatar_unavailable";
+    const err = new Error("avatar_unavailable");
+    err.code = "avatar_unavailable";
     err.status = resolved.status || 502;
     throw err;
   }
 
+  const sourceType = resolved.sourceType || avatarSourceType(resolved.source);
   await env.PRO_DATA.put(key, resolved.bytes, {
     httpMetadata: {
       contentType: resolved.contentType,
@@ -293,8 +446,9 @@ async function getTechLeaderAvatar(handle, env) {
     customMetadata: {
       handle: normalized,
       source: resolved.source,
+      source_type: sourceType,
       fetched_at: new Date().toISOString(),
-      policy: "x_original_only",
+      policy: TECH_AVATAR_POLICY,
       cache_version: TECH_AVATAR_CACHE_VERSION
     }
   });
@@ -305,6 +459,7 @@ async function getTechLeaderAvatar(handle, env) {
       "content-type": resolved.contentType,
       "cache-control": TECH_AVATAR_CACHE_CONTROL,
       "x-ooglex-avatar-source": resolved.source + "-r2",
+      "x-ooglex-avatar-source-type": sourceType,
       "x-ooglex-avatar-handle": normalized
     })
   };
@@ -314,23 +469,38 @@ async function getTechLeaderAvatarAudit(handles, env) {
   const unique = Array.from(new Set((handles || []).map(normalizeXHandle).filter(Boolean))).slice(0, 180);
   const items = await Promise.all(unique.map(async (handle) => {
     const obj = await env.PRO_DATA.head(techAvatarCacheKey(handle));
-    const source = obj && obj.customMetadata ? String(obj.customMetadata.source || "") : "";
-    const isXOriginal = source === "x_profile_redirect" || source === "x_syndication";
+    const metadata = obj && obj.customMetadata ? obj.customMetadata : {};
+    const source = String(metadata.source || "");
+    const sourceType = String(metadata.source_type || avatarSourceType(source));
+    let status = "missing";
+    if (sourceType === "x_original") status = "x_original";
+    else if (sourceType === "x_original_proxy") status = "x_original_proxy";
+    else if (sourceType === "official_fallback" || sourceType === "public_fallback") status = "fallback";
+
     return {
       handle,
-      status: isXOriginal ? "x_original" : "missing",
-      source: isXOriginal ? source : null,
-      fetched_at: obj && obj.customMetadata ? (obj.customMetadata.fetched_at || null) : null
+      status,
+      source_type: status === "missing" ? null : sourceType,
+      source: status === "missing" ? null : source,
+      fetched_at: metadata.fetched_at || null
     };
   }));
-  const verified = items.filter((item) => item.status === "x_original").length;
+
+  const count = (status) => items.filter((item) => item.status === status).length;
+  const xOriginal = count("x_original");
+  const xProxy = count("x_original_proxy");
+  const fallback = count("fallback");
+  const missing = count("missing");
   return {
-    schema_version: 1,
-    policy: "x_original_only",
+    schema_version: 2,
+    policy: TECH_AVATAR_POLICY,
     cache_version: TECH_AVATAR_CACHE_VERSION,
     total: items.length,
-    x_original: verified,
-    missing: items.length - verified,
+    x_original: xOriginal,
+    x_original_proxy: xProxy,
+    fallback,
+    missing,
+    usable: xOriginal + xProxy + fallback,
     items
   };
 }
@@ -567,11 +737,13 @@ export default {
 
     if (url.pathname === "/v1/tech-leaders/avatar") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
+      const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
+      const company = String(url.searchParams.get("company") || "").trim().slice(0, 120);
       if (!handle) return json({ error: "invalid_avatar_handle" }, 400, cors);
       try {
-        const avatar = await getTechLeaderAvatar(handle, env);
+        const avatar = await getTechLeaderAvatar(handle, name, company, env);
         const headers = new Headers(cors);
-        avatar.headers.forEach((value, name) => headers.set(name, value));
+        avatar.headers.forEach((value, headerName) => headers.set(headerName, value));
         return new Response(avatar.body, { status: 200, headers });
       } catch (err) {
         const code = err && err.code ? err.code : "avatar_unavailable";
@@ -587,7 +759,7 @@ export default {
         source: "x_api",
         configured: Boolean(env.X_BEARER_TOKEN),
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
-        avatar_policy: "x_original_only",
+        avatar_policy: TECH_AVATAR_POLICY,
         avatar_cache_version: TECH_AVATAR_CACHE_VERSION,
         leaders: Object.values(TECH_LEADERS).map(({ id, handle, name }) => ({ id, handle, name }))
       }, 200, { ...cors, "cache-control": "public, max-age=60" });
