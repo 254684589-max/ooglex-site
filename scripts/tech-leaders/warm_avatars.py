@@ -29,10 +29,23 @@ def fetch_one(base_url, leader, retries):
                 if resp.status == 200 and content_type.startswith("image/") and body:
                     return {"handle": handle, "ok": True, "status": resp.status, "type": content_type, "source": source}
                 last = f"bad_response status={resp.status} type={content_type}"
+        except urllib.error.HTTPError as exc:
+            last = f"HTTP Error {exc.code}: {exc.reason}"
+            if exc.code == 429:
+                retry_after = 0
+                try:
+                    retry_after = int(exc.headers.get("Retry-After") or 0)
+                except (TypeError, ValueError):
+                    retry_after = 0
+                if attempt < retries:
+                    delay = max(retry_after, min(8 * attempt, 30))
+                    print(f"RATE @{handle} 429; retrying in {delay}s (attempt {attempt}/{retries})", file=sys.stderr)
+                    time.sleep(delay)
+                    continue
         except Exception as exc:
             last = str(exc)
         if attempt < retries:
-            time.sleep(min(2 * attempt, 5))
+            time.sleep(min(3 * attempt, 10))
     return {"handle": handle, "ok": False, "error": last or "unknown_error"}
 
 
@@ -40,8 +53,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--catalog", required=True)
     ap.add_argument("--base-url", required=True)
-    ap.add_argument("--workers", type=int, default=12)
-    ap.add_argument("--retries", type=int, default=3)
+    ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--retries", type=int, default=5)
     args = ap.parse_args()
 
     with open(args.catalog, "r", encoding="utf-8") as f:
