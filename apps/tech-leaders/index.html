@@ -177,10 +177,11 @@
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
       <div class="catalog-actions">
-        <span>V4.3 · 全球公司领袖 + X 原版头像核验</span>
+        <span>V5.1 · X 原版优先 + 替代头像</span>
         <div class="avatar-audit" id="avatar-audit">
-          <button class="avatar-audit-btn on" type="button" data-avatar-filter="all">X原版 0/0</button>
-          <button class="avatar-audit-btn" type="button" data-avatar-filter="missing">待核验 0</button>
+          <button class="avatar-audit-btn on" type="button" data-avatar-filter="all">全部头像 0/0</button>
+          <button class="avatar-audit-btn" type="button" data-avatar-filter="fallback">替代图 0</button>
+          <button class="avatar-audit-btn" type="button" data-avatar-filter="missing">待补 0</button>
         </div>
         <button class="fold-btn" id="leader-fold" type="button" hidden>展开全部</button>
       </div>
@@ -214,7 +215,7 @@
     <div class="about">
       <b>免费模式：</b>由 X 官方 Embed 在浏览器中直接展示公开时间线，Ooglex 不调用 X API，因此不消耗你的 X API Credits；能否显示仍取决于访问者网络是否能正常连接 X。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
-      <b>头像：</b>优先读取公开 X 头像；若第三方头像服务不可用，会自动回退为姓名首字母头像，不影响名单与时间线使用。
+      <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
 
     <footer>
@@ -262,7 +263,8 @@
   var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
   var activeCategory=params.get("category")||"全部";
-  var avatarFilter=params.get("avatar")==="missing"?"missing":"all";
+  var avatarParam=params.get("avatar");
+  var avatarFilter=avatarParam==="missing"?"missing":(avatarParam==="fallback"?"fallback":"all");
   var requested=params.get("leader");
   var MODE=params.get("mode")==="api"?"api":"free";
   var DEBUG=params.get("debug")==="1";
@@ -283,10 +285,16 @@
     return people.find(function(p){return p.id===requested;})||people[0];
   }
   function avatarUrl(p){
-    // One canonical portrait path: X handle -> Ooglex/R2 avatar endpoint.
-    // Ignore arbitrary catalog/external avatar_url values so company press photos
-    // or stale third-party images can never override the current X portrait.
-    if(p&&p.handle)return API_BASE+"/v1/tech-leaders/avatar?handle="+encodeURIComponent(p.handle);
+    // One canonical image endpoint. The backend owns source priority:
+    // X original -> X proxy -> verified official/public substitute -> local initials.
+    if(p&&p.handle){
+      var q=new URLSearchParams({
+        handle:p.handle,
+        name:p.name_en||p.name||p.name_zh||p.zh||"",
+        company:p.company_en||p.company_zh||p.role||""
+      });
+      return API_BASE+"/v1/tech-leaders/avatar?"+q.toString();
+    }
     return avatarFallbackDataUrl(p||{});
   }
   function avatarFallbackDataUrl(p){
@@ -299,9 +307,20 @@
     var key=String(p&&p.handle||"").toLowerCase();
     return key?avatarAuditByHandle[key]||null:null;
   }
-  function hasConfiguredAvatar(p){
+  function avatarAuditStatus(p){
     var item=avatarAuditItem(p);
-    return !!(item&&item.status==="x_original");
+    return item&&item.status?String(item.status):"missing";
+  }
+  function hasXOriginalAvatar(p){
+    var status=avatarAuditStatus(p);
+    return status==="x_original"||status==="x_original_proxy";
+  }
+  function hasFallbackAvatar(p){
+    return avatarAuditStatus(p)==="fallback";
+  }
+  function hasConfiguredAvatar(p){
+    var status=avatarAuditStatus(p);
+    return status==="x_original"||status==="x_original_proxy"||status==="fallback";
   }
   function applyAvatarFallback(img,p){
     if(!img||img.dataset.avatarFallbackApplied==="1")return;
@@ -348,7 +367,12 @@
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
-    var avatarNote=hasConfiguredAvatar(p)?"头像：X 原版已核验":(avatarAuditLoaded?"头像：待核验 / 本地兜底":"头像：正在核验 X 原版");
+    var avatarStatus=avatarAuditStatus(p);
+    var avatarNote=!avatarAuditLoaded?"头像：正在核验":
+      (avatarStatus==="x_original"?"头像：X 原版":
+      (avatarStatus==="x_original_proxy"?"头像：X 原图代理":
+      (avatarStatus==="fallback"?"头像：替代肖像":
+      "头像：待补 / 本地兜底")));
     document.getElementById("profile-note").textContent=(p.note||"公开 X 账号。")+" · "+avatarNote;
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
     profileAvatarFallback.textContent=initialsFor(p);
@@ -380,16 +404,24 @@
   function renderAvatarAudit(){
     if(!avatarAudit)return;
     var total=people.length;
-    var confirmed=people.filter(hasConfiguredAvatar).length;
-    var missing=total-confirmed;
+    var xCount=people.filter(hasXOriginalAvatar).length;
+    var fallbackCount=people.filter(hasFallbackAvatar).length;
+    var usable=people.filter(hasConfiguredAvatar).length;
+    var missing=Math.max(0,total-usable);
     var allBtn=avatarAudit.querySelector('[data-avatar-filter="all"]');
+    var fallbackBtn=avatarAudit.querySelector('[data-avatar-filter="fallback"]');
     var missingBtn=avatarAudit.querySelector('[data-avatar-filter="missing"]');
     if(allBtn){
-      allBtn.textContent=(avatarAuditLoaded?"X原版 ":"核验中 ")+confirmed+"/"+total;
+      allBtn.textContent=avatarAuditLoaded?("X原版 "+xCount+" · 替代 "+fallbackCount):("核验中 0/"+total);
       allBtn.classList.toggle("on",avatarFilter==="all");
     }
+    if(fallbackBtn){
+      fallbackBtn.textContent="替代图 "+fallbackCount;
+      fallbackBtn.classList.toggle("on",avatarFilter==="fallback");
+      fallbackBtn.disabled=!avatarAuditLoaded||fallbackCount===0;
+    }
     if(missingBtn){
-      missingBtn.textContent="待核验 "+missing;
+      missingBtn.textContent="待补 "+missing;
       missingBtn.classList.toggle("on",avatarFilter==="missing");
       missingBtn.disabled=!avatarAuditLoaded||missing===0;
     }
@@ -399,7 +431,9 @@
     var filtered=people.filter(function(p){
       var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&(p.sp500_member||p.sp500_ceo))||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
-      var avatarOk=avatarFilter==="all"||!hasConfiguredAvatar(p);
+      var avatarOk=avatarFilter==="all"||
+        (avatarFilter==="fallback"&&hasFallbackAvatar(p))||
+        (avatarFilter==="missing"&&!hasConfiguredAvatar(p));
       return categoryOk&&searchOk&&avatarOk;
     });
     var canFold=filtered.length>COLLAPSED_LIMIT;
@@ -411,8 +445,11 @@
       }
     }
     var activeLabel=activeCategory==="全部"?"全部分类":(activeCategory==="sp500"?"标普500 决策者":activeCategory);
-    var avatarConfirmed=people.filter(hasConfiguredAvatar).length;
-    count.textContent="已收录 "+people.length+" 位 · X原版头像 "+avatarConfirmed+"/"+people.length+(avatarAuditLoaded?"":"（核验中）")+" · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
+    var avatarX=people.filter(hasXOriginalAvatar).length;
+    var avatarFallback=people.filter(hasFallbackAvatar).length;
+    var avatarUsable=people.filter(hasConfiguredAvatar).length;
+    var avatarMissing=Math.max(0,people.length-avatarUsable);
+    count.textContent="已收录 "+people.length+" 位 · X原版 "+avatarX+" · 替代 "+avatarFallback+" · 待补 "+avatarMissing+(avatarAuditLoaded?"":"（核验中）")+" · "+activeLabel+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
     foldBtn.hidden=!canFold;
     if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开 "+filtered.length+" 位 ↓";
     if(!filtered.length){
@@ -691,10 +728,11 @@
   search.addEventListener("input",function(){isExpanded=false;renderLeaderButtons(search.value);});
   avatarAudit.addEventListener("click",function(e){
     var btn=e.target.closest("[data-avatar-filter]");if(!btn||btn.disabled)return;
-    avatarFilter=btn.getAttribute("data-avatar-filter")==="missing"?"missing":"all";
+    var requestedAvatarFilter=btn.getAttribute("data-avatar-filter");
+    avatarFilter=requestedAvatarFilter==="missing"?"missing":(requestedAvatarFilter==="fallback"?"fallback":"all");
     isExpanded=false;
     var next=new URL(location.href);
-    if(avatarFilter==="all")next.searchParams.delete("avatar");else next.searchParams.set("avatar","missing");
+    if(avatarFilter==="all")next.searchParams.delete("avatar");else next.searchParams.set("avatar",avatarFilter);
     history.replaceState(null,"",next.toString());
     renderAvatarAudit();
     renderLeaderButtons(search.value);
