@@ -365,7 +365,9 @@
           ],
           "source": "ooglex_local"
         }
-      ]
+      ],
+      "timeline_mode": "local_only",
+      "local_post_limit": 1
     },
     {
       "id": "nadella",
