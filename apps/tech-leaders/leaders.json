@@ -350,7 +350,22 @@
       "x_verified_at": "2026-09-19",
       "avatar_origin_url": "https://x.com/ZLQ6600E",
       "avatar_verified_at": "2026-09-19T06:43:39Z",
-      "avatar_updated_at": "2026-09-19"
+      "avatar_updated_at": "2026-09-19",
+      "local_posts": [
+        {
+          "id": "macro-pulse-10y2y-20260919",
+          "created_at": "2026-09-19T06:49:00Z",
+          "text": "📊 宏观 · Macro Pulse\n\n🔻 10Y-2Y 期限利差｜10Y-2Y spread\n0.28%　-3bp\n\n#宏观快讯 #收益率曲线",
+          "media": [
+            {
+              "type": "photo",
+              "url": "./assets/posts/zhengyi-macro-pulse-10y2y.svg",
+              "alt": "10Y-2Y 期限利差 0.28%，单日 -3bp 的 Macro Pulse 图表"
+            }
+          ],
+          "source": "ooglex_local"
+        }
+      ]
     },
     {
       "id": "nadella",
