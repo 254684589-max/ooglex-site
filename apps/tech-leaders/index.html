@@ -158,7 +158,7 @@
     <section class="hero">
       <span class="kicker">Official X Embed · Free V4</span>
       <h1>全球公司领袖 X 动态</h1>
-      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
+      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。时间线默认使用 X 官方 Embed，不消耗时间线 API Credits；关注数、正在关注与加入时间使用后端缓存资料，优先公共源，必要时低频刷新 X 用户资料。标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
         <span class="fact" id="source-badge">X 时间线 Embed · $0 API</span>
@@ -379,8 +379,8 @@
       }
       var joined=formatJoinedDate(data.created_at);
       if(joined){profileJoinedText.textContent=joined;profileJoined.style.display="flex";}
-      var hasFollowing=Number.isFinite(Number(data.following_count));
-      var hasFollowers=Number.isFinite(Number(data.followers_count));
+      var hasFollowing=data.following_count!=null&&Number.isFinite(Number(data.following_count));
+      var hasFollowers=data.followers_count!=null&&Number.isFinite(Number(data.followers_count));
       if(hasFollowing||hasFollowers){
         profileFollowing.textContent=hasFollowing?formatFollowingCount(data.following_count):"—";
         profileFollowers.textContent=hasFollowers?formatFollowerCount(data.followers_count):"—";
