@@ -75,7 +75,7 @@ def leader_company(leader: dict[str, Any]) -> str:
 def infer_source_type(source: Any) -> str:
     value = str(source or "").strip().lower()
     value = re.sub(r"-r2(?:-cache)?$", "", value)
-    if value in {"x_profile_redirect", "x_syndication"}:
+    if value in {"x_profile_redirect_x", "x_profile_redirect", "x_followbutton", "x_syndication"}:
         return "x_original"
     if value == "unavatar_x":
         return "x_original_proxy"

@@ -33,9 +33,12 @@ const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
 
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
-const TECH_AVATAR_CACHE_CONTROL = "public, max-age=604800, stale-while-revalidate=2592000";
-const TECH_AVATAR_CACHE_VERSION = "v4-priority-fallback";
+const TECH_AVATAR_CACHE_CONTROL = "public, max-age=21600, stale-while-revalidate=86400";
+const TECH_AVATAR_CACHE_VERSION = "v6-x-current-first";
 const TECH_AVATAR_POLICY = "x_original_then_verified_fallback";
+const TECH_AVATAR_REFRESH_X_MS = 72 * 60 * 60 * 1000;
+const TECH_AVATAR_REFRESH_PROXY_MS = 24 * 60 * 60 * 1000;
+const TECH_AVATAR_REFRESH_FALLBACK_MS = 6 * 60 * 60 * 1000;
 
 // Only use explicit fallback portraits from first-party company/institution sources.
 // These are consulted only after all X-avatar routes fail.
@@ -178,7 +181,7 @@ function twitterProfileImageLarge(urlValue) {
 
 function avatarSourceType(sourceValue) {
   const source = String(sourceValue || "").toLowerCase().replace(/-r2(?:-cache)?$/, "");
-  if (source === "x_profile_redirect" || source === "x_syndication") return "x_original";
+  if (source === "x_profile_redirect_x" || source === "x_profile_redirect" || source === "x_followbutton" || source === "x_syndication") return "x_original";
   if (source === "unavatar_x") return "x_original_proxy";
   if (source === "official_override") return "official_fallback";
   if (source === "wikipedia" || source === "wikimedia_commons") return "public_fallback";
@@ -228,6 +231,23 @@ async function fetchTechAvatarImage(url, source) {
   const bytes = await res.arrayBuffer();
   if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) return { ok: false, status: 502, source };
   return { ok: true, bytes, contentType, source, sourceType: avatarSourceType(source) };
+}
+
+async function fetchTechAvatarViaFollowButton(handle) {
+  const url = `https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=${encodeURIComponent(handle)}`;
+  const res = await fetch(url, {
+    redirect: "follow",
+    headers: {
+      accept: "application/json,text/plain,*/*",
+      "user-agent": "Mozilla/5.0 (compatible; Ooglex-Tech-Leaders-Avatar/6.0)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source: "x_followbutton" };
+  let data = null;
+  try { data = await res.json(); } catch {}
+  const imageUrl = findXProfileImageUrl(data);
+  if (!imageUrl) return { ok: false, status: 404, source: "x_followbutton" };
+  return fetchTechAvatarImage(imageUrl, "x_followbutton");
 }
 
 async function fetchTechAvatarViaSyndication(handle) {
@@ -361,17 +381,26 @@ async function fetchTechAvatarViaCommons(name) {
 }
 
 async function resolveTechLeaderAvatar(handle, name, company) {
-  // 1) Prefer the actual X profile image.
+  // 1) Exhaust current X-owned/current-profile routes first.
+  const directX = await fetchTechAvatarImage(
+    `https://x.com/${encodeURIComponent(handle)}/profile_image?size=original`,
+    "x_profile_redirect_x"
+  );
+  if (directX.ok) return directX;
+
   const direct = await fetchTechAvatarImage(
     `https://twitter.com/${encodeURIComponent(handle)}/profile_image?size=original`,
     "x_profile_redirect"
   );
   if (direct.ok) return direct;
 
+  const followButton = await fetchTechAvatarViaFollowButton(handle);
+  if (followButton.ok) return followButton;
+
   const syndicated = await fetchTechAvatarViaSyndication(handle);
   if (syndicated.ok) return syndicated;
 
-  // 2) Try an X-avatar proxy before using non-X portraits.
+  // 2) Only then use an X avatar proxy/mirror.
   const xProxy = await fetchTechAvatarImage(
     `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
     "unavatar_x"
@@ -394,7 +423,7 @@ async function resolveTechLeaderAvatar(handle, name, company) {
 
   return {
     ok: false,
-    status: commons.status || wikipedia.status || xProxy.status || syndicated.status || direct.status || 502,
+    status: commons.status || wikipedia.status || xProxy.status || syndicated.status || followButton.status || direct.status || directX.status || 502,
     source: "avatar_unavailable",
     sourceType: "unknown"
   };
@@ -411,17 +440,48 @@ async function getTechLeaderAvatar(handle, name, company, env) {
 
   const key = techAvatarCacheKey(normalized);
   const cached = await env.PRO_DATA.get(key);
+  let cachedMeta = null;
+  let cachedSource = "unknown";
+  let cachedSourceType = "unknown";
+  let cachedNeedsRefresh = false;
+
   if (cached) {
-    const source = cached.customMetadata && cached.customMetadata.source
-      ? String(cached.customMetadata.source)
-      : "unknown";
-    const sourceType = cached.customMetadata && cached.customMetadata.source_type
-      ? String(cached.customMetadata.source_type)
-      : avatarSourceType(source);
+    cachedMeta = cached.customMetadata || {};
+    cachedSource = cachedMeta.source ? String(cachedMeta.source) : "unknown";
+    cachedSourceType = cachedMeta.source_type
+      ? String(cachedMeta.source_type)
+      : avatarSourceType(cachedSource);
+    const fetchedAtMs = Date.parse(String(cachedMeta.fetched_at || ""));
+    const ageMs = Number.isFinite(fetchedAtMs) ? Math.max(0, Date.now() - fetchedAtMs) : Number.POSITIVE_INFINITY;
+    const refreshAfterMs = cachedSourceType === "x_original"
+      ? TECH_AVATAR_REFRESH_X_MS
+      : cachedSourceType === "x_original_proxy"
+        ? TECH_AVATAR_REFRESH_PROXY_MS
+        : TECH_AVATAR_REFRESH_FALLBACK_MS;
+    cachedNeedsRefresh = ageMs >= refreshAfterMs;
+
+    if (!cachedNeedsRefresh) {
+      const headers = new Headers({
+        "cache-control": TECH_AVATAR_CACHE_CONTROL,
+        "x-ooglex-avatar-source": cachedSource + "-r2-cache",
+        "x-ooglex-avatar-source-type": cachedSourceType,
+        "x-ooglex-avatar-handle": normalized
+      });
+      const type = cached.httpMetadata && cached.httpMetadata.contentType
+        ? cached.httpMetadata.contentType
+        : "image/jpeg";
+      headers.set("content-type", type);
+      if (cached.etag) headers.set("etag", cached.etag);
+      return { body: cached.body, headers };
+    }
+  }
+
+  const resolved = await resolveTechLeaderAvatar(normalized, name, company);
+  if (!resolved.ok && cached) {
     const headers = new Headers({
-      "cache-control": TECH_AVATAR_CACHE_CONTROL,
-      "x-ooglex-avatar-source": source + "-r2-cache",
-      "x-ooglex-avatar-source-type": sourceType,
+      "cache-control": "public, max-age=1800, stale-while-revalidate=21600",
+      "x-ooglex-avatar-source": cachedSource + "-r2-stale",
+      "x-ooglex-avatar-source-type": cachedSourceType,
       "x-ooglex-avatar-handle": normalized
     });
     const type = cached.httpMetadata && cached.httpMetadata.contentType
@@ -431,8 +491,6 @@ async function getTechLeaderAvatar(handle, name, company, env) {
     if (cached.etag) headers.set("etag", cached.etag);
     return { body: cached.body, headers };
   }
-
-  const resolved = await resolveTechLeaderAvatar(normalized, name, company);
   if (!resolved.ok) {
     const err = new Error("avatar_unavailable");
     err.code = "avatar_unavailable";
