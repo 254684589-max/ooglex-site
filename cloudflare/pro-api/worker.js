@@ -232,7 +232,72 @@ async function fetchAvatarViaSyndication(handle) {
   return fetchAvatarImage(imageUrl, "x_syndication");
 }
 
-async function resolveTechLeaderAvatar(handle) {
+function normalizeWikiText(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function wikiTitleMatchesPerson(title, name) {
+  const t = normalizeWikiText(title);
+  const n = normalizeWikiText(name);
+  if (!t || !n) return false;
+  const tokens = n.split(/\s+/).filter(Boolean);
+  if (!tokens.length) return false;
+  const suffixes = new Set(["jr", "sr", "ii", "iii", "iv"]);
+  let key = tokens[tokens.length - 1];
+  if (suffixes.has(key) && tokens.length > 1) key = tokens[tokens.length - 2];
+  if (key.length < 2) return false;
+  return t.split(/\s+/).includes(key);
+}
+
+async function fetchAvatarViaWikipedia(name, company) {
+  const cleanName = String(name || "").trim().slice(0, 120);
+  const cleanCompany = String(company || "").trim().slice(0, 120);
+  if (!cleanName) return { ok: false, status: 400, source: "wikipedia" };
+
+  const search = [cleanName, cleanCompany].filter(Boolean).join(" ");
+  const params = new URLSearchParams({
+    action: "query",
+    generator: "search",
+    gsrsearch: search,
+    gsrnamespace: "0",
+    gsrlimit: "5",
+    prop: "pageimages",
+    pithumbsize: "500",
+    pilimit: "5",
+    format: "json",
+    formatversion: "2",
+    origin: "*"
+  });
+
+  const res = await fetch(`https://en.wikipedia.org/w/api.php?${params.toString()}`, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "Ooglex-Tech-Leaders-Avatar/4.2 (https://ooglex.com)"
+    }
+  });
+  if (!res.ok) return { ok: false, status: res.status, source: "wikipedia" };
+
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  const pages = payload && payload.query && Array.isArray(payload.query.pages)
+    ? payload.query.pages
+    : [];
+
+  for (const page of pages) {
+    if (!page || !page.thumbnail || !page.thumbnail.source) continue;
+    if (!wikiTitleMatchesPerson(page.title, cleanName)) continue;
+    const image = await fetchAvatarImage(page.thumbnail.source, "wikipedia");
+    if (image.ok) return image;
+  }
+  return { ok: false, status: 404, source: "wikipedia" };
+}
+
+async function resolveTechLeaderAvatar(handle, name, company) {
   const lower = handle.toLowerCase();
 
   if (TECH_AVATAR_OVERRIDES[lower]) {
@@ -249,13 +314,16 @@ async function resolveTechLeaderAvatar(handle) {
   const syndicated = await fetchAvatarViaSyndication(handle);
   if (syndicated.ok) return syndicated;
 
+  const wikipedia = await fetchAvatarViaWikipedia(name, company);
+  if (wikipedia.ok) return wikipedia;
+
   return fetchAvatarImage(
     `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
     "unavatar_x"
   );
 }
 
-async function getTechLeaderAvatar(handle, env) {
+async function getTechLeaderAvatar(handle, name, company, env) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
     const err = new Error("invalid_avatar_handle");
@@ -280,7 +348,7 @@ async function getTechLeaderAvatar(handle, env) {
     return { body: cached.body, headers };
   }
 
-  const resolved = await resolveTechLeaderAvatar(normalized);
+  const resolved = await resolveTechLeaderAvatar(normalized, name, company);
   if (!resolved.ok) {
     const err = new Error("avatar_upstream_unavailable");
     err.code = "avatar_upstream_unavailable";
@@ -535,9 +603,11 @@ export default {
 
     if (url.pathname === "/v1/tech-leaders/avatar") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
+      const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
+      const company = String(url.searchParams.get("company") || "").trim().slice(0, 120);
       if (!handle) return json({ error: "invalid_avatar_handle" }, 400, cors);
       try {
-        const avatar = await getTechLeaderAvatar(handle, env);
+        const avatar = await getTechLeaderAvatar(handle, name, company, env);
         const headers = new Headers(cors);
         avatar.headers.forEach((value, name) => headers.set(name, value));
         return new Response(avatar.body, { status: 200, headers });
