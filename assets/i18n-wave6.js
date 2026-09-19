@@ -458,8 +458,8 @@
     "黄仁勋": "Jensen Huang",
     "科技领袖实时动态流": "Tech Leaders Live Feed",
     "语言说明：": "Language note: ",
-    "免费模式展示 X 原文。如需简体中文，可使用 Microsoft Edge / Chrome 网页翻译，或沉浸式翻译等浏览器扩展。":
-      "Free mode displays the original X posts. For Simplified Chinese, use Microsoft Edge or Chrome page translation, or a browser translation extension such as Immersive Translate.",
+    "免费模式展示 X 原文。如需简体中文，可自行安装 Microsoft Edge / Chrome 浏览器，或其它沉浸式翻译等浏览器扩展。":
+      "Free mode displays the original X posts. For Simplified Chinese, you can install Microsoft Edge or Chrome, or use browser translation extensions such as Immersive Translate.",
 
     "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。":
       "Public X posts from global corporate leaders, listed-company CEOs and founders.",
