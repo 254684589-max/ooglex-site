@@ -199,3 +199,14 @@ The first Cloudflare-to-X syndication smoke test returned HTTP 429, so the free 
 3. Existing X official Embed in the browser if both native sources fail.
 
 The native route still never calls `api.x.com` and continues to return `uses_x_api: false`. The trial remains scoped to `@ZLQ6600E` before broader rollout.
+
+
+## Free Mode Hard Isolation — 2026-09-19
+
+Free mode is now structurally separated from the paid X Developer API path.
+
+- `/v1/tech-leaders/free-feed` never calls `api.x.com`.
+- `/v1/tech-leaders/free-profile` never calls `api.x.com`; it uses only public sources and a separate R2 cache namespace.
+- The existing `/v1/tech-leaders/profile` and `/v1/tech-leaders/feed` remain available only for explicit Data mode.
+- Initial native free-feed rollout: `@ZLQ6600E`, `@elonmusk`, `@JensenHuang`, and `@sama`.
+- All remaining catalog entries stay on the official X Embed fallback until the native path is validated at broader scale.

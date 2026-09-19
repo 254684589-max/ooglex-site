@@ -457,10 +457,13 @@
     "高通 · Qualcomm · 总裁兼 CEO": "Qualcomm · President & CEO",
     "黄仁勋": "Jensen Huang",
     "科技领袖实时动态流": "Tech Leaders Live Feed",
-    "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；标普500决策者层严格区分 CEO、Founder 与公司官号。":
-      "Public X posts from global corporate leaders, listed-company CEOs and founders. By default only the selected account is loaded on demand, with no call to the Ooglex X API, so it consumes no X API credits; within the S&P 500 decision-maker tier, CEO, founder and official company accounts are kept strictly distinct.",
+    "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。免费模式已与 api.x.com 硬隔离：不会调用 X Developer API，也不会消耗 X API Credits。郑翊、马斯克、黄仁勋与 Sam Altman 率先使用 Ooglex 原生动态流；其余账号暂时保留 X 官方 Embed。人物公开资料在免费模式下同样只读取公共源与缓存。":
+      "Public X posts from global corporate leaders, listed-company CEOs and founders. Free mode is hard-isolated from api.x.com: it never calls the X Developer API and consumes no X API credits. Zheng Yi, Elon Musk, Jensen Huang and Sam Altman are the first accounts on Ooglex's native live feed; remaining accounts temporarily retain the official X embed. Public profile data in free mode likewise comes only from public sources and cache.",
     "● 免费模式默认开启": "● Free mode on by default",
     "X 官方 Embed · $0 API": "Official X embed · $0 API",
+    "免费模式 · 0 X API Credits": "Free mode · 0 X API credits",
+    "Free Native Feed · Hard $0 X API": "Free Native Feed · Hard $0 X API",
+
     "单账号按需加载": "One account loaded on demand",
     "免费模式": "Free mode",
     "数据模式 · Credits": "Data mode · credits",
@@ -472,8 +475,8 @@
     "免费模式：": "Free mode: ",
     "数据模式：": "Data mode: ",
     "头像：": "Avatars: ",
-    "由 X 官方 Embed 在浏览器中直接展示公开时间线，Ooglex 不调用 X API，因此不消耗你的 X API Credits；能否显示仍取决于访问者网络是否能正常连接 X。":
-      "the official X embed renders the public timeline directly in the browser. Ooglex makes no X API call, so none of your X API credits are spent; whether it renders still depends on whether the visitor's network can reach X.",
+    "硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；原生公开源不可用时自动回退官方 Embed。":
+      "api.x.com is hard-blocked in free mode. Native feeds and profile data use only public sources and Ooglex cache, consuming no X API credits; if native public sources are unavailable the page automatically falls back to the official embed.",
     "仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。":
       "only after you switch to it manually does the existing Cloudflare + X API backend get called. That enables Ooglex's own rendering, plus later translation, summarisation and structured analysis — and it does consume X API credits.",
     "优先读取公开 X 头像；若第三方头像服务不可用，会自动回退为姓名首字母头像，不影响名单与时间线使用。":
@@ -482,8 +485,8 @@
     "免费模式本身没有产生 X API 费用。可以重试，或直接打开该账号的 X 原主页。":
       "Free mode itself incurs no X API cost. You can retry, or open the account's X profile directly.",
     "个人公开 X 账号。 · 头像由 Ooglex R2 自托管": "Personal public X account. · Avatar self-hosted on Ooglex R2",
-    "© 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容导航与官方嵌入展示 ·":
-      "© 2026 Ooglex · X content and account material remain the property of the original posters and the X platform · This page is only a navigation and official-embed surface for public content ·",
+    "© 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容聚合、导航与嵌入展示 ·":
+      "© 2026 Ooglex · X content and account material remain the property of the original posters and the X platform · This page only aggregates, navigates to and embeds public content ·",
     "科技领袖筛选与数据模式": "Leader filters and data mode",
     "搜索姓名、@账号、公司或股票代码…": "Search name, @handle, company or ticker…",
     "科技领袖分类筛选": "Leader category filter",
