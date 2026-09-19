@@ -8,6 +8,13 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+X_ORIGINAL_SOURCES = ("x_profile_redirect", "x_syndication")
+
+def is_x_original_source(value):
+    source = str(value or "").lower()
+    return any(source.startswith(prefix) for prefix in X_ORIGINAL_SOURCES)
+
+
 
 def fetch_one(base_url, leader, retries):
     handle = str(leader.get("handle") or "").lstrip("@")
@@ -26,9 +33,12 @@ def fetch_one(base_url, leader, retries):
                 content_type = (resp.headers.get("Content-Type") or "").split(";")[0].strip().lower()
                 source = resp.headers.get("X-Ooglex-Avatar-Source") or ""
                 body = resp.read(32)
-                if resp.status == 200 and content_type.startswith("image/") and body:
+                if resp.status == 200 and content_type.startswith("image/") and body and is_x_original_source(source):
                     return {"handle": handle, "ok": True, "status": resp.status, "type": content_type, "source": source}
-                last = f"bad_response status={resp.status} type={content_type}"
+                if resp.status == 200 and content_type.startswith("image/") and body:
+                    last = f"non_x_original_source={source or 'unknown'}"
+                else:
+                    last = f"bad_response status={resp.status} type={content_type}"
         except urllib.error.HTTPError as exc:
             last = f"HTTP Error {exc.code}: {exc.reason}"
             if exc.code == 429:
@@ -55,6 +65,7 @@ def main():
     ap.add_argument("--base-url", required=True)
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--retries", type=int, default=5)
+    ap.add_argument("--min-x-original", type=int, default=1)
     args = ap.parse_args()
 
     with open(args.catalog, "r", encoding="utf-8") as f:
@@ -80,9 +91,11 @@ def main():
 
     failures = sorted([r for r in results if not r["ok"]], key=lambda x: x["handle"].lower())
     ok = len(results) - len(failures)
-    print(f"Avatar warmup summary: {ok}/{len(results)} ready")
+    print(f"Avatar X-original audit summary: {ok}/{len(results)} verified from X")
     if failures:
-        print("Failed handles:", ", ".join("@" + r["handle"] for r in failures), file=sys.stderr)
+        print("Pending/fallback handles:", ", ".join("@" + r["handle"] for r in failures), file=sys.stderr)
+    if ok < max(1, args.min_x_original):
+        print(f"Too few X-original avatars: {ok} < {max(1, args.min_x_original)}", file=sys.stderr)
         return 1
     return 0
 

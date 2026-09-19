@@ -1,5 +1,5 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "capacity": 180,
   "leaders": [
     {
@@ -47,11 +47,12 @@
       "sp500_member": true,
       "sp500_ticker": "TSLA",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/elonmusk?fallback=false"
+      "avatar_origin_url": "https://x.com/elonmusk",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "huang",
@@ -74,7 +75,7 @@
       "company_en": "NVIDIA",
       "position_zh": "创始人兼 CEO",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JensenHuang",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
       "categories": [
         "芯片",
         "AI"
@@ -103,10 +104,11 @@
       "x_verified_at": "2026-09-19",
       "role_verified_at": "2026-09-19",
       "sp500_verified_at": "2026-09-19",
-      "avatar_status": "self_hosted",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://iprsoftwaremedia.com/219/files/202604/f0e9efa72f909f3f08cdd0a48ff92880/69e6b9293d633260eec67804_jensen-1920x1920/jensen-1920x1920_6a7e6ad5-c215-4503-b70d-fe6e5e9de205-prv.jpg?v=6a7e6ad5-c215-4503-b70d-fe6e5e9de205"
+      "avatar_origin_url": "https://x.com/JensenHuang",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "altman",
@@ -142,11 +144,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sama",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/sama?fallback=false"
+      "avatar_origin_url": "https://x.com/sama",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "su",
@@ -191,11 +194,12 @@
       "sp500_member": true,
       "sp500_ticker": "AMD",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LisaSu",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/LisaSu?fallback=false"
+      "avatar_origin_url": "https://x.com/LisaSu",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "pichai",
@@ -239,11 +243,12 @@
       "sp500_member": true,
       "sp500_ticker": "GOOGL",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sundarpichai",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/sundarpichai?fallback=false"
+      "avatar_origin_url": "https://x.com/sundarpichai",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "nadella",
@@ -290,11 +295,12 @@
       "sp500_member": true,
       "sp500_ticker": "MSFT",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=satyanadella",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/satyanadella?fallback=false"
+      "avatar_origin_url": "https://x.com/satyanadella",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "cook",
@@ -338,11 +344,12 @@
       "sp500_member": true,
       "sp500_ticker": "AAPL",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tim_cook",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/tim_cook?fallback=false"
+      "avatar_origin_url": "https://x.com/tim_cook",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "bezos",
@@ -387,11 +394,12 @@
         "S&P 500 Founder"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffBezos",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/JeffBezos?fallback=false"
+      "avatar_origin_url": "https://x.com/JeffBezos",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "jassy",
@@ -435,11 +443,12 @@
       "sp500_member": true,
       "sp500_ticker": "AMZN",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ajassy",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ajassy?fallback=false"
+      "avatar_origin_url": "https://x.com/ajassy",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "hassabis",
@@ -476,11 +485,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=demishassabis",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/demishassabis?fallback=false"
+      "avatar_origin_url": "https://x.com/demishassabis",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "amodei",
@@ -517,11 +527,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DarioAmodei",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/DarioAmodei?fallback=false"
+      "avatar_origin_url": "https://x.com/DarioAmodei",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "suleyman",
@@ -559,11 +570,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mustafasuleyman",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/mustafasuleyman?fallback=false"
+      "avatar_origin_url": "https://x.com/mustafasuleyman",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "lecun",
@@ -599,11 +611,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ylecun",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ylecun?fallback=false"
+      "avatar_origin_url": "https://x.com/ylecun",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "andrew-ng",
@@ -639,11 +652,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AndrewYNg",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/AndrewYNg?fallback=false"
+      "avatar_origin_url": "https://x.com/AndrewYNg",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "fei-fei-li",
@@ -682,11 +696,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drfeifei",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/drfeifei?fallback=false"
+      "avatar_origin_url": "https://x.com/drfeifei",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "sutskever",
@@ -722,11 +737,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilyasut",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ilyasut?fallback=false"
+      "avatar_origin_url": "https://x.com/ilyasut",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "murati",
@@ -763,11 +779,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=miramurati",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/miramurati?fallback=false"
+      "avatar_origin_url": "https://x.com/miramurati",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "brockman",
@@ -803,11 +820,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gdb",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/gdb?fallback=false"
+      "avatar_origin_url": "https://x.com/gdb",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "srinivas",
@@ -844,11 +862,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AravSrinivas",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/AravSrinivas?fallback=false"
+      "avatar_origin_url": "https://x.com/AravSrinivas",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "karpathy",
@@ -885,11 +904,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karpathy",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/karpathy?fallback=false"
+      "avatar_origin_url": "https://x.com/karpathy",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "field",
@@ -926,11 +946,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/zoink?fallback=false"
+      "avatar_origin_url": "https://x.com/zoink",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "patrick-collison",
@@ -967,11 +988,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=patrickc",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/patrickc?fallback=false"
+      "avatar_origin_url": "https://x.com/patrickc",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "chesky",
@@ -1015,11 +1037,12 @@
       "sp500_ticker": "ABNB",
       "sp500_verified_at": "2026-09-19",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bchesky",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/bchesky?fallback=false"
+      "avatar_origin_url": "https://x.com/bchesky",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "mohan",
@@ -1055,11 +1078,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nealmohan",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/nealmohan?fallback=false"
+      "avatar_origin_url": "https://x.com/nealmohan",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "ek",
@@ -1095,11 +1119,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eldsjal",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/eldsjal?fallback=false"
+      "avatar_origin_url": "https://x.com/eldsjal",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "benioff",
@@ -1144,11 +1169,12 @@
       "sp500_member": true,
       "sp500_ticker": "CRM",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Benioff",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/Benioff?fallback=false"
+      "avatar_origin_url": "https://x.com/Benioff",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "dell",
@@ -1193,11 +1219,12 @@
       "sp500_member": true,
       "sp500_ticker": "DELL",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelDell",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/MichaelDell?fallback=false"
+      "avatar_origin_url": "https://x.com/MichaelDell",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "andreessen",
@@ -1233,11 +1260,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pmarca",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/pmarca?fallback=false"
+      "avatar_origin_url": "https://x.com/pmarca",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "luckey",
@@ -1275,11 +1303,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PalmerLuckey",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/PalmerLuckey?fallback=false"
+      "avatar_origin_url": "https://x.com/PalmerLuckey",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "lutke",
@@ -1316,11 +1345,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/tobi?fallback=false"
+      "avatar_origin_url": "https://x.com/tobi",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "hoffman",
@@ -1357,11 +1387,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=reidhoffman",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/reidhoffman?fallback=false"
+      "avatar_origin_url": "https://x.com/reidhoffman",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "khosla",
@@ -1398,11 +1429,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vkhosla",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/vkhosla?fallback=false"
+      "avatar_origin_url": "https://x.com/vkhosla",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "levie",
@@ -1439,11 +1471,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=levie",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/levie?fallback=false"
+      "avatar_origin_url": "https://x.com/levie",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "dorsey",
@@ -1486,11 +1519,12 @@
         "S&P 500 Founder"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/jack?fallback=false"
+      "avatar_origin_url": "https://x.com/jack",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "paul-graham",
@@ -1526,11 +1560,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paulg",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/paulg?fallback=false"
+      "avatar_origin_url": "https://x.com/paulg",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "garry-tan",
@@ -1566,11 +1601,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=garrytan",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/garrytan?fallback=false"
+      "avatar_origin_url": "https://x.com/garrytan",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "alexandr-wang",
@@ -1604,11 +1640,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexandr_wang",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/alexandr_wang?fallback=false"
+      "avatar_origin_url": "https://x.com/alexandr_wang",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "delangue",
@@ -1645,11 +1682,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ClemDelangue",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ClemDelangue?fallback=false"
+      "avatar_origin_url": "https://x.com/ClemDelangue",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "jeff-dean",
@@ -1685,11 +1723,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffDean",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/JeffDean?fallback=false"
+      "avatar_origin_url": "https://x.com/JeffDean",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "gomez",
@@ -1726,11 +1765,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aidangomez",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/aidangomez?fallback=false"
+      "avatar_origin_url": "https://x.com/aidangomez",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "bret-taylor",
@@ -1767,11 +1807,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=btaylor",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/btaylor?fallback=false"
+      "avatar_origin_url": "https://x.com/btaylor",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "masad",
@@ -1808,11 +1849,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=amasad",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/amasad?fallback=false"
+      "avatar_origin_url": "https://x.com/amasad",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "rauch",
@@ -1849,11 +1891,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rauchg",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/rauchg?fallback=false"
+      "avatar_origin_url": "https://x.com/rauchg",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "friedman",
@@ -1890,11 +1933,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=natfriedman",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/natfriedman?fallback=false"
+      "avatar_origin_url": "https://x.com/natfriedman",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "krishna",
@@ -1939,11 +1983,12 @@
       "sp500_member": true,
       "sp500_ticker": "IBM",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ArvindKrishna",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ArvindKrishna?fallback=false"
+      "avatar_origin_url": "https://x.com/ArvindKrishna",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "amon",
@@ -1987,11 +2032,12 @@
       "sp500_member": true,
       "sp500_ticker": "QCOM",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cristianoamon",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/cristianoamon?fallback=false"
+      "avatar_origin_url": "https://x.com/cristianoamon",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "peter-beck",
@@ -2030,11 +2076,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/Peter_J_Beck?fallback=false"
+      "avatar_origin_url": "https://x.com/Peter_J_Beck",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "adcock",
@@ -2073,11 +2120,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adcock_brett",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/adcock_brett?fallback=false"
+      "avatar_origin_url": "https://x.com/adcock_brett",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "jim-keller",
@@ -2115,11 +2163,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimkxa",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/jimkxa?fallback=false"
+      "avatar_origin_url": "https://x.com/jimkxa",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "koduri",
@@ -2155,11 +2204,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RajaXg",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/RajaXg?fallback=false"
+      "avatar_origin_url": "https://x.com/RajaXg",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "dhh",
@@ -2195,11 +2245,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dhh",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/dhh?fallback=false"
+      "avatar_origin_url": "https://x.com/dhh",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "mullenweg",
@@ -2236,11 +2287,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=photomatt",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/photomatt?fallback=false"
+      "avatar_origin_url": "https://x.com/photomatt",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "houston",
@@ -2277,11 +2329,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drewhouston",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/drewhouston?fallback=false"
+      "avatar_origin_url": "https://x.com/drewhouston",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "armstrong",
@@ -2324,11 +2377,12 @@
       "sp500_member": true,
       "sp500_ticker": "COIN",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=brian_armstrong",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/brian_armstrong?fallback=false"
+      "avatar_origin_url": "https://x.com/brian_armstrong",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "buterin",
@@ -2364,11 +2418,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/VitalikButerin?fallback=false"
+      "avatar_origin_url": "https://x.com/VitalikButerin",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "son",
@@ -2407,11 +2462,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=masason",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/masason?fallback=false"
+      "avatar_origin_url": "https://x.com/masason",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "schmidt",
@@ -2448,11 +2504,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericschmidt",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ericschmidt?fallback=false"
+      "avatar_origin_url": "https://x.com/ericschmidt",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "durov",
@@ -2489,11 +2546,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=durov",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/durov?fallback=false"
+      "avatar_origin_url": "https://x.com/durov",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "lei-jun",
@@ -2532,11 +2590,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=leijun",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/leijun?fallback=false"
+      "avatar_origin_url": "https://x.com/leijun",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "fadell",
@@ -2572,11 +2631,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tfadell",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/tfadell?fallback=false"
+      "avatar_origin_url": "https://x.com/tfadell",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "zuckerberg",
@@ -2615,11 +2675,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=finkd",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/finkd?fallback=false"
+      "avatar_origin_url": "https://x.com/finkd",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "mosseri",
@@ -2653,11 +2714,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mosseri",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/mosseri?fallback=false"
+      "avatar_origin_url": "https://x.com/mosseri",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "boz",
@@ -2693,11 +2755,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=boztank",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/boztank?fallback=false"
+      "avatar_origin_url": "https://x.com/boztank",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "prince",
@@ -2734,11 +2797,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eastdakota",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/eastdakota?fallback=false"
+      "avatar_origin_url": "https://x.com/eastdakota",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "zatlyn",
@@ -2774,11 +2838,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zatlyn",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/zatlyn?fallback=false"
+      "avatar_origin_url": "https://x.com/zatlyn",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "vogels",
@@ -2812,11 +2877,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Werner",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/Werner?fallback=false"
+      "avatar_origin_url": "https://x.com/Werner",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "selipsky",
@@ -2850,11 +2916,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/aselipsky?fallback=false"
+      "avatar_origin_url": "https://x.com/aselipsky",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "gelsinger",
@@ -2888,11 +2955,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PGelsinger",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/PGelsinger?fallback=false"
+      "avatar_origin_url": "https://x.com/PGelsinger",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "rene-haas",
@@ -2928,11 +2996,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=renehaas237",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/renehaas237?fallback=false"
+      "avatar_origin_url": "https://x.com/renehaas237",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "lip-bu-tan",
@@ -2967,11 +3036,12 @@
         "芯片"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=intel",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/intel?fallback=false"
+      "avatar_origin_url": "https://x.com/intel",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "hock-tan",
@@ -3006,11 +3076,12 @@
         "芯片"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Broadcom",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/Broadcom?fallback=false"
+      "avatar_origin_url": "https://x.com/Broadcom",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "fouquet",
@@ -3045,11 +3116,12 @@
         "芯片"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ASMLcompany",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ASMLcompany?fallback=false"
+      "avatar_origin_url": "https://x.com/ASMLcompany",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "mehrotra",
@@ -3084,11 +3156,12 @@
         "芯片"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MicronTech",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/MicronTech?fallback=false"
+      "avatar_origin_url": "https://x.com/MicronTech",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "pabbeel",
@@ -3124,11 +3197,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pabbeel",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/pabbeel?fallback=false"
+      "avatar_origin_url": "https://x.com/pabbeel",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "rodney-brooks",
@@ -3164,11 +3238,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rodneyabrooks",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/rodneyabrooks?fallback=false"
+      "avatar_origin_url": "https://x.com/rodneyabrooks",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "sergey-levine",
@@ -3204,11 +3279,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=svlevine",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/svlevine?fallback=false"
+      "avatar_origin_url": "https://x.com/svlevine",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "chelsea-finn",
@@ -3244,11 +3320,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chelseabfinn",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/chelseabfinn?fallback=false"
+      "avatar_origin_url": "https://x.com/chelseabfinn",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "boston-dynamics",
@@ -3283,11 +3360,12 @@
         "AI"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BostonDynamics",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/BostonDynamics?fallback=false"
+      "avatar_origin_url": "https://x.com/BostonDynamics",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "tory-bruno",
@@ -3325,11 +3403,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=torybruno",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/torybruno?fallback=false"
+      "avatar_origin_url": "https://x.com/torybruno",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "tim-ellis",
@@ -3367,11 +3446,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=thetimellis",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/thetimellis?fallback=false"
+      "avatar_origin_url": "https://x.com/thetimellis",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "isaacman",
@@ -3405,11 +3485,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rookisaacman",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/rookisaacman?fallback=false"
+      "avatar_origin_url": "https://x.com/rookisaacman",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "stewart",
@@ -3445,11 +3526,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=stewart",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/stewart?fallback=false"
+      "avatar_origin_url": "https://x.com/stewart",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "perkins",
@@ -3486,11 +3568,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MelanieCanva",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/MelanieCanva?fallback=false"
+      "avatar_origin_url": "https://x.com/MelanieCanva",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "yuan",
@@ -3527,11 +3610,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericsyuan",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ericsyuan?fallback=false"
+      "avatar_origin_url": "https://x.com/ericsyuan",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "dara",
@@ -3576,11 +3660,12 @@
       "sp500_ticker": "UBER",
       "sp500_verified_at": "2026-09-19",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/dkhos?fallback=false"
+      "avatar_origin_url": "https://x.com/dkhos",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "kevin-rose",
@@ -3617,11 +3702,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=kevinrose",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/kevinrose?fallback=false"
+      "avatar_origin_url": "https://x.com/kevinrose",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "ohanian",
@@ -3658,11 +3744,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexisohanian",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/alexisohanian?fallback=false"
+      "avatar_origin_url": "https://x.com/alexisohanian",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "evan-you",
@@ -3698,11 +3785,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=youyuxi",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/youyuxi?fallback=false"
+      "avatar_origin_url": "https://x.com/youyuxi",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "hashimoto",
@@ -3738,11 +3826,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mitchellh",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/mitchellh?fallback=false"
+      "avatar_origin_url": "https://x.com/mitchellh",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "sijbrandij",
@@ -3778,11 +3867,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sytses",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/sytses?fallback=false"
+      "avatar_origin_url": "https://x.com/sytses",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "preston-werner",
@@ -3818,11 +3908,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mojombo",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/mojombo?fallback=false"
+      "avatar_origin_url": "https://x.com/mojombo",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "wanstrath",
@@ -3858,11 +3949,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=defunkt",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/defunkt?fallback=false"
+      "avatar_origin_url": "https://x.com/defunkt",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "levchin",
@@ -3899,11 +3991,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mlevchin",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/mlevchin?fallback=false"
+      "avatar_origin_url": "https://x.com/mlevchin",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "tenev",
@@ -3947,11 +4040,12 @@
         "S&P 500 CEO"
       ],
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vladtenev",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/vladtenev?fallback=false"
+      "avatar_origin_url": "https://x.com/vladtenev",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "david-marcus",
@@ -3988,11 +4082,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidmarcus",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/davidmarcus?fallback=false"
+      "avatar_origin_url": "https://x.com/davidmarcus",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "naval",
@@ -4029,11 +4124,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=naval",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/naval?fallback=false"
+      "avatar_origin_url": "https://x.com/naval",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "gurley",
@@ -4069,11 +4165,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgurley",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/bgurley?fallback=false"
+      "avatar_origin_url": "https://x.com/bgurley",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "chamath",
@@ -4110,11 +4207,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chamath",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/chamath?fallback=false"
+      "avatar_origin_url": "https://x.com/chamath",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "fred-wilson",
@@ -4151,11 +4249,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/fredwilson?fallback=false"
+      "avatar_origin_url": "https://x.com/fredwilson",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "gerstner",
@@ -4194,11 +4293,12 @@
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=altcap",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/altcap?fallback=false"
+      "avatar_origin_url": "https://x.com/altcap",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "jim-farley",
@@ -4244,11 +4344,12 @@
       "sp500_member": true,
       "sp500_ticker": "F",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimfarley98",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/jimfarley98?fallback=false"
+      "avatar_origin_url": "https://x.com/jimfarley98",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "chuck-robbins",
@@ -4295,11 +4396,12 @@
       "sp500_member": true,
       "sp500_ticker": "CSCO",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ChuckRobbins",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/ChuckRobbins?fallback=false"
+      "avatar_origin_url": "https://x.com/ChuckRobbins",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "bill-mcdermott",
@@ -4346,11 +4448,12 @@
       "sp500_member": true,
       "sp500_ticker": "NOW",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BillRMcDermott",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/BillRMcDermott?fallback=false"
+      "avatar_origin_url": "https://x.com/BillRMcDermott",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "marvin-ellison",
@@ -4395,11 +4498,12 @@
       "sp500_member": true,
       "sp500_ticker": "LOW",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/MarvinREllison?fallback=false"
+      "avatar_origin_url": "https://x.com/MarvinREllison",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "george-kurtz",
@@ -4446,11 +4550,12 @@
       "sp500_member": true,
       "sp500_ticker": "CRWD",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=George_Kurtz",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/George_Kurtz?fallback=false"
+      "avatar_origin_url": "https://x.com/George_Kurtz",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "nikesh-arora",
@@ -4497,11 +4602,12 @@
       "sp500_member": true,
       "sp500_ticker": "PANW",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikesharora",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/nikesharora?fallback=false"
+      "avatar_origin_url": "https://x.com/nikesharora",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "albert-bourla",
@@ -4546,11 +4652,12 @@
       "sp500_member": true,
       "sp500_ticker": "PFE",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AlbertBourla",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/AlbertBourla?fallback=false"
+      "avatar_origin_url": "https://x.com/AlbertBourla",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "mary-barra",
@@ -4597,11 +4704,12 @@
       "sp500_member": true,
       "sp500_ticker": "GM",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mtbarra",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/mtbarra?fallback=false"
+      "avatar_origin_url": "https://x.com/mtbarra",
+      "avatar_policy": "x_original_only"
     },
     {
       "id": "adena-friedman",
@@ -4651,11 +4759,12 @@
       ],
       "admission_status": "active",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adenatfriedman",
-      "avatar_source": "Ooglex R2 self-hosted avatar cache",
-      "avatar_status": "self_hosted",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar only",
+      "avatar_status": "runtime_audited",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-19",
-      "avatar_origin_url": "https://unavatar.io/x/adenatfriedman?fallback=false"
+      "avatar_origin_url": "https://x.com/adenatfriedman",
+      "avatar_policy": "x_original_only"
     }
   ],
   "categories": [
@@ -4711,16 +4820,6 @@
       "reason": "Company/role are confirmed; no sufficiently strong personal X identity evidence in the 2026-09-19 audit."
     }
   ],
-  "avatar_policy": {
-    "delivery": "Ooglex R2 self-hosted cache",
-    "source_priority": [
-      "explicit_official_override",
-      "x_public_profile_via_server",
-      "local_initials_fallback"
-    ],
-    "endpoint": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle={handle}",
-    "fallback": "local_initials_svg",
-    "warmed_by": "GitHub Actions",
-    "audited_at": "2026-09-19"
-  }
+  "avatar_policy": "x_original_only",
+  "avatar_cache_version": "v3-x-original"
 }
