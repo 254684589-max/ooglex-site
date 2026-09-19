@@ -215,3 +215,12 @@ Free mode is now structurally separated from the paid X Developer API path.
 ## Free Profile Public Fallback — 2026-09-19
 
 The first strict free-profile smoke test showed X public syndication/follow-button sources returning no usable profile metrics for the four pilot accounts. Free profile lookup now keeps the zero-X-API contract and adds FxEmbed/FxTwitter `GET /2/profile/{handle}` as a public fallback. The endpoint still never calls `api.x.com`.
+
+
+## Native Free Feed Rollout 24 — 2026-09-19
+
+After successful production validation on the initial four accounts, the native free-feed allowlist is expanded to 24 high-interest leaders:
+
+`Zheng Yi, Elon Musk, Jensen Huang, Sam Altman, Lisa Su, Sundar Pichai, Satya Nadella, Tim Cook, Jeff Bezos, Andy Jassy, Demis Hassabis, Dario Amodei, Mustafa Suleyman, Yann LeCun, Andrew Ng, Fei-Fei Li, Ilya Sutskever, Mira Murati, Greg Brockman, Aravind Srinivas, Andrej Karpathy, Marc Benioff, Michael Dell, Marc Andreessen`.
+
+The architecture remains on-demand: only the selected person's feed is fetched. Failure of the native public-source path still falls back to the official X Embed. Free mode remains hard-isolated from `api.x.com`.
