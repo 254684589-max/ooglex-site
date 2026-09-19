@@ -3417,30 +3417,34 @@
       "name": "Adam Selipsky",
       "zh": "Adam Selipsky",
       "handle": "aselipsky",
-      "role": "Cloud & Enterprise Technology Executive",
+      "role": "Helix Digital Infrastructure Co-Founder & CEO",
       "chips": [
-        "AWS",
-        "Cloud",
-        "Enterprise",
-        "AI"
+        "Helix",
+        "AI Infrastructure",
+        "Data Centers",
+        "Cloud"
       ],
       "category": "云计算",
-      "note": "个人公开 X 账号。",
+      "note": "Helix Digital Infrastructure 联合创始人兼 CEO，前 AWS CEO；个人公开 X 账号。",
       "title": "ADAM SELIPSKY · OFFICIAL X TIMELINE",
       "name_zh": "亚当·塞利普斯基",
       "name_en": "Adam Selipsky",
-      "company_zh": "云计算 / 企业科技",
-      "company_en": "Cloud & Enterprise Technology",
-      "position_zh": "科技高管",
+      "company_zh": "Helix 数字基础设施",
+      "company_en": "Helix Digital Infrastructure",
+      "position_zh": "联合创始人兼 CEO",
       "categories": [
-        "云计算"
+        "云计算",
+        "AI",
+        "工业"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [],
       "sector": "Information Technology",
       "themes": [
-        "云计算"
+        "云计算",
+        "AI基础设施",
+        "数据中心"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam+Selipsky&company=Cloud+%26+Enterprise+Technology",
