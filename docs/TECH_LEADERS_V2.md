@@ -210,3 +210,8 @@ Free mode is now structurally separated from the paid X Developer API path.
 - The existing `/v1/tech-leaders/profile` and `/v1/tech-leaders/feed` remain available only for explicit Data mode.
 - Initial native free-feed rollout: `@ZLQ6600E`, `@elonmusk`, `@JensenHuang`, and `@sama`.
 - All remaining catalog entries stay on the official X Embed fallback until the native path is validated at broader scale.
+
+
+## Free Profile Public Fallback — 2026-09-19
+
+The first strict free-profile smoke test showed X public syndication/follow-button sources returning no usable profile metrics for the four pilot accounts. Free profile lookup now keeps the zero-X-API contract and adds FxEmbed/FxTwitter `GET /2/profile/{handle}` as a public fallback. The endpoint still never calls `api.x.com`.
