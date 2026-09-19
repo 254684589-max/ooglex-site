@@ -474,6 +474,82 @@ async function fetchPublicXProfile(handle, name) {
   return merged;
 }
 
+function normalizeFxTwitterPublicProfile(payload, handle, name) {
+  const user = payload && payload.user && typeof payload.user === "object" ? payload.user : null;
+  if (!user) return null;
+
+  const website = user.website && typeof user.website === "object" ? user.website : null;
+  const websiteUrl = website && website.url ? String(website.url).trim() : "";
+  const displayUrl = website && website.display_url
+    ? String(website.display_url).trim()
+    : (websiteUrl ? websiteUrl.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "") : "");
+
+  const followers = user.followers == null ? null : Number(user.followers);
+  const following = user.following == null ? null : Number(user.following);
+  const joined = user.joined || null;
+  const avatar = user.avatar_url || null;
+  const description = user.description || null;
+  const verification = user.verification && typeof user.verification === "object" ? user.verification : {};
+
+  const usable = (
+    (Number.isFinite(followers) && followers >= 0) ||
+    (Number.isFinite(following) && following >= 0) ||
+    joined ||
+    websiteUrl ||
+    avatar ||
+    description
+  );
+  if (!usable) return null;
+
+  return {
+    schema_version: 1,
+    source: "fxtwitter_public_profile",
+    uses_x_api: false,
+    handle: String(user.screen_name || handle || ""),
+    name: String(user.name || name || ""),
+    followers_count: Number.isFinite(followers) && followers >= 0 ? followers : null,
+    following_count: Number.isFinite(following) && following >= 0 ? following : null,
+    created_at: joined,
+    url: websiteUrl || null,
+    display_url: displayUrl || null,
+    description: description || null,
+    profile_image_url: avatar || null,
+    verified: Boolean(verification.verified),
+    fetched_at: new Date().toISOString()
+  };
+}
+
+async function fetchFxTwitterPublicProfile(handle, name) {
+  const res = await fetch(
+    `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}`,
+    {
+      redirect: "follow",
+      headers: {
+        accept: "application/json",
+        "user-agent": "Ooglex-Tech-Leaders-Free-Profile/1.0"
+      }
+    }
+  );
+
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  if (!res.ok || !payload || Number(payload.code || res.status) >= 400) {
+    const err = new Error("fxtwitter_public_profile_error");
+    err.code = "fxtwitter_public_profile_error";
+    err.status = res.status || Number(payload && payload.code) || 502;
+    throw err;
+  }
+
+  const profile = normalizeFxTwitterPublicProfile(payload, handle, name);
+  if (!profile) {
+    const err = new Error("fxtwitter_public_profile_empty");
+    err.code = "fxtwitter_public_profile_empty";
+    err.status = 502;
+    throw err;
+  }
+  return profile;
+}
+
 async function getFreePublicXProfile(handle, name, env) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
@@ -498,7 +574,7 @@ async function getFreePublicXProfile(handle, name, env) {
 
   try {
     const publicProfile = await fetchPublicXProfile(normalized, name);
-    const fresh = {
+    let fresh = {
       ...(publicProfile || {}),
       handle: publicProfile && publicProfile.handle ? publicProfile.handle : normalized,
       name: publicProfile && publicProfile.name ? publicProfile.name : (name || ""),
@@ -506,6 +582,16 @@ async function getFreePublicXProfile(handle, name, env) {
       uses_x_api: false,
       fetched_at: new Date().toISOString()
     };
+
+    if (!publicProfileComplete(fresh)) {
+      try {
+        const fxProfile = await fetchFxTwitterPublicProfile(normalized, name);
+        fresh = mergeProfileSupplement(fresh, fxProfile, normalized, name);
+        fresh.source = "x_public_then_fxtwitter";
+        fresh.uses_x_api = false;
+      } catch {}
+    }
+
     const usable = fresh && (
       fresh.followers_count != null ||
       fresh.following_count != null ||
