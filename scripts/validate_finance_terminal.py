@@ -3466,9 +3466,42 @@ def main() -> None:
             and "终端应用代码当前不使用本地存储" in privacy_page
             and "https://www.coingecko.com/en/privacy" in privacy_page,
             "隐私政策缺少当前收集范围、第三方组件、本地存储或CoinGecko隐私入口")
-    require("font-size: 16px" in legal_css and "min-width: 320px" in legal_css
-            and "<script" not in terms_page and "<script" not in privacy_page,
-            "法律页面必须保持移动端可读且不得新增追踪脚本")
+    require("font-size: 16px" in legal_css and "min-width: 320px" in legal_css,
+            "法律页面必须保持移动端可读")
+    # 这条闸门要挡的是追踪脚本。原先写成「页面里不许出现 <script」，一刀切，
+    # 连站内同源、不发任何请求、不采集任何数据的界面英文化层也一并挡了，
+    # 结果两个法律页在英文模式下只能停在中文。
+    #
+    # 现在逐个标签核验：内联脚本一律不许，外链只许站内 /assets/ 下的 .js。
+    # 这比原来宽了一处——放行了 /assets/ 下的同源脚本，这是本次刻意放开的口子
+    # （经项目所有者确认）。除此之外一概不放：外域、协议相对、相对路径、
+    # 站内但不在 /assets/ 下的，全部拦下（反例矩阵见对应 PR）。
+    #
+    # 注意这条闸门管的只是 <script>：<img> 打点、<link rel=preconnect> 这类
+    # 不带 script 的追踪手段它从来就管不到，改动前后都一样，别把它当成全量防线。
+    for name, legal_page in (("使用条款", terms_page), ("隐私政策", privacy_page)):
+        require(
+            re.search(r"<script\b[^>]*>(?!.*?</script\s*>)", legal_page, re.I | re.S)
+            is None,
+            f"{name}页面存在未闭合的 <script>，无法逐个核验",
+        )
+        for tag, body in re.findall(
+            r"(<script\b[^>]*>)(.*?)</script\s*>", legal_page, re.I | re.S
+        ):
+            require(not body.strip(), f"{name}页面不得包含内联脚本：{tag}")
+            src = re.search(r"\bsrc\s*=\s*\"([^\"]*)\"", tag, re.I)
+            require(
+                src is not None,
+                f"{name}页面的 <script> 必须是同源外链，不得内联：{tag}",
+            )
+            require(
+                re.fullmatch(
+                    r"/assets/[A-Za-z0-9._/-]+\.js(\?v=[0-9a-f]+)?", src.group(1)
+                )
+                is not None,
+                f"{name}页面只允许加载站内 /assets/ 下的脚本，"
+                f"不得引入外域或追踪脚本：{src.group(1)}",
+            )
     for legal_page in (terms_page, privacy_page):
         require(all('rel="noopener noreferrer"' in tag
                     for tag in re.findall(r'<a[^>]+target="_blank"[^>]*>', legal_page)),
