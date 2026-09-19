@@ -95,12 +95,11 @@
     .profile h2{margin:0;font-size:27px;line-height:1.12;letter-spacing:-.02em}
     .handle{margin-top:4px;font:15px/1.35 var(--mono);color:var(--faint)}
     .profile-en{margin-top:3px;font:11px/1.3 var(--mono);color:var(--faint)}
-    .profile-xmark{display:inline-grid;place-items:center;width:22px;height:22px;margin-left:2px;border-radius:4px;background:#0f1419;color:#fff;font:14px/1 Arial,sans-serif;box-shadow:0 0 0 1px rgba(15,20,25,.16)}
     .profile-public{margin-top:14px;display:grid;gap:9px}
     .profile-web{display:none;max-width:100%;color:var(--blue);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .profile-joined{display:none;align-items:center;gap:7px;color:var(--dim);font-size:12.5px}
+    .profile-joined{display:flex;align-items:center;gap:7px;color:var(--dim);font-size:12.5px}
     .profile-calendar{font-size:15px;line-height:1}
-    .profile-stats{display:none;align-items:baseline;gap:22px;flex-wrap:wrap;color:var(--dim);font-size:12.5px}
+    .profile-stats{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;color:var(--dim);font-size:12.5px}
     .profile-stat strong{margin-right:5px;color:var(--ink);font-size:15px;font-weight:800;letter-spacing:-.01em}
     .profile-stat span{color:var(--dim)}
     .role{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
@@ -159,10 +158,10 @@
     <section class="hero">
       <span class="kicker">Official X Embed · Free V4</span>
       <h1>全球公司领袖 X 动态</h1>
-      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。默认按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits；标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
+      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。时间线默认使用 X 官方 Embed，不消耗时间线 API Credits；关注数、正在关注与加入时间使用后端缓存资料，优先公共源，必要时低频刷新 X 用户资料。标普500决策者层严格区分 CEO、Founder 与公司官号。</p>
       <div class="facts">
         <span class="fact live">● 免费模式默认开启</span>
-        <span class="fact" id="source-badge">X 官方 Embed · $0 API</span>
+        <span class="fact" id="source-badge">X 时间线 Embed · $0 API</span>
         <span class="fact">单账号按需加载</span>
         <span class="fact" id="catalog-fact">100+ 位 · 十三大分类</span>
       </div>
@@ -186,14 +185,14 @@
         <div class="profile-id">
           <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
           <div class="profile-copy">
-            <div class="profile-name-line"><h2 id="profile-name">马斯克</h2><span id="profile-verified"></span><span class="profile-xmark" aria-label="X">𝕏</span></div>
+            <div class="profile-name-line"><h2 id="profile-name">马斯克</h2><span id="profile-verified"></span></div>
             <div class="profile-en" id="profile-name-en">Elon Musk</div>
             <div class="handle" id="profile-handle">@elonmusk</div>
           </div>
         </div>
         <div class="profile-public" id="profile-public">
           <a class="profile-web" id="profile-web" target="_blank" rel="noopener noreferrer"></a>
-          <div class="profile-joined" id="profile-joined"><span class="profile-calendar">▣</span><span id="profile-joined-text"></span></div>
+          <div class="profile-joined" id="profile-joined"><span class="profile-calendar">▣</span><span id="profile-joined-text">资料加载中…</span></div>
           <div class="profile-stats" id="profile-stats">
             <div class="profile-stat"><strong id="profile-following">—</strong><span>正在关注</span></div>
             <div class="profile-stat"><strong id="profile-followers">—</strong><span>关注者</span></div>
@@ -213,7 +212,7 @@
     </section>
 
     <div class="about">
-      <b>免费模式：</b>由 X 官方 Embed 在浏览器中直接展示公开时间线，Ooglex 不调用 X API，因此不消耗你的 X API Credits；能否显示仍取决于访问者网络是否能正常连接 X。<br>
+      <b>免费模式：</b>X 时间线由官方 Embed 在浏览器中直接展示，不消耗时间线 API Credits；关注数、正在关注与加入时间由后端缓存资料提供，优先公共源，必要时每日最多刷新一次 X 用户资料。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
       <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
@@ -333,7 +332,7 @@
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
     apiBtn.classList.toggle("on",MODE==="api");
-    sourceBadge.textContent=MODE==="free"?"X 官方 Embed · $0 API":"Ooglex 后端 · X API";
+    sourceBadge.textContent=MODE==="free"?"X 时间线 Embed · $0 API":"Ooglex 后端 · X API";
   }
   function formatFollowingCount(value){
     var n=Number(value);
@@ -360,8 +359,8 @@
   }
   function resetPublicProfile(){
     profileWeb.style.display="none";profileWeb.removeAttribute("href");profileWeb.textContent="";
-    profileJoined.style.display="none";profileJoinedText.textContent="";
-    profileStats.style.display="none";profileFollowing.textContent="—";profileFollowers.textContent="—";
+    profileJoined.style.display="flex";profileJoinedText.textContent="资料加载中…";
+    profileStats.style.display="flex";profileFollowing.textContent="—";profileFollowers.textContent="—";
   }
   async function loadPublicProfile(p){
     var seq=++profileRequestSeq;
@@ -380,15 +379,18 @@
       }
       var joined=formatJoinedDate(data.created_at);
       if(joined){profileJoinedText.textContent=joined;profileJoined.style.display="flex";}
-      var hasFollowing=Number.isFinite(Number(data.following_count));
-      var hasFollowers=Number.isFinite(Number(data.followers_count));
+      var hasFollowing=data.following_count!=null&&Number.isFinite(Number(data.following_count));
+      var hasFollowers=data.followers_count!=null&&Number.isFinite(Number(data.followers_count));
       if(hasFollowing||hasFollowers){
         profileFollowing.textContent=hasFollowing?formatFollowingCount(data.following_count):"—";
         profileFollowers.textContent=hasFollowers?formatFollowerCount(data.followers_count):"—";
         profileStats.style.display="flex";
       }
     }catch(e){
-      if(seq===profileRequestSeq)resetPublicProfile();
+      if(seq===profileRequestSeq){
+        profileJoined.style.display="flex";profileJoinedText.textContent="公开资料暂不可用";
+        profileStats.style.display="flex";profileFollowing.textContent="—";profileFollowers.textContent="—";
+      }
     }
   }
     function updateProfile(p){
@@ -578,7 +580,7 @@
   function bootEmbed(){
     rendered=false;
     activeIframe=null;
-    sourceBadge.textContent="X 官方 Embed · $0 API";
+    sourceBadge.textContent="X 时间线 Embed · $0 API";
     drawDiag();probeSyndication();buildOfficialAnchor();
     timeline.setAttribute("data-state","loading");
     activeObserver=new MutationObserver(function(){var frame=timeline.querySelector("iframe");if(frame)attachIframe(frame);});
