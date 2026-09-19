@@ -22,7 +22,7 @@ def infer_source_type(source):
         if value.endswith(suffix):
             value = value[: -len(suffix)]
             break
-    if value in {"x_profile_redirect", "x_syndication"}:
+    if value in {"x_profile_redirect_x", "x_profile_redirect", "x_followbutton", "x_syndication"}:
         return "x_original"
     if value == "unavatar_x":
         return "x_original_proxy"
