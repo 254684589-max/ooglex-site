@@ -1,17 +1,17 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-19T06:40:10Z",
+  "checked_at": "2026-09-19T06:43:39Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
-  "usable": 109,
+  "usable": 110,
   "x_original": 0,
   "x_original_proxy": 16,
   "official_fallback": 6,
-  "public_fallback": 87,
-  "fallback": 93,
-  "pending_review": 1,
-  "missing_handle": 1,
+  "public_fallback": 88,
+  "fallback": 94,
+  "pending_review": 0,
+  "missing_handle": 0,
   "invalid_handle": 0,
   "items": [
     {
@@ -1527,6 +1527,20 @@
       "origin_url": "https://x.com/zatlyn"
     },
     {
+      "id": "zhengyi-temp",
+      "name": "Zheng Yi",
+      "company": "Independent Investment / VC",
+      "handle": "ZLQ6600E",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "ZLQ6600E",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ZLQ6600E&name=Zheng+Yi&company=Independent+Investment+%2F+VC",
+      "origin_url": "https://x.com/ZLQ6600E"
+    },
+    {
       "id": "field",
       "name": "Dylan Field",
       "company": "Figma",
@@ -1539,16 +1553,6 @@
       "response_handle": "zoink",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan+Field&company=Figma",
       "origin_url": "https://x.com/zoink"
-    },
-    {
-      "id": "zhengyi-temp",
-      "name": "Zheng Yi",
-      "company": "Independent Investment / VC",
-      "handle": "",
-      "ok": false,
-      "status": "pending_review",
-      "source_type": "pending_review",
-      "reason": "missing_handle"
     }
   ]
 }
