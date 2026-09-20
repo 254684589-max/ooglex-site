@@ -1958,9 +1958,16 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const publicAuthor = hideHandle
     ? "Zheng Yi"
     : (handleLower === "elonmusk" ? "马斯克 · Elon Musk" : author);
+  const showVerifiedBadge = handleLower === "elonmusk";
+  const verifiedBadgeHtml = showVerifiedBadge
+    ? '<span class="verified-badge" aria-label="Verified" title="Verified">✓</span>'
+    : "";
   const description = hideHandle
     ? `${publicAuthor} · Original public X post via Ooglex`
     : `${publicAuthor} (@${handle}) · Original public X post via Ooglex`;
+  const descriptionHtml = hideHandle
+    ? `${shareHtmlEscape(publicAuthor)} · Original public X post via Ooglex`
+    : `<span class="desc-author">${shareHtmlEscape(publicAuthor)}${verifiedBadgeHtml}</span> (@${shareHtmlEscape(handle)}) · Original public X post via Ooglex`;
   const shareMedia = techLeaderShareMedia(post, requestUrl.origin);
   const image = shareMedia.image;
   const video = shareMedia.video;
@@ -2012,8 +2019,10 @@ main{width:min(680px,calc(100% - 32px));margin:32px auto;padding:28px;border:1px
 h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
 .author-row{display:flex;align-items:center;gap:12px;margin:18px 0 8px}
 .author-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;border:1px solid #ded5cb;background:#eee}
-.author-copy{min-width:0}.author-name{font-weight:700;font-size:17px;line-height:1.2}.author-meta{margin-top:3px;color:#776f67;font-size:14px}
-.a{color:#655f59}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
+.author-copy{min-width:0}.author-name-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.author-name{font-weight:700;font-size:17px;line-height:1.2}.author-meta{margin-top:3px;color:#776f67;font-size:14px}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#1d9bf0;color:#fff;font:700 13px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;flex:0 0 20px;vertical-align:middle;box-shadow:0 0 0 1px rgba(29,155,240,.08)}
+.a{color:#655f59}.desc-author{display:inline-flex;align-items:center;gap:6px}.a .verified-badge{width:18px;height:18px;flex-basis:18px;font-size:12px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
 .preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px;background:#000}
 video.preview{object-fit:contain}
 .media-note{margin-top:8px;color:#8b837b;font-size:12px}
@@ -2026,12 +2035,15 @@ video.preview{object-fit:contain}
 <div class="author-row">
   <img class="author-avatar" src="${shareHtmlEscape(avatarUrl)}" alt="${shareHtmlEscape(publicAuthor)} avatar" referrerpolicy="no-referrer" onerror="this.style.display='none'">
   <div class="author-copy">
-    <div class="author-name">${shareHtmlEscape(publicAuthor)}</div>
+    <div class="author-name-row">
+      <div class="author-name">${shareHtmlEscape(publicAuthor)}</div>
+      ${verifiedBadgeHtml}
+    </div>
     <div class="author-meta">${hideHandle ? "Public X post" : `@${shareHtmlEscape(handle)} · Public X post`}</div>
   </div>
 </div>
 <h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
-<div class="a">${shareHtmlEscape(description)}</div>
+<div class="a">${descriptionHtml}</div>
 ${video
   ? `<video class="preview" controls playsinline preload="metadata" poster="${shareHtmlEscape(image)}" src="${shareHtmlEscape(video)}"></video>
 <div class="media-note">Video post · tap play to watch</div>`
