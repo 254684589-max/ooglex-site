@@ -1307,8 +1307,14 @@ function fxTwitterAuthorProfile(status) {
   const name = String(author.name || status.author_name || "").trim();
   const avatar = String(
     author.avatar_url ||
+    author.avatar_url_https ||
+    author.avatar ||
     author.profile_image_url_https ||
     author.profile_image_url ||
+    author.profile_image ||
+    author.image_url ||
+    author.image ||
+    status.author_avatar_url ||
     status.author_avatar ||
     ""
   );
