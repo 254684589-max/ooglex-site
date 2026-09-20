@@ -54,13 +54,17 @@
     .language-note{margin:-2px 0 12px;color:var(--faint);font-size:12px;line-height:1.6}
     .language-note b{color:var(--dim);font-weight:700}
     .catalog-toolbar{display:flex;align-items:flex-start;gap:8px;min-width:0;width:100%}
-    .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;padding:0 0 10px;margin-top:2px;scrollbar-width:thin}
+    .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;padding:0 0 10px;margin-top:2px;scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.48) rgba(128,128,128,.14)}
+    .category-bar::-webkit-scrollbar{height:8px}
+    .category-bar::-webkit-scrollbar-track{background:rgba(128,128,128,.14);border-radius:999px}
+    .category-bar::-webkit-scrollbar-thumb{background:rgba(128,128,128,.48);border-radius:999px}
     .category-btn{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:9px 13px;border-radius:999px;cursor:pointer;font:12px/1 var(--mono);white-space:nowrap}
     .category-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
     .category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
     .category-btn span{margin-left:5px;color:var(--faint)}
-    .leader-fold{appearance:none;flex:0 0 auto;margin-top:2px;border:1.5px solid #4f9bf5;background:#eaf3ff;color:#0b63ce;padding:10px 15px;border-radius:999px;cursor:pointer;font:800 14px/1 var(--mono);letter-spacing:.02em;white-space:nowrap;box-shadow:0 0 0 1px rgba(57,135,229,.08) inset}
-    .leader-fold:hover{border-color:#1d7eea;background:#dcecff;color:#064f9f}
+    .leader-fold{appearance:none;flex:0 0 auto;margin-top:2px;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:9px 13px;border-radius:999px;cursor:pointer;font:12px/1 var(--mono);letter-spacing:0;white-space:nowrap;box-shadow:none;min-width:58px}
+    .leader-fold:hover{border-color:rgba(57,135,229,.45);background:rgba(57,135,229,.06);color:var(--ink)}
+    .leader-fold.on{border-color:rgba(57,135,229,.55);background:rgba(57,135,229,.08);color:var(--ink)}
     .leader-rail-wrap{width:100%;margin:0 0 12px}
     .leader-rail-wrap.expanded .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));overflow:visible;padding-bottom:0}
     .leader-rail-wrap.expanded .leader{flex:none;width:auto}
@@ -79,11 +83,11 @@
       padding:12px 14px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;min-height:94px;transition:.18s ease;
       flex:0 0 calc((100% - 50px)/6);
     }
-    .leader-scrollbar{position:relative;height:12px;width:100%;border-radius:999px;background:rgba(128,128,128,.16);cursor:default;touch-action:none;user-select:none;padding:2px}
+    .leader-scrollbar{position:relative;height:8px;width:100%;border-radius:999px;background:rgba(128,128,128,.14);cursor:default;touch-action:none;user-select:none;padding:0}
     .leader-scrollbar[hidden]{display:none}
-    .leader-scroll-thumb{position:absolute;left:2px;top:2px;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.52);cursor:default;touch-action:none;transition:background .15s ease}
-    .leader-scroll-thumb:hover{background:rgba(128,128,128,.62)}
-    .leader-scroll-thumb.dragging{cursor:default;background:rgba(57,135,229,.72)}
+    .leader-scroll-thumb{position:absolute;left:0;top:0;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.48);cursor:default;touch-action:none;transition:background .15s ease}
+    .leader-scroll-thumb:hover{background:rgba(128,128,128,.58)}
+    .leader-scroll-thumb.dragging{cursor:default;background:rgba(128,128,128,.58)}
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:11px;min-width:0}
@@ -179,7 +183,7 @@
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
     @media(max-width:980px){.leader{flex-basis:calc((100% - 20px)/3)}.leader-rail-wrap.expanded .leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
     @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.leader-fold{padding:8px 10px;font-weight:700}}
-    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{gap:12px}.leader{flex-basis:min(84vw,320px)}.leader-rail-wrap.expanded .leaders{grid-template-columns:1fr}.leader-rail-wrap.expanded .leader{width:100%}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:11px 15px;font-size:14px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
+    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{gap:12px}.leader{flex-basis:min(84vw,320px)}.leader-rail-wrap.expanded .leaders{grid-template-columns:1fr}.leader-rail-wrap.expanded .leader{width:100%}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:9px 13px;font-size:12px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
@@ -545,6 +549,10 @@
   }
   function updateLeaderScrollbar(){
     if(!leaderScrollbar||!leaderScrollThumb)return;
+    // Keep the lower rail exactly the same visible width as the category rail above.
+    if(categoryBar&&categoryBar.clientWidth){
+      leaderScrollbar.style.width=categoryBar.clientWidth+"px";
+    }
     if(isExpanded){
       leaderScrollbar.hidden=true;
       return;
@@ -553,18 +561,17 @@
     if(maxScroll<=2){
       leaderScrollbar.hidden=true;
       leaderScrollThumb.style.width="100%";
-      leaderScrollThumb.style.left="2px";
+      leaderScrollThumb.style.left="0";
       return;
     }
     leaderScrollbar.hidden=false;
-    var inset=2;
-    var trackWidth=Math.max(0,leaderScrollbar.clientWidth-inset*2);
+    var trackWidth=Math.max(0,leaderScrollbar.clientWidth);
     var thumbWidth=Math.max(82,(leaders.clientWidth/leaders.scrollWidth)*trackWidth);
     thumbWidth=Math.min(trackWidth,thumbWidth);
     var maxThumbTravel=Math.max(0,trackWidth-thumbWidth);
-    var left=inset+(maxScroll>0?(leaders.scrollLeft/maxScroll)*maxThumbTravel:0);
+    var left=maxScroll>0?(leaders.scrollLeft/maxScroll)*maxThumbTravel:0;
     leaderScrollThumb.style.width=thumbWidth+"px";
-    leaderScrollThumb.style.left=Math.max(inset,Math.min(inset+maxThumbTravel,left))+"px";
+    leaderScrollThumb.style.left=Math.max(0,Math.min(maxThumbTravel,left))+"px";
   }
   function scrollActiveLeaderIntoView(){
     var active=leaders.querySelector(".leader.on");
@@ -587,7 +594,8 @@
     var foldLimit=window.matchMedia("(max-width:560px)").matches?1:(window.matchMedia("(max-width:980px)").matches?3:6);
     var canFold=filtered.length>foldLimit;
     foldBtn.hidden=!canFold;
-    foldBtn.textContent=isExpanded?"收起 ↑":"展开全部 ↓";
+    foldBtn.textContent=isExpanded?"收起":"展开";
+    foldBtn.classList.toggle("on",!!isExpanded);
     if(leaderRailWrap)leaderRailWrap.classList.toggle("expanded",!!isExpanded);
     if(!filtered.length){
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
@@ -1495,14 +1503,13 @@
 
     leaderScrollThumb.addEventListener("pointermove",function(e){
       if(!leaderDragging)return;
-      var inset=2;
-      var trackWidth=Math.max(0,leaderScrollbar.clientWidth-inset*2);
+      var trackWidth=Math.max(0,leaderScrollbar.clientWidth);
       var thumbWidth=leaderScrollThumb.offsetWidth;
       var maxTravel=Math.max(0,trackWidth-thumbWidth);
       var raw=leaderDragStartLeft+(e.clientX-leaderDragStartX);
-      var nextLeft=Math.max(inset,Math.min(inset+maxTravel,raw));
+      var nextLeft=Math.max(0,Math.min(maxTravel,raw));
       var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
-      leaders.scrollLeft=maxTravel>0?((nextLeft-inset)/maxTravel)*maxScroll:0;
+      leaders.scrollLeft=maxTravel>0?(nextLeft/maxTravel)*maxScroll:0;
       e.preventDefault();
     });
 
@@ -1517,15 +1524,14 @@
 
     leaderScrollbar.addEventListener("pointerdown",function(e){
       if(e.target===leaderScrollThumb||leaderScrollbar.hidden)return;
-      var inset=2;
       var rect=leaderScrollbar.getBoundingClientRect();
-      var trackWidth=Math.max(0,leaderScrollbar.clientWidth-inset*2);
+      var trackWidth=Math.max(0,leaderScrollbar.clientWidth);
       var thumbWidth=leaderScrollThumb.offsetWidth;
       var maxTravel=Math.max(0,trackWidth-thumbWidth);
       var raw=e.clientX-rect.left-thumbWidth/2;
-      var nextLeft=Math.max(inset,Math.min(inset+maxTravel,raw));
+      var nextLeft=Math.max(0,Math.min(maxTravel,raw));
       var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
-      leaders.scrollTo({left:maxTravel>0?((nextLeft-inset)/maxTravel)*maxScroll:0,behavior:"smooth"});
+      leaders.scrollTo({left:maxTravel>0?(nextLeft/maxTravel)*maxScroll:0,behavior:"smooth"});
     });
   }
 
