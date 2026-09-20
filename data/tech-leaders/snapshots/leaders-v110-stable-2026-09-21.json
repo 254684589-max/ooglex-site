@@ -1,0 +1,5801 @@
+{
+  "schema_version": 8,
+  "capacity": 180,
+  "leaders": [
+    {
+      "id": "musk",
+      "name": "Elon Musk",
+      "zh": "马斯克",
+      "handle": "elonmusk",
+      "role": "Tesla · SpaceX · xAI · X",
+      "chips": [
+        "TSLA",
+        "SpaceX",
+        "xAI",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ELON MUSK · OFFICIAL X TIMELINE",
+      "category": "汽车",
+      "name_zh": "马斯克",
+      "name_en": "Elon Musk",
+      "company_zh": "特斯拉 / SpaceX / xAI / X",
+      "company_en": "Tesla / SpaceX / xAI / X",
+      "position_zh": "创始人 / CEO",
+      "categories": [
+        "汽车",
+        "AI",
+        "航空航天"
+      ],
+      "sp500_ceo": true,
+      "ticker": "TSLA",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "汽车",
+        "AI",
+        "航空航天"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "TSLA",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&name=Elon+Musk&company=Tesla+%2F+SpaceX+%2F+xAI+%2F+X",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/elonmusk",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "huang",
+      "name": "Jensen Huang",
+      "zh": "黄仁勋",
+      "handle": "JensenHuang",
+      "role": "NVIDIA Founder & CEO",
+      "chips": [
+        "NVDA",
+        "AI",
+        "GPU",
+        "Data Center"
+      ],
+      "note": "现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",
+      "title": "JENSEN HUANG · OFFICIAL X TIMELINE",
+      "category": "芯片",
+      "name_zh": "黄仁勋",
+      "name_en": "Jensen Huang",
+      "company_zh": "英伟达",
+      "company_en": "NVIDIA",
+      "position_zh": "创始人兼 CEO",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JensenHuang&name=Jensen+Huang&company=NVIDIA",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "芯片",
+        "数据中心"
+      ],
+      "sp500_member": true,
+      "ticker": "NVDA",
+      "sp500_ticker": "NVDA",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "x_identity_verified": true,
+      "x_verified_at": "2026-09-19",
+      "role_verified_at": "2026-09-19",
+      "sp500_verified_at": "2026-09-19",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/JensenHuang",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "altman",
+      "name": "Sam Altman",
+      "zh": "Sam Altman",
+      "handle": "sama",
+      "role": "OpenAI",
+      "chips": [
+        "OpenAI",
+        "AI",
+        "Models"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "SAM ALTMAN · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "萨姆·奥尔特曼",
+      "name_en": "Sam Altman",
+      "company_zh": "OpenAI",
+      "company_en": "OpenAI",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sama&name=Sam+Altman&company=OpenAI",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/sama",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "su",
+      "name": "Lisa Su",
+      "zh": "苏姿丰",
+      "handle": "LisaSu",
+      "role": "AMD Chair & CEO",
+      "chips": [
+        "AMD",
+        "AI",
+        "CPU",
+        "GPU"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "LISA SU · OFFICIAL X TIMELINE",
+      "category": "芯片",
+      "name_zh": "苏姿丰",
+      "name_en": "Lisa Su",
+      "company_zh": "AMD",
+      "company_en": "AMD",
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "AMD",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AMD",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LisaSu&name=Lisa+Su&company=AMD",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/LisaSu",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "pichai",
+      "name": "Sundar Pichai",
+      "zh": "桑达尔·皮查伊",
+      "handle": "sundarpichai",
+      "role": "Google · Alphabet",
+      "chips": [
+        "GOOGL",
+        "Google",
+        "Gemini",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "SUNDAR PICHAI · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "桑达尔·皮查伊",
+      "name_en": "Sundar Pichai",
+      "company_zh": "谷歌 / Alphabet",
+      "company_en": "Google / Alphabet",
+      "position_zh": "CEO",
+      "categories": [
+        "AI",
+        "云计算"
+      ],
+      "sp500_ceo": true,
+      "ticker": "GOOGL",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "GOOGL",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sundarpichai&name=Sundar+Pichai&company=Google+%2F+Alphabet",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/sundarpichai",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "zhengyi-temp",
+      "name": "Zheng Yi",
+      "zh": "郑翊",
+      "name_zh": "郑翊",
+      "name_en": "Zheng Yi",
+      "role": "Independent Investor · VC",
+      "chips": [
+        "VC",
+        "AI",
+        "科技投资",
+        "全球市场"
+      ],
+      "note": "独立投资人，关注 AI、半导体、云计算、航天与全球科技产业趋势；本人公开 X 账号。",
+      "title": "ZHENGYI · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "company_zh": "独立投资 / VC",
+      "company_en": "Independent Investment / VC",
+      "position_zh": "投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC",
+        "AI",
+        "科技投资",
+        "全球市场"
+      ],
+      "static_profile": true,
+      "temporary": true,
+      "static_avatar_url": "./assets/zhengyi-temp.svg",
+      "followers_count": 7150000,
+      "following_count": 120,
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_verified": true,
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true,
+      "avatar_status": "public_fallback_verified",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_source_transport": "wikimedia_commons-r2-cache",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ZLQ6600E&name=Zheng+Yi&company=Independent+Investment+%2F+VC",
+      "website_url": "https://www.ooglex.com/",
+      "website_label": "Ooglex.com",
+      "created_at": "2012-06-01T00:00:00Z",
+      "handle": "ZLQ6600E",
+      "hide_handle": true,
+      "verified_personal_x": true,
+      "x_identity_verified": true,
+      "x_verified_at": "2026-09-19",
+      "avatar_origin_url": "https://x.com/ZLQ6600E",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_updated_at": "2026-09-20",
+      "local_posts": [
+        {
+          "id": "macro-pulse-10y2y-20260919",
+          "created_at": "2026-09-19T06:49:00Z",
+          "text": "📊 宏观 · Macro Pulse\n\n🔻 10Y-2Y 期限利差｜10Y-2Y spread\n0.28%　-3bp\n\n#宏观快讯 #收益率曲线",
+          "media": [
+            {
+              "type": "photo",
+              "url": "./assets/posts/zhengyi-macro-pulse-10y2y.svg",
+              "alt": "10Y-2Y 期限利差 0.28%，单日 -3bp 的 Macro Pulse 图表"
+            }
+          ],
+          "source": "ooglex_local"
+        }
+      ],
+      "timeline_mode": "native_recent",
+      "timeline_display_limit": 3,
+      "timeline_fetch_limit": 3,
+      "hide_local_posts": true,
+      "hide_post_metrics": true
+    },
+    {
+      "id": "nadella",
+      "name": "Satya Nadella",
+      "zh": "萨提亚·纳德拉",
+      "handle": "satyanadella",
+      "role": "Microsoft",
+      "chips": [
+        "MSFT",
+        "Microsoft",
+        "Copilot",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "SATYA NADELLA · OFFICIAL X TIMELINE",
+      "category": "云计算",
+      "name_zh": "萨提亚·纳德拉",
+      "name_en": "Satya Nadella",
+      "company_zh": "微软",
+      "company_en": "Microsoft",
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "云计算",
+        "AI",
+        "软件"
+      ],
+      "sp500_ceo": true,
+      "ticker": "MSFT",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "MSFT",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=satyanadella&name=Satya+Nadella&company=Microsoft",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/satyanadella",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "cook",
+      "name": "Tim Cook",
+      "zh": "蒂姆·库克",
+      "handle": "tim_cook",
+      "role": "Apple CEO",
+      "chips": [
+        "AAPL",
+        "Apple",
+        "iPhone",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "TIM COOK · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "蒂姆·库克",
+      "name_en": "Tim Cook",
+      "company_zh": "苹果",
+      "company_en": "Apple",
+      "position_zh": "CEO",
+      "categories": [
+        "消费零售",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "AAPL",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AAPL",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tim_cook&name=Tim+Cook&company=Apple",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/tim_cook",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "bezos",
+      "name": "Jeff Bezos",
+      "zh": "杰夫·贝索斯",
+      "handle": "JeffBezos",
+      "role": "Amazon Founder · Blue Origin",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "Blue Origin",
+        "Space"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JEFF BEZOS · OFFICIAL X TIMELINE",
+      "category": "航空航天",
+      "name_zh": "杰夫·贝索斯",
+      "name_en": "Jeff Bezos",
+      "company_zh": "亚马逊 / 蓝色起源",
+      "company_en": "Amazon / Blue Origin",
+      "position_zh": "创始人",
+      "categories": [
+        "航空航天",
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AMZN",
+      "ticker": "AMZN",
+      "sp500_verified_at": "2026-09-19",
+      "index_tags": [
+        "S&P 500 Founder"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffBezos&name=Jeff+Bezos&company=Amazon+%2F+Blue+Origin",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/JeffBezos",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "jassy",
+      "name": "Andy Jassy",
+      "zh": "安迪·贾西",
+      "handle": "ajassy",
+      "role": "Amazon CEO",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "AWS",
+        "Cloud"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ANDY JASSY · OFFICIAL X TIMELINE",
+      "category": "云计算",
+      "name_zh": "安迪·贾西",
+      "name_en": "Andy Jassy",
+      "company_zh": "亚马逊",
+      "company_en": "Amazon",
+      "position_zh": "CEO",
+      "categories": [
+        "云计算",
+        "消费零售"
+      ],
+      "sp500_ceo": true,
+      "ticker": "AMZN",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "AMZN",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ajassy&name=Andy+Jassy&company=Amazon",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ajassy",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "hassabis",
+      "name": "Demis Hassabis",
+      "zh": "德米斯·哈萨比斯",
+      "handle": "demishassabis",
+      "role": "Google DeepMind Co-Founder & CEO",
+      "chips": [
+        "GOOGL",
+        "DeepMind",
+        "Gemini",
+        "AGI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DEMIS HASSABIS · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "德米斯·哈萨比斯",
+      "name_en": "Demis Hassabis",
+      "company_zh": "谷歌 DeepMind",
+      "company_en": "Google DeepMind",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=demishassabis&name=Demis+Hassabis&company=Google+DeepMind",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/demishassabis",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "amodei",
+      "name": "Dario Amodei",
+      "zh": "达里奥·阿莫代",
+      "handle": "DarioAmodei",
+      "role": "Anthropic Co-Founder & CEO",
+      "chips": [
+        "Anthropic",
+        "Claude",
+        "AI",
+        "Safety"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DARIO AMODEI · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "达里奥·阿莫代",
+      "name_en": "Dario Amodei",
+      "company_zh": "Anthropic",
+      "company_en": "Anthropic",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DarioAmodei&name=Dario+Amodei&company=Anthropic",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/DarioAmodei",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "suleyman",
+      "name": "Mustafa Suleyman",
+      "zh": "穆斯塔法·苏莱曼",
+      "handle": "mustafasuleyman",
+      "role": "Microsoft AI CEO",
+      "chips": [
+        "MSFT",
+        "Microsoft AI",
+        "Copilot",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MUSTAFA SULEYMAN · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "穆斯塔法·苏莱曼",
+      "name_en": "Mustafa Suleyman",
+      "company_zh": "微软 AI",
+      "company_en": "Microsoft AI",
+      "position_zh": "CEO",
+      "categories": [
+        "AI",
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mustafasuleyman&name=Mustafa+Suleyman&company=Microsoft+AI",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/mustafasuleyman",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "lecun",
+      "name": "Yann LeCun",
+      "zh": "杨立昆",
+      "handle": "ylecun",
+      "role": "AI Researcher · NYU",
+      "chips": [
+        "AI",
+        "Deep Learning",
+        "Research",
+        "NYU"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "YANN LECUN · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "杨立昆",
+      "name_en": "Yann LeCun",
+      "company_zh": "纽约大学",
+      "company_en": "NYU",
+      "position_zh": "AI 研究员",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ylecun&name=Yann+LeCun&company=NYU",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ylecun",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "andrew-ng",
+      "name": "Andrew Ng",
+      "zh": "吴恩达",
+      "handle": "AndrewYNg",
+      "role": "DeepLearning.AI · AI Fund",
+      "chips": [
+        "AI",
+        "DeepLearning.AI",
+        "Education",
+        "Startups"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ANDREW NG · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "吴恩达",
+      "name_en": "Andrew Ng",
+      "company_zh": "DeepLearning.AI / AI Fund",
+      "company_en": "DeepLearning.AI / AI Fund",
+      "position_zh": "创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AndrewYNg&name=Andrew+Ng&company=DeepLearning.AI+%2F+AI+Fund",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/AndrewYNg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "fei-fei-li",
+      "name": "Fei-Fei Li",
+      "zh": "李飞飞",
+      "handle": "drfeifei",
+      "role": "World Labs Co-Founder & CEO · Stanford",
+      "chips": [
+        "AI",
+        "World Models",
+        "Stanford",
+        "Robotics"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "FEI-FEI LI · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "李飞飞",
+      "name_en": "Fei-Fei Li",
+      "company_zh": "World Labs / 斯坦福大学",
+      "company_en": "World Labs / Stanford",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI",
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drfeifei&name=Fei-Fei+Li&company=World+Labs+%2F+Stanford",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/drfeifei",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "sutskever",
+      "name": "Ilya Sutskever",
+      "zh": "Ilya Sutskever",
+      "handle": "ilyasut",
+      "role": "Safe Superintelligence Inc. Co-Founder",
+      "chips": [
+        "SSI",
+        "AI",
+        "Alignment",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ILYA SUTSKEVER · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "伊利亚·苏茨克维",
+      "name_en": "Ilya Sutskever",
+      "company_zh": "Safe Superintelligence",
+      "company_en": "Safe Superintelligence",
+      "position_zh": "联合创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilyasut&name=Ilya+Sutskever&company=Safe+Superintelligence",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ilyasut",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "murati",
+      "name": "Mira Murati",
+      "zh": "Mira Murati",
+      "handle": "miramurati",
+      "role": "Thinking Machines Lab Founder & CEO",
+      "chips": [
+        "Thinking Machines",
+        "AI",
+        "Models",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MIRA MURATI · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "米拉·穆拉蒂",
+      "name_en": "Mira Murati",
+      "company_zh": "Thinking Machines Lab",
+      "company_en": "Thinking Machines Lab",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=miramurati&name=Mira+Murati&company=Thinking+Machines+Lab",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/miramurati",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "brockman",
+      "name": "Greg Brockman",
+      "zh": "Greg Brockman",
+      "handle": "gdb",
+      "role": "OpenAI President & Co-Founder",
+      "chips": [
+        "OpenAI",
+        "AI",
+        "Models",
+        "Infrastructure"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "GREG BROCKMAN · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "格雷格·布罗克曼",
+      "name_en": "Greg Brockman",
+      "company_zh": "OpenAI",
+      "company_en": "OpenAI",
+      "position_zh": "总裁兼联合创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gdb&name=Greg+Brockman&company=OpenAI",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/gdb",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "srinivas",
+      "name": "Aravind Srinivas",
+      "zh": "Aravind Srinivas",
+      "handle": "AravSrinivas",
+      "role": "Perplexity Co-Founder & CEO",
+      "chips": [
+        "Perplexity",
+        "AI",
+        "Search",
+        "Agents"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ARAVIND SRINIVAS · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "阿拉温德·斯里尼瓦斯",
+      "name_en": "Aravind Srinivas",
+      "company_zh": "Perplexity",
+      "company_en": "Perplexity",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AravSrinivas&name=Aravind+Srinivas&company=Perplexity",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/AravSrinivas",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "karpathy",
+      "name": "Andrej Karpathy",
+      "zh": "Andrej Karpathy",
+      "handle": "karpathy",
+      "role": "AI Researcher · Eureka Labs",
+      "chips": [
+        "AI",
+        "Deep Learning",
+        "LLM",
+        "Education"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ANDREJ KARPATHY · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "安德烈·卡帕西",
+      "name_en": "Andrej Karpathy",
+      "company_zh": "Eureka Labs",
+      "company_en": "Eureka Labs",
+      "position_zh": "AI 研究员 / 创始人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "researcher"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karpathy&name=Andrej+Karpathy&company=Eureka+Labs",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/karpathy",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "field",
+      "name": "Dylan Field",
+      "zh": "Dylan Field",
+      "handle": "zoink",
+      "role": "Figma Co-Founder & CEO",
+      "chips": [
+        "Figma",
+        "Design",
+        "Software",
+        "Collaboration"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DYLAN FIELD · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "迪伦·菲尔德",
+      "name_en": "Dylan Field",
+      "company_zh": "Figma",
+      "company_en": "Figma",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan+Field&company=Figma",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/zoink",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "patrick-collison",
+      "name": "Patrick Collison",
+      "zh": "Patrick Collison",
+      "handle": "patrickc",
+      "role": "Stripe Co-Founder & CEO",
+      "chips": [
+        "Stripe",
+        "Fintech",
+        "Payments",
+        "Startups"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PATRICK COLLISON · OFFICIAL X TIMELINE",
+      "category": "金融",
+      "name_zh": "帕特里克·科里森",
+      "name_en": "Patrick Collison",
+      "company_zh": "Stripe",
+      "company_en": "Stripe",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=patrickc&name=Patrick+Collison&company=Stripe",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/patrickc",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "chesky",
+      "name": "Brian Chesky",
+      "zh": "Brian Chesky",
+      "handle": "bchesky",
+      "role": "Airbnb Co-Founder & CEO",
+      "chips": [
+        "ABNB",
+        "Airbnb",
+        "Travel",
+        "Product"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRIAN CHESKY · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "布莱恩·切斯基",
+      "name_en": "Brian Chesky",
+      "company_zh": "Airbnb",
+      "company_en": "Airbnb",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": true,
+      "ticker": "ABNB",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "ABNB",
+      "sp500_verified_at": "2026-09-19",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bchesky&name=Brian+Chesky&company=Airbnb",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/bchesky",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "mohan",
+      "name": "Neal Mohan",
+      "zh": "Neal Mohan",
+      "handle": "nealmohan",
+      "role": "YouTube CEO",
+      "chips": [
+        "GOOGL",
+        "YouTube",
+        "Video",
+        "Creators"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "NEAL MOHAN · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "尼尔·莫汉",
+      "name_en": "Neal Mohan",
+      "company_zh": "YouTube",
+      "company_en": "YouTube",
+      "position_zh": "CEO",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nealmohan&name=Neal+Mohan&company=YouTube",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/nealmohan",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "ek",
+      "name": "Daniel Ek",
+      "zh": "Daniel Ek",
+      "handle": "eldsjal",
+      "role": "Spotify Founder · Prima Materia",
+      "chips": [
+        "SPOT",
+        "Spotify",
+        "Audio",
+        "Health Tech"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DANIEL EK · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "丹尼尔·埃克",
+      "name_en": "Daniel Ek",
+      "company_zh": "Spotify / Prima Materia",
+      "company_en": "Spotify / Prima Materia",
+      "position_zh": "创始人",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eldsjal&name=Daniel+Ek&company=Spotify+%2F+Prima+Materia",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/eldsjal",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "benioff",
+      "name": "Marc Benioff",
+      "zh": "Marc Benioff",
+      "handle": "Benioff",
+      "role": "Salesforce Chair & CEO",
+      "chips": [
+        "CRM",
+        "Salesforce",
+        "Agentforce",
+        "Enterprise AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MARC BENIOFF · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "马克·贝尼奥夫",
+      "name_en": "Marc Benioff",
+      "company_zh": "Salesforce",
+      "company_en": "Salesforce",
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "软件",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "CRM",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "CRM",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Benioff&name=Marc+Benioff&company=Salesforce",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/Benioff",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "dell",
+      "name": "Michael Dell",
+      "zh": "迈克尔·戴尔",
+      "handle": "MichaelDell",
+      "role": "Dell Technologies Chair & CEO",
+      "chips": [
+        "DELL",
+        "AI Infrastructure",
+        "Servers",
+        "Enterprise"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MICHAEL DELL · OFFICIAL X TIMELINE",
+      "category": "云计算",
+      "name_zh": "迈克尔·戴尔",
+      "name_en": "Michael Dell",
+      "company_zh": "戴尔科技",
+      "company_en": "Dell Technologies",
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "云计算",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "DELL",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "DELL",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelDell&name=Michael+Dell&company=Dell+Technologies",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/MichaelDell",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "andreessen",
+      "name": "Marc Andreessen",
+      "zh": "Marc Andreessen",
+      "handle": "pmarca",
+      "role": "Andreessen Horowitz Co-Founder",
+      "chips": [
+        "a16z",
+        "VC",
+        "AI",
+        "Startups"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MARC ANDREESSEN · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "马克·安德森",
+      "name_en": "Marc Andreessen",
+      "company_zh": "Andreessen Horowitz",
+      "company_en": "Andreessen Horowitz",
+      "position_zh": "联合创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pmarca&name=Marc+Andreessen&company=Andreessen+Horowitz",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/pmarca",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "luckey",
+      "name": "Palmer Luckey",
+      "zh": "帕尔默·拉奇",
+      "handle": "PalmerLuckey",
+      "role": "Anduril Founder",
+      "chips": [
+        "Anduril",
+        "Defense Tech",
+        "AI",
+        "Autonomy"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PALMER LUCKEY · OFFICIAL X TIMELINE",
+      "category": "工业",
+      "name_zh": "帕尔默·拉奇",
+      "name_en": "Palmer Luckey",
+      "company_zh": "Anduril",
+      "company_en": "Anduril",
+      "position_zh": "创始人",
+      "categories": [
+        "工业",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PalmerLuckey&name=Palmer+Luckey&company=Anduril",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/PalmerLuckey",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "lutke",
+      "name": "Tobias Lütke",
+      "zh": "Tobias Lütke",
+      "handle": "tobi",
+      "role": "Shopify Co-Founder & CEO",
+      "chips": [
+        "SHOP",
+        "Shopify",
+        "Commerce",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "TOBIAS LÜTKE · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "托比亚斯·吕特克",
+      "name_en": "Tobias Lütke",
+      "company_zh": "Shopify",
+      "company_en": "Shopify",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi&name=Tobias+L%C3%BCtke&company=Shopify",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/tobi",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "hoffman",
+      "name": "Reid Hoffman",
+      "zh": "里德·霍夫曼",
+      "handle": "reidhoffman",
+      "role": "LinkedIn Co-Founder · Greylock",
+      "chips": [
+        "LinkedIn",
+        "Greylock",
+        "AI",
+        "VC"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "REID HOFFMAN · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "里德·霍夫曼",
+      "name_en": "Reid Hoffman",
+      "company_zh": "LinkedIn / Greylock",
+      "company_en": "LinkedIn / Greylock",
+      "position_zh": "联合创始人 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=reidhoffman&name=Reid+Hoffman&company=LinkedIn+%2F+Greylock",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/reidhoffman",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "khosla",
+      "name": "Vinod Khosla",
+      "zh": "维诺德·科斯拉",
+      "handle": "vkhosla",
+      "role": "Khosla Ventures Founder",
+      "chips": [
+        "Khosla Ventures",
+        "VC",
+        "AI",
+        "Climate Tech"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "VINOD KHOSLA · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "维诺德·科斯拉",
+      "name_en": "Vinod Khosla",
+      "company_zh": "Khosla Ventures",
+      "company_en": "Khosla Ventures",
+      "position_zh": "创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vkhosla&name=Vinod+Khosla&company=Khosla+Ventures",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/vkhosla",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "levie",
+      "name": "Aaron Levie",
+      "zh": "Aaron Levie",
+      "handle": "levie",
+      "role": "Box Co-Founder & CEO",
+      "chips": [
+        "BOX",
+        "Box",
+        "Enterprise AI",
+        "Cloud"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "AARON LEVIE · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "亚伦·莱维",
+      "name_en": "Aaron Levie",
+      "company_zh": "Box",
+      "company_en": "Box",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=levie&name=Aaron+Levie&company=Box",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/levie",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "dorsey",
+      "name": "Jack Dorsey",
+      "zh": "杰克·多西",
+      "handle": "jack",
+      "role": "Block Co-Founder · Twitter Co-Founder",
+      "chips": [
+        "XYZ",
+        "Block",
+        "Bitcoin",
+        "Payments"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JACK DORSEY · OFFICIAL X TIMELINE",
+      "category": "金融",
+      "name_zh": "杰克·多西",
+      "name_en": "Jack Dorsey",
+      "company_zh": "Block / Twitter",
+      "company_en": "Block / Twitter",
+      "position_zh": "联合创始人",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "XYZ",
+      "ticker": "XYZ",
+      "sp500_verified_at": "2026-09-19",
+      "index_tags": [
+        "S&P 500 Founder"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack&name=Jack+Dorsey&company=Block+%2F+Twitter",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/jack",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "paul-graham",
+      "name": "Paul Graham",
+      "zh": "Paul Graham",
+      "handle": "paulg",
+      "role": "Y Combinator Co-Founder",
+      "chips": [
+        "YC",
+        "Startups",
+        "Founders",
+        "Software"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PAUL GRAHAM · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "保罗·格雷厄姆",
+      "name_en": "Paul Graham",
+      "company_zh": "Y Combinator",
+      "company_en": "Y Combinator",
+      "position_zh": "联合创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paulg&name=Paul+Graham&company=Y+Combinator",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/paulg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "garry-tan",
+      "name": "Garry Tan",
+      "zh": "Garry Tan",
+      "handle": "garrytan",
+      "role": "Y Combinator President & CEO",
+      "chips": [
+        "YC",
+        "Startups",
+        "AI",
+        "VC"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "GARRY TAN · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "加里·谭",
+      "name_en": "Garry Tan",
+      "company_zh": "Y Combinator",
+      "company_en": "Y Combinator",
+      "position_zh": "总裁兼 CEO",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=garrytan&name=Garry+Tan&company=Y+Combinator",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/garrytan",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "alexandr-wang",
+      "name": "Alexandr Wang",
+      "zh": "Alexandr Wang",
+      "handle": "alexandr_wang",
+      "role": "AI Entrepreneur · Meta Superintelligence",
+      "chips": [
+        "META",
+        "Scale AI",
+        "AI",
+        "Models"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ALEXANDR WANG · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "亚历山大·王",
+      "name_en": "Alexandr Wang",
+      "company_zh": "Meta 超级智能团队",
+      "company_en": "Meta Superintelligence",
+      "position_zh": "AI 高管 / 创业者",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexandr_wang&name=Alexandr+Wang&company=Meta+Superintelligence",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/alexandr_wang",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "delangue",
+      "name": "Clément Delangue",
+      "zh": "Clément Delangue",
+      "handle": "ClemDelangue",
+      "role": "Hugging Face Co-Founder & CEO",
+      "chips": [
+        "Hugging Face",
+        "Open Source",
+        "AI",
+        "Models"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "CLEMENT DELANGUE · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "克莱芒·德朗格",
+      "name_en": "Clément Delangue",
+      "company_zh": "Hugging Face",
+      "company_en": "Hugging Face",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ClemDelangue&name=Cl%C3%A9ment+Delangue&company=Hugging+Face",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ClemDelangue",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "jeff-dean",
+      "name": "Jeff Dean",
+      "zh": "Jeff Dean",
+      "handle": "JeffDean",
+      "role": "Google · AI Research",
+      "chips": [
+        "GOOGL",
+        "Google",
+        "AI",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JEFF DEAN · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "杰夫·迪恩",
+      "name_en": "Jeff Dean",
+      "company_zh": "谷歌",
+      "company_en": "Google",
+      "position_zh": "AI 研究负责人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeffDean&name=Jeff+Dean&company=Google",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/JeffDean",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "gomez",
+      "name": "Aidan Gomez",
+      "zh": "Aidan Gomez",
+      "handle": "aidangomez",
+      "role": "Cohere Co-Founder & CEO",
+      "chips": [
+        "Cohere",
+        "AI",
+        "LLM",
+        "Enterprise"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "AIDAN GOMEZ · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "艾丹·戈麦斯",
+      "name_en": "Aidan Gomez",
+      "company_zh": "Cohere",
+      "company_en": "Cohere",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aidangomez&name=Aidan+Gomez&company=Cohere",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/aidangomez",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "bret-taylor",
+      "name": "Bret Taylor",
+      "zh": "Bret Taylor",
+      "handle": "btaylor",
+      "role": "Sierra Co-Founder & CEO · OpenAI Board",
+      "chips": [
+        "Sierra",
+        "AI Agents",
+        "Enterprise",
+        "OpenAI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRET TAYLOR · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "布雷特·泰勒",
+      "name_en": "Bret Taylor",
+      "company_zh": "Sierra / OpenAI",
+      "company_en": "Sierra / OpenAI",
+      "position_zh": "联合创始人兼 CEO / 董事",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=btaylor&name=Bret+Taylor&company=Sierra+%2F+OpenAI",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/btaylor",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "masad",
+      "name": "Amjad Masad",
+      "zh": "Amjad Masad",
+      "handle": "amasad",
+      "role": "Replit Founder & CEO",
+      "chips": [
+        "Replit",
+        "AI Coding",
+        "Agents",
+        "Developer Tools"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "AMJAD MASAD · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "阿姆贾德·马萨德",
+      "name_en": "Amjad Masad",
+      "company_zh": "Replit",
+      "company_en": "Replit",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=amasad&name=Amjad+Masad&company=Replit",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/amasad",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "rauch",
+      "name": "Guillermo Rauch",
+      "zh": "Guillermo Rauch",
+      "handle": "rauchg",
+      "role": "Vercel Founder & CEO",
+      "chips": [
+        "Vercel",
+        "Web",
+        "AI",
+        "Developer Tools"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "GUILLERMO RAUCH · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "吉列尔莫·劳赫",
+      "name_en": "Guillermo Rauch",
+      "company_zh": "Vercel",
+      "company_en": "Vercel",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rauchg&name=Guillermo+Rauch&company=Vercel",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/rauchg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "friedman",
+      "name": "Nat Friedman",
+      "zh": "Nat Friedman",
+      "handle": "natfriedman",
+      "role": "AI Investor · Former GitHub CEO",
+      "chips": [
+        "GitHub",
+        "AI",
+        "Startups",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "NAT FRIEDMAN · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "纳特·弗里德曼",
+      "name_en": "Nat Friedman",
+      "company_zh": "科技投资",
+      "company_en": "Technology Investing",
+      "position_zh": "投资人 / 前 GitHub CEO",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=natfriedman&name=Nat+Friedman&company=Technology+Investing",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/natfriedman",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "krishna",
+      "name": "Arvind Krishna",
+      "zh": "Arvind Krishna",
+      "handle": "ArvindKrishna",
+      "role": "IBM Chair & CEO",
+      "chips": [
+        "IBM",
+        "Enterprise AI",
+        "Cloud",
+        "Quantum"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ARVIND KRISHNA · OFFICIAL X TIMELINE",
+      "category": "云计算",
+      "name_zh": "阿尔温德·克里希纳",
+      "name_en": "Arvind Krishna",
+      "company_zh": "IBM",
+      "company_en": "IBM",
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "云计算",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "IBM",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "IBM",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ArvindKrishna&name=Arvind+Krishna&company=IBM",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ArvindKrishna",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "amon",
+      "name": "Cristiano Amon",
+      "zh": "Cristiano Amon",
+      "handle": "cristianoamon",
+      "role": "Qualcomm President & CEO",
+      "chips": [
+        "QCOM",
+        "Qualcomm",
+        "AI PC",
+        "Mobile"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "CRISTIANO AMON · OFFICIAL X TIMELINE",
+      "category": "芯片",
+      "name_zh": "克里斯蒂亚诺·阿蒙",
+      "name_en": "Cristiano Amon",
+      "company_zh": "高通",
+      "company_en": "Qualcomm",
+      "position_zh": "总裁兼 CEO",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": true,
+      "ticker": "QCOM",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "QCOM",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cristianoamon&name=Cristiano+Amon&company=Qualcomm",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/cristianoamon",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "peter-beck",
+      "name": "Peter Beck",
+      "zh": "彼得·贝克",
+      "handle": "Peter_J_Beck",
+      "role": "Rocket Lab Founder & CEO",
+      "chips": [
+        "RKLB",
+        "Rocket Lab",
+        "Space",
+        "Launch"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PETER BECK · OFFICIAL X TIMELINE",
+      "category": "航空航天",
+      "name_zh": "彼得·贝克",
+      "name_en": "Peter Beck",
+      "company_zh": "火箭实验室",
+      "company_en": "Rocket Lab",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "航空航天",
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck&name=Peter+Beck&company=Rocket+Lab",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/Peter_J_Beck",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "adcock",
+      "name": "Brett Adcock",
+      "zh": "Brett Adcock",
+      "handle": "adcock_brett",
+      "role": "Figure AI Founder & CEO",
+      "chips": [
+        "Figure AI",
+        "Robotics",
+        "Humanoid",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRETT ADCOCK · OFFICIAL X TIMELINE",
+      "category": "工业",
+      "name_zh": "布雷特·阿德科克",
+      "name_en": "Brett Adcock",
+      "company_zh": "Figure AI",
+      "company_en": "Figure AI",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "工业",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adcock_brett&name=Brett+Adcock&company=Figure+AI",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/adcock_brett",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "jim-keller",
+      "name": "Jim Keller",
+      "zh": "Jim Keller",
+      "handle": "jimkxa",
+      "role": "Tenstorrent CEO · Chip Architect",
+      "chips": [
+        "Tenstorrent",
+        "Semiconductors",
+        "AI Chips",
+        "RISC-V"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JIM KELLER · OFFICIAL X TIMELINE",
+      "category": "芯片",
+      "name_zh": "吉姆·凯勒",
+      "name_en": "Jim Keller",
+      "company_zh": "Tenstorrent",
+      "company_en": "Tenstorrent",
+      "position_zh": "CEO / 芯片架构师",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimkxa&name=Jim+Keller&company=Tenstorrent",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/jimkxa",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "koduri",
+      "name": "Raja Koduri",
+      "zh": "Raja Koduri",
+      "handle": "RajaXg",
+      "role": "Semiconductor Architect · AI Hardware",
+      "chips": [
+        "Semiconductors",
+        "GPU",
+        "AI Hardware",
+        "Compute"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "RAJA KODURI · OFFICIAL X TIMELINE",
+      "category": "芯片",
+      "name_zh": "拉贾·科杜里",
+      "name_en": "Raja Koduri",
+      "company_zh": "半导体 / AI 硬件",
+      "company_en": "Semiconductors / AI Hardware",
+      "position_zh": "芯片架构师",
+      "categories": [
+        "芯片",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RajaXg&name=Raja+Koduri&company=Semiconductors+%2F+AI+Hardware",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/RajaXg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "dhh",
+      "name": "David Heinemeier Hansson",
+      "zh": "DHH",
+      "handle": "dhh",
+      "role": "37signals Co-Owner · Ruby on Rails Creator",
+      "chips": [
+        "37signals",
+        "Rails",
+        "Software",
+        "Cloud"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DHH · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "大卫·海涅迈尔·汉松",
+      "name_en": "David Heinemeier Hansson",
+      "company_zh": "37signals / Ruby on Rails",
+      "company_en": "37signals / Ruby on Rails",
+      "position_zh": "共同所有人 / 创始作者",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dhh&name=David+Heinemeier+Hansson&company=37signals+%2F+Ruby+on+Rails",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/dhh",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "mullenweg",
+      "name": "Matt Mullenweg",
+      "zh": "Matt Mullenweg",
+      "handle": "photomatt",
+      "role": "Automattic CEO · WordPress Co-Founder",
+      "chips": [
+        "WordPress",
+        "Automattic",
+        "Open Source",
+        "Web"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MATT MULLENWEG · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "马特·穆伦维格",
+      "name_en": "Matt Mullenweg",
+      "company_zh": "Automattic / WordPress",
+      "company_en": "Automattic / WordPress",
+      "position_zh": "CEO / 联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=photomatt&name=Matt+Mullenweg&company=Automattic+%2F+WordPress",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/photomatt",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "houston",
+      "name": "Drew Houston",
+      "zh": "Drew Houston",
+      "handle": "drewhouston",
+      "role": "Dropbox Co-Founder & CEO",
+      "chips": [
+        "DBX",
+        "Dropbox",
+        "Cloud",
+        "Productivity"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DREW HOUSTON · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "name_zh": "德鲁·休斯顿",
+      "name_en": "Drew Houston",
+      "company_zh": "Dropbox",
+      "company_en": "Dropbox",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=drewhouston&name=Drew+Houston&company=Dropbox",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/drewhouston",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "armstrong",
+      "name": "Brian Armstrong",
+      "zh": "Brian Armstrong",
+      "handle": "brian_armstrong",
+      "role": "Coinbase Co-Founder & CEO",
+      "chips": [
+        "COIN",
+        "Coinbase",
+        "Crypto",
+        "Payments"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRIAN ARMSTRONG · OFFICIAL X TIMELINE",
+      "category": "金融",
+      "name_zh": "布莱恩·阿姆斯特朗",
+      "name_en": "Brian Armstrong",
+      "company_zh": "Coinbase",
+      "company_en": "Coinbase",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": true,
+      "ticker": "COIN",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "COIN",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=brian_armstrong&name=Brian+Armstrong&company=Coinbase",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/brian_armstrong",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "buterin",
+      "name": "Vitalik Buterin",
+      "zh": "Vitalik Buterin",
+      "handle": "VitalikButerin",
+      "role": "Ethereum Co-Founder",
+      "chips": [
+        "Ethereum",
+        "Crypto",
+        "Blockchain",
+        "Web3"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "VITALIK BUTERIN · OFFICIAL X TIMELINE",
+      "category": "金融",
+      "name_zh": "维塔利克·布特林",
+      "name_en": "Vitalik Buterin",
+      "company_zh": "以太坊",
+      "company_en": "Ethereum",
+      "position_zh": "联合创始人",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin&name=Vitalik+Buterin&company=Ethereum",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/VitalikButerin",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "son",
+      "name": "Masayoshi Son",
+      "zh": "孙正义",
+      "handle": "masason",
+      "role": "SoftBank Group Chair & CEO",
+      "chips": [
+        "SoftBank",
+        "AI",
+        "ARM",
+        "VC"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MASAYOSHI SON · OFFICIAL X TIMELINE",
+      "category": "VC",
+      "name_zh": "孙正义",
+      "name_en": "Masayoshi Son",
+      "company_zh": "软银集团",
+      "company_en": "SoftBank Group",
+      "position_zh": "董事长兼 CEO",
+      "categories": [
+        "VC",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=masason&name=Masayoshi+Son&company=SoftBank+Group",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/masason",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "schmidt",
+      "name": "Eric Schmidt",
+      "zh": "埃里克·施密特",
+      "handle": "ericschmidt",
+      "role": "Former Google CEO · Technology Investor",
+      "chips": [
+        "Google",
+        "AI",
+        "Defense Tech",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ERIC SCHMIDT · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "埃里克·施密特",
+      "name_en": "Eric Schmidt",
+      "company_zh": "谷歌 / 科技投资",
+      "company_en": "Google / Technology Investing",
+      "position_zh": "前 CEO / 投资人",
+      "categories": [
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "investor"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericschmidt&name=Eric+Schmidt&company=Google+%2F+Technology+Investing",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ericschmidt",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "durov",
+      "name": "Pavel Durov",
+      "zh": "帕维尔·杜罗夫",
+      "handle": "durov",
+      "role": "Telegram Founder & CEO",
+      "chips": [
+        "Telegram",
+        "Messaging",
+        "TON",
+        "Privacy"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PAVEL DUROV · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "帕维尔·杜罗夫",
+      "name_en": "Pavel Durov",
+      "company_zh": "Telegram",
+      "company_en": "Telegram",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=durov&name=Pavel+Durov&company=Telegram",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/durov",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "lei-jun",
+      "name": "Lei Jun",
+      "zh": "雷军",
+      "handle": "leijun",
+      "role": "Xiaomi Founder & CEO",
+      "chips": [
+        "Xiaomi",
+        "EV",
+        "Smartphone",
+        "AIoT"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "LEI JUN · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "雷军",
+      "name_en": "Lei Jun",
+      "company_zh": "小米",
+      "company_en": "Xiaomi",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "消费零售",
+        "汽车"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "汽车"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=leijun&name=Lei+Jun&company=Xiaomi",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/leijun",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "fadell",
+      "name": "Tony Fadell",
+      "zh": "Tony Fadell",
+      "handle": "tfadell",
+      "role": "Nest Founder · Product & Hardware Entrepreneur",
+      "chips": [
+        "Nest",
+        "Hardware",
+        "IoT",
+        "Product"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "TONY FADELL · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "name_zh": "托尼·法德尔",
+      "name_en": "Tony Fadell",
+      "company_zh": "Nest",
+      "company_en": "Nest",
+      "position_zh": "创始人",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tfadell&name=Tony+Fadell&company=Nest",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/tfadell",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "zuckerberg",
+      "name": "Mark Zuckerberg",
+      "zh": "马克·扎克伯格",
+      "handle": "finkd",
+      "role": "Meta Founder & CEO",
+      "chips": [
+        "META",
+        "Meta",
+        "AI",
+        "Social"
+      ],
+      "category": "消费零售",
+      "note": "个人公开 X 账号。",
+      "title": "MARK ZUCKERBERG · OFFICIAL X TIMELINE",
+      "name_zh": "马克·扎克伯格",
+      "name_en": "Mark Zuckerberg",
+      "company_zh": "Meta",
+      "company_en": "Meta",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "消费零售",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=finkd&name=Mark+Zuckerberg&company=Meta",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/finkd",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "mosseri",
+      "name": "Adam Mosseri",
+      "zh": "Adam Mosseri",
+      "handle": "mosseri",
+      "role": "Instagram Head",
+      "chips": [
+        "META",
+        "Instagram",
+        "Social",
+        "Creators"
+      ],
+      "category": "消费零售",
+      "note": "个人公开 X 账号。",
+      "title": "ADAM MOSSERI · OFFICIAL X TIMELINE",
+      "name_zh": "亚当·莫塞里",
+      "name_en": "Adam Mosseri",
+      "company_zh": "Instagram",
+      "company_en": "Instagram",
+      "position_zh": "负责人",
+      "categories": [
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mosseri&name=Adam+Mosseri&company=Instagram",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/mosseri",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "boz",
+      "name": "Andrew Bosworth",
+      "zh": "Andrew Bosworth",
+      "handle": "boztank",
+      "role": "Meta CTO",
+      "chips": [
+        "META",
+        "Reality Labs",
+        "AI",
+        "XR"
+      ],
+      "category": "AI",
+      "note": "个人公开 X 账号。",
+      "title": "ANDREW BOSWORTH · OFFICIAL X TIMELINE",
+      "name_zh": "安德鲁·博斯沃思",
+      "name_en": "Andrew Bosworth",
+      "company_zh": "Meta",
+      "company_en": "Meta",
+      "position_zh": "CTO",
+      "categories": [
+        "AI",
+        "消费零售"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=boztank&name=Andrew+Bosworth&company=Meta",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/boztank",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "prince",
+      "name": "Matthew Prince",
+      "zh": "Matthew Prince",
+      "handle": "eastdakota",
+      "role": "Cloudflare Co-Founder & CEO",
+      "chips": [
+        "NET",
+        "Cloudflare",
+        "Cloud",
+        "Security"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "MATTHEW PRINCE · OFFICIAL X TIMELINE",
+      "name_zh": "马修·普林斯",
+      "name_en": "Matthew Prince",
+      "company_zh": "Cloudflare",
+      "company_en": "Cloudflare",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eastdakota&name=Matthew+Prince&company=Cloudflare",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/eastdakota",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "zatlyn",
+      "name": "Michelle Zatlyn",
+      "zh": "Michelle Zatlyn",
+      "handle": "zatlyn",
+      "role": "Cloudflare Co-Founder & President",
+      "chips": [
+        "NET",
+        "Cloudflare",
+        "Cloud",
+        "Security"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "MICHELLE ZATLYN · OFFICIAL X TIMELINE",
+      "name_zh": "米歇尔·扎特林",
+      "name_en": "Michelle Zatlyn",
+      "company_zh": "Cloudflare",
+      "company_en": "Cloudflare",
+      "position_zh": "联合创始人兼总裁",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zatlyn&name=Michelle+Zatlyn&company=Cloudflare",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/zatlyn",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "vogels",
+      "name": "Werner Vogels",
+      "zh": "Werner Vogels",
+      "handle": "Werner",
+      "role": "Amazon CTO",
+      "chips": [
+        "AMZN",
+        "AWS",
+        "Cloud",
+        "Distributed Systems"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "WERNER VOGELS · OFFICIAL X TIMELINE",
+      "name_zh": "维尔纳·沃格尔斯",
+      "name_en": "Werner Vogels",
+      "company_zh": "亚马逊",
+      "company_en": "Amazon",
+      "position_zh": "CTO",
+      "categories": [
+        "云计算"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Werner&name=Werner+Vogels&company=Amazon",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/Werner",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "selipsky",
+      "name": "Adam Selipsky",
+      "zh": "Adam Selipsky",
+      "handle": "aselipsky",
+      "role": "Helix Digital Infrastructure Co-Founder & CEO",
+      "chips": [
+        "Helix",
+        "AI Infrastructure",
+        "Data Centers",
+        "Cloud"
+      ],
+      "category": "云计算",
+      "note": "Helix Digital Infrastructure 联合创始人兼 CEO，前 AWS CEO；个人公开 X 账号。",
+      "title": "ADAM SELIPSKY · OFFICIAL X TIMELINE",
+      "name_zh": "亚当·塞利普斯基",
+      "name_en": "Adam Selipsky",
+      "company_zh": "Helix 数字基础设施",
+      "company_en": "Helix Digital Infrastructure",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "云计算",
+        "AI",
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "云计算",
+        "AI基础设施",
+        "数据中心"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aselipsky&name=Adam+Selipsky&company=Helix+Digital+Infrastructure",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/aselipsky",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false,
+      "avatar_verified_at": "2026-09-20T12:59:37Z"
+    },
+    {
+      "id": "gelsinger",
+      "name": "Pat Gelsinger",
+      "zh": "帕特·基辛格",
+      "handle": "PGelsinger",
+      "role": "Semiconductor & Technology Executive",
+      "chips": [
+        "INTC",
+        "Semiconductors",
+        "Foundry",
+        "AI"
+      ],
+      "category": "芯片",
+      "note": "个人公开 X 账号。",
+      "title": "PAT GELSINGER · OFFICIAL X TIMELINE",
+      "name_zh": "帕特·基辛格",
+      "name_en": "Pat Gelsinger",
+      "company_zh": "半导体行业",
+      "company_en": "Semiconductors",
+      "position_zh": "科技高管",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PGelsinger&name=Pat+Gelsinger&company=Semiconductors",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/PGelsinger",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "rene-haas",
+      "name": "Rene Haas",
+      "zh": "Rene Haas",
+      "handle": "renehaas237",
+      "role": "Arm CEO",
+      "chips": [
+        "ARM",
+        "Arm",
+        "CPU",
+        "Semiconductors"
+      ],
+      "category": "芯片",
+      "note": "个人公开 X 账号。",
+      "title": "RENE HAAS · OFFICIAL X TIMELINE",
+      "name_zh": "雷内·哈斯",
+      "name_en": "Rene Haas",
+      "company_zh": "Arm",
+      "company_en": "Arm",
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=renehaas237&name=Rene+Haas&company=Arm",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/renehaas237",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "lip-bu-tan",
+      "name": "Lip-Bu Tan",
+      "zh": "陈立武",
+      "handle": "LipBuTan1",
+      "role": "Intel CEO · 本人公开 X 账号",
+      "chips": [
+        "INTC",
+        "Intel",
+        "Foundry",
+        "AI Chips"
+      ],
+      "category": "芯片",
+      "note": "陈立武本人公开 X 账号 @LipBuTan1。",
+      "title": "LIP-BU TAN · LIVE FEED",
+      "name_zh": "陈立武",
+      "name_en": "Lip-Bu Tan",
+      "company_zh": "英特尔",
+      "company_en": "Intel",
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LipBuTan1&name=Lip-Bu+Tan&company=Intel",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/LipBuTan1",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true,
+      "x_identity_verified": true,
+      "verified_personal_x": true,
+      "timeline_mode": "native_recent"
+    },
+    {
+      "id": "hock-tan",
+      "name": "Hock Tan / Broadcom",
+      "zh": "陈福阳 / Broadcom",
+      "handle": "Broadcom",
+      "role": "Broadcom CEO · Broadcom 官方账号",
+      "chips": [
+        "AVGO",
+        "Broadcom",
+        "Networking",
+        "AI Chips"
+      ],
+      "category": "芯片",
+      "note": "本页以 Broadcom 官方 X 账号作为陈福阳相关动态入口。",
+      "title": "HOCK TAN / BROADCOM · OFFICIAL X TIMELINE",
+      "name_zh": "陈福阳",
+      "name_en": "Hock Tan",
+      "company_zh": "博通",
+      "company_en": "Broadcom",
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Broadcom&name=Hock+Tan&company=Broadcom",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/Broadcom",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "fouquet",
+      "name": "Christophe Fouquet / ASML",
+      "zh": "Christophe Fouquet / ASML",
+      "handle": "ASMLcompany",
+      "role": "ASML CEO · ASML 官方账号",
+      "chips": [
+        "ASML",
+        "Lithography",
+        "EUV",
+        "Semiconductors"
+      ],
+      "category": "芯片",
+      "note": "本页以 ASML 官方 X 账号作为 CEO 相关动态入口。",
+      "title": "CHRISTOPHE FOUQUET / ASML · OFFICIAL X TIMELINE",
+      "name_zh": "克里斯托夫·富凯",
+      "name_en": "Christophe Fouquet",
+      "company_zh": "阿斯麦",
+      "company_en": "ASML",
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ASMLcompany&name=Christophe+Fouquet&company=ASML",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ASMLcompany",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "mehrotra",
+      "name": "Sanjay Mehrotra / Micron",
+      "zh": "Sanjay Mehrotra / Micron",
+      "handle": "MicronTech",
+      "role": "Micron CEO · Micron 官方账号",
+      "chips": [
+        "MU",
+        "Micron",
+        "Memory",
+        "HBM"
+      ],
+      "category": "芯片",
+      "note": "本页以 Micron 官方 X 账号作为 Sanjay Mehrotra 相关动态入口。",
+      "title": "SANJAY MEHROTRA / MICRON · OFFICIAL X",
+      "name_zh": "桑杰·梅赫罗特拉",
+      "name_en": "Sanjay Mehrotra",
+      "company_zh": "美光科技",
+      "company_en": "Micron",
+      "position_zh": "CEO",
+      "categories": [
+        "芯片"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "芯片"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MicronTech&name=Sanjay+Mehrotra&company=Micron",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/MicronTech",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "pabbeel",
+      "name": "Pieter Abbeel",
+      "zh": "Pieter Abbeel",
+      "handle": "pabbeel",
+      "role": "Robotics & AI Researcher · Covariant",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Embodied AI",
+        "Research"
+      ],
+      "category": "工业",
+      "note": "个人公开 X 账号。",
+      "title": "PIETER ABBEEL · OFFICIAL X TIMELINE",
+      "name_zh": "彼得·阿比尔",
+      "name_en": "Pieter Abbeel",
+      "company_zh": "Covariant / 加州大学伯克利分校",
+      "company_en": "Covariant / UC Berkeley",
+      "position_zh": "机器人与 AI 研究员",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pabbeel&name=Pieter+Abbeel&company=Covariant+%2F+UC+Berkeley",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/pabbeel",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "rodney-brooks",
+      "name": "Rodney Brooks",
+      "zh": "Rodney Brooks",
+      "handle": "rodneyabrooks",
+      "role": "Robotics Entrepreneur & Researcher",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Rethink Robotics",
+        "Research"
+      ],
+      "category": "工业",
+      "note": "个人公开 X 账号。",
+      "title": "RODNEY BROOKS · OFFICIAL X TIMELINE",
+      "name_zh": "罗德尼·布鲁克斯",
+      "name_en": "Rodney Brooks",
+      "company_zh": "机器人产业",
+      "company_en": "Robotics",
+      "position_zh": "机器人学家 / 创业者",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rodneyabrooks&name=Rodney+Brooks&company=Robotics",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/rodneyabrooks",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "sergey-levine",
+      "name": "Sergey Levine",
+      "zh": "Sergey Levine",
+      "handle": "svlevine",
+      "role": "Robotics & AI Researcher · UC Berkeley",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Reinforcement Learning",
+        "Research"
+      ],
+      "category": "工业",
+      "note": "个人公开 X 账号。",
+      "title": "SERGEY LEVINE · OFFICIAL X TIMELINE",
+      "name_zh": "谢尔盖·莱文",
+      "name_en": "Sergey Levine",
+      "company_zh": "加州大学伯克利分校",
+      "company_en": "UC Berkeley",
+      "position_zh": "机器人与 AI 研究员",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=svlevine&name=Sergey+Levine&company=UC+Berkeley",
+      "avatar_source": "Ooglex R2 cache · verified official portrait fallback",
+      "avatar_status": "official_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/svlevine",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "official_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "official_override-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "chelsea-finn",
+      "name": "Chelsea Finn",
+      "zh": "Chelsea Finn",
+      "handle": "chelseabfinn",
+      "role": "AI & Robotics Researcher · Stanford",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Foundation Models",
+        "Research"
+      ],
+      "category": "工业",
+      "note": "个人公开 X 账号。",
+      "title": "CHELSEA FINN · OFFICIAL X TIMELINE",
+      "name_zh": "切尔西·芬恩",
+      "name_en": "Chelsea Finn",
+      "company_zh": "斯坦福大学",
+      "company_en": "Stanford",
+      "position_zh": "AI 与机器人研究员",
+      "categories": [
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "researcher"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chelseabfinn&name=Chelsea+Finn&company=Stanford",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/chelseabfinn",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "boston-dynamics",
+      "name": "Boston Dynamics",
+      "zh": "Boston Dynamics",
+      "handle": "BostonDynamics",
+      "role": "Robotics Company · Official Account",
+      "chips": [
+        "Robotics",
+        "Humanoid",
+        "Atlas",
+        "Automation"
+      ],
+      "category": "工业",
+      "note": "官方 X 账号，用于跟踪 Boston Dynamics 机器人动态。",
+      "title": "BOSTON DYNAMICS · OFFICIAL X TIMELINE",
+      "name_zh": "波士顿动力",
+      "name_en": "Boston Dynamics",
+      "company_zh": "波士顿动力",
+      "company_en": "Boston Dynamics",
+      "position_zh": "机器人公司",
+      "categories": [
+        "工业",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Industrials",
+      "themes": [
+        "工业",
+        "AI"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BostonDynamics&name=Boston+Dynamics&company=Boston+Dynamics",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/BostonDynamics",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "tory-bruno",
+      "name": "Tory Bruno",
+      "zh": "Tory Bruno",
+      "handle": "torybruno",
+      "role": "United Launch Alliance CEO",
+      "chips": [
+        "ULA",
+        "Space",
+        "Launch",
+        "Vulcan"
+      ],
+      "category": "航空航天",
+      "note": "个人公开 X 账号。",
+      "title": "TORY BRUNO · OFFICIAL X TIMELINE",
+      "name_zh": "托里·布鲁诺",
+      "name_en": "Tory Bruno",
+      "company_zh": "联合发射联盟",
+      "company_en": "United Launch Alliance",
+      "position_zh": "CEO",
+      "categories": [
+        "航空航天",
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=torybruno&name=Tory+Bruno&company=United+Launch+Alliance",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/torybruno",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "tim-ellis",
+      "name": "Tim Ellis",
+      "zh": "Tim Ellis",
+      "handle": "thetimellis",
+      "role": "Relativity Space Co-Founder",
+      "chips": [
+        "Relativity Space",
+        "Space",
+        "Launch",
+        "Manufacturing"
+      ],
+      "category": "航空航天",
+      "note": "个人公开 X 账号。",
+      "title": "TIM ELLIS · OFFICIAL X TIMELINE",
+      "name_zh": "蒂姆·埃利斯",
+      "name_en": "Tim Ellis",
+      "company_zh": "Relativity Space",
+      "company_en": "Relativity Space",
+      "position_zh": "联合创始人",
+      "categories": [
+        "航空航天",
+        "工业"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=thetimellis&name=Tim+Ellis&company=Relativity+Space",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/thetimellis",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false,
+      "avatar_verified_at": "2026-09-20T12:59:37Z"
+    },
+    {
+      "id": "isaacman",
+      "name": "Jared Isaacman",
+      "zh": "Jared Isaacman",
+      "handle": "rookisaacman",
+      "role": "Space Entrepreneur",
+      "chips": [
+        "Space",
+        "Polaris",
+        "Commercial Spaceflight",
+        "Aerospace"
+      ],
+      "category": "航空航天",
+      "note": "个人公开 X 账号。",
+      "title": "JARED ISAACMAN · OFFICIAL X TIMELINE",
+      "name_zh": "贾里德·艾萨克曼",
+      "name_en": "Jared Isaacman",
+      "company_zh": "商业航天",
+      "company_en": "Commercial Spaceflight",
+      "position_zh": "航天企业家",
+      "categories": [
+        "航空航天"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [],
+      "sector": "Industrials",
+      "themes": [
+        "航空航天"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rookisaacman&name=Jared+Isaacman&company=Commercial+Spaceflight",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/rookisaacman",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "stewart",
+      "name": "Stewart Butterfield",
+      "zh": "Stewart Butterfield",
+      "handle": "stewart",
+      "role": "Slack Co-Founder",
+      "chips": [
+        "Slack",
+        "Software",
+        "Collaboration",
+        "SaaS"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "STEWART BUTTERFIELD · OFFICIAL X TIMELINE",
+      "name_zh": "斯图尔特·巴特菲尔德",
+      "name_en": "Stewart Butterfield",
+      "company_zh": "Slack",
+      "company_en": "Slack",
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=stewart&name=Stewart+Butterfield&company=Slack",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/stewart",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "perkins",
+      "name": "Melanie Perkins",
+      "zh": "Melanie Perkins",
+      "handle": "MelanieCanva",
+      "role": "Canva Co-Founder & CEO",
+      "chips": [
+        "Canva",
+        "Design",
+        "Software",
+        "AI"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "MELANIE PERKINS · OFFICIAL X TIMELINE",
+      "name_zh": "梅拉妮·珀金斯",
+      "name_en": "Melanie Perkins",
+      "company_zh": "Canva",
+      "company_en": "Canva",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MelanieCanva&name=Melanie+Perkins&company=Canva",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/MelanieCanva",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "yuan",
+      "name": "Eric Yuan",
+      "zh": "袁征",
+      "handle": "ericsyuan",
+      "role": "Zoom Founder & CEO",
+      "chips": [
+        "ZM",
+        "Zoom",
+        "Collaboration",
+        "AI"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "ERIC YUAN · OFFICIAL X TIMELINE",
+      "name_zh": "袁征",
+      "name_en": "Eric Yuan",
+      "company_zh": "Zoom",
+      "company_en": "Zoom",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericsyuan&name=Eric+Yuan&company=Zoom",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ericsyuan",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "dara",
+      "name": "Dara Khosrowshahi",
+      "zh": "达拉·科斯罗萨西",
+      "handle": "dkhos",
+      "role": "Uber CEO",
+      "chips": [
+        "UBER",
+        "Uber",
+        "Mobility",
+        "Platform"
+      ],
+      "category": "消费零售",
+      "note": "个人公开 X 账号。",
+      "title": "DARA KHOSROWSHAHI · OFFICIAL X TIMELINE",
+      "name_zh": "达拉·科斯罗萨西",
+      "name_en": "Dara Khosrowshahi",
+      "company_zh": "Uber",
+      "company_en": "Uber",
+      "position_zh": "CEO",
+      "categories": [
+        "消费零售",
+        "汽车"
+      ],
+      "sp500_ceo": true,
+      "ticker": "UBER",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售",
+        "汽车"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "UBER",
+      "sp500_verified_at": "2026-09-19",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos&name=Dara+Khosrowshahi&company=Uber",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/dkhos",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "kevin-rose",
+      "name": "Kevin Rose",
+      "zh": "Kevin Rose",
+      "handle": "kevinrose",
+      "role": "Technology Founder & Investor",
+      "chips": [
+        "Digg",
+        "Startups",
+        "Product",
+        "VC"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "KEVIN ROSE · OFFICIAL X TIMELINE",
+      "name_zh": "凯文·罗斯",
+      "name_en": "Kevin Rose",
+      "company_zh": "科技创业 / 投资",
+      "company_en": "Technology / Investing",
+      "position_zh": "创业者 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=kevinrose&name=Kevin+Rose&company=Technology+%2F+Investing",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/kevinrose",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "ohanian",
+      "name": "Alexis Ohanian",
+      "zh": "Alexis Ohanian",
+      "handle": "alexisohanian",
+      "role": "Reddit Co-Founder · Seven Seven Six",
+      "chips": [
+        "Reddit",
+        "776",
+        "VC",
+        "Startups"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "ALEXIS OHANIAN · OFFICIAL X TIMELINE",
+      "name_zh": "亚历克西斯·奥哈尼安",
+      "name_en": "Alexis Ohanian",
+      "company_zh": "Reddit / Seven Seven Six",
+      "company_en": "Reddit / Seven Seven Six",
+      "position_zh": "联合创始人 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alexisohanian&name=Alexis+Ohanian&company=Reddit+%2F+Seven+Seven+Six",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/alexisohanian",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "evan-you",
+      "name": "Evan You",
+      "zh": "尤雨溪",
+      "handle": "youyuxi",
+      "role": "Vue.js Creator",
+      "chips": [
+        "Vue",
+        "JavaScript",
+        "Open Source",
+        "Web"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "EVAN YOU · OFFICIAL X TIMELINE",
+      "name_zh": "尤雨溪",
+      "name_en": "Evan You",
+      "company_zh": "Vue.js",
+      "company_en": "Vue.js",
+      "position_zh": "创始作者",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=youyuxi&name=Evan+You&company=Vue.js",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/youyuxi",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikimedia_commons-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "hashimoto",
+      "name": "Mitchell Hashimoto",
+      "zh": "Mitchell Hashimoto",
+      "handle": "mitchellh",
+      "role": "HashiCorp Co-Founder · Ghostty",
+      "chips": [
+        "HashiCorp",
+        "Developer Tools",
+        "Cloud",
+        "Open Source"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "MITCHELL HASHIMOTO · OFFICIAL X TIMELINE",
+      "name_zh": "米切尔·哈希莫托",
+      "name_en": "Mitchell Hashimoto",
+      "company_zh": "HashiCorp / Ghostty",
+      "company_en": "HashiCorp / Ghostty",
+      "position_zh": "联合创始人 / 开发者",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mitchellh&name=Mitchell+Hashimoto&company=HashiCorp+%2F+Ghostty",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/mitchellh",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "sijbrandij",
+      "name": "Sid Sijbrandij",
+      "zh": "Sid Sijbrandij",
+      "handle": "sytses",
+      "role": "GitLab Co-Founder",
+      "chips": [
+        "GitLab",
+        "DevOps",
+        "Software",
+        "Open Source"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "SID SIJBRANDIJ · OFFICIAL X TIMELINE",
+      "name_zh": "西德·西布兰迪",
+      "name_en": "Sid Sijbrandij",
+      "company_zh": "GitLab",
+      "company_en": "GitLab",
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sytses&name=Sid+Sijbrandij&company=GitLab",
+      "avatar_source": "Ooglex R2 cache · verified official portrait fallback",
+      "avatar_status": "official_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/sytses",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "official_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "official_override-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "preston-werner",
+      "name": "Tom Preston-Werner",
+      "zh": "Tom Preston-Werner",
+      "handle": "mojombo",
+      "role": "GitHub Co-Founder",
+      "chips": [
+        "GitHub",
+        "Open Source",
+        "Developer Tools",
+        "Software"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "TOM PRESTON-WERNER · OFFICIAL X TIMELINE",
+      "name_zh": "汤姆·普雷斯顿-维尔纳",
+      "name_en": "Tom Preston-Werner",
+      "company_zh": "GitHub",
+      "company_en": "GitHub",
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mojombo&name=Tom+Preston-Werner&company=GitHub",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/mojombo",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "wanstrath",
+      "name": "Chris Wanstrath",
+      "zh": "Chris Wanstrath",
+      "handle": "defunkt",
+      "role": "GitHub Co-Founder",
+      "chips": [
+        "GitHub",
+        "Software",
+        "Developer Tools",
+        "Startups"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "CHRIS WANSTRATH · OFFICIAL X TIMELINE",
+      "name_zh": "克里斯·万斯特拉斯",
+      "name_en": "Chris Wanstrath",
+      "company_zh": "GitHub",
+      "company_en": "GitHub",
+      "position_zh": "联合创始人",
+      "categories": [
+        "软件"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=defunkt&name=Chris+Wanstrath&company=GitHub",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/defunkt",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "levchin",
+      "name": "Max Levchin",
+      "zh": "Max Levchin",
+      "handle": "mlevchin",
+      "role": "Affirm Founder & CEO",
+      "chips": [
+        "AFRM",
+        "Affirm",
+        "Payments",
+        "Fintech"
+      ],
+      "category": "金融",
+      "note": "个人公开 X 账号。",
+      "title": "MAX LEVCHIN · OFFICIAL X TIMELINE",
+      "name_zh": "马克斯·列夫琴",
+      "name_en": "Max Levchin",
+      "company_zh": "Affirm",
+      "company_en": "Affirm",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mlevchin&name=Max+Levchin&company=Affirm",
+      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
+      "avatar_status": "public_fallback_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/mlevchin",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "public_fallback",
+      "avatar_audit_status": "fallback",
+      "avatar_verified": true,
+      "avatar_source_transport": "wikipedia-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": false,
+      "avatar_is_substitute": true
+    },
+    {
+      "id": "tenev",
+      "name": "Vlad Tenev",
+      "zh": "Vlad Tenev",
+      "handle": "vladtenev",
+      "role": "Robinhood Co-Founder & CEO",
+      "chips": [
+        "HOOD",
+        "Robinhood",
+        "Brokerage",
+        "Fintech"
+      ],
+      "category": "金融",
+      "note": "个人公开 X 账号。",
+      "title": "VLAD TENEV · OFFICIAL X TIMELINE",
+      "name_zh": "弗拉德·特内夫",
+      "name_en": "Vlad Tenev",
+      "company_zh": "Robinhood",
+      "company_en": "Robinhood",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": true,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "HOOD",
+      "ticker": "HOOD",
+      "sp500_verified_at": "2026-09-19",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vladtenev&name=Vlad+Tenev&company=Robinhood",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/vladtenev",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "david-marcus",
+      "name": "David Marcus",
+      "zh": "David Marcus",
+      "handle": "davidmarcus",
+      "role": "Lightspark Co-Founder & CEO",
+      "chips": [
+        "Lightspark",
+        "Bitcoin",
+        "Payments",
+        "Fintech"
+      ],
+      "category": "金融",
+      "note": "个人公开 X 账号。",
+      "title": "DAVID MARCUS · OFFICIAL X TIMELINE",
+      "name_zh": "大卫·马库斯",
+      "name_en": "David Marcus",
+      "company_zh": "Lightspark",
+      "company_en": "Lightspark",
+      "position_zh": "联合创始人兼 CEO",
+      "categories": [
+        "金融"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "金融"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidmarcus&name=David+Marcus&company=Lightspark",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/davidmarcus",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "naval",
+      "name": "Naval Ravikant",
+      "zh": "Naval Ravikant",
+      "handle": "naval",
+      "role": "AngelList Co-Founder · Technology Investor",
+      "chips": [
+        "AngelList",
+        "VC",
+        "Startups",
+        "Technology"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "NAVAL RAVIKANT · OFFICIAL X TIMELINE",
+      "name_zh": "纳瓦尔·拉维坎特",
+      "name_en": "Naval Ravikant",
+      "company_zh": "AngelList",
+      "company_en": "AngelList",
+      "position_zh": "联合创始人 / 投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=naval&name=Naval+Ravikant&company=AngelList",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/naval",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "gurley",
+      "name": "Bill Gurley",
+      "zh": "Bill Gurley",
+      "handle": "bgurley",
+      "role": "Technology Investor",
+      "chips": [
+        "Benchmark",
+        "VC",
+        "Startups",
+        "Software"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "BILL GURLEY · OFFICIAL X TIMELINE",
+      "name_zh": "比尔·格利",
+      "name_en": "Bill Gurley",
+      "company_zh": "Benchmark",
+      "company_en": "Benchmark",
+      "position_zh": "科技投资人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgurley&name=Bill+Gurley&company=Benchmark",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/bgurley",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "chamath",
+      "name": "Chamath Palihapitiya",
+      "zh": "Chamath Palihapitiya",
+      "handle": "chamath",
+      "role": "Social Capital Founder & CEO",
+      "chips": [
+        "Social Capital",
+        "VC",
+        "AI",
+        "Startups"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "CHAMATH PALIHAPITIYA · OFFICIAL X TIMELINE",
+      "name_zh": "查马斯·帕里哈皮蒂亚",
+      "name_en": "Chamath Palihapitiya",
+      "company_zh": "Social Capital",
+      "company_en": "Social Capital",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chamath&name=Chamath+Palihapitiya&company=Social+Capital",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/chamath",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "zh": "Fred Wilson",
+      "handle": "fredwilson",
+      "role": "Union Square Ventures Co-Founder",
+      "chips": [
+        "USV",
+        "VC",
+        "Startups",
+        "Technology"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "FRED WILSON · OFFICIAL X TIMELINE",
+      "name_zh": "弗雷德·威尔逊",
+      "name_en": "Fred Wilson",
+      "company_zh": "Union Square Ventures",
+      "company_en": "Union Square Ventures",
+      "position_zh": "联合创始人",
+      "categories": [
+        "VC"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/fredwilson",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "gerstner",
+      "name": "Brad Gerstner",
+      "zh": "Brad Gerstner",
+      "handle": "altcap",
+      "role": "Altimeter Founder & CEO",
+      "chips": [
+        "Altimeter",
+        "VC",
+        "Cloud",
+        "AI"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "BRAD GERSTNER · OFFICIAL X TIMELINE",
+      "name_zh": "布拉德·格斯特纳",
+      "name_en": "Brad Gerstner",
+      "company_zh": "Altimeter",
+      "company_en": "Altimeter",
+      "position_zh": "创始人兼 CEO",
+      "categories": [
+        "VC",
+        "AI"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "VC",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=altcap&name=Brad+Gerstner&company=Altimeter",
+      "avatar_source": "Ooglex R2 cache · X profile avatar proxy",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/altcap",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "jim-farley",
+      "name": "Jim Farley",
+      "zh": "吉姆·法利",
+      "handle": "jimfarley98",
+      "role": "Ford CEO",
+      "chips": [
+        "F",
+        "Ford",
+        "EV",
+        "Auto"
+      ],
+      "note": "现任 Ford CEO，本人公开 X 账号。",
+      "title": "JIM FARLEY · OFFICIAL X TIMELINE",
+      "category": "汽车",
+      "categories": [
+        "汽车",
+        "工业"
+      ],
+      "name_zh": "吉姆·法利",
+      "name_en": "Jim Farley",
+      "company_zh": "福特",
+      "company_en": "Ford",
+      "position_zh": "CEO",
+      "ticker": "F",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "汽车",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "F",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jimfarley98&name=Jim+Farley&company=Ford",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/jimfarley98",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "chuck-robbins",
+      "name": "Chuck Robbins",
+      "zh": "查克·罗宾斯",
+      "handle": "ChuckRobbins",
+      "role": "Cisco Chair & CEO",
+      "chips": [
+        "CSCO",
+        "Cisco",
+        "Networking",
+        "AI Infrastructure"
+      ],
+      "note": "现任 Cisco 董事长兼 CEO，本人公开 X 账号。",
+      "title": "CHUCK ROBBINS · OFFICIAL X TIMELINE",
+      "category": "网络安全",
+      "categories": [
+        "网络安全",
+        "云计算"
+      ],
+      "name_zh": "查克·罗宾斯",
+      "name_en": "Chuck Robbins",
+      "company_zh": "思科",
+      "company_en": "Cisco",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "CSCO",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "网络安全",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "CSCO",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ChuckRobbins&name=Chuck+Robbins&company=Cisco",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/ChuckRobbins",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "bill-mcdermott",
+      "name": "Bill McDermott",
+      "zh": "比尔·麦克德莫特",
+      "handle": "BillRMcDermott",
+      "role": "ServiceNow Chair & CEO",
+      "chips": [
+        "NOW",
+        "ServiceNow",
+        "Enterprise Software",
+        "AI"
+      ],
+      "note": "现任 ServiceNow 董事长兼 CEO，本人公开 X 账号。",
+      "title": "BILL MCDERMOTT · OFFICIAL X TIMELINE",
+      "category": "软件",
+      "categories": [
+        "软件",
+        "AI"
+      ],
+      "name_zh": "比尔·麦克德莫特",
+      "name_en": "Bill McDermott",
+      "company_zh": "ServiceNow",
+      "company_en": "ServiceNow",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "NOW",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "软件",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "NOW",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BillRMcDermott&name=Bill+McDermott&company=ServiceNow",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/BillRMcDermott",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "marvin-ellison",
+      "name": "Marvin Ellison",
+      "zh": "马文·埃里森",
+      "handle": "MarvinREllison",
+      "role": "Lowe's Chair, President & CEO",
+      "chips": [
+        "LOW",
+        "Lowe's",
+        "Retail",
+        "Home Improvement"
+      ],
+      "note": "现任 Lowe's 董事长、总裁兼 CEO，本人公开 X 账号。",
+      "title": "MARVIN ELLISON · OFFICIAL X TIMELINE",
+      "category": "消费零售",
+      "categories": [
+        "消费零售"
+      ],
+      "name_zh": "马文·埃里森",
+      "name_en": "Marvin Ellison",
+      "company_zh": "劳氏",
+      "company_en": "Lowe's",
+      "position_zh": "董事长、总裁兼 CEO",
+      "ticker": "LOW",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "消费零售"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "LOW",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison&name=Marvin+Ellison&company=Lowe%27s",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/MarvinREllison",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false,
+      "avatar_verified_at": "2026-09-20T12:59:37Z"
+    },
+    {
+      "id": "george-kurtz",
+      "name": "George Kurtz",
+      "zh": "乔治·库尔茨",
+      "handle": "George_Kurtz",
+      "role": "CrowdStrike CEO & Founder",
+      "chips": [
+        "CRWD",
+        "CrowdStrike",
+        "Cybersecurity",
+        "AI"
+      ],
+      "note": "现任 CrowdStrike CEO 兼创始人，本人公开 X 账号。",
+      "title": "GEORGE KURTZ · OFFICIAL X TIMELINE",
+      "category": "网络安全",
+      "categories": [
+        "网络安全",
+        "AI"
+      ],
+      "name_zh": "乔治·库尔茨",
+      "name_en": "George Kurtz",
+      "company_zh": "CrowdStrike",
+      "company_en": "CrowdStrike",
+      "position_zh": "CEO 兼创始人",
+      "ticker": "CRWD",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "网络安全",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "CRWD",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=George_Kurtz&name=George+Kurtz&company=CrowdStrike",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/George_Kurtz",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "nikesh-arora",
+      "name": "Nikesh Arora",
+      "zh": "尼克什·阿罗拉",
+      "handle": "nikesharora",
+      "role": "Palo Alto Networks Chair & CEO",
+      "chips": [
+        "PANW",
+        "Palo Alto Networks",
+        "Cybersecurity",
+        "AI"
+      ],
+      "note": "现任 Palo Alto Networks 董事长兼 CEO，本人公开 X 账号。",
+      "title": "NIKESH ARORA · OFFICIAL X TIMELINE",
+      "category": "网络安全",
+      "categories": [
+        "网络安全",
+        "AI"
+      ],
+      "name_zh": "尼克什·阿罗拉",
+      "name_en": "Nikesh Arora",
+      "company_zh": "Palo Alto Networks",
+      "company_en": "Palo Alto Networks",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "PANW",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Information Technology",
+      "themes": [
+        "网络安全",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "PANW",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikesharora&name=Nikesh+Arora&company=Palo+Alto+Networks",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/nikesharora",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "albert-bourla",
+      "name": "Albert Bourla",
+      "zh": "艾伯乐",
+      "handle": "AlbertBourla",
+      "role": "Pfizer Chair & CEO",
+      "chips": [
+        "PFE",
+        "Pfizer",
+        "Healthcare",
+        "Pharma"
+      ],
+      "note": "现任 Pfizer 董事长兼 CEO，本人公开 X 账号。",
+      "title": "ALBERT BOURLA · OFFICIAL X TIMELINE",
+      "category": "医疗",
+      "categories": [
+        "医疗"
+      ],
+      "name_zh": "艾伯乐",
+      "name_en": "Albert Bourla",
+      "company_zh": "辉瑞",
+      "company_en": "Pfizer",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "PFE",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Health Care",
+      "themes": [
+        "医疗"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "PFE",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AlbertBourla&name=Albert+Bourla&company=Pfizer",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/AlbertBourla",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "mary-barra",
+      "name": "Mary Barra",
+      "zh": "玛丽·博拉",
+      "handle": "mtbarra",
+      "role": "General Motors Chair & CEO",
+      "chips": [
+        "GM",
+        "General Motors",
+        "EV",
+        "Auto"
+      ],
+      "note": "现任 General Motors 董事长兼 CEO，本人公开 X 账号。",
+      "title": "MARY BARRA · OFFICIAL X TIMELINE",
+      "category": "汽车",
+      "categories": [
+        "汽车",
+        "工业"
+      ],
+      "name_zh": "玛丽·博拉",
+      "name_en": "Mary Barra",
+      "company_zh": "通用汽车",
+      "company_en": "General Motors",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "GM",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "admission_status": "active",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Consumer Discretionary",
+      "themes": [
+        "汽车",
+        "工业"
+      ],
+      "x_identity_verified": true,
+      "sp500_member": true,
+      "sp500_ticker": "GM",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mtbarra&name=Mary+Barra&company=General+Motors",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/mtbarra",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    },
+    {
+      "id": "adena-friedman",
+      "name": "Adena Friedman",
+      "zh": "阿迪娜·弗里德曼",
+      "handle": "adenatfriedman",
+      "role": "Nasdaq Chair & CEO",
+      "chips": [
+        "NDAQ",
+        "Nasdaq",
+        "Capital Markets",
+        "Fintech"
+      ],
+      "note": "现任 Nasdaq 董事长兼 CEO，本人公开 X 账号。",
+      "title": "ADENA FRIEDMAN · OFFICIAL X TIMELINE",
+      "category": "金融",
+      "categories": [
+        "金融"
+      ],
+      "name_zh": "阿迪娜·弗里德曼",
+      "name_en": "Adena Friedman",
+      "company_zh": "纳斯达克",
+      "company_en": "Nasdaq",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "NDAQ",
+      "sp500_ceo": true,
+      "sp500_member": true,
+      "sp500_ticker": "NDAQ",
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19",
+      "x_identity_verified": true,
+      "x_verified_at": "2026-09-19",
+      "role_verified_at": "2026-09-19",
+      "sp500_verified_at": "2026-09-19",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "sector": "Financials",
+      "themes": [
+        "资本市场",
+        "金融科技",
+        "交易基础设施"
+      ],
+      "admission_status": "active",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adenatfriedman&name=Adena+Friedman&company=Nasdaq",
+      "avatar_source": "Ooglex R2 cache · X original profile avatar",
+      "avatar_status": "x_original_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_updated_at": "2026-09-20",
+      "avatar_origin_url": "https://x.com/adenatfriedman",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-20T12:59:37Z",
+      "avatar_source_type": "x_original",
+      "avatar_audit_status": "x_original",
+      "avatar_verified": true,
+      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_verified_at": "2026-09-20T12:59:37Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
+    }
+  ],
+  "categories": [
+    "AI",
+    "芯片",
+    "云计算",
+    "网络安全",
+    "软件",
+    "汽车",
+    "工业",
+    "消费零售",
+    "金融",
+    "医疗",
+    "能源",
+    "航空航天",
+    "VC"
+  ],
+  "catalog_version": "V4.2",
+  "last_audited_at": "2026-09-19",
+  "audit_policy": {
+    "role_reverify_days": 90,
+    "x_inactive_downgrade_days": 180,
+    "x_archive_days": 365,
+    "rule": "active profiles require a confirmed public personal X identity; company accounts are not substitutes for a person's account"
+  },
+  "candidates": [
+    {
+      "id": "tony-xu",
+      "name": "Tony Xu",
+      "company": "DoorDash",
+      "ticker": "DASH",
+      "role": "Co-Founder & CEO",
+      "sp500_member": true,
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "admission_status": "candidate",
+      "reason": "Company/role are confirmed; personal X direct-profile identity/activity still requires final verification before production admission."
+    },
+    {
+      "id": "adam-foroughi",
+      "name": "Adam Foroughi",
+      "company": "AppLovin",
+      "ticker": "APP",
+      "role": "CEO & Co-Founder",
+      "sp500_member": true,
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "admission_status": "hold",
+      "reason": "Company/role are confirmed; no sufficiently strong personal X identity evidence in the 2026-09-19 audit."
+    }
+  ],
+  "avatar_policy": "x_original_only",
+  "avatar_cache_version": "v3-x-original",
+  "avatar_audit": {
+    "schema_version": 2,
+    "policy": "x_original_then_verified_fallback",
+    "checked_at": "2026-09-20T12:59:37Z",
+    "total_checked": 110,
+    "usable": 110,
+    "x_original": 67,
+    "x_original_proxy": 19,
+    "fallback": 24,
+    "pending_review": 0
+  }
+}
