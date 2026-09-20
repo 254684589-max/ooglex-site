@@ -152,9 +152,6 @@ jobs:
               if [ "$handle" = "ZLQ6600E" ]; then
                 printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert len(p)<=3; times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("ZLQ freshness diagnostics: source={}, cache={}".format(d.get("source"), d.get("cache"))); [print("  {} | {} | media={} | {}".format(x.get("created_at"), x.get("id"), len(x.get("media") or []), (x.get("text") or "").replace("\n"," ")[:70])) for x in p]' || failed=1
               fi
-              if [ "$handle" = "elonmusk" ]; then
-                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON latest diagnostics: source={}, cache={}".format(d.get("source"), d.get("cache"))); [print("  {} | {} | {}".format(x.get("created_at"), x.get("id"), (x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:120])) for x in p[:3]]' || failed=1
-              fi
             else
               echo "::warning::Free feed trial for @$handle returned HTTP $code: $body"
             fi
@@ -169,19 +166,6 @@ jobs:
               echo "::warning::Free profile public sources unavailable for @$handle (HTTP $pcode): $pbody"
             fi
           done
-
-          elon10="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=elonmusk&limit=10" || true)"
-          if [ -n "$elon10" ]; then
-            printf '%s' "$elon10" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON public top10 refresh check:"); [print("  {} | {} | {}".format(x.get("created_at"),x.get("id"),(x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:140])) for x in p[:10]]'
-          fi
-
-          echo "ELON exact status probe:"
-          curl -fsS --connect-timeout 5 --max-time 20 "https://api.fxtwitter.com/status/2101601873115681037" | python -c 'import json,sys; d=json.load(sys.stdin); print("keys",sorted(d.keys())); t=d.get("tweet") or d.get("status") or d; print("id",t.get("id"),"text",repr((t.get("text") or "")[:160])); print("media",t.get("media")); print("url",t.get("url"))' || true
-
-          elon_api="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/feed?leader=musk&limit=10" || true)"
-          if [ -n "$elon_api" ]; then
-            printf '%s' "$elon_api" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON official-cache top10 check: cache={}".format(d.get("cache"))); [print("  {} | {} | {}".format(x.get("created_at"),x.get("id"),(x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:140])) for x in p[:10]]'
-          fi
 
           feed_json="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=8" || true)"
           media_url="$(printf '%s' "$feed_json" | python -c 'import json,sys; d=json.load(sys.stdin) if not sys.stdin.isatty() else {}; print(next((m.get("url") or m.get("preview_image_url") or m.get("video_url") for p in d.get("posts",[]) for m in (p.get("media") or []) if (m.get("url") or m.get("preview_image_url") or m.get("video_url"))),""))' 2>/dev/null || true)"
