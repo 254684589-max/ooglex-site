@@ -32,8 +32,8 @@ const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
 const TECH_FREE_FEED_MAX_ITEMS = 20;
-const TECH_FREE_FEED_TTL_MS = 30 * 60 * 1000;
-const TECH_FREE_FEED_MAX_STALE_MS = 48 * 60 * 60 * 1000;
+const TECH_FREE_FEED_TTL_MS = 10 * 60 * 1000;
+const TECH_FREE_FEED_MAX_STALE_MS = 12 * 60 * 60 * 1000;
 const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -1012,6 +1012,48 @@ function syndicationTweetAuthor(candidate) {
   return "";
 }
 
+function syndicationTweetMeta(candidate, legacy, text) {
+  const replyId = String(
+    legacy.in_reply_to_status_id_str ||
+    legacy.in_reply_to_status_id ||
+    candidate.in_reply_to_status_id_str ||
+    candidate.in_reply_to_status_id ||
+    ""
+  );
+  const replyHandle = String(
+    legacy.in_reply_to_screen_name ||
+    candidate.in_reply_to_screen_name ||
+    ""
+  ).replace(/^@/, "");
+  const quotedId = String(
+    legacy.quoted_status_id_str ||
+    legacy.quoted_status_id ||
+    candidate.quoted_status_id_str ||
+    candidate.quoted_status_id ||
+    ""
+  );
+  const isRetweet = Boolean(
+    legacy.retweeted_status_result ||
+    legacy.retweeted_status ||
+    candidate.retweeted_status_result ||
+    candidate.retweeted_status ||
+    /^RT\s+@/i.test(String(text || ""))
+  );
+  const isQuote = Boolean(
+    legacy.is_quote_status ||
+    candidate.is_quote_status ||
+    quotedId ||
+    legacy.quoted_status_result ||
+    candidate.quoted_status_result
+  );
+  return {
+    post_type: isRetweet ? "retweet" : (replyId || replyHandle ? "reply" : (isQuote ? "quote" : "post")),
+    reply_to_status_id: replyId || null,
+    reply_to_handle: replyHandle || null,
+    quoted_status_id: quotedId || null
+  };
+}
+
 function normalizeSyndicationTweet(candidate, handle) {
   if (!candidate || typeof candidate !== "object") return null;
   const legacy = candidate.legacy && typeof candidate.legacy === "object" ? candidate.legacy : candidate;
@@ -1038,6 +1080,7 @@ function normalizeSyndicationTweet(candidate, handle) {
     metrics,
     entities: normalizeSyndicationEntities(legacy.entities || candidate.entities),
     media: normalizeSyndicationMedia(legacy),
+    ...syndicationTweetMeta(candidate, legacy, text),
     url: `https://x.com/${encodeURIComponent(handle)}/status/${id}`
   };
 }
@@ -1155,11 +1198,18 @@ function normalizeFxTwitterStatus(status, handle) {
   if (!createdAt && Number.isFinite(Number(status.created_timestamp))) {
     createdAt = new Date(Number(status.created_timestamp) * 1000).toISOString();
   }
+  const replyTarget = status.replying_to_status_id || status.in_reply_to_status_id || status.replying_to || status.in_reply_to || null;
+  const quoteTarget = status.quote || status.quoted_tweet || status.quoted_status || status.quote_tweet || null;
+  const retweetTarget = status.retweeted_tweet || status.retweeted_status || status.retweet || null;
+  const postType = retweetTarget || /^RT\s+@/i.test(text)
+    ? "retweet"
+    : (replyTarget ? "reply" : (quoteTarget ? "quote" : "post"));
   return {
     id,
     text,
     created_at: createdAt,
     lang: status.lang || null,
+    post_type: postType,
     metrics: {
       reply_count: Number(status.replies || 0),
       repost_count: Number(status.reposts || status.retweets || 0),
@@ -1192,7 +1242,16 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
     throw err;
   }
   const results = Array.isArray(payload.results) ? payload.results : [];
-  const posts = results.map((item) => normalizeFxTwitterStatus(item, handle)).filter(Boolean).slice(0, limit);
+  const posts = results
+    .map((item) => normalizeFxTwitterStatus(item, handle))
+    .filter(Boolean)
+    .sort((a, b) => {
+      const ta = Date.parse(a.created_at || "") || 0;
+      const tb = Date.parse(b.created_at || "") || 0;
+      if (ta !== tb) return tb - ta;
+      return String(b.id || "").localeCompare(String(a.id || ""));
+    })
+    .slice(0, limit);
   if (!posts.length) {
     const err = new Error("fxtwitter_public_feed_empty");
     err.code = "fxtwitter_public_feed_empty";
@@ -1200,7 +1259,7 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
     throw err;
   }
   return {
-    schema_version: 2,
+    schema_version: 3,
     source: "fxtwitter_public_api",
     third_party: "FxEmbed/FxTwitter",
     uses_x_api: false,
@@ -1221,7 +1280,7 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     limit: String(Math.max(3, Math.min(20, limit || TECH_FEED_FETCH_SIZE))),
     origin: "https://www.ooglex.com/",
     showHeader: "false",
-    showReplies: "false",
+    showReplies: "true",
     theme: "light",
     transparent: "true"
   });
@@ -1251,7 +1310,7 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     throw err;
   }
   return {
-    schema_version: 2,
+    schema_version: 3,
     source: "x_public_syndication",
     uses_x_api: false,
     handle,
@@ -1292,7 +1351,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/free-feed/v1/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v2/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
@@ -1363,11 +1422,18 @@ function normalizeTechFeed(profile, user, payload) {
     const keys = post && post.attachments && Array.isArray(post.attachments.media_keys)
       ? post.attachments.media_keys
       : [];
+    const refs = Array.isArray(post && post.referenced_tweets) ? post.referenced_tweets : [];
+    const refTypes = new Set(refs.map((item) => String(item && item.type || "")));
+    const postType = refTypes.has("retweeted")
+      ? "retweet"
+      : (refTypes.has("replied_to") ? "reply" : (refTypes.has("quoted") ? "quote" : "post"));
     return {
       id: String(post.id || ""),
       text: String(post.text || ""),
       created_at: post.created_at || null,
       lang: post.lang || null,
+      post_type: postType,
+      referenced_tweets: refs,
       metrics: post.public_metrics || {},
       entities: post.entities || {},
       media: keys.map((key) => mediaByKey.get(key)).filter(Boolean).map((item) => ({
@@ -1437,7 +1503,6 @@ async function fetchTechLeaderFeed(profile, env, cached = null) {
 
   const params = new URLSearchParams({
     max_results: String(TECH_FEED_FETCH_SIZE),
-    exclude: "replies,retweets",
     "tweet.fields": "created_at,public_metrics,lang,entities,attachments,referenced_tweets",
     expansions: "attachments.media_keys",
     "media.fields": "media_key,type,url,preview_image_url,width,height"
