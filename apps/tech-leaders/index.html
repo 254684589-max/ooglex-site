@@ -215,7 +215,7 @@
     </section>
 
     <div class="about">
-      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；支持原帖、回复、引用与转发，引用/转发会尽量保留被引用原帖的作者、正文与媒体；默认显示最新 10 条，点击“加载更多 10 条”后单次会话最多显示 20 条，不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。<br>
+      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；支持原帖、回复、引用与转发，引用/转发会尽量保留被引用原帖的作者、正文与媒体；默认显示最新 10 条，每次继续加载 10 条，单次会话最多显示 100 条（实际数量取决于公开源可提供的数据），不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
       <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
@@ -836,7 +836,7 @@
     sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
-    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).slice(0,20).sort(sortPostsNewest);
+    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).slice(0,100).sort(sortPostsNewest);
     if(!posts.length){
       var empty=document.createElement("div");empty.className="api-state";
       empty.innerHTML="<b>公开时间线暂时没有可展示内容</b><div>正在回退到 X 官方 Embed。</div>";
@@ -871,16 +871,30 @@
       card.appendChild(foot);wrap.appendChild(card);
     }
 
-    posts.slice(0,10).forEach(appendPost);
+    var shown=0;
+    var batchSize=10;
+    function appendNextBatch(){
+      var end=Math.min(shown+batchSize,posts.length);
+      posts.slice(shown,end).forEach(appendPost);
+      shown=end;
+    }
+
+    appendNextBatch();
     timeline.appendChild(wrap);
 
-    if(posts.length>10){
+    if(posts.length>shown){
       var more=document.createElement("div");more.className="feed-more";
-      var btn=document.createElement("button");btn.type="button";btn.textContent="加载更多 10 条";
+      var btn=document.createElement("button");btn.type="button";
+      function refreshMoreLabel(){
+        var remaining=posts.length-shown;
+        btn.textContent="加载更多 "+Math.min(batchSize,remaining)+" 条";
+      }
+      refreshMoreLabel();
       btn.addEventListener("click",function(){
-        posts.slice(10,20).forEach(appendPost);
-        more.remove();
-      },{once:true});
+        appendNextBatch();
+        if(shown>=posts.length){more.remove();return;}
+        refreshMoreLabel();
+      });
       more.appendChild(btn);timeline.appendChild(more);
     }
     return true;
@@ -900,9 +914,9 @@
     var loading=document.createElement("div");loading.className="api-state";loading.innerHTML="<b>正在读取免费公开时间线</b><div>不调用 X API，不消耗 X API Credits。</div>";timeline.appendChild(loading);
     try{
       var ctl=new AbortController();
-      var timer=setTimeout(function(){ctl.abort();},12000);
+      var timer=setTimeout(function(){ctl.abort();},20000);
       try{
-        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit=20",{signal:ctl.signal,cache:"no-store"});
+        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit=100",{signal:ctl.signal,cache:"no-store"});
         var data=await res.json().catch(function(){return {};});
         if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
         renderFreeFeed(data);
