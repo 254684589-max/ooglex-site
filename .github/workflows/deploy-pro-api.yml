@@ -142,6 +142,38 @@ jobs:
           if len(eligible) < 100:
               raise SystemExit("Expected at least 100 confirmed personal X accounts")
           PY
+          echo "ZLQ free-source diagnostics:"
+          tmp="$(mktemp)"
+          legacy_code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://syndication.twitter.com/timeline/profile?callback=cb&dnt=true&screen_name=ZLQ6600E&suppress_response_codes=true&lang=en&rnd=$(date +%s)")"
+          LEGACY_TMP="$tmp" python - <<'PY' || true
+          import os,re
+          p=os.environ["LEGACY_TMP"]
+          body=open(p,encoding="utf-8",errors="ignore").read()
+          print("  legacy syndication bytes:",len(body))
+          print("  legacy ids:", re.findall(r'(?:data-tweet-id|status/)[=\"/]*([0-9]{10,25})',body)[:8])
+          print("  legacy dates:", re.findall(r'datetime=[\"\']([^\"\']+)',body)[:8])
+          print("  legacy head:", re.sub(r'\s+',' ',body[:450]))
+          PY
+          echo "  legacy syndication HTTP $legacy_code"
+          rm -f "$tmp"
+
+          tmp="$(mktemp)"
+          rss_code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://rsshub.app/twitter/user/ZLQ6600E?format=json&limit=5")"
+          RSS_TMP="$tmp" python - <<'PY' || true
+          import json,os,re
+          p=os.environ["RSS_TMP"]
+          body=open(p,encoding="utf-8",errors="ignore").read()
+          print("  RSSHub bytes:",len(body))
+          try:
+              d=json.loads(body)
+              items=d.get("items",[])
+              print("  RSSHub items:",[(x.get("date_published"),x.get("url"),(x.get("title") or x.get("content_text") or "")[:80]) for x in items[:5]])
+          except Exception as e:
+              print("  RSSHub head:",re.sub(r'\s+',' ',body[:450]),"parse=",type(e).__name__)
+          PY
+          echo "  RSSHub HTTP $rss_code"
+          rm -f "$tmp"
+
           for handle in ZLQ6600E elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
             tmp="$(mktemp)"
             code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$handle&limit=3")"
