@@ -141,6 +141,7 @@
     .post-media{display:grid;gap:8px;margin-top:12px}.post-media img,.post-media video{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}.post-media video{object-fit:contain}.post-media-item{min-width:0}.post-media-fallback{display:none;padding:16px;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}.post-media-fallback a{color:var(--blue)}
     .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
     .post-source{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:rgba(57,135,229,.06);color:var(--blue);font:10px/1 var(--mono)}
+    .embedded-post{margin-top:13px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018);overflow:hidden}.embedded-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.embedded-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:rgba(255,255,255,.05)}.embedded-who{min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.embedded-name{font-size:12px;font-weight:700;color:var(--ink)}.embedded-handle{font:10.5px/1.2 var(--mono);color:var(--faint)}.embedded-post .post-text{font-size:13px;line-height:1.58}.embedded-post .post-media{margin-top:9px}.embedded-post .post-media img,.embedded-post .post-media video{max-height:330px;border-radius:10px}.embedded-link{display:inline-block;margin-top:9px;color:var(--blue);font:10.5px/1.2 var(--mono)}
     .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
@@ -214,7 +215,7 @@
     </section>
 
     <div class="about">
-      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；默认显示最新 10 条，点击“加载更多 10 条”后单次会话最多显示 20 条，不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。<br>
+      <b>免费模式：</b>硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；支持原帖、回复、引用与转发，引用/转发会尽量保留被引用原帖的作者、正文与媒体；默认显示最新 10 条，点击“加载更多 10 条”后单次会话最多显示 20 条，不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。<br>
       <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
       <b>头像：</b>优先使用人物当前 X 头像；X 原头像不可取得时，依次尝试 X 头像代理、公司/机构官方肖像、Wikipedia/Wikimedia 公开肖像；仍无法确认时才回退为姓名首字母头像。
     </div>
@@ -795,6 +796,41 @@
     if(media.childNodes.length)card.appendChild(media);
   }
 
+  function appendEmbeddedPost(card,post){
+    var ref=post&&post.embedded_post;
+    if(!ref||(!String(ref.text||"").trim()&&!(Array.isArray(ref.media)&&ref.media.length)))return false;
+
+    var box=document.createElement("div");box.className="embedded-post";
+    var head=document.createElement("div");head.className="embedded-head";
+    var author=ref.author&&typeof ref.author==="object"?ref.author:{};
+
+    if(author.avatar_url){
+      var avatar=document.createElement("img");
+      avatar.className="embedded-avatar";
+      avatar.loading="lazy";avatar.decoding="async";avatar.referrerPolicy="no-referrer";
+      avatar.alt=(author.name||author.handle||"X")+" 头像";
+      avatar.src=author.avatar_url;
+      avatar.onerror=function(){avatar.remove();};
+      head.appendChild(avatar);
+    }
+
+    var who=document.createElement("div");who.className="embedded-who";
+    var name=document.createElement("span");name.className="embedded-name";name.textContent=author.name||author.handle||"X 用户";who.appendChild(name);
+    if(author.handle){var handle=document.createElement("span");handle.className="embedded-handle";handle.textContent="@"+author.handle;who.appendChild(handle);}
+    head.appendChild(who);box.appendChild(head);
+
+    if(String(ref.text||"").trim()){
+      var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,ref);box.appendChild(body);
+    }
+    appendPostMedia(box,ref);
+
+    if(ref.url){
+      var link=document.createElement("a");link.className="embedded-link";link.href=ref.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看这条原帖 ↗";box.appendChild(link);
+    }
+    card.appendChild(box);
+    return true;
+  }
+
   function renderFreeFeed(feed){
     clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
     sourceBadge.textContent="免费模式 · 0 X API Credits";
@@ -823,8 +859,10 @@
       var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
 
-      var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
-      appendPostMedia(card,post);
+      var hidePrimary=String(post.post_type||"").toLowerCase()==="retweet"&&post.embedded_post;
+      if(!hidePrimary&&String(post.text||"").trim()){var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);}
+      if(!hidePrimary)appendPostMedia(card,post);
+      appendEmbeddedPost(card,post);
       var foot=document.createElement("div");foot.className="post-foot";
       var pm=post.metrics||{};
       ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
@@ -894,8 +932,10 @@
       appendPostTypeBadge(nameLine,post);
       var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
-      var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
-      appendPostMedia(card,post);
+      var hidePrimary=String(post.post_type||"").toLowerCase()==="retweet"&&post.embedded_post;
+      if(!hidePrimary&&String(post.text||"").trim()){var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);}
+      if(!hidePrimary)appendPostMedia(card,post);
+      appendEmbeddedPost(card,post);
       var foot=document.createElement("div");foot.className="post-foot";var pm=post.metrics||{};
       ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
       var link=document.createElement("a");link.href=post.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);card.appendChild(foot);wrap.appendChild(card);
