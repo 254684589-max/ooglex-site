@@ -64,18 +64,21 @@
     .leader-rail-wrap{width:100%;margin:0 0 12px}
     .leaders{
       display:flex;gap:10px;width:100%;overflow-x:auto;overflow-y:hidden;
-      margin:0;padding:0 0 8px;scroll-behavior:smooth;scrollbar-width:none;
+      margin:0;padding:0 0 8px;scroll-behavior:auto;scrollbar-width:none;
       -ms-overflow-style:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
     }
     .leaders::-webkit-scrollbar{display:none}
+    .leaders.mouse-draggable{cursor:grab}
+    .leaders.mouse-dragging{cursor:grabbing;user-select:none}
+    .leaders.mouse-dragging .leader{cursor:grabbing;transform:none}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
       padding:12px 14px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;min-height:94px;transition:.18s ease;
       flex:0 0 calc((100% - 50px)/6);
     }
-    .leader-scrollbar{position:relative;height:8px;width:100%;border-radius:999px;background:rgba(128,128,128,.18);cursor:pointer;touch-action:none;user-select:none}
+    .leader-scrollbar{position:relative;height:12px;width:100%;border-radius:999px;background:rgba(128,128,128,.16);cursor:pointer;touch-action:none;user-select:none;padding:2px}
     .leader-scrollbar[hidden]{display:none}
-    .leader-scroll-thumb{position:absolute;left:0;top:0;height:100%;min-width:72px;border-radius:999px;background:rgba(128,128,128,.48);cursor:grab;touch-action:none;transition:background .15s ease}
+    .leader-scroll-thumb{position:absolute;left:2px;top:2px;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.52);cursor:grab;touch-action:none;transition:background .15s ease}
     .leader-scroll-thumb:hover{background:rgba(128,128,128,.62)}
     .leader-scroll-thumb.dragging{cursor:grabbing;background:rgba(57,135,229,.72)}
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
@@ -542,16 +545,18 @@
     if(maxScroll<=2){
       leaderScrollbar.hidden=true;
       leaderScrollThumb.style.width="100%";
-      leaderScrollThumb.style.left="0";
+      leaderScrollThumb.style.left="2px";
       return;
     }
     leaderScrollbar.hidden=false;
-    var barWidth=leaderScrollbar.clientWidth;
-    var thumbWidth=Math.max(72,(leaders.clientWidth/leaders.scrollWidth)*barWidth);
-    var maxThumbLeft=Math.max(0,barWidth-thumbWidth);
-    var left=maxScroll>0?(leaders.scrollLeft/maxScroll)*maxThumbLeft:0;
+    var inset=2;
+    var trackWidth=Math.max(0,leaderScrollbar.clientWidth-inset*2);
+    var thumbWidth=Math.max(82,(leaders.clientWidth/leaders.scrollWidth)*trackWidth);
+    thumbWidth=Math.min(trackWidth,thumbWidth);
+    var maxThumbTravel=Math.max(0,trackWidth-thumbWidth);
+    var left=inset+(maxScroll>0?(leaders.scrollLeft/maxScroll)*maxThumbTravel:0);
     leaderScrollThumb.style.width=thumbWidth+"px";
-    leaderScrollThumb.style.left=Math.max(0,Math.min(maxThumbLeft,left))+"px";
+    leaderScrollThumb.style.left=Math.max(inset,Math.min(inset+maxThumbTravel,left))+"px";
   }
   function scrollActiveLeaderIntoView(){
     var active=leaders.querySelector(".leader.on");
@@ -1364,7 +1369,12 @@
     var next=new URL(location.href);next.searchParams.set("leader",id);location.href=next.toString();
   }
 
-  leaders.addEventListener("click",function(e){var btn=e.target.closest(".leader");if(!btn)return;var id=btn.getAttribute("data-id");if(!current||id!==current.id)navigateLeader(id);});
+  var suppressLeaderClick=false;
+  leaders.addEventListener("click",function(e){
+    if(suppressLeaderClick){e.preventDefault();e.stopPropagation();suppressLeaderClick=false;return;}
+    var btn=e.target.closest(".leader");if(!btn)return;
+    var id=btn.getAttribute("data-id");if(!current||id!==current.id)navigateLeader(id);
+  });
   leaders.addEventListener("error",function(e){
     if(e.target&&e.target.matches&&e.target.matches("img[data-avatar]")){
       var btn=e.target.closest(".leader");
@@ -1376,6 +1386,57 @@
   foldBtn.hidden=true;
   leaders.addEventListener("scroll",updateLeaderScrollbar,{passive:true});
   window.addEventListener("resize",function(){requestAnimationFrame(updateLeaderScrollbar);});
+
+  // Desktop: drag the cards themselves left/right, like a native carousel.
+  var railMouseDragging=false;
+  var railMouseStartX=0;
+  var railMouseStartScroll=0;
+  var railMouseMoved=false;
+  if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){
+    leaders.classList.add("mouse-draggable");
+  }
+  leaders.addEventListener("pointerdown",function(e){
+    if(e.pointerType!=="mouse"||e.button!==0)return;
+    if(leaders.scrollWidth<=leaders.clientWidth+2)return;
+    railMouseDragging=true;
+    railMouseMoved=false;
+    railMouseStartX=e.clientX;
+    railMouseStartScroll=leaders.scrollLeft;
+    leaders.classList.add("mouse-dragging");
+    leaders.setPointerCapture(e.pointerId);
+  });
+  leaders.addEventListener("pointermove",function(e){
+    if(!railMouseDragging||e.pointerType!=="mouse")return;
+    var dx=e.clientX-railMouseStartX;
+    if(Math.abs(dx)>4)railMouseMoved=true;
+    if(railMouseMoved){
+      leaders.scrollLeft=railMouseStartScroll-dx;
+      e.preventDefault();
+    }
+  });
+  function stopRailMouseDrag(e){
+    if(!railMouseDragging)return;
+    railMouseDragging=false;
+    leaders.classList.remove("mouse-dragging");
+    if(railMouseMoved){
+      suppressLeaderClick=true;
+      setTimeout(function(){suppressLeaderClick=false;},0);
+    }
+    try{leaders.releasePointerCapture(e.pointerId);}catch(_){}
+  }
+  leaders.addEventListener("pointerup",stopRailMouseDrag);
+  leaders.addEventListener("pointercancel",stopRailMouseDrag);
+
+  // Desktop wheel / trackpad: vertical wheel movement scrolls this horizontal rail.
+  leaders.addEventListener("wheel",function(e){
+    var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
+    if(maxScroll<=2)return;
+    var delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    if(!delta)return;
+    var before=leaders.scrollLeft;
+    leaders.scrollLeft=Math.max(0,Math.min(maxScroll,before+delta));
+    if(leaders.scrollLeft!==before)e.preventDefault();
+  },{passive:false});
 
   if(leaderScrollbar&&leaderScrollThumb){
     var leaderDragging=false;
@@ -1394,12 +1455,14 @@
 
     leaderScrollThumb.addEventListener("pointermove",function(e){
       if(!leaderDragging)return;
-      var barWidth=leaderScrollbar.clientWidth;
+      var inset=2;
+      var trackWidth=Math.max(0,leaderScrollbar.clientWidth-inset*2);
       var thumbWidth=leaderScrollThumb.offsetWidth;
-      var maxThumbLeft=Math.max(0,barWidth-thumbWidth);
-      var nextLeft=Math.max(0,Math.min(maxThumbLeft,leaderDragStartLeft+(e.clientX-leaderDragStartX)));
+      var maxTravel=Math.max(0,trackWidth-thumbWidth);
+      var raw=leaderDragStartLeft+(e.clientX-leaderDragStartX);
+      var nextLeft=Math.max(inset,Math.min(inset+maxTravel,raw));
       var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
-      leaders.scrollLeft=maxThumbLeft>0?(nextLeft/maxThumbLeft)*maxScroll:0;
+      leaders.scrollLeft=maxTravel>0?((nextLeft-inset)/maxTravel)*maxScroll:0;
       e.preventDefault();
     });
 
@@ -1414,12 +1477,15 @@
 
     leaderScrollbar.addEventListener("pointerdown",function(e){
       if(e.target===leaderScrollThumb||leaderScrollbar.hidden)return;
+      var inset=2;
       var rect=leaderScrollbar.getBoundingClientRect();
+      var trackWidth=Math.max(0,leaderScrollbar.clientWidth-inset*2);
       var thumbWidth=leaderScrollThumb.offsetWidth;
-      var maxThumbLeft=Math.max(0,leaderScrollbar.clientWidth-thumbWidth);
-      var nextLeft=Math.max(0,Math.min(maxThumbLeft,e.clientX-rect.left-thumbWidth/2));
+      var maxTravel=Math.max(0,trackWidth-thumbWidth);
+      var raw=e.clientX-rect.left-thumbWidth/2;
+      var nextLeft=Math.max(inset,Math.min(inset+maxTravel,raw));
       var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
-      leaders.scrollTo({left:maxThumbLeft>0?(nextLeft/maxThumbLeft)*maxScroll:0,behavior:"smooth"});
+      leaders.scrollTo({left:maxTravel>0?((nextLeft-inset)/maxTravel)*maxScroll:0,behavior:"smooth"});
     });
   }
 
