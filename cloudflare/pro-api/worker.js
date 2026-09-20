@@ -1573,10 +1573,13 @@ function mergePublicFeedPosts(feeds, limit) {
 async function fetchFreeTechLeaderFeed(handle, limit) {
   const requested = Math.max(1, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
 
-  // Fast first paint: one public page is enough for the initial 10 visible posts
-  // plus the next 10 already buffered in the browser. Avoid waiting for both
-  // public sources before first render; deeper history is merged on demand.
-  if (requested <= 20) {
+  // Fast first paint: one public page is enough for ordinary profiles.
+  // Zheng Yi's public page intentionally shows only the latest 3 posts, so
+  // freshness matters more than first-paint latency there. For that profile,
+  // always compare both public sources and merge by created_at instead of
+  // accepting the first FxTwitter page, which can lag behind the live X profile.
+  const strictLatestProfile = String(handle || "").toLowerCase() === "zlq6600e";
+  if (requested <= 20 && !strictLatestProfile) {
     let fxError = null;
     try {
       const fast = await fetchFxTwitterFreeFeed(handle, requested);
@@ -1679,8 +1682,11 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   // that many posts. Only the number of posts physically cached counts as
   // fulfilled history depth.
   const cachedCapacity = cachedPosts.length;
+  const strictLatestProfile = normalized.toLowerCase() === "zlq6600e";
 
-  if (cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS && cachedCapacity >= limit) {
+  // Do not let a recently cached but upstream-stale public snapshot mask newer
+  // posts on Zheng Yi's three-item timeline. Revalidate it on each page load.
+  if (!strictLatestProfile && cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS && cachedCapacity >= limit) {
     return {
       ...cached,
       requested_limit: cachedCapacity,
@@ -1691,7 +1697,9 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   }
 
   try {
-    const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
+    const requestedLimit = strictLatestProfile
+      ? Math.max(1, Math.min(3, limit))
+      : Math.max(limit, TECH_FEED_FETCH_SIZE);
     const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
     const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
     const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
