@@ -170,6 +170,11 @@ jobs:
             fi
           done
 
+          elon10="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=elonmusk&limit=10" || true)"
+          if [ -n "$elon10" ]; then
+            printf '%s' "$elon10" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON top10 refresh check:"); [print("  {} | {} | {}".format(x.get("created_at"),x.get("id"),(x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:140])) for x in p[:10]]; assert any("This is the future we shall bring into being" in ((x.get("text") or "") + " " + (((x.get("embedded_post") or {}).get("text")) or "")) for x in p), "target Elon post not present in refreshed top10"' || failed=1
+          fi
+
           feed_json="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=8" || true)"
           media_url="$(printf '%s' "$feed_json" | python -c 'import json,sys; d=json.load(sys.stdin) if not sys.stdin.isatty() else {}; print(next((m.get("url") or m.get("preview_image_url") or m.get("video_url") for p in d.get("posts",[]) for m in (p.get("media") or []) if (m.get("url") or m.get("preview_image_url") or m.get("video_url"))),""))' 2>/dev/null || true)"
           if [ -n "$media_url" ]; then
