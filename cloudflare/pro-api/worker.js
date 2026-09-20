@@ -1960,7 +1960,7 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     : (handleLower === "elonmusk" ? "马斯克 · Elon Musk" : author);
   const showVerifiedBadge = handleLower === "elonmusk";
   const verifiedBadgeHtml = showVerifiedBadge
-    ? '<span class="verified-badge" aria-label="Verified" title="Verified">✓</span>'
+    ? '<span class="verified-badge" aria-label="Verified" title="Verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified-blue" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path class="verified-check" d="M7.35 12.35 10.1 15.1 16.65 8.55"/></svg></span>'
     : "";
   const description = hideHandle
     ? `${publicAuthor} · Original public X post via Ooglex`
@@ -2020,8 +2020,11 @@ h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-
 .author-row{display:flex;align-items:center;gap:12px;margin:18px 0 8px}
 .author-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;border:1px solid #ded5cb;background:#eee}
 .author-copy{min-width:0}.author-name-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.author-name{font-weight:700;font-size:17px;line-height:1.2}.author-meta{margin-top:3px;color:#776f67;font-size:14px}
-.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#1d9bf0;color:#fff;font:700 13px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;flex:0 0 20px;vertical-align:middle;box-shadow:0 0 0 1px rgba(29,155,240,.08)}
-.a{color:#655f59}.desc-author{display:inline-flex;align-items:center;gap:6px}.a .verified-badge{width:18px;height:18px;flex-basis:18px;font-size:12px}
+.verified-badge{display:inline-block;flex:0 0 auto;width:20px;height:20px;vertical-align:-3px;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.10));line-height:0}
+.verified-badge svg{display:block;width:100%;height:100%;overflow:visible}
+.verified-badge .verified-blue{fill:#1d9bf0}
+.verified-badge .verified-check{fill:none;stroke:#fff;stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round}
+.a{color:#655f59}.desc-author{display:inline-flex;align-items:center;gap:6px}.a .verified-badge{width:18px;height:18px;vertical-align:-3px}
 .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
 .preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px;background:#000}
 video.preview{object-fit:contain}
