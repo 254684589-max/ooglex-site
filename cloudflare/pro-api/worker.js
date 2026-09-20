@@ -1847,13 +1847,10 @@ main{width:min(680px,calc(100% - 32px));margin:32px auto;padding:28px;border:1px
 h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
 .a{color:#655f59}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
 .preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px}
-.wechat-tip{display:none;margin:0 auto 18px;width:min(680px,calc(100% - 32px));padding:14px 16px;border:1px solid #cdd9e6;border-radius:14px;background:#eef5fb;color:#29445f;font-size:14px;line-height:1.6}
-.wechat-tip b{color:#172b3f}.wechat-tip.show{display:block}
-@media(max-width:560px){main{margin:16px auto;padding:20px}h1{font-size:22px}.wechat-tip{margin-top:12px}}
+@media(max-width:560px){main{margin:16px auto;padding:20px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="wechat-tip" id="wechat-tip"><b>微信分享已准备</b><br>点击右上角“…”后，可选择“分享到朋友圈”或“发送给朋友”。分享标题会使用这条动态的原生英文正文。</div>
 <main>
 <div class="k">OOGLEX · PUBLIC X POST</div>
 <h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
@@ -1864,7 +1861,6 @@ ${image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : ""}
 <a href="${shareHtmlEscape(originalUrl)}">View original on X</a>
 </div>
 </main>
-<script>(function(){if(/MicroMessenger/i.test(navigator.userAgent)){var el=document.getElementById("wechat-tip");if(el)el.classList.add("show");}})();</script>
 </body>
 </html>`;
 
