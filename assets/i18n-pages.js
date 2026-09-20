@@ -492,20 +492,13 @@
     "此刻在想什么？最多 500 字。": "What are you thinking? 500 characters max.",
     "想法正文": "Thought text",
     "发布": "Post",
-    "站主工具": "Owner tools",
-    "被举报且仍然公开的想法会列在这里。": "Thoughts that were reported and are still public are listed here.",
-    "查看被举报的想法": "Review reported thoughts",
     "最新想法": "Latest thoughts",
     "加载中…": "Loading…",
     "加载更多": "Load more",
     "隐私政策": "Privacy Policy",
     "← 返回 Ooglex": "← Back to Ooglex",
     "想法流任何人都能看，但发布需要登录。": "Anyone can read the feed, but posting requires signing in.",
-    "前往登录或注册 →": "Sign in or register →",
-    /* 页脚这一条的文本节点末尾连着分隔符「·」（后面才是隐私政策链接），
-       整个节点必须逐字节入典，只写句子是匹配不到的。 */
-    "想法由发布者本人负责，不代表 Ooglex 立场。看到违规内容请点「举报」。\n    ·":
-      "Posts are the responsibility of whoever wrote them and do not represent Ooglex. Use “Report” if you see something that breaks the rules.\n    ·"
+    "前往登录或注册 →": "Sign in or register →"
   };
 
   function add(dst, src) { Object.keys(src).forEach(function (k) { dst[k] = src[k]; }); }
