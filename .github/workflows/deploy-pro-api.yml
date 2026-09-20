@@ -181,11 +181,11 @@ jobs:
             echo "::warning::No media found in current @sundarpichai sample; media proxy smoke skipped."
           fi
 
-          feed20="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=20" || true)"
-          if [ -n "$feed20" ]; then
-            printf '%s' "$feed20" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert d.get("uses_x_api") is False; assert len(p)<=20; print(f"Free feed 20-item ceiling OK: {len(p)} posts")' || failed=1
+          feed100="$(curl -fsS --connect-timeout 5 --max-time 30 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=100" || true)"
+          if [ -n "$feed100" ]; then
+            printf '%s' "$feed100" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert d.get("uses_x_api") is False; assert len(p)<=100; print(f"Free feed 100-item ceiling OK: {len(p)} posts")' || failed=1
           else
-            echo "::warning::20-item free-feed smoke returned no body"
+            echo "::warning::100-item free-feed smoke returned no body"
           fi
 
           status="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/status")"
