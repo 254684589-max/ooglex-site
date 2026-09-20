@@ -3,11 +3,23 @@ name: AI Rankings
 # 每日刷新「AI 模型天梯」：跑取数脚本 → 生成 apps/ai-rankings/data.json → 提交回仓库。
 # 数据源 LMArena / LiveBench 免密钥；Artificial Analysis 为可选轴（配置免费密钥 AA_API_KEY 后启用）。
 on:
-  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
+  # 每 6 小时补一次，Daily Scheduler 仍保留每日兜底。
+  schedule:
+    - cron: '23 */6 * * *'
+  # 仅脚本/工作流自身变更时立即验证；data.json 提交不会造成循环。
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/ai-rankings/**'
+      - '.github/workflows/ai_rankings.yml'
 
 permissions:
   contents: write
+
+concurrency:
+  group: ai-rankings-update
+  cancel-in-progress: false
 
 jobs:
   update:
