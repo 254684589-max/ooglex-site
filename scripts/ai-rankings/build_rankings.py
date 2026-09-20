@@ -100,22 +100,43 @@ def guess_org(key):
     return None
 
 
-def norm_name(raw):
-    """原始模型名 → 合并键：小写、去日期戳/后缀变体、点归一为连字符。"""
+def strip_variant_suffixes(raw):
+    """Remove benchmark/runtime variant labels while preserving model family/version.
+
+    The same model can appear as e.g. "Claude Fable 5.1 (Max)" in Arena and
+    "claude-fable-5-1-max-effort" in LiveBench. These labels describe evaluation
+    effort, not a distinct model family, so they must resolve to one merge key.
+    """
     s = str(raw or "").lower().strip()
     s = re.sub(r"[（(].*?[)）]", "", s)
-    s = re.sub(r"-?\d{8}$", "", s)
-    s = re.sub(SUFFIX, "", s)
     s = re.sub(r"[\s_.]+", "-", s)
+    # Strip effort / reasoning harness suffixes as one unit.
+    patterns = [
+        r"-(?:(?:thinking|reasoning)(?:-auto)?-)?(?:minimal|low|medium|high|xhigh|max)(?:-effort)?$",
+        r"-(?:thinking|reasoning)(?:-auto)?$",
+        r"-effort$",
+        r"-(?:preview|latest|exp|beta|instruct|chat|hf|fp8)$",
+    ]
+    changed = True
+    while changed:
+        before = s
+        for pat in patterns:
+            s = re.sub(pat, "", s)
+        changed = s != before
+    # Provider snapshot dates should not split the same named model family.
+    s = re.sub(r"-?20\d{2}-?\d{2}-?\d{2}$", "", s)
+    s = re.sub(r"-?\d{8}$", "", s)
     return s.strip("-")
 
 
+def norm_name(raw):
+    """Raw model name → canonical merge key across leaderboard variants."""
+    return strip_variant_suffixes(raw)
+
+
 def display_name(raw):
-    """原始模型名 → 展示名：去括号注记/后缀变体，分词美化（数字段用 . 连接）。"""
-    s = str(raw or "").strip()
-    s = re.sub(r"\s*[（(].*?[)）]", "", s)
-    s = re.sub(r"-?\d{8}$", "", s)
-    s = re.sub(SUFFIX, "", s.lower())
+    """Raw model name → display name without benchmark effort/harness suffixes."""
+    s = strip_variant_suffixes(raw)
     toks, out = [t for t in re.split(r"[-_\s]+", s) if t], []
     for t in toks:
         if out and re.fullmatch(r"\d+", t) and re.fullmatch(r"\d+(\.\d+)?", out[-1].split(" ")[-1]):
@@ -125,15 +146,14 @@ def display_name(raw):
         if t in BRAND:
             out.append(BRAND[t])
         elif mb and mb.group(1) in BRAND:
-            out.append(BRAND[mb.group(1)] + mb.group(2))  # qwen3 → Qwen3
+            out.append(BRAND[mb.group(1)] + mb.group(2))
         elif any(c.isdigit() for c in t) and any(c.isalpha() for c in t):
-            out.append(t.upper())  # 235b → 235B / a22b → A22B / k3 → K3
+            out.append(t.upper())
         elif t.isalpha() and len(t) <= 2:
             out.append(t.upper())
         else:
             out.append(t.capitalize() if t[0].isalpha() else t)
     return " ".join(out)
-
 
 def fmt_ctx(v):
     if not isinstance(v, (int, float)) or v <= 0:
