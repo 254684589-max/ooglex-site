@@ -92,7 +92,7 @@
     var m=post.metrics||{};var metrics=document.createElement("div");metrics.className="metrics";["回复 "+metric(m.reply_count),"转发 "+metric(m.repost_count||m.retweet_count),"喜欢 "+metric(m.like_count)].forEach(function(v){var s=document.createElement("span");s.textContent=v;metrics.appendChild(s);});el.appendChild(metrics);
     var actions=document.createElement("div");actions.className="actions";
     var sys=document.createElement("button");sys.className="primary";sys.type="button";sys.textContent="分享原文";sys.onclick=systemShare;actions.appendChild(sys);
-    var wx=document.createElement("button");wx.type="button";wx.textContent="链接分享";wx.onclick=linkShare;actions.appendChild(wx);
+    var wx=document.createElement("button");wx.type="button";wx.textContent="打开分享页";wx.onclick=openSharePage;actions.appendChild(wx);
     var copy=document.createElement("button");copy.type="button";copy.textContent="复制链接";copy.onclick=copyLink;actions.appendChild(copy);
     var gen=document.createElement("button");gen.type="button";gen.textContent="生成分享卡片";gen.onclick=generateCard;actions.appendChild(gen);
     var x=document.createElement("a");x.className="wide";x.target="_blank";x.rel="noopener noreferrer";x.href=post.url||("https://x.com/"+encodeURIComponent(handle)+"/status/"+postId);x.textContent="在 X 查看原文 ↗";actions.appendChild(x);
@@ -119,13 +119,8 @@
       else{await copyText(text);alert("帖子原文已复制");}
     }catch(e){}
   }
-  async function linkShare(){
-    var url=publicShareUrl();
-    try{
-      await copyText(url);
-      if(/MicroMessenger/i.test(navigator.userAgent)){location.href=url;return;}
-      var a=document.createElement("a");a.href="weixin://";a.style.display="none";document.body.appendChild(a);a.click();a.remove();
-    }catch(e){alert("操作未完成");}
+  function openSharePage(){
+    location.href=publicShareUrl();
   }
   function round(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
   function wrap(ctx,text,x,y,w,lh,max){var chars=Array.from(String(text||"")),line="",lines=[],i=0;for(;i<chars.length;i++){var t=line+chars[i];if(ctx.measureText(t).width>w&&line){lines.push(line);line=chars[i];if(lines.length>=max)break;}else line=t;}if(lines.length<max&&line)lines.push(line);if(i<chars.length&&lines.length)lines[lines.length-1]+="…";lines.forEach(function(v,k){ctx.fillText(v,x,y+k*lh);});return y+lines.length*lh;}
