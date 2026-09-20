@@ -141,6 +141,8 @@
     .post-media{display:grid;gap:8px;margin-top:12px}.post-media img,.post-media video{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}.post-media video{object-fit:contain}.post-media-item{min-width:0}.post-media-fallback{display:none;padding:16px;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}.post-media-fallback a{color:var(--blue)}
     .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
     .post-source{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:rgba(57,135,229,.06);color:var(--blue);font:10px/1 var(--mono)}
+    .post-share-btn{appearance:none;border:0;background:transparent;padding:0;color:var(--blue);font:inherit;cursor:pointer}.post-share-btn:hover{text-decoration:underline}.post-share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px}
+    .share-sheet[hidden]{display:none}.share-sheet{position:fixed;inset:0;z-index:1000;display:grid;align-items:end;justify-items:center;padding:18px}.share-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.38);backdrop-filter:blur(4px)}.share-panel{position:relative;width:min(520px,100%);max-height:min(82vh,760px);overflow:auto;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 24px 80px rgba(0,0,0,.28)}.share-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.share-head b{font-size:16px}.share-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:22px;cursor:pointer}.share-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}.share-actions button,.share-card-actions button{min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--ink);font-weight:700;cursor:pointer}.share-actions button:hover,.share-card-actions button:hover{background:rgba(57,135,229,.12)}.share-status{min-height:20px;margin-top:10px;font-size:12px;color:var(--faint)}.share-card-wrap{margin-top:12px}.share-card-wrap img{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#f7f2ea}.share-card-actions{display:flex;gap:9px;margin-top:10px}.share-card-actions button{flex:1}.share-note{margin-top:10px;font-size:11px;line-height:1.5;color:var(--faint)}
     .embedded-post{margin-top:13px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018);overflow:hidden}.embedded-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.embedded-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:rgba(255,255,255,.05)}.embedded-who{min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.embedded-name{font-size:12px;font-weight:700;color:var(--ink)}.embedded-handle{font:10.5px/1.2 var(--mono);color:var(--faint)}.embedded-post .post-text{font-size:13px;line-height:1.58}.embedded-post .post-media{margin-top:9px}.embedded-post .post-media img,.embedded-post .post-media video{max-height:330px;border-radius:10px}.embedded-link{display:inline-block;margin-top:9px;color:var(--blue);font:10.5px/1.2 var(--mono)}
     .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
@@ -148,7 +150,7 @@
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
     @media(max-width:980px){.leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
     @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.leader-fold{padding:8px 10px;font-weight:700}}
-    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:1fr;gap:12px}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:11px 15px;font-size:14px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}}
+    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:1fr;gap:12px}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:11px 15px;font-size:14px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
@@ -225,6 +227,27 @@
     </footer>
   </main>
 
+  <div class="share-sheet" id="share-sheet" hidden>
+    <div class="share-backdrop" data-share-close="1"></div>
+    <section class="share-panel" role="dialog" aria-modal="true" aria-labelledby="share-title">
+      <div class="share-head"><b id="share-title">分享这条动态</b><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
+      <div class="share-actions">
+        <button type="button" id="share-system">系统分享</button>
+        <button type="button" id="share-copy">复制帖子链接</button>
+        <button type="button" id="share-card">生成分享卡片</button>
+      </div>
+      <div class="share-status" id="share-status" aria-live="polite"></div>
+      <div class="share-card-wrap" id="share-card-wrap" hidden>
+        <img id="share-card-preview" alt="动态分享卡片预览">
+        <div class="share-card-actions">
+          <button type="button" id="share-card-system">分享图片</button>
+          <button type="button" id="share-card-save">保存图片</button>
+        </div>
+      </div>
+      <div class="share-note">分享链接打开后仅展示这一条动态，不会跳转到整条人物时间线。</div>
+    </section>
+  </div>
+
 <script>
 (function(){
   "use strict";
@@ -271,6 +294,13 @@
   var activeCategory=params.get("category")||"全部";
   var requested=params.get("leader");
   var MODE=params.get("mode")==="api"?"api":"free";
+  var shareSheet=document.getElementById("share-sheet");
+  var shareStatus=document.getElementById("share-status");
+  var shareCardWrap=document.getElementById("share-card-wrap");
+  var shareCardPreview=document.getElementById("share-card-preview");
+  var activeSharePost=null;
+  var activeShareCardBlob=null;
+  var activeShareCardObjectUrl="";
   function isConfirmedPersonalX(p){
     return !!p && !!p.handle && p.admission_status==="active" && (
       p.x_identity_verified===true ||
@@ -742,6 +772,124 @@
     return true;
   }
 
+  function singlePostUrl(post){
+    var u=new URL("./post/",location.href);
+    u.search="";
+    u.searchParams.set("handle",current&&current.handle?current.handle:"");
+    u.searchParams.set("id",String(post&&post.id||""));
+    if(current&&current.id)u.searchParams.set("leader",current.id);
+    return u.toString();
+  }
+  async function copyText(value){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+    var ta=document.createElement("textarea");
+    ta.value=value;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
+  }
+  function closeShareSheet(){
+    shareSheet.hidden=true;
+    document.body.style.overflow="";
+  }
+  function openShareSheet(post){
+    activeSharePost=post;
+    activeShareCardBlob=null;
+    if(activeShareCardObjectUrl){URL.revokeObjectURL(activeShareCardObjectUrl);activeShareCardObjectUrl="";}
+    shareCardWrap.hidden=true;shareCardPreview.removeAttribute("src");
+    shareStatus.textContent="";
+    shareSheet.hidden=false;
+    document.body.style.overflow="hidden";
+  }
+  function appendShareControl(foot,post){
+    if(!post||!post.id||!current||!current.handle)return;
+    var btn=document.createElement("button");
+    btn.type="button";btn.className="post-share-btn";btn.textContent="分享 ↗";
+    btn.addEventListener("click",function(){openShareSheet(post);});
+    foot.appendChild(btn);
+  }
+  function loadCardImage(raw){
+    return new Promise(function(resolve){
+      if(!raw){resolve(null);return;}
+      var im=new Image();var done=false;
+      var timer=setTimeout(function(){if(done)return;done=true;resolve(null);},4500);
+      im.crossOrigin="anonymous";
+      im.onload=function(){if(done)return;done=true;clearTimeout(timer);resolve(im);};
+      im.onerror=function(){if(done)return;done=true;clearTimeout(timer);resolve(null);};
+      im.src=raw;
+    });
+  }
+  function canvasRoundRect(ctx,x,y,w,h,r){
+    var rr=Math.min(r,w/2,h/2);
+    ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath();
+  }
+  function canvasWrap(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+    var chars=Array.from(String(text||""));var line="";var lines=[];var i=0;
+    for(;i<chars.length;i++){
+      var test=line+chars[i];
+      if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=chars[i];if(lines.length>=maxLines)break;}else line=test;
+    }
+    if(lines.length<maxLines&&line)lines.push(line);
+    if(i<chars.length&&lines.length){var last=lines.length-1;while(ctx.measureText(lines[last]+"…").width>maxWidth&&lines[last])lines[last]=lines[last].slice(0,-1);lines[last]+="…";}
+    lines.forEach(function(v,idx){ctx.fillText(v,x,y+idx*lineHeight);});
+    return y+lines.length*lineHeight;
+  }
+  function shareCardMedia(post){
+    function pick(p){
+      var list=p&&Array.isArray(p.media)?p.media:[];
+      for(var i=0;i<list.length;i++){var m=list[i]||{};var raw=m.url||m.preview_image_url||"";if(raw)return mediaProxyUrl(raw)||raw;}
+      return "";
+    }
+    return pick(post)||pick(post&&post.embedded_post);
+  }
+  async function buildShareCard(post){
+    var canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
+    var ctx=canvas.getContext("2d");
+    ctx.fillStyle="#f7f2ea";ctx.fillRect(0,0,1080,1350);
+    ctx.fillStyle="#111827";ctx.font="700 34px Arial,sans-serif";ctx.fillText("Ooglex · PUBLIC X POST",72,84);
+    ctx.strokeStyle="#d8d0c6";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(72,112);ctx.lineTo(1008,112);ctx.stroke();
+
+    var avatar=await loadCardImage(current?avatarUrl(current):"");
+    if(avatar){ctx.save();ctx.beginPath();ctx.arc(116,185,42,0,Math.PI*2);ctx.clip();ctx.drawImage(avatar,74,143,84,84);ctx.restore();}
+    ctx.fillStyle="#111827";ctx.font="700 38px Arial,sans-serif";ctx.fillText((current&&(current.name_zh||current.zh||current.name))||"X",180,177);
+    ctx.fillStyle="#667085";ctx.font="28px Arial,sans-serif";ctx.fillText("@"+((current&&current.handle)||""),180,218);
+    ctx.fillStyle="#2563a6";ctx.font="700 24px Arial,sans-serif";ctx.fillText(postTypeLabel(post),900,182);
+
+    var y=286;
+    ctx.fillStyle="#111827";ctx.font="38px Arial,sans-serif";
+    y=canvasWrap(ctx,post.text||"",72,y,936,58,8)+16;
+
+    var ref=post&&post.embedded_post;
+    if(ref&&(String(ref.text||"").trim()||(Array.isArray(ref.media)&&ref.media.length))){
+      var boxY=y+10,boxH=250;
+      ctx.fillStyle="#fffdf9";canvasRoundRect(ctx,64,boxY,952,boxH,24);ctx.fill();
+      ctx.strokeStyle="#d8d0c6";ctx.stroke();
+      var author=ref.author||{};
+      ctx.fillStyle="#111827";ctx.font="700 27px Arial,sans-serif";ctx.fillText(author.name||author.handle||"X",94,boxY+55);
+      ctx.fillStyle="#667085";ctx.font="23px Arial,sans-serif";ctx.fillText(author.handle?"@"+author.handle:"",94,boxY+92);
+      ctx.fillStyle="#344054";ctx.font="27px Arial,sans-serif";
+      canvasWrap(ctx,ref.text||"",94,boxY+138,860,40,3);
+      y=boxY+boxH+24;
+    }
+
+    var media=await loadCardImage(shareCardMedia(post));
+    if(media&&y<1040){
+      var maxW=936,maxH=Math.min(420,1120-y);var ratio=Math.min(maxW/media.width,maxH/media.height);
+      var dw=Math.max(1,media.width*ratio),dh=Math.max(1,media.height*ratio);
+      var dx=72+(maxW-dw)/2;
+      ctx.save();canvasRoundRect(ctx,dx,y,dw,dh,22);ctx.clip();ctx.drawImage(media,dx,y,dw,dh);ctx.restore();
+      y+=dh+24;
+    }
+
+    ctx.strokeStyle="#d8d0c6";ctx.beginPath();ctx.moveTo(72,1208);ctx.lineTo(1008,1208);ctx.stroke();
+    ctx.fillStyle="#667085";ctx.font="25px Arial,sans-serif";ctx.fillText(fmtTime(post.created_at),72,1260);
+    ctx.textAlign="right";ctx.fillText("ooglex.com · 单条动态",1008,1260);ctx.textAlign="left";
+    ctx.fillStyle="#98a2b3";ctx.font="20px Arial,sans-serif";ctx.fillText("公开内容聚合展示 · 内容版权归原发布者与 X 平台所有",72,1304);
+
+    return await new Promise(function(resolve,reject){canvas.toBlob(function(blob){blob?resolve(blob):reject(new Error("card_blob_failed"));},"image/png",0.95);});
+  }
+
   function mediaProxyUrl(raw){
     if(!raw)return "";
     return API_BASE+"/v1/tech-leaders/media?url="+encodeURIComponent(raw);
@@ -867,6 +1015,7 @@
       var pm=post.metrics||{};
       ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
       var source=document.createElement("span");source.className="post-source";source.textContent="公开源 · $0 X API";foot.appendChild(source);
+      appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
       card.appendChild(foot);wrap.appendChild(card);
     }
@@ -995,6 +1144,7 @@
       appendEmbeddedPost(card,post);
       var foot=document.createElement("div");foot.className="post-foot";var pm=post.metrics||{};
       ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);card.appendChild(foot);wrap.appendChild(card);
     });
     timeline.appendChild(wrap);
@@ -1071,6 +1221,47 @@
   });
   freeBtn.addEventListener("click",function(){if(MODE!=="free")navigateMode("free");});
   apiBtn.addEventListener("click",function(){if(MODE!=="api")navigateMode("api");});
+  shareSheet.addEventListener("click",function(e){if(e.target.closest("[data-share-close]"))closeShareSheet();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!shareSheet.hidden)closeShareSheet();});
+  document.getElementById("share-system").addEventListener("click",async function(){
+    if(!activeSharePost)return;
+    var url=singlePostUrl(activeSharePost);
+    var title=((current&&(current.name_zh||current.zh||current.name))||"X")+" · Ooglex";
+    var text=String(activeSharePost.text||"").slice(0,180);
+    try{
+      if(navigator.share){await navigator.share({title:title,text:text,url:url});shareStatus.textContent="已打开系统分享。";}
+      else{await copyText(url);shareStatus.textContent="当前浏览器不支持系统分享，已复制帖子链接。";}
+    }catch(e){if(e&&e.name!=="AbortError")shareStatus.textContent="系统分享未完成，可改用复制帖子链接。";}
+  });
+  document.getElementById("share-copy").addEventListener("click",async function(){
+    if(!activeSharePost)return;
+    try{await copyText(singlePostUrl(activeSharePost));shareStatus.textContent="帖子链接已复制。";}catch(e){shareStatus.textContent="复制失败，请稍后重试。";}
+  });
+  document.getElementById("share-card").addEventListener("click",async function(){
+    if(!activeSharePost)return;
+    shareStatus.textContent="正在生成分享卡片…";
+    try{
+      activeShareCardBlob=await buildShareCard(activeSharePost);
+      if(activeShareCardObjectUrl)URL.revokeObjectURL(activeShareCardObjectUrl);
+      activeShareCardObjectUrl=URL.createObjectURL(activeShareCardBlob);
+      shareCardPreview.src=activeShareCardObjectUrl;shareCardWrap.hidden=false;shareStatus.textContent="分享卡片已生成。";
+    }catch(e){shareStatus.textContent="分享卡片生成失败，请改用帖子链接。";}
+  });
+  document.getElementById("share-card-system").addEventListener("click",async function(){
+    if(!activeShareCardBlob||!activeSharePost)return;
+    var file=new File([activeShareCardBlob],"ooglex-post-"+String(activeSharePost.id||"")+".png",{type:"image/png"});
+    try{
+      if(navigator.canShare&&navigator.share&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Ooglex · 动态分享卡片"});shareStatus.textContent="已打开系统图片分享。";}
+      else{shareStatus.textContent="当前浏览器不支持直接分享图片，可使用“保存图片”。";}
+    }catch(e){if(e&&e.name!=="AbortError")shareStatus.textContent="图片分享未完成。";}
+  });
+  document.getElementById("share-card-save").addEventListener("click",function(){
+    if(!activeShareCardBlob||!activeSharePost)return;
+    var a=document.createElement("a");var u=URL.createObjectURL(activeShareCardBlob);
+    a.href=u;a.download="ooglex-post-"+String(activeSharePost.id||"")+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1200);
+    shareStatus.textContent="分享卡片已保存。";
+  });
+
   timeline.addEventListener("click",function(e){
     if(e.target.closest("[data-retry-x]"))location.reload();
     if(e.target.closest("[data-free-mode]"))navigateMode("free");
