@@ -1670,30 +1670,45 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/free-feed/v6/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v7/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
   const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
-  const cachedRequestedLimit = Math.max(
-    cachedPosts.length,
-    Number(cached && cached.requested_limit) || 0
-  );
+  // A previous request target is not proof that the upstream actually returned
+  // that many posts. Only the number of posts physically cached counts as
+  // fulfilled history depth.
+  const cachedCapacity = cachedPosts.length;
 
-  if (cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS && cachedRequestedLimit >= limit) {
-    return { ...cached, posts: cachedPosts.slice(0, limit), cache: { status: "fresh", age_ms: age } };
+  if (cachedPosts.length && age <= TECH_FREE_FEED_TTL_MS && cachedCapacity >= limit) {
+    return {
+      ...cached,
+      requested_limit: cachedCapacity,
+      requested_target: Number(cached && cached.requested_target) || cachedCapacity,
+      posts: cachedPosts.slice(0, limit),
+      cache: { status: "fresh", age_ms: age }
+    };
   }
 
   try {
     const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
     const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
-    const persisted = { ...fresh, requested_limit: requestedLimit };
+    const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
+    const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
+    const persisted = {
+      ...fresh,
+      requested_limit: fulfilledLimit,
+      requested_target: requestedLimit,
+      returned_items: returnedPosts.length
+    };
     await writeJson(env.PRO_DATA, key, persisted);
-    return { ...persisted, posts: persisted.posts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
+    return { ...persisted, posts: returnedPosts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
     if (cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS) {
       return {
         ...cached,
+        requested_limit: cachedPosts.length,
+        requested_target: Number(cached && cached.requested_target) || cachedPosts.length,
         posts: cachedPosts.slice(0, limit),
         cache: { status: "stale", age_ms: age, reason: err && err.code ? err.code : "x_public_feed_error" }
       };
@@ -1712,7 +1727,7 @@ async function getFreeTechLeaderPost(handle, postId, env) {
     throw err;
   }
 
-  const key = `tech-leaders/free-feed/v6/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v7/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
   const cachedHit = cachedPosts.find((post) => String(post && post.id || "") === id);
