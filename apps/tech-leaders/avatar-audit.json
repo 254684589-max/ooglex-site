@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-20T12:49:06Z",
+  "checked_at": "2026-09-20T12:59:37Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 110,
@@ -1044,7 +1044,7 @@
       "ok": true,
       "status": "x_original_proxy",
       "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2",
+      "source_transport": "unavatar_x-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "fredwilson",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
