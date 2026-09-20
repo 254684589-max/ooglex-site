@@ -115,42 +115,6 @@ def install_rich_public_previews() -> None:
     copy_tree(RICH_PREVIEW / "finance-column", OUT / "apps" / "finance-column")
 
 
-def install_terminal_curve_snapshot() -> None:
-    """Publish only the current Treasury curve cross-section for the public terminal."""
-    import json
-    src = ROOT / "apps" / "macro-radar" / "curve.json"
-    if not src.exists():
-        raise SystemExit("missing source for terminal curve snapshot: apps/macro-radar/curve.json")
-    obj = json.loads(src.read_text(encoding="utf-8"))
-    tenors = []
-    for row in obj.get("tenors") or []:
-        if not isinstance(row, dict):
-            continue
-        tenors.append({
-            "id": row.get("id"), "label": row.get("label"), "months": row.get("months"),
-            "value": row.get("value"), "asOf": row.get("asOf"), "current": bool(row.get("current")),
-        })
-    spreads = []
-    for row in obj.get("spreads") or []:
-        if not isinstance(row, dict):
-            continue
-        spreads.append({
-            "id": row.get("id"), "long": row.get("long"), "short": row.get("short"),
-            "asOf": row.get("asOf"), "value": row.get("value"), "inverted": bool(row.get("inverted")),
-        })
-    snap = {
-        "schemaVersion": 1,
-        "updatedAt": obj.get("updatedAt"), "asOf": obj.get("asOf"),
-        "source": obj.get("source"), "sourceUrl": obj.get("sourceUrl"),
-        "frequency": obj.get("frequency") or "daily",
-        "note": "公开终端快照：仅当前期限结构与当前利差；不含历史序列，不插值。",
-        "tenors": tenors, "spreads": spreads,
-        "ooglexAccess": {"mode": "public-terminal-snapshot", "historyIncluded": False},
-    }
-    dst = OUT / "apps" / "finance-terminal" / "curve-snapshot.json"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_text(json.dumps(snap, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-
 def inject_rich_access_adapter() -> None:
     """Keep original HTML/UI and install entitlement interception before app.js."""
     snippet = (
@@ -225,7 +189,6 @@ def build(protect_pro: bool) -> None:
 
     if protect_pro:
         install_rich_public_previews()
-        install_terminal_curve_snapshot()
         inject_rich_access_adapter()
 
         leaked = []
