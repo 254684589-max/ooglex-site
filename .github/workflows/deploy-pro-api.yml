@@ -175,6 +175,9 @@ jobs:
             printf '%s' "$elon10" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON public top10 refresh check:"); [print("  {} | {} | {}".format(x.get("created_at"),x.get("id"),(x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:140])) for x in p[:10]]'
           fi
 
+          echo "ELON exact status probe:"
+          curl -fsS --connect-timeout 5 --max-time 20 "https://api.fxtwitter.com/status/2101601873115681037" | python -c 'import json,sys; d=json.load(sys.stdin); print("keys",sorted(d.keys())); t=d.get("tweet") or d.get("status") or d; print("id",t.get("id"),"text",repr((t.get("text") or "")[:160])); print("media",t.get("media")); print("url",t.get("url"))' || true
+
           elon_api="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/feed?leader=musk&limit=10" || true)"
           if [ -n "$elon_api" ]; then
             printf '%s' "$elon_api" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON official-cache top10 check: cache={}".format(d.get("cache"))); [print("  {} | {} | {}".format(x.get("created_at"),x.get("id"),(x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:140])) for x in p[:10]]'
