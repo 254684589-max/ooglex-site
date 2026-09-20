@@ -183,7 +183,7 @@ jobs:
 
           feed100="$(curl -fsS --connect-timeout 5 --max-time 35 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=sundarpichai&limit=100" || true)"
           if [ -n "$feed100" ]; then
-            printf '%s' "$feed100" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert d.get("uses_x_api") is False; assert len(p)<=100; assert int(d.get("requested_limit",len(p)))<=len(p); print(f"Free feed capacity semantics OK: {len(p)} posts, fulfilled={d.get(\"requested_limit\")}, target={d.get(\"requested_target\")}")' || failed=1
+            printf '%s' "$feed100" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert d.get("uses_x_api") is False; assert len(p)<=100; assert int(d.get("requested_limit",len(p)))<=len(p); print("Free feed capacity semantics OK: {} posts, fulfilled={}, target={}".format(len(p), d.get("requested_limit"), d.get("requested_target")))' || failed=1
             post_id="$(printf '%s' "$feed100" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print(p[0].get("id","") if p else "")')"
             if [ -n "$post_id" ]; then
               single="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/post?handle=sundarpichai&id=$post_id" || true)"
