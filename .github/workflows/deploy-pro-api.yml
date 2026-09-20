@@ -152,6 +152,9 @@ jobs:
               if [ "$handle" = "ZLQ6600E" ]; then
                 printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert len(p)<=3; times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("ZLQ freshness diagnostics: source={}, cache={}".format(d.get("source"), d.get("cache"))); [print("  {} | {} | media={} | {}".format(x.get("created_at"), x.get("id"), len(x.get("media") or []), (x.get("text") or "").replace("\n"," ")[:70])) for x in p]' || failed=1
               fi
+              if [ "$handle" = "elonmusk" ]; then
+                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); print("ELON latest diagnostics: source={}, cache={}".format(d.get("source"), d.get("cache"))); [print("  {} | {} | {}".format(x.get("created_at"), x.get("id"), (x.get("text") or ((x.get("embedded_post") or {}).get("text")) or "").replace("\n"," ")[:120])) for x in p[:3]]' || failed=1
+              fi
             else
               echo "::warning::Free feed trial for @$handle returned HTTP $code: $body"
             fi
