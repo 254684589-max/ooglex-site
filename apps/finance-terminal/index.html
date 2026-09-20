@@ -136,7 +136,7 @@
     </div>
     <footer data-src="macro">—</footer>
   </section>
-  <section class="t-panel w2" data-fn="CURVE 曲线" id="p-curve">
+  <section class="t-panel w2 h2" data-fn="CURVE 曲线" id="p-curve">
     <header><span class="mn">CURVE</span><h3>收益率曲线 Yield Curve</h3><span class="sub" data-sub="curve">—</span></header>
     <div class="bd">
       <div class="t-subtabs" role="group" aria-label="曲线视图">
@@ -272,7 +272,7 @@
 <script src="/assets/terminal/registry.js?v=7a071288"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/overview.js?v=20260920-curvefix1"></script>
+<script src="/assets/terminal/overview.js?v=ca1f8bd4"></script>
 <script src="/assets/terminal/render.js?v=24fdb399"></script>
 <script>
 /* 终端监控首页装配：只声明「哪个面板用哪个渲染器」，口径与算法都在 /assets/terminal/。 */
@@ -423,21 +423,12 @@
       });
     })();
 
-    /* 曲线视图：公开终端一定提供当前形态。完整历史属于受保护研究数据；
-       当前页没有历史时，历史相关按钮明确禁用，不以空白或伪数据代替。 */
+    /* 曲线三视图：当前形态 / 随时间 / 期限价差历史。
+       历史数据本来就在 curve.json 里（11 个期限 × 260 天 + 两条利差的逐日序列），
+       之前模型层把它丢掉了，现在带上来。 */
     (function () {
       var H = M.rates.history, svg = $("#svg-curve");
       var LB = M.rates.tenors.map(function (t) { return { label:t.label, id:t.id }; });
-      if (!H || !H.dates || !H.dates.length) {
-        $("[data-cv]").forEach(function (btn) {
-          var mode = btn.getAttribute("data-cv");
-          if (mode === "time" || mode === "sprd") {
-            btn.disabled = true;
-            btn.setAttribute("aria-disabled", "true");
-            btn.title = "公开终端当前快照不包含历史序列";
-          }
-        });
-      }
       function snapAt(i) {
         return LB.map(function (t) {
           var col = H.values[t.id] || [];
@@ -449,8 +440,7 @@
         R.curve("#svg-curve", M.rates.tenors, { w:620, h:160, l:44, b:20 });
         R.spreadLegend("#lg-spread", M.rates.spreads);
         var inv = M.rates.spreads.filter(function (x) { return x.inverted; });
-        var availableTenors = M.rates.tenors.filter(function (t) { return isNum(t.value); }).length;
-        set("#n-curve", "当前 " + availableTenors + " 个期限有有效读数；某期限当日无观测即留空，" +
+        set("#n-curve", "十一个期限各取一条 FRED 官方序列、共享日期轴；某期限当日无观测即留空，" +
           "不插值、不用相邻期限顶替。" +
           (inv.length ? "当前倒挂：" + inv.map(function (x) { return x.id; }).join("、") + "。"
                       : "当前这两条利差都不倒挂。") +
