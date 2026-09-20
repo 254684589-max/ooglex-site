@@ -153,7 +153,7 @@
     .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
     .post-source{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:rgba(57,135,229,.06);color:var(--blue);font:10px/1 var(--mono)}
     .post-share-btn{appearance:none;border:0;background:transparent;padding:0;color:var(--blue);font:inherit;cursor:pointer}.post-share-btn:hover{text-decoration:underline}.post-share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px}
-    .share-sheet[hidden]{display:none}.share-sheet{position:fixed;inset:0;z-index:1000;display:grid;align-items:end;justify-items:center;padding:18px}.share-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.38);backdrop-filter:blur(4px)}.share-panel{position:relative;width:min(520px,100%);max-height:min(82vh,760px);overflow:auto;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 24px 80px rgba(0,0,0,.28)}.share-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.share-head b{font-size:16px}.share-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:22px;cursor:pointer}.share-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}.share-actions button,.share-card-actions button{min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--ink);font-weight:700;cursor:pointer}.share-actions button:hover,.share-card-actions button:hover{background:rgba(57,135,229,.12)}.share-status{min-height:20px;margin-top:10px;font-size:12px;color:var(--faint)}.share-card-wrap{margin-top:12px}.share-card-wrap img{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#f7f2ea}.share-card-actions{display:flex;gap:9px;margin-top:10px}.share-card-actions button{flex:1}.share-note{margin-top:10px;font-size:11px;line-height:1.5;color:var(--faint)}
+    .share-sheet[hidden]{display:none}.share-sheet{position:fixed;inset:0;z-index:1000;display:grid;align-items:end;justify-items:center;padding:18px}.share-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.38);backdrop-filter:blur(4px)}.share-panel{position:relative;width:min(520px,100%);max-height:min(82vh,760px);overflow:auto;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 24px 80px rgba(0,0,0,.28)}.share-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.share-head b{font-size:16px}.share-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:22px;cursor:pointer}.share-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-top:16px}.share-actions button,.share-card-actions button{min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--ink);font-weight:700;cursor:pointer}.share-actions button:hover,.share-card-actions button:hover{background:rgba(57,135,229,.12)}.share-status{min-height:20px;margin-top:10px;font-size:12px;color:var(--faint)}.share-card-wrap{margin-top:12px}.share-card-wrap img{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#f7f2ea}.share-card-actions{display:flex;gap:9px;margin-top:10px}.share-card-actions button{flex:1}.share-note{margin-top:10px;font-size:11px;line-height:1.5;color:var(--faint)}
     .embedded-post{margin-top:13px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018);overflow:hidden}.embedded-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.embedded-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:rgba(255,255,255,.05)}.embedded-who{min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.embedded-name{font-size:12px;font-weight:700;color:var(--ink)}.embedded-handle{font:10.5px/1.2 var(--mono);color:var(--faint)}.embedded-post .post-text{font-size:13px;line-height:1.58}.embedded-post .post-media{margin-top:9px}.embedded-post .post-media img,.embedded-post .post-media video{max-height:330px;border-radius:10px}.embedded-link{display:inline-block;margin-top:9px;color:var(--blue);font:10.5px/1.2 var(--mono)}
     .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
@@ -245,6 +245,7 @@
       <div class="share-head"><b id="share-title">分享这条动态</b><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
         <button type="button" id="share-wechat">打开单帖</button>
+        <button type="button" id="share-video" hidden>分享视频</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
       </div>
@@ -850,9 +851,22 @@
     shareSheet.hidden=true;
     document.body.style.overflow="";
   }
+  function shareVideoMedia(post){
+    function pick(p){
+      var list=p&&Array.isArray(p.media)?p.media:[];
+      for(var i=0;i<list.length;i++){
+        var m=list[i]||{},type=String(m.type||"").toLowerCase();
+        if((type==="video"||type==="animated_gif"||type==="gif")&&m.video_url)return m;
+      }
+      return null;
+    }
+    return pick(post)||pick(post&&post.embedded_post);
+  }
   function openShareSheet(post){
     activeSharePost=post;
     activeShareCardBlob=null;
+    var videoBtn=document.getElementById("share-video");
+    if(videoBtn)videoBtn.hidden=!shareVideoMedia(post);
     if(activeShareCardObjectUrl){URL.revokeObjectURL(activeShareCardObjectUrl);activeShareCardObjectUrl="";}
     shareCardWrap.hidden=true;shareCardPreview.removeAttribute("src");
     shareStatus.textContent="";
@@ -1349,6 +1363,29 @@
     if(!activeSharePost)return;
     shareStatus.textContent="";
     window.location.href=singlePostUrl(activeSharePost);
+  });
+
+  document.getElementById("share-video").addEventListener("click",async function(){
+    if(!activeSharePost)return;
+    var media=shareVideoMedia(activeSharePost);
+    if(!media||!media.video_url){shareStatus.textContent="这条动态没有可直接分享的视频。";return;}
+    shareStatus.textContent="正在准备视频…";
+    try{
+      var res=await fetch(mediaProxyUrl(media.video_url),{cache:"no-store"});
+      if(!res.ok)throw new Error("video_fetch_"+res.status);
+      var blob=await res.blob();
+      var type=blob.type&&blob.type.indexOf("video/")===0?blob.type:"video/mp4";
+      var file=new File([blob],"ooglex-video-"+String(activeSharePost.id||"")+".mp4",{type:type});
+      if(navigator.canShare&&navigator.share&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:String(activeSharePost.text||"Ooglex video")});
+        shareStatus.textContent="已打开系统视频分享。";
+      }else{
+        shareStatus.textContent="当前浏览器不支持直接分享视频；可打开单帖，分享后的页面仍可直接播放视频。";
+      }
+    }catch(e){
+      if(e&&e.name==="AbortError")return;
+      shareStatus.textContent="视频直接分享未完成；可打开单帖，分享后的页面仍可直接播放视频。";
+    }
   });
 
   document.getElementById("share-copy").addEventListener("click",async function(){
