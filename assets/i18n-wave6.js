@@ -481,8 +481,8 @@
     "免费模式：": "Free mode: ",
     "数据模式：": "Data mode: ",
     "头像：": "Avatars: ",
-    "硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；默认显示最新 10 条，点击“加载更多 10 条”后单次会话最多显示 20 条，不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。":
-      "api.x.com is hard-blocked in free mode. Native feeds and profile data use only public sources and Ooglex cache, consuming no X API credits. The latest 10 posts are shown by default; after selecting “Load 10 more”, a session shows at most 20 posts, with no permanent post archive. If native public sources are unavailable the page automatically falls back to the official embed.",
+    "硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；支持原帖、回复、引用与转发，引用/转发会尽量保留被引用原帖的作者、正文与媒体；默认显示最新 10 条，每次继续加载 10 条，单次会话最多显示 100 条（实际数量取决于公开源可提供的数据），不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。":
+      "api.x.com is hard-blocked in free mode. Native feeds and profile data use only public sources and Ooglex cache, consuming no X API credits. Original posts, replies, quotes and reposts are supported, with quoted/reposted authors, text and media preserved when the public source provides them. The latest 10 posts are shown by default, then 10 more per load, up to 100 posts per session when public sources provide enough data. No permanent post archive is created. If native public sources are unavailable the page automatically falls back to the official embed.",
     "仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。":
       "only after you switch to it manually does the existing Cloudflare + X API backend get called. That enables Ooglex's own rendering, plus later translation, summarisation and structured analysis — and it does consume X API credits.",
     "优先读取公开 X 头像；若第三方头像服务不可用，会自动回退为姓名首字母头像，不影响名单与时间线使用。":
