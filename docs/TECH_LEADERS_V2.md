@@ -266,6 +266,7 @@ The native free timeline now follows a progressive display policy:
 - A single page session displays at most 100 posts per selected account.
 - The browser requests up to 100 free-feed items for the selected account, while inserting only 10 at a time into the DOM to protect mobile performance.
 - The free backend requests X public syndication and FxTwitter in parallel, de-duplicates by post ID, prefers the richer copy when the same post is returned by both sources, and sorts the merged result newest-first.
+- FxTwitter list responses are cursor-paginated in 20-post pages; the backend follows `cursor.bottom` for up to five pages to reach the 100-post session ceiling when upstream data is available.
 - No permanent post archive is created. R2 remains a replaceable cache, with a 10-minute fresh TTL and 12-hour stale fallback.
 - The actual number available can be below 100 when upstream public sources expose fewer posts.
 - Zheng Yi's `local_only` profile remains unchanged and continues to display only the first local Macro Pulse post.
