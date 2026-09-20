@@ -70,7 +70,7 @@
       soft("asset-tracker/data.json"),
       soft("asset-tracker/intraday.json"),
       soft("macro-radar/data.json"),
-      soft("macro-radar/curve.json"),
+      soft("finance-terminal/curve-snapshot.json"),
       soft("macro-radar/history.json"),
       soft("macro-radar/series.json"),
       soft("fear-greed/data.json"),
@@ -141,7 +141,7 @@
           });
       }
 
-      /* 利率：曲线 + 期限差（5s30s 由曲线现算） */
+      /* 利率：公开终端只读当前曲线快照；完整历史仍保留在受保护的 macro-radar/curve.json。 */
       var rates = { tenors: [], spreads: [], asOf: null, source: null, error: null };
       if (curve && !curve.__error) {
         rates.tenors = (curve.tenors || []).filter(function (t) { return isNum(t.value); })
