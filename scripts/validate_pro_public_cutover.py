@@ -112,6 +112,24 @@ def main() -> None:
     if int(hmark.get("visiblePoints") or 0) > max(1, math.ceil(int(hmark.get("fullPoints") or 0) * RATIO)):
         fail("Macro Risk history preview exceeds 10%")
 
+    # Finance Terminal gets a deliberately narrow public Treasury snapshot.
+    # It must exist (otherwise US Rates / Yield Curve 404) and must never carry protected history.
+    curve_snap = read_json("apps/finance-terminal/curve-snapshot.json")
+    access = curve_snap.get("ooglexAccess") if isinstance(curve_snap, dict) else None
+    if not isinstance(access, dict) or access.get("mode") != "public-terminal-snapshot":
+        fail("Finance Terminal curve snapshot marker missing")
+    if access.get("historyIncluded") is not False:
+        fail("Finance Terminal curve snapshot must declare historyIncluded=false")
+    if "history" in curve_snap:
+        fail("Finance Terminal curve snapshot leaked history")
+    for row in curve_snap.get("spreads") or []:
+        if not isinstance(row, dict):
+            continue
+        for forbidden in ("dates", "values", "series", "history"):
+            if forbidden in row:
+                fail("Finance Terminal spread snapshot leaked " + forbidden)
+    if len(curve_snap.get("tenors") or []) < 3:
+        fail("Finance Terminal curve snapshot has too few current tenors")
     # Finance Column: public Pages must receive generated ~10% JS previews,
     # never the authoring-time full arch.js / diagrams.js.
     finance_arch = (SITE / "apps/finance-column/arch.js").read_text(encoding="utf-8")
