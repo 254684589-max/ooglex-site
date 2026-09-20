@@ -25,10 +25,10 @@
     "Microsoft": "microsoft", "01.AI": "01ai", "Reka AI": "reka", "AI21 Labs": "ai21"
   };
   var TABS = [
-    { key: "combo", label: "🏆 综合" },
+    { key: "combo", label: "🏆 多源共识" },
     { key: "arena", label: "⚔️ 竞技场 Elo" },
     { key: "livebench", label: "🧪 LiveBench" },
-    { key: "aa", label: "📊 智能指数" },
+    { key: "aa", label: "📊 AA 智能指数" },
     { key: "open", label: "🔓 开源模型" }
   ];
   var AXES = [
@@ -36,7 +36,7 @@
     { key: "livebench", short: "LiveB", color: "var(--lb)", fmt: function (v) { return v.toFixed(1); } },
     { key: "aa", short: "智能", color: "var(--aa)", fmt: function (v) { return v.toFixed(1); } }
   ];
-  var W = { arena: 0.4, livebench: 0.3, aa: 0.3 };
+  var W = { arena: 0.20, livebench: 0.30, aa: 0.50 };
 
   var DATA = null, tab = "combo", query = "";
 
@@ -108,8 +108,9 @@
   function mainScore(m) {
     if (tab === "arena") return { v: Math.round(m.arena), lab: "Arena Elo" };
     if (tab === "livebench") return { v: m.livebench.toFixed(1), lab: "LiveBench 均分" };
-    if (tab === "aa") return { v: m.aa.toFixed(1), lab: "智能指数" };
-    return { v: m._combo.toFixed(1), lab: "综合 · 基于 " + m._axes + " 源" };
+    if (tab === "aa") return { v: m.aa.toFixed(1), lab: "AA 智能指数" };
+    var cov = isNum(m.confidence) ? " · " + Math.round(m.confidence) + "%覆盖" : "";
+    return { v: m._combo.toFixed(1), lab: "共识 · " + m._axes + "源" + cov };
   }
 
   function render() {
@@ -184,7 +185,7 @@
     var openTop = byCombo.filter(function (m) { return m.open; })[0];
     var cn = d.models.filter(function (m) { return m.flag === "🇨🇳"; }).length;
     var h = "<span>覆盖 <b>" + d.models.length + "</b> 个模型</span>";
-    if (byCombo[0]) h += "<span>综合第一 <b>" + esc(byCombo[0].name) + "</b></span>";
+    if (byCombo[0]) h += "<span>共识第一 <b>" + esc(byCombo[0].name) + "</b></span>";
     if (openTop) h += "<span>开源第一 <b>" + esc(openTop.name) + "</b></span>";
     h += "<span>中国模型 <b>" + cn + "</b> 个</span>";
     h += "<span>当前综合 <b>" + active.length + " 源</b></span>";
@@ -193,7 +194,7 @@
     var titleSub=document.querySelector(".title p");
     if(titleSub){
       titleSub.textContent = active.map(function(k){return sourceNames[k];}).join(" · ") +
-        " —— 当前可用数据源综合，自动更新";
+        " —— 排名百分位多源共识，自动更新";
     }
 
     var cards = [];
@@ -204,7 +205,9 @@
         cards.push({
           name: src.name,
           url: src.url,
-          desc: src.desc + (meta.ok===false ? " · 当前未参与综合" : "")
+          desc: src.desc +
+            (meta.ok===false ? " · 当前未参与共识" : "") +
+            (k==="aa" && meta.mode==="verified_snapshot_fallback" ? " · 核验快照 " + (meta.snapshotDate||"") : "")
         });
       }
     });
@@ -218,10 +221,9 @@
     if(foot){
       var inactive=["arena","livebench","aa"].filter(function(k){return d.axisStatus&&d.axisStatus[k]===false;});
       foot.innerHTML =
-        "数据自动刷新；页面仅使用本次成功获取的最新数据源参与综合排名，不会用旧分数填补失败数据源。<br>" +
-        "当前综合口径：" + active.map(function(k){return sourceNames[k];}).join(" + ") + "。" +
-        (inactive.length ? " 暂未参与：" + inactive.map(function(k){return sourceNames[k];}).join("、") + "。<br>" : "<br>") +
-        "LMArena 为人类偏好对战；LiveBench 为客观题评测；Artificial Analysis 为独立综合指数。不同榜单绝对值不可直接横比；综合分仅用于多源参考。";
+        "Ooglex 多源共识：先把各来源转换为榜内排名百分位，再合成共识分，避免 Elo、百分制与 Intelligence Index 直接混加。<br>" +
+        "当前权重：Artificial Analysis 50% · LiveBench 30% · LMArena 20%。至少两个独立来源才进入主榜；缺源不会重新放大剩余权重，而会向中性分收缩。<br>" +
+        "LMArena 代表大规模真人偏好；LiveBench 代表客观任务能力；Artificial Analysis 覆盖代理、编程、通用与科学推理。该榜是 Ooglex 多源综合参考，不等同于任何单一机构的“官方全球排名”。";
     }
   }
 
