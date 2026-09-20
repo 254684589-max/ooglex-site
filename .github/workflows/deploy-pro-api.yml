@@ -194,7 +194,7 @@ jobs:
               printf '%s' "$single" | python -c 'import json,sys,os; d=json.load(sys.stdin); assert d.get("uses_x_api") is False; assert str(d.get("post",{}).get("id",""))==os.environ["POST_ID"]; print("Single-post share endpoint OK")' || failed=1
               share_html="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/share/tech-leaders/sundarpichai/$post_id" || true)"
               if [ -n "$share_html" ]; then
-                printf '%s' "$share_html" | python -c 'import re,sys,html; s=sys.stdin.read(); m=re.search(r"<meta property=\"og:title\" content=\"([^\"]*)\">",s); assert m and html.unescape(m.group(1)).strip(); assert "科技领袖实时动态流" not in html.unescape(m.group(1)); print("Original-post social preview metadata OK:", html.unescape(m.group(1))[:80])' || failed=1
+                printf '%s' "$share_html" | python -c 'import re,sys,html; s=sys.stdin.read(); m=re.search(r"<meta property=\"og:title\" content=\"([^\"]*)\">",s); assert m and html.unescape(m.group(1)).strip(); assert "科技领袖实时动态流" not in html.unescape(m.group(1)); assert "class=\"author-avatar\"" in s; assert "/v1/tech-leaders/avatar?" in s; print("Original-post social preview metadata + author avatar OK:", html.unescape(m.group(1))[:80])' || failed=1
               else
                 echo "::error::Single-post social preview returned no body"
                 failed=1
