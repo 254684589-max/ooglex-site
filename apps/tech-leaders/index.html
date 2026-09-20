@@ -121,6 +121,17 @@
     #timeline[data-state="fallback"]{min-height:0}
     .loading,.fallback,.api-state{padding:48px 26px;text-align:center;color:var(--dim)}
     .loading b,.fallback b,.api-state b{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
+    .feed-skeleton{padding:4px 0}
+    .feed-skeleton-card{padding:18px;border-bottom:1px solid var(--line)}
+    .feed-skeleton-card:last-child{border-bottom:0}
+    .feed-skeleton-head{display:flex;align-items:center;gap:11px}
+    .feed-skeleton-dot,.feed-skeleton-line{background:rgba(128,128,128,.14);animation:feedPulse 1.05s ease-in-out infinite alternate}
+    .feed-skeleton-dot{width:38px;height:38px;border-radius:50%;flex:0 0 38px}
+    .feed-skeleton-lines{flex:1;display:grid;gap:8px}
+    .feed-skeleton-line{height:10px;border-radius:999px}
+    .feed-skeleton-line.short{width:34%}.feed-skeleton-line.mid{width:62%}
+    .feed-skeleton-body{display:grid;gap:9px;margin-top:16px}
+    @keyframes feedPulse{from{opacity:.38}to{opacity:.78}}
     .fallback-actions{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:18px}
     .fallback a,.fallback button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 16px;border-radius:8px;font:700 13px/1.2 inherit;cursor:pointer}
     .fallback a{background:#f2f4f7;color:#111}
@@ -709,6 +720,53 @@
     if(ta!==tb)return tb-ta;
     return String(b&&b.id||"").localeCompare(String(a&&a.id||""));
   }
+  function freeFeedBrowserCacheKey(p){
+    return "ooglex-tech-feed-v3:" + String(p&&p.handle||"").toLowerCase();
+  }
+  function freeFeedBrowserFreshMs(p){
+    return p&&p.id==="zhengyi-temp" ? 60*1000 : 5*60*1000;
+  }
+  function freeFeedBrowserStaleMs(p){
+    return p&&p.id==="zhengyi-temp" ? 15*60*1000 : 12*60*60*1000;
+  }
+  function readFreeFeedBrowserCache(p){
+    try{
+      var raw=localStorage.getItem(freeFeedBrowserCacheKey(p));
+      if(!raw)return null;
+      var box=JSON.parse(raw);
+      if(!box||!box.saved_at||!box.data||!Array.isArray(box.data.posts)||!box.data.posts.length)return null;
+      box.age_ms=Math.max(0,Date.now()-Number(box.saved_at||0));
+      return box;
+    }catch(e){return null;}
+  }
+  function writeFreeFeedBrowserCache(p,data){
+    try{
+      if(!p||!p.handle||!data||!Array.isArray(data.posts)||!data.posts.length)return;
+      localStorage.setItem(freeFeedBrowserCacheKey(p),JSON.stringify({saved_at:Date.now(),data:data}));
+    }catch(e){}
+  }
+  function freeFeedIds(data){
+    return (data&&Array.isArray(data.posts)?data.posts:[]).map(function(x){return String(x&&x.id||"");}).join(",");
+  }
+  function renderFeedSkeleton(){
+    var count=current&&current.timeline_display_limit?Math.min(3,Number(current.timeline_display_limit)||3):3;
+    var html='<div class="feed-skeleton" aria-label="正在加载公开时间线">';
+    for(var i=0;i<count;i++){
+      html+='<div class="feed-skeleton-card"><div class="feed-skeleton-head"><span class="feed-skeleton-dot"></span><div class="feed-skeleton-lines"><span class="feed-skeleton-line short"></span><span class="feed-skeleton-line mid"></span></div></div><div class="feed-skeleton-body"><span class="feed-skeleton-line"></span><span class="feed-skeleton-line mid"></span></div></div>';
+    }
+    html+='</div>';
+    timeline.insertAdjacentHTML("beforeend",html);
+  }
+  async function fetchFreeFeedOnce(p,limit,timeoutMs){
+    var ctl=new AbortController();
+    var timer=setTimeout(function(){ctl.abort();},timeoutMs||4000);
+    try{
+      var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit,{signal:ctl.signal,cache:"no-store"});
+      var data=await res.json().catch(function(){return {};});
+      if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
+      return data;
+    }finally{clearTimeout(timer);}
+  }
   function postTypeLabel(post){
     var t=String(post&&post.post_type||"post").toLowerCase();
     if(t==="reply")return "回复";
@@ -978,7 +1036,8 @@
     return true;
   }
 
-  function renderFreeFeed(feed){
+  function renderFreeFeed(feed,options){
+    options=options||{};
     clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
     sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
@@ -1104,8 +1163,8 @@
     // Keep the fast 20-item first paint, but start preparing deeper history
     // after the page becomes interactive so 21–100 are usually ready before
     // the reader reaches the bottom.
-    if(posts.length<maxPosts&&!remoteExhausted){
-      setTimeout(function(){fetchMoreInBackground();},350);
+    if(!options.skipPrefetch&&posts.length<maxPosts&&!remoteExhausted){
+      setTimeout(function(){fetchMoreInBackground();},650);
     }
     return true;
   }
@@ -1121,19 +1180,36 @@
       timeline.setAttribute("data-state","ready");
       return;
     }
-    var loading=document.createElement("div");loading.className="api-state";loading.innerHTML="<b>正在读取免费公开时间线</b><div>不调用 X API，不消耗 X API Credits。</div>";timeline.appendChild(loading);
+
+    var selected=current;
+    var initialLimit=Math.max(1,Math.min(100,Number(selected&&selected.timeline_fetch_limit)||10));
+    var cached=readFreeFeedBrowserCache(selected);
+    var shownCache=false;
+    if(cached&&cached.age_ms<=freeFeedBrowserStaleMs(selected)){
+      renderFreeFeed(cached.data,{skipPrefetch:true});
+      shownCache=true;
+      if(cached.age_ms<=freeFeedBrowserFreshMs(selected))return;
+    }else{
+      renderFeedSkeleton();
+    }
+
     try{
-      var ctl=new AbortController();
-      var timer=setTimeout(function(){ctl.abort();},12000);
-      try{
-        var initialLimit=Math.max(1,Math.min(100,Number(current&&current.timeline_fetch_limit)||20));
-        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit="+initialLimit,{signal:ctl.signal,cache:"no-store"});
-        var data=await res.json().catch(function(){return {};});
-        if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
+      var data=await fetchFreeFeedOnce(selected,initialLimit,4000);
+      writeFreeFeedBrowserCache(selected,data);
+      if(!current||current.id!==selected.id)return;
+      if(!shownCache||freeFeedIds(data)!==freeFeedIds(cached&&cached.data)){
         renderFreeFeed(data);
-        return;
-      }finally{clearTimeout(timer);}
+      }else{
+        sourceBadge.textContent="免费模式 · 0 X API Credits";
+        timeline.setAttribute("data-state","ready");
+      }
+      return;
     }catch(e){
+      if(shownCache){
+        sourceBadge.textContent="免费缓存 · 后台源暂慢";
+        timeline.setAttribute("data-state","ready");
+        return;
+      }
       sourceBadge.textContent="X Embed 回退 · $0 API";
       bootEmbed();
     }
