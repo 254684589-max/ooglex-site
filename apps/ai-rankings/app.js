@@ -176,7 +176,7 @@
       stTxt.textContent = "快照数据 · 等待自动更新";
     } else {
       st.className = "status live";
-      stTxt.textContent = "每日数据 · 更新于 " + ago;
+      stTxt.textContent = "自动更新 · " + (ago || d.asOf || "");
     }
 
     var byCombo = d.models.slice().filter(function (m) { return isNum(m._combo); })
