@@ -262,8 +262,10 @@ Changes:
 The native free timeline now follows a progressive display policy:
 
 - Show the latest 10 posts by default.
-- If more are available, show one `加载更多 10 条` / `Load 10 more` button.
-- A single page session displays at most 20 posts per selected account.
-- The browser requests at most 20 free-feed items for the selected account; media for the second batch is not inserted into the DOM until the user clicks the button.
-- No permanent post archive is created. R2 remains a replaceable cache, with the existing 30-minute fresh TTL and 48-hour stale fallback.
+- If more are available, keep a progressive `加载更多 10 条` / `Load 10 more` control until the returned set is exhausted.
+- A single page session displays at most 100 posts per selected account.
+- The browser requests up to 100 free-feed items for the selected account, while inserting only 10 at a time into the DOM to protect mobile performance.
+- The free backend requests X public syndication and FxTwitter in parallel, de-duplicates by post ID, prefers the richer copy when the same post is returned by both sources, and sorts the merged result newest-first.
+- No permanent post archive is created. R2 remains a replaceable cache, with a 10-minute fresh TTL and 12-hour stale fallback.
+- The actual number available can be below 100 when upstream public sources expose fewer posts.
 - Zheng Yi's `local_only` profile remains unchanged and continues to display only the first local Macro Pulse post.
