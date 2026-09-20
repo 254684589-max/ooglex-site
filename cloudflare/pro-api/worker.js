@@ -1702,6 +1702,54 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   }
 }
 
+async function getFreeTechLeaderPost(handle, postId, env) {
+  const normalized = normalizeXHandle(handle);
+  const id = String(postId || "").trim();
+  if (!normalized || !/^\d{10,25}$/.test(id)) {
+    const err = new Error("invalid_free_post");
+    err.code = "invalid_free_post";
+    err.status = 400;
+    throw err;
+  }
+
+  const key = `tech-leaders/free-feed/v6/${normalized.toLowerCase()}.json`;
+  const cached = await readJson(env.PRO_DATA, key);
+  const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+  const cachedHit = cachedPosts.find((post) => String(post && post.id || "") === id);
+  if (cachedHit) {
+    return {
+      schema_version: 1,
+      source: cached.source || "ooglex_cache",
+      uses_x_api: false,
+      handle: normalized,
+      fetched_at: cached.fetched_at || null,
+      post: cachedHit,
+      cache: { status: "hit" }
+    };
+  }
+
+  const feed = await getFreeTechLeaderFeed(normalized, TECH_FREE_FEED_MAX_ITEMS, env);
+  const post = Array.isArray(feed.posts)
+    ? feed.posts.find((item) => String(item && item.id || "") === id)
+    : null;
+  if (!post) {
+    const err = new Error("free_post_not_found");
+    err.code = "free_post_not_found";
+    err.status = 404;
+    throw err;
+  }
+
+  return {
+    schema_version: 1,
+    source: feed.source || "public_source",
+    uses_x_api: false,
+    handle: normalized,
+    fetched_at: feed.fetched_at || null,
+    post,
+    cache: feed.cache || { status: "refreshed" }
+  };
+}
+
 async function xApiGet(path, env) {
   if (!env.X_BEARER_TOKEN) {
     const err = new Error("x_api_not_configured");
@@ -2107,6 +2155,38 @@ async function proxyTechLeaderMedia(request, target, cors) {
       }
     }
 
+    if (url.pathname === "/v1/tech-leaders/post") {
+      const handle = normalizeXHandle(url.searchParams.get("handle"));
+      const postId = String(url.searchParams.get("id") || "").trim();
+      if (!handle || !/^\d{10,25}$/.test(postId)) {
+        return json({ error: "invalid_free_post", uses_x_api: false }, 400, {
+          ...cors,
+          "cache-control": "no-store",
+          "x-ooglex-x-api": "unused"
+        });
+      }
+      try {
+        const result = await getFreeTechLeaderPost(handle, postId, env);
+        return json(result, 200, {
+          ...cors,
+          "cache-control": "public, max-age=300, stale-while-revalidate=1800",
+          "x-ooglex-x-api": "unused"
+        });
+      } catch (err) {
+        const status = err && Number.isInteger(err.status) ? err.status : 502;
+        return json({
+          error: err && err.code ? err.code : "free_post_unavailable",
+          handle,
+          id: postId,
+          uses_x_api: false
+        }, status, {
+          ...cors,
+          "cache-control": "no-store",
+          "x-ooglex-x-api": "unused"
+        });
+      }
+    }
+
     if (url.pathname === "/v1/tech-leaders/free-profile") {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
@@ -2192,6 +2272,7 @@ async function proxyTechLeaderMedia(request, target, cors) {
           calls_api_x_com: false,
           free_profile_endpoint: "/v1/tech-leaders/free-profile",
           free_feed_endpoint: "/v1/tech-leaders/free-feed",
+          single_post_endpoint: "/v1/tech-leaders/post",
           media_proxy_endpoint: "/v1/tech-leaders/media"
         },
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
