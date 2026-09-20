@@ -1572,6 +1572,50 @@ function mergePublicFeedPosts(feeds, limit) {
 
 async function fetchFreeTechLeaderFeed(handle, limit) {
   const requested = Math.max(1, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
+
+  // Fast first paint: one public page is enough for the initial 10 visible posts
+  // plus the next 10 already buffered in the browser. Avoid waiting for both
+  // public sources before first render; deeper history is merged on demand.
+  if (requested <= 20) {
+    let fxError = null;
+    try {
+      const fast = await fetchFxTwitterFreeFeed(handle, requested);
+      return {
+        ...fast,
+        schema_version: 6,
+        source: "fxtwitter_public_api_fast",
+        sources: ["fxtwitter_public_api"],
+        fast_first_paint: true
+      };
+    } catch (err) {
+      fxError = err;
+    }
+
+    try {
+      const official = await fetchOfficialSyndicationFreeFeed(handle, requested);
+      return {
+        ...official,
+        schema_version: 6,
+        source: "x_public_syndication_fast",
+        sources: ["x_public_syndication"],
+        fast_first_paint: true
+      };
+    } catch (officialError) {
+      const err = new Error("free_public_feed_sources_unavailable");
+      err.code = "free_public_feed_sources_unavailable";
+      err.status = fxError && Number.isInteger(fxError.status)
+        ? fxError.status
+        : (officialError && Number.isInteger(officialError.status) ? officialError.status : 502);
+      err.detail = {
+        official_source: officialError && officialError.code ? officialError.code : "empty",
+        official_status: officialError && officialError.status ? officialError.status : null,
+        fallback_source: fxError && fxError.code ? fxError.code : "empty",
+        fallback_status: fxError && fxError.status ? fxError.status : null
+      };
+      throw err;
+    }
+  }
+
   const results = await Promise.allSettled([
     fetchOfficialSyndicationFreeFeed(handle, requested),
     fetchFxTwitterFreeFeed(handle, requested)
@@ -1608,7 +1652,7 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
 
   const sources = feeds.map((feed) => feed.source).filter(Boolean);
   return {
-    schema_version: 5,
+    schema_version: 6,
     source: sources.length > 1 ? "x_public_merged" : (sources[0] || "public_source"),
     sources,
     uses_x_api: false,
@@ -1626,7 +1670,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/free-feed/v5/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v6/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
