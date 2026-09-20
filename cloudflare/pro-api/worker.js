@@ -2107,6 +2107,8 @@ async function proxyTechLeaderMedia(request, target, cors) {
           source: "public_source_ladder",
           sources: ["x_public_syndication", "fxtwitter_public_api"],
           uses_x_api: false,
+          max_items: TECH_FREE_FEED_MAX_ITEMS,
+          display_batch_size: 10,
           cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000)
         },
         free_mode_contract: {
