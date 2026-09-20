@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="paper">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>单条动态 · Ooglex</title>
+  <meta name="description" content="Ooglex 科技领袖公开 X 单条动态分享页。">
+  <meta property="og:title" content="单条动态 · Ooglex">
+  <meta property="og:description" content="查看这条公开 X 动态。">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <style>
+    :root{--bg:#f7f1e9;--panel:#fffaf4;--ink:#171717;--dim:#655f59;--faint:#8b837b;--line:#ded5cb;--blue:#2a6fa4;--green:#218c6a;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--blue);text-decoration:none}
+    .page{width:min(760px,100%);margin:0 auto;padding:20px 18px 48px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0 18px;border-bottom:1px solid var(--line)}.back{font-weight:700}.tag{font:11px/1.2 var(--mono);letter-spacing:.08em;color:var(--faint)}
+    .hero{padding:28px 0 20px}.hero h1{margin:0;font-size:31px;line-height:1.15}.hero p{margin:9px 0 0;color:var(--dim);font-size:14px}
+    .card{border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}.state{padding:54px 22px;text-align:center;color:var(--dim)}.state b{display:block;margin-bottom:8px;font-size:18px;color:var(--ink)}
+    .post{padding:20px}.head{display:flex;align-items:center;gap:11px}.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:#e8e0d7}.who{min-width:0;flex:1}.name{font-size:16px;font-weight:800}.handle{margin-top:2px;font:11px/1.2 var(--mono);color:var(--faint)}.time{font:11px/1.2 var(--mono);color:var(--faint);white-space:nowrap}.type{display:inline-flex;margin-left:7px;padding:3px 7px;border:1px solid var(--line);border-radius:999px;color:var(--blue);font:700 10px/1 var(--mono)}
+    .text{margin-top:16px;white-space:pre-wrap;word-break:break-word;font-size:17px;line-height:1.72}.media{display:grid;gap:9px;margin-top:14px}.media img,.media video{display:block;width:100%;max-height:560px;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#eee}.media video{object-fit:contain}
+    .embed{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fffdf9}.embed-head{display:flex;align-items:center;gap:8px}.embed-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover}.embed-name{font-size:13px;font-weight:800}.embed-handle{font:11px/1.2 var(--mono);color:var(--faint)}.embed .text{font-size:14px;margin-top:10px}
+    .metrics{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font:11px/1.2 var(--mono);color:var(--faint)}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.actions button,.actions a{min-height:44px;padding:11px 15px;border:1px solid var(--line);border-radius:11px;background:#f8f4ef;color:var(--ink);font-weight:750;cursor:pointer}.actions a{display:inline-flex;align-items:center}.actions .primary{background:rgba(42,111,164,.08);color:var(--blue)}
+    .notice{margin-top:16px;font-size:12px;line-height:1.6;color:var(--faint)}.card-preview{display:none;margin-top:16px}.card-preview.show{display:block}.card-preview img{display:block;width:100%;border:1px solid var(--line);border-radius:14px}.card-preview .actions{margin-top:10px}
+    footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;line-height:1.6;color:var(--faint)}
+    @media(max-width:560px){.page{padding:14px 12px 36px}.post{padding:16px}.hero h1{font-size:27px}.actions{display:grid;grid-template-columns:1fr 1fr}.actions .wide{grid-column:1/-1}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top"><a class="back" id="back-link" href="../">← 科技领袖实时动态流</a><span class="tag">SINGLE PUBLIC POST</span></header>
+    <section class="hero"><h1>单条动态</h1><p>独立分享页 · 仅展示这一条公开动态</p></section>
+    <section class="card" id="card"><div class="state" id="state"><b>正在读取动态</b><span>不调用 X API，不消耗 X API Credits。</span></div></section>
+    <div class="card-preview" id="card-preview"><img id="card-image" alt="动态分享卡片"><div class="actions"><button id="share-image" class="primary" type="button">分享图片</button><button id="save-image" type="button">保存图片</button></div></div>
+    <div class="notice">本页仅聚合展示公开内容。内容版权及账户资料归原发布者与 X 平台所有。</div>
+    <footer>© 2026 Ooglex · Public X Post</footer>
+  </main>
+<script>
+(function(){
+  "use strict";
+  var API_BASE="https://pro-api.ooglex.com";
+  var q=new URLSearchParams(location.search);
+  var handle=String(q.get("handle")||"").replace(/^@/,"");
+  var postId=String(q.get("id")||"");
+  var leader=String(q.get("leader")||"");
+  var card=document.getElementById("card");
+  var state=document.getElementById("state");
+  var cardPreview=document.getElementById("card-preview");
+  var cardImage=document.getElementById("card-image");
+  var cardBlob=null;
+  var cardObjectUrl="";
+  var currentPost=null;
+  var currentProfile={name:handle||"X",handle:handle,avatar:""};
+
+  var back=new URL("../",location.href);
+  if(leader)back.searchParams.set("leader",leader);
+  document.getElementById("back-link").href=back.toString();
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function fmt(value){var d=new Date(value);if(!value||Number.isNaN(d.getTime()))return "";return new Intl.DateTimeFormat("zh-CN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).format(d);}
+  function metric(n){n=Number(n||0);if(n>=1000000)return (n/1000000).toFixed(n>=10000000?0:1)+"M";if(n>=1000)return (n/1000).toFixed(n>=10000?0:1)+"K";return String(n);}
+  function typeLabel(p){var t=String(p&&p.post_type||"post").toLowerCase();return t==="reply"?"回复":t==="quote"?"引用":(t==="retweet"||t==="repost")?"转发":"原帖";}
+  function proxy(raw){return raw?API_BASE+"/v1/tech-leaders/media?url="+encodeURIComponent(raw):"";}
+  function avatarUrl(){var sp=new URLSearchParams({handle:handle,name:currentProfile.name||handle});return API_BASE+"/v1/tech-leaders/avatar?"+sp.toString();}
+  function addMedia(parent,p){
+    var list=p&&Array.isArray(p.media)?p.media:[];
+    if(!list.length)return;
+    var box=document.createElement("div");box.className="media";
+    list.forEach(function(m){
+      if(!m)return;var type=String(m.type||"photo").toLowerCase();var image=m.url||m.preview_image_url||"";var video=m.video_url||"";
+      if((type==="video"||type==="animated_gif"||type==="gif")&&video){var v=document.createElement("video");v.controls=type==="video";v.muted=true;v.playsInline=true;if(type!=="video"){v.autoplay=true;v.loop=true;}if(image)v.poster=proxy(image);v.src=proxy(video)||video;box.appendChild(v);}
+      else if(image||video){var im=document.createElement("img");im.loading="lazy";im.decoding="async";im.referrerPolicy="no-referrer";im.src=proxy(image||video)||image||video;box.appendChild(im);}
+    });
+    if(box.childNodes.length)parent.appendChild(box);
+  }
+  function render(post){
+    currentPost=post;
+    card.innerHTML="";
+    var el=document.createElement("article");el.className="post";
+    var head=document.createElement("div");head.className="head";
+    var av=document.createElement("img");av.className="avatar";av.alt=(currentProfile.name||handle)+" 头像";av.referrerPolicy="no-referrer";av.src=avatarUrl();head.appendChild(av);
+    var who=document.createElement("div");who.className="who";var name=document.createElement("div");name.className="name";name.textContent=currentProfile.name||handle;var type=document.createElement("span");type.className="type";type.textContent=typeLabel(post);name.appendChild(type);who.appendChild(name);var h=document.createElement("div");h.className="handle";h.textContent="@"+handle;who.appendChild(h);head.appendChild(who);
+    var time=document.createElement("div");time.className="time";time.textContent=fmt(post.created_at);head.appendChild(time);el.appendChild(head);
+    var hide=String(post.post_type||"").toLowerCase()==="retweet"&&post.embedded_post;
+    if(!hide&&String(post.text||"").trim()){var text=document.createElement("div");text.className="text";text.textContent=post.text;el.appendChild(text);}
+    if(!hide)addMedia(el,post);
+    if(post.embedded_post){
+      var ref=post.embedded_post;var box=document.createElement("div");box.className="embed";var eh=document.createElement("div");eh.className="embed-head";var a=ref.author||{};
+      if(a.avatar_url){var ea=document.createElement("img");ea.className="embed-avatar";ea.referrerPolicy="no-referrer";ea.src=a.avatar_url;eh.appendChild(ea);}
+      var ew=document.createElement("div");var en=document.createElement("div");en.className="embed-name";en.textContent=a.name||a.handle||"X";var ehh=document.createElement("div");ehh.className="embed-handle";ehh.textContent=a.handle?"@"+a.handle:"";ew.appendChild(en);ew.appendChild(ehh);eh.appendChild(ew);box.appendChild(eh);
+      if(String(ref.text||"").trim()){var et=document.createElement("div");et.className="text";et.textContent=ref.text;box.appendChild(et);}addMedia(box,ref);el.appendChild(box);
+    }
+    var m=post.metrics||{};var metrics=document.createElement("div");metrics.className="metrics";["回复 "+metric(m.reply_count),"转发 "+metric(m.repost_count||m.retweet_count),"喜欢 "+metric(m.like_count)].forEach(function(v){var s=document.createElement("span");s.textContent=v;metrics.appendChild(s);});el.appendChild(metrics);
+    var actions=document.createElement("div");actions.className="actions";
+    var sys=document.createElement("button");sys.className="primary";sys.type="button";sys.textContent="系统分享";sys.onclick=systemShare;actions.appendChild(sys);
+    var copy=document.createElement("button");copy.type="button";copy.textContent="复制链接";copy.onclick=copyLink;actions.appendChild(copy);
+    var gen=document.createElement("button");gen.type="button";gen.textContent="生成分享卡片";gen.onclick=generateCard;actions.appendChild(gen);
+    var x=document.createElement("a");x.className="wide";x.target="_blank";x.rel="noopener noreferrer";x.href=post.url||("https://x.com/"+encodeURIComponent(handle)+"/status/"+postId);x.textContent="在 X 查看原文 ↗";actions.appendChild(x);
+    el.appendChild(actions);card.appendChild(el);
+    document.title=(currentProfile.name||handle)+" · 单条动态 · Ooglex";
+  }
+  async function copyText(v){if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);return;}var ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
+  async function copyLink(){try{await copyText(location.href);alert("帖子链接已复制");}catch(e){alert("复制失败");}}
+  async function systemShare(){try{if(navigator.share){await navigator.share({title:(currentProfile.name||handle)+" · Ooglex",text:String(currentPost&&currentPost.text||"").slice(0,180),url:location.href});}else await copyLink();}catch(e){}}
+  function round(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function wrap(ctx,text,x,y,w,lh,max){var chars=Array.from(String(text||"")),line="",lines=[],i=0;for(;i<chars.length;i++){var t=line+chars[i];if(ctx.measureText(t).width>w&&line){lines.push(line);line=chars[i];if(lines.length>=max)break;}else line=t;}if(lines.length<max&&line)lines.push(line);if(i<chars.length&&lines.length)lines[lines.length-1]+="…";lines.forEach(function(v,k){ctx.fillText(v,x,y+k*lh);});return y+lines.length*lh;}
+  async function generateCard(){
+    if(!currentPost)return;
+    var canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;var ctx=canvas.getContext("2d");ctx.fillStyle="#f7f2ea";ctx.fillRect(0,0,1080,1350);
+    ctx.fillStyle="#111827";ctx.font="700 34px Arial";ctx.fillText("Ooglex · PUBLIC X POST",72,86);ctx.strokeStyle="#d8d0c6";ctx.beginPath();ctx.moveTo(72,112);ctx.lineTo(1008,112);ctx.stroke();
+    ctx.font="700 40px Arial";ctx.fillStyle="#111827";ctx.fillText(currentProfile.name||handle,72,190);ctx.font="27px Arial";ctx.fillStyle="#667085";ctx.fillText("@"+handle,72,230);ctx.fillStyle="#2563a6";ctx.font="700 23px Arial";ctx.fillText(typeLabel(currentPost),900,190);
+    ctx.fillStyle="#111827";ctx.font="38px Arial";var y=300;y=wrap(ctx,currentPost.text||"",72,y,936,58,9)+20;
+    if(currentPost.embedded_post){var ref=currentPost.embedded_post,a=ref.author||{};var by=y+10;ctx.fillStyle="#fffdf9";round(ctx,64,by,952,250,24);ctx.fill();ctx.strokeStyle="#d8d0c6";ctx.stroke();ctx.fillStyle="#111827";ctx.font="700 27px Arial";ctx.fillText(a.name||a.handle||"X",94,by+58);ctx.fillStyle="#667085";ctx.font="23px Arial";ctx.fillText(a.handle?"@"+a.handle:"",94,by+95);ctx.fillStyle="#344054";ctx.font="27px Arial";wrap(ctx,ref.text||"",94,by+140,860,40,3);}
+    ctx.strokeStyle="#d8d0c6";ctx.beginPath();ctx.moveTo(72,1208);ctx.lineTo(1008,1208);ctx.stroke();ctx.fillStyle="#667085";ctx.font="25px Arial";ctx.fillText(fmt(currentPost.created_at),72,1260);ctx.textAlign="right";ctx.fillText("ooglex.com · 单条动态",1008,1260);ctx.textAlign="left";ctx.fillStyle="#98a2b3";ctx.font="20px Arial";ctx.fillText("公开内容聚合展示 · 内容版权归原发布者与 X 平台所有",72,1304);
+    cardBlob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){b?resolve(b):reject(new Error("blob"));},"image/png",.95);});
+    if(cardObjectUrl)URL.revokeObjectURL(cardObjectUrl);cardObjectUrl=URL.createObjectURL(cardBlob);cardImage.src=cardObjectUrl;cardPreview.classList.add("show");cardPreview.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+  document.getElementById("share-image").onclick=async function(){if(!cardBlob)return;var file=new File([cardBlob],"ooglex-post-"+postId+".png",{type:"image/png"});try{if(navigator.canShare&&navigator.share&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"Ooglex · 动态分享卡片"});else alert("当前浏览器不支持直接分享图片，可使用“保存图片”。");}catch(e){}};
+  document.getElementById("save-image").onclick=function(){if(!cardBlob)return;var u=URL.createObjectURL(cardBlob),a=document.createElement("a");a.href=u;a.download="ooglex-post-"+postId+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);};
+
+  async function loadProfile(){
+    try{var r=await fetch("../leaders.json",{cache:"force-cache"});var d=await r.json();var list=Array.isArray(d)?d:(d.leaders||d.people||[]);var p=list.find(function(x){return String(x.handle||"").toLowerCase()===handle.toLowerCase();});if(p)currentProfile.name=p.name_zh||p.zh||p.name_en||p.name||handle;}catch(e){}
+  }
+  async function start(){
+    if(!/^[A-Za-z0-9_]{1,15}$/.test(handle)||!/^\d{10,25}$/.test(postId)){state.innerHTML="<b>链接无效</b><span>缺少有效的账号或帖子 ID。</span>";return;}
+    await loadProfile();
+    try{
+      var r=await fetch(API_BASE+"/v1/tech-leaders/post?handle="+encodeURIComponent(handle)+"&id="+encodeURIComponent(postId),{cache:"no-store"});
+      var d=await r.json().catch(function(){return {};});
+      if(!r.ok||!d.post)throw new Error(d.error||"post_unavailable");
+      render(d.post);
+    }catch(e){
+      card.innerHTML='<div class="state"><b>这条动态暂时无法读取</b><span>可以直接前往 X 查看原文。</span><div class="actions" style="justify-content:center"><a class="primary" target="_blank" rel="noopener noreferrer" href="https://x.com/'+esc(handle)+'/status/'+esc(postId)+'">在 X 查看原文 ↗</a></div></div>';
+    }
+  }
+  start();
+})();
+</script>
+</body>
+</html>
