@@ -458,14 +458,14 @@
     "黄仁勋": "Jensen Huang",
     "科技领袖实时动态流": "Tech Leaders Live Feed",
     "语言说明：": "Language note: ",
-    "免费模式展示 X 原文。如需简体中文，可自行安装 Microsoft Edge / Chrome 浏览器，或其它沉浸式翻译等浏览器扩展。":
-      "Free mode displays the original X posts. For Simplified Chinese, you can install Microsoft Edge or Chrome, or use browser translation extensions such as Immersive Translate.",
+    "公开模式展示 X 原文。如需简体中文，可自行安装 Microsoft Edge / Chrome 浏览器，或其它沉浸式翻译等浏览器扩展。":
+      "Public mode displays the original X posts. For Simplified Chinese, you can install Microsoft Edge or Chrome, or use browser translation extensions such as Immersive Translate.",
 
     "聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。":
       "Public X posts from global corporate leaders, listed-company CEOs and founders.",
-    "● 免费模式默认开启": "● Free mode on by default",
+    "● 公开模式默认开启": "● Public mode on by default",
     "X 官方 Embed · $0 API": "Official X embed · $0 API",
-    "免费模式 · 0 X API Credits": "Free mode · 0 X API credits",
+    "公开模式 · 0 X API Credits": "Public mode · 0 X API credits",
     "Free Native Feed · Hard $0 X API": "Free Native Feed · Hard $0 X API",
 
     "单账号按需加载": "One account loaded on demand",
@@ -485,14 +485,14 @@
     "复制链接": "Copy link",
     "在 X 查看原文 ↗": "View original on X ↗",
 
-    "免费模式": "Free mode",
+    "公开模式": "Public mode",
     "数据模式 · Credits": "Data mode · credits",
     "数据模式": "Data mode",
     "全部": "All",
     "全部分类": "All categories",
     "标普500 决策者": "S&P 500 decision-makers",
     "待补 0": "0 outstanding",
-    "免费模式：": "Free mode: ",
+    "公开模式：": "Public mode: ",
     "数据模式：": "Data mode: ",
     "头像：": "Avatars: ",
     "硬性禁止调用 api.x.com。原生动态流与人物资料只读取公开源和 Ooglex 缓存，不消耗 X API Credits；支持原帖、回复、引用与转发，引用/转发会尽量保留被引用原帖的作者、正文与媒体；默认显示最新 10 条，每次继续加载 10 条，单次会话最多显示 100 条（实际数量取决于公开源可提供的数据），不做永久帖子归档；原生公开源不可用时自动回退官方 Embed。":
