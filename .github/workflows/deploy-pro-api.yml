@@ -180,7 +180,9 @@ jobs:
               print("    code=",d.get("code"),"rows=",len(rows),"cursor=",d.get("cursor"))
               for x in rows[:6]:
                   if not isinstance(x,dict): continue
-                  print("   ",x.get("created_at"),x.get("id"),(x.get("text") or "")[:100].replace("\n"," "))
+                  raw=x.get("raw_text") if isinstance(x.get("raw_text"),dict) else {}
+                  article=x.get("article") if isinstance(x.get("article"),dict) else {}
+                  print("   ",x.get("type"),x.get("created_at"),x.get("id"),"text=",repr((x.get("text") or "")[:80]),"raw=",repr((raw.get("text") or "")[:80]),"article=",repr((article.get("title") or article.get("preview_text") or "")[:80]),"keys=",sorted(x.keys())[:24])
           except Exception as e:
               print("    head:",re.sub(r'\s+',' ',body[:300]),"parse=",type(e).__name__)
           PY
