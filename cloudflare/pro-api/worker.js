@@ -1423,7 +1423,7 @@ function normalizeFxTwitterStatus(status, handle) {
 async function fetchFxTwitterFreeFeed(handle, limit) {
   const requested = Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
   const pageSize = 20;
-  const strictLatestProfile = String(handle || "").toLowerCase() === "zlq6600e";
+  const strictLatestProfile = ["zlq6600e","elonmusk"].includes(String(handle || "").toLowerCase());
   const maxPages = Math.max(1, Math.ceil(requested / pageSize));
   const byId = new Map();
   let cursor = "";
@@ -1529,7 +1529,7 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     theme: "light",
     transparent: "true"
   });
-  if (String(handle || "").toLowerCase() === "zlq6600e") {
+  if (["zlq6600e","elonmusk"].includes(String(handle || "").toLowerCase())) {
     // One-minute bucket reduces the chance of reusing a stale CDN timeline
     // without producing a unique URL for every single page view.
     params.set("_fresh", String(Math.floor(Date.now() / 60000)));
@@ -1698,7 +1698,9 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
 
 function freeTechLeaderCacheKey(handle) {
   const normalized = String(handle || "").toLowerCase();
-  const version = normalized === "zlq6600e" ? "v8-latest" : "v7";
+  const version = normalized === "zlq6600e"
+    ? "v8-latest"
+    : (normalized === "elonmusk" ? "v8-elon-refresh" : "v7");
   return `tech-leaders/free-feed/${version}/${normalized}.json`;
 }
 
@@ -1719,7 +1721,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   // that many posts. Only the number of posts physically cached counts as
   // fulfilled history depth.
   const cachedCapacity = cachedPosts.length;
-  const strictLatestProfile = normalized.toLowerCase() === "zlq6600e";
+  const strictLatestProfile = ["zlq6600e","elonmusk"].includes(normalized.toLowerCase());
 
   const activeTtl = strictLatestProfile ? TECH_FREE_FEED_STRICT_TTL_MS : TECH_FREE_FEED_TTL_MS;
   if (cachedPosts.length && age <= activeTtl && cachedCapacity >= limit) {
@@ -2504,7 +2506,7 @@ async function proxyTechLeaderMedia(request, target, cors) {
           display_batch_size: 10,
           cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000),
           strict_profile_cache_ttl_seconds: Math.round(TECH_FREE_FEED_STRICT_TTL_MS / 1000),
-          strict_profile_strategy: "FxTwitter since=7d + media-only normalization + source merge"
+          strict_profile_strategy: "ZLQ6600E + elonmusk: FxTwitter since=7d + media-only normalization + source merge"
         },
         free_mode_contract: {
           calls_api_x_com: false,
