@@ -345,6 +345,7 @@
       "website_label": "Ooglex.com",
       "created_at": "2012-06-01T00:00:00Z",
       "handle": "ZLQ6600E",
+      "hide_handle": true,
       "verified_personal_x": true,
       "x_identity_verified": true,
       "x_verified_at": "2026-09-19",
