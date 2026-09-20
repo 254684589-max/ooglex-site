@@ -1953,8 +1953,11 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const previewTitle = originalText
     ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
     : `${author} · Ooglex`;
-  const hideHandle = String(handle || "").toLowerCase() === "zlq6600e";
-  const publicAuthor = hideHandle ? "Zheng Yi" : author;
+  const handleLower = String(handle || "").toLowerCase();
+  const hideHandle = handleLower === "zlq6600e";
+  const publicAuthor = hideHandle
+    ? "Zheng Yi"
+    : (handleLower === "elonmusk" ? "马斯克 · Elon Musk" : author);
   const description = hideHandle
     ? `${publicAuthor} · Original public X post via Ooglex`
     : `${publicAuthor} (@${handle}) · Original public X post via Ooglex`;
