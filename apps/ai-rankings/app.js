@@ -40,27 +40,50 @@
 
   var DATA = null, tab = "combo", query = "";
 
-  /* 各轴 min/max 归一化 + 综合分 */
+  /* 各轴 min/max 仅用于条形图。综合分优先使用后端已固定的数据口径，
+     避免前端只拿 Top40 再归一化导致排名二次漂移。 */
   function prepare(models) {
     var rng = {};
     AXES.forEach(function (a) {
       var vs = models.map(function (m) { return m[a.key]; }).filter(isNum);
       rng[a.key] = vs.length ? { min: Math.min.apply(null, vs), max: Math.max.apply(null, vs) } : null;
     });
+    var activeAxes = (DATA.comboAxes || AXES.map(function(a){return a.key;}))
+      .filter(function(k){ return !DATA.axisStatus || DATA.axisStatus[k] !== false; });
+
     models.forEach(function (m) {
       m._n = {};
-      var sum = 0, wsum = 0;
       AXES.forEach(function (a) {
         var r = rng[a.key];
         if (isNum(m[a.key]) && r && r.max > r.min) {
-          var n = (m[a.key] - r.min) / (r.max - r.min);
-          m._n[a.key] = n;
-          sum += n * W[a.key]; wsum += W[a.key];
+          m._n[a.key] = (m[a.key] - r.min) / (r.max - r.min);
         }
       });
-      m._axes = Object.keys(m._n).length;
-      /* 综合分要求至少两个榜有数据，避免单榜模型被归一化顶到满分 */
-      m._combo = m._axes >= 2 ? (sum / wsum) * 100 : null;
+
+      if (isNum(m.combo)) {
+        m._combo = Number(m.combo);
+        m._axes = Number(m.comboAxes || activeAxes.length || 0);
+        return;
+      }
+
+      /* Backward compatibility for older data.json snapshots. Only calculate
+         when the model fully covers every currently active source. */
+      var ok = activeAxes.length >= 2 && activeAxes.every(function(k){
+        return m._n[k] !== undefined;
+      });
+      if (!ok) {
+        m._combo = null;
+        m._axes = activeAxes.filter(function(k){return m._n[k] !== undefined;}).length;
+        return;
+      }
+      var sum = 0, wsum = 0;
+      activeAxes.forEach(function(k){
+        var wt = W[k] || 0;
+        sum += m._n[k] * wt;
+        wsum += wt;
+      });
+      m._combo = wsum ? (sum / wsum) * 100 : null;
+      m._axes = activeAxes.length;
     });
   }
 
@@ -86,7 +109,7 @@
     if (tab === "arena") return { v: Math.round(m.arena), lab: "Arena Elo" };
     if (tab === "livebench") return { v: m.livebench.toFixed(1), lab: "LiveBench 均分" };
     if (tab === "aa") return { v: m.aa.toFixed(1), lab: "智能指数" };
-    return { v: m._combo.toFixed(1), lab: m._axes < 3 ? "综合 · 基于 " + m._axes + " 榜" : "综合参考分" };
+    return { v: m._combo.toFixed(1), lab: "综合 · 基于 " + m._axes + " 源" };
   }
 
   function render() {
@@ -124,7 +147,12 @@
   }
 
   function renderTabs() {
-    $("tabs").innerHTML = TABS.map(function (t) {
+    var visibleTabs = TABS.filter(function(t){
+      if (t.key === "aa") return !DATA.axisStatus || DATA.axisStatus.aa !== false;
+      return true;
+    });
+    if (!visibleTabs.some(function(t){return t.key===tab;})) tab="combo";
+    $("tabs").innerHTML = visibleTabs.map(function (t) {
       return "<span class='chip" + (t.key === tab ? " on" : "") + "' data-k='" + t.key + "'>" + t.label + "</span>";
     }).join("");
     Array.prototype.forEach.call($("tabs").children, function (el) {
@@ -135,15 +163,22 @@
   function renderMeta() {
     var d = DATA;
     var st = $("status"), stTxt = $("statusTxt");
+    var t = Date.parse(d.updatedAt);
+    var hours = isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 3600000));
+    var ago = hours === null ? (d.asOf || "") : (hours < 1 ? "1 小时内" : hours + " 小时前");
+    var active = ["arena","livebench","aa"].filter(function(k){
+      return !d.axisStatus || d.axisStatus[k] !== false;
+    });
+    var sourceNames = {arena:"LMArena",livebench:"LiveBench",aa:"Artificial Analysis"};
+
     if (d.seed) {
       st.className = "status demo";
-      stTxt.textContent = "上线快照（近似值）· 合并后每日自动更新";
+      stTxt.textContent = "快照数据 · 等待自动更新";
     } else {
       st.className = "status live";
-      var t = Date.parse(d.updatedAt);
-      var ago = isNaN(t) ? "" : Math.max(1, Math.round((Date.now() - t) / 3600000)) + " 小时前";
-      stTxt.textContent = "实时数据 · 更新于 " + (ago || d.asOf || "");
+      stTxt.textContent = "每日数据 · 更新于 " + ago;
     }
+
     var byCombo = d.models.slice().filter(function (m) { return isNum(m._combo); })
       .sort(function (a, b) { return b._combo - a._combo; });
     var openTop = byCombo.filter(function (m) { return m.open; })[0];
@@ -152,18 +187,42 @@
     if (byCombo[0]) h += "<span>综合第一 <b>" + esc(byCombo[0].name) + "</b></span>";
     if (openTop) h += "<span>开源第一 <b>" + esc(openTop.name) + "</b></span>";
     h += "<span>中国模型 <b>" + cn + "</b> 个</span>";
+    h += "<span>当前综合 <b>" + active.length + " 源</b></span>";
     $("summary").innerHTML = h;
+
+    var titleSub=document.querySelector(".title p");
+    if(titleSub){
+      titleSub.textContent = active.map(function(k){return sourceNames[k];}).join(" · ") +
+        " —— 当前可用数据源综合，自动更新";
+    }
 
     var cards = [];
     ["arena", "livebench", "aa"].forEach(function (k) {
-      var s = d.sources && d.sources[k];
-      if (s) cards.push(s);
+      var src = d.sources && d.sources[k];
+      if (src) {
+        var meta=(d.sourceMeta&&d.sourceMeta[k])||{};
+        cards.push({
+          name: src.name,
+          url: src.url,
+          desc: src.desc + (meta.ok===false ? " · 当前未参与综合" : "")
+        });
+      }
     });
-    (d.extraSources || []).forEach(function (s) { cards.push(s); });
-    $("srcgrid").innerHTML = cards.map(function (s) {
-      return "<a class='srccard' href='" + esc(s.url) + "' target='_blank' rel='noopener'><b>" +
-        esc(s.name) + " ↗</b><span>" + esc(s.desc || "") + "</span></a>";
+    (d.extraSources || []).forEach(function (src) { cards.push(src); });
+    $("srcgrid").innerHTML = cards.map(function (src) {
+      return "<a class='srccard' href='" + esc(src.url) + "' target='_blank' rel='noopener'><b>" +
+        esc(src.name) + " ↗</b><span>" + esc(src.desc || "") + "</span></a>";
     }).join("");
+
+    var foot=$("foot");
+    if(foot){
+      var inactive=["arena","livebench","aa"].filter(function(k){return d.axisStatus&&d.axisStatus[k]===false;});
+      foot.innerHTML =
+        "数据自动刷新；页面仅使用本次成功获取的最新数据源参与综合排名，不会用旧分数填补失败数据源。<br>" +
+        "当前综合口径：" + active.map(function(k){return sourceNames[k];}).join(" + ") + "。" +
+        (inactive.length ? " 暂未参与：" + inactive.map(function(k){return sourceNames[k];}).join("、") + "。<br>" : "<br>") +
+        "LMArena 为人类偏好对战；LiveBench 为客观题评测；Artificial Analysis 为独立综合指数。不同榜单绝对值不可直接横比；综合分仅用于多源参考。";
+    }
   }
 
   $("q").addEventListener("input", function () { query = this.value.trim(); render(); });
