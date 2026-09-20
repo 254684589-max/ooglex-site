@@ -722,10 +722,13 @@
     return String(b&&b.id||"").localeCompare(String(a&&a.id||""));
   }
   function freeFeedBrowserCacheKey(p){
-    return "ooglex-tech-feed-v3:" + String(p&&p.handle||"").toLowerCase();
+    var h=String(p&&p.handle||"").toLowerCase();
+    var v=h==="elonmusk"?"v4-elon-refresh":"v3";
+    return "ooglex-tech-feed-"+v+":" + h;
   }
   function freeFeedBrowserFreshMs(p){
-    return p&&p.id==="zhengyi-temp" ? 60*1000 : 5*60*1000;
+    var h=String(p&&p.handle||"").toLowerCase();
+    return (p&&p.id==="zhengyi-temp")||h==="elonmusk" ? 60*1000 : 5*60*1000;
   }
   function freeFeedBrowserStaleMs(p){
     return p&&p.id==="zhengyi-temp" ? 15*60*1000 : 12*60*60*1000;
