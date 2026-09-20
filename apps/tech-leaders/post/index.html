@@ -99,8 +99,9 @@
     document.title=(currentProfile.name||handle)+" · 单条动态 · Ooglex";
   }
   async function copyText(v){if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);return;}var ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
-  async function copyLink(){try{await copyText(location.href);alert("帖子链接已复制");}catch(e){alert("复制失败");}}
-  async function systemShare(){try{if(navigator.share){await navigator.share({title:(currentProfile.name||handle)+" · Ooglex",text:String(currentPost&&currentPost.text||"").slice(0,180),url:location.href});}else await copyLink();}catch(e){}}
+  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId);}
+  async function copyLink(){try{await copyText(publicShareUrl());alert("帖子链接已复制");}catch(e){alert("复制失败");}}
+  async function systemShare(){try{if(navigator.share){await navigator.share({title:String(currentPost&&currentPost.text||currentProfile.name||handle).slice(0,180),text:String(currentPost&&currentPost.text||"").slice(0,180),url:publicShareUrl()});}else await copyLink();}catch(e){}}
   function round(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
   function wrap(ctx,text,x,y,w,lh,max){var chars=Array.from(String(text||"")),line="",lines=[],i=0;for(;i<chars.length;i++){var t=line+chars[i];if(ctx.measureText(t).width>w&&line){lines.push(line);line=chars[i];if(lines.length>=max)break;}else line=t;}if(lines.length<max&&line)lines.push(line);if(i<chars.length&&lines.length)lines[lines.length-1]+="…";lines.forEach(function(v,k){ctx.fillText(v,x,y+k*lh);});return y+lines.length*lh;}
   async function generateCard(){
