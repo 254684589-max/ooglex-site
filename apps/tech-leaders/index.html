@@ -465,7 +465,7 @@
     document.getElementById("profile-verified").innerHTML=isVerifiedPerson(p)?verifiedBadgeMarkup("profile-verified"):"";
     profileNameEn.textContent=p.name_en||p.name||"";
     var profileHandle=document.getElementById("profile-handle");
-    if(p.handle){profileHandle.textContent="@"+p.handle;profileHandle.style.display="block";}
+    if(p.handle&&!p.hide_handle){profileHandle.textContent="@"+p.handle;profileHandle.style.display="block";}
     else{profileHandle.textContent="";profileHandle.style.display="none";}
     profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
     profilePosition.textContent=p.position_zh||"";
@@ -752,8 +752,9 @@
       var nameLine=document.createElement("div");nameLine.className="post-name-line";
       var b=document.createElement("b");b.textContent=p.name_zh||p.zh||p.name;nameLine.appendChild(b);
       if(isVerifiedPerson(p)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
-      var h=document.createElement("span");h.textContent=p.handle?"@"+p.handle:"Ooglex";
-      who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
+      who.appendChild(nameLine);
+      if(!p.hide_handle){var h=document.createElement("span");h.textContent=p.handle?"@"+p.handle:"Ooglex";who.appendChild(h);}
+      head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
 
       var body=document.createElement("div");body.className="post-text";body.textContent=String(post.text||"");card.appendChild(body);
@@ -1001,7 +1002,7 @@
       var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
       if(isVerifiedPerson(current)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
       appendPostTypeBadge(nameLine,post);
-      var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
+      who.appendChild(nameLine);if(!current.hide_handle){var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(h);}head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
 
       var hidePrimary=String(post.post_type||"").toLowerCase()==="retweet"&&post.embedded_post;
@@ -1149,7 +1150,7 @@
       var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
       if(isVerifiedPerson(current)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
       appendPostTypeBadge(nameLine,post);
-      var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(nameLine);who.appendChild(h);head.appendChild(who);
+      who.appendChild(nameLine);if(!current.hide_handle){var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(h);}head.appendChild(who);
       var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
       var hidePrimary=String(post.post_type||"").toLowerCase()==="retweet"&&post.embedded_post;
       if(!hidePrimary&&String(post.text||"").trim()){var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);}
