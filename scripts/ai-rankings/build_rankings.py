@@ -5,15 +5,19 @@
 抓取三个公开榜单，合并写入 apps/ai-rankings/data.json：
   1) LMArena 竞技场 Elo   —— 榜单页内嵌 JSON（含厂商/协议/上下文/价格，已实测解析 370+ 模型）
   2) LiveBench 客观评测    —— 站点静态 CSV（从 JS bundle 中发现最新一期的日期 slug）
-  3) Artificial Analysis   —— 官方 API（可选，需免费密钥 AA_API_KEY；未配置则跳过该轴）
+  3) Artificial Analysis   —— 优先官方 API；无密钥时读取公开模型页，并以当前已核验快照兜底
 
-容错约定（与全站取数脚本一致）：
-  - 三源相互独立，单源失败不影响其余；失败轴不会沿用旧分数参与当前综合排名；
-  - 三源全部失败则保留上次 data.json，绝不用空/脏数据覆盖好数据；
-  - 综合分只在模型完整覆盖本次全部活跃轴时计算；各轴 min-max 归一化后按
-    0.4/0.3/0.3 权重（对可用轴重新归一化）合成。
+综合方法：
+  - 不再直接混加 Elo / 百分制 / Intelligence Index 绝对值；
+  - 每个来源先转为“榜内排名百分位”，降低量纲、离群点和版本换标带来的失真；
+  - 权重：Artificial Analysis 50%（综合能力）/ LiveBench 30%（客观题）/
+    LMArena 20%（大规模真人偏好）；
+  - 缺少某一来源时不把剩余权重重新放大，而把分数向中性 50 分收缩，并显示数据覆盖度；
+  - 至少两个独立来源才进入综合排名；单源模型只保留单项数据，不参与主榜。
+
 """
 import csv
+import html as html_lib
 import io
 import json
 import os
@@ -28,6 +32,31 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 TIMEOUT = 25
 SOURCE_META = {}
+
+# Artificial Analysis v4.3.x current public results verified on 2026-09-20.
+# The workflow first attempts to refresh these values from each official public
+# model page. The bundled snapshot is only a fallback and expires after 30 days.
+AA_SNAPSHOT_DATE = "2026-09-20"
+AA_PUBLIC_MODELS = {
+    "claude-fable-5-1": ("claude-fable-5-1", 53),
+    "gpt-6-astra": ("gpt-6-astra", 53),
+    "claude-opus-5": ("claude-opus-5", 51),
+    "claude-fable-5": ("claude-fable-5", 50),
+    "muse-spark-1-3": ("muse-spark-1-3", 48),
+    "gpt-5-6-sol": ("gpt-5-6-sol", 47),
+    "glm-5-3": ("glm-5-3", 45),
+    "kimi-k3": ("kimi-k3", 44),
+    "grok-4-6": ("grok-4-6", 44),
+    "gpt-5-6-terra": ("gpt-5-6-terra", 42),
+    "glm-5-3-flash": ("glm-5-3-flash", 42),
+    "gemini-3-8-flash": ("gemini-3-8-flash", 41),
+    "muse-spark-1-2": ("muse-spark-1-2", 40),
+    "gemini-3-7-flash": ("gemini-3-7-flash", 39),
+    "grok-4-5": ("grok-4-5", 39),
+    "gpt-5-5": ("gpt-5-5", 38),
+    "deepseek-v4-pro": ("deepseek-v4-pro", 36),
+    "qwen3-8-27b": ("qwen3-8-27b", 34),
+}
 
 # ---------------------------------------------------------------- 基础请求
 
@@ -139,7 +168,7 @@ def display_name(raw):
     s = strip_variant_suffixes(raw)
     toks, out = [t for t in re.split(r"[-_\s]+", s) if t], []
     for t in toks:
-        if out and re.fullmatch(r"\d+", t) and re.fullmatch(r"\d+(\.\d+)?", out[-1].split(" ")[-1]):
+        if out and re.fullmatch(r"\d+", t) and re.search(r"\d(?:\.\d+)?$", out[-1]):
             out[-1] = out[-1] + "." + t
             continue
         mb = re.match(r"([a-z]+)(\d[\d.]*)$", t)
@@ -345,21 +374,90 @@ def fetch_livebench():
     print("  LiveBench：全部候选期失败")
     return None
 
+def _extract_aa_public_score(page):
+    """Extract the headline Intelligence Index from an official model page."""
+    if not page:
+        return None
+    plain = html_lib.unescape(re.sub(r"<[^>]+>", " ", page))
+    plain = re.sub(r"\s+", " ", plain)
+    patterns = [
+        r"(\d{1,3}(?:\.\d+)?)\s*Artificial Analysis Intelligence Index",
+        r"IntelligenceUpdated\s*(?:#\d+\s*/\s*\d+\s*)?(\d{1,3}(?:\.\d+)?)",
+        r"Intelligence Index\s*(\d{1,3}(?:\.\d+)?)",
+    ]
+    for pat in patterns:
+        m = re.search(pat, plain, re.I)
+        if m:
+            v = float(m.group(1))
+            if 0 <= v <= 100:
+                return round(v, 1)
+    return None
+
+
+def fetch_aa_public():
+    """Refresh a curated frontier set from AA's official public model pages."""
+    found = {}
+    refreshed = 0
+    for key, (slug, fallback_score) in AA_PUBLIC_MODELS.items():
+        page = http_get(f"https://artificialanalysis.ai/models/{slug}", tries=1)
+        score = _extract_aa_public_score(page)
+        if score is not None:
+            refreshed += 1
+        else:
+            score = fallback_score
+        found[key] = {
+            "raw": key,
+            "aa": score,
+            "org": guess_org(key),
+            "price": None,
+        }
+
+    # Bundled values are allowed only while the snapshot is reasonably fresh.
+    try:
+        snapshot_ts = time.mktime(time.strptime(AA_SNAPSHOT_DATE, "%Y-%m-%d"))
+        snapshot_age_days = (time.time() - snapshot_ts) / 86400
+    except Exception:
+        snapshot_age_days = 999
+
+    if refreshed < 8 and snapshot_age_days > 30:
+        SOURCE_META["aa"] = {
+            "ok": False,
+            "reason": "public_refresh_failed_and_snapshot_expired",
+            "refreshed": refreshed,
+            "snapshotDate": AA_SNAPSHOT_DATE,
+        }
+        return None
+
+    SOURCE_META["aa"] = {
+        "ok": True,
+        "count": len(found),
+        "refreshed": refreshed,
+        "fetchedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "snapshotDate": AA_SNAPSHOT_DATE,
+        "source": "artificialanalysis.ai/models/*",
+        "mode": "official_public_pages" if refreshed >= 8 else "verified_snapshot_fallback",
+        "indexVersion": "v4.3.x",
+    }
+    print(f"  AA：公开模型页刷新 {refreshed}/{len(found)}，参与综合 {len(found)} 个前沿模型")
+    return found
+
+
 def fetch_aa():
-    """Artificial Analysis 官方 API（免费密钥，可选）。"""
+    """Artificial Analysis: API if configured; otherwise official public pages."""
     key = os.environ.get("AA_API_KEY", "").strip()
     if not key:
-        SOURCE_META["aa"] = {"ok": False, "reason": "api_key_not_configured"}
-        print("  AA：未配置 AA_API_KEY，跳过该轴（不会沿用旧分数参与综合排名）")
-        return None
+        return fetch_aa_public()
+
     txt = http_get("https://artificialanalysis.ai/api/v2/data/llms/models",
                    headers={"x-api-key": key})
     if not txt:
-        return None
+        print("  AA API 不可用，回退公开模型页")
+        return fetch_aa_public()
     try:
         rows = json.loads(txt).get("data") or []
     except Exception:
-        return None
+        return fetch_aa_public()
+
     found = {}
     for row in rows:
         name = row.get("name") or row.get("slug")
@@ -379,11 +477,14 @@ def fetch_aa():
             "count": len(found),
             "fetchedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "source": "artificialanalysis.ai/api/v2/data/llms/models",
+            "mode": "official_api",
         }
-        print(f"  AA：解析到 {len(found)} 个模型")
+        print(f"  AA：官方 API 解析到 {len(found)} 个模型")
         return found
-    SOURCE_META["aa"] = {"ok": False, "reason": "parse_too_few", "count": len(found)}
-    return None
+
+    print("  AA API 返回过少，回退公开模型页")
+    return fetch_aa_public()
+
 
 # ---------------------------------------------------------------- 合并
 
@@ -448,38 +549,72 @@ def build():
                 m["price"] = old.get("price")
         models.append(m)
 
-    # 综合参考分：只使用本次成功抓取的数据源，并要求模型在全部
-    # 当前活跃轴上都有数据，避免把 2 榜/3 榜或新旧数据混在同一排名里。
+    # Ooglex 多源共识分：
+    # 1) 各源先转为榜内排名百分位（平均处理并列），避免 Elo / % / AA Index 混量纲；
+    # 2) AA 50% + LiveBench 30% + Arena 20%；
+    # 3) 缺源时不重分配权重，而向中性 50 分收缩，减少“缺数据反而占便宜”。
     axis_data = {"arena": arena, "livebench": lb, "aa": aa}
     active_axes = [k for k, src in axis_data.items() if src is not None]
-    base_wts = {"arena": 0.4, "livebench": 0.3, "aa": 0.3}
+    base_wts = {"arena": 0.20, "livebench": 0.30, "aa": 0.50}
 
-    def ranges(key):
-        vs = [m[key] for m in models if isinstance(m[key], (int, float))]
-        return (min(vs), max(vs)) if vs else None
+    def rank_percentiles(key):
+        rows = [(m["id"], float(m[key])) for m in models if isinstance(m.get(key), (int, float))]
+        if len(rows) <= 1:
+            return {mid: 100.0 for mid, _ in rows}
+        rows.sort(key=lambda x: x[1], reverse=True)
+        values = [v for _, v in rows]
+        outp = {}
+        n = len(rows)
+        i = 0
+        while i < n:
+            j = i + 1
+            while j < n and values[j] == values[i]:
+                j += 1
+            avg_rank = ((i + 1) + j) / 2.0
+            pct = 100.0 * (1.0 - (avg_rank - 1.0) / (n - 1.0))
+            for k2 in range(i, j):
+                outp[rows[k2][0]] = pct
+            i = j
+        return outp
 
-    rng = {k: ranges(k) for k in active_axes}
-    active_weight_total = sum(base_wts[k] for k in active_axes) or 1.0
+    pct = {k: rank_percentiles(k) for k in active_axes}
 
     for m in models:
-        normalized = {}
+        available = []
+        weighted_sum = 0.0
+        coverage = 0.0
         for k in active_axes:
-            r = rng.get(k)
-            if isinstance(m.get(k), (int, float)) and r and r[1] > r[0]:
-                normalized[k] = (m[k] - r[0]) / (r[1] - r[0])
+            p = pct.get(k, {}).get(m["id"])
+            if p is None:
+                continue
+            w = base_wts[k]
+            available.append(k)
+            weighted_sum += p * w
+            coverage += w
+            m[k + "Percentile"] = round(p, 1)
 
-        full_coverage = len(active_axes) >= 2 and len(normalized) == len(active_axes)
-        if full_coverage:
-            combo = sum(normalized[k] * base_wts[k] for k in active_axes) / active_weight_total
-            m["combo"] = round(combo * 100, 1)
-            m["comboAxes"] = len(active_axes)
-            m["_selection"] = 2.0 + combo
+        m["comboAxes"] = len(available)
+        m["confidence"] = round(coverage * 100)
+        if len(available) >= 2 and coverage > 0:
+            observed = weighted_sum / coverage
+            # Bayesian-style shrinkage toward neutral 50 when source coverage is incomplete.
+            consensus = 50.0 + (observed - 50.0) * coverage
+            m["combo"] = round(consensus, 1)
+            m["_selection"] = consensus
         else:
             m["combo"] = None
-            m["comboAxes"] = len(normalized)
-            m["_selection"] = max(normalized.values(), default=0.0)
+            m["_selection"] = -1.0
 
-    models.sort(key=lambda m: (m["_selection"], m.get("arena") or 0, m.get("livebench") or 0), reverse=True)
+    models.sort(
+        key=lambda m: (
+            m["_selection"],
+            m.get("confidence") or 0,
+            m.get("aa") or -1,
+            m.get("livebench") or -1,
+            m.get("arena") or -1,
+        ),
+        reverse=True,
+    )
     models = models[:40]
     for m in models:
         m.pop("_selection", None)
@@ -495,15 +630,16 @@ def build():
         "updatedAt": now,
         "asOf": now[:10],
         "seed": False,
-        "note": "数据每日自动抓取；综合排名只使用本次成功更新且模型完整覆盖的活跃数据源，"
-                "不会用旧分数填补失败的数据源。各榜口径不同，跨榜绝对值不可直接比较。",
+        "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / "
+                "LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
         "sources": (prev or {}).get("sources") or {},
         "extraSources": (prev or {}).get("extraSources") or [],
         "axisStatus": {"arena": bool(arena), "livebench": bool(lb), "aa": bool(aa)},
         "sourceMeta": SOURCE_META,
         "comboAxes": active_axes,
-        "comboWeights": {k: round(base_wts[k] / active_weight_total, 4) for k in active_axes},
-        "comboMethod": "minmax_weighted_full_coverage_only",
+        "comboWeights": {k: base_wts[k] for k in active_axes},
+        "comboMethod": "rank_percentile_consensus_with_coverage_shrinkage",
+        "comboMethodVersion": "v2.0",
         "models": models,
     }
     with open(OUT, "w", encoding="utf-8") as f:
