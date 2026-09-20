@@ -1,0 +1,301 @@
+priority_rank,cik,ticker,company,exchange,market_cap_usd,sector,country,ooglex_company_rank,market_data_as_of,sec_identity_source,market_priority_source
+1,0001045810,NVDA,Nvidia,NASDAQ,5383600000000,科技,US,1,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+2,0000320193,AAPL,Apple Inc.,NASDAQ,4936900000000,科技,US,2,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+3,0001652044,GOOGL,Alphabet Inc. (Class A),NASDAQ,4227600000000,通信服务,US,3,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+4,0000789019,MSFT,Microsoft,NASDAQ,3668000000000,科技,US,4,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+5,0001018724,AMZN,Amazon,NASDAQ,2729200000000,可选消费,US,5,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+6,0001181412,SPCX,SpaceX,NASDAQ,2011200000000,工业,US,7,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+7,0001730168,AVGO,Broadcom,NASDAQ,1701400000000,科技,US,8,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+8,0001326801,META,Meta Platforms,NASDAQ,1690000000000,通信服务,US,9,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+9,0001318605,TSLA,"Tesla, Inc.",NASDAQ,1368100000000,可选消费,US,11,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+10,0000723125,MU,Micron Technology,NASDAQ,1147200000000,科技,US,13,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+11,0001067983,BRK-B,Berkshire Hathaway,NYSE,1099500000000,金融,US,14,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+12,0000059478,LLY,Lilly (Eli),NYSE,1085800000000,医疗健康,US,15,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+13,0000019617,JPM,JPMorgan Chase,NYSE,936900000000,金融,US,16,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+14,0000002488,AMD,Advanced Micro Devices,NASDAQ,912800000000,科技,US,17,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+15,0000104169,WMT,Walmart,NASDAQ,849400000000,必需消费,US,18,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+16,0001403161,V,Visa Inc.,NYSE,705900000000,金融,US,19,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+17,0002115436,XOM,ExxonMobil,NYSE,677900000000,能源,US,20,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+18,0000200406,JNJ,Johnson & Johnson,NYSE,649900000000,医疗健康,US,21,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+19,0000050863,INTC,Intel,NASDAQ,545800000000,科技,US,23,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+20,0001141391,MA,Mastercard,NYSE,499400000000,金融,US,24,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+21,0001551152,ABBV,AbbVie,NYSE,466400000000,医疗健康,US,26,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+22,0000858877,CSCO,Cisco,NASDAQ,431600000000,科技,US,27,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+23,0001341439,ORCL,Oracle Corporation,NYSE,425200000000,科技,US,28,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+24,0000093410,CVX,Chevron Corporation,NYSE,417300000000,能源,US,29,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+25,0000070858,BAC,Bank of America,NYSE,409700000000,金融,US,30,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+26,0001321655,PLTR,Palantir Technologies,NASDAQ,407900000000,科技,US,31,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+27,0000909832,COST,Costco,NASDAQ,397100000000,必需消费,US,32,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+28,0000021344,KO,Coca-Cola Company (The),NYSE,379700000000,必需消费,US,33,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+29,0001571996,DELL,Dell Technologies,NYSE,377300000000,科技,US,34,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+30,0000018230,CAT,Caterpillar Inc.,NYSE,372700000000,工业,US,35,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+31,0000310158,MRK,Merck & Co.,NYSE,362700000000,医疗健康,US,36,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+32,0000707549,LRCX,Lam Research,NASDAQ,360300000000,科技,US,37,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+33,0000006951,AMAT,Applied Materials,NASDAQ,353000000000,科技,US,38,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+34,0000731766,UNH,UnitedHealth Group,NYSE,342300000000,医疗健康,US,41,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+35,0000080424,PG,Procter & Gamble,NYSE,340900000000,必需消费,US,42,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+36,0000040545,GE,GE Aerospace,NYSE,328400000000,工业,US,43,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+37,0000895421,MS,Morgan Stanley,NYSE,319500000000,金融,US,44,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+38,0001065280,NFLX,Netflix,NASDAQ,302300000000,通信服务,US,45,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+39,0000354950,HD,Home Depot (The),NYSE,299100000000,可选消费,US,46,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+40,0001413329,PM,Philip Morris International,NYSE,294000000000,必需消费,US,47,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+41,0000886982,GS,Goldman Sachs,NYSE,277900000000,金融,US,50,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+42,0002023554,SNDK,Sandisk Corporation,NASDAQ,265400000000,科技,US,53,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+43,0000072971,WFC,Wells Fargo,NYSE,263500000000,金融,US,55,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+44,0000101829,RTX,RTX Corporation,NYSE,261300000000,工业,US,56,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+45,0001996810,GEV,GE Vernova,NYSE,252700000000,公用事业,US,59,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+46,0001596532,ANET,Arista Networks,NYSE,251100000000,科技,US,60,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+47,0001327567,PANW,Palo Alto Networks,NASDAQ,247800000000,科技,US,61,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+48,0000097476,TXN,Texas Instruments,NASDAQ,242700000000,科技,US,63,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+49,0000097745,TMO,Thermo Fisher Scientific,NYSE,242100000000,医疗健康,US,64,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+50,0000319201,KLAC,KLA Corporation,NASDAQ,231200000000,科技,US,67,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+51,0000831001,C,Citigroup,NYSE,224700000000,金融,US,70,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+52,0000051143,IBM,IBM,NYSE,215800000000,科技,US,72,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+53,0001835632,MRVL,"Marvell Technology, Inc.",NASDAQ,213700000000,科技,US,73,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+54,0000004962,AXP,American Express,NYSE,212600000000,金融,US,75,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+55,0000318154,AMGN,Amgen,NASDAQ,208100000000,医疗健康,US,77,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+56,0000732712,VZ,Verizon,NYSE,200800000000,通信服务,US,80,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+57,0001108524,CRM,Salesforce,NYSE,194900000000,科技,US,81,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+58,0000804328,QCOM,Qualcomm,NASDAQ,187300000000,科技,US,84,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+59,0000882095,GILD,Gilead Sciences,NASDAQ,186400000000,医疗健康,US,85,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+60,0000315189,DE,Deere & Company,NYSE,184600000000,工业,US,86,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+61,0000006281,ADI,Analog Devices,NASDAQ,183000000000,科技,US,87,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+62,0000316709,SCHW,Charles Schwab Corporation,NYSE,183000000000,金融,US,88,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+63,0001283699,TMUS,T-Mobile US,NASDAQ,182000000000,通信服务,US,89,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+64,0000001800,ABT,Abbott Laboratories,NYSE,178700000000,医疗健康,US,90,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+65,0001744489,DIS,Walt Disney Company (The),NYSE,178300000000,通信服务,US,91,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+66,0000077476,PEP,PepsiCo,NASDAQ,177400000000,必需消费,US,92,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+67,0000732717,T,AT&T,NYSE,176500000000,通信服务,US,94,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+68,0000063908,MCD,McDonald's,NYSE,176400000000,可选消费,US,95,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+69,0000753308,NEE,NextEra Energy,NYSE,167800000000,公用事业,US,96,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+70,0002012383,BLK,BlackRock,NYSE,166100000000,金融,US,99,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+71,0000100885,UNP,Union Pacific Corporation,NYSE,165900000000,工业,US,100,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+72,0000766704,WELL,Welltower,NYSE,161600000000,房地产,US,102,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+73,0001163165,COP,ConocoPhillips,NYSE,160600000000,能源,US,103,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+74,0000078003,PFE,Pfizer,NYSE,157600000000,医疗健康,US,106,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+75,0000012927,BA,Boeing,NYSE,156200000000,工业,US,107,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+76,0001381197,IBKR,Interactive Brokers Group,NASDAQ,156000000000,金融,US,108,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+77,0000106040,WDC,Western Digital,NASDAQ,152100000000,科技,US,109,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+78,0001393818,BX,Blackstone Inc.,NYSE,150100000000,金融,US,111,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+79,0000313616,DHR,Danaher Corporation,NYSE,149900000000,医疗健康,US,112,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+80,0001543151,UBER,Uber,NYSE,143500000000,科技,US,113,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+81,0000109198,TJX,TJX Companies,NYSE,140600000000,可选消费,US,114,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+82,0001373715,NOW,ServiceNow,NYSE,139700000000,科技,US,115,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+83,0001035267,ISRG,Intuitive Surgical,NASDAQ,139300000000,医疗健康,US,116,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+84,0001164727,NEM,Newmont,NYSE,131700000000,原材料,US,121,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+85,0000773840,HON,Honeywell,NASDAQ,130800000000,工业,US,122,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+86,0001075531,BKNG,Booking Holdings,NASDAQ,130100000000,可选消费,US,123,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+87,0000024741,GLW,Corning Inc.,NYSE,129200000000,科技,US,124,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+88,0000875320,VRTX,Vertex Pharmaceuticals,NASDAQ,129000000000,医疗健康,US,125,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+89,0000014272,BMY,Bristol Myers Squibb,NYSE,128800000000,医疗健康,US,126,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+90,0001045609,PLD,Prologis,NYSE,125700000000,房地产,US,127,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+91,0000927628,COF,Capital One,NYSE,124700000000,金融,US,128,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+92,0000080661,PGR,Progressive Corporation,NYSE,124700000000,金融,US,129,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+93,0001262039,FTNT,Fortinet,NASDAQ,124400000000,科技,US,130,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+94,0001510295,MPC,Marathon Petroleum,NYSE,124000000000,能源,US,131,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+95,0000936468,LMT,Lockheed Martin,NYSE,123000000000,工业,US,132,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+96,0001035002,VLO,Valero Energy,NYSE,122700000000,能源,US,133,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+97,0000064040,SPGI,S&P Global,NYSE,120000000000,金融,US,135,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+98,0000076334,PH,Parker Hannifin,NYSE,119000000000,工业,US,136,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+99,0000764180,MO,Altria,NYSE,116100000000,必需消费,US,140,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+100,0000064803,CVS,CVS Health,NYSE,113400000000,医疗健康,US,141,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+101,0001534701,PSX,Phillips 66,NYSE,109500000000,能源,US,144,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+102,0000829224,SBUX,Starbucks,NASDAQ,109200000000,可选消费,US,145,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+103,0000008670,ADP,Automatic Data Processing,NASDAQ,108400000000,工业,US,146,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+104,0001783879,HOOD,"Robinhood Markets, Inc.",NASDAQ,107900000000,金融,US,147,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+105,0000060667,LOW,Lowe's,NYSE,107900000000,可选消费,US,148,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+106,0001390777,BNY,Bank of New York Mellon Corp,NYSE,105600000000,金融,US,150,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+107,0000310764,SYK,Stryker Corporation,NYSE,105500000000,医疗健康,US,151,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+108,0001751008,APP,AppLovin Corporation,NASDAQ,103500000000,科技,US,154,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+109,0000831259,FCX,Freeport-McMoRan,NYSE,102800000000,原材料,US,155,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+110,0000927653,MCK,McKesson Corporation,NYSE,102400000000,医疗健康,US,156,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+111,0001101239,EQIX,Equinix,NASDAQ,100700000000,房地产,US,160,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+112,0001156375,CME,CME Group,NASDAQ,100000000000,金融,US,162,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+113,0000796343,ADBE,Adobe Inc.,NASDAQ,98900000000,科技,US,163,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+114,0001559720,ABNB,Airbnb,NASDAQ,98700000000,可选消费,US,164,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+115,0000092122,SO,Southern Company,NYSE,96400000000,公用事业,US,165,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+116,0001674101,VRT,Vertiv Holdings Co,NYSE,95800000000,工业,US,166,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+117,0001050915,PWR,Quanta Services,NYSE,95500000000,工业,US,167,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+118,0000040533,GD,General Dynamics,NYSE,95500000000,工业,US,168,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+119,0000820313,APH,Amphenol,NYSE,95400000000,科技,US,169,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+120,0000860730,HCA,HCA Healthcare,NYSE,94900000000,医疗健康,US,170,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+121,0000713676,PNC,PNC Financial Services,NYSE,93600000000,金融,US,172,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+122,0000036104,USB,U.S. Bancorp,NYSE,93200000000,金融,US,173,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+123,0000004281,HWM,Howmet Aerospace,NYSE,91900000000,工业,US,174,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+124,0001326160,DUK,Duke Energy,NYSE,91600000000,公用事业,US,175,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+125,0001868275,CEG,Constellation Energy,NASDAQ,91500000000,公用事业,US,176,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+126,0001048286,MAR,Marriott International,NASDAQ,89400000000,可选消费,US,177,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+127,0001156039,ELV,Elevance Health,NYSE,89200000000,医疗健康,US,178,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+128,0001404912,KKR,KKR,NYSE,88700000000,金融,US,179,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+129,0000107263,WMB,Williams Companies,NYSE,88100000000,能源,US,180,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+130,0001571949,ICE,Intercontinental Exchange,NYSE,87900000000,金融,US,181,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+131,0000277948,CSX,CSX Corporation,NASDAQ,87500000000,工业,US,182,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+132,0000066740,MMM,3M,NYSE,86500000000,工业,US,184,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+133,0000823768,WM,Waste Management,NYSE,84800000000,工业,US,185,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+134,0000062709,MRSH,"Marsh & McLennan Companies, Inc.",NYSE,84300000000,金融,US,187,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+135,0001090727,UPS,United Parcel Service,NYSE,84200000000,工业,US,188,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+136,0001792789,DASH,DoorDash,NASDAQ,84100000000,通信服务,US,189,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+137,0000032604,EMR,Emerson Electric,NYSE,84000000000,工业,US,190,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+138,0000896878,INTU,Intuit,NASDAQ,82900000000,科技,US,192,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+139,0001059556,MCO,Moody's Corporation,NYSE,81900000000,金融,US,193,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+140,0001561550,DDOG,Datadog,NASDAQ,81800000000,科技,US,194,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+141,0001166691,CMCSA,Comcast,NASDAQ,81200000000,通信服务,US,195,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+142,0001053507,AMT,American Tower,NYSE,81100000000,房地产,US,196,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+143,0000872589,REGN,Regeneron Pharmaceuticals,NASDAQ,80900000000,医疗健康,US,197,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+144,0001645590,HPE,Hewlett Packard Enterprise,NYSE,80500000000,科技,US,198,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+145,0000086312,TRV,Travelers Companies (The),NYSE,79700000000,金融,US,200,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+146,0000723254,CTAS,Cintas,NASDAQ,79100000000,工业,US,201,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+147,0000089800,SHW,Sherwin-Williams,NYSE,79100000000,原材料,US,202,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+148,0001103982,MDLZ,Mondelez International,NASDAQ,78100000000,必需消费,US,203,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+149,0000813672,CDNS,Cadence Design Systems,NASDAQ,78000000000,科技,US,204,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+150,0000049826,ITW,Illinois Tool Works,NYSE,77500000000,工业,US,205,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+151,0000821189,EOG,EOG Resources,NYSE,76800000000,能源,US,206,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+152,0000087347,SLB,Schlumberger,NYSE,76400000000,能源,US,207,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+153,0000068505,MSI,Motorola Solutions,NYSE,76100000000,科技,US,209,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+154,0000031462,ECL,Ecolab,NYSE,75800000000,原材料,US,210,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+155,0001133421,NOC,Northrop Grumman,NYSE,74900000000,工业,US,211,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+156,0001467858,GM,General Motors,NYSE,74100000000,可选消费,US,213,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+157,0000883241,SNPS,Synopsys,NASDAQ,73700000000,科技,US,215,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+158,0000026172,CMI,Cummins,NYSE,73400000000,工业,US,216,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+159,0001739940,CI,Cigna,NYSE,72800000000,医疗健康,US,217,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+160,0000745732,ROST,Ross Stores,NASDAQ,72700000000,可选消费,US,218,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+161,0001858681,APO,Apollo Global Management,NYSE,72600000000,金融,US,219,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+162,0001048911,FDX,FedEx,NYSE,72500000000,工业,US,220,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+163,0001633978,LITE,Lumentum Holdings Inc.,NASDAQ,72400000000,科技,US,221,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+164,0000027419,TGT,Target Corporation,NYSE,71800000000,必需消费,US,223,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+165,0001690820,CVNA,Carvana Co.,NYSE,71400000000,可选消费,US,224,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+166,0001506307,KMI,Kinder Morgan,NYSE,70800000000,能源,US,225,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+167,0000702165,NSC,Norfolk Southern Railway,NYSE,70600000000,工业,US,226,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+168,0000898173,ORLY,O'Reilly Auto Parts,NASDAQ,70200000000,可选消费,US,227,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+169,0000021665,CL,Colgate-Palmolive,NYSE,70000000000,必需消费,US,228,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+170,0001437107,WBD,Warner Bros. Discovery,NASDAQ,69700000000,通信服务,US,229,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+171,0001585689,HLT,Hilton Worldwide,NYSE,69600000000,可选消费,US,230,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+172,0001060391,RSG,Republic Services,NYSE,67100000000,工业,US,231,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+173,0001063761,SPG,Simon Property Group,NYSE,66600000000,房地产,US,232,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+174,0000884887,RCL,Royal Caribbean Group,NYSE,65900000000,可选消费,US,233,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+175,0000010795,BDX,Becton Dickinson,NYSE,65600000000,医疗健康,US,234,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+176,0000004904,AEP,American Electric Power,NASDAQ,65300000000,公用事业,US,235,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+177,0000885725,BSX,Boston Scientific,NYSE,64400000000,医疗健康,US,236,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+178,0000899051,ALL,Allstate,NYSE,64300000000,金融,US,237,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+179,0001297996,DLR,Digital Realty,NYSE,64000000000,房地产,US,238,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+180,0001067701,URI,United Rentals,NYSE,63500000000,工业,US,239,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+181,0000002969,APD,Air Products,NYSE,63300000000,原材料,US,240,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+182,0000315293,AON,Aon,NYSE,63100000000,金融,US,241,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+183,0001389170,TRGP,Targa Resources,NYSE,62700000000,能源,US,242,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+184,0001099219,MET,MetLife,NYSE,62400000000,金融,US,243,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+185,0000354190,AJG,Arthur J. Gallagher & Co.,NYSE,61500000000,金融,US,245,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+186,0001682852,MRNA,Moderna,NASDAQ,61100000000,医疗健康,US,246,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+187,0000075362,PCAR,Paccar,NASDAQ,61100000000,工业,US,247,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+188,0001260221,TDG,TransDigm Group,NYSE,60700000000,工业,US,248,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+189,0001535527,CRWD,CrowdStrike,NASDAQ,60500000000,科技,US,249,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+190,0000092230,TFC,Truist Financial,NYSE,60500000000,金融,US,250,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+191,0001140859,COR,Cencora,NYSE,60100000000,医疗健康,US,251,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+192,0001280452,MPWR,Monolithic Power Systems,NASDAQ,59800000000,科技,US,253,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+193,0000277135,GWW,W. W. Grainger,NYSE,59800000000,工业,US,254,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+194,0000004977,AFL,Aflac,NYSE,59200000000,金融,US,255,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+195,0001039684,OKE,ONEOK,NYSE,58900000000,能源,US,256,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+196,0000797468,OXY,Occidental Petroleum,NYSE,58500000000,能源,US,258,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+197,0000097210,TER,Teradyne,NASDAQ,58200000000,科技,US,259,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+198,0001035983,FIX,"Comfort Systems USA, Inc.",NYSE,58100000000,工业,US,260,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+199,0000849395,CRH,CRH plc,NYSE,57600000000,原材料,US,261,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+200,0001601046,KEYS,Keysight Technologies,NYSE,57200000000,科技,US,263,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+201,0001701605,BKR,Baker Hughes,NASDAQ,56800000000,能源,US,264,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+202,0000073309,NUE,Nucor,NYSE,56600000000,原材料,US,265,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+203,0000815556,FAST,Fastenal,NASDAQ,56300000000,工业,US,266,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+204,0000715957,D,Dominion Energy,NYSE,55900000000,公用事业,US,267,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+205,0001037868,AME,Ametek,NYSE,54500000000,工业,US,268,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+206,0001539838,FANG,Diamondback Energy,NASDAQ,54100000000,能源,US,269,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+207,0001755672,CTVA,Corteva,NYSE,53900000000,原材料,US,270,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+208,0001032208,SRE,Sempra,NYSE,53200000000,公用事业,US,271,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+209,0001120193,NDAQ,"Nasdaq, Inc.",NASDAQ,52900000000,金融,US,273,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+210,0000726728,O,Realty Income,NYSE,52800000000,房地产,US,274,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+211,0000721371,CAH,Cardinal Health,NYSE,52800000000,医疗健康,US,275,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+212,0000320187,NKE,"Nike, Inc.",NYSE,52500000000,可选消费,US,277,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+213,0000027904,DAL,Delta Air Lines,NYSE,52300000000,工业,US,279,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+214,0001393311,PSA,Public Storage,NYSE,52000000000,房地产,US,280,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+215,0000037996,F,Ford Motor Company,NYSE,51700000000,可选消费,US,281,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+216,0001679788,COIN,Coinbase Global,NASDAQ,51200000000,金融,US,282,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+217,0001327811,WDAY,"Workday, Inc.",NASDAQ,50800000000,科技,US,283,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+218,0001099800,EW,Edwards Lifesciences,NYSE,50800000000,医疗健康,US,284,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+219,0000093751,STT,State Street Corporation,NYSE,50600000000,金融,US,285,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+220,0000820318,COHR,"Coherent, Inc.",NYSE,50300000000,科技,US,286,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+221,0001065088,EBAY,eBay,NASDAQ,49700000000,可选消费,US,287,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+222,0000936395,CIEN,Ciena Corporation,NYSE,49400000000,科技,US,288,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+223,0000820027,AMP,Ameriprise Financial,NYSE,48900000000,金融,US,289,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+224,0000035527,FITB,Fifth Third Bancorp,NYSE,48000000000,金融,US,291,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+225,0000943452,WAB,Wabtec,NYSE,47500000000,工业,US,293,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+226,0001692819,VST,Vistra Corp.,NYSE,47400000000,公用事业,US,294,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+227,0000065984,ETR,Entergy,NYSE,46700000000,公用事业,US,295,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+228,0000866787,AZO,AutoZone,NYSE,46600000000,可选消费,US,296,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+229,0000049071,HUM,Humana,NYSE,46400000000,医疗健康,US,297,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+230,0001633917,PYPL,PayPal,NASDAQ,46200000000,金融,US,298,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+231,0001024478,ROK,Rockwell Automation,NYSE,46200000000,工业,US,299,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+232,0000202058,LHX,L3Harris,NYSE,46100000000,工业,US,300,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+233,0000769397,ADSK,Autodesk,NASDAQ,45800000000,科技,US,301,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+234,0001512673,XYZ,"Block, Inc.",NYSE,45400000000,科技,US,302,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+235,0000072903,XEL,Xcel Energy,NASDAQ,45100000000,公用事业,US,303,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+236,0001783180,CARR,Carrier Global,NYSE,44800000000,工业,US,304,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+237,0001478242,IQV,IQVIA,NYSE,44500000000,医疗健康,US,306,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+238,0001090872,A,Agilent Technologies,NYSE,44200000000,医疗健康,US,307,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+239,0000865752,MNST,Monster Beverage,NASDAQ,43700000000,必需消费,US,309,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+240,0001109357,EXC,Exelon,NASDAQ,43000000000,公用事业,US,310,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+241,0001058090,CMG,Chipotle Mexican Grill,NYSE,42900000000,可选消费,US,311,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+242,0001393052,VEEV,Veeva Systems Inc.,NYSE,42300000000,医疗健康,US,312,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+243,0001418135,KDP,Keurig Dr Pepper,NASDAQ,42100000000,必需消费,US,313,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+244,0000740260,VTR,Ventas,NYSE,42100000000,房地产,US,314,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+245,0000723531,PAYX,Paychex,NASDAQ,41600000000,工业,US,315,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+246,0001137774,PRU,Prudential Financial,NYSE,41100000000,金融,US,317,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+247,0000007084,ADM,Archer Daniels Midland,NYSE,41100000000,必需消费,US,318,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+248,0001138118,CBRE,CBRE Group,NYSE,40800000000,房地产,US,319,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+249,0001176948,ARES,Ares Management Corporation,NYSE,40700000000,金融,US,320,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+250,0000874716,IDXX,Idexx Laboratories,NASDAQ,40400000000,医疗健康,US,321,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+251,0001408198,MSCI,MSCI,NYSE,40200000000,金融,US,322,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+252,0000005272,AIG,American International Group,NYSE,39900000000,金融,US,323,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+253,0000827054,MCHP,Microchip Technology,NASDAQ,39700000000,科技,US,325,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+254,0000882184,DHI,D. R. Horton,NYSE,39100000000,可选消费,US,326,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+255,0001335258,LYV,Live Nation Entertainment,NYSE,38900000000,通信服务,US,327,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+256,0001047862,ED,Consolidated Edison,NYSE,38900000000,公用事业,US,328,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+257,0001002047,NTAP,NetApp,NASDAQ,38800000000,科技,US,329,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+258,0000946581,TTWO,Take-Two Interactive,NASDAQ,38100000000,科技,US,330,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+259,0001041061,YUM,Yum! Brands,NYSE,38000000000,可选消费,US,331,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+260,0000096021,SYY,Sysco,NYSE,37800000000,必需消费,US,332,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+261,0000882835,ROP,Roper Technologies,NASDAQ,37600000000,工业,US,333,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+262,0000056873,KR,Kroger,NYSE,37000000000,必需消费,US,334,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+263,0000874766,HIG,Hartford (The),NYSE,36200000000,金融,US,336,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+264,0001069183,AXON,Axon Enterprise,NASDAQ,36100000000,工业,US,337,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+265,0000878927,ODFL,Old Dominion,NASDAQ,36000000000,工业,US,338,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+266,0000100517,UAL,United Airlines Holdings,NASDAQ,35300000000,工业,US,339,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+267,0000788784,PEG,Public Service Enterprise Group,NYSE,34800000000,公用事业,US,340,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+268,0001093557,DXCM,Dexcom,NASDAQ,34500000000,医疗健康,US,341,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+269,0000047111,HSY,Hershey Company (The),NYSE,34400000000,必需消费,US,342,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+270,0001944048,KVUE,Kenvue,NYSE,34200000000,必需消费,US,343,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+271,0001020569,IRM,Iron Mountain,NYSE,34000000000,房地产,US,344,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+272,0001022671,STLD,Steel Dynamics,NASDAQ,33900000000,原材料,US,345,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+273,0001001250,EL,Estée Lauder Companies (The),NYSE,33800000000,必需消费,US,347,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+274,0000783325,WEC,WEC Energy Group,NYSE,33600000000,公用事业,US,348,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+275,0000105634,EME,"EMCOR Group, Inc.",NYSE,33400000000,工业,US,349,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+276,0000036270,MTB,M&T Bank,NYSE,33300000000,金融,US,350,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+277,0000073124,NTRS,Northern Trust,NASDAQ,32900000000,金融,US,351,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+278,0000943819,RMD,ResMed,NYSE,32600000000,医疗健康,US,352,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+279,0000055785,KMB,Kimberly-Clark,NASDAQ,32500000000,必需消费,US,353,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+280,0001071739,CNC,Centene Corporation,NYSE,32200000000,医疗健康,US,354,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+281,0000049196,HBAN,Huntington Bancshares,NASDAQ,32200000000,金融,US,355,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+282,0000720005,RJF,Raymond James Financial,NYSE,32100000000,金融,US,356,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+283,0001324424,EXPE,Expedia Group,NASDAQ,32000000000,可选消费,US,357,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+284,0001051470,CCI,Crown Castle,NYSE,31900000000,房地产,US,358,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+285,0000875045,BIIB,Biogen,NASDAQ,31800000000,医疗健康,US,359,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+286,0000898293,JBL,Jabil,NYSE,31600000000,科技,US,360,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+287,0000047217,HPQ,HP Inc.,NYSE,31500000000,科技,US,361,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+288,0000033213,EQT,EQT Corporation,NYSE,31300000000,能源,US,362,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+289,0001396009,VMC,Vulcan Materials Company,NYSE,31200000000,原材料,US,363,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+290,0001090012,DVN,Devon Energy,NYSE,30200000000,能源,US,365,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+291,0000815097,CCL,Carnival,NYSE,30000000000,可选消费,US,366,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+292,0001555280,ZTS,Zoetis,NYSE,29900000000,医疗健康,US,368,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+293,0000916076,MLM,Martin Marietta Materials,NYSE,29500000000,原材料,US,369,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+294,0001932393,GEHC,GE HealthCare,NASDAQ,29200000000,医疗健康,US,371,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+295,0001004980,PCG,PG&E Corporation,NYSE,29100000000,公用事业,US,372,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+296,0001637459,KHC,Kraft Heinz,NYSE,29000000000,必需消费,US,373,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+297,0001289490,EXR,Extra Space Storage,NYSE,28900000000,房地产,US,374,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+298,0000759944,CFG,Citizens Financial Group,NYSE,28400000000,金融,US,376,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+299,0001058290,CTSH,Cognizant,NASDAQ,28400000000,科技,US,377,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json
+300,0001754301,FOXA,Fox Corporation (Class A),NASDAQ,28300000000,通信服务,US,378,2026-09-18,https://www.sec.gov/files/company_tickers_exchange.json,apps/companies/data.json

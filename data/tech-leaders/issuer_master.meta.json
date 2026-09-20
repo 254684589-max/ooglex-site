@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "stage": "pilot_300",
+  "generated_at": "2026-09-20T18:50:42Z",
+  "requested_limit": 300,
+  "record_count": 300,
+  "exchange_counts": {
+    "NASDAQ": 99,
+    "NYSE": 201
+  },
+  "sector_counts": {
+    "科技": 53,
+    "金融": 50,
+    "工业": 45,
+    "医疗健康": 38,
+    "可选消费": 25,
+    "必需消费": 20,
+    "能源": 17,
+    "公用事业": 16,
+    "房地产": 13,
+    "通信服务": 12,
+    "原材料": 11
+  },
+  "market_data_as_of": "2026-09-18",
+  "sources": {
+    "sec_identity": "https://www.sec.gov/files/company_tickers_exchange.json",
+    "market_priority": "apps/companies/data.json"
+  },
+  "scope": "Top U.S. companies in Ooglex market-cap dataset, SEC-verified as NYSE/NASDAQ",
+  "next_stage": "executive role extraction and X account verification"
+}
