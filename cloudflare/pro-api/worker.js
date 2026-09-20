@@ -35,6 +35,8 @@ const TECH_FREE_FEED_MAX_ITEMS = 100;
 const TECH_FREE_FEED_TTL_MS = 10 * 60 * 1000;
 const TECH_FREE_FEED_STRICT_TTL_MS = 60 * 1000;
 const TECH_FREE_FEED_MAX_STALE_MS = 12 * 60 * 60 * 1000;
+const ELON_TEMP_REFRESH_POST_ID = "2101601873115681037";
+const ELON_TEMP_REFRESH_UNTIL_MS = Date.parse("2026-09-21T00:00:00Z");
 const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -1514,6 +1516,57 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
   };
 }
 
+async function fetchFxTwitterStatusById(postId, handle) {
+  const id = String(postId || "").trim();
+  if (!/^\d{10,25}$/.test(id)) return null;
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 3500);
+  try {
+    const res = await fetch(`https://api.fxtwitter.com/status/${encodeURIComponent(id)}`, {
+      signal: ctl.signal,
+      redirect: "follow",
+      headers: {
+        accept: "application/json",
+        "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.1"
+      }
+    });
+    if (!res.ok) return null;
+    const payload = await res.json().catch(() => null);
+    const raw = unwrapFxTwitterStatus(payload);
+    if (!raw) return null;
+    const normalized = normalizeFxTwitterStatus(raw, handle);
+    if (!normalized || normalized.id !== id) return null;
+    const url = String(normalized.url || "");
+    if (String(handle || "").toLowerCase() === "elonmusk" && !/x\.com\/elonmusk\/status\//i.test(url)) {
+      return null;
+    }
+    return normalized;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function applyTemporaryPublicFeedPatch(handle, posts, requested) {
+  const normalized = String(handle || "").toLowerCase();
+  const list = Array.isArray(posts) ? posts.slice() : [];
+  if (normalized !== "elonmusk" || Date.now() >= ELON_TEMP_REFRESH_UNTIL_MS) {
+    return list.slice(0, requested);
+  }
+  if (!list.some((post) => String(post && post.id || "") === ELON_TEMP_REFRESH_POST_ID)) {
+    const target = await fetchFxTwitterStatusById(ELON_TEMP_REFRESH_POST_ID, handle);
+    if (target) list.push(target);
+  }
+  list.sort((a, b) => {
+    const ta = Date.parse(a && a.created_at || "") || 0;
+    const tb = Date.parse(b && b.created_at || "") || 0;
+    if (ta !== tb) return tb - ta;
+    return String(b && b.id || "").localeCompare(String(a && a.id || ""));
+  });
+  return list.slice(0, requested);
+}
+
 async function fetchOfficialSyndicationFreeFeed(handle, limit) {
   const params = new URLSearchParams({
     dnt: "true",
@@ -1626,7 +1679,7 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
   const strictLatestProfile = String(handle || "").toLowerCase() === "zlq6600e";
   if (requested <= 20 && !strictLatestProfile) {
     try {
-      return await Promise.any([
+      const fastFeed = await Promise.any([
         fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
           ...fast,
           schema_version: 6,
@@ -1642,6 +1695,12 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
           fast_first_paint: true
         }))
       ]);
+      if (String(handle || "").toLowerCase() === "elonmusk") {
+        fastFeed.posts = await applyTemporaryPublicFeedPatch(handle, fastFeed.posts, requested);
+        fastFeed.source = "fxtwitter_public_api_exact_patch";
+        fastFeed.sources = Array.from(new Set([...(fastFeed.sources || []), "fxtwitter_public_status"]));
+      }
+      return fastFeed;
     } catch {
       const err = new Error("free_public_feed_sources_unavailable");
       err.code = "free_public_feed_sources_unavailable";
@@ -1676,7 +1735,10 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
     throw err;
   }
 
-  const posts = mergePublicFeedPosts(feeds, requested);
+  let posts = mergePublicFeedPosts(feeds, requested);
+  if (String(handle || "").toLowerCase() === "elonmusk") {
+    posts = await applyTemporaryPublicFeedPatch(handle, posts, requested);
+  }
   if (!posts.length) {
     const err = new Error("free_public_feed_empty");
     err.code = "free_public_feed_empty";
@@ -1700,7 +1762,7 @@ function freeTechLeaderCacheKey(handle) {
   const normalized = String(handle || "").toLowerCase();
   const version = normalized === "zlq6600e"
     ? "v8-latest"
-    : (normalized === "elonmusk" ? "v8-elon-refresh" : "v7");
+    : (normalized === "elonmusk" ? "v9-elon-target" : "v7");
   return `tech-leaders/free-feed/${version}/${normalized}.json`;
 }
 
