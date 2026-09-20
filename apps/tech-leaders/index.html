@@ -898,7 +898,7 @@
         return;
       }
       btn.disabled=false;
-      btn.textContent="加载更多 "+Math.min(batchSize,Math.max(batchSize,localRemaining))+" 条";
+      btn.textContent="加载更多 "+(localRemaining>0?Math.min(batchSize,localRemaining):batchSize)+" 条";
     }
 
     async function fetchMoreInBackground(){
