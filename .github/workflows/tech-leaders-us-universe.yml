@@ -36,7 +36,7 @@ jobs:
           SEC_USER_AGENT: "Ooglex Tech Leaders Scanner/1.0 https://www.ooglex.com"
         run: |
           python scripts/tech-leaders/build_us_company_universe.py \
-            --limit 1000 \
+            --limit 300 \
             --output data/tech-leaders/issuer_master.csv \
             --meta data/tech-leaders/issuer_master.meta.json
 
@@ -51,7 +51,7 @@ jobs:
           rows = list(csv.DictReader(csv_path.open(encoding="utf-8")))
           meta = json.loads(meta_path.read_text(encoding="utf-8"))
 
-          assert len(rows) >= 800, len(rows)
+          assert len(rows) >= 250, len(rows)
           assert meta["record_count"] == len(rows)
           assert {"NYSE", "NASDAQ"} & set(meta["exchange_counts"])
           assert all(r["cik"] and r["ticker"] and r["company"] for r in rows[:50])
