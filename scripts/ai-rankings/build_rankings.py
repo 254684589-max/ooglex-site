@@ -8,10 +8,10 @@
   3) Artificial Analysis   —— 官方 API（可选，需免费密钥 AA_API_KEY；未配置则跳过该轴）
 
 容错约定（与全站取数脚本一致）：
-  - 三源相互独立，单源失败不影响其余；该轴逐模型沿用上次 data.json 的值；
+  - 三源相互独立，单源失败不影响其余；失败轴不会沿用旧分数参与当前综合排名；
   - 三源全部失败则保留上次 data.json，绝不用空/脏数据覆盖好数据；
-  - 结果按「综合参考分」排序（三轴各自 min-max 归一化后加权 0.4/0.3/0.3，
-    至少两榜有数据才计综合分，单榜模型排在其后）。
+  - 综合分只在模型完整覆盖本次全部活跃轴时计算；各轴 min-max 归一化后按
+    0.4/0.3/0.3 权重（对可用轴重新归一化）合成。
 """
 import csv
 import io
@@ -27,6 +27,7 @@ OUT = os.path.join(ROOT, "apps", "ai-rankings", "data.json")
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 TIMEOUT = 25
+SOURCE_META = {}
 
 # ---------------------------------------------------------------- 基础请求
 
@@ -176,79 +177,160 @@ def fetch_arena():
                      if isinstance(pin, (int, float)) and isinstance(pout, (int, float)) else None,
         }
     if len(found) >= 20:
+        SOURCE_META["arena"] = {
+            "ok": True,
+            "count": len(found),
+            "fetchedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "source": "lmarena.ai/leaderboard/text",
+        }
         print(f"  Arena：解析到 {len(found)} 个模型（合并变体后）")
         return found
+    SOURCE_META["arena"] = {"ok": False, "count": len(found), "reason": "parse_too_few"}
     print(f"  Arena：仅解析到 {len(found)} 个，判为失败")
     return None
 
 
+def _score100(v):
+    try:
+        x = float(v)
+    except (TypeError, ValueError):
+        return None
+    if x <= 1.5:
+        x *= 100
+    return x if 0 <= x <= 100 else None
+
+
+def _livebench_overall(row, categories):
+    """Return LiveBench's official-style global average.
+
+    LiveBench weights categories equally, not individual tasks equally. The old
+    implementation averaged every numeric CSV column, which overweighted
+    categories containing more tasks and could shift the published ordering.
+    """
+    for key in ("global_average", "Global Average", "overall", "Overall"):
+        if row.get(key) not in (None, ""):
+            v = _score100(row.get(key))
+            if v is not None:
+                return v
+
+    cat_scores = []
+    if isinstance(categories, dict):
+        for tasks in categories.values():
+            vals = []
+            for task in (tasks or []):
+                v = _score100(row.get(task))
+                if v is not None:
+                    vals.append(v)
+            if vals:
+                cat_scores.append(sum(vals) / len(vals))
+    if len(cat_scores) >= 3:
+        return sum(cat_scores) / len(cat_scores)
+
+    # Compatibility fallback for table formats that already expose category
+    # averages but not the raw category map.
+    avgs = []
+    for key, value in row.items():
+        lk = str(key or "").lower()
+        if lk == "global_average":
+            continue
+        if lk.endswith("_average") or lk in ("reasoning", "coding", "mathematics", "language"):
+            v = _score100(value)
+            if v is not None:
+                avgs.append(v)
+    if len(avgs) >= 3:
+        return sum(avgs) / len(avgs)
+    return None
+
+
 def fetch_livebench():
-    """LiveBench：主页 → JS bundle → 最新一期 table_<日期>.csv。"""
+    """LiveBench：主页 → JS bundle → 最新一期 table_<日期>.csv。
+
+    Score uses the benchmark's equal-weight category aggregation, matching the
+    published global_average rather than a flat mean across all task columns.
+    """
     home = http_get("https://livebench.ai/")
     if not home:
+        SOURCE_META["livebench"] = {"ok": False, "reason": "homepage_unavailable"}
         return None
     m = re.search(r'src="\.?(/static/js/[^"]+\.js)"', home)
     if not m:
+        SOURCE_META["livebench"] = {"ok": False, "reason": "bundle_not_found"}
         print("  LiveBench：未找到 JS bundle")
         return None
     js = http_get("https://livebench.ai" + m.group(1))
     if not js:
+        SOURCE_META["livebench"] = {"ok": False, "reason": "bundle_unavailable"}
         return None
-    # 模型元数据（厂商 / 是否开源权重）
+
     meta = {}
     for slug, org, disp, rest in re.findall(
             r'"([A-Za-z0-9.\-_/]+)":\{url:"[^"]*",organization:"([^"]*)",displayName:"([^"]*)"([^{}]*)\}', js):
         info = {"org": canon_org(org), "open": "openweight:!0" in rest, "disp": disp}
         meta[norm_name(disp)] = info
         meta[norm_name(slug)] = info
-    # 最新一期日期 slug（bundle 内出现的 20xx-xx-xx，从新到旧尝试）
+
     slugs = sorted(set(re.findall(r"20\d{2}[-_][01]\d[-_][0-3]\d", js)), reverse=True)
-    for s in slugs[:6]:
-        s2 = s.replace("-", "_")
-        txt = http_get(f"https://livebench.ai/table_{s2}.csv")
+    for release in slugs[:8]:
+        slug = release.replace("-", "_")
+        txt = http_get(f"https://livebench.ai/table_{slug}.csv")
         if not txt or "," not in txt:
             continue
-        found = {}
+
+        categories = None
+        cat_txt = http_get(f"https://livebench.ai/categories_{slug}.json", tries=1)
+        if cat_txt:
+            try:
+                categories = json.loads(cat_txt)
+            except Exception:
+                categories = None
+
         try:
             rows = list(csv.DictReader(io.StringIO(txt)))
         except Exception:
             continue
+
+        found = {}
         for row in rows:
             name = row.get("model") or row.get("Model") or next(iter(row.values()), None)
-            nums = []
-            for k2, v in row.items():
-                if k2 in ("model", "Model") or v is None:
-                    continue
-                try:
-                    nums.append(float(v))
-                except (TypeError, ValueError):
-                    pass
-            if not name or len(nums) < 3:
+            if not name:
                 continue
-            avg = sum(nums) / len(nums)
-            if avg <= 1.5:
-                avg *= 100
-            if not (5 <= avg <= 100):
+            overall = _livebench_overall(row, categories)
+            if overall is None or not (5 <= overall <= 100):
                 continue
             k = norm_name(name)
             info = meta.get(k, {})
             cur = found.get(k)
-            if cur and cur["avg"] >= avg:
+            if cur and cur["avg"] >= overall:
                 continue
-            found[k] = {"raw": info.get("disp") or name, "avg": round(avg, 1),
-                        "org": info.get("org"), "open": info.get("open")}
+            found[k] = {
+                "raw": info.get("disp") or name,
+                "avg": round(overall, 1),
+                "org": info.get("org"),
+                "open": info.get("open"),
+            }
+
         if len(found) >= 10:
-            print(f"  LiveBench：{s} 期解析到 {len(found)} 个模型")
+            SOURCE_META["livebench"] = {
+                "ok": True,
+                "count": len(found),
+                "release": release.replace("_", "-"),
+                "fetchedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "source": f"livebench.ai/table_{slug}.csv",
+                "aggregation": "mean_of_category_averages",
+            }
+            print(f"  LiveBench：{release} 期解析到 {len(found)} 个模型（按官方分类等权均值）")
             return found
+
+    SOURCE_META["livebench"] = {"ok": False, "reason": "all_releases_failed"}
     print("  LiveBench：全部候选期失败")
     return None
-
 
 def fetch_aa():
     """Artificial Analysis 官方 API（免费密钥，可选）。"""
     key = os.environ.get("AA_API_KEY", "").strip()
     if not key:
-        print("  AA：未配置 AA_API_KEY，跳过该轴（可在仓库 Secrets 里配置免费密钥启用）")
+        SOURCE_META["aa"] = {"ok": False, "reason": "api_key_not_configured"}
+        print("  AA：未配置 AA_API_KEY，跳过该轴（不会沿用旧分数参与综合排名）")
         return None
     txt = http_get("https://artificialanalysis.ai/api/v2/data/llms/models",
                    headers={"x-api-key": key})
@@ -272,8 +354,15 @@ def fetch_aa():
             "price": round(price, 2) if isinstance(price, (int, float)) else None,
         }
     if len(found) >= 10:
+        SOURCE_META["aa"] = {
+            "ok": True,
+            "count": len(found),
+            "fetchedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "source": "artificialanalysis.ai/api/v2/data/llms/models",
+        }
         print(f"  AA：解析到 {len(found)} 个模型")
         return found
+    SOURCE_META["aa"] = {"ok": False, "reason": "parse_too_few", "count": len(found)}
     return None
 
 # ---------------------------------------------------------------- 合并
@@ -328,44 +417,52 @@ def build():
             "ctx": (a or {}).get("ctx"),
             "price": (a or {}).get("price") if a and a.get("price") is not None else (x or {}).get("price"),
         }
-        # 某轴本次整体失败 → 逐模型沿用上次值；ctx 也回填
+        # Source scores are never carried forward when that source failed:
+        # stale benchmark values must not contaminate a "current" composite.
+        # Non-ranking metadata may still fall back to the previous snapshot.
         old = prev_models.get(k)
         if old:
-            if arena is None:
-                m["arena"] = old.get("arena")
-            if lb is None:
-                m["livebench"] = old.get("livebench")
-            if aa is None:
-                m["aa"] = old.get("aa")
             if not m["ctx"]:
                 m["ctx"] = old.get("ctx")
             if m["price"] is None:
                 m["price"] = old.get("price")
         models.append(m)
 
-    # 综合参考分（与前端同口径）：≥2 榜才计综合，单榜模型排在其后
+    # 综合参考分：只使用本次成功抓取的数据源，并要求模型在全部
+    # 当前活跃轴上都有数据，避免把 2 榜/3 榜或新旧数据混在同一排名里。
+    axis_data = {"arena": arena, "livebench": lb, "aa": aa}
+    active_axes = [k for k, src in axis_data.items() if src is not None]
+    base_wts = {"arena": 0.4, "livebench": 0.3, "aa": 0.3}
+
     def ranges(key):
         vs = [m[key] for m in models if isinstance(m[key], (int, float))]
         return (min(vs), max(vs)) if vs else None
-    rng = {k: ranges(k) for k in ("arena", "livebench", "aa")}
-    wts = {"arena": 0.4, "livebench": 0.3, "aa": 0.3}
+
+    rng = {k: ranges(k) for k in active_axes}
+    active_weight_total = sum(base_wts[k] for k in active_axes) or 1.0
+
     for m in models:
-        s = w = 0.0
-        n_axes = 0
-        best_single = 0.0
-        for k, wt in wts.items():
-            r = rng[k]
-            if isinstance(m[k], (int, float)) and r and r[1] > r[0]:
-                nv = (m[k] - r[0]) / (r[1] - r[0])
-                s += nv * wt
-                w += wt
-                n_axes += 1
-                best_single = max(best_single, nv)
-        m["_combo"] = (1 + s / w) if n_axes >= 2 else best_single
-    models.sort(key=lambda m: m["_combo"], reverse=True)
+        normalized = {}
+        for k in active_axes:
+            r = rng.get(k)
+            if isinstance(m.get(k), (int, float)) and r and r[1] > r[0]:
+                normalized[k] = (m[k] - r[0]) / (r[1] - r[0])
+
+        full_coverage = len(active_axes) >= 2 and len(normalized) == len(active_axes)
+        if full_coverage:
+            combo = sum(normalized[k] * base_wts[k] for k in active_axes) / active_weight_total
+            m["combo"] = round(combo * 100, 1)
+            m["comboAxes"] = len(active_axes)
+            m["_selection"] = 2.0 + combo
+        else:
+            m["combo"] = None
+            m["comboAxes"] = len(normalized)
+            m["_selection"] = max(normalized.values(), default=0.0)
+
+    models.sort(key=lambda m: (m["_selection"], m.get("arena") or 0, m.get("livebench") or 0), reverse=True)
     models = models[:40]
     for m in models:
-        m.pop("_combo", None)
+        m.pop("_selection", None)
 
     if len(models) < 8:
         if prev:
@@ -378,11 +475,15 @@ def build():
         "updatedAt": now,
         "asOf": now[:10],
         "seed": False,
-        "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；"
-                "各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
+        "note": "数据每日自动抓取；综合排名只使用本次成功更新且模型完整覆盖的活跃数据源，"
+                "不会用旧分数填补失败的数据源。各榜口径不同，跨榜绝对值不可直接比较。",
         "sources": (prev or {}).get("sources") or {},
         "extraSources": (prev or {}).get("extraSources") or [],
         "axisStatus": {"arena": bool(arena), "livebench": bool(lb), "aa": bool(aa)},
+        "sourceMeta": SOURCE_META,
+        "comboAxes": active_axes,
+        "comboWeights": {k: round(base_wts[k] / active_weight_total, 4) for k in active_axes},
+        "comboMethod": "minmax_weighted_full_coverage_only",
         "models": models,
     }
     with open(OUT, "w", encoding="utf-8") as f:
