@@ -997,7 +997,7 @@ function normalizeSyndicationMedia(legacy) {
   }).filter(Boolean);
 }
 
-function syndicationTweetAuthor(candidate) {
+function syndicationTweetAuthorProfile(candidate) {
   const paths = [
     candidate && candidate.core && candidate.core.user_results && candidate.core.user_results.result,
     candidate && candidate.user_results && candidate.user_results.result,
@@ -1006,10 +1006,103 @@ function syndicationTweetAuthor(candidate) {
   for (const user of paths) {
     if (!user || typeof user !== "object") continue;
     const legacy = user.legacy && typeof user.legacy === "object" ? user.legacy : user;
-    const screen = String(legacy.screen_name || legacy.username || user.username || "").replace(/^@/, "");
-    if (screen) return screen;
+    const handle = String(legacy.screen_name || legacy.username || user.username || "").replace(/^@/, "");
+    const name = String(legacy.name || user.name || "").trim();
+    const avatar = String(
+      legacy.profile_image_url_https ||
+      legacy.profile_image_url ||
+      user.profile_image_url_https ||
+      user.profile_image_url ||
+      ""
+    );
+    if (handle || name || avatar) {
+      return {
+        name: name || handle,
+        handle: handle || null,
+        avatar_url: avatar || null,
+        verified: Boolean(user.is_blue_verified || user.verified || legacy.verified)
+      };
+    }
   }
-  return "";
+  return null;
+}
+
+function syndicationTweetAuthor(candidate) {
+  const author = syndicationTweetAuthorProfile(candidate);
+  return author && author.handle ? author.handle : "";
+}
+
+function unwrapSyndicationTweetResult(value) {
+  let node = value;
+  for (let i = 0; i < 8; i += 1) {
+    if (!node || typeof node !== "object") return null;
+    const legacy = node.legacy && typeof node.legacy === "object" ? node.legacy : node;
+    const id = String(node.rest_id || legacy.id_str || node.id_str || node.id || "");
+    const text = String(legacy.full_text || legacy.text || node.full_text || node.text || "").trim();
+    if (id || text) return node;
+    const next =
+      (node.tweet_results && node.tweet_results.result) ||
+      node.result ||
+      node.tweet ||
+      node.status ||
+      null;
+    if (!next || next === node) break;
+    node = next;
+  }
+  return null;
+}
+
+function syndicationEmbeddedRaw(candidate, legacy, type) {
+  if (type === "quote") {
+    return (
+      legacy.quoted_status_result ||
+      candidate.quoted_status_result ||
+      legacy.quoted_status ||
+      candidate.quoted_status ||
+      null
+    );
+  }
+  if (type === "retweet") {
+    return (
+      legacy.retweeted_status_result ||
+      candidate.retweeted_status_result ||
+      legacy.retweeted_status ||
+      candidate.retweeted_status ||
+      null
+    );
+  }
+  return null;
+}
+
+function normalizeSyndicationEmbeddedStatus(raw) {
+  const candidate = unwrapSyndicationTweetResult(raw);
+  if (!candidate) return null;
+  const legacy = candidate.legacy && typeof candidate.legacy === "object" ? candidate.legacy : candidate;
+  const text = String(legacy.full_text || legacy.text || candidate.full_text || candidate.text || "").trim();
+  const id = String(candidate.rest_id || legacy.id_str || candidate.id_str || candidate.id || "");
+  if (!text && !/^\d{10,25}$/.test(id)) return null;
+  const author = syndicationTweetAuthorProfile(candidate);
+  const handle = author && author.handle ? author.handle : "";
+  const url = /^\d{10,25}$/.test(id)
+    ? (handle ? `https://x.com/${encodeURIComponent(handle)}/status/${id}` : `https://x.com/i/web/status/${id}`)
+    : null;
+  return {
+    id: /^\d{10,25}$/.test(id) ? id : null,
+    text,
+    created_at: legacy.created_at || candidate.created_at || null,
+    lang: legacy.lang || candidate.lang || null,
+    author,
+    metrics: {
+      reply_count: Number(legacy.reply_count || 0),
+      repost_count: Number(legacy.retweet_count || 0),
+      retweet_count: Number(legacy.retweet_count || 0),
+      like_count: Number(legacy.favorite_count || legacy.favourite_count || 0),
+      quote_count: Number(legacy.quote_count || 0)
+    },
+    entities: normalizeSyndicationEntities(legacy.entities || candidate.entities),
+    media: normalizeSyndicationMedia(legacy),
+    url
+  };
 }
 
 function syndicationTweetMeta(candidate, legacy, text) {
@@ -1072,6 +1165,10 @@ function normalizeSyndicationTweet(candidate, handle) {
     like_count: Number(legacy.favorite_count || legacy.favourite_count || 0),
     quote_count: Number(legacy.quote_count || 0)
   };
+  const meta = syndicationTweetMeta(candidate, legacy, text);
+  const embeddedPost = (meta.post_type === "quote" || meta.post_type === "retweet")
+    ? normalizeSyndicationEmbeddedStatus(syndicationEmbeddedRaw(candidate, legacy, meta.post_type))
+    : null;
   return {
     id,
     text,
@@ -1080,7 +1177,8 @@ function normalizeSyndicationTweet(candidate, handle) {
     metrics,
     entities: normalizeSyndicationEntities(legacy.entities || candidate.entities),
     media: normalizeSyndicationMedia(legacy),
-    ...syndicationTweetMeta(candidate, legacy, text),
+    ...meta,
+    embedded_post: embeddedPost,
     url: `https://x.com/${encodeURIComponent(handle)}/status/${id}`
   };
 }
@@ -1189,6 +1287,86 @@ function normalizeFxTwitterMedia(status) {
   return out;
 }
 
+function fxTwitterAuthorProfile(status) {
+  if (!status || typeof status !== "object") return null;
+  const author = (
+    (status.author && typeof status.author === "object" && status.author) ||
+    (status.user && typeof status.user === "object" && status.user) ||
+    (status.account && typeof status.account === "object" && status.account) ||
+    {}
+  );
+  const handle = String(
+    author.screen_name ||
+    author.username ||
+    author.handle ||
+    status.author_screen_name ||
+    status.screen_name ||
+    ""
+  ).replace(/^@/, "");
+  const name = String(author.name || status.author_name || "").trim();
+  const avatar = String(
+    author.avatar_url ||
+    author.profile_image_url_https ||
+    author.profile_image_url ||
+    status.author_avatar ||
+    ""
+  );
+  if (!handle && !name && !avatar) return null;
+  return {
+    name: name || handle,
+    handle: handle || null,
+    avatar_url: avatar || null,
+    verified: Boolean(author.verified || (author.verification && author.verification.verified))
+  };
+}
+
+function unwrapFxTwitterStatus(value) {
+  if (!value || typeof value !== "object") return null;
+  return (
+    (value.tweet && typeof value.tweet === "object" && value.tweet) ||
+    (value.status && typeof value.status === "object" && value.status) ||
+    (value.result && typeof value.result === "object" && value.result) ||
+    value
+  );
+}
+
+function normalizeFxTwitterEmbeddedStatus(raw) {
+  const status = unwrapFxTwitterStatus(raw);
+  if (!status) return null;
+  const id = String(status.id || status.rest_id || "");
+  const text = String(status.text || status.full_text || "").trim();
+  if (!text && !/^\d{10,25}$/.test(id)) return null;
+  let createdAt = status.created_at || null;
+  if (!createdAt && Number.isFinite(Number(status.created_timestamp))) {
+    createdAt = new Date(Number(status.created_timestamp) * 1000).toISOString();
+  }
+  const author = fxTwitterAuthorProfile(status);
+  const handle = author && author.handle ? author.handle : "";
+  const url = String(
+    status.url ||
+    (/^\d{10,25}$/.test(id)
+      ? (handle ? `https://x.com/${encodeURIComponent(handle)}/status/${id}` : `https://x.com/i/web/status/${id}`)
+      : "")
+  ) || null;
+  return {
+    id: /^\d{10,25}$/.test(id) ? id : null,
+    text,
+    created_at: createdAt,
+    lang: status.lang || null,
+    author,
+    metrics: {
+      reply_count: Number(status.replies || 0),
+      repost_count: Number(status.reposts || status.retweets || 0),
+      retweet_count: Number(status.reposts || status.retweets || 0),
+      like_count: Number(status.likes || 0),
+      quote_count: Number(status.quotes || 0)
+    },
+    entities: { urls: [] },
+    media: normalizeFxTwitterMedia(status),
+    url
+  };
+}
+
 function normalizeFxTwitterStatus(status, handle) {
   if (!status || typeof status !== "object") return null;
   const id = String(status.id || status.rest_id || "");
@@ -1204,12 +1382,16 @@ function normalizeFxTwitterStatus(status, handle) {
   const postType = retweetTarget || /^RT\s+@/i.test(text)
     ? "retweet"
     : (replyTarget ? "reply" : (quoteTarget ? "quote" : "post"));
+  const embeddedPost = postType === "retweet"
+    ? normalizeFxTwitterEmbeddedStatus(retweetTarget)
+    : (postType === "quote" ? normalizeFxTwitterEmbeddedStatus(quoteTarget) : null);
   return {
     id,
     text,
     created_at: createdAt,
     lang: status.lang || null,
     post_type: postType,
+    embedded_post: embeddedPost,
     metrics: {
       reply_count: Number(status.replies || 0),
       repost_count: Number(status.reposts || status.retweets || 0),
@@ -1259,7 +1441,7 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
     throw err;
   }
   return {
-    schema_version: 3,
+    schema_version: 4,
     source: "fxtwitter_public_api",
     third_party: "FxEmbed/FxTwitter",
     uses_x_api: false,
@@ -1310,7 +1492,7 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     throw err;
   }
   return {
-    schema_version: 3,
+    schema_version: 4,
     source: "x_public_syndication",
     uses_x_api: false,
     handle,
@@ -1351,7 +1533,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/free-feed/v2/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v3/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
@@ -1414,19 +1596,70 @@ function normalizeTechFeed(profile, user, payload) {
   const mediaByKey = new Map();
   const includes = payload && payload.includes ? payload.includes : {};
   const media = Array.isArray(includes.media) ? includes.media : [];
+  const users = Array.isArray(includes.users) ? includes.users : [];
+  const includedTweets = Array.isArray(includes.tweets) ? includes.tweets : [];
   for (const item of media) {
     if (item && item.media_key) mediaByKey.set(item.media_key, item);
   }
+  const userById = new Map(users.filter(Boolean).map((item) => [String(item.id || ""), item]));
+  const tweetById = new Map(includedTweets.filter(Boolean).map((item) => [String(item.id || ""), item]));
+
+  function apiMedia(tweet) {
+    const keys = tweet && tweet.attachments && Array.isArray(tweet.attachments.media_keys)
+      ? tweet.attachments.media_keys
+      : [];
+    return keys.map((key) => mediaByKey.get(key)).filter(Boolean).map((item) => ({
+      media_key: item.media_key,
+      type: item.type,
+      url: item.url || null,
+      preview_image_url: item.preview_image_url || null,
+      width: item.width || null,
+      height: item.height || null
+    }));
+  }
+
+  function apiAuthor(tweet) {
+    const authorId = String(tweet && tweet.author_id || "");
+    const author = userById.get(authorId);
+    if (!author) return null;
+    return {
+      name: String(author.name || author.username || ""),
+      handle: author.username ? String(author.username) : null,
+      avatar_url: author.profile_image_url || null,
+      verified: Boolean(author.verified)
+    };
+  }
+
+  function apiEmbedded(ref) {
+    if (!ref || !ref.id) return null;
+    const tweet = tweetById.get(String(ref.id));
+    if (!tweet) return null;
+    const author = apiAuthor(tweet);
+    const handle = author && author.handle ? author.handle : "";
+    return {
+      id: String(tweet.id || ref.id),
+      text: String(tweet.text || ""),
+      created_at: tweet.created_at || null,
+      lang: tweet.lang || null,
+      author,
+      metrics: tweet.public_metrics || {},
+      entities: tweet.entities || {},
+      media: apiMedia(tweet),
+      url: handle
+        ? `https://x.com/${encodeURIComponent(handle)}/status/${tweet.id || ref.id}`
+        : `https://x.com/i/web/status/${tweet.id || ref.id}`
+    };
+  }
 
   const posts = (Array.isArray(payload && payload.data) ? payload.data : []).map((post) => {
-    const keys = post && post.attachments && Array.isArray(post.attachments.media_keys)
-      ? post.attachments.media_keys
-      : [];
     const refs = Array.isArray(post && post.referenced_tweets) ? post.referenced_tweets : [];
     const refTypes = new Set(refs.map((item) => String(item && item.type || "")));
     const postType = refTypes.has("retweeted")
       ? "retweet"
       : (refTypes.has("replied_to") ? "reply" : (refTypes.has("quoted") ? "quote" : "post"));
+    const embedRef = refs.find((item) => item && item.type === "retweeted")
+      || refs.find((item) => item && item.type === "quoted")
+      || null;
     return {
       id: String(post.id || ""),
       text: String(post.text || ""),
@@ -1434,22 +1667,16 @@ function normalizeTechFeed(profile, user, payload) {
       lang: post.lang || null,
       post_type: postType,
       referenced_tweets: refs,
+      embedded_post: apiEmbedded(embedRef),
       metrics: post.public_metrics || {},
       entities: post.entities || {},
-      media: keys.map((key) => mediaByKey.get(key)).filter(Boolean).map((item) => ({
-        media_key: item.media_key,
-        type: item.type,
-        url: item.url || null,
-        preview_image_url: item.preview_image_url || null,
-        width: item.width || null,
-        height: item.height || null
-      })),
+      media: apiMedia(post),
       url: `https://x.com/${profile.handle}/status/${post.id}`
     };
   });
 
   return {
-    schema_version: 1,
+    schema_version: 2,
     source: "x_api",
     leader: {
       id: profile.id,
@@ -1503,9 +1730,10 @@ async function fetchTechLeaderFeed(profile, env, cached = null) {
 
   const params = new URLSearchParams({
     max_results: String(TECH_FEED_FETCH_SIZE),
-    "tweet.fields": "created_at,public_metrics,lang,entities,attachments,referenced_tweets",
-    expansions: "attachments.media_keys",
-    "media.fields": "media_key,type,url,preview_image_url,width,height"
+    "tweet.fields": "created_at,public_metrics,lang,entities,attachments,referenced_tweets,author_id",
+    expansions: "attachments.media_keys,referenced_tweets.id,referenced_tweets.id.author_id",
+    "media.fields": "media_key,type,url,preview_image_url,width,height",
+    "user.fields": "name,username,profile_image_url,verified"
   });
 
   const cachedPosts = cachedMatchesProfile && Array.isArray(cached.posts) ? cached.posts : [];
