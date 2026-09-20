@@ -286,4 +286,6 @@ Each native Tech Leaders post now has an independent sharing flow:
 - Browser-native sharing uses the operating system share sheet. Available destination apps are controlled by the device/browser, not by Ooglex.
 - The primary `分享原文` action intentionally sends **text only** via Web Share — no URL — so apps such as WeChat receive the native public post text instead of a long Ooglex link in the compose field.
 - `复制帖子链接` remains a separate action for users who explicitly want a clickable URL, while `生成分享卡片` remains the visual-image route.
+- `微信分享` copies the dynamic single-post preview URL, tries to open WeChat from an external browser, and guides the user to open that link inside WeChat and use the top-right menu for further sharing. The product does not label this button as “朋友圈”.
+- The dynamic `/share/tech-leaders/<handle>/<post_id>` route now stays open as the actual share page instead of immediately redirecting. When opened inside WeChat, it displays an in-page prompt for the top-right menu while preserving server-rendered Open Graph metadata whose title is the original post text.
 
