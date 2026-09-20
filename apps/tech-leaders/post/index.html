@@ -91,7 +91,6 @@
     }
     var m=post.metrics||{};var metrics=document.createElement("div");metrics.className="metrics";["回复 "+metric(m.reply_count),"转发 "+metric(m.repost_count||m.retweet_count),"喜欢 "+metric(m.like_count)].forEach(function(v){var s=document.createElement("span");s.textContent=v;metrics.appendChild(s);});el.appendChild(metrics);
     var actions=document.createElement("div");actions.className="actions";
-    var sys=document.createElement("button");sys.className="primary";sys.type="button";sys.textContent="分享原文";sys.onclick=systemShare;actions.appendChild(sys);
     var wx=document.createElement("button");wx.type="button";wx.textContent="打开分享页";wx.onclick=openSharePage;actions.appendChild(wx);
     var copy=document.createElement("button");copy.type="button";copy.textContent="复制链接";copy.onclick=copyLink;actions.appendChild(copy);
     var gen=document.createElement("button");gen.type="button";gen.textContent="生成分享卡片";gen.onclick=generateCard;actions.appendChild(gen);
@@ -101,24 +100,7 @@
   }
   async function copyText(v){if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);return;}var ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
   function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId);}
-  function originalShareText(post){
-    if(!post)return "";
-    var type=String(post.post_type||"").toLowerCase();
-    var primary=String(post.text||"").trim();
-    var ref=post.embedded_post&&typeof post.embedded_post==="object"?post.embedded_post:null;
-    var embedded=String(ref&&ref.text||"").trim();
-    if(type==="retweet"||type==="repost")return embedded||primary;
-    return primary||embedded;
-  }
   async function copyLink(){try{await copyText(publicShareUrl());alert("帖子链接已复制");}catch(e){alert("复制失败");}}
-  async function systemShare(){
-    var text=originalShareText(currentPost);
-    if(!text){alert("这条动态没有可分享的正文，建议生成分享卡片。");return;}
-    try{
-      if(navigator.share)await navigator.share({text:text});
-      else{await copyText(text);alert("帖子原文已复制");}
-    }catch(e){}
-  }
   function openSharePage(){
     location.href=publicShareUrl();
   }
