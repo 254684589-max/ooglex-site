@@ -30,9 +30,6 @@
     whoTag: $("who-tag"),
     whoAvatar: $("who-avatar"),
     formMsg: $("form-msg"),
-    ownerTools: $("owner-tools"),
-    loadReports: $("load-reports"),
-    reportsBox: $("reports-box"),
     feed: $("feed"),
     feedState: $("feed-state"),
     loadMore: $("load-more")
@@ -359,76 +356,6 @@
     }
   }
 
-  async function loadReports() {
-    el.loadReports.disabled = true;
-    el.reportsBox.textContent = t("加载中…", "Loading…");
-    var res = await sb.rpc("reported_thoughts");
-    el.loadReports.disabled = false;
-
-    if (res.error) { el.reportsBox.textContent = explain(res.error); return; }
-
-    var rows = res.data || [];
-    el.reportsBox.textContent = "";
-    if (!rows.length) {
-      el.reportsBox.textContent = t("目前没有被举报的想法。", "No reported thoughts right now.");
-      return;
-    }
-    rows.forEach(function (row) {
-      var box = document.createElement("div");
-      box.className = "item" + (row.status !== "visible" ? " is-hidden" : "");
-
-      box.appendChild(avatarNode(row.author_name, false));
-      var rcol = document.createElement("div");
-      rcol.className = "col";
-      box.appendChild(rcol);
-
-      var meta = document.createElement("div");
-      meta.className = "meta";
-      var n = document.createElement("span");
-      n.className = "tag hidden";
-      n.textContent = t("被举报 " + row.report_count + " 次", row.report_count + " report(s)");
-      meta.appendChild(n);
-      var w = document.createElement("span");
-      w.textContent = (row.author_name || "") + " · " + whenText(row.created_at);
-      meta.appendChild(w);
-      rcol.appendChild(meta);
-
-      var b = document.createElement("div");
-      b.className = "body";
-      b.textContent = row.body || "";                              // textContent
-      rcol.appendChild(b);
-
-      if (row.last_reason) {
-        var r = document.createElement("div");
-        r.className = "sub";
-        r.style.marginTop = "6px";
-        r.textContent = t("最近一条理由：", "Latest reason: ") + row.last_reason;   // textContent
-        rcol.appendChild(r);
-      }
-
-      var acts = document.createElement("div");
-      acts.className = "acts";
-      if (row.status === "visible") {
-        acts.appendChild(makeButton(t("隐藏", "Hide"), "", function () {
-          setStatus(row.id, "hidden", null);
-          loadReports();
-        }));
-      } else {
-        acts.appendChild(makeButton(t("恢复公开", "Unhide"), "", function () {
-          setStatus(row.id, "visible", null);
-          loadReports();
-        }));
-      }
-      acts.appendChild(makeButton(t("删除", "Delete"), "", function () {
-        if (!window.confirm(t("彻底删除这条想法？", "Permanently delete this thought?"))) return;
-        removeThought(row.id, null);
-        loadReports();
-      }));
-      rcol.appendChild(acts);
-      el.reportsBox.appendChild(box);
-    });
-  }
-
   // --- 登录态 ---------------------------------------------------------------
 
   function updateCounter() {
@@ -447,7 +374,6 @@
       show(el.authAnon, true);
       show(el.authSuspended, false);
       show(el.form, false);
-      show(el.ownerTools, false);
       return;
     }
 
@@ -459,7 +385,6 @@
     if (profile && profile.status !== "active") {
       show(el.authSuspended, true);
       show(el.form, false);
-      show(el.ownerTools, false);
       return;
     }
 
@@ -474,7 +399,6 @@
       el.whoAvatar.textContent = "";
       el.whoAvatar.appendChild(avatarNode(shown, true));
     }
-    show(el.ownerTools, !!(profile && profile.role === "owner"));
     updateCounter();
   }
 
@@ -520,7 +444,6 @@
     el.form.addEventListener("submit", submitThought);
     el.body.addEventListener("input", updateCounter);
     el.loadMore.addEventListener("click", function () { loadFeed(true); });
-    el.loadReports.addEventListener("click", loadReports);
 
     // 语言切换后重排一次（时间与按钮文案是脚本生成的，不在 i18n 的文本字典里）
     window.addEventListener("storage", function (e) {
