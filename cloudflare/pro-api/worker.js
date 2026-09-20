@@ -1843,20 +1843,41 @@ function techLeaderShareText(post) {
   return raw.replace(/\s+/g, " ").trim();
 }
 
-function techLeaderShareImage(post, origin) {
-  const candidates = [];
+function techLeaderShareMedia(post, origin) {
+  const images = [];
+  const videos = [];
   const pushMedia = (source) => {
     const items = source && Array.isArray(source.media) ? source.media : [];
     for (const item of items) {
       if (!item || typeof item !== "object") continue;
-      const raw = item.preview_image_url || item.url || "";
-      if (raw) candidates.push(String(raw));
+      const type = String(item.type || "").toLowerCase();
+      const imageRaw = item.preview_image_url || item.url || "";
+      const videoRaw = item.video_url || "";
+      if (imageRaw) images.push(String(imageRaw));
+      if ((type === "video" || type === "animated_gif" || type === "gif") && videoRaw) {
+        videos.push({
+          raw: String(videoRaw),
+          width: Number(item.width) || null,
+          height: Number(item.height) || null
+        });
+      }
     }
   };
   pushMedia(post);
   pushMedia(post && post.embedded_post);
-  if (!candidates.length) return "https://www.ooglex.com/assets/og-cover.png";
-  return `${origin}/v1/tech-leaders/media?url=${encodeURIComponent(candidates[0])}`;
+
+  const imageRaw = images[0] || "";
+  const video = videos[0] || null;
+  return {
+    image: imageRaw
+      ? `${origin}/v1/tech-leaders/media?url=${encodeURIComponent(imageRaw)}`
+      : "https://www.ooglex.com/assets/og-cover.png",
+    video: video
+      ? `${origin}/v1/tech-leaders/media?url=${encodeURIComponent(video.raw)}`
+      : null,
+    videoWidth: video && video.width ? video.width : null,
+    videoHeight: video && video.height ? video.height : null
+  };
 }
 
 function techLeaderShareResponse(handle, post, requestUrl) {
@@ -1866,8 +1887,13 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const previewTitle = originalText
     ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
     : `${author} · Ooglex`;
-  const description = `${author} (@${handle}) · Original public X post via Ooglex`;
-  const image = techLeaderShareImage(post, requestUrl.origin);
+  const hideHandle = String(handle || "").toLowerCase() === "zlq6600e";
+  const description = hideHandle
+    ? `${author} · Original public X post via Ooglex`
+    : `${author} (@${handle}) · Original public X post via Ooglex`;
+  const shareMedia = techLeaderShareMedia(post, requestUrl.origin);
+  const image = shareMedia.image;
+  const video = shareMedia.video;
 
   const canonical = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
   canonical.searchParams.set("handle", handle);
@@ -1895,6 +1921,11 @@ function techLeaderShareResponse(handle, post, requestUrl) {
 <meta property="og:url" content="${shareHtmlEscape(shareUrl)}">
 <meta property="og:image" content="${shareHtmlEscape(image)}">
 <meta property="og:image:secure_url" content="${shareHtmlEscape(image)}">
+${video ? `<meta property="og:video" content="${shareHtmlEscape(video)}">
+<meta property="og:video:secure_url" content="${shareHtmlEscape(video)}">
+<meta property="og:video:type" content="video/mp4">
+${shareMedia.videoWidth ? `<meta property="og:video:width" content="${shareHtmlEscape(shareMedia.videoWidth)}">` : ""}
+${shareMedia.videoHeight ? `<meta property="og:video:height" content="${shareHtmlEscape(shareMedia.videoHeight)}">` : ""}` : ""}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${shareHtmlEscape(previewTitle)}">
 <meta name="twitter:description" content="${shareHtmlEscape(description)}">
@@ -1905,7 +1936,9 @@ main{width:min(680px,calc(100% - 32px));margin:32px auto;padding:28px;border:1px
 .k{font:12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:#8b837b;letter-spacing:.08em}
 h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
 .a{color:#655f59}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
-.preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px}
+.preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px;background:#000}
+video.preview{object-fit:contain}
+.media-note{margin-top:8px;color:#8b837b;font-size:12px}
 @media(max-width:560px){main{margin:16px auto;padding:20px}h1{font-size:22px}}
 </style>
 </head>
@@ -1914,7 +1947,10 @@ h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-
 <div class="k">OOGLEX · PUBLIC X POST</div>
 <h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
 <div class="a">${shareHtmlEscape(description)}</div>
-${image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : ""}
+${video
+  ? `<video class="preview" controls playsinline preload="metadata" poster="${shareHtmlEscape(image)}" src="${shareHtmlEscape(video)}"></video>
+<div class="media-note">Video post · tap play to watch</div>`
+  : (image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : "")}
 <div class="links">
 <a href="${shareHtmlEscape(canonical.toString())}">Open post on Ooglex</a>
 <a href="${shareHtmlEscape(originalUrl)}">View original on X</a>
@@ -1929,7 +1965,7 @@ ${image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : ""}
       "content-type": "text/html; charset=utf-8",
       "cache-control": "public, max-age=300, stale-while-revalidate=1800",
       "x-ooglex-x-api": "unused",
-      "x-ooglex-share-preview": "post-text"
+      "x-ooglex-share-preview": video ? "post-video" : "post-image"
     }
   });
 }
