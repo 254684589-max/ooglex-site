@@ -470,6 +470,18 @@
 
     "单账号按需加载": "One account loaded on demand",
     "加载更多 10 条": "Load 10 more",
+    "分享 ↗": "Share ↗",
+    "分享这条动态": "Share this post",
+    "系统分享": "System share",
+    "复制帖子链接": "Copy post link",
+    "生成分享卡片": "Create share card",
+    "分享图片": "Share image",
+    "保存图片": "Save image",
+    "分享链接打开后仅展示这一条动态，不会跳转到整条人物时间线。": "The shared link opens only this post, not the full leader timeline.",
+    "单条动态": "Single post",
+    "独立分享页 · 仅展示这一条公开动态": "Standalone share page · only this public post is shown",
+    "复制链接": "Copy link",
+    "在 X 查看原文 ↗": "View original on X ↗",
 
     "免费模式": "Free mode",
     "数据模式 · Credits": "Data mode · credits",
