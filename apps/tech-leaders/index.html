@@ -61,11 +61,23 @@
     .category-btn span{margin-left:5px;color:var(--faint)}
     .leader-fold{appearance:none;flex:0 0 auto;margin-top:2px;border:1.5px solid #4f9bf5;background:#eaf3ff;color:#0b63ce;padding:10px 15px;border-radius:999px;cursor:pointer;font:800 14px/1 var(--mono);letter-spacing:.02em;white-space:nowrap;box-shadow:0 0 0 1px rgba(57,135,229,.08) inset}
     .leader-fold:hover{border-color:#1d7eea;background:#dcecff;color:#064f9f}
-    .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:1fr;gap:10px;width:100%;margin:0 0 10px}
+    .leader-rail-wrap{width:100%;margin:0 0 12px}
+    .leaders{
+      display:flex;gap:10px;width:100%;overflow-x:auto;overflow-y:hidden;
+      margin:0;padding:0 0 8px;scroll-behavior:smooth;scrollbar-width:none;
+      -ms-overflow-style:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+    }
+    .leaders::-webkit-scrollbar{display:none}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
       padding:12px 14px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;min-height:94px;transition:.18s ease;
+      flex:0 0 calc((100% - 50px)/6);
     }
+    .leader-scrollbar{position:relative;height:8px;width:100%;border-radius:999px;background:rgba(128,128,128,.18);cursor:pointer;touch-action:none;user-select:none}
+    .leader-scrollbar[hidden]{display:none}
+    .leader-scroll-thumb{position:absolute;left:0;top:0;height:100%;min-width:72px;border-radius:999px;background:rgba(128,128,128,.48);cursor:grab;touch-action:none;transition:background .15s ease}
+    .leader-scroll-thumb:hover{background:rgba(128,128,128,.62)}
+    .leader-scroll-thumb.dragging{cursor:grabbing;background:rgba(57,135,229,.72)}
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:11px;min-width:0}
@@ -161,7 +173,7 @@
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
     @media(max-width:980px){.leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
     @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.leader-fold{padding:8px 10px;font-weight:700}}
-    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:1fr;gap:12px}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:11px 15px;font-size:14px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
+    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{gap:12px}.leader{flex-basis:min(84vw,320px)}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:11px 15px;font-size:14px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
@@ -194,7 +206,12 @@
       <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
       <button class="leader-fold" id="leader-fold" type="button" hidden>展开全部 ↓</button>
     </div>
-    <div class="leaders" id="leaders"></div>
+    <div class="leader-rail-wrap">
+      <div class="leaders" id="leaders"></div>
+      <div class="leader-scrollbar" id="leader-scrollbar" hidden aria-label="人物列表横向滚动条">
+        <div class="leader-scroll-thumb" id="leader-scroll-thumb"></div>
+      </div>
+    </div>
 
     <section class="panel">
       <aside class="profile">
@@ -286,6 +303,8 @@
   var catalogFact=document.getElementById("catalog-fact");
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
+  var leaderScrollbar=document.getElementById("leader-scrollbar");
+  var leaderScrollThumb=document.getElementById("leader-scroll-thumb");
   var isExpanded=false;
   var profileAvatar=document.getElementById("profile-avatar");
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
@@ -517,10 +536,33 @@
     }));
     categoryBar.innerHTML=buttons.join("");
   }
-  function collapsedLeaderLimit(){
-    if(window.matchMedia("(max-width:560px)").matches)return 1;
-    if(window.matchMedia("(max-width:980px)").matches)return 3;
-    return 6;
+  function updateLeaderScrollbar(){
+    if(!leaderScrollbar||!leaderScrollThumb)return;
+    var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
+    if(maxScroll<=2){
+      leaderScrollbar.hidden=true;
+      leaderScrollThumb.style.width="100%";
+      leaderScrollThumb.style.left="0";
+      return;
+    }
+    leaderScrollbar.hidden=false;
+    var barWidth=leaderScrollbar.clientWidth;
+    var thumbWidth=Math.max(72,(leaders.clientWidth/leaders.scrollWidth)*barWidth);
+    var maxThumbLeft=Math.max(0,barWidth-thumbWidth);
+    var left=maxScroll>0?(leaders.scrollLeft/maxScroll)*maxThumbLeft:0;
+    leaderScrollThumb.style.width=thumbWidth+"px";
+    leaderScrollThumb.style.left=Math.max(0,Math.min(maxThumbLeft,left))+"px";
+  }
+  function scrollActiveLeaderIntoView(){
+    var active=leaders.querySelector(".leader.on");
+    if(!active)return;
+    var left=active.offsetLeft;
+    var right=left+active.offsetWidth;
+    var viewLeft=leaders.scrollLeft;
+    var viewRight=viewLeft+leaders.clientWidth;
+    if(left<viewLeft||right>viewRight){
+      leaders.scrollTo({left:Math.max(0,left-(leaders.clientWidth-active.offsetWidth)/2),behavior:"auto"});
+    }
   }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
@@ -529,20 +571,13 @@
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
       return categoryOk&&searchOk;
     });
-    var limit=collapsedLeaderLimit();
-    var canFold=filtered.length>limit;
-    var visible=isExpanded?filtered:filtered.slice(0,limit);
-    if(!isExpanded&&current&&filtered.some(function(p){return p.id===current.id;})&&!visible.some(function(p){return p.id===current.id;})){
-      visible=visible.slice(0,Math.max(0,limit-1)).concat([current]);
-    }
-    foldBtn.hidden=!canFold;
-    if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开全部 ↓";
+    foldBtn.hidden=true;
     if(!filtered.length){
-      foldBtn.hidden=true;
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
+      if(leaderScrollbar)leaderScrollbar.hidden=true;
       return;
     }
-    leaders.innerHTML=visible.map(function(p){
+    leaders.innerHTML=filtered.map(function(p){
       var cn=p.name_zh||p.zh||p.name;
       var en=p.name_en||p.name||"";
       var company=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
@@ -553,6 +588,10 @@
         '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+(isVerifiedPerson(p)?verifiedBadgeMarkup(""):"")+'</div><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
         '<div class="leader-role">'+escapeHtml(meta)+'</div></button>';
     }).join("");
+    requestAnimationFrame(function(){
+      scrollActiveLeaderIntoView();
+      updateLeaderScrollbar();
+    });
   }
   async function loadCatalog(){
     try{
@@ -1334,19 +1373,62 @@
     }
   },true);
   profileAvatar.addEventListener("error",function(){applyAvatarFallback(profileAvatar,current||{});});
-  foldBtn.addEventListener("click",function(){isExpanded=!isExpanded;renderLeaderButtons(search.value);});
-  var lastFoldLimit=collapsedLeaderLimit();
-  window.addEventListener("resize",function(){
-    var nextLimit=collapsedLeaderLimit();
-    if(nextLimit===lastFoldLimit)return;
-    lastFoldLimit=nextLimit;
-    if(!isExpanded)renderLeaderButtons(search.value);
-  });
-  search.addEventListener("input",function(){isExpanded=false;renderLeaderButtons(search.value);});
+  foldBtn.hidden=true;
+  leaders.addEventListener("scroll",updateLeaderScrollbar,{passive:true});
+  window.addEventListener("resize",function(){requestAnimationFrame(updateLeaderScrollbar);});
+
+  if(leaderScrollbar&&leaderScrollThumb){
+    var leaderDragging=false;
+    var leaderDragStartX=0;
+    var leaderDragStartLeft=0;
+
+    leaderScrollThumb.addEventListener("pointerdown",function(e){
+      if(leaderScrollbar.hidden)return;
+      leaderDragging=true;
+      leaderDragStartX=e.clientX;
+      leaderDragStartLeft=parseFloat(leaderScrollThumb.style.left)||0;
+      leaderScrollThumb.classList.add("dragging");
+      leaderScrollThumb.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+
+    leaderScrollThumb.addEventListener("pointermove",function(e){
+      if(!leaderDragging)return;
+      var barWidth=leaderScrollbar.clientWidth;
+      var thumbWidth=leaderScrollThumb.offsetWidth;
+      var maxThumbLeft=Math.max(0,barWidth-thumbWidth);
+      var nextLeft=Math.max(0,Math.min(maxThumbLeft,leaderDragStartLeft+(e.clientX-leaderDragStartX)));
+      var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
+      leaders.scrollLeft=maxThumbLeft>0?(nextLeft/maxThumbLeft)*maxScroll:0;
+      e.preventDefault();
+    });
+
+    function stopLeaderDrag(e){
+      if(!leaderDragging)return;
+      leaderDragging=false;
+      leaderScrollThumb.classList.remove("dragging");
+      try{leaderScrollThumb.releasePointerCapture(e.pointerId);}catch(_){}
+    }
+    leaderScrollThumb.addEventListener("pointerup",stopLeaderDrag);
+    leaderScrollThumb.addEventListener("pointercancel",stopLeaderDrag);
+
+    leaderScrollbar.addEventListener("pointerdown",function(e){
+      if(e.target===leaderScrollThumb||leaderScrollbar.hidden)return;
+      var rect=leaderScrollbar.getBoundingClientRect();
+      var thumbWidth=leaderScrollThumb.offsetWidth;
+      var maxThumbLeft=Math.max(0,leaderScrollbar.clientWidth-thumbWidth);
+      var nextLeft=Math.max(0,Math.min(maxThumbLeft,e.clientX-rect.left-thumbWidth/2));
+      var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
+      leaders.scrollTo({left:maxThumbLeft>0?(nextLeft/maxThumbLeft)*maxScroll:0,behavior:"smooth"});
+    });
+  }
+
+  search.addEventListener("input",function(){leaders.scrollLeft=0;renderLeaderButtons(search.value);});
   categoryBar.addEventListener("click",function(e){
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
     isExpanded=false;
+    leaders.scrollLeft=0;
     var next=new URL(location.href);
     if(activeCategory==="全部")next.searchParams.delete("category");else next.searchParams.set("category",activeCategory);
     history.replaceState(null,"",next.toString());
