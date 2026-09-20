@@ -233,6 +233,7 @@
       <div class="share-head"><b id="share-title">分享这条动态</b><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
         <button type="button" id="share-system">分享原文</button>
+        <button type="button" id="share-wechat">微信分享</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
       </div>
@@ -244,7 +245,7 @@
           <button type="button" id="share-card-save">保存图片</button>
         </div>
       </div>
-      <div class="share-note">“分享原文”只发送这条动态的原生正文，不附带网址；需要链接时使用“复制帖子链接”。</div>
+      <div class="share-note">“分享原文”只发送这条动态的原生正文；“微信分享”会准备专用链接并尝试打开微信，在微信内打开后可通过右上角“…”继续分享。</div>
     </section>
   </div>
 
@@ -1238,6 +1239,24 @@
       else{await copyText(text);shareStatus.textContent="当前浏览器不支持系统分享，已复制帖子原文。";}
     }catch(e){if(e&&e.name!=="AbortError")shareStatus.textContent="原文分享未完成，可改用复制帖子链接或生成分享卡片。";}
   });
+  document.getElementById("share-wechat").addEventListener("click",async function(){
+    if(!activeSharePost)return;
+    var url=singlePostUrl(activeSharePost);
+    try{
+      await copyText(url);
+      if(/MicroMessenger/i.test(navigator.userAgent)){
+        shareStatus.textContent="已准备微信分享。请点右上角“…”继续分享。";
+        window.location.href=url;
+        return;
+      }
+      shareStatus.textContent="专用链接已复制，正在尝试打开微信。进入微信后打开该链接，再点右上角“…”继续分享。";
+      var a=document.createElement("a");
+      a.href="weixin://";a.style.display="none";document.body.appendChild(a);a.click();a.remove();
+    }catch(e){
+      shareStatus.textContent="微信分享准备失败，请使用“复制帖子链接”。";
+    }
+  });
+
   document.getElementById("share-copy").addEventListener("click",async function(){
     if(!activeSharePost)return;
     try{await copyText(singlePostUrl(activeSharePost));shareStatus.textContent="帖子链接已复制。";}catch(e){shareStatus.textContent="复制失败，请稍后重试。";}
