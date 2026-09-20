@@ -276,15 +276,15 @@ The native free timeline now follows a progressive display policy:
 Each native Tech Leaders post now has an independent sharing flow:
 
 - Every public post card exposes a `分享 ↗` action.
-- The share sheet uses neutral product wording: `系统分享`, `复制帖子链接`, and `生成分享卡片`.
+- The share sheet uses neutral product wording: `打开单帖`, `复制帖子链接`, and `生成分享卡片`.
 - No channel-specific label such as “朋友圈” appears in the product UI.
 - Shared links use the dynamic `/share/tech-leaders/<handle>/<post_id>` preview route, which emits server-side Open Graph metadata before redirecting human visitors to the standalone Ooglex post page.
 - The social-card title is the original public post text (English remains English); it no longer uses the generic `科技领袖实时动态流 · Ooglex` page title. Pure reposts use the reposted source text.
 - Recipients still land on `/apps/tech-leaders/post/?handle=<handle>&id=<post_id>`, so they see only the selected post rather than the full leader timeline.
 - `/v1/tech-leaders/post` resolves a single post from the Ooglex free-feed cache first, then refreshes public sources when necessary. It never calls `api.x.com`.
-- The share-card generator creates a 1080×1350 PNG client-side. The main feed attempts to include the first available media preview; the single-post page also supports system share, link copy, and share-card generation.
-- Browser-native sharing uses the operating system share sheet. Available destination apps are controlled by the device/browser, not by Ooglex.
-- The primary `分享原文` action intentionally sends **text only** via Web Share — no URL — so apps such as WeChat receive the native public post text instead of a long Ooglex link in the compose field.
+- The share-card generator creates a 1080×1350 PNG client-side. The main feed attempts to include the first available media preview; the single-post page supports opening the share page, link copy, and share-card generation.
+- Browser-native sharing is retained for generated share-card images. Available destination apps are controlled by the device/browser, not by Ooglex.
+- The former `分享原文` text-only Web Share action was removed from both the main feed and standalone post page on 2026-09-20.
 - `复制帖子链接` remains a separate action for users who explicitly want a clickable URL, while `生成分享卡片` remains the visual-image route.
 - `微信分享` copies the dynamic single-post preview URL, tries to open WeChat from an external browser, and guides the user to open that link inside WeChat and use the top-right menu for further sharing. The product does not label this button as “朋友圈”.
 - The dynamic `/share/tech-leaders/<handle>/<post_id>` route now stays open as the actual share page instead of immediately redirecting. When opened inside WeChat, it displays an in-page prompt for the top-right menu while preserving server-rendered Open Graph metadata whose title is the original post text.
