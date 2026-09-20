@@ -1406,47 +1406,80 @@ function normalizeFxTwitterStatus(status, handle) {
 }
 
 async function fetchFxTwitterFreeFeed(handle, limit) {
-  const count = Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
-  const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?count=${count}`;
-  const res = await fetch(url, {
-    redirect: "follow",
-    headers: {
-      accept: "application/json",
-      "user-agent": "Ooglex-Tech-Leaders-Free-Feed/2.0"
+  const requested = Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
+  const pageSize = 20;
+  const maxPages = Math.max(1, Math.ceil(requested / pageSize));
+  const byId = new Map();
+  let cursor = "";
+  let pagesFetched = 0;
+
+  for (let page = 0; page < maxPages && byId.size < requested; page += 1) {
+    const params = new URLSearchParams({ count: String(Math.min(pageSize, requested - byId.size)) });
+    if (cursor) params.set("cursor", cursor);
+    const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?${params.toString()}`;
+
+    const res = await fetch(url, {
+      redirect: "follow",
+      headers: {
+        accept: "application/json",
+        "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
+      }
+    });
+
+    let payload = null;
+    try { payload = await res.json(); } catch {}
+    if (!res.ok || !payload || Number(payload.code || res.status) >= 400) {
+      if (byId.size) break;
+      const err = new Error("fxtwitter_public_feed_error");
+      err.code = "fxtwitter_public_feed_error";
+      err.status = res.status || Number(payload && payload.code) || 502;
+      throw err;
     }
-  });
-  let payload = null;
-  try { payload = await res.json(); } catch {}
-  if (!res.ok || !payload || Number(payload.code || res.status) >= 400) {
-    const err = new Error("fxtwitter_public_feed_error");
-    err.code = "fxtwitter_public_feed_error";
-    err.status = res.status || Number(payload && payload.code) || 502;
-    throw err;
+
+    pagesFetched += 1;
+    const results = Array.isArray(payload.results) ? payload.results : [];
+    for (const item of results) {
+      const normalized = normalizeFxTwitterStatus(item, handle);
+      if (normalized && normalized.id && !byId.has(normalized.id)) byId.set(normalized.id, normalized);
+    }
+
+    const nextCursor = payload && payload.cursor && payload.cursor.bottom
+      ? String(payload.cursor.bottom)
+      : "";
+    if (!results.length || !nextCursor || nextCursor === cursor) break;
+    cursor = nextCursor;
   }
-  const results = Array.isArray(payload.results) ? payload.results : [];
-  const posts = results
-    .map((item) => normalizeFxTwitterStatus(item, handle))
-    .filter(Boolean)
+
+  const posts = Array.from(byId.values())
     .sort((a, b) => {
       const ta = Date.parse(a.created_at || "") || 0;
       const tb = Date.parse(b.created_at || "") || 0;
       if (ta !== tb) return tb - ta;
       return String(b.id || "").localeCompare(String(a.id || ""));
     })
-    .slice(0, limit);
+    .slice(0, requested);
+
   if (!posts.length) {
     const err = new Error("fxtwitter_public_feed_empty");
     err.code = "fxtwitter_public_feed_empty";
     err.status = 502;
     throw err;
   }
+
   return {
-    schema_version: 4,
+    schema_version: 5,
     source: "fxtwitter_public_api",
     third_party: "FxEmbed/FxTwitter",
     uses_x_api: false,
     handle,
     fetched_at: new Date().toISOString(),
+    pagination: {
+      page_size: pageSize,
+      pages_fetched: pagesFetched,
+      requested,
+      returned: posts.length,
+      has_more: Boolean(cursor) && posts.length < requested
+    },
     posts
   };
 }
@@ -1593,7 +1626,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/free-feed/v4/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v5/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
