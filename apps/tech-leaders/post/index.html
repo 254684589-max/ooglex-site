@@ -49,7 +49,7 @@
   var cardBlob=null;
   var cardObjectUrl="";
   var currentPost=null;
-  var currentProfile={name:handle||"X",handle:handle,avatar:""};
+  var currentProfile={name:handle||"X",handle:handle,avatar:"",hide_handle:false};
 
   var back=new URL("../",location.href);
   if(leader)back.searchParams.set("leader",leader);
@@ -78,7 +78,7 @@
     var el=document.createElement("article");el.className="post";
     var head=document.createElement("div");head.className="head";
     var av=document.createElement("img");av.className="avatar";av.alt=(currentProfile.name||handle)+" 头像";av.referrerPolicy="no-referrer";av.src=avatarUrl();head.appendChild(av);
-    var who=document.createElement("div");who.className="who";var name=document.createElement("div");name.className="name";name.textContent=currentProfile.name||handle;var type=document.createElement("span");type.className="type";type.textContent=typeLabel(post);name.appendChild(type);who.appendChild(name);var h=document.createElement("div");h.className="handle";h.textContent="@"+handle;who.appendChild(h);head.appendChild(who);
+    var who=document.createElement("div");who.className="who";var name=document.createElement("div");name.className="name";name.textContent=currentProfile.name||handle;var type=document.createElement("span");type.className="type";type.textContent=typeLabel(post);name.appendChild(type);who.appendChild(name);if(!currentProfile.hide_handle){var h=document.createElement("div");h.className="handle";h.textContent="@"+handle;who.appendChild(h);}head.appendChild(who);
     var time=document.createElement("div");time.className="time";time.textContent=fmt(post.created_at);head.appendChild(time);el.appendChild(head);
     var hide=String(post.post_type||"").toLowerCase()==="retweet"&&post.embedded_post;
     if(!hide&&String(post.text||"").trim()){var text=document.createElement("div");text.className="text";text.textContent=post.text;el.appendChild(text);}
@@ -110,7 +110,7 @@
     if(!currentPost)return;
     var canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;var ctx=canvas.getContext("2d");ctx.fillStyle="#f7f2ea";ctx.fillRect(0,0,1080,1350);
     ctx.fillStyle="#111827";ctx.font="700 34px Arial";ctx.fillText("Ooglex · PUBLIC X POST",72,86);ctx.strokeStyle="#d8d0c6";ctx.beginPath();ctx.moveTo(72,112);ctx.lineTo(1008,112);ctx.stroke();
-    ctx.font="700 40px Arial";ctx.fillStyle="#111827";ctx.fillText(currentProfile.name||handle,72,190);ctx.font="27px Arial";ctx.fillStyle="#667085";ctx.fillText("@"+handle,72,230);ctx.fillStyle="#2563a6";ctx.font="700 23px Arial";ctx.fillText(typeLabel(currentPost),900,190);
+    ctx.font="700 40px Arial";ctx.fillStyle="#111827";ctx.fillText(currentProfile.name||handle,72,190);ctx.font="27px Arial";ctx.fillStyle="#667085";if(!currentProfile.hide_handle)ctx.fillText("@"+handle,72,230);ctx.fillStyle="#2563a6";ctx.font="700 23px Arial";ctx.fillText(typeLabel(currentPost),900,190);
     ctx.fillStyle="#111827";ctx.font="38px Arial";var y=300;y=wrap(ctx,currentPost.text||"",72,y,936,58,9)+20;
     if(currentPost.embedded_post){var ref=currentPost.embedded_post,a=ref.author||{};var by=y+10;ctx.fillStyle="#fffdf9";round(ctx,64,by,952,250,24);ctx.fill();ctx.strokeStyle="#d8d0c6";ctx.stroke();ctx.fillStyle="#111827";ctx.font="700 27px Arial";ctx.fillText(a.name||a.handle||"X",94,by+58);ctx.fillStyle="#667085";ctx.font="23px Arial";ctx.fillText(a.handle?"@"+a.handle:"",94,by+95);ctx.fillStyle="#344054";ctx.font="27px Arial";wrap(ctx,ref.text||"",94,by+140,860,40,3);}
     ctx.strokeStyle="#d8d0c6";ctx.beginPath();ctx.moveTo(72,1208);ctx.lineTo(1008,1208);ctx.stroke();ctx.fillStyle="#667085";ctx.font="25px Arial";ctx.fillText(fmt(currentPost.created_at),72,1260);ctx.textAlign="right";ctx.fillText("ooglex.com · 单条动态",1008,1260);ctx.textAlign="left";ctx.fillStyle="#98a2b3";ctx.font="20px Arial";ctx.fillText("公开内容聚合展示 · 内容版权归原发布者与 X 平台所有",72,1304);
@@ -121,7 +121,7 @@
   document.getElementById("save-image").onclick=function(){if(!cardBlob)return;var u=URL.createObjectURL(cardBlob),a=document.createElement("a");a.href=u;a.download="ooglex-post-"+postId+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);};
 
   async function loadProfile(){
-    try{var r=await fetch("../leaders.json",{cache:"force-cache"});var d=await r.json();var list=Array.isArray(d)?d:(d.leaders||d.people||[]);var p=list.find(function(x){return String(x.handle||"").toLowerCase()===handle.toLowerCase();});if(p)currentProfile.name=p.name_zh||p.zh||p.name_en||p.name||handle;}catch(e){}
+    try{var r=await fetch("../leaders.json",{cache:"force-cache"});var d=await r.json();var list=Array.isArray(d)?d:(d.leaders||d.people||[]);var p=list.find(function(x){return String(x.handle||"").toLowerCase()===handle.toLowerCase();});if(p){currentProfile.name=p.name_zh||p.zh||p.name_en||p.name||handle;currentProfile.hide_handle=!!p.hide_handle;}}catch(e){}
   }
   async function start(){
     if(!/^[A-Za-z0-9_]{1,15}$/.test(handle)||!/^\d{10,25}$/.test(postId)){state.innerHTML="<b>链接无效</b><span>缺少有效的账号或帖子 ID。</span>";return;}
