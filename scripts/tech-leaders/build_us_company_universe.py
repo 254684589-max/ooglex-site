@@ -153,7 +153,10 @@ def load_nasdaq_rows(limit: int = 10000) -> list[dict[str, Any]]:
         "download": "true",
     }
     payload = http_json(f"{NASDAQ_URL}?{urlencode(params)}")
-    rows = (((payload or {}).get("data") or {}).get("table") or {}).get("rows") or []
+    data = (payload or {}).get("data") or {}
+    rows = data.get("rows")
+    if not isinstance(rows, list):
+        rows = (data.get("table") or {}).get("rows")
     if not isinstance(rows, list):
         raise RuntimeError("Nasdaq screener payload did not contain rows")
     return rows
