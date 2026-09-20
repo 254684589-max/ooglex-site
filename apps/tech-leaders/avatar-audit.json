@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-20T02:58:46Z",
+  "checked_at": "2026-09-20T07:14:37Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 110,
-  "x_original": 58,
-  "x_original_proxy": 28,
+  "x_original": 67,
+  "x_original_proxy": 18,
   "official_fallback": 2,
-  "public_fallback": 22,
-  "fallback": 24,
+  "public_fallback": 23,
+  "fallback": 25,
   "pending_review": 0,
   "missing_handle": 0,
   "invalid_handle": 0,
@@ -253,6 +253,20 @@
       "origin_url": "https://x.com/boztank"
     },
     {
+      "id": "armstrong",
+      "name": "Brian Armstrong",
+      "company": "Coinbase",
+      "handle": "brian_armstrong",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "brian_armstrong",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=brian_armstrong&name=Brian+Armstrong&company=Coinbase",
+      "origin_url": "https://x.com/brian_armstrong"
+    },
+    {
       "id": "hock-tan",
       "name": "Hock Tan",
       "company": "Broadcom",
@@ -421,6 +435,20 @@
       "origin_url": "https://x.com/eldsjal"
     },
     {
+      "id": "musk",
+      "name": "Elon Musk",
+      "company": "Tesla / SpaceX / xAI / X",
+      "handle": "elonmusk",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "elonmusk",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&name=Elon+Musk&company=Tesla+%2F+SpaceX+%2F+xAI+%2F+X",
+      "origin_url": "https://x.com/elonmusk"
+    },
+    {
       "id": "yuan",
       "name": "Eric Yuan",
       "company": "Zoom",
@@ -433,6 +461,34 @@
       "response_handle": "ericsyuan",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericsyuan&name=Eric+Yuan&company=Zoom",
       "origin_url": "https://x.com/ericsyuan"
+    },
+    {
+      "id": "zuckerberg",
+      "name": "Mark Zuckerberg",
+      "company": "Meta",
+      "handle": "finkd",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "finkd",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=finkd&name=Mark+Zuckerberg&company=Meta",
+      "origin_url": "https://x.com/finkd"
+    },
+    {
+      "id": "garry-tan",
+      "name": "Garry Tan",
+      "company": "Y Combinator",
+      "handle": "garrytan",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "garrytan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=garrytan&name=Garry+Tan&company=Y+Combinator",
+      "origin_url": "https://x.com/garrytan"
     },
     {
       "id": "brockman",
@@ -475,6 +531,20 @@
       "response_handle": "ilyasut",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilyasut&name=Ilya+Sutskever&company=Safe+Superintelligence",
       "origin_url": "https://x.com/ilyasut"
+    },
+    {
+      "id": "dorsey",
+      "name": "Jack Dorsey",
+      "company": "Block / Twitter",
+      "handle": "jack",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "jack",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack&name=Jack+Dorsey&company=Block+%2F+Twitter",
+      "origin_url": "https://x.com/jack"
     },
     {
       "id": "bezos",
@@ -715,6 +785,20 @@
       "origin_url": "https://x.com/photomatt"
     },
     {
+      "id": "andreessen",
+      "name": "Marc Andreessen",
+      "company": "Andreessen Horowitz",
+      "handle": "pmarca",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "pmarca",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pmarca&name=Marc+Andreessen&company=Andreessen+Horowitz",
+      "origin_url": "https://x.com/pmarca"
+    },
+    {
       "id": "koduri",
       "name": "Raja Koduri",
       "company": "Semiconductors / AI Hardware",
@@ -729,6 +813,20 @@
       "origin_url": "https://x.com/RajaXg"
     },
     {
+      "id": "rauch",
+      "name": "Guillermo Rauch",
+      "company": "Vercel",
+      "handle": "rauchg",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "rauchg",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rauchg&name=Guillermo+Rauch&company=Vercel",
+      "origin_url": "https://x.com/rauchg"
+    },
+    {
       "id": "hoffman",
       "name": "Reid Hoffman",
       "company": "LinkedIn / Greylock",
@@ -741,6 +839,20 @@
       "response_handle": "reidhoffman",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=reidhoffman&name=Reid+Hoffman&company=LinkedIn+%2F+Greylock",
       "origin_url": "https://x.com/reidhoffman"
+    },
+    {
+      "id": "altman",
+      "name": "Sam Altman",
+      "company": "OpenAI",
+      "handle": "sama",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "sama",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sama&name=Sam+Altman&company=OpenAI",
+      "origin_url": "https://x.com/sama"
     },
     {
       "id": "stewart",
@@ -797,6 +909,20 @@
       "response_handle": "tim_cook",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tim_cook&name=Tim+Cook&company=Apple",
       "origin_url": "https://x.com/tim_cook"
+    },
+    {
+      "id": "buterin",
+      "name": "Vitalik Buterin",
+      "company": "Ethereum",
+      "handle": "VitalikButerin",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "VitalikButerin",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin&name=Vitalik+Buterin&company=Ethereum",
+      "origin_url": "https://x.com/VitalikButerin"
     },
     {
       "id": "khosla",
@@ -869,20 +995,6 @@
       "origin_url": "https://x.com/bgurley"
     },
     {
-      "id": "armstrong",
-      "name": "Brian Armstrong",
-      "company": "Coinbase",
-      "handle": "brian_armstrong",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "brian_armstrong",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=brian_armstrong&name=Brian+Armstrong&company=Coinbase",
-      "origin_url": "https://x.com/brian_armstrong"
-    },
-    {
       "id": "chamath",
       "name": "Chamath Palihapitiya",
       "company": "Social Capital",
@@ -923,76 +1035,6 @@
       "response_handle": "dkhos",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos&name=Dara+Khosrowshahi&company=Uber",
       "origin_url": "https://x.com/dkhos"
-    },
-    {
-      "id": "musk",
-      "name": "Elon Musk",
-      "company": "Tesla / SpaceX / xAI / X",
-      "handle": "elonmusk",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "elonmusk",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&name=Elon+Musk&company=Tesla+%2F+SpaceX+%2F+xAI+%2F+X",
-      "origin_url": "https://x.com/elonmusk"
-    },
-    {
-      "id": "zuckerberg",
-      "name": "Mark Zuckerberg",
-      "company": "Meta",
-      "handle": "finkd",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "finkd",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=finkd&name=Mark+Zuckerberg&company=Meta",
-      "origin_url": "https://x.com/finkd"
-    },
-    {
-      "id": "fred-wilson",
-      "name": "Fred Wilson",
-      "company": "Union Square Ventures",
-      "handle": "fredwilson",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "fredwilson",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
-      "origin_url": "https://x.com/fredwilson"
-    },
-    {
-      "id": "garry-tan",
-      "name": "Garry Tan",
-      "company": "Y Combinator",
-      "handle": "garrytan",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "garrytan",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=garrytan&name=Garry+Tan&company=Y+Combinator",
-      "origin_url": "https://x.com/garrytan"
-    },
-    {
-      "id": "dorsey",
-      "name": "Jack Dorsey",
-      "company": "Block / Twitter",
-      "handle": "jack",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "jack",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack&name=Jack+Dorsey&company=Block+%2F+Twitter",
-      "origin_url": "https://x.com/jack"
     },
     {
       "id": "huang",
@@ -1107,48 +1149,6 @@
       "origin_url": "https://x.com/Peter_J_Beck"
     },
     {
-      "id": "andreessen",
-      "name": "Marc Andreessen",
-      "company": "Andreessen Horowitz",
-      "handle": "pmarca",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "pmarca",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pmarca&name=Marc+Andreessen&company=Andreessen+Horowitz",
-      "origin_url": "https://x.com/pmarca"
-    },
-    {
-      "id": "rauch",
-      "name": "Guillermo Rauch",
-      "company": "Vercel",
-      "handle": "rauchg",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "rauchg",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rauchg&name=Guillermo+Rauch&company=Vercel",
-      "origin_url": "https://x.com/rauchg"
-    },
-    {
-      "id": "altman",
-      "name": "Sam Altman",
-      "company": "OpenAI",
-      "handle": "sama",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "sama",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sama&name=Sam+Altman&company=OpenAI",
-      "origin_url": "https://x.com/sama"
-    },
-    {
       "id": "nadella",
       "name": "Satya Nadella",
       "company": "Microsoft",
@@ -1175,20 +1175,6 @@
       "response_handle": "tobi",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi&name=Tobias+L%C3%BCtke&company=Shopify",
       "origin_url": "https://x.com/tobi"
-    },
-    {
-      "id": "buterin",
-      "name": "Vitalik Buterin",
-      "company": "Ethereum",
-      "handle": "VitalikButerin",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "VitalikButerin",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin&name=Vitalik+Buterin&company=Ethereum",
-      "origin_url": "https://x.com/VitalikButerin"
     },
     {
       "id": "tenev",
@@ -1273,6 +1259,20 @@
       "response_handle": "ericschmidt",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericschmidt&name=Eric+Schmidt&company=Google+%2F+Technology+Investing",
       "origin_url": "https://x.com/ericschmidt"
+    },
+    {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "company": "Union Square Ventures",
+      "handle": "fredwilson",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "fredwilson",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
+      "origin_url": "https://x.com/fredwilson"
     },
     {
       "id": "lip-bu-tan",
