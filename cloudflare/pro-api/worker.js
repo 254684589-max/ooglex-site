@@ -1434,13 +1434,21 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
     }
     const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?${params.toString()}`;
 
-    const res = await fetch(url, {
-      redirect: "follow",
-      headers: {
-        accept: "application/json",
-        "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
-      }
-    });
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 3500);
+    let res = null;
+    try {
+      res = await fetch(url, {
+        signal: ctl.signal,
+        redirect: "follow",
+        headers: {
+          accept: "application/json",
+          "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
+        }
+      });
+    } finally {
+      clearTimeout(timer);
+    }
 
     let payload = null;
     try { payload = await res.json(); } catch {}
@@ -1521,15 +1529,23 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     params.set("_fresh", String(Math.floor(Date.now() / 60000)));
   }
   const url = `https://syndication.twitter.com/srv/timeline-profile/screen-name/${encodeURIComponent(handle)}?${params.toString()}`;
-  const res = await fetch(url, {
-    redirect: "follow",
-    headers: {
-      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "accept-language": "en-US,en;q=0.9",
-      referer: "https://publish.twitter.com/",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-    }
-  });
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 3500);
+  let res = null;
+  try {
+    res = await fetch(url, {
+      signal: ctl.signal,
+      redirect: "follow",
+      headers: {
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.9",
+        referer: "https://publish.twitter.com/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+      }
+    });
+  } finally {
+    clearTimeout(timer);
+  }
   if (!res.ok) {
     const err = new Error(res.status === 429 ? "x_public_syndication_rate_limited" : "x_public_syndication_error");
     err.code = res.status === 429 ? "x_public_syndication_rate_limited" : "x_public_syndication_error";
@@ -1603,41 +1619,27 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
   // accepting the first FxTwitter page, which can lag behind the live X profile.
   const strictLatestProfile = String(handle || "").toLowerCase() === "zlq6600e";
   if (requested <= 20 && !strictLatestProfile) {
-    let fxError = null;
     try {
-      const fast = await fetchFxTwitterFreeFeed(handle, requested);
-      return {
-        ...fast,
-        schema_version: 6,
-        source: "fxtwitter_public_api_fast",
-        sources: ["fxtwitter_public_api"],
-        fast_first_paint: true
-      };
-    } catch (err) {
-      fxError = err;
-    }
-
-    try {
-      const official = await fetchOfficialSyndicationFreeFeed(handle, requested);
-      return {
-        ...official,
-        schema_version: 6,
-        source: "x_public_syndication_fast",
-        sources: ["x_public_syndication"],
-        fast_first_paint: true
-      };
-    } catch (officialError) {
+      return await Promise.any([
+        fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
+          ...fast,
+          schema_version: 6,
+          source: "fxtwitter_public_api_fast",
+          sources: ["fxtwitter_public_api"],
+          fast_first_paint: true
+        })),
+        fetchOfficialSyndicationFreeFeed(handle, requested).then((official) => ({
+          ...official,
+          schema_version: 6,
+          source: "x_public_syndication_fast",
+          sources: ["x_public_syndication"],
+          fast_first_paint: true
+        }))
+      ]);
+    } catch {
       const err = new Error("free_public_feed_sources_unavailable");
       err.code = "free_public_feed_sources_unavailable";
-      err.status = fxError && Number.isInteger(fxError.status)
-        ? fxError.status
-        : (officialError && Number.isInteger(officialError.status) ? officialError.status : 502);
-      err.detail = {
-        official_source: officialError && officialError.code ? officialError.code : "empty",
-        official_status: officialError && officialError.status ? officialError.status : null,
-        fallback_source: fxError && fxError.code ? fxError.code : "empty",
-        fallback_status: fxError && fxError.status ? fxError.status : null
-      };
+      err.status = 502;
       throw err;
     }
   }
