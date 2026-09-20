@@ -1112,7 +1112,6 @@
       if(!current.hide_post_metrics){
         ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
       }
-      var source=document.createElement("span");source.className="post-source";source.textContent="公开源 · $0 X API";foot.appendChild(source);
       appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
       card.appendChild(foot);wrap.appendChild(card);
