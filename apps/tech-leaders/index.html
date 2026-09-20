@@ -1029,9 +1029,10 @@
     var shown=0;
     var batchSize=10;
     var maxPosts=100;
-    var requestedLimit=Math.max(20,Number(feed&&feed.requested_limit)||posts.length);
-    var remoteExhausted=posts.length<requestedLimit||posts.length>=maxPosts;
+    var requestedLimit=Math.max(20,posts.length);
+    var remoteExhausted=posts.length>=maxPosts;
     var fetchingMore=false;
+    var noGrowthFetches=0;
     var more=document.createElement("div");more.className="feed-more";
     var btn=document.createElement("button");btn.type="button";
 
@@ -1059,19 +1060,27 @@
     async function fetchMoreInBackground(){
       if(fetchingMore||remoteExhausted||posts.length>=maxPosts)return;
       fetchingMore=true;refreshMore();
-      var target=Math.min(maxPosts,Math.max(requestedLimit+20,posts.length+20));
+      var target=maxPosts;
       try{
         var ctl=new AbortController();
-        var timer=setTimeout(function(){ctl.abort();},20000);
+        var timer=setTimeout(function(){ctl.abort();},30000);
         try{
           var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit="+target,{signal:ctl.signal,cache:"no-store"});
           var data=await res.json().catch(function(){return {};});
           if(!res.ok||!data||!Array.isArray(data.posts))throw new Error(data.error||("free_feed_http_"+res.status));
           var seen=new Set(posts.map(function(p){return String(p&&p.id||"");}));
           var added=(data.posts||[]).filter(function(p){var id=String(p&&p.id||"");return id&&!seen.has(id);}).sort(sortPostsNewest);
-          if(added.length)posts=posts.concat(added).slice(0,maxPosts);
-          requestedLimit=target;
-          remoteExhausted=!added.length||data.posts.length<target||posts.length>=maxPosts;
+          if(added.length){
+            posts=posts.concat(added).slice(0,maxPosts).sort(sortPostsNewest);
+            noGrowthFetches=0;
+          }else{
+            noGrowthFetches+=1;
+          }
+          requestedLimit=Math.max(requestedLimit,Number(data.requested_limit)||data.posts.length||0);
+          // A short public-source response must not permanently lock the UI at
+          // 20 items. Only 100 loaded posts prove completion. Two no-growth
+          // attempts stop automatic retries for this page session.
+          remoteExhausted=posts.length>=maxPosts||noGrowthFetches>=2;
         }finally{clearTimeout(timer);}
       }catch(e){
         remoteExhausted=true;
@@ -1095,6 +1104,13 @@
       }
       fetchMoreInBackground();
     });
+
+    // Keep the fast 20-item first paint, but start preparing deeper history
+    // after the page becomes interactive so 21–100 are usually ready before
+    // the reader reaches the bottom.
+    if(posts.length<maxPosts&&!remoteExhausted){
+      setTimeout(function(){fetchMoreInBackground();},350);
+    }
     return true;
   }
 
