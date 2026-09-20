@@ -1369,8 +1369,13 @@
     if(!activeSharePost)return;
     var media=shareVideoMedia(activeSharePost);
     if(!media||!media.video_url){shareStatus.textContent="这条动态没有可直接分享的视频。";return;}
-    shareStatus.textContent="正在准备视频…";
     try{
+      var probe=new File([new Blob([""],{type:"video/mp4"})],"ooglex-video.mp4",{type:"video/mp4"});
+      if(!(navigator.canShare&&navigator.share&&navigator.canShare({files:[probe]}))){
+        shareStatus.textContent="当前浏览器不支持直接分享视频；可打开单帖，分享后的页面仍可直接播放视频。";
+        return;
+      }
+      shareStatus.textContent="正在准备视频…";
       var res=await fetch(mediaProxyUrl(media.video_url),{cache:"no-store"});
       if(!res.ok)throw new Error("video_fetch_"+res.status);
       var blob=await res.blob();
