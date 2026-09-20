@@ -1001,6 +1001,30 @@
     if(media.childNodes.length)card.appendChild(media);
   }
 
+  function embeddedAvatarUrl(author){
+    author=author&&typeof author==="object"?author:{};
+    var handle=String(author.handle||"").replace(/^@/,"").trim();
+    var name=String(author.name||handle||"X").trim();
+    if(handle){
+      var q=new URLSearchParams({handle:handle,name:name});
+      return API_BASE+"/v1/tech-leaders/avatar?"+q.toString();
+    }
+    var raw=String(author.avatar_url||"").trim();
+    return raw ? API_BASE+"/v1/tech-leaders/media?url="+encodeURIComponent(raw) : "";
+  }
+  function applyEmbeddedAvatarFallback(img,author){
+    if(!img)return;
+    author=author&&typeof author==="object"?author:{};
+    var raw=String(author.avatar_url||"").trim();
+    if(raw&&img.dataset.originalAvatarTried!=="1"){
+      img.dataset.originalAvatarTried="1";
+      img.src=API_BASE+"/v1/tech-leaders/media?url="+encodeURIComponent(raw);
+      return;
+    }
+    img.onerror=null;
+    img.src=avatarFallbackDataUrl({name:author.name||author.handle||"X",handle:author.handle||""});
+  }
+
   function appendEmbeddedPost(card,post){
     var ref=post&&post.embedded_post;
     if(!ref||(!String(ref.text||"").trim()&&!(Array.isArray(ref.media)&&ref.media.length)))return false;
@@ -1009,13 +1033,13 @@
     var head=document.createElement("div");head.className="embedded-head";
     var author=ref.author&&typeof ref.author==="object"?ref.author:{};
 
-    if(author.avatar_url){
+    if(author.avatar_url||author.handle){
       var avatar=document.createElement("img");
       avatar.className="embedded-avatar";
       avatar.loading="lazy";avatar.decoding="async";avatar.referrerPolicy="no-referrer";
       avatar.alt=(author.name||author.handle||"X")+" 头像";
-      avatar.src=author.avatar_url;
-      avatar.onerror=function(){avatar.remove();};
+      avatar.src=embeddedAvatarUrl(author)||avatarFallbackDataUrl({name:author.name||author.handle||"X",handle:author.handle||""});
+      avatar.onerror=function(){applyEmbeddedAvatarFallback(avatar,author);};
       head.appendChild(avatar);
     }
 
