@@ -233,7 +233,7 @@
       <div class="share-head"><b id="share-title">分享这条动态</b><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
         <button type="button" id="share-system">分享原文</button>
-        <button type="button" id="share-wechat">链接分享</button>
+        <button type="button" id="share-wechat">打开单帖</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
       </div>
@@ -1238,21 +1238,10 @@
       else{await copyText(text);shareStatus.textContent="当前浏览器不支持系统分享，已复制帖子原文。";}
     }catch(e){if(e&&e.name!=="AbortError")shareStatus.textContent="原文分享未完成，可改用复制帖子链接或生成分享卡片。";}
   });
-  document.getElementById("share-wechat").addEventListener("click",async function(){
+  document.getElementById("share-wechat").addEventListener("click",function(){
     if(!activeSharePost)return;
-    var url=singlePostUrl(activeSharePost);
     shareStatus.textContent="";
-    try{
-      await copyText(url);
-      if(/MicroMessenger/i.test(navigator.userAgent)){
-        window.location.href=url;
-        return;
-      }
-      var a=document.createElement("a");
-      a.href="weixin://";a.style.display="none";document.body.appendChild(a);a.click();a.remove();
-    }catch(e){
-      shareStatus.textContent="操作未完成";
-    }
+    window.location.href=singlePostUrl(activeSharePost);
   });
 
   document.getElementById("share-copy").addEventListener("click",async function(){
