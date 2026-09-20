@@ -270,3 +270,16 @@ The native free timeline now follows a progressive display policy:
 - No permanent post archive is created. R2 remains a replaceable cache, with a 10-minute fresh TTL and 12-hour stale fallback.
 - The actual number available can be below 100 when upstream public sources expose fewer posts.
 - Zheng Yi's `local_only` profile remains unchanged and continues to display only the first local Macro Pulse post.
+
+## Per-post sharing — 2026-09-20
+
+Each native Tech Leaders post now has an independent sharing flow:
+
+- Every public post card exposes a `分享 ↗` action.
+- The share sheet uses neutral product wording: `系统分享`, `复制帖子链接`, and `生成分享卡片`.
+- No channel-specific label such as “朋友圈” appears in the product UI.
+- Shared links point to `/apps/tech-leaders/post/?handle=<handle>&id=<post_id>`, so recipients see only the selected post rather than the full leader timeline.
+- `/v1/tech-leaders/post` resolves a single post from the Ooglex free-feed cache first, then refreshes public sources when necessary. It never calls `api.x.com`.
+- The share-card generator creates a 1080×1350 PNG client-side. The main feed attempts to include the first available media preview; the single-post page also supports system share, link copy, and share-card generation.
+- Browser-native sharing uses the operating system share sheet. Available destination apps are controlled by the device/browser, not by Ooglex.
+
