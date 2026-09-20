@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-20T10:59:58Z",
+  "checked_at": "2026-09-20T12:49:06Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 110,
   "x_original": 67,
-  "x_original_proxy": 18,
+  "x_original_proxy": 19,
   "official_fallback": 2,
-  "public_fallback": 23,
-  "fallback": 25,
+  "public_fallback": 22,
+  "fallback": 24,
   "pending_review": 0,
   "missing_handle": 0,
   "invalid_handle": 0,
@@ -1037,6 +1037,20 @@
       "origin_url": "https://x.com/dkhos"
     },
     {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "company": "Union Square Ventures",
+      "handle": "fredwilson",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "fredwilson",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
+      "origin_url": "https://x.com/fredwilson"
+    },
+    {
       "id": "huang",
       "name": "Jensen Huang",
       "company": "NVIDIA",
@@ -1259,20 +1273,6 @@
       "response_handle": "ericschmidt",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericschmidt&name=Eric+Schmidt&company=Google+%2F+Technology+Investing",
       "origin_url": "https://x.com/ericschmidt"
-    },
-    {
-      "id": "fred-wilson",
-      "name": "Fred Wilson",
-      "company": "Union Square Ventures",
-      "handle": "fredwilson",
-      "ok": true,
-      "status": "fallback",
-      "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "fredwilson",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
-      "origin_url": "https://x.com/fredwilson"
     },
     {
       "id": "kevin-rose",
