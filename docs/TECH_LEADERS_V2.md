@@ -284,4 +284,6 @@ Each native Tech Leaders post now has an independent sharing flow:
 - `/v1/tech-leaders/post` resolves a single post from the Ooglex free-feed cache first, then refreshes public sources when necessary. It never calls `api.x.com`.
 - The share-card generator creates a 1080×1350 PNG client-side. The main feed attempts to include the first available media preview; the single-post page also supports system share, link copy, and share-card generation.
 - Browser-native sharing uses the operating system share sheet. Available destination apps are controlled by the device/browser, not by Ooglex.
+- The primary `分享原文` action intentionally sends **text only** via Web Share — no URL — so apps such as WeChat receive the native public post text instead of a long Ooglex link in the compose field.
+- `复制帖子链接` remains a separate action for users who explicitly want a clickable URL, while `生成分享卡片` remains the visual-image route.
 
