@@ -149,6 +149,9 @@ jobs:
             rm -f "$tmp"
             if [ "$code" = "200" ] && echo "$body" | grep -q '"uses_x_api":false'; then
               echo "Free feed OK for @$handle (HTTP $code)"
+              if [ "$handle" = "ZLQ6600E" ]; then
+                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert len(p)<=3; times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("ZLQ freshness diagnostics: source={}, sources={}, cache={}".format(d.get("source"), d.get("sources"), d.get("cache"))); [print("  {} | {} | {}".format(x.get("created_at"), x.get("id"), (x.get("text") or "").replace("\n"," ")[:90])) for x in p]' || failed=1
+              fi
             else
               echo "::warning::Free feed trial for @$handle returned HTTP $code: $body"
             fi
