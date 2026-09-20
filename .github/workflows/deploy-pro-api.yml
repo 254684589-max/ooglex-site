@@ -142,7 +142,7 @@ jobs:
           if len(eligible) < 100:
               raise SystemExit("Expected at least 100 confirmed personal X accounts")
           PY
-          for handle in ZLQ6600E elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
+          for handle in ZLQ6600E LipBuTan1 elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
             tmp="$(mktemp)"
             code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$handle&limit=3")"
             body="$(cat "$tmp")"
