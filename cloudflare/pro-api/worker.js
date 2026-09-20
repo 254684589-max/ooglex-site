@@ -1750,6 +1750,131 @@ async function getFreeTechLeaderPost(handle, postId, env) {
   };
 }
 
+function shareHtmlEscape(value) {
+  return String(value == null ? "" : value).replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[ch]));
+}
+
+function techLeaderProfileByHandle(handle) {
+  const target = String(handle || "").toLowerCase();
+  return Object.values(TECH_LEADERS).find((profile) =>
+    String(profile && profile.handle || "").toLowerCase() === target
+  ) || null;
+}
+
+function techLeaderShareText(post) {
+  if (!post || typeof post !== "object") return "";
+  const type = String(post.post_type || "").toLowerCase();
+  const embedded = post.embedded_post && typeof post.embedded_post === "object"
+    ? post.embedded_post
+    : null;
+  const primary = String(post.text || "").trim();
+  const embeddedText = String(embedded && embedded.text || "").trim();
+
+  // For a pure repost, the reposted source text is the meaningful original post.
+  // For quotes/replies/original posts, keep the leader's own public English text.
+  const raw = (type === "retweet" || type === "repost")
+    ? (embeddedText || primary)
+    : (primary || embeddedText);
+  return raw.replace(/\s+/g, " ").trim();
+}
+
+function techLeaderShareImage(post, origin) {
+  const candidates = [];
+  const pushMedia = (source) => {
+    const items = source && Array.isArray(source.media) ? source.media : [];
+    for (const item of items) {
+      if (!item || typeof item !== "object") continue;
+      const raw = item.preview_image_url || item.url || "";
+      if (raw) candidates.push(String(raw));
+    }
+  };
+  pushMedia(post);
+  pushMedia(post && post.embedded_post);
+  if (!candidates.length) return "https://www.ooglex.com/assets/og-cover.png";
+  return `${origin}/v1/tech-leaders/media?url=${encodeURIComponent(candidates[0])}`;
+}
+
+function techLeaderShareResponse(handle, post, requestUrl) {
+  const profile = techLeaderProfileByHandle(handle);
+  const author = String(profile && profile.name || `@${handle}`);
+  const originalText = techLeaderShareText(post);
+  const previewTitle = originalText
+    ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
+    : `${author} · Ooglex`;
+  const description = `${author} (@${handle}) · Original public X post via Ooglex`;
+  const image = techLeaderShareImage(post, requestUrl.origin);
+
+  const canonical = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
+  canonical.searchParams.set("handle", handle);
+  canonical.searchParams.set("id", String(post && post.id || ""));
+  if (profile && profile.id) canonical.searchParams.set("leader", profile.id);
+
+  const shareUrl = requestUrl.toString();
+  const originalUrl = String(
+    post && post.url ||
+    `https://x.com/${encodeURIComponent(handle)}/status/${encodeURIComponent(String(post && post.id || ""))}`
+  );
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${shareHtmlEscape(previewTitle)}</title>
+<meta name="description" content="${shareHtmlEscape(originalText || description)}">
+<link rel="canonical" href="${shareHtmlEscape(canonical.toString())}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Ooglex">
+<meta property="og:title" content="${shareHtmlEscape(previewTitle)}">
+<meta property="og:description" content="${shareHtmlEscape(description)}">
+<meta property="og:url" content="${shareHtmlEscape(shareUrl)}">
+<meta property="og:image" content="${shareHtmlEscape(image)}">
+<meta property="og:image:secure_url" content="${shareHtmlEscape(image)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${shareHtmlEscape(previewTitle)}">
+<meta name="twitter:description" content="${shareHtmlEscape(description)}">
+<meta name="twitter:image" content="${shareHtmlEscape(image)}">
+<style>
+body{margin:0;background:#f7f1e9;color:#171717;font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{width:min(680px,calc(100% - 32px));margin:48px auto;padding:28px;border:1px solid #ded5cb;border-radius:18px;background:#fffaf4}
+.k{font:12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:#8b837b;letter-spacing:.08em}
+h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
+.a{color:#655f59}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
+.preview{display:block;width:100%;max-height:440px;object-fit:cover;margin-top:18px;border-radius:12px}
+</style>
+</head>
+<body>
+<main>
+<div class="k">OOGLEX · PUBLIC X POST</div>
+<h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
+<div class="a">${shareHtmlEscape(description)}</div>
+${image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : ""}
+<div class="links">
+<a href="${shareHtmlEscape(canonical.toString())}">Open post on Ooglex</a>
+<a href="${shareHtmlEscape(originalUrl)}">View original on X</a>
+</div>
+</main>
+<script>setTimeout(function(){location.replace(${JSON.stringify(canonical.toString())});},80);</script>
+</body>
+</html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "public, max-age=300, stale-while-revalidate=1800",
+      "x-ooglex-x-api": "unused",
+      "x-ooglex-share-preview": "post-text"
+    }
+  });
+}
+
 async function xApiGet(path, env) {
   if (!env.X_BEARER_TOKEN) {
     const err = new Error("x_api_not_configured");
@@ -2016,6 +2141,21 @@ export default {
 
     const url = new URL(request.url);
     const token = bearerToken(request);
+
+    const shareMatch = url.pathname.match(/^\/share\/tech-leaders\/([A-Za-z0-9_]{1,15})\/(\d{10,25})\/?$/);
+    if (shareMatch) {
+      const handle = normalizeXHandle(shareMatch[1]);
+      const postId = shareMatch[2];
+      try {
+        const result = await getFreeTechLeaderPost(handle, postId, env);
+        return techLeaderShareResponse(handle, result.post, url);
+      } catch (err) {
+        const fallback = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
+        fallback.searchParams.set("handle", handle || shareMatch[1]);
+        fallback.searchParams.set("id", postId);
+        return Response.redirect(fallback.toString(), 302);
+      }
+    }
 
     if (url.pathname === "/health") {
       return json({ ok: true, service: "ooglex-pro-api" }, 200, { ...cors, "cache-control": "no-store" });
