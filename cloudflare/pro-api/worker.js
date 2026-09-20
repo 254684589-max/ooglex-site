@@ -1371,8 +1371,15 @@ function normalizeFxTwitterEmbeddedStatus(raw) {
 function normalizeFxTwitterStatus(status, handle) {
   if (!status || typeof status !== "object") return null;
   const id = String(status.id || status.rest_id || "");
-  const text = String(status.text || status.full_text || "").trim();
-  if (!/^\d{10,25}$/.test(id) || !text) return null;
+  const rawText = String(
+    status.text ||
+    status.full_text ||
+    (status.raw_text && status.raw_text.text) ||
+    ""
+  ).trim();
+  const text = /^https:\/\/t\.co\/[A-Za-z0-9]+$/i.test(rawText) ? "" : rawText;
+  const normalizedMedia = normalizeFxTwitterMedia(status);
+  if (!/^\d{10,25}$/.test(id)) return null;
   let createdAt = status.created_at || null;
   if (!createdAt && Number.isFinite(Number(status.created_timestamp))) {
     createdAt = new Date(Number(status.created_timestamp) * 1000).toISOString();
@@ -1386,6 +1393,7 @@ function normalizeFxTwitterStatus(status, handle) {
   const embeddedPost = postType === "retweet"
     ? normalizeFxTwitterEmbeddedStatus(retweetTarget)
     : (postType === "quote" ? normalizeFxTwitterEmbeddedStatus(quoteTarget) : null);
+  if (!text && !normalizedMedia.length && !embeddedPost) return null;
   return {
     id,
     text,
@@ -1401,7 +1409,7 @@ function normalizeFxTwitterStatus(status, handle) {
       quote_count: Number(status.quotes || 0)
     },
     entities: { urls: [] },
-    media: normalizeFxTwitterMedia(status),
+    media: normalizedMedia,
     url: String(status.url || `https://x.com/${encodeURIComponent(handle)}/status/${id}`)
   };
 }
@@ -1409,14 +1417,21 @@ function normalizeFxTwitterStatus(status, handle) {
 async function fetchFxTwitterFreeFeed(handle, limit) {
   const requested = Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
   const pageSize = 20;
+  const strictLatestProfile = String(handle || "").toLowerCase() === "zlq6600e";
   const maxPages = Math.max(1, Math.ceil(requested / pageSize));
   const byId = new Map();
   let cursor = "";
   let pagesFetched = 0;
 
   for (let page = 0; page < maxPages && byId.size < requested; page += 1) {
-    const params = new URLSearchParams({ count: String(Math.min(pageSize, requested - byId.size)) });
+    const count = strictLatestProfile && !cursor
+      ? pageSize
+      : Math.min(pageSize, requested - byId.size);
+    const params = new URLSearchParams({ count: String(count) });
     if (cursor) params.set("cursor", cursor);
+    if (strictLatestProfile && !cursor) {
+      params.set("since", String(Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60));
+    }
     const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?${params.toString()}`;
 
     const res = await fetch(url, {
@@ -1541,129 +1556,6 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
 }
 
 
-function decodeFeedHtml(value) {
-  return String(value || "")
-    .replace(/<br\s*\/?\s*>/gi, "\n")
-    .replace(/<\/p\s*>/gi, "\n")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&#x27;/gi, "'")
-    .replace(/&#(\d+);/g, (_, n) => {
-      const code = Number(n);
-      try { return Number.isFinite(code) ? String.fromCodePoint(code) : ""; } catch { return ""; }
-    })
-    .replace(/[ \t]+\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .replace(/[ \t]{2,}/g, " ")
-    .trim();
-}
-
-function normalizeRssHubTwitterItem(item, handle) {
-  if (!item || typeof item !== "object") return null;
-  const rawUrl = String(item.url || item.external_url || item.id || "");
-  const idMatch = rawUrl.match(/\/status\/(\d{10,25})/i) || String(item.id || "").match(/(\d{10,25})/);
-  const id = idMatch ? idMatch[1] : "";
-  if (!id) return null;
-
-  const html = String(item.content_html || "");
-  const text = String(item.content_text || item.title || decodeFeedHtml(html)).trim();
-  if (!text) return null;
-
-  const media = [];
-  const seenMedia = new Set();
-  const imgRe = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
-  let match = null;
-  while ((match = imgRe.exec(html)) && media.length < 4) {
-    const raw = String(match[1] || "").replace(/&amp;/g, "&");
-    if (!raw || seenMedia.has(raw)) continue;
-    seenMedia.add(raw);
-    media.push({ type: "photo", url: raw });
-  }
-
-  return {
-    id,
-    text,
-    created_at: item.date_published || item.date_modified || null,
-    lang: null,
-    post_type: /^RT\s+@/i.test(text) ? "retweet" : "post",
-    embedded_post: null,
-    metrics: {
-      reply_count: 0,
-      repost_count: 0,
-      retweet_count: 0,
-      like_count: 0,
-      quote_count: 0
-    },
-    entities: { urls: [] },
-    media,
-    url: /^https?:\/\//i.test(rawUrl)
-      ? rawUrl
-      : `https://x.com/${encodeURIComponent(handle)}/status/${id}`
-  };
-}
-
-async function fetchRssHubFreeFeed(handle, limit) {
-  const requested = Math.max(3, Math.min(20, Number(limit) || 3));
-  const urls = [
-    `https://rsshub.app/twitter/user/${encodeURIComponent(handle)}?format=json&limit=${requested}`,
-    `https://rsshub.app/twitter/user/${encodeURIComponent(handle)}.json?limit=${requested}`
-  ];
-  let lastStatus = 502;
-
-  for (const url of urls) {
-    let res = null;
-    try {
-      res = await fetch(url, {
-        redirect: "follow",
-        headers: {
-          accept: "application/feed+json,application/json;q=0.9,*/*;q=0.5",
-          "cache-control": "no-cache",
-          pragma: "no-cache",
-          "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.1"
-        }
-      });
-    } catch {
-      continue;
-    }
-    lastStatus = res.status;
-    if (!res.ok) continue;
-
-    let payload = null;
-    try { payload = await res.json(); } catch {}
-    const items = payload && Array.isArray(payload.items) ? payload.items : [];
-    const posts = items
-      .map((item) => normalizeRssHubTwitterItem(item, handle))
-      .filter(Boolean)
-      .sort((a, b) => {
-        const ta = Date.parse(a.created_at || "") || 0;
-        const tb = Date.parse(b.created_at || "") || 0;
-        if (ta !== tb) return tb - ta;
-        return String(b.id || "").localeCompare(String(a.id || ""));
-      })
-      .slice(0, requested);
-
-    if (posts.length) {
-      return {
-        schema_version: 1,
-        source: "rsshub_twitter_web",
-        third_party: "RSSHub public Twitter Web API route",
-        uses_x_api: false,
-        handle,
-        fetched_at: new Date().toISOString(),
-        posts
-      };
-    }
-  }
-
-  const err = new Error("rsshub_public_feed_unavailable");
-  err.code = "rsshub_public_feed_unavailable";
-  err.status = lastStatus;
-  throw err;
-}
 
 function publicFeedPostRichness(post) {
   if (!post || typeof post !== "object") return 0;
@@ -1750,16 +1642,10 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
     }
   }
 
-  const sourceRequests = [
+  const results = await Promise.allSettled([
     fetchOfficialSyndicationFreeFeed(handle, requested),
     fetchFxTwitterFreeFeed(handle, requested)
-  ];
-  if (strictLatestProfile) {
-    // Free third source for the one profile where the public syndication/Fx
-    // snapshots have been observed to lag the live X timeline.
-    sourceRequests.push(fetchRssHubFreeFeed(handle, requested));
-  }
-  const results = await Promise.allSettled(sourceRequests);
+  ]);
 
   const feeds = results
     .filter((item) => item.status === "fulfilled" && item.value && Array.isArray(item.value.posts) && item.value.posts.length)
@@ -1768,7 +1654,6 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
   if (!feeds.length) {
     const officialError = results[0] && results[0].status === "rejected" ? results[0].reason : null;
     const fxErr = results[1] && results[1].status === "rejected" ? results[1].reason : null;
-    const rssErr = results[2] && results[2].status === "rejected" ? results[2].reason : null;
     const err = new Error("free_public_feed_sources_unavailable");
     err.code = "free_public_feed_sources_unavailable";
     err.status = fxErr && Number.isInteger(fxErr.status)
@@ -1778,9 +1663,7 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
       official_source: officialError && officialError.code ? officialError.code : "empty",
       official_status: officialError && officialError.status ? officialError.status : null,
       fallback_source: fxErr && fxErr.code ? fxErr.code : "empty",
-      fallback_status: fxErr && fxErr.status ? fxErr.status : null,
-      rsshub_source: rssErr && rssErr.code ? rssErr.code : (results[2] ? "ok" : "not_used"),
-      rsshub_status: rssErr && rssErr.status ? rssErr.status : null
+      fallback_status: fxErr && fxErr.status ? fxErr.status : null
     };
     throw err;
   }
@@ -2570,12 +2453,13 @@ async function proxyTechLeaderMedia(request, target, cors) {
         free_feed: {
           enabled: true,
           source: "public_source_ladder",
-          sources: ["x_public_syndication", "fxtwitter_public_api", "rsshub_twitter_web (ZLQ6600E only)"],
+          sources: ["x_public_syndication", "fxtwitter_public_api"],
           uses_x_api: false,
           max_items: TECH_FREE_FEED_MAX_ITEMS,
           display_batch_size: 10,
           cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000),
-          strict_profile_cache_ttl_seconds: Math.round(TECH_FREE_FEED_STRICT_TTL_MS / 1000)
+          strict_profile_cache_ttl_seconds: Math.round(TECH_FREE_FEED_STRICT_TTL_MS / 1000),
+          strict_profile_strategy: "FxTwitter since=7d + media-only normalization + source merge"
         },
         free_mode_contract: {
           calls_api_x_com: false,
