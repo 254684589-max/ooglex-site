@@ -61,6 +61,22 @@
   function typeLabel(p){var t=String(p&&p.post_type||"post").toLowerCase();return t==="reply"?"回复":t==="quote"?"引用":(t==="retweet"||t==="repost")?"转发":"原帖";}
   function proxy(raw){return raw?API_BASE+"/v1/tech-leaders/media?url="+encodeURIComponent(raw):"";}
   function avatarUrl(){var sp=new URLSearchParams({handle:handle,name:currentProfile.name||handle});return API_BASE+"/v1/tech-leaders/avatar?"+sp.toString();}
+  function initialsAvatar(name){
+    var raw=String(name||"X").trim(),parts=raw.split(/\s+/).filter(Boolean),txt=(parts.length>1?(parts[0][0]+parts[parts.length-1][0]):raw.slice(0,2)).toUpperCase().replace(/[<>&"]/g,"");
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="48" fill="#e8e0d7"/><text x="48" y="57" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#655d55">'+txt+'</text></svg>';
+    return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+  }
+  function embeddedAvatarUrl(a){
+    a=a&&typeof a==="object"?a:{};
+    var h=String(a.handle||"").replace(/^@/,"").trim();
+    if(h){var sp=new URLSearchParams({handle:h,name:a.name||h});return API_BASE+"/v1/tech-leaders/avatar?"+sp.toString();}
+    return a.avatar_url?proxy(a.avatar_url):"";
+  }
+  function embeddedAvatarFallback(img,a){
+    a=a&&typeof a==="object"?a:{};
+    if(a.avatar_url&&img.dataset.originalAvatarTried!=="1"){img.dataset.originalAvatarTried="1";img.src=proxy(a.avatar_url);return;}
+    img.onerror=null;img.src=initialsAvatar(a.name||a.handle||"X");
+  }
   function addMedia(parent,p){
     var list=p&&Array.isArray(p.media)?p.media:[];
     if(!list.length)return;
@@ -85,7 +101,7 @@
     if(!hide)addMedia(el,post);
     if(post.embedded_post){
       var ref=post.embedded_post;var box=document.createElement("div");box.className="embed";var eh=document.createElement("div");eh.className="embed-head";var a=ref.author||{};
-      if(a.avatar_url){var ea=document.createElement("img");ea.className="embed-avatar";ea.referrerPolicy="no-referrer";ea.src=a.avatar_url;eh.appendChild(ea);}
+      if(a.avatar_url||a.handle){var ea=document.createElement("img");ea.className="embed-avatar";ea.referrerPolicy="no-referrer";ea.alt=(a.name||a.handle||"X")+" 头像";ea.src=embeddedAvatarUrl(a)||initialsAvatar(a.name||a.handle||"X");ea.onerror=function(){embeddedAvatarFallback(ea,a);};eh.appendChild(ea);}
       var ew=document.createElement("div");var en=document.createElement("div");en.className="embed-name";en.textContent=a.name||a.handle||"X";var ehh=document.createElement("div");ehh.className="embed-handle";ehh.textContent=a.handle?"@"+a.handle:"";ew.appendChild(en);ew.appendChild(ehh);eh.appendChild(ew);box.appendChild(eh);
       if(String(ref.text||"").trim()){var et=document.createElement("div");et.className="text";et.textContent=ref.text;box.appendChild(et);}addMedia(box,ref);el.appendChild(box);
     }
