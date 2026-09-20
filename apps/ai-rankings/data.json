@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-20T09:41:00Z",
+  "updatedAt": "2026-09-20T09:43:27Z",
   "asOf": "2026-09-20",
   "seed": false,
   "note": "数据每日自动抓取；综合排名只使用本次成功更新且模型完整覆盖的活跃数据源，不会用旧分数填补失败的数据源。各榜口径不同，跨榜绝对值不可直接比较。",
@@ -45,15 +45,15 @@
   "sourceMeta": {
     "arena": {
       "ok": true,
-      "count": 362,
-      "fetchedAt": "2026-09-20T09:40:48Z",
+      "count": 371,
+      "fetchedAt": "2026-09-20T09:43:14Z",
       "source": "lmarena.ai/leaderboard/text"
     },
     "livebench": {
       "ok": true,
-      "count": 56,
+      "count": 58,
       "release": "2026-06-25",
-      "fetchedAt": "2026-09-20T09:41:00Z",
+      "fetchedAt": "2026-09-20T09:43:27Z",
       "source": "livebench.ai/table_2026_06_25.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -72,6 +72,36 @@
   },
   "comboMethod": "minmax_weighted_full_coverage_only",
   "models": [
+    {
+      "id": "claude-fable-5",
+      "name": "Claude Fable 5",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1506,
+      "livebench": 83.0,
+      "aa": null,
+      "ctx": "1M",
+      "price": 20.0,
+      "combo": 99.2,
+      "comboAxes": 2
+    },
+    {
+      "id": "claude-fable-5-1",
+      "name": "Claude Fable 5.1",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1498,
+      "livebench": 83.4,
+      "aa": null,
+      "ctx": "1M",
+      "price": 20.0,
+      "combo": 99.1,
+      "comboAxes": 2
+    },
     {
       "id": "muse-spark-1-3",
       "name": "Muse Spark 1.3",
@@ -115,6 +145,21 @@
       "ctx": "400K",
       "price": 8.0,
       "combo": 92.9,
+      "comboAxes": 2
+    },
+    {
+      "id": "claude-opus-5",
+      "name": "Claude Opus 5",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1493,
+      "livebench": 80.1,
+      "aa": null,
+      "ctx": "1M",
+      "price": 10.0,
+      "combo": 91.9,
       "comboAxes": 2
     },
     {
@@ -179,7 +224,7 @@
     },
     {
       "id": "qwen3-8",
-      "name": "Qwen3.8",
+      "name": "Qwen3 8",
       "org": "Alibaba",
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
@@ -205,6 +250,21 @@
       "ctx": "1.1M",
       "price": 5.62,
       "combo": 85.9,
+      "comboAxes": 2
+    },
+    {
+      "id": "claude-opus-4-7",
+      "name": "Claude Opus 4.7",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1502,
+      "livebench": 76.5,
+      "aa": null,
+      "ctx": "1M",
+      "price": 10.0,
+      "combo": 85.6,
       "comboAxes": 2
     },
     {
@@ -283,6 +343,21 @@
       "comboAxes": 2
     },
     {
+      "id": "claude-opus-4-8",
+      "name": "Claude Opus 4.8",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1481,
+      "livebench": 76.2,
+      "aa": null,
+      "ctx": "1M",
+      "price": 10.0,
+      "combo": 82.8,
+      "comboAxes": 2
+    },
+    {
       "id": "muse-spark-1-1",
       "name": "Muse Spark 1.1",
       "org": "Meta",
@@ -298,6 +373,21 @@
       "comboAxes": 2
     },
     {
+      "id": "claude-opus-4-6",
+      "name": "Claude Opus 4.6",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1505,
+      "livebench": 74.5,
+      "aa": null,
+      "ctx": "1M",
+      "price": 10.0,
+      "combo": 81.9,
+      "comboAxes": 2
+    },
+    {
       "id": "grok-4-5",
       "name": "Grok 4.5",
       "org": "xAI",
@@ -310,6 +400,21 @@
       "ctx": "500K",
       "price": 3.0,
       "combo": 80.5,
+      "comboAxes": 2
+    },
+    {
+      "id": "claude-sonnet-5",
+      "name": "Claude Sonnet 5",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1461,
+      "livebench": 76.0,
+      "aa": null,
+      "ctx": "1M",
+      "price": 4.0,
+      "combo": 80.2,
       "comboAxes": 2
     },
     {
@@ -344,7 +449,7 @@
     },
     {
       "id": "qwen3-8-27b",
-      "name": "Qwen3.8 27B",
+      "name": "Qwen3 8 27B",
       "org": "Alibaba",
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
@@ -374,7 +479,7 @@
     },
     {
       "id": "qwen3-7",
-      "name": "Qwen3.7",
+      "name": "Qwen3 7",
       "org": "Alibaba",
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
@@ -385,6 +490,36 @@
       "ctx": "1M",
       "price": 2.21,
       "combo": 75.6,
+      "comboAxes": 2
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
+      "livebench": 73.0,
+      "aa": null,
+      "ctx": "1M",
+      "price": 3.0,
+      "combo": 75.4,
+      "comboAxes": 2
+    },
+    {
+      "id": "gpt-5-2",
+      "name": "GPT 5.2",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1438,
+      "livebench": 74.6,
+      "aa": null,
+      "ctx": "400K",
+      "price": 2.41,
+      "combo": 74.9,
       "comboAxes": 2
     },
     {
@@ -424,12 +559,12 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1463,
+      "arena": 1457,
       "livebench": 71.6,
       "aa": null,
       "ctx": "1M",
       "price": 1.98,
-      "combo": 71.5,
+      "combo": 70.9,
       "comboAxes": 2
     },
     {
@@ -449,7 +584,7 @@
     },
     {
       "id": "kimi-k2-6",
-      "name": "Kimi K2.6",
+      "name": "Kimi K2 6",
       "org": "Moonshot AI",
       "orgCn": "月之暗面",
       "flag": "🇨🇳",
@@ -464,7 +599,7 @@
     },
     {
       "id": "qwen3-6-plus",
-      "name": "Qwen3.6 Plus",
+      "name": "Qwen3 6 Plus",
       "org": "Alibaba",
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
@@ -475,6 +610,21 @@
       "ctx": "1M",
       "price": 0.73,
       "combo": 63.9,
+      "comboAxes": 2
+    },
+    {
+      "id": "gpt-5-4-nano",
+      "name": "GPT 5.4 Nano",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1402,
+      "livebench": 69.6,
+      "aa": null,
+      "ctx": "400K",
+      "price": 0.46,
+      "combo": 60.9,
       "comboAxes": 2
     },
     {
@@ -493,6 +643,21 @@
       "comboAxes": 2
     },
     {
+      "id": "gpt-5-4-mini",
+      "name": "GPT 5.4 Mini",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1448,
+      "livebench": 66.4,
+      "aa": null,
+      "ctx": "400K",
+      "price": 1.69,
+      "combo": 59.4,
+      "comboAxes": 2
+    },
+    {
       "id": "deepseek-v4-flash",
       "name": "DeepSeek V4 Flash",
       "org": "DeepSeek",
@@ -506,171 +671,6 @@
       "price": 0.52,
       "combo": 56.5,
       "comboAxes": 2
-    },
-    {
-      "id": "gemini-3-5-flash-lite",
-      "name": "Gemini 3.5 Flash Lite",
-      "org": "Google",
-      "orgCn": "谷歌",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1456,
-      "livebench": 63.9,
-      "aa": null,
-      "ctx": "1M",
-      "price": 0.42,
-      "combo": 55.2,
-      "comboAxes": 2
-    },
-    {
-      "id": "grok-4-3",
-      "name": "Grok 4.3",
-      "org": "xAI",
-      "orgCn": "xAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1443,
-      "livebench": 62.2,
-      "aa": null,
-      "ctx": "1M",
-      "price": 1.56,
-      "combo": 50.4,
-      "comboAxes": 2
-    },
-    {
-      "id": "claude-fable-5",
-      "name": "Claude Fable 5",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1506,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 20.0,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "claude-fable-5-1-effort",
-      "name": "Claude Fable 5.1 Max Effort",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": null,
-      "livebench": 83.4,
-      "aa": null,
-      "ctx": null,
-      "price": null,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "claude-opus-4-6",
-      "name": "Claude Opus 4.6",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1505,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 10.0,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "claude-opus-4-7",
-      "name": "Claude Opus 4.7",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1502,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 10.0,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "claude-fable-5-1",
-      "name": "Claude Fable 5.1",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1498,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 20.0,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "claude-fable-5-effort",
-      "name": "Claude Fable 5 Effort",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": null,
-      "livebench": 83.0,
-      "aa": null,
-      "ctx": null,
-      "price": null,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "claude-opus-5",
-      "name": "Claude Opus 5",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1493,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 10.0,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "muse-spark",
-      "name": "Muse Spark",
-      "org": "Meta",
-      "orgCn": "Meta",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1488,
-      "livebench": null,
-      "aa": null,
-      "ctx": null,
-      "price": null,
-      "combo": null,
-      "comboAxes": 1
-    },
-    {
-      "id": "gemini-3-pro",
-      "name": "Gemini 3 Pro",
-      "org": "Google",
-      "orgCn": "谷歌",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1485,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 4.5,
-      "combo": null,
-      "comboAxes": 1
     }
   ]
 }
