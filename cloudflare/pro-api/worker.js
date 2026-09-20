@@ -1888,9 +1888,10 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
     : `${author} · Ooglex`;
   const hideHandle = String(handle || "").toLowerCase() === "zlq6600e";
+  const publicAuthor = hideHandle ? "Zheng Yi" : author;
   const description = hideHandle
-    ? `${author} · Original public X post via Ooglex`
-    : `${author} (@${handle}) · Original public X post via Ooglex`;
+    ? `${publicAuthor} · Original public X post via Ooglex`
+    : `${publicAuthor} (@${handle}) · Original public X post via Ooglex`;
   const shareMedia = techLeaderShareMedia(post, requestUrl.origin);
   const image = shareMedia.image;
   const video = shareMedia.video;
