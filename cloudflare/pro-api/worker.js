@@ -1961,6 +1961,11 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const shareMedia = techLeaderShareMedia(post, requestUrl.origin);
   const image = shareMedia.image;
   const video = shareMedia.video;
+  const avatarParams = new URLSearchParams({
+    handle: String(handle || ""),
+    name: publicAuthor || String(handle || "X")
+  });
+  const avatarUrl = `${requestUrl.origin}/v1/tech-leaders/avatar?${avatarParams.toString()}`;
 
   const canonical = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
   canonical.searchParams.set("handle", handle);
@@ -2002,6 +2007,9 @@ body{margin:0;background:#f7f1e9;color:#171717;font:16px/1.65 system-ui,-apple-s
 main{width:min(680px,calc(100% - 32px));margin:32px auto;padding:28px;border:1px solid #ded5cb;border-radius:18px;background:#fffaf4}
 .k{font:12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:#8b837b;letter-spacing:.08em}
 h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
+.author-row{display:flex;align-items:center;gap:12px;margin:18px 0 8px}
+.author-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;border:1px solid #ded5cb;background:#eee}
+.author-copy{min-width:0}.author-name{font-weight:700;font-size:17px;line-height:1.2}.author-meta{margin-top:3px;color:#776f67;font-size:14px}
 .a{color:#655f59}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
 .preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px;background:#000}
 video.preview{object-fit:contain}
@@ -2012,6 +2020,13 @@ video.preview{object-fit:contain}
 <body>
 <main>
 <div class="k">OOGLEX · PUBLIC X POST</div>
+<div class="author-row">
+  <img class="author-avatar" src="${shareHtmlEscape(avatarUrl)}" alt="${shareHtmlEscape(publicAuthor)} avatar" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+  <div class="author-copy">
+    <div class="author-name">${shareHtmlEscape(publicAuthor)}</div>
+    <div class="author-meta">${hideHandle ? "Public X post" : `@${shareHtmlEscape(handle)} · Public X post`}</div>
+  </div>
+</div>
 <h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
 <div class="a">${shareHtmlEscape(description)}</div>
 ${video
