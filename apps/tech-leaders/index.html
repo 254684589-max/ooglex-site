@@ -485,9 +485,6 @@
     (p.categories||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     (p.chips||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     document.getElementById("profile-chips").innerHTML=profileTags.slice(0,8).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
-    var openX=document.getElementById("open-x");
-    if(p.handle){openX.href="https://x.com/"+encodeURIComponent(p.handle);openX.style.display="flex";}
-    else{openX.removeAttribute("href");openX.style.display="none";}
     document.getElementById("profile-note").textContent=p.note||(p.handle?"公开 X 账号。":"临时人物资料。");
     var liveName=(p.name_en||p.name||p.handle||"").toUpperCase();
     document.getElementById("feed-title").textContent=usesNativeFreeFeed(p)
