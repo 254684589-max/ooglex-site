@@ -106,9 +106,6 @@
   .more { margin-top:16px; text-align:center; }
   .state { color:var(--dim); font-size:0.9rem; padding:22px 4px; text-align:center; }
 
-  footer { margin-top:30px; padding-top:14px; border-top:1px solid var(--line); color:var(--faint); font-size:0.8rem; }
-  footer a { color:var(--link); }
-
   @media (max-width:520px) {
     h1 { font-size:1.25rem; }
     .page { padding:12px 14px 56px; }
@@ -155,25 +152,11 @@
     </form>
   </section>
 
-  <!-- 站主工具 -->
-  <section id="owner-tools" class="card" style="margin-bottom:18px" hidden>
-    <strong style="font-size:0.95rem">站主工具</strong>
-    <div class="sub" style="margin-top:2px">被举报且仍然公开的想法会列在这里。</div>
-    <div class="item acts" style="border:0;padding:0;margin-top:10px">
-      <button type="button" id="load-reports">查看被举报的想法</button>
-    </div>
-    <div id="reports-box" style="margin-top:10px"></div>
-  </section>
-
   <h2 style="font-size:1rem;color:var(--dim);letter-spacing:.06em">最新想法</h2>
   <div class="feed" id="feed"></div>
   <div class="state" id="feed-state">加载中…</div>
   <div class="more"><button type="button" id="load-more" hidden>加载更多</button></div>
 
-  <footer>
-    想法由发布者本人负责，不代表 Ooglex 立场。看到违规内容请点「举报」。
-    · <a href="/privacy/">隐私政策</a>
-  </footer>
 </div>
 
 <script src="./app.js?v=9d067264" defer></script>
