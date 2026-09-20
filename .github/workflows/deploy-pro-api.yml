@@ -142,74 +142,6 @@ jobs:
           if len(eligible) < 100:
               raise SystemExit("Expected at least 100 confirmed personal X accounts")
           PY
-          echo "ZLQ free-source diagnostics:"
-          tmp="$(mktemp)"
-          legacy_code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://syndication.twitter.com/timeline/profile?callback=cb&dnt=true&screen_name=ZLQ6600E&suppress_response_codes=true&lang=en&rnd=$(date +%s)")"
-          LEGACY_TMP="$tmp" python - <<'PY' || true
-          import os,re
-          p=os.environ["LEGACY_TMP"]
-          body=open(p,encoding="utf-8",errors="ignore").read()
-          print("  legacy syndication bytes:",len(body))
-          print("  legacy ids:", re.findall(r'(?:data-tweet-id|status/)[=\"/]*([0-9]{10,25})',body)[:8])
-          print("  legacy dates:", re.findall(r'datetime=[\"\']([^\"\']+)',body)[:8])
-          print("  legacy head:", re.sub(r'\s+',' ',body[:450]))
-          PY
-          echo "  legacy syndication HTTP $legacy_code"
-          rm -f "$tmp"
-
-          since_ts="$(python - <<'PY'
-          import time
-          print(int(time.time())-7*24*3600)
-          PY
-          )"
-          for fxurl in \
-            "https://api.fxtwitter.com/2/profile/ZLQ6600E/statuses?count=20&since=$since_ts" \
-            "https://api.fxtwitter.com/2/profile/ZLQ6600E/media?count=20" \
-            "https://api.fxtwitter.com/2/search?q=from%3AZLQ6600E&count=20&feed=latest"; do
-            tmp="$(mktemp)"
-            fx_meta="$(curl -sS -L --connect-timeout 4 --max-time 15 -o "$tmp" -w '%{http_code} %{url_effective}' "$fxurl" || true)"
-            FX_TMP="$tmp" FX_URL="$fxurl" python - <<'PY' || true
-          import json,os,re
-          p=os.environ["FX_TMP"]; url=os.environ["FX_URL"]
-          body=open(p,encoding="utf-8",errors="ignore").read()
-          print("  Fx probe:",url)
-          try:
-              d=json.loads(body) if body else {}
-              rows=d.get("results") or []
-              if isinstance(rows,dict): rows=[rows]
-              print("    code=",d.get("code"),"rows=",len(rows),"cursor=",d.get("cursor"))
-              for x in rows[:6]:
-                  if not isinstance(x,dict): continue
-                  raw=x.get("raw_text") if isinstance(x.get("raw_text"),dict) else {}
-                  article=x.get("article") if isinstance(x.get("article"),dict) else {}
-                  print("   ",x.get("type"),x.get("created_at"),x.get("id"),"text=",repr((x.get("text") or "")[:80]),"raw=",repr((raw.get("text") or "")[:80]),"article=",repr((article.get("title") or article.get("preview_text") or "")[:80]),"keys=",sorted(x.keys())[:24])
-          except Exception as e:
-              print("    head:",re.sub(r'\s+',' ',body[:300]),"parse=",type(e).__name__)
-          PY
-            echo "  Fx probe => $fx_meta"
-            rm -f "$tmp"
-          done
-
-          for rsshost in rsshub.app rsshub.rssforever.com rsshub.feeded.xyz hub.slarker.me rsshub.liumingye.cn; do
-            tmp="$(mktemp)"
-            rss_meta="$(curl -sS -L --connect-timeout 4 --max-time 12 -o "$tmp" -w '%{http_code} %{url_effective}' "https://$rsshost/twitter/user/ZLQ6600E?format=json&limit=5" || true)"
-            RSS_TMP="$tmp" RSS_HOST="$rsshost" python - <<'PY' || true
-          import json,os,re
-          p=os.environ["RSS_TMP"]
-          host=os.environ["RSS_HOST"]
-          body=open(p,encoding="utf-8",errors="ignore").read()
-          print("  RSSHub",host,"bytes:",len(body))
-          try:
-              d=json.loads(body)
-              items=d.get("items",[])
-              print("  RSSHub",host,"items:",[(x.get("date_published"),x.get("url"),(x.get("title") or x.get("content_text") or "")[:80]) for x in items[:5]])
-          except Exception as e:
-              print("  RSSHub",host,"head:",re.sub(r'\s+',' ',body[:260]),"parse=",type(e).__name__)
-          PY
-            echo "  RSSHub $rsshost => $rss_meta"
-            rm -f "$tmp"
-          done
-
           for handle in ZLQ6600E elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
             tmp="$(mktemp)"
             code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$handle&limit=3")"
@@ -218,7 +150,7 @@ jobs:
             if [ "$code" = "200" ] && echo "$body" | grep -q '"uses_x_api":false'; then
               echo "Free feed OK for @$handle (HTTP $code)"
               if [ "$handle" = "ZLQ6600E" ]; then
-                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert len(p)<=3; times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("ZLQ freshness diagnostics: source={}, sources={}, cache={}".format(d.get("source"), d.get("sources"), d.get("cache"))); [print("  {} | {} | {}".format(x.get("created_at"), x.get("id"), (x.get("text") or "").replace("\n"," ")[:90])) for x in p]' || failed=1
+                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert len(p)<=3; times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("ZLQ freshness diagnostics: source={}, cache={}".format(d.get("source"), d.get("cache"))); [print("  {} | {} | media={} | {}".format(x.get("created_at"), x.get("id"), len(x.get("media") or []), (x.get("text") or "").replace("\n"," ")[:70])) for x in p]' || failed=1
               fi
             else
               echo "::warning::Free feed trial for @$handle returned HTTP $code: $body"
