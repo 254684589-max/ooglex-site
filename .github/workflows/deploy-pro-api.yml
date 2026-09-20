@@ -204,6 +204,19 @@ jobs:
             echo "::warning::100-item free-feed smoke returned no body"
           fi
 
+          zfeed="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=ZLQ6600E&limit=3" || true)"
+          if [ -n "$zfeed" ]; then
+            video_post_id="$(printf '%s' "$zfeed" | python -c 'import json,sys; d=json.load(sys.stdin); print(next((str(p.get("id","")) for p in d.get("posts",[]) if any((m or {}).get("video_url") for m in (p.get("media") or []))),""))' 2>/dev/null || true)"
+            if [ -n "$video_post_id" ]; then
+              video_share="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/share/tech-leaders/ZLQ6600E/$video_post_id" || true)"
+              printf '%s' "$video_share" | python -c 'import sys; s=sys.stdin.read(); assert "<video class=\"preview\"" in s; assert "property=\"og:video\"" in s; assert "@ZLQ6600E" not in s; print("Video share page OK: playable video + OG video metadata + hidden handle")' || failed=1
+            else
+              echo "::warning::No recent @ZLQ6600E video post found; video-share smoke skipped."
+            fi
+          else
+            echo "::warning::No @ZLQ6600E feed body; video-share smoke skipped."
+          fi
+
           status="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/status")"
           echo "$status" | grep -q '"calls_api_x_com":false' || failed=1
           if [ "$failed" -ne 0 ]; then
