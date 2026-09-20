@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-19T09:36:22Z",
+  "updatedAt": "2026-09-20T09:52:45Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -32,7 +32,7 @@
     },
     "celestrak/glo-ops": {
       "ok": true,
-      "detail": "28 颗"
+      "detail": "27 颗"
     },
     "celestrak/galileo": {
       "ok": true,
@@ -44,7 +44,7 @@
     },
     "launches": {
       "ok": true,
-      "detail": "28 条发射记录"
+      "detail": "30 条发射记录"
     }
   }
 }
