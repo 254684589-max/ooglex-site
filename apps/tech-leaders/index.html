@@ -773,12 +773,9 @@
   }
 
   function singlePostUrl(post){
-    var u=new URL("./post/",location.href);
-    u.search="";
-    u.searchParams.set("handle",current&&current.handle?current.handle:"");
-    u.searchParams.set("id",String(post&&post.id||""));
-    if(current&&current.id)u.searchParams.set("leader",current.id);
-    return u.toString();
+    var handle=current&&current.handle?String(current.handle):"";
+    var id=String(post&&post.id||"");
+    return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(id);
   }
   async function copyText(value){
     if(navigator.clipboard&&navigator.clipboard.writeText){
