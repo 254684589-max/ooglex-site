@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-20T08:41:06Z",
+  "checked_at": "2026-09-20T10:59:58Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 110,
@@ -1275,20 +1275,6 @@
       "origin_url": "https://x.com/fredwilson"
     },
     {
-      "id": "lip-bu-tan",
-      "name": "Lip-Bu Tan",
-      "company": "Intel",
-      "handle": "intel",
-      "ok": true,
-      "status": "fallback",
-      "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "intel",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=intel&name=Lip-Bu+Tan&company=Intel",
-      "origin_url": "https://x.com/intel"
-    },
-    {
       "id": "kevin-rose",
       "name": "Kevin Rose",
       "company": "Technology / Investing",
@@ -1315,6 +1301,20 @@
       "response_handle": "leijun",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=leijun&name=Lei+Jun&company=Xiaomi",
       "origin_url": "https://x.com/leijun"
+    },
+    {
+      "id": "lip-bu-tan",
+      "name": "Lip-Bu Tan",
+      "company": "Intel",
+      "handle": "LipBuTan1",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "LipBuTan1",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LipBuTan1&name=Lip-Bu+Tan&company=Intel",
+      "origin_url": "https://x.com/LipBuTan1"
     },
     {
       "id": "son",
