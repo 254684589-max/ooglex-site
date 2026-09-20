@@ -60,7 +60,7 @@ jobs:
 
       - name: Commit refreshed universe
         run: |
-          if git diff --quiet -- data/tech-leaders/issuer_master.csv data/tech-leaders/issuer_master.meta.json; then
+          if [ -z "$(git status --porcelain -- data/tech-leaders/issuer_master.csv data/tech-leaders/issuer_master.meta.json)" ]; then
             echo "No issuer universe changes."
             exit 0
           fi
