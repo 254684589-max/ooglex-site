@@ -1721,7 +1721,9 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   // that many posts. Only the number of posts physically cached counts as
   // fulfilled history depth.
   const cachedCapacity = cachedPosts.length;
-  const strictLatestProfile = ["zlq6600e","elonmusk"].includes(normalized.toLowerCase());
+  const normalizedLower = normalized.toLowerCase();
+  const strictLatestProfile = ["zlq6600e","elonmusk"].includes(normalizedLower);
+  const strictThreeProfile = normalizedLower === "zlq6600e";
 
   const activeTtl = strictLatestProfile ? TECH_FREE_FEED_STRICT_TTL_MS : TECH_FREE_FEED_TTL_MS;
   if (cachedPosts.length && age <= activeTtl && cachedCapacity >= limit) {
@@ -1735,7 +1737,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   }
 
   try {
-    const requestedLimit = strictLatestProfile
+    const requestedLimit = strictThreeProfile
       ? Math.max(1, Math.min(3, limit))
       : Math.max(limit, TECH_FEED_FETCH_SIZE);
     const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
