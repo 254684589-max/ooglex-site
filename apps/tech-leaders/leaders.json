@@ -303,7 +303,7 @@
         "科技投资",
         "全球市场"
       ],
-      "note": "独立投资人，关注 AI、半导体、云计算、航天与全球科技产业趋势；本人公开 X 账号 @ZLQ6600E。",
+      "note": "独立投资人，关注 AI、半导体、云计算、航天与全球科技产业趋势；本人公开 X 账号。",
       "title": "ZHENGYI · OFFICIAL X TIMELINE",
       "category": "VC",
       "company_zh": "独立投资 / VC",
@@ -367,8 +367,11 @@
           "source": "ooglex_local"
         }
       ],
-      "timeline_mode": "local_only",
-      "local_post_limit": 1
+      "timeline_mode": "native_recent",
+      "timeline_display_limit": 3,
+      "timeline_fetch_limit": 3,
+      "hide_local_posts": true,
+      "hide_post_metrics": true
     },
     {
       "id": "nadella",
