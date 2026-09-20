@@ -31,7 +31,7 @@ const TECH_LEADERS = Object.freeze({
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
 const TECH_FEED_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const TECH_FEED_FETCH_SIZE = 10;
-const TECH_FREE_FEED_MAX_ITEMS = 20;
+const TECH_FREE_FEED_MAX_ITEMS = 100;
 const TECH_FREE_FEED_TTL_MS = 10 * 60 * 1000;
 const TECH_FREE_FEED_MAX_STALE_MS = 12 * 60 * 60 * 1000;
 const TECH_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -1406,7 +1406,7 @@ function normalizeFxTwitterStatus(status, handle) {
 }
 
 async function fetchFxTwitterFreeFeed(handle, limit) {
-  const count = Math.max(3, Math.min(20, limit || TECH_FEED_FETCH_SIZE));
+  const count = Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
   const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?count=${count}`;
   const res = await fetch(url, {
     redirect: "follow",
@@ -1459,7 +1459,7 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     hideFooter: "true",
     hideHeader: "true",
     lang: "en",
-    limit: String(Math.max(3, Math.min(20, limit || TECH_FEED_FETCH_SIZE))),
+    limit: String(Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE))),
     origin: "https://www.ooglex.com/",
     showHeader: "false",
     showReplies: "true",
@@ -1501,28 +1501,88 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
   };
 }
 
-async function fetchFreeTechLeaderFeed(handle, limit) {
-  let officialError = null;
-  try {
-    return await fetchOfficialSyndicationFreeFeed(handle, limit);
-  } catch (err) {
-    officialError = err;
+function publicFeedPostRichness(post) {
+  if (!post || typeof post !== "object") return 0;
+  let score = 0;
+  if (String(post.text || "").trim()) score += 1;
+  if (Array.isArray(post.media) && post.media.length) score += 2 + Math.min(3, post.media.length);
+  if (post.embedded_post) {
+    score += 4;
+    if (String(post.embedded_post.text || "").trim()) score += 1;
+    if (Array.isArray(post.embedded_post.media) && post.embedded_post.media.length) score += 2;
+    if (post.embedded_post.author && post.embedded_post.author.handle) score += 1;
   }
+  if (post.post_type && post.post_type !== "post") score += 1;
+  return score;
+}
 
-  try {
-    return await fetchFxTwitterFreeFeed(handle, limit);
-  } catch (fxErr) {
+function mergePublicFeedPosts(feeds, limit) {
+  const byId = new Map();
+  for (const feed of feeds) {
+    const posts = feed && Array.isArray(feed.posts) ? feed.posts : [];
+    for (const post of posts) {
+      if (!post || !post.id) continue;
+      const id = String(post.id);
+      const prev = byId.get(id);
+      if (!prev || publicFeedPostRichness(post) > publicFeedPostRichness(prev)) byId.set(id, post);
+    }
+  }
+  return Array.from(byId.values())
+    .sort((a, b) => {
+      const ta = Date.parse(a.created_at || "") || 0;
+      const tb = Date.parse(b.created_at || "") || 0;
+      if (ta !== tb) return tb - ta;
+      return String(b.id || "").localeCompare(String(a.id || ""));
+    })
+    .slice(0, limit);
+}
+
+async function fetchFreeTechLeaderFeed(handle, limit) {
+  const requested = Math.max(1, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
+  const results = await Promise.allSettled([
+    fetchOfficialSyndicationFreeFeed(handle, requested),
+    fetchFxTwitterFreeFeed(handle, requested)
+  ]);
+
+  const feeds = results
+    .filter((item) => item.status === "fulfilled" && item.value && Array.isArray(item.value.posts) && item.value.posts.length)
+    .map((item) => item.value);
+
+  if (!feeds.length) {
+    const officialError = results[0] && results[0].status === "rejected" ? results[0].reason : null;
+    const fxErr = results[1] && results[1].status === "rejected" ? results[1].reason : null;
     const err = new Error("free_public_feed_sources_unavailable");
     err.code = "free_public_feed_sources_unavailable";
-    err.status = fxErr && Number.isInteger(fxErr.status) ? fxErr.status : 502;
+    err.status = fxErr && Number.isInteger(fxErr.status)
+      ? fxErr.status
+      : (officialError && Number.isInteger(officialError.status) ? officialError.status : 502);
     err.detail = {
-      official_source: officialError && officialError.code ? officialError.code : "unknown",
+      official_source: officialError && officialError.code ? officialError.code : "empty",
       official_status: officialError && officialError.status ? officialError.status : null,
-      fallback_source: fxErr && fxErr.code ? fxErr.code : "unknown",
+      fallback_source: fxErr && fxErr.code ? fxErr.code : "empty",
       fallback_status: fxErr && fxErr.status ? fxErr.status : null
     };
     throw err;
   }
+
+  const posts = mergePublicFeedPosts(feeds, requested);
+  if (!posts.length) {
+    const err = new Error("free_public_feed_empty");
+    err.code = "free_public_feed_empty";
+    err.status = 502;
+    throw err;
+  }
+
+  const sources = feeds.map((feed) => feed.source).filter(Boolean);
+  return {
+    schema_version: 5,
+    source: sources.length > 1 ? "x_public_merged" : (sources[0] || "public_source"),
+    sources,
+    uses_x_api: false,
+    handle,
+    fetched_at: new Date().toISOString(),
+    posts
+  };
 }
 
 async function getFreeTechLeaderFeed(handle, limit, env) {
@@ -1533,7 +1593,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     err.status = 400;
     throw err;
   }
-  const key = `tech-leaders/free-feed/v3/${normalized.toLowerCase()}.json`;
+  const key = `tech-leaders/free-feed/v4/${normalized.toLowerCase()}.json`;
   const cached = await readJson(env.PRO_DATA, key);
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
