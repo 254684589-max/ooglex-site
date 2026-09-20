@@ -738,6 +738,7 @@
     box.appendChild(document.createTextNode(text.slice(cursor)));
   }
   function renderLocalPosts(p,target){
+    if(p&&p.hide_local_posts)return false;
     var posts=p&&Array.isArray(p.local_posts)?p.local_posts:[];
     var localLimit=Math.max(0,Number(p&&p.local_post_limit)||posts.length);
     if(localLimit)posts=posts.slice(0,localLimit);
@@ -851,7 +852,7 @@
     var avatar=await loadCardImage(current?avatarUrl(current):"");
     if(avatar){ctx.save();ctx.beginPath();ctx.arc(116,185,42,0,Math.PI*2);ctx.clip();ctx.drawImage(avatar,74,143,84,84);ctx.restore();}
     ctx.fillStyle="#111827";ctx.font="700 38px Arial,sans-serif";ctx.fillText((current&&(current.name_zh||current.zh||current.name))||"X",180,177);
-    ctx.fillStyle="#667085";ctx.font="28px Arial,sans-serif";ctx.fillText("@"+((current&&current.handle)||""),180,218);
+    ctx.fillStyle="#667085";ctx.font="28px Arial,sans-serif";if(!(current&&current.hide_handle))ctx.fillText("@"+((current&&current.handle)||""),180,218);
     ctx.fillStyle="#2563a6";ctx.font="700 24px Arial,sans-serif";ctx.fillText(postTypeLabel(post),900,182);
 
     var y=286;
@@ -982,7 +983,8 @@
     sourceBadge.textContent="免费模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
-    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).slice(0,100).sort(sortPostsNewest);
+    var profileMaxPosts=Math.max(1,Math.min(100,Number(current&&current.timeline_display_limit)||100));
+    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).slice(0,profileMaxPosts).sort(sortPostsNewest);
     if(!posts.length){
       var empty=document.createElement("div");empty.className="api-state";
       empty.innerHTML="<b>公开时间线暂时没有可展示内容</b><div>正在回退到 X 官方 Embed。</div>";
@@ -1011,7 +1013,9 @@
       appendEmbeddedPost(card,post);
       var foot=document.createElement("div");foot.className="post-foot";
       var pm=post.metrics||{};
-      ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      if(!current.hide_post_metrics){
+        ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      }
       var source=document.createElement("span");source.className="post-source";source.textContent="公开源 · $0 X API";foot.appendChild(source);
       appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
@@ -1019,8 +1023,8 @@
     }
 
     var shown=0;
-    var batchSize=10;
-    var maxPosts=100;
+    var maxPosts=profileMaxPosts;
+    var batchSize=Math.min(Math.max(1,Number(current&&current.timeline_batch_size)||10),maxPosts);
     var requestedLimit=Math.max(20,posts.length);
     var remoteExhausted=posts.length>=maxPosts;
     var fetchingMore=false;
@@ -1122,7 +1126,8 @@
       var ctl=new AbortController();
       var timer=setTimeout(function(){ctl.abort();},12000);
       try{
-        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit=20",{signal:ctl.signal,cache:"no-store"});
+        var initialLimit=Math.max(1,Math.min(100,Number(current&&current.timeline_fetch_limit)||20));
+        var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit="+initialLimit,{signal:ctl.signal,cache:"no-store"});
         var data=await res.json().catch(function(){return {};});
         if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
         renderFreeFeed(data);
@@ -1138,7 +1143,8 @@
     clearWatchers();rendered=true;xdiag.hidden=true;sourceBadge.textContent="Ooglex 后端 · X API";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     var wrap=document.createElement("div");wrap.className="api-feed";
-    var posts=(Array.isArray(feed.posts)?feed.posts:[]).slice().sort(sortPostsNewest);
+    var apiMaxPosts=Math.max(1,Math.min(100,Number(current&&current.timeline_display_limit)||100));
+    var posts=(Array.isArray(feed.posts)?feed.posts:[]).slice().sort(sortPostsNewest).slice(0,apiMaxPosts);
     if(!posts.length){wrap.innerHTML='<div class="api-state"><b>暂无新公开动态</b><div>后端连接正常，但当前没有返回可展示的公开动态。</div></div>';timeline.appendChild(wrap);return;}
     posts.forEach(function(post){
       var card=document.createElement("article");card.className="post-card";
@@ -1157,7 +1163,9 @@
       if(!hidePrimary)appendPostMedia(card,post);
       appendEmbeddedPost(card,post);
       var foot=document.createElement("div");foot.className="post-foot";var pm=post.metrics||{};
-      ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      if(!current.hide_post_metrics){
+        ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      }
       appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);card.appendChild(foot);wrap.appendChild(card);
     });
