@@ -1,0 +1,965 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-22",
+  "status": "production_expansion_complete",
+  "target_category": "华尔街",
+  "operation": "reclassify_existing_verified_profiles",
+  "before_count": 34,
+  "added_count": 66,
+  "final_count": 100,
+  "total_catalog_count": 528,
+  "production_path": "apps/tech-leaders/leaders.json",
+  "production_blob_sha": "c755dffbb5c1497aaefdc8d477acc83540149143",
+  "policy": {
+    "new_leader_objects_added": 0,
+    "admission_status_required": "active",
+    "verified_personal_x_required": true,
+    "dedupe_note": "All 66 were existing production profiles, so no new person/handle duplicates were introduced.",
+    "category_scope": "finance, investing, fintech, trading-platform and capital-markets profiles already approved in the production catalog"
+  },
+  "additions": [
+    {
+      "id": "patrick-collison",
+      "name": "Patrick Collison",
+      "handle": "patrickc",
+      "company": "Stripe",
+      "role": "Stripe Co-Founder & CEO",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "dorsey",
+      "name": "Jack Dorsey",
+      "handle": "jack",
+      "company": "Block",
+      "role": "Block Head, Chairperson & Co-Founder",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "armstrong",
+      "name": "Brian Armstrong",
+      "handle": "brian_armstrong",
+      "company": "Coinbase",
+      "role": "Coinbase Co-Founder & CEO",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "levchin",
+      "name": "Max Levchin",
+      "handle": "mlevchin",
+      "company": "Affirm",
+      "role": "Affirm Founder & CEO",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "tenev",
+      "name": "Vlad Tenev",
+      "handle": "vladtenev",
+      "company": "Robinhood / Harmonic",
+      "role": "Robinhood Chairman, President & CEO · Harmonic Executive Chair & Co-Founder",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "david-marcus",
+      "name": "David Marcus",
+      "handle": "davidmarcus",
+      "company": "Lightspark",
+      "role": "Lightspark Chief Executive Officer",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "gurley",
+      "name": "Bill Gurley",
+      "handle": "bgurley",
+      "company": "P3 Institute / Benchmark",
+      "role": "Founder, P3 Institute · Former General Partner, Benchmark",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "chamath",
+      "name": "Chamath Palihapitiya",
+      "handle": "chamath",
+      "company": "8090 Labs / Social Capital",
+      "role": "Founder & CEO, 8090 Labs · Founder & Managing Partner, Social Capital",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "handle": "fredwilson",
+      "company": "Union Square Ventures",
+      "role": "Partner & Co-Founder, Union Square Ventures",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "michael-miebach-ma",
+      "name": "Michael Miebach",
+      "handle": "MiebachMichael",
+      "company": "Mastercard",
+      "role": "Mastercard · Chief Executive Officer",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "金融科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "michael-saylor-mstr",
+      "name": "Michael Saylor",
+      "handle": "saylor",
+      "company": "Strategy",
+      "role": "Strategy · Founder & Executive Chairman",
+      "prior_primary_category": "金融",
+      "categories": [
+        "科技",
+        "金融",
+        "比特币",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "anthony-noto-sofi",
+      "name": "Anthony Noto",
+      "handle": "anthonynoto",
+      "company": "SoFi Technologies",
+      "role": "SoFi Technologies · Chief Executive Officer",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "金融科技",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "fred-ehrsam-coin",
+      "name": "Fred Ehrsam",
+      "handle": "FEhrsam",
+      "company": "Coinbase Global",
+      "role": "Coinbase Global · Co-Founder & Board Director",
+      "prior_primary_category": "金融",
+      "categories": [
+        "金融",
+        "金融科技",
+        "加密资产",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "sebastian-siemiatkowski-klar",
+      "name": "Sebastian Siemiatkowski",
+      "handle": "klarnaseb",
+      "company": "Klarna Group",
+      "role": "Klarna Group · Co-Founder & Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "消费科技",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "dan-schulman-vz",
+      "name": "Dan Schulman",
+      "handle": "Dan_Schulman",
+      "company": "Verizon Communications",
+      "role": "Verizon Communications · Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "通信",
+        "金融科技",
+        "企业管理",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "jeremy-allaire-crcl",
+      "name": "Jeremy Allaire",
+      "handle": "jerallaire",
+      "company": "Circle Internet Group",
+      "role": "Circle Internet Group · Co-Founder, Chairman & Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "加密资产",
+        "软件",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "chris-dixon-private",
+      "name": "Chris Dixon",
+      "handle": "cdixon",
+      "company": "Andreessen Horowitz",
+      "role": "Andreessen Horowitz · General Partner & Managing Partner, a16z crypto",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "加密资产",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "mark-cuban-private",
+      "name": "Mark Cuban",
+      "handle": "mcuban",
+      "company": "Cost Plus Drugs",
+      "role": "Cost Plus Drugs · Co-Founder",
+      "prior_primary_category": "科技",
+      "categories": [
+        "科技",
+        "医疗科技",
+        "创业",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "john-collison-private",
+      "name": "John Collison",
+      "handle": "collision",
+      "company": "Stripe",
+      "role": "Stripe · Co-Founder & President",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "支付",
+        "软件",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "paolo-ardoino-private",
+      "name": "Paolo Ardoino",
+      "handle": "paoloardoino",
+      "company": "Tether",
+      "role": "Tether · Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "金融科技",
+        "基础设施",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "andrew-wilkinson-tiny",
+      "name": "Andrew Wilkinson",
+      "handle": "awilkinson",
+      "company": "Tiny",
+      "role": "Tiny · Co-Founder & Chairman",
+      "prior_primary_category": "软件",
+      "categories": [
+        "科技",
+        "投资",
+        "软件",
+        "创业",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "elad-gil-private",
+      "name": "Elad Gil",
+      "handle": "eladgil",
+      "company": "Independent Technology Investor",
+      "role": "Independent Technology Investor · Technology Investor & Entrepreneur",
+      "prior_primary_category": "AI",
+      "categories": [
+        "科技",
+        "投资",
+        "AI",
+        "创业",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "tim-draper-private",
+      "name": "Tim Draper",
+      "handle": "TimDraper",
+      "company": "Draper Associates",
+      "role": "Draper Associates · Founder & Managing Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "金融科技",
+        "创业",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "eric-glyman-private",
+      "name": "Eric Glyman",
+      "handle": "eglyman",
+      "company": "Ramp",
+      "role": "Ramp · Co-Founder & Co-Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "AI",
+        "企业软件",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "karim-atiyeh-private",
+      "name": "Karim Atiyeh",
+      "handle": "karimatiyeh",
+      "company": "Ramp",
+      "role": "Ramp · Co-Founder & Co-Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "AI",
+        "企业软件",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "immad-akhund-private",
+      "name": "Immad Akhund",
+      "handle": "immad",
+      "company": "Mercury",
+      "role": "Mercury · Co-Founder & Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "银行科技",
+        "创业",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "jesse-powell-private",
+      "name": "Jesse Powell",
+      "handle": "jespow",
+      "company": "Kraken",
+      "role": "Kraken · Co-Founder & Former Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "金融科技",
+        "交易平台",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "chris-sacca-private",
+      "name": "Chris Sacca",
+      "handle": "sacca",
+      "company": "Lowercarbon Capital",
+      "role": "Lowercarbon Capital · Co-Founder",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "气候科技",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "cameron-winklevoss-private",
+      "name": "Cameron Winklevoss",
+      "handle": "cameron",
+      "company": "Gemini",
+      "role": "Gemini · Co-Founder & President",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "金融科技",
+        "交易平台",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "tyler-winklevoss-private",
+      "name": "Tyler Winklevoss",
+      "handle": "tyler",
+      "company": "Gemini",
+      "role": "Gemini · Co-Founder & Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "金融科技",
+        "交易平台",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "zach-perret-private",
+      "name": "Zach Perret",
+      "handle": "zachperret",
+      "company": "Plaid",
+      "role": "Plaid · Co-Founder & Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "支付",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "william-hockey-private",
+      "name": "William Hockey",
+      "handle": "willhockey",
+      "company": "Column / Plaid",
+      "role": "Column / Plaid · Co-Founder & Chief Executive Officer, Column; Co-Founder, Plaid",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "银行科技",
+        "支付",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "henrique-dubugras-private",
+      "name": "Henrique Dubugras",
+      "handle": "hdubugras",
+      "company": "Brex",
+      "role": "Brex · Co-Founder & Chairman",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "企业软件",
+        "支付",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "pedro-franceschi-private",
+      "name": "Pedro Franceschi",
+      "handle": "pedrofranceschi",
+      "company": "Brex",
+      "role": "Brex · Co-Founder & Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "企业软件",
+        "支付",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "roelof-botha-private",
+      "name": "Roelof Botha",
+      "handle": "roelofbotha",
+      "company": "Sequoia Capital",
+      "role": "Sequoia Capital · Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "john-doerr-private",
+      "name": "John Doerr",
+      "handle": "johndoerr",
+      "company": "Kleiner Perkins",
+      "role": "Kleiner Perkins · Chairman",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "气候科技",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "mamoon-hamid-private",
+      "name": "Mamoon Hamid",
+      "handle": "mamoonha",
+      "company": "Kleiner Perkins",
+      "role": "Kleiner Perkins · Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "AI",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "josh-kopelman-private",
+      "name": "Josh Kopelman",
+      "handle": "joshk",
+      "company": "First Round",
+      "role": "First Round · Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "创业",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "hunter-walk-private",
+      "name": "Hunter Walk",
+      "handle": "hunterwalk",
+      "company": "Homebrew",
+      "role": "Homebrew · Co-Founder & Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "创业",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "brad-feld-private",
+      "name": "Brad Feld",
+      "handle": "bfeld",
+      "company": "Foundry",
+      "role": "Foundry · Co-Founder & Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "创业",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "albert-wenger-private",
+      "name": "Albert Wenger",
+      "handle": "albertwenger",
+      "company": "Union Square Ventures",
+      "role": "Union Square Ventures · Managing Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "投资",
+        "软件",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "pete-flint-private",
+      "name": "Pete Flint",
+      "handle": "peteflint",
+      "company": "NFX",
+      "role": "NFX · General Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "金融科技",
+        "市场平台",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "brad-garlinghouse-private",
+      "name": "Brad Garlinghouse",
+      "handle": "bgarlinghouse",
+      "company": "Ripple",
+      "role": "Ripple · Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "区块链",
+        "支付",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "arthur-hayes-private",
+      "name": "Arthur Hayes",
+      "handle": "CryptoHayes",
+      "company": "Maelstrom / BitMEX",
+      "role": "Maelstrom / BitMEX · Chief Investment Officer, Maelstrom; Co-Founder & Former Chief Executive Officer, BitMEX",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "投资",
+        "金融科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "richard-teng-private",
+      "name": "Richard Teng",
+      "handle": "RichardTeng",
+      "company": "Binance",
+      "role": "Binance · Co-Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "金融科技",
+        "交易平台",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "changpeng-zhao-private",
+      "name": "Changpeng Zhao",
+      "handle": "cz_binance",
+      "company": "Binance",
+      "role": "Binance · Founder & Former Chief Executive Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "加密资产",
+        "金融科技",
+        "创业",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "haseeb-qureshi-private",
+      "name": "Haseeb Qureshi",
+      "handle": "hosseeb",
+      "company": "Dragonfly",
+      "role": "Dragonfly · Managing Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "加密资产",
+        "区块链",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "kyle-samani-fwdi",
+      "name": "Kyle Samani",
+      "handle": "KyleSamani",
+      "company": "Forward Industries",
+      "role": "Forward Industries · Chairman of the Board; Co-Founder & Former Managing Partner, Multicoin Capital",
+      "prior_primary_category": "科技",
+      "categories": [
+        "科技",
+        "投资",
+        "Solana",
+        "区块链",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "tushar-jain-private",
+      "name": "Tushar Jain",
+      "handle": "TusharJain_",
+      "company": "Multicoin Capital",
+      "role": "Multicoin Capital · Co-Founder & Managing Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "加密资产",
+        "区块链",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "nic-carter-private",
+      "name": "Nic Carter",
+      "handle": "nic__carter",
+      "company": "Castle Island Ventures",
+      "role": "Castle Island Ventures · Founding Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "加密资产",
+        "金融科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "brian-singerman-private",
+      "name": "Brian Singerman",
+      "handle": "briansin",
+      "company": "Founders Fund",
+      "role": "Founders Fund · Partner Emeritus",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "投资",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "jeremy-liew-private",
+      "name": "Jeremy Liew",
+      "handle": "jeremysliew",
+      "company": "Lightspeed Venture Partners",
+      "role": "Lightspeed Venture Partners · Venture Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "科技",
+        "VC",
+        "消费科技",
+        "金融科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "monica-long-private",
+      "name": "Monica Long",
+      "handle": "MonicaLongSF",
+      "company": "Ripple",
+      "role": "Ripple · President",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "科技",
+        "金融科技",
+        "区块链",
+        "支付",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "emilie-choi-coin",
+      "name": "Emilie Choi",
+      "handle": "emiliemc",
+      "company": "Coinbase",
+      "role": "Coinbase · President & Chief Operating Officer",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "sheel-mohnot-private",
+      "name": "Sheel Mohnot",
+      "handle": "pitdesi",
+      "company": "Better Tomorrow Ventures",
+      "role": "Better Tomorrow Ventures · Co-Founder & General Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "金融科技",
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "alex-rampell-private",
+      "name": "Alex Rampell",
+      "handle": "arampell",
+      "company": "Andreessen Horowitz",
+      "role": "Andreessen Horowitz · General Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "金融科技",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "rex-salisbury-private",
+      "name": "Rex Salisbury",
+      "handle": "rexsalisbury",
+      "company": "Cambrian",
+      "role": "Cambrian · Founder & Solo General Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "金融科技",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "nik-milanovic-private",
+      "name": "Nik Milanovic",
+      "handle": "NikMilanovic",
+      "company": "The Fintech Fund / This Week in Fintech",
+      "role": "The Fintech Fund / This Week in Fintech · General Partner, The Fintech Fund; Founder, This Week in Fintech",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "VC",
+        "金融",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "gokul-rajaram-private",
+      "name": "Gokul Rajaram",
+      "handle": "gokulr",
+      "company": "Independent / Technology Investing",
+      "role": "Independent / Technology Investing · Technology Investor & Operator",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "科技",
+        "金融科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "anish-acharya-private",
+      "name": "Anish Acharya",
+      "handle": "illscience",
+      "company": "Andreessen Horowitz",
+      "role": "Andreessen Horowitz · General Partner",
+      "prior_primary_category": "VC",
+      "categories": [
+        "VC",
+        "金融科技",
+        "AI",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "caitlin-long-v500",
+      "name": "Caitlin Long",
+      "handle": "CaitlinLong_",
+      "company": "Custodia Bank",
+      "role": "Custodia Bank · Founder & CEO",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "baiju-bhatt-v500",
+      "name": "Baiju Bhatt",
+      "handle": "baijubhatt",
+      "company": "Cowboy Space / Robinhood",
+      "role": "Cowboy Space / Robinhood · Founder, Cowboy Space; Co-Founder, Robinhood",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "amrita-ahuja-v500",
+      "name": "Amrita Ahuja",
+      "handle": "AmritaAhuja",
+      "company": "Block",
+      "role": "Block · COO & CFO",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "claire-hughes-johnson-v500",
+      "name": "Claire Hughes Johnson",
+      "handle": "chughesjohnson",
+      "company": "Stripe",
+      "role": "Stripe · Corporate Officer & Advisor / Board Member",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "kristo-kaarmann-v500",
+      "name": "Kristo Kaarmann",
+      "handle": "kaarmann",
+      "company": "Wise",
+      "role": "Wise · Co-Founder & CEO",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    },
+    {
+      "id": "zach-abrams-v500",
+      "name": "Zach Abrams",
+      "handle": "zcabrams",
+      "company": "Open Standard / Bridge",
+      "role": "Open Standard / Bridge · Founding CEO, Open Standard; Co-Founder, Bridge",
+      "prior_primary_category": "金融科技",
+      "categories": [
+        "金融科技",
+        "金融",
+        "科技",
+        "华尔街"
+      ]
+    }
+  ]
+}
