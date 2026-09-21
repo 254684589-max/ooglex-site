@@ -45,7 +45,7 @@ from market_data_quality import (  # noqa: E402
     summarize_data_quality,
 )
 from market_history import build_rolling_history  # noqa: E402
-from market_history_long import build_long_history  # noqa: E402
+from market_history_long import build_long_history, month_index  # noqa: E402
 from market_monthly_yahoo import fetch_monthly  # noqa: E402
 from market_source_health import (  # noqa: E402
     attach_upstream_health,
@@ -91,6 +91,8 @@ CRYPTO_LONG_NOTE = ("加密资产的月线收盘，来自 Yahoo Finance 的现�
                     "本轮未取到的币种沿用上次序列，不补造新点。")
 # 同名代码在 Yahoo 上可能指向另一个资产，因此每条序列都要用最新一个月的收盘与本轮
 # CoinGecko 现价对表；偏离超过这个比例就判定为取错标的，宁可没有该币的长历史。
+# 光比价位不够：首轮实测 USDS-USD 取回的是一个 2023 年就停更的同名稳定币，
+# 价位同样在 1 美元附近，只能靠「尾月必须是当月」把它挡下来。
 CRYPTO_LONG_TOLERANCE = 0.20
 CRYPTO_LONG_INTERVAL = 0.35
 # CoinGecko 只给英文名，这里补常见币种的中文名；未收录的如实沿用英文名，不臆造译名。
@@ -370,6 +372,21 @@ def plausible_monthly(points, spot):
     return abs(last - spot) / spot <= CRYPTO_LONG_TOLERANCE
 
 
+def fresh_monthly(points, run_month):
+    """序列的尾月必须就是本轮所在月（跨月边界放宽到上一月）。
+
+    仍在交易的标的，数据源一定会给出当月那根未走完的月线；尾月停在很久以前，
+    说明这个代码在源上早已停止交易——多半是同名的另一个、已经下架的资产。
+    这类序列画出来会被读成「这就是该币至今的走势」，因此宁可不要。
+    """
+    if not points:
+        return False
+    try:
+        return month_index(points[-1][0]) >= month_index(run_month) - 1
+    except ValueError:
+        return False
+
+
 def build_crypto_long_history(assets, run_updated_at):
     """加密品类的长周期月线 → apps/asset-ranking/crypto-history-monthly.json。
 
@@ -391,10 +408,12 @@ def build_crypto_long_history(assets, run_updated_at):
             skipped.append(f"{symbol}（{pair}）：{error}")
             time.sleep(CRYPTO_LONG_INTERVAL)
             continue
-        if plausible_monthly(points, asset.get("price")):
-            collected[str(symbol).upper()] = points
-        else:
+        if not plausible_monthly(points, asset.get("price")):
             skipped.append(f"{symbol}（{pair}）：月末价与现价对不上，疑似同名的别的资产")
+        elif not fresh_monthly(points, run_updated_at[:7]):
+            skipped.append(f"{symbol}（{pair}）：序列停在 {points[-1][0]}，该代码在源上已停止交易")
+        else:
+            collected[str(symbol).upper()] = points
         time.sleep(CRYPTO_LONG_INTERVAL)
 
     prev = load_json(CRYPTO_LONG_HISTORY_PATH) or {}

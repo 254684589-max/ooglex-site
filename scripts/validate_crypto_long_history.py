@@ -8,8 +8,9 @@ Yahoo Finance 的现货交易对——因为 CoinGecko 免费档只回溯 365 �
 
 1. 不冒充——文件自报的来源必须是月线的真实来源，且说明里写明与现价不同源；
 2. 不越界——只给加密板里已登记的币种补历史，不引入板上没有的标的；
-3. 不张冠李戴——同名代码在 Yahoo 上可能是另一个资产，尾点价位必须与本站现价
-   在同一量级，差出数倍的序列一律判为取错标的。
+3. 不张冠李戴——同名代码在 Yahoo 上可能是另一个资产：尾点价位必须与本站现价
+   在同一量级，尾月还必须紧跟文件自己的更新月；两条里任何一条不满足，
+   都说明这条序列不是这个币的（首轮实测就抓到一个 2023 年停更的同名稳定币）。
 
 用法：
     python scripts/validate_crypto_long_history.py            # 校验仓库里的产物
@@ -27,6 +28,9 @@ LONG_PATH = os.path.join(ROOT, "apps", "asset-ranking", "crypto-history-monthly.
 # 尾点与现价的量级校验：留出足够的行情波动余量（沿用的序列可能是若干天前取的），
 # 只用来抓「取到了完全不同的资产」这类错误。
 MAX_TAIL_FACTOR = 4.0
+# 尾月与文件更新月的最大间隔（月）。仍在交易的标的一定有当月那根月线；
+# 允许 1 是为了跨月边界，不是给停更序列留口子。
+MAX_TAIL_LAG_MONTHS = 1
 
 
 def require(condition, message):
@@ -50,8 +54,22 @@ def load_builder():
     return module
 
 
+def month_number(text):
+    value = str(text or "")
+    if len(value) < 7 or value[4] != "-":
+        raise AssertionError(f"月份格式不合法：{text}")
+    return int(value[:4]) * 12 + int(value[5:7]) - 1
+
+
 def self_test():
     builder = load_builder()
+    require(builder.fresh_monthly([("2026-08", 1.0)], "2026-08") is True,
+            "尾月就是当月的序列应当采纳")
+    require(builder.fresh_monthly([("2026-07", 1.0)], "2026-08") is True,
+            "跨月边界允许尾月是上一月")
+    require(builder.fresh_monthly([("2023-04", 1.0)], "2026-08") is False,
+            "尾月停在数年前的序列必须丢弃：该代码在源上已停止交易")
+    require(builder.fresh_monthly([], "2026-08") is False, "空序列不得采纳")
     require(builder.crypto_yahoo_symbol("btc") == "BTC-USD", "币种代码应转成 Yahoo 现货交易对")
     require(builder.crypto_yahoo_symbol("") is None, "空代码不得拼出交易对")
     require(builder.crypto_yahoo_symbol("BTC-USD") is None, "含分隔符的代码不得再次拼接")
@@ -63,7 +81,8 @@ def self_test():
     require(builder.plausible_monthly(points, None) is False, "现价缺失时无从核对，不得采纳")
 
     fetched = {"BTC-USD": [("2024-01", 100.0), ("2024-02", 110.0)],
-               "FAKE-USD": [("2024-01", 1.0), ("2024-02", 2.0)]}
+               "FAKE-USD": [("2024-01", 1.0), ("2024-02", 2.0)],
+               "OLD-USD": [("2019-01", 1.0), ("2019-02", 1.02)]}
     calls = []
 
     def fake_fetch(symbol):
@@ -83,12 +102,13 @@ def self_test():
         history = builder.build_crypto_long_history(
             [{"symbol": "BTC", "price": 111.0},      # 正常
              {"symbol": "FAKE", "price": 900.0},     # 同名但价位对不上 → 丢弃
+             {"symbol": "OLD", "price": 1.0},        # 价位对得上但序列停在数年前 → 丢弃
              {"symbol": "NONE", "price": 5.0}],      # 数据源没有 → 跳过
             "2024-03-01T00:00:00Z")
         require(history is not None, "至少取到一条序列时应当写入历史")
         require(list(history["series"]) == ["BTC"], "只有通过核对的币种才进入历史")
         require(history["source"] == builder.CRYPTO_LONG_SOURCE, "历史必须自报月线的真实来源")
-        require(calls == ["BTC-USD", "FAKE-USD", "NONE-USD"], "应逐币按交易对代码取数")
+        require(calls == ["BTC-USD", "FAKE-USD", "OLD-USD", "NONE-USD"], "应逐币按交易对代码取数")
         written = load(scratch)
         require(written["series"]["BTC"]["start"] == "2024-01", "起始月应取该币可得的最早月份")
     finally:
@@ -130,6 +150,7 @@ def check_file():
     require(isinstance(series, dict) and series, "长周期月线必须给出至少一条序列")
     require(history.get("symbols") == len(series), "symbols 必须与序列条数一致")
 
+    updated_month = str(history.get("updatedAt"))[:7]
     for symbol, entry in series.items():
         require(symbol in prices, f"{symbol} 不在加密板清单里，长周期月线不得引入板外标的")
         start = entry.get("start")
@@ -142,6 +163,9 @@ def check_file():
         for value in values:
             require(isinstance(value, (int, float)) and value > 0,
                     f"{symbol} 的月线收盘必须是正数")
+        end_month = month_number(start) + len(closes) - 1
+        require(end_month >= month_number(updated_month) - MAX_TAIL_LAG_MONTHS,
+                f"{symbol} 的序列停在更新月之前，该代码在数据源上已停止交易，不得当作它的走势")
         spot = prices.get(symbol)
         if isinstance(spot, (int, float)) and spot > 0:
             tail = values[-1]
