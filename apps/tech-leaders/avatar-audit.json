@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-20T12:59:37Z",
+  "checked_at": "2026-09-21T02:58:36Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 110,
   "usable": 110,
-  "x_original": 67,
-  "x_original_proxy": 19,
+  "x_original": 69,
+  "x_original_proxy": 12,
   "official_fallback": 2,
-  "public_fallback": 22,
-  "fallback": 24,
+  "public_fallback": 27,
+  "fallback": 29,
   "pending_review": 0,
   "missing_handle": 0,
   "invalid_handle": 0,
@@ -757,6 +757,20 @@
       "origin_url": "https://x.com/nikesharora"
     },
     {
+      "id": "luckey",
+      "name": "Palmer Luckey",
+      "company": "Anduril",
+      "handle": "PalmerLuckey",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "PalmerLuckey",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PalmerLuckey&name=Palmer+Luckey&company=Anduril",
+      "origin_url": "https://x.com/PalmerLuckey"
+    },
+    {
       "id": "patrick-collison",
       "name": "Patrick Collison",
       "company": "Stripe",
@@ -911,6 +925,20 @@
       "origin_url": "https://x.com/tim_cook"
     },
     {
+      "id": "lutke",
+      "name": "Tobias Lütke",
+      "company": "Shopify",
+      "handle": "tobi",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "tobi",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi&name=Tobias+L%C3%BCtke&company=Shopify",
+      "origin_url": "https://x.com/tobi"
+    },
+    {
       "id": "buterin",
       "name": "Vitalik Buterin",
       "company": "Ethereum",
@@ -1023,20 +1051,6 @@
       "origin_url": "https://x.com/ClemDelangue"
     },
     {
-      "id": "dara",
-      "name": "Dara Khosrowshahi",
-      "company": "Uber",
-      "handle": "dkhos",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "dkhos",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos&name=Dara+Khosrowshahi&company=Uber",
-      "origin_url": "https://x.com/dkhos"
-    },
-    {
       "id": "fred-wilson",
       "name": "Fred Wilson",
       "company": "Union Square Ventures",
@@ -1093,20 +1107,6 @@
       "origin_url": "https://x.com/levie"
     },
     {
-      "id": "friedman",
-      "name": "Nat Friedman",
-      "company": "Technology Investing",
-      "handle": "natfriedman",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "natfriedman",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=natfriedman&name=Nat+Friedman&company=Technology+Investing",
-      "origin_url": "https://x.com/natfriedman"
-    },
-    {
       "id": "naval",
       "name": "Naval Ravikant",
       "company": "AngelList",
@@ -1119,20 +1119,6 @@
       "response_handle": "naval",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=naval&name=Naval+Ravikant&company=AngelList",
       "origin_url": "https://x.com/naval"
-    },
-    {
-      "id": "luckey",
-      "name": "Palmer Luckey",
-      "company": "Anduril",
-      "handle": "PalmerLuckey",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "PalmerLuckey",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PalmerLuckey&name=Palmer+Luckey&company=Anduril",
-      "origin_url": "https://x.com/PalmerLuckey"
     },
     {
       "id": "paul-graham",
@@ -1149,48 +1135,6 @@
       "origin_url": "https://x.com/paulg"
     },
     {
-      "id": "peter-beck",
-      "name": "Peter Beck",
-      "company": "Rocket Lab",
-      "handle": "Peter_J_Beck",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "Peter_J_Beck",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck&name=Peter+Beck&company=Rocket+Lab",
-      "origin_url": "https://x.com/Peter_J_Beck"
-    },
-    {
-      "id": "nadella",
-      "name": "Satya Nadella",
-      "company": "Microsoft",
-      "handle": "satyanadella",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "satyanadella",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=satyanadella&name=Satya+Nadella&company=Microsoft",
-      "origin_url": "https://x.com/satyanadella"
-    },
-    {
-      "id": "lutke",
-      "name": "Tobias Lütke",
-      "company": "Shopify",
-      "handle": "tobi",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "tobi",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi&name=Tobias+L%C3%BCtke&company=Shopify",
-      "origin_url": "https://x.com/tobi"
-    },
-    {
       "id": "tenev",
       "name": "Vlad Tenev",
       "company": "Robinhood",
@@ -1205,20 +1149,6 @@
       "origin_url": "https://x.com/vladtenev"
     },
     {
-      "id": "field",
-      "name": "Dylan Field",
-      "company": "Figma",
-      "handle": "zoink",
-      "ok": true,
-      "status": "x_original_proxy",
-      "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "zoink",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan+Field&company=Figma",
-      "origin_url": "https://x.com/zoink"
-    },
-    {
       "id": "wanstrath",
       "name": "Chris Wanstrath",
       "company": "GitHub",
@@ -1231,6 +1161,20 @@
       "response_handle": "defunkt",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=defunkt&name=Chris+Wanstrath&company=GitHub",
       "origin_url": "https://x.com/defunkt"
+    },
+    {
+      "id": "dara",
+      "name": "Dara Khosrowshahi",
+      "company": "Uber",
+      "handle": "dkhos",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "dkhos",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dkhos&name=Dara+Khosrowshahi&company=Uber",
+      "origin_url": "https://x.com/dkhos"
     },
     {
       "id": "durov",
@@ -1373,6 +1317,20 @@
       "origin_url": "https://x.com/mosseri"
     },
     {
+      "id": "friedman",
+      "name": "Nat Friedman",
+      "company": "Technology Investing",
+      "handle": "natfriedman",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "natfriedman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=natfriedman&name=Nat+Friedman&company=Technology+Investing",
+      "origin_url": "https://x.com/natfriedman"
+    },
+    {
       "id": "pabbeel",
       "name": "Pieter Abbeel",
       "company": "Covariant / UC Berkeley",
@@ -1385,6 +1343,20 @@
       "response_handle": "pabbeel",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pabbeel&name=Pieter+Abbeel&company=Covariant+%2F+UC+Berkeley",
       "origin_url": "https://x.com/pabbeel"
+    },
+    {
+      "id": "peter-beck",
+      "name": "Peter Beck",
+      "company": "Rocket Lab",
+      "handle": "Peter_J_Beck",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "Peter_J_Beck",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck&name=Peter+Beck&company=Rocket+Lab",
+      "origin_url": "https://x.com/Peter_J_Beck"
     },
     {
       "id": "gelsinger",
@@ -1441,6 +1413,20 @@
       "response_handle": "rookisaacman",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rookisaacman&name=Jared+Isaacman&company=Commercial+Spaceflight",
       "origin_url": "https://x.com/rookisaacman"
+    },
+    {
+      "id": "nadella",
+      "name": "Satya Nadella",
+      "company": "Microsoft",
+      "handle": "satyanadella",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "satyanadella",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=satyanadella&name=Satya+Nadella&company=Microsoft",
+      "origin_url": "https://x.com/satyanadella"
     },
     {
       "id": "sergey-levine",
@@ -1553,6 +1539,20 @@
       "response_handle": "ZLQ6600E",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ZLQ6600E&name=Zheng+Yi&company=Independent+Investment+%2F+VC",
       "origin_url": "https://x.com/ZLQ6600E"
+    },
+    {
+      "id": "field",
+      "name": "Dylan Field",
+      "company": "Figma",
+      "handle": "zoink",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "zoink",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zoink&name=Dylan+Field&company=Figma",
+      "origin_url": "https://x.com/zoink"
     }
   ]
 }
