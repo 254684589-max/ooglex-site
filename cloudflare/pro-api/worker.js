@@ -1976,6 +1976,10 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     name: publicAuthor || String(handle || "X")
   });
   const avatarUrl = `${requestUrl.origin}/v1/tech-leaders/avatar?${avatarParams.toString()}`;
+  // Social link previews (especially WeChat Moments) should identify the
+  // publisher first. Keep the post's own media inside the page, but use the
+  // square profile avatar as the Open Graph thumbnail shown beside the text.
+  const socialImage = avatarUrl;
 
   const canonical = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
   canonical.searchParams.set("handle", handle);
@@ -2001,8 +2005,8 @@ function techLeaderShareResponse(handle, post, requestUrl) {
 <meta property="og:title" content="${shareHtmlEscape(previewTitle)}">
 <meta property="og:description" content="${shareHtmlEscape(description)}">
 <meta property="og:url" content="${shareHtmlEscape(shareUrl)}">
-<meta property="og:image" content="${shareHtmlEscape(image)}">
-<meta property="og:image:secure_url" content="${shareHtmlEscape(image)}">
+<meta property="og:image" content="${shareHtmlEscape(socialImage)}">
+<meta property="og:image:secure_url" content="${shareHtmlEscape(socialImage)}">
 ${video ? `<meta property="og:video" content="${shareHtmlEscape(video)}">
 <meta property="og:video:secure_url" content="${shareHtmlEscape(video)}">
 <meta property="og:video:type" content="video/mp4">
@@ -2011,7 +2015,7 @@ ${shareMedia.videoHeight ? `<meta property="og:video:height" content="${shareHtm
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${shareHtmlEscape(previewTitle)}">
 <meta name="twitter:description" content="${shareHtmlEscape(description)}">
-<meta name="twitter:image" content="${shareHtmlEscape(image)}">
+<meta name="twitter:image" content="${shareHtmlEscape(socialImage)}">
 <style>
 body{margin:0;background:#f7f1e9;color:#171717;font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 main{width:min(680px,calc(100% - 32px));margin:32px auto;padding:28px;border:1px solid #ded5cb;border-radius:18px;background:#fffaf4}
