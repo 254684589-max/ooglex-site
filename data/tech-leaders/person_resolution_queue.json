@@ -926,6 +926,16 @@
           "name": "Ami Luttwak",
           "handle": "amiluttwak",
           "status": "current"
+        },
+        {
+          "name": "Shane Legg",
+          "handle": "ShaneLegg",
+          "status": "current"
+        },
+        {
+          "name": "Sarah Drasner",
+          "handle": "sarah_edo",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -1007,6 +1017,11 @@
         {
           "name": "Ami Luttwak",
           "handle": "amiluttwak",
+          "status": "current"
+        },
+        {
+          "name": "Shane Legg",
+          "handle": "ShaneLegg",
           "status": "current"
         }
       ],
