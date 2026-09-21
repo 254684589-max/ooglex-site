@@ -475,6 +475,12 @@
 
   var API_BASE="https://pro-api.ooglex.com";
   var CATALOG_URL="./leaders.json";
+  try{
+    var catalogMode=new URLSearchParams(window.location.search).get("catalog");
+    if(catalogMode==="wall-street-v428-preview"){
+      CATALOG_URL="./leaders-wall-street-v428-preview.json";
+    }
+  }catch(e){}
   var FALLBACK_PEOPLE=[
     {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],category:"航天",note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
     {id:"huang",name:"Jensen Huang",zh:"黄仁勋",handle:"JensenHuang",role:"NVIDIA Founder & CEO",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",note:"现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",title:"JENSEN HUANG · OFFICIAL X TIMELINE",sp500_ceo:true,sp500_member:true,ticker:"NVDA",leader_types:["ceo","founder"],x_identity_verified:true},
