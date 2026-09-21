@@ -1,0 +1,36 @@
+{
+  "version": "v500-final-audit",
+  "audited_at": "2026-09-22",
+  "catalog_version": "v500-stable-2026-09-22",
+  "source_path": "apps/tech-leaders/leaders.json",
+  "source_blob_sha": "56a4161b30e4f162fa70949fcb663df261ee40b8",
+  "previous_baseline": "v450-stable",
+  "leader_count": 500,
+  "active_count": 500,
+  "verified_count": 500,
+  "manual_review_count": 0,
+  "legacy_review_required_count": 0,
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "net_new_from_v450": 50,
+  "tranche20": {
+    "reviewed": 50,
+    "approved": 26,
+    "manual_review": 17,
+    "rejected": 7
+  },
+  "tranche21": {
+    "reviewed": 24,
+    "approved": 24,
+    "manual_review": 0,
+    "rejected": 0
+  },
+  "approved_promoted": 50,
+  "avatar_audit": {
+    "items": 500,
+    "usable": 403,
+    "pending_review": 97
+  },
+  "production_gate": "approved_only",
+  "freeze_status": "stable"
+}
