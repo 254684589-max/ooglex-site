@@ -41,16 +41,16 @@ jobs:
           for i in $(seq 1 60); do
             body="$(curl -fsS --connect-timeout 5 --max-time 12 https://pro-api.ooglex.com/v1/tech-leaders/status 2>/dev/null || true)"
             if echo "$body" | grep -q '"avatar_policy":"x_original_then_verified_fallback"' \
-              && echo "$body" | grep -q '"avatar_cache_version":"v6-x-current-first"'; then
-              echo "Avatar backend V6 X-first cache is ready."
+              && echo "$body" | grep -q '"avatar_cache_version":"v7-complete-portraits"'; then
+              echo "Avatar backend V7 complete-portraits cache is ready."
               ready=1
               break
             fi
-            echo "Waiting for avatar backend V6 X-first cache ($i/60)..."
+            echo "Waiting for avatar backend V7 complete-portraits cache ($i/60)..."
             sleep 5
           done
           if [ "$ready" != "1" ]; then
-            echo "::error::Avatar backend V6 X-first cache did not become ready in time"
+            echo "::error::Avatar backend V7 complete-portraits cache did not become ready in time"
             exit 1
           fi
 

@@ -42,7 +42,7 @@ const TECH_PROFILE_MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const TECH_AVATAR_MAX_BYTES = 3 * 1024 * 1024;
 const TECH_AVATAR_CACHE_CONTROL = "public, max-age=21600, stale-while-revalidate=86400";
-const TECH_AVATAR_CACHE_VERSION = "v6-x-current-first";
+const TECH_AVATAR_CACHE_VERSION = "v7-complete-portraits";
 const TECH_AVATAR_POLICY = "x_original_then_verified_fallback";
 const TECH_AVATAR_REFRESH_X_MS = 72 * 60 * 60 * 1000;
 const TECH_AVATAR_REFRESH_PROXY_MS = 24 * 60 * 60 * 1000;
@@ -57,7 +57,11 @@ const TECH_AVATAR_OFFICIAL_OVERRIDES = Object.freeze({
   svlevine: "https://vcresearch.berkeley.edu/sites/default/files/styles/faculty_photo_thumbnail/public/2023-04/sergey_levin_20200122_AVL_0050.jpg?h=726b1c9d&itok=Aa7Rxyv2",
   aselipsky: "https://www.helixdi.com/wp-content/uploads/2026/04/Adam-Selipsky.png",
   thetimellis: "https://images.squarespace-cdn.com/content/v1/59a8fb50d2b8575fad311abb/32f80d6d-e088-4fa8-a0d8-76db4966ac46/Tim_Ellis_Web.png",
-  marvinrellison: "https://corporate.lowes.com/sites/lowes-corp/files/BOD-images/Marvin-R.Ellison_0.jpg"
+  marvinrellison: "https://corporate.lowes.com/sites/lowes-corp/files/BOD-images/Marvin-R.Ellison_0.jpg",
+  alq: "https://corp.dd-static.net/img/Portraits/alexis-le-quoc-2025.png?auto=format&fit=max&format=png&w=264",
+  avishaiabrahami: "https://static.wixstatic.com/media/4a5235_03f03c77230a4960a552b2aff5e517b6~mv2.jpg",
+  benoitdageville: "https://www.snowflake.com/wp-content/uploads/2026/04/Benoit.jpeg",
+  tusharjain_: "https://images.ctfassets.net/qtbqvna1l0yq/3LcBoPhx9u1NmekXCX3wrZ/06be87a284486f9e1a41af419e4e0a87/tushar_headshot_2022_cropped.png?f=face&fit=fill&fm=png&h=1326&q=50&w=1326"
 });
 
 function json(data, status = 200, headers = {}) {
