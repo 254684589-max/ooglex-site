@@ -10,7 +10,10 @@ preview/full split.
 from __future__ import annotations
 
 import argparse
+import binascii
 import shutil
+import struct
+import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -159,6 +162,82 @@ def inject_rich_access_adapter() -> None:
             p.write_text(text, encoding="utf-8")
 
 
+def write_tech_leaders_share_cover() -> None:
+    """Generate a stable static PNG for WeChat/Open Graph catalog sharing."""
+    width = height = 512
+    bg = (247, 247, 247)
+    pixels = [list(bg) for _ in range(width * height)]
+
+    def put(x: int, y: int, color: tuple[int, int, int]) -> None:
+        if 0 <= x < width and 0 <= y < height:
+            pixels[y * width + x] = list(color)
+
+    def rect(x0: int, y0: int, x1: int, y1: int, color: tuple[int, int, int]) -> None:
+        for y in range(max(0, y0), min(height, y1)):
+            base = y * width
+            for x in range(max(0, x0), min(width, x1)):
+                pixels[base + x] = list(color)
+
+    def circle(cx: int, cy: int, radius: int, color: tuple[int, int, int]) -> None:
+        r2 = radius * radius
+        for y in range(max(0, cy - radius), min(height, cy + radius + 1)):
+            dy = y - cy
+            span = int((r2 - dy * dy) ** 0.5)
+            for x in range(max(0, cx - span), min(width, cx + span + 1)):
+                put(x, y, color)
+
+    # Paper-like card.
+    rect(18, 18, 494, 494, (248, 246, 242))
+    rect(44, 50, 242, 58, (111, 107, 101))
+
+    # Three public-leader portrait tokens.
+    portrait_centers = ((118, 184), (214, 184), (310, 184))
+    portrait_colors = ((35, 35, 37), (86, 92, 100), (149, 141, 132))
+    for (cx, cy), tone in zip(portrait_centers, portrait_colors):
+        circle(cx, cy, 50, (255, 255, 255))
+        circle(cx, cy, 46, (218, 210, 201))
+        circle(cx, cy, 42, (255, 255, 255))
+        circle(cx, cy - 9, 15, tone)
+        circle(cx, cy + 24, 27, tone)
+
+    # Verification badge.
+    circle(362, 218, 27, (255, 255, 255))
+    circle(362, 218, 22, (29, 155, 240))
+    for t in range(5):
+        for x, y in ((351 + t, 218 + t), (356 + t, 223 - t), (361 + t, 218 - t), (366 + t, 213 - t)):
+            put(x, y, (255, 255, 255))
+
+    # Strong typographic-like bars that remain legible at tiny WeChat thumbnail size.
+    rect(46, 286, 390, 324, (23, 23, 23))
+    rect(48, 342, 344, 362, (23, 23, 23))
+    rect(48, 402, 318, 413, (80, 84, 90))
+    rect(48, 438, 280, 447, (120, 113, 105))
+
+    raw = bytearray()
+    for y in range(height):
+        raw.append(0)
+        for x in range(width):
+            raw.extend(pixels[y * width + x])
+
+    def chunk(kind: bytes, payload: bytes) -> bytes:
+        return (
+            struct.pack(">I", len(payload))
+            + kind
+            + payload
+            + struct.pack(">I", binascii.crc32(kind + payload) & 0xFFFFFFFF)
+        )
+
+    png = (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(bytes(raw), 9))
+        + chunk(b"IEND", b"")
+    )
+    target = OUT / "assets" / "tech-leaders-share-v2.png"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(png)
+
+
 def build(protect_pro: bool) -> None:
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -178,6 +257,8 @@ def build(protect_pro: bool) -> None:
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
         copied += 1
+
+    write_tech_leaders_share_cover()
 
     cname = OUT / "CNAME"
     if cname.exists():
