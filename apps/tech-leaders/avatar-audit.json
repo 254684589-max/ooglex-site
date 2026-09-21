@@ -1,16 +1,16 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-21T12:34:27Z",
+  "checked_at": "2026-09-21T13:58:44Z",
   "catalog": "apps/tech-leaders/leaders.json",
-  "total_checked": 300,
-  "usable": 259,
-  "x_original": 91,
-  "x_original_proxy": 22,
+  "total_checked": 400,
+  "usable": 327,
+  "x_original": 99,
+  "x_original_proxy": 28,
   "official_fallback": 2,
-  "public_fallback": 144,
-  "fallback": 146,
-  "pending_review": 41,
+  "public_fallback": 198,
+  "fallback": 200,
+  "pending_review": 73,
   "missing_handle": 0,
   "invalid_handle": 0,
   "items": [
@@ -125,6 +125,20 @@
       "response_handle": "AndrewYNg",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AndrewYNg&name=Andrew+Ng&company=DeepLearning.AI+%2F+AI+Fund",
       "origin_url": "https://x.com/AndrewYNg"
+    },
+    {
+      "id": "anjney-midha-private",
+      "name": "Anjney Midha",
+      "company": "Andreessen Horowitz",
+      "handle": "AnjneyMidha",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "AnjneyMidha",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AnjneyMidha&name=Anjney+Midha&company=Andreessen+Horowitz",
+      "origin_url": "https://x.com/AnjneyMidha"
     },
     {
       "id": "srinivas",
@@ -407,6 +421,20 @@
       "origin_url": "https://x.com/davidmarcus"
     },
     {
+      "id": "david-ulevitch-private",
+      "name": "David Ulevitch",
+      "company": "Andreessen Horowitz",
+      "handle": "davidu",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "davidu",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidu&name=David+Ulevitch&company=Andreessen+Horowitz",
+      "origin_url": "https://x.com/davidu"
+    },
+    {
       "id": "hassabis",
       "name": "Demis Hassabis",
       "company": "Google DeepMind",
@@ -491,6 +519,20 @@
       "origin_url": "https://x.com/drfeifei"
     },
     {
+      "id": "dan-romero-private",
+      "name": "Dan Romero",
+      "company": "Farcaster",
+      "handle": "dwr",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/png",
+      "response_handle": "dwr",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dwr&name=Dan+Romero&company=Farcaster",
+      "origin_url": "https://x.com/dwr"
+    },
+    {
       "id": "ek",
       "name": "Daniel Ek",
       "company": "Spotify / Prima Materia",
@@ -531,6 +573,20 @@
       "response_handle": "ericsyuan",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericsyuan&name=Eric+Yuan&company=Zoom",
       "origin_url": "https://x.com/ericsyuan"
+    },
+    {
+      "id": "eric-vishria-private",
+      "name": "Eric Vishria",
+      "company": "Benchmark",
+      "handle": "ericvishria",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "ericvishria",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericvishria&name=Eric+Vishria&company=Benchmark",
+      "origin_url": "https://x.com/ericvishria"
     },
     {
       "id": "zuckerberg",
@@ -701,6 +757,20 @@
       "origin_url": "https://x.com/karpathy"
     },
     {
+      "id": "kyle-samani-fwdi",
+      "name": "Kyle Samani",
+      "company": "Forward Industries",
+      "handle": "KyleSamani",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "KyleSamani",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=KyleSamani&name=Kyle+Samani&company=Forward+Industries",
+      "origin_url": "https://x.com/KyleSamani"
+    },
+    {
       "id": "sam-lessin-private",
       "name": "Sam Lessin",
       "company": "Slow Ventures",
@@ -755,6 +825,20 @@
       "response_handle": "MarvinREllison",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MarvinREllison&name=Marvin+Ellison&company=Lowe%27s",
       "origin_url": "https://x.com/MarvinREllison"
+    },
+    {
+      "id": "max-haot-private",
+      "name": "Max Haot",
+      "company": "Vast",
+      "handle": "maxhaot",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "maxhaot",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=maxhaot&name=Max+Haot&company=Vast",
+      "origin_url": "https://x.com/maxhaot"
     },
     {
       "id": "perkins",
@@ -1023,6 +1107,20 @@
       "origin_url": "https://x.com/reidhoffman"
     },
     {
+      "id": "robert-leshner-private",
+      "name": "Robert Leshner",
+      "company": "Superstate / Compound",
+      "handle": "rleshner",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "rleshner",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rleshner&name=Robert+Leshner&company=Superstate+%2F+Compound",
+      "origin_url": "https://x.com/rleshner"
+    },
+    {
       "id": "ryan-dahl-private",
       "name": "Ryan Dahl",
       "company": "Deno",
@@ -1219,6 +1317,20 @@
       "origin_url": "https://x.com/tobi"
     },
     {
+      "id": "varun-srinivasan-private",
+      "name": "Varun Srinivasan",
+      "company": "Farcaster / Tempo",
+      "handle": "varunsrin",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "varunsrin",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=varunsrin&name=Varun+Srinivasan&company=Farcaster+%2F+Tempo",
+      "origin_url": "https://x.com/varunsrin"
+    },
+    {
       "id": "buterin",
       "name": "Vitalik Buterin",
       "company": "Ethereum",
@@ -1303,6 +1415,20 @@
       "origin_url": "https://x.com/BillAckman"
     },
     {
+      "id": "crist-bal-valenzuela-private",
+      "name": "Cristóbal Valenzuela",
+      "company": "Runway",
+      "handle": "c_valenzuelab",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "c_valenzuelab",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=c_valenzuelab&name=Crist%C3%B3bal+Valenzuela&company=Runway",
+      "origin_url": "https://x.com/c_valenzuelab"
+    },
+    {
       "id": "chris-olah-private",
       "name": "Chris Olah",
       "company": "Anthropic",
@@ -1331,6 +1457,20 @@
       "origin_url": "https://x.com/ClemDelangue"
     },
     {
+      "id": "changpeng-zhao-private",
+      "name": "Changpeng Zhao",
+      "company": "Binance",
+      "handle": "cz_binance",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "cz_binance",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cz_binance&name=Changpeng+Zhao&company=Binance",
+      "origin_url": "https://x.com/cz_binance"
+    },
+    {
       "id": "eric-glyman-private",
       "name": "Eric Glyman",
       "company": "Ramp",
@@ -1338,25 +1478,25 @@
       "ok": true,
       "status": "x_original_proxy",
       "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2",
+      "source_transport": "unavatar_x-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "eglyman",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eglyman&name=Eric+Glyman&company=Ramp",
       "origin_url": "https://x.com/eglyman"
     },
     {
-      "id": "fred-wilson",
-      "name": "Fred Wilson",
-      "company": "Union Square Ventures",
-      "handle": "fredwilson",
+      "id": "illia-polosukhin-private",
+      "name": "Illia Polosukhin",
+      "company": "NEAR Protocol",
+      "handle": "ilblackdragon",
       "ok": true,
       "status": "x_original_proxy",
       "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2-cache",
+      "source_transport": "unavatar_x-r2",
       "content_type": "image/jpeg",
-      "response_handle": "fredwilson",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
-      "origin_url": "https://x.com/fredwilson"
+      "response_handle": "ilblackdragon",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilblackdragon&name=Illia+Polosukhin&company=NEAR+Protocol",
+      "origin_url": "https://x.com/ilblackdragon"
     },
     {
       "id": "ivan-zhao-private",
@@ -1429,6 +1569,20 @@
       "origin_url": "https://x.com/jerallaire"
     },
     {
+      "id": "jesse-pollak-coin",
+      "name": "Jesse Pollak",
+      "company": "Base / Coinbase",
+      "handle": "jessepollak",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "jessepollak",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jessepollak&name=Jesse+Pollak&company=Base+%2F+Coinbase",
+      "origin_url": "https://x.com/jessepollak"
+    },
+    {
       "id": "jim-keller",
       "name": "Jim Keller",
       "company": "Tenstorrent",
@@ -1464,7 +1618,7 @@
       "ok": true,
       "status": "x_original_proxy",
       "source_type": "x_original_proxy",
-      "source_transport": "unavatar_x-r2",
+      "source_transport": "unavatar_x-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "karimatiyeh",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karimatiyeh&name=Karim+Atiyeh&company=Ramp",
@@ -1569,6 +1723,20 @@
       "origin_url": "https://x.com/naval"
     },
     {
+      "id": "nikita-bier-private",
+      "name": "Nikita Bier",
+      "company": "X / tbh / Gas",
+      "handle": "nikitabier",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "nikitabier",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikitabier&name=Nikita+Bier&company=X+%2F+tbh+%2F+Gas",
+      "origin_url": "https://x.com/nikitabier"
+    },
+    {
       "id": "paul-graham",
       "name": "Paul Graham",
       "company": "Y Combinator",
@@ -1581,6 +1749,34 @@
       "response_handle": "paulg",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paulg&name=Paul+Graham&company=Y+Combinator",
       "origin_url": "https://x.com/paulg"
+    },
+    {
+      "id": "raj-gokal-private",
+      "name": "Raj Gokal",
+      "company": "Solana",
+      "handle": "rajgokal",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "rajgokal",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rajgokal&name=Raj+Gokal&company=Solana",
+      "origin_url": "https://x.com/rajgokal"
+    },
+    {
+      "id": "sandeep-nailwal-private",
+      "name": "Sandeep Nailwal",
+      "company": "Polygon Labs",
+      "handle": "sandeepnailwal",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "unavatar_x-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "sandeepnailwal",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sandeepnailwal&name=Sandeep+Nailwal&company=Polygon+Labs",
+      "origin_url": "https://x.com/sandeepnailwal"
     },
     {
       "id": "wojciech-zaremba-private",
@@ -1597,6 +1793,20 @@
       "origin_url": "https://x.com/woj_zaremba"
     },
     {
+      "id": "adam-d-angelo-private",
+      "name": "Adam D'Angelo",
+      "company": "Quora",
+      "handle": "adamdangelo",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "adamdangelo",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adamdangelo&name=Adam+D%27Angelo&company=Quora",
+      "origin_url": "https://x.com/adamdangelo"
+    },
+    {
       "id": "anatoly-yakovenko-private",
       "name": "Anatoly Yakovenko",
       "company": "Solana Labs",
@@ -1604,7 +1814,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "aeyakovenko",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aeyakovenko&name=Anatoly+Yakovenko&company=Solana+Labs",
@@ -1623,6 +1833,20 @@
       "response_handle": "aileenlee",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aileenlee&name=Aileen+Lee&company=Cowboy+Ventures",
       "origin_url": "https://x.com/aileenlee"
+    },
+    {
+      "id": "albert-wenger-private",
+      "name": "Albert Wenger",
+      "company": "Union Square Ventures",
+      "handle": "albertwenger",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "albertwenger",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=albertwenger&name=Albert+Wenger&company=Union+Square+Ventures",
+      "origin_url": "https://x.com/albertwenger"
     },
     {
       "id": "ohanian",
@@ -1688,7 +1912,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/png",
       "response_handle": "andrewchen",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=andrewchen&name=Andrew+Chen&company=Andreessen+Horowitz",
@@ -1702,7 +1926,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/png",
       "response_handle": "andrewdfeldman",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=andrewdfeldman&name=Andrew+Feldman&company=Cerebras+Systems",
@@ -1735,6 +1959,20 @@
       "response_handle": "anthonynoto",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=anthonynoto&name=Anthony+Noto&company=SoFi+Technologies",
       "origin_url": "https://x.com/anthonynoto"
+    },
+    {
+      "id": "antonio-juliano-private",
+      "name": "Antonio Juliano",
+      "company": "dYdX",
+      "handle": "AntonioMJuliano",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "AntonioMJuliano",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AntonioMJuliano&name=Antonio+Juliano&company=dYdX",
+      "origin_url": "https://x.com/AntonioMJuliano"
     },
     {
       "id": "antonio-neri-hpe",
@@ -1793,6 +2031,20 @@
       "origin_url": "https://x.com/arthurmensch"
     },
     {
+      "id": "assaf-rappaport-googl",
+      "name": "Assaf Rappaport",
+      "company": "Wiz / Google Cloud",
+      "handle": "assaf_rapp",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "assaf_rapp",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=assaf_rapp&name=Assaf+Rappaport&company=Wiz+%2F+Google+Cloud",
+      "origin_url": "https://x.com/assaf_rapp"
+    },
+    {
       "id": "andrew-wilkinson-tiny",
       "name": "Andrew Wilkinson",
       "company": "Tiny",
@@ -1821,6 +2073,34 @@
       "origin_url": "https://x.com/balajis"
     },
     {
+      "id": "brad-feld-private",
+      "name": "Brad Feld",
+      "company": "Foundry",
+      "handle": "bfeld",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "bfeld",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bfeld&name=Brad+Feld&company=Foundry",
+      "origin_url": "https://x.com/bfeld"
+    },
+    {
+      "id": "brad-garlinghouse-private",
+      "name": "Brad Garlinghouse",
+      "company": "Ripple",
+      "handle": "bgarlinghouse",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "bgarlinghouse",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgarlinghouse&name=Brad+Garlinghouse&company=Ripple",
+      "origin_url": "https://x.com/bgarlinghouse"
+    },
+    {
       "id": "gurley",
       "name": "Bill Gurley",
       "company": "Benchmark",
@@ -1833,6 +2113,20 @@
       "response_handle": "bgurley",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgurley&name=Bill+Gurley&company=Benchmark",
       "origin_url": "https://x.com/bgurley"
+    },
+    {
+      "id": "brian-halligan-hubs",
+      "name": "Brian Halligan",
+      "company": "HubSpot",
+      "handle": "bhalligan",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "bhalligan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bhalligan&name=Brian+Halligan&company=HubSpot",
+      "origin_url": "https://x.com/bhalligan"
     },
     {
       "id": "ben-horowitz-private",
@@ -1884,7 +2178,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "Bouazizalex",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Bouazizalex&name=Alex+Bouaziz&company=Deel",
@@ -1903,6 +2197,20 @@
       "response_handle": "BradSmi",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BradSmi&name=Brad+Smith&company=Microsoft",
       "origin_url": "https://x.com/BradSmi"
+    },
+    {
+      "id": "brian-singerman-private",
+      "name": "Brian Singerman",
+      "company": "Founders Fund",
+      "handle": "briansin",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "briansin",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=briansin&name=Brian+Singerman&company=Founders+Fund",
+      "origin_url": "https://x.com/briansin"
     },
     {
       "id": "cal-henderson-crm",
@@ -1926,7 +2234,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "cameron",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cameron&name=Cameron+Winklevoss&company=Gemini",
@@ -2045,6 +2353,34 @@
       "origin_url": "https://x.com/collision"
     },
     {
+      "id": "connie-chan-private",
+      "name": "Connie Chan",
+      "company": "Andreessen Horowitz",
+      "handle": "conniechan",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/png",
+      "response_handle": "conniechan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=conniechan&name=Connie+Chan&company=Andreessen+Horowitz",
+      "origin_url": "https://x.com/conniechan"
+    },
+    {
+      "id": "arthur-hayes-private",
+      "name": "Arthur Hayes",
+      "company": "Maelstrom / BitMEX",
+      "handle": "CryptoHayes",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "CryptoHayes",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=CryptoHayes&name=Arthur+Hayes&company=Maelstrom+%2F+BitMEX",
+      "origin_url": "https://x.com/CryptoHayes"
+    },
+    {
       "id": "dmitri-alperovitch-crwd",
       "name": "Dmitri Alperovitch",
       "company": "CrowdStrike",
@@ -2059,6 +2395,20 @@
       "origin_url": "https://x.com/DAlperovitch"
     },
     {
+      "id": "dalton-caldwell-private",
+      "name": "Dalton Caldwell",
+      "company": "Standard Capital / Y Combinator",
+      "handle": "daltonc",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "daltonc",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=daltonc&name=Dalton+Caldwell&company=Standard+Capital+%2F+Y+Combinator",
+      "origin_url": "https://x.com/daltonc"
+    },
+    {
       "id": "dan-schulman-vz",
       "name": "Dan Schulman",
       "company": "Verizon Communications",
@@ -2071,6 +2421,20 @@
       "response_handle": "Dan_Schulman",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Dan_Schulman&name=Dan+Schulman&company=Verizon+Communications",
       "origin_url": "https://x.com/Dan_Schulman"
+    },
+    {
+      "id": "dave-dewalt-private",
+      "name": "Dave DeWalt",
+      "company": "NightDragon",
+      "handle": "davedewalt",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "davedewalt",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davedewalt&name=Dave+DeWalt&company=NightDragon",
+      "origin_url": "https://x.com/davedewalt"
     },
     {
       "id": "dave-clark-amzn",
@@ -2101,6 +2465,20 @@
       "origin_url": "https://x.com/DavidBaszucki"
     },
     {
+      "id": "david-krane-private",
+      "name": "David Krane",
+      "company": "GV",
+      "handle": "davidkrane",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "davidkrane",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidkrane&name=David+Krane&company=GV",
+      "origin_url": "https://x.com/davidkrane"
+    },
+    {
       "id": "david-risher-lyft",
       "name": "David Risher",
       "company": "Lyft",
@@ -2122,7 +2500,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "DavidSHolz",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DavidSHolz&name=David+Holz&company=Midjourney",
@@ -2141,6 +2519,20 @@
       "response_handle": "defunkt",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=defunkt&name=Chris+Wanstrath&company=GitHub",
       "origin_url": "https://x.com/defunkt"
+    },
+    {
+      "id": "denelle-dixon-private",
+      "name": "Denelle Dixon",
+      "company": "Stellar Development Foundation",
+      "handle": "DenelleDixon",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "DenelleDixon",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DenelleDixon&name=Denelle+Dixon&company=Stellar+Development+Foundation",
+      "origin_url": "https://x.com/DenelleDixon"
     },
     {
       "id": "dara",
@@ -2169,6 +2561,20 @@
       "response_handle": "DrJimFan",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DrJimFan&name=Jim+Fan&company=NVIDIA",
       "origin_url": "https://x.com/DrJimFan"
+    },
+    {
+      "id": "dug-song-csco",
+      "name": "Dug Song",
+      "company": "Duo Security / Cisco",
+      "handle": "dugsong",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "dugsong",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dugsong&name=Dug+Song&company=Duo+Security+%2F+Cisco",
+      "origin_url": "https://x.com/dugsong"
     },
     {
       "id": "durov",
@@ -2206,7 +2612,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "el33th4xor",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=el33th4xor&name=Emin+G%C3%BCn+Sirer&company=Ava+Labs",
@@ -2241,6 +2647,20 @@
       "origin_url": "https://x.com/ericschmidt"
     },
     {
+      "id": "emmett-shear-private",
+      "name": "Emmett Shear",
+      "company": "Twitch",
+      "handle": "eshear",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "eshear",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eshear&name=Emmett+Shear&company=Twitch",
+      "origin_url": "https://x.com/eshear"
+    },
+    {
       "id": "fred-ehrsam-coin",
       "name": "Fred Ehrsam",
       "company": "Coinbase Global",
@@ -2269,6 +2689,20 @@
       "origin_url": "https://x.com/fidjissimo"
     },
     {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "company": "Union Square Ventures",
+      "handle": "fredwilson",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "fredwilson",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=fredwilson&name=Fred+Wilson&company=Union+Square+Ventures",
+      "origin_url": "https://x.com/fredwilson"
+    },
+    {
       "id": "steve-jurvetson-private",
       "name": "Steve Jurvetson",
       "company": "Future Ventures",
@@ -2290,7 +2724,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "gavofyork",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gavofyork&name=Gavin+Wood&company=Polkadot+%2F+Web3+Foundation",
@@ -2309,6 +2743,48 @@
       "response_handle": "gc",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gc&name=Garrett+Camp&company=Uber+Technologies",
       "origin_url": "https://x.com/gc"
+    },
+    {
+      "id": "gigi-levy-weiss-private",
+      "name": "Gigi Levy-Weiss",
+      "company": "NFX",
+      "handle": "gigilevy",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "gigilevy",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gigilevy&name=Gigi+Levy-Weiss&company=NFX",
+      "origin_url": "https://x.com/gigilevy"
+    },
+    {
+      "id": "glauber-costa-private",
+      "name": "Glauber Costa",
+      "company": "Turso",
+      "handle": "glcst",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "glcst",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=glcst&name=Glauber+Costa&company=Turso",
+      "origin_url": "https://x.com/glcst"
+    },
+    {
+      "id": "geoff-ralston-private",
+      "name": "Geoff Ralston",
+      "company": "Y Combinator",
+      "handle": "grs",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "grs",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=grs&name=Geoff+Ralston&company=Y+Combinator",
+      "origin_url": "https://x.com/grs"
     },
     {
       "id": "harley-finkelstein-shop",
@@ -2346,11 +2822,39 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "htaneja",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=htaneja&name=Hemant+Taneja&company=General+Catalyst",
       "origin_url": "https://x.com/htaneja"
+    },
+    {
+      "id": "hunter-walk-private",
+      "name": "Hunter Walk",
+      "company": "Homebrew",
+      "handle": "hunterwalk",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "hunterwalk",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hunterwalk&name=Hunter+Walk&company=Homebrew",
+      "origin_url": "https://x.com/hunterwalk"
+    },
+    {
+      "id": "harrison-chase-private",
+      "name": "Harrison Chase",
+      "company": "LangChain",
+      "handle": "hwchase17",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "hwchase17",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hwchase17&name=Harrison+Chase&company=LangChain",
+      "origin_url": "https://x.com/hwchase17"
     },
     {
       "id": "charles-hoskinson-private",
@@ -2360,11 +2864,39 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "IOHK_Charles",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=IOHK_Charles&name=Charles+Hoskinson&company=Input+Output+%2F+Cardano",
       "origin_url": "https://x.com/IOHK_Charles"
+    },
+    {
+      "id": "sam-lambert-private",
+      "name": "Sam Lambert",
+      "company": "PlanetScale",
+      "handle": "isamlambert",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "isamlambert",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=isamlambert&name=Sam+Lambert&company=PlanetScale",
+      "origin_url": "https://x.com/isamlambert"
+    },
+    {
+      "id": "jack-altman-private",
+      "name": "Jack Altman",
+      "company": "Benchmark",
+      "handle": "jaltma",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "jaltma",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jaltma&name=Jack+Altman&company=Benchmark",
+      "origin_url": "https://x.com/jaltma"
     },
     {
       "id": "james-hawkins-private",
@@ -2374,11 +2906,25 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "james406",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=james406&name=James+Hawkins&company=PostHog",
       "origin_url": "https://x.com/james406"
+    },
+    {
+      "id": "james-currier-private",
+      "name": "James Currier",
+      "company": "NFX",
+      "handle": "JamesCurrier",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "JamesCurrier",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JamesCurrier&name=James+Currier&company=NFX",
+      "origin_url": "https://x.com/JamesCurrier"
     },
     {
       "id": "jason-citron-private",
@@ -2465,6 +3011,34 @@
       "origin_url": "https://x.com/jeremys"
     },
     {
+      "id": "jeremy-liew-private",
+      "name": "Jeremy Liew",
+      "company": "Lightspeed Venture Partners",
+      "handle": "jeremysliew",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "jeremysliew",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jeremysliew&name=Jeremy+Liew&company=Lightspeed+Venture+Partners",
+      "origin_url": "https://x.com/jeremysliew"
+    },
+    {
+      "id": "jerry-liu-private",
+      "name": "Jerry Liu",
+      "company": "LlamaIndex",
+      "handle": "jerryjliu0",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "jerryjliu0",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jerryjliu0&name=Jerry+Liu&company=LlamaIndex",
+      "origin_url": "https://x.com/jerryjliu0"
+    },
+    {
       "id": "jesse-powell-private",
       "name": "Jesse Powell",
       "company": "Kraken",
@@ -2477,6 +3051,20 @@
       "response_handle": "jespow",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jespow&name=Jesse+Powell&company=Kraken",
       "origin_url": "https://x.com/jespow"
+    },
+    {
+      "id": "jessica-livingston-private",
+      "name": "Jessica Livingston",
+      "company": "Y Combinator",
+      "handle": "jesslivingston",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "jesslivingston",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jesslivingston&name=Jessica+Livingston&company=Y+Combinator",
+      "origin_url": "https://x.com/jesslivingston"
     },
     {
       "id": "joe-gebbia-abnb",
@@ -2507,6 +3095,34 @@
       "origin_url": "https://x.com/jgrahamc"
     },
     {
+      "id": "david-schwartz-private",
+      "name": "David Schwartz",
+      "company": "Ripple",
+      "handle": "JoelKatz",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "JoelKatz",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JoelKatz&name=David+Schwartz&company=Ripple",
+      "origin_url": "https://x.com/JoelKatz"
+    },
+    {
+      "id": "john-doerr-private",
+      "name": "John Doerr",
+      "company": "Kleiner Perkins",
+      "handle": "johndoerr",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "johndoerr",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=johndoerr&name=John+Doerr&company=Kleiner+Perkins",
+      "origin_url": "https://x.com/johndoerr"
+    },
+    {
       "id": "john-legere-tmus",
       "name": "John Legere",
       "company": "T-Mobile US",
@@ -2535,6 +3151,20 @@
       "origin_url": "https://x.com/JohnTChambers"
     },
     {
+      "id": "josh-kopelman-private",
+      "name": "Josh Kopelman",
+      "company": "First Round",
+      "handle": "joshk",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "joshk",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=joshk&name=Josh+Kopelman&company=First+Round",
+      "origin_url": "https://x.com/joshk"
+    },
+    {
       "id": "joe-lonsdale-pltr",
       "name": "Joe Lonsdale",
       "company": "Palantir Technologies",
@@ -2561,6 +3191,34 @@
       "response_handle": "judsonalthoff",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=judsonalthoff&name=Judson+Althoff&company=Microsoft",
       "origin_url": "https://x.com/judsonalthoff"
+    },
+    {
+      "id": "justin-kan-private",
+      "name": "Justin Kan",
+      "company": "Twitch / Goat Capital",
+      "handle": "justinkan",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "justinkan",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=justinkan&name=Justin+Kan&company=Twitch+%2F+Goat+Capital",
+      "origin_url": "https://x.com/justinkan"
+    },
+    {
+      "id": "chris-kemp-private",
+      "name": "Chris Kemp",
+      "company": "Astra",
+      "handle": "Kemp",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "Kemp",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Kemp&name=Chris+Kemp&company=Astra",
+      "origin_url": "https://x.com/Kemp"
     },
     {
       "id": "kevin-scott-msft",
@@ -2640,7 +3298,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/png",
       "response_handle": "lucy_guo",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=lucy_guo&name=Lucy+Guo&company=Passes+%2F+Scale+AI",
@@ -2659,6 +3317,20 @@
       "response_handle": "LuisvonAhn",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LuisvonAhn&name=Luis+von+Ahn&company=Duolingo",
       "origin_url": "https://x.com/LuisvonAhn"
+    },
+    {
+      "id": "mamoon-hamid-private",
+      "name": "Mamoon Hamid",
+      "company": "Kleiner Perkins",
+      "handle": "mamoonha",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "mamoonha",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mamoonha&name=Mamoon+Hamid&company=Kleiner+Perkins",
+      "origin_url": "https://x.com/mamoonha"
     },
     {
       "id": "marc-randolph-nflx",
@@ -2689,6 +3361,20 @@
       "origin_url": "https://x.com/marissamayer"
     },
     {
+      "id": "martin-casado-private",
+      "name": "Martin Casado",
+      "company": "Andreessen Horowitz",
+      "handle": "martin_casado",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "martin_casado",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=martin_casado&name=Martin+Casado&company=Andreessen+Horowitz",
+      "origin_url": "https://x.com/martin_casado"
+    },
+    {
       "id": "son",
       "name": "Masayoshi Son",
       "company": "SoftBank Group",
@@ -2715,6 +3401,34 @@
       "response_handle": "matistanis",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=matistanis&name=Mati+Staniszewski&company=ElevenLabs",
       "origin_url": "https://x.com/matistanis"
+    },
+    {
+      "id": "matt-cohler-private",
+      "name": "Matt Cohler",
+      "company": "Benchmark",
+      "handle": "mattcohler",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "mattcohler",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mattcohler&name=Matt+Cohler&company=Benchmark",
+      "origin_url": "https://x.com/mattcohler"
+    },
+    {
+      "id": "mike-volpi-private",
+      "name": "Mike Volpi",
+      "company": "Index Ventures",
+      "handle": "mavolpi",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/png",
+      "response_handle": "mavolpi",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mavolpi&name=Mike+Volpi&company=Index+Ventures",
+      "origin_url": "https://x.com/mavolpi"
     },
     {
       "id": "mike-cannon-brookes-team",
@@ -2787,6 +3501,34 @@
       "origin_url": "https://x.com/mlevchin"
     },
     {
+      "id": "monica-long-private",
+      "name": "Monica Long",
+      "company": "Ripple",
+      "handle": "MonicaLongSF",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "MonicaLongSF",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MonicaLongSF&name=Monica+Long&company=Ripple",
+      "origin_url": "https://x.com/MonicaLongSF"
+    },
+    {
+      "id": "dustin-moskovitz-asan",
+      "name": "Dustin Moskovitz",
+      "company": "Asana",
+      "handle": "moskov",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/webp",
+      "response_handle": "moskov",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=moskov&name=Dustin+Moskovitz&company=Asana",
+      "origin_url": "https://x.com/moskov"
+    },
+    {
       "id": "mosseri",
       "name": "Adam Mosseri",
       "company": "Instagram",
@@ -2813,6 +3555,20 @@
       "response_handle": "mpaper2000",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mpaper2000&name=Mark+Papermaster&company=Advanced+Micro+Devices",
       "origin_url": "https://x.com/mpaper2000"
+    },
+    {
+      "id": "michael-seibel-private",
+      "name": "Michael Seibel",
+      "company": "Twitch / Y Combinator",
+      "handle": "mwseibel",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "mwseibel",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mwseibel&name=Michael+Seibel&company=Twitch+%2F+Y+Combinator",
+      "origin_url": "https://x.com/mwseibel"
     },
     {
       "id": "nathan-blecharczyk-abnb",
@@ -2855,6 +3611,20 @@
       "response_handle": "nehanarkhede",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nehanarkhede&name=Neha+Narkhede&company=Confluent",
       "origin_url": "https://x.com/nehanarkhede"
+    },
+    {
+      "id": "nic-carter-private",
+      "name": "Nic Carter",
+      "company": "Castle Island Ventures",
+      "handle": "nic__carter",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "nic__carter",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nic__carter&name=Nic+Carter&company=Castle+Island+Ventures",
+      "origin_url": "https://x.com/nic__carter"
     },
     {
       "id": "nick-frosst-private",
@@ -2955,6 +3725,34 @@
       "origin_url": "https://x.com/parkerharris"
     },
     {
+      "id": "paul-buchheit-private",
+      "name": "Paul Buchheit",
+      "company": "Y Combinator / FriendFeed",
+      "handle": "paultoo",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "paultoo",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paultoo&name=Paul+Buchheit&company=Y+Combinator+%2F+FriendFeed",
+      "origin_url": "https://x.com/paultoo"
+    },
+    {
+      "id": "pete-flint-private",
+      "name": "Pete Flint",
+      "company": "NFX",
+      "handle": "peteflint",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "peteflint",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=peteflint&name=Pete+Flint&company=NFX",
+      "origin_url": "https://x.com/peteflint"
+    },
+    {
       "id": "peter-beck",
       "name": "Peter Beck",
       "company": "Rocket Lab",
@@ -3039,6 +3837,20 @@
       "origin_url": "https://x.com/RayDalio"
     },
     {
+      "id": "george-hotz-private",
+      "name": "George Hotz",
+      "company": "comma.ai / tinygrad",
+      "handle": "realGeorgeHotz",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "realGeorgeHotz",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=realGeorgeHotz&name=George+Hotz&company=comma.ai+%2F+tinygrad",
+      "origin_url": "https://x.com/realGeorgeHotz"
+    },
+    {
       "id": "reed-hastings-nflx",
       "name": "Reed Hastings",
       "company": "Netflix",
@@ -3095,6 +3907,20 @@
       "origin_url": "https://x.com/RichardSocher"
     },
     {
+      "id": "richard-teng-private",
+      "name": "Richard Teng",
+      "company": "Binance",
+      "handle": "RichardTeng",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "RichardTeng",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RichardTeng&name=Richard+Teng&company=Binance",
+      "origin_url": "https://x.com/RichardTeng"
+    },
+    {
       "id": "rj-scaringe-rivn",
       "name": "RJ Scaringe",
       "company": "Rivian Automotive",
@@ -3121,6 +3947,20 @@
       "response_handle": "rodneyabrooks",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rodneyabrooks&name=Rodney+Brooks&company=Robotics",
       "origin_url": "https://x.com/rodneyabrooks"
+    },
+    {
+      "id": "roelof-botha-private",
+      "name": "Roelof Botha",
+      "company": "Sequoia Capital",
+      "handle": "roelofbotha",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "roelofbotha",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=roelofbotha&name=Roelof+Botha&company=Sequoia+Capital",
+      "origin_url": "https://x.com/roelofbotha"
     },
     {
       "id": "isaacman",
@@ -3151,6 +3991,20 @@
       "origin_url": "https://x.com/rrhoover"
     },
     {
+      "id": "rich-wong-private",
+      "name": "Rich Wong",
+      "company": "Accel",
+      "handle": "rwong",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "rwong",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rwong&name=Rich+Wong&company=Accel",
+      "origin_url": "https://x.com/rwong"
+    },
+    {
       "id": "ryan-cohen-gme",
       "name": "Ryan Cohen",
       "company": "GameStop",
@@ -3172,11 +4026,39 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "sacca",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sacca&name=Chris+Sacca&company=Lowercarbon+Capital",
       "origin_url": "https://x.com/sacca"
+    },
+    {
+      "id": "sal-khan-private",
+      "name": "Sal Khan",
+      "company": "Khan Academy",
+      "handle": "salkhanacademy",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "salkhanacademy",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=salkhanacademy&name=Sal+Khan&company=Khan+Academy",
+      "origin_url": "https://x.com/salkhanacademy"
+    },
+    {
+      "id": "sarah-tavel-private",
+      "name": "Sarah Tavel",
+      "company": "Benchmark",
+      "handle": "sarahtavel",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "sarahtavel",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sarahtavel&name=Sarah+Tavel&company=Benchmark",
+      "origin_url": "https://x.com/sarahtavel"
     },
     {
       "id": "sarah-guo-private",
@@ -3298,7 +4180,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "SergeyNazarov",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=SergeyNazarov&name=Sergey+Nazarov&company=Chainlink+Labs",
@@ -3331,6 +4213,20 @@
       "response_handle": "spencerkimball",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=spencerkimball&name=Spencer+Kimball&company=Cockroach+Labs",
       "origin_url": "https://x.com/spencerkimball"
+    },
+    {
+      "id": "joel-spolsky-private",
+      "name": "Joel Spolsky",
+      "company": "Stack Overflow / Trello",
+      "handle": "spolsky",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "spolsky",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=spolsky&name=Joel+Spolsky&company=Stack+Overflow+%2F+Trello",
+      "origin_url": "https://x.com/spolsky"
     },
     {
       "id": "steve-ballmer-msft",
@@ -3382,7 +4278,7 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikimedia_commons-r2",
+      "source_transport": "wikimedia_commons-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "Suhail",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Suhail&name=Suhail+Doshi&company=Playground+AI+%2F+Mixpanel",
@@ -3473,6 +4369,20 @@
       "origin_url": "https://x.com/ThomasOrTK"
     },
     {
+      "id": "tim-sweeney-private",
+      "name": "Tim Sweeney",
+      "company": "Epic Games",
+      "handle": "TimSweeneyEpic",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "TimSweeneyEpic",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TimSweeneyEpic&name=Tim+Sweeney&company=Epic+Games",
+      "origin_url": "https://x.com/TimSweeneyEpic"
+    },
+    {
       "id": "tory-bruno",
       "name": "Tory Bruno",
       "company": "United Launch Alliance",
@@ -3522,11 +4432,25 @@
       "ok": true,
       "status": "fallback",
       "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2",
+      "source_transport": "wikipedia-r2-cache",
       "content_type": "image/jpeg",
       "response_handle": "tyler",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tyler&name=Tyler+Winklevoss&company=Gemini",
       "origin_url": "https://x.com/tyler"
+    },
+    {
+      "id": "vipul-ved-prakash-private",
+      "name": "Vipul Ved Prakash",
+      "company": "Together AI",
+      "handle": "vipulved",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "vipulved",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vipulved&name=Vipul+Ved+Prakash&company=Together+AI",
+      "origin_url": "https://x.com/vipulved"
     },
     {
       "id": "tenev",
@@ -3571,6 +4495,20 @@
       "origin_url": "https://x.com/Werner"
     },
     {
+      "id": "william-hockey-private",
+      "name": "William Hockey",
+      "company": "Column / Plaid",
+      "handle": "willhockey",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "willhockey",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=willhockey&name=William+Hockey&company=Column+%2F+Plaid",
+      "origin_url": "https://x.com/willhockey"
+    },
+    {
       "id": "josh-wolfe-private",
       "name": "Josh Wolfe",
       "company": "Lux Capital",
@@ -3613,6 +4551,20 @@
       "origin_url": "https://x.com/youyuxi"
     },
     {
+      "id": "yat-siu-private",
+      "name": "Yat Siu",
+      "company": "Animoca Brands",
+      "handle": "ysiu",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "ysiu",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ysiu&name=Yat+Siu&company=Animoca+Brands",
+      "origin_url": "https://x.com/ysiu"
+    },
+    {
       "id": "zatlyn",
       "name": "Michelle Zatlyn",
       "company": "Cloudflare",
@@ -3641,6 +4593,18 @@
       "origin_url": "https://x.com/ZLQ6600E"
     },
     {
+      "id": "asheem-chandna-private",
+      "name": "Asheem Chandna",
+      "company": "Greylock",
+      "handle": "achandna",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=achandna&name=Asheem+Chandna&company=Greylock",
+      "origin_url": "https://x.com/achandna"
+    },
+    {
       "id": "adam-foroughi-app",
       "name": "Adam Foroughi",
       "company": "AppLovin",
@@ -3651,6 +4615,42 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=aforoughi&name=Adam+Foroughi&company=AppLovin",
       "origin_url": "https://x.com/aforoughi"
+    },
+    {
+      "id": "alexis-le-quoc-ddog",
+      "name": "Alexis Lê-Quôc",
+      "company": "Datadog",
+      "handle": "alq",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alq&name=Alexis+L%C3%AA-Qu%C3%B4c&company=Datadog",
+      "origin_url": "https://x.com/alq"
+    },
+    {
+      "id": "ami-luttwak-googl",
+      "name": "Ami Luttwak",
+      "company": "Wiz / Google Cloud",
+      "handle": "amiluttwak",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=amiluttwak&name=Ami+Luttwak&company=Wiz+%2F+Google+Cloud",
+      "origin_url": "https://x.com/amiluttwak"
+    },
+    {
+      "id": "andrew-braccia-private",
+      "name": "Andrew Braccia",
+      "company": "Accel",
+      "handle": "andrewbraccia",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=andrewbraccia&name=Andrew+Braccia&company=Accel",
+      "origin_url": "https://x.com/andrewbraccia"
     },
     {
       "id": "ant-wilson-private",
@@ -3677,6 +4677,18 @@
       "origin_url": "https://x.com/ashtom"
     },
     {
+      "id": "alex-svanevik-private",
+      "name": "Alex Svanevik",
+      "company": "Nansen",
+      "handle": "ASvanevik",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ASvanevik&name=Alex+Svanevik&company=Nansen",
+      "origin_url": "https://x.com/ASvanevik"
+    },
+    {
       "id": "avery-ching-private",
       "name": "Avery Ching",
       "company": "Aptos Labs",
@@ -3687,6 +4699,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AveryChing&name=Avery+Ching&company=Aptos+Labs",
       "origin_url": "https://x.com/AveryChing"
+    },
+    {
+      "id": "avishai-abrahami-wix",
+      "name": "Avishai Abrahami",
+      "company": "Wix.com",
+      "handle": "AvishaiAbrahami",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AvishaiAbrahami&name=Avishai+Abrahami&company=Wix.com",
+      "origin_url": "https://x.com/AvishaiAbrahami"
     },
     {
       "id": "amit-zavery-now",
@@ -3701,16 +4725,76 @@
       "origin_url": "https://x.com/azavery"
     },
     {
-      "id": "crist-bal-valenzuela-private",
-      "name": "Cristóbal Valenzuela",
-      "company": "Runway",
-      "handle": "c_valenzuelab",
+      "id": "byron-deeter-private",
+      "name": "Byron Deeter",
+      "company": "Bessemer Venture Partners",
+      "handle": "bdeeter",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_429:Too Many Requests",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bdeeter&name=Byron+Deeter&company=Bessemer+Venture+Partners",
+      "origin_url": "https://x.com/bdeeter"
+    },
+    {
+      "id": "benoit-dageville-snow",
+      "name": "Benoit Dageville",
+      "company": "Snowflake",
+      "handle": "BenoitDageville",
       "ok": false,
       "status": "pending_review",
       "source_type": "pending_review",
       "reason": "http_404:Not Found",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=c_valenzuelab&name=Crist%C3%B3bal+Valenzuela&company=Runway",
-      "origin_url": "https://x.com/c_valenzuelab"
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BenoitDageville&name=Benoit+Dageville&company=Snowflake",
+      "origin_url": "https://x.com/BenoitDageville"
+    },
+    {
+      "id": "erik-bernhardsson-private",
+      "name": "Erik Bernhardsson",
+      "company": "Modal",
+      "handle": "bernhardsson",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bernhardsson&name=Erik+Bernhardsson&company=Modal",
+      "origin_url": "https://x.com/bernhardsson"
+    },
+    {
+      "id": "ben-firshman-private",
+      "name": "Ben Firshman",
+      "company": "Replicate",
+      "handle": "bfirsh",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bfirsh&name=Ben+Firshman&company=Replicate",
+      "origin_url": "https://x.com/bfirsh"
+    },
+    {
+      "id": "mathias-biilmann-private",
+      "name": "Mathias Biilmann",
+      "company": "Netlify",
+      "handle": "biilmann",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=biilmann&name=Mathias+Biilmann&company=Netlify",
+      "origin_url": "https://x.com/biilmann"
+    },
+    {
+      "id": "vlad-magdalin-private",
+      "name": "Vlad Magdalin",
+      "company": "Webflow",
+      "handle": "callmevlad",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=callmevlad&name=Vlad+Magdalin&company=Webflow",
+      "origin_url": "https://x.com/callmevlad"
     },
     {
       "id": "scott-chacon-private",
@@ -3761,6 +4845,18 @@
       "origin_url": "https://x.com/destraynor"
     },
     {
+      "id": "dan-guido-private",
+      "name": "Dan Guido",
+      "company": "Trail of Bits",
+      "handle": "dguido",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dguido&name=Dan+Guido&company=Trail+of+Bits",
+      "origin_url": "https://x.com/dguido"
+    },
+    {
       "id": "edo-liberty-private",
       "name": "Edo Liberty",
       "company": "Pinecone",
@@ -3783,6 +4879,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eoghan&name=Eoghan+McCabe&company=Fin+%2F+Intercom",
       "origin_url": "https://x.com/eoghan"
+    },
+    {
+      "id": "feross-aboukhadijeh-private",
+      "name": "Feross Aboukhadijeh",
+      "company": "Socket",
+      "handle": "feross",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=feross&name=Feross+Aboukhadijeh&company=Socket",
+      "origin_url": "https://x.com/feross"
     },
     {
       "id": "fred-thiel-mara",
@@ -3809,6 +4917,18 @@
       "origin_url": "https://x.com/gregjoz"
     },
     {
+      "id": "guy-podjarny-private",
+      "name": "Guy Podjarny",
+      "company": "Snyk / Tessl",
+      "handle": "guypod",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=guypod&name=Guy+Podjarny&company=Snyk+%2F+Tessl",
+      "origin_url": "https://x.com/guypod"
+    },
+    {
       "id": "hayden-adams-private",
       "name": "Hayden Adams",
       "company": "Uniswap Labs",
@@ -3821,16 +4941,40 @@
       "origin_url": "https://x.com/haydenzadams"
     },
     {
-      "id": "illia-polosukhin-private",
-      "name": "Illia Polosukhin",
-      "company": "NEAR Protocol",
-      "handle": "ilblackdragon",
+      "id": "henrique-dubugras-private",
+      "name": "Henrique Dubugras",
+      "company": "Brex",
+      "handle": "hdubugras",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_429:Too Many Requests",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hdubugras&name=Henrique+Dubugras&company=Brex",
+      "origin_url": "https://x.com/hdubugras"
+    },
+    {
+      "id": "haseeb-qureshi-private",
+      "name": "Haseeb Qureshi",
+      "company": "Dragonfly",
+      "handle": "hosseeb",
       "ok": false,
       "status": "pending_review",
       "source_type": "pending_review",
       "reason": "http_404:Not Found",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ilblackdragon&name=Illia+Polosukhin&company=NEAR+Protocol",
-      "origin_url": "https://x.com/ilblackdragon"
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hosseeb&name=Haseeb+Qureshi&company=Dragonfly",
+      "origin_url": "https://x.com/hosseeb"
+    },
+    {
+      "id": "howie-liu-private",
+      "name": "Howie Liu",
+      "company": "Airtable",
+      "handle": "howietl",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=howietl&name=Howie+Liu&company=Airtable",
+      "origin_url": "https://x.com/howietl"
     },
     {
       "id": "immad-akhund-private",
@@ -3893,6 +5037,54 @@
       "origin_url": "https://x.com/jasonlk"
     },
     {
+      "id": "jed-mccaleb-private",
+      "name": "Jed McCaleb",
+      "company": "Vast / Stellar / Ripple",
+      "handle": "JedMcCaleb",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JedMcCaleb&name=Jed+McCaleb&company=Vast+%2F+Stellar+%2F+Ripple",
+      "origin_url": "https://x.com/JedMcCaleb"
+    },
+    {
+      "id": "jon-oberheide-csco",
+      "name": "Jon Oberheide",
+      "company": "Duo Security / Cisco",
+      "handle": "jonoberheide",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jonoberheide&name=Jon+Oberheide&company=Duo+Security+%2F+Cisco",
+      "origin_url": "https://x.com/jonoberheide"
+    },
+    {
+      "id": "tristan-handy-private",
+      "name": "Tristan Handy",
+      "company": "Fivetran + dbt Labs",
+      "handle": "jthandy",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jthandy&name=Tristan+Handy&company=Fivetran+%2B+dbt+Labs",
+      "origin_url": "https://x.com/jthandy"
+    },
+    {
+      "id": "kevin-mandia-private",
+      "name": "Kevin Mandia",
+      "company": "Ballistic Ventures / Mandiant",
+      "handle": "kevinmandia",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=kevinmandia&name=Kevin+Mandia&company=Ballistic+Ventures+%2F+Mandiant",
+      "origin_url": "https://x.com/kevinmandia"
+    },
+    {
       "id": "paul-copplestone-private",
       "name": "Paul Copplestone",
       "company": "Supabase",
@@ -3905,6 +5097,18 @@
       "origin_url": "https://x.com/kiwicopple"
     },
     {
+      "id": "koen-bok-private",
+      "name": "Koen Bok",
+      "company": "Framer",
+      "handle": "koenbok",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=koenbok&name=Koen+Bok&company=Framer",
+      "origin_url": "https://x.com/koenbok"
+    },
+    {
       "id": "logan-bartlett-private",
       "name": "Logan Bartlett",
       "company": "Redpoint Ventures",
@@ -3915,6 +5119,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=loganbartlett&name=Logan+Bartlett&company=Redpoint+Ventures",
       "origin_url": "https://x.com/loganbartlett"
+    },
+    {
+      "id": "dan-lorenc-private",
+      "name": "Dan Lorenc",
+      "company": "Chainguard",
+      "handle": "lorenc_dan",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=lorenc_dan&name=Dan+Lorenc&company=Chainguard",
+      "origin_url": "https://x.com/lorenc_dan"
     },
     {
       "id": "matt-garman-amzn",
@@ -3953,6 +5169,42 @@
       "origin_url": "https://x.com/michaeltruell"
     },
     {
+      "id": "micha-kaufman-fvrr",
+      "name": "Micha Kaufman",
+      "company": "Fiverr International",
+      "handle": "michakaufman",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=michakaufman&name=Micha+Kaufman&company=Fiverr+International",
+      "origin_url": "https://x.com/michakaufman"
+    },
+    {
+      "id": "michel-tricot-private",
+      "name": "Michel Tricot",
+      "company": "Airbyte",
+      "handle": "MichelTricot",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichelTricot&name=Michel+Tricot&company=Airbyte",
+      "origin_url": "https://x.com/MichelTricot"
+    },
+    {
+      "id": "nikita-shamgunov-private",
+      "name": "Nikita Shamgunov",
+      "company": "Neon / Databricks",
+      "handle": "nikitabase",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikitabase&name=Nikita+Shamgunov&company=Neon+%2F+Databricks",
+      "origin_url": "https://x.com/nikitabase"
+    },
+    {
       "id": "noam-shazeer-private",
       "name": "Noam Shazeer",
       "company": "Character.AI / Google",
@@ -3989,6 +5241,30 @@
       "origin_url": "https://x.com/oliveur"
     },
     {
+      "id": "ori-eisen-private",
+      "name": "Ori Eisen",
+      "company": "Trusona",
+      "handle": "orieisen",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=orieisen&name=Ori+Eisen&company=Trusona",
+      "origin_url": "https://x.com/orieisen"
+    },
+    {
+      "id": "pedro-franceschi-private",
+      "name": "Pedro Franceschi",
+      "company": "Brex",
+      "handle": "pedrofranceschi",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_429:Too Many Requests",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pedrofranceschi&name=Pedro+Franceschi&company=Brex",
+      "origin_url": "https://x.com/pedrofranceschi"
+    },
+    {
       "id": "peer-richelsen-private",
       "name": "Peer Richelsen",
       "company": "Cal.com",
@@ -4001,16 +5277,16 @@
       "origin_url": "https://x.com/peer_rich"
     },
     {
-      "id": "raj-gokal-private",
-      "name": "Raj Gokal",
-      "company": "Solana",
-      "handle": "rajgokal",
+      "id": "robert-nishihara-private",
+      "name": "Robert Nishihara",
+      "company": "Anyscale",
+      "handle": "robertnishihara",
       "ok": false,
       "status": "pending_review",
       "source_type": "pending_review",
       "reason": "http_404:Not Found",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rajgokal&name=Raj+Gokal&company=Solana",
-      "origin_url": "https://x.com/rajgokal"
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=robertnishihara&name=Robert+Nishihara&company=Anyscale",
+      "origin_url": "https://x.com/robertnishihara"
     },
     {
       "id": "rune-christensen-private",
@@ -4025,16 +5301,28 @@
       "origin_url": "https://x.com/RuneKek"
     },
     {
-      "id": "sandeep-nailwal-private",
-      "name": "Sandeep Nailwal",
-      "company": "Polygon Labs",
-      "handle": "sandeepnailwal",
+      "id": "robbie-schingler-pl",
+      "name": "Robbie Schingler",
+      "company": "Planet Labs PBC",
+      "handle": "schingler",
       "ok": false,
       "status": "pending_review",
       "source_type": "pending_review",
       "reason": "http_404:Not Found",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sandeepnailwal&name=Sandeep+Nailwal&company=Polygon+Labs",
-      "origin_url": "https://x.com/sandeepnailwal"
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=schingler&name=Robbie+Schingler&company=Planet+Labs+PBC",
+      "origin_url": "https://x.com/schingler"
+    },
+    {
+      "id": "nick-schrock-private",
+      "name": "Nick Schrock",
+      "company": "Dagster / Prefect",
+      "handle": "schrockn",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=schrockn&name=Nick+Schrock&company=Dagster+%2F+Prefect",
+      "origin_url": "https://x.com/schrockn"
     },
     {
       "id": "shaun-maguire-private",
@@ -4073,6 +5361,18 @@
       "origin_url": "https://x.com/stephenbalaban"
     },
     {
+      "id": "tarun-chitra-private",
+      "name": "Tarun Chitra",
+      "company": "Gauntlet",
+      "handle": "tarunchitra",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tarunchitra&name=Tarun+Chitra&company=Gauntlet",
+      "origin_url": "https://x.com/tarunchitra"
+    },
+    {
       "id": "todd-mckinnon-okta",
       "name": "Todd McKinnon",
       "company": "Okta",
@@ -4097,6 +5397,18 @@
       "origin_url": "https://x.com/tomerw"
     },
     {
+      "id": "tomasz-tunguz-private",
+      "name": "Tomasz Tunguz",
+      "company": "Theory Ventures",
+      "handle": "ttunguz",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_429:Too Many Requests",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ttunguz&name=Tomasz+Tunguz&company=Theory+Ventures",
+      "origin_url": "https://x.com/ttunguz"
+    },
+    {
       "id": "turner-novak-private",
       "name": "Turner Novak",
       "company": "Banana Capital",
@@ -4109,6 +5421,18 @@
       "origin_url": "https://x.com/TurnerNovak"
     },
     {
+      "id": "tushar-jain-private",
+      "name": "Tushar Jain",
+      "company": "Multicoin Capital",
+      "handle": "TusharJain_",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TusharJain_&name=Tushar+Jain&company=Multicoin+Capital",
+      "origin_url": "https://x.com/TusharJain_"
+    },
+    {
       "id": "will-marshall-pl",
       "name": "Will Marshall",
       "company": "Planet Labs PBC",
@@ -4119,6 +5443,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Will4Planet&name=Will+Marshall&company=Planet+Labs+PBC",
       "origin_url": "https://x.com/Will4Planet"
+    },
+    {
+      "id": "zach-perret-private",
+      "name": "Zach Perret",
+      "company": "Plaid",
+      "handle": "zachperret",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zachperret&name=Zach+Perret&company=Plaid",
+      "origin_url": "https://x.com/zachperret"
     },
     {
       "id": "delian-asparouhov-private",
