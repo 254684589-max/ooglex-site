@@ -5783,6 +5783,62 @@
       "preview_only": true
     },
     {
+      "id": "olivier-pomel-ddog",
+      "name": "Olivier Pomel",
+      "zh": "Olivier Pomel",
+      "handle": "oliveur",
+      "role": "Datadog · Co-founder & Chief Executive Officer",
+      "chips": [
+        "DDOG",
+        "Datadog",
+        "科技",
+        "AI",
+        "云计算"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "OLIVIER POMEL · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Olivier Pomel",
+      "name_en": "Olivier Pomel",
+      "company_zh": "Datadog",
+      "company_en": "Datadog",
+      "position_zh": "Co-founder & Chief Executive Officer",
+      "categories": [
+        "科技",
+        "AI",
+        "云计算",
+        "软件"
+      ],
+      "ticker": "DDOG",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "themes": [
+        "科技",
+        "AI",
+        "云计算",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "uncertain",
+      "x_role_source_url": "https://www.datadoghq.com/about/leadership/",
+      "x_identity_source_url": "https://x.com/oliveur/with_replies",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "2026-05-22",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=oliveur&name=Olivier+Pomel&company=Datadog",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
       "id": "antonio-neri-hpe",
       "name": "Antonio Neri",
       "zh": "Antonio Neri",
@@ -6010,13 +6066,18 @@
     "status": "review_only",
     "source_evidence": [
       "data/tech-leaders/verified_candidates.tranche01.json",
-      "data/tech-leaders/verified_candidates.tranche02.json"
+      "data/tech-leaders/verified_candidates.tranche02.json",
+      "data/tech-leaders/verified_candidates.tranche03.json"
     ],
-    "evidence_tranche_count": 2,
-    "reviewed_candidate_count": 11,
+    "evidence_tranche_count": 3,
+    "reviewed_candidate_count": 18,
+    "review_status_counts": {
+      "approved": 5,
+      "manual_review": 13
+    },
     "base_count": 110,
-    "approved_additions": 4,
-    "preview_count": 114,
+    "approved_additions": 5,
+    "preview_count": 115,
     "production_file_untouched": true
   }
 }
