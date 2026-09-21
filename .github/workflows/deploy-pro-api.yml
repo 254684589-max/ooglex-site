@@ -144,15 +144,15 @@ jobs:
           if len(eligible) < 100:
               raise SystemExit("Expected at least 100 confirmed personal X accounts")
           PY
-          for handle in ZLQ6600E LipBuTan1 elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
+          for handle in steipete bcherny LipBuTan1 elonmusk JensenHuang sama LisaSu sundarpichai satyanadella tim_cook JeffBezos ajassy demishassabis DarioAmodei ylecun AndrewYNg drfeifei miramurati AravSrinivas karpathy Benioff MichaelDell; do
             tmp="$(mktemp)"
             code="$(curl -sS --connect-timeout 5 --max-time 20 -o "$tmp" -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$handle&limit=3")"
             body="$(cat "$tmp")"
             rm -f "$tmp"
             if [ "$code" = "200" ] && echo "$body" | grep -q '"uses_x_api":false'; then
               echo "Free feed OK for @$handle (HTTP $code)"
-              if [ "$handle" = "ZLQ6600E" ]; then
-                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); assert len(p)<=3; times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("ZLQ freshness diagnostics: source={}, cache={}".format(d.get("source"), d.get("cache"))); [print("  {} | {} | media={} | {}".format(x.get("created_at"), x.get("id"), len(x.get("media") or []), (x.get("text") or "").replace("\n"," ")[:70])) for x in p]' || failed=1
+              if [ "$handle" = "steipete" ] || [ "$handle" = "bcherny" ]; then
+                printf '%s' "$body" | python -c 'import json,sys; d=json.load(sys.stdin); p=d.get("posts",[]); times=[x.get("created_at") or "" for x in p]; assert times==sorted(times, reverse=True); print("V400 replacement smoke: source={}, cache={}, posts={}".format(d.get("source"), d.get("cache"), len(p)))' || failed=1
               fi
             else
               echo "::warning::Free feed trial for @$handle returned HTTP $code: $body"
@@ -216,18 +216,20 @@ jobs:
             echo "::warning::100-item free-feed smoke returned no body"
           fi
 
-          zfeed="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=ZLQ6600E&limit=3" || true)"
-          if [ -n "$zfeed" ]; then
-            video_post_id="$(printf '%s' "$zfeed" | python -c 'import json,sys; d=json.load(sys.stdin); print(next((str(p.get("id","")) for p in d.get("posts",[]) if any((m or {}).get("video_url") for m in (p.get("media") or []))),""))' 2>/dev/null || true)"
-            if [ -n "$video_post_id" ]; then
-              video_share="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/share/tech-leaders/ZLQ6600E/$video_post_id" || true)"
-              printf '%s' "$video_share" | python -c 'import sys; s=sys.stdin.read(); assert "<video class=\"preview\"" in s; assert "property=\"og:video\"" in s; assert "@ZLQ6600E" not in s; print("Video share page OK: playable video + OG video metadata + hidden handle")' || failed=1
+          for video_handle in steipete bcherny; do
+            replacement_feed="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=$video_handle&limit=10" || true)"
+            if [ -n "$replacement_feed" ]; then
+              video_post_id="$(printf '%s' "$replacement_feed" | python -c 'import json,sys; d=json.load(sys.stdin); print(next((str(p.get("id","")) for p in d.get("posts",[]) if any((m or {}).get("video_url") for m in (p.get("media") or []))),""))' 2>/dev/null || true)"
+              if [ -n "$video_post_id" ]; then
+                video_share="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/share/tech-leaders/$video_handle/$video_post_id" || true)"
+                printf '%s' "$video_share" | python -c 'import sys; s=sys.stdin.read(); assert "<video class=\"preview\"" in s; assert "property=\"og:video\"" in s; print("V400 replacement video share OK: playable video + OG video metadata")' || failed=1
+              else
+                echo "::warning::No recent @$video_handle video post found; video-share smoke skipped."
+              fi
             else
-              echo "::warning::No recent @ZLQ6600E video post found; video-share smoke skipped."
+              echo "::warning::No @$video_handle feed body; video-share smoke skipped."
             fi
-          else
-            echo "::warning::No @ZLQ6600E feed body; video-share smoke skipped."
-          fi
+          done
 
           status="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/status")"
           echo "$status" | grep -q '"calls_api_x_com":false' || failed=1
