@@ -1937,7 +1937,7 @@ function techLeaderShareMedia(post, origin) {
   return {
     image: imageRaw
       ? `${origin}/v1/tech-leaders/media?url=${encodeURIComponent(imageRaw)}`
-      : "https://www.ooglex.com/assets/og-cover.png",
+      : null,
     video: video
       ? `${origin}/v1/tech-leaders/media?url=${encodeURIComponent(video.raw)}`
       : null,
@@ -2052,7 +2052,7 @@ video.preview{object-fit:contain}
 <h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
 <div class="a">${descriptionHtml}</div>
 ${video
-  ? `<video class="preview" controls playsinline preload="metadata" poster="${shareHtmlEscape(image)}" src="${shareHtmlEscape(video)}"></video>
+  ? `<video class="preview" controls playsinline preload="metadata"${image ? ` poster="${shareHtmlEscape(image)}"` : ""} src="${shareHtmlEscape(video)}"></video>
 <div class="media-note">Video post · tap play to watch</div>`
   : (image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : "")}
 <div class="links">
