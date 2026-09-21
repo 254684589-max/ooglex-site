@@ -6590,6 +6590,224 @@
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
       "preview_only": true
+    },
+    {
+      "id": "marc-randolph-nflx",
+      "name": "Marc Randolph",
+      "zh": "Marc Randolph",
+      "handle": "marcrandolph",
+      "role": "Netflix · Co-founder & Former Chief Executive Officer",
+      "chips": [
+        "NFLX",
+        "Netflix",
+        "通信服务",
+        "消费科技"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "MARC RANDOLPH · VERIFIED X TIMELINE PREVIEW",
+      "category": "通信服务",
+      "name_zh": "Marc Randolph",
+      "name_en": "Marc Randolph",
+      "company_zh": "Netflix",
+      "company_en": "Netflix",
+      "position_zh": "Co-founder & Former Chief Executive Officer",
+      "categories": [
+        "通信服务",
+        "消费科技"
+      ],
+      "ticker": "NFLX",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "通信服务",
+        "消费科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "official_site_profile_cross_source",
+      "x_role_source_url": "https://marcrandolph.com/about/",
+      "x_identity_source_url": "https://x.com/marcrandolph",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=marcrandolph&name=Marc+Randolph&company=Netflix",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "scott-belsky-adbe",
+      "name": "Scott Belsky",
+      "zh": "Scott Belsky",
+      "handle": "scottbelsky",
+      "role": "Adobe Inc. · Former Chief Strategy Officer & Chief Product Officer",
+      "chips": [
+        "ADBE",
+        "Adobe Inc.",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "SCOTT BELSKY · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Scott Belsky",
+      "name_en": "Scott Belsky",
+      "company_zh": "Adobe Inc.",
+      "company_en": "Adobe Inc.",
+      "position_zh": "Former Chief Strategy Officer & Chief Product Officer",
+      "categories": [
+        "科技",
+        "AI",
+        "软件",
+        "消费科技"
+      ],
+      "ticker": "ADBE",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "AI",
+        "软件",
+        "消费科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_history_profile_cross_source",
+      "x_role_source_url": "https://blog.adobe.com/authors/scott-belsky",
+      "x_identity_source_url": "https://x.com/scottbelsky",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=scottbelsky&name=Scott+Belsky&company=Adobe+Inc.",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "thomas-kurian-googl",
+      "name": "Thomas Kurian",
+      "zh": "Thomas Kurian",
+      "handle": "ThomasOrTK",
+      "role": "Alphabet Inc. (Class A) · Chief Executive Officer, Google Cloud",
+      "chips": [
+        "GOOGL",
+        "Alphabet Inc. (Class A)",
+        "科技",
+        "AI",
+        "云计算"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "THOMAS KURIAN · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Thomas Kurian",
+      "name_en": "Thomas Kurian",
+      "company_zh": "Alphabet Inc. (Class A)",
+      "company_en": "Alphabet Inc. (Class A)",
+      "position_zh": "Chief Executive Officer, Google Cloud",
+      "categories": [
+        "科技",
+        "AI",
+        "云计算",
+        "软件"
+      ],
+      "ticker": "GOOGL",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "executive"
+      ],
+      "company_relationship_status": "current",
+      "themes": [
+        "科技",
+        "AI",
+        "云计算",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_profile_cross_source",
+      "x_role_source_url": "https://www.googlecloudpresscorner.com/thomas-kurian",
+      "x_identity_source_url": "https://x.com/ThomasOrTK/with_replies",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-18",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ThomasOrTK&name=Thomas+Kurian&company=Alphabet+Inc.+%28Class+A%29",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "marissa-mayer-googl",
+      "name": "Marissa Mayer",
+      "zh": "Marissa Mayer",
+      "handle": "marissamayer",
+      "role": "Alphabet Inc. (Class A) · Former Vice President, Search Products / Local, Maps & Location Services",
+      "chips": [
+        "GOOGL",
+        "Alphabet Inc. (Class A)",
+        "科技",
+        "AI",
+        "消费科技"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "MARISSA MAYER · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Marissa Mayer",
+      "name_en": "Marissa Mayer",
+      "company_zh": "Alphabet Inc. (Class A)",
+      "company_en": "Alphabet Inc. (Class A)",
+      "position_zh": "Former Vice President, Search Products / Local, Maps & Location Services",
+      "categories": [
+        "科技",
+        "AI",
+        "消费科技"
+      ],
+      "ticker": "GOOGL",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "AI",
+        "消费科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "board_bio_profile_cross_source",
+      "x_role_source_url": "https://corporate.walmart.com/about/board-of-directors/marissa-mayer",
+      "x_identity_source_url": "https://x.com/marissamayer/with_replies",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "2026-08",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=marissamayer&name=Marissa+Mayer&company=Alphabet+Inc.+%28Class+A%29",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
     }
   ],
   "categories": [
@@ -6677,18 +6895,19 @@
       "data/tech-leaders/verified_candidates.tranche03.json",
       "data/tech-leaders/verified_candidates.tranche04.json",
       "data/tech-leaders/verified_candidates.tranche05.json",
-      "data/tech-leaders/verified_candidates.tranche06.json"
+      "data/tech-leaders/verified_candidates.tranche06.json",
+      "data/tech-leaders/verified_candidates.tranche07.json"
     ],
-    "evidence_tranche_count": 6,
-    "reviewed_candidate_count": 31,
+    "evidence_tranche_count": 7,
+    "reviewed_candidate_count": 35,
     "review_status_counts": {
-      "approved": 16,
+      "approved": 20,
       "hold": 2,
       "manual_review": 13
     },
     "base_count": 110,
-    "approved_additions": 16,
-    "preview_count": 126,
+    "approved_additions": 20,
+    "preview_count": 130,
     "production_file_untouched": true
   }
 }
