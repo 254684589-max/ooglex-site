@@ -8,9 +8,9 @@
     "former_executive": 150
   },
   "slots_with_known_people": {
-    "current_primary": 42,
-    "founder_legacy": 20,
-    "former_executive": 15
+    "current_primary": 44,
+    "founder_legacy": 21,
+    "former_executive": 16
   },
   "rules": {
     "three_parallel_tracks_per_company": true,
