@@ -1,13 +1,13 @@
 {
-  "baseline_version": "v450-stable",
+  "baseline_version": "v500-stable",
   "captured_at": "2026-09-22",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "611ebee43e3cd5e78837ee5c4b7e4606864e4fdc",
-  "leader_count": 450,
-  "active_count": 450,
+  "source_blob_sha": "56a4161b30e4f162fa70949fcb663df261ee40b8",
+  "leader_count": 500,
+  "active_count": 500,
   "schema_version": 12,
   "capacity": 800,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v450-stable-2026-09-22.json",
-  "previous_baseline": "data/tech-leaders/snapshots/leaders-v400-stable-2026-09-21.json",
-  "purpose": "Production rollback baseline after completing the 400 → 450 Tech Leaders expansion."
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v500-stable-2026-09-22.json",
+  "previous_baseline": "data/tech-leaders/snapshots/leaders-v450-stable-2026-09-22.json",
+  "purpose": "Production rollback baseline after completing the independently verified 450 → 500 Tech Leaders expansion."
 }
