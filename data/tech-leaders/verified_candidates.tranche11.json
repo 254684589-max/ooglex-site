@@ -488,34 +488,6 @@
       "review_notes": "Role/company relationship and personal X identity verified; account shows recent public activity."
     },
     {
-      "ticker": "MSFT",
-      "company": "Microsoft",
-      "exchange": "NASDAQ",
-      "executive_name": "Scott Guthrie",
-      "executive_role": "Executive Vice President, Cloud + AI",
-      "role_status": "current",
-      "role_source_url": "https://news.microsoft.com/exec/scott-guthrie/",
-      "x_handle": "scottgu",
-      "x_check_type": "company_profile_cross_source",
-      "x_identity_status": "verified",
-      "x_identity_source_url": "https://x.com/scottgu",
-      "x_identity_support_url": "https://x.com/scottgu",
-      "x_activity_status": "active",
-      "x_last_activity_at": "2026-09",
-      "x_activity_source_url": "https://x.com/scottgu",
-      "recommended_categories": [
-        "上市公司",
-        "NASDAQ",
-        "科技",
-        "AI",
-        "云计算",
-        "软件"
-      ],
-      "confidence": "high",
-      "review_status": "approved",
-      "review_notes": "Role/company relationship and personal X identity verified; account shows recent public activity."
-    },
-    {
       "ticker": "NVDA",
       "company": "NVIDIA",
       "exchange": "NASDAQ",

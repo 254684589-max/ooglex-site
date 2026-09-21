@@ -436,15 +436,15 @@
       "executive_name": "Scott Guthrie",
       "executive_role": "Executive Vice President, Cloud + AI",
       "role_status": "current",
-      "role_source_url": "https://blogs.microsoft.com/blog/author/scott-guthrie/",
+      "role_source_url": "https://blogs.microsoft.com/blog/author/scottguthrie/",
       "x_handle": "scottgu",
       "x_check_type": "company_profile_cross_source",
       "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/scottgu",
       "x_identity_support_url": "https://x.com/scottgu",
-      "x_activity_status": "manual_review",
-      "x_last_activity_at": "",
-      "x_activity_source_url": "",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "x_activity_source_url": "https://x.com/scottgu",
       "recommended_categories": [
         "上市公司",
         "NASDAQ",
@@ -453,9 +453,9 @@
         "云计算",
         "软件"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Microsoft role and personal X identity are clear, but a dated recent post was not confirmed in this pass; hold for activity proof."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Microsoft confirms Scott Guthrie as EVP, Cloud + AI in 2026; @scottgu remains the verified personal X identity and is retained as the canonical evidence record."
     }
   ]
 }
