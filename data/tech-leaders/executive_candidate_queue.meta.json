@@ -1,13 +1,13 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-09-21T04:57:52Z",
+  "generated_at": "2026-09-21T11:28:42Z",
   "issuer_count": 1000,
-  "represented_issuers": 58,
-  "unrepresented_issuers": 942,
+  "represented_issuers": 88,
+  "unrepresented_issuers": 912,
   "research_now_count": 300,
   "research_next_count": 350,
   "research_later_count": 350,
-  "research_now_existing_count": 35,
+  "research_now_existing_count": 50,
   "exchange_counts": {
     "NASDAQ": 409,
     "NYSE": 591
