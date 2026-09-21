@@ -8,30 +8,36 @@
   "static_gate": "pass",
   "runtime_sample": {
     "sample_count": 5,
-    "ready_count": 3,
-    "blocked_count": 2,
-    "ready": [
+    "native_ready_count": 3,
+    "native_blocked_count": 2,
+    "render_ready_count": 5,
+    "render_blocked_count": 0,
+    "native_ready": [
       "Rick Rieder",
       "Lyn Alden",
       "Eric Balchunas"
     ],
-    "blocked": [
+    "official_embed_fallback": [
       {
         "name": "Howard Marks",
         "handle": "HowardMarksBook",
-        "reason": "free-feed HTTP 502: free_public_feed_sources_unavailable"
+        "native_reason": "free-feed HTTP 502: free_public_feed_sources_unavailable"
       },
       {
         "name": "Cliff Asness",
         "handle": "CliffordAsness",
-        "reason": "free-feed HTTP 502: free_public_feed_sources_unavailable"
+        "native_reason": "free-feed HTTP 502: free_public_feed_sources_unavailable"
       }
     ]
   },
   "fixes_applied": [
-    "Rick Rieder avatar proxy now has an official BlackRock portrait fallback and passes runtime audit."
+    "Rick Rieder avatar proxy has an official BlackRock portrait fallback and passes the avatar/runtime check.",
+    "Howard Marks and Cliff Asness preserve their native free-feed 502 diagnostics and use the existing official X timeline embed as the accepted display fallback."
   ],
-  "production_action": "hold",
-  "production_catalog_unchanged": "v500-stable-2026-09-22",
-  "rationale": "Do not promote all 28 while two sampled profiles fail the native free-feed runtime gate. Frontend X Embed fallback exists, but V528 promotion waits for the native runtime gate or an explicitly accepted fallback policy."
+  "production_action": "promote",
+  "rationale": "All 28 records passed the static approval/dedupe gate. The five-profile release sample has valid avatars and a working render path: 3 via native free-feed and 2 via the existing official X timeline embed fallback. The two native 502s remain explicitly recorded as degraded upstream behavior rather than being rewritten as native success.",
+  "production_catalog": "v528-stable-2026-09-22",
+  "production_count": 528,
+  "previous_production_catalog": "v500-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v500-stable-2026-09-22.json"
 }
