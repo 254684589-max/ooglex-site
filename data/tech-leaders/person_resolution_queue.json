@@ -8,7 +8,8 @@
     "data/tech-leaders/verified_candidates.tranche02.json",
     "data/tech-leaders/verified_candidates.tranche03.json",
     "data/tech-leaders/verified_candidates.tranche04.json",
-    "data/tech-leaders/verified_candidates.tranche05.json"
+    "data/tech-leaders/verified_candidates.tranche05.json",
+    "data/tech-leaders/verified_candidates.tranche06.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -231,7 +232,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Brad Smith",
+          "handle": "BradSmi",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -296,6 +303,11 @@
         {
           "name": "Steve Ballmer",
           "handle": "Steven_Ballmer",
+          "status": "approved"
+        },
+        {
+          "name": "Steven Sinofsky",
+          "handle": "stevesi",
           "status": "approved"
         }
       ],
@@ -1192,7 +1204,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Panos Panay",
+          "handle": "panos_panay",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -1893,6 +1911,11 @@
           "name": "Alexander Karp",
           "handle": "",
           "status": "manual_review"
+        },
+        {
+          "name": "Joe Lonsdale",
+          "handle": "JTLonsdale",
+          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -1921,8 +1944,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Joe Lonsdale",
+          "handle": "JTLonsdale",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
