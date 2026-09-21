@@ -2050,16 +2050,12 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     handle: String(handle || ""),
     name: publicAuthor || String(handle || "X"),
     verified: showVerifiedBadge ? "1" : "0",
-    v: "20260921d"
+    v: "20260921e"
   });
   const socialImage = `${requestUrl.origin}/v1/tech-leaders/share-avatar?${shareAvatarParams.toString()}`;
 
-  const canonical = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
-  canonical.searchParams.set("handle", handle);
-  canonical.searchParams.set("id", String(post && post.id || ""));
-  if (profile && profile.id) canonical.searchParams.set("leader", profile.id);
-
   const shareUrl = requestUrl.toString();
+  const canonical = new URL(requestUrl.origin + requestUrl.pathname);
   const originalUrl = String(
     post && post.url ||
     `https://x.com/${encodeURIComponent(handle)}/status/${encodeURIComponent(String(post && post.id || ""))}`
@@ -2131,7 +2127,7 @@ ${video
 <div class="media-note">Video post · tap play to watch</div>`
   : (image ? `<img class="preview" src="${shareHtmlEscape(image)}" alt="">` : "")}
 <div class="links">
-<a href="${shareHtmlEscape(canonical.toString())}">Open post on Ooglex</a>
+<a href="https://www.ooglex.com/apps/tech-leaders/">Back to Tech Leaders</a>
 <a href="${shareHtmlEscape(originalUrl)}">View original on X</a>
 </div>
 </main>
