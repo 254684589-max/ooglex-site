@@ -1,5 +1,5 @@
 {
-  "schema_version": 11,
+  "schema_version": 12,
   "capacity": 800,
   "leaders": [
     {
@@ -18040,8 +18040,8 @@
         "消费科技",
         "直播"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "EMMETT SHEAR · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "EMMETT SHEAR · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Emmett Shear",
       "name_en": "Emmett Shear",
@@ -18056,9 +18056,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "former_ceo",
         "founder",
         "legacy_leader"
       ],
@@ -18077,12 +18078,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=eshear&name=Emmett+Shear&company=Twitch",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "justin-kan-private",
@@ -18097,8 +18098,8 @@
         "VC",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JUSTIN KAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JUSTIN KAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Justin Kan",
       "name_en": "Justin Kan",
@@ -18113,8 +18114,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -18133,12 +18134,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=justinkan&name=Justin+Kan&company=Twitch+%2F+Goat+Capital",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "michael-seibel-private",
@@ -18153,8 +18154,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MICHAEL SEIBEL · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MICHAEL SEIBEL · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Michael Seibel",
       "name_en": "Michael Seibel",
@@ -18169,10 +18170,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -18189,12 +18191,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mwseibel&name=Michael+Seibel&company=Twitch+%2F+Y+Combinator",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dalton-caldwell-private",
@@ -18209,8 +18211,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DALTON CALDWELL · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DALTON CALDWELL · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dalton Caldwell",
       "name_en": "Dalton Caldwell",
@@ -18225,10 +18227,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -18245,12 +18248,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=daltonc&name=Dalton+Caldwell&company=Standard+Capital+%2F+Y+Combinator",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "paul-buchheit-private",
@@ -18265,8 +18268,8 @@
         "VC",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "PAUL BUCHHEIT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "PAUL BUCHHEIT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Paul Buchheit",
       "name_en": "Paul Buchheit",
@@ -18281,10 +18284,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -18301,12 +18305,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=paultoo&name=Paul+Buchheit&company=Y+Combinator+%2F+FriendFeed",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jessica-livingston-private",
@@ -18321,8 +18325,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司退休创始人或前核心高管；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JESSICA LIVINGSTON · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JESSICA LIVINGSTON · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jessica Livingston",
       "name_en": "Jessica Livingston",
@@ -18336,8 +18340,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -18356,12 +18360,12 @@
       "x_last_activity_at": "2026-08",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jesslivingston&name=Jessica+Livingston&company=Y+Combinator",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "geoff-ralston-private",
@@ -18376,8 +18380,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "GEOFF RALSTON · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "GEOFF RALSTON · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Geoff Ralston",
       "name_en": "Geoff Ralston",
@@ -18392,8 +18396,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -18412,12 +18416,12 @@
       "x_last_activity_at": "2026-08",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=grs&name=Geoff+Ralston&company=Y+Combinator",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "nikita-bier-private",
@@ -18432,8 +18436,8 @@
         "消费科技",
         "社交"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "NIKITA BIER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "NIKITA BIER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Nikita Bier",
       "name_en": "Nikita Bier",
@@ -18448,8 +18452,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -18468,12 +18472,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikitabier&name=Nikita+Bier&company=X+%2F+tbh+%2F+Gas",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "george-hotz-private",
@@ -18488,8 +18492,8 @@
         "AI",
         "自动驾驶"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "GEORGE HOTZ · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "GEORGE HOTZ · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "George Hotz",
       "name_en": "George Hotz",
@@ -18504,8 +18508,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -18524,12 +18528,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=realGeorgeHotz&name=George+Hotz&company=comma.ai+%2F+tinygrad",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dustin-moskovitz-asan",
@@ -18544,8 +18548,8 @@
         "企业软件",
         "生产力"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DUSTIN MOSKOVITZ · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DUSTIN MOSKOVITZ · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dustin Moskovitz",
       "name_en": "Dustin Moskovitz",
@@ -18561,8 +18565,9 @@
       "ticker": "ASAN",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -18580,12 +18585,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=moskov&name=Dustin+Moskovitz&company=Asana",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "adam-d-angelo-private",
@@ -18600,8 +18605,8 @@
         "AI",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ADAM D'ANGELO · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ADAM D'ANGELO · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Adam D'Angelo",
       "name_en": "Adam D'Angelo",
@@ -18616,9 +18621,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -18635,13 +18641,13 @@
       "x_activity_status": "active",
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adamdangelo&name=Adam+D%27Angelo&company=Quora",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=adamdangelo&name=Adam+D'Angelo&company=Quora",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "joel-spolsky-private",
@@ -18656,8 +18662,8 @@
         "开发者工具",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JOEL SPOLSKY · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JOEL SPOLSKY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Joel Spolsky",
       "name_en": "Joel Spolsky",
@@ -18672,9 +18678,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "former_ceo",
         "founder",
         "legacy_leader"
       ],
@@ -18693,12 +18700,12 @@
       "x_last_activity_at": "2026-08",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=spolsky&name=Joel+Spolsky&company=Stack+Overflow+%2F+Trello",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "tim-sweeney-private",
@@ -18713,8 +18720,8 @@
         "游戏",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TIM SWEENEY · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "TIM SWEENEY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Tim Sweeney",
       "name_en": "Tim Sweeney",
@@ -18729,9 +18736,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -18749,12 +18757,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TimSweeneyEpic&name=Tim+Sweeney&company=Epic+Games",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "sal-khan-private",
@@ -18769,8 +18777,8 @@
         "教育科技",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SAL KHAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "SAL KHAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Sal Khan",
       "name_en": "Sal Khan",
@@ -18785,9 +18793,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -18805,12 +18814,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=salkhanacademy&name=Sal+Khan&company=Khan+Academy",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mathias-biilmann-private",
@@ -18825,8 +18834,8 @@
         "云计算",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MATHIAS BIILMANN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MATHIAS BIILMANN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Mathias Biilmann",
       "name_en": "Mathias Biilmann",
@@ -18841,9 +18850,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -18861,12 +18871,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=biilmann&name=Mathias+Biilmann&company=Netlify",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "howie-liu-private",
@@ -18881,8 +18891,8 @@
         "企业软件",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "HOWIE LIU · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "HOWIE LIU · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Howie Liu",
       "name_en": "Howie Liu",
@@ -18897,9 +18907,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -18917,12 +18928,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=howietl&name=Howie+Liu&company=Airtable",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "vlad-magdalin-private",
@@ -18937,8 +18948,8 @@
         "软件",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "VLAD MAGDALIN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "VLAD MAGDALIN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Vlad Magdalin",
       "name_en": "Vlad Magdalin",
@@ -18953,8 +18964,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -18973,12 +18984,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=callmevlad&name=Vlad+Magdalin&company=Webflow",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "koen-bok-private",
@@ -18993,8 +19004,8 @@
         "设计",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "KOEN BOK · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "KOEN BOK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Koen Bok",
       "name_en": "Koen Bok",
@@ -19009,8 +19020,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19029,12 +19040,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=koenbok&name=Koen+Bok&company=Framer",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "avishai-abrahami-wix",
@@ -19049,8 +19060,8 @@
         "软件",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "AVISHAI ABRAHAMI · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "AVISHAI ABRAHAMI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Avishai Abrahami",
       "name_en": "Avishai Abrahami",
@@ -19066,8 +19077,9 @@
       "ticker": "WIX",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19085,12 +19097,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AvishaiAbrahami&name=Avishai+Abrahami&company=Wix.com",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "micha-kaufman-fvrr",
@@ -19105,8 +19117,8 @@
         "消费科技",
         "企业软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MICHA KAUFMAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MICHA KAUFMAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Micha Kaufman",
       "name_en": "Micha Kaufman",
@@ -19122,9 +19134,11 @@
       "ticker": "FVRR",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "ceo",
+        "founder",
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -19141,12 +19155,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=michakaufman&name=Micha+Kaufman&company=Fiverr+International",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "brian-halligan-hubs",
@@ -19161,8 +19175,8 @@
         "企业软件",
         "营销科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BRIAN HALLIGAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BRIAN HALLIGAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Brian Halligan",
       "name_en": "Brian Halligan",
@@ -19178,8 +19192,9 @@
       "ticker": "HUBS",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19197,12 +19212,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bhalligan&name=Brian+Halligan&company=HubSpot",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "benoit-dageville-snow",
@@ -19217,8 +19232,8 @@
         "数据基础设施",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BENOIT DAGEVILLE · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BENOIT DAGEVILLE · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Benoit Dageville",
       "name_en": "Benoit Dageville",
@@ -19234,7 +19249,7 @@
       "ticker": "SNOW",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19253,15 +19268,15 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BenoitDageville&name=Benoit+Dageville&company=Snowflake",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
-      "id": "alexis-l-qu-c-ddog",
+      "id": "alexis-le-quoc-ddog",
       "name": "Alexis Lê-Quôc",
       "zh": "Alexis Lê-Quôc",
       "handle": "alq",
@@ -19273,8 +19288,8 @@
         "云计算",
         "可观测性"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ALEXIS LÊ-QUÔC · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ALEXIS LÊ-QUÔC · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Alexis Lê-Quôc",
       "name_en": "Alexis Lê-Quôc",
@@ -19290,7 +19305,7 @@
       "ticker": "DDOG",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19309,12 +19324,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alq&name=Alexis+L%C3%AA-Qu%C3%B4c&company=Datadog",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "tristan-handy-private",
@@ -19329,8 +19344,8 @@
         "数据基础设施",
         "企业软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TRISTAN HANDY · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "TRISTAN HANDY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Tristan Handy",
       "name_en": "Tristan Handy",
@@ -19345,8 +19360,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19365,12 +19380,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jthandy&name=Tristan+Handy&company=Fivetran+%2B+dbt+Labs",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "michel-tricot-private",
@@ -19385,8 +19400,8 @@
         "数据基础设施",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MICHEL TRICOT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MICHEL TRICOT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Michel Tricot",
       "name_en": "Michel Tricot",
@@ -19401,9 +19416,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19421,12 +19437,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichelTricot&name=Michel+Tricot&company=Airbyte",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "nick-schrock-private",
@@ -19441,8 +19457,8 @@
         "数据基础设施",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "NICK SCHROCK · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "NICK SCHROCK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Nick Schrock",
       "name_en": "Nick Schrock",
@@ -19457,9 +19473,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19477,12 +19494,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=schrockn&name=Nick+Schrock&company=Dagster+%2F+Prefect",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jerry-liu-private",
@@ -19497,8 +19514,8 @@
         "AI",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JERRY LIU · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JERRY LIU · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jerry Liu",
       "name_en": "Jerry Liu",
@@ -19513,9 +19530,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19533,12 +19551,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jerryjliu0&name=Jerry+Liu&company=LlamaIndex",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "harrison-chase-private",
@@ -19553,8 +19571,8 @@
         "AI",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "HARRISON CHASE · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "HARRISON CHASE · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Harrison Chase",
       "name_en": "Harrison Chase",
@@ -19569,9 +19587,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19589,12 +19608,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hwchase17&name=Harrison+Chase&company=LangChain",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "robert-nishihara-private",
@@ -19609,8 +19628,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ROBERT NISHIHARA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ROBERT NISHIHARA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Robert Nishihara",
       "name_en": "Robert Nishihara",
@@ -19625,8 +19644,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19645,12 +19664,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=robertnishihara&name=Robert+Nishihara&company=Anyscale",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "vipul-ved-prakash-private",
@@ -19665,8 +19684,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "VIPUL VED PRAKASH · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "VIPUL VED PRAKASH · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Vipul Ved Prakash",
       "name_en": "Vipul Ved Prakash",
@@ -19681,9 +19700,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19701,12 +19721,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vipulved&name=Vipul+Ved+Prakash&company=Together+AI",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "erik-bernhardsson-private",
@@ -19721,8 +19741,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ERIK BERNHARDSSON · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ERIK BERNHARDSSON · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Erik Bernhardsson",
       "name_en": "Erik Bernhardsson",
@@ -19737,9 +19757,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19757,12 +19778,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bernhardsson&name=Erik+Bernhardsson&company=Modal",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "ben-firshman-private",
@@ -19777,8 +19798,8 @@
         "AI",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BEN FIRSHMAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BEN FIRSHMAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Ben Firshman",
       "name_en": "Ben Firshman",
@@ -19793,8 +19814,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19813,12 +19834,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bfirsh&name=Ben+Firshman&company=Replicate",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "nikita-shamgunov-private",
@@ -19833,8 +19854,8 @@
         "数据库",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "NIKITA SHAMGUNOV · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "NIKITA SHAMGUNOV · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Nikita Shamgunov",
       "name_en": "Nikita Shamgunov",
@@ -19849,8 +19870,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -19869,12 +19890,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nikitabase&name=Nikita+Shamgunov&company=Neon+%2F+Databricks",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "sam-lambert-private",
@@ -19889,8 +19910,8 @@
         "数据库",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SAM LAMBERT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "SAM LAMBERT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Sam Lambert",
       "name_en": "Sam Lambert",
@@ -19905,10 +19926,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "ceo"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -19925,12 +19946,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=isamlambert&name=Sam+Lambert&company=PlanetScale",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "glauber-costa-private",
@@ -19945,8 +19966,8 @@
         "数据库",
         "开源"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "GLAUBER COSTA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "GLAUBER COSTA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Glauber Costa",
       "name_en": "Glauber Costa",
@@ -19961,9 +19982,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -19981,12 +20003,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=glcst&name=Glauber+Costa&company=Turso",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "zach-perret-private",
@@ -20001,8 +20023,8 @@
         "金融科技",
         "支付"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ZACH PERRET · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ZACH PERRET · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Zach Perret",
       "name_en": "Zach Perret",
@@ -20017,9 +20039,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -20037,12 +20060,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=zachperret&name=Zach+Perret&company=Plaid",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "william-hockey-private",
@@ -20057,8 +20080,8 @@
         "金融科技",
         "银行科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "WILLIAM HOCKEY · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "WILLIAM HOCKEY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "William Hockey",
       "name_en": "William Hockey",
@@ -20073,9 +20096,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -20093,12 +20117,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=willhockey&name=William+Hockey&company=Column+%2F+Plaid",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "henrique-dubugras-private",
@@ -20113,8 +20137,8 @@
         "金融科技",
         "企业软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "HENRIQUE DUBUGRAS · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "HENRIQUE DUBUGRAS · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Henrique Dubugras",
       "name_en": "Henrique Dubugras",
@@ -20129,10 +20153,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20149,12 +20174,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hdubugras&name=Henrique+Dubugras&company=Brex",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "pedro-franceschi-private",
@@ -20169,8 +20194,8 @@
         "金融科技",
         "企业软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "PEDRO FRANCESCHI · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "PEDRO FRANCESCHI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Pedro Franceschi",
       "name_en": "Pedro Franceschi",
@@ -20185,9 +20210,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -20205,12 +20231,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pedrofranceschi&name=Pedro+Franceschi&company=Brex",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "roelof-botha-private",
@@ -20225,8 +20251,8 @@
         "VC",
         "投资"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ROELOF BOTHA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ROELOF BOTHA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Roelof Botha",
       "name_en": "Roelof Botha",
@@ -20241,10 +20267,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20261,12 +20287,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=roelofbotha&name=Roelof+Botha&company=Sequoia+Capital",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "john-doerr-private",
@@ -20281,8 +20307,8 @@
         "VC",
         "气候科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JOHN DOERR · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JOHN DOERR · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "John Doerr",
       "name_en": "John Doerr",
@@ -20297,10 +20323,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20317,12 +20343,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=johndoerr&name=John+Doerr&company=Kleiner+Perkins",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mamoon-hamid-private",
@@ -20337,8 +20363,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MAMOON HAMID · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MAMOON HAMID · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Mamoon Hamid",
       "name_en": "Mamoon Hamid",
@@ -20353,10 +20379,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20373,12 +20399,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mamoonha&name=Mamoon+Hamid&company=Kleiner+Perkins",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "byron-deeter-private",
@@ -20393,8 +20419,8 @@
         "VC",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BYRON DEETER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BYRON DEETER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Byron Deeter",
       "name_en": "Byron Deeter",
@@ -20409,10 +20435,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20429,12 +20455,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bdeeter&name=Byron+Deeter&company=Bessemer+Venture+Partners",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "josh-kopelman-private",
@@ -20449,8 +20475,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JOSH KOPELMAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JOSH KOPELMAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Josh Kopelman",
       "name_en": "Josh Kopelman",
@@ -20465,10 +20491,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20485,12 +20511,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=joshk&name=Josh+Kopelman&company=First+Round",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "hunter-walk-private",
@@ -20505,8 +20531,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "HUNTER WALK · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "HUNTER WALK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Hunter Walk",
       "name_en": "Hunter Walk",
@@ -20521,10 +20547,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20541,12 +20568,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hunterwalk&name=Hunter+Walk&company=Homebrew",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "brad-feld-private",
@@ -20561,8 +20588,8 @@
         "VC",
         "创业"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BRAD FELD · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BRAD FELD · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Brad Feld",
       "name_en": "Brad Feld",
@@ -20577,10 +20604,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20597,12 +20625,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bfeld&name=Brad+Feld&company=Foundry",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "albert-wenger-private",
@@ -20617,8 +20645,8 @@
         "VC",
         "投资"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ALBERT WENGER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ALBERT WENGER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Albert Wenger",
       "name_en": "Albert Wenger",
@@ -20633,10 +20661,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20653,12 +20681,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=albertwenger&name=Albert+Wenger&company=Union+Square+Ventures",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "tomasz-tunguz-private",
@@ -20673,8 +20701,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TOMASZ TUNGUZ · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "TOMASZ TUNGUZ · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Tomasz Tunguz",
       "name_en": "Tomasz Tunguz",
@@ -20689,10 +20717,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20709,12 +20738,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ttunguz&name=Tomasz+Tunguz&company=Theory+Ventures",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "james-currier-private",
@@ -20729,8 +20758,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JAMES CURRIER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JAMES CURRIER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "James Currier",
       "name_en": "James Currier",
@@ -20745,10 +20774,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20765,12 +20794,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JamesCurrier&name=James+Currier&company=NFX",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "pete-flint-private",
@@ -20785,8 +20814,8 @@
         "VC",
         "金融科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "PETE FLINT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "PETE FLINT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Pete Flint",
       "name_en": "Pete Flint",
@@ -20801,10 +20830,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20821,12 +20850,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=peteflint&name=Pete+Flint&company=NFX",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "assaf-rappaport-googl",
@@ -20841,8 +20870,8 @@
         "网络安全",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ASSAF RAPPAPORT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ASSAF RAPPAPORT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Assaf Rappaport",
       "name_en": "Assaf Rappaport",
@@ -20858,8 +20887,9 @@
       "ticker": "GOOGL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -20877,12 +20907,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=assaf_rapp&name=Assaf+Rappaport&company=Wiz+%2F+Google+Cloud",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "ami-luttwak-googl",
@@ -20897,8 +20927,8 @@
         "网络安全",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "AMI LUTTWAK · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "AMI LUTTWAK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Ami Luttwak",
       "name_en": "Ami Luttwak",
@@ -20914,7 +20944,7 @@
       "ticker": "GOOGL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -20933,12 +20963,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=amiluttwak&name=Ami+Luttwak&company=Wiz+%2F+Google+Cloud",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "guy-podjarny-private",
@@ -20953,8 +20983,8 @@
         "网络安全",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "GUY PODJARNY · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "GUY PODJARNY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Guy Podjarny",
       "name_en": "Guy Podjarny",
@@ -20969,10 +20999,12 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "ceo",
+        "founder",
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -20989,12 +21021,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=guypod&name=Guy+Podjarny&company=Snyk+%2F+Tessl",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dan-lorenc-private",
@@ -21009,8 +21041,8 @@
         "网络安全",
         "开源"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAN LORENC · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAN LORENC · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dan Lorenc",
       "name_en": "Dan Lorenc",
@@ -21025,9 +21057,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21045,12 +21078,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=lorenc_dan&name=Dan+Lorenc&company=Chainguard",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "feross-aboukhadijeh-private",
@@ -21065,8 +21098,8 @@
         "网络安全",
         "开发者工具"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "FEROSS ABOUKHADIJEH · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "FEROSS ABOUKHADIJEH · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Feross Aboukhadijeh",
       "name_en": "Feross Aboukhadijeh",
@@ -21081,9 +21114,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21101,12 +21135,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=feross&name=Feross+Aboukhadijeh&company=Socket",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dan-guido-private",
@@ -21121,8 +21155,8 @@
         "网络安全",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAN GUIDO · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAN GUIDO · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dan Guido",
       "name_en": "Dan Guido",
@@ -21137,9 +21171,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21157,12 +21192,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dguido&name=Dan+Guido&company=Trail+of+Bits",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "kevin-mandia-private",
@@ -21177,8 +21212,8 @@
         "网络安全",
         "VC"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "KEVIN MANDIA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "KEVIN MANDIA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Kevin Mandia",
       "name_en": "Kevin Mandia",
@@ -21193,10 +21228,12 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "ceo",
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -21213,12 +21250,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=kevinmandia&name=Kevin+Mandia&company=Ballistic+Ventures+%2F+Mandiant",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dave-dewalt-private",
@@ -21233,8 +21270,8 @@
         "网络安全",
         "VC"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAVE DEWALT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAVE DEWALT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dave DeWalt",
       "name_en": "Dave DeWalt",
@@ -21249,9 +21286,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21269,12 +21307,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davedewalt&name=Dave+DeWalt&company=NightDragon",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dug-song-csco",
@@ -21289,8 +21327,8 @@
         "网络安全",
         "企业软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "DUG SONG · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DUG SONG · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dug Song",
       "name_en": "Dug Song",
@@ -21306,7 +21344,7 @@
       "ticker": "CSCO",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -21326,12 +21364,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dugsong&name=Dug+Song&company=Duo+Security+%2F+Cisco",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jon-oberheide-csco",
@@ -21346,8 +21384,8 @@
         "网络安全",
         "企业软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JON OBERHEIDE · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JON OBERHEIDE · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jon Oberheide",
       "name_en": "Jon Oberheide",
@@ -21363,7 +21401,7 @@
       "ticker": "CSCO",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -21383,12 +21421,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jonoberheide&name=Jon+Oberheide&company=Duo+Security+%2F+Cisco",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "brad-garlinghouse-private",
@@ -21403,8 +21441,8 @@
         "金融科技",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BRAD GARLINGHOUSE · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BRAD GARLINGHOUSE · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Brad Garlinghouse",
       "name_en": "Brad Garlinghouse",
@@ -21419,10 +21457,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "ceo"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -21439,12 +21477,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bgarlinghouse&name=Brad+Garlinghouse&company=Ripple",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "david-schwartz-private",
@@ -21459,8 +21497,8 @@
         "区块链",
         "金融科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAVID SCHWARTZ · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAVID SCHWARTZ · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "David Schwartz",
       "name_en": "David Schwartz",
@@ -21475,8 +21513,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -21495,12 +21533,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JoelKatz&name=David+Schwartz&company=Ripple",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jed-mccaleb-private",
@@ -21515,8 +21553,8 @@
         "航空航天",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JED MCCALEB · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JED MCCALEB · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jed McCaleb",
       "name_en": "Jed McCaleb",
@@ -21531,10 +21569,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -21551,12 +21590,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JedMcCaleb&name=Jed+McCaleb&company=Vast+%2F+Stellar+%2F+Ripple",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "denelle-dixon-private",
@@ -21571,8 +21610,8 @@
         "区块链",
         "金融科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DENELLE DIXON · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DENELLE DIXON · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Denelle Dixon",
       "name_en": "Denelle Dixon",
@@ -21587,10 +21626,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "ceo"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -21607,12 +21646,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DenelleDixon&name=Denelle+Dixon&company=Stellar+Development+Foundation",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "arthur-hayes-private",
@@ -21627,8 +21666,8 @@
         "加密资产",
         "投资"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ARTHUR HAYES · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ARTHUR HAYES · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Arthur Hayes",
       "name_en": "Arthur Hayes",
@@ -21643,9 +21682,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21663,12 +21703,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=CryptoHayes&name=Arthur+Hayes&company=Maelstrom+%2F+BitMEX",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "richard-teng-private",
@@ -21683,8 +21723,8 @@
         "加密资产",
         "金融科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "RICHARD TENG · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "RICHARD TENG · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Richard Teng",
       "name_en": "Richard Teng",
@@ -21699,10 +21739,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "ceo"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -21719,12 +21759,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RichardTeng&name=Richard+Teng&company=Binance",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "changpeng-zhao-private",
@@ -21739,8 +21779,8 @@
         "加密资产",
         "金融科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "CHANGPENG ZHAO · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "CHANGPENG ZHAO · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Changpeng Zhao",
       "name_en": "Changpeng Zhao",
@@ -21755,9 +21795,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "former_ceo",
         "founder",
         "legacy_leader"
       ],
@@ -21776,12 +21817,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cz_binance&name=Changpeng+Zhao&company=Binance",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "alex-svanevik-private",
@@ -21796,8 +21837,8 @@
         "区块链",
         "数据分析"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ALEX SVANEVIK · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ALEX SVANEVIK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Alex Svanevik",
       "name_en": "Alex Svanevik",
@@ -21812,9 +21853,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21832,12 +21874,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ASvanevik&name=Alex+Svanevik&company=Nansen",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "haseeb-qureshi-private",
@@ -21852,8 +21894,8 @@
         "VC",
         "加密资产"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "HASEEB QURESHI · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "HASEEB QURESHI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Haseeb Qureshi",
       "name_en": "Haseeb Qureshi",
@@ -21868,10 +21910,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -21888,12 +21930,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hosseeb&name=Haseeb+Qureshi&company=Dragonfly",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "tarun-chitra-private",
@@ -21908,8 +21950,8 @@
         "DeFi",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TARUN CHITRA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "TARUN CHITRA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Tarun Chitra",
       "name_en": "Tarun Chitra",
@@ -21924,9 +21966,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -21944,12 +21987,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tarunchitra&name=Tarun+Chitra&company=Gauntlet",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "robert-leshner-private",
@@ -21964,8 +22007,8 @@
         "金融科技",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ROBERT LESHNER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ROBERT LESHNER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Robert Leshner",
       "name_en": "Robert Leshner",
@@ -21980,9 +22023,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -22000,12 +22044,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rleshner&name=Robert+Leshner&company=Superstate+%2F+Compound",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "antonio-juliano-private",
@@ -22020,8 +22064,8 @@
         "DeFi",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ANTONIO JULIANO · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ANTONIO JULIANO · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Antonio Juliano",
       "name_en": "Antonio Juliano",
@@ -22036,8 +22080,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -22056,12 +22100,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AntonioMJuliano&name=Antonio+Juliano&company=dYdX",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jesse-pollak-coin",
@@ -22076,8 +22120,8 @@
         "区块链",
         "开发者平台"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JESSE POLLAK · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JESSE POLLAK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jesse Pollak",
       "name_en": "Jesse Pollak",
@@ -22093,7 +22137,7 @@
       "ticker": "COIN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -22112,12 +22156,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jessepollak&name=Jesse+Pollak&company=Base+%2F+Coinbase",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dan-romero-private",
@@ -22132,8 +22176,8 @@
         "社交",
         "区块链"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "DAN ROMERO · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAN ROMERO · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dan Romero",
       "name_en": "Dan Romero",
@@ -22148,8 +22192,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -22169,12 +22213,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dwr&name=Dan+Romero&company=Farcaster",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "varun-srinivasan-private",
@@ -22189,8 +22233,8 @@
         "区块链",
         "开发者平台"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "VARUN SRINIVASAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "科技公司、机构或生态前任核心领袖/创始人；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "VARUN SRINIVASAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Varun Srinivasan",
       "name_en": "Varun Srinivasan",
@@ -22205,8 +22249,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -22226,12 +22270,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=varunsrin&name=Varun+Srinivasan&company=Farcaster+%2F+Tempo",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "yat-siu-private",
@@ -22246,8 +22290,8 @@
         "游戏",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "YAT SIU · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "YAT SIU · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Yat Siu",
       "name_en": "Yat Siu",
@@ -22262,10 +22306,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22282,12 +22327,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ysiu&name=Yat+Siu&company=Animoca+Brands",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "kyle-samani-fwdi",
@@ -22302,8 +22347,8 @@
         "投资",
         "Solana"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "KYLE SAMANI · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "KYLE SAMANI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Kyle Samani",
       "name_en": "Kyle Samani",
@@ -22319,9 +22364,11 @@
       "ticker": "FWDI",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22338,12 +22385,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=KyleSamani&name=Kyle+Samani&company=Forward+Industries",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "tushar-jain-private",
@@ -22358,8 +22405,8 @@
         "VC",
         "加密资产"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TUSHAR JAIN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "TUSHAR JAIN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Tushar Jain",
       "name_en": "Tushar Jain",
@@ -22374,10 +22421,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22394,12 +22442,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TusharJain_&name=Tushar+Jain&company=Multicoin+Capital",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "nic-carter-private",
@@ -22414,8 +22462,8 @@
         "VC",
         "加密资产"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "NIC CARTER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "NIC CARTER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Nic Carter",
       "name_en": "Nic Carter",
@@ -22430,10 +22478,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22450,12 +22498,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nic__carter&name=Nic+Carter&company=Castle+Island+Ventures",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "martin-casado-private",
@@ -22470,8 +22518,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MARTIN CASADO · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MARTIN CASADO · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Martin Casado",
       "name_en": "Martin Casado",
@@ -22486,10 +22534,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22506,12 +22554,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=martin_casado&name=Martin+Casado&company=Andreessen+Horowitz",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "anjney-midha-private",
@@ -22526,8 +22574,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ANJNEY MIDHA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ANJNEY MIDHA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Anjney Midha",
       "name_en": "Anjney Midha",
@@ -22542,10 +22590,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22562,12 +22610,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AnjneyMidha&name=Anjney+Midha&company=Andreessen+Horowitz",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "connie-chan-private",
@@ -22582,8 +22630,8 @@
         "VC",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "CONNIE CHAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "CONNIE CHAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Connie Chan",
       "name_en": "Connie Chan",
@@ -22598,10 +22646,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22618,12 +22666,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=conniechan&name=Connie+Chan&company=Andreessen+Horowitz",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "david-ulevitch-private",
@@ -22638,8 +22686,8 @@
         "VC",
         "国防科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAVID ULEVITCH · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAVID ULEVITCH · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "David Ulevitch",
       "name_en": "David Ulevitch",
@@ -22654,10 +22702,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22674,12 +22722,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidu&name=David+Ulevitch&company=Andreessen+Horowitz",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "sarah-tavel-private",
@@ -22694,8 +22742,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SARAH TAVEL · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "SARAH TAVEL · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Sarah Tavel",
       "name_en": "Sarah Tavel",
@@ -22710,10 +22758,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22730,12 +22778,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sarahtavel&name=Sarah+Tavel&company=Benchmark",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "eric-vishria-private",
@@ -22750,8 +22798,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ERIC VISHRIA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ERIC VISHRIA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Eric Vishria",
       "name_en": "Eric Vishria",
@@ -22766,10 +22814,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22786,12 +22834,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ericvishria&name=Eric+Vishria&company=Benchmark",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mike-volpi-private",
@@ -22806,8 +22854,8 @@
         "VC",
         "企业软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MIKE VOLPI · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MIKE VOLPI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Mike Volpi",
       "name_en": "Mike Volpi",
@@ -22822,10 +22870,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22842,12 +22890,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mavolpi&name=Mike+Volpi&company=Index+Ventures",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "david-krane-private",
@@ -22862,8 +22910,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAVID KRANE · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "DAVID KRANE · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "David Krane",
       "name_en": "David Krane",
@@ -22878,10 +22926,11 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "ceo",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -22898,12 +22947,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davidkrane&name=David+Krane&company=GV",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "ori-eisen-private",
@@ -22918,8 +22967,8 @@
         "网络安全",
         "身份安全"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ORI EISEN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ORI EISEN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Ori Eisen",
       "name_en": "Ori Eisen",
@@ -22934,9 +22983,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder"
       ],
       "company_relationship_status": "current",
@@ -22954,12 +23004,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=orieisen&name=Ori+Eisen&company=Trusona",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "brian-singerman-private",
@@ -22974,8 +23024,8 @@
         "VC",
         "科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BRIAN SINGERMAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "BRIAN SINGERMAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Brian Singerman",
       "name_en": "Brian Singerman",
@@ -22990,10 +23040,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23010,12 +23060,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=briansin&name=Brian+Singerman&company=Founders+Fund",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "matt-cohler-private",
@@ -23030,8 +23080,8 @@
         "VC",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MATT COHLER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MATT COHLER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Matt Cohler",
       "name_en": "Matt Cohler",
@@ -23046,10 +23096,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23066,12 +23116,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mattcohler&name=Matt+Cohler&company=Benchmark",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "gigi-levy-weiss-private",
@@ -23086,8 +23136,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "GIGI LEVY-WEISS · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "GIGI LEVY-WEISS · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Gigi Levy-Weiss",
       "name_en": "Gigi Levy-Weiss",
@@ -23102,10 +23152,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23122,12 +23172,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=gigilevy&name=Gigi+Levy-Weiss&company=NFX",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "asheem-chandna-private",
@@ -23142,8 +23192,8 @@
         "VC",
         "网络安全"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ASHEEM CHANDNA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ASHEEM CHANDNA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Asheem Chandna",
       "name_en": "Asheem Chandna",
@@ -23158,10 +23208,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23178,12 +23228,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=achandna&name=Asheem+Chandna&company=Greylock",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jeremy-liew-private",
@@ -23198,8 +23248,8 @@
         "VC",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JEREMY LIEW · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JEREMY LIEW · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jeremy Liew",
       "name_en": "Jeremy Liew",
@@ -23214,10 +23264,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23234,12 +23284,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jeremysliew&name=Jeremy+Liew&company=Lightspeed+Venture+Partners",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "andrew-braccia-private",
@@ -23254,8 +23304,8 @@
         "VC",
         "消费科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ANDREW BRACCIA · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ANDREW BRACCIA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Andrew Braccia",
       "name_en": "Andrew Braccia",
@@ -23270,10 +23320,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23290,12 +23340,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=andrewbraccia&name=Andrew+Braccia&company=Accel",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "rich-wong-private",
@@ -23310,8 +23360,8 @@
         "VC",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "RICH WONG · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "RICH WONG · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Rich Wong",
       "name_en": "Rich Wong",
@@ -23326,10 +23376,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23346,12 +23396,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rwong&name=Rich+Wong&company=Accel",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "chris-kemp-private",
@@ -23366,8 +23416,8 @@
         "航空航天",
         "深科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "CHRIS KEMP · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "CHRIS KEMP · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Chris Kemp",
       "name_en": "Chris Kemp",
@@ -23382,10 +23432,12 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "ceo",
+        "founder",
+        "chair"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23402,12 +23454,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Kemp&name=Chris+Kemp&company=Astra",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "robbie-schingler-pl",
@@ -23422,8 +23474,8 @@
         "航空航天",
         "卫星"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ROBBIE SCHINGLER · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "ROBBIE SCHINGLER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Robbie Schingler",
       "name_en": "Robbie Schingler",
@@ -23439,7 +23491,7 @@
       "ticker": "PL",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -23458,12 +23510,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=schingler&name=Robbie+Schingler&company=Planet+Labs+PBC",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jack-altman-private",
@@ -23478,8 +23530,8 @@
         "VC",
         "企业软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JACK ALTMAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "JACK ALTMAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jack Altman",
       "name_en": "Jack Altman",
@@ -23494,10 +23546,12 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair",
+        "investor"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23514,12 +23568,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jaltma&name=Jack+Altman&company=Benchmark",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "monica-long-private",
@@ -23534,8 +23588,8 @@
         "金融科技",
         "区块链"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MONICA LONG · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MONICA LONG · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Monica Long",
       "name_en": "Monica Long",
@@ -23550,8 +23604,8 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -23570,12 +23624,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MonicaLongSF&name=Monica+Long&company=Ripple",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "max-haot-private",
@@ -23590,8 +23644,8 @@
         "航空航天",
         "深科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MAX HAOT · VERIFIED X TIMELINE PREVIEW",
+      "note": "现任科技公司、机构或生态核心领袖；个人公开 X 账号已完成人物身份、关系与活跃度审核。",
+      "title": "MAX HAOT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Max Haot",
       "name_en": "Max Haot",
@@ -23606,10 +23660,10 @@
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
-      "listed_company": true,
-      "admission_status": "preview_approved",
+      "listed_company": false,
+      "admission_status": "active",
       "leader_types": [
-        "executive"
+        "ceo"
       ],
       "company_relationship_status": "current",
       "themes": [
@@ -23626,12 +23680,12 @@
       "x_last_activity_at": "2026-09",
       "review_confidence": "high",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=maxhaot&name=Max+Haot&company=Vast",
-      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
-      "avatar_status": "pending_preview_audit",
+      "avatar_source": "Ooglex avatar pipeline",
+      "avatar_status": "pending_review",
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     }
   ],
   "categories": [
@@ -23805,9 +23859,9 @@
       "hold": 2,
       "manual_review": 13
     },
-    "base_count": 300,
-    "approved_already_live": 190,
-    "approved_additions": 100,
+    "base_count": 400,
+    "approved_already_live": 290,
+    "approved_additions": 0,
     "preview_count": 400,
     "production_file_untouched": true
   }
