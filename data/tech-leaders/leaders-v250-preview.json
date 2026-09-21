@@ -6158,6 +6158,217 @@
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
       "preview_only": true
+    },
+    {
+      "id": "steve-wozniak-aapl",
+      "name": "Steve Wozniak",
+      "zh": "Steve Wozniak",
+      "handle": "stevewoz",
+      "role": "Apple Inc. · Co-founder",
+      "chips": [
+        "AAPL",
+        "Apple Inc.",
+        "科技",
+        "消费科技"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "STEVE WOZNIAK · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Steve Wozniak",
+      "name_en": "Steve Wozniak",
+      "company_zh": "Apple Inc.",
+      "company_en": "Apple Inc.",
+      "position_zh": "Co-founder",
+      "categories": [
+        "科技",
+        "消费科技"
+      ],
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "消费科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "official_site_profile_cross_source",
+      "x_role_source_url": "https://woz.org/about/",
+      "x_identity_source_url": "https://x.com/stevewoz",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=stevewoz&name=Steve+Wozniak&company=Apple+Inc.",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "travis-kalanick-uber",
+      "name": "Travis Kalanick",
+      "zh": "Travis Kalanick",
+      "handle": "travisk",
+      "role": "Uber · Co-founder & Former Chief Executive Officer",
+      "chips": [
+        "UBER",
+        "Uber",
+        "软件",
+        "消费科技",
+        "AI"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "TRAVIS KALANICK · VERIFIED X TIMELINE PREVIEW",
+      "category": "软件",
+      "name_zh": "Travis Kalanick",
+      "name_en": "Travis Kalanick",
+      "company_zh": "Uber",
+      "company_en": "Uber",
+      "position_zh": "Co-founder & Former Chief Executive Officer",
+      "categories": [
+        "软件",
+        "消费科技",
+        "AI",
+        "机器人"
+      ],
+      "ticker": "UBER",
+      "exchange": "NYSE",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "软件",
+        "消费科技",
+        "AI",
+        "机器人"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_history_profile_cross_source",
+      "x_role_source_url": "https://www.uber.com/us/en/newsroom/1-1-3/",
+      "x_identity_source_url": "https://x.com/travisk/with_replies",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-06-29",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=travisk&name=Travis+Kalanick&company=Uber",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "john-legere-tmus",
+      "name": "John Legere",
+      "zh": "John Legere",
+      "handle": "JohnLegere",
+      "role": "T-Mobile US · Former President & Chief Executive Officer",
+      "chips": [
+        "TMUS",
+        "T-Mobile US",
+        "通信服务",
+        "科技"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "JOHN LEGERE · VERIFIED X TIMELINE PREVIEW",
+      "category": "通信服务",
+      "name_zh": "John Legere",
+      "name_en": "John Legere",
+      "company_zh": "T-Mobile US",
+      "company_en": "T-Mobile US",
+      "position_zh": "Former President & Chief Executive Officer",
+      "categories": [
+        "通信服务",
+        "科技"
+      ],
+      "ticker": "TMUS",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "通信服务",
+        "科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_social_profile_cross_source",
+      "x_role_source_url": "https://www.t-mobile.com/news/un-carrier/t-mobile-sprint-one-company",
+      "x_identity_source_url": "https://x.com/JohnLegere/with_replies?lang=en",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-08",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JohnLegere&name=John+Legere&company=T-Mobile+US",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "steve-ballmer-msft",
+      "name": "Steve Ballmer",
+      "zh": "Steve Ballmer",
+      "handle": "Steven_Ballmer",
+      "role": "Microsoft · Former Chief Executive Officer",
+      "chips": [
+        "MSFT",
+        "Microsoft",
+        "科技",
+        "软件"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "STEVE BALLMER · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Steve Ballmer",
+      "name_en": "Steve Ballmer",
+      "company_zh": "Microsoft",
+      "company_en": "Microsoft",
+      "position_zh": "Former Chief Executive Officer",
+      "categories": [
+        "科技",
+        "软件"
+      ],
+      "ticker": "MSFT",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "institution_profile_cross_source",
+      "x_role_source_url": "https://news.microsoft.com/announcement/steve-ballmer-named-ceo/",
+      "x_identity_source_url": "https://x.com/Steven_Ballmer",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-08",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Steven_Ballmer&name=Steve+Ballmer&company=Microsoft",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
     }
   ],
   "categories": [
@@ -6177,7 +6388,8 @@
     "科技",
     "金融科技",
     "通信服务",
-    "消费科技"
+    "消费科技",
+    "机器人"
   ],
   "catalog_version": "V4.3",
   "last_audited_at": "2026-09-19",
@@ -6241,18 +6453,19 @@
       "data/tech-leaders/verified_candidates.tranche01.json",
       "data/tech-leaders/verified_candidates.tranche02.json",
       "data/tech-leaders/verified_candidates.tranche03.json",
-      "data/tech-leaders/verified_candidates.tranche04.json"
+      "data/tech-leaders/verified_candidates.tranche04.json",
+      "data/tech-leaders/verified_candidates.tranche05.json"
     ],
-    "evidence_tranche_count": 4,
-    "reviewed_candidate_count": 23,
+    "evidence_tranche_count": 5,
+    "reviewed_candidate_count": 27,
     "review_status_counts": {
-      "approved": 8,
+      "approved": 12,
       "hold": 2,
       "manual_review": 13
     },
     "base_count": 110,
-    "approved_additions": 8,
-    "preview_count": 118,
+    "approved_additions": 12,
+    "preview_count": 122,
     "production_file_untouched": true
   }
 }
