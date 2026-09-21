@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-21T03:07:14Z",
+  "issuer_count": 300,
+  "covered_existing_issuers": 35,
+  "needs_research_issuers": 265,
+  "research_now_count": 124,
+  "research_now_exchange_counts": {
+    "NASDAQ": 38,
+    "NYSE": 86
+  },
+  "research_now_sector_counts": {
+    "金融": 26,
+    "工业": 21,
+    "医疗健康": 19,
+    "科技": 19,
+    "必需消费": 8,
+    "能源": 7,
+    "可选消费": 6,
+    "通信服务": 6,
+    "公用事业": 5,
+    "房地产": 4,
+    "原材料": 3
+  },
+  "policy": {
+    "primary_roles": [
+      "CEO",
+      "Founder & CEO",
+      "Co-founder & CEO",
+      "Executive Chair",
+      "President"
+    ],
+    "identity_rule": "Do not infer identity from blue check alone; require authoritative role evidence plus X account ownership evidence.",
+    "activity_rule": "Prefer accounts with meaningful recent public posting activity.",
+    "corporate_fallback": "Keep corporate-only X accounts out of the main personal-leader import batch.",
+    "production_rule": "Candidate queue never changes apps/tech-leaders/leaders.json automatically."
+  },
+  "next_stage": "Research and populate current executive role + personal X identity evidence for research_now rows."
+}
