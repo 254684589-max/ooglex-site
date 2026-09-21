@@ -9,7 +9,8 @@
     "data/tech-leaders/verified_candidates.tranche03.json",
     "data/tech-leaders/verified_candidates.tranche04.json",
     "data/tech-leaders/verified_candidates.tranche05.json",
-    "data/tech-leaders/verified_candidates.tranche06.json"
+    "data/tech-leaders/verified_candidates.tranche06.json",
+    "data/tech-leaders/verified_candidates.tranche07.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -685,7 +686,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Thomas Kurian",
+          "handle": "ThomasOrTK",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -741,8 +748,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Marissa Mayer",
+          "handle": "marissamayer",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -3124,6 +3137,11 @@
           "name": "Reed Hastings",
           "handle": "reedhastings",
           "status": "approved"
+        },
+        {
+          "name": "Marc Randolph",
+          "handle": "marcrandolph",
+          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -3154,6 +3172,11 @@
         {
           "name": "Reed Hastings",
           "handle": "reedhastings",
+          "status": "approved"
+        },
+        {
+          "name": "Marc Randolph",
+          "handle": "marcrandolph",
           "status": "approved"
         }
       ],
@@ -8382,8 +8405,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Scott Belsky",
+          "handle": "scottbelsky",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
