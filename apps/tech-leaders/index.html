@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(!u.searchParams.has("sharev")){
-        u.searchParams.set("sharev","20260922a");
+      if(u.searchParams.get("sharev")!=="20260922b"){
+        u.searchParams.set("sharev","20260922b");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -22,8 +22,8 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖实时动态流 · Ooglex">
   <meta property="og:description" content="聚合全球科技领袖、上市公司 CEO 与创始人的公开动态。">
-  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922a">
-  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922a">
+  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922b">
+  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922b">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
@@ -321,12 +321,13 @@
     .leader-library-categories::-webkit-scrollbar{display:none}
     .leader-library-categories.library-category-dragging{cursor:default;user-select:none}
     .leader-library-categories.library-category-dragging .library-category-btn{cursor:default}
-    .leader-library-category-scrollbar{position:relative;flex:0 0 auto;height:14px;margin:0 20px 0;border-radius:999px;background:transparent;cursor:default;touch-action:none;user-select:none}
-    .leader-library-category-scrollbar::before{content:"";position:absolute;left:0;right:0;top:3px;height:8px;border-radius:999px;background:rgba(128,128,128,.14);pointer-events:none}
+    .leader-library-category-scrollbar{position:relative;flex:0 0 auto;height:20px;margin:0 20px 0;border-radius:999px;background:transparent;cursor:default;touch-action:none;user-select:none}
+    .leader-library-category-scrollbar::before{content:"";position:absolute;left:0;right:0;top:6px;height:8px;border-radius:999px;background:rgba(128,128,128,.14);pointer-events:none}
     .leader-library-category-scrollbar[hidden]{display:none}
-    .leader-library-category-thumb{position:absolute;left:0;top:3px;height:8px;min-width:86px;border-radius:999px;background:rgba(128,128,128,.52);cursor:default;touch-action:none;will-change:transform;transform:translate3d(0,0,0);transition:background .15s ease}
-    .leader-library-category-thumb:hover{background:rgba(128,128,128,.60)}
-    .leader-library-category-thumb.dragging{cursor:default;background:rgba(128,128,128,.66)}
+    .leader-library-category-thumb{position:absolute;left:0;top:0;height:20px;min-width:86px;border-radius:999px;background:transparent;cursor:default;touch-action:none;will-change:transform;transform:translate3d(0,0,0)}
+    .leader-library-category-thumb::before{content:"";position:absolute;left:0;right:0;top:6px;height:8px;border-radius:999px;background:rgba(128,128,128,.52);pointer-events:none;transition:background .12s ease}
+    .leader-library-category-thumb:hover::before{background:rgba(128,128,128,.62)}
+    .leader-library-category-thumb.dragging::before{background:rgba(128,128,128,.72)}
     .library-category-btn{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:8px 11px;border-radius:999px;cursor:pointer;font:11px/1 var(--mono);white-space:nowrap}
     .library-category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
     .library-category-btn span{margin-left:4px;color:var(--faint)}
@@ -894,6 +895,7 @@
     libraryCategoryThumb.style.transform="translate3d("+libraryCategoryThumbLeft+"px,0,0)";
   }
   function scheduleLibraryCategoryScrollbar(){
+    if(libraryThumbDragging)return;
     if(libraryCategoryScrollbarRaf)return;
     libraryCategoryScrollbarRaf=requestAnimationFrame(function(){
       libraryCategoryScrollbarRaf=0;
@@ -2031,61 +2033,102 @@
 
   if(libraryCategoryScrollbar&&libraryCategoryThumb){
     var libraryThumbDragging=false;
-    var libraryThumbStartX=0;
-    var libraryThumbStartLeft=0;
+    var libraryThumbPointerId=null;
+    var libraryThumbPointerOffset=0;
+    var libraryThumbPendingClientX=null;
+    var libraryThumbDragRaf=0;
     var libraryThumbMaxTravel=0;
     var libraryThumbMaxScroll=0;
+
+    function refreshLibraryThumbGeometry(){
+      var trackWidth=Math.max(0,libraryCategoryScrollbar.clientWidth);
+      var thumbWidth=libraryCategoryThumb.getBoundingClientRect().width;
+      libraryThumbMaxTravel=Math.max(0,trackWidth-thumbWidth);
+      libraryThumbMaxScroll=Math.max(0,libraryCategories.scrollWidth-libraryCategories.clientWidth);
+      return {track:libraryCategoryScrollbar.getBoundingClientRect(),thumbWidth:thumbWidth};
+    }
+
     function applyLibraryThumbLeft(left){
       libraryCategoryThumbLeft=Math.max(0,Math.min(libraryThumbMaxTravel,left));
       libraryCategoryThumb.style.transform="translate3d("+libraryCategoryThumbLeft+"px,0,0)";
       libraryCategories.scrollLeft=libraryThumbMaxTravel>0?(libraryCategoryThumbLeft/libraryThumbMaxTravel)*libraryThumbMaxScroll:0;
     }
 
-    libraryCategoryThumb.addEventListener("pointerdown",function(e){
+    function applyLibraryThumbClientX(clientX){
+      var geometry=refreshLibraryThumbGeometry();
+      applyLibraryThumbLeft(clientX-geometry.track.left-libraryThumbPointerOffset);
+    }
+
+    function flushLibraryThumbDrag(){
+      libraryThumbDragRaf=0;
+      if(!libraryThumbDragging||libraryThumbPendingClientX===null)return;
+      var x=libraryThumbPendingClientX;
+      libraryThumbPendingClientX=null;
+      applyLibraryThumbClientX(x);
+    }
+
+    function queueLibraryThumbDrag(clientX){
+      libraryThumbPendingClientX=clientX;
+      if(libraryThumbDragRaf)return;
+      libraryThumbDragRaf=requestAnimationFrame(flushLibraryThumbDrag);
+    }
+
+    libraryCategoryScrollbar.addEventListener("pointerdown",function(e){
       if(libraryCategoryScrollbar.hidden)return;
+      if(e.pointerType==="mouse"&&e.button!==0)return;
+
+      var geometry=refreshLibraryThumbGeometry();
+      var thumbRect=libraryCategoryThumb.getBoundingClientRect();
+      var onThumb=e.target===libraryCategoryThumb||libraryCategoryThumb.contains(e.target);
+
       libraryThumbDragging=true;
-      libraryThumbStartX=e.clientX;
-      libraryThumbStartLeft=libraryCategoryThumbLeft;
-      var trackWidth=Math.max(0,libraryCategoryScrollbar.clientWidth);
-      var thumbWidth=libraryCategoryThumb.getBoundingClientRect().width;
-      libraryThumbMaxTravel=Math.max(0,trackWidth-thumbWidth);
-      libraryThumbMaxScroll=Math.max(0,libraryCategories.scrollWidth-libraryCategories.clientWidth);
+      libraryThumbPointerId=e.pointerId;
+      libraryThumbPointerOffset=onThumb
+        ? Math.max(0,Math.min(geometry.thumbWidth,e.clientX-thumbRect.left))
+        : geometry.thumbWidth/2;
+
       libraryCategoryThumb.classList.add("dragging");
-      try{libraryCategoryThumb.setPointerCapture(e.pointerId);}catch(_){}
+      try{libraryCategoryScrollbar.setPointerCapture(e.pointerId);}catch(_){}
+
+      if(!onThumb)queueLibraryThumbDrag(e.clientX);
       e.preventDefault();
     });
 
-    libraryCategoryThumb.addEventListener("pointermove",function(e){
-      if(!libraryThumbDragging)return;
+    libraryCategoryScrollbar.addEventListener("pointermove",function(e){
+      if(!libraryThumbDragging||e.pointerId!==libraryThumbPointerId)return;
       var sample=e;
       if(e.getCoalescedEvents){
         var batch=e.getCoalescedEvents();
         if(batch&&batch.length)sample=batch[batch.length-1];
       }
-      var raw=libraryThumbStartLeft+(sample.clientX-libraryThumbStartX);
-      applyLibraryThumbLeft(raw);
+      queueLibraryThumbDrag(sample.clientX);
       e.preventDefault();
     });
 
     function stopLibraryThumbDrag(e){
       if(!libraryThumbDragging)return;
+      if(e&&libraryThumbPointerId!==null&&e.pointerId!==undefined&&e.pointerId!==libraryThumbPointerId)return;
+      if(libraryThumbDragRaf){
+        cancelAnimationFrame(libraryThumbDragRaf);
+        libraryThumbDragRaf=0;
+      }
+      if(libraryThumbPendingClientX!==null){
+        applyLibraryThumbClientX(libraryThumbPendingClientX);
+        libraryThumbPendingClientX=null;
+      }
       libraryThumbDragging=false;
       libraryCategoryThumb.classList.remove("dragging");
-      try{libraryCategoryThumb.releasePointerCapture(e.pointerId);}catch(_){}
+      try{
+        if(libraryThumbPointerId!==null)libraryCategoryScrollbar.releasePointerCapture(libraryThumbPointerId);
+      }catch(_){}
+      libraryThumbPointerId=null;
+      requestAnimationFrame(updateLibraryCategoryScrollbar);
     }
-    libraryCategoryThumb.addEventListener("pointerup",stopLibraryThumbDrag);
-    libraryCategoryThumb.addEventListener("pointercancel",stopLibraryThumbDrag);
 
-    libraryCategoryScrollbar.addEventListener("pointerdown",function(e){
-      if(e.target===libraryCategoryThumb||libraryCategoryScrollbar.hidden)return;
-      var rect=libraryCategoryScrollbar.getBoundingClientRect();
-      var trackWidth=Math.max(0,libraryCategoryScrollbar.clientWidth);
-      var thumbWidth=libraryCategoryThumb.getBoundingClientRect().width;
-      var maxTravel=Math.max(0,trackWidth-thumbWidth);
-      var raw=e.clientX-rect.left-thumbWidth/2;
-      var nextLeft=Math.max(0,Math.min(maxTravel,raw));
-      var maxScroll=Math.max(0,libraryCategories.scrollWidth-libraryCategories.clientWidth);
-      libraryCategories.scrollLeft=maxTravel>0?(nextLeft/maxTravel)*maxScroll:0;
+    libraryCategoryScrollbar.addEventListener("pointerup",stopLibraryThumbDrag);
+    libraryCategoryScrollbar.addEventListener("pointercancel",stopLibraryThumbDrag);
+    libraryCategoryScrollbar.addEventListener("lostpointercapture",function(e){
+      if(libraryThumbDragging)stopLibraryThumbDrag(e);
     });
   }
 
