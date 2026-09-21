@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(u.searchParams.get("sharev")!=="20260922b"){
-        u.searchParams.set("sharev","20260922b");
+      if(u.searchParams.get("sharev")!=="20260922c"){
+        u.searchParams.set("sharev","20260922c");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -22,8 +22,8 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖实时动态流 · Ooglex">
   <meta property="og:description" content="聚合全球科技领袖、上市公司 CEO 与创始人的公开动态。">
-  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922b">
-  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922b">
+  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922c">
+  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922c">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
@@ -600,7 +600,8 @@
       var q=new URLSearchParams({
         handle:p.handle,
         name:p.name_en||p.name||p.name_zh||p.zh||"",
-        company:p.company_en||p.company_zh||p.role||""
+        company:p.company_en||p.company_zh||p.role||"",
+        v:"20260922-avatar2"
       });
       return API_BASE+"/v1/tech-leaders/avatar?"+q.toString();
     }
@@ -609,7 +610,7 @@
   function avatarFallbackDataUrl(p){
     var initials=initialsFor(p||{});
     var safe=String(initials).replace(/[<>&"]/g,"");
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="64" fill="#e8e0d7"/><circle cx="64" cy="46" r="22" fill="#8a8178"/><path d="M27 110c6-25 20-37 37-37s31 12 37 37" fill="#8a8178"/><text x="64" y="121" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#5f5750">'+safe+'</text></svg>';
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="64" fill="#e8e0d7"/><circle cx="64" cy="64" r="62" fill="none" stroke="#d3c8bd" stroke-width="2"/><text x="64" y="76" text-anchor="middle" font-family="Arial,sans-serif" font-size="38" font-weight="700" fill="#655c54">'+safe+'</text></svg>';
     return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
   }
   function applyAvatarFallback(img,p){

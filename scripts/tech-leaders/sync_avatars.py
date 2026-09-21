@@ -33,6 +33,7 @@ USABLE_SOURCE_TYPES = {
     "x_original_proxy",
     "official_fallback",
     "public_fallback",
+    "generated_fallback",
 }
 
 
@@ -77,10 +78,12 @@ def infer_source_type(source: Any) -> str:
     value = re.sub(r"-r2(?:-cache)?$", "", value)
     if value in {"x_profile_redirect_x", "x_profile_redirect", "x_followbutton", "x_syndication"}:
         return "x_original"
-    if value == "unavatar_x":
+    if value in {"unavatar_x", "fxtwitter_profile"}:
         return "x_original_proxy"
     if value == "official_override":
         return "official_fallback"
+    if value == "generated_initials":
+        return "generated_fallback"
     if value in {"wikipedia", "wikimedia_commons"}:
         return "public_fallback"
     return "unknown"
@@ -91,7 +94,7 @@ def result_status(source_type: str) -> str:
         return "x_original"
     if source_type == "x_original_proxy":
         return "x_original_proxy"
-    if source_type in {"official_fallback", "public_fallback"}:
+    if source_type in {"official_fallback", "public_fallback", "generated_fallback"}:
         return "fallback"
     return "pending_review"
 
@@ -229,6 +232,7 @@ def source_label(source_type: str) -> str:
         "x_original_proxy": "Ooglex R2 cache · X profile avatar proxy",
         "official_fallback": "Ooglex R2 cache · verified official portrait fallback",
         "public_fallback": "Ooglex R2 cache · verified public portrait fallback",
+        "generated_fallback": "Ooglex R2 cache · generated initials fallback",
     }.get(source_type, "Pending review · no verified portrait available")
 
 
@@ -238,6 +242,7 @@ def avatar_status(source_type: str) -> str:
         "x_original_proxy": "x_original_proxy_verified",
         "official_fallback": "official_fallback_verified",
         "public_fallback": "public_fallback_verified",
+        "generated_fallback": "generated_fallback",
     }.get(source_type, "pending_review")
 
 
@@ -275,6 +280,7 @@ def apply_result(
         leader["avatar_is_substitute"] = source_type in {
             "official_fallback",
             "public_fallback",
+            "generated_fallback",
         }
         leader.pop("avatar_review_reason", None)
     else:
@@ -393,7 +399,11 @@ def main() -> int:
         1 for item in audit_items
         if item.get("source_type") == "public_fallback"
     )
-    fallback_count = official_fallback + public_fallback
+    generated_fallback = sum(
+        1 for item in audit_items
+        if item.get("source_type") == "generated_fallback"
+    )
+    fallback_count = official_fallback + public_fallback + generated_fallback
     usable = sum(1 for item in audit_items if item.get("ok"))
     pending_count = len(audit_items) - usable
     missing_handles = sum(
@@ -416,6 +426,7 @@ def main() -> int:
         "x_original_proxy": x_proxy,
         "official_fallback": official_fallback,
         "public_fallback": public_fallback,
+        "generated_fallback": generated_fallback,
         "fallback": fallback_count,
         "pending_review": pending_count,
         "missing_handle": missing_handles,

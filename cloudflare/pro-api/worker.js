@@ -191,8 +191,9 @@ function twitterProfileImageLarge(urlValue) {
 function avatarSourceType(sourceValue) {
   const source = String(sourceValue || "").toLowerCase().replace(/-r2(?:-cache)?$/, "");
   if (source === "x_profile_redirect_x" || source === "x_profile_redirect" || source === "x_followbutton" || source === "x_syndication") return "x_original";
-  if (source === "unavatar_x") return "x_original_proxy";
+  if (source === "unavatar_x" || source === "fxtwitter_profile") return "x_original_proxy";
   if (source === "official_override") return "official_fallback";
+  if (source === "generated_initials") return "generated_fallback";
   if (source === "wikipedia" || source === "wikimedia_commons") return "public_fallback";
   return "unknown";
 }
@@ -282,6 +283,23 @@ async function fetchTechAvatarViaSyndication(handle) {
   }
   if (!imageUrl) return { ok: false, status: 404, source: "x_syndication" };
   return fetchTechAvatarImage(imageUrl, "x_syndication");
+}
+
+async function fetchTechAvatarViaFxTwitterProfile(handle, name) {
+  try {
+    const profile = await fetchFxTwitterPublicProfile(handle, name);
+    const imageUrl = profile && profile.profile_image_url
+      ? twitterProfileImageLarge(profile.profile_image_url)
+      : "";
+    if (!imageUrl) return { ok: false, status: 404, source: "fxtwitter_profile" };
+    return fetchTechAvatarImage(imageUrl, "fxtwitter_profile");
+  } catch (err) {
+    return {
+      ok: false,
+      status: Number(err && err.status) || 502,
+      source: "fxtwitter_profile"
+    };
+  }
 }
 
 function xProfileExpandedUrl(value) {
@@ -694,37 +712,44 @@ async function fetchTechAvatarViaWikipedia(name, company) {
   const cleanCompany = String(company || "").trim().slice(0, 120);
   if (!cleanName) return { ok: false, status: 400, source: "wikipedia" };
 
-  const params = new URLSearchParams({
-    action: "query",
-    generator: "search",
-    gsrsearch: [cleanName, cleanCompany].filter(Boolean).join(" "),
-    gsrnamespace: "0",
-    gsrlimit: "5",
-    prop: "pageimages",
-    pithumbsize: "500",
-    pilimit: "5",
-    format: "json",
-    formatversion: "2",
-    origin: "*"
-  });
+  const queries = [];
+  const withCompany = [cleanName, cleanCompany].filter(Boolean).join(" ");
+  if (withCompany) queries.push(withCompany);
+  if (!queries.includes(cleanName)) queries.push(cleanName);
 
-  const res = await fetch(`https://en.wikipedia.org/w/api.php?${params.toString()}`, {
-    headers: {
-      accept: "application/json",
-      "user-agent": "Ooglex-Tech-Leaders-Avatar/5.1 (https://ooglex.com)"
+  for (const query of queries) {
+    const params = new URLSearchParams({
+      action: "query",
+      generator: "search",
+      gsrsearch: query,
+      gsrnamespace: "0",
+      gsrlimit: "8",
+      prop: "pageimages",
+      pithumbsize: "500",
+      pilimit: "8",
+      format: "json",
+      formatversion: "2",
+      origin: "*"
+    });
+
+    const res = await fetch(`https://en.wikipedia.org/w/api.php?${params.toString()}`, {
+      headers: {
+        accept: "application/json",
+        "user-agent": "Ooglex-Tech-Leaders-Avatar/6.1 (https://ooglex.com)"
+      }
+    });
+    if (!res.ok) continue;
+
+    let payload = null;
+    try { payload = await res.json(); } catch {}
+    const pages = payload && payload.query && Array.isArray(payload.query.pages) ? payload.query.pages : [];
+
+    for (const page of pages) {
+      if (!page || !page.thumbnail || !page.thumbnail.source) continue;
+      if (!wikiTitleMatchesPerson(page.title, cleanName)) continue;
+      const image = await fetchTechAvatarImage(page.thumbnail.source, "wikipedia");
+      if (image.ok) return image;
     }
-  });
-  if (!res.ok) return { ok: false, status: res.status, source: "wikipedia" };
-
-  let payload = null;
-  try { payload = await res.json(); } catch {}
-  const pages = payload && payload.query && Array.isArray(payload.query.pages) ? payload.query.pages : [];
-
-  for (const page of pages) {
-    if (!page || !page.thumbnail || !page.thumbnail.source) continue;
-    if (!wikiTitleMatchesPerson(page.title, cleanName)) continue;
-    const image = await fetchTechAvatarImage(page.thumbnail.source, "wikipedia");
-    if (image.ok) return image;
   }
   return { ok: false, status: 404, source: "wikipedia" };
 }
@@ -773,6 +798,36 @@ async function fetchTechAvatarViaCommons(name) {
   return { ok: false, status: 404, source: "wikimedia_commons" };
 }
 
+function techAvatarInitials(name, handle) {
+  const raw = String(name || handle || "?").trim();
+  const latin = raw.split(/\s+/).filter(Boolean);
+  if (/[A-Za-z]/.test(raw) && latin.length > 1) {
+    return (latin[0][0] + latin[latin.length - 1][0]).toUpperCase();
+  }
+  return raw.slice(0, 2).toUpperCase();
+}
+
+function techAvatarSvgEscape(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function generatedTechLeaderAvatar(name, handle) {
+  const initials = techAvatarSvgEscape(techAvatarInitials(name, handle));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="128" fill="#e8e0d7"/><circle cx="128" cy="128" r="126" fill="none" stroke="#d3c8bd" stroke-width="4"/><text x="128" y="145" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="78" font-weight="700" fill="#655c54">${initials}</text></svg>`;
+  const bytes = new TextEncoder().encode(svg);
+  return {
+    ok: true,
+    bytes: bytes.buffer,
+    contentType: "image/svg+xml",
+    source: "generated_initials",
+    sourceType: "generated_fallback"
+  };
+}
+
 async function resolveTechLeaderAvatar(handle, name, company) {
   // 1) Exhaust current X-owned/current-profile routes first.
   const directX = await fetchTechAvatarImage(
@@ -793,7 +848,11 @@ async function resolveTechLeaderAvatar(handle, name, company) {
   const syndicated = await fetchTechAvatarViaSyndication(handle);
   if (syndicated.ok) return syndicated;
 
-  // 2) Only then use an X avatar proxy/mirror.
+  // 2) Public X-profile mirrors. FxTwitter is already used by the free-profile
+  // path and often succeeds for accounts that X syndication does not expose.
+  const fxProfile = await fetchTechAvatarViaFxTwitterProfile(handle, name);
+  if (fxProfile.ok) return fxProfile;
+
   const xProxy = await fetchTechAvatarImage(
     `https://unavatar.io/x/${encodeURIComponent(handle)}?fallback=false`,
     "unavatar_x"
@@ -814,12 +873,9 @@ async function resolveTechLeaderAvatar(handle, name, company) {
   const commons = await fetchTechAvatarViaCommons(name);
   if (commons.ok) return commons;
 
-  return {
-    ok: false,
-    status: commons.status || wikipedia.status || xProxy.status || syndicated.status || followButton.status || direct.status || directX.status || 502,
-    source: "avatar_unavailable",
-    sourceType: "unknown"
-  };
+  // 5) Never return a broken avatar. Keep this source explicit so it is never
+  // confused with a verified photographic portrait.
+  return generatedTechLeaderAvatar(name, handle);
 }
 
 async function getTechLeaderAvatar(handle, name, company, env) {
@@ -929,7 +985,7 @@ async function getTechLeaderAvatarAudit(handles, env) {
     let status = "missing";
     if (sourceType === "x_original") status = "x_original";
     else if (sourceType === "x_original_proxy") status = "x_original_proxy";
-    else if (sourceType === "official_fallback" || sourceType === "public_fallback") status = "fallback";
+    else if (sourceType === "official_fallback" || sourceType === "public_fallback" || sourceType === "generated_fallback") status = "fallback";
 
     return {
       handle,

@@ -13,6 +13,7 @@ USABLE_SOURCE_TYPES = {
     "x_original_proxy",
     "official_fallback",
     "public_fallback",
+    "generated_fallback",
 }
 
 
@@ -24,10 +25,12 @@ def infer_source_type(source):
             break
     if value in {"x_profile_redirect_x", "x_profile_redirect", "x_followbutton", "x_syndication"}:
         return "x_original"
-    if value == "unavatar_x":
+    if value in {"unavatar_x", "fxtwitter_profile"}:
         return "x_original_proxy"
     if value == "official_override":
         return "official_fallback"
+    if value == "generated_initials":
+        return "generated_fallback"
     if value in {"wikipedia", "wikimedia_commons"}:
         return "public_fallback"
     return "unknown"
@@ -189,7 +192,7 @@ def main():
         1
         for r in results
         if r.get("source_type")
-        in {"official_fallback", "public_fallback"}
+        in {"official_fallback", "public_fallback", "generated_fallback"}
     )
     usable = len(results) - len(failures)
 
