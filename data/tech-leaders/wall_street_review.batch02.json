@@ -6,6 +6,7 @@
   "source_scan": "data/tech-leaders/wall_street_scan.v1.json",
   "batch": "02",
   "candidate_range": "26-50",
+  "target_category": "华尔街",
   "policy": {
     "require_current_role_or_clearly_labeled_legacy_role": true,
     "require_personal_x_identity_evidence_for_approval": true,
@@ -15,10 +16,35 @@
     "dedupe_against_production": true,
     "production_write_forbidden_until_approved": true
   },
+  "production_dedupe_checked": true,
+  "production_duplicates": [],
   "summary": {
     "approved": 21,
     "manual_review": 4
   },
+  "approved_handles": [
+    "HowardMarksBook",
+    "elerianm",
+    "LizAnnSonders",
+    "biancoresearch",
+    "EconguyRosie",
+    "PeterSchiff",
+    "LynAldenContact",
+    "DiMartinoBooth",
+    "spomboy",
+    "BobEUnlimited",
+    "profplum99",
+    "RealJimChanos",
+    "Scaramucci",
+    "RaoulGMI",
+    "jimcramer",
+    "ritholtz",
+    "michaelbatnick",
+    "awealthofcs",
+    "EricBalchunas",
+    "jam_croissant",
+    "donnelly_brent"
+  ],
   "records": [
     {
       "rank": 26,
