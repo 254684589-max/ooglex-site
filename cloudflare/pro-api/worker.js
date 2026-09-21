@@ -238,7 +238,7 @@ async function fetchTechAvatarImage(url, source) {
   if (!contentType.startsWith("image/")) return { ok: false, status: 502, source };
   const bytes = await res.arrayBuffer();
   if (!bytes.byteLength || bytes.byteLength > TECH_AVATAR_MAX_BYTES) return { ok: false, status: 502, source };
-  return { ok: true, bytes, contentType, source, sourceType: avatarSourceType(source) };
+  return { ok: true, bytes, contentType, source, sourceType: avatarSourceType(source), sourceUrl: res.url || url };
 }
 
 async function fetchTechAvatarViaFollowButton(handle) {
@@ -1946,16 +1946,6 @@ function techLeaderShareMedia(post, origin) {
   };
 }
 
-function arrayBufferToBase64(buffer) {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  const chunkSize = 0x8000;
-  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
-    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
-  }
-  return btoa(binary);
-}
-
 async function techLeaderShareAvatarResponse(url, env, cors) {
   const handle = normalizeXHandle(url.searchParams.get("handle"));
   const name = String(url.searchParams.get("name") || handle || "X").trim().slice(0, 120);
@@ -1963,38 +1953,53 @@ async function techLeaderShareAvatarResponse(url, env, cors) {
   if (!handle) return json({ error: "invalid_share_avatar_handle" }, 400, cors);
 
   try {
-    const avatar = await getTechLeaderAvatar(handle, name, "", env);
-    const contentType = String(avatar.headers.get("content-type") || "image/jpeg").split(";")[0].trim();
-    const bytes = await new Response(avatar.body).arrayBuffer();
-    const dataUri = `data:${contentType};base64,${arrayBufferToBase64(bytes)}`;
-
-    const badge = verified ? `
-      <circle cx="414" cy="406" r="62" fill="#ffffff"/>
-      <svg x="358" y="350" width="112" height="112" viewBox="0 0 24 24" aria-label="Ooglex verified public account">
-        <path fill="#1d9bf0" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/>
-        <path d="M7.35 12.35 10.1 15.1 16.65 8.55" fill="none" stroke="#fff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>` : "";
-
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-      <title>${shareHtmlEscape(name)} profile portrait</title>
-      <rect width="512" height="512" rx="44" fill="#ffffff"/>
-      <defs>
-        <clipPath id="avatar-clip"><circle cx="256" cy="256" r="202"/></clipPath>
-      </defs>
-      <circle cx="256" cy="256" r="208" fill="#ffffff" stroke="#ded5cb" stroke-width="6"/>
-      <image href="${dataUri}" x="54" y="54" width="404" height="404" preserveAspectRatio="xMidYMid slice" clip-path="url(#avatar-clip)"/>
-      ${badge}
-    </svg>`;
-
-    return new Response(svg, {
-      status: 200,
-      headers: {
-        ...cors,
-        "content-type": "image/svg+xml; charset=utf-8",
-        "cache-control": "public, max-age=21600, stale-while-revalidate=86400",
-        "x-ooglex-share-avatar": verified ? "circle-verified" : "circle"
+    const resolved = await resolveTechLeaderAvatar(handle, name, "");
+    if (resolved && resolved.ok && resolved.sourceUrl) {
+      const draw = [
+        { url: "https://www.ooglex.com/assets/tech-leader-share-mask.svg", width: 512, height: 512 }
+      ];
+      if (verified) {
+        draw.push({
+          url: "https://www.ooglex.com/assets/tech-leader-share-verified.svg",
+          width: 112,
+          height: 112,
+          right: 34,
+          bottom: 34
+        });
       }
-    });
+
+      const transformed = await fetch(resolved.sourceUrl, {
+        cf: {
+          image: {
+            width: 512,
+            height: 512,
+            fit: "cover",
+            format: "png",
+            draw
+          }
+        }
+      });
+      const transformedType = String(transformed.headers.get("content-type") || "").toLowerCase();
+      if (transformed.ok && transformedType.startsWith("image/")) {
+        const headers = new Headers(cors);
+        headers.set("content-type", transformedType.split(";")[0] || "image/png");
+        headers.set("cache-control", "public, max-age=21600, stale-while-revalidate=86400");
+        headers.set("x-ooglex-share-avatar", verified ? "circle-verified-png" : "circle-png");
+        return new Response(transformed.body, { status: 200, headers });
+      }
+    }
+  } catch {}
+
+  // WeChat does not reliably render SVG Open Graph thumbnails. If image
+  // transformation is unavailable, return the normal raster avatar rather
+  // than a blank preview.
+  try {
+    const avatar = await getTechLeaderAvatar(handle, name, "", env);
+    const headers = new Headers(cors);
+    avatar.headers.forEach((value, key) => headers.set(key, value));
+    headers.set("cache-control", "public, max-age=21600, stale-while-revalidate=86400");
+    headers.set("x-ooglex-share-avatar", "raster-avatar-fallback");
+    return new Response(avatar.body, { status: 200, headers });
   } catch (err) {
     const code = err && err.code ? err.code : "share_avatar_unavailable";
     const status = err && Number.isInteger(err.status) ? err.status : 502;
@@ -2068,7 +2073,6 @@ function techLeaderShareResponse(handle, post, requestUrl) {
 <meta property="og:url" content="${shareHtmlEscape(shareUrl)}">
 <meta property="og:image" content="${shareHtmlEscape(socialImage)}">
 <meta property="og:image:secure_url" content="${shareHtmlEscape(socialImage)}">
-<meta property="og:image:type" content="image/svg+xml">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 ${video ? `<meta property="og:video" content="${shareHtmlEscape(video)}">
