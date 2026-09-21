@@ -240,6 +240,21 @@
           "name": "Brad Smith",
           "handle": "BradSmi",
           "status": "approved"
+        },
+        {
+          "name": "Pavan Davuluri",
+          "handle": "pavandavuluri",
+          "status": "approved"
+        },
+        {
+          "name": "Judson Althoff",
+          "handle": "judsonalthoff",
+          "status": "approved"
+        },
+        {
+          "name": "Scott Guthrie",
+          "handle": "scottgu",
+          "status": "manual_review"
         }
       ],
       "resolution_status": "expand_more",
@@ -311,6 +326,11 @@
         {
           "name": "Steven Sinofsky",
           "handle": "stevesi",
+          "status": "approved"
+        },
+        {
+          "name": "Phil Spencer",
+          "handle": "XboxP3",
           "status": "approved"
         }
       ],
@@ -396,8 +416,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Raghu Raghuram",
+          "handle": "RaghuRaghuram",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -429,13 +455,7 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [
-        {
-          "name": "Sanjay Mehrotra",
-          "handle": "MicronCEO",
-          "status": "approved"
-        }
-      ],
+      "known_reviewed_people": [],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -518,7 +538,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Mark Papermaster",
+          "handle": "mpaper2000",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -698,6 +724,11 @@
         {
           "name": "Thomas Kurian",
           "handle": "ThomasOrTK",
+          "status": "approved"
+        },
+        {
+          "name": "Sameer Samat",
+          "handle": "ssamat",
           "status": "approved"
         }
       ],
@@ -1256,6 +1287,11 @@
         {
           "name": "Matt Garman",
           "handle": "MattSGarman",
+          "status": "approved"
+        },
+        {
+          "name": "Swami Sivasubramanian",
+          "handle": "SwamiSivasubram",
           "status": "approved"
         }
       ],
@@ -1937,11 +1973,6 @@
           "name": "Alexander Karp",
           "handle": "",
           "status": "manual_review"
-        },
-        {
-          "name": "Shyam Sankar",
-          "handle": "ssankar",
-          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -3434,11 +3465,6 @@
           "name": "David Solomon",
           "handle": "",
           "status": "manual_review"
-        },
-        {
-          "name": "David Solomon",
-          "handle": "DavidSolomon",
-          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -4341,7 +4367,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Amit Zavery",
+          "handle": "azavery",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -8696,13 +8728,7 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [
-        {
-          "name": "Baiju Bhatt",
-          "handle": "BaijuBhatt",
-          "status": "approved"
-        }
-      ],
+      "known_reviewed_people": [],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -8733,13 +8759,7 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [
-        {
-          "name": "Baiju Bhatt",
-          "handle": "BaijuBhatt",
-          "status": "approved"
-        }
-      ],
+      "known_reviewed_people": [],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -9922,11 +9942,6 @@
       ],
       "known_reviewed_people": [
         {
-          "name": "Joe Gebbia",
-          "handle": "jgebbia",
-          "status": "approved"
-        },
-        {
           "name": "Nathan Blecharczyk",
           "handle": "nathanblec",
           "status": "approved"
@@ -9998,8 +10013,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Joe Gebbia",
+          "handle": "jgebbia",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -10029,16 +10050,6 @@
         {
           "name": "Tony Xu",
           "handle": "t_xu",
-          "status": "approved"
-        },
-        {
-          "name": "Stanley Tang",
-          "handle": "stanleytang",
-          "status": "approved"
-        },
-        {
-          "name": "Andy Fang",
-          "handle": "andyfang",
           "status": "approved"
         }
       ],
@@ -10070,16 +10081,6 @@
         {
           "name": "Tony Xu",
           "handle": "t_xu",
-          "status": "approved"
-        },
-        {
-          "name": "Stanley Tang",
-          "handle": "stanleytang",
-          "status": "approved"
-        },
-        {
-          "name": "Andy Fang",
-          "handle": "andyfang",
           "status": "approved"
         }
       ],
