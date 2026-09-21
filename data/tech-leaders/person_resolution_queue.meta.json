@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "company_count": 150,
+  "slot_count": 450,
+  "slot_type_counts": {
+    "current_primary": 150,
+    "founder_legacy": 150,
+    "former_executive": 150
+  },
+  "slots_with_known_people": {
+    "current_primary": 41,
+    "founder_legacy": 16,
+    "former_executive": 5
+  },
+  "rules": {
+    "three_parallel_tracks_per_company": true,
+    "existing_people_do_not_close_company": true,
+    "dedupe_by_person_and_handle": true,
+    "production_file_untouched": "apps/tech-leaders/leaders.json"
+  },
+  "next_stage": "Resolve names + role evidence + personal X identity + activity for needs_person_discovery slots; approved people flow into evidence tranches."
+}
