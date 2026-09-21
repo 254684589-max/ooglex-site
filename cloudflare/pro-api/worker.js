@@ -1425,7 +1425,7 @@ function normalizeFxTwitterStatus(status, handle) {
 async function fetchFxTwitterFreeFeed(handle, limit) {
   const requested = Math.max(3, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
   const pageSize = 20;
-  const strictLatestProfile = ["zlq6600e","elonmusk"].includes(String(handle || "").toLowerCase());
+  const strictLatestProfile = ["elonmusk"].includes(String(handle || "").toLowerCase());
   const maxPages = Math.max(1, Math.ceil(requested / pageSize));
   const byId = new Map();
   let cursor = "";
@@ -1582,7 +1582,7 @@ async function fetchOfficialSyndicationFreeFeed(handle, limit) {
     theme: "light",
     transparent: "true"
   });
-  if (["zlq6600e","elonmusk"].includes(String(handle || "").toLowerCase())) {
+  if (["elonmusk"].includes(String(handle || "").toLowerCase())) {
     // One-minute bucket reduces the chance of reusing a stale CDN timeline
     // without producing a unique URL for every single page view.
     params.set("_fresh", String(Math.floor(Date.now() / 60000)));
@@ -1672,12 +1672,9 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
   const requested = Math.max(1, Math.min(TECH_FREE_FEED_MAX_ITEMS, limit || TECH_FEED_FETCH_SIZE));
 
   // Fast first paint: one public page is enough for ordinary profiles.
-  // Zheng Yi's public page intentionally shows only the latest 3 posts, so
-  // freshness matters more than first-paint latency there. For that profile,
-  // always compare both public sources and merge by created_at instead of
-  // accepting the first FxTwitter page, which can lag behind the live X profile.
-  const strictLatestProfile = String(handle || "").toLowerCase() === "zlq6600e";
-  if (requested <= 20 && !strictLatestProfile) {
+  // Elon Musk retains a temporary exact-post patch below; all other profiles
+  // use the generic public-source path with no catalog-specific exceptions.
+  if (requested <= 20) {
     try {
       const fastFeed = await Promise.any([
         fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
@@ -1760,9 +1757,7 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
 
 function freeTechLeaderCacheKey(handle) {
   const normalized = String(handle || "").toLowerCase();
-  const version = normalized === "zlq6600e"
-    ? "v8-latest"
-    : (normalized === "elonmusk" ? "v9-elon-target" : "v7");
+  const version = normalized === "elonmusk" ? "v9-elon-target" : "v7";
   return `tech-leaders/free-feed/${version}/${normalized}.json`;
 }
 
@@ -1784,8 +1779,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   // fulfilled history depth.
   const cachedCapacity = cachedPosts.length;
   const normalizedLower = normalized.toLowerCase();
-  const strictLatestProfile = ["zlq6600e","elonmusk"].includes(normalizedLower);
-  const strictThreeProfile = normalizedLower === "zlq6600e";
+  const strictLatestProfile = normalizedLower === "elonmusk";
 
   const activeTtl = strictLatestProfile ? TECH_FREE_FEED_STRICT_TTL_MS : TECH_FREE_FEED_TTL_MS;
   if (cachedPosts.length && age <= activeTtl && cachedCapacity >= limit) {
@@ -1799,9 +1793,7 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   }
 
   try {
-    const requestedLimit = strictThreeProfile
-      ? Math.max(1, Math.min(3, limit))
-      : Math.max(limit, TECH_FEED_FETCH_SIZE);
+    const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
     const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
     const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
     const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
@@ -2065,20 +2057,13 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
     : `${author} · Ooglex`;
   const handleLower = String(handle || "").toLowerCase();
-  const hideHandle = handleLower === "zlq6600e";
-  const publicAuthor = hideHandle
-    ? "Zheng Yi"
-    : (handleLower === "elonmusk" ? "马斯克 · Elon Musk" : author);
+  const publicAuthor = handleLower === "elonmusk" ? "马斯克 · Elon Musk" : author;
   const showVerifiedBadge = Boolean(handle);
   const verifiedBadgeHtml = showVerifiedBadge
     ? '<span class="verified-badge" aria-label="Verified" title="Verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified-blue" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path class="verified-check" d="M7.35 12.35 10.1 15.1 16.65 8.55"/></svg></span>'
     : "";
-  const description = hideHandle
-    ? `${publicAuthor} · Original public X post via Ooglex`
-    : `${publicAuthor} (@${handle}) · Original public X post via Ooglex`;
-  const descriptionHtml = hideHandle
-    ? `${shareHtmlEscape(publicAuthor)} · Original public X post via Ooglex`
-    : `<span class="desc-author">${shareHtmlEscape(publicAuthor)}${verifiedBadgeHtml}</span> (@${shareHtmlEscape(handle)}) · Original public X post via Ooglex`;
+  const description = `${publicAuthor} (@${handle}) · Original public X post via Ooglex`;
+  const descriptionHtml = `<span class="desc-author">${shareHtmlEscape(publicAuthor)}${verifiedBadgeHtml}</span> (@${shareHtmlEscape(handle)}) · Original public X post via Ooglex`;
   const shareMedia = techLeaderShareMedia(post, requestUrl.origin);
   const image = shareMedia.image;
   const video = shareMedia.video;
@@ -2161,7 +2146,7 @@ video.preview{object-fit:contain}
       <div class="author-name">${shareHtmlEscape(publicAuthor)}</div>
       ${verifiedBadgeHtml}
     </div>
-    <div class="author-meta">${hideHandle ? "Public X post" : `@${shareHtmlEscape(handle)} · Public X post`}</div>
+    <div class="author-meta">@${shareHtmlEscape(handle)} · Public X post</div>
   </div>
 </div>
 <h1>${shareHtmlEscape(originalText || previewTitle)}</h1>
@@ -2732,7 +2717,7 @@ async function proxyTechLeaderMedia(request, target, cors) {
           display_batch_size: 10,
           cache_ttl_seconds: Math.round(TECH_FREE_FEED_TTL_MS / 1000),
           strict_profile_cache_ttl_seconds: Math.round(TECH_FREE_FEED_STRICT_TTL_MS / 1000),
-          strict_profile_strategy: "ZLQ6600E + elonmusk: FxTwitter since=7d + media-only normalization + source merge"
+          strict_profile_strategy: "elonmusk: FxTwitter since=7d + media-only normalization"
         },
         free_mode_contract: {
           calls_api_x_com: false,
