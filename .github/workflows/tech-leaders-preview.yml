@@ -62,4 +62,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$FILE"
           git commit -m "data: refresh tech-leaders verified preview"
-          git push
+
+          # Other Tech Leaders generators may commit to main at the same time.
+          # Rebase the preview commit before push to avoid non-fast-forward races.
+          git pull --rebase origin main
+          git push origin HEAD:main
