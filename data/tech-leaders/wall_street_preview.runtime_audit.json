@@ -1,29 +1,29 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-21T18:33:12Z",
+  "generated_at": "2026-09-21T18:36:43Z",
   "preview_catalog_version": "v528-wall-street-preview-2026-09-22",
   "preview_count": 528,
   "base_count": 500,
   "approved_additions": 28,
   "sample_count": 5,
-  "ready_count": 2,
-  "blocked_count": 3,
+  "ready_count": 3,
+  "blocked_count": 2,
   "rows": [
     {
       "name": "Rick Rieder",
       "handle": "RickRieder",
       "preview_record_ok": true,
-      "avatar_ok": false,
-      "avatar_content_type": "",
-      "avatar_bytes": 0,
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 287227,
       "feed_ok": true,
+      "feed_http_status": 200,
+      "feed_error_body": "",
       "feed_source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "newest_post_at": "Thu Apr 30 13:36:23 +0000 2026",
-      "ready": false,
-      "blocking_reasons": [
-        "avatar_fetch_failed:HTTPError"
-      ]
+      "ready": true,
+      "blocking_reasons": []
     },
     {
       "name": "Howard Marks",
@@ -33,12 +33,14 @@
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 88726,
       "feed_ok": false,
+      "feed_http_status": 502,
+      "feed_error_body": "{\"error\":\"free_public_feed_sources_unavailable\",\"handle\":\"HowardMarksBook\",\"uses_x_api\":false,\"upstream_status\":502,\"diagnostic\":null}",
       "feed_source": "",
       "post_count": 0,
       "newest_post_at": null,
       "ready": false,
       "blocking_reasons": [
-        "feed_fetch_failed:HTTPError"
+        "feed_http_502"
       ]
     },
     {
@@ -49,6 +51,8 @@
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 8169,
       "feed_ok": true,
+      "feed_http_status": 200,
+      "feed_error_body": "",
       "feed_source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "newest_post_at": "Sat Sep 19 12:25:51 +0000 2026",
@@ -63,6 +67,8 @@
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 23535,
       "feed_ok": true,
+      "feed_http_status": 200,
+      "feed_error_body": "",
       "feed_source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "newest_post_at": "Mon Sep 21 15:27:54 +0000 2026",
@@ -77,12 +83,14 @@
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 289653,
       "feed_ok": false,
+      "feed_http_status": 502,
+      "feed_error_body": "{\"error\":\"free_public_feed_sources_unavailable\",\"handle\":\"CliffordAsness\",\"uses_x_api\":false,\"upstream_status\":502,\"diagnostic\":null}",
       "feed_source": "",
       "post_count": 0,
       "newest_post_at": null,
       "ready": false,
       "blocking_reasons": [
-        "feed_fetch_failed:HTTPError"
+        "feed_http_502"
       ]
     }
   ],
