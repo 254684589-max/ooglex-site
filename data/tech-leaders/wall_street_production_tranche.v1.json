@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-22",
+  "status": "preview_built",
+  "tranche_type": "wall_street_production_tranche_v1",
+  "source_reviews": [
+    "data/tech-leaders/wall_street_review.batch01.json",
+    "data/tech-leaders/wall_street_review.batch02.json"
+  ],
+  "target_category": "华尔街",
+  "base_catalog": "v400-stable-2026-09-21",
+  "base_count": 400,
+  "approved_count": 28,
+  "production_duplicates": [],
+  "net_new_count": 28,
+  "preview_count": 428,
+  "production_write_forbidden": true,
+  "preview_catalog_path": "apps/tech-leaders/leaders-wall-street-v428-preview.json",
+  "candidates": [
+    {
+      "id": "wall-street-rick-rieder",
+      "name": "Rick Rieder",
+      "handle": "RickRieder",
+      "company": "BlackRock",
+      "current_role": "Chief Investment Officer of Global Fixed Income",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.blackrock.com/us/individual/biographies/rick-rieder",
+      "x_identity_source_url": "https://x.com/RickRieder",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-05"
+    },
+    {
+      "id": "wall-street-cliff-asness",
+      "name": "Cliff Asness",
+      "handle": "CliffordAsness",
+      "company": "AQR Capital Management",
+      "current_role": "Founder, Managing Principal & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.aqr.com/our-firm/leadership/cliff-asness",
+      "x_identity_source_url": "https://x.com/CliffordAsness",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-david-einhorn",
+      "name": "David Einhorn",
+      "handle": "davidein",
+      "company": "Greenlight Capital",
+      "current_role": "President",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1373670/000162828026037547/a2025annualreport-grbk.pdf",
+      "x_identity_source_url": "https://x.com/davidein",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    },
+    {
+      "id": "wall-street-daniel-loeb",
+      "name": "Daniel Loeb",
+      "handle": "DanielSLoeb1",
+      "company": "Third Point",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.thirdpoint.com/",
+      "x_identity_source_url": "https://x.com/DanielSLoeb1",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-steve-cohen",
+      "name": "Steve Cohen",
+      "handle": "StevenACohen2",
+      "company": "Point72",
+      "current_role": "Chairman, Chief Executive Officer & Co-Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://point72.com/leader/steven-a-cohen/",
+      "x_identity_source_url": "https://x.com/StevenACohen2",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-07"
+    },
+    {
+      "id": "wall-street-boaz-weinstein",
+      "name": "Boaz Weinstein",
+      "handle": "boazweinstein",
+      "company": "Saba Capital Management",
+      "current_role": "Founder & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.sabacapital.com/team-members/boaz-weinstein",
+      "x_identity_source_url": "https://x.com/boazweinstein",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21"
+    },
+    {
+      "id": "wall-street-jeffrey-gundlach",
+      "name": "Jeffrey Gundlach",
+      "handle": "TruthGundlach",
+      "company": "DoubleLine Capital",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://doubleline.com/leadership/",
+      "x_identity_source_url": "https://x.com/TruthGundlach",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21"
+    },
+    {
+      "id": "wall-street-howard-marks",
+      "name": "Howard Marks",
+      "handle": "HowardMarksBook",
+      "company": "Oaktree Capital Management",
+      "current_role": "Co-Founder & Co-Chairman",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.oaktreecapital.com/about/leadership/bio/howard-marks",
+      "x_identity_source_url": "https://www.oaktreecapital.com/fraud-and-phishing",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-08"
+    },
+    {
+      "id": "wall-street-mohamed-el-erian",
+      "name": "Mohamed El-Erian",
+      "handle": "elerianm",
+      "company": "Allianz / Gramercy Funds Management / Queens' College",
+      "current_role": "Chief Economic Adviser, Allianz; Chair, Gramercy Funds Management; Life Fellow, Queens' College",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.queens.cam.ac.uk/visiting-fellows-and-honorary-fellows/mohamed-el-erian",
+      "x_identity_source_url": "https://x.com/elerianm",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    },
+    {
+      "id": "wall-street-liz-ann-sonders",
+      "name": "Liz Ann Sonders",
+      "handle": "LizAnnSonders",
+      "company": "Charles Schwab",
+      "current_role": "Managing Director & Chief Investment Strategist",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.schwab.com/learn/author/liz-ann-sonders",
+      "x_identity_source_url": "https://x.com/LizAnnSonders",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-jim-bianco",
+      "name": "Jim Bianco",
+      "handle": "biancoresearch",
+      "company": "Bianco Research",
+      "current_role": "President & Macro Strategist",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.biancoresearch.com/contact-us/",
+      "x_identity_source_url": "https://x.com/biancoresearch",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-david-rosenberg",
+      "name": "David Rosenberg",
+      "handle": "EconguyRosie",
+      "company": "Rosenberg Research",
+      "current_role": "Founder & President",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.rosenbergresearch.com/about/",
+      "x_identity_source_url": "https://x.com/EconguyRosie",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    },
+    {
+      "id": "wall-street-peter-schiff",
+      "name": "Peter Schiff",
+      "handle": "PeterSchiff",
+      "company": "Euro Pacific Asset Management",
+      "current_role": "Chief Economist & Global Strategist",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://europac.com/about/peter-schiff/",
+      "x_identity_source_url": "https://x.com/PeterSchiff",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-lyn-alden",
+      "name": "Lyn Alden",
+      "handle": "LynAldenContact",
+      "company": "Lyn Alden Investment Strategy / Ego Death Capital",
+      "current_role": "Founder, Lyn Alden Investment Strategy; General Partner, Ego Death Capital",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.lynalden.com/",
+      "x_identity_source_url": "https://x.com/LynAldenContact",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-danielle-dimartino-booth",
+      "name": "Danielle DiMartino Booth",
+      "handle": "DiMartinoBooth",
+      "company": "QI Research",
+      "current_role": "Chief Executive Officer & Chief Strategist",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://quillintelligence.com/about/",
+      "x_identity_source_url": "https://x.com/DiMartinoBooth",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-stephanie-pomboy",
+      "name": "Stephanie Pomboy",
+      "handle": "spomboy",
+      "company": "MacroMavens",
+      "current_role": "Founder",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.macromavens.com/",
+      "x_identity_source_url": "https://x.com/spomboy",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    },
+    {
+      "id": "wall-street-bob-elliott",
+      "name": "Bob Elliott",
+      "handle": "BobEUnlimited",
+      "company": "Unlimited Funds",
+      "current_role": "Co-Founder, Chief Executive Officer & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.unlimitedfunds.com/team",
+      "x_identity_source_url": "https://x.com/BobEUnlimited",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-mike-green",
+      "name": "Mike Green",
+      "handle": "profplum99",
+      "company": "Tier1 Alpha Asset Management",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.t1a.com/about",
+      "x_identity_source_url": "https://x.com/profplum99",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-jim-chanos",
+      "name": "Jim Chanos",
+      "handle": "RealJimChanos",
+      "company": "Chanos & Company",
+      "current_role": "President & Founder",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.sohnconference.org/2026-agenda",
+      "x_identity_source_url": "https://x.com/RealJimChanos",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    },
+    {
+      "id": "wall-street-anthony-scaramucci",
+      "name": "Anthony Scaramucci",
+      "handle": "Scaramucci",
+      "company": "SkyBridge Capital",
+      "current_role": "Founder & Managing Partner",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.skybridge.com/team/",
+      "x_identity_source_url": "https://x.com/Scaramucci",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-raoul-pal",
+      "name": "Raoul Pal",
+      "handle": "RaoulGMI",
+      "company": "Real Vision / Global Macro Investor",
+      "current_role": "Co-Founder & Chief Executive Officer, Real Vision Group; Founder, Global Macro Investor",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.realvision.com/contributors/raoul-pal",
+      "x_identity_source_url": "https://x.com/RaoulGMI",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-jim-cramer",
+      "name": "Jim Cramer",
+      "handle": "jimcramer",
+      "company": "CNBC",
+      "current_role": "Host, Mad Money; Co-Anchor, Squawk on the Street",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.jimcramer.com/",
+      "x_identity_source_url": "https://x.com/jimcramer",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-barry-ritholtz",
+      "name": "Barry Ritholtz",
+      "handle": "ritholtz",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Chairman & Chief Investment Officer; Co-Founder",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.ritholtzwealth.com/team/barry-ritholtz/",
+      "x_identity_source_url": "https://x.com/ritholtz",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-michael-batnick",
+      "name": "Michael Batnick",
+      "handle": "michaelbatnick",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Managing Partner",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.ritholtzwealth.com/team/michael-batnick/",
+      "x_identity_source_url": "https://x.com/michaelbatnick",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    },
+    {
+      "id": "wall-street-ben-carlson",
+      "name": "Ben Carlson",
+      "handle": "awealthofcs",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Director of Institutional Asset Management",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.ritholtzwealth.com/team/ben-carlson/",
+      "x_identity_source_url": "https://x.com/awealthofcs",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-eric-balchunas",
+      "name": "Eric Balchunas",
+      "handle": "EricBalchunas",
+      "company": "Bloomberg Intelligence",
+      "current_role": "Senior ETF Analyst",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.bloomberg.com/authors/AQKlEAh5C3k/eric-balchunas",
+      "x_identity_source_url": "https://x.com/EricBalchunas",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-cem-karsan",
+      "name": "Cem Karsan",
+      "handle": "jam_croissant",
+      "company": "Kai Wealth",
+      "current_role": "Founder & Chief Investment Officer",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://kaiwealth.com/cem",
+      "x_identity_source_url": "https://x.com/jam_croissant",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-22"
+    },
+    {
+      "id": "wall-street-brent-donnelly",
+      "name": "Brent Donnelly",
+      "handle": "donnelly_brent",
+      "company": "Spectra Markets",
+      "current_role": "President",
+      "category": "华尔街",
+      "categories": [
+        "华尔街",
+        "金融"
+      ],
+      "role_source_url": "https://www.spectramarkets.com/about/",
+      "x_identity_source_url": "https://x.com/donnelly_brent",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09"
+    }
+  ]
+}
