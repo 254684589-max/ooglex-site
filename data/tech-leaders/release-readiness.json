@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-21T15:30:44Z",
+  "generated_at": "2026-09-21T15:44:06Z",
   "policy": {
     "x_identity_verified_required": true,
     "x_activity_status_allowed": [
