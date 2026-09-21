@@ -160,7 +160,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Steve Wozniak",
+          "handle": "stevewoz",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Steve Wozniak",
@@ -191,7 +197,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Steve Wozniak",
+          "handle": "stevewoz",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Steve Wozniak",
@@ -234,6 +246,41 @@
           "name": "Mustafa Suleyman",
           "handle": "mustafasuleyman",
           "status": "production"
+        },
+        {
+          "name": "Bill Gates",
+          "handle": "BillGates",
+          "status": "former"
+        },
+        {
+          "name": "Steve Ballmer",
+          "handle": "Steven_Ballmer",
+          "status": "former"
+        },
+        {
+          "name": "Brad Smith",
+          "handle": "BradSmi",
+          "status": "current"
+        },
+        {
+          "name": "Steven Sinofsky",
+          "handle": "stevesi",
+          "status": "former"
+        },
+        {
+          "name": "Pavan Davuluri",
+          "handle": "pavandavuluri",
+          "status": "current"
+        },
+        {
+          "name": "Judson Althoff",
+          "handle": "judsonalthoff",
+          "status": "current"
+        },
+        {
+          "name": "Phil Spencer",
+          "handle": "XboxP3",
+          "status": "former"
         }
       ],
       "known_reviewed_people": [
@@ -281,7 +328,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Bill Gates",
+          "handle": "BillGates",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Bill Gates",
@@ -312,7 +365,28 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Bill Gates",
+          "handle": "BillGates",
+          "status": "former"
+        },
+        {
+          "name": "Steve Ballmer",
+          "handle": "Steven_Ballmer",
+          "status": "former"
+        },
+        {
+          "name": "Steven Sinofsky",
+          "handle": "stevesi",
+          "status": "former"
+        },
+        {
+          "name": "Phil Spencer",
+          "handle": "XboxP3",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Bill Gates",
@@ -365,6 +439,11 @@
           "name": "Hock Tan",
           "handle": "Broadcom",
           "status": "production"
+        },
+        {
+          "name": "Raghu Raghuram",
+          "handle": "RaghuRaghuram",
+          "status": "former"
         }
       ],
       "known_reviewed_people": [],
@@ -416,7 +495,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Raghu Raghuram",
+          "handle": "RaghuRaghuram",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Raghu Raghuram",
@@ -537,6 +622,11 @@
           "name": "Lisa Su",
           "handle": "LisaSu",
           "status": "production"
+        },
+        {
+          "name": "Mark Papermaster",
+          "handle": "mpaper2000",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -719,6 +809,21 @@
           "name": "Neal Mohan",
           "handle": "nealmohan",
           "status": "production"
+        },
+        {
+          "name": "Thomas Kurian",
+          "handle": "ThomasOrTK",
+          "status": "current"
+        },
+        {
+          "name": "Marissa Mayer",
+          "handle": "marissamayer",
+          "status": "former"
+        },
+        {
+          "name": "Sameer Samat",
+          "handle": "ssamat",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -787,7 +892,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Marissa Mayer",
+          "handle": "marissamayer",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Marissa Mayer",
@@ -856,6 +967,11 @@
           "name": "Mark Zuckerberg",
           "handle": "finkd",
           "status": "production"
+        },
+        {
+          "name": "Mike Krieger",
+          "handle": "mikeyk",
+          "status": "former"
         }
       ],
       "known_reviewed_people": [
@@ -888,7 +1004,18 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Mike Schroepfer",
+          "handle": "schrep",
+          "status": "former"
+        },
+        {
+          "name": "Mike Krieger",
+          "handle": "mikeyk",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Sheryl Sandberg",
@@ -1102,6 +1229,16 @@
           "name": "Chuck Robbins",
           "handle": "ChuckRobbins",
           "status": "production"
+        },
+        {
+          "name": "John T. Chambers",
+          "handle": "JohnTChambers",
+          "status": "former"
+        },
+        {
+          "name": "Jeetu Patel",
+          "handle": "jpatel41",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -1159,7 +1296,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "John T. Chambers",
+          "handle": "JohnTChambers",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "John T. Chambers",
@@ -1277,6 +1420,31 @@
           "name": "Andy Jassy",
           "handle": "ajassy",
           "status": "production"
+        },
+        {
+          "name": "Panos Panay",
+          "handle": "panos_panay",
+          "status": "current"
+        },
+        {
+          "name": "Jeff Wilke",
+          "handle": "jeffawilke",
+          "status": "former"
+        },
+        {
+          "name": "Dave Clark",
+          "handle": "davehclark",
+          "status": "former"
+        },
+        {
+          "name": "Matt Garman",
+          "handle": "MattSGarman",
+          "status": "current"
+        },
+        {
+          "name": "Swami Sivasubramanian",
+          "handle": "SwamiSivasubram",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -1350,7 +1518,18 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Jeff Wilke",
+          "handle": "jeffawilke",
+          "status": "former"
+        },
+        {
+          "name": "Dave Clark",
+          "handle": "davehclark",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Jeff Wilke",
@@ -1881,7 +2060,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Michael Miebach",
+          "handle": "MiebachMichael",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Michael Miebach",
@@ -2001,7 +2186,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Joe Lonsdale",
+          "handle": "JTLonsdale",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Alexander Karp",
@@ -2039,7 +2230,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Joe Lonsdale",
+          "handle": "JTLonsdale",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Joe Lonsdale",
@@ -2346,7 +2543,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Nir Zuk",
+          "handle": "nirzuk",
+          "status": "founder_emeritus"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Nir Zuk",
@@ -2377,7 +2580,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Nir Zuk",
+          "handle": "nirzuk",
+          "status": "founder_emeritus"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Nir Zuk",
@@ -3201,9 +3410,20 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Reed Hastings",
+          "handle": "reedhastings",
+          "status": "former"
+        },
+        {
+          "name": "Marc Randolph",
+          "handle": "marcrandolph",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -3226,7 +3446,18 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Reed Hastings",
+          "handle": "reedhastings",
+          "status": "former"
+        },
+        {
+          "name": "Marc Randolph",
+          "handle": "marcrandolph",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Reed Hastings",
@@ -3262,7 +3493,18 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Reed Hastings",
+          "handle": "reedhastings",
+          "status": "former"
+        },
+        {
+          "name": "Marc Randolph",
+          "handle": "marcrandolph",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Reed Hastings",
@@ -4093,6 +4335,11 @@
           "name": "Marc Benioff",
           "handle": "Benioff",
           "status": "production"
+        },
+        {
+          "name": "Parker Harris",
+          "handle": "parkerharris",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -4125,7 +4372,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Parker Harris",
+          "handle": "parkerharris",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Parker Harris",
@@ -4271,6 +4524,11 @@
           "name": "Dara Khosrowshahi",
           "handle": "dkhos",
           "status": "production"
+        },
+        {
+          "name": "Travis Kalanick",
+          "handle": "travisk",
+          "status": "former"
         }
       ],
       "known_reviewed_people": [],
@@ -4297,7 +4555,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Travis Kalanick",
+          "handle": "travisk",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Travis Kalanick",
@@ -4328,7 +4592,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Travis Kalanick",
+          "handle": "travisk",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Travis Kalanick",
@@ -4366,6 +4636,11 @@
           "name": "Bill McDermott",
           "handle": "BillRMcDermott",
           "status": "production"
+        },
+        {
+          "name": "Amit Zavery",
+          "handle": "azavery",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -5641,7 +5916,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "John Legere",
+          "handle": "JohnLegere",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Srini Gopalan",
@@ -5697,7 +5978,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "John Legere",
+          "handle": "JohnLegere",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "John Legere",
@@ -7824,7 +8111,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Olivier Pomel",
+          "handle": "oliveur",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Olivier Pomel",
@@ -7858,7 +8151,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Olivier Pomel",
+          "handle": "oliveur",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Olivier Pomel",
@@ -8517,7 +8816,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Scott Belsky",
+          "handle": "scottbelsky",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Scott Belsky",
@@ -8552,7 +8857,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Sasan Goodarzi",
+          "handle": "sasan_goodarzi",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Sasan Goodarzi",
@@ -8972,7 +9283,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Antonio Neri",
+          "handle": "AntonioNeri_HPE",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Antonio Neri",
@@ -9939,6 +10256,11 @@
           "name": "Brian Chesky",
           "handle": "bchesky",
           "status": "production"
+        },
+        {
+          "name": "Nathan Blecharczyk",
+          "handle": "nathanblec",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -9976,6 +10298,16 @@
           "name": "Brian Chesky",
           "handle": "bchesky",
           "status": "production"
+        },
+        {
+          "name": "Joe Gebbia",
+          "handle": "jgebbia",
+          "status": "founder_emeritus"
+        },
+        {
+          "name": "Nathan Blecharczyk",
+          "handle": "nathanblec",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -10013,7 +10345,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Joe Gebbia",
+          "handle": "jgebbia",
+          "status": "founder_emeritus"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Joe Gebbia",
@@ -10046,7 +10384,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Tony Xu",
+          "handle": "t_xu",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Tony Xu",
@@ -10077,7 +10421,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Tony Xu",
+          "handle": "t_xu",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Tony Xu",
