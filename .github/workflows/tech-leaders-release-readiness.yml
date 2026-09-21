@@ -185,6 +185,11 @@ jobs:
             exit 0
           fi
 
+          # build_preview_catalog.py may have refreshed the preview in the working
+          # tree. The readiness commit must contain only the audit artifact, or a
+          # later rebase can fail because of unstaged preview changes.
+          git restore --worktree -- data/tech-leaders/leaders-v250-preview.json
+
           git add "$FILE"
           git commit -m "data: refresh tech-leaders release readiness"
 
