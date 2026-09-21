@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build review queue
+      - name: Build multi-person research queue
         run: |
           python scripts/tech-leaders/build_candidate_queue.py
 
@@ -43,14 +43,20 @@ jobs:
 
           q = Path("data/tech-leaders/executive_candidate_queue.csv")
           m = Path("data/tech-leaders/executive_candidate_queue.meta.json")
+          issuer_meta = json.loads(Path("data/tech-leaders/issuer_master.meta.json").read_text(encoding="utf-8"))
           rows = list(csv.DictReader(q.open(encoding="utf-8")))
           meta = json.loads(m.read_text(encoding="utf-8"))
 
-          assert len(rows) == 300, len(rows)
-          assert meta["issuer_count"] == 300
-          assert meta["needs_research_issuers"] > 150
-          assert meta["research_now_count"] >= 100
-          assert all(r["review_status"] in {"covered_existing", "needs_research"} for r in rows)
+          assert len(rows) == meta["issuer_count"]
+          assert len(rows) >= 250
+          if issuer_meta.get("stage") == "v1_1_universe_1000":
+              assert len(rows) >= 900
+          assert meta["research_now_count"] >= min(250, len(rows))
+          assert meta["policy"]["multi_person_per_issuer"] is True
+          assert meta["policy"]["existing_issuer_considered_complete"] is False
+          assert all(r["review_status"] in {"expand_existing", "needs_research"} for r in rows)
+          assert all(r["discovery_mode"] == "multi_person_current_and_legacy" for r in rows)
+          assert all(r["target_roles"] for r in rows)
           assert not any(r["x_identity_status"] == "verified" and not r["x_identity_source_url"] for r in rows)
           print(json.dumps(meta, ensure_ascii=False))
           PY
@@ -65,5 +71,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/tech-leaders/executive_candidate_queue.csv data/tech-leaders/executive_candidate_queue.meta.json
-          git commit -m "data: refresh tech-leaders executive candidate queue"
+          git commit -m "data: refresh tech-leaders multi-person candidate queue"
           git push
