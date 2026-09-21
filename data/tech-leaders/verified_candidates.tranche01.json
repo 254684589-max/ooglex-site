@@ -97,8 +97,8 @@
       "x_check_type": "uncertain",
       "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/oliveur/with_replies",
-      "x_activity_status": "needs_activity_check",
-      "x_last_activity_at": "",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "2026-05-22",
       "recommended_categories": [
         "上市公司",
         "NASDAQ",
@@ -107,10 +107,11 @@
         "云计算",
         "软件"
       ],
-      "confidence": "high_identity_medium_activity",
-      "review_status": "manual_review",
-      "review_notes": "Official Datadog leadership confirms CEO/co-founder. X profile identifies Olivier Pomel as Datadog co-founder and links datadoghq.com; recent posting cadence still needs verification.",
-      "corporate_fallback": "datadoghq"
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Datadog's official leadership page confirms Olivier Pomel as CEO & co-founder. His X profile @oliveur identifies him as a Datadog co-founder and links datadoghq.com; 2026 public activity is visible, including a May 22 retweet. Approved for preview, not production.",
+      "corporate_fallback": "datadoghq",
+      "x_activity_source_url": "https://zamantika.com/profile/oliveur"
     },
     {
       "ticker": "HPE",
