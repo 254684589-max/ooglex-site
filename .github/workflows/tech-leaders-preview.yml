@@ -1,0 +1,63 @@
+name: Tech Leaders Preview Catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "data/tech-leaders/verified_candidates*.json"
+      - "scripts/tech-leaders/build_preview_catalog.py"
+      - ".github/workflows/tech-leaders-preview.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tech-leaders-preview-catalog
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build review-only preview
+        run: python scripts/tech-leaders/build_preview_catalog.py
+
+      - name: Validate production isolation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          live = json.loads(Path("apps/tech-leaders/leaders.json").read_text(encoding="utf-8"))
+          preview = json.loads(Path("data/tech-leaders/leaders-v250-preview.json").read_text(encoding="utf-8"))
+          meta = preview["preview"]
+          assert len(live["leaders"]) == 110
+          assert meta["production_file_untouched"] is True
+          assert meta["base_count"] == 110
+          assert meta["approved_additions"] >= 1
+          assert len(preview["leaders"]) == meta["preview_count"]
+          additions = preview["leaders"][meta["base_count"]:]
+          assert all(x.get("preview_only") is True for x in additions)
+          assert all(x.get("x_identity_verified") is True for x in additions)
+          assert all(x.get("admission_status") == "preview_approved" for x in additions)
+          print(meta)
+          PY
+
+      - name: Commit preview artifact
+        run: |
+          FILE="data/tech-leaders/leaders-v250-preview.json"
+          if [ -z "$(git status --porcelain -- "$FILE")" ]; then
+            echo "No preview changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          git commit -m "data: refresh tech-leaders verified preview"
+          git push
