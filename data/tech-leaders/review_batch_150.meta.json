@@ -1,57 +1,60 @@
 {
-  "schema_version": 1,
-  "generated_at": "2026-09-21T03:35:43Z",
+  "schema_version": 2,
+  "generated_at": "2026-09-21T04:57:52Z",
   "status": "review_only",
+  "mode": "multi_person_current_and_legacy",
   "count": 150,
+  "existing_issuer_rows": 30,
   "exchange_counts": {
-    "NASDAQ": 44,
-    "NYSE": 106
+    "NASDAQ": 56,
+    "NYSE": 94
   },
   "sector_counts": {
-    "金融": 33,
-    "工业": 31,
-    "科技": 25,
-    "医疗健康": 19,
-    "能源": 9,
-    "必需消费": 8,
-    "通信服务": 7,
-    "可选消费": 6,
-    "公用事业": 5,
-    "房地产": 4,
-    "原材料": 3
+    "科技": 39,
+    "通信服务": 9,
+    "工业": 22,
+    "金融": 27,
+    "可选消费": 10,
+    "医疗健康": 20,
+    "能源": 7,
+    "必需消费": 7,
+    "公用事业": 4,
+    "房地产": 3,
+    "原材料": 2
   },
   "review_tier_counts": {
-    "A": 4,
-    "B": 38,
-    "C": 108
+    "A": 17,
+    "B": 48,
+    "C": 85
   },
   "category_counts": {
     "上市公司": 150,
-    "NYSE": 106,
-    "NASDAQ": 44,
-    "金融": 33,
-    "工业": 31,
-    "科技": 25,
-    "医疗": 19,
-    "消费零售": 14,
-    "能源": 14,
-    "芯片": 8,
-    "通信服务": 7,
-    "AI": 6,
-    "航空航天": 6,
-    "软件": 6,
-    "金融科技": 5,
+    "NASDAQ": 56,
+    "科技": 39,
+    "通信服务": 9,
+    "NYSE": 94,
     "云计算": 4,
-    "房地产": 4,
-    "原材料": 3,
-    "网络安全": 1
+    "软件": 6,
+    "工业": 22,
+    "金融": 27,
+    "金融科技": 5,
+    "消费零售": 17,
+    "医疗": 20,
+    "能源": 11,
+    "AI": 6,
+    "芯片": 8,
+    "航空航天": 6,
+    "网络安全": 1,
+    "房地产": 3,
+    "原材料": 2
   },
   "rules": {
-    "no_existing_catalog_matches": true,
+    "existing_catalog_matches_are_eligible": true,
+    "multi_person_per_issuer": true,
+    "legacy_leaders_allowed": true,
     "no_auto_verified_x": true,
     "no_auto_role_verification": true,
-    "production_file_untouched": "apps/tech-leaders/leaders.json",
-    "purpose": "Human research/review ordering only."
+    "production_file_untouched": "apps/tech-leaders/leaders.json"
   },
-  "next_stage": "Populate role/X evidence, then create leaders-v250-preview.json from approved candidates only."
+  "next_stage": "Resolve named people for each issuer/role target, verify role history + personal X identity + activity, then create leaders-v250-preview.json from approved people only."
 }
