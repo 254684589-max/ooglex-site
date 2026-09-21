@@ -67,10 +67,12 @@
     .language-note{margin:-2px 0 12px;color:var(--faint);font-size:12px;line-height:1.6}
     .language-note b{color:var(--dim);font-weight:700}
     .catalog-toolbar{display:flex;align-items:flex-start;gap:8px;min-width:0;width:100%}
-    .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;padding:0 0 10px;margin-top:2px;scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.48) rgba(128,128,128,.14)}
-    .category-bar::-webkit-scrollbar{height:8px}
+    .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;overflow-y:hidden;padding:0 0 12px;margin-top:2px;scroll-behavior:auto;scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.52) rgba(128,128,128,.14);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x}
+    .category-bar::-webkit-scrollbar{height:10px}
     .category-bar::-webkit-scrollbar-track{background:rgba(128,128,128,.14);border-radius:999px}
-    .category-bar::-webkit-scrollbar-thumb{background:rgba(128,128,128,.48);border-radius:999px}
+    .category-bar::-webkit-scrollbar-thumb{background:rgba(128,128,128,.52);border:2px solid transparent;background-clip:padding-box;border-radius:999px}
+    .category-bar.category-dragging{cursor:grabbing;user-select:none}
+    .category-bar.category-dragging .category-btn{cursor:grabbing}
     .category-btn{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:9px 13px;border-radius:999px;cursor:pointer;font:12px/1 var(--mono);white-space:nowrap}
     .category-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
     .category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
@@ -96,11 +98,12 @@
       padding:12px 14px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;min-height:94px;transition:.18s ease;
       flex:0 0 calc((100% - 50px)/6);
     }
-    .leader-scrollbar{position:relative;height:8px;width:100%;margin-top:2px;border-radius:999px;background:rgba(128,128,128,.14);cursor:pointer;touch-action:none;user-select:none;padding:0}
+    .leader-scrollbar{position:relative;height:14px;width:100%;margin-top:0;border-radius:999px;background:transparent;cursor:pointer;touch-action:none;user-select:none;padding:0}
+    .leader-scrollbar::before{content:"";position:absolute;left:0;right:0;top:3px;height:8px;border-radius:999px;background:rgba(128,128,128,.14);pointer-events:none}
     .leader-scrollbar[hidden]{display:none}
-    .leader-scroll-thumb{position:absolute;left:0;top:0;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.48);cursor:grab;touch-action:none;transition:background .15s ease}
-    .leader-scroll-thumb:hover{background:rgba(128,128,128,.58)}
-    .leader-scroll-thumb.dragging{cursor:grabbing;background:rgba(128,128,128,.62)}
+    .leader-scroll-thumb{position:absolute;left:0;top:3px;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.52);cursor:grab;touch-action:none;transition:background .15s ease;will-change:transform;transform:translate3d(0,0,0)}
+    .leader-scroll-thumb:hover{background:rgba(128,128,128,.60)}
+    .leader-scroll-thumb.dragging{cursor:grabbing;background:rgba(128,128,128,.66)}
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:11px;min-width:0}
@@ -750,6 +753,8 @@
     }));
     categoryBar.innerHTML=buttons.join("");
   }
+  var leaderScrollbarRaf=0;
+  var leaderThumbLeft=0;
   function updateLeaderScrollbar(){
     if(!leaderScrollbar||!leaderScrollThumb)return;
     // Keep the lower rail exactly the same visible width as the category rail above.
@@ -760,7 +765,8 @@
     if(maxScroll<=2){
       leaderScrollbar.hidden=true;
       leaderScrollThumb.style.width="100%";
-      leaderScrollThumb.style.left="0";
+      leaderThumbLeft=0;
+      leaderScrollThumb.style.transform="translate3d(0,0,0)";
       return;
     }
     leaderScrollbar.hidden=false;
@@ -769,8 +775,16 @@
     thumbWidth=Math.min(trackWidth,thumbWidth);
     var maxThumbTravel=Math.max(0,trackWidth-thumbWidth);
     var left=maxScroll>0?(leaders.scrollLeft/maxScroll)*maxThumbTravel:0;
+    leaderThumbLeft=Math.max(0,Math.min(maxThumbTravel,left));
     leaderScrollThumb.style.width=thumbWidth+"px";
-    leaderScrollThumb.style.left=Math.max(0,Math.min(maxThumbTravel,left))+"px";
+    leaderScrollThumb.style.transform="translate3d("+leaderThumbLeft+"px,0,0)";
+  }
+  function scheduleLeaderScrollbarUpdate(){
+    if(leaderScrollbarRaf)return;
+    leaderScrollbarRaf=requestAnimationFrame(function(){
+      leaderScrollbarRaf=0;
+      updateLeaderScrollbar();
+    });
   }
   function scrollActiveLeaderIntoView(){
     var active=leaders.querySelector(".leader.on");
@@ -1677,7 +1691,7 @@
   },true);
   profileAvatar.addEventListener("error",function(){applyAvatarFallback(profileAvatar,current||{});});
   foldBtn.addEventListener("click",openLeaderLibrary);
-  leaders.addEventListener("scroll",updateLeaderScrollbar,{passive:true});
+  leaders.addEventListener("scroll",scheduleLeaderScrollbarUpdate,{passive:true});
   window.addEventListener("resize",function(){
     requestAnimationFrame(function(){
       renderLeaderButtons(search.value);
@@ -1758,31 +1772,57 @@
     var leaderDragging=false;
     var leaderDragStartX=0;
     var leaderDragStartLeft=0;
+    var leaderDragMaxTravel=0;
+    var leaderDragMaxScroll=0;
+    var leaderDragPendingLeft=0;
+    var leaderDragRaf=0;
+
+    function flushLeaderDragFrame(){
+      leaderDragRaf=0;
+      leaderThumbLeft=leaderDragPendingLeft;
+      leaderScrollThumb.style.transform="translate3d("+leaderThumbLeft+"px,0,0)";
+      leaders.scrollLeft=leaderDragMaxTravel>0?(leaderThumbLeft/leaderDragMaxTravel)*leaderDragMaxScroll:0;
+    }
+    function queueLeaderDragFrame(left){
+      leaderDragPendingLeft=left;
+      if(!leaderDragRaf)leaderDragRaf=requestAnimationFrame(flushLeaderDragFrame);
+    }
 
     leaderScrollThumb.addEventListener("pointerdown",function(e){
       if(leaderScrollbar.hidden)return;
       leaderDragging=true;
       leaderDragStartX=e.clientX;
-      leaderDragStartLeft=parseFloat(leaderScrollThumb.style.left)||0;
+      leaderDragStartLeft=leaderThumbLeft;
+      var trackWidth=Math.max(0,leaderScrollbar.clientWidth);
+      var thumbWidth=leaderScrollThumb.getBoundingClientRect().width;
+      leaderDragMaxTravel=Math.max(0,trackWidth-thumbWidth);
+      leaderDragMaxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
+      leaderDragPendingLeft=leaderDragStartLeft;
       leaderScrollThumb.classList.add("dragging");
-      leaderScrollThumb.setPointerCapture(e.pointerId);
+      try{leaderScrollThumb.setPointerCapture(e.pointerId);}catch(_){}
       e.preventDefault();
     });
 
     leaderScrollThumb.addEventListener("pointermove",function(e){
       if(!leaderDragging)return;
-      var trackWidth=Math.max(0,leaderScrollbar.clientWidth);
-      var thumbWidth=leaderScrollThumb.offsetWidth;
-      var maxTravel=Math.max(0,trackWidth-thumbWidth);
-      var raw=leaderDragStartLeft+(e.clientX-leaderDragStartX);
-      var nextLeft=Math.max(0,Math.min(maxTravel,raw));
-      var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
-      leaders.scrollLeft=maxTravel>0?(nextLeft/maxTravel)*maxScroll:0;
+      var sample=e;
+      if(e.getCoalescedEvents){
+        var batch=e.getCoalescedEvents();
+        if(batch&&batch.length)sample=batch[batch.length-1];
+      }
+      var raw=leaderDragStartLeft+(sample.clientX-leaderDragStartX);
+      var nextLeft=Math.max(0,Math.min(leaderDragMaxTravel,raw));
+      queueLeaderDragFrame(nextLeft);
       e.preventDefault();
     });
 
     function stopLeaderDrag(e){
       if(!leaderDragging)return;
+      if(leaderDragRaf){
+        cancelAnimationFrame(leaderDragRaf);
+        leaderDragRaf=0;
+        flushLeaderDragFrame();
+      }
       leaderDragging=false;
       leaderScrollThumb.classList.remove("dragging");
       try{leaderScrollThumb.releasePointerCapture(e.pointerId);}catch(_){}
@@ -1794,7 +1834,7 @@
       if(e.target===leaderScrollThumb||leaderScrollbar.hidden)return;
       var rect=leaderScrollbar.getBoundingClientRect();
       var trackWidth=Math.max(0,leaderScrollbar.clientWidth);
-      var thumbWidth=leaderScrollThumb.offsetWidth;
+      var thumbWidth=leaderScrollThumb.getBoundingClientRect().width;
       var maxTravel=Math.max(0,trackWidth-thumbWidth);
       var raw=e.clientX-rect.left-thumbWidth/2;
       var nextLeft=Math.max(0,Math.min(maxTravel,raw));
@@ -1803,8 +1843,78 @@
     });
   }
 
+  // Category strip: add direct drag + rAF wheel scrolling so desktop/trackpad movement stays 1:1 and fluid.
+  var categoryMousePressed=false;
+  var categoryMouseDragging=false;
+  var categoryMouseStartX=0;
+  var categoryMouseStartY=0;
+  var categoryMouseStartScroll=0;
+  var suppressCategoryClick=false;
+  var CATEGORY_DRAG_THRESHOLD=8;
+  var categoryWheelDelta=0;
+  var categoryWheelRaf=0;
+
+  categoryBar.addEventListener("pointerdown",function(e){
+    if(e.pointerType!=="mouse"||e.button!==0)return;
+    if(categoryBar.scrollWidth<=categoryBar.clientWidth+2)return;
+    categoryMousePressed=true;
+    categoryMouseDragging=false;
+    categoryMouseStartX=e.clientX;
+    categoryMouseStartY=e.clientY;
+    categoryMouseStartScroll=categoryBar.scrollLeft;
+  });
+  categoryBar.addEventListener("pointermove",function(e){
+    if(!categoryMousePressed||e.pointerType!=="mouse")return;
+    var dx=e.clientX-categoryMouseStartX;
+    var dy=e.clientY-categoryMouseStartY;
+    if(!categoryMouseDragging){
+      if(Math.abs(dx)<CATEGORY_DRAG_THRESHOLD)return;
+      if(Math.abs(dx)<=Math.abs(dy))return;
+      categoryMouseDragging=true;
+      categoryBar.classList.add("category-dragging");
+      try{categoryBar.setPointerCapture(e.pointerId);}catch(_){}
+    }
+    categoryBar.scrollLeft=categoryMouseStartScroll-dx;
+    e.preventDefault();
+  });
+  function stopCategoryMouseDrag(e){
+    if(!categoryMousePressed)return;
+    var wasDragging=categoryMouseDragging;
+    categoryMousePressed=false;
+    categoryMouseDragging=false;
+    categoryBar.classList.remove("category-dragging");
+    if(wasDragging){
+      suppressCategoryClick=true;
+      setTimeout(function(){suppressCategoryClick=false;},90);
+    }
+    try{categoryBar.releasePointerCapture(e.pointerId);}catch(_){}
+  }
+  categoryBar.addEventListener("pointerup",stopCategoryMouseDrag);
+  categoryBar.addEventListener("pointercancel",stopCategoryMouseDrag);
+
+  categoryBar.addEventListener("wheel",function(e){
+    var maxScroll=Math.max(0,categoryBar.scrollWidth-categoryBar.clientWidth);
+    if(maxScroll<=2)return;
+    var unit=e.deltaMode===1?16:(e.deltaMode===2?categoryBar.clientWidth:1);
+    var delta=(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*unit;
+    if(!delta)return;
+    var projected=Math.max(0,Math.min(maxScroll,categoryBar.scrollLeft+categoryWheelDelta+delta));
+    if(projected===categoryBar.scrollLeft&&categoryWheelDelta===0)return;
+    categoryWheelDelta+=delta;
+    if(!categoryWheelRaf){
+      categoryWheelRaf=requestAnimationFrame(function(){
+        categoryWheelRaf=0;
+        var maxNow=Math.max(0,categoryBar.scrollWidth-categoryBar.clientWidth);
+        categoryBar.scrollLeft=Math.max(0,Math.min(maxNow,categoryBar.scrollLeft+categoryWheelDelta));
+        categoryWheelDelta=0;
+      });
+    }
+    e.preventDefault();
+  },{passive:false});
+
   search.addEventListener("input",function(){leaders.scrollLeft=0;renderLeaderButtons(search.value);});
   categoryBar.addEventListener("click",function(e){
+    if(suppressCategoryClick)return;
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
     leaders.scrollLeft=0;
