@@ -893,6 +893,16 @@
           "name": "Sameer Samat",
           "handle": "ssamat",
           "status": "current"
+        },
+        {
+          "name": "Assaf Rappaport",
+          "handle": "assaf_rapp",
+          "status": "current"
+        },
+        {
+          "name": "Ami Luttwak",
+          "handle": "amiluttwak",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -945,6 +955,16 @@
           "name": "Demis Hassabis",
           "handle": "demishassabis",
           "status": "production"
+        },
+        {
+          "name": "Assaf Rappaport",
+          "handle": "assaf_rapp",
+          "status": "current"
+        },
+        {
+          "name": "Ami Luttwak",
+          "handle": "amiluttwak",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -1361,7 +1381,18 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Dug Song",
+          "handle": "dugsong",
+          "status": "former"
+        },
+        {
+          "name": "Jon Oberheide",
+          "handle": "jonoberheide",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Dug Song",
@@ -1401,6 +1432,16 @@
         {
           "name": "John T. Chambers",
           "handle": "JohnTChambers",
+          "status": "former"
+        },
+        {
+          "name": "Dug Song",
+          "handle": "dugsong",
+          "status": "former"
+        },
+        {
+          "name": "Jon Oberheide",
+          "handle": "jonoberheide",
           "status": "former"
         }
       ],
@@ -6399,6 +6440,11 @@
           "name": "Olivier Pomel",
           "handle": "oliveur",
           "status": "current"
+        },
+        {
+          "name": "Alexis Lê-Quôc",
+          "handle": "alq",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -6443,6 +6489,11 @@
         {
           "name": "Olivier Pomel",
           "handle": "oliveur",
+          "status": "current"
+        },
+        {
+          "name": "Alexis Lê-Quôc",
+          "handle": "alq",
           "status": "current"
         }
       ],
