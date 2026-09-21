@@ -1,0 +1,194 @@
+name: Tech Leaders Release Readiness
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "data/tech-leaders/verified_candidates*.json"
+      - "scripts/tech-leaders/build_preview_catalog.py"
+      - ".github/workflows/tech-leaders-release-readiness.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tech-leaders-release-readiness
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build current review preview
+        run: python scripts/tech-leaders/build_preview_catalog.py
+
+      - name: Audit preview additions
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          PREVIEW = Path("data/tech-leaders/leaders-v250-preview.json")
+          OUT = Path("data/tech-leaders/release-readiness.json")
+
+          preview = json.loads(PREVIEW.read_text(encoding="utf-8"))
+          meta = preview["preview"]
+          base_count = int(meta["base_count"])
+          additions = preview["leaders"][base_count:]
+
+          live_handles = {
+              str(x.get("handle") or "").strip().lower()
+              for x in preview["leaders"][:base_count]
+              if x.get("handle")
+          }
+          seen = set()
+          rows = []
+
+          for leader in additions:
+              reasons = []
+              handle = str(leader.get("handle") or "").strip().lower()
+              if not handle:
+                  reasons.append("missing_handle")
+              elif handle in live_handles or handle in seen:
+                  reasons.append("duplicate_handle")
+              seen.add(handle)
+
+              if leader.get("preview_only") is not True:
+                  reasons.append("not_preview_only")
+              if leader.get("x_identity_verified") is not True:
+                  reasons.append("x_identity_not_verified")
+              if leader.get("x_activity_status") not in {"active", "intermittent"}:
+                  reasons.append("x_activity_not_usable")
+              if not str(leader.get("x_role_source_url") or "").startswith("https://"):
+                  reasons.append("missing_role_source")
+              if not str(leader.get("x_identity_source_url") or "").startswith("https://"):
+                  reasons.append("missing_identity_source")
+
+              avatar_url = str(leader.get("avatar_url") or "")
+              avatar_ok = False
+              avatar_content_type = ""
+              avatar_bytes = 0
+              if not avatar_url.startswith("https://"):
+                  reasons.append("missing_avatar_url")
+              else:
+                  try:
+                      req = urllib.request.Request(
+                          avatar_url,
+                          headers={
+                              "User-Agent": "Ooglex Tech Leaders Release Audit/1.0",
+                              "Accept": "image/*",
+                          },
+                      )
+                      with urllib.request.urlopen(req, timeout=25) as resp:
+                          body = resp.read(2_000_000)
+                          avatar_content_type = str(resp.headers.get("Content-Type") or "")
+                          avatar_bytes = len(body)
+                          avatar_ok = (
+                              resp.status == 200
+                              and avatar_content_type.lower().startswith("image/")
+                              and avatar_bytes >= 512
+                          )
+                  except Exception as exc:
+                      reasons.append(f"avatar_fetch_failed:{type(exc).__name__}")
+                  else:
+                      if not avatar_ok:
+                          reasons.append("avatar_invalid_response")
+                  time.sleep(0.15)
+
+              rows.append(
+                  {
+                      "name": leader.get("name"),
+                      "ticker": leader.get("ticker"),
+                      "handle": leader.get("handle"),
+                      "relationship_status": leader.get("company_relationship_status"),
+                      "avatar_ok": avatar_ok,
+                      "avatar_content_type": avatar_content_type,
+                      "avatar_bytes": avatar_bytes,
+                      "ready": not reasons,
+                      "blocking_reasons": reasons,
+                  }
+              )
+
+          ready = [r for r in rows if r["ready"]]
+          blocked = [r for r in rows if not r["ready"]]
+          payload = {
+              "schema_version": 1,
+              "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+              "policy": {
+                  "x_identity_verified_required": True,
+                  "x_activity_status_allowed": ["active", "intermittent"],
+                  "role_source_required": True,
+                  "identity_source_required": True,
+                  "avatar_http_image_required": True,
+                  "duplicate_handle_forbidden": True,
+                  "production_file_untouched": "apps/tech-leaders/leaders.json",
+              },
+              "base_count": base_count,
+              "preview_count": len(preview["leaders"]),
+              "candidate_count": len(rows),
+              "ready_count": len(ready),
+              "blocked_count": len(blocked),
+              "production_if_all_ready": base_count + len(ready),
+              "ready": ready,
+              "blocked": blocked,
+          }
+          OUT.parent.mkdir(parents=True, exist_ok=True)
+          OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({
+              "candidate_count": payload["candidate_count"],
+              "ready_count": payload["ready_count"],
+              "blocked_count": payload["blocked_count"],
+              "production_if_all_ready": payload["production_if_all_ready"],
+          }, ensure_ascii=False))
+          PY
+
+      - name: Validate readiness artifact
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(Path("data/tech-leaders/release-readiness.json").read_text(encoding="utf-8"))
+          assert data["base_count"] == 110
+          assert data["candidate_count"] >= 12
+          assert data["ready_count"] + data["blocked_count"] == data["candidate_count"]
+          assert data["production_if_all_ready"] == data["base_count"] + data["ready_count"]
+          assert all(r["ready"] for r in data["ready"])
+          assert all(not r["ready"] for r in data["blocked"])
+          print(json.dumps(data, ensure_ascii=False))
+          PY
+
+      - name: Commit readiness artifact
+        run: |
+          FILE="data/tech-leaders/release-readiness.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ -z "$(git status --porcelain -- "$FILE")" ]; then
+            echo "No readiness changes."
+            exit 0
+          fi
+
+          git add "$FILE"
+          git commit -m "data: refresh tech-leaders release readiness"
+
+          # Preview and readiness workflows may finish close together. Rebase on
+          # the newest main before pushing so the audit commit does not race.
+          git pull --rebase origin main
+          git push origin HEAD:main
