@@ -60,6 +60,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4"
           workingDirectory: cloudflare/pro-api
           command: deploy
         env:
@@ -88,6 +89,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4"
           command: |
             r2 object put ooglex-pro-data/supply-chain/preview.json --file .pro-build/supply-chain/preview.json
             r2 object put ooglex-pro-data/supply-chain/full.json --file .pro-build/supply-chain/full.json
