@@ -51,7 +51,7 @@
         {
           "name": "Jensen Huang",
           "handle": "JensenHuang",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Bryan Catanzaro",
@@ -103,7 +103,7 @@
         {
           "name": "Jensen Huang",
           "handle": "JensenHuang",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -161,7 +161,7 @@
         {
           "name": "Tim Cook",
           "handle": "tim_cook",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Phil Schiller",
@@ -294,12 +294,12 @@
         {
           "name": "Satya Nadella",
           "handle": "satyanadella",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Mustafa Suleyman",
           "handle": "mustafasuleyman",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Bill Gates",
@@ -507,7 +507,7 @@
         {
           "name": "Hock Tan",
           "handle": "Broadcom",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Raghu Raghuram",
@@ -607,7 +607,7 @@
         {
           "name": "Sanjay Mehrotra",
           "handle": "MicronTech",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -690,7 +690,7 @@
         {
           "name": "Lisa Su",
           "handle": "LisaSu",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Mark Papermaster",
@@ -782,9 +782,14 @@
       ],
       "known_production_people": [
         {
+          "name": "Pat Gelsinger",
+          "handle": "PGelsinger",
+          "status": "current"
+        },
+        {
           "name": "Lip-Bu Tan",
           "handle": "LipBuTan1",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -867,17 +872,22 @@
         {
           "name": "Sundar Pichai",
           "handle": "sundarpichai",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Demis Hassabis",
           "handle": "demishassabis",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Neal Mohan",
           "handle": "nealmohan",
-          "status": "production"
+          "status": "current"
+        },
+        {
+          "name": "Jeff Dean",
+          "handle": "JeffDean",
+          "status": "current"
         },
         {
           "name": "Thomas Kurian",
@@ -954,7 +964,7 @@
         {
           "name": "Demis Hassabis",
           "handle": "demishassabis",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Assaf Rappaport",
@@ -1043,9 +1053,24 @@
       ],
       "known_production_people": [
         {
+          "name": "Alexandr Wang",
+          "handle": "alexandr_wang",
+          "status": "current"
+        },
+        {
           "name": "Mark Zuckerberg",
           "handle": "finkd",
-          "status": "production"
+          "status": "current"
+        },
+        {
+          "name": "Adam Mosseri",
+          "handle": "mosseri",
+          "status": "current"
+        },
+        {
+          "name": "Andrew Bosworth",
+          "handle": "boztank",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -1076,7 +1101,7 @@
         {
           "name": "Mark Zuckerberg",
           "handle": "finkd",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Mike Krieger",
@@ -1338,7 +1363,7 @@
         {
           "name": "Chuck Robbins",
           "handle": "ChuckRobbins",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "John T. Chambers",
@@ -1661,9 +1686,19 @@
       ],
       "known_production_people": [
         {
+          "name": "Jeff Bezos",
+          "handle": "JeffBezos",
+          "status": "current"
+        },
+        {
           "name": "Andy Jassy",
           "handle": "ajassy",
-          "status": "production"
+          "status": "current"
+        },
+        {
+          "name": "Werner Vogels",
+          "handle": "Werner",
+          "status": "current"
         },
         {
           "name": "Panos Panay",
@@ -1735,7 +1770,7 @@
         {
           "name": "Jeff Bezos",
           "handle": "JeffBezos",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -1815,7 +1850,7 @@
         {
           "name": "Elon Musk",
           "handle": "elonmusk",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -1846,7 +1881,7 @@
         {
           "name": "Elon Musk",
           "handle": "elonmusk",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -2585,7 +2620,7 @@
         {
           "name": "Michael Dell",
           "handle": "MichaelDell",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -2668,7 +2703,7 @@
         {
           "name": "Nikesh Arora",
           "handle": "nikesharora",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -4406,7 +4441,7 @@
         {
           "name": "Arvind Krishna",
           "handle": "ArvindKrishna",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Armon Dadgar",
@@ -4589,7 +4624,7 @@
         {
           "name": "Marc Benioff",
           "handle": "Benioff",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Parker Harris",
@@ -4715,7 +4750,7 @@
         {
           "name": "Cristiano Amon",
           "handle": "cristianoamon",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Chris Lattner",
@@ -4821,7 +4856,7 @@
         {
           "name": "Dara Khosrowshahi",
           "handle": "dkhos",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Travis Kalanick",
@@ -4958,7 +4993,7 @@
         {
           "name": "Bill McDermott",
           "handle": "BillRMcDermott",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Amit Zavery",
@@ -5864,7 +5899,7 @@
         {
           "name": "Albert Bourla",
           "handle": "AlbertBourla",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -9428,7 +9463,7 @@
         {
           "name": "Vlad Tenev",
           "handle": "vladtenev",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -9459,7 +9494,7 @@
         {
           "name": "Vlad Tenev",
           "handle": "vladtenev",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -9677,7 +9712,7 @@
         {
           "name": "Marvin Ellison",
           "handle": "MarvinREllison",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -10809,7 +10844,7 @@
         {
           "name": "Brian Chesky",
           "handle": "bchesky",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Nathan Blecharczyk",
@@ -10851,7 +10886,7 @@
         {
           "name": "Brian Chesky",
           "handle": "bchesky",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Joe Gebbia",
@@ -12482,7 +12517,7 @@
         {
           "name": "George Kurtz",
           "handle": "George_Kurtz",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
@@ -12513,7 +12548,7 @@
         {
           "name": "George Kurtz",
           "handle": "George_Kurtz",
-          "status": "production"
+          "status": "current"
         },
         {
           "name": "Dmitri Alperovitch",
@@ -12667,9 +12702,15 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Jack Dorsey",
+          "handle": "jack",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -12696,7 +12737,7 @@
         {
           "name": "Jack Dorsey",
           "handle": "jack",
-          "status": "production"
+          "status": "current"
         }
       ],
       "known_reviewed_people": [],
