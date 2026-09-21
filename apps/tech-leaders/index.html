@@ -233,6 +233,55 @@
       .language-note{font-size:12px;line-height:1.55;margin-bottom:12px}
       .share-panel{padding:18px;border-radius:20px}
     }
+
+    /* Mobile leader rail: four compact people visible at once */
+    @media(max-width:560px){
+      .leader-rail-wrap:not(.expanded) .leaders{gap:6px;padding-bottom:7px}
+      .leader-rail-wrap:not(.expanded) .leader{
+        flex:0 0 calc((100% - 18px)/4);
+        width:calc((100% - 18px)/4);
+        min-height:88px;
+        padding:8px 5px 7px;
+        border-radius:12px;
+        text-align:center;
+      }
+      .leader-rail-wrap:not(.expanded) .leader-head{
+        height:100%;
+        flex-direction:column;
+        justify-content:center;
+        gap:6px;
+      }
+      .leader-rail-wrap:not(.expanded) .leader-avatar-shell{
+        width:34px;
+        height:34px;
+      }
+      .leader-rail-wrap:not(.expanded) .leader-identity{
+        width:100%;
+        min-width:0;
+      }
+      .leader-rail-wrap:not(.expanded) .leader-name-line{
+        width:100%;
+        justify-content:center;
+        gap:3px;
+      }
+      .leader-rail-wrap:not(.expanded) .leader b{
+        max-width:calc(100% - 16px);
+        font-size:12.5px;
+        line-height:1.2;
+        text-align:center;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .leader-rail-wrap:not(.expanded) .verified-badge{
+        width:14px;
+        height:14px;
+      }
+      .leader-rail-wrap:not(.expanded) .leader-en,
+      .leader-rail-wrap:not(.expanded) .leader-role{display:none}
+      .leader-rail-wrap:not(.expanded) .leader-scrollbar{height:6px}
+      .leader-rail-wrap:not(.expanded) .leader-scroll-thumb{height:6px;min-width:64px}
+    }
   </style>
 </head>
 <body>
