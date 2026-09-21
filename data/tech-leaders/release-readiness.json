@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-21T13:52:05Z",
+  "generated_at": "2026-09-21T13:59:21Z",
   "policy": {
     "x_identity_verified_required": true,
     "x_activity_status_allowed": [
@@ -14,11 +14,11 @@
     "production_file_untouched": "apps/tech-leaders/leaders.json"
   },
   "base_count": 300,
-  "preview_count": 350,
-  "candidate_count": 50,
-  "ready_count": 29,
-  "blocked_count": 21,
-  "production_if_all_ready": 329,
+  "preview_count": 400,
+  "candidate_count": 100,
+  "ready_count": 55,
+  "blocked_count": 45,
+  "production_if_all_ready": 355,
   "ready": [
     {
       "name": "Emmett Shear",
@@ -94,6 +94,17 @@
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 76270,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Nikita Bier",
+      "ticker": "PRIVATE",
+      "handle": "nikitabier",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 26449,
       "ready": true,
       "blocking_reasons": []
     },
@@ -338,22 +349,284 @@
       "avatar_bytes": 68875,
       "ready": true,
       "blocking_reasons": []
+    },
+    {
+      "name": "Assaf Rappaport",
+      "ticker": "GOOGL",
+      "handle": "assaf_rapp",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 49092,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Dave DeWalt",
+      "ticker": "PRIVATE",
+      "handle": "davedewalt",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 87828,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Dug Song",
+      "ticker": "CSCO",
+      "handle": "dugsong",
+      "relationship_status": "former",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 26766,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Brad Garlinghouse",
+      "ticker": "PRIVATE",
+      "handle": "bgarlinghouse",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 38382,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "David Schwartz",
+      "ticker": "PRIVATE",
+      "handle": "JoelKatz",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 53800,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Denelle Dixon",
+      "ticker": "PRIVATE",
+      "handle": "DenelleDixon",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 34509,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Arthur Hayes",
+      "ticker": "PRIVATE",
+      "handle": "CryptoHayes",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 58946,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Richard Teng",
+      "ticker": "PRIVATE",
+      "handle": "RichardTeng",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 29883,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Changpeng Zhao",
+      "ticker": "PRIVATE",
+      "handle": "cz_binance",
+      "relationship_status": "former",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 28070,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Antonio Juliano",
+      "ticker": "PRIVATE",
+      "handle": "AntonioMJuliano",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 155448,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Yat Siu",
+      "ticker": "PRIVATE",
+      "handle": "ysiu",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 58735,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Nic Carter",
+      "ticker": "PRIVATE",
+      "handle": "nic__carter",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 58372,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Martin Casado",
+      "ticker": "PRIVATE",
+      "handle": "martin_casado",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 49058,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Connie Chan",
+      "ticker": "PRIVATE",
+      "handle": "conniechan",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/png",
+      "avatar_bytes": 106085,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Sarah Tavel",
+      "ticker": "PRIVATE",
+      "handle": "sarahtavel",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 90470,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Mike Volpi",
+      "ticker": "PRIVATE",
+      "handle": "mavolpi",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/png",
+      "avatar_bytes": 292053,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "David Krane",
+      "ticker": "PRIVATE",
+      "handle": "davidkrane",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 29667,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Brian Singerman",
+      "ticker": "PRIVATE",
+      "handle": "briansin",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 41438,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Matt Cohler",
+      "ticker": "PRIVATE",
+      "handle": "mattcohler",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 66099,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Gigi Levy-Weiss",
+      "ticker": "PRIVATE",
+      "handle": "gigilevy",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 85616,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Jeremy Liew",
+      "ticker": "PRIVATE",
+      "handle": "jeremysliew",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 99115,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Rich Wong",
+      "ticker": "PRIVATE",
+      "handle": "rwong",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 37440,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Chris Kemp",
+      "ticker": "PRIVATE",
+      "handle": "Kemp",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 54309,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Jack Altman",
+      "ticker": "PRIVATE",
+      "handle": "jaltma",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 103050,
+      "ready": true,
+      "blocking_reasons": []
+    },
+    {
+      "name": "Monica Long",
+      "ticker": "PRIVATE",
+      "handle": "MonicaLongSF",
+      "relationship_status": "current",
+      "avatar_ok": true,
+      "avatar_content_type": "image/jpeg",
+      "avatar_bytes": 44117,
+      "ready": true,
+      "blocking_reasons": []
     }
   ],
   "blocked": [
-    {
-      "name": "Nikita Bier",
-      "ticker": "PRIVATE",
-      "handle": "nikitabier",
-      "relationship_status": "current",
-      "avatar_ok": false,
-      "avatar_content_type": "",
-      "avatar_bytes": 0,
-      "ready": false,
-      "blocking_reasons": [
-        "avatar_fetch_failed:HTTPError"
-      ]
-    },
     {
       "name": "Mathias Biilmann",
       "ticker": "PRIVATE",
@@ -605,6 +878,331 @@
       "name": "Tomasz Tunguz",
       "ticker": "PRIVATE",
       "handle": "ttunguz",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Ami Luttwak",
+      "ticker": "GOOGL",
+      "handle": "amiluttwak",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Guy Podjarny",
+      "ticker": "PRIVATE",
+      "handle": "guypod",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Dan Lorenc",
+      "ticker": "PRIVATE",
+      "handle": "lorenc_dan",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Feross Aboukhadijeh",
+      "ticker": "PRIVATE",
+      "handle": "feross",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Dan Guido",
+      "ticker": "PRIVATE",
+      "handle": "dguido",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Kevin Mandia",
+      "ticker": "PRIVATE",
+      "handle": "kevinmandia",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Jon Oberheide",
+      "ticker": "CSCO",
+      "handle": "jonoberheide",
+      "relationship_status": "former",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Jed McCaleb",
+      "ticker": "PRIVATE",
+      "handle": "JedMcCaleb",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Alex Svanevik",
+      "ticker": "PRIVATE",
+      "handle": "ASvanevik",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Haseeb Qureshi",
+      "ticker": "PRIVATE",
+      "handle": "hosseeb",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Tarun Chitra",
+      "ticker": "PRIVATE",
+      "handle": "tarunchitra",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Robert Leshner",
+      "ticker": "PRIVATE",
+      "handle": "rleshner",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Jesse Pollak",
+      "ticker": "COIN",
+      "handle": "jessepollak",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Dan Romero",
+      "ticker": "PRIVATE",
+      "handle": "dwr",
+      "relationship_status": "former",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Varun Srinivasan",
+      "ticker": "PRIVATE",
+      "handle": "varunsrin",
+      "relationship_status": "former",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Kyle Samani",
+      "ticker": "FWDI",
+      "handle": "KyleSamani",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Tushar Jain",
+      "ticker": "PRIVATE",
+      "handle": "TusharJain_",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Anjney Midha",
+      "ticker": "PRIVATE",
+      "handle": "AnjneyMidha",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "David Ulevitch",
+      "ticker": "PRIVATE",
+      "handle": "davidu",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Eric Vishria",
+      "ticker": "PRIVATE",
+      "handle": "ericvishria",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Ori Eisen",
+      "ticker": "PRIVATE",
+      "handle": "orieisen",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Asheem Chandna",
+      "ticker": "PRIVATE",
+      "handle": "achandna",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Andrew Braccia",
+      "ticker": "PRIVATE",
+      "handle": "andrewbraccia",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Robbie Schingler",
+      "ticker": "PL",
+      "handle": "schingler",
+      "relationship_status": "current",
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:HTTPError"
+      ]
+    },
+    {
+      "name": "Max Haot",
+      "ticker": "PRIVATE",
+      "handle": "maxhaot",
       "relationship_status": "current",
       "avatar_ok": false,
       "avatar_content_type": "",
