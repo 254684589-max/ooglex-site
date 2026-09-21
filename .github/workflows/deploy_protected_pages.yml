@@ -9,7 +9,7 @@ on:
   # Connector/API-authored commits do not always emit a workflow-triggering push event.
   # Hourly fallback keeps the public GitHub Pages artifact converged with main.
   schedule:
-    - cron: '17 * * * *'
+    - cron: '*/15 * * * *'
 
 permissions:
   contents: read
