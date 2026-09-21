@@ -115,7 +115,7 @@
     document.title=(currentProfile.name||handle)+" · 单条动态 · Ooglex";
   }
   async function copyText(v){if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);return;}var ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
-  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId)+"?v=20260921c";}
+  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId)+"?v=20260921d";}
   async function copyLink(){try{await copyText(publicShareUrl());alert("帖子链接已复制");}catch(e){alert("复制失败");}}
   function openSharePage(){
     location.href=publicShareUrl();
