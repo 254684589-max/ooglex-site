@@ -2048,7 +2048,8 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const shareAvatarParams = new URLSearchParams({
     handle: String(handle || ""),
     name: publicAuthor || String(handle || "X"),
-    verified: showVerifiedBadge ? "1" : "0"
+    verified: showVerifiedBadge ? "1" : "0",
+    v: "20260921c"
   });
   const socialImage = `${requestUrl.origin}/v1/tech-leaders/share-avatar?${shareAvatarParams.toString()}`;
 
