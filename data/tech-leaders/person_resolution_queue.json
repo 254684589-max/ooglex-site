@@ -20,7 +20,8 @@
     "data/tech-leaders/verified_candidates.tranche14.json",
     "data/tech-leaders/verified_candidates.tranche15.json",
     "data/tech-leaders/verified_candidates.tranche16.json",
-    "data/tech-leaders/verified_candidates.tranche17.json"
+    "data/tech-leaders/verified_candidates.tranche17.json",
+    "data/tech-leaders/verified_candidates.tranche18.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -946,6 +947,21 @@
           "name": "Ami Luttwak",
           "handle": "amiluttwak",
           "status": "approved"
+        },
+        {
+          "name": "Oriol Vinyals",
+          "handle": "OriolVinyalsML",
+          "status": "manual_review"
+        },
+        {
+          "name": "Shane Legg",
+          "handle": "ShaneLegg",
+          "status": "approved"
+        },
+        {
+          "name": "Sarah Drasner",
+          "handle": "sarah_edo",
+          "status": "manual_review"
         }
       ],
       "resolution_status": "expand_more",
@@ -1002,6 +1018,11 @@
         {
           "name": "Ami Luttwak",
           "handle": "amiluttwak",
+          "status": "approved"
+        },
+        {
+          "name": "Shane Legg",
+          "handle": "ShaneLegg",
           "status": "approved"
         }
       ],
@@ -9493,7 +9514,13 @@
           "status": "current"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Baiju Bhatt",
+          "handle": "baijubhatt",
+          "status": "manual_review"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -9524,7 +9551,13 @@
           "status": "current"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Baiju Bhatt",
+          "handle": "baijubhatt",
+          "status": "manual_review"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
