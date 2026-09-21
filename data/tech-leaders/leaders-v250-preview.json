@@ -5781,6 +5781,161 @@
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
       "preview_only": true
+    },
+    {
+      "id": "antonio-neri-hpe",
+      "name": "Antonio Neri",
+      "zh": "Antonio Neri",
+      "handle": "AntonioNeri_HPE",
+      "role": "Hewlett Packard Enterprise · President & Chief Executive Officer",
+      "chips": [
+        "HPE",
+        "Hewlett Packard Enterprise",
+        "科技",
+        "云计算"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "ANTONIO NERI · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Antonio Neri",
+      "name_en": "Antonio Neri",
+      "company_zh": "Hewlett Packard Enterprise",
+      "company_en": "Hewlett Packard Enterprise",
+      "position_zh": "President & Chief Executive Officer",
+      "categories": [
+        "科技",
+        "云计算"
+      ],
+      "ticker": "HPE",
+      "exchange": "NYSE",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "ceo"
+      ],
+      "themes": [
+        "科技",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "uncertain",
+      "x_role_source_url": "https://www.hpe.com/us/en/leadership-bios/antonio-neri.html",
+      "x_identity_source_url": "https://x.com/AntonioNeri_HPE/status/2013272143811821744",
+      "x_activity_status": "active",
+      "x_last_activity_at": "",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AntonioNeri_HPE&name=Antonio+Neri&company=Hewlett+Packard+Enterprise",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "michael-miebach-ma",
+      "name": "Michael Miebach",
+      "zh": "Michael Miebach",
+      "handle": "MiebachMichael",
+      "role": "Mastercard · Chief Executive Officer",
+      "chips": [
+        "MA",
+        "Mastercard",
+        "金融",
+        "金融科技"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "MICHAEL MIEBACH · VERIFIED X TIMELINE PREVIEW",
+      "category": "金融",
+      "name_zh": "Michael Miebach",
+      "name_en": "Michael Miebach",
+      "company_zh": "Mastercard",
+      "company_en": "Mastercard",
+      "position_zh": "Chief Executive Officer",
+      "categories": [
+        "金融",
+        "金融科技"
+      ],
+      "ticker": "MA",
+      "exchange": "NYSE",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "ceo"
+      ],
+      "themes": [
+        "金融",
+        "金融科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "uncertain",
+      "x_role_source_url": "https://www.mastercard.com/us/en/news-and-trends/press/2026/june/mastercard-leadership-updates.html",
+      "x_identity_source_url": "https://x.com/MiebachMichael",
+      "x_activity_status": "active",
+      "x_last_activity_at": "",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MiebachMichael&name=Michael+Miebach&company=Mastercard",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "sasan-goodarzi-intu",
+      "name": "Sasan Goodarzi",
+      "zh": "Sasan Goodarzi",
+      "handle": "sasan_goodarzi",
+      "role": "Intuit · Chairman & Chief Executive Officer",
+      "chips": [
+        "INTU",
+        "Intuit",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "SASAN GOODARZI · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Sasan Goodarzi",
+      "name_en": "Sasan Goodarzi",
+      "company_zh": "Intuit",
+      "company_en": "Intuit",
+      "position_zh": "Chairman & Chief Executive Officer",
+      "categories": [
+        "科技",
+        "AI",
+        "软件",
+        "金融科技"
+      ],
+      "ticker": "INTU",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "ceo"
+      ],
+      "themes": [
+        "科技",
+        "AI",
+        "软件",
+        "金融科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "uncertain",
+      "x_role_source_url": "https://www.intuit.com/company/executives/sasan-goodarzi/",
+      "x_identity_source_url": "https://x.com/sasan_goodarzi",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sasan_goodarzi&name=Sasan+Goodarzi&company=Intuit",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
     }
   ],
   "categories": [
@@ -5796,7 +5951,9 @@
     "医疗",
     "能源",
     "航空航天",
-    "VC"
+    "VC",
+    "科技",
+    "金融科技"
   ],
   "catalog_version": "V4.2",
   "last_audited_at": "2026-09-19",
@@ -5851,10 +6008,15 @@
   },
   "preview": {
     "status": "review_only",
-    "source_evidence": "data/tech-leaders/verified_candidates.tranche01.json",
+    "source_evidence": [
+      "data/tech-leaders/verified_candidates.tranche01.json",
+      "data/tech-leaders/verified_candidates.tranche02.json"
+    ],
+    "evidence_tranche_count": 2,
+    "reviewed_candidate_count": 11,
     "base_count": 110,
-    "approved_additions": 1,
-    "preview_count": 111,
+    "approved_additions": 4,
+    "preview_count": 114,
     "production_file_untouched": true
   }
 }
