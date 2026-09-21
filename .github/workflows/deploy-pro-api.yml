@@ -207,6 +207,16 @@ jobs:
                   failed=1
                 fi
                 rm -f "$share_avatar_file" "$share_avatar_headers"
+                catalog_cover="https://pro-api.ooglex.com/v1/tech-leaders/catalog-share-cover?v=20260921f"
+                catalog_cover_file="$(mktemp)"
+                catalog_cover_headers="$(mktemp)"
+                if curl -fsS --connect-timeout 5 --max-time 25 -D "$catalog_cover_headers" -o "$catalog_cover_file" "$catalog_cover"; then
+                  python -c 'import pathlib,sys; body=pathlib.Path(sys.argv[1]).read_bytes(); headers=pathlib.Path(sys.argv[2]).read_text(errors="ignore").lower(); assert len(body)>1000; assert "content-type: image/png" in headers; assert "x-ooglex-share-cover: tech-leaders-v2" in headers; print("Tech Leaders catalog share cover OK")' "$catalog_cover_file" "$catalog_cover_headers" || failed=1
+                else
+                  echo "::error::Tech Leaders catalog share cover failed"
+                  failed=1
+                fi
+                rm -f "$catalog_cover_file" "$catalog_cover_headers"
               else
                 echo "::error::Single-post social preview returned no body"
                 failed=1
