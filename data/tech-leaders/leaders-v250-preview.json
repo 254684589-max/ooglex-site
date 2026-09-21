@@ -6369,6 +6369,227 @@
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
       "preview_only": true
+    },
+    {
+      "id": "joe-lonsdale-pltr",
+      "name": "Joe Lonsdale",
+      "zh": "Joe Lonsdale",
+      "handle": "JTLonsdale",
+      "role": "Palantir Technologies · Co-founder",
+      "chips": [
+        "PLTR",
+        "Palantir Technologies",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "JOE LONSDALE · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Joe Lonsdale",
+      "name_en": "Joe Lonsdale",
+      "company_zh": "Palantir Technologies",
+      "company_en": "Palantir Technologies",
+      "position_zh": "Co-founder",
+      "categories": [
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "ticker": "PLTR",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "sec_profile_cross_source",
+      "x_role_source_url": "https://www.sec.gov/Archives/edgar/data/1822250/000114036121014753/nc10020548x1_def14a.htm",
+      "x_identity_source_url": "https://x.com/JTLonsdale",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JTLonsdale&name=Joe+Lonsdale&company=Palantir+Technologies",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "brad-smith-msft",
+      "name": "Brad Smith",
+      "zh": "Brad Smith",
+      "handle": "BradSmi",
+      "role": "Microsoft · Vice Chair & President",
+      "chips": [
+        "MSFT",
+        "Microsoft",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "BRAD SMITH · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Brad Smith",
+      "name_en": "Brad Smith",
+      "company_zh": "Microsoft",
+      "company_en": "Microsoft",
+      "position_zh": "Vice Chair & President",
+      "categories": [
+        "科技",
+        "AI",
+        "软件",
+        "云计算"
+      ],
+      "ticker": "MSFT",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "executive"
+      ],
+      "company_relationship_status": "current",
+      "themes": [
+        "科技",
+        "AI",
+        "软件",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_role_profile_cross_source",
+      "x_role_source_url": "https://news.microsoft.com/source/2026/09/15/microsoft-announces-quarterly-dividend-increase-7/",
+      "x_identity_source_url": "https://x.com/BradSmi",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BradSmi&name=Brad+Smith&company=Microsoft",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "steven-sinofsky-msft",
+      "name": "Steven Sinofsky",
+      "zh": "Steven Sinofsky",
+      "handle": "stevesi",
+      "role": "Microsoft · Former President, Windows Division",
+      "chips": [
+        "MSFT",
+        "Microsoft",
+        "科技",
+        "软件",
+        "消费科技"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "STEVEN SINOFSKY · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Steven Sinofsky",
+      "name_en": "Steven Sinofsky",
+      "company_zh": "Microsoft",
+      "company_en": "Microsoft",
+      "position_zh": "Former President, Windows Division",
+      "categories": [
+        "科技",
+        "软件",
+        "消费科技"
+      ],
+      "ticker": "MSFT",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "软件",
+        "消费科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_history_profile_cross_source",
+      "x_role_source_url": "https://news.microsoft.com/source/2012/11/13/microsoft-announces-leadership-changes-to-drive-next-wave-of-products/",
+      "x_identity_source_url": "https://x.com/stevesi",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-10",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=stevesi&name=Steven+Sinofsky&company=Microsoft",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "panos-panay-amzn",
+      "name": "Panos Panay",
+      "zh": "Panos Panay",
+      "handle": "panos_panay",
+      "role": "Amazon · Senior Vice President, Devices & Services",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "消费科技",
+        "AI",
+        "硬件"
+      ],
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+      "title": "PANOS PANAY · VERIFIED X TIMELINE PREVIEW",
+      "category": "消费科技",
+      "name_zh": "Panos Panay",
+      "name_en": "Panos Panay",
+      "company_zh": "Amazon",
+      "company_en": "Amazon",
+      "position_zh": "Senior Vice President, Devices & Services",
+      "categories": [
+        "消费科技",
+        "AI",
+        "硬件",
+        "云计算"
+      ],
+      "ticker": "AMZN",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "executive"
+      ],
+      "company_relationship_status": "current",
+      "themes": [
+        "消费科技",
+        "AI",
+        "硬件",
+        "云计算"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_role_profile_cross_source",
+      "x_role_source_url": "https://www.aboutamazon.com/news/workplace/amazon-s-team-members",
+      "x_identity_source_url": "https://x.com/panos_panay",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-05",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=panos_panay&name=Panos+Panay&company=Amazon",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
     }
   ],
   "categories": [
@@ -6389,7 +6610,8 @@
     "金融科技",
     "通信服务",
     "消费科技",
-    "机器人"
+    "机器人",
+    "硬件"
   ],
   "catalog_version": "V4.3",
   "last_audited_at": "2026-09-19",
@@ -6454,18 +6676,19 @@
       "data/tech-leaders/verified_candidates.tranche02.json",
       "data/tech-leaders/verified_candidates.tranche03.json",
       "data/tech-leaders/verified_candidates.tranche04.json",
-      "data/tech-leaders/verified_candidates.tranche05.json"
+      "data/tech-leaders/verified_candidates.tranche05.json",
+      "data/tech-leaders/verified_candidates.tranche06.json"
     ],
-    "evidence_tranche_count": 5,
-    "reviewed_candidate_count": 27,
+    "evidence_tranche_count": 6,
+    "reviewed_candidate_count": 31,
     "review_status_counts": {
-      "approved": 12,
+      "approved": 16,
       "hold": 2,
       "manual_review": 13
     },
     "base_count": 110,
-    "approved_additions": 12,
-    "preview_count": 122,
+    "approved_additions": 16,
+    "preview_count": 126,
     "production_file_untouched": true
   }
 }
