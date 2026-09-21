@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  # Connector/API-authored commits do not always emit a workflow-triggering push event.
+  # Hourly fallback keeps the public GitHub Pages artifact converged with main.
+  schedule:
+    - cron: '17 * * * *'
 
 permissions:
   contents: read
