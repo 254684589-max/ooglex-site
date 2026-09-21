@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-09-21T16:34:41Z",
+  "generated_at": "2026-09-21T16:56:01Z",
   "issuer_count": 1000,
-  "represented_issuers": 115,
-  "unrepresented_issuers": 885,
+  "represented_issuers": 120,
+  "unrepresented_issuers": 880,
   "research_now_count": 300,
   "research_next_count": 350,
   "research_later_count": 350,
