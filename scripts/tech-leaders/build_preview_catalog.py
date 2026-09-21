@@ -8,6 +8,7 @@ This script never writes apps/tech-leaders/leaders.json.
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import re
 from copy import deepcopy
@@ -104,26 +105,44 @@ def make_leader(c: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default="apps/tech-leaders/leaders.json")
-    ap.add_argument("--evidence", default="data/tech-leaders/verified_candidates.tranche01.json")
+    ap.add_argument("--evidence-glob", default="data/tech-leaders/verified_candidates.tranche*.json")
     ap.add_argument("--output", default="data/tech-leaders/leaders-v250-preview.json")
     args = ap.parse_args()
 
     base = load_json(Path(args.base))
-    ev = load_json(Path(args.evidence))
-    candidates = ev.get("candidates") or []
-    for c in candidates:
-        validate_candidate(c)
+    evidence_paths = [Path(p) for p in sorted(glob.glob(args.evidence_glob))]
+    if not evidence_paths:
+        raise RuntimeError(f"no evidence files matched {args.evidence_glob}")
+
+    candidates = []
+    source_evidence = []
+    seen_candidate_keys = set()
+    for evidence_path in evidence_paths:
+        ev = load_json(evidence_path)
+        source_evidence.append(str(evidence_path))
+        for c in ev.get("candidates") or []:
+            key = (
+                str(c.get("ticker") or "").upper(),
+                str(c.get("executive_name") or "").strip().lower(),
+            )
+            if key in seen_candidate_keys:
+                raise RuntimeError(f"duplicate candidate across evidence tranches: {key}")
+            seen_candidate_keys.add(key)
+            validate_candidate(c)
+            candidates.append(c)
 
     approved = [c for c in candidates if c.get("review_status") == "approved"]
     existing_handles = {str(x.get("handle") or "").lower() for x in base.get("leaders") or []}
-    existing_tickers = {str(x.get("ticker") or x.get("sp500_ticker") or "").upper() for x in base.get("leaders") or []}
+    approved_handles = set()
 
     additions = []
     for c in approved:
         handle = c["x_handle"].lstrip("@").lower()
         if handle in existing_handles:
             raise RuntimeError(f"duplicate X handle in approved preview: {handle}")
-        # Ticker duplication is allowed only when the person is distinct from an existing founder/CEO.
+        if handle in approved_handles:
+            raise RuntimeError(f"duplicate approved X handle across evidence tranches: {handle}")
+        approved_handles.add(handle)
         leader = make_leader(c)
         additions.append(leader)
 
@@ -131,7 +150,9 @@ def main() -> int:
     preview["schema_version"] = max(int(base.get("schema_version") or 0), 9)
     preview["preview"] = {
         "status": "review_only",
-        "source_evidence": args.evidence,
+        "source_evidence": source_evidence,
+        "evidence_tranche_count": len(source_evidence),
+        "reviewed_candidate_count": len(candidates),
         "base_count": len(base.get("leaders") or []),
         "approved_additions": len(additions),
         "preview_count": len(base.get("leaders") or []) + len(additions),
@@ -139,6 +160,13 @@ def main() -> int:
     }
     preview["capacity"] = max(int(base.get("capacity") or 0), 250)
     preview["leaders"] = list(base.get("leaders") or []) + additions
+
+    category_order = list(base.get("categories") or [])
+    for leader in additions:
+        for cat in leader.get("categories") or []:
+            if cat and cat not in category_order:
+                category_order.append(cat)
+    preview["categories"] = category_order
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)

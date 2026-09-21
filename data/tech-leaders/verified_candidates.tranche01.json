@@ -124,18 +124,20 @@
       "x_check_type": "uncertain",
       "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/AntonioNeri_HPE/status/2013272143811821744",
-      "x_activity_status": "intermittent",
-      "x_last_activity_at": "2026-01-19",
+      "x_activity_status": "active",
+      "x_last_activity_at": "",
       "recommended_categories": [
         "上市公司",
         "NYSE",
         "科技",
         "云计算"
       ],
-      "confidence": "high_identity_medium_activity",
-      "review_status": "manual_review",
-      "review_notes": "Current HPE CEO confirmed by HPE. Personal X handle is attributable to Antonio Neri; latest directly surfaced post in this tranche is Jan 2026, so activity is not strong enough for automatic approval.",
-      "corporate_fallback": "HPE"
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Current HPE CEO confirmed by HPE. Personal X handle @AntonioNeri_HPE is attributable to Antonio Neri. Recent public posts were observed within the last month in the Sep 2026 review, so the account clears the activity gate.",
+      "corporate_fallback": "HPE",
+      "x_activity_source_url": "https://twstalker.com/AntonioNeri_HPE",
+      "reverified_at": "2026-09-21"
     }
   ]
 }
