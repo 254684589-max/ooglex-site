@@ -248,6 +248,11 @@
       ],
       "known_production_people": [
         {
+          "name": "Tim Cook",
+          "handle": "tim_cook",
+          "status": "current"
+        },
+        {
           "name": "Steve Wozniak",
           "handle": "stevewoz",
           "status": "former"
@@ -967,6 +972,11 @@
           "status": "current"
         },
         {
+          "name": "Jeff Dean",
+          "handle": "JeffDean",
+          "status": "current"
+        },
+        {
           "name": "Assaf Rappaport",
           "handle": "assaf_rapp",
           "status": "current"
@@ -1013,6 +1023,11 @@
         "Former C-suite"
       ],
       "known_production_people": [
+        {
+          "name": "Jeff Dean",
+          "handle": "JeffDean",
+          "status": "current"
+        },
         {
           "name": "Marissa Mayer",
           "handle": "marissamayer",
@@ -2647,9 +2662,15 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Michael Dell",
+          "handle": "MichaelDell",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
