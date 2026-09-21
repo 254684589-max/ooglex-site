@@ -13,10 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  # All Tech Leaders workflows that commit generated artifacts to main share
-  # one writer lane. This prevents non-fast-forward races between catalog,
-  # review, readiness and avatar maintenance jobs.
-  group: tech-leaders-main-writes
+  group: tech-leaders-review-batch
   cancel-in-progress: false
 
 jobs:
@@ -78,4 +75,21 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $FILES
           git commit -m "data: refresh tech-leaders multi-person review batch"
-          git push
+          # Multiple Tech Leaders generators can finish at nearly the same time.
+          # Keep each workflow independent, then retry a rejected main push after
+          # rebasing onto the newest remote main. This avoids both lost writes
+          # and GitHub concurrency-group pending-run cancellation.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "::error::Unable to rebase generated artifact commit onto main"
+              exit 1
+            fi
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          echo "::error::Unable to push generated artifact after 5 attempts"
+          exit 1
