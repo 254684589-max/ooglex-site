@@ -3,11 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>单条动态 · Ooglex</title>
-  <meta name="description" content="Ooglex 科技领袖公开 X 单条动态分享页。">
-  <meta property="og:title" content="单条动态 · Ooglex">
-  <meta property="og:description" content="查看这条公开 X 动态。">
-  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <title>正在打开动态 · Ooglex</title>
+  <meta name="description" content="正在打开 Ooglex 科技领袖单条公开动态。">
+  <meta name="robots" content="noindex,nofollow">
+  <script>
+  (function(){
+    var q=new URLSearchParams(location.search);
+    var handle=String(q.get("handle")||"").replace(/^@/,"");
+    var id=String(q.get("id")||"");
+    if(/^[A-Za-z0-9_]{1,15}$/.test(handle)&&/^\d{10,25}$/.test(id)){
+      location.replace("https://pro-api.ooglex.com/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(id)+"?v=20260921e");
+    }
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <style>
     :root{--bg:#f7f1e9;--panel:#fffaf4;--ink:#171717;--dim:#655f59;--faint:#8b837b;--line:#ded5cb;--blue:#2a6fa4;--green:#218c6a;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
@@ -115,7 +123,7 @@
     document.title=(currentProfile.name||handle)+" · 单条动态 · Ooglex";
   }
   async function copyText(v){if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);return;}var ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
-  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId)+"?v=20260921d";}
+  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId)+"?v=20260921e";}
   async function copyLink(){try{await copyText(publicShareUrl());alert("帖子链接已复制");}catch(e){alert("复制失败");}}
   function openSharePage(){
     location.href=publicShareUrl();
