@@ -477,7 +477,9 @@
   var CATALOG_URL="./leaders.json";
   try{
     var catalogMode=new URLSearchParams(window.location.search).get("catalog");
-    if(catalogMode==="wall-street-v428-preview"){
+    if(catalogMode==="wall-street-v528-preview"){
+      CATALOG_URL="./leaders-wall-street-v528-preview.json";
+    }else if(catalogMode==="wall-street-v428-preview"){
       CATALOG_URL="./leaders-wall-street-v428-preview.json";
     }
   }catch(e){}
