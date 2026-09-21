@@ -194,7 +194,15 @@ jobs:
               printf '%s' "$single" | python -c 'import json,sys,os; d=json.load(sys.stdin); assert d.get("uses_x_api") is False; assert str(d.get("post",{}).get("id",""))==os.environ["POST_ID"]; print("Single-post share endpoint OK")' || failed=1
               share_html="$(curl -fsS --connect-timeout 5 --max-time 25 "https://pro-api.ooglex.com/share/tech-leaders/sundarpichai/$post_id" || true)"
               if [ -n "$share_html" ]; then
-                printf '%s' "$share_html" | python -c 'import re,sys,html; s=sys.stdin.read(); m=re.search(r"<meta property=\"og:title\" content=\"([^\"]*)\">",s); im=re.search(r"<meta property=\"og:image\" content=\"([^\"]*)\">",s); assert m and html.unescape(m.group(1)).strip(); assert "科技领袖实时动态流" not in html.unescape(m.group(1)); assert im and "/v1/tech-leaders/avatar?" in html.unescape(im.group(1)); assert "class=\"author-avatar\"" in s; assert "/assets/og-cover.png" not in s; print("Original-post social preview title + avatar thumbnail + no generic cover OK:", html.unescape(m.group(1))[:80])' || failed=1
+                printf '%s' "$share_html" | python -c 'import re,sys,html; s=sys.stdin.read(); m=re.search(r"<meta property=\"og:title\" content=\"([^\"]*)\">",s); im=re.search(r"<meta property=\"og:image\" content=\"([^\"]*)\">",s); assert m and html.unescape(m.group(1)).strip(); assert "科技领袖实时动态流" not in html.unescape(m.group(1)); assert im and "/v1/tech-leaders/share-avatar?" in html.unescape(im.group(1)); assert "property=\"og:image:type\" content=\"image/svg+xml\"" in s; assert "property=\"og:image:width\" content=\"512\"" in s; assert "class=\"author-avatar\"" in s; assert "/assets/og-cover.png" not in s; print("Original-post social preview title + circular verified avatar metadata OK:", html.unescape(m.group(1))[:80])' || failed=1
+                share_avatar="https://pro-api.ooglex.com/v1/tech-leaders/share-avatar?handle=sundarpichai&name=Sundar%20Pichai&verified=1"
+                share_avatar_body="$(curl -fsS --connect-timeout 5 --max-time 25 "$share_avatar" || true)"
+                if [ -n "$share_avatar_body" ]; then
+                  printf '%s' "$share_avatar_body" | python -c 'import sys; s=sys.stdin.read(); assert "<svg" in s; assert "clipPath id=\"avatar-clip\"" in s; assert "fill=\"#1d9bf0\"" in s; assert "Ooglex verified public account" in s; print("Circular share avatar + verification badge OK")' || failed=1
+                else
+                  echo "::error::Circular share avatar endpoint returned no body"
+                  failed=1
+                fi
               else
                 echo "::error::Single-post social preview returned no body"
                 failed=1
