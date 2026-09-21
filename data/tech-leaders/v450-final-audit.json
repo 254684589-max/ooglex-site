@@ -1,0 +1,19 @@
+{
+  "version": "v450-final-audit",
+  "audited_at": "2026-09-22",
+  "catalog_version": "v450-stable-2026-09-21",
+  "source_path": "apps/tech-leaders/leaders.json",
+  "source_blob_sha": "611ebee43e3cd5e78837ee5c4b7e4606864e4fdc",
+  "leader_count": 450,
+  "active_count": 450,
+  "verified_count": 450,
+  "manual_review_count": 0,
+  "legacy_review_required_count": 0,
+  "personal_x_count": 447,
+  "company_official_proxy_count": 3,
+  "avatar_audit_count": 450,
+  "avatar_total_checked": 450,
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "freeze_status": "stable"
+}
