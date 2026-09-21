@@ -1,16 +1,16 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-21T19:12:41Z",
+  "checked_at": "2026-09-21T19:49:11Z",
   "catalog": "apps/tech-leaders/leaders.json",
-  "total_checked": 528,
-  "usable": 455,
-  "x_original": 162,
+  "total_checked": 594,
+  "usable": 478,
+  "x_original": 163,
   "x_original_proxy": 43,
   "official_fallback": 3,
-  "public_fallback": 247,
-  "fallback": 250,
-  "pending_review": 73,
+  "public_fallback": 269,
+  "fallback": 272,
+  "pending_review": 116,
   "missing_handle": 0,
   "invalid_handle": 0,
   "items": [
@@ -1245,6 +1245,20 @@
       "response_handle": "jpatel41",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jpatel41&name=Jeetu+Patel&company=Cisco",
       "origin_url": "https://x.com/jpatel41"
+    },
+    {
+      "id": "wall-street-v594-james-seyffart",
+      "name": "James Seyffart",
+      "company": "Bloomberg Intelligence",
+      "handle": "JSeyff",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "JSeyff",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JSeyff&name=James+Seyffart&company=Bloomberg+Intelligence",
+      "origin_url": "https://x.com/JSeyff"
     },
     {
       "id": "karpathy",
@@ -3179,6 +3193,20 @@
       "origin_url": "https://x.com/assaf_rapp"
     },
     {
+      "id": "wall-street-v594-aswath-damodaran",
+      "name": "Aswath Damodaran",
+      "company": "NYU Stern School of Business",
+      "handle": "AswathDamodaran",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "AswathDamodaran",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AswathDamodaran&name=Aswath+Damodaran&company=NYU+Stern+School+of+Business",
+      "origin_url": "https://x.com/AswathDamodaran"
+    },
+    {
       "id": "wall-street-ben-carlson",
       "name": "Ben Carlson",
       "company": "Ritholtz Wealth Management",
@@ -3333,6 +3361,20 @@
       "origin_url": "https://x.com/BillGates"
     },
     {
+      "id": "wall-street-v594-brian-kelly",
+      "name": "Brian Kelly",
+      "company": "BKCM",
+      "handle": "BKBrianKelly",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "BKBrianKelly",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BKBrianKelly&name=Brian+Kelly&company=BKCM",
+      "origin_url": "https://x.com/BKBrianKelly"
+    },
+    {
       "id": "wall-street-bob-elliott",
       "name": "Bob Elliott",
       "company": "Unlimited Funds",
@@ -3443,6 +3485,20 @@
       "response_handle": "cameron",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cameron&name=Cameron+Winklevoss&company=Gemini",
       "origin_url": "https://x.com/cameron"
+    },
+    {
+      "id": "wall-street-v594-cameron-dawson",
+      "name": "Cameron Dawson",
+      "company": "NewEdge Wealth",
+      "handle": "CameronDawson",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "CameronDawson",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=CameronDawson&name=Cameron+Dawson&company=NewEdge+Wealth",
+      "origin_url": "https://x.com/CameronDawson"
     },
     {
       "id": "cathie-wood-private",
@@ -3683,6 +3739,20 @@
       "origin_url": "https://x.com/davehclark"
     },
     {
+      "id": "wall-street-v594-david-bahnsen",
+      "name": "David Bahnsen",
+      "company": "The Bahnsen Group",
+      "handle": "DavidBahnsen",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "DavidBahnsen",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DavidBahnsen&name=David+Bahnsen&company=The+Bahnsen+Group",
+      "origin_url": "https://x.com/DavidBahnsen"
+    },
+    {
       "id": "david-baszucki-rblx",
       "name": "David Baszucki",
       "company": "Roblox",
@@ -3809,6 +3879,20 @@
       "origin_url": "https://x.com/DenelleDixon"
     },
     {
+      "id": "wall-street-v594-david-keller",
+      "name": "David Keller",
+      "company": "Sierra Alpha Research",
+      "handle": "DKellerCMT",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "DKellerCMT",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DKellerCMT&name=David+Keller&company=Sierra+Alpha+Research",
+      "origin_url": "https://x.com/DKellerCMT"
+    },
+    {
       "id": "dara",
       "name": "Dara Khosrowshahi",
       "company": "Uber",
@@ -3933,6 +4017,20 @@
       "response_handle": "elerianm",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elerianm&name=Mohamed+El-Erian&company=Allianz+%2F+Gramercy+Funds+Management+%2F+Queens%27+College",
       "origin_url": "https://x.com/elerianm"
+    },
+    {
+      "id": "wall-street-v594-ben-hunt",
+      "name": "Ben Hunt",
+      "company": "Epsilon Theory",
+      "handle": "EpsilonTheory",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "EpsilonTheory",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=EpsilonTheory&name=Ben+Hunt&company=Epsilon+Theory",
+      "origin_url": "https://x.com/EpsilonTheory"
     },
     {
       "id": "schmidt",
@@ -4075,6 +4173,20 @@
       "origin_url": "https://x.com/gc"
     },
     {
+      "id": "wall-street-v594-ross-gerber",
+      "name": "Ross Gerber",
+      "company": "Gerber Kawasaki Wealth & Investment Management",
+      "handle": "GerberKawasaki",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "GerberKawasaki",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=GerberKawasaki&name=Ross+Gerber&company=Gerber+Kawasaki+Wealth+%26+Investment+Management",
+      "origin_url": "https://x.com/GerberKawasaki"
+    },
+    {
       "id": "gigi-levy-weiss-private",
       "name": "Gigi Levy-Weiss",
       "company": "NFX",
@@ -4131,6 +4243,34 @@
       "origin_url": "https://x.com/grs"
     },
     {
+      "id": "wall-street-v594-guy-spier",
+      "name": "Guy Spier",
+      "company": "Aquamarine Capital",
+      "handle": "GSpier",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "GSpier",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=GSpier&name=Guy+Spier&company=Aquamarine+Capital",
+      "origin_url": "https://x.com/GSpier"
+    },
+    {
+      "id": "wall-street-v594-guy-adami",
+      "name": "Guy Adami",
+      "company": "RiskReversal Media",
+      "handle": "GuyAdami",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "GuyAdami",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=GuyAdami&name=Guy+Adami&company=RiskReversal+Media",
+      "origin_url": "https://x.com/GuyAdami"
+    },
+    {
       "id": "guido-van-rossum-v500",
       "name": "Guido van Rossum",
       "company": "Microsoft / Python",
@@ -4185,6 +4325,20 @@
       "response_handle": "hnshah",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hnshah&name=Hiten+Shah&company=Nira+%2F+KISSmetrics",
       "origin_url": "https://x.com/hnshah"
+    },
+    {
+      "id": "wall-street-v594-howard-lindzon",
+      "name": "Howard Lindzon",
+      "company": "Social Leverage",
+      "handle": "howardlindzon",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "howardlindzon",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=howardlindzon&name=Howard+Lindzon&company=Social+Leverage",
+      "origin_url": "https://x.com/howardlindzon"
     },
     {
       "id": "wall-street-howard-marks",
@@ -4395,6 +4549,20 @@
       "response_handle": "JensenHuang",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JensenHuang&name=Jensen+Huang&company=NVIDIA",
       "origin_url": "https://x.com/JensenHuang"
+    },
+    {
+      "id": "wall-street-v594-jeremy-schwartz",
+      "name": "Jeremy Schwartz",
+      "company": "WisdomTree",
+      "handle": "JeremyDSchwartz",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/png",
+      "response_handle": "JeremyDSchwartz",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JeremyDSchwartz&name=Jeremy+Schwartz&company=WisdomTree",
+      "origin_url": "https://x.com/JeremyDSchwartz"
     },
     {
       "id": "jeremy-howard-private",
@@ -4663,6 +4831,20 @@
       "origin_url": "https://x.com/kaarmann"
     },
     {
+      "id": "wall-street-v594-karen-finerman",
+      "name": "Karen Finerman",
+      "company": "Metropolitan Capital Advisors",
+      "handle": "karenfinerman",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "karenfinerman",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karenfinerman&name=Karen+Finerman&company=Metropolitan+Capital+Advisors",
+      "origin_url": "https://x.com/karenfinerman"
+    },
+    {
       "id": "chris-kemp-private",
       "name": "Chris Kemp",
       "company": "Astra",
@@ -4675,6 +4857,20 @@
       "response_handle": "Kemp",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Kemp&name=Chris+Kemp&company=Astra",
       "origin_url": "https://x.com/Kemp"
+    },
+    {
+      "id": "wall-street-v594-ken-fisher",
+      "name": "Ken Fisher",
+      "company": "Fisher Investments",
+      "handle": "KennethLFisher",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "KennethLFisher",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=KennethLFisher&name=Ken+Fisher&company=Fisher+Investments",
+      "origin_url": "https://x.com/KennethLFisher"
     },
     {
       "id": "kevin-scott-msft",
@@ -5069,6 +5265,20 @@
       "origin_url": "https://x.com/mlevchin"
     },
     {
+      "id": "wall-street-v594-mohnish-pabrai",
+      "name": "Mohnish Pabrai",
+      "company": "Pabrai Investment Funds",
+      "handle": "MohnishPabrai",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "MohnishPabrai",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MohnishPabrai&name=Mohnish+Pabrai&company=Pabrai+Investment+Funds",
+      "origin_url": "https://x.com/MohnishPabrai"
+    },
+    {
       "id": "monica-long-private",
       "name": "Monica Long",
       "company": "Ripple",
@@ -5137,6 +5347,20 @@
       "response_handle": "mpaper2000",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mpaper2000&name=Mark+Papermaster&company=Advanced+Micro+Devices",
       "origin_url": "https://x.com/mpaper2000"
+    },
+    {
+      "id": "wall-street-v594-ben-johnson",
+      "name": "Ben Johnson",
+      "company": "Morningstar",
+      "handle": "MstarBenJohnson",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "MstarBenJohnson",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MstarBenJohnson&name=Ben+Johnson&company=Morningstar",
+      "origin_url": "https://x.com/MstarBenJohnson"
     },
     {
       "id": "michael-seibel-private",
@@ -5377,6 +5601,20 @@
       "origin_url": "https://x.com/peteflint"
     },
     {
+      "id": "wall-street-v594-peter-atwater",
+      "name": "Peter Atwater",
+      "company": "Financial Insyghts",
+      "handle": "Peter_Atwater",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "Peter_Atwater",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_Atwater&name=Peter+Atwater&company=Financial+Insyghts",
+      "origin_url": "https://x.com/Peter_Atwater"
+    },
+    {
       "id": "peter-beck",
       "name": "Peter Beck",
       "company": "Rocket Lab",
@@ -5389,6 +5627,20 @@
       "response_handle": "Peter_J_Beck",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Peter_J_Beck&name=Peter+Beck&company=Rocket+Lab",
       "origin_url": "https://x.com/Peter_J_Beck"
+    },
+    {
+      "id": "wall-street-v594-peter-brandt",
+      "name": "Peter Brandt",
+      "company": "Factor Trading",
+      "handle": "PeterLBrandt",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "PeterLBrandt",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=PeterLBrandt&name=Peter+Brandt&company=Factor+Trading",
+      "origin_url": "https://x.com/PeterLBrandt"
     },
     {
       "id": "wall-street-peter-schiff",
@@ -5531,6 +5783,20 @@
       "origin_url": "https://x.com/reedhastings"
     },
     {
+      "id": "wall-street-v594-josh-brown",
+      "name": "Josh Brown",
+      "company": "Ritholtz Wealth Management",
+      "handle": "ReformedBroker",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "ReformedBroker",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ReformedBroker&name=Josh+Brown&company=Ritholtz+Wealth+Management",
+      "origin_url": "https://x.com/ReformedBroker"
+    },
+    {
       "id": "peter-reinhardt-private",
       "name": "Peter Reinhardt",
       "company": "Charm Industrial / Revoy",
@@ -5613,6 +5879,20 @@
       "response_handle": "RickRieder",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RickRieder&name=Rick+Rieder&company=BlackRock",
       "origin_url": "https://x.com/RickRieder"
+    },
+    {
+      "id": "wall-street-v594-dan-nathan",
+      "name": "Dan Nathan",
+      "company": "RiskReversal Media",
+      "handle": "RiskReversal",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "RiskReversal",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RiskReversal&name=Dan+Nathan&company=RiskReversal+Media",
+      "origin_url": "https://x.com/RiskReversal"
     },
     {
       "id": "rj-scaringe-rivn",
@@ -5739,6 +6019,20 @@
       "response_handle": "salkhanacademy",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=salkhanacademy&name=Sal+Khan&company=Khan+Academy",
       "origin_url": "https://x.com/salkhanacademy"
+    },
+    {
+      "id": "wall-street-v594-brent-johnson",
+      "name": "Brent Johnson",
+      "company": "Santiago Capital",
+      "handle": "SantiagoAuFund",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "SantiagoAuFund",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=SantiagoAuFund&name=Brent+Johnson&company=Santiago+Capital",
+      "origin_url": "https://x.com/SantiagoAuFund"
     },
     {
       "id": "sarah-tavel-private",
@@ -6133,6 +6427,20 @@
       "origin_url": "https://x.com/tfadell"
     },
     {
+      "id": "wall-street-v594-joe-weisenthal",
+      "name": "Joe Weisenthal",
+      "company": "Bloomberg",
+      "handle": "TheStalwart",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikipedia-r2",
+      "content_type": "image/jpeg",
+      "response_handle": "TheStalwart",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TheStalwart&name=Joe+Weisenthal&company=Bloomberg",
+      "origin_url": "https://x.com/TheStalwart"
+    },
+    {
       "id": "thomas-wolf-private",
       "name": "Thomas Wolf",
       "company": "Hugging Face",
@@ -6243,6 +6551,20 @@
       "response_handle": "vipulved",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vipulved&name=Vipul+Ved+Prakash&company=Together+AI",
       "origin_url": "https://x.com/vipulved"
+    },
+    {
+      "id": "wall-street-v594-vitaliy-katsenelson",
+      "name": "Vitaliy Katsenelson",
+      "company": "Investment Management Associates",
+      "handle": "vitaliyk",
+      "ok": true,
+      "status": "fallback",
+      "source_type": "public_fallback",
+      "source_transport": "wikimedia_commons-r2",
+      "content_type": "image/png",
+      "response_handle": "vitaliyk",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vitaliyk&name=Vitaliy+Katsenelson&company=Investment+Management+Associates",
+      "origin_url": "https://x.com/vitaliyk"
     },
     {
       "id": "tenev",
@@ -6445,6 +6767,18 @@
       "origin_url": "https://x.com/akothari"
     },
     {
+      "id": "wall-street-v594-marc-cohodes",
+      "name": "Marc Cohodes",
+      "company": "Independent",
+      "handle": "AlderLaneEggs",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AlderLaneEggs&name=Marc+Cohodes&company=Independent",
+      "origin_url": "https://x.com/AlderLaneEggs"
+    },
+    {
       "id": "alex-danco-v500",
       "name": "Alex Danco",
       "company": "Andreessen Horowitz",
@@ -6455,6 +6789,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Alex_Danco&name=Alex+Danco&company=Andreessen+Horowitz",
       "origin_url": "https://x.com/Alex_Danco"
+    },
+    {
+      "id": "wall-street-v594-brian-shannon",
+      "name": "Brian Shannon",
+      "company": "AlphaTrends",
+      "handle": "alphatrends",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=alphatrends&name=Brian+Shannon&company=AlphaTrends",
+      "origin_url": "https://x.com/alphatrends"
     },
     {
       "id": "alexis-le-quoc-ddog",
@@ -6493,6 +6839,18 @@
       "origin_url": "https://x.com/AmritaAhuja"
     },
     {
+      "id": "wall-street-v594-anastasia-amoroso",
+      "name": "Anastasia Amoroso",
+      "company": "iCapital",
+      "handle": "AnaAmoroso",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=AnaAmoroso&name=Anastasia+Amoroso&company=iCapital",
+      "origin_url": "https://x.com/AnaAmoroso"
+    },
+    {
       "id": "andrew-braccia-private",
       "name": "Andrew Braccia",
       "company": "Accel",
@@ -6503,6 +6861,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=andrewbraccia&name=Andrew+Braccia&company=Accel",
       "origin_url": "https://x.com/andrewbraccia"
+    },
+    {
+      "id": "wall-street-v594-anthony-pompliano",
+      "name": "Anthony Pompliano",
+      "company": "Professional Capital Management",
+      "handle": "APompliano",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=APompliano&name=Anthony+Pompliano&company=Professional+Capital+Management",
+      "origin_url": "https://x.com/APompliano"
     },
     {
       "id": "alex-rampell-private",
@@ -6565,6 +6935,18 @@
       "origin_url": "https://x.com/BenoitDageville"
     },
     {
+      "id": "wall-street-v594-beth-kindig",
+      "name": "Beth Kindig",
+      "company": "I/O Fund",
+      "handle": "Beth_Kindig",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Beth_Kindig&name=Beth+Kindig&company=I%2FO+Fund",
+      "origin_url": "https://x.com/Beth_Kindig"
+    },
+    {
       "id": "wall-street-boaz-weinstein",
       "name": "Boaz Weinstein",
       "company": "Saba Capital Management",
@@ -6575,6 +6957,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=boazweinstein&name=Boaz+Weinstein&company=Saba+Capital+Management",
       "origin_url": "https://x.com/boazweinstein"
+    },
+    {
+      "id": "wall-street-v594-brian-belski",
+      "name": "Brian Belski",
+      "company": "Humilis Investment Strategies",
+      "handle": "briangbelski",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=briangbelski&name=Brian+Belski&company=Humilis+Investment+Strategies",
+      "origin_url": "https://x.com/briangbelski"
     },
     {
       "id": "caitlin-long-v500",
@@ -6589,6 +6983,42 @@
       "origin_url": "https://x.com/CaitlinLong_"
     },
     {
+      "id": "wall-street-v594-charlie-bilello",
+      "name": "Charlie Bilello",
+      "company": "Creative Planning",
+      "handle": "charliebilello",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=charliebilello&name=Charlie+Bilello&company=Creative+Planning",
+      "origin_url": "https://x.com/charliebilello"
+    },
+    {
+      "id": "wall-street-v594-chris-bloomstran",
+      "name": "Chris Bloomstran",
+      "company": "Semper Augustus Investments Group",
+      "handle": "ChrisBloomstran",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ChrisBloomstran&name=Chris+Bloomstran&company=Semper+Augustus+Investments+Group",
+      "origin_url": "https://x.com/ChrisBloomstran"
+    },
+    {
+      "id": "wall-street-v594-chris-camillo",
+      "name": "Chris Camillo",
+      "company": "Dumb Money",
+      "handle": "ChrisCamillo",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ChrisCamillo&name=Chris+Camillo&company=Dumb+Money",
+      "origin_url": "https://x.com/ChrisCamillo"
+    },
+    {
       "id": "claire-hughes-johnson-v500",
       "name": "Claire Hughes Johnson",
       "company": "Stripe",
@@ -6599,6 +7029,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=chughesjohnson&name=Claire+Hughes+Johnson&company=Stripe",
       "origin_url": "https://x.com/chughesjohnson"
+    },
+    {
+      "id": "wall-street-v594-harley-bassman",
+      "name": "Harley Bassman",
+      "company": "Simplify Asset Management",
+      "handle": "ConvexityMaven",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ConvexityMaven&name=Harley+Bassman&company=Simplify+Asset+Management",
+      "origin_url": "https://x.com/ConvexityMaven"
     },
     {
       "id": "malte-ubl-private",
@@ -6613,6 +7055,18 @@
       "origin_url": "https://x.com/cramforce"
     },
     {
+      "id": "wall-street-v594-cullen-roche",
+      "name": "Cullen Roche",
+      "company": "Discipline Funds / Orcam Financial Group",
+      "handle": "cullenroche",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=cullenroche&name=Cullen+Roche&company=Discipline+Funds+%2F+Orcam+Financial+Group",
+      "origin_url": "https://x.com/cullenroche"
+    },
+    {
       "id": "piotr-dabkowski-v500",
       "name": "Piotr Dabkowski",
       "company": "ElevenLabs",
@@ -6623,6 +7077,42 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dabkowski_piotr&name=Piotr+Dabkowski&company=ElevenLabs",
       "origin_url": "https://x.com/dabkowski_piotr"
+    },
+    {
+      "id": "wall-street-v594-andy-constan",
+      "name": "Andy Constan",
+      "company": "Damped Spring Advisors",
+      "handle": "dampedspring",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dampedspring&name=Andy+Constan&company=Damped+Spring+Advisors",
+      "origin_url": "https://x.com/dampedspring"
+    },
+    {
+      "id": "wall-street-v594-darius-dale",
+      "name": "Darius Dale",
+      "company": "42 Macro",
+      "handle": "DariusDale42",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DariusDale42&name=Darius+Dale&company=42+Macro",
+      "origin_url": "https://x.com/DariusDale42"
+    },
+    {
+      "id": "wall-street-v594-dave-nadig",
+      "name": "Dave Nadig",
+      "company": "Independent",
+      "handle": "DaveNadig",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DaveNadig&name=Dave+Nadig&company=Independent",
+      "origin_url": "https://x.com/DaveNadig"
     },
     {
       "id": "david-khourshid-v500",
@@ -6661,6 +7151,18 @@
       "origin_url": "https://x.com/DiMartinoBooth"
     },
     {
+      "id": "wall-street-v594-nick-maggiulli",
+      "name": "Nick Maggiulli",
+      "company": "Ritholtz Wealth Management",
+      "handle": "dollarsanddata",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dollarsanddata&name=Nick+Maggiulli&company=Ritholtz+Wealth+Management",
+      "origin_url": "https://x.com/dollarsanddata"
+    },
+    {
       "id": "wall-street-brent-donnelly",
       "name": "Brent Donnelly",
       "company": "Spectra Markets",
@@ -6671,6 +7173,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=donnelly_brent&name=Brent+Donnelly&company=Spectra+Markets",
       "origin_url": "https://x.com/donnelly_brent"
+    },
+    {
+      "id": "wall-street-v594-doug-kass",
+      "name": "Doug Kass",
+      "company": "Seabreeze Partners Management",
+      "handle": "DougKass",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=DougKass&name=Doug+Kass&company=Seabreeze+Partners+Management",
+      "origin_url": "https://x.com/DougKass"
     },
     {
       "id": "edo-liberty-private",
@@ -6733,6 +7247,30 @@
       "origin_url": "https://x.com/guypod"
     },
     {
+      "id": "wall-street-v594-hunter-horsley",
+      "name": "Hunter Horsley",
+      "company": "Bitwise Asset Management",
+      "handle": "HHorsley",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=HHorsley&name=Hunter+Horsley&company=Bitwise+Asset+Management",
+      "origin_url": "https://x.com/HHorsley"
+    },
+    {
+      "id": "wall-street-v594-harris-kupperman",
+      "name": "Harris Kupperman",
+      "company": "Praetorian Capital Management",
+      "handle": "hkuppy",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=hkuppy&name=Harris+Kupperman&company=Praetorian+Capital+Management",
+      "origin_url": "https://x.com/hkuppy"
+    },
+    {
       "id": "anish-acharya-private",
       "name": "Anish Acharya",
       "company": "Andreessen Horowitz",
@@ -6755,6 +7293,42 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jam_croissant&name=Cem+Karsan&company=Kai+Wealth",
       "origin_url": "https://x.com/jam_croissant"
+    },
+    {
+      "id": "wall-street-v594-jason-zweig",
+      "name": "Jason Zweig",
+      "company": "The Wall Street Journal",
+      "handle": "jasonzweigwsj",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jasonzweigwsj&name=Jason+Zweig&company=The+Wall+Street+Journal",
+      "origin_url": "https://x.com/jasonzweigwsj"
+    },
+    {
+      "id": "wall-street-v594-jc-parets",
+      "name": "JC Parets",
+      "company": "Trend Labs",
+      "handle": "JC_ParetsX",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JC_ParetsX&name=JC+Parets&company=Trend+Labs",
+      "origin_url": "https://x.com/JC_ParetsX"
+    },
+    {
+      "id": "wall-street-v594-jesse-felder",
+      "name": "Jesse Felder",
+      "company": "The Felder Report",
+      "handle": "jessefelder",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jessefelder&name=Jesse+Felder&company=The+Felder+Report",
+      "origin_url": "https://x.com/jessefelder"
     },
     {
       "id": "joel-gascoigne-private",
@@ -6791,6 +7365,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jthandy&name=Tristan+Handy&company=Fivetran+%2B+dbt+Labs",
       "origin_url": "https://x.com/jthandy"
+    },
+    {
+      "id": "wall-street-v594-julian-brigden",
+      "name": "Julian Brigden",
+      "company": "Macro Intelligence 2 Partners",
+      "handle": "JulianMI2",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JulianMI2&name=Julian+Brigden&company=Macro+Intelligence+2+Partners",
+      "origin_url": "https://x.com/JulianMI2"
     },
     {
       "id": "kent-c-dodds-private",
@@ -6841,6 +7427,18 @@
       "origin_url": "https://x.com/lennysan"
     },
     {
+      "id": "wall-street-v594-linda-raschke",
+      "name": "Linda Raschke",
+      "company": "LBRGroup",
+      "handle": "LindaRaschke",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LindaRaschke&name=Linda+Raschke&company=LBRGroup",
+      "origin_url": "https://x.com/LindaRaschke"
+    },
+    {
       "id": "wall-street-liz-ann-sonders",
       "name": "Liz Ann Sonders",
       "company": "Charles Schwab",
@@ -6851,6 +7449,54 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LizAnnSonders&name=Liz+Ann+Sonders&company=Charles+Schwab",
       "origin_url": "https://x.com/LizAnnSonders"
+    },
+    {
+      "id": "wall-street-v594-luke-gromen",
+      "name": "Luke Gromen",
+      "company": "Forest for the Trees",
+      "handle": "LukeGromen",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LukeGromen&name=Luke+Gromen&company=Forest+for+the+Trees",
+      "origin_url": "https://x.com/LukeGromen"
+    },
+    {
+      "id": "wall-street-v594-mark-dow",
+      "name": "Mark Dow",
+      "company": "Behavioral Macro",
+      "handle": "mark_dow",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mark_dow&name=Mark+Dow&company=Behavioral+Macro",
+      "origin_url": "https://x.com/mark_dow"
+    },
+    {
+      "id": "wall-street-v594-mark-minervini",
+      "name": "Mark Minervini",
+      "company": "Minervini Private Access",
+      "handle": "markminervini",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=markminervini&name=Mark+Minervini&company=Minervini+Private+Access",
+      "origin_url": "https://x.com/markminervini"
+    },
+    {
+      "id": "wall-street-v594-matt-hougan",
+      "name": "Matt Hougan",
+      "company": "Bitwise Asset Management",
+      "handle": "Matt_Hougan",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Matt_Hougan&name=Matt+Hougan&company=Bitwise+Asset+Management",
+      "origin_url": "https://x.com/Matt_Hougan"
     },
     {
       "id": "matt-garman-amzn",
@@ -6865,6 +7511,18 @@
       "origin_url": "https://x.com/MattSGarman"
     },
     {
+      "id": "wall-street-v594-meb-faber",
+      "name": "Meb Faber",
+      "company": "Cambria Investment Management",
+      "handle": "MebFaber",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MebFaber&name=Meb+Faber&company=Cambria+Investment+Management",
+      "origin_url": "https://x.com/MebFaber"
+    },
+    {
       "id": "wall-street-michael-batnick",
       "name": "Michael Batnick",
       "company": "Ritholtz Wealth Management",
@@ -6875,6 +7533,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=michaelbatnick&name=Michael+Batnick&company=Ritholtz+Wealth+Management",
       "origin_url": "https://x.com/michaelbatnick"
+    },
+    {
+      "id": "wall-street-v594-michael-kantrowitz",
+      "name": "Michael Kantrowitz",
+      "company": "Piper Sandler",
+      "handle": "MichaelKantro",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelKantro&name=Michael+Kantrowitz&company=Piper+Sandler",
+      "origin_url": "https://x.com/MichaelKantro"
     },
     {
       "id": "michael-truell-private",
@@ -6913,6 +7583,18 @@
       "origin_url": "https://x.com/mikeknoop"
     },
     {
+      "id": "wall-street-v594-morgan-housel",
+      "name": "Morgan Housel",
+      "company": "Collaborative Fund",
+      "handle": "morganhousel",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=morganhousel&name=Morgan+Housel&company=Collaborative+Fund",
+      "origin_url": "https://x.com/morganhousel"
+    },
+    {
       "id": "kurt-mackey-v500",
       "name": "Kurt Mackey",
       "company": "Fly.io",
@@ -6925,6 +7607,30 @@
       "origin_url": "https://x.com/mrkurt"
     },
     {
+      "id": "wall-street-v594-gene-munster",
+      "name": "Gene Munster",
+      "company": "Deepwater Asset Management",
+      "handle": "munster_gene",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=munster_gene&name=Gene+Munster&company=Deepwater+Asset+Management",
+      "origin_url": "https://x.com/munster_gene"
+    },
+    {
+      "id": "wall-street-v594-nate-geraci",
+      "name": "Nate Geraci",
+      "company": "The ETF Store",
+      "handle": "NateGeraci",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=NateGeraci&name=Nate+Geraci&company=The+ETF+Store",
+      "origin_url": "https://x.com/NateGeraci"
+    },
+    {
       "id": "nik-milanovic-private",
       "name": "Nik Milanovic",
       "company": "The Fintech Fund / This Week in Fintech",
@@ -6935,6 +7641,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=NikMilanovic&name=Nik+Milanovic&company=The+Fintech+Fund+%2F+This+Week+in+Fintech",
       "origin_url": "https://x.com/NikMilanovic"
+    },
+    {
+      "id": "wall-street-v594-sven-henrich",
+      "name": "Sven Henrich",
+      "company": "NorthmanTrader",
+      "handle": "NorthmanTrader",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=NorthmanTrader&name=Sven+Henrich&company=NorthmanTrader",
+      "origin_url": "https://x.com/NorthmanTrader"
     },
     {
       "id": "olivier-pomel-ddog",
@@ -6985,6 +7703,18 @@
       "origin_url": "https://x.com/patio11"
     },
     {
+      "id": "wall-street-v594-peter-boockvar",
+      "name": "Peter Boockvar",
+      "company": "OnePoint BFG Wealth Partners",
+      "handle": "pboockvar",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=pboockvar&name=Peter+Boockvar&company=OnePoint+BFG+Wealth+Partners",
+      "origin_url": "https://x.com/pboockvar"
+    },
+    {
       "id": "pedro-franceschi-private",
       "name": "Pedro Franceschi",
       "company": "Brex",
@@ -7019,6 +7749,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RaoulGMI&name=Raoul+Pal&company=Real+Vision+%2F+Global+Macro+Investor",
       "origin_url": "https://x.com/RaoulGMI"
+    },
+    {
+      "id": "wall-street-v594-chris-whalen",
+      "name": "Chris Whalen",
+      "company": "Whalen Global Advisors",
+      "handle": "rcwhalen",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=rcwhalen&name=Chris+Whalen&company=Whalen+Global+Advisors",
+      "origin_url": "https://x.com/rcwhalen"
     },
     {
       "id": "wall-street-jim-chanos",
@@ -7057,6 +7799,18 @@
       "origin_url": "https://x.com/RyanCarniato"
     },
     {
+      "id": "wall-street-v594-ryan-detrick",
+      "name": "Ryan Detrick",
+      "company": "Carson Group",
+      "handle": "RyanDetrick",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=RyanDetrick&name=Ryan+Detrick&company=Carson+Group",
+      "origin_url": "https://x.com/RyanDetrick"
+    },
+    {
       "id": "sarah-drasner-googl",
       "name": "Sarah Drasner",
       "company": "Google / Chrome",
@@ -7093,6 +7847,30 @@
       "origin_url": "https://x.com/sindresorhus"
     },
     {
+      "id": "wall-street-v594-sonali-basak",
+      "name": "Sonali Basak",
+      "company": "iCapital",
+      "handle": "sonalibasak",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sonalibasak&name=Sonali+Basak&company=iCapital",
+      "origin_url": "https://x.com/sonalibasak"
+    },
+    {
+      "id": "wall-street-v594-sonu-varghese",
+      "name": "Sonu Varghese",
+      "company": "Carson Group",
+      "handle": "sonusvarghese",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=sonusvarghese&name=Sonu+Varghese&company=Carson+Group",
+      "origin_url": "https://x.com/sonusvarghese"
+    },
+    {
       "id": "sonya-huang-v500",
       "name": "Sonya Huang",
       "company": "Sequoia Capital",
@@ -7115,6 +7893,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=spomboy&name=Stephanie+Pomboy&company=MacroMavens",
       "origin_url": "https://x.com/spomboy"
+    },
+    {
+      "id": "wall-street-v594-stephanie-link",
+      "name": "Stephanie Link",
+      "company": "Hightower",
+      "handle": "Stephanie_Link",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=Stephanie_Link&name=Stephanie+Link&company=Hightower",
+      "origin_url": "https://x.com/Stephanie_Link"
     },
     {
       "id": "stephanie-zhan-v500",
@@ -7153,6 +7943,18 @@
       "origin_url": "https://x.com/tannerlinsley"
     },
     {
+      "id": "wall-street-v594-peter-tchir",
+      "name": "Peter Tchir",
+      "company": "Academy Securities",
+      "handle": "TFMkts",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TFMkts&name=Peter+Tchir&company=Academy+Securities",
+      "origin_url": "https://x.com/TFMkts"
+    },
+    {
       "id": "dax-raad-private",
       "name": "Dax Raad",
       "company": "Anomaly / OpenCode",
@@ -7163,6 +7965,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=thdxr&name=Dax+Raad&company=Anomaly+%2F+OpenCode",
       "origin_url": "https://x.com/thdxr"
+    },
+    {
+      "id": "wall-street-v594-scott-wapner",
+      "name": "Scott Wapner",
+      "company": "CNBC",
+      "handle": "TheJudgeCNBC",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TheJudgeCNBC&name=Scott+Wapner&company=CNBC",
+      "origin_url": "https://x.com/TheJudgeCNBC"
     },
     {
       "id": "theo-browne-private",
@@ -7189,6 +8003,18 @@
       "origin_url": "https://x.com/toddmckinnon"
     },
     {
+      "id": "wall-street-v594-todd-rosenbluth",
+      "name": "Todd Rosenbluth",
+      "company": "VettaFi",
+      "handle": "ToddRosenbluth",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ToddRosenbluth&name=Todd+Rosenbluth&company=VettaFi",
+      "origin_url": "https://x.com/ToddRosenbluth"
+    },
+    {
       "id": "tomer-weingarten-s",
       "name": "Tomer Weingarten",
       "company": "SentinelOne",
@@ -7199,6 +8025,18 @@
       "reason": "http_404:Not Found",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tomerw&name=Tomer+Weingarten&company=SentinelOne",
       "origin_url": "https://x.com/tomerw"
+    },
+    {
+      "id": "wall-street-v594-tracy-alloway",
+      "name": "Tracy Alloway",
+      "company": "Bloomberg",
+      "handle": "tracyalloway",
+      "ok": false,
+      "status": "pending_review",
+      "source_type": "pending_review",
+      "reason": "http_404:Not Found",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tracyalloway&name=Tracy+Alloway&company=Bloomberg",
+      "origin_url": "https://x.com/tracyalloway"
     },
     {
       "id": "wall-street-jeffrey-gundlach",
