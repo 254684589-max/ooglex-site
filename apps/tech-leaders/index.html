@@ -352,7 +352,7 @@
         <h1>科技领袖实时动态流</h1>
         <p class="lead">聚合全球科技领袖、上市公司 CEO 与创始人的公开动态。</p>
         <div class="hero-meta" aria-label="栏目概览">
-          <span>400 公开账号</span>
+          <span id="hero-account-count">450 公开账号</span>
           <span>全球公司领袖</span>
           <span>AI · 芯片 · 云计算 · 金融科技</span>
         </div>
@@ -371,7 +371,7 @@
     <div class="language-note"><b>语言：</b>公开模式展示原文；如需中文，可使用浏览器网页翻译。</div>
     <div class="catalog-toolbar">
       <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
-      <button class="leader-fold" id="leader-fold" type="button" hidden>查看全部 400 →</button>
+      <button class="leader-fold" id="leader-fold" type="button" hidden>查看全部 450 →</button>
     </div>
     <div class="leader-rail-wrap">
       <div class="leaders" id="leaders"></div>
@@ -429,7 +429,7 @@
       <div class="leader-library-head">
         <div class="leader-library-title">
           <b id="leader-library-title">全球人物库</b>
-          <span id="leader-library-count">400 位公开账号</span>
+          <span id="leader-library-count">450 位公开账号</span>
         </div>
         <button class="leader-library-close" id="leader-library-close" type="button" aria-label="关闭人物库">×</button>
       </div>
@@ -494,6 +494,7 @@
   var sourceBadge=document.getElementById("source-badge");
   var search=document.getElementById("leader-search");
   var catalogFact=document.getElementById("catalog-fact");
+  var heroAccountCount=document.getElementById("hero-account-count");
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
   var leaderRailWrap=document.querySelector(".leader-rail-wrap");
@@ -893,6 +894,7 @@
       capacity=180;
     }
     catalogFact.textContent=people.length+" 位 · "+catalogCategories.length+" 大分类";
+    if(heroAccountCount)heroAccountCount.textContent=people.length+" 公开账号";
     current=currentFromCatalog();
     updateProfile(current);
     renderCategories();
