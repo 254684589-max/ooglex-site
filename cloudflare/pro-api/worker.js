@@ -1953,57 +1953,56 @@ async function techLeaderShareAvatarResponse(url, env, cors) {
   if (!handle) return json({ error: "invalid_share_avatar_handle" }, 400, cors);
 
   try {
-    const resolved = await resolveTechLeaderAvatar(handle, name, "");
-    if (resolved && resolved.ok && resolved.sourceUrl) {
-      const draw = [
-        { url: "https://www.ooglex.com/assets/tech-leader-share-mask.svg", width: 512, height: 512 }
-      ];
-      if (verified) {
-        draw.push({
-          url: "https://www.ooglex.com/assets/tech-leader-share-verified.svg",
-          width: 112,
-          height: 112,
-          right: 34,
-          bottom: 34
-        });
-      }
+    if (!env.IMAGES) throw new Error("images_binding_unavailable");
 
-      const transformed = await fetch(resolved.sourceUrl, {
-        cf: {
-          image: {
-            width: 512,
-            height: 512,
-            fit: "cover",
-            format: "png",
-            draw
-          }
-        }
-      });
-      const transformedType = String(transformed.headers.get("content-type") || "").toLowerCase();
-      if (transformed.ok && transformedType.startsWith("image/")) {
-        const headers = new Headers(cors);
-        headers.set("content-type", transformedType.split(";")[0] || "image/png");
-        headers.set("cache-control", "public, max-age=21600, stale-while-revalidate=86400");
-        headers.set("x-ooglex-share-avatar", verified ? "circle-verified-png" : "circle-png");
-        return new Response(transformed.body, { status: 200, headers });
-      }
-    }
-  } catch {}
-
-  // WeChat does not reliably render SVG Open Graph thumbnails. If image
-  // transformation is unavailable, return the normal raster avatar rather
-  // than a blank preview.
-  try {
     const avatar = await getTechLeaderAvatar(handle, name, "", env);
-    const headers = new Headers(cors);
-    avatar.headers.forEach((value, key) => headers.set(key, value));
+    const maskRes = await fetch("https://www.ooglex.com/assets/tech-leader-share-mask.svg", {
+      headers: { accept: "image/svg+xml,image/*,*/*;q=0.8" }
+    });
+    if (!maskRes.ok) throw new Error("share_avatar_mask_unavailable");
+
+    let chain = env.IMAGES
+      .input(avatar.body)
+      .transform({ width: 512, height: 512, fit: "cover" })
+      .draw(
+        env.IMAGES.input(maskRes.body).transform({ width: 512, height: 512, fit: "contain" }),
+        { top: 0, left: 0 }
+      );
+
+    if (verified) {
+      const badgeRes = await fetch("https://www.ooglex.com/assets/tech-leader-share-verified.svg", {
+        headers: { accept: "image/svg+xml,image/*,*/*;q=0.8" }
+      });
+      if (!badgeRes.ok) throw new Error("share_avatar_badge_unavailable");
+      chain = chain.draw(
+        env.IMAGES.input(badgeRes.body).transform({ width: 112, height: 112, fit: "contain" }),
+        { right: 34, bottom: 34 }
+      );
+    }
+
+    const rendered = await chain.output({ format: "image/png" });
+    const response = rendered.response();
+    const headers = new Headers(response.headers);
+    Object.entries(cors).forEach(([key, value]) => headers.set(key, value));
     headers.set("cache-control", "public, max-age=21600, stale-while-revalidate=86400");
-    headers.set("x-ooglex-share-avatar", "raster-avatar-fallback");
-    return new Response(avatar.body, { status: 200, headers });
+    headers.set("x-ooglex-share-avatar", verified ? "circle-verified-png" : "circle-png");
+    return new Response(response.body, { status: response.status, headers });
   } catch (err) {
-    const code = err && err.code ? err.code : "share_avatar_unavailable";
-    const status = err && Number.isInteger(err.status) ? err.status : 502;
-    return json({ error: code, handle }, status, { ...cors, "cache-control": "no-store" });
+    // Never leave WeChat with a blank thumbnail. If composition fails, fall
+    // back to the normal raster avatar and expose the fallback in a header.
+    try {
+      const avatar = await getTechLeaderAvatar(handle, name, "", env);
+      const headers = new Headers(cors);
+      avatar.headers.forEach((value, key) => headers.set(key, value));
+      headers.set("cache-control", "public, max-age=1800, stale-while-revalidate=21600");
+      headers.set("x-ooglex-share-avatar", "raster-avatar-fallback");
+      headers.set("x-ooglex-share-avatar-error", String(err && err.message || "compose_failed").slice(0, 120));
+      return new Response(avatar.body, { status: 200, headers });
+    } catch (fallbackErr) {
+      const code = fallbackErr && fallbackErr.code ? fallbackErr.code : "share_avatar_unavailable";
+      const status = fallbackErr && Number.isInteger(fallbackErr.status) ? fallbackErr.status : 502;
+      return json({ error: code, handle }, status, { ...cors, "cache-control": "no-store" });
+    }
   }
 }
 
