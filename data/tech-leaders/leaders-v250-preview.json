@@ -5995,6 +5995,169 @@
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
       "preview_only": true
+    },
+    {
+      "id": "bill-gates-msft",
+      "name": "Bill Gates",
+      "zh": "Bill Gates",
+      "handle": "BillGates",
+      "role": "Microsoft · Co-founder & Former Chief Executive Officer",
+      "chips": [
+        "MSFT",
+        "Microsoft",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "BILL GATES · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Bill Gates",
+      "name_en": "Bill Gates",
+      "company_zh": "Microsoft",
+      "company_en": "Microsoft",
+      "position_zh": "Co-founder & Former Chief Executive Officer",
+      "categories": [
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "ticker": "MSFT",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "official_cross_source",
+      "x_role_source_url": "https://news.microsoft.com/source/2020/03/13/microsoft-announces-change-to-its-board-of-directors/",
+      "x_identity_source_url": "https://x.com/BillGates",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-19",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BillGates&name=Bill+Gates&company=Microsoft",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "john-t-chambers-csco",
+      "name": "John T. Chambers",
+      "zh": "John T. Chambers",
+      "handle": "JohnTChambers",
+      "role": "Cisco · Former Chief Executive Officer, Chairman & Executive Chairman",
+      "chips": [
+        "CSCO",
+        "Cisco",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "JOHN T. CHAMBERS · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "John T. Chambers",
+      "name_en": "John T. Chambers",
+      "company_zh": "Cisco",
+      "company_en": "Cisco",
+      "position_zh": "Former Chief Executive Officer, Chairman & Executive Chairman",
+      "categories": [
+        "科技",
+        "AI",
+        "软件",
+        "网络安全"
+      ],
+      "ticker": "CSCO",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "科技",
+        "AI",
+        "软件",
+        "网络安全"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "official_cross_source",
+      "x_role_source_url": "https://blogs.cisco.com/author/johnchambers",
+      "x_identity_source_url": "https://x.com/JohnTChambers",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-21",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=JohnTChambers&name=John+T.+Chambers&company=Cisco",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "reed-hastings-nflx",
+      "name": "Reed Hastings",
+      "zh": "Reed Hastings",
+      "handle": "reedhastings",
+      "role": "Netflix · Co-founder & Former Co-Chief Executive Officer",
+      "chips": [
+        "NFLX",
+        "Netflix",
+        "通信服务",
+        "消费科技"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "REED HASTINGS · VERIFIED X TIMELINE PREVIEW",
+      "category": "通信服务",
+      "name_zh": "Reed Hastings",
+      "name_en": "Reed Hastings",
+      "company_zh": "Netflix",
+      "company_en": "Netflix",
+      "position_zh": "Co-founder & Former Co-Chief Executive Officer",
+      "categories": [
+        "通信服务",
+        "消费科技"
+      ],
+      "ticker": "NFLX",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "通信服务",
+        "消费科技"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "profile_cross_source",
+      "x_role_source_url": "https://about.netflix.com/en/news/ted-sarandos-greg-peters-co-ceos-netflix",
+      "x_identity_source_url": "https://x.com/reedhastings",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-05-24",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=reedhastings&name=Reed+Hastings&company=Netflix",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
     }
   ],
   "categories": [
@@ -6012,7 +6175,9 @@
     "航空航天",
     "VC",
     "科技",
-    "金融科技"
+    "金融科技",
+    "通信服务",
+    "消费科技"
   ],
   "catalog_version": "V4.3",
   "last_audited_at": "2026-09-19",
@@ -6075,17 +6240,19 @@
     "source_evidence": [
       "data/tech-leaders/verified_candidates.tranche01.json",
       "data/tech-leaders/verified_candidates.tranche02.json",
-      "data/tech-leaders/verified_candidates.tranche03.json"
+      "data/tech-leaders/verified_candidates.tranche03.json",
+      "data/tech-leaders/verified_candidates.tranche04.json"
     ],
-    "evidence_tranche_count": 3,
-    "reviewed_candidate_count": 18,
+    "evidence_tranche_count": 4,
+    "reviewed_candidate_count": 23,
     "review_status_counts": {
-      "approved": 5,
+      "approved": 8,
+      "hold": 2,
       "manual_review": 13
     },
     "base_count": 110,
-    "approved_additions": 5,
-    "preview_count": 115,
+    "approved_additions": 8,
+    "preview_count": 118,
     "production_file_untouched": true
   }
 }
