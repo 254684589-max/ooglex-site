@@ -299,6 +299,44 @@
       .leader-rail-wrap:not(.expanded) .leader-scrollbar{height:6px}
       .leader-rail-wrap:not(.expanded) .leader-scroll-thumb{height:6px;min-width:64px}
     }
+  
+    /* V400 UI Scale Fix: quick rail + paginated leader library */
+    body.leader-library-open{overflow:hidden}
+    .leader-library[hidden]{display:none!important}
+    .leader-library{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:24px}
+    .leader-library-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(8px)}
+    .leader-library-panel{position:relative;z-index:1;width:min(1180px,100%);height:min(86vh,860px);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--bg);box-shadow:0 24px 80px rgba(0,0,0,.32)}
+    .leader-library-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--line)}
+    .leader-library-title{display:grid;gap:2px;min-width:0}
+    .leader-library-title b{font-size:19px;line-height:1.2}
+    .leader-library-title span{font:11px/1.35 var(--mono);color:var(--faint)}
+    .leader-library-close{appearance:none;width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+    .leader-library-controls{display:grid;grid-template-columns:minmax(220px,1fr);gap:10px;padding:14px 20px 10px}
+    .leader-library-search{width:100%;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:0 14px;outline:none}
+    .leader-library-search:focus{border-color:rgba(57,135,229,.62);box-shadow:0 0 0 3px rgba(57,135,229,.10)}
+    .leader-library-categories{display:flex;gap:7px;overflow-x:auto;padding:0 20px 12px;scrollbar-width:thin}
+    .library-category-btn{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:8px 11px;border-radius:999px;cursor:pointer;font:11px/1 var(--mono);white-space:nowrap}
+    .library-category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
+    .library-category-btn span{margin-left:4px;color:var(--faint)}
+    .leader-library-grid{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-content:start;gap:10px;padding:4px 20px 18px}
+    .library-leader{appearance:none;min-width:0;min-height:92px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:11px 12px;text-align:left;cursor:pointer;transition:.16s ease}
+    .library-leader:hover{border-color:rgba(57,135,229,.48);transform:translateY(-1px)}
+    .library-leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09)}
+    .library-leader .leader-head{gap:9px}
+    .library-leader .leader-avatar-shell{width:38px;height:38px}
+    .library-leader .leader-name-line b{display:block;font-size:13.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .library-leader .leader-en{font-size:10.5px}
+    .library-leader .leader-role{margin-top:7px;font-size:10.5px}
+    .leader-library-empty{grid-column:1/-1;padding:48px 20px;text-align:center;color:var(--faint)}
+    .leader-library-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-top:1px solid var(--line);background:var(--panel)}
+    .leader-library-page-info{font:11px/1.4 var(--mono);color:var(--dim)}
+    .leader-library-pager{display:flex;gap:8px}
+    .leader-library-pager button{appearance:none;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:8px 12px;cursor:pointer}
+    .leader-library-pager button:disabled{opacity:.38;cursor:not-allowed}
+    @media(max-width:980px){.leader-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:700px){.leader-library{padding:0}.leader-library-panel{width:100%;height:100%;max-height:none;border-radius:0;border:0}.leader-library-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding-left:12px;padding-right:12px}.leader-library-head,.leader-library-controls,.leader-library-footer{padding-left:14px;padding-right:14px}.leader-library-categories{padding-left:14px;padding-right:14px}}
+    @media(max-width:480px){.leader-library-grid{grid-template-columns:1fr}.library-leader{min-height:84px}.leader-library-footer{align-items:flex-start;flex-direction:column}.leader-library-pager{width:100%}.leader-library-pager button{flex:1}}
+
   </style>
 </head>
 <body>
@@ -333,7 +371,7 @@
     <div class="language-note"><b>语言：</b>公开模式展示原文；如需中文，可使用浏览器网页翻译。</div>
     <div class="catalog-toolbar">
       <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
-      <button class="leader-fold" id="leader-fold" type="button" hidden>展开全部 ↓</button>
+      <button class="leader-fold" id="leader-fold" type="button" hidden>查看全部 400 →</button>
     </div>
     <div class="leader-rail-wrap">
       <div class="leaders" id="leaders"></div>
@@ -383,6 +421,32 @@
     </footer>
 
   </main>
+
+
+  <div class="leader-library" id="leader-library" hidden>
+    <div class="leader-library-backdrop" data-library-close="1"></div>
+    <section class="leader-library-panel" role="dialog" aria-modal="true" aria-labelledby="leader-library-title">
+      <div class="leader-library-head">
+        <div class="leader-library-title">
+          <b id="leader-library-title">全球人物库</b>
+          <span id="leader-library-count">400 位公开账号</span>
+        </div>
+        <button class="leader-library-close" id="leader-library-close" type="button" aria-label="关闭人物库">×</button>
+      </div>
+      <div class="leader-library-controls">
+        <input class="leader-library-search" id="leader-library-search" type="search" placeholder="搜索姓名、@账号、公司、股票代码…" autocomplete="off">
+      </div>
+      <div class="leader-library-categories" id="leader-library-categories" aria-label="人物库分类"></div>
+      <div class="leader-library-grid" id="leader-library-grid"></div>
+      <div class="leader-library-footer">
+        <span class="leader-library-page-info" id="leader-library-page-info"></span>
+        <div class="leader-library-pager">
+          <button id="leader-library-prev" type="button">上一页</button>
+          <button id="leader-library-next" type="button">下一页</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <div class="share-sheet" id="share-sheet" hidden>
     <div class="share-backdrop" data-share-close="1"></div>
@@ -436,6 +500,19 @@
   var leaderScrollbar=document.getElementById("leader-scrollbar");
   var leaderScrollThumb=document.getElementById("leader-scroll-thumb");
   var isExpanded=false;
+  var librarySheet=document.getElementById("leader-library");
+  var librarySearch=document.getElementById("leader-library-search");
+  var libraryCategories=document.getElementById("leader-library-categories");
+  var libraryGrid=document.getElementById("leader-library-grid");
+  var libraryCount=document.getElementById("leader-library-count");
+  var libraryPageInfo=document.getElementById("leader-library-page-info");
+  var libraryPrev=document.getElementById("leader-library-prev");
+  var libraryNext=document.getElementById("leader-library-next");
+  var libraryClose=document.getElementById("leader-library-close");
+  var LIBRARY_PAGE_SIZE=50;
+  var libraryPage=1;
+  var libraryCategory="全部";
+  var libraryQuery="";
   var profileAvatar=document.getElementById("profile-avatar");
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var profileNameEn=document.getElementById("profile-name-en");
@@ -670,10 +747,6 @@
     if(categoryBar&&categoryBar.clientWidth){
       leaderScrollbar.style.width=categoryBar.clientWidth+"px";
     }
-    if(isExpanded){
-      leaderScrollbar.hidden=true;
-      return;
-    }
     var maxScroll=Math.max(0,leaders.scrollWidth-leaders.clientWidth);
     if(maxScroll<=2){
       leaderScrollbar.hidden=true;
@@ -715,40 +788,93 @@
     return [company,title].filter(Boolean).join(" · ");
   }
 
+  function categoryMatches(p,category){
+    return category==="全部"||(category==="sp500"&&(p.sp500_member||p.sp500_ceo))||(category!=="sp500"&&(p.categories||[p.category]).indexOf(category)!==-1);
+  }
+  function leaderCardMarkup(p,className){
+    var cn=p.name_zh||p.zh||p.name;
+    var en=p.name_en||p.name||"";
+    var company=(p.company_zh||p.company||"")+(p.company_en&&p.company_en!==p.company_zh&&p.company_en!==p.company?" · "+p.company_en:"");
+    var meta=sp500Labels(p).concat([company,p.current_role||p.position_zh||""]).filter(Boolean).join(" · ");
+    return '<button class="'+className+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
+      '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
+      '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
+      '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+(isVerifiedPerson(p)?verifiedBadgeMarkup(""):"")+'</div><span class="leader-en">'+escapeHtml(en)+'</span><span class="leader-short-role">'+escapeHtml(compactLeaderRole(p))+'</span></div></div>'+
+      '<div class="leader-role">'+escapeHtml(meta)+'</div></button>';
+  }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
     var filtered=people.filter(function(p){
-      var categoryOk=activeCategory==="全部"||(activeCategory==="sp500"&&(p.sp500_member||p.sp500_ceo))||(activeCategory!=="sp500"&&(p.categories||[p.category]).indexOf(activeCategory)!==-1);
-      var searchOk=!q||searchableText(p).indexOf(q)!==-1;
-      return categoryOk&&searchOk;
+      return categoryMatches(p,activeCategory)&&(!q||searchableText(p).indexOf(q)!==-1);
     });
-    var foldLimit=window.matchMedia("(max-width:560px)").matches?1:(window.matchMedia("(max-width:980px)").matches?3:6);
-    var canFold=filtered.length>foldLimit;
-    foldBtn.hidden=!canFold;
-    foldBtn.textContent=isExpanded?"收起":"展开";
-    foldBtn.classList.toggle("on",!!isExpanded);
-    if(leaderRailWrap)leaderRailWrap.classList.toggle("expanded",!!isExpanded);
-    if(!filtered.length){
+    var quick=filtered.slice(0,6);
+    if(current&&filtered.some(function(p){return p.id===current.id;})&&!quick.some(function(p){return p.id===current.id;})){
+      if(quick.length<6)quick.push(current);else quick[quick.length-1]=current;
+    }
+    foldBtn.hidden=people.length<=6;
+    foldBtn.textContent="查看全部 "+people.length+" →";
+    foldBtn.classList.remove("on");
+    if(leaderRailWrap)leaderRailWrap.classList.remove("expanded");
+    if(!quick.length){
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
       if(leaderScrollbar)leaderScrollbar.hidden=true;
       return;
     }
-    leaders.innerHTML=filtered.map(function(p){
-      var cn=p.name_zh||p.zh||p.name;
-      var en=p.name_en||p.name||"";
-      var company=(p.company_zh||p.company||"")+(p.company_en&&p.company_en!==p.company_zh&&p.company_en!==p.company?" · "+p.company_en:"");
-      var meta=sp500Labels(p).concat([company,p.current_role||p.position_zh||""]).filter(Boolean).join(" · ");
-      return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
-        '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
-        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
-        '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+(isVerifiedPerson(p)?verifiedBadgeMarkup(""):"")+'</div><span class="leader-en">'+escapeHtml(en)+'</span><span class="leader-short-role">'+escapeHtml(compactLeaderRole(p))+'</span></div></div>'+
-        '<div class="leader-role">'+escapeHtml(meta)+'</div></button>';
-    }).join("");
+    leaders.innerHTML=quick.map(function(p){return leaderCardMarkup(p,"leader");}).join("");
     requestAnimationFrame(function(){
-      if(!isExpanded)scrollActiveLeaderIntoView();
+      scrollActiveLeaderIntoView();
       updateLeaderScrollbar();
     });
   }
+  function libraryCounts(){
+    var counts={};
+    catalogCategories.forEach(function(c){counts[c]=0;});
+    people.forEach(function(p){(p.categories||[p.category]).forEach(function(c){counts[c]=(counts[c]||0)+1;});});
+    counts.sp500=people.filter(function(p){return p.sp500_member||p.sp500_ceo;}).length;
+    return counts;
+  }
+  function renderLibraryCategories(){
+    var counts=libraryCounts();
+    var buttons=[
+      '<button class="library-category-btn'+(libraryCategory==="全部"?' on':'')+'" type="button" data-library-category="全部">全部<span>'+people.length+'</span></button>',
+      '<button class="library-category-btn'+(libraryCategory==="sp500"?' on':'')+'" type="button" data-library-category="sp500">标普500<span>'+counts.sp500+'</span></button>'
+    ];
+    buttons=buttons.concat(catalogCategories.filter(function(c){return counts[c];}).map(function(c){
+      return '<button class="library-category-btn'+(libraryCategory===c?' on':'')+'" type="button" data-library-category="'+escapeHtml(c)+'">'+escapeHtml(c)+'<span>'+counts[c]+'</span></button>';
+    }));
+    libraryCategories.innerHTML=buttons.join("");
+  }
+  function renderLeaderLibrary(){
+    var q=String(libraryQuery||"").trim().toLowerCase();
+    var filtered=people.filter(function(p){
+      return categoryMatches(p,libraryCategory)&&(!q||searchableText(p).indexOf(q)!==-1);
+    });
+    var pages=Math.max(1,Math.ceil(filtered.length/LIBRARY_PAGE_SIZE));
+    libraryPage=Math.max(1,Math.min(pages,libraryPage));
+    var start=(libraryPage-1)*LIBRARY_PAGE_SIZE;
+    var pageItems=filtered.slice(start,start+LIBRARY_PAGE_SIZE);
+    libraryCount.textContent=filtered.length+" 位匹配 · 每页 "+LIBRARY_PAGE_SIZE+" 人";
+    libraryPageInfo.textContent="第 "+libraryPage+" / "+pages+" 页 · "+(filtered.length?((start+1)+"–"+Math.min(start+LIBRARY_PAGE_SIZE,filtered.length)):"0")+" / "+filtered.length;
+    libraryPrev.disabled=libraryPage<=1;
+    libraryNext.disabled=libraryPage>=pages;
+    libraryGrid.innerHTML=pageItems.length?pageItems.map(function(p){return leaderCardMarkup(p,"library-leader");}).join(""):'<div class="leader-library-empty">没有匹配的人物。</div>';
+    renderLibraryCategories();
+  }
+  function openLeaderLibrary(){
+    libraryCategory="全部";
+    libraryQuery="";
+    libraryPage=1;
+    librarySearch.value="";
+    renderLeaderLibrary();
+    librarySheet.hidden=false;
+    document.body.classList.add("leader-library-open");
+    requestAnimationFrame(function(){librarySearch.focus();});
+  }
+  function closeLeaderLibrary(){
+    librarySheet.hidden=true;
+    document.body.classList.remove("leader-library-open");
+  }
+
   async function loadCatalog(){
     try{
       var res=await fetch(CATALOG_URL,{cache:"no-store"});
@@ -1539,10 +1665,7 @@
     }
   },true);
   profileAvatar.addEventListener("error",function(){applyAvatarFallback(profileAvatar,current||{});});
-  foldBtn.addEventListener("click",function(){
-    isExpanded=!isExpanded;
-    renderLeaderButtons(search.value);
-  });
+  foldBtn.addEventListener("click",openLeaderLibrary);
   leaders.addEventListener("scroll",updateLeaderScrollbar,{passive:true});
   window.addEventListener("resize",function(){
     requestAnimationFrame(function(){
@@ -1669,11 +1792,10 @@
     });
   }
 
-  search.addEventListener("input",function(){isExpanded=false;leaders.scrollLeft=0;renderLeaderButtons(search.value);});
+  search.addEventListener("input",function(){leaders.scrollLeft=0;renderLeaderButtons(search.value);});
   categoryBar.addEventListener("click",function(e){
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
-    isExpanded=false;
     leaders.scrollLeft=0;
     var next=new URL(location.href);
     if(activeCategory==="全部")next.searchParams.delete("category");else next.searchParams.set("category",activeCategory);
@@ -1683,8 +1805,51 @@
   });
   freeBtn.addEventListener("click",function(){if(MODE!=="free")navigateMode("free");});
   apiBtn.addEventListener("click",function(){if(MODE!=="api")navigateMode("api");});
+  librarySheet.addEventListener("click",function(e){
+    if(e.target.closest("[data-library-close]")){closeLeaderLibrary();return;}
+    var card=e.target.closest(".library-leader");
+    if(card){
+      var id=card.getAttribute("data-id");
+      if(id)navigateLeader(id);
+    }
+  });
+  libraryClose.addEventListener("click",closeLeaderLibrary);
+  librarySearch.addEventListener("input",function(){
+    libraryQuery=librarySearch.value;
+    libraryPage=1;
+    renderLeaderLibrary();
+  });
+  libraryCategories.addEventListener("click",function(e){
+    var btn=e.target.closest("[data-library-category]");
+    if(!btn)return;
+    libraryCategory=btn.getAttribute("data-library-category")||"全部";
+    libraryPage=1;
+    renderLeaderLibrary();
+  });
+  libraryPrev.addEventListener("click",function(){
+    if(libraryPage<=1)return;
+    libraryPage-=1;
+    renderLeaderLibrary();
+    libraryGrid.scrollTop=0;
+  });
+  libraryNext.addEventListener("click",function(){
+    libraryPage+=1;
+    renderLeaderLibrary();
+    libraryGrid.scrollTop=0;
+  });
+  libraryGrid.addEventListener("error",function(e){
+    if(e.target&&e.target.matches&&e.target.matches("img[data-avatar]")){
+      var btn=e.target.closest(".library-leader");
+      var p=btn?people.find(function(x){return x.id===btn.getAttribute("data-id");}):null;
+      applyAvatarFallback(e.target,p||{});
+    }
+  },true);
   shareSheet.addEventListener("click",function(e){if(e.target.closest("[data-share-close]"))closeShareSheet();});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!shareSheet.hidden)closeShareSheet();});
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Escape")return;
+    if(!librarySheet.hidden){closeLeaderLibrary();return;}
+    if(!shareSheet.hidden)closeShareSheet();
+  });
   document.getElementById("share-wechat").addEventListener("click",function(){
     if(!activeSharePost)return;
     shareStatus.textContent="";
