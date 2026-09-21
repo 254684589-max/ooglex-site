@@ -32,6 +32,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import urllib.error
           import urllib.parse
           import urllib.request
           from datetime import datetime, timezone
@@ -73,9 +74,11 @@ jobs:
                           avatar_type = str(resp.headers.get("Content-Type") or "")
                           avatar_bytes = len(body)
                           avatar_ok = resp.status == 200 and avatar_type.lower().startswith("image/") and avatar_bytes >= 512
+                  except urllib.error.HTTPError as exc:
+                      reasons.append("avatar_http_" + str(exc.code))
                   except Exception as exc:
                       reasons.append("avatar_fetch_failed:" + type(exc).__name__)
-                  if not avatar_ok and not any(r.startswith("avatar_fetch_failed:") for r in reasons):
+                  if not avatar_ok and not any(r.startswith("avatar_fetch_failed:") or r.startswith("avatar_http_") for r in reasons):
                       reasons.append("avatar_invalid_response")
               else:
                   reasons.append("missing_avatar_url")
@@ -88,12 +91,15 @@ jobs:
               feed_source = ""
               post_count = 0
               newest_post_at = None
+              feed_http_status = None
+              feed_error_body = ""
               try:
                   req = urllib.request.Request(feed_url, headers={
                       "User-Agent": "Ooglex Wall Street Preview Audit/1.0",
                       "Accept": "application/json",
                   })
                   with urllib.request.urlopen(req, timeout=30) as resp:
+                      feed_http_status = resp.status
                       payload = json.loads(resp.read().decode("utf-8"))
                   posts = payload.get("posts") or []
                   post_count = len(posts)
@@ -105,9 +111,16 @@ jobs:
                       and 1 <= post_count <= 3
                       and times == sorted(times, reverse=True)
                   )
+              except urllib.error.HTTPError as exc:
+                  feed_http_status = exc.code
+                  try:
+                      feed_error_body = exc.read().decode("utf-8", errors="ignore")[:500]
+                  except Exception:
+                      pass
+                  reasons.append("feed_http_" + str(exc.code))
               except Exception as exc:
                   reasons.append("feed_fetch_failed:" + type(exc).__name__)
-              if not feed_ok and not any(r.startswith("feed_fetch_failed:") for r in reasons):
+              if not feed_ok and not any(r.startswith("feed_fetch_failed:") or r.startswith("feed_http_") for r in reasons):
                   reasons.append("feed_invalid_response")
 
               rows.append({
@@ -118,6 +131,8 @@ jobs:
                   "avatar_content_type": avatar_type,
                   "avatar_bytes": avatar_bytes,
                   "feed_ok": feed_ok,
+                  "feed_http_status": feed_http_status,
+                  "feed_error_body": feed_error_body,
                   "feed_source": feed_source,
                   "post_count": post_count,
                   "newest_post_at": newest_post_at,
