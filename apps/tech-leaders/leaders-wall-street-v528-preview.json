@@ -39230,6 +39230,7 @@
     "target_category": "华尔街",
     "production_file_untouched": true,
     "source_review": "data/tech-leaders/wall_street_review.summary.json",
-    "dedupe_against_v500": true
+    "dedupe_against_v500": true,
+    "runtime_audit_requested_at": "2026-09-22"
   }
 }
