@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-22",
+  "status": "wall_street_review_complete",
+  "target_category": "华尔街",
+  "source_scan": "data/tech-leaders/wall_street_scan.v1.json",
+  "batches": [
+    {
+      "batch": "01",
+      "candidate_range": "1-25",
+      "approved": 7,
+      "manual_review": 18,
+      "source": "data/tech-leaders/wall_street_review.batch01.json"
+    },
+    {
+      "batch": "02",
+      "candidate_range": "26-50",
+      "approved": 21,
+      "manual_review": 4,
+      "source": "data/tech-leaders/wall_street_review.batch02.json"
+    }
+  ],
+  "totals": {
+    "candidates": 50,
+    "approved": 28,
+    "manual_review": 22,
+    "rejected": 0,
+    "production_duplicate_approved": 0
+  },
+  "launch_gate": {
+    "policy": "Approved only. Manual Review remains excluded until independently resolved.",
+    "launch_eligible_count": 28,
+    "proposed_first_release_count": 28,
+    "production_write_status": "not_started",
+    "next_action": "Build the independent Wall Street production tranche from these approved records, dedupe again against the live catalog, then add category=华尔街 without modifying the 400-person V400 Stable rollback snapshot."
+  },
+  "approved": [
+    {
+      "rank": 8,
+      "name": "Rick Rieder",
+      "company": "BlackRock",
+      "current_role": "Chief Investment Officer of Global Fixed Income",
+      "x_handle": "RickRieder",
+      "batch": "01"
+    },
+    {
+      "rank": 18,
+      "name": "Cliff Asness",
+      "company": "AQR Capital Management",
+      "current_role": "Founder, Managing Principal & Chief Investment Officer",
+      "x_handle": "CliffordAsness",
+      "batch": "01"
+    },
+    {
+      "rank": 19,
+      "name": "David Einhorn",
+      "company": "Greenlight Capital",
+      "current_role": "President",
+      "x_handle": "davidein",
+      "batch": "01"
+    },
+    {
+      "rank": 20,
+      "name": "Daniel Loeb",
+      "company": "Third Point",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "x_handle": "DanielSLoeb1",
+      "batch": "01"
+    },
+    {
+      "rank": 23,
+      "name": "Steve Cohen",
+      "company": "Point72",
+      "current_role": "Chairman, Chief Executive Officer & Co-Chief Investment Officer",
+      "x_handle": "StevenACohen2",
+      "batch": "01"
+    },
+    {
+      "rank": 24,
+      "name": "Boaz Weinstein",
+      "company": "Saba Capital Management",
+      "current_role": "Founder & Chief Investment Officer",
+      "x_handle": "boazweinstein",
+      "batch": "01"
+    },
+    {
+      "rank": 25,
+      "name": "Jeffrey Gundlach",
+      "company": "DoubleLine Capital",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "x_handle": "TruthGundlach",
+      "batch": "01"
+    },
+    {
+      "rank": 26,
+      "name": "Howard Marks",
+      "company": "Oaktree Capital Management",
+      "current_role": "Co-Founder & Co-Chairman",
+      "x_handle": "HowardMarksBook",
+      "batch": "02"
+    },
+    {
+      "rank": 27,
+      "name": "Mohamed El-Erian",
+      "company": "Allianz / Gramercy Funds Management / Queens' College",
+      "current_role": "Chief Economic Adviser, Allianz; Chair, Gramercy Funds Management; Life Fellow, Queens' College",
+      "x_handle": "elerianm",
+      "batch": "02"
+    },
+    {
+      "rank": 28,
+      "name": "Liz Ann Sonders",
+      "company": "Charles Schwab",
+      "current_role": "Managing Director & Chief Investment Strategist",
+      "x_handle": "LizAnnSonders",
+      "batch": "02"
+    },
+    {
+      "rank": 29,
+      "name": "Jim Bianco",
+      "company": "Bianco Research",
+      "current_role": "President & Macro Strategist",
+      "x_handle": "biancoresearch",
+      "batch": "02"
+    },
+    {
+      "rank": 30,
+      "name": "David Rosenberg",
+      "company": "Rosenberg Research",
+      "current_role": "Founder & President",
+      "x_handle": "EconguyRosie",
+      "batch": "02"
+    },
+    {
+      "rank": 32,
+      "name": "Peter Schiff",
+      "company": "Euro Pacific Asset Management",
+      "current_role": "Chief Economist & Global Strategist",
+      "x_handle": "PeterSchiff",
+      "batch": "02"
+    },
+    {
+      "rank": 33,
+      "name": "Lyn Alden",
+      "company": "Lyn Alden Investment Strategy / Ego Death Capital",
+      "current_role": "Founder, Lyn Alden Investment Strategy; General Partner, Ego Death Capital",
+      "x_handle": "LynAldenContact",
+      "batch": "02"
+    },
+    {
+      "rank": 34,
+      "name": "Danielle DiMartino Booth",
+      "company": "QI Research",
+      "current_role": "Chief Executive Officer & Chief Strategist",
+      "x_handle": "DiMartinoBooth",
+      "batch": "02"
+    },
+    {
+      "rank": 35,
+      "name": "Stephanie Pomboy",
+      "company": "MacroMavens",
+      "current_role": "Founder",
+      "x_handle": "spomboy",
+      "batch": "02"
+    },
+    {
+      "rank": 36,
+      "name": "Bob Elliott",
+      "company": "Unlimited Funds",
+      "current_role": "Co-Founder, Chief Executive Officer & Chief Investment Officer",
+      "x_handle": "BobEUnlimited",
+      "batch": "02"
+    },
+    {
+      "rank": 37,
+      "name": "Mike Green",
+      "company": "Tier1 Alpha Asset Management",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "x_handle": "profplum99",
+      "batch": "02"
+    },
+    {
+      "rank": 38,
+      "name": "Jim Chanos",
+      "company": "Chanos & Company",
+      "current_role": "President & Founder",
+      "x_handle": "RealJimChanos",
+      "batch": "02"
+    },
+    {
+      "rank": 39,
+      "name": "Anthony Scaramucci",
+      "company": "SkyBridge Capital",
+      "current_role": "Founder & Managing Partner",
+      "x_handle": "Scaramucci",
+      "batch": "02"
+    },
+    {
+      "rank": 40,
+      "name": "Raoul Pal",
+      "company": "Real Vision / Global Macro Investor",
+      "current_role": "Co-Founder & Chief Executive Officer, Real Vision Group; Founder, Global Macro Investor",
+      "x_handle": "RaoulGMI",
+      "batch": "02"
+    },
+    {
+      "rank": 41,
+      "name": "Jim Cramer",
+      "company": "CNBC",
+      "current_role": "Host, Mad Money; Co-Anchor, Squawk on the Street",
+      "x_handle": "jimcramer",
+      "batch": "02"
+    },
+    {
+      "rank": 43,
+      "name": "Barry Ritholtz",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Chairman & Chief Investment Officer; Co-Founder",
+      "x_handle": "ritholtz",
+      "batch": "02"
+    },
+    {
+      "rank": 44,
+      "name": "Michael Batnick",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Managing Partner",
+      "x_handle": "michaelbatnick",
+      "batch": "02"
+    },
+    {
+      "rank": 45,
+      "name": "Ben Carlson",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Director of Institutional Asset Management",
+      "x_handle": "awealthofcs",
+      "batch": "02"
+    },
+    {
+      "rank": 46,
+      "name": "Eric Balchunas",
+      "company": "Bloomberg Intelligence",
+      "current_role": "Senior ETF Analyst",
+      "x_handle": "EricBalchunas",
+      "batch": "02"
+    },
+    {
+      "rank": 48,
+      "name": "Cem Karsan",
+      "company": "Kai Wealth",
+      "current_role": "Founder & Chief Investment Officer",
+      "x_handle": "jam_croissant",
+      "batch": "02"
+    },
+    {
+      "rank": 49,
+      "name": "Brent Donnelly",
+      "company": "Spectra Markets",
+      "current_role": "President",
+      "x_handle": "donnelly_brent",
+      "batch": "02"
+    }
+  ],
+  "manual_review": [
+    {
+      "rank": 1,
+      "name": "Jamie Dimon",
+      "company": "JPMorgan Chase",
+      "current_role": "Chairman & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X account was resolved in this pass; company/media references to him are not sufficient for admission."
+    },
+    {
+      "rank": 2,
+      "name": "Brian Moynihan",
+      "company": "Bank of America",
+      "current_role": "Chair of the Board & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. Search surfaced @therealbrianmoy, but it has no authoritative Bank of America cross-link and very low follower count; do not treat it as his personal account."
+    },
+    {
+      "rank": 3,
+      "name": "David Solomon",
+      "company": "Goldman Sachs",
+      "current_role": "Chairman & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 4,
+      "name": "Ted Pick",
+      "company": "Morgan Stanley",
+      "current_role": "Chairman & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 5,
+      "name": "Jane Fraser",
+      "company": "Citigroup",
+      "current_role": "Chair & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 6,
+      "name": "Charlie Scharf",
+      "company": "Wells Fargo",
+      "current_role": "Chairman & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 7,
+      "name": "Larry Fink",
+      "company": "BlackRock",
+      "current_role": "Founder, Chairman & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. BlackRock company accounts discuss him, but no authoritative personal X account was resolved."
+    },
+    {
+      "rank": 9,
+      "name": "Salim Ramji",
+      "company": "Vanguard",
+      "current_role": "Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X account resolved; aggregator results were insufficient."
+    },
+    {
+      "rank": 10,
+      "name": "Ron O'Hanley",
+      "company": "State Street",
+      "current_role": "Chairman & Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 11,
+      "name": "Steve Schwarzman",
+      "company": "Blackstone",
+      "current_role": "Chairman, Chief Executive Officer & Co-Founder",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. Blackstone company X posts feature him, but no authoritative personal X account was resolved."
+    },
+    {
+      "rank": 12,
+      "name": "Jon Gray",
+      "company": "Blackstone",
+      "current_role": "President & Chief Operating Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. Blackstone company X posts are not a personal-account substitute."
+    },
+    {
+      "rank": 13,
+      "name": "Marc Rowan",
+      "company": "Apollo Global Management",
+      "current_role": "Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. @TheMarcRowan surfaced in search, but the profile had weak identity evidence and no reliable current-post history; not approved."
+    },
+    {
+      "rank": 14,
+      "name": "David Rubenstein",
+      "company": "Carlyle",
+      "current_role": "Co-Founder & Co-Chairman",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 15,
+      "name": "Harvey Schwartz",
+      "company": "Carlyle",
+      "current_role": "Partner, Chief Executive Officer & Director",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. Carlyle promotes his LinkedIn presence; no authoritative personal X account resolved."
+    },
+    {
+      "rank": 16,
+      "name": "Joe Bae",
+      "company": "KKR",
+      "current_role": "Co-Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 17,
+      "name": "Scott Nuttall",
+      "company": "KKR",
+      "current_role": "Co-Chief Executive Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. @scotty_nuttall surfaced but lacks authoritative KKR identity linkage; do not admit."
+    },
+    {
+      "rank": 21,
+      "name": "Ken Griffin",
+      "company": "Citadel",
+      "current_role": "Founder, Chief Executive Officer & Co-Chief Investment Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. Citadel company account is not eligible as a personal-account substitute."
+    },
+    {
+      "rank": 22,
+      "name": "Paul Singer",
+      "company": "Elliott Investment Management",
+      "current_role": "Founder, President, Co-Chief Executive Officer & Co-Chief Investment Officer",
+      "x_handle": null,
+      "batch": "01",
+      "review_notes": "Current role verified. No authoritative personal X identity resolved."
+    },
+    {
+      "rank": 31,
+      "name": "Ed Yardeni",
+      "company": "Yardeni Research",
+      "current_role": "President & Chief Investment Strategist",
+      "x_handle": null,
+      "batch": "02",
+      "review_notes": "Current role is verified, but @yardeni is the Yardeni Research company account. Under the Wall Street policy, a company account cannot substitute for a verified personal X account."
+    },
+    {
+      "rank": 42,
+      "name": "Josh Brown",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Chief Executive Officer & Co-Founder",
+      "x_handle": "ReformedBroker",
+      "batch": "02",
+      "review_notes": "Ritholtz and Brown's own site verify his role and identify @ReformedBroker as his personal Twitter/X account. This pass did not independently resolve a current first-party post date within the 180-day gate, so the record remains Manual Review rather than assuming activity."
+    },
+    {
+      "rank": 47,
+      "name": "Dave Nadig",
+      "company": "Independent / ETF Industry",
+      "current_role": "Financial Futurist / ETF Industry Analyst",
+      "x_handle": "DaveNadig",
+      "batch": "02",
+      "review_notes": "Personal X identity and activity are clear, but a sufficiently authoritative current institutional role/title was not resolved in this pass. Do not approve on an inferred 'financial futurist' label alone."
+    },
+    {
+      "rank": 50,
+      "name": "Mark Dow",
+      "company": "Behavioral Macro",
+      "current_role": "Macro Investor / Behavioral Macro",
+      "x_handle": "mark_dow",
+      "batch": "02",
+      "review_notes": "Personal X is clearly active and linked to Behavioral Macro, but the current formal role/title (for example Founder) was not explicitly established by a sufficiently authoritative source in this pass. Keep Manual Review rather than promote an inferred title."
+    }
+  ],
+  "checks": {
+    "approved_handle_duplicates": [],
+    "approved_count_matches_batches": true,
+    "candidate_count_is_50": true
+  }
+}
