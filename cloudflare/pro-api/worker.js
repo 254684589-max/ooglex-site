@@ -1827,6 +1827,37 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   }
 }
 
+async function fetchFxTwitterStatusById(handle, postId) {
+  const url = `https://api.fxtwitter.com/${encodeURIComponent(handle)}/status/${encodeURIComponent(postId)}`;
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 4500);
+  let res = null;
+  try {
+    res = await fetch(url, {
+      signal: ctl.signal,
+      redirect: "follow",
+      headers: {
+        accept: "application/json",
+        "user-agent": "Ooglex-Tech-Leaders-Single-Post/1.0"
+      }
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+
+  let payload = null;
+  try { payload = await res.json(); } catch {}
+  const raw = payload && (payload.tweet || payload.status);
+  const post = normalizeFxTwitterStatus(raw, handle);
+  if (!res.ok || !post) {
+    const err = new Error("fxtwitter_single_post_unavailable");
+    err.code = "fxtwitter_single_post_unavailable";
+    err.status = res && res.status ? res.status : 502;
+    throw err;
+  }
+  return post;
+}
+
 async function getFreeTechLeaderPost(handle, postId, env) {
   const normalized = normalizeXHandle(handle);
   const id = String(postId || "").trim();
@@ -1857,7 +1888,13 @@ async function getFreeTechLeaderPost(handle, postId, env) {
   const post = Array.isArray(feed.posts)
     ? feed.posts.find((item) => String(item && item.id || "") === id)
     : null;
-  if (!post) {
+  let resolvedPost = post;
+  if (!resolvedPost) {
+    try {
+      resolvedPost = await fetchFxTwitterStatusById(normalized, id);
+    } catch {}
+  }
+  if (!resolvedPost) {
     const err = new Error("free_post_not_found");
     err.code = "free_post_not_found";
     err.status = 404;
@@ -1870,7 +1907,7 @@ async function getFreeTechLeaderPost(handle, postId, env) {
     uses_x_api: false,
     handle: normalized,
     fetched_at: feed.fetched_at || null,
-    post,
+    post: resolvedPost,
     cache: feed.cache || { status: "refreshed" }
   };
 }
@@ -1956,26 +1993,21 @@ async function techLeaderShareAvatarResponse(url, env, cors) {
     if (!env.IMAGES) throw new Error("images_binding_unavailable");
 
     const avatar = await getTechLeaderAvatar(handle, name, "", env);
-    const maskRes = await fetch("https://www.ooglex.com/assets/tech-leader-share-mask.svg", {
-      headers: { accept: "image/svg+xml,image/*,*/*;q=0.8" }
-    });
-    if (!maskRes.ok) throw new Error("share_avatar_mask_unavailable");
+    const encoder = new TextEncoder();
+    const maskSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><path d="M0 0H512V512H0Z M256 54a202 202 0 1 0 0 404 202 202 0 1 0 0-404Z" fill="#fff" fill-rule="evenodd"/><circle cx="256" cy="256" r="208" fill="none" stroke="#ded5cb" stroke-width="6"/></svg>';
+    const badgeSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 112 112"><circle cx="56" cy="56" r="56" fill="#fff"/><g transform="translate(12 12) scale(3.6666667)"><path fill="#1d9bf0" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path d="M7.35 12.35 10.1 15.1 16.65 8.55" fill="none" stroke="#fff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
 
     let chain = env.IMAGES
       .input(avatar.body)
       .transform({ width: 512, height: 512, fit: "cover" })
       .draw(
-        env.IMAGES.input(maskRes.body).transform({ width: 512, height: 512, fit: "contain" }),
+        env.IMAGES.input(encoder.encode(maskSvg)),
         { top: 0, left: 0 }
       );
 
     if (verified) {
-      const badgeRes = await fetch("https://www.ooglex.com/assets/tech-leader-share-verified.svg", {
-        headers: { accept: "image/svg+xml,image/*,*/*;q=0.8" }
-      });
-      if (!badgeRes.ok) throw new Error("share_avatar_badge_unavailable");
       chain = chain.draw(
-        env.IMAGES.input(badgeRes.body).transform({ width: 112, height: 112, fit: "contain" }),
+        env.IMAGES.input(encoder.encode(badgeSvg)),
         { right: 34, bottom: 34 }
       );
     }
@@ -2416,10 +2448,12 @@ export default {
         const result = await getFreeTechLeaderPost(handle, postId, env);
         return techLeaderShareResponse(handle, result.post, url);
       } catch (err) {
-        const fallback = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
-        fallback.searchParams.set("handle", handle || shareMatch[1]);
-        fallback.searchParams.set("id", postId);
-        return Response.redirect(fallback.toString(), 302);
+        return techLeaderShareResponse(handle || shareMatch[1], {
+          id: postId,
+          text: "",
+          url: `https://x.com/${encodeURIComponent(handle || shareMatch[1])}/status/${encodeURIComponent(postId)}`,
+          media: []
+        }, url);
       }
     }
 
