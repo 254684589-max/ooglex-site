@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-21T11:30:42Z",
+  "generated_at": "2026-09-21T12:18:12Z",
   "policy": {
     "x_identity_verified_required": true,
     "x_activity_status_allowed": [
@@ -13,12 +13,12 @@
     "duplicate_handle_forbidden": true,
     "production_file_untouched": "apps/tech-leaders/leaders.json"
   },
-  "base_count": 165,
-  "preview_count": 165,
+  "base_count": 250,
+  "preview_count": 250,
   "candidate_count": 0,
   "ready_count": 0,
   "blocked_count": 0,
-  "production_if_all_ready": 165,
+  "production_if_all_ready": 250,
   "ready": [],
   "blocked": []
 }
