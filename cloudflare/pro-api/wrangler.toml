@@ -3,6 +3,9 @@ main = "worker.js"
 compatibility_date = "2026-09-01"
 workers_dev = false
 
+[images]
+binding = "IMAGES"
+
 [[routes]]
 pattern = "pro-api.ooglex.com"
 custom_domain = true
