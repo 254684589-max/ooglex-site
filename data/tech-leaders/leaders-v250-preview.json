@@ -6808,6 +6808,231 @@
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
       "preview_only": true
+    },
+    {
+      "id": "mike-schroepfer-meta",
+      "name": "Mike Schroepfer",
+      "zh": "Mike Schroepfer",
+      "handle": "schrep",
+      "role": "Meta Platforms · Former Chief Technology Officer & Senior Fellow",
+      "chips": [
+        "META",
+        "Meta Platforms",
+        "通信服务",
+        "科技",
+        "AI"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "MIKE SCHROEPFER · VERIFIED X TIMELINE PREVIEW",
+      "category": "通信服务",
+      "name_zh": "Mike Schroepfer",
+      "name_en": "Mike Schroepfer",
+      "company_zh": "Meta Platforms",
+      "company_en": "Meta Platforms",
+      "position_zh": "Former Chief Technology Officer & Senior Fellow",
+      "categories": [
+        "通信服务",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "ticker": "META",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "通信服务",
+        "科技",
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_transition_profile_cross_source",
+      "x_role_source_url": "https://about.fb.com/news/2021/09/note-from-mark-zuckerberg/",
+      "x_identity_source_url": "https://x.com/schrep",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-08",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=schrep&name=Mike+Schroepfer&company=Meta+Platforms",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "nir-zuk-panw",
+      "name": "Nir Zuk",
+      "zh": "Nir Zuk",
+      "handle": "nirzuk",
+      "role": "Palo Alto Networks · Founder Emeritus; Former Chief Technology Officer & Director",
+      "chips": [
+        "PANW",
+        "Palo Alto Networks",
+        "科技",
+        "网络安全",
+        "AI"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "NIR ZUK · VERIFIED X TIMELINE PREVIEW",
+      "category": "科技",
+      "name_zh": "Nir Zuk",
+      "name_en": "Nir Zuk",
+      "company_zh": "Palo Alto Networks",
+      "company_en": "Palo Alto Networks",
+      "position_zh": "Founder Emeritus; Former Chief Technology Officer & Director",
+      "categories": [
+        "科技",
+        "网络安全",
+        "AI",
+        "软件"
+      ],
+      "ticker": "PANW",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "company_relationship_status": "founder_emeritus",
+      "themes": [
+        "科技",
+        "网络安全",
+        "AI",
+        "软件"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_retirement_profile_cross_source",
+      "x_role_source_url": "https://www.paloaltonetworks.com/company/press/2025/palo-alto-networks-announces-retirement-of-nir-zuk--founder-and-cto",
+      "x_identity_source_url": "https://x.com/nirzuk/with_replies",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "2026-09",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=nirzuk&name=Nir+Zuk&company=Palo+Alto+Networks",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "jeff-wilke-amzn",
+      "name": "Jeff Wilke",
+      "zh": "Jeff Wilke",
+      "handle": "jeffawilke",
+      "role": "Amazon · Former Chief Executive Officer, Worldwide Consumer",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "消费零售",
+        "科技",
+        "工业"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "JEFF WILKE · VERIFIED X TIMELINE PREVIEW",
+      "category": "消费零售",
+      "name_zh": "Jeff Wilke",
+      "name_en": "Jeff Wilke",
+      "company_zh": "Amazon",
+      "company_en": "Amazon",
+      "position_zh": "Former Chief Executive Officer, Worldwide Consumer",
+      "categories": [
+        "消费零售",
+        "科技",
+        "工业",
+        "机器人"
+      ],
+      "ticker": "AMZN",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "消费零售",
+        "科技",
+        "工业",
+        "机器人"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_retirement_profile_cross_source",
+      "x_role_source_url": "https://www.aboutamazon.com/news/company-news/hanging-up-the-flannel",
+      "x_identity_source_url": "https://x.com/jeffawilke",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-06",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jeffawilke&name=Jeff+Wilke&company=Amazon",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
+    },
+    {
+      "id": "dave-clark-amzn",
+      "name": "Dave Clark",
+      "zh": "Dave Clark",
+      "handle": "davehclark",
+      "role": "Amazon · Former Chief Executive Officer, Worldwide Consumer",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "消费零售",
+        "科技",
+        "工业"
+      ],
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
+      "title": "DAVE CLARK · VERIFIED X TIMELINE PREVIEW",
+      "category": "消费零售",
+      "name_zh": "Dave Clark",
+      "name_en": "Dave Clark",
+      "company_zh": "Amazon",
+      "company_en": "Amazon",
+      "position_zh": "Former Chief Executive Officer, Worldwide Consumer",
+      "categories": [
+        "消费零售",
+        "科技",
+        "工业",
+        "AI"
+      ],
+      "ticker": "AMZN",
+      "exchange": "NASDAQ",
+      "listed_company": true,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "legacy_leader"
+      ],
+      "company_relationship_status": "former",
+      "themes": [
+        "消费零售",
+        "科技",
+        "工业",
+        "AI"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "company_departure_profile_cross_source",
+      "x_role_source_url": "https://www.aboutamazon.com/news/company-news/amazon-ceo-of-worldwide-consumer-dave-clark-resigns-after-23-years",
+      "x_identity_source_url": "https://twitter.com/davehclark/with_replies",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-08",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=davehclark&name=Dave+Clark&company=Amazon",
+      "avatar_source": "Ooglex avatar pipeline · pending preview audit",
+      "avatar_status": "pending_preview_audit",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": false,
+      "preview_only": true
     }
   ],
   "categories": [
@@ -6896,18 +7121,19 @@
       "data/tech-leaders/verified_candidates.tranche04.json",
       "data/tech-leaders/verified_candidates.tranche05.json",
       "data/tech-leaders/verified_candidates.tranche06.json",
-      "data/tech-leaders/verified_candidates.tranche07.json"
+      "data/tech-leaders/verified_candidates.tranche07.json",
+      "data/tech-leaders/verified_candidates.tranche08.json"
     ],
-    "evidence_tranche_count": 7,
-    "reviewed_candidate_count": 35,
+    "evidence_tranche_count": 8,
+    "reviewed_candidate_count": 39,
     "review_status_counts": {
-      "approved": 20,
+      "approved": 24,
       "hold": 2,
       "manual_review": 13
     },
     "base_count": 110,
-    "approved_additions": 20,
-    "preview_count": 130,
+    "approved_additions": 24,
+    "preview_count": 134,
     "production_file_untouched": true
   }
 }
