@@ -1,0 +1,863 @@
+{
+  "version": "v400-legacy-review-phase2-batch01",
+  "reviewed_at": "2026-09-21",
+  "reviewed_count": 50,
+  "status_counts": {
+    "verified": 48,
+    "manual_review": 2
+  },
+  "catalog_status_counts": {
+    "verified": 348,
+    "manual_review": 2,
+    "legacy_review_required": 50
+  },
+  "changed_role_records": 25,
+  "changed_ids": [
+    "su",
+    "cook",
+    "bezos",
+    "hassabis",
+    "suleyman",
+    "lecun",
+    "andrew-ng",
+    "sutskever",
+    "karpathy",
+    "field",
+    "chesky",
+    "ek",
+    "dell",
+    "hoffman",
+    "dorsey",
+    "paul-graham",
+    "alexandr-wang",
+    "jeff-dean",
+    "bret-taylor",
+    "friedman",
+    "krishna",
+    "peter-beck",
+    "adcock",
+    "jim-keller",
+    "koduri"
+  ],
+  "manual_review": [
+    {
+      "id": "zhengyi-temp",
+      "name": "Zheng Yi",
+      "handle": "ZLQ6600E",
+      "review_note": "No authoritative public role/company source was resolved in the 2026-09-21 legacy pass; personal X identity remains previously verified.",
+      "x_review_status": "identity_verified_role_source_pending"
+    },
+    {
+      "id": "paul-graham",
+      "name": "Paul Graham",
+      "handle": "paulg",
+      "review_note": "YC confirms Founder, Retired. A current third-party X tracker reports @paulg unavailable since 2026-07-04; keep active pending a second X availability check before V400 Stable freeze.",
+      "x_review_status": "manual_review_account_unavailable_signal"
+    }
+  ],
+  "records": [
+    {
+      "id": "musk",
+      "name": "Elon Musk",
+      "handle": "elonmusk",
+      "company": "Tesla / SpaceX / xAI / X",
+      "current_role": "创始人 / CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/elonmusk"
+    },
+    {
+      "id": "altman",
+      "name": "Sam Altman",
+      "handle": "sama",
+      "company": "OpenAI",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/sama"
+    },
+    {
+      "id": "su",
+      "name": "Lisa Su",
+      "handle": "LisaSu",
+      "company": "AMD",
+      "current_role": "董事长、总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://ir.amd.com/governance/board-of-directors",
+      "x_identity_source_url": "https://x.com/LisaSu"
+    },
+    {
+      "id": "pichai",
+      "name": "Sundar Pichai",
+      "handle": "sundarpichai",
+      "company": "Google / Alphabet",
+      "current_role": "CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/sundarpichai"
+    },
+    {
+      "id": "zhengyi-temp",
+      "name": "Zheng Yi",
+      "handle": "ZLQ6600E",
+      "company": "Independent Investment / VC",
+      "current_role": "投资人",
+      "role_status": "current",
+      "leader_types": [
+        "investor"
+      ],
+      "role_review_status": "manual_review",
+      "x_review_status": "identity_verified_role_source_pending",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/ZLQ6600E"
+    },
+    {
+      "id": "nadella",
+      "name": "Satya Nadella",
+      "handle": "satyanadella",
+      "company": "Microsoft",
+      "current_role": "董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/satyanadella"
+    },
+    {
+      "id": "cook",
+      "name": "Tim Cook",
+      "handle": "tim_cook",
+      "company": "Apple",
+      "current_role": "执行董事长",
+      "role_status": "current",
+      "leader_types": [
+        "chair",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investor.apple.com/leadership-and-governance/person-details/default.aspx",
+      "x_identity_source_url": "https://x.com/tim_cook"
+    },
+    {
+      "id": "bezos",
+      "name": "Jeff Bezos",
+      "handle": "JeffBezos",
+      "company": "Amazon / Blue Origin",
+      "current_role": "Amazon 执行董事长 / Blue Origin 创始人",
+      "role_status": "current",
+      "leader_types": [
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://ir.aboutamazon.com/officers-and-directors/person-details/",
+      "x_identity_source_url": "https://x.com/JeffBezos"
+    },
+    {
+      "id": "jassy",
+      "name": "Andy Jassy",
+      "handle": "ajassy",
+      "company": "Amazon",
+      "current_role": "CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/ajassy"
+    },
+    {
+      "id": "hassabis",
+      "name": "Demis Hassabis",
+      "handle": "demishassabis",
+      "company": "Google DeepMind / Alphabet",
+      "current_role": "Google DeepMind 董事长 / Alphabet 首席科学家",
+      "role_status": "current",
+      "leader_types": [
+        "chair",
+        "founder",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.reuters.com/business/google-shakes-up-ai-leadership-deepmind-chief-shifts-role-2026-08-05/",
+      "x_identity_source_url": "https://x.com/demishassabis"
+    },
+    {
+      "id": "amodei",
+      "name": "Dario Amodei",
+      "handle": "DarioAmodei",
+      "company": "Anthropic",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/DarioAmodei"
+    },
+    {
+      "id": "suleyman",
+      "name": "Mustafa Suleyman",
+      "handle": "mustafasuleyman",
+      "company": "Microsoft AI",
+      "current_role": "执行副总裁兼 Microsoft AI CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://blogs.microsoft.com/blog/2026/03/17/announcing-copilot-leadership-update/",
+      "x_identity_source_url": "https://x.com/mustafasuleyman"
+    },
+    {
+      "id": "lecun",
+      "name": "Yann LeCun",
+      "handle": "ylecun",
+      "company": "AMI Labs / NYU",
+      "current_role": "AMI Labs 执行董事长 / NYU 教授",
+      "role_status": "current",
+      "leader_types": [
+        "chair",
+        "founder",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://techcrunch.com/2026/01/23/whos-behind-ami-labs-yann-lecuns-world-model-startup/",
+      "x_identity_source_url": "https://x.com/ylecun"
+    },
+    {
+      "id": "andrew-ng",
+      "name": "Andrew Ng",
+      "handle": "AndrewYNg",
+      "company": "AI Fund / DeepLearning.AI / LandingAI",
+      "current_role": "AI Fund 管理合伙人 / DeepLearning.AI 创始人 / LandingAI 执行董事长",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://ir.aboutamazon.com/officers-and-directors/person-details/default.aspx",
+      "x_identity_source_url": "https://x.com/AndrewYNg"
+    },
+    {
+      "id": "fei-fei-li",
+      "name": "Fei-Fei Li",
+      "handle": "drfeifei",
+      "company": "World Labs / Stanford",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/drfeifei"
+    },
+    {
+      "id": "sutskever",
+      "name": "Ilya Sutskever",
+      "handle": "ilyasut",
+      "company": "Safe Superintelligence",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.globenewswire.com/news-release/2026/07/27/3333561/0/en/ilya-sutskever-s-safe-superintelligence-inc-and-nvidia-announce-long-term-strategic-partnership.html",
+      "x_identity_source_url": "https://x.com/ilyasut"
+    },
+    {
+      "id": "murati",
+      "name": "Mira Murati",
+      "handle": "miramurati",
+      "company": "Thinking Machines Lab",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/miramurati"
+    },
+    {
+      "id": "brockman",
+      "name": "Greg Brockman",
+      "handle": "gdb",
+      "company": "OpenAI",
+      "current_role": "总裁兼联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/gdb"
+    },
+    {
+      "id": "srinivas",
+      "name": "Aravind Srinivas",
+      "handle": "AravSrinivas",
+      "company": "Perplexity",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/AravSrinivas"
+    },
+    {
+      "id": "karpathy",
+      "name": "Andrej Karpathy",
+      "handle": "karpathy",
+      "company": "Anthropic / Eureka Labs",
+      "current_role": "Anthropic 预训练研究 / Eureka Labs 创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.reuters.com/business/autos-transportation/former-tesla-ai-executive-openai-founding-member-andrej-karpathy-joins-anthropic-2026-05-19/",
+      "x_identity_source_url": "https://x.com/karpathy"
+    },
+    {
+      "id": "field",
+      "name": "Dylan Field",
+      "handle": "zoink",
+      "company": "Figma",
+      "current_role": "联合创始人、董事长、总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investor.figma.com/governance/board-of-directors/default.aspx",
+      "x_identity_source_url": "https://x.com/zoink"
+    },
+    {
+      "id": "patrick-collison",
+      "name": "Patrick Collison",
+      "handle": "patrickc",
+      "company": "Stripe",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/patrickc"
+    },
+    {
+      "id": "chesky",
+      "name": "Brian Chesky",
+      "handle": "bchesky",
+      "company": "Airbnb",
+      "current_role": "联合创始人、董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investors.airbnb.com/governance/default.aspx",
+      "x_identity_source_url": "https://x.com/bchesky"
+    },
+    {
+      "id": "mohan",
+      "name": "Neal Mohan",
+      "handle": "nealmohan",
+      "company": "YouTube",
+      "current_role": "CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/nealmohan"
+    },
+    {
+      "id": "ek",
+      "name": "Daniel Ek",
+      "handle": "eldsjal",
+      "company": "Spotify",
+      "current_role": "创始人兼执行董事长",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "chair",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investors.spotify.com/governance/board-of-directors/person-details/default.aspx",
+      "x_identity_source_url": "https://x.com/eldsjal"
+    },
+    {
+      "id": "benioff",
+      "name": "Marc Benioff",
+      "handle": "Benioff",
+      "company": "Salesforce",
+      "current_role": "董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/Benioff"
+    },
+    {
+      "id": "dell",
+      "name": "Michael Dell",
+      "handle": "MichaelDell",
+      "company": "Dell Technologies",
+      "current_role": "董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1571996/000157199626000008/dell-20260130.htm",
+      "x_identity_source_url": "https://x.com/MichaelDell"
+    },
+    {
+      "id": "andreessen",
+      "name": "Marc Andreessen",
+      "handle": "pmarca",
+      "company": "Andreessen Horowitz",
+      "current_role": "联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/pmarca"
+    },
+    {
+      "id": "luckey",
+      "name": "Palmer Luckey",
+      "handle": "PalmerLuckey",
+      "company": "Anduril",
+      "current_role": "创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/PalmerLuckey"
+    },
+    {
+      "id": "lutke",
+      "name": "Tobias Lütke",
+      "handle": "tobi",
+      "company": "Shopify",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/tobi"
+    },
+    {
+      "id": "hoffman",
+      "name": "Reid Hoffman",
+      "handle": "reidhoffman",
+      "company": "Greylock / Manas AI / LinkedIn",
+      "current_role": "Greylock 合伙人 / Manas AI 与 LinkedIn 联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.reidhoffman.org/",
+      "x_identity_source_url": "https://x.com/reidhoffman"
+    },
+    {
+      "id": "khosla",
+      "name": "Vinod Khosla",
+      "handle": "vkhosla",
+      "company": "Khosla Ventures",
+      "current_role": "创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/vkhosla"
+    },
+    {
+      "id": "levie",
+      "name": "Aaron Levie",
+      "handle": "levie",
+      "company": "Box",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/levie"
+    },
+    {
+      "id": "dorsey",
+      "name": "Jack Dorsey",
+      "handle": "jack",
+      "company": "Block",
+      "current_role": "Block Head、董事长兼联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "chair",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1512673/000162828026027203/sq-20260423.htm",
+      "x_identity_source_url": "https://x.com/jack"
+    },
+    {
+      "id": "paul-graham",
+      "name": "Paul Graham",
+      "handle": "paulg",
+      "company": "Y Combinator",
+      "current_role": "联合创始人（退休）",
+      "role_status": "retired",
+      "leader_types": [
+        "founder",
+        "legacy_leader"
+      ],
+      "role_review_status": "manual_review",
+      "x_review_status": "manual_review_account_unavailable_signal",
+      "role_source_url": "https://www.ycombinator.com/people",
+      "x_identity_source_url": "https://x.com/paulg"
+    },
+    {
+      "id": "garry-tan",
+      "name": "Garry Tan",
+      "handle": "garrytan",
+      "company": "Y Combinator",
+      "current_role": "总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/garrytan"
+    },
+    {
+      "id": "alexandr-wang",
+      "name": "Alexandr Wang",
+      "handle": "alexandr_wang",
+      "company": "Meta",
+      "current_role": "首席 AI 官",
+      "role_status": "current",
+      "leader_types": [
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.axios.com/2026/09/18/meta-muse-personal-agent-make-money",
+      "x_identity_source_url": "https://x.com/alexandr_wang"
+    },
+    {
+      "id": "delangue",
+      "name": "Clément Delangue",
+      "handle": "ClemDelangue",
+      "company": "Hugging Face",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/ClemDelangue"
+    },
+    {
+      "id": "jeff-dean",
+      "name": "Jeff Dean",
+      "handle": "JeffDean",
+      "company": "Discovery Loop",
+      "current_role": "联合创始人兼 CEO / 前 Google 首席科学家",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "researcher",
+        "former_executive"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://techcrunch.com/2026/08/05/jeff-dean-and-other-top-ai-researchers-are-leaving-google-to-launch-their-own-startup/",
+      "x_identity_source_url": "https://x.com/JeffDean"
+    },
+    {
+      "id": "gomez",
+      "name": "Aidan Gomez",
+      "handle": "aidangomez",
+      "company": "Cohere",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/aidangomez"
+    },
+    {
+      "id": "bret-taylor",
+      "name": "Bret Taylor",
+      "handle": "btaylor",
+      "company": "Sierra / OpenAI",
+      "current_role": "Sierra 联合创始人兼 CEO / OpenAI Foundation 董事长",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://openai.com/our-structure/",
+      "x_identity_source_url": "https://x.com/btaylor"
+    },
+    {
+      "id": "masad",
+      "name": "Amjad Masad",
+      "handle": "amasad",
+      "company": "Replit",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/amasad"
+    },
+    {
+      "id": "rauch",
+      "name": "Guillermo Rauch",
+      "handle": "rauchg",
+      "company": "Vercel",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/rauchg"
+    },
+    {
+      "id": "friedman",
+      "name": "Nat Friedman",
+      "handle": "natfriedman",
+      "company": "NFDG / AI Investing",
+      "current_role": "NFDG 联合创始人 / 投资人 / 前 GitHub CEO",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://nat.org",
+      "x_identity_source_url": "https://x.com/natfriedman"
+    },
+    {
+      "id": "krishna",
+      "name": "Arvind Krishna",
+      "handle": "ArvindKrishna",
+      "company": "IBM",
+      "current_role": "董事长、总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.ibm.com/investor/governance/arvind-krishna",
+      "x_identity_source_url": "https://x.com/ArvindKrishna"
+    },
+    {
+      "id": "amon",
+      "name": "Cristiano Amon",
+      "handle": "cristianoamon",
+      "company": "Qualcomm",
+      "current_role": "总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": null,
+      "x_identity_source_url": "https://x.com/cristianoamon"
+    },
+    {
+      "id": "peter-beck",
+      "name": "Peter Beck",
+      "handle": "Peter_J_Beck",
+      "company": "Rocket Lab",
+      "current_role": "创始人、董事长、总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://rocketlabcorp.com/about/team/",
+      "x_identity_source_url": "https://x.com/Peter_J_Beck"
+    },
+    {
+      "id": "adcock",
+      "name": "Brett Adcock",
+      "handle": "adcock_brett",
+      "company": "Figure",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.figure.ai/news/figure-and-nscale-sign-strategic-partnership",
+      "x_identity_source_url": "https://x.com/adcock_brett"
+    },
+    {
+      "id": "jim-keller",
+      "name": "Jim Keller",
+      "handle": "jimkxa",
+      "company": "Tenstorrent",
+      "current_role": "CEO / 芯片架构师",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://tenstorrent.com/about",
+      "x_identity_source_url": "https://x.com/jimkxa"
+    },
+    {
+      "id": "koduri",
+      "name": "Raja Koduri",
+      "handle": "RajaXg",
+      "company": "OXMIQ Labs",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://oxmiq.ai/team",
+      "x_identity_source_url": "https://x.com/RajaXg"
+    }
+  ]
+}
