@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-09-22",
+  "preview_catalog_version": "v528-wall-street-preview-2026-09-22",
+  "base_count": 500,
+  "preview_count": 528,
+  "approved_additions": 28,
+  "summary_approved": 28,
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "addition_issues": [
+    {
+      "id": "wall-street-howard-marks",
+      "issue": "identity_not_verified"
+    }
+  ],
+  "all_28_static_ready": false
+}
