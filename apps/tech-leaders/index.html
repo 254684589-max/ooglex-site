@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(u.searchParams.get("sharev")!=="20260922d"){
-        u.searchParams.set("sharev","20260922d");
+      if(u.searchParams.get("sharev")!=="20260922e"){
+        u.searchParams.set("sharev","20260922e");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -22,8 +22,8 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖实时动态流 · Ooglex">
   <meta property="og:description" content="聚合全球科技领袖、上市公司 CEO 与创始人的公开动态。">
-  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922d">
-  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922d">
+  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922e">
+  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922e">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
@@ -198,6 +198,18 @@
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
+    @media(min-width:701px){
+      .post-who b{font-size:16px;line-height:21px}
+      .post-who span{font-size:15px;line-height:20px}
+      .post-time{font-size:14px;line-height:20px}
+      .post-text{font-size:16px;line-height:24px}
+      .embedded-name{font-size:16px;line-height:21px}
+      .embedded-handle{font-size:15px;line-height:20px}
+      .embedded-post .post-text{font-size:16px;line-height:23px}
+      .profile-en{font-size:13px;line-height:1.35}
+      .leader-en{font-size:12px;line-height:1.3}
+      .leader-role{font-size:12px;line-height:1.4}
+    }
     @media(max-width:980px){.leader{flex-basis:calc((100% - 20px)/3)}.leader-rail-wrap.expanded .leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
     @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.leader-fold{padding:8px 10px;font-weight:700}}
     @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{gap:12px}.leader{flex-basis:min(84vw,320px)}.leader-rail-wrap.expanded .leaders{grid-template-columns:1fr}.leader-rail-wrap.expanded .leader{width:100%}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:9px 13px;font-size:12px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
