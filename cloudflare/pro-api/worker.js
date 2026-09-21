@@ -1952,6 +1952,50 @@ function techLeaderShareMedia(post, origin) {
   };
 }
 
+async function techLeaderCatalogShareCoverResponse(env, cors) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+    <rect width="512" height="512" fill="#f7f7f7"/>
+    <rect x="18" y="18" width="476" height="476" rx="34" fill="#f8f6f2" stroke="#ded5cb" stroke-width="2"/>
+    <text x="46" y="68" font-family="Arial,Helvetica,sans-serif" font-size="20" letter-spacing="2.2" fill="#6d6862">OOGLEX · PUBLIC X</text>
+    <g>
+      <circle cx="118" cy="182" r="47" fill="#fff" stroke="#d8d0c6" stroke-width="3"/>
+      <circle cx="214" cy="182" r="47" fill="#fff" stroke="#d8d0c6" stroke-width="3"/>
+      <circle cx="310" cy="182" r="47" fill="#fff" stroke="#d8d0c6" stroke-width="3"/>
+      <circle cx="118" cy="168" r="15" fill="#1b1b1d"/><path d="M86 214c5-28 20-42 32-42s27 14 32 42" fill="#1b1b1d"/>
+      <circle cx="214" cy="168" r="15" fill="#555b63"/><path d="M182 214c5-28 20-42 32-42s27 14 32 42" fill="#555b63"/>
+      <circle cx="310" cy="168" r="15" fill="#948b82"/><path d="M278 214c5-28 20-42 32-42s27 14 32 42" fill="#948b82"/>
+    </g>
+    <circle cx="362" cy="214" r="25" fill="#fff"/>
+    <path fill="#1d9bf0" d="M386 214l-5.1-5.8.8-7.7-7.5-1.7-3.9-6.7-7.2 3-7.2-3-3.9 6.7-7.5 1.7.8 7.7-5.1 5.8 5.1 5.8-.8 7.7 7.5 1.7 3.9 6.7 7.2-3 7.2 3 3.9-6.7 7.5-1.7-.8-7.7z"/>
+    <path d="M353 214l6 6 13-15" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="46" y="305" font-family="Arial,Helvetica,sans-serif" font-size="54" font-weight="700" fill="#171717">TECH LEADERS</text>
+    <text x="48" y="354" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="700" fill="#171717">LIVE PUBLIC X FEED</text>
+    <text x="48" y="405" font-family="Arial,Helvetica,sans-serif" font-size="20" letter-spacing="1.3" fill="#50545a">CEO · FOUNDERS · S&amp;P 500</text>
+    <text x="48" y="445" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#77716b">AI · CHIPS · CLOUD · SPACE · MARKETS</text>
+  </svg>`;
+
+  try {
+    if (!env.IMAGES) throw new Error("images_binding_unavailable");
+    const rendered = await env.IMAGES
+      .input(new Blob([svg], { type: "image/svg+xml" }).stream())
+      .output({ format: "image/png" });
+    const response = rendered.response();
+    const headers = new Headers(response.headers);
+    Object.entries(cors).forEach(([key, value]) => headers.set(key, value));
+    headers.set("content-type", "image/png");
+    headers.set("cache-control", "public, max-age=86400, stale-while-revalidate=604800");
+    headers.set("x-ooglex-share-cover", "tech-leaders-v2");
+    return new Response(response.body, { status: 200, headers });
+  } catch {
+    const fallback = await fetch("https://www.ooglex.com/assets/og-cover.png");
+    const headers = new Headers(cors);
+    fallback.headers.forEach((value, key) => headers.set(key, value));
+    headers.set("cache-control", "public, max-age=1800, stale-while-revalidate=21600");
+    headers.set("x-ooglex-share-cover", "fallback");
+    return new Response(fallback.body, { status: 200, headers });
+  }
+}
+
 async function techLeaderShareAvatarResponse(url, env, cors) {
   const handle = normalizeXHandle(url.searchParams.get("handle"));
   const name = String(url.searchParams.get("name") || handle || "X").trim().slice(0, 120);
@@ -2669,6 +2713,10 @@ async function proxyTechLeaderMedia(request, target, cors) {
       return techLeaderShareAvatarResponse(url, env, cors);
     }
 
+    if (url.pathname === "/v1/tech-leaders/catalog-share-cover") {
+      return techLeaderCatalogShareCoverResponse(env, cors);
+    }
+
     if (url.pathname === "/v1/tech-leaders/status") {
       return json({
         ok: true,
@@ -2692,7 +2740,8 @@ async function proxyTechLeaderMedia(request, target, cors) {
           free_feed_endpoint: "/v1/tech-leaders/free-feed",
           single_post_endpoint: "/v1/tech-leaders/post",
           media_proxy_endpoint: "/v1/tech-leaders/media",
-          share_avatar_endpoint: "/v1/tech-leaders/share-avatar"
+          share_avatar_endpoint: "/v1/tech-leaders/share-avatar",
+          catalog_share_cover_endpoint: "/v1/tech-leaders/catalog-share-cover"
         },
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
         avatar_policy: TECH_AVATAR_POLICY,
