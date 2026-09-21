@@ -4322,6 +4322,11 @@
           "name": "Arvind Krishna",
           "handle": "ArvindKrishna",
           "status": "production"
+        },
+        {
+          "name": "Armon Dadgar",
+          "handle": "armon",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -4354,7 +4359,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Armon Dadgar",
+          "handle": "armon",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Armon Dadgar",
@@ -4620,6 +4631,11 @@
           "name": "Cristiano Amon",
           "handle": "cristianoamon",
           "status": "production"
+        },
+        {
+          "name": "Chris Lattner",
+          "handle": "clattner_llvm",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -4652,7 +4668,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Chris Lattner",
+          "handle": "clattner_llvm",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Chris Lattner",
