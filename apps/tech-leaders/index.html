@@ -96,11 +96,11 @@
       padding:12px 14px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;min-height:94px;transition:.18s ease;
       flex:0 0 calc((100% - 50px)/6);
     }
-    .leader-scrollbar{position:relative;height:8px;width:100%;border-radius:999px;background:rgba(128,128,128,.14);cursor:default;touch-action:none;user-select:none;padding:0}
+    .leader-scrollbar{position:relative;height:8px;width:100%;margin-top:2px;border-radius:999px;background:rgba(128,128,128,.14);cursor:pointer;touch-action:none;user-select:none;padding:0}
     .leader-scrollbar[hidden]{display:none}
-    .leader-scroll-thumb{position:absolute;left:0;top:0;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.48);cursor:default;touch-action:none;transition:background .15s ease}
+    .leader-scroll-thumb{position:absolute;left:0;top:0;height:8px;min-width:82px;border-radius:999px;background:rgba(128,128,128,.48);cursor:grab;touch-action:none;transition:background .15s ease}
     .leader-scroll-thumb:hover{background:rgba(128,128,128,.58)}
-    .leader-scroll-thumb.dragging{cursor:default;background:rgba(128,128,128,.58)}
+    .leader-scroll-thumb.dragging{cursor:grabbing;background:rgba(128,128,128,.62)}
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:11px;min-width:0}
@@ -808,9 +808,10 @@
     var filtered=people.filter(function(p){
       return categoryMatches(p,activeCategory)&&(!q||searchableText(p).indexOf(q)!==-1);
     });
-    var quick=filtered.slice(0,6);
+    var QUICK_RAIL_LIMIT=24;
+    var quick=filtered.slice(0,QUICK_RAIL_LIMIT);
     if(current&&filtered.some(function(p){return p.id===current.id;})&&!quick.some(function(p){return p.id===current.id;})){
-      if(quick.length<6)quick.push(current);else quick[quick.length-1]=current;
+      if(quick.length<QUICK_RAIL_LIMIT)quick.push(current);else quick[quick.length-1]=current;
     }
     foldBtn.hidden=people.length<=6;
     foldBtn.textContent="查看全部 "+people.length+" →";
