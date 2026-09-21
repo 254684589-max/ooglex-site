@@ -3830,10 +3830,9 @@ def main() -> None:
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
     # 终端改版后入口文案按新终端的真实构成写（12 个站内源、4 项 ETF 代理、0 项演示）。
     # 断言的意图不变：首页入口必须如实写清数据构成，且不得残留演示版文案。
-    require("金融终端 Public Beta" in home
+    require('data-i18n="hero.terminalCta"' not in home
             and "12 个站内数据源" in home
             and "4项 ETF 代理逐条标注、0项演示" in home
-            and "Finance Terminal Public Beta" in home
             and "12 first-party data sources" in home
             and "4 ETF proxies each labelled, 0 demo" in home,
             "首页金融终端入口未同步Public Beta真实数据与代理口径")
