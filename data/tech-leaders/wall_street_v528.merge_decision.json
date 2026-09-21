@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V500 -> V528",
+  "preview_catalog": "apps/tech-leaders/leaders-wall-street-v528-preview.json",
+  "preview_count": 528,
+  "approved_additions": 28,
+  "static_gate": "pass",
+  "runtime_sample": {
+    "sample_count": 5,
+    "ready_count": 3,
+    "blocked_count": 2,
+    "ready": [
+      "Rick Rieder",
+      "Lyn Alden",
+      "Eric Balchunas"
+    ],
+    "blocked": [
+      {
+        "name": "Howard Marks",
+        "handle": "HowardMarksBook",
+        "reason": "free-feed HTTP 502: free_public_feed_sources_unavailable"
+      },
+      {
+        "name": "Cliff Asness",
+        "handle": "CliffordAsness",
+        "reason": "free-feed HTTP 502: free_public_feed_sources_unavailable"
+      }
+    ]
+  },
+  "fixes_applied": [
+    "Rick Rieder avatar proxy now has an official BlackRock portrait fallback and passes runtime audit."
+  ],
+  "production_action": "hold",
+  "production_catalog_unchanged": "v500-stable-2026-09-22",
+  "rationale": "Do not promote all 28 while two sampled profiles fail the native free-feed runtime gate. Frontend X Embed fallback exists, but V528 promotion waits for the native runtime gate or an explicitly accepted fallback policy."
+}
