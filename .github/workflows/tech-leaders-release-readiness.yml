@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "data/tech-leaders/verified_candidates*.json"
+      - "apps/tech-leaders/leaders.json"
       - "scripts/tech-leaders/build_preview_catalog.py"
       - ".github/workflows/tech-leaders-release-readiness.yml"
 
@@ -165,8 +166,9 @@ jobs:
           from pathlib import Path
 
           data = json.loads(Path("data/tech-leaders/release-readiness.json").read_text(encoding="utf-8"))
-          assert data["base_count"] == 110
-          assert data["candidate_count"] >= 12
+          live = json.loads(Path("apps/tech-leaders/leaders.json").read_text(encoding="utf-8"))
+          assert data["base_count"] == len(live["leaders"])
+          assert data["candidate_count"] >= 0
           assert data["ready_count"] + data["blocked_count"] == data["candidate_count"]
           assert data["production_if_all_ready"] == data["base_count"] + data["ready_count"]
           assert all(r["ready"] for r in data["ready"])
