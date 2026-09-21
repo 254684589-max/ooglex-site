@@ -8,11 +8,11 @@
   "summary_approved": 28,
   "duplicate_ids": [],
   "duplicate_handles": [],
-  "addition_issues": [
-    {
-      "id": "wall-street-howard-marks",
-      "issue": "identity_not_verified"
-    }
+  "addition_issues": [],
+  "all_28_static_ready": true,
+  "policy_note": "x_identity_verified=true is required. authorized_person_brand accounts explicitly verified by the person's institution are allowed even when verified_personal_x=false; they must be labeled as team-managed.",
+  "authorized_person_brand_exception": [
+    "wall-street-howard-marks"
   ],
-  "all_28_static_ready": false
+  "corrected_at": "2026-09-22"
 }
