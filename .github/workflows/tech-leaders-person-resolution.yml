@@ -1,0 +1,76 @@
+name: Tech Leaders Person Resolution Queue
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "data/tech-leaders/review_batch_150.json"
+      - "apps/tech-leaders/leaders.json"
+      - "data/tech-leaders/verified_candidates.tranche*.json"
+      - "scripts/tech-leaders/build_person_resolution_queue.py"
+      - ".github/workflows/tech-leaders-person-resolution.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tech-leaders-person-resolution
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build person resolution queue
+        run: |
+          python scripts/tech-leaders/build_person_resolution_queue.py
+
+      - name: Validate person resolution queue
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          q = json.loads(Path("data/tech-leaders/person_resolution_queue.json").read_text(encoding="utf-8"))
+          m = json.loads(Path("data/tech-leaders/person_resolution_queue.meta.json").read_text(encoding="utf-8"))
+
+          assert q["company_count"] == 150
+          assert q["slot_count"] == 450
+          assert m["slot_count"] == 450
+          assert m["slot_type_counts"] == {
+              "current_primary": 150,
+              "founder_legacy": 150,
+              "former_executive": 150,
+          }
+          assert len({s["slot_id"] for s in q["slots"]}) == 450
+          assert all(s["ticker"] and s["company"] and s["target_roles"] for s in q["slots"])
+          assert all(s["resolution_status"] in {"expand_more", "needs_person_discovery"} for s in q["slots"])
+          assert m["rules"]["existing_people_do_not_close_company"] is True
+          assert m["rules"]["production_file_untouched"] == "apps/tech-leaders/leaders.json"
+          print(json.dumps(m, ensure_ascii=False))
+          PY
+
+      - name: Commit refreshed person resolution queue
+        run: |
+          FILES="data/tech-leaders/person_resolution_queue.json data/tech-leaders/person_resolution_queue.meta.json"
+          if [ -z "$(git status --porcelain -- $FILES)" ]; then
+            echo "No person-resolution changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $FILES
+          git commit -m "data: refresh tech-leaders person resolution queue"
+          git push
