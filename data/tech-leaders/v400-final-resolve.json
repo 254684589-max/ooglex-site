@@ -1,0 +1,53 @@
+{
+  "version": "v400-final-resolve",
+  "resolved_at": "2026-09-21",
+  "catalog_version": "v400-stable-2026-09-21",
+  "leader_count": 400,
+  "active_count": 400,
+  "verified_count": 400,
+  "manual_review_count": 0,
+  "legacy_review_required_count": 0,
+  "personal_x_count": 397,
+  "company_official_proxy_count": 3,
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "resolutions": [
+    {
+      "previous_id": "zhengyi-temp",
+      "action": "replaced",
+      "replacement_id": "peter-steinberger-openai",
+      "replacement_name": "Peter Steinberger",
+      "handle": "steipete",
+      "reason": "Authoritative role/company identity for the previous record could not be independently resolved.",
+      "role_source_url": "https://www.steipete.md/",
+      "x_activity_source_url": "https://x.com/steipete/status/2038785558881976558"
+    },
+    {
+      "previous_id": "boston-dynamics",
+      "action": "replaced",
+      "replacement_id": "boris-cherny-anthropic",
+      "replacement_name": "Boris Cherny",
+      "handle": "bcherny",
+      "reason": "The previous record was a company account rather than an individual leader.",
+      "role_source_url": "https://claude.com/code-with-claude/session/sf-opening-keynote",
+      "x_activity_source_url": "https://x.com/bcherny/status/2038454336355999749"
+    },
+    {
+      "id": "paul-graham",
+      "action": "verified",
+      "current_role": "Y Combinator Founder, Retired",
+      "handle": "paulg",
+      "role_source_url": "https://www.ycombinator.com/people",
+      "x_activity_source_url": "https://x.com/paulg/status/2039736438271668691"
+    },
+    {
+      "id": "gurley",
+      "action": "verified_and_role_corrected",
+      "current_role": "Founder, P3 Institute · Former General Partner, Benchmark",
+      "handle": "bgurley",
+      "role_source_url": "https://p3.institute/about",
+      "x_activity_source_url": "https://texxr.com/handle/bgurley"
+    }
+  ],
+  "freeze_status": "stable"
+}
