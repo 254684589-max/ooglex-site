@@ -369,103 +369,79 @@
       "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
     },
     {
-      "id": "zhengyi-temp",
-      "name": "Zheng Yi",
-      "zh": "郑翊",
-      "name_zh": "郑翊",
-      "name_en": "Zheng Yi",
-      "role": "Independent Investor · VC",
+      "id": "peter-steinberger-openai",
+      "name": "Peter Steinberger",
+      "zh": "Peter Steinberger",
+      "handle": "steipete",
+      "role": "OpenAI · Personal Agents; OpenClaw Creator",
       "chips": [
-        "VC",
-        "AI",
-        "科技投资",
-        "全球市场"
+        "OpenAI",
+        "OpenClaw",
+        "Agents",
+        "Developer Tools"
       ],
-      "note": "独立投资人，关注 AI、半导体、云计算、航天与全球科技产业趋势；本人公开 X 账号。",
-      "title": "ZHENGYI · OFFICIAL X TIMELINE",
-      "category": "VC",
-      "company_zh": "独立投资 / VC",
-      "company_en": "Independent Investment / VC",
-      "position_zh": "投资人",
+      "note": "本人公开 X 账号。",
+      "title": "PETER STEINBERGER · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "Peter Steinberger",
+      "name_en": "Peter Steinberger",
+      "company_zh": "OpenAI / OpenClaw",
+      "company_en": "OpenAI / OpenClaw",
+      "position_zh": "OpenAI 个人智能体负责人 / OpenClaw 创始人",
       "categories": [
-        "VC"
+        "AI",
+        "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "investor"
+        "founder",
+        "executive"
       ],
-      "sector": "Financials",
+      "sector": "Information Technology",
       "themes": [
-        "VC",
         "AI",
-        "科技投资",
-        "全球市场"
+        "软件",
+        "开发者工具",
+        "智能体",
+        "开源"
       ],
-      "static_profile": true,
-      "temporary": true,
-      "static_avatar_url": "./assets/zhengyi-temp.svg",
-      "followers_count": 7150000,
-      "following_count": 120,
-      "avatar_audited_at": "2026-09-21T15:30:43Z",
-      "avatar_source_type": "public_fallback",
-      "avatar_audit_status": "fallback",
-      "avatar_policy": "x_original_then_verified_fallback",
-      "avatar_fallback": "local_initials_svg",
-      "avatar_verified": true,
-      "avatar_is_x_original": false,
-      "avatar_is_substitute": true,
-      "avatar_status": "public_fallback_verified",
-      "avatar_source": "Ooglex R2 cache · verified public portrait fallback",
-      "avatar_source_transport": "wikimedia_commons-r2-cache",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ZLQ6600E&name=Zheng+Yi&company=Independent+Investment+%2F+VC",
-      "website_url": "https://www.ooglex.com/",
-      "website_label": "Ooglex.com",
-      "created_at": "2012-06-01T00:00:00Z",
-      "handle": "ZLQ6600E",
-      "hide_handle": true,
-      "verified_personal_x": true,
       "x_identity_verified": true,
-      "x_verified_at": "2026-09-19",
-      "avatar_origin_url": "https://x.com/ZLQ6600E",
-      "avatar_verified_at": "2026-09-21T15:30:43Z",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=steipete&name=Peter+Steinberger&company=OpenAI+%2F+OpenClaw",
+      "avatar_source": "Ooglex avatar proxy · personal X profile",
+      "avatar_status": "x_original_proxy_pending_cache",
+      "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-21",
-      "local_posts": [
-        {
-          "id": "macro-pulse-10y2y-20260919",
-          "created_at": "2026-09-19T06:49:00Z",
-          "text": "📊 宏观 · Macro Pulse\n\n🔻 10Y-2Y 期限利差｜10Y-2Y spread\n0.28%　-3bp\n\n#宏观快讯 #收益率曲线",
-          "media": [
-            {
-              "type": "photo",
-              "url": "./assets/posts/zhengyi-macro-pulse-10y2y.svg",
-              "alt": "10Y-2Y 期限利差 0.28%，单日 -3bp 的 Macro Pulse 图表"
-            }
-          ],
-          "source": "ooglex_local"
-        }
-      ],
-      "timeline_mode": "native_recent",
-      "timeline_display_limit": 3,
-      "timeline_fetch_limit": 3,
-      "hide_local_posts": true,
-      "hide_post_metrics": true,
-      "x_handle": "ZLQ6600E",
-      "company": "Independent Investment / VC",
-      "current_role": "投资人",
+      "avatar_origin_url": "https://x.com/steipete",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_audited_at": "2026-09-21",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
+      "avatar_verified": true,
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-21",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false,
+      "x_handle": "steipete",
+      "company": "OpenAI / OpenClaw",
+      "current_role": "OpenAI 个人智能体负责人 / OpenClaw 创始人",
       "active_status": "active",
-      "primary_category": "VC",
+      "primary_category": "AI",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
-      "role_review_status": "manual_review",
-      "legacy_review_batch": "phase2-batch01",
+      "verified_personal_x": true,
+      "role_review_status": "verified",
       "role_verified_at": "2026-09-21",
       "relationship_verified_at": "2026-09-21",
       "x_reviewed_at": "2026-09-21",
-      "x_identity_source_url": "https://x.com/ZLQ6600E",
-      "review_note": "No authoritative public role/company source was resolved in the 2026-09-21 legacy pass; personal X identity remains previously verified.",
-      "x_review_status": "identity_verified_role_source_pending"
+      "x_identity_source_url": "https://x.com/steipete",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-03-30",
+      "x_activity_source_url": "https://x.com/steipete/status/2038785558881976558",
+      "x_review_status": "verified_identity_and_activity",
+      "role_source_url": "https://www.steipete.md/",
+      "review_note": "V400 Final Resolve: added as a verified individual leader with current role evidence and recent personal X activity."
     },
     {
       "id": "nadella",
@@ -2556,16 +2532,18 @@
       "role_status": "retired",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "manual_review",
+      "role_review_status": "verified",
       "role_source_url": "https://www.ycombinator.com/people",
       "legacy_review_batch": "phase2-batch01",
       "role_verified_at": "2026-09-21",
       "relationship_verified_at": "2026-09-21",
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/paulg",
-      "x_review_status": "manual_review_account_unavailable_signal",
-      "review_note": "YC confirms Founder, Retired. A current third-party X tracker reports @paulg unavailable since 2026-07-04; keep active pending a second X availability check before V400 Stable freeze.",
-      "x_activity_status": "manual_review"
+      "x_review_status": "verified_identity_and_activity",
+      "review_note": "V400 Final Resolve: Y Combinator confirms Founder, Retired; @paulg has a public 2026-04-02 post, within the 180-day activity gate as of 2026-09-21.",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-04-02",
+      "x_activity_source_url": "https://x.com/paulg/status/2039736438271668691"
     },
     {
       "id": "garry-tan",
@@ -5466,68 +5444,77 @@
       "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
-      "id": "boston-dynamics",
-      "name": "Boston Dynamics",
-      "zh": "Boston Dynamics",
-      "handle": "BostonDynamics",
-      "role": "Robotics Company · Official Account",
+      "id": "boris-cherny-anthropic",
+      "name": "Boris Cherny",
+      "zh": "Boris Cherny",
+      "handle": "bcherny",
+      "role": "Anthropic · Head of Claude Code",
       "chips": [
-        "Robotics",
-        "Humanoid",
-        "Atlas",
-        "Automation"
-      ],
-      "category": "工业",
-      "note": "官方 X 账号，用于跟踪 Boston Dynamics 机器人动态。",
-      "title": "BOSTON DYNAMICS · OFFICIAL X TIMELINE",
-      "name_zh": "波士顿动力",
-      "name_en": "Boston Dynamics",
-      "company_zh": "波士顿动力",
-      "company_en": "Boston Dynamics",
-      "position_zh": "机器人公司",
-      "categories": [
-        "工业",
+        "Anthropic",
+        "Claude Code",
+        "Developer Tools",
         "AI"
+      ],
+      "note": "本人公开 X 账号。",
+      "title": "BORIS CHERNY · OFFICIAL X TIMELINE",
+      "category": "AI",
+      "name_zh": "Boris Cherny",
+      "name_en": "Boris Cherny",
+      "company_zh": "Anthropic",
+      "company_en": "Anthropic",
+      "position_zh": "Claude Code 负责人",
+      "categories": [
+        "AI",
+        "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
-      "sector": "Industrials",
-      "themes": [
-        "工业",
-        "AI"
+      "leader_types": [
+        "executive"
       ],
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=BostonDynamics&name=Boston+Dynamics&company=Boston+Dynamics",
-      "avatar_source": "Ooglex R2 cache · X original profile avatar",
-      "avatar_status": "x_original_verified",
+      "sector": "Information Technology",
+      "themes": [
+        "AI",
+        "软件",
+        "开发者工具",
+        "智能体"
+      ],
+      "x_identity_verified": true,
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=bcherny&name=Boris+Cherny&company=Anthropic",
+      "avatar_source": "Ooglex avatar proxy · personal X profile",
+      "avatar_status": "x_original_proxy_pending_cache",
       "avatar_fallback": "local_initials_svg",
       "avatar_updated_at": "2026-09-21",
-      "avatar_origin_url": "https://x.com/BostonDynamics",
+      "avatar_origin_url": "https://x.com/bcherny",
       "avatar_policy": "x_original_then_verified_fallback",
-      "avatar_audited_at": "2026-09-21T15:30:43Z",
-      "avatar_source_type": "x_original",
-      "avatar_audit_status": "x_original",
+      "avatar_audited_at": "2026-09-21",
+      "avatar_source_type": "x_original_proxy",
+      "avatar_audit_status": "x_original_proxy",
       "avatar_verified": true,
-      "avatar_verified_at": "2026-09-21T15:30:43Z",
-      "avatar_source_transport": "x_syndication-r2-cache",
+      "avatar_source_transport": "unavatar_x-r2-cache",
+      "avatar_verified_at": "2026-09-21",
       "avatar_is_x_original": true,
       "avatar_is_substitute": false,
-      "x_handle": "BostonDynamics",
-      "company": "Boston Dynamics",
-      "current_role": "机器人公司",
+      "x_handle": "bcherny",
+      "company": "Anthropic",
+      "current_role": "Claude Code 负责人",
       "active_status": "active",
-      "primary_category": "工业",
+      "primary_category": "AI",
       "company_relationship_status": "current",
       "role_status": "current",
-      "x_account_type": "company_official",
-      "verified_personal_x": false,
-      "role_review_status": "manual_review",
-      "legacy_review_batch": "phase2-batch02",
+      "x_account_type": "personal",
+      "verified_personal_x": true,
+      "role_review_status": "verified",
       "role_verified_at": "2026-09-21",
       "relationship_verified_at": "2026-09-21",
       "x_reviewed_at": "2026-09-21",
-      "x_review_status": "company_official_account_exception",
-      "review_note": "Entity-type mismatch: this is a company account, not an individual leader. Keep active temporarily so V400 does not shrink; replace with a verified individual leader before V400 Stable freeze."
+      "x_identity_source_url": "https://x.com/bcherny",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-03-30",
+      "x_activity_source_url": "https://x.com/bcherny/status/2038454336355999749",
+      "x_review_status": "verified_identity_and_activity",
+      "role_source_url": "https://claude.com/code-with-claude/session/sf-opening-keynote",
+      "review_note": "V400 Final Resolve: added as a verified individual leader with current role evidence and recent personal X activity."
     },
     {
       "id": "tory-bruno",
@@ -6781,7 +6768,7 @@
       "name": "Bill Gurley",
       "zh": "Bill Gurley",
       "handle": "bgurley",
-      "role": "Technology Investor · Benchmark relationship pending final confirmation",
+      "role": "Founder, P3 Institute · Former General Partner, Benchmark",
       "chips": [
         "Benchmark",
         "VC",
@@ -6793,16 +6780,18 @@
       "title": "BILL GURLEY · OFFICIAL X TIMELINE",
       "name_zh": "比尔·格利",
       "name_en": "Bill Gurley",
-      "company_zh": "Benchmark",
-      "company_en": "Benchmark",
-      "position_zh": "科技投资人 / Benchmark 关系待最终确认",
+      "company_zh": "P3 Institute / Benchmark",
+      "company_en": "P3 Institute / Benchmark",
+      "position_zh": "P3 Institute 创始人 / 前 Benchmark General Partner",
       "categories": [
         "VC"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "investor"
+        "founder",
+        "investor",
+        "former_executive"
       ],
       "sector": "Financials",
       "themes": [
@@ -6825,23 +6814,26 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "bgurley",
-      "company": "Benchmark",
-      "current_role": "科技投资人 / Benchmark 关系待最终确认",
+      "company": "P3 Institute / Benchmark",
+      "current_role": "P3 Institute 创始人 / 前 Benchmark General Partner",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "manual_review",
+      "role_review_status": "verified",
       "legacy_review_batch": "phase2-batch02",
       "role_verified_at": "2026-09-21",
       "relationship_verified_at": "2026-09-21",
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/bgurley",
-      "x_review_status": "verified_identity_retained",
-      "review_note": "Current Benchmark title is inconsistently described across 2026 sources; some list General Partner while reporting says he has not regularly invested for the firm in years. Retain as investor pending authoritative current-role confirmation.",
-      "role_source_url": "https://www.theinformation.com/articles/benchmarks-ai-pressure-test-high-prices-smaller-stakes-and-a-poached-star/"
+      "x_review_status": "verified_identity_and_activity",
+      "review_note": "V400 Final Resolve: P3 Institute identifies Gurley as its founder and says he spent 25 years as a Benchmark general partner; recent @bgurley activity verified in September 2026.",
+      "role_source_url": "https://p3.institute/about",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09-11",
+      "x_activity_source_url": "https://texxr.com/handle/bgurley"
     },
     {
       "id": "chamath",
@@ -29265,7 +29257,7 @@
     "身份安全",
     "数据"
   ],
-  "catalog_version": "v400-cleanup-1",
+  "catalog_version": "v400-stable-2026-09-21",
   "last_audited_at": "2026-09-21",
   "audit_policy": {
     "role_reverify_days": 90,
@@ -29460,6 +29452,25 @@
         "changed_role_records": 48,
         "status": "complete"
       }
+    },
+    "final_resolve": {
+      "resolved_at": "2026-09-21",
+      "prior_manual_review_count": 4,
+      "resolved_existing": [
+        "paul-graham",
+        "gurley"
+      ],
+      "replaced": [
+        {
+          "removed_id": "zhengyi-temp",
+          "replacement_id": "peter-steinberger-openai"
+        },
+        {
+          "removed_id": "boston-dynamics",
+          "replacement_id": "boris-cherny-anthropic"
+        }
+      ],
+      "final_status": "stable"
     }
   }
 }
