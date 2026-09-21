@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "production_expansion_complete",
+  "status": "superseded",
   "target_category": "华尔街",
   "operation": "reclassify_existing_verified_profiles",
   "before_count": 34,
@@ -961,5 +961,8 @@
         "华尔街"
       ]
     }
-  ]
+  ],
+  "superseded_at": "2026-09-22",
+  "superseded_by": "data/tech-leaders/wall_street_v100.genuine_expansion.json",
+  "superseded_reason": "Category-only 34→100 re-tagging did not satisfy the requested global 528→594 genuine-person expansion."
 }
