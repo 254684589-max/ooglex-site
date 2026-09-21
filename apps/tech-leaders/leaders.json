@@ -3612,7 +3612,7 @@
       "name": "David Heinemeier Hansson",
       "zh": "DHH",
       "handle": "dhh",
-      "role": "37signals Co-Owner · Ruby on Rails Creator",
+      "role": "37signals Co-Owner & CTO · Creator of Ruby on Rails",
       "chips": [
         "37signals",
         "Rails",
@@ -3626,14 +3626,15 @@
       "name_en": "David Heinemeier Hansson",
       "company_zh": "37signals / Ruby on Rails",
       "company_en": "37signals / Ruby on Rails",
-      "position_zh": "共同所有人 / 创始作者",
+      "position_zh": "37signals 共同所有人兼 CTO / Ruby on Rails 创始作者",
       "categories": [
         "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "executive"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -3657,21 +3658,29 @@
       "avatar_is_substitute": false,
       "x_handle": "dhh",
       "company": "37signals / Ruby on Rails",
-      "current_role": "共同所有人 / 创始作者",
+      "current_role": "37signals 共同所有人兼 CTO / Ruby on Rails 创始作者",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000011/shop-20251231.htm",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/dhh",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "mullenweg",
       "name": "Matt Mullenweg",
       "zh": "Matt Mullenweg",
       "handle": "photomatt",
-      "role": "Automattic CEO · WordPress Co-Founder",
+      "role": "Automattic Chairman & CEO · WordPress Co-Founder",
       "chips": [
         "WordPress",
         "Automattic",
@@ -3685,7 +3694,7 @@
       "name_en": "Matt Mullenweg",
       "company_zh": "Automattic / WordPress",
       "company_en": "Automattic / WordPress",
-      "position_zh": "CEO / 联合创始人",
+      "position_zh": "Automattic 董事长兼 CEO / WordPress 联合创始人",
       "categories": [
         "软件"
       ],
@@ -3693,6 +3702,7 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
+        "chair",
         "founder"
       ],
       "sector": "Information Technology",
@@ -3717,21 +3727,29 @@
       "avatar_is_substitute": false,
       "x_handle": "photomatt",
       "company": "Automattic / WordPress",
-      "current_role": "CEO / 联合创始人",
+      "current_role": "Automattic 董事长兼 CEO / WordPress 联合创始人",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://techcrunch.com/2026/09/12/automattic-confirms-mullenweg-has-returned-as-ceo-after-attempted-ouster-by-board/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/photomatt",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "houston",
       "name": "Drew Houston",
       "zh": "Drew Houston",
       "handle": "drewhouston",
-      "role": "Dropbox Co-Founder & CEO",
+      "role": "Dropbox Co-Founder, Chairman & Co-CEO",
       "chips": [
         "DBX",
         "Dropbox",
@@ -3745,7 +3763,7 @@
       "name_en": "Drew Houston",
       "company_zh": "Dropbox",
       "company_en": "Dropbox",
-      "position_zh": "联合创始人兼 CEO",
+      "position_zh": "联合创始人、董事长兼联席 CEO",
       "categories": [
         "软件"
       ],
@@ -3753,6 +3771,7 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
+        "chair",
         "founder"
       ],
       "sector": "Information Technology",
@@ -3777,14 +3796,22 @@
       "avatar_is_substitute": false,
       "x_handle": "drewhouston",
       "company": "Dropbox",
-      "current_role": "联合创始人兼 CEO",
+      "current_role": "联合创始人、董事长兼联席 CEO",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.dropbox.com/en_GB/about",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/drewhouston",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "armstrong",
@@ -3850,14 +3877,22 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.coinbase.com/about",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/brian_armstrong",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "buterin",
       "name": "Vitalik Buterin",
       "zh": "Vitalik Buterin",
       "handle": "VitalikButerin",
-      "role": "Ethereum Co-Founder",
+      "role": "Ethereum Co-Founder · Ethereum Foundation Board",
       "chips": [
         "Ethereum",
         "Crypto",
@@ -3869,16 +3904,17 @@
       "category": "金融",
       "name_zh": "维塔利克·布特林",
       "name_en": "Vitalik Buterin",
-      "company_zh": "以太坊",
-      "company_en": "Ethereum",
-      "position_zh": "联合创始人",
+      "company_zh": "Ethereum / Ethereum Foundation",
+      "company_en": "Ethereum / Ethereum Foundation",
+      "position_zh": "Ethereum 联合创始人 / Ethereum Foundation 董事",
       "categories": [
         "金融"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "board"
       ],
       "sector": "Financials",
       "themes": [
@@ -3901,22 +3937,30 @@
       "avatar_is_x_original": true,
       "avatar_is_substitute": false,
       "x_handle": "VitalikButerin",
-      "company": "Ethereum",
-      "current_role": "联合创始人",
+      "company": "Ethereum / Ethereum Foundation",
+      "current_role": "Ethereum 联合创始人 / Ethereum Foundation 董事",
       "active_status": "active",
       "primary_category": "金融",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://blog.ethereum.org/2026/07/29/ef-board-update",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/VitalikButerin",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "son",
       "name": "Masayoshi Son",
       "zh": "孙正义",
       "handle": "masason",
-      "role": "SoftBank Group Chair & CEO",
+      "role": "SoftBank Group Founder, Chairman & CEO",
       "chips": [
         "SoftBank",
         "AI",
@@ -3930,7 +3974,7 @@
       "name_en": "Masayoshi Son",
       "company_zh": "软银集团",
       "company_en": "SoftBank Group",
-      "position_zh": "董事长兼 CEO",
+      "position_zh": "创始人、董事长兼 CEO",
       "categories": [
         "VC",
         "AI"
@@ -3939,7 +3983,8 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
-        "chair"
+        "chair",
+        "founder"
       ],
       "sector": "Financials",
       "themes": [
@@ -3964,21 +4009,29 @@
       "avatar_is_substitute": true,
       "x_handle": "masason",
       "company": "SoftBank Group",
-      "current_role": "董事长兼 CEO",
+      "current_role": "创始人、董事长兼 CEO",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.softbank.jp/en/corp/aboutus/profile/officer/son/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/masason",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "schmidt",
       "name": "Eric Schmidt",
       "zh": "埃里克·施密特",
       "handle": "ericschmidt",
-      "role": "Former Google CEO · Technology Investor",
+      "role": "Relativity Space CEO & Executive Chairman · Former Google CEO",
       "chips": [
         "Google",
         "AI",
@@ -3990,17 +4043,19 @@
       "category": "AI",
       "name_zh": "埃里克·施密特",
       "name_en": "Eric Schmidt",
-      "company_zh": "谷歌 / 科技投资",
-      "company_en": "Google / Technology Investing",
-      "position_zh": "前 CEO / 投资人",
+      "company_zh": "Relativity Space",
+      "company_en": "Relativity Space",
+      "position_zh": "CEO 兼执行董事长 / 前 Google CEO",
       "categories": [
         "AI"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "investor",
-        "former_ceo"
+        "ceo",
+        "chair",
+        "former_ceo",
+        "investor"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -4023,15 +4078,23 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "ericschmidt",
-      "company": "Google / Technology Investing",
-      "current_role": "前 CEO / 投资人",
+      "company": "Relativity Space",
+      "current_role": "CEO 兼执行董事长 / 前 Google CEO",
       "active_status": "active",
       "primary_category": "AI",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.relativityspace.com/leadership",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/ericschmidt",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "durov",
@@ -4091,14 +4154,22 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.reuters.com/technology/who-is-pavel-durov-ceo-messaging-app-telegram-2026-07-29/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/durov",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "lei-jun",
       "name": "Lei Jun",
       "zh": "雷军",
       "handle": "leijun",
-      "role": "Xiaomi Founder & CEO",
+      "role": "Xiaomi Founder, Chairman & CEO",
       "chips": [
         "Xiaomi",
         "EV",
@@ -4112,7 +4183,7 @@
       "name_en": "Lei Jun",
       "company_zh": "小米",
       "company_en": "Xiaomi",
-      "position_zh": "创始人兼 CEO",
+      "position_zh": "创始人、董事长兼 CEO",
       "categories": [
         "消费零售",
         "汽车"
@@ -4121,6 +4192,7 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
+        "chair",
         "founder"
       ],
       "sector": "Consumer Discretionary",
@@ -4146,21 +4218,29 @@
       "avatar_is_substitute": true,
       "x_handle": "leijun",
       "company": "Xiaomi",
-      "current_role": "创始人兼 CEO",
+      "current_role": "创始人、董事长兼 CEO",
       "active_status": "active",
       "primary_category": "消费零售",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://ir.mi.com/corporate-information/management",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/leijun",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "fadell",
       "name": "Tony Fadell",
       "zh": "Tony Fadell",
       "handle": "tfadell",
-      "role": "Nest Founder · Product & Hardware Entrepreneur",
+      "role": "Principal, Build Collective · Founder & Former CEO, Nest",
       "chips": [
         "Nest",
         "Hardware",
@@ -4172,16 +4252,18 @@
       "category": "消费零售",
       "name_zh": "托尼·法德尔",
       "name_en": "Tony Fadell",
-      "company_zh": "Nest",
-      "company_en": "Nest",
-      "position_zh": "创始人",
+      "company_zh": "Build Collective / Nest",
+      "company_en": "Build Collective / Nest",
+      "position_zh": "Build Collective Principal / Nest 创始人兼前 CEO",
       "categories": [
         "消费零售"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "investor",
+        "former_ceo"
       ],
       "sector": "Consumer Discretionary",
       "themes": [
@@ -4204,22 +4286,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "tfadell",
-      "company": "Nest",
-      "current_role": "创始人",
+      "company": "Build Collective / Nest",
+      "current_role": "Build Collective Principal / Nest 创始人兼前 CEO",
       "active_status": "active",
       "primary_category": "消费零售",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.buildc.com/newsroom/a-legacy-of-disruption-tony-fadell-principal-build-collective",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/tfadell",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "zuckerberg",
       "name": "Mark Zuckerberg",
       "zh": "马克·扎克伯格",
       "handle": "finkd",
-      "role": "Meta Founder & CEO",
+      "role": "Meta Founder, Chairman & CEO",
       "chips": [
         "META",
         "Meta",
@@ -4233,7 +4323,7 @@
       "name_en": "Mark Zuckerberg",
       "company_zh": "Meta",
       "company_en": "Meta",
-      "position_zh": "创始人兼 CEO",
+      "position_zh": "创始人、董事长兼 CEO",
       "categories": [
         "消费零售",
         "AI"
@@ -4242,6 +4332,7 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
+        "chair",
         "founder"
       ],
       "sector": "Consumer Discretionary",
@@ -4267,21 +4358,29 @@
       "avatar_is_substitute": false,
       "x_handle": "finkd",
       "company": "Meta",
-      "current_role": "创始人兼 CEO",
+      "current_role": "创始人、董事长兼 CEO",
       "active_status": "active",
       "primary_category": "消费零售",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://investor.atmeta.com/leadership-and-governance/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/finkd",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "mosseri",
       "name": "Adam Mosseri",
       "zh": "Adam Mosseri",
       "handle": "mosseri",
-      "role": "Instagram Head",
+      "role": "Head of Instagram, Meta",
       "chips": [
         "META",
         "Instagram",
@@ -4293,15 +4392,17 @@
       "title": "ADAM MOSSERI · OFFICIAL X TIMELINE",
       "name_zh": "亚当·莫塞里",
       "name_en": "Adam Mosseri",
-      "company_zh": "Instagram",
-      "company_en": "Instagram",
-      "position_zh": "负责人",
+      "company_zh": "Instagram / Meta",
+      "company_en": "Instagram / Meta",
+      "position_zh": "Instagram 负责人",
       "categories": [
         "消费零售"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
+      "leader_types": [
+        "executive"
+      ],
       "sector": "Consumer Discretionary",
       "themes": [
         "消费零售"
@@ -4323,22 +4424,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "mosseri",
-      "company": "Instagram",
-      "current_role": "负责人",
+      "company": "Instagram / Meta",
+      "current_role": "Instagram 负责人",
       "active_status": "active",
       "primary_category": "消费零售",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://about.fb.com/news/2025/10/teen-ai-safety-approach/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/mosseri",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "boz",
       "name": "Andrew Bosworth",
       "zh": "Andrew Bosworth",
       "handle": "boztank",
-      "role": "Meta CTO",
+      "role": "Meta Chief Technology Officer",
       "chips": [
         "META",
         "Reality Labs",
@@ -4352,14 +4461,16 @@
       "name_en": "Andrew Bosworth",
       "company_zh": "Meta",
       "company_en": "Meta",
-      "position_zh": "CTO",
+      "position_zh": "首席技术官（CTO）",
       "categories": [
         "AI",
         "消费零售"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
+      "leader_types": [
+        "executive"
+      ],
       "sector": "Information Technology",
       "themes": [
         "AI",
@@ -4383,14 +4494,22 @@
       "avatar_is_substitute": false,
       "x_handle": "boztank",
       "company": "Meta",
-      "current_role": "CTO",
+      "current_role": "首席技术官（CTO）",
       "active_status": "active",
       "primary_category": "AI",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://investor.atmeta.com/leadership-and-governance/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/boztank",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "prince",
@@ -4450,14 +4569,22 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.cloudflare.com/press/press-kit/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/eastdakota",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "zatlyn",
       "name": "Michelle Zatlyn",
       "zh": "Michelle Zatlyn",
       "handle": "zatlyn",
-      "role": "Cloudflare Co-Founder & President",
+      "role": "Cloudflare Co-Founder, President & Co-Chair",
       "chips": [
         "NET",
         "Cloudflare",
@@ -4471,14 +4598,16 @@
       "name_en": "Michelle Zatlyn",
       "company_zh": "Cloudflare",
       "company_en": "Cloudflare",
-      "position_zh": "联合创始人兼总裁",
+      "position_zh": "联合创始人、总裁兼联席董事长",
       "categories": [
         "云计算"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair",
+        "executive"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -4502,21 +4631,29 @@
       "avatar_is_substitute": true,
       "x_handle": "zatlyn",
       "company": "Cloudflare",
-      "current_role": "联合创始人兼总裁",
+      "current_role": "联合创始人、总裁兼联席董事长",
       "active_status": "active",
       "primary_category": "云计算",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.cloudflare.net/governance/board-of-directors/person-details/default.aspx?ItemId=90a13042-89f4-42a9-ac68-e9bd8da17ec1",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/zatlyn",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "vogels",
       "name": "Werner Vogels",
       "zh": "Werner Vogels",
       "handle": "Werner",
-      "role": "Amazon CTO",
+      "role": "Amazon VP & CTO",
       "chips": [
         "AMZN",
         "AWS",
@@ -4530,13 +4667,15 @@
       "name_en": "Werner Vogels",
       "company_zh": "亚马逊",
       "company_en": "Amazon",
-      "position_zh": "CTO",
+      "position_zh": "副总裁兼 CTO",
       "categories": [
         "云计算"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
+      "leader_types": [
+        "executive"
+      ],
       "sector": "Information Technology",
       "themes": [
         "云计算"
@@ -4559,21 +4698,29 @@
       "avatar_is_substitute": true,
       "x_handle": "Werner",
       "company": "Amazon",
-      "current_role": "CTO",
+      "current_role": "副总裁兼 CTO",
       "active_status": "active",
       "primary_category": "云计算",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://aws.amazon.com/executive-insights/content/werner-vogels-2026-tech-predictions/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/Werner",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "selipsky",
       "name": "Adam Selipsky",
       "zh": "Adam Selipsky",
       "handle": "aselipsky",
-      "role": "Helix Digital Infrastructure Co-Founder & CEO",
+      "role": "Helix Digital Infrastructure Co-Founder & CEO · Former AWS CEO",
       "chips": [
         "Helix",
         "AI Infrastructure",
@@ -4585,9 +4732,9 @@
       "title": "ADAM SELIPSKY · OFFICIAL X TIMELINE",
       "name_zh": "亚当·塞利普斯基",
       "name_en": "Adam Selipsky",
-      "company_zh": "Helix 数字基础设施",
+      "company_zh": "Helix Digital Infrastructure",
       "company_en": "Helix Digital Infrastructure",
-      "position_zh": "联合创始人兼 CEO",
+      "position_zh": "联合创始人兼 CEO / 前 AWS CEO",
       "categories": [
         "云计算",
         "AI",
@@ -4596,8 +4743,9 @@
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
+        "ceo",
         "founder",
-        "ceo"
+        "former_ceo"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -4623,21 +4771,29 @@
       "avatar_verified_at": "2026-09-21T15:17:40Z",
       "x_handle": "aselipsky",
       "company": "Helix Digital Infrastructure",
-      "current_role": "联合创始人兼 CEO",
+      "current_role": "联合创始人兼 CEO / 前 AWS CEO",
       "active_status": "active",
       "primary_category": "云计算",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.helixdi.com/about/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/aselipsky",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "gelsinger",
       "name": "Pat Gelsinger",
       "zh": "帕特·基辛格",
       "handle": "PGelsinger",
-      "role": "Semiconductor & Technology Executive",
+      "role": "General Partner, Playground Global · Executive Chair, xLight",
       "chips": [
         "INTC",
         "Semiconductors",
@@ -4649,15 +4805,19 @@
       "title": "PAT GELSINGER · OFFICIAL X TIMELINE",
       "name_zh": "帕特·基辛格",
       "name_en": "Pat Gelsinger",
-      "company_zh": "半导体行业",
-      "company_en": "Semiconductors",
-      "position_zh": "科技高管",
+      "company_zh": "Playground Global / xLight",
+      "company_en": "Playground Global / xLight",
+      "position_zh": "Playground Global General Partner / xLight 执行董事长",
       "categories": [
         "芯片"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
+      "leader_types": [
+        "investor",
+        "chair",
+        "former_ceo"
+      ],
       "sector": "Information Technology",
       "themes": [
         "芯片"
@@ -4679,22 +4839,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "PGelsinger",
-      "company": "Semiconductors",
-      "current_role": "科技高管",
+      "company": "Playground Global / xLight",
+      "current_role": "Playground Global General Partner / xLight 执行董事长",
       "active_status": "active",
       "primary_category": "芯片",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://playgroundglobal.co/people/pat-gelsinger",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/PGelsinger",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "rene-haas",
       "name": "Rene Haas",
       "zh": "Rene Haas",
       "handle": "renehaas237",
-      "role": "Arm CEO",
+      "role": "CEO, Arm · CEO, SoftBank Group International",
       "chips": [
         "ARM",
         "Arm",
@@ -4706,9 +4874,9 @@
       "title": "RENE HAAS · OFFICIAL X TIMELINE",
       "name_zh": "雷内·哈斯",
       "name_en": "Rene Haas",
-      "company_zh": "Arm",
-      "company_en": "Arm",
-      "position_zh": "CEO",
+      "company_zh": "Arm / SoftBank Group International",
+      "company_en": "Arm / SoftBank Group International",
+      "position_zh": "Arm CEO / SoftBank Group International CEO",
       "categories": [
         "芯片"
       ],
@@ -4738,22 +4906,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "renehaas237",
-      "company": "Arm",
-      "current_role": "CEO",
+      "company": "Arm / SoftBank Group International",
+      "current_role": "Arm CEO / SoftBank Group International CEO",
       "active_status": "active",
       "primary_category": "芯片",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1973239/000197323926000059/arm-20260421.htm",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/renehaas237",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "lip-bu-tan",
       "name": "Lip-Bu Tan",
       "zh": "陈立武",
       "handle": "LipBuTan1",
-      "role": "Intel CEO · 本人公开 X 账号",
+      "role": "Intel Chief Executive Officer",
       "chips": [
         "INTC",
         "Intel",
@@ -4806,14 +4982,22 @@
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.intel.com/content/www/us/en/corporate/executive-leadership.html",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/LipBuTan1",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "hock-tan",
       "name": "Hock Tan / Broadcom",
       "zh": "陈福阳 / Broadcom",
       "handle": "Broadcom",
-      "role": "Broadcom CEO · Broadcom 官方账号",
+      "role": "Broadcom President & CEO",
       "chips": [
         "AVGO",
         "Broadcom",
@@ -4827,7 +5011,7 @@
       "name_en": "Hock Tan",
       "company_zh": "博通",
       "company_en": "Broadcom",
-      "position_zh": "CEO",
+      "position_zh": "总裁兼 CEO",
       "categories": [
         "芯片"
       ],
@@ -4857,21 +5041,29 @@
       "avatar_is_substitute": false,
       "x_handle": "Broadcom",
       "company": "Broadcom",
-      "current_role": "CEO",
+      "current_role": "总裁兼 CEO",
       "active_status": "active",
       "primary_category": "芯片",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "company_official",
       "verified_personal_x": false,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://investors.broadcom.com/board-member/hock-e-tan",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_review_status": "company_official_account_exception",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained. No personal X is claimed; the profile uses the verified company account as a feed proxy.",
+      "x_identity_verified": false
     },
     {
       "id": "fouquet",
       "name": "Christophe Fouquet / ASML",
       "zh": "Christophe Fouquet / ASML",
       "handle": "ASMLcompany",
-      "role": "ASML CEO · ASML 官方账号",
+      "role": "ASML President & CEO",
       "chips": [
         "ASML",
         "Lithography",
@@ -4883,9 +5075,9 @@
       "title": "CHRISTOPHE FOUQUET / ASML · OFFICIAL X TIMELINE",
       "name_zh": "克里斯托夫·富凯",
       "name_en": "Christophe Fouquet",
-      "company_zh": "阿斯麦",
+      "company_zh": "ASML",
       "company_en": "ASML",
-      "position_zh": "CEO",
+      "position_zh": "总裁兼 CEO",
       "categories": [
         "芯片"
       ],
@@ -4915,21 +5107,29 @@
       "avatar_is_substitute": false,
       "x_handle": "ASMLcompany",
       "company": "ASML",
-      "current_role": "CEO",
+      "current_role": "总裁兼 CEO",
       "active_status": "active",
       "primary_category": "芯片",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "company_official",
       "verified_personal_x": false,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.asml.com/en/company/governance/board-of-management",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_review_status": "company_official_account_exception",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained. No personal X is claimed; the profile uses the verified company account as a feed proxy.",
+      "x_identity_verified": false
     },
     {
       "id": "mehrotra",
       "name": "Sanjay Mehrotra / Micron",
       "zh": "Sanjay Mehrotra / Micron",
       "handle": "MicronTech",
-      "role": "Micron CEO · Micron 官方账号",
+      "role": "Micron Chairman & CEO",
       "chips": [
         "MU",
         "Micron",
@@ -4941,16 +5141,17 @@
       "title": "SANJAY MEHROTRA / MICRON · OFFICIAL X",
       "name_zh": "桑杰·梅赫罗特拉",
       "name_en": "Sanjay Mehrotra",
-      "company_zh": "美光科技",
+      "company_zh": "美光",
       "company_en": "Micron",
-      "position_zh": "CEO",
+      "position_zh": "董事长兼 CEO",
       "categories": [
         "芯片"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "ceo"
+        "ceo",
+        "chair"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -4973,21 +5174,29 @@
       "avatar_is_substitute": true,
       "x_handle": "MicronTech",
       "company": "Micron",
-      "current_role": "CEO",
+      "current_role": "董事长兼 CEO",
       "active_status": "active",
       "primary_category": "芯片",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "company_official",
       "verified_personal_x": false,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.micron.com/about/company/leadership/sanjay-mehrotra",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_review_status": "company_official_account_exception",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained. No personal X is claimed; the profile uses the verified company account as a feed proxy.",
+      "x_identity_verified": false
     },
     {
       "id": "pabbeel",
       "name": "Pieter Abbeel",
       "zh": "Pieter Abbeel",
       "handle": "pabbeel",
-      "role": "Robotics & AI Researcher · Covariant",
+      "role": "UC Berkeley Professor · Co-Founder & Chief Scientist, Covariant",
       "chips": [
         "Robotics",
         "AI",
@@ -4999,16 +5208,18 @@
       "title": "PIETER ABBEEL · OFFICIAL X TIMELINE",
       "name_zh": "彼得·阿比尔",
       "name_en": "Pieter Abbeel",
-      "company_zh": "Covariant / 加州大学伯克利分校",
-      "company_en": "Covariant / UC Berkeley",
-      "position_zh": "机器人与 AI 研究员",
+      "company_zh": "加州大学伯克利分校 / Covariant",
+      "company_en": "UC Berkeley / Covariant",
+      "position_zh": "教授 / Covariant 联合创始人兼首席科学家",
       "categories": [
         "工业"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "researcher"
+        "founder",
+        "researcher",
+        "executive"
       ],
       "sector": "Industrials",
       "themes": [
@@ -5031,22 +5242,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "pabbeel",
-      "company": "Covariant / UC Berkeley",
-      "current_role": "机器人与 AI 研究员",
+      "company": "UC Berkeley / Covariant",
+      "current_role": "教授 / Covariant 联合创始人兼首席科学家",
       "active_status": "active",
       "primary_category": "工业",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://executive.berkeley.edu/faculty-directory/pieter-abbeel",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/pabbeel",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "rodney-brooks",
       "name": "Rodney Brooks",
       "zh": "Rodney Brooks",
       "handle": "rodneyabrooks",
-      "role": "Robotics Entrepreneur & Researcher",
+      "role": "Robust AI Co-Founder & CTO · MIT Professor Emeritus",
       "chips": [
         "Robotics",
         "AI",
@@ -5058,15 +5277,17 @@
       "title": "RODNEY BROOKS · OFFICIAL X TIMELINE",
       "name_zh": "罗德尼·布鲁克斯",
       "name_en": "Rodney Brooks",
-      "company_zh": "机器人产业",
-      "company_en": "Robotics",
-      "position_zh": "机器人学家 / 创业者",
+      "company_zh": "Robust AI / MIT",
+      "company_en": "Robust AI / MIT",
+      "position_zh": "Robust AI 联合创始人兼 CTO / MIT 荣休教授",
       "categories": [
         "工业"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
+        "founder",
+        "executive",
         "researcher"
       ],
       "sector": "Industrials",
@@ -5090,22 +5311,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "rodneyabrooks",
-      "company": "Robotics",
-      "current_role": "机器人学家 / 创业者",
+      "company": "Robust AI / MIT",
+      "current_role": "Robust AI 联合创始人兼 CTO / MIT 荣休教授",
       "active_status": "active",
       "primary_category": "工业",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.robust.ai/team",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/rodneyabrooks",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "sergey-levine",
       "name": "Sergey Levine",
       "zh": "Sergey Levine",
       "handle": "svlevine",
-      "role": "Robotics & AI Researcher · UC Berkeley",
+      "role": "Physical Intelligence Co-Founder · UC Berkeley Associate Professor",
       "chips": [
         "Robotics",
         "AI",
@@ -5117,15 +5346,16 @@
       "title": "SERGEY LEVINE · OFFICIAL X TIMELINE",
       "name_zh": "谢尔盖·莱文",
       "name_en": "Sergey Levine",
-      "company_zh": "加州大学伯克利分校",
-      "company_en": "UC Berkeley",
-      "position_zh": "机器人与 AI 研究员",
+      "company_zh": "Physical Intelligence / 加州大学伯克利分校",
+      "company_en": "Physical Intelligence / UC Berkeley",
+      "position_zh": "Physical Intelligence 联合创始人 / UC Berkeley 副教授",
       "categories": [
         "工业"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
+        "founder",
         "researcher"
       ],
       "sector": "Industrials",
@@ -5149,22 +5379,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "svlevine",
-      "company": "UC Berkeley",
-      "current_role": "机器人与 AI 研究员",
+      "company": "Physical Intelligence / UC Berkeley",
+      "current_role": "Physical Intelligence 联合创始人 / UC Berkeley 副教授",
       "active_status": "active",
       "primary_category": "工业",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www2.eecs.berkeley.edu/Faculty/Lists/faculty.html",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/svlevine",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "chelsea-finn",
       "name": "Chelsea Finn",
       "zh": "Chelsea Finn",
       "handle": "chelseabfinn",
-      "role": "AI & Robotics Researcher · Stanford",
+      "role": "Physical Intelligence Co-Founder · Stanford Assistant Professor",
       "chips": [
         "Robotics",
         "AI",
@@ -5176,15 +5414,16 @@
       "title": "CHELSEA FINN · OFFICIAL X TIMELINE",
       "name_zh": "切尔西·芬恩",
       "name_en": "Chelsea Finn",
-      "company_zh": "斯坦福大学",
-      "company_en": "Stanford",
-      "position_zh": "AI 与机器人研究员",
+      "company_zh": "Physical Intelligence / 斯坦福大学",
+      "company_en": "Physical Intelligence / Stanford",
+      "position_zh": "Physical Intelligence 联合创始人 / Stanford 助理教授",
       "categories": [
         "工业"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
+        "founder",
         "researcher"
       ],
       "sector": "Industrials",
@@ -5208,15 +5447,23 @@
       "avatar_is_x_original": true,
       "avatar_is_substitute": false,
       "x_handle": "chelseabfinn",
-      "company": "Stanford",
-      "current_role": "AI 与机器人研究员",
+      "company": "Physical Intelligence / Stanford",
+      "current_role": "Physical Intelligence 联合创始人 / Stanford 助理教授",
       "active_status": "active",
       "primary_category": "工业",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://engineering.stanford.edu/people/chelsea-finn",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/chelseabfinn",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "boston-dynamics",
@@ -5274,14 +5521,20 @@
       "role_status": "current",
       "x_account_type": "company_official",
       "verified_personal_x": false,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "manual_review",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_review_status": "company_official_account_exception",
+      "review_note": "Entity-type mismatch: this is a company account, not an individual leader. Keep active temporarily so V400 does not shrink; replace with a verified individual leader before V400 Stable freeze."
     },
     {
       "id": "tory-bruno",
       "name": "Tory Bruno",
       "zh": "Tory Bruno",
       "handle": "torybruno",
-      "role": "United Launch Alliance CEO",
+      "role": "Former President & CEO, United Launch Alliance",
       "chips": [
         "ULA",
         "Space",
@@ -5293,9 +5546,9 @@
       "title": "TORY BRUNO · OFFICIAL X TIMELINE",
       "name_zh": "托里·布鲁诺",
       "name_en": "Tory Bruno",
-      "company_zh": "联合发射联盟",
+      "company_zh": "United Launch Alliance",
       "company_en": "United Launch Alliance",
-      "position_zh": "CEO",
+      "position_zh": "前总裁兼 CEO",
       "categories": [
         "航空航天",
         "工业"
@@ -5303,7 +5556,8 @@
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "ceo"
+        "former_ceo",
+        "legacy_leader"
       ],
       "sector": "Industrials",
       "themes": [
@@ -5328,21 +5582,29 @@
       "avatar_is_substitute": true,
       "x_handle": "torybruno",
       "company": "United Launch Alliance",
-      "current_role": "CEO",
+      "current_role": "前总裁兼 CEO",
       "active_status": "active",
       "primary_category": "航空航天",
-      "company_relationship_status": "current",
-      "role_status": "current",
+      "company_relationship_status": "former",
+      "role_status": "former",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://newsroom.ulalaunch.com/releases/statement-from-robert-lightfoot-and-kay-sears",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/torybruno",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "tim-ellis",
       "name": "Tim Ellis",
       "zh": "Tim Ellis",
       "handle": "thetimellis",
-      "role": "Relativity Space Co-Founder",
+      "role": "Relativity Space Co-Founder & Board Member · Former CEO",
       "chips": [
         "Relativity Space",
         "Space",
@@ -5356,7 +5618,7 @@
       "name_en": "Tim Ellis",
       "company_zh": "Relativity Space",
       "company_en": "Relativity Space",
-      "position_zh": "联合创始人",
+      "position_zh": "联合创始人兼董事 / 前 CEO",
       "categories": [
         "航空航天",
         "工业"
@@ -5364,7 +5626,9 @@
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "board",
+        "former_ceo"
       ],
       "sector": "Industrials",
       "themes": [
@@ -5389,21 +5653,29 @@
       "avatar_verified_at": "2026-09-21T15:17:40Z",
       "x_handle": "thetimellis",
       "company": "Relativity Space",
-      "current_role": "联合创始人",
+      "current_role": "联合创始人兼董事 / 前 CEO",
       "active_status": "active",
       "primary_category": "航空航天",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.marssociety.org/news/2026/07/14/relativity-space-co-founder-tim-ellis-to-join-2026-mars-society-convention/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/thetimellis",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "isaacman",
       "name": "Jared Isaacman",
       "zh": "Jared Isaacman",
       "handle": "rookisaacman",
-      "role": "Space Entrepreneur",
+      "role": "NASA Administrator",
       "chips": [
         "Space",
         "Polaris",
@@ -5415,15 +5687,17 @@
       "title": "JARED ISAACMAN · OFFICIAL X TIMELINE",
       "name_zh": "贾里德·艾萨克曼",
       "name_en": "Jared Isaacman",
-      "company_zh": "商业航天",
-      "company_en": "Commercial Spaceflight",
-      "position_zh": "航天企业家",
+      "company_zh": "美国国家航空航天局（NASA）",
+      "company_en": "NASA",
+      "position_zh": "局长",
       "categories": [
         "航空航天"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
-      "leader_types": [],
+      "leader_types": [
+        "executive"
+      ],
       "sector": "Industrials",
       "themes": [
         "航空航天"
@@ -5445,22 +5719,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "rookisaacman",
-      "company": "Commercial Spaceflight",
-      "current_role": "航天企业家",
+      "company": "NASA",
+      "current_role": "局长",
       "active_status": "active",
       "primary_category": "航空航天",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.nasa.gov/people/jared-isaacman/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/rookisaacman",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "stewart",
       "name": "Stewart Butterfield",
       "zh": "Stewart Butterfield",
       "handle": "stewart",
-      "role": "Slack Co-Founder",
+      "role": "Slack Co-Founder & Former CEO",
       "chips": [
         "Slack",
         "Software",
@@ -5474,14 +5756,16 @@
       "name_en": "Stewart Butterfield",
       "company_zh": "Slack",
       "company_en": "Slack",
-      "position_zh": "联合创始人",
+      "position_zh": "联合创始人 / 前 CEO",
       "categories": [
         "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "former_ceo",
+        "legacy_leader"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -5505,14 +5789,22 @@
       "avatar_is_substitute": false,
       "x_handle": "stewart",
       "company": "Slack",
-      "current_role": "联合创始人",
+      "current_role": "联合创始人 / 前 CEO",
       "active_status": "active",
       "primary_category": "软件",
-      "company_relationship_status": "current",
-      "role_status": "current",
+      "company_relationship_status": "former",
+      "role_status": "former",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.axios.com/2022/12/05/slack-ceo-stewart-butterfield-leaving-salesforce",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/stewart",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "perkins",
@@ -5572,7 +5864,15 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.canva.com/newsroom/news/author/melanie-perkins/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/MelanieCanva",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "yuan",
@@ -5632,14 +5932,22 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.zoom.com/en/about/team/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/ericsyuan",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "dara",
       "name": "Dara Khosrowshahi",
       "zh": "达拉·科斯罗萨西",
       "handle": "dkhos",
-      "role": "Uber CEO",
+      "role": "Uber Chief Executive Officer",
       "chips": [
         "UBER",
         "Uber",
@@ -5700,14 +6008,22 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.uber.com/iq/en/newsroom/simplerfasteruber/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/dkhos",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "kevin-rose",
       "name": "Kevin Rose",
       "zh": "Kevin Rose",
       "handle": "kevinrose",
-      "role": "Technology Founder & Investor",
+      "role": "Special Advisor, True Ventures · Entrepreneur & Investor",
       "chips": [
         "Digg",
         "Startups",
@@ -5719,9 +6035,9 @@
       "title": "KEVIN ROSE · OFFICIAL X TIMELINE",
       "name_zh": "凯文·罗斯",
       "name_en": "Kevin Rose",
-      "company_zh": "科技创业 / 投资",
-      "company_en": "Technology / Investing",
-      "position_zh": "创业者 / 投资人",
+      "company_zh": "True Ventures / 独立投资",
+      "company_en": "True Ventures / Independent Investing",
+      "position_zh": "True Ventures 特别顾问 / 创业者与投资人",
       "categories": [
         "VC"
       ],
@@ -5729,7 +6045,8 @@
       "admission_status": "active",
       "leader_types": [
         "founder",
-        "investor"
+        "investor",
+        "advisor"
       ],
       "sector": "Financials",
       "themes": [
@@ -5752,22 +6069,30 @@
       "avatar_is_x_original": true,
       "avatar_is_substitute": false,
       "x_handle": "kevinrose",
-      "company": "Technology / Investing",
-      "current_role": "创业者 / 投资人",
+      "company": "True Ventures / Independent Investing",
+      "current_role": "True Ventures 特别顾问 / 创业者与投资人",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.trueventures.com/team/kevin-rose",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/kevinrose",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "ohanian",
       "name": "Alexis Ohanian",
       "zh": "Alexis Ohanian",
       "handle": "alexisohanian",
-      "role": "Reddit Co-Founder · Seven Seven Six",
+      "role": "Founder & General Partner, Seven Seven Six · Reddit Co-Founder",
       "chips": [
         "Reddit",
         "776",
@@ -5779,9 +6104,9 @@
       "title": "ALEXIS OHANIAN · OFFICIAL X TIMELINE",
       "name_zh": "亚历克西斯·奥哈尼安",
       "name_en": "Alexis Ohanian",
-      "company_zh": "Reddit / Seven Seven Six",
-      "company_en": "Reddit / Seven Seven Six",
-      "position_zh": "联合创始人 / 投资人",
+      "company_zh": "Seven Seven Six / Reddit",
+      "company_en": "Seven Seven Six / Reddit",
+      "position_zh": "Seven Seven Six 创始人兼 General Partner / Reddit 联合创始人",
       "categories": [
         "VC"
       ],
@@ -5812,22 +6137,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "alexisohanian",
-      "company": "Reddit / Seven Seven Six",
-      "current_role": "联合创始人 / 投资人",
+      "company": "Seven Seven Six / Reddit",
+      "current_role": "Seven Seven Six 创始人兼 General Partner / Reddit 联合创始人",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://sevensevensix.com/team",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/alexisohanian",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "evan-you",
       "name": "Evan You",
       "zh": "尤雨溪",
       "handle": "youyuxi",
-      "role": "Vue.js Creator",
+      "role": "Founder, VoidZero · Creator of Vue.js & Vite · Team joined Cloudflare ETI",
       "chips": [
         "Vue",
         "JavaScript",
@@ -5839,16 +6172,17 @@
       "title": "EVAN YOU · OFFICIAL X TIMELINE",
       "name_zh": "尤雨溪",
       "name_en": "Evan You",
-      "company_zh": "Vue.js",
-      "company_en": "Vue.js",
-      "position_zh": "创始作者",
+      "company_zh": "Cloudflare / VoidZero / Vue.js",
+      "company_en": "Cloudflare / VoidZero / Vue.js",
+      "position_zh": "VoidZero 创始人 / Vue.js 与 Vite 创始作者；团队已加入 Cloudflare ETI",
       "categories": [
         "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "executive"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -5871,22 +6205,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "youyuxi",
-      "company": "Vue.js",
-      "current_role": "创始作者",
+      "company": "Cloudflare / VoidZero / Vue.js",
+      "current_role": "VoidZero 创始人 / Vue.js 与 Vite 创始作者；团队已加入 Cloudflare ETI",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.cloudflare.com/press/press-releases/2026/cloudflare-acquires-voidzero-to-build-the-future-of-the-ai-native-web/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/youyuxi",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "hashimoto",
       "name": "Mitchell Hashimoto",
       "zh": "Mitchell Hashimoto",
       "handle": "mitchellh",
-      "role": "HashiCorp Co-Founder · Ghostty",
+      "role": "Co-Founder, Superlogical · Creator of Ghostty · HashiCorp Co-Founder",
       "chips": [
         "HashiCorp",
         "Developer Tools",
@@ -5898,9 +6240,9 @@
       "title": "MITCHELL HASHIMOTO · OFFICIAL X TIMELINE",
       "name_zh": "米切尔·哈希莫托",
       "name_en": "Mitchell Hashimoto",
-      "company_zh": "HashiCorp / Ghostty",
-      "company_en": "HashiCorp / Ghostty",
-      "position_zh": "联合创始人 / 开发者",
+      "company_zh": "Superlogical / Ghostty / HashiCorp",
+      "company_en": "Superlogical / Ghostty / HashiCorp",
+      "position_zh": "Superlogical 联合创始人 / Ghostty 创始作者 / HashiCorp 联合创始人",
       "categories": [
         "软件"
       ],
@@ -5930,22 +6272,30 @@
       "avatar_is_x_original": true,
       "avatar_is_substitute": false,
       "x_handle": "mitchellh",
-      "company": "HashiCorp / Ghostty",
-      "current_role": "联合创始人 / 开发者",
+      "company": "Superlogical / Ghostty / HashiCorp",
+      "current_role": "Superlogical 联合创始人 / Ghostty 创始作者 / HashiCorp 联合创始人",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://mitchellh.com/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/mitchellh",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "sijbrandij",
       "name": "Sid Sijbrandij",
       "zh": "Sid Sijbrandij",
       "handle": "sytses",
-      "role": "GitLab Co-Founder",
+      "role": "GitLab Co-Founder & Executive Chair",
       "chips": [
         "GitLab",
         "DevOps",
@@ -5959,14 +6309,16 @@
       "name_en": "Sid Sijbrandij",
       "company_zh": "GitLab",
       "company_en": "GitLab",
-      "position_zh": "联合创始人",
+      "position_zh": "联合创始人兼执行董事长",
       "categories": [
         "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "chair",
+        "former_ceo"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -5990,21 +6342,29 @@
       "avatar_is_substitute": true,
       "x_handle": "sytses",
       "company": "GitLab",
-      "current_role": "联合创始人",
+      "current_role": "联合创始人兼执行董事长",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://about.gitlab.com/company/team/board-of-directors/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/sytses",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "preston-werner",
       "name": "Tom Preston-Werner",
       "zh": "Tom Preston-Werner",
       "handle": "mojombo",
-      "role": "GitHub Co-Founder",
+      "role": "Chatterbug Co-Founder / Product · GitHub Co-Founder",
       "chips": [
         "GitHub",
         "Open Source",
@@ -6016,16 +6376,17 @@
       "title": "TOM PRESTON-WERNER · OFFICIAL X TIMELINE",
       "name_zh": "汤姆·普雷斯顿-维尔纳",
       "name_en": "Tom Preston-Werner",
-      "company_zh": "GitHub",
-      "company_en": "GitHub",
-      "position_zh": "联合创始人",
+      "company_zh": "Chatterbug / GitHub",
+      "company_en": "Chatterbug / GitHub",
+      "position_zh": "Chatterbug 联合创始人兼产品负责人 / GitHub 联合创始人",
       "categories": [
         "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "executive"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -6048,22 +6409,30 @@
       "avatar_is_x_original": true,
       "avatar_is_substitute": false,
       "x_handle": "mojombo",
-      "company": "GitHub",
-      "current_role": "联合创始人",
+      "company": "Chatterbug / GitHub",
+      "current_role": "Chatterbug 联合创始人兼产品负责人 / GitHub 联合创始人",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://chatterbug.com/en/about",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/mojombo",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "wanstrath",
       "name": "Chris Wanstrath",
       "zh": "Chris Wanstrath",
       "handle": "defunkt",
-      "role": "GitHub Co-Founder",
+      "role": "Founder, Null Games · GitHub Co-Founder & Former CEO",
       "chips": [
         "GitHub",
         "Software",
@@ -6075,16 +6444,17 @@
       "title": "CHRIS WANSTRATH · OFFICIAL X TIMELINE",
       "name_zh": "克里斯·万斯特拉斯",
       "name_en": "Chris Wanstrath",
-      "company_zh": "GitHub",
-      "company_en": "GitHub",
-      "position_zh": "联合创始人",
+      "company_zh": "Null Games / GitHub",
+      "company_en": "Null Games / GitHub",
+      "position_zh": "Null Games 创始人 / GitHub 联合创始人兼前 CEO",
       "categories": [
         "软件"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
       "leader_types": [
-        "founder"
+        "founder",
+        "former_ceo"
       ],
       "sector": "Information Technology",
       "themes": [
@@ -6107,15 +6477,23 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "defunkt",
-      "company": "GitHub",
-      "current_role": "联合创始人",
+      "company": "Null Games / GitHub",
+      "current_role": "Null Games 创始人 / GitHub 联合创始人兼前 CEO",
       "active_status": "active",
       "primary_category": "软件",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://computerhistory.org/profile/chris-wanstrath-2/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/defunkt",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "levchin",
@@ -6175,14 +6553,22 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://investors.affirm.com/corporate-governance/management",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/mlevchin",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "tenev",
       "name": "Vlad Tenev",
       "zh": "Vlad Tenev",
       "handle": "vladtenev",
-      "role": "Robinhood Co-Founder & CEO",
+      "role": "Robinhood Chairman, President & CEO · Harmonic Executive Chair & Co-Founder",
       "chips": [
         "HOOD",
         "Robinhood",
@@ -6194,9 +6580,9 @@
       "title": "VLAD TENEV · OFFICIAL X TIMELINE",
       "name_zh": "弗拉德·特内夫",
       "name_en": "Vlad Tenev",
-      "company_zh": "Robinhood",
-      "company_en": "Robinhood",
-      "position_zh": "联合创始人兼 CEO",
+      "company_zh": "Robinhood / Harmonic",
+      "company_en": "Robinhood / Harmonic",
+      "position_zh": "Robinhood 董事长、总裁兼 CEO / Harmonic 执行董事长兼联合创始人",
       "categories": [
         "金融"
       ],
@@ -6204,6 +6590,7 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
+        "chair",
         "founder"
       ],
       "sector": "Financials",
@@ -6234,22 +6621,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "vladtenev",
-      "company": "Robinhood",
-      "current_role": "联合创始人兼 CEO",
+      "company": "Robinhood / Harmonic",
+      "current_role": "Robinhood 董事长、总裁兼 CEO / Harmonic 执行董事长兼联合创始人",
       "active_status": "active",
       "primary_category": "金融",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://investors.robinhood.com/management/vlad-tenev",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/vladtenev",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "david-marcus",
       "name": "David Marcus",
       "zh": "David Marcus",
       "handle": "davidmarcus",
-      "role": "Lightspark Co-Founder & CEO",
+      "role": "Lightspark Chief Executive Officer",
       "chips": [
         "Lightspark",
         "Bitcoin",
@@ -6263,7 +6658,7 @@
       "name_en": "David Marcus",
       "company_zh": "Lightspark",
       "company_en": "Lightspark",
-      "position_zh": "联合创始人兼 CEO",
+      "position_zh": "CEO",
       "categories": [
         "金融"
       ],
@@ -6295,21 +6690,29 @@
       "avatar_is_substitute": false,
       "x_handle": "davidmarcus",
       "company": "Lightspark",
-      "current_role": "联合创始人兼 CEO",
+      "current_role": "CEO",
       "active_status": "active",
       "primary_category": "金融",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.lightspark.com/about",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/davidmarcus",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "naval",
       "name": "Naval Ravikant",
       "zh": "Naval Ravikant",
       "handle": "naval",
-      "role": "AngelList Co-Founder · Technology Investor",
+      "role": "AngelList Co-Founder & Chairman · Investor",
       "chips": [
         "AngelList",
         "VC",
@@ -6323,7 +6726,7 @@
       "name_en": "Naval Ravikant",
       "company_zh": "AngelList",
       "company_en": "AngelList",
-      "position_zh": "联合创始人 / 投资人",
+      "position_zh": "联合创始人兼董事长 / 投资人",
       "categories": [
         "VC"
       ],
@@ -6331,6 +6734,7 @@
       "admission_status": "active",
       "leader_types": [
         "founder",
+        "chair",
         "investor"
       ],
       "sector": "Financials",
@@ -6355,21 +6759,29 @@
       "avatar_is_substitute": false,
       "x_handle": "naval",
       "company": "AngelList",
-      "current_role": "联合创始人 / 投资人",
+      "current_role": "联合创始人兼董事长 / 投资人",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://wellfound.com/company/angellist/people",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/naval",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "gurley",
       "name": "Bill Gurley",
       "zh": "Bill Gurley",
       "handle": "bgurley",
-      "role": "Technology Investor",
+      "role": "Technology Investor · Benchmark relationship pending final confirmation",
       "chips": [
         "Benchmark",
         "VC",
@@ -6383,7 +6795,7 @@
       "name_en": "Bill Gurley",
       "company_zh": "Benchmark",
       "company_en": "Benchmark",
-      "position_zh": "科技投资人",
+      "position_zh": "科技投资人 / Benchmark 关系待最终确认",
       "categories": [
         "VC"
       ],
@@ -6414,21 +6826,29 @@
       "avatar_is_substitute": true,
       "x_handle": "bgurley",
       "company": "Benchmark",
-      "current_role": "科技投资人",
+      "current_role": "科技投资人 / Benchmark 关系待最终确认",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "manual_review",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/bgurley",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "Current Benchmark title is inconsistently described across 2026 sources; some list General Partner while reporting says he has not regularly invested for the firm in years. Retain as investor pending authoritative current-role confirmation.",
+      "role_source_url": "https://www.theinformation.com/articles/benchmarks-ai-pressure-test-high-prices-smaller-stakes-and-a-poached-star/"
     },
     {
       "id": "chamath",
       "name": "Chamath Palihapitiya",
       "zh": "Chamath Palihapitiya",
       "handle": "chamath",
-      "role": "Social Capital Founder & CEO",
+      "role": "Founder & CEO, 8090 Labs · Founder & Managing Partner, Social Capital",
       "chips": [
         "Social Capital",
         "VC",
@@ -6440,9 +6860,9 @@
       "title": "CHAMATH PALIHAPITIYA · OFFICIAL X TIMELINE",
       "name_zh": "查马斯·帕里哈皮蒂亚",
       "name_en": "Chamath Palihapitiya",
-      "company_zh": "Social Capital",
-      "company_en": "Social Capital",
-      "position_zh": "创始人兼 CEO",
+      "company_zh": "8090 Labs / Social Capital",
+      "company_en": "8090 Labs / Social Capital",
+      "position_zh": "8090 Labs 创始人兼 CEO / Social Capital 创始人兼 Managing Partner",
       "categories": [
         "VC"
       ],
@@ -6450,7 +6870,8 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
-        "founder"
+        "founder",
+        "investor"
       ],
       "sector": "Financials",
       "themes": [
@@ -6473,22 +6894,30 @@
       "avatar_is_x_original": false,
       "avatar_is_substitute": true,
       "x_handle": "chamath",
-      "company": "Social Capital",
-      "current_role": "创始人兼 CEO",
+      "company": "8090 Labs / Social Capital",
+      "current_role": "8090 Labs 创始人兼 CEO / Social Capital 创始人兼 Managing Partner",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://techcrunch.com/2026/06/29/chamath-palihapitiya-raises-135m-series-a-for-his-ai-coding-startup-takes-ceo-role/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/chamath",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "fred-wilson",
       "name": "Fred Wilson",
       "zh": "Fred Wilson",
       "handle": "fredwilson",
-      "role": "Union Square Ventures Co-Founder",
+      "role": "Partner & Co-Founder, Union Square Ventures",
       "chips": [
         "USV",
         "VC",
@@ -6502,7 +6931,7 @@
       "name_en": "Fred Wilson",
       "company_zh": "Union Square Ventures",
       "company_en": "Union Square Ventures",
-      "position_zh": "联合创始人",
+      "position_zh": "合伙人 / 联合创始人",
       "categories": [
         "VC"
       ],
@@ -6534,14 +6963,22 @@
       "avatar_is_substitute": true,
       "x_handle": "fredwilson",
       "company": "Union Square Ventures",
-      "current_role": "联合创始人",
+      "current_role": "合伙人 / 联合创始人",
       "active_status": "active",
       "primary_category": "VC",
       "company_relationship_status": "current",
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://www.usv.com/people/fred-wilson/",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/fredwilson",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "gerstner",
@@ -6571,7 +7008,8 @@
       "admission_status": "active",
       "leader_types": [
         "ceo",
-        "founder"
+        "founder",
+        "investor"
       ],
       "sector": "Financials",
       "themes": [
@@ -6603,7 +7041,15 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "legacy_review_required"
+      "role_review_status": "verified",
+      "role_source_url": "https://milkeninstitute.org/events/global-conference-2026/speakers/brad-gerstner",
+      "legacy_review_batch": "phase2-batch02",
+      "role_verified_at": "2026-09-21",
+      "relationship_verified_at": "2026-09-21",
+      "x_reviewed_at": "2026-09-21",
+      "x_identity_source_url": "https://x.com/altcap",
+      "x_review_status": "verified_identity_retained",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
     },
     {
       "id": "jim-farley",
@@ -28993,6 +29439,14 @@
         "verified_count": 48,
         "manual_review_count": 2,
         "changed_role_records": 25,
+        "status": "complete"
+      },
+      "batch02": {
+        "reviewed_at": "2026-09-21",
+        "reviewed_count": 50,
+        "verified_count": 48,
+        "manual_review_count": 2,
+        "changed_role_records": 48,
         "status": "complete"
       }
     }
