@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build 150-row review batch
+      - name: Build 150-row multi-person review batch
         run: |
           python scripts/tech-leaders/build_review_batch.py
 
@@ -51,11 +51,14 @@ jobs:
           assert len(rows) == 150, len(rows)
           assert payload["count"] == 150
           assert meta["count"] == 150
+          assert payload["mode"] == "multi_person_current_and_legacy"
+          assert meta["rules"]["existing_catalog_matches_are_eligible"] is True
           assert len({r["ticker"] for r in rows}) == 150
-          assert all(r["review_status"] == "needs_research" for r in rows)
+          assert all(r["review_status"] in {"expand_existing", "needs_research"} for r in rows)
           assert not any(r["x_identity_status"] == "verified" for r in rows)
           assert not any(r["role_status"] == "current" and not r["role_source_url"] for r in rows)
           assert all(r["recommended_categories"] for r in rows)
+          assert all(r["target_roles"] for r in rows)
           assert all(r["exchange"] in {"NYSE", "NASDAQ"} for r in rows)
           print(json.dumps(meta, ensure_ascii=False))
           PY
@@ -71,5 +74,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $FILES
-          git commit -m "data: refresh tech-leaders 150 review batch"
+          git commit -m "data: refresh tech-leaders multi-person review batch"
           git push
