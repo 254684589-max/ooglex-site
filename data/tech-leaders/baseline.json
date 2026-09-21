@@ -1,13 +1,13 @@
 {
-  "baseline_version": "v528-wallstreet100-stable",
+  "baseline_version": "v594-wallstreet100-stable",
   "captured_at": "2026-09-22",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "c755dffbb5c1497aaefdc8d477acc83540149143",
-  "leader_count": 528,
-  "active_count": 528,
+  "source_blob_sha": "92c54b77f181c6455a2ce845fcd540b0e2b8c34c",
+  "leader_count": 594,
+  "active_count": 594,
   "schema_version": 12,
   "capacity": 800,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v528-wallstreet100-2026-09-22.json",
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v594-wallstreet100-2026-09-22.json",
   "previous_baseline": "data/tech-leaders/snapshots/leaders-v528-stable-2026-09-22.json",
-  "purpose": "Stable rollback baseline after expanding the Wall Street secondary category from 34 to 100 using 66 already-approved active profiles with verified personal X accounts; total production catalog remains 528."
+  "purpose": "Stable rollback baseline after correcting the Wall Street expansion: reverted 66 mistaken category-only re-tags, then added 66 genuinely new finance/markets profiles so the global catalog is 594 and Wall Street is 100."
 }
