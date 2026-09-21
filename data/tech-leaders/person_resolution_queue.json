@@ -7,7 +7,8 @@
     "data/tech-leaders/verified_candidates.tranche01.json",
     "data/tech-leaders/verified_candidates.tranche02.json",
     "data/tech-leaders/verified_candidates.tranche03.json",
-    "data/tech-leaders/verified_candidates.tranche04.json"
+    "data/tech-leaders/verified_candidates.tranche04.json",
+    "data/tech-leaders/verified_candidates.tranche05.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -155,8 +156,14 @@
         "Founder Emeritus"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Steve Wozniak",
+          "handle": "stevewoz",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -180,8 +187,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Steve Wozniak",
+          "handle": "stevewoz",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -278,6 +291,11 @@
         {
           "name": "Bill Gates",
           "handle": "BillGates",
+          "status": "approved"
+        },
+        {
+          "name": "Steve Ballmer",
+          "handle": "Steven_Ballmer",
           "status": "approved"
         }
       ],
@@ -4121,8 +4139,14 @@
         "Founder Emeritus"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Travis Kalanick",
+          "handle": "travisk",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -4146,8 +4170,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Travis Kalanick",
+          "handle": "travisk",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -5503,8 +5533,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "John Legere",
+          "handle": "JohnLegere",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
