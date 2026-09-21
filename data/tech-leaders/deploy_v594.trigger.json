@@ -1,0 +1,7 @@
+{
+  "release": "v594-stable-2026-09-22",
+  "requested_at": "2026-09-22",
+  "production_catalog_count": 594,
+  "wall_street_count": 100,
+  "reason": "Server-side merge trigger to force the protected GitHub Pages deployment workflow after connector-authored main commits did not expose push workflow runs."
+}
