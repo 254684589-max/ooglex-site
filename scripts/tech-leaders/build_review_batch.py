@@ -191,11 +191,11 @@ def build_batch(rows: list[dict[str, str]], limit: int) -> list[dict[str, Any]]:
     for row in uncovered:
         score, tags, bucket = score_row(row)
         enriched.append({
+            **row,
             "research_score": score,
             "review_tier": review_tier(score),
             "market_cap_bucket": bucket,
             "recommended_categories": "|".join(tags),
-            **row,
         })
 
     priority_order = {"research_now": 0, "research_next": 1, "research_later": 2}
