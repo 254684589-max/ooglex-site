@@ -1827,37 +1827,6 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
   }
 }
 
-async function fetchFxTwitterStatusById(handle, postId) {
-  const url = `https://api.fxtwitter.com/${encodeURIComponent(handle)}/status/${encodeURIComponent(postId)}`;
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 4500);
-  let res = null;
-  try {
-    res = await fetch(url, {
-      signal: ctl.signal,
-      redirect: "follow",
-      headers: {
-        accept: "application/json",
-        "user-agent": "Ooglex-Tech-Leaders-Single-Post/1.0"
-      }
-    });
-  } finally {
-    clearTimeout(timer);
-  }
-
-  let payload = null;
-  try { payload = await res.json(); } catch {}
-  const raw = payload && (payload.tweet || payload.status);
-  const post = normalizeFxTwitterStatus(raw, handle);
-  if (!res.ok || !post) {
-    const err = new Error("fxtwitter_single_post_unavailable");
-    err.code = "fxtwitter_single_post_unavailable";
-    err.status = res && res.status ? res.status : 502;
-    throw err;
-  }
-  return post;
-}
-
 async function getFreeTechLeaderPost(handle, postId, env) {
   const normalized = normalizeXHandle(handle);
   const id = String(postId || "").trim();
@@ -1891,7 +1860,7 @@ async function getFreeTechLeaderPost(handle, postId, env) {
   let resolvedPost = post;
   if (!resolvedPost) {
     try {
-      resolvedPost = await fetchFxTwitterStatusById(normalized, id);
+      resolvedPost = await fetchFxTwitterStatusById(id, normalized);
     } catch {}
   }
   if (!resolvedPost) {
