@@ -1,6 +1,6 @@
 {
   "schema_version": 9,
-  "capacity": 250,
+  "capacity": 800,
   "leaders": [
     {
       "id": "musk",
@@ -5760,9 +5760,9 @@
       "listed_company": true,
       "admission_status": "preview_approved",
       "leader_types": [
-        "ceo",
         "founder"
       ],
+      "company_relationship_status": "current",
       "themes": [
         "消费零售",
         "软件"
@@ -5814,9 +5814,9 @@
       "listed_company": true,
       "admission_status": "preview_approved",
       "leader_types": [
-        "ceo",
         "founder"
       ],
+      "company_relationship_status": "current",
       "themes": [
         "科技",
         "AI",
@@ -5867,8 +5867,9 @@
       "listed_company": true,
       "admission_status": "preview_approved",
       "leader_types": [
-        "ceo"
+        "executive"
       ],
+      "company_relationship_status": "current",
       "themes": [
         "科技",
         "云计算"
@@ -5917,8 +5918,9 @@
       "listed_company": true,
       "admission_status": "preview_approved",
       "leader_types": [
-        "ceo"
+        "executive"
       ],
+      "company_relationship_status": "current",
       "themes": [
         "金融",
         "金融科技"
@@ -5970,8 +5972,9 @@
       "listed_company": true,
       "admission_status": "preview_approved",
       "leader_types": [
-        "ceo"
+        "executive"
       ],
+      "company_relationship_status": "current",
       "themes": [
         "科技",
         "AI",
@@ -6011,13 +6014,18 @@
     "科技",
     "金融科技"
   ],
-  "catalog_version": "V4.2",
+  "catalog_version": "V4.3",
   "last_audited_at": "2026-09-19",
   "audit_policy": {
     "role_reverify_days": 90,
     "x_inactive_downgrade_days": 180,
     "x_archive_days": 365,
-    "rule": "active profiles require a confirmed public personal X identity; company accounts are not substitutes for a person's account"
+    "rule": "active profiles may be current or former/retired company leaders; admission requires a confirmed public personal X identity, a verified relationship to the company, and meaningful X activity. Company accounts are not substitutes for a person's account.",
+    "legacy_leaders_allowed": true,
+    "current_role_required": false,
+    "x_active_required_days": 180,
+    "x_manual_review_days": 365,
+    "relationship_reverify_days": 180
   },
   "candidates": [
     {
