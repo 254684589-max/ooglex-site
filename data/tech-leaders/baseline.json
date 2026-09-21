@@ -1,15 +1,13 @@
 {
-  "baseline_version": "v500-stable",
+  "baseline_version": "v528-stable",
   "captured_at": "2026-09-22",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "56a4161b30e4f162fa70949fcb663df261ee40b8",
-  "leader_count": 500,
+  "source_blob_sha": "172a71a710f2e9cc81bb07b63930f722d805b050",
+  "leader_count": 528,
   "active_count": 528,
   "schema_version": 12,
   "capacity": 800,
   "snapshot_path": "data/tech-leaders/snapshots/leaders-v528-stable-2026-09-22.json",
   "previous_baseline": "data/tech-leaders/snapshots/leaders-v500-stable-2026-09-22.json",
-  "purpose": "Production rollback baseline after promoting 28 independently approved Wall Street profiles from V500 to V528. V500 remains the immediate previous rollback snapshot.",
-  "version": "v528-stable",
-  "updated_at": "2026-09-22"
+  "purpose": "Production rollback baseline after promoting 28 independently approved Wall Street profiles from V500 to V528. V500 remains the immediate previous rollback snapshot."
 }
