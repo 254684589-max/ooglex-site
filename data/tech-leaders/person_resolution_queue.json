@@ -48,6 +48,16 @@
           "name": "Jensen Huang",
           "handle": "JensenHuang",
           "status": "production"
+        },
+        {
+          "name": "Bryan Catanzaro",
+          "handle": "ctnzr",
+          "status": "current"
+        },
+        {
+          "name": "Jim Fan",
+          "handle": "DrJimFan",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -148,6 +158,16 @@
           "name": "Tim Cook",
           "handle": "tim_cook",
           "status": "production"
+        },
+        {
+          "name": "Phil Schiller",
+          "handle": "pschiller",
+          "status": "current"
+        },
+        {
+          "name": "Greg Joswiak",
+          "handle": "gregjoz",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -227,6 +247,11 @@
           "name": "Steve Wozniak",
           "handle": "stevewoz",
           "status": "former"
+        },
+        {
+          "name": "Phil Schiller",
+          "handle": "pschiller",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -306,6 +331,16 @@
           "name": "Phil Spencer",
           "handle": "XboxP3",
           "status": "former"
+        },
+        {
+          "name": "Kevin Scott",
+          "handle": "kevin_scott",
+          "status": "current"
+        },
+        {
+          "name": "Scott Guthrie",
+          "handle": "scottgu",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -4455,6 +4490,11 @@
           "name": "Parker Harris",
           "handle": "parkerharris",
           "status": "current"
+        },
+        {
+          "name": "Cal Henderson",
+          "handle": "calhenderson",
+          "status": "current"
         }
       ],
       "known_reviewed_people": [
@@ -4496,6 +4536,11 @@
         {
           "name": "Parker Harris",
           "handle": "parkerharris",
+          "status": "current"
+        },
+        {
+          "name": "Cal Henderson",
+          "handle": "calhenderson",
           "status": "current"
         }
       ],
@@ -4654,6 +4699,11 @@
           "name": "Travis Kalanick",
           "handle": "travisk",
           "status": "former"
+        },
+        {
+          "name": "Garrett Camp",
+          "handle": "gc",
+          "status": "former"
         }
       ],
       "known_reviewed_people": [],
@@ -4684,6 +4734,11 @@
         {
           "name": "Travis Kalanick",
           "handle": "travisk",
+          "status": "former"
+        },
+        {
+          "name": "Garrett Camp",
+          "handle": "gc",
           "status": "former"
         }
       ],
@@ -4726,6 +4781,11 @@
         {
           "name": "Travis Kalanick",
           "handle": "travisk",
+          "status": "former"
+        },
+        {
+          "name": "Garrett Camp",
+          "handle": "gc",
           "status": "former"
         }
       ],
@@ -6072,7 +6132,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Dan Schulman",
+          "handle": "Dan_Schulman",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Dan Schulman",
@@ -8701,7 +8767,13 @@
         "President",
         "C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Adam Foroughi",
+          "handle": "aforoughi",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Adam Foroughi",
@@ -8733,7 +8805,13 @@
         "Retired Founder",
         "Founder Emeritus"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Adam Foroughi",
+          "handle": "aforoughi",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Adam Foroughi",
@@ -12288,6 +12366,11 @@
           "name": "George Kurtz",
           "handle": "George_Kurtz",
           "status": "production"
+        },
+        {
+          "name": "Dmitri Alperovitch",
+          "handle": "DAlperovitch",
+          "status": "former"
         }
       ],
       "known_reviewed_people": [
@@ -12320,7 +12403,13 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Dmitri Alperovitch",
+          "handle": "DAlperovitch",
+          "status": "former"
+        }
+      ],
       "known_reviewed_people": [
         {
           "name": "Dmitri Alperovitch",
