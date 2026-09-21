@@ -1946,6 +1946,62 @@ function techLeaderShareMedia(post, origin) {
   };
 }
 
+function arrayBufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+  return btoa(binary);
+}
+
+async function techLeaderShareAvatarResponse(url, env, cors) {
+  const handle = normalizeXHandle(url.searchParams.get("handle"));
+  const name = String(url.searchParams.get("name") || handle || "X").trim().slice(0, 120);
+  const verified = String(url.searchParams.get("verified") || "1") !== "0";
+  if (!handle) return json({ error: "invalid_share_avatar_handle" }, 400, cors);
+
+  try {
+    const avatar = await getTechLeaderAvatar(handle, name, "", env);
+    const contentType = String(avatar.headers.get("content-type") || "image/jpeg").split(";")[0].trim();
+    const bytes = await new Response(avatar.body).arrayBuffer();
+    const dataUri = `data:${contentType};base64,${arrayBufferToBase64(bytes)}`;
+
+    const badge = verified ? `
+      <circle cx="414" cy="406" r="62" fill="#ffffff"/>
+      <svg x="358" y="350" width="112" height="112" viewBox="0 0 24 24" aria-label="Ooglex verified public account">
+        <path fill="#1d9bf0" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/>
+        <path d="M7.35 12.35 10.1 15.1 16.65 8.55" fill="none" stroke="#fff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>` : "";
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+      <title>${shareHtmlEscape(name)} profile portrait</title>
+      <rect width="512" height="512" rx="44" fill="#ffffff"/>
+      <defs>
+        <clipPath id="avatar-clip"><circle cx="256" cy="256" r="202"/></clipPath>
+      </defs>
+      <circle cx="256" cy="256" r="208" fill="#ffffff" stroke="#ded5cb" stroke-width="6"/>
+      <image href="${dataUri}" x="54" y="54" width="404" height="404" preserveAspectRatio="xMidYMid slice" clip-path="url(#avatar-clip)"/>
+      ${badge}
+    </svg>`;
+
+    return new Response(svg, {
+      status: 200,
+      headers: {
+        ...cors,
+        "content-type": "image/svg+xml; charset=utf-8",
+        "cache-control": "public, max-age=21600, stale-while-revalidate=86400",
+        "x-ooglex-share-avatar": verified ? "circle-verified" : "circle"
+      }
+    });
+  } catch (err) {
+    const code = err && err.code ? err.code : "share_avatar_unavailable";
+    const status = err && Number.isInteger(err.status) ? err.status : 502;
+    return json({ error: code, handle }, status, { ...cors, "cache-control": "no-store" });
+  }
+}
+
 function techLeaderShareResponse(handle, post, requestUrl) {
   const profile = techLeaderProfileByHandle(handle);
   const author = String(profile && profile.name || `@${handle}`);
@@ -1958,7 +2014,7 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const publicAuthor = hideHandle
     ? "Zheng Yi"
     : (handleLower === "elonmusk" ? "马斯克 · Elon Musk" : author);
-  const showVerifiedBadge = handleLower === "elonmusk";
+  const showVerifiedBadge = Boolean(handle);
   const verifiedBadgeHtml = showVerifiedBadge
     ? '<span class="verified-badge" aria-label="Verified" title="Verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified-blue" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path class="verified-check" d="M7.35 12.35 10.1 15.1 16.65 8.55"/></svg></span>'
     : "";
@@ -1976,10 +2032,15 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     name: publicAuthor || String(handle || "X")
   });
   const avatarUrl = `${requestUrl.origin}/v1/tech-leaders/avatar?${avatarParams.toString()}`;
-  // Social link previews (especially WeChat Moments) should identify the
-  // publisher first. Keep the post's own media inside the page, but use the
-  // square profile avatar as the Open Graph thumbnail shown beside the text.
-  const socialImage = avatarUrl;
+  // Social link previews (especially WeChat Moments) identify the publisher
+  // with a dedicated square image whose visible portrait is circular and whose
+  // blue badge means Ooglex has confirmed the public personal X account.
+  const shareAvatarParams = new URLSearchParams({
+    handle: String(handle || ""),
+    name: publicAuthor || String(handle || "X"),
+    verified: showVerifiedBadge ? "1" : "0"
+  });
+  const socialImage = `${requestUrl.origin}/v1/tech-leaders/share-avatar?${shareAvatarParams.toString()}`;
 
   const canonical = new URL("https://www.ooglex.com/apps/tech-leaders/post/");
   canonical.searchParams.set("handle", handle);
@@ -2007,6 +2068,9 @@ function techLeaderShareResponse(handle, post, requestUrl) {
 <meta property="og:url" content="${shareHtmlEscape(shareUrl)}">
 <meta property="og:image" content="${shareHtmlEscape(socialImage)}">
 <meta property="og:image:secure_url" content="${shareHtmlEscape(socialImage)}">
+<meta property="og:image:type" content="image/svg+xml">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
 ${video ? `<meta property="og:video" content="${shareHtmlEscape(video)}">
 <meta property="og:video:secure_url" content="${shareHtmlEscape(video)}">
 <meta property="og:video:type" content="video/mp4">
@@ -2592,6 +2656,10 @@ async function proxyTechLeaderMedia(request, target, cors) {
       }
     }
 
+    if (url.pathname === "/v1/tech-leaders/share-avatar") {
+      return techLeaderShareAvatarResponse(url, env, cors);
+    }
+
     if (url.pathname === "/v1/tech-leaders/status") {
       return json({
         ok: true,
@@ -2614,7 +2682,8 @@ async function proxyTechLeaderMedia(request, target, cors) {
           free_profile_endpoint: "/v1/tech-leaders/free-profile",
           free_feed_endpoint: "/v1/tech-leaders/free-feed",
           single_post_endpoint: "/v1/tech-leaders/post",
-          media_proxy_endpoint: "/v1/tech-leaders/media"
+          media_proxy_endpoint: "/v1/tech-leaders/media",
+          share_avatar_endpoint: "/v1/tech-leaders/share-avatar"
         },
         cache_ttl_seconds: Math.round(TECH_FEED_TTL_MS / 1000),
         avatar_policy: TECH_AVATAR_POLICY,
