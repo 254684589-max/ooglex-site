@@ -1,0 +1,75 @@
+name: Tech Leaders Review Batch
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "data/tech-leaders/executive_candidate_queue.csv"
+      - "scripts/tech-leaders/build_review_batch.py"
+      - ".github/workflows/tech-leaders-review-batch.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tech-leaders-review-batch
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build 150-row review batch
+        run: |
+          python scripts/tech-leaders/build_review_batch.py
+
+      - name: Validate review batch
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+
+          csv_path = Path("data/tech-leaders/review_batch_150.csv")
+          json_path = Path("data/tech-leaders/review_batch_150.json")
+          meta_path = Path("data/tech-leaders/review_batch_150.meta.json")
+
+          rows = list(csv.DictReader(csv_path.open(encoding="utf-8")))
+          payload = json.loads(json_path.read_text(encoding="utf-8"))
+          meta = json.loads(meta_path.read_text(encoding="utf-8"))
+
+          assert len(rows) == 150, len(rows)
+          assert payload["count"] == 150
+          assert meta["count"] == 150
+          assert len({r["ticker"] for r in rows}) == 150
+          assert all(r["review_status"] == "needs_research" for r in rows)
+          assert not any(r["x_identity_status"] == "verified" for r in rows)
+          assert not any(r["role_status"] == "current" and not r["role_source_url"] for r in rows)
+          assert all(r["recommended_categories"] for r in rows)
+          assert all(r["exchange"] in {"NYSE", "NASDAQ"} for r in rows)
+          print(json.dumps(meta, ensure_ascii=False))
+          PY
+
+      - name: Commit refreshed review batch
+        run: |
+          FILES="data/tech-leaders/review_batch_150.csv data/tech-leaders/review_batch_150.json data/tech-leaders/review_batch_150.meta.json"
+          if [ -z "$(git status --porcelain -- $FILES)" ]; then
+            echo "No review-batch changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $FILES
+          git commit -m "data: refresh tech-leaders 150 review batch"
+          git push
