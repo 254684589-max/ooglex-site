@@ -314,9 +314,9 @@
         <h1>科技领袖实时动态流</h1>
         <p class="lead">聚合全球科技领袖、上市公司 CEO 与创始人的公开动态。</p>
         <div class="hero-meta" aria-label="栏目概览">
-          <span>100+ 公开账号</span>
-          <span>S&amp;P 500 决策者</span>
-          <span>AI · 芯片 · 云计算 · 航天</span>
+          <span>400 公开账号</span>
+          <span>全球公司领袖</span>
+          <span>AI · 芯片 · 云计算 · 金融科技</span>
         </div>
       </div>
       <span id="source-badge" hidden></span>
@@ -529,11 +529,9 @@
   function sp500Labels(p){
     if(!p||!(p.sp500_member||p.sp500_ceo))return [];
     var types=Array.isArray(p.leader_types)?p.leader_types:[];
-    var out=[];
-    if(p.sp500_ceo||types.indexOf("ceo")!==-1)out.push("S&P 500 CEO");
-    if(types.indexOf("founder")!==-1)out.push("S&P 500 Founder");
-    if(!out.length)out.push("S&P 500");
-    return out;
+    if(p.sp500_ceo||types.indexOf("ceo")!==-1)return ["S&P 500 CEO"];
+    if(types.indexOf("founder")!==-1)return ["S&P 500 Founder"];
+    return ["S&P 500"];
   }
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
@@ -646,7 +644,7 @@
     loadPublicProfile(p);
   }
   function searchableText(p){
-    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.role,p.company_zh,p.company_en,p.position_zh,p.category,p.ticker,p.sp500_ticker,p.sector].concat(p.categories||[],p.themes||[],p.leader_types||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
+    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.x_handle,p.role,p.current_role,p.company,p.company_zh,p.company_en,p.position_zh,p.category,p.primary_category,p.ticker,p.sp500_ticker,p.sector].concat(p.categories||[],p.themes||[],p.leader_types||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
   }
   function renderCategories(){
     var counts={};
@@ -738,8 +736,8 @@
     leaders.innerHTML=filtered.map(function(p){
       var cn=p.name_zh||p.zh||p.name;
       var en=p.name_en||p.name||"";
-      var company=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
-      var meta=sp500Labels(p).concat([company,p.position_zh||""]).filter(Boolean).join(" · ");
+      var company=(p.company_zh||p.company||"")+(p.company_en&&p.company_en!==p.company_zh&&p.company_en!==p.company?" · "+p.company_en:"");
+      var meta=sp500Labels(p).concat([company,p.current_role||p.position_zh||""]).filter(Boolean).join(" · ");
       return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
         '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
         '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
@@ -757,7 +755,10 @@
       if(!res.ok)throw new Error("catalog_http_"+res.status);
       var data=await res.json();
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
-        people=data.leaders.filter(function(p){return !p.admission_status||p.admission_status==="active";});
+        people=data.leaders.filter(function(p){
+          var status=p.active_status||p.admission_status||"active";
+          return status==="active";
+        });
         capacity=Number(data.capacity)||people.length;
         if(Array.isArray(data.categories)&&data.categories.length)catalogCategories=data.categories.slice();
       }
