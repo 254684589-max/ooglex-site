@@ -1048,10 +1048,10 @@
   }
   function freeFeedBrowserFreshMs(p){
     var h=String(p&&p.handle||"").toLowerCase();
-    return (p&&p.id==="zhengyi-temp")||h==="elonmusk" ? 60*1000 : 5*60*1000;
+    return h==="elonmusk" ? 60*1000 : 5*60*1000;
   }
-  function freeFeedBrowserStaleMs(p){
-    return p&&p.id==="zhengyi-temp" ? 15*60*1000 : 12*60*60*1000;
+  function freeFeedBrowserStaleMs(){
+    return 12*60*60*1000;
   }
   function readFreeFeedBrowserCache(p){
     try{
