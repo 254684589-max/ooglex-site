@@ -1,0 +1,179 @@
+name: Wall Street Preview Runtime Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "apps/tech-leaders/leaders-wall-street-v528-preview.json"
+      - "apps/tech-leaders/index.html"
+      - ".github/workflows/wall-street-preview-audit.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wall-street-preview-runtime-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Audit V528 preview and five Wall Street runtime profiles
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          preview_path = Path("apps/tech-leaders/leaders-wall-street-v528-preview.json")
+          out_path = Path("data/tech-leaders/wall_street_preview.runtime_audit.json")
+          preview = json.loads(preview_path.read_text(encoding="utf-8"))
+          people = {str(x.get("name")): x for x in preview.get("leaders", [])}
+          selected = [
+              ("Rick Rieder", "RickRieder"),
+              ("Howard Marks", "HowardMarksBook"),
+              ("Lyn Alden", "LynAldenContact"),
+              ("Eric Balchunas", "EricBalchunas"),
+              ("Cliff Asness", "CliffordAsness"),
+          ]
+
+          rows = []
+          for name, handle in selected:
+              p = people.get(name)
+              reasons = []
+              if not p:
+                  reasons.append("missing_preview_record")
+              elif str(p.get("handle") or "").lower() != handle.lower():
+                  reasons.append("preview_handle_mismatch")
+
+              avatar_url = str((p or {}).get("avatar_url") or "")
+              avatar_ok = False
+              avatar_type = ""
+              avatar_bytes = 0
+              if avatar_url:
+                  try:
+                      req = urllib.request.Request(avatar_url, headers={
+                          "User-Agent": "Ooglex Wall Street Preview Audit/1.0",
+                          "Accept": "image/*",
+                      })
+                      with urllib.request.urlopen(req, timeout=25) as resp:
+                          body = resp.read(2_000_000)
+                          avatar_type = str(resp.headers.get("Content-Type") or "")
+                          avatar_bytes = len(body)
+                          avatar_ok = resp.status == 200 and avatar_type.lower().startswith("image/") and avatar_bytes >= 512
+                  except Exception as exc:
+                      reasons.append("avatar_fetch_failed:" + type(exc).__name__)
+                  if not avatar_ok and not any(r.startswith("avatar_fetch_failed:") for r in reasons):
+                      reasons.append("avatar_invalid_response")
+              else:
+                  reasons.append("missing_avatar_url")
+
+              feed_url = "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?" + urllib.parse.urlencode({
+                  "handle": handle,
+                  "limit": 3,
+              })
+              feed_ok = False
+              feed_source = ""
+              post_count = 0
+              newest_post_at = None
+              try:
+                  req = urllib.request.Request(feed_url, headers={
+                      "User-Agent": "Ooglex Wall Street Preview Audit/1.0",
+                      "Accept": "application/json",
+                  })
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      payload = json.loads(resp.read().decode("utf-8"))
+                  posts = payload.get("posts") or []
+                  post_count = len(posts)
+                  feed_source = str(payload.get("source") or "")
+                  newest_post_at = posts[0].get("created_at") if posts else None
+                  times = [str(x.get("created_at") or "") for x in posts]
+                  feed_ok = (
+                      payload.get("uses_x_api") is False
+                      and 1 <= post_count <= 3
+                      and times == sorted(times, reverse=True)
+                  )
+              except Exception as exc:
+                  reasons.append("feed_fetch_failed:" + type(exc).__name__)
+              if not feed_ok and not any(r.startswith("feed_fetch_failed:") for r in reasons):
+                  reasons.append("feed_invalid_response")
+
+              rows.append({
+                  "name": name,
+                  "handle": handle,
+                  "preview_record_ok": p is not None and str((p or {}).get("handle") or "").lower() == handle.lower(),
+                  "avatar_ok": avatar_ok,
+                  "avatar_content_type": avatar_type,
+                  "avatar_bytes": avatar_bytes,
+                  "feed_ok": feed_ok,
+                  "feed_source": feed_source,
+                  "post_count": post_count,
+                  "newest_post_at": newest_post_at,
+                  "ready": not reasons,
+                  "blocking_reasons": reasons,
+              })
+
+          payload = {
+              "schema_version": 1,
+              "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+              "preview_catalog_version": preview.get("catalog_version"),
+              "preview_count": len(preview.get("leaders", [])),
+              "base_count": int((preview.get("preview") or {}).get("base_count") or 0),
+              "approved_additions": int((preview.get("preview") or {}).get("approved_additions") or 0),
+              "sample_count": len(rows),
+              "ready_count": sum(1 for r in rows if r["ready"]),
+              "blocked_count": sum(1 for r in rows if not r["ready"]),
+              "rows": rows,
+              "merge_gate": "pass" if all(r["ready"] for r in rows) else "hold",
+          }
+          assert payload["preview_count"] == 528
+          assert payload["base_count"] == 500
+          assert payload["approved_additions"] == 28
+          out_path.parent.mkdir(parents=True, exist_ok=True)
+          out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(payload, ensure_ascii=False))
+          if payload["merge_gate"] != "pass":
+              raise SystemExit("Wall Street preview runtime audit blocked")
+          PY
+
+      - name: Commit runtime audit
+        if: success()
+        run: |
+          FILE="data/tech-leaders/wall_street_preview.runtime_audit.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain -- "$FILE")" ]; then
+            echo "No runtime audit changes."
+            exit 0
+          fi
+          git add "$FILE"
+          git commit -m "data: record Wall Street V528 preview runtime audit"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              conflicts="$(git diff --name-only --diff-filter=U)"
+              if [ "$conflicts" = "$FILE" ]; then
+                git checkout --theirs -- "$FILE"
+                git add "$FILE"
+                GIT_EDITOR=true git rebase --continue
+              else
+                git rebase --abort || true
+                exit 1
+              fi
+            fi
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1
