@@ -19,7 +19,8 @@
     "data/tech-leaders/verified_candidates.tranche13.json",
     "data/tech-leaders/verified_candidates.tranche14.json",
     "data/tech-leaders/verified_candidates.tranche15.json",
-    "data/tech-leaders/verified_candidates.tranche16.json"
+    "data/tech-leaders/verified_candidates.tranche16.json",
+    "data/tech-leaders/verified_candidates.tranche17.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -904,6 +905,16 @@
           "name": "Sameer Samat",
           "handle": "ssamat",
           "status": "approved"
+        },
+        {
+          "name": "Assaf Rappaport",
+          "handle": "assaf_rapp",
+          "status": "approved"
+        },
+        {
+          "name": "Ami Luttwak",
+          "handle": "amiluttwak",
+          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -936,7 +947,18 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Assaf Rappaport",
+          "handle": "assaf_rapp",
+          "status": "approved"
+        },
+        {
+          "name": "Ami Luttwak",
+          "handle": "amiluttwak",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -1340,8 +1362,19 @@
         "Founder Emeritus"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Dug Song",
+          "handle": "dugsong",
+          "status": "approved"
+        },
+        {
+          "name": "Jon Oberheide",
+          "handle": "jonoberheide",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -1375,6 +1408,16 @@
         {
           "name": "John T. Chambers",
           "handle": "JohnTChambers",
+          "status": "approved"
+        },
+        {
+          "name": "Dug Song",
+          "handle": "dugsong",
+          "status": "approved"
+        },
+        {
+          "name": "Jon Oberheide",
+          "handle": "jonoberheide",
           "status": "approved"
         }
       ],
