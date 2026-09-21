@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-22",
+  "status": "static_preview_validation_pass",
+  "preview_catalog": "apps/tech-leaders/leaders-wall-street-v428-preview.json",
+  "preview_query": "?catalog=wall-street-v428-preview",
+  "requested_lineage": {
+    "frozen_base": "v400-stable-2026-09-21",
+    "base_count": 400,
+    "approved_additions": 28,
+    "preview_count": 428
+  },
+  "current_main_observation": {
+    "catalog_version": "v500-stable-2026-09-22",
+    "leader_count": 500,
+    "note": "Current main catalog is not overwritten by this preview."
+  },
+  "checks": {
+    "preview_count": 428,
+    "wall_street_count": 28,
+    "all_wall_street_primary": true,
+    "all_have_roles": true,
+    "all_have_avatar_urls": true,
+    "all_avatar_urls_use_ooglex_proxy": true,
+    "all_have_active_feed_handles": true,
+    "all_handles_worker_compatible": true,
+    "duplicate_preview_ids": [],
+    "duplicate_preview_handles": [],
+    "duplicate_vs_current_main": [],
+    "index_js_parse": "ok",
+    "preview_switch_present": true,
+    "wall_street_category_supported": true,
+    "generic_feed_path_present": true
+  },
+  "runtime_note": "The catalog, page routing, avatar proxy URLs, role fields, handle syntax, and generic feed plumbing are statically validated. External HTTP probing of pro-api.ooglex.com was not available from the current web probe, so image bytes/feed payloads were not asserted here."
+}
