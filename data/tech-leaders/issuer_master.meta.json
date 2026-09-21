@@ -1,31 +1,37 @@
 {
-  "schema_version": 2,
-  "stage": "pilot_300",
-  "generated_at": "2026-09-20T18:50:42Z",
-  "requested_limit": 300,
-  "record_count": 300,
+  "schema_version": 3,
+  "stage": "v1_1_universe_1000",
+  "generated_at": "2026-09-21T04:56:42Z",
+  "requested_limit": 1000,
+  "record_count": 1000,
   "exchange_counts": {
-    "NASDAQ": 99,
-    "NYSE": 201
+    "NASDAQ": 409,
+    "NYSE": 591
   },
   "sector_counts": {
-    "科技": 53,
-    "金融": 50,
-    "工业": 45,
-    "医疗健康": 38,
-    "可选消费": 25,
-    "必需消费": 20,
-    "能源": 17,
-    "公用事业": 16,
-    "房地产": 13,
-    "通信服务": 12,
-    "原材料": 11
+    "Unknown": 632,
+    "科技": 62,
+    "金融": 59,
+    "工业": 54,
+    "医疗健康": 44,
+    "可选消费": 35,
+    "公用事业": 27,
+    "必需消费": 25,
+    "能源": 21,
+    "原材料": 14,
+    "房地产": 14,
+    "通信服务": 13
   },
-  "market_data_as_of": "2026-09-18",
+  "priority_method_counts": {
+    "market_cap": 368,
+    "sec_filer_category_proxy": 632
+  },
+  "market_data_as_of": "2026-09-20",
   "sources": {
     "sec_identity": "https://www.sec.gov/files/company_tickers_exchange.json",
-    "market_priority": "apps/companies/data.json"
+    "market_cap_priority": "apps/companies/data.json",
+    "sec_scale_proxy": "apps/supply-chain/domestic.json"
   },
-  "scope": "Top U.S. companies in Ooglex market-cap dataset, SEC-verified as NYSE/NASDAQ",
-  "next_stage": "executive role extraction and X account verification"
+  "scope": "NYSE/Nasdaq research universe. Quoted companies use market-cap order; supplemental issuers use SEC filer-category/public-float tier as a labelled proxy.",
+  "next_stage": "multi-person leader discovery and X identity/activity verification"
 }
