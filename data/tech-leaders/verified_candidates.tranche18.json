@@ -15,12 +15,13 @@
   },
   "summary": {
     "candidates": 50,
-    "approved": 27,
-    "manual_review": 23,
+    "approved": 33,
+    "manual_review": 17,
     "rejected": 0,
     "production_overlap": 0,
     "target": "400 → 450",
-    "production_write_forbidden": true
+    "production_write_forbidden": true,
+    "reverified_at": "2026-09-21"
   },
   "candidates": [
     {
@@ -150,28 +151,28 @@
     },
     {
       "ticker": "PRIVATE",
-      "company": "Open Source / Developer Tools",
+      "company": "Earendil Works / Open Source",
       "exchange": "PRIVATE",
       "executive_name": "Armin Ronacher",
-      "executive_role": "Open-Source Software Engineer; Creator of Flask",
+      "executive_role": "Founder, Earendil Works; Creator of Flask & Jinja",
       "role_status": "current",
-      "role_source_url": "https://ppll.app/armin-ronacher",
+      "role_source_url": "https://ronacher.eu/",
       "x_handle": "mitsuhiko",
       "x_check_type": "self_profile_cross_source",
-      "x_identity_status": "candidate",
+      "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/mitsuhiko",
-      "x_identity_support_url": "",
-      "x_activity_status": "needs_recheck",
+      "x_identity_support_url": "https://github.com/mitsuhiko",
+      "x_activity_status": "active",
       "x_last_activity_at": "2026-09",
-      "x_activity_source_url": "https://ppll.app/armin-ronacher",
+      "x_activity_source_url": "https://twstalker.com/mitsuhiko",
       "recommended_categories": [
+        "AI",
         "软件",
-        "开发者工具",
-        "AI"
+        "开发者工具"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Recent personal-X activity is clear, but current employment/organizational relationship was not pinned to an authoritative first-party source in this pass."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Current personal site/GitHub identify his post-Sentry work and Earendil; @mitsuhiko has active September 2026 posts. Corrected away from a stale Sentry employment label."
     },
     {
       "ticker": "PRIVATE",
@@ -698,24 +699,24 @@
       "company": "Front",
       "exchange": "PRIVATE",
       "executive_name": "Mathilde Collin",
-      "executive_role": "Executive Chair & Co-Founder; Former CEO",
+      "executive_role": "Co-Founder & Executive Chair; Former CEO",
       "role_status": "current",
-      "role_source_url": "https://front.com/blog/a-new-fronteer-for-a-new-frontier",
+      "role_source_url": "https://front.com/about",
       "x_handle": "collinmathilde",
       "x_check_type": "self_profile_cross_source",
-      "x_identity_status": "candidate",
+      "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/collinmathilde",
-      "x_identity_support_url": "",
-      "x_activity_status": "needs_recheck",
-      "x_last_activity_at": "",
-      "x_activity_source_url": "",
+      "x_identity_support_url": "https://front.com/about",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "x_activity_source_url": "https://w.twstalker.com/collinmathilde",
       "recommended_categories": [
         "软件",
         "AI"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Important correction: she is Executive Chair & Co-Founder, not current CEO. Personal-X recency still needs verification."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Corrected from stale CEO labeling: Front lists Executive Chair & Co-Founder; @collinmathilde is active in September 2026."
     },
     {
       "ticker": "PRIVATE",
@@ -868,49 +869,51 @@
       "company": "Signal Foundation",
       "exchange": "PRIVATE",
       "executive_name": "Meredith Whittaker",
-      "executive_role": "President & Board Member",
+      "executive_role": "President, Signal; Board Member, Signal Foundation",
       "role_status": "current",
       "role_source_url": "https://signalfoundation.org/",
       "x_handle": "mer__edith",
       "x_check_type": "self_profile_cross_source",
-      "x_identity_status": "candidate",
+      "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/mer__edith",
-      "x_identity_support_url": "",
-      "x_activity_status": "needs_recheck",
-      "x_last_activity_at": "",
-      "x_activity_source_url": "",
+      "x_identity_support_url": "https://signalfoundation.org/",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "x_activity_source_url": "https://www13.twstalker.com/mer__edith",
       "recommended_categories": [
         "网络安全",
         "隐私",
-        "AI"
+        "AI",
+        "软件"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Signal Foundation confirms current President role; personal-X recency still needs a clean activity check."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Signal Foundation confirms current President/Board role; personal @mer__edith posted and reposted within recent weeks in September 2026."
     },
     {
       "ticker": "PRIVATE",
       "company": "Buffer",
       "exchange": "PRIVATE",
       "executive_name": "Joel Gascoigne",
-      "executive_role": "Founder & CEO",
+      "executive_role": "Co-Founder & CEO",
       "role_status": "current",
       "role_source_url": "https://buffer.com/about",
       "x_handle": "joelgascoigne",
       "x_check_type": "self_profile_cross_source",
-      "x_identity_status": "candidate",
+      "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/joelgascoigne",
-      "x_identity_support_url": "",
-      "x_activity_status": "needs_recheck",
-      "x_last_activity_at": "",
-      "x_activity_source_url": "",
+      "x_identity_support_url": "https://buffer.com/threads",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "x_activity_source_url": "https://mobile.twstalker.com/joelgascoigne",
       "recommended_categories": [
         "软件",
+        "消费科技",
         "AI"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Current role is well established, but personal-X recency was not independently resolved in this pass."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Buffer lists him as CEO & Co-Founder and links @joelgascoigne; September 2026 X activity verified."
     },
     {
       "ticker": "HUBS",
@@ -1086,7 +1089,7 @@
     },
     {
       "ticker": "GOOGL",
-      "company": "Google",
+      "company": "Google / Chrome",
       "exchange": "NASDAQ",
       "executive_name": "Sarah Drasner",
       "executive_role": "Distinguished Engineer; Area Tech Lead, Chrome AI & Web Ecosystem",
@@ -1094,20 +1097,21 @@
       "role_source_url": "https://github.com/sdras",
       "x_handle": "sarah_edo",
       "x_check_type": "self_profile_cross_source",
-      "x_identity_status": "candidate",
+      "x_identity_status": "verified",
       "x_identity_source_url": "https://x.com/sarah_edo",
-      "x_identity_support_url": "",
-      "x_activity_status": "needs_recheck",
-      "x_last_activity_at": "",
-      "x_activity_source_url": "",
+      "x_identity_support_url": "https://github.com/sdras",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "x_activity_source_url": "https://www6.twstalker.com/sarah_edo",
       "recommended_categories": [
         "AI",
         "软件",
-        "开发者工具"
+        "开发者工具",
+        "云计算"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Current role is stated on her GitHub profile, but recent personal-X activity inside the automatic gate still needs verification."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Current GitHub profile states Google Distinguished Engineer / Chrome AI & Web Ecosystem Area Tech Lead; @sarah_edo is actively posting in September 2026."
     },
     {
       "ticker": "PRIVATE",
@@ -1192,21 +1196,22 @@
       "executive_role": "President & Chief Operating Officer",
       "role_status": "current",
       "role_source_url": "https://www.coinbase.com/about",
-      "x_handle": "emiliechoi",
-      "x_check_type": "self_profile_cross_source",
-      "x_identity_status": "candidate",
-      "x_identity_source_url": "https://x.com/emiliechoi",
-      "x_identity_support_url": "",
-      "x_activity_status": "needs_recheck",
-      "x_last_activity_at": "",
-      "x_activity_source_url": "",
+      "x_handle": "emiliemc",
+      "x_check_type": "company_profile_cross_source",
+      "x_identity_status": "verified",
+      "x_identity_source_url": "https://x.com/emiliemc",
+      "x_identity_support_url": "https://help.coinbase.com/en/coinbase/other-topics/other/is-coinbase-present-on-social-media",
+      "x_activity_status": "active",
+      "x_last_activity_at": "2026-09",
+      "x_activity_source_url": "https://www.twstalker.com/emiliemc",
       "recommended_categories": [
         "金融科技",
-        "金融"
+        "金融",
+        "科技"
       ],
-      "confidence": "medium",
-      "review_status": "manual_review",
-      "review_notes": "Coinbase and SEC materials confirm current President/COO role; personal-X identity/activity needs independent current verification."
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Corrected handle from @emiliechoi to Coinbase-confirmed @emiliemc. Coinbase lists her as President & COO; current September 2026 X activity verified."
     },
     {
       "ticker": "HOOD",
