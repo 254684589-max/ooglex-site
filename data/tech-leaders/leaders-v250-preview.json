@@ -5743,8 +5743,8 @@
         "消费零售",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TONY XU · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "TONY XU · VERIFIED X TIMELINE",
       "category": "消费零售",
       "name_zh": "Tony Xu",
       "name_en": "Tony Xu",
@@ -5758,7 +5758,7 @@
       "ticker": "DASH",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -5780,7 +5780,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "olivier-pomel-ddog",
@@ -5795,8 +5795,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "OLIVIER POMEL · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "OLIVIER POMEL · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Olivier Pomel",
       "name_en": "Olivier Pomel",
@@ -5812,7 +5812,7 @@
       "ticker": "DDOG",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -5836,7 +5836,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "antonio-neri-hpe",
@@ -5850,8 +5850,8 @@
         "科技",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ANTONIO NERI · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "ANTONIO NERI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Antonio Neri",
       "name_en": "Antonio Neri",
@@ -5865,7 +5865,7 @@
       "ticker": "HPE",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -5887,7 +5887,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "michael-miebach-ma",
@@ -5901,8 +5901,8 @@
         "金融",
         "金融科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MICHAEL MIEBACH · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MICHAEL MIEBACH · VERIFIED X TIMELINE",
       "category": "金融",
       "name_zh": "Michael Miebach",
       "name_en": "Michael Miebach",
@@ -5916,7 +5916,7 @@
       "ticker": "MA",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -5938,7 +5938,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "sasan-goodarzi-intu",
@@ -5953,8 +5953,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SASAN GOODARZI · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SASAN GOODARZI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Sasan Goodarzi",
       "name_en": "Sasan Goodarzi",
@@ -5970,7 +5970,7 @@
       "ticker": "INTU",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -5994,7 +5994,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "bill-gates-msft",
@@ -6009,8 +6009,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "BILL GATES · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "BILL GATES · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Bill Gates",
       "name_en": "Bill Gates",
@@ -6025,7 +6025,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6049,7 +6049,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "john-t-chambers-csco",
@@ -6064,8 +6064,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JOHN T. CHAMBERS · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JOHN T. CHAMBERS · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "John T. Chambers",
       "name_en": "John T. Chambers",
@@ -6081,7 +6081,7 @@
       "ticker": "CSCO",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6105,7 +6105,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "reed-hastings-nflx",
@@ -6119,8 +6119,8 @@
         "通信服务",
         "消费科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "REED HASTINGS · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "REED HASTINGS · VERIFIED X TIMELINE",
       "category": "通信服务",
       "name_zh": "Reed Hastings",
       "name_en": "Reed Hastings",
@@ -6134,7 +6134,7 @@
       "ticker": "NFLX",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6157,7 +6157,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "steve-wozniak-aapl",
@@ -6171,8 +6171,8 @@
         "科技",
         "消费科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "STEVE WOZNIAK · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "STEVE WOZNIAK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Steve Wozniak",
       "name_en": "Steve Wozniak",
@@ -6186,7 +6186,7 @@
       "ticker": "AAPL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6209,7 +6209,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "travis-kalanick-uber",
@@ -6224,8 +6224,8 @@
         "消费科技",
         "AI"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "TRAVIS KALANICK · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "TRAVIS KALANICK · VERIFIED X TIMELINE",
       "category": "软件",
       "name_zh": "Travis Kalanick",
       "name_en": "Travis Kalanick",
@@ -6241,7 +6241,7 @@
       "ticker": "UBER",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6266,7 +6266,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "john-legere-tmus",
@@ -6280,8 +6280,8 @@
         "通信服务",
         "科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JOHN LEGERE · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JOHN LEGERE · VERIFIED X TIMELINE",
       "category": "通信服务",
       "name_zh": "John Legere",
       "name_en": "John Legere",
@@ -6295,7 +6295,7 @@
       "ticker": "TMUS",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6317,7 +6317,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "steve-ballmer-msft",
@@ -6331,8 +6331,8 @@
         "科技",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "STEVE BALLMER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "STEVE BALLMER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Steve Ballmer",
       "name_en": "Steve Ballmer",
@@ -6346,7 +6346,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6368,7 +6368,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "joe-lonsdale-pltr",
@@ -6383,8 +6383,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JOE LONSDALE · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JOE LONSDALE · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Joe Lonsdale",
       "name_en": "Joe Lonsdale",
@@ -6399,7 +6399,7 @@
       "ticker": "PLTR",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6423,7 +6423,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "brad-smith-msft",
@@ -6438,8 +6438,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BRAD SMITH · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "BRAD SMITH · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Brad Smith",
       "name_en": "Brad Smith",
@@ -6455,7 +6455,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -6479,7 +6479,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "steven-sinofsky-msft",
@@ -6494,8 +6494,8 @@
         "软件",
         "消费科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "STEVEN SINOFSKY · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "STEVEN SINOFSKY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Steven Sinofsky",
       "name_en": "Steven Sinofsky",
@@ -6510,7 +6510,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6533,7 +6533,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "panos-panay-amzn",
@@ -6548,8 +6548,8 @@
         "AI",
         "硬件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "PANOS PANAY · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "PANOS PANAY · VERIFIED X TIMELINE",
       "category": "消费科技",
       "name_zh": "Panos Panay",
       "name_en": "Panos Panay",
@@ -6565,7 +6565,7 @@
       "ticker": "AMZN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -6589,7 +6589,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "marc-randolph-nflx",
@@ -6603,8 +6603,8 @@
         "通信服务",
         "消费科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "MARC RANDOLPH · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MARC RANDOLPH · VERIFIED X TIMELINE",
       "category": "通信服务",
       "name_zh": "Marc Randolph",
       "name_en": "Marc Randolph",
@@ -6618,7 +6618,7 @@
       "ticker": "NFLX",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6641,7 +6641,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "scott-belsky-adbe",
@@ -6656,8 +6656,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "SCOTT BELSKY · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SCOTT BELSKY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Scott Belsky",
       "name_en": "Scott Belsky",
@@ -6673,7 +6673,7 @@
       "ticker": "ADBE",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6697,7 +6697,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "thomas-kurian-googl",
@@ -6712,8 +6712,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "THOMAS KURIAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "THOMAS KURIAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Thomas Kurian",
       "name_en": "Thomas Kurian",
@@ -6729,7 +6729,7 @@
       "ticker": "GOOGL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -6753,7 +6753,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "marissa-mayer-googl",
@@ -6768,8 +6768,8 @@
         "AI",
         "消费科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "MARISSA MAYER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MARISSA MAYER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Marissa Mayer",
       "name_en": "Marissa Mayer",
@@ -6784,7 +6784,7 @@
       "ticker": "GOOGL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6807,7 +6807,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mike-schroepfer-meta",
@@ -6822,8 +6822,8 @@
         "科技",
         "AI"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "MIKE SCHROEPFER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MIKE SCHROEPFER · VERIFIED X TIMELINE",
       "category": "通信服务",
       "name_zh": "Mike Schroepfer",
       "name_en": "Mike Schroepfer",
@@ -6839,7 +6839,7 @@
       "ticker": "META",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6863,7 +6863,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "nir-zuk-panw",
@@ -6878,8 +6878,8 @@
         "网络安全",
         "AI"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "NIR ZUK · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "NIR ZUK · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Nir Zuk",
       "name_en": "Nir Zuk",
@@ -6895,7 +6895,7 @@
       "ticker": "PANW",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -6920,7 +6920,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jeff-wilke-amzn",
@@ -6935,8 +6935,8 @@
         "科技",
         "工业"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JEFF WILKE · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JEFF WILKE · VERIFIED X TIMELINE",
       "category": "消费零售",
       "name_zh": "Jeff Wilke",
       "name_en": "Jeff Wilke",
@@ -6952,7 +6952,7 @@
       "ticker": "AMZN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -6976,7 +6976,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dave-clark-amzn",
@@ -6991,8 +6991,8 @@
         "科技",
         "工业"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "DAVE CLARK · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "DAVE CLARK · VERIFIED X TIMELINE",
       "category": "消费零售",
       "name_zh": "Dave Clark",
       "name_en": "Dave Clark",
@@ -7008,7 +7008,7 @@
       "ticker": "AMZN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -7032,7 +7032,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "sameer-samat-googl",
@@ -7047,8 +7047,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SAMEER SAMAT · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SAMEER SAMAT · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Sameer Samat",
       "name_en": "Sameer Samat",
@@ -7064,7 +7064,7 @@
       "ticker": "GOOGL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7088,7 +7088,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mark-papermaster-amd",
@@ -7103,8 +7103,8 @@
         "芯片",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MARK PAPERMASTER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MARK PAPERMASTER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Mark Papermaster",
       "name_en": "Mark Papermaster",
@@ -7119,7 +7119,7 @@
       "ticker": "AMD",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7142,7 +7142,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jeetu-patel-csco",
@@ -7157,8 +7157,8 @@
         "AI",
         "网络安全"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JEETU PATEL · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JEETU PATEL · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jeetu Patel",
       "name_en": "Jeetu Patel",
@@ -7174,7 +7174,7 @@
       "ticker": "CSCO",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7198,7 +7198,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "matt-garman-amzn",
@@ -7213,8 +7213,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MATT GARMAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MATT GARMAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Matt Garman",
       "name_en": "Matt Garman",
@@ -7230,7 +7230,7 @@
       "ticker": "AMZN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7254,7 +7254,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "joe-gebbia-abnb",
@@ -7268,8 +7268,8 @@
         "消费科技",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "JOE GEBBIA · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JOE GEBBIA · VERIFIED X TIMELINE",
       "category": "消费科技",
       "name_zh": "Joe Gebbia",
       "name_en": "Joe Gebbia",
@@ -7283,7 +7283,7 @@
       "ticker": "ABNB",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -7306,7 +7306,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "parker-harris-crm",
@@ -7321,8 +7321,8 @@
         "云计算",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "PARKER HARRIS · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "PARKER HARRIS · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Parker Harris",
       "name_en": "Parker Harris",
@@ -7338,7 +7338,7 @@
       "ticker": "CRM",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -7362,7 +7362,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "nathan-blecharczyk-abnb",
@@ -7376,8 +7376,8 @@
         "消费科技",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "NATHAN BLECHARCZYK · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "NATHAN BLECHARCZYK · VERIFIED X TIMELINE",
       "category": "消费科技",
       "name_zh": "Nathan Blecharczyk",
       "name_en": "Nathan Blecharczyk",
@@ -7391,7 +7391,7 @@
       "ticker": "ABNB",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -7413,7 +7413,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mike-krieger-meta",
@@ -7428,8 +7428,8 @@
         "消费科技",
         "AI"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "MIKE KRIEGER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MIKE KRIEGER · VERIFIED X TIMELINE",
       "category": "通信服务",
       "name_zh": "Mike Krieger",
       "name_en": "Mike Krieger",
@@ -7445,7 +7445,7 @@
       "ticker": "META",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -7470,7 +7470,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "arash-ferdowsi-dbx",
@@ -7485,8 +7485,8 @@
         "云计算",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "ARASH FERDOWSI · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "ARASH FERDOWSI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Arash Ferdowsi",
       "name_en": "Arash Ferdowsi",
@@ -7502,7 +7502,7 @@
       "ticker": "DBX",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -7527,7 +7527,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "amit-zavery-now",
@@ -7542,8 +7542,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "AMIT ZAVERY · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "AMIT ZAVERY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Amit Zavery",
       "name_en": "Amit Zavery",
@@ -7559,7 +7559,7 @@
       "ticker": "NOW",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7583,7 +7583,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "raghu-raghuram-avgo",
@@ -7598,8 +7598,8 @@
         "云计算",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "RAGHU RAGHURAM · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "RAGHU RAGHURAM · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Raghu Raghuram",
       "name_en": "Raghu Raghuram",
@@ -7615,7 +7615,7 @@
       "ticker": "AVGO",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -7639,7 +7639,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "pavan-davuluri-msft",
@@ -7654,8 +7654,8 @@
         "AI",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "PAVAN DAVULURI · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "PAVAN DAVULURI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Pavan Davuluri",
       "name_en": "Pavan Davuluri",
@@ -7671,7 +7671,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7695,7 +7695,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "judson-althoff-msft",
@@ -7710,8 +7710,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JUDSON ALTHOFF · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JUDSON ALTHOFF · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Judson Althoff",
       "name_en": "Judson Althoff",
@@ -7727,7 +7727,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7751,7 +7751,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "swami-sivasubramanian-amzn",
@@ -7766,8 +7766,8 @@
         "AI",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SWAMI SIVASUBRAMANIAN · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SWAMI SIVASUBRAMANIAN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Swami Sivasubramanian",
       "name_en": "Swami Sivasubramanian",
@@ -7783,7 +7783,7 @@
       "ticker": "AMZN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -7807,7 +7807,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "phil-spencer-msft",
@@ -7822,8 +7822,8 @@
         "软件",
         "消费科技"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "PHIL SPENCER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "PHIL SPENCER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Phil Spencer",
       "name_en": "Phil Spencer",
@@ -7839,7 +7839,7 @@
       "ticker": "MSFT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -7863,7 +7863,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "david-baszucki-rblx",
@@ -7878,8 +7878,8 @@
         "消费科技",
         "游戏"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DAVID BASZUCKI · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "DAVID BASZUCKI · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "David Baszucki",
       "name_en": "David Baszucki",
@@ -7895,7 +7895,7 @@
       "ticker": "RBLX",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -7919,7 +7919,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "todd-mckinnon-okta",
@@ -7934,8 +7934,8 @@
         "网络安全",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "TODD MCKINNON · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "TODD MCKINNON · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Todd McKinnon",
       "name_en": "Todd McKinnon",
@@ -7951,7 +7951,7 @@
       "ticker": "OKTA",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -7975,7 +7975,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dev-ittycheria-mdb",
@@ -7990,8 +7990,8 @@
         "云计算",
         "软件"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "DEV ITTYCHERIA · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "DEV ITTYCHERIA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dev Ittycheria",
       "name_en": "Dev Ittycheria",
@@ -8007,7 +8007,7 @@
       "ticker": "MDB",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "legacy_leader"
       ],
@@ -8031,7 +8031,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "dharmesh-shah-hubs",
@@ -8046,8 +8046,8 @@
         "软件",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "DHARMESH SHAH · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "DHARMESH SHAH · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Dharmesh Shah",
       "name_en": "Dharmesh Shah",
@@ -8062,7 +8062,7 @@
       "ticker": "HUBS",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8085,7 +8085,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "mike-cannon-brookes-team",
@@ -8100,8 +8100,8 @@
         "软件",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MIKE CANNON-BROOKES · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MIKE CANNON-BROOKES · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Mike Cannon-Brookes",
       "name_en": "Mike Cannon-Brookes",
@@ -8116,7 +8116,7 @@
       "ticker": "TEAM",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8139,7 +8139,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "michael-saylor-mstr",
@@ -8154,8 +8154,8 @@
         "金融",
         "比特币"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "MICHAEL SAYLOR · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "MICHAEL SAYLOR · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Michael Saylor",
       "name_en": "Michael Saylor",
@@ -8170,7 +8170,7 @@
       "ticker": "MSTR",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8193,7 +8193,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "harley-finkelstein-shop",
@@ -8208,8 +8208,8 @@
         "电商",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "HARLEY FINKELSTEIN · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "HARLEY FINKELSTEIN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Harley Finkelstein",
       "name_en": "Harley Finkelstein",
@@ -8225,7 +8225,7 @@
       "ticker": "SHOP",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -8249,7 +8249,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "jay-kreps-cflt",
@@ -8264,8 +8264,8 @@
         "云计算",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "JAY KREPS · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "JAY KREPS · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Jay Kreps",
       "name_en": "Jay Kreps",
@@ -8282,7 +8282,7 @@
       "ticker": "CFLT",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8307,7 +8307,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "anthony-noto-sofi",
@@ -8322,8 +8322,8 @@
         "金融科技",
         "AI"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "ANTHONY NOTO · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "ANTHONY NOTO · VERIFIED X TIMELINE",
       "category": "金融",
       "name_zh": "Anthony Noto",
       "name_en": "Anthony Noto",
@@ -8338,7 +8338,7 @@
       "ticker": "SOFI",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -8361,7 +8361,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "fred-ehrsam-coin",
@@ -8376,8 +8376,8 @@
         "金融科技",
         "加密资产"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "FRED EHRSAM · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "FRED EHRSAM · VERIFIED X TIMELINE",
       "category": "金融",
       "name_zh": "Fred Ehrsam",
       "name_en": "Fred Ehrsam",
@@ -8392,7 +8392,7 @@
       "ticker": "COIN",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8415,7 +8415,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "bill-staples-gtlb",
@@ -8430,8 +8430,8 @@
         "开发者工具",
         "软件"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BILL STAPLES · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "BILL STAPLES · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Bill Staples",
       "name_en": "Bill Staples",
@@ -8447,7 +8447,7 @@
       "ticker": "GTLB",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -8471,7 +8471,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "bipul-sinha-rbrk",
@@ -8486,8 +8486,8 @@
         "网络安全",
         "云计算"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "BIPUL SINHA · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "BIPUL SINHA · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Bipul Sinha",
       "name_en": "Bipul Sinha",
@@ -8503,7 +8503,7 @@
       "ticker": "RBRK",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8527,7 +8527,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "severin-hacker-duol",
@@ -8542,8 +8542,8 @@
         "消费科技",
         "教育科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SEVERIN HACKER · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SEVERIN HACKER · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Severin Hacker",
       "name_en": "Severin Hacker",
@@ -8559,7 +8559,7 @@
       "ticker": "DUOL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8583,7 +8583,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "luis-von-ahn-duol",
@@ -8598,8 +8598,8 @@
         "消费科技",
         "教育科技"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "LUIS VON AHN · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "LUIS VON AHN · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Luis von Ahn",
       "name_en": "Luis von Ahn",
@@ -8615,7 +8615,7 @@
       "ticker": "DUOL",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder"
       ],
@@ -8639,7 +8639,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "sridhar-ramaswamy-snow",
@@ -8654,8 +8654,8 @@
         "云计算",
         "数据基础设施"
       ],
-      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
-      "title": "SRIDHAR RAMASWAMY · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SRIDHAR RAMASWAMY · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Sridhar Ramaswamy",
       "name_en": "Sridhar Ramaswamy",
@@ -8671,7 +8671,7 @@
       "ticker": "SNOW",
       "exchange": "NYSE",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "executive"
       ],
@@ -8695,7 +8695,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     },
     {
       "id": "scott-farquhar-team",
@@ -8710,8 +8710,8 @@
         "软件",
         "AI"
       ],
-      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。",
-      "title": "SCOTT FARQUHAR · VERIFIED X TIMELINE PREVIEW",
+      "note": "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。已通过人物身份、公司关系、个人 X 与活跃度审核。",
+      "title": "SCOTT FARQUHAR · VERIFIED X TIMELINE",
       "category": "科技",
       "name_zh": "Scott Farquhar",
       "name_en": "Scott Farquhar",
@@ -8726,7 +8726,7 @@
       "ticker": "TEAM",
       "exchange": "NASDAQ",
       "listed_company": true,
-      "admission_status": "preview_approved",
+      "admission_status": "active",
       "leader_types": [
         "founder",
         "legacy_leader"
@@ -8750,7 +8750,7 @@
       "avatar_fallback": "local_initials_svg",
       "avatar_policy": "x_original_then_verified_fallback",
       "avatar_verified": false,
-      "preview_only": true
+      "production_promoted_at": "2026-09-21"
     }
   ],
   "categories": [
@@ -8858,8 +8858,9 @@
       "hold": 2,
       "manual_review": 14
     },
-    "base_count": 110,
-    "approved_additions": 55,
+    "base_count": 165,
+    "approved_already_live": 55,
+    "approved_additions": 0,
     "preview_count": 165,
     "production_file_untouched": true
   }
