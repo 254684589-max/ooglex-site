@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-21",
+  "status": "reviewed_tranche",
+  "source_batch": "data/tech-leaders/review_batch_150.json",
+  "policy": {
+    "blue_check_alone_not_identity_proof": true,
+    "require_current_role_source": true,
+    "require_x_identity_evidence_for_approval": true,
+    "production_write_forbidden": true
+  },
+  "candidates": [
+    {
+      "ticker": "ORCL",
+      "company": "Oracle Corporation",
+      "exchange": "NYSE",
+      "executive_name": "Clay Magouyrk / Mike Sicilia",
+      "executive_role": "Co-Chief Executive Officers",
+      "role_status": "current",
+      "role_source_url": "https://www.oracle.com/corporate/executives/",
+      "x_handle": "",
+      "x_check_type": "unknown",
+      "x_identity_status": "not_verified",
+      "x_identity_source_url": "",
+      "x_activity_status": "unknown",
+      "x_last_activity_at": "",
+      "recommended_categories": [
+        "上市公司",
+        "NYSE",
+        "科技",
+        "云计算",
+        "软件"
+      ],
+      "confidence": "high_role_only",
+      "review_status": "manual_review",
+      "review_notes": "Oracle changed leadership in Sep 2025. Safra Catz is now Executive Vice Chair, not CEO. No personal X for the current co-CEOs was verified in this tranche.",
+      "corporate_fallback": "Oracle"
+    },
+    {
+      "ticker": "TMUS",
+      "company": "T-Mobile US",
+      "exchange": "NASDAQ",
+      "executive_name": "Srini Gopalan",
+      "executive_role": "President & Chief Executive Officer",
+      "role_status": "current",
+      "role_source_url": "https://www.t-mobile.com/our-story/executive-leadership-team/srini-gopalan",
+      "x_handle": "",
+      "x_check_type": "unknown",
+      "x_identity_status": "not_verified",
+      "x_identity_source_url": "",
+      "x_activity_status": "unknown",
+      "x_last_activity_at": "",
+      "recommended_categories": [
+        "上市公司",
+        "NASDAQ",
+        "通信服务"
+      ],
+      "confidence": "high_role_only",
+      "review_status": "manual_review",
+      "review_notes": "Mike Sievert is former CEO and current Vice Chairman; do not import his X account as the current CEO. Srini Gopalan has been CEO since Nov 2025.",
+      "corporate_fallback": "TMobile"
+    },
+    {
+      "ticker": "DASH",
+      "company": "DoorDash",
+      "exchange": "NASDAQ",
+      "executive_name": "Tony Xu",
+      "executive_role": "Co-founder & Chief Executive Officer",
+      "role_status": "current",
+      "role_source_url": "https://ir.doordash.com/governance/management/default.aspx",
+      "x_handle": "t_xu",
+      "x_check_type": "uncertain",
+      "x_identity_status": "verified",
+      "x_identity_source_url": "https://x.com/t_xu/with_replies",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "2026-04-08",
+      "recommended_categories": [
+        "上市公司",
+        "NASDAQ",
+        "消费零售",
+        "软件"
+      ],
+      "confidence": "high",
+      "review_status": "approved",
+      "review_notes": "Official DoorDash IR confirms current CEO/co-founder role. X profile self-identifies as CEO and co-founder at @DoorDash; a public post is visible in Apr 2026.",
+      "corporate_fallback": "DoorDash"
+    },
+    {
+      "ticker": "DDOG",
+      "company": "Datadog",
+      "exchange": "NASDAQ",
+      "executive_name": "Olivier Pomel",
+      "executive_role": "Co-founder & Chief Executive Officer",
+      "role_status": "current",
+      "role_source_url": "https://www.datadoghq.com/about/leadership/",
+      "x_handle": "oliveur",
+      "x_check_type": "uncertain",
+      "x_identity_status": "verified",
+      "x_identity_source_url": "https://x.com/oliveur/with_replies",
+      "x_activity_status": "needs_activity_check",
+      "x_last_activity_at": "",
+      "recommended_categories": [
+        "上市公司",
+        "NASDAQ",
+        "科技",
+        "AI",
+        "云计算",
+        "软件"
+      ],
+      "confidence": "high_identity_medium_activity",
+      "review_status": "manual_review",
+      "review_notes": "Official Datadog leadership confirms CEO/co-founder. X profile identifies Olivier Pomel as Datadog co-founder and links datadoghq.com; recent posting cadence still needs verification.",
+      "corporate_fallback": "datadoghq"
+    },
+    {
+      "ticker": "HPE",
+      "company": "Hewlett Packard Enterprise",
+      "exchange": "NYSE",
+      "executive_name": "Antonio Neri",
+      "executive_role": "President & Chief Executive Officer",
+      "role_status": "current",
+      "role_source_url": "https://www.hpe.com/us/en/leadership-bios/antonio-neri.html",
+      "x_handle": "AntonioNeri_HPE",
+      "x_check_type": "uncertain",
+      "x_identity_status": "verified",
+      "x_identity_source_url": "https://x.com/AntonioNeri_HPE/status/2013272143811821744",
+      "x_activity_status": "intermittent",
+      "x_last_activity_at": "2026-01-19",
+      "recommended_categories": [
+        "上市公司",
+        "NYSE",
+        "科技",
+        "云计算"
+      ],
+      "confidence": "high_identity_medium_activity",
+      "review_status": "manual_review",
+      "review_notes": "Current HPE CEO confirmed by HPE. Personal X handle is attributable to Antonio Neri; latest directly surfaced post in this tranche is Jan 2026, so activity is not strong enough for automatic approval.",
+      "corporate_fallback": "HPE"
+    }
+  ]
+}
