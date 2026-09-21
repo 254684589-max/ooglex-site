@@ -1,0 +1,692 @@
+{
+  "schema_version": 2,
+  "as_of": "2026-09-22",
+  "status": "production_promoted",
+  "release": "v594-stable-2026-09-22",
+  "correction": {
+    "prior_incorrect_operation": "Tagged 66 existing V528 profiles as Wall Street without increasing the global catalog.",
+    "reverted_existing_retags": 66,
+    "corrected_target": "528 -> 594 global leaders; 34 -> 100 Wall Street"
+  },
+  "summary": {
+    "base_catalog_count": 528,
+    "genuine_new_people": 66,
+    "final_catalog_count": 594,
+    "original_wall_street_count": 34,
+    "final_wall_street_count": 100,
+    "duplicate_ids": 0,
+    "duplicate_handles": 0,
+    "duplicate_names": 0
+  },
+  "policy": {
+    "require_new_person": true,
+    "require_no_name_or_handle_collision": true,
+    "require_finance_or_capital_markets_relevance": true,
+    "require_personal_x_identity": true,
+    "require_role_or_public_market_evidence": true,
+    "activity_review_window": "2026 public activity/relevance",
+    "avatar_policy": "Ooglex avatar endpoint; new 66 remain pending avatar audit until verified"
+  },
+  "additions": [
+    {
+      "id": "wall-street-v594-josh-brown",
+      "name": "Josh Brown",
+      "handle": "ReformedBroker",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Chief Executive Officer",
+      "role_source_url": "https://www.ritholtzwealth.com/team/josh-brown/",
+      "x_identity_source_url": "https://x.com/ReformedBroker",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-joe-weisenthal",
+      "name": "Joe Weisenthal",
+      "handle": "TheStalwart",
+      "company": "Bloomberg",
+      "current_role": "Odd Lots Co-host",
+      "role_source_url": "https://www.bloombergmedia.com/talent/people/joe-weisenthal/",
+      "x_identity_source_url": "https://x.com/TheStalwart",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-tracy-alloway",
+      "name": "Tracy Alloway",
+      "handle": "tracyalloway",
+      "company": "Bloomberg",
+      "current_role": "Odd Lots Co-host",
+      "role_source_url": "https://www.bloombergmedia.com/talent/people/tracy-alloway/",
+      "x_identity_source_url": "https://x.com/tracyalloway",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-charlie-bilello",
+      "name": "Charlie Bilello",
+      "handle": "charliebilello",
+      "company": "Creative Planning",
+      "current_role": "Chief Market Strategist",
+      "role_source_url": "https://creativeplanning.com/team/charlie-bilello/",
+      "x_identity_source_url": "https://x.com/charliebilello",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-ryan-detrick",
+      "name": "Ryan Detrick",
+      "handle": "RyanDetrick",
+      "company": "Carson Group",
+      "current_role": "Chief Market Strategist",
+      "role_source_url": "https://www.carsongroup.com/about/team/ryan-detrick/",
+      "x_identity_source_url": "https://x.com/RyanDetrick",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-meb-faber",
+      "name": "Meb Faber",
+      "handle": "MebFaber",
+      "company": "Cambria Investment Management",
+      "current_role": "Co-Founder & Chief Investment Officer",
+      "role_source_url": "https://www.cambriainvestments.com/meb-faber/",
+      "x_identity_source_url": "https://x.com/MebFaber",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-ben-hunt",
+      "name": "Ben Hunt",
+      "handle": "EpsilonTheory",
+      "company": "Epsilon Theory",
+      "current_role": "Co-Founder & Author",
+      "role_source_url": "https://www.epsilontheory.com/about/",
+      "x_identity_source_url": "https://x.com/EpsilonTheory",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-cullen-roche",
+      "name": "Cullen Roche",
+      "handle": "cullenroche",
+      "company": "Discipline Funds / Orcam Financial Group",
+      "current_role": "Chief Investment Officer / Managing Member",
+      "role_source_url": "https://disciplinefunds.com/about/",
+      "x_identity_source_url": "https://x.com/cullenroche",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-jesse-felder",
+      "name": "Jesse Felder",
+      "handle": "jessefelder",
+      "company": "The Felder Report",
+      "current_role": "Founder",
+      "role_source_url": "https://thefelderreport.com/about/",
+      "x_identity_source_url": "https://x.com/jessefelder",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-brent-johnson",
+      "name": "Brent Johnson",
+      "handle": "SantiagoAuFund",
+      "company": "Santiago Capital",
+      "current_role": "Chief Executive Officer",
+      "role_source_url": "https://www.santiagocapital.com/",
+      "x_identity_source_url": "https://x.com/SantiagoAuFund",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-luke-gromen",
+      "name": "Luke Gromen",
+      "handle": "LukeGromen",
+      "company": "Forest for the Trees",
+      "current_role": "Founder & President",
+      "role_source_url": "https://fftt-llc.com/about/",
+      "x_identity_source_url": "https://x.com/LukeGromen",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-darius-dale",
+      "name": "Darius Dale",
+      "handle": "DariusDale42",
+      "company": "42 Macro",
+      "current_role": "Founder & Chief Executive Officer",
+      "role_source_url": "https://42macro.com/our-founder",
+      "x_identity_source_url": "https://x.com/DariusDale42",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-peter-boockvar",
+      "name": "Peter Boockvar",
+      "handle": "pboockvar",
+      "company": "OnePoint BFG Wealth Partners",
+      "current_role": "Chief Investment Officer",
+      "role_source_url": "https://www.onepointbfg.com/feldman-and-klein",
+      "x_identity_source_url": "https://x.com/pboockvar",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-julian-brigden",
+      "name": "Julian Brigden",
+      "handle": "JulianMI2",
+      "company": "Macro Intelligence 2 Partners",
+      "current_role": "Co-Founder & President",
+      "role_source_url": "https://portal.mi2partners.com/press-kit/",
+      "x_identity_source_url": "https://x.com/JulianMI2",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-harley-bassman",
+      "name": "Harley Bassman",
+      "handle": "ConvexityMaven",
+      "company": "Simplify Asset Management",
+      "current_role": "Managing Partner",
+      "role_source_url": "https://www.simplify.us/team/harley-bassman",
+      "x_identity_source_url": "https://x.com/ConvexityMaven",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-chris-whalen",
+      "name": "Chris Whalen",
+      "handle": "rcwhalen",
+      "company": "Whalen Global Advisors",
+      "current_role": "Chairman",
+      "role_source_url": "https://www.rcwhalen.com/",
+      "x_identity_source_url": "https://x.com/rcwhalen",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-stephanie-link",
+      "name": "Stephanie Link",
+      "handle": "Stephanie_Link",
+      "company": "Hightower",
+      "current_role": "Chief Investment Strategist & Portfolio Manager",
+      "role_source_url": "https://hightoweradvisors.com/",
+      "x_identity_source_url": "https://x.com/Stephanie_Link",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-karen-finerman",
+      "name": "Karen Finerman",
+      "handle": "karenfinerman",
+      "company": "Metropolitan Capital Advisors",
+      "current_role": "Chief Executive Officer",
+      "role_source_url": "https://www.metropolitancapital.com/",
+      "x_identity_source_url": "https://x.com/karenfinerman",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-guy-adami",
+      "name": "Guy Adami",
+      "handle": "GuyAdami",
+      "company": "RiskReversal Media",
+      "current_role": "Co-Founder",
+      "role_source_url": "https://riskreversal.com/",
+      "x_identity_source_url": "https://x.com/GuyAdami",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-dan-nathan",
+      "name": "Dan Nathan",
+      "handle": "RiskReversal",
+      "company": "RiskReversal Media",
+      "current_role": "Co-Founder",
+      "role_source_url": "https://riskreversal.com/",
+      "x_identity_source_url": "https://x.com/RiskReversal",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-brian-kelly",
+      "name": "Brian Kelly",
+      "handle": "BKBrianKelly",
+      "company": "BKCM",
+      "current_role": "Founder & Chief Executive Officer",
+      "role_source_url": "https://bkcm.co/",
+      "x_identity_source_url": "https://x.com/BKBrianKelly",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-doug-kass",
+      "name": "Doug Kass",
+      "handle": "DougKass",
+      "company": "Seabreeze Partners Management",
+      "current_role": "President",
+      "role_source_url": "https://seabreezepartnerslp.com/",
+      "x_identity_source_url": "https://x.com/DougKass",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-marc-cohodes",
+      "name": "Marc Cohodes",
+      "handle": "AlderLaneEggs",
+      "company": "Independent",
+      "current_role": "Investor & Short Seller",
+      "role_source_url": "https://www.glasshousebrands.com/marc-cohodes/",
+      "x_identity_source_url": "https://x.com/AlderLaneEggs",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-ken-fisher",
+      "name": "Ken Fisher",
+      "handle": "KennethLFisher",
+      "company": "Fisher Investments",
+      "current_role": "Founder, Executive Chairman & Co-Chief Investment Officer",
+      "role_source_url": "https://www.fisherinvestments.com/en-us/about/leadership/ken-fisher",
+      "x_identity_source_url": "https://x.com/KennethLFisher",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-mohnish-pabrai",
+      "name": "Mohnish Pabrai",
+      "handle": "MohnishPabrai",
+      "company": "Pabrai Investment Funds",
+      "current_role": "Managing Partner",
+      "role_source_url": "https://pabraifunds.com/",
+      "x_identity_source_url": "https://x.com/MohnishPabrai",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-guy-spier",
+      "name": "Guy Spier",
+      "handle": "GSpier",
+      "company": "Aquamarine Capital",
+      "current_role": "Founder & Portfolio Manager",
+      "role_source_url": "https://www.aquamarinefund.com/",
+      "x_identity_source_url": "https://x.com/GSpier",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-vitaliy-katsenelson",
+      "name": "Vitaliy Katsenelson",
+      "handle": "vitaliyk",
+      "company": "Investment Management Associates",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "role_source_url": "https://imausa.com/",
+      "x_identity_source_url": "https://x.com/vitaliyk",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-chris-bloomstran",
+      "name": "Chris Bloomstran",
+      "handle": "ChrisBloomstran",
+      "company": "Semper Augustus Investments Group",
+      "current_role": "President & Chief Investment Officer",
+      "role_source_url": "https://www.semperaugustus.com/team",
+      "x_identity_source_url": "https://x.com/ChrisBloomstran",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-mark-minervini",
+      "name": "Mark Minervini",
+      "handle": "markminervini",
+      "company": "Minervini Private Access",
+      "current_role": "Trader & Author",
+      "role_source_url": "https://www.minervini.com/",
+      "x_identity_source_url": "https://x.com/markminervini",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-peter-brandt",
+      "name": "Peter Brandt",
+      "handle": "PeterLBrandt",
+      "company": "Factor Trading",
+      "current_role": "Founder & Trader",
+      "role_source_url": "https://www.peterlbrandt.com/",
+      "x_identity_source_url": "https://x.com/PeterLBrandt",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-linda-raschke",
+      "name": "Linda Raschke",
+      "handle": "LindaRaschke",
+      "company": "LBRGroup",
+      "current_role": "Professional Trader",
+      "role_source_url": "https://lindaraschke.net/",
+      "x_identity_source_url": "https://x.com/LindaRaschke",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-brian-shannon",
+      "name": "Brian Shannon",
+      "handle": "alphatrends",
+      "company": "AlphaTrends",
+      "current_role": "Founder & Trader",
+      "role_source_url": "https://alphatrends.net/",
+      "x_identity_source_url": "https://x.com/alphatrends",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-jc-parets",
+      "name": "JC Parets",
+      "handle": "JC_ParetsX",
+      "company": "Trend Labs",
+      "current_role": "Founder",
+      "role_source_url": "https://www.carsongroup.com/insights/blog/jc-parets-returns-fvf-ep-197/",
+      "x_identity_source_url": "https://x.com/JC_ParetsX",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-sven-henrich",
+      "name": "Sven Henrich",
+      "handle": "NorthmanTrader",
+      "company": "NorthmanTrader",
+      "current_role": "Founder & Lead Market Strategist",
+      "role_source_url": "https://northmantrader.com/",
+      "x_identity_source_url": "https://x.com/NorthmanTrader",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-harris-kupperman",
+      "name": "Harris Kupperman",
+      "handle": "hkuppy",
+      "company": "Praetorian Capital Management",
+      "current_role": "Founder & Chief Investment Officer",
+      "role_source_url": "https://www.praetoriancapital.com/",
+      "x_identity_source_url": "https://x.com/hkuppy",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-peter-tchir",
+      "name": "Peter Tchir",
+      "handle": "TFMkts",
+      "company": "Academy Securities",
+      "current_role": "Head of Macro Strategy",
+      "role_source_url": "https://academysecurities.com/",
+      "x_identity_source_url": "https://x.com/TFMkts",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-anthony-pompliano",
+      "name": "Anthony Pompliano",
+      "handle": "APompliano",
+      "company": "Professional Capital Management",
+      "current_role": "Founder & Chief Executive Officer",
+      "role_source_url": "https://professionalcapitalmanagement.com/",
+      "x_identity_source_url": "https://x.com/APompliano",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-matt-hougan",
+      "name": "Matt Hougan",
+      "handle": "Matt_Hougan",
+      "company": "Bitwise Asset Management",
+      "current_role": "Chief Investment Officer",
+      "role_source_url": "https://bitwiseinvestments.com/",
+      "x_identity_source_url": "https://x.com/Matt_Hougan",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-hunter-horsley",
+      "name": "Hunter Horsley",
+      "handle": "HHorsley",
+      "company": "Bitwise Asset Management",
+      "current_role": "Co-Founder & Chief Executive Officer",
+      "role_source_url": "https://bitwiseinvestments.com/",
+      "x_identity_source_url": "https://x.com/HHorsley",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-james-seyffart",
+      "name": "James Seyffart",
+      "handle": "JSeyff",
+      "company": "Bloomberg Intelligence",
+      "current_role": "ETF Analyst",
+      "role_source_url": "https://www.bloomberg.com/professional/",
+      "x_identity_source_url": "https://x.com/JSeyff",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-nate-geraci",
+      "name": "Nate Geraci",
+      "handle": "NateGeraci",
+      "company": "The ETF Store",
+      "current_role": "President",
+      "role_source_url": "https://etfstore.com/about-us/",
+      "x_identity_source_url": "https://x.com/NateGeraci",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-todd-rosenbluth",
+      "name": "Todd Rosenbluth",
+      "handle": "ToddRosenbluth",
+      "company": "VettaFi",
+      "current_role": "Head of Research",
+      "role_source_url": "https://vettafi.com/",
+      "x_identity_source_url": "https://x.com/ToddRosenbluth",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-nick-maggiulli",
+      "name": "Nick Maggiulli",
+      "handle": "dollarsanddata",
+      "company": "Ritholtz Wealth Management",
+      "current_role": "Chief Operating Officer",
+      "role_source_url": "https://www.ritholtzwealth.com/",
+      "x_identity_source_url": "https://x.com/dollarsanddata",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-morgan-housel",
+      "name": "Morgan Housel",
+      "handle": "morganhousel",
+      "company": "Collaborative Fund",
+      "current_role": "Partner",
+      "role_source_url": "https://www.collaborativefund.com/team/morgan/",
+      "x_identity_source_url": "https://x.com/morganhousel",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-jeremy-schwartz",
+      "name": "Jeremy Schwartz",
+      "handle": "JeremyDSchwartz",
+      "company": "WisdomTree",
+      "current_role": "Global Chief Investment Officer",
+      "role_source_url": "https://www.wisdomtree.com/",
+      "x_identity_source_url": "https://x.com/JeremyDSchwartz",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-dave-nadig",
+      "name": "Dave Nadig",
+      "handle": "DaveNadig",
+      "company": "Independent",
+      "current_role": "Financial Markets Commentator",
+      "role_source_url": "https://davenadig.com/",
+      "x_identity_source_url": "https://x.com/DaveNadig",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-mark-dow",
+      "name": "Mark Dow",
+      "handle": "mark_dow",
+      "company": "Behavioral Macro",
+      "current_role": "Founder",
+      "role_source_url": "https://www.behavioralmacro.com/",
+      "x_identity_source_url": "https://x.com/mark_dow",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-aswath-damodaran",
+      "name": "Aswath Damodaran",
+      "handle": "AswathDamodaran",
+      "company": "NYU Stern School of Business",
+      "current_role": "Professor of Finance",
+      "role_source_url": "https://pages.stern.nyu.edu/~adamodar/",
+      "x_identity_source_url": "https://x.com/AswathDamodaran",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-david-bahnsen",
+      "name": "David Bahnsen",
+      "handle": "DavidBahnsen",
+      "company": "The Bahnsen Group",
+      "current_role": "Founder, Managing Partner & Chief Investment Officer",
+      "role_source_url": "https://thebahnsengroup.com/",
+      "x_identity_source_url": "https://x.com/DavidBahnsen",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-ross-gerber",
+      "name": "Ross Gerber",
+      "handle": "GerberKawasaki",
+      "company": "Gerber Kawasaki Wealth & Investment Management",
+      "current_role": "Co-Founder, President & Chief Executive Officer",
+      "role_source_url": "https://www.gerberkawasaki.com/our-team/ross-gerber",
+      "x_identity_source_url": "https://x.com/GerberKawasaki",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-gene-munster",
+      "name": "Gene Munster",
+      "handle": "munster_gene",
+      "company": "Deepwater Asset Management",
+      "current_role": "Managing Partner",
+      "role_source_url": "https://deepwatermgmt.com/",
+      "x_identity_source_url": "https://x.com/munster_gene",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-beth-kindig",
+      "name": "Beth Kindig",
+      "handle": "Beth_Kindig",
+      "company": "I/O Fund",
+      "current_role": "Lead Tech Analyst",
+      "role_source_url": "https://io-fund.com/",
+      "x_identity_source_url": "https://x.com/Beth_Kindig",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-howard-lindzon",
+      "name": "Howard Lindzon",
+      "handle": "howardlindzon",
+      "company": "Social Leverage",
+      "current_role": "Co-Founder & General Partner",
+      "role_source_url": "https://www.socialleverage.com/",
+      "x_identity_source_url": "https://x.com/howardlindzon",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-chris-camillo",
+      "name": "Chris Camillo",
+      "handle": "ChrisCamillo",
+      "company": "Dumb Money",
+      "current_role": "Investor & Co-Host",
+      "role_source_url": "https://dumbmoney.tv/",
+      "x_identity_source_url": "https://x.com/ChrisCamillo",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-michael-kantrowitz",
+      "name": "Michael Kantrowitz",
+      "handle": "MichaelKantro",
+      "company": "Piper Sandler",
+      "current_role": "Chief Investment Strategist",
+      "role_source_url": "https://www.pipersandler.com/",
+      "x_identity_source_url": "https://x.com/MichaelKantro",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-peter-atwater",
+      "name": "Peter Atwater",
+      "handle": "Peter_Atwater",
+      "company": "Financial Insyghts",
+      "current_role": "President",
+      "role_source_url": "https://www.peteratwater.com/",
+      "x_identity_source_url": "https://x.com/Peter_Atwater",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-andy-constan",
+      "name": "Andy Constan",
+      "handle": "dampedspring",
+      "company": "Damped Spring Advisors",
+      "current_role": "Founder & Chief Executive Officer",
+      "role_source_url": "https://dampedspring.com/",
+      "x_identity_source_url": "https://x.com/dampedspring",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-cameron-dawson",
+      "name": "Cameron Dawson",
+      "handle": "CameronDawson",
+      "company": "NewEdge Wealth",
+      "current_role": "Chief Investment Officer",
+      "role_source_url": "https://www.newedgewealth.com/",
+      "x_identity_source_url": "https://x.com/CameronDawson",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-anastasia-amoroso",
+      "name": "Anastasia Amoroso",
+      "handle": "AnaAmoroso",
+      "company": "iCapital",
+      "current_role": "Chief Investment Strategist",
+      "role_source_url": "https://icapital.com/",
+      "x_identity_source_url": "https://x.com/AnaAmoroso",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-sonali-basak",
+      "name": "Sonali Basak",
+      "handle": "sonalibasak",
+      "company": "iCapital",
+      "current_role": "Managing Director, Chief Investment Strategist",
+      "role_source_url": "https://icapital.com/about-us/sonali-basak/",
+      "x_identity_source_url": "https://x.com/sonalibasak",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-jason-zweig",
+      "name": "Jason Zweig",
+      "handle": "jasonzweigwsj",
+      "company": "The Wall Street Journal",
+      "current_role": "Investing Columnist",
+      "role_source_url": "https://www.wsj.com/news/author/jason-zweig",
+      "x_identity_source_url": "https://x.com/jasonzweigwsj",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-ben-johnson",
+      "name": "Ben Johnson",
+      "handle": "MstarBenJohnson",
+      "company": "Morningstar",
+      "current_role": "Head of Client Solutions, Asset Management",
+      "role_source_url": "https://www.morningstar.com/people/ben-johnson",
+      "x_identity_source_url": "https://x.com/MstarBenJohnson",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-scott-wapner",
+      "name": "Scott Wapner",
+      "handle": "TheJudgeCNBC",
+      "company": "CNBC",
+      "current_role": "Host, Closing Bell",
+      "role_source_url": "https://www.cnbc.com/scott-wapner/",
+      "x_identity_source_url": "https://x.com/TheJudgeCNBC",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-sonu-varghese",
+      "name": "Sonu Varghese",
+      "handle": "sonusvarghese",
+      "company": "Carson Group",
+      "current_role": "Chief Macro Strategist",
+      "role_source_url": "https://www.carsongroup.com/",
+      "x_identity_source_url": "https://x.com/sonusvarghese",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-david-keller",
+      "name": "David Keller",
+      "handle": "DKellerCMT",
+      "company": "Sierra Alpha Research",
+      "current_role": "President",
+      "role_source_url": "https://www.sierraalpha.com/",
+      "x_identity_source_url": "https://x.com/DKellerCMT",
+      "avatar_status": "pending_review"
+    },
+    {
+      "id": "wall-street-v594-brian-belski",
+      "name": "Brian Belski",
+      "handle": "briangbelski",
+      "company": "Humilis Investment Strategies",
+      "current_role": "Chief Executive Officer & Chief Investment Officer",
+      "role_source_url": "https://humilisinv.com/",
+      "x_identity_source_url": "https://x.com/briangbelski",
+      "avatar_status": "pending_review"
+    }
+  ]
+}
