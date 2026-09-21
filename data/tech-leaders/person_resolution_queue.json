@@ -846,9 +846,15 @@
         "Former President",
         "Former C-suite"
       ],
-      "known_production_people": [],
+      "known_production_people": [
+        {
+          "name": "Pat Gelsinger",
+          "handle": "PGelsinger",
+          "status": "current"
+        }
+      ],
       "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
