@@ -1,0 +1,922 @@
+{
+  "version": "v400-legacy-review-phase2-batch02",
+  "reviewed_at": "2026-09-21",
+  "reviewed_count": 50,
+  "status_counts": {
+    "verified": 48,
+    "manual_review": 2
+  },
+  "catalog_status_counts": {
+    "verified": 396,
+    "manual_review": 4
+  },
+  "records": [
+    {
+      "id": "dhh",
+      "name": "David Heinemeier Hansson",
+      "handle": "dhh",
+      "company": "37signals / Ruby on Rails",
+      "current_role": "37signals 共同所有人兼 CTO / Ruby on Rails 创始作者",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000011/shop-20251231.htm",
+      "x_identity_source_url": "https://x.com/dhh",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "mullenweg",
+      "name": "Matt Mullenweg",
+      "handle": "photomatt",
+      "company": "Automattic / WordPress",
+      "current_role": "Automattic 董事长兼 CEO / WordPress 联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://techcrunch.com/2026/09/12/automattic-confirms-mullenweg-has-returned-as-ceo-after-attempted-ouster-by-board/",
+      "x_identity_source_url": "https://x.com/photomatt",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "houston",
+      "name": "Drew Houston",
+      "handle": "drewhouston",
+      "company": "Dropbox",
+      "current_role": "联合创始人、董事长兼联席 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.dropbox.com/en_GB/about",
+      "x_identity_source_url": "https://x.com/drewhouston",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "armstrong",
+      "name": "Brian Armstrong",
+      "handle": "brian_armstrong",
+      "company": "Coinbase",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.coinbase.com/about",
+      "x_identity_source_url": "https://x.com/brian_armstrong",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "buterin",
+      "name": "Vitalik Buterin",
+      "handle": "VitalikButerin",
+      "company": "Ethereum / Ethereum Foundation",
+      "current_role": "Ethereum 联合创始人 / Ethereum Foundation 董事",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "board"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://blog.ethereum.org/2026/07/29/ef-board-update",
+      "x_identity_source_url": "https://x.com/VitalikButerin",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "son",
+      "name": "Masayoshi Son",
+      "handle": "masason",
+      "company": "SoftBank Group",
+      "current_role": "创始人、董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.softbank.jp/en/corp/aboutus/profile/officer/son/",
+      "x_identity_source_url": "https://x.com/masason",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "schmidt",
+      "name": "Eric Schmidt",
+      "handle": "ericschmidt",
+      "company": "Relativity Space",
+      "current_role": "CEO 兼执行董事长 / 前 Google CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "former_ceo",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.relativityspace.com/leadership",
+      "x_identity_source_url": "https://x.com/ericschmidt",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "durov",
+      "name": "Pavel Durov",
+      "handle": "durov",
+      "company": "Telegram",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.reuters.com/technology/who-is-pavel-durov-ceo-messaging-app-telegram-2026-07-29/",
+      "x_identity_source_url": "https://x.com/durov",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "lei-jun",
+      "name": "Lei Jun",
+      "handle": "leijun",
+      "company": "Xiaomi",
+      "current_role": "创始人、董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://ir.mi.com/corporate-information/management",
+      "x_identity_source_url": "https://x.com/leijun",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "fadell",
+      "name": "Tony Fadell",
+      "handle": "tfadell",
+      "company": "Build Collective / Nest",
+      "current_role": "Build Collective Principal / Nest 创始人兼前 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.buildc.com/newsroom/a-legacy-of-disruption-tony-fadell-principal-build-collective",
+      "x_identity_source_url": "https://x.com/tfadell",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "zuckerberg",
+      "name": "Mark Zuckerberg",
+      "handle": "finkd",
+      "company": "Meta",
+      "current_role": "创始人、董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investor.atmeta.com/leadership-and-governance/",
+      "x_identity_source_url": "https://x.com/finkd",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "mosseri",
+      "name": "Adam Mosseri",
+      "handle": "mosseri",
+      "company": "Instagram / Meta",
+      "current_role": "Instagram 负责人",
+      "role_status": "current",
+      "leader_types": [
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://about.fb.com/news/2025/10/teen-ai-safety-approach/",
+      "x_identity_source_url": "https://x.com/mosseri",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "boz",
+      "name": "Andrew Bosworth",
+      "handle": "boztank",
+      "company": "Meta",
+      "current_role": "首席技术官（CTO）",
+      "role_status": "current",
+      "leader_types": [
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investor.atmeta.com/leadership-and-governance/",
+      "x_identity_source_url": "https://x.com/boztank",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "prince",
+      "name": "Matthew Prince",
+      "handle": "eastdakota",
+      "company": "Cloudflare",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.cloudflare.com/press/press-kit/",
+      "x_identity_source_url": "https://x.com/eastdakota",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "zatlyn",
+      "name": "Michelle Zatlyn",
+      "handle": "zatlyn",
+      "company": "Cloudflare",
+      "current_role": "联合创始人、总裁兼联席董事长",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "chair",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.cloudflare.net/governance/board-of-directors/person-details/default.aspx?ItemId=90a13042-89f4-42a9-ac68-e9bd8da17ec1",
+      "x_identity_source_url": "https://x.com/zatlyn",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "vogels",
+      "name": "Werner Vogels",
+      "handle": "Werner",
+      "company": "Amazon",
+      "current_role": "副总裁兼 CTO",
+      "role_status": "current",
+      "leader_types": [
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://aws.amazon.com/executive-insights/content/werner-vogels-2026-tech-predictions/",
+      "x_identity_source_url": "https://x.com/Werner",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "selipsky",
+      "name": "Adam Selipsky",
+      "handle": "aselipsky",
+      "company": "Helix Digital Infrastructure",
+      "current_role": "联合创始人兼 CEO / 前 AWS CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.helixdi.com/about/",
+      "x_identity_source_url": "https://x.com/aselipsky",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "gelsinger",
+      "name": "Pat Gelsinger",
+      "handle": "PGelsinger",
+      "company": "Playground Global / xLight",
+      "current_role": "Playground Global General Partner / xLight 执行董事长",
+      "role_status": "current",
+      "leader_types": [
+        "investor",
+        "chair",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://playgroundglobal.co/people/pat-gelsinger",
+      "x_identity_source_url": "https://x.com/PGelsinger",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "rene-haas",
+      "name": "Rene Haas",
+      "handle": "renehaas237",
+      "company": "Arm / SoftBank Group International",
+      "current_role": "Arm CEO / SoftBank Group International CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.sec.gov/Archives/edgar/data/1973239/000197323926000059/arm-20260421.htm",
+      "x_identity_source_url": "https://x.com/renehaas237",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "lip-bu-tan",
+      "name": "Lip-Bu Tan",
+      "handle": "LipBuTan1",
+      "company": "Intel",
+      "current_role": "CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.intel.com/content/www/us/en/corporate/executive-leadership.html",
+      "x_identity_source_url": "https://x.com/LipBuTan1",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "hock-tan",
+      "name": "Hock Tan / Broadcom",
+      "handle": "Broadcom",
+      "company": "Broadcom",
+      "current_role": "总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "company_official",
+      "x_review_status": "company_official_account_exception",
+      "role_source_url": "https://investors.broadcom.com/board-member/hock-e-tan",
+      "x_identity_source_url": null,
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained. No personal X is claimed; the profile uses the verified company account as a feed proxy."
+    },
+    {
+      "id": "fouquet",
+      "name": "Christophe Fouquet / ASML",
+      "handle": "ASMLcompany",
+      "company": "ASML",
+      "current_role": "总裁兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "company_official",
+      "x_review_status": "company_official_account_exception",
+      "role_source_url": "https://www.asml.com/en/company/governance/board-of-management",
+      "x_identity_source_url": null,
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained. No personal X is claimed; the profile uses the verified company account as a feed proxy."
+    },
+    {
+      "id": "mehrotra",
+      "name": "Sanjay Mehrotra / Micron",
+      "handle": "MicronTech",
+      "company": "Micron",
+      "current_role": "董事长兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "company_official",
+      "x_review_status": "company_official_account_exception",
+      "role_source_url": "https://www.micron.com/about/company/leadership/sanjay-mehrotra",
+      "x_identity_source_url": null,
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained. No personal X is claimed; the profile uses the verified company account as a feed proxy."
+    },
+    {
+      "id": "pabbeel",
+      "name": "Pieter Abbeel",
+      "handle": "pabbeel",
+      "company": "UC Berkeley / Covariant",
+      "current_role": "教授 / Covariant 联合创始人兼首席科学家",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "researcher",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://executive.berkeley.edu/faculty-directory/pieter-abbeel",
+      "x_identity_source_url": "https://x.com/pabbeel",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "rodney-brooks",
+      "name": "Rodney Brooks",
+      "handle": "rodneyabrooks",
+      "company": "Robust AI / MIT",
+      "current_role": "Robust AI 联合创始人兼 CTO / MIT 荣休教授",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "executive",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.robust.ai/team",
+      "x_identity_source_url": "https://x.com/rodneyabrooks",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "sergey-levine",
+      "name": "Sergey Levine",
+      "handle": "svlevine",
+      "company": "Physical Intelligence / UC Berkeley",
+      "current_role": "Physical Intelligence 联合创始人 / UC Berkeley 副教授",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www2.eecs.berkeley.edu/Faculty/Lists/faculty.html",
+      "x_identity_source_url": "https://x.com/svlevine",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "chelsea-finn",
+      "name": "Chelsea Finn",
+      "handle": "chelseabfinn",
+      "company": "Physical Intelligence / Stanford",
+      "current_role": "Physical Intelligence 联合创始人 / Stanford 助理教授",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "researcher"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://engineering.stanford.edu/people/chelsea-finn",
+      "x_identity_source_url": "https://x.com/chelseabfinn",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "boston-dynamics",
+      "name": "Boston Dynamics",
+      "handle": "BostonDynamics",
+      "company": "Boston Dynamics",
+      "current_role": "机器人公司",
+      "role_status": "current",
+      "leader_types": [],
+      "role_review_status": "manual_review",
+      "x_account_type": "company_official",
+      "x_review_status": "company_official_account_exception",
+      "role_source_url": null,
+      "x_identity_source_url": null,
+      "review_note": "Entity-type mismatch: this is a company account, not an individual leader. Keep active temporarily so V400 does not shrink; replace with a verified individual leader before V400 Stable freeze."
+    },
+    {
+      "id": "tory-bruno",
+      "name": "Tory Bruno",
+      "handle": "torybruno",
+      "company": "United Launch Alliance",
+      "current_role": "前总裁兼 CEO",
+      "role_status": "former",
+      "leader_types": [
+        "former_ceo",
+        "legacy_leader"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://newsroom.ulalaunch.com/releases/statement-from-robert-lightfoot-and-kay-sears",
+      "x_identity_source_url": "https://x.com/torybruno",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "tim-ellis",
+      "name": "Tim Ellis",
+      "handle": "thetimellis",
+      "company": "Relativity Space",
+      "current_role": "联合创始人兼董事 / 前 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "board",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.marssociety.org/news/2026/07/14/relativity-space-co-founder-tim-ellis-to-join-2026-mars-society-convention/",
+      "x_identity_source_url": "https://x.com/thetimellis",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "isaacman",
+      "name": "Jared Isaacman",
+      "handle": "rookisaacman",
+      "company": "NASA",
+      "current_role": "局长",
+      "role_status": "current",
+      "leader_types": [
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.nasa.gov/people/jared-isaacman/",
+      "x_identity_source_url": "https://x.com/rookisaacman",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "stewart",
+      "name": "Stewart Butterfield",
+      "handle": "stewart",
+      "company": "Slack",
+      "current_role": "联合创始人 / 前 CEO",
+      "role_status": "former",
+      "leader_types": [
+        "founder",
+        "former_ceo",
+        "legacy_leader"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.axios.com/2022/12/05/slack-ceo-stewart-butterfield-leaving-salesforce",
+      "x_identity_source_url": "https://x.com/stewart",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "perkins",
+      "name": "Melanie Perkins",
+      "handle": "MelanieCanva",
+      "company": "Canva",
+      "current_role": "联合创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.canva.com/newsroom/news/author/melanie-perkins/",
+      "x_identity_source_url": "https://x.com/MelanieCanva",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "yuan",
+      "name": "Eric Yuan",
+      "handle": "ericsyuan",
+      "company": "Zoom",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.zoom.com/en/about/team/",
+      "x_identity_source_url": "https://x.com/ericsyuan",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "dara",
+      "name": "Dara Khosrowshahi",
+      "handle": "dkhos",
+      "company": "Uber",
+      "current_role": "CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.uber.com/iq/en/newsroom/simplerfasteruber/",
+      "x_identity_source_url": "https://x.com/dkhos",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "kevin-rose",
+      "name": "Kevin Rose",
+      "handle": "kevinrose",
+      "company": "True Ventures / Independent Investing",
+      "current_role": "True Ventures 特别顾问 / 创业者与投资人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor",
+        "advisor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.trueventures.com/team/kevin-rose",
+      "x_identity_source_url": "https://x.com/kevinrose",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "ohanian",
+      "name": "Alexis Ohanian",
+      "handle": "alexisohanian",
+      "company": "Seven Seven Six / Reddit",
+      "current_role": "Seven Seven Six 创始人兼 General Partner / Reddit 联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://sevensevensix.com/team",
+      "x_identity_source_url": "https://x.com/alexisohanian",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "evan-you",
+      "name": "Evan You",
+      "handle": "youyuxi",
+      "company": "Cloudflare / VoidZero / Vue.js",
+      "current_role": "VoidZero 创始人 / Vue.js 与 Vite 创始作者；团队已加入 Cloudflare ETI",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.cloudflare.com/press/press-releases/2026/cloudflare-acquires-voidzero-to-build-the-future-of-the-ai-native-web/",
+      "x_identity_source_url": "https://x.com/youyuxi",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "hashimoto",
+      "name": "Mitchell Hashimoto",
+      "handle": "mitchellh",
+      "company": "Superlogical / Ghostty / HashiCorp",
+      "current_role": "Superlogical 联合创始人 / Ghostty 创始作者 / HashiCorp 联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://mitchellh.com/",
+      "x_identity_source_url": "https://x.com/mitchellh",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "sijbrandij",
+      "name": "Sid Sijbrandij",
+      "handle": "sytses",
+      "company": "GitLab",
+      "current_role": "联合创始人兼执行董事长",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "chair",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://about.gitlab.com/company/team/board-of-directors/",
+      "x_identity_source_url": "https://x.com/sytses",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "preston-werner",
+      "name": "Tom Preston-Werner",
+      "handle": "mojombo",
+      "company": "Chatterbug / GitHub",
+      "current_role": "Chatterbug 联合创始人兼产品负责人 / GitHub 联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "executive"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://chatterbug.com/en/about",
+      "x_identity_source_url": "https://x.com/mojombo",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "wanstrath",
+      "name": "Chris Wanstrath",
+      "handle": "defunkt",
+      "company": "Null Games / GitHub",
+      "current_role": "Null Games 创始人 / GitHub 联合创始人兼前 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "former_ceo"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://computerhistory.org/profile/chris-wanstrath-2/",
+      "x_identity_source_url": "https://x.com/defunkt",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "levchin",
+      "name": "Max Levchin",
+      "handle": "mlevchin",
+      "company": "Affirm",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investors.affirm.com/corporate-governance/management",
+      "x_identity_source_url": "https://x.com/mlevchin",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "tenev",
+      "name": "Vlad Tenev",
+      "handle": "vladtenev",
+      "company": "Robinhood / Harmonic",
+      "current_role": "Robinhood 董事长、总裁兼 CEO / Harmonic 执行董事长兼联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "chair",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://investors.robinhood.com/management/vlad-tenev",
+      "x_identity_source_url": "https://x.com/vladtenev",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "david-marcus",
+      "name": "David Marcus",
+      "handle": "davidmarcus",
+      "company": "Lightspark",
+      "current_role": "CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.lightspark.com/about",
+      "x_identity_source_url": "https://x.com/davidmarcus",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "naval",
+      "name": "Naval Ravikant",
+      "handle": "naval",
+      "company": "AngelList",
+      "current_role": "联合创始人兼董事长 / 投资人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "chair",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://wellfound.com/company/angellist/people",
+      "x_identity_source_url": "https://x.com/naval",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "gurley",
+      "name": "Bill Gurley",
+      "handle": "bgurley",
+      "company": "Benchmark",
+      "current_role": "科技投资人 / Benchmark 关系待最终确认",
+      "role_status": "current",
+      "leader_types": [
+        "investor"
+      ],
+      "role_review_status": "manual_review",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.theinformation.com/articles/benchmarks-ai-pressure-test-high-prices-smaller-stakes-and-a-poached-star/",
+      "x_identity_source_url": "https://x.com/bgurley",
+      "review_note": "Current Benchmark title is inconsistently described across 2026 sources; some list General Partner while reporting says he has not regularly invested for the firm in years. Retain as investor pending authoritative current-role confirmation."
+    },
+    {
+      "id": "chamath",
+      "name": "Chamath Palihapitiya",
+      "handle": "chamath",
+      "company": "8090 Labs / Social Capital",
+      "current_role": "8090 Labs 创始人兼 CEO / Social Capital 创始人兼 Managing Partner",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://techcrunch.com/2026/06/29/chamath-palihapitiya-raises-135m-series-a-for-his-ai-coding-startup-takes-ceo-role/",
+      "x_identity_source_url": "https://x.com/chamath",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "handle": "fredwilson",
+      "company": "Union Square Ventures",
+      "current_role": "合伙人 / 联合创始人",
+      "role_status": "current",
+      "leader_types": [
+        "founder",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://www.usv.com/people/fred-wilson/",
+      "x_identity_source_url": "https://x.com/fredwilson",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    },
+    {
+      "id": "gerstner",
+      "name": "Brad Gerstner",
+      "handle": "altcap",
+      "company": "Altimeter",
+      "current_role": "创始人兼 CEO",
+      "role_status": "current",
+      "leader_types": [
+        "ceo",
+        "founder",
+        "investor"
+      ],
+      "role_review_status": "verified",
+      "x_account_type": "personal",
+      "x_review_status": "verified_identity_retained",
+      "role_source_url": "https://milkeninstitute.org/events/global-conference-2026/speakers/brad-gerstner",
+      "x_identity_source_url": "https://x.com/altcap",
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+    }
+  ]
+}
