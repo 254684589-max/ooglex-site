@@ -162,15 +162,17 @@ def main() -> int:
     approved = [c for c in candidates if c.get("review_status") == "approved"]
     existing_handles = {str(x.get("handle") or "").lower() for x in base.get("leaders") or []}
     approved_handles = set()
+    approved_already_live = 0
 
     additions = []
     for c in approved:
         handle = c["x_handle"].lstrip("@").lower()
-        if handle in existing_handles:
-            raise RuntimeError(f"duplicate X handle in approved preview: {handle}")
         if handle in approved_handles:
             raise RuntimeError(f"duplicate approved X handle across evidence tranches: {handle}")
         approved_handles.add(handle)
+        if handle in existing_handles:
+            approved_already_live += 1
+            continue
         leader = make_leader(c)
         additions.append(leader)
 
@@ -188,6 +190,7 @@ def main() -> int:
         "reviewed_candidate_count": len(candidates),
         "review_status_counts": dict(sorted(review_counts.items())),
         "base_count": len(base.get("leaders") or []),
+        "approved_already_live": approved_already_live,
         "approved_additions": len(additions),
         "preview_count": len(base.get("leaders") or []) + len(additions),
         "production_file_untouched": True,

@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "data/tech-leaders/verified_candidates*.json"
+      - "apps/tech-leaders/leaders.json"
       - "scripts/tech-leaders/build_preview_catalog.py"
       - ".github/workflows/tech-leaders-preview.yml"
 
@@ -37,12 +38,15 @@ jobs:
           live = json.loads(Path("apps/tech-leaders/leaders.json").read_text(encoding="utf-8"))
           preview = json.loads(Path("data/tech-leaders/leaders-v250-preview.json").read_text(encoding="utf-8"))
           meta = preview["preview"]
-          assert len(live["leaders"]) == 110
+          live_count = len(live["leaders"])
+          assert live_count >= 110
           assert meta["production_file_untouched"] is True
-          assert meta["base_count"] == 110
-          assert meta["approved_additions"] >= 5
+          assert meta["base_count"] == live_count
+          assert meta["approved_additions"] >= 0
+          assert meta.get("approved_already_live", 0) >= 0
           assert meta["reviewed_candidate_count"] >= 18
           assert meta["review_status_counts"]["approved"] >= 5
+          assert meta["preview_count"] == live_count + meta["approved_additions"]
           assert len(preview["leaders"]) == meta["preview_count"]
           additions = preview["leaders"][meta["base_count"]:]
           assert all(x.get("preview_only") is True for x in additions)

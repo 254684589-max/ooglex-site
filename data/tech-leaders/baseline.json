@@ -1,12 +1,13 @@
 {
-  "baseline_version": "v110-stable",
+  "baseline_version": "v165-stable",
   "captured_at": "2026-09-21",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "90466906810553632d42f2a6ab71eba702092d99",
-  "leader_count": 110,
-  "active_count": 110,
-  "schema_version": 8,
-  "capacity": 180,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v110-stable-2026-09-21.json",
-  "purpose": "Frozen rollback baseline before NYSE/Nasdaq expansion."
+  "source_blob_sha": "084435875c3b6d56f8cfe6502bc3d7645fec1fe0",
+  "leader_count": 165,
+  "active_count": 165,
+  "schema_version": 9,
+  "capacity": 800,
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v165-stable-2026-09-21.json",
+  "previous_baseline": "data/tech-leaders/snapshots/leaders-v110-stable-2026-09-21.json",
+  "purpose": "Production rollback baseline after promoting all 55 approved expansion candidates."
 }
