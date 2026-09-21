@@ -15,7 +15,10 @@ permissions:
   contents: write
 
 concurrency:
-  group: tech-leaders-person-resolution
+  # All Tech Leaders workflows that commit generated artifacts to main share
+  # one writer lane. This prevents non-fast-forward races between catalog,
+  # review, readiness and avatar maintenance jobs.
+  group: tech-leaders-main-writes
   cancel-in-progress: false
 
 jobs:
