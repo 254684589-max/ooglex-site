@@ -16,7 +16,8 @@
     "data/tech-leaders/verified_candidates.tranche10.json",
     "data/tech-leaders/verified_candidates.tranche11.json",
     "data/tech-leaders/verified_candidates.tranche12.json",
-    "data/tech-leaders/verified_candidates.tranche13.json"
+    "data/tech-leaders/verified_candidates.tranche13.json",
+    "data/tech-leaders/verified_candidates.tranche14.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -4322,7 +4323,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Armon Dadgar",
+          "handle": "armon",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -4347,8 +4354,14 @@
         "Founder Emeritus"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Armon Dadgar",
+          "handle": "armon",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -4608,7 +4621,13 @@
           "status": "production"
         }
       ],
-      "known_reviewed_people": [],
+      "known_reviewed_people": [
+        {
+          "name": "Chris Lattner",
+          "handle": "clattner_llvm",
+          "status": "approved"
+        }
+      ],
       "resolution_status": "expand_more",
       "research_notes": ""
     },
@@ -4633,8 +4652,14 @@
         "Founder Emeritus"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Chris Lattner",
+          "handle": "clattner_llvm",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
