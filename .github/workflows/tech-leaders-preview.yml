@@ -40,7 +40,9 @@ jobs:
           assert len(live["leaders"]) == 110
           assert meta["production_file_untouched"] is True
           assert meta["base_count"] == 110
-          assert meta["approved_additions"] >= 1
+          assert meta["approved_additions"] >= 5
+          assert meta["reviewed_candidate_count"] >= 18
+          assert meta["review_status_counts"]["approved"] >= 5
           assert len(preview["leaders"]) == meta["preview_count"]
           additions = preview["leaders"][meta["base_count"]:]
           assert all(x.get("preview_only") is True for x in additions)

@@ -148,11 +148,17 @@ def main() -> int:
 
     preview = deepcopy(base)
     preview["schema_version"] = max(int(base.get("schema_version") or 0), 9)
+    review_counts = {}
+    for candidate in candidates:
+        state = str(candidate.get("review_status") or "unknown")
+        review_counts[state] = review_counts.get(state, 0) + 1
+
     preview["preview"] = {
         "status": "review_only",
         "source_evidence": source_evidence,
         "evidence_tranche_count": len(source_evidence),
         "reviewed_candidate_count": len(candidates),
+        "review_status_counts": dict(sorted(review_counts.items())),
         "base_count": len(base.get("leaders") or []),
         "approved_additions": len(additions),
         "preview_count": len(base.get("leaders") or []) + len(additions),
