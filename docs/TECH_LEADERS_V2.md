@@ -19,7 +19,7 @@ Leader metadata is stored in:
 
 `apps/tech-leaders/leaders.json`
 
-The catalog schema is now V4 with capacity for 180 profiles. The production catalog currently contains 108 curated leaders/accounts. The page supports name/handle/company/ticker search, multi-category membership, and a dedicated S&P 500 CEO layer.
+The catalog schema is now V4.3 with capacity for 800 profiles. The production catalog currently contains 108 curated leaders/accounts. The page supports name/handle/company/ticker search, multi-category membership, and a dedicated S&P 500 CEO layer.
 
 To replace or maintain a Free-mode profile, edit one object in `leaders.json`. Each entry now includes a primary `category`, and the top-level catalog includes the nine supported categories. No page JavaScript change is required for ordinary catalog maintenance.
 
@@ -289,3 +289,16 @@ Each native Tech Leaders post now has an independent sharing flow:
 - `微信分享` copies the dynamic single-post preview URL, tries to open WeChat from an external browser, and guides the user to open that link inside WeChat and use the top-right menu for further sharing. The product does not label this button as “朋友圈”.
 - The dynamic `/share/tech-leaders/<handle>/<post_id>` route now stays open as the actual share page instead of immediately redirecting. When opened inside WeChat, it displays an in-page prompt for the top-right menu while preserving server-rendered Open Graph metadata whose title is the original post text.
 
+
+
+## Former / retired leader admission
+
+The catalog is no longer restricted to current CEOs or current operating executives. A person may be admitted as a legacy leader when all of the following are true:
+
+- the person's former executive/founder relationship to a tracked public company can be verified;
+- the public personal X account can be verified as belonging to that person;
+- the account remains meaningfully active, with the automatic-approval window set to 180 days;
+- accounts last meaningfully active 181-365 days ago require manual review; older inactive accounts are held/excluded;
+- one listed company may contribute multiple people (for example a current CEO plus an active former CEO or retired founder).
+
+Blue-check status by itself is not identity evidence. Corporate accounts are not substitutes for personal accounts.

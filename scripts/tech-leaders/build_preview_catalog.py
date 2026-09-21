@@ -42,12 +42,18 @@ def validate_candidate(c: dict[str, Any]) -> None:
     missing = [k for k in required if not c.get(k)]
     if missing:
         raise RuntimeError(f"approved candidate {c.get('ticker')} missing: {missing}")
-    if c["role_status"] != "current":
-        raise RuntimeError(f"approved candidate {c['ticker']} role is not current")
+    if c["role_status"] not in {"current", "former", "retired", "founder_emeritus"}:
+        raise RuntimeError(
+            f"approved candidate {c['ticker']} has unsupported role_status={c['role_status']!r}"
+        )
     if c["x_identity_status"] != "verified":
         raise RuntimeError(f"approved candidate {c['ticker']} X identity is not verified")
     if c["x_activity_status"] not in {"active", "intermittent"}:
         raise RuntimeError(f"approved candidate {c['ticker']} lacks usable X activity")
+    if c["role_status"] != "current" and not c.get("x_last_activity_at"):
+        raise RuntimeError(
+            f"legacy candidate {c['ticker']} requires x_last_activity_at to prove current activity"
+        )
     require_url(c["role_source_url"], f"{c['ticker']} role_source_url")
     require_url(c["x_identity_source_url"], f"{c['ticker']} x_identity_source_url")
 
@@ -63,6 +69,27 @@ def make_leader(c: dict[str, Any]) -> dict[str, Any]:
         "https://pro-api.ooglex.com/v1/tech-leaders/avatar?"
         f"handle={quote_plus(handle)}&name={quote_plus(name)}&company={quote_plus(company)}"
     )
+    status = c.get("role_status") or "current"
+    role_low = role.lower()
+    leader_types = []
+    if status == "current" and "ceo" in role_low:
+        leader_types.append("ceo")
+    if status != "current" and "ceo" in role_low:
+        leader_types.append("former_ceo")
+    if "founder" in role_low:
+        leader_types.append("founder")
+    if status in {"former", "retired", "founder_emeritus"}:
+        leader_types.append("legacy_leader")
+    if not leader_types:
+        leader_types.append("executive")
+
+    if status == "current":
+        note = "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。"
+    elif status == "retired":
+        note = "美国上市公司退休创始人或前核心高管；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。"
+    else:
+        note = "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。"
+
     return {
         "id": slugify(name + "-" + c["ticker"]),
         "name": name,
@@ -70,7 +97,7 @@ def make_leader(c: dict[str, Any]) -> dict[str, Any]:
         "handle": handle,
         "role": f"{company} · {role}",
         "chips": [c["ticker"], company] + cats[:3],
-        "note": "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。",
+        "note": note,
         "title": f"{name.upper()} · VERIFIED X TIMELINE PREVIEW",
         "category": primary,
         "name_zh": name,
@@ -83,7 +110,8 @@ def make_leader(c: dict[str, Any]) -> dict[str, Any]:
         "exchange": c["exchange"],
         "listed_company": True,
         "admission_status": "preview_approved",
-        "leader_types": ["ceo"] + (["founder"] if "founder" in role.lower() else []),
+        "leader_types": leader_types,
+        "company_relationship_status": status,
         "themes": cats,
         "x_identity_verified": True,
         "x_check_type": c.get("x_check_type") or "uncertain",

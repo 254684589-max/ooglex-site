@@ -13,7 +13,7 @@ Output:
 This stage DOES NOT guess executives or X handles. It only:
 1) de-duplicates issuers already represented in the live 110-person catalog;
 2) assigns research priority;
-3) creates a stable schema for the subsequent current-role/X verification pass.
+3) creates a stable schema for subsequent current + former/retired leader/X verification.
 """
 
 from __future__ import annotations
@@ -219,13 +219,16 @@ def write_meta(path: Path, rows: list[dict[str, Any]]) -> None:
         "research_now_exchange_counts": dict(sorted(by_exchange.items())),
         "research_now_sector_counts": dict(sorted(by_sector.items(), key=lambda kv: (-kv[1], kv[0]))),
         "policy": {
-            "primary_roles": ["CEO", "Founder & CEO", "Co-founder & CEO", "Executive Chair", "President"],
-            "identity_rule": "Do not infer identity from blue check alone; require authoritative role evidence plus X account ownership evidence.",
-            "activity_rule": "Prefer accounts with meaningful recent public posting activity.",
+            "current_roles": ["CEO", "Founder & CEO", "Co-founder & CEO", "Executive Chair", "President", "C-suite"],
+            "legacy_roles": ["Former CEO", "Former Chair", "Former President", "Former C-suite", "Founder", "Retired Founder", "Founder Emeritus"],
+            "eligibility_rule": "Current employment is not required. Former executives, former CEOs, retired founders and founder-emeritus figures may be admitted when the person-to-company relationship is verified, the personal X identity is verified, and the X account remains meaningfully active.",
+            "identity_rule": "Do not infer identity from blue check alone; require authoritative company/role-history evidence plus X account ownership evidence.",
+            "activity_rule": "Automatic approval requires meaningful public X activity within 180 days. Activity 181-365 days old is manual-review only; more than 365 days without meaningful activity is hold/exclude.",
+            "multi_person_rule": "One issuer may contribute multiple leaders: current leadership plus notable former/retired leaders. De-duplicate by person/X handle, not by issuer.",
             "corporate_fallback": "Keep corporate-only X accounts out of the main personal-leader import batch.",
             "production_rule": "Candidate queue never changes apps/tech-leaders/leaders.json automatically.",
         },
-        "next_stage": "Research and populate current executive role + personal X identity evidence for research_now rows.",
+        "next_stage": "Research current and legacy company leaders, populate verified company relationship + personal X identity/activity evidence, and allow multiple people per issuer.",
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
