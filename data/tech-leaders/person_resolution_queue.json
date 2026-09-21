@@ -10,7 +10,8 @@
     "data/tech-leaders/verified_candidates.tranche04.json",
     "data/tech-leaders/verified_candidates.tranche05.json",
     "data/tech-leaders/verified_candidates.tranche06.json",
-    "data/tech-leaders/verified_candidates.tranche07.json"
+    "data/tech-leaders/verified_candidates.tranche07.json",
+    "data/tech-leaders/verified_candidates.tranche08.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -848,6 +849,11 @@
           "name": "Sheryl Sandberg",
           "handle": "sherylsandberg",
           "status": "hold"
+        },
+        {
+          "name": "Mike Schroepfer",
+          "handle": "schrep",
+          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -1279,8 +1285,19 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Jeff Wilke",
+          "handle": "jeffawilke",
+          "status": "approved"
+        },
+        {
+          "name": "Dave Clark",
+          "handle": "davehclark",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -2264,8 +2281,14 @@
         "Founder Emeritus"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Nir Zuk",
+          "handle": "nirzuk",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
@@ -2289,8 +2312,14 @@
         "Former C-suite"
       ],
       "known_production_people": [],
-      "known_reviewed_people": [],
-      "resolution_status": "needs_person_discovery",
+      "known_reviewed_people": [
+        {
+          "name": "Nir Zuk",
+          "handle": "nirzuk",
+          "status": "approved"
+        }
+      ],
+      "resolution_status": "expand_more",
       "research_notes": ""
     },
     {
