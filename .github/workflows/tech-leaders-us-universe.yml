@@ -8,6 +8,8 @@ on:
     branches: [main]
     paths:
       - "scripts/tech-leaders/build_us_company_universe.py"
+      - "apps/supply-chain/domestic.json"
+      - "apps/companies/data.json"
       - ".github/workflows/tech-leaders-us-universe.yml"
 
 permissions:
@@ -31,12 +33,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build NYSE + Nasdaq issuer universe
+      - name: Build NYSE + Nasdaq 1000-issuer universe
         env:
-          SEC_USER_AGENT: "Ooglex Tech Leaders Scanner/1.0 https://www.ooglex.com"
+          SEC_USER_AGENT: "Ooglex Tech Leaders Scanner/1.1 https://www.ooglex.com"
         run: |
           python scripts/tech-leaders/build_us_company_universe.py \
-            --limit 300 \
+            --limit 1000 \
             --output data/tech-leaders/issuer_master.csv \
             --meta data/tech-leaders/issuer_master.meta.json
 
@@ -51,11 +53,17 @@ jobs:
           rows = list(csv.DictReader(csv_path.open(encoding="utf-8")))
           meta = json.loads(meta_path.read_text(encoding="utf-8"))
 
-          assert len(rows) >= 250, len(rows)
+          assert 900 <= len(rows) <= 1000, len(rows)
           assert meta["record_count"] == len(rows)
+          assert meta["requested_limit"] == 1000
+          assert meta["stage"] == "v1_1_universe_1000"
+          assert set(r["exchange"] for r in rows) <= {"NYSE", "NASDAQ"}
           assert {"NYSE", "NASDAQ"} & set(meta["exchange_counts"])
-          assert all(r["cik"] and r["ticker"] and r["company"] for r in rows[:50])
-          print(f"validated {len(rows)} issuer rows")
+          assert all(r["cik"] and r["ticker"] and r["company"] for r in rows)
+          assert any(r["priority_method"] == "market_cap" for r in rows)
+          assert any(r["priority_method"] == "sec_filer_category_proxy" for r in rows)
+          assert len({r["cik"] for r in rows}) == len(rows)
+          print(json.dumps(meta, ensure_ascii=False))
           PY
 
       - name: Commit refreshed universe
@@ -68,5 +76,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/tech-leaders/issuer_master.csv data/tech-leaders/issuer_master.meta.json
-          git commit -m "data: refresh tech-leaders US issuer universe"
+          git commit -m "data: refresh tech-leaders 1000 issuer universe"
           git push
