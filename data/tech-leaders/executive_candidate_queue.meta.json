@@ -1,39 +1,46 @@
 {
-  "schema_version": 1,
-  "generated_at": "2026-09-21T03:07:14Z",
-  "issuer_count": 300,
-  "covered_existing_issuers": 35,
-  "needs_research_issuers": 265,
-  "research_now_count": 124,
-  "research_now_exchange_counts": {
-    "NASDAQ": 38,
-    "NYSE": 86
+  "schema_version": 2,
+  "generated_at": "2026-09-21T04:57:52Z",
+  "issuer_count": 1000,
+  "represented_issuers": 58,
+  "unrepresented_issuers": 942,
+  "research_now_count": 300,
+  "research_next_count": 350,
+  "research_later_count": 350,
+  "research_now_existing_count": 35,
+  "exchange_counts": {
+    "NASDAQ": 409,
+    "NYSE": 591
   },
-  "research_now_sector_counts": {
-    "金融": 26,
-    "工业": 21,
-    "医疗健康": 19,
-    "科技": 19,
-    "必需消费": 8,
-    "能源": 7,
-    "可选消费": 6,
-    "通信服务": 6,
-    "公用事业": 5,
-    "房地产": 4,
-    "原材料": 3
+  "priority_method_counts": {
+    "market_cap": 368,
+    "sec_filer_category_proxy": 632
   },
   "policy": {
-    "primary_roles": [
+    "current_role_required": false,
+    "legacy_leaders_allowed": true,
+    "existing_issuer_considered_complete": false,
+    "multi_person_per_issuer": true,
+    "target_roles": [
       "CEO",
       "Founder & CEO",
       "Co-founder & CEO",
+      "Founder",
+      "Co-founder",
       "Executive Chair",
-      "President"
+      "President",
+      "C-suite",
+      "Former CEO",
+      "Former Chair",
+      "Former President",
+      "Former C-suite",
+      "Retired Founder",
+      "Founder Emeritus"
     ],
-    "identity_rule": "Do not infer identity from blue check alone; require authoritative role evidence plus X account ownership evidence.",
-    "activity_rule": "Prefer accounts with meaningful recent public posting activity.",
-    "corporate_fallback": "Keep corporate-only X accounts out of the main personal-leader import batch.",
-    "production_rule": "Candidate queue never changes apps/tech-leaders/leaders.json automatically."
+    "identity_rule": "Blue check is status only. Require authoritative role/company evidence plus personal X ownership evidence.",
+    "activity_rule": "Meaningful public X activity <=180d may pass automatic activity gate; 181-365d requires manual review; >365d is hold/exclude unless exceptional.",
+    "dedupe_rule": "Deduplicate people/X handles, not issuers.",
+    "production_file_untouched": "apps/tech-leaders/leaders.json"
   },
-  "next_stage": "Research and populate current executive role + personal X identity evidence for research_now rows."
+  "next_stage": "Resolve each issuer into one or more named people, verify role history, personal X identity and activity, then build approved V250 preview."
 }
