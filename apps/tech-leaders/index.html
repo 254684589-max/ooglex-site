@@ -3,7 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>科技领袖实时动态流 · Ooglex</title>
+  <script>
+  (function(){
+    try{
+      var u=new URL(location.href);
+      if(!u.searchParams.has("sharev")){
+        u.searchParams.set("sharev","20260921g");
+        history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString()+u.hash);
+      }
+    }catch(e){}
+  })();
+  </script>
+  <title>科技领袖实时动态流</title>
   <meta name="description" content="免费浏览 100+ 位全球公司领袖、上市公司 CEO 与创始人的公开 X 时间线，新增标普500决策者动态层，并支持 AI、芯片、云计算、网络安全、软件、汽车、工业、消费零售、金融、医疗、能源、航空航天、VC 分类筛选。默认使用 X 官方 Embed，不调用 Ooglex X API。">
   <link rel="canonical" href="https://www.ooglex.com/apps/tech-leaders/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -11,8 +22,8 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖实时动态流">
   <meta property="og:description" content="聚合全球科技领袖、上市公司 CEO 与创始人的公开 X 动态。">
-  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
-  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/catalog-share-cover?v=20260921f">
+  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260921g">
+  <meta property="og:image" content="https://www.ooglex.com/assets/tech-leaders-share-v2.png?v=20260921g">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary_large_image">
