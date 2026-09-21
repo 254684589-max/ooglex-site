@@ -9,10 +9,12 @@
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="科技领袖实时动态流 · Ooglex">
-  <meta property="og:description" content="100+ 位全球公司领袖、上市公司 CEO 与创始人官方 X 时间线，支持标普500决策者与十三大行业分类；默认零 X API Credits。">
+  <meta property="og:title" content="科技领袖实时动态流">
+  <meta property="og:description" content="聚合全球科技领袖、上市公司 CEO 与创始人的公开 X 动态。">
   <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
-  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/catalog-share-cover?v=20260921f">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
   <script>
@@ -187,19 +189,59 @@
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
+
+    /* Tech Leaders 2026.09 share + mobile visual refinement */
+    .hero{padding:38px 0 22px}
+    .hero-copy{max-width:880px}
+    .hero .kicker{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border:1px solid rgba(57,135,229,.28);border-radius:999px;background:rgba(57,135,229,.06);letter-spacing:.14em}
+    .hero h1{margin-top:14px;margin-bottom:8px;font-size:44px}
+    .hero .lead{font-size:16px;line-height:1.75}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}
+    .hero-meta span{display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);font:11px/1 var(--mono);color:var(--dim)}
+    .controls{margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.018)}
+    .search{border-radius:12px}
+    .modes{border-radius:12px}
+    .language-note{margin:0 2px 14px;padding:0;color:var(--faint)}
+    .share-panel{border-radius:22px;padding:20px}
+    .share-head>div{min-width:0;display:grid;gap:3px}
+    .share-head b{font-size:18px;letter-spacing:-.01em}
+    .share-subtitle{font-size:11px;color:var(--faint)}
+    .share-actions{gap:10px;margin-top:18px}
+    .share-actions button,.share-card-actions button{border-radius:12px;background:rgba(57,135,229,.055)}
+    .share-card-wrap img{border-radius:16px}
+    html[data-theme="ft"] .hero .kicker,html[data-theme="paper"] .hero .kicker{background:var(--tint-1)}
+    html[data-theme="ft"] .hero-meta span,html[data-theme="paper"] .hero-meta span{background:var(--panel)}
+    html[data-theme="ft"] .controls,html[data-theme="paper"] .controls{background:var(--panel)}
+    @media(max-width:560px){
+      .hero{padding:26px 0 18px}
+      .hero h1{font-size:34px;line-height:1.16}
+      .hero .lead{font-size:15px;line-height:1.65}
+      .hero-meta{gap:6px;margin-top:14px}
+      .hero-meta span{min-height:28px;padding:0 9px;font-size:10px}
+      .controls{padding:8px;border-radius:14px;margin-bottom:10px}
+      .language-note{font-size:12px;line-height:1.55;margin-bottom:12px}
+      .share-panel{padding:18px;border-radius:20px}
+    }
   </style>
 </head>
 <body>
   <main class="page">
     <header class="top">
       <a class="back" href="../../">← Ooglex</a>
-      <span class="tag">PUBLIC COMPANY LEADERS · X</span>
+      <span class="tag">PUBLIC COMPANY LEADERS</span>
     </header>
 
     <section class="hero">
-      <span class="kicker">Free Native Feed · Hard $0 X API</span>
-      <h1>科技领袖实时动态流</h1>
-      <p class="lead">聚合全球公司领袖、上市公司 CEO 与创始人的公开 X 动态。</p>
+      <div class="hero-copy">
+        <span class="kicker">PUBLIC COMPANY LEADERS · LIVE X</span>
+        <h1>科技领袖实时动态流</h1>
+        <p class="lead">聚合全球科技领袖、上市公司 CEO 与创始人的公开 X 动态。</p>
+        <div class="hero-meta" aria-label="栏目概览">
+          <span>100+ 公开账号</span>
+          <span>S&amp;P 500 决策者</span>
+          <span>AI · 芯片 · 云计算 · 航天</span>
+        </div>
+      </div>
       <span id="source-badge" hidden></span>
       <span id="catalog-fact" hidden></span>
     </section>
@@ -211,7 +253,7 @@
         <button class="mode api" id="mode-api" type="button">数据模式 · Credits</button>
       </div>
     </section>
-    <div class="language-note"><b>语言说明：</b>公开模式展示 X 原文。如需简体中文，可自行安装 Microsoft Edge / Chrome 浏览器，或其它沉浸式翻译等浏览器扩展。</div>
+    <div class="language-note"><b>语言：</b>公开模式展示 X 原文；如需中文，可使用浏览器网页翻译。</div>
     <div class="catalog-toolbar">
       <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
       <button class="leader-fold" id="leader-fold" type="button" hidden>展开全部 ↓</button>
@@ -268,9 +310,9 @@
   <div class="share-sheet" id="share-sheet" hidden>
     <div class="share-backdrop" data-share-close="1"></div>
     <section class="share-panel" role="dialog" aria-modal="true" aria-labelledby="share-title">
-      <div class="share-head"><b id="share-title">分享这条动态</b><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
+      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">原帖链接 · 图片卡片 · 微信分享</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
-        <button type="button" id="share-wechat">打开单帖</button>
+        <button type="button" id="share-wechat">打开分享页</button>
         <button type="button" id="share-video" hidden>分享视频</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
