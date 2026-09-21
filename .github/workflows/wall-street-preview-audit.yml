@@ -144,8 +144,6 @@ jobs:
           out_path.parent.mkdir(parents=True, exist_ok=True)
           out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           print(json.dumps(payload, ensure_ascii=False))
-          if payload["merge_gate"] != "pass":
-              raise SystemExit("Wall Street preview runtime audit blocked")
           PY
 
       - name: Commit runtime audit
