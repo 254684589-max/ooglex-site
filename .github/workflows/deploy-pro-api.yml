@@ -201,7 +201,7 @@ jobs:
                 share_avatar_file="$(mktemp)"
                 share_avatar_headers="$(mktemp)"
                 if curl -fsS --connect-timeout 5 --max-time 25 -D "$share_avatar_headers" -o "$share_avatar_file" "$share_avatar"; then
-                  python -c 'import pathlib,sys; body=pathlib.Path(sys.argv[1]).read_bytes(); headers=pathlib.Path(sys.argv[2]).read_text(errors="ignore").lower(); assert len(body)>1000; assert "content-type: image/png" in headers; assert "x-ooglex-share-avatar: circle-verified-png" in headers; assert not body.lstrip().startswith(b"<svg"); print("Circular verified PNG share avatar OK")' "$share_avatar_file" "$share_avatar_headers" || failed=1
+                  python -c 'import pathlib,sys; body=pathlib.Path(sys.argv[1]).read_bytes(); headers=pathlib.Path(sys.argv[2]).read_text(errors="ignore").lower(); assert len(body)>1000; assert "content-type: image/png" in headers; assert "x-ooglex-share-avatar: circle-verified-png" in headers; assert "x-ooglex-share-avatar-bg: #f7f7f7" in headers; assert not body.lstrip().startswith(b"<svg"); print("Circular verified PNG share avatar + unified card background OK")' "$share_avatar_file" "$share_avatar_headers" || failed=1
                 else
                   echo "::error::Raster share avatar endpoint failed"
                   failed=1
