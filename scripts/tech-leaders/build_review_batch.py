@@ -1,18 +1,9 @@
 #!/usr/bin/env python3
-"""
-Build the first 150-row Tech Leaders research/review batch.
+"""Build the first Tech Leaders V1.1 research batch.
 
-This is a REVIEW artifact, not a production import.
-It classifies and prioritizes uncovered NYSE/Nasdaq issuers while preserving
-empty executive/X evidence fields until they are actually verified.
-
-Inputs:
-  data/tech-leaders/executive_candidate_queue.csv
-
-Outputs:
-  data/tech-leaders/review_batch_150.csv
-  data/tech-leaders/review_batch_150.json
-  data/tech-leaders/review_batch_150.meta.json
+The batch is issuer-led research, but explicitly multi-person: represented
+companies stay eligible so additional founders, former CEOs and other active
+legacy leaders can be discovered. No role or X identity is auto-verified.
 """
 
 from __future__ import annotations
@@ -24,7 +15,6 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-
 
 SECTOR_CATEGORY = {
     "科技": "科技",
@@ -98,9 +88,9 @@ def rank_points(rank: int) -> int:
         return 46
     if rank <= 150:
         return 38
-    if rank <= 200:
+    if rank <= 300:
         return 30
-    if rank <= 250:
+    if rank <= 650:
         return 22
     return 14
 
@@ -116,16 +106,26 @@ def cap_points(bucket: str) -> int:
     }[bucket]
 
 
+def proxy_points(row: dict[str, str]) -> int:
+    low = (row.get("filer_category") or "").lower()
+    if "large accelerated" in low:
+        return 10
+    if "accelerated" in low and "non-accelerated" not in low:
+        return 6
+    if "non-accelerated" in low:
+        return 3
+    return 0
+
+
 def tags_for(row: dict[str, str]) -> list[str]:
     ticker = row["ticker"].upper()
     tags = ["上市公司", row["exchange"]]
-    sector_tag = SECTOR_CATEGORY.get(row["sector"])
+    sector_tag = SECTOR_CATEGORY.get(row.get("sector", ""))
     if sector_tag:
         tags.append(sector_tag)
     for tag, tickers in STRATEGIC_TICKERS.items():
         if ticker in tickers:
             tags.append(tag)
-    # Keep deterministic order, no duplicates.
     seen: set[str] = set()
     out: list[str] = []
     for tag in tags:
@@ -137,10 +137,30 @@ def tags_for(row: dict[str, str]) -> list[str]:
 
 def score_row(row: dict[str, str]) -> tuple[int, list[str], str]:
     rank = int(row["priority_rank"])
-    bucket = market_cap_bucket(row["market_cap_usd"])
+    bucket = market_cap_bucket(row.get("market_cap_usd", ""))
     tags = tags_for(row)
-    score = rank_points(rank) + cap_points(bucket) + SECTOR_WEIGHT.get(row["sector"], 4)
-    score += min(10, 2 * sum(tag in {"AI", "芯片", "云计算", "网络安全", "软件", "航空航天", "金融科技"} for tag in tags))
+    score = rank_points(rank) + cap_points(bucket)
+    score += proxy_points(row)
+    score += SECTOR_WEIGHT.get(row.get("sector", ""), 4)
+    score += min(
+        10,
+        2
+        * sum(
+            tag
+            in {
+                "AI",
+                "芯片",
+                "云计算",
+                "网络安全",
+                "软件",
+                "航空航天",
+                "金融科技",
+            }
+            for tag in tags
+        ),
+    )
+    if row.get("existing_catalog_match") == "yes":
+        score += 3
     score = min(100, score)
     return score, tags, bucket
 
@@ -164,9 +184,18 @@ OUT_FIELDS = [
     "market_cap_usd",
     "market_cap_bucket",
     "sector",
+    "priority_method",
+    "filer_category",
+    "last_annual",
     "recommended_categories",
     "cik",
+    "existing_catalog_match",
+    "existing_leader_count",
+    "existing_leader_names",
+    "existing_x_handles",
     "source_research_priority",
+    "discovery_mode",
+    "target_roles",
     "executive_name",
     "executive_role",
     "role_status",
@@ -186,19 +215,24 @@ OUT_FIELDS = [
 
 
 def build_batch(rows: list[dict[str, str]], limit: int) -> list[dict[str, Any]]:
-    uncovered = [r for r in rows if r["existing_catalog_match"] == "no"]
     enriched: list[dict[str, Any]] = []
-    for row in uncovered:
+    for row in rows:
         score, tags, bucket = score_row(row)
-        enriched.append({
-            **row,
-            "research_score": score,
-            "review_tier": review_tier(score),
-            "market_cap_bucket": bucket,
-            "recommended_categories": "|".join(tags),
-        })
+        enriched.append(
+            {
+                **row,
+                "research_score": score,
+                "review_tier": review_tier(score),
+                "market_cap_bucket": bucket,
+                "recommended_categories": "|".join(tags),
+            }
+        )
 
-    priority_order = {"research_now": 0, "research_next": 1, "research_later": 2}
+    priority_order = {
+        "research_now": 0,
+        "research_next": 1,
+        "research_later": 2,
+    }
     enriched.sort(
         key=lambda r: (
             priority_order.get(r["research_priority"], 9),
@@ -212,9 +246,6 @@ def build_batch(rows: list[dict[str, str]], limit: int) -> list[dict[str, Any]]:
     for idx, row in enumerate(batch, start=1):
         row["batch_rank"] = idx
         row["source_research_priority"] = row["research_priority"]
-        # Keep evidence fields honest. No auto-promotion.
-        if row.get("review_status") == "needs_research":
-            row["review_status"] = "needs_research"
         row.pop("research_priority", None)
         for key in OUT_FIELDS:
             row.setdefault(key, "")
@@ -234,8 +265,9 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def write_json(path: Path, rows: list[dict[str, Any]]) -> None:
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "review_only",
+        "mode": "multi_person_current_and_legacy",
         "count": len(rows),
         "candidates": [{k: r.get(k, "") for k in OUT_FIELDS} for r in rows],
     }
@@ -247,29 +279,34 @@ def write_json(path: Path, rows: list[dict[str, Any]]) -> None:
 def write_meta(path: Path, rows: list[dict[str, Any]]) -> None:
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     exchange = Counter(r["exchange"] for r in rows)
-    sector = Counter(r["sector"] for r in rows)
+    sector = Counter(r.get("sector") or "Unknown" for r in rows)
     tiers = Counter(r["review_tier"] for r in rows)
     tags = Counter()
     for r in rows:
         tags.update(filter(None, r["recommended_categories"].split("|")))
 
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at": now,
         "status": "review_only",
+        "mode": "multi_person_current_and_legacy",
         "count": len(rows),
+        "existing_issuer_rows": sum(
+            1 for r in rows if r.get("existing_catalog_match") == "yes"
+        ),
         "exchange_counts": dict(sorted(exchange.items())),
         "sector_counts": dict(sorted(sector.items(), key=lambda kv: (-kv[1], kv[0]))),
         "review_tier_counts": dict(sorted(tiers.items())),
         "category_counts": dict(sorted(tags.items(), key=lambda kv: (-kv[1], kv[0]))),
         "rules": {
-            "no_existing_catalog_matches": True,
+            "existing_catalog_matches_are_eligible": True,
+            "multi_person_per_issuer": True,
+            "legacy_leaders_allowed": True,
             "no_auto_verified_x": True,
             "no_auto_role_verification": True,
             "production_file_untouched": "apps/tech-leaders/leaders.json",
-            "purpose": "Human research/review ordering only.",
         },
-        "next_stage": "Populate role/X evidence, then create leaders-v250-preview.json from approved candidates only.",
+        "next_stage": "Resolve named people for each issuer/role target, verify role history + personal X identity + activity, then create leaders-v250-preview.json from approved people only.",
     }
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -278,7 +315,10 @@ def write_meta(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--input", default="data/tech-leaders/executive_candidate_queue.csv")
+    ap.add_argument(
+        "--input",
+        default="data/tech-leaders/executive_candidate_queue.csv",
+    )
     ap.add_argument("--limit", type=int, default=150)
     ap.add_argument("--csv", default="data/tech-leaders/review_batch_150.csv")
     ap.add_argument("--json", default="data/tech-leaders/review_batch_150.json")
@@ -297,21 +337,29 @@ def main() -> int:
     write_json(Path(args.json), batch)
     write_meta(Path(args.meta), batch)
 
-    print(json.dumps({
-        "ok": True,
-        "count": len(batch),
-        "top10": [
+    print(
+        json.dumps(
             {
-                "batch_rank": r["batch_rank"],
-                "ticker": r["ticker"],
-                "company": r["company"],
-                "score": r["research_score"],
-                "tier": r["review_tier"],
-                "categories": r["recommended_categories"],
-            }
-            for r in batch[:10]
-        ],
-    }, ensure_ascii=False))
+                "ok": True,
+                "count": len(batch),
+                "existing_issuer_rows": sum(
+                    r.get("existing_catalog_match") == "yes" for r in batch
+                ),
+                "top10": [
+                    {
+                        "batch_rank": r["batch_rank"],
+                        "ticker": r["ticker"],
+                        "company": r["company"],
+                        "score": r["research_score"],
+                        "tier": r["review_tier"],
+                        "categories": r["recommended_categories"],
+                    }
+                    for r in batch[:10]
+                ],
+            },
+            ensure_ascii=False,
+        )
+    )
     return 0
 
 
