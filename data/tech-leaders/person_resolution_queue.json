@@ -362,16 +362,11 @@
         {
           "name": "Scott Guthrie",
           "handle": "scottgu",
-          "status": "manual_review"
+          "status": "approved"
         },
         {
           "name": "Kevin Scott",
           "handle": "kevin_scott",
-          "status": "approved"
-        },
-        {
-          "name": "Scott Guthrie",
-          "handle": "scottgu",
           "status": "approved"
         }
       ],
