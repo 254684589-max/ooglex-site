@@ -4,10 +4,12 @@
   "source_path": "apps/tech-leaders/leaders.json",
   "source_blob_sha": "56a4161b30e4f162fa70949fcb663df261ee40b8",
   "leader_count": 500,
-  "active_count": 500,
+  "active_count": 528,
   "schema_version": 12,
   "capacity": 800,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v500-stable-2026-09-22.json",
-  "previous_baseline": "data/tech-leaders/snapshots/leaders-v450-stable-2026-09-22.json",
-  "purpose": "Production rollback baseline after completing the independently verified 450 → 500 Tech Leaders expansion."
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v528-stable-2026-09-22.json",
+  "previous_baseline": "data/tech-leaders/snapshots/leaders-v500-stable-2026-09-22.json",
+  "purpose": "Production rollback baseline after promoting 28 independently approved Wall Street profiles from V500 to V528. V500 remains the immediate previous rollback snapshot.",
+  "version": "v528-stable",
+  "updated_at": "2026-09-22"
 }
