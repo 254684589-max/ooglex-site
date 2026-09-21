@@ -18,7 +18,8 @@
     "data/tech-leaders/verified_candidates.tranche12.json",
     "data/tech-leaders/verified_candidates.tranche13.json",
     "data/tech-leaders/verified_candidates.tranche14.json",
-    "data/tech-leaders/verified_candidates.tranche15.json"
+    "data/tech-leaders/verified_candidates.tranche15.json",
+    "data/tech-leaders/verified_candidates.tranche16.json"
   ],
   "company_count": 150,
   "slot_count": 450,
@@ -6362,6 +6363,11 @@
           "name": "Olivier Pomel",
           "handle": "oliveur",
           "status": "approved"
+        },
+        {
+          "name": "Alexis Lê-Quôc",
+          "handle": "alq",
+          "status": "approved"
         }
       ],
       "resolution_status": "expand_more",
@@ -6401,6 +6407,11 @@
         {
           "name": "Olivier Pomel",
           "handle": "oliveur",
+          "status": "approved"
+        },
+        {
+          "name": "Alexis Lê-Quôc",
+          "handle": "alq",
           "status": "approved"
         }
       ],
