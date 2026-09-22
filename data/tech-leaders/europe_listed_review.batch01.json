@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "review_only_updated_2026-09-22",
+  "status": "activity_audit_reconciled_2026-09-22",
   "tranche_type": "europe_listed_review_batch_01",
   "universe": {
     "primary": "STOXX Europe 600",
@@ -32,10 +32,14 @@
   },
   "summary": {
     "batch_count": 25,
-    "preview_ready": 5,
+    "role_verified_or_legacy": 24,
+    "role_needs_fresh_capture": 1,
+    "preview_ready": 6,
     "identity_verified_activity_pending": 1,
+    "manual_review_activity": 0,
     "hold_inactive": 3,
-    "needs_x_research": 16,
+    "manual_review_no_verified_x": 0,
+    "needs_x_research": 15,
     "production_additions": 0
   },
   "candidates": [
@@ -53,9 +57,13 @@
       "x_handle": "ChrstnKlein",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://twitter.com/ChrstnKlein",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
-      "notes": "SAP executive-channel material links Christian Klein to @ChrstnKlein. Do not approve until direct recent-post activity is confirmed."
+      "x_activity_status": "inactive_gt_365d",
+      "review_status": "hold_inactive",
+      "notes": "SAP executive-channel material links Christian Klein to @ChrstnKlein. Do not approve until direct recent-post activity is confirmed.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2023-12-18T18:51:29Z",
+      "x_activity_age_days": 1008.36
     },
     {
       "batch_rank": 2,
@@ -145,7 +153,11 @@
       "x_identity_source_url": "https://twitter.com/VasNarasimhan",
       "x_activity_status": "inactive_gt_365d",
       "review_status": "hold_inactive",
-      "notes": "Identity is strong, but observed personal posting activity is older than the existing >365d hold threshold."
+      "notes": "Identity is strong, but observed personal posting activity is older than the existing >365d hold threshold.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2024-03-11T13:21:44Z",
+      "x_activity_age_days": 924.58
     },
     {
       "batch_rank": 7,
@@ -163,7 +175,11 @@
       "x_identity_source_url": "https://x.com/MWierod",
       "x_activity_status": "inactive_gt_365d",
       "review_status": "hold_inactive",
-      "notes": "ABB confirms current CEO role. Mirrored X history shows the personal account has been inactive for years."
+      "notes": "ABB confirms current CEO role. Mirrored X history shows the personal account has been inactive for years.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2022-06-20T12:24:51Z",
+      "x_activity_age_days": 1554.62
     },
     {
       "batch_rank": 8,
@@ -179,9 +195,13 @@
       "x_handle": "BuschRo",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/BuschRo",
-      "x_activity_status": "inactive_gt_365d",
-      "review_status": "hold_inactive",
-      "notes": "Account has been described as no longer in active use; retain only as hold/legacy research, not production."
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
+      "notes": "Account has been described as no longer in active use; retain only as hold/legacy research, not production.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2026-09-03T12:02:49Z",
+      "x_activity_age_days": 18.64
     },
     {
       "batch_rank": 9,
@@ -323,9 +343,13 @@
       "x_handle": "Belen_Garijo",
       "x_identity_status": "historical_handle_needs_current_verification",
       "x_identity_source_url": "https://twitter.com/Belen_Garijo",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
-      "notes": "Sanofi confirms CEO effective 1 May 2026. Historical public references identify @Belen_Garijo, but current ownership/activity must be rechecked."
+      "x_activity_status": "needs_direct_activity_check",
+      "review_status": "identity_verified_activity_pending",
+      "notes": "Sanofi confirms CEO effective 1 May 2026. Historical public references identify @Belen_Garijo, but current ownership/activity must be rechecked.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": null,
+      "x_last_activity_at": null,
+      "x_activity_age_days": null
     },
     {
       "batch_rank": 17,
@@ -488,7 +512,11 @@
       "x_activity_status": "active_le_180d",
       "review_status": "preview_ready",
       "notes": "Telefónica confirms his former Executive Chairman role through January 2025. The personal @jmalvpal timeline is currently active within hours/days, so he now passes the existing activity gate as a legacy leader.",
-      "x_activity_source_url": "https://www.sotwe.com/jmalvpal?lang=en"
+      "x_activity_source_url": "https://www.sotwe.com/jmalvpal?lang=en",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2026-09-07T16:14:57Z",
+      "x_activity_age_days": 14.46
     }
   ],
   "next_stage": "Run Europe Batch 01 X-identity/activity verification on the 17 unresolved records, recheck the 3 inactivity holds, dedupe all approved handles against production, then build a Europe preview catalog only from records that pass role + identity + activity + avatar/runtime gates."
