@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "x_identity_activity_first_pass",
+  "status": "activity_audit_reconciled_2026-09-22",
   "tranche_type": "europe_listed_review_batch_04",
   "batch_range": "76-100",
   "phase": "Europe 5 -> 50",
@@ -13,12 +13,12 @@
   "production_file_untouched": "apps/tech-leaders/leaders.json",
   "summary": {
     "batch_count": 25,
-    "role_verified_or_legacy": 24,
-    "role_needs_fresh_capture": 1,
-    "preview_ready": 2,
-    "identity_verified_activity_pending": 4,
+    "role_verified_or_legacy": 25,
+    "role_needs_fresh_capture": 0,
+    "preview_ready": 3,
+    "identity_verified_activity_pending": 1,
     "manual_review_activity": 1,
-    "hold_inactive": 2,
+    "hold_inactive": 4,
     "needs_x_research": 16,
     "production_additions": 0
   },
@@ -50,7 +50,11 @@
       "review_status": "hold_inactive",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
       "notes": "S4 Capital's 2026 annual-report filing identifies Sorrell as Executive Chairman. Personal X identity is clear, but the visible personal timeline is roughly nine years stale.",
-      "x_activity_source_url": "https://www.sotwe.com/martinsorrell"
+      "x_activity_source_url": "https://www.sotwe.com/martinsorrell",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2017-09-14T11:03:09Z",
+      "x_activity_age_days": 3294.69
     },
     {
       "batch_rank": 77,
@@ -70,7 +74,11 @@
       "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
       "notes": "Wise identifies Hinrikus as co-founder. Public X mirrors show current activity within days, satisfying the activity gate.",
-      "x_activity_source_url": "https://www.sotwe.com/taavet?lang=en"
+      "x_activity_source_url": "https://www.sotwe.com/taavet?lang=en",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2026-09-10T08:48:57Z",
+      "x_activity_age_days": 11.78
     },
     {
       "batch_rank": 78,
@@ -90,7 +98,11 @@
       "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
       "notes": "Aston Martin's official succession release confirms Palmer's former CEO role. His personal X profile explicitly references that role and is actively posting in September 2026.",
-      "x_activity_source_url": "https://www.twstalker.com/AndyatAuto"
+      "x_activity_source_url": "https://www.twstalker.com/AndyatAuto",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2026-09-15T08:53:09Z",
+      "x_activity_age_days": 6.78
     },
     {
       "batch_rank": 79,
@@ -110,7 +122,11 @@
       "review_status": "manual_review_activity",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
       "notes": "Renault's official archive confirms the Chairman/CEO role. Personal X identity is clear, but the visible latest posts are about seven months old, outside the automatic 180-day gate.",
-      "x_activity_source_url": "https://www.sotwe.com/CarlosGhosn?lang=id"
+      "x_activity_source_url": "https://www.sotwe.com/CarlosGhosn?lang=id",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2026-02-18T17:02:34Z",
+      "x_activity_age_days": 215.44
     },
     {
       "batch_rank": 80,
@@ -126,10 +142,14 @@
       "x_handle": "ArthurSadoun",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/ArthurSadoun",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "inactive_gt_365d",
+      "review_status": "hold_inactive",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Publicis 2026 meeting materials confirm the current Chairman & CEO role. The personal X username is independently mapped, but recent activity still needs a direct check."
+      "notes": "Publicis 2026 meeting materials confirm the current Chairman & CEO role. The personal X username is independently mapped, but recent activity still needs a direct check.",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2017-06-26T18:31:52Z",
+      "x_activity_age_days": 3374.38
     },
     {
       "batch_rank": 81,
@@ -149,7 +169,11 @@
       "review_status": "hold_inactive",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
       "notes": "Havas confirms current Chairman & CEO status. The personal X bio matches the role, but the visible timeline is more than two years stale.",
-      "x_activity_source_url": "https://www.sotwe.com/YannickBollore"
+      "x_activity_source_url": "https://www.sotwe.com/YannickBollore",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2024-02-06T10:37:45Z",
+      "x_activity_age_days": 958.7
     },
     {
       "batch_rank": 82,
@@ -203,10 +227,14 @@
       "x_handle": "CindyRose",
       "x_identity_status": "probable_personal_x_needs_current_role_relink",
       "x_identity_source_url": "https://x.com/CindyRose",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "inactive_gt_365d",
+      "review_status": "hold_inactive",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "WPP confirms Rose as Group CEO. The long-standing @CindyRose account clearly belongs to the same executive but its indexed bio still references Microsoft, so current-role relinking and activity need one more check."
+      "notes": "WPP confirms Rose as Group CEO. The long-standing @CindyRose account clearly belongs to the same executive but its indexed bio still references Microsoft, so current-role relinking and activity need one more check.",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2022-03-25T16:49:34Z",
+      "x_activity_age_days": 1641.45
     },
     {
       "batch_rank": 85,
@@ -255,15 +283,15 @@
       "exchange": "Xetra",
       "country": "Germany",
       "current_role": "Co-Founder and Chief Executive Officer",
-      "role_status": "needs_fresh_role_page_capture",
-      "role_source_url": "",
+      "role_status": "verified_current",
+      "role_source_url": "https://ir.hellofreshgroup.com/corporate-governance",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
       "review_status": "needs_x_research",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Multiple current public-company references identify Richter as Founder & CEO, but this batch keeps the role on hold until a fresh first-party HelloFresh leadership page is captured."
+      "notes": "Multiple current public-company references identify Richter as Founder & CEO, but this batch keeps the role on hold until a fresh first-party HelloFresh leadership page is captured. HelloFresh current corporate-governance materials confirm Dominik Richter as Group CEO."
     },
     {
       "batch_rank": 88,
@@ -377,7 +405,11 @@
       "x_activity_status": "needs_direct_activity_check",
       "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Telenor's 2024 report confirms Brekke's nine-year CEO tenure. World Bank profile metadata links the personal @Sigve_telenor account; current activity requires a direct check."
+      "notes": "Telenor's 2024 report confirms Brekke's nine-year CEO tenure. World Bank profile metadata links the personal @Sigve_telenor account; current activity requires a direct check.",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": null,
+      "x_last_activity_at": null,
+      "x_activity_age_days": null
     },
     {
       "batch_rank": 94,
@@ -488,10 +520,14 @@
       "x_handle": "readmark",
       "x_identity_status": "verified_personal_x_historical",
       "x_identity_source_url": "https://x.com/readmark",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "WPP confirms Read's CEO succession. Historical WPP posts explicitly tag @readmark as its CEO; current activity requires a direct check."
+      "notes": "WPP confirms Read's CEO succession. Historical WPP posts explicitly tag @readmark as its CEO; current activity requires a direct check.",
+      "x_activity_audit_generated_at": "2026-09-22T03:32:32Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2026-09-15T16:02:38Z",
+      "x_activity_age_days": 6.48
     },
     {
       "batch_rank": 100,
@@ -513,5 +549,5 @@
       "notes": "UBS confirms Hamers stepped down as Group CEO in 2023; personal X remains unverified."
     }
   ],
-  "next_stage": "Run direct free-feed activity audit for every resolved personal X handle in Europe Batches 01-04, then build the next Europe Preview only from non-production records that pass role + identity + <=180d activity + dedupe + avatar/runtime gates."
+  "next_stage": "V604 Preview has passed with five new Europe candidates across prior batches. Batch 04 contributes Taavet Hinrikus, Andy Palmer and Mark Read; continue to Batch 05 after V604 Stable Promotion."
 }
