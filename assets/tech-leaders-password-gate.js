@@ -2,8 +2,6 @@
   "use strict";
 
   var API_BASE = "https://pro-api.ooglex.com";
-  var SESSION_KEY = "ooglex.tech-leaders.server-token.v1";
-  var token = "";
   var resolveGate;
   var gatePromise = new Promise(function (resolve) { resolveGate = resolve; });
   var resolved = false;
@@ -14,38 +12,13 @@
     resolveGate(!!value);
   }
 
-  function readSessionToken() {
-    try { return sessionStorage.getItem(SESSION_KEY) || ""; }
-    catch (_) { return ""; }
-  }
-
-  function rememberToken(value) {
-    token = String(value || "");
-    try {
-      if (token) sessionStorage.setItem(SESSION_KEY, token);
-      else sessionStorage.removeItem(SESSION_KEY);
-    } catch (_) {}
-  }
-
-  function authHeaders(headers) {
-    var out = new Headers(headers || {});
-    if (token) out.set("Authorization", "Bearer " + token);
-    return out;
-  }
-
   async function protectedFetch(input, init) {
     var options = Object.assign({}, init || {});
-    options.headers = authHeaders(options.headers);
-    var response = await fetch(input, options);
-    if (response.status === 401 && String(input).indexOf("/v1/tech-leaders/") >= 0) {
-      rememberToken("");
-    }
-    return response;
+    options.credentials = "include";
+    return fetch(input, options);
   }
 
-  async function validateToken(value) {
-    token = String(value || "");
-    if (!token) return false;
+  async function validateSession() {
     try {
       var response = await protectedFetch(API_BASE + "/v1/tech-leaders/session", { cache: "no-store" });
       return response.ok;
@@ -111,25 +84,32 @@
       submit.disabled = true;
       submit.textContent = "验证中…";
       try {
+        // text/plain keeps this request CORS-simple and avoids a browser preflight
+        // that can fail on some networks even when the Worker itself is reachable.
         var response = await fetch(API_BASE + "/v1/tech-leaders/auth", {
           method: "POST",
           cache: "no-store",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ password: input.value })
+          credentials: "include",
+          headers: { "content-type": "text/plain;charset=UTF-8" },
+          body: input.value
         });
         var data = {};
         try { data = await response.json(); } catch (_) {}
-        if (!response.ok || !data.token) {
+        if (!response.ok || !data.ok) {
           if (response.status === 429) error.textContent = "尝试次数过多，请稍后再试。";
+          else if (response.status === 401) error.textContent = "密码错误，请重试。";
           else if (response.status === 503) error.textContent = "服务器门禁正在部署，请稍后刷新。";
-          else error.textContent = "密码错误，请重试。";
+          else error.textContent = "服务器验证失败，请稍后重试。";
           input.select();
           return;
         }
-        rememberToken(data.token);
+        if (!(await validateSession())) {
+          error.textContent = "密码已通过，但浏览器未保存访问会话，请刷新后重试。";
+          return;
+        }
         unlockUi(root);
       } catch (_) {
-        error.textContent = "暂时无法连接服务器门禁，请稍后重试。";
+        error.textContent = "当前网络无法连接验证服务器，请检查网络后重试。";
       } finally {
         submit.disabled = false;
         submit.textContent = "进入";
@@ -141,26 +121,19 @@
 
   window.OoglexTechLeadersGate = {
     wait: function () { return gatePromise; },
-    token: function () { return token; },
     fetch: protectedFetch,
-    lock: function () {
-      rememberToken("");
-      location.reload();
-    }
+    lock: function () { location.reload(); }
   };
 
   addStyle();
   document.documentElement.classList.add("ooglex-tech-locked");
 
   async function startGate() {
-    var saved = readSessionToken();
-    if (saved && await validateToken(saved)) {
-      rememberToken(saved);
+    if (await validateSession()) {
       document.documentElement.classList.remove("ooglex-tech-locked");
       finish(true);
       return;
     }
-    rememberToken("");
     mountGate();
   }
 
