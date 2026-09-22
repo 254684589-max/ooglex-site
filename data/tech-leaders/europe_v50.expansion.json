@@ -38,7 +38,7 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "conditional"
+      "status": "next"
     }
   ],
   "admission_gates": [
@@ -51,8 +51,8 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "V604 Preview has passed all gates. Next release step is V604 Stable Promotion (599 -> 604); after promotion, continue Europe Batch 05 scanning because 40 more Europe additions will still be required to reach 50.",
-  "current_europe_count": 5,
+  "next_action": "Open Europe Batch 05 and continue scanning until 40 additional people pass role + personal-X identity + activity + avatar/feed/runtime gates. Do not lower the gate to fill the 50-person target.",
+  "current_europe_count": 10,
   "batch03_result": {
     "reviewed": 25,
     "preview_ready": 0,
@@ -96,8 +96,23 @@
     "render_ready_count": 5,
     "render_blocked_count": 0,
     "merge_gate": "pass",
-    "production_promoted": false
+    "production_promoted": true,
+    "production_catalog": "v604-stable-2026-09-22",
+    "production_count": 604,
+    "production_europe_count": 10
   },
-  "production_gap_to_50": 45,
-  "approved_preview_gap_to_50_after_promotion": 40
+  "production_gap_to_50": 40,
+  "approved_preview_gap_to_50_after_promotion": 40,
+  "last_promotion": {
+    "release": "v604-stable-2026-09-22",
+    "promoted_at": "2026-09-22",
+    "additions": 5,
+    "names": [
+      "Andy Palmer",
+      "José María Álvarez-Pallete",
+      "Mark Read",
+      "Roland Busch",
+      "Taavet Hinrikus"
+    ]
+  }
 }

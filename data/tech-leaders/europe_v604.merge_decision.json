@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V599 -> V604",
+  "target_category": "欧洲",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v604-preview.json",
+  "preview_catalog_version": "v604-europe-preview-2026-09-22",
+  "base_count": 599,
+  "approved_additions": 5,
+  "static_gate": "pass",
+  "runtime_gate": "pass",
+  "runtime_generated_at": "2026-09-22T03:30:58Z",
+  "runtime_summary": {
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "avatar_ready_count": 5,
+    "native_free_feed_ready_count": 5,
+    "embed_fallback_available": true,
+    "render_ready_count": 5,
+    "render_blocked_count": 0
+  },
+  "promoted_people": [
+    {
+      "id": "europe-b04-andy-palmer",
+      "name": "Andy Palmer",
+      "handle": "AndyatAuto",
+      "company": "Aston Martin Lagonda Global Holdings plc",
+      "categories": [
+        "欧洲",
+        "汽车"
+      ]
+    },
+    {
+      "id": "europe-telefonica-jose-maria-alvarez-pallete",
+      "name": "José María Álvarez-Pallete",
+      "handle": "jmalvpal",
+      "company": "Telefónica SA",
+      "categories": [
+        "欧洲"
+      ]
+    },
+    {
+      "id": "europe-b04-mark-read",
+      "name": "Mark Read",
+      "handle": "readmark",
+      "company": "WPP plc",
+      "categories": [
+        "欧洲"
+      ]
+    },
+    {
+      "id": "europe-siemens-roland-busch",
+      "name": "Roland Busch",
+      "handle": "BuschRo",
+      "company": "Siemens AG",
+      "categories": [
+        "欧洲",
+        "工业"
+      ]
+    },
+    {
+      "id": "europe-b04-taavet-hinrikus",
+      "name": "Taavet Hinrikus",
+      "handle": "taavet",
+      "company": "Wise plc",
+      "categories": [
+        "欧洲",
+        "金融"
+      ]
+    }
+  ],
+  "production_action": "promote",
+  "production_catalog": "v604-stable-2026-09-22",
+  "production_count": 604,
+  "europe_count": 10,
+  "wall_street_count": 100,
+  "previous_production_catalog": "v599-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v599-europe5-stable-2026-09-22.json",
+  "rationale": "All five V604 Europe preview additions passed the static/dedupe gate and deployed runtime checks with 5/5 valid avatars, 5/5 native free feeds, 5/5 render-ready and 0 blocked records."
+}
