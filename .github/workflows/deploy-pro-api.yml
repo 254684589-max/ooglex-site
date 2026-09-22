@@ -66,6 +66,34 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+      - name: Rotate Tech Leaders server session secret
+        working-directory: cloudflare/pro-api
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          secret="$(openssl rand -hex 32)"
+          echo "::add-mask::$secret"
+          printf '%s' "$secret" | npx --yes wrangler@4 secret put TECH_LEADERS_SESSION_SECRET --name ooglex-pro-api
+          echo "TECH_LEADERS_DEPLOY_SECRET=$secret" >> "$GITHUB_ENV"
+
+      - name: Upload private Tech Leaders catalogs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          count=0
+          for file in apps/tech-leaders/leaders*.json; do
+            [ -f "$file" ] || continue
+            name="$(basename "$file")"
+            npx --yes wrangler@4 r2 object put "ooglex-pro-data/tech-leaders/catalogs/$name" --file "$file"
+            count=$((count+1))
+          done
+          test "$count" -gt 0
+          echo "Uploaded $count protected Tech Leaders catalogs to private R2."
+
       - name: Verify PRO API custom domain
         run: |
           set -e
@@ -118,10 +146,28 @@ jobs:
           echo "$body" | grep -q '"service":"tech-leaders"'
           echo "Tech Leaders backend ready: $body"
 
+      - name: Verify Tech Leaders server gate
+        run: |
+          set -euo pipefail
+          public_code="$(curl -sS -o /tmp/tech-public.json -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/catalog?catalog=leaders.json")"
+          test "$public_code" = "401"
+          auth_code="$(curl -sS -H "x-ooglex-tech-secret: $TECH_LEADERS_DEPLOY_SECRET" -o /tmp/tech-auth.json -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/catalog?catalog=leaders.json")"
+          test "$auth_code" = "200"
+          python - <<'PY'
+          import json
+          with open("/tmp/tech-auth.json", "r", encoding="utf-8") as f:
+              data=json.load(f)
+          leaders=data.get("leaders", data if isinstance(data,list) else [])
+          assert len(leaders) >= 100, len(leaders)
+          print("Server gate OK; protected catalog count:", len(leaders))
+          PY
+
       - name: Smoke test hard-zero-X-API free mode
         run: |
           set +e
           failed=0
+          curl() { command curl -H "x-ooglex-tech-secret: ${TECH_LEADERS_DEPLOY_SECRET:-}" "$@"; }
+
 
           python - <<'PY'
           import json
