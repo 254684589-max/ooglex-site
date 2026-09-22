@@ -138,43 +138,64 @@ def identity_already_verified(c: dict[str, Any]) -> bool:
     xs = str(c.get("x_identity_status") or "").lower()
     return xs.startswith("verified_personal_x")
 
-def typeahead_identity(c: dict[str, Any]) -> dict[str, Any] | None:
+def typeahead_identity(c: dict[str, Any]) -> dict[str, Any]:
+    """Return strict acceptance plus a compact manual-review suggestion list."""
     name = str(c.get("name") or "").strip()
     company = str(c.get("company") or "").strip()
     if not name or not company:
-        return None
+        return {"accepted": None, "suggestions": []}
     q = urllib.parse.urlencode({"q": name, "result_type": "users"})
     payload = http_json(f"https://api.fxtwitter.com/2/typeahead?{q}", timeout=15, tries=2)
     users = payload.get("users") if isinstance(payload, dict) else None
     if not isinstance(users, list):
-        return None
+        return {"accepted": None, "suggestions": []}
 
     target_name = norm(name)
+    target_words = set(words(name))
     ctoks = company_tokens(company)
     best = None
     best_score = -1
-    for user in users:
+    suggestions = []
+
+    for user in users[:8]:
         if not isinstance(user, dict):
             continue
-        if norm(user.get("name")) != target_name:
-            continue
+        uname = str(user.get("name") or "").strip()
         handle = str(user.get("screen_name") or "").lstrip("@").strip()
         if not handle:
             continue
+        uw = set(words(uname))
+        exact_name = norm(uname) == target_name
+        surname_overlap = bool(target_words) and len(target_words & uw) >= max(1, min(2, len(target_words)))
+        if not exact_name and not surname_overlap:
+            continue
+
         verification = user.get("verification") if isinstance(user.get("verification"), dict) else {}
         verified = bool(verification.get("verified") or verification.get("identity_verified"))
-        if not verified:
-            continue
         hay = " ".join([
             str(user.get("description") or ""),
             str(user.get("url") or ""),
             str((user.get("website") or {}).get("display_url") if isinstance(user.get("website"), dict) else ""),
-        ]).lower()
-        token_hits = [t for t in ctoks if t in norm(hay)]
-        if not token_hits:
-            # Also compare normalized company tokens against unstripped text.
-            token_hits = [t for t in ctoks if t in hay]
-        if not token_hits:
+        ])
+        hay_norm = norm(hay)
+        token_hits = [t for t in ctoks if t in hay_norm]
+        suggestion = {
+            "handle": handle,
+            "name": uname,
+            "description": str(user.get("description") or "")[:280],
+            "verified": verified,
+            "verification_type": verification.get("type"),
+            "identity_verified": bool(verification.get("identity_verified")),
+            "company_token_hits": token_hits,
+            "exact_name": exact_name,
+            "followers": int(user.get("followers") or 0),
+            "avatar_url": user.get("avatar_url"),
+        }
+        suggestions.append(suggestion)
+
+        # Production admission remains deliberately strict:
+        # exact display-name match + verified account + explicit company signal.
+        if not exact_name or not verified or not token_hits:
             continue
         score = 100 + min(20, 5 * len(token_hits))
         if bool(verification.get("identity_verified")):
@@ -182,16 +203,19 @@ def typeahead_identity(c: dict[str, Any]) -> dict[str, Any] | None:
         if score > best_score:
             best_score = score
             best = {
-                "handle": handle,
-                "name": user.get("name"),
-                "description": user.get("description") or "",
-                "verification": verification,
-                "avatar_url": user.get("avatar_url"),
-                "company_token_hits": token_hits,
+                **suggestion,
                 "score": score,
                 "source": "fxtwitter_typeahead_exact_name_verified_company_match",
             }
-    return best
+
+    suggestions.sort(key=lambda x: (
+        bool(x.get("exact_name")),
+        bool(x.get("identity_verified")),
+        bool(x.get("verified")),
+        len(x.get("company_token_hits") or []),
+        int(x.get("followers") or 0),
+    ), reverse=True)
+    return {"accepted": best, "suggestions": suggestions[:5]}
 
 def latest_activity(handle: str) -> tuple[datetime | None, str, int]:
     params = urllib.parse.urlencode({"handle": handle, "limit": 3})
@@ -344,7 +368,10 @@ def main() -> int:
 
     existing_handles = {str(x.get("handle") or "").lower(): x for x in leaders if x.get("handle")}
     existing_names = {norm(x.get("name_en") or x.get("name")): x for x in leaders}
-    cache = load_json(CACHE, {"schema_version":1,"candidates":{}}) or {"schema_version":1,"candidates":{}}
+    cache = load_json(CACHE, {"schema_version":2,"candidates":{}}) or {"schema_version":2,"candidates":{}}
+    if int(cache.get("schema_version") or 0) < 2:
+        cache = {"schema_version":2,"candidates":{}}
+    cache["schema_version"] = 2
     cache_rows = cache.setdefault("candidates", {})
     old_report = load_json(REPORT, {}) or {}
 
@@ -389,19 +416,20 @@ def main() -> int:
             row = cache_rows.get(nkey) if isinstance(cache_rows.get(nkey), dict) else {}
             checked = parse_time(row.get("checked_at"))
             fresh_cache = checked is not None and (now - checked).total_seconds() < args.cache_hours * 3600
-            discovered = row.get("discovered") if fresh_cache else None
+            probe = row.get("probe") if fresh_cache else None
             if not fresh_cache and scanned < args.scan_limit:
-                discovered = typeahead_identity(c)
+                probe = typeahead_identity(c)
                 scanned += 1
                 cache_rows[nkey] = {
                     "name": name,
                     "company": company,
                     "checked_at": iso_now(),
-                    "discovered": discovered,
+                    "probe": probe,
                 }
-            if isinstance(discovered, dict) and discovered.get("handle"):
-                handle = str(discovered["handle"]).lstrip("@")
-                identity_method = str(discovered.get("source") or "auto_typeahead_verified_company_match")
+            accepted = probe.get("accepted") if isinstance(probe, dict) else None
+            if isinstance(accepted, dict) and accepted.get("handle"):
+                handle = str(accepted["handle"]).lstrip("@")
+                identity_method = str(accepted.get("source") or "auto_typeahead_verified_company_match")
                 identity_source = f"https://x.com/{handle}"
             else:
                 blocked["identity_unresolved"] = blocked.get("identity_unresolved", 0) + 1
