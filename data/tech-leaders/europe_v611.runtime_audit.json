@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T06:07:08Z",
+  "generated_at": "2026-09-22T08:18:09Z",
   "preview_catalog_version": "v611-europe-preview-2026-09-22",
   "preview_count": 611,
   "base_count": 610,
@@ -9,7 +9,7 @@
   "static_gate": "pass",
   "static_blocking_reasons": [],
   "live_catalog_ok": true,
-  "live_catalog_error": "HTTPError",
+  "live_catalog_error": "",
   "live_page_ok": true,
   "live_page_error": "",
   "embed_fallback_available": true,
