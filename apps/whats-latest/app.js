@@ -165,6 +165,9 @@
 
   function renderFooter() {
     var html = "数据来源 <b>" + esc(DATA.source || "—") + "</b>";
+    if (DATA.sourcePool && DATA.sourcePool.length) {
+      html += "<br>主要新闻源：" + DATA.sourcePool.map(esc).join(" · ");
+    }
     if (DATA.note) html += "<br>" + esc(DATA.note);
     $("foot").innerHTML = html;
   }
