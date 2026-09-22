@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V604 -> V608",
+  "target_category": "欧洲",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v608-preview.json",
+  "preview_catalog_version": "v608-europe-preview-2026-09-22",
+  "base_count": 604,
+  "approved_additions": 4,
+  "static_gate": "pass",
+  "runtime_gate": "pass",
+  "runtime_generated_at": "2026-09-22T04:25:53Z",
+  "runtime_summary": {
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "avatar_ready_count": 4,
+    "native_free_feed_ready_count": 4,
+    "embed_fallback_available": true,
+    "render_ready_count": 4,
+    "render_blocked_count": 0
+  },
+  "promoted_people": [
+    {
+      "id": "europe-b05-octave-klaba",
+      "name": "Octave Klaba",
+      "handle": "olesovhcom",
+      "company": "OVH Groupe SA",
+      "categories": [
+        "欧洲"
+      ]
+    },
+    {
+      "id": "europe-b05-fredrik-wester",
+      "name": "Fredrik Wester",
+      "handle": "TheWesterFront",
+      "company": "Paradox Interactive AB",
+      "categories": [
+        "欧洲"
+      ]
+    },
+    {
+      "id": "europe-b05-antoine-arnault",
+      "name": "Antoine Arnault",
+      "handle": "AntoineArnault_",
+      "company": "LVMH Moët Hennessy Louis Vuitton SE",
+      "categories": [
+        "欧洲"
+      ]
+    },
+    {
+      "id": "europe-b05-alexandre-arnault",
+      "name": "Alexandre Arnault",
+      "handle": "alexarnault",
+      "company": "LVMH Moët Hennessy Louis Vuitton SE",
+      "categories": [
+        "欧洲"
+      ]
+    }
+  ],
+  "production_action": "promote",
+  "production_catalog": "v608-stable-2026-09-22",
+  "production_count": 608,
+  "europe_count": 14,
+  "wall_street_count": 100,
+  "previous_production_catalog": "v604-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v604-europe10-stable-2026-09-22.json",
+  "rationale": "All four V608 Europe preview additions passed the static/dedupe gate and deployed runtime checks with 4/4 valid avatars, 4/4 native free feeds, 4/4 render-ready and 0 blocked records."
+}
