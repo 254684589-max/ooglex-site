@@ -49,23 +49,22 @@
     .top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .back{color:var(--dim);font-size:14px}.back:hover{color:var(--ink)}
     .tag{font:11px/1 var(--mono);letter-spacing:.16em;color:var(--faint)}
-    .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(310px,360px);gap:42px;align-items:start;padding:50px 0 26px}
+    .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,330px);gap:38px;align-items:center;padding:50px 0 26px}
     .hero-copy{min-width:0}
-    .hero-tools{min-width:0;display:flex;justify-content:flex-end;align-items:flex-start}
+    .hero-tools{min-width:0;display:flex;justify-content:flex-end;align-items:center}
     .kicker{font:12px/1.4 var(--mono);letter-spacing:.18em;color:var(--blue);text-transform:uppercase}
     h1{margin:12px 0 8px;font-size:42px;line-height:1.18;letter-spacing:-.02em}
     .lead{max-width:850px;margin:0;color:var(--dim);font-size:15px}
     .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
     .fact{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);font:11px/1.2 var(--mono);color:var(--dim)}
     .fact.live{color:var(--up)}
-    .controls{width:100%;max-width:360px;display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:13px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.032),rgba(255,255,255,.015));box-shadow:0 14px 34px rgba(0,0,0,.10)}
-    .controls-caption{display:flex;align-items:center;gap:7px;padding:0 2px;color:var(--faint);font:10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
-    .controls-caption-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px rgba(57,135,229,.42)}
-    .search-wrap{position:relative;display:flex;align-items:center}
-    .search-icon{position:absolute;left:13px;width:15px;height:15px;color:var(--faint);pointer-events:none}
-    .search{height:42px;width:100%;min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:0 13px 0 38px;outline:none;font-size:13.5px;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
-    .search::placeholder{color:var(--faint);opacity:.92}
-    .search:focus{border-color:rgba(57,135,229,.65);box-shadow:0 0 0 3px rgba(57,135,229,.09)}
+    .controls{width:100%;max-width:330px;display:block;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+    .hero-tools .controls-caption,.hero-tools .modes{display:none!important}
+    .search-wrap{position:relative;display:flex;align-items:center;width:100%}
+    .search-icon{position:absolute;left:14px;width:14px;height:14px;color:var(--faint);pointer-events:none}
+    .search{height:40px;width:100%;min-width:0;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);padding:0 15px 0 39px;outline:none;font-size:13.5px;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
+    .search::placeholder{color:var(--faint);opacity:.9}
+    .search:focus{border-color:rgba(57,135,229,.58);box-shadow:0 0 0 3px rgba(57,135,229,.075)}
     .modes{display:flex;min-height:38px;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--panel)}
     .mode{appearance:none;flex:1;border:0;border-right:1px solid var(--line);background:transparent;color:var(--dim);padding:0 11px;cursor:pointer;font-size:11.5px;white-space:nowrap}
     .mode:last-child{border-right:0}
@@ -217,8 +216,8 @@
       .leader-en{font-size:12px;line-height:1.3}
       .leader-role{font-size:12px;line-height:1.4}
     }
-    @media(max-width:980px){.hero{grid-template-columns:1fr;gap:20px}.hero-tools{justify-content:flex-start}.controls{max-width:620px}.leader{flex-basis:calc((100% - 20px)/3)}.leader-rail-wrap.expanded .leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
-    @media(max-width:700px){.controls{max-width:100%;padding:12px}.modes{min-height:40px}.mode{flex:1}.leader-fold{padding:8px 10px;font-weight:700}}
+    @media(max-width:980px){.hero{grid-template-columns:1fr;gap:18px;align-items:start}.hero-tools{justify-content:flex-start}.controls{max-width:520px}.leader{flex-basis:calc((100% - 20px)/3)}.leader-rail-wrap.expanded .leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
+    @media(max-width:700px){.controls{max-width:100%;padding:0}.search{height:42px}.leader-fold{padding:8px 10px;font-weight:700}}
     @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{gap:12px}.leader{flex-basis:min(84vw,320px)}.leader-rail-wrap.expanded .leaders{grid-template-columns:1fr}.leader-rail-wrap.expanded .leader{width:100%}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.language-note{font-size:13px}.category-btn{padding:10px 14px;font-size:13px}.leader-fold{padding:9px 13px;font-size:12px}.leader{min-height:112px;padding:14px 16px;border-radius:13px}.leader-head{gap:13px}.leader-avatar-shell{width:50px;height:50px}.leader b{font-size:17px}.leader-en{font-size:12.5px;margin-top:3px}.leader-role{font-size:13px;line-height:1.4;margin-top:10px}.verified-badge{width:21px;height:21px}.share-actions{grid-template-columns:1fr}.share-panel{padding:16px}.share-sheet{padding:10px}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
@@ -226,12 +225,11 @@
 
     /* Paper theme: blend the hero search card into the page background */
     html[data-theme="paper"] .hero-tools .controls{
-      background:var(--bg);
-      border-color:rgba(112,96,80,.20);
-      box-shadow:0 8px 20px rgba(82,64,48,.035);
+      background:transparent;
+      border:0;
+      box-shadow:none;
     }
-    html[data-theme="paper"] .hero-tools .search,
-    html[data-theme="paper"] .hero-tools .modes{
+    html[data-theme="paper"] .hero-tools .search{
       background:var(--bg);
       border-color:rgba(112,96,80,.20);
     }
@@ -406,7 +404,7 @@
         </div>
       </div>
       <div class="hero-tools">
-        <section class="controls" aria-label="科技领袖筛选与数据模式">
+        <section class="controls" aria-label="科技领袖搜索">
           <div class="controls-caption"><span class="controls-caption-dot"></span><span>Search &amp; Mode</span></div>
           <div class="search-wrap">
             <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
