@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_batch13_role_23_activity_audit_pending",
+  "status": "strict_v50_fast_track_active",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -392,5 +392,27 @@
     ],
     "preview_ready": 0,
     "production_additions": 0
-  }
+  },
+  "execution_mode": "bulk_until_50",
+  "batch_by_batch_manual_progression": false,
+  "current_production_europe_count": 24,
+  "remaining_to_target": 26,
+  "role_verified_candidate_pool": 260,
+  "fast_track_policy": {
+    "promote_all_strict_passers_immediately": true,
+    "hold_non_passers_without_production_change": true,
+    "stop_when_europe_count_reaches": 50,
+    "no_quota_fill": true,
+    "strict_gates": [
+      "verified listed-company current/legacy role",
+      "verified personal X identity",
+      "direct X activity <=180d",
+      "production person/handle dedupe",
+      "avatar ready",
+      "author-safe native public feed ready"
+    ],
+    "workflow": ".github/workflows/europe-v50-fast-track.yml",
+    "promoter": "scripts/tech-leaders/europe_v50_fast_track.py"
+  },
+  "next_stage": "Fast-track mode owns Europe 24→50. Scan the full verified review pool, promote every strict passer immediately, keep failed/uncertain candidates off production, and stop automatically at 50."
 }
