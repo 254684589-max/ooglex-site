@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "batch12_role_pass_complete_activity_audit_pending",
+  "status": "batch12_activity_audit_2_hold_1_retry_continue_x_research",
   "tranche_type": "europe_listed_review_batch_12",
   "batch_range": "276-300",
   "phase": "Europe 24 -> 50",
@@ -21,12 +21,19 @@
     "preview_ready": 0,
     "production_additions": 0,
     "resolved_x_handles": 3,
-    "identity_activity_pending": 3,
+    "identity_activity_pending": 1,
     "unresolved_role_names": [],
     "activity_audit_pending_names": [
+      "Philippe Brassac"
+    ],
+    "hold_inactive_gt_365d": 2,
+    "hold_inactive_names": [
       "Pekka Lundmark",
-      "Philippe Brassac",
       "Ilham Kadri"
+    ],
+    "activity_audit_retry_required": 1,
+    "activity_audit_retry_names": [
+      "Philippe Brassac"
     ]
   },
   "policy": {
@@ -54,11 +61,11 @@
       "x_handle": "PekkaLundmark",
       "x_identity_status": "verified_personal_x_cross_source",
       "x_identity_source_url": "https://fortumforenergyblog.wordpress.com/bloggers/",
-      "x_activity_status": "pending_direct_free_feed_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_11_by_exact_name",
-      "notes": "Nokia first-party leadership-transition notice confirms Pekka Lundmark stepped down as President and CEO effective 1 Apr 2025. Fortum's former corporate blog identifies @PekkaLundmark as his personal account. Direct <=180d activity audit required.",
+      "notes": "Nokia legacy role and @PekkaLundmark identity are verified. Direct public-feed audit on 2026-09-22 returned latest activity 2025-08-21T05:04:10Z (~397 days old), so the candidate is Hold under the >365d inactivity rule and is not Preview Ready.",
       "production_handle_duplicate_check": "not_found_in_v613_production_by_exact_handle_repository_search"
     },
     {
@@ -235,11 +242,11 @@
       "x_handle": "PhilippeBrassac",
       "x_identity_status": "verified_personal_x_cross_source",
       "x_identity_source_url": "https://www.lesrencontreseconomiques.fr/2022/en/speakers/philippe-brassac/",
-      "x_activity_status": "pending_direct_free_feed_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "audit_error_retry_required",
+      "review_status": "identity_verified_activity_retry_required",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_11_by_exact_name",
-      "notes": "Crédit Agricole first-party 2026 governance material confirms Philippe Brassac was CEO until 14 May 2025. Les Rencontres Économiques explicitly links his personal Twitter account @PhilippeBrassac. Direct <=180d activity audit required.",
+      "notes": "Crédit Agricole legacy role and @PhilippeBrassac identity are verified. The 2026-09-22 direct activity audit hit a transient HTTP 502 and returned no trustworthy freshness result. Candidate remains pending retry and is not treated as inactive or Preview Ready.",
       "production_handle_duplicate_check": "not_found_in_v613_production_by_exact_handle_repository_search"
     },
     {
@@ -376,11 +383,11 @@
       "x_handle": "Kadriilham",
       "x_identity_status": "verified_personal_x_first_party",
       "x_identity_source_url": "https://x.com/syensqo/status/1806673914279428210",
-      "x_activity_status": "pending_direct_free_feed_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_11_by_exact_name",
-      "notes": "Syensqo first-party succession material confirms Kadri stepped down as CEO on 1 Jan 2026 and continued as special advisor. Syensqo's official X account explicitly tagged @Kadriilham as its CEO, verifying personal-account ownership. Direct <=180d activity audit required.",
+      "notes": "Syensqo legacy role and @Kadriilham identity are verified. Direct public-feed audit on 2026-09-22 returned latest activity 2024-08-01T15:15:02Z (~782 days old), so the candidate is Hold under the >365d inactivity rule and is not Preview Ready.",
       "production_handle_duplicate_check": "not_found_in_v613_production_by_exact_handle_repository_search"
     },
     {
@@ -544,11 +551,11 @@
       "notes": "Knorr-Bremse's current management page identifies Stephan Sturm as former Chief Executive Officer of Fresenius SE. This independently corroborates the legacy listed-company leadership relationship. Verified personal X ownership and direct activity remain unresolved."
     }
   ],
-  "next_action": "Run the Europe Handle Activity Audit for @PekkaLundmark, @PhilippeBrassac and @Kadriilham. Continue personal-X research across the remaining 22 role-qualified candidates. No production promotion until identity, <=180d activity, handle dedupe, avatar and render gates pass.",
+  "next_action": "Retry direct activity audit for @PhilippeBrassac after the transient 502. Keep Pekka Lundmark and Ilham Kadri on Hold (>365d). Continue personal-X identity research across the remaining 22 role-qualified Batch 12 candidates.",
   "review_method": {
     "candidate_source": "Fresh Europe-listed company core figures absent by exact-name repository search from production and Europe Batches 01-11.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
     "dedupe_rule": "Exact-name against V613 production and Europe Batches 01-11 before admission; exact-handle against production before Preview."
   },
-  "next_stage": "Batch 12 first-party/legacy role gate is complete: 25/25 role-qualified. Three verified personal X handles remain pending direct activity audit; 22 candidates remain personal-X research only."
+  "next_stage": "Batch 12 has no Preview Ready addition from the first three resolved handles: 2 are Hold (>365d) and 1 requires retry after upstream 502. Open Batch 13 in parallel rather than lowering admission gates."
 }
