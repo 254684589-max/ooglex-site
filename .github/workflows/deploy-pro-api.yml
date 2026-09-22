@@ -162,6 +162,19 @@ jobs:
           print("Server gate OK; protected catalog count:", len(leaders))
           PY
 
+      - name: Verify Tech Leaders browser auth transport
+        run: |
+          set -euo pipefail
+          code="$(curl -sS -D /tmp/tech-auth-headers.txt -o /tmp/tech-auth-wrong.json -w '%{http_code}' \
+            -H 'Origin: https://ooglex.com' \
+            -H 'Content-Type: text/plain;charset=UTF-8' \
+            --data 'definitely-wrong-password' \
+            'https://pro-api.ooglex.com/v1/tech-leaders/auth')"
+          test "$code" = "401"
+          grep -qi '^access-control-allow-origin: https://ooglex.com' /tmp/tech-auth-headers.txt
+          grep -qi '^access-control-allow-credentials: true' /tmp/tech-auth-headers.txt
+          echo "Browser auth transport OK: simple POST + credentialed CORS."
+
       - name: Smoke test hard-zero-X-API free mode
         run: |
           set +e
