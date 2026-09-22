@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T12:12:04Z",
+  "generated_at": "2026-09-22T12:53:52Z",
   "production_count": 613,
-  "audited_handle_count": 29,
+  "audited_handle_count": 32,
   "pass_le_180d": 5,
   "manual_181_365d": 6,
-  "hold_gt_365d": 14,
-  "no_recent_post_evidence": 4,
+  "hold_gt_365d": 16,
+  "no_recent_post_evidence": 5,
   "rows": [
     {
       "batch": "europe_listed_review.batch01.json",
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.72,
+      "age_days": 1008.75,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.95,
+      "age_days": 924.98,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.99,
+      "age_days": 1555.02,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 317.07,
+      "age_days": 317.1,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1394.04,
+      "age_days": 1394.07,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -139,7 +139,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3295.05,
+      "age_days": 3295.08,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.8,
+      "age_days": 215.83,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.74,
+      "age_days": 3374.77,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-07-27T16:56:52Z",
-      "age_days": 1152.8,
+      "age_days": 1152.83,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-01-24T17:12:09Z",
-      "age_days": 1701.79,
+      "age_days": 1701.82,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -229,7 +229,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 224.19,
+      "age_days": 224.22,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.72,
+      "age_days": 814.75,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 77.11,
+      "age_days": 77.14,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -274,7 +274,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-05T08:09:45Z",
-      "age_days": 321.17,
+      "age_days": 321.2,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -289,7 +289,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-19T13:40:52Z",
-      "age_days": 306.94,
+      "age_days": 306.97,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -304,7 +304,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.73,
+      "age_days": 1020.76,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -319,7 +319,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.7,
+      "age_days": 1.73,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -334,7 +334,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.6,
+      "age_days": 2.63,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -349,7 +349,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-04T03:21:25Z",
-      "age_days": 18.37,
+      "age_days": 18.4,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -364,7 +364,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.75,
+      "age_days": 74.78,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -379,7 +379,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2021-01-27T21:30:53Z",
-      "age_days": 2063.61,
+      "age_days": 2063.64,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -394,7 +394,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2015-03-24T13:08:21Z",
-      "age_days": 4199.96,
+      "age_days": 4199.99,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -409,7 +409,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-12-13T18:06:48Z",
-      "age_days": 282.75,
+      "age_days": 282.78,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -424,7 +424,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-08-02T15:25:39Z",
-      "age_days": 415.87,
+      "age_days": 415.89,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -439,7 +439,52 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2014-08-28T06:57:58Z",
-      "age_days": 4408.22,
+      "age_days": 4408.25,
+      "activity_gate": "hold_gt_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch12.json",
+      "name": "Pekka Lundmark",
+      "company": "Nokia Oyj",
+      "handle": "PekkaLundmark",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x_cross_source",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2025-08-21T05:04:10Z",
+      "age_days": 397.33,
+      "activity_gate": "hold_gt_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch12.json",
+      "name": "Philippe Brassac",
+      "company": "Crédit Agricole S.A.",
+      "handle": "PhilippeBrassac",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x_cross_source",
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "no_recent_post_evidence",
+      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+    },
+    {
+      "batch": "europe_listed_review.batch12.json",
+      "name": "Ilham Kadri",
+      "company": "Syensqo S.A.",
+      "handle": "Kadriilham",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x_first_party",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2024-08-01T15:15:02Z",
+      "age_days": 781.9,
       "activity_gate": "hold_gt_365d",
       "error": ""
     }
