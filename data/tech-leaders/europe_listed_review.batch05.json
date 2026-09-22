@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "first_pass_complete_pending_runtime_activity_reconciliation",
+  "status": "first_pass_complete_resolved_handles_deduped_pending_runtime_activity_reconciliation",
   "tranche_type": "europe_listed_review_batch_05",
   "batch_range": "101-125",
   "phase": "Europe 10 -> 50",
@@ -49,7 +49,7 @@
       "x_activity_status": "active_le_180d",
       "review_status": "preview_ready",
       "notes": "Schneider Electric confirms Tricoire remains Chairman. Personal X identity is established and public mirrors show activity within the 180-day policy window.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 102,
@@ -68,7 +68,7 @@
       "x_activity_status": "active_le_180d",
       "review_status": "preview_ready",
       "notes": "OVHcloud identifies Klaba as Founder, Chairman and CEO. The long-standing personal @olesovhcom account is actively posting in September 2026.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 103,
@@ -87,7 +87,7 @@
       "x_activity_status": "active_le_180d",
       "review_status": "preview_ready",
       "notes": "Paradox lists Wester as CEO since 2021. His personal X account is currently active, including recent Paradox-related posts and reposts.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 104,
@@ -106,7 +106,7 @@
       "x_activity_status": "needs_direct_activity_check",
       "review_status": "identity_verified_activity_pending",
       "notes": "LVMH confirms current Group responsibilities and Executive Committee membership. Personal X ownership is mapped; direct activity gate remains to be reconciled by the Batch 05 audit.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 105,
@@ -125,7 +125,7 @@
       "x_activity_status": "needs_direct_activity_check",
       "review_status": "identity_verified_activity_pending",
       "notes": "LVMH governance lists Alexandre Arnault as a director. Public X identity is established; recent repost activity is visible but the production feed gate will make the final activity determination.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 106,
@@ -144,7 +144,7 @@
       "x_activity_status": "needs_direct_activity_check",
       "review_status": "needs_x_research",
       "notes": "LVMH governance confirms board membership. The apparent personal X handle requires one more ownership and activity check before approval; fan-page variants are explicitly excluded.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 107,
@@ -258,7 +258,7 @@
       "x_activity_status": "inactive_gt_365d",
       "review_status": "hold_inactive",
       "notes": "Pearson confirms Abbosh as Chief Executive. The personal X identity is clear but observed posting is outside the 365-day activity limit.",
-      "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
     },
     {
       "batch_rank": 113,
@@ -508,5 +508,14 @@
       "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
     }
   ],
-  "next_stage": "Run the extended Europe Handle Activity Audit across Batch 01-05, reconcile resolved Batch 05 handles, perform exact v604 name/handle dedupe, and build the next Europe preview only from candidates that pass role + personal-X identity + activity + avatar/feed/runtime gates."
+  "next_stage": "Run the extended Europe Handle Activity Audit across Batch 01-05, reconcile resolved Batch 05 handles, perform exact v604 name/handle dedupe, and build the next Europe preview only from candidates that pass role + personal-X identity + activity + avatar/feed/runtime gates.",
+  "dedupe_check": {
+    "production_catalog": "v604-stable-2026-09-22",
+    "checked_count": 7,
+    "conflict_count": 0,
+    "scope": "All Batch 05 candidates with a resolved X handle",
+    "method": "Exact candidate name and exact X handle checked against apps/tech-leaders/leaders.json via repository path search",
+    "remaining_unresolved_count": 18,
+    "remaining_rule": "Run production dedupe immediately when a personal X handle is resolved; unresolved candidates cannot enter Preview."
+  }
 }
