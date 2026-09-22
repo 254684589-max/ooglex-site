@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_open_v613_preview",
+  "status": "phase_open_v613_promoted",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -53,8 +53,8 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "V613 Preview opened for Estelle Brachlianoff after role + personal-X identity + <=180d activity evidence. Run avatar/native-feed/live-page gate before any production promotion; Catherine MacGregor remains activity-pending. Continue Batch 10 unresolved X research.",
-  "current_europe_count": 23,
+  "next_action": "Europe V613 promoted successfully. Continue Batch 10 unresolved personal-X research and Catherine MacGregor activity verification; build the next Preview only from candidates passing role + personal-X identity + <=180d activity gates.",
+  "current_europe_count": 24,
   "batch03_result": {
     "reviewed": 25,
     "preview_ready": 0,
@@ -78,10 +78,8 @@
     ],
     "note": "Batch 01 legacy leader resolved with verified @jmalvpal identity and current activity."
   },
-  "current_new_preview_ready_count": 1,
-  "current_new_preview_ready_names": [
-    "Estelle Brachlianoff"
-  ],
+  "current_new_preview_ready_count": 0,
+  "current_new_preview_ready_names": [],
   "v604_preview": {
     "catalog_version": "v604-europe-preview-2026-09-22",
     "base_count": 599,
@@ -99,15 +97,15 @@
     "production_count": 604,
     "production_europe_count": 10
   },
-  "production_gap_to_50": 27,
-  "approved_preview_gap_to_50_after_promotion": 27,
+  "production_gap_to_50": 26,
+  "approved_preview_gap_to_50_after_promotion": 26,
   "last_promotion": {
-    "release": "v612-stable-2026-09-22",
+    "release": "v613-stable-2026-09-22",
     "promoted_at": "2026-09-22",
     "additions": 1,
     "category_enrichments": 0,
     "names": [
-      "Martin Lorentzon"
+      "Estelle Brachlianoff"
     ],
     "category_enriched_names": []
   },
@@ -266,28 +264,36 @@
     ]
   },
   "batch10_open": {
-    "status": "activity_pass_1_v613_preview_open",
+    "status": "v613_promoted_continue_x_research",
     "candidate_range": "226-250",
     "candidate_count": 25,
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
     "role_verified_current": 20,
     "personal_x_verified": 2,
-    "preview_ready": 1,
+    "preview_ready": 0,
     "activity_pending": 1,
-    "preview_ready_names": [
-      "Estelle Brachlianoff"
-    ],
+    "preview_ready_names": [],
     "activity_pending_names": [
       "Catherine MacGregor"
-    ]
+    ],
+    "production_additions": 1
   },
   "v613_preview": {
     "catalog_version": "v613-europe-preview-2026-09-22",
     "base_count": 612,
     "approved_additions": 1,
     "preview_count": 613,
-    "status": "pending_runtime_audit",
-    "production_promoted": false
+    "static_gate": "pass",
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "native_ready_count": 1,
+    "render_ready_count": 1,
+    "render_blocked_count": 0,
+    "merge_gate": "pass",
+    "production_promoted": true,
+    "production_catalog": "v613-stable-2026-09-22",
+    "production_count": 613,
+    "production_europe_count": 24
   }
 }
