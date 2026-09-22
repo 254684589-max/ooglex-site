@@ -1143,9 +1143,25 @@
     if(ta!==tb)return tb-ta;
     return String(b&&b.id||"").localeCompare(String(a&&a.id||""));
   }
+  function postUrlHandle(value){
+    var raw=String(value||"").trim();
+    if(!raw)return "";
+    var m=raw.match(/^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com|fxtwitter\.com|fixupx\.com)\/([^\/?#]+)\/status\/\d+/i);
+    return m&&m[1]?String(m[1]).replace(/^@/,"").toLowerCase():"";
+  }
+  function freeFeedPostBelongsToCurrent(post){
+    var target=String(current&&current.handle||"").replace(/^@/,"").toLowerCase();
+    if(!target||!post||typeof post!=="object")return false;
+    var author=post.author&&typeof post.author==="object"?post.author:{};
+    var authorHandle=String(author.handle||author.username||author.screen_name||"").replace(/^@/,"").toLowerCase();
+    if(authorHandle&&authorHandle!==target)return false;
+    var urlHandle=postUrlHandle(post.url);
+    if(urlHandle&&urlHandle!==target)return false;
+    return true;
+  }
   function freeFeedBrowserCacheKey(p){
     var h=String(p&&p.handle||"").toLowerCase();
-    var v=h==="elonmusk"?"v6-elon-target":"v3";
+    var v=h==="elonmusk"?"v7-auth-guard":"v4-auth-guard";
     return "ooglex-tech-feed-"+v+":" + h;
   }
   function freeFeedBrowserFreshMs(p){
@@ -1506,7 +1522,7 @@
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
     var profileMaxPosts=Math.max(1,Math.min(100,Number(current&&current.timeline_display_limit)||100));
-    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).slice(0,profileMaxPosts).sort(sortPostsNewest);
+    var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).filter(freeFeedPostBelongsToCurrent).slice(0,profileMaxPosts).sort(sortPostsNewest);
     if(!posts.length){
       var empty=document.createElement("div");empty.className="api-state";
       empty.innerHTML="<b>公开时间线暂时没有可展示内容</b><div>正在回退到 X 官方 Embed。</div>";
