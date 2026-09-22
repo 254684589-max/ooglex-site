@@ -1,4 +1,4 @@
-name: Europe V50 Fast Track
+name: Europe V100 Capacity Guard
 
 on:
   workflow_dispatch:
@@ -39,8 +39,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run strict Europe V50 fast track
-        run: python scripts/tech-leaders/europe_v50_fast_track.py --target 50 --scan-limit 400 --cache-hours 24
+      - name: Run Europe capacity guard
+        run: python scripts/tech-leaders/europe_v50_fast_track.py --target 100 --scan-limit 400 --cache-hours 24
 
       - name: Validate resulting catalog
         run: |
@@ -55,14 +55,14 @@ jobs:
           europe=[x for x in leaders if "欧洲" in (x.get("categories") or [])]
           assert len(handles)==len(set(handles)), "duplicate handles"
           assert len(ids)==len(set(ids)), "duplicate ids"
-          assert len(europe) <= 50, "Europe category exceeded target"
+          assert len(europe) <= 100, "Europe category exceeded target"
           for x in europe:
               assert x.get("verified_personal_x") is True, f"Europe personal-X gate failed: {x.get('name')}"
               assert x.get("handle"), f"Europe handle missing: {x.get('name')}"
           print(json.dumps({"leaders":len(leaders),"europe":len(europe)},ensure_ascii=False))
           PY
 
-      - name: Commit qualified promotions and fast-track state
+      - name: Commit qualified promotions and capacity state
         if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
