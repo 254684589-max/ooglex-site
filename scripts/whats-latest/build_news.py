@@ -54,11 +54,11 @@ CATS = [
 
 # Risk V2：风险页不再依赖一个宽泛查询，而是五路独立扫描。
 RISK_STREAMS = [
-    {"key": "geopolitics", "name": "地缘冲突", "q": 'war OR conflict OR missile OR attack OR sanctions OR "military escalation" OR blockade OR "shipping security"'},
-    {"key": "market_credit", "name": "市场信用", "q": '"credit risk" OR default OR bankruptcy OR "liquidity stress" OR "market volatility" OR "bank stress" OR "bond selloff"'},
-    {"key": "energy_shipping", "name": "能源运输", "q": '"oil supply" OR "energy security" OR tanker OR pipeline OR shipping OR "supply disruption" OR "freight disruption"'},
-    {"key": "cyber", "name": "网络安全", "q": 'cyberattack OR ransomware OR cyber OR outage OR "data breach" OR "critical infrastructure"'},
-    {"key": "supply_chain", "name": "供应链", "q": '"supply chain" OR "port disruption" OR "logistics disruption" OR "trade route" OR shortage OR bottleneck'},
+    {"key": "geopolitics", "name": "地缘冲突", "q": '"military" OR missile OR drone OR ceasefire OR sanctions OR blockade OR "armed conflict" OR "Iran war" OR "Ukraine war"'},
+    {"key": "market_credit", "name": "市场信用", "q": '"credit risk" OR "credit spread" OR bankruptcy OR "liquidity stress" OR "bank stress" OR "bond selloff" OR "debt default"'},
+    {"key": "energy_shipping", "name": "能源运输", "q": '"oil supply" OR "energy security" OR tanker OR pipeline OR "shipping disruption" OR "freight disruption" OR "export route"'},
+    {"key": "cyber", "name": "网络安全", "q": 'cyberattack OR ransomware OR hacking OR "data breach" OR malware OR "network attack" OR "security breach"'},
+    {"key": "supply_chain", "name": "供应链", "q": '"supply chain" OR "port disruption" OR "logistics disruption" OR "trade route" OR "semiconductor shortage" OR bottleneck'},
 ]
 RISK_MIN_ITEMS = 8
 RISK_MIN_SOURCES = 3
@@ -292,10 +292,11 @@ def importance_score(it, category_key):
 
 
 RISK_DIMENSIONS = [
-    ("地缘政治", r"war|conflict|attack|strike|missile|invasion|sanction|Iran|Israel|Ukraine|Russia|North Korea|Middle East|Hormuz"),
-    ("市场 / 信用", r"market risk|credit risk|default|bankruptcy|volatility|liquidity|selloff|debt|spread"),
-    ("能源 / 供应链", r"oil|energy|shipping|supply chain|disruption|pipeline|port|freight|blockade"),
-    ("网络 / 运营", r"cyber|cyberattack|ransomware|outage|hack|data breach|infrastructure"),
+    ("地缘政治", r"\b(?:war|conflict|attack|strike|missile|invasion|sanctions?|blockade|ceasefire|drone|military|troops?)\b|Iran|Israel|Ukraine|Russia|North Korea|Middle East|Hormuz"),
+    ("市场 / 信用", r"\b(?:credit|default|bankruptcy|liquidity|selloff|debt|bond|loan|spread)\b|bank stress|credit spread"),
+    ("能源 / 运输", r"\b(?:oil|gas|energy|pipeline|tanker|shipping|freight|port|vessel|LNG|OPEC)\b|export route"),
+    ("网络安全", r"\b(?:cyber|cyberattack|ransomware|hack|hacker|malware)\b|data breach|network attack|security breach"),
+    ("供应链", r"supply chain|\b(?:shortage|bottleneck|logistics)\b|port disruption|trade route|semiconductor shortage"),
 ]
 
 
@@ -314,8 +315,8 @@ def build_risk_analysis(cats_out, markets, risk_meta=None):
         and len(streams) >= RISK_MIN_STREAMS
     )
 
-    high_re = re.compile(r"attack|strike|missile|invasion|war|cyberattack|ransomware|default|blockade|explosion|shutdown", re.I)
-    elevated_re = re.compile(r"sanction|disruption|crisis|volatility|credit risk|supply chain|energy security|threat|tension|shortage|outage", re.I)
+    high_re = re.compile(r"\b(?:attack|strike|missile|invasion|war|cyberattack|ransomware|default|blockade|explosion|shutdown)\b", re.I)
+    elevated_re = re.compile(r"\b(?:sanctions?|disruption|crisis|volatility|liquidity|shortage|outage|threat|tension|bottleneck)\b|credit risk|supply chain|energy security", re.I)
     high_hits = len(high_re.findall(text))
     elevated_hits = len(elevated_re.findall(text))
 
@@ -435,47 +436,65 @@ def fetch_feed(url, n=PER_CAT):
     return out
 
 
+RISK_STREAM_FILTERS = {
+    "market_credit": re.compile(r"\b(?:credit|bond|debt|loan|liquidity|bankruptcy|bank|spread)\b|credit risk|debt default|bank stress", re.I),
+    "energy_shipping": re.compile(r"\b(?:oil|gas|energy|pipeline|tanker|shipping|freight|vessel|LNG|OPEC)\b|export route|shipping disruption", re.I),
+    "cyber": re.compile(r"\b(?:cyber|cyberattack|ransomware|hack|hacker|malware)\b|data breach|network attack|security breach", re.I),
+    "supply_chain": re.compile(r"supply chain|\b(?:shortage|bottleneck|logistics)\b|port disruption|trade route|semiconductor shortage", re.I),
+}
+GEO_EVENT_RE = re.compile(r"\b(?:war|conflict|attack|strike|missile|invasion|sanctions?|blockade|ceasefire|drone|military|troops?)\b", re.I)
+GEO_CONTEXT_RE = re.compile(r"\b(?:Iran|Israel|Ukraine|Russia|NATO|North Korea|Yemen|Syria|Lebanon|Saudi|Gulf|Hormuz|military|army|navy|troops?)\b|United Nations", re.I)
+
+
+def risk_stream_relevant(item, stream_key):
+    text = f"{item.get('title') or ''} {item.get('summary') or ''}"
+    if stream_key == "geopolitics":
+        return bool(GEO_EVENT_RE.search(text) and GEO_CONTEXT_RE.search(text))
+    pattern = RISK_STREAM_FILTERS.get(stream_key)
+    if not pattern or not pattern.search(text):
+        return False
+    if stream_key == "market_credit" and re.search(r"default judgment", text, re.I):
+        if not re.search(r"\b(?:debt|bond|loan|credit|bankruptcy|liquidity)\b", text, re.I):
+            return False
+    return True
+
+
 def risk_event_score(item):
     """风险事件排序：事件强度优先，其次时效；不用于预测，只用于版面排序。"""
     text = f"{item.get('title') or ''} {item.get('summary') or ''}"
     score = float(item.get("published") or 0) / 3600
-    severe = re.compile(r"attack|strike|missile|invasion|war|cyberattack|ransomware|default|bankruptcy|blockade|explosion|shutdown", re.I)
-    elevated = re.compile(r"sanction|disruption|crisis|volatility|liquidity|shortage|outage|threat|tension|bottleneck", re.I)
+    severe = re.compile(r"\b(?:attack|strike|missile|invasion|war|cyberattack|ransomware|default|bankruptcy|blockade|explosion|shutdown)\b", re.I)
+    elevated = re.compile(r"\b(?:sanctions?|disruption|crisis|volatility|liquidity|shortage|outage|threat|tension|bottleneck)\b", re.I)
     score += len(severe.findall(text)) * 30
     score += len(elevated.findall(text)) * 12
     return score
 
 
 def risk_brief_zh(item):
-    """不做逐句机器翻译；基于已识别风险流生成保守的中文风险摘要，英文原标题保留作核验。"""
+    """风险页中文简报按已验证的风险流生成；英文原标题保留供原文核验。"""
     stream = item.get("riskStreamName") or "风险"
-    title = item.get("title") or ""
-    patterns = [
-        (r"sanction", "制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。"),
-        (r"attack|strike|missile|war|conflict|invasion", "出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。"),
-        (r"default|bankruptcy|credit risk|liquidity|bank stress", "信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。"),
-        (r"oil|pipeline|tanker|shipping|freight|energy", "能源或运输链条出现风险信号，需关注供应、运价与通胀预期变化。"),
-        (r"cyber|ransomware|data breach|outage", "网络安全或关键系统运行风险上升，需关注服务中断、数据与基础设施影响。"),
-        (r"supply chain|shortage|bottleneck|port|logistics", "供应链韧性或物流瓶颈受到关注，需观察成本、交付与跨行业传导。"),
-    ]
-    for pattern, text in patterns:
-        if re.search(pattern, title, re.I):
-            return f"{stream}：{text}"
-    return f"{stream}：该报道涉及潜在风险事件，需结合原文与后续发展持续核验。"
+    templates = {
+        "地缘冲突": "出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+        "市场信用": "信用、债务或流动性风险受到关注，需观察是否向银行、债券或融资市场进一步传导。",
+        "能源运输": "能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+        "网络安全": "网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
+        "供应链": "供应链或物流瓶颈受到关注，需观察成本、交付周期与跨行业传导。",
+    }
+    return f"{stream}：{templates.get(stream, '该报道涉及潜在风险事件，需结合原文与后续发展持续核验。')}"
+
 
 
 def fetch_risk_v2():
-    """
-    五路独立扫描。与普通分类使用独立去重集合，避免同一篇报道先被国际/市场板块
-    消耗后导致风险页样本枯竭。
-    """
+    """五路独立扫描 + 严格相关性过滤 + 风险流均衡取样。"""
     candidates = []
     stream_counts = {}
     errors = []
     for stream in RISK_STREAMS:
         got = 0
         try:
-            for it in fetch_feed(query_url(stream["q"]), n=RISK_PER_STREAM):
+            for it in fetch_feed(query_url(stream["q"]), n=RISK_PER_STREAM * 2):
+                if not risk_stream_relevant(it, stream["key"]):
+                    continue
                 it = dict(it)
                 it["riskStream"] = stream["key"]
                 it["riskStreamName"] = stream["name"]
@@ -487,35 +506,56 @@ def fetch_risk_v2():
                 it["categoryKey"] = "risk"
                 candidates.append(it)
                 got += 1
+                if got >= RISK_PER_STREAM:
+                    break
         except Exception as exc:
             errors.append(f"{stream['key']}:{str(exc)[:80]}")
         stream_counts[stream["key"]] = got
         time.sleep(0.25)
 
-    # 风险流内部近重复去重；不与其他新闻板块共享 seen/sigs。
     candidates.sort(key=risk_event_score, reverse=True)
-    chosen = []
+    deduped = []
     sigs_local = []
-    per_source = {}
     for it in candidates:
         sig = title_sig(it["title"])
         if any(len(sig & old) / max(1, min(len(sig), len(old))) >= 0.5 for old in sigs_local):
             continue
-        # 单一媒体最多占 3 条，避免风险结论被一个来源支配。
+        deduped.append(it)
+        sigs_local.append(sig)
+
+    chosen = []
+    chosen_links = set()
+    per_source = {}
+    for stream in RISK_STREAMS:
+        for it in [x for x in deduped if x.get("riskStream") == stream["key"]]:
+            src = it.get("source") or ""
+            if per_source.get(src, 0) >= 3:
+                continue
+            chosen.append(it)
+            chosen_links.add(it.get("link"))
+            per_source[src] = per_source.get(src, 0) + 1
+            break
+
+    for it in deduped:
+        if len(chosen) >= RISK_MAX_ITEMS:
+            break
+        if it.get("link") in chosen_links:
+            continue
         src = it.get("source") or ""
         if per_source.get(src, 0) >= 3:
             continue
         chosen.append(it)
-        sigs_local.append(sig)
+        chosen_links.add(it.get("link"))
         per_source[src] = per_source.get(src, 0) + 1
-        if len(chosen) >= RISK_MAX_ITEMS:
-            break
 
-    return chosen, {
+    chosen.sort(key=risk_event_score, reverse=True)
+    return chosen[:RISK_MAX_ITEMS], {
         "streamCounts": stream_counts,
         "errors": errors,
         "candidateCount": len(candidates),
+        "dedupedCount": len(deduped),
     }
+
 
 
 def fetch_quote(sym):
