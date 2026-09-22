@@ -88,6 +88,34 @@ def cat_url(c):
     return f"{GN}?{GN_TAIL}"
 
 
+def make_brief(title, category_name=""):
+    """把原始标题拆成「主题词 + 简报句」，只重组标题已有信息，不补充外部事实。"""
+    text = re.sub(r"\s+", " ", (title or "").strip())
+    topic = category_name or "简报"
+    brief = text
+
+    # 优先使用标题本身已有的编辑分隔符。
+    for sep in ("丨", "｜", "：", ":"):
+        if sep in text:
+            left, right = text.split(sep, 1)
+            left, right = left.strip(), right.strip()
+            if 2 <= len(left) <= 18 and len(right) >= 4:
+                topic, brief = left, right
+                break
+
+    # 问句后常跟核心判断，可拆成图二式「主题 + 正文」。
+    if brief == text and "？" in text:
+        left, right = text.split("？", 1)
+        left, right = left.strip(), right.strip(" ：:")
+        if 4 <= len(left) <= 22 and len(right) >= 5:
+            topic, brief = left + "？", right
+
+    brief = brief.strip()
+    if brief and brief[-1] not in "。！？!?":
+        brief += "。"
+    return topic, brief
+
+
 def parse_entry(e):
     """从 RSS 条目提取 {title, source, link, published}；Google News 标题形如『标题 - 来源』。"""
     title = (e.get("title") or "").strip()
@@ -190,6 +218,9 @@ def build():
                 if any(len(s & k) / max(1, min(len(s), len(k))) >= 0.5 for k in sigs):
                     continue   # 同一事件多家媒体报道，只保留一条
                 seen.add(it["link"]); sigs.append(s)
+                topic, brief = make_brief(it["title"], c["name"])
+                it["topic"] = topic
+                it["brief"] = brief
                 items.append(it)
         except Exception as e:
             print(f"[..] 板块 {c['name']} 抓取失败：{str(e)[:60]}")
@@ -251,11 +282,55 @@ def build():
         top, cat_name = max(pool, key=lambda x: x[0].get("published") or 0)
         highlight = {**top, "category": cat_name}
 
+    # 图二式「今日概述」：各取市场 / AI科技 / 国际最新一条，只使用标题已有事实。
+    overview = []
+    for key in ("markets", "tech", "world"):
+        category = next((x for x in cats_out if x.get("key") == key and x.get("items")), None)
+        if category:
+            it = max(category["items"], key=lambda x: x.get("published") or 0)
+            overview.append({
+                "topic": category["name"],
+                "text": it.get("brief") or it.get("title") or "",
+                "source": it.get("source") or "",
+            })
+
+    # 主题 / 市场方向标签。新闻类标签表示当日出现的主题，市场类箭头直接来自行情涨跌。
+    all_titles = " ".join(
+        it.get("title", "")
+        for category in cats_out
+        for it in category.get("items", [])
+    )
+    signals = []
+    signal_rules = [
+        ("地缘政治风险", r"战争|冲突|中东|制裁|霍尔木兹|乌克兰|俄乌"),
+        ("AI / 芯片", r"人工智能|\bAI\b|芯片|OpenAI|半导体"),
+        ("利率预期", r"美联储|利率|加息|降息|国债|收益率"),
+    ]
+    for label, pattern in signal_rules:
+        if re.search(pattern, all_titles, re.I):
+            signals.append({"label": label, "trend": "↑"})
+
+    market_map = {m.get("name"): m for m in markets}
+    for names, label in [
+        (("布伦特原油", "WTI原油"), "原油"),
+        (("标普500", "纳斯达克"), "美股"),
+        (("黄金",), "黄金"),
+    ]:
+        vals = [
+            market_map[n].get("changePct")
+            for n in names if n in market_map and market_map[n].get("changePct") is not None
+        ]
+        if vals:
+            avg = sum(vals) / len(vals)
+            signals.append({"label": label, "trend": "↑" if avg > 0 else ("↓" if avg < 0 else "→")})
+
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
         "source": "Google News · Yahoo Finance",
         "highlight": highlight,
+        "overview": overview,
+        "signals": signals,
         "categories": cats_out,
         "markets": markets,
         "note": ("新闻聚合自 Google News 收录的权威媒体，每条均链接回原文，仅作信息聚合，不代表本站观点；"
