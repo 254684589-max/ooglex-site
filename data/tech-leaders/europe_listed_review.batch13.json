@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "batch13_first_pass_21_role_verified_4_handles_resolved",
+  "status": "batch13_role_pass_23_verified_activity_audit_pending",
   "tranche_type": "europe_listed_review_batch_13",
   "batch_range": "301-325",
   "phase": "Europe 24 -> 50",
@@ -15,8 +15,8 @@
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
     "role_verified_current": 8,
-    "role_verified_legacy": 13,
-    "role_needs_fresh_capture": 4,
+    "role_verified_legacy": 15,
+    "role_needs_fresh_capture": 2,
     "personal_x_verified": 2,
     "preview_ready": 0,
     "production_additions": 0,
@@ -25,9 +25,7 @@
     "identity_activity_pending": 4,
     "unresolved_role_names": [
       "David Loew",
-      "Bernard Looney",
-      "Jes Staley",
-      "Tidjane Thiam"
+      "Jes Staley"
     ],
     "activity_audit_pending_names": [
       "Jean-Dominique Senard",
@@ -339,16 +337,16 @@
       "exchange": "London Stock Exchange",
       "country": "Ireland / United Kingdom",
       "current_role": "Former Chief Executive Officer / legacy core figure",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "role_status": "verified_legacy",
+      "role_source_url": "https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/investors/bp-annual-report-and-form-20f-2023.pdf",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
-      "review_status": "candidate_role_x_research",
+      "review_status": "role_verified_needs_x_research",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_12_by_exact_name",
-      "notes": "Batch 13 fresh candidate after exact-name production + Europe Batch01-12 repository dedupe. Role is a scan seed only; fresh first-party listed-company relationship, verified personal X ownership and direct <=180d activity are required before Preview."
+      "notes": "BP's 2023 Annual Report records Bernard Looney as CEO through 12 Sep 2023 and confirms his immediate resignation from the role and Board. Legacy-role gate passed; verified personal X ownership remains unresolved."
     },
     {
       "batch_rank": 316,
@@ -499,17 +497,17 @@
       "ticker": "PRU / legacy CSGN",
       "exchange": "London Stock Exchange / legacy SIX",
       "country": "Côte d'Ivoire / Switzerland / United Kingdom",
-      "current_role": "Former listed-company Chief Executive Officer / legacy core figure",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "current_role": "Former Prudential Group Chief Executive / former Credit Suisse Chief Executive Officer / legacy core figure",
+      "role_status": "verified_legacy",
+      "role_source_url": "https://www.prudentialplc.com/~/media/Files/P/Prudential-V13/hkex/2015/2015-03-10b.pdf",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
-      "review_status": "candidate_role_x_research",
+      "review_status": "role_verified_needs_x_research",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_12_by_exact_name",
-      "notes": "Batch 13 fresh candidate after exact-name production + Europe Batch01-12 repository dedupe. Role is a scan seed only; fresh first-party listed-company relationship, verified personal X ownership and direct <=180d activity are required before Preview."
+      "notes": "Prudential's first-party 2015 announcement confirms Tidjane Thiam was Group Chief Executive and would step down to join Credit Suisse as CEO. Legacy corporate-role gate passed. No relay/fan/political account is accepted as a substitute for a verified personal X account."
     },
     {
       "batch_rank": 324,
@@ -552,11 +550,11 @@
       "notes": "Bayer's current history biography records Marijn Dekkers as Chairman of the Board of Management from 2010 to 2016. Legacy-role gate passed; personal X remains unresolved."
     }
   ],
-  "next_action": "Run the Europe Handle Activity Audit for @jdsenard, @JoeKaeser, @jhsnabe and @vitt61. Only @JoeKaeser and @jhsnabe currently meet the identity-evidence threshold; @jdsenard and @vitt61 remain research candidates pending stronger identity corroboration. In parallel, close the remaining four role captures: David Loew, Bernard Looney, Jes Staley and Tidjane Thiam.",
+  "next_action": "Run direct activity audit for the four resolved Batch 13 handles. In parallel, finish first-party role capture for David Loew and Jes Staley and continue personal-X identity research for the remaining role-qualified candidates.",
   "review_method": {
     "candidate_source": "Fresh Europe-listed company core figures absent by exact-name repository search from production and Europe Batches 01-12.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold; transient upstream errors are retry-required rather than inactivity evidence.",
     "dedupe_rule": "Exact-name against V613 production and Europe Batches 01-12 before admission; exact-handle against production before Preview."
   },
-  "next_stage": "Batch 13 first pass: 21/25 role-qualified, 4 handles resolved, 2 identity-verified personal X accounts awaiting direct activity audit. No Preview promotion until all admission gates pass."
+  "next_stage": "Batch 13 role pass is now 23/25 complete. Four X handles are resolved, two of them identity-verified; no candidate is Preview Ready until the activity gate and remaining admission checks pass."
 }
