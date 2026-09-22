@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "first_pass_open_activity_audit_pending",
+  "status": "v611_promoted_2026-09-22",
   "tranche_type": "europe_listed_review_batch_07",
   "batch_range": "151-175",
   "phase": "Europe 17 -> 50",
   "source_plan": "data/tech-leaders/europe_v50.expansion.json",
-  "production_catalog": "v610-stable-2026-09-22",
-  "production_count": 610,
-  "current_europe_count": 17,
+  "production_catalog": "v611-stable-2026-09-22",
+  "production_count": 611,
+  "current_europe_count": 22,
   "target_europe_count": 50,
   "summary": {
     "batch_count": 25,
@@ -17,7 +17,8 @@
     "role_needs_fresh_capture": 18,
     "needs_x_research": 21,
     "production_additions": 0,
-    "production_category_enrichments": 0
+    "production_category_enrichments": 4,
+    "carryover_production_additions": 1
   },
   "policy": {
     "require_role_evidence": true,
@@ -47,7 +48,10 @@
       "review_status": "existing_production_europe_retag_ready",
       "candidate_type": "production_category_enrichment",
       "production_duplicate_check": "existing_production_match_id_ek_retag_only",
-      "notes": "Existing production person. Spotify confirms Daniel Ek as Founder and Executive Chairman; only Europe-category enrichment is allowed after the fresh <=180d activity gate."
+      "notes": "Existing production person. Spotify confirms Daniel Ek as Founder and Executive Chairman; only Europe-category enrichment is allowed after the fresh <=180d activity gate.",
+      "production_status": "existing_record_europe_category_enriched_v611",
+      "production_release": "v611-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 152,
@@ -67,7 +71,10 @@
       "review_status": "existing_production_europe_retag_ready",
       "candidate_type": "production_category_enrichment",
       "production_duplicate_check": "existing_production_match_id_sebastian-siemiatkowski-klar_retag_only",
-      "notes": "Existing production person. Klarna lists Siemiatkowski as CEO; London principal office/foreign issuer structure and European operating identity qualify for Europe review. Retag only after fresh activity gate."
+      "notes": "Existing production person. Klarna lists Siemiatkowski as CEO; London principal office/foreign issuer structure and European operating identity qualify for Europe review. Retag only after fresh activity gate.",
+      "production_status": "existing_record_europe_category_enriched_v611",
+      "production_release": "v611-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 153,
@@ -87,7 +94,10 @@
       "review_status": "existing_production_europe_retag_ready",
       "candidate_type": "production_category_enrichment",
       "production_duplicate_check": "existing_production_match_id_rene-haas_retag_only",
-      "notes": "Existing production person. Arm Holdings plc is incorporated in England and Wales and Haas is current CEO. Retag only after fresh activity gate."
+      "notes": "Existing production person. Arm Holdings plc is incorporated in England and Wales and Haas is current CEO. Retag only after fresh activity gate.",
+      "production_status": "existing_record_europe_category_enriched_v611",
+      "production_release": "v611-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 154,
@@ -107,7 +117,10 @@
       "review_status": "existing_production_europe_retag_ready",
       "candidate_type": "production_category_enrichment",
       "production_duplicate_check": "existing_production_match_id_shay-banon-estc_retag_only",
-      "notes": "Existing production person. Elastic N.V. is a Netherlands issuer and Elastic lists Banon as Founder and CTO. Retag only after fresh activity gate."
+      "notes": "Existing production person. Elastic N.V. is a Netherlands issuer and Elastic lists Banon as Founder and CTO. Retag only after fresh activity gate.",
+      "production_status": "existing_record_europe_category_enriched_v611",
+      "production_release": "v611-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 155,
@@ -514,11 +527,13 @@
       "source_batch": "05",
       "name": "Frédéric Arnault",
       "handle": "f_arnault",
-      "status": "identity_resolution_ready_for_recheck",
-      "latest_audit_age_days": 112.69
+      "status": "promoted_v611",
+      "latest_audit_age_days": 112.69,
+      "production_release": "v611-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     }
   ],
-  "next_stage": "Run the fresh Europe handle activity audit. If the four production retag candidates pass <=180d, build a Europe preview that category-enriches them without duplication. Re-check Frédéric Arnault from Batch 05 for a possible new-person addition.",
+  "next_stage": "V611 Stable Promotion completed: Frédéric Arnault added as a new person; Daniel Ek, Sebastian Siemiatkowski, Rene Haas and Shay Banon enriched with 欧洲 without duplication. Continue Europe Batch 08 (176-200).",
   "review_method": {
     "candidate_source": "Existing verified production people plus new European listed-company core figures not used in Batches 01-06.",
     "activity_rule": "<=180d pass; 181-365d manual review; >365d hold.",
