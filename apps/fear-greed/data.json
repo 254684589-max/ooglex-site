@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-09-22T00:01:30Z",
+  "updatedAt": "2026-09-22T22:00:12Z",
   "asOf": "2026-09-22",
   "source": "CNN Business Fear & Greed Index",
-  "score": 34,
+  "score": 35,
   "rating": "fear",
   "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 34,
+      "score": 35,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "close": {
-      "score": 29,
+      "score": 34,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "week": {
-      "score": 31,
+      "score": 28,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
@@ -27,7 +27,7 @@
       "ratingZh": "贪婪"
     },
     "year": {
-      "score": 66,
+      "score": 67,
       "rating": "greed",
       "ratingZh": "贪婪"
     }
@@ -58,9 +58,9 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 38,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 48,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "put_call_options",
       "name": "看跌/看涨期权",
       "desc": "5日 Put/Call 比率"
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 57,
+      "score": 58,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 49,
+      "score": 48,
       "rating": "neutral",
       "ratingZh": "中性",
       "key": "junk_bond_demand",
