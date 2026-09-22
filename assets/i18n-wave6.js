@@ -431,6 +431,7 @@
     "通用汽车 · General Motors · 董事长兼 CEO": "General Motors · Chairman & CEO",
     "里德·霍夫曼": "Reid Hoffman",
     "金融": "Financials",
+    "欧洲": "Europe",
     "阿姆贾德·马萨德": "Amjad Masad",
     "阿尔温德·克里希纳": "Arvind Krishna",
     "阿拉温德·斯里尼瓦斯": "Aravind Srinivas",

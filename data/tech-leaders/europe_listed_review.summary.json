@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-22",
+  "status": "europe_review_batches_01_02_complete",
+  "target_category": "欧洲",
+  "source_reviews": [
+    "data/tech-leaders/europe_listed_review.batch01.json",
+    "data/tech-leaders/europe_listed_review.batch02.json"
+  ],
+  "production_catalog": "apps/tech-leaders/leaders.json",
+  "production_count_at_review": 594,
+  "production_write_status": "unchanged",
+  "scan": {
+    "batch_01_count": 25,
+    "batch_02_count": 25,
+    "combined_count": 50,
+    "unique_people": 50,
+    "named_duplicate_groups": [],
+    "handle_duplicate_groups": []
+  },
+  "review_summary": {
+    "preview_ready": 5,
+    "identity_verified_activity_pending": 3,
+    "hold_or_inactive": 4,
+    "needs_x_research": 38,
+    "production_additions": 0
+  },
+  "preview_ready_records": [
+    {
+      "id": "europe-totalenergies-patrick-pouyanne",
+      "name": "Patrick Pouyanné",
+      "company": "TotalEnergies SE",
+      "handle": "PPouyanne",
+      "role_status": "verified_current",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "active_le_180d"
+    },
+    {
+      "id": "europe-santander-ana-botin",
+      "name": "Ana Botín",
+      "company": "Banco Santander SA",
+      "handle": "AnaBotin",
+      "role_status": "verified_current",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "active_le_180d"
+    },
+    {
+      "id": "europe-axa-thomas-buberl",
+      "name": "Thomas Buberl",
+      "company": "AXA SA",
+      "handle": "thomasbuberl",
+      "role_status": "verified_current",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "active_le_180d"
+    },
+    {
+      "id": "europe-delivery-hero-niklas-oestberg",
+      "name": "Niklas Östberg",
+      "company": "Delivery Hero SE",
+      "handle": "niklasoestberg",
+      "role_status": "verified_current_transition",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "active_le_180d"
+    },
+    {
+      "id": "europe-carrefour-alexandre-bompard",
+      "name": "Alexandre Bompard",
+      "company": "Carrefour SA",
+      "handle": "bompard",
+      "role_status": "verified_current",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "active_le_180d"
+    }
+  ],
+  "activity_pending_records": [
+    {
+      "id": "europe-sap-christian-klein",
+      "name": "Christian Klein",
+      "company": "SAP SE",
+      "handle": "ChrstnKlein",
+      "role_status": "verified_current",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "needs_direct_activity_check"
+    },
+    {
+      "id": "europe-mercedes-ola-kallenius",
+      "name": "Ola Källenius",
+      "company": "Mercedes-Benz Group AG",
+      "handle": "OlaKaellenius",
+      "role_status": "verified_current",
+      "x_identity_status": "verified_personal_x",
+      "x_activity_status": "needs_direct_activity_check"
+    },
+    {
+      "id": "europe-novo-nordisk-mike-doustdar",
+      "name": "Maziar Mike Doustdar",
+      "company": "Novo Nordisk A/S",
+      "handle": "maziardoustdar",
+      "role_status": "verified_current",
+      "x_identity_status": "probable_personal_x_needs_direct_verification",
+      "x_activity_status": "needs_direct_activity_check"
+    }
+  ],
+  "hold_records": [
+    {
+      "id": "europe-novartis-vas-narasimhan",
+      "name": "Vas Narasimhan",
+      "company": "Novartis AG",
+      "handle": "VasNarasimhan",
+      "review_status": "hold_inactive",
+      "x_activity_status": "inactive_gt_365d",
+      "notes": "Identity is strong, but observed personal posting activity is older than the existing >365d hold threshold."
+    },
+    {
+      "id": "europe-abb-morten-wierod",
+      "name": "Morten Wierod",
+      "company": "ABB Ltd",
+      "handle": "MWierod",
+      "review_status": "hold_inactive",
+      "x_activity_status": "inactive_gt_365d",
+      "notes": "ABB confirms current CEO role. Mirrored X history shows the personal account has been inactive for years."
+    },
+    {
+      "id": "europe-siemens-roland-busch",
+      "name": "Roland Busch",
+      "company": "Siemens AG",
+      "handle": "BuschRo",
+      "review_status": "hold_inactive",
+      "x_activity_status": "inactive_gt_365d",
+      "notes": "Account has been described as no longer in active use; retain only as hold/legacy research, not production."
+    },
+    {
+      "id": "europe-kering-luca-de-meo",
+      "name": "Luca de Meo",
+      "company": "Kering SA",
+      "handle": "",
+      "review_status": "hold_or_dormant",
+      "x_activity_status": "dormant_or_ambiguous",
+      "notes": "Kering confirms CEO since 15 September 2025. Public sources conflict on the exact personal X handle and one observed account is dormant; do not approve until ownership is resolved."
+    }
+  ],
+  "production_dedupe_check": {
+    "scope": "All currently preview-ready plus identity/activity-pending Europe candidates",
+    "method": "Exact-name and exact-handle GitHub code search against apps/tech-leaders/leaders.json",
+    "checked_count": 8,
+    "conflicts": [],
+    "records": [
+      {
+        "name": "Christian Klein",
+        "handle": "ChrstnKlein",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Patrick Pouyanné",
+        "handle": "PPouyanne",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Ana Botín",
+        "handle": "AnaBotin",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Thomas Buberl",
+        "handle": "thomasbuberl",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Niklas Östberg",
+        "handle": "niklasoestberg",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Alexandre Bompard",
+        "handle": "bompard",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Ola Källenius",
+        "handle": "OlaKaellenius",
+        "production_name_match": false,
+        "production_handle_match": false
+      },
+      {
+        "name": "Maziar Mike Doustdar",
+        "handle": "maziardoustdar",
+        "production_name_match": false,
+        "production_handle_match": false
+      }
+    ]
+  },
+  "category_schema": {
+    "category": "欧洲",
+    "ui_catalog_category_registered": true,
+    "english_label": "Europe",
+    "render_rule": "The category button is shown only when at least one loaded catalog record carries the 欧洲 category, so production will not display an empty category before promotion.",
+    "production_records_tagged": 0
+  },
+  "policy": {
+    "production_594_untouched": true,
+    "only_preview_ready_after_role_identity_activity_checks": true,
+    "pending_records_not_promoted": true,
+    "hold_records_not_promoted": true,
+    "unresolved_records_not_promoted": true,
+    "next_release_gate": "Before any promotion, build a Europe preview catalog, tag approved records with 欧洲, re-run handle/name dedupe, avatar audit, free-feed/embed runtime checks, and static catalog validation."
+  },
+  "next_stage": "Resolve the 3 activity-pending accounts and the remaining X-research queue, then build the first Europe preview only from records that pass role + personal-X identity + activity. The five current preview-ready records form the initial approved pool."
+}
