@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T05:00:12Z",
+  "generated_at": "2026-09-22T05:00:38Z",
   "production_count": 608,
   "audited_handle_count": 23,
   "pass_le_180d": 4,
@@ -268,7 +268,7 @@
       "name": "Kristo Käärmann",
       "company": "Wise plc",
       "handle": "kaarmann",
-      "current_review_status": "identity_verified_activity_pending",
+      "current_review_status": "existing_production_activity_reaudit_pending",
       "x_identity_status": "verified_personal_x",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
