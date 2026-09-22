@@ -27,13 +27,13 @@
       "batch": "03",
       "candidate_range": "51-75",
       "scan_size": 25,
-      "status": "next"
+      "status": "first_pass_complete_0_preview_ready"
     },
     {
       "batch": "04",
       "candidate_range": "76-100",
       "scan_size": 25,
-      "status": "planned"
+      "status": "next"
     },
     {
       "batch": "05+",
@@ -51,5 +51,14 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Build Europe Review Batch 03 for candidates 51-75 without modifying production."
+  "next_action": "Build Europe Review Batch 04 for candidates 76-100. Continue scanning until 45 additional people genuinely pass role + personal-X identity + activity + runtime gates; Batch 03 contributes zero immediate Preview additions.",
+  "current_europe_count": 5,
+  "batch03_result": {
+    "reviewed": 25,
+    "preview_ready": 0,
+    "identity_verified_activity_pending": 1,
+    "hold_inactive": 1,
+    "no_verified_personal_x": 23,
+    "production_additions": 0
+  }
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "review_only",
+  "status": "batch03_x_identity_activity_first_pass_complete",
   "tranche_type": "europe_listed_review_batch_03",
   "batch_range": "51-75",
   "phase": "Europe 5 -> 50",
@@ -14,9 +14,10 @@
   "summary": {
     "batch_count": 25,
     "role_verified_current": 25,
-    "x_identity_verified": 0,
     "preview_ready": 0,
-    "needs_x_research": 25,
+    "identity_verified_activity_pending": 1,
+    "hold_inactive": 1,
+    "manual_review_no_verified_x": 23,
     "production_additions": 0
   },
   "policy": {
@@ -40,12 +41,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.hsbc.com/who-we-are/our-people/senior-management",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 52,
@@ -59,12 +61,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.allianz.com/en/investor_relations/shareholders/annual-general-meeting/agenda-2026/speech-baete.html",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 53,
@@ -77,13 +80,15 @@
       "current_role": "Chair of the Board of Management",
       "role_status": "verified_current",
       "role_source_url": "https://www.munichre.com/en/company/investors/reports-and-presentations/annual-report/letter-to-shareholders.html",
-      "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
-      "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_handle": "ChristophJ32219",
+      "x_identity_status": "probable_personal_x_third_party_link",
+      "x_identity_source_url": "https://x.com/ChristophJ32219",
+      "x_activity_status": "needs_direct_activity_check",
+      "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Crunchbase currently links Christoph Jurecka's profile to @ChristophJ32219. Direct recent X activity was not independently confirmed, so this record remains pending and is not Preview-ready.",
+      "x_identity_support_url": "https://www.crunchbase.com/person/christoph-jurecka",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 54,
@@ -97,12 +102,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://group.bnpparibas/en/group/our-governance/general-management-and-the-executive-committee/jean-laurent-bonnafe",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 55,
@@ -116,12 +122,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.loreal-finance.com/eng/gouvernance",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 56,
@@ -134,13 +141,16 @@
       "current_role": "Chief Executive Officer",
       "role_status": "verified_current",
       "role_source_url": "https://www.se.com/ww/en/about-us/company-profile/corporate-governance/executive-committee/",
-      "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
-      "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_handle": "olblum",
+      "x_identity_status": "verified_personal_x",
+      "x_identity_source_url": "https://x.com/olblum",
+      "x_activity_status": "inactive_gt_365d",
+      "review_status": "hold_inactive",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Schneider Electric's own historical page embeds @olblum and the current public profile identifies him as Schneider Electric CEO, but the visible timeline is roughly four years stale; held out under the activity gate.",
+      "x_identity_support_url": "https://www.se.com/ww/en/about-us/newsroom/news/press-releases/Schneider-Electric-included-in-the-Top-50-for-The-Diversity-Leaders-2020-ranking-held-by-the-Financial-Times-5dd40ffa8217ef38bc5ff78f/",
+      "x_activity_source_url": "https://www.sotwe.com/olblum",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 57,
@@ -154,12 +164,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.safran-group.com/pressroom/safran-reports-its-first-half-2026-results-2026-07-28",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 58,
@@ -173,12 +184,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.airliquide.com/group/board-directors",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 59,
@@ -192,12 +204,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.essilorluxottica.com/en/newsroom/press-releases/essilorluxottica-reaffirms-confidence-in-the-leadership/",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 60,
@@ -211,12 +224,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.zurich.com/annual-report-2025",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 61,
@@ -230,12 +244,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.riotinto.com/about/executive-committee/simon-trott",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 62,
@@ -249,12 +264,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.sc.com/en/about/our-people/group-management-team/",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 63,
@@ -268,12 +284,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://group.intesasanpaolo.com/en/newsroom/all-news/news/2026/shareholders-meeting-ceo-chairman-statements",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 64,
@@ -287,12 +304,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.enel.com/media/explore/search-press-releases/press/2026/05/enel-the-new-board-of-directors-confirms-flavio-cattaneo-as-chief-executive-officer-and-general-manager-and-appoints-internal-committees",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 65,
@@ -306,12 +324,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.eni.com/en-IT/media/press-release/2026/05/pr-bod-confirms-claudio-descalzi-as-ceo-appoints-board-committees-2026.html",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 66,
@@ -325,12 +344,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.stellantis.com/en/investors/events/stellantis-investor-day-2026",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 67,
@@ -344,12 +364,17 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.press.bmwgroup.com/global/article/detail/T0457779EN/106th-annual-general-meeting%3A-oliver-zipse-hands-over-chairmanship-of-the-board-of-management-of-bmw-ag-to-milan-nedeljkovi%C4%87",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Exact-name public-X mirror result @nedeljkovic77 was rejected as a different person. No independently verified personal X account for the BMW CEO was found.",
+      "x_reviewed_at": "2026-09-22",
+      "false_match_rejected": {
+        "handle": "nedeljkovic77",
+        "reason": "Profile/content identifies a Serbian personal account unrelated to BMW's Milan Nedeljković."
+      }
     },
     {
       "batch_rank": 68,
@@ -363,12 +388,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://group.dhl.com/en/media-relations/press-releases/2026/annual-general-meeting-for-the-financial-year-2025.html",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 69,
@@ -382,12 +408,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.rheinmetall.com/en/media/news-watch/news/2026/08/2026-08-06-rheinmetall-news-half-yearly-financial-report-h1",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 70,
@@ -401,12 +428,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.lufthansagroup.com/en/company/company-management/carsten-spohr.html",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 71,
@@ -420,12 +448,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.deutsche-boerse.com/dbg-en/investor-relations/corporate-governance/cv-leithner",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 72,
@@ -439,12 +468,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.philips.com/a-w/about/news/archive/corpcomms/news/press/2026/philips-first-quarter-results-2026.html",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 73,
@@ -458,12 +488,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.wolterskluwer.com/en/news/stacey-caywood-has-officially-assumed-the-role-of-ceo-at-wolters-kluwer",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 74,
@@ -477,12 +508,13 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.relx.com/investors/corporate-governance/board-of-directors",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     },
     {
       "batch_rank": 75,
@@ -496,13 +528,25 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.glencore.com/who-we-are/our-leadership",
       "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
+      "x_identity_status": "no_verified_personal_x_found",
       "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_activity_status": "not_applicable",
+      "review_status": "manual_review_no_verified_x",
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
-      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission."
+      "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Public-web and company-profile review found corporate/third-party references but no independently verifiable personal X account. Excluded from Preview under the personal-X rule.",
+      "x_reviewed_at": "2026-09-22"
     }
   ],
-  "next_stage": "Verify personal X identity and activity for these 25 records. Only records passing role + identity + activity + dedupe enter the Europe V50 preview candidate pool."
+  "next_stage": "Do not promote Batch 03. Keep Christoph Jurecka pending a direct activity confirmation, keep Olivier Blum on inactivity hold, and move to Europe Review Batch 04 (76-100) to continue the 5 -> 50 expansion without lowering the personal-X/activity gate.",
+  "review_method": {
+    "completed_at": "2026-09-22",
+    "scope": "Personal X ownership + activity first pass for all 25 Batch 03 candidates",
+    "rules": [
+      "Corporate X account mentions do not count as a personal X account.",
+      "Name-only X matches are rejected unless company/role identity can be tied to the person.",
+      "Recent LinkedIn activity does not substitute for X activity.",
+      "No verified personal X or stale >365d personal X remains excluded from Preview."
+    ],
+    "result": "0 Preview-ready from Batch 03 first pass; 1 activity-pending, 1 inactive hold, 23 without a verified personal X."
+  }
 }
