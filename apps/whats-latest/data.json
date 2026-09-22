@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T17:57:21Z",
+  "updatedAt": "2026-09-22T18:01:51Z",
   "asOf": "2026-09-22",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -39,7 +39,7 @@
     "riskStreamName": "地缘冲突",
     "topic": "地缘冲突",
     "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
-    "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+    "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
     "category": "风险"
@@ -54,7 +54,7 @@
     "riskStreamName": "地缘冲突",
     "topic": "地缘冲突",
     "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
-    "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+    "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
     "category": "风险"
@@ -123,22 +123,22 @@
       "riskStreamName": "地缘冲突",
       "topic": "地缘冲突",
       "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
-      "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+      "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "category": "风险"
     },
     {
-      "title": "Austria's Raiffeisen Bank wins default judgment against Rasperia",
-      "source": "Reuters",
-      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbFpELWFXZVMtbDE3bWFNMHNCUUhIRWduNjNRWGRVY0xndGFuZ0cwbnk1aFFiRE1uMHZMRU1VU2NOWW9SUGN6bk9TM2xNVVA1Uk53SDJQZmUzbXZVcDV6WnZVTjh6UktpckxuRUdWX3J3ZHR2MXpPQlBYX0tCSUx0OU5TaXdEOV8zVlRhYlVhU2tvbVZkVGczZi1nVDlLaEtQZGhQRkFHdXByRmxzQ3BpbXhNR01udGc?oc=5",
-      "published": 1790096752,
+      "title": "The hidden cost of supply chain resilience",
+      "source": "Axios",
+      "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
+      "published": 1790093769,
       "summary": "",
-      "riskStream": "market_credit",
-      "riskStreamName": "市场信用",
-      "topic": "市场信用",
-      "brief": "Austria's Raiffeisen Bank wins default judgment against Rasperia。",
-      "briefZh": "市场信用：信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。",
+      "riskStream": "supply_chain",
+      "riskStreamName": "供应链",
+      "topic": "供应链",
+      "brief": "The hidden cost of supply chain resilience。",
+      "briefZh": "供应链：供应链或物流瓶颈受到关注，需观察成本、交付周期与跨行业传导。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "category": "风险"
@@ -165,7 +165,7 @@
       "riskStreamName": "能源运输",
       "topic": "能源运输",
       "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
-      "briefZh": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "category": "风险"
@@ -197,46 +197,43 @@
   ],
   "alsoNoted": [
     {
-      "title": "Trump in address to world leaders at the UN defends his decision to start the war against Iran",
-      "source": "Associated Press",
-      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOLTBMZ0ppZk41VENvQnJNNVU5Tmk3anJCdEJrcGRrb3dfb2dJMVRaSXNWQnhjY0wxX2Z4NHlKRXdaSXZfc2cxOHNLM1hwRGJ4WDhGNTdBb1pjTDBmVzQ1VE95SHJlYUtSVm1KdUdyYURwaGpScDBmam56OFlUZ25aaWlaczhnUzN6SkV3Y3NNTVVtblZtd183Rg?oc=5",
-      "published": 1790098320,
+      "title": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections",
+      "source": "NBC News",
+      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNWHlfaF85em55RjZHa3VUZnlpME1GTnNQTmdxdFRiYktLd2Y1c1ZpQUNPUF9ma1RqSFE1QVJJdXRYM21ZUGJfWEhNVDBVMHk2OGNMSFpYMVB2cVg2Tk92aUgzQkxSWGlhYVZjUDdyMTg5dnVFNFQyTlRqanFxRzFLS0twcXZEcFk0RlR6M0hhdlU4ajNhdURycVdfTWRnQ0pYR0h2SzBieTJBVmo3d3FmeWhyaVpiZzZOMm84?oc=5",
+      "published": 1790094667,
+      "summary": "",
+      "topic": "国际·地缘",
+      "brief": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际·地缘"
+    },
+    {
+      "title": "Trump, dragged down by Iran war, hits lowest approval ever on foreign affairs in new poll",
+      "source": "POLITICO",
+      "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOTW52enhYRWRmYlZYQmxiTWR6Yi10dy10eHhRMno2QnN1eHFtN1cyblBGS1ktcUVNT0FDR1RzU1J4aGE4dXFnaXJHSld5R3JoVGUzR3otM1FFdWJiMTBfb3JkeVNRRG4wbmxJVHhfZHdJdVNQbWFISmdWdTRYNWFaeDl1TlQtb0ZiU2FsdWd5Z1lnMHBDOFE?oc=5",
+      "published": 1790090520,
       "summary": "",
       "riskStream": "geopolitics",
       "riskStreamName": "地缘冲突",
       "topic": "地缘冲突",
-      "brief": "Trump in address to world leaders at the UN defends his decision to start the war against Iran。",
-      "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "brief": "Trump, dragged down by Iran war, hits lowest approval ever on foreign affairs in new poll。",
+      "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "category": "风险"
     },
     {
-      "title": "5 things to know about Trump’s speech to the United Nations",
-      "source": "The Hill",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQaWtZN2F6bmR4RmhKV3lrTGc2RGFfN3RJODUzaXhLazZOVWRsZkE5eTB1UjZzek5QbTNBNVRiTk5jOHJjTU1XbEFweXV6N2szM1h2eklzbWJMMjVqWV93U0JFcVo5RlhQeTgtVV9NUzloWVpqNFV3R3JWQ0NXajZFZzBsN0NYREk2aFF4cjhITQ?oc=5",
-      "published": 1790098140,
+      "title": "Trump defends Iran war, touts ‘America is back’ agenda in UN speech",
+      "source": "South China Morning Post",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPckxpa1Q2dmptWFVnZXp4c19Pa0dnY1VxdFBhSzZoekEtaS1WR25lQjNvcTVJa2toTkZjUE1ueEIxblZIUFFKZk9qVWc4VE9RT25mLTFYRFhGQlZzbTNDQmlXcDlRdTFZUldhYUR6Q1NuTkdhOTJlbnBNeENScnVxQU9QUTRCYUhmUmZzaUljQ2hzSjJBWHZBX054cUdrTTZLaF9EdnN3?oc=5",
+      "published": 1790089597,
       "summary": "",
       "riskStream": "geopolitics",
       "riskStreamName": "地缘冲突",
       "topic": "地缘冲突",
-      "brief": "5 things to know about Trump’s speech to the United Nations。",
-      "briefZh": "地缘冲突：该报道涉及潜在风险事件，需结合原文与后续发展持续核验。",
-      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "categoryKey": "risk",
-      "category": "风险"
-    },
-    {
-      "title": "GOP's war for eyeballs",
-      "source": "Axios",
-      "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOVHZTWGJpTVJqUFZFX2tsQVpaUUtCTkIyWkhxUUp5c3BlanRsd0poX3NMUTl4QnFHLU5UbE5hVDF5UDJpTnRQUG1FQjkzWEtPMmtPRmhUbU1EcnItX3o4Z0Yza2RRNDFTaV9yNXhnQzdRX1dZemYyS3cyLWhISVltODhIdFlSYU44LUk3Q1NUeUtHU0t6a2Y3WEpn?oc=5",
-      "published": 1790096216,
-      "summary": "",
-      "riskStream": "geopolitics",
-      "riskStreamName": "地缘冲突",
-      "topic": "地缘冲突",
-      "brief": "GOP's war for eyeballs。",
-      "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "brief": "Trump defends Iran war, touts ‘America is back’ agenda in UN speech。",
+      "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "category": "风险"
@@ -249,16 +246,16 @@
     "status": "升级",
     "reliable": true,
     "lead": {
-      "title": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage",
-      "source": "CNBC",
-      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPYjl0VXhoSlV4MVQtV2NYN2hPeGRiQlpPNHZleVZNbTJEanJYRkQ2a2xtUWxtVEY1MTZnRVh0eDRSSU1qWXdSZTBRdUpVbEsxTDR4RTJuVXVRTjQzS1NnbXJ4Sm9rWVo0Z1NRQnVxTWwwVm9BQkxFTGVRRjhVbFV2ekI5QVQzMEh2NHRpeTZwUjU3QXZqSGEtc1BfT2RNa3FGdDhDRTFmanlRQdIBrwFBVV95cUxPdWdjRVNaUXhKZURyZkZkdlN3RHZBal83LU15NnNUZzNuZVFsd0Y4ZHNFaWtpM3NNSEppRlhIOE5mMDdKYmFudG5FeFRHWXo5NGlPYlhZejdGQk1uZVJRNlBIajJVZ1hMVFhEMl9SNldjYmRadnhTNlh2SmFyOG5ZNTRILWQwZXI2SktUNG5CRGNMU0VWWmZNaG9Ma0J4amVRVmtsY3VaTVU1azNmS3Vz?oc=5",
-      "published": 1790077223,
+      "title": "Oil erases losses after Trump says Iran war could be settled after midterms",
+      "source": "NBC News",
+      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
+      "published": 1790090601,
       "summary": "",
-      "riskStream": "cyber",
-      "riskStreamName": "网络安全",
-      "topic": "网络安全",
-      "brief": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage。",
-      "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "riskStream": "energy_shipping",
+      "riskStreamName": "能源运输",
+      "topic": "能源运输",
+      "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
+      "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk"
     },
@@ -268,61 +265,70 @@
         "name": "地缘政治",
         "score": 100,
         "state": "高",
-        "matches": 20
+        "matches": 19
       },
       {
         "name": "市场 / 信用",
-        "score": 56,
-        "state": "中",
-        "matches": 3
+        "score": 32,
+        "state": "低",
+        "matches": 1
       },
       {
-        "name": "能源 / 供应链",
+        "name": "能源 / 运输",
         "score": 100,
         "state": "高",
-        "matches": 8
+        "matches": 11
       },
       {
-        "name": "网络 / 运营",
-        "score": 68,
-        "state": "中高",
-        "matches": 4
+        "name": "网络安全",
+        "score": 32,
+        "state": "低",
+        "matches": 1
+      },
+      {
+        "name": "供应链",
+        "score": 32,
+        "state": "低",
+        "matches": 1
       }
     ],
     "followUp": [
       {
-        "text": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-        "source": "Associated Press"
-      },
-      {
-        "text": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+        "text": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
         "source": "NBC News"
       },
       {
-        "text": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+        "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
         "source": "Reuters"
+      },
+      {
+        "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+        "source": "The New York Times"
       }
     ],
     "coverage": {
       "sampleCount": 15,
-      "sourceCount": 9,
-      "streamCount": 4,
+      "sourceCount": 11,
+      "streamCount": 5,
       "sources": [
         "Associated Press",
         "Axios",
+        "Bloomberg",
         "CNBC",
         "Euronews",
-        "Fox News",
         "NBC News",
+        "POLITICO",
         "Reuters",
-        "The Hill",
+        "South China Morning Post",
+        "The New York Times",
         "The Wall Street Journal"
       ],
       "streams": [
         "cyber",
         "energy_shipping",
         "geopolitics",
-        "market_credit"
+        "market_credit",
+        "supply_chain"
       ],
       "minItems": 8,
       "minSources": 3,
@@ -332,10 +338,10 @@
         "geopolitics": 7,
         "market_credit": 7,
         "energy_shipping": 7,
-        "cyber": 6,
-        "supply_chain": 6
+        "cyber": 5,
+        "supply_chain": 4
       },
-      "candidateCount": 33
+      "candidateCount": 30
     },
     "method": "rule-based-multistream"
   },
@@ -461,6 +467,17 @@
           "categoryKey": "world"
         },
         {
+          "title": "Rubio says Ukraine unintentionally hit 'American-linked' oil infrastructure - ABC News",
+          "source": "ABC News",
+          "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOY19XczhlU0h4aXA4S3NJUWhRVzV3MjZ2NXp4bGN4UjJRWU12QWp5Q1VLT0Z2MlZaU3hSUUFMcmRvdEFlbVZWWXM2djVabUhJTmMzMWZXblpwVjZVWjJlSDBRaFFfQnE2WjJTSVlkRU9KUlhPLU1mZXl6Rzl6TTRtbzlTX0UtR3pxY0hic0xJWl95ZVJtNlRsT1dsSWpRY2ZFY0ZRNXlEcDd0WkVrY3FxVndmQVh3YWw0QmVRVVB30gHDAUFVX3lxTE1ZM281UEJob3NIWU9kSkg4Q3h5WldvYXRFSUNxODF5LWVNb3RvLV9NQWltUjJVd1BSbVN5ejdXT1psRXhqbmVyMW9lTUx2WmZvRmQ3MDk4TDdadFBuMTN6TEt1dHE5Z05TMU8td0lWMTVyUEdhOFczak93MXQxM3pkcGN6V01OSlEwOVlRSEo5T0h2U3lTaGdTX3VJR3ZyN0dlQXRmNjFId2FyLWxIMUhrQk5YMk9CMVpMOTlzOF91TzVJQQ?oc=5",
+          "published": 1790092213,
+          "summary": "Rubio says Ukraine unintentionally hit 'American-linked' oil infrastructure   。",
+          "topic": "国际·地缘",
+          "brief": "Rubio says Ukraine unintentionally hit 'American-linked' oil infrastructure   。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
           "title": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war",
           "source": "CNBC",
           "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOU3VOUDE2WFpHSE50Nk40elJZZ1pObDJFano0bmpvN2ZpMmJrc2pJSVlqTlQ3QTFySFNnZldHLUR0T3U3UGpEaV9MazBNNldTY1dCRm5tY254bWFhYW5rQkk0bXpiT0tkX3FzdHQxbThaaTJWakM1X29YclJuSDFNS0xzdUhpSmhaZWp4U9IBkgFBVV95cUxNTnlqQ25DZ1V5RUY1OXB6UFFCYzZuV0lIM3d2Z1ByT2F0ZlJURVhUQlFvWVp6QlU4UkhJRTJQVTgxaWwyY21TUWhfVHd5NWxFQjNPMkFvcFdVTll4RlRNd2lONy1FLVlCZUhGOWdwZlFFUHozRHZsNVhvdU84cHh0Z0YtYTY0UHJnQ2NuZUpLZEE1UQ?oc=5",
@@ -544,13 +561,13 @@
           "categoryKey": "markets"
         },
         {
-          "title": "SNAPSHOT Nasdaq hits intraday record high as tech stocks regain footing",
+          "title": "COMMENTARY: Morning Bid: As oil swoons, AI recharges",
           "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNNlc5U2haVjdCOXFmcjZtdUJGOGtOaThkenVQS3piZGpYa0xqbHFuRU5fRHZ2TkdwVC1oZkpRSzVJNXRqU0g2M3BlakJnaVR1NUx1RG90aGRjdjJQYXo1MGg5R2w4ejJ4aXVhY3V1Qk5tX3Y5ZE5sY0dEYzlKY0c5Mmh4WDRleHFCdTM0UjVLT2dFTEVVMXFmVk00bHhhSDlFYXA5cEpGX0tvOU9YRjVraVBKaw?oc=5",
-          "published": 1790085251,
+          "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOWDg3N3o3aUpOS0JUNnBBVjZhOF9hendQRFd4aXNzV0ZIa1Q5Z3piVkc5NUt0ZWItMHdHeEk2ZGRaR240dFVOaHBKMVhUdXZKX3JlSFdxSktEenNrRkV1R3BWdWRINkJfVDZ1Z0lwMGtoSG9PWG9mM0xTamcyY2l3c0d4Yjg5cjBfNzFQS18ydlplWmdlcXdR?oc=5",
+          "published": 1790075634,
           "summary": "",
-          "topic": "纳斯达克",
-          "brief": "SNAPSHOT Nasdaq hits intraday record high as tech stocks regain footing。",
+          "topic": "COMMENTARY",
+          "brief": "COMMENTARY: Morning Bid: As oil swoons, AI recharges。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
@@ -594,13 +611,13 @@
           "categoryKey": "tech"
         },
         {
-          "title": "I Gave My Life Over to Meta’s A.I. Agent and Was Blown Away",
-          "source": "The New York Times",
-          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE94MEh4Uk1LU3pMcTJtU2Jlc1hTMVVjd05Wcy1PdWxXNm5MWS1vS1hUeEM5bWd4V21ReXNqVHpXeVF0VjRjcDk4T3IyVkU1Uk5Mb1RSenlUZFdMSXMtNFQzNlpyc2doeHdwZzVQNDhoNGppYnJydVprZQ?oc=5",
-          "published": 1790092503,
+          "title": "Trump says US Justice Department could rein in AI companies if needed",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
+          "published": 1790092475,
           "summary": "",
           "topic": "人工智能·科技",
-          "brief": "I Gave My Life Over to Meta’s A.I. Agent and Was Blown Away。",
+          "brief": "Trump says US Justice Department could rein in AI companies if needed。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         },
@@ -616,13 +633,24 @@
           "categoryKey": "tech"
         },
         {
-          "title": "Trump says US Justice Department could rein in AI companies if needed",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
-          "published": 1790092475,
+          "title": "I Gave My Life Over to Meta’s A.I. Agent and Was Blown Away",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE94MEh4Uk1LU3pMcTJtU2Jlc1hTMVVjd05Wcy1PdWxXNm5MWS1vS1hUeEM5bWd4V21ReXNqVHpXeVF0VjRjcDk4T3IyVkU1Uk5Mb1RSenlUZFdMSXMtNFQzNlpyc2doeHdwZzVQNDhoNGppYnJydVprZQ?oc=5",
+          "published": 1790092503,
           "summary": "",
           "topic": "人工智能·科技",
-          "brief": "Trump says US Justice Department could rein in AI companies if needed。",
+          "brief": "I Gave My Life Over to Meta’s A.I. Agent and Was Blown Away。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "What is an \"AI swarm,\" and why is it giving tech experts nightmares?",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1lYUNiREo5MnhMdzN0d2pndHZteUh2aDBMNDZoanpLYkV2QjdUTkRLTnh6R1VhdmxGNGYxNklRN1NMMzFlLWc4YXlnM2Q5Q1hxY3FuT0hzU2VGS29GdVZ3VTh2cmh1ZWVHSEFhUHk3Z1RGV2pQWUtkbA?oc=5",
+          "published": 1790067600,
+          "summary": "",
+          "topic": "人工智能·科技",
+          "brief": "What is an \"AI swarm,\" and why is it giving tech experts nightmares?",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         },
@@ -645,17 +673,6 @@
           "summary": "",
           "topic": "芯片 / 半导体",
           "brief": "Nvidia’s Stock Is Flashing a Warning Sign as Valuation Falls。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence",
-          "source": "BBC",
-          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9wZElLYTA3N1pYMHNTa0dOTGpMT2dnUG9oQ0RYZE9KRm1VRnJJVWxLUFluRHpaT1V0SWpkMzBoODNpN0hhZGVJRnFHYWduMlN5eHJyMmN4ZXk?oc=5",
-          "published": 1790092405,
-          "summary": "",
-          "topic": "Watch",
-          "brief": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         }
@@ -738,90 +755,6 @@
       "name": "风险",
       "items": [
         {
-          "title": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage",
-          "source": "CNBC",
-          "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPYjl0VXhoSlV4MVQtV2NYN2hPeGRiQlpPNHZleVZNbTJEanJYRkQ2a2xtUWxtVEY1MTZnRVh0eDRSSU1qWXdSZTBRdUpVbEsxTDR4RTJuVXVRTjQzS1NnbXJ4Sm9rWVo0Z1NRQnVxTWwwVm9BQkxFTGVRRjhVbFV2ekI5QVQzMEh2NHRpeTZwUjU3QXZqSGEtc1BfT2RNa3FGdDhDRTFmanlRQdIBrwFBVV95cUxPdWdjRVNaUXhKZURyZkZkdlN3RHZBal83LU15NnNUZzNuZVFsd0Y4ZHNFaWtpM3NNSEppRlhIOE5mMDdKYmFudG5FeFRHWXo5NGlPYlhZejdGQk1uZVJRNlBIajJVZ1hMVFhEMl9SNldjYmRadnhTNlh2SmFyOG5ZNTRILWQwZXI2SktUNG5CRGNMU0VWWmZNaG9Ma0J4amVRVmtsY3VaTVU1azNmS3Vz?oc=5",
-          "published": 1790077223,
-          "summary": "",
-          "riskStream": "cyber",
-          "riskStreamName": "网络安全",
-          "topic": "网络安全",
-          "brief": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage。",
-          "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "Trump in address to world leaders at the UN defends his decision to start the war against Iran",
-          "source": "Associated Press",
-          "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOLTBMZ0ppZk41VENvQnJNNVU5Tmk3anJCdEJrcGRrb3dfb2dJMVRaSXNWQnhjY0wxX2Z4NHlKRXdaSXZfc2cxOHNLM1hwRGJ4WDhGNTdBb1pjTDBmVzQ1VE95SHJlYUtSVm1KdUdyYURwaGpScDBmam56OFlUZ25aaWlaczhnUzN6SkV3Y3NNTVVtblZtd183Rg?oc=5",
-          "published": 1790098320,
-          "summary": "",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "Trump in address to world leaders at the UN defends his decision to start the war against Iran。",
-          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "Austria's Raiffeisen Bank wins default judgment against Rasperia",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbFpELWFXZVMtbDE3bWFNMHNCUUhIRWduNjNRWGRVY0xndGFuZ0cwbnk1aFFiRE1uMHZMRU1VU2NOWW9SUGN6bk9TM2xNVVA1Uk53SDJQZmUzbXZVcDV6WnZVTjh6UktpckxuRUdWX3J3ZHR2MXpPQlBYX0tCSUx0OU5TaXdEOV8zVlRhYlVhU2tvbVZkVGczZi1nVDlLaEtQZGhQRkFHdXByRmxzQ3BpbXhNR01udGc?oc=5",
-          "published": 1790096752,
-          "summary": "",
-          "riskStream": "market_credit",
-          "riskStreamName": "市场信用",
-          "topic": "市场信用",
-          "brief": "Austria's Raiffeisen Bank wins default judgment against Rasperia。",
-          "briefZh": "市场信用：信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "GOP's war for eyeballs",
-          "source": "Axios",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOVHZTWGJpTVJqUFZFX2tsQVpaUUtCTkIyWkhxUUp5c3BlanRsd0poX3NMUTl4QnFHLU5UbE5hVDF5UDJpTnRQUG1FQjkzWEtPMmtPRmhUbU1EcnItX3o4Z0Yza2RRNDFTaV9yNXhnQzdRX1dZemYyS3cyLWhISVltODhIdFlSYU44LUk3Q1NUeUtHU0t6a2Y3WEpn?oc=5",
-          "published": 1790096216,
-          "summary": "",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "GOP's war for eyeballs。",
-          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "Trump-backed Senate candidate says 'Groceries cost too much,' calls for Iran war to 'end quickly'",
-          "source": "Fox News",
-          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNLVZCazdxS2oxN0ticWhYWWJOejVpQUF6ZVNaYVFKcFh4RTNLLWZnQXRNaW5ScVA2bW9TNDllWWZXMDRZWnlQN3REa3JkV0pRdzQwMUN0X1p0ZVFZMjBtcExYV3ZMd25pSmd2NjZhVDJyeWxERUVmeDNQdmdzeElYblZ5XzRkclA3RmdGcTFWdDh1cWZRWll5UmVKOURTNno4SXF0MFBhTEk2RDRWMjh3XzFhYw?oc=5",
-          "published": 1790094710,
-          "summary": "",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "Trump-backed Senate candidate says 'Groceries cost too much,' calls for Iran war to 'end quickly'。",
-          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
-          "published": 1790049176,
-          "summary": "",
-          "riskStream": "energy_shipping",
-          "riskStreamName": "能源运输",
-          "topic": "能源运输",
-          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
-          "briefZh": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
           "title": "Oil erases losses after Trump says Iran war could be settled after midterms",
           "source": "NBC News",
           "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
@@ -831,7 +764,35 @@
           "riskStreamName": "能源运输",
           "topic": "能源运输",
           "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
-          "briefZh": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Trump, dragged down by Iran war, hits lowest approval ever on foreign affairs in new poll",
+          "source": "POLITICO",
+          "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOTW52enhYRWRmYlZYQmxiTWR6Yi10dy10eHhRMno2QnN1eHFtN1cyblBGS1ktcUVNT0FDR1RzU1J4aGE4dXFnaXJHSld5R3JoVGUzR3otM1FFdWJiMTBfb3JkeVNRRG4wbmxJVHhfZHdJdVNQbWFISmdWdTRYNWFaeDl1TlQtb0ZiU2FsdWd5Z1lnMHBDOFE?oc=5",
+          "published": 1790090520,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Trump, dragged down by Iran war, hits lowest approval ever on foreign affairs in new poll。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Trump defends Iran war, touts ‘America is back’ agenda in UN speech",
+          "source": "South China Morning Post",
+          "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPckxpa1Q2dmptWFVnZXp4c19Pa0dnY1VxdFBhSzZoekEtaS1WR25lQjNvcTVJa2toTkZjUE1ueEIxblZIUFFKZk9qVWc4VE9RT25mLTFYRFhGQlZzbTNDQmlXcDlRdTFZUldhYUR6Q1NuTkdhOTJlbnBNeENScnVxQU9QUTRCYUhmUmZzaUljQ2hzSjJBWHZBX054cUdrTTZLaF9EdnN3?oc=5",
+          "published": 1790089597,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Trump defends Iran war, touts ‘America is back’ agenda in UN speech。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         },
@@ -845,21 +806,7 @@
           "riskStreamName": "地缘冲突",
           "topic": "地缘冲突",
           "brief": "Iran War: Latest News, Live Coverage and Video。",
-          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "Exclusive: A major cyber vendor's new service to fight AI cyberattacks",
-          "source": "Axios",
-          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOWlF1R1loNzZEVGhyNEM2R3p5bmFwVk5NdHlFQUxiMTBSdG9JTU1INnRnQVpqelZBbnY4RjIxS25HNlc1NVYyLWN4djdLM0t3bGxUeWpMUzF0Q1hraTFqWWdORXBsd3gwNmVDbGQ1ZkR2djhUWlotaW5jdWRSR1daQg?oc=5",
-          "published": 1790081750,
-          "summary": "",
-          "riskStream": "cyber",
-          "riskStreamName": "网络安全",
-          "topic": "网络安全",
-          "brief": "Exclusive: A major cyber vendor's new service to fight AI cyberattacks。",
-          "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         },
@@ -873,35 +820,35 @@
           "riskStreamName": "网络安全",
           "topic": "网络安全",
           "brief": "The EU spent billions on a cyberattack shield — nobody checked if it worked。",
-          "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "briefZh": "网络安全：网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         },
         {
-          "title": "Daily Briefing: Moody’s Warns of Rising Credit Risk for Weaker Borrowers",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOTnVOaXYwYkd3UXAwZWxvQ1c1ekNuNTBmLTdEQ0V3eW5BS2EzNHBxN19ocHZKMnZfaTdJeTJkcWhUSWdLcEptd3gtY2tfeUJtcGkzbkJTdC1qU29ZTVhXbVRGaGdjdGdYSURGakxqMXEzaW9XR2toUTlSZzljMXYwbHZmWlJfSXJwMWVMZUoyN2d5cjAyUFlqWlVNOHF4eU9KYVNndjRMS3JuXzFsTllqcThncUo?oc=5",
-          "published": 1790074500,
-          "summary": "",
-          "riskStream": "market_credit",
-          "riskStreamName": "市场信用",
-          "topic": "市场信用",
-          "brief": "Daily Briefing: Moody’s Warns of Rising Credit Risk for Weaker Borrowers。",
-          "briefZh": "市场信用：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk"
-        },
-        {
-          "title": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war",
-          "source": "CNBC",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOU3VOUDE2WFpHSE50Nk40elJZZ1pObDJFano0bmpvN2ZpMmJrc2pJSVlqTlQ3QTFySFNnZldHLUR0T3U3UGpEaV9MazBNNldTY1dCRm5tY254bWFhYW5rQkk0bXpiT0tkX3FzdHQxbThaaTJWakM1X29YclJuSDFNS0xzdUhpSmhaZWp4U9IBkgFBVV95cUxNTnlqQ25DZ1V5RUY1OXB6UFFCYzZuV0lIM3d2Z1ByT2F0ZlJURVhUQlFvWVp6QlU4UkhJRTJQVTgxaWwyY21TUWhfVHd5NWxFQjNPMkFvcFdVTll4RlRNd2lONy1FLVlCZUhGOWdwZlFFUHozRHZsNVhvdU84cHh0Z0YtYTY0UHJnQ2NuZUpLZEE1UQ?oc=5",
-          "published": 1790067243,
+          "title": "Iran ready to reopen Strait of Hormuz if US eases military pressure and lifts blockade",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQNEdfLVlEeU1GTjFkdDRlZ2NCN19kT0tNTEdKTnJBM29mNGk4OW9EMURHRm9WTEljdFBQY3Y1OTB6VnJBMFRMclpzV2xrV0M4NVMzZld6MlFJeHB1Rnp3Y01aVDJ4STB0Vk80bVE5X2JGaHRPeXlHM1h0WExNNHRlWEhuZkhjWWF0ajJYMGxsX0l1djRWYzRJbUZnbkpTM0k2LWZiT1AtWHA1QnhuajhwOVhjOExkWmNOcjkwXzJJTWJUWWlUazVtTDhR?oc=5",
+          "published": 1790072983,
           "summary": "",
           "riskStream": "geopolitics",
           "riskStreamName": "地缘冲突",
           "topic": "地缘冲突",
-          "brief": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war。",
-          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "brief": "Iran ready to reopen Strait of Hormuz if US eases military pressure and lifts blockade。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
+          "published": 1790049176,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         },
@@ -915,7 +862,7 @@
           "riskStreamName": "地缘冲突",
           "topic": "地缘冲突",
           "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
-          "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         },
@@ -929,21 +876,91 @@
           "riskStreamName": "市场信用",
           "topic": "市场信用",
           "brief": "Operator of 314 Wendy’s locations in the US files for bankruptcy protection。",
-          "briefZh": "市场信用：信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。",
+          "briefZh": "市场信用：信用、债务或流动性风险受到关注，需观察是否向银行、债券或融资市场进一步传导。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         },
         {
-          "title": "5 things to know about Trump’s speech to the United Nations",
-          "source": "The Hill",
-          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQaWtZN2F6bmR4RmhKV3lrTGc2RGFfN3RJODUzaXhLazZOVWRsZkE5eTB1UjZzek5QbTNBNVRiTk5jOHJjTU1XbEFweXV6N2szM1h2eklzbWJMMjVqWV93U0JFcVo5RlhQeTgtVV9NUzloWVpqNFV3R3JWQ0NXajZFZzBsN0NYREk2aFF4cjhITQ?oc=5",
-          "published": 1790098140,
+          "title": "Saudi Arabia ramps up Gulf oil exports after pipeline attack, data shows",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQcThldmdWd2c5aHdfck8zYk1XMWtsa3kweWlXaTNQWEpnV2NIUHhiNTh2cHhoSndCV2Z2QkhwNl9DZEJObFJha2pXWG1JcUZpVXlZU1RqQ2diZUJ0YVV2alRBRmRCampGOGdQQnM4UVV2R2ZMQ2p6WC1QSk5iOGJEWDZ2YXdaSzlLeGtZYnNuVld5MGZESG1tenNaMFlFcExWeVhlZjJBTlJOeHNmVkhBYzFkejJkNno5VWEwU05hRHU4NGlqT1U5UXcxUzU?oc=5",
+          "published": 1790006100,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Saudi Arabia ramps up Gulf oil exports after pipeline attack, data shows。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "The hidden cost of supply chain resilience",
+          "source": "Axios",
+          "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
+          "published": 1790093769,
+          "summary": "",
+          "riskStream": "supply_chain",
+          "riskStreamName": "供应链",
+          "topic": "供应链",
+          "brief": "The hidden cost of supply chain resilience。",
+          "briefZh": "供应链：供应链或物流瓶颈受到关注，需观察成本、交付周期与跨行业传导。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Saudi Arabia Running Tests to Resume East-West Oil Pipeline",
+          "source": "Bloomberg",
+          "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNXy1NQWNxNHNjYk94V09jWlZEcXJkUEZ5ZVRtVXNmbnpISFh6NEFSZlZVLXpSTDM0QW04anpDdXVTZjcxN2NNajhweDdVM2ZYelFlVGJWbTIxZUpXcnRVVG5MYWhqQ0VFMWhVUEVBMkpkdHJIR0ZOX1h6MXowQ29JWnVxRm51dGRxWTBJT1dLWXpYRkd1eTdGQmowRWdLXzlTUGFpMTJzaThlSld0LUxN?oc=5",
+          "published": 1790088404,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Saudi Arabia Running Tests to Resume East-West Oil Pipeline。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Here's what the Saudi East-West pipeline shutdown means for Asia's biggest crude importers",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRDlCal9FSDBLa0d1M0ZVWUxVT0pHNFNhTGRNUmRXeHVyaXRiNE5ma0x1V2JmNUg3MU9xNU5ES1hkQ3dkSi1QNEhlWWUzb2ZwWkZDV3RwN1RneWhwa1FNNURwRVAwLWg1TjlqZktuTG55bGJzcmNIcnJyMDBjTHZlRFhOR3dueGUz0gGOAUFVX3lxTE5fQ3B2dWpkdjdaTUZZWDhuUUdCdFZrVW5rWlhPV2tOSnJjQzF2YzQxdXZYa0lORlY0dDF3UE1oU1FIWmEyYjBzanR1R2RfTEprdTlPcm9CZU1QY3hGQVRqYlhfMFlidE1Fam5WT1hMbkxERFMzVVpRLXZaR3kyZGVSaW1ZMDVGMzdEUWpYcFE?oc=5",
+          "published": 1789979353,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Here's what the Saudi East-West pipeline shutdown means for Asia's biggest crude importers。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "What Is Saudi Arabia’s East-West Pipeline and Why Is It Rocking Oil Markets?",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQR3Ywd1JaYWZkdmxzWGRDT3NONzlNWlhSRE1TTlYtWUptU25fd0NPaTlDSVNHX0tsTzJZTWtjbmYyQ3RpckhWMDg0dHRuNWtEWXFtcGVCZU00QjRKbDM1SlM5TDltcWhLUkF2ZTZCY200cUZqWDFLRHdKV3pvbXk2YXY3ekNTX0NKVkM5Y0d4WnVUUGlTUm1DOV9ZbGtXNTB6UHEzMEpMOHdQSmlabUFLbmxoSXRzd1lyNTFIVnJ3?oc=5",
+          "published": 1790085660,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "What Is Saudi Arabia’s East-West Pipeline and Why Is It Rocking Oil Markets?",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "​Urging Pivot on North Korea, South’s Leader Calls for Easing Sanctions",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNTjU4UFd6TXlIOGl3TzNMM1dpWnM1cjdYMVRucWZLUV9yendTUXJlOHdFSkdhX2JyZE5OaW1oc1d3a0NtZ282aF9tbDFpT2VvTm1hZGg4NFJWaU5tX1NiSWhkUzUzQTE0d2NwVFhvN0J5S0tzc3BNMDR1dmxWME11by1JaFJkeE9Ea3ZLX2pqYzZpT2hockRDdHdCVXVORFI2TVMtTHFReXlXRVUtemJV?oc=5",
+          "published": 1790041175,
           "summary": "",
           "riskStream": "geopolitics",
           "riskStreamName": "地缘冲突",
           "topic": "地缘冲突",
-          "brief": "5 things to know about Trump’s speech to the United Nations。",
-          "briefZh": "地缘冲突：该报道涉及潜在风险事件，需结合原文与后续发展持续核验。",
+          "brief": "​Urging Pivot on North Korea, South’s Leader Calls for Easing Sanctions。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         }
@@ -954,43 +971,43 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7770.07,
-      "changePct": 0.07,
+      "price": 7768.11,
+      "changePct": 0.04,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 27236.27,
-      "changePct": 0.42,
+      "price": 27228.23,
+      "changePct": 0.39,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 99.65,
-      "changePct": -0.69,
+      "price": 99.62,
+      "changePct": -0.72,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 90.82,
-      "changePct": -5.18,
+      "price": 90.81,
+      "changePct": -5.19,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4377.3,
-      "changePct": -0.15,
+      "price": 4378.0,
+      "changePct": -0.13,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 100.67,
-      "changePct": 0.24,
+      "price": 100.64,
+      "changePct": 0.21,
       "fmt": "idx"
     }
   ],
