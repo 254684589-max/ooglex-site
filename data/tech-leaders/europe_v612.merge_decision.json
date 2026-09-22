@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V611 -> V612",
+  "target_category": "欧洲",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v612-preview.json",
+  "preview_catalog_version": "v612-europe-preview-2026-09-22",
+  "base_count": 611,
+  "approved_additions": 1,
+  "category_enrichments": 0,
+  "static_gate": "pass",
+  "runtime_gate": "pass",
+  "runtime_generated_at": "2026-09-22T08:43:10Z",
+  "runtime_summary": {
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "avatar_ready_count": 1,
+    "native_free_feed_ready_count": 1,
+    "embed_fallback_available": true,
+    "render_ready_count": 1,
+    "render_blocked_count": 0
+  },
+  "promoted_people": [
+    {
+      "id": "europe-b08-martin-lorentzon",
+      "name": "Martin Lorentzon",
+      "handle": "MartinLorentzon",
+      "company": "Spotify Technology S.A.",
+      "categories": [
+        "欧洲",
+        "消费零售"
+      ]
+    }
+  ],
+  "category_enriched_people": [],
+  "production_action": "promote",
+  "production_catalog": "v612-stable-2026-09-22",
+  "production_count": 612,
+  "europe_count": 23,
+  "wall_street_count": 100,
+  "previous_production_catalog": "v611-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v611-europe22-stable-2026-09-22.json",
+  "rationale": "V612 passed static/dedupe and deployed runtime checks. Martin Lorentzon was 1/1 avatar-ready, native-feed-ready and render-ready with 0 blocked."
+}
