@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T13:07:39Z",
+  "generated_at": "2026-09-22T13:13:54Z",
   "preview_catalog_version": "v528-wall-street-preview-2026-09-22",
   "preview_count": 528,
   "base_count": 500,
   "approved_additions": 28,
   "sample_count": 5,
-  "ready_count": 3,
-  "blocked_count": 2,
+  "ready_count": 1,
+  "blocked_count": 4,
   "rows": [
     {
       "name": "Rick Rieder",
@@ -50,30 +50,34 @@
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 8169,
-      "feed_ok": true,
-      "feed_http_status": 200,
+      "feed_ok": false,
+      "feed_http_status": null,
       "feed_error_body": "",
-      "feed_source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "newest_post_at": "Tue Sep 22 12:54:09 +0000 2026",
-      "ready": true,
-      "blocking_reasons": []
+      "feed_source": "",
+      "post_count": 0,
+      "newest_post_at": null,
+      "ready": false,
+      "blocking_reasons": [
+        "feed_fetch_failed:URLError"
+      ]
     },
     {
       "name": "Eric Balchunas",
       "handle": "EricBalchunas",
       "preview_record_ok": true,
-      "avatar_ok": true,
-      "avatar_content_type": "image/jpeg",
-      "avatar_bytes": 23535,
+      "avatar_ok": false,
+      "avatar_content_type": "",
+      "avatar_bytes": 0,
       "feed_ok": true,
       "feed_http_status": 200,
       "feed_error_body": "",
       "feed_source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "newest_post_at": "Tue Sep 22 12:04:13 +0000 2026",
-      "ready": true,
-      "blocking_reasons": []
+      "ready": false,
+      "blocking_reasons": [
+        "avatar_fetch_failed:URLError"
+      ]
     },
     {
       "name": "Cliff Asness",
