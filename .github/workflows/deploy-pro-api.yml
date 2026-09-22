@@ -88,7 +88,7 @@ jobs:
           for file in apps/tech-leaders/leaders*.json; do
             [ -f "$file" ] || continue
             name="$(basename "$file")"
-            npx --yes wrangler@4 r2 object put "ooglex-pro-data/tech-leaders/catalogs/$name" --file "$file"
+            npx --yes wrangler@4 r2 object put "ooglex-pro-data/tech-leaders/catalogs/$name" --file "$file" --remote
             count=$((count+1))
           done
           test "$count" -gt 0
