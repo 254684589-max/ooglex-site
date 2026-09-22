@@ -44,7 +44,7 @@ jobs:
           if len(hs)!=len(set(hs)): reasons.append("duplicate_handle")
           live=False; live_error=""
           for attempt in range(60):
-            url="https://ooglex.com/apps/tech-leaders/leaders-europe-v612-preview.json?"+urllib.parse.urlencode({"audit":"v612","attempt":attempt,"ts":int(time.time())})
+            url="https://www.ooglex.com/apps/tech-leaders/leaders-europe-v612-preview.json?"+urllib.parse.urlencode({"audit":"v612","attempt":attempt,"ts":int(time.time())})
             try:
               req=urllib.request.Request(url,headers={"User-Agent":"Ooglex Europe V612 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
               with urllib.request.urlopen(req,timeout=15) as resp: d=json.loads(resp.read().decode())
@@ -55,7 +55,7 @@ jobs:
           page_ok=False; page_error=""
           if live:
             try:
-              page_url="https://ooglex.com/apps/tech-leaders/?"+urllib.parse.urlencode({"catalog":"europe-v612-preview","sharev":"20260922q","audit_ts":int(time.time())})
+              page_url="https://www.ooglex.com/apps/tech-leaders/?"+urllib.parse.urlencode({"catalog":"europe-v612-preview","sharev":"20260922q","audit_ts":int(time.time())})
               req=urllib.request.Request(page_url,headers={"User-Agent":"Ooglex Europe V612 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
               with urllib.request.urlopen(req,timeout=20) as resp: page=resp.read().decode(errors="ignore")
               page_ok=('catalogMode==="europe-v612-preview"' in page and "20260922q" in page)
