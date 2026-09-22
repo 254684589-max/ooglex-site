@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T09:07:04Z",
+  "generated_at": "2026-09-22T09:09:19Z",
   "production_count": 612,
-  "audited_handle_count": 25,
+  "audited_handle_count": 26,
   "pass_le_180d": 5,
   "manual_181_365d": 5,
-  "hold_gt_365d": 11,
+  "hold_gt_365d": 12,
   "no_recent_post_evidence": 4,
   "rows": [
     {
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.59,
+      "age_days": 1008.6,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -229,7 +229,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 224.06,
+      "age_days": 224.07,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -334,7 +334,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.47,
+      "age_days": 2.48,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -373,13 +373,28 @@
       "name": "Frank Vang-Jensen",
       "company": "Nordea Bank Abp",
       "handle": "frankvangjensen",
-      "current_review_status": "identity_verified_activity_pending",
+      "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_cross_source",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2021-03-01T13:16:17Z",
       "age_days": 2030.83,
+      "activity_gate": "hold_gt_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch09.json",
+      "name": "József Váradi",
+      "company": "Wizz Air Holdings Plc",
+      "handle": "jozsefjvaradi",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x_cross_source",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 2,
+      "latest_post_at": "2015-03-24T13:08:21Z",
+      "age_days": 4199.83,
       "activity_gate": "hold_gt_365d",
       "error": ""
     }
