@@ -1,0 +1,122 @@
+name: Europe Preview V613 Audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "apps/tech-leaders/leaders-europe-v613-preview.json"
+      - ".github/workflows/europe-v613-preview-audit.yml"
+permissions:
+  contents: write
+concurrency:
+  group: europe-preview-v613-audit
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v6
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - name: Audit V613 static, deployed page, avatars and feed/embed
+        run: |
+          python - <<'PY'
+          import json,time,urllib.parse,urllib.request
+          from datetime import datetime,timezone
+          from email.utils import parsedate_to_datetime
+          from pathlib import Path
+          p=json.loads(Path("apps/tech-leaders/leaders-europe-v613-preview.json").read_text(encoding="utf-8"))
+          html=Path("apps/tech-leaders/index.html").read_text(encoding="utf-8")
+          meta=p.get("preview") or {}; leaders=p.get("leaders") or []; additions=leaders[int(meta.get("base_count") or 0):]
+          reasons=[]
+          if p.get("catalog_version")!="v613-europe-preview-2026-09-22": reasons.append("version")
+          if len(leaders)!=613 or len(additions)!=1 or int(meta.get("base_count") or 0)!=612 or int(meta.get("category_enrichments") or 0)!=0: reasons.append("count")
+          if 'catalogMode==="europe-v613-preview"' not in html: reasons.append("route")
+          embed=("https://platform.twitter.com/widgets.js" in html and 'sourceBadge.textContent="X Embed 回退 · $0 API"' in html)
+          if not embed: reasons.append("embed")
+          hs=[str(x.get("handle") or "").lower() for x in leaders if x.get("handle")]
+          if len(hs)!=len(set(hs)): reasons.append("duplicate_handle")
+          live=False; live_error=""
+          for attempt in range(60):
+            url="https://www.ooglex.com/apps/tech-leaders/leaders-europe-v613-preview.json?"+urllib.parse.urlencode({"audit":"v613","attempt":attempt,"ts":int(time.time())})
+            try:
+              req=urllib.request.Request(url,headers={"User-Agent":"Ooglex Europe V613 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
+              with urllib.request.urlopen(req,timeout=15) as resp: d=json.loads(resp.read().decode())
+              if d.get("catalog_version")=="v613-europe-preview-2026-09-22" and len(d.get("leaders") or [])==613: live=True; break
+              live_error="stale"
+            except Exception as e: live_error=type(e).__name__
+            time.sleep(5)
+          page_ok=False; page_error=""
+          if live:
+            try:
+              page_url="https://www.ooglex.com/apps/tech-leaders/?"+urllib.parse.urlencode({"catalog":"europe-v613-preview","audit_ts":int(time.time())})
+              req=urllib.request.Request(page_url,headers={"User-Agent":"Ooglex Europe V613 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
+              with urllib.request.urlopen(req,timeout=20) as resp: page=resp.read().decode(errors="ignore")
+              page_ok=('catalogMode==="europe-v613-preview"' in page)
+              if not page_ok: page_error="contract"
+            except Exception as e: page_error=type(e).__name__
+          def dt(s):
+            s=str(s or "").strip()
+            if not s:return None
+            try:return datetime.fromisoformat(s.replace("Z","+00:00"))
+            except Exception:
+              try:return parsedate_to_datetime(s)
+              except Exception:
+                try:return datetime.strptime(s,"%a %b %d %H:%M:%S %z %Y")
+                except Exception:return None
+          rows=[]
+          for x in additions:
+            av=False; at=""; ab=0; aerr=""
+            try:
+              req=urllib.request.Request(str(x.get("avatar_url") or ""),headers={"User-Agent":"Ooglex Europe V613 Audit/1.0","Accept":"image/*"})
+              with urllib.request.urlopen(req,timeout=30) as resp:
+                body=resp.read(2000000); at=str(resp.headers.get("Content-Type") or ""); ab=len(body); av=resp.status==200 and at.lower().startswith("image/") and ab>=512
+            except Exception as e:aerr=type(e).__name__
+            native=False; fs=None; pc=0; newest=None; ferr=""
+            try:
+              fu="https://pro-api.ooglex.com/v1/tech-leaders/free-feed?"+urllib.parse.urlencode({"handle":x.get("handle"),"limit":3})
+              req=urllib.request.Request(fu,headers={"User-Agent":"Ooglex Europe V613 Audit/1.0","Accept":"application/json"})
+              with urllib.request.urlopen(req,timeout=35) as resp: fs=resp.status; fd=json.loads(resp.read().decode())
+              posts=fd.get("posts") or []; pc=len(posts); ts=[dt(z.get("created_at")) for z in posts]
+              ordered=all(t is not None for t in ts) and all(ts[i]>=ts[i+1] for i in range(len(ts)-1))
+              native=(fd.get("uses_x_api") is False and 1<=pc<=3 and ordered); newest=posts[0].get("created_at") if posts else None
+            except Exception as e:ferr=type(e).__name__
+            ready=av and (native or embed)
+            rows.append({"name":x.get("name"),"handle":x.get("handle"),"avatar_ok":av,"avatar_content_type":at,"avatar_bytes":ab,"avatar_error":aerr,"native_feed_ok":native,"feed_http_status":fs,"feed_error":ferr,"post_count":pc,"newest_post_at":newest,"embed_fallback_available":embed,"render_path":"native_free_feed" if native else ("official_x_embed_fallback" if embed else "blocked"),"render_ready":ready})
+          gate=(not reasons and live and page_ok and all(r["render_ready"] for r in rows))
+          out={"schema_version":1,"generated_at":datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z"),"preview_catalog_version":p.get("catalog_version"),"preview_count":len(leaders),"base_count":int(meta.get("base_count") or 0),"approved_additions":len(additions),"category_enrichment_count":int(meta.get("category_enrichments") or 0),"static_gate":"pass" if not reasons else "hold","static_blocking_reasons":reasons,"live_catalog_ok":live,"live_catalog_error":live_error,"live_page_ok":page_ok,"live_page_error":page_error,"embed_fallback_available":embed,"native_ready_count":sum(1 for r in rows if r["native_feed_ok"]),"render_ready_count":sum(1 for r in rows if r["render_ready"]),"render_blocked_count":sum(1 for r in rows if not r["render_ready"]),"rows":rows,"merge_gate":"pass" if gate else "hold"}
+          Path("data/tech-leaders/europe_v613.runtime_audit.json").write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(out,ensure_ascii=False))
+          PY
+      - name: Commit V613 runtime audit
+        if: always()
+        run: |
+          FILE="data/tech-leaders/europe_v613.runtime_audit.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: record Europe V613 preview runtime audit"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              conflicts="$(git diff --name-only --diff-filter=U)"
+              if [ "$conflicts" = "$FILE" ]; then git checkout --theirs -- "$FILE"; git add "$FILE"; GIT_EDITOR=true git rebase --continue; else git rebase --abort || true; exit 1; fi
+            fi
+            if git push origin HEAD:main; then exit 0; fi
+            [ "$attempt" = "5" ] && exit 1
+            sleep $((attempt*2))
+          done
+      - name: Enforce V613 merge gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("data/tech-leaders/europe_v613.runtime_audit.json").read_text())
+          assert p["preview_count"]==613 and p["base_count"]==612 and p["approved_additions"]==1 and p["category_enrichment_count"]==0
+          assert p["static_gate"]=="pass" and p["live_catalog_ok"] is True and p["live_page_ok"] is True
+          assert p["render_ready_count"]==1 and p["render_blocked_count"]==0 and p["merge_gate"]=="pass"
+          print("Europe V613 merge gate: PASS")
+          PY
