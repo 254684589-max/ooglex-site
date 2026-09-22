@@ -90,6 +90,9 @@ def is_preview_replacement(path: Path) -> bool:
 
 
 def should_skip(path: Path, protect_pro: bool) -> bool:
+    relative = rel(path)
+    if protect_pro and relative.startswith("apps/tech-leaders/") and path.suffix.lower() == ".json":
+        return True
     if any(part in EXCLUDED_DIR_NAMES for part in path.relative_to(ROOT).parts):
         return True
     if path.name in EXCLUDED_FILES:
