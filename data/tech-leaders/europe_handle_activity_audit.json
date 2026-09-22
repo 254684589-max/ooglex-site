@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T13:16:13Z",
+  "generated_at": "2026-09-22T13:18:00Z",
   "production_count": 613,
   "audited_handle_count": 36,
   "pass_le_180d": 5,
@@ -125,7 +125,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1394.08,
+      "age_days": 1394.09,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -320,7 +320,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.74,
+      "age_days": 1.75,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
