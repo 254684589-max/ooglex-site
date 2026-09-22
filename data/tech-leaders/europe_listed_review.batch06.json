@@ -13,11 +13,11 @@
   "production_file_untouched": "apps/tech-leaders/leaders.json",
   "summary": {
     "batch_count": 25,
-    "role_verified_or_transition": 11,
-    "role_needs_fresh_capture": 14,
+    "role_verified_or_transition": 13,
+    "role_needs_fresh_capture": 12,
     "preview_ready": 0,
-    "identity_verified_activity_pending": 3,
-    "role_reverify_activity_pending": 2,
+    "identity_verified_activity_pending": 5,
+    "role_reverify_activity_pending": 0,
     "managed_account_policy_review": 1,
     "needs_x_research": 19,
     "production_additions": 0
@@ -137,14 +137,14 @@
       "country": "Germany / Sweden",
       "current_role": "President and Chief Executive Officer",
       "role_status": "verified_current",
-      "role_source_url": "https://www.daimlertruck.com/en/company/management",
+      "role_source_url": "https://www.daimlertruck.com/en/company/corporate-governance/board-of-management",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
       "review_status": "needs_x_research",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "Current Daimler Truck leadership candidate; no personal X account has yet passed ownership verification."
+      "notes": "Daimler Truck's current Board of Management page lists Rådström as President & CEO. No personal X account has yet passed ownership verification."
     },
     {
       "batch_rank": 132,
@@ -192,16 +192,16 @@
       "ticker": "ONT",
       "exchange": "London Stock Exchange",
       "country": "United Kingdom",
-      "current_role": "Co-founder / senior company leader",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "current_role": "Co-founder; Senior Adviser to the Board; former Chief Executive Officer",
+      "role_status": "verified_legacy_current_adviser",
+      "role_source_url": "https://nanoporetech.com/ja/about/investors/shareholder-information",
       "x_handle": "gordon_sanghera",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/gordon_sanghera",
       "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "needs_role_reverify_activity_pending",
+      "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "The personal @gordon_sanghera account is clearly attributable, but both the exact 2026 company role and activity recency require fresh validation before approval."
+      "notes": "Oxford Nanopore confirms Sanghera stepped down as CEO on 2 March 2026 and remains a senior adviser to the Board. The personal @gordon_sanghera identity is established; activity audit determines whether this allowed legacy/core-company record can advance."
     },
     {
       "batch_rank": 135,
@@ -211,16 +211,16 @@
       "ticker": "REMEDY",
       "exchange": "Nasdaq Helsinki",
       "country": "Finland",
-      "current_role": "Creative Director / core public company figure",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "current_role": "Creative Director; Member of Management Team",
+      "role_status": "verified_current_core_figure",
+      "role_source_url": "https://investors.remedygames.com/en/corporate_governance/management_team",
       "x_handle": "SamLakeRMD",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/SamLakeRMD",
       "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "needs_role_reverify_activity_pending",
+      "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "@SamLakeRMD is a well-established personal account tied to Remedy. A fresh first-party role capture plus direct activity audit are required before Preview."
+      "notes": "Remedy lists Sami Järvi (Sam Lake) as Creative Director and a member of the Management Team. @SamLakeRMD is his established personal account; direct activity audit is still required."
     },
     {
       "batch_rank": 136,
