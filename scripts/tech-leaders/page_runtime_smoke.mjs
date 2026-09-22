@@ -123,9 +123,21 @@ if (errors.length) {
   throw new Error("Runtime errors: " + errors.map(String).join(" | "));
 }
 
-const cards = window.document.querySelectorAll("#leaders .leader");
-if (cards.length === 0) {
-  throw new Error("Leader rail did not render.");
+let cards = window.document.querySelectorAll("#leaders .leader");
+const activeLeaders = leaders.filter((p) => (p.active_status || p.admission_status || "active") === "active");
+if (cards.length !== activeLeaders.length) {
+  throw new Error(`Leader rail was truncated: rendered ${cards.length} of ${activeLeaders.length} active leaders.`);
+}
+
+const aiExpected = activeLeaders.filter((p) => (p.categories || [p.category]).includes("AI")).length;
+const aiButton = window.document.querySelector('#category-bar [data-category="AI"]');
+if (aiExpected > 0 && aiButton) {
+  aiButton.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  cards = window.document.querySelectorAll("#leaders .leader");
+  if (cards.length !== aiExpected) {
+    throw new Error(`AI category rail was truncated: rendered ${cards.length} of ${aiExpected} AI leaders.`);
+  }
 }
 
 const profile = window.document.querySelector(".profile");
@@ -141,7 +153,7 @@ if (!timeline.querySelector(".post-card") && timeline.getAttribute("data-state")
 }
 
 const hero = window.document.getElementById("hero-account-count");
-const activeCount = leaders.filter((p) => (p.active_status || p.admission_status || "active") === "active").length;
+const activeCount = activeLeaders.length;
 if (!hero || !hero.textContent.includes(String(activeCount))) {
   throw new Error("Hero account count did not synchronize with catalog.");
 }
@@ -151,6 +163,7 @@ console.log(JSON.stringify({
   selected_id: preferred.id,
   selected_handle: preferred.handle,
   rendered_leader_cards: cards.length,
+  ai_expected: aiExpected,
   timeline_state: timeline.getAttribute("data-state"),
   post_cards: timeline.querySelectorAll(".post-card").length,
   active_count: activeCount
