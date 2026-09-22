@@ -38,6 +38,21 @@ if (routeBlock.includes("\\n")) {
   throw new Error("Catalog router contains a literal \\n token; this breaks inline JavaScript parsing.");
 }
 
+const gateAssetPath = "assets/tech-leaders-password-gate.js";
+if (!html.includes("/assets/tech-leaders-password-gate.js")) {
+  throw new Error("Tech Leaders password gate asset is not loaded.");
+}
+if (!fs.existsSync(gateAssetPath)) {
+  throw new Error("Tech Leaders password gate asset is missing.");
+}
+const gateSource = fs.readFileSync(gateAssetPath, "utf8");
+if (!gateSource.includes("PBKDF2") || !gateSource.includes("sessionStorage")) {
+  throw new Error("Tech Leaders password gate is missing hashed verification/session behavior.");
+}
+if (/PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
+  throw new Error("Tech Leaders password gate must not store a plaintext password constant.");
+}
+
 const inlineScripts = [];
 const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
 let match;
