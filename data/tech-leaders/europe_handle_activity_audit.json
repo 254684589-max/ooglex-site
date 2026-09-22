@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T04:20:45Z",
-  "production_count": 604,
-  "audited_handle_count": 21,
-  "pass_le_180d": 5,
+  "generated_at": "2026-09-22T04:51:15Z",
+  "production_count": 608,
+  "audited_handle_count": 17,
+  "pass_le_180d": 1,
   "manual_181_365d": 3,
   "hold_gt_365d": 9,
   "no_recent_post_evidence": 4,
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.4,
+      "age_days": 1008.42,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.62,
+      "age_days": 924.65,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.66,
+      "age_days": 1554.69,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 316.74,
+      "age_days": 316.76,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.71,
+      "age_days": 1393.73,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -139,7 +139,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3294.72,
+      "age_days": 3294.74,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.47,
+      "age_days": 215.49,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.41,
+      "age_days": 3374.43,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-02-06T10:37:45Z",
-      "age_days": 958.74,
+      "age_days": 958.76,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-03-25T16:49:34Z",
-      "age_days": 1641.48,
+      "age_days": 1641.5,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -229,68 +229,8 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 223.87,
+      "age_days": 223.89,
       "activity_gate": "manual_181_365d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch05.json",
-      "name": "Octave Klaba",
-      "company": "OVH Groupe SA",
-      "handle": "olesovhcom",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-16T18:20:04Z",
-      "age_days": 5.42,
-      "activity_gate": "pass_le_180d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch05.json",
-      "name": "Fredrik Wester",
-      "company": "Paradox Interactive AB",
-      "handle": "TheWesterFront",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-20T08:46:18Z",
-      "age_days": 1.82,
-      "activity_gate": "pass_le_180d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch05.json",
-      "name": "Antoine Arnault",
-      "company": "LVMH Moët Hennessy Louis Vuitton SE",
-      "handle": "AntoineArnault_",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-09T09:44:37Z",
-      "age_days": 12.78,
-      "activity_gate": "pass_le_180d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch05.json",
-      "name": "Alexandre Arnault",
-      "company": "LVMH Moët Hennessy Louis Vuitton SE",
-      "handle": "alexarnault",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-16T20:45:00Z",
-      "age_days": 5.32,
-      "activity_gate": "pass_le_180d",
       "error": ""
     },
     {
@@ -304,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-06-01T12:39:54Z",
-      "age_days": 112.65,
+      "age_days": 112.67,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -319,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.39,
+      "age_days": 814.42,
       "activity_gate": "hold_gt_365d",
       "error": ""
     }
