@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T17:01:11Z",
+  "updatedAt": "2026-09-22T21:23:44Z",
   "asOf": "2026-09-22",
   "seed": false,
   "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
@@ -46,14 +46,14 @@
     "arena": {
       "ok": true,
       "count": 371,
-      "fetchedAt": "2026-09-22T17:00:52Z",
+      "fetchedAt": "2026-09-22T21:23:25Z",
       "source": "lmarena.ai/leaderboard/text"
     },
     "livebench": {
       "ok": true,
-      "count": 59,
+      "count": 62,
       "release": "2026-06-25",
-      "fetchedAt": "2026-09-22T17:01:05Z",
+      "fetchedAt": "2026-09-22T21:23:38Z",
       "source": "livebench.ai/table_2026_06_25.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -61,7 +61,7 @@
       "ok": true,
       "count": 18,
       "refreshed": 18,
-      "fetchedAt": "2026-09-22T17:01:10Z",
+      "fetchedAt": "2026-09-22T21:23:44Z",
       "snapshotDate": "2026-09-20",
       "source": "artificialanalysis.ai/models/*",
       "mode": "official_public_pages",
@@ -113,11 +113,11 @@
       "ctx": null,
       "price": null,
       "arenaPercentile": 94.1,
-      "livebenchPercentile": 96.4,
+      "livebenchPercentile": 94.8,
       "aaPercentile": 97.1,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 96.3
+      "combo": 95.8
     },
     {
       "id": "claude-fable-5",
@@ -132,11 +132,11 @@
       "ctx": "1M",
       "price": 20.0,
       "arenaPercentile": 100.0,
-      "livebenchPercentile": 98.2,
+      "livebenchPercentile": 96.6,
       "aaPercentile": 82.4,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 90.6
+      "combo": 90.1
     },
     {
       "id": "claude-opus-5",
@@ -151,11 +151,11 @@
       "ctx": "1M",
       "price": 10.0,
       "arenaPercentile": 98.0,
-      "livebenchPercentile": 87.3,
+      "livebenchPercentile": 86.2,
       "aaPercentile": 88.2,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 89.9
+      "combo": 89.6
     },
     {
       "id": "muse-spark-1-3",
@@ -170,11 +170,11 @@
       "ctx": null,
       "price": null,
       "arenaPercentile": 98.0,
-      "livebenchPercentile": 94.5,
+      "livebenchPercentile": 93.1,
       "aaPercentile": 76.5,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 86.2
+      "combo": 85.8
     },
     {
       "id": "gpt-5-6-sol",
@@ -189,11 +189,11 @@
       "ctx": "400K",
       "price": 8.0,
       "arenaPercentile": 95.6,
-      "livebenchPercentile": 91.8,
+      "livebenchPercentile": 90.5,
       "aaPercentile": 70.6,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 82.0
+      "combo": 81.6
     },
     {
       "id": "kimi-k3",
@@ -208,11 +208,11 @@
       "ctx": "1M",
       "price": 6.0,
       "arenaPercentile": 96.2,
-      "livebenchPercentile": 85.5,
+      "livebenchPercentile": 83.6,
       "aaPercentile": 55.9,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 72.8
+      "combo": 72.3
     },
     {
       "id": "glm-5-3",
@@ -227,11 +227,11 @@
       "ctx": "1M",
       "price": 2.15,
       "arenaPercentile": 95.6,
-      "livebenchPercentile": 59.1,
+      "livebenchPercentile": 57.8,
       "aaPercentile": 64.7,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 69.2
+      "combo": 68.8
     },
     {
       "id": "qwen3-8",
@@ -246,10 +246,10 @@
       "ctx": "1M",
       "price": 2.54,
       "arenaPercentile": 94.7,
-      "livebenchPercentile": 81.8,
+      "livebenchPercentile": 79.3,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 68.5
+      "combo": 67.7
     },
     {
       "id": "grok-4-6",
@@ -264,11 +264,11 @@
       "ctx": "500K",
       "price": 3.0,
       "arenaPercentile": 84.7,
-      "livebenchPercentile": 78.2,
+      "livebenchPercentile": 75.9,
       "aaPercentile": 55.9,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 68.3
+      "combo": 67.6
     },
     {
       "id": "gpt-5-4",
@@ -283,10 +283,10 @@
       "ctx": "1.1M",
       "price": 5.62,
       "arenaPercentile": 93.2,
-      "livebenchPercentile": 78.2,
+      "livebenchPercentile": 75.9,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 67.1
+      "combo": 66.4
     },
     {
       "id": "gemini-3-1-pro",
@@ -301,10 +301,10 @@
       "ctx": "1M",
       "price": 2.25,
       "arenaPercentile": 96.7,
-      "livebenchPercentile": 69.1,
+      "livebenchPercentile": 67.2,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 65.1
+      "combo": 64.5
     },
     {
       "id": "claude-opus-4-7",
@@ -319,10 +319,10 @@
       "ctx": "1M",
       "price": 10.0,
       "arenaPercentile": 99.4,
-      "livebenchPercentile": 65.5,
+      "livebenchPercentile": 63.8,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 64.5
+      "combo": 64.0
     },
     {
       "id": "claude-opus-4-8",
@@ -337,10 +337,10 @@
       "ctx": "1M",
       "price": 10.0,
       "arenaPercentile": 94.7,
-      "livebenchPercentile": 62.7,
+      "livebenchPercentile": 61.2,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 62.8
+      "combo": 62.3
     },
     {
       "id": "gpt-5-6-terra",
@@ -355,11 +355,11 @@
       "ctx": null,
       "price": 4.5,
       "arenaPercentile": 88.3,
-      "livebenchPercentile": 74.5,
+      "livebenchPercentile": 72.4,
       "aaPercentile": 44.1,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 62.1
+      "combo": 61.4
     },
     {
       "id": "muse-spark-1-1",
@@ -374,10 +374,10 @@
       "ctx": null,
       "price": 2.0,
       "arenaPercentile": 98.0,
-      "livebenchPercentile": 50.0,
+      "livebenchPercentile": 49.1,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 59.6
+      "combo": 59.3
     },
     {
       "id": "claude-sonnet-5",
@@ -392,10 +392,10 @@
       "ctx": "1M",
       "price": 4.0,
       "arenaPercentile": 86.9,
-      "livebenchPercentile": 56.4,
+      "livebenchPercentile": 55.2,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 59.3
+      "combo": 58.9
     },
     {
       "id": "claude-opus-4-6",
@@ -410,29 +410,10 @@
       "ctx": "1M",
       "price": 10.0,
       "arenaPercentile": 99.7,
-      "livebenchPercentile": 43.6,
+      "livebenchPercentile": 43.1,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 58.0
-    },
-    {
-      "id": "muse-spark-1-2",
-      "name": "Muse Spark 1.2",
-      "org": "Meta",
-      "orgCn": "Meta",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1500,
-      "livebench": 78.0,
-      "aa": 40.0,
-      "ctx": null,
-      "price": 2.0,
-      "arenaPercentile": 99.1,
-      "livebenchPercentile": 78.2,
-      "aaPercentile": 29.4,
-      "comboAxes": 3,
-      "confidence": 100,
-      "combo": 58.0
+      "combo": 57.9
     },
     {
       "id": "gemini-3-5-flash",
@@ -447,10 +428,29 @@
       "ctx": "1M",
       "price": 1.69,
       "arenaPercentile": 93.6,
-      "livebenchPercentile": 46.4,
+      "livebenchPercentile": 45.7,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 57.6
+      "combo": 57.4
+    },
+    {
+      "id": "muse-spark-1-2",
+      "name": "Muse Spark 1.2",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1500,
+      "livebench": 78.0,
+      "aa": 40.0,
+      "ctx": null,
+      "price": 2.0,
+      "arenaPercentile": 99.1,
+      "livebenchPercentile": 75.9,
+      "aaPercentile": 29.4,
+      "comboAxes": 3,
+      "confidence": 100,
+      "combo": 57.3
     },
     {
       "id": "gemini-3-6-flash",
@@ -465,29 +465,10 @@
       "ctx": "1M",
       "price": 1.5,
       "arenaPercentile": 94.1,
-      "livebenchPercentile": 37.3,
+      "livebenchPercentile": 37.1,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 55.0
-    },
-    {
-      "id": "gemini-3-7-flash",
-      "name": "Gemini 3.7 Flash",
-      "org": "Google",
-      "orgCn": "谷歌",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1490,
-      "livebench": 78.8,
-      "aa": 39.0,
-      "ctx": "1M",
-      "price": 1.5,
-      "arenaPercentile": 97.3,
-      "livebenchPercentile": 83.6,
-      "aaPercentile": 20.6,
-      "comboAxes": 3,
-      "confidence": 100,
-      "combo": 54.8
+      "combo": 54.9
     },
     {
       "id": "gpt-5-2",
@@ -502,10 +483,29 @@
       "ctx": "400K",
       "price": 2.41,
       "arenaPercentile": 76.9,
-      "livebenchPercentile": 46.4,
+      "livebenchPercentile": 45.7,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 54.3
+      "combo": 54.1
+    },
+    {
+      "id": "gemini-3-7-flash",
+      "name": "Gemini 3.7 Flash",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1490,
+      "livebench": 78.8,
+      "aa": 39.0,
+      "ctx": "1M",
+      "price": 1.5,
+      "arenaPercentile": 97.3,
+      "livebenchPercentile": 81.0,
+      "aaPercentile": 20.6,
+      "comboAxes": 3,
+      "confidence": 100,
+      "combo": 54.1
     },
     {
       "id": "glm-5-2",
@@ -526,25 +526,6 @@
       "combo": 53.5
     },
     {
-      "id": "gemini-3-8-flash",
-      "name": "Gemini 3.8 Flash",
-      "org": "Google",
-      "orgCn": "谷歌",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1493,
-      "livebench": 75.8,
-      "aa": 41.0,
-      "ctx": "1M",
-      "price": 1.5,
-      "arenaPercentile": 98.0,
-      "livebenchPercentile": 53.6,
-      "aaPercentile": 35.3,
-      "comboAxes": 3,
-      "confidence": 100,
-      "combo": 53.3
-    },
-    {
       "id": "qwen3-7",
       "name": "Qwen3.7",
       "org": "Alibaba",
@@ -557,10 +538,29 @@
       "ctx": "1M",
       "price": 2.21,
       "arenaPercentile": 91.2,
-      "livebenchPercentile": 32.7,
+      "livebenchPercentile": 32.8,
       "comboAxes": 2,
       "confidence": 50,
       "combo": 53.1
+    },
+    {
+      "id": "gemini-3-8-flash",
+      "name": "Gemini 3.8 Flash",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1493,
+      "livebench": 75.8,
+      "aa": 41.0,
+      "ctx": "1M",
+      "price": 1.5,
+      "arenaPercentile": 98.0,
+      "livebenchPercentile": 52.6,
+      "aaPercentile": 35.3,
+      "comboAxes": 3,
+      "confidence": 100,
+      "combo": 53.0
     },
     {
       "id": "gpt-5-6-luna",
@@ -575,10 +575,10 @@
       "ctx": null,
       "price": 0.45,
       "arenaPercentile": 83.0,
-      "livebenchPercentile": 37.3,
+      "livebenchPercentile": 37.1,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 52.8
+      "combo": 52.7
     },
     {
       "id": "claude-sonnet-4-6",
@@ -593,7 +593,7 @@
       "ctx": "1M",
       "price": 3.0,
       "arenaPercentile": 91.2,
-      "livebenchPercentile": 30.9,
+      "livebenchPercentile": 31.0,
       "comboAxes": 2,
       "confidence": 50,
       "combo": 52.5
@@ -611,11 +611,11 @@
       "ctx": "1.1M",
       "price": 11.25,
       "arenaPercentile": 95.1,
-      "livebenchPercentile": 89.1,
+      "livebenchPercentile": 87.9,
       "aaPercentile": 11.8,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 51.6
+      "combo": 51.3
     },
     {
       "id": "kimi-k2-6",
@@ -630,10 +630,10 @@
       "ctx": "262K",
       "price": 1.71,
       "arenaPercentile": 86.5,
-      "livebenchPercentile": 21.8,
+      "livebenchPercentile": 20.7,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 48.8
+      "combo": 48.5
     },
     {
       "id": "inkling",
@@ -648,10 +648,10 @@
       "ctx": "1M",
       "price": 1.76,
       "arenaPercentile": 77.5,
-      "livebenchPercentile": 27.3,
+      "livebenchPercentile": 25.9,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 48.7
+      "combo": 48.3
     },
     {
       "id": "glm-5-3-flash",
@@ -666,11 +666,11 @@
       "ctx": "1M",
       "price": 0.1,
       "arenaPercentile": 92.6,
-      "livebenchPercentile": 24.5,
+      "livebenchPercentile": 23.3,
       "aaPercentile": 44.1,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 47.9
+      "combo": 47.6
     },
     {
       "id": "qwen3-6-plus",
@@ -685,10 +685,10 @@
       "ctx": "1M",
       "price": 0.73,
       "arenaPercentile": 79.0,
-      "livebenchPercentile": 16.4,
+      "livebenchPercentile": 15.5,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 45.7
+      "combo": 45.5
     },
     {
       "id": "grok-4-5",
@@ -703,29 +703,11 @@
       "ctx": "500K",
       "price": 3.0,
       "arenaPercentile": 89.2,
-      "livebenchPercentile": 53.6,
+      "livebenchPercentile": 52.6,
       "aaPercentile": 20.6,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 44.2
-    },
-    {
-      "id": "gpt-5-4-nano",
-      "name": "GPT 5.4 Nano",
-      "org": "OpenAI",
-      "orgCn": "OpenAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1402,
-      "livebench": 69.6,
-      "aa": null,
-      "ctx": "400K",
-      "price": 0.46,
-      "arenaPercentile": 62.2,
-      "livebenchPercentile": 20.0,
-      "comboAxes": 2,
-      "confidence": 50,
-      "combo": 43.4
+      "combo": 43.9
     },
     {
       "id": "gpt-5-4-mini",
@@ -740,10 +722,10 @@
       "ctx": "400K",
       "price": 1.69,
       "arenaPercentile": 80.9,
-      "livebenchPercentile": 7.3,
+      "livebenchPercentile": 6.9,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 43.4
+      "combo": 43.2
     },
     {
       "id": "minimax-m3",
@@ -758,10 +740,28 @@
       "ctx": "524K",
       "price": 0.52,
       "arenaPercentile": 77.8,
-      "livebenchPercentile": 9.1,
+      "livebenchPercentile": 8.6,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 43.3
+      "combo": 43.1
+    },
+    {
+      "id": "gpt-5-4-nano",
+      "name": "GPT 5.4 Nano",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1402,
+      "livebench": 69.6,
+      "aa": null,
+      "ctx": "400K",
+      "price": 0.46,
+      "arenaPercentile": 62.2,
+      "livebenchPercentile": 19.0,
+      "comboAxes": 2,
+      "confidence": 50,
+      "combo": 43.1
     },
     {
       "id": "gemini-3-5-flash-lite",
@@ -776,10 +776,10 @@
       "ctx": "1M",
       "price": 0.42,
       "arenaPercentile": 84.7,
-      "livebenchPercentile": 1.8,
+      "livebenchPercentile": 1.7,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 42.5
+      "combo": 42.4
     },
     {
       "id": "deepseek-v4-flash",
@@ -794,10 +794,10 @@
       "ctx": "1M",
       "price": 0.52,
       "arenaPercentile": 76.9,
-      "livebenchPercentile": 5.5,
+      "livebenchPercentile": 5.2,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 42.0
+      "combo": 41.9
     },
     {
       "id": "grok-4-3",
