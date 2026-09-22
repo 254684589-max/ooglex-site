@@ -75,14 +75,14 @@ FEED_SPECS: dict[str, dict[str, Any]] = {
         ],
     },
     "whats-latest": {
-        "source": "Google News · Yahoo Finance",
+        "source": "Google News (curated global publishers) · Yahoo Finance",
         "maxReportAgeHours": 12,
         "components": [
-            {"id": "markets-news", "name": "Google News 市场", "role": "primary", "frequency": "intraday", "requiredForTerminal": True},
-            {"id": "tech-news", "name": "Google News 科技", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
-            {"id": "ent-news", "name": "Google News 娱乐", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
-            {"id": "sports-news", "name": "Google News 体育", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
-            {"id": "world-news", "name": "Google News 国际", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
+            {"id": "politics-news", "name": "Google News 政策与政治", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
+            {"id": "world-news", "name": "Google News 国际与地缘", "role": "primary", "frequency": "intraday", "requiredForTerminal": True},
+            {"id": "markets-news", "name": "Google News 市场与经济", "role": "primary", "frequency": "intraday", "requiredForTerminal": True},
+            {"id": "tech-news", "name": "Google News AI与科技", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
+            {"id": "law-news", "name": "Google News 法律与监管", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
             {"id": "market-quotes", "name": "Yahoo Finance 市场快照", "role": "auxiliary", "frequency": "daily", "requiredForTerminal": False},
         ],
         "recovery": [
@@ -94,11 +94,11 @@ FEED_SPECS: dict[str, dict[str, Any]] = {
 }
 
 NEWS_COMPONENT_KEYS = {
+    "politics-news": "politics",
+    "world-news": "world",
     "markets-news": "markets",
     "tech-news": "tech",
-    "ent-news": "ent",
-    "sports-news": "sports",
-    "world-news": "world",
+    "law-news": "law",
 }
 
 
