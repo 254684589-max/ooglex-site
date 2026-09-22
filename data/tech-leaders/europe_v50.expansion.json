@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_batch12_activity_audit_pending",
+  "status": "phase_batch12_role_complete_activity_audit_pending",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -38,7 +38,7 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch12_activity_audit_pending",
+      "status": "batch12_role_complete_activity_audit_pending",
       "last_completed_batch": "11",
       "next_batch": "12"
     }
@@ -327,14 +327,14 @@
     "production_additions": 0
   },
   "batch12_open": {
-    "status": "role_pass_23_verified_activity_audit_pending",
+    "status": "role_pass_complete_activity_audit_pending",
     "candidate_range": "276-300",
     "candidate_count": 25,
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
     "role_verified_current": 8,
-    "role_verified_legacy": 15,
-    "role_needs_fresh_capture": 2,
+    "role_verified_legacy": 17,
+    "role_needs_fresh_capture": 0,
     "personal_x_verified": 3,
     "resolved_x_handles": 3,
     "identity_activity_pending": 3,
@@ -343,10 +343,7 @@
       "Philippe Brassac",
       "Ilham Kadri"
     ],
-    "unresolved_role_names": [
-      "Peter Cowgill",
-      "Stefan Sturm"
-    ],
+    "unresolved_role_names": [],
     "preview_ready": 0,
     "production_additions": 0
   }

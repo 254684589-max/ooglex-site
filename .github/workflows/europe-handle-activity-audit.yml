@@ -7,6 +7,10 @@ on:
     paths:
       - "data/tech-leaders/europe_listed_review.batch*.json"
       - ".github/workflows/europe-handle-activity-audit.yml"
+  # Connector/API-authored commits do not always emit a workflow-triggering push event.
+  # Periodic fallback keeps the handle activity audit converged with the current review batches.
+  schedule:
+    - cron: "7,22,37,52 * * * *"
 
 permissions:
   contents: write

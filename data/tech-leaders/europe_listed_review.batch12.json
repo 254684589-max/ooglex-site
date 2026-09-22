@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "batch12_role_pass_23_verified_activity_audit_pending",
+  "status": "batch12_role_pass_complete_activity_audit_pending",
   "tranche_type": "europe_listed_review_batch_12",
   "batch_range": "276-300",
   "phase": "Europe 24 -> 50",
@@ -15,17 +15,14 @@
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
     "role_verified_current": 8,
-    "role_verified_legacy": 15,
-    "role_needs_fresh_capture": 2,
+    "role_verified_legacy": 17,
+    "role_needs_fresh_capture": 0,
     "personal_x_verified": 3,
     "preview_ready": 0,
     "production_additions": 0,
     "resolved_x_handles": 3,
     "identity_activity_pending": 3,
-    "unresolved_role_names": [
-      "Peter Cowgill",
-      "Stefan Sturm"
-    ],
+    "unresolved_role_names": [],
     "activity_audit_pending_names": [
       "Pekka Lundmark",
       "Philippe Brassac",
@@ -495,16 +492,16 @@
       "exchange": "London Stock Exchange",
       "country": "United Kingdom",
       "current_role": "Former Executive Chairman / legacy core figure",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "role_status": "verified_legacy",
+      "role_source_url": "https://www.jdplc.com/?p=6008",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
-      "review_status": "candidate_role_x_research",
+      "review_status": "role_verified_needs_x_research",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_11_by_exact_name",
-      "notes": "Batch 12 fresh candidate after exact-name production + Europe Batch01-11 repository dedupe. Role is a scan seed only; fresh first-party listed-company relationship, verified personal X ownership and direct <=180d activity are required before Preview."
+      "notes": "JD Sports' first-party FY2023 results state that Peter Cowgill departed in 2022 after leading the business for the previous 18 years; earlier JD disclosures identify him as Executive Chairman. Legacy-role gate passed. Verified personal X ownership and direct activity remain unresolved."
     },
     {
       "batch_rank": 299,
@@ -535,23 +532,23 @@
       "exchange": "Xetra",
       "country": "Germany",
       "current_role": "Former Chief Executive Officer / legacy core figure",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "role_status": "verified_legacy",
+      "role_source_url": "https://www.knorr-bremse.com/en/company/management/",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
-      "review_status": "candidate_role_x_research",
+      "review_status": "role_verified_needs_x_research",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_11_by_exact_name",
-      "notes": "Batch 12 fresh candidate after exact-name production + Europe Batch01-11 repository dedupe. Role is a scan seed only; fresh first-party listed-company relationship, verified personal X ownership and direct <=180d activity are required before Preview."
+      "notes": "Knorr-Bremse's current management page identifies Stephan Sturm as former Chief Executive Officer of Fresenius SE. This independently corroborates the legacy listed-company leadership relationship. Verified personal X ownership and direct activity remain unresolved."
     }
   ],
-  "next_action": "Run the Europe Handle Activity Audit for @PekkaLundmark, @PhilippeBrassac and @Kadriilham. In parallel, finish first-party legacy-role capture for Peter Cowgill and Stefan Sturm and continue personal-X research for the remaining role-qualified candidates.",
+  "next_action": "Run the Europe Handle Activity Audit for @PekkaLundmark, @PhilippeBrassac and @Kadriilham. Continue personal-X research across the remaining 22 role-qualified candidates. No production promotion until identity, <=180d activity, handle dedupe, avatar and render gates pass.",
   "review_method": {
     "candidate_source": "Fresh Europe-listed company core figures absent by exact-name repository search from production and Europe Batches 01-11.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
     "dedupe_rule": "Exact-name against V613 production and Europe Batches 01-11 before admission; exact-handle against production before Preview."
   },
-  "next_stage": "Batch 12 role pass has 23/25 candidates role-qualified and 3 resolved personal X handles. No candidate is Preview Ready until the direct <=180d activity gate passes."
+  "next_stage": "Batch 12 first-party/legacy role gate is complete: 25/25 role-qualified. Three verified personal X handles remain pending direct activity audit; 22 candidates remain personal-X research only."
 }
