@@ -271,6 +271,79 @@ def importance_score(it, category_key):
         score += 4 * 3600
     return score
 
+
+RISK_DIMENSIONS = [
+    ("地缘政治", r"war|conflict|attack|strike|missile|invasion|sanction|Iran|Israel|Ukraine|Russia|North Korea|Middle East|Hormuz"),
+    ("市场 / 信用", r"market risk|credit risk|default|bankruptcy|volatility|liquidity|selloff|debt|spread"),
+    ("能源 / 供应链", r"oil|energy|shipping|supply chain|disruption|pipeline|port|freight|blockade"),
+    ("网络 / 运营", r"cyber|cyberattack|ransomware|outage|hack|data breach|infrastructure"),
+]
+
+
+def build_risk_analysis(cats_out, markets):
+    risk_cat = next((c for c in cats_out if c.get("key") == "risk"), {"items": []})
+    items = list(risk_cat.get("items") or [])
+    text = " ".join((it.get("title") or "") + " " + (it.get("summary") or "") for it in items)
+
+    # 规则化等级：只根据可观察到的事件措辞与市场方向判定。
+    high_re = re.compile(r"attack|strike|missile|invasion|war|cyberattack|default|blockade|explosion|shutdown", re.I)
+    elevated_re = re.compile(r"sanction|disruption|crisis|volatility|credit risk|supply chain|energy security|threat|tension", re.I)
+    high_hits = len(high_re.findall(text))
+    elevated_hits = len(elevated_re.findall(text))
+
+    market_stress = 0
+    for m in markets or []:
+        pct = m.get("changePct")
+        if pct is None:
+            continue
+        if m.get("name") in ("标普500", "纳斯达克") and pct <= -2:
+            market_stress += 1
+        if m.get("name") in ("布伦特原油", "WTI原油") and abs(pct) >= 4:
+            market_stress += 1
+
+    if high_hits >= 2 or (high_hits >= 1 and market_stress):
+        level, status = "高", "升级"
+    elif high_hits >= 1 or elevated_hits >= 3 or market_stress >= 2:
+        level, status = "中高", "活跃"
+    elif elevated_hits >= 1 or items:
+        level, status = "中", "持续监测"
+    else:
+        level, status = "低", "平稳"
+
+    dims = []
+    for name, pattern in RISK_DIMENSIONS:
+        count = len(re.findall(pattern, text, re.I))
+        score = min(100, 20 + count * 20) if count else 10
+        state = "高" if score >= 80 else ("中高" if score >= 60 else ("中" if score >= 35 else "低"))
+        dims.append({"name": name, "score": score, "state": state, "matches": count})
+
+    lead = max(items, key=lambda x: x.get("published") or 0) if items else None
+    follow = []
+    future_re = re.compile(r"will|could|may|plan|expected|next|meeting|decision|sanction|deadline|election", re.I)
+    for it in items:
+        if future_re.search(it.get("title") or ""):
+            follow.append({
+                "text": it.get("brief") or it.get("title") or "",
+                "source": it.get("source") or "",
+            })
+        if len(follow) >= 4:
+            break
+    if not follow:
+        follow = [
+            {"text": "监测现有事件是否出现升级、扩散或跨市场传导。", "source": "Ooglex rules"},
+            {"text": "关注能源、信用利差与主要股指是否出现同步压力。", "source": "Ooglex rules"},
+        ]
+
+    return {
+        "level": level,
+        "status": status,
+        "lead": lead,
+        "why": (lead or {}).get("why") if lead else "",
+        "dimensions": dims,
+        "followUp": follow,
+        "method": "rule-based",
+    }
+
 def parse_entry(e):
     """从 RSS 条目提取 {title, source, link, published}；Google News 标题形如『标题 - 来源』。"""
     title = (e.get("title") or "").strip()
@@ -517,6 +590,8 @@ def build():
     future_re = re.compile(r"将|计划|预计|拟|即将|明日|下周|发布|公布|举行|会议|财报|决议")
     watch = [it for it in ranked if future_re.search(it.get("title") or "")][:3]
 
+    risk_analysis = build_risk_analysis(cats_out, markets)
+
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
@@ -530,6 +605,7 @@ def build():
         "wires": wires,
         "alsoNoted": also_noted,
         "watch": watch,
+        "riskAnalysis": risk_analysis,
         "categories": cats_out,
         "markets": markets,
         "note": ("新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；"

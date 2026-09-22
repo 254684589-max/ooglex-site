@@ -68,7 +68,73 @@
     return items[0]||{};
   }
 
+  function setRiskMode(on){
+    var ids=["cover"];
+    ids.forEach(function(id){var el=$(id);if(el)el.style.display=on?"none":"";});
+    var galaxy=document.querySelector(".galaxy");
+    var main=document.querySelector(".main-grid");
+    if(galaxy)galaxy.style.display=on?"none":"";
+    if(main)main.style.display=on?"none":"";
+    var desk=$("risk-desk");
+    if(desk)desk.classList.toggle("show",!!on);
+  }
+
+  function riskClass(level){
+    if(level==="高")return "high";
+    if(level==="中高")return "medium-high";
+    if(level==="中")return "medium";
+    return "low";
+  }
+
+  function renderRiskDesk(){
+    var a=DATA.riskAnalysis||{};
+    var riskCat=catByKey("risk")||{items:[]};
+    var items=(riskCat.items||[]).slice();
+    var lead=a.lead||items[0]||{};
+    var level=a.level||"观察";
+    var status=a.status||"持续监测";
+    $("risk-meta").innerHTML=
+      "<span class='risk-level "+riskClass(level)+"'><span class='dot'></span>风险等级："+esc(level)+"</span>"+
+      "<span>威胁状态："+esc(status)+"</span>"+
+      "<span>监测事件："+items.length+" 条</span>"+
+      "<span>"+esc(DATA.asOf||"")+"</span>";
+
+    $("risk-focus").innerHTML=
+      "<div class='risk-kicker'>CURRENT FOCUS</div>"+
+      "<h3>"+esc(lead.brief||lead.title||"暂无核心风险事件")+"</h3>"+
+      (lead.source?"<p>"+esc(lead.source)+(relTime(lead.published)?" · "+esc(relTime(lead.published)):"")+"</p>":"")+
+      "<div class='risk-why'><b>WHY IT MATTERS</b>"+esc(lead.why||a.why||"持续跟踪事件是否出现升级、扩散或市场传导。")+"</div>";
+
+    $("risk-events").innerHTML=(items.length?items.slice(0,6):[]).map(function(it){
+      return "<a class='risk-event' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
+        "<span class='bullet'></span><span><div class='risk-event-title'>"+esc(it.brief||it.title||"")+"</div>"+
+        "<div class='risk-event-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+" · 阅读原文 →</div></span></a>";
+    }).join("")||"<div class='risk-note'>当前没有新的风险事件。</div>";
+
+    var follow=a.followUp||[];
+    if(!follow.length)follow=items.slice(0,3);
+    $("risk-followup").innerHTML=follow.map(function(it){
+      return "<div class='risk-event'><span class='bullet'></span><span><div class='risk-event-title'>"+esc(it.text||it.brief||it.title||"持续监测")+"</div>"+
+        (it.source?"<div class='risk-event-meta'>"+esc(it.source)+"</div>":"")+"</span></div>";
+    }).join("");
+
+    var dims=a.dimensions||[];
+    $("risk-dimensions").innerHTML=dims.map(function(d){
+      var pct=Math.max(8,Math.min(100,Number(d.score||0)));
+      return "<div class='risk-dimension'><div class='risk-dimension-row'><span class='risk-dimension-name'>"+esc(d.name||"风险")+
+        "</span><span class='risk-dimension-state'>"+esc(d.state||"观察")+"</span></div>"+
+        "<div class='risk-dimension-bar'><span style='width:"+pct+"%'></span></div></div>";
+    }).join("");
+  }
+
   function renderActiveView(){
+    var riskMode=active==="risk";
+    setRiskMode(riskMode);
+    if(riskMode){
+      renderRiskDesk();
+      renderRundown();
+      return;
+    }
     renderHero();
     renderTrending();
     renderSignals();

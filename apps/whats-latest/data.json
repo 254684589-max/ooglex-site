@@ -686,5 +686,54 @@
       "fmt": "idx"
     }
   ],
-  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"
+  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。",
+  "riskAnalysis": {
+    "level": "中",
+    "status": "持续监测",
+    "lead": {
+      "title": "South Korean president says Trump should ease sanctions on North Korea",
+      "source": "The Hill",
+      "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxONkM2UzRsRlpFVS1NdjhScWlCdmRHVkE5WUh0N3hVUG53Z1V6Q3RaelhhUUw2Q1Buak1HU2NKQkxwclA2Qm5JdjYwU1oyNnJjTDhlcXNYZ3pxTzdsTzRzNW45VXpaenVGdEV4M1A2RTZibmpiZWU5Vkc4RHB3QTRrTWdIcVdreGxybm8wcEVR?oc=5",
+      "published": 1790094540,
+      "summary": "",
+      "topic": "风险",
+      "brief": "South Korean president says Trump should ease sanctions on North Korea。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk"
+    },
+    "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+    "dimensions": [
+      {
+        "name": "地缘政治",
+        "score": 60,
+        "state": "中高",
+        "matches": 2
+      },
+      {
+        "name": "市场 / 信用",
+        "score": 10,
+        "state": "低",
+        "matches": 0
+      },
+      {
+        "name": "能源 / 供应链",
+        "score": 40,
+        "state": "中",
+        "matches": 1
+      },
+      {
+        "name": "网络 / 运营",
+        "score": 10,
+        "state": "低",
+        "matches": 0
+      }
+    ],
+    "followUp": [
+      {
+        "text": "South Korean president says Trump should ease sanctions on North Korea。",
+        "source": "The Hill"
+      }
+    ],
+    "method": "rule-based"
+  }
 }
