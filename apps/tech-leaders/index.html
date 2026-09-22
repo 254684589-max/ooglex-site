@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(u.searchParams.get("sharev")!=="20260922r"){
-        u.searchParams.set("sharev","20260922r");
+      if(u.searchParams.get("sharev")!=="20260923d"){
+        u.searchParams.set("sharev","20260923d");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -152,7 +152,7 @@
     .profile-stat span{color:var(--dim)}
     .role{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
     .company-line{font-weight:700;color:var(--ink)}
-    .position-line{margin-top:2px;color:var(--dim)}
+    .position-line{margin-top:2px;color:var(--dim);font-weight:600}\n    .position-en{margin-top:2px;color:var(--faint);font:10.5px/1.35 var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
     .index-badge{display:inline-flex;align-items:center;padding:3px 6px;border:1px solid rgba(57,135,229,.35);border-radius:999px;background:rgba(57,135,229,.08);color:var(--blue);font:9px/1.1 var(--mono);white-space:nowrap;margin-right:6px}
@@ -457,7 +457,7 @@
             <div class="profile-stat"><strong id="profile-followers">—</strong><span>关注者</span></div>
           </div>
         </div>
-        <div class="role"><div class="company-line" id="profile-company">特斯拉 / SpaceX / xAI / X</div><div class="position-line" id="profile-position">创始人 / CEO</div></div>
+        <div class="role"><div class="company-line" id="profile-company">特斯拉 / SpaceX / xAI / X</div><div class="position-line" id="profile-position">创始人 / CEO</div><div class="position-en" id="profile-position-en">Founder / CEO</div></div>
         <div class="chips" id="profile-chips"></div>
         <div class="profile-extra">
           <div class="profile-extra-title">Profile Overview</div>
@@ -544,7 +544,7 @@
 (function(){
   "use strict";
 
-  var API_BASE="https://pro-api.ooglex.com";
+  var API_BASE="https://pro-api.ooglex.com";\n  var leaderNameDictionary={};
   var CATALOG_FILE="leaders.json";
   try{
     var catalogMode=new URLSearchParams(window.location.search).get("catalog");
@@ -620,7 +620,7 @@
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var profileNameEn=document.getElementById("profile-name-en");
   var profileCompany=document.getElementById("profile-company");
-  var profilePosition=document.getElementById("profile-position");
+  var profilePosition=document.getElementById("profile-position");\n  var profilePositionEn=document.getElementById("profile-position-en");
   var profileWeb=document.getElementById("profile-web");
   var profileJoined=document.getElementById("profile-joined");
   var profileJoinedText=document.getElementById("profile-joined-text");
@@ -805,14 +805,14 @@
     }
   }
     function updateProfile(p){
-    document.getElementById("profile-name").textContent=p.name_zh||p.zh||p.name;
+    document.getElementById("profile-name").textContent=displayNameZh(p);
     document.getElementById("profile-verified").innerHTML=isVerifiedPerson(p)?verifiedBadgeMarkup("profile-verified"):"";
-    profileNameEn.textContent=p.name_en||p.name||"";
+    profileNameEn.textContent=displayNameEn(p);
     var profileHandle=document.getElementById("profile-handle");
     if(p.handle&&!p.hide_handle){profileHandle.textContent="@"+p.handle;profileHandle.style.display="block";}
     else{profileHandle.textContent="";profileHandle.style.display="none";}
-    profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
-    profilePosition.textContent=p.position_zh||"";
+    profileCompany.textContent=displayCompanyZh(p);\n    profileCompany.title=displayCompanyEn(p);
+    profilePosition.textContent=displayPositionZh(p);\n    profilePositionEn.textContent=displayPositionEn(p);
     var profileTags=[];
     sp500Labels(p).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     (p.categories||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
@@ -827,7 +827,7 @@
       profileOpenX.href=xUrl;
       profileOpenX.textContent=xUrl+" ↗";
       profileOpenX.style.display="inline-block";
-      profileOpenX.setAttribute("aria-label","打开 "+(p.name_zh||p.zh||p.name||p.handle)+" 的 X 主页");
+      profileOpenX.setAttribute("aria-label","打开 "+(displayNameZh(p)||p.handle)+" 的 X 主页");
     }else{
       profileOpenX.removeAttribute("href");
       profileOpenX.textContent="";
@@ -839,12 +839,12 @@
       : (p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE"));
     profileAvatarFallback.textContent=initialsFor(p);
     profileAvatar.hidden=false;
-    profileAvatar.alt=(p.name_zh||p.zh||p.name)+" 头像";
+    profileAvatar.alt=displayNameZh(p)+" 头像";
     profileAvatar.src=avatarUrl(p);
     loadPublicProfile(p);
   }
   function searchableText(p){
-    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.x_handle,p.role,p.current_role,p.company,p.company_zh,p.company_en,p.position_zh,p.category,p.primary_category,p.ticker,p.sp500_ticker,p.sector].concat(p.categories||[],p.themes||[],p.leader_types||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
+    return [p.id,p.name,p.zh,p.name_zh,p.name_en,displayNameZh(p),p.handle,p.x_handle,p.role,p.current_role,displayPositionZh(p),p.company,p.company_zh,p.company_en,p.position_zh,p.category,p.primary_category,p.ticker,p.sp500_ticker,p.sector].concat(p.categories||[],p.themes||[],p.leader_types||[],p.index_tags||[],p.chips||[]).join(" ").toLowerCase();
   }
   function renderCategories(){
     var counts={};
@@ -908,6 +908,114 @@
       leaders.scrollTo({left:Math.max(0,left-(leaders.clientWidth-active.offsetWidth)/2),behavior:"auto"});
     }
   }
+  function hasHanText(value){return /[\u3400-\u9fff]/.test(String(value||""));}
+
+  var curatedLeaderZhNames={
+    "Peter Steinberger":"彼得·施泰因贝格","Boris Cherny":"鲍里斯·切尔尼",
+    "Emmett Shear":"埃米特·希尔","Justin Kan":"贾斯汀·坎","Michael Seibel":"迈克尔·塞贝尔",
+    "Dalton Caldwell":"道尔顿·考德威尔","Paul Buchheit":"保罗·布赫海特","Jessica Livingston":"杰西卡·利文斯顿",
+    "Geoff Ralston":"杰夫·拉尔斯顿","Nikita Bier":"尼基塔·比尔","George Hotz":"乔治·霍茨",
+    "Adam D'Angelo":"亚当·德安杰洛","Joel Spolsky":"乔尔·斯波尔斯基","Sal Khan":"萨尔·汗",
+    "Mathias Biilmann":"马蒂亚斯·比尔曼","Howie Liu":"霍伊·刘","Vlad Magdalin":"弗拉德·马格达林",
+    "Koen Bok":"库恩·博克","Avishai Abrahami":"阿维沙伊·亚伯拉哈米","Micha Kaufman":"米哈·考夫曼",
+    "Brian Halligan":"布莱恩·哈利根","Benoit Dageville":"伯努瓦·达热维尔","Alexis Lê-Quôc":"亚历克西·黎国",
+    "Tristan Handy":"特里斯坦·汉迪","Michel Tricot":"米歇尔·特里科","Nick Schrock":"尼克·施罗克",
+    "Jerry Liu":"杰里·刘","Harrison Chase":"哈里森·蔡斯","Robert Nishihara":"罗伯特·西原",
+    "Vipul Ved Prakash":"维普尔·维德·普拉卡什","Antonio Neri":"安东尼奥·内里",
+    "Michael Miebach":"迈克尔·米巴赫","Sasan Goodarzi":"萨桑·古达尔齐","John T. Chambers":"约翰·钱伯斯",
+    "Steve Wozniak":"史蒂夫·沃兹尼亚克","John Legere":"约翰·莱杰尔","Steven Sinofsky":"史蒂文·西诺夫斯基",
+    "Panos Panay":"帕诺斯·帕奈","Scott Belsky":"斯科特·贝尔斯基","Thomas Kurian":"托马斯·库里安",
+    "Mike Schroepfer":"迈克·施罗普弗","Jeff Wilke":"杰夫·威尔克","Sameer Samat":"萨米尔·萨马特",
+    "Mark Papermaster":"马克·帕珀马斯特","Jeetu Patel":"吉图·帕特尔","Matt Garman":"马特·加曼",
+    "Dharmesh Shah":"达梅什·沙阿","Harley Finkelstein":"哈利·芬克尔斯坦","Jay Kreps":"杰伊·克雷普斯",
+    "Anthony Noto":"安东尼·诺托","Bill Staples":"比尔·斯台普斯","Severin Hacker":"塞韦林·哈克",
+    "Luis von Ahn":"路易斯·冯·安","Sridhar Ramaswamy":"斯里达尔·拉马斯瓦米",
+    "Dmitri Alperovitch":"德米特里·阿尔佩罗维奇","Sebastian Siemiatkowski":"塞巴斯蒂安·谢米亚特科夫斯基",
+    "John Graham-Cumming":"约翰·格雷厄姆-卡明","Wojciech Zaremba":"沃伊切赫·扎伦巴",
+    "Julien Chaumond":"朱利安·肖蒙","Karri Saarinen":"卡里·萨里宁"
+  };
+
+  var commonLeaderNameTokens={
+    michael:"迈克尔",john:"约翰",david:"戴维",james:"詹姆斯",robert:"罗伯特",william:"威廉",peter:"彼得",paul:"保罗",
+    mark:"马克",matt:"马特",chris:"克里斯",andrew:"安德鲁",brian:"布莱恩",kevin:"凯文",jason:"杰森",ryan:"瑞安",
+    daniel:"丹尼尔",steve:"史蒂夫",steven:"史蒂文",scott:"斯科特",ben:"本",nick:"尼克",eric:"埃里克",alex:"亚历克斯",
+    sam:"萨姆",tom:"汤姆",jeff:"杰夫",josh:"乔什",tim:"蒂姆",joe:"乔",bill:"比尔",george:"乔治",justin:"贾斯汀",
+    jessica:"杰西卡",adam:"亚当",harry:"哈里",charles:"查尔斯",richard:"理查德",anthony:"安东尼",patrick:"帕特里克"
+  };
+  var leaderLetterZh={a:"阿",b:"布",c:"克",d:"德",e:"埃",f:"弗",g:"格",h:"赫",i:"伊",j:"杰",k:"克",l:"勒",m:"姆",n:"恩",o:"奥",p:"普",q:"库",r:"尔",s:"斯",t:"特",u:"乌",v:"维",w:"沃",x:"克斯",y:"伊",z:"兹"};
+
+  function autoZhNameToken(raw){
+    var k=String(raw||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z]/g,"");
+    if(!k)return "艾";
+    if(commonLeaderNameTokens[k])return commonLeaderNameTokens[k];
+    var chunks=[["stein","斯泰因"],["berg","贝格"],["sch","施"],["sh","希"],["ch","奇"],["th","特"],["ph","菲"],["ck","克"],["ng","恩"],["son","森"],["sen","森"],["mann","曼"],["man","曼"]];
+    var out="",s=k;
+    while(s){
+      var hit=false;
+      for(var i=0;i<chunks.length;i++){
+        if(s.indexOf(chunks[i][0])===0){out+=chunks[i][1];s=s.slice(chunks[i][0].length);hit=true;break;}
+      }
+      if(hit)continue;
+      out+=leaderLetterZh[s.charAt(0)]||"尔";s=s.slice(1);
+    }
+    return out;
+  }
+  function autoZhName(en){
+    return String(en||"").replace(/[’']/g,"'").split(/[\s\-–—]+/).filter(Boolean).filter(function(x){return !/^(Jr\.?|Sr\.?|II|III|IV)$/i.test(x);}).map(autoZhNameToken).join("·")||"人物";
+  }
+  function displayNameZh(p){
+    var existing=p.name_zh||p.zh||"";
+    var en=p.name_en||p.name||"";
+    if(hasHanText(existing))return existing;
+    if(curatedLeaderZhNames[en])return curatedLeaderZhNames[en];
+    if(leaderNameDictionary[en]&&hasHanText(leaderNameDictionary[en]))return leaderNameDictionary[en];
+    return autoZhName(en);
+  }
+  function displayNameEn(p){return p.name_en||p.name||"";}
+  function displayCompanyZh(p){return p.company_zh||p.company||p.company_en||"";}
+  function displayCompanyEn(p){return p.company_en||p.company||p.company_zh||"";}
+
+  var roleExactZh={
+    "CEO":"首席执行官（CEO）","CTO":"首席技术官（CTO）","Chief Executive Officer":"首席执行官（CEO）",
+    "Co-Founder":"联合创始人","Co-founder":"联合创始人","Founder":"创始人","Partner":"合伙人",
+    "General Partner":"普通合伙人","Managing Partner":"管理合伙人","President":"总裁",
+    "Co-Founder & Chief Executive Officer":"联合创始人兼首席执行官（CEO）",
+    "Founder & Chief Executive Officer":"创始人兼首席执行官（CEO）",
+    "Co-Founder & CEO":"联合创始人兼首席执行官（CEO）","Founder & CEO":"创始人兼首席执行官（CEO）",
+    "Co-Founder & Chief Technology Officer":"联合创始人兼首席技术官（CTO）",
+    "Chairman & Chief Executive Officer":"董事长兼首席执行官（CEO）","Chief Investment Officer":"首席投资官（CIO）"
+  };
+  var roleZhRules=[
+    [/Co-Chief Executive Officer/gi,"联席首席执行官（CEO）"],[/Chief Executive Officer/gi,"首席执行官（CEO）"],
+    [/Chief Technology Officer/gi,"首席技术官（CTO）"],[/Chief Product Officer/gi,"首席产品官（CPO）"],
+    [/Chief Operating Officer/gi,"首席运营官（COO）"],[/Chief Investment Officer/gi,"首席投资官（CIO）"],
+    [/Chief Strategy Officer/gi,"首席战略官（CSO）"],[/Chief Science Officer/gi,"首席科学官"],[/Chief Research Officer/gi,"首席研究官"],
+    [/Executive Chairman/gi,"执行董事长"],[/Board Chairman/gi,"董事长"],[/Chairman of the Board/gi,"董事长"],[/Chairman/gi,"董事长"],
+    [/Senior Vice President/gi,"高级副总裁"],[/Executive Vice President/gi,"执行副总裁"],[/Vice President/gi,"副总裁"],[/Vice Chair/gi,"副董事长"],
+    [/Managing Director/gi,"董事总经理"],[/Managing Principal/gi,"管理负责人"],[/Managing Partner/gi,"管理合伙人"],[/General Partner/gi,"普通合伙人"],
+    [/Founding Partner/gi,"创始合伙人"],[/Venture Partner/gi,"风险投资合伙人"],[/Partner Emeritus/gi,"荣誉合伙人"],[/Partner/gi,"合伙人"],
+    [/Co-Founder/gi,"联合创始人"],[/Co-founder/gi,"联合创始人"],[/Founder Emeritus/gi,"荣誉创始人"],[/Founder/gi,"创始人"],
+    [/Board Member/gi,"董事"],[/Board Director/gi,"董事"],[/Director/gi,"董事"],[/President/gi,"总裁"],[/Former/gi,"前"],[/Retired/gi,"已退休"],
+    [/Advisor/gi,"顾问"],[/Head of Product/gi,"产品负责人"],[/Head of Macro Strategy/gi,"宏观策略主管"],[/Research Leader/gi,"研究负责人"],
+    [/Research Lead/gi,"研究负责人"],[/Researcher/gi,"研究员"],[/Distinguished Scientist/gi,"杰出科学家"],[/Scientist/gi,"科学家"],
+    [/Member of Technical Staff/gi,"技术人员"],[/Technology Entrepreneur/gi,"科技创业者"],[/Technology Investor/gi,"科技投资人"],
+    [/Entrepreneur/gi,"创业者"],[/Investor/gi,"投资人"],[/Professional Trader/gi,"职业交易员"],[/Trader/gi,"交易员"],
+    [/Portfolio Manager/gi,"投资组合经理"],[/Professor/gi,"教授"],[/Columnist/gi,"专栏作家"],[/Analyst/gi,"分析师"],[/Strategist/gi,"策略师"],
+    [/Commentator/gi,"评论员"],[/Author/gi,"作者"],[/Educator/gi,"教育者"],[/Engineer/gi,"工程师"],[/Co-host/gi,"联合主持人"],[/Co-Host/gi,"联合主持人"],
+    [/Host/gi,"主持人"],[/Lead/gi,"负责人"],[/Chair/gi,"主席"],[/\bCEO\b/g,"首席执行官（CEO）"],[/\bCTO\b/g,"首席技术官（CTO）"],[/\bCIO\b/g,"首席投资官（CIO）"]
+  ];
+  function displayPositionEn(p){return p.position_en||p.current_role||p.role||p.position_zh||"";}
+  function displayPositionZh(p){
+    var raw=String(p.position_zh||p.current_role||p.role||"").trim();
+    if(!raw)return "职务信息";
+    if(hasHanText(raw))return raw;
+    if(roleExactZh[raw])return roleExactZh[raw];
+    var out=raw;
+    roleZhRules.forEach(function(pair){out=out.replace(pair[0],pair[1]);});
+    out=out.replace(/\s*&\s*/g,"兼").replace(/\s*;\s*/g,"；").replace(/\s*,\s*/g,"，").replace(/\s{2,}/g," ").trim();
+    return hasHanText(out)?out:("职务："+out);
+  }
+
   function compactLeaderRole(p){
     var company=String(p.company_en||p.company_zh||"").split(/[\/·,]/)[0].trim();
     var position=String(p.position_zh||p.position_en||p.role||"").trim();
@@ -926,15 +1034,17 @@
     return category==="全部"||(category==="sp500"&&(p.sp500_member||p.sp500_ceo))||(category!=="sp500"&&(p.categories||[p.category]).indexOf(category)!==-1);
   }
   function leaderCardMarkup(p,className){
-    var cn=p.name_zh||p.zh||p.name;
-    var en=p.name_en||p.name||"";
-    var company=(p.company_zh||p.company||"")+(p.company_en&&p.company_en!==p.company_zh&&p.company_en!==p.company?" · "+p.company_en:"");
-    var meta=sp500Labels(p).concat([company,p.current_role||p.position_zh||""]).filter(Boolean).join(" · ");
+    var cn=displayNameZh(p);
+    var en=displayNameEn(p);
+    var company=displayCompanyZh(p);
+    var position=displayPositionZh(p);
+    var meta=sp500Labels(p).concat([company,position]).filter(Boolean).join(" · ");
+    var enMeta=[displayCompanyEn(p),displayPositionEn(p)].filter(Boolean).join(" · ");
     return '<button class="'+className+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
       '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
       '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
       '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+(isVerifiedPerson(p)?verifiedBadgeMarkup(""):"")+'</div><span class="leader-en">'+escapeHtml(en)+'</span><span class="leader-short-role">'+escapeHtml(compactLeaderRole(p))+'</span></div></div>'+
-      '<div class="leader-role">'+escapeHtml(meta)+'</div></button>';
+      '<div class="leader-role" title="'+escapeHtml(enMeta)+'">'+escapeHtml(meta)+'</div></button>';
   }
   function renderLeaderButtons(query){
     var q=String(query||"").trim().toLowerCase();
@@ -1046,6 +1156,13 @@
 
   async function loadCatalog(){
     try{
+      try{
+        var nameRes=await fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"});
+        if(nameRes.ok){
+          var nameData=await nameRes.json();
+          if(nameData&&nameData.names)leaderNameDictionary=nameData.names;
+        }
+      }catch(nameErr){}
       var res=await techProtectedFetch(CATALOG_URL,{cache:"no-store"});
       if(!res.ok)throw new Error("catalog_http_"+res.status);
       var data=await res.json();
@@ -1432,7 +1549,7 @@
 
     var avatar=await loadCardImage(current?avatarUrl(current):"");
     if(avatar){ctx.save();ctx.beginPath();ctx.arc(116,185,42,0,Math.PI*2);ctx.clip();ctx.drawImage(avatar,74,143,84,84);ctx.restore();}
-    ctx.fillStyle="#111827";ctx.font="700 38px Arial,sans-serif";ctx.fillText((current&&(current.name_zh||current.zh||current.name))||"X",180,177);
+    ctx.fillStyle="#111827";ctx.font="700 38px Arial,sans-serif";ctx.fillText((current&&displayNameZh(current))||"X",180,177);
     ctx.fillStyle="#667085";ctx.font="28px Arial,sans-serif";if(!(current&&current.hide_handle))ctx.fillText("@"+((current&&current.handle)||""),180,218);
     ctx.fillStyle="#2563a6";ctx.font="700 24px Arial,sans-serif";ctx.fillText(postTypeLabel(post),900,182);
 
@@ -1604,10 +1721,10 @@
       card.setAttribute("data-post-id",String(post.id||""));
       var head=document.createElement("div");head.className="post-head";
       var postAvatarSrc=avatarUrl(current);
-      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
+      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=displayNameZh(current)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
       var who=document.createElement("div");who.className="post-who";
       var nameLine=document.createElement("div");nameLine.className="post-name-line";
-      var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
+      var b=document.createElement("b");b.textContent=displayNameZh(current);nameLine.appendChild(b);
       if(isVerifiedPerson(current)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
       appendPostTypeBadge(nameLine,post);
       who.appendChild(nameLine);if(!current.hide_handle){var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(h);}head.appendChild(who);
@@ -1772,10 +1889,10 @@
       var card=document.createElement("article");card.className="post-card";
       var head=document.createElement("div");head.className="post-head";
       var postAvatarSrc=avatarUrl(current)||(feed.leader&&feed.leader.profile_image_url)||"";
-      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=(current.name_zh||current.zh||current.name)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
+      if(postAvatarSrc){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt=displayNameZh(current)+" 头像";img.referrerPolicy="no-referrer";img.onerror=function(){applyAvatarFallback(img,current||{});};img.src=postAvatarSrc;head.appendChild(img);}
       var who=document.createElement("div");who.className="post-who";
       var nameLine=document.createElement("div");nameLine.className="post-name-line";
-      var b=document.createElement("b");b.textContent=current.name_zh||current.zh||current.name;nameLine.appendChild(b);
+      var b=document.createElement("b");b.textContent=displayNameZh(current);nameLine.appendChild(b);
       if(isVerifiedPerson(current)){var badgeWrap=document.createElement("span");badgeWrap.innerHTML=verifiedBadgeMarkup("post-verified");nameLine.appendChild(badgeWrap.firstChild);}
       appendPostTypeBadge(nameLine,post);
       who.appendChild(nameLine);if(!current.hide_handle){var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(h);}head.appendChild(who);
