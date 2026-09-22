@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V610 -> V611",
+  "target_category": "欧洲",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v611-preview.json",
+  "preview_catalog_version": "v611-europe-preview-2026-09-22",
+  "base_count": 610,
+  "approved_additions": 1,
+  "category_enrichments": 4,
+  "static_gate": "pass",
+  "runtime_gate": "pass",
+  "runtime_generated_at": "2026-09-22T06:07:08Z",
+  "runtime_summary": {
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "avatar_ready_count": 1,
+    "native_free_feed_ready_count": 1,
+    "embed_fallback_available": true,
+    "render_ready_count": 1,
+    "render_blocked_count": 0
+  },
+  "promoted_people": [
+    {
+      "id": "europe-b05-frederic-arnault",
+      "name": "Frédéric Arnault",
+      "handle": "f_arnault",
+      "company": "LVMH Moët Hennessy Louis Vuitton SE",
+      "categories": [
+        "欧洲",
+        "消费零售"
+      ]
+    }
+  ],
+  "category_enriched_people": [
+    {
+      "id": "ek",
+      "name": "Daniel Ek",
+      "handle": "eldsjal",
+      "company": "Spotify",
+      "categories": [
+        "消费零售",
+        "欧洲"
+      ]
+    },
+    {
+      "id": "sebastian-siemiatkowski-klar",
+      "name": "Sebastian Siemiatkowski",
+      "handle": "klarnaseb",
+      "company": "Klarna Group",
+      "categories": [
+        "科技",
+        "金融科技",
+        "消费科技",
+        "AI",
+        "欧洲"
+      ]
+    },
+    {
+      "id": "rene-haas",
+      "name": "Rene Haas",
+      "handle": "renehaas237",
+      "company": "Arm / SoftBank Group International",
+      "categories": [
+        "芯片",
+        "欧洲"
+      ]
+    },
+    {
+      "id": "shay-banon-estc",
+      "name": "Shay Banon",
+      "handle": "kimchy",
+      "company": "Elastic",
+      "categories": [
+        "科技",
+        "软件",
+        "云计算",
+        "AI",
+        "欧洲"
+      ]
+    }
+  ],
+  "production_action": "promote",
+  "production_catalog": "v611-stable-2026-09-22",
+  "production_count": 611,
+  "europe_count": 22,
+  "wall_street_count": 100,
+  "previous_production_catalog": "v610-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v610-europe17-stable-2026-09-22.json",
+  "rationale": "V611 passed static/dedupe and deployed runtime checks. Frédéric Arnault was 1/1 avatar-ready, native-feed-ready and render-ready with 0 blocked; four existing production people were Europe-category enriched after fresh identity/activity qualification."
+}

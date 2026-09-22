@@ -1,13 +1,13 @@
 {
-  "baseline_version": "v610-europe17-stable",
+  "baseline_version": "v611-europe22-stable",
   "captured_at": "2026-09-22",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "df38331c35fe1f481271a029a25d75b260ebfab4",
-  "leader_count": 610,
-  "active_count": 610,
+  "source_blob_sha": "326d42fb9dc21a81ec1643e24addc579b6df2ee5",
+  "leader_count": 611,
+  "active_count": 611,
   "schema_version": 12,
   "capacity": 800,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v610-europe17-stable-2026-09-22.json",
-  "previous_baseline": "data/tech-leaders/snapshots/leaders-v608-europe14-stable-2026-09-22.json",
-  "purpose": "Stable production baseline after Europe V610 promotion: Rafał Brzoska and Sam Lake passed all new-person gates, while existing Kristo Kaarmann was re-audited and category-enriched with 欧洲 without duplication."
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v611-europe22-stable-2026-09-22.json",
+  "previous_baseline": "data/tech-leaders/snapshots/leaders-v610-europe17-stable-2026-09-22.json",
+  "purpose": "Stable production baseline after Europe V611 promotion: Frédéric Arnault passed all new-person gates; Daniel Ek, Sebastian Siemiatkowski, Rene Haas and Shay Banon were re-audited and enriched with 欧洲 without duplication."
 }
