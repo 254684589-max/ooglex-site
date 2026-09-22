@@ -42,7 +42,7 @@ def validate_candidate(c: dict[str, Any]) -> None:
     missing = [k for k in required if not c.get(k)]
     if missing:
         raise RuntimeError(f"approved candidate {c.get('ticker')} missing: {missing}")
-    if c["role_status"] not in {"current", "former", "retired", "founder_emeritus"}:
+    if c["role_status"] not in {"current", "former", "retired", "founder_emeritus", "legacy"}:
         raise RuntimeError(
             f"approved candidate {c['ticker']} has unsupported role_status={c['role_status']!r}"
         )
@@ -78,7 +78,7 @@ def make_leader(c: dict[str, Any]) -> dict[str, Any]:
         leader_types.append("former_ceo")
     if "founder" in role_low:
         leader_types.append("founder")
-    if status in {"former", "retired", "founder_emeritus"}:
+    if status in {"former", "retired", "founder_emeritus", "legacy"}:
         leader_types.append("legacy_leader")
     if not leader_types:
         leader_types.append("executive")
@@ -87,6 +87,8 @@ def make_leader(c: dict[str, Any]) -> dict[str, Any]:
         note = "美国上市公司现任核心高管；个人公开 X 账号已完成身份核验。预览候选，尚未上线。"
     elif status == "retired":
         note = "美国上市公司退休创始人或前核心高管；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。"
+    elif status == "legacy":
+        note = "历史核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。"
     else:
         note = "美国上市公司前任核心高管或创始人；个人公开 X 账号已完成身份核验且保持活跃。预览候选，尚未上线。"
 
