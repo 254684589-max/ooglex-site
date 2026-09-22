@@ -56,7 +56,7 @@ jobs:
             try:
               req=urllib.request.Request("https://ooglex.com/apps/tech-leaders/?catalog=europe-v610-preview&sharev=20260922m",headers={"User-Agent":"Ooglex Europe V610 Audit/1.0"})
               with urllib.request.urlopen(req,timeout=20) as resp: page=resp.read().decode(errors="ignore")
-              page_ok=('catalogMode==="europe-v610-preview"' in page and "20260922k" in page)
+              page_ok=('catalogMode==="europe-v610-preview"' in page and "20260922m" in page)
               if not page_ok: page_error="contract"
             except Exception as e: page_error=type(e).__name__
           def dt(s):
