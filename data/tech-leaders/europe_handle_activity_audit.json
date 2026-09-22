@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T09:09:19Z",
+  "generated_at": "2026-09-22T09:11:59Z",
   "production_count": 612,
   "audited_handle_count": 26,
   "pass_le_180d": 5,
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.82,
+      "age_days": 924.83,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.86,
+      "age_days": 1554.87,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.91,
+      "age_days": 1393.92,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.59,
+      "age_days": 814.6,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 76.98,
+      "age_days": 76.99,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -304,7 +304,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.6,
+      "age_days": 1020.61,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -364,7 +364,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.62,
+      "age_days": 74.63,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -388,13 +388,13 @@
       "name": "József Váradi",
       "company": "Wizz Air Holdings Plc",
       "handle": "jozsefjvaradi",
-      "current_review_status": "identity_verified_activity_pending",
+      "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_cross_source",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2015-03-24T13:08:21Z",
-      "age_days": 4199.83,
+      "age_days": 4199.84,
       "activity_gate": "hold_gt_365d",
       "error": ""
     }
