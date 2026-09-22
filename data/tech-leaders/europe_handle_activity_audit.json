@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T08:19:45Z",
+  "generated_at": "2026-09-22T08:23:33Z",
   "production_count": 611,
-  "audited_handle_count": 24,
-  "pass_le_180d": 5,
+  "audited_handle_count": 25,
+  "pass_le_180d": 6,
   "manual_181_365d": 5,
   "hold_gt_365d": 10,
   "no_recent_post_evidence": 4,
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.57,
+      "age_days": 3374.58,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-02-06T10:37:45Z",
-      "age_days": 958.9,
+      "age_days": 958.91,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -365,6 +365,21 @@
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
       "age_days": 74.59,
+      "activity_gate": "pass_le_180d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch08.json",
+      "name": "Martin Lorentzon",
+      "company": "Spotify Technology S.A.",
+      "handle": "MartinLorentzon",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2026-09-22T07:36:05Z",
+      "age_days": 0.03,
       "activity_gate": "pass_le_180d",
       "error": ""
     }
