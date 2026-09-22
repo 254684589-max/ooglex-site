@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "activity_pass_1_v613_preview_open",
+  "status": "v613_promoted_continue_x_research",
   "tranche_type": "europe_listed_review_batch_10",
   "batch_range": "226-250",
   "phase": "Europe 23 -> 50",
   "source_plan": "data/tech-leaders/europe_v50.expansion.json",
-  "production_catalog": "v612-stable-2026-09-22",
-  "production_count": 612,
-  "current_europe_count": 23,
+  "production_catalog": "v613-stable-2026-09-22",
+  "production_count": 613,
+  "current_europe_count": 24,
   "target_europe_count": 50,
   "summary": {
     "batch_count": 25,
@@ -19,13 +19,16 @@
     "role_needs_fresh_capture": 0,
     "identity_verified_activity_pending": 1,
     "needs_x_research": 23,
-    "preview_ready": 1,
-    "production_additions": 0,
+    "preview_ready": 0,
+    "production_additions": 1,
     "activity_gate_passed_names": [
       "Estelle Brachlianoff"
     ],
     "activity_gate_pending_names": [
       "Catherine MacGregor"
+    ],
+    "promoted_names": [
+      "Estelle Brachlianoff"
     ]
   },
   "policy": {
@@ -234,12 +237,14 @@
       "x_identity_status": "verified_personal_x_cross_source",
       "x_identity_source_url": "https://x.com/E_Brachlianoff",
       "x_activity_status": "active_le_180d",
-      "review_status": "preview_ready",
+      "review_status": "production_promoted_v613",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_09_by_exact_name",
       "notes": "Veolia first-party governance verifies the current CEO role; @E_Brachlianoff identity is cross-source verified. A fresh public profile mirror observed on 2026-09-22 shows personal posts within days, satisfying the <=180d activity gate. Candidate advanced to V613 Preview; runtime native-feed/avatar/render audit remains required before production promotion.",
       "x_activity_source_url": "https://w.twstalker.com/E_Brachlianoff",
-      "x_activity_evidence_observed_at": "2026-09-22"
+      "x_activity_evidence_observed_at": "2026-09-22",
+      "production_release": "v613-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 236,
@@ -548,5 +553,5 @@
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
     "dedupe_rule": "Exact-name against V612 production and Europe Batches 01-09; exact-handle against production before Preview."
   },
-  "next_action": "Run V613 static/runtime preview audit for Estelle Brachlianoff. Keep Catherine MacGregor pending until recent first-person X activity is directly evidenced. Continue unresolved Batch 10 X research without quota filling."
+  "next_action": "Continue personal-X verification for the remaining Batch 10 queue and resolve Catherine MacGregor recent activity. Do not promote further candidates until all admission gates pass."
 }
