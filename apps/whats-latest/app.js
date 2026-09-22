@@ -52,12 +52,15 @@
   }
 
   function renderHighlight() {
-    var h = DATA.highlight, el = $("highlight");
+    var h = DATA.lead || DATA.highlight, el = $("highlight");
     if (!h || !h.title) { el.style.display = "none"; return; }
     el.href = h.link || "#"; el.target = "_blank"; el.rel = "noopener";
-    el.innerHTML = "<span class='tag'>今日重点 · " + esc(h.category || "") + "</span>" +
-      "<div class='t'>" + esc(h.title) + "</div>" +
-      "<div class='m'>" + esc(h.source || "") + (relTime(h.published) ? " · " + relTime(h.published) : "") + " · 点击阅读原文 →</div>";
+    el.innerHTML =
+      "<span class='tag'>今日主线 · " + esc(h.category || "") + "</span>" +
+      "<div class='lead-topic'>" + esc(h.topic || "重点") + "</div>" +
+      "<div class='t'>" + esc(h.brief || h.title) + "</div>" +
+      (h.why ? "<div class='lead-why'><b>为什么重要</b>" + esc(h.why) + "</div>" : "") +
+      "<div class='m'>" + esc(h.source || "") + (relTime(h.published) ? " · " + relTime(h.published) : "") + " · 阅读原文 →</div>";
   }
 
   function newsItem(it) {
@@ -73,22 +76,49 @@
 
   function renderDailyBrief() {
     var box = $("daily-brief");
-    var rows = DATA.overview || [];
     var signals = DATA.signals || [];
-    if (!rows.length && !signals.length) { box.style.display = "none"; return; }
-    var html = "<div class='db-title'>今日概述</div>";
-    rows.forEach(function (r) {
-      html += "<div class='db-row'><b>" + esc(r.topic || "要闻") + "</b>" + esc(r.text || "") + "</div>";
-    });
-    if (signals.length) {
-      html += "<div class='signals'>" + signals.map(function (s) {
+    if (!signals.length) { box.style.display = "none"; return; }
+    var html = "<div class='db-title'>信号板</div><div class='signals'>" +
+      signals.map(function (s) {
         var trend = s.trend || "";
         var cls = trend === "↑" ? " up" : (trend === "↓" ? " down" : "");
         return "<span class='signal" + cls + "'>" + esc(s.label || "") + (trend ? " " + esc(trend) : "") + "</span>";
-      }).join("") + "</div><div class='signal-note'>标签表示当日新闻主题或市场方向，仅作信息归纳，不代表本站判断。</div>";
-    }
+      }).join("") +
+      "</div><div class='signal-note'>市场箭头来自实时涨跌；“关注”表示该主题在当日新闻中集中出现，不代表预测。</div>";
     box.innerHTML = html;
     box.style.display = "";
+  }
+
+  function wireItem(it) {
+    return "<a class='wire' href='" + esc(it.link || "#") + "' target='_blank' rel='noopener'>" +
+      "<div class='wt'><b>" + esc(it.topic || it.category || "快讯") + "</b>" + esc(it.brief || it.title || "") + "</div>" +
+      "<div class='wm'>" + esc(it.source || "来源未知") + (relTime(it.published) ? " · " + relTime(it.published) : "") + " · 阅读原文 →</div></a>";
+  }
+
+  function renderWires() {
+    var box = $("wires"), items = DATA.wires || [];
+    if (!items.length) { box.style.display = "none"; return; }
+    box.innerHTML = "<div class='desk-title'>快讯</div>" + items.map(wireItem).join("");
+    box.style.display = "";
+  }
+
+  function auxItem(it) {
+    return "<a class='aux-item' href='" + esc(it.link || "#") + "' target='_blank' rel='noopener'>" +
+      "<div class='at'><b>" + esc(it.topic || it.category || "关注") + "</b>" + esc(it.brief || it.title || "") + "</div>" +
+      "<div class='am'>" + esc(it.source || "来源未知") + (relTime(it.published) ? " · " + relTime(it.published) : "") + "</div></a>";
+  }
+
+  function renderAux() {
+    var noted = DATA.alsoNoted || [], watch = DATA.watch || [];
+    var n = $("also-noted"), w = $("watch");
+    if (noted.length) {
+      n.innerHTML = "<div class='desk-title'>另外关注</div>" + noted.map(auxItem).join("");
+      n.style.display = "";
+    } else n.style.display = "none";
+    if (watch.length) {
+      w.innerHTML = "<div class='desk-title'>接下来关注</div>" + watch.map(auxItem).join("");
+      w.style.display = "";
+    } else w.style.display = "none";
   }
 
   function renderNews() {
@@ -141,7 +171,7 @@
 
   function boot(data) {
     DATA = data;
-    renderMeta(); renderTicker(); renderHighlight(); renderDailyBrief(); renderTabs(); renderNews(); renderMarkets(); renderFooter();
+    renderMeta(); renderTicker(); renderHighlight(); renderDailyBrief(); renderWires(); renderTabs(); renderNews(); renderAux(); renderMarkets(); renderFooter();
   }
 
   fetch("data.json?t=" + Date.now())

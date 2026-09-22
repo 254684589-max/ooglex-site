@@ -13,6 +13,7 @@ apps/whats-latest/data.json，供静态页面渲染。
 由 .github/workflows/whats_latest.yml 定时运行（每数小时一次），并把 data.json 提交回仓库。
 """
 import json
+import html
 import os
 import re
 import sys
@@ -88,33 +89,109 @@ def cat_url(c):
     return f"{GN}?{GN_TAIL}"
 
 
-def make_brief(title, category_name=""):
-    """把原始标题拆成「主题词 + 简报句」，只重组标题已有信息，不补充外部事实。"""
-    text = re.sub(r"\s+", " ", (title or "").strip())
-    topic = category_name or "简报"
-    brief = text
+TOPIC_RULES = [
+    (r"标普500|S&P ?500", "标普500"),
+    (r"纳斯达克|Nasdaq", "纳斯达克"),
+    (r"美联储|Fed", "美联储"),
+    (r"国债|收益率", "债券市场"),
+    (r"布伦特|WTI|原油|油价", "原油"),
+    (r"黄金|金价", "黄金"),
+    (r"人工智能|\\bAI\\b|OpenAI", "人工智能"),
+    (r"芯片|半导体|GPU|英伟达|NVIDIA", "芯片 / 半导体"),
+    (r"数据中心|云计算", "AI 基础设施"),
+    (r"电影|影视", "影视"),
+    (r"音乐|演唱会", "音乐"),
+    (r"网球", "网球"),
+    (r"足球|世界杯", "足球"),
+    (r"篮球|NBA", "篮球"),
+    (r"乌克兰|俄乌", "俄乌"),
+    (r"中东|伊朗|以色列|霍尔木兹", "中东"),
+    (r"欧洲|欧盟", "欧洲"),
+]
 
-    # 优先使用标题本身已有的编辑分隔符。
+
+def clean_feed_summary(e, title, source):
+    """优先读取 RSS 自带摘要；若只是重复标题/来源则丢弃。"""
+    raw = e.get("summary") or e.get("description") or ""
+    if not raw:
+        return ""
+    text = html.unescape(re.sub(r"<[^>]+>", " ", str(raw)))
+    text = re.sub(r"\\s+", " ", text).strip()
+    if not text:
+        return ""
+    for part in (title, source):
+        if part:
+            text = text.replace(part, " ")
+    text = re.sub(r"\\s+", " ", text).strip(" -·|")
+    if len(text) < 20:
+        return ""
+    return text[:180].rstrip("，,;； ") + ("。" if text[-1:] not in "。！？!?" else "")
+
+
+def topic_from_title(title, category_name=""):
+    text = (title or "").strip()
+    for pattern, label in TOPIC_RULES:
+        if re.search(pattern, text, re.I):
+            return label
     for sep in ("丨", "｜", "：", ":"):
         if sep in text:
-            left, right = text.split(sep, 1)
-            left, right = left.strip(), right.strip()
-            if 2 <= len(left) <= 18 and len(right) >= 4:
-                topic, brief = left, right
+            left = text.split(sep, 1)[0].strip()
+            if 2 <= len(left) <= 16:
+                return left
+    if "？" in text:
+        left = text.split("？", 1)[0].strip()
+        if 4 <= len(left) <= 18:
+            return left + "？"
+    return category_name or "简报"
+
+
+def make_brief(title, category_name="", summary=""):
+    """生成一到两句编辑部式简报；只使用 RSS 标题/摘要里已有的信息。"""
+    text = re.sub(r"\\s+", " ", (summary or title or "").strip())
+    topic = topic_from_title(title, category_name)
+    if not text:
+        return topic, ""
+    # 若没有可用 RSS 摘要，直接把标题整理成完整陈述，避免凭空补事实。
+    if not summary:
+        for sep in ("丨", "｜"):
+            if sep in text:
+                text = text.split(sep, 1)[1].strip()
                 break
+    text = re.sub(r"[！!]{2,}", "！", text)
+    if len(text) > 150:
+        text = text[:147].rstrip("，,;； ") + "…"
+    if text[-1:] not in "。！？!?…":
+        text += "。"
+    return topic, text
 
-    # 问句后常跟核心判断，可拆成图二式「主题 + 正文」。
-    if brief == text and "？" in text:
-        left, right = text.split("？", 1)
-        left, right = left.strip(), right.strip(" ：:")
-        if 4 <= len(left) <= 22 and len(right) >= 5:
-            topic, brief = left + "？", right
 
-    brief = brief.strip()
-    if brief and brief[-1] not in "。！？!?":
-        brief += "。"
-    return topic, brief
+def why_it_matters(title, category_key):
+    t = title or ""
+    if re.search(r"美联储|利率|加息|降息|国债|收益率", t):
+        return "这可能影响利率预期、融资成本与风险资产估值。"
+    if re.search(r"布伦特|WTI|原油|油价|能源", t):
+        return "这可能影响能源成本、通胀预期与市场风险偏好。"
+    if re.search(r"标普500|纳斯达克|美股|股市", t):
+        return "这可能改变风险偏好、估值预期与资金流向。"
+    if re.search(r"人工智能|\\bAI\\b|芯片|半导体|OpenAI|英伟达", t, re.I):
+        return "这关系到算力供给、技术竞争与 AI 资本开支节奏。"
+    if re.search(r"战争|冲突|中东|乌克兰|俄乌|制裁|霍尔木兹", t):
+        return "这可能改变地缘风险、能源或贸易链条，并影响市场定价。"
+    if category_key == "sports":
+        return "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。"
+    if category_key == "ent":
+        return "这反映内容产业、平台或消费偏好的最新变化。"
+    return "这条信息可能影响该领域后续预期与市场关注重点。"
 
+
+def importance_score(it, category_key):
+    score = float(it.get("published") or 0)
+    boosts = {"world": 6, "markets": 5, "tech": 4, "sports": 1, "ent": 0}
+    score += boosts.get(category_key, 0) * 3600
+    t = it.get("title") or ""
+    if re.search(r"战争|冲突|制裁|美联储|利率|标普500|纳斯达克|原油|芯片|人工智能|\\bAI\\b", t, re.I):
+        score += 4 * 3600
+    return score
 
 def parse_entry(e):
     """从 RSS 条目提取 {title, source, link, published}；Google News 标题形如『标题 - 来源』。"""
@@ -133,7 +210,8 @@ def parse_entry(e):
             title = head
     ts = e.get("published_parsed") or e.get("updated_parsed")
     pub = int(time.mktime(ts)) if ts else None
-    return {"title": title, "source": src, "link": e.get("link", ""), "published": pub}
+    summary = clean_feed_summary(e, title, src)
+    return {"title": title, "source": src, "link": e.get("link", ""), "published": pub, "summary": summary}
 
 
 def fetch_feed(url, n=PER_CAT):
@@ -218,9 +296,11 @@ def build():
                 if any(len(s & k) / max(1, min(len(s), len(k))) >= 0.5 for k in sigs):
                     continue   # 同一事件多家媒体报道，只保留一条
                 seen.add(it["link"]); sigs.append(s)
-                topic, brief = make_brief(it["title"], c["name"])
+                topic, brief = make_brief(it["title"], c["name"], it.get("summary") or "")
                 it["topic"] = topic
                 it["brief"] = brief
+                it["why"] = why_it_matters(it["title"], c["key"])
+                it["categoryKey"] = c["key"]
                 items.append(it)
         except Exception as e:
             print(f"[..] 板块 {c['name']} 抓取失败：{str(e)[:60]}")
@@ -277,10 +357,12 @@ def build():
         modes["market-quotes"] = "unavailable"
 
     highlight = None
-    pool = [(it, c["name"]) for c in cats_out for it in c["items"]]
+    lead = None
+    pool = [(it, c["name"], c["key"]) for c in cats_out for it in c["items"]]
     if pool:
-        top, cat_name = max(pool, key=lambda x: x[0].get("published") or 0)
-        highlight = {**top, "category": cat_name}
+        top, cat_name, cat_key = max(pool, key=lambda x: importance_score(x[0], x[2]))
+        lead = {**top, "category": cat_name, "why": why_it_matters(top.get("title", ""), cat_key)}
+        highlight = lead
 
     # 图二式「今日概述」：各取市场 / AI科技 / 国际最新一条，只使用标题已有事实。
     overview = []
@@ -308,7 +390,7 @@ def build():
     ]
     for label, pattern in signal_rules:
         if re.search(pattern, all_titles, re.I):
-            signals.append({"label": label, "trend": "↑"})
+            signals.append({"label": label, "trend": "关注"})
 
     market_map = {m.get("name"): m for m in markets}
     for names, label in [
@@ -324,17 +406,46 @@ def build():
             avg = sum(vals) / len(vals)
             signals.append({"label": label, "trend": "↑" if avg > 0 else ("↓" if avg < 0 else "→")})
 
+    # 快讯：按时效 + 重要性选 6 条，尽量避免同一主题重复。
+    ranked = sorted(
+        [
+            {**it, "category": c["name"], "categoryKey": c["key"]}
+            for c in cats_out
+            for it in c.get("items", [])
+        ],
+        key=lambda x: importance_score(x, x.get("categoryKey", "")),
+        reverse=True,
+    )
+    wires, used_topics, used_links = [], set(), set()
+    for it in ranked:
+        if len(wires) >= 6:
+            break
+        topic = it.get("topic") or it.get("category") or "快讯"
+        if topic in used_topics and len(used_topics) < 5:
+            continue
+        wires.append(it)
+        used_topics.add(topic)
+        used_links.add(it.get("link"))
+
+    also_noted = [it for it in ranked if it.get("link") not in used_links][:3]
+    future_re = re.compile(r"将|计划|预计|拟|即将|明日|下周|发布|公布|举行|会议|财报|决议")
+    watch = [it for it in ranked if future_re.search(it.get("title") or "")][:3]
+
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
         "source": "Google News · Yahoo Finance",
+        "lead": lead,
         "highlight": highlight,
         "overview": overview,
         "signals": signals,
+        "wires": wires,
+        "alsoNoted": also_noted,
+        "watch": watch,
         "categories": cats_out,
         "markets": markets,
-        "note": ("新闻聚合自 Google News 收录的权威媒体，每条均链接回原文，仅作信息聚合，不代表本站观点；"
-                 "市场快照来自 Yahoo Finance。仅供参考。"),
+        "note": ("新闻聚合自 Google News 收录的公开媒体，简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差；"
+                 "每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"),
     }
     health = make_health(
         "whats-latest",

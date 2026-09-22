@@ -4,6 +4,10 @@ name: What's Latest
 # 新闻时效性强，故每 6 小时跑一次（仍属每日多次更新）。数据源均免登录，无需任何密钥。
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/whats-latest/**'
+      - '.github/workflows/whats_latest.yml'
   schedule:
     - cron: '15 */6 * * *'   # 每 6 小时（00:15 / 06:15 / 12:15 / 18:15 UTC）
 
