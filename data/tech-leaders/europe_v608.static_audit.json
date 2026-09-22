@@ -27,5 +27,9 @@
   "all_additions_preview_only": true,
   "all_additions_identity_verified": true,
   "all_additions_activity_qualified": true,
-  "runtime_gate": "pending"
+  "runtime_gate": "pass",
+  "runtime_audit": "data/tech-leaders/europe_v608.runtime_audit.json",
+  "runtime_generated_at": "2026-09-22T04:25:53Z",
+  "production_promoted": true,
+  "production_catalog": "v608-stable-2026-09-22"
 }
