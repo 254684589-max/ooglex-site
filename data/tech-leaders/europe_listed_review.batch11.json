@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "batch11_role_capture_in_progress",
+  "status": "batch11_activity_audit_complete_continue_role_x_research",
   "tranche_type": "europe_listed_review_batch_11",
   "batch_range": "251-275",
   "phase": "Europe 24 -> 50",
@@ -21,7 +21,13 @@
     "preview_ready": 0,
     "production_additions": 0,
     "resolved_x_handles": 2,
-    "identity_activity_pending": 2
+    "identity_activity_pending": 0,
+    "hold_inactive_gt_365d": 2,
+    "hold_inactive_names": [
+      "Corinne Vigreux",
+      "John Elkann"
+    ],
+    "activity_gate_passed_names": []
   },
   "policy": {
     "require_role_evidence": true,
@@ -188,11 +194,11 @@
       "x_handle": "CorinneVigreux",
       "x_identity_status": "verified_personal_x_cross_source",
       "x_identity_source_url": "https://siliconcanals.com/7-influential-people-amsterdam-tech-twitter/",
-      "x_activity_status": "pending_direct_free_feed_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_10_by_exact_name",
-      "notes": "TomTom confirmed Vigreux stepped down from executive responsibilities in Mar 2026 after 35 years but remains a co-founder/core legacy figure. Multiple public profiles identify @CorinneVigreux as her personal X handle; direct <=180d activity audit is now required."
+      "notes": "TomTom legacy-core relationship and @CorinneVigreux identity are verified. Direct public-feed audit returned latest activity 2025-08-02T15:25:39Z (~416 days old on 2026-09-22), so the candidate is Hold under the >365d inactivity rule and is not Preview Ready."
     },
     {
       "batch_rank": 259,
@@ -448,11 +454,11 @@
       "x_handle": "JohnElkann",
       "x_identity_status": "probable_personal_x_needs_direct_verification",
       "x_identity_source_url": "https://x.com/JohnElkann",
-      "x_activity_status": "pending_direct_free_feed_audit",
-      "review_status": "identity_candidate_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d_identity_unconfirmed",
       "production_duplicate_check": "not_found_in_v613_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_10_by_exact_name",
-      "notes": "Exor first-party management page confirms Elkann as Exor CEO and Chairman of Ferrari and Stellantis. A same-name @JohnElkann X profile exists, but personal ownership is not yet strong enough for approval; direct activity plus identity corroboration required."
+      "notes": "Exor first-party management relationship is verified. Direct audit of @JohnElkann returned latest activity 2014-08-28T06:57:58Z (>12 years old), and ownership remains insufficiently corroborated; candidate is Hold and not Preview Ready."
     },
     {
       "batch_rank": 272,
@@ -535,6 +541,6 @@
       "notes": "Saab first-party Group Management page confirms Micael Johansson as President and CEO. The active @Saab company account does not satisfy the personal-X gate; a personal handle still requires verification."
     }
   ],
-  "next_action": "Batch 11 role pass: capture current/legacy first-party listed-company relationship for all 25, then run personal-X identity research only on role-qualified candidates.",
-  "next_stage": "Run Europe Handle Activity Audit for newly resolved Batch 11 handles, then continue first-party role + personal-X capture for the remaining 17 unresolved candidates. Only <=180d active, identity-verified personal accounts may enter Preview."
+  "next_action": "Continue first-party role capture for the remaining 17 unresolved candidates and personal-X identity research for role-qualified candidates. Corinne Vigreux and John Elkann are now closed as inactivity Holds.",
+  "next_stage": "Batch 11 direct activity audit is complete for all resolved handles: 0 Preview Ready, 2 Hold (>365d). Open Batch 12 in parallel with a fresh production + cross-batch deduped candidate pool while continuing unresolved Batch 11 role/X research."
 }
