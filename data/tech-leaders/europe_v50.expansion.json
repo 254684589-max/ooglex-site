@@ -38,7 +38,7 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch09_complete_0_preview_ready_continue_batch10",
+      "status": "batch10_open_role_x_research",
       "last_completed_batch": "09",
       "next_batch": "10"
     }
@@ -53,7 +53,7 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Open Europe Batch 10 (226-250) with a fresh production + Batch01-09 deduped candidate pool. Continue until Europe production reaches 50; do not lower role/personal-X/activity/avatar/feed/runtime gates.",
+  "next_action": "Europe Batch 10 (226-250) opened with 25 fresh candidates after production + Batch01-09 cross-batch dedupe. Verify first-party company relationship, personal X identity and activity before Preview.",
   "current_europe_count": 23,
   "batch03_result": {
     "reviewed": 25,
@@ -267,5 +267,15 @@
       "Frank Vang-Jensen",
       "József Váradi"
     ]
+  },
+  "batch10_open": {
+    "status": "clean_candidate_pool_ready",
+    "candidate_range": "226-250",
+    "candidate_count": 25,
+    "production_duplicates": 0,
+    "prior_review_duplicates": 0,
+    "role_verified_current": 0,
+    "personal_x_verified": 0,
+    "preview_ready": 0
   }
 }
