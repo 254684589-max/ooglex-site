@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T05:09:17Z",
+  "generated_at": "2026-09-22T06:01:38Z",
   "production_count": 610,
-  "audited_handle_count": 23,
-  "pass_le_180d": 4,
+  "audited_handle_count": 21,
+  "pass_le_180d": 2,
   "manual_181_365d": 5,
   "hold_gt_365d": 10,
   "no_recent_post_evidence": 4,
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.43,
+      "age_days": 1008.47,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.66,
+      "age_days": 924.69,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.7,
+      "age_days": 1554.73,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 316.77,
+      "age_days": 316.81,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.75,
+      "age_days": 1393.78,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -139,7 +139,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3294.75,
+      "age_days": 3294.79,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.5,
+      "age_days": 215.54,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.44,
+      "age_days": 3374.48,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-02-06T10:37:45Z",
-      "age_days": 958.77,
+      "age_days": 958.81,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-03-25T16:49:34Z",
-      "age_days": 1641.51,
+      "age_days": 1641.55,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -229,7 +229,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 223.9,
+      "age_days": 223.94,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-06-01T12:39:54Z",
-      "age_days": 112.69,
+      "age_days": 112.72,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.43,
+      "age_days": 814.46,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -274,22 +274,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 76.82,
-      "activity_gate": "pass_le_180d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch06.json",
-      "name": "Rafał Brzoska",
-      "company": "InPost S.A.",
-      "handle": "RBrzoska",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-21T08:58:54Z",
-      "age_days": 0.84,
+      "age_days": 76.85,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -304,7 +289,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-05T08:09:45Z",
-      "age_days": 320.87,
+      "age_days": 320.91,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -319,7 +304,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-19T13:40:52Z",
-      "age_days": 306.64,
+      "age_days": 306.68,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -334,23 +319,8 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.44,
+      "age_days": 1020.47,
       "activity_gate": "hold_gt_365d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch06.json",
-      "name": "Sam Lake",
-      "company": "Remedy Entertainment Plc",
-      "handle": "SamLakeRMD",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-21T04:29:17Z",
-      "age_days": 1.03,
-      "activity_gate": "pass_le_180d",
       "error": ""
     }
   ]
