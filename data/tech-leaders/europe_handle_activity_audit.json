@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T08:56:00Z",
+  "generated_at": "2026-09-22T08:57:24Z",
   "production_count": 612,
-  "audited_handle_count": 24,
+  "audited_handle_count": 27,
   "pass_le_180d": 5,
-  "manual_181_365d": 5,
-  "hold_gt_365d": 10,
+  "manual_181_365d": 6,
+  "hold_gt_365d": 12,
   "no_recent_post_evidence": 4,
   "rows": [
     {
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.85,
+      "age_days": 1554.86,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -304,7 +304,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.59,
+      "age_days": 1020.6,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -366,6 +366,51 @@
       "latest_post_at": "2026-07-09T18:09:51Z",
       "age_days": 74.62,
       "activity_gate": "pass_le_180d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch09.json",
+      "name": "Christian Klein",
+      "company": "SAP SE",
+      "handle": "ChrstnKlein",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2023-12-18T18:51:29Z",
+      "age_days": 1008.59,
+      "activity_gate": "hold_gt_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch09.json",
+      "name": "Guillaume Faury",
+      "company": "Airbus SE",
+      "handle": "GuillaumeFaury",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2024-02-15T10:45:45Z",
+      "age_days": 949.92,
+      "activity_gate": "hold_gt_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch09.json",
+      "name": "Christel Heydemann",
+      "company": "Orange S.A.",
+      "handle": "Cheydema",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2026-02-19T11:07:51Z",
+      "age_days": 214.91,
+      "activity_gate": "manual_181_365d",
       "error": ""
     }
   ]
