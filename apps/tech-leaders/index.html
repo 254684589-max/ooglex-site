@@ -545,29 +545,36 @@
   "use strict";
 
   var API_BASE="https://pro-api.ooglex.com";
-  var CATALOG_URL="./leaders.json";
+  var CATALOG_FILE="leaders.json";
   try{
     var catalogMode=new URLSearchParams(window.location.search).get("catalog");
     if(catalogMode==="europe-v613-preview"){
-      CATALOG_URL="./leaders-europe-v613-preview.json";
+      CATALOG_FILE="leaders-europe-v613-preview.json";
     }else if(catalogMode==="europe-v612-preview"){
-      CATALOG_URL="./leaders-europe-v612-preview.json";
+      CATALOG_FILE="leaders-europe-v612-preview.json";
     }else if(catalogMode==="europe-v611-preview"){
-      CATALOG_URL="./leaders-europe-v611-preview.json";
+      CATALOG_FILE="leaders-europe-v611-preview.json";
     }else if(catalogMode==="europe-v610-preview"){
-      CATALOG_URL="./leaders-europe-v610-preview.json";
+      CATALOG_FILE="leaders-europe-v610-preview.json";
     }else if(catalogMode==="europe-v608-preview"){
-      CATALOG_URL="./leaders-europe-v608-preview.json";
+      CATALOG_FILE="leaders-europe-v608-preview.json";
     }else if(catalogMode==="europe-v604-preview"){
-      CATALOG_URL="./leaders-europe-v604-preview.json";
+      CATALOG_FILE="leaders-europe-v604-preview.json";
     }else if(catalogMode==="europe-v599-preview"){
-      CATALOG_URL="./leaders-europe-v599-preview.json";
+      CATALOG_FILE="leaders-europe-v599-preview.json";
     }else if(catalogMode==="wall-street-v528-preview"){
-      CATALOG_URL="./leaders-wall-street-v528-preview.json";
+      CATALOG_FILE="leaders-wall-street-v528-preview.json";
     }else if(catalogMode==="wall-street-v428-preview"){
-      CATALOG_URL="./leaders-wall-street-v428-preview.json";
+      CATALOG_FILE="leaders-wall-street-v428-preview.json";
     }
   }catch(e){}
+  var CATALOG_URL=API_BASE+"/v1/tech-leaders/catalog?catalog="+encodeURIComponent(CATALOG_FILE);
+  function techProtectedFetch(url,options){
+    if(window.OoglexTechLeadersGate&&typeof window.OoglexTechLeadersGate.fetch==="function"){
+      return window.OoglexTechLeadersGate.fetch(url,options);
+    }
+    return fetch(url,options);
+  }
   var FALLBACK_PEOPLE=[
     {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],category:"航天",note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
     {id:"huang",name:"Jensen Huang",zh:"黄仁勋",handle:"JensenHuang",role:"NVIDIA Founder & CEO",chips:["NVDA","AI","GPU","Data Center"],category:"芯片",note:"现任 NVIDIA 创始人兼 CEO，本人公开 X 账号。",title:"JENSEN HUANG · OFFICIAL X TIMELINE",sp500_ceo:true,sp500_member:true,ticker:"NVDA",leader_types:["ceo","founder"],x_identity_verified:true},
@@ -772,7 +779,7 @@
     try{
       var q=new URLSearchParams({handle:p.handle,name:p.name_en||p.name||p.name_zh||p.zh||""});
       var profileEndpoint=MODE==="free"?"/v1/tech-leaders/free-profile":"/v1/tech-leaders/profile";
-      var res=await fetch(API_BASE+profileEndpoint+"?"+q.toString(),{cache:"no-store"});
+      var res=await techProtectedFetch(API_BASE+profileEndpoint+"?"+q.toString(),{cache:"no-store"});
       if(!res.ok)throw new Error("profile_http_"+res.status);
       var data=await res.json();
       if(seq!==profileRequestSeq||!current||current.id!==p.id)return;
@@ -1039,7 +1046,7 @@
 
   async function loadCatalog(){
     try{
-      var res=await fetch(CATALOG_URL,{cache:"no-store"});
+      var res=await techProtectedFetch(CATALOG_URL,{cache:"no-store"});
       if(!res.ok)throw new Error("catalog_http_"+res.status);
       var data=await res.json();
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
@@ -1264,7 +1271,7 @@
     var ctl=new AbortController();
     var timer=setTimeout(function(){ctl.abort();},timeoutMs||4000);
     try{
-      var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit,{signal:ctl.signal,cache:"no-store"});
+      var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit,{signal:ctl.signal,cache:"no-store"});
       var data=await res.json().catch(function(){return {};});
       if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
       return data;
@@ -1659,7 +1666,7 @@
         var ctl=new AbortController();
         var timer=setTimeout(function(){ctl.abort();},30000);
         try{
-          var res=await fetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit="+target,{signal:ctl.signal,cache:"no-store"});
+          var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(current.handle)+"&limit="+target,{signal:ctl.signal,cache:"no-store"});
           var data=await res.json().catch(function(){return {};});
           if(!res.ok||!data||!Array.isArray(data.posts))throw new Error(data.error||("free_feed_http_"+res.status));
           var seen=new Set(posts.map(function(p){return String(p&&p.id||"");}));
@@ -1809,7 +1816,7 @@
       var ctl=new AbortController();
       var timer=setTimeout(function(){ctl.abort();},15000);
       try{
-        var res=await fetch(API_BASE+"/v1/tech-leaders/feed?leader="+encodeURIComponent(current.id)+"&limit=8",{signal:ctl.signal,cache:"no-store"});
+        var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/feed?leader="+encodeURIComponent(current.id)+"&limit=8",{signal:ctl.signal,cache:"no-store"});
         var data=await res.json().catch(function(){return {};});
         if(!res.ok)throw new Error(data.error||("http_"+res.status));
         renderApiFeed(data);

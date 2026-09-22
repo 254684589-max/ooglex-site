@@ -29,11 +29,11 @@ if (heroCount !== active.length) {
   throw new Error(`Hero count ${heroCount} does not match active catalog count ${active.length}.`);
 }
 
-const routeStart = html.indexOf('var CATALOG_URL="./leaders.json"');
+const routeStart = html.indexOf('var CATALOG_FILE="leaders.json"');
 if (routeStart < 0) {
-  throw new Error("Catalog router is missing.");
+  throw new Error("Protected catalog router is missing.");
 }
-const routeBlock = html.slice(routeStart, routeStart + 1800);
+const routeBlock = html.slice(routeStart, routeStart + 2600);
 if (routeBlock.includes("\\n")) {
   throw new Error("Catalog router contains a literal \\n token; this breaks inline JavaScript parsing.");
 }
@@ -46,11 +46,14 @@ if (!fs.existsSync(gateAssetPath)) {
   throw new Error("Tech Leaders password gate asset is missing.");
 }
 const gateSource = fs.readFileSync(gateAssetPath, "utf8");
-if (!gateSource.includes("PBKDF2") || !gateSource.includes("sessionStorage")) {
-  throw new Error("Tech Leaders password gate is missing hashed verification/session behavior.");
+if (!gateSource.includes("/v1/tech-leaders/auth") || !gateSource.includes("sessionStorage")) {
+  throw new Error("Tech Leaders gate is not wired to the server-side auth endpoint.");
 }
-if (/PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
-  throw new Error("Tech Leaders password gate must not store a plaintext password constant.");
+if (gateSource.includes("PBKDF2") || /PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
+  throw new Error("Tech Leaders client gate must not contain password verification material.");
+}
+if (!html.includes("/v1/tech-leaders/catalog?catalog=") || !html.includes("techProtectedFetch")) {
+  throw new Error("Tech Leaders catalog/feed are not wired through the protected server fetch path.");
 }
 
 const inlineScripts = [];
