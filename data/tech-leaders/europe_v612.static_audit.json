@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-09-22",
+  "status": "static_preview_validation_pass",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v612-preview.json",
+  "preview_catalog_version": "v612-europe-preview-2026-09-22",
+  "base_catalog": "v611-stable-2026-09-22",
+  "base_count": 611,
+  "preview_count": 612,
+  "approved_additions": 1,
+  "category_enrichments": 0,
+  "target_category": "欧洲",
+  "addition_names": [
+    "Martin Lorentzon"
+  ],
+  "addition_handles": [
+    "MartinLorentzon"
+  ],
+  "category_enrichment_names": [],
+  "category_enrichment_handles": [],
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "production_handle_conflicts": [],
+  "all_additions_preview_only": true,
+  "all_additions_identity_verified": true,
+  "all_additions_activity_qualified": true,
+  "all_category_enrichments_identity_verified": true,
+  "all_category_enrichments_activity_qualified": true,
+  "activity_audit_generated_at": "2026-09-22T08:23:33Z",
+  "runtime_gate": "pending"
+}

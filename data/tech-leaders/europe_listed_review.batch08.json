@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "first_pass_open_activity_audit_pending",
+  "status": "activity_audit_reconciled_2026-09-22",
   "tranche_type": "europe_listed_review_batch_08",
   "batch_range": "176-200",
   "phase": "Europe 22 -> 50",
@@ -14,10 +14,11 @@
     "batch_count": 25,
     "role_verified_current": 13,
     "role_needs_fresh_capture": 12,
-    "identity_verified_activity_pending": 1,
+    "identity_verified_activity_pending": 0,
     "needs_x_research": 24,
     "production_additions": 0,
-    "production_category_enrichments": 0
+    "production_category_enrichments": 0,
+    "preview_ready": 1
   },
   "policy": {
     "require_role_evidence": true,
@@ -43,10 +44,13 @@
       "x_handle": "MartinLorentzon",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/MartinLorentzon",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_v611_production_by_exact_name_or_handle",
-      "notes": "Spotify lists Lorentzon as Co-Founder and Director. The personal @MartinLorentzon account identifies him as Spotify founder and remains actively posting/reposting in September 2026; the direct <=180d site audit is the final activity gate."
+      "notes": "Spotify lists Lorentzon as Co-Founder and Director. Personal @MartinLorentzon identity is verified and the direct Europe activity audit passed with latest post 2026-09-22T07:36:05Z (0.03 days old).",
+      "x_last_activity_at": "2026-09-22T07:36:05Z",
+      "x_activity_age_days": 0.03,
+      "x_activity_audit_generated_at": "2026-09-22T08:23:33Z"
     },
     {
       "batch_rank": 177,
@@ -505,7 +509,7 @@
       "notes": "High-priority Europe-listed company core figure. Fresh role capture and verified personal X ownership are both required before approval."
     }
   ],
-  "next_stage": "Run the fresh Europe handle activity audit. Martin Lorentzon is the first identity-resolved candidate; if @MartinLorentzon passes <=180d, promote him into the next Europe Preview. Continue X research on the remaining 24 without lowering the gate.",
+  "next_stage": "Build Europe V612 Preview from Martin Lorentzon, the Batch 08 candidate that passes role + verified personal-X identity + <=180d activity. Keep the remaining 24 candidates in X/role research.",
   "review_method": {
     "candidate_source": "New Europe-listed company CEOs, founders, directors and core executives not used in Batches 01-07.",
     "activity_rule": "Automated direct free-feed audit: <=180d pass; 181-365d manual review; >365d hold.",
