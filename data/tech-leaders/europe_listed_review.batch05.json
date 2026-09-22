@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "first_pass_complete_resolved_handles_deduped_pending_runtime_activity_reconciliation",
+  "status": "activity_audit_reconciled_2026-09-22",
   "tranche_type": "europe_listed_review_batch_05",
   "batch_range": "101-125",
   "phase": "Europe 10 -> 50",
@@ -15,9 +15,9 @@
     "batch_count": 25,
     "role_verified_or_legacy": 23,
     "role_needs_fresh_capture": 2,
-    "preview_ready": 3,
-    "identity_verified_activity_pending": 2,
-    "manual_review_activity": 0,
+    "preview_ready": 4,
+    "identity_verified_activity_pending": 0,
+    "manual_review_activity": 1,
     "hold_inactive": 1,
     "needs_x_research": 19,
     "production_additions": 0
@@ -46,10 +46,15 @@
       "x_handle": "jptricoire",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/jptricoire",
-      "x_activity_status": "active_le_180d",
-      "review_status": "preview_ready",
+      "x_activity_status": "manual_181_365d",
+      "review_status": "manual_review_activity",
       "notes": "Schneider Electric confirms Tricoire remains Chairman. Personal X identity is established and public mirrors show activity within the 180-day policy window.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2026-02-10T07:33:42Z",
+      "x_activity_age_days": 223.87
     },
     {
       "batch_rank": 102,
@@ -68,7 +73,12 @@
       "x_activity_status": "active_le_180d",
       "review_status": "preview_ready",
       "notes": "OVHcloud identifies Klaba as Founder, Chairman and CEO. The long-standing personal @olesovhcom account is actively posting in September 2026.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2026-09-16T18:20:04Z",
+      "x_activity_age_days": 5.42
     },
     {
       "batch_rank": 103,
@@ -87,7 +97,12 @@
       "x_activity_status": "active_le_180d",
       "review_status": "preview_ready",
       "notes": "Paradox lists Wester as CEO since 2021. His personal X account is currently active, including recent Paradox-related posts and reposts.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2026-09-20T08:46:18Z",
+      "x_activity_age_days": 1.81
     },
     {
       "batch_rank": 104,
@@ -103,10 +118,15 @@
       "x_handle": "AntoineArnault_",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/AntoineArnault_",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
       "notes": "LVMH confirms current Group responsibilities and Executive Committee membership. Personal X ownership is mapped; direct activity gate remains to be reconciled by the Batch 05 audit.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2026-09-09T09:44:37Z",
+      "x_activity_age_days": 12.77
     },
     {
       "batch_rank": 105,
@@ -122,10 +142,15 @@
       "x_handle": "alexarnault",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/alexarnault",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
       "notes": "LVMH governance lists Alexandre Arnault as a director. Public X identity is established; recent repost activity is visible but the production feed gate will make the final activity determination.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2026-09-16T20:45:00Z",
+      "x_activity_age_days": 5.32
     },
     {
       "batch_rank": 106,
@@ -141,10 +166,15 @@
       "x_handle": "f_arnault",
       "x_identity_status": "probable_personal_x_needs_direct_verification",
       "x_identity_source_url": "https://x.com/f_arnault",
-      "x_activity_status": "needs_direct_activity_check",
+      "x_activity_status": "active_le_180d",
       "review_status": "needs_x_research",
       "notes": "LVMH governance confirms board membership. The apparent personal X handle requires one more ownership and activity check before approval; fan-page variants are explicitly excluded.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2026-06-01T12:39:54Z",
+      "x_activity_age_days": 112.65
     },
     {
       "batch_rank": 107,
@@ -258,7 +288,12 @@
       "x_activity_status": "inactive_gt_365d",
       "review_status": "hold_inactive",
       "notes": "Pearson confirms Abbosh as Chief Executive. The personal X identity is clear but observed posting is outside the 365-day activity limit.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle"
+      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
+      "x_activity_http_status": 200,
+      "x_activity_source": "fxtwitter_public_api_fast",
+      "x_last_activity_at": "2024-06-29T18:53:19Z",
+      "x_activity_age_days": 814.39
     },
     {
       "batch_rank": 113,
@@ -508,7 +543,7 @@
       "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
     }
   ],
-  "next_stage": "Run the extended Europe Handle Activity Audit across Batch 01-05, reconcile resolved Batch 05 handles, perform exact v604 name/handle dedupe, and build the next Europe preview only from candidates that pass role + personal-X identity + activity + avatar/feed/runtime gates.",
+  "next_stage": "Build Europe V608 Preview from the four Batch 05 candidates that now pass role + verified personal-X identity + <=180d activity: Octave Klaba, Fredrik Wester, Antoine Arnault and Alexandre Arnault. Keep Jean-Pascal Tricoire in manual review, Frédéric Arnault in identity review, and all unresolved candidates out of Preview.",
   "dedupe_check": {
     "production_catalog": "v604-stable-2026-09-22",
     "checked_count": 7,
@@ -517,5 +552,21 @@
     "method": "Exact candidate name and exact X handle checked against apps/tech-leaders/leaders.json via repository path search",
     "remaining_unresolved_count": 18,
     "remaining_rule": "Run production dedupe immediately when a personal X handle is resolved; unresolved candidates cannot enter Preview."
+  },
+  "audit_reconciliation": {
+    "source": "data/tech-leaders/europe_handle_activity_audit.json",
+    "generated_at": "2026-09-22T04:19:40Z",
+    "preview_ready_names": [
+      "Octave Klaba",
+      "Fredrik Wester",
+      "Antoine Arnault",
+      "Alexandre Arnault"
+    ],
+    "manual_review_names": [
+      "Jean-Pascal Tricoire"
+    ],
+    "hold_names": [
+      "Omar Abbosh"
+    ]
   }
 }
