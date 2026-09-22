@@ -1,460 +1,56 @@
 {
-  "updatedAt": "2026-09-22T11:33:59Z",
+  "updatedAt": "2026-09-22T16:42:30Z",
   "asOf": "2026-09-22",
   "source": "Google News · Yahoo Finance",
-  "highlight": {
-    "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-    "source": "东方财富",
-    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-    "published": 1790072250,
+  "lead": {
+    "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
+    "source": "21财经",
+    "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
+    "published": 1790086120,
+    "summary": "",
     "topic": "人工智能",
-    "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
+    "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
     "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
     "categoryKey": "tech",
     "category": "人工智能·科技"
   },
-  "categories": [
-    {
-      "key": "markets",
-      "name": "市场",
-      "items": [
-        {
-          "title": "活力中国调研行丨宁夏原州：“指尖经济”迸发新活力",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOaS12ZEdVN25uMzB0ZHZpeUpDcWRuM2NmN1RsN0R2NW96N0FhSktBN2VJR0RYZWJkOG9uMEhmcTlrV3hHZFM4YjlpQV9qR0ZtQ2lzVHd6dmtLa3BfelNnb25EbmJOdWJlbEVHeUpHVUdKOHh1cVZ1Rjl0eUgxNmwyY01B?oc=5",
-          "published": 1790069706,
-          "topic": "活力中国调研行",
-          "brief": "宁夏原州：“指尖经济”迸发新活力。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "美股要迎“最后一舞”？知名投资人：标普500料先升破8000点再暴跌",
-          "source": "财联社",
-          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE1seVVaaTRMMWhjTk5GeE9pM3FWckJza0ZrTUdEbEhBbjhyU0xFZXlTZWlhRUd6LXJrYVJHaXA0bDg2VlFKSFd0Qg?oc=5",
-          "published": 1790055720,
-          "topic": "标普500",
-          "brief": "美股要迎“最后一舞”？知名投资人：标普500料先升破8000点再暴跌。",
-          "why": "这可能改变风险偏好、估值预期与资金流向。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "21专访丨上海财经大学校长刘元春：AI仍是发展方向，增强金融服务新质生产力的质效",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1NZHkwNWczRzJRMnk0Y0hDdS1qeTJwVVlmUFgwT3ZvMk9yWW1sZ0RLTE8wZjhLeGI0QTRXZmFPbkotV3kwS1FwUk5OUTlKZVRvUWxkYTd3V05kUE5XSEpTcS1qUGJZUQ?oc=5",
-          "published": 1790068149,
-          "topic": "人工智能",
-          "brief": "上海财经大学校长刘元春：AI仍是发展方向，增强金融服务新质生产力的质效。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "央视聚焦湖北光电子信息产业链",
-          "source": "湖北省经济和信息化厅",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTFBROHZrXzItMV9EREdJZnZHY05CLUliVkhYazlWQW1ta29pQmFJSVM3UjRSblJEaHJELWZDaTNLM0dRR3duQ29MM3FoM3VXRk1yblo0Mm9PX0h2dmhmbjRZTnpJMEs0bXBtb3VUY2ppcmVJdw?oc=5",
-          "published": 1790071200,
-          "topic": "市场",
-          "brief": "央视聚焦湖北光电子信息产业链。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "杨德龙：美联储加息靴子落地 新一轮行情呼之欲出",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQUlFJbC1EdWhyUkdiTTRDV1ZYZzlWYVhjZERJdVNpYUl5U2M1aS1OOXhKcmJSaE5XY3NzS1VCRGZ5MzNNdEFwbjhhT18xZ2xBVGZ2MHNvdGg0MzQ4TjZMblpfTWdUUkVudmJkWHFNWmFUMFkzWWE4ejJqRnFJbndwelJWTWc5d29NcmNIOE9WVQ?oc=5",
-          "published": 1790061060,
-          "topic": "美联储",
-          "brief": "杨德龙：美联储加息靴子落地 新一轮行情呼之欲出。",
-          "why": "这可能影响利率预期、融资成本与风险资产估值。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "市场预期美联储续加息 盾币收跌至17884盾",
-          "source": "Shangbao Indonesia",
-          "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTFAtb0FYbTRycnFSaTFLZndTcVk3R3paSUdGc0d3aHVWanhyM2pxQ0xJV1ZKLTBWSkFmaVdtbmdVX3hydEpvM1dvQXNGbXR0VUJfLWx2N0dad01RZ3R5NTVKeE1fT2RhOG9xX3dFRlM3SWdBZXhZZFlpVzd3?oc=5",
-          "published": 1790068500,
-          "topic": "美联储",
-          "brief": "市场预期美联储续加息 盾币收跌至17884盾。",
-          "why": "这可能影响利率预期、融资成本与风险资产估值。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "央行：前8个月熊猫债券累计发行2139.8亿元 新增29家境外机构入市",
-          "source": "观点网",
-          "link": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5aRXkxX1FWUHo2aFc1QmxqWEJaOTVreFh2aWRfNENzck5rTW8wXzhJeHNEYjRDcy1YeExXc2g0Y0xxOEhMWjF0NXBuNDNxdw?oc=5",
-          "published": 1790066137,
-          "topic": "央行",
-          "brief": "央行：前8个月熊猫债券累计发行2139.8亿元 新增29家境外机构入市。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets"
-        }
-      ]
-    },
-    {
-      "key": "tech",
-      "name": "人工智能·科技",
-      "items": [
-        {
-          "title": "致远互联徐石：合于道、融于智，让AI在组织的轨道上运行",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBHdWdRbVhfa2x2NGJqaUJGdmpURlhFTTlhN29DVU83LUlCdmlYWC1MT1ZJRERxU0VfWG9TZFNRTklDU01NSjBGM3k3N0dOY1NGSmVETUs5T3ZCSGNkWnN1dkw1TzAtcFhMeGVSX1BhSXdqRVF2NDN5eXpIZUE?oc=5",
-          "published": 1790068456,
-          "topic": "人工智能",
-          "brief": "致远互联徐石：合于道、融于智，让AI在组织的轨道上运行。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "AI陷阱大揭秘丨AI配置失当酿成后门漏洞，内网数据裸奔外泄",
-          "source": "中央网络安全和信息化委员会办公室",
-          "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9HaFNFb1lJSlZGd1ktVDJDY2tEMHh1Q09PeUhOeHZoM0JjVzduSk84bkJFMThOUHUtV1dBS3JtX3draFNSd1dmUU1JVXJSb2NGc0tsQjdzZnNHa0R4TjQzOW1haGhoLUU?oc=5",
-          "published": 1790043120,
-          "topic": "人工智能",
-          "brief": "AI配置失当酿成后门漏洞，内网数据裸奔外泄。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "AI驱动下的产业变革与创新演进",
-          "source": "新华网客户端",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPQ2YxbFhNd05UWnZwWWNHVTRFNjcxeS1CbDRuMVpuMl96U2lEOEkyektlZFlZMkVvLVgwRG5TdWY0NTdWVHF2UDlKWFBJbkpHTFJDS1dHUUhab0RvRjh5bHNBVi1SMzUzdWVzbE90Y3N4ekMxUVhGd1c0bDB6cVp4WEpkb2xQNC1IZzJFVnJTUXdSZERNSWRMbWtn?oc=5",
-          "published": 1790067852,
-          "topic": "人工智能",
-          "brief": "AI驱动下的产业变革与创新演进。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "科技部部长阴和俊出席中国-爱尔兰科技合作联委会第3次会议",
-          "source": "中华人民共和国科学技术部",
-          "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFA2YzFiZHYyRm1MeF9GdGFsN2p6MTEyc1BUMEF6VTgyMlQyTlhhU3ZqZWFYbllQOFMtWUhHcFBRdmdxNXRLSk1qbFc3S2M2b1NoNFZad0IyVHQ1cVJseE1IUG1YOEZNME5td1E?oc=5",
-          "published": 1790069460,
-          "topic": "人工智能·科技",
-          "brief": "科技部部长阴和俊出席中国-爱尔兰科技合作联委会第3次会议。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "接续奋斗：跑好科技强国“接力赛”",
-          "source": "china.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9OTzB1S2dSdnozaUdFbER1Z0kteVc5dkpMV1ZPLUF2TkxqQVpPVWppNDFYMF9PT3l5aHh5R21LM1NZd2duRXhWc0JPRWRMODVxWnZGdWsyUWs1eW1KUU5SUWFZemlINFJvc2hFNG5RMllTOFJBWVVVVE9B?oc=5",
-          "published": 1790067960,
-          "topic": "接续奋斗",
-          "brief": "接续奋斗：跑好科技强国“接力赛”。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-          "published": 1790072250,
-          "topic": "人工智能",
-          "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "提升源头供给能力 以科技创新推动行业升级",
-          "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE43OUhOUVF6anNrR1BqU3Z3cDRFZWtaRUdFTTdmQVRYSmRSei05U3Z1Sm85TVkwNDc1SkI5VTFMbURpU0lyaUhfSGlQbENMNW4yZ1JMSEVvY3d1b2xLRGQ2WGdmN3VxLVhBTzZLalBNNUM?oc=5",
-          "published": 1790069857,
-          "topic": "人工智能·科技",
-          "brief": "提升源头供给能力 以科技创新推动行业升级。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        }
-      ]
-    },
-    {
-      "key": "ent",
-      "name": "娱乐",
-      "items": [
-        {
-          "title": "AI深度介入电影工业改变了什么？对话导演陆川",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFB4ZHk0bG5HU2xFYnFvVlloUkliUWp0MEt1eExwdXYwZllwMTFFRzVYRTZRMmJibWYyamJLb2hZTzNQdUdob1BzMnB2a3hVam15amRic3BFVUV1RUN4cXRxd2dhdnl3SnpIZWdkNE1jZ1FRcGhPWDVDQm1LNFI?oc=5",
-          "published": 1790075639,
-          "topic": "人工智能",
-          "brief": "AI深度介入电影工业改变了什么？对话导演陆川。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "音乐剧空中之约，东航执飞《剧院魅影》全球限定主题航班",
-          "source": "中国民航网",
-          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTFA1RHFZdjlIRFFhSDdpVTVpeERjWmVSZElWc2xRTkR2ZHdFb3JPQndibzVETFBPZTd2QVkxb0pBMTBaUXhKelZpRkVaaVZWMjR5RHZUWlkyX0JvQUJtbUEtUFZ3dzNXU3NwcTBuMQ?oc=5",
-          "published": 1790067300,
-          "topic": "音乐",
-          "brief": "音乐剧空中之约，东航执飞《剧院魅影》全球限定主题航班。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "“天涯共此时——中国艺术歌曲声乐音乐会”在首尔举行--国际",
-          "source": "人民网",
-          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE0wOEVYQngwUnZHYWpmdGNuWS1DYm5IZkx6eEliR0g1aVRNWHVxbUJTMzYzWHo2eE0xU1RGa2NFamlGQmRkelZhWkpmRHdLT3JjNVhNQncySVowTlRIMlVRXzZ4YzNLenJEakhV?oc=5",
-          "published": 1790066100,
-          "topic": "音乐",
-          "brief": "“天涯共此时——中国艺术歌曲声乐音乐会”在首尔举行--国际。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "AI冲击下音乐教育何去何从？飞思乐峰会提出双轨育人新模式",
-          "source": "中国教育在线",
-          "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1vdkhwTEZqLThiXzJ2REsyZExXQnlIT3RxZ3RrY05BZmRQWjNiSHdvZUJnclloOFdONmNQRHZHNm9mRjFyNU9VQmVtMGlNeFBhRjlQR3dLeTJRSTZTb2xqNmtfcWp4SnJ1N3A3NTdR?oc=5",
-          "published": 1790056860,
-          "topic": "人工智能",
-          "brief": "AI冲击下音乐教育何去何从？飞思乐峰会提出双轨育人新模式。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "中国高校影视学会媒介文化专委会2026年年会暨第九届媒介文化学术研讨会举行",
-          "source": "hunnu.edu.cn",
-          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBJZWctTXVfV3FYZ0E1c3VlbE5lU1lLTzZHUlRCdjcxS1lSMDY5SHUwazk3UFNEZXkxWm1XcGFacWktbTNHTFN3ekpfZ2hGbEpUNkMxVnFXdw?oc=5",
-          "published": 1790066948,
-          "topic": "影视",
-          "brief": "中国高校影视学会媒介文化专委会2026年年会暨第九届媒介文化学术研讨会举行。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "月下听曲做月饼，第七季“坪新音乐汇”解锁中秋新体验",
-          "source": "深圳新闻网",
-          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9LYXlwZmIwTUh3ZDRYQVo4alBFX04tVkk3M25BV3hhLVBia3VXb3RWZ1dPcWlJdWdvOTdDV3Ezek5yNDJwdkk5ZU54cGJraVJsMWFRTWJPaUdKSWJFd2UySzl6TGdvT0NEVllzM2p1TFVoeXFRLUE?oc=5",
-          "published": 1790074368,
-          "topic": "音乐",
-          "brief": "月下听曲做月饼，第七季“坪新音乐汇”解锁中秋新体验。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "​明星约单独见面？七旬老人来京“赴约”被首都机场公安及时劝返",
-          "source": "bjnews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9wLS0yRktnWWVJYmNlcUZLVlQzYWd4OTBpUG5WUE4yU1R3VE5tdFVheXBoTmtMMWo2bXBHTzNLNEdBcXMwc0lVOF9mTWNteThja2FMR2o3STVGdV9ucEdrZU4tazI?oc=5",
-          "published": 1790073720,
-          "topic": "​明星约单独见面？",
-          "brief": "​明星约单独见面？七旬老人来京“赴约”被首都机场公安及时劝返。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        }
-      ]
-    },
-    {
-      "key": "sports",
-      "name": "体育",
-      "items": [
-        {
-          "title": "追光丨郑钦文领衔中国队角逐“女子网球世界杯”",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOSzBXblc1ekgwaUIzQ0ZRSkd3ejR1U2VyY0R6Mk83Wm1rRTRYMEJZZU1KUnJPT1MzSm5RWnprU2JndGxUU0ZGd1NuOTA3NHV3WFVEbE56MGx0ODVqNzhoMVNZU25lNDZwLUw1dkwxZXZmOHBENFY4SHUyZDNvemNnaQ?oc=5",
-          "published": 1790049882,
-          "topic": "网球",
-          "brief": "郑钦文领衔中国队角逐“女子网球世界杯”。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "新华网体育与中乔体育联合推出青春校园跑系列赛",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNUmwwVFFmOU82V3ZvRTJqX1BINDA3amJwWE9Wd0NYYnl6RHlmVE5lLWNVb19ocjhkaFBjcjYxd0g3LU11SG5obmJteGl5WHV6VVJFbnBucVlfRlN0a2hTR01xZ1lKdHd6dnA3aUhNR2dkR2NjSDVBOEpPbUx5NGVZZHR4Z25KNmM?oc=5",
-          "published": 1790071683,
-          "topic": "体育",
-          "brief": "新华网体育与中乔体育联合推出青春校园跑系列赛。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "首届“大学超”沈北大学城足球超级联赛落幕 辽宁大学斩获总冠军",
-          "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTFByRjF4X0xJUzRHQkpSNS11eXlNck1OVGJaSnVBaTRhMnNlNWxHZWhYZUJKeGJ0SXFTYW1scXowSF9ZUnI2RFJlQWxxUmJvcDlPT2RQazhRVlkzRXNjdDBSUEJjYms1ZG1ERjBmTzlR?oc=5",
-          "published": 1790046403,
-          "topic": "足球",
-          "brief": "首届“大学超”沈北大学城足球超级联赛落幕 辽宁大学斩获总冠军。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "网球名将郑钦文：想向对手展示中国体育的精气神-中新网",
-          "source": "chinanews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE8tZE4wWGstaUVDdGFnUnlDbERlWVRORVNOWnF5TGZMSUd0Rk9DamVidENPcW9rYmN0dk02NnpxS3RmcDdmbk5JRmZ2Sk44RTFOem4wcERZWjlIbHdRRG9DTXhHY2Q1Q3Rm?oc=5",
-          "published": 1790049349,
-          "topic": "网球",
-          "brief": "网球名将郑钦文：想向对手展示中国体育的精气神-中新网。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "KeepOpen一球加冕网球季圆满收官：跨城四站激战，上海滩上演终极对决",
-          "source": "凤凰网",
-          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBlXy1iOV9UZm1rckNKaGFkTm9kVnBjNXdseDEwdEtBYlZxRURseGdONlFPVGhSeDdKOFpjUFhyVE00UmNuSWRIQ1VGS2h2RnM?oc=5",
-          "published": 1790068374,
-          "topic": "网球",
-          "brief": "KeepOpen一球加冕网球季圆满收官：跨城四站激战，上海滩上演终极对决。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "抢抓赛事经济机遇，宁波体育用品拓展全球市场",
-          "source": "zjnews.zjol.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTFBNWmxKbFFOOXR5UDlYdjl2Mzd3NEhFTFk0QVJ6OW05dEl0RkRXbm1sX3JfZ1NILXUwRjFjd0tLT3V5eGo1d3RuM2hfQTVNS3kzUDJyVzVFWEZtQ2dpMDFJV1dsdk9xejl6dUlWYlhpYWc2QQ?oc=5",
-          "published": 1790065253,
-          "topic": "体育",
-          "brief": "抢抓赛事经济机遇，宁波体育用品拓展全球市场。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "郑州航空港区：万村千乡农民篮球赛闭幕",
-          "source": "新浪财经",
-          "link": "https://news.google.com/rss/articles/CBMi4gNBVV95cUxQWHpYN2lrN0ZxMVNTa2t6Ni0ybG94RWJPcjZONnJKa252T0lTa1U5eDcxUkVaRGRJd2dyVW42M0JaOVRHWGtrR29zaUdISzhHXzNOUEdaaWNMV0xPVkFISm1rVVpkcE8yb2o1TW5ZTmlMRWxGblFJWWhvWkNKU05CSTc1ZXRGRE5tTTNlaE1VX2NfRGhUNnBTQzE0b2YtYWVuOGRYVk5vU0V2OV9iSWFGdVRfZlFMTWUxRURNM3MwbWozS3VrRjJNZl9fV1VtZTRod3pzVHdoYXNFQUVBVVIyRG10RkJ2NDE3V2JuVGFqZ1JBZFM0MFF2RlNLN2xwdG9GQ05rOXo4MlN2UkVaQXFrTDJOVGtfQm12RzNSYlVHTExSS2tRNVEycWF4TXJOb1BkeVo2MGsxbWUwTXVLQVBJLWxEdExxWVgta21QMjZzMXVqN1U3WE5TMEhib09zcEhWN01WaVZLemwxZS1rOW1RTmVSd21lRkFLanlPUFdHZC03aFlGYlNOSnhORDFWaHNjaUhEM1luRUVBeEFTcUc4ZFhwOC1rWGNvVHhOX2stYUF2cWN0cmdEaU5uOHdIdFEwNzBPVGlqenJDN0tFMkhLVGRyQmp4d1hQdWlha19Wek1lQQ?oc=5",
-          "published": 1790068659,
-          "topic": "篮球",
-          "brief": "郑州航空港区：万村千乡农民篮球赛闭幕。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        }
-      ]
-    },
-    {
-      "key": "world",
-      "name": "国际",
-      "items": [
-        {
-          "title": "观天下丨加拿大与欧洲靠拢 “独特同盟”前景如何",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBsYVZKUm9CS0ZYMy1OeTdKanpiRVJWd0VKRlJ4N2hrRGtJdERHSnJ0MWVKTnRueV8xQ2NoWFRyZWNzVWo2MVBIWXpUalMtbFdLUThTYWxUckE1cjBPX3hPaF9jUGRPUHF6QXkwNHk4azdZaDhnSzFB?oc=5",
-          "published": 1790037593,
-          "topic": "欧洲",
-          "brief": "加拿大与欧洲靠拢 “独特同盟”前景如何。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
-        },
-        {
-          "title": "北外举办全球区域国别学共同体2026年会",
-          "source": "北外新闻网",
-          "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFAweDZLN3lBcUtTNTlmMl9pdURkbm5EclN5d0NHbGxzenFTWG8taGtFVUhhLWVzUDNLNEp3ZmtxUmR3YVRTbURSaERNR3h6dDBEalE?oc=5",
-          "published": 1790065236,
-          "topic": "国际",
-          "brief": "北外举办全球区域国别学共同体2026年会。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
-        },
-        {
-          "title": "特朗普将到访并发表演讲，联合国：已反复检查自动扶梯",
-          "source": "凤凰网",
-          "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE9qR1plM2NsSkxRWkgtVjRCTmV2UEJjUmdIbzkzV1FRNDVUX1FnSHBkSXdaRzd1OUxJUjBBVkF0b1FRUHFHdmJ3VllYekY?oc=5",
-          "published": 1790070398,
-          "topic": "特朗普将到访并发表演讲，联合国",
-          "brief": "特朗普将到访并发表演讲，联合国：已反复检查自动扶梯。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
-        },
-        {
-          "title": "欧洲能源困境关键症结在哪儿？",
-          "source": "京报网",
-          "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE9kNGFwYXA4bzZTYWY3VUxUMUJPR2x3clgtMUlOaml2eWJ1R19RdHF4SWltbjdPTEtGT0RlbXBuMmZJdXpWZm9TTHZhdkNua21yazNYRmpsMTUxX1lmLWc?oc=5",
-          "published": 1790074528,
-          "topic": "欧洲",
-          "brief": "欧洲能源困境关键症结在哪儿？",
-          "why": "这可能影响能源成本、通胀预期与市场风险偏好。",
-          "categoryKey": "world"
-        },
-        {
-          "title": "巴西合作社国际高管访学团到访上外国际工商管理学院",
-          "source": "上海外国语大学",
-          "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTFA2QVBnRTRtUEhnV0VNUHd6MENvZFA2MnVHQkItVlg2Y2ZsRHhsenJBYjFhMDdkcTk3Ni1EbER2dUhWVWt2a1BpN1JSRURBUmRhMjRGd0ROb1VjOElYUE93cV9abw?oc=5",
-          "published": 1790072837,
-          "topic": "国际",
-          "brief": "巴西合作社国际高管访学团到访上外国际工商管理学院。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
-        },
-        {
-          "title": "腾冲科学家论坛海外首站专题活动在曼谷举行--国际",
-          "source": "人民网",
-          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE04U25sM19JSUZLOUl4bGxvZEZZWlFmVFlFQmw2VTlxUllDSDBPbkIxUXA0WU5TQTRpNTY2ZGpON0lNTnJ0Z1FCOEVJVHI3QWduT255eDZrOTBDUzRDV096cUVZbXp1WTV0SGxJ?oc=5",
-          "published": 1790059920,
-          "topic": "国际",
-          "brief": "腾冲科学家论坛海外首站专题活动在曼谷举行--国际。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
-        }
-      ]
-    }
-  ],
-  "markets": [
-    {
-      "name": "标普500",
-      "symbol": "^GSPC",
-      "price": 7764.7,
-      "changePct": 1.49,
-      "fmt": "idx"
-    },
-    {
-      "name": "纳斯达克",
-      "symbol": "^IXIC",
-      "price": 27122.09,
-      "changePct": 2.26,
-      "fmt": "idx"
-    },
-    {
-      "name": "布伦特原油",
-      "symbol": "BZ=F",
-      "price": 98.55,
-      "changePct": -1.78,
-      "fmt": "usd"
-    },
-    {
-      "name": "WTI原油",
-      "symbol": "CL=F",
-      "price": 90.31,
-      "changePct": -5.71,
-      "fmt": "usd"
-    },
-    {
-      "name": "黄金",
-      "symbol": "GC=F",
-      "price": 4352,
-      "changePct": -0.73,
-      "fmt": "usd"
-    },
-    {
-      "name": "美元指数",
-      "symbol": "DX-Y.NYB",
-      "price": 100.42,
-      "changePct": -0.01,
-      "fmt": "idx"
-    }
-  ],
-  "note": "新闻聚合自 Google News 收录的公开媒体，简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差；每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。",
+  "highlight": {
+    "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
+    "source": "21财经",
+    "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
+    "published": 1790086120,
+    "summary": "",
+    "topic": "人工智能",
+    "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
+    "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
+    "categoryKey": "tech",
+    "category": "人工智能·科技"
+  },
   "overview": [
     {
       "topic": "市场",
-      "text": "央视聚焦湖北光电子信息产业链。",
-      "source": "湖北省经济和信息化厅"
+      "text": "到2030年 我国电气化率将跃居全球主要经济体首位。",
+      "source": "经济频道"
     },
     {
       "topic": "人工智能·科技",
-      "text": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
-      "source": "东方财富"
+      "text": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
+      "source": "21财经"
     },
     {
       "topic": "国际",
-      "text": "欧洲能源困境关键症结在哪儿？",
-      "source": "京报网"
+      "text": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
+      "source": "UN News"
     }
   ],
   "signals": [
     {
       "label": "AI / 芯片",
-      "trend": "↑"
+      "trend": "关注"
     },
     {
       "label": "利率预期",
-      "trend": "↑"
+      "trend": "关注"
     },
     {
       "label": "原油",
@@ -469,115 +65,113 @@
       "trend": "↓"
     }
   ],
-  "lead": {
-    "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-    "source": "东方财富",
-    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-    "published": 1790072250,
-    "topic": "人工智能",
-    "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
-    "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-    "categoryKey": "tech",
-    "category": "人工智能·科技"
-  },
   "wires": [
     {
-      "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-      "source": "东方财富",
-      "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-      "published": 1790072250,
+      "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
+      "source": "21财经",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
+      "published": 1790086120,
+      "summary": "",
       "topic": "人工智能",
-      "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
+      "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
       "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
       "categoryKey": "tech",
       "category": "人工智能·科技"
     },
     {
-      "title": "市场预期美联储续加息 盾币收跌至17884盾",
-      "source": "Shangbao Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTFAtb0FYbTRycnFSaTFLZndTcVk3R3paSUdGc0d3aHVWanhyM2pxQ0xJV1ZKLTBWSkFmaVdtbmdVX3hydEpvM1dvQXNGbXR0VUJfLWx2N0dad01RZ3R5NTVKeE1fT2RhOG9xX3dFRlM3SWdBZXhZZFlpVzd3?oc=5",
-      "published": 1790068500,
-      "topic": "美联储",
-      "brief": "市场预期美联储续加息 盾币收跌至17884盾。",
+      "title": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急",
+      "source": "UN News",
+      "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1zcVVTeExSbUExc01lYXFqWEdZZmt6Rjgzdk5qQ2RpckhFcWJaQ0doSG9nM1pQa216SzFOVHlMMWEtQ2pGQ2tLSUtVLUNhbVNCcWZuaVU0Yw?oc=5",
+      "published": 1790085941,
+      "summary": "",
+      "topic": "联大第81届会议主席",
+      "brief": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际"
+    },
+    {
+      "title": "联合国秘书长：“四大考验”决定人类未来",
+      "source": "finance.sina.cn",
+      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNZ0w3MW5LdHNkTzU4dFBnUXM0RzN1ZzdraGJxSUt5NWd3U3VFM0FSYkRKVFBUczQxMXJqNU0zUFFpaE5LUjFuNlJiQmJ5dldhbXpYTy1IcEVMcm4zTmVxRVhyWXFCazBoQnJGUEJ4c3BTVXpVZkhhUnBOM3RtWkZxbmFfNHNnUQ?oc=5",
+      "published": 1790085792,
+      "summary": "",
+      "topic": "联合国秘书长",
+      "brief": "联合国秘书长：“四大考验”决定人类未来。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际"
+    },
+    {
+      "title": "充分发挥青年在国际传播中的独特作用（专题深思）",
+      "source": "人民日报",
+      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQQWRYU2VFdDhfRS1LMGNvWDZ0alY4b2xoaklmcENaVm9WT2N5NGcyUm5mSlZ0d2lHX3dpYXFlLWN0NjdsalZLZ09VczFQdlBPQUh2MVJta29RbzZ5Ymtvclpnek96aE9DTEJOSi1FNW4wT1hLcENKWkRBQ2pIR1R6eg?oc=5",
+      "published": 1790083089,
+      "summary": "",
+      "topic": "国际",
+      "brief": "充分发挥青年在国际传播中的独特作用（专题深思）。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际"
+    },
+    {
+      "title": "到2030年 我国电气化率将跃居全球主要经济体首位",
+      "source": "经济频道",
+      "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5DOTlQRHFoREY3dUVZZXFkT1d0YjNITjYwUHA1MkVuVW1ETVQtalp3TXRlNmZ4OVItWmpyMXJScFI3MmdJMU92bDU1U3BpSE1QT1Ixa195M3d3RURKdGRVV1NfUERuOENvYWR0ZnVJbVhrOTE3bGtOV0UxNA?oc=5",
+      "published": 1790086440,
+      "summary": "",
+      "topic": "市场",
+      "brief": "到2030年 我国电气化率将跃居全球主要经济体首位。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "markets",
+      "category": "市场"
+    },
+    {
+      "title": "古特雷斯被问“以色列为何还在联合国”",
+      "source": "21财经",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNUGtXZHRQb3ZQVWNtXzNNSFJ6Um9XTno3Q0RuMGtKakw0ODZkUjQ3aGliSGN0RlBJSVZyblVmeS1VNjZUd2ZFMlVObUVZWEVLNWV0UUVHbW9aRU9DVGxGWHNKeVVycWcwa2xtc2c3cFF6M0wxQUVNSXlPTmZxUDFMYUpuZW5veUZlUTZ0eUo2RQ?oc=5",
+      "published": 1790082780,
+      "summary": "",
+      "topic": "中东",
+      "brief": "古特雷斯被问“以色列为何还在联合国”。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际"
+    }
+  ],
+  "alsoNoted": [
+    {
+      "title": "中国经济面面观丨人形机器人叩响消费市场，离走进家庭还有多远？",
+      "source": "news.cn",
+      "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPVUN4TGw5ZDNteFdfRWg2ZG43MWdhcjEzeUlnaFRUVFVFbVpfdnZHUkl4YWFqc0ZLei0wbDd6cGhlZjl6V0dWbUVHN1Z3STBEQWlIYjU4M1dFNUhTelRtR0N6TThNZ05fcHhrMlZUcFBmTTlUekZvQURHaW5zS0UzenVB?oc=5",
+      "published": 1790085102,
+      "summary": "",
+      "topic": "中国经济面面观",
+      "brief": "人形机器人叩响消费市场，离走进家庭还有多远？",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "markets",
+      "category": "市场"
+    },
+    {
+      "title": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
+      "source": "21财经",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNN2JNWHE5dXl3UVJXbzN2N3lreHhQUVZibEhFeVY2VjVSN2VmeEJnLXppZjdkUmcwaEVLM1ZtUFY3OUV6TGgyWDNRQWxhOHItaDM0TGl6VVZKZy0zZkVlbENIbXB5eHBRaE5WaFNtNUhXc05uSTBwMzN6ckl5dHJ3NkJkcFpHeDFQLTR6YlFjRQ?oc=5",
+      "published": 1790084040,
+      "summary": "",
+      "topic": "市场",
+      "brief": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
       "why": "这可能影响利率预期、融资成本与风险资产估值。",
       "categoryKey": "markets",
       "category": "市场"
     },
     {
-      "title": "欧洲能源困境关键症结在哪儿？",
-      "source": "京报网",
-      "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE9kNGFwYXA4bzZTYWY3VUxUMUJPR2x3clgtMUlOaml2eWJ1R19RdHF4SWltbjdPTEtGT0RlbXBuMmZJdXpWZm9TTHZhdkNua21yazNYRmpsMTUxX1lmLWc?oc=5",
-      "published": 1790074528,
-      "topic": "欧洲",
-      "brief": "欧洲能源困境关键症结在哪儿？",
-      "why": "这可能影响能源成本、通胀预期与市场风险偏好。",
-      "categoryKey": "world",
-      "category": "国际"
-    },
-    {
-      "title": "巴西合作社国际高管访学团到访上外国际工商管理学院",
-      "source": "上海外国语大学",
-      "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTFA2QVBnRTRtUEhnV0VNUHd6MENvZFA2MnVHQkItVlg2Y2ZsRHhsenJBYjFhMDdkcTk3Ni1EbER2dUhWVWt2a1BpN1JSRURBUmRhMjRGd0ROb1VjOElYUE93cV9abw?oc=5",
-      "published": 1790072837,
-      "topic": "国际",
-      "brief": "巴西合作社国际高管访学团到访上外国际工商管理学院。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际"
-    },
-    {
-      "title": "特朗普将到访并发表演讲，联合国：已反复检查自动扶梯",
-      "source": "凤凰网",
-      "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE9qR1plM2NsSkxRWkgtVjRCTmV2UEJjUmdIbzkzV1FRNDVUX1FnSHBkSXdaRzd1OUxJUjBBVkF0b1FRUHFHdmJ3VllYekY?oc=5",
-      "published": 1790070398,
-      "topic": "特朗普将到访并发表演讲，联合国",
-      "brief": "特朗普将到访并发表演讲，联合国：已反复检查自动扶梯。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际"
-    },
-    {
-      "title": "AI深度介入电影工业改变了什么？对话导演陆川",
-      "source": "新华网",
-      "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFB4ZHk0bG5HU2xFYnFvVlloUkliUWp0MEt1eExwdXYwZllwMTFFRzVYRTZRMmJibWYyamJLb2hZTzNQdUdob1BzMnB2a3hVam15amRic3BFVUV1RUN4cXRxd2dhdnl3SnpIZWdkNE1jZ1FRcGhPWDVDQm1LNFI?oc=5",
-      "published": 1790075639,
-      "topic": "人工智能",
-      "brief": "AI深度介入电影工业改变了什么？对话导演陆川。",
-      "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-      "categoryKey": "ent",
-      "category": "娱乐"
-    }
-  ],
-  "alsoNoted": [
-    {
-      "title": "21专访丨上海财经大学校长刘元春：AI仍是发展方向，增强金融服务新质生产力的质效",
+      "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
       "source": "东方财富",
-      "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1NZHkwNWczRzJRMnk0Y0hDdS1qeTJwVVlmUFgwT3ZvMk9yWW1sZ0RLTE8wZjhLeGI0QTRXZmFPbkotV3kwS1FwUk5OUTlKZVRvUWxkYTd3V05kUE5XSEpTcS1qUGJZUQ?oc=5",
-      "published": 1790068149,
-      "topic": "人工智能",
-      "brief": "上海财经大学校长刘元春：AI仍是发展方向，增强金融服务新质生产力的质效。",
-      "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-      "categoryKey": "markets",
-      "category": "市场"
-    },
-    {
-      "title": "致远互联徐石：合于道、融于智，让AI在组织的轨道上运行",
-      "source": "新华网",
-      "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBHdWdRbVhfa2x2NGJqaUJGdmpURlhFTTlhN29DVU83LUlCdmlYWC1MT1ZJRERxU0VfWG9TZFNRTklDU01NSjBGM3k3N0dOY1NGSmVETUs5T3ZCSGNkWnN1dkw1TzAtcFhMeGVSX1BhSXdqRVF2NDN5eXpIZUE?oc=5",
-      "published": 1790068456,
-      "topic": "人工智能",
-      "brief": "致远互联徐石：合于道、融于智，让AI在组织的轨道上运行。",
-      "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-      "categoryKey": "tech",
-      "category": "人工智能·科技"
-    },
-    {
-      "title": "AI驱动下的产业变革与创新演进",
-      "source": "新华网客户端",
-      "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPQ2YxbFhNd05UWnZwWWNHVTRFNjcxeS1CbDRuMVpuMl96U2lEOEkyektlZFlZMkVvLVgwRG5TdWY0NTdWVHF2UDlKWFBJbkpHTFJDS1dHUUhab0RvRjh5bHNBVi1SMzUzdWVzbE90Y3N4ekMxUVhGd1c0bDB6cVp4WEpkb2xQNC1IZzJFVnJTUXdSZERNSWRMbWtn?oc=5",
-      "published": 1790067852,
-      "topic": "人工智能",
-      "brief": "AI驱动下的产业变革与创新演进。",
+      "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
+      "published": 1790072250,
+      "summary": "",
+      "topic": "芯片 / 半导体",
+      "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
       "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
       "categoryKey": "tech",
       "category": "人工智能·科技"
@@ -585,37 +179,480 @@
   ],
   "watch": [
     {
-      "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-      "source": "东方财富",
-      "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-      "published": 1790072250,
-      "topic": "人工智能",
-      "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
-      "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-      "categoryKey": "tech",
-      "category": "人工智能·科技"
-    },
-    {
-      "title": "特朗普将到访并发表演讲，联合国：已反复检查自动扶梯",
-      "source": "凤凰网",
-      "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE9qR1plM2NsSkxRWkgtVjRCTmV2UEJjUmdIbzkzV1FRNDVUX1FnSHBkSXdaRzd1OUxJUjBBVkF0b1FRUHFHdmJ3VllYekY?oc=5",
-      "published": 1790070398,
-      "topic": "特朗普将到访并发表演讲，联合国",
-      "brief": "特朗普将到访并发表演讲，联合国：已反复检查自动扶梯。",
+      "title": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急",
+      "source": "UN News",
+      "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1zcVVTeExSbUExc01lYXFqWEdZZmt6Rjgzdk5qQ2RpckhFcWJaQ0doSG9nM1pQa216SzFOVHlMMWEtQ2pGQ2tLSUtVLUNhbVNCcWZuaVU0Yw?oc=5",
+      "published": 1790085941,
+      "summary": "",
+      "topic": "联大第81届会议主席",
+      "brief": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "world",
       "category": "国际"
     },
     {
-      "title": "科技部部长阴和俊出席中国-爱尔兰科技合作联委会第3次会议",
-      "source": "中华人民共和国科学技术部",
-      "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFA2YzFiZHYyRm1MeF9GdGFsN2p6MTEyc1BUMEF6VTgyMlQyTlhhU3ZqZWFYbllQOFMtWUhHcFBRdmdxNXRLSk1qbFc3S2M2b1NoNFZad0IyVHQ1cVJseE1IUG1YOEZNME5td1E?oc=5",
-      "published": 1790069460,
-      "topic": "人工智能·科技",
-      "brief": "科技部部长阴和俊出席中国-爱尔兰科技合作联委会第3次会议。",
+      "title": "到2030年 我国电气化率将跃居全球主要经济体首位",
+      "source": "经济频道",
+      "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5DOTlQRHFoREY3dUVZZXFkT1d0YjNITjYwUHA1MkVuVW1ETVQtalp3TXRlNmZ4OVItWmpyMXJScFI3MmdJMU92bDU1U3BpSE1QT1Ixa195M3d3RURKdGRVV1NfUERuOENvYWR0ZnVJbVhrOTE3bGtOV0UxNA?oc=5",
+      "published": 1790086440,
+      "summary": "",
+      "topic": "市场",
+      "brief": "到2030年 我国电气化率将跃居全球主要经济体首位。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "tech",
-      "category": "人工智能·科技"
+      "categoryKey": "markets",
+      "category": "市场"
+    },
+    {
+      "title": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
+      "source": "21财经",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNN2JNWHE5dXl3UVJXbzN2N3lreHhQUVZibEhFeVY2VjVSN2VmeEJnLXppZjdkUmcwaEVLM1ZtUFY3OUV6TGgyWDNRQWxhOHItaDM0TGl6VVZKZy0zZkVlbENIbXB5eHBRaE5WaFNtNUhXc05uSTBwMzN6ckl5dHJ3NkJkcFpHeDFQLTR6YlFjRQ?oc=5",
+      "published": 1790084040,
+      "summary": "",
+      "topic": "市场",
+      "brief": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
+      "why": "这可能影响利率预期、融资成本与风险资产估值。",
+      "categoryKey": "markets",
+      "category": "市场"
     }
-  ]
+  ],
+  "categories": [
+    {
+      "key": "markets",
+      "name": "市场",
+      "items": [
+        {
+          "title": "中国经济面面观丨人形机器人叩响消费市场，离走进家庭还有多远？",
+          "source": "news.cn",
+          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPVUN4TGw5ZDNteFdfRWg2ZG43MWdhcjEzeUlnaFRUVFVFbVpfdnZHUkl4YWFqc0ZLei0wbDd6cGhlZjl6V0dWbUVHN1Z3STBEQWlIYjU4M1dFNUhTelRtR0N6TThNZ05fcHhrMlZUcFBmTTlUekZvQURHaW5zS0UzenVB?oc=5",
+          "published": 1790085102,
+          "summary": "",
+          "topic": "中国经济面面观",
+          "brief": "人形机器人叩响消费市场，离走进家庭还有多远？",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
+          "source": "21财经",
+          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNN2JNWHE5dXl3UVJXbzN2N3lreHhQUVZibEhFeVY2VjVSN2VmeEJnLXppZjdkUmcwaEVLM1ZtUFY3OUV6TGgyWDNRQWxhOHItaDM0TGl6VVZKZy0zZkVlbENIbXB5eHBRaE5WaFNtNUhXc05uSTBwMzN6ckl5dHJ3NkJkcFpHeDFQLTR6YlFjRQ?oc=5",
+          "published": 1790084040,
+          "summary": "",
+          "topic": "市场",
+          "brief": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
+          "why": "这可能影响利率预期、融资成本与风险资产估值。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "到2030年 我国电气化率将跃居全球主要经济体首位",
+          "source": "经济频道",
+          "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5DOTlQRHFoREY3dUVZZXFkT1d0YjNITjYwUHA1MkVuVW1ETVQtalp3TXRlNmZ4OVItWmpyMXJScFI3MmdJMU92bDU1U3BpSE1QT1Ixa195M3d3RURKdGRVV1NfUERuOENvYWR0ZnVJbVhrOTE3bGtOV0UxNA?oc=5",
+          "published": 1790086440,
+          "summary": "",
+          "topic": "市场",
+          "brief": "到2030年 我国电气化率将跃居全球主要经济体首位。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "每日机构分析：9月22日",
+          "source": "eeo.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1odC10RGlHRGgtaHFlU3V3MmdON2dzWG1vNnEzZ3pCci1OZmNQdHp5SjNwc0xHS3hMTFdQa1JpTDRPamYzeGhtaUdYY1ZsajRibTlpZ3ZJNHc?oc=5",
+          "published": 1790082660,
+          "summary": "",
+          "topic": "每日机构分析",
+          "brief": "每日机构分析：9月22日。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "央视聚焦湖北光电子信息产业链",
+          "source": "湖北省经济和信息化厅",
+          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTFBROHZrXzItMV9EREdJZnZHY05CLUliVkhYazlWQW1ta29pQmFJSVM3UjRSblJEaHJELWZDaTNLM0dRR3duQ29MM3FoM3VXRk1yblo0Mm9PX0h2dmhmbjRZTnpJMEs0bXBtb3VUY2ppcmVJdw?oc=5",
+          "published": 1790071200,
+          "summary": "",
+          "topic": "市场",
+          "brief": "央视聚焦湖北光电子信息产业链。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "东莞控股：拟收购低空经济公司65%股权",
+          "source": "东方财富",
+          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFAzLW05UldiUVJxZDlQUnZWWW53TzBYU1Vvd1M0czFUOXBuRU9sQXhUUWlXWGVNQ1pJWUlYc0F1VWQwYnBnNUM0OUJYcDFmbDZWYW5qMzVCMmhqTkE3OTNNbDdRTkplQQ?oc=5",
+          "published": 1790081797,
+          "summary": "",
+          "topic": "东莞控股",
+          "brief": "东莞控股：拟收购低空经济公司65%股权。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "李昌平：别再靠“打兴奋剂”续命！中国经济的病根不在缺债，而在数百万亿乡土资产沉睡",
+          "source": "guancha.cn",
+          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5BM3Z5REZON05QTzJJME5jdVI5bzFheV9EeVl2YjdfYlVWaXY5eU5xQVAzQXlHSWdXcEhnelFQZnMyLXpOOF9aV2w4Zk1EcklRYlBpdXM3SVhSa19TdmNDTng0eXlRQQ?oc=5",
+          "published": 1790078827,
+          "summary": "",
+          "topic": "李昌平",
+          "brief": "李昌平：别再靠“打兴奋剂”续命！中国经济的病根不在缺债，而在数百万亿乡土资产沉睡。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        }
+      ]
+    },
+    {
+      "key": "tech",
+      "name": "人工智能·科技",
+      "items": [
+        {
+          "title": "AI深度介入电影工业改变了什么？对话导演陆川",
+          "source": "news.cn",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFB5REU5eDRXYTRZOF96NmVJbFdtR09ZV2w2cHBlOVhnbEdOb2NLdWNHX3NjRXRVYzVFa3Y1bzFBcXhSdWxNVGdWbDhobk1nTDhaUkh6VW4ydkstS0lOT0N3WW1VUmpCWVY1cS16VzBKSmJMNWp6eEhfTmN3aGpidw?oc=5",
+          "published": 1790075639,
+          "summary": "",
+          "topic": "影视",
+          "brief": "AI深度介入电影工业改变了什么？对话导演陆川。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "山东省科学技术厅工作动态省科技厅举办第35期“山东科技大讲堂”",
+          "source": "山东省科学技术厅",
+          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE1VUXBSc1p0cHQ4YWFXWkJ0ZmdZS2x0QXVoUTE0b3BFMlJ6NU54aHFJeGZ0WGxoQXEwU1FNekRUaGtMTnVITzlGam1wRWdxVnljUEQ5M2V4dUZ2d1FVR29JWk1nWWE0U3R6dVlVejhMRVBCQQ?oc=5",
+          "published": 1790069640,
+          "summary": "",
+          "topic": "人工智能·科技",
+          "brief": "山东省科学技术厅工作动态省科技厅举办第35期“山东科技大讲堂”。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "AI陷阱大揭秘丨AI配置失当酿成后门漏洞，内网数据裸奔外泄",
+          "source": "中央网络安全和信息化委员会办公室",
+          "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9HaFNFb1lJSlZGd1ktVDJDY2tEMHh1Q09PeUhOeHZoM0JjVzduSk84bkJFMThOUHUtV1dBS3JtX3draFNSd1dmUU1JVXJSb2NGc0tsQjdzZnNHa0R4TjQzOW1haGhoLUU?oc=5",
+          "published": 1790043120,
+          "summary": "",
+          "topic": "AI陷阱大揭秘",
+          "brief": "AI配置失当酿成后门漏洞，内网数据裸奔外泄。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "第五届全球数贸会：前沿科技可触可感",
+          "source": "中国科技网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFB2WnFwVGpObG5taS1qLWtpSnR5WGpMelNvUElETXBZRzAtUXpVVXhtSGZkNFY1cVNoWlgzOWxRQm1uSXZVVUNqa1M2RXJBMEpjcnpuVUpCNGJBQS0wTHlveGI1ajZHVmFPTlAtN0M4aGs?oc=5",
+          "published": 1790080590,
+          "summary": "",
+          "topic": "第五届全球数贸会",
+          "brief": "第五届全球数贸会：前沿科技可触可感。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "Anthropic发布AI滥用报告后 中国监管部门据报对DeepSeek和月之暗面展开调查",
+          "source": "RFI",
+          "link": "https://news.google.com/rss/articles/CBMiygNBVV95cUxNVTdxLTlNR2hBSDhyR2VEbWh1VTV0TFNBZWFEN280bjNrTjVSenNuRVpjZW5VYnY3VElsOVVCaWFlYl9zNVNPTzEySUtTbnB0WDhWWEZSLV9TWWVFNjBvUHZjYkg3SUZUdWhTdDJnMUVkLV9lblhtMFREazNJaW04cFp1LUZqM01qUHhuTlJ2bkxzbDVmd1dUby1tSGczZTJmeWlpZ0ppcExEXzQ1QTZzc09WN1JUNzlFY1Eza2FxQmJFNEZseXdJRTM4SHFHZHNpVzZkcEh6XzVWV1JXQmFaOGxHQTFiNHFRMGNhQ1RtQ0lraUpjbGpsYklJemxkR19oeF9jTU1fYVhfZjgzOGNWMUVwYmtVZmZRWHptNDZpMkgxUjdPUDRxYTRJN1k2cFNqWk5HNkt2RVp5MmFRWnZZRG9SR2htLVNEcHBLZFFxazB3Q1hiUGltRVZJaXdqZFJYVC1pb1FkaVM4b2dydXV2bnRtR04xT1ZsbjVWUG5LUVprQks2U2VHQVNpSlduS2VFWXJKTWQ3TXRmRVlrVGprYlYxMnRKWVdfTjRaSG5YRkNYX1h6ci1INGNnUl9Jc2FrT0RxdFl4YldvUQ?oc=5",
+          "published": 1790084728,
+          "summary": "",
+          "topic": "人工智能·科技",
+          "brief": "Anthropic发布AI滥用报告后 中国监管部门据报对DeepSeek和月之暗面展开调查。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
+          "source": "东方财富",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
+          "published": 1790072250,
+          "summary": "",
+          "topic": "芯片 / 半导体",
+          "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
+          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
+          "source": "21财经",
+          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
+          "published": 1790086120,
+          "summary": "",
+          "topic": "人工智能",
+          "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
+          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
+          "categoryKey": "tech"
+        }
+      ]
+    },
+    {
+      "key": "ent",
+      "name": "娱乐",
+      "items": [
+        {
+          "title": "音乐剧空中之约，东航执飞《剧院魅影》全球限定主题航班",
+          "source": "中国民航网",
+          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTFA1RHFZdjlIRFFhSDdpVTVpeERjWmVSZElWc2xRTkR2ZHdFb3JPQndibzVETFBPZTd2QVkxb0pBMTBaUXhKelZpRkVaaVZWMjR5RHZUWlkyX0JvQUJtbUEtUFZ3dzNXU3NwcTBuMQ?oc=5",
+          "published": 1790067300,
+          "summary": "",
+          "topic": "音乐",
+          "brief": "音乐剧空中之约，东航执飞《剧院魅影》全球限定主题航班。",
+          "why": "这反映内容产业、平台或消费偏好的最新变化。",
+          "categoryKey": "ent"
+        },
+        {
+          "title": "“天涯共此时——中国艺术歌曲声乐音乐会”在首尔举行--国际",
+          "source": "人民网",
+          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE0wOEVYQngwUnZHYWpmdGNuWS1DYm5IZkx6eEliR0g1aVRNWHVxbUJTMzYzWHo2eE0xU1RGa2NFamlGQmRkelZhWkpmRHdLT3JjNVhNQncySVowTlRIMlVRXzZ4YzNLenJEakhV?oc=5",
+          "published": 1790066100,
+          "summary": "",
+          "topic": "音乐",
+          "brief": "“天涯共此时——中国艺术歌曲声乐音乐会”在首尔举行--国际。",
+          "why": "这反映内容产业、平台或消费偏好的最新变化。",
+          "categoryKey": "ent"
+        },
+        {
+          "title": "中国高校影视学会媒介文化专委会2026年年会暨第九届媒介文化学术研讨会举行",
+          "source": "hunnu.edu.cn",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBJZWctTXVfV3FYZ0E1c3VlbE5lU1lLTzZHUlRCdjcxS1lSMDY5SHUwazk3UFNEZXkxWm1XcGFacWktbTNHTFN3ekpfZ2hGbEpUNkMxVnFXdw?oc=5",
+          "published": 1790066948,
+          "summary": "",
+          "topic": "影视",
+          "brief": "中国高校影视学会媒介文化专委会2026年年会暨第九届媒介文化学术研讨会举行。",
+          "why": "这反映内容产业、平台或消费偏好的最新变化。",
+          "categoryKey": "ent"
+        },
+        {
+          "title": "14部中秋档电影预售票房过2000万 加码臻享版《复仇者联盟4》占比67%",
+          "source": "Shangbao Indonesia",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9kVTVMS280bXdVTndoSzQyY3RWRjB4NWxZUlFDWThsakQtN3Q5MWUxWllQN3NpX3RrMjdTbXhBYnZzV21aZ1NBeUtBNnczODlpdGwwVGhRemdXTUlaTHVJRi1wNHNYZGh5MzQxTkxEVVdQVGVpY0FUOXBrNmZ5Z3M?oc=5",
+          "published": 1790090400,
+          "summary": "",
+          "topic": "影视",
+          "brief": "14部中秋档电影预售票房过2000万 加码臻享版《复仇者联盟4》占比67%。",
+          "why": "这反映内容产业、平台或消费偏好的最新变化。",
+          "categoryKey": "ent"
+        },
+        {
+          "title": "月下听曲做月饼，第七季“坪新音乐汇”解锁中秋新体验",
+          "source": "sznews.com",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9LYXlwZmIwTUh3ZDRYQVo4alBFX04tVkk3M25BV3hhLVBia3VXb3RWZ1dPcWlJdWdvOTdDV3Ezek5yNDJwdkk5ZU54cGJraVJsMWFRTWJPaUdKSWJFd2UySzl6TGdvT0NEVllzM2p1TFVoeXFRLUE?oc=5",
+          "published": 1790074368,
+          "summary": "",
+          "topic": "音乐",
+          "brief": "月下听曲做月饼，第七季“坪新音乐汇”解锁中秋新体验。",
+          "why": "这反映内容产业、平台或消费偏好的最新变化。",
+          "categoryKey": "ent"
+        },
+        {
+          "title": "搭乘《剧院魅影》主题航班，万米高空感受经典音乐剧氛围",
+          "source": "上观新闻",
+          "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE53eldKZk9MQzBwRThyLUJRRXVBRGl3Y3hzVkJzZ3RUTnMtUExqRHQxRWdTYmF2dDdwWC1tTUJXTDdEMHV3OEhrSXlkQ0NaTWVRbmc5Y2RhWmpRQQ?oc=5",
+          "published": 1790083440,
+          "summary": "",
+          "topic": "音乐",
+          "brief": "搭乘《剧院魅影》主题航班，万米高空感受经典音乐剧氛围。",
+          "why": "这反映内容产业、平台或消费偏好的最新变化。",
+          "categoryKey": "ent"
+        }
+      ]
+    },
+    {
+      "key": "sports",
+      "name": "体育",
+      "items": [
+        {
+          "title": "追光丨郑钦文领衔中国队角逐“女子网球世界杯”",
+          "source": "news.cn",
+          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOSzBXblc1ekgwaUIzQ0ZRSkd3ejR1U2VyY0R6Mk83Wm1rRTRYMEJZZU1KUnJPT1MzSm5RWnprU2JndGxUU0ZGd1NuOTA3NHV3WFVEbE56MGx0ODVqNzhoMVNZU25lNDZwLUw1dkwxZXZmOHBENFY4SHUyZDNvemNnaQ?oc=5",
+          "published": 1790049882,
+          "summary": "",
+          "topic": "网球",
+          "brief": "郑钦文领衔中国队角逐“女子网球世界杯”。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        },
+        {
+          "title": "幸福成都足球联赛八强对阵图公布，​10月17日决出冠军",
+          "source": "四川新闻",
+          "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE5VWk5QRVJJckZYRE5IcWp6UFJ5NTUzVG42blc3UzlKTjFGVldvd0FsNzgydWFoLTZPWXFTSXk4WlFITUpFX2h6ZkhzNTlleU1yYVVRMVh4cHVkRmt6cU5hd2ZsVQ?oc=5",
+          "published": 1790086957,
+          "summary": "",
+          "topic": "足球",
+          "brief": "幸福成都足球联赛八强对阵图公布，​10月17日决出冠军。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        },
+        {
+          "title": "第三届“喀什杯”国际青少年足球邀请赛开赛",
+          "source": "chinanews.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9pQ0NiU25UcFNsem9hdVRJaU9vdWRtYmVZdDFnczZodjBlcDdJMDhERVVIVEdVWVllMjhTOXJmOUk3ci1xekVDVFhnUEc0MFFPRGlDX24ta1QyZkhrM2tGNUV0TWw0REJL?oc=5",
+          "published": 1790074463,
+          "summary": "",
+          "topic": "足球",
+          "brief": "第三届“喀什杯”国际青少年足球邀请赛开赛。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        },
+        {
+          "title": "首届“大学超”沈北大学城足球超级联赛落幕 辽宁大学斩获总冠军",
+          "source": "央广网",
+          "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTFByRjF4X0xJUzRHQkpSNS11eXlNck1OVGJaSnVBaTRhMnNlNWxHZWhYZUJKeGJ0SXFTYW1scXowSF9ZUnI2RFJlQWxxUmJvcDlPT2RQazhRVlkzRXNjdDBSUEJjYms1ZG1ERjBmTzlR?oc=5",
+          "published": 1790046403,
+          "summary": "",
+          "topic": "足球",
+          "brief": "首届“大学超”沈北大学城足球超级联赛落幕 辽宁大学斩获总冠军。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        },
+        {
+          "title": "结束18年NBA生涯！37岁巴图姆正式宣布退役 生涯总薪水超2亿美元",
+          "source": "Shangbao Indonesia",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBFeUpqN29WTFN3RDdwdTBzdndzU0hnYnp2TjcyN21mLURheUNLc3NUeFM0ckVidHFocURWVnNnTFVBY3RsTzR3T1UxM2VNdnQzLTRPckNvbzFYd2lHMk9UWWVHc2MtbUVZU2dybjlJUDQ5YXBROUE?oc=5",
+          "published": 1790080200,
+          "summary": "",
+          "topic": "篮球",
+          "brief": "结束18年NBA生涯！37岁巴图姆正式宣布退役 生涯总薪水超2亿美元。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        },
+        {
+          "title": "2026世界杯足球赛",
+          "source": "美国之音",
+          "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE14SDJVQnBKUkEzbUhiNnZpZlI3SFlkS1NHcnZuUXJZZWRyNlZKOGg5X3VPU3JqRGRlTDYtV1FZSUdUTXdtVHd5akpnRkJDNFlJ?oc=5",
+          "published": 1790079675,
+          "summary": "",
+          "topic": "足球",
+          "brief": "2026世界杯足球赛。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        },
+        {
+          "title": "成都网球公开赛抽签结果出炉",
+          "source": "新体育网",
+          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9ZaTFSaVRONlB6M2pUcDI1dEUwbElKdFEtdDZ6MjdIMDlpU2hTMHBod0sxck5oZHpoOU1FOF8zWGxLVlpKYnFyX1VnUzIyRGFwN3I0V2tYYzMwekN6SGhPNUJWZzRTUVRjR3dYTg?oc=5",
+          "published": 1790067082,
+          "summary": "",
+          "topic": "网球",
+          "brief": "成都网球公开赛抽签结果出炉。",
+          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
+          "categoryKey": "sports"
+        }
+      ]
+    },
+    {
+      "key": "world",
+      "name": "国际",
+      "items": [
+        {
+          "title": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急",
+          "source": "UN News",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1zcVVTeExSbUExc01lYXFqWEdZZmt6Rjgzdk5qQ2RpckhFcWJaQ0doSG9nM1pQa216SzFOVHlMMWEtQ2pGQ2tLSUtVLUNhbVNCcWZuaVU0Yw?oc=5",
+          "published": 1790085941,
+          "summary": "",
+          "topic": "联大第81届会议主席",
+          "brief": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "充分发挥青年在国际传播中的独特作用（专题深思）",
+          "source": "人民日报",
+          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQQWRYU2VFdDhfRS1LMGNvWDZ0alY4b2xoaklmcENaVm9WT2N5NGcyUm5mSlZ0d2lHX3dpYXFlLWN0NjdsalZLZ09VczFQdlBPQUh2MVJta29RbzZ5Ymtvclpnek96aE9DTEJOSi1FNW4wT1hLcENKWkRBQ2pIR1R6eg?oc=5",
+          "published": 1790083089,
+          "summary": "",
+          "topic": "国际",
+          "brief": "充分发挥青年在国际传播中的独特作用（专题深思）。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "古特雷斯被问“以色列为何还在联合国”",
+          "source": "21财经",
+          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNUGtXZHRQb3ZQVWNtXzNNSFJ6Um9XTno3Q0RuMGtKakw0ODZkUjQ3aGliSGN0RlBJSVZyblVmeS1VNjZUd2ZFMlVObUVZWEVLNWV0UUVHbW9aRU9DVGxGWHNKeVVycWcwa2xtc2c3cFF6M0wxQUVNSXlPTmZxUDFMYUpuZW5veUZlUTZ0eUo2RQ?oc=5",
+          "published": 1790082780,
+          "summary": "",
+          "topic": "中东",
+          "brief": "古特雷斯被问“以色列为何还在联合国”。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "联合国秘书长：“四大考验”决定人类未来",
+          "source": "finance.sina.cn",
+          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNZ0w3MW5LdHNkTzU4dFBnUXM0RzN1ZzdraGJxSUt5NWd3U3VFM0FSYkRKVFBUczQxMXJqNU0zUFFpaE5LUjFuNlJiQmJ5dldhbXpYTy1IcEVMcm4zTmVxRVhyWXFCazBoQnJGUEJ4c3BTVXpVZkhhUnBOM3RtWkZxbmFfNHNnUQ?oc=5",
+          "published": 1790085792,
+          "summary": "",
+          "topic": "联合国秘书长",
+          "brief": "联合国秘书长：“四大考验”决定人类未来。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "2026年9月22日外交部发言人郭嘉昆主持例行记者会",
+          "source": "中国驻加拿大大使馆",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE0yM3ZYR3BEZXVuWlJVUEtLaXdHWUxRMklLdXpxazRlZUdfeUxKMnBZNmhIclFQN3NpZmNSblFIOFlRa2xDU1lyOW1Ta0N5VEtlNnRlR2ZHMXZHLXdXeXVDdjBlejVBVERYRDZmZWNqVUpxNmFQMVRtczNLM3hSdw?oc=5",
+          "published": 1790071267,
+          "summary": "",
+          "topic": "国际",
+          "brief": "2026年9月22日外交部发言人郭嘉昆主持例行记者会。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "北外举办全球区域国别学共同体2026年会",
+          "source": "北外新闻网",
+          "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFAweDZLN3lBcUtTNTlmMl9pdURkbm5EclN5d0NHbGxzenFTWG8taGtFVUhhLWVzUDNLNEp3ZmtxUmR3YVRTbURSaERNR3h6dDBEalE?oc=5",
+          "published": 1790065236,
+          "summary": "",
+          "topic": "国际",
+          "brief": "北外举办全球区域国别学共同体2026年会。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        }
+      ]
+    }
+  ],
+  "markets": [
+    {
+      "name": "标普500",
+      "symbol": "^GSPC",
+      "price": 7759.02,
+      "changePct": -0.07,
+      "fmt": "idx"
+    },
+    {
+      "name": "纳斯达克",
+      "symbol": "^IXIC",
+      "price": 27169.16,
+      "changePct": 0.17,
+      "fmt": "idx"
+    },
+    {
+      "name": "布伦特原油",
+      "symbol": "BZ=F",
+      "price": 100.36,
+      "changePct": 0.02,
+      "fmt": "usd"
+    },
+    {
+      "name": "WTI原油",
+      "symbol": "CL=F",
+      "price": 91.75,
+      "changePct": -4.21,
+      "fmt": "usd"
+    },
+    {
+      "name": "黄金",
+      "symbol": "GC=F",
+      "price": 4364.8,
+      "changePct": -0.44,
+      "fmt": "usd"
+    },
+    {
+      "name": "美元指数",
+      "symbol": "DX-Y.NYB",
+      "price": 100.68,
+      "changePct": 0.25,
+      "fmt": "idx"
+    }
+  ],
+  "note": "新闻聚合自 Google News 收录的公开媒体，简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差；每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"
 }
