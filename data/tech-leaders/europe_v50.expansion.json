@@ -38,7 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "next"
+      "status": "batch05_promoted_continue_batch06",
+      "last_completed_batch": "05",
+      "next_batch": "06"
     }
   ],
   "admission_gates": [
@@ -51,8 +53,8 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Open Europe Batch 05 and continue scanning until 40 additional people pass role + personal-X identity + activity + avatar/feed/runtime gates. Do not lower the gate to fill the 50-person target.",
-  "current_europe_count": 10,
+  "next_action": "Open Europe Batch 06 (126-150) and continue scanning until 36 additional people pass role + personal-X identity + activity + avatar/feed/runtime gates. Do not lower the gate to fill the 50-person target.",
+  "current_europe_count": 14,
   "batch03_result": {
     "reviewed": 25,
     "preview_ready": 0,
@@ -76,13 +78,12 @@
     ],
     "note": "Batch 01 legacy leader resolved with verified @jmalvpal identity and current activity."
   },
-  "current_new_preview_ready_count": 5,
+  "current_new_preview_ready_count": 4,
   "current_new_preview_ready_names": [
-    "Andy Palmer",
-    "José María Álvarez-Pallete",
-    "Mark Read",
-    "Roland Busch",
-    "Taavet Hinrikus"
+    "Octave Klaba",
+    "Fredrik Wester",
+    "Antoine Arnault",
+    "Alexandre Arnault"
   ],
   "v604_preview": {
     "catalog_version": "v604-europe-preview-2026-09-22",
@@ -101,18 +102,48 @@
     "production_count": 604,
     "production_europe_count": 10
   },
-  "production_gap_to_50": 40,
-  "approved_preview_gap_to_50_after_promotion": 40,
+  "production_gap_to_50": 36,
+  "approved_preview_gap_to_50_after_promotion": 36,
   "last_promotion": {
-    "release": "v604-stable-2026-09-22",
+    "release": "v608-stable-2026-09-22",
     "promoted_at": "2026-09-22",
-    "additions": 5,
+    "additions": 4,
     "names": [
-      "Andy Palmer",
-      "José María Álvarez-Pallete",
-      "Mark Read",
-      "Roland Busch",
-      "Taavet Hinrikus"
+      "Octave Klaba",
+      "Fredrik Wester",
+      "Antoine Arnault",
+      "Alexandre Arnault"
     ]
+  },
+  "batch05_result": {
+    "reviewed": 25,
+    "preview_ready": 4,
+    "manual_review_activity": 1,
+    "hold_inactive": 1,
+    "needs_x_research": 19,
+    "production_additions": 4,
+    "promoted_names": [
+      "Octave Klaba",
+      "Fredrik Wester",
+      "Antoine Arnault",
+      "Alexandre Arnault"
+    ]
+  },
+  "v608_preview": {
+    "catalog_version": "v608-europe-preview-2026-09-22",
+    "base_count": 604,
+    "approved_additions": 4,
+    "preview_count": 608,
+    "static_gate": "pass",
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "native_ready_count": 4,
+    "render_ready_count": 4,
+    "render_blocked_count": 0,
+    "merge_gate": "pass",
+    "production_promoted": true,
+    "production_catalog": "v608-stable-2026-09-22",
+    "production_count": 608,
+    "production_europe_count": 14
   }
 }
