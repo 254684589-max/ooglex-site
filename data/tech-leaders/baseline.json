@@ -1,13 +1,13 @@
 {
-  "baseline_version": "v608-europe14-stable",
+  "baseline_version": "v610-europe17-stable",
   "captured_at": "2026-09-22",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "d13a64af03bf7f26d101f34f8066e02d88780a59",
-  "leader_count": 608,
-  "active_count": 608,
+  "source_blob_sha": "df38331c35fe1f481271a029a25d75b260ebfab4",
+  "leader_count": 610,
+  "active_count": 610,
   "schema_version": 12,
   "capacity": 800,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v608-europe14-stable-2026-09-22.json",
-  "previous_baseline": "data/tech-leaders/snapshots/leaders-v604-europe10-stable-2026-09-22.json",
-  "purpose": "Stable production baseline after Europe V608 promotion: four Batch 05 Europe leaders passed role/personal-X/activity, static dedupe, avatar, native free-feed, deployed-preview and page-render gates."
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v610-europe17-stable-2026-09-22.json",
+  "previous_baseline": "data/tech-leaders/snapshots/leaders-v608-europe14-stable-2026-09-22.json",
+  "purpose": "Stable production baseline after Europe V610 promotion: Rafał Brzoska and Sam Lake passed all new-person gates, while existing Kristo Kaarmann was re-audited and category-enriched with 欧洲 without duplication."
 }
