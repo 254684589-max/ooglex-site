@@ -48,7 +48,7 @@ jobs:
             try:
               req=urllib.request.Request(url,headers={"User-Agent":"Ooglex Europe V612 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
               with urllib.request.urlopen(req,timeout=15) as resp: d=json.loads(resp.read().decode())
-              if d.get("catalog_version")=="v612-europe-preview-2026-09-22" and len(d.get("leaders") or [])==611: live=True; break
+              if d.get("catalog_version")=="v612-europe-preview-2026-09-22" and len(d.get("leaders") or [])==612: live=True; break
               live_error="stale"
             except Exception as e: live_error=type(e).__name__
             time.sleep(5)
