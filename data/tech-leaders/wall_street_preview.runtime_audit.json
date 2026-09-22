@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T14:07:59Z",
+  "generated_at": "2026-09-22T14:53:19Z",
   "preview_catalog_version": "v528-wall-street-preview-2026-09-22",
   "preview_count": 528,
   "base_count": 500,
   "approved_additions": 28,
   "sample_count": 5,
-  "ready_count": 3,
-  "blocked_count": 2,
+  "ready_count": 0,
+  "blocked_count": 5,
   "rows": [
     {
       "name": "Rick Rieder",
@@ -16,14 +16,16 @@
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 23283,
-      "feed_ok": true,
-      "feed_http_status": 200,
-      "feed_error_body": "",
-      "feed_source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "newest_post_at": "Thu Apr 30 13:36:23 +0000 2026",
-      "ready": true,
-      "blocking_reasons": []
+      "feed_ok": false,
+      "feed_http_status": 401,
+      "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",
+      "feed_source": "",
+      "post_count": 0,
+      "newest_post_at": null,
+      "ready": false,
+      "blocking_reasons": [
+        "feed_http_401"
+      ]
     },
     {
       "name": "Howard Marks",
@@ -33,14 +35,14 @@
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 88726,
       "feed_ok": false,
-      "feed_http_status": 502,
-      "feed_error_body": "{\"error\":\"free_public_feed_sources_unavailable\",\"handle\":\"HowardMarksBook\",\"uses_x_api\":false,\"upstream_status\":502,\"diagnostic\":null}",
+      "feed_http_status": 401,
+      "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",
       "feed_source": "",
       "post_count": 0,
       "newest_post_at": null,
       "ready": false,
       "blocking_reasons": [
-        "feed_http_502"
+        "feed_http_401"
       ]
     },
     {
@@ -50,14 +52,16 @@
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 8169,
-      "feed_ok": true,
-      "feed_http_status": 200,
-      "feed_error_body": "",
-      "feed_source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "newest_post_at": "Tue Sep 22 12:54:09 +0000 2026",
-      "ready": true,
-      "blocking_reasons": []
+      "feed_ok": false,
+      "feed_http_status": 401,
+      "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",
+      "feed_source": "",
+      "post_count": 0,
+      "newest_post_at": null,
+      "ready": false,
+      "blocking_reasons": [
+        "feed_http_401"
+      ]
     },
     {
       "name": "Eric Balchunas",
@@ -66,14 +70,16 @@
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 23535,
-      "feed_ok": true,
-      "feed_http_status": 200,
-      "feed_error_body": "",
-      "feed_source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "newest_post_at": "Tue Sep 22 12:04:13 +0000 2026",
-      "ready": true,
-      "blocking_reasons": []
+      "feed_ok": false,
+      "feed_http_status": 401,
+      "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",
+      "feed_source": "",
+      "post_count": 0,
+      "newest_post_at": null,
+      "ready": false,
+      "blocking_reasons": [
+        "feed_http_401"
+      ]
     },
     {
       "name": "Cliff Asness",
@@ -83,14 +89,14 @@
       "avatar_content_type": "image/jpeg",
       "avatar_bytes": 289653,
       "feed_ok": false,
-      "feed_http_status": 502,
-      "feed_error_body": "{\"error\":\"free_public_feed_sources_unavailable\",\"handle\":\"CliffordAsness\",\"uses_x_api\":false,\"upstream_status\":502,\"diagnostic\":null}",
+      "feed_http_status": 401,
+      "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",
       "feed_source": "",
       "post_count": 0,
       "newest_post_at": null,
       "ready": false,
       "blocking_reasons": [
-        "feed_http_502"
+        "feed_http_401"
       ]
     }
   ],
