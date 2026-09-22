@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(u.searchParams.get("sharev")!=="20260923e"){
-        u.searchParams.set("sharev","20260923e");
+      if(u.searchParams.get("sharev")!=="20260923f"){
+        u.searchParams.set("sharev","20260923f");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -1133,7 +1133,7 @@
     libraryPage=Math.max(1,Math.min(pages,libraryPage));
     var start=(libraryPage-1)*LIBRARY_PAGE_SIZE;
     var pageItems=filtered.slice(start,start+LIBRARY_PAGE_SIZE);
-    libraryCount.textContent=filtered.length+" 位匹配 · 每页 "+LIBRARY_PAGE_SIZE+" 人";
+    libraryCount.textContent="总计 "+people.length+" 人 · 当前 "+filtered.length+" 人 · 每页 "+LIBRARY_PAGE_SIZE+" 人";
     libraryPageInfo.textContent="第 "+libraryPage+" / "+pages+" 页 · "+(filtered.length?((start+1)+"–"+Math.min(start+LIBRARY_PAGE_SIZE,filtered.length)):"0")+" / "+filtered.length;
     libraryPrev.disabled=libraryPage<=1;
     libraryNext.disabled=libraryPage>=pages;
