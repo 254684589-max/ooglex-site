@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "personal_x_identity_pass_3_activity_pending",
+  "status": "personal_x_identity_pass_4_activity_reconciled_3_pending_1",
   "tranche_type": "europe_listed_review_batch_09",
   "batch_range": "201-225",
   "phase": "Europe 23 -> 50",
@@ -14,12 +14,14 @@
     "batch_count": 25,
     "role_verified_current": 25,
     "role_needs_fresh_capture": 0,
-    "identity_verified_activity_pending": 3,
-    "needs_x_research": 22,
+    "identity_verified_activity_pending": 1,
+    "needs_x_research": 21,
     "needs_role_and_x_research": 0,
     "production_additions": 0,
     "production_category_enrichments": 0,
-    "preview_ready": 0
+    "preview_ready": 0,
+    "manual_review_activity": 1,
+    "hold_inactive": 2
   },
   "policy": {
     "require_role_evidence": true,
@@ -45,10 +47,12 @@
       "x_handle": "ChrstnKlein",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/ChrstnKlein",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
-      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @ChrstnKlein. Christian Klein's own published profile text explicitly says to follow him on Twitter @ChrstnKlein; account references also match SAP leadership. Direct Ooglex activity audit is required before Preview."
+      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @ChrstnKlein. Christian Klein's own published profile text explicitly says to follow him on Twitter @ChrstnKlein; account references also match SAP leadership. Direct Ooglex activity audit is required before Preview.",
+      "x_last_activity_at": "2023-12-18T18:51:29Z",
+      "x_activity_age_days": 1008.59
     },
     {
       "batch_rank": 202,
@@ -140,10 +144,12 @@
       "x_handle": "GuillaumeFaury",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/GuillaumeFaury",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
-      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @GuillaumeFaury. Public speaker biography explicitly identifies Guillaume Faury's Twitter as @GuillaumeFaury; current profile mirrors identify the account as Airbus Chief Executive Officer. Direct Ooglex activity audit is required before Preview."
+      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @GuillaumeFaury. Public speaker biography explicitly identifies Guillaume Faury's Twitter as @GuillaumeFaury; current profile mirrors identify the account as Airbus Chief Executive Officer. Direct Ooglex activity audit is required before Preview.",
+      "x_last_activity_at": "2024-02-15T10:45:45Z",
+      "x_activity_age_days": 949.92
     },
     {
       "batch_rank": 207,
@@ -156,13 +162,13 @@
       "current_role": "Chief Executive Officer",
       "role_status": "verified_current",
       "role_source_url": "https://www.maersk.com/about/executive-leadership-team/vincent-clerc",
-      "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
-      "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_handle": "VincentClerc_m",
+      "x_identity_status": "verified_personal_x_cross_source",
+      "x_identity_source_url": "https://x.com/VincentClerc_m",
+      "x_activity_status": "needs_direct_activity_check",
+      "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
-      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval."
+      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @VincentClerc_m from a matching Maersk leadership bio mirror and recent Maersk executive/employee references to the same handle as their CEO. Direct Ooglex activity audit is required before Preview."
     },
     {
       "batch_rank": 208,
@@ -501,13 +507,15 @@
       "x_handle": "Cheydema",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/Cheydema",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "manual_181_365d",
+      "review_status": "manual_review_activity_181_365d",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
-      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @Cheydema. Current public profile mirrors identify @Cheydema as Orange CEO, and institutional posts address Christel Heydemann at the same handle. Direct Ooglex activity audit is required before Preview."
+      "notes": "Exact-name production dedupe passed. Current-role source captured; verified personal X ownership and <=180d activity are still required before approval. Personal-X identity resolved as @Cheydema. Current public profile mirrors identify @Cheydema as Orange CEO, and institutional posts address Christel Heydemann at the same handle. Direct Ooglex activity audit is required before Preview.",
+      "x_last_activity_at": "2026-02-19T11:07:51Z",
+      "x_activity_age_days": 214.91
     }
   ],
-  "next_stage": "Run Europe Handle Activity Audit for @ChrstnKlein, @GuillaumeFaury and @Cheydema. Only candidates with <=180d direct activity evidence may become preview_ready; continue X research for the remaining 22.",
+  "next_stage": "Run direct activity audit for @VincentClerc_m. Christian Klein and Guillaume Faury are Hold (>365d); Christel Heydemann is Manual Review (181-365d). Continue personal-X research for the remaining 21.",
   "review_method": {
     "candidate_source": "25 Europe-listed company core figures not present by exact name in V612 production.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
