@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T04:06:56Z",
+  "generated_at": "2026-09-22T04:23:03Z",
   "preview_catalog_version": "v599-europe-preview-2026-09-22",
   "preview_count": 599,
   "base_count": 594,
@@ -30,7 +30,7 @@
       "native_feed_ok": true,
       "feed_http_status": 200,
       "feed_error_body": "",
-      "feed_source": "fxtwitter_public_api_fast",
+      "feed_source": "fxtwitter_public_api",
       "post_count": 3,
       "newest_post_at": "Tue Sep 15 07:35:25 +0000 2026",
       "embed_fallback_available": true,
