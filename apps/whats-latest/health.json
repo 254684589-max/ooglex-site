@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-09-22T16:42:30Z",
+  "generatedAt": "2026-09-22T16:56:07Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-22T16:42:30Z",
-  "lastSuccessfulAt": "2026-09-22T16:42:30Z",
+  "lastAttemptAt": "2026-09-22T16:56:07Z",
+  "lastSuccessfulAt": "2026-09-22T16:56:07Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-22T16:42:30Z",
+  "publishedSnapshotAt": "2026-09-22T16:56:07Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -24,11 +24,11 @@
     "status": "success",
     "published": true,
     "refreshedComponents": [
+      "politics-news",
+      "world-news",
       "markets-news",
       "tech-news",
-      "ent-news",
-      "sports-news",
-      "world-news",
+      "law-news",
       "market-quotes"
     ],
     "fallbackComponents": [],
@@ -37,64 +37,64 @@
   },
   "components": [
     {
-      "id": "markets-news",
-      "name": "Google News 市场",
+      "id": "politics-news",
+      "name": "Google News 政策与政治",
+      "role": "secondary",
+      "frequency": "intraday",
+      "requiredForTerminal": false,
+      "status": "healthy",
+      "mode": "fresh",
+      "published": true,
+      "lastAttemptAt": "2026-09-22T16:56:07Z",
+      "lastSuccessAt": "2026-09-22T16:56:07Z"
+    },
+    {
+      "id": "world-news",
+      "name": "Google News 国际与地缘",
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:42:30Z",
-      "lastSuccessAt": "2026-09-22T16:42:30Z"
+      "lastAttemptAt": "2026-09-22T16:56:07Z",
+      "lastSuccessAt": "2026-09-22T16:56:07Z"
+    },
+    {
+      "id": "markets-news",
+      "name": "Google News 市场与经济",
+      "role": "primary",
+      "frequency": "intraday",
+      "requiredForTerminal": true,
+      "status": "healthy",
+      "mode": "fresh",
+      "published": true,
+      "lastAttemptAt": "2026-09-22T16:56:07Z",
+      "lastSuccessAt": "2026-09-22T16:56:07Z"
     },
     {
       "id": "tech-news",
-      "name": "Google News 科技",
+      "name": "Google News AI与科技",
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:42:30Z",
-      "lastSuccessAt": "2026-09-22T16:42:30Z"
+      "lastAttemptAt": "2026-09-22T16:56:07Z",
+      "lastSuccessAt": "2026-09-22T16:56:07Z"
     },
     {
-      "id": "ent-news",
-      "name": "Google News 娱乐",
+      "id": "law-news",
+      "name": "Google News 法律与监管",
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:42:30Z",
-      "lastSuccessAt": "2026-09-22T16:42:30Z"
-    },
-    {
-      "id": "sports-news",
-      "name": "Google News 体育",
-      "role": "secondary",
-      "frequency": "intraday",
-      "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
-      "published": true,
-      "lastAttemptAt": "2026-09-22T16:42:30Z",
-      "lastSuccessAt": "2026-09-22T16:42:30Z"
-    },
-    {
-      "id": "world-news",
-      "name": "Google News 国际",
-      "role": "secondary",
-      "frequency": "intraday",
-      "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
-      "published": true,
-      "lastAttemptAt": "2026-09-22T16:42:30Z",
-      "lastSuccessAt": "2026-09-22T16:42:30Z"
+      "lastAttemptAt": "2026-09-22T16:56:07Z",
+      "lastSuccessAt": "2026-09-22T16:56:07Z"
     },
     {
       "id": "market-quotes",
@@ -105,13 +105,14 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:42:30Z",
-      "lastSuccessAt": "2026-09-22T16:42:30Z"
+      "lastAttemptAt": "2026-09-22T16:56:07Z",
+      "lastSuccessAt": "2026-09-22T16:56:07Z"
     }
   ],
   "policy": {
     "maxReportAgeHours": 12,
     "terminalRequiredComponents": [
+      "world-news",
       "markets-news"
     ]
   },

@@ -1,55 +1,90 @@
 {
-  "updatedAt": "2026-09-22T16:42:30Z",
+  "updatedAt": "2026-09-22T16:56:07Z",
   "asOf": "2026-09-22",
-  "source": "Google News · Yahoo Finance",
+  "source": "Google News (curated global publishers) · Yahoo Finance",
+  "sourcePool": [
+    "Reuters",
+    "Bloomberg",
+    "Financial Times",
+    "The Wall Street Journal",
+    "BBC",
+    "CNBC",
+    "CNN",
+    "NBC News",
+    "CBS News",
+    "ABC News",
+    "The New York Times",
+    "The Guardian",
+    "South China Morning Post",
+    "The Hill",
+    "Fox News",
+    "TechCrunch",
+    "Semafor",
+    "The Japan Times",
+    "Axios",
+    "WIRED",
+    "Euronews",
+    "Associated Press",
+    "POLITICO",
+    "Finextra"
+  ],
   "lead": {
-    "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
-    "source": "21财经",
-    "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
-    "published": 1790086120,
+    "title": "Trump urges complete isolation of Iran, expects deal after election",
+    "source": "Reuters",
+    "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPMHFVWHVmRkJDV09JMHNSQ2RvNk5zS2NwN3lwZ3lNOFNLd0tUdjZHS09lMUhZdHBCWXZUQ1NJUHh5cUxmYlU4NjNTRGRtWDJ3UkFpb05jS1U2R2huempndzFvVEtqZmV1RjN2cTRJWWYybEpQSkptR2NjLWFySUtUeDdXMmdBd0N4dktqeGN6WjdTOGVfQXZJLVgyX2k1RTlzbDZncmktWlI?oc=5",
+    "published": 1790095421,
     "summary": "",
-    "topic": "人工智能",
-    "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
-    "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-    "categoryKey": "tech",
-    "category": "人工智能·科技"
+    "topic": "国际·地缘",
+    "brief": "Trump urges complete isolation of Iran, expects deal after election。",
+    "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+    "categoryKey": "world",
+    "category": "国际·地缘"
   },
   "highlight": {
-    "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
-    "source": "21财经",
-    "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
-    "published": 1790086120,
+    "title": "Trump urges complete isolation of Iran, expects deal after election",
+    "source": "Reuters",
+    "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPMHFVWHVmRkJDV09JMHNSQ2RvNk5zS2NwN3lwZ3lNOFNLd0tUdjZHS09lMUhZdHBCWXZUQ1NJUHh5cUxmYlU4NjNTRGRtWDJ3UkFpb05jS1U2R2huempndzFvVEtqZmV1RjN2cTRJWWYybEpQSkptR2NjLWFySUtUeDdXMmdBd0N4dktqeGN6WjdTOGVfQXZJLVgyX2k1RTlzbDZncmktWlI?oc=5",
+    "published": 1790095421,
     "summary": "",
-    "topic": "人工智能",
-    "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
-    "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-    "categoryKey": "tech",
-    "category": "人工智能·科技"
+    "topic": "国际·地缘",
+    "brief": "Trump urges complete isolation of Iran, expects deal after election。",
+    "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+    "categoryKey": "world",
+    "category": "国际·地缘"
   },
   "overview": [
     {
-      "topic": "市场",
-      "text": "到2030年 我国电气化率将跃居全球主要经济体首位。",
-      "source": "经济频道"
+      "topic": "政策·政治",
+      "text": "What Is the White House Press Pool?",
+      "source": "The Wall Street Journal"
+    },
+    {
+      "topic": "国际·地缘",
+      "text": "Trump urges complete isolation of Iran, expects deal after election。",
+      "source": "Reuters"
+    },
+    {
+      "topic": "市场·经济",
+      "text": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes。",
+      "source": "The Wall Street Journal"
     },
     {
       "topic": "人工智能·科技",
-      "text": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
-      "source": "21财经"
-    },
-    {
-      "topic": "国际",
-      "text": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
-      "source": "UN News"
+      "text": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence。",
+      "source": "BBC"
     }
   ],
   "signals": [
+    {
+      "label": "地缘政治",
+      "trend": "关注"
+    },
     {
       "label": "AI / 芯片",
       "trend": "关注"
     },
     {
-      "label": "利率预期",
+      "label": "利率 / 债券",
       "trend": "关注"
     },
     {
@@ -67,233 +102,351 @@
   ],
   "wires": [
     {
-      "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
-      "source": "21财经",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
-      "published": 1790086120,
+      "title": "Trump urges complete isolation of Iran, expects deal after election",
+      "source": "Reuters",
+      "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPMHFVWHVmRkJDV09JMHNSQ2RvNk5zS2NwN3lwZ3lNOFNLd0tUdjZHS09lMUhZdHBCWXZUQ1NJUHh5cUxmYlU4NjNTRGRtWDJ3UkFpb05jS1U2R2huempndzFvVEtqZmV1RjN2cTRJWWYybEpQSkptR2NjLWFySUtUeDdXMmdBd0N4dktqeGN6WjdTOGVfQXZJLVgyX2k1RTlzbDZncmktWlI?oc=5",
+      "published": 1790095421,
       "summary": "",
-      "topic": "人工智能",
-      "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
-      "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
+      "topic": "国际·地缘",
+      "brief": "Trump urges complete isolation of Iran, expects deal after election。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际·地缘"
+    },
+    {
+      "title": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes",
+      "source": "The Wall Street Journal",
+      "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNV0dWcVNNMlhnbkxPYlRmRnlNblltd1JsbHNab0pINjBpTGFPYlR0aTdiZ1ZfRzNXMlJTRXhMeTF1S0xxY29pUk84UzFxQ3dmZy11S0VEWFZjMmczOXE3cjRBTFFQMDF1NlFERTJaYkZHSURES0JySlNQWHhOSGV4SC1yWGdlSXJLaE1TNjc0a1Y2YXdKR1hieEd4cw?oc=5",
+      "published": 1790094240,
+      "summary": "",
+      "topic": "市场·经济",
+      "brief": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "markets",
+      "category": "市场·经济"
+    },
+    {
+      "title": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence",
+      "source": "BBC",
+      "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9wZElLYTA3N1pYMHNTa0dOTGpMT2dnUG9oQ0RYZE9KRm1VRnJJVWxLUFluRHpaT1V0SWpkMzBoODNpN0hhZGVJRnFHYWduMlN5eHJyMmN4ZXk?oc=5",
+      "published": 1790092405,
+      "summary": "",
+      "topic": "Watch",
+      "brief": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "tech",
       "category": "人工智能·科技"
     },
     {
-      "title": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急",
-      "source": "UN News",
-      "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1zcVVTeExSbUExc01lYXFqWEdZZmt6Rjgzdk5qQ2RpckhFcWJaQ0doSG9nM1pQa216SzFOVHlMMWEtQ2pGQ2tLSUtVLUNhbVNCcWZuaVU0Yw?oc=5",
-      "published": 1790085941,
+      "title": "Trump says AI will be renamed ‘super intelligence’ in all US documents",
+      "source": "The Hill",
+      "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPTHFSRVlHOGRzQlVzcWRvcHlCU2pyMGhSXzlPLUxvNnFqaldRVnpIYWJWMHpvRHY5OUR3UmV1eGtCS29LbHlHUFFDaHc5YjVhN1owS0RfT2Y1X0FSVVJsZ09WZUNNOUV4MGtZLTRMeS01bVJ2MHdaaE5VMEI3M3laVEZGejJCNHZSWDFuNWZ1NjBHd9IBlwFBVV95cUxQTnJVNkJmdXZuX2pHN0pqd1JKczNfM21JVHFLaHU5QVFHN1VERkxtNUhqQVZuZi1xaUZrZms3SzFWU201SUs2Y0cySEN2SG4wUmQ1TnVOMEo5T2lacDJpMzVoS2RwQWdUOUV2cG93bkZURUxNb2JhRkE1R1RyZlk1dkhvS1k2cGxSTjRlallVRzF4RzB4RkJr?oc=5",
+      "published": 1790091960,
       "summary": "",
-      "topic": "联大第81届会议主席",
-      "brief": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
+      "topic": "人工智能·科技",
+      "brief": "Trump says AI will be renamed ‘super intelligence’ in all US documents。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际"
+      "categoryKey": "tech",
+      "category": "人工智能·科技"
     },
     {
-      "title": "联合国秘书长：“四大考验”决定人类未来",
-      "source": "finance.sina.cn",
-      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNZ0w3MW5LdHNkTzU4dFBnUXM0RzN1ZzdraGJxSUt5NWd3U3VFM0FSYkRKVFBUczQxMXJqNU0zUFFpaE5LUjFuNlJiQmJ5dldhbXpYTy1IcEVMcm4zTmVxRVhyWXFCazBoQnJGUEJ4c3BTVXpVZkhhUnBOM3RtWkZxbmFfNHNnUQ?oc=5",
-      "published": 1790085792,
+      "title": "Republican calls for Senate investigation of Trump Jr wedding paid for by Russian oligarch",
+      "source": "The Guardian",
+      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPRUFGbVRQWXJlenVHenVLb2o0Q0JSVGpEd2NDSzExQkZDeF9ES1oxaTM4N3hxSk9FcW1rZFhLVHk2QzdUa0pwNzBfR1NaYnBGbFJ1aVRBNGszbWxSMS1JSDl3RmpUS1hFQWk2MGk0UHNqenVDUGVaaVNQZ0pSTTFkLWI2QlhCZEt1QkpqTGFZOVE2Nnhnam5HdUV4V00?oc=5",
+      "published": 1790095200,
       "summary": "",
-      "topic": "联合国秘书长",
-      "brief": "联合国秘书长：“四大考验”决定人类未来。",
+      "topic": "法律·监管",
+      "brief": "Republican calls for Senate investigation of Trump Jr wedding paid for by Russian oligarch。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际"
+      "categoryKey": "law",
+      "category": "法律·监管"
     },
     {
-      "title": "充分发挥青年在国际传播中的独特作用（专题深思）",
-      "source": "人民日报",
-      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQQWRYU2VFdDhfRS1LMGNvWDZ0alY4b2xoaklmcENaVm9WT2N5NGcyUm5mSlZ0d2lHX3dpYXFlLWN0NjdsalZLZ09VczFQdlBPQUh2MVJta29RbzZ5Ymtvclpnek96aE9DTEJOSi1FNW4wT1hLcENKWkRBQ2pIR1R6eg?oc=5",
-      "published": 1790083089,
+      "title": "What Is the White House Press Pool?",
+      "source": "The Wall Street Journal",
+      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPS1pfSlpvRmd5d19TUF9vUW94Y285N3dDQWR6ZDViUTN0MlgxM24tUFBXUFV4cVZvbVAzWXFHN2JHRWlzWlFzV1VZcHFwMDRxOTNSSWd0c0hLOFc0NXZrenl5eHhzQnF0WFh0MmIwMVY3VXRpWnhja0lhYm80dHBhdERLLTg?oc=5",
+      "published": 1790091000,
       "summary": "",
-      "topic": "国际",
-      "brief": "充分发挥青年在国际传播中的独特作用（专题深思）。",
+      "topic": "政策·政治",
+      "brief": "What Is the White House Press Pool?",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际"
-    },
-    {
-      "title": "到2030年 我国电气化率将跃居全球主要经济体首位",
-      "source": "经济频道",
-      "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5DOTlQRHFoREY3dUVZZXFkT1d0YjNITjYwUHA1MkVuVW1ETVQtalp3TXRlNmZ4OVItWmpyMXJScFI3MmdJMU92bDU1U3BpSE1QT1Ixa195M3d3RURKdGRVV1NfUERuOENvYWR0ZnVJbVhrOTE3bGtOV0UxNA?oc=5",
-      "published": 1790086440,
-      "summary": "",
-      "topic": "市场",
-      "brief": "到2030年 我国电气化率将跃居全球主要经济体首位。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "markets",
-      "category": "市场"
-    },
-    {
-      "title": "古特雷斯被问“以色列为何还在联合国”",
-      "source": "21财经",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNUGtXZHRQb3ZQVWNtXzNNSFJ6Um9XTno3Q0RuMGtKakw0ODZkUjQ3aGliSGN0RlBJSVZyblVmeS1VNjZUd2ZFMlVObUVZWEVLNWV0UUVHbW9aRU9DVGxGWHNKeVVycWcwa2xtc2c3cFF6M0wxQUVNSXlPTmZxUDFMYUpuZW5veUZlUTZ0eUo2RQ?oc=5",
-      "published": 1790082780,
-      "summary": "",
-      "topic": "中东",
-      "brief": "古特雷斯被问“以色列为何还在联合国”。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际"
+      "categoryKey": "politics",
+      "category": "政策·政治"
     }
   ],
   "alsoNoted": [
     {
-      "title": "中国经济面面观丨人形机器人叩响消费市场，离走进家庭还有多远？",
-      "source": "news.cn",
-      "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPVUN4TGw5ZDNteFdfRWg2ZG43MWdhcjEzeUlnaFRUVFVFbVpfdnZHUkl4YWFqc0ZLei0wbDd6cGhlZjl6V0dWbUVHN1Z3STBEQWlIYjU4M1dFNUhTelRtR0N6TThNZ05fcHhrMlZUcFBmTTlUekZvQURHaW5zS0UzenVB?oc=5",
-      "published": 1790085102,
+      "title": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections",
+      "source": "NBC News",
+      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNWHlfaF85em55RjZHa3VUZnlpME1GTnNQTmdxdFRiYktLd2Y1c1ZpQUNPUF9ma1RqSFE1QVJJdXRYM21ZUGJfWEhNVDBVMHk2OGNMSFpYMVB2cVg2Tk92aUgzQkxSWGlhYVZjUDdyMTg5dnVFNFQyTlRqanFxRzFLS0twcXZEcFk0RlR6M0hhdlU4ajNhdURycVdfTWRnQ0pYR0h2SzBieTJBVmo3d3FmeWhyaVpiZzZOMm84?oc=5",
+      "published": 1790094667,
       "summary": "",
-      "topic": "中国经济面面观",
-      "brief": "人形机器人叩响消费市场，离走进家庭还有多远？",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "markets",
-      "category": "市场"
-    },
-    {
-      "title": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
-      "source": "21财经",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNN2JNWHE5dXl3UVJXbzN2N3lreHhQUVZibEhFeVY2VjVSN2VmeEJnLXppZjdkUmcwaEVLM1ZtUFY3OUV6TGgyWDNRQWxhOHItaDM0TGl6VVZKZy0zZkVlbENIbXB5eHBRaE5WaFNtNUhXc05uSTBwMzN6ckl5dHJ3NkJkcFpHeDFQLTR6YlFjRQ?oc=5",
-      "published": 1790084040,
-      "summary": "",
-      "topic": "市场",
-      "brief": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
-      "why": "这可能影响利率预期、融资成本与风险资产估值。",
-      "categoryKey": "markets",
-      "category": "市场"
-    },
-    {
-      "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-      "source": "东方财富",
-      "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-      "published": 1790072250,
-      "summary": "",
-      "topic": "芯片 / 半导体",
-      "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
-      "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
-      "categoryKey": "tech",
-      "category": "人工智能·科技"
-    }
-  ],
-  "watch": [
-    {
-      "title": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急",
-      "source": "UN News",
-      "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1zcVVTeExSbUExc01lYXFqWEdZZmt6Rjgzdk5qQ2RpckhFcWJaQ0doSG9nM1pQa216SzFOVHlMMWEtQ2pGQ2tLSUtVLUNhbVNCcWZuaVU0Yw?oc=5",
-      "published": 1790085941,
-      "summary": "",
-      "topic": "联大第81届会议主席",
-      "brief": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
+      "topic": "国际·地缘",
+      "brief": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "world",
-      "category": "国际"
+      "category": "国际·地缘"
     },
     {
-      "title": "到2030年 我国电气化率将跃居全球主要经济体首位",
-      "source": "经济频道",
-      "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5DOTlQRHFoREY3dUVZZXFkT1d0YjNITjYwUHA1MkVuVW1ETVQtalp3TXRlNmZ4OVItWmpyMXJScFI3MmdJMU92bDU1U3BpSE1QT1Ixa195M3d3RURKdGRVV1NfUERuOENvYWR0ZnVJbVhrOTE3bGtOV0UxNA?oc=5",
-      "published": 1790086440,
+      "title": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech",
+      "source": "Axios",
+      "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQzlabml1UjVQNmswWUFzYUZFVmxYb1hHLUhZa0JvMXliZEpUQjBMcUY5Z3gtWGR5elZQMHhlZmRFN1R6b0otY29rQURUei1kT3VRVzZQTFdkbDVTS1JpWlByMEZNbHgxcm53LWUzNnk4aEZEdlB6SHYyZy1LcExqNVNPQVBRQ2hh?oc=5",
+      "published": 1790093758,
       "summary": "",
-      "topic": "市场",
-      "brief": "到2030年 我国电气化率将跃居全球主要经济体首位。",
+      "topic": "国际·地缘",
+      "brief": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "markets",
-      "category": "市场"
+      "categoryKey": "world",
+      "category": "国际·地缘"
     },
     {
-      "title": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
-      "source": "21财经",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNN2JNWHE5dXl3UVJXbzN2N3lreHhQUVZibEhFeVY2VjVSN2VmeEJnLXppZjdkUmcwaEVLM1ZtUFY3OUV6TGgyWDNRQWxhOHItaDM0TGl6VVZKZy0zZkVlbENIbXB5eHBRaE5WaFNtNUhXc05uSTBwMzN6ckl5dHJ3NkJkcFpHeDFQLTR6YlFjRQ?oc=5",
-      "published": 1790084040,
+      "title": "Trump floats ‘big decision’ at UN on whether he’ll ‘annihilate’ Iran or make deal",
+      "source": "The Hill",
+      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPQ0RZTFktS3o2NjVIQ3JEYVE5SExrZzJvMUZSWFdjQmxpS25WRHRMQ0xUMDVlS0Q3dzRySW9hR1dKQ0MyRmpGSVBleVdRTHpjSmpERWVnMkJvbm1zdDVkcU1UUzY4M0M4N283MUVieGtvRVhVenh1SkxTUk55bkg0MtIBhgFBVV95cUxPVGdLM2wxcG92SDBJVXBFbUt2V3hzNnBHVUxjMDNyN3dodUZ5TnJoSmJfaXB4NkdlZlduU3NRTVpxSEMyUHducUtqZUEwc2tpVjJjRTFoc1FjRlpHZjNxWXZtQ3VIeFRtdlhnSmtIWDd6Q2hzaEg1SlpsckY4VlhDbWFXZ1BxZw?oc=5",
+      "published": 1790089740,
       "summary": "",
-      "topic": "市场",
-      "brief": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
-      "why": "这可能影响利率预期、融资成本与风险资产估值。",
-      "categoryKey": "markets",
-      "category": "市场"
+      "topic": "国际·地缘",
+      "brief": "Trump floats ‘big decision’ at UN on whether he’ll ‘annihilate’ Iran or make deal。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "category": "国际·地缘"
     }
   ],
+  "watch": [],
   "categories": [
     {
-      "key": "markets",
-      "name": "市场",
+      "key": "politics",
+      "name": "政策·政治",
       "items": [
         {
-          "title": "中国经济面面观丨人形机器人叩响消费市场，离走进家庭还有多远？",
-          "source": "news.cn",
-          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPVUN4TGw5ZDNteFdfRWg2ZG43MWdhcjEzeUlnaFRUVFVFbVpfdnZHUkl4YWFqc0ZLei0wbDd6cGhlZjl6V0dWbUVHN1Z3STBEQWlIYjU4M1dFNUhTelRtR0N6TThNZ05fcHhrMlZUcFBmTTlUekZvQURHaW5zS0UzenVB?oc=5",
-          "published": 1790085102,
+          "title": "Swedish prosecutors probe election fraud allegation casting shadow over vote",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPQjhVVi1qNGdFZFNFVEkyVnpIV0xDNFd3VDk2VHJfb2VaNzlTa2ZzV3lLZ2xWei1LMGR6bFpBb1pwME8xN0s4akNfTVFDcEFnZ0JFZXdGMXNoOXhLSU53QUp2MEdRUWF3Zk5xOFhOLXNucmZydVlJa2ZXZ0ZTSFNhTlZheUZpTV9MQkJ1LVJfYzg4MFVZZmRUWTVwSjdwOHkybUJmcWN5dVRXdmo2NC1mTkhBX3hTUU9nUXpHbW5lc2VNVjZDc3lwampmQWVnTHBp?oc=5",
+          "published": 1790088029,
           "summary": "",
-          "topic": "中国经济面面观",
-          "brief": "人形机器人叩响消费市场，离走进家庭还有多远？",
+          "topic": "政策·政治",
+          "brief": "Swedish prosecutors probe election fraud allegation casting shadow over vote。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        },
+        {
+          "title": "What Is the White House Press Pool?",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPS1pfSlpvRmd5d19TUF9vUW94Y285N3dDQWR6ZDViUTN0MlgxM24tUFBXUFV4cVZvbVAzWXFHN2JHRWlzWlFzV1VZcHFwMDRxOTNSSWd0c0hLOFc0NXZrenl5eHhzQnF0WFh0MmIwMVY3VXRpWnhja0lhYm80dHBhdERLLTg?oc=5",
+          "published": 1790091000,
+          "summary": "",
+          "topic": "政策·政治",
+          "brief": "What Is the White House Press Pool?",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        },
+        {
+          "title": "Republicans’ Cash Blitz Meets a $5-Gas Election",
+          "source": "POLITICO",
+          "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOcnJ0NGdxdnZwamdKdF9sc09EVkpIaW1iMklpVnRDa0wtWjdCNWpCMExxcUJMNmJXeHZmRDNvMmlaUFBtckhRM0YzRFQwWE5RXzV5OVZvbTRlU0kzZzg1am0wMWg3UTlEYTVhdG82eF9sdXlRSU5PZWVRZmN3VjJIMjktQmQwYTlKeVp4WmN4am52QzFsMXZJU3hKaw?oc=5",
+          "published": 1790067600,
+          "summary": "",
+          "topic": "政策·政治",
+          "brief": "Republicans’ Cash Blitz Meets a $5-Gas Election。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        },
+        {
+          "title": "Appeals court reinstates GOP House map in Missouri for November election",
+          "source": "The Hill",
+          "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPTXJCSG1mMlhDZU92RGJleEx1VXBYdWhfNjRTd2JUUEE4aDE2bjBvV0dpcUdnMERRdVI2VlczSVRwems4UWplT0JlYUdCclBLektzQWNXUXF2SGNLMHRiX3BlOHFWMVZzUkxURlVuUm5heVZHQnNMOWV1WTRfbVFPQjhhVWtPLUJ3ZldqbUtHSm7SAZYBQVVfeXFMT3FWbFVkT2I5YXhySXRhNmtVaXVtc1BHZWhCT3FQc1ZUNEVlOXJRYW5DMXNndDBMZGtUQ2lRUnFKdktabjVWYng2b1VJUUxrY1VzdGFUT01kTlBiS0h5WEV2UUhxcHlIZU5MSFBjSTFMeTJ0T3VJS2JrTTJyd1FVeHpIRENvVlVsbVZ5V2hhQVBoaHR0X3VB?oc=5",
+          "published": 1790028300,
+          "summary": "",
+          "topic": "政策·政治",
+          "brief": "Appeals court reinstates GOP House map in Missouri for November election。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        },
+        {
+          "title": "CNN, Politico and MSNOW Sue Trump After White House Ban",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPd0VsX2hWOXZ5QnpwTWZ0MFNqLWpTdHFmTzlxeWsyR0pkamxxNXRFN3JZTGdYZDJzZ3VnV3VpNFRBdlloRU0wVHVLNGFkTnN5VVRIQ3k2ck8zYTZGRU5YRFExcEpEWjlGcFFQT3p1S2xhVlpPS0xocGUzaFhreHJOdm5MUnNKcHR0bERfdndn?oc=5",
+          "published": 1790089860,
+          "summary": "",
+          "topic": "政策·政治",
+          "brief": "CNN, Politico and MSNOW Sue Trump After White House Ban。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        },
+        {
+          "title": "Trump says he thinks US will make deal with Iran after election",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPYkw1RzVpeWp6Q0lENW1HSzFGSUJoNEx5VmJZdWlpa2otcmNiY3RUeXlJc0FJMnNCc3Zsa2c0dUkxN3c3cGhiemFFd2xEWjZMUWtVQ1VvdG9sNmYtZF9XV1NoMjZFNEMzUTZJaVJkWlBlQ1VPRTA0WjB5QVNNUHlKZEw4SW1pNmI5TmM3RktzX1Zvbmp6cWQ1WXVWNUVab2NidTR5d2g3YmR3UWZuYVJUcQ?oc=5",
+          "published": 1790088896,
+          "summary": "",
+          "topic": "政策·政治",
+          "brief": "Trump says he thinks US will make deal with Iran after election。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        }
+      ]
+    },
+    {
+      "key": "world",
+      "name": "国际·地缘",
+      "items": [
+        {
+          "title": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNWHlfaF85em55RjZHa3VUZnlpME1GTnNQTmdxdFRiYktLd2Y1c1ZpQUNPUF9ma1RqSFE1QVJJdXRYM21ZUGJfWEhNVDBVMHk2OGNMSFpYMVB2cVg2Tk92aUgzQkxSWGlhYVZjUDdyMTg5dnVFNFQyTlRqanFxRzFLS0twcXZEcFk0RlR6M0hhdlU4ajNhdURycVdfTWRnQ0pYR0h2SzBieTJBVmo3d3FmeWhyaVpiZzZOMm84?oc=5",
+          "published": 1790094667,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOU3VOUDE2WFpHSE50Nk40elJZZ1pObDJFano0bmpvN2ZpMmJrc2pJSVlqTlQ3QTFySFNnZldHLUR0T3U3UGpEaV9MazBNNldTY1dCRm5tY254bWFhYW5rQkk0bXpiT0tkX3FzdHQxbThaaTJWakM1X29YclJuSDFNS0xzdUhpSmhaZWp4U9IBkgFBVV95cUxNTnlqQ25DZ1V5RUY1OXB6UFFCYzZuV0lIM3d2Z1ByT2F0ZlJURVhUQlFvWVp6QlU4UkhJRTJQVTgxaWwyY21TUWhfVHd5NWxFQjNPMkFvcFdVTll4RlRNd2lONy1FLVlCZUhGOWdwZlFFUHozRHZsNVhvdU84cHh0Z0YtYTY0UHJnQ2NuZUpLZEE1UQ?oc=5",
+          "published": 1790067243,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Trump urges complete isolation of Iran, expects deal after election",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPMHFVWHVmRkJDV09JMHNSQ2RvNk5zS2NwN3lwZ3lNOFNLd0tUdjZHS09lMUhZdHBCWXZUQ1NJUHh5cUxmYlU4NjNTRGRtWDJ3UkFpb05jS1U2R2huempndzFvVEtqZmV1RjN2cTRJWWYybEpQSkptR2NjLWFySUtUeDdXMmdBd0N4dktqeGN6WjdTOGVfQXZJLVgyX2k1RTlzbDZncmktWlI?oc=5",
+          "published": 1790095421,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Trump urges complete isolation of Iran, expects deal after election。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Russia and Ukraine trade deadly strikes as Zelenskyy prepares to meet Trump",
+          "source": "Associated Press",
+          "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNYnlCTkxicTUzUWYtb2ZqTjJZMGJJY3ZKWlYzR21UMk1tN2NwRkJ4dE9lVHkyVnhIald4YWxjbGkxMEl6QW1HUE9RdWoyYkVwWjJWYmZRUHRTdlFWeDFBMzhVN3ZBQkVHUHRNRm1oWmZNYU9CTzZFN19ScEtja1lwMXdBV21BSjl6RDJHQ3laX0lrcVFycFVyTU40QzRSTmt1Slc1anVsVGNmWTNl?oc=5",
+          "published": 1790083440,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Russia and Ukraine trade deadly strikes as Zelenskyy prepares to meet Trump。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech",
+          "source": "Axios",
+          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQzlabml1UjVQNmswWUFzYUZFVmxYb1hHLUhZa0JvMXliZEpUQjBMcUY5Z3gtWGR5elZQMHhlZmRFN1R6b0otY29rQURUei1kT3VRVzZQTFdkbDVTS1JpWlByMEZNbHgxcm53LWUzNnk4aEZEdlB6SHYyZy1LcExqNVNPQVBRQ2hh?oc=5",
+          "published": 1790093758,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Trump floats ‘big decision’ at UN on whether he’ll ‘annihilate’ Iran or make deal",
+          "source": "The Hill",
+          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPQ0RZTFktS3o2NjVIQ3JEYVE5SExrZzJvMUZSWFdjQmxpS25WRHRMQ0xUMDVlS0Q3dzRySW9hR1dKQ0MyRmpGSVBleVdRTHpjSmpERWVnMkJvbm1zdDVkcU1UUzY4M0M4N283MUVieGtvRVhVenh1SkxTUk55bkg0MtIBhgFBVV95cUxPVGdLM2wxcG92SDBJVXBFbUt2V3hzNnBHVUxjMDNyN3dodUZ5TnJoSmJfaXB4NkdlZlduU3NRTVpxSEMyUHducUtqZUEwc2tpVjJjRTFoc1FjRlpHZjNxWXZtQ3VIeFRtdlhnSmtIWDd6Q2hzaEg1SlpsckY4VlhDbWFXZ1BxZw?oc=5",
+          "published": 1790089740,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Trump floats ‘big decision’ at UN on whether he’ll ‘annihilate’ Iran or make deal。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Iran’s President Arrives in U.S. for U.N. Meeting Against the Backdrop of War",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPVTVUVkYyWHN5aXRrblFHZmZfYlcwLVZ4MjNISWNzYzJWMVhtelFfMnpQUktFdFc3REFGd0ZjMXhXZzB5N0JHLW42MnlLdFV4emNuV3lMbzhtMFRTUVBSeWNWRzFyY2FveS12MlYzN1JjR29kVzBobmNsSnVBLTlqRERIS182WXI5MjFhM2EtbWpYekYteU5CSENoRlY?oc=5",
+          "published": 1790089119,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Iran’s President Arrives in U.S. for U.N. Meeting Against the Backdrop of War。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        }
+      ]
+    },
+    {
+      "key": "markets",
+      "name": "市场·经济",
+      "items": [
+        {
+          "title": "Oil erases losses after Trump says Iran war could be settled after midterms",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
+          "published": 1790090601,
+          "summary": "",
+          "topic": "市场·经济",
+          "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
         {
-          "title": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNN2JNWHE5dXl3UVJXbzN2N3lreHhQUVZibEhFeVY2VjVSN2VmeEJnLXppZjdkUmcwaEVLM1ZtUFY3OUV6TGgyWDNRQWxhOHItaDM0TGl6VVZKZy0zZkVlbENIbXB5eHBRaE5WaFNtNUhXc05uSTBwMzN6ckl5dHJ3NkJkcFpHeDFQLTR6YlFjRQ?oc=5",
-          "published": 1790084040,
+          "title": "Saudi Arabia restarts East-West oil pipeline, sources say",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxPNmJidHFzNHlscWlnT2hsWFdKc1hNRFMxOWRnTTRQRHVHbV9tRTJySFJoOGFoZXdNdTIwMngxZlczRmY3dWJxWkNiWTRYclVyT0JoWXQyUHJpNThicmpUNDMwWjNqREdrYmw3Ty1peU9oaEtRdC1GWXE1S0o1eGlrWDZONDhqS0FDbWotZXV1LXBvTEhUWHdlT1BzYU5udjNKTTFXdk1hX0wwVk1yczRTdV94R0p4UUQ1bEViTXJ2S2pEaTVLTFlvdw?oc=5",
+          "published": 1790089939,
           "summary": "",
-          "topic": "市场",
-          "brief": "巴西央行9月议息会议纪要显示，维持偏紧货币政策，降息至13.65%，但强调需求端通胀仍有支撑。",
-          "why": "这可能影响利率预期、融资成本与风险资产估值。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "到2030年 我国电气化率将跃居全球主要经济体首位",
-          "source": "经济频道",
-          "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5DOTlQRHFoREY3dUVZZXFkT1d0YjNITjYwUHA1MkVuVW1ETVQtalp3TXRlNmZ4OVItWmpyMXJScFI3MmdJMU92bDU1U3BpSE1QT1Ixa195M3d3RURKdGRVV1NfUERuOENvYWR0ZnVJbVhrOTE3bGtOV0UxNA?oc=5",
-          "published": 1790086440,
-          "summary": "",
-          "topic": "市场",
-          "brief": "到2030年 我国电气化率将跃居全球主要经济体首位。",
+          "topic": "市场·经济",
+          "brief": "Saudi Arabia restarts East-West oil pipeline, sources say。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
         {
-          "title": "每日机构分析：9月22日",
-          "source": "eeo.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1odC10RGlHRGgtaHFlU3V3MmdON2dzWG1vNnEzZ3pCci1OZmNQdHp5SjNwc0xHS3hMTFdQa1JpTDRPamYzeGhtaUdYY1ZsajRibTlpZ3ZJNHc?oc=5",
-          "published": 1790082660,
+          "title": "Stocks Get a Lift as Oil Sinks Below $100",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOc3MyRDJabzN1SXp5Z3JMNHJUZHFoLWJQVHM2eUxodjlfRzFtVHJ0YlJyYWlNTjVpa1NzZ2djSWxVNk92MzdRSVBKclFZa1l3MVE0MjBMYng1b3dwMzdzWEp0MXhycDhnLS1TVS1WYTZOZlFzSFVOUTFIeXBRSlpDMGI1MElCdXJaa3dZMzBXWWc1US13Z0FIV3ZSNA?oc=5",
+          "published": 1790086080,
           "summary": "",
-          "topic": "每日机构分析",
-          "brief": "每日机构分析：9月22日。",
+          "topic": "市场·经济",
+          "brief": "Stocks Get a Lift as Oil Sinks Below $100。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
         {
-          "title": "央视聚焦湖北光电子信息产业链",
-          "source": "湖北省经济和信息化厅",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTFBROHZrXzItMV9EREdJZnZHY05CLUliVkhYazlWQW1ta29pQmFJSVM3UjRSblJEaHJELWZDaTNLM0dRR3duQ29MM3FoM3VXRk1yblo0Mm9PX0h2dmhmbjRZTnpJMEs0bXBtb3VUY2ppcmVJdw?oc=5",
-          "published": 1790071200,
+          "title": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNV0dWcVNNMlhnbkxPYlRmRnlNblltd1JsbHNab0pINjBpTGFPYlR0aTdiZ1ZfRzNXMlJTRXhMeTF1S0xxY29pUk84UzFxQ3dmZy11S0VEWFZjMmczOXE3cjRBTFFQMDF1NlFERTJaYkZHSURES0JySlNQWHhOSGV4SC1yWGdlSXJLaE1TNjc0a1Y2YXdKR1hieEd4cw?oc=5",
+          "published": 1790094240,
           "summary": "",
-          "topic": "市场",
-          "brief": "央视聚焦湖北光电子信息产业链。",
+          "topic": "市场·经济",
+          "brief": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
         {
-          "title": "东莞控股：拟收购低空经济公司65%股权",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFAzLW05UldiUVJxZDlQUnZWWW53TzBYU1Vvd1M0czFUOXBuRU9sQXhUUWlXWGVNQ1pJWUlYc0F1VWQwYnBnNUM0OUJYcDFmbDZWYW5qMzVCMmhqTkE3OTNNbDdRTkplQQ?oc=5",
-          "published": 1790081797,
+          "title": "Stocks had a great day on the surface. But something alarming occurred not seen since 1999",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNWHI2dUs1VHRMaTBYUTdCODVvYUllNkdEVlJXMUs3eTFGZlVQM2hDbGFJMjRQU0hkd3JyQllXUnNOZjU1Y081S0Z4emk3RXdITlU5VjN4UU96YjhsTmpIVkF0cUkwWThGZHZvZmM1a0c2TnVabl9MZ0ljMC1sTmNlOUpLYlJ1OTlncElCQ2hRMGZRc0I5Uk9SMG9TLS1GdTBfdFZjdWdBZ3gwZGJGUmpieUtoVTJjaFRnUXZ1Vm9pZy0tSU1L0gHKAUFVX3lxTE9BZTVLUmhnOExPQlc2LWRvZ2dBVHFNaXVOaWRWRTZRT2V6UDhNamVzYmUzb28zMW16VmY2ejdfMXBVYVZ1c3o2VnU0OXNaQ25RQk9wbV81aGZJRDFmbUpKc2oyVy0zcnhMdFBkdmtseUk5dkJ3eW9UeVhJcnZveWlTSG41dWI1WklGWWIxTmZXdkd3T0ZyM1N2aVg0b2lDOTNfdW1QNnVJaTdyWmxLUmtYeGk0dWlxWGxGUlhzbzBRTWlCbTVObWdpY0E?oc=5",
+          "published": 1790022397,
           "summary": "",
-          "topic": "东莞控股",
-          "brief": "东莞控股：拟收购低空经济公司65%股权。",
+          "topic": "市场·经济",
+          "brief": "Stocks had a great day on the surface. But something alarming occurred not seen since 1999。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
         {
-          "title": "李昌平：别再靠“打兴奋剂”续命！中国经济的病根不在缺债，而在数百万亿乡土资产沉睡",
-          "source": "guancha.cn",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5BM3Z5REZON05QTzJJME5jdVI5bzFheV9EeVl2YjdfYlVWaXY5eU5xQVAzQXlHSWdXcEhnelFQZnMyLXpOOF9aV2w4Zk1EcklRYlBpdXM3SVhSa19TdmNDTng0eXlRQQ?oc=5",
-          "published": 1790078827,
+          "title": "Traders push for discounts for Venezuelan oil as shipping costs soar, sources say",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQOVVMaFBzbF9UZE5pd2VoZlZnclpPTjU3SVRDTkFzSjFOWk04VzREVjRnSlFCZTBJV1g0SXRMT3hJeFRwVjNwM2JuLTBVOHJZcndDZTc0bEt6NFlweElqQ3oyWGFtTzBUVDE1dEV4NFE5UnVDbV9IelEzU2dHNzhSQ3lKbVVBNW1pMTdSbTFqV0RCOXd6Z3FfU2NBMU1tUWZPOXItX3d5Z1RQZnRlU3VzLXVveFN2LThhSjdxaXp3?oc=5",
+          "published": 1790088534,
           "summary": "",
-          "topic": "李昌平",
-          "brief": "李昌平：别再靠“打兴奋剂”续命！中国经济的病根不在缺债，而在数百万亿乡土资产沉睡。",
+          "topic": "市场·经济",
+          "brief": "Traders push for discounts for Venezuelan oil as shipping costs soar, sources say。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "Tech stocks power market surge as bond yields and oil prices tumble",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPUi1FcU5EQjl2dUY3WmtrTDh4QTIxdG5VdVBaQWRDeWJUZXVlRUtYM2FvaDRaRlFXM2Fyby1PVno2Y1NtdVpJN1M5NmlqSWRJUGh2eUhGNXZTYU9tU0J0QzFsWHZUYllLUVRuel8tMWVmTjd5dEtOR2NJRnZ6clR1SXJwM2pLYTN3MndOamM1anA?oc=5",
+          "published": 1790022477,
+          "summary": "",
+          "topic": "市场·经济",
+          "brief": "Tech stocks power market surge as bond yields and oil prices tumble。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         }
@@ -304,308 +457,153 @@
       "name": "人工智能·科技",
       "items": [
         {
-          "title": "AI深度介入电影工业改变了什么？对话导演陆川",
-          "source": "news.cn",
-          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFB5REU5eDRXYTRZOF96NmVJbFdtR09ZV2w2cHBlOVhnbEdOb2NLdWNHX3NjRXRVYzVFa3Y1bzFBcXhSdWxNVGdWbDhobk1nTDhaUkh6VW4ydkstS0lOT0N3WW1VUmpCWVY1cS16VzBKSmJMNWp6eEhfTmN3aGpidw?oc=5",
-          "published": 1790075639,
-          "summary": "",
-          "topic": "影视",
-          "brief": "AI深度介入电影工业改变了什么？对话导演陆川。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "山东省科学技术厅工作动态省科技厅举办第35期“山东科技大讲堂”",
-          "source": "山东省科学技术厅",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE1VUXBSc1p0cHQ4YWFXWkJ0ZmdZS2x0QXVoUTE0b3BFMlJ6NU54aHFJeGZ0WGxoQXEwU1FNekRUaGtMTnVITzlGam1wRWdxVnljUEQ5M2V4dUZ2d1FVR29JWk1nWWE0U3R6dVlVejhMRVBCQQ?oc=5",
-          "published": 1790069640,
+          "title": "Trump says AI will be renamed ‘super intelligence’ in all US documents",
+          "source": "The Hill",
+          "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPTHFSRVlHOGRzQlVzcWRvcHlCU2pyMGhSXzlPLUxvNnFqaldRVnpIYWJWMHpvRHY5OUR3UmV1eGtCS29LbHlHUFFDaHc5YjVhN1owS0RfT2Y1X0FSVVJsZ09WZUNNOUV4MGtZLTRMeS01bVJ2MHdaaE5VMEI3M3laVEZGejJCNHZSWDFuNWZ1NjBHd9IBlwFBVV95cUxQTnJVNkJmdXZuX2pHN0pqd1JKczNfM21JVHFLaHU5QVFHN1VERkxtNUhqQVZuZi1xaUZrZms3SzFWU201SUs2Y0cySEN2SG4wUmQ1TnVOMEo5T2lacDJpMzVoS2RwQWdUOUV2cG93bkZURUxNb2JhRkE1R1RyZlk1dkhvS1k2cGxSTjRlallVRzF4RzB4RkJr?oc=5",
+          "published": 1790091960,
           "summary": "",
           "topic": "人工智能·科技",
-          "brief": "山东省科学技术厅工作动态省科技厅举办第35期“山东科技大讲堂”。",
+          "brief": "Trump says AI will be renamed ‘super intelligence’ in all US documents。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         },
         {
-          "title": "AI陷阱大揭秘丨AI配置失当酿成后门漏洞，内网数据裸奔外泄",
-          "source": "中央网络安全和信息化委员会办公室",
-          "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9HaFNFb1lJSlZGd1ktVDJDY2tEMHh1Q09PeUhOeHZoM0JjVzduSk84bkJFMThOUHUtV1dBS3JtX3draFNSd1dmUU1JVXJSb2NGc0tsQjdzZnNHa0R4TjQzOW1haGhoLUU?oc=5",
-          "published": 1790043120,
-          "summary": "",
-          "topic": "AI陷阱大揭秘",
-          "brief": "AI配置失当酿成后门漏洞，内网数据裸奔外泄。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "第五届全球数贸会：前沿科技可触可感",
-          "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFB2WnFwVGpObG5taS1qLWtpSnR5WGpMelNvUElETXBZRzAtUXpVVXhtSGZkNFY1cVNoWlgzOWxRQm1uSXZVVUNqa1M2RXJBMEpjcnpuVUpCNGJBQS0wTHlveGI1ajZHVmFPTlAtN0M4aGs?oc=5",
-          "published": 1790080590,
-          "summary": "",
-          "topic": "第五届全球数贸会",
-          "brief": "第五届全球数贸会：前沿科技可触可感。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
-          "title": "Anthropic发布AI滥用报告后 中国监管部门据报对DeepSeek和月之暗面展开调查",
-          "source": "RFI",
-          "link": "https://news.google.com/rss/articles/CBMiygNBVV95cUxNVTdxLTlNR2hBSDhyR2VEbWh1VTV0TFNBZWFEN280bjNrTjVSenNuRVpjZW5VYnY3VElsOVVCaWFlYl9zNVNPTzEySUtTbnB0WDhWWEZSLV9TWWVFNjBvUHZjYkg3SUZUdWhTdDJnMUVkLV9lblhtMFREazNJaW04cFp1LUZqM01qUHhuTlJ2bkxzbDVmd1dUby1tSGczZTJmeWlpZ0ppcExEXzQ1QTZzc09WN1JUNzlFY1Eza2FxQmJFNEZseXdJRTM4SHFHZHNpVzZkcEh6XzVWV1JXQmFaOGxHQTFiNHFRMGNhQ1RtQ0lraUpjbGpsYklJemxkR19oeF9jTU1fYVhfZjgzOGNWMUVwYmtVZmZRWHptNDZpMkgxUjdPUDRxYTRJN1k2cFNqWk5HNkt2RVp5MmFRWnZZRG9SR2htLVNEcHBLZFFxazB3Q1hiUGltRVZJaXdqZFJYVC1pb1FkaVM4b2dydXV2bnRtR04xT1ZsbjVWUG5LUVprQks2U2VHQVNpSlduS2VFWXJKTWQ3TXRmRVlrVGprYlYxMnRKWVdfTjRaSG5YRkNYX1h6ci1INGNnUl9Jc2FrT0RxdFl4YldvUQ?oc=5",
-          "published": 1790084728,
+          "title": "Trump says US will henceforth call AI 'super intelligence'",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
+          "published": 1790090263,
           "summary": "",
           "topic": "人工智能·科技",
-          "brief": "Anthropic发布AI滥用报告后 中国监管部门据报对DeepSeek和月之暗面展开调查。",
+          "brief": "Trump says US will henceforth call AI 'super intelligence'。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         },
         {
-          "title": "阿里平头哥发布最强国产AI芯片！相关概念股梳理",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0tSUp6OEdpRy1xVDhBSVZuVjZiSUZFR2NDelhBVndodWU3dGtUdTMzdDFITDhEMDVCX0NiWFl4YVRqYlB4a3Y0UW9KRkV5R3JRdmhfZzdWT2MzNTc4WV9JRA?oc=5",
-          "published": 1790072250,
+          "title": "I Built AI Clones of My Coworkers. Things Got Weird",
+          "source": "WIRED",
+          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQa2pUS0VjMHFrR0tRMUdyZERRdUU1d1J6bklqZ3AtZElXb1lqeTREbDZjSTBUWVV6N05aaHFuLTliZWZpdjlsU0paWG42Z01CLXZJdzlRR1JBU1VJS3o4YVd2RWV6RjlhU2Z4UTFGRS1Tb1dCN1lEaHdpTk1YLUM0TnBvbDlUZk5GWnFSakZmZw?oc=5",
+          "published": 1790073000,
           "summary": "",
-          "topic": "芯片 / 半导体",
-          "brief": "阿里平头哥发布最强国产AI芯片！相关概念股梳理。",
-          "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
+          "topic": "人工智能·科技",
+          "brief": "I Built AI Clones of My Coworkers. Things Got Weird。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         },
         {
-          "title": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQb3pyLUM4Zjg5V05IQl96NVp0VWJkWUpfbTcyNkp4V3o3YjRiWkMtdkFrOUJCR3BIQTg3ZFlDR0ZCTHJpRnlEMEY4SnVNSWZMdVhKN0lRZjNmTmFSOFY1V3RMal9ud2JXbzNBMDJUNl9BZlNVRkNtNFpoWk5lVFUwSHJfejd0Y0Y0bHJWQXNsOA?oc=5",
-          "published": 1790086120,
+          "title": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence",
+          "source": "BBC",
+          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9wZElLYTA3N1pYMHNTa0dOTGpMT2dnUG9oQ0RYZE9KRm1VRnJJVWxLUFluRHpaT1V0SWpkMzBoODNpN0hhZGVJRnFHYWduMlN5eHJyMmN4ZXk?oc=5",
+          "published": 1790092405,
+          "summary": "",
+          "topic": "Watch",
+          "brief": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "UN leaders' meeting convenes with secretary-general calling for 'world built on interdependence'",
+          "source": "Associated Press",
+          "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQendGemFFSmthSDlNMXV6R2QwWENmRE5XSzY0YU1pQ1VwWWtvWDUzTk96U0MyVmFLbWtnV0pleVFWX05oTzMxWHloQlplN3E3SkFvcWpIa29FUjBmSzB5dU81dDk3RFZZV3JVdkVqcXBtU2JOYzZyUG5oU3dBRVNaQlRRTi1TZU5lbm1TWnNXMzd4S0xyU0k4V2V1YUVYMmdEc1NiZDI3QUF0Zw?oc=5",
+          "published": 1790090580,
+          "summary": "",
+          "topic": "人工智能·科技",
+          "brief": "UN leaders' meeting convenes with secretary-general calling for 'world built on interdependence'。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "How Unions Are Confronting A.I. Threats in the Workplace",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQd0pSano3UHdiZGNha3VFUVVueXQ0dTRzY2dPc21uTEhOTkI5cEdsOVdDdG4xbWloTll4MktPTzMwaF9BYUtlMVU3M1BobENyWFVadnROTUNubWtJZzZWcWVfUDE3RkhGY20tejBaZ2ZSSlRrUjh3XzNmdERfeXNTaTJvM3Nidw?oc=5",
+          "published": 1790090316,
+          "summary": "",
+          "topic": "人工智能·科技",
+          "brief": "How Unions Are Confronting A.I. Threats in the Workplace。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "OpenAI proposes development of global AI standards to guide alignment, RSI",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9MaTRGOTJzeUlkUEZIcVdRUGgxS1JHMnBReFE1aWpiajIzQTNSRFJobGt5Z2pVckNKOENlRS1lWEM3V3J2WE5COTlOUnQ4Wlo3SXVTQmpXQklsUklVZmNETHlWeGpFU1dwLWfSAW9BVV95cUxNOWFKNlkxSnZDRVdiX2xHSFZjSUFGdnlISTVtX0dveWJKZUF4WGpDUkQtQ1FPMVB2SUtqMFNUd0x2ODNuOUFNeTBsQlBjRWxqLVVTMVdxTENrN1FFRml2SndWZkxReG5xUzBrdFBXMzg?oc=5",
+          "published": 1790022101,
           "summary": "",
           "topic": "人工智能",
-          "brief": "数智赋能文旅！广东举办“人工智能+”文化和旅游专题对接会。",
+          "brief": "OpenAI proposes development of global AI standards to guide alignment, RSI。",
           "why": "这关系到算力供给、技术竞争与 AI 资本开支节奏。",
           "categoryKey": "tech"
         }
       ]
     },
     {
-      "key": "ent",
-      "name": "娱乐",
+      "key": "law",
+      "name": "法律·监管",
       "items": [
         {
-          "title": "音乐剧空中之约，东航执飞《剧院魅影》全球限定主题航班",
-          "source": "中国民航网",
-          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTFA1RHFZdjlIRFFhSDdpVTVpeERjWmVSZElWc2xRTkR2ZHdFb3JPQndibzVETFBPZTd2QVkxb0pBMTBaUXhKelZpRkVaaVZWMjR5RHZUWlkyX0JvQUJtbUEtUFZ3dzNXU3NwcTBuMQ?oc=5",
-          "published": 1790067300,
+          "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
+          "published": 1790089819,
           "summary": "",
-          "topic": "音乐",
-          "brief": "音乐剧空中之约，东航执飞《剧院魅影》全球限定主题航班。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "“天涯共此时——中国艺术歌曲声乐音乐会”在首尔举行--国际",
-          "source": "人民网",
-          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE0wOEVYQngwUnZHYWpmdGNuWS1DYm5IZkx6eEliR0g1aVRNWHVxbUJTMzYzWHo2eE0xU1RGa2NFamlGQmRkelZhWkpmRHdLT3JjNVhNQncySVowTlRIMlVRXzZ4YzNLenJEakhV?oc=5",
-          "published": 1790066100,
-          "summary": "",
-          "topic": "音乐",
-          "brief": "“天涯共此时——中国艺术歌曲声乐音乐会”在首尔举行--国际。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "中国高校影视学会媒介文化专委会2026年年会暨第九届媒介文化学术研讨会举行",
-          "source": "hunnu.edu.cn",
-          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBJZWctTXVfV3FYZ0E1c3VlbE5lU1lLTzZHUlRCdjcxS1lSMDY5SHUwazk3UFNEZXkxWm1XcGFacWktbTNHTFN3ekpfZ2hGbEpUNkMxVnFXdw?oc=5",
-          "published": 1790066948,
-          "summary": "",
-          "topic": "影视",
-          "brief": "中国高校影视学会媒介文化专委会2026年年会暨第九届媒介文化学术研讨会举行。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "14部中秋档电影预售票房过2000万 加码臻享版《复仇者联盟4》占比67%",
-          "source": "Shangbao Indonesia",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9kVTVMS280bXdVTndoSzQyY3RWRjB4NWxZUlFDWThsakQtN3Q5MWUxWllQN3NpX3RrMjdTbXhBYnZzV21aZ1NBeUtBNnczODlpdGwwVGhRemdXTUlaTHVJRi1wNHNYZGh5MzQxTkxEVVdQVGVpY0FUOXBrNmZ5Z3M?oc=5",
-          "published": 1790090400,
-          "summary": "",
-          "topic": "影视",
-          "brief": "14部中秋档电影预售票房过2000万 加码臻享版《复仇者联盟4》占比67%。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "月下听曲做月饼，第七季“坪新音乐汇”解锁中秋新体验",
-          "source": "sznews.com",
-          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9LYXlwZmIwTUh3ZDRYQVo4alBFX04tVkk3M25BV3hhLVBia3VXb3RWZ1dPcWlJdWdvOTdDV3Ezek5yNDJwdkk5ZU54cGJraVJsMWFRTWJPaUdKSWJFd2UySzl6TGdvT0NEVllzM2p1TFVoeXFRLUE?oc=5",
-          "published": 1790074368,
-          "summary": "",
-          "topic": "音乐",
-          "brief": "月下听曲做月饼，第七季“坪新音乐汇”解锁中秋新体验。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        },
-        {
-          "title": "搭乘《剧院魅影》主题航班，万米高空感受经典音乐剧氛围",
-          "source": "上观新闻",
-          "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE53eldKZk9MQzBwRThyLUJRRXVBRGl3Y3hzVkJzZ3RUTnMtUExqRHQxRWdTYmF2dDdwWC1tTUJXTDdEMHV3OEhrSXlkQ0NaTWVRbmc5Y2RhWmpRQQ?oc=5",
-          "published": 1790083440,
-          "summary": "",
-          "topic": "音乐",
-          "brief": "搭乘《剧院魅影》主题航班，万米高空感受经典音乐剧氛围。",
-          "why": "这反映内容产业、平台或消费偏好的最新变化。",
-          "categoryKey": "ent"
-        }
-      ]
-    },
-    {
-      "key": "sports",
-      "name": "体育",
-      "items": [
-        {
-          "title": "追光丨郑钦文领衔中国队角逐“女子网球世界杯”",
-          "source": "news.cn",
-          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOSzBXblc1ekgwaUIzQ0ZRSkd3ejR1U2VyY0R6Mk83Wm1rRTRYMEJZZU1KUnJPT1MzSm5RWnprU2JndGxUU0ZGd1NuOTA3NHV3WFVEbE56MGx0ODVqNzhoMVNZU25lNDZwLUw1dkwxZXZmOHBENFY4SHUyZDNvemNnaQ?oc=5",
-          "published": 1790049882,
-          "summary": "",
-          "topic": "网球",
-          "brief": "郑钦文领衔中国队角逐“女子网球世界杯”。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "幸福成都足球联赛八强对阵图公布，​10月17日决出冠军",
-          "source": "四川新闻",
-          "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE5VWk5QRVJJckZYRE5IcWp6UFJ5NTUzVG42blc3UzlKTjFGVldvd0FsNzgydWFoLTZPWXFTSXk4WlFITUpFX2h6ZkhzNTlleU1yYVVRMVh4cHVkRmt6cU5hd2ZsVQ?oc=5",
-          "published": 1790086957,
-          "summary": "",
-          "topic": "足球",
-          "brief": "幸福成都足球联赛八强对阵图公布，​10月17日决出冠军。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "第三届“喀什杯”国际青少年足球邀请赛开赛",
-          "source": "chinanews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9pQ0NiU25UcFNsem9hdVRJaU9vdWRtYmVZdDFnczZodjBlcDdJMDhERVVIVEdVWVllMjhTOXJmOUk3ci1xekVDVFhnUEc0MFFPRGlDX24ta1QyZkhrM2tGNUV0TWw0REJL?oc=5",
-          "published": 1790074463,
-          "summary": "",
-          "topic": "足球",
-          "brief": "第三届“喀什杯”国际青少年足球邀请赛开赛。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "首届“大学超”沈北大学城足球超级联赛落幕 辽宁大学斩获总冠军",
-          "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTFByRjF4X0xJUzRHQkpSNS11eXlNck1OVGJaSnVBaTRhMnNlNWxHZWhYZUJKeGJ0SXFTYW1scXowSF9ZUnI2RFJlQWxxUmJvcDlPT2RQazhRVlkzRXNjdDBSUEJjYms1ZG1ERjBmTzlR?oc=5",
-          "published": 1790046403,
-          "summary": "",
-          "topic": "足球",
-          "brief": "首届“大学超”沈北大学城足球超级联赛落幕 辽宁大学斩获总冠军。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "结束18年NBA生涯！37岁巴图姆正式宣布退役 生涯总薪水超2亿美元",
-          "source": "Shangbao Indonesia",
-          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBFeUpqN29WTFN3RDdwdTBzdndzU0hnYnp2TjcyN21mLURheUNLc3NUeFM0ckVidHFocURWVnNnTFVBY3RsTzR3T1UxM2VNdnQzLTRPckNvbzFYd2lHMk9UWWVHc2MtbUVZU2dybjlJUDQ5YXBROUE?oc=5",
-          "published": 1790080200,
-          "summary": "",
-          "topic": "篮球",
-          "brief": "结束18年NBA生涯！37岁巴图姆正式宣布退役 生涯总薪水超2亿美元。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "2026世界杯足球赛",
-          "source": "美国之音",
-          "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE14SDJVQnBKUkEzbUhiNnZpZlI3SFlkS1NHcnZuUXJZZWRyNlZKOGg5X3VPU3JqRGRlTDYtV1FZSUdUTXdtVHd5akpnRkJDNFlJ?oc=5",
-          "published": 1790079675,
-          "summary": "",
-          "topic": "足球",
-          "brief": "2026世界杯足球赛。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        },
-        {
-          "title": "成都网球公开赛抽签结果出炉",
-          "source": "新体育网",
-          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9ZaTFSaVRONlB6M2pUcDI1dEUwbElKdFEtdDZ6MjdIMDlpU2hTMHBod0sxck5oZHpoOU1FOF8zWGxLVlpKYnFyX1VnUzIyRGFwN3I0V2tYYzMwekN6SGhPNUJWZzRTUVRjR3dYTg?oc=5",
-          "published": 1790067082,
-          "summary": "",
-          "topic": "网球",
-          "brief": "成都网球公开赛抽签结果出炉。",
-          "why": "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。",
-          "categoryKey": "sports"
-        }
-      ]
-    },
-    {
-      "key": "world",
-      "name": "国际",
-      "items": [
-        {
-          "title": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急",
-          "source": "UN News",
-          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1zcVVTeExSbUExc01lYXFqWEdZZmt6Rjgzdk5qQ2RpckhFcWJaQ0doSG9nM1pQa216SzFOVHlMMWEtQ2pGQ2tLSUtVLUNhbVNCcWZuaVU0Yw?oc=5",
-          "published": 1790085941,
-          "summary": "",
-          "topic": "联大第81届会议主席",
-          "brief": "联大第81届会议主席：联合国不可替代 重建信任乃当务之急。",
+          "topic": "法律·监管",
+          "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
+          "categoryKey": "law"
         },
         {
-          "title": "充分发挥青年在国际传播中的独特作用（专题深思）",
-          "source": "人民日报",
-          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQQWRYU2VFdDhfRS1LMGNvWDZ0alY4b2xoaklmcENaVm9WT2N5NGcyUm5mSlZ0d2lHX3dpYXFlLWN0NjdsalZLZ09VczFQdlBPQUh2MVJta29RbzZ5Ymtvclpnek96aE9DTEJOSi1FNW4wT1hLcENKWkRBQ2pIR1R6eg?oc=5",
-          "published": 1790083089,
+          "title": "Republican calls for Senate investigation of Trump Jr wedding paid for by Russian oligarch",
+          "source": "The Guardian",
+          "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPRUFGbVRQWXJlenVHenVLb2o0Q0JSVGpEd2NDSzExQkZDeF9ES1oxaTM4N3hxSk9FcW1rZFhLVHk2QzdUa0pwNzBfR1NaYnBGbFJ1aVRBNGszbWxSMS1JSDl3RmpUS1hFQWk2MGk0UHNqenVDUGVaaVNQZ0pSTTFkLWI2QlhCZEt1QkpqTGFZOVE2Nnhnam5HdUV4V00?oc=5",
+          "published": 1790095200,
           "summary": "",
-          "topic": "国际",
-          "brief": "充分发挥青年在国际传播中的独特作用（专题深思）。",
+          "topic": "法律·监管",
+          "brief": "Republican calls for Senate investigation of Trump Jr wedding paid for by Russian oligarch。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
+          "categoryKey": "law"
         },
         {
-          "title": "古特雷斯被问“以色列为何还在联合国”",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNUGtXZHRQb3ZQVWNtXzNNSFJ6Um9XTno3Q0RuMGtKakw0ODZkUjQ3aGliSGN0RlBJSVZyblVmeS1VNjZUd2ZFMlVObUVZWEVLNWV0UUVHbW9aRU9DVGxGWHNKeVVycWcwa2xtc2c3cFF6M0wxQUVNSXlPTmZxUDFMYUpuZW5veUZlUTZ0eUo2RQ?oc=5",
-          "published": 1790082780,
+          "title": "Judge appointed by Trump will oversee news outlets’ lawsuit over White House ban",
+          "source": "POLITICO",
+          "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPWUlabVl4TVd6NHhsR1FkVWk5S1dMN2didmhHMFBFVUE5V0xpTDlCbG1wbkdHZjFrd3FzalpCQi1DUDJSTFRvV2lLLUk3cGtJUmFHNGkwa29heXRRc2NnU2gwb3ZmazlWd3A3UG1CbFFRSnJjNUpMeVZBZ1JpVmtCbmFnalBJVWp4bnF1emlvYjk0QXloWGVtOA?oc=5",
+          "published": 1790022000,
           "summary": "",
-          "topic": "中东",
-          "brief": "古特雷斯被问“以色列为何还在联合国”。",
+          "topic": "法律·监管",
+          "brief": "Judge appointed by Trump will oversee news outlets’ lawsuit over White House ban。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
+          "categoryKey": "law"
         },
         {
-          "title": "联合国秘书长：“四大考验”决定人类未来",
-          "source": "finance.sina.cn",
-          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNZ0w3MW5LdHNkTzU4dFBnUXM0RzN1ZzdraGJxSUt5NWd3U3VFM0FSYkRKVFBUczQxMXJqNU0zUFFpaE5LUjFuNlJiQmJ5dldhbXpYTy1IcEVMcm4zTmVxRVhyWXFCazBoQnJGUEJ4c3BTVXpVZkhhUnBOM3RtWkZxbmFfNHNnUQ?oc=5",
-          "published": 1790085792,
+          "title": "South Korean President Calls for Easing Sanctions on the North",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNTjU4UFd6TXlIOGl3TzNMM1dpWnM1cjdYMVRucWZLUV9yendTUXJlOHdFSkdhX2JyZE5OaW1oc1d3a0NtZ282aF9tbDFpT2VvTm1hZGg4NFJWaU5tX1NiSWhkUzUzQTE0d2NwVFhvN0J5S0tzc3BNMDR1dmxWME11by1JaFJkeE9Ea3ZLX2pqYzZpT2hockRDdHdCVXVORFI2TVMtTHFReXlXRVUtemJV?oc=5",
+          "published": 1790037011,
           "summary": "",
-          "topic": "联合国秘书长",
-          "brief": "联合国秘书长：“四大考验”决定人类未来。",
+          "topic": "法律·监管",
+          "brief": "South Korean President Calls for Easing Sanctions on the North。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
+          "categoryKey": "law"
         },
         {
-          "title": "2026年9月22日外交部发言人郭嘉昆主持例行记者会",
-          "source": "中国驻加拿大大使馆",
-          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE0yM3ZYR3BEZXVuWlJVUEtLaXdHWUxRMklLdXpxazRlZUdfeUxKMnBZNmhIclFQN3NpZmNSblFIOFlRa2xDU1lyOW1Ta0N5VEtlNnRlR2ZHMXZHLXdXeXVDdjBlejVBVERYRDZmZWNqVUpxNmFQMVRtczNLM3hSdw?oc=5",
-          "published": 1790071267,
+          "title": "The Morning Risk Report: Paramount Settles States’ Antitrust Suit, Clearing Way for Warner Megadeal",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQdHVzcjV3d21idWIyNE56TW5UajM3TVRJWkZjQWx2WEg5dXUyZDEtRWpHMWctMHU3NTlRU1FVUGtCQTR6UmJJUm1qbGRCbEZqZkE3TEVJRnJmVjF4dV9iRDFXazk2ZkFNR2hJc29ibFVMR1YyLTY2dWQySm5USFppem01LU02a0NzLTJBVDYtdFZJM1hDTkJ2RUU5cE9FS3VoZEppNzBobThnLXpkckZyZnRoQTFxaEhLay10OV9xTk9WWGhWSUZ3b3hyd05uekNrMkZiWnRmRG9qNnlHakQ0by15Yw?oc=5",
+          "published": 1790076300,
           "summary": "",
-          "topic": "国际",
-          "brief": "2026年9月22日外交部发言人郭嘉昆主持例行记者会。",
+          "topic": "法律·监管",
+          "brief": "The Morning Risk Report: Paramount Settles States’ Antitrust Suit, Clearing Way for Warner Megadeal。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
+          "categoryKey": "law"
         },
         {
-          "title": "北外举办全球区域国别学共同体2026年会",
-          "source": "北外新闻网",
-          "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFAweDZLN3lBcUtTNTlmMl9pdURkbm5EclN5d0NHbGxzenFTWG8taGtFVUhhLWVzUDNLNEp3ZmtxUmR3YVRTbURSaERNR3h6dDBEalE?oc=5",
-          "published": 1790065236,
+          "title": "Trump's White House media ban faces long odds in court, legal experts say",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQUDdOdVpHTGQzWC1PbjNJd0xBbHpBSFBJSWdSUWowUDZMZ21GSzFTVi1HdTgxZkU3V2x6bGRsMGZsaXhIMjZjamRzVlNrOXIxOTI4S1RBNWE0QmZsSTAwTFRxN0cxT25Mc1ZmeUxKRWJaRXdqdDNtRHNyb3RlSjV5T3FMMFZKc1FqS0pCOG1rNmVnV1FEZWl4NGtvckNHZ2JKOWRYWjlCcExpVmJUTzlCSEswWVc0eW8yVnBNVlJB?oc=5",
+          "published": 1790082837,
           "summary": "",
-          "topic": "国际",
-          "brief": "北外举办全球区域国别学共同体2026年会。",
+          "topic": "法律·监管",
+          "brief": "Trump's White House media ban faces long odds in court, legal experts say。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
+          "categoryKey": "law"
         }
       ]
     }
@@ -614,45 +612,45 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7759.02,
-      "changePct": -0.07,
+      "price": 7764.92,
+      "changePct": 0.0,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 27169.16,
-      "changePct": 0.17,
+      "price": 27202.9,
+      "changePct": 0.3,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 100.36,
-      "changePct": 0.02,
+      "price": 100.2,
+      "changePct": -0.14,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 91.75,
-      "changePct": -4.21,
+      "price": 91.55,
+      "changePct": -4.42,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4364.8,
-      "changePct": -0.44,
+      "price": 4369.2,
+      "changePct": -0.34,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 100.68,
-      "changePct": 0.25,
+      "price": 100.67,
+      "changePct": 0.24,
       "fmt": "idx"
     }
   ],
-  "note": "新闻聚合自 Google News 收录的公开媒体，简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差；每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"
+  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"
 }
