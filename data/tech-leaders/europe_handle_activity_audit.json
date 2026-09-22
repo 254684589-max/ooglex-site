@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T09:11:59Z",
+  "generated_at": "2026-09-22T09:13:28Z",
   "production_count": 612,
   "audited_handle_count": 26,
   "pass_le_180d": 5,
@@ -319,7 +319,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.57,
+      "age_days": 1.58,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
