@@ -152,7 +152,7 @@ jobs:
             if [ "$code" = "200" ] && echo "$body" | grep -q '"uses_x_api":false'; then
               echo "Free feed OK for @$handle (HTTP $code)"
               if [ "$handle" = "steipete" ] || [ "$handle" = "bcherny" ]; then
-                printf '%s' "$body" | python -c 'import json,sys; from datetime import datetime; from email.utils import parsedate_to_datetime; d=json.load(sys.stdin); p=d.get("posts",[]); conv=lambda s: (datetime.fromisoformat(str(s).replace("Z","+00:00")).timestamp() if "T" in str(s) else parsedate_to_datetime(str(s)).timestamp()); times=[conv(x.get("created_at") or "") for x in p]; assert all(times[i]>=times[i+1] for i in range(len(times)-1)); print("V400 replacement smoke: source={}, cache={}, posts={}".format(d.get("source"), d.get("cache"), len(p)))' || failed=1
+                printf '%s' "$body" | python -c 'import json,sys; from datetime import datetime; d=json.load(sys.stdin); p=d.get("posts",[]); days={"Mon","Tue","Wed","Thu","Fri","Sat","Sun"}; conv=lambda s: (datetime.strptime(str(s),"%a %b %d %H:%M:%S %z %Y").timestamp() if str(s)[:3] in days else datetime.fromisoformat(str(s).replace("Z","+00:00")).timestamp()); times=[conv(x.get("created_at") or "") for x in p]; assert all(times[i]>=times[i+1] for i in range(len(times)-1)); print("V400 replacement smoke: source={}, cache={}, posts={}".format(d.get("source"), d.get("cache"), len(p)))' || failed=1
               fi
             else
               echo "::warning::Free feed trial for @$handle returned HTTP $code: $body"
