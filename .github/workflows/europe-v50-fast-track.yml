@@ -1,92 +1,71 @@
-name: Europe V100 Capacity Guard
+name: Europe Company-Location Audit
 
 on:
   workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
-      - "scripts/tech-leaders/europe_v50_fast_track.py"
+      - "apps/tech-leaders/leaders.json"
       - ".github/workflows/europe-v50-fast-track.yml"
   push:
     branches: [main]
     paths:
-      - "data/tech-leaders/europe_listed_review.batch*.json"
-      - "data/tech-leaders/europe_handle_activity_audit.json"
-      - "scripts/tech-leaders/europe_v50_fast_track.py"
+      - "apps/tech-leaders/leaders.json"
       - ".github/workflows/europe-v50-fast-track.yml"
-  # Connector/API-authored commits can miss a push-triggered run.
-  # Keep advancing the strict V50 queue without requiring manual "next step" prompts.
-  schedule:
-    - cron: "11,26,41,56 * * * *"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: europe-v50-fast-track
+  group: europe-company-location-audit
   cancel-in-progress: true
 
 jobs:
-  fast-track:
+  audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 28
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
-      - name: Run Europe capacity guard
-        run: python scripts/tech-leaders/europe_v50_fast_track.py --target 100 --scan-limit 400 --cache-hours 24
-
-      - name: Validate resulting catalog
+      - name: Validate Europe classification
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path("apps/tech-leaders/leaders.json")
-          d=json.loads(p.read_text(encoding="utf-8"))
-          leaders=d.get("leaders") or []
-          handles=[str(x.get("handle") or "").lower() for x in leaders if x.get("handle")]
-          ids=[str(x.get("id") or "") for x in leaders if x.get("id")]
-          europe=[x for x in leaders if "欧洲" in (x.get("categories") or [])]
-          assert len(handles)==len(set(handles)), "duplicate handles"
-          assert len(ids)==len(set(ids)), "duplicate ids"
-          assert len(europe) <= 100, "Europe category exceeded target"
-          for x in europe:
-              assert x.get("verified_personal_x") is True, f"Europe personal-X gate failed: {x.get('name')}"
-              assert x.get("handle"), f"Europe handle missing: {x.get('name')}"
-          print(json.dumps({"leaders":len(leaders),"europe":len(europe)},ensure_ascii=False))
-          PY
 
-      - name: Commit qualified promotions and capacity state
-        if: github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/tech-leaders/leaders.json                   data/tech-leaders/europe_v50.fast_track.json                   data/tech-leaders/europe_v50.discovery_cache.json                   data/tech-leaders/snapshots/ || true
-          if git diff --cached --quiet; then
-            echo "No new Europe candidate passed all strict gates."
-            exit 0
-          fi
-          git commit -m "data: advance Europe V50 strict fast track"
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            if ! git rebase origin/main; then
-              conflicts="$(git diff --name-only --diff-filter=U)"
-              if [ "$conflicts" = "data/tech-leaders/europe_v50.fast_track.json" ] ||                  [ "$conflicts" = "data/tech-leaders/europe_v50.discovery_cache.json" ]; then
-                git checkout --theirs -- $conflicts
-                git add $conflicts
-                GIT_EDITOR=true git rebase --continue
-              else
-                git rebase --abort || true
-                exit 1
-              fi
-            fi
-            if git push origin HEAD:main; then exit 0; fi
-            [ "$attempt" = "5" ] && exit 1
-            sleep $((attempt*2))
-          done
+          p = Path("apps/tech-leaders/leaders.json")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          leaders = d.get("leaders") or []
+
+          ids = [str(x.get("id") or "") for x in leaders if x.get("id")]
+          handles = [str(x.get("handle") or "").lower() for x in leaders if x.get("handle")]
+          assert len(ids) == len(set(ids)), "duplicate ids"
+          assert len(handles) == len(set(handles)), "duplicate handles"
+
+          forbidden = {"欧洲背景", "欧洲前高管", "欧洲科技"}
+          for x in leaders:
+              for field in ("categories", "themes", "chips", "index_tags"):
+                  vals = x.get(field) or []
+                  if isinstance(vals, list):
+                      bad = forbidden.intersection(str(v) for v in vals)
+                      assert not bad, f"{x.get('name')}: obsolete Europe labels remain in {field}: {sorted(bad)}"
+              assert str(x.get("category") or "") not in forbidden
+              assert str(x.get("primary_category") or "") not in forbidden
+
+          categories = d.get("categories") or []
+          assert not forbidden.intersection(categories), "obsolete Europe categories remain in catalog"
+          assert "欧洲" in categories, "Europe category missing"
+
+          policy = d.get("region_policy") or {}
+          assert policy.get("version") == "company-location-v1", "Europe region policy is not company-location-v1"
+
+          europe = [x for x in leaders if "欧洲" in (x.get("categories") or [])]
+          print(json.dumps({
+              "leaders": len(leaders),
+              "europe": len(europe),
+              "policy": policy.get("version")
+          }, ensure_ascii=False))
+          PY
