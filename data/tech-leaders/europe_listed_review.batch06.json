@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "first_pass_open_activity_audit_pending",
+  "status": "activity_audit_complete_v610_preview_ready",
   "tranche_type": "europe_listed_review_batch_06",
   "batch_range": "126-150",
   "phase": "Europe 14 -> 50",
@@ -15,12 +15,15 @@
     "batch_count": 25,
     "role_verified_or_transition": 13,
     "role_needs_fresh_capture": 12,
-    "preview_ready": 0,
-    "identity_verified_activity_pending": 5,
+    "preview_ready": 2,
+    "identity_verified_activity_pending": 0,
     "role_reverify_activity_pending": 0,
     "managed_account_policy_review": 1,
     "needs_x_research": 19,
-    "production_additions": 0
+    "production_additions": 0,
+    "existing_production_europe_retag_ready": 1,
+    "manual_review_activity": 1,
+    "hold_inactive": 1
   },
   "policy": {
     "require_role_evidence": true,
@@ -46,10 +49,13 @@
       "x_handle": "kaarmann",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/kaarmann",
-      "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "existing_production_activity_reaudit_pending",
+      "x_activity_status": "pass_le_180d",
+      "review_status": "existing_production_europe_retag_ready",
       "production_duplicate_check": "existing_production_match_by_name_and_handle_retag_only",
-      "notes": "Wise lists Käärmann as Co-founder and CEO. Public X mirrors identify @kaarmann as his personal founder/CEO account with recent 2026 activity; final <=180d gate is delegated to the site activity audit. Existing production record `kristo-kaarmann-v500` will be category-enriched rather than duplicated if the fresh activity gate passes."
+      "notes": "Wise lists Käärmann as Co-founder and CEO. Public X mirrors identify @kaarmann as his personal founder/CEO account with recent 2026 activity; final <=180d gate is delegated to the site activity audit. Existing production record `kristo-kaarmann-v500` will be category-enriched rather than duplicated if the fresh activity gate passes.",
+      "x_last_activity_at": "2026-07-07T09:31:19Z",
+      "x_activity_age_days": 76.81,
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
     },
     {
       "batch_rank": 127,
@@ -65,10 +71,13 @@
       "x_handle": "RBrzoska",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/RBrzoska",
-      "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "pass_le_180d",
+      "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "InPost annual governance materials identify Brzoska as founder and CEO. @RBrzoska is an active personal executive account; production activity gate will be determined by the automated free-feed audit."
+      "notes": "InPost annual governance materials identify Brzoska as founder and CEO. @RBrzoska is an active personal executive account; production activity gate will be determined by the automated free-feed audit.",
+      "x_last_activity_at": "2026-09-21T08:58:54Z",
+      "x_activity_age_days": 0.83,
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
     },
     {
       "batch_rank": 128,
@@ -84,10 +93,13 @@
       "x_handle": "MachinStuart1",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/MachinStuart1",
-      "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "manual_181_365d",
+      "review_status": "manual_review_activity_181_365d",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "M&S lists Machin as CEO. Public executive profiles and attributed posts map @MachinStuart1 to Machin; activity recency still needs the direct audit."
+      "notes": "M&S lists Machin as CEO. Public executive profiles and attributed posts map @MachinStuart1 to Machin; activity recency still needs the direct audit.",
+      "x_last_activity_at": "2025-11-05T08:09:45Z",
+      "x_activity_age_days": 320.87,
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
     },
     {
       "batch_rank": 129,
@@ -160,10 +172,13 @@
       "x_handle": "Patrice_Caine",
       "x_identity_status": "executive_account_managed_by_company_not_personal_gate",
       "x_identity_source_url": "https://x.com/Patrice_Caine",
-      "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "needs_policy_review_managed_account",
+      "x_activity_status": "manual_181_365d",
+      "review_status": "hold_managed_account_and_manual_activity",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "Recent reporting identifies Caine as Thales CEO. @Patrice_Caine explicitly says the account is run by Thales communications and only signed posts are personal; it does not yet satisfy the strict personal-account gate."
+      "notes": "Recent reporting identifies Caine as Thales CEO. @Patrice_Caine explicitly says the account is run by Thales communications and only signed posts are personal; it does not yet satisfy the strict personal-account gate.",
+      "x_last_activity_at": "2025-11-19T13:40:52Z",
+      "x_activity_age_days": 306.64,
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
     },
     {
       "batch_rank": 133,
@@ -198,10 +213,13 @@
       "x_handle": "gordon_sanghera",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/gordon_sanghera",
-      "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "Oxford Nanopore confirms Sanghera stepped down as CEO on 2 March 2026 and remains a senior adviser to the Board. The personal @gordon_sanghera identity is established; activity audit determines whether this allowed legacy/core-company record can advance."
+      "notes": "Oxford Nanopore confirms Sanghera stepped down as CEO on 2 March 2026 and remains a senior adviser to the Board. The personal @gordon_sanghera identity is established; activity audit determines whether this allowed legacy/core-company record can advance.",
+      "x_last_activity_at": "2023-12-06T18:39:34Z",
+      "x_activity_age_days": 1020.43,
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
     },
     {
       "batch_rank": 135,
@@ -217,10 +235,13 @@
       "x_handle": "SamLakeRMD",
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/SamLakeRMD",
-      "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "pass_le_180d",
+      "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "Remedy lists Sami Järvi (Sam Lake) as Creative Director and a member of the Management Team. @SamLakeRMD is his established personal account; direct activity audit is still required."
+      "notes": "Remedy lists Sami Järvi (Sam Lake) as Creative Director and a member of the Management Team. @SamLakeRMD is his established personal account; direct activity audit is still required.",
+      "x_last_activity_at": "2026-09-21T04:29:17Z",
+      "x_activity_age_days": 1.02,
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
     },
     {
       "batch_rank": 136,
@@ -508,7 +529,7 @@
       "notes": "High-priority Munich Re leadership candidate; fresh first-party role and personal-X verification required."
     }
   ],
-  "next_stage": "Run the refreshed Batch 06 activity audit including existing-production handles. If Kristo Käärmann passes, enrich his existing production record with 欧洲 rather than adding a duplicate. Rafał Brzoska and Sam Lake may advance as new people only if their role/identity/activity/dedupe gates remain clean.",
+  "next_stage": "Build Europe V610 Preview from two new approved people (Rafał Brzoska, Sam Lake) plus one existing-production Europe category enrichment (Kristo Käärmann). Keep Stuart Machin manual, Patrice Caine out due managed account/personal-X gate plus stale activity, and Gordon Sanghera on inactive hold.",
   "review_method": {
     "candidate_source": "New names beyond Europe Batches 01-05, prioritising European listed-company CEOs/founders/core figures.",
     "initial_role_sources": "Current first-party/recent sources captured where available; unresolved roles explicitly remain needs_fresh_capture rather than being assumed current.",
