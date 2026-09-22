@@ -224,6 +224,25 @@
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
 
+    /* Paper theme: blend the hero search card into the page background */
+    html[data-theme="paper"] .hero-tools .controls{
+      background:var(--bg);
+      border-color:rgba(112,96,80,.20);
+      box-shadow:0 8px 20px rgba(82,64,48,.035);
+    }
+    html[data-theme="paper"] .hero-tools .search,
+    html[data-theme="paper"] .hero-tools .modes{
+      background:var(--bg);
+      border-color:rgba(112,96,80,.20);
+    }
+    html[data-theme="paper"] .hero-tools .mode{
+      border-color:rgba(112,96,80,.18);
+    }
+    html[data-theme="paper"] .hero-tools .mode.on{
+      background:rgba(57,135,229,.065);
+      color:var(--ink);
+    }
+
     /* Tech Leaders 2026.09 share + mobile visual refinement */
     .hero{padding:38px 0 22px}
     .hero-copy{max-width:760px}
