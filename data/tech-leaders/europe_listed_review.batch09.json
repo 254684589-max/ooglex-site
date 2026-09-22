@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "clean_pool_x_identity_pass_1_activity_pending",
+  "status": "clean_pool_x_identity_pass_2_activity_pending_1_hold_1",
   "tranche_type": "europe_listed_review_batch_09",
   "batch_range": "201-225",
   "phase": "Europe 23 -> 50",
@@ -24,9 +24,9 @@
     "role_verified_current": 25,
     "role_needs_fresh_capture": 0,
     "identity_verified_activity_pending": 1,
-    "needs_x_research": 24,
+    "needs_x_research": 23,
     "manual_review_activity": 0,
-    "hold_inactive": 0,
+    "hold_inactive": 1,
     "production_additions": 0,
     "production_category_enrichments": 0,
     "preview_ready": 0
@@ -236,11 +236,13 @@
       "x_handle": "frankvangjensen",
       "x_identity_status": "verified_personal_x_cross_source",
       "x_identity_source_url": "https://x.com/frankvangjensen",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "hold_gt_365d",
+      "review_status": "hold_inactive_gt_365d",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_08_by_exact_name",
-      "notes": "Clean Batch 09 candidate after production + prior-review cross-batch dedupe. Current role verified from Nordea first-party evidence. Crunchbase person profile maps Frank Vang-Jensen (Nordea President & Group CEO) directly to X account @frankvangjensen. Direct Ooglex activity audit is required before Preview."
+      "notes": "Clean Batch 09 candidate after production + prior-review cross-batch dedupe. Current role verified from Nordea first-party evidence. Crunchbase person profile maps Frank Vang-Jensen (Nordea President & Group CEO) directly to X account @frankvangjensen. Direct Ooglex activity audit is required before Preview. Direct Ooglex activity audit: latest public post 2021-03-01T13:16:17Z (~2030.83d), therefore Hold (>365d).",
+      "x_last_activity_at": "2021-03-01T13:16:17Z",
+      "x_activity_age_days": 2030.83
     },
     {
       "batch_rank": 211,
@@ -313,14 +315,14 @@
       "current_role": "Chief Executive Officer",
       "role_status": "verified_current",
       "role_source_url": "https://corporate.wizzair.com/corporate-governance/leadership-team/",
-      "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
-      "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
+      "x_handle": "jozsefjvaradi",
+      "x_identity_status": "verified_personal_x_cross_source",
+      "x_identity_source_url": "https://x.com/jozsefjvaradi",
+      "x_activity_status": "needs_direct_activity_check",
+      "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_08_by_exact_name",
-      "notes": "Clean Batch 09 candidate after production + prior-review cross-batch dedupe. Current role captured from first-party company evidence. Verified personal X ownership and <=180d direct activity are required before Preview."
+      "notes": "Clean Batch 09 candidate after production + prior-review cross-batch dedupe. Current role verified from Wizz Air first-party evidence. Crunchbase links József Váradi directly to @jozsefjvaradi, and the X profile itself links to wizzair.com. Direct Ooglex activity audit is required before Preview."
     },
     {
       "batch_rank": 215,
@@ -544,7 +546,7 @@
     }
   ],
   "superseded_initial_batch09_note": "The first Batch 09 draft was production-deduped only. A second audit found 21 of 25 names had already appeared in Europe Batches 01-08. Those 21 were removed from Batch 09; their historical review/activity state remains in their original batch files.",
-  "next_stage": "Run direct activity audit for @frankvangjensen. Continue high-confidence personal-X identity research for the remaining 24; no company-account substitution.",
+  "next_stage": "Run direct activity audit for @jozsefjvaradi. Frank Vang-Jensen is Hold (>365d). Continue high-confidence personal-X research for the remaining 23; no company-account substitution.",
   "review_method": {
     "candidate_source": "Europe-listed company core figures not present by exact name in V612 production and not already reviewed in Europe Batches 01-08.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
