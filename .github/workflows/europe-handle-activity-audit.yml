@@ -9,6 +9,7 @@ on:
       - "data/tech-leaders/europe_listed_review.batch02.json"
       - "data/tech-leaders/europe_listed_review.batch03.json"
       - "data/tech-leaders/europe_listed_review.batch04.json"
+      - "data/tech-leaders/europe_listed_review.batch05.json"
       - ".github/workflows/europe-handle-activity-audit.yml"
 
 permissions:
@@ -38,7 +39,7 @@ jobs:
           from email.utils import parsedate_to_datetime
           from pathlib import Path
 
-          review_paths=[Path(f"data/tech-leaders/europe_listed_review.batch0{i}.json") for i in range(1,5)]
+          review_paths=[Path(f"data/tech-leaders/europe_listed_review.batch0{i}.json") for i in range(1,6)]
           production=json.loads(Path("apps/tech-leaders/leaders.json").read_text(encoding="utf-8"))
           prod_handles={str(x.get("handle") or "").lower() for x in production.get("leaders",[]) if x.get("handle")}
           rows=[]
