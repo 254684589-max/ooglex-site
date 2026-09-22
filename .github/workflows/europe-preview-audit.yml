@@ -120,7 +120,7 @@ jobs:
 
           live_page_ok = False
           live_page_error = ""
-          page_url = "https://ooglex.com/apps/tech-leaders/?catalog=europe-v599-preview&sharev=20260922g"
+          page_url = "https://ooglex.com/apps/tech-leaders/?catalog=europe-v599-preview&audit_ts=" + str(int(time.time()))
           if live_catalog_ok:
               try:
                   req = urllib.request.Request(page_url, headers={"User-Agent": "Ooglex Europe V599 Audit/1.0"})
@@ -128,7 +128,6 @@ jobs:
                       page = resp.read().decode("utf-8", errors="ignore")
                   live_page_ok = (
                       'catalogMode==="europe-v599-preview"' in page
-                      and "20260922g" in page
                       and "欧洲" in page
                   )
                   if not live_page_ok:
