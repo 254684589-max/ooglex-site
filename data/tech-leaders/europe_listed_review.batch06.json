@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "activity_audit_complete_v610_preview_ready",
+  "status": "v610_promoted_2026-09-22",
   "tranche_type": "europe_listed_review_batch_06",
   "batch_range": "126-150",
   "phase": "Europe 14 -> 50",
   "source_plan": "data/tech-leaders/europe_v50.expansion.json",
-  "production_catalog": "v608-stable-2026-09-22",
-  "production_count": 608,
-  "current_europe_count": 14,
+  "production_catalog": "v610-stable-2026-09-22",
+  "production_count": 610,
+  "current_europe_count": 17,
   "target_europe_count": 50,
   "production_file_untouched": "apps/tech-leaders/leaders.json",
   "summary": {
@@ -20,10 +20,11 @@
     "role_reverify_activity_pending": 0,
     "managed_account_policy_review": 1,
     "needs_x_research": 19,
-    "production_additions": 0,
+    "production_additions": 2,
     "existing_production_europe_retag_ready": 1,
     "manual_review_activity": 1,
-    "hold_inactive": 1
+    "hold_inactive": 1,
+    "production_category_enrichments": 1
   },
   "policy": {
     "require_role_evidence": true,
@@ -55,7 +56,10 @@
       "notes": "Wise lists Käärmann as Co-founder and CEO. Public X mirrors identify @kaarmann as his personal founder/CEO account with recent 2026 activity; final <=180d gate is delegated to the site activity audit. Existing production record `kristo-kaarmann-v500` will be category-enriched rather than duplicated if the fresh activity gate passes.",
       "x_last_activity_at": "2026-07-07T09:31:19Z",
       "x_activity_age_days": 76.81,
-      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z",
+      "production_status": "existing_record_europe_category_enriched_v610",
+      "production_release": "v610-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 127,
@@ -77,7 +81,10 @@
       "notes": "InPost annual governance materials identify Brzoska as founder and CEO. @RBrzoska is an active personal executive account; production activity gate will be determined by the automated free-feed audit.",
       "x_last_activity_at": "2026-09-21T08:58:54Z",
       "x_activity_age_days": 0.83,
-      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z",
+      "production_status": "promoted_v610",
+      "production_release": "v610-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 128,
@@ -241,7 +248,10 @@
       "notes": "Remedy lists Sami Järvi (Sam Lake) as Creative Director and a member of the Management Team. @SamLakeRMD is his established personal account; direct activity audit is still required.",
       "x_last_activity_at": "2026-09-21T04:29:17Z",
       "x_activity_age_days": 1.02,
-      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z"
+      "x_activity_audit_generated_at": "2026-09-22T05:00:38Z",
+      "production_status": "promoted_v610",
+      "production_release": "v610-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 136,
@@ -529,7 +539,7 @@
       "notes": "High-priority Munich Re leadership candidate; fresh first-party role and personal-X verification required."
     }
   ],
-  "next_stage": "Build Europe V610 Preview from two new approved people (Rafał Brzoska, Sam Lake) plus one existing-production Europe category enrichment (Kristo Käärmann). Keep Stuart Machin manual, Patrice Caine out due managed account/personal-X gate plus stale activity, and Gordon Sanghera on inactive hold.",
+  "next_stage": "V610 Stable Promotion completed: Rafał Brzoska and Sam Lake added as new people; existing Kristo Käärmann record enriched with 欧洲. Continue Europe Batch 07 (151-175); keep Stuart Machin, Patrice Caine, Gordon Sanghera and unresolved candidates out until their gates clear.",
   "review_method": {
     "candidate_source": "New names beyond Europe Batches 01-05, prioritising European listed-company CEOs/founders/core figures.",
     "initial_role_sources": "Current first-party/recent sources captured where available; unresolved roles explicitly remain needs_fresh_capture rather than being assumed current.",
