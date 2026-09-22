@@ -7,11 +7,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏中心 · 网页小游戏</title>
-<meta name="description" content="Ooglex 游戏中心：网页小游戏、开源 ARPG 与正版游戏官方入口，包含 WarpTracker、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
+<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含 GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
 <link rel="canonical" href="https://www.ooglex.com/games/hub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏中心 · 网页小游戏">
-<meta property="og:description" content="Ooglex 游戏中心：网页小游戏、开源 ARPG 与正版游戏官方入口，包含 WarpTracker、暗黑破坏神 IV 等。">
+<meta property="og:description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含暗黑破坏神 IV 等。">
 <meta property="og:url" content="https://www.ooglex.com/games/hub/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -53,15 +53,6 @@
   .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
     background-image:linear-gradient(90deg, rgba(0,0,0,.28) 8px, transparent 8px); background-size:26px 100%;
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 55%); mask-image:linear-gradient(180deg, transparent, #000 55%); }
-  /* WarpTracker：暗黑风开源 ARPG */
-  .cv-warp { background:
-    radial-gradient(circle at 50% 48%, rgba(173,83,255,.66) 0 5%, rgba(123,52,204,.35) 6% 16%, transparent 17%),
-    repeating-radial-gradient(circle at 50% 48%, rgba(180,90,255,.11) 0 3px, transparent 4px 18px),
-    radial-gradient(circle at 50% 50%, #321242 0%, #151023 42%, #090a12 78%); }
-  .cv-warp::before { content:""; position:absolute; inset:-20%; z-index:1;
-    background:conic-gradient(from 20deg, transparent 0 12%, rgba(166,88,255,.18) 13% 16%, transparent 17% 36%, rgba(95,219,255,.10) 37% 40%, transparent 41% 100%);
-    animation:warpSpin 15s linear infinite; }
-  @keyframes warpSpin { to { transform:rotate(360deg); } }
   /* 暗黑破坏神 IV：地狱火与圣休亚瑞 */
   .cv-diablo { background:radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,#140708 68%,#070506 100%); }
   .cv-diablo::before { content:""; position:absolute; inset:0; z-index:1;
@@ -90,7 +81,6 @@ html[data-theme="ft"] .cover::after, html[data-theme="paper"] .cover::after { ba
 html[data-theme="ft"] .cv-gta, html[data-theme="paper"] .cv-gta { background: linear-gradient(180deg,var(--panel2) 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
 html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: linear-gradient(180deg,var(--panel2) 0%,var(--panel2) 45%,#b2321e 80%,#e8a13a 100%); }
 html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { background: radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,var(--panel2) 72%); }
-html[data-theme="ft"] .cv-warp, html[data-theme="paper"] .cv-warp { background: radial-gradient(circle at 50% 48%,#8553b8 0 7%,#d9cfea 38%,var(--panel2) 76%); }
 /* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
@@ -100,7 +90,7 @@ html[data-theme="ft"] .cv-warp, html[data-theme="paper"] .cv-warp { background: 
     <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
     <div class="hero">
       <h1>🎮 游戏中心</h1>
-      <p>网页小游戏 · 开源 ARPG · 正版游戏官方入口 · 点击进入</p>
+      <p>网页小游戏 · 正版游戏官方入口 · 点击进入</p>
     </div>
     <div class="grid">
       <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
@@ -119,14 +109,6 @@ html[data-theme="ft"] .cv-warp, html[data-theme="paper"] .cv-warp { background: 
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game" href="../warptracker/" style="--ac:#8c4bd6;--ac2:#38a9c7">
-        <div class="cover cv-warp"><span class="ico">🌀</span></div>
-        <div class="body">
-          <h3>WarpTracker · 开源暗黑风 ARPG</h3>
-          <p>MIT 开源的 3D 动作角色扮演游戏：俯视战斗、怪物群、装备掉落、技能成长、任务、地下城与 Boss。完整静态版已托管在 Ooglex，浏览器直接游玩。</p>
-          <span class="play">🎮 直接游玩 →</span>
-        </div>
-      </a>
       <a class="game" href="../diablo/" style="--ac:#b33423;--ac2:#e66d32">
         <div class="cover cv-diablo"><span class="ico">🔥</span></div>
         <div class="body">
@@ -136,7 +118,7 @@ html[data-theme="ft"] .cv-warp, html[data-theme="paper"] .cv-warp { background: 
         </div>
       </a>
     </div>
-    <footer>Ooglex Games · 网页游戏 · 开源游戏 · 正版游戏官方入口</footer>
+    <footer>Ooglex Games · 网页游戏与正版游戏官方入口</footer>
   </div>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
