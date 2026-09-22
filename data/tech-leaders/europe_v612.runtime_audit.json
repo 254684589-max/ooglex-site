@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T08:32:08Z",
+  "generated_at": "2026-09-22T08:43:10Z",
   "preview_catalog_version": "v612-europe-preview-2026-09-22",
   "preview_count": 612,
   "base_count": 611,
@@ -8,9 +8,9 @@
   "category_enrichment_count": 0,
   "static_gate": "pass",
   "static_blocking_reasons": [],
-  "live_catalog_ok": false,
-  "live_catalog_error": "stale",
-  "live_page_ok": false,
+  "live_catalog_ok": true,
+  "live_catalog_error": "",
+  "live_page_ok": true,
   "live_page_error": "",
   "embed_fallback_available": true,
   "native_ready_count": 1,
@@ -34,5 +34,5 @@
       "render_ready": true
     }
   ],
-  "merge_gate": "hold"
+  "merge_gate": "pass"
 }
