@@ -46,11 +46,14 @@ if (!fs.existsSync(gateAssetPath)) {
   throw new Error("Tech Leaders password gate asset is missing.");
 }
 const gateSource = fs.readFileSync(gateAssetPath, "utf8");
-if (!gateSource.includes("PBKDF2") || !gateSource.includes("sessionStorage")) {
-  throw new Error("Tech Leaders password gate is missing hashed verification/session behavior.");
+if (!gateSource.includes("/v1/tech-leaders/auth") || !gateSource.includes("sessionStorage")) {
+  throw new Error("Tech Leaders gate is not wired to the server-side auth endpoint.");
 }
-if (/PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
-  throw new Error("Tech Leaders password gate must not store a plaintext password constant.");
+if (gateSource.includes("PBKDF2") || /PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
+  throw new Error("Tech Leaders client gate must not contain password verification material.");
+}
+if (!html.includes("/v1/tech-leaders/catalog?catalog=") || !html.includes("techProtectedFetch")) {
+  throw new Error("Tech Leaders catalog/feed are not wired through the protected server fetch path.");
 }
 
 const inlineScripts = [];
