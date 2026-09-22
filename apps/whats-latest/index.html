@@ -25,14 +25,22 @@
     body{
       margin:0;
       min-height:100vh;
-      background:var(--bg,#f5efe5);
-      color:var(--ink,#221f1b);
+      background:var(--bg);
+      color:var(--ink);
       font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
       -webkit-font-smoothing:antialiased;
     }
     a{color:inherit;text-decoration:none}
     button{font:inherit}
     :root{
+      --bg:#0b0e13;
+      --paper:#0b0e13;
+      --panel:#111720;
+      --panel2:#161d27;
+      --ink:#edf1f6;
+      --text:#edf1f6;
+      --dim:#9aa4af;
+      --line:rgba(255,255,255,.12);
       --desk-red:#bf2036;
       --desk-red2:#9f172c;
       --desk-gold:#b67a17;
@@ -47,6 +55,14 @@
       --desk-panel-strong:rgba(255,255,255,.70);
     }
     html[data-theme="dark"]{
+      --bg:#0b0e13;
+      --paper:#0b0e13;
+      --panel:#111720;
+      --panel2:#161d27;
+      --ink:#edf1f6;
+      --text:#edf1f6;
+      --dim:#9aa4af;
+      --line:rgba(255,255,255,.12);
       --desk-line:rgba(255,255,255,.12);
       --desk-muted:#aaa39b;
       --desk-panel:rgba(255,255,255,.035);
@@ -55,6 +71,16 @@
     }
     .top-rule{height:2px;background:linear-gradient(90deg,var(--desk-red),#e39f26)}
     .shell{max-width:1180px;margin:0 auto;padding:11px 24px 64px}
+    .home-row{display:flex;align-items:center;justify-content:space-between;margin:1px 0 8px}
+    .home-back{
+      display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 9px;
+      border:1px solid var(--desk-line);border-radius:7px;background:var(--desk-panel);
+      color:var(--desk-muted);
+      font:12px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+      transition:background .15s,color .15s,border-color .15s
+    }
+    .home-back:hover{background:var(--desk-panel-strong);color:var(--ink);border-color:var(--line)}
+    .home-back .arrow{font-size:15px;line-height:1}
     .dateline{
       display:flex;justify-content:space-between;gap:18px;align-items:center;
       color:var(--desk-muted);font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -217,6 +243,8 @@
     }
     @media(max-width:680px){
       .shell{padding:9px 15px 48px}
+      .home-row{margin-bottom:6px}
+      .home-back{min-height:28px;padding:0 8px;font-size:11px}
       .dateline{font-size:10px}
       .mast{align-items:flex-start;flex-direction:column}
       .edition-controls{justify-content:flex-start}
@@ -234,6 +262,9 @@
 <body>
   <div class="top-rule"></div>
   <main class="shell">
+    <div class="home-row">
+      <a class="home-back" href="/" aria-label="返回 Ooglex 首页"><span class="arrow">←</span><span>Ooglex</span></a>
+    </div>
     <div class="dateline">
       <span id="date-line">—</span>
       <span class="fresh-badge" id="freshness">更新中</span>
