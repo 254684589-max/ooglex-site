@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T10:05:46Z",
-  "production_count": 612,
-  "audited_handle_count": 28,
-  "pass_le_180d": 6,
+  "generated_at": "2026-09-22T10:12:22Z",
+  "production_count": 613,
+  "audited_handle_count": 27,
+  "pass_le_180d": 5,
   "manual_181_365d": 6,
   "hold_gt_365d": 12,
   "no_recent_post_evidence": 4,
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.63,
+      "age_days": 1008.64,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.86,
+      "age_days": 924.87,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.9,
+      "age_days": 1554.91,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.95,
+      "age_days": 1393.96,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.71,
+      "age_days": 215.72,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.63,
+      "age_days": 814.64,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 77.02,
+      "age_days": 77.03,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -274,7 +274,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-05T08:09:45Z",
-      "age_days": 321.08,
+      "age_days": 321.09,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -289,7 +289,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-19T13:40:52Z",
-      "age_days": 306.85,
+      "age_days": 306.86,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -304,7 +304,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.64,
+      "age_days": 1020.65,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -319,7 +319,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.61,
+      "age_days": 1.62,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -334,7 +334,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.51,
+      "age_days": 2.52,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -349,7 +349,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-04T03:21:25Z",
-      "age_days": 18.28,
+      "age_days": 18.29,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -364,7 +364,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.66,
+      "age_days": 74.67,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -394,23 +394,8 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2015-03-24T13:08:21Z",
-      "age_days": 4199.87,
+      "age_days": 4199.88,
       "activity_gate": "hold_gt_365d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch10.json",
-      "name": "Estelle Brachlianoff",
-      "company": "Veolia Environnement SA",
-      "handle": "E_Brachlianoff",
-      "current_review_status": "preview_ready",
-      "x_identity_status": "verified_personal_x_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-09T08:22:59Z",
-      "age_days": 13.07,
-      "activity_gate": "pass_le_180d",
       "error": ""
     },
     {
@@ -424,7 +409,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-25T20:05:50Z",
-      "age_days": 208.58,
+      "age_days": 208.59,
       "activity_gate": "manual_181_365d",
       "error": ""
     }
