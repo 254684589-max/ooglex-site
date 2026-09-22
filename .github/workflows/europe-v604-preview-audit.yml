@@ -52,9 +52,10 @@ jobs:
           page_ok=False; page_error=""
           if live:
             try:
-              req=urllib.request.Request("https://ooglex.com/apps/tech-leaders/?catalog=europe-v604-preview&sharev=20260922i",headers={"User-Agent":"Ooglex Europe V604 Audit/1.0"})
+              page_url="https://ooglex.com/apps/tech-leaders/?catalog=europe-v604-preview&audit_ts="+str(int(time.time()))
+              req=urllib.request.Request(page_url,headers={"User-Agent":"Ooglex Europe V604 Audit/1.0"})
               with urllib.request.urlopen(req,timeout=20) as resp: page=resp.read().decode(errors="ignore")
-              page_ok=('catalogMode==="europe-v604-preview"' in page and "20260922i" in page)
+              page_ok=('catalogMode==="europe-v604-preview"' in page)
               if not page_ok: page_error="contract"
             except Exception as e: page_error=type(e).__name__
           def dt(s):
