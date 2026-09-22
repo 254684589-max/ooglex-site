@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T08:58:32Z",
+  "generated_at": "2026-09-22T09:05:33Z",
   "production_count": 612,
-  "audited_handle_count": 28,
+  "audited_handle_count": 24,
   "pass_le_180d": 5,
-  "manual_181_365d": 6,
-  "hold_gt_365d": 13,
+  "manual_181_365d": 5,
+  "hold_gt_365d": 10,
   "no_recent_post_evidence": 4,
   "rows": [
     {
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 316.93,
+      "age_days": 316.94,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -139,7 +139,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3294.91,
+      "age_days": 3294.92,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.66,
+      "age_days": 215.67,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.6,
+      "age_days": 3374.61,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-02-06T10:37:45Z",
-      "age_days": 958.93,
+      "age_days": 958.94,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-03-25T16:49:34Z",
-      "age_days": 1641.67,
+      "age_days": 1641.68,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -274,7 +274,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-05T08:09:45Z",
-      "age_days": 321.03,
+      "age_days": 321.04,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -289,7 +289,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-19T13:40:52Z",
-      "age_days": 306.8,
+      "age_days": 306.81,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -319,7 +319,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.56,
+      "age_days": 1.57,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -349,7 +349,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-04T03:21:25Z",
-      "age_days": 18.23,
+      "age_days": 18.24,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -366,66 +366,6 @@
       "latest_post_at": "2026-07-09T18:09:51Z",
       "age_days": 74.62,
       "activity_gate": "pass_le_180d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch09.json",
-      "name": "Christian Klein",
-      "company": "SAP SE",
-      "handle": "ChrstnKlein",
-      "current_review_status": "hold_inactive_gt_365d",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.59,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch09.json",
-      "name": "Guillaume Faury",
-      "company": "Airbus SE",
-      "handle": "GuillaumeFaury",
-      "current_review_status": "hold_inactive_gt_365d",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2024-02-15T10:45:45Z",
-      "age_days": 949.93,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch09.json",
-      "name": "Vincent Clerc",
-      "company": "A.P. Møller - Mærsk A/S",
-      "handle": "VincentClerc_m",
-      "current_review_status": "identity_verified_activity_pending",
-      "x_identity_status": "verified_personal_x_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2023-03-22T09:30:56Z",
-      "age_days": 1279.98,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
-    },
-    {
-      "batch": "europe_listed_review.batch09.json",
-      "name": "Christel Heydemann",
-      "company": "Orange S.A.",
-      "handle": "Cheydema",
-      "current_review_status": "manual_review_activity_181_365d",
-      "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-02-19T11:07:51Z",
-      "age_days": 214.91,
-      "activity_gate": "manual_181_365d",
       "error": ""
     }
   ]
