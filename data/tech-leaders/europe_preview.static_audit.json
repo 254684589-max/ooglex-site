@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-09-22",
+  "status": "static_preview_validation_pass",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v599-preview.json",
+  "preview_catalog_version": "v599-europe-preview-2026-09-22",
+  "base_catalog": "v594-stable-2026-09-22",
+  "base_count": 594,
+  "preview_count": 599,
+  "approved_additions": 5,
+  "target_category": "欧洲",
+  "addition_names": [
+    "Patrick Pouyanné",
+    "Ana Botín",
+    "Thomas Buberl",
+    "Niklas Östberg",
+    "Alexandre Bompard"
+  ],
+  "addition_handles": [
+    "PPouyanne",
+    "AnaBotin",
+    "thomasbuberl",
+    "niklasoestberg",
+    "bompard"
+  ],
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "production_name_conflicts": [],
+  "production_handle_conflicts": [],
+  "category_registered": true,
+  "all_additions_preview_only": true,
+  "all_additions_identity_verified": true,
+  "all_additions_activity_qualified": true,
+  "all_additions_europe_tagged": true,
+  "runtime_gate": "pending"
+}

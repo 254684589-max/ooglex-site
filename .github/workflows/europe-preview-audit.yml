@@ -1,0 +1,322 @@
+name: Europe Preview V599 Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "apps/tech-leaders/leaders-europe-v599-preview.json"
+      - "apps/tech-leaders/index.html"
+      - ".github/workflows/europe-preview-audit.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: europe-preview-v599-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Audit Europe V599 static, page, avatar and feed/embed paths
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          preview_path = Path("apps/tech-leaders/leaders-europe-v599-preview.json")
+          index_path = Path("apps/tech-leaders/index.html")
+          out_path = Path("data/tech-leaders/europe_preview.runtime_audit.json")
+
+          preview = json.loads(preview_path.read_text(encoding="utf-8"))
+          index_html = index_path.read_text(encoding="utf-8")
+          leaders = preview.get("leaders") or []
+          meta = preview.get("preview") or {}
+          selected = [
+              ("Patrick Pouyanné", "PPouyanne"),
+              ("Ana Botín", "AnaBotin"),
+              ("Thomas Buberl", "thomasbuberl"),
+              ("Niklas Östberg", "niklasoestberg"),
+              ("Alexandre Bompard", "bompard"),
+          ]
+
+          static_reasons = []
+          if preview.get("catalog_version") != "v599-europe-preview-2026-09-22":
+              static_reasons.append("catalog_version_mismatch")
+          if len(leaders) != 599:
+              static_reasons.append("preview_count_not_599")
+          if int(meta.get("base_count") or 0) != 594:
+              static_reasons.append("base_count_not_594")
+          if int(meta.get("approved_additions") or 0) != 5:
+              static_reasons.append("approved_additions_not_5")
+          if meta.get("production_file_untouched") is not True:
+              static_reasons.append("production_isolation_missing")
+          if "欧洲" not in (preview.get("categories") or []):
+              static_reasons.append("europe_category_missing")
+          if 'catalogMode==="europe-v599-preview"' not in index_html:
+              static_reasons.append("preview_query_route_missing")
+          embed_fallback_available = (
+              "https://platform.twitter.com/widgets.js" in index_html
+              and 'sourceBadge.textContent="X Embed 回退 · $0 API"' in index_html
+          )
+          if not embed_fallback_available:
+              static_reasons.append("official_embed_fallback_missing")
+
+          ids = [str(x.get("id") or "") for x in leaders]
+          handles = [str(x.get("handle") or "").lower() for x in leaders if x.get("handle")]
+          if len(ids) != len(set(ids)):
+              static_reasons.append("duplicate_ids")
+          if len(handles) != len(set(handles)):
+              static_reasons.append("duplicate_handles")
+
+          by_name = {str(x.get("name") or ""): x for x in leaders}
+          base_count = int(meta.get("base_count") or 0)
+          additions = leaders[base_count:]
+          for p in additions:
+              if p.get("preview_only") is not True:
+                  static_reasons.append("addition_not_preview_only:" + str(p.get("name")))
+              if p.get("admission_status") != "preview_approved":
+                  static_reasons.append("addition_admission_status:" + str(p.get("name")))
+              if p.get("x_identity_verified") is not True or p.get("verified_personal_x") is not True:
+                  static_reasons.append("addition_identity_not_verified:" + str(p.get("name")))
+              if p.get("x_activity_status") != "active":
+                  static_reasons.append("addition_activity_not_active:" + str(p.get("name")))
+              if "欧洲" not in (p.get("categories") or []) or p.get("category") != "欧洲":
+                  static_reasons.append("addition_europe_tag_missing:" + str(p.get("name")))
+
+          # Wait until Pages exposes this exact preview build.
+          live_catalog_ok = False
+          live_catalog_error = ""
+          live_catalog_url = "https://ooglex.com/apps/tech-leaders/leaders-europe-v599-preview.json?audit=v599"
+          for attempt in range(1, 61):
+              try:
+                  req = urllib.request.Request(live_catalog_url, headers={"User-Agent": "Ooglex Europe V599 Audit/1.0"})
+                  with urllib.request.urlopen(req, timeout=12) as resp:
+                      body = resp.read().decode("utf-8")
+                  live = json.loads(body)
+                  if live.get("catalog_version") == "v599-europe-preview-2026-09-22" and len(live.get("leaders") or []) == 599:
+                      live_catalog_ok = True
+                      break
+                  live_catalog_error = "stale_catalog"
+              except Exception as exc:
+                  live_catalog_error = type(exc).__name__
+              time.sleep(5)
+
+          live_page_ok = False
+          live_page_error = ""
+          page_url = "https://ooglex.com/apps/tech-leaders/?catalog=europe-v599-preview&sharev=20260922g"
+          if live_catalog_ok:
+              try:
+                  req = urllib.request.Request(page_url, headers={"User-Agent": "Ooglex Europe V599 Audit/1.0"})
+                  with urllib.request.urlopen(req, timeout=20) as resp:
+                      page = resp.read().decode("utf-8", errors="ignore")
+                  live_page_ok = (
+                      'catalogMode==="europe-v599-preview"' in page
+                      and "20260922g" in page
+                      and "欧洲" in page
+                  )
+                  if not live_page_ok:
+                      live_page_error = "page_contract_missing"
+              except Exception as exc:
+                  live_page_error = type(exc).__name__
+
+          rows = []
+          for name, handle in selected:
+              p = by_name.get(name)
+              reasons = []
+              if not p:
+                  reasons.append("missing_preview_record")
+              elif str(p.get("handle") or "").lower() != handle.lower():
+                  reasons.append("preview_handle_mismatch")
+
+              avatar_url = str((p or {}).get("avatar_url") or "")
+              avatar_ok = False
+              avatar_type = ""
+              avatar_bytes = 0
+              avatar_source = ""
+              if avatar_url:
+                  try:
+                      req = urllib.request.Request(avatar_url, headers={
+                          "User-Agent": "Ooglex Europe V599 Audit/1.0",
+                          "Accept": "image/*",
+                      })
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          body = resp.read(2_000_000)
+                          avatar_type = str(resp.headers.get("Content-Type") or "")
+                          avatar_source = str(resp.headers.get("X-Ooglex-Avatar-Source") or "")
+                          avatar_bytes = len(body)
+                          avatar_ok = resp.status == 200 and avatar_type.lower().startswith("image/") and avatar_bytes >= 512
+                  except urllib.error.HTTPError as exc:
+                      reasons.append("avatar_http_" + str(exc.code))
+                  except Exception as exc:
+                      reasons.append("avatar_fetch_failed:" + type(exc).__name__)
+                  if not avatar_ok and not any(r.startswith("avatar_") for r in reasons):
+                      reasons.append("avatar_invalid_response")
+              else:
+                  reasons.append("missing_avatar_url")
+
+              feed_url = "https://pro-api.ooglex.com/v1/tech-leaders/free-feed?" + urllib.parse.urlencode({
+                  "handle": handle,
+                  "limit": 3,
+              })
+              native_ok = False
+              feed_source = ""
+              post_count = 0
+              newest_post_at = None
+              feed_http_status = None
+              feed_error_body = ""
+              try:
+                  req = urllib.request.Request(feed_url, headers={
+                      "User-Agent": "Ooglex Europe V599 Audit/1.0",
+                      "Accept": "application/json",
+                  })
+                  with urllib.request.urlopen(req, timeout=35) as resp:
+                      feed_http_status = resp.status
+                      payload = json.loads(resp.read().decode("utf-8"))
+                  posts = payload.get("posts") or []
+                  post_count = len(posts)
+                  feed_source = str(payload.get("source") or "")
+                  newest_post_at = posts[0].get("created_at") if posts else None
+                  times = [str(x.get("created_at") or "") for x in posts]
+                  native_ok = (
+                      payload.get("uses_x_api") is False
+                      and 1 <= post_count <= 3
+                      and times == sorted(times, reverse=True)
+                  )
+              except urllib.error.HTTPError as exc:
+                  feed_http_status = exc.code
+                  try:
+                      feed_error_body = exc.read().decode("utf-8", errors="ignore")[:500]
+                  except Exception:
+                      pass
+              except Exception as exc:
+                  feed_error_body = type(exc).__name__
+
+              render_path = "native_free_feed" if native_ok else ("official_x_embed_fallback" if embed_fallback_available else "blocked")
+              render_ready = avatar_ok and p is not None and str((p or {}).get("handle") or "").lower() == handle.lower() and (native_ok or embed_fallback_available)
+              if not render_ready:
+                  if not avatar_ok and not any(r.startswith("avatar_") for r in reasons):
+                      reasons.append("avatar_not_ready")
+                  if not native_ok and not embed_fallback_available:
+                      reasons.append("no_feed_or_embed_path")
+
+              rows.append({
+                  "name": name,
+                  "handle": handle,
+                  "preview_record_ok": p is not None and str((p or {}).get("handle") or "").lower() == handle.lower(),
+                  "avatar_ok": avatar_ok,
+                  "avatar_content_type": avatar_type,
+                  "avatar_bytes": avatar_bytes,
+                  "avatar_source": avatar_source,
+                  "native_feed_ok": native_ok,
+                  "feed_http_status": feed_http_status,
+                  "feed_error_body": feed_error_body,
+                  "feed_source": feed_source,
+                  "post_count": post_count,
+                  "newest_post_at": newest_post_at,
+                  "embed_fallback_available": embed_fallback_available,
+                  "render_path": render_path,
+                  "render_ready": render_ready,
+                  "blocking_reasons": reasons,
+              })
+
+          merge_gate = (
+              not static_reasons
+              and live_catalog_ok
+              and live_page_ok
+              and all(r["render_ready"] for r in rows)
+          )
+          payload = {
+              "schema_version": 1,
+              "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+              "preview_catalog_version": preview.get("catalog_version"),
+              "preview_count": len(leaders),
+              "base_count": int(meta.get("base_count") or 0),
+              "approved_additions": int(meta.get("approved_additions") or 0),
+              "target_category": "欧洲",
+              "static_gate": "pass" if not static_reasons else "hold",
+              "static_blocking_reasons": static_reasons,
+              "live_catalog_ok": live_catalog_ok,
+              "live_catalog_error": live_catalog_error,
+              "live_page_ok": live_page_ok,
+              "live_page_error": live_page_error,
+              "embed_fallback_available": embed_fallback_available,
+              "sample_count": len(rows),
+              "native_ready_count": sum(1 for r in rows if r["native_feed_ok"]),
+              "embed_fallback_count": sum(1 for r in rows if not r["native_feed_ok"] and r["embed_fallback_available"]),
+              "render_ready_count": sum(1 for r in rows if r["render_ready"]),
+              "render_blocked_count": sum(1 for r in rows if not r["render_ready"]),
+              "rows": rows,
+              "merge_gate": "pass" if merge_gate else "hold",
+          }
+          out_path.parent.mkdir(parents=True, exist_ok=True)
+          out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(payload, ensure_ascii=False))
+          PY
+
+      - name: Commit Europe V599 runtime audit
+        if: always()
+        run: |
+          FILE="data/tech-leaders/europe_preview.runtime_audit.json"
+          if [ ! -f "$FILE" ]; then
+            echo "::error::Runtime audit file was not generated"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain -- "$FILE")" ]; then
+            echo "No runtime audit changes."
+          else
+            git add "$FILE"
+            git commit -m "data: record Europe V599 preview runtime audit"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              if ! git rebase origin/main; then
+                conflicts="$(git diff --name-only --diff-filter=U)"
+                if [ "$conflicts" = "$FILE" ]; then
+                  git checkout --theirs -- "$FILE"
+                  git add "$FILE"
+                  GIT_EDITOR=true git rebase --continue
+                else
+                  git rebase --abort || true
+                  exit 1
+                fi
+              fi
+              if git push origin HEAD:main; then break; fi
+              if [ "$attempt" = "5" ]; then exit 1; fi
+              sleep $((attempt * 2))
+            done
+          fi
+
+      - name: Enforce Europe V599 merge gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("data/tech-leaders/europe_preview.runtime_audit.json").read_text(encoding="utf-8"))
+          assert p["preview_count"] == 599
+          assert p["base_count"] == 594
+          assert p["approved_additions"] == 5
+          assert p["static_gate"] == "pass"
+          assert p["live_catalog_ok"] is True
+          assert p["live_page_ok"] is True
+          assert p["render_ready_count"] == 5
+          assert p["render_blocked_count"] == 0
+          assert p["merge_gate"] == "pass"
+          print("Europe V599 merge gate: PASS")
+          PY
