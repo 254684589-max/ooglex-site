@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "role_complete_x_identity_pass_2_activity_pending",
+  "status": "activity_pass_1_v613_preview_open",
   "tranche_type": "europe_listed_review_batch_10",
   "batch_range": "226-250",
   "phase": "Europe 23 -> 50",
@@ -17,10 +17,16 @@
     "role_verified_current": 20,
     "role_verified_legacy": 5,
     "role_needs_fresh_capture": 0,
-    "identity_verified_activity_pending": 2,
+    "identity_verified_activity_pending": 1,
     "needs_x_research": 23,
-    "preview_ready": 0,
-    "production_additions": 0
+    "preview_ready": 1,
+    "production_additions": 0,
+    "activity_gate_passed_names": [
+      "Estelle Brachlianoff"
+    ],
+    "activity_gate_pending_names": [
+      "Catherine MacGregor"
+    ]
   },
   "policy": {
     "require_role_evidence": true,
@@ -227,11 +233,13 @@
       "x_handle": "E_Brachlianoff",
       "x_identity_status": "verified_personal_x_cross_source",
       "x_identity_source_url": "https://x.com/E_Brachlianoff",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_09_by_exact_name",
-      "notes": "Production + prior-review cross-batch dedupe passed. Veolia first-party governance verifies the current CEO role; public X profile mirror identifies @E_Brachlianoff as Veolia CEO with current posts. Direct Ooglex activity audit is required before Preview."
+      "notes": "Veolia first-party governance verifies the current CEO role; @E_Brachlianoff identity is cross-source verified. A fresh public profile mirror observed on 2026-09-22 shows personal posts within days, satisfying the <=180d activity gate. Candidate advanced to V613 Preview; runtime native-feed/avatar/render audit remains required before production promotion.",
+      "x_activity_source_url": "https://w.twstalker.com/E_Brachlianoff",
+      "x_activity_evidence_observed_at": "2026-09-22"
     },
     {
       "batch_rank": 236,
@@ -251,7 +259,7 @@
       "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_09_by_exact_name",
-      "notes": "Production + prior-review cross-batch dedupe passed. ENGIE first-party CEO page verifies current role and directly links the personal X profile @cathmacgregor. Direct Ooglex activity audit is required before Preview."
+      "notes": "ENGIE first-party CEO page verifies current role and directly links @cathmacgregor. Current public sources confirm the profile identity, but this review did not obtain sufficiently strong recent first-person posting evidence to satisfy the <=180d activity gate, so the candidate remains pending and is not included in V613 Preview."
     },
     {
       "batch_rank": 237,
@@ -539,5 +547,6 @@
     "candidate_source": "25 Europe-listed company core figures absent from V612 production and Europe Batches 01-09 by exact-name cross-batch dedupe.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
     "dedupe_rule": "Exact-name against V612 production and Europe Batches 01-09; exact-handle against production before Preview."
-  }
+  },
+  "next_action": "Run V613 static/runtime preview audit for Estelle Brachlianoff. Keep Catherine MacGregor pending until recent first-person X activity is directly evidenced. Continue unresolved Batch 10 X research without quota filling."
 }
