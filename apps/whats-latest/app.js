@@ -52,6 +52,32 @@
     return out;
   }
 
+  function activeItems(){
+    if(active==="all")return allItems();
+    var c=catByKey(active);
+    return c?(c.items||[]).map(function(it){
+      return Object.assign({category:c.name,categoryKey:c.key},it);
+    }):[];
+  }
+
+  function activeLead(){
+    if(active==="all")return DATA.lead||DATA.highlight||{};
+    var items=activeItems().slice().sort(function(a,b){
+      return Number(b.published||0)-Number(a.published||0);
+    });
+    return items[0]||{};
+  }
+
+  function renderActiveView(){
+    renderHero();
+    renderTrending();
+    renderSignals();
+    renderWires();
+    renderCards();
+    renderRail();
+    renderRundown();
+  }
+
   function renderHeader(){
     $("date-line").textContent=dateText(DATA.asOf);
     $("edition-date").textContent=(DATA.asOf||"—")+" · latest";
@@ -77,17 +103,18 @@
         active=t.key;
         box.querySelectorAll("button").forEach(function(x){x.classList.remove("on");});
         b.classList.add("on");
-        renderCards();renderRundown();
+        renderActiveView();
       };
       box.appendChild(b);
     });
   }
 
   function renderHero(){
-    var h=DATA.lead||DATA.highlight||{};
+    var h=activeLead();
     $("hero-link").href=h.link||"#";
     $("hero-title").textContent=h.brief||h.title||"今日全球新闻简报";
-    $("hero-meta").textContent=[h.source||"",DATA.asOf||"",h.category||""].filter(Boolean).join(" · ");
+    var activeCat=active==="all"?(h.category||"概览"):((catByKey(active)||{}).name||h.category||"");
+    $("hero-meta").textContent=[h.source||"",DATA.asOf||"",activeCat].filter(Boolean).join(" · ");
     $("lead-title").textContent=h.title||h.brief||"今日主线";
     $("why-box").innerHTML="<b>WHY IT MATTERS</b>"+esc(h.why||"这条信息是当前简报中的核心主线，值得进一步核实原文与后续发展。");
     $("lead-source").innerHTML=esc(h.source||"来源未知")+(relTime(h.published)?" · "+esc(relTime(h.published)):"")+
@@ -96,8 +123,14 @@
 
   function renderTrending(){
     var box=$("trending"),items=[];
-    (DATA.signals||[]).forEach(function(s){items.push({label:s.label+(s.trend?" "+s.trend:""),hot:true});});
-    (DATA.wires||[]).slice(0,5).forEach(function(it){if(it.topic)items.push({label:it.topic,hot:false});});
+    if(active==="all"){
+      (DATA.signals||[]).forEach(function(s){items.push({label:s.label+(s.trend?" "+s.trend:""),hot:true});});
+      (DATA.wires||[]).slice(0,5).forEach(function(it){if(it.topic)items.push({label:it.topic,hot:false});});
+    }else{
+      activeItems().slice(0,8).forEach(function(it){
+        items.push({label:it.topic||it.category||"要闻",hot:false});
+      });
+    }
     var seen={};
     items=items.filter(function(x){if(seen[x.label])return false;seen[x.label]=1;return true;}).slice(0,8);
     box.innerHTML="<span class='trend-label'>TRENDING NOW</span>"+items.map(function(x){
@@ -121,7 +154,8 @@
       "<div class='wire-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
   }
   function renderWires(){
-    var list=(DATA.wires||[]).slice(0,6);
+    var list=active==="all"?(DATA.wires||[]).slice(0,6):activeItems().slice(1,7);
+    if(!list.length&&active!=="all")list=activeItems().slice(0,6);
     $("wire-list").innerHTML=list.map(wireHtml).join("");
   }
 
@@ -145,8 +179,14 @@
       "<div class='ri-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
   }
   function renderRail(){
-    $("rail-watch").innerHTML=(DATA.watch||[]).slice(0,4).map(railItem).join("");
-    $("rail-noted").innerHTML=(DATA.alsoNoted||[]).slice(0,4).map(railItem).join("");
+    var selected=activeItems();
+    if(active==="all"){
+      $("rail-watch").innerHTML=(DATA.watch||[]).slice(0,4).map(railItem).join("");
+      $("rail-noted").innerHTML=(DATA.alsoNoted||[]).slice(0,4).map(railItem).join("");
+    }else{
+      $("rail-watch").innerHTML=selected.slice(0,4).map(railItem).join("");
+      $("rail-noted").innerHTML=selected.slice(4,8).map(railItem).join("");
+    }
     var mk=DATA.markets||[];
     $("market-list").innerHTML=mk.length?mk.map(function(m){
       return "<div class='quote'><span>"+esc(m.name)+"</span><span class='quote-val'>"+fmtPrice(m)+
@@ -155,10 +195,21 @@
   }
 
   function renderSignals(){
-    $("signal-row").innerHTML=(DATA.signals||[]).map(function(s){
-      var cls=s.trend==="↑"?" up":s.trend==="↓"?" down":"";
-      return "<span class='signal"+cls+"'>"+esc(s.label||"")+(s.trend?" "+esc(s.trend):"")+"</span>";
-    }).join("");
+    var signals;
+    if(active==="all"){
+      signals=DATA.signals||[];
+      $("signal-row").innerHTML=signals.map(function(s){
+        var cls=s.trend==="↑"?" up":s.trend==="↓"?" down":"";
+        return "<span class='signal"+cls+"'>"+esc(s.label||"")+(s.trend?" "+esc(s.trend):"")+"</span>";
+      }).join("");
+    }else{
+      var seen={};
+      signals=activeItems().map(function(it){return it.topic||it.category||"要闻";})
+        .filter(function(x){if(seen[x])return false;seen[x]=1;return true;}).slice(0,6);
+      $("signal-row").innerHTML=signals.map(function(label){
+        return "<span class='signal'>"+esc(label)+"</span>";
+      }).join("");
+    }
   }
 
   function rdHtml(it){
@@ -185,8 +236,7 @@
 
   function boot(data){
     DATA=data;
-    renderHeader();renderTabs();renderHero();renderTrending();renderGalaxy();
-    renderSignals();renderWires();renderCards();renderRail();renderRundown();renderFooter();
+    renderHeader();renderTabs();renderGalaxy();renderActiveView();renderFooter();
   }
 
   fetch("data.json?t="+Date.now())
