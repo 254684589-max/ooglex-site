@@ -10,9 +10,13 @@
   "retagged_count": 0,
   "promoted": [],
   "retagged": [],
-  "blocked_summary": {},
-  "role_verified_candidate_pool": 260,
-  "typeahead_scanned_this_run": 0,
+  "blocked_summary": {
+    "activity_gt_180d": 19,
+    "activity_unavailable": 4,
+    "identity_unresolved": 212
+  },
+  "role_verified_candidate_pool": 259,
+  "typeahead_scanned_this_run": 212,
   "strict_gates": [
     "verified listed-company role",
     "verified personal X identity",
@@ -23,5 +27,5 @@
   ],
   "quota_fill_disabled": true,
   "status": "fast_track_active",
-  "generated_at": "2026-09-22T13:43:00Z"
+  "generated_at": "2026-09-22T13:45:21Z"
 }

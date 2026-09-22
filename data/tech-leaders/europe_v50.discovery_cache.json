@@ -1,0 +1,1279 @@
+{
+  "schema_version": 1,
+  "candidates": {
+    "guillaumefaury": {
+      "name": "Guillaume Faury",
+      "company": "Airbus SE",
+      "checked_at": "2026-09-22T13:43:27Z",
+      "discovered": null
+    },
+    "fabriciobloisi": {
+      "name": "Fabricio Bloisi",
+      "company": "Prosus NV",
+      "checked_at": "2026-09-22T13:43:27Z",
+      "discovered": null
+    },
+    "francoishenripinault": {
+      "name": "François-Henri Pinault",
+      "company": "Kering SA",
+      "checked_at": "2026-09-22T13:43:27Z",
+      "discovered": null
+    },
+    "christianbruch": {
+      "name": "Christian Bruch",
+      "company": "Siemens Energy AG",
+      "checked_at": "2026-09-22T13:43:27Z",
+      "discovered": null
+    },
+    "henrikandersen": {
+      "name": "Henrik Andersen",
+      "company": "Vestas Wind Systems A/S",
+      "checked_at": "2026-09-22T13:43:27Z",
+      "discovered": null
+    },
+    "vincentclerc": {
+      "name": "Vincent Clerc",
+      "company": "A.P. Møller - Mærsk A/S",
+      "checked_at": "2026-09-22T13:43:28Z",
+      "discovered": null
+    },
+    "pascalsoriot": {
+      "name": "Pascal Soriot",
+      "company": "AstraZeneca PLC",
+      "checked_at": "2026-09-22T13:43:28Z",
+      "discovered": null
+    },
+    "belengarijo": {
+      "name": "Belén Garijo",
+      "company": "Sanofi SA",
+      "checked_at": "2026-09-22T13:43:28Z",
+      "discovered": null
+    },
+    "waelsawan": {
+      "name": "Wael Sawan",
+      "company": "Shell PLC",
+      "checked_at": "2026-09-22T13:43:28Z",
+      "discovered": null
+    },
+    "ignaciosgalan": {
+      "name": "Ignacio S. Galán",
+      "company": "Iberdrola SA",
+      "checked_at": "2026-09-22T13:43:28Z",
+      "discovered": null
+    },
+    "carlostorresvila": {
+      "name": "Carlos Torres Vila",
+      "company": "Banco Bilbao Vizcaya Argentaria SA",
+      "checked_at": "2026-09-22T13:43:29Z",
+      "discovered": null
+    },
+    "timotheushottges": {
+      "name": "Timotheus Höttges",
+      "company": "Deutsche Telekom AG",
+      "checked_at": "2026-09-22T13:43:29Z",
+      "discovered": null
+    },
+    "aimanezzat": {
+      "name": "Aiman Ezzat",
+      "company": "Capgemini SE",
+      "checked_at": "2026-09-22T13:43:29Z",
+      "discovered": null
+    },
+    "justinhotard": {
+      "name": "Justin Hotard",
+      "company": "Nokia Oyj",
+      "checked_at": "2026-09-22T13:43:29Z",
+      "discovered": null
+    },
+    "borjeekholm": {
+      "name": "Börje Ekholm",
+      "company": "Telefonaktiebolaget LM Ericsson",
+      "checked_at": "2026-09-22T13:43:29Z",
+      "discovered": null
+    },
+    "lucademeo": {
+      "name": "Luca de Meo",
+      "company": "Kering SA",
+      "checked_at": "2026-09-22T13:43:30Z",
+      "discovered": null
+    },
+    "billanderson": {
+      "name": "Bill Anderson",
+      "company": "Bayer AG",
+      "checked_at": "2026-09-22T13:43:30Z",
+      "discovered": null
+    },
+    "amandablanc": {
+      "name": "Amanda Blanc",
+      "company": "Aviva plc",
+      "checked_at": "2026-09-22T13:43:30Z",
+      "discovered": null
+    },
+    "margheritadellavalle": {
+      "name": "Margherita Della Valle",
+      "company": "Vodafone Group Plc",
+      "checked_at": "2026-09-22T13:43:30Z",
+      "discovered": null
+    },
+    "allisonkirkby": {
+      "name": "Allison Kirkby",
+      "company": "BT Group plc",
+      "checked_at": "2026-09-22T13:43:31Z",
+      "discovered": null
+    },
+    "andreaorcel": {
+      "name": "Andrea Orcel",
+      "company": "UniCredit S.p.A.",
+      "checked_at": "2026-09-22T13:43:31Z",
+      "discovered": null
+    },
+    "christiansewing": {
+      "name": "Christian Sewing",
+      "company": "Deutsche Bank AG",
+      "checked_at": "2026-09-22T13:43:31Z",
+      "discovered": null
+    },
+    "davidschwimmer": {
+      "name": "David Schwimmer",
+      "company": "London Stock Exchange Group plc",
+      "checked_at": "2026-09-22T13:43:31Z",
+      "discovered": null
+    },
+    "tufanerginbilgic": {
+      "name": "Tufan Erginbilgic",
+      "company": "Rolls-Royce Holdings plc",
+      "checked_at": "2026-09-22T13:43:32Z",
+      "discovered": null
+    },
+    "oliverblume": {
+      "name": "Oliver Blume",
+      "company": "Volkswagen AG",
+      "checked_at": "2026-09-22T13:43:39Z",
+      "discovered": null
+    },
+    "bjrngulden": {
+      "name": "Bjørn Gulden",
+      "company": "adidas AG",
+      "checked_at": "2026-09-22T13:43:39Z",
+      "discovered": null
+    },
+    "philippnavratil": {
+      "name": "Philipp Navratil",
+      "company": "Nestlé S.A.",
+      "checked_at": "2026-09-22T13:43:39Z",
+      "discovered": null
+    },
+    "sergiopermotti": {
+      "name": "Sergio P. Ermotti",
+      "company": "UBS Group AG",
+      "checked_at": "2026-09-22T13:43:39Z",
+      "discovered": null
+    },
+    "thomasschinecker": {
+      "name": "Thomas Schinecker",
+      "company": "Roche Holding AG",
+      "checked_at": "2026-09-22T13:43:39Z",
+      "discovered": null
+    },
+    "maziarmikedoustdar": {
+      "name": "Maziar Mike Doustdar",
+      "company": "Novo Nordisk A/S",
+      "checked_at": "2026-09-22T13:43:39Z",
+      "discovered": null
+    },
+    "christophefouquet": {
+      "name": "Christophe Fouquet",
+      "company": "ASML Holding N.V.",
+      "checked_at": "2026-09-22T13:43:40Z",
+      "discovered": null
+    },
+    "jeanmarcchery": {
+      "name": "Jean-Marc Chery",
+      "company": "STMicroelectronics N.V.",
+      "checked_at": "2026-09-22T13:43:40Z",
+      "discovered": null
+    },
+    "jochenhanebeck": {
+      "name": "Jochen Hanebeck",
+      "company": "Infineon Technologies AG",
+      "checked_at": "2026-09-22T13:43:40Z",
+      "discovered": null
+    },
+    "pietervanderdoes": {
+      "name": "Pieter van der Does",
+      "company": "Adyen N.V.",
+      "checked_at": "2026-09-22T13:43:40Z",
+      "discovered": null
+    },
+    "fernandofernandez": {
+      "name": "Fernando Fernandez",
+      "company": "Unilever PLC",
+      "checked_at": "2026-09-22T13:43:42Z",
+      "discovered": null
+    },
+    "rafaeloliveira": {
+      "name": "Rafael Oliveira",
+      "company": "Heineken N.V.",
+      "checked_at": "2026-09-22T13:43:42Z",
+      "discovered": null
+    },
+    "bernardarnault": {
+      "name": "Bernard Arnault",
+      "company": "LVMH Moët Hennessy Louis Vuitton SE",
+      "checked_at": "2026-09-22T13:43:42Z",
+      "discovered": null
+    },
+    "georgeselhedery": {
+      "name": "Georges Elhedery",
+      "company": "HSBC Holdings plc",
+      "checked_at": "2026-09-22T13:43:42Z",
+      "discovered": null
+    },
+    "oliverbate": {
+      "name": "Oliver Bäte",
+      "company": "Allianz SE",
+      "checked_at": "2026-09-22T13:43:42Z",
+      "discovered": null
+    },
+    "christophjurecka": {
+      "name": "Christoph Jurecka",
+      "company": "Munich Re",
+      "checked_at": "2026-09-22T13:43:42Z",
+      "discovered": null
+    },
+    "jeanlaurentbonnafe": {
+      "name": "Jean-Laurent Bonnafé",
+      "company": "BNP Paribas SA",
+      "checked_at": "2026-09-22T13:43:43Z",
+      "discovered": null
+    },
+    "nicolashieronimus": {
+      "name": "Nicolas Hieronimus",
+      "company": "L'Oréal SA",
+      "checked_at": "2026-09-22T13:43:43Z",
+      "discovered": null
+    },
+    "olivierandries": {
+      "name": "Olivier Andriès",
+      "company": "Safran SA",
+      "checked_at": "2026-09-22T13:43:44Z",
+      "discovered": null
+    },
+    "francoisjackow": {
+      "name": "François Jackow",
+      "company": "Air Liquide SA",
+      "checked_at": "2026-09-22T13:43:44Z",
+      "discovered": null
+    },
+    "francescomilleri": {
+      "name": "Francesco Milleri",
+      "company": "EssilorLuxottica SA",
+      "checked_at": "2026-09-22T13:43:44Z",
+      "discovered": null
+    },
+    "mariogreco": {
+      "name": "Mario Greco",
+      "company": "Zurich Insurance Group AG",
+      "checked_at": "2026-09-22T13:43:44Z",
+      "discovered": null
+    },
+    "simontrott": {
+      "name": "Simon Trott",
+      "company": "Rio Tinto plc",
+      "checked_at": "2026-09-22T13:43:45Z",
+      "discovered": null
+    },
+    "billwinters": {
+      "name": "Bill Winters",
+      "company": "Standard Chartered PLC",
+      "checked_at": "2026-09-22T13:43:45Z",
+      "discovered": null
+    },
+    "carlomessina": {
+      "name": "Carlo Messina",
+      "company": "Intesa Sanpaolo S.p.A.",
+      "checked_at": "2026-09-22T13:43:45Z",
+      "discovered": null
+    },
+    "flaviocattaneo": {
+      "name": "Flavio Cattaneo",
+      "company": "Enel S.p.A.",
+      "checked_at": "2026-09-22T13:43:45Z",
+      "discovered": null
+    },
+    "claudiodescalzi": {
+      "name": "Claudio Descalzi",
+      "company": "Eni S.p.A.",
+      "checked_at": "2026-09-22T13:43:46Z",
+      "discovered": null
+    },
+    "antoniofilosa": {
+      "name": "Antonio Filosa",
+      "company": "Stellantis N.V.",
+      "checked_at": "2026-09-22T13:43:46Z",
+      "discovered": null
+    },
+    "milannedeljkovic": {
+      "name": "Milan Nedeljković",
+      "company": "BMW AG",
+      "checked_at": "2026-09-22T13:43:46Z",
+      "discovered": null
+    },
+    "tobiasmeyer": {
+      "name": "Tobias Meyer",
+      "company": "DHL Group / Deutsche Post AG",
+      "checked_at": "2026-09-22T13:43:46Z",
+      "discovered": null
+    },
+    "arminpapperger": {
+      "name": "Armin Papperger",
+      "company": "Rheinmetall AG",
+      "checked_at": "2026-09-22T13:43:47Z",
+      "discovered": null
+    },
+    "carstenspohr": {
+      "name": "Carsten Spohr",
+      "company": "Deutsche Lufthansa AG",
+      "checked_at": "2026-09-22T13:43:47Z",
+      "discovered": null
+    },
+    "stephanleithner": {
+      "name": "Stephan Leithner",
+      "company": "Deutsche Börse AG",
+      "checked_at": "2026-09-22T13:43:47Z",
+      "discovered": null
+    },
+    "royjakobs": {
+      "name": "Roy Jakobs",
+      "company": "Koninklijke Philips N.V.",
+      "checked_at": "2026-09-22T13:43:47Z",
+      "discovered": null
+    },
+    "staceycaywood": {
+      "name": "Stacey Caywood",
+      "company": "Wolters Kluwer N.V.",
+      "checked_at": "2026-09-22T13:43:47Z",
+      "discovered": null
+    },
+    "erikengstrom": {
+      "name": "Erik Engstrom",
+      "company": "RELX PLC",
+      "checked_at": "2026-09-22T13:43:49Z",
+      "discovered": null
+    },
+    "garynagle": {
+      "name": "Gary Nagle",
+      "company": "Glencore plc",
+      "checked_at": "2026-09-22T13:43:49Z",
+      "discovered": null
+    },
+    "christelheydemann": {
+      "name": "Christel Heydemann",
+      "company": "Orange SA",
+      "checked_at": "2026-09-22T13:43:53Z",
+      "discovered": null
+    },
+    "stefanhoops": {
+      "name": "Stefan Hoops",
+      "company": "DWS Group GmbH & Co. KGaA",
+      "checked_at": "2026-09-22T13:43:53Z",
+      "discovered": null
+    },
+    "cindyrose": {
+      "name": "Cindy Rose",
+      "company": "WPP plc",
+      "checked_at": "2026-09-22T13:43:53Z",
+      "discovered": null
+    },
+    "christianbertermann": {
+      "name": "Christian Bertermann",
+      "company": "AUTO1 Group SE",
+      "checked_at": "2026-09-22T13:43:53Z",
+      "discovered": null
+    },
+    "hakankoc": {
+      "name": "Hakan Koç",
+      "company": "AUTO1 Group SE",
+      "checked_at": "2026-09-22T13:43:54Z",
+      "discovered": null
+    },
+    "dominikrichter": {
+      "name": "Dominik Richter",
+      "company": "HelloFresh SE",
+      "checked_at": "2026-09-22T13:43:54Z",
+      "discovered": null
+    },
+    "hannekefaber": {
+      "name": "Hanneke Faber",
+      "company": "Logitech International SA",
+      "checked_at": "2026-09-22T13:43:54Z",
+      "discovered": null
+    },
+    "richardsaynor": {
+      "name": "Richard Saynor",
+      "company": "Sandoz Group AG",
+      "checked_at": "2026-09-22T13:43:54Z",
+      "discovered": null
+    },
+    "hakansamuelsson": {
+      "name": "Håkan Samuelsson",
+      "company": "Volvo Car AB",
+      "checked_at": "2026-09-22T13:43:54Z",
+      "discovered": null
+    },
+    "martinlundstedt": {
+      "name": "Martin Lundstedt",
+      "company": "AB Volvo",
+      "checked_at": "2026-09-22T13:43:54Z",
+      "discovered": null
+    },
+    "benedicteschilbredfasmer": {
+      "name": "Benedicte Schilbred Fasmer",
+      "company": "Telenor ASA",
+      "checked_at": "2026-09-22T13:43:55Z",
+      "discovered": null
+    },
+    "rasmuserrboe": {
+      "name": "Rasmus Errboe",
+      "company": "Ørsted A/S",
+      "checked_at": "2026-09-22T13:44:07Z",
+      "discovered": null
+    },
+    "madsnipper": {
+      "name": "Mads Nipper",
+      "company": "Ørsted A/S",
+      "checked_at": "2026-09-22T13:44:07Z",
+      "discovered": null
+    },
+    "lukemiels": {
+      "name": "Luke Miels",
+      "company": "GSK plc",
+      "checked_at": "2026-09-22T13:44:07Z",
+      "discovered": null
+    },
+    "heinschumacher": {
+      "name": "Hein Schumacher",
+      "company": "Unilever PLC",
+      "checked_at": "2026-09-22T13:44:07Z",
+      "discovered": null
+    },
+    "peterwennink": {
+      "name": "Peter Wennink",
+      "company": "ASML Holding N.V.",
+      "checked_at": "2026-09-22T13:44:07Z",
+      "discovered": null
+    },
+    "ralphhamers": {
+      "name": "Ralph Hamers",
+      "company": "UBS Group AG",
+      "checked_at": "2026-09-22T13:44:08Z",
+      "discovered": null
+    },
+    "josemanuelentrecanales": {
+      "name": "José Manuel Entrecanales",
+      "company": "ACCIONA SA",
+      "checked_at": "2026-09-22T13:44:08Z",
+      "discovered": null
+    },
+    "stephaneboujnah": {
+      "name": "Stéphane Boujnah",
+      "company": "Euronext N.V.",
+      "checked_at": "2026-09-22T13:44:09Z",
+      "discovered": null
+    },
+    "sebastienbazin": {
+      "name": "Sébastien Bazin",
+      "company": "Accor SA",
+      "checked_at": "2026-09-22T13:44:09Z",
+      "discovered": null
+    },
+    "markuskrebber": {
+      "name": "Markus Krebber",
+      "company": "RWE AG",
+      "checked_at": "2026-09-22T13:44:09Z",
+      "discovered": null
+    },
+    "miguelstilwelldandrade": {
+      "name": "Miguel Stilwell d’Andrade",
+      "company": "EDP SA",
+      "checked_at": "2026-09-22T13:44:09Z",
+      "discovered": null
+    },
+    "benoitbazin": {
+      "name": "Benoit Bazin",
+      "company": "Compagnie de Saint-Gobain SA",
+      "checked_at": "2026-09-22T13:44:10Z",
+      "discovered": null
+    },
+    "alexandrericard": {
+      "name": "Alexandre Ricard",
+      "company": "Pernod Ricard SA",
+      "checked_at": "2026-09-22T13:44:10Z",
+      "discovered": null
+    },
+    "juliahoggett": {
+      "name": "Julia Hoggett",
+      "company": "London Stock Exchange Group plc",
+      "checked_at": "2026-09-22T13:44:10Z",
+      "discovered": null
+    },
+    "micheldoukeris": {
+      "name": "Michel Doukeris",
+      "company": "Anheuser-Busch InBev SA/NV",
+      "checked_at": "2026-09-22T13:44:11Z",
+      "discovered": null
+    },
+    "benoitcoquart": {
+      "name": "Benoît Coquart",
+      "company": "Legrand SA",
+      "checked_at": "2026-09-22T13:44:11Z",
+      "discovered": null
+    },
+    "antoinedesaintaffrique": {
+      "name": "Antoine de Saint-Affrique",
+      "company": "Danone SA",
+      "checked_at": "2026-09-22T13:44:11Z",
+      "discovered": null
+    },
+    "mikeradossich": {
+      "name": "Mike Radossich",
+      "company": "Syensqo SA/NV",
+      "checked_at": "2026-09-22T13:44:11Z",
+      "discovered": null
+    },
+    "valeriebaudson": {
+      "name": "Valérie Baudson",
+      "company": "Amundi SA",
+      "checked_at": "2026-09-22T13:44:11Z",
+      "discovered": null
+    },
+    "francescostarace": {
+      "name": "Francesco Starace",
+      "company": "Enel S.p.A.",
+      "checked_at": "2026-09-22T13:44:12Z",
+      "discovered": null
+    },
+    "marcoalvera": {
+      "name": "Marco Alverà",
+      "company": "Snam S.p.A.",
+      "checked_at": "2026-09-22T13:44:12Z",
+      "discovered": null
+    },
+    "xavierrolet": {
+      "name": "Xavier Rolet",
+      "company": "London Stock Exchange Group plc",
+      "checked_at": "2026-09-22T13:44:12Z",
+      "discovered": null
+    },
+    "pascaldaloz": {
+      "name": "Pascal Daloz",
+      "company": "Dassault Systèmes SE",
+      "checked_at": "2026-09-22T13:44:13Z",
+      "discovered": null
+    },
+    "christianlevin": {
+      "name": "Christian Levin",
+      "company": "TRATON SE",
+      "checked_at": "2026-09-22T13:44:13Z",
+      "discovered": null
+    },
+    "karinradstrom": {
+      "name": "Karin Rådström",
+      "company": "Daimler Truck Holding AG",
+      "checked_at": "2026-09-22T13:44:13Z",
+      "discovered": null
+    },
+    "patricecaine": {
+      "name": "Patrice Caine",
+      "company": "Thales SA",
+      "checked_at": "2026-09-22T13:44:13Z",
+      "discovered": null
+    },
+    "timsteiner": {
+      "name": "Tim Steiner",
+      "company": "Ocado Group plc",
+      "checked_at": "2026-09-22T13:44:14Z",
+      "discovered": null
+    },
+    "thierrygarnier": {
+      "name": "Thierry Garnier",
+      "company": "Kingfisher plc",
+      "checked_at": "2026-09-22T13:44:15Z",
+      "discovered": null
+    },
+    "josevicentedelosmozos": {
+      "name": "José Vicente de los Mozos",
+      "company": "Indra Sistemas SA",
+      "checked_at": "2026-09-22T13:44:15Z",
+      "discovered": null
+    },
+    "arnaudpieton": {
+      "name": "Arnaud Pieton",
+      "company": "Technip Energies N.V.",
+      "checked_at": "2026-09-22T13:44:15Z",
+      "discovered": null
+    },
+    "ashutoshkulkarni": {
+      "name": "Ashutosh Kulkarni",
+      "company": "Elastic N.V.",
+      "checked_at": "2026-09-22T13:44:15Z",
+      "discovered": null
+    },
+    "alexnorstrom": {
+      "name": "Alex Norström",
+      "company": "Spotify Technology S.A.",
+      "checked_at": "2026-09-22T13:44:15Z",
+      "discovered": null
+    },
+    "gustavsoderstrom": {
+      "name": "Gustav Söderström",
+      "company": "Spotify Technology S.A.",
+      "checked_at": "2026-09-22T13:44:16Z",
+      "discovered": null
+    },
+    "thomassaueressig": {
+      "name": "Thomas Saueressig",
+      "company": "SAP SE",
+      "checked_at": "2026-09-22T13:44:16Z",
+      "discovered": null
+    },
+    "bettinaorlopp": {
+      "name": "Bettina Orlopp",
+      "company": "Commerzbank AG",
+      "checked_at": "2026-09-22T13:44:16Z",
+      "discovered": null
+    },
+    "luisgallego": {
+      "name": "Luis Gallego",
+      "company": "International Consolidated Airlines Group S.A.",
+      "checked_at": "2026-09-22T13:44:16Z",
+      "discovered": null
+    },
+    "michaeloleary": {
+      "name": "Michael O'Leary",
+      "company": "Ryanair Holdings plc",
+      "checked_at": "2026-09-22T13:44:16Z",
+      "discovered": null
+    },
+    "andreaguerra": {
+      "name": "Andrea Guerra",
+      "company": "Prada S.p.A.",
+      "checked_at": "2026-09-22T13:44:17Z",
+      "discovered": null
+    },
+    "dominikasam": {
+      "name": "Dominik Asam",
+      "company": "SAP SE",
+      "checked_at": "2026-09-22T13:44:17Z",
+      "discovered": null
+    },
+    "sebastiansteinhaeuser": {
+      "name": "Sebastian Steinhaeuser",
+      "company": "SAP SE",
+      "checked_at": "2026-09-22T13:44:17Z",
+      "discovered": null
+    },
+    "ginavargiubreuer": {
+      "name": "Gina Vargiu-Breuer",
+      "company": "SAP SE",
+      "checked_at": "2026-09-22T13:44:17Z",
+      "discovered": null
+    },
+    "thomastoepfer": {
+      "name": "Thomas Toepfer",
+      "company": "Airbus SE",
+      "checked_at": "2026-09-22T13:44:17Z",
+      "discovered": null
+    },
+    "reneobermann": {
+      "name": "René Obermann",
+      "company": "Airbus SE",
+      "checked_at": "2026-09-22T13:44:18Z",
+      "discovered": null
+    },
+    "larswagner": {
+      "name": "Lars Wagner",
+      "company": "Airbus SE",
+      "checked_at": "2026-09-22T13:44:18Z",
+      "discovered": null
+    },
+    "michaelschoellhorn": {
+      "name": "Michael Schoellhorn",
+      "company": "Airbus SE",
+      "checked_at": "2026-09-22T13:44:18Z",
+      "discovered": null
+    },
+    "philippedonnet": {
+      "name": "Philippe Donnet",
+      "company": "Assicurazioni Generali S.p.A.",
+      "checked_at": "2026-09-22T13:44:18Z",
+      "discovered": null
+    },
+    "sergioermotti": {
+      "name": "Sergio Ermotti",
+      "company": "UBS Group AG",
+      "checked_at": "2026-09-22T13:44:18Z",
+      "discovered": null
+    },
+    "hectorgrisi": {
+      "name": "Héctor Grisi",
+      "company": "Banco Santander SA",
+      "checked_at": "2026-09-22T13:44:19Z",
+      "discovered": null
+    },
+    "slawomirkrupa": {
+      "name": "Slawomir Krupa",
+      "company": "Société Générale SA",
+      "checked_at": "2026-09-22T13:44:19Z",
+      "discovered": null
+    },
+    "francoisprovost": {
+      "name": "François Provost",
+      "company": "Renault SA",
+      "checked_at": "2026-09-22T13:44:19Z",
+      "discovered": null
+    },
+    "johantorgeby": {
+      "name": "Johan Torgeby",
+      "company": "Skandinaviska Enskilda Banken AB",
+      "checked_at": "2026-09-22T13:44:19Z",
+      "discovered": null
+    },
+    "jenshenriksson": {
+      "name": "Jens Henriksson",
+      "company": "Swedbank AB",
+      "checked_at": "2026-09-22T13:44:20Z",
+      "discovered": null
+    },
+    "michaelgreen": {
+      "name": "Michael Green",
+      "company": "Svenska Handelsbanken AB",
+      "checked_at": "2026-09-22T13:44:21Z",
+      "discovered": null
+    },
+    "kjerstinbraathen": {
+      "name": "Kjerstin Braathen",
+      "company": "DNB Bank ASA",
+      "checked_at": "2026-09-22T13:44:22Z",
+      "discovered": null
+    },
+    "jacobaarupandersen": {
+      "name": "Jacob Aarup-Andersen",
+      "company": "Carlsberg A/S",
+      "checked_at": "2026-09-22T13:44:25Z",
+      "discovered": null
+    },
+    "fransmuller": {
+      "name": "Frans Muller",
+      "company": "Koninklijke Ahold Delhaize N.V.",
+      "checked_at": "2026-09-22T13:44:26Z",
+      "discovered": null
+    },
+    "benjaminsmith": {
+      "name": "Benjamin Smith",
+      "company": "Air France-KLM SA",
+      "checked_at": "2026-09-22T13:44:26Z",
+      "discovered": null
+    },
+    "onurgenc": {
+      "name": "Onur Genç",
+      "company": "Banco Bilbao Vizcaya Argentaria SA",
+      "checked_at": "2026-09-22T13:44:28Z",
+      "discovered": null
+    },
+    "gonzalogortazar": {
+      "name": "Gonzalo Gortázar",
+      "company": "CaixaBank SA",
+      "checked_at": "2026-09-22T13:44:28Z",
+      "discovered": null
+    },
+    "stevenvanrijswijk": {
+      "name": "Steven van Rijswijk",
+      "company": "ING Groep N.V.",
+      "checked_at": "2026-09-22T13:44:28Z",
+      "discovered": null
+    },
+    "johanthijs": {
+      "name": "Johan Thijs",
+      "company": "KBC Group NV",
+      "checked_at": "2026-09-22T13:44:28Z",
+      "discovered": null
+    },
+    "miljangutovic": {
+      "name": "Miljan Gutovic",
+      "company": "Holcim Ltd",
+      "checked_at": "2026-09-22T13:44:28Z",
+      "discovered": null
+    },
+    "thomashasler": {
+      "name": "Thomas Hasler",
+      "company": "Sika AG",
+      "checked_at": "2026-09-22T13:44:29Z",
+      "discovered": null
+    },
+    "christianbuhl": {
+      "name": "Christian Buhl",
+      "company": "Geberit AG",
+      "checked_at": "2026-09-22T13:44:29Z",
+      "discovered": null
+    },
+    "nickhayek": {
+      "name": "Nick Hayek",
+      "company": "The Swatch Group AG",
+      "checked_at": "2026-09-22T13:44:29Z",
+      "discovered": null
+    },
+    "denismachuel": {
+      "name": "Denis Machuel",
+      "company": "Adecco Group AG",
+      "checked_at": "2026-09-22T13:44:29Z",
+      "discovered": null
+    },
+    "stefanpaul": {
+      "name": "Stefan Paul",
+      "company": "Kuehne + Nagel International AG",
+      "checked_at": "2026-09-22T13:44:30Z",
+      "discovered": null
+    },
+    "christianstammkoetter": {
+      "name": "Christian Stammkoetter",
+      "company": "Givaudan SA",
+      "checked_at": "2026-09-22T13:44:30Z",
+      "discovered": null
+    },
+    "gillesandrier": {
+      "name": "Gilles Andrier",
+      "company": "Givaudan SA",
+      "checked_at": "2026-09-22T13:44:30Z",
+      "discovered": null
+    },
+    "nancymckinstry": {
+      "name": "Nancy McKinstry",
+      "company": "Wolters Kluwer N.V.",
+      "checked_at": "2026-09-22T13:44:30Z",
+      "discovered": null
+    },
+    "briancassin": {
+      "name": "Brian Cassin",
+      "company": "Experian plc",
+      "checked_at": "2026-09-22T13:44:30Z",
+      "discovered": null
+    },
+    "dominicblakemore": {
+      "name": "Dominic Blakemore",
+      "company": "Compass Group PLC",
+      "checked_at": "2026-09-22T13:44:31Z",
+      "discovered": null
+    },
+    "andyransom": {
+      "name": "Andy Ransom",
+      "company": "Rentokil Initial plc",
+      "checked_at": "2026-09-22T13:44:31Z",
+      "discovered": null
+    },
+    "charleswoodburn": {
+      "name": "Charles Woodburn",
+      "company": "BAE Systems plc",
+      "checked_at": "2026-09-22T13:44:31Z",
+      "discovered": null
+    },
+    "florentmenegaux": {
+      "name": "Florent Menegaux",
+      "company": "Compagnie Générale des Établissements Michelin SCA",
+      "checked_at": "2026-09-22T13:44:31Z",
+      "discovered": null
+    },
+    "pierreanjolras": {
+      "name": "Pierre Anjolras",
+      "company": "VINCI SA",
+      "checked_at": "2026-09-22T13:44:32Z",
+      "discovered": null
+    },
+    "olivierroussat": {
+      "name": "Olivier Roussat",
+      "company": "Bouygues SA",
+      "checked_at": "2026-09-22T13:44:32Z",
+      "discovered": null
+    },
+    "josujonimaz": {
+      "name": "Josu Jon Imaz",
+      "company": "Repsol SA",
+      "checked_at": "2026-09-22T13:44:35Z",
+      "discovered": null
+    },
+    "ignaciogalan": {
+      "name": "Ignacio Galán",
+      "company": "Iberdrola SA",
+      "checked_at": "2026-09-22T13:44:35Z",
+      "discovered": null
+    },
+    "alistairphillipsdavies": {
+      "name": "Alistair Phillips-Davies",
+      "company": "SSE plc",
+      "checked_at": "2026-09-22T13:44:36Z",
+      "discovered": null
+    },
+    "johnpettigrew": {
+      "name": "John Pettigrew",
+      "company": "National Grid plc",
+      "checked_at": "2026-09-22T13:44:36Z",
+      "discovered": null
+    },
+    "chrisoshea": {
+      "name": "Chris O'Shea",
+      "company": "Centrica plc",
+      "checked_at": "2026-09-22T13:44:36Z",
+      "discovered": null
+    },
+    "heikkimalinen": {
+      "name": "Heikki Malinen",
+      "company": "Neste Oyj",
+      "checked_at": "2026-09-22T13:44:36Z",
+      "discovered": null
+    },
+    "markusrauramo": {
+      "name": "Markus Rauramo",
+      "company": "Fortum Oyj",
+      "checked_at": "2026-09-22T13:44:36Z",
+      "discovered": null
+    },
+    "eivindkallevik": {
+      "name": "Eivind Kallevik",
+      "company": "Norsk Hydro ASA",
+      "checked_at": "2026-09-22T13:44:36Z",
+      "discovered": null
+    },
+    "sveintoreholsether": {
+      "name": "Svein Tore Holsether",
+      "company": "Yara International ASA",
+      "checked_at": "2026-09-22T13:44:37Z",
+      "discovered": null
+    },
+    "patrikhofbauer": {
+      "name": "Patrik Hofbauer",
+      "company": "Telia Company AB",
+      "checked_at": "2026-09-22T13:44:37Z",
+      "discovered": null
+    },
+    "christophaeschlimann": {
+      "name": "Christoph Aeschlimann",
+      "company": "Swisscom AG",
+      "checked_at": "2026-09-22T13:44:37Z",
+      "discovered": null
+    },
+    "marcmurtra": {
+      "name": "Marc Murtra",
+      "company": "Telefónica SA",
+      "checked_at": "2026-09-22T13:44:37Z",
+      "discovered": null
+    },
+    "royperticucci": {
+      "name": "Roy Perticucci",
+      "company": "Allegro.eu SA",
+      "checked_at": "2026-09-22T13:44:37Z",
+      "discovered": null
+    },
+    "dimitridevreeze": {
+      "name": "Dimitri de Vreeze",
+      "company": "dsm-firmenich AG",
+      "checked_at": "2026-09-22T13:44:37Z",
+      "discovered": null
+    },
+    "davelewis": {
+      "name": "Dave Lewis",
+      "company": "Diageo plc",
+      "checked_at": "2026-09-22T13:44:38Z",
+      "discovered": null
+    },
+    "haroldgoddijn": {
+      "name": "Harold Goddijn",
+      "company": "TomTom N.V.",
+      "checked_at": "2026-09-22T13:44:38Z",
+      "discovered": null
+    },
+    "andreasberger": {
+      "name": "Andreas Berger",
+      "company": "Swiss Re AG",
+      "checked_at": "2026-09-22T13:44:40Z",
+      "discovered": null
+    },
+    "berndmontag": {
+      "name": "Bernd Montag",
+      "company": "Siemens Healthineers AG",
+      "checked_at": "2026-09-22T13:44:40Z",
+      "discovered": null
+    },
+    "johnelkann": {
+      "name": "John Elkann",
+      "company": "Ferrari N.V. / Stellantis N.V.",
+      "checked_at": "2026-09-22T13:44:40Z",
+      "discovered": null
+    },
+    "pietrolabriola": {
+      "name": "Pietro Labriola",
+      "company": "Telecom Italia S.p.A.",
+      "checked_at": "2026-09-22T13:44:41Z",
+      "discovered": null
+    },
+    "micaeljohansson": {
+      "name": "Micael Johansson",
+      "company": "Saab AB",
+      "checked_at": "2026-09-22T13:44:41Z",
+      "discovered": null
+    },
+    "debracrew": {
+      "name": "Debra Crew",
+      "company": "Diageo plc",
+      "checked_at": "2026-09-22T13:44:44Z",
+      "discovered": null
+    },
+    "jenshlund": {
+      "name": "Jens H. Lund",
+      "company": "DSV A/S",
+      "checked_at": "2026-09-22T13:44:44Z",
+      "discovered": null
+    },
+    "jakobstausholm": {
+      "name": "Jakob Stausholm",
+      "company": "Rio Tinto plc",
+      "checked_at": "2026-09-22T13:44:45Z",
+      "discovered": null
+    },
+    "duncanwanblad": {
+      "name": "Duncan Wanblad",
+      "company": "Anglo American plc",
+      "checked_at": "2026-09-22T13:44:45Z",
+      "discovered": null
+    },
+    "adityamittal": {
+      "name": "Aditya Mittal",
+      "company": "ArcelorMittal S.A.",
+      "checked_at": "2026-09-22T13:44:45Z",
+      "discovered": null
+    },
+    "rolandharings": {
+      "name": "Roland Harings",
+      "company": "Aurubis AG",
+      "checked_at": "2026-09-22T13:44:45Z",
+      "discovered": null
+    },
+    "tomerixon": {
+      "name": "Tom Erixon",
+      "company": "Alfa Laval AB",
+      "checked_at": "2026-09-22T13:44:45Z",
+      "discovered": null
+    },
+    "henrikpoulsen": {
+      "name": "Henrik Poulsen",
+      "company": "Carlsberg A/S",
+      "checked_at": "2026-09-22T13:44:46Z",
+      "discovered": null
+    },
+    "antoniohortaosorio": {
+      "name": "António Horta-Osório",
+      "company": "Lloyds Banking Group plc",
+      "checked_at": "2026-09-22T13:44:57Z",
+      "discovered": null
+    },
+    "srenskou": {
+      "name": "Søren Skou",
+      "company": "A.P. Møller - Mærsk A/S",
+      "checked_at": "2026-09-22T13:44:57Z",
+      "discovered": null
+    },
+    "robertmrskuggla": {
+      "name": "Robert Mærsk Uggla",
+      "company": "A.P. Møller - Mærsk A/S",
+      "checked_at": "2026-09-22T13:44:57Z",
+      "discovered": null
+    },
+    "laurentfreixe": {
+      "name": "Laurent Freixe",
+      "company": "Nestlé S.A.",
+      "checked_at": "2026-09-22T13:44:57Z",
+      "discovered": null
+    },
+    "markschneider": {
+      "name": "Mark Schneider",
+      "company": "Nestlé S.A.",
+      "checked_at": "2026-09-22T13:44:58Z",
+      "discovered": null
+    },
+    "paulhudson": {
+      "name": "Paul Hudson",
+      "company": "Sanofi S.A.",
+      "checked_at": "2026-09-22T13:44:58Z",
+      "discovered": null
+    },
+    "caspervonkoskull": {
+      "name": "Casper von Koskull",
+      "company": "Nordea Bank Abp",
+      "checked_at": "2026-09-22T13:45:00Z",
+      "discovered": null
+    },
+    "feikesijbesma": {
+      "name": "Feike Sijbesma",
+      "company": "dsm-firmenich AG",
+      "checked_at": "2026-09-22T13:45:00Z",
+      "discovered": null
+    },
+    "stefanoschmann": {
+      "name": "Stefan Oschmann",
+      "company": "Merck KGaA",
+      "checked_at": "2026-09-22T13:45:00Z",
+      "discovered": null
+    },
+    "georgeweston": {
+      "name": "George Weston",
+      "company": "Associated British Foods plc",
+      "checked_at": "2026-09-22T13:45:01Z",
+      "discovered": null
+    },
+    "simonwolfson": {
+      "name": "Simon Wolfson",
+      "company": "Next plc",
+      "checked_at": "2026-09-22T13:45:01Z",
+      "discovered": null
+    },
+    "petercowgill": {
+      "name": "Peter Cowgill",
+      "company": "JD Sports Fashion plc",
+      "checked_at": "2026-09-22T13:45:01Z",
+      "discovered": null
+    },
+    "emmawalmsley": {
+      "name": "Emma Walmsley",
+      "company": "GSK plc",
+      "checked_at": "2026-09-22T13:45:01Z",
+      "discovered": null
+    },
+    "stefansturm": {
+      "name": "Stefan Sturm",
+      "company": "Fresenius SE & Co. KGaA",
+      "checked_at": "2026-09-22T13:45:02Z",
+      "discovered": null
+    },
+    "paulbulcke": {
+      "name": "Paul Bulcke",
+      "company": "Nestlé S.A.",
+      "checked_at": "2026-09-22T13:45:02Z",
+      "discovered": null
+    },
+    "annamanz": {
+      "name": "Anna Manz",
+      "company": "Nestlé S.A.",
+      "checked_at": "2026-09-22T13:45:03Z",
+      "discovered": null
+    },
+    "jeandominiquesenard": {
+      "name": "Jean-Dominique Senard",
+      "company": "Renault S.A.",
+      "checked_at": "2026-09-22T13:45:03Z",
+      "discovered": null
+    },
+    "benoitpotier": {
+      "name": "Benoît Potier",
+      "company": "L'Air Liquide S.A.",
+      "checked_at": "2026-09-22T13:45:03Z",
+      "discovered": null
+    },
+    "kasperrrsted": {
+      "name": "Kasper Rørsted",
+      "company": "adidas AG",
+      "checked_at": "2026-09-22T13:45:17Z",
+      "discovered": null
+    },
+    "herberthainer": {
+      "name": "Herbert Hainer",
+      "company": "adidas AG",
+      "checked_at": "2026-09-22T13:45:18Z",
+      "discovered": null
+    },
+    "pierrobertofolgiero": {
+      "name": "Pierroberto Folgiero",
+      "company": "Fincantieri S.p.A.",
+      "checked_at": "2026-09-22T13:45:18Z",
+      "discovered": null
+    },
+    "carlostavares": {
+      "name": "Carlos Tavares",
+      "company": "Stellantis N.V.",
+      "checked_at": "2026-09-22T13:45:18Z",
+      "discovered": null
+    },
+    "bjornrosengren": {
+      "name": "Björn Rosengren",
+      "company": "ABB Ltd",
+      "checked_at": "2026-09-22T13:45:19Z",
+      "discovered": null
+    },
+    "benvanbeurden": {
+      "name": "Ben van Beurden",
+      "company": "Shell plc",
+      "checked_at": "2026-09-22T13:45:19Z",
+      "discovered": null
+    },
+    "bernardlooney": {
+      "name": "Bernard Looney",
+      "company": "BP p.l.c.",
+      "checked_at": "2026-09-22T13:45:19Z",
+      "discovered": null
+    },
+    "dominiqueleroy": {
+      "name": "Dominique Leroy",
+      "company": "Deutsche Telekom AG",
+      "checked_at": "2026-09-22T13:45:19Z",
+      "discovered": null
+    },
+    "guillaumeboutin": {
+      "name": "Guillaume Boutin",
+      "company": "Proximus SA",
+      "checked_at": "2026-09-22T13:45:19Z",
+      "discovered": null
+    },
+    "nickread": {
+      "name": "Nick Read",
+      "company": "Vodafone Group Plc",
+      "checked_at": "2026-09-22T13:45:20Z",
+      "discovered": null
+    },
+    "vittoriocolao": {
+      "name": "Vittorio Colao",
+      "company": "Vodafone Group Plc",
+      "checked_at": "2026-09-22T13:45:20Z",
+      "discovered": null
+    },
+    "stephanerichard": {
+      "name": "Stéphane Richard",
+      "company": "Orange S.A.",
+      "checked_at": "2026-09-22T13:45:20Z",
+      "discovered": null
+    },
+    "johnflint": {
+      "name": "John Flint",
+      "company": "HSBC Holdings plc",
+      "checked_at": "2026-09-22T13:45:20Z",
+      "discovered": null
+    },
+    "tidjanethiam": {
+      "name": "Tidjane Thiam",
+      "company": "Prudential plc / Credit Suisse Group AG",
+      "checked_at": "2026-09-22T13:45:20Z",
+      "discovered": null
+    },
+    "wernerbaumann": {
+      "name": "Werner Baumann",
+      "company": "Bayer AG",
+      "checked_at": "2026-09-22T13:45:21Z",
+      "discovered": null
+    },
+    "marijndekkers": {
+      "name": "Marijn Dekkers",
+      "company": "Bayer AG",
+      "checked_at": "2026-09-22T13:45:21Z",
+      "discovered": null
+    }
+  },
+  "updated_at": "2026-09-22T13:45:21Z",
+  "scan_limit": 400
+}
