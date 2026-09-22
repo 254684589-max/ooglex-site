@@ -53,18 +53,6 @@
   .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
     background-image:linear-gradient(90deg, rgba(0,0,0,.28) 8px, transparent 8px); background-size:26px 100%;
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 55%); mask-image:linear-gradient(180deg, transparent, #000 55%); }
-  /* 起源：16-bit 暗黑风 ARPG */
-  .cv-origin { background:
-    radial-gradient(circle at 28% 25%, rgba(72,168,121,.34), transparent 26%),
-    radial-gradient(circle at 72% 74%, rgba(149,65,194,.24), transparent 30%),
-    linear-gradient(145deg,#10231c 0%,#17213b 52%,#29142e 100%); }
-  .cv-origin::before { content:""; position:absolute; inset:0; z-index:1;
-    background:
-      linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
-      linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px);
-    background-size:18px 18px;
-    -webkit-mask-image:linear-gradient(180deg,#000,transparent 82%);
-    mask-image:linear-gradient(180deg,#000,transparent 82%); }
   /* 暗黑破坏神 IV：地狱火与圣休亚瑞 */
   .cv-diablo { background:radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,#140708 68%,#070506 100%); }
   .cv-diablo::before { content:""; position:absolute; inset:0; z-index:1;
@@ -93,7 +81,6 @@ html[data-theme="ft"] .cover::after, html[data-theme="paper"] .cover::after { ba
 html[data-theme="ft"] .cv-gta, html[data-theme="paper"] .cv-gta { background: linear-gradient(180deg,var(--panel2) 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
 html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: linear-gradient(180deg,var(--panel2) 0%,var(--panel2) 45%,#b2321e 80%,#e8a13a 100%); }
 html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { background: radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,var(--panel2) 72%); }
-html[data-theme="ft"] .cv-origin, html[data-theme="paper"] .cv-origin { background: linear-gradient(145deg,#dce8df 0%,#dfe5f2 52%,#eadcec 100%); }
 /* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
@@ -120,14 +107,6 @@ html[data-theme="ft"] .cv-origin, html[data-theme="paper"] .cv-origin { backgrou
           <h3>红色警戒 2 · 网页版</h3>
           <p>经典 RTS 浏览器在线玩：单人战役、遭遇战、多人联机、天梯排位，内置共和国之辉 MOD。无需下载安装，电脑体验最佳，手机建议横屏。</p>
           <span class="play">🎮 开始游戏 →</span>
-        </div>
-      </a>
-      <a class="game" href="../origin-arpg/" style="--ac:#36a66f;--ac2:#7b4fc9">
-        <div class="cover cv-origin"><span class="ico">⚔️</span></div>
-        <div class="body">
-          <h3>起源 Origin · 开源 ARPG</h3>
-          <p>MIT 开源的 16-bit 像素动作角色扮演游戏：三种职业、实时战斗、技能树、装备战利品、Boss、商店、小地图与触屏操作。单文件网页，点击即可直接游玩。</p>
-          <span class="play">🎮 直接游玩 →</span>
         </div>
       </a>
       <a class="game" href="../diablo/" style="--ac:#b33423;--ac2:#e66d32">
