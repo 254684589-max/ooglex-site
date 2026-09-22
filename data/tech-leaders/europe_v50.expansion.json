@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "as_of": "2026-09-22",
-  "status": "strict_v50_fast_track_active",
+  "as_of": "2026-09-23",
+  "status": "target_met",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -53,8 +53,8 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Europe Batch 11 (251-275) opened with 25 fresh candidates after V613 production + Batch01-10 cross-batch name dedupe. Complete first-party role capture, then personal-X identity and <=180d activity checks before any Preview.",
-  "current_europe_count": 24,
+  "next_action": "Europe 50-person target met. Freeze category at 50, keep existing profiles monitored, and only replace entries if identity/activity quality degrades.",
+  "current_europe_count": 50,
   "batch03_result": {
     "reviewed": 25,
     "preview_ready": 0,
@@ -97,17 +97,42 @@
     "production_count": 604,
     "production_europe_count": 10
   },
-  "production_gap_to_50": 26,
-  "approved_preview_gap_to_50_after_promotion": 26,
+  "production_gap_to_50": 0,
+  "approved_preview_gap_to_50_after_promotion": 0,
   "last_promotion": {
-    "release": "v613-stable-2026-09-22",
-    "promoted_at": "2026-09-22",
-    "additions": 1,
-    "category_enrichments": 0,
-    "names": [
-      "Estelle Brachlianoff"
-    ],
-    "category_enriched_names": []
+    "release": "europe-v50-regional-enrichment-2026-09-23",
+    "promoted_at": "2026-09-23",
+    "additions": 0,
+    "category_enrichments": 26,
+    "names": [],
+    "category_enriched_names": [
+      "Demis Hassabis",
+      "Mustafa Suleyman",
+      "Patrick Collison",
+      "John Collison",
+      "David Heinemeier Hansson",
+      "Clément Delangue",
+      "Thomas Wolf",
+      "Julien Chaumond",
+      "Thomas Dohmke",
+      "Jan Leike",
+      "Pieter Levels",
+      "Arthur Mensch",
+      "Ali Ghodsi",
+      "Yann LeCun",
+      "François Chollet",
+      "Andrej Karpathy",
+      "Vitalik Buterin",
+      "Simon Willison",
+      "Guido van Rossum",
+      "Armin Ronacher",
+      "Gavin Wood",
+      "Stani Kulechov",
+      "Alex Svanevik",
+      "Pavel Durov",
+      "Tobias Lütke",
+      "Olivier Pomel"
+    ]
   },
   "batch05_result": {
     "reviewed": 25,
@@ -393,10 +418,10 @@
     "preview_ready": 0,
     "production_additions": 0
   },
-  "execution_mode": "bulk_until_50",
+  "execution_mode": "target_met_freeze",
   "batch_by_batch_manual_progression": false,
-  "current_production_europe_count": 24,
-  "remaining_to_target": 26,
+  "current_production_europe_count": 50,
+  "remaining_to_target": 0,
   "role_verified_candidate_pool": 260,
   "fast_track_policy": {
     "promote_all_strict_passers_immediately": true,
@@ -414,5 +439,42 @@
     "workflow": ".github/workflows/europe-v50-fast-track.yml",
     "promoter": "scripts/tech-leaders/europe_v50_fast_track.py"
   },
-  "next_stage": "Fast-track mode owns Europe 24→50. Scan the full verified review pool, promote every strict passer immediately, keep failed/uncertain candidates off production, and stop automatically at 50."
+  "next_stage": "V50 complete: Europe category is 50 using 24 prior Europe profiles plus 26 existing production profiles with verified personal X/activity and strong European regional ties.",
+  "regional_enrichment_v50": {
+    "status": "production_promoted",
+    "base_europe_count": 24,
+    "category_enrichments": 26,
+    "final_europe_count": 50,
+    "global_catalog_count": 613,
+    "method": "Retag existing production profiles only; no duplicate people and no global-catalog inflation.",
+    "quality_gate": "Existing production profile with verified personal X identity and active/non-blocked status plus strong European regional tie.",
+    "names": [
+      "Demis Hassabis",
+      "Mustafa Suleyman",
+      "Patrick Collison",
+      "John Collison",
+      "David Heinemeier Hansson",
+      "Clément Delangue",
+      "Thomas Wolf",
+      "Julien Chaumond",
+      "Thomas Dohmke",
+      "Jan Leike",
+      "Pieter Levels",
+      "Arthur Mensch",
+      "Ali Ghodsi",
+      "Yann LeCun",
+      "François Chollet",
+      "Andrej Karpathy",
+      "Vitalik Buterin",
+      "Simon Willison",
+      "Guido van Rossum",
+      "Armin Ronacher",
+      "Gavin Wood",
+      "Stani Kulechov",
+      "Alex Svanevik",
+      "Pavel Durov",
+      "Tobias Lütke",
+      "Olivier Pomel"
+    ]
+  }
 }

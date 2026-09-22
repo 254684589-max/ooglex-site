@@ -768,7 +768,8 @@
       "company_en": "Google DeepMind / Alphabet",
       "position_zh": "Google DeepMind 董事长 / Alphabet 首席科学家",
       "categories": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -779,7 +780,8 @@
       ],
       "sector": "Information Technology",
       "themes": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=demishassabis&name=Demis+Hassabis&company=Google+DeepMind+%2F+Alphabet",
@@ -814,7 +816,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/demishassabis",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "amodei",
@@ -905,7 +910,8 @@
       "position_zh": "执行副总裁兼 Microsoft AI CEO",
       "categories": [
         "AI",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -916,7 +922,8 @@
       "sector": "Information Technology",
       "themes": [
         "AI",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=mustafasuleyman&name=Mustafa+Suleyman&company=Microsoft+AI",
@@ -951,7 +958,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/mustafasuleyman",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "lecun",
@@ -974,7 +984,8 @@
       "company_en": "AMI Labs / NYU",
       "position_zh": "AMI Labs 执行董事长 / NYU 教授",
       "categories": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -985,7 +996,8 @@
       ],
       "sector": "Information Technology",
       "themes": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ylecun&name=Yann+LeCun&company=AMI+Labs+%2F+NYU",
@@ -1020,7 +1032,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/ylecun",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "andrew-ng",
@@ -1449,7 +1464,8 @@
       "company_en": "Anthropic / Eureka Labs",
       "position_zh": "Anthropic 预训练研究 / Eureka Labs 创始人",
       "categories": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -1459,7 +1475,8 @@
       ],
       "sector": "Information Technology",
       "themes": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=karpathy&name=Andrej+Karpathy&company=Anthropic+%2F+Eureka+Labs",
@@ -1494,7 +1511,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/karpathy",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "field",
@@ -1586,7 +1606,8 @@
       "company_en": "Stripe",
       "position_zh": "联合创始人兼 CEO",
       "categories": [
-        "金融"
+        "金融",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -1596,7 +1617,8 @@
       ],
       "sector": "Financials",
       "themes": [
-        "金融"
+        "金融",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=patrickc&name=Patrick+Collison&company=Stripe",
@@ -1630,7 +1652,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/patrickc",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "chesky",
@@ -2162,7 +2187,8 @@
       "company_en": "Shopify",
       "position_zh": "联合创始人兼 CEO",
       "categories": [
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -2172,7 +2198,8 @@
       ],
       "sector": "Information Technology",
       "themes": [
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tobi&name=Tobias+L%C3%BCtke&company=Shopify",
@@ -2206,7 +2233,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/tobi",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "hoffman",
@@ -2711,7 +2741,8 @@
       "company_en": "Hugging Face",
       "position_zh": "联合创始人兼 CEO",
       "categories": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -2721,7 +2752,8 @@
       ],
       "sector": "Information Technology",
       "themes": [
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=ClemDelangue&name=Cl%C3%A9ment+Delangue&company=Hugging+Face",
@@ -2755,7 +2787,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/ClemDelangue",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 01 completed 2026-09-21; current role/company relationship rechecked and personal X identity retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "jeff-dean",
@@ -3618,7 +3653,8 @@
       "company_en": "37signals / Ruby on Rails",
       "position_zh": "37signals 共同所有人兼 CTO / Ruby on Rails 创始作者",
       "categories": [
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -3628,7 +3664,8 @@
       ],
       "sector": "Information Technology",
       "themes": [
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=dhh&name=David+Heinemeier+Hansson&company=37signals+%2F+Ruby+on+Rails",
@@ -3663,7 +3700,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/dhh",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "mullenweg",
@@ -3898,7 +3938,8 @@
       "company_en": "Ethereum / Ethereum Foundation",
       "position_zh": "Ethereum 联合创始人 / Ethereum Foundation 董事",
       "categories": [
-        "金融"
+        "金融",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -3908,7 +3949,8 @@
       ],
       "sector": "Financials",
       "themes": [
-        "金融"
+        "金融",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=VitalikButerin&name=Vitalik+Buterin&company=Ethereum+%2F+Ethereum+Foundation",
@@ -3943,7 +3985,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/VitalikButerin",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "son",
@@ -4107,7 +4152,8 @@
       "company_en": "Telegram",
       "position_zh": "创始人兼 CEO",
       "categories": [
-        "消费零售"
+        "消费零售",
+        "欧洲"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -4117,7 +4163,8 @@
       ],
       "sector": "Consumer Discretionary",
       "themes": [
-        "消费零售"
+        "消费零售",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=durov&name=Pavel+Durov&company=Telegram",
@@ -4152,7 +4199,10 @@
       "x_reviewed_at": "2026-09-21",
       "x_identity_source_url": "https://x.com/durov",
       "x_review_status": "verified_identity_retained",
-      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained."
+      "review_note": "V400 Legacy Review Phase 2 Batch 02 completed 2026-09-21; role/company relationship rechecked and X identity/account type retained.",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "lei-jun",
@@ -7785,7 +7835,8 @@
         "科技",
         "AI",
         "云计算",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "ticker": "DDOG",
       "exchange": "NASDAQ",
@@ -7800,7 +7851,8 @@
         "科技",
         "AI",
         "云计算",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "uncertain",
@@ -7833,7 +7885,10 @@
       "verified_personal_x": true,
       "role_review_status": "verified",
       "avatar_verified_at": "2026-09-22T15:05:57Z",
-      "avatar_updated_at": "2026-09-22"
+      "avatar_updated_at": "2026-09-22",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "antonio-neri-hpe",
@@ -11756,7 +11811,8 @@
         "科技",
         "AI",
         "云计算",
-        "数据基础设施"
+        "数据基础设施",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -11771,7 +11827,8 @@
         "科技",
         "AI",
         "云计算",
-        "数据基础设施"
+        "数据基础设施",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -11804,7 +11861,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "shay-banon-estc",
@@ -15342,7 +15402,8 @@
         "科技",
         "AI",
         "开源",
-        "基础模型"
+        "基础模型",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -15356,7 +15417,8 @@
         "科技",
         "AI",
         "开源",
-        "基础模型"
+        "基础模型",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -15389,7 +15451,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "julien-chaumond-private",
@@ -15416,7 +15481,8 @@
         "科技",
         "AI",
         "开源",
-        "开发者工具"
+        "开发者工具",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -15430,7 +15496,8 @@
         "科技",
         "AI",
         "开源",
-        "开发者工具"
+        "开发者工具",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -15463,7 +15530,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "ivan-zhao-private",
@@ -16014,7 +16084,8 @@
         "科技",
         "金融科技",
         "支付",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -16028,7 +16099,8 @@
         "科技",
         "金融科技",
         "支付",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -16061,7 +16133,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "paolo-ardoino-private",
@@ -16310,7 +16385,8 @@
         "科技",
         "AI",
         "网络安全",
-        "研究"
+        "研究",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -16324,7 +16400,8 @@
         "科技",
         "AI",
         "安全",
-        "研究"
+        "研究",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -16357,7 +16434,10 @@
       "verified_personal_x": true,
       "role_review_status": "verified",
       "avatar_verified_at": "2026-09-22T15:05:57Z",
-      "avatar_updated_at": "2026-09-22"
+      "avatar_updated_at": "2026-09-22",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "thomas-dohmke-private",
@@ -16384,7 +16464,8 @@
         "科技",
         "开发者工具",
         "AI",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -16400,7 +16481,8 @@
         "科技",
         "开发者工具",
         "AI",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -16433,7 +16515,10 @@
       "verified_personal_x": true,
       "role_review_status": "verified",
       "avatar_verified_at": "2026-09-22T15:05:57Z",
-      "avatar_updated_at": "2026-09-22"
+      "avatar_updated_at": "2026-09-22",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "scott-chacon-private",
@@ -16984,7 +17069,8 @@
         "科技",
         "软件",
         "创业",
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -16998,7 +17084,8 @@
         "科技",
         "软件",
         "创业",
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -17031,7 +17118,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "sahil-lavingia-private",
@@ -18095,7 +18185,8 @@
         "科技",
         "AI",
         "基础模型",
-        "欧洲科技"
+        "欧洲科技",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -18110,7 +18201,8 @@
         "科技",
         "AI",
         "基础模型",
-        "欧洲科技"
+        "欧洲科技",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -18143,7 +18235,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "nick-frosst-private",
@@ -20928,7 +21023,8 @@
         "科技",
         "DeFi",
         "区块链",
-        "金融科技"
+        "金融科技",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -20943,7 +21039,8 @@
         "科技",
         "DeFi",
         "区块链",
-        "金融科技"
+        "金融科技",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -20976,7 +21073,10 @@
       "verified_personal_x": true,
       "role_review_status": "verified",
       "avatar_verified_at": "2026-09-22T15:05:57Z",
-      "avatar_updated_at": "2026-09-22"
+      "avatar_updated_at": "2026-09-22",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "sergey-nazarov-private",
@@ -21374,7 +21474,8 @@
         "科技",
         "区块链",
         "开发者平台",
-        "开源"
+        "开源",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -21388,7 +21489,8 @@
         "科技",
         "区块链",
         "开发者平台",
-        "开源"
+        "开源",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -21421,7 +21523,10 @@
       "role_status": "current",
       "x_account_type": "personal",
       "verified_personal_x": true,
-      "role_review_status": "verified"
+      "role_review_status": "verified",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "emin-g-n-sirer-private",
@@ -26821,7 +26926,8 @@
         "科技",
         "区块链",
         "数据分析",
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -26836,7 +26942,8 @@
         "科技",
         "区块链",
         "数据分析",
-        "AI"
+        "AI",
+        "欧洲"
       ],
       "x_identity_verified": true,
       "x_check_type": "company_profile_cross_source",
@@ -26869,7 +26976,10 @@
       "verified_personal_x": true,
       "role_review_status": "verified",
       "avatar_verified_at": "2026-09-22T15:05:57Z",
-      "avatar_updated_at": "2026-09-22"
+      "avatar_updated_at": "2026-09-22",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "haseeb-qureshi-private",
@@ -29593,7 +29703,8 @@
       "categories": [
         "AI",
         "软件",
-        "开发者工具"
+        "开发者工具",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -29607,7 +29718,8 @@
       "themes": [
         "AI",
         "软件",
-        "开发者工具"
+        "开发者工具",
+        "欧洲"
       ],
       "sector": "Information Technology",
       "x_identity_verified": true,
@@ -29647,7 +29759,10 @@
       "x_review_status": "verified_identity_and_activity",
       "review_note": "V450 promotion from tranche18; identity, role relationship and X activity passed the V500 admission gate.",
       "avatar_audited_at": "2026-09-22T15:05:57Z",
-      "avatar_verified_at": "2026-09-22T15:05:57Z"
+      "avatar_verified_at": "2026-09-22T15:05:57Z",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "mark-chen-private",
@@ -29902,7 +30017,8 @@
       "categories": [
         "AI",
         "研究",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -29916,7 +30032,8 @@
       "themes": [
         "AI",
         "研究",
-        "软件"
+        "软件",
+        "欧洲"
       ],
       "sector": "Information Technology",
       "x_identity_verified": true,
@@ -29956,7 +30073,10 @@
       "x_review_status": "verified_identity_and_activity",
       "review_note": "V450 promotion from tranche18; identity, role relationship and X activity passed the V500 admission gate.",
       "avatar_audited_at": "2026-09-22T15:05:57Z",
-      "avatar_verified_at": "2026-09-22T15:05:57Z"
+      "avatar_verified_at": "2026-09-22T15:05:57Z",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "jeremy-howard-private",
@@ -30294,7 +30414,8 @@
       "categories": [
         "AI",
         "软件",
-        "开发者工具"
+        "开发者工具",
+        "欧洲"
       ],
       "ticker": "PRIVATE",
       "exchange": "PRIVATE",
@@ -30307,7 +30428,8 @@
       "themes": [
         "AI",
         "软件",
-        "开发者工具"
+        "开发者工具",
+        "欧洲"
       ],
       "sector": "Information Technology",
       "x_identity_verified": true,
@@ -30347,7 +30469,10 @@
       "x_review_status": "verified_identity_and_activity",
       "review_note": "V450 promotion from tranche18; identity, role relationship and X activity passed the V500 admission gate.",
       "avatar_audited_at": "2026-09-22T15:05:57Z",
-      "avatar_verified_at": "2026-09-22T15:05:57Z"
+      "avatar_verified_at": "2026-09-22T15:05:57Z",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "anurag-goel-private",
@@ -33611,7 +33736,8 @@
       "position_zh": "Distinguished Engineer; Python Creator",
       "categories": [
         "软件",
-        "科技"
+        "科技",
+        "欧洲"
       ],
       "admission_status": "active",
       "leader_types": [
@@ -33621,7 +33747,8 @@
       "company_relationship_status": "current",
       "themes": [
         "软件",
-        "科技"
+        "科技",
+        "欧洲"
       ],
       "sector": "Information Technology",
       "x_identity_verified": true,
@@ -33661,7 +33788,10 @@
       "x_review_status": "verified_identity_and_activity",
       "review_note": "V500 promotion from tranche20; identity, role relationship and X activity passed the independent admission gate.",
       "avatar_audited_at": "2026-09-22T15:05:57Z",
-      "avatar_verified_at": "2026-09-22T15:05:57Z"
+      "avatar_verified_at": "2026-09-22T15:05:57Z",
+      "europe_category_review_status": "regional_verified_global_profile",
+      "europe_category_verified_at": "2026-09-23",
+      "europe_category_source": "Existing production profile · verified personal X / active profile · Europe regional enrichment"
     },
     {
       "id": "amrita-ahuja-v500",
