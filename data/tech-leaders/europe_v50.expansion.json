@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_open_v613_promoted",
+  "status": "phase_open_batch11",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -38,9 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch10_activity_review_1_preview_ready",
-      "last_completed_batch": "09",
-      "next_batch": "10"
+      "status": "batch11_open_role_x_research",
+      "last_completed_batch": "10",
+      "next_batch": "11"
     }
   ],
   "admission_gates": [
@@ -53,7 +53,7 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Europe V613 promoted successfully. Continue Batch 10 unresolved personal-X research and Catherine MacGregor activity verification; build the next Preview only from candidates passing role + personal-X identity + <=180d activity gates.",
+  "next_action": "Europe Batch 11 (251-275) opened with 25 fresh candidates after V613 production + Batch01-10 cross-batch name dedupe. Complete first-party role capture, then personal-X identity and <=180d activity checks before any Preview.",
   "current_europe_count": 24,
   "batch03_result": {
     "reviewed": 25,
@@ -295,5 +295,17 @@
     "production_catalog": "v613-stable-2026-09-22",
     "production_count": 613,
     "production_europe_count": 24
+  },
+  "batch11_open": {
+    "status": "clean_candidate_pool_ready",
+    "candidate_range": "251-275",
+    "candidate_count": 25,
+    "production_duplicates": 0,
+    "prior_review_duplicates": 0,
+    "role_verified_current": 0,
+    "role_verified_legacy": 0,
+    "role_needs_fresh_capture": 25,
+    "personal_x_verified": 0,
+    "preview_ready": 0
   }
 }
