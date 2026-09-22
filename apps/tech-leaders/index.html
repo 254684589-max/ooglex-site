@@ -155,9 +155,8 @@
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
     .index-badge{display:inline-flex;align-items:center;padding:3px 6px;border:1px solid rgba(57,135,229,.35);border-radius:999px;background:rgba(57,135,229,.08);color:var(--blue);font:9px/1.1 var(--mono);white-space:nowrap;margin-right:6px}
-    .openx{display:flex;align-items:center;justify-content:space-between;gap:10px;height:44px;margin-top:18px;padding:0 14px;border:1px solid var(--line);border-radius:11px;background:rgba(57,135,229,.07);color:var(--ink);font-size:12.5px;font-weight:700;transition:border-color .16s ease,background .16s ease,transform .16s ease}
-    .openx:hover{border-color:rgba(57,135,229,.42);background:rgba(57,135,229,.11);transform:translateY(-1px)}
-    .openx .openx-handle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim);font:11px/1 var(--mono);font-weight:500}
+    .profile-x-url{display:inline-block;max-width:100%;margin-top:18px;color:var(--blue);font:11.5px/1.45 var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}
+    .profile-x-url:hover{text-decoration:underline}
     .profile-extra{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
     .profile-extra-title{margin:0 0 10px;color:var(--faint);font:10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
     .profile-extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -468,11 +467,7 @@
             <div class="profile-extra-item"><span>X 账号状态</span><strong id="profile-extra-xstatus">—</strong></div>
           </div>
         </div>
-        <a class="openx" id="profile-open-x" href="#" target="_blank" rel="noopener noreferrer" aria-label="打开本人官方 X 主页">
-          <span>打开官方 X（Twitter）</span>
-          <span class="openx-handle" id="profile-open-x-handle">@— ↗</span>
-        </a>
-        <p class="note" id="profile-note"></p>
+        <a class="profile-x-url" id="profile-open-x" href="#" target="_blank" rel="noopener noreferrer" aria-label="打开本人 X 主页"></a>
       </aside>
 
       <section class="feed">
@@ -629,7 +624,6 @@
   var profileExtraMarket=document.getElementById("profile-extra-market");
   var profileExtraXStatus=document.getElementById("profile-extra-xstatus");
   var profileOpenX=document.getElementById("profile-open-x");
-  var profileOpenXHandle=document.getElementById("profile-open-x-handle");
   var profileRequestSeq=0;
   var freeBtn=document.getElementById("mode-free");
   var apiBtn=document.getElementById("mode-api");
@@ -821,16 +815,16 @@
     profileExtraMarket.textContent=(p.sp500_member||p.sp500_ceo)?"S&P 500":((p.ticker||p.sp500_ticker)?"上市公司":"—");
     profileExtraXStatus.textContent=isConfirmedPersonalX(p)?"本人公开账号":(p.handle?"公开账号":"—");
     if(p.handle){
-      profileOpenX.href="https://x.com/"+encodeURIComponent(String(p.handle).replace(/^@/,""));
-      profileOpenX.style.display="flex";
-      profileOpenXHandle.textContent="@"+String(p.handle).replace(/^@/,"")+" ↗";
-      profileOpenX.setAttribute("aria-label","打开 "+(p.name_zh||p.zh||p.name||p.handle)+" 的官方 X 主页");
+      var xUrl="https://x.com/"+encodeURIComponent(String(p.handle).replace(/^@/,""));
+      profileOpenX.href=xUrl;
+      profileOpenX.textContent=xUrl+" ↗";
+      profileOpenX.style.display="inline-block";
+      profileOpenX.setAttribute("aria-label","打开 "+(p.name_zh||p.zh||p.name||p.handle)+" 的 X 主页");
     }else{
       profileOpenX.removeAttribute("href");
+      profileOpenX.textContent="";
       profileOpenX.style.display="none";
-      profileOpenXHandle.textContent="@—";
     }
-    document.getElementById("profile-note").textContent=p.note||(p.handle?"公开 X 账号。":"临时人物资料。");
     var liveName=(p.name_en||p.name||p.handle||"").toUpperCase();
     document.getElementById("feed-title").textContent=usesNativeFreeFeed(p)
       ? (liveName+" · LIVE FEED")
