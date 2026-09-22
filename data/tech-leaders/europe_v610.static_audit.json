@@ -32,5 +32,11 @@
   "all_additions_activity_qualified": true,
   "all_category_enrichments_identity_verified": true,
   "all_category_enrichments_activity_qualified": true,
-  "runtime_gate": "pending"
+  "runtime_gate": "pass",
+  "runtime_audit": "data/tech-leaders/europe_v610.runtime_audit.json",
+  "runtime_generated_at": "2026-09-22T05:05:39Z",
+  "production_promoted": true,
+  "production_catalog": "v610-stable-2026-09-22",
+  "production_count": 610,
+  "production_europe_count": 17
 }
