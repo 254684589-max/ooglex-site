@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-09-22",
+  "status": "static_preview_validation_pass",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v611-preview.json",
+  "preview_catalog_version": "v611-europe-preview-2026-09-22",
+  "base_catalog": "v610-stable-2026-09-22",
+  "base_count": 610,
+  "preview_count": 611,
+  "approved_additions": 1,
+  "category_enrichments": 4,
+  "target_category": "欧洲",
+  "addition_names": [
+    "Frédéric Arnault"
+  ],
+  "addition_handles": [
+    "f_arnault"
+  ],
+  "category_enrichment_names": [
+    "Daniel Ek",
+    "Sebastian Siemiatkowski",
+    "Rene Haas",
+    "Shay Banon"
+  ],
+  "category_enrichment_handles": [
+    "eldsjal",
+    "klarnaseb",
+    "renehaas237",
+    "kimchy"
+  ],
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "production_handle_conflicts": [],
+  "all_additions_preview_only": true,
+  "all_additions_identity_verified": true,
+  "all_additions_activity_qualified": true,
+  "all_category_enrichments_identity_verified": true,
+  "all_category_enrichments_activity_qualified": true,
+  "activity_audit_generated_at": "2026-09-22T06:02:32Z",
+  "runtime_gate": "pending"
+}
