@@ -2,6 +2,11 @@ name: Europe V50 Fast Track
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/tech-leaders/europe_v50_fast_track.py"
+      - ".github/workflows/europe-v50-fast-track.yml"
   push:
     branches: [main]
     paths:
@@ -58,6 +63,7 @@ jobs:
           PY
 
       - name: Commit qualified promotions and fast-track state
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
