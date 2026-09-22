@@ -1,16 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T03:30:33Z",
+  "generated_at": "2026-09-22T03:30:58Z",
   "preview_catalog_version": "v604-europe-preview-2026-09-22",
   "preview_count": 604,
   "base_count": 599,
   "approved_additions": 5,
-  "static_gate": "hold",
-  "static_blocking_reasons": [
-    "route"
-  ],
+  "static_gate": "pass",
+  "static_blocking_reasons": [],
   "live_catalog_ok": true,
-  "live_catalog_error": "HTTPError",
+  "live_catalog_error": "",
   "live_page_ok": true,
   "live_page_error": "",
   "embed_fallback_available": true,
@@ -99,5 +97,5 @@
       "render_ready": true
     }
   ],
-  "merge_gate": "hold"
+  "merge_gate": "pass"
 }
