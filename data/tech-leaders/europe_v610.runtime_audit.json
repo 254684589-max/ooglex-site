@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T08:48:13Z",
+  "generated_at": "2026-09-22T08:56:03Z",
   "preview_catalog_version": "v610-europe-preview-2026-09-22",
   "preview_count": 610,
   "base_count": 608,
@@ -10,8 +10,8 @@
   "static_blocking_reasons": [],
   "live_catalog_ok": true,
   "live_catalog_error": "",
-  "live_page_ok": false,
-  "live_page_error": "contract",
+  "live_page_ok": true,
+  "live_page_error": "",
   "embed_fallback_available": true,
   "native_ready_count": 2,
   "render_ready_count": 2,
@@ -50,5 +50,5 @@
       "render_ready": true
     }
   ],
-  "merge_gate": "hold"
+  "merge_gate": "pass"
 }
