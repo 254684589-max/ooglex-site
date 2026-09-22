@@ -80,6 +80,7 @@
   }
 
   function riskClass(level){
+    if(level==="数据不足")return "insufficient";
     if(level==="高")return "high";
     if(level==="中高")return "medium-high";
     if(level==="中")return "medium";
@@ -91,23 +92,34 @@
     var riskCat=catByKey("risk")||{items:[]};
     var items=(riskCat.items||[]).slice();
     var lead=a.lead||items[0]||{};
-    var level=a.level||"观察";
-    var status=a.status||"持续监测";
+    var level=a.level||"数据不足";
+    var status=a.status||"等待样本";
+    var cov=a.coverage||{};
+    var reliable=!!a.reliable;
     $("risk-meta").innerHTML=
       "<span class='risk-level "+riskClass(level)+"'><span class='dot'></span>风险等级："+esc(level)+"</span>"+
       "<span>威胁状态："+esc(status)+"</span>"+
-      "<span>监测事件："+items.length+" 条</span>"+
-      "<span>"+esc(DATA.asOf||"")+"</span>";
+      "<span>监测事件："+esc(cov.sampleCount!=null?cov.sampleCount:items.length)+" 条</span>"+
+      "<span>媒体："+esc(cov.sourceCount!=null?cov.sourceCount:"—")+" 家</span>"+
+      "<span>风险流："+esc(cov.streamCount!=null?cov.streamCount:"—")+" / 5</span>"+
+      "<span>"+esc(DATA.asOf||"")+"</span>"+
+      "<div class='risk-quality'>"+
+        "<span class='"+(reliable?"ok":"warn")+"'>"+(reliable?"样本门槛已满足":"样本门槛未满足")+"</span>"+
+        "<span>要求 ≥ "+esc(cov.minItems||8)+" 条</span>"+
+        "<span>≥ "+esc(cov.minSources||3)+" 家媒体</span>"+
+        "<span>≥ "+esc(cov.minStreams||3)+" 个风险流</span>"+
+      "</div>";
 
     $("risk-focus").innerHTML=
       "<div class='risk-kicker'>CURRENT FOCUS</div>"+
-      "<h3>"+esc(lead.brief||lead.title||"暂无核心风险事件")+"</h3>"+
+      "<h3>"+esc(lead.briefZh||lead.brief||lead.title||"暂无核心风险事件")+"</h3>"+
+      (lead.title&&lead.briefZh?"<p>原文标题："+esc(lead.title)+"</p>":"")+
       (lead.source?"<p>"+esc(lead.source)+(relTime(lead.published)?" · "+esc(relTime(lead.published)):"")+"</p>":"")+
       "<div class='risk-why'><b>WHY IT MATTERS</b>"+esc(lead.why||a.why||"持续跟踪事件是否出现升级、扩散或市场传导。")+"</div>";
 
     $("risk-events").innerHTML=(items.length?items.slice(0,6):[]).map(function(it){
       return "<a class='risk-event' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
-        "<span class='bullet'></span><span><div class='risk-event-title'>"+esc(it.brief||it.title||"")+"</div>"+
+        "<span class='bullet'></span><span><div class='risk-event-title'>"+esc(it.briefZh||it.brief||it.title||"")+"</div>"+
         "<div class='risk-event-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+" · 阅读原文 →</div></span></a>";
     }).join("")||"<div class='risk-note'>当前没有新的风险事件。</div>";
 

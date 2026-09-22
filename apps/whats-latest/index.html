@@ -191,6 +191,7 @@
     .risk-level.medium-high{color:#c77e20}.risk-level.medium-high .dot{background:#c77e20}
     .risk-level.medium{color:#b89a34}.risk-level.medium .dot{background:#b89a34}
     .risk-level.low{color:var(--desk-green)}.risk-level.low .dot{background:var(--desk-green)}
+    .risk-level.insufficient{color:var(--desk-muted)}.risk-level.insufficient .dot{background:var(--desk-muted)}
     .risk-focus{padding:16px 0;border-bottom:1px solid var(--desk-line)}
     .risk-focus h3{font-size:21px;line-height:1.35;margin:4px 0 9px}
     .risk-focus p{margin:0;color:var(--desk-muted);font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
@@ -211,6 +212,10 @@
     .risk-dimension-state{font:10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--desk-muted)}
     .risk-dimension-bar{height:5px;border-radius:999px;background:var(--desk-line);overflow:hidden;margin-top:7px}
     .risk-dimension-bar span{display:block;height:100%;border-radius:999px;background:var(--desk-red)}
+    .risk-quality{display:flex;gap:7px;flex-wrap:wrap;margin:11px 0 2px}
+    .risk-quality span{padding:4px 7px;border:1px solid var(--desk-line);border-radius:999px;background:var(--desk-panel);color:var(--desk-muted);font:10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .risk-quality .ok{color:var(--desk-green)}
+    .risk-quality .warn{color:var(--desk-gold)}
     .risk-note{margin-top:13px;color:var(--desk-muted);font:10px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
 
     .main-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px}
@@ -419,6 +424,6 @@
     <footer class="source-foot" id="sources"></footer>
   </main>
 
-  <script src="app.js?v=20260923-riskdesk-v2"></script>
+  <script src="app.js?v=20260923-risk-v2"></script>
 </body>
 </html>

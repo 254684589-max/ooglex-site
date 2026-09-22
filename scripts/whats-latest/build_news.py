@@ -51,6 +51,21 @@ CATS = [
     {"key": "law",      "name": "法律·监管",     "q": 'court OR lawsuit OR sanctions OR regulator OR investigation OR antitrust'},
     {"key": "risk",     "name": "风险",          "q": '"geopolitical risk" OR "market risk" OR "credit risk" OR cyberattack OR "supply chain" OR disruption OR volatility OR default OR sanctions OR "energy security" OR "shipping disruption"'},
 ]
+
+# Risk V2：风险页不再依赖一个宽泛查询，而是五路独立扫描。
+RISK_STREAMS = [
+    {"key": "geopolitics", "name": "地缘冲突", "q": 'war OR conflict OR missile OR attack OR sanctions OR "military escalation" OR blockade OR "shipping security"'},
+    {"key": "market_credit", "name": "市场信用", "q": '"credit risk" OR default OR bankruptcy OR "liquidity stress" OR "market volatility" OR "bank stress" OR "bond selloff"'},
+    {"key": "energy_shipping", "name": "能源运输", "q": '"oil supply" OR "energy security" OR tanker OR pipeline OR shipping OR "supply disruption" OR "freight disruption"'},
+    {"key": "cyber", "name": "网络安全", "q": 'cyberattack OR ransomware OR cyber OR outage OR "data breach" OR "critical infrastructure"'},
+    {"key": "supply_chain", "name": "供应链", "q": '"supply chain" OR "port disruption" OR "logistics disruption" OR "trade route" OR shortage OR bottleneck'},
+]
+RISK_MIN_ITEMS = 8
+RISK_MIN_SOURCES = 3
+RISK_MIN_STREAMS = 3
+RISK_MAX_ITEMS = 15
+RISK_PER_STREAM = 7
+
 CATEGORY_COMPONENTS = {
     "politics": "politics-news",
     "world": "world-news",
@@ -169,6 +184,10 @@ def cat_url(c):
     return f"{GN}?{GN_TAIL}"
 
 
+def query_url(q):
+    return f"{GN}/search?q={quote(q)}&{GN_TAIL}"
+
+
 TOPIC_RULES = [
     (r"标普500|S&P ?500", "标普500"),
     (r"纳斯达克|Nasdaq", "纳斯达克"),
@@ -280,14 +299,23 @@ RISK_DIMENSIONS = [
 ]
 
 
-def build_risk_analysis(cats_out, markets):
+def build_risk_analysis(cats_out, markets, risk_meta=None):
     risk_cat = next((c for c in cats_out if c.get("key") == "risk"), {"items": []})
     items = list(risk_cat.get("items") or [])
+    risk_meta = risk_meta or {}
     text = " ".join((it.get("title") or "") + " " + (it.get("summary") or "") for it in items)
 
-    # 规则化等级：只根据可观察到的事件措辞与市场方向判定。
-    high_re = re.compile(r"attack|strike|missile|invasion|war|cyberattack|default|blockade|explosion|shutdown", re.I)
-    elevated_re = re.compile(r"sanction|disruption|crisis|volatility|credit risk|supply chain|energy security|threat|tension", re.I)
+    sources = sorted({it.get("source") for it in items if it.get("source")})
+    streams = sorted({it.get("riskStream") for it in items if it.get("riskStream")})
+    sample_count = len(items)
+    reliable = (
+        sample_count >= RISK_MIN_ITEMS
+        and len(sources) >= RISK_MIN_SOURCES
+        and len(streams) >= RISK_MIN_STREAMS
+    )
+
+    high_re = re.compile(r"attack|strike|missile|invasion|war|cyberattack|ransomware|default|blockade|explosion|shutdown", re.I)
+    elevated_re = re.compile(r"sanction|disruption|crisis|volatility|credit risk|supply chain|energy security|threat|tension|shortage|outage", re.I)
     high_hits = len(high_re.findall(text))
     elevated_hits = len(elevated_re.findall(text))
 
@@ -301,11 +329,13 @@ def build_risk_analysis(cats_out, markets):
         if m.get("name") in ("布伦特原油", "WTI原油") and abs(pct) >= 4:
             market_stress += 1
 
-    if high_hits >= 2 or (high_hits >= 1 and market_stress):
+    if not reliable:
+        level, status = "数据不足", f"等待更多样本（{sample_count}/{RISK_MIN_ITEMS}）"
+    elif high_hits >= 4 or (high_hits >= 2 and market_stress):
         level, status = "高", "升级"
-    elif high_hits >= 1 or elevated_hits >= 3 or market_stress >= 2:
+    elif high_hits >= 2 or elevated_hits >= 6 or market_stress >= 2:
         level, status = "中高", "活跃"
-    elif elevated_hits >= 1 or items:
+    elif elevated_hits >= 2 or market_stress:
         level, status = "中", "持续监测"
     else:
         level, status = "低", "平稳"
@@ -313,17 +343,20 @@ def build_risk_analysis(cats_out, markets):
     dims = []
     for name, pattern in RISK_DIMENSIONS:
         count = len(re.findall(pattern, text, re.I))
-        score = min(100, 20 + count * 20) if count else 10
-        state = "高" if score >= 80 else ("中高" if score >= 60 else ("中" if score >= 35 else "低"))
-        dims.append({"name": name, "score": score, "state": state, "matches": count})
+        raw_score = min(100, 20 + count * 12) if count else 10
+        if not reliable:
+            state = "样本不足"
+        else:
+            state = "高" if raw_score >= 80 else ("中高" if raw_score >= 60 else ("中" if raw_score >= 35 else "低"))
+        dims.append({"name": name, "score": raw_score, "state": state, "matches": count})
 
-    lead = max(items, key=lambda x: x.get("published") or 0) if items else None
+    lead = max(items, key=risk_event_score) if items else None
     follow = []
     future_re = re.compile(r"will|could|may|plan|expected|next|meeting|decision|sanction|deadline|election", re.I)
-    for it in items:
+    for it in sorted(items, key=risk_event_score, reverse=True):
         if future_re.search(it.get("title") or ""):
             follow.append({
-                "text": it.get("brief") or it.get("title") or "",
+                "text": it.get("briefZh") or it.get("brief") or it.get("title") or "",
                 "source": it.get("source") or "",
             })
         if len(follow) >= 4:
@@ -331,17 +364,34 @@ def build_risk_analysis(cats_out, markets):
     if not follow:
         follow = [
             {"text": "监测现有事件是否出现升级、扩散或跨市场传导。", "source": "Ooglex rules"},
-            {"text": "关注能源、信用利差与主要股指是否出现同步压力。", "source": "Ooglex rules"},
+            {"text": "关注能源、信用利差、主要股指与关键基础设施是否出现同步压力。", "source": "Ooglex rules"},
         ]
 
+    coverage = {
+        "sampleCount": sample_count,
+        "sourceCount": len(sources),
+        "streamCount": len(streams),
+        "sources": sources,
+        "streams": streams,
+        "minItems": RISK_MIN_ITEMS,
+        "minSources": RISK_MIN_SOURCES,
+        "minStreams": RISK_MIN_STREAMS,
+        "reliable": reliable,
+        "streamCounts": risk_meta.get("streamCounts", {}),
+        "candidateCount": risk_meta.get("candidateCount", sample_count),
+    }
+
     return {
+        "version": "2.0",
         "level": level,
         "status": status,
+        "reliable": reliable,
         "lead": lead,
         "why": (lead or {}).get("why") if lead else "",
         "dimensions": dims,
         "followUp": follow,
-        "method": "rule-based",
+        "coverage": coverage,
+        "method": "rule-based-multistream",
     }
 
 def parse_entry(e):
@@ -383,6 +433,89 @@ def fetch_feed(url, n=PER_CAT):
         if len(out) >= n:
             break
     return out
+
+
+def risk_event_score(item):
+    """风险事件排序：事件强度优先，其次时效；不用于预测，只用于版面排序。"""
+    text = f"{item.get('title') or ''} {item.get('summary') or ''}"
+    score = float(item.get("published") or 0) / 3600
+    severe = re.compile(r"attack|strike|missile|invasion|war|cyberattack|ransomware|default|bankruptcy|blockade|explosion|shutdown", re.I)
+    elevated = re.compile(r"sanction|disruption|crisis|volatility|liquidity|shortage|outage|threat|tension|bottleneck", re.I)
+    score += len(severe.findall(text)) * 30
+    score += len(elevated.findall(text)) * 12
+    return score
+
+
+def risk_brief_zh(item):
+    """不做逐句机器翻译；基于已识别风险流生成保守的中文风险摘要，英文原标题保留作核验。"""
+    stream = item.get("riskStreamName") or "风险"
+    title = item.get("title") or ""
+    patterns = [
+        (r"sanction", "制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。"),
+        (r"attack|strike|missile|war|conflict|invasion", "出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。"),
+        (r"default|bankruptcy|credit risk|liquidity|bank stress", "信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。"),
+        (r"oil|pipeline|tanker|shipping|freight|energy", "能源或运输链条出现风险信号，需关注供应、运价与通胀预期变化。"),
+        (r"cyber|ransomware|data breach|outage", "网络安全或关键系统运行风险上升，需关注服务中断、数据与基础设施影响。"),
+        (r"supply chain|shortage|bottleneck|port|logistics", "供应链韧性或物流瓶颈受到关注，需观察成本、交付与跨行业传导。"),
+    ]
+    for pattern, text in patterns:
+        if re.search(pattern, title, re.I):
+            return f"{stream}：{text}"
+    return f"{stream}：该报道涉及潜在风险事件，需结合原文与后续发展持续核验。"
+
+
+def fetch_risk_v2():
+    """
+    五路独立扫描。与普通分类使用独立去重集合，避免同一篇报道先被国际/市场板块
+    消耗后导致风险页样本枯竭。
+    """
+    candidates = []
+    stream_counts = {}
+    errors = []
+    for stream in RISK_STREAMS:
+        got = 0
+        try:
+            for it in fetch_feed(query_url(stream["q"]), n=RISK_PER_STREAM):
+                it = dict(it)
+                it["riskStream"] = stream["key"]
+                it["riskStreamName"] = stream["name"]
+                topic, brief = make_brief(it["title"], "风险", it.get("summary") or "")
+                it["topic"] = stream["name"]
+                it["brief"] = brief
+                it["briefZh"] = risk_brief_zh(it)
+                it["why"] = why_it_matters(it["title"], "risk")
+                it["categoryKey"] = "risk"
+                candidates.append(it)
+                got += 1
+        except Exception as exc:
+            errors.append(f"{stream['key']}:{str(exc)[:80]}")
+        stream_counts[stream["key"]] = got
+        time.sleep(0.25)
+
+    # 风险流内部近重复去重；不与其他新闻板块共享 seen/sigs。
+    candidates.sort(key=risk_event_score, reverse=True)
+    chosen = []
+    sigs_local = []
+    per_source = {}
+    for it in candidates:
+        sig = title_sig(it["title"])
+        if any(len(sig & old) / max(1, min(len(sig), len(old))) >= 0.5 for old in sigs_local):
+            continue
+        # 单一媒体最多占 3 条，避免风险结论被一个来源支配。
+        src = it.get("source") or ""
+        if per_source.get(src, 0) >= 3:
+            continue
+        chosen.append(it)
+        sigs_local.append(sig)
+        per_source[src] = per_source.get(src, 0) + 1
+        if len(chosen) >= RISK_MAX_ITEMS:
+            break
+
+    return chosen, {
+        "streamCounts": stream_counts,
+        "errors": errors,
+        "candidateCount": len(candidates),
+    }
 
 
 def fetch_quote(sym):
@@ -441,22 +574,26 @@ def build():
     seen, sigs, cats_out, total = set(), [], [], 0
     modes = {}
     fresh_categories = 0
+    risk_meta = {}
     for c in CATS:
         items = []
         try:
-            for it in fetch_feed(cat_url(c)):
-                if it["link"] in seen:
-                    continue
-                s = title_sig(it["title"])
-                if any(len(s & k) / max(1, min(len(s), len(k))) >= 0.5 for k in sigs):
-                    continue   # 同一事件多家媒体报道，只保留一条
-                seen.add(it["link"]); sigs.append(s)
-                topic, brief = make_brief(it["title"], c["name"], it.get("summary") or "")
-                it["topic"] = topic
-                it["brief"] = brief
-                it["why"] = why_it_matters(it["title"], c["key"])
-                it["categoryKey"] = c["key"]
-                items.append(it)
+            if c["key"] == "risk":
+                items, risk_meta = fetch_risk_v2()
+            else:
+                for it in fetch_feed(cat_url(c)):
+                    if it["link"] in seen:
+                        continue
+                    s = title_sig(it["title"])
+                    if any(len(s & k) / max(1, min(len(s), len(k))) >= 0.5 for k in sigs):
+                        continue   # 同一事件多家媒体报道，只保留一条
+                    seen.add(it["link"]); sigs.append(s)
+                    topic, brief = make_brief(it["title"], c["name"], it.get("summary") or "")
+                    it["topic"] = topic
+                    it["brief"] = brief
+                    it["why"] = why_it_matters(it["title"], c["key"])
+                    it["categoryKey"] = c["key"]
+                    items.append(it)
         except Exception as e:
             print(f"[..] 板块 {c['name']} 抓取失败：{str(e)[:60]}")
         if items:
@@ -590,7 +727,7 @@ def build():
     future_re = re.compile(r"将|计划|预计|拟|即将|明日|下周|发布|公布|举行|会议|财报|决议")
     watch = [it for it in ranked if future_re.search(it.get("title") or "")][:3]
 
-    risk_analysis = build_risk_analysis(cats_out, markets)
+    risk_analysis = build_risk_analysis(cats_out, markets, risk_meta)
 
     data = {
         "updatedAt": attempted_at,
@@ -610,7 +747,8 @@ def build():
         "markets": markets,
         "note": ("新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；"
                  "本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，"
-                 "每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"),
+                 "每条均链接回原文核实。风险页采用五路独立扫描，并在样本、来源和风险维度达到最低覆盖前显示‘数据不足’。"
+                 "市场快照来自 Yahoo Finance。仅供参考。"),
     }
     health = make_health(
         "whats-latest",

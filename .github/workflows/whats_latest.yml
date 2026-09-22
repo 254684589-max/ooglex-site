@@ -1,6 +1,6 @@
 name: What's Latest
 
-# 刷新「最新消息是什么？」：聚合 Google News 中文要闻 + Yahoo 市场快照 → 写 apps/whats-latest/data.json。
+# 刷新「最新消息是什么？」：聚合 Google News 全球主流媒体 + Yahoo 市场快照 → 写 apps/whats-latest/data.json。
 # 新闻时效性强，故每 6 小时跑一次（仍属每日多次更新）。数据源均免登录，无需任何密钥。
 on:
   workflow_dispatch:
