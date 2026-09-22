@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-构建「最新消息是什么？」资讯应用的数据：聚合权威公开新闻源（Google News 中文 RSS，
+构建「最新消息是什么？」资讯应用的数据：聚合全球主流新闻源（Google News 英文 RSS + 来源白名单，
 逐条链接回原文）按板块归类，并附一条实时市场快照（Yahoo Finance），写入
 apps/whats-latest/data.json，供静态页面渲染。
 
