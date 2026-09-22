@@ -38,9 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch05_promoted_continue_batch06",
-      "last_completed_batch": "05",
-      "next_batch": "06"
+      "status": "batch06_promoted_continue_batch07",
+      "last_completed_batch": "06",
+      "next_batch": "07"
     }
   ],
   "admission_gates": [
@@ -53,8 +53,8 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Open Europe Batch 06 (126-150) and continue scanning until 36 additional people pass role + personal-X identity + activity + avatar/feed/runtime gates. Do not lower the gate to fill the 50-person target.",
-  "current_europe_count": 14,
+  "next_action": "Open Europe Batch 07 (151-175) and continue scanning until 33 additional people qualify for 欧洲 after role + personal-X identity + activity + dedupe + avatar/feed/runtime gates. Existing production people may be Europe-category-enriched instead of duplicated.",
+  "current_europe_count": 17,
   "batch03_result": {
     "reviewed": 25,
     "preview_ready": 0,
@@ -102,17 +102,19 @@
     "production_count": 604,
     "production_europe_count": 10
   },
-  "production_gap_to_50": 36,
-  "approved_preview_gap_to_50_after_promotion": 36,
+  "production_gap_to_50": 33,
+  "approved_preview_gap_to_50_after_promotion": 33,
   "last_promotion": {
-    "release": "v608-stable-2026-09-22",
+    "release": "v610-stable-2026-09-22",
     "promoted_at": "2026-09-22",
-    "additions": 4,
+    "additions": 2,
+    "category_enrichments": 1,
     "names": [
-      "Octave Klaba",
-      "Fredrik Wester",
-      "Antoine Arnault",
-      "Alexandre Arnault"
+      "Rafał Brzoska",
+      "Sam Lake"
+    ],
+    "category_enriched_names": [
+      "Kristo Kaarmann"
     ]
   },
   "batch05_result": {
@@ -145,5 +147,45 @@
     "production_catalog": "v608-stable-2026-09-22",
     "production_count": 608,
     "production_europe_count": 14
+  },
+  "batch06_result": {
+    "reviewed": 25,
+    "new_people_promoted": 2,
+    "existing_production_category_enriched": 1,
+    "promoted_names": [
+      "Rafał Brzoska",
+      "Sam Lake"
+    ],
+    "category_enriched_names": [
+      "Kristo Kaarmann"
+    ],
+    "manual_review_activity": [
+      "Stuart Machin"
+    ],
+    "hold_managed_or_policy": [
+      "Patrice Caine"
+    ],
+    "hold_inactive": [
+      "Gordon Sanghera"
+    ],
+    "unresolved_x_or_role_research": 19
+  },
+  "v610_preview": {
+    "catalog_version": "v610-europe-preview-2026-09-22",
+    "base_count": 608,
+    "approved_additions": 2,
+    "category_enrichments": 1,
+    "preview_count": 610,
+    "static_gate": "pass",
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "native_ready_count": 2,
+    "render_ready_count": 2,
+    "render_blocked_count": 0,
+    "merge_gate": "pass",
+    "production_promoted": true,
+    "production_catalog": "v610-stable-2026-09-22",
+    "production_count": 610,
+    "production_europe_count": 17
   }
 }
