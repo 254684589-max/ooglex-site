@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "batch03_x_identity_activity_first_pass_complete",
+  "status": "activity_audit_reconciled_2026-09-22",
   "tranche_type": "europe_listed_review_batch_03",
   "batch_range": "51-75",
   "phase": "Europe 5 -> 50",
@@ -13,11 +13,14 @@
   "production_file_untouched": "apps/tech-leaders/leaders.json",
   "summary": {
     "batch_count": 25,
-    "role_verified_current": 25,
+    "role_verified_or_legacy": 25,
+    "role_needs_fresh_capture": 0,
     "preview_ready": 0,
     "identity_verified_activity_pending": 1,
+    "manual_review_activity": 0,
     "hold_inactive": 1,
     "manual_review_no_verified_x": 23,
+    "needs_x_research": 0,
     "production_additions": 0
   },
   "policy": {
@@ -88,7 +91,11 @@
       "production_duplicate_check": "not_found_in_v599_production_by_exact_name",
       "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Crunchbase currently links Christoph Jurecka's profile to @ChristophJ32219. Direct recent X activity was not independently confirmed, so this record remains pending and is not Preview-ready.",
       "x_identity_support_url": "https://www.crunchbase.com/person/christoph-jurecka",
-      "x_reviewed_at": "2026-09-22"
+      "x_reviewed_at": "2026-09-22",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": null,
+      "x_last_activity_at": null,
+      "x_activity_age_days": null
     },
     {
       "batch_rank": 54,
@@ -150,7 +157,11 @@
       "notes": "Current leadership role captured from an official company source. Personal X ownership and recent activity still require direct verification before Preview admission. Schneider Electric's own historical page embeds @olblum and the current public profile identifies him as Schneider Electric CEO, but the visible timeline is roughly four years stale; held out under the activity gate.",
       "x_identity_support_url": "https://www.se.com/ww/en/about-us/newsroom/news/press-releases/Schneider-Electric-included-in-the-Top-50-for-The-Diversity-Leaders-2020-ranking-held-by-the-Financial-Times-5dd40ffa8217ef38bc5ff78f/",
       "x_activity_source_url": "https://www.sotwe.com/olblum",
-      "x_reviewed_at": "2026-09-22"
+      "x_reviewed_at": "2026-09-22",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2022-11-28T11:14:23Z",
+      "x_activity_age_days": 1393.67
     },
     {
       "batch_rank": 57,
