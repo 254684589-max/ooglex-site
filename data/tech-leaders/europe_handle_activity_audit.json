@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T03:23:47Z",
+  "generated_at": "2026-09-22T03:32:04Z",
   "production_count": 599,
   "audited_handle_count": 19,
   "pass_le_180d": 5,
@@ -13,7 +13,7 @@
       "name": "Christian Klein",
       "company": "SAP SE",
       "handle": "ChrstnKlein",
-      "current_review_status": "identity_verified_activity_pending",
+      "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.58,
+      "age_days": 924.59,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.62,
+      "age_days": 1554.63,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -58,13 +58,13 @@
       "name": "Roland Busch",
       "company": "Siemens AG",
       "handle": "BuschRo",
-      "current_review_status": "hold_inactive",
+      "current_review_status": "preview_ready",
       "x_identity_status": "verified_personal_x",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-03T12:02:49Z",
-      "age_days": 18.64,
+      "age_days": 18.65,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -73,7 +73,7 @@
       "name": "Belén Garijo",
       "company": "Sanofi SA",
       "handle": "Belen_Garijo",
-      "current_review_status": "needs_x_research",
+      "current_review_status": "identity_verified_activity_pending",
       "x_identity_status": "historical_handle_needs_current_verification",
       "http_status": null,
       "source": "",
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-07T16:14:57Z",
-      "age_days": 14.46,
+      "age_days": 14.47,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 316.7,
+      "age_days": 316.71,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.67,
+      "age_days": 1393.68,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3294.68,
+      "age_days": 3294.69,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-10T08:48:57Z",
-      "age_days": 11.77,
+      "age_days": 11.78,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-15T08:53:09Z",
-      "age_days": 6.77,
+      "age_days": 6.78,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -214,7 +214,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.43,
+      "age_days": 215.44,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -229,7 +229,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.37,
+      "age_days": 3374.38,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-03-25T16:49:34Z",
-      "age_days": 1641.44,
+      "age_days": 1641.45,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -289,7 +289,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-15T16:02:38Z",
-      "age_days": 6.47,
+      "age_days": 6.48,
       "activity_gate": "pass_le_180d",
       "error": ""
     }
