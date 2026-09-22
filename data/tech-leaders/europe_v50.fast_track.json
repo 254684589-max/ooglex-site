@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "mode": "strict_fast_track_to_50",
+  "target_europe_count": 50,
+  "production_count": 613,
+  "europe_count_before": 24,
+  "europe_count_after": 24,
+  "remaining_to_target": 26,
+  "promoted_count": 0,
+  "retagged_count": 0,
+  "promoted": [],
+  "retagged": [],
+  "blocked_summary": {},
+  "role_verified_candidate_pool": 260,
+  "typeahead_scanned_this_run": 0,
+  "strict_gates": [
+    "verified listed-company role",
+    "verified personal X identity",
+    "direct X activity <=180d",
+    "production name/handle dedupe",
+    "avatar endpoint ready",
+    "native public feed ready and author-safe"
+  ],
+  "quota_fill_disabled": true,
+  "status": "fast_track_active",
+  "generated_at": "2026-09-22T13:43:00Z"
+}
