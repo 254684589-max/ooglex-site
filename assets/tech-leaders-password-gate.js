@@ -1,11 +1,9 @@
 (function () {
   "use strict";
 
-  var SESSION_KEY = "ooglex.tech-leaders.access.JB2e";
-  var SALT_B64 = "RA0HH2UArl2Dc3wjsz7M3A==";
-  var HASH_B64 = "JB2e+zsOwsmJskntOW8Y42DKqA5IfXxbVE3oZVOzlSE=";
-  var ITERATIONS = 250000;
-
+  var API_BASE = "https://pro-api.ooglex.com";
+  var SESSION_KEY = "ooglex.tech-leaders.server-token.v1";
+  var token = "";
   var resolveGate;
   var gatePromise = new Promise(function (resolve) { resolveGate = resolve; });
   var resolved = false;
@@ -16,45 +14,44 @@
     resolveGate(!!value);
   }
 
-  function sessionGranted() {
-    try { return sessionStorage.getItem(SESSION_KEY) === "1"; }
-    catch (_) { return false; }
+  function readSessionToken() {
+    try { return sessionStorage.getItem(SESSION_KEY) || ""; }
+    catch (_) { return ""; }
   }
 
-  function rememberSession() {
-    try { sessionStorage.setItem(SESSION_KEY, "1"); } catch (_) {}
+  function rememberToken(value) {
+    token = String(value || "");
+    try {
+      if (token) sessionStorage.setItem(SESSION_KEY, token);
+      else sessionStorage.removeItem(SESSION_KEY);
+    } catch (_) {}
   }
 
-  function fromBase64(value) {
-    var raw = atob(value);
-    var out = new Uint8Array(raw.length);
-    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  function authHeaders(headers) {
+    var out = new Headers(headers || {});
+    if (token) out.set("Authorization", "Bearer " + token);
     return out;
   }
 
-  function equalBytes(a, b) {
-    if (!a || !b || a.length !== b.length) return false;
-    var diff = 0;
-    for (var i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
-    return diff === 0;
+  async function protectedFetch(input, init) {
+    var options = Object.assign({}, init || {});
+    options.headers = authHeaders(options.headers);
+    var response = await fetch(input, options);
+    if (response.status === 401 && String(input).indexOf("/v1/tech-leaders/") >= 0) {
+      rememberToken("");
+    }
+    return response;
   }
 
-  async function verifyPassword(value) {
-    if (!window.crypto || !window.crypto.subtle || !window.TextEncoder) return false;
-    var material = await crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(String(value || "")),
-      "PBKDF2",
-      false,
-      ["deriveBits"]
-    );
-    var bits = await crypto.subtle.deriveBits({
-      name: "PBKDF2",
-      salt: fromBase64(SALT_B64),
-      iterations: ITERATIONS,
-      hash: "SHA-256"
-    }, material, 256);
-    return equalBytes(new Uint8Array(bits), fromBase64(HASH_B64));
+  async function validateToken(value) {
+    token = String(value || "");
+    if (!token) return false;
+    try {
+      var response = await protectedFetch(API_BASE + "/v1/tech-leaders/session", { cache: "no-store" });
+      return response.ok;
+    } catch (_) {
+      return false;
+    }
   }
 
   function addStyle() {
@@ -79,6 +76,12 @@
     document.head.appendChild(style);
   }
 
+  function unlockUi(root) {
+    document.documentElement.classList.remove("ooglex-tech-locked");
+    if (root) root.remove();
+    finish(true);
+  }
+
   function mountGate() {
     if (document.getElementById("ooglex-tech-gate")) return;
     var root = document.createElement("div");
@@ -87,7 +90,7 @@
       '<section class="gate-card" role="dialog" aria-modal="true" aria-labelledby="ooglex-tech-gate-title">' +
         '<div class="gate-kicker">OOGLEX · PRIVATE COLUMN</div>' +
         '<h1 id="ooglex-tech-gate-title">科技领袖实时动态流</h1>' +
-        '<p>该专栏已设置访问密码。请输入密码后继续。</p>' +
+        '<p>该专栏由服务器验证访问密码。密码通过后，本次浏览器会话内保持解锁。</p>' +
         '<form class="gate-row" id="ooglex-tech-gate-form">' +
           '<input id="ooglex-tech-gate-input" type="password" inputmode="numeric" autocomplete="current-password" maxlength="64" placeholder="请输入访问密码" aria-label="访问密码">' +
           '<button id="ooglex-tech-gate-submit" type="submit">进入</button>' +
@@ -108,18 +111,25 @@
       submit.disabled = true;
       submit.textContent = "验证中…";
       try {
-        var ok = await verifyPassword(input.value);
-        if (!ok) {
-          error.textContent = "密码错误，请重试。";
+        var response = await fetch(API_BASE + "/v1/tech-leaders/auth", {
+          method: "POST",
+          cache: "no-store",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ password: input.value })
+        });
+        var data = {};
+        try { data = await response.json(); } catch (_) {}
+        if (!response.ok || !data.token) {
+          if (response.status === 429) error.textContent = "尝试次数过多，请稍后再试。";
+          else if (response.status === 503) error.textContent = "服务器门禁正在部署，请稍后刷新。";
+          else error.textContent = "密码错误，请重试。";
           input.select();
           return;
         }
-        rememberSession();
-        document.documentElement.classList.remove("ooglex-tech-locked");
-        root.remove();
-        finish(true);
+        rememberToken(data.token);
+        unlockUi(root);
       } catch (_) {
-        error.textContent = "当前浏览器无法完成密码验证。";
+        error.textContent = "暂时无法连接服务器门禁，请稍后重试。";
       } finally {
         submit.disabled = false;
         submit.textContent = "进入";
@@ -131,23 +141,32 @@
 
   window.OoglexTechLeadersGate = {
     wait: function () { return gatePromise; },
+    token: function () { return token; },
+    fetch: protectedFetch,
     lock: function () {
-      try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
+      rememberToken("");
       location.reload();
     }
   };
 
   addStyle();
+  document.documentElement.classList.add("ooglex-tech-locked");
 
-  if (sessionGranted()) {
-    finish(true);
-    return;
+  async function startGate() {
+    var saved = readSessionToken();
+    if (saved && await validateToken(saved)) {
+      rememberToken(saved);
+      document.documentElement.classList.remove("ooglex-tech-locked");
+      finish(true);
+      return;
+    }
+    rememberToken("");
+    mountGate();
   }
 
-  document.documentElement.classList.add("ooglex-tech-locked");
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountGate, { once: true });
+    document.addEventListener("DOMContentLoaded", startGate, { once: true });
   } else {
-    mountGate();
+    startGate();
   }
 })();
