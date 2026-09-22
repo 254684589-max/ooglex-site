@@ -47,9 +47,9 @@
       "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/kaarmann",
       "x_activity_status": "pending_direct_activity_audit",
-      "review_status": "identity_verified_activity_pending",
-      "production_duplicate_check": "not_found_in_prior_europe_batches_by_exact_name",
-      "notes": "Wise lists Käärmann as Co-founder and CEO. Public X mirrors identify @kaarmann as his personal founder/CEO account with recent 2026 activity; final <=180d gate is delegated to the site activity audit."
+      "review_status": "existing_production_activity_reaudit_pending",
+      "production_duplicate_check": "existing_production_match_by_name_and_handle_retag_only",
+      "notes": "Wise lists Käärmann as Co-founder and CEO. Public X mirrors identify @kaarmann as his personal founder/CEO account with recent 2026 activity; final <=180d gate is delegated to the site activity audit. Existing production record `kristo-kaarmann-v500` will be category-enriched rather than duplicated if the fresh activity gate passes."
     },
     {
       "batch_rank": 127,
@@ -508,7 +508,7 @@
       "notes": "High-priority Munich Re leadership candidate; fresh first-party role and personal-X verification required."
     }
   ],
-  "next_stage": "Run the Europe handle activity audit for all resolved Batch 06 handles. Only records with current/allowed legacy role evidence, verified personal-X ownership, <=180d activity and clean production dedupe may advance to the next Europe Preview; managed/company-run or unresolved accounts remain out.",
+  "next_stage": "Run the refreshed Batch 06 activity audit including existing-production handles. If Kristo Käärmann passes, enrich his existing production record with 欧洲 rather than adding a duplicate. Rafał Brzoska and Sam Lake may advance as new people only if their role/identity/activity/dedupe gates remain clean.",
   "review_method": {
     "candidate_source": "New names beyond Europe Batches 01-05, prioritising European listed-company CEOs/founders/core figures.",
     "initial_role_sources": "Current first-party/recent sources captured where available; unresolved roles explicitly remain needs_fresh_capture rather than being assumed current.",
