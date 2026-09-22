@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T12:59:44Z",
+  "generated_at": "2026-09-22T13:04:15Z",
   "preview_catalog_version": "v528-wall-street-preview-2026-09-22",
   "preview_count": 528,
   "base_count": 500,
@@ -55,7 +55,7 @@
       "feed_error_body": "",
       "feed_source": "fxtwitter_public_api_fast",
       "post_count": 3,
-      "newest_post_at": "Fri Sep 18 22:28:11 +0000 2026",
+      "newest_post_at": "Tue Sep 22 12:54:09 +0000 2026",
       "ready": true,
       "blocking_reasons": []
     },
