@@ -1,19 +1,19 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-09-22T16:56:32Z",
+  "generatedAt": "2026-09-22T17:19:32Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-22T16:56:32Z",
-  "lastSuccessfulAt": "2026-09-22T16:56:32Z",
+  "lastAttemptAt": "2026-09-22T17:19:32Z",
+  "lastSuccessfulAt": "2026-09-22T17:19:32Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-22T16:56:32Z",
+  "publishedSnapshotAt": "2026-09-22T17:19:32Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
-    "expectedComponents": 6,
-    "publishedComponents": 6,
-    "refreshedComponents": 6,
+    "expectedComponents": 7,
+    "publishedComponents": 7,
+    "refreshedComponents": 7,
     "fallbackComponents": 0,
     "unavailableComponents": 0,
     "unknownComponents": 0,
@@ -29,6 +29,7 @@
       "markets-news",
       "tech-news",
       "law-news",
+      "risk-news",
       "market-quotes"
     ],
     "fallbackComponents": [],
@@ -45,8 +46,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:56:32Z",
-      "lastSuccessAt": "2026-09-22T16:56:32Z"
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
     },
     {
       "id": "world-news",
@@ -57,8 +58,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:56:32Z",
-      "lastSuccessAt": "2026-09-22T16:56:32Z"
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
     },
     {
       "id": "markets-news",
@@ -69,8 +70,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:56:32Z",
-      "lastSuccessAt": "2026-09-22T16:56:32Z"
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
     },
     {
       "id": "tech-news",
@@ -81,8 +82,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:56:32Z",
-      "lastSuccessAt": "2026-09-22T16:56:32Z"
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
     },
     {
       "id": "law-news",
@@ -93,8 +94,20 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:56:32Z",
-      "lastSuccessAt": "2026-09-22T16:56:32Z"
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
+    },
+    {
+      "id": "risk-news",
+      "name": "Google News 风险",
+      "role": "secondary",
+      "frequency": "intraday",
+      "requiredForTerminal": false,
+      "status": "healthy",
+      "mode": "fresh",
+      "published": true,
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
     },
     {
       "id": "market-quotes",
@@ -105,8 +118,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-22T16:56:32Z",
-      "lastSuccessAt": "2026-09-22T16:56:32Z"
+      "lastAttemptAt": "2026-09-22T17:19:32Z",
+      "lastSuccessAt": "2026-09-22T17:19:32Z"
     }
   ],
   "policy": {
