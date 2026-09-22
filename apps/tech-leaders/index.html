@@ -505,7 +505,9 @@
   var CATALOG_URL="./leaders.json";
   try{
     var catalogMode=new URLSearchParams(window.location.search).get("catalog");
-    if(catalogMode==="europe-v612-preview"){
+    if(catalogMode==="europe-v613-preview"){
+      CATALOG_URL="./leaders-europe-v613-preview.json";
+    }else if(catalogMode==="europe-v612-preview"){
       CATALOG_URL="./leaders-europe-v612-preview.json";
     }else if(catalogMode==="europe-v611-preview"){
       CATALOG_URL="./leaders-europe-v611-preview.json";
