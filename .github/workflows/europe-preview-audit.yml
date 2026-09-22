@@ -37,6 +37,7 @@ jobs:
           import urllib.parse
           import urllib.request
           from datetime import datetime, timezone
+          from email.utils import parsedate_to_datetime
           from pathlib import Path
 
           preview_path = Path("apps/tech-leaders/leaders-europe-v599-preview.json")
@@ -192,11 +193,23 @@ jobs:
                   post_count = len(posts)
                   feed_source = str(payload.get("source") or "")
                   newest_post_at = posts[0].get("created_at") if posts else None
-                  times = [str(x.get("created_at") or "") for x in posts]
+                  def post_time(value):
+                      raw = str(value or "").strip()
+                      if not raw:
+                          return None
+                      try:
+                          return datetime.fromisoformat(raw.replace("Z", "+00:00")).timestamp()
+                      except Exception:
+                          try:
+                              return parsedate_to_datetime(raw).timestamp()
+                          except Exception:
+                              return None
+                  times = [post_time(x.get("created_at")) for x in posts]
+                  ordered = all(t is not None for t in times) and all(times[i] >= times[i + 1] for i in range(len(times) - 1))
                   native_ok = (
                       payload.get("uses_x_api") is False
                       and 1 <= post_count <= 3
-                      and times == sorted(times, reverse=True)
+                      and ordered
                   )
               except urllib.error.HTTPError as exc:
                   feed_http_status = exc.code
