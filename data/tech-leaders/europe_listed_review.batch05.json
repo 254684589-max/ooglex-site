@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "activity_audit_reconciled_2026-09-22",
+  "status": "v608_promoted_2026-09-22",
   "tranche_type": "europe_listed_review_batch_05",
   "batch_range": "101-125",
   "phase": "Europe 10 -> 50",
   "source_plan": "data/tech-leaders/europe_v50.expansion.json",
-  "production_catalog": "v604-stable-2026-09-22",
-  "production_count": 604,
-  "current_europe_count": 10,
+  "production_catalog": "v608-stable-2026-09-22",
+  "production_count": 608,
+  "current_europe_count": 14,
   "target_europe_count": 50,
   "production_file_untouched": "apps/tech-leaders/leaders.json",
   "summary": {
@@ -20,7 +20,7 @@
     "manual_review_activity": 1,
     "hold_inactive": 1,
     "needs_x_research": 19,
-    "production_additions": 0
+    "production_additions": 4
   },
   "policy": {
     "require_role_evidence": true,
@@ -78,7 +78,10 @@
       "x_activity_http_status": 200,
       "x_activity_source": "fxtwitter_public_api_fast",
       "x_last_activity_at": "2026-09-16T18:20:04Z",
-      "x_activity_age_days": 5.42
+      "x_activity_age_days": 5.42,
+      "production_status": "promoted_v608",
+      "production_release": "v608-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 103,
@@ -102,7 +105,10 @@
       "x_activity_http_status": 200,
       "x_activity_source": "fxtwitter_public_api_fast",
       "x_last_activity_at": "2026-09-20T08:46:18Z",
-      "x_activity_age_days": 1.81
+      "x_activity_age_days": 1.81,
+      "production_status": "promoted_v608",
+      "production_release": "v608-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 104,
@@ -126,7 +132,10 @@
       "x_activity_http_status": 200,
       "x_activity_source": "fxtwitter_public_api_fast",
       "x_last_activity_at": "2026-09-09T09:44:37Z",
-      "x_activity_age_days": 12.77
+      "x_activity_age_days": 12.77,
+      "production_status": "promoted_v608",
+      "production_release": "v608-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 105,
@@ -150,7 +159,10 @@
       "x_activity_http_status": 200,
       "x_activity_source": "fxtwitter_public_api_fast",
       "x_last_activity_at": "2026-09-16T20:45:00Z",
-      "x_activity_age_days": 5.32
+      "x_activity_age_days": 5.32,
+      "production_status": "promoted_v608",
+      "production_release": "v608-stable-2026-09-22",
+      "production_promoted_at": "2026-09-22"
     },
     {
       "batch_rank": 106,
@@ -543,7 +555,7 @@
       "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
     }
   ],
-  "next_stage": "Build Europe V608 Preview from the four Batch 05 candidates that now pass role + verified personal-X identity + <=180d activity: Octave Klaba, Fredrik Wester, Antoine Arnault and Alexandre Arnault. Keep Jean-Pascal Tricoire in manual review, Frédéric Arnault in identity review, and all unresolved candidates out of Preview.",
+  "next_stage": "V608 Stable Promotion completed for Octave Klaba, Fredrik Wester, Antoine Arnault and Alexandre Arnault. Continue Europe Batch 06; keep Jean-Pascal Tricoire in manual activity review, Frédéric Arnault in identity review, and unresolved candidates out of production.",
   "dedupe_check": {
     "production_catalog": "v604-stable-2026-09-22",
     "checked_count": 7,
