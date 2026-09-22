@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T10:12:22Z",
+  "generated_at": "2026-09-22T10:42:32Z",
   "production_count": 613,
   "audited_handle_count": 27,
   "pass_le_180d": 5,
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.64,
+      "age_days": 1008.66,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.87,
+      "age_days": 924.89,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -49,7 +49,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1554.91,
+      "age_days": 1554.93,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 316.98,
+      "age_days": 317.01,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.96,
+      "age_days": 1393.98,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -139,7 +139,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3294.96,
+      "age_days": 3294.99,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.72,
+      "age_days": 215.74,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -169,7 +169,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.65,
+      "age_days": 3374.67,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -184,7 +184,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-02-06T10:37:45Z",
-      "age_days": 958.98,
+      "age_days": 959.0,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-03-25T16:49:34Z",
-      "age_days": 1641.72,
+      "age_days": 1641.75,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -229,7 +229,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 224.11,
+      "age_days": 224.13,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.64,
+      "age_days": 814.66,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 77.03,
+      "age_days": 77.05,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -274,7 +274,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-05T08:09:45Z",
-      "age_days": 321.09,
+      "age_days": 321.11,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -289,7 +289,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-19T13:40:52Z",
-      "age_days": 306.86,
+      "age_days": 306.88,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -304,7 +304,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.65,
+      "age_days": 1020.67,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -319,7 +319,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.62,
+      "age_days": 1.64,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -334,7 +334,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.52,
+      "age_days": 2.54,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -349,7 +349,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-04T03:21:25Z",
-      "age_days": 18.29,
+      "age_days": 18.31,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -364,7 +364,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.67,
+      "age_days": 74.69,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -379,7 +379,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2021-03-01T13:16:17Z",
-      "age_days": 2030.87,
+      "age_days": 2030.89,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -394,7 +394,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2015-03-24T13:08:21Z",
-      "age_days": 4199.88,
+      "age_days": 4199.9,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -409,7 +409,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-25T20:05:50Z",
-      "age_days": 208.59,
+      "age_days": 208.61,
       "activity_gate": "manual_181_365d",
       "error": ""
     }
