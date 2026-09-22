@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_batch13_first_pass_activity_audit_pending",
+  "status": "phase_batch13_role_23_activity_audit_pending",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -38,7 +38,7 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch13_first_pass_activity_audit_pending",
+      "status": "batch13_role_23_activity_audit_pending",
       "last_completed_batch": "12",
       "next_batch": "13"
     }
@@ -368,14 +368,14 @@
     "production_additions": 0
   },
   "batch13_open": {
-    "status": "first_pass_21_role_verified_4_handles_resolved",
+    "status": "role_pass_23_verified_activity_audit_pending",
     "candidate_range": "301-325",
     "candidate_count": 25,
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
     "role_verified_current": 8,
-    "role_verified_legacy": 13,
-    "role_needs_fresh_capture": 4,
+    "role_verified_legacy": 15,
+    "role_needs_fresh_capture": 2,
     "personal_x_verified": 2,
     "personal_x_candidate": 2,
     "resolved_x_handles": 4,
@@ -388,9 +388,7 @@
     ],
     "unresolved_role_names": [
       "David Loew",
-      "Bernard Looney",
-      "Jes Staley",
-      "Tidjane Thiam"
+      "Jes Staley"
     ],
     "preview_ready": 0,
     "production_additions": 0
