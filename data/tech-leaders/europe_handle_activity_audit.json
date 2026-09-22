@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T13:08:55Z",
+  "generated_at": "2026-09-22T13:16:13Z",
   "production_count": 613,
-  "audited_handle_count": 32,
+  "audited_handle_count": 36,
   "pass_le_180d": 5,
-  "manual_181_365d": 6,
+  "manual_181_365d": 8,
   "hold_gt_365d": 16,
-  "audit_error_retry_required": 5,
+  "audit_error_retry_required": 7,
   "no_recent_post_evidence": 0,
   "rows": [
     {
@@ -20,7 +20,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.76,
+      "age_days": 1008.77,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -35,7 +35,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.99,
+      "age_days": 925.0,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -50,7 +50,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1555.03,
+      "age_days": 1555.04,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -185,7 +185,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-07-27T16:56:52Z",
-      "age_days": 1152.84,
+      "age_days": 1152.85,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -200,7 +200,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-01-24T17:12:09Z",
-      "age_days": 1701.83,
+      "age_days": 1701.84,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -230,7 +230,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 224.23,
+      "age_days": 224.24,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -245,7 +245,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.76,
+      "age_days": 814.77,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -260,7 +260,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 77.15,
+      "age_days": 77.16,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -305,7 +305,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.77,
+      "age_days": 1020.78,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -335,7 +335,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.64,
+      "age_days": 2.65,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -365,7 +365,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.79,
+      "age_days": 74.8,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -380,7 +380,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2021-01-27T21:30:53Z",
-      "age_days": 2063.65,
+      "age_days": 2063.66,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -395,7 +395,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2015-03-24T13:08:21Z",
-      "age_days": 4200.0,
+      "age_days": 4200.01,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -410,7 +410,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-12-13T18:06:48Z",
-      "age_days": 282.79,
+      "age_days": 282.8,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -485,8 +485,68 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-08-01T15:15:02Z",
-      "age_days": 781.91,
+      "age_days": 781.92,
       "activity_gate": "hold_gt_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch13.json",
+      "name": "Jean-Dominique Senard",
+      "company": "Renault S.A.",
+      "handle": "jdsenard",
+      "current_review_status": "identity_candidate_activity_pending",
+      "x_identity_status": "probable_personal_x_wikidata_verified_profile",
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+    },
+    {
+      "batch": "europe_listed_review.batch13.json",
+      "name": "Joe Kaeser",
+      "company": "Siemens AG / Daimler Truck Holding AG",
+      "handle": "JoeKaeser",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x_self_cross_source",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2026-03-03T20:25:05Z",
+      "age_days": 202.7,
+      "activity_gate": "manual_181_365d",
+      "error": ""
+    },
+    {
+      "batch": "europe_listed_review.batch13.json",
+      "name": "Jim Hagemann Snabe",
+      "company": "Siemens AG / A.P. Møller - Mærsk A/S",
+      "handle": "jhsnabe",
+      "current_review_status": "identity_verified_activity_pending",
+      "x_identity_status": "verified_personal_x_cross_source",
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+    },
+    {
+      "batch": "europe_listed_review.batch13.json",
+      "name": "Vittorio Colao",
+      "company": "Vodafone Group Plc",
+      "handle": "vitt61",
+      "current_review_status": "identity_candidate_activity_pending",
+      "x_identity_status": "probable_personal_x_wikidata",
+      "http_status": 200,
+      "source": "fxtwitter_public_api_fast",
+      "post_count": 3,
+      "latest_post_at": "2026-02-06T16:22:55Z",
+      "age_days": 227.87,
+      "activity_gate": "manual_181_365d",
       "error": ""
     }
   ]
