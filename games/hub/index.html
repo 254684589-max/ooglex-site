@@ -7,11 +7,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏中心 · 网页小游戏</title>
-<meta name="description" content="游戏中心：GTA Vice City、红色警戒 2 等网页小游戏，无需下载，浏览器直接畅玩。">
+<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版 PC/主机游戏官方入口，包含 GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
 <link rel="canonical" href="https://www.ooglex.com/games/hub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏中心 · 网页小游戏">
-<meta property="og:description" content="游戏中心：GTA Vice City、红色警戒 2 等网页小游戏，无需下载，浏览器直接畅玩。">
+<meta property="og:description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含暗黑破坏神 IV 等。">
 <meta property="og:url" content="https://www.ooglex.com/games/hub/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -53,6 +53,14 @@
   .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
     background-image:linear-gradient(90deg, rgba(0,0,0,.28) 8px, transparent 8px); background-size:26px 100%;
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 55%); mask-image:linear-gradient(180deg, transparent, #000 55%); }
+  /* 暗黑破坏神 IV：地狱火与圣休亚瑞 */
+  .cv-diablo { background:radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,#140708 68%,#070506 100%); }
+  .cv-diablo::before { content:""; position:absolute; inset:0; z-index:1;
+    background:
+      radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(229,92,42,.16) 29% 31%, transparent 32% 100%),
+      repeating-conic-gradient(from 0deg, rgba(255,120,52,.08) 0 7deg, transparent 7deg 30deg);
+    -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 0 48%, transparent 70%);
+    mask-image:radial-gradient(circle at 50% 50%, #000 0 48%, transparent 70%); }
   /* 红色警戒 2：战火铁幕 */
   .cv-ra { background:linear-gradient(180deg,#1a0505 0%,#5a1210 45%,#b2321e 80%,#e8a13a 100%); }
   .cv-ra::before { content:""; position:absolute; left:0; right:0; bottom:0; height:40%; z-index:1;
@@ -72,6 +80,7 @@ html[data-theme="ft"] .game, html[data-theme="paper"] .game { box-shadow: 0 22px
 html[data-theme="ft"] .cover::after, html[data-theme="paper"] .cover::after { background: linear-gradient(180deg, transparent 55%, var(--tint-2)); }
 html[data-theme="ft"] .cv-gta, html[data-theme="paper"] .cv-gta { background: linear-gradient(180deg,var(--panel2) 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
 html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: linear-gradient(180deg,var(--panel2) 0%,var(--panel2) 45%,#b2321e 80%,#e8a13a 100%); }
+html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { background: radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,var(--panel2) 72%); }
 /* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
@@ -81,7 +90,7 @@ html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: line
     <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
     <div class="hero">
       <h1>🎮 游戏中心</h1>
-      <p>网页小游戏 · 电脑手机都能玩 · 点击开玩</p>
+      <p>网页小游戏 · 正版游戏官方入口 · 点击进入</p>
     </div>
     <div class="grid">
       <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
@@ -100,8 +109,16 @@ html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: line
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
+      <a class="game" href="../diablo/" style="--ac:#b33423;--ac2:#e66d32">
+        <div class="cover cv-diablo"><span class="ico">🔥</span></div>
+        <div class="body">
+          <h3>暗黑破坏神 IV · 官方入口</h3>
+          <p>黑暗奇幻动作角色扮演游戏。Ooglex 提供游戏介绍与暴雪官方入口；正版游戏需通过 Battle.net 或支持的平台安装运行。</p>
+          <span class="play">进入游戏专页 →</span>
+        </div>
+      </a>
     </div>
-    <footer>网页小游戏 · 纯前端，无需安装</footer>
+    <footer>Ooglex Games · 网页游戏与正版游戏官方入口</footer>
   </div>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
