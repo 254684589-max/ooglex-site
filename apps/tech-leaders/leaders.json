@@ -45406,6 +45406,83 @@
       "avatar_audited_at": "2026-09-22T08:43:10Z",
       "avatar_is_x_original": true,
       "avatar_is_substitute": false
+    },
+    {
+      "id": "europe-b10-estelle-brachlianoff",
+      "name": "Estelle Brachlianoff",
+      "zh": "Estelle Brachlianoff",
+      "handle": "E_Brachlianoff",
+      "role": "Veolia Environnement SA · Chief Executive Officer",
+      "chips": [
+        "VIE",
+        "Veolia Environnement SA",
+        "欧洲",
+        "能源"
+      ],
+      "note": "欧洲上市公司核心人物；本人公开 X 账号已通过职位、身份、活跃度、头像、原生动态流与页面运行时核验，已于 2026-09-22 并入 V613 正式库。",
+      "title": "ESTELLE BRACHLIANOFF · EUROPE VERIFIED X TIMELINE",
+      "category": "欧洲",
+      "name_zh": "Estelle Brachlianoff",
+      "name_en": "Estelle Brachlianoff",
+      "company_zh": "Veolia Environnement SA",
+      "company_en": "Veolia Environnement SA",
+      "position_zh": "Chief Executive Officer",
+      "categories": [
+        "欧洲",
+        "能源"
+      ],
+      "sp500_ceo": false,
+      "admission_status": "preview_approved",
+      "leader_types": [
+        "ceo"
+      ],
+      "sector": "Utilities / Environmental Services",
+      "themes": [
+        "欧洲",
+        "能源",
+        "环境服务"
+      ],
+      "x_identity_verified": true,
+      "x_check_type": "reviewed_personal_x",
+      "x_identity_source_url": "https://x.com/E_Brachlianoff",
+      "x_activity_status": "active",
+      "x_last_activity_at": "Wed Sep 09 08:22:59 +0000 2026",
+      "x_activity_source_url": "https://w.twstalker.com/E_Brachlianoff",
+      "review_confidence": "high",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=E_Brachlianoff&name=Estelle%20Brachlianoff&company=Veolia%20Environnement%20SA",
+      "avatar_source": "Ooglex avatar pipeline · Europe V613 runtime verified",
+      "avatar_status": "x_original_proxy_verified",
+      "avatar_fallback": "local_initials_svg",
+      "avatar_policy": "x_original_then_verified_fallback",
+      "avatar_verified": true,
+      "preview_only": true,
+      "x_handle": "E_Brachlianoff",
+      "company": "Veolia Environnement SA",
+      "current_role": "Chief Executive Officer",
+      "active_status": "active",
+      "primary_category": "欧洲",
+      "company_relationship_status": "current",
+      "role_status": "current",
+      "x_account_type": "personal",
+      "verified_personal_x": true,
+      "role_review_status": "verified",
+      "role_source_url": "https://www.veolia.com/en/veolia-group/governance/board-directors",
+      "role_verified_at": "2026-09-22",
+      "relationship_verified_at": "2026-09-22",
+      "x_reviewed_at": "2026-09-22",
+      "x_review_status": "verified_identity_and_activity",
+      "review_note": "Veolia first-party governance confirms the current CEO role. @E_Brachlianoff identity and <=180d activity passed review. V613 runtime audit passed on 2026-09-22T10:07:12Z: avatar OK, native free-feed OK, live catalog/page OK, render ready 1/1, blocked 0. Promoted to production.",
+      "feed_runtime_status": "native_free_feed_verified",
+      "country": "France",
+      "ticker": "VIE",
+      "exchange": "Euronext Paris",
+      "feed_runtime_verified_at": "2026-09-22",
+      "production_promoted_at": "2026-09-22",
+      "production_release": "v613-stable-2026-09-22",
+      "avatar_verified_at": "2026-09-22T10:07:12Z",
+      "avatar_audited_at": "2026-09-22T10:07:12Z",
+      "avatar_is_x_original": true,
+      "avatar_is_substitute": false
     }
   ],
   "categories": [
@@ -45499,7 +45576,7 @@
     "华尔街",
     "欧洲"
   ],
-  "catalog_version": "v612-stable-2026-09-22",
+  "catalog_version": "v613-stable-2026-09-22",
   "last_audited_at": "2026-09-22",
   "audit_policy": {
     "role_reverify_days": 90,
@@ -45801,19 +45878,19 @@
     "avatar_note": "New 66 use the Ooglex avatar endpoint but remain pending avatar audit until the cache/fallback pass is completed."
   },
   "preview": {
-    "status": "review_only",
+    "status": "promoted",
     "source_evidence": [
-      "data/tech-leaders/europe_listed_review.batch08.json",
-      "data/tech-leaders/europe_handle_activity_audit.json"
+      "data/tech-leaders/europe_listed_review.batch10.json",
+      "data/tech-leaders/europe_v613.runtime_audit.json"
     ],
     "target_category": "欧洲",
-    "base_catalog": "v611-stable-2026-09-22",
-    "base_count": 611,
+    "base_catalog": "v612-stable-2026-09-22",
+    "base_count": 612,
     "approved_additions": 1,
     "category_enrichments": 0,
-    "category_enrichment_ids": [],
-    "preview_count": 612,
-    "production_file_untouched": true,
-    "merge_gate": "pending_runtime_audit"
+    "preview_count": 613,
+    "production_file_untouched": false,
+    "merge_gate": "pass",
+    "promoted_at": "2026-09-22"
   }
 }
