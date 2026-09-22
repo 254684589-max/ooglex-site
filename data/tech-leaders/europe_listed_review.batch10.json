@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "v613_promoted_continue_x_research",
+  "status": "v613_promoted_manual_activity_review_continue_x_research",
   "tranche_type": "europe_listed_review_batch_10",
   "batch_range": "226-250",
   "phase": "Europe 23 -> 50",
@@ -17,18 +17,20 @@
     "role_verified_current": 20,
     "role_verified_legacy": 5,
     "role_needs_fresh_capture": 0,
-    "identity_verified_activity_pending": 1,
+    "identity_verified_activity_pending": 0,
     "needs_x_research": 23,
     "preview_ready": 0,
     "production_additions": 1,
     "activity_gate_passed_names": [
       "Estelle Brachlianoff"
     ],
-    "activity_gate_pending_names": [
-      "Catherine MacGregor"
-    ],
+    "activity_gate_pending_names": [],
     "promoted_names": [
       "Estelle Brachlianoff"
+    ],
+    "manual_review_activity": 1,
+    "activity_manual_review_names": [
+      "Catherine MacGregor"
     ]
   },
   "policy": {
@@ -260,11 +262,11 @@
       "x_handle": "cathmacgregor",
       "x_identity_status": "verified_personal_x_first_party",
       "x_identity_source_url": "https://x.com/cathmacgregor",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "manual_181_365d",
+      "review_status": "manual_review_activity_181_365d",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
       "previous_review_duplicate_check": "not_found_in_europe_batches_01_09_by_exact_name",
-      "notes": "ENGIE first-party CEO page verifies current role and directly links @cathmacgregor. Current public sources confirm the profile identity, but this review did not obtain sufficiently strong recent first-person posting evidence to satisfy the <=180d activity gate, so the candidate remains pending and is not included in V613 Preview."
+      "notes": "ENGIE first-party role and personal @cathmacgregor identity are verified. Direct public-feed audit returned latest activity 2025-12-13T18:06:48Z (~283 days old on 2026-09-22), so this candidate remains Manual Review under the 181-365d rule and is not Preview Ready."
     },
     {
       "batch_rank": 237,
@@ -547,11 +549,11 @@
       "notes": "Production + prior-review cross-batch dedupe passed. Company relationship verified for 2026 review as verified_current. Verified personal X ownership and direct activity are still required before Preview."
     }
   ],
-  "next_stage": "Run direct activity audit for @cathmacgregor and @E_Brachlianoff. Continue high-confidence personal-X identity research for remaining 23; no company-account substitution.",
+  "next_stage": "Catherine MacGregor moved to Manual Review (181-365d) after direct activity audit. Continue high-confidence personal-X identity research for the remaining Batch 10 queue; no company-account substitution.",
   "review_method": {
     "candidate_source": "25 Europe-listed company core figures absent from V612 production and Europe Batches 01-09 by exact-name cross-batch dedupe.",
     "activity_rule": "Automated/direct audit: <=180d pass; 181-365d manual review; >365d hold.",
     "dedupe_rule": "Exact-name against V612 production and Europe Batches 01-09; exact-handle against production before Preview."
   },
-  "next_action": "Continue personal-X verification for the remaining Batch 10 queue and resolve Catherine MacGregor recent activity. Do not promote further candidates until all admission gates pass."
+  "next_action": "Keep Catherine MacGregor out of Preview unless policy explicitly accepts 181-365d manual-review candidates. Continue personal-X verification for the remaining Batch 10 queue."
 }

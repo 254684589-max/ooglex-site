@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_open_batch11",
+  "status": "phase_open_batch12",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -38,9 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch11_open_role_x_research",
-      "last_completed_batch": "10",
-      "next_batch": "11"
+      "status": "batch12_open_role_x_research",
+      "last_completed_batch": "11",
+      "next_batch": "12"
     }
   ],
   "admission_gates": [
@@ -264,7 +264,7 @@
     ]
   },
   "batch10_open": {
-    "status": "v613_promoted_continue_x_research",
+    "status": "manual_activity_review_continue_x_research",
     "candidate_range": "226-250",
     "candidate_count": 25,
     "production_duplicates": 0,
@@ -272,12 +272,14 @@
     "role_verified_current": 20,
     "personal_x_verified": 2,
     "preview_ready": 0,
-    "activity_pending": 1,
+    "activity_pending": 0,
     "preview_ready_names": [],
-    "activity_pending_names": [
+    "activity_pending_names": [],
+    "production_additions": 1,
+    "manual_review_activity": 1,
+    "manual_review_names": [
       "Catherine MacGregor"
-    ],
-    "production_additions": 1
+    ]
   },
   "v613_preview": {
     "catalog_version": "v613-europe-preview-2026-09-22",
@@ -299,6 +301,34 @@
   "batch11_open": {
     "status": "clean_candidate_pool_ready",
     "candidate_range": "251-275",
+    "candidate_count": 25,
+    "production_duplicates": 0,
+    "prior_review_duplicates": 0,
+    "role_verified_current": 0,
+    "role_verified_legacy": 0,
+    "role_needs_fresh_capture": 25,
+    "personal_x_verified": 0,
+    "preview_ready": 0
+  },
+  "batch11_result": {
+    "status": "activity_audit_complete_continue_role_x_research",
+    "candidate_range": "251-275",
+    "candidate_count": 25,
+    "role_verified_current": 6,
+    "role_verified_legacy": 2,
+    "role_needs_fresh_capture": 17,
+    "resolved_x_handles": 2,
+    "preview_ready": 0,
+    "hold_inactive_gt_365d": 2,
+    "hold_names": [
+      "Corinne Vigreux",
+      "John Elkann"
+    ],
+    "production_additions": 0
+  },
+  "batch12_open": {
+    "status": "clean_candidate_pool_ready",
+    "candidate_range": "276-300",
     "candidate_count": 25,
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
