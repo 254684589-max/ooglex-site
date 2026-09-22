@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(u.searchParams.get("sharev")!=="20260922j"){
-        u.searchParams.set("sharev","20260922j");
+      if(u.searchParams.get("sharev")!=="20260922k"){
+        u.searchParams.set("sharev","20260922k");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -22,8 +22,8 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖实时动态流 · Ooglex">
   <meta property="og:description" content="聚合全球科技领袖、上市公司 CEO 与创始人的公开动态。">
-  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922j">
-  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922j">
+  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/?sharev=20260922k">
+  <meta property="og:image" content="https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=elonmusk&amp;name=Elon%20Musk&amp;company=Tesla%20%2F%20SpaceX%20%2F%20xAI%20%2F%20X&amp;v=20260922k">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
@@ -505,7 +505,9 @@
   var CATALOG_URL="./leaders.json";
   try{
     var catalogMode=new URLSearchParams(window.location.search).get("catalog");
-    if(catalogMode==="europe-v604-preview"){
+    if(catalogMode==="europe-v608-preview"){
+      CATALOG_URL="./leaders-europe-v608-preview.json";
+    }else if(catalogMode==="europe-v604-preview"){
       CATALOG_URL="./leaders-europe-v604-preview.json";
     }else if(catalogMode==="europe-v599-preview"){
       CATALOG_URL="./leaders-europe-v599-preview.json";
