@@ -38,9 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch06_promoted_continue_batch07",
-      "last_completed_batch": "06",
-      "next_batch": "07"
+      "status": "batch07_promoted_continue_batch08",
+      "last_completed_batch": "07",
+      "next_batch": "08"
     }
   ],
   "admission_gates": [
@@ -53,8 +53,8 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Open Europe Batch 07 (151-175) and continue scanning until 33 additional people qualify for 欧洲 after role + personal-X identity + activity + dedupe + avatar/feed/runtime gates. Existing production people may be Europe-category-enriched instead of duplicated.",
-  "current_europe_count": 17,
+  "next_action": "Open Europe Batch 08 (176-200) and continue scanning until 28 additional people qualify for 欧洲 after role + personal-X identity + activity + dedupe + avatar/feed/runtime gates. Existing production people may be Europe-category-enriched instead of duplicated.",
+  "current_europe_count": 22,
   "batch03_result": {
     "reviewed": 25,
     "preview_ready": 0,
@@ -102,19 +102,21 @@
     "production_count": 604,
     "production_europe_count": 10
   },
-  "production_gap_to_50": 33,
-  "approved_preview_gap_to_50_after_promotion": 33,
+  "production_gap_to_50": 28,
+  "approved_preview_gap_to_50_after_promotion": 28,
   "last_promotion": {
-    "release": "v610-stable-2026-09-22",
+    "release": "v611-stable-2026-09-22",
     "promoted_at": "2026-09-22",
-    "additions": 2,
-    "category_enrichments": 1,
+    "additions": 1,
+    "category_enrichments": 4,
     "names": [
-      "Rafał Brzoska",
-      "Sam Lake"
+      "Frédéric Arnault"
     ],
     "category_enriched_names": [
-      "Kristo Kaarmann"
+      "Daniel Ek",
+      "Sebastian Siemiatkowski",
+      "Rene Haas",
+      "Shay Banon"
     ]
   },
   "batch05_result": {
@@ -187,5 +189,39 @@
     "production_catalog": "v610-stable-2026-09-22",
     "production_count": 610,
     "production_europe_count": 17
+  },
+  "batch07_result": {
+    "reviewed": 25,
+    "new_people_promoted": 0,
+    "carryover_new_people_promoted": 1,
+    "carryover_promoted_names": [
+      "Frédéric Arnault"
+    ],
+    "existing_production_category_enriched": 4,
+    "category_enriched_names": [
+      "Daniel Ek",
+      "Sebastian Siemiatkowski",
+      "Rene Haas",
+      "Shay Banon"
+    ],
+    "unresolved_x_or_role_research": 21
+  },
+  "v611_preview": {
+    "catalog_version": "v611-europe-preview-2026-09-22",
+    "base_count": 610,
+    "approved_additions": 1,
+    "category_enrichments": 4,
+    "preview_count": 611,
+    "static_gate": "pass",
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "native_ready_count": 1,
+    "render_ready_count": 1,
+    "render_blocked_count": 0,
+    "merge_gate": "pass",
+    "production_promoted": true,
+    "production_catalog": "v611-stable-2026-09-22",
+    "production_count": 611,
+    "production_europe_count": 22
   }
 }
