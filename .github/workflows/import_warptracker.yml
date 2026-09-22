@@ -1,0 +1,90 @@
+name: Import Warptracker into Ooglex
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/import_warptracker.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-warptracker
+  cancel-in-progress: true
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ooglex
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Warptracker upstream
+        uses: actions/checkout@v4
+        with:
+          repository: ilrein/warptracker
+          ref: main
+          path: _warptracker
+          fetch-depth: 1
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Patch subpath asset URLs
+        working-directory: _warptracker
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("src/game/assets.ts")
+          s = p.read_text()
+          old = "loader.loadAsync(`/models/${name}.glb`)"
+          new = "loader.loadAsync(`/games/warptracker/models/${name}.glb`)"
+          if old not in s:
+              raise SystemExit("Expected model URL pattern not found")
+          p.write_text(s.replace(old, new))
+          PY
+
+      - name: Install and build Warptracker
+        working-directory: _warptracker
+        run: |
+          npm install --no-audit --no-fund
+          npx tsc --noEmit
+          npx vite build --base=/games/warptracker/
+
+      - name: Stage Ooglex game files
+        run: |
+          rm -rf games/warptracker
+          mkdir -p games/warptracker
+          cp -R _warptracker/dist/. games/warptracker/
+          cp _warptracker/LICENSE games/warptracker/LICENSE
+          cp _warptracker/ASSETS.md games/warptracker/ASSETS.md
+          UPSTREAM_SHA="$(git -C _warptracker rev-parse HEAD)"
+          cat > games/warptracker/SOURCE.md <<EOF
+          # Warptracker — Ooglex vendored build
+
+          Upstream: https://github.com/ilrein/warptracker
+          Upstream commit: ${UPSTREAM_SHA}
+          License: MIT
+          Assets: procedural or CC0, as documented in ASSETS.md.
+
+          Ooglex redistributes this compiled browser build under the upstream MIT license.
+          Ooglex does not claim authorship of the upstream game.
+          EOF
+          rm -rf _warptracker
+
+      - name: Commit imported build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games/warptracker
+          if git diff --cached --quiet; then
+            echo "No Warptracker changes to commit."
+            exit 0
+          fi
+          git commit -m "Import Warptracker open-source ARPG"
+          git push
