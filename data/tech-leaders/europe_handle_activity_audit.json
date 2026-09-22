@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T08:23:33Z",
+  "generated_at": "2026-09-22T08:27:05Z",
   "production_count": 611,
   "audited_handle_count": 25,
   "pass_le_180d": 6,
@@ -19,7 +19,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.56,
+      "age_days": 1008.57,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -34,7 +34,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 924.79,
+      "age_days": 924.8,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -229,7 +229,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 224.03,
+      "age_days": 224.04,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.56,
+      "age_days": 814.57,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -259,7 +259,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 76.95,
+      "age_days": 76.96,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -334,7 +334,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.44,
+      "age_days": 2.45,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -364,7 +364,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.59,
+      "age_days": 74.6,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
@@ -373,13 +373,13 @@
       "name": "Martin Lorentzon",
       "company": "Spotify Technology S.A.",
       "handle": "MartinLorentzon",
-      "current_review_status": "identity_verified_activity_pending",
+      "current_review_status": "preview_ready",
       "x_identity_status": "verified_personal_x",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-09-22T07:36:05Z",
-      "age_days": 0.03,
+      "age_days": 0.04,
       "activity_gate": "pass_le_180d",
       "error": ""
     }
