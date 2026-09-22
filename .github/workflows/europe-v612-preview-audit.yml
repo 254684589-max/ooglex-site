@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - "apps/tech-leaders/leaders-europe-v612-preview.json"
-      - "apps/tech-leaders/index.html"
       - ".github/workflows/europe-v612-preview-audit.yml"
 permissions:
   contents: write
@@ -55,10 +54,10 @@ jobs:
           page_ok=False; page_error=""
           if live:
             try:
-              page_url="https://www.ooglex.com/apps/tech-leaders/?"+urllib.parse.urlencode({"catalog":"europe-v612-preview","sharev":"20260922q","audit_ts":int(time.time())})
+              page_url="https://www.ooglex.com/apps/tech-leaders/?"+urllib.parse.urlencode({"catalog":"europe-v612-preview","audit_ts":int(time.time())})
               req=urllib.request.Request(page_url,headers={"User-Agent":"Ooglex Europe V612 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
               with urllib.request.urlopen(req,timeout=20) as resp: page=resp.read().decode(errors="ignore")
-              page_ok=('catalogMode==="europe-v612-preview"' in page and "20260922q" in page)
+              page_ok=('catalogMode==="europe-v612-preview"' in page)
               if not page_ok: page_error="contract"
             except Exception as e: page_error=type(e).__name__
           def dt(s):

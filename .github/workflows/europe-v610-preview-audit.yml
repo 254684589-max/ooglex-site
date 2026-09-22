@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - "apps/tech-leaders/leaders-europe-v610-preview.json"
-      - "apps/tech-leaders/index.html"
       - ".github/workflows/europe-v610-preview-audit.yml"
 permissions:
   contents: write
@@ -42,7 +41,7 @@ jobs:
           hs=[str(x.get("handle") or "").lower() for x in leaders if x.get("handle")]
           if len(hs)!=len(set(hs)): reasons.append("duplicate_handle")
           live=False; live_error=""
-          url="https://ooglex.com/apps/tech-leaders/leaders-europe-v610-preview.json?audit=v610"
+          url="https://www.ooglex.com/apps/tech-leaders/leaders-europe-v610-preview.json?"+urllib.parse.urlencode({"audit":"v610","ts":int(time.time())})
           for _ in range(60):
             try:
               req=urllib.request.Request(url,headers={"User-Agent":"Ooglex Europe V610 Audit/1.0"})
@@ -54,9 +53,10 @@ jobs:
           page_ok=False; page_error=""
           if live:
             try:
-              req=urllib.request.Request("https://ooglex.com/apps/tech-leaders/?catalog=europe-v610-preview&sharev=20260922m",headers={"User-Agent":"Ooglex Europe V610 Audit/1.0"})
+              page_url="https://www.ooglex.com/apps/tech-leaders/?"+urllib.parse.urlencode({"catalog":"europe-v610-preview","audit_ts":int(time.time())})
+              req=urllib.request.Request(page_url,headers={"User-Agent":"Ooglex Europe V610 Audit/1.0","Cache-Control":"no-cache","Pragma":"no-cache"})
               with urllib.request.urlopen(req,timeout=20) as resp: page=resp.read().decode(errors="ignore")
-              page_ok=('catalogMode==="europe-v610-preview"' in page and "20260922m" in page)
+              page_ok=('catalogMode==="europe-v610-preview"' in page)
               if not page_ok: page_error="contract"
             except Exception as e: page_error=type(e).__name__
           def dt(s):

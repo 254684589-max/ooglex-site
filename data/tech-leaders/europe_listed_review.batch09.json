@@ -12,11 +12,11 @@
   "target_europe_count": 50,
   "summary": {
     "batch_count": 25,
-    "role_verified_current": 24,
-    "role_needs_fresh_capture": 1,
+    "role_verified_current": 25,
+    "role_needs_fresh_capture": 0,
     "identity_verified_activity_pending": 0,
-    "needs_x_research": 24,
-    "needs_role_and_x_research": 1,
+    "needs_x_research": 25,
+    "needs_role_and_x_research": 0,
     "production_additions": 0,
     "production_category_enrichments": 0,
     "preview_ready": 0
@@ -192,15 +192,15 @@
       "exchange": "London Stock Exchange",
       "country": "United Kingdom",
       "current_role": "Chief Executive Officer",
-      "role_status": "needs_fresh_capture",
-      "role_source_url": "",
+      "role_status": "verified_current",
+      "role_source_url": "https://www.bp.com/en/global/corporate/who-we-are/board-and-executive-management/leadership-team/murray-auchincloss.html",
       "x_handle": "",
       "x_identity_status": "needs_personal_x_verification",
       "x_identity_source_url": "",
       "x_activity_status": "unknown",
-      "review_status": "needs_role_and_x_research",
+      "review_status": "needs_x_research",
       "production_duplicate_check": "not_found_in_v612_production_by_exact_name",
-      "notes": "Exact-name production dedupe passed. Fresh first-party role capture and verified personal X ownership are both required before approval."
+      "notes": "Exact-name production dedupe passed. bp leadership content identifies Murray Auchincloss in the current executive leadership set; verified personal X ownership and <=180d activity are still required before approval."
     },
     {
       "batch_rank": 210,
