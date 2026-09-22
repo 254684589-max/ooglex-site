@@ -46,8 +46,8 @@ if (!fs.existsSync(gateAssetPath)) {
   throw new Error("Tech Leaders password gate asset is missing.");
 }
 const gateSource = fs.readFileSync(gateAssetPath, "utf8");
-if (!gateSource.includes("/v1/tech-leaders/auth") || !gateSource.includes("sessionStorage")) {
-  throw new Error("Tech Leaders gate is not wired to the server-side auth endpoint.");
+if (!gateSource.includes("/v1/tech-leaders/auth") || !gateSource.includes('credentials = "include"')) {
+  throw new Error("Tech Leaders gate is not wired to credentialed server-side auth.");
 }
 if (gateSource.includes("PBKDF2") || /PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
   throw new Error("Tech Leaders client gate must not contain password verification material.");
