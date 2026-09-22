@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V594 -> V599",
+  "target_category": "欧洲",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v599-preview.json",
+  "preview_catalog_version": "v599-europe-preview-2026-09-22",
+  "base_count": 594,
+  "approved_additions": 5,
+  "static_gate": "pass",
+  "runtime_gate": "pass",
+  "runtime_summary": {
+    "avatar_ready_count": 5,
+    "native_free_feed_ready_count": 5,
+    "embed_fallback_available": true,
+    "render_ready_count": 5,
+    "render_blocked_count": 0
+  },
+  "promoted_people": [
+    {
+      "id": "europe-totalenergies-patrick-pouyanne",
+      "name": "Patrick Pouyanné",
+      "handle": "PPouyanne",
+      "company": "TotalEnergies SE",
+      "categories": [
+        "欧洲",
+        "能源"
+      ]
+    },
+    {
+      "id": "europe-santander-ana-botin",
+      "name": "Ana Botín",
+      "handle": "AnaBotin",
+      "company": "Banco Santander SA",
+      "categories": [
+        "欧洲",
+        "金融"
+      ]
+    },
+    {
+      "id": "europe-axa-thomas-buberl",
+      "name": "Thomas Buberl",
+      "handle": "thomasbuberl",
+      "company": "AXA SA",
+      "categories": [
+        "欧洲",
+        "金融"
+      ]
+    },
+    {
+      "id": "europe-delivery-hero-niklas-oestberg",
+      "name": "Niklas Östberg",
+      "handle": "niklasoestberg",
+      "company": "Delivery Hero SE",
+      "categories": [
+        "欧洲",
+        "消费科技",
+        "电商"
+      ]
+    },
+    {
+      "id": "europe-carrefour-alexandre-bompard",
+      "name": "Alexandre Bompard",
+      "handle": "bompard",
+      "company": "Carrefour SA",
+      "categories": [
+        "欧洲",
+        "消费零售"
+      ]
+    }
+  ],
+  "production_action": "promote",
+  "production_catalog": "v599-stable-2026-09-22",
+  "production_count": 599,
+  "europe_count": 5,
+  "wall_street_count": 100,
+  "previous_production_catalog": "v594-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v594-wallstreet100-2026-09-22.json",
+  "rationale": "All five Europe Preview V599 records passed the static/dedupe gate, valid avatar check, native zero-X-API free-feed check, deployed preview-catalog check and deployed page check with no blocking records."
+}

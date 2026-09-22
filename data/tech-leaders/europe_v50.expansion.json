@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-22",
+  "status": "phase_open",
+  "phase": "Europe 5 -> 50",
+  "category": "欧洲",
+  "production_start_count": 5,
+  "target_count": 50,
+  "net_new_required": 45,
+  "global_catalog_start": 599,
+  "source_universe": {
+    "primary": "STOXX Europe 600",
+    "supplements": [
+      "FTSE 100",
+      "DAX",
+      "CAC 40",
+      "AEX",
+      "SMI",
+      "IBEX 35",
+      "OMX Stockholm",
+      "Nasdaq Copenhagen",
+      "Nasdaq Helsinki"
+    ]
+  },
+  "planned_review_batches": [
+    {
+      "batch": "03",
+      "candidate_range": "51-75",
+      "scan_size": 25,
+      "status": "next"
+    },
+    {
+      "batch": "04",
+      "candidate_range": "76-100",
+      "scan_size": 25,
+      "status": "planned"
+    },
+    {
+      "batch": "05+",
+      "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
+      "status": "conditional"
+    }
+  ],
+  "admission_gates": [
+    "current/clearly-labelled legacy role evidence",
+    "verified personal X ownership",
+    "meaningful public X activity within policy window",
+    "name/handle dedupe against production",
+    "avatar image validation",
+    "native free-feed or official X Embed render path",
+    "preview static/runtime gate before production promotion"
+  ],
+  "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
+  "next_action": "Build Europe Review Batch 03 for candidates 51-75 without modifying production."
+}
