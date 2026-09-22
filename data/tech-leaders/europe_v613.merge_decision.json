@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "decided_at": "2026-09-22",
+  "target": "V612 -> V613",
+  "target_category": "欧洲",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v613-preview.json",
+  "preview_catalog_version": "v613-europe-preview-2026-09-22",
+  "base_count": 612,
+  "approved_additions": 1,
+  "category_enrichments": 0,
+  "static_gate": "pass",
+  "runtime_gate": "pass",
+  "runtime_generated_at": "2026-09-22T10:07:12Z",
+  "runtime_summary": {
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "avatar_ready_count": 1,
+    "native_free_feed_ready_count": 1,
+    "embed_fallback_available": true,
+    "render_ready_count": 1,
+    "render_blocked_count": 0
+  },
+  "promoted_people": [
+    {
+      "id": "europe-b10-estelle-brachlianoff",
+      "name": "Estelle Brachlianoff",
+      "handle": "E_Brachlianoff",
+      "company": "Veolia Environnement SA",
+      "categories": [
+        "欧洲",
+        "能源"
+      ]
+    }
+  ],
+  "category_enriched_people": [],
+  "production_action": "promote",
+  "production_catalog": "v613-stable-2026-09-22",
+  "production_count": 613,
+  "europe_count": 24,
+  "wall_street_count": 100,
+  "previous_production_catalog": "v612-stable-2026-09-22",
+  "rollback_snapshot": "data/tech-leaders/snapshots/leaders-v612-europe23-stable-2026-09-22.json",
+  "rationale": "V613 passed static/dedupe and deployed runtime checks. Estelle Brachlianoff was avatar-ready, native-feed-ready and render-ready with 0 blocked."
+}
