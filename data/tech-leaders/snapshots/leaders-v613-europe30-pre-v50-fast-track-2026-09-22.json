@@ -12021,8 +12021,7 @@
         "软件",
         "云计算",
         "AI",
-        "欧洲背景",
-        "欧洲"
+        "欧洲背景"
       ],
       "ticker": "ESTC",
       "exchange": "NYSE",
@@ -12071,11 +12070,11 @@
       "x_account_type": "personal",
       "verified_personal_x": true,
       "role_review_status": "verified",
-      "europe_category_review_status": "fast_track_strict_pass",
+      "europe_category_review_status": "preview_approved",
       "europe_category_verified_at": "2026-09-22",
-      "europe_category_activity_verified_at": "2026-09-22T17:55:56Z",
-      "europe_category_activity_age_days": 74.99,
-      "europe_category_source": "Europe V50 Fast Track",
+      "europe_category_activity_verified_at": "2026-09-22T06:02:32Z",
+      "europe_category_activity_age_days": 74.49,
+      "europe_category_source": "data/tech-leaders/europe_listed_review.batch07.json",
       "europe_category_enriched_at": "2026-09-22",
       "europe_category_enrichment_release": "v611-stable-2026-09-22",
       "europe_classification": "europe_background",
@@ -45164,8 +45163,7 @@
       "position_zh": "Former President and Group Chief Executive Officer",
       "categories": [
         "汽车",
-        "欧洲前高管",
-        "欧洲"
+        "欧洲前高管"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -45225,12 +45223,7 @@
       "europe_classification": "europe_former_exec",
       "europe_classification_label": "欧洲前高管",
       "europe_classification_note": "曾任欧洲公司核心高管，当前不作为现任欧洲高管统计",
-      "europe_reclassified_at": "2026-09-23",
-      "europe_category_review_status": "fast_track_strict_pass",
-      "europe_category_verified_at": "2026-09-22",
-      "europe_category_activity_verified_at": "2026-09-22T17:54:55Z",
-      "europe_category_activity_age_days": 0.48,
-      "europe_category_source": "Europe V50 Fast Track"
+      "europe_reclassified_at": "2026-09-23"
     },
     {
       "id": "europe-telefonica-jose-maria-alvarez-pallete",
@@ -45252,8 +45245,7 @@
       "company_en": "Telefónica SA",
       "position_zh": "Former Executive Chairman",
       "categories": [
-        "欧洲前高管",
-        "欧洲"
+        "欧洲前高管"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -45312,12 +45304,7 @@
       "europe_classification": "europe_former_exec",
       "europe_classification_label": "欧洲前高管",
       "europe_classification_note": "曾任欧洲公司核心高管，当前不作为现任欧洲高管统计",
-      "europe_reclassified_at": "2026-09-23",
-      "europe_category_review_status": "fast_track_strict_pass",
-      "europe_category_verified_at": "2026-09-22",
-      "europe_category_activity_verified_at": "2026-09-22T17:54:33Z",
-      "europe_category_activity_age_days": 15.07,
-      "europe_category_source": "Europe V50 Fast Track"
+      "europe_reclassified_at": "2026-09-23"
     },
     {
       "id": "europe-b04-mark-read",
@@ -45339,8 +45326,7 @@
       "company_en": "WPP plc",
       "position_zh": "Former Chief Executive Officer",
       "categories": [
-        "欧洲前高管",
-        "欧洲"
+        "欧洲前高管"
       ],
       "sp500_ceo": false,
       "admission_status": "active",
@@ -45399,12 +45385,7 @@
       "europe_classification": "europe_former_exec",
       "europe_classification_label": "欧洲前高管",
       "europe_classification_note": "曾任欧洲公司核心高管，当前不作为现任欧洲高管统计",
-      "europe_reclassified_at": "2026-09-23",
-      "europe_category_review_status": "fast_track_strict_pass",
-      "europe_category_verified_at": "2026-09-22",
-      "europe_category_activity_verified_at": "2026-09-22T17:55:27Z",
-      "europe_category_activity_age_days": 132.17,
-      "europe_category_source": "Europe V50 Fast Track"
+      "europe_reclassified_at": "2026-09-23"
     },
     {
       "id": "europe-siemens-roland-busch",

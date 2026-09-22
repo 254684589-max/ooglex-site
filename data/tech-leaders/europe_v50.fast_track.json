@@ -1,267 +1,49 @@
 {
   "schema_version": 1,
-  "mode": "regional_enrichment_to_100",
+  "mode": "strict_fast_track_to_50",
   "target_europe_count": 100,
   "production_count": 613,
-  "europe_count_before": 50,
-  "europe_count_after": 100,
-  "remaining_to_target": 0,
+  "europe_count_before": 30,
+  "europe_count_after": 34,
+  "remaining_to_target": 66,
   "promoted_count": 0,
-  "retagged_count": 50,
+  "retagged_count": 4,
   "promoted": [],
   "retagged": [
     {
-      "name": "Peter Steinberger",
-      "handle": "steipete",
-      "company": "OpenAI / OpenClaw"
+      "name": "José María Álvarez-Pallete",
+      "handle": "jmalvpal",
+      "company": "Telefónica SA",
+      "activity_age_days": 15.07,
+      "feed_source": "fxtwitter_public_api"
     },
     {
-      "name": "Mira Murati",
-      "handle": "miramurati",
-      "company": "Thinking Machines Lab"
+      "name": "Andy Palmer",
+      "handle": "AndyatAuto",
+      "company": "Aston Martin Lagonda Global Holdings plc",
+      "activity_age_days": 0.48,
+      "feed_source": "fxtwitter_public_api"
     },
     {
-      "name": "Paul Graham",
-      "handle": "paulg",
-      "company": "Y Combinator"
+      "name": "Mark Read",
+      "handle": "readmark",
+      "company": "WPP plc",
+      "activity_age_days": 132.17,
+      "feed_source": "fxtwitter_public_api"
     },
     {
-      "name": "Werner Vogels",
-      "handle": "Werner",
-      "company": "Amazon"
-    },
-    {
-      "name": "Sindre Sorhus",
-      "handle": "sindresorhus",
-      "company": "Open Source"
-    },
-    {
-      "name": "Sid Sijbrandij",
-      "handle": "sytses",
-      "company": "GitLab"
-    },
-    {
-      "name": "Max Levchin",
-      "handle": "mlevchin",
-      "company": "Affirm"
-    },
-    {
-      "name": "David Marcus",
-      "handle": "davidmarcus",
-      "company": "Lightspark"
-    },
-    {
-      "name": "Panos Panay",
-      "handle": "panos_panay",
-      "company": "Amazon"
-    },
-    {
-      "name": "Dmitri Alperovitch",
-      "handle": "DAlperovitch",
-      "company": "CrowdStrike"
-    },
-    {
-      "name": "Mati Staniszewski",
-      "handle": "matistanis",
-      "company": "ElevenLabs"
-    },
-    {
-      "name": "Wojciech Zaremba",
-      "handle": "woj_zaremba",
-      "company": "OpenAI"
-    },
-    {
-      "name": "Eoghan McCabe",
-      "handle": "eoghan",
-      "company": "Fin / Intercom"
-    },
-    {
-      "name": "Des Traynor",
-      "handle": "destraynor",
-      "company": "Fin / Intercom"
-    },
-    {
-      "name": "Solomon Hykes",
-      "handle": "solomonstre",
-      "company": "Dagger"
-    },
-    {
-      "name": "Anton Osika",
-      "handle": "antonosika",
-      "company": "Lovable"
-    },
-    {
-      "name": "Delian Asparouhov",
-      "handle": "zebulgar",
-      "company": "Varda Space Industries / Founders Fund"
-    },
-    {
-      "name": "Rune Christensen",
-      "handle": "RuneKek",
-      "company": "Sky / MakerDAO"
-    },
-    {
-      "name": "Illia Polosukhin",
-      "handle": "ilblackdragon",
-      "company": "NEAR Protocol"
-    },
-    {
-      "name": "Anatoly Yakovenko",
-      "handle": "aeyakovenko",
-      "company": "Solana Labs"
-    },
-    {
-      "name": "Paolo Ardoino",
-      "handle": "paoloardoino",
-      "company": "Tether"
-    },
-    {
-      "name": "Yat Siu",
-      "handle": "ysiu",
-      "company": "Animoca Brands"
-    },
-    {
-      "name": "Mike Volpi",
-      "handle": "mavolpi",
-      "company": "Index Ventures"
-    },
-    {
-      "name": "Max Haot",
-      "handle": "maxhaot",
-      "company": "Vast"
-    },
-    {
-      "name": "Sebastien Bubeck",
-      "handle": "SebastienBubeck",
-      "company": "OpenAI"
-    },
-    {
-      "name": "Gergely Orosz",
-      "handle": "GergelyOrosz",
-      "company": "The Pragmatic Engineer"
-    },
-    {
-      "name": "Koray Kavukcuoglu",
-      "handle": "koraykv",
-      "company": "Google / Google DeepMind"
-    },
-    {
-      "name": "Stefano Ermon",
-      "handle": "StefanoErmon",
-      "company": "Stanford / Inception"
-    },
-    {
-      "name": "Neel Nanda",
-      "handle": "NeelNanda5",
-      "company": "Google DeepMind"
-    },
-    {
-      "name": "Douwe Kiela",
-      "handle": "douwekiela",
-      "company": "Google DeepMind"
-    },
-    {
-      "name": "Piotr Dabkowski",
-      "handle": "dabkowski_piotr",
-      "company": "ElevenLabs"
-    },
-    {
-      "name": "Raoul Pal",
-      "handle": "RaoulGMI",
-      "company": "Real Vision / Global Macro Investor"
-    },
-    {
-      "name": "Julian Brigden",
-      "handle": "JulianMI2",
-      "company": "Macro Intelligence 2 Partners"
-    },
-    {
-      "name": "Sven Henrich",
-      "handle": "NorthmanTrader",
-      "company": "NorthmanTrader"
-    },
-    {
-      "name": "Vitaliy Katsenelson",
-      "handle": "vitaliyk",
-      "company": "Investment Management Associates"
-    },
-    {
-      "name": "Cal Henderson",
-      "handle": "calhenderson",
-      "company": "Salesforce / Slack"
-    },
-    {
-      "name": "Karri Saarinen",
-      "handle": "karrisaarinen",
-      "company": "Linear"
-    },
-    {
-      "name": "Bob van Luijt",
-      "handle": "bobvanluijt",
-      "company": "Weaviate"
-    },
-    {
-      "name": "Alex Bouaziz",
-      "handle": "Bouazizalex",
-      "company": "Deel"
-    },
-    {
-      "name": "Michel Tricot",
-      "handle": "MichelTricot",
-      "company": "Airbyte"
-    },
-    {
-      "name": "Benoit Dageville",
-      "handle": "BenoitDageville",
-      "company": "Snowflake"
-    },
-    {
-      "name": "Alexis Lê-Quôc",
-      "handle": "alq",
-      "company": "Datadog"
-    },
-    {
-      "name": "Mathias Biilmann",
-      "handle": "biilmann",
-      "company": "Netlify"
-    },
-    {
-      "name": "Koen Bok",
-      "handle": "koenbok",
-      "company": "Framer"
-    },
-    {
-      "name": "Mathilde Collin",
-      "handle": "collinmathilde",
-      "company": "Front"
-    },
-    {
-      "name": "John O'Nolan",
-      "handle": "JohnONolan",
-      "company": "Ghost"
-    },
-    {
-      "name": "Joel Gascoigne",
-      "handle": "joelgascoigne",
-      "company": "Buffer"
-    },
-    {
-      "name": "Flo Crivello",
-      "handle": "Altimor",
-      "company": "Lindy"
-    },
-    {
-      "name": "Malte Ubl",
-      "handle": "cramforce",
-      "company": "Vercel"
-    },
-    {
-      "name": "Albert Wenger",
-      "handle": "albertwenger",
-      "company": "Union Square Ventures"
+      "name": "Shay Banon",
+      "handle": "kimchy",
+      "company": "Elastic N.V.",
+      "activity_age_days": 74.99,
+      "feed_source": "fxtwitter_public_api"
     }
   ],
-  "blocked_summary": {},
+  "blocked_summary": {
+    "activity_gt_180d": 19,
+    "activity_unavailable": 4,
+    "identity_unresolved": 212
+  },
   "role_verified_candidate_pool": 259,
   "typeahead_scanned_this_run": 0,
   "strict_gates": [
@@ -273,19 +55,6 @@
     "native public feed ready and author-safe"
   ],
   "quota_fill_disabled": true,
-  "status": "target_met",
-  "generated_at": "2026-09-23T00:55:00+08:00",
-  "previous_strict_fast_track_blocked_summary": {
-    "activity_gt_180d": 19,
-    "activity_unavailable": 4,
-    "identity_unresolved": 212
-  },
-  "quality_gate": [
-    "existing production profile",
-    "verified personal X identity",
-    "active/non-blocked profile",
-    "clear European origin, citizenship, or substantial Europe career/company tie",
-    "existing production name/handle dedupe already satisfied"
-  ],
-  "supersedes": "Europe V50 completed baseline"
+  "status": "fast_track_active",
+  "generated_at": "2026-09-22T17:56:57Z"
 }
