@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "review_only",
+  "status": "activity_audit_reconciled_2026-09-22",
   "tranche_type": "europe_listed_review_batch_02",
   "batch_range": "26-50",
   "source_batch_01": "data/tech-leaders/europe_listed_review.batch01.json",
@@ -33,9 +33,13 @@
   },
   "summary": {
     "batch_count": 25,
+    "role_verified_or_legacy": 24,
+    "role_needs_fresh_capture": 1,
     "preview_ready": 1,
-    "identity_verified_activity_pending": 2,
-    "hold_or_dormant": 1,
+    "identity_verified_activity_pending": 1,
+    "manual_review_activity": 1,
+    "hold_inactive": 0,
+    "manual_review_no_verified_x": 0,
     "needs_x_research": 21,
     "production_additions": 0
   },
@@ -266,7 +270,11 @@
       "x_activity_status": "needs_direct_activity_check",
       "review_status": "identity_verified_activity_pending",
       "production_duplicate_check": "not_found_in_apps_tech_leaders_leaders_json",
-      "notes": "Public X profile identifies him as Chairman of the Board of Management of Mercedes-Benz AG. Direct recent-post activity still needs to be confirmed before approval."
+      "notes": "Public X profile identifies him as Chairman of the Board of Management of Mercedes-Benz AG. Direct recent-post activity still needs to be confirmed before approval.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": null,
+      "x_last_activity_at": null,
+      "x_activity_age_days": null
     },
     {
       "batch_rank": 38,
@@ -377,10 +385,14 @@
       "x_handle": "maziardoustdar",
       "x_identity_status": "probable_personal_x_needs_direct_verification",
       "x_identity_source_url": "https://x.com/maziardoustdar",
-      "x_activity_status": "needs_direct_activity_check",
-      "review_status": "identity_verified_activity_pending",
+      "x_activity_status": "manual_181_365d",
+      "review_status": "manual_review_activity",
       "production_duplicate_check": "not_found_in_apps_tech_leaders_leaders_json",
-      "notes": "Novo Nordisk confirms current CEO role. Wikidata ties the X username to him and a public mirror shows the matching profile; direct recent activity and ownership should be rechecked before approval."
+      "notes": "Novo Nordisk confirms current CEO role. Wikidata ties the X username to him and a public mirror shows the matching profile; direct recent activity and ownership should be rechecked before approval.",
+      "x_activity_audit_generated_at": "2026-09-22T03:23:47Z",
+      "x_activity_http_status": 200,
+      "x_last_activity_at": "2025-11-09T10:34:15Z",
+      "x_activity_age_days": 316.7
     },
     {
       "batch_rank": 44,
