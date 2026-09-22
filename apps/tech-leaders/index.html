@@ -7,8 +7,8 @@
   (function(){
     try{
       var u=new URL(location.href);
-      if(u.searchParams.get("sharev")!=="20260923d"){
-        u.searchParams.set("sharev","20260923d");
+      if(u.searchParams.get("sharev")!=="20260923e"){
+        u.searchParams.set("sharev","20260923e");
         location.replace(u.pathname+"?"+u.searchParams.toString()+u.hash);
       }
     }catch(e){}
@@ -152,7 +152,8 @@
     .profile-stat span{color:var(--dim)}
     .role{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
     .company-line{font-weight:700;color:var(--ink)}
-    .position-line{margin-top:2px;color:var(--dim);font-weight:600}\n    .position-en{margin-top:2px;color:var(--faint);font:10.5px/1.35 var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .position-line{margin-top:2px;color:var(--dim);font-weight:600}
+    .position-en{margin-top:2px;color:var(--faint);font:10.5px/1.35 var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
     .index-badge{display:inline-flex;align-items:center;padding:3px 6px;border:1px solid rgba(57,135,229,.35);border-radius:999px;background:rgba(57,135,229,.08);color:var(--blue);font:9px/1.1 var(--mono);white-space:nowrap;margin-right:6px}
@@ -544,7 +545,8 @@
 (function(){
   "use strict";
 
-  var API_BASE="https://pro-api.ooglex.com";\n  var leaderNameDictionary={};
+  var API_BASE="https://pro-api.ooglex.com";
+  var leaderNameDictionary={};
   var CATALOG_FILE="leaders.json";
   try{
     var catalogMode=new URLSearchParams(window.location.search).get("catalog");
@@ -620,7 +622,8 @@
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var profileNameEn=document.getElementById("profile-name-en");
   var profileCompany=document.getElementById("profile-company");
-  var profilePosition=document.getElementById("profile-position");\n  var profilePositionEn=document.getElementById("profile-position-en");
+  var profilePosition=document.getElementById("profile-position");
+  var profilePositionEn=document.getElementById("profile-position-en");
   var profileWeb=document.getElementById("profile-web");
   var profileJoined=document.getElementById("profile-joined");
   var profileJoinedText=document.getElementById("profile-joined-text");
@@ -811,8 +814,10 @@
     var profileHandle=document.getElementById("profile-handle");
     if(p.handle&&!p.hide_handle){profileHandle.textContent="@"+p.handle;profileHandle.style.display="block";}
     else{profileHandle.textContent="";profileHandle.style.display="none";}
-    profileCompany.textContent=displayCompanyZh(p);\n    profileCompany.title=displayCompanyEn(p);
-    profilePosition.textContent=displayPositionZh(p);\n    profilePositionEn.textContent=displayPositionEn(p);
+    profileCompany.textContent=displayCompanyZh(p);
+    profileCompany.title=displayCompanyEn(p);
+    profilePosition.textContent=displayPositionZh(p);
+    profilePositionEn.textContent=displayPositionEn(p);
     var profileTags=[];
     sp500Labels(p).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
     (p.categories||[]).forEach(function(x){if(profileTags.indexOf(x)===-1)profileTags.push(x);});
