@@ -1437,8 +1437,38 @@ function normalizeFxTwitterEmbeddedStatus(raw) {
   };
 }
 
+function fxTwitterStatusUrlHandle(status) {
+  if (!status || typeof status !== "object") return "";
+  const raw = String(
+    status.url ||
+    status.twitter_url ||
+    status.twitterUrl ||
+    status.tweet_url ||
+    ""
+  ).trim();
+  if (!raw) return "";
+  const match = raw.match(/^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com|fxtwitter\.com|fixupx\.com)\/([^\/?#]+)\/status\/\d+/i);
+  return match && match[1] ? normalizeXHandle(match[1]) : "";
+}
+
+function fxTwitterStatusBelongsToProfile(status, handle) {
+  const target = normalizeXHandle(handle).toLowerCase();
+  if (!target) return false;
+
+  const author = fxTwitterAuthorProfile(status);
+  const authorHandle = normalizeXHandle(author && author.handle ? author.handle : "").toLowerCase();
+  if (authorHandle && authorHandle !== target) return false;
+
+  const urlHandle = fxTwitterStatusUrlHandle(status).toLowerCase();
+  if (urlHandle && urlHandle !== target) return false;
+
+  return true;
+}
+
 function normalizeFxTwitterStatus(status, handle) {
   if (!status || typeof status !== "object") return null;
+  if (!fxTwitterStatusBelongsToProfile(status, handle)) return null;
+
   const id = String(status.id || status.rest_id || "");
   const rawText = String(
     status.text ||
@@ -1449,10 +1479,13 @@ function normalizeFxTwitterStatus(status, handle) {
   const text = /^https:\/\/t\.co\/[A-Za-z0-9]+$/i.test(rawText) ? "" : rawText;
   const normalizedMedia = normalizeFxTwitterMedia(status);
   if (!/^\d{10,25}$/.test(id)) return null;
+
   let createdAt = status.created_at || null;
   if (!createdAt && Number.isFinite(Number(status.created_timestamp))) {
     createdAt = new Date(Number(status.created_timestamp) * 1000).toISOString();
   }
+
+  const author = fxTwitterAuthorProfile(status);
   const replyTarget = status.replying_to_status_id || status.in_reply_to_status_id || status.replying_to || status.in_reply_to || null;
   const quoteTarget = status.quote || status.quoted_tweet || status.quoted_status || status.quote_tweet || null;
   const retweetTarget = status.retweeted_tweet || status.retweeted_status || status.retweet || null;
@@ -1462,12 +1495,20 @@ function normalizeFxTwitterStatus(status, handle) {
   const embeddedPost = postType === "retweet"
     ? normalizeFxTwitterEmbeddedStatus(retweetTarget)
     : (postType === "quote" ? normalizeFxTwitterEmbeddedStatus(quoteTarget) : null);
+
   if (!text && !normalizedMedia.length && !embeddedPost) return null;
+
   return {
     id,
     text,
     created_at: createdAt,
     lang: status.lang || null,
+    author: author || {
+      name: normalizeXHandle(handle),
+      handle: normalizeXHandle(handle),
+      avatar_url: null,
+      verified: false
+    },
     post_type: postType,
     embedded_post: embeddedPost,
     metrics: {
@@ -1597,10 +1638,6 @@ async function fetchFxTwitterStatusById(postId, handle) {
     if (!raw) return null;
     const normalized = normalizeFxTwitterStatus(raw, handle);
     if (!normalized || normalized.id !== id) return null;
-    const url = String(normalized.url || "");
-    if (String(handle || "").toLowerCase() === "elonmusk" && !/x\.com\/elonmusk\/status\//i.test(url)) {
-      return null;
-    }
     return normalized;
   } catch {
     return null;
@@ -1818,7 +1855,7 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
 
 function freeTechLeaderCacheKey(handle) {
   const normalized = String(handle || "").toLowerCase();
-  const version = normalized === "elonmusk" ? "v9-elon-target" : "v7";
+  const version = normalized === "elonmusk" ? "v10-auth-guard" : "v8-auth-guard";
   return `tech-leaders/free-feed/${version}/${normalized}.json`;
 }
 
