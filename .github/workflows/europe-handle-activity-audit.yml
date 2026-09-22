@@ -1,0 +1,145 @@
+name: Europe Handle Activity Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "data/tech-leaders/europe_listed_review.batch01.json"
+      - "data/tech-leaders/europe_listed_review.batch02.json"
+      - "data/tech-leaders/europe_listed_review.batch03.json"
+      - "data/tech-leaders/europe_listed_review.batch04.json"
+      - ".github/workflows/europe-handle-activity-audit.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: europe-handle-activity-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Audit resolved Europe personal X handles
+        run: |
+          python - <<'PY'
+          import json, urllib.parse, urllib.request
+          from datetime import datetime, timezone
+          from email.utils import parsedate_to_datetime
+          from pathlib import Path
+
+          review_paths=[Path(f"data/tech-leaders/europe_listed_review.batch0{i}.json") for i in range(1,5)]
+          production=json.loads(Path("apps/tech-leaders/leaders.json").read_text(encoding="utf-8"))
+          prod_handles={str(x.get("handle") or "").lower() for x in production.get("leaders",[]) if x.get("handle")}
+          rows=[]
+          now=datetime.now(timezone.utc)
+
+          def parse_time(raw):
+              s=str(raw or "").strip()
+              if not s: return None
+              try:
+                  return datetime.fromisoformat(s.replace("Z","+00:00"))
+              except Exception:
+                  try:
+                      return parsedate_to_datetime(s)
+                  except Exception:
+                      try:
+                          return datetime.strptime(s,"%a %b %d %H:%M:%S %z %Y")
+                      except Exception:
+                          return None
+
+          for path in review_paths:
+              if not path.exists(): continue
+              data=json.loads(path.read_text(encoding="utf-8"))
+              for p in data.get("candidates") or []:
+                  handle=str(p.get("x_handle") or "").lstrip("@").strip()
+                  if not handle: continue
+                  if handle.lower() in prod_handles: continue
+                  url="https://pro-api.ooglex.com/v1/tech-leaders/free-feed?"+urllib.parse.urlencode({"handle":handle,"limit":3})
+                  status=None; source=""; posts=[]; error=""
+                  try:
+                      req=urllib.request.Request(url,headers={"User-Agent":"Ooglex Europe Handle Audit/1.0","Accept":"application/json"})
+                      with urllib.request.urlopen(req,timeout=30) as resp:
+                          status=resp.status
+                          payload=json.loads(resp.read().decode("utf-8"))
+                      posts=payload.get("posts") or []
+                      source=str(payload.get("source") or "")
+                  except Exception as exc:
+                      error=type(exc).__name__+":"+str(exc)[:180]
+                  parsed=[parse_time(x.get("created_at")) for x in posts]
+                  parsed=[x for x in parsed if x is not None]
+                  latest=max(parsed) if parsed else None
+                  age_days=(now-latest).total_seconds()/86400 if latest else None
+                  if age_days is None:
+                      gate="no_recent_post_evidence"
+                  elif age_days <= 180:
+                      gate="pass_le_180d"
+                  elif age_days <= 365:
+                      gate="manual_181_365d"
+                  else:
+                      gate="hold_gt_365d"
+                  rows.append({
+                      "batch":path.name,
+                      "name":p.get("name"),
+                      "company":p.get("company"),
+                      "handle":handle,
+                      "current_review_status":p.get("review_status"),
+                      "x_identity_status":p.get("x_identity_status"),
+                      "http_status":status,
+                      "source":source,
+                      "post_count":len(posts),
+                      "latest_post_at":latest.isoformat().replace("+00:00","Z") if latest else None,
+                      "age_days":round(age_days,2) if age_days is not None else None,
+                      "activity_gate":gate,
+                      "error":error,
+                  })
+          out={
+              "schema_version":1,
+              "generated_at":now.replace(microsecond=0).isoformat().replace("+00:00","Z"),
+              "production_count":len(production.get("leaders") or []),
+              "audited_handle_count":len(rows),
+              "pass_le_180d":sum(1 for r in rows if r["activity_gate"]=="pass_le_180d"),
+              "manual_181_365d":sum(1 for r in rows if r["activity_gate"]=="manual_181_365d"),
+              "hold_gt_365d":sum(1 for r in rows if r["activity_gate"]=="hold_gt_365d"),
+              "no_recent_post_evidence":sum(1 for r in rows if r["activity_gate"]=="no_recent_post_evidence"),
+              "rows":rows,
+          }
+          Path("data/tech-leaders/europe_handle_activity_audit.json").write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(out,ensure_ascii=False))
+          PY
+
+      - name: Commit Europe handle activity audit
+        run: |
+          FILE="data/tech-leaders/europe_handle_activity_audit.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: refresh Europe handle activity audit"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              conflicts="$(git diff --name-only --diff-filter=U)"
+              if [ "$conflicts" = "$FILE" ]; then
+                git checkout --theirs -- "$FILE"
+                git add "$FILE"
+                GIT_EDITOR=true git rebase --continue
+              else
+                git rebase --abort || true
+                exit 1
+              fi
+            fi
+            if git push origin HEAD:main; then exit 0; fi
+            [ "$attempt" = "5" ] && exit 1
+            sleep $((attempt*2))
+          done

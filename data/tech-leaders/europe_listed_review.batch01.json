@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "review_only",
+  "status": "review_only_updated_2026-09-22",
   "tranche_type": "europe_listed_review_batch_01",
   "universe": {
     "primary": "STOXX Europe 600",
@@ -32,10 +32,10 @@
   },
   "summary": {
     "batch_count": 25,
-    "preview_ready": 4,
+    "preview_ready": 5,
     "identity_verified_activity_pending": 1,
     "hold_inactive": 3,
-    "needs_x_research": 17,
+    "needs_x_research": 16,
     "production_additions": 0
   },
   "candidates": [
@@ -482,12 +482,13 @@
       "current_role": "Former Executive Chairman",
       "role_status": "verified_legacy",
       "role_source_url": "https://www.telefonica.com/en/autores/jose-maria-alvarez-pallete/",
-      "x_handle": "",
-      "x_identity_status": "needs_personal_x_verification",
-      "x_identity_source_url": "",
-      "x_activity_status": "unknown",
-      "review_status": "needs_x_research",
-      "notes": "Eligible only under the legacy-leader rule. Telefónica states he served through January 2025; current Chairman & CEO is Marc Murtra."
+      "x_handle": "jmalvpal",
+      "x_identity_status": "verified_personal_x",
+      "x_identity_source_url": "https://x.com/jmalvpal",
+      "x_activity_status": "active_le_180d",
+      "review_status": "preview_ready",
+      "notes": "Telefónica confirms his former Executive Chairman role through January 2025. The personal @jmalvpal timeline is currently active within hours/days, so he now passes the existing activity gate as a legacy leader.",
+      "x_activity_source_url": "https://www.sotwe.com/jmalvpal?lang=en"
     }
   ],
   "next_stage": "Run Europe Batch 01 X-identity/activity verification on the 17 unresolved records, recheck the 3 inactivity holds, dedupe all approved handles against production, then build a Europe preview catalog only from records that pass role + identity + activity + avatar/runtime gates."
