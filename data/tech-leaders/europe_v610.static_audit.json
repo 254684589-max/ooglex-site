@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-09-22",
+  "status": "static_preview_validation_pass",
+  "preview_catalog": "apps/tech-leaders/leaders-europe-v610-preview.json",
+  "preview_catalog_version": "v610-europe-preview-2026-09-22",
+  "base_catalog": "v608-stable-2026-09-22",
+  "base_count": 608,
+  "preview_count": 610,
+  "approved_additions": 2,
+  "category_enrichments": 1,
+  "target_category": "欧洲",
+  "addition_names": [
+    "Rafał Brzoska",
+    "Sam Lake"
+  ],
+  "addition_handles": [
+    "RBrzoska",
+    "SamLakeRMD"
+  ],
+  "category_enrichment_names": [
+    "Kristo Kaarmann"
+  ],
+  "category_enrichment_handles": [
+    "kaarmann"
+  ],
+  "duplicate_ids": [],
+  "duplicate_handles": [],
+  "production_handle_conflicts": [],
+  "all_additions_preview_only": true,
+  "all_additions_identity_verified": true,
+  "all_additions_activity_qualified": true,
+  "all_category_enrichments_identity_verified": true,
+  "all_category_enrichments_activity_qualified": true,
+  "runtime_gate": "pending"
+}
