@@ -38,37 +38,94 @@ HEALTH_PATH = os.path.join("apps", "whats-latest", "health.json")
 PER_CAT = 7
 
 GN = "https://news.google.com/rss"
-GN_TAIL = "hl=zh-CN&gl=CN&ceid=CN:zh"
+GN_TAIL = "hl=en-US&gl=US&ceid=US:en"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/123.0 Safari/537.36")
 
-# 板块：key / 名称 / Google News 查询。聚焦 市场·科技·娱乐·体育·国际，去掉「中国」与政治头条总览。
+# 板块：对齐 whatsthelatest.ai 的全球新闻范围，来源由主流媒体白名单控制。
 CATS = [
-    {"key": "markets", "name": "市场",        "q": "财经 OR 股市 OR 美联储 OR 美股 OR 央行 OR 国债 OR 经济"},
-    {"key": "tech",    "name": "人工智能·科技", "q": "人工智能 OR AI OR 芯片 OR OpenAI OR 半导体 OR 科技"},
-    {"key": "ent",     "name": "娱乐",        "q": "娱乐 OR 明星 OR 影视 OR 电影 OR 综艺 OR 音乐 OR 演唱会"},
-    {"key": "sports",  "name": "体育",        "q": "体育 OR 足球 OR 篮球 OR NBA OR 网球 OR 奥运 OR 世界杯"},
-    {"key": "world",   "name": "国际",        "q": "国际 OR 全球 OR 海外 OR 中东 OR 欧洲 OR 联合国 OR 太空 OR 灾害"},
+    {"key": "politics", "name": "政策·政治",     "q": '"White House" OR Congress OR election OR policy OR regulation'},
+    {"key": "world",    "name": "国际·地缘",     "q": 'geopolitics OR war OR Ukraine OR Iran OR "Middle East" OR Europe OR China OR "United Nations"'},
+    {"key": "markets",  "name": "市场·经济",     "q": 'markets OR economy OR stocks OR bonds OR Treasury OR oil OR inflation OR "Federal Reserve"'},
+    {"key": "tech",     "name": "人工智能·科技", "q": '"artificial intelligence" OR AI OR Nvidia OR chips OR semiconductor OR "data center"'},
+    {"key": "law",      "name": "法律·监管",     "q": 'court OR lawsuit OR sanctions OR regulator OR investigation OR antitrust'},
 ]
 CATEGORY_COMPONENTS = {
+    "politics": "politics-news",
+    "world": "world-news",
     "markets": "markets-news",
     "tech": "tech-news",
-    "ent": "ent-news",
-    "sports": "sports-news",
-    "world": "world-news",
+    "law": "law-news",
 }
 
-# 政治说教/党政类过滤：标题命中即剔除（领导人、党建、官场、外事会见、两会等），让信息流远离硬政治。
-POLITICS_RE = re.compile(
-    "习近平|李强|赵乐际|王沪宁|蔡奇|丁薛祥|李希|韩正|何立峰|王毅|李克强|刘国中|胡锦涛|"
-    "党中央|总书记|政治局|常委会|从严治党|党建|党委|党组|党支部|纪委|监委|巡视|反腐|统战|"
-    "宣传部|组织部|人大|政协|学习贯彻|重要讲话|重要指示|主旨讲话|党的二十|两会|意识形态|"
-    "换届|代表大会|书记|干部|主席团|亲切会见|应约|会见|会谈|国事访问|莅临|座谈会|"
-    "动员大会|外长|双边会"
-)
+# 新闻来源池：对齐 whatsthelatest.ai 当前简报中频繁出现的主流来源。
+# 只过滤来源，不抓取或复制其站内内容；标题/摘要仍由 Google News RSS 提供并链接回原文。
+SOURCE_POOL = [
+    "Reuters",
+    "Bloomberg",
+    "Financial Times",
+    "The Wall Street Journal",
+    "BBC",
+    "CNBC",
+    "CNN",
+    "NBC News",
+    "CBS News",
+    "ABC News",
+    "The New York Times",
+    "The Guardian",
+    "South China Morning Post",
+    "The Hill",
+    "Fox News",
+    "TechCrunch",
+    "Semafor",
+    "The Japan Times",
+    "Axios",
+    "WIRED",
+    "Euronews",
+    "Associated Press",
+    "POLITICO",
+    "Finextra",
+]
+SOURCE_ALIASES = {
+    "reuters": "Reuters",
+    "bloomberg": "Bloomberg",
+    "financial times": "Financial Times",
+    "wall street journal": "The Wall Street Journal",
+    "wsj": "The Wall Street Journal",
+    "bbc": "BBC",
+    "cnbc": "CNBC",
+    "cnn": "CNN",
+    "nbc news": "NBC News",
+    "cbs news": "CBS News",
+    "abc news": "ABC News",
+    "new york times": "The New York Times",
+    "nytimes": "The New York Times",
+    "guardian": "The Guardian",
+    "south china morning post": "South China Morning Post",
+    "scmp": "South China Morning Post",
+    "the hill": "The Hill",
+    "fox news": "Fox News",
+    "techcrunch": "TechCrunch",
+    "semafor": "Semafor",
+    "japan times": "The Japan Times",
+    "axios": "Axios",
+    "wired": "WIRED",
+    "euronews": "Euronews",
+    "associated press": "Associated Press",
+    "ap news": "Associated Press",
+    "politico": "POLITICO",
+    "finextra": "Finextra",
+}
 
-# 官方/政务来源过滤：来自政府或党务网站的通稿基本是政治内容，按来源剔除。
-SOURCE_BLOCK = re.compile(r"政府|gov\.|idcpc|mfa\.|customs|外交部|中联部|发改委|人大|政协|党校")
+
+def canonical_source(src):
+    s = re.sub(r"\\s+", " ", (src or "").strip())
+    low = s.lower()
+    for needle, canonical in SOURCE_ALIASES.items():
+        if needle in low:
+            return canonical
+    return ""
+
 
 # 市场快照（Yahoo 代码）：名称 / 代码 / 计价格式
 MARKETS = [
@@ -218,12 +275,14 @@ def fetch_feed(url, n=PER_CAT):
     import feedparser
     fp = feedparser.parse(url, agent=UA)
     out = []
-    for e in fp.entries[:n * 4]:
+    for e in fp.entries[:n * 20]:
         it = parse_entry(e)
         if not (it["title"] and it["link"]):
             continue
-        if POLITICS_RE.search(it["title"]) or SOURCE_BLOCK.search(it.get("source") or ""):
+        canonical = canonical_source(it.get("source") or "")
+        if not canonical:
             continue
+        it["source"] = canonical
         out.append(it)
         if len(out) >= n:
             break
@@ -366,7 +425,7 @@ def build():
 
     # 图二式「今日概述」：各取市场 / AI科技 / 国际最新一条，只使用标题已有事实。
     overview = []
-    for key in ("markets", "tech", "world"):
+    for key in ("politics", "world", "markets", "tech"):
         category = next((x for x in cats_out if x.get("key") == key and x.get("items")), None)
         if category:
             it = max(category["items"], key=lambda x: x.get("published") or 0)
@@ -384,9 +443,9 @@ def build():
     )
     signals = []
     signal_rules = [
-        ("地缘政治风险", r"战争|冲突|中东|制裁|霍尔木兹|乌克兰|俄乌"),
-        ("AI / 芯片", r"人工智能|\bAI\b|芯片|OpenAI|半导体"),
-        ("利率预期", r"美联储|利率|加息|降息|国债|收益率"),
+        ("地缘政治", r"war|conflict|Iran|Israel|Ukraine|Russia|sanction|Middle East|Hormuz"),
+        ("AI / 芯片", r"artificial intelligence|\\bAI\\b|chip|Nvidia|OpenAI|semiconductor"),
+        ("利率 / 债券", r"Federal Reserve|Fed|interest rate|Treasury|yield|inflation"),
     ]
     for label, pattern in signal_rules:
         if re.search(pattern, all_titles, re.I):
@@ -434,7 +493,8 @@ def build():
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
-        "source": "Google News · Yahoo Finance",
+        "source": "Google News (curated global publishers) · Yahoo Finance",
+        "sourcePool": SOURCE_POOL,
         "lead": lead,
         "highlight": highlight,
         "overview": overview,
@@ -444,8 +504,9 @@ def build():
         "watch": watch,
         "categories": cats_out,
         "markets": markets,
-        "note": ("新闻聚合自 Google News 收录的公开媒体，简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差；"
-                 "每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"),
+        "note": ("新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；"
+                 "简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。"
+                 "市场快照来自 Yahoo Finance。仅供参考。"),
     }
     health = make_health(
         "whats-latest",
