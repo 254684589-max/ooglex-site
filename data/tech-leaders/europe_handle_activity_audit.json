@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T13:18:00Z",
+  "generated_at": "2026-09-22T17:36:33Z",
   "production_count": 613,
   "audited_handle_count": 36,
-  "pass_le_180d": 5,
-  "manual_181_365d": 8,
-  "hold_gt_365d": 16,
-  "audit_error_retry_required": 7,
+  "pass_le_180d": 0,
+  "manual_181_365d": 0,
+  "hold_gt_365d": 0,
+  "audit_error_retry_required": 36,
   "no_recent_post_evidence": 0,
   "rows": [
     {
@@ -16,13 +16,13 @@
       "handle": "ChrstnKlein",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2023-12-18T18:51:29Z",
-      "age_days": 1008.77,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch01.json",
@@ -31,13 +31,13 @@
       "handle": "VasNarasimhan",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2024-03-11T13:21:44Z",
-      "age_days": 925.0,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch01.json",
@@ -46,13 +46,13 @@
       "handle": "MWierod",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2022-06-20T12:24:51Z",
-      "age_days": 1555.04,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch01.json",
@@ -67,7 +67,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch02.json",
@@ -82,7 +82,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch02.json",
@@ -91,13 +91,13 @@
       "handle": "maziardoustdar",
       "current_review_status": "manual_review_activity",
       "x_identity_status": "probable_personal_x_needs_direct_verification",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 317.11,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch03.json",
@@ -112,7 +112,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch03.json",
@@ -121,13 +121,13 @@
       "handle": "olblum",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1394.09,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch04.json",
@@ -136,13 +136,13 @@
       "handle": "martinsorrell",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 2,
-      "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3295.09,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch04.json",
@@ -151,13 +151,13 @@
       "handle": "carlosghosn",
       "current_review_status": "manual_review_activity",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.84,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch04.json",
@@ -166,13 +166,13 @@
       "handle": "ArthurSadoun",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2017-06-26T18:31:52Z",
-      "age_days": 3374.78,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch04.json",
@@ -181,13 +181,13 @@
       "handle": "YannickBollore",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2023-07-27T16:56:52Z",
-      "age_days": 1152.85,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch04.json",
@@ -196,13 +196,13 @@
       "handle": "CindyRose",
       "current_review_status": "hold_inactive",
       "x_identity_status": "probable_personal_x_needs_current_role_relink",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2022-01-24T17:12:09Z",
-      "age_days": 1701.84,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch04.json",
@@ -217,7 +217,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch05.json",
@@ -226,13 +226,13 @@
       "handle": "jptricoire",
       "current_review_status": "manual_review_activity",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-02-10T07:33:42Z",
-      "age_days": 224.24,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch05.json",
@@ -241,13 +241,13 @@
       "handle": "omarabbosh",
       "current_review_status": "hold_inactive",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2024-06-29T18:53:19Z",
-      "age_days": 814.77,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch06.json",
@@ -256,13 +256,13 @@
       "handle": "kaarmann",
       "current_review_status": "existing_production_europe_retag_ready",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-07-07T09:31:19Z",
-      "age_days": 77.16,
-      "activity_gate": "pass_le_180d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch06.json",
@@ -271,13 +271,13 @@
       "handle": "MachinStuart1",
       "current_review_status": "manual_review_activity_181_365d",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2025-11-05T08:09:45Z",
-      "age_days": 321.21,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch06.json",
@@ -286,13 +286,13 @@
       "handle": "Patrice_Caine",
       "current_review_status": "hold_managed_account_and_manual_activity",
       "x_identity_status": "executive_account_managed_by_company_not_personal_gate",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2025-11-19T13:40:52Z",
-      "age_days": 306.98,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch06.json",
@@ -301,13 +301,13 @@
       "handle": "gordon_sanghera",
       "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2023-12-06T18:39:34Z",
-      "age_days": 1020.78,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch07.json",
@@ -316,13 +316,13 @@
       "handle": "eldsjal",
       "current_review_status": "existing_production_europe_retag_ready",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 2,
-      "latest_post_at": "2026-09-20T19:25:04Z",
-      "age_days": 1.75,
-      "activity_gate": "pass_le_180d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch07.json",
@@ -331,13 +331,13 @@
       "handle": "klarnaseb",
       "current_review_status": "existing_production_europe_retag_ready",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-19T21:44:29Z",
-      "age_days": 2.65,
-      "activity_gate": "pass_le_180d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch07.json",
@@ -346,13 +346,13 @@
       "handle": "renehaas237",
       "current_review_status": "existing_production_europe_retag_ready",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-09-04T03:21:25Z",
-      "age_days": 18.41,
-      "activity_gate": "pass_le_180d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch07.json",
@@ -361,13 +361,13 @@
       "handle": "kimchy",
       "current_review_status": "existing_production_europe_retag_ready",
       "x_identity_status": "verified_personal_x",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-07-09T18:09:51Z",
-      "age_days": 74.8,
-      "activity_gate": "pass_le_180d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch09.json",
@@ -376,13 +376,13 @@
       "handle": "frankvangjensen",
       "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2021-01-27T21:30:53Z",
-      "age_days": 2063.66,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch09.json",
@@ -391,13 +391,13 @@
       "handle": "jozsefjvaradi",
       "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 2,
-      "latest_post_at": "2015-03-24T13:08:21Z",
-      "age_days": 4200.01,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch10.json",
@@ -406,13 +406,13 @@
       "handle": "cathmacgregor",
       "current_review_status": "manual_review_activity_181_365d",
       "x_identity_status": "verified_personal_x_first_party",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2025-12-13T18:06:48Z",
-      "age_days": 282.8,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch11.json",
@@ -421,13 +421,13 @@
       "handle": "CorinneVigreux",
       "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2025-08-02T15:25:39Z",
-      "age_days": 415.91,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch11.json",
@@ -436,13 +436,13 @@
       "handle": "JohnElkann",
       "current_review_status": "hold_inactive_gt_365d_identity_unconfirmed",
       "x_identity_status": "probable_personal_x_needs_direct_verification",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2014-08-28T06:57:58Z",
-      "age_days": 4408.26,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch12.json",
@@ -451,13 +451,13 @@
       "handle": "PekkaLundmark",
       "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2025-08-21T05:04:10Z",
-      "age_days": 397.34,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch12.json",
@@ -472,7 +472,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch12.json",
@@ -481,13 +481,13 @@
       "handle": "Kadriilham",
       "current_review_status": "hold_inactive_gt_365d",
       "x_identity_status": "verified_personal_x_first_party",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2024-08-01T15:15:02Z",
-      "age_days": 781.92,
-      "activity_gate": "hold_gt_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch13.json",
@@ -502,7 +502,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch13.json",
@@ -511,13 +511,13 @@
       "handle": "JoeKaeser",
       "current_review_status": "identity_verified_activity_pending",
       "x_identity_status": "verified_personal_x_self_cross_source",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-03-03T20:25:05Z",
-      "age_days": 202.7,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch13.json",
@@ -532,7 +532,7 @@
       "latest_post_at": null,
       "age_days": null,
       "activity_gate": "audit_error_retry_required",
-      "error": "HTTPError:HTTP Error 502: Bad Gateway"
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     },
     {
       "batch": "europe_listed_review.batch13.json",
@@ -541,13 +541,13 @@
       "handle": "vitt61",
       "current_review_status": "identity_candidate_activity_pending",
       "x_identity_status": "probable_personal_x_wikidata",
-      "http_status": 200,
-      "source": "fxtwitter_public_api_fast",
-      "post_count": 3,
-      "latest_post_at": "2026-02-06T16:22:55Z",
-      "age_days": 227.87,
-      "activity_gate": "manual_181_365d",
-      "error": ""
+      "http_status": null,
+      "source": "",
+      "post_count": 0,
+      "latest_post_at": null,
+      "age_days": null,
+      "activity_gate": "audit_error_retry_required",
+      "error": "HTTPError:HTTP Error 401: Unauthorized"
     }
   ]
 }
