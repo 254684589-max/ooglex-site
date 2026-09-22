@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T17:41:57Z",
+  "updatedAt": "2026-09-22T17:57:21Z",
   "asOf": "2026-09-22",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -30,25 +30,31 @@
   ],
   "contentPolicy": "exclude-china-related-news",
   "lead": {
-    "title": "The hidden cost of supply chain resilience",
-    "source": "Axios",
-    "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
-    "published": 1790093769,
+    "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
+    "source": "Reuters",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
+    "published": 1790098657,
     "summary": "",
-    "topic": "风险",
-    "brief": "The hidden cost of supply chain resilience。",
+    "riskStream": "geopolitics",
+    "riskStreamName": "地缘冲突",
+    "topic": "地缘冲突",
+    "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
+    "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
     "category": "风险"
   },
   "highlight": {
-    "title": "The hidden cost of supply chain resilience",
-    "source": "Axios",
-    "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
-    "published": 1790093769,
+    "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
+    "source": "Reuters",
+    "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
+    "published": 1790098657,
     "summary": "",
-    "topic": "风险",
-    "brief": "The hidden cost of supply chain resilience。",
+    "riskStream": "geopolitics",
+    "riskStreamName": "地缘冲突",
+    "topic": "地缘冲突",
+    "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
+    "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
     "category": "风险"
@@ -56,18 +62,18 @@
   "overview": [
     {
       "topic": "风险",
-      "text": "The hidden cost of supply chain resilience。",
-      "source": "Axios"
+      "text": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
+      "source": "Reuters"
     },
     {
       "topic": "政策·政治",
-      "text": "CNN, Politico and MSNOW Sue Trump After White House Ban。",
-      "source": "The New York Times"
+      "text": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.。",
+      "source": "The Wall Street Journal"
     },
     {
       "topic": "国际·地缘",
-      "text": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections。",
-      "source": "NBC News"
+      "text": "Trump urges complete isolation of Iran, expects deal after election。",
+      "source": "Reuters"
     },
     {
       "topic": "市场·经济",
@@ -108,28 +114,61 @@
   ],
   "wires": [
     {
-      "title": "The hidden cost of supply chain resilience",
-      "source": "Axios",
-      "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
-      "published": 1790093769,
+      "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
+      "source": "Reuters",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
+      "published": 1790098657,
       "summary": "",
-      "topic": "风险",
-      "brief": "The hidden cost of supply chain resilience。",
+      "riskStream": "geopolitics",
+      "riskStreamName": "地缘冲突",
+      "topic": "地缘冲突",
+      "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
+      "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "category": "风险"
     },
     {
-      "title": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections",
-      "source": "NBC News",
-      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNWHlfaF85em55RjZHa3VUZnlpME1GTnNQTmdxdFRiYktLd2Y1c1ZpQUNPUF9ma1RqSFE1QVJJdXRYM21ZUGJfWEhNVDBVMHk2OGNMSFpYMVB2cVg2Tk92aUgzQkxSWGlhYVZjUDdyMTg5dnVFNFQyTlRqanFxRzFLS0twcXZEcFk0RlR6M0hhdlU4ajNhdURycVdfTWRnQ0pYR0h2SzBieTJBVmo3d3FmeWhyaVpiZzZOMm84?oc=5",
-      "published": 1790094667,
+      "title": "Austria's Raiffeisen Bank wins default judgment against Rasperia",
+      "source": "Reuters",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbFpELWFXZVMtbDE3bWFNMHNCUUhIRWduNjNRWGRVY0xndGFuZ0cwbnk1aFFiRE1uMHZMRU1VU2NOWW9SUGN6bk9TM2xNVVA1Uk53SDJQZmUzbXZVcDV6WnZVTjh6UktpckxuRUdWX3J3ZHR2MXpPQlBYX0tCSUx0OU5TaXdEOV8zVlRhYlVhU2tvbVZkVGczZi1nVDlLaEtQZGhQRkFHdXByRmxzQ3BpbXhNR01udGc?oc=5",
+      "published": 1790096752,
+      "summary": "",
+      "riskStream": "market_credit",
+      "riskStreamName": "市场信用",
+      "topic": "市场信用",
+      "brief": "Austria's Raiffeisen Bank wins default judgment against Rasperia。",
+      "briefZh": "市场信用：信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "category": "风险"
+    },
+    {
+      "title": "Trump urges complete isolation of Iran, expects deal after election",
+      "source": "Reuters",
+      "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPMHFVWHVmRkJDV09JMHNSQ2RvNk5zS2NwN3lwZ3lNOFNLd0tUdjZHS09lMUhZdHBCWXZUQ1NJUHh5cUxmYlU4NjNTRGRtWDJ3UkFpb05jS1U2R2huempndzFvVEtqZmV1RjN2cTRJWWYybEpQSkptR2NjLWFySUtUeDdXMmdBd0N4dktqeGN6WjdTOGVfQXZJLVgyX2k1RTlzbDZncmktWlI?oc=5",
+      "published": 1790095421,
       "summary": "",
       "topic": "国际·地缘",
-      "brief": "Trump tells U.N. he could ‘annihilate’ Iran but expects a deal after the midterm elections。",
+      "brief": "Trump urges complete isolation of Iran, expects deal after election。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "world",
       "category": "国际·地缘"
+    },
+    {
+      "title": "Oil erases losses after Trump says Iran war could be settled after midterms",
+      "source": "NBC News",
+      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
+      "published": 1790090601,
+      "summary": "",
+      "riskStream": "energy_shipping",
+      "riskStreamName": "能源运输",
+      "topic": "能源运输",
+      "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
+      "briefZh": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "category": "风险"
     },
     {
       "title": "Stocks Mixed as Oil Sinks Below $100",
@@ -139,68 +178,6 @@
       "summary": "",
       "topic": "市场·经济",
       "brief": "Stocks Mixed as Oil Sinks Below $100。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "markets",
-      "category": "市场·经济"
-    },
-    {
-      "title": "CNN, Politico and MSNOW Sue Trump After White House Ban",
-      "source": "The New York Times",
-      "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPd0VsX2hWOXZ5QnpwTWZ0MFNqLWpTdHFmTzlxeWsyR0pkamxxNXRFN3JZTGdYZDJzZ3VnV3VpNFRBdlloRU0wVHVLNGFkTnN5VVRIQ3k2ck8zYTZGRU5YRFExcEpEWjlGcFFQT3p1S2xhVlpPS0xocGUzaFhreHJOdm5MUnNKcHR0bERfdndn?oc=5",
-      "published": 1790097180,
-      "summary": "",
-      "topic": "政策·政治",
-      "brief": "CNN, Politico and MSNOW Sue Trump After White House Ban。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "politics",
-      "category": "政策·政治"
-    },
-    {
-      "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
-      "source": "Reuters",
-      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
-      "published": 1790098657,
-      "summary": "",
-      "topic": "法律·监管",
-      "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "law",
-      "category": "法律·监管"
-    },
-    {
-      "title": "Oil erases losses after Trump says Iran war could be settled after midterms",
-      "source": "NBC News",
-      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
-      "published": 1790090601,
-      "summary": "",
-      "topic": "市场·经济",
-      "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "markets",
-      "category": "市场·经济"
-    }
-  ],
-  "alsoNoted": [
-    {
-      "title": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech",
-      "source": "Axios",
-      "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQzlabml1UjVQNmswWUFzYUZFVmxYb1hHLUhZa0JvMXliZEpUQjBMcUY5Z3gtWGR5elZQMHhlZmRFN1R6b0otY29rQURUei1kT3VRVzZQTFdkbDVTS1JpWlByMEZNbHgxcm53LWUzNnk4aEZEdlB6SHYyZy1LcExqNVNPQVBRQ2hh?oc=5",
-      "published": 1790093758,
-      "summary": "",
-      "topic": "国际·地缘",
-      "brief": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "category": "国际·地缘"
-    },
-    {
-      "title": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes",
-      "source": "The Wall Street Journal",
-      "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNV0dWcVNNMlhnbkxPYlRmRnlNblltd1JsbHNab0pINjBpTGFPYlR0aTdiZ1ZfRzNXMlJTRXhMeTF1S0xxY29pUk84UzFxQ3dmZy11S0VEWFZjMmczOXE3cjRBTFFQMDF1NlFERTJaYkZHSURES0JySlNQWHhOSGV4SC1yWGdlSXJLaE1TNjc0a1Y2YXdKR1hieEd4cw?oc=5",
-      "published": 1790094240,
-      "summary": "",
-      "topic": "市场·经济",
-      "brief": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "markets",
       "category": "市场·经济"
@@ -218,18 +195,70 @@
       "category": "国际·地缘"
     }
   ],
+  "alsoNoted": [
+    {
+      "title": "Trump in address to world leaders at the UN defends his decision to start the war against Iran",
+      "source": "Associated Press",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOLTBMZ0ppZk41VENvQnJNNVU5Tmk3anJCdEJrcGRrb3dfb2dJMVRaSXNWQnhjY0wxX2Z4NHlKRXdaSXZfc2cxOHNLM1hwRGJ4WDhGNTdBb1pjTDBmVzQ1VE95SHJlYUtSVm1KdUdyYURwaGpScDBmam56OFlUZ25aaWlaczhnUzN6SkV3Y3NNTVVtblZtd183Rg?oc=5",
+      "published": 1790098320,
+      "summary": "",
+      "riskStream": "geopolitics",
+      "riskStreamName": "地缘冲突",
+      "topic": "地缘冲突",
+      "brief": "Trump in address to world leaders at the UN defends his decision to start the war against Iran。",
+      "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "category": "风险"
+    },
+    {
+      "title": "5 things to know about Trump’s speech to the United Nations",
+      "source": "The Hill",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQaWtZN2F6bmR4RmhKV3lrTGc2RGFfN3RJODUzaXhLazZOVWRsZkE5eTB1UjZzek5QbTNBNVRiTk5jOHJjTU1XbEFweXV6N2szM1h2eklzbWJMMjVqWV93U0JFcVo5RlhQeTgtVV9NUzloWVpqNFV3R3JWQ0NXajZFZzBsN0NYREk2aFF4cjhITQ?oc=5",
+      "published": 1790098140,
+      "summary": "",
+      "riskStream": "geopolitics",
+      "riskStreamName": "地缘冲突",
+      "topic": "地缘冲突",
+      "brief": "5 things to know about Trump’s speech to the United Nations。",
+      "briefZh": "地缘冲突：该报道涉及潜在风险事件，需结合原文与后续发展持续核验。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "category": "风险"
+    },
+    {
+      "title": "GOP's war for eyeballs",
+      "source": "Axios",
+      "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOVHZTWGJpTVJqUFZFX2tsQVpaUUtCTkIyWkhxUUp5c3BlanRsd0poX3NMUTl4QnFHLU5UbE5hVDF5UDJpTnRQUG1FQjkzWEtPMmtPRmhUbU1EcnItX3o4Z0Yza2RRNDFTaV9yNXhnQzdRX1dZemYyS3cyLWhISVltODhIdFlSYU44LUk3Q1NUeUtHU0t6a2Y3WEpn?oc=5",
+      "published": 1790096216,
+      "summary": "",
+      "riskStream": "geopolitics",
+      "riskStreamName": "地缘冲突",
+      "topic": "地缘冲突",
+      "brief": "GOP's war for eyeballs。",
+      "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "category": "风险"
+    }
+  ],
   "watch": [],
   "riskAnalysis": {
-    "level": "中",
-    "status": "持续监测",
+    "version": "2.0",
+    "level": "高",
+    "status": "升级",
+    "reliable": true,
     "lead": {
-      "title": "The hidden cost of supply chain resilience",
-      "source": "Axios",
-      "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
-      "published": 1790093769,
+      "title": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage",
+      "source": "CNBC",
+      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPYjl0VXhoSlV4MVQtV2NYN2hPeGRiQlpPNHZleVZNbTJEanJYRkQ2a2xtUWxtVEY1MTZnRVh0eDRSSU1qWXdSZTBRdUpVbEsxTDR4RTJuVXVRTjQzS1NnbXJ4Sm9rWVo0Z1NRQnVxTWwwVm9BQkxFTGVRRjhVbFV2ekI5QVQzMEh2NHRpeTZwUjU3QXZqSGEtc1BfT2RNa3FGdDhDRTFmanlRQdIBrwFBVV95cUxPdWdjRVNaUXhKZURyZkZkdlN3RHZBal83LU15NnNUZzNuZVFsd0Y4ZHNFaWtpM3NNSEppRlhIOE5mMDdKYmFudG5FeFRHWXo5NGlPYlhZejdGQk1uZVJRNlBIajJVZ1hMVFhEMl9SNldjYmRadnhTNlh2SmFyOG5ZNTRILWQwZXI2SktUNG5CRGNMU0VWWmZNaG9Ma0J4amVRVmtsY3VaTVU1azNmS3Vz?oc=5",
+      "published": 1790077223,
       "summary": "",
-      "topic": "风险",
-      "brief": "The hidden cost of supply chain resilience。",
+      "riskStream": "cyber",
+      "riskStreamName": "网络安全",
+      "topic": "网络安全",
+      "brief": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage。",
+      "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk"
     },
@@ -237,40 +266,78 @@
     "dimensions": [
       {
         "name": "地缘政治",
-        "score": 10,
-        "state": "低",
-        "matches": 0
+        "score": 100,
+        "state": "高",
+        "matches": 20
       },
       {
         "name": "市场 / 信用",
-        "score": 10,
-        "state": "低",
-        "matches": 0
+        "score": 56,
+        "state": "中",
+        "matches": 3
       },
       {
         "name": "能源 / 供应链",
-        "score": 40,
-        "state": "中",
-        "matches": 1
+        "score": 100,
+        "state": "高",
+        "matches": 8
       },
       {
         "name": "网络 / 运营",
-        "score": 10,
-        "state": "低",
-        "matches": 0
+        "score": 68,
+        "state": "中高",
+        "matches": 4
       }
     ],
     "followUp": [
       {
-        "text": "监测现有事件是否出现升级、扩散或跨市场传导。",
-        "source": "Ooglex rules"
+        "text": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+        "source": "Associated Press"
       },
       {
-        "text": "关注能源、信用利差与主要股指是否出现同步压力。",
-        "source": "Ooglex rules"
+        "text": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+        "source": "NBC News"
+      },
+      {
+        "text": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+        "source": "Reuters"
       }
     ],
-    "method": "rule-based"
+    "coverage": {
+      "sampleCount": 15,
+      "sourceCount": 9,
+      "streamCount": 4,
+      "sources": [
+        "Associated Press",
+        "Axios",
+        "CNBC",
+        "Euronews",
+        "Fox News",
+        "NBC News",
+        "Reuters",
+        "The Hill",
+        "The Wall Street Journal"
+      ],
+      "streams": [
+        "cyber",
+        "energy_shipping",
+        "geopolitics",
+        "market_credit"
+      ],
+      "minItems": 8,
+      "minSources": 3,
+      "minStreams": 3,
+      "reliable": true,
+      "streamCounts": {
+        "geopolitics": 7,
+        "market_credit": 7,
+        "energy_shipping": 7,
+        "cyber": 6,
+        "supply_chain": 6
+      },
+      "candidateCount": 33
+    },
+    "method": "rule-based-multistream"
   },
   "categories": [
     {
@@ -289,13 +356,24 @@
           "categoryKey": "politics"
         },
         {
-          "title": "What Is the White House Press Pool?",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPS1pfSlpvRmd5d19TUF9vUW94Y285N3dDQWR6ZDViUTN0MlgxM24tUFBXUFV4cVZvbVAzWXFHN2JHRWlzWlFzV1VZcHFwMDRxOTNSSWd0c0hLOFc0NXZrenl5eHhzQnF0WFh0MmIwMVY3VXRpWnhja0lhYm80dHBhdERLLTg?oc=5",
-          "published": 1790091000,
+          "title": "‘I Was Sold a Bill of Goods’: Americans and the Distrust Election",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQcHVVd3ljOGFhSGNKWWRPT3hwWWc5N3ZMdFhNOEZoSFVQVkl2dkhnOFdoUDJaN2VIRjlVUGRxc0hOZXlpckFvQTRvQVpNa1gwRWJkV1czTVFhbGx4M0R0QU5IQ25ncmJiaVEyQnNOZWtrWU4zSjBrSnFXNWxTMDJBX25yUFREUQ?oc=5",
+          "published": 1790067693,
           "summary": "",
           "topic": "政策·政治",
-          "brief": "What Is the White House Press Pool?",
+          "brief": "‘I Was Sold a Bill of Goods’: Americans and the Distrust Election。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics"
+        },
+        {
+          "title": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNX2NEcUlPVHdCWTZGWDA4YkVlU0loRkpwNlY2VkV0cFIxRmJYMWV2MFpuR3pvLVpRTDFGQ1IzVkx2Ty1MZjV6X0FGYzliaFdqd1B1UDlGNnhadjNHa0JUQUdHZEszZGhiZkZtdXZGT3p5UWthcEFBTUI0alBpTFJGZWZiM2ZzeVVYRkNaY3pPZE1PQTg3ZnpHNGh3VkFnR3NJLXk4S2RzUXYzOUtUbUxBX2Z0dE14NWYtYVE?oc=5",
+          "published": 1790093100,
+          "summary": "",
+          "topic": "政策·政治",
+          "brief": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics"
         },
@@ -322,17 +400,6 @@
           "categoryKey": "politics"
         },
         {
-          "title": "CNN, Politico and MSNOW Sue Trump After White House Ban",
-          "source": "The New York Times",
-          "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPd0VsX2hWOXZ5QnpwTWZ0MFNqLWpTdHFmTzlxeWsyR0pkamxxNXRFN3JZTGdYZDJzZ3VnV3VpNFRBdlloRU0wVHVLNGFkTnN5VVRIQ3k2ck8zYTZGRU5YRFExcEpEWjlGcFFQT3p1S2xhVlpPS0xocGUzaFhreHJOdm5MUnNKcHR0bERfdndn?oc=5",
-          "published": 1790097180,
-          "summary": "",
-          "topic": "政策·政治",
-          "brief": "CNN, Politico and MSNOW Sue Trump After White House Ban。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "politics"
-        },
-        {
           "title": "Swedish prosecutors probe election fraud allegation casting shadow over vote",
           "source": "Reuters",
           "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPQjhVVi1qNGdFZFNFVEkyVnpIV0xDNFd3VDk2VHJfb2VaNzlTa2ZzV3lLZ2xWei1LMGR6bFpBb1pwME8xN0s4akNfTVFDcEFnZ0JFZXdGMXNoOXhLSU53QUp2MEdRUWF3Zk5xOFhOLXNucmZydVlJa2ZXZ0ZTSFNhTlZheUZpTV9MQkJ1LVJfYzg4MFVZZmRUWTVwSjdwOHkybUJmcWN5dVRXdmo2NC1mTkhBX3hTUU9nUXpHbW5lc2VNVjZDc3lwampmQWVnTHBp?oc=5",
@@ -344,13 +411,13 @@
           "categoryKey": "politics"
         },
         {
-          "title": "Trump Tells U.N. He Is a Peacemaker While Threatening to ‘Annihilate’ Iran",
+          "title": "What Is the White House Press Pool?",
           "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNX2NEcUlPVHdCWTZGWDA4YkVlU0loRkpwNlY2VkV0cFIxRmJYMWV2MFpuR3pvLVpRTDFGQ1IzVkx2Ty1MZjV6X0FGYzliaFdqd1B1UDlGNnhadjNHa0JUQUdHZEszZGhiZkZtdXZGT3p5UWthcEFBTUI0alBpTFJGZWZiM2ZzeVVYRkNaY3pPZE1PQTg3ZnpHNGh3VkFnR3NJLXk4S2RzUXYzOUtUbUxBX2Z0dE14NWYtYVE?oc=5",
-          "published": 1790093100,
+          "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPS1pfSlpvRmd5d19TUF9vUW94Y285N3dDQWR6ZDViUTN0MlgxM24tUFBXUFV4cVZvbVAzWXFHN2JHRWlzWlFzV1VZcHFwMDRxOTNSSWd0c0hLOFc0NXZrenl5eHhzQnF0WFh0MmIwMVY3VXRpWnhja0lhYm80dHBhdERLLTg?oc=5",
+          "published": 1790091000,
           "summary": "",
           "topic": "政策·政治",
-          "brief": "Trump Tells U.N. He Is a Peacemaker While Threatening to ‘Annihilate’ Iran。",
+          "brief": "What Is the White House Press Pool?",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics"
         }
@@ -368,6 +435,17 @@
           "summary": "",
           "topic": "国际·地缘",
           "brief": "Republican support for Trump’s handling of war in Iran shows cracks in new CNN poll。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world"
+        },
+        {
+          "title": "Trump urges complete isolation of Iran, expects deal after election",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPMHFVWHVmRkJDV09JMHNSQ2RvNk5zS2NwN3lwZ3lNOFNLd0tUdjZHS09lMUhZdHBCWXZUQ1NJUHh5cUxmYlU4NjNTRGRtWDJ3UkFpb05jS1U2R2huempndzFvVEtqZmV1RjN2cTRJWWYybEpQSkptR2NjLWFySUtUeDdXMmdBd0N4dktqeGN6WjdTOGVfQXZJLVgyX2k1RTlzbDZncmktWlI?oc=5",
+          "published": 1790095421,
+          "summary": "",
+          "topic": "国际·地缘",
+          "brief": "Trump urges complete isolation of Iran, expects deal after election。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world"
         },
@@ -412,17 +490,6 @@
           "summary": "",
           "topic": "国际·地缘",
           "brief": "Russia and Ukraine trade deadly strikes as Zelenskyy prepares to meet Trump。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world"
-        },
-        {
-          "title": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech",
-          "source": "Axios",
-          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQzlabml1UjVQNmswWUFzYUZFVmxYb1hHLUhZa0JvMXliZEpUQjBMcUY5Z3gtWGR5elZQMHhlZmRFN1R6b0otY29rQURUei1kT3VRVzZQTFdkbDVTS1JpWlByMEZNbHgxcm53LWUzNnk4aEZEdlB6SHYyZy1LcExqNVNPQVBRQ2hh?oc=5",
-          "published": 1790093758,
-          "summary": "",
-          "topic": "国际·地缘",
-          "brief": "Trump says he faces a decision whether to \"annihilate\" Iran in UN speech。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world"
         }
@@ -477,24 +544,13 @@
           "categoryKey": "markets"
         },
         {
-          "title": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNV0dWcVNNMlhnbkxPYlRmRnlNblltd1JsbHNab0pINjBpTGFPYlR0aTdiZ1ZfRzNXMlJTRXhMeTF1S0xxY29pUk84UzFxQ3dmZy11S0VEWFZjMmczOXE3cjRBTFFQMDF1NlFERTJaYkZHSURES0JySlNQWHhOSGV4SC1yWGdlSXJLaE1TNjc0a1Y2YXdKR1hieEd4cw?oc=5",
-          "published": 1790094240,
-          "summary": "",
-          "topic": "市场·经济",
-          "brief": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets"
-        },
-        {
-          "title": "COMMENTARY: Morning Bid: As oil swoons, AI recharges",
+          "title": "SNAPSHOT Nasdaq hits intraday record high as tech stocks regain footing",
           "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOWDg3N3o3aUpOS0JUNnBBVjZhOF9hendQRFd4aXNzV0ZIa1Q5Z3piVkc5NUt0ZWItMHdHeEk2ZGRaR240dFVOaHBKMVhUdXZKX3JlSFdxSktEenNrRkV1R3BWdWRINkJfVDZ1Z0lwMGtoSG9PWG9mM0xTamcyY2l3c0d4Yjg5cjBfNzFQS18ydlplWmdlcXdR?oc=5",
-          "published": 1790075634,
+          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNNlc5U2haVjdCOXFmcjZtdUJGOGtOaThkenVQS3piZGpYa0xqbHFuRU5fRHZ2TkdwVC1oZkpRSzVJNXRqU0g2M3BlakJnaVR1NUx1RG90aGRjdjJQYXo1MGg5R2w4ejJ4aXVhY3V1Qk5tX3Y5ZE5sY0dEYzlKY0c5Mmh4WDRleHFCdTM0UjVLT2dFTEVVMXFmVk00bHhhSDlFYXA5cEpGX0tvOU9YRjVraVBKaw?oc=5",
+          "published": 1790085251,
           "summary": "",
-          "topic": "COMMENTARY",
-          "brief": "COMMENTARY: Morning Bid: As oil swoons, AI recharges。",
+          "topic": "纳斯达克",
+          "brief": "SNAPSHOT Nasdaq hits intraday record high as tech stocks regain footing。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         },
@@ -506,6 +562,17 @@
           "summary": "",
           "topic": "美联储",
           "brief": "10-year Treasury yield slips further below 5% as traders await Fed comments。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets"
+        },
+        {
+          "title": "Tech stocks power market surge as bond yields and oil prices tumble",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPUi1FcU5EQjl2dUY3WmtrTDh4QTIxdG5VdVBaQWRDeWJUZXVlRUtYM2FvaDRaRlFXM2Fyby1PVno2Y1NtdVpJN1M5NmlqSWRJUGh2eUhGNXZTYU9tU0J0QzFsWHZUYllLUVRuel8tMWVmTjd5dEtOR2NJRnZ6clR1SXJwM2pLYTN3MndOamM1anA?oc=5",
+          "published": 1790022477,
+          "summary": "",
+          "topic": "市场·经济",
+          "brief": "Tech stocks power market surge as bond yields and oil prices tumble。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets"
         }
@@ -538,17 +605,6 @@
           "categoryKey": "tech"
         },
         {
-          "title": "Trump says US Justice Department could rein in AI companies if needed",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
-          "published": 1790092475,
-          "summary": "",
-          "topic": "人工智能·科技",
-          "brief": "Trump says US Justice Department could rein in AI companies if needed。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech"
-        },
-        {
           "title": "Trump says AI will be renamed ‘super intelligence’ in all US documents",
           "source": "The Hill",
           "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPTHFSRVlHOGRzQlVzcWRvcHlCU2pyMGhSXzlPLUxvNnFqaldRVnpIYWJWMHpvRHY5OUR3UmV1eGtCS29LbHlHUFFDaHc5YjVhN1owS0RfT2Y1X0FSVVJsZ09WZUNNOUV4MGtZLTRMeS01bVJ2MHdaaE5VMEI3M3laVEZGejJCNHZSWDFuNWZ1NjBHd9IBlwFBVV95cUxQTnJVNkJmdXZuX2pHN0pqd1JKczNfM21JVHFLaHU5QVFHN1VERkxtNUhqQVZuZi1xaUZrZms3SzFWU201SUs2Y0cySEN2SG4wUmQ1TnVOMEo5T2lacDJpMzVoS2RwQWdUOUV2cG93bkZURUxNb2JhRkE1R1RyZlk1dkhvS1k2cGxSTjRlallVRzF4RzB4RkJr?oc=5",
@@ -560,13 +616,13 @@
           "categoryKey": "tech"
         },
         {
-          "title": "What is an \"AI swarm,\" and why is it giving tech experts nightmares?",
-          "source": "CBS News",
-          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1lYUNiREo5MnhMdzN0d2pndHZteUh2aDBMNDZoanpLYkV2QjdUTkRLTnh6R1VhdmxGNGYxNklRN1NMMzFlLWc4YXlnM2Q5Q1hxY3FuT0hzU2VGS29GdVZ3VTh2cmh1ZWVHSEFhUHk3Z1RGV2pQWUtkbA?oc=5",
-          "published": 1790067600,
+          "title": "Trump says US Justice Department could rein in AI companies if needed",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
+          "published": 1790092475,
           "summary": "",
           "topic": "人工智能·科技",
-          "brief": "What is an \"AI swarm,\" and why is it giving tech experts nightmares?",
+          "brief": "Trump says US Justice Department could rein in AI companies if needed。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         },
@@ -589,6 +645,17 @@
           "summary": "",
           "topic": "芯片 / 半导体",
           "brief": "Nvidia’s Stock Is Flashing a Warning Sign as Valuation Falls。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech"
+        },
+        {
+          "title": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence",
+          "source": "BBC",
+          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9wZElLYTA3N1pYMHNTa0dOTGpMT2dnUG9oQ0RYZE9KRm1VRnJJVWxLUFluRHpaT1V0SWpkMzBoODNpN0hhZGVJRnFHYWduMlN5eHJyMmN4ZXk?oc=5",
+          "published": 1790092405,
+          "summary": "",
+          "topic": "Watch",
+          "brief": "Watch: Moment Trump rebrands Artificial Intelligence to Super Intelligence。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech"
         }
@@ -621,6 +688,17 @@
           "categoryKey": "law"
         },
         {
+          "title": "Paramount Settles States’ Lawsuit, Clearing Way for Warner Bros. Merger",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQOXQ5VHVldm1qTTU5SC1MUXV3Wm5XTnNBMDlicmV1dWxPcXZ1cmtHR1luSV9pdXdLN21IRlM4OHBVbndFXzZHcTllZFlUcWhBelY0bllKTllNZVZrSUswNWROdUZDSzJjN3ZMWERVWExmRndtMGNFcEEtUFRWWG1FMG01UWE?oc=5",
+          "published": 1790063700,
+          "summary": "",
+          "topic": "法律·监管",
+          "brief": "Paramount Settles States’ Lawsuit, Clearing Way for Warner Bros. Merger。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "law"
+        },
+        {
           "title": "Judge appointed by Trump will oversee news outlets’ lawsuit over White House ban",
           "source": "POLITICO",
           "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPWUlabVl4TVd6NHhsR1FkVWk5S1dMN2didmhHMFBFVUE5V0xpTDlCbG1wbkdHZjFrd3FzalpCQi1DUDJSTFRvV2lLLUk3cGtJUmFHNGkwa29heXRRc2NnU2gwb3ZmazlWd3A3UG1CbFFRSnJjNUpMeVZBZ1JpVmtCbmFnalBJVWp4bnF1emlvYjk0QXloWGVtOA?oc=5",
@@ -628,6 +706,17 @@
           "summary": "",
           "topic": "法律·监管",
           "brief": "Judge appointed by Trump will oversee news outlets’ lawsuit over White House ban。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "law"
+        },
+        {
+          "title": "Banned White House outlets cover Trump at UN as court hearing looms",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOUkpHTVpnWHI5c0RnRGgwalRFMGxSRUZRUTFIYnlXTXhnT29NQ0N2QVlxTXFVZzRRbzhUaHo5MmR3RzZBSmRzQ0h0TWN0R2JPRWhPRm1JQzdpSUpyUmhqa1VWRkNXeWVLZXp2VFhFZUNnWDVxcERYVE9aOG56ZG5QdHVSMEpOd01zMDBfNkJhcmdtc1RVbW52bHItbWxHQ05zQk1jS19hWVg1LWVVZjhyeFZLaEk?oc=5",
+          "published": 1790092373,
+          "summary": "",
+          "topic": "法律·监管",
+          "brief": "Banned White House outlets cover Trump at UN as court hearing looms。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law"
         },
@@ -641,39 +730,6 @@
           "brief": "​Urging Pivot on North Korea, South’s Leader Calls for Easing Sanctions。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law"
-        },
-        {
-          "title": "The Morning Risk Report: Paramount Settles States’ Antitrust Suit, Clearing Way for Warner Megadeal",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQdHVzcjV3d21idWIyNE56TW5UajM3TVRJWkZjQWx2WEg5dXUyZDEtRWpHMWctMHU3NTlRU1FVUGtCQTR6UmJJUm1qbGRCbEZqZkE3TEVJRnJmVjF4dV9iRDFXazk2ZkFNR2hJc29ibFVMR1YyLTY2dWQySm5USFppem01LU02a0NzLTJBVDYtdFZJM1hDTkJ2RUU5cE9FS3VoZEppNzBobThnLXpkckZyZnRoQTFxaEhLay10OV9xTk9WWGhWSUZ3b3hyd05uekNrMkZiWnRmRG9qNnlHakQ0by15Yw?oc=5",
-          "published": 1790076414,
-          "summary": "",
-          "topic": "法律·监管",
-          "brief": "The Morning Risk Report: Paramount Settles States’ Antitrust Suit, Clearing Way for Warner Megadeal。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law"
-        },
-        {
-          "title": "Trump's White House media ban faces long odds in court, legal experts say",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQUDdOdVpHTGQzWC1PbjNJd0xBbHpBSFBJSWdSUWowUDZMZ21GSzFTVi1HdTgxZkU3V2x6bGRsMGZsaXhIMjZjamRzVlNrOXIxOTI4S1RBNWE0QmZsSTAwTFRxN0cxT25Mc1ZmeUxKRWJaRXdqdDNtRHNyb3RlSjV5T3FMMFZKc1FqS0pCOG1rNmVnV1FEZWl4NGtvckNHZ2JKOWRYWjlCcExpVmJUTzlCSEswWVc0eW8yVnBNVlJB?oc=5",
-          "published": 1790082837,
-          "summary": "",
-          "topic": "法律·监管",
-          "brief": "Trump's White House media ban faces long odds in court, legal experts say。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law"
-        },
-        {
-          "title": "South Korean president says Trump should ease sanctions on North Korea",
-          "source": "The Hill",
-          "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxONkM2UzRsRlpFVS1NdjhScWlCdmRHVkE5WUh0N3hVUG53Z1V6Q3RaelhhUUw2Q1Buak1HU2NKQkxwclA2Qm5JdjYwU1oyNnJjTDhlcXNYZ3pxTzdsTzRzNW45VXpaenVGdEV4M1A2RTZibmpiZWU5Vkc4RHB3QTRrTWdIcVdreGxybm8wcEVR0gGTAUFVX3lxTFBTVWdHS3pmbXl3NzlJb3ZLVFU0V2E2RkYycWNjR0lLS2pEX3dwN2QtX0pCUHhzc2hLU0RQS1JBRkVieXA1LUVpbFNNTVVRYmlROXdlVFRsa1NhNkNmVnJiemZDeDVkUDhpTndkSW1DcmpwaVhtNDdHUU53WVJ4VVdkVDNRamZ6QTFBeTkzLUlINEFQcw?oc=5",
-          "published": 1790094540,
-          "summary": "",
-          "topic": "法律·监管",
-          "brief": "South Korean president says Trump should ease sanctions on North Korea。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law"
         }
       ]
     },
@@ -682,13 +738,212 @@
       "name": "风险",
       "items": [
         {
-          "title": "The hidden cost of supply chain resilience",
-          "source": "Axios",
-          "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE42S3dHTm02ZWF6T1JRNDRxWGdKRHB0R1RDUlZJbk9nandsRU9NYkdvbjZ1RnYya3JzVFFqUWpsN05vSXMtS0NiUUFNc21EZlp2dUU3NzNIZk8wcF9SaXU5S0V6WEx2czItbl9GLXk0WQ?oc=5",
-          "published": 1790093769,
+          "title": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPYjl0VXhoSlV4MVQtV2NYN2hPeGRiQlpPNHZleVZNbTJEanJYRkQ2a2xtUWxtVEY1MTZnRVh0eDRSSU1qWXdSZTBRdUpVbEsxTDR4RTJuVXVRTjQzS1NnbXJ4Sm9rWVo0Z1NRQnVxTWwwVm9BQkxFTGVRRjhVbFV2ekI5QVQzMEh2NHRpeTZwUjU3QXZqSGEtc1BfT2RNa3FGdDhDRTFmanlRQdIBrwFBVV95cUxPdWdjRVNaUXhKZURyZkZkdlN3RHZBal83LU15NnNUZzNuZVFsd0Y4ZHNFaWtpM3NNSEppRlhIOE5mMDdKYmFudG5FeFRHWXo5NGlPYlhZejdGQk1uZVJRNlBIajJVZ1hMVFhEMl9SNldjYmRadnhTNlh2SmFyOG5ZNTRILWQwZXI2SktUNG5CRGNMU0VWWmZNaG9Ma0J4amVRVmtsY3VaTVU1azNmS3Vz?oc=5",
+          "published": 1790077223,
           "summary": "",
-          "topic": "风险",
-          "brief": "The hidden cost of supply chain resilience。",
+          "riskStream": "cyber",
+          "riskStreamName": "网络安全",
+          "topic": "网络安全",
+          "brief": "Flight disruptions ease at Newark, Philadelphia airports following equipment outage。",
+          "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Trump in address to world leaders at the UN defends his decision to start the war against Iran",
+          "source": "Associated Press",
+          "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOLTBMZ0ppZk41VENvQnJNNVU5Tmk3anJCdEJrcGRrb3dfb2dJMVRaSXNWQnhjY0wxX2Z4NHlKRXdaSXZfc2cxOHNLM1hwRGJ4WDhGNTdBb1pjTDBmVzQ1VE95SHJlYUtSVm1KdUdyYURwaGpScDBmam56OFlUZ25aaWlaczhnUzN6SkV3Y3NNTVVtblZtd183Rg?oc=5",
+          "published": 1790098320,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Trump in address to world leaders at the UN defends his decision to start the war against Iran。",
+          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Austria's Raiffeisen Bank wins default judgment against Rasperia",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbFpELWFXZVMtbDE3bWFNMHNCUUhIRWduNjNRWGRVY0xndGFuZ0cwbnk1aFFiRE1uMHZMRU1VU2NOWW9SUGN6bk9TM2xNVVA1Uk53SDJQZmUzbXZVcDV6WnZVTjh6UktpckxuRUdWX3J3ZHR2MXpPQlBYX0tCSUx0OU5TaXdEOV8zVlRhYlVhU2tvbVZkVGczZi1nVDlLaEtQZGhQRkFHdXByRmxzQ3BpbXhNR01udGc?oc=5",
+          "published": 1790096752,
+          "summary": "",
+          "riskStream": "market_credit",
+          "riskStreamName": "市场信用",
+          "topic": "市场信用",
+          "brief": "Austria's Raiffeisen Bank wins default judgment against Rasperia。",
+          "briefZh": "市场信用：信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "GOP's war for eyeballs",
+          "source": "Axios",
+          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOVHZTWGJpTVJqUFZFX2tsQVpaUUtCTkIyWkhxUUp5c3BlanRsd0poX3NMUTl4QnFHLU5UbE5hVDF5UDJpTnRQUG1FQjkzWEtPMmtPRmhUbU1EcnItX3o4Z0Yza2RRNDFTaV9yNXhnQzdRX1dZemYyS3cyLWhISVltODhIdFlSYU44LUk3Q1NUeUtHU0t6a2Y3WEpn?oc=5",
+          "published": 1790096216,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "GOP's war for eyeballs。",
+          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Trump-backed Senate candidate says 'Groceries cost too much,' calls for Iran war to 'end quickly'",
+          "source": "Fox News",
+          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNLVZCazdxS2oxN0ticWhYWWJOejVpQUF6ZVNaYVFKcFh4RTNLLWZnQXRNaW5ScVA2bW9TNDllWWZXMDRZWnlQN3REa3JkV0pRdzQwMUN0X1p0ZVFZMjBtcExYV3ZMd25pSmd2NjZhVDJyeWxERUVmeDNQdmdzeElYblZ5XzRkclA3RmdGcTFWdDh1cWZRWll5UmVKOURTNno4SXF0MFBhTEk2RDRWMjh3XzFhYw?oc=5",
+          "published": 1790094710,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Trump-backed Senate candidate says 'Groceries cost too much,' calls for Iran war to 'end quickly'。",
+          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
+          "published": 1790049176,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
+          "briefZh": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Oil erases losses after Trump says Iran war could be settled after midterms",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
+          "published": 1790090601,
+          "summary": "",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Oil erases losses after Trump says Iran war could be settled after midterms。",
+          "briefZh": "能源运输：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Iran War: Latest News, Live Coverage and Video",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1vRFdEaTJrbkd5dmlGNzFrY19yTEJFZko2aXBSejFKbXNsbl95eFBsM2dSNkRjdVNudjhZTl9DSzFud3JoTTJ2R2ttX3lBNkE?oc=5",
+          "published": 1790082460,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Iran War: Latest News, Live Coverage and Video。",
+          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Exclusive: A major cyber vendor's new service to fight AI cyberattacks",
+          "source": "Axios",
+          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOWlF1R1loNzZEVGhyNEM2R3p5bmFwVk5NdHlFQUxiMTBSdG9JTU1INnRnQVpqelZBbnY4RjIxS25HNlc1NVYyLWN4djdLM0t3bGxUeWpMUzF0Q1hraTFqWWdORXBsd3gwNmVDbGQ1ZkR2djhUWlotaW5jdWRSR1daQg?oc=5",
+          "published": 1790081750,
+          "summary": "",
+          "riskStream": "cyber",
+          "riskStreamName": "网络安全",
+          "topic": "网络安全",
+          "brief": "Exclusive: A major cyber vendor's new service to fight AI cyberattacks。",
+          "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "The EU spent billions on a cyberattack shield — nobody checked if it worked",
+          "source": "Euronews",
+          "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQZXl4clNNamxZZV9BTEoxbmNTb1FUS2RjMFVRNHF2OGhOTkNtaXYzTWw4TUJ3dkdNelF3ajl2NGs4SERGNjlVa3VNNFRhY0pVSmlGb25HVlFxN1l3LUlabm5JNjk4RXVPVHlnODE3eUNrenFUby1oWFN6ZmFPRjN3dkZ1d3FpQkFMdDEyblNVNjB3aU1TZmNfZVZpZW5nZ21WcHlvZmpCdDRGWTRLcVFxM0JrTDk?oc=5",
+          "published": 1790075640,
+          "summary": "",
+          "riskStream": "cyber",
+          "riskStreamName": "网络安全",
+          "topic": "网络安全",
+          "brief": "The EU spent billions on a cyberattack shield — nobody checked if it worked。",
+          "briefZh": "网络安全：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Daily Briefing: Moody’s Warns of Rising Credit Risk for Weaker Borrowers",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOTnVOaXYwYkd3UXAwZWxvQ1c1ekNuNTBmLTdEQ0V3eW5BS2EzNHBxN19ocHZKMnZfaTdJeTJkcWhUSWdLcEptd3gtY2tfeUJtcGkzbkJTdC1qU29ZTVhXbVRGaGdjdGdYSURGakxqMXEzaW9XR2toUTlSZzljMXYwbHZmWlJfSXJwMWVMZUoyN2d5cjAyUFlqWlVNOHF4eU9KYVNndjRMS3JuXzFsTllqcThncUo?oc=5",
+          "published": 1790074500,
+          "summary": "",
+          "riskStream": "market_credit",
+          "riskStreamName": "市场信用",
+          "topic": "市场信用",
+          "brief": "Daily Briefing: Moody’s Warns of Rising Credit Risk for Weaker Borrowers。",
+          "briefZh": "市场信用：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOU3VOUDE2WFpHSE50Nk40elJZZ1pObDJFano0bmpvN2ZpMmJrc2pJSVlqTlQ3QTFySFNnZldHLUR0T3U3UGpEaV9MazBNNldTY1dCRm5tY254bWFhYW5rQkk0bXpiT0tkX3FzdHQxbThaaTJWakM1X29YclJuSDFNS0xzdUhpSmhaZWp4U9IBkgFBVV95cUxNTnlqQ25DZ1V5RUY1OXB6UFFCYzZuV0lIM3d2Z1ByT2F0ZlJURVhUQlFvWVp6QlU4UkhJRTJQVTgxaWwyY21TUWhfVHd5NWxFQjNPMkFvcFdVTll4RlRNd2lONy1FLVlCZUhGOWdwZlFFUHozRHZsNVhvdU84cHh0Z0YtYTY0UHJnQ2NuZUpLZEE1UQ?oc=5",
+          "published": 1790067243,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Trump to press Zelenskyy for energy truce, says Russia has ‘lost control’ of oil due to Ukraine war。",
+          "briefZh": "地缘冲突：出现军事冲突或升级信号，需关注事件是否扩散并影响能源、运输与风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
+          "published": 1790098657,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
+          "briefZh": "地缘冲突：制裁政策出现新变化，需关注其对地缘关系、贸易或资产定价的传导。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "Operator of 314 Wendy’s locations in the US files for bankruptcy protection",
+          "source": "Associated Press",
+          "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNd2xzUkdVNVlPTVBrdFdxajc0cWFoTnprbS11TlhXVWx6dm9KSzJQSkJDWjdra2JoYkktMy1MUlNpeVk5QzM1N1J2bldRZW1lNXlHVHpjaXFxYThMZnFCOU5UX1N1ZUtpUVRob0xzSXR0b2dBcXdnVUFfaEROb0NjV2xtelJ4VGRCblJiQXpRd3lfU0dTQ3ZjakVWSU1rUQ?oc=5",
+          "published": 1790020260,
+          "summary": "",
+          "riskStream": "market_credit",
+          "riskStreamName": "市场信用",
+          "topic": "市场信用",
+          "brief": "Operator of 314 Wendy’s locations in the US files for bankruptcy protection。",
+          "briefZh": "市场信用：信用或流动性压力受到关注，需观察其是否向债券、银行或融资市场传导。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk"
+        },
+        {
+          "title": "5 things to know about Trump’s speech to the United Nations",
+          "source": "The Hill",
+          "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQaWtZN2F6bmR4RmhKV3lrTGc2RGFfN3RJODUzaXhLazZOVWRsZkE5eTB1UjZzek5QbTNBNVRiTk5jOHJjTU1XbEFweXV6N2szM1h2eklzbWJMMjVqWV93U0JFcVo5RlhQeTgtVV9NUzloWVpqNFV3R3JWQ0NXajZFZzBsN0NYREk2aFF4cjhITQ?oc=5",
+          "published": 1790098140,
+          "summary": "",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "5 things to know about Trump’s speech to the United Nations。",
+          "briefZh": "地缘冲突：该报道涉及潜在风险事件，需结合原文与后续发展持续核验。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk"
         }
@@ -699,36 +954,36 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7762.42,
-      "changePct": -0.03,
+      "price": 7770.07,
+      "changePct": 0.07,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 27197.17,
-      "changePct": 0.28,
+      "price": 27236.27,
+      "changePct": 0.42,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 99.85,
-      "changePct": -0.49,
+      "price": 99.65,
+      "changePct": -0.69,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 91.06,
-      "changePct": -4.93,
+      "price": 90.82,
+      "changePct": -5.18,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4375.8,
-      "changePct": -0.18,
+      "price": 4377.3,
+      "changePct": -0.15,
       "fmt": "usd"
     },
     {
@@ -739,5 +994,5 @@
       "fmt": "idx"
     }
   ],
-  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"
+  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。风险页采用五路独立扫描，并在样本、来源和风险维度达到最低覆盖前显示‘数据不足’。市场快照来自 Yahoo Finance。仅供参考。"
 }
