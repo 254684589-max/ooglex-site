@@ -38,9 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch09_clean_pool_ready_x_verification",
-      "last_completed_batch": "08",
-      "next_batch": "09"
+      "status": "batch09_complete_0_preview_ready_continue_batch10",
+      "last_completed_batch": "09",
+      "next_batch": "10"
     }
   ],
   "admission_gates": [
@@ -53,7 +53,7 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Europe Batch 09 (201-225) rebuilt with production + Batch01-08 cross-batch dedupe: 25 clean candidates, all current-role verified, 0 preview-ready pending personal-X identity/activity checks. Continue until Europe production reaches 50 without lowering gates.",
+  "next_action": "Open Europe Batch 10 (226-250) with a fresh production + Batch01-09 deduped candidate pool. Continue until Europe production reaches 50; do not lower role/personal-X/activity/avatar/feed/runtime gates.",
   "current_europe_count": 23,
   "batch03_result": {
     "reviewed": 25,
@@ -255,5 +255,17 @@
     "personal_x_verified": 0,
     "preview_ready": 0,
     "removed_from_initial_draft_as_prior_review_duplicates": 21
+  },
+  "batch09_result": {
+    "reviewed": 25,
+    "preview_ready": 0,
+    "verified_personal_x": 2,
+    "hold_inactive_gt_365d": 2,
+    "no_verified_personal_x_first_pass": 23,
+    "production_additions": 0,
+    "names_hold": [
+      "Frank Vang-Jensen",
+      "József Váradi"
+    ]
   }
 }
