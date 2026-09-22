@@ -15,11 +15,11 @@
     "batch_count": 25,
     "role_verified_or_legacy": 23,
     "role_needs_fresh_capture": 2,
-    "preview_ready": 4,
+    "preview_ready": 5,
     "identity_verified_activity_pending": 0,
     "manual_review_activity": 1,
     "hold_inactive": 1,
-    "needs_x_research": 19,
+    "needs_x_research": 18,
     "production_additions": 4
   },
   "policy": {
@@ -176,12 +176,12 @@
       "role_status": "verified_current",
       "role_source_url": "https://www.lvmh.com/our-group/governance",
       "x_handle": "f_arnault",
-      "x_identity_status": "probable_personal_x_needs_direct_verification",
+      "x_identity_status": "verified_personal_x",
       "x_identity_source_url": "https://x.com/f_arnault",
       "x_activity_status": "active_le_180d",
-      "review_status": "needs_x_research",
-      "notes": "LVMH governance confirms board membership. The apparent personal X handle requires one more ownership and activity check before approval; fan-page variants are explicitly excluded.",
-      "production_duplicate_check": "not_found_in_v604_production_by_exact_name_or_handle",
+      "review_status": "preview_ready",
+      "notes": "LVMH governance confirms current board/executive responsibilities. The personal @f_arnault profile identifies Frédéric Arnault as CEO of Loro Piana; the latest Europe activity audit shows 2026-06-01 activity (112.69 days), passing the <=180d gate.",
+      "production_duplicate_check": "not_found_in_v610_production_by_exact_name_or_handle",
       "x_activity_audit_generated_at": "2026-09-22T04:19:40Z",
       "x_activity_http_status": 200,
       "x_activity_source": "fxtwitter_public_api_fast",
@@ -555,7 +555,7 @@
       "production_duplicate_check": "pending_v604_exact_name_and_handle_check"
     }
   ],
-  "next_stage": "V608 Stable Promotion completed for Octave Klaba, Fredrik Wester, Antoine Arnault and Alexandre Arnault. Continue Europe Batch 06; keep Jean-Pascal Tricoire in manual activity review, Frédéric Arnault in identity review, and unresolved candidates out of production.",
+  "next_stage": "Batch 05 is closed for V608 promotion, but Frédéric Arnault has since cleared identity + <=180d activity and is eligible for the next Europe Preview as a carryover addition. Continue Batch 07 in parallel.",
   "dedupe_check": {
     "production_catalog": "v604-stable-2026-09-22",
     "checked_count": 7,
