@@ -1,13 +1,13 @@
 {
-  "baseline_version": "v612-europe23-stable",
+  "baseline_version": "v613-europe24-stable",
   "captured_at": "2026-09-22",
   "source_path": "apps/tech-leaders/leaders.json",
-  "source_blob_sha": "566d389b4646fbb8815375d4e2ea6b00df98fa1c",
-  "leader_count": 612,
-  "active_count": 612,
+  "source_blob_sha": "6e41023f8fddb5ef449aa7b6fb9181310adecacd",
+  "leader_count": 613,
+  "active_count": 613,
   "schema_version": 12,
   "capacity": 800,
-  "snapshot_path": "data/tech-leaders/snapshots/leaders-v612-europe23-stable-2026-09-22.json",
-  "previous_baseline": "data/tech-leaders/snapshots/leaders-v611-europe22-stable-2026-09-22.json",
-  "purpose": "Stable production baseline after Europe V612 promotion: Martin Lorentzon passed role, verified personal-X identity, <=180d activity, avatar, native free-feed and live-page render gates."
+  "snapshot_path": "data/tech-leaders/snapshots/leaders-v613-europe24-stable-2026-09-22.json",
+  "previous_baseline": "data/tech-leaders/snapshots/leaders-v612-europe23-stable-2026-09-22.json",
+  "purpose": "Stable production baseline after Europe V613 promotion: Estelle Brachlianoff passed role, verified personal-X identity, <=180d activity, avatar, native free-feed and live-page render gates."
 }
