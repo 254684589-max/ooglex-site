@@ -83,6 +83,7 @@ function corsHeaders(request, env) {
   const allow = configured.includes(origin) ? origin : configured[0] || "https://www.ooglex.com";
   return {
     "access-control-allow-origin": allow,
+    "access-control-allow-credentials": "true",
     "access-control-allow-headers": "authorization,content-type,x-ooglex-tech-secret",
     "access-control-allow-methods": "GET,POST,OPTIONS",
     "access-control-expose-headers": "x-ooglex-avatar-source,x-ooglex-avatar-source-type,x-ooglex-avatar-handle",
@@ -186,9 +187,27 @@ async function verifyTechLeadersToken(token, env) {
   return constantTimeBytesEqual(expected, supplied);
 }
 
+function cookieValue(request, name) {
+  const raw = request.headers.get("Cookie") || "";
+  for (const part of raw.split(";")) {
+    const idx = part.indexOf("=");
+    if (idx < 0) continue;
+    if (part.slice(0, idx).trim() === name) return decodeURIComponent(part.slice(idx + 1).trim());
+  }
+  return "";
+}
+
+function techLeadersSessionCookie(token) {
+  return "ooglex_tech_session=" + encodeURIComponent(String(token || "")) +
+    "; Path=/v1/tech-leaders/; Max-Age=" + Math.floor(TECH_LEADERS_SESSION_TTL_MS / 1000) +
+    "; HttpOnly; Secure; SameSite=Lax";
+}
+
 async function techLeadersRequestAuthorized(request, env) {
   const internal = request.headers.get("x-ooglex-tech-secret") || "";
   if (env.TECH_LEADERS_SESSION_SECRET && internal && internal === env.TECH_LEADERS_SESSION_SECRET) return true;
+  const cookieToken = cookieValue(request, "ooglex_tech_session");
+  if (cookieToken && await verifyTechLeadersToken(cookieToken, env)) return true;
   return verifyTechLeadersToken(bearerToken(request), env);
 }
 
@@ -2684,9 +2703,16 @@ export default {
           "retry-after": String(rate.retry_after)
         });
       }
-      let body = {};
-      try { body = await request.json(); } catch {}
-      const ok = await verifyTechLeadersPassword(body && body.password);
+      let password = "";
+      const contentType = String(request.headers.get("content-type") || "").toLowerCase();
+      if (contentType.includes("application/json")) {
+        let body = {};
+        try { body = await request.json(); } catch {}
+        password = String(body && body.password || "");
+      } else {
+        try { password = String(await request.text()); } catch {}
+      }
+      const ok = await verifyTechLeadersPassword(password);
       if (!ok) {
         await techLeadersRateRecordFailure(rate, env);
         return json({ error: "invalid_password" }, 401, { ...cors, "cache-control": "no-store" });
@@ -2695,9 +2721,12 @@ export default {
       const accessToken = await issueTechLeadersToken(env);
       return json({
         ok: true,
-        token: accessToken,
         expires_in: Math.round(TECH_LEADERS_SESSION_TTL_MS / 1000)
-      }, 200, { ...cors, "cache-control": "no-store" });
+      }, 200, {
+        ...cors,
+        "cache-control": "no-store",
+        "set-cookie": techLeadersSessionCookie(accessToken)
+      });
     }
 
     if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405, cors);
