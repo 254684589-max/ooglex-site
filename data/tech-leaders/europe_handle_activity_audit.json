@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T03:32:04Z",
+  "generated_at": "2026-09-22T03:32:32Z",
   "production_count": 599,
   "audited_handle_count": 19,
   "pass_le_180d": 5,
@@ -118,7 +118,7 @@
       "name": "Maziar Mike Doustdar",
       "company": "Novo Nordisk A/S",
       "handle": "maziardoustdar",
-      "current_review_status": "identity_verified_activity_pending",
+      "current_review_status": "manual_review_activity",
       "x_identity_status": "probable_personal_x_needs_direct_verification",
       "http_status": 200,
       "source": "fxtwitter_public_api_fast",
