@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_batch12_role_complete_activity_audit_pending",
+  "status": "phase_open_batch13",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -38,9 +38,9 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch12_role_complete_activity_audit_pending",
-      "last_completed_batch": "11",
-      "next_batch": "12"
+      "status": "batch13_open_role_x_research",
+      "last_completed_batch": "12",
+      "next_batch": "13"
     }
   ],
   "admission_gates": [
@@ -346,5 +346,37 @@
     "unresolved_role_names": [],
     "preview_ready": 0,
     "production_additions": 0
+  },
+  "batch12_result": {
+    "status": "activity_audit_2_hold_1_retry_continue_x_research",
+    "candidate_range": "276-300",
+    "candidate_count": 25,
+    "role_verified_current": 8,
+    "role_verified_legacy": 17,
+    "role_needs_fresh_capture": 0,
+    "personal_x_verified": 3,
+    "preview_ready": 0,
+    "hold_inactive_gt_365d": 2,
+    "hold_names": [
+      "Pekka Lundmark",
+      "Ilham Kadri"
+    ],
+    "audit_retry_required": 1,
+    "retry_names": [
+      "Philippe Brassac"
+    ],
+    "production_additions": 0
+  },
+  "batch13_open": {
+    "status": "clean_candidate_pool_ready",
+    "candidate_range": "301-325",
+    "candidate_count": 25,
+    "production_duplicates": 0,
+    "prior_review_duplicates": 0,
+    "role_verified_current": 0,
+    "role_verified_legacy": 0,
+    "role_needs_fresh_capture": 25,
+    "personal_x_verified": 0,
+    "preview_ready": 0
   }
 }
