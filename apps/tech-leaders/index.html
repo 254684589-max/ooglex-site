@@ -933,11 +933,10 @@
     var filtered=people.filter(function(p){
       return categoryMatches(p,activeCategory)&&(!q||searchableText(p).indexOf(q)!==-1);
     });
-    var QUICK_RAIL_LIMIT=24;
-    var quick=filtered.slice(0,QUICK_RAIL_LIMIT);
-    if(current&&filtered.some(function(p){return p.id===current.id;})&&!quick.some(function(p){return p.id===current.id;})){
-      if(quick.length<QUICK_RAIL_LIMIT)quick.push(current);else quick[quick.length-1]=current;
-    }
+    // Render the complete filtered category into the horizontal rail.
+    // The scrollbar/drag rail virtualizes only by viewport via lazy-loaded avatars;
+    // do not truncate categories (AI alone can contain 200+ leaders).
+    var quick=filtered.slice();
     foldBtn.hidden=people.length<=6;
     foldBtn.textContent="查看全部 "+people.length+" →";
     foldBtn.classList.remove("on");
