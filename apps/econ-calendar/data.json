@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-21T18:16:21Z",
-  "asOf": "2026-09-21",
+  "updatedAt": "2026-09-22T00:02:19Z",
+  "asOf": "2026-09-22",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-20 ~ 2026-09-26",
-  "count": 76,
+  "count": 77,
   "highCount": 7,
   "events": [
     {
@@ -134,7 +134,7 @@
       "title": "Public Sector Net Borrowing",
       "titleEn": "Public Sector Net Borrowing",
       "impact": "low",
-      "forecast": "15.4B",
+      "forecast": "15.2B",
       "previous": "1.8B",
       "actual": null
     },
@@ -158,7 +158,7 @@
       "title": "CBI Industrial Order Expectations",
       "titleEn": "CBI Industrial Order Expectations",
       "impact": "low",
-      "forecast": "-34",
+      "forecast": "-33",
       "previous": "-25",
       "actual": null
     },
@@ -206,7 +206,7 @@
       "title": "Richmond Manufacturing Index",
       "titleEn": "Richmond Manufacturing Index",
       "impact": "low",
-      "forecast": "5",
+      "forecast": "2",
       "previous": "4",
       "actual": null
     },
@@ -326,7 +326,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "French Flash Services PMI",
       "impact": "medium",
-      "forecast": "48.4",
+      "forecast": "48.3",
       "previous": "48.4",
       "actual": null
     },
@@ -338,7 +338,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "German Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "54.0",
+      "forecast": "54.1",
       "previous": "54.1",
       "actual": null
     },
@@ -386,7 +386,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "51.4",
+      "forecast": "51.5",
       "previous": "51.5",
       "actual": null
     },
@@ -422,7 +422,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "low",
-      "forecast": "53.4",
+      "forecast": "53.6",
       "previous": "53.2",
       "actual": null
     },
@@ -434,7 +434,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "Flash Services PMI",
       "impact": "low",
-      "forecast": "56.0",
+      "forecast": "55.8",
       "previous": "56.8",
       "actual": null
     },
@@ -458,7 +458,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-0.6M",
       "previous": "-0.6M",
       "actual": null
     },
@@ -494,7 +494,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "20.9K",
+      "forecast": "22.5K",
       "previous": "-15.8K",
       "actual": null
     },
@@ -566,7 +566,7 @@
       "title": "German ifo Business Climate",
       "titleEn": "German ifo Business Climate",
       "impact": "low",
-      "forecast": "89.0",
+      "forecast": "89.1",
       "previous": "88.8",
       "actual": null
     },
@@ -602,7 +602,7 @@
       "title": "CBI Realized Sales",
       "titleEn": "CBI Realized Sales",
       "impact": "low",
-      "forecast": "-50",
+      "forecast": "-42",
       "previous": "-48",
       "actual": null
     },
@@ -650,8 +650,20 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "-259B",
+      "forecast": "-258B",
       "previous": "-227B",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-24T12:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Barkin Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -722,7 +734,7 @@
       "title": "新屋销售",
       "titleEn": "New Home Sales",
       "impact": "low",
-      "forecast": "619K",
+      "forecast": "615K",
       "previous": "607K",
       "actual": null
     },
@@ -746,7 +758,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "52B",
       "previous": "44B",
       "actual": null
     },
@@ -782,7 +794,7 @@
       "title": "核心 CPI 同比",
       "titleEn": "BOJ Core CPI y/y",
       "impact": "low",
-      "forecast": null,
+      "forecast": "1.5%",
       "previous": "1.6%",
       "actual": null
     },
@@ -854,7 +866,7 @@
       "title": "耐用品订单 环比",
       "titleEn": "Core Durable Goods Orders m/m",
       "impact": "low",
-      "forecast": "0.5%",
+      "forecast": "0.6%",
       "previous": "0.4%",
       "actual": null
     },
@@ -878,7 +890,7 @@
       "title": "消费者信心指数",
       "titleEn": "Revised UoM Consumer Sentiment",
       "impact": "medium",
-      "forecast": "47.5",
+      "forecast": "47.4",
       "previous": "47.8",
       "actual": null
     },
