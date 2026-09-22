@@ -65,7 +65,7 @@
   function renderTabs(){
     var box=$("category-tabs");
     var defs=[{key:"all",name:"概览"}].concat((DATA.categories||[]).map(function(c){
-      var map={politics:"政策",world:"国际",markets:"市场",tech:"AI/Tech",law:"监管"};
+      var map={politics:"政策",world:"国际",markets:"市场",tech:"AI/Tech",law:"监管",risk:"风险"};
       return {key:c.key,name:map[c.key]||c.name};
     }));
     box.innerHTML="";

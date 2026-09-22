@@ -45,10 +45,11 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 # 板块：对齐 whatsthelatest.ai 的全球新闻范围，来源由主流媒体白名单控制。
 CATS = [
     {"key": "politics", "name": "政策·政治",     "q": '"White House" OR Congress OR election OR policy OR regulation'},
-    {"key": "world",    "name": "国际·地缘",     "q": 'geopolitics OR war OR Ukraine OR Iran OR "Middle East" OR Europe OR China OR "United Nations"'},
+    {"key": "world",    "name": "国际·地缘",     "q": 'geopolitics OR war OR Ukraine OR Iran OR "Middle East" OR Europe OR "United Nations"'},
     {"key": "markets",  "name": "市场·经济",     "q": 'markets OR economy OR stocks OR bonds OR Treasury OR oil OR inflation OR "Federal Reserve"'},
     {"key": "tech",     "name": "人工智能·科技", "q": '"artificial intelligence" OR AI OR Nvidia OR chips OR semiconductor OR "data center"'},
     {"key": "law",      "name": "法律·监管",     "q": 'court OR lawsuit OR sanctions OR regulator OR investigation OR antitrust'},
+    {"key": "risk",     "name": "风险",          "q": '"geopolitical risk" OR "market risk" OR "credit risk" OR cyberattack OR "supply chain" OR disruption OR volatility OR default OR sanctions OR "energy security" OR "shipping disruption"'},
 ]
 CATEGORY_COMPONENTS = {
     "politics": "politics-news",
@@ -56,6 +57,7 @@ CATEGORY_COMPONENTS = {
     "markets": "markets-news",
     "tech": "tech-news",
     "law": "law-news",
+    "risk": "risk-news",
 }
 
 # 新闻来源池：对齐 whatsthelatest.ai 当前简报中频繁出现的主流来源。
@@ -125,6 +127,27 @@ def canonical_source(src):
         if needle in low:
             return canonical
     return ""
+
+
+# 全局内容过滤：该专栏不收录中国相关报道。
+# 仅检查新闻标题和 RSS 摘要，不检查媒体名称，因此不会因为来源名含 China
+# （例如 South China Morning Post）而误删其非中国题材报道。
+CHINA_RELATED_RE = re.compile(
+    r"\\bChina\\b|\\bChinese\\b|\\bPRC\\b|People['’]s Republic of China|"
+    r"\\bBeijing\\b|\\bShanghai\\b|\\bShenzhen\\b|\\bGuangzhou\\b|"
+    r"\\bHong Kong\\b|\\bMacau\\b|\\bMacao\\b|\\bCCP\\b|"
+    r"Chinese Communist Party|Communist Party of China|Xi Jinping|"
+    r"People['’]s Liberation Army|\\bPLA\\b|People['’]s Bank of China|\\bPBOC\\b|"
+    r"\\byuan\\b|\\brenminbi\\b|South China Sea|Taiwan Strait|"
+    r"\\bAlibaba\\b|\\bTencent\\b|\\bHuawei\\b|\\bByteDance\\b|\\bTikTok\\b|"
+    r"\\bDeepSeek\\b|\\bBYD\\b|\\bBaidu\\b|\\bXiaomi\\b|\\bJD\\.com\\b",
+    re.I,
+)
+
+
+def is_china_related(item):
+    text = f"{item.get('title') or ''} {item.get('summary') or ''}"
+    return bool(CHINA_RELATED_RE.search(text))
 
 
 # 市场快照（Yahoo 代码）：名称 / 代码 / 计价格式
@@ -234,16 +257,14 @@ def why_it_matters(title, category_key):
         return "这关系到算力供给、技术竞争与 AI 资本开支节奏。"
     if re.search(r"战争|冲突|中东|乌克兰|俄乌|制裁|霍尔木兹", t):
         return "这可能改变地缘风险、能源或贸易链条，并影响市场定价。"
-    if category_key == "sports":
-        return "这会影响赛事进程、运动员或球队预期，以及相关商业关注度。"
-    if category_key == "ent":
-        return "这反映内容产业、平台或消费偏好的最新变化。"
+    if category_key == "risk":
+        return "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
     return "这条信息可能影响该领域后续预期与市场关注重点。"
 
 
 def importance_score(it, category_key):
     score = float(it.get("published") or 0)
-    boosts = {"world": 6, "markets": 5, "tech": 4, "sports": 1, "ent": 0}
+    boosts = {"risk": 7, "world": 6, "markets": 5, "politics": 4, "tech": 4, "law": 3}
     score += boosts.get(category_key, 0) * 3600
     t = it.get("title") or ""
     if re.search(r"战争|冲突|制裁|美联储|利率|标普500|纳斯达克|原油|芯片|人工智能|\\bAI\\b", t, re.I):
@@ -281,6 +302,8 @@ def fetch_feed(url, n=PER_CAT):
             continue
         canonical = canonical_source(it.get("source") or "")
         if not canonical:
+            continue
+        if is_china_related(it):
             continue
         it["source"] = canonical
         out.append(it)
@@ -371,14 +394,18 @@ def build():
             print(f"[OK] {c['name']}：{len(items)} 条")
         elif c["key"] in previous:
             fallback = previous[c["key"]]
-            cats_out.append({
-                "key": c["key"],
-                "name": fallback.get("name") or c["name"],
-                "items": list(fallback["items"]),
-            })
-            total += len(fallback["items"])
-            modes[CATEGORY_COMPONENTS[c["key"]]] = "fallback"
-            print(f"[fallback] {c['name']}：沿用 {len(fallback['items'])} 条旧新闻")
+            fallback_items = [it for it in fallback["items"] if not is_china_related(it)]
+            if fallback_items:
+                cats_out.append({
+                    "key": c["key"],
+                    "name": fallback.get("name") or c["name"],
+                    "items": fallback_items,
+                })
+                total += len(fallback_items)
+                modes[CATEGORY_COMPONENTS[c["key"]]] = "fallback"
+                print(f"[fallback] {c['name']}：沿用 {len(fallback_items)} 条旧新闻（已应用中国相关内容过滤）")
+            else:
+                modes[CATEGORY_COMPONENTS[c["key"]]] = "unavailable"
         else:
             modes[CATEGORY_COMPONENTS[c["key"]]] = "unavailable"
         time.sleep(0.3)
@@ -394,7 +421,7 @@ def build():
                 component_modes=modes,
                 published=False,
                 previous_health=prev_health,
-                failure_reason="Google News五个板块均未刷新",
+                failure_reason="Google News六个板块均未刷新",
             )
             validate_health("whats-latest", prev_file, health)
             write_health(HEALTH_PATH, health)
@@ -425,7 +452,7 @@ def build():
 
     # 图二式「今日概述」：各取市场 / AI科技 / 国际最新一条，只使用标题已有事实。
     overview = []
-    for key in ("politics", "world", "markets", "tech"):
+    for key in ("risk", "politics", "world", "markets", "tech"):
         category = next((x for x in cats_out if x.get("key") == key and x.get("items")), None)
         if category:
             it = max(category["items"], key=lambda x: x.get("published") or 0)
@@ -495,6 +522,7 @@ def build():
         "asOf": now.strftime("%Y-%m-%d"),
         "source": "Google News (curated global publishers) · Yahoo Finance",
         "sourcePool": SOURCE_POOL,
+        "contentPolicy": "exclude-china-related-news",
         "lead": lead,
         "highlight": highlight,
         "overview": overview,
@@ -505,8 +533,8 @@ def build():
         "categories": cats_out,
         "markets": markets,
         "note": ("新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；"
-                 "简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。"
-                 "市场快照来自 Yahoo Finance。仅供参考。"),
+                 "本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，"
+                 "每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"),
     }
     health = make_health(
         "whats-latest",

@@ -83,6 +83,7 @@ FEED_SPECS: dict[str, dict[str, Any]] = {
             {"id": "markets-news", "name": "Google News 市场与经济", "role": "primary", "frequency": "intraday", "requiredForTerminal": True},
             {"id": "tech-news", "name": "Google News AI与科技", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
             {"id": "law-news", "name": "Google News 法律与监管", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
+            {"id": "risk-news", "name": "Google News 风险", "role": "secondary", "frequency": "intraday", "requiredForTerminal": False},
             {"id": "market-quotes", "name": "Yahoo Finance 市场快照", "role": "auxiliary", "frequency": "daily", "requiredForTerminal": False},
         ],
         "recovery": [
@@ -99,6 +100,7 @@ NEWS_COMPONENT_KEYS = {
     "markets-news": "markets",
     "tech-news": "tech",
     "law-news": "law",
+    "risk-news": "risk",
 }
 
 

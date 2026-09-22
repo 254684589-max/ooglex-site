@@ -624,7 +624,7 @@
       "name": "标普500",
       "symbol": "^GSPC",
       "price": 7764.88,
-      "changePct": 0.0,
+      "changePct": 0,
       "fmt": "idx"
     },
     {
@@ -663,5 +663,6 @@
       "fmt": "idx"
     }
   ],
-  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。"
+  "note": "新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，每条均链接回原文核实。市场快照来自 Yahoo Finance。仅供参考。",
+  "contentPolicy": "exclude-china-related-news"
 }
