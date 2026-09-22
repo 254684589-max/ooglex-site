@@ -51,7 +51,7 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Run Europe handle activity audit across Batches 01-04. If all three current new Preview-ready records pass live avatar/free-feed checks, build a Europe V602 Preview (599 -> 602). Continue scanning Batch 05 afterwards because the Europe 50 target still requires 42 more approved additions.",
+  "next_action": "V604 Preview has passed all gates. Next release step is V604 Stable Promotion (599 -> 604); after promotion, continue Europe Batch 05 scanning because 40 more Europe additions will still be required to reach 50.",
   "current_europe_count": 5,
   "batch03_result": {
     "reviewed": 25,
@@ -76,10 +76,28 @@
     ],
     "note": "Batch 01 legacy leader resolved with verified @jmalvpal identity and current activity."
   },
-  "current_new_preview_ready_count": 3,
+  "current_new_preview_ready_count": 5,
   "current_new_preview_ready_names": [
-    "Taavet Hinrikus",
     "Andy Palmer",
-    "José María Álvarez-Pallete"
-  ]
+    "José María Álvarez-Pallete",
+    "Mark Read",
+    "Roland Busch",
+    "Taavet Hinrikus"
+  ],
+  "v604_preview": {
+    "catalog_version": "v604-europe-preview-2026-09-22",
+    "base_count": 599,
+    "approved_additions": 5,
+    "preview_count": 604,
+    "static_gate": "pass",
+    "live_catalog_ok": true,
+    "live_page_ok": true,
+    "native_ready_count": 5,
+    "render_ready_count": 5,
+    "render_blocked_count": 0,
+    "merge_gate": "pass",
+    "production_promoted": false
+  },
+  "production_gap_to_50": 45,
+  "approved_preview_gap_to_50_after_promotion": 40
 }
