@@ -1,0 +1,1 @@
+import{n as e,r as t,t as n}from"./index-BrbPto9a.js";function r(){window.__WTdebug={THREE:t,instantiate:e,findBone:n}}export{r as installDebug};
