@@ -83,8 +83,8 @@ function corsHeaders(request, env) {
   const allow = configured.includes(origin) ? origin : configured[0] || "https://www.ooglex.com";
   return {
     "access-control-allow-origin": allow,
-    "access-control-allow-headers": "authorization,content-type",
-    "access-control-allow-methods": "GET,OPTIONS",
+    "access-control-allow-headers": "authorization,content-type,x-ooglex-tech-secret",
+    "access-control-allow-methods": "GET,POST,OPTIONS",
     "access-control-expose-headers": "x-ooglex-avatar-source,x-ooglex-avatar-source-type,x-ooglex-avatar-handle",
     "vary": "Origin"
   };
@@ -94,6 +94,139 @@ function bearerToken(request) {
   const auth = request.headers.get("Authorization") || "";
   const m = auth.match(/^Bearer\s+(.+)$/i);
   return m ? m[1] : null;
+}
+
+const TECH_LEADERS_PASSWORD_SALT_B64 = "gpPK4sVP5MJwfwYGyn+2rw==";
+const TECH_LEADERS_PASSWORD_HASH_B64 = "ItuR1zX1Ky3AmIcXnfs5OKGBaMTMz3lS/gxu4uQ4EHg=";
+const TECH_LEADERS_PASSWORD_ITERATIONS = 180000;
+const TECH_LEADERS_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const TECH_LEADERS_AUTH_WINDOW_MS = 15 * 60 * 1000;
+const TECH_LEADERS_AUTH_MAX_ATTEMPTS = 8;
+
+function bytesFromBase64(value) {
+  const raw = atob(String(value || ""));
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i += 1) out[i] = raw.charCodeAt(i);
+  return out;
+}
+
+function base64UrlFromBytes(bytes) {
+  let raw = "";
+  for (const value of bytes) raw += String.fromCharCode(value);
+  return btoa(raw).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function bytesFromBase64Url(value) {
+  const normalized = String(value || "").replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized + "=".repeat((4 - normalized.length % 4) % 4);
+  return bytesFromBase64(padded);
+}
+
+function constantTimeBytesEqual(a, b) {
+  if (!(a instanceof Uint8Array) || !(b instanceof Uint8Array) || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i += 1) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
+async function verifyTechLeadersPassword(password) {
+  const material = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(String(password || "")),
+    "PBKDF2",
+    false,
+    ["deriveBits"]
+  );
+  const bits = await crypto.subtle.deriveBits({
+    name: "PBKDF2",
+    salt: bytesFromBase64(TECH_LEADERS_PASSWORD_SALT_B64),
+    iterations: TECH_LEADERS_PASSWORD_ITERATIONS,
+    hash: "SHA-256"
+  }, material, 256);
+  return constantTimeBytesEqual(new Uint8Array(bits), bytesFromBase64(TECH_LEADERS_PASSWORD_HASH_B64));
+}
+
+async function hmacTechLeaders(value, secret) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(String(secret || "")),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign", "verify"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(String(value || "")));
+  return new Uint8Array(signature);
+}
+
+async function issueTechLeadersToken(env) {
+  if (!env.TECH_LEADERS_SESSION_SECRET) throw new Error("tech_leaders_gate_not_configured");
+  const payload = {
+    v: 1,
+    iat: Date.now(),
+    exp: Date.now() + TECH_LEADERS_SESSION_TTL_MS
+  };
+  const body = base64UrlFromBytes(new TextEncoder().encode(JSON.stringify(payload)));
+  const sig = base64UrlFromBytes(await hmacTechLeaders(body, env.TECH_LEADERS_SESSION_SECRET));
+  return body + "." + sig;
+}
+
+async function verifyTechLeadersToken(token, env) {
+  if (!token || !env.TECH_LEADERS_SESSION_SECRET) return false;
+  const parts = String(token).split(".");
+  if (parts.length !== 2) return false;
+  let payload;
+  try {
+    payload = JSON.parse(new TextDecoder().decode(bytesFromBase64Url(parts[0])));
+  } catch {
+    return false;
+  }
+  if (!payload || payload.v !== 1 || !Number.isFinite(payload.exp) || payload.exp <= Date.now()) return false;
+  const expected = await hmacTechLeaders(parts[0], env.TECH_LEADERS_SESSION_SECRET);
+  const supplied = bytesFromBase64Url(parts[1]);
+  return constantTimeBytesEqual(expected, supplied);
+}
+
+async function techLeadersRequestAuthorized(request, env) {
+  const internal = request.headers.get("x-ooglex-tech-secret") || "";
+  if (env.TECH_LEADERS_SESSION_SECRET && internal && internal === env.TECH_LEADERS_SESSION_SECRET) return true;
+  return verifyTechLeadersToken(bearerToken(request), env);
+}
+
+async function techLeadersRateKey(request) {
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
+  return "tech-leaders/auth-rate/" + base64UrlFromBytes(new Uint8Array(digest)).slice(0, 32) + ".json";
+}
+
+async function techLeadersRateCheck(request, env) {
+  const key = await techLeadersRateKey(request);
+  const now = Date.now();
+  const current = await readJson(env.PRO_DATA, key);
+  if (current && Number(current.reset_at) > now && Number(current.count) >= TECH_LEADERS_AUTH_MAX_ATTEMPTS) {
+    return { allowed: false, retry_after: Math.max(1, Math.ceil((Number(current.reset_at) - now) / 1000)) };
+  }
+  return { allowed: true, key, current, now };
+}
+
+async function techLeadersRateRecordFailure(state, env) {
+  const now = state.now || Date.now();
+  const current = state.current && Number(state.current.reset_at) > now ? state.current : null;
+  const next = {
+    count: current ? Number(current.count || 0) + 1 : 1,
+    reset_at: current ? Number(current.reset_at) : now + TECH_LEADERS_AUTH_WINDOW_MS
+  };
+  await writeJson(env.PRO_DATA, state.key, next);
+}
+
+async function techLeadersRateClear(state, env) {
+  if (state && state.key) {
+    try { await env.PRO_DATA.delete(state.key); } catch {}
+  }
+}
+
+function techLeadersCatalogName(raw) {
+  const value = String(raw || "leaders.json").trim();
+  return /^leaders(?:-[a-z0-9-]+)?\.json$/i.test(value) ? value : "";
 }
 
 async function getUser(token, env) {
@@ -2530,7 +2663,6 @@ export default {
   async fetch(request, env) {
     const cors = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
-    if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405, cors);
 
     if (!env.SUPABASE_URL || !env.SUPABASE_PUBLISHABLE_KEY || !env.PRO_DATA) {
       return json({ error: "service_not_configured" }, 503, cors);
@@ -2538,6 +2670,56 @@ export default {
 
     const url = new URL(request.url);
     const token = bearerToken(request);
+
+    if (url.pathname === "/v1/tech-leaders/auth") {
+      if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
+      if (!env.TECH_LEADERS_SESSION_SECRET) {
+        return json({ error: "tech_leaders_gate_not_configured" }, 503, { ...cors, "cache-control": "no-store" });
+      }
+      const rate = await techLeadersRateCheck(request, env);
+      if (!rate.allowed) {
+        return json({ error: "too_many_attempts", retry_after: rate.retry_after }, 429, {
+          ...cors,
+          "cache-control": "no-store",
+          "retry-after": String(rate.retry_after)
+        });
+      }
+      let body = {};
+      try { body = await request.json(); } catch {}
+      const ok = await verifyTechLeadersPassword(body && body.password);
+      if (!ok) {
+        await techLeadersRateRecordFailure(rate, env);
+        return json({ error: "invalid_password" }, 401, { ...cors, "cache-control": "no-store" });
+      }
+      await techLeadersRateClear(rate, env);
+      const accessToken = await issueTechLeadersToken(env);
+      return json({
+        ok: true,
+        token: accessToken,
+        expires_in: Math.round(TECH_LEADERS_SESSION_TTL_MS / 1000)
+      }, 200, { ...cors, "cache-control": "no-store" });
+    }
+
+    if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405, cors);
+
+    if (url.pathname === "/v1/tech-leaders/session") {
+      const authorized = await techLeadersRequestAuthorized(request, env);
+      return json({ ok: authorized }, authorized ? 200 : 401, { ...cors, "cache-control": "no-store" });
+    }
+
+    if (url.pathname === "/v1/tech-leaders/catalog") {
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
+      const catalog = techLeadersCatalogName(url.searchParams.get("catalog"));
+      if (!catalog) return json({ error: "invalid_catalog" }, 400, cors);
+      const dataset = await readDataset(env.PRO_DATA, "tech-leaders/catalogs/" + catalog);
+      if (!dataset) return json({ error: "catalog_not_ready" }, 503, cors);
+      const headers = new Headers(cors);
+      dataset.headers.forEach((value, name) => headers.set(name, value));
+      headers.set("cache-control", "private, no-store");
+      return new Response(dataset.body, { status: 200, headers });
+    }
 
     const shareMatch = url.pathname.match(/^\/share\/tech-leaders\/([A-Za-z0-9_]{1,15})\/(\d{10,25})\/?$/);
     if (shareMatch) {
@@ -2670,6 +2852,9 @@ async function proxyTechLeaderMedia(request, target, cors) {
     }
 
     if (url.pathname === "/v1/tech-leaders/free-feed") {
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FREE_FEED_MAX_ITEMS, 10);
       if (!handle) return json({ error: "invalid_free_feed_handle" }, 400, cors);
@@ -2695,6 +2880,9 @@ async function proxyTechLeaderMedia(request, target, cors) {
     }
 
     if (url.pathname === "/v1/tech-leaders/post") {
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const postId = String(url.searchParams.get("id") || "").trim();
       if (!handle || !/^\d{10,25}$/.test(postId)) {
@@ -2727,6 +2915,9 @@ async function proxyTechLeaderMedia(request, target, cors) {
     }
 
     if (url.pathname === "/v1/tech-leaders/free-profile") {
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
       if (!handle) return json({ error: "invalid_profile_handle" }, 400, cors);
@@ -2750,6 +2941,9 @@ async function proxyTechLeaderMedia(request, target, cors) {
     }
 
     if (url.pathname === "/v1/tech-leaders/profile") {
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const name = String(url.searchParams.get("name") || "").trim().slice(0, 120);
       if (!handle) return json({ error: "invalid_profile_handle" }, 400, cors);
@@ -2834,6 +3028,9 @@ async function proxyTechLeaderMedia(request, target, cors) {
     }
 
     if (url.pathname === "/v1/tech-leaders/feed") {
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
       const leaderId = url.searchParams.get("leader") || "musk";
       const profile = TECH_LEADERS[leaderId];
       if (!profile) return json({ error: "unknown_leader" }, 400, cors);
