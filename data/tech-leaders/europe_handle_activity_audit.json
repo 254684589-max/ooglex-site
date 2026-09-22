@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-22T04:51:15Z",
+  "generated_at": "2026-09-22T04:57:36Z",
   "production_count": 608,
   "audited_handle_count": 17,
   "pass_le_180d": 1,
@@ -94,7 +94,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2025-11-09T10:34:15Z",
-      "age_days": 316.76,
+      "age_days": 316.77,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -124,7 +124,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-11-28T11:14:23Z",
-      "age_days": 1393.73,
+      "age_days": 1393.74,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -139,7 +139,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 2,
       "latest_post_at": "2017-09-14T11:03:09Z",
-      "age_days": 3294.74,
+      "age_days": 3294.75,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -154,7 +154,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-02-18T17:02:34Z",
-      "age_days": 215.49,
+      "age_days": 215.5,
       "activity_gate": "manual_181_365d",
       "error": ""
     },
@@ -199,7 +199,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2022-03-25T16:49:34Z",
-      "age_days": 1641.5,
+      "age_days": 1641.51,
       "activity_gate": "hold_gt_365d",
       "error": ""
     },
@@ -244,7 +244,7 @@
       "source": "fxtwitter_public_api_fast",
       "post_count": 3,
       "latest_post_at": "2026-06-01T12:39:54Z",
-      "age_days": 112.67,
+      "age_days": 112.68,
       "activity_gate": "pass_le_180d",
       "error": ""
     },
