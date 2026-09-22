@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-09-22",
-  "status": "phase_open",
+  "status": "phase_open_v613_preview",
   "phase": "Europe 5 -> 50",
   "category": "欧洲",
   "production_start_count": 5,
@@ -38,7 +38,7 @@
     {
       "batch": "05+",
       "purpose": "Continue issuer/person scans until 45 additional candidates pass all gates",
-      "status": "batch10_open_role_x_research",
+      "status": "batch10_activity_review_1_preview_ready",
       "last_completed_batch": "09",
       "next_batch": "10"
     }
@@ -53,7 +53,7 @@
     "preview static/runtime gate before production promotion"
   ],
   "production_rule": "Do not fill to 50 by quota. Stop a batch at the number of genuinely approved people and continue scanning until Europe production_count reaches 50.",
-  "next_action": "Europe Batch 10 (226-250) opened with 25 fresh candidates after production + Batch01-09 cross-batch dedupe. Verify first-party company relationship, personal X identity and activity before Preview.",
+  "next_action": "V613 Preview opened for Estelle Brachlianoff after role + personal-X identity + <=180d activity evidence. Run avatar/native-feed/live-page gate before any production promotion; Catherine MacGregor remains activity-pending. Continue Batch 10 unresolved X research.",
   "current_europe_count": 23,
   "batch03_result": {
     "reviewed": 25,
@@ -78,12 +78,9 @@
     ],
     "note": "Batch 01 legacy leader resolved with verified @jmalvpal identity and current activity."
   },
-  "current_new_preview_ready_count": 4,
+  "current_new_preview_ready_count": 1,
   "current_new_preview_ready_names": [
-    "Octave Klaba",
-    "Fredrik Wester",
-    "Antoine Arnault",
-    "Alexandre Arnault"
+    "Estelle Brachlianoff"
   ],
   "v604_preview": {
     "catalog_version": "v604-europe-preview-2026-09-22",
@@ -269,13 +266,28 @@
     ]
   },
   "batch10_open": {
-    "status": "clean_candidate_pool_ready",
+    "status": "activity_pass_1_v613_preview_open",
     "candidate_range": "226-250",
     "candidate_count": 25,
     "production_duplicates": 0,
     "prior_review_duplicates": 0,
-    "role_verified_current": 0,
-    "personal_x_verified": 0,
-    "preview_ready": 0
+    "role_verified_current": 20,
+    "personal_x_verified": 2,
+    "preview_ready": 1,
+    "activity_pending": 1,
+    "preview_ready_names": [
+      "Estelle Brachlianoff"
+    ],
+    "activity_pending_names": [
+      "Catherine MacGregor"
+    ]
+  },
+  "v613_preview": {
+    "catalog_version": "v613-europe-preview-2026-09-22",
+    "base_count": 612,
+    "approved_additions": 1,
+    "preview_count": 613,
+    "status": "pending_runtime_audit",
+    "production_promoted": false
   }
 }
