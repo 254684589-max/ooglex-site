@@ -5,12 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "data/tech-leaders/europe_listed_review.batch01.json"
-      - "data/tech-leaders/europe_listed_review.batch02.json"
-      - "data/tech-leaders/europe_listed_review.batch03.json"
-      - "data/tech-leaders/europe_listed_review.batch04.json"
-      - "data/tech-leaders/europe_listed_review.batch05.json"
-      - "data/tech-leaders/europe_listed_review.batch06.json"
+      - "data/tech-leaders/europe_listed_review.batch*.json"
       - ".github/workflows/europe-handle-activity-audit.yml"
 
 permissions:
@@ -40,7 +35,7 @@ jobs:
           from email.utils import parsedate_to_datetime
           from pathlib import Path
 
-          review_paths=[Path(f"data/tech-leaders/europe_listed_review.batch0{i}.json") for i in range(1,7)]
+          review_paths=sorted(Path("data/tech-leaders").glob("europe_listed_review.batch*.json"))
           production=json.loads(Path("apps/tech-leaders/leaders.json").read_text(encoding="utf-8"))
           prod_handles={str(x.get("handle") or "").lower() for x in production.get("leaders",[]) if x.get("handle")}
           rows=[]
@@ -66,7 +61,8 @@ jobs:
               for p in data.get("candidates") or []:
                   handle=str(p.get("x_handle") or "").lstrip("@").strip()
                   if not handle: continue
-                  if handle.lower() in prod_handles and path.name != "europe_listed_review.batch06.json": continue
+                  is_retag=(str(p.get("candidate_type") or "")=="production_category_enrichment" or str(p.get("review_status") or "").startswith("existing_production_europe_retag_ready"))
+                  if handle.lower() in prod_handles and not is_retag: continue
                   url="https://pro-api.ooglex.com/v1/tech-leaders/free-feed?"+urllib.parse.urlencode({"handle":handle,"limit":3})
                   status=None; source=""; posts=[]; error=""
                   try:
