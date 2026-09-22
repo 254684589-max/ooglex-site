@@ -186,7 +186,8 @@ def main() -> int:
 
     candidates = []
     source_evidence = []
-    seen_candidate_keys = set()
+    candidate_index_by_key = {}
+    superseded_candidate_count = 0
     for evidence_path in evidence_paths:
         ev = load_json(evidence_path)
         source_evidence.append(str(evidence_path))
@@ -196,10 +197,14 @@ def main() -> int:
                 str(c.get("ticker") or "").upper(),
                 str(c.get("executive_name") or "").strip().lower(),
             )
-            if key in seen_candidate_keys:
-                raise RuntimeError(f"duplicate candidate across evidence tranches: {key}")
-            seen_candidate_keys.add(key)
             validate_candidate(c)
+            if key in candidate_index_by_key:
+                # Later tranches are review updates/resolutions of earlier rows.
+                # Treat them as superseding evidence rather than a fatal duplicate.
+                candidates[candidate_index_by_key[key]] = c
+                superseded_candidate_count += 1
+                continue
+            candidate_index_by_key[key] = len(candidates)
             candidates.append(c)
 
     approved = [c for c in candidates if c.get("review_status") == "approved"]
@@ -231,6 +236,7 @@ def main() -> int:
         "source_evidence": source_evidence,
         "evidence_tranche_count": len(source_evidence),
         "reviewed_candidate_count": len(candidates),
+        "superseded_candidate_count": superseded_candidate_count,
         "review_status_counts": dict(sorted(review_counts.items())),
         "base_count": len(base.get("leaders") or []),
         "approved_already_live": approved_already_live,
