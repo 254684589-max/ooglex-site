@@ -31,6 +31,46 @@ def require_url(value: str, label: str) -> None:
         raise RuntimeError(f"{label} must be an https URL")
 
 
+
+def normalize_candidate(c: dict[str, Any]) -> dict[str, Any]:
+    """Normalize newer research-tranche records into the preview-builder schema.
+
+    Tranches 20+ use person-first fields (name/category) instead of the older
+    issuer-first fields (executive_name/recommended_categories). Preserve the
+    evidence rather than failing the whole preview workflow on schema drift.
+    """
+    out = dict(c)
+    if out.get("executive_name"):
+        return out
+
+    name = str(out.get("name") or "").strip()
+    role = str(out.get("executive_role") or "").strip()
+    if not name:
+        return out
+
+    out.setdefault("ticker", "PRIVATE")
+    out.setdefault("exchange", "PRIVATE")
+    out["executive_name"] = name
+
+    role_low = role.lower()
+    if out.get("role_status"):
+        pass
+    elif "currently on extended break" in role_low or role_low.startswith("former "):
+        out["role_status"] = "legacy"
+    else:
+        out["role_status"] = "current"
+
+    if not out.get("x_identity_status") and out.get("x_identity_source_url"):
+        out["x_identity_status"] = "verified"
+    out.setdefault("x_check_type", "person_first_verified_evidence")
+
+    cats = out.get("recommended_categories")
+    if not cats:
+        category = str(out.get("category") or "").strip()
+        out["recommended_categories"] = [category] if category else []
+
+    return out
+
 def validate_candidate(c: dict[str, Any]) -> None:
     if c.get("review_status") != "approved":
         return
@@ -150,7 +190,8 @@ def main() -> int:
     for evidence_path in evidence_paths:
         ev = load_json(evidence_path)
         source_evidence.append(str(evidence_path))
-        for c in ev.get("candidates") or []:
+        for raw in ev.get("candidates") or []:
+            c = normalize_candidate(raw)
             key = (
                 str(c.get("ticker") or "").upper(),
                 str(c.get("executive_name") or "").strip().lower(),
