@@ -228,6 +228,46 @@ def _extract_json_payload(text):
     return data if isinstance(data, list) else []
 
 
+def apply_google_title_translation(refs):
+    """无密钥标题翻译兜底：只翻译原始标题，不补写新闻事实。"""
+    pending = [
+        (idx, item)
+        for idx, item in refs
+        if not has_han(item.get("title") or "")
+        and (item.get("titleZh") or "").endswith("最新进展")
+    ]
+    if not pending:
+        return
+    try:
+        from deep_translator import GoogleTranslator
+        translator = GoogleTranslator(source="auto", target="zh-CN")
+    except Exception as exc:
+        print(f"[translate-google] 初始化失败：{str(exc)[:120]}")
+        return
+
+    for start in range(0, len(pending), 20):
+        chunk = pending[start:start + 20]
+        titles = [item.get("title") or "" for _, item in chunk]
+        try:
+            translated = translator.translate_batch(titles)
+            if not isinstance(translated, list) or len(translated) != len(chunk):
+                raise RuntimeError("translate_batch returned unexpected payload")
+            applied = 0
+            for (_, item), title_zh in zip(chunk, translated):
+                title_zh = str(title_zh or "").strip()
+                if not has_han(title_zh):
+                    continue
+                item["titleZh"] = title_zh
+                item["briefZh"] = (
+                    f"{title_zh}。{zh_source(item.get('source') or '')}为该报道新闻源；"
+                    "更多事实与细节请查看原文。"
+                )
+                applied += 1
+            print(f"[translate-google] 标题中文化 {applied}/{len(chunk)} 条")
+        except Exception as exc:
+            print(f"[translate-google] 批次失败，保留中文兜底：{str(exc)[:120]}")
+
+
 def apply_chinese_translation(cats_out):
     """把新闻标题/摘要统一补成中文。失败时保留中文兜底，不让前端回退到英文。"""
     refs = []
@@ -293,6 +333,8 @@ def apply_chinese_translation(cats_out):
             print(f"[translate] 中文化 {applied}/{len(chunk)} 条")
         except Exception as exc:
             print(f"[translate] 批次失败，保留中文兜底：{str(exc)[:120]}")
+
+    apply_google_title_translation(refs)
 
 
 # 全局内容过滤：该专栏不收录中国相关报道。
