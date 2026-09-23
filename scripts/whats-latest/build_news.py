@@ -280,12 +280,28 @@ def cloudflare_translate_text(text):
         return ""
 
 
-def apply_chinese_translation(cats_out):
-    """统一生成中文标题、中文新闻源和中文简报；翻译失败时不回退显示英文。"""
+def apply_chinese_translation(cats_out, prev_file=None):
+    """统一生成中文标题、中文新闻源和中文简报；优先复用上次已核定的中文译文。"""
+    prior = {}
+    if isinstance(prev_file, dict):
+        for category in prev_file.get("categories") or []:
+            for old in category.get("items") or []:
+                raw_title = old.get("title") or ""
+                title_zh = old.get("titleZh") or ""
+                if raw_title and has_han(title_zh) and not title_zh.endswith("最新进展"):
+                    prior[raw_title] = {
+                        "titleZh": title_zh,
+                        "briefZh": old.get("briefZh") or "",
+                        "sourceZh": old.get("sourceZh") or "",
+                    }
+
     refs = []
     for category in cats_out:
         category_name = category.get("name") or "新闻"
         for item in category.get("items") or []:
+            cached = prior.get(item.get("title") or "")
+            if cached:
+                item.update({k: v for k, v in cached.items() if v})
             item["sourceZh"] = item.get("sourceZh") or zh_source(item.get("source") or "")
             item["titleZh"] = (
                 item.get("titleZh")
@@ -860,7 +876,7 @@ def build():
             modes[CATEGORY_COMPONENTS[c["key"]]] = "unavailable"
         time.sleep(0.3)
 
-    apply_chinese_translation(cats_out)
+    apply_chinese_translation(cats_out, prev_file)
 
     if fresh_categories == 0:
         modes["market-quotes"] = "fallback" if prev_file and prev_file.get("markets") else "unavailable"
