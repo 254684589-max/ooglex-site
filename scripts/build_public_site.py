@@ -51,9 +51,14 @@ PRO_PRIVATE_PATHS = {
     "apps/supply-chain/edges",
     "apps/macro-radar/data.json",
     "apps/macro-radar/history.json",
-    "apps/macro-radar/curve.json",
-    "apps/macro-radar/curve-monthly.json",
-    # series.json 不在这份名单里：它是 10 年期美债、美联储广义美元指数、WTI 现货
+    # curve.json / curve-monthly.json 也不在这份名单里：公开金融终端的收益率曲线
+    # 面板有「当前形态 / 随时间 / 期限价差历史」三个视图，后两个要逐日历史才画得出，
+    # 期限详情页的八档区间同理。只给当期读数的话，这些视图点了没反应——那不是
+    # 「降级」，是坏的。且 10 年期那条日线本来就已经随 series.json 公开了，
+    # 把其余 10 个期限的同一段窗口留在墙内也保护不了什么。
+    # PRO 的价值在宏观风险模型本身（regime / signals / 危机复盘 / history.json），
+    # 不在美国财政部 H.15 这份公开收益率。
+    # series.json 同理，不在这份名单里：它是 10 年期美债、美联储广义美元指数、WTI 现货
     # 三条 FRED 公开序列的**滚动一年**窗口（各 260 个交易日），公开终端的宏观面板
     # 拿它算两条 Z-Score。Z 的窗口就是整段序列（win=504 会被 260 截断），
     # 按比例裁一份"替身"会把 Z 值改成另一个数——那是造数，不是预览。
@@ -78,7 +83,6 @@ PREVIEW_REPLACEMENTS = {
     "apps/supply-chain/edges",
     "apps/macro-radar/data.json",
     "apps/macro-radar/history.json",
-    "apps/macro-radar/curve.json",
     "apps/finance-column/arch.js",
     "apps/finance-column/diagrams.js",
     "apps/whats-latest/data.json",
@@ -129,55 +133,6 @@ def copy_tree(src: Path, dst: Path) -> None:
         target = dst / p.relative_to(src)
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(p, target)
-
-
-def install_public_curve_snapshot() -> None:
-    """把当前期限结构写成公开替身，历史序列一律不带出去。
-
-    与 data.json / history.json 的预览替身同一套机制，只是这里不按比例抽样：
-    「当前形态」要么完整要么没有，抽样会让曲线变形。因此保留全部期限的当期读数
-    与当期利差，删掉 history（11 期限 × 260 天）与利差的逐日序列。
-    """
-    src = ROOT / "apps" / "macro-radar" / "curve.json"
-    if not src.exists():
-        raise SystemExit("missing source for public curve snapshot: apps/macro-radar/curve.json")
-    obj = json.loads(src.read_text(encoding="utf-8"))
-
-    tenors = []
-    for row in obj.get("tenors") or []:
-        if isinstance(row, dict):
-            tenors.append({k: row.get(k) for k in
-                           ("id", "label", "months", "value", "asOf", "current") if k in row})
-    spreads = []
-    for row in obj.get("spreads") or []:
-        if isinstance(row, dict):
-            spreads.append({k: row.get(k) for k in
-                            ("id", "label", "long", "short", "value", "asOf", "inverted")
-                            if k in row})
-
-    snapshot = {
-        "updatedAt": obj.get("updatedAt"),
-        "asOf": obj.get("asOf"),
-        "source": obj.get("source"),
-        "sourceUrl": obj.get("sourceUrl"),
-        "frequency": obj.get("frequency") or "daily",
-        "status": obj.get("status") or "ok",
-        "note": (str(obj.get("note") or "")
-                 + "（公开站点只提供当期期限结构与当期利差，不含逐日历史序列；"
-                   "历史序列属受保护研究数据，页面在需要历史的视图上明确说明，不以空白或推断值代替。）"),
-        "tenors": tenors,
-        "spreads": spreads,
-        "ooglexAccess": {
-            "mode": "preview",
-            "ratio": 0,
-            "historyIncluded": False,
-            "visibleTenors": len(tenors),
-            "fullTenors": len(obj.get("tenors") or []),
-        },
-    }
-    dst = OUT / "apps" / "macro-radar" / "curve.json"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_text(json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 
 def install_rich_public_previews() -> None:
@@ -499,7 +454,6 @@ def build(protect_pro: bool) -> None:
     if protect_pro:
         install_rich_public_previews()
         install_whats_latest_preview()
-        install_public_curve_snapshot()
         inject_rich_access_adapter()
 
         leaked = []

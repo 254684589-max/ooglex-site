@@ -693,7 +693,11 @@ table{width:100%;border-collapse:collapse}
   border:1px solid #000;border-bottom:0;
 }
 .t-subtabs button.on{background:var(--t-sel);color:#fff}
-.t-subtabs button:hover{color:#fff}
+.t-subtabs button:hover:not([disabled]){color:#fff}
+/* 置灰的子标签必须一眼看出点不动：只把 onclick 摘掉、外观不变，读者只会以为页面坏了 */
+.t-subtabs button[disabled]{opacity:.42;cursor:not-allowed;text-decoration:line-through;
+  text-decoration-color:var(--t-dim)}
+.t-subtabs button[disabled]:hover{color:var(--t-dim)}
 .t-subtabs .lbl{font-size:11.5px;color:var(--t-dim);padding:0 6px 0 12px}
 .t-subtabs .pick{
   background:var(--t-cmd-key);border:1px solid var(--t-cmd-line);color:var(--t-cmd-line);

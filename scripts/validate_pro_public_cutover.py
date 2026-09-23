@@ -15,12 +15,12 @@ FULL_ONLY_FORBIDDEN = (
     "apps/supply-chain/foreign.json",
     "apps/supply-chain/domestic.json",
     "apps/supply-chain/smelters.json",
-    "apps/macro-radar/curve-monthly.json",
 )
 
-# curve.json 不在上面的名单里：公开站点必须有它（公开金融终端的 US RATES、
-# 收益率曲线、债券品类与 11 个期限详情页都读它），但只能是去掉历史的替身。
-# 下面 check_public_curve() 逐条核对：当期期限一个不少、历史一个不带。
+# curve.json / curve-monthly.json 不在上面的名单里：公开金融终端的 US RATES、
+# 收益率曲线三视图、债券品类与 11 个期限详情页全都读它们，缺一个视图就点不动。
+# 下面 check_public_curve() 反过来守：公开产物里必须有，且与源文件逐条等长
+# ——公开页与 PRO 页看同一条曲线，不允许悄悄少几天。
 
 
 def check_public_reference_series() -> None:
@@ -47,35 +47,39 @@ def check_public_reference_series() -> None:
 
 
 def check_public_curve() -> None:
-    """公开的美债曲线必须是「当期齐全、历史全无」的替身。
+    """公开的美债曲线必须与源文件完全一致（期限、历史、利差都不许缺）。
 
-    少了它，公开金融终端的四处读数直接 404（这正是 2026-09-21 线上那次故障）；
-    多带了历史，等于把受保护的研究数据发到公开站点。两头都要守住。
+    2026-09-21 的故障就是它被整份删掉：四处读数直接 404。后来改成只给当期读数，
+    结果「随时间 / 期限价差历史」两个标签页点了没反应——留着一个点不动的按钮，
+    比没有这个功能更糟。现在整份公开，这条契约守住「不许悄悄少几天」：
+    公开页与 PRO 页必须是同一条曲线。
     """
     rel = "apps/macro-radar/curve.json"
     curve = read_json(rel)
-    assert_preview_marker(curve, rel)
-
     source = json.loads((ROOT / rel).read_text(encoding="utf-8"))
+
     expected = [t.get("id") for t in (source.get("tenors") or []) if isinstance(t, dict)]
     actual = [t.get("id") for t in (curve.get("tenors") or []) if isinstance(t, dict)]
-    if actual != expected:
+    if actual != expected or not actual:
         fail(f"public Treasury curve tenors differ from source: {len(actual)}/{len(expected)}")
-    if not actual:
-        fail("public Treasury curve has no tenors")
 
-    for key in ("history", "values", "dates"):
-        if key in curve:
-            fail(f"public Treasury curve must not carry {key}")
-    for row in curve.get("spreads") or []:
-        for key in ("history", "values", "dates"):
-            if isinstance(row, dict) and key in row:
-                fail(f"public Treasury curve spread must not carry {key}")
+    src_hist = (source.get("history") or {}).get("values") or {}
+    pub_hist = (curve.get("history") or {}).get("values") or {}
+    if sorted(pub_hist) != sorted(src_hist):
+        fail("public Treasury curve history is missing tenors")
+    for key, values in src_hist.items():
+        if len(pub_hist.get(key) or []) != len(values or []):
+            fail(f"public Treasury curve history {key} truncated")
+    if len((curve.get("spreads") or [])) != len((source.get("spreads") or [])):
+        fail("public Treasury curve spreads truncated")
     if not curve.get("source") or not curve.get("asOf"):
         fail("public Treasury curve must keep source and asOf")
-    mark = curve.get("ooglexAccess") or {}
-    if mark.get("historyIncluded") is not False:
-        fail("public Treasury curve must declare historyIncluded=false")
+
+    monthly_rel = "apps/macro-radar/curve-monthly.json"
+    monthly = read_json(monthly_rel)
+    monthly_src = json.loads((ROOT / monthly_rel).read_text(encoding="utf-8"))
+    if sorted((monthly.get("series") or {})) != sorted((monthly_src.get("series") or {})):
+        fail("public Treasury monthly curve is missing tenors")
 
 
 def fail(message: str) -> None:
