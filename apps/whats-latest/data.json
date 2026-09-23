@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T06:12:47Z",
+  "updatedAt": "2026-09-23T06:15:23Z",
   "asOf": "2026-09-23",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -171,24 +171,6 @@
       "category": "国际·地缘"
     },
     {
-      "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
-      "source": "The Wall Street Journal",
-      "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
-      "published": 1790128657,
-      "summary": "",
-      "sourceZh": "《华尔街日报》",
-      "riskStream": "energy_shipping",
-      "riskStreamName": "能源运输",
-      "topic": "能源运输",
-      "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
-      "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
-      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "categoryKey": "risk",
-      "titleZh": "能源运输：最新进展",
-      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "category": "风险"
-    },
-    {
       "title": "The A.I. Party House Where Networking Has a Dark Side",
       "source": "The New York Times",
       "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9UVVh3cG10S1Q4enl4MDFMZmgxTkYzdUtqWnZfeVZzS0hLcFRXVmt5cFd0Ym1mZmZHUURyell1bEUzOS1oYjlQWUZ4bmFWaHpQU0V3NHZfX1VRUTVqQmUzTEk5NXE4VFlhbG5NNjBLZzZGUWpoWG9MYUhkMA?oc=5",
@@ -205,20 +187,36 @@
       "category": "人工智能·科技"
     },
     {
-      "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
-      "source": "CNBC",
-      "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
-      "published": 1790125440,
+      "title": "Oil falls $1 on better supply outlook, hopes for US-Iran talks",
+      "source": "Reuters",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOeFhpNFFXWGZ2azRGVllBNXpwLXZQeTFySkY3Vi12SmpTNmMyY09oU3RMa3Rqb21pNUl0ZGhSbVBWQnZBOXdOb19xSlU3TnNra0F6OWowVHp5RHlSblJGTVhXandWeEFJaDBOTi1VcjdrSjVNeGVJZnVjeUJXM3NVYUgxZ28yQkVuWXNhc1pxd093NVVBTHZnWm40c01OS00zZHAwRWVR?oc=5",
+      "published": 1790127840,
       "summary": "",
-      "sourceZh": "美国消费者新闻与商业频道",
-      "topic": "国际·地缘",
-      "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
+      "sourceZh": "路透社",
+      "topic": "市场·经济",
+      "brief": "Oil falls $1 on better supply outlook, hopes for US-Iran talks。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "titleZh": "国际·地缘：最新进展",
-      "briefZh": "美国消费者新闻与商业频道报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "categoryKey": "markets",
+      "titleZh": "市场·经济：最新进展",
+      "briefZh": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "国际·地缘"
+      "category": "市场·经济"
+    },
+    {
+      "title": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.",
+      "source": "The Wall Street Journal",
+      "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNX2NEcUlPVHdCWTZGWDA4YkVlU0loRkpwNlY2VkV0cFIxRmJYMWV2MFpuR3pvLVpRTDFGQ1IzVkx2Ty1MZjV6X0FGYzliaFdqd1B1UDlGNnhadjNHa0JUQUdHZEszZGhiZkZtdXZGT3p5UWthcEFBTUI0alBpTFJGZWZiM2ZzeVVYRkNaY3pPZE1PQTg3ZnpHNGh3VkFnR3NJLXk4S2RzUXYzOUtUbUxBX2Z0dE14NWYtYVE?oc=5",
+      "published": 1790130240,
+      "summary": "",
+      "sourceZh": "《华尔街日报》",
+      "topic": "政策·政治",
+      "brief": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "politics",
+      "titleZh": "政策·政治：最新进展",
+      "briefZh": "《华尔街日报》报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "category": "政策·政治"
     }
   ],
   "alsoNoted": [
@@ -300,7 +298,7 @@
         "name": "地缘政治",
         "score": 100,
         "state": "高",
-        "matches": 16
+        "matches": 17
       },
       {
         "name": "市场 / 信用",
@@ -312,7 +310,7 @@
         "name": "能源 / 运输",
         "score": 100,
         "state": "高",
-        "matches": 8
+        "matches": 9
       },
       {
         "name": "网络安全",
@@ -331,21 +329,18 @@
       {
         "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
         "source": "Reuters"
-      },
-      {
-        "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
-        "source": "The Guardian"
       }
     ],
     "coverage": {
       "sampleCount": 15,
-      "sourceCount": 9,
+      "sourceCount": 10,
       "streamCount": 5,
       "sources": [
         "ABC News",
         "Associated Press",
         "Axios",
         "Bloomberg",
+        "CNBC",
         "Euronews",
         "NBC News",
         "Reuters",
@@ -410,21 +405,6 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "British Columbia leader calls snap election as premier tells voters to say ‘hell no to Trump’",
-          "source": "Associated Press",
-          "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQMWpkYVZhbkJYTEpmaUh5ZGtuMDVBVmFFR3JDY25JM1gzRjl2ZWlQYkFVbEFSRXprendWcWdEZWJrWjdDNWt2RjFYS1BZT0VUQmppZEFYWEZLWUI0QzhTQWdUQWI1eUZtSzFJa3puYjQ2VXc1cklLN2V3OE9aYlF5UzFUQUEwMW91eVVKQ2NCbENYdXYzeXgtSkRFc2U1U0E?oc=5",
-          "published": 1790110320,
-          "summary": "",
-          "sourceZh": "美联社",
-          "topic": "政策·政治",
-          "brief": "British Columbia leader calls snap election as premier tells voters to say ‘hell no to Trump’。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "politics",
-          "titleZh": "政策·政治：最新进展",
-          "briefZh": "美联社报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
           "title": "DOJ defends Trump ban of 3 news outlets, says White House access is a 'privilege — not a right'",
           "source": "CNBC",
           "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPOHpWNU00a0N3dGYtT0JBRzRhY1lUTkEzUUh5akRhZmRPNlE4Tkp4SWNqMFNyRmFWRGhGaFpVcnQ2WU81dDFncHdXVGRqcnV2WmJMUFJDbm9jWERNTk00WTUxblB5ajFvdHNtazI1UjJxTjlKVFRubHhMT2NQdDBpM2ZPT29vZTZ2eHFEQ0hTQ1PSAZYBQVVfeXFMTlQ5cHJlZFpzY2FESVBKRmh0Tkh2cU9fRFI4alB6WWRmcm9MRGlRZjhPRWk3Z1FVSjBMeThjYkE3ZzJwX1VDNkxwY0NOWFpEbGotYzNVSUpHTWl6cFJkQjNNSlZ4Mmp1M2hDNVVaNWQ1RXpjSXlmSUswYndxb3hlSUZZRWx4TDVsSFZZY2s4d09SNkozd2p3?oc=5",
@@ -437,6 +417,21 @@
           "categoryKey": "politics",
           "titleZh": "政策·政治：最新进展",
           "briefZh": "美国消费者新闻与商业频道报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "British Columbia leader calls snap election as premier tells voters to say ‘hell no to Trump’",
+          "source": "Associated Press",
+          "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQMWpkYVZhbkJYTEpmaUh5ZGtuMDVBVmFFR3JDY25JM1gzRjl2ZWlQYkFVbEFSRXprendWcWdEZWJrWjdDNWt2RjFYS1BZT0VUQmppZEFYWEZLWUI0QzhTQWdUQWI1eUZtSzFJa3puYjQ2VXc1cklLN2V3OE9aYlF5UzFUQUEwMW91eVVKQ2NCbENYdXYzeXgtSkRFc2U1U0E?oc=5",
+          "published": 1790110320,
+          "summary": "",
+          "sourceZh": "美联社",
+          "topic": "政策·政治",
+          "brief": "British Columbia leader calls snap election as premier tells voters to say ‘hell no to Trump’。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "美联社报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -602,6 +597,21 @@
       "name": "市场·经济",
       "items": [
         {
+          "title": "Oil falls $1 on better supply outlook, hopes for US-Iran talks",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOeFhpNFFXWGZ2azRGVllBNXpwLXZQeTFySkY3Vi12SmpTNmMyY09oU3RMa3Rqb21pNUl0ZGhSbVBWQnZBOXdOb19xSlU3TnNra0F6OWowVHp5RHlSblJGTVhXandWeEFJaDBOTi1VcjdrSjVNeGVJZnVjeUJXM3NVYUgxZ28yQkVuWXNhc1pxd093NVVBTHZnWm40c01OS00zZHAwRWVR?oc=5",
+          "published": 1790127840,
+          "summary": "",
+          "sourceZh": "路透社",
+          "topic": "市场·经济",
+          "brief": "Oil falls $1 on better supply outlook, hopes for US-Iran talks。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
           "title": "Oil Prices Tumble Again",
           "source": "The Wall Street Journal",
           "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE04SzctMDNsU3pqSnBUejhaU04wTmgyMG9CUjhVWHFGeVhzTDc5dDdXTnBaQjIwYmpaTFFhOVBwM1A4aERoQ3lreG92djFqMGNiQTRpN3JKNWJiWmNXU3JiWEVoUVhMYVY5UWh0eXR4Z3JCUkM5Qmc?oc=5",
@@ -629,21 +639,6 @@
           "categoryKey": "markets",
           "titleZh": "市场·经济：最新进展",
           "briefZh": "美国全国广播公司新闻报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Oil falls $1 on better supply outlook, hopes for US-Iran talks",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOeFhpNFFXWGZ2azRGVllBNXpwLXZQeTFySkY3Vi12SmpTNmMyY09oU3RMa3Rqb21pNUl0ZGhSbVBWQnZBOXdOb19xSlU3TnNra0F6OWowVHp5RHlSblJGTVhXandWeEFJaDBOTi1VcjdrSjVNeGVJZnVjeUJXM3NVYUgxZ28yQkVuWXNhc1pxd093NVVBTHZnWm40c01OS00zZHAwRWVR?oc=5",
-          "published": 1790127840,
-          "summary": "",
-          "sourceZh": "路透社",
-          "topic": "市场·经济",
-          "brief": "Oil falls $1 on better supply outlook, hopes for US-Iran talks。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets",
-          "titleZh": "市场·经济：最新进展",
-          "briefZh": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -713,21 +708,6 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "Trump says US Justice Department could rein in AI companies if needed",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
-          "published": 1790116324,
-          "summary": "",
-          "sourceZh": "路透社",
-          "topic": "人工智能·科技",
-          "brief": "Trump says US Justice Department could rein in AI companies if needed。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech",
-          "titleZh": "人工智能·科技：最新进展",
-          "briefZh": "路透社报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
           "title": "Trump rejects global entity for AI oversight",
           "source": "POLITICO",
           "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNWjFSMGM0WDEzdFVqc3RrczI5d0JkSTlzX0pUTVFpa1V6bGh1UUZxeHNsTDNmRkJOQ2tGUWh3NnJ1MzZBclF1QnpCeHg1ZjR6cVZ3cU9jbUp6SzVWMFY4WFZZUmVQOE1mczBPdGR1TTk5VVNMTFlWc2Y3cjBGWkJSVElfZXMtbTRaWExTTnZCY0tJQ01i?oc=5",
@@ -740,6 +720,21 @@
           "categoryKey": "tech",
           "titleZh": "人工智能·科技：最新进展",
           "briefZh": "《政客》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "Trump says US Justice Department could rein in AI companies if needed",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOYkFwcnFpOFFycEx0SEwwNUxZazVuTTh6aUNKZ0pUUHlPU2toMkk2WXAyc3RkYTdKWlVsTEVoTmR5VGJaZlhaU21OdHp2aXRWZ0VGNGtJdERKVGUtWXBiMWdKRm9JY04zTnZ3YXp5akdBU2RsS0tHZG9ESTVmR0hOWUYyaWpjYVNCcFF3c3RBVk53NC1SanNTaXpxOHdMei1SNUJPWnhLLTkzU2VOaUE?oc=5",
+          "published": 1790116324,
+          "summary": "",
+          "sourceZh": "路透社",
+          "topic": "人工智能·科技",
+          "brief": "Trump says US Justice Department could rein in AI companies if needed。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "路透社报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -808,21 +803,6 @@
       "key": "law",
       "name": "法律·监管",
       "items": [
-        {
-          "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
-          "published": 1790098657,
-          "summary": "",
-          "sourceZh": "路透社",
-          "topic": "法律·监管",
-          "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law",
-          "titleZh": "法律·监管：最新进展",
-          "briefZh": "路透社报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
         {
           "title": "US supreme court declines to intervene in custody fight over baby born via surrogate",
           "source": "The Guardian",
@@ -912,6 +892,21 @@
           "titleZh": "法律·监管：最新进展",
           "briefZh": "《纽约时报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "Republican calls for Senate investigation of Trump Jr wedding paid for by Russian oligarch",
+          "source": "The Guardian",
+          "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPRUFGbVRQWXJlenVHenVLb2o0Q0JSVGpEd2NDSzExQkZDeF9ES1oxaTM4N3hxSk9FcW1rZFhLVHk2QzdUa0pwNzBfR1NaYnBGbFJ1aVRBNGszbWxSMS1JSDl3RmpUS1hFQWk2MGk0UHNqenVDUGVaaVNQZ0pSTTFkLWI2QlhCZEt1QkpqTGFZOVE2Nnhnam5HdUV4V00?oc=5",
+          "published": 1790103660,
+          "summary": "",
+          "sourceZh": "英国《卫报》",
+          "topic": "法律·监管",
+          "brief": "Republican calls for Senate investigation of Trump Jr wedding paid for by Russian oligarch。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "law",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "英国《卫报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
     },
@@ -954,23 +949,6 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
-          "published": 1790128657,
-          "summary": "",
-          "sourceZh": "《华尔街日报》",
-          "riskStream": "energy_shipping",
-          "riskStreamName": "能源运输",
-          "topic": "能源运输",
-          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
-          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "能源运输：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
           "title": "Hacking group purports to have stolen FBI data in cyber attack",
           "source": "ABC News",
           "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPODloOW1tYWw4aUp3WGRfVUNuOGVRQjBLZXBVczQwUVlfcVZESGpBYl9hRVpmS3lMMFpjckR1a2xKWmdoQlVHRzRGWHhmRVBzaFRybXdtUjNpdVdha2toSzdoTk9xQVFwWklmR1Y0aDJFSll1dUZQOUt6LWp3UkxsYzk5NUxoTWs2eUVrUW5INmhKUV9DSzk1ZUV1MHNLUnJ0ZURTMHdYXzd1SDZ3MWIxcg?oc=5",
@@ -1005,6 +983,23 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
+          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
+          "published": 1790095479,
+          "summary": "",
+          "sourceZh": "《华尔街日报》",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "能源运输：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
           "title": "The EU spent billions on a cyberattack shield — nobody checked if it worked",
           "source": "Euronews",
           "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQZXl4clNNamxZZV9BTEoxbmNTb1FUS2RjMFVRNHF2OGhOTkNtaXYzTWw4TUJ3dkdNelF3ajl2NGs4SERGNjlVa3VNNFRhY0pVSmlGb25HVlFxN1l3LUlabm5JNjk4RXVPVHlnODE3eUNrenFUby1oWFN6ZmFPRjN3dkZ1d3FpQkFMdDEyblNVNjB3aU1TZmNfZVZpZW5nZ21WcHlvZmpCdDRGWTRLcVFxM0JrTDk?oc=5",
@@ -1019,6 +1014,23 @@
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
           "titleZh": "网络安全：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Iran ready to reopen Strait of Hormuz if US eases military pressure and lifts blockade",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQNEdfLVlEeU1GTjFkdDRlZ2NCN19kT0tNTEdKTnJBM29mNGk4OW9EMURHRm9WTEljdFBQY3Y1OTB6VnJBMFRMclpzV2xrV0M4NVMzZld6MlFJeHB1Rnp3Y01aVDJ4STB0Vk80bVE5X2JGaHRPeXlHM1h0WExNNHRlWEhuZkhjWWF0ajJYMGxsX0l1djRWYzRJbUZnbkpTM0k2LWZiT1AtWHA1QnhuajhwOVhjOExkWmNOcjkwXzJJTWJUWWlUazVtTDhR?oc=5",
+          "published": 1790072983,
+          "summary": "",
+          "sourceZh": "路透社",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Iran ready to reopen Strait of Hormuz if US eases military pressure and lifts blockade。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1056,23 +1068,6 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "EU removes two oligarchs from Russia sanctions list as deadline looms",
-          "source": "The Guardian",
-          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPU0NBNDhzdUdiMEtEUnhtbkh4MVoxODYzSFNGTGhXTmRyNXk2eGF3bl9kV3VzVm9FREtySTRqNnF3MDdEby1yQUYyYU5RTXRXMU4tWkU1ZVNoQnlTNF9KeTZRQnJiUlB4Y0VJZTBKWENoaDl5QXd4Z0w5d3c3ZFgyTm1MQ1FteW1jWDl5VXpSWEd4aGl5dUJ2czhXNnlvbDBXTk5HaWdDMFJBZ0ZyVHNxZA?oc=5",
-          "published": 1790096400,
-          "summary": "",
-          "sourceZh": "英国《卫报》",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "EU removes two oligarchs from Russia sanctions list as deadline looms。",
-          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "地缘冲突：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
           "title": "Operator of 314 Wendy’s locations in the US files for bankruptcy protection",
           "source": "Associated Press",
           "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNd2xzUkdVNVlPTVBrdFdxajc0cWFoTnprbS11TlhXVWx6dm9KSzJQSkJDWjdra2JoYkktMy1MUlNpeVk5QzM1N1J2bldRZW1lNXlHVHpjaXFxYThMZnFCOU5UX1N1ZUtpUVRob0xzSXR0b2dBcXdnVUFfaEROb0NjV2xtelJ4VGRCblJiQXpRd3lfU0dTQ3ZjakVWSU1rUQ?oc=5",
@@ -1087,23 +1082,6 @@
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
           "titleZh": "市场信用：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
-          "title": "Trump pledges 'unmatched military might' against drug cartels",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPN3ZiLV9yeVlIX0gzQ2dPLUp0QVVZMVFhcVJ4Uy16TktGdjBXdDkzQ2RkVDRIVXUwVHE5TE5mTzY0Y3RQU1ZIcEkxSGVjekN3M1RGc1FLRzgyOHRYWW43bVpsX0FzM3gzbDdBREhBQXRSOHdjSnpsd3E1MFItY3JhcTRlRUJaR09ORWZhQ3NnandqNDNSV1hpRFJvbDZuak9vc216VzM3aVJnc2JSUmJhX3l0VjdRZ0FqTERxQlEtVVNySUE?oc=5",
-          "published": 1790110745,
-          "summary": "",
-          "sourceZh": "路透社",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "Trump pledges 'unmatched military might' against drug cartels。",
-          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1168,10 +1146,27 @@
           "riskStreamName": "能源运输",
           "topic": "能源运输",
           "brief": "Saudi Arabia Running Tests to Resume East-West Oil Pipeline。",
-          "briefZh": "沙特阿拉伯正在进行测试，以恢复东西石油管道的运行。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "沙特阿拉伯进行测试以恢复东西石油管道",
+          "titleZh": "能源运输：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Here's what the Saudi East-West pipeline shutdown means for Asia's biggest crude importers",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRDlCal9FSDBLa0d1M0ZVWUxVT0pHNFNhTGRNUmRXeHVyaXRiNE5ma0x1V2JmNUg3MU9xNU5ES1hkQ3dkSi1QNEhlWWUzb2ZwWkZDV3RwN1RneWhwa1FNNURwRVAwLWg1TjlqZktuTG55bGJzcmNIcnJyMDBjTHZlRFhOR3dueGUz0gGOAUFVX3lxTE5fQ3B2dWpkdjdaTUZZWDhuUUdCdFZrVW5rWlhPV2tOSnJjQzF2YzQxdXZYa0lORlY0dDF3UE1oU1FIWmEyYjBzanR1R2RfTEprdTlPcm9CZU1QY3hGQVRqYlhfMFlidE1Fam5WT1hMbkxERFMzVVpRLXZaR3kyZGVSaW1ZMDVGMzdEUWpYcFE?oc=5",
+          "published": 1789979353,
+          "summary": "",
+          "sourceZh": "美国消费者新闻与商业频道",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Here's what the Saudi East-West pipeline shutdown means for Asia's biggest crude importers。",
+          "briefZh": "沙特东西管道关闭对亚洲最大原油进口国的影响分析。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "沙特东西管道关闭对亚洲最大原油进口国的影响",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         }
       ]
@@ -1195,15 +1190,15 @@
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 98.28,
-      "changePct": -0.98,
+      "price": 98.3,
+      "changePct": -0.96,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 89.17,
-      "changePct": -5.73,
+      "price": 89.18,
+      "changePct": -5.72,
       "fmt": "usd"
     },
     {
@@ -1216,8 +1211,8 @@
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 100.72,
-      "changePct": 0.29,
+      "price": 100.73,
+      "changePct": 0.3,
       "fmt": "idx"
     }
   ],
