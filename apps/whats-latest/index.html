@@ -201,10 +201,24 @@
     .risk-section h3{margin:0 0 9px;font-size:19px}
     .risk-event{display:grid;grid-template-columns:7px 1fr;gap:9px;padding:8px 0}
     .risk-event .bullet{width:5px;height:5px;border-radius:50%;background:var(--desk-red);margin-top:8px}
-    .risk-event-title{font:13.5px/1.58 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
-    .risk-event-meta{margin-top:3px;color:var(--desk-muted);font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .risk-level-group{padding:11px 0 2px}
+    .risk-level-group-title{display:flex;align-items:center;gap:8px;margin:0 0 2px;color:var(--desk-muted);font:11px/1.3 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-weight:800}
+    .risk-source-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:20px;padding:0 7px;border-radius:999px;border:1px solid var(--desk-line);font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}
+    .risk-source-badge.high{color:#c74343;background:rgba(199,67,67,.08);border-color:rgba(199,67,67,.28)}
+    .risk-source-badge.medium{color:#b98522;background:rgba(185,133,34,.08);border-color:rgba(185,133,34,.28)}
+    .risk-source-badge.low{color:var(--desk-green);background:rgba(30,138,99,.08);border-color:rgba(30,138,99,.28)}
+    .risk-event-title{font:700 13.5px/1.58 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    .risk-event-copy{margin-top:5px;color:var(--desk-muted);font:12.5px/1.72 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    .risk-event-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:6px;color:var(--desk-muted);font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace}
     .risk-side{border:1px solid var(--desk-line);border-radius:10px;background:var(--desk-panel);padding:15px;height:max-content}
     .risk-side-title{font-size:18px;margin:7px 0 12px}
+    .risk-source-tier{padding:10px 0;border-top:1px solid var(--desk-line)}
+    .risk-source-tier:first-child{border-top:0}
+    .risk-source-tier-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .risk-source-tier-name{font:700 13px/1.4 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    .risk-source-tier-list{margin-top:5px;color:var(--desk-muted);font:11.5px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    .risk-source-explain{margin:9px 0 13px;color:var(--desk-muted);font:10px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    .risk-side-divider{height:1px;background:var(--desk-line);margin:13px 0}
     .risk-dimension{padding:10px 0;border-top:1px solid var(--desk-line)}
     .risk-dimension:first-of-type{border-top:0}
     .risk-dimension-row{display:flex;justify-content:space-between;gap:10px;align-items:center}
@@ -342,7 +356,7 @@
 
     <section class="risk-desk" id="risk-desk">
       <div class="risk-main">
-        <div class="risk-kicker">RISK · DAILY BRIEF</div>
+        <div class="risk-kicker">风险 · 每日简报</div>
         <h2 class="risk-heading">地缘政治与市场风险</h2>
         <div class="risk-meta" id="risk-meta"></div>
         <div class="risk-focus" id="risk-focus"></div>
@@ -356,7 +370,12 @@
         </section>
       </div>
       <aside class="risk-side">
-        <div class="risk-kicker">RISK MAP</div>
+        <div class="risk-kicker">新闻源分层</div>
+        <h3 class="risk-side-title">新闻源等级</h3>
+        <div id="risk-source-levels"></div>
+        <div class="risk-source-explain">按 Ooglex 采编优先级分为高、中、低，用于新闻排序与交叉核验，不代表对单篇报道事实真伪的评分。</div>
+        <div class="risk-side-divider"></div>
+        <div class="risk-kicker">风险结构</div>
         <h3 class="risk-side-title">风险拆分</h3>
         <div id="risk-dimensions"></div>
         <div class="risk-note">风险等级为规则化信息指标：基于新闻关键词、事件类型与当日市场方向自动生成，不代表预测或投资建议。</div>
@@ -424,6 +443,6 @@
     <footer class="source-foot" id="sources"></footer>
   </main>
 
-  <script src="app.js?v=20260923-risk-v2"></script>
+  <script src="app.js?v=20260923-risk-v3-source-tier-zh"></script>
 </body>
 </html>
