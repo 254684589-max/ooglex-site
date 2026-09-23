@@ -44,7 +44,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install requests feedparser
+        run: pip install requests feedparser deep-translator
 
       - name: Build news data
         run: python scripts/whats-latest/build_news.py
