@@ -288,6 +288,17 @@
     .rd-meta{color:var(--desk-muted);font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:3px}
     .source-foot{margin-top:28px;padding-top:16px;border-top:1px solid var(--desk-line);color:var(--desk-muted);font:10px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace}
     .source-foot b{color:var(--ink,#221f1b)}
+    #whats-preview-wall{
+      width:min(1180px,calc(100% - 30px));margin:0 auto 44px;box-sizing:border-box;
+      background:#171717;color:#f6f3ee;border-top:1px solid rgba(255,255,255,.12);
+      min-height:230px;display:flex;align-items:center;justify-content:center;text-align:center;
+      box-shadow:0 -24px 60px rgba(0,0,0,.16)
+    }
+    .preview-wall-inner{max-width:720px;padding:34px 24px 32px}
+    .preview-wall-kicker{font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;color:#e7b78c;margin-bottom:10px}
+    #whats-preview-wall h2{margin:0;color:#fff;font:700 28px/1.25 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    #whats-preview-wall p{margin:12px auto 0;color:#c9c4bd;font:14px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    .preview-wall-meta{margin-top:17px;color:#8f8a84;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
 
     @media(max-width:900px){
       .main-grid{grid-template-columns:1fr}
@@ -443,6 +454,6 @@
     <footer class="source-foot" id="sources"></footer>
   </main>
 
-  <script src="app.js?v=20260923-full-zh-v1"></script>
+  <script src="app.js?v=20260923-preview10-hardstop-v2"></script>
 </body>
 </html>
