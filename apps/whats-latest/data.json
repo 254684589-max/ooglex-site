@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T06:25:06Z",
+  "updatedAt": "2026-09-23T06:27:11Z",
   "asOf": "2026-09-23",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -82,9 +82,9 @@
     },
     {
       "topic": "市场·经济",
-      "text": "美国消费者新闻与商业频道报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-      "source": "CNBC",
-      "sourceZh": "美国消费者新闻与商业频道"
+      "text": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "source": "Reuters",
+      "sourceZh": "路透社"
     },
     {
       "topic": "人工智能·科技",
@@ -167,6 +167,24 @@
       "category": "政策·政治"
     },
     {
+      "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
+      "source": "The Wall Street Journal",
+      "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
+      "published": 1790128657,
+      "summary": "",
+      "sourceZh": "《华尔街日报》",
+      "riskStream": "energy_shipping",
+      "riskStreamName": "能源运输",
+      "topic": "能源运输",
+      "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
+      "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "titleZh": "能源运输：最新进展",
+      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "category": "风险"
+    },
+    {
       "title": "The A.I. Party House Where Networking Has a Dark Side",
       "source": "The New York Times",
       "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9UVVh3cG10S1Q4enl4MDFMZmgxTkYzdUtqWnZfeVZzS0hLcFRXVmt5cFd0Ym1mZmZHUURyell1bEUzOS1oYjlQWUZ4bmFWaHpQU0V3NHZfX1VRUTVqQmUzTEk5NXE4VFlhbG5NNjBLZzZGUWpoWG9MYUhkMA?oc=5",
@@ -183,38 +201,22 @@
       "category": "人工智能·科技"
     },
     {
-      "title": "Hacking group purports to have stolen FBI data in cyber attack",
-      "source": "ABC News",
-      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPODloOW1tYWw4aUp3WGRfVUNuOGVRQjBLZXBVczQwUVlfcVZESGpBYl9hRVpmS3lMMFpjckR1a2xKWmdoQlVHRzRGWHhmRVBzaFRybXdtUjNpdVdha2toSzdoTk9xQVFwWklmR1Y0aDJFSll1dUZQOUt6LWp3UkxsYzk5NUxoTWs2eUVrUW5INmhKUV9DSzk1ZUV1MHNLUnJ0ZURTMHdYXzd1SDZ3MWIxcg?oc=5",
-      "published": 1790118552,
+      "title": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war",
+      "source": "CBS News",
+      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9CWWN6a3ZZZzBheXJmWWZjVVFtQmtlVFljRHUyeFc4bjJJTW5kR0ZIdnZ0YmtRR1prRFluNkNLU1ZXLW96NHJjeWdVS2JVazVIakZFWWdmZm9LYzlPUTdqMUFKNFZYeWFmbGE3OW5Va2ZzbHR3TTkwd1dadi14QQ?oc=5",
+      "published": 1790124259,
       "summary": "",
-      "sourceZh": "美国广播公司新闻",
-      "riskStream": "cyber",
-      "riskStreamName": "网络安全",
-      "topic": "网络安全",
-      "brief": "Hacking group purports to have stolen FBI data in cyber attack。",
-      "briefZh": "网络安全：网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
+      "sourceZh": "美国哥伦比亚广播公司新闻",
+      "riskStream": "geopolitics",
+      "riskStreamName": "地缘冲突",
+      "topic": "地缘冲突",
+      "brief": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war。",
+      "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
-      "titleZh": "网络安全：最新进展",
+      "titleZh": "地缘冲突：最新进展",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "category": "风险"
-    },
-    {
-      "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
-      "source": "CNBC",
-      "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
-      "published": 1790125440,
-      "summary": "",
-      "sourceZh": "美国消费者新闻与商业频道",
-      "topic": "市场·经济",
-      "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "markets",
-      "titleZh": "市场·经济：最新进展",
-      "briefZh": "美国消费者新闻与商业频道报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "市场·经济"
     }
   ],
   "alsoNoted": [
@@ -314,9 +316,9 @@
       },
       {
         "name": "网络安全",
-        "score": 56,
-        "state": "中",
-        "matches": 3
+        "score": 68,
+        "state": "中高",
+        "matches": 4
       },
       {
         "name": "供应链",
@@ -329,10 +331,6 @@
       {
         "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
         "source": "Reuters"
-      },
-      {
-        "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
-        "source": "The Guardian"
       }
     ],
     "coverage": {
@@ -344,9 +342,9 @@
         "Associated Press",
         "Axios",
         "Bloomberg",
+        "CBS News",
         "Euronews",
         "NBC News",
-        "POLITICO",
         "Reuters",
         "The Guardian",
         "The Wall Street Journal"
@@ -366,10 +364,10 @@
         "geopolitics": 7,
         "market_credit": 7,
         "energy_shipping": 7,
-        "cyber": 6,
+        "cyber": 7,
         "supply_chain": 3
       },
-      "candidateCount": 30
+      "candidateCount": 31
     },
     "method": "rule-based-multistream"
   },
@@ -616,6 +614,21 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
+          "title": "Oil falls $1 on better supply outlook, hopes for US-Iran talks",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOeFhpNFFXWGZ2azRGVllBNXpwLXZQeTFySkY3Vi12SmpTNmMyY09oU3RMa3Rqb21pNUl0ZGhSbVBWQnZBOXdOb19xSlU3TnNra0F6OWowVHp5RHlSblJGTVhXandWeEFJaDBOTi1VcjdrSjVNeGVJZnVjeUJXM3NVYUgxZ28yQkVuWXNhc1pxd093NVVBTHZnWm40c01OS00zZHAwRWVR?oc=5",
+          "published": 1790127840,
+          "summary": "",
+          "sourceZh": "路透社",
+          "topic": "市场·经济",
+          "brief": "Oil falls $1 on better supply outlook, hopes for US-Iran talks。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
           "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
           "source": "CNBC",
           "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
@@ -628,21 +641,6 @@
           "categoryKey": "markets",
           "titleZh": "市场·经济：最新进展",
           "briefZh": "美国消费者新闻与商业频道报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Nasdaq reaches record high close, AI stocks rally",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOOUI2bTZ5ZFhnZUozYjg5LXM1WHhuT24xUS0zYmRRZkViWVBreE05ZTNMWFBDSGhHTXUyQ3ZyMWhsUFdxSUlxUXVUUXVHWGRVelg3Z2RuVXo3bndwaXJfRXhEUEFERFNSUVZoaDNERnFxdnhuNkxLdVhnNDRpRGhxYndETzVJdVNnZXJESmpMNmw5QVFQODFGY2w2NzVCcFl0bXBSNjRaTQ?oc=5",
-          "published": 1790115927,
-          "summary": "",
-          "sourceZh": "路透社",
-          "topic": "纳斯达克",
-          "brief": "Nasdaq reaches record high close, AI stocks rally。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets",
-          "titleZh": "纳斯达克：最新进展",
-          "briefZh": "路透社报道了纳斯达克相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -772,6 +770,21 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
+          "title": "Andreessen Horowitz launches AI school as college alternative",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPMHBlOXZ4V3RXRnRBTUtjcW10MTRMSjF4aFp5X2dKSVUtd0t4VWk4b0tjcjhXOWE1MkhvTXNtMWNhWURKTFpCaE5OZjRNUERTOEMtYnJIaFNISkpyYmo5VENPODNQMmRHSF9PTHdVaDdvNDNBb0I1TVNBeG5sTHM5bFNVUjhIUQ?oc=5",
+          "published": 1790112300,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "topic": "人工智能·科技",
+          "brief": "Andreessen Horowitz launches AI school as college alternative。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "美国哥伦比亚广播公司新闻报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
           "title": "Snorkel AI triples valuation to $3.5B as demand for AI training data booms",
           "source": "TechCrunch",
           "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPSHR1RURsVmZGUmlrQzlndUxiYlNrOWRSWnI3TVdPdmswY2FQN1U3TkhzZ05KZ1JjY3BoS3RCeGJIVWphRFB1N3RTMkxMNm14YWdnMFRVU1pJMDg4am14RF9IR01FR2s0M3dNQjJuUVNSWmhQR01vYjFaYlBvTnY4amQwY0lTekUta2prV3VxWnotT3V5bFY2X3YzNDN3X0NZUnNRdXZVRGY3Qllw?oc=5",
@@ -799,21 +812,6 @@
           "categoryKey": "tech",
           "titleZh": "人工智能·科技：最新进展",
           "briefZh": "《纽约时报》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "‘The scientific, technical term is BS’: Inside the new Bessent-China AI hotline",
-          "source": "POLITICO",
-          "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQWGh6dzJhMm9ta0lFRE1wQWtsQTJJWEo4RVNwV1hPTXJDWnZOWGpmaDg5cWZxSkdPUDJYN3V1SkNldmxGUlBPc09GeUIyYVpsdjRuRkpZMWttNUs0NEh2dnNQUzg3T0RzRGg0eVlUNHY2Z0JPQmZDQTRNUVdpcGtkdjhmNmo1VjNaZWlCT1RWOEctd25MZWNJTUc4VjEyWC02ZWZ0Mjl2ZUQ3RldzRmlxbUxUdlB0cGZ4OFpmY1ROTnFpcS0xZXRIRzRn?oc=5",
-          "published": 1790090580,
-          "summary": "",
-          "sourceZh": "《政客》",
-          "topic": "人工智能·科技",
-          "brief": "‘The scientific, technical term is BS’: Inside the new Bessent-China AI hotline。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech",
-          "titleZh": "人工智能·科技：最新进展",
-          "briefZh": "《政客》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -868,6 +866,21 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
+          "title": "Supreme Court stays out of custody dispute between California couple and surrogate",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNVGpfMmZlc09BdWgtdFVDbUhQN1N3Umg2NGlYVm0zZUgyaDJEMHJmSGRpMmxKZGxkQUwzVmZaUlBNWTE3bE9nNmxKbFBtaU55MTJyc1JtbzJqT2xhU2R6Q0ZILU03YkUzNTk4c1ZYdXJobEo1OWw2aTRYdTZ2Vm5MRWpfWUljNTIzd3VwQWIxZ0w5aTEtTnNQZTVycEI5WnVIZ3Q3UWtZS0xYMHRLTUFYWmg2MjVmWk4wdlE?oc=5",
+          "published": 1790109780,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "topic": "法律·监管",
+          "brief": "Supreme Court stays out of custody dispute between California couple and surrogate。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "law",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "美国哥伦比亚广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
           "title": "Supreme Court Order Gives Parents Custody of Baby in Surrogacy Fight",
           "source": "The New York Times",
           "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPdzR6NE8zbVlua1RYTmFRTFF1d0Zucmp3SC1qYk94UVE2R3dwT0lfQWk3ZVFnemU1ZFNqbnZEVE5DUF9EaHR4VWgwUEZicjBmSDVGM2RFZkVsWmN6VzFMdEVCNWFvLXQ4a3I2SElSVmdxM1Z5dE9GYmYwdUgwcHM2SVl0dVA2cml4QWVkaFhDSXRyT01qUGc4?oc=5",
@@ -895,36 +908,6 @@
           "categoryKey": "law",
           "titleZh": "法律·监管：最新进展",
           "briefZh": "美国全国广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate - ABC News",
-          "source": "ABC News",
-          "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOcWxneUsyZVJFOGdlMHhVVUFRSWlGWlJiYldtdWxCZU1FUmFlVGdtNXJ2eDlZR2VWVm1jdHVlZ0dkbE1Gbjg1NTk4ZTJOcTVYZ3BGR1VmTV84QXBtMDhVSGt3VU5NT25iRnlvTERoOHBjdE1fTTdqRHMydnNyMmhhd3lQNS1sSGhiZHI0RmtuLXNLT0h3MHdId2xVX3hhZ3UwdkRLRzJBR2I1VnfSAbABQVVfeXFMTjRkdzF2cWRKZHUxYVJKb0NsV1NhXzVMYjNxMF9XTXZWMDVDQkFLX3Q1djRtNy1ZM24xUGlrTm1ZQ0pEak1GYmNlMjZvLWRqOVJiS2xSTUpDUmJYX18ySngtZXZDMkY3YzgtTHlLc2FJNXJOdkJBN19sNGlwOWtZd0NteVhHTXU1V3YzRjhZUmhzLVpMQnk5THpoN3VKdXE1N1lkM2dTcHNnSWhyc3RobnE?oc=5",
-          "published": 1790112848,
-          "summary": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate   。",
-          "sourceZh": "美国广播公司新闻",
-          "topic": "法律·监管",
-          "brief": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate   。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law",
-          "titleZh": "法律·监管：最新进展",
-          "briefZh": "美国广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Kagan steers Supreme Court clear of high-profile surrogacy fight",
-          "source": "The Hill",
-          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPanZDSFF5dG02ZTY3cncxRmdXcXZEa3BieUUxaUxyTHc5MFhKNk1JLWE0S3dQOC0xU3U0YVFaT3BvcGluRlFjM1djQkpraF80VkJWMmdLMVFLVHo4MEJwREJlMkNtTkJmejlEc3ZIWkNWX0MzNnV3TmpwYkwzaS1ZcmlLbFgwcGhuWEZ2S0dIU0dmNEl40gGaAUFVX3lxTE9pZHZObjI5OElWbE1abDFaRUk5QU5SLXJBRTFYZC1URTRXTVFrZjM4a1VidlpyMTV2ZVhuWHNUTW1UUzdhUFRDYnljMW5vb2dyaEVKYVYwTHFvR2pZblNJdjdmcXdUM2R4S2RfRkxIaDZKVkZnREkyM0dKdTd3ZG9lYkxmMDZtRzdZVTRVaFQyRzM1Z0dfdTZ4NEE?oc=5",
-          "published": 1790117400,
-          "summary": "",
-          "sourceZh": "《国会山报》",
-          "topic": "法律·监管",
-          "brief": "Kagan steers Supreme Court clear of high-profile surrogacy fight。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law",
-          "titleZh": "法律·监管：最新进展",
-          "briefZh": "《国会山报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -968,6 +951,40 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
+          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
+          "source": "The Wall Street Journal",
+          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
+          "published": 1790128657,
+          "summary": "",
+          "sourceZh": "《华尔街日报》",
+          "riskStream": "energy_shipping",
+          "riskStreamName": "能源运输",
+          "topic": "能源运输",
+          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "能源运输：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9CWWN6a3ZZZzBheXJmWWZjVVFtQmtlVFljRHUyeFc4bjJJTW5kR0ZIdnZ0YmtRR1prRFluNkNLU1ZXLW96NHJjeWdVS2JVazVIakZFWWdmZm9LYzlPUTdqMUFKNFZYeWFmbGE3OW5Va2ZzbHR3TTkwd1dadi14QQ?oc=5",
+          "published": 1790124259,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "地缘冲突：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
           "title": "Hacking group purports to have stolen FBI data in cyber attack",
           "source": "ABC News",
           "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPODloOW1tYWw4aUp3WGRfVUNuOGVRQjBLZXBVczQwUVlfcVZESGpBYl9hRVpmS3lMMFpjckR1a2xKWmdoQlVHRzRGWHhmRVBzaFRybXdtUjNpdVdha2toSzdoTk9xQVFwWklmR1Y0aDJFSll1dUZQOUt6LWp3UkxsYzk5NUxoTWs2eUVrUW5INmhKUV9DSzk1ZUV1MHNLUnJ0ZURTMHdYXzd1SDZ3MWIxcg?oc=5",
@@ -985,23 +1002,6 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "Sen. Jon Husted: Iran war ‘needs to come to an end as quickly as possible’",
-          "source": "POLITICO",
-          "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOMTdVMDFtVHlqNm5hTmMwaGJYN1dBUDlpbm9rckE0OFZSV25qUWY4aWdoRlBjbU9LUDBySExmYVlIZ29CQkJMZTh2OTVsbWpYbHQ5R0tuSmVXOGhHNjdrX0Zub2tyTFBUYUVmc1otYjdFMTNzTmNqdHdkWmdOSVhrVENNVEI5NWVkQ3dybHVR?oc=5",
-          "published": 1790113680,
-          "summary": "",
-          "sourceZh": "《政客》",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "Sen. Jon Husted: Iran war ‘needs to come to an end as quickly as possible’。",
-          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "地缘冲突：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
           "title": "Brightline Preparing for Bankruptcy Filing as Soon as This Week",
           "source": "Bloomberg",
           "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQZjVZbGkxYU9UUnpZbHFCNllRRkhqTllVNEladnQzaU93T2ZTd1NTTXJMZ1lRMHREbUdVdW1RNmpiNEhWTGFrelJLZks5dWt5TFpFbzA2ek5jakdNRnZzekdIOWlfNVdmdG14LXVqX2J3MnRrLXVaTFVRcjVYQ1JUZXRlT2ZUUm0taHZKQ3RMVk5Ya29XbVVYMnZDaXdVMTE1UVJqbk5SeTBRcHkxN0ZpUGd0dFk?oc=5",
@@ -1016,23 +1016,6 @@
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
           "titleZh": "市场信用：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
-          "title": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOeDdvckhVQlJKZzN2eU90TEg3YU9vRmhZdTdjdkZ1cExSOUd4N09GVEktMTBVT012ZUdGWUdtc2JLaDdIWDJWWFdpUmlJU3pMVWt3MXR2bXRyUXlnSHJTVDJ2Vzg1bmx1ZFptX3ZoVmlMZS1EODlaM3FHbGFJTHFUM0I5YkE5WVRGcEs0UlNkZjdsdXhzdHF6dXFqbHV0bFFZRmRCNDF1WHpQOGZLeGJCdkJIRmNOa1Bzb1FKNU9fcGc?oc=5",
-          "published": 1790095479,
-          "summary": "",
-          "sourceZh": "《华尔街日报》",
-          "riskStream": "energy_shipping",
-          "riskStreamName": "能源运输",
-          "topic": "能源运输",
-          "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
-          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "能源运输：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1056,7 +1039,7 @@
           "title": "Iran War: Latest News, Live Coverage and Video",
           "source": "NBC News",
           "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1vRFdEaTJrbkd5dmlGNzFrY19yTEJFZko2aXBSejFKbXNsbl95eFBsM2dSNkRjdVNudjhZTl9DSzFud3JoTTJ2R2ttX3lBNkE?oc=5",
-          "published": 1790053570,
+          "published": 1790049995,
           "summary": "",
           "sourceZh": "美国全国广播公司新闻",
           "riskStream": "geopolitics",
@@ -1087,23 +1070,6 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "EU removes two oligarchs from Russia sanctions list as deadline looms",
-          "source": "The Guardian",
-          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPU0NBNDhzdUdiMEtEUnhtbkh4MVoxODYzSFNGTGhXTmRyNXk2eGF3bl9kV3VzVm9FREtySTRqNnF3MDdEby1yQUYyYU5RTXRXMU4tWkU1ZVNoQnlTNF9KeTZRQnJiUlB4Y0VJZTBKWENoaDl5QXd4Z0w5d3c3ZFgyTm1MQ1FteW1jWDl5VXpSWEd4aGl5dUJ2czhXNnlvbDBXTk5HaWdDMFJBZ0ZyVHNxZA?oc=5",
-          "published": 1790096400,
-          "summary": "",
-          "sourceZh": "英国《卫报》",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "EU removes two oligarchs from Russia sanctions list as deadline looms。",
-          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "地缘冲突：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
           "title": "Operator of 314 Wendy’s locations in the US files for bankruptcy protection",
           "source": "Associated Press",
           "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNd2xzUkdVNVlPTVBrdFdxajc0cWFoTnprbS11TlhXVWx6dm9KSzJQSkJDWjdra2JoYkktMy1MUlNpeVk5QzM1N1J2bldRZW1lNXlHVHpjaXFxYThMZnFCOU5UX1N1ZUtpUVRob0xzSXR0b2dBcXdnVUFfaEROb0NjV2xtelJ4VGRCblJiQXpRd3lfU0dTQ3ZjakVWSU1rUQ?oc=5",
@@ -1118,6 +1084,23 @@
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
           "titleZh": "市场信用：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Suisun City fully reopens City Hall weeks after malware incident",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPQm5iMWUyM2s5VVVidnhzQk90dDg1N2piVDFVM2dQMklCVEM5LUJaOGRFbndHTkVGUVFZdzNvSDRySllWWldKMFZYV0tTa1RMQWhZTWlBd3hqUnhfN2VUMU1RelU0MGdadm44d0Q4aVJ2T19hTmEwZlVNTWRaQUxJNkxsalZUd0Y2aWdtaVZQcTV3VmJ5?oc=5",
+          "published": 1790119260,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "riskStream": "cyber",
+          "riskStreamName": "网络安全",
+          "topic": "网络安全",
+          "brief": "Suisun City fully reopens City Hall weeks after malware incident。",
+          "briefZh": "网络安全：网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "网络安全：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1209,29 +1192,29 @@
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 98.44,
-      "changePct": -0.82,
+      "price": 98.43,
+      "changePct": -0.83,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 89.31,
-      "changePct": -5.58,
+      "price": 89.22,
+      "changePct": -5.68,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4365.7,
-      "changePct": -0.24,
+      "price": 4365.1,
+      "changePct": -0.26,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 100.76,
-      "changePct": 0.33,
+      "price": 100.75,
+      "changePct": 0.32,
       "fmt": "idx"
     }
   ],
