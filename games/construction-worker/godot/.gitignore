@@ -1,0 +1,4 @@
+# Godot 4 的导入缓存与编辑器状态，不入库
+.godot/
+/android/
+*.tmp

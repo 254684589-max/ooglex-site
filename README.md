@@ -50,6 +50,7 @@ ZLQ6600E/
 │   └── telescope/          # 🔭 星瞳望远镜（手机摄像头数码望远镜）
 ├── games/                  # 网页小游戏
 │   ├── hub/                # 🎮 游戏中心（游戏合集入口）
+│   ├── construction-worker/ # 🏗️ 工地搬砖（原创 Godot 4 3D 工地模拟 · godot/ 为工程源码，play/ 为网页导出）
 │   ├── gta-vice-city/      # 🌆 GTA Vice City 网页版
 │   └── red-alert/          # 🚩 红色警戒 2 网页版（嵌入红色井界/共和国之辉 · 战役/联机 · 双源可切换）
 ├── scripts/

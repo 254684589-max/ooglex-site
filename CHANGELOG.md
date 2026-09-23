@@ -13,6 +13,15 @@
 
 ### 新增
 
+- 2026-09-23，**游戏中心新增原创 3D 游戏《工地搬砖》ConstructionWorker V0.1（Godot 4 网页版）**。**未部署**（在功能分支上，合并 `main` 后随 GitHub Pages 发布）。
+  - **入口**：`/games/construction-worker/`（介绍页）→ `/games/construction-worker/play/`（游戏本体）；游戏中心 `/games/hub/` 第一张卡片；`sitemap.xml` 新增一条。
+  - **玩法闭环**：标题画面 → 开场字幕 → 工地门口「你刚来到这座城市，身上只剩下 300 元。」→ 找工头老王（「一天 280，管一顿饭，干不干？」）→ 接搬砖任务 → 在砖堆按 F 拿砖、送进黄框卸货区才计进度 → 搬够 20 块 ¥280 到账 → 食堂用饭票换盒饭 → 回宿舍睡觉 → 第二天。另有搬水泥、搬钢筋两个任务；体力 / 饥饿 / 水分、搬运熟练度（一次 1→2→4→6 块）、昼夜、食堂 / 小卖部 / 凉茶桶、JSON 存档（浏览器 IndexedDB）、Tab 任务面板、M 工地图、手机触屏操作。
+  - **工程**：Godot 4.7 + GDScript，源码在 `games/construction-worker/godot/`，按 Player / NPC / Interaction / Inventory / TaskSystem / EconomySystem / TimeSystem / SaveSystem / UI 分模块；任务系统是通用的（任务 = 数据 + 目标事件）。地图全部用几何体灰盒生成，无外部美术素材；中文字体为思源黑体子集（OFL，1.4 MB），音效由脚本合成。
+  - **网页导出**：用 Godot 的无线程 Web 模板，GitHub Pages 不需要跨源隔离响应头。引擎 wasm 39.5 MB + 游戏包 1.3 MB（gzip 后约 11 MB）；`tools/stamp_web_build.py` 把文件名改成内容哈希 `cw-<哈希>.*`，与站点「资源版本号必须与内容一致」规则一致。
+  - **站点改动**：`games/hub/index.html` 加卡片与 `.cv-cw` 封面样式、描述里加上游戏名；`sitemap.xml`、根 `README.md` 目录树各加一行；`scripts/theme/light_overrides.py` 把 Godot 源码目录加入跳过列表、把介绍页与 `play/` 加入锁深色名单——否则下次运行会往 Godot 的 HTML 导出模板里注入浅色主题 CSS。
+  - **验证**：`godot --headless res://tests/test_game_loop.tscn` 自动化验收 **74 项全部通过**（从新游戏一路走到第二天、存读档、熬夜累倒）；网页版在无头 Chromium（SwiftShader 软件 WebGL 2）里实际加载并操作：电脑键鼠（1280×720）与手机横屏触屏（844×390，摇杆移动、拖动转视角）均可玩，控制台无报错；介绍页 360 / 768 / 1280 三档宽度无横向溢出、无失败请求；`validate_asset_versions.py` 通过（299 处引用）；`build_public_site.py` 确认新文件进入发布产物、`.md/.py/.sh` 被排除。构建：Godot Web 导出（见 `games/construction-worker/tools/build_web.sh`）。
+  - **已知限制**：灰盒画面、无骨骼动画；砌墙等施工玩法、天气与随机事件、班组 / 包工头阶段未做（见 `games/construction-worker/README.md`「尚未完成的功能」）；只有中文界面，未接入站点 i18n；在真实手机 GPU 上的帧率未实测（本环境只有软件渲染）。首次加载体积较大（约 40 MB，压缩传输约 11 MB）。
+
 - 2026-09-23，**收益率曲线三视图恢复可用；并把全站 40 处「改了文件没更新版本号」一次校正**。**已部署。**
   - **问题一（所有者实测）：曲线面板的「随时间 / 期限价差历史」点了没反应。** 是我上一轮留下的：当时只公开当期期限结构、不公开历史，这两个视图没有数据可画，代码把按钮置成 `disabled`——但 `.t-subtabs button` **根本没有 `[disabled]` 样式**，按钮看上去和能点的一模一样。留一个看得见、点不动、也不说为什么的按钮，比没有这个功能更糟。
   - **改法：整份公开 `curve.json` 与 `curve-monthly.json`，三个视图全部恢复。** 理由有三条：① 这两个视图要逐日历史才画得出，只给当期读数等于永远点不动；② 10 年期那条日线**本来就已经随 `series.json` 公开了**，把其余 10 个期限的同一段窗口留在墙内保护不了什么；③ PRO 的价值在宏观风险模型本身（regime / signals / 危机复盘 / `history.json` 的 1038 个周频观测），不在美国财政部 H.15 这份公开收益率。**本条取代上一条里「逐日历史仍只在受保护文件里」的说法。**
