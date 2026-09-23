@@ -38,6 +38,7 @@ HEALTH_PATH = os.path.join("apps", "whats-latest", "health.json")
 PER_CAT = 7
 AI_CONFIG_PATH = os.path.join("apps", "ai-chat", "shared-config.json")
 TRANSLATE_CHUNK = 12
+CF_TRANSLATE_MODEL = "@cf/meta/m2m100-1.2b"
 
 GN = "https://news.google.com/rss"
 GN_TAIL = "hl=zh-CN&gl=US&ceid=US:zh-Hans"
@@ -203,147 +204,108 @@ def fallback_zh_brief(item, category_name="新闻"):
     return f"{source}报道了{topic}相关最新进展；本站已链接原文，具体事实与细节以原报道为准。"
 
 
-def load_translation_proxy():
+def cloudflare_translate_text(text):
+    """通过 Cloudflare Workers AI 翻译为简体中文；密钥仅从 GitHub Actions Secret 读取。"""
+    text = re.sub(r"\s+", " ", (text or "")).strip()
+    if not text or has_han(text):
+        return text
+
+    token = (os.getenv("CLOUDFLARE_API_TOKEN") or "").strip()
+    account_id = (os.getenv("CLOUDFLARE_ACCOUNT_ID") or "").strip()
+    if not token or not account_id:
+        return ""
+
+    url = (
+        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/"
+        f"{CF_TRANSLATE_MODEL}"
+    )
     try:
-        with open(AI_CONFIG_PATH, encoding="utf-8") as fp:
-            cfg = json.load(fp)
-        if not cfg.get("enabled") or not cfg.get("base"):
-            return None
-        return {
-            "url": cfg["base"].rstrip("/") + "/chat/completions",
-            "model": cfg.get("model") or "glm-4-flash",
-        }
-    except Exception:
-        return None
-
-
-def _extract_json_payload(text):
-    text = (text or "").strip()
-    if text.startswith("```"):
-        text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.I)
-        text = re.sub(r"\s*```$", "", text)
-    data = json.loads(text)
-    if isinstance(data, dict):
-        data = data.get("items") or data.get("translations") or []
-    return data if isinstance(data, list) else []
-
-
-def apply_google_title_translation(refs):
-    """无密钥标题翻译兜底：限速逐条翻译，避免 Google 429。"""
-    pending = [
-        (idx, item)
-        for idx, item in refs
-        if not has_han(item.get("title") or "")
-        and (item.get("titleZh") or "").endswith("最新进展")
-    ]
-    if not pending:
-        return
-    try:
-        from deep_translator import GoogleTranslator
-        translator = GoogleTranslator(source="auto", target="zh-CN")
+        resp = requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+                "User-Agent": UA,
+            },
+            json={
+                "text": text,
+                "source_lang": "en",
+                "target_lang": "zh",
+            },
+            timeout=20,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+        result = payload.get("result") or {}
+        translated = str(
+            result.get("translated_text")
+            or result.get("translation")
+            or ""
+        ).strip()
+        return translated if has_han(translated) else ""
     except Exception as exc:
-        print(f"[translate-google] 初始化失败：{str(exc)[:120]}")
-        return
-
-    applied = 0
-    for pos, (_, item) in enumerate(pending, 1):
-        title = item.get("title") or ""
-        title_zh = ""
-        for attempt in range(2):
-            try:
-                title_zh = str(translator.translate(title) or "").strip()
-                if has_han(title_zh):
-                    break
-            except Exception as exc:
-                if attempt == 1:
-                    print(f"[translate-google] 单条失败：{str(exc)[:100]}")
-                time.sleep(1.0)
-        if has_han(title_zh):
-            item["titleZh"] = title_zh
-            item["briefZh"] = (
-                f"{title_zh}。{zh_source(item.get('source') or '')}为该报道新闻源；"
-                "更多事实与细节请查看原文。"
-            )
-            applied += 1
-        time.sleep(0.35)
-    print(f"[translate-google] 标题中文化 {applied}/{len(pending)} 条")
+        print(f"[translate-cf] 单条失败：{str(exc)[:140]}")
+        return ""
 
 
 def apply_chinese_translation(cats_out):
-    """把新闻标题/摘要统一补成中文。失败时保留中文兜底，不让前端回退到英文。"""
+    """统一生成中文标题、中文新闻源和中文简报；翻译失败时不回退显示英文。"""
     refs = []
     for category in cats_out:
         category_name = category.get("name") or "新闻"
         for item in category.get("items") or []:
             item["sourceZh"] = item.get("sourceZh") or zh_source(item.get("source") or "")
-            item["titleZh"] = item.get("titleZh") if has_han(item.get("titleZh")) else fallback_zh_title(item, category_name)
-            item["briefZh"] = item.get("briefZh") if has_han(item.get("briefZh")) else fallback_zh_brief(item, category_name)
-            item["whyZh"] = item.get("whyZh") or item.get("why") or "请结合原文与后续报道持续核验。"
-            refs.append((len(refs), item))
+            item["titleZh"] = (
+                item.get("titleZh")
+                if has_han(item.get("titleZh"))
+                else fallback_zh_title(item, category_name)
+            )
+            item["briefZh"] = (
+                item.get("briefZh")
+                if has_han(item.get("briefZh"))
+                else fallback_zh_brief(item, category_name)
+            )
+            item["whyZh"] = (
+                item.get("whyZh")
+                or item.get("why")
+                or "请结合原文与后续报道持续核验。"
+            )
+            refs.append((category_name, item))
 
-    apply_google_title_translation(refs)
-    pending_refs = [
-        (idx, item)
-        for idx, item in refs
-        if not has_han(item.get("title") or "")
-        and (item.get("titleZh") or "").endswith("最新进展")
-    ]
-    if not pending_refs:
+    if not refs:
         return
 
-    proxy = load_translation_proxy()
-    if not proxy:
-        print("[translate] 共享翻译通道不可用，剩余条目使用中文兜底文案")
+    token = (os.getenv("CLOUDFLARE_API_TOKEN") or "").strip()
+    account_id = (os.getenv("CLOUDFLARE_ACCOUNT_ID") or "").strip()
+    if not token or not account_id:
+        print("[translate-cf] Cloudflare AI 凭据不可用，使用中文兜底文案")
         return
 
-    system = (
-        "你是新闻编辑翻译器。把输入中的英文新闻标题和RSS摘要忠实翻译成简体中文。"
-        "不得新增事实、推测、立场或评价；政治新闻保持中性。"
-        "titleZh要简洁准确；briefZh为1到2句中文，只能使用原title/summary已有信息。"
-        "如果summary为空，briefZh只能改写title，不能补充背景。"
-        "只返回JSON数组，每项严格包含id、titleZh、briefZh，不要Markdown。"
-    )
-    for start in range(0, len(pending_refs), TRANSLATE_CHUNK):
-        chunk = pending_refs[start:start + TRANSLATE_CHUNK]
-        payload_items = [
-            {
-                "id": idx,
-                "title": item.get("title") or "",
-                "summary": item.get("summary") or "",
-            }
-            for idx, item in chunk
-        ]
-        body = {
-            "model": proxy["model"],
-            "stream": False,
-            "temperature": 0.1,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": json.dumps(payload_items, ensure_ascii=False)},
-            ],
-        }
-        try:
-            resp = requests.post(proxy["url"], json=body, headers={"User-Agent": UA}, timeout=6)
-            resp.raise_for_status()
-            result = resp.json()
-            content = (((result.get("choices") or [{}])[0].get("message") or {}).get("content") or "")
-            rows = _extract_json_payload(content)
-            by_id = {int(row.get("id")): row for row in rows if isinstance(row, dict) and str(row.get("id", "")).isdigit()}
-            applied = 0
-            for idx, item in chunk:
-                row = by_id.get(idx)
-                if not row:
-                    continue
-                title_zh = str(row.get("titleZh") or "").strip()
-                brief_zh = str(row.get("briefZh") or "").strip()
-                if has_han(title_zh):
-                    item["titleZh"] = title_zh
-                if has_han(brief_zh):
-                    item["briefZh"] = brief_zh
-                applied += 1
-            print(f"[translate] 中文化 {applied}/{len(chunk)} 条")
-        except Exception as exc:
-            print(f"[translate] 批次失败，保留中文兜底：{str(exc)[:120]}")
+    applied = 0
+    failed = 0
+    for category_name, item in refs:
+        original_title = item.get("title") or ""
+        if has_han(original_title):
+            item["titleZh"] = original_title
+            if not has_han(item.get("briefZh")):
+                item["briefZh"] = original_title
+            continue
+
+        title_zh = cloudflare_translate_text(original_title)
+        if title_zh:
+            item["titleZh"] = title_zh
+            source_zh = item.get("sourceZh") or zh_source(item.get("source") or "")
+            item["briefZh"] = (
+                f"{title_zh}。新闻源：{source_zh}。"
+                "本站保留原文链接，更多事实与细节请查看原报道。"
+            )
+            applied += 1
+        else:
+            failed += 1
+            item["titleZh"] = fallback_zh_title(item, category_name)
+            item["briefZh"] = fallback_zh_brief(item, category_name)
+
+    print(f"[translate-cf] 中文标题 {applied} 条；兜底 {failed} 条")
 
 
 # 全局内容过滤：该专栏不收录中国相关报道。
