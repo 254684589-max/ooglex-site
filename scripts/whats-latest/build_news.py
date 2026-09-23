@@ -307,12 +307,6 @@ def apply_chinese_translation(cats_out):
     if not refs:
         return
 
-    token = (os.getenv("CLOUDFLARE_API_TOKEN") or "").strip()
-    account_id = (os.getenv("CLOUDFLARE_ACCOUNT_ID") or "").strip()
-    if not token or not account_id:
-        print("[translate-cf] Cloudflare AI 凭据不可用，使用中文兜底文案")
-        return
-
     applied = 0
     failed = 0
     for category_name, item in refs:
