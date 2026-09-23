@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T06:16:21Z",
+  "updatedAt": "2026-09-23T06:18:07Z",
   "asOf": "2026-09-23",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -1175,29 +1175,29 @@
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 98.3,
-      "changePct": -0.96,
+      "price": 98.47,
+      "changePct": -0.79,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 89.13,
-      "changePct": -5.77,
+      "price": 89.32,
+      "changePct": -5.57,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4372.4,
-      "changePct": -0.09,
+      "price": 4368.0,
+      "changePct": -0.19,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 100.73,
-      "changePct": 0.3,
+      "price": 100.75,
+      "changePct": 0.32,
       "fmt": "idx"
     }
   ],
