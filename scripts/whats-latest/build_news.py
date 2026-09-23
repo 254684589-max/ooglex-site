@@ -37,7 +37,7 @@ OUT_PATH = os.path.join("apps", "whats-latest", "data.json")
 HEALTH_PATH = os.path.join("apps", "whats-latest", "health.json")
 PER_CAT = 7
 AI_CONFIG_PATH = os.path.join("apps", "ai-chat", "shared-config.json")
-TRANSLATE_CHUNK = 24
+TRANSLATE_CHUNK = 8
 
 GN = "https://news.google.com/rss"
 GN_TAIL = "hl=zh-CN&gl=US&ceid=US:zh-Hans"
@@ -183,6 +183,9 @@ def has_han(text):
 
 
 def fallback_zh_title(item, category_name="新闻"):
+    title = item.get("title") or ""
+    if has_han(title):
+        return title
     topic = item.get("topic") or category_name or "新闻"
     if not has_han(topic):
         topic = category_name if has_han(category_name) else "新闻"
@@ -190,6 +193,9 @@ def fallback_zh_title(item, category_name="新闻"):
 
 
 def fallback_zh_brief(item, category_name="新闻"):
+    brief = item.get("brief") or ""
+    if has_han(brief):
+        return brief
     source = zh_source(item.get("source") or "")
     topic = item.get("topic") or category_name or "新闻"
     if not has_han(topic):
@@ -266,7 +272,7 @@ def apply_chinese_translation(cats_out):
             ],
         }
         try:
-            resp = requests.post(proxy["url"], json=body, headers={"User-Agent": UA}, timeout=45)
+            resp = requests.post(proxy["url"], json=body, headers={"User-Agent": UA}, timeout=25)
             resp.raise_for_status()
             result = resp.json()
             content = (((result.get("choices") or [{}])[0].get("message") or {}).get("content") or "")
@@ -927,7 +933,7 @@ def build():
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
-        "source": "谷歌新闻（全球主流媒体聚合）· 雅虎财经",
+        "source": "Google News (curated global publishers) · Yahoo Finance",
         "sourcePool": SOURCE_POOL,
         "contentPolicy": "exclude-china-related-news",
         "lead": lead,
