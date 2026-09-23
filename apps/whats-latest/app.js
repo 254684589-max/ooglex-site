@@ -177,6 +177,7 @@
     return map[stream]||"重点观察事件是否升级、扩散，并形成跨市场或跨行业传导。";
   }
   function riskHeadlineZh(it){
+    if(it&&hasHan(it.titleZh))return it.titleZh;
     var entities=riskEntitiesZh(it.title||"");
     var type=riskEventTypeZh(it.title||"",it.riskStreamName||it.topic||"");
     return (entities.length?entities.join("、")+"：":"")+type;
@@ -186,7 +187,8 @@
     var stream=it.riskStreamName||it.topic||"风险";
     var entities=riskEntitiesZh(it.title||"");
     var type=riskEventTypeZh(it.title||"",stream);
-    var first=src+"报道显示，"+(entities.length?entities.join("、")+"相关的":"")+type+"成为当前风险监测重点。";
+    var headline=riskHeadlineZh(it);
+    var first=src+"报道："+headline+"。";
     var second="该消息已归入“"+stream+"”风险流。"+riskImpactZh(stream);
     return first+" "+second;
   }
