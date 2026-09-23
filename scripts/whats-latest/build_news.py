@@ -204,8 +204,40 @@ def fallback_zh_brief(item, category_name="新闻"):
     return f"{source}报道了{topic}相关最新进展；本站已链接原文，具体事实与细节以原报道为准。"
 
 
+def google_gtx_translate_text(text):
+    """Google Translate gtx 无密钥端点；仅翻译已有标题，不生成新事实。"""
+    text = re.sub(r"\s+", " ", (text or "")).strip()
+    if not text or has_han(text):
+        return text
+    try:
+        resp = requests.get(
+            "https://translate.googleapis.com/translate_a/single",
+            params={
+                "client": "gtx",
+                "sl": "en",
+                "tl": "zh-CN",
+                "dt": "t",
+                "q": text,
+            },
+            headers={"User-Agent": UA},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+        parts = payload[0] if isinstance(payload, list) and payload else []
+        translated = "".join(
+            str(part[0] or "")
+            for part in parts
+            if isinstance(part, list) and part
+        ).strip()
+        return translated if has_han(translated) else ""
+    except Exception as exc:
+        print(f"[translate-gtx] 单条失败：{str(exc)[:140]}")
+        return ""
+
+
 def cloudflare_translate_text(text):
-    """通过 Cloudflare Workers AI 翻译为简体中文；密钥仅从 GitHub Actions Secret 读取。"""
+    """Cloudflare Workers AI 备用翻译；密钥仅从 GitHub Actions Secret 读取。"""
     text = re.sub(r"\s+", " ", (text or "")).strip()
     if not text or has_han(text):
         return text
@@ -291,7 +323,9 @@ def apply_chinese_translation(cats_out):
                 item["briefZh"] = original_title
             continue
 
-        title_zh = cloudflare_translate_text(original_title)
+        title_zh = google_gtx_translate_text(original_title)
+        if not title_zh:
+            title_zh = cloudflare_translate_text(original_title)
         if title_zh:
             item["titleZh"] = title_zh
             source_zh = item.get("sourceZh") or zh_source(item.get("source") or "")
@@ -300,12 +334,13 @@ def apply_chinese_translation(cats_out):
                 "本站保留原文链接，更多事实与细节请查看原报道。"
             )
             applied += 1
+            time.sleep(0.28)
         else:
             failed += 1
             item["titleZh"] = fallback_zh_title(item, category_name)
             item["briefZh"] = fallback_zh_brief(item, category_name)
 
-    print(f"[translate-cf] 中文标题 {applied} 条；兜底 {failed} 条")
+    print(f"[translate] 中文标题 {applied} 条；兜底 {failed} 条")
 
 
 # 全局内容过滤：该专栏不收录中国相关报道。
