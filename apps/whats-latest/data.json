@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T06:10:08Z",
+  "updatedAt": "2026-09-23T06:12:47Z",
   "asOf": "2026-09-23",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -40,10 +40,10 @@
     "riskStreamName": "地缘冲突",
     "topic": "地缘冲突",
     "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-    "briefZh": "俄乌战争持续，小麦买家面临成本上升。",
+    "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
-    "titleZh": "随着俄乌战争持续，小麦买家准备应对更高的成本",
+    "titleZh": "地缘冲突：最新进展",
     "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "category": "风险"
   },
@@ -58,41 +58,41 @@
     "riskStreamName": "地缘冲突",
     "topic": "地缘冲突",
     "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-    "briefZh": "俄乌战争持续，小麦买家面临成本上升。",
+    "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
-    "titleZh": "随着俄乌战争持续，小麦买家准备应对更高的成本",
+    "titleZh": "地缘冲突：最新进展",
     "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "category": "风险"
   },
   "overview": [
     {
       "topic": "风险",
-      "text": "俄乌战争持续，小麦买家面临成本上升。",
+      "text": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "source": "Reuters",
       "sourceZh": "路透社"
     },
     {
       "topic": "政策·政治",
-      "text": "白宫捍卫特朗普对媒体的禁令。",
-      "source": "The New York Times",
-      "sourceZh": "《纽约时报》"
+      "text": "美国消费者新闻与商业频道报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "source": "CNBC",
+      "sourceZh": "美国消费者新闻与商业频道"
     },
     {
       "topic": "国际·地缘",
-      "text": "泽连斯基准备实施‘能源停火’，北约警告普京变得越来越鲁莽。",
+      "text": "英国《卫报》报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "source": "The Guardian",
       "sourceZh": "英国《卫报》"
     },
     {
       "topic": "市场·经济",
-      "text": "亚洲股市受科技板块推动上涨，同时油价保持低迷。",
+      "text": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "source": "Reuters",
       "sourceZh": "路透社"
     },
     {
       "topic": "人工智能·科技",
-      "text": "AI派对屋：社交的阴暗面。",
+      "text": "《纽约时报》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "source": "The New York Times",
       "sourceZh": "《纽约时报》"
     }
@@ -131,12 +131,28 @@
       "riskStreamName": "地缘冲突",
       "topic": "地缘冲突",
       "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-      "briefZh": "俄乌战争持续，小麦买家面临成本上升。",
+      "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
-      "titleZh": "随着俄乌战争持续，小麦买家准备应对更高的成本",
+      "titleZh": "地缘冲突：最新进展",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "category": "风险"
+    },
+    {
+      "title": "DOJ defends Trump ban of 3 news outlets, says White House access is a 'privilege — not a right'",
+      "source": "CNBC",
+      "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPOHpWNU00a0N3dGYtT0JBRzRhY1lUTkEzUUh5akRhZmRPNlE4Tkp4SWNqMFNyRmFWRGhGaFpVcnQ2WU81dDFncHdXVGRqcnV2WmJMUFJDbm9jWERNTk00WTUxblB5ajFvdHNtazI1UjJxTjlKVFRubHhMT2NQdDBpM2ZPT29vZTZ2eHFEQ0hTQ1PSAZYBQVVfeXFMTlQ5cHJlZFpzY2FESVBKRmh0Tkh2cU9fRFI4alB6WWRmcm9MRGlRZjhPRWk3Z1FVSjBMeThjYkE3ZzJwX1VDNkxwY0NOWFpEbGotYzNVSUpHTWl6cFJkQjNNSlZ4Mmp1M2hDNVVaNWQ1RXpjSXlmSUswYndxb3hlSUZZRWx4TDVsSFZZY2s4d09SNkozd2p3?oc=5",
+      "published": 1790142597,
+      "summary": "",
+      "sourceZh": "美国消费者新闻与商业频道",
+      "topic": "政策·政治",
+      "brief": "DOJ defends Trump ban of 3 news outlets, says White House access is a 'privilege — not a right'。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "politics",
+      "titleZh": "政策·政治：最新进展",
+      "briefZh": "美国消费者新闻与商业频道报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "category": "政策·政治"
     },
     {
       "title": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’",
@@ -149,8 +165,8 @@
       "brief": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "world",
-      "titleZh": "乌克兰战争简报：泽连斯基准备实施‘能源停火’，北约警告普京变得越来越鲁莽",
-      "briefZh": "泽连斯基准备实施‘能源停火’，北约警告普京变得越来越鲁莽。",
+      "titleZh": "国际·地缘：最新进展",
+      "briefZh": "英国《卫报》报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
       "category": "国际·地缘"
     },
@@ -165,28 +181,12 @@
       "riskStreamName": "能源运输",
       "topic": "能源运输",
       "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
-      "briefZh": "沙特东西方管道遭袭，油价上涨。",
+      "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
-      "titleZh": "沙特东西方管道遭袭威胁出口路线，油价上涨",
+      "titleZh": "能源运输：最新进展",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "category": "风险"
-    },
-    {
-      "title": "White House Defends Trump’s Ban on CNN, MS NOW and Politico in Court Filing",
-      "source": "The New York Times",
-      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPTGlOMHQ1di1TeU1UdFdQTWdONmd5SXo3dkdJQlV3VW9PWFBSU1c2UXlndTQwX1ZIYjFvYy00WlJfeWluVmp2aDNGU2lTYkpIMzJHTFEyRlpOQnl4YmZiNTRNOHAxVE1GZzFaZmp3Qm9WS256WnM2dmpkaTVqWWlQSFU1NVo?oc=5",
-      "published": 1790138167,
-      "summary": "",
-      "sourceZh": "《纽约时报》",
-      "topic": "政策·政治",
-      "brief": "White House Defends Trump’s Ban on CNN, MS NOW and Politico in Court Filing。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "politics",
-      "titleZh": "白宫在法庭文件中捍卫特朗普对CNN、MS NOW和Politico的禁令",
-      "briefZh": "白宫捍卫特朗普对媒体的禁令。",
-      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "政策·政治"
     },
     {
       "title": "The A.I. Party House Where Networking Has a Dark Side",
@@ -199,28 +199,26 @@
       "brief": "The A.I. Party House Where Networking Has a Dark Side。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "tech",
-      "titleZh": "AI派对屋：社交的阴暗面",
-      "briefZh": "AI派对屋：社交的阴暗面。",
+      "titleZh": "人工智能·科技：最新进展",
+      "briefZh": "《纽约时报》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
       "category": "人工智能·科技"
     },
     {
-      "title": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war",
-      "source": "CBS News",
-      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9CWWN6a3ZZZzBheXJmWWZjVVFtQmtlVFljRHUyeFc4bjJJTW5kR0ZIdnZ0YmtRR1prRFluNkNLU1ZXLW96NHJjeWdVS2JVazVIakZFWWdmZm9LYzlPUTdqMUFKNFZYeWFmbGE3OW5Va2ZzbHR3TTkwd1dadi14QQ?oc=5",
-      "published": 1790124259,
+      "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
+      "source": "CNBC",
+      "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
+      "published": 1790125440,
       "summary": "",
-      "sourceZh": "美国哥伦比亚广播公司新闻",
-      "riskStream": "geopolitics",
-      "riskStreamName": "地缘冲突",
-      "topic": "地缘冲突",
-      "brief": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war。",
-      "briefZh": "乌克兰准备与美国签署无人机防御协议，透露基辅在伊朗战争中的新细节。",
-      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "categoryKey": "risk",
-      "titleZh": "消息称乌克兰准备与美国签署历史性的无人机防御协议，同时透露基辅在伊朗战争中的新细节",
-      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "category": "风险"
+      "sourceZh": "美国消费者新闻与商业频道",
+      "topic": "国际·地缘",
+      "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "titleZh": "国际·地缘：最新进展",
+      "briefZh": "美国消费者新闻与商业频道报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "category": "国际·地缘"
     }
   ],
   "alsoNoted": [
@@ -235,8 +233,8 @@
       "brief": "U.S. and Iran officials meet in New York to discuss ending the war。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "world",
-      "titleZh": "美伊官员在纽约会晤，讨论结束战争事宜",
-      "briefZh": "美国和伊朗官员在纽约会晤，讨论结束战争事宜。",
+      "titleZh": "国际·地缘：最新进展",
+      "briefZh": "阿克西奥斯新闻报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
       "category": "国际·地缘"
     },
@@ -251,26 +249,26 @@
       "brief": "Trump says US and Iranian officials met Tuesday, shortly after warning he may 'annihilate' Iran。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
       "categoryKey": "world",
-      "titleZh": "特朗普称美伊官员周二会面，此前警告他可能‘消灭’伊朗",
-      "briefZh": "特朗普称美伊官员周二会面，此前警告他可能‘消灭’伊朗。",
+      "titleZh": "国际·地缘：最新进展",
+      "briefZh": "美联社报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
       "category": "国际·地缘"
     },
     {
-      "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
-      "source": "CNBC",
-      "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
-      "published": 1790125440,
+      "title": "White House Defends Trump’s Ban on CNN, MS NOW and Politico in Court Filing",
+      "source": "The New York Times",
+      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPTGlOMHQ1di1TeU1UdFdQTWdONmd5SXo3dkdJQlV3VW9PWFBSU1c2UXlndTQwX1ZIYjFvYy00WlJfeWluVmp2aDNGU2lTYkpIMzJHTFEyRlpOQnl4YmZiNTRNOHAxVE1GZzFaZmp3Qm9WS256WnM2dmpkaTVqWWlQSFU1NVo?oc=5",
+      "published": 1790138167,
       "summary": "",
-      "sourceZh": "美国消费者新闻与商业频道",
-      "topic": "国际·地缘",
-      "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
+      "sourceZh": "《纽约时报》",
+      "topic": "政策·政治",
+      "brief": "White House Defends Trump’s Ban on CNN, MS NOW and Politico in Court Filing。",
       "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "titleZh": "美伊在联合国会议会谈数小时后，油价下跌",
-      "briefZh": "美伊在联合国会议会谈数小时后，油价下跌。",
+      "categoryKey": "politics",
+      "titleZh": "政策·政治：最新进展",
+      "briefZh": "《纽约时报》报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "国际·地缘"
+      "category": "政策·政治"
     }
   ],
   "watch": [],
@@ -290,10 +288,10 @@
       "riskStreamName": "地缘冲突",
       "topic": "地缘冲突",
       "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-      "briefZh": "俄乌战争持续，小麦买家面临成本上升。",
+      "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
-      "titleZh": "随着俄乌战争持续，小麦买家准备应对更高的成本",
+      "titleZh": "地缘冲突：最新进展",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
     },
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
@@ -302,7 +300,7 @@
         "name": "地缘政治",
         "score": 100,
         "state": "高",
-        "matches": 18
+        "matches": 16
       },
       {
         "name": "市场 / 信用",
@@ -318,9 +316,9 @@
       },
       {
         "name": "网络安全",
-        "score": 68,
-        "state": "中高",
-        "matches": 4
+        "score": 56,
+        "state": "中",
+        "matches": 3
       },
       {
         "name": "供应链",
@@ -348,8 +346,8 @@
         "Associated Press",
         "Axios",
         "Bloomberg",
-        "CBS News",
         "Euronews",
+        "NBC News",
         "Reuters",
         "The Guardian",
         "The Wall Street Journal"
@@ -369,10 +367,10 @@
         "geopolitics": 7,
         "market_credit": 7,
         "energy_shipping": 7,
-        "cyber": 7,
+        "cyber": 6,
         "supply_chain": 3
       },
-      "candidateCount": 31
+      "candidateCount": 30
     },
     "method": "rule-based-multistream"
   },
@@ -385,15 +383,15 @@
           "title": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.",
           "source": "The Wall Street Journal",
           "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNX2NEcUlPVHdCWTZGWDA4YkVlU0loRkpwNlY2VkV0cFIxRmJYMWV2MFpuR3pvLVpRTDFGQ1IzVkx2Ty1MZjV6X0FGYzliaFdqd1B1UDlGNnhadjNHa0JUQUdHZEszZGhiZkZtdXZGT3p5UWthcEFBTUI0alBpTFJGZWZiM2ZzeVVYRkNaY3pPZE1PQTg3ZnpHNGh3VkFnR3NJLXk4S2RzUXYzOUtUbUxBX2Z0dE14NWYtYVE?oc=5",
-          "published": 1790109504,
+          "published": 1790130240,
           "summary": "",
           "sourceZh": "《华尔街日报》",
           "topic": "政策·政治",
           "brief": "Trump Threatens to Annihilate Iran as He Lays Out Foreign-Policy Vision at U.N.。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics",
-          "titleZh": "特朗普在联合国阐述外交政策愿景时威胁摧毁伊朗",
-          "briefZh": "特朗普在联合国发表外交政策演讲，威胁伊朗。",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "《华尔街日报》报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -407,8 +405,8 @@
           "brief": "Swedish prosecutors probe election fraud allegation casting shadow over vote。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics",
-          "titleZh": "瑞典检察官调查选举舞弊指控，投票结果蒙上阴影",
-          "briefZh": "瑞典检察官调查选举舞弊指控。",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "路透社报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -422,8 +420,23 @@
           "brief": "British Columbia leader calls snap election as premier tells voters to say ‘hell no to Trump’。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics",
-          "titleZh": "不列颠哥伦比亚省领导人宣布提前选举，省长呼吁选民反对特朗普",
-          "briefZh": "不列颠哥伦比亚省领导人宣布提前选举。",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "美联社报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "DOJ defends Trump ban of 3 news outlets, says White House access is a 'privilege — not a right'",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPOHpWNU00a0N3dGYtT0JBRzRhY1lUTkEzUUh5akRhZmRPNlE4Tkp4SWNqMFNyRmFWRGhGaFpVcnQ2WU81dDFncHdXVGRqcnV2WmJMUFJDbm9jWERNTk00WTUxblB5ajFvdHNtazI1UjJxTjlKVFRubHhMT2NQdDBpM2ZPT29vZTZ2eHFEQ0hTQ1PSAZYBQVVfeXFMTlQ5cHJlZFpzY2FESVBKRmh0Tkh2cU9fRFI4alB6WWRmcm9MRGlRZjhPRWk3Z1FVSjBMeThjYkE3ZzJwX1VDNkxwY0NOWFpEbGotYzNVSUpHTWl6cFJkQjNNSlZ4Mmp1M2hDNVVaNWQ1RXpjSXlmSUswYndxb3hlSUZZRWx4TDVsSFZZY2s4d09SNkozd2p3?oc=5",
+          "published": 1790142597,
+          "summary": "",
+          "sourceZh": "美国消费者新闻与商业频道",
+          "topic": "政策·政治",
+          "brief": "DOJ defends Trump ban of 3 news outlets, says White House access is a 'privilege — not a right'。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "politics",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "美国消费者新闻与商业频道报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -437,8 +450,8 @@
           "brief": "Trump’s drive to raise fears of election mischief zeroes in on Utah mailman。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics",
-          "titleZh": "特朗普试图引发选举舞弊恐慌，聚焦犹他州邮递员",
-          "briefZh": "特朗普试图引发选举舞弊恐慌。",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "《政客》报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -452,8 +465,8 @@
           "brief": "White House Defends Trump’s Ban on CNN, MS NOW and Politico in Court Filing。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics",
-          "titleZh": "白宫在法庭文件中捍卫特朗普对CNN、MS NOW和Politico的禁令",
-          "briefZh": "白宫捍卫特朗普对媒体的禁令。",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "《纽约时报》报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -467,23 +480,8 @@
           "brief": "Trump says he thinks US will make deal with Iran after election。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "politics",
-          "titleZh": "特朗普表示他认为美国选举后将与伊朗达成协议",
-          "briefZh": "特朗普表示选举后可能与伊朗达成协议。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Republicans’ Cash Blitz Meets a $5-Gas Election",
-          "source": "POLITICO",
-          "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOcnJ0NGdxdnZwamdKdF9sc09EVkpIaW1iMklpVnRDa0wtWjdCNWpCMExxcUJMNmJXeHZmRDNvMmlaUFBtckhRM0YzRFQwWE5RXzV5OVZvbTRlU0kzZzg1am0wMWg3UTlEYTVhdG82eF9sdXlRSU5PZWVRZmN3VjJIMjktQmQwYTlKeVp4WmN4am52QzFsMXZJU3hKaw?oc=5",
-          "published": 1790067600,
-          "summary": "",
-          "sourceZh": "《政客》",
-          "topic": "政策·政治",
-          "brief": "Republicans’ Cash Blitz Meets a $5-Gas Election。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "politics",
-          "titleZh": "共和党人的资金狂潮遭遇5美元汽油选举",
-          "briefZh": "共和党人的资金狂潮面临挑战。",
+          "titleZh": "政策·政治：最新进展",
+          "briefZh": "路透社报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -503,23 +501,8 @@
           "brief": "Republican support for Trump’s handling of war in Iran shows cracks in new CNN poll。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
-          "titleZh": "CNN新民意调查显示，共和党人对特朗普处理伊朗战争的支持出现裂痕",
-          "briefZh": "CNN民意调查显示共和党人支持特朗普出现裂痕。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Zelenskiy says Russia planning new mass attack on Ukraine",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOV045LXNpMHZzM3o3R1h1N3ZtNmJNaTN0V3lHNkwxYmpfNU9NeFMzVG9tQmdDeDY1enVzY1FXTV9LLWtyWFBNUWlGcUFLZ1MtZkxSd2xsNW96SDhmS2taZ0c1MWo3Z2NiOEtJQUVHRXhOTU00X0Rha3JMc1BBOFVKVUpnRzA1a3Q2U3MzcXJwQW1YMTVxYnhhUXpOaWRNV0N6X0laTUxLMTUyV1E4V2pHOWNWa3VLZEpG?oc=5",
-          "published": 1790120219,
-          "summary": "",
-          "sourceZh": "路透社",
-          "topic": "国际·地缘",
-          "brief": "Zelenskiy says Russia planning new mass attack on Ukraine。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world",
-          "titleZh": "泽连斯基称俄罗斯计划对乌克兰发动新一轮大规模攻击",
-          "briefZh": "泽连斯基表示俄罗斯计划对乌克兰发动新一轮大规模攻击。",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "美国有线电视新闻网报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -533,8 +516,8 @@
           "brief": "U.S. and Iran officials meet in New York to discuss ending the war。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
-          "titleZh": "美伊官员在纽约会晤，讨论结束战争事宜",
-          "briefZh": "美国和伊朗官员在纽约会晤，讨论结束战争事宜。",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "阿克西奥斯新闻报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -548,8 +531,23 @@
           "brief": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
-          "titleZh": "乌克兰战争简报：泽连斯基准备实施‘能源停火’，北约警告普京变得越来越鲁莽",
-          "briefZh": "泽连斯基准备实施‘能源停火’，北约警告普京变得越来越鲁莽。",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "英国《卫报》报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "Zelenskiy says Russia planning new mass attack on Ukraine",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOV045LXNpMHZzM3o3R1h1N3ZtNmJNaTN0V3lHNkwxYmpfNU9NeFMzVG9tQmdDeDY1enVzY1FXTV9LLWtyWFBNUWlGcUFLZ1MtZkxSd2xsNW96SDhmS2taZ0c1MWo3Z2NiOEtJQUVHRXhOTU00X0Rha3JMc1BBOFVKVUpnRzA1a3Q2U3MzcXJwQW1YMTVxYnhhUXpOaWRNV0N6X0laTUxLMTUyV1E4V2pHOWNWa3VLZEpG?oc=5",
+          "published": 1790120160,
+          "summary": "",
+          "sourceZh": "路透社",
+          "topic": "国际·地缘",
+          "brief": "Zelenskiy says Russia planning new mass attack on Ukraine。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "路透社报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -563,8 +561,8 @@
           "brief": "Sen. Jon Husted: Iran war ‘needs to come to an end as quickly as possible’。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
-          "titleZh": "参议员乔恩·胡斯特：伊朗战争‘需要尽快结束’",
-          "briefZh": "参议员乔恩·胡斯特表示伊朗战争‘需要尽快结束’。",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "《政客》报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -578,8 +576,8 @@
           "brief": "Trump says US and Iranian officials met Tuesday, shortly after warning he may 'annihilate' Iran。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
-          "titleZh": "特朗普称美伊官员周二会面，此前警告他可能‘消灭’伊朗",
-          "briefZh": "特朗普称美伊官员周二会面，此前警告他可能‘消灭’伊朗。",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "美联社报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -593,8 +591,8 @@
           "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
-          "titleZh": "美伊在联合国会议会谈数小时后，油价下跌",
-          "briefZh": "美伊在联合国会议会谈数小时后，油价下跌。",
+          "titleZh": "国际·地缘：最新进展",
+          "briefZh": "美国消费者新闻与商业频道报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -614,8 +612,23 @@
           "brief": "Oil Prices Tumble Again。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets",
-          "titleZh": "油价再次暴跌",
-          "briefZh": "油价再次暴跌。",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "《华尔街日报》报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "Oil prices see-saw, as markets weigh Trump’s UN speech, potential Saudi pipeline fix",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
+          "published": 1790106910,
+          "summary": "",
+          "sourceZh": "美国全国广播公司新闻",
+          "topic": "市场·经济",
+          "brief": "Oil prices see-saw, as markets weigh Trump’s UN speech, potential Saudi pipeline fix。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "美国全国广播公司新闻报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -629,8 +642,8 @@
           "brief": "Oil falls $1 on better supply outlook, hopes for US-Iran talks。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets",
-          "titleZh": "油价下跌1美元，因供应前景改善，对美伊谈判抱有希望",
-          "briefZh": "油价下跌1美元，因供应前景改善，对美伊谈判抱有希望。",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "路透社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -644,8 +657,8 @@
           "brief": "Meta’s Muse Drags Down Stocks That Depend on ‘Consumer Inertia’。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets",
-          "titleZh": "Meta的Muse拖累了依赖“消费者惰性”的股票",
-          "briefZh": "Meta的Muse对依赖消费者惰性的股票产生了负面影响。",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "彭博社报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -659,8 +672,8 @@
           "brief": "Global Oil Price Drops Below $100 a Barrel。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets",
-          "titleZh": "全球油价跌破每桶100美元",
-          "briefZh": "全球油价已跌破每桶100美元。",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "《纽约时报》报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -674,23 +687,8 @@
           "brief": "Oil Prices Fall on U.S.-Iran Diplomacy Hopes。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "markets",
-          "titleZh": "油价下跌，因美国伊朗外交希望",
-          "briefZh": "油价下跌，受美国伊朗外交前景影响。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Asia stocks ride tech wave higher, oil stays subdued",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPSzB2Vlh0Nm9MZUlDRnA2S1pIMUJXWmZtdlZEVUdFRDV2WEJ1U3pLQnJKUFNBU3YyZGxXZ0trVk1tdm9lVFp0aEh5N0VpVUdOZDNWYjRzOTdUVW84bEYwYnZHNEQ1X213dHl5OGlpQWNSUEFkdXRpRC1rUTRDaDRBMFh2Zw?oc=5",
-          "published": 1790128260,
-          "summary": "",
-          "sourceZh": "路透社",
-          "topic": "市场·经济",
-          "brief": "Asia stocks ride tech wave higher, oil stays subdued。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets",
-          "titleZh": "亚洲股市受科技浪潮推动上涨，油价保持低迷",
-          "briefZh": "亚洲股市受科技板块推动上涨，同时油价保持低迷。",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "《华尔街日报》报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -710,8 +708,8 @@
           "brief": "Opinion | It’s Time to Cry Wolf Over A.I.。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "观点 | 是时候对人工智能发出狼来了的警告了",
-          "briefZh": "是时候对人工智能发出狼来了的警告了。",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "《纽约时报》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -725,8 +723,8 @@
           "brief": "Trump says US Justice Department could rein in AI companies if needed。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "特朗普表示，如需则美国司法部可限制AI公司",
-          "briefZh": "特朗普表示，美国司法部在必要时可对AI公司进行限制。",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "路透社报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -740,23 +738,8 @@
           "brief": "Trump rejects global entity for AI oversight。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "特朗普拒绝为AI监管设立全球实体",
-          "briefZh": "特朗普拒绝设立全球实体以监管人工智能。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Andreessen Horowitz launches AI school as college alternative",
-          "source": "CBS News",
-          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPMHBlOXZ4V3RXRnRBTUtjcW10MTRMSjF4aFp5X2dKSVUtd0t4VWk4b0tjcjhXOWE1MkhvTXNtMWNhWURKTFpCaE5OZjRNUERTOEMtYnJIaFNISkpyYmo5VENPODNQMmRHSF9PTHdVaDdvNDNBb0I1TVNBeG5sTHM5bFNVUjhIUQ?oc=5",
-          "published": 1790112300,
-          "summary": "",
-          "sourceZh": "美国哥伦比亚广播公司新闻",
-          "topic": "人工智能·科技",
-          "brief": "Andreessen Horowitz launches AI school as college alternative。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech",
-          "titleZh": "安德森·霍洛维茨启动AI学校，作为大学替代方案",
-          "briefZh": "安德森·霍洛维茨启动AI学校，作为大学教育的替代选择。",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "《政客》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -770,8 +753,8 @@
           "brief": "Qualcomm releases Android chip built for AI as memory shortage weighs on smartphone market。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "高通发布专为AI设计的Android芯片，智能手机市场内存短缺问题加重",
-          "briefZh": "高通发布专为AI设计的Android芯片，智能手机市场内存短缺问题加重。",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "美国消费者新闻与商业频道报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -785,8 +768,8 @@
           "brief": "Snorkel AI triples valuation to $3.5B as demand for AI training data booms。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "Snorkel AI因AI训练数据需求激增，估值增至35亿美元",
-          "briefZh": "Snorkel AI因AI训练数据需求激增，估值增至35亿美元。",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "科技博客报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -800,8 +783,23 @@
           "brief": "The A.I. Party House Where Networking Has a Dark Side。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "AI派对屋：社交的阴暗面",
-          "briefZh": "AI派对屋：社交的阴暗面。",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "《纽约时报》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "UN chief calls for AI curbs and end to wars in his last assembly address",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQTkpSMVRsY0JxTUpDS2t2WDhJNm5pSjdkME96Z2poVEhWM3JnZVU5MDZoMTlFQi1xZ3NZVllGX1JUYWRla0wxdk1aeUFOdEk5VWRZTnhTUmZtZHZ1a1pYNkIwWmpzN1FmaVZOSm5DYWdfTlZQWEZYVEU4OXZXckZ5LVBKVnBWUjhBd0VEQVo0ZkpnT3RkVGc2QUtOcmJlNDdlaEhZZmlYWVRCYWs?oc=5",
+          "published": 1790111810,
+          "summary": "",
+          "sourceZh": "路透社",
+          "topic": "人工智能·科技",
+          "brief": "UN chief calls for AI curbs and end to wars in his last assembly address。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "路透社报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -821,8 +819,8 @@
           "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "欧盟延长对俄制裁，取消俄罗斯亿万富翁乌斯马诺夫和弗里德曼的制裁",
-          "briefZh": "欧盟延长对俄制裁，取消俄罗斯亿万富翁乌斯马诺夫和弗里德曼的制裁。",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "路透社报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -836,8 +834,8 @@
           "brief": "US supreme court declines to intervene in custody fight over baby born via surrogate。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "美国最高法院拒绝介入通过代孕出生的婴儿监护权争夺战",
-          "briefZh": "美国最高法院拒绝介入通过代孕出生的婴儿监护权争夺战。",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "英国《卫报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -851,23 +849,38 @@
           "brief": "Supreme Court stays out of custody case involving surrogate who refused abortion。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "最高法院不介入拒绝堕胎的代孕母亲监护权案件",
-          "briefZh": "最高法院不介入拒绝堕胎的代孕母亲监护权案件。",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "英国广播公司报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "Supreme Court stays out of custody dispute between California couple and surrogate",
-          "source": "CBS News",
-          "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNVGpfMmZlc09BdWgtdFVDbUhQN1N3Umg2NGlYVm0zZUgyaDJEMHJmSGRpMmxKZGxkQUwzVmZaUlBNWTE3bE9nNmxKbFBtaU55MTJyc1JtbzJqT2xhU2R6Q0ZILU03YkUzNTk4c1ZYdXJobEo1OWw2aTRYdTZ2Vm5MRWpfWUljNTIzd3VwQWIxZ0w5aTEtTnNQZTVycEI5WnVIZ3Q3UWtZS0xYMHRLTUFYWmg2MjVmWk4wdlE?oc=5",
-          "published": 1790109780,
-          "summary": "",
-          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "title": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate - ABC News",
+          "source": "ABC News",
+          "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOcWxneUsyZVJFOGdlMHhVVUFRSWlGWlJiYldtdWxCZU1FUmFlVGdtNXJ2eDlZR2VWVm1jdHVlZ0dkbE1Gbjg1NTk4ZTJOcTVYZ3BGR1VmTV84QXBtMDhVSGt3VU5NT25iRnlvTERoOHBjdE1fTTdqRHMydnNyMmhhd3lQNS1sSGhiZHI0RmtuLXNLT0h3MHdId2xVX3hhZ3UwdkRLRzJBR2I1VnfSAbABQVVfeXFMTjRkdzF2cWRKZHUxYVJKb0NsV1NhXzVMYjNxMF9XTXZWMDVDQkFLX3Q1djRtNy1ZM24xUGlrTm1ZQ0pEak1GYmNlMjZvLWRqOVJiS2xSTUpDUmJYX18ySngtZXZDMkY3YzgtTHlLc2FJNXJOdkJBN19sNGlwOWtZd0NteVhHTXU1V3YzRjhZUmhzLVpMQnk5THpoN3VKdXE1N1lkM2dTcHNnSWhyc3RobnE?oc=5",
+          "published": 1790112848,
+          "summary": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate   。",
+          "sourceZh": "美国广播公司新闻",
           "topic": "法律·监管",
-          "brief": "Supreme Court stays out of custody dispute between California couple and surrogate。",
+          "brief": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate   。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "最高法院不介入加州夫妇与代孕母亲之间的监护权纠纷",
-          "briefZh": "最高法院不介入加州夫妇与代孕母亲之间的监护权纠纷。",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "美国广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "Supreme Court declines to intervene in custody case involving newborn with heart condition",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOSXZGZF9zX01ZXzRDeldWM1JNQ2J5ZmJRR1E1NnZWc1BIaEtFelBRQ0ZLUVV1alFOTXlYcU51aTZkbUwzUENnSnR3SWFCWkVHRXM0bGtaLWdZZG5uaHFTeERPbnVmdUdfM3IxRDJ4NWd4VmtMRlhNUFdBUjZSaTJsV3hWdHhQSGZOU2wwT1Z1WW5DYVZnem9iYjgzZndqTjlUcnQyVmp3TnNrb0lhaV9ZMHNfcHZvdTVmeFZYbDhzRG5rcjJfRnc?oc=5",
+          "published": 1790110256,
+          "summary": "",
+          "sourceZh": "美国全国广播公司新闻",
+          "topic": "法律·监管",
+          "brief": "Supreme Court declines to intervene in custody case involving newborn with heart condition。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "law",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "美国全国广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -881,8 +894,8 @@
           "brief": "Kagan steers Supreme Court clear of high-profile surrogacy fight。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "卡根引导最高法院避开备受瞩目的代孕争议",
-          "briefZh": "卡根引导最高法院避开备受瞩目的代孕争议。",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "《国会山报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -896,8 +909,8 @@
           "brief": "Supreme Court Order Gives Parents Custody of Baby in Surrogacy Fight。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "最高法院命令将代孕婴儿抚养权判给父母",
-          "briefZh": "代孕抚养权争议中，最高法院作出判决。",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "《纽约时报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -917,10 +930,10 @@
           "riskStreamName": "地缘冲突",
           "topic": "地缘冲突",
           "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-          "briefZh": "俄乌战争持续，小麦买家面临成本上升。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "随着俄乌战争持续，小麦买家准备应对更高的成本",
+          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -934,10 +947,10 @@
           "riskStreamName": "地缘冲突",
           "topic": "地缘冲突",
           "brief": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’。",
-          "briefZh": "乌克兰战争，泽连斯基准备实施‘能源停火’，北约警告普京。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "乌克兰战争简报：泽连斯基准备实施‘能源停火’，北约警告普京变得越来越鲁莽",
+          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -951,27 +964,10 @@
           "riskStreamName": "能源运输",
           "topic": "能源运输",
           "brief": "Oil Prices Rise as Saudi East-West Pipeline Attack Threatens Export Routes。",
-          "briefZh": "沙特东西方管道遭袭，油价上涨。",
+          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "沙特东西方管道遭袭威胁出口路线，油价上涨",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
-          "title": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war",
-          "source": "CBS News",
-          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9CWWN6a3ZZZzBheXJmWWZjVVFtQmtlVFljRHUyeFc4bjJJTW5kR0ZIdnZ0YmtRR1prRFluNkNLU1ZXLW96NHJjeWdVS2JVazVIakZFWWdmZm9LYzlPUTdqMUFKNFZYeWFmbGE3OW5Va2ZzbHR3TTkwd1dadi14QQ?oc=5",
-          "published": 1790124259,
-          "summary": "",
-          "sourceZh": "美国哥伦比亚广播公司新闻",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war。",
-          "briefZh": "乌克兰准备与美国签署无人机防御协议，透露基辅在伊朗战争中的新细节。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "消息称乌克兰准备与美国签署历史性的无人机防御协议，同时透露基辅在伊朗战争中的新细节",
+          "titleZh": "能源运输：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -985,10 +981,10 @@
           "riskStreamName": "网络安全",
           "topic": "网络安全",
           "brief": "Hacking group purports to have stolen FBI data in cyber attack。",
-          "briefZh": "黑客组织声称窃取FBI数据。",
+          "briefZh": "网络安全：网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "黑客组织声称在网络攻击中窃取了FBI数据",
+          "titleZh": "网络安全：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1002,10 +998,10 @@
           "riskStreamName": "市场信用",
           "topic": "市场信用",
           "brief": "Brightline Preparing for Bankruptcy Filing as Soon as This Week。",
-          "briefZh": "Brightline计划申请破产。",
+          "briefZh": "市场信用：信用、债务或流动性风险受到关注，需观察是否向银行、债券或融资市场进一步传导。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "Brightline计划在本周内申请破产",
+          "titleZh": "市场信用：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1019,10 +1015,27 @@
           "riskStreamName": "网络安全",
           "topic": "网络安全",
           "brief": "The EU spent billions on a cyberattack shield — nobody checked if it worked。",
-          "briefZh": "欧盟花费巨资建立网络攻击防护盾，但未检查其有效性。",
+          "briefZh": "网络安全：网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "欧盟花费数十亿欧元建立网络攻击防护盾，但无人检查其是否有效",
+          "titleZh": "网络安全：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Iran War: Latest News, Live Coverage and Video",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1vRFdEaTJrbkd5dmlGNzFrY19yTEJFZko2aXBSejFKbXNsbl95eFBsM2dSNkRjdVNudjhZTl9DSzFud3JoTTJ2R2ttX3lBNkE?oc=5",
+          "published": 1790049995,
+          "summary": "",
+          "sourceZh": "美国全国广播公司新闻",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Iran War: Latest News, Live Coverage and Video。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1077,33 +1090,33 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "Suisun City fully reopens City Hall weeks after malware incident",
-          "source": "CBS News",
-          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPQm5iMWUyM2s5VVVidnhzQk90dDg1N2piVDFVM2dQMklCVEM5LUJaOGRFbndHTkVGUVFZdzNvSDRySllWWldKMFZYV0tTa1RMQWhZTWlBd3hqUnhfN2VUMU1RelU0MGdadm44d0Q4aVJ2T19hTmEwZlVNTWRaQUxJNkxsalZUd0Y2aWdtaVZQcTV3VmJ5?oc=5",
-          "published": 1790119260,
+          "title": "Trump pledges 'unmatched military might' against drug cartels",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPN3ZiLV9yeVlIX0gzQ2dPLUp0QVVZMVFhcVJ4Uy16TktGdjBXdDkzQ2RkVDRIVXUwVHE5TE5mTzY0Y3RQU1ZIcEkxSGVjekN3M1RGc1FLRzgyOHRYWW43bVpsX0FzM3gzbDdBREhBQXRSOHdjSnpsd3E1MFItY3JhcTRlRUJaR09ORWZhQ3NnandqNDNSV1hpRFJvbDZuak9vc216VzM3aVJnc2JSUmJhX3l0VjdRZ0FqTERxQlEtVVNySUE?oc=5",
+          "published": 1790110745,
           "summary": "",
-          "sourceZh": "美国哥伦比亚广播公司新闻",
-          "riskStream": "cyber",
-          "riskStreamName": "网络安全",
-          "topic": "网络安全",
-          "brief": "Suisun City fully reopens City Hall weeks after malware incident。",
-          "briefZh": "网络安全：网络攻击、勒索软件或数据安全风险受到关注，需观察关键系统、数据与基础设施影响。",
+          "sourceZh": "路透社",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Trump pledges 'unmatched military might' against drug cartels。",
+          "briefZh": "地缘冲突：出现地缘或军事风险信号，需关注事件是否升级、扩散并传导至能源、运输与市场风险偏好。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "网络安全：最新进展",
+          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "Saudi Arabia ramps up Gulf oil exports after pipeline attack, data shows",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQcThldmdWd2c5aHdfck8zYk1XMWtsa3kweWlXaTNQWEpnV2NIUHhiNTh2cHhoSndCV2Z2QkhwNl9DZEJObFJha2pXWG1JcUZpVXlZU1RqQ2diZUJ0YVV2alRBRmRCampGOGdQQnM4UVV2R2ZMQ2p6WC1QSk5iOGJEWDZ2YXdaSzlLeGtZYnNuVld5MGZESG1tenNaMFlFcExWeVhlZjJBTlJOeHNmVkhBYzFkejJkNno5VWEwU05hRHU4NGlqT1U5UXcxUzU?oc=5",
-          "published": 1790006100,
+          "title": "Oil prices see-saw, as markets weigh Trump’s UN speech, potential Saudi pipeline fix",
+          "source": "NBC News",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
+          "published": 1790106910,
           "summary": "",
-          "sourceZh": "路透社",
+          "sourceZh": "美国全国广播公司新闻",
           "riskStream": "energy_shipping",
           "riskStreamName": "能源运输",
           "topic": "能源运输",
-          "brief": "Saudi Arabia ramps up Gulf oil exports after pipeline attack, data shows。",
+          "brief": "Oil prices see-saw, as markets weigh Trump’s UN speech, potential Saudi pipeline fix。",
           "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
@@ -1155,10 +1168,10 @@
           "riskStreamName": "能源运输",
           "topic": "能源运输",
           "brief": "Saudi Arabia Running Tests to Resume East-West Oil Pipeline。",
-          "briefZh": "能源运输：能源或运输链条出现风险信号，需关注供应、运价、出口通道与通胀预期变化。",
+          "briefZh": "沙特阿拉伯正在进行测试，以恢复东西石油管道的运行。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "能源运输：最新进展",
+          "titleZh": "沙特阿拉伯进行测试以恢复东西石油管道",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         }
       ]
@@ -1182,22 +1195,22 @@
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 98.4,
-      "changePct": -0.86,
+      "price": 98.28,
+      "changePct": -0.98,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 89.19,
-      "changePct": -5.71,
+      "price": 89.17,
+      "changePct": -5.73,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4372.8,
-      "changePct": -0.08,
+      "price": 4372.4,
+      "changePct": -0.09,
       "fmt": "usd"
     },
     {
