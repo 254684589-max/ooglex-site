@@ -44,9 +44,12 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install requests feedparser deep-translator
+        run: pip install requests feedparser
 
       - name: Build news data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: python scripts/whats-latest/build_news.py
 
       - name: Validate source health and recovery
