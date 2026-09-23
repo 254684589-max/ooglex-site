@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import argparse
 import binascii
+import copy
+import json
 import shutil
 import struct
 import zlib
@@ -54,6 +56,7 @@ PRO_PRIVATE_PATHS = {
     "apps/macro-radar/curve-monthly.json",
     "apps/finance-column/arch.js",
     "apps/finance-column/diagrams.js",
+    "apps/whats-latest/data.json",
 }
 
 PREVIEW_REPLACEMENTS = {
@@ -66,6 +69,7 @@ PREVIEW_REPLACEMENTS = {
     "apps/macro-radar/history.json",
     "apps/finance-column/arch.js",
     "apps/finance-column/diagrams.js",
+    "apps/whats-latest/data.json",
 }
 
 
@@ -119,6 +123,166 @@ def install_rich_public_previews() -> None:
     copy_tree(RICH_PREVIEW / "supply-chain", OUT / "apps" / "supply-chain")
     copy_tree(RICH_PREVIEW / "macro-risk", OUT / "apps" / "macro-radar")
     copy_tree(RICH_PREVIEW / "finance-column", OUT / "apps" / "finance-column")
+
+
+def install_whats_latest_preview() -> None:
+    """Publish only ~10% of What's Latest content to the public Pages artifact."""
+    src = ROOT / "apps" / "whats-latest" / "data.json"
+    dst = OUT / "apps" / "whats-latest" / "data.json"
+    if not src.exists():
+        raise SystemExit("What's Latest full dataset missing")
+
+    data = json.loads(src.read_text(encoding="utf-8"))
+    categories = data.get("categories") or []
+    flat = []
+    for category in categories:
+        for item in category.get("items") or []:
+            row = copy.deepcopy(item)
+            row["_categoryKey"] = category.get("key")
+            row["_categoryName"] = category.get("name")
+            flat.append(row)
+
+    total = len(flat)
+    if total <= 0:
+        raise SystemExit("What's Latest dataset has no news items")
+
+    # Round to the nearest whole article. Current 49-item dataset => 5 public items.
+    visible_target = max(1, int(total * 0.10 + 0.5))
+
+    def key(item: dict) -> str:
+        return str(item.get("link") or item.get("title") or "")
+
+    selected = []
+    selected_keys = set()
+
+    def add_item(item: dict | None) -> None:
+        if not item or len(selected) >= visible_target:
+            return
+        k = key(item)
+        if not k or k in selected_keys:
+            return
+        selected.append(copy.deepcopy(item))
+        selected_keys.add(k)
+
+    # Keep the edition lead, then preserve representative high-value desks.
+    lead = data.get("lead") or data.get("highlight") or {}
+    lead_key = key(lead)
+    if lead_key:
+        for item in flat:
+            if key(item) == lead_key:
+                add_item(item)
+                break
+
+    by_cat = {}
+    for item in flat:
+        by_cat.setdefault(item.get("_categoryKey"), []).append(item)
+    for items in by_cat.values():
+        items.sort(key=lambda x: float(x.get("published") or 0), reverse=True)
+
+    for category_key in ("risk", "markets", "tech", "world", "politics", "law"):
+        if len(selected) >= visible_target:
+            break
+        items = by_cat.get(category_key) or []
+        if items:
+            add_item(items[0])
+
+    for item in sorted(flat, key=lambda x: float(x.get("published") or 0), reverse=True):
+        if len(selected) >= visible_target:
+            break
+        add_item(item)
+
+    # Remove helper keys from public objects.
+    selected_clean = []
+    selected_by_key = {}
+    for item in selected:
+        item = copy.deepcopy(item)
+        category_key = item.pop("_categoryKey", None)
+        category_name = item.pop("_categoryName", None)
+        item["categoryKey"] = item.get("categoryKey") or category_key
+        item["category"] = item.get("category") or category_name
+        selected_clean.append(item)
+        selected_by_key[key(item)] = item
+
+    preview = copy.deepcopy(data)
+    preview_categories = []
+    for category in categories:
+        c = copy.deepcopy(category)
+        c["items"] = [
+            selected_by_key[key(item)]
+            for item in category.get("items") or []
+            if key(item) in selected_by_key
+        ]
+        preview_categories.append(c)
+    preview["categories"] = preview_categories
+
+    primary = selected_clean[0] if selected_clean else {}
+    preview["lead"] = copy.deepcopy(primary)
+    preview["highlight"] = copy.deepcopy(primary)
+    preview["wires"] = copy.deepcopy(selected_clean[1:])
+    preview["alsoNoted"] = copy.deepcopy(selected_clean[-2:] if len(selected_clean) > 2 else [])
+    preview["watch"] = []
+
+    overview = []
+    seen_cats = set()
+    for item in selected_clean:
+        cat = item.get("category") or ""
+        if not cat or cat in seen_cats:
+            continue
+        seen_cats.add(cat)
+        overview.append({
+            "topic": cat,
+            "text": item.get("briefZh") or item.get("titleZh") or "最新进展",
+            "source": item.get("source") or "",
+            "sourceZh": item.get("sourceZh") or "",
+        })
+    preview["overview"] = overview
+
+    # Supporting market/trend widgets are also reduced instead of leaking the full panel.
+    preview["markets"] = copy.deepcopy((data.get("markets") or [])[:1])
+    preview["signals"] = copy.deepcopy((data.get("signals") or [])[:1])
+
+    visible_risk = [
+        item for item in selected_clean
+        if item.get("categoryKey") == "risk"
+    ]
+    risk_sources = {item.get("source") for item in visible_risk if item.get("source")}
+    risk_streams = {item.get("riskStream") for item in visible_risk if item.get("riskStream")}
+    preview["riskAnalysis"] = {
+        "version": "preview-10pct",
+        "level": "预览",
+        "status": "公开版",
+        "reliable": False,
+        "lead": copy.deepcopy(visible_risk[0]) if visible_risk else None,
+        "why": "公开页面仅展示约10%的风险事件；完整风险样本未发布到公共页面。",
+        "dimensions": [],
+        "followUp": [],
+        "coverage": {
+            "sampleCount": len(visible_risk),
+            "sourceCount": len(risk_sources),
+            "streamCount": len(risk_streams),
+            "minItems": 8,
+            "minSources": 3,
+            "minStreams": 3,
+        },
+        "method": "public-10-percent-preview",
+    }
+
+    preview["preview"] = {
+        "enabled": True,
+        "ratio": 0.10,
+        "visibleItems": len(selected_clean),
+        "totalItems": total,
+        "mode": "public",
+    }
+    base_note = str(preview.get("note") or "").strip()
+    preview["note"] = (
+        (base_note + " " if base_note else "")
+        + f"公开页面仅发布约10%新闻内容（{len(selected_clean)}/{total} 条）；完整数据不随 Pages 公共产物发布。"
+    )
+
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    dst.write_text(json.dumps(preview, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"What's Latest public preview: {len(selected_clean)}/{total} news items")
 
 
 def inject_rich_access_adapter() -> None:
@@ -273,6 +437,7 @@ def build(protect_pro: bool) -> None:
 
     if protect_pro:
         install_rich_public_previews()
+        install_whats_latest_preview()
         inject_rich_access_adapter()
 
         leaked = []
