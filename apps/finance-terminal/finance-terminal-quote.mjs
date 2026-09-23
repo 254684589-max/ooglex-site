@@ -452,6 +452,10 @@ export async function loadInstrument(kind, symbol) {
   const data = await loadJson(paths.data);
   const instrument = INSTRUMENT_READERS[kind](data, symbol);
   if (!instrument) throw new Error("站内当前的日更快照里没有这个标的");
+  /* 当期文件自报不含历史（公开站点的美债曲线即如此）时打个标记：
+     缺图不是"站内没有"，而是这一份公开数据本来就只给当期读数，措辞要分清。 */
+  instrument.historyRestricted = Boolean(
+    data && data.ooglexAccess && data.ooglexAccess.historyIncluded === false);
   const seriesKey = instrument.seriesKey || symbol;
   const dailyTask = (async () => {
     if (kind === "crypto") return dailyPoints(data.history, seriesKey);
@@ -478,6 +482,9 @@ export async function loadInstrument(kind, symbol) {
   })();
   const monthlyTask = (async () => {
     if (!paths.monthly) return [];
+    /* 当期文件自报不含历史时（公开站点的美债曲线就是这样），月线那份同样不会公开，
+       这里不再发一个注定 404 的请求；长端几档如实置灰。 */
+    if (data && data.ooglexAccess && data.ooglexAccess.historyIncluded === false) return [];
     try {
       const file = await loadJson(
         paths.sharded ? shardPath(paths.monthly, instrument.historyShard) : paths.monthly);
@@ -633,11 +640,14 @@ export function renderQuote(document, root, payload, wanted) {
       format,
       unit: instrument.unit,
       label: `${instrument.name} ${range.label}走势，共 ${points.length} ${grain}`,
-      emptyText: range.grain === "monthly"
-        ? "站内还没有该标的的月线序列，这一档区间暂时画不出来；管道每日更新，取到后会自动出现。"
-        : (range.grain === "fourHour"
-          ? "站内还没有该标的这一档区间的 4 小时观测，这里不画任何推断曲线。"
-          : "站内还没有该标的的日线序列，这一档区间暂时画不出来。")
+      emptyText: instrument.historyRestricted
+        ? "本页读的这份公开数据只含当期读数，不含历史序列，因此这一档区间画不出来——"
+          + "不是没取到，也不画任何推断曲线；口径见下方说明。"
+        : (range.grain === "monthly"
+          ? "站内还没有该标的的月线序列，这一档区间暂时画不出来；管道每日更新，取到后会自动出现。"
+          : (range.grain === "fourHour"
+            ? "站内还没有该标的这一档区间的 4 小时观测，这里不画任何推断曲线。"
+            : "站内还没有该标的的日线序列，这一档区间暂时画不出来。"))
     });
     describeGrain(range);
     stats.textContent = "";
@@ -678,7 +688,9 @@ export function renderQuote(document, root, payload, wanted) {
       button.dataset.range = range.key;
       if (pointsFor(range).length < 2) {
         button.disabled = true;
-        button.title = "站内暂无该区间的历史序列";
+        button.title = instrument.historyRestricted
+          ? "本页这份公开数据只含当期读数，不含历史序列"
+          : "站内暂无该区间的历史序列";
       } else if (!initial) {
         initial = range;
       }

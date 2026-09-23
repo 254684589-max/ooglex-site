@@ -16,9 +16,44 @@ FULL_ONLY_FORBIDDEN = (
     "apps/supply-chain/domestic.json",
     "apps/supply-chain/smelters.json",
     "apps/macro-radar/series.json",
-    "apps/macro-radar/curve.json",
     "apps/macro-radar/curve-monthly.json",
 )
+
+# curve.json 不在上面的名单里：公开站点必须有它（公开金融终端的 US RATES、
+# 收益率曲线、债券品类与 11 个期限详情页都读它），但只能是去掉历史的替身。
+# 下面 check_public_curve() 逐条核对：当期期限一个不少、历史一个不带。
+
+
+def check_public_curve() -> None:
+    """公开的美债曲线必须是「当期齐全、历史全无」的替身。
+
+    少了它，公开金融终端的四处读数直接 404（这正是 2026-09-21 线上那次故障）；
+    多带了历史，等于把受保护的研究数据发到公开站点。两头都要守住。
+    """
+    rel = "apps/macro-radar/curve.json"
+    curve = read_json(rel)
+    assert_preview_marker(curve, rel)
+
+    source = json.loads((ROOT / rel).read_text(encoding="utf-8"))
+    expected = [t.get("id") for t in (source.get("tenors") or []) if isinstance(t, dict)]
+    actual = [t.get("id") for t in (curve.get("tenors") or []) if isinstance(t, dict)]
+    if actual != expected:
+        fail(f"public Treasury curve tenors differ from source: {len(actual)}/{len(expected)}")
+    if not actual:
+        fail("public Treasury curve has no tenors")
+
+    for key in ("history", "values", "dates"):
+        if key in curve:
+            fail(f"public Treasury curve must not carry {key}")
+    for row in curve.get("spreads") or []:
+        for key in ("history", "values", "dates"):
+            if isinstance(row, dict) and key in row:
+                fail(f"public Treasury curve spread must not carry {key}")
+    if not curve.get("source") or not curve.get("asOf"):
+        fail("public Treasury curve must keep source and asOf")
+    mark = curve.get("ooglexAccess") or {}
+    if mark.get("historyIncluded") is not False:
+        fail("public Treasury curve must declare historyIncluded=false")
 
 
 def fail(message: str) -> None:
@@ -105,6 +140,8 @@ def main() -> None:
     actual_signals = len(macro.get("signals") or [])
     if actual_signals != expected_signals:
         fail(f"Macro Risk headline cards incomplete: {actual_signals}/{expected_signals}")
+
+    check_public_curve()
 
     macro_hist = read_json("apps/macro-radar/history.json")
     assert_preview_marker(macro_hist, "apps/macro-radar/history.json")

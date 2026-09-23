@@ -100,7 +100,11 @@
   /* ── 出处行：金融数据规范要求的 source / asOf / 频率 / 状态 ────────── */
   function meta(label, d, cadence) {
     if (!d || d.__error) return { label: label, error: (d && d.__error) || "未加载", cadence: cadence };
-    return { label: label, source: d.source, asOf: d.asOf, updatedAt: d.updatedAt,
+    /* 盘中快照这类逐标的时点的文件没有单一 asOf，只有最早/最新两个时点：
+       取最新那个当数据日，免得一行写着 OK 却不显示更新时间。 */
+    var asOf = d.asOf || (typeof d.asOfLatest === "string"
+      ? d.asOfLatest.replace("T", " ").replace(/:\d\d(?=Z$)/, "") : d.asOfLatest);
+    return { label: label, source: d.source, asOf: asOf, updatedAt: d.updatedAt,
              frequency: d.frequency, status: d.status, cadence: cadence, note: d.note,
              count: d.count, realtime: d.realtime === true };
   }
