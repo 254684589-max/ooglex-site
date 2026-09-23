@@ -357,14 +357,14 @@ def apply_chinese_translation(cats_out, prev_file=None):
 # 仅检查新闻标题和 RSS 摘要，不检查媒体名称，因此不会因为来源名含 China
 # （例如 South China Morning Post）而误删其非中国题材报道。
 CHINA_RELATED_RE = re.compile(
-    r"\\bChina\\b|\\bChinese\\b|\\bPRC\\b|People['’]s Republic of China|"
-    r"\\bBeijing\\b|\\bShanghai\\b|\\bShenzhen\\b|\\bGuangzhou\\b|"
-    r"\\bHong Kong\\b|\\bMacau\\b|\\bMacao\\b|\\bCCP\\b|"
+    r"\bChina\b|\bChinese\b|\bPRC\b|People['’]s Republic of China|"
+    r"\bBeijing\b|\bShanghai\b|\bShenzhen\b|\bGuangzhou\b|"
+    r"\bHong Kong\b|\bMacau\b|\bMacao\b|\bCCP\b|"
     r"Chinese Communist Party|Communist Party of China|Xi Jinping|"
-    r"People['’]s Liberation Army|\\bPLA\\b|People['’]s Bank of China|\\bPBOC\\b|"
-    r"\\byuan\\b|\\brenminbi\\b|South China Sea|Taiwan Strait|"
-    r"\\bAlibaba\\b|\\bTencent\\b|\\bHuawei\\b|\\bByteDance\\b|\\bTikTok\\b|"
-    r"\\bDeepSeek\\b|\\bBYD\\b|\\bBaidu\\b|\\bXiaomi\\b|\\bJD\\.com\\b",
+    r"People['’]s Liberation Army|\bPLA\b|People['’]s Bank of China|\bPBOC\b|"
+    r"\byuan\b|\brenminbi\b|South China Sea|Taiwan Strait|"
+    r"\bAlibaba\b|\bTencent\b|\bHuawei\b|\bByteDance\b|\bTikTok\b|"
+    r"\bDeepSeek\b|\bBYD\b|\bBaidu\b|\bXiaomi\b|\bJD\.com\b",
     re.I,
 )
 
