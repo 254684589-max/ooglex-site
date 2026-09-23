@@ -15,13 +15,35 @@ FULL_ONLY_FORBIDDEN = (
     "apps/supply-chain/foreign.json",
     "apps/supply-chain/domestic.json",
     "apps/supply-chain/smelters.json",
-    "apps/macro-radar/series.json",
     "apps/macro-radar/curve-monthly.json",
 )
 
 # curve.json 不在上面的名单里：公开站点必须有它（公开金融终端的 US RATES、
 # 收益率曲线、债券品类与 11 个期限详情页都读它），但只能是去掉历史的替身。
 # 下面 check_public_curve() 逐条核对：当期期限一个不少、历史一个不带。
+
+
+def check_public_reference_series() -> None:
+    """公开的三条参考序列必须与源文件逐条等长。
+
+    宏观面板的两条 Z-Score 用整段序列算（窗口 504 会被 260 个点截断），
+    少一个点就是另一个 Z 值。所以这份文件要么完整公开、要么公开页不给这两行，
+    不接受"裁一段当预览"——那等于在公开页展示一个与 PRO 不同的读数。
+    """
+    rel = "apps/macro-radar/series.json"
+    public = read_json(rel)
+    source = json.loads((ROOT / rel).read_text(encoding="utf-8"))
+    src_series = source.get("series") or {}
+    pub_series = public.get("series") or {}
+    if sorted(pub_series) != sorted(src_series):
+        fail(f"public reference series differ: {sorted(pub_series)} vs {sorted(src_series)}")
+    for key, entry in src_series.items():
+        expected = len((entry or {}).get("values") or [])
+        actual = len((pub_series.get(key) or {}).get("values") or [])
+        if actual != expected:
+            fail(f"public reference series {key} truncated: {actual}/{expected}")
+    if not public.get("source") or not public.get("updatedAt"):
+        fail("public reference series must keep source and updatedAt")
 
 
 def check_public_curve() -> None:
@@ -142,6 +164,7 @@ def main() -> None:
         fail(f"Macro Risk headline cards incomplete: {actual_signals}/{expected_signals}")
 
     check_public_curve()
+    check_public_reference_series()
 
     macro_hist = read_json("apps/macro-radar/history.json")
     assert_preview_marker(macro_hist, "apps/macro-radar/history.json")

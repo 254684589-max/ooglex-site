@@ -51,9 +51,14 @@ PRO_PRIVATE_PATHS = {
     "apps/supply-chain/edges",
     "apps/macro-radar/data.json",
     "apps/macro-radar/history.json",
-    "apps/macro-radar/series.json",
     "apps/macro-radar/curve.json",
     "apps/macro-radar/curve-monthly.json",
+    # series.json 不在这份名单里：它是 10 年期美债、美联储广义美元指数、WTI 现货
+    # 三条 FRED 公开序列的**滚动一年**窗口（各 260 个交易日），公开终端的宏观面板
+    # 拿它算两条 Z-Score。Z 的窗口就是整段序列（win=504 会被 260 截断），
+    # 按比例裁一份"替身"会把 Z 值改成另一个数——那是造数，不是预览。
+    # 因此要么整份公开、要么公开页干脆不给这两行；所有者选了公开。
+    # 深度研究用的长历史仍在 history.json（1038 个观测，公开只给 10%）。
     "apps/finance-column/arch.js",
     "apps/finance-column/diagrams.js",
     "apps/whats-latest/data.json",

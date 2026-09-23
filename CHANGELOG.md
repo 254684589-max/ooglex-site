@@ -13,6 +13,13 @@
 
 ### 新增
 
+- 2026-09-23，**公开宏观参考序列，补回公开终端的两条 Z-Score**。**已部署。**
+  - 接上一条：曲线修好后，公开页仍有一个 `apps/macro-radar/series.json` 的 404。这份文件是 10 年期美债（DGS10）、美联储广义美元指数（DTWEXBGS）、WTI 现货（RWTC）三条 FRED 公开序列的**滚动一年**窗口，各 260 个交易日，10.9KB；公开终端的宏观面板拿它算两条 Z-Score。
+  - **为什么没做成「裁一段的预览」**：`zscore(values, win)` 的窗口是 `min(504, 序列长度)`，这三条只有 260 个点，**窗口就是整段序列**。按 10% 裁一份会把 Z 值改成另一个数——公开页与 PRO 页看同一个指标却得出不同读数，那是造数不是预览。所以只有两个诚实选项：整份公开，或者公开页干脆不给这两行。**所有者选了公开。**
+  - 深度研究用的长历史不受影响：`history.json`（1038 个周频观测、十段历史情景）仍然只给 10% 预览，完整版走 PRO。
+  - **契约**：新增 `check_public_reference_series()`——公开产物里这份文件必须存在、三条序列一条不少、**逐条与源文件等长**（少一个点就判失败），并保留 source 与 updatedAt。
+  - **实测**：公开构建后终端首页两条 Z-Score 行回来了（`US10Y 4.9600 Z +2.50 STRESS`、`DXY-FED 119.51 Z −0.14 NORMAL`）；WTI 那条仍不显示——它只有 8 个观测，低于 30 个点的下限，本来就不该给 Z 值，页面照旧不画。终端首页与 `/apps/markets/` 现在**零网络失败**。
+
 - 2026-09-23，**修复线上金融终端「美债曲线 FAIL」：PRO 切分把公开页还在读的曲线数据一并删掉了**。**尚未部署。**
   - **现象**（所有者截图报出）：公开金融终端的 US RATES 面板整块空、红字「曲线数据读取失败」，脚注写着 `HTTP 404 macro-radar/curve.json`；收益率曲线面板三个标签页都没内容；数据来源表里「美债曲线」一行是 **FAIL** 且来源名为空。
   - **根因**：9-17 起公开站点改由 `scripts/build_public_site.py --pro-cutover` 生成 FREE/PRO 切分产物。`apps/macro-radar/` 有 5 个文件列进 `PRO_PRIVATE_PATHS`，其中 `data.json` / `history.json` 有 10% 预览替身，而 **`curve.json` / `curve-monthly.json` / `series.json` 没有任何替身，直接从公开产物里删掉**，浏览器只能拿到 404。`validate_pro_public_cutover.py` 的 `FULL_ONLY_FORBIDDEN` 还明令这三个文件不得出现在公开站点——切分是有意的，漏掉的是「公开金融终端一直在读它们」这件事。
@@ -23,7 +30,7 @@
   - **顺带修一处「状态 OK 却不显示更新时间」**：数据来源表的「行情（盘中快照）」一行 AS OF 一直是「—」。`intraday.json` 逐标的各有时点，只有 `asOfLatest`/`asOfEarliest` 而没有单一 `asOf`，而 `core.js` 的 `meta()` 只读 `asOf`。现在退到 `asOfLatest` 并压成 `2026-09-21 00:28Z` 的窄格式。
   - **契约同步收紧**：`validate_pro_public_cutover.py` 把 `curve.json` 从「必须不存在」改成 `check_public_curve()`——公开产物里必须有它、必须标 preview、期限一个不少（与源文件逐 id 比对）、**不得带 history / values / dates**、必须保留 source 与 asOf、必须自报 `historyIncluded: false`。两头都守：少了它公开页 404，多带了历史就是把受保护数据发出去。
   - **核实后确认不是缺陷的两项**：「行情（收盘）部分缺失」是 133 个标的里 1 个（`^TASI.SR` 沙特）本轮未取到、沿用上次，标注正确；主权利差数据日停在 2026-08-01 是 OECD 月频序列本身滞后，页面已写明数据日与被摘出的 4 条。
-  - **已知遗留，本轮未动**：① `apps/macro-radar/series.json` 仍不在公开产物里，宏观面板的两条 Z-Score 行（10 年期美债、美联储广义美元指数）在公开页直接不出现——它们是「历史序列」，公开与否属 PRO/FREE 边界，等所有者定；② `validate_finance_terminal.py` 在 `origin/main` 上**本来就是红的**（「法律页面必须保持移动端可读且不得新增追踪脚本」）：9-18 的 i18n 上线给 `terms.html` / `privacy.html` 加了同源的 `assets/i18n.js` 与 `i18n-wave5.js`，而这条断言禁止法律页出现任何 `<script>`。这不是本轮引入的，`Finance Terminal Quality` 自 8-29 起就没再跑过，因此一直没被发现；是放宽为「禁第三方脚本、允许同源 i18n」还是把脚本从法律页移走，同样等所有者定。
+  - **已知遗留**：① `apps/macro-radar/series.json` —— **已按所有者决定在同日一并公开，见下一条**；② `validate_finance_terminal.py` 在 `origin/main` 上**本来就是红的**（「法律页面必须保持移动端可读且不得新增追踪脚本」）：9-18 的 i18n 上线给 `terms.html` / `privacy.html` 加了同源的 `assets/i18n.js` 与 `i18n-wave5.js`，而这条断言禁止法律页出现任何 `<script>`。这不是本轮引入的，`Finance Terminal Quality` 自 8-29 起就没再跑过，因此一直没被发现；是放宽为「禁第三方脚本、允许同源 i18n」还是把脚本从法律页移走，同样等所有者定。
   - **验证**：公开站点构建 + `validate_pro_public_cutover.py` 通过；品类行情板契约、加载器契约、工作流治理（全数据集）全绿；`validate_finance_terminal.py` 只剩上面那条既有的法律页断言；无头浏览器对公开产物逐页复测——终端首页 12 行来源表齐全且「美债曲线 … 2026-09-17 OK」、`/apps/markets/` 债券 57 项（11+35+11）、10 年期详情页正常渲染且**零网络失败**。构建：不适用（纯静态）。
 
 - 2026-09-19，**合并上游 47 个提交后的英文界面修复：把「把当日数值写死成词条」这个系统性隐患改掉，并上线**。**已部署。**
