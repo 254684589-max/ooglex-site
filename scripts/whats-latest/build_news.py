@@ -229,7 +229,7 @@ def _extract_json_payload(text):
 
 
 def apply_google_title_translation(refs):
-    """无密钥标题翻译兜底：只翻译原始标题，不补写新闻事实。"""
+    """无密钥标题翻译兜底：限速逐条翻译，避免 Google 429。"""
     pending = [
         (idx, item)
         for idx, item in refs
@@ -245,27 +245,28 @@ def apply_google_title_translation(refs):
         print(f"[translate-google] 初始化失败：{str(exc)[:120]}")
         return
 
-    for start in range(0, len(pending), 20):
-        chunk = pending[start:start + 20]
-        titles = [item.get("title") or "" for _, item in chunk]
-        try:
-            translated = translator.translate_batch(titles)
-            if not isinstance(translated, list) or len(translated) != len(chunk):
-                raise RuntimeError("translate_batch returned unexpected payload")
-            applied = 0
-            for (_, item), title_zh in zip(chunk, translated):
-                title_zh = str(title_zh or "").strip()
-                if not has_han(title_zh):
-                    continue
-                item["titleZh"] = title_zh
-                item["briefZh"] = (
-                    f"{title_zh}。{zh_source(item.get('source') or '')}为该报道新闻源；"
-                    "更多事实与细节请查看原文。"
-                )
-                applied += 1
-            print(f"[translate-google] 标题中文化 {applied}/{len(chunk)} 条")
-        except Exception as exc:
-            print(f"[translate-google] 批次失败，保留中文兜底：{str(exc)[:120]}")
+    applied = 0
+    for pos, (_, item) in enumerate(pending, 1):
+        title = item.get("title") or ""
+        title_zh = ""
+        for attempt in range(2):
+            try:
+                title_zh = str(translator.translate(title) or "").strip()
+                if has_han(title_zh):
+                    break
+            except Exception as exc:
+                if attempt == 1:
+                    print(f"[translate-google] 单条失败：{str(exc)[:100]}")
+                time.sleep(1.0)
+        if has_han(title_zh):
+            item["titleZh"] = title_zh
+            item["briefZh"] = (
+                f"{title_zh}。{zh_source(item.get('source') or '')}为该报道新闻源；"
+                "更多事实与细节请查看原文。"
+            )
+            applied += 1
+        time.sleep(0.35)
+    print(f"[translate-google] 标题中文化 {applied}/{len(pending)} 条")
 
 
 def apply_chinese_translation(cats_out):
@@ -280,9 +281,19 @@ def apply_chinese_translation(cats_out):
             item["whyZh"] = item.get("whyZh") or item.get("why") or "请结合原文与后续报道持续核验。"
             refs.append((len(refs), item))
 
+    apply_google_title_translation(refs)
+    pending_refs = [
+        (idx, item)
+        for idx, item in refs
+        if not has_han(item.get("title") or "")
+        and (item.get("titleZh") or "").endswith("最新进展")
+    ]
+    if not pending_refs:
+        return
+
     proxy = load_translation_proxy()
-    if not proxy or not refs:
-        print("[translate] 共享翻译通道不可用，使用中文兜底文案")
+    if not proxy:
+        print("[translate] 共享翻译通道不可用，剩余条目使用中文兜底文案")
         return
 
     system = (
@@ -292,8 +303,8 @@ def apply_chinese_translation(cats_out):
         "如果summary为空，briefZh只能改写title，不能补充背景。"
         "只返回JSON数组，每项严格包含id、titleZh、briefZh，不要Markdown。"
     )
-    for start in range(0, len(refs), TRANSLATE_CHUNK):
-        chunk = refs[start:start + TRANSLATE_CHUNK]
+    for start in range(0, len(pending_refs), TRANSLATE_CHUNK):
+        chunk = pending_refs[start:start + TRANSLATE_CHUNK]
         payload_items = [
             {
                 "id": idx,
@@ -333,8 +344,6 @@ def apply_chinese_translation(cats_out):
             print(f"[translate] 中文化 {applied}/{len(chunk)} 条")
         except Exception as exc:
             print(f"[translate] 批次失败，保留中文兜底：{str(exc)[:120]}")
-
-    apply_google_title_translation(refs)
 
 
 # 全局内容过滤：该专栏不收录中国相关报道。
