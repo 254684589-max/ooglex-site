@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T06:30:30Z",
+  "updatedAt": "2026-09-23T06:32:01Z",
   "asOf": "2026-09-23",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -64,9 +64,9 @@
   "overview": [
     {
       "topic": "风险",
-      "text": "路透社报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-      "source": "Reuters",
-      "sourceZh": "路透社"
+      "text": "英国《卫报》报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "source": "The Guardian",
+      "sourceZh": "英国《卫报》"
     },
     {
       "topic": "政策·政治",
@@ -133,17 +133,17 @@
       "category": "国际·地缘"
     },
     {
-      "title": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on",
-      "source": "Reuters",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQaUswVEozejNqc18tLUlqcnBVXzNDVDNkZHQyN25BdDhqYTVBN2NTNnVoODNxLTI0bXg3d00wWXY1NW1yUVpuM1FDLWFsZVYzVFVwbkNqbzdBd0JHaDk1UGg5NXVFQ2g2MFZwalBpYW9GRURiMVB4cnd5RWd3cXpmcktIalFsNFBxTU1YNTRBakx1NXRBaEJJWlo0Q280X1FIcFR3cWxfTTVsV2ZIUlBmX25na0E2U0JhdTF6M2dQMA?oc=5",
-      "published": 1790136540,
+      "title": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’",
+      "source": "The Guardian",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTEUyaDRNNlZTbkNQWHk2cWpIaFhpZGlIMThmd1ZUWWx1MXNhRVE1VDRuelA1ZGVWVVRDZ19UXzl2cnRYWkY0Ym5qcjdta1Y0UjdackloTkRzSHNxTWYtRzM2d1hkNmtNcENJZXpXN0ZRY0prdkFwOTl0SU4tS3l5VlQ5N2hSUWNkbnE0dmtUS3JQV2FRYWtoMg?oc=5",
+      "published": 1790133540,
       "summary": "",
-      "sourceZh": "路透社",
+      "sourceZh": "英国《卫报》",
       "riskStream": "geopolitics",
       "riskStreamName": "地缘冲突",
       "topic": "地缘冲突",
-      "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-      "briefZh": "路透社报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "brief": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’。",
+      "briefZh": "英国《卫报》报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "titleZh": "地缘冲突：最新进展",
@@ -201,6 +201,58 @@
       "category": "人工智能·科技"
     },
     {
+      "title": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war",
+      "source": "CBS News",
+      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9CWWN6a3ZZZzBheXJmWWZjVVFtQmtlVFljRHUyeFc4bjJJTW5kR0ZIdnZ0YmtRR1prRFluNkNLU1ZXLW96NHJjeWdVS2JVazVIakZFWWdmZm9LYzlPUTdqMUFKNFZYeWFmbGE3OW5Va2ZzbHR3TTkwd1dadi14QQ?oc=5",
+      "published": 1790124259,
+      "summary": "",
+      "sourceZh": "美国哥伦比亚广播公司新闻",
+      "riskStream": "geopolitics",
+      "riskStreamName": "地缘冲突",
+      "topic": "地缘冲突",
+      "brief": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war。",
+      "briefZh": "美国哥伦比亚广播公司新闻报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "titleZh": "地缘冲突：最新进展",
+      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "category": "风险"
+    }
+  ],
+  "alsoNoted": [
+    {
+      "title": "Senior NATO commander warns Putin is becoming more cavalier and open to risk as Ukraine war drags on",
+      "source": "Associated Press",
+      "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOeFRCNGc0VG9kTExITWJ4RXNhLWt5Wkh1WnlqOEM5UkRlSGxnU29XS0JFNlBNN1RGWjZHb3g5QzBMbldwUjhLekVKQVg2UnY3WkZLQ2RqbDZFNk91N3RsTW5jUy11MFBIYjZTemtkQmpZLV9ydUd1bmhGYk9pRUhMVW05OWptaktLTHV2amtrNE44TGc?oc=5",
+      "published": 1790137800,
+      "summary": "",
+      "sourceZh": "美联社",
+      "topic": "国际·地缘",
+      "brief": "Senior NATO commander warns Putin is becoming more cavalier and open to risk as Ukraine war drags on。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "titleZh": "国际·地缘：最新进展",
+      "briefZh": "美联社报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "category": "国际·地缘"
+    },
+    {
+      "title": "In Court Filing Defending Media Ban, White House Says Access Is a ‘Privilege’",
+      "source": "The New York Times",
+      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPTGlOMHQ1di1TeU1UdFdQTWdONmd5SXo3dkdJQlV3VW9PWFBSU1c2UXlndTQwX1ZIYjFvYy00WlJfeWluVmp2aDNGU2lTYkpIMzJHTFEyRlpOQnl4YmZiNTRNOHAxVE1GZzFaZmp3Qm9WS256WnM2dmpkaTVqWWlQSFU1NVo?oc=5",
+      "published": 1790138168,
+      "summary": "",
+      "sourceZh": "《纽约时报》",
+      "topic": "政策·政治",
+      "brief": "In Court Filing Defending Media Ban, White House Says Access Is a ‘Privilege’。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "politics",
+      "titleZh": "政策·政治：最新进展",
+      "briefZh": "《纽约时报》报道了政策·政治相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "category": "政策·政治"
+    },
+    {
       "title": "Oil falls $1 on better supply outlook, hopes for US-Iran talks",
       "source": "Reuters",
       "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOeFhpNFFXWGZ2azRGVllBNXpwLXZQeTFySkY3Vi12SmpTNmMyY09oU3RMa3Rqb21pNUl0ZGhSbVBWQnZBOXdOb19xSlU3TnNra0F6OWowVHp5RHlSblJGTVhXandWeEFJaDBOTi1VcjdrSjVNeGVJZnVjeUJXM3NVYUgxZ28yQkVuWXNhc1pxd093NVVBTHZnWm40c01OS00zZHAwRWVR?oc=5",
@@ -217,8 +269,13 @@
       "category": "市场·经济"
     }
   ],
-  "alsoNoted": [
-    {
+  "watch": [],
+  "riskAnalysis": {
+    "version": "2.0",
+    "level": "高",
+    "status": "升级",
+    "reliable": true,
+    "lead": {
       "title": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’",
       "source": "The Guardian",
       "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTEUyaDRNNlZTbkNQWHk2cWpIaFhpZGlIMThmd1ZUWWx1MXNhRVE1VDRuelA1ZGVWVVRDZ19UXzl2cnRYWkY0Ym5qcjdta1Y0UjdackloTkRzSHNxTWYtRzM2d1hkNmtNcENJZXpXN0ZRY0prdkFwOTl0SU4tS3l5VlQ5N2hSUWNkbnE0dmtUS3JQV2FRYWtoMg?oc=5",
@@ -233,63 +290,6 @@
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "titleZh": "地缘冲突：最新进展",
-      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "category": "风险"
-    },
-    {
-      "title": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’",
-      "source": "The Guardian",
-      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTEUyaDRNNlZTbkNQWHk2cWpIaFhpZGlIMThmd1ZUWWx1MXNhRVE1VDRuelA1ZGVWVVRDZ19UXzl2cnRYWkY0Ym5qcjdta1Y0UjdackloTkRzSHNxTWYtRzM2d1hkNmtNcENJZXpXN0ZRY0prdkFwOTl0SU4tS3l5VlQ5N2hSUWNkbnE0dmtUS3JQV2FRYWtoMg?oc=5",
-      "published": 1790133540,
-      "summary": "",
-      "sourceZh": "英国《卫报》",
-      "topic": "国际·地缘",
-      "brief": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "titleZh": "国际·地缘：最新进展",
-      "briefZh": "英国《卫报》报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "国际·地缘"
-    },
-    {
-      "title": "Trump says US and Iranian officials met Tuesday, shortly after warning he may 'annihilate' Iran",
-      "source": "Associated Press",
-      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOLTBMZ0ppZk41VENvQnJNNVU5Tmk3anJCdEJrcGRrb3dfb2dJMVRaSXNWQnhjY0wxX2Z4NHlKRXdaSXZfc2cxOHNLM1hwRGJ4WDhGNTdBb1pjTDBmVzQ1VE95SHJlYUtSVm1KdUdyYURwaGpScDBmam56OFlUZ25aaWlaczhnUzN6SkV3Y3NNTVVtblZtd183Rg?oc=5",
-      "published": 1790132100,
-      "summary": "",
-      "sourceZh": "美联社",
-      "topic": "国际·地缘",
-      "brief": "Trump says US and Iranian officials met Tuesday, shortly after warning he may 'annihilate' Iran。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "world",
-      "titleZh": "国际·地缘：最新进展",
-      "briefZh": "美联社报道了国际·地缘相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "国际·地缘"
-    }
-  ],
-  "watch": [],
-  "riskAnalysis": {
-    "version": "2.0",
-    "level": "高",
-    "status": "升级",
-    "reliable": true,
-    "lead": {
-      "title": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on",
-      "source": "Reuters",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQaUswVEozejNqc18tLUlqcnBVXzNDVDNkZHQyN25BdDhqYTVBN2NTNnVoODNxLTI0bXg3d00wWXY1NW1yUVpuM1FDLWFsZVYzVFVwbkNqbzdBd0JHaDk1UGg5NXVFQ2g2MFZwalBpYW9GRURiMVB4cnd5RWd3cXpmcktIalFsNFBxTU1YNTRBakx1NXRBaEJJWlo0Q280X1FIcFR3cWxfTTVsV2ZIUlBmX25na0E2U0JhdTF6M2dQMA?oc=5",
-      "published": 1790136540,
-      "summary": "",
-      "sourceZh": "路透社",
-      "riskStream": "geopolitics",
-      "riskStreamName": "地缘冲突",
-      "topic": "地缘冲突",
-      "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-      "briefZh": "路透社报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "categoryKey": "risk",
-      "titleZh": "地缘冲突：最新进展",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
     },
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
@@ -298,7 +298,7 @@
         "name": "地缘政治",
         "score": 100,
         "state": "高",
-        "matches": 18
+        "matches": 17
       },
       {
         "name": "市场 / 信用",
@@ -314,9 +314,9 @@
       },
       {
         "name": "网络安全",
-        "score": 56,
-        "state": "中",
-        "matches": 3
+        "score": 68,
+        "state": "中高",
+        "matches": 4
       },
       {
         "name": "供应链",
@@ -329,21 +329,18 @@
       {
         "text": "路透社报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
         "source": "Reuters"
-      },
-      {
-        "text": "英国《卫报》报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-        "source": "The Guardian"
       }
     ],
     "coverage": {
       "sampleCount": 15,
-      "sourceCount": 10,
+      "sourceCount": 11,
       "streamCount": 5,
       "sources": [
         "ABC News",
         "Associated Press",
         "Axios",
         "Bloomberg",
+        "CBS News",
         "Euronews",
         "NBC News",
         "POLITICO",
@@ -366,10 +363,10 @@
         "geopolitics": 7,
         "market_credit": 7,
         "energy_shipping": 7,
-        "cyber": 6,
+        "cyber": 7,
         "supply_chain": 3
       },
-      "candidateCount": 30
+      "candidateCount": 31
     },
     "method": "rule-based-multistream"
   },
@@ -580,14 +577,14 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "Trump says US and Iranian officials met Tuesday, shortly after warning he may 'annihilate' Iran",
+          "title": "Senior NATO commander warns Putin is becoming more cavalier and open to risk as Ukraine war drags on",
           "source": "Associated Press",
-          "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOLTBMZ0ppZk41VENvQnJNNVU5Tmk3anJCdEJrcGRrb3dfb2dJMVRaSXNWQnhjY0wxX2Z4NHlKRXdaSXZfc2cxOHNLM1hwRGJ4WDhGNTdBb1pjTDBmVzQ1VE95SHJlYUtSVm1KdUdyYURwaGpScDBmam56OFlUZ25aaWlaczhnUzN6SkV3Y3NNTVVtblZtd183Rg?oc=5",
-          "published": 1790132100,
+          "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOeFRCNGc0VG9kTExITWJ4RXNhLWt5Wkh1WnlqOEM5UkRlSGxnU29XS0JFNlBNN1RGWjZHb3g5QzBMbldwUjhLekVKQVg2UnY3WkZLQ2RqbDZFNk91N3RsTW5jUy11MFBIYjZTemtkQmpZLV9ydUd1bmhGYk9pRUhMVW05OWptaktLTHV2amtrNE44TGc?oc=5",
+          "published": 1790137800,
           "summary": "",
           "sourceZh": "美联社",
           "topic": "国际·地缘",
-          "brief": "Trump says US and Iranian officials met Tuesday, shortly after warning he may 'annihilate' Iran。",
+          "brief": "Senior NATO commander warns Putin is becoming more cavalier and open to risk as Ukraine war drags on。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "world",
           "titleZh": "国际·地缘：最新进展",
@@ -631,21 +628,6 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
-          "source": "CNBC",
-          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
-          "published": 1790125440,
-          "summary": "",
-          "sourceZh": "美国消费者新闻与商业频道",
-          "topic": "市场·经济",
-          "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "markets",
-          "titleZh": "市场·经济：最新进展",
-          "briefZh": "美国消费者新闻与商业频道报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
           "title": "Oil prices see-saw, as markets weigh Trump’s UN speech, potential Saudi pipeline fix",
           "source": "NBC News",
           "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxObU1tZnZwTkhweW9HMkM5cDFMMjB3YUY1ZFdaN3ZfRzktSEhudU5wYzVPVVNZcDhIVFBZaWNBT2ItVFo1VmJPZUZETmRzR1pUU3Z1Qk1Nc0Y1dmNSRTNPZ2RBeUkySDBGcGJGMlFxa1JTLUI2SDVTYXgyX2JIX3NzUXZLbm1Kcmt2enRjSThGaVItRVJCb09jOENjVU95NGdoam5RUS1fZlg0cUtCNVA0N2N3?oc=5",
@@ -658,6 +640,21 @@
           "categoryKey": "markets",
           "titleZh": "市场·经济：最新进展",
           "briefZh": "美国全国广播公司新闻报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "Oil falls after U.S. and Iran talk for hours at UN meeting",
+          "source": "CNBC",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5jRmVBbWp6NkRiRDNUZGZDQXl4STBBNVlqdl9sSzNNZGxNbEg0bHkzaE5sNm9NVkRRRE9zSHVjdERobTN3V2lTRDhGdllrcTd0dzk4eDN3a3RUeEY4bGI1c2F5azluVDZvRmluNlBETVdnVlgxQWfSAXtBVV95cUxNYnBvYXFFNUQ2STVBNmI4c2V4VEZIWlA3bTlYRnlRRy1ZMnNDcGhjOGNUWmJ1SUV4eG5hdXJXNGxINkZuYUJfQ2QxRktBMkIzQzIyR0F1NklJNWFOZmxvdXNsNGFTVnRSVTZPTk9fRGl0N1ljMUl4NDNEQzg?oc=5",
+          "published": 1790125440,
+          "summary": "",
+          "sourceZh": "美国消费者新闻与商业频道",
+          "topic": "市场·经济",
+          "brief": "Oil falls after U.S. and Iran talk for hours at UN meeting。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "markets",
+          "titleZh": "市场·经济：最新进展",
+          "briefZh": "美国消费者新闻与商业频道报道了市场·经济相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -772,6 +769,21 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
+          "title": "Andreessen Horowitz launches AI school as college alternative",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPMHBlOXZ4V3RXRnRBTUtjcW10MTRMSjF4aFp5X2dKSVUtd0t4VWk4b0tjcjhXOWE1MkhvTXNtMWNhWURKTFpCaE5OZjRNUERTOEMtYnJIaFNISkpyYmo5VENPODNQMmRHSF9PTHdVaDdvNDNBb0I1TVNBeG5sTHM5bFNVUjhIUQ?oc=5",
+          "published": 1790112300,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "topic": "人工智能·科技",
+          "brief": "Andreessen Horowitz launches AI school as college alternative。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech",
+          "titleZh": "人工智能·科技：最新进展",
+          "briefZh": "美国哥伦比亚广播公司新闻报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
           "title": "Snorkel AI triples valuation to $3.5B as demand for AI training data booms",
           "source": "TechCrunch",
           "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPSHR1RURsVmZGUmlrQzlndUxiYlNrOWRSWnI3TVdPdmswY2FQN1U3TkhzZ05KZ1JjY3BoS3RCeGJIVWphRFB1N3RTMkxMNm14YWdnMFRVU1pJMDg4am14RF9IR01FR2s0M3dNQjJuUVNSWmhQR01vYjFaYlBvTnY4amQwY0lTekUta2prV3VxWnotT3V5bFY2X3YzNDN3X0NZUnNRdXZVRGY3Qllw?oc=5",
@@ -800,21 +812,6 @@
           "titleZh": "人工智能·科技：最新进展",
           "briefZh": "《纽约时报》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "‘The scientific, technical term is BS’: Inside the new Bessent-China AI hotline",
-          "source": "POLITICO",
-          "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQWGh6dzJhMm9ta0lFRE1wQWtsQTJJWEo4RVNwV1hPTXJDWnZOWGpmaDg5cWZxSkdPUDJYN3V1SkNldmxGUlBPc09GeUIyYVpsdjRuRkpZMWttNUs0NEh2dnNQUzg3T0RzRGg0eVlUNHY2Z0JPQmZDQTRNUVdpcGtkdjhmNmo1VjNaZWlCT1RWOEctd25MZWNJTUc4VjEyWC02ZWZ0Mjl2ZUQ3RldzRmlxbUxUdlB0cGZ4OFpmY1ROTnFpcS0xZXRIRzRn?oc=5",
-          "published": 1790090580,
-          "summary": "",
-          "sourceZh": "《政客》",
-          "topic": "人工智能·科技",
-          "brief": "‘The scientific, technical term is BS’: Inside the new Bessent-China AI hotline。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech",
-          "titleZh": "人工智能·科技：最新进展",
-          "briefZh": "《政客》报道了人工智能·科技相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
     },
@@ -822,6 +819,21 @@
       "key": "law",
       "name": "法律·监管",
       "items": [
+        {
+          "title": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman",
+          "source": "Reuters",
+          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMnhFeHB1dlJzNUFaZkYzM0d3cFNyaDI3bFo3VjJFYW5wc0dhandneXlLVkstbVhfd0REaXJrUmx2TF9tRTd0QzdoTExocDNHSFhwVTlVRkZ6RzhKMU4yckMwNzEzS0xtalhQQl9vSkpBdjRxbUFVczFVc1NEQVJQM3R0NEdaQThjX0owTkdxbUcxb3JuM1c3XzNCVGN4dXV4OTNBeEQ3bURQWGxnRmdaVw?oc=5",
+          "published": 1790098657,
+          "summary": "",
+          "sourceZh": "路透社",
+          "topic": "法律·监管",
+          "brief": "EU renews Russia sanctions, drops Russian billionaires Usmanov and Fridman。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "law",
+          "titleZh": "法律·监管：最新进展",
+          "briefZh": "路透社报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
         {
           "title": "US supreme court declines to intervene in custody fight over baby born via surrogate",
           "source": "The Guardian",
@@ -853,18 +865,18 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "US Supreme Court denies surrogate's bid to block California parentage ruling",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNTjUxOFRMM0d2aUdrcEYxSFM0TFJ3ZS1FeW41bFlLd1J5UVM0TFZidlFJekk2d09PRnhFMHNrZmR1RWxRd3JTMXFZME5lcF9QZFdkbkFTbW1MY0ZnSmtnV2haWDRnbXV3ZzliTUtfcnhKRGpKYlplQ21kMlp3dVN3amJOd3JnZEJBMW0zRTdhTURPN0xxa3ktM2tZeUhYWDYyZWtXd21HenJrUURVQkZmT3psVVk?oc=5",
-          "published": 1790109612,
+          "title": "Supreme Court stays out of custody dispute between California couple and surrogate",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNVGpfMmZlc09BdWgtdFVDbUhQN1N3Umg2NGlYVm0zZUgyaDJEMHJmSGRpMmxKZGxkQUwzVmZaUlBNWTE3bE9nNmxKbFBtaU55MTJyc1JtbzJqT2xhU2R6Q0ZILU03YkUzNTk4c1ZYdXJobEo1OWw2aTRYdTZ2Vm5MRWpfWUljNTIzd3VwQWIxZ0w5aTEtTnNQZTVycEI5WnVIZ3Q3UWtZS0xYMHRLTUFYWmg2MjVmWk4wdlE?oc=5",
+          "published": 1790109780,
           "summary": "",
-          "sourceZh": "路透社",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
           "topic": "法律·监管",
-          "brief": "US Supreme Court denies surrogate's bid to block California parentage ruling。",
+          "brief": "Supreme Court stays out of custody dispute between California couple and surrogate。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
           "titleZh": "法律·监管：最新进展",
-          "briefZh": "路透社报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "briefZh": "美国哥伦比亚广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -896,36 +908,6 @@
           "titleZh": "法律·监管：最新进展",
           "briefZh": "美国全国广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate - ABC News",
-          "source": "ABC News",
-          "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOcWxneUsyZVJFOGdlMHhVVUFRSWlGWlJiYldtdWxCZU1FUmFlVGdtNXJ2eDlZR2VWVm1jdHVlZ0dkbE1Gbjg1NTk4ZTJOcTVYZ3BGR1VmTV84QXBtMDhVSGt3VU5NT25iRnlvTERoOHBjdE1fTTdqRHMydnNyMmhhd3lQNS1sSGhiZHI0RmtuLXNLT0h3MHdId2xVX3hhZ3UwdkRLRzJBR2I1VnfSAbABQVVfeXFMTjRkdzF2cWRKZHUxYVJKb0NsV1NhXzVMYjNxMF9XTXZWMDVDQkFLX3Q1djRtNy1ZM24xUGlrTm1ZQ0pEak1GYmNlMjZvLWRqOVJiS2xSTUpDUmJYX18ySngtZXZDMkY3YzgtTHlLc2FJNXJOdkJBN19sNGlwOWtZd0NteVhHTXU1V3YzRjhZUmhzLVpMQnk5THpoN3VKdXE1N1lkM2dTcHNnSWhyc3RobnE?oc=5",
-          "published": 1790112848,
-          "summary": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate   。",
-          "sourceZh": "美国广播公司新闻",
-          "topic": "法律·监管",
-          "brief": "US Supreme Court won’t intervene in custody dispute between California couple and surrogate   。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law",
-          "titleZh": "法律·监管：最新进展",
-          "briefZh": "美国广播公司新闻报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Kagan steers Supreme Court clear of high-profile surrogacy fight",
-          "source": "The Hill",
-          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPanZDSFF5dG02ZTY3cncxRmdXcXZEa3BieUUxaUxyTHc5MFhKNk1JLWE0S3dQOC0xU3U0YVFaT3BvcGluRlFjM1djQkpraF80VkJWMmdLMVFLVHo4MEJwREJlMkNtTkJmejlEc3ZIWkNWX0MzNnV3TmpwYkwzaS1ZcmlLbFgwcGhuWEZ2S0dIU0dmNEl40gGaAUFVX3lxTE9pZHZObjI5OElWbE1abDFaRUk5QU5SLXJBRTFYZC1URTRXTVFrZjM4a1VidlpyMTV2ZVhuWHNUTW1UUzdhUFRDYnljMW5vb2dyaEVKYVYwTHFvR2pZblNJdjdmcXdUM2R4S2RfRkxIaDZKVkZnREkyM0dKdTd3ZG9lYkxmMDZtRzdZVTRVaFQyRzM1Z0dfdTZ4NEE?oc=5",
-          "published": 1790117400,
-          "summary": "",
-          "sourceZh": "《国会山报》",
-          "topic": "法律·监管",
-          "brief": "Kagan steers Supreme Court clear of high-profile surrogacy fight。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "law",
-          "titleZh": "法律·监管：最新进展",
-          "briefZh": "《国会山报》报道了法律·监管相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
     },
@@ -933,23 +915,6 @@
       "key": "risk",
       "name": "风险",
       "items": [
-        {
-          "title": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on",
-          "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQaUswVEozejNqc18tLUlqcnBVXzNDVDNkZHQyN25BdDhqYTVBN2NTNnVoODNxLTI0bXg3d00wWXY1NW1yUVpuM1FDLWFsZVYzVFVwbkNqbzdBd0JHaDk1UGg5NXVFQ2g2MFZwalBpYW9GRURiMVB4cnd5RWd3cXpmcktIalFsNFBxTU1YNTRBakx1NXRBaEJJWlo0Q280X1FIcFR3cWxfTTVsV2ZIUlBmX25na0E2U0JhdTF6M2dQMA?oc=5",
-          "published": 1790136540,
-          "summary": "",
-          "sourceZh": "路透社",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "Wheat buyers brace for higher costs as Russia-Ukraine war drags on。",
-          "briefZh": "路透社报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "地缘冲突：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
         {
           "title": "Ukraine war briefing: Zelenskyy ready for ‘energy ceasefire’, as Nato warns Putin becoming ‘increasingly cavalier’",
           "source": "The Guardian",
@@ -982,6 +947,23 @@
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
           "titleZh": "能源运输：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9CWWN6a3ZZZzBheXJmWWZjVVFtQmtlVFljRHUyeFc4bjJJTW5kR0ZIdnZ0YmtRR1prRFluNkNLU1ZXLW96NHJjeWdVS2JVazVIakZFWWdmZm9LYzlPUTdqMUFKNFZYeWFmbGE3OW5Va2ZzbHR3TTkwd1dadi14QQ?oc=5",
+          "published": 1790124259,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "riskStream": "geopolitics",
+          "riskStreamName": "地缘冲突",
+          "topic": "地缘冲突",
+          "brief": "Ukraine ready to sign landmark drone defense deal with U.S., sources say, amid new details on Kyiv's role in Iran war。",
+          "briefZh": "美国哥伦比亚广播公司新闻报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "地缘冲突：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1087,23 +1069,6 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "EU removes two oligarchs from Russia sanctions list as deadline looms",
-          "source": "The Guardian",
-          "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPU0NBNDhzdUdiMEtEUnhtbkh4MVoxODYzSFNGTGhXTmRyNXk2eGF3bl9kV3VzVm9FREtySTRqNnF3MDdEby1yQUYyYU5RTXRXMU4tWkU1ZVNoQnlTNF9KeTZRQnJiUlB4Y0VJZTBKWENoaDl5QXd4Z0w5d3c3ZFgyTm1MQ1FteW1jWDl5VXpSWEd4aGl5dUJ2czhXNnlvbDBXTk5HaWdDMFJBZ0ZyVHNxZA?oc=5",
-          "published": 1790096400,
-          "summary": "",
-          "sourceZh": "英国《卫报》",
-          "riskStream": "geopolitics",
-          "riskStreamName": "地缘冲突",
-          "topic": "地缘冲突",
-          "brief": "EU removes two oligarchs from Russia sanctions list as deadline looms。",
-          "briefZh": "英国《卫报》报道了地缘冲突相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
-          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-          "categoryKey": "risk",
-          "titleZh": "地缘冲突：最新进展",
-          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
-        },
-        {
           "title": "Operator of 314 Wendy’s locations in the US files for bankruptcy protection",
           "source": "Associated Press",
           "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNd2xzUkdVNVlPTVBrdFdxajc0cWFoTnprbS11TlhXVWx6dm9KSzJQSkJDWjdra2JoYkktMy1MUlNpeVk5QzM1N1J2bldRZW1lNXlHVHpjaXFxYThMZnFCOU5UX1N1ZUtpUVRob0xzSXR0b2dBcXdnVUFfaEROb0NjV2xtelJ4VGRCblJiQXpRd3lfU0dTQ3ZjakVWSU1rUQ?oc=5",
@@ -1118,6 +1083,23 @@
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
           "titleZh": "市场信用：最新进展",
+          "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
+        },
+        {
+          "title": "Suisun City fully reopens City Hall weeks after malware incident",
+          "source": "CBS News",
+          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPQm5iMWUyM2s5VVVidnhzQk90dDg1N2piVDFVM2dQMklCVEM5LUJaOGRFbndHTkVGUVFZdzNvSDRySllWWldKMFZYV0tTa1RMQWhZTWlBd3hqUnhfN2VUMU1RelU0MGdadm44d0Q4aVJ2T19hTmEwZlVNTWRaQUxJNkxsalZUd0Y2aWdtaVZQcTV3VmJ5?oc=5",
+          "published": 1790119260,
+          "summary": "",
+          "sourceZh": "美国哥伦比亚广播公司新闻",
+          "riskStream": "cyber",
+          "riskStreamName": "网络安全",
+          "topic": "网络安全",
+          "brief": "Suisun City fully reopens City Hall weeks after malware incident。",
+          "briefZh": "美国哥伦比亚广播公司新闻报道了网络安全相关最新进展；本站已链接原文，具体事实与细节以原报道为准。",
+          "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+          "categoryKey": "risk",
+          "titleZh": "网络安全：最新进展",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1209,28 +1191,28 @@
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 98.41,
-      "changePct": -0.85,
+      "price": 98.46,
+      "changePct": -0.8,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 89.27,
-      "changePct": -5.62,
+      "price": 89.32,
+      "changePct": -5.57,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4366.6,
-      "changePct": -0.22,
+      "price": 4366.3,
+      "changePct": -0.23,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 100.75,
+      "price": 100.74,
       "changePct": 0.31,
       "fmt": "idx"
     }
