@@ -37,7 +37,7 @@ OUT_PATH = os.path.join("apps", "whats-latest", "data.json")
 HEALTH_PATH = os.path.join("apps", "whats-latest", "health.json")
 PER_CAT = 7
 AI_CONFIG_PATH = os.path.join("apps", "ai-chat", "shared-config.json")
-TRANSLATE_CHUNK = 8
+TRANSLATE_CHUNK = 12
 
 GN = "https://news.google.com/rss"
 GN_TAIL = "hl=zh-CN&gl=US&ceid=US:zh-Hans"
@@ -272,7 +272,7 @@ def apply_chinese_translation(cats_out):
             ],
         }
         try:
-            resp = requests.post(proxy["url"], json=body, headers={"User-Agent": UA}, timeout=25)
+            resp = requests.post(proxy["url"], json=body, headers={"User-Agent": UA}, timeout=6)
             resp.raise_for_status()
             result = resp.json()
             content = (((result.get("choices") or [{}])[0].get("message") or {}).get("content") or "")
