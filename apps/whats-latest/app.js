@@ -209,6 +209,56 @@
     }).join("");
   }
 
+  function installPreviewHardStop(){
+    if(!(DATA&&DATA.preview&&DATA.preview.enabled))return;
+
+    var shell=document.querySelector(".shell");
+    if(!shell)return;
+
+    var oldFade=document.getElementById("whats-preview-fade");
+    if(oldFade)oldFade.remove();
+    var oldWall=document.getElementById("whats-preview-wall");
+    if(oldWall)oldWall.remove();
+
+    shell.style.maxHeight="";
+    shell.style.overflow="";
+    shell.removeAttribute("data-preview-hard-stop");
+
+    var target=active==="risk"?$("risk-desk"):$("cover");
+    if(!target||target.offsetHeight<20)return;
+
+    var sr=shell.getBoundingClientRect();
+    var tr=target.getBoundingClientRect();
+    var cap=Math.ceil(tr.bottom-sr.top+24);
+    cap=Math.max(620,cap);
+
+    if(window.getComputedStyle(shell).position==="static")shell.style.position="relative";
+    shell.style.maxHeight=cap+"px";
+    shell.style.overflow="hidden";
+    shell.setAttribute("data-preview-hard-stop","true");
+
+    var fade=document.createElement("div");
+    fade.id="whats-preview-fade";
+    fade.setAttribute("aria-hidden","true");
+    fade.style.cssText=[
+      "position:absolute","left:0","right:0","bottom:0","height:150px","z-index:40","pointer-events:none",
+      "background:linear-gradient(to bottom,rgba(246,239,230,0),rgba(246,239,230,.96) 72%,rgba(246,239,230,1))"
+    ].join(";");
+    shell.appendChild(fade);
+
+    var wall=document.createElement("section");
+    wall.id="whats-preview-wall";
+    wall.setAttribute("aria-label","公开预览限制");
+    wall.innerHTML=
+      "<div class='preview-wall-inner'>"+
+        "<div class='preview-wall-kicker'>OOGLEX · 10% PREVIEW</div>"+
+        "<h2>当前仅展示约 10% 内容</h2>"+
+        "<p>公开页面只保留少量新闻预览，完整新闻、风险样本与更多简报内容不会发送到公共页面。</p>"+
+        "<div class='preview-wall-meta'>公开预览 "+esc((DATA.preview.visibleItems||0)+" / "+(DATA.preview.totalItems||0)+" 条新闻")+"</div>"+
+      "</div>";
+    shell.parentNode.insertBefore(wall,shell.nextSibling);
+  }
+
   function setRiskMode(on){
     var ids=["cover"];
     ids.forEach(function(id){var el=$(id);if(el)el.style.display=on?"none":"";});
@@ -307,6 +357,7 @@
     if(riskMode){
       renderRiskDesk();
       renderRundown();
+      requestAnimationFrame(installPreviewHardStop);
       return;
     }
     renderHero();
@@ -316,6 +367,7 @@
     renderCards();
     renderRail();
     renderRundown();
+    requestAnimationFrame(installPreviewHardStop);
   }
 
   function renderHeader(){
@@ -488,6 +540,13 @@
   function boot(data){
     DATA=data;
     renderHeader();renderTabs();renderGalaxy();renderActiveView();renderFooter();
+    requestAnimationFrame(installPreviewHardStop);
+    window.addEventListener("resize",function(){
+      if(DATA&&DATA.preview&&DATA.preview.enabled){
+        window.clearTimeout(window.__whatsPreviewResizeTimer);
+        window.__whatsPreviewResizeTimer=window.setTimeout(installPreviewHardStop,120);
+      }
+    });
   }
 
   fetch("data.json?t="+Date.now())
