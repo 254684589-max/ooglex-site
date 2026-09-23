@@ -92,7 +92,8 @@
     "Euronews":"欧洲新闻台",
     "Associated Press":"美联社",
     "POLITICO":"《政客》",
-    "Finextra":"金融科技资讯网"
+    "Finextra":"金融科技资讯网",
+    "Ooglex rules":"Ooglex 规则"
   };
   var SOURCE_LEVEL={
     "Reuters":"high","Bloomberg":"high","Financial Times":"high","The Wall Street Journal":"high",
@@ -110,6 +111,30 @@
   function sourceZh(src){return SOURCE_ZH[src]||"其他新闻源";}
   function sourceLevel(src){return SOURCE_LEVEL[src]||"low";}
   function sourceLevelMeta(src){return SOURCE_LEVEL_META[sourceLevel(src)];}
+  function hasHan(s){return /[\u3400-\u9fff]/.test(String(s||""));}
+  function categoryZh(it){
+    var map={politics:"政策政治",world:"国际地缘",markets:"市场经济",tech:"人工智能科技",law:"法律监管",risk:"风险"};
+    return map[(it&&it.categoryKey)||""]||(it&&hasHan(it.category)?it.category:"新闻");
+  }
+  function showTitle(it){
+    it=it||{};
+    if(hasHan(it.titleZh))return it.titleZh;
+    if(hasHan(it.briefZh))return it.briefZh;
+    if(hasHan(it.title))return it.title;
+    if(hasHan(it.brief))return it.brief;
+    return categoryZh(it)+"：最新进展";
+  }
+  function showBrief(it){
+    it=it||{};
+    if(hasHan(it.briefZh))return it.briefZh;
+    if(hasHan(it.brief))return it.brief;
+    return showTitle(it);
+  }
+  function showSource(it){
+    it=it||{};
+    if(hasHan(it.sourceZh))return it.sourceZh;
+    return sourceZh(it.source||"");
+  }
   function riskEntitiesZh(title){
     var t=String(title||""),out=[];
     [
@@ -293,7 +318,7 @@
 
   function renderHeader(){
     $("date-line").textContent=dateText(DATA.asOf);
-    $("edition-date").textContent=(DATA.asOf||"—")+" · latest";
+    $("edition-date").textContent=(DATA.asOf||"—")+" · 最新";
     var upd=DATA.updatedAt?new Date(DATA.updatedAt):null;
     if(upd&&!isNaN(upd.getTime())){
       var mins=Math.max(0,Math.round((Date.now()-upd.getTime())/60000));
@@ -304,7 +329,7 @@
   function renderTabs(){
     var box=$("category-tabs");
     var defs=[{key:"all",name:"概览"}].concat((DATA.categories||[]).map(function(c){
-      var map={politics:"政策",world:"国际",markets:"市场",tech:"AI/Tech",law:"监管",risk:"风险"};
+      var map={politics:"政策",world:"国际",markets:"市场",tech:"人工智能",law:"监管",risk:"风险"};
       return {key:c.key,name:map[c.key]||c.name};
     }));
     box.innerHTML="";
@@ -325,12 +350,12 @@
   function renderHero(){
     var h=activeLead();
     $("hero-link").href=h.link||"#";
-    $("hero-title").textContent=h.brief||h.title||"今日全球新闻简报";
+    $("hero-title").textContent=showBrief(h)||"今日全球新闻简报";
     var activeCat=active==="all"?(h.category||"概览"):((catByKey(active)||{}).name||h.category||"");
-    $("hero-meta").textContent=[h.source||"",DATA.asOf||"",activeCat].filter(Boolean).join(" · ");
-    $("lead-title").textContent=h.title||h.brief||"今日主线";
-    $("why-box").innerHTML="<b>WHY IT MATTERS</b>"+esc(h.why||"这条信息是当前简报中的核心主线，值得进一步核实原文与后续发展。");
-    $("lead-source").innerHTML=esc(h.source||"来源未知")+(relTime(h.published)?" · "+esc(relTime(h.published)):"")+
+    $("hero-meta").textContent=[showSource(h),DATA.asOf||"",activeCat].filter(Boolean).join(" · ");
+    $("lead-title").textContent=showTitle(h)||"今日主线";
+    $("why-box").innerHTML="<b>影响解读</b>"+esc(h.whyZh||h.why||"这条信息是当前简报中的核心主线，值得进一步核实原文与后续发展。");
+    $("lead-source").innerHTML=esc(showSource(h)||"来源未知")+(relTime(h.published)?" · "+esc(relTime(h.published)):"")+
       (h.link?" · <a href='"+esc(h.link)+"' target='_blank' rel='noopener'>阅读原文 →</a>":"");
   }
 
@@ -346,7 +371,7 @@
     }
     var seen={};
     items=items.filter(function(x){if(seen[x.label])return false;seen[x.label]=1;return true;}).slice(0,8);
-    box.innerHTML="<span class='trend-label'>TRENDING NOW</span>"+items.map(function(x){
+    box.innerHTML="<span class='trend-label'>今日热点</span>"+items.map(function(x){
       return "<span class='trend-chip"+(x.hot?" hot":"")+"'>"+esc(x.label)+"</span>";
     }).join("");
   }
@@ -356,15 +381,15 @@
     var cats=DATA.categories||[];
     $("galaxy-bars").innerHTML=(cats.length?cats:[{},{},{},{},{}]).map(function(c,i){
       var n=(c.items||[]).length||1;
-      return "<span title='"+esc(c.name||"cluster")+"' style='background:"+cols[i%cols.length]+";flex:"+Math.max(1,n)+"'></span>";
+      return "<span title='"+esc(c.name||"新闻分组")+"' style='background:"+cols[i%cols.length]+";flex:"+Math.max(1,n)+"'></span>";
     }).join("");
   }
 
   function wireHtml(it){
     return "<a class='wire' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
-      "<div class='wire-topic'>"+esc(it.topic||it.category||"NEWS")+"</div>"+
-      "<div class='wire-title'>"+esc(it.brief||it.title||"")+"</div>"+
-      "<div class='wire-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
+      "<div class='wire-topic'>"+esc(hasHan(it.topic)?it.topic:categoryZh(it))+"</div>"+
+      "<div class='wire-title'>"+esc(showBrief(it))+"</div>"+
+      "<div class='wire-meta'>"+esc(showSource(it)||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
   }
   function renderWires(){
     var list=active==="all"?(DATA.wires||[]).slice(0,6):activeItems().slice(1,7);
@@ -374,9 +399,9 @@
 
   function cardHtml(it){
     return "<a class='brief-card' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
-      "<div class='c-topic'>"+esc(it.topic||it.category||"BRIEF")+"</div>"+
-      "<div class='c-title'>"+esc(it.brief||it.title||"")+"</div>"+
-      "<div class='c-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
+      "<div class='c-topic'>"+esc(hasHan(it.topic)?it.topic:categoryZh(it))+"</div>"+
+      "<div class='c-title'>"+esc(showBrief(it))+"</div>"+
+      "<div class='c-meta'>"+esc(showSource(it)||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
   }
   function renderCards(){
     var items=active==="all"?(DATA.alsoNoted||[]).concat((DATA.watch||[])).slice(0,6):
@@ -387,9 +412,9 @@
 
   function railItem(it){
     return "<a class='rail-item' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
-      "<div class='ri-topic'>"+esc(it.topic||it.category||"BRIEF")+"</div>"+
-      "<div class='ri-title'>"+esc(it.brief||it.title||"")+"</div>"+
-      "<div class='ri-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
+      "<div class='ri-topic'>"+esc(hasHan(it.topic)?it.topic:categoryZh(it))+"</div>"+
+      "<div class='ri-title'>"+esc(showBrief(it))+"</div>"+
+      "<div class='ri-meta'>"+esc(showSource(it)||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+"</div></a>";
   }
   function renderRail(){
     var selected=activeItems();
@@ -427,8 +452,8 @@
 
   function rdHtml(it){
     return "<a class='rd-item' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
-      "<span class='rd-dot'></span><span><div class='rd-title'><b>"+esc(it.topic||it.category||"要闻")+"</b>"+
-      esc(it.brief||it.title||"")+"</div><div class='rd-meta'>"+esc(it.source||"来源未知")+
+      "<span class='rd-dot'></span><span><div class='rd-title'><b>"+esc(hasHan(it.topic)?it.topic:categoryZh(it))+"</b>"+
+      esc(showBrief(it))+"</div><div class='rd-meta'>"+esc(showSource(it)||"来源未知")+
       (relTime(it.published)?" · "+esc(relTime(it.published)):"")+" · 阅读原文 →</div></span></a>";
   }
   function renderRundown(){
@@ -441,8 +466,8 @@
   }
 
   function renderFooter(){
-    var html="数据来源 <b>"+esc(DATA.source||"—")+"</b>";
-    if(DATA.sourcePool&&DATA.sourcePool.length)html+="<br>新闻源："+DATA.sourcePool.map(esc).join(" · ");
+    var html="数据来源 <b>谷歌新闻聚合 · 雅虎财经</b>";
+    if(DATA.sourcePool&&DATA.sourcePool.length)html+="<br>新闻源："+DATA.sourcePool.map(function(x){return esc(sourceZh(x));}).join(" · ");
     if(DATA.note)html+="<br>"+esc(DATA.note);
     $("sources").innerHTML=html;
   }
@@ -457,7 +482,7 @@
     .then(boot)
     .catch(function(e){
       $("lead-title").textContent="数据加载失败";
-      $("why-box").innerHTML="<b>ERROR</b>"+esc(e.message);
+      $("why-box").innerHTML="<b>加载错误</b>"+esc(e.message);
       $("rundown-list").innerHTML="";
     });
 })();
