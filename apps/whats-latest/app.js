@@ -320,12 +320,14 @@
 
   function renderHeader(){
     $("date-line").textContent=dateText(DATA.asOf);
-    $("edition-date").textContent=(DATA.asOf||"—")+" · 最新";
+    var isPreview=!!(DATA.preview&&DATA.preview.enabled);
+    $("edition-date").textContent=(DATA.asOf||"—")+" · 最新"+(isPreview?" · 10%预览":"");
     var upd=DATA.updatedAt?new Date(DATA.updatedAt):null;
     if(upd&&!isNaN(upd.getTime())){
       var mins=Math.max(0,Math.round((Date.now()-upd.getTime())/60000));
       $("freshness").textContent=mins<60?"更新于 "+Math.max(1,mins)+" 分钟前":"更新于 "+Math.floor(mins/60)+" 小时前";
     }else $("freshness").textContent="自动更新";
+    if(isPreview)$("freshness").textContent+=" · 公开展示10%";
   }
 
   function renderTabs(){
@@ -351,9 +353,18 @@
 
   function renderHero(){
     var h=activeLead();
+    var activeCat=active==="all"?(h.category||"概览"):((catByKey(active)||{}).name||h.category||"");
+    if(DATA.preview&&DATA.preview.enabled&&!h.title&&!h.brief&&!h.titleZh&&!h.briefZh){
+      $("hero-link").href="#";
+      $("hero-title").textContent="该分类未包含在公开10%预览中";
+      $("hero-meta").textContent=[DATA.asOf||"",activeCat,"公开预览"].filter(Boolean).join(" · ");
+      $("lead-title").textContent="完整内容已限制";
+      $("why-box").innerHTML="<b>公开预览</b>当前页面仅展示约10%的新闻内容，完整数据未发布到公共页面。";
+      $("lead-source").textContent="Ooglex · 10% PREVIEW";
+      return;
+    }
     $("hero-link").href=h.link||"#";
     $("hero-title").textContent=showBrief(h)||"今日全球新闻简报";
-    var activeCat=active==="all"?(h.category||"概览"):((catByKey(active)||{}).name||h.category||"");
     $("hero-meta").textContent=[showSource(h),DATA.asOf||"",activeCat].filter(Boolean).join(" · ");
     $("lead-title").textContent=showTitle(h)||"今日主线";
     $("why-box").innerHTML="<b>影响解读</b>"+esc(h.whyZh||h.why||"这条信息是当前简报中的核心主线，值得进一步核实原文与后续发展。");
