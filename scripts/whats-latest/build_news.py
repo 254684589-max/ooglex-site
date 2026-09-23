@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-构建「最新消息是什么？」资讯应用的数据：聚合全球主流新闻源（Google News 英文 RSS + 来源白名单，
+构建「最新消息是什么？」资讯应用的数据：聚合全球主流新闻源（Google News RSS + 来源白名单，
 逐条链接回原文）按板块归类，并附一条实时市场快照（Yahoo Finance），写入
 apps/whats-latest/data.json，供静态页面渲染。
 
@@ -36,9 +36,11 @@ from supporting_source_health import (  # noqa: E402
 OUT_PATH = os.path.join("apps", "whats-latest", "data.json")
 HEALTH_PATH = os.path.join("apps", "whats-latest", "health.json")
 PER_CAT = 7
+AI_CONFIG_PATH = os.path.join("apps", "ai-chat", "shared-config.json")
+TRANSLATE_CHUNK = 24
 
 GN = "https://news.google.com/rss"
-GN_TAIL = "hl=en-US&gl=US&ceid=US:en"
+GN_TAIL = "hl=zh-CN&gl=US&ceid=US:zh-Hans"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/123.0 Safari/537.36")
 
@@ -103,6 +105,34 @@ SOURCE_POOL = [
     "POLITICO",
     "Finextra",
 ]
+SOURCE_ZH = {
+    "Reuters": "路透社",
+    "Bloomberg": "彭博社",
+    "Financial Times": "英国《金融时报》",
+    "The Wall Street Journal": "《华尔街日报》",
+    "BBC": "英国广播公司",
+    "CNBC": "美国消费者新闻与商业频道",
+    "CNN": "美国有线电视新闻网",
+    "NBC News": "美国全国广播公司新闻",
+    "CBS News": "美国哥伦比亚广播公司新闻",
+    "ABC News": "美国广播公司新闻",
+    "The New York Times": "《纽约时报》",
+    "The Guardian": "英国《卫报》",
+    "South China Morning Post": "《南华早报》",
+    "The Hill": "《国会山报》",
+    "Fox News": "福克斯新闻",
+    "TechCrunch": "科技博客",
+    "Semafor": "塞马福新闻",
+    "The Japan Times": "《日本时报》",
+    "Axios": "阿克西奥斯新闻",
+    "WIRED": "《连线》杂志",
+    "Euronews": "欧洲新闻台",
+    "Associated Press": "美联社",
+    "POLITICO": "《政客》",
+    "Finextra": "金融科技资讯网",
+    "Ooglex rules": "Ooglex 规则",
+}
+
 SOURCE_ALIASES = {
     "reuters": "Reuters",
     "bloomberg": "Bloomberg",
@@ -142,6 +172,121 @@ def canonical_source(src):
         if needle in low:
             return canonical
     return ""
+
+
+def zh_source(src):
+    return SOURCE_ZH.get(src, src or "其他新闻源")
+
+
+def has_han(text):
+    return bool(re.search(r"[\u3400-\u9fff]", text or ""))
+
+
+def fallback_zh_title(item, category_name="新闻"):
+    topic = item.get("topic") or category_name or "新闻"
+    if not has_han(topic):
+        topic = category_name if has_han(category_name) else "新闻"
+    return f"{topic}：最新进展"
+
+
+def fallback_zh_brief(item, category_name="新闻"):
+    source = zh_source(item.get("source") or "")
+    topic = item.get("topic") or category_name or "新闻"
+    if not has_han(topic):
+        topic = category_name if has_han(category_name) else "新闻"
+    return f"{source}报道了{topic}相关最新进展；本站已链接原文，具体事实与细节以原报道为准。"
+
+
+def load_translation_proxy():
+    try:
+        with open(AI_CONFIG_PATH, encoding="utf-8") as fp:
+            cfg = json.load(fp)
+        if not cfg.get("enabled") or not cfg.get("base"):
+            return None
+        return {
+            "url": cfg["base"].rstrip("/") + "/chat/completions",
+            "model": cfg.get("model") or "glm-4-flash",
+        }
+    except Exception:
+        return None
+
+
+def _extract_json_payload(text):
+    text = (text or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.I)
+        text = re.sub(r"\s*```$", "", text)
+    data = json.loads(text)
+    if isinstance(data, dict):
+        data = data.get("items") or data.get("translations") or []
+    return data if isinstance(data, list) else []
+
+
+def apply_chinese_translation(cats_out):
+    """把新闻标题/摘要统一补成中文。失败时保留中文兜底，不让前端回退到英文。"""
+    refs = []
+    for category in cats_out:
+        category_name = category.get("name") or "新闻"
+        for item in category.get("items") or []:
+            item["sourceZh"] = item.get("sourceZh") or zh_source(item.get("source") or "")
+            item["titleZh"] = item.get("titleZh") if has_han(item.get("titleZh")) else fallback_zh_title(item, category_name)
+            item["briefZh"] = item.get("briefZh") if has_han(item.get("briefZh")) else fallback_zh_brief(item, category_name)
+            item["whyZh"] = item.get("whyZh") or item.get("why") or "请结合原文与后续报道持续核验。"
+            refs.append((len(refs), item))
+
+    proxy = load_translation_proxy()
+    if not proxy or not refs:
+        print("[translate] 共享翻译通道不可用，使用中文兜底文案")
+        return
+
+    system = (
+        "你是新闻编辑翻译器。把输入中的英文新闻标题和RSS摘要忠实翻译成简体中文。"
+        "不得新增事实、推测、立场或评价；政治新闻保持中性。"
+        "titleZh要简洁准确；briefZh为1到2句中文，只能使用原title/summary已有信息。"
+        "如果summary为空，briefZh只能改写title，不能补充背景。"
+        "只返回JSON数组，每项严格包含id、titleZh、briefZh，不要Markdown。"
+    )
+    for start in range(0, len(refs), TRANSLATE_CHUNK):
+        chunk = refs[start:start + TRANSLATE_CHUNK]
+        payload_items = [
+            {
+                "id": idx,
+                "title": item.get("title") or "",
+                "summary": item.get("summary") or "",
+            }
+            for idx, item in chunk
+        ]
+        body = {
+            "model": proxy["model"],
+            "stream": False,
+            "temperature": 0.1,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": json.dumps(payload_items, ensure_ascii=False)},
+            ],
+        }
+        try:
+            resp = requests.post(proxy["url"], json=body, headers={"User-Agent": UA}, timeout=45)
+            resp.raise_for_status()
+            result = resp.json()
+            content = (((result.get("choices") or [{}])[0].get("message") or {}).get("content") or "")
+            rows = _extract_json_payload(content)
+            by_id = {int(row.get("id")): row for row in rows if isinstance(row, dict) and str(row.get("id", "")).isdigit()}
+            applied = 0
+            for idx, item in chunk:
+                row = by_id.get(idx)
+                if not row:
+                    continue
+                title_zh = str(row.get("titleZh") or "").strip()
+                brief_zh = str(row.get("briefZh") or "").strip()
+                if has_han(title_zh):
+                    item["titleZh"] = title_zh
+                if has_han(brief_zh):
+                    item["briefZh"] = brief_zh
+                applied += 1
+            print(f"[translate] 中文化 {applied}/{len(chunk)} 条")
+        except Exception as exc:
+            print(f"[translate] 批次失败，保留中文兜底：{str(exc)[:120]}")
 
 
 # 全局内容过滤：该专栏不收录中国相关报道。
@@ -430,6 +575,7 @@ def fetch_feed(url, n=PER_CAT):
         if is_china_related(it):
             continue
         it["source"] = canonical
+        it["sourceZh"] = zh_source(canonical)
         out.append(it)
         if len(out) >= n:
             break
@@ -504,6 +650,9 @@ def fetch_risk_v2():
                 it["briefZh"] = risk_brief_zh(it)
                 it["why"] = why_it_matters(it["title"], "risk")
                 it["categoryKey"] = "risk"
+                it["titleZh"] = fallback_zh_title(it, "风险")
+                it["sourceZh"] = zh_source(it.get("source") or "")
+                it["whyZh"] = it["why"]
                 candidates.append(it)
                 got += 1
                 if got >= RISK_PER_STREAM:
@@ -633,6 +782,9 @@ def build():
                     it["brief"] = brief
                     it["why"] = why_it_matters(it["title"], c["key"])
                     it["categoryKey"] = c["key"]
+                    it["titleZh"] = fallback_zh_title(it, c["name"])
+                    it["briefZh"] = fallback_zh_brief(it, c["name"])
+                    it["whyZh"] = it["why"]
                     items.append(it)
         except Exception as e:
             print(f"[..] 板块 {c['name']} 抓取失败：{str(e)[:60]}")
@@ -659,6 +811,8 @@ def build():
         else:
             modes[CATEGORY_COMPONENTS[c["key"]]] = "unavailable"
         time.sleep(0.3)
+
+    apply_chinese_translation(cats_out)
 
     if fresh_categories == 0:
         modes["market-quotes"] = "fallback" if prev_file and prev_file.get("markets") else "unavailable"
@@ -708,8 +862,9 @@ def build():
             it = max(category["items"], key=lambda x: x.get("published") or 0)
             overview.append({
                 "topic": category["name"],
-                "text": it.get("brief") or it.get("title") or "",
+                "text": it.get("briefZh") or it.get("titleZh") or "",
                 "source": it.get("source") or "",
+                "sourceZh": it.get("sourceZh") or zh_source(it.get("source") or ""),
             })
 
     # 主题 / 市场方向标签。新闻类标签表示当日出现的主题，市场类箭头直接来自行情涨跌。
@@ -772,7 +927,7 @@ def build():
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
-        "source": "Google News (curated global publishers) · Yahoo Finance",
+        "source": "谷歌新闻（全球主流媒体聚合）· 雅虎财经",
         "sourcePool": SOURCE_POOL,
         "contentPolicy": "exclude-china-related-news",
         "lead": lead,
@@ -786,9 +941,9 @@ def build():
         "categories": cats_out,
         "markets": markets,
         "note": ("新闻通过 Google News RSS 聚合，并只保留本站配置的全球主流媒体来源池；"
-                 "本专栏全局排除中国相关报道。简报由 RSS 标题/摘要自动压缩整理，可能存在遗漏或误差，"
-                 "每条均链接回原文核实。风险页采用五路独立扫描，并在样本、来源和风险维度达到最低覆盖前显示‘数据不足’。"
-                 "市场快照来自 Yahoo Finance。仅供参考。"),
+                 "本专栏全局排除中国相关报道。页面统一以中文展示；新闻标题与摘要由 RSS 中文源优先，并通过 Ooglex 共享 AI 通道做忠实中文翻译，"
+                 "翻译失败时使用中文兜底说明。每条均链接回原文核实。风险页采用五路独立扫描，并在样本、来源和风险维度达到最低覆盖前显示‘数据不足’。"
+                 "市场快照来自雅虎财经。仅供参考。"),
     }
     health = make_health(
         "whats-latest",
