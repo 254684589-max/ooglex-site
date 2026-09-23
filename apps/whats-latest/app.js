@@ -68,6 +68,120 @@
     return items[0]||{};
   }
 
+  var SOURCE_ZH={
+    "Reuters":"路透社",
+    "Bloomberg":"彭博社",
+    "Financial Times":"英国《金融时报》",
+    "The Wall Street Journal":"《华尔街日报》",
+    "BBC":"英国广播公司",
+    "CNBC":"美国消费者新闻与商业频道",
+    "CNN":"美国有线电视新闻网",
+    "NBC News":"美国全国广播公司新闻",
+    "CBS News":"美国哥伦比亚广播公司新闻",
+    "ABC News":"美国广播公司新闻",
+    "The New York Times":"《纽约时报》",
+    "The Guardian":"英国《卫报》",
+    "South China Morning Post":"《南华早报》",
+    "The Hill":"《国会山报》",
+    "Fox News":"福克斯新闻",
+    "TechCrunch":"科技博客",
+    "Semafor":"塞马福新闻",
+    "The Japan Times":"《日本时报》",
+    "Axios":"阿克西奥斯新闻",
+    "WIRED":"《连线》杂志",
+    "Euronews":"欧洲新闻台",
+    "Associated Press":"美联社",
+    "POLITICO":"《政客》",
+    "Finextra":"金融科技资讯网"
+  };
+  var SOURCE_LEVEL={
+    "Reuters":"high","Bloomberg":"high","Financial Times":"high","The Wall Street Journal":"high",
+    "BBC":"high","Associated Press":"high","The New York Times":"high",
+    "CNBC":"medium","CNN":"medium","NBC News":"medium","CBS News":"medium","ABC News":"medium",
+    "The Guardian":"medium","Axios":"medium","POLITICO":"medium","Euronews":"medium","The Japan Times":"medium",
+    "South China Morning Post":"low","The Hill":"low","Fox News":"low","TechCrunch":"low",
+    "Semafor":"low","WIRED":"low","Finextra":"low"
+  };
+  var SOURCE_LEVEL_META={
+    high:{label:"高",order:0,title:"高等级新闻源"},
+    medium:{label:"中",order:1,title:"中等级新闻源"},
+    low:{label:"低",order:2,title:"低等级新闻源"}
+  };
+  function sourceZh(src){return SOURCE_ZH[src]||"其他新闻源";}
+  function sourceLevel(src){return SOURCE_LEVEL[src]||"low";}
+  function sourceLevelMeta(src){return SOURCE_LEVEL_META[sourceLevel(src)];}
+  function riskEntitiesZh(title){
+    var t=String(title||""),out=[];
+    [
+      [/\\bU\\.S\\.\\b|\\bUS\\b|United States/i,"美国"],
+      [/Ukraine|Kyiv|Zelensky/i,"乌克兰"],
+      [/Russia|Moscow|Putin/i,"俄罗斯"],
+      [/Iran|Tehran/i,"伊朗"],
+      [/Israel|Jerusalem/i,"以色列"],
+      [/Sudan/i,"苏丹"],
+      [/Saudi|Riyadh/i,"沙特阿拉伯"],
+      [/Yemen/i,"也门"],
+      [/Syria/i,"叙利亚"],
+      [/Lebanon/i,"黎巴嫩"],
+      [/NATO/i,"北约"],
+      [/United Nations|\\bU\\.N\\.\\b/i,"联合国"]
+    ].forEach(function(x){if(x[0].test(t)&&out.indexOf(x[1])<0)out.push(x[1]);});
+    return out.slice(0,3);
+  }
+  function riskEventTypeZh(title,stream){
+    var t=String(title||"");
+    if(/wheat|grain|food price|agricultur/i.test(t))return "战争延续与粮食成本压力";
+    if(/ceasefire|talks|meet|negotiat|peace plan/i.test(t))return "停火与谈判进展";
+    if(/missile|drone|attack|strike|explosion|bomb/i.test(t))return "军事打击与安全升级";
+    if(/sanction|blockade|visa/i.test(t))return "制裁、限制与外交措施";
+    if(/oil|gas|tanker|pipeline|shipping|freight|vessel|LNG/i.test(t))return "能源与运输风险";
+    if(/credit|bond|debt|bank|liquidity|default|bankruptcy/i.test(t))return "信用与流动性风险";
+    if(/cyber|ransomware|hack|malware|data breach/i.test(t))return "网络攻击与数据安全风险";
+    if(/supply chain|shortage|logistics|bottleneck|port disruption/i.test(t))return "供应链与物流中断";
+    if(/war|conflict|invasion|military|troops|army/i.test(t))return "战争与军事行动";
+    return (stream||"风险事件")+"最新进展";
+  }
+  function riskImpactZh(stream){
+    var map={
+      "地缘冲突":"重点观察冲突是否继续升级，以及是否向能源、运输、商品价格和市场风险偏好传导。",
+      "市场信用":"重点观察信用利差、融资条件、银行与债券市场是否出现进一步压力。",
+      "能源运输":"重点观察供应、航运通道、运价与能源价格是否出现持续扰动。",
+      "网络安全":"重点观察关键基础设施、企业系统和数据安全是否受到进一步影响。",
+      "供应链":"重点观察物流、交付周期与成本压力是否向更多行业扩散。"
+    };
+    return map[stream]||"重点观察事件是否升级、扩散，并形成跨市场或跨行业传导。";
+  }
+  function riskHeadlineZh(it){
+    var entities=riskEntitiesZh(it.title||"");
+    var type=riskEventTypeZh(it.title||"",it.riskStreamName||it.topic||"");
+    return (entities.length?entities.join("、")+"：":"")+type;
+  }
+  function riskNarrativeZh(it){
+    var src=sourceZh(it.source||"");
+    var stream=it.riskStreamName||it.topic||"风险";
+    var entities=riskEntitiesZh(it.title||"");
+    var type=riskEventTypeZh(it.title||"",stream);
+    var first=src+"报道显示，"+(entities.length?entities.join("、")+"相关的":"")+type+"成为当前风险监测重点。";
+    var second="该消息已归入“"+stream+"”风险流。"+riskImpactZh(stream);
+    return first+" "+second;
+  }
+  function renderRiskSourceLevels(items){
+    var box=$("risk-source-levels"); if(!box)return;
+    var groups={high:[],medium:[],low:[]},seen={};
+    (items||[]).forEach(function(it){
+      var src=it.source||"";
+      if(!src||seen[src])return;
+      seen[src]=1;
+      groups[sourceLevel(src)].push(sourceZh(src));
+    });
+    box.innerHTML=["high","medium","low"].map(function(k){
+      var meta=SOURCE_LEVEL_META[k],arr=groups[k];
+      return "<div class='risk-source-tier'><div class='risk-source-tier-head'><span class='risk-source-tier-name'>"+
+        meta.title+"</span><span class='risk-source-badge "+k+"'>"+meta.label+"</span></div>"+
+        "<div class='risk-source-tier-list'>"+esc(arr.length?arr.join(" · "):"当前无样本")+"</div></div>";
+    }).join("");
+  }
+
   function setRiskMode(on){
     var ids=["cover"];
     ids.forEach(function(id){var el=$(id);if(el)el.style.display=on?"none":"";});
@@ -90,8 +204,12 @@
   function renderRiskDesk(){
     var a=DATA.riskAnalysis||{};
     var riskCat=catByKey("risk")||{items:[]};
-    var items=(riskCat.items||[]).slice();
-    var lead=a.lead||items[0]||{};
+    var items=(riskCat.items||[]).slice().sort(function(x,y){
+      var ax=sourceLevelMeta(x.source||"").order, ay=sourceLevelMeta(y.source||"").order;
+      if(ax!==ay)return ax-ay;
+      return Number(y.published||0)-Number(x.published||0);
+    });
+    var lead=items[0]||a.lead||{};
     var level=a.level||"数据不足";
     var status=a.status||"等待样本";
     var cov=a.coverage||{};
@@ -100,7 +218,7 @@
       "<span class='risk-level "+riskClass(level)+"'><span class='dot'></span>风险等级："+esc(level)+"</span>"+
       "<span>威胁状态："+esc(status)+"</span>"+
       "<span>监测事件："+esc(cov.sampleCount!=null?cov.sampleCount:items.length)+" 条</span>"+
-      "<span>媒体："+esc(cov.sourceCount!=null?cov.sourceCount:"—")+" 家</span>"+
+      "<span>新闻源："+esc(cov.sourceCount!=null?cov.sourceCount:"—")+" 家</span>"+
       "<span>风险流："+esc(cov.streamCount!=null?cov.streamCount:"—")+" / 5</span>"+
       "<span>"+esc(DATA.asOf||"")+"</span>"+
       "<div class='risk-quality'>"+
@@ -110,27 +228,44 @@
         "<span>≥ "+esc(cov.minStreams||3)+" 个风险流</span>"+
       "</div>";
 
+    var leadMeta=sourceLevelMeta(lead.source||"");
     $("risk-focus").innerHTML=
-      "<div class='risk-kicker'>CURRENT FOCUS</div>"+
-      "<h3>"+esc(lead.briefZh||lead.brief||lead.title||"暂无核心风险事件")+"</h3>"+
-      (lead.title&&lead.briefZh?"<p>原文标题："+esc(lead.title)+"</p>":"")+
-      (lead.source?"<p>"+esc(lead.source)+(relTime(lead.published)?" · "+esc(relTime(lead.published)):"")+"</p>":"")+
-      "<div class='risk-why'><b>WHY IT MATTERS</b>"+esc(lead.why||a.why||"持续跟踪事件是否出现升级、扩散或市场传导。")+"</div>";
+      "<div class='risk-kicker'>当前焦点</div>"+
+      "<h3>"+esc(riskHeadlineZh(lead)||"暂无核心风险事件")+"</h3>"+
+      "<div class='risk-event-meta'><span class='risk-source-badge "+sourceLevel(lead.source||"")+"'>"+leadMeta.label+"</span>"+
+      "<span>新闻源："+esc(sourceZh(lead.source||""))+"</span>"+
+      (relTime(lead.published)?"<span>· "+esc(relTime(lead.published))+"</span>":"")+"</div>"+
+      "<p>"+esc(riskNarrativeZh(lead))+"</p>"+
+      "<div class='risk-why'><b>影响研判</b>"+esc(lead.why||a.why||riskImpactZh(lead.riskStreamName||lead.topic||""))+"</div>";
 
-    $("risk-events").innerHTML=(items.length?items.slice(0,6):[]).map(function(it){
-      return "<a class='risk-event' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
-        "<span class='bullet'></span><span><div class='risk-event-title'>"+esc(it.briefZh||it.brief||it.title||"")+"</div>"+
-        "<div class='risk-event-meta'>"+esc(it.source||"来源未知")+(relTime(it.published)?" · "+esc(relTime(it.published)):"")+" · 阅读原文 →</div></span></a>";
+    var grouped={high:[],medium:[],low:[]};
+    items.slice(0,12).forEach(function(it){grouped[sourceLevel(it.source||"")].push(it);});
+    $("risk-events").innerHTML=["high","medium","low"].map(function(k){
+      if(!grouped[k].length)return "";
+      var meta=SOURCE_LEVEL_META[k];
+      return "<div class='risk-level-group'><div class='risk-level-group-title'><span class='risk-source-badge "+k+"'>"+meta.label+"</span><span>"+meta.title+"</span></div>"+
+        grouped[k].map(function(it){
+          return "<a class='risk-event' href='"+esc(it.link||"#")+"' target='_blank' rel='noopener'>"+
+            "<span class='bullet'></span><span>"+
+            "<div class='risk-event-meta'><span class='risk-source-badge "+k+"'>"+meta.label+"</span><span>新闻源："+esc(sourceZh(it.source||""))+"</span>"+
+            (relTime(it.published)?"<span>· "+esc(relTime(it.published))+"</span>":"")+"<span>· 查看原文 →</span></div>"+
+            "<div class='risk-event-title'>"+esc(riskHeadlineZh(it))+"</div>"+
+            "<div class='risk-event-copy'>"+esc(riskNarrativeZh(it))+"</div>"+
+            "</span></a>";
+        }).join("")+"</div>";
     }).join("")||"<div class='risk-note'>当前没有新的风险事件。</div>";
 
     var follow=a.followUp||[];
     if(!follow.length)follow=items.slice(0,3);
     $("risk-followup").innerHTML=follow.map(function(it){
-      return "<div class='risk-event'><span class='bullet'></span><span><div class='risk-event-title'>"+esc(it.text||it.brief||it.title||"持续监测")+"</div>"+
-        (it.source?"<div class='risk-event-meta'>"+esc(it.source)+"</div>":"")+"</span></div>";
+      return "<div class='risk-event'><span class='bullet'></span><span><div class='risk-event-title'>"+
+        esc(it.text||riskHeadlineZh(it)||"持续监测")+"</div>"+
+        (it.source?"<div class='risk-event-meta'>新闻源："+esc(sourceZh(it.source))+"</div>":"")+"</span></div>";
     }).join("");
 
-    var dims=a.dimensions||[];
+    renderRiskSourceLevels(items);
+
+    var dims=(a.dimensions||[]).slice().sort(function(x,y){return Number(y.score||0)-Number(x.score||0);});
     $("risk-dimensions").innerHTML=dims.map(function(d){
       var pct=Math.max(8,Math.min(100,Number(d.score||0)));
       return "<div class='risk-dimension'><div class='risk-dimension-row'><span class='risk-dimension-name'>"+esc(d.name||"风险")+
