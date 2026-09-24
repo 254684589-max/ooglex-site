@@ -13,7 +13,7 @@
 
 ### 新增
 
-- 2026-09-23，**游戏中心新增原创 3D 游戏《工地搬砖》ConstructionWorker V0.1（Godot 4 网页版）**。**未部署**（在功能分支上，合并 `main` 后随 GitHub Pages 发布）。
+- 2026-09-23，**游戏中心新增原创 3D 游戏《工地搬砖》ConstructionWorker V0.1（Godot 4 网页版）**。**已部署**（经项目所有者明确同意「合并。上线」，合并到 `main` 并随 GitHub Pages 发布）。
   - **入口**：`/games/construction-worker/`（介绍页）→ `/games/construction-worker/play/`（游戏本体）；游戏中心 `/games/hub/` 第一张卡片；`sitemap.xml` 新增一条。
   - **玩法闭环**：标题画面 → 开场字幕 → 工地门口「你刚来到这座城市，身上只剩下 300 元。」→ 找工头老王（「一天 280，管一顿饭，干不干？」）→ 接搬砖任务 → 在砖堆按 F 拿砖、送进黄框卸货区才计进度 → 搬够 20 块 ¥280 到账 → 食堂用饭票换盒饭 → 回宿舍睡觉 → 第二天。另有搬水泥、搬钢筋两个任务；体力 / 饥饿 / 水分、搬运熟练度（一次 1→2→4→6 块）、昼夜、食堂 / 小卖部 / 凉茶桶、JSON 存档（浏览器 IndexedDB）、Tab 任务面板、M 工地图、手机触屏操作。
   - **工程**：Godot 4.7 + GDScript，源码在 `games/construction-worker/godot/`，按 Player / NPC / Interaction / Inventory / TaskSystem / EconomySystem / TimeSystem / SaveSystem / UI 分模块；任务系统是通用的（任务 = 数据 + 目标事件）。地图全部用几何体灰盒生成，无外部美术素材；中文字体为思源黑体子集（OFL，1.4 MB），音效由脚本合成。
