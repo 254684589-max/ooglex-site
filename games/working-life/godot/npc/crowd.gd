@@ -31,6 +31,8 @@ func setup(sidewalk_points: Array) -> void:
 		m.accent_color = CityBuilder.NEON_COLORS[i % CityBuilder.NEON_COLORS.size()]
 		m.hat = "visor" if i % 4 == 0 else "none"
 		m.body_scale = _rng.randf_range(0.92, 1.05)
+		m.build_width = [0.94, 1.0, 1.08][_rng.randi() % 3]
+		m.sleeves = "long" if _rng.randf() < 0.4 else "short"
 		m.draw_distance = 70.0
 		m.casts_shadow = false
 		add_child(m)

@@ -84,14 +84,17 @@ games/working-life/
 ```
 
 ## 素材与替换接口
-- 美术：全部由代码生成（`world/city_builder.gd` + `buildings/building_kit.gd` + `world/mats.gd`）。换正式模型：
-  人物保留 `CharacterModel` 的关节接口，或在模型里放 `AnimationPlayer` 并提供 Idle/Walk/Run/Interact/Carry/Sit/Work 动画，
-  `AnimationController` 会自动改用它。
+- 美术：全部由代码生成（`world/city_builder.gd` + `buildings/building_kit.gd` + `world/mats.gd`）。
+  人物（`player/character_model.gd`）是 17 根骨头的 `Skeleton3D` + 一张放样生成的蒙皮网格，
+  `AnimationController` 逐帧计算程序化步态并设置骨头姿势。换成外部骨骼模型时：骨头沿用同样的名字
+  （Hips / Spine / Chest / Neck / Head / UpperArm.L …），或在模型里放 `AnimationPlayer` 并提供
+  Idle/Walk/Run/Interact/Carry/Sit/Work 动画，`AnimationController` 会自动改用它。
+  开发用逐帧图：`tests/anim_shots.tscn`（待机 / 走 / 跑 / 搬箱子 / 拖行李箱 / 转身 / 坐 / 干活）。
 - 音频：`tools/gen_audio.py` 合成；按 `music_* / amb_* / sfx_*` 命名覆盖 `godot/assets/audio/` 下同名 wav 即可替换，缺文件不会报错。
 - 字体：思源黑体子集（OFL），新增生僻字后运行 `tools/build_font.py`。
 
 ## 已知问题
-- 建筑、人物、车辆、植物由代码程序化生成（路面、混凝土、石材等使用真实照片材质，来源见 `godot/assets/textures/photo/SOURCES.md`），近看仍是简化几何；人物没有骨骼动画（程序化摆动）。
+- 建筑、人物、车辆、植物由代码程序化生成（路面、混凝土、石材等使用真实照片材质，来源见 `godot/assets/textures/photo/SOURCES.md`），近看仍是简化几何；人物是程序化骨骼动画（没有动作捕捉数据），五官为简化造型。
 - 受网页 WebGL 2（Godot 兼容渲染器）限制，没有屏幕空间反射、环境光遮蔽、体积雾和全局光照，达不到 GTA V 这类 3A 游戏的画质。
 - 网页版首次加载较大（约 42 MB）；手机实机帧率未在真实 GPU 上测过（本环境只有软件渲染）。
 - 室内较小时镜头会贴近人物；NPC 进出建筑是「走到门口 → 直线走到站位」，偶尔会穿过柜台。
