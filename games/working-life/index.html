@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme-lock="dark">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08050f">
+  <title>打工 WORKING LIFE · 3D 赛博朋克都市人生模拟网页游戏 | Ooglex 游戏中心</title>
+  <meta name="description" content="《打工》WORKING LIFE：第三人称 3D 赛博朋克都市人生模拟游戏，浏览器直接玩。带着 ¥2000 走出火车站，找工作、上班、升职、租房、学习、交朋友、投资、创业，达成五种人生结局。">
+  <link rel="canonical" href="https://www.ooglex.com/games/working-life/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="打工 WORKING LIFE · 3D 赛博朋克都市人生模拟">
+  <meta property="og:description" content="带着 ¥2000 来到霓虹城市：找工作、升职、租房、投资、创业，选择你自己的人生。浏览器直接玩，电脑手机都支持。">
+  <meta property="og:url" content="https://www.ooglex.com/games/working-life/">
+  <meta property="og:image" content="https://www.ooglex.com/games/working-life/img/hero.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js?v=2ae26043" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    :root {
+      --bg: #08050f; --panel: #120d1f; --panel2: #1a1330; --line: rgba(34, 228, 255, .16);
+      --ink: #eef2ff; --dim: #a7a9c8; --faint: #7b7c9c; --pink: #ff2e88; --cyan: #22e4ff; --gold: #ffd23f; --violet: #b04dff; --ok: #7cff6b;
+    }
+    body {
+      min-height: 100vh; color: var(--ink); line-height: 1.7;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(900px 480px at 85% -10%, rgba(255, 46, 136, .16), transparent 62%),
+        radial-gradient(800px 520px at 0% 110%, rgba(34, 228, 255, .12), transparent 62%),
+        var(--bg);
+    }
+    a { color: var(--cyan); }
+    a:focus-visible, .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 10px; }
+    .stripe { height: 6px; background: linear-gradient(90deg, var(--pink), var(--cyan), var(--violet)); }
+    .page { max-width: 1080px; margin: 0 auto; padding: 16px 16px 64px; }
+    .back { display: inline-block; color: var(--cyan); text-decoration: none; font-size: 14px; margin: 6px 0 18px; }
+
+    .hero { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: center; }
+    .eyebrow { font-size: 12px; letter-spacing: .22em; color: var(--cyan); text-transform: uppercase; }
+    h1 { margin: 8px 0 0; font-size: clamp(52px, 9vw, 84px); line-height: 1.02; font-weight: 900; letter-spacing: .06em; color: var(--pink);
+      text-shadow: 0 0 22px rgba(255, 46, 136, .55), 0 0 2px rgba(255, 255, 255, .6); }
+    h1 span { display: block; margin-top: 12px; font-size: 15px; letter-spacing: .42em; color: var(--cyan); font-weight: 800; text-shadow: 0 0 12px rgba(34, 228, 255, .5); }
+    .lead { margin: 18px 0 0; color: #d6d8f0; font-size: 16px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 12px;
+      font-weight: 800; font-size: 16px; text-decoration: none; }
+    .btn.primary { color: #08050f; background: linear-gradient(135deg, var(--cyan), var(--pink)); box-shadow: 0 12px 34px -10px rgba(255, 46, 136, .7); }
+    .btn.secondary { color: var(--ink); border: 1px solid var(--line); background: rgba(255, 255, 255, .04); }
+    .small { margin-top: 12px; color: var(--faint); font-size: 13px; }
+    .shot { margin: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #05030a;
+      box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .9), 0 0 40px -20px rgba(34, 228, 255, .4); }
+    .shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+    .shot figcaption { padding: 8px 12px; font-size: 12px; color: var(--faint); background: var(--panel); }
+
+    .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 28px; }
+    .fact { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); }
+    .fact b { display: block; font-size: 12px; letter-spacing: .08em; color: var(--cyan); margin-bottom: 4px; }
+    .fact span { font-size: 14px; color: #d6d8f0; }
+
+    section { margin-top: 46px; }
+    h2 { font-size: 22px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+    h2::before { content: ""; width: 6px; height: 22px; border-radius: 3px; background: linear-gradient(180deg, var(--pink), var(--cyan)); }
+    .story p { margin: 0 0 10px; color: #d6d8f0; }
+    .phone { margin: 14px 0; display: grid; gap: 8px; max-width: 520px; }
+    .phone div { padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); font-size: 15px; }
+    .phone div small { display: block; color: var(--cyan); font-size: 12px; }
+
+    .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; counter-reset: step; padding: 0; margin: 0; list-style: none; }
+    .loop li { position: relative; border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 14px 52px; background: var(--panel); font-size: 14px; color: #d6d8f0; }
+    .loop li::before { counter-increment: step; content: counter(step); position: absolute; left: 14px; top: 14px; width: 26px; height: 26px;
+      border-radius: 50%; background: var(--pink); color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+    .loop li b { display: block; color: var(--ink); font-size: 15px; }
+
+    .jobs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .job { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--panel); }
+    .job b { display: block; font-size: 16px; }
+    .job .pay { color: var(--gold); font-weight: 800; font-size: 14px; }
+    .job p { margin: 6px 0 0; font-size: 13px; color: var(--dim); line-height: 1.6; }
+    .job .req { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--cyan); }
+
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .systems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--panel); }
+    .card h3 { margin: 0 0 8px; font-size: 16px; color: var(--ink); }
+    .card p { margin: 0; font-size: 14px; color: #d6d8f0; }
+    .endings { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .ending { border-radius: 14px; padding: 14px; background: var(--panel2); border: 1px solid var(--line); border-top: 3px solid var(--c); }
+    .ending b { display: block; color: var(--c); font-size: 17px; }
+    .ending small { display: block; color: var(--faint); font-size: 11px; letter-spacing: .12em; }
+    .ending p { margin: 8px 0 0; font-size: 13px; color: #d6d8f0; line-height: 1.6; }
+
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .keys { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; font-size: 14px; color: #d6d8f0; align-items: center; }
+    kbd { display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 6px; text-align: center; font: 700 13px/1.6 inherit;
+      color: #08050f; background: #e8ecff; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .25); white-space: nowrap; }
+
+    .notice { margin-top: 36px; padding: 16px 18px; border-radius: 14px; border: 1px solid rgba(255, 210, 63, .28); background: rgba(255, 210, 63, .05);
+      color: #cfd0e6; font-size: 13px; line-height: 1.8; }
+    .cta-bottom { text-align: center; margin-top: 40px; }
+    footer { text-align: center; color: var(--faint); font-size: 12px; margin-top: 30px; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .facts { grid-template-columns: repeat(2, 1fr); }
+      .loop, .jobs { grid-template-columns: repeat(2, 1fr); }
+      .gallery, .systems { grid-template-columns: 1fr 1fr; }
+      .endings { grid-template-columns: repeat(2, 1fr); }
+      .controls { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .loop, .jobs, .gallery, .systems, .endings, .facts { grid-template-columns: 1fr; }
+      .btn { flex: 1 1 100%; }
+      h1 span { letter-spacing: .24em; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="stripe" aria-hidden="true"></div>
+  <main class="page">
+    <a class="back" href="../hub/">← 返回游戏中心</a>
+
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Ooglex Games · 原创 3D 网页游戏</div>
+        <h1>打工<span>WORKING LIFE · 1.0</span></h1>
+        <p class="lead">2088 年，霓虹闪烁的新澜市。你拖着一个行李箱走出中央火车站：没有背景，没有工作，没有住处，只有 <b>¥2000</b> 和一部旧手机。先活过今晚——然后，选择你自己的人生。</p>
+        <div class="actions">
+          <a class="btn primary" href="play/">▶ 开始游戏</a>
+          <a class="btn secondary" href="#controls">操作说明</a>
+        </div>
+        <p class="small">免下载安装 · 电脑和手机浏览器都能玩 · 3 个存档位，存档保存在你自己的浏览器里</p>
+      </div>
+      <figure class="shot">
+        <img src="img/hero.jpg" width="1280" height="720" alt="雨夜的新澜市美食街：玩家站在霓虹招牌闪烁的咖啡馆门口，路面湿滑反光，屏幕左上角是日期、时间、天气和现金，右上角是当前任务">
+        <figcaption>网页版实机截图 · 画面全部由代码程序化生成</figcaption>
+      </figure>
+    </div>
+
+    <div class="facts">
+      <div class="fact"><b>类型</b><span>第三人称 3D · 赛博朋克都市人生模拟</span></div>
+      <div class="fact"><b>流程</b><span>7 章主线 · 约 6～12 小时 · 通关后无限人生</span></div>
+      <div class="fact"><b>首次加载</b><span>约 42 MB（压缩传输约 12 MB），之后浏览器缓存</span></div>
+      <div class="fact"><b>引擎</b><span>Godot 4 · GDScript · WebGL 2</span></div>
+    </div>
+
+    <section class="story">
+      <h2>故事</h2>
+      <p>磁悬浮列车缓缓驶入中央火车站。你走出站口，头顶是一层叠一层的全息广告，脚下的路面映着粉色和青色的霓虹。手机响了：</p>
+      <div class="phone">
+        <div><small>新澜市政务</small>欢迎来到新城市。</div>
+        <div><small>新澜银行</small>当前余额：¥2000</div>
+        <div><small>新澜市政务</small>你现在没有工作，也没有固定住所。</div>
+        <div><small>？？？</small>今晚之前，先想办法活下来。</div>
+      </div>
+      <p>找一家廉价旅馆，买点吃的，去人才市场投简历、面试。第二天准时上班。之后的路，从「活下去」一点点变成「选择自己的人生」。</p>
+    </section>
+
+    <section>
+      <h2>人生的循环</h2>
+      <ol class="loop">
+        <li><b>找工作</b>手机「招聘」APP 投简历，去面试</li>
+        <li><b>上班</b>按时打卡，完成工作小游戏拿评分</li>
+        <li><b>赚钱花钱</b>日薪 / 月薪，吃饭、房租、交通、学习</li>
+        <li><b>学技能</b>上课、读书、练习，六项技能 Lv.0～10</li>
+        <li><b>升职跳槽</b>绩效、出勤、技能达标就升职</li>
+        <li><b>交朋友</b>17 位 NPC，关系好了会帮你</li>
+        <li><b>投资创业</b>指数、科技股、黄金、债券；开公司</li>
+        <li><b>人生结局</b>五种结局，之后继续无限人生</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>游戏画面</h2>
+      <div class="gallery">
+        <figure class="shot"><img src="img/viewpoint.jpg" width="960" height="540" loading="lazy" alt="黄昏时从中央公园观景台俯瞰天穹大厦与商务区的霓虹高楼"><figcaption>中央公园观景台：黄昏俯瞰商务区</figcaption></figure>
+        <figure class="shot"><img src="img/phone.jpg" width="960" height="540" loading="lazy" alt="手机招聘 APP：职位、公司、工资、上班时间、技能要求和申请按钮"><figcaption>手机招聘 APP：投简历、看要求</figcaption></figure>
+        <figure class="shot"><img src="img/work.jpg" width="960" height="540" loading="lazy" alt="程序员工作小游戏：阅读需求，点出有 Bug 的那一行代码"><figcaption>程序员上班：找出代码里的 Bug</figcaption></figure>
+        <figure class="shot"><img src="img/talk.jpg" width="960" height="540" loading="lazy" alt="在 24h 便利店和陈叔对话，可以闲聊、接任务、送礼物"><figcaption>和便利店的陈叔聊天、接任务</figcaption></figure>
+        <figure class="shot"><img src="img/day.jpg" width="960" height="540" loading="lazy" alt="白天的天穹大厦门口，玻璃幕墙与霓虹灯条"><figcaption>白天的天穹大厦（办公室与管理岗位）</figcaption></figure>
+        <figure class="shot"><img src="img/map.jpg" width="960" height="540" loading="lazy" alt="新澜市地图：道路、各个地点、公交与地铁站、玩家位置与任务目标"><figcaption>城市地图：23 个地点、公交与地铁</figcaption></figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>八条职业路线</h2>
+      <div class="jobs">
+        <div class="job"><b>便利店员工</b><span class="pay">¥180 / 天起</span><p>收银小游戏：扫码、算找零。店员 → 店长。</p><span class="req">零门槛</span></div>
+        <div class="job"><b>餐厅服务员</b><span class="pay">¥220 / 天起</span><p>上菜小游戏：出餐口选菜送对桌、清桌。</p><span class="req">零门槛</span></div>
+        <div class="job"><b>仓库员工</b><span class="pay">¥260 / 天起</span><p>分拣小游戏：按标签把包裹放进货区。</p><span class="req">零门槛</span></div>
+        <div class="job"><b>建筑工人</b><span class="pay">¥320 / 天起</span><p>3D 搬运：在工地扛材料送进卸货区，雨天路滑。</p><span class="req">零门槛</span></div>
+        <div class="job"><b>办公室职员</b><span class="pay">¥7,000 / 月起</span><p>文件归档、接电话。助理 → 总监。</p><span class="req">电脑 Lv.1 · 沟通 Lv.1</span></div>
+        <div class="job"><b>程序员</b><span class="pay">¥15,000 / 月起</span><p>找 Bug 小游戏。Junior → CTO。</p><span class="req">电脑 Lv.3</span></div>
+        <div class="job"><b>金融分析师</b><span class="pay">¥18,000 / 月起</span><p>看图判断趋势、选风险收益比最好的方案。</p><span class="req">金融 Lv.4 · 电脑 Lv.2</span></div>
+        <div class="job"><b>公司管理者</b><span class="pay">¥30,000 / 月起</span><p>分配任务、控制预算、招聘、处理突发事件。</p><span class="req">管理 Lv.5 · 沟通 Lv.4 · 声望</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>这座城市里能做的事</h2>
+      <div class="systems">
+        <div class="card"><h3>住房五个等级</h3><p>廉价旅馆 ¥50/晚 → 合租房 → 普通公寓 → 高级公寓 → 豪华别墅。住得越好，睡得越香、心情越好、面试越体面。房间都能走进去睡觉、换衣服、用电脑。</p></div>
+        <div class="card"><h3>时间、昼夜、天气</h3><p>一天约现实 22 分钟，按 T 切换两倍速。夜里霓虹更亮；晴、阴、雨随机变化，雨天行人少、通勤慢、工地路滑。</p></div>
+        <div class="card"><h3>40+ 任务，36 种随机事件</h3><p>7 章主线 + 35 个支线：找钱包、修水龙头、雨夜送药、黑客松、公益夜跑……还有加班、裁员、市场暴涨暴跌、公交故障、朋友借钱。</p></div>
+        <div class="card"><h3>投资</h3><p>指数基金、科技股、银行股、黄金、债券五种虚构资产，价格由游戏内经济周期（繁荣 / 平稳 / 衰退）与新闻驱动，不是真实行情。</p></div>
+        <div class="card"><h3>创业</h3><p>管理 Lv.5 + ¥100,000 就能开公司：招工程师、销售、运营，接项目、配预算、买设备、分红；长期亏空会破产。</p></div>
+        <div class="card"><h3>公交、地铁、出租车</h3><p>整座城市可以步行走遍；找到工作后开通公交，第三章开通地铁，第四章可以用手机随时叫车。</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>五种人生结局</h2>
+      <div class="endings">
+        <div class="ending" style="--c:#7cff6b"><b>普通人生</b><small>AN ORDINARY LIFE</small><p>稳定工作 + 自己的公寓 + ¥10 万存款。</p></div>
+        <div class="ending" style="--c:#ff2e88"><b>职业经理人</b><small>THE EXECUTIVE</small><p>成为总监、副总裁或 CEO。</p></div>
+        <div class="ending" style="--c:#22e4ff"><b>技术专家</b><small>THE ARCHITECT</small><p>电脑 Lv.10，做到 Tech Lead 或 CTO。</p></div>
+        <div class="ending" style="--c:#ffd23f"><b>创业成功</b><small>THE FOUNDER</small><p>自己的公司发展成中型企业。</p></div>
+        <div class="ending" style="--c:#b04dff"><b>财务自由</b><small>FINANCIAL FREEDOM</small><p>净资产 ¥500 万，且有稳定被动收入。</p></div>
+      </div>
+      <p class="small">达成任意一个目标后，去中央公园观景台回望这座城市。看完结局可以继续游戏，其余目标依然可以达成。</p>
+    </section>
+
+    <section id="controls">
+      <h2>操作说明</h2>
+      <div class="controls">
+        <div class="card">
+          <h3>电脑（键盘 + 鼠标）</h3>
+          <div class="keys">
+            <span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span><span>移动</span>
+            <span><kbd>Shift</kbd> <kbd>空格</kbd></span><span>奔跑（消耗体力）· 跳跃</span>
+            <span><kbd>鼠标</kbd></span><span>转动视角（先点一下画面锁定鼠标）· 滚轮远近</span>
+            <span><kbd>E</kbd></span><span>交互：对话、购物、上班、面试、开门、睡觉</span>
+            <span><kbd>F</kbd></span><span>使用 / 拿起 / 放下（电脑、ATM、任务物品、工地材料）</span>
+            <span><kbd>左键</kbd></span><span>执行当前动作</span>
+            <span><kbd>Tab</kbd></span><span>手机（招聘、银行、住房、投资、创业……）</span>
+            <span><kbd>M</kbd> <kbd>I</kbd> <kbd>J</kbd> <kbd>C</kbd></span><span>地图 · 背包 · 任务 · 人物</span>
+            <span><kbd>T</kbd> <kbd>Esc</kbd></span><span>时间倍速 · 暂停菜单（保存 / 读取 / 设置）</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>手机 / 平板（触屏）</h3>
+          <div class="keys">
+            <span><kbd>左下摇杆</kbd></span><span>移动</span>
+            <span><kbd>右半屏拖动</kbd></span><span>转动视角</span>
+            <span><kbd>交互</kbd> <kbd>使用</kbd></span><span>对应 E / F</span>
+            <span><kbd>跑</kbd> <kbd>跳</kbd></span><span>切换奔跑 · 跳跃</span>
+            <span><kbd>手机</kbd> <kbd>地图</kbd> <kbd>菜单</kbd></span><span>右上角按钮</span>
+          </div>
+          <p class="small">手机建议横屏游玩。触屏设备会自动降低 3D 分辨率、关闭阴影以保证流畅；也可以在设置里调画质。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-bottom">
+      <a class="btn primary" href="play/">▶ 开始游戏</a>
+    </div>
+
+    <div class="notice">
+      <b>说明：</b>本游戏为 Ooglex 原创作品。新澜市以及游戏中的公司、人物、投资品全部为虚构；投资 APP 的价格由游戏内部模型生成，与真实市场无关，不构成任何投资建议。
+      画面、音乐和音效全部由代码生成，没有使用第三方美术与音频素材；中文字体为思源黑体子集（SIL Open Font License）。
+      存档保存在你当前浏览器的本地存储里：换浏览器、使用无痕模式或清除网站数据后存档会消失。
+      游戏需要浏览器支持 WebGL 2（新版 Chrome、Edge、Firefox、Safari 均支持）；首次打开要下载约 42 MB 的游戏引擎与资源，网速较慢时请耐心等待。
+    </div>
+
+    <footer>Ooglex Games · 打工 WORKING LIFE 1.0 · Godot 4 制作</footer>
+  </main>
+</body>
+</html>
