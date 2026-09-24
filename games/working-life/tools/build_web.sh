@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 《打工》WORKING LIFE 网页版构建：Godot 工程 → games/working-life/play/
+# 《打工》HUSTLE CITY 网页版构建：Godot 工程 → games/working-life/play/
 #
 # 需要：Godot 4.7.x 编辑器 + 对应版本的导出模板（只用到 web_nothreads_release.zip）。
 #   GODOT=/path/to/Godot_v4.7.2-stable_linux.x86_64 games/working-life/tools/build_web.sh
