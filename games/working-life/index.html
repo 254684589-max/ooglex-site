@@ -85,6 +85,7 @@
     .job .req { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--cyan); }
 
     .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .gallery .wide { grid-column: span 2; }
     .systems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .card { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--panel); }
     .card h3 { margin: 0 0 8px; font-size: 16px; color: var(--ink); }
@@ -115,6 +116,7 @@
     }
     @media (max-width: 480px) {
       .loop, .jobs, .gallery, .systems, .endings, .facts { grid-template-columns: 1fr; }
+      .gallery .wide { grid-column: auto; }
       .btn { flex: 1 1 100%; }
       h1 span { letter-spacing: .24em; }
     }
@@ -179,11 +181,13 @@
     <section>
       <h2>游戏画面</h2>
       <div class="gallery">
+        <figure class="shot wide"><img src="img/skyline.jpg" width="1280" height="720" loading="lazy" alt="黄昏航拍新澜市：夕阳雾霭中的玻璃幕墙、写字楼和住宅高楼，街道两旁是棕榈树与来往的汽车，远处是山"><figcaption>黄昏航拍：天际线、棕榈大道与远山</figcaption></figure>
+        <figure class="shot"><img src="img/skyline_night.jpg" width="960" height="540" loading="lazy" alt="夜晚的新澜市：高楼窗户一格格亮起暖色和冷色灯光，天空有星星，商务区的霓虹楼名"><figcaption>夜景：万家灯火与霓虹楼名</figcaption></figure>
         <figure class="shot"><img src="img/viewpoint.jpg" width="960" height="540" loading="lazy" alt="黄昏时从中央公园观景台俯瞰天穹大厦与商务区的霓虹高楼"><figcaption>中央公园观景台：黄昏俯瞰商务区</figcaption></figure>
         <figure class="shot"><img src="img/phone.jpg" width="960" height="540" loading="lazy" alt="手机招聘 APP：职位、公司、工资、上班时间、技能要求和申请按钮"><figcaption>手机招聘 APP：投简历、看要求</figcaption></figure>
         <figure class="shot"><img src="img/work.jpg" width="960" height="540" loading="lazy" alt="程序员工作小游戏：阅读需求，点出有 Bug 的那一行代码"><figcaption>程序员上班：找出代码里的 Bug</figcaption></figure>
         <figure class="shot"><img src="img/talk.jpg" width="960" height="540" loading="lazy" alt="在 24h 便利店和陈叔对话，可以闲聊、接任务、送礼物"><figcaption>和便利店的陈叔聊天、接任务</figcaption></figure>
-        <figure class="shot"><img src="img/day.jpg" width="960" height="540" loading="lazy" alt="白天的天穹大厦门口，玻璃幕墙与霓虹灯条"><figcaption>白天的天穹大厦（办公室与管理岗位）</figcaption></figure>
+        <figure class="shot"><img src="img/day.jpg" width="960" height="540" loading="lazy" alt="白天的天穹大厦门口：玻璃幕墙、棕榈树、路边停着的汽车和人行道地砖"><figcaption>白天的天穹大厦（办公室与管理岗位）</figcaption></figure>
         <figure class="shot"><img src="img/map.jpg" width="960" height="540" loading="lazy" alt="新澜市地图：道路、各个地点、公交与地铁站、玩家位置与任务目标"><figcaption>城市地图：23 个地点、公交与地铁</figcaption></figure>
       </div>
     </section>

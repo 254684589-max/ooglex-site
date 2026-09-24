@@ -52,11 +52,20 @@ invest_or_business ending_ready invest_profit get_job promote。
 ## 世界生成
 `CityBuilder.build()`：地面与道路 → 按 locations.json 的 type 调用模板（shop / tower / home / station / park / site /
 warehouse / oldtown）→ 填充高楼 → 公交地铁站、售货机、街道设施、高架轨道、远景天际线、边界墙 → MeshBatcher 合批 →
-4 米网格导航网格。几何体按「材质 × 96 米格子」合批（约 335 个网格节点）；夜间专用几何单独一组，昼夜切换时整组显隐。
+4 米网格导航网格。几何体按「材质 × 96 米格子」合批（约 560 个网格节点）；夜间专用几何单独一组，昼夜切换时整组显隐。
+另有：人行道棕榈树与路边停车（`_palms_and_parking`）、两圈远景高楼 + 城郊 + 远山（`_skyline` / `_mountains`）。
+
+## 画面
+- 材质（`world/mats.gd`）：城市几何体用顶点色 + 十几种批次材质；立面 `fac_glass / fac_office / fac_res / fac_cyber`
+  用 `world/proc_tex.gd` 生成的贴图，UV 是世界坐标（竖直面 `(x+z, y)`、水平面 `(x, z)`，单位米），
+  夜间灯光走自发光贴图，亮度由 `Mats.set_window_energy()` 随昼夜调整。
+- 天空（`world/sky.gdshader` + `world/day_night.gd`）：渐变、日轮、云、星星；AgX 色调映射、雾（太阳散射 + 大气透视 + 高度雾）、泛光。
+- 人物（`player/character_model.gd`）：每个关节的零件合并成一个顶点色网格 + 一个发光网格。
+- 地面交通（`world/street_traffic.gd`）：每种车漆一个多材质网格，所有车共享。
 
 ## 性能手段
 信号驱动（HUD 0.2 秒刷新、任务条件 0.4 秒节流、NPC 整点换日程）；Resources/JSON 数据；自动加载单例；对象池（路人、音效播放器）；
-LOD（小物件、标签、人物部件、空中车辆按距离隐藏）；遥远 NPC 直接瞬移不寻路；遮挡剔除（桌面版大楼遮挡体）；
+LOD（小物件、树叶、标签、人物、空中与地面车辆按距离隐藏）；遥远 NPC 直接瞬移不寻路；遮挡剔除（桌面版大楼遮挡体）；
 NPC 与路人不投射阴影；触屏 / 低画质降低 3D 分辨率、关泛光、减少路人与车辆。
 
 ## 存档格式
@@ -64,5 +73,5 @@ NPC 与路人不投射阴影；触屏 / 低画质降低 3D 分辨率、关泛光
 quests, events, investment, business, player{pos, yaw, cam_yaw}}`，JSON 文本，版本号 1。
 
 ## 测试
-`tests/parse_all.gd`（加载全部脚本）、`tests/test_runner.gd`（21 组、303 项）、`tests/shots.gd` / `site_shots.gd`（截图）、
+`tests/parse_all.gd`（加载全部脚本）、`tests/test_runner.gd`（21 组、303 项）、`tests/shots.gd` / `site_shots.gd` / `vis_shots.gd`（截图）、
 `tests/perf_stats.gd`（绘制调用统计）。见 TEST_REPORT.md。

@@ -53,6 +53,7 @@ func build() -> void:
 		_build_location(id, DataDB.location(id))
 	_fillers()
 	_transit_stops()
+	_palms_and_parking()
 	_vending_machines()
 	_street_props()
 	_track()
@@ -77,7 +78,7 @@ func _ground() -> void:
 	var pm := PlaneMesh.new()
 	pm.size = Vector2(LIMIT * 2 + 40, LIMIT * 2 + 40)
 	mi.mesh = pm
-	mi.material_override = Mats.ground("main", Color(0.1, 0.1, 0.12), Color(0.06, 0.06, 0.075), 0.05)
+	mi.material_override = Mats.ground("main", Color(0.2, 0.2, 0.2), Color(0.13, 0.13, 0.14), 0.05)
 	mi.name = "Ground"
 	add_child(mi)
 	kit.collide(Vector3(0, -0.5, 0), Vector3(LIMIT * 2 + 40, 1.0, LIMIT * 2 + 40))
@@ -87,14 +88,14 @@ func _ground() -> void:
 	fp.size = Vector2(1400, 1400)
 	far.mesh = fp
 	far.position = Vector3(0, -0.05, 0)
-	far.material_override = Mats.color(Color(0.03, 0.03, 0.045), 0.9)
+	far.material_override = Mats.ground("far", Color(0.2, 0.19, 0.16), Color(0.13, 0.14, 0.11), 0.01)
 	add_child(far)
 
 
 func _roads() -> void:
-	var road_col := Color(0.075, 0.075, 0.09)
-	var walk_col := Color(0.2, 0.2, 0.23)
-	var curb := Color(0.1, 0.55, 0.65)
+	var road_col := Color(0.95, 0.95, 0.95)
+	var walk_col := Color(1.0, 1.0, 1.0)
+	var curb := Color(0.1, 0.55, 0.65) * 0.5
 	var span := LIMIT + 8.0
 	# 南北向道路（x 固定）：整条；东西向道路在路口之间分段，避免重叠闪烁
 	for x in ROADS:
@@ -120,10 +121,13 @@ func _roads() -> void:
 			var length := b2 - a2
 			for side in [-1.0, 1.0]:
 				var off: float = road + side * (ROAD_HALF + 1.5)
-				batcher.box("solid", Vector3(off, 0.03, mid), Vector3(3.0, 0.06, length), walk_col, Basis.IDENTITY, true)
-				batcher.box("solid", Vector3(mid, 0.031, off), Vector3(length, 0.062, 3.0), walk_col, Basis.IDENTITY, true)
-				batcher.box("neon", Vector3(road + side * (ROAD_HALF + 0.05), 0.07, mid), Vector3(0.1, 0.04, length), curb, Basis.IDENTITY, true)
-				batcher.box("neon", Vector3(mid, 0.07, road + side * (ROAD_HALF + 0.05)), Vector3(length, 0.04, 0.1), curb, Basis.IDENTITY, true)
+				batcher.box("walk", Vector3(off, 0.03, mid), Vector3(3.0, 0.06, length), walk_col, Basis.IDENTITY, true)
+				batcher.box("walk", Vector3(mid, 0.031, off), Vector3(length, 0.062, 3.0), walk_col, Basis.IDENTITY, true)
+				# 路缘石
+				batcher.box("solid", Vector3(road + side * (ROAD_HALF + 0.15), 0.07, mid), Vector3(0.3, 0.14, length), Color(0.58, 0.58, 0.58), Basis.IDENTITY, true)
+				batcher.box("solid", Vector3(mid, 0.07, road + side * (ROAD_HALF + 0.15)), Vector3(length, 0.14, 0.3), Color(0.58, 0.58, 0.58), Basis.IDENTITY, true)
+				batcher.box("neon", Vector3(road + side * (ROAD_HALF + 0.02), 0.1, mid), Vector3(0.05, 0.04, length), curb, Basis.IDENTITY, true)
+				batcher.box("neon", Vector3(mid, 0.1, road + side * (ROAD_HALF + 0.02)), Vector3(length, 0.04, 0.05), curb, Basis.IDENTITY, true)
 				# 路灯与行人路点
 				var n := int(length / 24.0)
 				for k in n:
@@ -288,7 +292,7 @@ func _tower(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	var h0 := 6.0
 	var floors := int(d.get("floors", 12))
 	kit.shell(frame, h0, BuildingKit.C_CONCRETE2, 6.0)
-	kit.tower_mass(frame, h0 + 0.3, (floors - 1) * 3.6, BuildingKit.C_CONCRETE, neon, 1)
+	kit.tower_mass(frame, h0 + 0.3, (floors - 1) * 3.6, BuildingKit.C_CONCRETE, neon, 1, "glass" if floors > 14 else "office", false)
 	kit.sign(frame, h0, String(d.get("name", "")), String(d.get("en", "")), neon)
 	kit.add_obstacle_frame(frame)
 	var w: float = frame["w"]
@@ -329,9 +333,9 @@ func _home(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	var dd: float = frame["d"]
 	kit.shell(frame, h0, BuildingKit.C_CONCRETE2, 2.6)
 	if id == "villa":
-		kit.tower_mass(frame, h0 + 0.3, 3.6 * 2, Color(0.85, 0.85, 0.82), neon, 1)
+		kit.tower_mass(frame, h0 + 0.3, 3.6 * 2, Color(0.85, 0.85, 0.82), neon, 1, "res")
 	else:
-		kit.tower_mass(frame, h0 + 0.3, maxf(3.6, (floors - 1) * 3.6), BuildingKit.C_CONCRETE if id != "hotel" else Color(0.2, 0.14, 0.18), neon, 1)
+		kit.tower_mass(frame, h0 + 0.3, maxf(3.6, (floors - 1) * 3.6), BuildingKit.C_CONCRETE if id != "hotel" else Color(0.2, 0.14, 0.18), neon, 1, "cyber" if id == "hotel" else "res")
 	kit.sign(frame, h0, String(d.get("name", "")), String(d.get("en", "")), neon)
 	kit.add_obstacle_frame(frame)
 	# 隔墙：前半是大堂 / 前台，后半是住户的房间
@@ -418,9 +422,9 @@ func _park(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	var w: float = frame["w"]
 	var dd: float = frame["d"]
 	# 草地与小路
-	kit.lbox(frame, "solid", Vector3(0, 0.02, 0), Vector3(w, 0.04, dd), Color(0.06, 0.18, 0.12), false)
-	kit.lbox(frame, "solid", Vector3(0, 0.045, 0), Vector3(4, 0.03, dd), Color(0.22, 0.2, 0.2), false)
-	kit.lbox(frame, "solid", Vector3(0, 0.046, 6), Vector3(w, 0.03, 3.5), Color(0.22, 0.2, 0.2), false)
+	kit.lbox(frame, "solid", Vector3(0, 0.02, 0), Vector3(w, 0.04, dd), Color(0.2, 0.34, 0.13), false)
+	kit.lbox(frame, "walk", Vector3(0, 0.045, 0), Vector3(4, 0.03, dd), Color(0.9, 0.86, 0.8), false)
+	kit.lbox(frame, "walk", Vector3(0, 0.046, 6), Vector3(w, 0.03, 3.5), Color(0.9, 0.86, 0.8), false)
 	for sx in [-1.0, 1.0]:
 		kit.lbox(frame, "neon", Vector3(sx * 2.1, 0.07, 0), Vector3(0.08, 0.02, dd), Color(0.4, 1.0, 0.45) * 0.6, false)
 	# 池塘
@@ -430,11 +434,15 @@ func _park(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	kit.obstacles.append(Rect2(pond.x - 7, pond.z - 7, 14, 14))
 	# 树
 	var tree_spots := [Vector2(-24, -24), Vector2(-18, -26), Vector2(22, -24), Vector2(26, -14), Vector2(-26, 18), Vector2(-22, 26), Vector2(24, 24), Vector2(14, 26), Vector2(26, 12), Vector2(-8, 20), Vector2(10, 18), Vector2(-26, -6), Vector2(18, -12), Vector2(-12, -24), Vector2(12, -26)]
-	for t in tree_spots:
-		kit.tree(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(4.0, 6.5))
+	for i in tree_spots.size():
+		var t: Vector2 = tree_spots[i]
+		if i % 3 == 0:
+			kit.palm(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(8.0, 12.0))
+		else:
+			kit.tree(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(4.0, 6.5))
 	# 观景台：高 4 米，前方台阶
 	var deck_h := 4.0
-	kit.lbox(frame, "solid", Vector3(0, deck_h * 0.5, -19), Vector3(12, deck_h, 7), Color(0.18, 0.18, 0.22))
+	kit.lbox(frame, "solid", Vector3(0, deck_h * 0.5, -19), Vector3(12, deck_h, 7), Color(0.42, 0.41, 0.4))
 	kit.lbox(frame, "neon", Vector3(0, deck_h + 0.05, -15.5), Vector3(12, 0.06, 0.1), Color(0.5, 1.0, 0.4), false)
 	for sx in [-1.0, 1.0]:
 		kit.lbox(frame, "metal", Vector3(sx * 5.9, deck_h + 0.55, -19), Vector3(0.1, 1.1, 7), Color(0.3, 0.3, 0.35))
@@ -596,8 +604,9 @@ func _fillers() -> void:
 					var neon: Color = NEON_COLORS[n % NEON_COLORS.size()]
 					var yaw := 0.0 if bz < 0 else PI
 					var frame := BuildingKit.make_frame(c, size, "s" if bz < 0 else "n")
-					kit.lbox(frame, "solid", Vector3(0, 2.5, 0), Vector3(size.x, 5, size.y), Color(0.14, 0.14, 0.17))
-					kit.lbox(frame, "win_warm" if n % 2 == 0 else "win_cool", Vector3(0, 2.2, size.y * 0.5 + 0.05), Vector3(size.x * 0.8, 3.0, 0.1), Color(0.12, 0.14, 0.2), false)
+					kit.lbox(frame, "solid", Vector3(0, 2.5, 0), Vector3(size.x, 5, size.y), Color(0.42, 0.41, 0.4))
+					kit.lbox(frame, "win_warm" if n % 2 == 0 else "win_cool", Vector3(0, 2.2, size.y * 0.5 + 0.05), Vector3(size.x * 0.8, 3.0, 0.1), Color(0.25, 0.3, 0.36), false)
+					kit.lbox(frame, "solid", Vector3(0, 3.9, size.y * 0.5 + 0.7), Vector3(size.x * 0.86, 0.15, 1.4), Color(0.2, 0.2, 0.22), false)
 					kit.tower_mass(frame, 5.0, h, col, neon, 0 if n % 3 else 1)
 					kit.obstacles.append(r.grow(0.6))
 					if n % 4 == 1:
@@ -633,6 +642,53 @@ func _transit_stops() -> void:
 			sp.setup("transit", "乘坐%s" % String(m.get("name", "")), String(s.get("near", "")), {"mode": mode_id, "stop": String(s["id"]), "always_open": true})
 			sp.global_position = pos + Vector3(0, 0, 1.0)
 			GameManager.register("stop:" + String(s["id"]), sp)
+
+
+## 人行道上的棕榈树 + 路边停着的车（避开路口、公交 / 地铁站、火车站出口）
+func _palms_and_parking() -> void:
+	var avoid: Array = [station_spawn]
+	for mode_id in ["bus", "metro"]:
+		for st in (DataDB.transport.get(mode_id, {}) as Dictionary).get("stops", []):
+			var sp: Array = st["pos"]
+			avoid.append(Vector3(float(sp[0]), 0, float(sp[1])))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 404
+	var paints := [Color(0.85, 0.85, 0.86), Color(0.08, 0.08, 0.09), Color(0.45, 0.47, 0.5), Color(0.55, 0.06, 0.08), Color(0.1, 0.2, 0.45), Color(0.9, 0.9, 0.88), Color(0.2, 0.24, 0.22), Color(0.75, 0.55, 0.25)]
+	var edges := [-LIMIT - 8.0] + ROADS + [LIMIT + 8.0]
+	for road in ROADS:
+		for i in range(edges.size() - 1):
+			var a: float = edges[i] + WALK_HALF + 2.0
+			var bb: float = edges[i + 1] - WALK_HALF - 2.0
+			for side in [-1.0, 1.0]:
+				for along_x in [false, true]:
+					var t := a + 6.0
+					while t < bb - 2.0:
+						var off: float = road + side * (ROAD_HALF + 2.6)
+						var p := Vector3(t, 0, off) if along_x else Vector3(off, 0, t)
+						if absf(t) < LIMIT - 6.0 and _clear_of(p, avoid, 5.0):
+							kit.palm(p, rng.randf_range(8.0, 12.5))
+						t += 24.0
+					# 路边停车：贴着路缘，车头朝行驶方向
+					var c := a + rng.randf_range(4.0, 14.0)
+					while c < bb - 4.0:
+						if rng.randf() < 0.45:
+							var lane: float = road + side * (ROAD_HALF - 0.98)
+							var cp := Vector3(c, 0, lane) if along_x else Vector3(lane, 0, c)
+							if absf(c) < LIMIT - 6.0 and _clear_of(cp, avoid, 7.0):
+								var yaw: float = (-PI * 0.5 * side) if along_x else (0.0 if side > 0 else PI)
+								var basis := Basis(Vector3.UP, yaw)
+								BuildingKit.car_geometry(batcher, cp, basis, paints[rng.randi() % paints.size()])
+								kit.collide_prop(cp + Vector3(0, 0.75, 0), Vector3(4.4, 1.5, 1.9) if along_x else Vector3(1.9, 1.5, 4.4))
+								var ext := Vector2(2.2, 1.0) if along_x else Vector2(1.0, 2.2)
+								kit.obstacles.append(Rect2(cp.x - ext.x, cp.z - ext.y, ext.x * 2, ext.y * 2))
+						c += rng.randf_range(6.0, 11.0)
+
+
+func _clear_of(p: Vector3, pts: Array, r: float) -> bool:
+	for q in pts:
+		if Vector2(p.x - (q as Vector3).x, p.z - (q as Vector3).z).length() < r:
+			return false
+	return true
 
 
 func _vending_machines() -> void:
@@ -678,31 +734,109 @@ func _track() -> void:
 
 
 func _skyline() -> void:
+	# 远景：两圈贴图高楼（带退台和屋顶灯），再远处是一圈山
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 77
 	var local_b := MeshBatcher.new()
-	for i in 64:
-		var ang := TAU * i / 64.0 + rng.randf() * 0.05
-		var r := rng.randf_range(250.0, 340.0)
-		var c := Vector3(cos(ang) * r, 0, sin(ang) * r)
-		var w := rng.randf_range(18.0, 34.0)
-		var h := rng.randf_range(60.0, 190.0)
-		var col := Color(0.07, 0.07, 0.1)
-		local_b.box("solid", c + Vector3(0, h * 0.5, 0), Vector3(w, h, w), col, Basis.IDENTITY, true)
-		var floors := int(h / 7.0)
-		for f in floors:
-			var y := 4.0 + f * 7.0
-			var kind := "win_warm" if rng.randf() < 0.45 else "win_cool"
-			local_b.box(kind, c + Vector3(0, y, 0), Vector3(w + 0.2, 1.4, w + 0.2), Color(0.1, 0.12, 0.17), Basis.IDENTITY, true)
-		var nc: Color = NEON_COLORS[i % NEON_COLORS.size()]
-		local_b.box("neon", c + Vector3(0, h + 0.4, 0), Vector3(w + 0.4, 0.5, w + 0.4), nc)
-		if i % 5 == 0:
-			local_b.box("neon", c + Vector3(0, h * 0.5, 0), Vector3(0.6, h * 0.8, w + 0.6), nc * 0.8)
+	for ring in 2:
+		var count := 56 if ring == 0 else 72
+		for i in count:
+			var ang := TAU * i / float(count) + rng.randf() * 0.04 + ring * 0.03
+			var r := rng.randf_range(252.0, 300.0) if ring == 0 else rng.randf_range(320.0, 430.0)
+			var c := Vector3(cos(ang) * r, 0, sin(ang) * r)
+			# 北边（负 z）是中央商务区，楼更高
+			var cbd := clampf(-sin(ang), 0.0, 1.0)
+			var w := rng.randf_range(16.0, 32.0)
+			var dd := rng.randf_range(16.0, 32.0)
+			var h := rng.randf_range(35.0, 110.0) + cbd * rng.randf_range(20.0, 150.0)
+			if ring == 1:
+				h *= 1.15
+			var style := BuildingKit.pick_style(rng.randf())
+			if h > 120.0 and rng.randf() < 0.6:
+				style = "glass"
+			var tint := kit.style_tint(style)
+			var y := 0.0
+			var parts := 1 if h < 70.0 else (2 if h < 140.0 else 3)
+			for pi in parts:
+				var ph := h / parts if pi < parts - 1 else h - y
+				var sc := 1.0 - pi * 0.18
+				local_b.box("fac_" + style, c + Vector3(0, y + ph * 0.5, 0), Vector3(w * sc, ph, dd * sc), tint, Basis.IDENTITY, true)
+				y += ph
+				local_b.box("solid", c + Vector3(0, y + 0.3, 0), Vector3(w * sc + 0.6, 0.6, dd * sc + 0.6), Color(0.5, 0.5, 0.52))
+			if style == "cyber" or i % 6 == 0:
+				var nc: Color = NEON_COLORS[i % NEON_COLORS.size()]
+				local_b.box("neon", c + Vector3(0, y + 0.8, 0), Vector3(w * 0.5, 0.5, dd * 0.5), nc)
+			if h > 100.0:
+				local_b.box("metal", c + Vector3(0, y + 6.0, 0), Vector3(0.4, 12.0, 0.4), Color(0.4, 0.4, 0.42))
+				local_b.box("neon", c + Vector3(0, y + 12.2, 0), Vector3(0.8, 0.8, 0.8), Color(1, 0.15, 0.2))
+	# 城郊：一大片低矮的住宅与仓库，铺满天际线与山之间的平地
+	for i in 420:
+		var ang2 := rng.randf() * TAU
+		var r2 := rng.randf_range(445.0, 610.0)
+		var c2 := Vector3(cos(ang2) * r2, 0, sin(ang2) * r2)
+		var w2 := rng.randf_range(10.0, 24.0)
+		var d2 := rng.randf_range(10.0, 24.0)
+		var h2 := rng.randf_range(5.0, 16.0) if rng.randf() < 0.85 else rng.randf_range(20.0, 45.0)
+		var st2 := "res" if rng.randf() < 0.6 else ("office" if rng.randf() < 0.6 else "glass")
+		local_b.box("fac_" + st2, c2 + Vector3(0, h2 * 0.5, 0), Vector3(w2, h2, d2), kit.style_tint(st2), Basis(Vector3.UP, rng.randf() * PI), true)
 	local_b.chunked = false
 	var node := Node3D.new()
 	node.name = "Skyline"
 	add_child(node)
 	local_b.build(node, false)
+	_mountains()
+
+
+## 城市外围的山：一圈起伏的山脊，被大气雾染成远景色（类似洛杉矶北边的山）
+func _mountains() -> void:
+	var noise := FastNoiseLite.new()
+	noise.seed = 12
+	noise.frequency = 1.6
+	noise.fractal_octaves = 4
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var seg := 160
+	var rings := [620.0, 820.0, 1100.0]
+	var cols := [Color(0.28, 0.25, 0.2), Color(0.3, 0.29, 0.26), Color(0.36, 0.36, 0.38)]
+	var pts: Array = []
+	for ri in rings.size():
+		var row: Array = []
+		for i in seg + 1:
+			var a := TAU * i / float(seg)
+			var dir := Vector2(cos(a), sin(a))
+			var hgt := 0.0
+			if ri == 1:
+				var n := noise.get_noise_2d(dir.x * 1.3, dir.y * 1.3) * 0.5 + 0.5
+				var north := clampf(-dir.y * 0.8 + 0.5, 0.25, 1.0)
+				hgt = (40.0 + n * n * 260.0) * north
+			elif ri == 2:
+				hgt = 20.0
+			row.append(Vector3(dir.x * rings[ri], hgt - 2.0, dir.y * rings[ri]))
+		pts.append(row)
+	for ri in rings.size() - 1:
+		for i in seg:
+			var a0: Vector3 = pts[ri][i]
+			var a1: Vector3 = pts[ri][i + 1]
+			var b0: Vector3 = pts[ri + 1][i]
+			var b1: Vector3 = pts[ri + 1][i + 1]
+			var n := (a1 - a0).cross(b0 - a0).normalized()
+			if n.y < 0.0:
+				n = -n
+			for pp in [[a0, cols[ri]], [b0, cols[ri + 1]], [a1, cols[ri]], [a1, cols[ri]], [b0, cols[ri + 1]], [b1, cols[ri + 1]]]:
+				st.set_color(pp[1])
+				st.set_normal(n)
+				st.add_vertex(pp[0])
+	st.generate_normals()
+	var mi := MeshInstance3D.new()
+	mi.name = "Mountains"
+	mi.mesh = st.commit()
+	var m := StandardMaterial3D.new()
+	m.vertex_color_use_as_albedo = true
+	m.roughness = 1.0
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mi)
 
 
 func _bounds() -> void:
