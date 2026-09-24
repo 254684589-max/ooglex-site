@@ -18,6 +18,7 @@
   - **性能**：人物零件按关节合并网格（每人绘制调用约 27 → 10），典型视角绘制调用 338～510（1.0.0 为 326～474）。
   - **介绍页**：新增「黄昏航拍」「夜景」两张实机截图，其余截图按新画面重拍；`games/working-life/` 的 `CHANGELOG.md`、`ARCHITECTURE.md`、`README.md`、`TEST_REPORT.md`、`version.txt` 同步更新。
   - **验证**：见 `games/working-life/TEST_REPORT.md`「1.1.0」一节。构建：Godot Web 导出（`games/working-life/tools/build_web.sh`）。
+  - **缓存问题修复（所有者实测仍看到旧画面）**：部署本身已完成（`main` 与 Pages 产物都是新构建 `wl-0b5ea7e4`），原因是 `play/` 地址不变，浏览器 / CDN 会把旧的 `index.html` 缓存约 10 分钟，旧页面继续加载旧游戏包。介绍页的「开始游戏」链接改为 `play/?v=<构建号>`，`tools/stamp_web_build.py` 每次构建自动更新该构建号。
   - **已知限制**：浏览器 WebGL 2 兼容渲染器没有屏幕空间反射、环境光遮蔽、体积雾和全局光照，画面全部程序生成、无手工美术资产——整体观感向参考截图靠拢，但**达不到 GTA V 的 3A 画质**；真实手机 GPU 帧率未实测。
 
 ### 新增
