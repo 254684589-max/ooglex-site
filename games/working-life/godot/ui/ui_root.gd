@@ -110,7 +110,7 @@ func _sync() -> void:
 	if ending != null and is_instance_valid(ending):
 		n += 1
 	GameManager.modal_count = n
-	var in_game := GameManager.playing and not menu.visible
+	var in_game := GameManager.playing and not menu.visible and (ending == null or not is_instance_valid(ending))
 	hud.visible = in_game and not story.playing
 	touch.visible = GameManager.touch_mode and in_game and not story.playing
 	carry_status.visible = in_game

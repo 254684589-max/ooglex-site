@@ -356,7 +356,8 @@ func _home(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	if id in ["luxury_apartment", "villa"]:
 		kit.lbox(frame, "prop", Vector3(0, 0.4, -dd * 0.25 - 1.0), Vector3(3.0, 0.8, 1.0), Color(0.5, 0.2, 0.3), false)
 		kit.plant(frame, -w * 0.5 + 1.0, -1.2)
-	kit.omni(BuildingKit.xf(frame, 0, h0 - 0.6, -dd * 0.25), Color(1.0, 0.9, 0.8), 0.9, maxf(w, dd) * 0.55)
+	kit.omni(BuildingKit.xf(frame, 0, h0 - 0.6, -dd * 0.25), Color(1.0, 0.9, 0.8), 1.8, maxf(w, dd) * 0.7)
+	kit.lbox(frame, "neon", Vector3(0, h0 - 0.08, -dd * 0.3), Vector3(3.0, 0.05, 1.2), Color(1.0, 0.92, 0.8), false)
 	kit.omni(BuildingKit.xf(frame, 0, h0 - 0.6, dd * 0.25), Color(0.85, 0.9, 1.0).lerp(neon, 0.3), 0.8, maxf(w, dd) * 0.5)
 	# 房间里的交互点
 	var pts := [
@@ -546,7 +547,7 @@ func _oldtown(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void
 			kit.lbox(frame, "neon", Vector3(lx + face, 3.2, lz), Vector3(0.1, 1.2, 4.0), nc * 0.9, false)
 			var yaw := float(frame["yaw"]) + (PI * 0.5 if side > 0 else -PI * 0.5)
 			kit.label(shops[i % shops.size()], BuildingKit.xf(frame, lx + face - side * 0.08, 3.2, lz), yaw, 96, nc * 1.5, 0.012, 6)
-			kit.lbox(frame, "win_warm", Vector3(lx + face, h * 0.7, lz), Vector3(0.1, 1.2, 6), Color(0.5, 0.4, 0.3), false)
+			kit.lbox(frame, "win_warm", Vector3(lx + face, h * 0.7, lz), Vector3(0.1, 1.2, 6), Color(0.12, 0.12, 0.16), false)
 			i += 1
 	# 小吃摊与灯笼
 	var stall := Vector2(0, 20)
@@ -596,7 +597,7 @@ func _fillers() -> void:
 					var yaw := 0.0 if bz < 0 else PI
 					var frame := BuildingKit.make_frame(c, size, "s" if bz < 0 else "n")
 					kit.lbox(frame, "solid", Vector3(0, 2.5, 0), Vector3(size.x, 5, size.y), Color(0.14, 0.14, 0.17))
-					kit.lbox(frame, "win_warm" if n % 2 == 0 else "win_cool", Vector3(0, 2.2, size.y * 0.5 + 0.05), Vector3(size.x * 0.8, 3.0, 0.1), Color(0.5, 0.45, 0.4), false)
+					kit.lbox(frame, "win_warm" if n % 2 == 0 else "win_cool", Vector3(0, 2.2, size.y * 0.5 + 0.05), Vector3(size.x * 0.8, 3.0, 0.1), Color(0.12, 0.14, 0.2), false)
 					kit.tower_mass(frame, 5.0, h, col, neon, 0 if n % 3 else 1)
 					kit.obstacles.append(r.grow(0.6))
 					if n % 4 == 1:
@@ -692,7 +693,7 @@ func _skyline() -> void:
 		for f in floors:
 			var y := 4.0 + f * 7.0
 			var kind := "win_warm" if rng.randf() < 0.45 else "win_cool"
-			local_b.box(kind, c + Vector3(0, y, 0), Vector3(w + 0.2, 1.4, w + 0.2), Color(0.45, 0.45, 0.45), Basis.IDENTITY, true)
+			local_b.box(kind, c + Vector3(0, y, 0), Vector3(w + 0.2, 1.4, w + 0.2), Color(0.1, 0.12, 0.17), Basis.IDENTITY, true)
 		var nc: Color = NEON_COLORS[i % NEON_COLORS.size()]
 		local_b.box("neon", c + Vector3(0, h + 0.4, 0), Vector3(w + 0.4, 0.5, w + 0.4), nc)
 		if i % 5 == 0:

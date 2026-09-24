@@ -6,7 +6,7 @@ extends RefCounted
 
 ## Godot 以顺时针为正面
 const FRONT_CLOCKWISE := true
-const CELL := 48.0
+const CELL := 96.0
 
 var chunked := true
 var _groups: Dictionary = {}

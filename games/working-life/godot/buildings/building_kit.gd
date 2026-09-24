@@ -67,6 +67,19 @@ func collide(center: Vector3, size: Vector3, rot := Basis.IDENTITY) -> void:
 	body.add_child(cs)
 
 
+## 遮挡体：大楼挡住的东西不渲染（桌面版画质中 / 高时开启遮挡剔除）
+func occluder(center: Vector3, size: Vector3, rot := Basis.IDENTITY) -> void:
+	# 网页版导出模板没有编译遮挡剔除，不生成遮挡体
+	if OS.has_feature("web"):
+		return
+	var oi := OccluderInstance3D.new()
+	var bo := BoxOccluder3D.new()
+	bo.size = size
+	oi.occluder = bo
+	oi.transform = Transform3D(rot, center)
+	root.add_child(oi)
+
+
 func solid(kind: String, center: Vector3, size: Vector3, col: Color, rot := Basis.IDENTITY, with_collision := true) -> void:
 	b.box(kind, center, size, col, rot, center.y - size.y * 0.5 < 0.05)
 	if with_collision:
@@ -102,7 +115,7 @@ func label(text: String, pos: Vector3, yaw: float, font_size := 64, col := Color
 	l.position = pos
 	l.rotation.y = yaw
 	l.double_sided = false
-	l.visibility_range_end = 260.0
+	l.visibility_range_end = 160.0 if font_size < 90 else 320.0
 	root.add_child(l)
 	return l
 
@@ -128,6 +141,8 @@ func tower_mass(frame: Dictionary, y0: float, height: float, col: Color, accent:
 	var d: float = frame["d"]
 	lbox(frame, "solid", Vector3(0, y0 + height * 0.5, 0), Vector3(w, height, d), col, false)
 	collide(xf(frame, 0, y0 + height * 0.5, 0), Vector3(w, height, d), frame["basis"])
+	if height > 12.0:
+		occluder(xf(frame, 0, y0 + height * 0.5, 0), Vector3(w - 0.6, height - 0.6, d - 0.6), frame["basis"])
 	# 窗带：每层一条，四个面
 	var floors := int(height / FLOOR_H)
 	var step := 1 if detail >= 1 else 2
@@ -135,7 +150,8 @@ func tower_mass(frame: Dictionary, y0: float, height: float, col: Color, accent:
 		var y := y0 + f * FLOOR_H + FLOOR_H * 0.55
 		var r := rng.randf()
 		var kind := "win_warm" if r < 0.42 else ("win_cool" if r < 0.8 else "solid")
-		var wc := Color(0.55, 0.5, 0.45) if kind == "win_warm" else (Color(0.4, 0.55, 0.65) if kind == "win_cool" else C_WIN_OFF)
+		# 白天是深色玻璃，夜里靠材质自发光亮起
+		var wc := Color(0.1, 0.13, 0.19) if kind != "solid" else C_WIN_OFF
 		lbox(frame, kind, Vector3(0, y, d * 0.5 + 0.06), Vector3(w * 0.9, 1.3, 0.1), wc, false)
 		lbox(frame, kind, Vector3(0, y, -d * 0.5 - 0.06), Vector3(w * 0.9, 1.3, 0.1), wc, false)
 		lbox(frame, kind, Vector3(w * 0.5 + 0.06, y, 0), Vector3(0.1, 1.3, d * 0.9), wc, false)

@@ -30,7 +30,7 @@ static func batch(kind: String) -> Material:
 			m.roughness = 0.3
 			m.metallic = 0.2
 			m.emission_enabled = true
-			m.emission = Color(1.0, 0.72, 0.45) if kind == "win_warm" else Color(0.45, 0.85, 1.0)
+			m.emission = Color(1.0, 0.7, 0.42) if kind == "win_warm" else Color(0.4, 0.85, 1.0)
 			m.emission_energy_multiplier = window_energy
 		"glass":
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

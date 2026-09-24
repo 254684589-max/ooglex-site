@@ -31,6 +31,8 @@ func setup(sidewalk_points: Array) -> void:
 		m.accent_color = CityBuilder.NEON_COLORS[i % CityBuilder.NEON_COLORS.size()]
 		m.hat = "visor" if i % 4 == 0 else "none"
 		m.body_scale = _rng.randf_range(0.92, 1.05)
+		m.draw_distance = 70.0
+		m.casts_shadow = false
 		add_child(m)
 		var w := {"node": m, "anim": AnimationController.new(m), "from": 0, "to": 0, "speed": _rng.randf_range(1.2, 1.9)}
 		walkers.append(w)

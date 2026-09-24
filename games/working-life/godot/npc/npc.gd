@@ -21,6 +21,10 @@ var _final_yaw := 0.0
 var _stage := 0   # 0 到达 1 导航中 2 直线进入
 var _hide_on_arrive := false
 var _idle_t := 0.0
+## 到站后在站位附近随机闲逛（只在玩家附近时）
+var _home_spot := Vector3.ZERO
+var _wander_t := 0.0
+var _wander := false
 
 
 func setup(id: String) -> void:
@@ -37,6 +41,8 @@ func setup(id: String) -> void:
 	cs.position = Vector3(0, 0.85, 0)
 	add_child(cs)
 	model = CharacterModel.new()
+	model.draw_distance = 90.0
+	model.casts_shadow = false
 	model.apply_look(data.get("look", {}))
 	model.accent_color = Color.from_hsv(float(id.hash() % 360) / 360.0, 0.8, 1.0)
 	add_child(model)
@@ -118,6 +124,9 @@ func _far_from_player() -> bool:
 
 
 func _arrive_now() -> void:
+	_home_spot = _final
+	_wander = false
+	_wander_t = randf_range(6.0, 14.0)
 	global_position = _final
 	rotation.y = _final_yaw
 	_stage = 0
@@ -142,6 +151,15 @@ func _physics_process(delta: float) -> void:
 		return
 	if _stage == 0:
 		_idle_t += delta
+		_wander_t -= delta
+		if _wander_t <= 0.0 and _roams() and not _far_from_player():
+			# 在站位 2.5 米范围内走两步，再回到原位
+			_wander_t = randf_range(8.0, 16.0)
+			var off := Vector3(randf_range(-2.5, 2.5), 0, randf_range(-2.5, 2.5)) if not _wander else Vector3.ZERO
+			_wander = not _wander
+			_final = _home_spot + off
+			_stage = 2
+			return
 		anim.update(delta, 0.0)
 		rotation.y = lerp_angle(rotation.y, _final_yaw + sin(_idle_t * 0.3) * 0.25, clampf(delta * 3.0, 0.0, 1.0))
 		return
@@ -157,6 +175,11 @@ func _physics_process(delta: float) -> void:
 	else:
 		next = _final
 		if Vector2(global_position.x - _final.x, global_position.z - _final.z).length() < 0.35:
+			if _home_spot != Vector3.ZERO and _final.distance_to(_home_spot) < 3.0 and (_wander or _final != _home_spot):
+				# 闲逛中：停下但保留原站位
+				_stage = 0
+				global_position = _final
+				return
 			_arrive_now()
 			return
 	var to2 := next - global_position
@@ -170,6 +193,12 @@ func _physics_process(delta: float) -> void:
 		anim.update(delta, WALK_SPEED)
 	else:
 		anim.update(delta, 0.0)
+
+
+## 户外的人（公园、旧街区、广场、火车站）才会闲逛；柜台后的人待在原地
+func _roams() -> bool:
+	var spot := NPCManager.spot_for(npc_id)
+	return spot.begins_with("park.") or spot.begins_with("old_street.") or spot.begins_with("train_station.") or spot == "mall.atrium"
 
 
 func begin_talk() -> void:

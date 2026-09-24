@@ -26,8 +26,6 @@ func _ready() -> void:
 	add_child(center)
 	_banner = UIKit.vbox(8)
 	center.add_child(_banner)
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(10, 0)
 	_banner_title = UIKit.hud_label("", 38, UIKit.CYAN)
 	_banner_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_banner_title.add_theme_constant_override("outline_size", 10)
@@ -71,6 +69,8 @@ func show_banner(title: String, subtitle := "") -> void:
 
 
 func _process(_delta: float) -> void:
+	# 打开窗口时不让大字横幅盖在窗口上
+	_banner.visible = not GameManager.is_modal() or not GameManager.playing
 	if _list.get_child_count() > 0:
 		_list.reset_size()
 		_list.position = Vector2((size.x - _list.size.x) * 0.5, size.y * 0.2)

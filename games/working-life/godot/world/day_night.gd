@@ -9,8 +9,8 @@ var sky_mat: ProceduralSkyMaterial
 var city: CityBuilder
 var _night_on := -1
 
-const SKY_TOP_DAY := Color(0.36, 0.5, 0.62)
-const SKY_HOR_DAY := Color(0.78, 0.72, 0.6)
+const SKY_TOP_DAY := Color(0.2, 0.36, 0.5)
+const SKY_HOR_DAY := Color(0.5, 0.58, 0.64)
 const SKY_TOP_DUSK := Color(0.28, 0.12, 0.38)
 const SKY_HOR_DUSK := Color(1.0, 0.38, 0.45)
 const SKY_TOP_NIGHT := Color(0.03, 0.02, 0.08)
@@ -100,8 +100,8 @@ func update_lighting(minute: float) -> void:
 	var sun_dir: Vector3
 	if day > 0.02:
 		sun_dir = Vector3(cos(t), maxf(sin(t), 0.1) * 1.1, 0.45).normalized()
-		sun.light_color = Color(1.0, 0.92, 0.8).lerp(Color(1.0, 0.45, 0.5), dusk)
-		sun.light_energy = lerpf(0.15, 1.05, day) * (1.0 - gloom * 0.6)
+		sun.light_color = Color(0.92, 0.95, 1.0).lerp(Color(1.0, 0.45, 0.5), dusk)
+		sun.light_energy = lerpf(0.15, 0.95, day) * (1.0 - gloom * 0.6)
 	else:
 		sun_dir = Vector3(-0.3, 0.8, 0.5).normalized()
 		sun.light_color = Color(0.5, 0.45, 0.95)
@@ -117,8 +117,8 @@ func update_lighting(minute: float) -> void:
 	sky_mat.ground_horizon_color = hor
 	sky_mat.ground_bottom_color = hor.darkened(0.6)
 	env.fog_light_color = hor.lerp(Color(0.35, 0.15, 0.45), 1.0 - day)
-	env.fog_density = 0.0035 + gloom * 0.004 + (1.0 - day) * 0.0015
-	env.ambient_light_color = Color(0.32, 0.25, 0.5).lerp(Color(0.62, 0.62, 0.66), day)
+	env.fog_density = 0.0022 + gloom * 0.0035 + (1.0 - day) * 0.0022
+	env.ambient_light_color = Color(0.32, 0.25, 0.5).lerp(Color(0.5, 0.56, 0.66), day)
 	env.ambient_light_energy = lerpf(0.75, 0.6, day)
 	env.glow_intensity = lerpf(1.2, 0.6, day)
 	Mats.set_window_energy(clampf((0.75 - day) * 3.0, 0.15, 2.0))

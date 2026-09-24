@@ -175,7 +175,7 @@ func refresh() -> void:
 		var prefix := "第%d章 · " % int(q.get("chapter", 1)) if String(q.get("type", "")) == "main" else ""
 		_quest_title.text = prefix + String(q.get("title", ""))
 		var idx := QuestManager.current_objective_index(qid)
-		_quest_obj.text = "▶ " + QuestManager.objective_text(qid, idx) if idx >= 0 else ""
+		_quest_obj.text = "▶ " + QuestManager.objective_text(qid, idx) if idx >= 0 else ""
 		_quest_dist.text = _distance_text()
 	_job.text = "" + JobManager.status_text()
 	var unread := int(GameManager.get_value("unread_messages", 0))

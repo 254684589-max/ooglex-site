@@ -12,6 +12,9 @@ extends Node3D
 @export var accent_color := Color(0.13, 0.9, 1.0)
 @export var hat := "none"
 @export var body_scale := 1.0
+## 远处不渲染（米，0 = 不限制）；NPC 与路人关闭阴影以减少绘制调用
+@export var draw_distance := 0.0
+@export var casts_shadow := true
 
 var hips: Node3D
 var torso: Node3D
@@ -90,6 +93,10 @@ func _part(parent: Node3D, mesh_type: String, size: Vector3, pos: Vector3, col: 
 	mi.mesh = mesh
 	mi.material_override = Mats.glow(col) if mesh_type == "glow" else Mats.color(col)
 	mi.position = pos
+	if draw_distance > 0.0:
+		mi.visibility_range_end = draw_distance
+	if not casts_shadow:
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(mi)
 	return mi
 

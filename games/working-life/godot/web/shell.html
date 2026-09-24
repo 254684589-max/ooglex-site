@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#08050f">
+<title>打工 WORKING LIFE · 开始游戏 | Ooglex 游戏中心</title>
+<meta name="description" content="《打工》WORKING LIFE 网页版：第三人称 3D 赛博朋克都市人生模拟游戏。带着 ¥2000 来到霓虹城市，找工作、升职、租房、投资、创业，选择你自己的人生。">
+<link rel="canonical" href="https://www.ooglex.com/games/working-life/">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #08050f; }
+body { color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif; touch-action: none; }
+#canvas { display: block; width: 100%; height: 100%; }
+#canvas:focus { outline: none; }
+
+#wl-loading {
+  position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 24px 16px; text-align: center;
+  background:
+    radial-gradient(700px 420px at 50% 18%, rgba(255, 46, 136, .18), transparent 65%),
+    radial-gradient(800px 500px at 50% 115%, rgba(34, 228, 255, .14), transparent 62%),
+    #08050f;
+  transition: opacity .6s ease;
+}
+#wl-loading.hide { opacity: 0; pointer-events: none; }
+#wl-loading::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 10px;
+  background: linear-gradient(90deg, #ff2e88, #22e4ff, #b04dff);
+}
+.wl-hat { width: 88px; height: 88px; filter: drop-shadow(0 0 18px rgba(34, 228, 255, .55)); animation: wl-bob 2.4s ease-in-out infinite; }
+@keyframes wl-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.wl-title { font-size: clamp(30px, 7vw, 46px); font-weight: 800; letter-spacing: 4px; color: #ff2e88; text-shadow: 0 0 18px rgba(255, 46, 136, .6); }
+.wl-sub { color: #a9a69e; font-size: 14px; letter-spacing: 1px; margin-top: -10px; }
+.wl-bar { width: min(360px, 78vw); height: 8px; border-radius: 99px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.wl-bar i { display: block; height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, #ff2e88, #22e4ff); transition: width .25s; }
+.wl-bar.indeterminate i { width: 35%; animation: wl-slide 1.4s ease-in-out infinite; }
+@keyframes wl-slide { 0% { margin-left: -35%; } 100% { margin-left: 100%; } }
+.wl-status { font-size: 14px; color: #d8d4ca; min-height: 20px; }
+.wl-tip { font-size: 13px; color: #8f8c85; max-width: 440px; line-height: 1.7; min-height: 44px; }
+.wl-note { font-size: 12px; color: #77746d; max-width: 440px; line-height: 1.7; }
+.wl-portrait { display: none; font-size: 13px; color: #22e4ff; }
+@media (orientation: portrait) and (max-width: 820px) { .wl-portrait { display: block; } }
+.wl-back {
+  position: fixed; top: 20px; left: 16px; z-index: 11; color: #22e4ff; text-decoration: none; font-size: 14px;
+  padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(34, 228, 255, .4); background: rgba(8, 5, 15, .7);
+}
+.wl-back:focus-visible, .wl-btn:focus-visible { outline: 2px solid #22e4ff; outline-offset: 2px; }
+.wl-error { display: none; max-width: 480px; white-space: pre-line; background: #3a2020; border: 1px solid #8a3a30; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #ffd8cf; }
+.wl-error.show { display: block; }
+.wl-btn { display: inline-block; margin-top: 4px; padding: 9px 20px; border-radius: 99px; background: #22e4ff; color: #08050f; font-weight: 700; text-decoration: none; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .wl-hat, .wl-bar.indeterminate i { animation: none; } #wl-loading { transition: none; } }
+</style>
+$GODOT_HEAD_INCLUDE
+</head>
+<body>
+<canvas id="canvas" tabindex="0">你的浏览器不支持 canvas。</canvas>
+<noscript>《打工》需要启用 JavaScript 才能运行。</noscript>
+
+<div id="wl-loading" role="status" aria-live="polite">
+  <a class="wl-back" id="wl-back" href="../">← 返回介绍页</a>
+  <svg class="wl-hat" viewBox="0 0 128 128" aria-hidden="true">
+    <path d="M14 104h100" stroke="#ff2e88" stroke-width="5" stroke-linecap="round"/>
+    <g fill="none" stroke="#22e4ff" stroke-width="5"><rect x="24" y="40" width="22" height="60"/><rect x="54" y="18" width="24" height="82"/><rect x="86" y="52" width="18" height="48"/></g>
+    <circle cx="66" cy="38" r="5" fill="#ffd23f"/>
+  </svg>
+  <div class="wl-title">打工</div>
+  <div class="wl-sub">WORKING LIFE 1.0 · 网页版</div>
+  <div class="wl-bar indeterminate" id="wl-bar"><i id="wl-bar-fill"></i></div>
+  <div class="wl-status" id="wl-status">正在准备……</div>
+  <div class="wl-tip" id="wl-tip"></div>
+  <div class="wl-portrait">手机建议横屏游玩，画面更宽</div>
+  <div class="wl-error" id="wl-error"></div>
+  <div class="wl-note">首次打开需要下载约 45 MB 的游戏引擎与资源（服务器压缩传输时约 13 MB），之后浏览器会缓存。<br>推荐使用电脑版 Chrome / Edge / Firefox；手机支持触屏操作。</div>
+</div>
+
+<script src="$GODOT_URL"></script>
+<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+  const overlay = document.getElementById('wl-loading');
+  const bar = document.getElementById('wl-bar');
+  const fill = document.getElementById('wl-bar-fill');
+  const status = document.getElementById('wl-status');
+  const tip = document.getElementById('wl-tip');
+  const errorBox = document.getElementById('wl-error');
+  const tips = [
+    '提示：手机（Tab）是你的生活管家：招聘、银行、住房、投资、创业都在里面。',
+    '提示：上班别迟到！手机「人物」页可以看到上班时间和地点。',
+    '提示：饿了、累了、压力大都会降低工作效率。按时吃饭睡觉。',
+    '提示：职业培训学校每天可以上一门课，技能是升职和跳槽的门票。',
+    '提示：和城市里的人多聊天、帮忙，他们会给你介绍工作、打折、指路。',
+    '提示：五种人生结局——普通人生、职业经理人、技术专家、创业成功、财务自由。',
+  ];
+  let tipIndex = Math.floor(Math.random() * tips.length);
+  function nextTip() { tip.textContent = tips[tipIndex % tips.length]; tipIndex += 1; }
+  nextTip();
+  const tipTimer = setInterval(nextTip, 4200);
+
+  function mb(bytes) { return (bytes / 1048576).toFixed(1); }
+
+  function showError(message) {
+    clearInterval(tipTimer);
+    bar.style.display = 'none';
+    status.textContent = '加载失败';
+    errorBox.textContent = message;
+    const retry = document.createElement('a');
+    retry.className = 'wl-btn';
+    retry.href = window.location.pathname;
+    retry.textContent = '刷新重试';
+    errorBox.appendChild(document.createElement('br'));
+    errorBox.appendChild(retry);
+    errorBox.classList.add('show');
+  }
+
+  const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+  if (missing.length !== 0) {
+    showError('你的浏览器缺少运行本游戏需要的功能：\n' + missing.join('\n') + '\n\n请换用最新版 Chrome、Edge、Firefox 或 Safari（需要支持 WebGL 2）。');
+    return;
+  }
+
+  status.textContent = '正在下载游戏……';
+  engine.startGame({
+    onProgress: function (current, total) {
+      if (current > 0 && total > 0) {
+        bar.classList.remove('indeterminate');
+        const pct = Math.min(100, Math.round(current / total * 100));
+        fill.style.width = pct + '%';
+        status.textContent = '正在下载游戏 ' + pct + '%（' + mb(current) + ' / ' + mb(total) + ' MB）';
+        if (current >= total) {
+          status.textContent = '下载完成，正在启动引擎……';
+        }
+      } else {
+        bar.classList.add('indeterminate');
+      }
+    },
+  }).then(function () {
+    clearInterval(tipTimer);
+    overlay.classList.add('hide');
+    setTimeout(function () { overlay.remove(); }, 700);
+    const canvas = document.getElementById('canvas');
+    canvas.focus();
+  }, function (err) {
+    console.error(err);
+    showError('游戏启动时出错：' + (err && err.message ? err.message : String(err)));
+  });
+}());
+</script>
+</body>
+</html>

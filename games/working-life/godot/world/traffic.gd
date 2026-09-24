@@ -40,6 +40,9 @@ func _ready() -> void:
 		under.material_override = Mats.glow(Color(0.2, 0.9, 1.0) if i % 2 == 0 else Color(1.0, 0.2, 0.6))
 		under.position = Vector3(0, -0.33, 0)
 		car.add_child(under)
+		for part in [mi, tl, hl, under]:
+			(part as MeshInstance3D).visibility_range_end = 220.0
+			(part as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(car)
 		var along_x := _rng.randf() < 0.5
 		var road: float = CityBuilder.ROADS[_rng.randi() % CityBuilder.ROADS.size()]

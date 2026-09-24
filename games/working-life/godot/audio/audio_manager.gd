@@ -118,6 +118,21 @@ func _loop_amb(i: int) -> void:
 		p.play()
 
 
+func _exit_tree() -> void:
+	shutdown()
+
+
+## 退出时释放所有音频流（主场景退出时调用一次，自动加载退出时再兜底一次）
+func shutdown() -> void:
+	stop_all()
+	for p in _sfx:
+		(p as AudioStreamPlayer).stream = null
+	for p in _amb:
+		(p as AudioStreamPlayer).stream = null
+	_music.stream = null
+	_cache.clear()
+
+
 func stop_all() -> void:
 	_music.stop()
 	_music_id = ""

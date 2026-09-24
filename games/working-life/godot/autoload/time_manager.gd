@@ -26,7 +26,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 
 
-func reset(start_hour := 13.0) -> void:
+func reset(start_hour := 17.0) -> void:
 	total_minutes = start_hour * 60.0
 	day = 1
 	_last_hour = hour()

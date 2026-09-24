@@ -44,6 +44,8 @@ func _ready() -> void:
 		current_group = g
 		await call("test_" + g)
 	print("")
+	AudioManager.shutdown()
+	await frames(2)
 	if failures.is_empty():
 		print("ALL %d CHECKS PASSED" % checks)
 		get_tree().quit(0)
@@ -220,7 +222,7 @@ func test_economy() -> void:
 
 func test_time() -> void:
 	await new_game()
-	check(TimeManager.day == 1 and TimeManager.hour() == 13, "新游戏：第 1 天 13:00")
+	check(TimeManager.day == 1 and TimeManager.hour() == 17, "新游戏：第 1 天 17:00（傍晚到站）")
 	check(TimeManager.weekday_name() == "周一" and TimeManager.date_text() == "2088年3月1日", "日历：2088年3月1日 周一")
 	var days := [0]
 	var cb := func(_d): days[0] += 1

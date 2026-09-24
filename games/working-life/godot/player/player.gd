@@ -129,7 +129,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			camera_rig.handle_mouse_motion(event.relative)
+			# 刚锁定鼠标时浏览器可能送来一次很大的位移，限制单次幅度避免镜头猛甩
+			camera_rig.handle_mouse_motion((event.relative as Vector2).limit_length(80.0))
 		return
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:

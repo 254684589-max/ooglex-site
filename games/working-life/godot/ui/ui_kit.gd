@@ -19,6 +19,11 @@ static var _theme: Theme
 static var _font: Font
 
 
+static func clear_cache() -> void:
+	_theme = null
+	_font = null
+
+
 static func font() -> Font:
 	if _font == null:
 		_font = load(FONT_PATH)

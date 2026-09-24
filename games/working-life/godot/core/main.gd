@@ -6,7 +6,7 @@ extends Node3D
 ## 各系统的规则都在自己的管理器里，这里只负责「串起来」。
 
 const START_CASH := 2000
-const START_HOUR := 13.0
+const START_HOUR := 17.0
 
 var city: CityBuilder
 var day_night: DayNight
@@ -155,13 +155,15 @@ func _intro() -> void:
 	ui.story.fade(false, 1.2)
 	ui.story.caption("2088 年，春。新澜市。")
 	var t := 0.0
+	var second_caption := false
 	while t < 9.5 and not _skip_intro:
 		var dt := get_process_delta_time()
 		t += dt
 		var tp := train.global_position + Vector3(10, 2, 0)
 		cam.global_position = cam.global_position.lerp(Vector3(tp.x + 40, 16, 180), clampf(dt * 0.8, 0.0, 1.0))
 		cam.look_at(tp)
-		if t > 4.0 and t < 4.1:
+		if t > 4.0 and not second_caption:
+			second_caption = true
 			ui.story.caption("一列从远方驶来的磁悬浮列车，缓缓驶入这座不眠的城市。")
 		await get_tree().process_frame
 	train.place_at_stop()
@@ -545,3 +547,10 @@ func _refresh_spawns() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST and GameManager.playing:
 		SaveManager.save()
+
+
+func _exit_tree() -> void:
+	# 释放静态缓存（材质、主题、字体），避免退出时报资源泄漏
+	Mats.clear()
+	UIKit.clear_cache()
+	AudioManager.shutdown()
