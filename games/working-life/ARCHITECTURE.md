@@ -64,6 +64,8 @@ warehouse / oldtown）→ 填充高楼 → 公交地铁站、售货机、街道�
 - 地面交通（`world/street_traffic.gd`）：每种车漆一个多材质网格，所有车共享。
 - 路灯（`BuildingKit.streetlight` + `world/lamp_pool.gd`）：灯罩用 `lamp_warm / lamp_cool` 材质，亮度 `Mats.lamp_energy` 随昼夜变化；
   真实点光源只放在离相机最近的几盏路灯下，每 0.4 秒重选。
+- 街道设施（`BuildingKit`）：`palm`（扇叶棕榈，贴图集 `ProcTex.palm_leaf`）、`traffic_light`、`utility_pole` + `wire`、`billboard`（`ad` 材质）；
+  由 `CityBuilder._intersections()` / `_city_edge()` / `_palms_and_parking()` 摆放。
 - 环境光遮蔽：`MeshBatcher._tri` 把竖直面贴地部分的顶点色压暗（发光、透明类材质除外）。
 
 ## 性能手段

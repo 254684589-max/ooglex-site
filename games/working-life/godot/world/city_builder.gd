@@ -55,6 +55,8 @@ func build() -> void:
 	_fillers()
 	_transit_stops()
 	_palms_and_parking()
+	_intersections()
+	_city_edge()
 	_vending_machines()
 	_street_props()
 	_track()
@@ -438,7 +440,7 @@ func _park(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	for i in tree_spots.size():
 		var t: Vector2 = tree_spots[i]
 		if i % 3 == 0:
-			kit.palm(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(8.0, 12.0))
+			kit.palm(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(9.0, 14.0))
 		else:
 			kit.tree(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(4.0, 6.5))
 	# 观景台：高 4 米，前方台阶
@@ -667,7 +669,7 @@ func _palms_and_parking() -> void:
 						var off: float = road + side * (ROAD_HALF + 2.6)
 						var p := Vector3(t, 0, off) if along_x else Vector3(off, 0, t)
 						if absf(t) < LIMIT - 6.0 and _clear_of(p, avoid, 5.0):
-							kit.palm(p, rng.randf_range(8.0, 12.5))
+							kit.palm(p, rng.randf_range(10.0, 16.0))
 						t += 24.0
 					# 路边停车：贴着路缘，车头朝行驶方向
 					var c := a + rng.randf_range(4.0, 14.0)
@@ -683,6 +685,62 @@ func _palms_and_parking() -> void:
 								var ext := Vector2(2.2, 1.0) if along_x else Vector2(1.0, 2.2)
 								kit.obstacles.append(Rect2(cp.x - ext.x, cp.z - ext.y, ext.x * 2, ext.y * 2))
 						c += rng.randf_range(6.0, 11.0)
+
+
+## 路名（南北向按 x、东西向按 z 排序）
+const NS_NAMES := ["西岭路", "枫林路", "中央大道", "滨江路", "东港路"]
+const EW_NAMES := ["北山街", "新华街", "人民路", "南湖街", "海湾街"]
+
+
+## 每个路口四个角的红绿灯：横臂伸到来车车道上方，南北向绿灯、东西向红灯；两个角挂路名牌
+func _intersections() -> void:
+	var o := ROAD_HALF + 1.3
+	for xi in ROADS.size():
+		for zi in ROADS.size():
+			var x: float = ROADS[xi]
+			var z: float = ROADS[zi]
+			# 北行车辆（-z 方向，车道在 +x 侧）从 +z 方向驶来
+			kit.traffic_light(Vector3(x + o, 0, z + o), Vector3(-1, 0, 0), o - 2.2, Vector3(0, 0, 1), true, NS_NAMES[xi])
+			kit.traffic_light(Vector3(x - o, 0, z - o), Vector3(1, 0, 0), o - 2.2, Vector3(0, 0, -1), true)
+			kit.traffic_light(Vector3(x - o, 0, z + o), Vector3(0, 0, -1), o - 2.2, Vector3(-1, 0, 0), false, EW_NAMES[zi])
+			kit.traffic_light(Vector3(x + o, 0, z - o), Vector3(0, 0, 1), o - 2.2, Vector3(1, 0, 0), false)
+
+
+## 城市外缘（最外圈道路的外侧空地）：电线杆 + 电线、大型广告牌
+func _city_edge() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 55
+	var outer := [ROADS[0], ROADS[ROADS.size() - 1]]
+	var design := 0
+	for road in outer:
+		var side := signf(road)
+		for along_x in [false, true]:
+			var prev_tops: Array = []
+			var t := -LIMIT + 10.0
+			while t < LIMIT - 10.0:
+				var near_cross := false
+				for rr in ROADS:
+					if absf(t - float(rr)) < ROAD_HALF + 4.0:
+						near_cross = true
+				if near_cross:
+					prev_tops = []
+					t += 6.0
+					continue
+				var off: float = road + side * (WALK_HALF + 1.5)
+				var p := Vector3(t, 0, off) if along_x else Vector3(off, 0, t)
+				var dir := Vector3(1, 0, 0) if along_x else Vector3(0, 0, 1)
+				var tops := kit.utility_pole(p, dir)
+				if not prev_tops.is_empty():
+					for k in 3:
+						kit.wire(prev_tops[k], tops[k], rng.randf_range(0.4, 0.8))
+				prev_tops = tops
+				# 每隔一段在电线外侧立一块广告牌，画面朝向道路
+				if rng.randf() < 0.28:
+					var bp := p + (Vector3(0, 0, side) if along_x else Vector3(side, 0, 0)) * 9.0
+					var face := (Vector3(0, 0, -side) if along_x else Vector3(-side, 0, 0))
+					kit.billboard(bp, face, design % 4, rng.randf_range(7.0, 11.0), rng.randf_range(10.0, 14.0))
+					design += 1
+				t += 28.0
 
 
 func _clear_of(p: Vector3, pts: Array, r: float) -> bool:
@@ -765,7 +823,7 @@ func _skyline() -> void:
 				var sc := 1.0 - pi * 0.18
 				local_b.box("fac_" + style, c + Vector3(0, y + ph * 0.5, 0), Vector3(w * sc, ph, dd * sc), tint, Basis.IDENTITY, true)
 				y += ph
-				local_b.box("solid", c + Vector3(0, y + 0.3, 0), Vector3(w * sc + 0.6, 0.6, dd * sc + 0.6), Color(0.5, 0.5, 0.52))
+				local_b.box("roof", c + Vector3(0, y + 0.3, 0), Vector3(w * sc + 0.6, 0.6, dd * sc + 0.6), Color(1, 1, 1))
 			if h > 100.0:
 				local_b.box("metal", c + Vector3(0, y + 6.0, 0), Vector3(0.4, 12.0, 0.4), Color(0.4, 0.4, 0.42))
 				local_b.box("neon", c + Vector3(0, y + 12.2, 0), Vector3(0.8, 0.8, 0.8), Color(1, 0.15, 0.2))

@@ -203,26 +203,117 @@ static func bumps() -> Texture2D:
 	return nt
 
 
-## 棕榈叶（带透明度）：中脉 + 两侧羽状小叶
+## 植物贴图集（带透明度，512×256）：
+##   x 0–127   羽状叶（椰子类棕榈、行道树）
+##   x 128–383 扇形叶 + 叶柄（华盛顿棕榈，洛杉矶街头最常见的那种）
+##   x 384–511 枯叶裙（挂在树冠下面的一圈干枯老叶）
+const FOLIAGE_FEATHER := Rect2(0.0, 0.0, 0.25, 1.0)
+const FOLIAGE_FAN := Rect2(0.25, 0.0, 0.5, 1.0)
+const FOLIAGE_SKIRT := Rect2(0.75, 0.0, 0.25, 1.0)
+
+
 static func palm_leaf() -> Texture2D:
 	if _cache.has("palm"):
 		return _cache["palm"]
-	var w := 64
-	var h := 256
-	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var img := Image.create(512, 256, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0, 0, 0, 0))
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 8
-	for y in range(4, h - 2, 3):
-		var t := float(y) / h
-		var reach := int((w * 0.5 - 2) * sin(t * PI) * rng.randf_range(0.75, 1.0))
+	# 羽状叶
+	for y in range(4, 254, 3):
+		var t := float(y) / 256.0
+		var reach := int(60.0 * sin(t * PI) * rng.randf_range(0.75, 1.0))
 		var g := Color(0.16, 0.34, 0.12).lerp(Color(0.32, 0.46, 0.18), rng.randf())
-		img.fill_rect(Rect2i(w / 2 - reach, y, reach, 2), g)
-		img.fill_rect(Rect2i(w / 2, y + 1, reach, 2), g.darkened(0.12))
-	img.fill_rect(Rect2i(w / 2 - 1, 0, 3, h), Color(0.36, 0.4, 0.2))
+		img.fill_rect(Rect2i(64 - reach, y, reach, 2), g)
+		img.fill_rect(Rect2i(64, y + 1, reach, 2), g.darkened(0.12))
+	img.fill_rect(Rect2i(62, 0, 3, 256), Color(0.36, 0.4, 0.2))
+	# 扇形叶：叶柄从下边中点伸上来，顶端放射出几十片细长小叶
+	var cx := 256.0
+	var cy := 140.0
+	img.fill_rect(Rect2i(254, 140, 4, 116), Color(0.42, 0.4, 0.24))
+	var ang := -100.0
+	while ang <= 100.0:
+		var rad := deg_to_rad(ang)
+		var length := rng.randf_range(96.0, 124.0) * (0.75 + 0.25 * cos(rad * 0.8))
+		var base := Color(0.3, 0.45, 0.2).lerp(Color(0.46, 0.56, 0.28), rng.randf())
+		var droop := absf(ang) / 100.0
+		var step := 0.0
+		while step < length:
+			var k := step / length
+			var dx := sin(rad) * step
+			var dy := -cos(rad) * step + droop * droop * k * k * 40.0
+			var w := 3 if k < 0.7 else 2
+			img.fill_rect(Rect2i(int(cx + dx), int(cy + dy), w, w), base.darkened(k * 0.15))
+			step += 1.5
+		ang += rng.randf_range(4.0, 6.5)
+	# 枯叶裙：竖向的干叶纤维，下沿参差
+	for x in range(384, 512, 2):
+		var len2 := rng.randi_range(170, 250)
+		var c := Color(0.44, 0.36, 0.25).lerp(Color(0.62, 0.52, 0.36), rng.randf())
+		img.fill_rect(Rect2i(x, 0, 2, len2), c.darkened(rng.randf() * 0.3))
 	var t2 := _tex(img)
 	_cache["palm"] = t2
 	return t2
+
+
+## 屋顶：沥青卷材 + 接缝 + 补丁
+static func roof() -> Texture2D:
+	if _cache.has("roof"):
+		return _cache["roof"]
+	var img := _noise_image(256, 0.06, Color(0.25, 0.25, 0.26), Color(0.33, 0.33, 0.34), 31)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 12
+	for k in 4:
+		img.fill_rect(Rect2i(0, k * 64, 256, 2), Color(0.38, 0.38, 0.39))
+		img.fill_rect(Rect2i(k * 64 + rng.randi() % 20, 0, 1, 256), Color(0.22, 0.22, 0.23))
+	for i in 8:
+		img.fill_rect(Rect2i(rng.randi() % 230, rng.randi() % 230, rng.randi_range(10, 30), rng.randi_range(8, 24)), Color(0.2, 0.2, 0.21) if i % 2 else Color(0.36, 0.35, 0.34))
+	var t := _tex(img)
+	_cache["roof"] = t
+	return t
+
+
+## 广告牌画面贴图集（2×2 四种设计，同时用作夜间自发光）：色块、大图形与「文字行」
+static func ads() -> Texture2D:
+	if _cache.has("ads"):
+		return _cache["ads"]
+	var img := Image.create(512, 512, false, Image.FORMAT_RGB8)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 21
+	var designs := [
+		[Color(1.0, 0.55, 0.3), Color(0.95, 0.3, 0.5), Color(1, 1, 0.95), Color(0.15, 0.08, 0.2)],
+		[Color(0.06, 0.1, 0.25), Color(0.1, 0.25, 0.5), Color(0.85, 0.9, 1.0), Color(0.9, 0.95, 1.0)],
+		[Color(0.95, 0.94, 0.9), Color(0.92, 0.9, 0.86), Color(0.85, 0.12, 0.15), Color(0.1, 0.1, 0.12)],
+		[Color(0.05, 0.5, 0.5), Color(0.1, 0.35, 0.45), Color(1.0, 0.85, 0.2), Color(1, 1, 1)],
+	]
+	for d in 4:
+		var ox := (d % 2) * 256
+		var oy := (d / 2) * 256
+		var c: Array = designs[d]
+		for y in 16:
+			img.fill_rect(Rect2i(ox, oy + y * 16, 256, 16), (c[0] as Color).lerp(c[1], y / 15.0))
+		match d:
+			0:
+				img.fill_rect(Rect2i(ox + 150, oy + 40, 80, 80), c[2])
+			1:
+				img.fill_rect(Rect2i(ox + 170, oy + 30, 50, 100), Color(0.05, 0.05, 0.07))
+				img.fill_rect(Rect2i(ox + 174, oy + 36, 42, 86), c[2])
+			2:
+				img.fill_rect(Rect2i(ox, oy, 90, 256), c[2])
+			_:
+				for k in 5:
+					img.fill_rect(Rect2i(ox, oy + 30 + k * 40, 256, 12), c[2])
+		# 文字行
+		var tx := ox + (110 if d == 2 else 20)
+		var ty := oy + 150
+		img.fill_rect(Rect2i(tx, ty, rng.randi_range(90, 130), 22), c[3])
+		for k in 3:
+			img.fill_rect(Rect2i(tx, ty + 34 + k * 14, rng.randi_range(60, 120), 7), (c[3] as Color).lerp(c[1], 0.3))
+		img.fill_rect(Rect2i(ox, oy, 256, 3), Color(0.9, 0.9, 0.9))
+		img.fill_rect(Rect2i(ox, oy + 253, 256, 3), Color(0.9, 0.9, 0.9))
+	var t := _tex(img)
+	_cache["ads"] = t
+	return t
 
 
 static func _noise_image(size: int, freq: float, a: Color, b: Color, seed_v: int) -> Image:

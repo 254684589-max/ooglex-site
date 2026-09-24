@@ -25,7 +25,7 @@ func _ready() -> void:
 	cam.far = 1600.0
 	cam.fov = 60.0
 	main.add_child(cam)
-	for spec in [[19.1, "sunny", "ref_dusk", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [19.4, "sunny", "ref_dusk_late", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [18.5, "sunny", "drone_sunset", Vector3(185, 75, 120), Vector3(-80, 30, -60)], [11.0, "sunny", "drone_noon", Vector3(120, 50, 190), Vector3(0, 25, -40)], [21.5, "cloudy", "drone_night", Vector3(-180, 55, 150), Vector3(0, 20, -40)]]:
+	for spec in [[19.1, "sunny", "ref_dusk", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [19.4, "sunny", "ref_dusk_late", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [18.9, "sunny", "edge_dusk", Vector3(140, 12, 95), Vector3(185, 9, 20)], [19.3, "sunny", "cross_dusk", Vector3(3, 4.5, 34), Vector3(-6, 5, -20)], [20.2, "sunny", "board_night", Vector3(156, 5, 52), Vector3(180, 11, 30)], [18.5, "sunny", "drone_sunset", Vector3(185, 75, 120), Vector3(-80, 30, -60)], [11.0, "sunny", "drone_noon", Vector3(120, 50, 190), Vector3(0, 25, -40)], [21.5, "cloudy", "drone_night", Vector3(-180, 55, 150), Vector3(0, 20, -40)]]:
 		set_scene(spec[0], spec[1])
 		cam.look_at_from_position(spec[3], spec[4])
 		cam.make_current()

@@ -209,8 +209,8 @@ func tower_mass(frame: Dictionary, y0: float, height: float, _col: Color, accent
 		b.box(kind, xf(frame, 0, y + th * 0.5, 0), Vector3(tw, th, td), tint, frame["basis"], true)
 		y += th
 		# 檐口 / 退台处的挑檐
-		var ledge := Color(0.62, 0.62, 0.64) if style != "cyber" else Color(0.14, 0.15, 0.18)
-		lbox(frame, "solid", Vector3(0, y + 0.2, 0), Vector3(tw + 0.5, 0.4, td + 0.5), ledge, false)
+		var ledge := Color(1, 1, 1) if style != "cyber" else Color(0.55, 0.56, 0.6)
+		lbox(frame, "roof", Vector3(0, y + 0.2, 0), Vector3(tw + 0.5, 0.4, td + 0.5), ledge, false)
 	var top := y + 0.4
 	# 赛博风格保留霓虹：转角竖条 + 屋顶边
 	if style == "cyber":
@@ -374,38 +374,130 @@ func tree(pos: Vector3, h := 5.0) -> void:
 	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.4, 3.0, 0.4))
 
 
-## 棕榈树：略弯的分段树干 + 一圈下垂的羽状叶（贴图面片，双面）
-func palm(pos: Vector3, h := 9.0) -> void:
-	var lean := Vector3(rng.randf_range(-1, 1), 0, rng.randf_range(-1, 1)).normalized() * rng.randf_range(0.3, 1.2)
-	var segs := 5
+## 棕榈树（华盛顿扇叶棕榈，洛杉矶街头那种）：细高的分段树干 + 树冠下一圈枯叶裙 + 二十来片扇形叶。
+## 叶片与枯叶都是植物贴图集（ProcTex.palm_leaf）上的透明面片，双面渲染。
+static func _atlas(region: Rect2, u0: float, v0: float, u1: float, v1: float) -> PackedVector2Array:
+	var x0 := region.position.x + region.size.x * u0
+	var x1 := region.position.x + region.size.x * u1
+	return PackedVector2Array([Vector2(x0, v1), Vector2(x1, v1), Vector2(x1, v0), Vector2(x0, v0)])
+
+
+func palm(pos: Vector3, h := 12.0) -> void:
+	var lean := Vector3(rng.randf_range(-1, 1), 0, rng.randf_range(-1, 1)).normalized() * rng.randf_range(0.2, 0.9)
+	var segs := 6
 	var prev := pos
+	var bark := Color(0.46, 0.4, 0.33)
 	for i in segs:
 		var t := float(i + 1) / segs
 		var p := pos + Vector3(0, h * t, 0) + lean * t * t
-		b.beam("solid", prev, p, lerpf(0.42, 0.28, t), Color(0.42, 0.36, 0.28).darkened(0.1 * (i % 2)))
+		b.beam("solid", prev, p, lerpf(0.5, 0.36, t), bark.darkened(0.08 * (i % 2)))
 		prev = p
 	var top := prev
-	b.box("prop", top + Vector3(0, 0.1, 0), Vector3(0.7, 0.6, 0.7), Color(0.3, 0.34, 0.14))
-	var fronds := 9
-	var base_a := rng.randf() * TAU
-	var uv_in := PackedVector2Array([Vector2(0, 0), Vector2(1, 0), Vector2(1, 0.5), Vector2(0, 0.5)])
-	var uv_out := PackedVector2Array([Vector2(0, 0.5), Vector2(1, 0.5), Vector2(1, 1), Vector2(0, 1)])
+	# 枯叶裙：八边形一圈贴图面片，上窄下宽
+	var skirt_len := rng.randf_range(1.0, 2.0)
+	var sides := 8
+	var skirt_uv := _atlas(ProcTex.FOLIAGE_SKIRT, 0.0, 0.0, 1.0, 1.0)
+	for k in sides:
+		var a0 := TAU * k / sides
+		var a1 := TAU * (k + 1) / sides
+		var d0 := Vector3(cos(a0), 0, sin(a0))
+		var d1 := Vector3(cos(a1), 0, sin(a1))
+		var t0 := top + d0 * 0.45 + Vector3(0, 0.1, 0)
+		var t1 := top + d1 * 0.45 + Vector3(0, 0.1, 0)
+		var b0 := top + d0 * 0.6 - Vector3(0, skirt_len, 0)
+		var b1 := top + d1 * 0.6 - Vector3(0, skirt_len, 0)
+		b.quad_uv("leaf", b0, b1, t1, t0, Color(1, 1, 1), skirt_uv)
+	# 扇形叶：从朝天到下垂，方位随机，每片略微扭转
+	var fronds := rng.randi_range(22, 28)
+	var fan_uv := _atlas(ProcTex.FOLIAGE_FAN, 0.0, 0.0, 1.0, 1.0)
 	for f in fronds:
-		var a := base_a + TAU * f / fronds + rng.randf_range(-0.15, 0.15)
-		var dir := Vector3(cos(a), 0, sin(a))
-		var side := Vector3(-dir.z, 0, dir.x)
-		var length := rng.randf_range(3.6, 4.8)
-		var width := 1.3
-		var up := rng.randf_range(0.3, 0.8)
-		var p0 := top
-		var p1 := top + dir * length * 0.5 + Vector3(0, up, 0)
-		var p2 := top + dir * length + Vector3(0, up - rng.randf_range(1.6, 2.6), 0)
-		# 叶片沿长度方向微微向下卷：两侧边缘比中脉低
-		var sag := Vector3(0, -0.25, 0)
-		var col := Color(1, 1, 1).darkened(rng.randf() * 0.25)
-		b.quad_uv("leaf", p0 - side * width * 0.2, p0 + side * width * 0.2, p1 + side * width * 0.5 + sag, p1 - side * width * 0.5 + sag, col, uv_in)
-		b.quad_uv("leaf", p1 - side * width * 0.5 + sag, p1 + side * width * 0.5 + sag, p2 + side * width * 0.15, p2 - side * width * 0.15, col, uv_out)
-	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.5, 3.0, 0.5))
+		var az := rng.randf() * TAU
+		var el := deg_to_rad(lerpf(72.0, -40.0, float(f) / fronds) + rng.randf_range(-8, 8))
+		var horiz := Vector3(cos(az), 0, sin(az))
+		var dir := (horiz * cos(el) + Vector3.UP * sin(el)).normalized()
+		var side := horiz.cross(Vector3.UP).normalized().rotated(dir, rng.randf_range(-0.6, 0.6))
+		var length := rng.randf_range(3.4, 4.4)
+		var width := length * 1.0
+		var base := top + dir * 0.15
+		var tip := base + dir * length
+		var col := Color(1, 1, 1).darkened(rng.randf() * 0.2)
+		b.quad_uv("leaf", base - side * width * 0.5, base + side * width * 0.5, tip + side * width * 0.5, tip - side * width * 0.5, col, fan_uv)
+	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.6, 3.0, 0.6))
+
+
+## 红绿灯：灯杆 + 横臂（伸到车道上方）+ 信号灯箱 + 路名牌。green 决定哪一盏亮（静态）。
+## arm 是横臂方向（单位向量），face 是信号灯面朝的方向（迎着来车）。
+func traffic_light(pos: Vector3, arm: Vector3, arm_len: float, face: Vector3, green: bool, street := "") -> void:
+	var pole := Color(0.2, 0.21, 0.2)
+	b.cylinder("metal", pos + Vector3(0, 3.0, 0), 0.13, 6.0, pole, 8)
+	b.beam("metal", pos + Vector3(0, 5.8, 0), pos + Vector3(0, 5.8, 0) + arm * arm_len, 0.1, pole)
+	var yaw := atan2(face.x, face.z)
+	var r := Basis(Vector3.UP, yaw)
+	var head := pos + arm * (arm_len - 0.3) + Vector3(0, 5.2, 0)
+	b.box("metal", head, Vector3(0.36, 1.0, 0.3), Color(0.08, 0.08, 0.08), r)
+	var cols := [Color(1.0, 0.12, 0.08), Color(1.0, 0.65, 0.05), Color(0.1, 1.0, 0.45)]
+	for i in 3:
+		var on := (i == 2) if green else (i == 0)
+		b.box("neon", head + Vector3(0, 0.3 - i * 0.3, 0) + face * 0.16, Vector3(0.2, 0.2, 0.03), cols[i] if on else cols[i] * 0.12, r)
+	# 行人信号灯（杆上）与路名牌
+	b.box("metal", pos + Vector3(0, 2.8, 0) + face * 0.2, Vector3(0.3, 0.3, 0.2), Color(0.1, 0.1, 0.1), r)
+	b.box("neon", pos + Vector3(0, 2.8, 0) + face * 0.31, Vector3(0.2, 0.2, 0.02), Color(1.0, 0.95, 0.9) * (0.9 if green else 0.2), r)
+	var sign_pos := pos + arm * 1.6 + Vector3(0, 6.15, 0)
+	b.box("solid", sign_pos, Vector3(1.6, 0.34, 0.04), Color(0.05, 0.36, 0.2), Basis(Vector3.UP, atan2(arm.z, -arm.x)))
+	if street != "":
+		label(street, sign_pos + face * 0.03, yaw, 28, Color(0.95, 0.97, 0.95), 0.008, 0).visibility_range_end = 60.0
+	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.35, 3.0, 0.35))
+
+
+## 电线杆（木杆 + 横担 + 绝缘子，部分带变压器）；返回三根电线的挂点
+func utility_pole(pos: Vector3, along: Vector3) -> Array:
+	var wood := Color(0.36, 0.28, 0.2)
+	b.cylinder("solid", pos + Vector3(0, 5.2, 0), 0.15, 10.4, wood, 8, Basis.IDENTITY, 0.12)
+	var across := Vector3(-along.z, 0, along.x)
+	b.beam("solid", pos + Vector3(0, 9.6, 0) - across * 1.2, pos + Vector3(0, 9.6, 0) + across * 1.2, 0.12, wood.darkened(0.1))
+	var tops: Array = []
+	for k in [-1.0, 0.0, 1.0]:
+		var ip: Vector3 = pos + across * (k * 1.0) + Vector3(0, 9.8, 0)
+		b.cylinder("metal", ip, 0.05, 0.22, Color(0.55, 0.6, 0.55), 6)
+		tops.append(ip + Vector3(0, 0.1, 0))
+	if rng.randf() < 0.3:
+		b.cylinder("metal", pos + across * 0.35 + Vector3(0, 7.8, 0), 0.32, 1.0, Color(0.45, 0.47, 0.46), 10)
+	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.4, 3.0, 0.4))
+	return tops
+
+
+## 两根电线杆之间的下垂电线（折线近似悬链线）
+func wire(a: Vector3, c: Vector3, sag := 0.6) -> void:
+	var segs := 6
+	var prev := a
+	for i in range(1, segs + 1):
+		var t := float(i) / segs
+		var p := a.lerp(c, t) - Vector3(0, sag * 4.0 * t * (1.0 - t), 0)
+		b.beam("metal", prev, p, 0.035, Color(0.06, 0.06, 0.06))
+		prev = p
+
+
+## 路边大型广告牌：立柱 + 画面（广告贴图集里的一种）+ 检修走道 + 两盏射灯
+func billboard(pos: Vector3, face: Vector3, design: int, h := 9.0, w := 12.0) -> void:
+	var side := Vector3(face.z, 0, -face.x)
+	var steel := Color(0.35, 0.36, 0.37)
+	b.cylinder("metal", pos + Vector3(0, h * 0.5, 0), 0.4, h, steel, 10)
+	var bh := w * 0.38
+	var c := pos + Vector3(0, h + bh * 0.5, 0)
+	var yaw := atan2(face.x, face.z)
+	var r := Basis(Vector3.UP, yaw)
+	b.box("metal", c - face * 0.25, Vector3(w + 0.4, bh + 0.4, 0.3), steel.darkened(0.3), r)
+	var u0 := 0.5 * (design % 2)
+	var v0 := 0.5 * (design / 2)
+	var uv := PackedVector2Array([Vector2(u0, v0 + 0.5), Vector2(u0 + 0.5, v0 + 0.5), Vector2(u0 + 0.5, v0), Vector2(u0, v0)])
+	var hw := side * (w * 0.5)
+	var hv := Vector3(0, bh * 0.5, 0)
+	b.quad_uv("ad", c - hw - hv - face * 0.08, c + hw - hv - face * 0.08, c + hw + hv - face * 0.08, c - hw + hv - face * 0.08, Color(1, 1, 1), uv)
+	b.box("metal", c - hv + face * 0.5 - Vector3(0, 0.1, 0), Vector3(w, 0.08, 1.0), steel, r)
+	for k in [-0.3, 0.3]:
+		var lp: Vector3 = c - hv + face * 1.1 + side * (w * k)
+		b.box("lamp_warm", lp, Vector3(0.4, 0.2, 0.3), Color(0.9, 0.9, 0.9), r)
+	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.8, 3.0, 0.8))
 
 
 ## 汽车（停在路边的静态车，或 StreetTraffic 里行驶的车共用同一套几何体）。原点在车底中心，车头朝 -Z

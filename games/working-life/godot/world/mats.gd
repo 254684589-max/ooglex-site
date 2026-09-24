@@ -53,6 +53,20 @@ static func batch(kind: String) -> Material:
 			m.roughness = 0.05
 			m.metallic = 0.6
 			m.albedo_color = Color(1, 1, 1, 0.8)
+		"roof":
+			m.albedo_texture = ProcTex.roof()
+			m.uv1_scale = Vector3(1.0 / 12.0, 1.0 / 12.0, 1)
+			m.roughness = 0.92
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+		"ad":
+			# 广告牌画面：白天是印刷画面，夜里被灯照亮（自发光随路灯亮度）
+			m.albedo_texture = ProcTex.ads()
+			m.emission_enabled = true
+			m.emission = Color.BLACK
+			m.emission_texture = ProcTex.ads()
+			m.emission_energy_multiplier = lamp_energy * 0.6
+			m.roughness = 0.6
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		"lamp_warm", "lamp_cool":
 			m.roughness = 0.4
 			m.emission_enabled = true
@@ -123,6 +137,7 @@ static func set_lamp_energy(energy: float) -> void:
 	lamp_energy = energy
 	for k in ["lamp_warm", "lamp_cool"]:
 		(batch(k) as StandardMaterial3D).emission_energy_multiplier = energy * 4.0
+	(batch("ad") as StandardMaterial3D).emission_energy_multiplier = energy * 0.6
 
 
 ## 雨天路面变湿：粗糙度降低、带一点金属感，反射霓虹与灯光
