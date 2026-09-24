@@ -1,0 +1,1394 @@
+{
+ "note": "任务数据。type: main 主线 / side 支线 / job 职业任务 / npc NPC 任务。giver 为发布 NPC（主线为空，自动接取）。objectives 的 type 见 ARCHITECTURE.md「任务目标类型」。事件型目标由 Events.notify(kind, data) 推进；条件型目标（skill/cash/rent/...）每次状态变化时重新判定。requires 为接取条件，next 为完成后自动接取的下一个任务。spawn 为任务期间在世界里生成的可拾取物。",
+ "list": [
+  {
+   "id": "m1_first_day",
+   "type": "main",
+   "chapter": 1,
+   "title": "第一天",
+   "desc": "刚下火车，身上只有 ¥2000。今晚之前，先想办法活下来。人才市场今天开到晚上 10 点。",
+   "objectives": [
+    {
+     "type": "visit",
+     "target": "hotel",
+     "text": "找到廉价旅馆（车站东北边的「安心旅馆」）"
+    },
+    {
+     "type": "buy",
+     "category": "food",
+     "text": "买点吃的（便利店、超市、小吃摊都行）"
+    },
+    {
+     "type": "visit",
+     "target": "talent_market",
+     "text": "前往人才市场"
+    },
+    {
+     "type": "apply_job",
+     "text": "在招聘栏或手机「招聘」APP 申请一份工作"
+    },
+    {
+     "type": "interview_pass",
+     "text": "完成第一次面试并被录用"
+    }
+   ],
+   "reward": {
+    "cash": 200,
+    "rep": 2
+   },
+   "next": "m1_first_night"
+  },
+  {
+   "id": "m1_first_night",
+   "type": "main",
+   "chapter": 1,
+   "title": "落脚",
+   "desc": "有了工作，还得有地方睡觉。去旅馆开间房，睡个好觉。",
+   "objectives": [
+    {
+     "type": "sleep",
+     "text": "在旅馆（或自己的住处）睡一觉"
+    }
+   ],
+   "reward": {
+    "mood": 10
+   },
+   "next": "m2_first_shift"
+  },
+  {
+   "id": "m2_first_shift",
+   "type": "main",
+   "chapter": 2,
+   "title": "第一份工作",
+   "desc": "按时去上班。别迟到——第一天的印象很重要。手机「人物」页可以看到上班时间和地点。",
+   "objectives": [
+    {
+     "type": "work_shift",
+     "count": 1,
+     "text": "按时上班，完成一个班次"
+    }
+   ],
+   "reward": {
+    "cash": 100,
+    "rep": 2
+   },
+   "next": "m2_first_pay"
+  },
+  {
+   "id": "m2_first_pay",
+   "type": "main",
+   "chapter": 2,
+   "title": "第一桶金",
+   "desc": "靠自己的双手挣钱。注意吃饭和休息，别把身体拖垮。",
+   "objectives": [
+    {
+     "type": "earn",
+     "amount": 800,
+     "text": "通过工作累计挣到 ¥800"
+    },
+    {
+     "type": "work_shift",
+     "count": 3,
+     "text": "完成 3 个班次"
+    }
+   ],
+   "reward": {
+    "cash": 200,
+    "rep": 3
+   },
+   "next": "m2_learn"
+  },
+  {
+   "id": "m2_learn",
+   "type": "main",
+   "chapter": 2,
+   "title": "学点真本事",
+   "desc": "体力活挣不了一辈子。去职业培训学校找刘老师，报一门课。",
+   "objectives": [
+    {
+     "type": "talk",
+     "npc": "liulaoshi",
+     "text": "在职业培训学校找刘老师聊聊"
+    },
+    {
+     "type": "course",
+     "count": 1,
+     "text": "参加一门培训课程"
+    }
+   ],
+   "reward": {
+    "skill_xp": {
+     "communication": 30
+    },
+    "rep": 2
+   },
+   "next": "m3_skills"
+  },
+  {
+   "id": "m3_skills",
+   "type": "main",
+   "chapter": 3,
+   "title": "真正的职业",
+   "desc": "办公室的工作要求电脑和沟通都达到 Lv.1。上课、读书、干活都能涨经验。",
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "computer",
+     "level": 1,
+     "text": "电脑技能达到 Lv.1"
+    },
+    {
+     "type": "skill",
+     "skill": "communication",
+     "level": 1,
+     "text": "沟通技能达到 Lv.1"
+    }
+   ],
+   "reward": {
+    "cash": 300,
+    "rep": 3
+   },
+   "next": "m3_real_job"
+  },
+  {
+   "id": "m3_real_job",
+   "type": "main",
+   "chapter": 3,
+   "title": "坐进写字楼",
+   "desc": "拿到一份月薪工作：办公室职员、程序员、金融分析师或公司管理者都算。",
+   "objectives": [
+    {
+     "type": "get_job",
+     "pay_type": "monthly",
+     "text": "获得一份月薪工作"
+    }
+   ],
+   "reward": {
+    "cash": 500,
+    "rep": 5
+   },
+   "next": "m3_rent"
+  },
+  {
+   "id": "m3_rent",
+   "type": "main",
+   "chapter": 3,
+   "title": "有个家",
+   "desc": "旅馆不是长久之计。找房东老李租合租房，或者租更好的房子。",
+   "objectives": [
+    {
+     "type": "rent",
+     "level": 2,
+     "text": "租下合租房或更好的住房"
+    }
+   ],
+   "reward": {
+    "mood": 15,
+    "rep": 3
+   },
+   "next": "m4_direction"
+  },
+  {
+   "id": "m4_direction",
+   "type": "main",
+   "chapter": 4,
+   "title": "选择方向",
+   "desc": "技术、金融、管理，还是自己当老板？把一项专业技能练到 Lv.3，决定你要走的路。",
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "any_pro",
+     "level": 3,
+     "text": "电脑 / 金融 / 管理 任一技能达到 Lv.3"
+    }
+   ],
+   "reward": {
+    "cash": 1000,
+    "rep": 5
+   },
+   "next": "m4_network"
+  },
+  {
+   "id": "m4_network",
+   "type": "main",
+   "chapter": 4,
+   "title": "人脉",
+   "desc": "在这座城市，一个人走不远。和三个人成为熟人（关系 30 以上）。多聊天、帮忙、送礼都有用。",
+   "objectives": [
+    {
+     "type": "relation",
+     "count": 3,
+     "value": 30,
+     "text": "与 3 位 NPC 的关系达到 30"
+    }
+   ],
+   "reward": {
+    "rep": 6,
+    "mood": 10
+   },
+   "next": "m5_promote"
+  },
+  {
+   "id": "m5_promote",
+   "type": "main",
+   "chapter": 5,
+   "title": "职业发展",
+   "desc": "保持高绩效（70 以上）、满足技能要求、出勤够班次，就会升职。",
+   "objectives": [
+    {
+     "type": "promote",
+     "count": 1,
+     "text": "获得一次升职"
+    }
+   ],
+   "reward": {
+    "cash": 2000,
+    "rep": 6
+   },
+   "next": "m5_climb"
+  },
+  {
+   "id": "m5_climb",
+   "type": "main",
+   "chapter": 5,
+   "title": "往上走",
+   "desc": "职位等级达到 3（例如办公室「主管」、程序员「Senior Developer」、金融「投资经理」），并让声望达到 30。",
+   "objectives": [
+    {
+     "type": "job_level",
+     "level": 3,
+     "text": "职位等级达到 3"
+    },
+    {
+     "type": "reputation",
+     "value": 30,
+     "text": "声望达到 30"
+    }
+   ],
+   "reward": {
+    "cash": 5000,
+    "rep": 5
+   },
+   "next": "m6_savings"
+  },
+  {
+   "id": "m6_savings",
+   "type": "main",
+   "chapter": 6,
+   "title": "财富积累",
+   "desc": "钱放在口袋里会被花掉。在银行存下 ¥50,000。",
+   "objectives": [
+    {
+     "type": "bank",
+     "amount": 50000,
+     "text": "银行存款达到 ¥50,000"
+    }
+   ],
+   "reward": {
+    "rep": 4
+   },
+   "next": "m6_grow"
+  },
+  {
+   "id": "m6_grow",
+   "type": "main",
+   "chapter": 6,
+   "title": "让钱生钱",
+   "desc": "学点金融，在手机「投资」APP 买入一笔资产；或者攒够条件，去霓虹广场的创业孵化中心注册公司。",
+   "objectives": [
+    {
+     "type": "invest_or_business",
+     "text": "进行一次投资，或创办自己的公司"
+    }
+   ],
+   "reward": {
+    "cash": 3000,
+    "rep": 4
+   },
+   "next": "m6_networth"
+  },
+  {
+   "id": "m6_networth",
+   "type": "main",
+   "chapter": 6,
+   "title": "身家",
+   "desc": "净资产（现金 + 存款 + 投资市值 + 公司权益）达到 ¥300,000。",
+   "objectives": [
+    {
+     "type": "networth",
+     "amount": 300000,
+     "text": "净资产达到 ¥300,000"
+    }
+   ],
+   "reward": {
+    "rep": 6,
+    "mood": 10
+   },
+   "next": "m7_life_goal"
+  },
+  {
+   "id": "m7_life_goal",
+   "type": "main",
+   "chapter": 7,
+   "title": "人生选择",
+   "desc": "你已经在这座城市站稳了脚跟。接下来，你想成为什么样的人？在手机「人物」页查看五种人生目标，达成其中任意一种。",
+   "objectives": [
+    {
+     "type": "ending_ready",
+     "text": "达成任意一种人生目标（见手机「人物 → 人生目标」）"
+    }
+   ],
+   "reward": {
+    "rep": 10
+   },
+   "next": "m7_rooftop"
+  },
+  {
+   "id": "m7_rooftop",
+   "type": "main",
+   "chapter": 7,
+   "title": "回望",
+   "desc": "去中央公园的观景台，看看这座你奋斗过的城市。",
+   "objectives": [
+    {
+     "type": "interact",
+     "target": "rooftop",
+     "text": "在中央公园观景台眺望城市"
+    }
+   ],
+   "reward": {},
+   "next": ""
+  },
+  {
+   "id": "s_help_newbie",
+   "type": "npc",
+   "giver": "xiaomei",
+   "title": "帮助新人",
+   "desc": "火车站门口的小美不知道人才市场怎么走。带她去一趟吧。",
+   "objectives": [
+    {
+     "type": "visit",
+     "target": "talent_market",
+     "text": "前往人才市场"
+    },
+    {
+     "type": "talk",
+     "npc": "wangjl",
+     "text": "向王经理推荐小美"
+    }
+   ],
+   "reward": {
+    "cash": 50,
+    "rep": 3,
+    "rel": {
+     "xiaomei": 25
+    },
+    "flag": "helped_newbie"
+   }
+  },
+  {
+   "id": "s_lost_wallet",
+   "type": "npc",
+   "giver": "xiaolin",
+   "title": "寻找遗失钱包",
+   "desc": "小林说钱包可能丢在中央公园的池塘边了，里面有她的学生证。",
+   "spawn": {
+    "item": "wallet",
+    "location": "park",
+    "pos": [
+     -16,
+     6
+    ]
+   },
+   "objectives": [
+    {
+     "type": "pickup",
+     "item": "wallet",
+     "text": "在中央公园池塘边找到钱包"
+    },
+    {
+     "type": "deliver",
+     "item": "wallet",
+     "npc": "xiaolin",
+     "text": "把钱包还给小林"
+    }
+   ],
+   "reward": {
+    "cash": 100,
+    "rep": 3,
+    "rel": {
+     "xiaolin": 20
+    }
+   }
+  },
+  {
+   "id": "s_fix_faucet",
+   "type": "npc",
+   "giver": "laoli",
+   "title": "替房东修东西",
+   "desc": "老李的水龙头漏水了。去超市买一套扳手工具包，回来帮他修一修。",
+   "objectives": [
+    {
+     "type": "have_item",
+     "item": "wrench",
+     "text": "准备扳手工具包（万家超市有售）"
+    },
+    {
+     "type": "talk",
+     "npc": "laoli",
+     "text": "帮老李修好水龙头"
+    }
+   ],
+   "reward": {
+    "cash": 150,
+    "skill_xp": {
+     "technical": 40
+    },
+    "rel": {
+     "laoli": 15
+    }
+   }
+  },
+  {
+   "id": "s_rain_medicine",
+   "type": "npc",
+   "giver": "laoli",
+   "title": "雨夜送药",
+   "desc": "老李感冒了，腿脚不便。去药房或便利店买盒药给他送过来。",
+   "requires": {
+    "rel_min": {
+     "laoli": 20
+    }
+   },
+   "objectives": [
+    {
+     "type": "have_item",
+     "item": "medicine",
+     "text": "买一盒药品"
+    },
+    {
+     "type": "deliver",
+     "item": "medicine",
+     "npc": "laoli",
+     "text": "把药送给老李"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "laoli": 18
+    },
+    "rep": 2,
+    "mood": 5
+   }
+  },
+  {
+   "id": "s_lost_cat",
+   "type": "npc",
+   "giver": "laoli",
+   "title": "找猫",
+   "desc": "老李的橘猫「团子」跑丢了，最后有人在旧街区的小巷里看到过它。",
+   "requires": {
+    "rel_min": {
+     "laoli": 10
+    }
+   },
+   "spawn": {
+    "item": "lost_cat",
+    "location": "old_street",
+    "pos": [
+     14,
+     6
+    ]
+   },
+   "objectives": [
+    {
+     "type": "pickup",
+     "item": "lost_cat",
+     "text": "在旧街区小巷找到团子"
+    },
+    {
+     "type": "deliver",
+     "item": "lost_cat",
+     "npc": "laoli",
+     "text": "把团子还给老李"
+    }
+   ],
+   "reward": {
+    "cash": 200,
+    "rel": {
+     "laoli": 15
+    }
+   }
+  },
+  {
+   "id": "s_night_restock",
+   "type": "npc",
+   "giver": "chenshu",
+   "title": "深夜补货",
+   "desc": "陈叔的补货车晚到了，他一个人搬不动。去速达物流园取一箱货送到便利店。",
+   "spawn": {
+    "item": "parcel",
+    "location": "warehouse",
+    "pos": [
+     12,
+     4
+    ]
+   },
+   "objectives": [
+    {
+     "type": "pickup",
+     "item": "parcel",
+     "text": "在速达物流园取货"
+    },
+    {
+     "type": "deliver",
+     "item": "parcel",
+     "npc": "chenshu",
+     "text": "送给便利店的陈叔"
+    }
+   ],
+   "reward": {
+    "cash": 120,
+    "rel": {
+     "chenshu": 15
+    },
+    "skill_xp": {
+     "fitness": 20
+    }
+   }
+  },
+  {
+   "id": "s_customer_complaint",
+   "type": "job",
+   "giver": "chenshu",
+   "title": "处理客户投诉",
+   "desc": "有顾客投诉便利店的盒饭过期了。在便利店上班时把收银做好，陈叔就有底气回应。",
+   "requires": {
+    "job_id": "store"
+   },
+   "objectives": [
+    {
+     "type": "work_shift",
+     "count": 1,
+     "job": "store",
+     "min_score": 70,
+     "text": "在便利店完成一个评分 70 以上的班次"
+    }
+   ],
+   "reward": {
+    "cash": 150,
+    "rep": 3,
+    "skill_xp": {
+     "communication": 40
+    },
+    "rel": {
+     "chenshu": 10
+    }
+   }
+  },
+  {
+   "id": "s_overtime_help",
+   "type": "job",
+   "giver": "xiaozhang",
+   "title": "帮同事加班",
+   "desc": "小张的方案今晚必须交。帮他一起把活干完——在办公室完成一个高质量的班次。",
+   "requires": {
+    "job_category": "office_any"
+   },
+   "objectives": [
+    {
+     "type": "work_shift",
+     "count": 1,
+     "min_score": 75,
+     "text": "完成一个评分 75 以上的班次"
+    },
+    {
+     "type": "talk",
+     "npc": "xiaozhang",
+     "text": "告诉小张方案搞定了"
+    }
+   ],
+   "reward": {
+    "cash": 300,
+    "rel": {
+     "xiaozhang": 18
+    },
+    "rep": 2,
+    "stress": 5
+   }
+  },
+  {
+   "id": "s_dinner_friend",
+   "type": "npc",
+   "giver": "xiaozhang",
+   "title": "陪朋友吃饭",
+   "desc": "小张失恋了，想找人吃顿饭。晚上去芳姐小馆吃点东西陪陪他。",
+   "requires": {
+    "rel_min": {
+     "xiaozhang": 15
+    }
+   },
+   "objectives": [
+    {
+     "type": "eat_at",
+     "location": "restaurant",
+     "text": "在芳姐小馆吃一顿饭"
+    },
+    {
+     "type": "talk",
+     "npc": "xiaozhang",
+     "text": "和小张聊聊"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "xiaozhang": 20
+    },
+    "mood": 8,
+    "stress": -8
+   }
+  },
+  {
+   "id": "s_hackathon",
+   "type": "npc",
+   "giver": "ajie",
+   "title": "周末黑客松",
+   "desc": "阿杰拉你组队参加黑客松。把电脑练到 Lv.3，再完成一次写代码的班次或在家用电脑练习。",
+   "requires": {
+    "skill": {
+     "computer": 2
+    }
+   },
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "computer",
+     "level": 3,
+     "text": "电脑技能达到 Lv.3"
+    },
+    {
+     "type": "practice",
+     "skill": "computer",
+     "count": 1,
+     "text": "用电脑练习编程一次（家里的电脑，或星河科技上班）"
+    }
+   ],
+   "reward": {
+    "cash": 2000,
+    "rel": {
+     "ajie": 20
+    },
+    "rep": 4,
+    "skill_xp": {
+     "computer": 60
+    }
+   }
+  },
+  {
+   "id": "s_mentor_junior",
+   "type": "npc",
+   "giver": "ajie",
+   "title": "指导新人程序员",
+   "desc": "阿杰组里来了实习生，他忙不过来，想请你带一带。",
+   "requires": {
+    "skill": {
+     "computer": 5
+    }
+   },
+   "objectives": [
+    {
+     "type": "work_shift",
+     "count": 2,
+     "job": "tech",
+     "min_score": 70,
+     "text": "在星河科技完成 2 个评分 70 以上的班次"
+    }
+   ],
+   "reward": {
+    "rep": 6,
+    "skill_xp": {
+     "management": 60,
+     "communication": 40
+    },
+    "rel": {
+     "ajie": 15
+    }
+   }
+  },
+  {
+   "id": "s_job_fair",
+   "type": "npc",
+   "giver": "wangjl",
+   "title": "参加招聘会",
+   "desc": "周末人才市场有招聘会。去招聘栏看看，顺便投一份简历。",
+   "objectives": [
+    {
+     "type": "visit",
+     "target": "talent_market",
+     "text": "前往人才市场"
+    },
+    {
+     "type": "apply_job",
+     "text": "申请一个职位"
+    }
+   ],
+   "reward": {
+    "rep": 2,
+    "rel": {
+     "wangjl": 10
+    },
+    "skill_xp": {
+     "communication": 20
+    }
+   }
+  },
+  {
+   "id": "s_coffee_run",
+   "type": "npc",
+   "giver": "wangjl",
+   "title": "咖啡跑腿",
+   "desc": "王经理一上午面试了三十个人，嗓子都哑了。去像素咖啡给他带杯咖啡。",
+   "objectives": [
+    {
+     "type": "have_item",
+     "item": "coffee",
+     "text": "买一杯咖啡"
+    },
+    {
+     "type": "deliver",
+     "item": "coffee",
+     "npc": "wangjl",
+     "text": "把咖啡送给王经理"
+    }
+   ],
+   "reward": {
+    "cash": 30,
+    "rel": {
+     "wangjl": 14
+    }
+   }
+  },
+  {
+   "id": "s_recruit_help",
+   "type": "npc",
+   "giver": "wangjl",
+   "title": "帮王经理招人",
+   "desc": "星河科技急招实习生。小林正好在找实习——去跟她说一声。",
+   "requires": {
+    "rel_min": {
+     "wangjl": 20
+    }
+   },
+   "objectives": [
+    {
+     "type": "talk",
+     "npc": "xiaolin",
+     "text": "把实习消息告诉小林"
+    },
+    {
+     "type": "talk",
+     "npc": "wangjl",
+     "text": "回复王经理"
+    }
+   ],
+   "reward": {
+    "cash": 500,
+    "rel": {
+     "wangjl": 12,
+     "xiaolin": 12
+    },
+    "rep": 3
+   }
+  },
+  {
+   "id": "s_first_course",
+   "type": "npc",
+   "giver": "liulaoshi",
+   "title": "参加培训",
+   "desc": "刘老师说：光听不练假把式。选一门课上完。",
+   "objectives": [
+    {
+     "type": "course",
+     "count": 1,
+     "text": "上完一门培训课程"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "liulaoshi": 12
+    },
+    "skill_xp": {
+     "communication": 20
+    }
+   }
+  },
+  {
+   "id": "s_study_group",
+   "type": "npc",
+   "giver": "liulaoshi",
+   "title": "学习小组",
+   "desc": "刘老师建议你组建读书习惯。读完两本技能书。",
+   "objectives": [
+    {
+     "type": "read",
+     "count": 2,
+     "text": "读完 2 本技能书"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "liulaoshi": 12,
+     "xiaolin": 6
+    },
+    "rep": 2,
+    "cash": 200
+   }
+  },
+  {
+   "id": "s_laptop_repair",
+   "type": "npc",
+   "giver": "xiaolin",
+   "title": "修电脑",
+   "desc": "小林的电脑蓝屏了，论文还在里面。需要电脑 Lv.2 才修得好。",
+   "requires": {
+    "rel_min": {
+     "xiaolin": 10
+    }
+   },
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "computer",
+     "level": 2,
+     "text": "电脑技能达到 Lv.2"
+    },
+    {
+     "type": "talk",
+     "npc": "xiaolin",
+     "text": "帮小林修电脑"
+    }
+   ],
+   "reward": {
+    "cash": 150,
+    "rel": {
+     "xiaolin": 18
+    },
+    "skill_xp": {
+     "computer": 40,
+     "technical": 30
+    }
+   }
+  },
+  {
+   "id": "s_resume_help",
+   "type": "npc",
+   "giver": "xiaolin",
+   "title": "改简历",
+   "desc": "小林要投第一份实习，想请你帮忙看看简历。需要沟通 Lv.2。",
+   "requires": {
+    "rel_min": {
+     "xiaolin": 20
+    }
+   },
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "communication",
+     "level": 2,
+     "text": "沟通技能达到 Lv.2"
+    },
+    {
+     "type": "talk",
+     "npc": "xiaolin",
+     "text": "帮小林改简历"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "xiaolin": 18
+    },
+    "rep": 2,
+    "skill_xp": {
+     "communication": 50
+    }
+   }
+  },
+  {
+   "id": "s_startup_advice",
+   "type": "npc",
+   "giver": "zhoulb",
+   "title": "周老板的建议",
+   "desc": "周老板说想创业先懂管理。把管理技能练到 Lv.3 再来找他。",
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "management",
+     "level": 3,
+     "text": "管理技能达到 Lv.3"
+    },
+    {
+     "type": "talk",
+     "npc": "zhoulb",
+     "text": "回去找周老板"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "zhoulb": 20
+    },
+    "skill_xp": {
+     "management": 80
+    },
+    "rep": 3
+   }
+  },
+  {
+   "id": "s_first_client",
+   "type": "npc",
+   "giver": "zhoulb",
+   "title": "第一个客户",
+   "desc": "公司开张了！在手机「创业」APP 接下一个项目并按时交付。",
+   "requires": {
+    "has_business": true
+   },
+   "objectives": [
+    {
+     "type": "project_done",
+     "count": 1,
+     "text": "交付一个项目"
+    }
+   ],
+   "reward": {
+    "cash": 5000,
+    "rel": {
+     "zhoulb": 15
+    },
+    "rep": 5
+   }
+  },
+  {
+   "id": "s_hire_team",
+   "type": "npc",
+   "giver": "zhoulb",
+   "title": "组建团队",
+   "desc": "一个人干不成大事。让公司员工达到 5 人。",
+   "requires": {
+    "has_business": true
+   },
+   "objectives": [
+    {
+     "type": "employees",
+     "count": 5,
+     "text": "公司员工达到 5 人"
+    }
+   ],
+   "reward": {
+    "rep": 5,
+    "skill_xp": {
+     "management": 100
+    },
+    "rel": {
+     "zhoulb": 10
+    }
+   }
+  },
+  {
+   "id": "s_bank_account",
+   "type": "npc",
+   "giver": "zhaojl",
+   "title": "开始储蓄",
+   "desc": "赵经理建议你养成储蓄习惯：往银行卡存入至少 ¥1,000（ATM 或柜台都行）。",
+   "objectives": [
+    {
+     "type": "deposit",
+     "amount": 1000,
+     "text": "存入 ¥1,000"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "zhaojl": 12
+    },
+    "skill_xp": {
+     "finance": 40
+    }
+   }
+  },
+  {
+   "id": "s_market_report",
+   "type": "job",
+   "giver": "zhaojl",
+   "title": "写市场报告",
+   "desc": "银行需要一份外部视角的市场报告。金融 Lv.3 才写得出来。",
+   "requires": {
+    "skill": {
+     "finance": 2
+    }
+   },
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "finance",
+     "level": 3,
+     "text": "金融技能达到 Lv.3"
+    },
+    {
+     "type": "talk",
+     "npc": "zhaojl",
+     "text": "把报告交给赵经理"
+    }
+   ],
+   "reward": {
+    "cash": 1500,
+    "rel": {
+     "zhaojl": 15
+    },
+    "rep": 4
+   }
+  },
+  {
+   "id": "s_dinner_rush",
+   "type": "npc",
+   "giver": "fangjie",
+   "title": "晚市救急",
+   "desc": "芳姐的服务员请假了，晚市忙不过来。在芳姐小馆完成一次服务员班次（不是这份工作的也可以帮忙，按日结算）。",
+   "objectives": [
+    {
+     "type": "work_shift",
+     "count": 1,
+     "job": "restaurant",
+     "text": "在芳姐小馆完成一次服务班次"
+    }
+   ],
+   "reward": {
+    "cash": 150,
+    "rel": {
+     "fangjie": 18
+    }
+   }
+  },
+  {
+   "id": "s_site_safety",
+   "type": "job",
+   "giver": "laoma",
+   "title": "工地安全检查",
+   "desc": "老马需要懂设备的人帮忙查一遍线路。技术 Lv.2 才能签字。",
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "technical",
+     "level": 2,
+     "text": "技术技能达到 Lv.2"
+    },
+    {
+     "type": "talk",
+     "npc": "laoma",
+     "text": "帮老马完成安全检查"
+    }
+   ],
+   "reward": {
+    "cash": 600,
+    "rel": {
+     "laoma": 15
+    },
+    "rep": 3
+   }
+  },
+  {
+   "id": "s_old_photo",
+   "type": "npc",
+   "giver": "laoma",
+   "title": "旧照片",
+   "desc": "老马说工地挖出一张旧照片，可能是他师傅的。他托你去旧街区打听打听——照片在小吃摊老板那儿。",
+   "requires": {
+    "rel_min": {
+     "laoma": 20
+    }
+   },
+   "spawn": {
+    "item": "old_photo",
+    "location": "old_street",
+    "pos": [
+     -6,
+     20
+    ]
+   },
+   "objectives": [
+    {
+     "type": "pickup",
+     "item": "old_photo",
+     "text": "在旧街区小吃摊附近找到旧照片"
+    },
+    {
+     "type": "deliver",
+     "item": "old_photo",
+     "npc": "laoma",
+     "text": "把照片交给老马"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "laoma": 25
+    },
+    "mood": 10,
+    "rep": 2
+   }
+  },
+  {
+   "id": "s_urgent_project",
+   "type": "job",
+   "giver": "sunzg",
+   "title": "紧急项目",
+   "desc": "客户明天来验收，孙主管需要全组拿出最好状态。",
+   "requires": {
+    "job_category": "office_any"
+   },
+   "objectives": [
+    {
+     "type": "work_shift",
+     "count": 1,
+     "min_score": 85,
+     "text": "完成一个评分 85 以上的班次"
+    }
+   ],
+   "reward": {
+    "cash": 1200,
+    "rep": 5,
+    "perf": 8,
+    "rel": {
+     "sunzg": 15
+    }
+   }
+  },
+  {
+   "id": "s_client_meeting",
+   "type": "job",
+   "giver": "sunzg",
+   "title": "客户会议",
+   "desc": "孙主管让你陪同见大客户。沟通 Lv.3 才压得住场。",
+   "requires": {
+    "job_category": "office_any"
+   },
+   "objectives": [
+    {
+     "type": "skill",
+     "skill": "communication",
+     "level": 3,
+     "text": "沟通技能达到 Lv.3"
+    },
+    {
+     "type": "talk",
+     "npc": "sunzg",
+     "text": "和孙主管一起见客户"
+    }
+   ],
+   "reward": {
+    "cash": 800,
+    "rep": 4,
+    "rel": {
+     "sunzg": 12
+    }
+   }
+  },
+  {
+   "id": "s_first_stock",
+   "type": "npc",
+   "giver": "laok",
+   "title": "小试牛刀",
+   "desc": "老K说，纸上谈兵不如真金白银。在手机「投资」APP 买入任意一笔资产。",
+   "objectives": [
+    {
+     "type": "invest",
+     "text": "买入任意一种投资品"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "laok": 15
+    },
+    "skill_xp": {
+     "finance": 50
+    }
+   }
+  },
+  {
+   "id": "s_market_watch",
+   "type": "npc",
+   "giver": "laok",
+   "title": "穿越牛熊",
+   "desc": "老K说：一次赚钱是运气，持续赚钱才是本事。让你的投资总盈利达到 ¥2,000。",
+   "requires": {
+    "rel_min": {
+     "laok": 20
+    }
+   },
+   "objectives": [
+    {
+     "type": "invest_profit",
+     "amount": 2000,
+     "text": "投资累计盈利（已实现 + 浮盈）达到 ¥2,000"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "laok": 20
+    },
+    "skill_xp": {
+     "finance": 120
+    },
+    "rep": 3
+   }
+  },
+  {
+   "id": "s_health_check",
+   "type": "npc",
+   "giver": "xuys",
+   "title": "体检",
+   "desc": "许医生提醒你做一次体检：在医院挂号看一次病。",
+   "objectives": [
+    {
+     "type": "treatment",
+     "text": "在医院看一次病"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "xuys": 14
+    },
+    "health": 10
+   }
+  },
+  {
+   "id": "s_gym_challenge",
+   "type": "npc",
+   "giver": "ahao",
+   "title": "健身挑战",
+   "desc": "阿豪给你定了个小目标：一周内来健身房练 3 次。",
+   "objectives": [
+    {
+     "type": "workout",
+     "count": 3,
+     "text": "健身 3 次"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "ahao": 15
+    },
+    "skill_xp": {
+     "fitness": 80
+    },
+    "health": 10
+   }
+  },
+  {
+   "id": "s_charity_run",
+   "type": "npc",
+   "giver": "ahao",
+   "title": "公益夜跑",
+   "desc": "公益夜跑的打卡点在中央公园、霓虹广场和火车站。依次跑过去吧。",
+   "requires": {
+    "rel_min": {
+     "ahao": 15
+    }
+   },
+   "objectives": [
+    {
+     "type": "visit",
+     "target": "park",
+     "text": "打卡：中央公园"
+    },
+    {
+     "type": "visit",
+     "target": "mall",
+     "text": "打卡：霓虹广场"
+    },
+    {
+     "type": "visit",
+     "target": "train_station",
+     "text": "打卡：中央火车站"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "ahao": 15
+    },
+    "rep": 5,
+    "skill_xp": {
+     "fitness": 60
+    },
+    "mood": 10
+   }
+  },
+  {
+   "id": "s_urgent_parcel",
+   "type": "npc",
+   "giver": "daliu",
+   "title": "临时送货",
+   "desc": "一个加急包裹要送到天穹大厦的孙主管手里，快递员都派出去了。",
+   "spawn": {
+    "item": "parcel",
+    "location": "warehouse",
+    "pos": [
+     12,
+     4
+    ]
+   },
+   "objectives": [
+    {
+     "type": "pickup",
+     "item": "parcel",
+     "text": "在速达物流园取包裹"
+    },
+    {
+     "type": "deliver",
+     "item": "parcel",
+     "npc": "sunzg",
+     "text": "送到天穹大厦交给孙主管"
+    }
+   ],
+   "reward": {
+    "cash": 180,
+    "rel": {
+     "daliu": 12,
+     "sunzg": 5
+    }
+   }
+  },
+  {
+   "id": "s_moving_help",
+   "type": "npc",
+   "giver": "daliu",
+   "title": "帮人搬家",
+   "desc": "大刘的表弟今天搬进幸福里，找你去搭把手。",
+   "requires": {
+    "rel_min": {
+     "daliu": 15
+    }
+   },
+   "objectives": [
+    {
+     "type": "visit",
+     "target": "shared_house",
+     "text": "去幸福里合租房"
+    },
+    {
+     "type": "talk",
+     "npc": "laoli",
+     "text": "找房东老李，帮忙搬两小时"
+    }
+   ],
+   "reward": {
+    "cash": 260,
+    "rel": {
+     "daliu": 15
+    },
+    "skill_xp": {
+     "fitness": 40
+    },
+    "energy": -20,
+    "time": 120
+   }
+  }
+ ]
+}

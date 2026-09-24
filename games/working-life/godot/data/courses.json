@@ -1,0 +1,23 @@
+{
+  "note": "职业培训学校课程。每天最多上一门课；minutes 为上课占用的游戏时间；min_level/max_level 为适合的技能等级区间。",
+  "list": [
+    {"id": "c_computer_1", "skill": "computer", "name": "电脑基础班", "price": 600, "minutes": 180, "xp": 100, "min_level": 0, "max_level": 3},
+    {"id": "c_computer_2", "skill": "computer", "name": "全栈开发进阶班", "price": 2400, "minutes": 240, "xp": 230, "min_level": 3, "max_level": 7},
+    {"id": "c_computer_3", "skill": "computer", "name": "架构师高级研修", "price": 7800, "minutes": 300, "xp": 420, "min_level": 6, "max_level": 10},
+    {"id": "c_comm_1", "skill": "communication", "name": "职场沟通入门", "price": 500, "minutes": 180, "xp": 100, "min_level": 0, "max_level": 3},
+    {"id": "c_comm_2", "skill": "communication", "name": "演讲与谈判", "price": 2200, "minutes": 240, "xp": 230, "min_level": 3, "max_level": 7},
+    {"id": "c_comm_3", "skill": "communication", "name": "高管沟通力", "price": 7200, "minutes": 300, "xp": 420, "min_level": 6, "max_level": 10},
+    {"id": "c_fitness_1", "skill": "fitness", "name": "体能训练营", "price": 400, "minutes": 180, "xp": 100, "min_level": 0, "max_level": 3},
+    {"id": "c_fitness_2", "skill": "fitness", "name": "力量与耐力", "price": 1800, "minutes": 240, "xp": 230, "min_level": 3, "max_level": 7},
+    {"id": "c_fitness_3", "skill": "fitness", "name": "专业运动员计划", "price": 6000, "minutes": 300, "xp": 420, "min_level": 6, "max_level": 10},
+    {"id": "c_management_1", "skill": "management", "name": "管理学基础", "price": 800, "minutes": 180, "xp": 100, "min_level": 0, "max_level": 3},
+    {"id": "c_management_2", "skill": "management", "name": "项目管理 PMP", "price": 3200, "minutes": 240, "xp": 230, "min_level": 3, "max_level": 7},
+    {"id": "c_management_3", "skill": "management", "name": "MBA 精华课", "price": 9800, "minutes": 300, "xp": 420, "min_level": 6, "max_level": 10},
+    {"id": "c_finance_1", "skill": "finance", "name": "个人理财入门", "price": 700, "minutes": 180, "xp": 100, "min_level": 0, "max_level": 3},
+    {"id": "c_finance_2", "skill": "finance", "name": "证券分析师考证班", "price": 3000, "minutes": 240, "xp": 230, "min_level": 3, "max_level": 7},
+    {"id": "c_finance_3", "skill": "finance", "name": "量化投资高级班", "price": 9200, "minutes": 300, "xp": 420, "min_level": 6, "max_level": 10},
+    {"id": "c_technical_1", "skill": "technical", "name": "电工与设备维修", "price": 500, "minutes": 180, "xp": 100, "min_level": 0, "max_level": 3},
+    {"id": "c_technical_2", "skill": "technical", "name": "特种设备操作证", "price": 2000, "minutes": 240, "xp": 230, "min_level": 3, "max_level": 7},
+    {"id": "c_technical_3", "skill": "technical", "name": "高级技师认证", "price": 6400, "minutes": 300, "xp": 420, "min_level": 6, "max_level": 10}
+  ]
+}

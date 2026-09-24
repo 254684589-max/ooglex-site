@@ -13,6 +13,15 @@
 
 ### 新增
 
+- 2026-09-24，**游戏中心新增原创 3D 游戏《打工》WORKING LIFE 1.0（Godot 4 网页版，赛博朋克都市人生模拟）**。**已部署**（经项目所有者明确同意「合并 上线」，合并到 `main` 并随 GitHub Pages 发布）。
+  - **入口**：`/games/working-life/`（介绍页）→ `/games/working-life/play/`（游戏本体）；游戏中心 `/games/hub/` 第一张卡片；`sitemap.xml`、根 `README.md` 目录树各加一行。
+  - **玩法**：带着 ¥2000 走出火车站 → 7 章主线（活下来 → 第一份工作 → 真正的职业 → 选择方向 → 职业发展 → 财富积累 → 人生选择）→ 五种结局（普通人生 / 职业经理人 / 技术专家 / 创业成功 / 财务自由）→ 无限人生。8 条职业各有小游戏，6 项技能，17 位有日程的 NPC，52 个任务，36 种随机事件，5 级住房，银行、投资（游戏内虚构资产，非真实行情）、创业，公交 / 地铁 / 出租车，手机 13 个 APP，3 个存档位。
+  - **工程**：`games/working-life/godot/`，14 个指定管理器 + 设置 / 天气 / 交通 / 数据自动加载，内容全部在 `data/*.json`；城市、建筑、人物全部程序化生成，音乐与音效由 `tools/gen_audio.py` 合成，中文字体为思源黑体子集（OFL）。文档：`README.md`、`ARCHITECTURE.md`、`GAME_DESIGN.md`、`TEST_REPORT.md`、`CHANGELOG.md`、`version.txt`。
+  - **网页导出**：无线程 Web 模板；文件名加内容哈希 `wl-<哈希>.*`；引擎 wasm 与《工地搬砖》逐字节相同，仓库只存一份。
+  - **站点改动**：`games/hub/index.html` 加卡片与 `.cv-wl` 封面样式；`scripts/theme/light_overrides.py` 把 Godot 源码目录加入跳过列表、介绍页与 `play/` 加入锁深色名单。
+  - **验证**：`tools/run_tests.sh` 语法检查 + **303 项自动化测试全部通过**（含从主菜单到结局再到无限模式的完整流程、存读档、各系统单测）；Xvfb 实跑截图无脚本错误；无头 Chromium 实际加载并操作网页版，控制台 0 错误、0 失败请求；介绍页 360 / 768 / 1280 无横向溢出；`validate_asset_versions.py` 通过；`build_public_site.py` 产物包含新页面（该脚本在未改动的 HEAD 上同样因缺少 CI 产物 `.pro-build/rich-preview` 以退出码 1 结束，与本次无关）。macOS Universal `.app` 导出成功（未入库、未在 Mac 真机运行）。构建：Godot Web 导出（`games/working-life/tools/build_web.sh`）。
+  - **已知限制**：低多边形程序化画面、无骨骼动画；未在真实 GPU / 手机 / Mac 上测帧率；首次加载约 42 MB；只有中文界面。
+
 - 2026-09-23，**游戏中心新增原创 3D 游戏《工地搬砖》ConstructionWorker V0.1（Godot 4 网页版）**。**已部署**（经项目所有者明确同意「合并。上线」，合并到 `main` 并随 GitHub Pages 发布）。
   - **入口**：`/games/construction-worker/`（介绍页）→ `/games/construction-worker/play/`（游戏本体）；游戏中心 `/games/hub/` 第一张卡片；`sitemap.xml` 新增一条。
   - **玩法闭环**：标题画面 → 开场字幕 → 工地门口「你刚来到这座城市，身上只剩下 300 元。」→ 找工头老王（「一天 280，管一顿饭，干不干？」）→ 接搬砖任务 → 在砖堆按 F 拿砖、送进黄框卸货区才计进度 → 搬够 20 块 ¥280 到账 → 食堂用饭票换盒饭 → 回宿舍睡觉 → 第二天。另有搬水泥、搬钢筋两个任务；体力 / 饥饿 / 水分、搬运熟练度（一次 1→2→4→6 块）、昼夜、食堂 / 小卖部 / 凉茶桶、JSON 存档（浏览器 IndexedDB）、Tab 任务面板、M 工地图、手机触屏操作。

@@ -1,0 +1,10 @@
+{
+  "note": "五个住房等级。period: night 按晚付费（前台办理）/ month 月租（每月 1 日自动扣款，签约时付押金一个月 + 首月）。sleep 为睡眠恢复系数，mood 为每天早上的心情加成，prestige 为体面度（影响面试与声望），storage 为家中储物格数。",
+  "list": [
+    {"id": "hotel", "level": 1, "name": "廉价旅馆", "location": "hotel", "rent": 50, "period": "night", "deposit": 0, "sleep": 0.8, "mood": -2, "prestige": 0, "storage": 4, "desc": "车站旁的小旅馆。隔音差，床很硬，但至少有张床。"},
+    {"id": "shared", "level": 2, "name": "合租房", "location": "shared_house", "rent": 800, "period": "month", "deposit": 800, "sleep": 0.9, "mood": 0, "prestige": 2, "storage": 10, "desc": "和三个陌生人共用厨房卫生间。房东老李人不错。"},
+    {"id": "apartment", "level": 3, "name": "普通公寓", "location": "apartment", "rent": 2500, "period": "month", "deposit": 2500, "sleep": 1.0, "mood": 2, "prestige": 5, "storage": 20, "desc": "一室一厅，终于有了自己的空间。"},
+    {"id": "luxury", "level": 4, "name": "高级公寓", "location": "luxury_apartment", "rent": 8000, "period": "month", "deposit": 8000, "sleep": 1.1, "mood": 4, "prestige": 10, "storage": 40, "desc": "二十六楼，落地窗外是整座霓虹城市。"},
+    {"id": "mansion", "level": 5, "name": "豪华住宅", "location": "villa", "rent": 30000, "period": "month", "deposit": 30000, "sleep": 1.2, "mood": 6, "prestige": 18, "storage": 80, "desc": "湾景独栋别墅，带花园和私人泳池。"}
+  ]
+}

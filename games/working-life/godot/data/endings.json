@@ -1,0 +1,25 @@
+{
+  "note": "五种人生结局。conditions 为达成条件（全部满足；any 为满足其一）。priority 越大越优先推荐。达成后在中央公园观景台「回顾人生」即可播放结局，之后可以继续无限人生模式。",
+  "list": [
+    {"id": "ordinary", "title": "普通人生", "en": "AN ORDINARY LIFE", "priority": 1, "color": "#7cff6b",
+     "goal": "稳定工作（当前工作出勤 20 个班次以上）+ 普通公寓或更好的住房 + 现金与存款合计 ¥100,000",
+     "conditions": {"has_job": true, "job_shifts_min": 20, "housing_min": 3, "liquid_min": 100000},
+     "text": ["霓虹灯依旧在雨里闪烁。", "你有一份稳定的工作，一间属于自己的公寓，一笔足够应付意外的存款。", "没有人会为你写传记，但每个清晨，你都知道自己为什么起床。", "在这座不眠的城市里，平凡地活下来，本身就是一种胜利。"]},
+    {"id": "manager", "title": "职业经理人", "en": "THE EXECUTIVE", "priority": 3, "color": "#ff2e88",
+     "goal": "成为高级管理人员：云途集团总监，或公司管理者路线升到副总裁 / CEO",
+     "conditions": {"any": [{"job_id": "office", "job_level_min": 5}, {"job_id": "manager", "job_level_min": 2}]},
+     "text": ["天穹大厦顶层的会议室里，所有人都在等你开口。", "从拖着行李箱走出火车站的那天起，你学会了沟通、学会了取舍、学会了为别人的饭碗负责。", "城市的天际线上，有一扇窗的灯为你而亮。", "你成了当年仰望的那种人。"]},
+    {"id": "tech", "title": "技术专家", "en": "THE ARCHITECT", "priority": 4, "color": "#22e4ff",
+     "goal": "电脑技能 Lv.10 + 星河科技 Tech Lead 或 CTO",
+     "conditions": {"skill": {"computer": 10}, "job_id": "tech", "job_level_min": 4},
+     "text": ["凌晨三点，星河科技的服务器平稳运行着一千万用户的请求。", "那套系统的核心模块，每一行都出自你手。", "你曾经连表格都不会用；现在，整座城市的数据在你设计的架构里流动。", "代码不会说谎。你也没有。"]},
+    {"id": "business", "title": "创业成功", "en": "THE FOUNDER", "priority": 5, "color": "#ffd23f",
+     "goal": "自己的公司发展到「中型企业」（25 名员工 + 累计营收 ¥5,000,000）",
+     "conditions": {"business_stage_min": 4},
+     "text": ["公司的霓虹招牌挂上了写字楼外墙。", "二十几个人因为你的一个念头有了工作；有人在这里第一次租到了像样的房子。", "你知道那种感觉——所以你付工资从不拖欠。", "新澜市又多了一个从零开始的故事，而这一次，故事的主角是你。"]},
+    {"id": "freedom", "title": "财务自由", "en": "FINANCIAL FREEDOM", "priority": 6, "color": "#b04dff",
+     "goal": "净资产达到 ¥5,000,000，且近 30 天被动收入（利息、分红、公司分红）折合每月 ¥20,000 以上",
+     "conditions": {"networth_min": 5000000, "passive_income_min": 20000},
+     "text": ["你不再需要为了房租算计每一顿饭。", "钱在替你工作：利息、分红、公司的利润，每个月准时到账。", "你终于可以只做自己想做的事。", "站在城市最高处，你想起火车站门口那个只有两千块的自己——谢谢你，没有放弃。"]}
+  ]
+}

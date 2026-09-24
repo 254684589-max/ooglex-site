@@ -1,0 +1,1098 @@
+{
+ "note": "城市地点。center 为世界坐标 [x, z]（米，X 向东、Z 向南）；size 为 [宽, 深]；facing 为正门朝向 n/s/e/w。points 与 spots 的坐标是建筑本地坐标 [x, z]：+z 指向正门外侧，+x 为从门外面向建筑时的右手侧。hours 为营业时间 [开, 关]，缺省为 24 小时。",
+ "list": [
+  {
+   "id": "train_station",
+   "name": "中央火车站",
+   "en": "NEO LAN CENTRAL",
+   "type": "station",
+   "center": [
+    0,
+    192
+   ],
+   "size": [
+    80,
+    28
+   ],
+   "floors": 3,
+   "facing": "n",
+   "neon": "#22e4ff",
+   "map": "交通",
+   "points": [],
+   "spots": {
+    "hall": [
+     0,
+     4
+    ],
+    "plaza": [
+     10,
+     20
+    ]
+   },
+   "short": "火车站"
+  },
+  {
+   "id": "talent_market",
+   "name": "人才市场",
+   "en": "TALENT HUB",
+   "type": "shop",
+   "center": [
+    -134,
+    -32
+   ],
+   "size": [
+    28,
+    20
+   ],
+   "floors": 3,
+   "facing": "s",
+   "neon": "#ffd23f",
+   "hours": [
+    8,
+    22
+   ],
+   "map": "求职",
+   "points": [
+    {
+     "kind": "jobboard",
+     "pos": [
+      -8,
+      2
+     ],
+     "label": "查看招聘信息"
+    },
+    {
+     "kind": "interview",
+     "pos": [
+      6,
+      -6
+     ],
+     "label": "参加面试",
+     "venue": "talent_market"
+    }
+   ],
+   "spots": {
+    "desk": [
+     6,
+     -8
+    ],
+    "board": [
+     -8,
+     4
+    ]
+   },
+   "short": "人才市场"
+  },
+  {
+   "id": "training_school",
+   "name": "职业培训学校",
+   "en": "SKILL ACADEMY",
+   "type": "shop",
+   "center": [
+    -102,
+    -32
+   ],
+   "size": [
+    24,
+    20
+   ],
+   "floors": 4,
+   "facing": "s",
+   "neon": "#7cff6b",
+   "hours": [
+    8,
+    21
+   ],
+   "map": "学习",
+   "points": [
+    {
+     "kind": "course",
+     "pos": [
+      0,
+      -6
+     ],
+     "label": "报名培训课程"
+    },
+    {
+     "kind": "shop",
+     "shop": "bookstore",
+     "pos": [
+      8,
+      2
+     ],
+     "label": "逛逛书店"
+    }
+   ],
+   "spots": {
+    "lectern": [
+     0,
+     -8
+    ],
+    "seat": [
+     -5,
+     -2
+    ]
+   },
+   "short": "培训学校"
+  },
+  {
+   "id": "tech_company",
+   "name": "星河科技",
+   "en": "GALAXY TECH",
+   "type": "tower",
+   "center": [
+    -120,
+    -108
+   ],
+   "size": [
+    40,
+    30
+   ],
+   "floors": 12,
+   "facing": "s",
+   "neon": "#22e4ff",
+   "hours": [
+    7,
+    23
+   ],
+   "map": "工作",
+   "points": [
+    {
+     "kind": "interview",
+     "pos": [
+      8,
+      6
+     ],
+     "label": "参加面试",
+     "venue": "tech_company"
+    },
+    {
+     "kind": "workstation",
+     "job": "tech",
+     "pos": [
+      -8,
+      -6
+     ],
+     "label": "开始上班（写代码）"
+    }
+   ],
+   "spots": {
+    "desk": [
+     -10,
+     -8
+    ],
+    "lounge": [
+     10,
+     -6
+    ]
+   },
+   "short": "星河科技"
+  },
+  {
+   "id": "office_tower",
+   "name": "天穹大厦",
+   "en": "SKYDOME TOWER",
+   "type": "tower",
+   "center": [
+    -40,
+    -106
+   ],
+   "size": [
+    36,
+    30
+   ],
+   "floors": 18,
+   "facing": "s",
+   "neon": "#ff2e88",
+   "hours": [
+    7,
+    23
+   ],
+   "map": "工作",
+   "points": [
+    {
+     "kind": "interview",
+     "pos": [
+      0,
+      7
+     ],
+     "label": "参加面试",
+     "venue": "office_tower"
+    },
+    {
+     "kind": "workstation",
+     "job": "office",
+     "pos": [
+      -9,
+      -6
+     ],
+     "label": "开始上班（文职）"
+    },
+    {
+     "kind": "workstation",
+     "job": "manager",
+     "pos": [
+      9,
+      -6
+     ],
+     "label": "开始上班（管理）"
+    }
+   ],
+   "spots": {
+    "desk_a": [
+     -11,
+     -9
+    ],
+    "desk_b": [
+     11,
+     -9
+    ],
+    "lobby": [
+     4,
+     4
+    ]
+   },
+   "short": "天穹大厦"
+  },
+  {
+   "id": "finance_center",
+   "name": "新澜金融中心",
+   "en": "NEO LAN FINANCE",
+   "type": "tower",
+   "center": [
+    30,
+    -110
+   ],
+   "size": [
+    30,
+    28
+   ],
+   "floors": 22,
+   "facing": "s",
+   "neon": "#ffd23f",
+   "hours": [
+    7,
+    23
+   ],
+   "map": "工作",
+   "points": [
+    {
+     "kind": "interview",
+     "pos": [
+      0,
+      6
+     ],
+     "label": "参加面试",
+     "venue": "finance_center"
+    },
+    {
+     "kind": "workstation",
+     "job": "finance",
+     "pos": [
+      -7,
+      -6
+     ],
+     "label": "开始上班（分析）"
+    }
+   ],
+   "spots": {
+    "desk": [
+     -8,
+     -8
+    ],
+    "lounge": [
+     7,
+     -5
+    ]
+   },
+   "short": "金融中心"
+  },
+  {
+   "id": "bank",
+   "name": "新澜银行",
+   "en": "NEO LAN BANK",
+   "type": "shop",
+   "center": [
+    62,
+    -100
+   ],
+   "size": [
+    16,
+    18
+   ],
+   "floors": 4,
+   "facing": "s",
+   "neon": "#ffd23f",
+   "hours": [
+    9,
+    17
+   ],
+   "map": "金融",
+   "points": [
+    {
+     "kind": "bank_counter",
+     "pos": [
+      0,
+      -5
+     ],
+     "label": "办理银行业务"
+    },
+    {
+     "kind": "atm",
+     "pos": [
+      5,
+      11
+     ],
+     "label": "使用 ATM",
+     "key": "pickup",
+     "always_open": true
+    }
+   ],
+   "spots": {
+    "counter": [
+     0,
+     -7
+    ]
+   },
+   "short": "银行"
+  },
+  {
+   "id": "mall",
+   "name": "霓虹广场",
+   "en": "NEON PLAZA",
+   "type": "tower",
+   "center": [
+    120,
+    -106
+   ],
+   "size": [
+    50,
+    30
+   ],
+   "floors": 6,
+   "facing": "s",
+   "neon": "#b04dff",
+   "hours": [
+    10,
+    22
+   ],
+   "map": "购物",
+   "points": [
+    {
+     "kind": "shop",
+     "shop": "electronics",
+     "pos": [
+      -14,
+      -6
+     ],
+     "label": "数码城"
+    },
+    {
+     "kind": "shop",
+     "shop": "fashion",
+     "pos": [
+      14,
+      -6
+     ],
+     "label": "服装店"
+    },
+    {
+     "kind": "incubator",
+     "pos": [
+      0,
+      -9
+     ],
+     "label": "创业孵化中心",
+     "always_open": true
+    }
+   ],
+   "spots": {
+    "plaza": [
+     0,
+     18
+    ],
+    "atrium": [
+     0,
+     0
+    ]
+   },
+   "short": "霓虹广场"
+  },
+  {
+   "id": "park",
+   "name": "中央公园",
+   "en": "CENTRAL PARK",
+   "type": "park",
+   "center": [
+    -40,
+    -40
+   ],
+   "size": [
+    64,
+    64
+   ],
+   "facing": "s",
+   "neon": "#7cff6b",
+   "map": "休闲",
+   "points": [
+    {
+     "kind": "bench",
+     "pos": [
+      -14,
+      14
+     ],
+     "label": "坐下休息"
+    },
+    {
+     "kind": "bench",
+     "pos": [
+      16,
+      10
+     ],
+     "label": "坐下休息"
+    },
+    {
+     "kind": "rooftop",
+     "pos": [
+      0,
+      -16
+     ],
+     "label": "在观景台眺望城市",
+     "elevated": 4.0
+    }
+   ],
+   "spots": {
+    "lawn": [
+     10,
+     16
+    ],
+    "pond": [
+     -12,
+     4
+    ],
+    "path": [
+     18,
+     -6
+    ],
+    "hill": [
+     0,
+     -8
+    ]
+   },
+   "short": "中央公园"
+  },
+  {
+   "id": "restaurant",
+   "name": "芳姐小馆",
+   "en": "FANG'S KITCHEN",
+   "type": "shop",
+   "center": [
+    20,
+    -30
+   ],
+   "size": [
+    18,
+    16
+   ],
+   "floors": 3,
+   "facing": "s",
+   "neon": "#ff5a36",
+   "hours": [
+    10,
+    23
+   ],
+   "map": "餐饮",
+   "points": [
+    {
+     "kind": "shop",
+     "shop": "restaurant",
+     "pos": [
+      4,
+      -4
+     ],
+     "label": "点餐"
+    },
+    {
+     "kind": "workstation",
+     "job": "restaurant",
+     "pos": [
+      -5,
+      -5
+     ],
+     "label": "开始上班（服务员）"
+    }
+   ],
+   "spots": {
+    "counter": [
+     4,
+     -6
+    ],
+    "table": [
+     -4,
+     2
+    ]
+   },
+   "short": "餐厅"
+  },
+  {
+   "id": "cafe",
+   "name": "像素咖啡",
+   "en": "PIXEL CAFE",
+   "type": "shop",
+   "center": [
+    42,
+    -30
+   ],
+   "size": [
+    16,
+    16
+   ],
+   "floors": 3,
+   "facing": "s",
+   "neon": "#22e4ff",
+   "hours": [
+    7,
+    22
+   ],
+   "map": "餐饮",
+   "points": [
+    {
+     "kind": "shop",
+     "shop": "cafe",
+     "pos": [
+      0,
+      -4
+     ],
+     "label": "点一杯咖啡"
+    },
+    {
+     "kind": "relax",
+     "pos": [
+      -4,
+      3
+     ],
+     "label": "坐一会儿（心情+ 压力-）",
+     "key": "pickup"
+    }
+   ],
+   "spots": {
+    "counter": [
+     0,
+     -6
+    ],
+    "window": [
+     4,
+     3
+    ],
+    "corner": [
+     -4,
+     2
+    ]
+   },
+   "short": "咖啡"
+  },
+  {
+   "id": "store",
+   "name": "24h 便利店",
+   "en": "ALLDAY MART",
+   "type": "shop",
+   "center": [
+    62,
+    -30
+   ],
+   "size": [
+    14,
+    16
+   ],
+   "floors": 3,
+   "facing": "s",
+   "neon": "#7cff6b",
+   "map": "购物",
+   "points": [
+    {
+     "kind": "shop",
+     "shop": "convenience",
+     "pos": [
+      2,
+      -4
+     ],
+     "label": "购物"
+    },
+    {
+     "kind": "workstation",
+     "job": "store",
+     "pos": [
+      -3,
+      -4
+     ],
+     "label": "开始上班（收银）"
+    }
+   ],
+   "spots": {
+    "counter": [
+     2,
+     -6
+    ],
+    "aisle": [
+     -3,
+     2
+    ]
+   },
+   "short": "便利店"
+  },
+  {
+   "id": "hospital",
+   "name": "新澜第一医院",
+   "en": "NEO LAN HOSPITAL",
+   "type": "shop",
+   "center": [
+    106,
+    -34
+   ],
+   "size": [
+    26,
+    22
+   ],
+   "floors": 6,
+   "facing": "s",
+   "neon": "#22e4ff",
+   "map": "医疗",
+   "points": [
+    {
+     "kind": "hospital",
+     "pos": [
+      -5,
+      -6
+     ],
+     "label": "挂号看病"
+    },
+    {
+     "kind": "shop",
+     "shop": "pharmacy",
+     "pos": [
+      6,
+      -4
+     ],
+     "label": "药房"
+    }
+   ],
+   "spots": {
+    "clinic": [
+     -6,
+     -8
+    ],
+    "hall": [
+     4,
+     2
+    ]
+   },
+   "short": "医院"
+  },
+  {
+   "id": "gym",
+   "name": "脉冲健身",
+   "en": "PULSE GYM",
+   "type": "shop",
+   "center": [
+    138,
+    -34
+   ],
+   "size": [
+    18,
+    18
+   ],
+   "floors": 3,
+   "facing": "s",
+   "neon": "#ff2e88",
+   "hours": [
+    6,
+    23
+   ],
+   "map": "休闲",
+   "points": [
+    {
+     "kind": "gym",
+     "pos": [
+      -3,
+      -5
+     ],
+     "label": "健身锻炼"
+    },
+    {
+     "kind": "shop",
+     "shop": "gym",
+     "pos": [
+      5,
+      -2
+     ],
+     "label": "前台"
+    }
+   ],
+   "spots": {
+    "floor": [
+     -3,
+     -6
+    ],
+    "desk": [
+     5,
+     -4
+    ]
+   },
+   "short": "健身"
+  },
+  {
+   "id": "warehouse",
+   "name": "速达物流园",
+   "en": "SPEEDEX LOGISTICS",
+   "type": "warehouse",
+   "center": [
+    -120,
+    40
+   ],
+   "size": [
+    44,
+    30
+   ],
+   "floors": 1,
+   "facing": "n",
+   "neon": "#ffd23f",
+   "hours": [
+    6,
+    22
+   ],
+   "map": "工作",
+   "points": [
+    {
+     "kind": "workstation",
+     "job": "warehouse",
+     "pos": [
+      0,
+      -4
+     ],
+     "label": "开始上班（分拣）"
+    }
+   ],
+   "spots": {
+    "floor": [
+     -6,
+     -6
+    ],
+    "office": [
+     14,
+     -8
+    ]
+   },
+   "short": "物流园"
+  },
+  {
+   "id": "shared_house",
+   "name": "幸福里合租房",
+   "en": "HAPPY LANE",
+   "type": "home",
+   "center": [
+    -56,
+    30
+   ],
+   "size": [
+    18,
+    16
+   ],
+   "floors": 6,
+   "facing": "n",
+   "neon": "#ffd23f",
+   "map": "住房",
+   "home": "shared",
+   "points": [
+    {
+     "kind": "lease",
+     "pos": [
+      5,
+      5
+     ],
+     "label": "找房东签约"
+    }
+   ],
+   "spots": {
+    "lobby": [
+     5,
+     4
+    ]
+   },
+   "short": "合租"
+  },
+  {
+   "id": "apartment",
+   "name": "阳光公寓",
+   "en": "SUNNY APARTMENTS",
+   "type": "home",
+   "center": [
+    -24,
+    30
+   ],
+   "size": [
+    18,
+    16
+   ],
+   "floors": 10,
+   "facing": "n",
+   "neon": "#22e4ff",
+   "map": "住房",
+   "home": "apartment",
+   "points": [
+    {
+     "kind": "lease",
+     "pos": [
+      5,
+      5
+     ],
+     "label": "租房咨询"
+    }
+   ],
+   "spots": {
+    "lobby": [
+     5,
+     4
+    ]
+   },
+   "short": "公寓"
+  },
+  {
+   "id": "supermarket",
+   "name": "万家超市",
+   "en": "MEGAMART",
+   "type": "shop",
+   "center": [
+    30,
+    32
+   ],
+   "size": [
+    26,
+    20
+   ],
+   "floors": 2,
+   "facing": "n",
+   "neon": "#ff5a36",
+   "hours": [
+    8,
+    22
+   ],
+   "map": "购物",
+   "points": [
+    {
+     "kind": "shop",
+     "shop": "supermarket",
+     "pos": [
+      0,
+      -4
+     ],
+     "label": "超市购物"
+    }
+   ],
+   "spots": {
+    "checkout": [
+     0,
+     -6
+    ],
+    "aisle": [
+     -8,
+     0
+    ]
+   },
+   "short": "超市"
+  },
+  {
+   "id": "luxury_apartment",
+   "name": "云顶公寓",
+   "en": "CLOUD TOP",
+   "type": "home",
+   "center": [
+    120,
+    32
+   ],
+   "size": [
+    24,
+    20
+   ],
+   "floors": 26,
+   "facing": "n",
+   "neon": "#b04dff",
+   "map": "住房",
+   "home": "luxury",
+   "points": [
+    {
+     "kind": "lease",
+     "pos": [
+      7,
+      6
+     ],
+     "label": "物业前台"
+    }
+   ],
+   "spots": {
+    "lobby": [
+     6,
+     5
+    ]
+   },
+   "short": "云顶公寓"
+  },
+  {
+   "id": "construction_site",
+   "name": "滨江项目工地",
+   "en": "RIVERSIDE SITE",
+   "type": "site",
+   "center": [
+    -120,
+    120
+   ],
+   "size": [
+    60,
+    56
+   ],
+   "facing": "n",
+   "neon": "#ffd23f",
+   "hours": [
+    6,
+    20
+   ],
+   "map": "工作",
+   "points": [
+    {
+     "kind": "workstation",
+     "job": "construction",
+     "pos": [
+      20,
+      18
+     ],
+     "label": "开始上班（搬运）"
+    }
+   ],
+   "spots": {
+    "office": [
+     20,
+     20
+    ],
+    "yard": [
+     -10,
+     6
+    ]
+   },
+   "short": "工地"
+  },
+  {
+   "id": "old_street",
+   "name": "旧街区",
+   "en": "OLD TOWN",
+   "type": "oldtown",
+   "center": [
+    -40,
+    120
+   ],
+   "size": [
+    64,
+    64
+   ],
+   "facing": "n",
+   "neon": "#ff5a36",
+   "map": "街区",
+   "points": [
+    {
+     "kind": "shop",
+     "shop": "street_food",
+     "pos": [
+      0,
+      20
+     ],
+     "label": "路边小吃摊",
+     "hours": [
+      16,
+      26
+     ]
+    }
+   ],
+   "spots": {
+    "alley": [
+     10,
+     10
+    ],
+    "stall": [
+     0,
+     22
+    ]
+   },
+   "short": "旧街区"
+  },
+  {
+   "id": "hotel",
+   "name": "安心旅馆",
+   "en": "SAFE INN",
+   "type": "home",
+   "center": [
+    30,
+    134
+   ],
+   "size": [
+    18,
+    16
+   ],
+   "floors": 5,
+   "facing": "s",
+   "neon": "#ff2e88",
+   "map": "住房",
+   "home": "hotel",
+   "points": [
+    {
+     "kind": "hotel_desk",
+     "pos": [
+      -5,
+      4
+     ],
+     "label": "前台：办理入住"
+    }
+   ],
+   "spots": {
+    "desk": [
+     -5,
+     2
+    ]
+   },
+   "short": "旅馆"
+  },
+  {
+   "id": "villa",
+   "name": "湾景别墅",
+   "en": "BAYVIEW VILLA",
+   "type": "home",
+   "center": [
+    120,
+    126
+   ],
+   "size": [
+    22,
+    18
+   ],
+   "floors": 3,
+   "facing": "s",
+   "neon": "#7cff6b",
+   "map": "住房",
+   "home": "mansion",
+   "points": [
+    {
+     "kind": "lease",
+     "pos": [
+      6,
+      6
+     ],
+     "label": "置业顾问"
+    }
+   ],
+   "spots": {
+    "garden": [
+     6,
+     12
+    ]
+   },
+   "short": "别墅"
+  }
+ ]
+}

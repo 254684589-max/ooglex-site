@@ -1,0 +1,156 @@
+{
+ "note": "商店货架。location 为所在地点（营业时间以地点为准）；eat_in 为 true 时可以「买了就吃」。",
+ "list": [
+  {
+   "id": "convenience",
+   "name": "24h 便利店",
+   "location": "store",
+   "eat_in": true,
+   "items": [
+    "water",
+    "noodles",
+    "bread",
+    "synth_bar",
+    "bento",
+    "coffee",
+    "energy_drink",
+    "medicine"
+   ]
+  },
+  {
+   "id": "supermarket",
+   "name": "万家超市",
+   "location": "supermarket",
+   "eat_in": false,
+   "discount": 0.9,
+   "items": [
+    "water",
+    "noodles",
+    "bread",
+    "synth_bar",
+    "bento",
+    "vitamins",
+    "medicine",
+    "wrench",
+    "flowers",
+    "gift_box",
+    "wine",
+    "outfit_casual"
+   ]
+  },
+  {
+   "id": "restaurant",
+   "name": "芳姐小馆",
+   "location": "restaurant",
+   "eat_in": true,
+   "items": [
+    "bento",
+    "fastfood",
+    "nutrition",
+    "water"
+   ]
+  },
+  {
+   "id": "cafe",
+   "name": "像素咖啡",
+   "location": "cafe",
+   "eat_in": true,
+   "items": [
+    "coffee",
+    "cake",
+    "bread"
+   ]
+  },
+  {
+   "id": "bookstore",
+   "name": "学校书店",
+   "location": "training_school",
+   "eat_in": false,
+   "items": [
+    "book_computer",
+    "book_comm",
+    "book_fitness",
+    "book_management",
+    "book_finance",
+    "book_technical",
+    "book_adv_computer",
+    "book_adv_comm",
+    "book_adv_finance",
+    "book_adv_management"
+   ]
+  },
+  {
+   "id": "electronics",
+   "name": "霓虹数码城",
+   "location": "mall",
+   "eat_in": false,
+   "items": [
+    "laptop",
+    "phone_pro",
+    "skateboard"
+   ]
+  },
+  {
+   "id": "fashion",
+   "name": "霓虹服装店",
+   "location": "mall",
+   "eat_in": false,
+   "items": [
+    "outfit_casual",
+    "outfit_smart",
+    "outfit_neon",
+    "outfit_suit",
+    "flowers",
+    "gift_box",
+    "wine"
+   ]
+  },
+  {
+   "id": "pharmacy",
+   "name": "医院药房",
+   "location": "hospital",
+   "eat_in": false,
+   "items": [
+    "medicine",
+    "vitamins",
+    "water"
+   ]
+  },
+  {
+   "id": "gym",
+   "name": "脉冲健身前台",
+   "location": "gym",
+   "eat_in": true,
+   "items": [
+    "gym_card",
+    "synth_bar",
+    "water",
+    "energy_drink"
+   ]
+  },
+  {
+   "id": "street_food",
+   "name": "旧街小吃摊",
+   "location": "old_street",
+   "eat_in": true,
+   "items": [
+    "street_skewers",
+    "noodles",
+    "water"
+   ]
+  },
+  {
+   "id": "vending",
+   "name": "自动售货机",
+   "location": "",
+   "eat_in": true,
+   "markup": 1.2,
+   "items": [
+    "water",
+    "coffee",
+    "energy_drink",
+    "synth_bar"
+   ]
+  }
+ ]
+}

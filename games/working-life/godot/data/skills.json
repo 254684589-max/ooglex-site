@@ -1,0 +1,14 @@
+{
+  "note": "六项技能。等级 0~10；从 L 级升到 L+1 级需要 base + step × L 点经验。",
+  "base": 80,
+  "step": 40,
+  "max_level": 10,
+  "list": [
+    {"id": "computer", "name": "电脑", "en": "Computer", "color": "#22e4ff", "desc": "办公软件、编程、数据处理。程序员与办公室岗位的核心技能。"},
+    {"id": "communication", "name": "沟通", "en": "Communication", "color": "#ffd23f", "desc": "说服、协调、服务顾客。影响面试、销售与管理岗位。"},
+    {"id": "fitness", "name": "体能", "en": "Fitness", "color": "#7cff6b", "desc": "力量与耐力。体力消耗更少，体力类工作表现更好。"},
+    {"id": "management", "name": "管理", "en": "Management", "color": "#ff2e88", "desc": "计划、分工、预算。晋升管理岗与创业的门槛。"},
+    {"id": "finance", "name": "金融", "en": "Finance", "color": "#b04dff", "desc": "财务、估值、市场分析。金融岗位与投资收益的基础。"},
+    {"id": "technical", "name": "技术", "en": "Technical", "color": "#ff5a36", "desc": "工具、设备、维修。仓储与工地岗位晋升需要。"}
+  ]
+}

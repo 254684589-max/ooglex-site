@@ -1,0 +1,5 @@
+root = true
+
+[*.gd]
+indent_style = tab
+charset = utf-8

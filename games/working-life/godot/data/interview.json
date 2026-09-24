@@ -1,0 +1,97 @@
+{
+  "note": "面试题库。每题三个选项，score 为得分（0~10）；skill 表示该题额外看哪项技能。pools 定义各类岗位抽哪些题。",
+  "pools": {
+    "service": ["intro", "why_job", "customer_angry", "late_shift", "stand_long"],
+    "labor": ["intro", "why_job", "heavy_work", "safety", "late_shift"],
+    "office": ["intro", "why_company", "excel", "priority", "team_conflict", "five_years"],
+    "tech": ["intro", "why_company", "bug_prod", "code_review", "learn_new", "five_years"],
+    "finance": ["intro", "why_company", "market_crash", "risk", "report", "five_years"],
+    "management": ["intro", "lead_team", "budget_cut", "underperformer", "team_conflict", "five_years"]
+  },
+  "list": [
+    {"id": "intro", "q": "先简单做个自我介绍吧。", "skill": "communication", "options": [
+      {"text": "我刚来新澜市，学东西快、能吃苦，希望在这里站稳脚跟。", "score": 9},
+      {"text": "呃……我叫……没什么特别的。", "score": 2},
+      {"text": "简历上都写着呢，您自己看吧。", "score": 0}]},
+    {"id": "why_job", "q": "为什么想做这份工作？", "options": [
+      {"text": "先养活自己，同时积累经验，干好了也想往上走。", "score": 9},
+      {"text": "就是缺钱。", "score": 4},
+      {"text": "别的地方都不要我。", "score": 1}]},
+    {"id": "why_company", "q": "你为什么选择我们公司？", "skill": "communication", "options": [
+      {"text": "我研究过贵公司的业务，觉得自己的能力正好能用上。", "score": 10},
+      {"text": "工资比较高。", "score": 4},
+      {"text": "随便投的，没想太多。", "score": 0}]},
+    {"id": "customer_angry", "q": "顾客冲你发火，说你算错钱了，怎么办？", "skill": "communication", "options": [
+      {"text": "先道歉安抚，再一起核对小票，错了立刻改。", "score": 10},
+      {"text": "据理力争，我肯定没算错。", "score": 3},
+      {"text": "叫老板来处理。", "score": 5}]},
+    {"id": "late_shift", "q": "有时要上晚班或者周末加班，能接受吗？", "options": [
+      {"text": "可以，提前排好班就行。", "score": 9},
+      {"text": "看情况吧。", "score": 5},
+      {"text": "不行，我下班后要打游戏。", "score": 1}]},
+    {"id": "stand_long", "q": "一站就是八个小时，吃得消吗？", "skill": "fitness", "options": [
+      {"text": "没问题，我体力还可以。", "score": 8},
+      {"text": "应该……可以吧。", "score": 5},
+      {"text": "能不能给我一把椅子？", "score": 2}]},
+    {"id": "heavy_work", "q": "我们这儿都是重活，一天搬几百件货，你行吗？", "skill": "fitness", "options": [
+      {"text": "行，力气活我不怕。", "score": 9},
+      {"text": "我试试。", "score": 6},
+      {"text": "有没有轻松点的岗位？", "score": 2}]},
+    {"id": "safety", "q": "干活时发现安全隐患，你会怎么做？", "skill": "technical", "options": [
+      {"text": "立刻停下，报告班长，排除了再干。", "score": 10},
+      {"text": "小心点绕过去继续干。", "score": 3},
+      {"text": "不关我的事。", "score": 0}]},
+    {"id": "excel", "q": "给你一千行杂乱的报销数据，一个下午能整理好吗？", "skill": "computer", "options": [
+      {"text": "用表格的筛选和公式分类汇总，一个下午足够。", "score": 10},
+      {"text": "我一行一行手动整理。", "score": 4},
+      {"text": "什么是表格？", "score": 0}]},
+    {"id": "priority", "q": "老板同时给你三件急事，你怎么安排？", "skill": "management", "options": [
+      {"text": "先确认优先级和截止时间，重要紧急的先做，其余及时同步进度。", "score": 10},
+      {"text": "按顺序一件件来。", "score": 5},
+      {"text": "全部同时开工。", "score": 2}]},
+    {"id": "team_conflict", "q": "同事和你意见不合，吵起来了，怎么办？", "skill": "communication", "options": [
+      {"text": "冷静下来，回到事实和目标，一起找双方都能接受的方案。", "score": 10},
+      {"text": "找领导评理。", "score": 5},
+      {"text": "以后不跟他说话。", "score": 1}]},
+    {"id": "five_years", "q": "你五年后想成为什么样的人？", "options": [
+      {"text": "在专业上独当一面，也能带团队。", "score": 9},
+      {"text": "还没想好。", "score": 4},
+      {"text": "财务自由，不用再上班。", "score": 3}]},
+    {"id": "bug_prod", "q": "线上系统凌晨出了严重 Bug，你是值班的人，第一步做什么？", "skill": "computer", "options": [
+      {"text": "先回滚止损，保住服务，再查日志定位根因。", "score": 10},
+      {"text": "直接在线上改代码试试。", "score": 3},
+      {"text": "等明天上班再说。", "score": 0}]},
+    {"id": "code_review", "q": "同事在代码评审里指出你的写法有问题，你会？", "skill": "computer", "options": [
+      {"text": "认真看理由，对的就改，不同意就用数据讨论。", "score": 10},
+      {"text": "能跑就行，不用改。", "score": 2},
+      {"text": "改是改，心里不服。", "score": 5}]},
+    {"id": "learn_new", "q": "项目要用一门你没学过的语言，一周后交付，怎么办？", "skill": "computer", "options": [
+      {"text": "先抓核心语法和项目需要的部分，边做边学，及时同步风险。", "score": 10},
+      {"text": "跟老板说我不会。", "score": 3},
+      {"text": "通宵七天硬学。", "score": 5}]},
+    {"id": "market_crash", "q": "市场一天跌了 7%，客户打电话要清仓，你怎么建议？", "skill": "finance", "options": [
+      {"text": "先了解他的资金需求和风险承受力，再看基本面决定是否调整，不在恐慌中做决定。", "score": 10},
+      {"text": "赶紧卖，跑得快。", "score": 3},
+      {"text": "抄底！全仓买入！", "score": 2}]},
+    {"id": "risk", "q": "高收益和低风险，能不能同时拥有？", "skill": "finance", "options": [
+      {"text": "长期看收益与风险相匹配，只能通过分散配置改善风险收益比。", "score": 10},
+      {"text": "能，我知道一只必涨股。", "score": 0},
+      {"text": "不知道。", "score": 3}]},
+    {"id": "report", "q": "明早要交行业研究报告，现在数据还缺一半，怎么办？", "skill": "finance", "options": [
+      {"text": "先用已有数据搭好框架和结论假设，标明缺口，同时追数据补全。", "score": 10},
+      {"text": "编一些数据先交差。", "score": 0},
+      {"text": "申请延期。", "score": 5}]},
+    {"id": "lead_team", "q": "接手一个士气低落的团队，第一个月做什么？", "skill": "management", "options": [
+      {"text": "一对一了解每个人，找出症结，先拿下一个小胜利建立信心。", "score": 10},
+      {"text": "开大会立规矩。", "score": 5},
+      {"text": "先裁掉几个。", "score": 2}]},
+    {"id": "budget_cut", "q": "预算被砍了 30%，但目标不变，你怎么办？", "skill": "management", "options": [
+      {"text": "重新排优先级，砍掉低价值项目，把资源集中到关键目标上。", "score": 10},
+      {"text": "每个项目都砍 30%。", "score": 4},
+      {"text": "跟老板说做不到。", "score": 2}]},
+    {"id": "underperformer", "q": "团队里有人连续三个月不达标，怎么处理？", "skill": "management", "options": [
+      {"text": "先沟通找原因，给明确目标和辅导期，仍不改善再调整岗位。", "score": 10},
+      {"text": "直接开除。", "score": 3},
+      {"text": "算了，睁一只眼闭一只眼。", "score": 2}]}
+  ]
+}
