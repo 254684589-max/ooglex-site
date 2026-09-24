@@ -694,7 +694,7 @@
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-23",
-      "name": "Agomab Therapeutics NV",
+      "name": "AgomAb Therapeutics NV",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "Belgium",
@@ -1829,8 +1829,7 @@
       "sicDescription": "Services-Prepackaged Software",
       "symbol": "ARQQ",
       "tickers": [
-        "ARQQ",
-        "ARQQW"
+        "ARQQ"
       ]
     },
     "AS": {
@@ -2187,6 +2186,31 @@
         "ATS"
       ]
     },
+    "ATTT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1948443,
+      "country": "Virgin Islands, British",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "D8",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-07-31",
+      "name": "Raytech Holding Ltd",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Hong Kong",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 3630,
+      "sicDescription": "Household Appliances",
+      "symbol": "ATTT",
+      "tickers": [
+        "ATTT"
+      ]
+    },
     "AU": {
       "annualForm": "20-F/40-F",
       "cik": 1973832,
@@ -2467,7 +2491,7 @@
       "annualForm": "20-F/40-F",
       "cik": 1175596,
       "country": "Canada",
-      "countryBasis": "business-address",
+      "countryBasis": "state-of-incorporation",
       "countryCode": "A1",
       "countryRejected": null,
       "entityType": "other",
@@ -3104,7 +3128,6 @@
       "sicDescription": "Retail-Jewelry Stores",
       "symbol": "BGICF",
       "tickers": [
-        "BGI",
         "BGICF"
       ]
     },
@@ -3656,7 +3679,7 @@
       "countryRejected": null,
       "entityType": "other",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-13",
       "name": "Basel Medical Group Ltd",
@@ -4436,32 +4459,6 @@
       "tickers": [
         "BTAFF",
         "BTI"
-      ]
-    },
-    "BTOG": {
-      "annualForm": "20-F/40-F",
-      "cik": 1735556,
-      "country": "Cayman Islands",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "E9",
-      "countryRejected": null,
-      "entityType": "other",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer",
-      "filesFormSd": false,
-      "lastAnnual": "2025-10-31",
-      "name": "SANGRIX INC.",
-      "offshoreIncorporation": true,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Singapore",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 6199,
-      "sicDescription": "Finance Services",
-      "symbol": "BTOG",
-      "tickers": [
-        "BTOG",
-        "SGRX"
       ]
     },
     "BTQ": {
@@ -5984,7 +5981,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-23",
       "name": "Caledonia Mining Corp Plc",
       "offshoreIncorporation": false,
@@ -6868,7 +6865,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": null,
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-19",
       "name": "CENOVUS ENERGY INC.",
       "offshoreIncorporation": false,
@@ -7886,6 +7883,32 @@
         "DTCKF"
       ]
     },
+    "DUNXF": {
+      "annualForm": "20-F/40-F",
+      "cik": 1648636,
+      "country": "Canada",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "A1",
+      "countryRejected": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-05-27",
+      "name": "Dune Oil Corp.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Turkey",
+      "operatingRegion": null,
+      "region": "British Columbia",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "DUNXF",
+      "tickers": [
+        "DUNXF",
+        "TRLEF"
+      ]
+    },
     "DUO": {
       "annualForm": "20-F/40-F",
       "cik": 1750593,
@@ -8022,7 +8045,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-30",
       "name": "ECOPETROL S.A.",
       "offshoreIncorporation": false,
@@ -8186,6 +8209,32 @@
       "symbol": "EDTK",
       "tickers": [
         "EDTK"
+      ]
+    },
+    "EDU": {
+      "annualForm": "20-F/40-F",
+      "cik": 1372920,
+      "country": "Cayman Islands",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "E9",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "NYSE",
+      "filerCategory": "Large accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-22",
+      "name": "New Oriental Education & Technology Group Inc.",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "China",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 8200,
+      "sicDescription": "Services-Educational Services",
+      "symbol": "EDU",
+      "tickers": [
+        "EDU",
+        "NWOEF"
       ]
     },
     "EEIQ": {
@@ -8839,8 +8888,7 @@
       "sicDescription": "Pharmaceutical Preparations",
       "symbol": "EOCN",
       "tickers": [
-        "EOCN",
-        "GLMD"
+        "EOCN"
       ]
     },
     "EPOW": {
@@ -10566,7 +10614,6 @@
       "symbol": "GFR",
       "tickers": [
         "GFR",
-        "GFR-RI",
         "GFRWF"
       ]
     },
@@ -11203,6 +11250,31 @@
         "GMM"
       ]
     },
+    "GMTL": {
+      "annualForm": "20-F/40-F",
+      "cik": 2039972,
+      "country": "United Kingdom",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "X0",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "NYSE",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-17",
+      "name": "Guardian Metal Resources PLC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United Kingdom",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "GMTL",
+      "tickers": [
+        "GMTL"
+      ]
+    },
     "GNOLF": {
       "annualForm": "20-F/40-F",
       "cik": 1261002,
@@ -11768,6 +11840,31 @@
         "GSUN"
       ]
     },
+    "GTMAY": {
+      "annualForm": "20-F/40-F",
+      "cik": 1163560,
+      "country": "Mexico",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "O5",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-11",
+      "name": "GRUPO TMM SAB",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Mexico",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 4412,
+      "sicDescription": "Deep Sea Foreign Transportation of  Freight",
+      "symbol": "GTMAY",
+      "tickers": [
+        "GTMAY"
+      ]
+    },
     "GVH": {
       "annualForm": "20-F/40-F",
       "cik": 1978527,
@@ -11841,6 +11938,31 @@
       "symbol": "HAFN",
       "tickers": [
         "HAFN"
+      ]
+    },
+    "HAMVF": {
+      "annualForm": "20-F/40-F",
+      "cik": 2039079,
+      "country": "Virgin Islands, British",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "D8",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2025-10-24",
+      "name": "Hamco Ventures Ltd",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Hong Kong",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 8742,
+      "sicDescription": "Services-Management Consulting Services",
+      "symbol": "HAMVF",
+      "tickers": [
+        "HAMVF"
       ]
     },
     "HAO": {
@@ -12955,6 +13077,31 @@
       "symbol": "IAG",
       "tickers": [
         "IAG"
+      ]
+    },
+    "IBG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1924482,
+      "country": "Australia",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "C3",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-17",
+      "name": "Innovation Beverage Group Ltd",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Australia",
+      "operatingRegion": "AUSTRALIA",
+      "region": null,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "symbol": "IBG",
+      "tickers": [
+        "IBG"
       ]
     },
     "IBN": {
@@ -15059,7 +15206,7 @@
       "countryRejected": null,
       "entityType": "other",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-08-19",
       "name": "KNOREX LTD.",
@@ -15199,34 +15346,6 @@
       "symbol": "KT",
       "tickers": [
         "KT"
-      ]
-    },
-    "KWM": {
-      "annualForm": "20-F/40-F",
-      "cik": 2000756,
-      "country": "Cayman Islands",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "E9",
-      "countryRejected": null,
-      "entityType": "other",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-05-15",
-      "name": "Nexus Advanced Technologies Inc.",
-      "offshoreIncorporation": true,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Cayman Islands",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 7819,
-      "sicDescription": "Services-Allied To Motion Picture Production",
-      "symbol": "KWM",
-      "tickers": [
-        "KWM",
-        "KWMWW",
-        "NXAT",
-        "NXATW"
       ]
     },
     "KXIN": {
@@ -15869,7 +15988,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-28",
       "name": "Loma Negra Compania Industrial Argentina Sociedad Anonima",
       "offshoreIncorporation": false,
@@ -16146,7 +16265,7 @@
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-30",
+      "lastAnnual": "2026-09-16",
       "name": "LuxExperience B.V.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -16349,7 +16468,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-03-03",
+      "lastAnnual": "2026-09-17",
       "name": "Magnitude International Ltd",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
@@ -16500,14 +16619,14 @@
       "filerCategory": "Non-accelerated filer",
       "filesFormSd": false,
       "lastAnnual": "2026-04-27",
-      "name": "Check-Cap Ltd",
+      "name": "MBody AI Ltd.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "Israel",
       "operatingRegion": "ISRAEL",
       "region": null,
-      "sic": 3844,
-      "sicDescription": "X-Ray Apparatus & Tubes & Related Irradiation Apparatus",
+      "sic": 7373,
+      "sicDescription": "Services-Computer Integrated Systems Design",
       "symbol": "MBAI",
       "tickers": [
         "MBAI"
@@ -17966,7 +18085,7 @@
       "exchange": "NYSE",
       "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-03-31",
+      "lastAnnual": "2026-09-15",
       "name": "NORTHERN DYNASTY MINERALS LTD",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -19351,6 +19470,32 @@
         "NWGL"
       ]
     },
+    "NXAT": {
+      "annualForm": "20-F/40-F",
+      "cik": 2000756,
+      "country": "Cayman Islands",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "E9",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-05-15",
+      "name": "Nexus Advanced Technologies Inc.",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Cayman Islands",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 7819,
+      "sicDescription": "Services-Allied To Motion Picture Production",
+      "symbol": "NXAT",
+      "tickers": [
+        "NXAT",
+        "NXATW"
+      ]
+    },
     "NXE": {
       "annualForm": "20-F/40-F",
       "cik": 1698535,
@@ -19399,6 +19544,31 @@
       "symbol": "NYAX",
       "tickers": [
         "NYAX"
+      ]
+    },
+    "NYMXF": {
+      "annualForm": "20-F/40-F",
+      "cik": 1018735,
+      "country": "Canada",
+      "countryBasis": "business-address",
+      "countryCode": "A8",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "OTC",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-16",
+      "name": "NYMOX PHARMACEUTICAL CORP",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Canada",
+      "operatingRegion": "Quebec",
+      "region": "Quebec",
+      "sic": 2835,
+      "sicDescription": "In Vitro & In Vivo Diagnostic Substances",
+      "symbol": "NYMXF",
+      "tickers": [
+        "NYMXF"
       ]
     },
     "NYXH": {
@@ -20365,6 +20535,31 @@
       "symbol": "PCLA",
       "tickers": [
         "PCLA"
+      ]
+    },
+    "PDC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1944399,
+      "country": "Japan",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "M0",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-18",
+      "name": "Perpetuals.com Ltd",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Japan",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 7371,
+      "sicDescription": "Services-Computer Programming Services",
+      "symbol": "PDC",
+      "tickers": [
+        "PDC"
       ]
     },
     "PDD": {
@@ -21830,32 +22025,6 @@
         "RAJAF"
       ]
     },
-    "RAY": {
-      "annualForm": "20-F/40-F",
-      "cik": 1948443,
-      "country": "Virgin Islands, British",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "D8",
-      "countryRejected": null,
-      "entityType": "other",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-07-31",
-      "name": "Raytech Holding Ltd",
-      "offshoreIncorporation": true,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Hong Kong",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 3630,
-      "sicDescription": "Household Appliances",
-      "symbol": "RAY",
-      "tickers": [
-        "ATTT",
-        "RAY"
-      ]
-    },
     "RAYA": {
       "annualForm": "20-F/40-F",
       "cik": 1825875,
@@ -22331,7 +22500,8 @@
       "sicDescription": "Real Estate Operators (No Developers) & Lessors",
       "symbol": "RITR",
       "tickers": [
-        "RITR"
+        "RITR",
+        "RITRF"
       ]
     },
     "RLNDF": {
@@ -23377,6 +23547,31 @@
         "SGML"
       ]
     },
+    "SGRX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1735556,
+      "country": "Cayman Islands",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "E9",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-18",
+      "name": "SANGRIX INC.",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Singapore",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "symbol": "SGRX",
+      "tickers": [
+        "SGRX"
+      ]
+    },
     "SHEL": {
       "annualForm": "20-F/40-F",
       "cik": 1306965,
@@ -23669,7 +23864,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-24",
       "name": "Skeena Resources Ltd",
       "offshoreIncorporation": false,
@@ -24731,7 +24926,7 @@
       "countryRejected": null,
       "entityType": "other",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2025-11-12",
       "name": "Star Fashion Culture Holdings Ltd",
@@ -26529,7 +26724,7 @@
       "exchange": "Nasdaq",
       "filerCategory": null,
       "filesFormSd": false,
-      "lastAnnual": "2026-08-12",
+      "lastAnnual": "2026-09-21",
       "name": "Tactical Resources Corp.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -26592,31 +26787,6 @@
       "symbol": "TRIB",
       "tickers": [
         "TRIB"
-      ]
-    },
-    "TRLEF": {
-      "annualForm": "20-F/40-F",
-      "cik": 1648636,
-      "country": "Canada",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "A1",
-      "countryRejected": null,
-      "entityType": "operating",
-      "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer",
-      "filesFormSd": false,
-      "lastAnnual": "2026-05-27",
-      "name": "Dune Oil Corp.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Turkey",
-      "operatingRegion": null,
-      "region": "British Columbia",
-      "sic": 1311,
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "symbol": "TRLEF",
-      "tickers": [
-        "TRLEF"
       ]
     },
     "TRMD": {
@@ -27075,7 +27245,7 @@
       "name": "Top Wealth Group Holding Ltd",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
-      "operatingCountry": "Hong Kong",
+      "operatingCountry": "France",
       "operatingRegion": null,
       "region": null,
       "sic": 2090,
@@ -27398,7 +27568,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-02",
       "name": "Americas Gold & Silver Corp",
       "offshoreIncorporation": false,
@@ -28508,7 +28678,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-24",
       "name": "WOODSIDE ENERGY GROUP LTD",
       "offshoreIncorporation": false,
@@ -29502,8 +29672,7 @@
       "sicDescription": "Services-Help Supply Services",
       "symbol": "YFOR",
       "tickers": [
-        "YFOR",
-        "YYGH"
+        "YFOR"
       ]
     },
     "YI": {
@@ -30208,7 +30377,7 @@
         "ZOOZW"
       ]
     },
-    "ZTEK": {
+    "ZTEKF": {
       "annualForm": "20-F/40-F",
       "cik": 1904501,
       "country": "Canada",
@@ -30216,7 +30385,7 @@
       "countryCode": "A6",
       "countryRejected": null,
       "entityType": "other",
-      "exchange": "Nasdaq",
+      "exchange": "OTC",
       "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-06-26",
@@ -30228,9 +30397,8 @@
       "region": "Ontario",
       "sic": 2890,
       "sicDescription": "Miscellaneous Chemical Products",
-      "symbol": "ZTEK",
+      "symbol": "ZTEKF",
       "tickers": [
-        "ZTEK",
         "ZTEKF"
       ]
     },
@@ -30313,46 +30481,46 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 151,
-    "foreignAnnualFilers": 1223,
-    "formSdFilers": 1042,
-    "published": 1194,
-    "publishedFilesFormSd": 151,
-    "skippedNoTicker": 29,
+    "bothAnnualAndFormSd": 158,
+    "foreignAnnualFilers": 1228,
+    "formSdFilers": 1068,
+    "published": 1201,
+    "publishedFilesFormSd": 158,
+    "skippedNoTicker": 27,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
-    "withTicker": 1194,
+    "withTicker": 1201,
     "withoutSic": 0
   },
   "dataset": "supply-chain-foreign-issuers",
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 3151882,
+      "bytes": 3427755,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 251817,
+      "rows": 277145,
       "unparsed": 7
     },
     {
-      "bytes": 4272368,
+      "bytes": 4273401,
       "gzip": true,
       "quarter": "2026QTR2",
-      "rows": 353223,
+      "rows": 353245,
       "unparsed": 7
     },
     {
-      "bytes": 4439917,
+      "bytes": 4441658,
       "gzip": true,
       "quarter": "2026QTR1",
-      "rows": 370082,
+      "rows": 370151,
       "unparsed": 7
     },
     {
-      "bytes": 3400063,
+      "bytes": 3401303,
       "gzip": true,
       "quarter": "2025QTR4",
-      "rows": 276542,
+      "rows": 276581,
       "unparsed": 7
     }
   ],
@@ -30674,5 +30842,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-13T23:38:26Z"
+  "updatedAt": "2026-09-24T01:02:13Z"
 }
