@@ -28,14 +28,24 @@ var player: Player
 const BAR_DEFS := [["energy", "体力", Color(0.2, 0.9, 1.0)], ["hunger", "饱腹", Color(1.0, 0.72, 0.25)], ["mood", "心情", Color(1.0, 0.3, 0.65)], ["health", "健康", Color(0.45, 1.0, 0.5)], ["stress", "压力", Color(0.7, 0.4, 1.0)]]
 
 
+var _tl: Control
+var _bl: Control
+var _tr: Control
+var _keys_hint: Label
+var _bar_nodes: Array = []
+var _layout_key := ""
+
+
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	UIKit.full_rect(self)
+	resized.connect(_relayout)
 	# ---- 左上
 	var tl := UIKit.panel(Color(0.02, 0.02, 0.05, 0.62), 6, 10)
 	tl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tl.position = Vector2(14, 12)
 	add_child(tl)
+	_tl = tl
 	var tlv := UIKit.vbox(2)
 	tl.add_child(tlv)
 	_date = UIKit.label("", 15, UIKit.DIM)
@@ -61,6 +71,7 @@ func _ready() -> void:
 	bl.offset_bottom = -14
 	bl.offset_top = -14
 	add_child(bl)
+	_bl = bl
 	var blv := UIKit.vbox(3)
 	bl.add_child(blv)
 	for d in BAR_DEFS:
@@ -74,6 +85,7 @@ func _ready() -> void:
 		var vl := UIKit.label("", 14, UIKit.TEXT)
 		vl.custom_minimum_size.x = 64
 		h.add_child(vl)
+		_bar_nodes.append([b, vl])
 		_bars[d[0]] = b
 		_bar_vals[d[0]] = vl
 	# ---- 右侧：任务
@@ -86,13 +98,15 @@ func _ready() -> void:
 	tr.offset_left = -334
 	tr.offset_top = 12
 	add_child(tr)
+	_tr = tr
 	var trv := UIKit.vbox(3)
 	tr.add_child(trv)
 	var qh := UIKit.hbox(6)
 	trv.add_child(qh)
 	qh.add_child(UIKit.label("◆ 当前任务", 13, UIKit.MAGENTA))
 	qh.add_child(UIKit.spacer())
-	qh.add_child(UIKit.label("[J] 任务  [Tab] 手机", 12, UIKit.DIM))
+	_keys_hint = UIKit.label("[J] 任务  [Tab] 手机", 12, UIKit.DIM)
+	qh.add_child(_keys_hint)
 	_quest_title = UIKit.label("", 19, UIKit.TEXT, HORIZONTAL_ALIGNMENT_LEFT, true)
 	trv.add_child(_quest_title)
 	_quest_obj = UIKit.label("", 15, UIKit.CYAN, HORIZONTAL_ALIGNMENT_LEFT, true)
@@ -132,7 +146,47 @@ func set_hint(t: String) -> void:
 	_hint.text = t
 
 
+## 触屏布局：右上角有「手机 / 地图 / 菜单」按钮、左下角是摇杆，面板要让开。
+##   竖屏：属性条挪到左上时间面板下面，任务面板下移到按钮下方；
+##   横屏：属性条放在时间面板右边（紧凑），任务面板变窄并下移。
+func _relayout() -> void:
+	if _tl == null or size.x <= 0.0:
+		return
+	var touch := GameManager.touch_mode
+	var portrait := size.y > size.x
+	var key := "%s|%s|%d|%d|%d" % [touch, portrait, int(size.x), int(_tl.size.x), int(_tl.size.y)]
+	if key == _layout_key:
+		return
+	_layout_key = key
+	_keys_hint.visible = not touch
+	for pair in _bar_nodes:
+		(pair[0] as Control).custom_minimum_size.x = 96.0 if touch else 132.0
+		(pair[1] as Control).custom_minimum_size.x = 34.0 if touch else 64.0
+	if not touch:
+		_bl.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+		_bl.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		_bl.offset_left = 14
+		_bl.offset_bottom = -14
+		_bl.offset_top = -14
+		_tr.custom_minimum_size.x = 320
+		_tr.offset_left = -334
+		_tr.offset_top = 12
+		return
+	_bl.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	_bl.grow_vertical = Control.GROW_DIRECTION_END
+	_bl.size = Vector2.ZERO
+	if portrait:
+		_bl.position = Vector2(14, _tl.position.y + _tl.size.y + 8)
+		_tr.custom_minimum_size.x = minf(320.0, size.x - 28.0)
+	else:
+		_bl.position = Vector2(_tl.position.x + _tl.size.x + 10, 12)
+		_tr.custom_minimum_size.x = 220.0
+	_tr.offset_left = -14.0 - _tr.custom_minimum_size.x
+	_tr.offset_top = 80
+
+
 func _process(delta: float) -> void:
+	_relayout()
 	if not visible:
 		return
 	_update_prompts()
