@@ -30,10 +30,9 @@ shoe_color = Color(0.08, 0.08, 0.09, 1)
 hair_color = Color(0.24, 0.23, 0.22, 1)
 hat = "snapback"
 body_scale = 1.02
-beard = "goatee"
-beard_color = Color(0.36, 0.34, 0.33, 1)
+beard = "none"
 jacket = true
-chain = true
+chain = false
 earring = true
 accent_strip = false
 
