@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -38,6 +39,24 @@ def require(cond, message):
 
 def num(x):
     return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+
+def roe_matches(raw, roe):
+    """原始比率未四舍五入，直接核对同期公式，避免接近的两期权益被误判。"""
+    income, equity = raw.get("netIncome"), raw.get("equityAligned")
+    return (num(income) and num(equity) and equity > 0 and num(roe)
+            and math.isfinite(roe)
+            and math.isclose(roe, income / equity * 100, rel_tol=1e-9, abs_tol=1e-9))
+
+
+def check_roe_validation():
+    # 两期权益相近时，正确值与跨期值差距小于旧阈值 0.01，仍须准确区分。
+    raw = {"netIncome": 100, "equityAligned": 1000, "equity": 1000.5}
+    require(roe_matches(raw, 10), "同期 ROE 不应因最新权益接近而误报")
+    require(not roe_matches(raw, 100 / 1000.5 * 100), "接近但跨期的 ROE 必须拒绝")
+    require(not roe_matches({"netIncome": 100}, 10), "ROE 缺少同期权益必须拒绝")
+    require(not roe_matches({"netIncome": 100, "equityAligned": 0}, 10),
+            "ROE 分母非正必须拒绝")
 
 
 SRC = ROOT / "apps" / "companies" / "fundamentals-source.json"
@@ -236,6 +255,7 @@ def main() -> int:
     check_source_record()
     check_adapter_decoding()
     check_bail_path()
+    check_roe_validation()
     if not PATH.is_file():
         require(False, "缺少 apps/companies/fundamentals.json：SCRN / RV / FA 无法使用，"
                 "请运行修正后的 Fundamentals 管道并验收真实产出")
@@ -308,19 +328,8 @@ def main() -> int:
                 mismatch.append(f"{sym} 缺 statementEnd")
 
         # 现算的必须能复算：ROE = 净利 / **同财年末**权益（不是最新那一期）
-        if num(raw.get("netIncome")) and num(raw.get("equityAligned")) \
-                and raw["equityAligned"] > 0 and num(r.get("roe")):
-            want = raw["netIncome"] / raw["equityAligned"] * 100
-            if abs(want - r["roe"]) > 0.01:
-                mismatch.append(f"{sym} ROE 复算不符：{r['roe']:.4f} vs {want:.4f}")
-        # 反过来钉住：ROE 不得用最新那一期权益（跨期）算出来
-        if num(raw.get("netIncome")) and num(r.get("roe")) and num(raw.get("equity")) \
-                and num(raw.get("equityAligned")) and raw["equity"] > 0 \
-                and abs(raw["equity"] - raw["equityAligned"]) > 1:
-            wrong = raw["netIncome"] / raw["equity"] * 100
-            if abs(wrong - r["roe"]) < 0.01:
-                mismatch.append(
-                    f"{sym} ROE 是用最新一期权益算的（跨期）—— 分母必须与分子同财年")
+        if r.get("roe") is not None and not roe_matches(raw, r["roe"]):
+            mismatch.append(f"{sym} ROE 复算不符或缺少有效分母：必须为净利 / 同财年末权益")
 
     require(not zero_filled,
             f"有 {len(zero_filled)} 处把缺值写成了 0（0 是有意义的值，缺应为 null）：{zero_filled[:5]}")
