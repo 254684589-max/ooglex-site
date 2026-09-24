@@ -13,7 +13,7 @@
 
 ### 新增
 
-- 2026-09-24，**游戏中心新增原创 3D 游戏《打工》WORKING LIFE 1.0（Godot 4 网页版，赛博朋克都市人生模拟）**。**未部署**（在功能分支 `claude/elegant-knuth-uiulr6` 上，等待项目所有者同意后合并）。
+- 2026-09-24，**游戏中心新增原创 3D 游戏《打工》WORKING LIFE 1.0（Godot 4 网页版，赛博朋克都市人生模拟）**。**已部署**（经项目所有者明确同意「合并 上线」，合并到 `main` 并随 GitHub Pages 发布）。
   - **入口**：`/games/working-life/`（介绍页）→ `/games/working-life/play/`（游戏本体）；游戏中心 `/games/hub/` 第一张卡片；`sitemap.xml`、根 `README.md` 目录树各加一行。
   - **玩法**：带着 ¥2000 走出火车站 → 7 章主线（活下来 → 第一份工作 → 真正的职业 → 选择方向 → 职业发展 → 财富积累 → 人生选择）→ 五种结局（普通人生 / 职业经理人 / 技术专家 / 创业成功 / 财务自由）→ 无限人生。8 条职业各有小游戏，6 项技能，17 位有日程的 NPC，52 个任务，36 种随机事件，5 级住房，银行、投资（游戏内虚构资产，非真实行情）、创业，公交 / 地铁 / 出租车，手机 13 个 APP，3 个存档位。
   - **工程**：`games/working-life/godot/`，14 个指定管理器 + 设置 / 天气 / 交通 / 数据自动加载，内容全部在 `data/*.json`；城市、建筑、人物全部程序化生成，音乐与音效由 `tools/gen_audio.py` 合成，中文字体为思源黑体子集（OFL）。文档：`README.md`、`ARCHITECTURE.md`、`GAME_DESIGN.md`、`TEST_REPORT.md`、`CHANGELOG.md`、`version.txt`。
