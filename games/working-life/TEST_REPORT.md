@@ -1,5 +1,11 @@
 # 测试报告 · 打工 WORKING LIFE
 
+## 1.4.0 画质工程阶段 3（2026-09-24）
+- 语法检查 **PARSE OK**；自动化测试 **303 / 303 通过**（`tools/build_web.sh`，退出码 0）；Web 导出 `play/wl-48889c26.*`，40.6 MB。
+- `tests/perf_stats.tscn`：典型视角绘制调用 491 / 454 / 377 / 334；三角形 31～39 万。
+- `tests/vis_shots.tscn` 新增 `aerial_dusk` / `aerial_night`（城外全景），与 `ref_dusk` 一起逐张目视检查；
+  修正：远山三圈环只有中间一圈有高度，出现尖锥形山峰（改六圈、剖面平滑）。
+
 ## 1.3.0 画质工程阶段 2a（2026-09-24）
 - 语法检查 **PARSE OK**；自动化测试 **303 / 303 通过**（`tools/build_web.sh`，退出码 0）；Web 导出 `play/wl-02d53344.*`，40.6 MB。
 - `tests/perf_stats.tscn`：典型视角绘制调用 483 / 448 / 371 / 328；城市网格节点 393 个、顶点约 72 万；Label3D 141 个（路名牌 50 个，60 米外不渲染）。

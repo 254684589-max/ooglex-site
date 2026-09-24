@@ -53,7 +53,8 @@ invest_or_business ending_ready invest_profit get_job promote。
 `CityBuilder.build()`：地面与道路 → 按 locations.json 的 type 调用模板（shop / tower / home / station / park / site /
 warehouse / oldtown）→ 填充高楼 → 公交地铁站、售货机、街道设施、高架轨道、远景天际线、边界墙 → MeshBatcher 合批 →
 4 米网格导航网格。几何体按「材质 × 96 米格子」合批（约 375 个网格节点）；夜间专用几何单独一组，昼夜切换时整组显隐。
-另有：人行道棕榈树与路边停车（`_palms_and_parking`）、两圈远景高楼 + 城郊 + 远山（`_skyline` / `_mountains`）。
+另有：人行道棕榈树与路边停车（`_palms_and_parking`）、红绿灯（`_intersections`）、城市外缘电线杆与广告牌（`_city_edge`）、
+城外远景（`world/outskirts.gd`：商务区与地标、低层城区、高架快速路与 `world/freeway_traffic.gd` 车流、铁路货场）与远山（`_mountains`）。
 
 ## 画面
 - 材质（`world/mats.gd`）：城市几何体用顶点色 + 十几种批次材质；立面 `fac_glass / fac_office / fac_res / fac_cyber`

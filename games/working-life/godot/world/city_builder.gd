@@ -793,82 +793,40 @@ func _track() -> void:
 
 
 func _skyline() -> void:
-	# 远景：两圈贴图高楼（带退台和屋顶灯），再远处是一圈山
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 77
-	var local_b := MeshBatcher.new()
-	# 远景整圈合成每种材质一个网格（必须在加几何体之前设置，否则会按 96 米格子切成几百块）
-	local_b.chunked = false
-	for ring in 2:
-		var count := 56 if ring == 0 else 72
-		for i in count:
-			var ang := TAU * i / float(count) + rng.randf() * 0.04 + ring * 0.03
-			var r := rng.randf_range(252.0, 300.0) if ring == 0 else rng.randf_range(320.0, 430.0)
-			var c := Vector3(cos(ang) * r, 0, sin(ang) * r)
-			# 北边（负 z）是中央商务区，楼更高
-			var cbd := clampf(-sin(ang), 0.0, 1.0)
-			var w := rng.randf_range(16.0, 32.0)
-			var dd := rng.randf_range(16.0, 32.0)
-			var h := rng.randf_range(35.0, 110.0) + cbd * rng.randf_range(20.0, 150.0)
-			if ring == 1:
-				h *= 1.15
-			var style := BuildingKit.pick_style(rng.randf())
-			if h > 120.0 and rng.randf() < 0.6:
-				style = "glass"
-			var tint := kit.style_tint(style)
-			var y := 0.0
-			var parts := 1 if h < 70.0 else (2 if h < 140.0 else 3)
-			for pi in parts:
-				var ph := h / parts if pi < parts - 1 else h - y
-				var sc := 1.0 - pi * 0.18
-				local_b.box("fac_" + style, c + Vector3(0, y + ph * 0.5, 0), Vector3(w * sc, ph, dd * sc), tint, Basis.IDENTITY, true)
-				y += ph
-				local_b.box("roof", c + Vector3(0, y + 0.3, 0), Vector3(w * sc + 0.6, 0.6, dd * sc + 0.6), Color(1, 1, 1))
-			if h > 100.0:
-				local_b.box("metal", c + Vector3(0, y + 6.0, 0), Vector3(0.4, 12.0, 0.4), Color(0.4, 0.4, 0.42))
-				local_b.box("neon", c + Vector3(0, y + 12.2, 0), Vector3(0.8, 0.8, 0.8), Color(1, 0.15, 0.2))
-	# 城郊：一大片低矮的住宅与仓库，铺满天际线与山之间的平地
-	for i in 420:
-		var ang2 := rng.randf() * TAU
-		var r2 := rng.randf_range(445.0, 610.0)
-		var c2 := Vector3(cos(ang2) * r2, 0, sin(ang2) * r2)
-		var w2 := rng.randf_range(10.0, 24.0)
-		var d2 := rng.randf_range(10.0, 24.0)
-		var h2 := rng.randf_range(5.0, 16.0) if rng.randf() < 0.85 else rng.randf_range(20.0, 45.0)
-		var st2 := "res" if rng.randf() < 0.6 else ("office" if rng.randf() < 0.6 else "glass")
-		local_b.box("fac_" + st2, c2 + Vector3(0, h2 * 0.5, 0), Vector3(w2, h2, d2), kit.style_tint(st2), Basis(Vector3.UP, rng.randf() * PI), true)
-	var node := Node3D.new()
-	node.name = "Skyline"
-	add_child(node)
-	local_b.build(node, false)
+	# 远景：北边的商务区与地标楼、四周的低层城区、高架快速路、铁路货场（world/outskirts.gd），再远是一圈山
+	Outskirts.new().build(self, kit)
 	_mountains()
 
 
-## 城市外围的山：一圈起伏的山脊，被大气雾染成远景色（类似洛杉矶北边的山）
+## 城市外围的山：六圈同心环组成连绵起伏的山脊（宽而圆润，不是尖锥），北边更高；
+## 离城越远颜色越偏蓝灰，再叠加大气雾，呈现层层远山的效果。
 func _mountains() -> void:
-	var noise := FastNoiseLite.new()
-	noise.seed = 12
-	noise.frequency = 1.6
-	noise.fractal_octaves = 4
+	var broad := FastNoiseLite.new()
+	broad.seed = 12
+	broad.frequency = 0.9
+	broad.fractal_octaves = 3
+	var detail := FastNoiseLite.new()
+	detail.seed = 31
+	detail.frequency = 4.0
+	detail.fractal_octaves = 3
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var seg := 160
-	var rings := [620.0, 820.0, 1100.0]
-	var cols := [Color(0.28, 0.25, 0.2), Color(0.3, 0.29, 0.26), Color(0.36, 0.36, 0.38)]
+	var seg := 240
+	var rings := [640.0, 720.0, 820.0, 930.0, 1040.0, 1180.0]
+	var profile := [0.0, 0.35, 0.8, 1.0, 0.75, 0.25]
+	var cols := [Color(0.36, 0.32, 0.26), Color(0.34, 0.31, 0.27), Color(0.33, 0.31, 0.3), Color(0.34, 0.34, 0.36), Color(0.36, 0.37, 0.4), Color(0.4, 0.41, 0.45)]
 	var pts: Array = []
 	for ri in rings.size():
 		var row: Array = []
 		for i in seg + 1:
 			var a := TAU * i / float(seg)
 			var dir := Vector2(cos(a), sin(a))
-			var hgt := 0.0
-			if ri == 1:
-				var n := noise.get_noise_2d(dir.x * 1.3, dir.y * 1.3) * 0.5 + 0.5
-				var north := clampf(-dir.y * 0.8 + 0.5, 0.25, 1.0)
-				hgt = (40.0 + n * n * 260.0) * north
-			elif ri == 2:
-				hgt = 20.0
-			row.append(Vector3(dir.x * rings[ri], hgt - 2.0, dir.y * rings[ri]))
+			var n := broad.get_noise_2d(dir.x, dir.y) * 0.5 + 0.5
+			var north := clampf(-dir.y * 0.6 + 0.6, 0.35, 1.0)
+			var amp := (50.0 + n * n * 230.0) * north
+			var bump := detail.get_noise_3d(dir.x * 1.5, dir.y * 1.5, ri * 0.7) * 0.22
+			var h := float(profile[ri]) * amp * (1.0 + bump)
+			row.append(Vector3(dir.x * rings[ri], h - 2.0, dir.y * rings[ri]))
 		pts.append(row)
 	for ri in rings.size() - 1:
 		for i in seg:
@@ -876,13 +834,10 @@ func _mountains() -> void:
 			var a1: Vector3 = pts[ri][i + 1]
 			var b0: Vector3 = pts[ri + 1][i]
 			var b1: Vector3 = pts[ri + 1][i + 1]
-			var n := (a1 - a0).cross(b0 - a0).normalized()
-			if n.y < 0.0:
-				n = -n
 			for pp in [[a0, cols[ri]], [b0, cols[ri + 1]], [a1, cols[ri]], [a1, cols[ri]], [b0, cols[ri + 1]], [b1, cols[ri + 1]]]:
 				st.set_color(pp[1])
-				st.set_normal(n)
 				st.add_vertex(pp[0])
+	st.index()
 	st.generate_normals()
 	var mi := MeshInstance3D.new()
 	mi.name = "Mountains"

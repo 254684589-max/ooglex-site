@@ -124,6 +124,32 @@ func cylinder(kind: String, center: Vector3, radius: float, height: float, col: 
 		_tri(st, bot, b1, b0, -up, col)
 
 
+## 双坡屋顶：底边矩形 w×d（中心 base 在檐口高度），屋脊高 h，沿 x（along_x）或沿 z；山墙三角用 gable_kind
+func gable_roof(kind: String, base: Vector3, w: float, d: float, h: float, col: Color, along_x: bool, gable_kind: String, gable_col: Color) -> void:
+	var st := _tool_for(kind, base)
+	# 统一成「屋脊沿 x」计算，沿 z 时交换坐标轴
+	var L := w if along_x else d
+	var S := d if along_x else w
+	var hl := L * 0.5
+	var hs := S * 0.5
+	var f := func(a: float, y: float, c: float) -> Vector3:
+		return base + (Vector3(a, y, c) if along_x else Vector3(c, y, a))
+	var r0: Vector3 = f.call(-hl, h, 0.0)
+	var r1: Vector3 = f.call(hl, h, 0.0)
+	var s0: Vector3 = f.call(-hl, 0.0, -hs)
+	var s1: Vector3 = f.call(hl, 0.0, -hs)
+	var n0: Vector3 = f.call(-hl, 0.0, hs)
+	var n1: Vector3 = f.call(hl, 0.0, hs)
+	var ns: Vector3 = f.call(0.0, hs, -h) - base
+	var nn: Vector3 = f.call(0.0, hs, h) - base
+	_quad(st, s0, s1, r1, r0, ns.normalized(), col)
+	_quad(st, n0, n1, r1, r0, nn.normalized(), col)
+	var gt := _tool_for(gable_kind, base)
+	var ge: Vector3 = f.call(-1.0, 0.0, 0.0) - base
+	_tri(gt, s0, n0, r0, ge.normalized(), gable_col)
+	_tri(gt, s1, n1, r1, -ge.normalized(), gable_col)
+
+
 ## 立在两点之间的细杆（脚手架钢管、塔吊桁架）
 func beam(kind: String, from: Vector3, to: Vector3, thickness: float, col: Color) -> void:
 	var dir := to - from
