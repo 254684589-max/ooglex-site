@@ -7,7 +7,9 @@ signal changed
 const PATH := "user://settings.cfg"
 const RESOLUTIONS := [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const FPS_OPTIONS := [30, 60, 120, 0]
-const QUALITY_NAMES := ["低", "中", "高"]
+const QUALITY_NAMES := ["低", "中", "高", "超高"]
+## 设置格式版本：2 = 新增「超高」画质（电脑浏览器默认开启）
+const SETTINGS_REV := 2
 
 var values := {
 	"resolution": 0,
@@ -24,6 +26,7 @@ var values := {
 	"fps": 1,
 	"show_marker": true,
 	"time_speed": 1,
+	"rev": SETTINGS_REV,
 }
 
 
@@ -55,9 +58,17 @@ func load_settings() -> void:
 			values["quality"] = 0
 			values["shadows"] = false
 			values["msaa"] = false
+		elif not GameManager.touch_mode:
+			values["quality"] = 3
 		return
 	for k in values.keys():
 		values[k] = cfg.get_value("settings", k, values[k])
+	# 老存档的设置：电脑端还停在默认「中」画质的，升级到新的「超高」（只迁移一次；手动选过别的档位的不动）
+	if int(cfg.get_value("settings", "rev", 1)) < SETTINGS_REV:
+		if not GameManager.touch_mode and int(values["quality"]) == 1:
+			values["quality"] = 3
+		values["rev"] = SETTINGS_REV
+		save_settings()
 
 
 func save_settings() -> void:

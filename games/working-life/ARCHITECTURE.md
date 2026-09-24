@@ -70,6 +70,8 @@ warehouse / oldtown）→ 填充高楼 → 公交地铁站、售货机、街道�
 - 照片材质（`assets/textures/photo`，由 `tools/bake_photo_textures.gd` 生成，来源见同目录 `SOURCES.md`）：
   `Mats.photo()` 加载；`road / walk / roof / concrete / stone / grass / dirt` 材质与地面使用；
   立面 `fac_office / fac_res` 用 UV2（米制）叠加 `plaster_detail` 细节层，遮罩由 `ProcTex.facade` 生成。
+- 「超高」画质后期（`world/post_fx.gd`）：两个全屏四边形挂在当前相机下——SSAO（黑色 + 透明度混合）与加法光效
+  （光柱、雨天屏幕空间反射）；路灯光锥 `beam` 材质；地面反弹补光 `DayNight.bounce`；帧率保护自动降档。
 - 环境光遮蔽：`MeshBatcher._tri` 把竖直面贴地部分的顶点色压暗（发光、透明类材质除外）。
 
 ## 性能手段

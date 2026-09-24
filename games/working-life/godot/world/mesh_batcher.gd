@@ -12,7 +12,7 @@ var chunked := true
 var _groups: Dictionary = {}
 ## 当前写入的材质类型（发光类材质不做环境光遮蔽）
 var _kind := ""
-const _NO_AO := ["ad", "neon", "holo", "decal", "lamp_warm", "lamp_cool", "leaf", "water", "glass", "win_warm", "win_cool"]
+const _NO_AO := ["beam", "ad", "neon", "holo", "decal", "lamp_warm", "lamp_cool", "leaf", "water", "glass", "win_warm", "win_cool"]
 
 
 func _tool_for(kind: String, at: Vector3) -> SurfaceTool:
@@ -196,7 +196,7 @@ func build(parent: Node3D, cast_shadows := true) -> int:
 		mi.mesh = mesh
 		mi.material_override = Mats.batch(String(g["kind"]))
 		var kind := String(g["kind"])
-		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo", "lamp_warm", "lamp_cool", "ad"]:
+		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo", "lamp_warm", "lamp_cool", "ad", "beam"]:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# 远处的小物件不渲染（LOD）
 		if kind in ["prop", "decal", "leaf"]:
