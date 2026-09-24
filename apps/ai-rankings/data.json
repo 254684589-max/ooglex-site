@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T04:58:33Z",
+  "updatedAt": "2026-09-24T11:53:29Z",
   "asOf": "2026-09-24",
   "seed": false,
   "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
@@ -46,14 +46,14 @@
     "arena": {
       "ok": true,
       "count": 371,
-      "fetchedAt": "2026-09-24T04:58:09Z",
+      "fetchedAt": "2026-09-24T11:53:09Z",
       "source": "lmarena.ai/leaderboard/text"
     },
     "livebench": {
       "ok": true,
       "count": 62,
       "release": "2026-06-25",
-      "fetchedAt": "2026-09-24T04:58:22Z",
+      "fetchedAt": "2026-09-24T11:53:22Z",
       "source": "livebench.ai/table_2026_06_25.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -61,7 +61,7 @@
       "ok": true,
       "count": 18,
       "refreshed": 18,
-      "fetchedAt": "2026-09-24T04:58:33Z",
+      "fetchedAt": "2026-09-24T11:53:29Z",
       "snapshotDate": "2026-09-20",
       "source": "artificialanalysis.ai/models/*",
       "mode": "official_public_pages",
