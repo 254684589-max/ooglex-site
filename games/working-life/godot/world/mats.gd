@@ -104,7 +104,11 @@ static func batch(kind: String) -> Material:
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 			m.alpha_scissor_threshold = 0.4
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
-			m.roughness = 0.7
+			# 叶片几乎不反光（否则逆光时会反射明亮的天空、整片发白）；逆光时透出一点绿色
+			m.roughness = 0.95
+			m.metallic_specular = 0.08
+			m.backlight_enabled = true
+			m.backlight = Color(0.16, 0.24, 0.06)
 			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		_:
 			if kind.begins_with("fac_"):
