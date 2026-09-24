@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-22T22:01:03Z",
-  "asOf": "2026-09-22",
+  "updatedAt": "2026-09-23T22:13:54Z",
+  "asOf": "2026-09-23",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-20 ~ 2026-09-26",
-  "count": 78,
+  "count": 80,
   "highCount": 7,
   "events": [
     {
@@ -415,7 +415,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-23T09:34:00Z",
+      "ts": "2026-09-23T09:35:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -470,8 +470,20 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "-0.6M",
+      "forecast": "-0.7M",
       "previous": "-0.6M",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-23T16:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Goolsbee Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -506,7 +518,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "22.5K",
+      "forecast": "21.5K",
       "previous": "-15.8K",
       "actual": null
     },
@@ -770,7 +782,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": "52B",
+      "forecast": "50B",
       "previous": "44B",
       "actual": null
     },
@@ -892,6 +904,18 @@
       "impact": "low",
       "forecast": "-0.3%",
       "previous": "1.1%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-25T13:20:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Schmid Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
