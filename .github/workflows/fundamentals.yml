@@ -18,6 +18,13 @@ name: Fundamentals (SEC XBRL)
 # 不会用默认值去撞 SEC 的限流策略。
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/fundamentals/**'
+      - 'scripts/validate_fundamentals.py'
+      - 'assets/terminal/**'
+      - 'apps/finance-terminal/**'
+      - '.github/workflows/fundamentals.yml'
 
 permissions:
   contents: write
@@ -27,7 +34,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preview:
+    # 在同仓库 PR 内先验真实取数；只保存短期审核产物，不推分支、不部署。
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout proposed code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Generate a fresh fundamentals preview
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/fundamentals/build_fundamentals.py
+      - name: Verify actual data and ratios
+        run: python scripts/validate_fundamentals.py
+      - name: Save validated data for review
+        uses: actions/upload-artifact@v6
+        with:
+          name: fundamentals-preview-${{ github.run_id }}
+          path: apps/companies/fundamentals.json
+          if-no-files-found: error
+          retention-days: 7
+
   update:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

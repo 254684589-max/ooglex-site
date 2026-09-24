@@ -10,8 +10,8 @@
 
 所以这里逐条查这四类，并核对比率与报表项能对得上（现算的东西必须能复算）。
 
-数据文件不存在时**跳过而不失败** —— 管道是手动触发的，owner 还没跑第一次的时候
-这份校验不该把 CI 弄红。文件一旦存在，就必须全部通过。
+基本面已经被 SCRN / RV / FA 作为生产依赖，文件缺失必须失败。
+不能让「页面已接入、数据却被删除」继续通过质量检查。
 
 用法：python3 scripts/validate_fundamentals.py
 """
@@ -237,8 +237,8 @@ def main() -> int:
     check_adapter_decoding()
     check_bail_path()
     if not PATH.is_file():
-        print("apps/companies/fundamentals.json 还不存在 —— 管道是手动触发的，"
-              "owner 尚未跑第一次。数据部分跳过（不算失败），选源记录仍已校验。")
+        require(False, "缺少 apps/companies/fundamentals.json：SCRN / RV / FA 无法使用，"
+                "请运行修正后的 Fundamentals 管道并验收真实产出")
         return report()
 
     d = json.loads(PATH.read_text(encoding="utf-8"))
