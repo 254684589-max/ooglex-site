@@ -9,6 +9,10 @@ var light_quad: MeshInstance3D
 var ao_mat: ShaderMaterial
 var light_mat: ShaderMaterial
 var day_night: DayNight
+## 帧率保护：「超高」画质下持续卡顿（8 秒平均低于 28 帧）就自动降到「高」
+var _fps_samples: Array = []
+var _fps_timer := 0.0
+var _guard_done := false
 
 
 func _ready() -> void:
@@ -35,11 +39,37 @@ func _quad(mat: ShaderMaterial, n: String) -> MeshInstance3D:
 	return mi
 
 
+func _fps_guard(delta: float) -> void:
+	if _guard_done or not enabled() or not GameManager.playing or GameManager.is_modal():
+		_fps_samples.clear()
+		return
+	_fps_timer += delta
+	if _fps_timer < 1.0:
+		return
+	_fps_timer = 0.0
+	_fps_samples.append(Engine.get_frames_per_second())
+	if _fps_samples.size() < 8:
+		return
+	var avg := 0.0
+	for f in _fps_samples:
+		avg += float(f)
+	avg /= _fps_samples.size()
+	_fps_samples.pop_front()
+	# 只在网页版自动降级（桌面导出版由玩家自己选）；无头测试环境帧率不代表真实设备，也不降
+	if avg < 28.0 and OS.has_feature("web"):
+		_guard_done = true
+		SettingsManager.set_v("quality", 2)
+		if day_night != null:
+			day_night.apply_quality()
+		Events.toast.emit("画面较卡，已自动把画质从「超高」调到「高」（可在设置里改回）", "info")
+
+
 static func enabled() -> bool:
 	return int(SettingsManager.get_v("quality", 1)) >= 3
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_fps_guard(delta)
 	var cam := get_viewport().get_camera_3d()
 	var on := enabled() and cam != null
 	for q in [ao_quad, light_quad]:

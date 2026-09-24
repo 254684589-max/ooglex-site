@@ -14,11 +14,11 @@ void vertex() {
 	POSITION = vec4(VERTEX.xy * 2.0, 0.0, 1.0);
 }
 
-float lin_depth(vec2 uv, mat4 inv_proj) {
+vec3 view_pos(vec2 uv, mat4 inv_proj) {
 	float d = texture(depth_tex, uv).r;
 	vec3 ndc = vec3(uv, d) * 2.0 - 1.0;
 	vec4 v = inv_proj * vec4(ndc, 1.0);
-	return -v.z / v.w;
+	return v.xyz / v.w;
 }
 
 float hash(vec2 p) {
@@ -27,10 +27,13 @@ float hash(vec2 p) {
 
 void fragment() {
 	vec2 uv = SCREEN_UV;
-	float d = lin_depth(uv, INV_PROJECTION_MATRIX);
+	vec3 p = view_pos(uv, INV_PROJECTION_MATRIX);
+	float d = -p.z;
 	float ao = 1.0;
 	if (d < max_distance) {
-		// 世界空间半径 → 屏幕空间半径
+		// 由深度重建的表面法线；只统计「高出表面」的采样点（平地上不会自己遮自己）
+		vec3 n = normalize(cross(dFdx(p), dFdy(p)));
+		if (dot(n, -p) < 0.0) n = -n;
 		float r = radius * PROJECTION_MATRIX[1][1] * 0.5 / d;
 		r = min(r, 0.08);
 		float rot = hash(FRAGCOORD.xy) * 6.2831;
@@ -41,12 +44,13 @@ void fragment() {
 			float s = sqrt((fi + 0.5) / 10.0);
 			vec2 o = vec2(cos(a), sin(a)) * r * s;
 			o.x *= VIEWPORT_SIZE.y / VIEWPORT_SIZE.x;
-			float sd = lin_depth(uv + o, INV_PROJECTION_MATRIX);
-			float diff = d - sd;
-			// 比当前点更靠近相机、且在半径范围内的采样点 = 遮挡
-			occ += smoothstep(0.03, 0.25, diff) * (1.0 - smoothstep(radius, radius * 2.5, diff));
+			vec3 v = view_pos(uv + o, INV_PROJECTION_MATRIX) - p;
+			float dist = length(v);
+			if (dist > 0.001) {
+				occ += max(dot(n, v / dist) - 0.2, 0.0) * (1.0 - smoothstep(radius * 0.6, radius * 1.6, dist));
+			}
 		}
-		ao = 1.0 - strength * occ / 10.0;
+		ao = 1.0 - strength * clamp(occ / 10.0 * 1.8, 0.0, 1.0);
 		ao = mix(ao, 1.0, smoothstep(max_distance * 0.6, max_distance, d));
 	}
 	ALBEDO = vec3(0.0);
