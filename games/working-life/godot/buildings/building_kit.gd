@@ -213,7 +213,7 @@ func tower_mass(frame: Dictionary, y0: float, height: float, _col: Color, accent
 		lbox(frame, "solid", Vector3(0, y + 0.2, 0), Vector3(tw + 0.5, 0.4, td + 0.5), ledge, false)
 	var top := y + 0.4
 	# 赛博风格保留霓虹：转角竖条 + 屋顶边
-	if style == "cyber" or (detail >= 1 and rng.randf() < 0.3):
+	if style == "cyber":
 		for sx in [-1.0, 1.0]:
 			lbox(frame, "neon", Vector3(sx * (w * 0.5 + 0.08), y0 + height * float(tiers[0][0]) * 0.5, d * 0.5 + 0.08), Vector3(0.14, height * float(tiers[0][0]), 0.14), accent, false)
 		lbox(frame, "neon", Vector3(0, top + 0.05, td * 0.5 + 0.25), Vector3(tw + 0.5, 0.08, 0.08), accent, false)
@@ -335,12 +335,24 @@ func table_set(frame: Dictionary, lx: float, lz: float) -> void:
 
 
 # ================================================================ 街道设施
-func streetlight(pos: Vector3, yaw: float, col: Color) -> void:
-	var arm := Basis(Vector3.UP, yaw) * Vector3(0, 0, 1.4)
-	b.cylinder("metal", pos + Vector3(0, 3.2, 0), 0.09, 6.4, Color(0.2, 0.21, 0.24), 6)
-	b.beam("metal", pos + Vector3(0, 6.3, 0), pos + Vector3(0, 6.3, 0) + arm, 0.1, Color(0.2, 0.21, 0.24))
-	b.box("neon", pos + Vector3(0, 6.2, 0) + arm, Vector3(0.5, 0.12, 0.5), col)
-	night.cylinder("decal", pos + arm + Vector3(0, 0.03, 0), 3.2, 0.02, Color(col.r * 0.35, col.g * 0.35, col.b * 0.35), 10)
+## 路灯：灯杆 + 悬臂 + 灯罩。灯罩是 lamp 材质（黄昏后按 Mats.lamp_energy 亮起），地面光斑只在夜间组里。
+## warm = 钠灯暖黄，否则是 LED 冷白。灯头位置记进 lamp_points，供 LampPool 在玩家附近放真实光源。
+var lamp_points: Array = []
+
+
+func streetlight(pos: Vector3, yaw: float, warm := true) -> void:
+	var arm := Basis(Vector3.UP, yaw) * Vector3(0, 0, 1.6)
+	var pole := Color(0.32, 0.33, 0.35)
+	b.cylinder("metal", pos + Vector3(0, 0.25, 0), 0.16, 0.5, pole, 8)
+	b.cylinder("metal", pos + Vector3(0, 3.4, 0), 0.08, 6.8, pole, 6, Basis.IDENTITY, 0.06)
+	b.beam("metal", pos + Vector3(0, 6.7, 0), pos + Vector3(0, 6.9, 0) + arm, 0.08, pole)
+	var head := pos + Vector3(0, 6.85, 0) + arm
+	b.box("metal", head + Vector3(0, 0.08, 0), Vector3(0.36, 0.12, 0.7), pole, Basis(Vector3.UP, yaw))
+	b.box("lamp_warm" if warm else "lamp_cool", head - Vector3(0, 0.02, 0), Vector3(0.3, 0.06, 0.6), Color(0.9, 0.9, 0.88), Basis(Vector3.UP, yaw))
+	var pool := Color(0.5, 0.33, 0.14) if warm else Color(0.36, 0.4, 0.44)
+	night.cylinder("decal", pos + arm + Vector3(0, 0.035, 0), 4.2, 0.02, pool * 0.45, 14)
+	night.cylinder("decal", pos + arm + Vector3(0, 0.04, 0), 2.2, 0.02, pool * 0.35, 12)
+	lamp_points.append([head - Vector3(0, 0.3, 0), warm])
 
 
 func bench(pos: Vector3, yaw: float) -> void:

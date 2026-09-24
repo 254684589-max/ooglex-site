@@ -44,8 +44,8 @@ func _ready() -> void:
 	cam.far = 1600.0
 	cam.fov = 60.0
 	main.add_child(cam)
-	set_scene(18.5, "sunny")
-	cam.look_at_from_position(Vector3(185, 75, 120), Vector3(-80, 30, -60))
+	set_scene(19.1, "sunny")
+	cam.look_at_from_position(Vector3(30, 42, 196), Vector3(-10, 30, -300))
 	cam.make_current()
 	await _wait(40)
 	await _shot("skyline", 1280)

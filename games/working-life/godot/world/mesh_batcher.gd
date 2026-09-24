@@ -10,9 +10,13 @@ const CELL := 96.0
 
 var chunked := true
 var _groups: Dictionary = {}
+## 当前写入的材质类型（发光类材质不做环境光遮蔽）
+var _kind := ""
+const _NO_AO := ["neon", "holo", "decal", "lamp_warm", "lamp_cool", "leaf", "water", "glass", "win_warm", "win_cool"]
 
 
 func _tool_for(kind: String, at: Vector3) -> SurfaceTool:
+	_kind = kind
 	var key := kind
 	if chunked:
 		key = "%s|%d|%d" % [kind, floori(at.x / CELL), floori(at.z / CELL)]
@@ -33,8 +37,14 @@ func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, n: Vector3, col: 
 		c = t
 	# 竖直面 UV = (x + z, y)，水平面 UV = (x, z)：都是米，材质里再按贴图尺寸缩放
 	var flat := absf(n.y) > 0.7
+	# 贴地的环境光遮蔽（烘焙进顶点色）：竖直面越靠近地面越暗，墙根、车底、树干底部有接触阴影
+	var ao := not flat and not (_kind in _NO_AO)
 	for p in [a, b, c]:
-		st.set_color(col)
+		if ao and p.y < 2.5 and p.y > -0.1:
+			var f := lerpf(0.58, 1.0, clampf(p.y / 2.5, 0.0, 1.0))
+			st.set_color(Color(col.r * f, col.g * f, col.b * f, col.a))
+		else:
+			st.set_color(col)
 		st.set_normal(n)
 		st.set_uv(Vector2(p.x, p.z) if flat else Vector2(p.x + p.z, p.y))
 		st.add_vertex(p)
@@ -156,7 +166,7 @@ func build(parent: Node3D, cast_shadows := true) -> int:
 		mi.mesh = mesh
 		mi.material_override = Mats.batch(String(g["kind"]))
 		var kind := String(g["kind"])
-		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo"]:
+		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo", "lamp_warm", "lamp_cool", "leaf"]:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# 远处的小物件不渲染（LOD）
 		if kind in ["prop", "decal", "leaf"]:

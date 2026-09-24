@@ -52,7 +52,7 @@ invest_or_business ending_ready invest_profit get_job promote。
 ## 世界生成
 `CityBuilder.build()`：地面与道路 → 按 locations.json 的 type 调用模板（shop / tower / home / station / park / site /
 warehouse / oldtown）→ 填充高楼 → 公交地铁站、售货机、街道设施、高架轨道、远景天际线、边界墙 → MeshBatcher 合批 →
-4 米网格导航网格。几何体按「材质 × 96 米格子」合批（约 560 个网格节点）；夜间专用几何单独一组，昼夜切换时整组显隐。
+4 米网格导航网格。几何体按「材质 × 96 米格子」合批（约 375 个网格节点）；夜间专用几何单独一组，昼夜切换时整组显隐。
 另有：人行道棕榈树与路边停车（`_palms_and_parking`）、两圈远景高楼 + 城郊 + 远山（`_skyline` / `_mountains`）。
 
 ## 画面
@@ -62,6 +62,9 @@ warehouse / oldtown）→ 填充高楼 → 公交地铁站、售货机、街道�
 - 天空（`world/sky.gdshader` + `world/day_night.gd`）：渐变、日轮、云、星星；AgX 色调映射、雾（太阳散射 + 大气透视 + 高度雾）、泛光。
 - 人物（`player/character_model.gd`）：每个关节的零件合并成一个顶点色网格 + 一个发光网格。
 - 地面交通（`world/street_traffic.gd`）：每种车漆一个多材质网格，所有车共享。
+- 路灯（`BuildingKit.streetlight` + `world/lamp_pool.gd`）：灯罩用 `lamp_warm / lamp_cool` 材质，亮度 `Mats.lamp_energy` 随昼夜变化；
+  真实点光源只放在离相机最近的几盏路灯下，每 0.4 秒重选。
+- 环境光遮蔽：`MeshBatcher._tri` 把竖直面贴地部分的顶点色压暗（发光、透明类材质除外）。
 
 ## 性能手段
 信号驱动（HUD 0.2 秒刷新、任务条件 0.4 秒节流、NPC 整点换日程）；Resources/JSON 数据；自动加载单例；对象池（路人、音效播放器）；

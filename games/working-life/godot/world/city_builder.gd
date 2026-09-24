@@ -19,6 +19,7 @@ var body: StaticBody3D
 var kit: BuildingKit
 var props_root: Node3D
 var night_root: Node3D
+var lamp_pool: LampPool
 ## 世界坐标矩形：已被建筑占用（填充高楼避开这些区域）
 var occupied: Array = []
 ## 行人可以去的路点（人行道上）
@@ -65,6 +66,10 @@ func build() -> void:
 	batcher.build(geo, true)
 	night_batcher.chunked = false
 	night_batcher.build(night_root, false)
+	lamp_pool = LampPool.new()
+	lamp_pool.name = "LampPool"
+	add_child(lamp_pool)
+	lamp_pool.setup(kit.lamp_points)
 	_build_navigation()
 
 
@@ -95,7 +100,6 @@ func _ground() -> void:
 func _roads() -> void:
 	var road_col := Color(0.95, 0.95, 0.95)
 	var walk_col := Color(1.0, 1.0, 1.0)
-	var curb := Color(0.1, 0.55, 0.65) * 0.5
 	var span := LIMIT + 8.0
 	# 南北向道路（x 固定）：整条；东西向道路在路口之间分段，避免重叠闪烁
 	for x in ROADS:
@@ -126,17 +130,14 @@ func _roads() -> void:
 				# 路缘石
 				batcher.box("solid", Vector3(road + side * (ROAD_HALF + 0.15), 0.07, mid), Vector3(0.3, 0.14, length), Color(0.58, 0.58, 0.58), Basis.IDENTITY, true)
 				batcher.box("solid", Vector3(mid, 0.07, road + side * (ROAD_HALF + 0.15)), Vector3(length, 0.14, 0.3), Color(0.58, 0.58, 0.58), Basis.IDENTITY, true)
-				batcher.box("neon", Vector3(road + side * (ROAD_HALF + 0.02), 0.1, mid), Vector3(0.05, 0.04, length), curb, Basis.IDENTITY, true)
-				batcher.box("neon", Vector3(mid, 0.1, road + side * (ROAD_HALF + 0.02)), Vector3(length, 0.04, 0.05), curb, Basis.IDENTITY, true)
 				# 路灯与行人路点
+				# 两个方向的道路两侧每 24 米一盏；大多是钠灯暖黄，主干道（x / z = 0）是 LED 冷白
 				var n := int(length / 24.0)
 				for k in n:
 					var t := a2 + 12.0 + k * 24.0
-					var col: Color = NEON_COLORS[(k + i) % 2 + 1] if (k % 3) != 0 else Color(0.9, 0.95, 1.0)
-					if k % 2 == 0:
-						kit.streetlight(Vector3(road + side * (ROAD_HALF + 2.6), 0, t), PI * 0.5 * (-side), col)
-					else:
-						kit.streetlight(Vector3(t, 0, road + side * (ROAD_HALF + 2.6)), PI if side > 0 else 0.0, col)
+					var warm := absf(road) > 1.0
+					kit.streetlight(Vector3(road + side * (ROAD_HALF + 2.6), 0, t), PI * 0.5 * (-side), warm)
+					kit.streetlight(Vector3(t, 0, road + side * (ROAD_HALF + 2.6)), PI if side > 0 else 0.0, warm)
 				var m := int(length / 10.0)
 				for k in m:
 					var t2 := a2 + 5.0 + k * 10.0
@@ -738,6 +739,8 @@ func _skyline() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 77
 	var local_b := MeshBatcher.new()
+	# 远景整圈合成每种材质一个网格（必须在加几何体之前设置，否则会按 96 米格子切成几百块）
+	local_b.chunked = false
 	for ring in 2:
 		var count := 56 if ring == 0 else 72
 		for i in count:
@@ -763,9 +766,6 @@ func _skyline() -> void:
 				local_b.box("fac_" + style, c + Vector3(0, y + ph * 0.5, 0), Vector3(w * sc, ph, dd * sc), tint, Basis.IDENTITY, true)
 				y += ph
 				local_b.box("solid", c + Vector3(0, y + 0.3, 0), Vector3(w * sc + 0.6, 0.6, dd * sc + 0.6), Color(0.5, 0.5, 0.52))
-			if style == "cyber" or i % 6 == 0:
-				var nc: Color = NEON_COLORS[i % NEON_COLORS.size()]
-				local_b.box("neon", c + Vector3(0, y + 0.8, 0), Vector3(w * 0.5, 0.5, dd * 0.5), nc)
 			if h > 100.0:
 				local_b.box("metal", c + Vector3(0, y + 6.0, 0), Vector3(0.4, 12.0, 0.4), Color(0.4, 0.4, 0.42))
 				local_b.box("neon", c + Vector3(0, y + 12.2, 0), Vector3(0.8, 0.8, 0.8), Color(1, 0.15, 0.2))
@@ -779,7 +779,6 @@ func _skyline() -> void:
 		var h2 := rng.randf_range(5.0, 16.0) if rng.randf() < 0.85 else rng.randf_range(20.0, 45.0)
 		var st2 := "res" if rng.randf() < 0.6 else ("office" if rng.randf() < 0.6 else "glass")
 		local_b.box("fac_" + st2, c2 + Vector3(0, h2 * 0.5, 0), Vector3(w2, h2, d2), kit.style_tint(st2), Basis(Vector3.UP, rng.randf() * PI), true)
-	local_b.chunked = false
 	var node := Node3D.new()
 	node.name = "Skyline"
 	add_child(node)
