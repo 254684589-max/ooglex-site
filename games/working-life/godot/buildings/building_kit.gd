@@ -21,7 +21,7 @@ var _font: Font
 
 ## 常用颜色
 const C_CONCRETE := Color(0.3, 0.3, 0.32)
-const C_CONCRETE2 := Color(0.46, 0.45, 0.44)
+const C_CONCRETE2 := Color(0.82, 0.8, 0.77)
 const C_DARK := Color(0.07, 0.07, 0.09)
 const C_FLOOR := Color(0.22, 0.22, 0.27)
 const C_TRIM := Color(0.5, 0.5, 0.53)
@@ -261,21 +261,21 @@ func shell(frame: Dictionary, h0: float, wall_col: Color, door_w := 3.4, glass :
 	# 室内地面
 	lbox(frame, "solid", Vector3(0, 0.015, 0), Vector3(w - t, 0.03, d - t), C_FLOOR, false)
 	# 墙
-	lbox(frame, "solid", Vector3(0, h0 * 0.5, -d * 0.5 + t * 0.5), Vector3(w, h0, t), wall_col)
-	lbox(frame, "solid", Vector3(-w * 0.5 + t * 0.5, h0 * 0.5, 0), Vector3(t, h0, d), wall_col)
-	lbox(frame, "solid", Vector3(w * 0.5 - t * 0.5, h0 * 0.5, 0), Vector3(t, h0, d), wall_col)
+	lbox(frame, "stone", Vector3(0, h0 * 0.5, -d * 0.5 + t * 0.5), Vector3(w, h0, t), wall_col)
+	lbox(frame, "stone", Vector3(-w * 0.5 + t * 0.5, h0 * 0.5, 0), Vector3(t, h0, d), wall_col)
+	lbox(frame, "stone", Vector3(w * 0.5 - t * 0.5, h0 * 0.5, 0), Vector3(t, h0, d), wall_col)
 	# 正面：门洞两侧
 	var seg := (w - door_w) * 0.5
 	for sx in [-1.0, 1.0]:
 		var cx: float = sx * (door_w * 0.5 + seg * 0.5)
 		if glass:
-			lbox(frame, "solid", Vector3(cx, 0.35, d * 0.5 - t * 0.5), Vector3(seg, 0.7, t), wall_col, false)
+			lbox(frame, "stone", Vector3(cx, 0.35, d * 0.5 - t * 0.5), Vector3(seg, 0.7, t), wall_col, false)
 			lbox(frame, "glass", Vector3(cx, (h0 - 0.7) * 0.5 + 0.7, d * 0.5 - t * 0.5), Vector3(seg - 0.1, h0 - 0.7, 0.08), Color(0.3, 0.5, 0.6), false)
 			collide(xf(frame, cx, h0 * 0.5, d * 0.5 - t * 0.5), Vector3(seg, h0, t), frame["basis"])
 		else:
-			lbox(frame, "solid", Vector3(cx, h0 * 0.5, d * 0.5 - t * 0.5), Vector3(seg, h0, t), wall_col)
+			lbox(frame, "stone", Vector3(cx, h0 * 0.5, d * 0.5 - t * 0.5), Vector3(seg, h0, t), wall_col)
 	# 门楣
-	lbox(frame, "solid", Vector3(0, (h0 + 2.9) * 0.5, d * 0.5 - t * 0.5), Vector3(door_w, h0 - 2.9, t), wall_col)
+	lbox(frame, "stone", Vector3(0, (h0 + 2.9) * 0.5, d * 0.5 - t * 0.5), Vector3(door_w, h0 - 2.9, t), wall_col)
 	# 天花板
 	lbox(frame, "solid", Vector3(0, h0 + 0.15, 0), Vector3(w, 0.3, d), C_CONCRETE)
 	# 室内灯带
@@ -362,15 +362,36 @@ func bench(pos: Vector3, yaw: float) -> void:
 	b.box("metal", pos + Vector3(0, 0.22, 0), Vector3(1.6, 0.44, 0.4), Color(0.15, 0.15, 0.17), r)
 
 
+## 阔叶行道树：树干 + 三四根主枝 + 八九团叶簇（每团两片交叉的贴图面片），颜色每棵略有不同
 func tree(pos: Vector3, h := 5.0) -> void:
-	b.cylinder("solid", pos + Vector3(0, h * 0.3, 0), 0.18, h * 0.6, Color(0.3, 0.22, 0.16), 6)
-	# 圆润的阔叶树冠：三段圆台叠成近似球体，每棵树的绿色略有不同
-	var g := Color(0.16, 0.32, 0.14).lerp(Color(0.28, 0.4, 0.16), rng.randf())
-	var r := rng.randf_range(1.5, 2.1)
-	var cy := h * 0.72
-	b.cylinder("prop", pos + Vector3(0, cy - r * 0.45, 0), r * 0.55, r * 0.5, g.darkened(0.15), 9, Basis.IDENTITY, r)
-	b.cylinder("prop", pos + Vector3(0, cy + r * 0.1, 0), r, r * 0.6, g, 9)
-	b.cylinder("prop", pos + Vector3(0, cy + r * 0.65, 0), r, r * 0.5, g.lightened(0.08), 9, Basis.IDENTITY, r * 0.45)
+	var bark := Color(0.36, 0.3, 0.24)
+	var trunk_top := pos + Vector3(rng.randf_range(-0.2, 0.2), h * 0.5, rng.randf_range(-0.2, 0.2))
+	b.beam("solid", pos, trunk_top, 0.28, bark)
+	var crown := pos + Vector3(0, h * 0.72, 0)
+	var r := rng.randf_range(1.8, 2.4) * h / 5.0
+	for k in rng.randi_range(3, 4):
+		var a := TAU * k / 4.0 + rng.randf_range(-0.4, 0.4)
+		var tip := crown + Vector3(cos(a) * r * 0.6, rng.randf_range(0.0, r * 0.5), sin(a) * r * 0.6)
+		b.beam("solid", trunk_top, tip, 0.13, bark)
+	var uv := _atlas(ProcTex.FOLIAGE_CLUMP, 0.0, 0.0, 1.0, 1.0)
+	var tint := Color(1, 1, 1).lerp(Color(0.85, 0.95, 0.75), rng.randf())
+	var clumps := rng.randi_range(8, 10)
+	for i in clumps:
+		var ang := rng.randf() * TAU
+		var el := rng.randf_range(-0.35, 0.9)
+		var c := crown + Vector3(cos(ang) * cos(el) * r * 0.75, sin(el) * r * 0.6 + r * 0.25, sin(ang) * cos(el) * r * 0.75)
+		if i == clumps - 1:
+			c = crown + Vector3(0, r * 0.9, 0)
+		var sz := rng.randf_range(1.8, 2.6) * h / 5.0
+		var yaw := rng.randf() * PI
+		for q in 2:
+			var d := Vector3(cos(yaw + q * PI * 0.5), 0, sin(yaw + q * PI * 0.5)) * sz * 0.5
+			var up := Vector3(0, sz * 0.5, 0)
+			b.quad_uv("leaf", c - d - up, c + d - up, c + d + up, c - d + up, tint.darkened(rng.randf() * 0.15), uv)
+		# 顶面一片水平叶簇，从上往下看也不空
+		var dx := Vector3(sz * 0.5, 0, 0)
+		var dz := Vector3(0, 0, sz * 0.5)
+		b.quad_uv("leaf", c - dx - dz, c + dx - dz, c + dx + dz, c - dx + dz, tint, uv)
 	collide_prop(pos + Vector3(0, 1.5, 0), Vector3(0.4, 3.0, 0.4))
 
 
@@ -379,7 +400,9 @@ func tree(pos: Vector3, h := 5.0) -> void:
 static func _atlas(region: Rect2, u0: float, v0: float, u1: float, v1: float) -> PackedVector2Array:
 	var x0 := region.position.x + region.size.x * u0
 	var x1 := region.position.x + region.size.x * u1
-	return PackedVector2Array([Vector2(x0, v1), Vector2(x1, v1), Vector2(x1, v0), Vector2(x0, v0)])
+	var y0 := region.position.y + region.size.y * v0
+	var y1 := region.position.y + region.size.y * v1
+	return PackedVector2Array([Vector2(x0, y1), Vector2(x1, y1), Vector2(x1, y0), Vector2(x0, y0)])
 
 
 func palm(pos: Vector3, h := 12.0) -> void:
@@ -502,21 +525,65 @@ func billboard(pos: Vector3, face: Vector3, design: int, h := 9.0, w := 12.0) ->
 
 ## 汽车（停在路边的静态车，或 StreetTraffic 里行驶的车共用同一套几何体）。原点在车底中心，车头朝 -Z
 static func car_geometry(mb: MeshBatcher, origin: Vector3, basis: Basis, paint: Color, kind := "metal") -> void:
-	var glass := Color(0.08, 0.1, 0.13)
-	mb.box(kind, origin + basis * Vector3(0, 0.62, 0), Vector3(1.86, 0.62, 4.4), paint, basis)
-	mb.box(kind, origin + basis * Vector3(0, 0.95, -1.55), Vector3(1.8, 0.1, 1.1), paint, basis)
-	# 车舱：四棱台（上窄下宽，前后挡风玻璃是斜的）
-	var cab := basis * Basis.from_scale(Vector3(1.174, 1.0, 1.84)) * Basis(Vector3.UP, PI * 0.25)
-	mb.cylinder(kind, origin + basis * Vector3(0, 1.24, 0.25), 1.0, 0.62, glass, 4, cab, 0.72)
-	mb.box(kind, origin + basis * Vector3(0, 1.56, 0.25), Vector3(1.22, 0.05, 1.8), paint, basis)
-	mb.box(kind, origin + basis * Vector3(0, 0.34, -2.21), Vector3(1.8, 0.22, 0.06), Color(0.12, 0.12, 0.13), basis)
+	var glass := Color(0.07, 0.09, 0.12)
+	var dark := Color(0.05, 0.05, 0.06)
+	# 车身按轿车侧面轮廓挤出（x = 车长方向，负值是车头；y = 高度）：保险杠、引擎盖、车尾、行李箱
+	var lower := PackedVector2Array([Vector2(-2.22, 0.3), Vector2(2.22, 0.3), Vector2(2.3, 0.58), Vector2(2.22, 0.9), Vector2(1.5, 0.97), Vector2(-0.95, 0.97), Vector2(-2.12, 0.84), Vector2(-2.3, 0.6)])
+	_extrude(mb, kind, origin, basis, lower, 0.92, paint)
+	# 车舱：前后挡风玻璃倾斜，车顶用车漆色
+	var cabin := PackedVector2Array([Vector2(-0.95, 0.97), Vector2(1.5, 0.97), Vector2(0.82, 1.4), Vector2(-0.28, 1.4)])
+	_extrude(mb, kind, origin, basis, cabin, 0.8, glass)
+	var roof := PackedVector2Array([Vector2(-0.3, 1.39), Vector2(0.84, 1.39), Vector2(0.8, 1.45), Vector2(-0.26, 1.45)])
+	_extrude(mb, kind, origin, basis, roof, 0.81, paint)
+	# A / C 柱、腰线下的黑色护板、前格栅
+	for sx in [-0.8, 0.8]:
+		mb.box(kind, origin + basis * Vector3(sx, 0.5, 0.0), Vector3(0.04, 0.16, 3.4), dark, basis)
+		mb.box(kind, origin + basis * Vector3(sx * 1.08, 1.0, -0.72), Vector3(0.22, 0.12, 0.08), paint, basis)
+	mb.box(kind, origin + basis * Vector3(0, 0.62, -2.28), Vector3(1.1, 0.2, 0.06), dark, basis)
+	# 车轮：轮胎 + 轮毂
 	var wheel := basis * Basis(Vector3.FORWARD, PI * 0.5)
-	for wx in [-0.86, 0.86]:
-		for wz in [-1.38, 1.38]:
-			mb.cylinder(kind, origin + basis * Vector3(wx, 0.36, wz), 0.36, 0.26, Color(0.05, 0.05, 0.06), 10, wheel)
+	for wx in [-0.84, 0.84]:
+		for wz in [-1.4, 1.42]:
+			var wp := origin + basis * Vector3(wx, 0.34, wz)
+			mb.cylinder(kind, wp, 0.34, 0.24, dark, 10, wheel)
+			mb.cylinder(kind, wp + basis * Vector3(signf(wx) * 0.03, 0, 0), 0.2, 0.22, Color(0.62, 0.63, 0.65), 6, wheel)
 	for sx in [-0.62, 0.62]:
-		mb.box("neon", origin + basis * Vector3(sx, 0.72, -2.21), Vector3(0.42, 0.14, 0.04), Color(1.0, 0.96, 0.85), basis)
-		mb.box("neon", origin + basis * Vector3(sx, 0.78, 2.21), Vector3(0.4, 0.12, 0.04), Color(0.9, 0.06, 0.1), basis)
+		mb.box("neon", origin + basis * Vector3(sx, 0.72, -2.25), Vector3(0.42, 0.12, 0.04), Color(1.0, 0.96, 0.85), basis)
+		mb.box("neon", origin + basis * Vector3(sx, 0.78, 2.26), Vector3(0.38, 0.12, 0.04), Color(0.9, 0.06, 0.1), basis)
+
+
+## 远处车流用的简化车模（几十个三角形）：车身 + 车舱 + 车灯
+static func car_geometry_lod(mb: MeshBatcher, paint: Color) -> void:
+	mb.box("metal", Vector3(0, 0.6, 0), Vector3(1.84, 0.62, 4.5), paint)
+	mb.box("metal", Vector3(0, 1.18, 0.25), Vector3(1.6, 0.46, 2.2), Color(0.07, 0.09, 0.12))
+	for sx in [-0.62, 0.62]:
+		mb.box("neon", Vector3(sx, 0.72, -2.27), Vector3(0.42, 0.12, 0.04), Color(1.0, 0.96, 0.85))
+		mb.box("neon", Vector3(sx, 0.78, 2.27), Vector3(0.38, 0.12, 0.04), Color(0.9, 0.06, 0.1))
+
+
+## 把侧面轮廓多边形（凸多边形，x 沿车长、y 为高度）沿车宽方向挤出成实体
+static func _extrude(mb: MeshBatcher, kind: String, origin: Vector3, basis: Basis, poly: PackedVector2Array, half_w: float, col: Color) -> void:
+	var st := mb._tool_for(kind, origin)
+	var n := poly.size()
+	var P := func(p: Vector2, side: float) -> Vector3:
+		return origin + basis * Vector3(side * half_w, p.y, p.x)
+	var c := Vector2.ZERO
+	for p in poly:
+		c += p
+	c /= n
+	for side in [-1.0, 1.0]:
+		var sn: Vector3 = (basis * Vector3(side, 0, 0)).normalized()
+		for i in n:
+			mb._tri(st, P.call(c, side), P.call(poly[i], side), P.call(poly[(i + 1) % n], side), sn, col)
+	for i in n:
+		var p0: Vector2 = poly[i]
+		var p1: Vector2 = poly[(i + 1) % n]
+		var e := p1 - p0
+		var out2 := Vector2(e.y, -e.x).normalized()
+		if out2.dot((p0 + p1) * 0.5 - c) < 0.0:
+			out2 = -out2
+		var nn: Vector3 = (basis * Vector3(0, out2.y, out2.x)).normalized()
+		mb._quad(st, P.call(p0, -1.0), P.call(p1, -1.0), P.call(p1, 1.0), P.call(p0, 1.0), nn, col)
 
 
 func holo_board(pos: Vector3, yaw: float, size: Vector2, text: String, col: Color) -> void:

@@ -54,8 +54,8 @@ static func batch(kind: String) -> Material:
 			m.metallic = 0.6
 			m.albedo_color = Color(1, 1, 1, 0.8)
 		"roof":
-			m.albedo_texture = ProcTex.roof()
-			m.uv1_scale = Vector3(1.0 / 12.0, 1.0 / 12.0, 1)
+			m.albedo_texture = photo("roof_albedo")
+			m.uv1_scale = Vector3(1.0 / 8.0, 1.0 / 8.0, 1)
 			m.roughness = 0.92
 			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 		"ad":
@@ -72,18 +72,30 @@ static func batch(kind: String) -> Material:
 			m.emission_enabled = true
 			m.emission = LAMP_WARM if kind == "lamp_warm" else LAMP_COOL
 			m.emission_energy_multiplier = lamp_energy * 4.0
+		"concrete", "stone", "grass", "dirt":
+			# 照片材质：混凝土（桥墩、护栏、仓库）、石材（店铺外墙）、草坪、泥土
+			var tex := {"concrete": "concrete_albedo", "stone": "stone_albedo", "grass": "grass_albedo", "dirt": "dirt_albedo"}[kind] as String
+			var sz := {"concrete": 4.0, "stone": 2.5, "grass": 4.0, "dirt": 6.0}[kind] as float
+			m.albedo_texture = photo(tex)
+			m.uv1_scale = Vector3(1.0 / sz, 1.0 / sz, 1)
+			if kind in ["concrete", "stone"]:
+				m.normal_enabled = true
+				m.normal_texture = photo("concrete_normal" if kind == "concrete" else "stone_normal")
+				m.normal_scale = 0.7
+			m.roughness = 0.9
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 		"skin":
 			# 人物：顶点色按 sRGB 解释，与原来用 albedo_color 的颜色一致
 			m.vertex_color_is_srgb = true
 			m.roughness = 0.7
 		"road", "walk":
-			# 水平面的 UV 是世界坐标 (x, z)：沥青 8 米一张，地砖 4.8 米一张
-			m.albedo_texture = ProcTex.asphalt() if kind == "road" else ProcTex.paving()
-			var sc := 1.0 / 8.0 if kind == "road" else 1.0 / 4.8
+			# 真实照片材质（assets/textures/photo，来源见 SOURCES.md）：沥青 5 米一张，人行道方砖 4.8 米一张
+			m.albedo_texture = photo("asphalt_albedo") if kind == "road" else photo("paving_albedo")
+			var sc := 1.0 / 5.0 if kind == "road" else 1.0 / 4.8
 			m.uv1_scale = Vector3(sc, sc, 1)
 			m.normal_enabled = true
-			m.normal_texture = ProcTex.bumps()
-			m.normal_scale = 0.3
+			m.normal_texture = photo("asphalt_normal") if kind == "road" else photo("concrete_normal")
+			m.normal_scale = 0.8
 			m.roughness = 0.8 if kind == "road" else 0.85
 			m.metallic = 0.05
 			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
@@ -122,6 +134,21 @@ static func _facade(m: StandardMaterial3D, style: String) -> void:
 		m.roughness = 0.45
 	else:
 		m.roughness = 0.82
+		# 墙面细节层：真实照片的抹灰 / 混凝土质感，按米平铺（UV2），窗玻璃处由遮罩排除
+		m.detail_enabled = true
+		m.detail_albedo = photo("plaster_detail")
+		m.detail_mask = texs[2]
+		m.detail_blend_mode = BaseMaterial3D.BLEND_MODE_MUL
+		m.detail_uv_layer = BaseMaterial3D.DETAIL_UV_2
+		m.uv2_scale = Vector3(1.0 / 3.0, 1.0 / 3.0, 1)
+
+
+## 照片材质（预先加工好的 webp，tools/bake_photo_textures.gd 生成）
+static func photo(name: String) -> Texture2D:
+	var key := "photo_" + name
+	if not _cache.has(key):
+		_cache[key] = load("res://assets/textures/photo/%s.webp" % name)
+	return _cache[key]
 
 
 static func set_window_energy(energy: float) -> void:
@@ -147,6 +174,9 @@ static func set_wetness(w: float) -> void:
 	road.roughness = lerpf(0.8, 0.12, w)
 	road.metallic = lerpf(0.05, 0.45, w)
 	var walk: StandardMaterial3D = batch("walk")
+	for k in ["concrete", "stone"]:
+		var cm: StandardMaterial3D = batch(k)
+		cm.roughness = lerpf(0.9, 0.3, w)
 	walk.roughness = lerpf(0.85, 0.2, w)
 	walk.metallic = lerpf(0.05, 0.3, w)
 	var g := _cache.get("ground_main") as StandardMaterial3D
@@ -194,6 +224,23 @@ static func marker(c: Color) -> StandardMaterial3D:
 	m.albedo_color = c
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_cache[key] = m
+	return m
+
+
+## 照片地面（世界坐标三平面映射）：城内空地是混凝土，城外远处是泥土
+static func photo_ground(id: String, tex: String, size: float, tint: Color) -> StandardMaterial3D:
+	var key := "ground_" + id
+	if _cache.has(key):
+		return _cache[key]
+	var m := StandardMaterial3D.new()
+	m.albedo_texture = photo(tex)
+	m.albedo_color = tint
+	m.roughness = 0.95
+	m.uv1_triplanar = true
+	m.uv1_world_triplanar = true
+	m.uv1_scale = Vector3(1.0 / size, 1.0 / size, 1.0 / size)
+	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	_cache[key] = m
 	return m
 

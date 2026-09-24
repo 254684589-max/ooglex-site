@@ -85,7 +85,7 @@ func _ground() -> void:
 	var pm := PlaneMesh.new()
 	pm.size = Vector2(LIMIT * 2 + 40, LIMIT * 2 + 40)
 	mi.mesh = pm
-	mi.material_override = Mats.ground("main", Color(0.2, 0.2, 0.2), Color(0.13, 0.13, 0.14), 0.05)
+	mi.material_override = Mats.photo_ground("main", "concrete_albedo", 6.0, Color(0.72, 0.72, 0.72))
 	mi.name = "Ground"
 	add_child(mi)
 	kit.collide(Vector3(0, -0.5, 0), Vector3(LIMIT * 2 + 40, 1.0, LIMIT * 2 + 40))
@@ -95,7 +95,7 @@ func _ground() -> void:
 	fp.size = Vector2(1400, 1400)
 	far.mesh = fp
 	far.position = Vector3(0, -0.05, 0)
-	far.material_override = Mats.ground("far", Color(0.2, 0.19, 0.16), Color(0.13, 0.14, 0.11), 0.01)
+	far.material_override = Mats.photo_ground("far", "dirt_albedo", 10.0, Color(0.9, 0.9, 0.9))
 	add_child(far)
 
 
@@ -130,8 +130,8 @@ func _roads() -> void:
 				batcher.box("walk", Vector3(off, 0.03, mid), Vector3(3.0, 0.06, length), walk_col, Basis.IDENTITY, true)
 				batcher.box("walk", Vector3(mid, 0.031, off), Vector3(length, 0.062, 3.0), walk_col, Basis.IDENTITY, true)
 				# 路缘石
-				batcher.box("solid", Vector3(road + side * (ROAD_HALF + 0.15), 0.07, mid), Vector3(0.3, 0.14, length), Color(0.58, 0.58, 0.58), Basis.IDENTITY, true)
-				batcher.box("solid", Vector3(mid, 0.07, road + side * (ROAD_HALF + 0.15)), Vector3(length, 0.14, 0.3), Color(0.58, 0.58, 0.58), Basis.IDENTITY, true)
+				batcher.box("concrete", Vector3(road + side * (ROAD_HALF + 0.15), 0.07, mid), Vector3(0.3, 0.14, length), Color(0.95, 0.95, 0.95), Basis.IDENTITY, true)
+				batcher.box("concrete", Vector3(mid, 0.07, road + side * (ROAD_HALF + 0.15)), Vector3(length, 0.14, 0.3), Color(0.95, 0.95, 0.95), Basis.IDENTITY, true)
 				# 路灯与行人路点
 				# 两个方向的道路两侧每 24 米一盏；大多是钠灯暖黄，主干道（x / z = 0）是 LED 冷白
 				var n := int(length / 24.0)
@@ -393,7 +393,7 @@ func _station(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void
 	var h0 := 11.0
 	var w: float = frame["w"]
 	var dd: float = frame["d"]
-	kit.shell(frame, h0, Color(0.2, 0.21, 0.25), 18.0)
+	kit.shell(frame, h0, Color(0.62, 0.62, 0.64), 18.0)
 	kit.tower_mass(frame, h0 + 0.3, 7.2, BuildingKit.C_CONCRETE, neon, 1)
 	kit.sign(frame, h0, String(d.get("name", "")), String(d.get("en", "")), neon)
 	kit.add_obstacle_frame(frame)
@@ -425,7 +425,7 @@ func _park(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	var w: float = frame["w"]
 	var dd: float = frame["d"]
 	# 草地与小路
-	kit.lbox(frame, "solid", Vector3(0, 0.02, 0), Vector3(w, 0.04, dd), Color(0.2, 0.34, 0.13), false)
+	kit.lbox(frame, "grass", Vector3(0, 0.02, 0), Vector3(w, 0.04, dd), Color(1, 1, 1), false)
 	kit.lbox(frame, "walk", Vector3(0, 0.045, 0), Vector3(4, 0.03, dd), Color(0.9, 0.86, 0.8), false)
 	kit.lbox(frame, "walk", Vector3(0, 0.046, 6), Vector3(w, 0.03, 3.5), Color(0.9, 0.86, 0.8), false)
 	for sx in [-1.0, 1.0]:
@@ -445,7 +445,7 @@ func _park(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 			kit.tree(BuildingKit.xf(frame, t.x, 0, t.y), kit.rng.randf_range(4.0, 6.5))
 	# 观景台：高 4 米，前方台阶
 	var deck_h := 4.0
-	kit.lbox(frame, "solid", Vector3(0, deck_h * 0.5, -19), Vector3(12, deck_h, 7), Color(0.42, 0.41, 0.4))
+	kit.lbox(frame, "concrete", Vector3(0, deck_h * 0.5, -19), Vector3(12, deck_h, 7), Color(0.85, 0.85, 0.85))
 	kit.lbox(frame, "neon", Vector3(0, deck_h + 0.05, -15.5), Vector3(12, 0.06, 0.1), Color(0.5, 1.0, 0.4), false)
 	for sx in [-1.0, 1.0]:
 		kit.lbox(frame, "metal", Vector3(sx * 5.9, deck_h + 0.55, -19), Vector3(0.1, 1.1, 7), Color(0.3, 0.3, 0.35))
@@ -454,7 +454,7 @@ func _park(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> void:
 	for k in steps:
 		var sy := (k + 0.5) * deck_h / steps
 		var sz := -9.5 - k * 0.75
-		kit.lbox(frame, "solid", Vector3(0, sy * 0.5, sz), Vector3(4, sy, 0.75), Color(0.24, 0.24, 0.28), false)
+		kit.lbox(frame, "concrete", Vector3(0, sy * 0.5, sz), Vector3(4, sy, 0.75), Color(0.8, 0.8, 0.8), false)
 	# 台阶的碰撞用一整块斜坡，走上去更顺滑
 	var run := steps * 0.75
 	var ang := atan2(deck_h, run)
@@ -522,7 +522,7 @@ func _warehouse(id: String, d: Dictionary, frame: Dictionary, neon: Color) -> vo
 	var h0 := 9.0
 	var w: float = frame["w"]
 	var dd: float = frame["d"]
-	kit.shell(frame, h0, Color(0.25, 0.26, 0.3), 18.0, false)
+	kit.shell(frame, h0, Color(0.7, 0.68, 0.64), 18.0, false)
 	kit.lbox(frame, "metal", Vector3(0, h0 + 1.0, 0), Vector3(w + 1, 1.6, dd + 1), Color(0.3, 0.32, 0.36), false)
 	kit.sign(frame, h0 - 3.2, String(d.get("name", "")), String(d.get("en", "")), neon)
 	kit.add_obstacle_frame(frame)
@@ -789,7 +789,7 @@ func _track() -> void:
 		var x := -435.0 + k * 30.0
 		if absf(x) < 45.0:
 			continue
-		batcher.box("solid", Vector3(x, (TRACK_Y - 0.8) * 0.5, TRACK_Z), Vector3(1.5, TRACK_Y - 0.8, 1.5), Color(0.18, 0.18, 0.22))
+		batcher.box("concrete", Vector3(x, (TRACK_Y - 0.8) * 0.5, TRACK_Z), Vector3(1.5, TRACK_Y - 0.8, 1.5), Color(0.9, 0.9, 0.9))
 
 
 func _skyline() -> void:

@@ -276,7 +276,7 @@ func _industrial(c: Vector3) -> void:
 	var d := rng.randf_range(22.0, 32.0)
 	var h := rng.randf_range(7.0, 11.0)
 	var col := Color(0.66, 0.62, 0.55).lerp(Color(0.55, 0.58, 0.6), rng.randf())
-	b.box("solid", c + Vector3(0, h * 0.5, 0), Vector3(w, h, d), col, Basis.IDENTITY, true)
+	b.box("concrete", c + Vector3(0, h * 0.5, 0), Vector3(w, h, d), col.lightened(0.3), Basis.IDENTITY, true)
 	b.box("roof", c + Vector3(0, h + 0.2, 0), Vector3(w + 0.3, 0.4, d + 0.3), Color(1, 1, 1))
 	for k in 4:
 		b.box("solid", c + Vector3(-w * 0.35 + k * w * 0.23, 2.2, d * 0.5 + 0.05), Vector3(3.6, 4.2, 0.1), Color(0.3, 0.32, 0.34))
@@ -297,7 +297,7 @@ func _freeway(ew: bool) -> void:
 	b.box("road", center, deck, Color(0.95, 0.95, 0.95))
 	for off in [-FW_W * 0.5 + 0.2, 0.0, FW_W * 0.5 - 0.2]:
 		var bs := (Vector3(length, 1.0, 0.4) if ew else Vector3(0.4, 1.0, length))
-		b.box("solid", center + across * off + Vector3(0, 1.1, 0), bs, Color(0.66, 0.65, 0.62))
+		b.box("concrete", center + across * off + Vector3(0, 1.1, 0), bs, Color(0.95, 0.95, 0.95))
 	# 车道虚线
 	for off in [-7.6, -3.9, 3.9, 7.6]:
 		var t := -half + 6.0
@@ -311,9 +311,9 @@ func _freeway(ew: bool) -> void:
 		var p := along * t2 + across * line
 		if not _in_city_square(p, 4.0):
 			for sx in [-6.0, 6.0]:
-				b.cylinder("solid", p + across * sx + Vector3(0, (y - 0.6) * 0.5, 0), 1.1, y - 0.6, Color(0.62, 0.61, 0.58), 10)
+				b.cylinder("concrete", p + across * sx + Vector3(0, (y - 0.6) * 0.5, 0), 1.1, y - 0.6, Color(0.92, 0.92, 0.92), 10)
 			var cap := (Vector3(1.8, 1.2, FW_W - 4.0) if ew else Vector3(FW_W - 4.0, 1.2, 1.8))
-			b.box("solid", p + Vector3(0, y - 1.1, 0), cap, Color(0.6, 0.59, 0.56))
+			b.box("concrete", p + Vector3(0, y - 1.1, 0), cap, Color(0.9, 0.9, 0.9))
 		t2 += 36.0
 	var t3 := -half + 20.0
 	while t3 < half:
@@ -331,7 +331,7 @@ func _in_city_square(p: Vector3, margin: float) -> bool:
 func _rail_yard() -> void:
 	var half := sqrt(R_MAX * R_MAX - YARD_Z1 * YARD_Z1)
 	var zc := (YARD_Z0 + YARD_Z1) * 0.5
-	b.box("solid", Vector3(0, 0.08, zc), Vector3(half * 2.0, 0.16, YARD_Z1 - YARD_Z0), Color(0.42, 0.38, 0.34), Basis.IDENTITY, true)
+	b.box("dirt", Vector3(0, 0.08, zc), Vector3(half * 2.0, 0.16, YARD_Z1 - YARD_Z0), Color(0.85, 0.82, 0.8), Basis.IDENTITY, true)
 	var tracks := 8
 	var cols := [Color(0.55, 0.22, 0.14), Color(0.2, 0.3, 0.45), Color(0.42, 0.42, 0.4), Color(0.6, 0.5, 0.25), Color(0.25, 0.35, 0.28), Color(0.7, 0.7, 0.68)]
 	for k in tracks:
