@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#161719">
+<title>工地搬砖 · 开始游戏 | Ooglex 游戏中心</title>
+<meta name="description" content="《工地搬砖》网页版：第三人称 3D 工地模拟游戏，从临时工干起，搬砖、挣钱、吃饭、睡觉。">
+<link rel="canonical" href="https://www.ooglex.com/games/construction-worker/">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #161719; }
+body { color: #f1efe9; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif; touch-action: none; }
+#canvas { display: block; width: 100%; height: 100%; }
+#canvas:focus { outline: none; }
+
+#cw-loading {
+  position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 24px 16px; text-align: center;
+  background:
+    radial-gradient(700px 420px at 50% 18%, rgba(245, 190, 40, .14), transparent 65%),
+    radial-gradient(800px 500px at 50% 115%, rgba(60, 110, 200, .14), transparent 62%),
+    #161719;
+  transition: opacity .6s ease;
+}
+#cw-loading.hide { opacity: 0; pointer-events: none; }
+#cw-loading::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 10px;
+  background: repeating-linear-gradient(-45deg, #f5be28 0 18px, #1d1d1f 18px 36px);
+}
+.cw-hat { width: 88px; height: 88px; filter: drop-shadow(0 10px 22px rgba(245, 190, 40, .35)); animation: cw-bob 2.4s ease-in-out infinite; }
+@keyframes cw-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.cw-title { font-size: clamp(30px, 7vw, 46px); font-weight: 800; letter-spacing: 4px; color: #f5be28; }
+.cw-sub { color: #a9a69e; font-size: 14px; letter-spacing: 1px; margin-top: -10px; }
+.cw-bar { width: min(360px, 78vw); height: 8px; border-radius: 99px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.cw-bar i { display: block; height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, #f5be28, #ff8a2b); transition: width .25s; }
+.cw-bar.indeterminate i { width: 35%; animation: cw-slide 1.4s ease-in-out infinite; }
+@keyframes cw-slide { 0% { margin-left: -35%; } 100% { margin-left: 100%; } }
+.cw-status { font-size: 14px; color: #d8d4ca; min-height: 20px; }
+.cw-tip { font-size: 13px; color: #8f8c85; max-width: 440px; line-height: 1.7; min-height: 44px; }
+.cw-note { font-size: 12px; color: #77746d; max-width: 440px; line-height: 1.7; }
+.cw-portrait { display: none; font-size: 13px; color: #f5be28; }
+@media (orientation: portrait) and (max-width: 820px) { .cw-portrait { display: block; } }
+.cw-back {
+  position: fixed; top: 20px; left: 16px; z-index: 11; color: #f5be28; text-decoration: none; font-size: 14px;
+  padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(245, 190, 40, .35); background: rgba(22, 23, 25, .7);
+}
+.cw-back:focus-visible, .cw-btn:focus-visible { outline: 2px solid #f5be28; outline-offset: 2px; }
+.cw-error { display: none; max-width: 480px; white-space: pre-line; background: #3a2020; border: 1px solid #8a3a30; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #ffd8cf; }
+.cw-error.show { display: block; }
+.cw-btn { display: inline-block; margin-top: 4px; padding: 9px 20px; border-radius: 99px; background: #f5be28; color: #1b1b1b; font-weight: 700; text-decoration: none; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .cw-hat, .cw-bar.indeterminate i { animation: none; } #cw-loading { transition: none; } }
+</style>
+
+</head>
+<body>
+<canvas id="canvas" tabindex="0">你的浏览器不支持 canvas。</canvas>
+<noscript>《工地搬砖》需要启用 JavaScript 才能运行。</noscript>
+
+<div id="cw-loading" role="status" aria-live="polite">
+  <a class="cw-back" id="cw-back" href="../">← 返回介绍页</a>
+  <svg class="cw-hat" viewBox="0 0 128 128" aria-hidden="true">
+    <path d="M14 90h100v10H14z" fill="#f2b81c"/>
+    <path d="M24 90c0-26 18-44 40-44s40 18 40 44z" fill="#f7c52b"/>
+    <path d="M58 44h12v46H58z" fill="#d99e10"/>
+    <g fill="#b3412a"><rect x="18" y="106" width="28" height="12" rx="2"/><rect x="50" y="106" width="28" height="12" rx="2"/><rect x="82" y="106" width="28" height="12" rx="2"/></g>
+  </svg>
+  <div class="cw-title">工地搬砖</div>
+  <div class="cw-sub">ConstructionWorker V0.1 · 网页版</div>
+  <div class="cw-bar indeterminate" id="cw-bar"><i id="cw-bar-fill"></i></div>
+  <div class="cw-status" id="cw-status">正在准备……</div>
+  <div class="cw-tip" id="cw-tip"></div>
+  <div class="cw-portrait">手机建议横屏游玩，画面更宽</div>
+  <div class="cw-error" id="cw-error"></div>
+  <div class="cw-note">首次打开需要下载约 40 MB 的游戏引擎与资源（服务器压缩传输时约 11 MB），之后浏览器会缓存。<br>推荐使用电脑版 Chrome / Edge / Firefox；手机支持触屏操作。</div>
+</div>
+
+<script src="cw-b45c8810.js?v=33c94cb3"></script>
+<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"cw-b45c8810","experimentalVK":false,"fileSizes":{"cw-b45c8810.pck":1289312,"cw-b45c8810.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"mainPack":"cw-b45c8810.pck"};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+  const overlay = document.getElementById('cw-loading');
+  const bar = document.getElementById('cw-bar');
+  const fill = document.getElementById('cw-bar-fill');
+  const status = document.getElementById('cw-status');
+  const tip = document.getElementById('cw-tip');
+  const errorBox = document.getElementById('cw-error');
+  const tips = [
+    '提示：走到砖堆跟前按 F 拿砖，再按一次多拿一块。',
+    '提示：只有走进黄框卸货区放下的材料，才算任务进度。',
+    '提示：体力低了会走不动、眼前发晃。站着歇会儿，或者去食堂吃饭。',
+    '提示：施工楼南边的凉茶桶可以免费喝水。',
+    '提示：晚上回宿舍睡觉，醒来就是第二天。别熬过凌晨两点！',
+    '提示：搬得越多，搬运熟练度越高，一次能拿的砖就越多。',
+  ];
+  let tipIndex = Math.floor(Math.random() * tips.length);
+  function nextTip() { tip.textContent = tips[tipIndex % tips.length]; tipIndex += 1; }
+  nextTip();
+  const tipTimer = setInterval(nextTip, 4200);
+
+  function mb(bytes) { return (bytes / 1048576).toFixed(1); }
+
+  function showError(message) {
+    clearInterval(tipTimer);
+    bar.style.display = 'none';
+    status.textContent = '加载失败';
+    errorBox.textContent = message;
+    const retry = document.createElement('a');
+    retry.className = 'cw-btn';
+    retry.href = window.location.pathname;
+    retry.textContent = '刷新重试';
+    errorBox.appendChild(document.createElement('br'));
+    errorBox.appendChild(retry);
+    errorBox.classList.add('show');
+  }
+
+  const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+  if (missing.length !== 0) {
+    showError('你的浏览器缺少运行本游戏需要的功能：\n' + missing.join('\n') + '\n\n请换用最新版 Chrome、Edge、Firefox 或 Safari（需要支持 WebGL 2）。');
+    return;
+  }
+
+  status.textContent = '正在下载游戏……';
+  engine.startGame({
+    onProgress: function (current, total) {
+      if (current > 0 && total > 0) {
+        bar.classList.remove('indeterminate');
+        const pct = Math.min(100, Math.round(current / total * 100));
+        fill.style.width = pct + '%';
+        status.textContent = '正在下载游戏 ' + pct + '%（' + mb(current) + ' / ' + mb(total) + ' MB）';
+        if (current >= total) {
+          status.textContent = '下载完成，正在启动引擎……';
+        }
+      } else {
+        bar.classList.add('indeterminate');
+      }
+    },
+  }).then(function () {
+    clearInterval(tipTimer);
+    overlay.classList.add('hide');
+    setTimeout(function () { overlay.remove(); }, 700);
+    const canvas = document.getElementById('canvas');
+    canvas.focus();
+  }, function (err) {
+    console.error(err);
+    showError('游戏启动时出错：' + (err && err.message ? err.message : String(err)));
+  });
+}());
+</script>
+</body>
+</html>
