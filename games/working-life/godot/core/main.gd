@@ -13,6 +13,7 @@ var day_night: DayNight
 var weather_fx: WeatherFX
 var traffic: Traffic
 var street_traffic: StreetTraffic
+var post_fx: PostFX
 var train: Train
 var crowd: Crowd
 var player: Player
@@ -44,6 +45,10 @@ func _ready() -> void:
 	street_traffic = StreetTraffic.new()
 	street_traffic.name = "StreetTraffic"
 	add_child(street_traffic)
+	post_fx = PostFX.new()
+	post_fx.name = "PostFX"
+	post_fx.day_night = day_night
+	add_child(post_fx)
 	train = Train.new()
 	train.position = Vector3(0, CityBuilder.TRACK_Y, CityBuilder.TRACK_Z)
 	add_child(train)

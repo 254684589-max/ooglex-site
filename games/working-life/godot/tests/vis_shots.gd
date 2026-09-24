@@ -1,6 +1,14 @@
 extends "res://tests/site_shots.gd"
+
+var only := ""
 ## 画质对比用的快速截图：只拍城市场景（不开面板、不跑小游戏）。
 ##   xvfb-run godot --path . --rendering-driver opengl3 --resolution 1280x720 res://tests/vis_shots.tscn -- <outdir>
+
+
+func _shot(name: String, width: int) -> void:
+	if only != "" and not name.contains(only):
+		return
+	await super._shot(name, width)
 
 
 func _ready() -> void:
@@ -8,6 +16,8 @@ func _ready() -> void:
 	if args.size() > 0:
 		out = args[0]
 	DirAccess.make_dir_recursive_absolute(out)
+	# 第二个参数指定画质（默认「超高」）
+	SettingsManager.values["quality"] = int(args[1]) if args.size() > 1 else 3
 	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_skip_intro = true
 	add_child(main)
@@ -18,6 +28,8 @@ func _ready() -> void:
 		if GameManager.playing and not main.ui.story.playing:
 			break
 	await _wait(240)
+	# 第三个参数：只拍名字里含这个字符串的镜头（调试单个效果时省时间）
+	only = args[2] if args.size() > 2 else ""
 	var p: Player = GameManager.player
 	SettingsManager.values["show_marker"] = false
 	main.ui.visible = false
@@ -25,7 +37,7 @@ func _ready() -> void:
 	cam.far = 1800.0
 	cam.fov = 60.0
 	main.add_child(cam)
-	for spec in [[19.1, "sunny", "ref_dusk", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [19.4, "sunny", "ref_dusk_late", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [18.9, "sunny", "edge_dusk", Vector3(140, 12, 95), Vector3(185, 9, 20)], [19.3, "sunny", "cross_dusk", Vector3(3, 4.5, 34), Vector3(-6, 5, -20)], [20.2, "sunny", "board_night", Vector3(156, 5, 52), Vector3(180, 11, 30)], [19.0, "sunny", "aerial_dusk", Vector3(330, 140, 330), Vector3(-40, 0, -200)], [21.0, "sunny", "aerial_night", Vector3(330, 140, 330), Vector3(-40, 0, -200)], [18.5, "sunny", "drone_sunset", Vector3(185, 75, 120), Vector3(-80, 30, -60)], [11.0, "sunny", "drone_noon", Vector3(120, 50, 190), Vector3(0, 25, -40)], [21.5, "cloudy", "drone_night", Vector3(-180, 55, 150), Vector3(0, 20, -40)]]:
+	for spec in [[19.1, "sunny", "ref_dusk", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [19.4, "sunny", "ref_dusk_late", Vector3(30, 42, 196), Vector3(-10, 30, -300)], [18.9, "sunny", "edge_dusk", Vector3(140, 12, 95), Vector3(185, 9, 20)], [19.3, "sunny", "cross_dusk", Vector3(3, 4.5, 34), Vector3(-6, 5, -20)], [20.2, "sunny", "board_night", Vector3(156, 5, 52), Vector3(180, 11, 30)], [19.0, "sunny", "aerial_dusk", Vector3(330, 140, 330), Vector3(-40, 0, -200)], [21.0, "sunny", "aerial_night", Vector3(330, 140, 330), Vector3(-40, 0, -200)], [18.9, "sunny", "shafts_dusk", Vector3(150, 3.2, 3.0), Vector3(-200, 30, 70)], [18.5, "sunny", "drone_sunset", Vector3(185, 75, 120), Vector3(-80, 30, -60)], [11.0, "sunny", "drone_noon", Vector3(120, 50, 190), Vector3(0, 25, -40)], [21.5, "cloudy", "drone_night", Vector3(-180, 55, 150), Vector3(0, 20, -40)]]:
 		set_scene(spec[0], spec[1])
 		cam.look_at_from_position(spec[3], spec[4])
 		cam.make_current()

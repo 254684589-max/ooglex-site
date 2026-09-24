@@ -18,6 +18,11 @@ static func batch(kind: String) -> Material:
 	var key := "batch_" + kind
 	if _cache.has(key):
 		return _cache[key]
+	if kind == "beam":
+		var sm := ShaderMaterial.new()
+		sm.shader = load("res://world/shaders/light_beam.gdshader")
+		_cache[key] = sm
+		return sm
 	var m := StandardMaterial3D.new()
 	m.vertex_color_use_as_albedo = true
 	match kind:
@@ -169,6 +174,9 @@ static func set_lamp_energy(energy: float) -> void:
 	for k in ["lamp_warm", "lamp_cool"]:
 		(batch(k) as StandardMaterial3D).emission_energy_multiplier = energy * 4.0
 	(batch("ad") as StandardMaterial3D).emission_energy_multiplier = energy * 0.6
+	# 路灯光锥只在「高」「超高」画质显示
+	var beam_on := int(SettingsManager.get_v("quality", 1)) >= 2
+	(batch("beam") as ShaderMaterial).set_shader_parameter("intensity", energy * energy * 0.07 if beam_on else 0.0)
 
 
 ## 雨天路面变湿：粗糙度降低、带一点金属感，反射霓虹与灯光

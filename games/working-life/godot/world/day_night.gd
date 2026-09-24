@@ -4,6 +4,7 @@ extends Node3D
 ## 赛博朋克配色：白天是泛黄的雾霾天，黄昏紫红，夜晚深紫蓝，霓虹始终在亮。天气会压暗天空、加浓雾气。
 
 var sun: DirectionalLight3D
+var bounce: DirectionalLight3D
 var env: Environment
 var sky_mat: ShaderMaterial
 var city: CityBuilder
@@ -71,6 +72,13 @@ func _ready() -> void:
 	sun.shadow_bias = 0.06
 	sun.shadow_normal_bias = 1.2
 	add_child(sun)
+	# 地面反弹补光（模拟全局光照）：一盏从下往上打的暖色弱光，照亮背光面、屋檐下与车身下半部分
+	bounce = DirectionalLight3D.new()
+	bounce.name = "GroundBounce"
+	bounce.shadow_enabled = false
+	bounce.light_specular = 0.0
+	bounce.rotation = Vector3(deg_to_rad(70.0), 0.0, 0.0)
+	add_child(bounce)
 	apply_quality()
 
 
@@ -93,7 +101,15 @@ func apply_quality() -> void:
 	var q := int(SettingsManager.get_v("quality", 1))
 	if sun != null:
 		sun.shadow_enabled = bool(SettingsManager.get_v("shadows", true)) and q >= 1
-		sun.directional_shadow_max_distance = 60.0 if q < 2 else 110.0
+		sun.directional_shadow_max_distance = [60.0, 60.0, 110.0, 150.0][clampi(q, 0, 3)]
+		# 超高：阴影贴图 4096、四级级联、柔和阴影
+		RenderingServer.directional_shadow_atlas_set_size(4096 if q >= 3 else 2048, true)
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS if q >= 3 else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_MEDIUM if q >= 3 else RenderingServer.SHADOW_QUALITY_SOFT_LOW)
+	if bounce != null:
+		bounce.visible = q >= 2
+	# 让路灯 / 光锥材质在下一帧按新画质刷新
+	Mats.lamp_energy = -1.0
 	if env != null:
 		env.glow_enabled = q >= 1
 	var vp := get_viewport()
@@ -175,6 +191,10 @@ func update_lighting(minute: float) -> void:
 	env.ambient_light_color = Color(0.26, 0.24, 0.42).lerp(top.lerp(hor, 0.35).lerp(Color(0.6, 0.64, 0.72), 0.3), day).lerp(Color(0.42, 0.42, 0.66), dusk * 0.6)
 	env.ambient_light_energy = lerpf(0.7, 0.75, day) * (1.0 - dusk * 0.5)
 	env.glow_intensity = lerpf(0.8, 0.45, day)
+	if bounce != null:
+		# 反弹光颜色取太阳色与地面色的混合，强度随太阳高度
+		bounce.light_color = sun_col.lerp(Color(0.7, 0.62, 0.55), 0.5)
+		bounce.light_energy = 0.22 * day * (1.0 - gloom * 0.6)
 	env.tonemap_exposure = lerpf(1.1, 1.0, day)
 	# 黄昏开始陆续开灯：窗户与路灯在太阳落山前就亮起来（参考真实城市的蓝调时刻）
 	Mats.set_window_energy(clampf((0.9 - day) * 1.6, 0.05, 1.0))

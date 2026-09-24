@@ -352,6 +352,8 @@ func streetlight(pos: Vector3, yaw: float, warm := true) -> void:
 	var pool := Color(0.5, 0.33, 0.14) if warm else Color(0.36, 0.4, 0.44)
 	night.cylinder("decal", pos + arm + Vector3(0, 0.035, 0), 4.2, 0.02, pool * 0.45, 14)
 	night.cylinder("decal", pos + arm + Vector3(0, 0.04, 0), 2.2, 0.02, pool * 0.35, 12)
+	# 光锥：从灯头往下张开的半透明圆锥（模拟雾里的体积光）
+	night.cylinder("beam", head - Vector3(0, 3.35, 0), 2.6, 6.6, (Color(1.0, 0.72, 0.4) if warm else Color(0.8, 0.88, 1.0)), 12, Basis.IDENTITY, 0.22)
 	lamp_points.append([head - Vector3(0, 0.3, 0), warm])
 
 
