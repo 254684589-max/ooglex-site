@@ -41,16 +41,16 @@ func _ready() -> void:
 	# 2b. 航拍天际线：黄昏与夜景（隐藏界面）
 	main.ui.visible = false
 	var cam := Camera3D.new()
-	cam.far = 1600.0
+	cam.far = 1800.0
 	cam.fov = 60.0
 	main.add_child(cam)
-	set_scene(18.5, "sunny")
-	cam.look_at_from_position(Vector3(185, 75, 120), Vector3(-80, 30, -60))
+	set_scene(19.0, "sunny")
+	cam.look_at_from_position(Vector3(330, 140, 330), Vector3(-40, 0, -200))
 	cam.make_current()
 	await _wait(40)
 	await _shot("skyline", 1280)
-	set_scene(21.5, "cloudy")
-	cam.look_at_from_position(Vector3(-180, 55, 150), Vector3(0, 20, -40))
+	set_scene(21.0, "sunny")
+	cam.look_at_from_position(Vector3(30, 42, 196), Vector3(-10, 30, -300))
 	await _wait(40)
 	await _shot("skyline_night", 960)
 	cam.clear_current()

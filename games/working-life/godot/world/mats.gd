@@ -7,6 +7,10 @@ extends RefCounted
 static var _cache: Dictionary = {}
 static var window_energy := 0.0
 static var wetness := 0.0
+## 路灯亮度：黄昏开始亮，夜里最亮（DayNight 每帧设置）
+static var lamp_energy := 0.0
+const LAMP_WARM := Color(1.0, 0.66, 0.32)
+const LAMP_COOL := Color(0.86, 0.92, 1.0)
 const FACADES := ["fac_glass", "fac_office", "fac_res", "fac_cyber"]
 
 
@@ -49,6 +53,25 @@ static func batch(kind: String) -> Material:
 			m.roughness = 0.05
 			m.metallic = 0.6
 			m.albedo_color = Color(1, 1, 1, 0.8)
+		"roof":
+			m.albedo_texture = ProcTex.roof()
+			m.uv1_scale = Vector3(1.0 / 12.0, 1.0 / 12.0, 1)
+			m.roughness = 0.92
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+		"ad":
+			# 广告牌画面：白天是印刷画面，夜里被灯照亮（自发光随路灯亮度）
+			m.albedo_texture = ProcTex.ads()
+			m.emission_enabled = true
+			m.emission = Color.BLACK
+			m.emission_texture = ProcTex.ads()
+			m.emission_energy_multiplier = lamp_energy * 0.6
+			m.roughness = 0.6
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+		"lamp_warm", "lamp_cool":
+			m.roughness = 0.4
+			m.emission_enabled = true
+			m.emission = LAMP_WARM if kind == "lamp_warm" else LAMP_COOL
+			m.emission_energy_multiplier = lamp_energy * 4.0
 		"skin":
 			# 人物：顶点色按 sRGB 解释，与原来用 albedo_color 的颜色一致
 			m.vertex_color_is_srgb = true
@@ -106,6 +129,15 @@ static func set_window_energy(energy: float) -> void:
 	for k in ["win_warm", "win_cool"] + FACADES:
 		var m: StandardMaterial3D = batch(k)
 		m.emission_energy_multiplier = energy
+
+
+static func set_lamp_energy(energy: float) -> void:
+	if absf(energy - lamp_energy) < 0.005 and _cache.has("batch_lamp_warm"):
+		return
+	lamp_energy = energy
+	for k in ["lamp_warm", "lamp_cool"]:
+		(batch(k) as StandardMaterial3D).emission_energy_multiplier = energy * 4.0
+	(batch("ad") as StandardMaterial3D).emission_energy_multiplier = energy * 0.6
 
 
 ## 雨天路面变湿：粗糙度降低、带一点金属感，反射霓虹与灯光

@@ -10,9 +10,13 @@ const CELL := 96.0
 
 var chunked := true
 var _groups: Dictionary = {}
+## 当前写入的材质类型（发光类材质不做环境光遮蔽）
+var _kind := ""
+const _NO_AO := ["ad", "neon", "holo", "decal", "lamp_warm", "lamp_cool", "leaf", "water", "glass", "win_warm", "win_cool"]
 
 
 func _tool_for(kind: String, at: Vector3) -> SurfaceTool:
+	_kind = kind
 	var key := kind
 	if chunked:
 		key = "%s|%d|%d" % [kind, floori(at.x / CELL), floori(at.z / CELL)]
@@ -33,8 +37,14 @@ func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, n: Vector3, col: 
 		c = t
 	# 竖直面 UV = (x + z, y)，水平面 UV = (x, z)：都是米，材质里再按贴图尺寸缩放
 	var flat := absf(n.y) > 0.7
+	# 贴地的环境光遮蔽（烘焙进顶点色）：竖直面越靠近地面越暗，墙根、车底、树干底部有接触阴影
+	var ao := not flat and not (_kind in _NO_AO)
 	for p in [a, b, c]:
-		st.set_color(col)
+		if ao and p.y < 2.5 and p.y > -0.1:
+			var f := lerpf(0.58, 1.0, clampf(p.y / 2.5, 0.0, 1.0))
+			st.set_color(Color(col.r * f, col.g * f, col.b * f, col.a))
+		else:
+			st.set_color(col)
 		st.set_normal(n)
 		st.set_uv(Vector2(p.x, p.z) if flat else Vector2(p.x + p.z, p.y))
 		st.add_vertex(p)
@@ -114,6 +124,32 @@ func cylinder(kind: String, center: Vector3, radius: float, height: float, col: 
 		_tri(st, bot, b1, b0, -up, col)
 
 
+## 双坡屋顶：底边矩形 w×d（中心 base 在檐口高度），屋脊高 h，沿 x（along_x）或沿 z；山墙三角用 gable_kind
+func gable_roof(kind: String, base: Vector3, w: float, d: float, h: float, col: Color, along_x: bool, gable_kind: String, gable_col: Color) -> void:
+	var st := _tool_for(kind, base)
+	# 统一成「屋脊沿 x」计算，沿 z 时交换坐标轴
+	var L := w if along_x else d
+	var S := d if along_x else w
+	var hl := L * 0.5
+	var hs := S * 0.5
+	var f := func(a: float, y: float, c: float) -> Vector3:
+		return base + (Vector3(a, y, c) if along_x else Vector3(c, y, a))
+	var r0: Vector3 = f.call(-hl, h, 0.0)
+	var r1: Vector3 = f.call(hl, h, 0.0)
+	var s0: Vector3 = f.call(-hl, 0.0, -hs)
+	var s1: Vector3 = f.call(hl, 0.0, -hs)
+	var n0: Vector3 = f.call(-hl, 0.0, hs)
+	var n1: Vector3 = f.call(hl, 0.0, hs)
+	var ns: Vector3 = f.call(0.0, hs, -h) - base
+	var nn: Vector3 = f.call(0.0, hs, h) - base
+	_quad(st, s0, s1, r1, r0, ns.normalized(), col)
+	_quad(st, n0, n1, r1, r0, nn.normalized(), col)
+	var gt := _tool_for(gable_kind, base)
+	var ge: Vector3 = f.call(-1.0, 0.0, 0.0) - base
+	_tri(gt, s0, n0, r0, ge.normalized(), gable_col)
+	_tri(gt, s1, n1, r1, -ge.normalized(), gable_col)
+
+
 ## 立在两点之间的细杆（脚手架钢管、塔吊桁架）
 func beam(kind: String, from: Vector3, to: Vector3, thickness: float, col: Color) -> void:
 	var dir := to - from
@@ -156,7 +192,7 @@ func build(parent: Node3D, cast_shadows := true) -> int:
 		mi.mesh = mesh
 		mi.material_override = Mats.batch(String(g["kind"]))
 		var kind := String(g["kind"])
-		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo"]:
+		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo", "lamp_warm", "lamp_cool", "ad"]:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# 远处的小物件不渲染（LOD）
 		if kind in ["prop", "decal", "leaf"]:

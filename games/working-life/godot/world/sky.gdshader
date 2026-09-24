@@ -3,6 +3,7 @@ shader_type sky;
 // 反射 / 环境用的立方体贴图里不画云和星星（省性能），只有屏幕上的天空才画。
 
 uniform vec3 top_color : source_color = vec3(0.22, 0.42, 0.72);
+uniform vec3 mid_color : source_color = vec3(0.45, 0.62, 0.85);
 uniform vec3 horizon_color : source_color = vec3(0.8, 0.82, 0.86);
 uniform vec3 ground_color : source_color = vec3(0.2, 0.2, 0.22);
 uniform vec3 sun_color : source_color = vec3(1.0, 0.9, 0.7);
@@ -50,8 +51,11 @@ void sky() {
 	vec3 sd = normalize(sun_dir);
 	float mu = max(dot(d, sd), 0.0);
 	// 地平线附近更亮更暖（大气散射 / 雾霾）
+	// 三段渐变：天顶 → 中空（黄昏时是粉紫色）→ 地平线
 	float h = pow(1.0 - clamp(y, 0.0, 1.0), 5.0);
-	vec3 col = mix(top_color, horizon_color, h);
+	float m = pow(1.0 - clamp(y, 0.0, 1.0), 2.2);
+	vec3 col = mix(top_color, mid_color, m);
+	col = mix(col, horizon_color, h);
 	// 太阳方向的地平线更亮
 	float side = pow(mu, 3.0) * h;
 	col += sun_color * side * 0.55 * haze;

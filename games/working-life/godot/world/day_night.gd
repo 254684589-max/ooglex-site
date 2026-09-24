@@ -14,8 +14,11 @@ var _drift := 0.0
 ## 调色板（写实一点的洛杉矶式黄昏：天顶偏蓝、地平线橙色雾霾；夜里城市光把低空染成紫色）
 const SKY_TOP_DAY := Color(0.2, 0.42, 0.76)
 const SKY_HOR_DAY := Color(0.74, 0.8, 0.86)
-const SKY_TOP_DUSK := Color(0.2, 0.3, 0.52)
-const SKY_HOR_DUSK := Color(1.0, 0.6, 0.36)
+const SKY_TOP_DUSK := Color(0.3, 0.33, 0.6)
+const SKY_HOR_DUSK := Color(1.0, 0.66, 0.46)
+const SKY_MID_DAY := Color(0.42, 0.6, 0.85)
+const SKY_MID_DUSK := Color(0.8, 0.56, 0.7)
+const SKY_MID_NIGHT := Color(0.05, 0.05, 0.13)
 const SKY_TOP_NIGHT := Color(0.012, 0.016, 0.045)
 const SKY_HOR_NIGHT := Color(0.13, 0.08, 0.2)
 const SUN_DAY := Color(1.0, 0.95, 0.86)
@@ -55,6 +58,7 @@ func _ready() -> void:
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.06
 	env.adjustment_saturation = 1.15
+	env.adjustment_color_correction = _grade()
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -68,6 +72,21 @@ func _ready() -> void:
 	sun.shadow_normal_bias = 1.2
 	add_child(sun)
 	apply_quality()
+
+
+## 调色（逐通道曲线）：暗部微微偏紫蓝、亮部偏暖，接近电影感的黄昏色调
+static func _grade() -> GradientTexture1D:
+	var g := Gradient.new()
+	g.set_offset(0, 0.0)
+	g.set_color(0, Color(0.0, 0.0, 0.035))
+	g.set_offset(1, 1.0)
+	g.set_color(1, Color(1.0, 0.985, 0.95))
+	g.add_point(0.22, Color(0.2, 0.2, 0.245))
+	g.add_point(0.6, Color(0.615, 0.6, 0.585))
+	var t := GradientTexture1D.new()
+	t.gradient = g
+	t.width = 256
+	return t
 
 
 func apply_quality() -> void:
@@ -115,7 +134,8 @@ func update_lighting(minute: float) -> void:
 	if day > 0.02:
 		sun_dir = Vector3(cos(t), maxf(sin(t), 0.06) * 1.1, 0.45).normalized()
 		sun.light_color = sun_col
-		sun.light_energy = lerpf(0.35, 1.25, day) * (1.0 - gloom * 0.65) * (1.0 - dusk * 0.25)
+		# 黄昏太阳贴近地平线、被雾霾削弱：楼的受光面只剩一层暖色，背光面偏蓝紫（接近剪影）
+		sun.light_energy = lerpf(0.35, 1.25, day) * (1.0 - gloom * 0.65) * (1.0 - dusk * 0.5)
 	else:
 		sun_dir = Vector3(-0.3, 0.8, 0.5).normalized()
 		sun.light_color = Color(0.55, 0.55, 0.9)
@@ -123,14 +143,17 @@ func update_lighting(minute: float) -> void:
 	sun.look_at_from_position(sun_dir * 100.0, Vector3.ZERO, Vector3.UP if absf(sun_dir.y) < 0.99 else Vector3.FORWARD)
 	var top := SKY_TOP_NIGHT.lerp(SKY_TOP_DAY, day).lerp(SKY_TOP_DUSK, dusk * 0.8)
 	var hor := SKY_HOR_NIGHT.lerp(SKY_HOR_DAY, day).lerp(SKY_HOR_DUSK, dusk * 0.9)
+	var mid := SKY_MID_NIGHT.lerp(SKY_MID_DAY, day).lerp(SKY_MID_DUSK, dusk * 0.85)
 	var grey := Color(0.46, 0.5, 0.55).lerp(Color(0.07, 0.06, 0.1), 1.0 - day)
 	top = top.lerp(grey.darkened(0.15), gloom)
 	hor = hor.lerp(grey.lightened(0.1), gloom * 0.85)
+	mid = mid.lerp(grey, gloom)
 	if _sky_timer <= 0.0:
 		# 天空参数每 0.2 秒更新一次（每次更新都会重画反射用的立方体贴图）
 		_sky_timer = 0.2
 		sky_mat.set_shader_parameter("top_color", top)
 		sky_mat.set_shader_parameter("horizon_color", hor)
+		sky_mat.set_shader_parameter("mid_color", mid)
 		sky_mat.set_shader_parameter("ground_color", hor.darkened(0.55))
 		sky_mat.set_shader_parameter("sun_color", sun_col * (1.0 - gloom * 0.7))
 		sky_mat.set_shader_parameter("sun_dir", sun_dir if day > 0.02 else Vector3(0, -1, 0))
@@ -142,15 +165,24 @@ func update_lighting(minute: float) -> void:
 		sky_mat.set_shader_parameter("cloud_shadow", Color(0.55, 0.6, 0.7).lerp(Color(0.45, 0.3, 0.42), dusk).lerp(Color(0.05, 0.04, 0.08), 1.0 - day).lerp(grey.darkened(0.2), gloom))
 		sky_mat.set_shader_parameter("stars", clampf(1.0 - day * 3.0, 0.0, 1.0) * (1.0 - gloom))
 		sky_mat.set_shader_parameter("drift", _drift)
-	env.fog_light_color = hor.lerp(Color(0.66, 0.62, 0.64), dusk * 0.45).lerp(Color(0.24, 0.12, 0.3), (1.0 - day) * 0.6)
-	env.fog_density = 0.0011 + gloom * 0.0035 + (1.0 - day) * 0.0012
+	# 雾色取地平线与中空的混合：黄昏是桃粉到淡紫，远处的楼和山被染成天空色（空气透视）
+	# 背光一侧的雾比天空暗：黄昏时整体压暗一些，楼才会呈现偏蓝紫的剪影而不是被雾「漂白」
+	env.fog_light_color = hor.lerp(mid, 0.45).darkened(dusk * 0.35).lerp(Color(0.2, 0.12, 0.28), (1.0 - day) * 0.6)
+	env.fog_aerial_perspective = 0.45 - dusk * 0.25
+	env.fog_density = 0.0011 + gloom * 0.0035 + dusk * 0.0009 + (1.0 - day) * 0.0012
+	env.fog_height_density = 0.004 + dusk * 0.01
 	env.fog_sun_scatter = 0.18 * day * (1.0 - gloom)
-	env.ambient_light_color = Color(0.26, 0.24, 0.42).lerp(top.lerp(hor, 0.35).lerp(Color(0.6, 0.64, 0.72), 0.3), day)
-	env.ambient_light_energy = lerpf(0.7, 0.75, day)
+	env.ambient_light_color = Color(0.26, 0.24, 0.42).lerp(top.lerp(hor, 0.35).lerp(Color(0.6, 0.64, 0.72), 0.3), day).lerp(Color(0.42, 0.42, 0.66), dusk * 0.6)
+	env.ambient_light_energy = lerpf(0.7, 0.75, day) * (1.0 - dusk * 0.5)
 	env.glow_intensity = lerpf(0.8, 0.45, day)
 	env.tonemap_exposure = lerpf(1.1, 1.0, day)
-	Mats.set_window_energy(clampf((0.75 - day) * 2.0, 0.05, 1.0))
-	var night := 1 if day < 0.45 else 0
+	# 黄昏开始陆续开灯：窗户与路灯在太阳落山前就亮起来（参考真实城市的蓝调时刻）
+	Mats.set_window_energy(clampf((0.9 - day) * 1.6, 0.05, 1.0))
+	var lamps := clampf((0.85 - day) / 0.4, 0.0, 1.0) * (1.0 if day < 0.99 else 0.0)
+	if gloom > 0.5 and day < 0.99:
+		lamps = maxf(lamps, 0.6)
+	Mats.set_lamp_energy(lamps)
+	var night := 1 if lamps > 0.3 else 0
 	if night != _night_on and city != null:
 		_night_on = night
 		city.set_night(night == 1)

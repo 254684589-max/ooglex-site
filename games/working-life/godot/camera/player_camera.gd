@@ -49,7 +49,7 @@ func _ready() -> void:
 	camera.name = "Camera3D"
 	camera.fov = 70.0
 	camera.near = 0.08
-	camera.far = 1600.0
+	camera.far = 1800.0
 	_arm.add_child(camera)
 	if target_path != NodePath():
 		target = get_node_or_null(target_path)
