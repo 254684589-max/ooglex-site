@@ -191,7 +191,8 @@ func refresh_outfit() -> void:
 		return
 	var id := PlayerManager.outfit
 	if id == "":
-		model.set_clothes(Color(0.25, 0.3, 0.42), Color(0.16, 0.17, 0.22))
+		# 默认造型：黑色飞行员夹克 + 黑色连帽衫、黑裤
+		model.set_clothes(Color(0.09, 0.09, 0.1), Color(0.1, 0.1, 0.11))
 		return
 	var cols: Dictionary = DataDB.item(id).get("colors", {})
 	model.set_clothes(Mats.hex(String(cols.get("shirt", "")), Color(0.3, 0.3, 0.4)), Mats.hex(String(cols.get("pants", "")), Color(0.15, 0.15, 0.2)))
