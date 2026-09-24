@@ -13,6 +13,13 @@ extends Node3D
 @export var accent_color := Color(0.13, 0.9, 1.0)
 @export var hat := "none"
 @export var body_scale := 1.0
+## 形象细节：胡子（none / goatee）、胡子颜色、外套（夹克 + 连帽衫的帽子与拉链）、金链、耳钉、胸前灯带
+@export var beard := "none"
+@export var beard_color := Color(0.33, 0.31, 0.3)
+@export var jacket := false
+@export var chain := false
+@export var earring := false
+@export var accent_strip := true
 ## 远处不渲染（米，0 = 不限制）；NPC 与路人关闭阴影以减少绘制调用
 @export var draw_distance := 0.0
 @export var casts_shadow := true
@@ -51,7 +58,21 @@ func build() -> void:
 	_part(torso, "capsule", Vector3(0.44, 0.66, 0.26), Vector3(0, 0.33, 0), shirt_color, Vector3.ZERO, "shirt")
 	_part(torso, "capsule", Vector3(0.56, 0.2, 0.26), Vector3(0, 0.54, 0), shirt_color, Vector3(0, 0, PI * 0.5), "shirt")
 	# 发光条（赛博朋克外套的灯带）
-	_part(torso, "glow", Vector3(0.03, 0.46, 0.02), Vector3(0.12, 0.33, -0.135), accent_color)
+	if accent_strip:
+		_part(torso, "glow", Vector3(0.03, 0.46, 0.02), Vector3(0.12, 0.33, -0.135), accent_color)
+	if jacket:
+		# 飞行员夹克 + 里面的连帽衫：立领、银色拉链、背后垂着的卫衣帽子、夹克下摆罗纹
+		_part(torso, "capsule", Vector3(0.3, 0.1, 0.24), Vector3(0, 0.6, 0.0), shirt_color.lightened(0.04), Vector3(0, 0, PI * 0.5), "shirt")
+		_part(torso, "box", Vector3(0.012, 0.5, 0.012), Vector3(0.0, 0.33, -0.138), Color(0.72, 0.73, 0.75))
+		_part(torso, "capsule", Vector3(0.26, 0.2, 0.12), Vector3(0, 0.58, 0.13), shirt_color.darkened(0.25), Vector3(0.5, 0, 0))
+		_part(torso, "box", Vector3(0.44, 0.05, 0.27), Vector3(0, 0.04, 0), shirt_color.darkened(0.35))
+	if chain:
+		# 金链：从脖子两侧垂到胸前的 V 形，一颗颗小珠子
+		var gold := Color(0.86, 0.66, 0.26)
+		for sx in [-1.0, 1.0]:
+			for i in 9:
+				var t := float(i) / 8.0
+				_part(torso, "sphere", Vector3(0.016, 0.016, 0.016), Vector3(sx * lerpf(0.085, 0.0, t), lerpf(0.62, 0.42, t), lerpf(-0.08, -0.142, t)), gold)
 	_part(hips, "capsule", Vector3(0.4, 0.26, 0.25), Vector3(0, 0.0, 0), pants_color, Vector3.ZERO, "pants")
 	_part(hips, "box", Vector3(0.41, 0.05, 0.255), Vector3(0, 0.08, 0), Color(0.08, 0.07, 0.07))
 	head_pivot = Node3D.new()
@@ -71,6 +92,15 @@ func build() -> void:
 	# 头发：盖住头顶与后脑
 	_part(head_pivot, "sphere", Vector3(0.235, 0.2, 0.26), Vector3(0, 0.29, 0.015), hair_color)
 	_part(head_pivot, "sphere", Vector3(0.22, 0.2, 0.12), Vector3(0, 0.22, 0.07), hair_color)
+	if beard == "goatee":
+		# 八字胡 + 下巴山羊胡 + 两鬓花白
+		_part(head_pivot, "box", Vector3(0.062, 0.01, 0.01), Vector3(0, 0.154, -0.121), beard_color)
+		for sx in [-1.0, 1.0]:
+			_part(head_pivot, "box", Vector3(0.008, 0.026, 0.01), Vector3(sx * 0.03, 0.142, -0.118), beard_color)
+			_part(head_pivot, "box", Vector3(0.012, 0.06, 0.06), Vector3(sx * 0.109, 0.225, 0.02), hair_color.lightened(0.3))
+		_part(head_pivot, "box", Vector3(0.036, 0.034, 0.012), Vector3(0, 0.097, -0.103), beard_color, Vector3(0.35, 0, 0))
+	if earring:
+		_part(head_pivot, "sphere", Vector3(0.016, 0.016, 0.016), Vector3(-0.118, 0.172, 0.0), Color(0.8, 0.8, 0.82))
 	hat_node = Node3D.new()
 	hat_node.position = Vector3(0, 0.32, 0)
 	head_pivot.add_child(hat_node)
@@ -228,4 +258,15 @@ func set_hat(kind: String) -> void:
 			_part(hat_node, "dome", Vector3(0.33, 0.165, 0.33), Vector3(0, -0.04, 0), Color(0.98, 0.78, 0.1))
 		"visor":
 			_part(hat_node, "glow", Vector3(0.28, 0.06, 0.05), Vector3(0, -0.1, -0.13), accent_color)
+		"snapback":
+			# 黑色平檐棒球帽：帽顶、平帽檐（檐下绿色）、帽顶纽扣、正面红色刺绣徽标（通用翅膀图案，不用真实品牌）
+			var black := Color(0.06, 0.06, 0.07)
+			_part(hat_node, "dome", Vector3(0.29, 0.15, 0.29), Vector3(0, -0.06, 0.005), black)
+			_part(hat_node, "box", Vector3(0.22, 0.014, 0.16), Vector3(0, -0.05, -0.2), black, Vector3(0.06, 0, 0))
+			_part(hat_node, "box", Vector3(0.215, 0.008, 0.155), Vector3(0, -0.059, -0.198), Color(0.08, 0.3, 0.17), Vector3(0.06, 0, 0))
+			_part(hat_node, "sphere", Vector3(0.025, 0.012, 0.025), Vector3(0, 0.09, 0.005), black)
+			var red := Color(0.86, 0.1, 0.12)
+			_part(hat_node, "box", Vector3(0.075, 0.016, 0.006), Vector3(0.015, 0.03, -0.128), red, Vector3(-0.45, 0, 0.3))
+			_part(hat_node, "box", Vector3(0.04, 0.012, 0.006), Vector3(-0.022, 0.022, -0.13), red, Vector3(-0.45, 0, -0.25))
+			_part(hat_node, "box", Vector3(0.11, 0.02, 0.006), Vector3(0, -0.005, -0.14), red, Vector3(-0.3, 0, 0))
 	_flush(hat_node)

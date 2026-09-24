@@ -23,9 +23,18 @@ shape = SubResource("CapsuleShape3D_body")
 
 [node name="Model" type="Node3D" parent="."]
 script = ExtResource("2_model")
-skin_color = Color(0.85, 0.66, 0.5, 1)
-shirt_color = Color(0.25, 0.3, 0.42, 1)
-pants_color = Color(0.16, 0.17, 0.22, 1)
+skin_color = Color(0.78, 0.58, 0.44, 1)
+shirt_color = Color(0.09, 0.09, 0.1, 1)
+pants_color = Color(0.1, 0.1, 0.11, 1)
+shoe_color = Color(0.08, 0.08, 0.09, 1)
+hair_color = Color(0.24, 0.23, 0.22, 1)
+hat = "snapback"
+body_scale = 1.02
+beard = "none"
+jacket = true
+chain = false
+earring = true
+accent_strip = false
 
 [node name="CarryRoot" type="Node3D" parent="."]
 
