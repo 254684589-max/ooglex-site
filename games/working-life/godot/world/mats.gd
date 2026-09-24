@@ -7,6 +7,7 @@ extends RefCounted
 static var _cache: Dictionary = {}
 static var window_energy := 0.0
 static var wetness := 0.0
+const FACADES := ["fac_glass", "fac_office", "fac_res", "fac_cyber"]
 
 
 static func batch(kind: String) -> Material:
@@ -48,18 +49,61 @@ static func batch(kind: String) -> Material:
 			m.roughness = 0.05
 			m.metallic = 0.6
 			m.albedo_color = Color(1, 1, 1, 0.8)
-		"road":
-			m.roughness = 0.75
-			m.metallic = 0.1
+		"skin":
+			# 人物：顶点色按 sRGB 解释，与原来用 albedo_color 的颜色一致
+			m.vertex_color_is_srgb = true
+			m.roughness = 0.7
+		"road", "walk":
+			# 水平面的 UV 是世界坐标 (x, z)：沥青 8 米一张，地砖 4.8 米一张
+			m.albedo_texture = ProcTex.asphalt() if kind == "road" else ProcTex.paving()
+			var sc := 1.0 / 8.0 if kind == "road" else 1.0 / 4.8
+			m.uv1_scale = Vector3(sc, sc, 1)
+			m.normal_enabled = true
+			m.normal_texture = ProcTex.bumps()
+			m.normal_scale = 0.3
+			m.roughness = 0.8 if kind == "road" else 0.85
+			m.metallic = 0.05
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+		"leaf":
+			m.albedo_texture = ProcTex.palm_leaf()
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+			m.alpha_scissor_threshold = 0.4
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+			m.roughness = 0.7
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		_:
-			m.roughness = 0.88
+			if kind.begins_with("fac_"):
+				_facade(m, kind.substr(4))
+			else:
+				m.roughness = 0.88
 	_cache[key] = m
 	return m
 
 
+## 建筑立面：程序贴图按世界坐标平铺（24 米 × 28.8 米一张 = 8 开间 × 8 层），夜里窗户按灯光图亮起
+static func _facade(m: StandardMaterial3D, style: String) -> void:
+	var texs := ProcTex.facade(style)
+	m.albedo_texture = texs[0]
+	m.uv1_scale = Vector3(1.0 / (ProcTex.BAYS * ProcTex.BAY_W), -1.0 / (ProcTex.FLOORS * ProcTex.FLOOR_H), 1)
+	m.emission_enabled = true
+	# 默认的 ADD 运算是「颜色 + 贴图」，所以颜色要是黑的，只让灯光图发光
+	m.emission = Color.BLACK
+	m.emission_texture = texs[1]
+	m.emission_energy_multiplier = window_energy
+	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	if style == "glass":
+		m.metallic = 0.45
+		m.roughness = 0.22
+	elif style == "cyber":
+		m.metallic = 0.3
+		m.roughness = 0.45
+	else:
+		m.roughness = 0.82
+
+
 static func set_window_energy(energy: float) -> void:
 	window_energy = energy
-	for k in ["win_warm", "win_cool"]:
+	for k in ["win_warm", "win_cool"] + FACADES:
 		var m: StandardMaterial3D = batch(k)
 		m.emission_energy_multiplier = energy
 
@@ -68,8 +112,11 @@ static func set_window_energy(energy: float) -> void:
 static func set_wetness(w: float) -> void:
 	wetness = w
 	var road: StandardMaterial3D = batch("road")
-	road.roughness = lerpf(0.75, 0.12, w)
-	road.metallic = lerpf(0.1, 0.45, w)
+	road.roughness = lerpf(0.8, 0.12, w)
+	road.metallic = lerpf(0.05, 0.45, w)
+	var walk: StandardMaterial3D = batch("walk")
+	walk.roughness = lerpf(0.85, 0.2, w)
+	walk.metallic = lerpf(0.05, 0.3, w)
 	var g := _cache.get("ground_main") as StandardMaterial3D
 	if g != null:
 		g.roughness = lerpf(0.95, 0.2, w)

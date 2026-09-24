@@ -33,7 +33,7 @@ var _warned_tired := false
 func _ready() -> void:
 	add_to_group("player")
 	collision_layer = 2
-	collision_mask = 1 | 4
+	collision_mask = 1 | 4 | 32
 	floor_snap_length = 0.35
 	floor_max_angle = deg_to_rad(50)
 	detector.player = self

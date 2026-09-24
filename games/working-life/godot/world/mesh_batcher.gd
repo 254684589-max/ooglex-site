@@ -31,16 +31,30 @@ func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, n: Vector3, col: 
 		var t := b
 		b = c
 		c = t
+	# 竖直面 UV = (x + z, y)，水平面 UV = (x, z)：都是米，材质里再按贴图尺寸缩放
+	var flat := absf(n.y) > 0.7
 	for p in [a, b, c]:
 		st.set_color(col)
 		st.set_normal(n)
-		st.set_uv(Vector2(p.x + p.z, p.y))
+		st.set_uv(Vector2(p.x, p.z) if flat else Vector2(p.x + p.z, p.y))
 		st.add_vertex(p)
 
 
 func _quad(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: Vector3, n: Vector3, col: Color) -> void:
 	_tri(st, a, b, c, n, col)
 	_tri(st, a, c, d, n, col)
+
+
+## 自带 UV 的四边形（树叶等贴图面片），a-b-c-d 依次对应 uv 的四个角
+func quad_uv(kind: String, a: Vector3, b: Vector3, c: Vector3, d: Vector3, col: Color, uvs: PackedVector2Array) -> void:
+	var st := _tool_for(kind, (a + c) * 0.5)
+	var n := (b - a).cross(d - a).normalized()
+	for idx in [0, 1, 2, 0, 2, 3]:
+		var p: Vector3 = [a, b, c, d][idx]
+		st.set_color(col)
+		st.set_normal(n)
+		st.set_uv(uvs[idx])
+		st.add_vertex(p)
 
 
 const _FACES := [
@@ -116,6 +130,18 @@ func beam(kind: String, from: Vector3, to: Vector3, thickness: float, col: Color
 	box(kind, (from + to) * 0.5, Vector3(thickness, length, thickness), col, basis)
 
 
+## 全部分组合成一个多材质网格（行驶中的车等需要整体移动的物体用）
+func to_mesh() -> ArrayMesh:
+	var mesh := ArrayMesh.new()
+	for key in _groups:
+		var g: Dictionary = _groups[key]
+		var st: SurfaceTool = g["st"]
+		st.commit(mesh)
+		mesh.surface_set_material(mesh.get_surface_count() - 1, Mats.batch(String(g["kind"])))
+	_groups.clear()
+	return mesh
+
+
 ## 生成网格节点，挂到 parent 下
 func build(parent: Node3D, cast_shadows := true) -> int:
 	var made := 0
@@ -133,8 +159,8 @@ func build(parent: Node3D, cast_shadows := true) -> int:
 		if not cast_shadows or kind in ["glass", "neon", "win_warm", "win_cool", "decal", "water", "holo"]:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# 远处的小物件不渲染（LOD）
-		if kind in ["prop", "decal"]:
-			mi.visibility_range_end = 140.0
+		if kind in ["prop", "decal", "leaf"]:
+			mi.visibility_range_end = 140.0 if kind != "leaf" else 220.0
 			mi.visibility_range_end_margin = 10.0
 		parent.add_child(mi)
 		made += 1

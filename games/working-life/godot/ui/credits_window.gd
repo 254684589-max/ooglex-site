@@ -10,7 +10,7 @@ func _init() -> void:
 func _ready() -> void:
 	super()
 	add_text("《打工》WORKING LIFE", 26, UIKit.CYAN)
-	add_text("版本 1.0.0 · Ooglex 游戏中心", 16, UIKit.DIM)
+	add_text("版本 1.1.0 · Ooglex 游戏中心", 16, UIKit.DIM)
 	add_text("策划 / 程序 / 关卡 / 数值 / 测试：Ooglex 与 Claude（AI 编程助手）协作开发", 17)
 	add_text("引擎：Godot Engine 4（MIT 许可）· GDScript", 16)
 	add_text("字体：思源黑体 Noto Sans SC 子集（SIL Open Font License 1.1）", 16)

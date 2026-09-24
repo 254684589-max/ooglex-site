@@ -38,9 +38,28 @@ func _ready() -> void:
 	p.camera_rig.distance = 6.0
 	await _wait(60)
 	await _shot("viewpoint", 960)
+	# 2b. 航拍天际线：黄昏与夜景（隐藏界面）
+	main.ui.visible = false
+	var cam := Camera3D.new()
+	cam.far = 1600.0
+	cam.fov = 60.0
+	main.add_child(cam)
+	set_scene(18.5, "sunny")
+	cam.look_at_from_position(Vector3(185, 75, 120), Vector3(-80, 30, -60))
+	cam.make_current()
+	await _wait(40)
+	await _shot("skyline", 1280)
+	set_scene(21.5, "cloudy")
+	cam.look_at_from_position(Vector3(-180, 55, 150), Vector3(0, 20, -40))
+	await _wait(40)
+	await _shot("skyline_night", 960)
+	cam.clear_current()
+	cam.queue_free()
+	p.camera_rig.camera.make_current()
+	main.ui.visible = true
 	# 3. 白天的写字楼
 	set_scene(10.5, "sunny")
-	_look_at_loc(p, "office_tower", 10.0, 0.0, 0.18, 8.0)
+	_look_at_loc(p, "office_tower", 12.0, 0.3, 0.12, 9.0)
 	await _wait(60)
 	await _shot("day", 960)
 	# 4. 手机招聘

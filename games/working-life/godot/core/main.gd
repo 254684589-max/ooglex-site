@@ -12,6 +12,7 @@ var city: CityBuilder
 var day_night: DayNight
 var weather_fx: WeatherFX
 var traffic: Traffic
+var street_traffic: StreetTraffic
 var train: Train
 var crowd: Crowd
 var player: Player
@@ -40,6 +41,9 @@ func _ready() -> void:
 	add_child(weather_fx)
 	traffic = Traffic.new()
 	add_child(traffic)
+	street_traffic = StreetTraffic.new()
+	street_traffic.name = "StreetTraffic"
+	add_child(street_traffic)
 	train = Train.new()
 	train.position = Vector3(0, CityBuilder.TRACK_Y, CityBuilder.TRACK_Z)
 	add_child(train)
