@@ -11,7 +11,7 @@ var cars: Array = []
 func setup() -> void:
 	var mb := MeshBatcher.new()
 	mb.chunked = false
-	BuildingKit.car_geometry(mb, Vector3.ZERO, Basis.IDENTITY, Color(1, 1, 1))
+	BuildingKit.car_geometry_lod(mb, Color(1, 1, 1))
 	var full := mb.to_mesh()
 	var body_mesh := ArrayMesh.new()
 	var light_mesh := ArrayMesh.new()

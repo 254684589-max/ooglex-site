@@ -46,7 +46,10 @@ func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, n: Vector3, col: 
 		else:
 			st.set_color(col)
 		st.set_normal(n)
-		st.set_uv(Vector2(p.x, p.z) if flat else Vector2(p.x + p.z, p.y))
+		var uv := Vector2(p.x, p.z) if flat else Vector2(p.x + p.z, p.y)
+		st.set_uv(uv)
+		# UV2 同样是米制坐标：材质的细节层（真实照片的抹灰 / 石材质感）按自己的尺寸平铺
+		st.set_uv2(uv)
 		st.add_vertex(p)
 
 
@@ -64,6 +67,7 @@ func quad_uv(kind: String, a: Vector3, b: Vector3, c: Vector3, d: Vector3, col: 
 		st.set_color(col)
 		st.set_normal(n)
 		st.set_uv(uvs[idx])
+		st.set_uv2(uvs[idx])
 		st.add_vertex(p)
 
 

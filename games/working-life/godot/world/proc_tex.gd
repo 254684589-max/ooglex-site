@@ -24,6 +24,9 @@ static func facade(style: String) -> Array:
 	var alb := Image.create(SIZE, SIZE, false, Image.FORMAT_RGB8)
 	var emi := Image.create(SIZE, SIZE, false, Image.FORMAT_RGB8)
 	emi.fill(Color.BLACK)
+	# 墙面遮罩：墙 = 白（叠加真实照片的墙面细节），窗玻璃 = 黑
+	var mask := Image.create(SIZE, SIZE, false, Image.FORMAT_RGB8)
+	mask.fill(Color.WHITE)
 	var cw := SIZE / BAYS
 	var ch := SIZE / FLOORS
 	match style:
@@ -54,9 +57,20 @@ static func facade(style: String) -> Array:
 					_res_cell(alb, emi, rng, x0, y0, cw, ch, lit, lc)
 				_:
 					_cyber_cell(alb, emi, rng, x0, y0, cw, ch, lit, lc, bx, fy)
-	var out := [_tex(alb), _tex(emi)]
+	if style in ["office", "res"]:
+		_mask_windows(alb, mask)
+	var out := [_tex(alb), _tex(emi), _tex(mask)]
 	_cache[key] = out
 	return out
+
+
+## 遮罩：颜色偏蓝、偏暗的像素是玻璃（窗户在各风格里都画成蓝灰色），不叠墙面细节
+static func _mask_windows(alb: Image, mask: Image) -> void:
+	for y in SIZE:
+		for x in SIZE:
+			var c := alb.get_pixel(x, y)
+			if c.b > c.r + 0.04 or (c.r + c.g + c.b) < 0.45:
+				mask.set_pixel(x, y, Color.BLACK)
 
 
 ## 玻璃幕墙：细竖梃 + 楼层间的深色窗槛墙，玻璃上半截更亮（映着天空）
@@ -203,22 +217,35 @@ static func bumps() -> Texture2D:
 	return nt
 
 
-## 植物贴图集（带透明度，512×256）：
-##   x 0–127   羽状叶（椰子类棕榈、行道树）
-##   x 128–383 扇形叶 + 叶柄（华盛顿棕榈，洛杉矶街头最常见的那种）
-##   x 384–511 枯叶裙（挂在树冠下面的一圈干枯老叶）
-const FOLIAGE_FEATHER := Rect2(0.0, 0.0, 0.25, 1.0)
-const FOLIAGE_FAN := Rect2(0.25, 0.0, 0.5, 1.0)
-const FOLIAGE_SKIRT := Rect2(0.75, 0.0, 0.25, 1.0)
+## 植物贴图集（带透明度，512×512）：
+##   上半 y 0–255：x 0–127 羽状叶；x 128–383 扇形叶 + 叶柄（华盛顿棕榈）；x 384–511 枯叶裙
+##   下半 y 256–511：x 0–255 阔叶树的叶簇（一团团叶片，边缘参差）
+const FOLIAGE_FEATHER := Rect2(0.0, 0.0, 0.25, 0.5)
+const FOLIAGE_FAN := Rect2(0.25, 0.0, 0.5, 0.5)
+const FOLIAGE_SKIRT := Rect2(0.75, 0.0, 0.25, 0.5)
+const FOLIAGE_CLUMP := Rect2(0.0, 0.5, 0.5, 0.5)
 
 
 static func palm_leaf() -> Texture2D:
 	if _cache.has("palm"):
 		return _cache["palm"]
-	var img := Image.create(512, 256, false, Image.FORMAT_RGBA8)
+	var img := Image.create(512, 512, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0, 0, 0, 0))
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 8
+	# 叶簇：几百片小椭圆叶，越靠中心越密，外缘稀疏参差；上方偏亮、下方偏暗（自带一点体积感）
+	for i in 900:
+		var ang := rng.randf() * TAU
+		var rr := sqrt(rng.randf()) * 118.0
+		var lx := 128.0 + cos(ang) * rr
+		var ly := 384.0 + sin(ang) * rr * 0.9
+		var lw := rng.randi_range(4, 8)
+		var lh := rng.randi_range(3, 6)
+		var shade := clampf(0.5 - (ly - 384.0) / 240.0, 0.0, 1.0)
+		var g := Color(0.12, 0.24, 0.08).lerp(Color(0.3, 0.46, 0.16), shade * 0.7 + rng.randf() * 0.3)
+		for k in lh:
+			var half := int(lw * 0.5 * sqrt(1.0 - pow((k - lh * 0.5) / (lh * 0.5 + 0.01), 2.0)))
+			img.fill_rect(Rect2i(int(lx) - half, int(ly) - lh / 2 + k, half * 2 + 1, 1), g)
 	# 羽状叶
 	for y in range(4, 254, 3):
 		var t := float(y) / 256.0
