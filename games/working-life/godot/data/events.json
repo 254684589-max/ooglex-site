@@ -1,0 +1,115 @@
+{
+  "note": "随机事件。trigger: morning 起床后 / shift_end 下班后 / evening 18:00 / day 每天 12:00。weight 为权重，cooldown 为冷却天数，chance 为该时段是否触发事件的总概率（在 _meta）。conditions 见 Conditions。choices 为可选项（effects + result）；没有 choices 则直接生效。",
+  "chance": {"morning": 0.35, "shift_end": 0.3, "evening": 0.25, "day": 0.2},
+  "list": [
+    {"id": "e_overtime", "trigger": "shift_end", "weight": 10, "cooldown": 3, "title": "老板要求加班", "text": "快下班时，领导走过来：「今晚大家辛苦一下，把这批活赶完。」", "conditions": {"has_job": true},
+     "choices": [
+       {"text": "留下加班（+2 小时，加班费 + 绩效）", "effects": {"time": 120, "pay_bonus": 0.3, "perf": 4, "energy": -12, "stress": 8}, "result": "你加班到很晚，领导记住了你。"},
+       {"text": "婉拒，今天有事", "effects": {"perf": -2, "mood": 3}, "result": "领导脸色不太好看，但也没说什么。"}]},
+    {"id": "e_sick", "trigger": "morning", "weight": 5, "cooldown": 6, "title": "突然生病", "text": "早上醒来头昏脑涨，好像发烧了。", "conditions": {"health_max": 70},
+     "choices": [
+       {"text": "吃药硬撑（需要一盒药品）", "requires": {"has_item": "medicine"}, "effects": {"consume": "medicine", "health": 10, "energy": -10}, "result": "吃了药，勉强能扛。"},
+       {"text": "去医院看病（¥200）", "effects": {"cash": -200, "health": 30, "time": 120}, "result": "医生开了药，叮嘱你多休息。"},
+       {"text": "躺着多睡会儿", "effects": {"health": 8, "time": 180, "mood": -4}, "result": "睡了一上午，好一点了。"}]},
+    {"id": "e_layoff", "trigger": "day", "weight": 3, "cooldown": 20, "title": "公司裁员", "text": "HR 群发邮件：因业务调整，公司将优化部分岗位。你的名字在不在名单上，取决于你的绩效。", "conditions": {"has_job": true, "day_min": 12, "job_perf_max": 45},
+     "effects": {"fire_job": true, "mood": -15, "stress": 10}, "result": "你被裁了。拿着纸箱走出大楼时，雨正好下起来。"},
+    {"id": "e_layoff_safe", "trigger": "day", "weight": 3, "cooldown": 20, "title": "裁员风波", "text": "公司裁员，隔壁工位空了一排。你因为绩效不错留了下来，但工作量更大了。", "conditions": {"has_job": true, "day_min": 12, "job_perf_min": 46},
+     "effects": {"stress": 10, "perf": 3}, "result": "活下来的人要干双份活。"},
+    {"id": "e_bonus", "trigger": "shift_end", "weight": 6, "cooldown": 7, "title": "获得奖金", "text": "领导把你叫进办公室：「这阵子表现不错，这是给你的奖励。」", "conditions": {"has_job": true, "job_perf_min": 70},
+     "effects": {"cash_salary_days": 3, "mood": 10, "rep": 2}, "result": "奖金到账！"},
+    {"id": "e_coworker_quit", "trigger": "day", "weight": 5, "cooldown": 10, "title": "同事辞职", "text": "和你关系不错的同事递了辞呈，他的活暂时分给了你。", "conditions": {"has_job": true},
+     "choices": [
+       {"text": "接下来，趁机表现", "effects": {"perf": 5, "stress": 10, "skill_xp_job": 30}, "result": "忙是忙了点，但你学到了不少。"},
+       {"text": "推掉，自己的活都干不完", "effects": {"perf": -2}, "result": "领导另找了人。"}]},
+    {"id": "e_rent_up", "trigger": "day", "weight": 3, "cooldown": 30, "title": "房租上涨", "text": "房东发来消息：物价上涨，下个月起房租上调 10%。", "conditions": {"rent_monthly": true},
+     "choices": [
+       {"text": "接受", "effects": {"rent_mult": 1.1, "mood": -4}, "result": "认了。"},
+       {"text": "讨价还价（沟通越高越可能成功）", "effects": {"negotiate_rent": true}, "result": ""}]},
+    {"id": "e_job_offer", "trigger": "morning", "weight": 4, "cooldown": 12, "title": "意外的工作机会", "text": "一个陌生号码打来：「您好，我们在人才库里看到您的简历，想邀请您来面试。」", "conditions": {"day_min": 4},
+     "effects": {"interview_invite": "best"}, "result": "面试邀请已经发到手机「招聘」APP，今明两天有效。"},
+    {"id": "e_course_sale", "trigger": "morning", "weight": 5, "cooldown": 10, "title": "培训打折", "text": "职业培训学校推送：本周课程限时 7 折！", "conditions": {},
+     "effects": {"course_sale": 3}, "result": "三天内报名培训课程享 7 折。"},
+    {"id": "e_pc_broken", "trigger": "morning", "weight": 3, "cooldown": 20, "title": "电脑损坏", "text": "按下电源键，笔记本电脑冒了一缕青烟。", "conditions": {"has_item": "laptop"},
+     "choices": [
+       {"text": "送修（¥800）", "effects": {"cash": -800}, "result": "修好了，心疼钱。"},
+       {"text": "自己动手修（技术 Lv.3 以上必成功）", "effects": {"diy_repair": true}, "result": ""}]},
+    {"id": "e_market_up", "trigger": "day", "weight": 5, "cooldown": 4, "title": "市场大涨", "text": "新闻推送：央行降准，市场情绪高涨，大盘单日涨超 3%。", "conditions": {"investment_unlocked": true},
+     "effects": {"market_shock": {"index": 0.03, "tech": 0.05, "bankstock": 0.02}}, "result": "你的持仓一片通红（在这里红色代表上涨）。"},
+    {"id": "e_market_down", "trigger": "day", "weight": 5, "cooldown": 4, "title": "市场下跌", "text": "新闻推送：海外风暴蔓延，大盘单日跌超 4%，黄金逆势上涨。", "conditions": {"investment_unlocked": true},
+     "effects": {"market_shock": {"index": -0.04, "tech": -0.07, "bankstock": -0.03, "gold": 0.02}}, "result": "市场一片哀嚎。"},
+    {"id": "e_tech_news", "trigger": "day", "weight": 4, "cooldown": 6, "title": "科技新闻", "text": "星链科技发布新一代神经芯片，发布会刷屏全城。", "conditions": {"investment_unlocked": true},
+     "effects": {"market_shock": {"tech": 0.08}}, "result": "科技股大涨。"},
+    {"id": "e_client_default", "trigger": "day", "weight": 4, "cooldown": 10, "title": "创业客户违约", "text": "一个客户以「资金紧张」为由拖欠尾款，律师说官司至少打半年。", "conditions": {"has_business": true},
+     "effects": {"biz_cash_pct": -0.08, "biz_rep": -3, "stress": 8}, "result": "公司账上少了一笔钱。"},
+    {"id": "e_rain_late", "trigger": "morning", "weight": 6, "cooldown": 4, "title": "暴雨", "text": "窗外暴雨倾盆，路上积水，今天通勤要多花时间。", "conditions": {"weather": "rain", "has_job": true},
+     "choices": [
+       {"text": "打车上班（¥40）", "effects": {"cash": -40}, "result": "车费贵，但不湿身。"},
+       {"text": "冒雨出发", "effects": {"mood": -4, "health": -3}, "result": "裤腿全湿了。"}]},
+    {"id": "e_bus_breakdown", "trigger": "morning", "weight": 3, "cooldown": 8, "title": "公交故障", "text": "市交通 APP 通知：今天部分公交线路故障停运，出行请改乘地铁。", "conditions": {"flag": "has_first_job"},
+     "effects": {"bus_down": 1}, "result": "今天公交停运。"},
+    {"id": "e_work_accident", "trigger": "shift_end", "weight": 3, "cooldown": 12, "title": "工作事故", "text": "搬货时脚下一滑，扭伤了手腕。", "conditions": {"job_category": "basic"},
+     "choices": [
+       {"text": "去医院处理（¥150）", "effects": {"cash": -150, "health": -5}, "result": "医生说休息两天就好。"},
+       {"text": "贴块膏药算了", "effects": {"health": -18, "mood": -5}, "result": "越来越疼了……"}]},
+    {"id": "e_new_boss", "trigger": "day", "weight": 3, "cooldown": 25, "title": "新老板上任", "text": "部门来了新领导，第一次开会就说要「重塑团队文化」。", "conditions": {"has_job": true, "day_min": 10},
+     "choices": [
+       {"text": "主动汇报工作，留个好印象", "effects": {"perf": 5, "skill_xp": {"communication": 30}, "stress": 4}, "result": "新领导对你点了点头。"},
+       {"text": "低调观望", "effects": {"perf": -3}, "result": "新领导好像不太记得你的名字。"}]},
+    {"id": "e_friend_help", "trigger": "evening", "weight": 5, "cooldown": 8, "title": "朋友求助", "text": "老家的朋友打电话：「兄弟，家里急用钱，能借我 ¥500 吗？」", "conditions": {"liquid_min": 1500},
+     "choices": [
+       {"text": "借给他", "effects": {"cash": -500, "mood": 5, "delayed_cash": {"days": 10, "amount": 600}}, "result": "朋友连声道谢，说一定尽快还。"},
+       {"text": "婉拒", "effects": {"mood": -3}, "result": "挂了电话，心里有点不是滋味。"}]},
+    {"id": "e_project_win", "trigger": "shift_end", "weight": 5, "cooldown": 10, "title": "公司项目成功", "text": "你参与的项目拿下了大客户，全组发红包庆祝！", "conditions": {"job_category": "office_any", "job_perf_min": 55},
+     "effects": {"cash_salary_days": 2, "rep": 3, "mood": 8, "perf": 3}, "result": "红包到账。"},
+    {"id": "e_recession", "trigger": "day", "weight": 3, "cooldown": 30, "title": "经济衰退", "text": "统计局发布数据：经济连续两个季度负增长。街上的霓虹灯都暗了几盏。", "conditions": {"day_min": 15, "cycle_not": "recession"},
+     "effects": {"cycle": "recession", "mood": -5}, "result": "经济进入衰退期：股市承压，黄金债券走强，创业更难。"},
+    {"id": "e_boom", "trigger": "day", "weight": 3, "cooldown": 30, "title": "经济繁荣", "text": "新澜市获批自贸区，外资涌入，工地一夜之间多了一倍。", "conditions": {"day_min": 10, "cycle_not": "boom"},
+     "effects": {"cycle": "boom", "mood": 5}, "result": "经济进入繁荣期：股市上涨，公司订单增加。"},
+    {"id": "e_found_money", "trigger": "evening", "weight": 3, "cooldown": 15, "title": "路边捡到钱", "text": "回家路上，你在地上看到一张 ¥100。", "conditions": {},
+     "choices": [
+       {"text": "交给路边的巡逻机器人", "effects": {"rep": 2, "mood": 3}, "result": "机器人说：「感谢市民的诚实。」"},
+       {"text": "揣进兜里", "effects": {"cash": 100}, "result": "今天运气不错。"}]},
+    {"id": "e_scam_call", "trigger": "day", "weight": 4, "cooldown": 12, "title": "可疑来电", "text": "「您好，我是新澜银行客服，您的账户存在风险，请把钱转到安全账户……」", "conditions": {"bank_min": 1000},
+     "choices": [
+       {"text": "挂断并举报", "effects": {"skill_xp": {"finance": 15}, "rep": 1}, "result": "是诈骗电话。赵经理说银行从来不会这么打电话。"},
+       {"text": "照做", "effects": {"bank_pct": -0.2, "mood": -15, "stress": 12}, "result": "钱被骗走了。你在派出所坐了一下午。"}]},
+    {"id": "e_street_music", "trigger": "evening", "weight": 5, "cooldown": 5, "title": "街头音乐", "text": "旧街区有个流浪歌手在弹吉他，唱的是你家乡的歌。", "conditions": {},
+     "choices": [
+       {"text": "驻足听完，投 ¥10", "effects": {"cash": -10, "mood": 10, "stress": -6, "time": 30}, "result": "听着听着，眼眶有点热。"},
+       {"text": "赶路要紧", "effects": {}, "result": "歌声渐渐远了。"}]},
+    {"id": "e_power_outage", "trigger": "evening", "weight": 3, "cooldown": 14, "title": "片区停电", "text": "整片街区突然停电，霓虹灯全灭，城市第一次这么安静。", "conditions": {},
+     "effects": {"mood": 4, "stress": -5}, "result": "你在黑暗里看到了多年未见的星星。"},
+    {"id": "e_family_call", "trigger": "evening", "weight": 5, "cooldown": 7, "title": "家里来电", "text": "妈妈打来视频：「在外面吃得好不好？钱够不够花？」", "conditions": {},
+     "choices": [
+       {"text": "报喜不报忧，转点钱回家（¥300）", "effects": {"cash": -300, "mood": 8, "stress": -5}, "result": "妈妈说不用，你还是转了。"},
+       {"text": "聊聊最近的难处", "effects": {"mood": 6, "stress": -10}, "result": "说出来，心里轻松多了。"}]},
+    {"id": "e_customer_praise", "trigger": "shift_end", "weight": 5, "cooldown": 6, "title": "顾客表扬", "text": "一位顾客专门给你写了表扬信，贴在了公告栏上。", "conditions": {"job_category": "basic", "job_perf_min": 60},
+     "effects": {"perf": 5, "rep": 2, "mood": 6}, "result": "被认可的感觉真好。"},
+    {"id": "e_side_gig", "trigger": "evening", "weight": 5, "cooldown": 6, "title": "兼职机会", "text": "朋友介绍了一个晚上的兼职：帮会展中心布展，三小时 ¥260。", "conditions": {"energy_min": 40},
+     "choices": [
+       {"text": "接了（+3 小时，¥260）", "effects": {"cash": 260, "time": 180, "energy": -25, "income_cat": "兼职"}, "result": "腰酸背痛，但钱到手了。"},
+       {"text": "今晚想休息", "effects": {"energy": 5}, "result": "身体是革命的本钱。"}]},
+    {"id": "e_headhunter", "trigger": "morning", "weight": 4, "cooldown": 15, "title": "猎头来电", "text": "猎头说有家公司愿意开出更高的薪水挖你，但要你马上决定是否面试。", "conditions": {"job_category": "office_any", "job_level_min": 2},
+     "effects": {"interview_invite": "upgrade"}, "result": "面试邀请已经发到手机「招聘」APP。跳槽会以更高职级入职。"},
+    {"id": "e_viral_post", "trigger": "evening", "weight": 3, "cooldown": 20, "title": "意外走红", "text": "你随手拍的城市夜景在网上火了，几万人点赞。", "conditions": {},
+     "effects": {"rep": 4, "mood": 10}, "result": "有人认出你来了。"},
+    {"id": "e_biz_big_order", "trigger": "day", "weight": 4, "cooldown": 8, "title": "大订单", "text": "一家大客户主动找上门，想跟你的公司长期合作。", "conditions": {"has_business": true},
+     "effects": {"biz_cash": 30000, "biz_rep": 4}, "result": "公司账上多了一笔预付款。"},
+    {"id": "e_biz_poach", "trigger": "day", "weight": 3, "cooldown": 12, "title": "员工被挖", "text": "竞争对手出高薪挖走了你公司的一名员工。", "conditions": {"has_business": true, "employees_min": 3},
+     "choices": [
+       {"text": "给全员加薪留人（公司现金 -¥20,000）", "effects": {"biz_cash": -20000, "biz_rep": 2}, "result": "团队稳住了。"},
+       {"text": "让他走", "effects": {"biz_fire_one": true}, "result": "少了一个人，项目进度受了点影响。"}]},
+    {"id": "e_health_warning", "trigger": "morning", "weight": 6, "cooldown": 5, "title": "身体报警", "text": "最近压力太大，你开始失眠、心慌。", "conditions": {"stress_min": 75},
+     "choices": [
+       {"text": "请一天假彻底休息", "effects": {"take_leave": true, "stress": -30, "mood": 8}, "result": "睡到自然醒，世界都安静了。"},
+       {"text": "扛着", "effects": {"health": -12}, "result": "身体在抗议。"}]},
+    {"id": "e_neighbor_noise", "trigger": "evening", "weight": 4, "cooldown": 8, "title": "邻居装修", "text": "隔壁连续三天晚上装修，电钻声吵得你没法休息。", "conditions": {"housing_max": 2},
+     "choices": [
+       {"text": "去敲门好好沟通（沟通经验）", "effects": {"skill_xp": {"communication": 20}, "mood": 2}, "result": "邻居答应晚上九点后停工。"},
+       {"text": "戴上耳塞忍了", "effects": {"mood": -5, "stress": 4}, "result": "嗡嗡嗡……"}]},
+    {"id": "e_lottery", "trigger": "evening", "weight": 2, "cooldown": 25, "title": "彩票", "text": "便利店门口的自助彩票机闪着光：「今晚头奖 500 万！」", "conditions": {"cash_min": 20},
+     "choices": [
+       {"text": "买一注（¥20）", "effects": {"cash": -20, "lottery": true}, "result": ""},
+       {"text": "不买", "effects": {}, "result": "理性消费。"}]}
+  ]
+}

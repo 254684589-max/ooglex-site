@@ -1,0 +1,14 @@
+{
+  "note": "游戏内虚构投资品，价格由游戏内部经济模型每天生成，不连接任何真实金融数据。drift 为不同经济周期下的日均漂移，vol 为日波动率，yield 为年化分红 / 票息（按日计入银行卡）。",
+  "unlock": {"skill": {"finance": 1}},
+  "unlock_text": "金融技能 Lv.1 后可以在手机「投资」APP 开户（到银行或书店学点金融吧）。",
+  "fee": 0.001,
+  "cycle_days": [18, 40],
+  "list": [
+    {"id": "index", "name": "新澜 300 指数基金", "short": "指数", "price": 100.0, "vol": 0.011, "drift": {"boom": 0.0016, "normal": 0.0005, "recession": -0.0013}, "yield": 0.015, "beta": 1.0, "desc": "追踪全市 300 家大公司，分散风险。"},
+    {"id": "tech", "name": "星链科技股", "short": "科技", "price": 50.0, "vol": 0.026, "drift": {"boom": 0.0030, "normal": 0.0008, "recession": -0.0028}, "yield": 0.0, "beta": 1.8, "desc": "高成长高波动，跟随科技行业新闻。"},
+    {"id": "bankstock", "name": "新澜银行股", "short": "银行", "price": 12.0, "vol": 0.010, "drift": {"boom": 0.0008, "normal": 0.0003, "recession": -0.0008}, "yield": 0.045, "beta": 0.7, "desc": "低估值高分红，稳。"},
+    {"id": "gold", "name": "黄金 ETF", "short": "黄金", "price": 480.0, "vol": 0.009, "drift": {"boom": -0.0002, "normal": 0.0002, "recession": 0.0012}, "yield": 0.0, "beta": -0.3, "desc": "避险资产，经济衰退时往往上涨。"},
+    {"id": "bond", "name": "城投债券基金", "short": "债券", "price": 1.0, "vol": 0.0022, "drift": {"boom": 0.0001, "normal": 0.0002, "recession": 0.0004}, "yield": 0.035, "beta": -0.1, "desc": "波动很小，按日计息。"}
+  ]
+}

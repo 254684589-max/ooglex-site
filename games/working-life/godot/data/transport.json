@@ -1,0 +1,25 @@
+{
+  "note": "公交与地铁站点（世界坐标）。unlock 为解锁条件；fare 为单程票价；minutes 为每 100 米耗时（游戏分钟）。",
+  "list": [
+    {"id": "bus", "name": "公交", "fare": 2, "base_minutes": 8, "minutes_per_100m": 2.2, "unlock": {"flag": "has_first_job"}, "unlock_text": "找到第一份工作后开通公交卡",
+     "stops": [
+       {"id": "bus_station", "name": "火车站", "pos": [24, 170], "near": "train_station"},
+       {"id": "bus_talent", "name": "人才市场", "pos": [-128, -12], "near": "talent_market"},
+       {"id": "bus_cbd", "name": "天穹大厦", "pos": [-24, -90], "near": "office_tower"},
+       {"id": "bus_mall", "name": "霓虹广场", "pos": [128, -90], "near": "mall"},
+       {"id": "bus_food", "name": "美食街", "pos": [40, -12], "near": "restaurant"},
+       {"id": "bus_hospital", "name": "医院", "pos": [100, -12], "near": "hospital"},
+       {"id": "bus_home", "name": "幸福里", "pos": [-40, 12], "near": "shared_house"},
+       {"id": "bus_logistics", "name": "物流园", "pos": [-104, 12], "near": "warehouse"},
+       {"id": "bus_site", "name": "滨江工地", "pos": [-96, 92], "near": "construction_site"},
+       {"id": "bus_market", "name": "万家超市", "pos": [40, 70], "near": "supermarket"}]},
+    {"id": "metro", "name": "地铁", "fare": 4, "base_minutes": 5, "minutes_per_100m": 1.0, "unlock": {"chapter_min": 3}, "unlock_text": "第三章开通地铁",
+     "stops": [
+       {"id": "metro_station", "name": "中央站", "pos": [-24, 170], "near": "train_station"},
+       {"id": "metro_finance", "name": "金融中心", "pos": [10, -90], "near": "finance_center"},
+       {"id": "metro_park", "name": "中央公园", "pos": [-12, -12], "near": "park"},
+       {"id": "metro_cloud", "name": "云顶", "pos": [104, 12], "near": "luxury_apartment"},
+       {"id": "metro_tech", "name": "星河科技", "pos": [-138, -90], "near": "tech_company"}]},
+    {"id": "taxi", "name": "出租车", "fare": 14, "per_100m": 2.5, "base_minutes": 3, "minutes_per_100m": 0.9, "unlock": {"chapter_min": 4}, "unlock_text": "第四章开通打车（手机叫车，随时随地）", "stops": []}
+  ]
+}

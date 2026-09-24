@@ -1,0 +1,191 @@
+{
+  "note": "有名字的 NPC。schedule 为日程（小时区间 [from, to)，days: all/weekdays/weekend/six；可加 flag / not_flag 条件），不在任何日程里就回家（隐藏）。greet 按关系分档：cold(<0) stranger(0~19) acquaint(20~49) friend(50~79) close(80+)。topics 为每天一次的闲聊。perks 为关系达到 min_rel 后的帮助。",
+  "list": [
+    {"id": "laoli", "name": "房东老李", "role": "幸福里的房东", "look": {"skin": "#d8a988", "shirt": "#6b5a45", "pants": "#3a3a40", "hair": "#bbbbbb"},
+     "schedule": [{"from": 6, "to": 8, "spot": "park.pond"}, {"from": 8, "to": 21, "spot": "shared_house.lobby"}],
+     "greet": {"cold": ["房租交了没？"], "stranger": ["小伙子，找房子啊？合租房一个月八百，押一付一。"], "acquaint": ["吃了没？最近工作顺利吧？"], "friend": ["来来来，尝尝我自己腌的咸菜。"], "close": ["你小子，现在是有出息了，别忘了常回来看看。"]},
+     "topics": [
+       {"q": "年轻人，你说这城市里的灯怎么一年比一年亮，人却一年比一年累？", "options": [
+         {"text": "可能大家都想被看见吧。", "rel": 5, "reply": "嗯……这话说得有意思。"},
+         {"text": "累也得干啊，房租又不会自己交。", "rel": 3, "reply": "哈哈，你倒是实在。"},
+         {"text": "关我什么事。", "rel": -3, "reply": "……行吧。"}]},
+       {"q": "我年轻时也是从火车站拖着箱子来的，那时候这儿还是一片滩涂。", "options": [
+         {"text": "那您一定见证了这座城市的变化。", "rel": 5, "reply": "是啊，三十年啦，一眨眼。"},
+         {"text": "那您现在也算熬出头了。", "rel": 3, "reply": "熬出头？房子都是租的，就是收收租罢了。"},
+         {"text": "又开始忆苦思甜了。", "rel": -2, "reply": "嘿，你这孩子。"}]}],
+     "perks": [{"min_rel": 50, "type": "rent_discount", "value": 0.1, "text": "老李给你的合租房 / 普通公寓房租打九折。"}],
+     "quests": ["s_fix_faucet", "s_rain_medicine", "s_lost_cat"], "gifts": ["wine", "gift_box"]},
+    {"id": "chenshu", "name": "陈叔", "role": "24h 便利店老板", "look": {"skin": "#d6a27c", "shirt": "#2f7d4a", "pants": "#2b2b33", "hair": "#444444"},
+     "schedule": [{"from": 7, "to": 23, "spot": "store.counter"}],
+     "greet": {"cold": ["要买什么自己拿。"], "stranger": ["欢迎光临！要点什么？"], "acquaint": ["又来啦，今天的盒饭是红烧肉的。"], "friend": ["给你留了一瓶冰水，拿着。"], "close": ["有空来陪我这老头子唠唠嗑。"]},
+     "topics": [
+       {"q": "开便利店二十年，最怕的就是夜班，一个人守着一屋子灯。", "options": [
+         {"text": "下次我夜里路过就来陪您坐坐。", "rel": 6, "reply": "好好好，那我请你吃关东煮。"},
+         {"text": "那为什么不雇人？", "rel": 3, "reply": "雇人要钱哪，现在啥都贵。"},
+         {"text": "无聊可以刷手机啊。", "rel": 0, "reply": "眼睛花了，看不清喽。"}]},
+       {"q": "你说我这店要不要装个自助收银机？", "options": [
+         {"text": "可以装一台，高峰期分流，您也轻松点。", "rel": 5, "reply": "有道理，回头问问价钱。"},
+         {"text": "别装，人情味就没了。", "rel": 4, "reply": "哈，我也是这么想的。"},
+         {"text": "装了就不用雇人了。", "rel": -1, "reply": "……那你以后来哪打工？"}]}],
+     "perks": [{"min_rel": 20, "type": "direct_hire", "job": "store", "text": "陈叔愿意直接录用你到便利店上班，不用面试。"}],
+     "quests": ["s_night_restock", "s_customer_complaint"], "gifts": ["wine", "flowers"]},
+    {"id": "xiaozhang", "name": "小张", "role": "云途集团职员", "look": {"skin": "#e2b596", "shirt": "#3d6fb3", "pants": "#1f2533", "hair": "#1a1a1a"},
+     "schedule": [{"from": 9, "to": 18, "spot": "office_tower.desk_a", "days": "weekdays"}, {"from": 18, "to": 20, "spot": "restaurant.table", "days": "weekdays"}, {"from": 11, "to": 17, "spot": "cafe.window", "days": "weekend"}],
+     "greet": {"cold": ["哦，是你。"], "stranger": ["你好，新来的吗？"], "acquaint": ["又是加班的一天……"], "friend": ["走，下班一起撸串去！"], "close": ["兄弟，有你在真好。"]},
+     "topics": [
+       {"q": "我们主管又让我周末改方案，第七版了……", "options": [
+         {"text": "要不要我帮你一起看看？", "rel": 6, "reply": "真的吗？太感谢了！"},
+         {"text": "拒绝啊，周末是自己的。", "rel": 3, "reply": "说得轻巧，下个月还想要奖金呢。"},
+         {"text": "那是你能力不行。", "rel": -4, "reply": "……谢谢你的鼓励哦。"}]},
+       {"q": "你说我们这样天天加班，图个啥呢？", "options": [
+         {"text": "图有一天能自己做选择。", "rel": 5, "reply": "嗯……为了那一天，再忍忍。"},
+         {"text": "图工资啊。", "rel": 3, "reply": "也是，谁不是为了碎银几两。"},
+         {"text": "不知道，别想了。", "rel": 1, "reply": "唉。"}]}],
+     "perks": [{"min_rel": 40, "type": "cover_leave", "text": "小张愿意帮你顶班：每周一次请假不扣绩效。"}],
+     "quests": ["s_overtime_help", "s_dinner_friend"], "gifts": ["cake", "flowers"]},
+    {"id": "ajie", "name": "阿杰", "role": "星河科技程序员", "look": {"skin": "#e0b28e", "shirt": "#22262e", "pants": "#2a3140", "hair": "#2a2a2a"},
+     "schedule": [{"from": 10, "to": 20, "spot": "tech_company.desk", "days": "weekdays"}, {"from": 20, "to": 23, "spot": "cafe.window", "days": "weekdays"}, {"from": 13, "to": 18, "spot": "park.path", "days": "weekend"}],
+     "greet": {"cold": ["忙，改天。"], "stranger": ["嗯？找我？"], "acquaint": ["今天又修了八个 Bug。"], "friend": ["嘿，最近在学什么新技术？"], "close": ["哥们，一起搞点大事？"]},
+     "topics": [
+       {"q": "你觉得 AI 会取代程序员吗？", "options": [
+         {"text": "会取代只会复制粘贴的，不会取代会解决问题的。", "rel": 6, "reply": "对！所以得一直学。"},
+         {"text": "会吧，早点转行。", "rel": 2, "reply": "……你这话让我失眠了。"},
+         {"text": "程序员是什么？", "rel": -1, "reply": "……"}]},
+       {"q": "最近在写一个开源项目，没人用，有点灰心。", "options": [
+         {"text": "发给我看看？我可以当第一个用户。", "rel": 6, "reply": "好！我把链接发你。"},
+         {"text": "写 README 了吗？好文档才有人用。", "rel": 5, "reply": "……好像还真没写。"},
+         {"text": "没人用就别写了。", "rel": -3, "reply": "你懂什么。"}]}],
+     "perks": [{"min_rel": 40, "type": "interview_bonus", "job": "tech", "value": 20, "text": "阿杰内推你去星河科技：面试加分 +20。"}],
+     "quests": ["s_hackathon", "s_mentor_junior"], "gifts": ["coffee", "gift_box"]},
+    {"id": "wangjl", "name": "王经理", "role": "人才市场招聘经理", "look": {"skin": "#dcae8a", "shirt": "#5c2f45", "pants": "#1d1d24", "hair": "#2e2320"},
+     "schedule": [{"from": 8, "to": 18, "spot": "talent_market.desk", "days": "six"}],
+     "greet": {"cold": ["下一位。"], "stranger": ["找工作？先去看看招聘栏，想好了投简历。"], "acquaint": ["最近怎么样？工作还适应吗？"], "friend": ["有好岗位我第一个想到你。"], "close": ["我这儿的人才里，你是最让我骄傲的一个。"]},
+     "topics": [
+       {"q": "每天看几百份简历，你知道什么样的人最容易被录取吗？", "options": [
+         {"text": "准备充分、知道自己要什么的人。", "rel": 6, "reply": "没错，你悟性不错。"},
+         {"text": "长得好看的。", "rel": 1, "reply": "……也不能说完全不对。"},
+         {"text": "有关系的。", "rel": -2, "reply": "年轻人，别这么悲观。"}]}],
+     "perks": [{"min_rel": 30, "type": "interview_bonus", "job": "any", "value": 10, "text": "王经理帮你打磨简历：所有面试加分 +10。"}],
+     "quests": ["s_job_fair", "s_coffee_run", "s_recruit_help"], "gifts": ["coffee", "flowers"]},
+    {"id": "liulaoshi", "name": "刘老师", "role": "职业培训学校讲师", "look": {"skin": "#e3b79a", "shirt": "#7a4b8c", "pants": "#2b2436", "hair": "#3a2a24"},
+     "schedule": [{"from": 8, "to": 21, "spot": "training_school.lectern"}],
+     "greet": {"cold": ["上课别迟到。"], "stranger": ["来报名课程吗？学点真本事，比什么都强。"], "acquaint": ["你上次的作业做得不错。"], "friend": ["有空来旁听我的新课。"], "close": ["看到你一路成长，我这个老师也骄傲。"]},
+     "topics": [
+       {"q": "你觉得学历和能力，哪个更重要？", "options": [
+         {"text": "学历是门票，能力才是走多远的底气。", "rel": 6, "reply": "说得好，所以终身学习最重要。"},
+         {"text": "学历，没学历简历都过不了。", "rel": 3, "reply": "现实确实如此，但别被它困住。"},
+         {"text": "都不重要，靠运气。", "rel": -2, "reply": "运气只照顾有准备的人。"}]}],
+     "perks": [{"min_rel": 40, "type": "course_discount", "value": 0.25, "text": "刘老师给你学员价：培训课程 75 折。"}],
+     "quests": ["s_first_course", "s_study_group"], "gifts": ["flowers", "gift_box"]},
+    {"id": "xiaolin", "name": "小林", "role": "大学生（林小雨）", "look": {"skin": "#f0c7a8", "shirt": "#e46b9a", "pants": "#3b4a6b", "hair": "#2b1b17"},
+     "schedule": [{"from": 8, "to": 12, "spot": "training_school.seat"}, {"from": 12, "to": 17, "spot": "cafe.corner"}, {"from": 17, "to": 20, "spot": "park.lawn"}],
+     "greet": {"cold": ["……"], "stranger": ["你好！你也是来新澜市打拼的吗？"], "acquaint": ["嘿！今天复习得头都大了。"], "friend": ["我找到实习啦！还得谢谢你。"], "close": ["以后我也要像你一样厉害！"]},
+     "topics": [
+       {"q": "毕业后是留在大城市，还是回老家？好纠结。", "options": [
+         {"text": "趁年轻多闯闯，大不了再回去。", "rel": 6, "reply": "嗯！那我再坚持一下！"},
+         {"text": "回老家吧，大城市太累。", "rel": 3, "reply": "……可我不甘心。"},
+         {"text": "随便啦。", "rel": 0, "reply": "你好敷衍。"}]}],
+     "perks": [{"min_rel": 50, "type": "study_buddy", "value": 0.2, "text": "和小林一起学习：读书获得的技能经验 +20%。"}],
+     "quests": ["s_lost_wallet", "s_laptop_repair", "s_resume_help"], "gifts": ["cake", "flowers"]},
+    {"id": "zhoulb", "name": "周老板", "role": "连续创业者", "look": {"skin": "#d9a882", "shirt": "#141820", "pants": "#141820", "hair": "#111111"},
+     "schedule": [{"from": 10, "to": 18, "spot": "mall.atrium"}, {"from": 18, "to": 22, "spot": "cafe.window"}],
+     "greet": {"cold": ["我很忙。"], "stranger": ["年轻人，有没有想过自己当老板？"], "acquaint": ["创业就是九死一生，但那一生值了。"], "friend": ["有项目随时找我聊。"], "close": ["咱们是一路人。"]},
+     "topics": [
+       {"q": "我第一次创业赔光了所有积蓄，你猜我第二次怎么做的？", "options": [
+         {"text": "先找到真实的客户需求，再动手。", "rel": 7, "reply": "对！现金流和客户，永远是第一位。"},
+         {"text": "借更多的钱。", "rel": 1, "reply": "哈哈，那我现在应该在天桥底下。"},
+         {"text": "放弃了去上班。", "rel": 0, "reply": "差一点就是这样。"}]}],
+     "perks": [{"min_rel": 50, "type": "business_mentor", "value": 0.3, "text": "周老板当你的创业导师：创办公司费用 -30%，并送你第一个客户。"}],
+     "quests": ["s_startup_advice", "s_first_client", "s_hire_team"], "gifts": ["wine", "gift_box"]},
+    {"id": "zhaojl", "name": "赵经理", "role": "新澜银行客户经理", "look": {"skin": "#e6b999", "shirt": "#e8e8ee", "pants": "#1e2230", "hair": "#3b2b24"},
+     "schedule": [{"from": 9, "to": 17, "spot": "bank.counter", "days": "weekdays"}],
+     "greet": {"cold": ["请取号排队。"], "stranger": ["您好，办理什么业务？"], "acquaint": ["最近理财有什么打算吗？"], "friend": ["给你推荐个利率高点的产品。"], "close": ["您是我们的 VIP 客户。"]},
+     "topics": [
+       {"q": "您知道复利吗？爱因斯坦说它是世界第八大奇迹。", "options": [
+         {"text": "时间加复利，越早开始越好。", "rel": 6, "reply": "完全正确！"},
+         {"text": "我连本金都没有。", "rel": 3, "reply": "那就从每个月存一点开始。"},
+         {"text": "听起来像骗局。", "rel": -1, "reply": "……您可以研究一下。"}]}],
+     "perks": [{"min_rel": 30, "type": "deposit_rate", "value": 0.5, "text": "赵经理给你 VIP 利率：存款利息 +50%。"}],
+     "quests": ["s_bank_account", "s_market_report"], "gifts": ["flowers", "wine"]},
+    {"id": "fangjie", "name": "芳姐", "role": "芳姐小馆老板娘", "look": {"skin": "#e8b894", "shirt": "#b8323a", "pants": "#2d2a30", "hair": "#2b1a14"},
+     "schedule": [{"from": 10, "to": 23, "spot": "restaurant.counter"}],
+     "greet": {"cold": ["吃饭自己点。"], "stranger": ["来啦！里面坐！"], "acquaint": ["老样子？给你多加个蛋。"], "friend": ["饿了就来，阿姐给你做。"], "close": ["你就是我半个亲弟弟。"]},
+     "topics": [
+       {"q": "现在外卖平台抽成越来越高，小店真难做。", "options": [
+         {"text": "可以做点熟客会员，堂食打折。", "rel": 6, "reply": "咦，这主意不错！"},
+         {"text": "那就涨价呗。", "rel": 2, "reply": "涨价客人就跑啦。"},
+         {"text": "关门算了。", "rel": -3, "reply": "呸呸呸，乌鸦嘴。"}]}],
+     "perks": [{"min_rel": 30, "type": "meal_discount", "value": 0.2, "text": "芳姐给你熟客价：芳姐小馆 8 折。"}],
+     "quests": ["s_dinner_rush"], "gifts": ["flowers", "gift_box"]},
+    {"id": "laoma", "name": "老马", "role": "工地班长", "look": {"skin": "#b9835d", "shirt": "#e0a02a", "pants": "#3d3a33", "hair": "#2a2a2a", "hat": "yellow"},
+     "schedule": [{"from": 6, "to": 18, "spot": "construction_site.office", "days": "six"}, {"from": 19, "to": 23, "spot": "old_street.stall"}],
+     "greet": {"cold": ["别在工地乱逛。"], "stranger": ["想干活？去人才市场登记，我们这儿缺人。"], "acquaint": ["戴好安全帽！"], "friend": ["晚上一起喝两杯？"], "close": ["兄弟，老马这辈子没服过几个人。"]},
+     "topics": [
+       {"q": "我干了二十年工地，盖了半个新澜市的楼，自己一套房都没有。", "options": [
+         {"text": "这些楼里都有您的汗水，城市会记得。", "rel": 6, "reply": "……谢谢你这么说。"},
+         {"text": "那您得多存钱。", "rel": 2, "reply": "存？孩子上学、老人看病，哪样不要钱。"},
+         {"text": "干嘛不换行？", "rel": 0, "reply": "我这岁数，能换哪去？"}]}],
+     "perks": [{"min_rel": 30, "type": "direct_hire", "job": "construction", "text": "老马直接收你进班组，不用面试。"}],
+     "quests": ["s_site_safety", "s_old_photo"], "gifts": ["wine"]},
+    {"id": "sunzg", "name": "孙主管", "role": "云途集团部门主管", "look": {"skin": "#dfb08e", "shirt": "#2c3b5a", "pants": "#161a24", "hair": "#1e1e1e"},
+     "schedule": [{"from": 9, "to": 19, "spot": "office_tower.desk_b", "days": "weekdays"}],
+     "greet": {"cold": ["有事发邮件。"], "stranger": ["你是哪个部门的？"], "acquaint": ["今天的周报交了吗？"], "friend": ["你的表现我都看在眼里。"], "close": ["我准备推荐你接我的位置。"]},
+     "topics": [
+       {"q": "你觉得一个好员工最重要的品质是什么？", "options": [
+         {"text": "靠谱：说到做到，有问题及时反馈。", "rel": 6, "reply": "对，靠谱比聪明更难得。"},
+         {"text": "听话。", "rel": 2, "reply": "听话的人很多，能解决问题的很少。"},
+         {"text": "会拍马屁。", "rel": -3, "reply": "……你可以出去了。"}]}],
+     "perks": [{"min_rel": 40, "type": "promotion_boost", "value": 2, "text": "孙主管替你说话：办公室与管理岗晋升所需出勤 -2 个班次。"}],
+     "quests": ["s_urgent_project", "s_client_meeting"], "gifts": ["wine", "gift_box"]},
+    {"id": "laok", "name": "老K", "role": "投资爱好者", "look": {"skin": "#d3a07c", "shirt": "#6a7f3a", "pants": "#2a2a2a", "hair": "#8a8a8a"},
+     "schedule": [{"from": 7, "to": 11, "spot": "park.path"}, {"from": 13, "to": 17, "spot": "cafe.window"}],
+     "greet": {"cold": ["别打扰我看盘。"], "stranger": ["年轻人，懂不懂 K 线？"], "acquaint": ["今天大盘怎么走？你猜猜。"], "friend": ["告诉你个秘密：别碰杠杆。"], "close": ["我这辈子赚的钱，都是从不懂到懂的学费换来的。"]},
+     "topics": [
+       {"q": "你知道股市里最重要的是什么吗？", "options": [
+         {"text": "活下来——控制仓位，别被一次亏损清零。", "rel": 7, "reply": "孺子可教！"},
+         {"text": "消息，内幕消息。", "rel": 0, "reply": "哈哈，内幕消息害死过多少人。"},
+         {"text": "胆子大。", "rel": 1, "reply": "胆子大的，坟头草都三尺高了。"}]}],
+     "perks": [{"min_rel": 30, "type": "market_tip", "text": "老K每天给你透露市场情绪：投资 APP 显示经济周期。"}],
+     "quests": ["s_first_stock", "s_market_watch"], "gifts": ["coffee", "wine"]},
+    {"id": "xuys", "name": "许医生", "role": "新澜第一医院内科医生", "look": {"skin": "#ecc2a2", "shirt": "#f2f4f6", "pants": "#3a4a5a", "hair": "#241a16"},
+     "schedule": [{"from": 8, "to": 18, "spot": "hospital.clinic"}],
+     "greet": {"cold": ["挂号了吗？"], "stranger": ["哪里不舒服？"], "acquaint": ["最近睡得好吗？别总熬夜。"], "friend": ["体检报告我帮你看了，挺好。"], "close": ["身体是你最大的本钱，记住了。"]},
+     "topics": [
+       {"q": "你知道急诊里最多的年轻人是什么病吗？过劳。", "options": [
+         {"text": "我会注意作息，按时吃饭。", "rel": 6, "reply": "说到做到才行。"},
+         {"text": "没办法，不拼不行。", "rel": 2, "reply": "拼命之前，先得有命。"},
+         {"text": "我年轻，扛得住。", "rel": -1, "reply": "每个躺在这里的人都这么说过。"}]}],
+     "perks": [{"min_rel": 30, "type": "clinic_discount", "value": 0.4, "text": "许医生照顾你：看病费用 6 折。"}],
+     "quests": ["s_health_check"], "gifts": ["flowers", "gift_box"]},
+    {"id": "ahao", "name": "阿豪", "role": "脉冲健身教练", "look": {"skin": "#c98e62", "shirt": "#1ec8e0", "pants": "#15151a", "hair": "#111111"},
+     "schedule": [{"from": 7, "to": 22, "spot": "gym.floor"}],
+     "greet": {"cold": ["练不练？"], "stranger": ["兄弟！练一练？第一次体验免费指导！"], "acquaint": ["今天练哪个部位？"], "friend": ["你这肩膀，有型了啊！"], "close": ["跟我去参加城市马拉松！"]},
+     "topics": [
+       {"q": "你觉得健身最难的是什么？", "options": [
+         {"text": "坚持。三分钟热度谁都有。", "rel": 6, "reply": "对！所以我天天盯着你！"},
+         {"text": "没钱办卡。", "rel": 2, "reply": "跑步不花钱啊！"},
+         {"text": "起床。", "rel": 4, "reply": "哈哈哈，这个我也难。"}]}],
+     "perks": [{"min_rel": 30, "type": "workout_bonus", "value": 0.5, "text": "阿豪私教指导：健身获得的体能经验 +50%。"}],
+     "quests": ["s_gym_challenge", "s_charity_run"], "gifts": ["synth_bar", "gift_box"]},
+    {"id": "daliu", "name": "大刘", "role": "速达物流园主管", "look": {"skin": "#c08b64", "shirt": "#f0b030", "pants": "#303640", "hair": "#1a1a1a"},
+     "schedule": [{"from": 6, "to": 18, "spot": "warehouse.office", "days": "six"}],
+     "greet": {"cold": ["别挡道。"], "stranger": ["来找活？我们这儿天天缺分拣员。"], "acquaint": ["今天双十一，货多得吓人。"], "friend": ["你手脚麻利，是块好料。"], "close": ["以后我这仓库交给你我都放心。"]},
+     "topics": [
+       {"q": "现在都上机器人分拣了，我们这些人迟早要被替代吧？", "options": [
+         {"text": "学会管理和维护机器人，就是新饭碗。", "rel": 6, "reply": "嘿，是这个理儿！"},
+         {"text": "能干一天是一天。", "rel": 3, "reply": "唉，也只能这样。"},
+         {"text": "早点跑路。", "rel": -1, "reply": "你倒是说得轻松。"}]}],
+     "perks": [{"min_rel": 30, "type": "direct_hire", "job": "warehouse", "text": "大刘直接录用你到物流园，不用面试。"}],
+     "quests": ["s_urgent_parcel", "s_moving_help"], "gifts": ["wine"]},
+    {"id": "xiaomei", "name": "小美", "role": "刚到新澜市的女孩", "look": {"skin": "#f2cba9", "shirt": "#f4d35e", "pants": "#46618a", "hair": "#4a2a1e"},
+     "schedule": [{"from": 8, "to": 20, "spot": "train_station.plaza", "not_flag": "helped_newbie"}, {"from": 11, "to": 19, "spot": "restaurant.table", "flag": "helped_newbie", "days": "six"}],
+     "greet": {"cold": ["……"], "stranger": ["那个……请问人才市场怎么走？"], "acquaint": ["我在芳姐小馆找到工作啦！"], "friend": ["今天我请你喝奶茶！"], "close": ["你是我在这座城市的第一个朋友。"]},
+     "topics": [
+       {"q": "刚来的时候我每天晚上都想家，你呢？", "options": [
+         {"text": "也想，但想想为什么出来，就又有劲了。", "rel": 6, "reply": "嗯！我们都要加油！"},
+         {"text": "不想，家里没什么好想的。", "rel": 2, "reply": "……对不起，我不该问。"},
+         {"text": "想家就回去啊。", "rel": -2, "reply": "……"}]}],
+     "perks": [],
+     "quests": ["s_help_newbie"], "gifts": ["cake", "flowers"]}
+  ]
+}
