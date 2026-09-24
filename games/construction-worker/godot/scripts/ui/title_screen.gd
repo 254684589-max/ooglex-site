@@ -40,7 +40,7 @@ func _ready() -> void:
 	var col := UIKit.vbox(12)
 	margin.add_child(col)
 	col.add_child(UIKit.spacer(false, true))
-	var tag := UIKit.hud_label("ConstructionWorker V0.1", 18, UIKit.DIM)
+	var tag := UIKit.hud_label("BRICK BY BRICK · V0.1", 18, UIKit.DIM)
 	col.add_child(tag)
 	var title := UIKit.hud_label("工地搬砖", 76, UIKit.YELLOW)
 	title.add_theme_constant_override("outline_size", 14)

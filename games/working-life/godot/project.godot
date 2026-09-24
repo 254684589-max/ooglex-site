@@ -1,14 +1,14 @@
 ; Engine configuration file.
-; 《打工》WORKING LIFE —— Godot 4 工程配置
+; 《打工》HUSTLE CITY —— Godot 4 工程配置
 ; 输入映射在 res://core/input_setup.gd 中用代码注册，便于阅读和修改。
 
 config_version=5
 
 [application]
 
-config/name="打工 WORKING LIFE"
+config/name="打工 HUSTLE CITY"
 config/description="第三人称 3D 赛博朋克都市人生模拟游戏"
-config/version="1.7.0"
+config/version="1.7.1"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/bg_color=Color(0.03, 0.02, 0.07, 1)

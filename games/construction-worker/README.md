@@ -1,11 +1,11 @@
-# 《工地搬砖》ConstructionWorker V0.1
+# 《工地搬砖》BRICK BY BRICK V0.1（原名 ConstructionWorker）
 
 第三人称 3D 工地模拟 / 打工 / 生存 / 成长游戏。玩家从只有 300 元的临时工干起：找工头老王接活、
 搬砖搬水泥扛钢筋、领工资、吃饭、睡觉，一天天在工地上成长。
 
 - 引擎：Godot 4.7（标准版）· GDScript · Compatibility 渲染器（WebGL 2）
 - 网页版：`/games/construction-worker/`（介绍页）→ `/games/construction-worker/play/`（游戏本体）
-- 当前版本：**ConstructionWorker V0.1**（`godot/project.godot` 里 `config/version="0.1.0"`）
+- 当前版本：**BRICK BY BRICK V0.1**（`godot/project.godot` 里 `config/version="0.1.0"`）
 
 ---
 
@@ -184,7 +184,7 @@ games/construction-worker/
 │   ├── stamp_web_build.py      # 给导出文件加内容哈希
 │   ├── build_font.py           # 生成中文字体子集（GB2312 常用字 + 源码用字）
 │   └── gen_sfx.py              # 合成音效
-└── godot/                      # Godot 4 工程（ConstructionWorker）
+└── godot/                      # Godot 4 工程（BRICK BY BRICK；内部标识仍为 ConstructionWorker）
     ├── project.godot           # 工程设置、自动加载列表
     ├── export_presets.cfg      # Web 导出预设（无线程版）
     ├── web/shell.html          # 网页加载页模板

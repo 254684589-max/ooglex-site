@@ -45,7 +45,7 @@ BANNER_END = "/* ==== 浅色主题兜底 结束 ==== */"
 SKIP_PREFIXES = (".git/", "home-redesign/", "terminal-redesign/", "docs/", "node_modules/",
                  # 《工地搬砖》的 Godot 工程源码（web/shell.html 是导出模板，不是站点页面）
                  "games/construction-worker/godot/",
-                 # 《打工》WORKING LIFE 的 Godot 工程源码（同上）
+                 # 《打工》HUSTLE CITY 的 Godot 工程源码（同上）
                  "games/working-life/godot/")
 
 # 画面由整屏 canvas / iframe 主导、固定深色的页面：不生成浅色覆盖
@@ -58,7 +58,7 @@ LOCKED = {
     # 《工地搬砖》：介绍页锁深色；play/ 是 Godot 导出的整屏 canvas
     "games/construction-worker/index.html",
     "games/construction-worker/play/index.html",
-    # 《打工》WORKING LIFE：介绍页锁深色（赛博朋克配色）；play/ 是整屏 canvas
+    # 《打工》HUSTLE CITY：介绍页锁深色（赛博朋克配色）；play/ 是整屏 canvas
     "games/working-life/index.html",
     "games/working-life/play/index.html",
     # 金融终端四页：专业终端本身是深色语言，统一锁深色（页面上主题选择器会显示锁定说明）

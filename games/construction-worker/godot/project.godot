@@ -1,12 +1,12 @@
 ; Engine configuration file.
-; 《工地搬砖》ConstructionWorker —— Godot 4 工程配置
+; 《工地搬砖》BRICK BY BRICK —— Godot 4 工程配置
 ; 输入映射在 res://scripts/core/input_setup.gd 中用代码注册，便于阅读和修改。
 
 config_version=5
 
 [application]
 
-config/name="工地搬砖 ConstructionWorker"
+config/name="工地搬砖 BRICK BY BRICK"
 config/description="第三人称 3D 工地模拟 / 打工 / 生存 / 成长游戏"
 config/version="0.1.0"
 run/main_scene="res://scenes/main.tscn"

@@ -62,6 +62,13 @@ def main() -> int:
         return 1
     html = html.replace(old_tag, f'<script src="{new}.js?v={sha8(js)}"></script>')
     (dst / "index.html").write_text(html.rstrip() + "\n", encoding="utf-8")
+    # 介绍页的「开始游戏」链接带上构建号：play/ 的地址不变，浏览器 / CDN 会把旧的 index.html
+    # 缓存约 10 分钟，更新后回访玩家可能还在玩旧版；换一个查询参数就是一个新的缓存键。
+    intro = dst.parent / "index.html"
+    if intro.exists():
+        page = intro.read_text(encoding="utf-8")
+        page = re.sub(r'href="play/(\?v=[0-9a-f]+)?"', f'href="play/?v={new[3:]}"', page)
+        intro.write_text(page, encoding="utf-8")
     total = sum(p.stat().st_size for p in dst.iterdir() if p.is_file())
     print(f"已写入 {dst}：{new}.*，共 {total / 1048576:.1f} MB")
     return 0

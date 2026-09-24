@@ -1,4 +1,4 @@
-# 架构说明 · 打工 WORKING LIFE 1.0
+# 架构说明 · 打工 HUSTLE CITY
 
 ## 分层
 ```
