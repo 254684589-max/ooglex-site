@@ -76,6 +76,16 @@ static func actions_for(sp: ServicePoint) -> Array:
 			return [Interactable.action(key, "点杯饮品坐一会儿（%s，45 分钟）" % Fmt.yuan(RELAX_FEE))]
 		"bed":
 			return [Interactable.action(key, "床：睡觉 / 保存")]
+		"decor_rest":
+			return [Interactable.action(key, "躺沙发休息（30 分钟）")]
+		"decor_tv":
+			return [Interactable.action(key, "看电视（1 小时）")]
+		"decor_read":
+			return [Interactable.action(key, "看书（1 小时，金融 / 管理经验）")]
+		"decor_run":
+			if PlayerManager.energy < 15.0:
+				return [Interactable.action(key, "体力不足 15，跑不动了", false)]
+			return [Interactable.action(key, "在家跑步（45 分钟，体能经验）")]
 	return [Interactable.action(key, sp.label_text)]
 
 
@@ -135,6 +145,8 @@ static func run(sp: ServicePoint, _action_key: String) -> void:
 			_treatment()
 		"gym":
 			_workout()
+		"decor_rest", "decor_tv", "decor_read", "decor_run":
+			_use_furniture(sp)
 		"bench":
 			var h := TimeManager.hour_f()
 			if (h >= 21.0 or h < 5.0) and HousingManager.home_id() == "":
@@ -187,3 +199,44 @@ static func _workout() -> void:
 	Events.notify("workout", {})
 	AudioManager.play_sfx("levelup", -8.0)
 	Events.say("练了一小时（体能经验 +%d，健康 +5，压力 -10）" % int(35.0 * bonus * PlayerManager.efficiency()), "good")
+
+
+## 自己家里的家具：躺沙发、看电视、看书、跑步（效果随家具档次，power 见 data/furniture.json）
+static func _use_furniture(sp: ServicePoint) -> void:
+	var it: Dictionary = DataDB.furniture.get(String(sp.args.get("item", "")), {})
+	var power := float(it.get("power", 8))
+	var name := String(it.get("name", ""))
+	match sp.kind:
+		"decor_rest":
+			TimeManager.advance(30, "idle")
+			PlayerManager.change("energy", power)
+			PlayerManager.change("stress", -power * 0.6)
+			PlayerManager.change("mood", 2)
+			Events.say("在%s上躺了半小时（体力 +%d 压力 -%d）" % [name, int(power), int(power * 0.6)], "good")
+		"decor_tv":
+			TimeManager.advance(60, "idle")
+			PlayerManager.change("stress", -power)
+			PlayerManager.change("mood", power * 0.5)
+			Events.say("用%s看了一集剧（压力 -%d 心情 +%d）" % [name, int(power), int(power * 0.5)], "good")
+		"decor_read":
+			if PlayerManager.energy < 8.0:
+				Events.say("太累了，看不进去", "warn")
+				return
+			TimeManager.advance(60, "study")
+			var xp := power * PlayerManager.efficiency()
+			SkillManager.add_xp("finance", xp * 0.5, "看书")
+			SkillManager.add_xp("management", xp * 0.5, "看书")
+			PlayerManager.change("energy", -6)
+			Events.say("在书架前看了一小时书（金融、管理经验各 +%d）" % int(xp * 0.5), "good")
+		"decor_run":
+			if PlayerManager.energy < 15.0:
+				Events.say("体力不足 15，跑不动了", "warn")
+				return
+			TimeManager.advance(45, "study")
+			var xp2 := power * PlayerManager.efficiency()
+			SkillManager.add_xp("fitness", xp2, "在家跑步")
+			PlayerManager.change("energy", -12)
+			PlayerManager.change("health", 3)
+			PlayerManager.change("stress", -6)
+			Events.notify("workout", {})
+			Events.say("在%s上跑了 45 分钟（体能经验 +%d，健康 +3，压力 -6）" % [name, int(xp2)], "good")
