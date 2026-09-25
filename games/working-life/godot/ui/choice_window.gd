@@ -23,4 +23,4 @@ func _init(p_title: String, text: String, options: Array, p_size := Vector2(620,
 				cb.call())
 		body.add_child(b)
 		if String(o.get("hint", "")) != "":
-			body.add_child(UIKit.label("　" + String(o["hint"]), 14, UIKit.DIM, HORIZONTAL_ALIGNMENT_LEFT, true))
+			body.add_child(UIKit.label("  " + String(o["hint"]), 14, UIKit.DIM, HORIZONTAL_ALIGNMENT_LEFT, true))

@@ -70,7 +70,7 @@ func _btn(parent: Control, text: String, id: String) -> Button:
 func refresh() -> void:
 	var slot := SaveManager.latest_slot()
 	_continue.disabled = slot == 0
-	_sub.text = ("　存档 %d：%s" % [slot, String(SaveManager.read(slot).get("summary", ""))]) if slot > 0 else "　还没有存档"
+	_sub.text = ("  存档 %d：%s" % [slot, String(SaveManager.read(slot).get("summary", ""))]) if slot > 0 else "  还没有存档"
 	if visible and is_inside_tree() and slot > 0:
 		_continue.grab_focus()
 

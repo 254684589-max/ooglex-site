@@ -71,7 +71,7 @@ func _effects_text(it: Dictionary) -> String:
 	if it.has("interview"):
 		parts.append("面试加分 +%d" % int(it["interview"]))
 	var d := String(it.get("desc", ""))
-	return (" · ".join(parts) + "　" if not parts.is_empty() else "") + d
+	return (" · ".join(parts) + "  " if not parts.is_empty() else "") + d
 
 
 func _buy(item_id: String, eat_now: bool) -> void:

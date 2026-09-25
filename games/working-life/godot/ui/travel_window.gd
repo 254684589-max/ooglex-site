@@ -26,7 +26,7 @@ func _ready() -> void:
 	for d in TransportManager.destinations(mode, from):
 		var h := UIKit.hbox(8)
 		body.add_child(h)
-		var l := UIKit.label("%s　%d 米 · 约 %d 分钟" % [String(d["name"]), int(d["dist"]), int(d["minutes"])], 16, UIKit.TEXT)
+		var l := UIKit.label("%s  %d 米 · 约 %d 分钟" % [String(d["name"]), int(d["dist"]), int(d["minutes"])], 16, UIKit.TEXT)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		h.add_child(l)
 		var b := UIKit.small_button("%s 出发" % Fmt.yuan(int(d["cost"])), _go.bind(d))

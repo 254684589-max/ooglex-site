@@ -9,8 +9,8 @@
     {"id": "e_sick", "trigger": "morning", "weight": 5, "cooldown": 6, "title": "突然生病", "text": "早上醒来头昏脑涨，好像发烧了。", "conditions": {"health_max": 70},
      "choices": [
        {"text": "吃药硬撑（需要一盒药品）", "requires": {"has_item": "medicine"}, "effects": {"consume": "medicine", "health": 10, "energy": -10}, "result": "吃了药，勉强能扛。"},
-       {"text": "去医院看病（¥200）", "effects": {"cash": -200, "health": 30, "time": 120}, "result": "医生开了药，叮嘱你多休息。"},
-       {"text": "躺着多睡会儿", "effects": {"health": 8, "time": 180, "mood": -4}, "result": "睡了一上午，好一点了。"}]},
+       {"text": "去医院看病（¥200）", "effects": {"cash": -200, "health": 30, "time": 120, "sick_leave_if_late": true}, "result": "医生开了药，叮嘱你多休息。"},
+       {"text": "躺着多睡会儿", "effects": {"health": 8, "time": 180, "mood": -4, "sick_leave_if_late": true}, "result": "睡了一上午，好一点了。"}]},
     {"id": "e_layoff", "trigger": "day", "weight": 3, "cooldown": 20, "title": "公司裁员", "text": "HR 群发邮件：因业务调整，公司将优化部分岗位。你的名字在不在名单上，取决于你的绩效。", "conditions": {"has_job": true, "day_min": 12, "job_perf_max": 45},
      "effects": {"fire_job": true, "mood": -15, "stress": 10}, "result": "你被裁了。拿着纸箱走出大楼时，雨正好下起来。"},
     {"id": "e_layoff_safe", "trigger": "day", "weight": 3, "cooldown": 20, "title": "裁员风波", "text": "公司裁员，隔壁工位空了一排。你因为绩效不错留了下来，但工作量更大了。", "conditions": {"has_job": true, "day_min": 12, "job_perf_min": 46},

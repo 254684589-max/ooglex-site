@@ -434,11 +434,38 @@ func status_text() -> String:
 		return "今天请假"
 	var now := TimeManager.total_minutes
 	var start := shift_start_minute()
+	# 入职当天不算旷工：赶得上可以上一班，赶不上就下一个工作日再来
+	if hired_today() and (hired_after_shift_today() or now > start + LATE_GRACE_MIN):
+		return "今天刚入职 · %s（%s）%s 上班 @ %s" % [_next_workday_text(), TimeManager.weekday_name(next_workday()), Fmt.clock(start), where]
 	if now > start + CLOCK_IN_LATE_MAX_MIN:
 		return "今天旷工了！"
 	if now > start + LATE_GRACE_MIN:
 		return "已迟到！快去%s" % where
 	return "%s 上班 @ %s" % [Fmt.clock(start), where]
+
+
+func hired_today() -> bool:
+	return has_job() and int(current.get("hired_day", -1)) == TimeManager.day
+
+
+## 今天入职，而且录用时已经过了今天的上班时间
+func hired_after_shift_today() -> bool:
+	return hired_today() and float(current.get("hired_minute", 0.0)) > shift_start_minute()
+
+
+## 明天起第一个工作日
+func next_workday() -> int:
+	var d := TimeManager.day + 1
+	for i in 7:
+		if is_workday(d):
+			return d
+		d += 1
+	return TimeManager.day + 1
+
+
+func _next_workday_text() -> String:
+	var d := next_workday()
+	return "明天" if d == TimeManager.day + 1 else "%d 天后" % (d - TimeManager.day)
 
 
 ## 能否在工位开始上班。返回 {ok, reason, late}
@@ -623,6 +650,18 @@ func take_leave(sick := false) -> String:
 	return "已请假（绩效 -3）。"
 
 
+## 生病等原因耽误了今天的班（已经迟到）时自动请病假。返回是否请了假
+func sick_leave_if_missed() -> bool:
+	if not has_job() or not is_workday() or worked_today() or on_leave_today():
+		return false
+	if hired_today():
+		return false
+	if TimeManager.total_minutes <= shift_start_minute() + LATE_GRACE_MIN:
+		return false
+	take_leave(true)
+	return true
+
+
 ## 加班（随机事件）后给的额外时间已经在 Effects 里处理
 func _on_day_changed(d: int) -> void:
 	# 过期的面试邀请
@@ -634,18 +673,16 @@ func _on_day_changed(d: int) -> void:
 		return
 	var y := d - 1
 	var hired_day := int(current.get("hired_day", d))
-	var hired_min := float(current.get("hired_minute", 0.0))
-	# 昨天应该上班却没来：旷工（入职当天在上班时间之后才录用的不算）
-	if y >= hired_day and is_workday(y) and int(current.get("last_shift_day", -1)) != y and int(current.get("leave_day", -1)) != y:
-		if not (y == hired_day and hired_min > shift_start_minute(y)):
-			current["absences"] = int(current.get("absences", 0)) + 1
-			change_perf(-12)
-			current["boss_rel"] = clampf(float(current.get("boss_rel", 50)) - 10.0, 0.0, 100.0)
-			var n := int(current["absences"])
-			if n >= 3:
-				fire("多次旷工")
-				return
-			Events.phone_message.emit("上司", "你昨天怎么没来上班？这是第 %d 次旷工了，满 3 次公司会解除合同。" % n)
+	# 昨天应该上班却没来：旷工（入职当天不算，第二个工作日起才要求出勤）
+	if y > hired_day and is_workday(y) and int(current.get("last_shift_day", -1)) != y and int(current.get("leave_day", -1)) != y:
+		current["absences"] = int(current.get("absences", 0)) + 1
+		change_perf(-12)
+		current["boss_rel"] = clampf(float(current.get("boss_rel", 50)) - 10.0, 0.0, 100.0)
+		var n := int(current["absences"])
+		if n >= 3:
+			fire("多次旷工")
+			return
+		Events.phone_message.emit("上司", "你昨天怎么没来上班？这是第 %d 次旷工了，满 3 次公司会解除合同。" % n)
 	# 周五晚上发周薪（进入周六时）
 	if (d - 1) % 7 == 5:
 		var p := int(current.get("pending_pay", 0))

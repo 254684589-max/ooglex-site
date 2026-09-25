@@ -36,7 +36,10 @@ static func actions_for(sp: ServicePoint) -> Array:
 				var chk := JobManager.can_start_shift(job_id)
 				if bool(chk.get("ok", false)):
 					var late := float(chk.get("late", 0.0))
-					return [Interactable.action(key, "开始上班%s" % ("（迟到 %d 分钟）" % int(late) if late > 0 else ""))]
+					# 能打卡时优先于旁边的 NPC（工地的老马就站在工位旁，按 E 不能变成和他聊天）
+					var a := Interactable.action(key, "开始上班%s" % ("（迟到 %d 分钟）" % int(late) if late > 0 else ""))
+					a["boost"] = 50.0
+					return [a]
 				return [Interactable.action(key, String(chk.get("reason", "")), false)]
 			if guest_shift_available(job_id):
 				return [Interactable.action(key, "帮忙顶班（任务）")]

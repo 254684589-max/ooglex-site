@@ -77,6 +77,7 @@ func _ready() -> void:
 	ui.setup(self)
 	PlayerManager.collapsed.connect(_on_collapsed)
 	Events.location_entered.connect(_on_location)
+	Events.housing_changed.connect(_on_housing_changed)
 	Events.world_spawns_changed.connect(_refresh_spawns)
 	QuestManager.quest_completed.connect(_on_quest_completed)
 	SettingsManager.apply_runtime()
@@ -140,6 +141,8 @@ func _reset_all() -> void:
 	GigManager.reset()
 	WeatherManager.reset()
 	_clear_spawns()
+	for n in get_tree().get_nodes_in_group(SuitcaseProp.GROUP):
+		n.queue_free()
 
 
 func start_new_game(slot: int) -> void:
@@ -289,8 +292,8 @@ func start_shift(job_id: String) -> void:
 
 
 func _start_carry(job_id: String, diff: int, late: float, guest: bool) -> void:
+	_stow_suitcase()
 	player.set_carry("")
-	GameManager.set_flag("dropped_suitcase")
 	carry_job = CarryJob.new()
 	add_child(carry_job)
 	carry_job.setup(city.carry_pile, city.carry_zone, diff)
@@ -496,8 +499,7 @@ func after_ending(action: String) -> void:
 
 func _on_quest_completed(id: String) -> void:
 	if id == "m1_first_day":
-		player.set_carry("")
-		GameManager.set_flag("dropped_suitcase")
+		_stow_suitcase()
 	var q := QuestManager.data(id)
 	var nx := String(q.get("next", ""))
 	if nx != "" and String(q.get("type", "")) == "main":
@@ -520,9 +522,24 @@ func _on_location(id: String) -> void:
 	elif t == "shop" or id == "mall":
 		amb = "shop"
 	AudioManager.set_ambience(0, amb)
-	if id == "hotel" and not GameManager.has_flag("dropped_suitcase") and HousingManager.has_hotel_room():
+	if id == "hotel" and HousingManager.has_hotel_room():
+		_stow_suitcase()
+
+
+## 行李箱放进住处：手里的、放在地上的都收走，之后不再出现
+func _stow_suitcase() -> void:
+	if GameManager.has_flag("dropped_suitcase"):
+		return
+	GameManager.set_flag("dropped_suitcase")
+	if player.carrying == "suitcase":
 		player.set_carry("")
-		GameManager.set_flag("dropped_suitcase")
+	for n in get_tree().get_nodes_in_group(SuitcaseProp.GROUP):
+		n.queue_free()
+
+
+func _on_housing_changed() -> void:
+	if HousingManager.current != "" or not HousingManager.owned.is_empty():
+		_stow_suitcase()
 
 
 var _spawned: Array = []
@@ -537,16 +554,26 @@ func _clear_spawns() -> void:
 
 func _refresh_spawns() -> void:
 	var want := QuestManager.spawns()
+	var want_q: Array = []
+	for s in want:
+		want_q.append(String(s["quest"]))
 	var keep: Array = []
 	for n in _spawned:
 		if is_instance_valid(n) and not n.is_queued_for_deletion():
+			# 任务已经完成 / 不再需要的物品收走
+			if not want_q.has(String(n.quest_id)):
+				n.queue_free()
+				continue
 			keep.append(n)
 	_spawned = keep
 	for s in want:
 		var exists := false
+		var same_spot := 0
 		for n in _spawned:
-			if String(n.item_id) == String(s["item"]):
+			if String(n.quest_id) == String(s["quest"]):
 				exists = true
+			elif String(n.item_id) == String(s["item"]):
+				same_spot += 1
 		if exists:
 			continue
 		var ln := GameManager.lookup("loc:" + String(s["location"])) as LocationNode
@@ -556,7 +583,7 @@ func _refresh_spawns() -> void:
 		var qp := QuestPickup.new()
 		add_child(qp)
 		qp.setup(String(s["item"]), String(s["quest"]))
-		qp.global_position = BuildingKit.xf(ln.frame, float(p[0]), 0.05, float(p[1]))
+		qp.global_position = BuildingKit.xf(ln.frame, float(p[0]) + same_spot * 1.6, 0.05, float(p[1]))
 		_spawned.append(qp)
 
 

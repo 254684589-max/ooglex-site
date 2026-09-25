@@ -163,6 +163,10 @@ func objective_text(id: String, i: int) -> String:
 	match String(o.get("type", "")):
 		"earn", "deposit", "bank", "networth", "cash", "invest_profit":
 			t += "（%s / %s）" % [Fmt.yuan(minf(prog, target)), Fmt.yuan(target)]
+		"deliver":
+			var di := String(o.get("item", ""))
+			if di in ["coffee", "medicine", "wrench"] and states.has(id) and not objective_done(id, i) and not PlayerManager.has_item(di):
+				t += "（手里没有%s了，再去买一份）" % DataDB.item_name(di)
 		_:
 			if target > 1.0:
 				t += "（%d / %d）" % [int(minf(prog, target)), int(target)]
@@ -176,6 +180,9 @@ func _on_event(kind: String, d: Dictionary) -> void:
 		for i in open_indices(id):
 			var o: Dictionary = objectives(id)[i]
 			if String(o.get("type", "")) != kind:
+				continue
+			# 任务物品只算给生成它的那个任务
+			if kind == "pickup" and d.has("quest") and String(d["quest"]) != String(id):
 				continue
 			var inc := _match(o, d)
 			if inc > 0.0:
@@ -385,7 +392,8 @@ func spawns() -> Array:
 		var item := String(sp.get("item", ""))
 		for i in open_indices(id):
 			var o: Dictionary = objectives(id)[i]
-			if String(o.get("type", "")) == "pickup" and String(o.get("item", "")) == item and not PlayerManager.has_item(item):
+			# 按任务生成：两个任务要同一种物品（例如包裹）时各生成一个，互不影响
+			if String(o.get("type", "")) == "pickup" and String(o.get("item", "")) == item:
 				out.append({"quest": id, "item": item, "location": String(sp.get("location", "")), "pos": sp.get("pos", [0, 0])})
 	return out
 
@@ -419,7 +427,13 @@ func objective_target(id := "") -> Dictionary:
 	match String(o.get("type", "")):
 		"visit":
 			return {"kind": "location", "id": String(o.get("target", ""))}
-		"talk", "deliver":
+		"talk":
+			return {"kind": "npc", "id": String(o.get("npc", ""))}
+		"deliver":
+			# 要交的东西已经用掉了（咖啡喝了、药吃了）：先带去能买到的地方
+			var di := String(o.get("item", ""))
+			if not PlayerManager.has_item(di) and di in ["coffee", "medicine", "wrench"]:
+				return {"kind": "location", "id": "cafe" if di == "coffee" else ("supermarket" if di == "wrench" else "store")}
 			return {"kind": "npc", "id": String(o.get("npc", ""))}
 		"pickup":
 			var sp: Dictionary = data(id).get("spawn", {})

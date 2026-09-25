@@ -160,7 +160,7 @@ func _answer(o: Dictionary) -> void:
 	if rel > 0:
 		SkillManager.add_xp("communication", 6 + rel, "聊天")
 		PlayerManager.change("mood", 2)
-	show_main(String(o.get("reply", "")) + ("　（关系 %+d）" % rel))
+	show_main(String(o.get("reply", "")) + ("  （关系 %+d）" % rel))
 
 
 func _gift_menu(gifts: Array) -> void:

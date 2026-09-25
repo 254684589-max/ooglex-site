@@ -109,6 +109,10 @@ static func apply(effects: Variant, source := "奖励", category := "任务奖�
 				BusinessManager.lose_employee()
 			"take_leave":
 				JobManager.take_leave(true)
+			"sick_leave_if_late":
+				# 生病耽误了上班：自动请病假，不算旷工（放在 time 之后执行）
+				if JobManager.sick_leave_if_missed():
+					notes.append("已经赶不上今天的班，公司按病假处理（不算旷工）。")
 			"lottery":
 				var r := randf()
 				if r < 0.002:

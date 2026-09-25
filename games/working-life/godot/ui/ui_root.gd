@@ -255,8 +255,16 @@ func _sleep_menu(bench: bool) -> void:
 	var until7 := TimeManager.minutes_until(7.0)
 	var quality := HousingManager.sleep_quality() if not bench else 0.45
 	var where := "长椅上" if bench else HousingManager.home_name()
+	# 早班（7 点开工的仓库、工地）睡到 7 点就迟到了：给一个「上班前 1 小时」起床的选项
+	var wake := _wake_before_shift()
+	if not wake.is_empty() and (h >= 19.0 or h < 5.0 or bench or float(wake["minutes"]) <= 600.0):
+		var wm := float(wake["minutes"])
+		opts.append({"text": "睡到上班前 1 小时 %s（%s）" % [Fmt.clock(float(wake["hour"]) * 60.0), Fmt.hours_text(wm)], "cb": func(): main.sleep(wm, bench)})
 	if h >= 19.0 or h < 5.0 or bench:
-		opts.append({"text": "睡到早上 7:00（%s）" % Fmt.hours_text(until7), "cb": func(): main.sleep(until7, bench)})
+		var late7 := ""
+		if not wake.is_empty() and float(wake["hour"]) < 7.0 and until7 > float(wake["minutes"]):
+			late7 = "，上班会迟到"
+		opts.append({"text": "睡到早上 7:00（%s%s）" % [Fmt.hours_text(until7), late7], "cb": func(): main.sleep(until7, bench)})
 	opts.append({"text": "睡 8 小时", "cb": func(): main.sleep(480.0, bench)})
 	if not bench:
 		opts.append({"text": "小睡 2 小时", "cb": func(): main.sleep(120.0, bench)})
@@ -264,6 +272,20 @@ func _sleep_menu(bench: bool) -> void:
 			Events.say("已保存到存档 %d" % SaveManager.current_slot if SaveManager.save() else "保存失败", "good")})
 	opts.append({"text": "不睡了", "cb": Callable()})
 	open(ChoiceWindow.new("睡觉", "在%s休息。睡眠恢复效率 %d%%。睡醒后会自动保存。" % [where, int(quality * 100)], opts))
+
+
+## 下一个要上班的早晨：{hour, minutes}（起床时刻、距现在的分钟数）；没工作 / 不上班 / 起床时刻就是 7 点时为空
+func _wake_before_shift() -> Dictionary:
+	if not JobManager.has_job():
+		return {}
+	var hr := float(JobManager.job().get("shift_start", 9)) - 1.0
+	if is_equal_approx(hr, 7.0):
+		return {}
+	var m := TimeManager.minutes_until(hr)
+	var d := int((TimeManager.total_minutes + m) / 1440.0) + 1
+	if m < 60.0 or not JobManager.is_workday(d):
+		return {}
+	return {"hour": hr, "minutes": m}
 
 
 func _wardrobe_view(box: VBoxContainer, refresh: Callable) -> void:
@@ -276,7 +298,7 @@ func _wardrobe_view(box: VBoxContainer, refresh: Callable) -> void:
 		any = true
 		var h := UIKit.hbox(8)
 		box.add_child(h)
-		var l := UIKit.label("%s（面试 +%d）%s" % [String(it["name"]), int(it.get("interview", 0)), "　← 穿着" if String(id) == PlayerManager.outfit else ""], 16, UIKit.TEXT)
+		var l := UIKit.label("%s（面试 +%d）%s" % [String(it["name"]), int(it.get("interview", 0)), "  ← 穿着" if String(id) == PlayerManager.outfit else ""], 16, UIKit.TEXT)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		h.add_child(l)
 		h.add_child(UIKit.small_button("穿上", func():
