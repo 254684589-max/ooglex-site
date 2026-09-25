@@ -2303,9 +2303,6 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const profile = techLeaderProfileByHandle(handle);
   const author = String(profile && profile.name || `@${handle}`);
   const originalText = techLeaderShareText(post);
-  const previewTitle = originalText
-    ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
-    : `${author} · Ooglex`;
   const handleLower = String(handle || "").toLowerCase();
   const englishNameParts = String(author || "").split(/\s*[·•|/]\s*/).map((part) => part.trim()).filter(Boolean);
   const englishName = [...englishNameParts].reverse().find((part) => /[A-Za-z]/.test(part) && !/[\u3400-\u9fff]/.test(part));
@@ -2317,6 +2314,14 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   const publicAuthor = handleLower === "elonmusk"
     ? "马斯克 · Elon Musk"
     : (englishName || strippedName || `@${handle}`);
+  const postPreviewText = originalText
+    ? (originalText.length > 180 ? `${originalText.slice(0, 177)}…` : originalText)
+    : "";
+  // Put the author first so WeChat / Moments link cards identify whose post it is
+  // before showing the original post text.
+  const previewTitle = postPreviewText
+    ? `${publicAuthor}：${postPreviewText}`
+    : `${publicAuthor} · Ooglex`;
   const showVerifiedBadge = Boolean(handle);
   const verifiedBadgeHtml = showVerifiedBadge
     ? '<span class="verified-badge" aria-label="Verified" title="Verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified-blue" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path class="verified-check" d="M7.35 12.35 10.1 15.1 16.65 8.55"/></svg></span>'
