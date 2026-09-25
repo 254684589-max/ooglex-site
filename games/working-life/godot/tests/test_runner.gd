@@ -35,7 +35,7 @@ func _ready() -> void:
 	player = GameManager.player
 	ui = main.ui
 	var groups := ["startup", "data", "economy", "time", "skills", "first_day", "job_payment", "monthly_job",
-		"housing", "investment", "business", "npc", "events", "transport", "collapse", "carry", "ui_windows",
+		"housing", "investment", "business", "npc", "character", "events", "transport", "collapse", "carry", "ui_windows",
 		"navigation", "save_load", "endings", "journey"]
 	for g in groups:
 		if not only.is_empty() and not only.has(g):
@@ -128,6 +128,64 @@ func set_clock(hour: float) -> void:
 
 
 # ================================================================ 启动与数据
+## 人物：骨架、蒙皮、步态（屈膝、脚着地）、坐姿、换衣服改色、几何缓存
+func test_character() -> void:
+	var m := CharacterModel.new()
+	m.accent_strip = false
+	main.add_child(m)
+	m.global_position = Vector3(0, -50, 0)
+	await frames(1)
+	check(m.skeleton != null and m.skeleton.get_bone_count() == 17, "人物骨架 17 根骨头")
+	var body := m.skeleton.get_node("Body") as MeshInstance3D
+	check(body != null and (body.mesh.surface_get_format(0) & Mesh.ARRAY_FORMAT_BONES) != 0, "身体是一张带骨骼权重的蒙皮网格")
+	check(m.skeleton.get_node_or_null("Glow") == null, "没有发光零件时只有 1 个网格（1 次绘制）")
+	var a := AnimationController.new(m)
+	for i in 90:
+		a.update(1.0 / 60.0, 0.0)
+	var feet := func() -> float:
+		var y1 := m.skeleton.get_bone_global_pose(CharacterModel.FOOT_L).origin.y
+		var y2 := m.skeleton.get_bone_global_pose(CharacterModel.FOOT_R).origin.y
+		return minf(y1, y2)
+	check(absf(feet.call() - CharacterModel.ANKLE_H) < 0.03, "站立时脚踝在地面以上约 8 厘米（%.3f）" % feet.call())
+	var knee_min := 0.0
+	var foot_min := 10.0
+	var foot_max := -10.0
+	var hip_min := 10.0
+	var hip_max := -10.0
+	for i in 180:
+		a.update(1.0 / 60.0, 1.5)
+		knee_min = minf(knee_min, m.skeleton.get_bone_pose_rotation(CharacterModel.LOWERLEG_L).get_euler().x)
+		var f: float = feet.call()
+		foot_min = minf(foot_min, f)
+		foot_max = maxf(foot_max, f)
+		var hy := m.skeleton.get_bone_global_pose(CharacterModel.HIPS).origin.y
+		hip_min = minf(hip_min, hy)
+		hip_max = maxf(hip_max, hy)
+	check(a.state == AnimationController.State.WALK, "慢走状态为 Walk")
+	check(knee_min < -0.5 and knee_min > -1.3, "走路时摆动腿屈膝 30°–75°（%.0f°）" % rad_to_deg(-knee_min))
+	check(foot_min > 0.04 and foot_max < 0.13, "走路时始终有一只脚着地（脚踝高度 %.3f–%.3f）" % [foot_min, foot_max])
+	check(hip_max - hip_min > 0.01 and hip_max - hip_min < 0.08, "走路时骨盆上下起伏 %.1f 厘米" % ((hip_max - hip_min) * 100.0))
+	for i in 120:
+		a.update(1.0 / 60.0, 7.6, true, true)
+	check(a.state == AnimationController.State.RUN and m.skeleton.get_bone_pose_rotation(CharacterModel.LOWERLEG_L).get_euler().x < 0.0, "奔跑状态为 Run")
+	a.set_sitting(true)
+	for i in 90:
+		a.update(1.0 / 60.0, 0.0)
+	check(m.skeleton.get_bone_global_pose(CharacterModel.HIPS).origin.y < 0.6, "坐下时骨盆降到椅面高度")
+	m.set_clothes(Color(0.9, 0.1, 0.1), Color(0.1, 0.9, 0.1))
+	check(m._buf.cols.has(Color(0.9, 0.1, 0.1)) and m._buf.cols.has(Color(0.1, 0.9, 0.1)), "换衣服后上衣和裤子颜色更新")
+	var m2 := CharacterModel.new()
+	m2.accent_strip = false
+	m2.shirt_color = Color(0.2, 0.2, 0.9)
+	main.add_child(m2)
+	await frames(1)
+	check(m2._buf.verts.size() == m._buf.verts.size() and m2._buf.cols.has(Color(0.2, 0.2, 0.9)) and not m2._buf.cols.has(Color(0.9, 0.1, 0.1)), "同款体型复用几何缓存，颜色各自独立")
+	check(player.model.skeleton != null and player.model.skeleton.get_bone_count() == 17, "玩家使用新的骨骼人物")
+	m.queue_free()
+	m2.queue_free()
+	await frames(1)
+
+
 func test_startup() -> void:
 	check(ui.menu.visible, "启动后显示主菜单")
 	check(not GameManager.playing, "主菜单时不在游玩状态")

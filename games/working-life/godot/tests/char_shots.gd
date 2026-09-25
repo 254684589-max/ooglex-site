@@ -34,6 +34,20 @@ func _ready() -> void:
 		cam.look_at_from_position(target + off, target)
 		await _wait(8)
 		await _shot(spec[0], 900)
+	# 路人：找离玩家最近的几个行人，从侧前方拍全身
+	var crowd := main.find_children("*", "Crowd", true, false)
+	if not crowd.is_empty():
+		var walkers: Array = (crowd[0] as Crowd).walkers.filter(func(w: Dictionary) -> bool: return (w["node"] as Node3D).visible)
+		walkers.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return (a["node"] as Node3D).global_position.distance_to(p.global_position) < (b["node"] as Node3D).global_position.distance_to(p.global_position))
+		for i in mini(3, walkers.size()):
+			var n: Node3D = walkers[i]["node"]
+			for f in 3:
+				var fwd := -n.global_basis.z
+				var side := n.global_basis.x
+				var c := n.global_position + Vector3(0, 0.9, 0)
+				cam.look_at_from_position(c + fwd * 3.2 + side * 2.4 + Vector3(0, 0.4, 0), c)
+				await _wait(9)
+				await _shot("crowd%d_%d" % [i, f], 900)
 	get_tree().quit()
 
 
