@@ -523,9 +523,9 @@
   <div class="share-sheet" id="share-sheet" hidden>
     <div class="share-backdrop" data-share-close="1"></div>
     <section class="share-panel" role="dialog" aria-modal="true" aria-labelledby="share-title">
-      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">原帖链接 · 图片卡片 · 微信分享</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
+      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">微信卡片 · 原帖链接 · 图片卡片</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
-        <button type="button" id="share-wechat">打开分享页</button>
+        <button type="button" id="share-wechat">微信卡片分享</button>
         <button type="button" id="share-video" hidden>分享视频</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
@@ -1467,7 +1467,7 @@
   function singlePostUrl(post){
     var handle=current&&current.handle?String(current.handle):"";
     var id=String(post&&post.id||"");
-    return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(id)+"?v=20260921e";
+    return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(id)+"?wx=20260925a";
   }
   async function copyText(value){
     if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -2399,7 +2399,7 @@
   });
   document.getElementById("share-wechat").addEventListener("click",function(){
     if(!activeSharePost)return;
-    shareStatus.textContent="";
+    shareStatus.textContent="正在打开微信卡片分享页…";
     window.location.href=singlePostUrl(activeSharePost);
   });
 
