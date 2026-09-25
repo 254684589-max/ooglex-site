@@ -1389,6 +1389,15 @@
     "energy": -20,
     "time": 120
    }
-  }
- ]
+  },
+    {"id": "g_rider_1", "type": "npc", "giver": "daliu", "title": "骑手江湖 · 第一单", "desc": "大刘拍拍你的肩：「想多挣点？下班以后跑跑外卖。手机上开「零工」，先跑三单试试手——记住，别闯红灯。」", "objectives": [{"type": "gig", "gig": "delivery", "count": 3, "text": "完成 3 单外卖"}, {"type": "talk", "npc": "daliu", "text": "跟大刘说说感受"}], "reward": {"cash": 80, "rel": {"daliu": 10}, "skill_xp": {"fitness": 20}}},
+    {"id": "g_rider_2", "type": "npc", "giver": "daliu", "title": "骑手江湖 · 暴雨夜", "requires": {"quest_done": "g_rider_1"}, "desc": "「下雨天单子多、补贴高，可路也滑。」大刘递给你一件雨衣，「在雨天跑两单，稳一点，安全第一。」", "objectives": [{"type": "gig", "gig": "delivery", "rain": true, "count": 2, "text": "下雨天完成 2 单外卖"}], "reward": {"cash": 150, "mood": 5, "rel": {"daliu": 12}}},
+    {"id": "g_rider_3", "type": "npc", "giver": "daliu", "title": "骑手江湖 · 金牌骑手", "requires": {"quest_done": "g_rider_2"}, "desc": "「站点缺个带新人的。」大刘说，「攒够十个五星好评，我把你推荐上去。」", "objectives": [{"type": "gig", "gig": "delivery", "min_stars": 5, "count": 10, "text": "拿到 10 个五星外卖好评"}, {"type": "talk", "npc": "daliu", "text": "回去找大刘"}], "reward": {"cash": 600, "rep": 5, "rel": {"daliu": 15}, "skill_xp": {"fitness": 60}}},
+    {"id": "g_ride_1", "type": "npc", "giver": "chenmo", "title": "新澜出行 · 第一批司机", "requires": {"has_car": true}, "desc": "陈默难得多说了几句：「我负责的网约车 APP『新澜出行』刚上线，想请你当第一批司机。跑三单，告诉我哪里不好用。」", "objectives": [{"type": "gig", "gig": "ride", "count": 3, "text": "完成 3 单网约车"}, {"type": "talk", "npc": "chenmo", "text": "给陈默提意见"}], "reward": {"cash": 200, "rel": {"chenmo": 12}}},
+    {"id": "g_ride_2", "type": "npc", "giver": "chenmo", "title": "新澜出行 · 深夜的乘客", "requires": {"quest_done": "g_ride_1"}, "desc": "「深夜的单最少，但总有人要回家——下夜班的护士、赶末班车没赶上的学生。」陈默想知道夜里跑车是什么感觉。", "objectives": [{"type": "gig", "gig": "ride", "night": true, "count": 1, "text": "在 23:00～5:00 完成 1 单网约车"}], "reward": {"cash": 180, "mood": 8, "rel": {"chenmo": 8}}},
+    {"id": "g_ride_3", "type": "npc", "giver": "chenmo", "title": "新澜出行 · 零投诉", "requires": {"quest_done": "g_ride_2"}, "desc": "陈默在做「平稳驾驶」功能，需要真实数据：「跑 8 单五星——不撞、不急刹、不迟到。乘客舒服，评分自然就高。」", "objectives": [{"type": "gig", "gig": "ride", "min_stars": 5, "count": 8, "text": "拿到 8 个五星网约车好评"}, {"type": "talk", "npc": "chenmo", "text": "把数据交给陈默"}], "reward": {"cash": 800, "rep": 5, "rel": {"chenmo": 15}}},
+    {"id": "g_stream_1", "type": "npc", "giver": "suqing", "title": "直播间 · 第一次开播", "desc": "苏晴在直播间画画已经有几百个粉丝了。「你说话挺有意思的，也试试？」她教你怎么架手机。回家开一次播，聊什么都行。", "objectives": [{"type": "stream", "count": 1, "text": "在家开播一次"}, {"type": "talk", "npc": "suqing", "text": "告诉苏晴开播感受"}], "reward": {"rel": {"suqing": 10}, "skill_xp": {"communication": 40}}},
+    {"id": "g_stream_2", "type": "npc", "giver": "suqing", "title": "直播间 · 一千个粉丝", "requires": {"quest_done": "g_stream_1"}, "desc": "「粉丝过一千，就会有人来找你合作了。」苏晴说，「多播几次，家里布置得好看一点，镜头里也好看。」", "objectives": [{"type": "followers", "count": 1000, "text": "粉丝达到 1000"}], "reward": {"cash": 500, "rep": 3, "rel": {"suqing": 10}}},
+    {"id": "g_stream_3", "type": "npc", "giver": "chenshu", "title": "直播间 · 带货首秀", "requires": {"quest_done": "g_stream_2"}, "desc": "陈叔便利店进了一批新口味的辣条：「听说你在网上有点名气了？帮叔带带货，一场卖到五百块，叔给你包个大红包！」", "objectives": [{"type": "stream", "content": "sell", "min_income": 500, "count": 1, "text": "一场直播带货收入 ¥500 以上"}, {"type": "talk", "npc": "chenshu", "text": "回便利店找陈叔"}], "reward": {"cash": 1500, "rep": 5, "rel": {"chenshu": 15}}}
+  ]
 }

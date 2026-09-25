@@ -367,6 +367,8 @@ func _bump(strength: float) -> void:
 		return
 	_bump_cd = 0.6
 	AudioManager.play_sfx("place", -2.0, 0.6)
+	if driver != null:
+		GigManager.on_bump()
 	if driver != null and strength > 8.0:
 		PlayerManager.change("mood", -2.0)
 		Events.say("小心开车！", "warn")

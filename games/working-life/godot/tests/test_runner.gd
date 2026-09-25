@@ -35,7 +35,7 @@ func _ready() -> void:
 	player = GameManager.player
 	ui = main.ui
 	var groups := ["startup", "data", "economy", "time", "skills", "first_day", "job_payment", "monthly_job",
-		"housing", "property", "investment", "business", "npc", "romance", "character", "events", "transport", "collapse", "carry", "ui_windows",
+		"housing", "property", "investment", "business", "npc", "romance", "gigs", "character", "events", "transport", "collapse", "carry", "ui_windows",
 		"driving", "navigation", "save_load", "endings", "journey"]
 	for g in groups:
 		if not only.is_empty() and not only.has(g):
@@ -338,6 +338,115 @@ func test_romance() -> void:
 	main.load_slot(3)
 	await frames(5)
 	check(RomanceManager.partner == snap["p"] and RomanceManager.status_of("chenmo") == snap["s"] and RomanceManager.affection_of("chenmo") == snap["a"] and RomanceManager.affection_of("suqing") == snap["su"], "读档：恋爱状态与好感都在")
+
+
+## 零工：外卖、网约车、直播，评分、等级、任务线、存档
+func _run_order() -> void:
+	for step in 2:
+		var t := GigManager.target()
+		if t.is_empty():
+			return
+		if player.vehicle != null:
+			player.vehicle.place(t["pos"], player.vehicle.rotation.y)
+			await get_tree().physics_frame
+		else:
+			player.teleport(t["pos"] + Vector3(0, 0.1, 0), 0.0)
+		await frames(24)
+
+
+func test_gigs() -> void:
+	await new_game()
+	fresh()
+	player.set_carry("")
+	check(GigManager.accept_block("ride").begins_with("要有自己的车"), "没有车不能跑网约车")
+	QuestManager.start("g_rider_1")
+	var c0 := EconomyManager.cash
+	var msg := GigManager.accept("delivery")
+	check(GigManager.has_order() and GigManager.order["stage"] == "pickup" and GigManager.FOOD.has(String(GigManager.order["from"])), "接外卖单：%s" % msg.left(24))
+	var marker = GameManager.lookup("objective_marker")
+	marker._resolve()
+	check(marker.has_target and marker.target_pos.distance_to(GigManager.target()["pos"]) < 0.1, "地图箭头指向取餐点")
+	check(ui.carry_status.text.begins_with("外卖订单") or GigManager.status_text().begins_with("外卖订单"), "屏幕上方显示订单状态：%s" % GigManager.status_text())
+	check(GigManager.accept_block("delivery") != "", "同一时间只能接一单")
+	var t := GigManager.target()
+	player.teleport(t["pos"] + Vector3(0, 0.1, 0), 0.0)
+	await frames(24)
+	check(GigManager.order.get("stage", "") == "dropoff", "到餐馆取到餐")
+	t = GigManager.target()
+	player.teleport(t["pos"] + Vector3(0, 0.1, 0), 0.0)
+	await frames(24)
+	check(not GigManager.has_order() and GigManager.done_count("delivery") == 1 and GigManager.rating("delivery") == 5.0 and EconomyManager.cash > c0, "准时送达：五星，收入 %s" % Fmt.yuan(EconomyManager.cash - c0))
+	# 迟到：评分下降
+	GigManager.accept("delivery")
+	GigManager.order["deadline"] = TimeManager.total_minutes - 20.0
+	await _run_order()
+	check(GigManager.done_count("delivery") == 2 and GigManager.rating("delivery") == 3.5, "超时 20 分钟送达：2 星（平均 %.1f）" % GigManager.rating("delivery"))
+	await _run_order()
+	GigManager.accept("delivery")
+	await _run_order()
+	check(QuestManager.is_active("g_rider_1") and float(QuestManager.states["g_rider_1"]["progress"][0]) >= 3.0, "任务「骑手江湖 · 第一单」：3 单外卖完成")
+	# 取消与超时
+	GigManager.accept("delivery")
+	GigManager.cancel()
+	check(not GigManager.has_order() and GigManager.done_count("delivery") == 4, "取消订单：记一个差评")
+	GigManager.accept("delivery")
+	GigManager.order["deadline"] = TimeManager.total_minutes - 130.0
+	await frames(24)
+	check(not GigManager.has_order(), "超时太久顾客自动取消")
+	# 等级
+	GigManager.stats["delivery"] = {"done": 20, "stars": 96, "earned": 0}
+	check(GigManager.level("delivery") == 1 and GigManager.level_name("delivery") == "熟手", "20 单、平均 4.8 星：升为熟手（收入 ×1.2）")
+	# 网约车：必须开自己的车接送
+	EconomyManager.earn(100000, "其他", "测试", true)
+	VehicleManager.buy("sedan")
+	var car := VehicleManager.node("car1")
+	car.enter(player)
+	QuestManager.start("g_ride_1")
+	msg = GigManager.accept("ride")
+	check(GigManager.has_order() and GigManager.order["gig"] == "ride" and GigManager._passenger != null, "接网约车单，上车点出现乘客：%s" % msg.left(20))
+	var c1 := EconomyManager.cash
+	await _run_order()
+	check(GigManager.done_count("ride") == 1 and EconomyManager.cash > c1, "开车接到乘客并送达：收入 %s" % Fmt.yuan(EconomyManager.cash - c1))
+	GigManager.accept("ride")
+	var t2 := GigManager.target()
+	car.place(t2["pos"], car.rotation.y)
+	await frames(24)
+	GigManager.order["bumps"] = 2
+	await _run_order()
+	check(int(GigManager.stats["ride"]["stars"]) == 5 + 3, "路上撞了两次：乘客只给 3 星")
+	car.exit()
+	GigManager.accept("ride")
+	var t3 := GigManager.target()
+	player.teleport(t3["pos"] + Vector3(0, 0.1, 0), 0.0)
+	await frames(24)
+	check(GigManager.order.get("stage", "") == "pickup", "步行到上车点不算，网约车必须开车去")
+	GigManager.cancel()
+	# 直播
+	check(GigManager.stream_block("chat") != "", "没有住处不能开播")
+	HousingManager.book_hotel(1)
+	player.teleport(GameManager.location_front("hotel") + Vector3(0, 0.1, 0), 0.0)
+	await frames(3)
+	QuestManager.start("g_stream_1")
+	var t0 := TimeManager.total_minutes
+	msg = GigManager.stream("chat")
+	check(GigManager.followers > 0 and TimeManager.total_minutes - t0 >= 119.0 and GigManager.done_count("stream") == 1, "在家开播：%s" % msg.left(26))
+	check(GigManager.stream_block("sell").contains("500"), "粉丝不到 500 不能带货")
+	GigManager.followers = 8000
+	QuestManager.states["g_stream_1"] = {"status": "done", "progress": [1.0, 1.0], "day": TimeManager.day}
+	QuestManager.start("g_stream_2")
+	QuestManager.check_conditions()
+	check(QuestManager.is_done("g_stream_2"), "粉丝过 1000：完成「直播间 · 一千个粉丝」")
+	PlayerManager.set_stat("energy", 90)
+	var c2 := EconomyManager.cash
+	GigManager.stream("sell")
+	check(EconomyManager.cash - c2 >= 500, "8000 粉丝带货一场收入 %s" % Fmt.yuan(EconomyManager.cash - c2))
+	# 存档
+	var snap := {"f": GigManager.followers, "d": GigManager.done_count("delivery"), "r": GigManager.done_count("ride")}
+	check(SaveManager.save(3), "保存")
+	GigManager.reset()
+	main.load_slot(3)
+	await frames(5)
+	check(GigManager.followers == snap["f"] and GigManager.done_count("delivery") == snap["d"] and GigManager.done_count("ride") == snap["r"], "读档：粉丝与接单记录都在")
 
 
 ## 人物：骨架、蒙皮、步态（屈膝、脚着地）、坐姿、换衣服改色、几何缓存

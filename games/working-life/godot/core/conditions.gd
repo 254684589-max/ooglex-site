@@ -106,6 +106,15 @@ static func _check_one(key: String, v: Variant) -> bool:
 			return not GameManager.has_flag(String(v))
 		"quest_done":
 			return QuestManager.is_done(String(v))
+		"has_car":
+			return VehicleManager.has_car() == bool(v)
+		"followers_min":
+			return GigManager.followers >= int(v)
+		"gig_done_min":
+			for k in v:
+				if GigManager.done_count(String(k)) < int(v[k]):
+					return false
+			return true
 	push_warning("Conditions: 未知条件 %s" % key)
 	return true
 

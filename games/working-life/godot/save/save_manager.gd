@@ -80,6 +80,7 @@ func build() -> Dictionary:
 		"business": BusinessManager.to_dict(),
 		"vehicles": VehicleManager.to_dict(),
 		"romance": RomanceManager.to_dict(),
+		"gigs": GigManager.to_dict(),
 	}
 	var p := GameManager.player
 	if p != null and p.has_method("to_save_dict"):
@@ -123,6 +124,7 @@ func apply(d: Dictionary) -> bool:
 	BusinessManager.from_dict(d.get("business", {}))
 	VehicleManager.from_dict(d.get("vehicles", {}))
 	RomanceManager.from_dict(d.get("romance", {}))
+	GigManager.from_dict(d.get("gigs", {}))
 	var p := GameManager.player
 	if p != null and p.has_method("apply_save_dict"):
 		p.apply_save_dict(d.get("player", {}))
