@@ -21,6 +21,10 @@ var sway := 0.0
 var aiming := false
 
 var target: Node3D
+## 开车时跟随的车（镜头更高更远，车在动时自动转到车后方）
+var vehicle: Node3D = null
+var _walk_distance := 4.6
+var _manual_t := 0.0
 var _yaw_node: Node3D
 var _pitch_node: Node3D
 var _arm: SpringArm3D
@@ -65,6 +69,25 @@ func set_target(t: Node3D) -> void:
 	snap()
 
 
+func follow_vehicle(car: Node3D) -> void:
+	if car != null:
+		if vehicle == null:
+			_walk_distance = distance
+		vehicle = car
+		target = car
+		if car is CollisionObject3D:
+			_arm.add_excluded_object(car.get_rid())
+		distance = 7.5
+		yaw = car.rotation.y
+		pitch = -0.26
+		snap()
+	else:
+		if vehicle is CollisionObject3D and is_instance_valid(vehicle):
+			_arm.remove_excluded_object(vehicle.get_rid())
+		vehicle = null
+		distance = _walk_distance
+
+
 func snap() -> void:
 	if target != null:
 		global_position = target.global_position + Vector3(0, height, 0)
@@ -72,6 +95,7 @@ func snap() -> void:
 
 
 func rotate_by(delta_yaw: float, delta_pitch: float) -> void:
+	_manual_t = 1.5
 	yaw -= delta_yaw
 	pitch = clampf(pitch - delta_pitch, min_pitch, max_pitch)
 	_apply_rotation()
@@ -89,7 +113,7 @@ func handle_touch_drag(rel: Vector2) -> void:
 
 
 func zoom(step: float) -> void:
-	distance = clampf(distance + step, min_distance, max_distance)
+	distance = clampf(distance + step, min_distance, max_distance + (4.0 if vehicle != null else 0.0))
 
 
 ## 水平面上镜头的前方向（玩家移动以此为参考）
@@ -112,6 +136,15 @@ func _process(delta: float) -> void:
 	if target == null:
 		return
 	var goal := target.global_position + Vector3(0, height, 0)
+	if vehicle != null and is_instance_valid(vehicle):
+		goal = vehicle.global_position + Vector3(0, 2.2, 0)
+		# 车在开、玩家一会儿没拖视角：镜头慢慢转到车后方
+		_manual_t = maxf(_manual_t - delta, 0.0)
+		var sp := absf(float(vehicle.get("speed")))
+		if _manual_t <= 0.0 and sp > 2.0:
+			var behind: float = vehicle.rotation.y + (PI if float(vehicle.get("speed")) < -2.0 else 0.0)
+			yaw = lerp_angle(yaw, behind, clampf(delta * (1.0 + sp * 0.12), 0.0, 1.0))
+			pitch = lerpf(pitch, -0.26, clampf(delta, 0.0, 1.0))
 	global_position = global_position.lerp(goal, clampf(delta * follow_speed, 0.0, 1.0))
 	var want := aim_distance if aiming else distance
 	_arm.spring_length = lerpf(_arm.spring_length, want, clampf(delta * 8.0, 0.0, 1.0))

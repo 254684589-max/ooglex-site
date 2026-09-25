@@ -1,6 +1,7 @@
 class_name StreetTraffic
 extends Node3D
-## 地面交通：汽车沿道路右侧车道行驶，跟车保持车距，玩家挡在前面会减速停车（纯视觉，不参与碰撞）。
+## 地面交通：汽车沿道路右侧车道行驶，跟车保持车距，玩家或玩家的车挡在前面会减速停车（纯视觉，不参与物理碰撞；
+## 玩家开的车与车流的碰撞由 PlayerCar 按距离处理）。
 ## 车的几何体与路边停车共用 BuildingKit.car_geometry；每种车漆一个网格，所有车共享。
 
 const LANE_OFF := 2.1
@@ -60,9 +61,12 @@ func _place(d: Dictionary) -> void:
 
 func _process(delta: float) -> void:
 	var dens := WeatherManager.crowd_factor() * 0.4 + 0.6
-	var pp := Vector3(9999, 0, 9999)
+	# 障碍：玩家本人 + 玩家的私家车（停在路边或正在开）
+	var obstacles: Array = []
 	if GameManager.player != null:
-		pp = GameManager.player.global_position
+		obstacles.append(GameManager.player.global_position)
+	for car in VehicleManager.nodes():
+		obstacles.append((car as Node3D).global_position)
 	for i in cars.size():
 		var d: Dictionary = cars[i]
 		var n: Node3D = d["node"]
@@ -83,12 +87,14 @@ func _process(delta: float) -> void:
 			var gap := (float(o["t"]) - t) * dir
 			if gap > 0.0 and gap < ahead:
 				ahead = gap
-		# 玩家站在车道上：刹车
-		var lateral := absf((pp.z if bool(d["x"]) else pp.x) - _lane_pos(d))
-		if lateral < 2.2:
-			var pgap := ((pp.x if bool(d["x"]) else pp.z) - t) * dir
-			if pgap > 0.0 and pgap < ahead + 3.0:
-				ahead = minf(ahead, pgap + 2.5)
+		# 玩家或玩家的车在车道上：刹车
+		for op in obstacles:
+			var pp: Vector3 = op
+			var lateral := absf((pp.z if bool(d["x"]) else pp.x) - _lane_pos(d))
+			if lateral < 2.2:
+				var pgap := ((pp.x if bool(d["x"]) else pp.z) - t) * dir
+				if pgap > 0.0 and pgap < ahead + 3.0:
+					ahead = minf(ahead, pgap + 2.5)
 		if ahead < GAP:
 			want = 0.0
 		elif ahead < GAP * 2.5:

@@ -1,0 +1,65 @@
+{
+  "note": "可购买的私家车。price 为全款售价（元）；resale 为转卖回收比例；monthly 为每月 1 日扣的保险 + 停车 + 保养；fuel_per_km 为每公里油费（下车时结算）；top_speed 为最高车速（米/秒）；accel 为加速度（米/秒²）；steer 为最大转向角（弧度）；prestige 为体面度（影响面试与声望，与住房的体面度相加）；shape 为车身造型；paints 为可选车漆。",
+  "list": [
+    {
+      "id": "hatch",
+      "name": "二手两厢小车",
+      "price": 18000,
+      "resale": 0.6,
+      "monthly": 300,
+      "fuel_per_km": 0.6,
+      "top_speed": 22.0,
+      "accel": 5.0,
+      "steer": 0.62,
+      "prestige": 0,
+      "shape": "hatch",
+      "paints": ["#c9ccd1", "#b33a2e", "#2f5f8a"],
+      "desc": "开了八年的小两厢，空调时灵时不灵。但下雨天再也不用挤公交了。"
+    },
+    {
+      "id": "sedan",
+      "name": "家用轿车",
+      "price": 89000,
+      "resale": 0.6,
+      "monthly": 900,
+      "fuel_per_km": 0.8,
+      "top_speed": 30.0,
+      "accel": 6.5,
+      "steer": 0.58,
+      "prestige": 2,
+      "shape": "sedan",
+      "paints": ["#e6e7e9", "#1d1f24", "#6d737c", "#16305e"],
+      "desc": "安静、省心、后排宽敞。面试的时候开过去，至少不丢人。"
+    },
+    {
+      "id": "suv",
+      "name": "豪华 SUV",
+      "price": 260000,
+      "resale": 0.6,
+      "monthly": 2500,
+      "fuel_per_km": 1.4,
+      "top_speed": 33.0,
+      "accel": 7.0,
+      "steer": 0.52,
+      "prestige": 5,
+      "shape": "suv",
+      "paints": ["#111214", "#f1f1ef", "#3e4a3d", "#5b1a1f"],
+      "desc": "坐得高、看得远，真皮座椅加全景天窗。停在写字楼门口，保安会主动帮你指车位。"
+    },
+    {
+      "id": "sports",
+      "name": "双门跑车",
+      "price": 880000,
+      "resale": 0.6,
+      "monthly": 6000,
+      "fuel_per_km": 2.0,
+      "top_speed": 44.0,
+      "accel": 10.0,
+      "steer": 0.5,
+      "prestige": 8,
+      "shape": "sports",
+      "paints": ["#c8102e", "#f5c400", "#0a0a0c", "#e8e8ea"],
+      "desc": "百公里加速 3.9 秒。从火车站拖着行李箱走出来的那天，你没想过会有这一天。"
+    }
+  ]
+}

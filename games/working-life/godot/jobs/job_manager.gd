@@ -321,7 +321,7 @@ func interview_chance(id: String, answer_avg: float) -> float:
 	var c := (0.5 if basic else 0.3) + answer_avg / 10.0 * (0.4 if basic else 0.45)
 	c += SkillManager.level("communication") * 0.02
 	c += PlayerManager.outfit_interview_bonus() * 0.01
-	c += HousingManager.prestige() * 0.005
+	c += (HousingManager.prestige() + VehicleManager.prestige()) * 0.005
 	c += PlayerManager.reputation * 0.003
 	c += (PlayerManager.mood - 60.0) * 0.002
 	c -= maxf(0.0, PlayerManager.stress - 60.0) * 0.004

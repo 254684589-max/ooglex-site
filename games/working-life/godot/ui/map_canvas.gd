@@ -86,6 +86,15 @@ func _draw() -> void:
 	if marker != null and bool(marker.has_target):
 		var mp := _to_map(marker.target_pos)
 		draw_colored_polygon(PackedVector2Array([mp + Vector2(0, -9), mp + Vector2(9, 0), mp + Vector2(0, 9), mp + Vector2(-9, 0)]), UIKit.MAGENTA)
+	# 我的车（没在开的）：黄色圆角方块 +「车」字
+	for car in VehicleManager.nodes():
+		var c3 := car as PlayerCar
+		if c3.driver != null:
+			continue
+		var cp := _to_map(c3.global_position)
+		draw_rect(Rect2(cp - Vector2(9, 9), Vector2(18, 18)), Color(0.1, 0.08, 0.02, 0.9))
+		draw_rect(Rect2(cp - Vector2(9, 9), Vector2(18, 18)), UIKit.YELLOW, false, 2.0)
+		draw_string(_font, cp + Vector2(-7, 6), "车", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, UIKit.YELLOW)
 	# 玩家
 	var pl := GameManager.player
 	if pl != null:

@@ -78,6 +78,7 @@ func build() -> Dictionary:
 		"events": EventManager.to_dict(),
 		"investment": InvestmentManager.to_dict(),
 		"business": BusinessManager.to_dict(),
+		"vehicles": VehicleManager.to_dict(),
 	}
 	var p := GameManager.player
 	if p != null and p.has_method("to_save_dict"):
@@ -119,6 +120,7 @@ func apply(d: Dictionary) -> bool:
 	EventManager.from_dict(d.get("events", {}))
 	InvestmentManager.from_dict(d.get("investment", {}))
 	BusinessManager.from_dict(d.get("business", {}))
+	VehicleManager.from_dict(d.get("vehicles", {}))
 	var p := GameManager.player
 	if p != null and p.has_method("apply_save_dict"):
 		p.apply_save_dict(d.get("player", {}))

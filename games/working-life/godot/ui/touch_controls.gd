@@ -3,7 +3,7 @@ extends Control
 ## 手机 / 平板触屏操作：
 ##   左下：虚拟摇杆（移动）
 ##   右半屏空白处拖动：转视角
-##   右下：交互(E)、使用(F)、跳、跑（切换）
+##   右下：交互(E)、使用(F)、跳、跑（切换）；开车时变为「下车」「手刹」，摇杆上推加速、下拉刹车、左右转向
 ##   右上：手机、地图、菜单
 ## 按钮通过 Input.parse_input_event 发出与键盘相同的输入动作，玩家脚本无需区分来源。
 
@@ -26,6 +26,15 @@ func _ready() -> void:
 	_font = UIKit.font()
 	resized.connect(_layout)
 	_layout()
+
+
+var _was_driving := false
+
+
+func _process(_delta: float) -> void:
+	if VehicleManager.is_driving() != _was_driving:
+		_was_driving = VehicleManager.is_driving()
+		queue_redraw()
 
 
 func _layout() -> void:
@@ -53,6 +62,8 @@ func _mk(center: Vector2, radius: float, act: String, text: String, col: Color) 
 func _hit_button(pos: Vector2) -> int:
 	for i in _buttons.size():
 		var b: Dictionary = _buttons[i]
+		if VehicleManager.is_driving() and String(b["action"]) in ["sprint_toggle", "use"]:
+			continue
 		if pos.distance_to(b["center"]) <= float(b["radius"]) * 1.15:
 			return i
 	return -1
@@ -154,22 +165,34 @@ func _release_all() -> void:
 func _draw() -> void:
 	if not GameManager.playing:
 		return
+	var driving := VehicleManager.is_driving()
 	# 摇杆
 	var jc := _joy_center if _joy_index >= 0 else Vector2(110, size.y - 120)
 	draw_circle(jc, JOY_RADIUS, Color(1, 1, 1, 0.1))
 	draw_arc(jc, JOY_RADIUS, 0, TAU, 40, Color(1, 1, 1, 0.35), 2.0)
 	draw_circle(jc + _joy_vec * JOY_RADIUS, 28.0, Color(1, 1, 1, 0.4 if _joy_index >= 0 else 0.22))
 	if _joy_index < 0:
-		_draw_text_centered(jc + Vector2(0, JOY_RADIUS + 20), "移动", 15, Color(1, 1, 1, 0.55))
+		_draw_text_centered(jc + Vector2(0, JOY_RADIUS + 20), "上推加速 · 下拉刹车" if driving else "移动", 15, Color(1, 1, 1, 0.55))
 	# 按钮
 	for b in _buttons:
+		if driving and String(b["action"]) in ["sprint_toggle", "use"]:
+			continue
 		var c: Vector2 = b["center"]
 		var r: float = b["radius"]
 		var col: Color = b["color"]
 		var active := int(b["index"]) >= 0 or (String(b["action"]) == "sprint_toggle" and _sprint_on)
 		draw_circle(c, r, Color(col.r, col.g, col.b, 0.55 if active else 0.24))
 		draw_arc(c, r, 0, TAU, 36, Color(col.r, col.g, col.b, 0.9), 2.0)
-		_draw_text_centered(c + Vector2(0, 6), String(b["label"]), 17 if r > 30 else 13, Color(1, 1, 1, 0.95))
+		var text := String(b["label"])
+		if driving:
+			match String(b["action"]):
+				"interact":
+					text = "下车"
+				"jump":
+					text = "手刹"
+				"sprint_toggle", "use":
+					continue
+		_draw_text_centered(c + Vector2(0, 6), text, 17 if r > 30 else 13, Color(1, 1, 1, 0.95))
 
 
 func _draw_text_centered(pos: Vector2, text: String, fs: int, col: Color) -> void:
