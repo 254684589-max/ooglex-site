@@ -2341,7 +2341,7 @@ function techLeaderShareResponse(handle, post, requestUrl) {
   );
 
   const html = `<!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -2357,6 +2357,11 @@ function techLeaderShareResponse(handle, post, requestUrl) {
 <meta property="og:image:secure_url" content="${shareHtmlEscape(socialImage)}">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
+<meta property="og:image:type" content="image/png">
+<link rel="image_src" href="${shareHtmlEscape(socialImage)}">
+<meta itemprop="name" content="${shareHtmlEscape(previewTitle)}">
+<meta itemprop="description" content="${shareHtmlEscape(description)}">
+<meta itemprop="image" content="${shareHtmlEscape(socialImage)}">
 ${video ? `<meta property="og:video" content="${shareHtmlEscape(video)}">
 <meta property="og:video:secure_url" content="${shareHtmlEscape(video)}">
 <meta property="og:video:type" content="video/mp4">
@@ -2379,7 +2384,7 @@ h1{margin:16px 0 10px;font-size:26px;line-height:1.35;white-space:pre-wrap;word-
 .verified-badge .verified-blue{fill:#1d9bf0}
 .verified-badge .verified-check{fill:none;stroke:#fff;stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round}
 .a{color:#655f59}.desc-author{display:inline-flex;align-items:center;gap:6px}.a .verified-badge{width:18px;height:18px;vertical-align:-3px}
-.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
+.share-guide{margin:0 0 20px;padding:14px 16px;border:1px solid #d6c6b6;border-radius:12px;background:#fff4e8;color:#51473f}.share-guide b{display:block;margin-bottom:4px;font-size:15px}.share-guide span{display:block;font-size:13px;line-height:1.6}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.links a{padding:10px 14px;border:1px solid #ded5cb;border-radius:10px;color:#2a6fa4;text-decoration:none}
 .preview{display:block;width:100%;max-height:520px;object-fit:cover;margin-top:18px;border-radius:12px;background:#000}
 video.preview{object-fit:contain}
 .media-note{margin-top:8px;color:#8b837b;font-size:12px}
@@ -2388,6 +2393,7 @@ video.preview{object-fit:contain}
 </head>
 <body>
 <main>
+<div class="share-guide" id="share-guide"><b>微信分享</b><span>请先用微信打开本页，再点右上角「···」→「发送给朋友」或「分享到朋友圈」。不要把网址粘贴到“发表文字”。</span></div>
 <div class="k">OOGLEX · PUBLIC X POST</div>
 <div class="author-row">
   <img class="author-avatar" src="${shareHtmlEscape(avatarUrl)}" alt="${shareHtmlEscape(publicAuthor)} avatar" referrerpolicy="no-referrer" onerror="this.style.display='none'">
@@ -2410,6 +2416,21 @@ ${video
 <a href="${shareHtmlEscape(originalUrl)}">View original on X</a>
 </div>
 </main>
+<script>
+(function(){
+  var guide=document.getElementById("share-guide");
+  if(!guide)return;
+  var inWeChat=/MicroMessenger/i.test(navigator.userAgent||"");
+  var title=guide.querySelector("b"),body=guide.querySelector("span");
+  if(inWeChat){
+    title.textContent="微信卡片分享";
+    body.textContent="请点右上角「···」→「发送给朋友」或「分享到朋友圈」。不要复制网址到“发表文字”，否则微信只会显示裸链接。";
+  }else{
+    title.textContent="微信卡片分享";
+    body.textContent="请先用微信打开本页，再点右上角「···」→「发送给朋友」或「分享到朋友圈」。";
+  }
+})();
+</script>
 </body>
 </html>`;
 
