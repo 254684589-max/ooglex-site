@@ -229,7 +229,7 @@ func refresh() -> void:
 		var prefix := "第%d章 · " % int(q.get("chapter", 1)) if String(q.get("type", "")) == "main" else ""
 		_quest_title.text = prefix + String(q.get("title", ""))
 		var idx := QuestManager.current_objective_index(qid)
-		_quest_obj.text = "▶ " + QuestManager.objective_text(qid, idx) if idx >= 0 else ""
+		_quest_obj.text = "▶ " + QuestManager.objective_text(qid, idx) if idx >= 0 else ""
 		_quest_dist.text = _distance_text()
 	_job.text = "" + JobManager.status_text()
 	var unread := int(GameManager.get_value("unread_messages", 0))
@@ -252,7 +252,10 @@ func _distance_text() -> String:
 func _update_prompts() -> void:
 	if player == null:
 		return
-	var acts: Array = player.detector.current_actions()
+	var acts: Array = player.detector.current_actions().duplicate()
+	# 拖着行李箱、附近没有别的 F 动作时，提示可以放下
+	if player.carrying == "suitcase" and player.vehicle == null and not player.detector.has_action("pickup"):
+		acts.append({"action": "pickup", "label": "放下行李箱", "enabled": true})
 	var key := ""
 	for a in acts:
 		key += "%s|%s|%s;" % [a["action"], a["label"], a.get("enabled", true)]

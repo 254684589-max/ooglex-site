@@ -72,7 +72,7 @@ func refresh() -> void:
 		for a in acts:
 			var key := String(a.get("action", ""))
 			# 可用的动作优先于只是提示的动作
-			var s := score + (100.0 if bool(a.get("enabled", true)) else 0.0)
+			var s := score + (100.0 if bool(a.get("enabled", true)) else 0.0) + float(a.get("boost", 0.0))
 			if not best_by_key.has(key) or s > float(best_by_key[key]["score"]):
 				var entry: Dictionary = a.duplicate()
 				entry["target"] = it

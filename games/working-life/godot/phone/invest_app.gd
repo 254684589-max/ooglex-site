@@ -31,7 +31,7 @@ static func build(box: VBoxContainer, refresh: Callable) -> void:
 		chart.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		chart.set_series([{"values": InvestmentManager.history.get(id, []), "color": UIKit.CYAN, "width": 1.6}], "元/份", "近 %d 个交易日" % (InvestmentManager.history.get(id, []) as Array).size())
 		v.add_child(chart)
-		v.add_child(UIKit.label("%s　年化分红/票息 %.1f%%" % [String(a.get("desc", "")), float(a.get("yield", 0)) * 100.0], 13, UIKit.DIM, HORIZONTAL_ALIGNMENT_LEFT, true))
+		v.add_child(UIKit.label("%s  年化分红/票息 %.1f%%" % [String(a.get("desc", "")), float(a.get("yield", 0)) * 100.0], 13, UIKit.DIM, HORIZONTAL_ALIGNMENT_LEFT, true))
 		var u := InvestmentManager.units(id)
 		if u > 0.0:
 			var pnl := InvestmentManager.position_pnl(id)

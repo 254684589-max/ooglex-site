@@ -36,7 +36,7 @@ func _ready() -> void:
 	ui = main.ui
 	var groups := ["startup", "data", "economy", "time", "skills", "first_day", "job_payment", "monthly_job",
 		"housing", "property", "investment", "business", "npc", "romance", "gigs", "character", "events", "transport", "collapse", "carry", "ui_windows",
-		"driving", "navigation", "save_load", "endings", "journey"]
+		"driving", "navigation", "save_load", "story_audit", "endings", "journey"]
 	for g in groups:
 		if not only.is_empty() and not only.has(g):
 			continue
@@ -1277,6 +1277,192 @@ func test_carry() -> void:
 	await frames(3)
 	check(main.carry_job == null and JobManager.worked_today(), "搬完结算班次")
 	check(EconomyManager.cash > c0 + 300, "建筑工人日薪到账（+%d）" % (EconomyManager.cash - c0))
+	ui.close_all()
+
+
+# ================================================================ 剧情排查回归（1.12.1）
+func _choice_texts(w: Control) -> Array:
+	var out: Array = []
+	if w is ChoiceWindow:
+		for c in (w as ChoiceWindow).body.get_children():
+			if c is Button:
+				out.append((c as Button).text)
+	return out
+
+
+func test_story_audit() -> void:
+	await new_game()
+	# —— 开场行李箱：F 放下 / 再拿起，可以跑，住进旅馆自动收走
+	check(player.carrying == "suitcase", "开场拖着行李箱")
+	player.teleport(GameManager.location_front("park") + Vector3(0, 0.2, 14), 0.0)
+	await frames(6)
+	var free_spot := not player.detector.has_action("pickup")
+	ui.hud._update_prompts()
+	var hint := false
+	for c in ui.hud._prompts.get_children():
+		for l in c.get_children():
+			if l is Label and (l as Label).text == "放下行李箱":
+				hint = true
+	check(free_spot and hint, "空地上 HUD 提示「F 放下行李箱」")
+	Input.action_press("move_forward")
+	Input.action_press("sprint")
+	await frames(10)
+	check(player.sprinting, "拖着行李箱也能跑")
+	Input.action_release("sprint")
+	Input.action_release("move_forward")
+	await frames(20)
+	await press("use")
+	await frames(2)
+	var props := get_tree().get_nodes_in_group(SuitcaseProp.GROUP)
+	check(player.carrying == "" and props.size() == 1, "按 F 把行李箱放在地上")
+	await frames(4)
+	check(player.detector.target_for("pickup") is SuitcaseProp, "走近行李箱出现「拿起行李箱」")
+	await press("use")
+	await frames(2)
+	check(player.carrying == "suitcase" and get_tree().get_nodes_in_group(SuitcaseProp.GROUP).filter(func(n): return not n.is_queued_for_deletion()).is_empty(), "再按 F 拿起行李箱")
+	await press("use")
+	await frames(2)
+	HousingManager.book_hotel(1)
+	await goto_loc("hotel")
+	await frames(3)
+	check(player.carrying == "" and GameManager.has_flag("dropped_suitcase") and get_tree().get_nodes_in_group(SuitcaseProp.GROUP).filter(func(n): return not n.is_queued_for_deletion()).is_empty(), "住进旅馆：地上的行李箱也一起收走")
+	# —— 第一天傍晚被工地录用：不显示旷工、不记旷工
+	check(TimeManager.day == 1 and TimeManager.hour() >= 17, "第 1 天傍晚（%s）" % TimeManager.clock_text())
+	JobManager.hire("construction", 0)
+	var st := JobManager.status_text()
+	check(not st.contains("旷工") and st.contains("刚入职") and st.contains("07:00"), "当天傍晚入职显示「%s」" % st)
+	# —— 睡觉菜单：7 点上班的工作有「上班前 1 小时」起床选项
+	await set_clock(22.0)
+	ui._sleep_menu(false)
+	await frames(2)
+	var opts := _choice_texts(top())
+	var has6 := false
+	for t in opts:
+		if String(t).contains("06:00"):
+			has6 = true
+	check(has6, "睡觉菜单有「睡到上班前 1 小时 06:00」（%s）" % str(opts))
+	var late_hint := false
+	for t in opts:
+		if String(t).begins_with("睡到早上 7:00") and String(t).contains("迟到"):
+			late_hint = true
+	check(late_hint, "「睡到早上 7:00」提示会迟到")
+	ui.close_all()
+	EventManager.enabled = false
+	await main.sleep(TimeManager.minutes_until(6.0))
+	await frames(3)
+	ui.close_all()
+	check(TimeManager.day == 2 and TimeManager.hour() == 6, "睡到第 2 天 06:00")
+	check(int(JobManager.current.get("absences", 0)) == 0, "入职当天没上班不记旷工")
+	st = JobManager.status_text()
+	check(st.contains("07:00 上班"), "早上显示「%s」" % st)
+	# 按时到工地打卡
+	TimeManager.advance(40, "idle")
+	fresh()
+	var ws := await goto_point("point:construction_site:workstation_construction")
+	var lab := ""
+	for a in player.detector.current_actions():
+		if String(a["action"]) == "interact":
+			lab = String(a["label"])
+	check(ws != null and lab.begins_with("开始上班"), "6:40 到工地，按 E 是「开始上班」而不是和老马聊天（%s）" % lab)
+	await press("interact")
+	await frames(3)
+	var cj: CarryJob = main.carry_job
+	check(cj != null, "开始搬运")
+	if cj != null:
+		for i in cj.target:
+			cj.pick(player)
+			cj.drop(player)
+	await frames(3)
+	ui.close_all()
+	check(JobManager.worked_today() and int(JobManager.current.get("late_count", 0)) == 0, "按时上完班，不算迟到")
+	check(JobManager.status_text() == "今天的班已经上完", "HUD：今天的班已经上完")
+	await set_clock(23.0)
+	TimeManager.advance(TimeManager.minutes_until(6.5), "sleep")
+	fresh()
+	check(int(JobManager.current.get("absences", 0)) == 0, "第二天没有旷工记录")
+	# —— 早上生病多睡 3 小时：自动请病假，不算旷工
+	check(JobManager.is_workday(), "第 3 天是工作日")
+	TimeManager.advance(TimeManager.minutes_until(7.0), "idle")
+	var ev: Dictionary = DataDB.events["e_sick"]
+	var notes := Effects.apply(ev["choices"][2]["effects"], "事件")
+	check(JobManager.on_leave_today() and str(notes).contains("病假"), "生病多睡耽误上班：自动请病假（%s）" % str(notes))
+	var perf0 := JobManager.perf()
+	await set_clock(23.0)
+	TimeManager.advance(TimeManager.minutes_until(6.5), "sleep")
+	check(int(JobManager.current.get("absences", 0)) == 0 and JobManager.perf() == perf0, "病假那天不记旷工、不扣绩效")
+	# —— 上午 8 点录用、9 点上班的工作：入职当天赶不上也不算旷工
+	JobManager.hire("office", 0)
+	while not JobManager.is_workday():
+		TimeManager.advance(1440, "sleep")
+	TimeManager.advance(TimeManager.minutes_until(8.5), "idle")
+	JobManager.hire("office", 0)
+	fresh()
+	await set_clock(23.0)
+	TimeManager.advance(TimeManager.minutes_until(7.0), "sleep")
+	check(JobManager.has_job() and int(JobManager.current.get("absences", 0)) == 0, "早上入职当天没去上班不算旷工")
+	# —— 每个职业：上班前 10 分钟到工位，按 E 都是「开始上班」（不被旁边的 NPC 抢走）
+	var blocked: Array = []
+	for j in DataDB.ids("jobs"):
+		var jid := String(j)
+		JobManager.hire(jid, 0)
+		TimeManager.advance(TimeManager.minutes_until(float(DataDB.job(jid).get("shift_start", 9)) - 0.17), "idle")
+		while not JobManager.is_workday() or JobManager.hired_today():
+			TimeManager.advance(1440, "sleep")
+		fresh()
+		NPCManager.refresh_schedules(true)
+		await frames(3)
+		await goto_point("point:%s:workstation_%s" % [String(DataDB.job(jid).get("workplace", "")), jid])
+		var l2 := ""
+		for a in player.detector.current_actions():
+			if String(a["action"]) == "interact":
+				l2 = String(a["label"])
+		if not l2.begins_with("开始上班"):
+			blocked.append("%s:%s" % [jid, l2])
+	check(blocked.is_empty(), "8 个职业的工位在上班时间按 E 都能开始上班（%s）" % str(blocked))
+	# —— 所有交互点：站在正前方时按键不会被旁边的 NPC 抢走（健身房阿豪、合租房老李、旧街区老马）
+	var shadowed: Array = []
+	for hour in [10.0, 19.5]:
+		TimeManager.advance(TimeManager.minutes_until(hour), "sleep")
+		fresh()
+		NPCManager.refresh_schedules(true)
+		await frames(2)
+		for k in GameManager.registry.keys():
+			if not String(k).begins_with("point:"):
+				continue
+			var sp := GameManager.lookup(k) as ServicePoint
+			if sp == null:
+				continue
+			await goto_point(String(k))
+			if player.detector.target_for(sp.key) != sp:
+				shadowed.append("%s@%d" % [k, int(hour)])
+	check(shadowed.is_empty(), "所有交互点都不被旁边的 NPC 挡住（%s）" % str(shadowed))
+	# —— 两个任务都要包裹：各生成一个，互不抢
+	EventManager.enabled = true
+	QuestManager.start("s_night_restock")
+	QuestManager.start("s_urgent_parcel")
+	await frames(3)
+	var parcels := QuestManager.spawns().filter(func(x): return String(x["item"]) == "parcel")
+	check(parcels.size() == 2, "两个包裹任务各生成一个包裹（%d）" % parcels.size())
+	main._refresh_spawns()
+	var nodes: Array = main._spawned.filter(func(n): return is_instance_valid(n) and String(n.item_id) == "parcel")
+	check(nodes.size() == 2, "世界里有 2 个包裹")
+	if nodes.size() == 2:
+		var q0 := String(nodes[0].quest_id)
+		(nodes[0] as QuestPickup).perform("pickup", player)
+		await frames(3)
+		var q1 := "s_urgent_parcel" if q0 == "s_night_restock" else "s_night_restock"
+		check(QuestManager.objective_done(q0, 0) and not QuestManager.objective_done(q1, 0), "拿起一个包裹只算给对应任务")
+		main._refresh_spawns()
+		check(main._spawned.filter(func(n): return is_instance_valid(n) and not n.is_queued_for_deletion() and String(n.item_id) == "parcel").size() == 1, "另一个包裹还在原地")
+	# —— 要交的咖啡被喝掉：目标提示再去买，箭头指向咖啡店
+	QuestManager.start("s_coffee_run")
+	PlayerManager.add_item("coffee", 1)
+	QuestManager.check_conditions()
+	PlayerManager.remove_item("coffee", 1)
+	await frames(2)
+	var idx := QuestManager.current_objective_index("s_coffee_run")
+	check(idx == 1 and QuestManager.objective_text("s_coffee_run", idx).contains("再去买"), "咖啡喝掉后目标提示再去买一份")
+	check(String(QuestManager.objective_target("s_coffee_run").get("id", "")) == "cafe", "引导箭头指向咖啡店")
 	ui.close_all()
 
 

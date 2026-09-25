@@ -64,5 +64,5 @@ func perform(_action_key: String, _player: Node) -> void:
 	if PlayerManager.add_item(item_id, 1):
 		Events.say("拿到了：%s" % display_name, "good")
 		AudioManager.play_sfx("pickup")
-		Events.notify("pickup", {"item": item_id})
+		Events.notify("pickup", {"item": item_id, "quest": quest_id})
 		queue_free()

@@ -81,6 +81,9 @@ func status_text() -> String:
 func _process(delta: float) -> void:
 	if done:
 		return
+	# 打开手机 / 菜单 / 暂停时倒计时也停
+	if GameManager.is_modal() or get_tree().paused:
+		return
 	time_left -= delta
 	if time_left <= 0.0:
 		_finish()

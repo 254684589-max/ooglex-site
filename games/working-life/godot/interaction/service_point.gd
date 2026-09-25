@@ -20,6 +20,8 @@ func setup(p_kind: String, p_label: String, p_loc: String, p_args := {}, p_key :
 	name = "SP_%s_%s" % [p_loc, p_kind]
 	set_sphere_shape(1.6, Vector3(0, 1.0, 0))
 	max_distance = float(args.get("reach", 2.6))
+	# 与 NPC 同级：站在柜台 / 器械前时按 E 是用它，面向旁边的 NPC 时才是聊天
+	focus_priority = 1
 
 
 func get_actions(_player: Node) -> Array:

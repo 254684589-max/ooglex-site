@@ -88,18 +88,21 @@ func _physics_process(delta: float) -> void:
 		dir = dir.normalized()
 	var moving := dir.length() > 0.05
 	var want_sprint := can_move and moving and (Input.is_action_pressed("sprint") or touch_sprint)
-	sprinting = want_sprint and PlayerManager.can_sprint() and carrying == ""
+	# 搬材料（box）不能跑；拖着行李箱可以跑，只是慢一点
+	sprinting = want_sprint and PlayerManager.can_sprint() and carrying != "box"
 	var speed := (run_speed if sprinting else walk_speed) * PlayerManager.speed_factor()
-	if carrying != "":
+	if carrying == "box":
 		speed *= 0.78
 		if WeatherManager.is_raining():
 			speed *= 0.88
+	elif carrying == "suitcase":
+		speed *= 0.92
 	var target := dir * speed
 	var accel := ground_accel if on_floor else air_accel
 	var hv := Vector3(velocity.x, 0, velocity.z).move_toward(target, accel * delta)
 	velocity.x = hv.x
 	velocity.z = hv.z
-	if can_move and on_floor and Input.is_action_just_pressed("jump") and carrying == "":
+	if can_move and on_floor and Input.is_action_just_pressed("jump") and carrying != "box":
 		if PlayerManager.energy > 3.0:
 			velocity.y = jump_velocity
 			PlayerManager.change("energy", -1.0)
@@ -198,9 +201,27 @@ func _do(key: String, warn := true) -> bool:
 	if detector.perform(key):
 		anim.play_once(AnimationController.State.INTERACT)
 		return true
-	if warn and key == "pickup" and carrying != "":
+	# 附近没有别的 F 动作时，F 放下行李箱（鼠标左键不触发，免得误放）
+	if warn and key == "pickup" and carrying == "suitcase" and vehicle == null:
+		drop_suitcase()
+		return true
+	if warn and key == "pickup" and carrying == "box":
 		Events.say("这里不能放下——把材料送到卸货区", "warn")
 	return false
+
+
+## 把行李箱放在脚边，按 F 可以再拿起来
+func drop_suitcase() -> void:
+	if carrying != "suitcase":
+		return
+	set_carry("")
+	var prop := SuitcaseProp.new()
+	get_parent().add_child(prop)
+	var fwd := facing_direction()
+	fwd.y = 0.0
+	prop.global_position = global_position + fwd.normalized() * 0.7
+	prop.rotation.y = rotation.y
+	Events.say("行李箱放下了。按 F 可以再拿起来；租到房或住进旅馆后会自动放进屋里", "info")
 
 
 ## 搬运显示（建筑搬运小游戏、开场的行李箱）
