@@ -9,7 +9,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	super()
-	add_text("《打工》HUSTLE CITY", 26, UIKit.CYAN)
+	add_text("HUSTLE CITY", 26, UIKit.CYAN)
 	add_text("版本 %s · Ooglex 游戏中心" % String(ProjectSettings.get_setting("application/config/version", "")), 16, UIKit.DIM)
 	add_text("策划 / 程序 / 关卡 / 数值 / 测试：Ooglex 与 Claude（AI 编程助手）协作开发", 17)
 	add_text("引擎：Godot Engine 4（MIT 许可）· GDScript", 16)
