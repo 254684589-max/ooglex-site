@@ -554,6 +554,100 @@ static func car_geometry(mb: MeshBatcher, origin: Vector3, basis: Basis, paint: 
 		mb.box("neon", origin + basis * Vector3(sx, 0.78, 2.26), Vector3(0.38, 0.12, 0.04), Color(0.9, 0.06, 0.1), basis)
 
 
+## 玩家私家车的车身造型（不含车轮，车轮单独做成可转动的节点）。原点在车底中心，车头朝 -Z。
+## 返回尺寸信息：车轮位置 / 半径 / 宽度、车长车宽车高、前后灯位置。
+const CAR_SHAPES := {
+	"hatch": {
+		"lower": [[-1.95, 0.28], [1.9, 0.28], [1.98, 0.55], [1.92, 0.88], [1.7, 0.95], [-0.75, 0.95], [-1.85, 0.8], [-2.0, 0.55]], "half": 0.85,
+		"cabin": [[-0.75, 0.95], [1.7, 0.95], [1.6, 1.5], [-0.05, 1.5]], "cabin_half": 0.76,
+		"wheel_z": [-1.25, 1.2], "wheel_x": 0.76, "wheel_r": 0.3, "wheel_w": 0.2, "light_y": 0.7, "tail_y": 0.82,
+	},
+	"sedan": {
+		"lower": [[-2.22, 0.3], [2.22, 0.3], [2.3, 0.58], [2.22, 0.9], [1.5, 0.97], [-0.95, 0.97], [-2.12, 0.84], [-2.3, 0.6]], "half": 0.92,
+		"cabin": [[-0.95, 0.97], [1.5, 0.97], [0.82, 1.4], [-0.28, 1.4]], "cabin_half": 0.8,
+		"wheel_z": [-1.4, 1.42], "wheel_x": 0.84, "wheel_r": 0.34, "wheel_w": 0.24, "light_y": 0.72, "tail_y": 0.78,
+	},
+	"suv": {
+		"lower": [[-2.35, 0.4], [2.35, 0.4], [2.42, 0.7], [2.36, 1.12], [2.1, 1.2], [-1.2, 1.2], [-2.25, 1.05], [-2.42, 0.72]], "half": 0.98,
+		"cabin": [[-1.2, 1.2], [2.1, 1.2], [1.95, 1.78], [-0.5, 1.78]], "cabin_half": 0.88,
+		"wheel_z": [-1.5, 1.5], "wheel_x": 0.9, "wheel_r": 0.42, "wheel_w": 0.28, "light_y": 0.95, "tail_y": 1.0,
+	},
+	"sports": {
+		"lower": [[-2.25, 0.22], [2.2, 0.22], [2.3, 0.45], [2.22, 0.76], [1.3, 0.84], [-0.6, 0.84], [-2.1, 0.6], [-2.3, 0.4]], "half": 0.99,
+		"cabin": [[-0.6, 0.84], [1.3, 0.84], [0.75, 1.2], [-0.02, 1.2]], "cabin_half": 0.78,
+		"wheel_z": [-1.38, 1.38], "wheel_x": 0.9, "wheel_r": 0.34, "wheel_w": 0.28, "light_y": 0.55, "tail_y": 0.62,
+	},
+}
+
+
+static func car_body(mb: MeshBatcher, shape: String, paint: Color) -> Dictionary:
+	var sh: Dictionary = CAR_SHAPES.get(shape, CAR_SHAPES["sedan"])
+	var glass := Color(0.07, 0.09, 0.12)
+	var dark := Color(0.05, 0.05, 0.06)
+	var o := Vector3.ZERO
+	var b := Basis.IDENTITY
+	var lower := _poly(sh["lower"])
+	var cabin := _poly(sh["cabin"])
+	var half: float = sh["half"]
+	var ch: float = sh["cabin_half"]
+	_extrude(mb, "metal", o, b, lower, half, paint)
+	_extrude(mb, "metal", o, b, cabin, ch, glass)
+	# 车顶：沿车舱顶边做一片车漆色的顶盖
+	var top_y := cabin[2].y
+	var roof := PackedVector2Array([Vector2(cabin[3].x - 0.02, top_y - 0.01), Vector2(cabin[2].x + 0.02, top_y - 0.01), Vector2(cabin[2].x, top_y + 0.05), Vector2(cabin[3].x + 0.02, top_y + 0.05)])
+	_extrude(mb, "metal", o, b, roof, ch + 0.01, paint)
+	var front := lower[lower.size() - 1].x
+	var rear := lower[2].x
+	var wr: float = sh["wheel_r"]
+	# 腰线下的黑色护板、前格栅、后视镜
+	for sx in [-1.0, 1.0]:
+		mb.box("metal", Vector3(sx * (half - 0.08), wr + 0.14, 0.0), Vector3(0.04, 0.14, (rear - front) * 0.72), dark)
+		mb.box("metal", Vector3(sx * (half + 0.12), cabin[0].y + 0.06, cabin[0].x + 0.2), Vector3(0.2, 0.11, 0.08), paint)
+	mb.box("metal", Vector3(0, float(sh["light_y"]) - 0.08, front + 0.03), Vector3(half * 1.15, 0.18, 0.06), dark)
+	# 轮拱：车轮上方一圈黑色
+	for z in sh["wheel_z"]:
+		for sx in [-1.0, 1.0]:
+			mb.box("metal", Vector3(sx * (half - 0.02), wr * 2.0 + 0.02, float(z)), Vector3(0.06, 0.05, wr * 2.3), dark)
+	if shape == "sports":
+		# 尾翼
+		mb.box("metal", Vector3(0, 0.98, rear - 0.2), Vector3(half * 1.7, 0.04, 0.3), paint)
+		for sx in [-0.55, 0.55]:
+			mb.box("metal", Vector3(sx, 0.88, rear - 0.2), Vector3(0.05, 0.18, 0.12), dark)
+	if shape == "suv":
+		# 车顶行李架
+		for sx in [-0.7, 0.7]:
+			mb.box("metal", Vector3(sx, top_y + 0.09, (cabin[2].x + cabin[3].x) * 0.5), Vector3(0.05, 0.05, (cabin[2].x - cabin[3].x) * 0.9), Color(0.55, 0.56, 0.58))
+	var ly: float = sh["light_y"]
+	var ty: float = sh["tail_y"]
+	for sx in [-1.0, 1.0]:
+		mb.box("neon", Vector3(sx * half * 0.66, ly, front + 0.02), Vector3(half * 0.42, 0.11, 0.04), Color(1.0, 0.96, 0.85))
+		mb.box("neon", Vector3(sx * half * 0.68, ty, rear - 0.02), Vector3(half * 0.38, 0.1, 0.04), Color(0.45, 0.03, 0.05))
+	var wheels: Array = []
+	for z in sh["wheel_z"]:
+		for sx in [-1.0, 1.0]:
+			wheels.append(Vector3(sx * float(sh["wheel_x"]), wr, float(z)))
+	return {"wheels": wheels, "wheel_r": wr, "wheel_w": float(sh["wheel_w"]), "half_w": half, "front": front, "rear": rear,
+		"height": top_y + 0.05, "light_y": ly, "tail_y": ty}
+
+
+## 车轮网格（轮胎 + 轮毂 + 轮辐），轴沿 X
+static func car_wheel(mb: MeshBatcher, radius: float, width: float) -> void:
+	var axis := Basis(Vector3.FORWARD, PI * 0.5)
+	mb.cylinder("metal", Vector3.ZERO, radius, width, Color(0.05, 0.05, 0.06), 14, axis)
+	mb.cylinder("metal", Vector3.ZERO, radius * 0.62, width + 0.02, Color(0.62, 0.63, 0.66), 10, axis)
+	# 轮辐：转起来能看出在转
+	for i in 5:
+		var a := TAU * i / 5.0
+		mb.box("metal", Vector3(0, sin(a) * radius * 0.3, cos(a) * radius * 0.3), Vector3(width + 0.03, radius * 0.5, 0.05), Color(0.32, 0.33, 0.36), Basis(Vector3.RIGHT, -a))
+
+
+static func _poly(pts: Array) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for p in pts:
+		out.append(Vector2(float(p[0]), float(p[1])))
+	return out
+
+
 ## 远处车流用的简化车模（几十个三角形）：车身 + 车舱 + 车灯
 static func car_geometry_lod(mb: MeshBatcher, paint: Color) -> void:
 	mb.box("metal", Vector3(0, 0.6, 0), Vector3(1.84, 0.62, 4.5), paint)

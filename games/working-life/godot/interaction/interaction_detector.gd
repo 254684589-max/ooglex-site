@@ -48,6 +48,10 @@ func refresh() -> void:
 			_candidates.erase(c)
 			continue
 		var it: Interactable = c
+		# 开车时只能和自己的车交互（下车），不能开着车进门、买东西
+		var veh = player.get("vehicle")
+		if veh != null and not (it is PlayerCar.CarDoor and (it as PlayerCar.CarDoor).car == veh):
+			continue
 		if not it.visible:
 			continue
 		var dist := it.distance_to_player(player)

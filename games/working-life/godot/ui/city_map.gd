@@ -18,7 +18,7 @@ func _ready() -> void:
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas.window = self
 	body.add_child(canvas)
-	var info := UIKit.label("点地点查看信息 · ● 你的位置 · ◆ 任务目标 · 黄 = 公交站 · 青 = 地铁站", 14, UIKit.DIM)
+	var info := UIKit.label("点地点查看信息 · ● 你的位置 · ◆ 任务目标 · 黄 = 公交站 · 青 = 地铁站" + (" · 「车」= 我的车" if VehicleManager.has_car() else ""), 14, UIKit.DIM)
 	body.add_child(info)
 
 

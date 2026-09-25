@@ -4,7 +4,8 @@
 输出到 godot/assets/audio/：
   music_menu / music_city / music_intro / music_ending  背景音乐（合成波循环）
   amb_city / amb_rain / amb_shop / amb_office            环境声循环
-  sfx_*                                                  界面、交互、脚步等短音效
+  sfx_*                                                  界面、交互、脚步等短音效；sfx_engine 为汽车发动机循环
+  （只重新生成发动机声：python3 games/working-life/tools/gen_audio.py engine）
 全部 22.05 kHz 单声道 16 位 WAV；Godot 导入时压缩为 QOA。
 
     python3 games/working-life/tools/gen_audio.py
@@ -257,10 +258,32 @@ def sfx() -> None:
     write("sfx_eat", lowpass(eat, 0.3))
 
 
+def engine() -> None:
+    """私家车发动机怠速循环（1 秒，首尾相位对齐可无缝循环；游戏里按车速调音高）。"""
+    rnd = random.Random(11)
+    n = RATE
+    base = 42.0  # 1 秒内整数个周期
+    noise = lowpass([rnd.uniform(-1, 1) for _ in range(n)], 0.05)
+    out = []
+    for i in range(n):
+        t = i / RATE
+        ph = 2 * math.pi * base * t
+        # 四缸发动机：基频 + 二、三、四次谐波，外加点火脉动与低通噪声
+        s = 0.55 * math.sin(ph) + 0.35 * math.sin(2 * ph + 0.3) + 0.18 * math.sin(3 * ph + 1.1) + 0.1 * math.sin(4 * ph)
+        s *= 0.8 + 0.2 * math.sin(2 * math.pi * 4 * t)
+        out.append(s + noise[i] * 0.5)
+    write("sfx_engine", lowpass(out, 0.35), 0.6)
+
+
 def main() -> None:
+    import sys
+    if sys.argv[1:] == ["engine"]:
+        engine()
+        return
     music()
     ambience()
     sfx()
+    engine()
     total = sum(p.stat().st_size for p in OUT.glob("*.wav"))
     print(f"写入 {OUT}：{len(list(OUT.glob('*.wav')))} 个文件，{total / 1048576:.1f} MB")
 

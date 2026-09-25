@@ -36,7 +36,7 @@ func _ready() -> void:
 	ui = main.ui
 	var groups := ["startup", "data", "economy", "time", "skills", "first_day", "job_payment", "monthly_job",
 		"housing", "investment", "business", "npc", "character", "events", "transport", "collapse", "carry", "ui_windows",
-		"navigation", "save_load", "endings", "journey"]
+		"driving", "navigation", "save_load", "endings", "journey"]
 	for g in groups:
 		if not only.is_empty() and not only.has(g):
 			continue
@@ -773,6 +773,134 @@ func test_transport() -> void:
 	GameManager.chapter = 4
 	var td := TransportManager.destinations("taxi", player.global_position)
 	check(td.size() == DataDB.ids("locations").size(), "打车可以去任意地点")
+
+
+# ================================================================ 开车
+func _physics_frames(n: int) -> void:
+	for i in n:
+		await get_tree().physics_frame
+
+
+func test_driving() -> void:
+	await new_game()
+	fresh()
+	check(not VehicleManager.has_car() and VehicleManager.buy("hatch").begins_with("钱不够"), "开局 ¥2000 买不起车")
+	EconomyManager.earn(200000, "其他", "测试", true)
+	var liquid0 := EconomyManager.liquid()
+	var nw0 := EconomyManager.networth()
+	var msg := VehicleManager.buy("sedan", 1)
+	var car := VehicleManager.node("car1")
+	check(VehicleManager.has_car() and car != null and EconomyManager.liquid() == liquid0 - 89000, "全款买家用轿车 ¥89,000：%s" % msg)
+	check(car != null and car.global_position.distance_to(player.global_position) < 30.0, "新车送到玩家附近的路边（%.0f 米）" % car.global_position.distance_to(player.global_position))
+	check(EconomyManager.networth() == nw0 - 89000 + VehicleManager.resale_value() and VehicleManager.resale_value() == 53400, "净资产计入车辆转卖价 ¥53,400")
+	check(VehicleManager.prestige() == 2.0, "家用轿车体面度 +2（计入面试）")
+	# 上车
+	var half: float = car.dims["half_w"]
+	player.teleport(car.global_transform * Vector3(-half - 0.9, 0, 0) + Vector3(0, 0.1, 0), car.rotation.y)
+	await frames(4)
+	player.detector.refresh()
+	var t := player.detector.target_for("interact")
+	check(t is PlayerCar.CarDoor, "走到车门旁出现「开车」提示")
+	await press("interact")
+	check(VehicleManager.is_driving() and player.vehicle == car and not player.model.visible, "按 E 上车：人物隐藏，进入驾驶")
+	check(player.camera_rig.vehicle == car, "镜头改为跟车")
+	# 油门（先把车挪到空的行车道上，免得撞上路边停着的车）
+	car.place(Vector3(1.8, 0.02, 60.0), 0.0)
+	await _physics_frames(2)
+	var p0 := car.global_position
+	var fwd := -car.global_transform.basis.z
+	Input.action_press("move_forward")
+	await _physics_frames(120)
+	Input.action_release("move_forward")
+	var moved := (car.global_position - p0).dot(fwd)
+	check(car.speed > 5.0 and moved > 5.0, "踩油门 2 秒：车速 %.0f km/h，前进 %.1f 米" % [car.speed * 3.6, moved])
+	check(player.global_position.distance_to(car.global_position) < 0.6, "玩家位置跟着车走")
+	check(absf(car.global_position.y) < 0.5, "车轮贴地（高度 %.2f）" % car.global_position.y)
+	# 刹车：按住 S 直到停下（再按住就是倒车）
+	var v0 := car.speed
+	var brake_frames := 0
+	Input.action_press("move_back")
+	while car.speed > 0.3 and brake_frames < 180:
+		await _physics_frames(1)
+		brake_frames += 1
+	Input.action_release("move_back")
+	check(car.speed <= 0.3 and brake_frames < 90, "踩刹车：%.0f km/h 在 %.1f 秒内停下" % [v0 * 3.6, brake_frames / 60.0])
+	# 转向
+	var yaw0 := car.rotation.y
+	Input.action_press("move_forward")
+	Input.action_press("move_left")
+	await _physics_frames(90)
+	Input.action_release("move_left")
+	Input.action_release("move_forward")
+	check(wrapf(car.rotation.y - yaw0, -PI, PI) > 0.3, "按 A 向左转（%.0f°）" % rad_to_deg(wrapf(car.rotation.y - yaw0, -PI, PI)))
+	# 撞墙：城市边界的墙挡住车
+	car.place(Vector3(CityBuilder.LIMIT - 20.0, 0.02, 2.0), -PI * 0.5)
+	Input.action_press("move_forward")
+	await _physics_frames(300)
+	Input.action_release("move_forward")
+	check(car.global_position.x < CityBuilder.LIMIT + 1.0, "开到城市边缘被墙挡住（x = %.1f）" % car.global_position.x)
+	# 开车时不能进门、买东西
+	car.place(GameManager.location_front("store") + Vector3(0, 0, 0), 0.0)
+	await _physics_frames(5)
+	player.detector.refresh()
+	var acts: Array = player.detector.current_actions()
+	var only_car := true
+	for a in acts:
+		if not (a.get("target") is PlayerCar.CarDoor):
+			only_car = false
+	check(only_car and not acts.is_empty(), "开车时只显示「下车」，不能开着车进门")
+	# 下车：结算油费
+	VehicleManager.trip_m = 5200.0
+	var cash0 := EconomyManager.liquid()
+	await press("interact")
+	check(not VehicleManager.is_driving() and player.vehicle == null and player.model.visible and player.collision_layer == 2, "按 E 下车：人物出现、恢复碰撞")
+	check(player.global_position.distance_to(car.global_position) < 4.0, "在车旁边下车（%.1f 米）" % player.global_position.distance_to(car.global_position))
+	check(EconomyManager.liquid() == cash0 - 5, "下车结算油费：5.2 公里 ¥5")
+	check(float(VehicleManager.car("car1")["km"]) > 5.0, "里程累计")
+	# 代驾
+	player.teleport(GameManager.location_front("hospital"), 0.0)
+	await frames(3)
+	var c1 := EconomyManager.liquid()
+	VehicleManager.valet("car1")
+	await _physics_frames(3)
+	check(car.global_position.distance_to(player.global_position) < 30.0 and EconomyManager.liquid() == c1 - VehicleManager.VALET_FEE, "代驾把车送到身边（¥80）")
+	# 打车等传送时自动下车
+	player.teleport(car.global_transform * Vector3(-half - 0.9, 0, 0) + Vector3(0, 0.1, 0), car.rotation.y)
+	await frames(4)
+	car.enter(player)
+	check(VehicleManager.is_driving(), "再次上车")
+	player.teleport(GameManager.location_front("park"), 0.0)
+	await frames(2)
+	check(not VehicleManager.is_driving() and player.model.visible, "传送（打车、送医）前自动下车，车留在原地")
+	# 每月用车费用
+	var d := TimeManager.day + 1
+	while TimeManager.day_of_month(d) != 1:
+		d += 1
+	VehicleManager.paid_month = ""
+	TimeManager.set_time(d, 8.0 * 60.0)
+	VehicleManager._on_day_changed(d)
+	check(VehicleManager.paid_month == TimeManager.month_key(), "每月 1 日扣保险 / 停车 / 保养费")
+	# 存档：开着车存档，读档后回到车里、车在原位
+	car.enter(player)
+	car.place(Vector3(40.0, 0.02, 2.0), -PI * 0.5)
+	await _physics_frames(3)
+	check(SaveManager.save(3), "开车时存档")
+	var saved_pos := car.global_position
+	car.exit()
+	VehicleManager.sell("car1")
+	check(not VehicleManager.has_car(), "卖车")
+	main.load_slot(3)
+	await frames(6)
+	var car2 := VehicleManager.node("car1")
+	check(car2 != null and car2.global_position.distance_to(saved_pos) < 1.0, "读档：车回到存档时的位置")
+	check(VehicleManager.is_driving() and player.vehicle == car2, "读档：回到车里继续开")
+	car2.exit()
+	# 卖车
+	var b0 := EconomyManager.bank
+	var back := VehicleManager._resale(VehicleManager.car("car1"))
+	VehicleManager.sell("car1")
+	check(not VehicleManager.has_car() and EconomyManager.bank == b0 + back and VehicleManager.node("car1") == null, "转卖：钱进银行卡，车从世界里移除")
+	await frames(2)
 
 
 # ================================================================ 昏倒

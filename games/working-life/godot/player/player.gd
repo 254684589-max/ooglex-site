@@ -18,6 +18,8 @@ var sprinting := false
 ## 手上搬着的东西（建筑搬运小游戏）
 var carrying := ""
 var anim: AnimationController
+## 正在驾驶的车（null：步行）
+var vehicle: PlayerCar = null
 
 @onready var model: CharacterModel = $Model
 @onready var camera_rig: PlayerCamera = $CameraRig
@@ -49,6 +51,9 @@ func set_spawn(pos: Vector3, yaw: float) -> void:
 
 
 func teleport(pos: Vector3, yaw: float) -> void:
+	# 打车 / 晕倒送医等传送：人先下车，车留在原地
+	if vehicle != null:
+		vehicle.exit()
 	global_position = pos
 	rotation.y = yaw
 	velocity = Vector3.ZERO
@@ -66,6 +71,9 @@ func controllable() -> bool:
 
 
 func _physics_process(delta: float) -> void:
+	if vehicle != null:
+		detector.refresh()
+		return
 	var on_floor := is_on_floor()
 	if not on_floor:
 		velocity.y -= gravity * delta
@@ -153,6 +161,38 @@ func _unhandled_input(event: InputEvent) -> void:
 			_do("interact", false)
 
 
+## 上车：隐藏人物、关闭碰撞，镜头改为跟车
+func enter_vehicle(car: PlayerCar) -> void:
+	vehicle = car
+	velocity = Vector3.ZERO
+	sprinting = false
+	model.visible = false
+	carry_root.visible = false
+	collision_layer = 0
+	collision_mask = 0
+	camera_rig.follow_vehicle(car)
+	follow_vehicle(car)
+
+
+## 开车时人物跟着车走（地点触发、任务距离、NPC 与车流的避让都照常按玩家位置计算）
+func follow_vehicle(car: PlayerCar) -> void:
+	global_position = car.global_position + Vector3(0, 0.2, 0)
+	rotation.y = car.rotation.y
+
+
+func exit_vehicle(car: PlayerCar, spot: Vector3) -> void:
+	vehicle = null
+	collision_layer = 2
+	collision_mask = 1 | 4 | 32
+	model.visible = true
+	carry_root.visible = true
+	global_position = spot
+	rotation.y = car.rotation.y
+	velocity = Vector3.ZERO
+	camera_rig.follow_vehicle(null)
+	camera_rig.set_target(self)
+
+
 func _do(key: String, warn := true) -> bool:
 	get_viewport().set_input_as_handled()
 	if detector.perform(key):
@@ -199,11 +239,17 @@ func refresh_outfit() -> void:
 
 
 func to_save_dict() -> Dictionary:
+	if vehicle != null:
+		# 开车时存档：记录车旁边的位置，读档后由 VehicleManager 放回车里
+		var p2 := vehicle.global_position + vehicle.global_transform.basis.x * -2.0
+		return {"pos": [p2.x, p2.y + 0.1, p2.z], "yaw": rotation.y, "cam_yaw": camera_rig.yaw}
 	var p := global_position
 	return {"pos": [p.x, p.y, p.z], "yaw": rotation.y, "cam_yaw": camera_rig.yaw}
 
 
 func apply_save_dict(d: Dictionary) -> void:
+	if vehicle != null:
+		vehicle.exit()
 	var pos: Array = d.get("pos", [])
 	if pos.size() == 3:
 		teleport(Vector3(float(pos[0]), float(pos[1]) + 0.1, float(pos[2])), float(d.get("yaw", 0.0)))

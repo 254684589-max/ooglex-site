@@ -8,6 +8,7 @@ var main: Node
 var root: Control
 var hud: HUD
 var touch: TouchControls
+var drive_hud: DriveHud
 var toasts: Toasts
 var menu: MainMenu
 var story: StoryOverlay
@@ -29,6 +30,9 @@ func setup(main_node: Node) -> void:
 	hud = HUD.new()
 	hud.player = GameManager.player
 	root.add_child(hud)
+	drive_hud = DriveHud.new()
+	drive_hud.hud = hud
+	root.add_child(drive_hud)
 	carry_status = UIKit.hud_label("", 22, UIKit.YELLOW)
 	carry_status.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	carry_status.position = Vector2(-300, 90)

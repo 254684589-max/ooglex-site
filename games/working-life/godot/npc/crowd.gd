@@ -81,6 +81,7 @@ func _process(delta: float) -> void:
 	if check:
 		_timer = 0.0
 	var p := GameManager.player
+	var cars := VehicleManager.nodes()
 	for i in walkers.size():
 		var w: Dictionary = walkers[i]
 		var n: Node3D = w["node"]
@@ -99,6 +100,17 @@ func _process(delta: float) -> void:
 			var dir := to / dist
 			n.global_position += dir * sp * delta
 			n.rotation.y = lerp_angle(n.rotation.y, atan2(-dir.x, -dir.z), clampf(delta * 6.0, 0.0, 1.0))
+		# 玩家开车过来：行人往旁边让开
+		for car in cars:
+			var c3: PlayerCar = car
+			var off := n.global_position - c3.global_position
+			off.y = 0.0
+			var cd := off.length()
+			if cd < 3.0 and absf(c3.speed) > 1.0:
+				var side := c3.global_transform.basis.x
+				var push := side * signf(off.dot(side) + 0.001)
+				n.global_position += push * (3.0 - cd) * clampf(delta * 6.0, 0.0, 1.0)
+				sp = maxf(sp, 3.5)
 		(w["anim"] as AnimationController).update(delta, sp)
 		if check and p != null and n.global_position.distance_to(p.global_position) > 80.0:
 			_respawn(w)
