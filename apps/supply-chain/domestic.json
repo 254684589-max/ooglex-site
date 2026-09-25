@@ -3778,30 +3778,6 @@
         "AIXC"
       ]
     },
-    "AIXN": {
-      "annualForm": "10-K",
-      "cik": 835662,
-      "country": "China",
-      "countryBasis": "business-address",
-      "countryCode": "F4",
-      "entityType": "operating",
-      "exchange": "",
-      "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-05-15",
-      "name": "AiXin Life International, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "China",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 5912,
-      "sicDescription": "Retail-Drug Stores and Proprietary Stores",
-      "symbol": "AIXN",
-      "tickers": [
-        "AIXN"
-      ]
-    },
     "AIZN": {
       "annualForm": "10-K",
       "cik": 1267238,
@@ -5665,9 +5641,9 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-28",
+      "lastAnnual": "2026-09-23",
       "name": "Amesite Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -7811,7 +7787,7 @@
       "countryCode": "E9",
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-18",
       "name": "Accelerant Holdings",
@@ -18682,7 +18658,7 @@
       "entityType": "operating",
       "exchange": "Nasdaq",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-03",
       "name": "CENTURY ALUMINUM CO",
       "offshoreIncorporation": false,
@@ -19582,7 +19558,7 @@
       "entityType": "operating",
       "exchange": "Nasdaq",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-26",
       "name": "Chord Energy Corp",
       "offshoreIncorporation": false,
@@ -20594,30 +20570,6 @@
       "symbol": "CLOV",
       "tickers": [
         "CLOV"
-      ]
-    },
-    "CLOW": {
-      "annualForm": "10-K",
-      "cik": 1619227,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-04-15",
-      "name": "Cloudweb, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "CA",
-      "region": null,
-      "sic": 7370,
-      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
-      "symbol": "CLOW",
-      "tickers": [
-        "CLOW"
       ]
     },
     "CLPR": {
@@ -21657,7 +21609,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-27",
       "name": "Core Natural Resources, Inc.",
       "offshoreIncorporation": false,
@@ -30835,7 +30787,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-10",
       "name": "ENBRIDGE INC",
       "offshoreIncorporation": false,
@@ -31479,7 +31431,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-27",
       "name": "ENTERPRISE PRODUCTS PARTNERS L.P.",
       "offshoreIncorporation": false,
@@ -32006,6 +31958,30 @@
       "symbol": "ESOA",
       "tickers": [
         "ESOA"
+      ]
+    },
+    "ESP": {
+      "annualForm": "10-K",
+      "cik": 33533,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-23",
+      "name": "ESPEY MFG & ELECTRONICS CORP",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NY",
+      "region": null,
+      "sic": 3679,
+      "sicDescription": "Electronic Components, NEC",
+      "symbol": "ESP",
+      "tickers": [
+        "ESP"
       ]
     },
     "ESQ": {
@@ -40790,7 +40766,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-25",
       "name": "GULFPORT ENERGY CORP",
       "offshoreIncorporation": false,
@@ -42798,7 +42774,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-04-15",
+      "lastAnnual": "2026-09-23",
       "name": "Hall Chadwick Acquisition Corp",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
@@ -43188,7 +43164,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-25",
       "name": "Hess Midstream LP",
       "offshoreIncorporation": false,
@@ -53696,7 +53672,7 @@
     },
     "LEG": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-14T00:08:14Z",
+      "carriedFrom": "2026-09-24T01:34:19Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 58492,
       "confirmedThisScan": false,
@@ -60754,7 +60730,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-12",
       "name": "MARIMED INC.",
@@ -62697,7 +62673,7 @@
       "countryCode": "F5",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-08-28",
       "name": "NOCERA, INC.",
@@ -62960,6 +62936,31 @@
       "symbol": "NEON",
       "tickers": [
         "NEON"
+      ]
+    },
+    "NEOV": {
+      "annualForm": "10-K",
+      "cik": 1748137,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-23",
+      "name": "NeoVolta Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 3690,
+      "sicDescription": "Miscellaneous Electrical Machinery, Equipment & Supplies",
+      "symbol": "NEOV",
+      "tickers": [
+        "NEOV",
+        "NEOVW"
       ]
     },
     "NEPH": {
@@ -64735,7 +64736,7 @@
     },
     "NRDE": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-14T00:08:14Z",
+      "carriedFrom": "2026-09-24T01:34:19Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1759546,
       "confirmedThisScan": false,
@@ -65491,7 +65492,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-05-18",
       "name": "NutriBand Inc.",
@@ -68122,7 +68123,7 @@
       "countryCode": "X0",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-30",
       "name": "OneMedNet Corp",
@@ -73139,7 +73140,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-06-29",
       "name": "PodcastOne, Inc.",
@@ -75550,8 +75551,7 @@
       "sicDescription": "Industrial Organic Chemicals",
       "symbol": "QGAI",
       "tickers": [
-        "QGAI",
-        "QTZM"
+        "QGAI"
       ]
     },
     "QIND": {
@@ -76278,7 +76278,7 @@
     },
     "QVCAQ": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-14T00:08:14Z",
+      "carriedFrom": "2026-09-24T01:34:19Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1355096,
       "confirmedThisScan": false,
@@ -81803,7 +81803,7 @@
       "exchange": "OTC",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2026-08-06",
+      "lastAnnual": "2026-09-23",
       "name": "Securetech Innovations, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -91063,6 +91063,30 @@
         "THTG"
       ]
     },
+    "THYP": {
+      "annualForm": "10-K",
+      "cik": 2090011,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-23",
+      "name": "21Shares Hyperliquid Staking ETF",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NY",
+      "region": null,
+      "sic": 6221,
+      "sicDescription": "Commodity Contracts Brokers & Dealers",
+      "symbol": "THYP",
+      "tickers": [
+        "THYP"
+      ]
+    },
     "TIC": {
       "annualForm": "10-K",
       "cik": 2032966,
@@ -100183,30 +100207,6 @@
         "WNHK"
       ]
     },
-    "WNLV": {
-      "annualForm": "10-K",
-      "cik": 1558740,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-05-08",
-      "name": "Winvest Group Ltd",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "NV",
-      "region": null,
-      "sic": 7812,
-      "sicDescription": "Services-Motion Picture & Video Tape Production",
-      "symbol": "WNLV",
-      "tickers": [
-        "WNLV"
-      ]
-    },
     "WOLF": {
       "annualForm": "10-K",
       "cik": 895419,
@@ -103161,7 +103161,7 @@
   "contractVersion": 1,
   "coverage": {
     "alreadyInPool": 1,
-    "annualFilers": 6513,
+    "annualFilers": 6518,
     "attempted": 4510,
     "carriedForward": 3,
     "carriedForwardSymbols": [
@@ -103172,8 +103172,8 @@
     "droppedBlankCheck": 204,
     "droppedNoSic": 54,
     "published": 4255,
-    "publishedFilesFormSd": 669,
-    "skippedNoTicker": 1587,
+    "publishedFilesFormSd": 677,
+    "skippedNoTicker": 1592,
     "skippedTickerCollision": 415,
     "submissionsFailed": 0
   },
@@ -103181,10 +103181,10 @@
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 3427755,
+      "bytes": 3459213,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 277145,
+      "rows": 280306,
       "unparsed": 7
     },
     {
@@ -103195,14 +103195,14 @@
       "unparsed": 7
     },
     {
-      "bytes": 4441658,
+      "bytes": 4440857,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370151,
       "unparsed": 7
     },
     {
-      "bytes": 3401303,
+      "bytes": 3401618,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276581,
@@ -103210,5 +103210,5 @@
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-24T01:34:19Z"
+  "updatedAt": "2026-09-25T02:19:43Z"
 }

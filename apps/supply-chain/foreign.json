@@ -7968,7 +7968,7 @@
       "countryRejected": null,
       "entityType": "other",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-02",
       "name": "Decent Holding Inc.",
@@ -10550,7 +10550,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-30",
       "name": "GOLD FIELDS LTD",
       "offshoreIncorporation": false,
@@ -18424,6 +18424,31 @@
       "symbol": "NEGG",
       "tickers": [
         "NEGG"
+      ]
+    },
+    "NEWP": {
+      "annualForm": "20-F/40-F",
+      "cik": 1369085,
+      "country": "Canada",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "A1",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "NYSE",
+      "filerCategory": "<br>Emerging growth company",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-23",
+      "name": "NEW PACIFIC METALS CORP",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Canada",
+      "operatingRegion": "British Columbia",
+      "region": "British Columbia",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "NEWP",
+      "tickers": [
+        "NEWP"
       ]
     },
     "NEXA": {
@@ -30481,43 +30506,43 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 158,
-    "foreignAnnualFilers": 1228,
-    "formSdFilers": 1068,
-    "published": 1201,
-    "publishedFilesFormSd": 158,
+    "bothAnnualAndFormSd": 160,
+    "foreignAnnualFilers": 1229,
+    "formSdFilers": 1077,
+    "published": 1202,
+    "publishedFilesFormSd": 160,
     "skippedNoTicker": 27,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
-    "withTicker": 1201,
+    "withTicker": 1202,
     "withoutSic": 0
   },
   "dataset": "supply-chain-foreign-issuers",
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 3427755,
+      "bytes": 3460504,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 277145,
+      "rows": 280306,
       "unparsed": 7
     },
     {
-      "bytes": 4273401,
+      "bytes": 4272632,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353245,
       "unparsed": 7
     },
     {
-      "bytes": 4441658,
+      "bytes": 4440877,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370151,
       "unparsed": 7
     },
     {
-      "bytes": 3401303,
+      "bytes": 3401618,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276581,
@@ -30842,5 +30867,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-24T01:02:13Z"
+  "updatedAt": "2026-09-25T01:58:08Z"
 }
