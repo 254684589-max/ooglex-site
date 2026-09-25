@@ -12,7 +12,7 @@
     var handle=String(q.get("handle")||"").replace(/^@/,"");
     var id=String(q.get("id")||"");
     if(/^[A-Za-z0-9_]{1,15}$/.test(handle)&&/^\d{10,25}$/.test(id)){
-      location.replace("https://pro-api.ooglex.com/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(id)+"?wx=20260925a");
+      location.replace("https://pro-api.ooglex.com/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(id)+"?wx=20260925b");
     }
   })();
   </script>
@@ -123,7 +123,7 @@
     document.title=(currentProfile.name||handle)+" · 单条动态 · Ooglex";
   }
   async function copyText(v){if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);return;}var ta=document.createElement("textarea");ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
-  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId)+"?wx=20260925a";}
+  function publicShareUrl(){return API_BASE+"/share/tech-leaders/"+encodeURIComponent(handle)+"/"+encodeURIComponent(postId)+"?wx=20260925b";}
   async function copyLink(){try{await copyText(publicShareUrl());alert("帖子链接已复制");}catch(e){alert("复制失败");}}
   function openSharePage(){
     location.href=publicShareUrl();
