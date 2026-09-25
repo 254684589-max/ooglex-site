@@ -4,7 +4,7 @@ extends Node
 ## 创业、面试题、结局。游戏里所有「内容」都来自这些文件，代码里只写规则。
 
 const FILES := ["jobs", "items", "npcs", "quests", "events", "housing", "locations", "courses",
-	"assets", "business", "interview", "endings", "shops", "skills", "transport", "vehicles", "furniture"]
+	"assets", "business", "interview", "endings", "shops", "skills", "transport", "vehicles", "furniture", "romance"]
 
 var jobs: Dictionary = {}
 var items: Dictionary = {}
@@ -23,6 +23,7 @@ var skills: Dictionary = {}
 var transport: Dictionary = {}
 var vehicles: Dictionary = {}
 var furniture: Dictionary = {}
+var romance: Dictionary = {}
 
 ## 按文件原始顺序保存的 id 列表（字典遍历顺序即插入顺序，这里再存一份方便排序显示）
 var order: Dictionary = {}
