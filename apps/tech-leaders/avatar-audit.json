@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-09-25T08:55:32Z",
+  "checked_at": "2026-09-25T11:41:28Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 604,
   "usable": 604,
