@@ -151,7 +151,7 @@ func _process(_delta: float) -> void:
 			release_mouse()
 		_was_captured = false
 	var cj = main.get("carry_job")
-	carry_status.text = cj.status_text() if cj != null and is_instance_valid(cj) else ""
+	carry_status.text = cj.status_text() if cj != null and is_instance_valid(cj) else GigManager.status_text()
 	# 随机事件：没有窗口、不在小游戏时才弹出
 	if GameManager.playing and not GameManager.is_modal() and not GameManager.in_minigame and not EventManager.queue.is_empty():
 		_show_event(EventManager.pop_next())

@@ -59,6 +59,13 @@ func _ready() -> void:
 
 func _resolve() -> void:
 	has_target = false
+	# 零工订单优先：取餐点 / 上车点 / 目的地
+	var g := GigManager.target()
+	if not g.is_empty() and g["pos"] != Vector3.ZERO:
+		target_pos = g["pos"]
+		target_name = String(g["name"])
+		has_target = true
+		return
 	var t := QuestManager.objective_target()
 	if t.is_empty():
 		return

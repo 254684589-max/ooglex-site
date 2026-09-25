@@ -137,6 +137,7 @@ func _reset_all() -> void:
 	BusinessManager.reset()
 	VehicleManager.reset()
 	RomanceManager.reset()
+	GigManager.reset()
 	WeatherManager.reset()
 	_clear_spawns()
 

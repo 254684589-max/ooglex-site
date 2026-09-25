@@ -10,7 +10,7 @@ signal quests_changed
 signal quest_completed(id: String)
 
 const CONDITION_TYPES := ["skill", "relation", "rent", "job_level", "reputation", "bank", "networth", "have_item",
-	"employees", "invest_or_business", "ending_ready", "invest_profit", "cash", "get_job", "promote"]
+	"employees", "invest_or_business", "ending_ready", "invest_profit", "cash", "get_job", "promote", "followers"]
 const PARALLEL_BY_DEFAULT := ["m1_first_day", "m2_first_pay", "m3_skills", "m5_climb", "s_charity_run"]
 
 ## id -> {status: "active"/"done", progress: [float], day: int}
@@ -220,6 +220,20 @@ func _match(o: Dictionary, d: Dictionary) -> float:
 			return 1.0
 		"interact":
 			return 1.0 if String(d.get("target", "")) == String(o.get("target", "")) else 0.0
+		"gig":
+			if o.has("gig") and String(d.get("gig", "")) != String(o["gig"]):
+				return 0.0
+			if int(d.get("stars", 0)) < int(o.get("min_stars", 0)):
+				return 0.0
+			if bool(o.get("rain", false)) and not bool(d.get("rain", false)):
+				return 0.0
+			if bool(o.get("night", false)) and not bool(d.get("night", false)):
+				return 0.0
+			return 1.0
+		"stream":
+			if o.has("content") and String(d.get("content", "")) != String(o["content"]):
+				return 0.0
+			return 1.0 if int(d.get("income", 0)) >= int(o.get("min_income", 0)) else 0.0
 	return 1.0
 
 
@@ -288,6 +302,8 @@ func _condition_value(o: Dictionary) -> float:
 			return target
 		"promote":
 			return float(mini(JobManager.promotions, int(target)))
+		"followers":
+			return float(mini(GigManager.followers, int(target)))
 	return 0.0
 
 
@@ -432,6 +448,9 @@ func objective_target(id := "") -> Dictionary:
 			return {"kind": "location", "id": "shared_house"}
 		"eat_at":
 			return {"kind": "location", "id": String(o.get("location", "restaurant"))}
+		"stream":
+			var h := HousingManager.home_location()
+			return {"kind": "location", "id": h} if h != "" else {}
 		"workout":
 			return {"kind": "location", "id": "gym"}
 		"treatment":
