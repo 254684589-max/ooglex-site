@@ -40,6 +40,12 @@ jobs:
       - name: Build FREE/PRO payload split
         run: python scripts/pro/build_pro_datasets.py
 
+      - name: Verify required terminal fundamentals
+        run: python scripts/validate_fundamentals.py
+
+      - name: Verify terminal source health and availability
+        run: node scripts/validate_terminal_health.mjs
+
       - name: Build original-page 10 percent previews
         run: python scripts/pro/build_rich_previews.py
 
@@ -51,6 +57,9 @@ jobs:
 
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
+
+      - name: Verify fundamentals are included in the public artifact
+        run: cmp apps/companies/fundamentals.json .site/apps/companies/fundamentals.json
 
       - name: Apply Billionaires PRO cutover
         run: python scripts/pro/apply_billionaires_cutover.py

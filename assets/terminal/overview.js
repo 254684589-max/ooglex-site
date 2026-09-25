@@ -80,11 +80,17 @@
       soft("asset-ranking/crypto.json"),
       soft("companies/data.json"),
       soft("bonds/data.json"),
-      soft("bonds/history.json")
+      soft("bonds/history.json"),
+      soft("companies/fundamentals.json"),
+      soft("macro-radar/health.json"),
+      soft("fear-greed/health.json"),
+      soft("ofr-monitor/health.json"),
+      soft("econ-calendar/health.json"),
+      soft("whats-latest/health.json")
     ]).then(function (r) {
       var assets = r[0], intraday = r[1], macro = r[2], curve = r[3], hist = r[4],
           series = r[5], fear = r[6], ofr = r[7], cal = r[8], news = r[9], crypto = r[10], comps = r[11],
-          bonds = r[12], bondHist = r[13];
+          bonds = r[12], bondHist = r[13], fundamentals = r[14];
 
       /* 收盘与盘中合并：收盘为准，盘中作为「最新」另列 */
       var byName = {}, bySym = {};
@@ -250,16 +256,17 @@
           sources: [
             src("行情（收盘）", assets, "日频收盘"),
             src("行情（盘中快照）", intraday, "约30分钟 · 非实时"),
-            src("宏观风险监测", macro, "日频"),
+            src("宏观风险监测", macro, "日频", r[15]),
             src("美债曲线", curve, "日频"),
-            src("恐慌贪婪", fear, "日频"),
-            src("OFR 金融风险", ofr, "日频"),
-            src("经济日历", cal, "周历 · 每日刷新"),
-            src("要闻", news, "日内多次"),
+            src("恐慌贪婪", fear, "日频", r[16]),
+            src("OFR 金融风险", ofr, "日频", r[17]),
+            src("经济日历", cal, "周历 · 每日刷新", r[18]),
+            src("要闻", news, "日内多次", r[19]),
             src("加密（CoinGecko）", crypto, "日频 · 24h 口径"),
             src("公司（个股）", comps, "日频收盘"),
             src("各国主权债收益率", bonds, "34条月频 + 1条日频"),
-            src("主权债观测历史", bondHist, "月频 400 期")
+            src("主权债观测历史", bondHist, "月频 400 期"),
+            src("公司基本面（SCRN / RV / FA）", fundamentals, "季报 / 年报 · 非实时")
           ]
         },
         markets: markets,
@@ -287,6 +294,7 @@
         calendar: (cal && !cal.__error) ? cal : null,
         news: (news && !news.__error) ? news : null,
         companies: (comps && !comps.__error) ? comps : null,
+        fundamentals: (fundamentals && !fundamentals.__error) ? fundamentals : null,
         sovereign: sovereign,
         /* raw 保留各源的原始 json：地缘风险模型要的是原始形态（signals 数组、fsi.spark），不是归一化后的 */
         raw: { assets: assets, intraday: intraday, macro: macro, curve: curve, fear: fear, ofr: ofr, cal: cal, news: news, crypto: crypto, comps: comps, bonds: bonds, bondHist: bondHist }
@@ -294,7 +302,7 @@
       return model;
 
       /* 出处元数据统一由 core.meta 产出 */
-      function src(label, d, cadence) { return meta(label, d, cadence); }
+      function src(label, d, cadence, health) { return meta(label, d, cadence, health); }
     });
   }
 

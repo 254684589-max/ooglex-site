@@ -79,7 +79,8 @@
     },
     statusZh: function (s) {
       return { ok:"正常", partial:"部分缺失", stale:"数据过期", error:"读取失败",
-               degraded:"降级", provider:"由提供方标注" }[s] || (s || "—");
+               degraded:"降级", provider:"由提供方标注", unknown:"状态未核验",
+               empty:"暂无数据", demo:"模拟数据" }[s] || "状态未核验";
     }
   };
   function p2(n) { return n < 10 ? "0" + n : "" + n; }
@@ -89,23 +90,53 @@
     { k:"BID / ASK / 买卖价差", why:"无免费公开的层级报价来源" },
     { k:"VOL 成交量 / 成交额",  why:"无免费公开来源" },
     { k:"日内最高 / 最低",       why:"盘中快照只给单点价格，不含区间" },
-    { k:"财务报表字段（PE / PB / ROE / 营收）", why:"站内公司数据只到价格、市值与收益率" },
+    { k:"完整现金流量表",       why:"基本面目前仅覆盖部分 SEC 申报公司的估值、利润与资产负债字段" },
     { k:"信用评级 / 券级现金流",  why:"站内债券数据是主权收益率序列，无券级要素" },
     { k:"ISIN / FIGI / CUSIP",   why:"站内只有交易所代码（symbol），无付费标识符库" },
     { k:"持仓 / 组合",           why:"站内无任何账户或持仓来源" }
   ];
-  var UNAVAILABLE_NOTE = "本终端不显示 BID / ASK / VOL / 日内高低 / 财务报表 / 评级 / 券级现金流 / 持仓：" +
+  var UNAVAILABLE_NOTE = "本终端不显示 BID / ASK / VOL / 日内高低 / 完整现金流量表 / 评级 / 券级现金流 / 持仓：" +
     "站内没有这些来源，也不用占位数字冒充。";
 
   /* ── 出处行：金融数据规范要求的 source / asOf / 频率 / 状态 ────────── */
-  function meta(label, d, cadence) {
-    if (!d || d.__error) return { label: label, error: (d && d.__error) || "未加载", cadence: cadence };
+  function meta(label, d, cadence, health) {
+    if (!d || d.__error) return { label: label, status:"error", error: (d && d.__error) || "未加载", cadence: cadence };
     /* 盘中快照这类逐标的时点的文件没有单一 asOf，只有最早/最新两个时点：
        取最新那个当数据日，免得一行写着 OK 却不显示更新时间。 */
     var asOf = d.asOf || (typeof d.asOfLatest === "string"
       ? d.asOfLatest.replace("T", " ").replace(/:\d\d(?=Z$)/, "") : d.asOfLatest);
+    var status = d.status || "unknown", details = [], quality = d.dataQuality || {};
+    // 健康报告只有与当前数据文件的时间戳一致时，才能描述这份快照。
+    if (health && !health.__error && d.updatedAt && health.publishedSnapshotAt === d.updatedAt) {
+      var hs = { healthy:"ok", degraded:"partial", failed:"error" }[health.status];
+      if (hs && (status === "unknown" || (status === "ok" && hs !== "ok"))) status = hs;
+      (health.components || []).forEach(function (x) {
+        if (x.status === "healthy") return;
+        details.push({ name:x.name || x.id, status:({ degraded:"partial", failed:"error" })[x.status] || "unknown",
+          asOf:x.lastSuccessAt, note:x.failureReason || x.note || "组件未通过健康检查" });
+      });
+    }
+    var rows = d.assets || d.companies || d.rows || d.tenors || d.events;
+    if (Array.isArray(rows)) {
+      rows.forEach(function (x) {
+        var m = x.dataMeta || {};
+        if (!x.stale && x.available !== false && m.mode !== "fallback" && (!m.status || m.status === "ok")) return;
+        details.push({ name:[x.symbol || x.id, x.name || x.nameEn].filter(Boolean).join(" · "),
+          status:x.stale || m.mode === "fallback" ? "stale" : (m.status || "empty"),
+          asOf:m.asOf || x.statementEnd, note:x.reason || m.note || x.note || "字段未完整提供" });
+      });
+      if (!rows.length) status = "empty";
+      else if (status === "ok" && details.length) status = "partial";
+    }
+    if (status === "ok" && quality.status && quality.status !== "ok") status = quality.status;
+    if (d.demo === true) status = "demo";
+    var counts = quality.counts || {}, labels = { market:"有效数据", fallback:"沿用旧值", estimate:"估算", unknown:"未知", unavailable:"不可用" };
+    var coverage = Object.keys(labels).filter(function (k) { return counts[k] > 0; })
+      .map(function (k) { return labels[k] + " " + counts[k]; }).join(" · ");
+    if (isNum(d.withRatio)) coverage = "至少一项比率可用 " + d.withRatio + " / " + (d.count || 0) + " 家 · " + coverage;
     return { label: label, source: d.source, asOf: asOf, updatedAt: d.updatedAt,
-             frequency: d.frequency, status: d.status, cadence: cadence, note: d.note,
+             frequency: d.frequency, status: status, cadence: cadence, note: d.note,
+             details: details, coverage: coverage,
              count: d.count, realtime: d.realtime === true };
   }
   function srcLine(s, extra) {

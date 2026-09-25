@@ -20,7 +20,7 @@
 <script src="/assets/theme.js?v=2ae26043" defer></script>
 <script src="/assets/i18n.js?v=c83b60c1" defer></script>
 <script src="/assets/i18n-wave5.js?v=ff70b201" defer></script>
-<link rel="stylesheet" href="/assets/terminal/terminal.css?v=328717b2">
+<link rel="stylesheet" href="/assets/terminal/terminal.css?v=5f560435">
 <style>
   /* 监控首页专属：等尺寸面板墙。1920 四列、≥2300 五列、≤1500 三列、≤1100 两列 */
   .mon{
@@ -37,6 +37,15 @@
     .mon{grid-template-columns:1fr}
     .mon > .t-panel,.mon > .t-panel.w2,.mon > .t-panel.h2{grid-column:auto;grid-row:auto;max-height:none}
   }
+  /* 尾部目录与来源铺满整行；三/五列时跨品类面板也铺满，避免留下整列空洞。 */
+  .mon > #p-reg,.mon > #p-src{grid-column:1 / -1;min-height:0;max-height:none}
+  #tbl-sources{table-layout:fixed;width:100%}
+  #tbl-sources th:first-child{width:50%}
+  #tbl-sources th:nth-child(2){width:30%}
+  #tbl-sources th,#tbl-sources td,#tbl-sources .t-sig{white-space:normal;overflow-wrap:anywhere}
+  @media (min-width:1101px) and (max-width:1500px), (min-width:2300px){
+    .mon > #p-geo,.mon > #p-cat{grid-column:1 / -1}
+  }
   .t-panel .t-tbl{border:0}
   .t-panel .t-chart{border:0;background:transparent;padding:4px 6px 0}
   /* 时钟与市场状态：span 之间没有空白文本节点，做成可换行的 flex，窄屏才不顶出视口 */
@@ -47,7 +56,8 @@
   .reg a,.reg div{background:#111;padding:3px 7px;display:flex;align-items:baseline;gap:6px;min-width:0}
   .reg a:hover{background:#1c1c1c}
   .reg .mn{font-family:var(--t-mono);font-size:9.5px;font-weight:700;padding:0 4px;flex:0 0 auto}
-  .reg .lb{font-size:11px;color:var(--t-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .reg .lb{font-size:11px;color:var(--t-ink2);white-space:normal;min-width:0}
+  .reg .reg-health{display:block;color:var(--t-amber);font-size:10px}
   .reg div .lb{color:var(--t-faint);text-decoration:line-through}
 </style>
 </head>
@@ -238,14 +248,14 @@
     <footer data-src="credit">—</footer>
   </section>
   <section class="t-panel w2" data-fn="FDIR 功能目录 REGISTRY" id="p-reg">
-    <header><span class="mn">FDIR</span><h3>功能注册表 Function Registry</h3><span class="sub" id="reg-sub">—</span></header>
+    <header><span class="mn">FDIR</span><h3>功能目录 Function Directory</h3><span class="sub" id="reg-sub">—</span></header>
     <div class="bd"><div class="reg" id="reg"></div></div>
-    <footer>彩色功能键条、功能目录、命令行解析、建议功能条都从 <code>/assets/terminal/registry.js</code> 生成：加一个金融功能 = 加一条记录。划掉的是规划中，缺什么写在功能目录里。</footer>
+    <footer><span id="reg-health" role="status">正在检查选股、估值与财务分析的数据…</span> · 划线功能仍在规划中；各项数据覆盖与异常见下方来源表。</footer>
   </section>
   <section class="t-panel w2" data-fn="SOURCES 来源 DHUB" id="p-src">
     <header><span class="mn">DHUB</span><h3>数据来源 Data Sources</h3><span class="sub">来源 / 数据日期 / 状态</span></header>
     <div class="bd">
-      <table class="t-tbl t-wrap" id="tbl-sources"><thead><tr><th>DATASET</th><th>AS OF</th><th>STATUS</th></tr></thead><tbody></tbody></table>
+      <table class="t-tbl t-wrap" id="tbl-sources"><thead><tr><th>数据集与覆盖</th><th>数据日期 / 更新时间</th><th>状态</th></tr></thead><tbody></tbody></table>
     </div>
     <footer data-src="sources">—</footer>
   </section>
@@ -268,12 +278,12 @@
   <span class="t-right">数据仅供研究参考，不构成投资建议</span>
 </div>
 
-<script src="/assets/terminal/core.js?v=72a66181"></script>
+<script src="/assets/terminal/core.js?v=ea3da102"></script>
 <script src="/assets/terminal/registry.js?v=7a071288"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/overview.js?v=ca1f8bd4"></script>
-<script src="/assets/terminal/render.js?v=24fdb399"></script>
+<script src="/assets/terminal/overview.js?v=2655c5f2"></script>
+<script src="/assets/terminal/render.js?v=abcb5e99"></script>
 <script>
 /* 终端监控首页装配：只声明「哪个面板用哪个渲染器」，口径与算法都在 /assets/terminal/。 */
 (function () {
@@ -307,7 +317,7 @@
   $("#reg").innerHTML =
     FN.live().map(function (f) {
       var c = FN.catOf(f);
-      return '<a href="' + esc(f.href) + '" title="' + esc(f.zh + " · " + (f.note || "")) + '">' +
+      return '<a data-reg-mn="' + esc(f.mn) + '" href="' + esc(f.href) + '" title="' + esc(f.zh + " · " + (f.note || "")) + '">' +
         '<span class="mn" style="background:' + c.bg + ";color:" + c.ink + '">' + esc(f.mn) + "</span>" +
         '<span class="lb">' + esc(f.zh) + "</span></a>";
     }).join("") +
@@ -317,9 +327,21 @@
         '<span class="mn" style="background:' + c.bg + ";color:" + c.ink + ';opacity:.45">' + esc(f.mn) + "</span>" +
         '<span class="lb">' + esc(f.zh) + "</span></div>";
     }).join("");
-  $("#reg-sub").textContent = "已接入 " + FN.live().length + " · 规划中 " + FN.PLANNED.length;
+  $("#reg-sub").textContent = "功能入口 " + FN.live().length + " · 规划中 " + FN.PLANNED.length;
 
   O.load().then(function (M) {
+    var fundamentalRows = (M.fundamentals && M.fundamentals.rows) || [];
+    var covered = fundamentalRows.filter(function (r) {
+      return r.available && ["pe", "pb", "ps", "roe", "netMargin", "debtToAssets"].some(function (k) { return isNum(r[k]); });
+    }).length;
+    var ready = covered > 0 && M.fundamentals.demo !== true && M.fundamentals.status !== "error";
+    $("#reg-health").textContent = ready
+      ? "选股 / 估值 / 财务分析：" + covered + " / " + fundamentalRows.length + " 家至少一项比率可用；具体字段覆盖见详情"
+      : "选股 / 估值 / 财务分析：数据未就绪，请查看下方公司基本面状态";
+    ["SCRN", "RV", "FA"].forEach(function (mn) {
+      var a = $('[data-reg-mn="' + mn + '"]');
+      if (a && !ready) a.querySelector(".lb").insertAdjacentHTML("beforeend", '<span class="reg-health">数据未就绪</span>');
+    });
     var eqSrc = M.meta.sources[0];
     R.topStatus(M);
 
@@ -872,6 +894,7 @@
     });
     K.wireNumbers();
   }).catch(function (e) {
+    $("#reg-health").textContent = "数据检查失败，请稍后重试；功能入口不代表数据可用";
     $$("[data-src]").forEach(function (f) {
       f.textContent = "数据层异常：" + (e && e.message || e);
       f.style.color = "var(--t-dn)";

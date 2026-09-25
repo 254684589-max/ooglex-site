@@ -388,12 +388,21 @@
     var body = $(sel + " tbody");
     if (!body) return;
     body.innerHTML = M.meta.sources.map(function (s) {
-      var ok = !s.error && (s.status === "ok" || s.status === undefined);
+      var status = s.error ? "error" : (s.status || "unknown");
+      var details = (s.details || []).map(function (x) {
+        return "<li>" + esc(x.name || "未命名记录") + " · " + esc(fmt.statusZh(x.status)) +
+          " · 数据日期 " + esc(x.asOf || "未提供") + (x.note ? " · " + esc(x.note) : "") + "</li>";
+      }).join("");
+      var extra = (s.coverage ? '<span class="t-source-info">' + esc(s.coverage) + "</span>" : "") +
+        (s.error ? '<span class="t-source-info">' + esc(s.error) + "</span>" : "") +
+        (details ? '<details class="t-source-details"><summary>异常明细（' + s.details.length +
+          "）</summary><ul>" + details + "</ul></details>" : "");
       return "<tr><td>" + esc(s.label) + '<span class="t-nm">' + esc(s.source || "") + " · " +
-        esc(s.cadence || s.frequency || "—") + "</span></td>" +
-        '<td class="t-rownum">' + esc(s.asOf || "—") + "</td>" +
-        "<td>" + sigTag(s.error ? { k:"stress", label:"FAIL" } : ok ? { k:"normal", label:"OK" }
-          : { k:"watch", label:String(fmt.statusZh(s.status)).toUpperCase() }) + "</td></tr>";
+        esc(s.cadence || s.frequency || "—") + "</span>" + extra + "</td>" +
+        '<td class="t-rownum">' + esc(s.asOf || "未提供") + '<span class="t-source-info">更新 ' +
+        esc(fmt.utc(s.updatedAt)) + "</span></td>" +
+        "<td>" + sigTag({ k:status === "error" ? "stress" : status === "ok" ? "normal" : "watch",
+          label:esc(fmt.statusZh(status)) }) + "</td></tr>";
     }).join("");
   }
 
