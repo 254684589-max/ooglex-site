@@ -2315,7 +2315,7 @@ function techLeaderShareResponse(handle, post, requestUrl) {
     .replace(/\s+/g, " ")
     .trim();
   const publicAuthor = handleLower === "elonmusk"
-    ? "Elon Musk"
+    ? "马斯克 · Elon Musk"
     : (englishName || strippedName || `@${handle}`);
   const showVerifiedBadge = Boolean(handle);
   const verifiedBadgeHtml = showVerifiedBadge
