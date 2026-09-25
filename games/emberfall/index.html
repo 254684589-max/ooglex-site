@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme-lock="dark">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0605">
+  <title>余烬陷落 EMBERFALL · 暗黑风动作角色扮演网页游戏 | Ooglex 游戏中心</title>
+  <meta name="description" content="《余烬陷落》EMBERFALL：Ooglex 原创 2.5D 暗黑风动作角色扮演游戏，浏览器直接玩。深入修道院地下，斩杀亡灵、收集随机词缀装备，击败堕落院长，挑战无尽深渊。">
+  <link rel="canonical" href="https://www.ooglex.com/games/emberfall/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="余烬陷落 EMBERFALL · 暗黑风动作角色扮演网页游戏">
+  <meta property="og:description" content="深入修道院地下，斩杀亡灵、收集装备、击败堕落院长。浏览器直接玩，电脑手机都支持。">
+  <meta property="og:url" content="https://www.ooglex.com/games/emberfall/">
+  <meta property="og:image" content="https://www.ooglex.com/games/emberfall/img/dungeon.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js?v=2ae26043" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    :root {
+      --bg: #0a0605; --panel: #150e0b; --line: rgba(201, 163, 90, .2);
+      --ink: #efe6d6; --dim: #a8987f; --faint: #7d6f5c; --ember: #e8843a; --gold: #c9a35a; --blood: #b3241a;
+    }
+    body {
+      min-height: 100vh; color: var(--ink); line-height: 1.7;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(900px 520px at 50% -10%, rgba(179, 36, 26, .28), transparent 64%),
+        radial-gradient(800px 520px at 100% 110%, rgba(232, 132, 58, .1), transparent 62%),
+        var(--bg);
+    }
+    a { color: var(--ember); }
+    a:focus-visible, .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 10px; }
+    .serif { font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", serif; }
+    .page { max-width: 1080px; margin: 0 auto; padding: 16px 16px 64px; }
+    .back { display: inline-block; color: var(--gold); text-decoration: none; font-size: 14px; margin: 6px 0 18px; }
+
+    .hero { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: center; }
+    .eyebrow { font-size: 12px; letter-spacing: .22em; color: var(--gold); text-transform: uppercase; }
+    h1 { margin: 8px 0 0; font-size: clamp(44px, 7vw, 74px); line-height: 1.02; font-weight: 900; letter-spacing: .06em; color: var(--ember);
+      text-shadow: 0 0 28px rgba(232, 90, 30, .45), 0 4px 0 #3a1206; }
+    h1 span { display: block; margin-top: 12px; font-size: 14px; letter-spacing: .5em; color: var(--gold); font-weight: 700; text-shadow: none; }
+    .lead { margin: 18px 0 0; color: #d9cdb8; font-size: 16px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 12px;
+      font-weight: 800; font-size: 16px; text-decoration: none; }
+    .btn.primary { color: #fff; background: linear-gradient(135deg, #b3241a, #e8843a); box-shadow: 0 12px 30px -10px rgba(232, 90, 30, .7); }
+    .btn.secondary { color: var(--ink); border: 1px solid var(--line); background: rgba(255, 255, 255, .04); }
+    .small { margin-top: 12px; color: var(--faint); font-size: 13px; }
+    .shot { margin: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #050303;
+      box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .9); }
+    .shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+    .shot figcaption { padding: 8px 12px; font-size: 12px; color: var(--faint); background: var(--panel); }
+
+    .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 28px; }
+    .fact { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); }
+    .fact b { display: block; font-size: 12px; letter-spacing: .08em; color: var(--gold); margin-bottom: 4px; }
+    .fact span { font-size: 14px; color: #d9cdb8; }
+
+    section { margin-top: 44px; }
+    h2 { font-size: 22px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+    h2::before { content: ""; width: 6px; height: 22px; border-radius: 3px; background: var(--ember); }
+    .story p { margin: 0 0 10px; color: #d9cdb8; }
+    .quote { margin: 14px 0; padding: 14px 18px; border-left: 4px solid var(--ember); background: var(--panel); border-radius: 0 12px 12px 0; font-size: 18px; }
+    .quote small { display: block; color: var(--dim); font-size: 13px; margin-top: 4px; font-family: inherit; }
+    .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .act { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); }
+    .act b { display: block; color: var(--ember); margin-bottom: 4px; }
+    .act p { margin: 0; font-size: 14px; color: #d9cdb8; }
+
+    .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0; margin: 0; list-style: none; }
+    .loop li { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--panel); font-size: 14px; color: #d9cdb8; }
+    .loop li b { display: block; color: var(--ink); font-size: 15px; }
+    .r1 { color: #7c8cff; } .r2 { color: #f3d34a; } .r3 { color: #e8843a; }
+
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--panel); }
+    .card h3 { margin: 0 0 10px; font-size: 16px; }
+    .keys { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; font-size: 14px; color: #d9cdb8; align-items: center; }
+    kbd { display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 6px; text-align: center; font: 700 13px/1.6 inherit;
+      color: #1b120c; background: #eee6d6; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .25); white-space: nowrap; }
+    ul.list { margin: 0; padding-left: 20px; color: #d9cdb8; font-size: 14px; }
+    ul.list li { margin-bottom: 4px; }
+
+    .notice { margin-top: 36px; padding: 16px 18px; border-radius: 14px; border: 1px solid rgba(232, 132, 58, .25); background: rgba(232, 132, 58, .06);
+      color: #cfc3ae; font-size: 13px; line-height: 1.8; }
+    .cta-bottom { text-align: center; margin-top: 40px; }
+    footer { text-align: center; color: var(--faint); font-size: 12px; margin-top: 30px; }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .facts, .loop { grid-template-columns: repeat(2, 1fr); }
+      .gallery, .controls, .acts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) {
+      .loop { grid-template-columns: 1fr; }
+      .btn { flex: 1 1 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="../hub/">← 返回游戏中心</a>
+
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Ooglex Games · 原创暗黑风网页游戏</div>
+        <h1 class="serif">余烬陷落<span>EMBERFALL</span></h1>
+        <p class="lead">修道院的钟在午夜自己响了。院长带着修士们走进地窖，再也没有出来；从那以后，死者开始行走。你是一个途经烬原镇的流浪者——举起火把，走下台阶，看看黑暗里到底藏着什么。</p>
+        <div class="actions">
+          <a class="btn primary" href="play/?v=1">▶ 开始游戏</a>
+          <a class="btn secondary" href="#controls">操作说明</a>
+        </div>
+        <p class="small">免下载安装 · 电脑和手机浏览器都能玩 · 首次加载约 160 KB · 存档保存在你自己的浏览器里</p>
+      </div>
+      <figure class="shot">
+        <img src="img/dungeon.jpg" width="1280" height="720" alt="《余烬陷落》地窖第 2 层：火光照亮的石砌地牢里，玩家挥剑迎战一群腐尸，屏幕两侧是红色生命球与蓝色法力球">
+        <figcaption>网页版实机截图 · 地窖第 2 层，腐尸群来袭</figcaption>
+      </figure>
+    </div>
+
+    <div class="facts">
+      <div class="fact"><b>类型</b><span>2.5D 斜视角 · 动作角色扮演 · 地牢探索 · 刷装备</span></div>
+      <div class="fact"><b>版本</b><span>EMBERFALL V0.1 · 第一幕完整可玩</span></div>
+      <div class="fact"><b>篇幅</b><span>6 层主线 · 2 个首领 · 3 条任务 · 之后无尽深渊</span></div>
+      <div class="fact"><b>技术</b><span>Canvas 2D + 原生 JavaScript，画面与音效全部由代码生成</span></div>
+    </div>
+
+    <section class="story">
+      <h2>故事</h2>
+      <p class="serif">三十年前，灰烬之王厄鲁斯从地底裂隙中爬出，焚毁了半个王国。圣焰修会以七位守誓者的性命为代价，把他封进一枚「余烬之心」，埋在修道院的最深处。烬原镇的人们以为噩梦已经结束。</p>
+      <div class="quote serif">「镇上能拿剑的人都已经下去过了，没有一个回来。」<small>—— 老祭司 伊莲</small></div>
+      <div class="acts">
+        <div class="act"><b>第 1–2 层 · 修道院地窖</b><p>腐尸、骸骨战士与火坑小鬼。查明地下发生了什么，回镇上告诉伊莲。</p></div>
+        <div class="act"><b>第 3–4 层 · 白骨墓穴</b><p>铁匠格伦的学徒托比被「腐肉监工」莫格抓走了。杀进屠宰间，把他救出来。</p></div>
+        <div class="act"><b>第 5–6 层 · 熔渊</b><p>封印大厅里，堕落院长摩登胸口的余烬之心正在燃烧……之后，是没有尽头的深渊。</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>玩法</h2>
+      <ol class="loop">
+        <li><b>点击即战斗</b>点地面走路，点怪物挥剑，按住不放连续攻击</li>
+        <li><b>四个技能</b>火球术、旋风斩、冰霜新星、暗影闪现，随等级解锁</li>
+        <li><b>随机地牢</b>每层房间和走廊随机生成，火把、宝箱、木桶、神殿</li>
+        <li><b>刷装备</b>普通 / <span class="r1">魔法</span> / <span class="r2">稀有</span> / <span class="r3">传奇</span>，16 种随机词缀</li>
+        <li><b>精英怪</b>蓝名精英带「迅捷」「石肤」「嗜血」「焚烧」等特性</li>
+        <li><b>升级加点</b>每级 5 点，分配到力量、体能、魔力</li>
+        <li><b>回城与传送</b>回城卷轴开传送门，镇上传送石直达到过的楼层</li>
+        <li><b>首领战</b>莫格会冲锋和暴怒；摩登会瞬移、召唤、放火环并二阶段变身</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>游戏画面</h2>
+      <div class="gallery">
+        <figure class="shot">
+          <img src="img/town.jpg" width="1280" height="720" loading="lazy" alt="烬原镇：篝火旁站着白袍的老祭司伊莲，头顶有感叹号，旁边是铁匠格伦、药剂师玛拉、水井与传送石，四周是树林和红顶房屋">
+          <figcaption>烬原镇：接任务、买卖装备、免费治疗</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="img/dungeon.jpg" width="1280" height="720" loading="lazy" alt="地窖中玩家被腐尸包围，火光只照亮身边一小片区域">
+          <figcaption>地牢：光照范围之外一片漆黑</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="img/boss.jpg" width="1280" height="720" loading="lazy" alt="熔渊第 6 层封印大厅：头戴火焰冠冕的堕落院长摩登释放紫色法球，身边召唤出骸骨战士">
+          <figcaption>第 6 层首领：堕落院长摩登</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="controls">
+      <h2>操作说明</h2>
+      <div class="controls">
+        <div class="card">
+          <h3>电脑（鼠标 + 键盘）</h3>
+          <div class="keys">
+            <span><kbd>左键</kbd></span><span>移动 / 攻击 / 拾取 / 对话（按住持续）</span>
+            <span><kbd>Shift</kbd>+<kbd>左键</kbd></span><span>原地攻击</span>
+            <span><kbd>右键</kbd></span><span>火球术</span>
+            <span><kbd>1</kbd>～<kbd>4</kbd></span><span>向鼠标位置释放技能</span>
+            <span><kbd>Q</kbd> <kbd>E</kbd></span><span>生命药水 · 法力药水</span>
+            <span><kbd>T</kbd></span><span>回城卷轴</span>
+            <span><kbd>I</kbd> <kbd>C</kbd> <kbd>Tab</kbd></span><span>背包 · 角色 · 自动地图</span>
+            <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>键盘移动（可选）</span>
+            <span><kbd>M</kbd> <kbd>Esc</kbd></span><span>音效开关 · 菜单</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>手机 / 平板（触屏）</h3>
+          <div class="keys">
+            <span><kbd>点地面</kbd></span><span>移动，按住拖动持续移动</span>
+            <span><kbd>点怪物</kbd></span><span>攻击，按住不放持续攻击</span>
+            <span><kbd>技能按钮</kbd></span><span>自动瞄准最近的可见敌人</span>
+            <span><kbd>血</kbd> <kbd>蓝</kbd> <kbd>城</kbd></span><span>喝药 · 回城</span>
+            <span><kbd>右上角</kbd></span><span>背包 · 角色 · 地图 · 菜单</span>
+          </div>
+          <p class="small">打开背包、角色、对话等面板时游戏自动暂停。竖屏、横屏都可以玩。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>后续计划</h2>
+      <ul class="list">
+        <li>更多职业（目前为一名近战与法术兼修的流浪者）与技能树</li>
+        <li>第二幕新区域、更多首领和套装</li>
+        <li>装备鉴定、耐久与宝石镶嵌</li>
+      </ul>
+      <p class="small">以上为规划，尚未实现。</p>
+    </section>
+
+    <div class="cta-bottom">
+      <a class="btn primary" href="play/?v=1">▶ 开始游戏</a>
+    </div>
+
+    <div class="notice">
+      <b>说明：</b>《余烬陷落》是 Ooglex 的原创作品，致敬经典暗黑风动作角色扮演游戏的玩法类型；游戏中的人物、地名、剧情、美术与音效均为原创，由代码实时生成，
+      不包含任何其他游戏的程序、图像、音乐或文字素材，与暴雪娱乐（Blizzard Entertainment）及《暗黑破坏神》系列没有关联。
+      想玩正版《暗黑破坏神 IV》，请前往 <a href="../diablo/">暗黑破坏神 IV 官方入口</a>。
+      存档保存在你当前浏览器的本地存储里：换浏览器、使用无痕模式或清除网站数据后存档会消失。
+    </div>
+
+    <footer>Ooglex Games · 余烬陷落 EMBERFALL V0.1 · Canvas 2D 制作</footer>
+  </main>
+</body>
+</html>

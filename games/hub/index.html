@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏中心 · 网页小游戏</title>
-<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含原创 3D 赛博朋克都市人生模拟《打工》、原创 3D 工地模拟《工地搬砖》、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
+<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含原创 3D 赛博朋克都市人生模拟《打工》、原创 3D 工地模拟《工地搬砖》、原创暗黑风动作角色扮演《余烬陷落》、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
 <link rel="canonical" href="https://www.ooglex.com/games/hub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏中心 · 网页小游戏">
@@ -59,6 +59,11 @@
   .cv-cw { background:linear-gradient(180deg,#2b3a55 0%,#6e5a4a 55%,#e0a13a 100%); }
   .cv-cw::before { content:""; position:absolute; left:0; right:0; bottom:0; height:16px; z-index:1;
     background:repeating-linear-gradient(-45deg,#f5be28 0 14px,#1d1d1f 14px 28px); }
+  /* 余烬陷落 EMBERFALL：黑暗地牢里的一簇火光 */
+  .cv-ef { background:radial-gradient(circle at 50% 62%,#e8843a 0%,#8a2412 16%,#2a0a07 42%,#0a0504 100%); }
+  .cv-ef::before { content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1;
+    background:repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 2px, transparent 2px 34px), repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 17px);
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
   /* GTA Vice City：迈阿密霓虹夕阳 */
   .cv-gta { background:linear-gradient(180deg,#2a0a4a 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
   .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
@@ -117,6 +122,14 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
         <div class="body">
           <h3>BRICK BY BRICK · 原创 3D 游戏</h3>
           <p>第三人称工地模拟：揣着 300 元来到大城市，找工头老王接活，搬砖、搬水泥、扛钢筋，领工资、吃饭、睡觉，一天天成长。电脑手机浏览器直接玩，首次加载约 40 MB。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../emberfall/" style="--ac:#b3241a;--ac2:#e8843a">
+        <div class="cover cv-ef"><span class="ico">🕯️</span></div>
+        <div class="body">
+          <h3>EMBERFALL · 原创暗黑风 ARPG</h3>
+          <p>2.5D 暗黑风动作角色扮演：深入修道院地下，斩杀亡灵、刷随机词缀装备、击败堕落院长，之后挑战无尽深渊。电脑手机浏览器直接玩，首次加载约 160 KB。</p>
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050304">
+<title>EMBERFALL 余烬陷落 · 开始游戏 | Ooglex 游戏中心</title>
+<meta name="description" content="《余烬陷落》EMBERFALL 网页版：原创 2.5D 暗黑风动作角色扮演游戏。深入修道院地下，斩杀亡灵、收集装备、击败堕落院长。">
+<link rel="canonical" href="https://www.ooglex.com/games/emberfall/play/">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="game.css?v=1">
+</head>
+<body>
+<canvas id="game" aria-label="游戏画面：点击地面移动，点击敌人攻击"></canvas>
+
+<div id="hud" hidden>
+  <div id="top">
+    <div id="loc"></div>
+    <div id="topbtns">
+      <button class="tb" id="b-inv" type="button" title="背包（I）">背包</button>
+      <button class="tb" id="b-char" type="button" title="角色（C）">角色<span class="badge" id="pts-badge" hidden></span></button>
+      <button class="tb" id="b-map" type="button" title="地图（Tab）">地图</button>
+      <button class="tb" id="b-menu" type="button" title="菜单（Esc）">菜单</button>
+    </div>
+  </div>
+  <div id="bossbar" hidden><div class="name serif"></div><div class="bar"><i></i></div></div>
+  <div id="tgt" hidden><div class="name"></div><div class="bar"><i></i></div><div class="sub"></div></div>
+  <div id="log" aria-live="polite"></div>
+  <div id="bottom">
+    <div class="orb hp" id="orb-hp" title="生命"><i></i><span></span></div>
+    <div id="center">
+      <div id="xp" title="经验"><i></i></div>
+      <div class="row" id="skills"></div>
+      <div class="row" id="pots">
+        <button class="sk hpp" id="p-hp" type="button" title="生命药水（Q）"><span class="key">Q</span><b>血</b><small>生命</small><span class="cnt"></span></button>
+        <button class="sk mpp" id="p-mp" type="button" title="法力药水（E）"><span class="key">E</span><b>蓝</b><small>法力</small><span class="cnt"></span></button>
+        <button class="sk tpp" id="p-tp" type="button" title="回城卷轴（T）"><span class="key">T</span><b>城</b><small>回城</small><span class="cnt"></span></button>
+      </div>
+    </div>
+    <div class="orb mp" id="orb-mp" title="法力"><i></i><span></span></div>
+  </div>
+</div>
+
+<div id="panel" class="panel" hidden role="dialog" aria-modal="true" aria-labelledby="panel-title">
+  <div class="ph"><h2 id="panel-title"></h2><button class="x" id="panel-x" type="button" aria-label="关闭">×</button></div>
+  <div class="pb" id="panel-body"></div>
+</div>
+
+<div id="title" class="screen">
+  <div class="box">
+    <div class="logo">余烬陷落</div>
+    <div class="logo-sub">EMBERFALL</div>
+    <div class="story">
+      <p>三十年前，灰烬之王厄鲁斯从地底裂隙中爬出，焚毁了半个王国。圣焰修会以七位守誓者的性命为代价，把他封进一枚「余烬之心」，埋在修道院的最深处。</p>
+      <p>烬原镇的人们以为噩梦已经结束。</p>
+      <p>直到一个月前，修道院的钟在午夜自己响了起来。院长摩登带着修士们走进地窖，再也没有出来。从那以后，地下传来了呻吟，死者开始行走。</p>
+      <p>你是一个途经此地的流浪者。镇中央的篝火旁，老祭司伊莲在等你。</p>
+    </div>
+    <div class="opts">
+      <button class="btn main" id="t-continue" type="button" hidden>继续旅程</button>
+      <button class="btn main" id="t-new" type="button">新的旅程</button>
+      <button class="btn" id="t-help" type="button" style="text-align:center">操作说明</button>
+    </div>
+    <p class="note">Ooglex 原创作品 · 人物、地名与剧情均为虚构 · 存档保存在当前浏览器<br><a href="../">← 返回游戏介绍</a></p>
+  </div>
+</div>
+
+<div id="death" class="screen" hidden>
+  <div class="box">
+    <div class="dead-t">你倒下了</div>
+    <p class="note" id="death-note" style="font-size:14px;color:#cdbfa6"></p>
+    <div class="opts"><button class="btn main" id="d-revive" type="button">在烬原镇复活</button></div>
+  </div>
+</div>
+
+<noscript><p style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#e9dcc6">需要启用 JavaScript 才能游玩。</p></noscript>
+<script src="game.js?v=1"></script>
+</body>
+</html>
