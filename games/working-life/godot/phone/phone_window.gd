@@ -1,12 +1,12 @@
 class_name PhoneWindow
 extends UIWindow
 ## 手机（Tab）：游戏里主要的管理界面。主屏是 APP 图标，点进去是各个 APP。
-## APP：消息、招聘、银行、地图、任务、人物、住房、技能、投资、创业、联系人、打车、房产、汽车、设置。
+## APP：消息、招聘、银行、地图、任务、人物、住房、技能、投资、创业、联系人、约会、打车、房产、汽车、设置。
 
 const APPS := [
 	["messages", "消息", "信"], ["jobs", "招聘", "职"], ["bank", "银行", "¥"], ["map", "地图", "◎"],
 	["quests", "任务", "◆"], ["profile", "人物", "我"], ["housing", "住房", "家"], ["skills", "技能", "技"],
-	["invest", "投资", "↗"], ["business", "创业", "企"], ["contacts", "联系人", "友"], ["transit", "打车", "的"],
+	["invest", "投资", "↗"], ["business", "创业", "企"], ["contacts", "联系人", "友"], ["romance", "约会", "爱"], ["transit", "打车", "的"],
 	["property", "房产", "楼"], ["cars", "汽车", "车"], ["settings", "设置", "设"],
 ]
 
@@ -74,6 +74,8 @@ func open_app(id: String) -> void:
 			CarsApp.build(body, refresh)
 		"property":
 			PropertyApp.build(body, refresh)
+		"romance":
+			RomanceApp.build(body, force_close)
 		"transit":
 			force_close()
 			Events.panel_requested.emit("travel", {"mode": "taxi"})

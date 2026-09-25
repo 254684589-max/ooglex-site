@@ -211,6 +211,8 @@ func _on_panel(id: String, args: Dictionary) -> void:
 			open(args["window"])
 		"phone":
 			open(PhoneWindow.new(String(args.get("app", ""))))
+		"date":
+			open(DateWindow.new(String(args.get("npc", ""))))
 		"map":
 			open(CityMapWindow.new())
 		"courses":

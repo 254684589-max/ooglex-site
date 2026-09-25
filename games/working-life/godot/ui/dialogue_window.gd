@@ -76,6 +76,11 @@ func show_main(line: String) -> void:
 			gifts.append(String(id))
 	if not gifts.is_empty():
 		_opt("送礼物" if NPCManager.can_gift(npc_id) else "送礼物（今天已经送过了）", _gift_menu.bind(gifts), NPCManager.can_gift(npc_id))
+	if RomanceManager.is_candidate(npc_id):
+		var why := RomanceManager.date_block(npc_id)
+		var st := RomanceManager.status_of(npc_id)
+		var label := "约 TA 出去（约会）" if st == "none" else ("约会（%s）" % RomanceManager.stage_text(npc_id))
+		_opt(label if why == "" else "%s（%s）" % [label, why], func(): _open_panel("date", {"npc": npc_id}), why == "")
 	var hire := NPCManager.direct_hire_job(npc_id)
 	if hire != "" and not (JobManager.has_job() and JobManager.job_id() == hire):
 		_opt("【关系】请%s直接录用我：%s（%s）" % [String(npc.get("name", "")), String(DataDB.job(hire).get("name", "")), JobManager.pay_text(hire, 0)], _direct_hire.bind(hire))

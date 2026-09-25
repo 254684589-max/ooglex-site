@@ -35,7 +35,7 @@ func _ready() -> void:
 	player = GameManager.player
 	ui = main.ui
 	var groups := ["startup", "data", "economy", "time", "skills", "first_day", "job_payment", "monthly_job",
-		"housing", "property", "investment", "business", "npc", "character", "events", "transport", "collapse", "carry", "ui_windows",
+		"housing", "property", "investment", "business", "npc", "romance", "character", "events", "transport", "collapse", "carry", "ui_windows",
 		"driving", "navigation", "save_load", "endings", "journey"]
 	for g in groups:
 		if not only.is_empty() and not only.has(g):
@@ -241,6 +241,103 @@ func test_property() -> void:
 	await frames(5)
 	check(HousingManager.is_owned("luxury") and HousingManager.current == "luxury" and HousingManager.furniture_of("luxury").get("tv", "") == "tv_2" and int(HousingManager.owned["luxury"]["price"]) == int(lux_before["price"]), "读档：房产、自住、家具都在")
 	check(EconomyManager.networth() >= HousingManager.property_equity() and HousingManager.property_equity() > 2000000, "净资产计入房产净值 %s" % Fmt.yuan(HousingManager.property_equity()))
+
+
+## 约会与恋爱：约会条件、地点、聊天与好感、表白、分手、求婚结婚、存档
+func _best_answer() -> int:
+	var t := RomanceManager.current_topic()
+	var best := 0
+	for i in (t["options"] as Array).size():
+		if int(t["options"][i]["a"]) > int(t["options"][best]["a"]):
+			best = i
+	return best
+
+
+func test_romance() -> void:
+	await new_game()
+	fresh()
+	check(RomanceManager.candidates().size() == 4, "可以约会的人 4 位")
+	check(GameManager.lookup("npc:suqing") != null and GameManager.lookup("npc:chenmo") != null, "新 NPC 苏晴、陈默已生成")
+	var d0 := TimeManager.day
+	TimeManager.set_time(d0, 20.0 * 60.0)
+	check(RomanceManager.date_block("suqing").begins_with("和苏晴还不够熟"), "关系不够约不出来")
+	check(RomanceManager.date_block("laoli") != "", "房东老李不在约会对象里")
+	NPCManager.change_relation("suqing", 40)
+	check(RomanceManager.date_block("suqing") == "", "关系 40：可以约苏晴")
+	check(RomanceManager.venue_block(RomanceManager.venue("home")) != "", "没住公寓不能约来家里")
+	TimeManager.set_time(d0, 21.5 * 60.0)
+	check(RomanceManager.venue_block(RomanceManager.venue("park")) != "" and RomanceManager.venue_block(RomanceManager.venue("night_view")) == "", "21:30 公园散步已结束，还能看夜景")
+	TimeManager.set_time(d0, 20.0 * 60.0)
+	var c0 := EconomyManager.liquid()
+	var r := RomanceManager.start_date("suqing", "night_view")
+	check(bool(r["ok"]), "约苏晴去山坡看夜景：%s" % String(r["text"]))
+	var npc := GameManager.lookup("npc:suqing") as NPC
+	check(npc != null and npc.talking and player.global_position.distance_to(npc.global_position) < 2.5, "两人一起到了山坡（相距 %.1f 米）" % player.global_position.distance_to(npc.global_position))
+	var t0 := TimeManager.total_minutes
+	for i in 3:
+		RomanceManager.answer(_best_answer())
+	var msg := RomanceManager.finish_date()
+	check(RomanceManager.affection_of("suqing") >= 20 and EconomyManager.liquid() == c0, "免费的夜景约会：好感 %d（TA 最喜欢夜景，回答都很好）" % RomanceManager.affection_of("suqing"))
+	check(TimeManager.total_minutes - t0 >= 89.0 and not npc.talking, "约会用掉 90 分钟，结束后苏晴回到日程")
+	check(RomanceManager.date_block("suqing").begins_with("今天已经"), "一天只能约一次：%s" % msg.left(10))
+	# 表白：好感不够被拒
+	RomanceManager.affection["suqing"] = 55
+	var cr := RomanceManager.confess("suqing")
+	check(not bool(cr[0]) and RomanceManager.affection_of("suqing") == 47 and RomanceManager.can_confess("suqing").begins_with("上次被拒"), "好感 55 表白被拒：好感 -8，三天内不能再表白")
+	RomanceManager.confess_cooldown.clear()
+	RomanceManager.affection["suqing"] = 70
+	cr = RomanceManager.confess("suqing")
+	check(bool(cr[0]) and RomanceManager.partner == "suqing" and RomanceManager.status_of("suqing") == "dating", "好感 70 表白成功，成为恋人")
+	NPCManager.change_relation("xiaomei", 40)
+	check(RomanceManager.date_block("xiaomei") == "你已经有恋人了", "有恋人时不能约别人")
+	# 冷落：太久不约会掉好感，跌破 35 分手
+	var mood0 := PlayerManager.mood
+	RomanceManager.last_date["suqing"] = TimeManager.day - 3
+	RomanceManager._on_day_changed(TimeManager.day)
+	check(PlayerManager.mood > mood0 - 0.01 and RomanceManager.affection_of("suqing") == 70, "恋人每天心情 +3，常约会不掉好感")
+	RomanceManager.last_date["suqing"] = TimeManager.day - 20
+	RomanceManager.affection["suqing"] = 36
+	RomanceManager._on_day_changed(TimeManager.day)
+	check(RomanceManager.partner == "" and RomanceManager.status_of("suqing") == "none", "太久不约会好感跌破 35：分手")
+	# 上班时间约不出来
+	var wd := TimeManager.day
+	while not NPCManager._days_ok("weekdays", wd):
+		wd += 1
+	TimeManager.set_time(wd, 12.0 * 60.0)
+	NPCManager.change_relation("chenmo", 40)
+	check(RomanceManager.busy_now("chenmo") and RomanceManager.date_block("chenmo").contains("上班"), "工作日中午陈默在上班，约不出来")
+	# 求婚：恋爱 7 天、好感 90、有公寓、买得起钻戒
+	TimeManager.set_time(wd, 19.5 * 60.0)
+	RomanceManager.affection["chenmo"] = 80
+	RomanceManager.confess("chenmo")
+	check(RomanceManager.partner == "chenmo", "和陈默在一起")
+	RomanceManager.affection["chenmo"] = 95
+	check(RomanceManager.can_propose("chenmo").contains("7 天"), "在一起不到 7 天不能求婚")
+	RomanceManager.partner_since = TimeManager.day - 8
+	check(RomanceManager.can_propose("chenmo").contains("家"), "没有像样的家不能求婚")
+	EconomyManager.earn(200000, "其他", "测试", true)
+	HousingManager.move_in("apartment")
+	var c1 := EconomyManager.liquid()
+	var pr := RomanceManager.propose("chenmo")
+	check(bool(pr[0]) and RomanceManager.status_of("chenmo") == "married" and GameManager.has_flag("married") and EconomyManager.liquid() == c1 - RomanceManager.RING_PRICE, "求婚成功（钻戒 ¥52,000），结婚了")
+	# 在家约会：住公寓后可以约来家里
+	RomanceManager.last_date.erase("chenmo")
+	TimeManager.set_time(wd + 1 if NPCManager._days_ok("weekend", wd + 1) else wd, 20.0 * 60.0)
+	RomanceManager.last_date.erase("chenmo")
+	check(RomanceManager.venue_block(RomanceManager.venue("home")) == "", "住上公寓后可以约来家里")
+	# 界面
+	Events.panel_requested.emit("date", {"npc": "chenmo"})
+	await frames(2)
+	check(ui.windows.size() > 0 and ui.windows.back() is DateWindow, "打开约会窗口")
+	ui.close_all()
+	await frames(1)
+	# 存档
+	var snap := {"a": RomanceManager.affection_of("chenmo"), "p": RomanceManager.partner, "s": RomanceManager.status_of("chenmo"), "su": RomanceManager.affection_of("suqing")}
+	check(SaveManager.save(3), "保存")
+	RomanceManager.reset()
+	main.load_slot(3)
+	await frames(5)
+	check(RomanceManager.partner == snap["p"] and RomanceManager.status_of("chenmo") == snap["s"] and RomanceManager.affection_of("chenmo") == snap["a"] and RomanceManager.affection_of("suqing") == snap["su"], "读档：恋爱状态与好感都在")
 
 
 ## 人物：骨架、蒙皮、步态（屈膝、脚着地）、坐姿、换衣服改色、几何缓存
