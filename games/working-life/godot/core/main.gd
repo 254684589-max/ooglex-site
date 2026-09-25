@@ -13,6 +13,7 @@ var day_night: DayNight
 var weather_fx: WeatherFX
 var traffic: Traffic
 var street_traffic: StreetTraffic
+var home_decor: HomeDecor
 var post_fx: PostFX
 var train: Train
 var crowd: Crowd
@@ -62,6 +63,9 @@ func _ready() -> void:
 	crowd = Crowd.new()
 	add_child(crowd)
 	crowd.setup(city.sidewalk_points)
+	home_decor = HomeDecor.new()
+	home_decor.name = "HomeDecor"
+	add_child(home_decor)
 	marker = ObjectiveMarker.new()
 	add_child(marker)
 	menu_camera = Camera3D.new()

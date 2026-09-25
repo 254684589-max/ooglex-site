@@ -130,9 +130,9 @@ func withdraw_to_void(amount: int, note: String) -> void:
 	Events.money_changed.emit()
 
 
-## 净资产 = 现金 + 存款 + 投资市值 + 公司权益 + 押金 + 车辆转卖价
+## 净资产 = 现金 + 存款 + 投资市值 + 公司权益 + 押金 + 车辆转卖价 + 房产净值
 func networth() -> int:
-	return cash + bank + int(InvestmentManager.market_value()) + BusinessManager.equity() + HousingManager.deposit_held() + VehicleManager.resale_value()
+	return cash + bank + int(InvestmentManager.market_value()) + BusinessManager.equity() + HousingManager.deposit_held() + VehicleManager.resale_value() + HousingManager.property_equity()
 
 
 ## 近 30 天被动收入，折算为月

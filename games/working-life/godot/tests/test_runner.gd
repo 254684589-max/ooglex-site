@@ -35,7 +35,7 @@ func _ready() -> void:
 	player = GameManager.player
 	ui = main.ui
 	var groups := ["startup", "data", "economy", "time", "skills", "first_day", "job_payment", "monthly_job",
-		"housing", "investment", "business", "npc", "character", "events", "transport", "collapse", "carry", "ui_windows",
+		"housing", "property", "investment", "business", "npc", "character", "events", "transport", "collapse", "carry", "ui_windows",
 		"driving", "navigation", "save_load", "endings", "journey"]
 	for g in groups:
 		if not only.is_empty() and not only.has(g):
@@ -128,6 +128,121 @@ func set_clock(hour: float) -> void:
 
 
 # ================================================================ 启动与数据
+## 买房、贷款、自住、出租、装修、卖房、断供收房、存档
+func _next_month_day1() -> int:
+	var d := TimeManager.day + 1
+	while TimeManager.day_of_month(d) != 1:
+		d += 1
+	return d
+
+
+func _skill_total(id: String) -> float:
+	return SkillManager.level(id) * 100000.0 + float(SkillManager.xp.get(id, 0.0))
+
+
+func test_property() -> void:
+	await new_game()
+	fresh()
+	EconomyManager.earn(3000000, "其他", "测试", true)
+	check(HousingManager.buy_home("apartment", true).begins_with("银行不批"), "没有工作不能贷款买房")
+	check(HousingManager.buy_home("shared", false).begins_with("这种房子只能租"), "合租房只能租不能买")
+	JobManager.hire("office", 0)
+	var liquid0 := EconomyManager.liquid()
+	var nw0 := EconomyManager.networth()
+	var msg := HousingManager.buy_home("apartment", true)
+	var o: Dictionary = HousingManager.owned.get("apartment", {})
+	check(not o.is_empty() and EconomyManager.liquid() == liquid0 - 234000 - 11700, "贷款买普通公寓：首付 ¥234,000 + 税费 ¥11,700（%s）" % msg.left(12))
+	check(int(o.get("payment", 0)) == HousingManager.mortgage_payment(546000.0, 120) and int(o["payment"]) > 5000 and int(o["payment"]) < 6000, "月供 %s（等额本息 120 期）" % Fmt.yuan(int(o.get("payment", 0))))
+	check(EconomyManager.networth() == nw0 - 11700, "买房后净资产只少了税费（房产净值计入）")
+	check(HousingManager.can_enter("apartment") and HousingManager.current != "apartment", "买下后能进房间，但还没搬进去")
+	check(HousingManager.buy_furniture("apartment", "rug_1").contains("已送货") and HousingManager.buy_furniture("shared", "rug_1").begins_with("租的房子"), "只能装修自己的房子")
+	msg = HousingManager.move_into_owned("apartment")
+	check(HousingManager.current == "apartment" and HousingManager.is_monthly() and HousingManager.level() == 3, "搬进自己的房子：住房等级 3（%s）" % msg)
+	var p0 := HousingManager.prestige()
+	var m0 := HousingManager.mood_bonus()
+	check(p0 == 5.0 + 2.0, "自己的房子体面度 +2（%.1f）" % p0)
+	HousingManager.buy_furniture("apartment", "sofa_2")
+	check(HousingManager.mood_bonus() == m0 + 1.0 and HousingManager.prestige() == p0 + 0.5, "真皮沙发：心情 +1/天、体面度 +0.5")
+	var c1 := EconomyManager.liquid()
+	msg = HousingManager.buy_furniture("apartment", "sofa_3")
+	check(EconomyManager.liquid() == c1 - 38000 + 2940 and HousingManager.furniture_of("apartment")["sofa"] == "sofa_3", "换意式沙发：旧沙发三成回收 ¥2,940")
+	for it in ["tv_3", "rug_3", "lamp_3", "art_3", "bookshelf_3", "plant_3", "treadmill_3", "bedding_3"]:
+		HousingManager.buy_furniture("apartment", it)
+	check(HousingManager.furniture_of("apartment").size() == 9, "九个位置全部装修")
+	check(HousingManager.decor_sum("apartment", "mood") == HousingManager.DECOR_MOOD_CAP and HousingManager.decor_sum("apartment", "sleep") <= HousingManager.DECOR_SLEEP_CAP, "家具加成有上限（心情 +%d/天）" % int(HousingManager.DECOR_MOOD_CAP))
+	check(HousingManager.sleep_quality() > 1.0, "高级床品提高睡眠恢复（%.2f）" % HousingManager.sleep_quality())
+	main.home_decor.refresh()
+	await frames(2)
+	var decor: Node3D = main.home_decor.node_of("apartment")
+	check(decor != null and decor.get_child_count() >= 5, "房间里生成了家具模型和交互点")
+	var run_sp := GameManager.lookup("point:apartment:decor_run") as ServicePoint
+	var rest_sp := GameManager.lookup("point:apartment:decor_rest") as ServicePoint
+	var tv_sp := GameManager.lookup("point:apartment:decor_tv") as ServicePoint
+	var read_sp := GameManager.lookup("point:apartment:decor_read") as ServicePoint
+	check(run_sp != null and rest_sp != null and tv_sp != null and read_sp != null, "沙发、电视、书架、跑步机都可以使用")
+	var f0 := _skill_total("fitness")
+	run_sp.perform("interact", player)
+	check(_skill_total("fitness") > f0, "在家跑步：体能经验增加")
+	var fin0 := _skill_total("finance")
+	read_sp.perform("interact", player)
+	check(_skill_total("finance") > fin0, "看书：金融经验增加")
+	PlayerManager.set_stat("stress", 60)
+	tv_sp.perform("pickup", player)
+	check(PlayerManager.stress < 60, "看电视：压力下降")
+	# 每月 1 日：月供、房价、住自己的房子不交房租
+	var d1 := _next_month_day1()
+	TimeManager.set_time(d1, 8.0 * 60.0)
+	var loan0 := float(HousingManager.owned["apartment"]["loan"])
+	var b0 := EconomyManager.liquid()
+	HousingManager._on_day_changed(d1)
+	o = HousingManager.owned["apartment"]
+	check(float(o["loan"]) < loan0 and int(o["months_left"]) == 119, "每月扣月供，本金减少（剩 %s）" % Fmt.yuan(int(o["loan"])))
+	check(EconomyManager.liquid() == b0 - int(o["payment"]), "只扣月供，住自己的房子不交房租")
+	check(int(o["value"]) != 780000, "房价按月波动（%s）" % Fmt.yuan(int(o["value"])))
+	# 提前还款
+	var pay0 := int(o["payment"])
+	HousingManager.prepay("apartment", 100000)
+	check(int(HousingManager.owned["apartment"]["payment"]) < pay0, "提前还 ¥100,000：月供降到 %s" % Fmt.yuan(int(HousingManager.owned["apartment"]["payment"])))
+	# 第二套：全款买高级公寓，搬过去，把普通公寓出租
+	EconomyManager.earn(5000000, "其他", "测试", true)
+	HousingManager.buy_home("luxury", false)
+	check(HousingManager.is_owned("luxury") and float(HousingManager.owned["luxury"]["loan"]) == 0.0, "全款买高级公寓：没有贷款")
+	check(HousingManager.set_rented_out("apartment", true).begins_with("你正住在这里"), "正住着的房子不能出租")
+	HousingManager.move_into_owned("luxury")
+	HousingManager.set_rented_out("apartment", true)
+	check(not HousingManager.can_enter("apartment") and HousingManager.can_enter("luxury_apartment"), "出租的房子不能进，自住的能进")
+	var d2 := _next_month_day1()
+	TimeManager.set_time(d2, 8.0 * 60.0)
+	var bank0 := EconomyManager.bank
+	var pay2 := int(HousingManager.owned["apartment"]["payment"])
+	HousingManager._on_day_changed(d2)
+	check(EconomyManager.liquid() - (b0 - int(o["payment"])) != 0 and EconomyManager.bank >= bank0 - pay2 + HousingManager.lease_income("apartment") - 1, "出租收入 %s 按月到账" % Fmt.yuan(HousingManager.lease_income("apartment")))
+	# 卖房
+	var ao: Dictionary = HousingManager.owned["apartment"]
+	var expect := int(round(float(ao["value"]) * 0.97)) + int(float(ao["spent"]) * 0.3) - int(ceil(float(ao["loan"])))
+	var bank1 := EconomyManager.bank
+	HousingManager.sell_home("apartment")
+	check(not HousingManager.is_owned("apartment") and EconomyManager.bank == bank1 + expect, "卖房：还清贷款后到手 %s（家具三成作价）" % Fmt.yuan(expect))
+	# 断供：逾期 30 天银行收房
+	HousingManager.buy_home("apartment", true)
+	HousingManager.owned["apartment"]["arrears"] = 50000
+	HousingManager.owned["apartment"]["arrears_days"] = 30
+	EconomyManager.withdraw_to_void(EconomyManager.bank, "测试")
+	EconomyManager.cash = 0
+	HousingManager._daily_properties()
+	check(not HousingManager.is_owned("apartment"), "月供逾期超过 30 天：银行收房拍卖")
+	# 存档
+	EconomyManager.earn(100000, "其他", "测试", true)
+	var lux_before: Dictionary = HousingManager.owned["luxury"].duplicate(true)
+	HousingManager.buy_furniture("luxury", "tv_2")
+	check(SaveManager.save(3), "保存")
+	HousingManager.owned.clear()
+	main.load_slot(3)
+	await frames(5)
+	check(HousingManager.is_owned("luxury") and HousingManager.current == "luxury" and HousingManager.furniture_of("luxury").get("tv", "") == "tv_2" and int(HousingManager.owned["luxury"]["price"]) == int(lux_before["price"]), "读档：房产、自住、家具都在")
+	check(EconomyManager.networth() >= HousingManager.property_equity() and HousingManager.property_equity() > 2000000, "净资产计入房产净值 %s" % Fmt.yuan(HousingManager.property_equity()))
+
+
 ## 人物：骨架、蒙皮、步态（屈膝、脚着地）、坐姿、换衣服改色、几何缓存
 func test_character() -> void:
 	var m := CharacterModel.new()

@@ -5,7 +5,7 @@ extends RefCounted
 
 static func build(box: VBoxContainer, refresh: Callable) -> void:
 	box.add_child(UIKit.label("当前住处：%s" % HousingManager.home_name(), 18, UIKit.CYAN))
-	if HousingManager.is_monthly():
+	if HousingManager.is_monthly() and not HousingManager.is_owned(HousingManager.current):
 		box.add_child(UIKit.label("月租 %s（每月 1 日自动扣款）· 押金 %s%s" % [Fmt.yuan(HousingManager.rent_of(HousingManager.current)), Fmt.yuan(HousingManager.deposit), ("· 欠租 %s！" % Fmt.yuan(HousingManager.arrears)) if HousingManager.arrears > 0 else ""], 15, UIKit.TEXT, HORIZONTAL_ALIGNMENT_LEFT, true))
 		box.add_child(UIKit.small_button("退租（押金退回）", func():
 			Events.say(HousingManager.move_out(), "info")
@@ -30,7 +30,9 @@ static func build(box: VBoxContainer, refresh: Callable) -> void:
 		if String(d["period"]) == "night":
 			v.add_child(UIKit.label("到安心旅馆前台办理入住（车站东北）。", 14, UIKit.TEXT))
 		elif id == HousingManager.current:
-			v.add_child(UIKit.label("✓ 你住在这里", 15, UIKit.GOOD))
+			v.add_child(UIKit.label("✓ 你住在这里%s" % ("（自己的房子）" if HousingManager.is_owned(id) else ""), 15, UIKit.GOOD))
+		elif HousingManager.is_owned(id):
+			v.add_child(UIKit.label("这是你自己的房子，到「房产」APP 搬进去住", 14, UIKit.GOOD))
 		else:
 			v.add_child(UIKit.small_button("签约（押金 + 首月 %s）" % Fmt.yuan(HousingManager.rent_of(id) * 2), func():
 				Events.say(HousingManager.move_in(id), "info")
