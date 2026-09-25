@@ -3,9 +3,8 @@ name: Fundamentals (SEC XBRL)
 # 取公司报表项 → 算 PE/PB/PS/ROE 等比率 → 生成 apps/companies/fundamentals.json → 提交回仓库。
 # 数据源：SEC EDGAR XBRL frames（美国政府公开披露，零密钥）。
 #
-# 刻意只有 workflow_dispatch，**没有加进 scheduler.yml 的每日轮转**：
-# 这条管道的第一次真实运行谁都没看过（开发容器无外网，无法预先验证 SEC 的返回结构）。
-# 所以先由你手动跑一次、看日志与产出的 JSON 对不对，确认之后再决定要不要进每日轮转。
+# 正式更新只由 workflow_dispatch 触发，**没有加进 scheduler.yml 的每日轮转**：
+# PR 另有只读 preview 任务，校验真实产出并保存审核文件，不推送数据、不部署。
 #
 # 治理与其余行情管道同一套：独立并发锁、生成前同步目标分支、路径守卫只放行
 # apps/companies/fundamentals.json（与公司榜同目录但所有权不同，守卫拦的就是这种情形）、
@@ -34,36 +33,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  preview:
-    # 在同仓库 PR 内先验真实取数；只保存短期审核产物，不推分支、不部署。
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout proposed code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - name: Generate a fresh fundamentals preview
-        env:
-          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
-        run: python scripts/fundamentals/build_fundamentals.py
-      - name: Verify actual data and ratios
-        run: python scripts/validate_fundamentals.py
-      - name: Save validated data for review
-        uses: actions/upload-artifact@v6
-        with:
-          name: fundamentals-preview-${{ github.run_id }}
-          path: apps/companies/fundamentals.json
-          if-no-files-found: error
-          retention-days: 7
-
   update:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -160,3 +129,33 @@ jobs:
           path: /tmp/market-workflow-diagnostics/fundamentals-*.json
           if-no-files-found: warn
           retention-days: 14
+
+  preview:
+    # 在同仓库 PR 内先验真实取数；只保存短期审核产物，不推分支、不部署。
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout proposed code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Generate a fresh fundamentals preview
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/fundamentals/build_fundamentals.py
+      - name: Verify actual data and ratios
+        run: python scripts/validate_fundamentals.py
+      - name: Save validated data for review
+        uses: actions/upload-artifact@v6
+        with:
+          name: fundamentals-preview-${{ github.run_id }}
+          path: apps/companies/fundamentals.json
+          if-no-files-found: error
+          retention-days: 7
