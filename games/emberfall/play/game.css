@@ -38,16 +38,32 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-
 
 #bottom { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px;
   padding: 0 max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
-.orb { position: relative; width: 88px; height: 88px; border-radius: 50%; overflow: hidden; border: 3px solid var(--bronze);
-  background: #0b0606; box-shadow: 0 0 0 2px #1a110b, 0 6px 18px rgba(0, 0, 0, .7), inset 0 0 16px #000; pointer-events: auto; flex: none; }
-.orb i { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transition: height .15s; }
-.orb.hp i { background: radial-gradient(circle at 40% 30%, #ff6a4a, #b3180e 45%, #4a0503 100%); }
-.orb.mp i { background: radial-gradient(circle at 40% 30%, #6a9aff, #1f3fb3 45%, #070f4a 100%); }
-.orb::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, .28), transparent 38%); }
-.orb span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; z-index: 2;
+/* 生命「火盆」与法力「油灯」（ART.md 第五节：不用红蓝球）。内部尺寸都用百分比，改 .gauge 的宽高即可整体缩放。 */
+.gauge { position: relative; width: 88px; height: 88px; flex: none; pointer-events: auto; }
+.gauge span { position: absolute; left: 0; right: 0; bottom: 6%; text-align: center; font-size: 12px; font-weight: 700; z-index: 3;
   text-shadow: 0 1px 2px #000, 0 0 4px #000; }
-.orb.low { animation: pulse 1s infinite; }
-@keyframes pulse { 50% { box-shadow: 0 0 0 2px #1a110b, 0 0 22px rgba(255, 40, 20, .8), inset 0 0 16px #000; } }
+.brazier .fire { position: absolute; left: 18%; right: 18%; bottom: 30%; height: 64%; }
+.brazier .fire i { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transition: height .15s; transform-origin: 50% 100%;
+  background: radial-gradient(ellipse 60% 90% at 50% 100%, #fff3b0 0%, #ffb040 28%, #e8431a 62%, rgba(150, 20, 5, .0) 100%);
+  clip-path: polygon(50% 0, 64% 22%, 84% 44%, 100% 72%, 100% 100%, 0 100%, 0 72%, 16% 44%, 36% 22%);
+  animation: flicker 1.1s ease-in-out infinite alternate; }
+.brazier .bowl { position: absolute; left: 6%; right: 6%; bottom: 0; height: 36%; z-index: 2;
+  background: linear-gradient(#9a7440, #5a3c1e 55%, #2a1a0c); clip-path: polygon(0 0, 100% 0, 84% 100%, 16% 100%);
+  box-shadow: inset 0 3px 0 rgba(255, 210, 140, .25); }
+.brazier::before { content: ""; position: absolute; left: 10%; right: 10%; bottom: 30%; height: 10%; border-radius: 50%; z-index: 1;
+  background: radial-gradient(ellipse at 50% 40%, rgba(255, 150, 60, .55), transparent 70%); }
+.lamp .cap { position: absolute; left: 34%; right: 34%; top: 0; height: 9%; background: linear-gradient(#9a7440, #5a3c1e); border-radius: 4px 4px 0 0; }
+.lamp .glass { position: absolute; left: 25%; right: 25%; top: 8%; bottom: 17%; border: 3px solid var(--bronze); border-radius: 12px 12px 6px 6px;
+  background: #0a0c16; overflow: hidden; box-shadow: inset 0 0 10px #000; }
+.lamp .glass i { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; transition: height .15s;
+  background: linear-gradient(#8ab4ff, #2f5bd0 45%, #0f236a); }
+.lamp .glass::after { content: ""; position: absolute; top: 0; bottom: 0; left: 22%; width: 12%; background: rgba(255, 255, 255, .14); }
+.lamp .base { position: absolute; left: 16%; right: 16%; bottom: 4%; height: 14%; background: linear-gradient(#9a7440, #3a2614); border-radius: 4px; }
+.lamp span { bottom: 36%; }
+.gauge.low .fire i { animation-duration: .35s; }
+.gauge.low { animation: lowpulse 1s infinite; }
+@keyframes lowpulse { 50% { filter: drop-shadow(0 0 10px rgba(255, 40, 20, .95)); } }
+@keyframes flicker { from { transform: scaleY(1) scaleX(1); } to { transform: scaleY(.9) scaleX(1.05); } }
 #center { flex: 1; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: auto; }
 #xp { width: 100%; height: 6px; background: #120c08; border: 1px solid #3b2b18; border-radius: 3px; overflow: hidden; }
 #xp i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #8a6a2a, #e8c56a); }
@@ -142,8 +158,8 @@ kbd { display: inline-block; min-width: 24px; padding: 1px 6px; border-radius: 5
 .dead-t { font-family: "Songti SC", "Noto Serif SC", serif; font-size: 56px; color: #c8321f; text-shadow: 0 0 30px rgba(200, 50, 30, .7); }
 
 @media (max-width: 640px) {
-  .orb { width: 66px; height: 66px; }
-  .orb span { font-size: 10px; }
+  .gauge { width: 66px; height: 66px; }
+  .gauge span { font-size: 10px; }
   .sk { width: 42px; height: 42px; }
   .sk b { font-size: 15px; }
   .sk small { display: none; }
@@ -157,13 +173,13 @@ kbd { display: inline-block; min-width: 24px; padding: 1px 6px; border-radius: 5
   #bossbar, #tgt { top: 88px; }
 }
 @media (max-width: 380px) {
-  .orb { width: 58px; height: 58px; }
+  .gauge { width: 58px; height: 58px; }
   .sk { width: 38px; height: 38px; }
 }
 @media (max-height: 460px) and (orientation: landscape) {
-  .orb { width: 62px; height: 62px; }
+  .gauge { width: 62px; height: 62px; }
   .sk { width: 40px; height: 40px; }
   .sk small { display: none; }
   #log { bottom: 110px; }
 }
-@media (prefers-reduced-motion: reduce) { .orb.low { animation: none; } * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .brazier .fire i { animation: none; } .gauge.low { animation: none; filter: drop-shadow(0 0 8px rgba(255, 40, 20, .9)); } * { transition: none !important; } }

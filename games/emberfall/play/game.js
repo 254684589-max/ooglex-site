@@ -217,8 +217,8 @@ function poolFor(f) {
 }
 const SK = [
   { id: 'fireball', n: '火球术', k: '1', lvl: 1, mp: 5, cd: .4, g: '火', c: 'fire', d: '发射一枚火球，命中后爆炸，波及周围敌人。伤害受「魔力」和「法术伤害」加成。' },
-  { id: 'whirl', n: '旋风斩', k: '2', lvl: 3, mp: 9, cd: .8, g: '旋', c: 'whirl', d: '挥舞武器横扫周围所有敌人，造成 130% 武器伤害。' },
-  { id: 'nova', n: '冰霜新星', k: '3', lvl: 6, mp: 14, cd: 3, g: '冰', c: 'nova', d: '向四周释放寒冰，伤害并减速敌人 3 秒。' },
+  { id: 'whirl', n: '烬环斩', k: '2', lvl: 3, mp: 9, cd: .8, g: '环', c: 'whirl', d: '挥舞武器横扫周围所有敌人，造成 130% 武器伤害。' },
+  { id: 'nova', n: '寂霜环', k: '3', lvl: 6, mp: 14, cd: 3, g: '霜', c: 'nova', d: '向四周释放寒冰，伤害并减速敌人 3 秒。' },
   { id: 'blink', n: '暗影闪现', k: '4', lvl: 10, mp: 10, cd: 4, g: '闪', c: 'blink', d: '瞬间传送到目标位置（最远 7 格，需要视线）。' },
 ];
 
@@ -452,7 +452,7 @@ function genDungeon(f) {
       const bx = r.cx + .5, by = r.cy + .5;
       let bk = f === 3 ? 'mog' : f === 6 ? 'abbot' : pick(['mog', 'abbot']);
       const b = spawnMon(m, bk, bx, by, null);
-      if (f > 6) b.name = '深渊化身 · ' + (bk === 'mog' ? '屠戮者' : '焚誓者');
+      if (f > 6) b.name = '深渊化身 · ' + (bk === 'mog' ? '缚链者' : '焚誓者');
       const guard = bk === 'mog' ? 'zombie' : 'skel';
       for (let i = 0; i < 4; i++) { const s = spot(); if (s) spawnMon(m, f > 6 ? pick(pool) : guard, s.x, s.y, null); }
       m.props.push({ type: 'torch', x: r.x - .5, y: r.cy + .5, face: 'R', wall: true });
@@ -1013,7 +1013,7 @@ function bossDown(e) {
   const cx = r ? r.cx : Math.floor(e.x), cy = r ? r.cy : Math.floor(e.y);
   M.t[cy * M.w + cx] = T_DOWN; M.down = { x: cx + .5, y: cy + .5 };
   if (e.key === 'mog' && M.floor === 3) {
-    if (hero.q.q2 < 2) { hero.q.q2 = 2; log('你在莫格的屠宰间里找到了被锁住的托比——他还活着！托比逃回了镇上。', '#ffd24a'); }
+    if (hero.q.q2 < 2) { hero.q.q2 = 2; log('你在莫格背上的囚笼里找到了被锁住的托比——他还活着！托比逃回了镇上。', '#ffd24a'); }
   } else if (e.key === 'abbot' && M.floor === 6) {
     if (hero.q.q3 < 2) { hero.q.q3 = 2; setTimeout(epilogue, 1600); }
   } else log('深渊化身倒下了。更深处的裂隙打开了。', '#ffd24a');
@@ -1159,7 +1159,12 @@ function weaponShape(kind, len, col) {
   ctx.strokeStyle = '#4a3420'; ctx.lineWidth = 2.4 * Z; ctx.beginPath(); ctx.moveTo(0, 3 * Z); ctx.lineTo(0, -len * .35); ctx.stroke();
   if (kind === 'axe') { ctx.strokeStyle = '#5a3a20'; ctx.beginPath(); ctx.moveTo(0, -len * .35); ctx.lineTo(0, -len); ctx.stroke(); ctx.fillStyle = col || '#b8bcc4'; ctx.beginPath(); ctx.moveTo(0, -len * .95); ctx.quadraticCurveTo(9 * Z, -len * .85, 8 * Z, -len * .6); ctx.lineTo(0, -len * .7); ctx.fill(); return; }
   if (kind === 'mace') { ctx.strokeStyle = '#5a3a20'; ctx.beginPath(); ctx.moveTo(0, -len * .35); ctx.lineTo(0, -len * .85); ctx.stroke(); ctx.fillStyle = col || '#8a8f96'; ctx.beginPath(); ctx.arc(0, -len * .92, 4.2 * Z, 0, 6.3); ctx.fill(); return; }
-  if (kind === 'cleaver') { ctx.fillStyle = '#9aa0a8'; ctx.fillRect(-1 * Z, -len, 10 * Z, len * .65); ctx.fillStyle = '#6a1a10'; ctx.fillRect(4 * Z, -len * .5, 5 * Z, 4 * Z); return; }
+  if (kind === 'chain') { // 铁链连枷：一节节链环，末端一颗铁球
+    ctx.strokeStyle = '#8a8f96'; ctx.lineWidth = 1.4 * Z;
+    for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.ellipse(Math.sin(time * 4 + i) * i * .4 * Z, -len * (.18 + i * .12), 1.6 * Z, 2.6 * Z, 0, 0, 6.3); ctx.stroke(); }
+    ctx.fillStyle = '#5a5e64'; ctx.beginPath(); ctx.arc(Math.sin(time * 4 + 6) * 2.4 * Z, -len * .98, 4.4 * Z, 0, 6.3); ctx.fill();
+    ctx.strokeStyle = '#3a3e44'; ctx.lineWidth = 1.2 * Z; ctx.stroke(); return;
+  }
   // 剑类
   ctx.strokeStyle = '#8a6a3a'; ctx.lineWidth = 2 * Z; ctx.beginPath(); ctx.moveTo(-4 * Z, -len * .35); ctx.lineTo(4 * Z, -len * .35); ctx.stroke();
   ctx.strokeStyle = col || '#d8dce4'; ctx.lineWidth = (kind === 'gsword' ? 3.6 : kind === 'dagger' ? 2 : 2.8) * Z;
@@ -1197,22 +1202,31 @@ function drawMan(px, py, o) {
   };
   if (back) { drawWeaponArm(); }
   else drawShield();
+  // 背上的囚笼（莫格）：画在躯干后面
+  if (o.cage) {
+    ctx.fillStyle = W_('rgba(20,16,14,.85)'); ctx.fillRect(-11 * s, -50 * s, 22 * s, 24 * s);
+    ctx.strokeStyle = W_('#5a5048'); ctx.lineWidth = 1.8 * s; ctx.beginPath();
+    for (let i = 0; i <= 5; i++) { const x = -11 * s + i * 4.4 * s; ctx.moveTo(x, -50 * s); ctx.lineTo(x, -26 * s); }
+    ctx.moveTo(-12 * s, -50 * s); ctx.lineTo(12 * s, -50 * s); ctx.moveTo(-12 * s, -26 * s); ctx.lineTo(12 * s, -26 * s); ctx.stroke();
+  }
   // 躯干
   if (o.robe) {
     ctx.fillStyle = W_(o.body); ctx.beginPath(); ctx.moveTo(-6 * s + hy, -31 * s); ctx.lineTo(6 * s + hy, -31 * s); ctx.lineTo(10 * s, -1 * s); ctx.lineTo(-10 * s, -1 * s); ctx.closePath(); ctx.fill();
     if (o.trim) { ctx.strokeStyle = W_(o.trim); ctx.lineWidth = 1.6 * s; ctx.beginPath(); ctx.moveTo(-10 * s, -2 * s); ctx.lineTo(10 * s, -2 * s); ctx.moveTo(hy, -30 * s); ctx.lineTo(0, -2 * s); ctx.stroke(); }
   } else if (o.thin) {
     ctx.strokeStyle = W_(o.body); ctx.lineWidth = 2 * s; ctx.beginPath(); ctx.moveTo(hy, -32 * s); ctx.lineTo(0, -14 * s); for (let r = 0; r < 3; r++) { ctx.moveTo(-4 * s + hy, (-29 + r * 4) * s); ctx.lineTo(4 * s + hy, (-29 + r * 4) * s); } ctx.stroke();
-  } else if (o.fat) {
-    ctx.fillStyle = W_(o.body); ctx.beginPath(); ctx.ellipse(0, -20 * s, 12 * s, 13 * s, 0, 0, 6.3); ctx.fill();
-    ctx.fillStyle = W_(o.apron || '#5a4a3a'); ctx.fillRect(-8 * s, -22 * s, 16 * s, 16 * s);
-    ctx.fillStyle = 'rgba(120,10,5,.8)'; ctx.fillRect(-4 * s, -16 * s, 5 * s, 4 * s); ctx.fillRect(2 * s, -11 * s, 4 * s, 3 * s);
+  } else if (o.brute) {
+    // 宽肩的监工：倒梯形躯干、胸前斜缠铁链、铁项圈
+    ctx.fillStyle = W_(o.body); ctx.beginPath(); ctx.moveTo(-12 * s + hy, -33 * s); ctx.lineTo(12 * s + hy, -33 * s); ctx.lineTo(8 * s, -12 * s); ctx.lineTo(-8 * s, -12 * s); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = W_('#8a8f96'); ctx.lineWidth = 2.4 * s; ctx.setLineDash([2.2 * s, 1.4 * s]);
+    ctx.beginPath(); ctx.moveTo(-11 * s + hy, -32 * s); ctx.lineTo(8 * s, -14 * s); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = W_('#4a4e54'); ctx.fillRect(-5 * s + hy, -35 * s, 10 * s, 3 * s);
   } else {
     ctx.fillStyle = W_(o.body); ctx.beginPath(); ctx.moveTo(-7 * s + hy, -31 * s); ctx.lineTo(7 * s + hy, -31 * s); ctx.lineTo(6 * s, -13 * s); ctx.lineTo(-6 * s, -13 * s); ctx.closePath(); ctx.fill();
     if (o.belt) { ctx.fillStyle = W_(o.belt); ctx.fillRect(-6 * s, -16 * s, 12 * s, 2.4 * s); }
   }
   // 头
-  const hx = hy * 1.4, hyy = o.fat ? -36 * s : -37 * s;
+  const hx = hy * 1.4, hyy = o.brute ? -38 * s : -37 * s;
   ctx.fillStyle = W_(o.skin); ctx.beginPath(); ctx.arc(hx, hyy, (o.head || 5.6) * s, 0, 6.3); ctx.fill();
   if (o.skull && !back) { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx + 1 * s, hyy - .5 * s, 1.3 * s, 0, 6.3); ctx.arc(hx + 4 * s, hyy - .5 * s, 1.3 * s, 0, 6.3); ctx.fill(); }
   if (o.eyes && !back) { ctx.fillStyle = o.eyes; ctx.beginPath(); ctx.arc(hx + 1.5 * s, hyy - .5 * s, 1.1 * s, 0, 6.3); ctx.arc(hx + 4.2 * s, hyy - .5 * s, 1.1 * s, 0, 6.3); ctx.fill(); }
@@ -1253,7 +1267,7 @@ function lookOf(e) {
     case 'ghoul': return Object.assign(base, { body: '#8a8a7a', legs: '#4a4a3a', skin: '#a8a898', hunch: true, armsFwd: true, arm: '#a8a898', eyes: '#ff4020' });
     case 'cultist': return Object.assign(base, { robe: true, body: '#3a1e4e', trim: '#8a5ab8', skin: '#b89a8a', hood: '#2a1438', weapon: 'staff', wcol: '#c070ff', eyes: '#e090ff' });
     case 'knight': return Object.assign(base, { body: '#2c2c36', legs: '#1e1e26', skin: '#2c2c36', helm: '#3a3a46', eyes: '#ff3020', weapon: 'gsword', wcol: '#8a8a9a', wlen: 1.2, cape: '#5a0e0a', shield: '#2a2a33' });
-    case 'mog': return Object.assign(base, { fat: true, body: '#9a6a5a', legs: '#4a3028', skin: '#a87a6a', apron: '#6a5a48', weapon: 'cleaver', wlen: 1.2, head: 6.4, eyes: '#ff3010', aura: e.enraged ? 'rgba(255,40,20,.35)' : base.aura });
+    case 'mog': return Object.assign(base, { brute: true, cage: true, body: '#5a4638', legs: '#3a2a20', skin: '#8a6a5a', weapon: 'chain', wlen: 1.3, head: 5.4, eyes: '#ff3010', aura: e.enraged ? 'rgba(255,40,20,.35)' : base.aura });
     case 'abbot': return Object.assign(base, { robe: true, float: true, body: e.phase === 2 ? '#4a0e08' : '#6a1a14', trim: '#d8a040', skin: '#c8a08a', crown: e.phase === 2 ? '#ff8a2a' : '#d8a040', weapon: 'staff', wcol: '#ff7a2a', wlen: 1.3, eyes: e.phase === 2 ? '#ffb020' : null, aura: e.phase === 2 ? 'rgba(255,110,30,.45)' : 'rgba(255,120,40,.18)' });
   }
   return base;
@@ -1271,7 +1285,7 @@ function heroLook() {
 }
 function drawNpc(n) {
   const px = sx(n.x, n.y), py = sy(n.x, n.y);
-  const L = { priest: { robe: true, body: '#d8d0c0', trim: '#c9a35a', skin: '#d8b8a0', hood: '#e8e0d0', weapon: 'staff', wcol: '#ffe08a' }, smith: { body: '#5a3a24', legs: '#2a2018', skin: '#c89878', belt: '#1a120a', apron: '#3a2a1a', weapon: 'mace', hair: '#6a4a2a', s: 1.1 }, alch: { robe: true, body: '#2a4a3a', trim: '#8ad0a0', skin: '#e0b8a0', hair: '#8a2a1a' }, boy: { body: '#6a5a3a', legs: '#3a2a1a', skin: '#e0b898', hair: '#4a3020', s: .8 } }[n.look];
+  const L = { priest: { robe: true, body: '#d8d0c0', trim: '#c9a35a', skin: '#d8b8a0', hood: '#e8e0d0', weapon: 'staff', wcol: '#ffe08a' }, smith: { body: '#5a3a24', legs: '#2a2018', skin: '#c89878', belt: '#1a120a', weapon: 'mace', hair: '#6a4a2a', s: 1.1 }, alch: { robe: true, body: '#2a4a3a', trim: '#8ad0a0', skin: '#e0b8a0', hair: '#8a2a1a' }, boy: { body: '#6a5a3a', legs: '#3a2a1a', skin: '#e0b898', hair: '#4a3020', s: .8 } }[n.look];
   drawMan(px, py, Object.assign({ face: n.face, walk: 0, moving: false }, L));
   ctx.font = `bold ${Math.round(12 * Math.max(Z, .85))}px sans-serif`; ctx.textAlign = 'center';
   const ty = py - 52 * Z * (L.s || 1);
@@ -1736,18 +1750,18 @@ function talk(n) {
       [{ t: '我会阻止他。', main: true, fn: () => { q.q3 = 1; closePanel(); log('新任务：余烬之心——前往第 6 层封印大厅', '#ffd24a'); saveGame(); } }, bye]);
     if (q.q3 === 2) return dialog(n, ['你回来了……让我看看你。', '……孩子，你的眼睛里有火。', '灰烬之王没有死，他只是换了一个容器。封印大厅下面的裂隙还在呼唤他。去吧，在火焰吞没你之前，把深渊里的东西全部埋葬。这是修会最后的遗物，带上它。'],
       [{ t: '收下遗物', main: true, fn: () => { q.q3 = 3; hero.won = true; const it = genItem(Math.max(14, hero.lvl + 2), { rar: 3 }); hero.inv.length < 40 ? hero.inv.push(it) : dropItemAt(it, P.x, P.y); gainXp(1500); log(`获得传奇物品：${it.n}`, '#e8843a'); log('无尽深渊已开启：第 6 层之下还有更深的楼层', '#ffd24a'); Snd.play('legend'); closePanel(); saveGame(); } }]);
-    const lines = q.q3 === 1 ? '封印大厅在第 6 层。愿圣焰为你照亮道路。' : q.q2 === 1 ? '格伦的学徒还困在下面……莫格那头畜生，以前是修道院的屠夫。' : hero.won ? '深渊没有尽头，孩子。但每往下一层，你都让地面上的人多活一天。' : '伤口我已经为你治好了。小心脚下，孩子。';
+    const lines = q.q3 === 1 ? '封印大厅在第 6 层。愿圣焰为你照亮道路。' : q.q2 === 1 ? '格伦的学徒还困在下面……莫格那头畜生，以前是修道院地牢的狱卒。' : hero.won ? '深渊没有尽头，孩子。但每往下一层，你都让地面上的人多活一天。' : '伤口我已经为你治好了。小心脚下，孩子。';
     return dialog(n, [lines, '（伊莲为你恢复了全部生命与法力）'], [{ t: '关于烬原镇', fn: () => dialog(n, ['烬原镇建在三十年前那场大火的灰烬上，所以叫这个名字。镇上的人大多是守誓者的后代。', '北边的废墟就是圣焰修道院，地窖入口在废墟中间。镇中央的传送石能把你送到你到过的任何一层。'], [{ t: '返回', fn: () => talk(n) }]) }, bye]);
   }
   if (n.id === 'gren') {
-    if (q.q2 === 0 && q.q1 >= 1) return dialog(n, ['你要下地窖？……那帮我一个忙。', '我的学徒托比，那傻小子三天前偷了我的锤子，说要下去找他爹。有人在第 3 层听见了他的叫声——还有剁肉的声音。', '以前修道院有个屠夫叫莫格，现在他就在下面，自称「监工」。把托比带回来，我给你打一把最好的家伙。'],
+    if (q.q2 === 0 && q.q1 >= 1) return dialog(n, ['你要下地窖？……那帮我一个忙。', '我的学徒托比，那傻小子三天前偷了我的锤子，说要下去找他爹。有人在第 3 层听见了他的叫声——还有铁链在地上拖的声音。', '以前修道院地牢有个狱卒叫莫格，现在他就在下面，自称「监工」。把托比带回来，我给你打一把最好的家伙。'],
       [{ t: '我会把托比带回来。', main: true, fn: () => { q.q2 = 1; closePanel(); log('新任务：铁匠的学徒——击败第 3 层的莫格', '#ffd24a'); saveGame(); } }, { t: '先看看你的货', fn: () => openShop('smith') }, bye]);
     if (q.q2 === 2) return dialog(n, ['托比回来了！浑身是血，但活着……', '说话算话。这是我这辈子打过最好的一件，拿去吧。'],
       [{ t: '收下报酬', main: true, fn: () => { q.q2 = 3; const it = genItem(Math.max(8, hero.lvl + 2), { rar: 2, slot: 'weapon' }); hero.inv.length < 40 ? hero.inv.push(it) : dropItemAt(it, P.x, P.y); gainXp(400); log(`获得：${it.n}`, '#f3d34a'); spawnToby(); closePanel(); saveGame(); } }]);
     return dialog(n, ['要买兵器护甲，还是要卖点破烂？'], [{ t: '交易', main: true, fn: () => openShop('smith') }, bye]);
   }
-  if (n.id === 'mara') return dialog(n, ['药水、卷轴，要什么自己挑。别问配方。'], [{ t: '交易', main: true, fn: () => openShop('alch') }, { t: '关于地下的怪物', fn: () => dialog(n, ['骸骨弓手会躲在远处放箭，别站着不动；邪教术士会瞬移，逼近了打。', '名字发蓝光的是「精英」，更硬也更值钱。木桶里偶尔藏着小鬼，砸之前想清楚。', '要是被围住了，冰霜新星能让它们慢下来。'], [{ t: '返回', fn: () => talk(n) }]) }, bye]);
-  if (n.id === 'toby') return dialog(n, [pick(['谢谢你救了我！师父现在不骂我了……至少少骂了一点。', '我在下面看见院长了。他的胸口在发光，像一块烧红的炭。', '莫格的屠宰间里挂满了……我不想说了。'])], [bye]);
+  if (n.id === 'mara') return dialog(n, ['药水、卷轴，要什么自己挑。别问配方。'], [{ t: '交易', main: true, fn: () => openShop('alch') }, { t: '关于地下的怪物', fn: () => dialog(n, ['骸骨弓手会躲在远处放箭，别站着不动；邪教术士会瞬移，逼近了打。', '名字发蓝光的是「精英」，更硬也更值钱。木桶里偶尔藏着小鬼，砸之前想清楚。', '要是被围住了，寂霜环能让它们慢下来。'], [{ t: '返回', fn: () => talk(n) }]) }, bye]);
+  if (n.id === 'toby') return dialog(n, [pick(['谢谢你救了我！师父现在不骂我了……至少少骂了一点。', '我在下面看见院长了。他的胸口在发光，像一块烧红的炭。', '莫格背上那个笼子里关过好多人……我不想说了。'])], [bye]);
 }
 function spawnToby() { if (!town.npcs.some(n => n.id === 'toby')) town.npcs.push({ kind: 'npc', id: 'toby', n: '学徒 托比', g: '托', x: 12.4, y: 17.2, face: .5, walk: 0, r: .3, look: 'boy' }); }
 function epilogue() {
@@ -1837,8 +1851,8 @@ let hudCache = {};
 function setIf(key, val, fn) { if (hudCache[key] !== val) { hudCache[key] = val; fn(val); } }
 function updHud() {
   const hp = Math.max(0, Math.ceil(hero.hp)), mp = Math.floor(hero.mp);
-  setIf('hp', hp + '/' + S.maxHp, () => { $('orb-hp').querySelector('i').style.height = (hp / S.maxHp * 100) + '%'; $('orb-hp').querySelector('span').textContent = `${hp}/${S.maxHp}`; $('orb-hp').classList.toggle('low', hp < S.maxHp * .3); });
-  setIf('mp', mp + '/' + S.maxMp, () => { $('orb-mp').querySelector('i').style.height = (mp / S.maxMp * 100) + '%'; $('orb-mp').querySelector('span').textContent = `${mp}/${S.maxMp}`; });
+  setIf('hp', hp + '/' + S.maxHp, () => { $('g-hp').querySelector('.fill').style.height = (hp / S.maxHp * 100) + '%'; $('g-hp').querySelector('span').textContent = `${hp}/${S.maxHp}`; $('g-hp').classList.toggle('low', hp < S.maxHp * .3); });
+  setIf('mp', mp + '/' + S.maxMp, () => { $('g-mp').querySelector('.fill').style.height = (mp / S.maxMp * 100) + '%'; $('g-mp').querySelector('span').textContent = `${mp}/${S.maxMp}`; });
   setIf('xp', hero.xp + '/' + hero.lvl, () => { $('xp').querySelector('i').style.width = (hero.xp / xpNeed(hero.lvl) * 100) + '%'; $('xp').title = `经验 ${hero.xp} / ${xpNeed(hero.lvl)}（${hero.lvl} 级）`; });
   setIf('pots', `${hero.pots.hp},${hero.pots.mp},${hero.pots.tp}`, () => { $('p-hp').querySelector('.cnt').textContent = hero.pots.hp; $('p-mp').querySelector('.cnt').textContent = hero.pots.mp; $('p-tp').querySelector('.cnt').textContent = hero.pots.tp; });
   setIf('pts', hero.pts, v => { $('pts-badge').hidden = !v; $('pts-badge').textContent = v; });
