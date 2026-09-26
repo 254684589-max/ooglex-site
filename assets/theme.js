@@ -483,7 +483,7 @@
                       p.indexOf("/games/") === 0 || p === "/games";
   if (!protectedPage || window.OoglexSiteAccess) return;
   var s = document.createElement("script");
-  s.src = "/assets/access-gate.js?v=20260926c";
+  s.src = "/assets/access-gate.js?v=20260926d";
   s.defer = true;
   (document.head || document.documentElement).appendChild(s);
 })();
