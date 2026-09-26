@@ -98,7 +98,7 @@
     chip.id = "ooglex-rich-access";
     chip.textContent = access && access.access_level === "full"
       ? String(access.plan || "PRO").toUpperCase() + " · FULL"
-      : "FREE · TOP 10 PREVIEW";
+      : "GUEST · 10% PREVIEW";
     chip.style.cssText = [
       "position:fixed","right:14px","bottom:14px","z-index:10001",
       "padding:7px 11px","border-radius:999px",
@@ -125,7 +125,7 @@
     if (pager) pager.style.display = "none";
 
     var search = document.getElementById("q");
-    if (search) search.placeholder = "在免费 Top 10 预览中搜索姓名（中 / 英）…";
+    if (search) search.placeholder = "在公开 10% 预览中搜索姓名（中 / 英）…";
 
     var fade = document.createElement("div");
     fade.id = "ooglex-preview-fade";
@@ -145,20 +145,20 @@
     ].join(";");
 
     var title = document.createElement("div");
-    title.textContent = "继续查看完整富豪榜";
+    title.textContent = "注册后查看完整富豪榜";
     title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
 
     var sub = document.createElement("div");
     sub.textContent = access && access.degraded
-      ? "当前网络连不上会员服务，已按 Top 10 预览显示。恢复连接后可查看完整榜单。"
+      ? "当前网络连不上账户权限服务，已按约 10% 预览显示。恢复连接后，已注册用户可查看完整榜单。"
       : access && access.authenticated
-        ? "当前为 FREE 预览，仅展示 Top 10。升级 PRO 后可查看完整榜单、搜索与排序。"
-        : "当前仅展示 Top 10 预览。登录 PRO 后可查看完整榜单、搜索与排序。";
+        ? "登录状态暂未通过权限校验，当前仅展示约 10% 预览。权限恢复后可查看完整榜单、搜索与排序。"
+        : "当前仅展示约 10% 预览。免费注册并登录后可查看完整榜单、搜索与排序。";
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:720px";
 
     var button = document.createElement("a");
     button.href = "/account/";
-    button.textContent = access && access.authenticated ? "查看会员权限" : "登录 / 注册";
+    button.textContent = access && access.authenticated ? "重新验证登录" : "注册 / 登录";
     button.style.cssText = [
       "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:46px",
       "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",
@@ -166,7 +166,7 @@
     ].join(";");
 
     var note = document.createElement("div");
-    note.textContent = "FREE 浏览器只接收 Top 10 预览数据；完整榜单通过登录权限接口返回。";
+    note.textContent = "未注册浏览器只接收约 10% 预览数据；完整榜单仅在登录验证通过后返回。";
     note.style.cssText = "font-size:11px;color:#8f8f8f;margin-top:14px";
 
     wall.appendChild(title);
