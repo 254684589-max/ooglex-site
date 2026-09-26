@@ -9,6 +9,29 @@ const states = [
 ].filter(Boolean);
 const msg = $('message');
 
+function safeNextTarget() {
+  try {
+    const value = new URLSearchParams(location.search || '').get('next') || '';
+    if (!value.startsWith('/') || value.startsWith('//') || value.startsWith('/account')) return '';
+    return value;
+  } catch (_) {
+    return '';
+  }
+}
+
+const nextTarget = safeNextTarget();
+
+function signupRedirectUrl() {
+  if (!nextTarget) return cfg.redirectUrl;
+  try {
+    const url = new URL(cfg.redirectUrl, location.origin);
+    url.searchParams.set('next', nextTarget);
+    return url.toString();
+  } catch (_) {
+    return cfg.redirectUrl;
+  }
+}
+
 function show(state) {
   states.forEach((s) => s.classList.add('hidden'));
   if (state) state.classList.remove('hidden');
@@ -184,6 +207,9 @@ async function boot() {
         nameInput.value = profile?.display_name || user.user_metadata?.display_name || '';
       }
       show($('user-state'));
+      if (nextTarget && !recoveryMode) {
+        window.setTimeout(() => location.replace(nextTarget), 0);
+      }
     }
 
     // 昵称是唯一由用户自己控制的公开身份：它决定想法流里显示的名字，也决定
@@ -283,7 +309,7 @@ async function boot() {
         email: $('signup-email').value.trim(),
         password: $('signup-password').value,
         options: {
-          emailRedirectTo: cfg.redirectUrl,
+          emailRedirectTo: signupRedirectUrl(),
           data: { display_name: $('signup-name').value.trim() }
         }
       });
