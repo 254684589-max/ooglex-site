@@ -1,15 +1,15 @@
-/* OOGLEX_ACCESS_GATE_V10
-   Unified 10% preview for non-password /apps/ and /games/ pages.
-   Standard: visible content -> 110px fade -> 218px dark access block.
-   The dark wall extends over all remaining content, so nothing can reappear below it. */
+/* OOGLEX_ACCESS_GATE_V11
+   Unified hard-stop preview for non-password /apps/ and /games/ pages.
+   Standard: original page preview on top -> fade -> fixed dark access wall at viewport bottom.
+   The document is scroll-locked for unauthenticated visitors, so no content can leak below the wall. */
 (function () {
   "use strict";
   if (window.OoglexSiteAccess) return;
 
   var PATH = window.location.pathname || "/";
   var PREVIEW_RATIO = 0.10;
-  var MIN_VIEWPORT_PREVIEW_RATIO = 0.70;
-  var WALL_HEIGHT = 218;
+  var PREVIEW_VIEWPORT_RATIO = 0.70;
+  var MIN_WALL_HEIGHT = 340;
   var FADE_HEIGHT = 110;
   var PROJECT_REF = "nwthqkpkvbtilafqpjlf";
   var AUTH_KEY = "sb-" + PROJECT_REF + "-auth-token";
@@ -18,11 +18,8 @@
   var VERIFY_TIMEOUT_MS = 4500;
   var resolveReady;
   var ready = new Promise(function (resolve) { resolveReady = resolve; });
-  var maxNaturalHeight = 0;
-  var refreshTimer = 0;
-  var observer = null;
-  var observerTimer = 0;
-  var scrollClamp = null;
+  var resizeTimer = 0;
+  var scrollLock = null;
 
   function nativePasswordPage() {
     if (PATH === "/apps/tech-leaders/" || PATH === "/apps/tech-leaders" ||
@@ -80,9 +77,9 @@
     var style = document.createElement("style");
     style.id = "ooglex-registration-preview-style";
     style.textContent =
-      "html.ooglex-access-checking body{overflow:hidden!important}" +
-      "#ooglex-registration-preview-fade{position:absolute;left:0;right:0;z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.96))}" +
-      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;box-sizing:border-box;width:100%;padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "html.ooglex-access-checking,html.ooglex-access-checking body,html.ooglex-access-preview,html.ooglex-access-preview body{overflow:hidden!important;overscroll-behavior:none!important}" +
+      "#ooglex-registration-preview-fade{position:fixed;left:0;right:0;z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.97))}" +
+      "#ooglex-registration-preview{position:fixed;left:0;right:0;bottom:0;z-index:2147483646;box-sizing:border-box;width:100%;overflow:auto;padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
       "#ooglex-registration-preview .ogx-access-kicker{font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#9aa1aa;margin-bottom:10px}" +
       "#ooglex-registration-preview h2{margin:1px 0 8px;font-size:27px;line-height:1.3;color:#f5f5f5;font-weight:760;letter-spacing:-.3px}" +
       "#ooglex-registration-preview p{margin:0 auto 17px;max-width:720px;color:#c8c8c8;font-size:14px;line-height:1.6}" +
@@ -131,54 +128,34 @@
     return { gate: gate, fade: fade, badge: badge };
   }
 
-  function naturalHeight(parts) {
-    var body = document.body;
-    var root = document.documentElement;
-    if (!body) return Math.max(root.scrollHeight || 0, window.innerHeight || 0);
-    var els = [parts && parts.gate, parts && parts.fade, parts && parts.badge];
-    var states = [];
-    els.forEach(function (el) {
-      if (!el) return;
-      states.push([el, el.style.display]);
-      el.style.display = "none";
-    });
-    var h = Math.max(
-      body.scrollHeight || 0, body.offsetHeight || 0,
-      root.scrollHeight || 0, root.offsetHeight || 0,
-      root.clientHeight || 0, window.innerHeight || 0
-    );
-    states.forEach(function (p) { p[0].style.display = p[1]; });
-    return h;
-  }
-
-  function installScrollClamp(cutoff) {
-    if (scrollClamp) window.removeEventListener("scroll", scrollClamp);
-    scrollClamp = function () {
-      var maxScroll = Math.max(0, cutoff + WALL_HEIGHT - (window.innerHeight || 0) + 24);
-      if (window.scrollY > maxScroll) {
-        window.scrollTo({ top: maxScroll, left: 0, behavior: "auto" });
+  function lockScroll() {
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (_) {}
+    try { window.scrollTo({ top: 0, left: 0, behavior: "auto" }); } catch (_) { window.scrollTo(0, 0); }
+    if (scrollLock) window.removeEventListener("scroll", scrollLock);
+    scrollLock = function () {
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        try { window.scrollTo({ top: 0, left: 0, behavior: "auto" }); }
+        catch (_) { window.scrollTo(0, 0); }
       }
     };
-    window.addEventListener("scroll", scrollClamp, { passive: true });
-    scrollClamp();
+    window.addEventListener("scroll", scrollLock, { passive: true });
   }
 
   function layoutPreview() {
     if (!document.body) return;
     var parts = ensureGate();
-    var measured = naturalHeight(parts);
-    if (measured > maxNaturalHeight) maxNaturalHeight = measured;
-    var total = Math.max(maxNaturalHeight, measured, window.innerHeight || 0, 1);
-    var cutoff = Math.max(1, Math.floor(total * PREVIEW_RATIO), Math.floor((window.innerHeight || 720) * MIN_VIEWPORT_PREVIEW_RATIO));
-    cutoff = Math.min(cutoff, Math.max(1, total - 1));
-    var maskHeight = Math.max(WALL_HEIGHT, total - cutoff + (window.innerHeight || 0));
+    var vh = Math.max(window.innerHeight || 0, 1);
+    var wallHeight = Math.max(MIN_WALL_HEIGHT, Math.floor(vh * (1 - PREVIEW_VIEWPORT_RATIO)));
+    wallHeight = Math.min(vh, wallHeight);
+    var wallTop = Math.max(0, vh - wallHeight);
+    var fadeTop = Math.max(0, wallTop - FADE_HEIGHT);
 
-    parts.fade.style.top = Math.max(0, cutoff - FADE_HEIGHT) + "px";
+    parts.fade.style.top = fadeTop + "px";
     parts.fade.style.display = "block";
 
-    parts.gate.style.top = cutoff + "px";
-    parts.gate.style.minHeight = maskHeight + "px";
-    parts.gate.style.height = maskHeight + "px";
+    parts.gate.style.top = wallTop + "px";
+    parts.gate.style.height = (vh - wallTop) + "px";
+    parts.gate.style.minHeight = (vh - wallTop) + "px";
     parts.gate.style.display = "block";
 
     parts.badge.style.display = "block";
@@ -187,66 +164,42 @@
     html.classList.remove("ooglex-access-checking");
     html.classList.add("ooglex-access-preview");
     html.setAttribute("data-ooglex-preview-ratio", "10");
-    html.setAttribute("data-ooglex-preview-cutoff", String(cutoff));
-    html.setAttribute("data-ooglex-preview-total", String(total));
+    html.setAttribute("data-ooglex-preview-wall-top", String(wallTop));
+    html.setAttribute("data-ooglex-preview-mode", "viewport-hard-stop");
 
-    installScrollClamp(cutoff);
+    lockScroll();
   }
 
-  function scheduleLayout(delay) {
-    if (refreshTimer) clearTimeout(refreshTimer);
-    refreshTimer = setTimeout(function () {
-      refreshTimer = 0;
+  function scheduleLayout() {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      resizeTimer = 0;
       layoutPreview();
-    }, delay || 0);
-  }
-
-  function observeDynamicContent() {
-    if (typeof MutationObserver === "undefined" || observer || !document.body) return;
-    observer = new MutationObserver(function (records) {
-      for (var i = 0; i < records.length; i++) {
-        var target = records[i].target;
-        if (target && target.closest &&
-            (target.closest("#ooglex-registration-preview") ||
-             target.closest("#ooglex-registration-preview-fade") ||
-             target.closest("#ooglex-registration-preview-badge"))) continue;
-        scheduleLayout(180);
-        break;
-      }
-    });
-    observer.observe(document.body, { subtree: true, childList: true });
-    observerTimer = setTimeout(function () {
-      if (observer) { observer.disconnect(); observer = null; }
-    }, 15000);
+    }, 100);
   }
 
   function mountPreview() {
     addStyles();
     layoutPreview();
-    observeDynamicContent();
-    [300, 800, 1600, 3000, 5000, 8000, 12000].forEach(function (ms) {
-      setTimeout(layoutPreview, ms);
-    });
-    window.addEventListener("load", function () { setTimeout(layoutPreview, 100); }, { once: true });
-    window.addEventListener("resize", function () { scheduleLayout(100); });
+    window.addEventListener("load", function () { setTimeout(layoutPreview, 80); }, { once: true });
+    window.addEventListener("resize", scheduleLayout);
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", scheduleLayout);
   }
 
   function applyPreview() {
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { setTimeout(mountPreview, 60); }, { once: true });
+      document.addEventListener("DOMContentLoaded", function () { setTimeout(mountPreview, 40); }, { once: true });
     } else {
-      setTimeout(mountPreview, 60);
+      setTimeout(mountPreview, 40);
     }
   }
 
   function unlock() {
-    if (observer) { observer.disconnect(); observer = null; }
-    if (observerTimer) clearTimeout(observerTimer);
-    if (scrollClamp) { window.removeEventListener("scroll", scrollClamp); scrollClamp = null; }
+    if (scrollLock) { window.removeEventListener("scroll", scrollLock); scrollLock = null; }
     document.documentElement.classList.remove("ooglex-access-checking", "ooglex-access-preview");
     document.documentElement.removeAttribute("data-ooglex-preview-ratio");
-    document.documentElement.removeAttribute("data-ooglex-preview-cutoff");
-    document.documentElement.removeAttribute("data-ooglex-preview-total");
+    document.documentElement.removeAttribute("data-ooglex-preview-wall-top");
+    document.documentElement.removeAttribute("data-ooglex-preview-mode");
     ["ooglex-registration-preview","ooglex-registration-preview-fade","ooglex-registration-preview-badge"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.remove();
@@ -276,7 +229,7 @@
     resolveReady(ok);
     try {
       document.dispatchEvent(new CustomEvent("ooglex:accessready", {
-        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "bottom-cover-v10" }
+        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "viewport-hard-stop-v11" }
       }));
     } catch (_) {}
   })();
