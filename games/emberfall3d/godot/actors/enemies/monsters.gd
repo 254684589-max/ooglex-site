@@ -25,11 +25,24 @@ static func get_def(id: String) -> Dictionary:
 
 
 ## 带 v01 的怪物：生命、伤害、经验、等级按所在楼层从 V0.1 对应怪物换算（P3）
-static func scaled_def(id: String, floor_i: int = 1) -> Dictionary:
+static func scaled_def(id: String, floor_i: int = 1, champ: String = "") -> Dictionary:
 	var d: Dictionary = get_def(id).duplicate(true)
 	d.floor = floor_i
+	d.champ = champ
 	if d.has("v01"):
-		var m := FloorRules.scale_monster(d.v01, floor_i)
+		var m := FloorRules.scale_monster(d.v01, floor_i, champ)
+		d.name = m.name
+		# 迅捷精英：移动速度 ×1.45（V0.1 spawnMon）；换算成 3D 速度按同样比例放大
+		d.speed = float(d.speed) * float(m.spd) / float(Act1Data.monster(d.v01).spd)
+		if champ != "":
+			var C: Dictionary = Act1Data.rules().monsters.champion
+			if champ == "fury":
+				# 狂怒精英：攻击间隔 ×0.6
+				for k in ["attack", "shot"]:
+					if d.has(k):
+						for f in ["recover_s", "cooldown_s"]:
+							if d[k].has(f):
+								d[k][f] = float(d[k][f]) * float(C.fury_cd_mul)
 		d.hp = m.hp
 		d.level = m.lvl
 		d.xp = m.xp
@@ -43,8 +56,8 @@ static func scaled_def(id: String, floor_i: int = 1) -> Dictionary:
 	return d
 
 
-static func spawn(id: String, parent: Node, pos: Vector3, player: Node3D, floor_i: int = 1) -> EnemyBase:
-	var d := scaled_def(id, floor_i)
+static func spawn(id: String, parent: Node, pos: Vector3, player: Node3D, floor_i: int = 1, champ: String = "") -> EnemyBase:
+	var d := scaled_def(id, floor_i, champ)
 	var e: EnemyBase = load(BEHAVIORS[d.behavior]).new()
 	e.setup(d, player)
 	e.home = pos

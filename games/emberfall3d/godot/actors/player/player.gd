@@ -17,6 +17,7 @@ signal hit_landed(skill_id: String, hits: int)
 signal hurt(amount: int)
 signal died
 signal respawned
+signal message(text: String, color: Color)     # 屏幕左侧的消息（拾取、背包已满等）
 
 const LAYER_WORLD := Layers.WORLD
 const LAYER_GROUND := Layers.GROUND
@@ -49,6 +50,7 @@ var stats: Dictionary = progress.combat_stats()
 var mp := 0.0
 var max_mp := 1.0
 var last_gold_lost := 0
+var pickup_target: GroundItem = null
 var rng := RandomNumberGenerator.new()
 var attack_target: Node3D
 var attack_hold := false         # 按住鼠标 / 攻击按钮：打完一下继续打
@@ -73,7 +75,8 @@ var _repath_t := 0.0
 func _ready() -> void:
 	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
 	collision_layer = LAYER_PLAYER
-	collision_mask = LAYER_WORLD | Layers.ENEMY
+	# P5：不再和敌人碰撞（怪物会被推开让路，见 EnemyBase._separation），否则点地移动会被挡路的怪顶住
+	collision_mask = LAYER_WORLD
 	var shape := CollisionShape3D.new()
 	var cap := CapsuleShape3D.new()
 	cap.radius = 0.35
@@ -200,16 +203,66 @@ func _over_ui(p: Vector2) -> bool:
 func click_at(screen_pos: Vector2) -> void:
 	if dead:
 		return
+	pickup_target = null
 	var enemy = pick_enemy(screen_pos)
 	if enemy:
 		attack_target = enemy
 		moving_to = false
 		return
 	attack_target = null
+	var gi := pick_item(screen_pos)
+	if gi != null:
+		# 点地上的东西：走过去拾取（V0.1 pickUp）
+		pickup_target = gi
+		move_to(gi.global_position)
+		return
 	var p = pick_ground(screen_pos)
 	if p != null:
 		move_to(p)
 		_show_marker(last_target)
+
+
+## 屏幕上离点击位置最近的地上物品（名字标签或物品本身在 40 像素以内）
+func pick_item(screen_pos: Vector2) -> GroundItem:
+	if camera == null:
+		return null
+	var best: GroundItem = null
+	var bd := 40.0 * get_window().content_scale_factor
+	for g in get_tree().get_nodes_in_group("ground_item"):
+		if not is_instance_valid(g) or camera.is_position_behind(g.global_position):
+			continue
+		for h in [0.3, 0.8]:
+			var sp := camera.unproject_position(g.global_position + Vector3(0, h, 0))
+			var d := sp.distance_to(screen_pos)
+			if d < bd:
+				bd = d
+				best = g
+	return best
+
+
+## 拾取（V0.1 pickUp）：金币、药水直接收下；装备进背包（上限 40 件，满了留在地上）
+func pick_up(g: GroundItem) -> bool:
+	if not is_instance_valid(g):
+		return false
+	var sh: Dictionary = progress.sheet
+	var msg := ""
+	if g.data.has("gold"):
+		sh.gold += int(g.data.gold)
+		msg = "拾取 %d 金币" % int(g.data.gold)
+	elif g.data.has("pot"):
+		sh.pots[g.data.pot] = int(sh.pots.get(g.data.pot, 0)) + 1
+		msg = "拾取 " + g.title()
+	else:
+		if sh.inv.size() >= int(Act1Data.rules().hero.inventory_cap):
+			message.emit("背包已满", Color(0.88, 0.38, 0.29))
+			return false
+		sh.inv.append(g.data.item)
+		msg = "拾取 " + g.title()
+	message.emit(msg, g.color())
+	print("EF_PICKUP ", g.title())
+	g.queue_free()
+	progress.changed.emit()
+	return true
 
 
 func pick_enemy(screen_pos: Vector2):
@@ -683,6 +736,14 @@ func _physics_process(delta: float) -> void:
 		if _respawn_t <= 0.0:
 			respawn()
 		return
+	if pickup_target != null:
+		if not is_instance_valid(pickup_target):
+			pickup_target = null
+		elif Vector2(pickup_target.global_position.x - global_position.x, pickup_target.global_position.z - global_position.z).length() <= GroundItem.PICK_RANGE:
+			var gi := pickup_target
+			pickup_target = null
+			stop()
+			pick_up(gi)
 	# 每秒回复（V0.1：生命 0.4 + 0.05×等级 + 装备；法力 1.2 + 0.06×魔力）
 	hp = minf(max_hp, hp + progress.S.regen * delta)
 	mp = minf(max_mp, mp + progress.S.mregen * delta)

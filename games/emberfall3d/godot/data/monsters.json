@@ -1,5 +1,5 @@
 {
-  "_说明": "阶段 1.5 灰盒怪物（WORLD.md 第十一节的敌人家族），behavior 对应 actors/enemies/ 下的脚本。P3 起：生命、伤害、经验、等级不再写在这里，由 v01 指向的 V0.1 怪物（data/act1_monsters.json）按楼层换算（FloorRules.scale_monster），护甲为 0（V0.1 的怪物没有护甲）；冲锋伤害 = 近战伤害 × charge.dmg_mul。行为参数（距离、前摇、冷却等）仍在这里。",
+  "_说明": "阶段 1.5 灰盒怪物（WORLD.md 第十一节的敌人家族），behavior 对应 actors/enemies/ 下的脚本。P3 起：生命、伤害、经验、等级不再写在这里，由 v01 指向的 V0.1 怪物（data/act1_monsters.json）按楼层换算（FloorRules.scale_monster），护甲为 0（V0.1 的怪物没有护甲）；冲锋伤害 = 近战伤害 × charge.dmg_mul。行为参数（距离、前摇、冷却等）仍在这里。 P5：新增 V0.1 第一幕的 8 种怪物（键名同 V0.1），速度按「V0.1 速度 ÷ 主角 4.3 × 主角 5 米/秒」、距离按 1 格 ≈ 1.5 米换算，攻击节奏 = V0.1 攻击间隔；外观按 look 字段选占位造型。地下城按 V0.1 怪物池刷这些怪；ash_* 四种只在测试区。",
   "ash_corpse": {
     "name": "腐尸",
     "v01": "zombie",
@@ -81,6 +81,156 @@
       "count": 2,
       "cap": 4,
       "minion": "ash_corpse"
+    }
+  },
+  "zombie": {
+    "name": "腐尸",
+    "v01": "zombie",
+    "family": "灰尸",
+    "look": "zombie",
+    "behavior": "melee",
+    "speed": 1.16,
+    "aggro": 9.0,
+    "radius": 0.45,
+    "label_h": 2.2,
+    "attack": {
+      "range": 1.35,
+      "arc_deg": 100,
+      "windup_s": 0.28,
+      "recover_s": 1.42
+    }
+  },
+  "skel": {
+    "name": "骸骨战士",
+    "v01": "skel",
+    "family": "骸骨",
+    "look": "skel",
+    "behavior": "melee",
+    "speed": 2.21,
+    "aggro": 12.0,
+    "radius": 0.43,
+    "label_h": 2.1,
+    "attack": {
+      "range": 1.35,
+      "arc_deg": 100,
+      "windup_s": 0.28,
+      "recover_s": 0.92
+    }
+  },
+  "imp": {
+    "name": "火坑小鬼",
+    "v01": "imp",
+    "family": "火坑",
+    "look": "imp",
+    "behavior": "melee",
+    "speed": 3.26,
+    "aggro": 13.5,
+    "radius": 0.32,
+    "label_h": 1.63,
+    "attack": {
+      "range": 1.2,
+      "arc_deg": 100,
+      "windup_s": 0.28,
+      "recover_s": 0.62
+    }
+  },
+  "archer": {
+    "name": "骸骨弓手",
+    "v01": "archer",
+    "family": "骸骨",
+    "look": "archer",
+    "behavior": "ranged",
+    "speed": 1.98,
+    "aggro": 13.5,
+    "radius": 0.43,
+    "label_h": 2.1,
+    "keep_min": 4.5,
+    "keep_max": 8.3,
+    "shot": {
+      "windup_s": 0.5,
+      "recover_s": 0.4,
+      "cooldown_s": 1.9,
+      "speed": 12.0,
+      "range": 10.8,
+      "kind": "arrow"
+    }
+  },
+  "ghoul": {
+    "name": "食尸鬼",
+    "v01": "ghoul",
+    "family": "灰尸",
+    "look": "ghoul",
+    "behavior": "melee",
+    "speed": 2.56,
+    "aggro": 10.5,
+    "radius": 0.47,
+    "label_h": 2.29,
+    "attack": {
+      "range": 1.5,
+      "arc_deg": 100,
+      "windup_s": 0.28,
+      "recover_s": 1.02
+    }
+  },
+  "cultist": {
+    "name": "邪教术士",
+    "v01": "cultist",
+    "family": "凡人敌人（灰誓教团）",
+    "look": "cultist",
+    "behavior": "ranged",
+    "speed": 1.86,
+    "aggro": 13.5,
+    "radius": 0.45,
+    "label_h": 2.2,
+    "keep_min": 4.5,
+    "keep_max": 8.9,
+    "shot": {
+      "windup_s": 0.5,
+      "recover_s": 0.4,
+      "cooldown_s": 2.3,
+      "speed": 8.25,
+      "range": 11.5,
+      "kind": "bolt"
+    },
+    "blink": {
+      "trigger_dist": 3.3,
+      "min_m": 4.5,
+      "max_m": 9.0,
+      "cooldown_s": 5.0
+    }
+  },
+  "hound": {
+    "name": "熔渊猎犬",
+    "v01": "hound",
+    "family": "熔渊兽",
+    "look": "hound",
+    "behavior": "melee",
+    "speed": 3.84,
+    "aggro": 15.0,
+    "radius": 0.41,
+    "label_h": 2.01,
+    "attack": {
+      "range": 1.35,
+      "arc_deg": 100,
+      "windup_s": 0.28,
+      "recover_s": 0.72
+    }
+  },
+  "knight": {
+    "name": "堕落骑士",
+    "v01": "knight",
+    "family": "堕落者",
+    "look": "knight",
+    "behavior": "melee",
+    "speed": 2.09,
+    "aggro": 12.0,
+    "radius": 0.52,
+    "label_h": 2.48,
+    "attack": {
+      "range": 1.65,
+      "arc_deg": 100,
+      "windup_s": 0.28,
+      "recover_s": 1.12
     }
   }
 }

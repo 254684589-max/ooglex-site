@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -466,7 +466,9 @@ func _spawn(main: Node, id: String, pos: Vector3) -> EnemyBase:
 
 func test_monsters() -> void:
 	var defs := Monsters.defs()
-	check(defs.size() == 4 and defs.has("ash_brute") and defs.has("bone_archer") and defs.has("ash_priest") and defs.has("ash_corpse"), "怪物数据：冲锋、远程、召唤、仆从 4 种")
+	check(defs.has("ash_brute") and defs.has("bone_archer") and defs.has("ash_priest") and defs.has("ash_corpse"), "测试区怪物数据：冲锋、远程、召唤、仆从 4 种")
+	var v01_keys := ["zombie", "skel", "imp", "archer", "ghoul", "cultist", "hound", "knight"]
+	check(defs.size() == 12 and v01_keys.all(func(k): return defs.has(k) and defs[k].v01 == k), "P5：V0.1 第一幕的 8 种怪物都有 3D 定义（共 12 种）")
 
 	# ---- 发现与群体惊动 ----
 	var main = await _arena()
@@ -974,7 +976,8 @@ func test_dungeon() -> void:
 	var m1: Dictionary = main.dungeon
 	var up_pos := DungeonBuilder.cell_center(m1.up)
 	check(hero.global_position.distance_to(up_pos) < 4.5 and not main.stairs.up.overlaps_body(hero), "到达后站在上楼梯旁边，而不是楼梯上（%.1f 米）" % hero.global_position.distance_to(up_pos))
-	check(main.dummies.is_empty() and main.monsters.is_empty() and main.stage.find_children("*", "TrainingDummy", true, false).is_empty(), "测试区的木桩和怪物随楼层一起清掉")
+	check(main.dummies.is_empty() and main.stage.find_children("*", "TrainingDummy", true, false).is_empty() and main.monsters.all(func(e): return not String(e.def.v01).is_empty() and not e.def.has("summon") and e.def.floor == 1),
+		"测试区的木桩和怪物随楼层一起清掉，换成本层按 V0.1 刷的怪（%d 只）" % main.monsters.size())
 	check(main.level.navigation_mesh.get_polygon_count() > 50 and main.torches.size() > 3, "整层导航已烘焙（%d 个多边形，%.0f 毫秒），%d 支火把" % [main.level.navigation_mesh.get_polygon_count(), main.nav_bake_ms, main.torches.size()])
 	info("第 1 层搭建总耗时 %.0f 毫秒（几何 %.0f、导航 %.0f），%d 个地块" % [main.floor_info.build_ms, main.floor_info.geo_ms, main.floor_info.nav_ms, main.floor_info.chunks])
 	await physics(3)
@@ -1341,5 +1344,169 @@ func test_skills() -> void:
 	hero._apply_progress()
 	await frames(2)
 	check(bar.slots.blink.text.contains("10 级解锁") and bar.slots.blink.disabled, "未解锁的技能显示解锁等级并置灰")
+	main.queue_free()
+	await frames(2)
+
+
+# ---------- 阶段 P5：怪物全表、精英、掉落 ----------
+func test_loot() -> void:
+	# 房间怪物群的规则（V0.1 genDungeon）
+	var problems := []
+	var total := 0
+	var champ_packs := 0
+	var packs := 0
+	for f in range(1, 9):
+		for sd in [5, 66, 777]:
+			var m := DungeonGen.generate(f, sd)
+			var pool := FloorRules.monster_pool(f)
+			var by_room := {}
+			for sp in m.spawns:
+				total += 1
+				var r: Dictionary = m.rooms[sp.room]
+				if not pool.has(sp.key):
+					problems.append("第%d层刷了池外的怪 %s" % [f, sp.key])
+				if m.t[sp.cell.y * m.w + sp.cell.x] != DungeonGen.FLOOR:
+					problems.append("怪物站在非地面格")
+				if sp.room == m.start or sp.room == m.boss_room:
+					problems.append("起点房或首领房里刷了怪")
+				if sp.cell.x < r.x + 1 or sp.cell.x > r.x + r.w - 2 or sp.cell.y < r.y + 1 or sp.cell.y > r.y + r.h - 2:
+					problems.append("怪物不在房间内侧")
+				if not by_room.has(sp.room):
+					by_room[sp.room] = []
+				by_room[sp.room].append(sp)
+			for ri in by_room:
+				var pk: Array = by_room[ri]
+				packs += 1
+				var champs := {}
+				var cells := {}
+				for sp in pk:
+					champs[sp.champ] = true
+					cells[sp.cell] = true
+				var champ: String = pk[0].champ
+				var hi := 3 if champ != "" else (4 + (1 if f > 3 else 0))
+				if champs.size() != 1 or cells.size() != pk.size() or pk.size() > hi:
+					problems.append("第%d层怪物群不合规（%d 只，精英 %s）" % [f, pk.size(), champ])
+				if champ != "":
+					champ_packs += 1
+	check(problems.is_empty(), "24 张地图的怪物群都合规：本层怪物池、房间内侧、起点房和首领房不刷、每群 2–4 只（深层 +1）、精英群同一特性 2–3 只 %s" % str(problems.slice(0, 3)))
+	info("平均每层 %.1f 只怪、%.1f 群；精英群占 %.0f%%（V0.1 为 12%%）" % [total / 24.0, packs / 24.0, 100.0 * champ_packs / maxi(1, packs)])
+	check(total / 24.0 > 12.0 and total / 24.0 < 50.0, "每层怪物数量合理")
+	check(DungeonGen.generate(4, 9).spawns == DungeonGen.generate(4, 9).spawns, "同一层同一种子，怪物位置不变")
+
+	# 精英数值
+	var d := Monsters.scaled_def("zombie", 3, "fast")
+	var m3 := FloorRules.scale_monster("zombie", 3, "fast")
+	check(d.hp == m3.hp and d.name == "迅捷的腐尸" and d.xp == m3.xp and absf(d.speed - Monsters.get_def("zombie").speed * 1.45) < 0.001,
+		"迅捷的腐尸：生命 ×2.6、经验 ×3、移动 ×1.45（%d 血）" % d.hp)
+	var fury := Monsters.scaled_def("skel", 1, "fury")
+	check(absf(fury.attack.recover_s - Monsters.get_def("skel").attack.recover_s * 0.6) < 0.001, "狂怒精英：攻击间隔 ×0.6")
+
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.spawn_monsters = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	hero.global_position = Vector3(0, 0, 13)
+	main.camera.snap()
+	await physics(2)
+
+	var st := Monsters.spawn("zombie", main.stage, Vector3(4, 0, 13), hero, 1, "stone")
+	st.stun_t = 1e6
+	await physics(2)
+	st.max_hp = 100.0
+	st.hp = 100.0
+	st.take_hit({"amount": 10, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	check(is_equal_approx(st.hp, 94.0), "石肤精英：受到的伤害 ×0.6（10 → 6）")
+	check(st.find_child("ChampionRing", false, false) != null and st.hp_label.modulate.b > 0.9, "精英脚下有光环、名字是蓝色")
+	var vp := Monsters.spawn("zombie", main.stage, Vector3(5, 0, 14), hero, 1, "vamp")
+	vp.stun_t = 1e6
+	await physics(2)
+	vp.hp = 5.0
+	vp.on_damage_dealt(7)
+	check(is_equal_approx(vp.hp, 12.0), "嗜血精英：打中玩家按伤害回血")
+	var fe := Monsters.spawn("zombie", main.stage, hero.global_position + Vector3(1.5, 0, 0), hero, 1, "fire")
+	fe.stun_t = 1e6
+	await physics(2)
+	var hp0 := hero.hp
+	fe.die()
+	await seconds(0.5)
+	check(hero.hp < hp0, "焚烧精英死亡时爆出火环，烧到身边的主角（-%.0f）" % (hp0 - hero.hp))
+
+	# 掉落：精英必掉 1–2 件装备
+	var before_items := get_tree().get_nodes_in_group("ground_item")
+	var before := before_items.size()
+	var ch := Monsters.spawn("skel", main.stage, hero.global_position + Vector3(3, 0, 1), hero, 1, "fury")
+	ch.stun_t = 1e6
+	await physics(2)
+	ch.die()
+	await frames(2)
+	var items: Array = get_tree().get_nodes_in_group("ground_item").filter(func(g): return g.data.has("item") and not before_items.has(g))
+	check(get_tree().get_nodes_in_group("ground_item").size() > before and items.size() >= 1, "打倒精英掉出装备（地上 %d 件）" % items.size())
+	var g: GroundItem = items[0]
+	check(g.label.text == g.data.item.name and g.label.modulate == GroundItem.RARITY_COLORS[int(g.data.item.rarity)], "地上的装备显示名字，颜色对应品质")
+	check(g.global_position.distance_to(ch.global_position) < 2.0, "掉落物散在尸体周围")
+
+	# 点击拾取：点名字 → 走过去 → 进背包
+	hero.global_position = g.global_position + Vector3(-3, 0, 0)
+	main.camera.snap()
+	await physics(3)
+	var sp: Vector2 = main.camera.unproject_position(g.global_position + Vector3(0, 0.8, 0))
+	hero.click_at(sp)
+	check(hero.pickup_target == g, "点地上装备的名字：锁定它为拾取目标")
+	var inv0: int = hero.progress.sheet.inv.size()
+	for i in 240:
+		await physics(1)
+		if hero.progress.sheet.inv.size() > inv0:
+			break
+	await frames(2)
+	check(hero.progress.sheet.inv.size() == inv0 + 1 and not is_instance_valid(g), "走过去自动拾取，装备进背包")
+	check(main.log_label.text.contains("拾取"), "左侧提示「拾取 ……」")
+	var gold0: int = hero.progress.sheet.gold
+	var gg := GroundItem.make({"gold": 50})
+	main.stage.add_child(gg)
+	gg.global_position = hero.global_position
+	check(hero.pick_up(gg) and hero.progress.sheet.gold == gold0 + 50, "拾取金币")
+	var pp := GroundItem.make({"pot": "mp"})
+	main.stage.add_child(pp)
+	var mp_pots: int = hero.progress.sheet.pots.mp
+	check(hero.pick_up(pp) and hero.progress.sheet.pots.mp == mp_pots + 1, "拾取法力药水")
+	while hero.progress.sheet.inv.size() < 40:
+		hero.progress.sheet.inv.append({"name": "占位"})
+	var rng := RandomNumberGenerator.new()
+	var full := GroundItem.make({"item": ItemGen.generate(rng, 3)})
+	main.stage.add_child(full)
+	await frames(1)
+	var picked_full := hero.pick_up(full)
+	await frames(2)
+	check(not picked_full and is_instance_valid(full) and main.log_label.text.contains("背包已满"), "背包满 40 件时捡不起来，东西留在地上")
+
+	# 不再被挡路的怪卡住（P4 发现的问题）
+	hero.global_position = Vector3(-6, 0, 13)
+	var blocker := Monsters.spawn("ghoul", main.stage, Vector3(-3, 0, 13), hero)
+	blocker.def.aggro = 0.0        # 不追击，原地待着（被眩晕的怪不移动，也就不会被挤开）
+	blocker.max_hp = 1000.0
+	blocker.hp = 1000.0
+	var b0 := blocker.global_position
+	await physics(2)
+	hero.move_to(Vector3(0, 0, 13))
+	var arrived := false
+	for i in 180:
+		await physics(1)
+		if hero.global_position.distance_to(Vector3(0, 0, 13)) < 0.4:
+			arrived = true
+			break
+	check(arrived, "点地移动时路上站着怪也能走过去（怪被推开）")
+	check(blocker.global_position.distance_to(b0) > 0.2, "挡路的怪被挤开 %.2f 米" % blocker.global_position.distance_to(b0))
+
+	# 地下城里满是怪
+	main.run_seed = 99
+	main.go_floor(2)
+	await frames(3)
+	check(main.monsters.size() == main.dungeon.spawns.size() and main.monsters.size() > 5 and main.monsters.all(func(e): return e.def.level == 4),
+		"第 2 层按生成结果刷怪：%d 只，全是 4 级（第 2 层）" % main.monsters.size())
+	var champs: Array = main.monsters.filter(func(e): return e.def.champ != "")
+	info("第 2 层：%d 只怪，其中精英 %d 只" % [main.monsters.size(), champs.size()])
 	main.queue_free()
 	await frames(2)

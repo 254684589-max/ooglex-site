@@ -27,6 +27,9 @@ var char_btn: Button
 var btn_hp: Button
 var btn_mp: Button
 var char_panel: CharPanel
+var log_label: Label          # 左侧消息（拾取、背包已满……最近 4 条，几秒后淡出）
+var log_lines: Array = []     # [文字, 颜色, 剩余秒数]
+var loot_rng := RandomNumberGenerator.new()
 var btn_attack: Button
 var skill_btns := {}          # 手机：四个技能圆按钮（P4）
 var skill_bar: SkillBar       # 电脑：屏幕下方技能栏（P4）
@@ -54,6 +57,8 @@ var banner_t := 0.0
 
 
 func _ready() -> void:
+	add_to_group("loot_host")
+	loot_rng.randomize()
 	_build_world()
 	_build_ui()
 	var q := Look.default_tier()
@@ -157,7 +162,14 @@ func _process(delta: float) -> void:
 		mp_bar.value = hero.mp
 		mp_label.text = "法力 %d / %d" % [floori(hero.mp), int(hero.max_mp)]
 		var keys := not touch.visible
-		bag_label.text = "金币 %d　生命药水 ×%d%s　法力药水 ×%d%s" % [sh.gold, sh.pots.hp, "（Q）" if keys else "", sh.pots.mp, "（E）" if keys else ""]
+		bag_label.text = "金币 %d　生命药水 ×%d%s　法力药水 ×%d%s　背包 %d / %d" % [sh.gold, sh.pots.hp, "（Q）" if keys else "", sh.pots.mp, "（E）" if keys else "", sh.inv.size(), int(Act1Data.rules().hero.inventory_cap)]
+		var lines: PackedStringArray = []
+		for l in log_lines:
+			l[2] -= delta
+			lines.append(l[0])
+		log_lines = log_lines.filter(func(l): return l[2] > 0.0)
+		log_label.text = "\n".join(lines)
+		log_label.add_theme_color_override("font_color", log_lines[-1][1] if not log_lines.is_empty() else Color.WHITE)
 		char_btn.text = ("属性 +%d" % sh.pts) if sh.pts > 0 else ("属性（C）" if keys else "属性")
 		if btn_hp:
 			btn_hp.text = "血 %d" % sh.pots.hp
@@ -386,14 +398,20 @@ func go_floor(f: int, via: String = "down") -> void:
 			at = floor_info.down_cell
 		hero.global_position = DungeonBuilder.cell_center(DungeonGen.near_free(dungeon, at))
 		Look.apply_theme(environment, dungeon.theme)
+		# 房间里的怪物群（P5，V0.1 genDungeon）
+		var jit := RandomNumberGenerator.new()
+		jit.seed = seed_for(f) + 17
+		for sp in dungeon.spawns:
+			var pos := DungeonBuilder.cell_center(sp.cell) + Vector3(jit.randf_range(-0.5, 0.5), 0, jit.randf_range(-0.5, 0.5))
+			monsters.append(Monsters.spawn(sp.key, stage, pos, hero, f, sp.champ))
 	hero.respawn_point = hero.global_position
 	camera.snap()
 	apply_quality(quality)
 	stair_lock = 0.8
 	var fname := FloorRules.floor_name(f) if f > 0 else "测试区 · 灰盒房间与大厅"
-	_show_banner(fname + ("\n本层还没有怪物（后续步骤接入）" if f > 0 else ""))
+	_show_banner(fname)
 	var ms := (Time.get_ticks_usec() - t0) / 1000.0
-	print("EF_FLOOR n=%d theme=%s total_ms=%.1f nav_ms=%.1f chunks=%d torches=%d" % [f, dungeon.get("theme", "test"), ms, nav_bake_ms, floor_info.get("chunks", 0), torches.size()])
+	print("EF_FLOOR n=%d theme=%s total_ms=%.1f nav_ms=%.1f chunks=%d torches=%d monsters=%d" % [f, dungeon.get("theme", "test"), ms, nav_bake_ms, floor_info.get("chunks", 0), torches.size(), monsters.size()])
 
 
 func _on_hero_arrived() -> void:
@@ -404,6 +422,29 @@ func _on_hero_arrived() -> void:
 	if floor_i == 0:
 		var ss := camera.unproject_position(TEST_STAIRS) * get_window().content_scale_factor
 		print("EF_STAIRS_SCREEN x=%d y=%d" % [ss.x, ss.y])
+
+
+# ---------------- 掉落（P5） ----------------
+
+func on_enemy_died(e: Node) -> void:
+	## 怪物死亡：按 V0.1 dropLoot 掷掉落，散落在尸体周围的地面上
+	var S: Dictionary = hero.progress.S
+	var drops := FloorRules.roll_loot(loot_rng, maxi(1, floor_i), {"boss": e.def.get("boss", false), "champ": e.def.get("champ", "")}, S.mf, S.gf)
+	var map := get_world_3d().navigation_map
+	for d in drops:
+		var g := GroundItem.make(d)
+		stage.add_child(g)
+		var a := loot_rng.randf() * TAU
+		var r := loot_rng.randf_range(0.45, 1.5)
+		var p: Vector3 = e.global_position + Vector3(cos(a), 0, sin(a)) * r
+		p = NavigationServer3D.map_get_closest_point(map, p)
+		g.global_position = Vector3(p.x, 0, p.z)
+
+
+func add_log(text: String, c: Color) -> void:
+	log_lines.append([text, c, 5.0])
+	if log_lines.size() > 4:
+		log_lines.pop_front()
 
 
 func _show_banner(text: String) -> void:
@@ -448,7 +489,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；C 属性；WASD 移动；滚轮缩放；走到楼梯上换层"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P4 四个技能）\n模型仍是占位几何体。南边大厅的怪物给经验，升级得属性点；房间东北角的楼梯通往随机地下城（暂无怪物）。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P5 怪物与掉落）\n模型仍是占位几何体。南边大厅与楼梯下的随机地下城里有怪物，打倒后掉金币、药水和装备（点它拾取）。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -503,6 +544,10 @@ func _build_ui() -> void:
 	bag_label.add_theme_font_size_override("font_size", 14)
 	bag_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
 	box.add_child(bag_label)
+	log_label = Label.new()
+	log_label.add_theme_font_size_override("font_size", 14)
+	log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(log_label)
 	dead_label = Label.new()
 	dead_label.set_anchors_preset(Control.PRESET_CENTER)
 	dead_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -586,6 +631,7 @@ func _build_ui() -> void:
 	char_panel.bind(hero)
 	hero.ui_blockers.append(char_btn)
 	hero.ui_blockers.append(char_panel)
+	hero.message.connect(add_log)
 	hero.progress.leveled.connect(func(lvl: int): _show_banner("升级！你现在是 %d 级\n获得 5 点属性点（按 C 或点「属性」分配）" % lvl))
 	hero.died.connect(func(): dead_label.text = "你倒下了\n%s3 秒后在本层入口复活" % (("掉落 %d 金币；" % hero.last_gold_lost) if hero.last_gold_lost > 0 else ""))
 	_refresh_labels()

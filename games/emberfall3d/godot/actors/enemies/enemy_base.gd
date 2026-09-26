@@ -69,6 +69,8 @@ func _ready() -> void:
 	visual = Node3D.new()
 	add_child(visual)
 	_build_visual()
+	if def.get("champ", "") != "":
+		_champion_look()
 	add_child(Look.blob_shadow(def.get("radius", 0.45)))
 	hp_label = _label(18, Vector3(0, def.get("label_h", 2.45), 0))
 	stun_mark = _label(22, Vector3(0, def.get("label_h", 2.45) + 0.35, 0))
@@ -156,7 +158,9 @@ func update_label() -> void:
 	if hp_label == null:
 		return
 	hp_label.text = "%s  %d / %d" % [def.get("name", "?"), ceili(hp), int(max_hp)]
-	hp_label.modulate = Color(0.95, 0.85, 0.7) if hp > max_hp * 0.3 else Color(1.0, 0.45, 0.35)
+	var champ: bool = def.get("champ", "") != ""
+	# V0.1：精英蓝名
+	hp_label.modulate = (Color(0.55, 0.62, 1.0) if champ else Color(0.95, 0.85, 0.7)) if hp > max_hp * 0.3 else Color(1.0, 0.45, 0.35)
 	# 满血且没被惊动时不显示，减少画面上的字
 	hp_label.visible = hp < max_hp or state != "idle" or def.get("always_label", false)
 
@@ -168,12 +172,17 @@ func combat_target() -> Dictionary:
 
 
 func attacker_stats(dmg: Array) -> Dictionary:
-	return {"level": def.get("level", 1), "main_stat": 0, "weapon_min": dmg[0], "weapon_max": dmg[1], "damage_bonus": 0.0, "crit_chance": 0.03}
+	# V0.1 的怪物不会暴击
+	return {"level": def.get("level", 1), "main_stat": 0, "weapon_min": dmg[0], "weapon_max": dmg[1], "damage_bonus": 0.0, "crit_chance": 0.0}
 
 
 func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, stun_s: float = 0.0) -> void:
 	if dead:
 		return
+	if def.get("champ", "") == "stone":
+		# 石肤精英：受到的伤害 ×0.6（V0.1 hurtMon）
+		result = result.duplicate()
+		result.amount = maxi(1, roundi(result.amount * Act1Data.rules().monsters.champion.stone_taken_mul))
 	hp = maxf(0.0, hp - result.amount)
 	flash_t = Balance.fb().flash_s
 	if knock_m > 0.0 and not def.get("no_knockback", false):
@@ -205,6 +214,11 @@ func die() -> void:
 	# 击杀经验（P3）：木桩没有 xp 字段，不给经验
 	if def.get("xp", 0) > 0 and is_instance_valid(player) and player.has_method("on_enemy_killed"):
 		player.on_enemy_killed(self)
+	# 掉落（P5）：由场景里登记为 loot_host 的节点（scenes/main.gd）负责生成地上的金币、药水与装备
+	if def.get("xp", 0) > 0 and is_inside_tree():
+		get_tree().call_group("loot_host", "on_enemy_died", self)
+	if def.get("champ", "") == "fire":
+		_fire_ring()
 	_on_dead()
 
 
@@ -225,6 +239,57 @@ func dist_to_player() -> float:
 
 func player_alive() -> bool:
 	return player != null and not player.get("dead")
+
+
+const CHAMP_COLORS := {"fast": Color(0.4, 0.9, 1.0), "stone": Color(0.7, 0.7, 0.72), "fury": Color(1.0, 0.3, 0.2), "vamp": Color(0.75, 0.1, 0.25), "fire": Color(1.0, 0.55, 0.15)}
+
+
+func _champion_look() -> void:
+	## 精英（P5）：体型大一点，脚下一圈对应特性颜色的光环
+	visual.scale = Vector3.ONE * 1.15
+	var ring := MeshInstance3D.new()
+	ring.mesh = LowPoly.torus(0.85, 1.0)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = CHAMP_COLORS.get(def.champ, Color.WHITE)
+	m.emission_enabled = true
+	m.emission = m.albedo_color
+	m.emission_energy_multiplier = 1.5
+	ring.material_override = m
+	ring.scale = Vector3.ONE * (float(def.get("radius", 0.45)) + 0.25)
+	ring.position.y = 0.06
+	ring.name = "ChampionRing"
+	add_child(ring)
+
+
+func _fire_ring() -> void:
+	## 焚烧精英死亡时爆出火环（V0.1 killMon：半径 2.2 格 ≈ 3.3 米，伤害 = 该怪伤害上限）
+	var radius: float = float(Act1Data.rules().monsters.champion.fire_death_ring.radius) * 1.5
+	var parent := get_parent()
+	var pos := global_position
+	var ring := MeshInstance3D.new()
+	ring.mesh = LowPoly.torus(0.85, 1.0)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_color = Color(1.0, 0.48, 0.16, 0.9)
+	ring.material_override = m
+	parent.add_child(ring)
+	ring.global_position = pos + Vector3(0, 0.15, 0)
+	ring.scale = Vector3(0.3, 1, 0.3)
+	var tw := ring.create_tween()
+	tw.tween_property(ring, "scale", Vector3(radius, 1, radius), 0.36)
+	tw.tween_property(m, "albedo_color:a", 0.0, 0.2)
+	tw.tween_callback(ring.queue_free)
+	var pl := player
+	var dmg: Array = def.attack.dmg if def.has("attack") else def.shot.dmg
+	var lvl: int = def.get("level", 1)
+	var tree := get_tree()
+	tree.create_timer(0.3).timeout.connect(func():
+		if is_instance_valid(pl) and not pl.get("dead") and Vector2(pl.global_position.x - pos.x, pl.global_position.z - pos.z).length() <= radius:
+			var r := DamageCalc.roll({"level": lvl, "main_stat": 0, "weapon_min": dmg[1], "weapon_max": dmg[1], "damage_bonus": 0.0, "crit_chance": 0.0}, 1.0, "fire", pl.combat_target(), RandomNumberGenerator.new())
+			r.type = "fire"
+			pl.take_hit(r, pl.global_position - pos, 0.3))
 
 
 func apply_slow(seconds: float) -> void:
@@ -376,6 +441,14 @@ func _separation() -> Vector3:
 		var l := d.length()
 		if l < 0.95 and l > 0.001:
 			push += d / l * (0.95 - l)
+	# P5：主角不再被怪物挡住（主角碰撞不含敌人层），改由怪物让开：和主角重叠时往外推（V0.1 separate）
+	if is_instance_valid(player) and not player.get("dead"):
+		var dp: Vector3 = global_position - player.global_position
+		dp.y = 0.0
+		var need: float = float(def.get("radius", 0.45)) + 0.35
+		var lp := dp.length()
+		if lp < need:
+			push += (dp / lp if lp > 0.001 else Vector3(1, 0, 0)) * (need - lp) * 2.5
 	return push
 
 
@@ -436,6 +509,18 @@ func melee_hit(dmg: Array, reach: float, arc_deg: float) -> bool:
 		return false
 	if d.length() > 0.01 and rad_to_deg(forward().angle_to(d.normalized())) > arc_deg * 0.5:
 		return false
-	var r := DamageCalc.roll(attacker_stats(dmg), 1.0, "physical", player.combat_target(), rng)
+	var dm := dmg
+	if def.get("champ", "") == "fire":
+		var fm: float = Act1Data.rules().monsters.champion.fire_dmg_mul
+		dm = [roundi(dmg[0] * fm), roundi(dmg[1] * fm)]
+	var r := DamageCalc.roll(attacker_stats(dm), 1.0, "physical", player.combat_target(), rng)
 	player.take_hit(r, d, 0.25)
+	on_damage_dealt(r.amount)
 	return true
+
+
+## 嗜血精英：打中玩家时按伤害回血（V0.1 hurtHero）
+func on_damage_dealt(amount: float) -> void:
+	if def.get("champ", "") == "vamp" and not dead:
+		hp = minf(max_hp, hp + amount)
+		update_label()

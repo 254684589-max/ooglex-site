@@ -5,6 +5,6 @@
 
 | 素材 | 仓库内路径 | 作者 / 来源 | 许可 | 原始链接 | 取得日期 | 备注 |
 |---|---|---|---|---|---|---|
-| Noto Sans SC 中文字体子集（ASCII、常用标点、GB2312 一级汉字 3755 个） | `godot/assets/fonts/NotoSansSC-EF.ttf` | Google / Adobe（Noto Sans SC）；子集由 `games/working-life/tools/build_font.py` 生成 | SIL Open Font License 1.1（全文 `godot/assets/fonts/OFL.txt`） | https://github.com/google/fonts/tree/main/ofl/notosanssc | 2026-09-26（复制自仓库内 `games/working-life/godot/assets/fonts/NotoSansSC-WL.ttf`） | 以后需要生僻字时，改用本工程自己的字符集重新生成子集 |
+| Noto Sans SC 中文字体子集（ASCII、常用标点、GB2312 一级汉字与符号区、本工程源码与数据里出现的全部字符，共 4546 个字形） | `godot/assets/fonts/NotoSansSC-EF.ttf` | Google / Adobe（Noto Sans SC）；子集由 `tools/build_font.py`（复用 `games/working-life/tools/build_font.py`）生成，字重 500 | SIL Open Font License 1.1（全文 `godot/assets/fonts/OFL.txt`） | https://github.com/google/fonts/tree/main/ofl/notosanssc（`NotoSansSC[wght].ttf`） | 2026-09-26（P5 按本工程字符集重新生成，补上 V0.1 物品名里的「匕、睿、鸢」） | 代码或数据里新增生僻字后重新运行 `tools/build_font.py` |
 
 阶段 1 的场景全部是代码生成的**占位几何体**，不使用任何外部模型或贴图。

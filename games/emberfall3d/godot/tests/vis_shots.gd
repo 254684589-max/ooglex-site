@@ -44,6 +44,34 @@ func _ready() -> void:
 		var p2: String = out.path_join("floor%d%s.png" % [f, ("-" + tier) if tier != "" else ""])
 		img2.save_png(p2)
 		print("SHOT ", p2, " draw_calls=", Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), " primitives=", Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
+	# P5：地下城里的怪物群与掉落（找一群精英，没有就找第一群；站到旁边，打倒一只看掉落）
+	for f in [2, 5]:
+		main.go_floor(f)
+		await get_tree().create_timer(0.3).timeout
+		var sps: Array = main.dungeon.spawns
+		if sps.is_empty():
+			continue
+		var pick: Dictionary = sps[0]
+		for sp in sps:
+			if sp.champ != "":
+				pick = sp
+				break
+		var c: Vector2i = pick.cell
+		hero.global_position = DungeonBuilder.cell_center(DungeonGen.near_free(main.dungeon, c + Vector2i(-2, 1)))
+		main.camera.snap()
+		await get_tree().create_timer(1.2).timeout
+		var nearest: EnemyBase = null
+		for e in main.monsters:
+			if is_instance_valid(e) and not e.dead and (nearest == null or e.global_position.distance_to(hero.global_position) < nearest.global_position.distance_to(hero.global_position)):
+				nearest = e
+		if nearest:
+			nearest.die()
+		await get_tree().create_timer(0.8).timeout
+		await RenderingServer.frame_post_draw
+		var img3 := get_viewport().get_texture().get_image()
+		var p3: String = out.path_join("fight%d%s.png" % [f, ("-" + tier) if tier != "" else ""])
+		img3.save_png(p3)
+		print("SHOT ", p3, " draw_calls=", Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), " primitives=", Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME), " monsters=", main.monsters.size())
 	get_tree().quit()
 
 
