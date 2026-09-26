@@ -98,11 +98,18 @@ func _ai(_delta: float) -> void:
 
 
 func _on_dead() -> void:
+	## 倒地 → 停一下 → 从身上烧穿出洞、边缘发余烬光，整个消散（阶段 2.5 溶解着色器；之前是沉进地里）
 	var tw := create_tween()
 	tw.tween_property(visual, "rotation_degrees:x", -85.0, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.tween_interval(1.6)
-	tw.tween_property(visual, "position:y", -1.2, 0.8)
-	tw.tween_callback(queue_free)
+	tw.tween_interval(0.6)
+	tw.tween_callback(func():
+		var mats := Fx.dissolve_materials(visual)
+		Fx.burst(get_parent(), global_position + Vector3(0, 0.4, 0), Color(1.0, 0.5, 0.15), 16, {"speed": 1.2, "life": 1.0, "size": 0.1, "gravity": -1.5, "sphere": 0.6, "explosive": 0.3})
+		var t2 := create_tween()
+		t2.tween_method(func(v: float):
+			for m in mats:
+				m.set_shader_parameter("progress", v), 0.0, 1.0, 1.1)
+		t2.tween_callback(queue_free))
 
 
 # ---------------- 外观工具 ----------------

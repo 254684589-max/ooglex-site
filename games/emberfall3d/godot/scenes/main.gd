@@ -119,6 +119,7 @@ func _ready() -> void:
 	# 系统设置了「减少动态效果」：关掉震屏（V0.1 REDUCED 同样不震屏）
 	if OS.has_feature("web") and str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 		camera.shake_enabled = false
+		Fx.reduced = true
 		print("EF_REDUCED_MOTION")
 	PackLoader.pack_loaded.connect(_on_pack_loaded)
 	hero.arrived.connect(_on_hero_arrived)
@@ -1568,6 +1569,7 @@ func apply_quality(tier: String) -> void:
 	environment.glow_enabled = tier != "low"
 	for tch in torches:
 		tch.set_quality(tier)
+	Fx.amount_mul = 0.5 if tier == "low" else 1.0      # 阶段 2.5：低画质粒子减半
 	_refresh_labels()
 
 

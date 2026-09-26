@@ -127,6 +127,48 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	await _shot(out, "automap", tier)
 	main.toggle_map()
+	# 阶段 2.5：特效（火球爆炸与焦痕、寂霜环、怪物烧尽消散）——第 4 层最大的房间中央（没有传送门挡着），主角 12 级
+	main.go_floor(4)
+	await get_tree().create_timer(0.3).timeout
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	var big: Dictionary = main.dungeon.rooms[0]
+	for r in main.dungeon.rooms:
+		if r.w * r.h > big.w * big.h:
+			big = r
+	hero.global_position = Vector3((big.cx + 0.5) * DungeonBuilder.TILE, 0, (big.cy + 0.5) * DungeonBuilder.TILE)
+	hero.stop()
+	main.info.visible = false
+	hero.progress.sheet.lvl = 12
+	hero.stats_changed()
+	main.camera.snap()
+	await get_tree().create_timer(0.5).timeout
+	Sfx.counts.clear()
+	var z1 := Monsters.spawn("zombie", main.stage, hero.global_position + Vector3(-3.0, 0, -3.0), hero, 2)
+	var z2 := Monsters.spawn("skel", main.stage, hero.global_position + Vector3(-1.5, 0, 1.0), hero, 2)
+	z1.stun_t = 30.0
+	z2.stun_t = 30.0
+	main.camera.snap()
+	await get_tree().create_timer(0.4).timeout
+	hero.mp = hero.max_mp
+	hero.cast_skill("fireball", z1.global_position)
+	for i in 120:
+		await get_tree().process_frame
+		if Sfx.counts.get("boom", 0) > 0 and not is_instance_valid(hero.last_fireball):
+			break
+	await _shot(out, "fx-fireball", tier)
+	await get_tree().create_timer(0.6).timeout
+	hero.mp = hero.max_mp
+	hero.skill_cd["nova"] = 0.0
+	z2.hp = 5000.0                    # 别让寂霜环直接打死，溶解要从下面那一击开始计时
+	hero.cast_skill("nova")
+	await get_tree().create_timer(0.25).timeout
+	await _shot(out, "fx-nova", tier)
+	z2.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await get_tree().create_timer(1.35).timeout
+	await _shot(out, "fx-dissolve", tier)
+	main.info.visible = true
 	# P10：木桶、宝箱、神殿与战争迷雾（找一层有神殿和宝箱的，站在神殿旁）
 	for f in range(2, 12):
 		main.go_floor(f)

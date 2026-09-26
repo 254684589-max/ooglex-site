@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2655,5 +2655,82 @@ func test_parity() -> void:
 	var htxt := " ".join(main.dialog_panel.body.get_children().map(func(l): return l.text))
 	check(main.dialog_panel.who.text == "操作说明" and htxt.contains("Shift") and htxt.contains("Tab") and htxt.contains("回城卷轴"), "菜单里有「操作说明」（V0.1 helpHtml）")
 	main.dialog_panel.close()
+	main.queue_free()
+	await frames(2)
+
+
+## 阶段 2.5：特效（粒子、地面痕迹、溶解）
+func test_fx() -> void:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var st: Node3D = main.stage
+	main.apply_quality("medium")
+	var p := Fx.burst(st, Vector3(0, 1, 0), Color.ORANGE, 40, {"life": 0.3})
+	check(p != null and p.emitting and p.amount == 40 and p.one_shot, "一次性粒子：数量按参数（中画质 40）")
+	await seconds(0.8)
+	check(not is_instance_valid(p), "播完自己释放")
+	main.apply_quality("low")
+	var p2 := Fx.burst(st, Vector3.ZERO, Color.ORANGE, 40)
+	Fx.reduced = true
+	var p3 := Fx.burst(st, Vector3.ZERO, Color.ORANGE, 40)
+	Fx.reduced = false
+	check(p2.amount == 20 and p3.amount == 7, "低画质粒子减半（20）；「减少动态效果」再减到三分之一（7）")
+	main.apply_quality("medium")
+	var mk := Fx.mark(st, Vector3(1, 0, 1), Color(0, 0, 0, 0.7), 1.0, 0.1, 0.2)
+	check(mk != null and absf(mk.global_position.y - 0.025) < 0.01, "地面痕迹贴在地上")
+	await seconds(0.6)
+	check(not is_instance_valid(mk), "地面痕迹停留后淡出并释放")
+	# 技能特效
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.stun_t = 60.0
+	hero.progress.sheet.lvl = 12
+	hero.stats_changed()
+	hero.mp = hero.max_mp
+	hero.global_position = Vector3(-3, 0, -2)
+	var n0 := Fx.spawned
+	var marks0: int = main.find_children("*", "MeshInstance3D", true, false).filter(func(n): return n.mesh is PlaneMesh and n.material_override is StandardMaterial3D and (n.material_override as StandardMaterial3D).albedo_texture == Look.radial_texture()).size()
+	Sfx.counts.clear()
+	hero.cast_skill("fireball", hero.global_position + Vector3(0, 0, -6))
+	var trail := false
+	for i in 60:
+		await physics(1)
+		if is_instance_valid(hero.last_fireball) and hero.last_fireball.find_children("*", "CPUParticles3D", false, false).size() > 0:
+			trail = true
+		if Sfx.counts.get("boom", 0) > 0 and not is_instance_valid(hero.last_fireball):
+			break
+	var marks := main.find_children("*", "MeshInstance3D", true, false).filter(func(n): return n.mesh is PlaneMesh and n.material_override is StandardMaterial3D and (n.material_override as StandardMaterial3D).albedo_texture == Look.radial_texture())
+	var lit: int = main.find_children("*", "OmniLight3D", true, false).filter(func(n): return n.get_parent() == hero.get_parent() and n.omni_range > 3.0 and n.light_energy > 0.0).size()
+	check(trail and Fx.spawned >= n0 + 6 and marks.size() == marks0 + 2 and lit >= 1, "火球：一路拖着火星，爆炸时火焰与烟雾粒子、一闪照亮周围，地上留下焦痕与发红的余烬（新特效 %d 个）" % (Fx.spawned - n0))
+	for id in ["whirl", "nova", "blink"]:
+		await seconds(0.8)
+		hero.mp = hero.max_mp
+		hero.skill_cd[id] = 0.0
+		var k := Fx.spawned
+		hero.cast_skill(id, hero.global_position + Vector3(2, 0, 0))
+		for i in 40:
+			await physics(1)
+			if Fx.spawned > k:
+				break
+		check(Fx.spawned > k, "%s 有粒子特效" % id)
+	# 命中火花与溶解
+	var dummy_e := Monsters.spawn("zombie", st, hero.global_position + Vector3(1.2, 0, 0), hero, 1)
+	await frames(2)
+	var k2 := Fx.spawned
+	HitFeedback.apply(hero, dummy_e, {"amount": 1, "crit": true, "type": "physical"}, null)
+	check(Fx.spawned == k2 + 1, "命中时溅出火花 / 血雾")
+	dummy_e.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await seconds(1.2)
+	var sm: Array = dummy_e.visual.find_children("*", "MeshInstance3D", true, false).map(func(m): return m.material_override)
+	var prog: float = sm[0].get_shader_parameter("progress") if sm[0] is ShaderMaterial else -1.0
+	check(sm.all(func(m): return m is ShaderMaterial) and prog > 0.0 and prog < 1.0, "怪物倒下后换成溶解材质，正在「烧尽」（进度 %.2f）" % prog)
+	check((sm[0] as ShaderMaterial).get_shader_parameter("albedo") != Color(0.5, 0.5, 0.5), "溶解材质保留原来的颜色")
+	await seconds(1.4)
+	check(not is_instance_valid(dummy_e), "烧尽后释放（倒下后约 2 秒）")
 	main.queue_free()
 	await frames(2)

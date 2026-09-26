@@ -31,6 +31,7 @@ func _ready() -> void:
 	light.light_energy = 1.4
 	light.omni_range = 4.0
 	add_child(light)
+	Fx.trail(self, Color(1.0, 0.5, 0.15), 30, 0.26)   # 阶段 2.5：一路掉火星
 
 
 func _physics_process(delta: float) -> void:
@@ -85,6 +86,12 @@ func explode(direct: Node3D) -> void:
 			print("EF_HIT skill=fireball hits=%d" % hits)
 	Sfx.play("boom")
 	_boom_fx()
+	var par := get_parent()
+	Fx.burst(par, global_position, Color(1.0, 0.55, 0.15), 40, {"speed": 6.0, "life": 0.5, "size": 0.22, "gravity": 3.0, "damping": 4.0})
+	Fx.burst(par, global_position, Color(0.12, 0.1, 0.09, 0.6), 10, {"speed": 1.2, "life": 1.2, "size": 0.6, "gravity": -1.5, "additive": false, "sphere": 0.4})
+	Fx.mark(par, global_position, Color(0.05, 0.03, 0.02, 0.75), splash_radius * 0.6, 3.0, 2.0)
+	Fx.mark(par, global_position, Color(1.0, 0.4, 0.1, 0.7), splash_radius * 0.4, 0.5, 1.5, true)
+	Fx.flash(par, global_position, Color(1.0, 0.55, 0.2), 5.0, splash_radius * 3.0, 0.35)
 	queue_free()
 
 

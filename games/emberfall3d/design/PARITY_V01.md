@@ -43,9 +43,9 @@
 | 首领莫格：冲锋、暴怒；摩登：扇形弹、火环、召唤、瞬移、二阶段（bossAI / bossShout / bossDown） | `enemy_boss_mog.gd` / `enemy_boss_abbot.gd` | ✅（莫格冲锋前多了 0.35 秒红色预警，按 GDD「只看画面就能躲」） | bosses |
 | 怪物被挤开、不挡主角（separate） | `EnemyBase._separation` | ✅ | loot |
 | 倒下掉 10% 金币、在镇上复活（die） | `Player._die`、`main` 复活回镇 | ✅ | growth、town |
-| 尸体 | V0.1 尸体留在地上；3D 版倒下后 2.4 秒沉入地面 | ≈ 仅表现 | — |
+| 尸体 | V0.1 尸体留在地上；3D 版倒下后约 2 秒烧穿消散（阶段 2.5 溶解特效） | ≈ 仅表现 | fx |
 | 目标信息 | V0.1 屏幕上方目标框；3D 版怪物头顶名字与血量、屏幕下方首领血条 | ≈ | bosses |
-| 粒子、飘字（burst / ftext） | 占位光环特效、伤害数字 | ≈ 仅表现 | combat |
+| 粒子、飘字（burst / ftext） | `combat/fx.gd` 粒子与地面痕迹（阶段 2.5）、伤害数字 | ≈ 仅表现 | combat、fx |
 
 ## 四、镇上、任务与移动
 

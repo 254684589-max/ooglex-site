@@ -428,8 +428,9 @@ func drink_potion(kind: String) -> int:
 
 
 func _level_fx() -> void:
-	## 升级：脚下金色光环向外扩散（占位特效）
+	## 升级：脚下金色光环向外扩散 + 一柱往上飘的金光
 	Sfx.play("lvl")
+	Fx.burst(get_parent(), global_position + Vector3(0, 0.2, 0), Color(1.0, 0.85, 0.35), 40, {"speed": 3.0, "life": 1.2, "size": 0.14, "gravity": -2.0, "spread": 20.0, "ring": 0.6, "explosive": 0.4})
 	var ring := MeshInstance3D.new()
 	ring.mesh = LowPoly.torus(0.9, 1.0)
 	var m := _mat(Color(1.0, 0.85, 0.35))
@@ -676,6 +677,7 @@ func _resolve_action() -> void:
 				hits += 1
 			if action == "whirl":
 				_ring_fx(Color(1.0, 0.62, 0.3), s.radius, 0.3)
+				Fx.burst(get_parent(), global_position + Vector3(0, 0.9, 0), Color(1.0, 0.55, 0.2), 36, {"speed": 4.0, "life": 0.45, "size": 0.16, "gravity": 2.0, "spread": 10.0, "up": Vector3.UP, "ring": s.radius * 0.8})
 		"fireball":
 			var fb := Fireball.new()
 			var dir := aim_point - global_position
@@ -703,9 +705,13 @@ func _resolve_action() -> void:
 				HitFeedback.apply(self, e, r, camera, false)
 				hits += 1
 			_ring_fx(Color(0.6, 0.85, 1.0), s.radius, 0.45)
+			Fx.burst(get_parent(), global_position + Vector3(0, 0.3, 0), Color(0.7, 0.9, 1.0), 40, {"speed": 7.0, "life": 0.55, "size": 0.14, "gravity": 4.0, "spread": 75.0, "damping": 6.0})
+			Fx.mark(get_parent(), global_position, Color(0.65, 0.85, 1.0, 0.45), s.radius * 0.9, 2.0, 1.2)
 		"blink":
 			_ring_fx(Color(0.7, 0.5, 1.0), 1.2, 0.3)
+			Fx.burst(get_parent(), global_position + Vector3(0, 1.0, 0), Color(0.6, 0.35, 1.0), 24, {"speed": 1.5, "life": 0.6, "size": 0.3, "gravity": -1.0, "sphere": 0.5})
 			global_position = aim_point
+			Fx.burst(get_parent(), global_position + Vector3(0, 1.0, 0), Color(0.6, 0.35, 1.0), 24, {"speed": 1.5, "life": 0.6, "size": 0.3, "gravity": -1.0, "sphere": 0.5})
 			stop()
 			_ring_fx(Color(0.7, 0.5, 1.0), 1.2, 0.3)
 			if camera:

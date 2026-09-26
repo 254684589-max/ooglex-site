@@ -35,6 +35,28 @@ static func apply(attacker: Node, target: Node, result: Dictionary, camera: IsoC
 		camera.add_trauma(sh.crit if result.crit else (sh.heavy if heavy else sh.normal))
 	if numbers_enabled and target is Node3D:
 		spawn_number(target, result)
+	if target is Node3D and target.is_inside_tree():
+		_hit_sparks(target, result)
+
+
+## 命中火花（阶段 2.5）：骨头类的怪溅碎骨白屑，其余溅暗红血雾；火焰伤害是火星、冰霜是冰晶；暴击更多
+static func _hit_sparks(target: Node3D, result: Dictionary) -> void:
+	var d = target.get("def")
+	var look: String = d.get("look", "") if d is Dictionary else ""
+	var c := Color(0.55, 0.05, 0.04, 0.9)
+	var additive := false
+	match String(result.get("type", "physical")):
+		"fire":
+			c = Color(1.0, 0.55, 0.15)
+			additive = true
+		"cold":
+			c = Color(0.6, 0.85, 1.0)
+			additive = true
+		_:
+			if look in ["skel", "archer", "bone_archer"] or d is Dictionary and d.get("family", "") == "骸骨":
+				c = Color(0.9, 0.87, 0.78)
+	var n := 14 if result.get("crit", false) else 7
+	Fx.burst(target.get_parent(), target.global_position + Vector3(0, 1.1, 0), c, n, {"speed": 3.5, "life": 0.4, "size": 0.12, "gravity": 9.0, "additive": additive})
 
 
 static func spawn_number(target: Node3D, result: Dictionary) -> Label3D:
