@@ -48,7 +48,7 @@ body { color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, "PingFang
   padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(232, 132, 58, .4); background: rgba(10, 6, 5, .7);
 }
 .wl-back:focus-visible, .wl-btn:focus-visible { outline: 2px solid #e8843a; outline-offset: 2px; }
-.wl-error { display: none; max-width: 480px; white-space: pre-line; background: #3a2020; border: 1px solid #8a3a30; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #ffd8cf; }
+.wl-error { display: none; max-width: 480px; white-space: pre-line; background: #3a2020; border: 1px solid #8a3a30; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #ffd8cf; text-align: left; }
 .wl-error.show { display: block; }
 .wl-btn { display: inline-block; margin-top: 4px; padding: 9px 20px; border-radius: 99px; background: #e8843a; color: #0a0605; font-weight: 700; text-decoration: none; font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { .wl-hat, .wl-bar.indeterminate i { animation: none; } #wl-loading { transition: none; } }
@@ -73,9 +73,9 @@ body { color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, "PingFang
   <div class="wl-note">这是开发中的技术原型：画面全部为占位几何体，不代表最终美术。<br>首次打开需要下载约 40 MB 的游戏引擎，之后浏览器会缓存。</div>
 </div>
 
-<script src="ef-c1bde7f7.js?v=33c94cb3"></script>
+<script src="ef-f4c8778f.js?v=33c94cb3"></script>
 <script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"ef-c1bde7f7","experimentalVK":false,"fileSizes":{"ef-c1bde7f7.pck":1364432,"ef-c1bde7f7.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"mainPack":"ef-c1bde7f7.pck"};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"ef-f4c8778f","experimentalVK":false,"fileSizes":{"ef-f4c8778f.pck":1364432,"ef-f4c8778f.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"mainPack":"ef-f4c8778f.pck"};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -89,7 +89,8 @@ const engine = new Engine(GODOT_CONFIG);
   const tips = [
     '世界是一堆正在熄灭的篝火。',
     '火种能换来力量，也会烧掉别的东西。',
-    '当前是阶段 1.1 灰盒原型：只验证引擎、渲染器、网页导出与章节包加载。',
+    '当前是移植 V0.1 的灰盒版本：玩法已可玩，模型仍是占位几何体。',
+    '游戏会自动保存到当前浏览器，下次打开可以继续旅程。',
   ];
   let tipIndex = Math.floor(Math.random() * tips.length);
   function nextTip() { tip.textContent = tips[tipIndex % tips.length]; tipIndex += 1; }
@@ -114,7 +115,20 @@ const engine = new Engine(GODOT_CONFIG);
 
   const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
   if (missing.length !== 0) {
-    showError('你的浏览器缺少运行本游戏需要的功能：\n' + missing.join('\n') + '\n\n请换用最新版 Chrome、Edge、Firefox 或 Safari（需要支持 WebGL 2）。');
+    // 最常见的原因不是浏览器太旧，而是显卡加速被关掉，或显卡进程崩溃后浏览器暂时停用了 WebGL：给出能照着做的步骤
+    let webgl1 = false;
+    try { webgl1 = !!document.createElement('canvas').getContext('webgl'); } catch (e) { /* 不可用 */ }
+    const noGL = missing.some(function (m) { return m.indexOf('WebGL2') === 0; });
+    const steps = noGL ? [
+      webgl1 ? '浏览器现在只提供旧版 WebGL 1，本游戏需要 WebGL 2。' : '浏览器现在没有提供 WebGL（3D 绘图）功能。',
+      '通常是下面几种情况，按顺序试一下：',
+      '1. 完全退出浏览器再打开（显卡进程崩溃后，浏览器会在本次运行中停用 WebGL；同时开着别的 3D 网页也可能触发）。',
+      '2. Chrome / Edge：设置 → 系统 → 打开「使用图形加速功能（如果可用）」，然后重启浏览器。',
+      '3. 在地址栏打开 chrome://gpu，看「WebGL2」一行是否为 Hardware accelerated。',
+      '4. 换一个浏览器试试（Safari、Firefox、Edge）。',
+    ] : ['请换用最新版 Chrome、Edge、Firefox 或 Safari。'];
+    showError('无法启动游戏：你的浏览器缺少需要的功能\n（' + missing.join('；') + '）\n\n' + steps.join('\n'));
+    console.log('EF_NO_WEBGL2 webgl1=' + webgl1);
     return;
   }
 
