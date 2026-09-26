@@ -387,6 +387,22 @@ def inject_rich_access_adapter() -> None:
             p.write_text(text, encoding="utf-8")
 
 
+    whats_latest_snippet = (
+        '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
+        '<script src="/assets/pro-access.js?v=6"></script>\n'
+        '<script src="/assets/pro-whats-latest.js?v=1"></script>\n'
+    )
+    whats_latest = OUT / "apps" / "whats-latest" / "index.html"
+    if not whats_latest.exists():
+        raise SystemExit("What's Latest page missing")
+    text = whats_latest.read_text(encoding="utf-8")
+    if "/assets/pro-whats-latest.js" not in text:
+        if "</head>" not in text:
+            raise SystemExit("cannot inject What's Latest access adapter")
+        text = text.replace("</head>", whats_latest_snippet + "</head>", 1)
+        whats_latest.write_text(text, encoding="utf-8")
+
+
 def write_tech_leaders_share_cover() -> None:
     """Generate a stable static PNG for WeChat/Open Graph catalog sharing."""
     width = height = 512
