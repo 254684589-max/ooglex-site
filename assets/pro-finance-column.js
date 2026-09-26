@@ -88,7 +88,7 @@
     chip.id = "ooglex-rich-access";
     chip.textContent = access && access.access_level === "full"
       ? String(access.plan || "PRO").toUpperCase() + " · FULL"
-      : "FREE · 10% PREVIEW";
+      : "GUEST · 10% PREVIEW";
     chip.style.cssText = [
       "position:fixed","right:14px","bottom:14px","z-index:10001",
       "padding:7px 11px","border-radius:999px",
@@ -133,20 +133,20 @@
     ].join(";");
 
     var title = document.createElement("div");
-    title.textContent = "继续查看完整金融知识架构";
+    title.textContent = "注册后查看完整金融知识架构";
     title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
 
     var sub = document.createElement("div");
     sub.textContent = access && access.degraded
-      ? "当前网络连不上会员服务，已按约 10% 预览显示。恢复连接后可查看完整 8 层级、48 模块、560+ 术语与全部图谱。"
+      ? "当前网络连不上账户权限服务，已按约 10% 预览显示。恢复连接后，已注册用户可查看完整 8 层级、48 模块、560+ 术语与全部图谱。"
       : access && access.authenticated
-        ? "当前为 FREE 预览，仅开放约 10% 术语与图谱。升级 PRO 后可查看完整内容。"
-        : "当前仅开放约 10% 术语与图谱预览。登录 PRO 后可查看完整内容。";
+        ? "登录状态暂未通过权限校验，当前仅开放约 10% 术语与图谱。权限恢复后可查看完整内容。"
+        : "当前仅开放约 10% 术语与图谱预览。免费注册并登录后可查看完整内容。";
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:760px";
 
     var button = document.createElement("a");
-    button.href = "/account/";
-    button.textContent = access && access.authenticated ? "查看会员权限" : "登录 / 注册";
+    button.href = "/account/?next=" + encodeURIComponent(location.pathname + location.search + location.hash);
+    button.textContent = access && access.authenticated ? "重新验证登录" : "注册 / 登录";
     button.style.cssText = [
       "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:46px",
       "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",
@@ -154,7 +154,7 @@
     ].join(";");
 
     var note = document.createElement("div");
-    note.textContent = "FREE 浏览器只接收约 10% 预览数据；完整术语与图谱通过登录权限接口返回。";
+    note.textContent = "未注册浏览器只接收约 10% 预览数据；完整术语与图谱仅在登录验证通过后返回。";
     note.style.cssText = "font-size:11px;color:#8f8f8f;margin-top:14px";
 
     wall.appendChild(title);
