@@ -146,37 +146,60 @@ jobs:
           echo "$body" | grep -q '"service":"tech-leaders"'
           echo "Tech Leaders backend ready: $body"
 
-      - name: Verify Tech Leaders server gate
+      - name: Verify Tech Leaders registration gate
         run: |
           set -euo pipefail
+
           public_code="$(curl -sS -o /tmp/tech-public.json -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/catalog?catalog=leaders.json")"
-          test "$public_code" = "401"
+          test "$public_code" = "200"
+
           auth_code="$(curl -sS -H "x-ooglex-tech-secret: $TECH_LEADERS_DEPLOY_SECRET" -o /tmp/tech-auth.json -w '%{http_code}' "https://pro-api.ooglex.com/v1/tech-leaders/catalog?catalog=leaders.json")"
           test "$auth_code" = "200"
+
           python - <<'PY'
-          import json
+          import json, math
+          with open("/tmp/tech-public.json", "r", encoding="utf-8") as f:
+              preview=json.load(f)
           with open("/tmp/tech-auth.json", "r", encoding="utf-8") as f:
-              data=json.load(f)
-          leaders=data.get("leaders", data if isinstance(data,list) else [])
-          assert len(leaders) >= 100, len(leaders)
-          print("Server gate OK; protected catalog count:", len(leaders))
+              full=json.load(f)
+
+          preview_leaders=preview.get("leaders", [])
+          full_leaders=full.get("leaders", [])
+          marker=preview.get("ooglexAccess") or {}
+          assert marker.get("mode") == "preview", marker
+          assert float(marker.get("ratio", 0)) == 0.10, marker
+          assert len(full_leaders) >= 100, len(full_leaders)
+          assert 1 <= len(preview_leaders) <= max(1, math.ceil(len(full_leaders) * 0.10)), (len(preview_leaders), len(full_leaders))
+          print("Registration gate OK; preview/full:", len(preview_leaders), len(full_leaders))
           PY
 
-      - name: Verify Tech Leaders browser auth transport
+      - name: Verify Tech Leaders browser preview transport
         run: |
           set -euo pipefail
-          code="$(curl -sS -D /tmp/tech-auth-headers.txt -o /tmp/tech-auth-wrong.json -w '%{http_code}' \
+          code="$(curl -sS -D /tmp/tech-preview-headers.txt -o /tmp/tech-preview.json -w '%{http_code}' \
+            -H 'Origin: https://ooglex.com' \
+            'https://pro-api.ooglex.com/v1/tech-leaders/catalog?catalog=leaders.json')"
+          echo "browser-preview-http-code=$code"
+          test "$code" = "200"
+          grep -qi '^access-control-allow-origin: https://ooglex.com' /tmp/tech-preview-headers.txt
+          grep -qi '^access-control-allow-credentials: true' /tmp/tech-preview-headers.txt
+          python - <<'PY'
+          import json
+          with open("/tmp/tech-preview.json", "r", encoding="utf-8") as f:
+              data=json.load(f)
+          marker=data.get("ooglexAccess") or {}
+          assert marker.get("registrationRequired") is True, marker
+          print("Anonymous browser transport serves 10% registration preview.")
+          PY
+
+          legacy_code="$(curl -sS -o /tmp/tech-legacy-auth.json -w '%{http_code}' \
             -H 'Origin: https://ooglex.com' \
             -H 'Content-Type: text/plain;charset=UTF-8' \
-            --data 'definitely-wrong-password' \
+            --data 'legacy-password-path-disabled' \
             'https://pro-api.ooglex.com/v1/tech-leaders/auth')"
-          echo "browser-auth-http-code=$code"
-          sed -n '1,30p' /tmp/tech-auth-headers.txt
-          cat /tmp/tech-auth-wrong.json || true
-          test "$code" = "401"
-          grep -qi '^access-control-allow-origin: https://ooglex.com' /tmp/tech-auth-headers.txt
-          grep -qi '^access-control-allow-credentials: true' /tmp/tech-auth-headers.txt
-          echo "Browser auth transport OK: simple POST + credentialed CORS."
+          test "$legacy_code" = "410"
+          grep -q '"registration_required"' /tmp/tech-legacy-auth.json
+          echo "Legacy password entitlement is disabled."
 
       - name: Smoke test hard-zero-X-API free mode
         run: |
