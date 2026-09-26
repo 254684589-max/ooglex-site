@@ -1,8 +1,7 @@
-/* OOGLEX_ACCESS_GATE_V5
-   Bloomberg-style registration wall.
-   Anonymous visitors can read the first 10% of the natural page height.
-   The remaining 90% stays in place behind a continuous dim/blur veil and cannot be interacted with.
-   A verified Supabase Auth session removes the wall completely. */
+/* OOGLEX_ACCESS_GATE_V6
+   Unified 10% preview wall for non-password /apps/ and /games/ pages.
+   Visual standard matches the native Supply Chain preview: content -> fade -> dark in-flow wall.
+   Password-gated and native-preview pages keep their own gates. */
 (function () {
   "use strict";
   if (window.OoglexSiteAccess) return;
@@ -14,12 +13,15 @@
   var SUPABASE_URL = "https://nwthqkpkvbtilafqpjlf.supabase.co";
   var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Vf8spXXXksPHKvfxp2XPcw_1dfaIR6r";
   var VERIFY_TIMEOUT_MS = 4500;
+  var WALL_HEIGHT = 250;
+  var FADE_HEIGHT = 140;
   var resolveReady;
   var ready = new Promise(function (resolve) { resolveReady = resolve; });
   var maxNaturalHeight = 0;
   var refreshTimer = 0;
   var stopObserveTimer = 0;
   var observer = null;
+  var bodyState = null;
 
   function nativePasswordPage() {
     if (PATH === "/apps/tech-leaders/" || PATH === "/apps/tech-leaders" ||
@@ -32,7 +34,8 @@
     if (PATH.indexOf("/apps/whats-latest/") === 0 ||
         PATH.indexOf("/apps/supply-chain/") === 0 ||
         PATH.indexOf("/apps/macro-radar/") === 0 ||
-        PATH.indexOf("/apps/finance-column/") === 0) return true;
+        PATH.indexOf("/apps/finance-column/") === 0 ||
+        PATH.indexOf("/apps/billionaires/") === 0) return true;
     try { return document.documentElement.hasAttribute("data-ooglex-native-preview"); }
     catch (_) { return false; }
   }
@@ -77,18 +80,15 @@
     style.id = "ooglex-registration-preview-style";
     style.textContent =
       "html.ooglex-access-checking body{overflow:hidden!important}" +
-      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;display:block;pointer-events:auto;color:#f7f7f7;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;background:linear-gradient(to bottom,rgba(155,155,155,.34) 0,rgba(105,105,105,.47) 150px,rgba(55,55,55,.58) 100%);-webkit-backdrop-filter:grayscale(.18) brightness(.76);backdrop-filter:grayscale(.18) brightness(.76)}" +
-      "#ooglex-registration-preview .ogx-access-panel{position:sticky;top:43vh;width:100%;margin:0;background:#1c1c1c;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 -18px 38px rgba(0,0,0,.18);text-align:center}" +
-      "#ooglex-registration-preview .ogx-access-inner{width:min(780px,calc(100vw - 32px));margin:0 auto;padding:30px 18px 34px}" +
-      "#ooglex-registration-preview .ogx-access-kicker{font:700 11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#aaa}" +
-      "#ooglex-registration-preview h2{margin:10px 0 7px;font-size:clamp(25px,3vw,34px);line-height:1.22;color:#fff;font-weight:800}" +
-      "#ooglex-registration-preview p{margin:0 auto;max-width:640px;color:#d0d0d0;font-size:14px;line-height:1.7}" +
-      "#ooglex-registration-preview .ogx-access-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}" +
-      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:190px;height:46px;padding:0 20px;border-radius:6px;text-decoration:none;font-weight:750;font-size:15px}" +
-      "#ooglex-registration-preview .ogx-access-primary{background:#fff;color:#111;border:1px solid #fff}" +
-      "#ooglex-registration-preview .ogx-access-secondary{border:1px solid rgba(255,255,255,.35);color:#fff;background:transparent}" +
-      "#ooglex-registration-preview .ogx-access-note{margin-top:14px;font-size:11px;color:#979797}" +
-      "@media(max-width:640px){#ooglex-registration-preview .ogx-access-panel{top:39vh}#ooglex-registration-preview .ogx-access-inner{padding:27px 16px 32px}#ooglex-registration-preview h2{font-size:27px}#ooglex-registration-preview p{font-size:14px}#ooglex-registration-preview .ogx-access-actions{display:grid;grid-template-columns:1fr;max-width:286px;margin:22px auto 0}#ooglex-registration-preview a{width:100%}}";
+      "#ooglex-registration-preview-fade{position:absolute;left:0;right:0;z-index:2147483645;height:140px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.96))}" +
+      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;box-sizing:border-box;width:100%;min-height:250px;padding:34px 20px 30px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "#ooglex-registration-preview .ogx-access-kicker{font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#9aa1aa;margin-bottom:10px}" +
+      "#ooglex-registration-preview h2{margin:1px 0 8px;font-size:27px;line-height:1.3;color:#f5f5f5;font-weight:760;letter-spacing:-.3px}" +
+      "#ooglex-registration-preview p{margin:0 auto 18px;max-width:720px;color:#c8c8c8;font-size:14px;line-height:1.7}" +
+      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:270px;height:46px;padding:0 22px;border-radius:4px;background:#fff;color:#111;text-decoration:none;font-size:15px;font-weight:720;box-shadow:none}" +
+      "#ooglex-registration-preview .ogx-access-note{font-size:11px;color:#8f8f8f;margin-top:14px}" +
+      "#ooglex-registration-preview-badge{position:fixed;right:14px;bottom:14px;z-index:2147483647;padding:7px 11px;border-radius:999px;font:600 11px/1.2 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;letter-spacing:.4px;color:#dfe7ec;background:rgba(10,14,20,.88);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.28)}" +
+      "@media(max-width:640px){#ooglex-registration-preview{min-height:238px;padding:30px 16px 28px}#ooglex-registration-preview h2{font-size:25px}#ooglex-registration-preview p{font-size:13px}#ooglex-registration-preview a{min-width:min(270px,calc(100vw - 48px));width:min(270px,calc(100vw - 48px))}}";
     document.head.appendChild(style);
   }
 
@@ -96,42 +96,73 @@
     return "/account/?next=" + encodeURIComponent(PATH + window.location.search + window.location.hash);
   }
 
+  function saveBodyState() {
+    if (!document.body || bodyState) return;
+    bodyState = {
+      height: document.body.style.getPropertyValue("height"),
+      maxHeight: document.body.style.getPropertyValue("max-height"),
+      overflow: document.body.style.getPropertyValue("overflow"),
+      position: document.body.style.getPropertyValue("position")
+    };
+  }
+
+  function restoreBodyState() {
+    if (!document.body || !bodyState) return;
+    var body = document.body;
+    if (bodyState.height) body.style.setProperty("height", bodyState.height); else body.style.removeProperty("height");
+    if (bodyState.maxHeight) body.style.setProperty("max-height", bodyState.maxHeight); else body.style.removeProperty("max-height");
+    if (bodyState.overflow) body.style.setProperty("overflow", bodyState.overflow); else body.style.removeProperty("overflow");
+    if (bodyState.position) body.style.setProperty("position", bodyState.position); else body.style.removeProperty("position");
+  }
+
   function ensureGate() {
     var gate = document.getElementById("ooglex-registration-preview");
-    if (gate) return gate;
-    gate = document.createElement("div");
-    gate.id = "ooglex-registration-preview";
-    gate.setAttribute("role", "region");
-    gate.setAttribute("aria-label", "注册访问限制");
-    gate.innerHTML =
-      '<section class="ogx-access-panel">' +
-        '<div class="ogx-access-inner">' +
-          '<div class="ogx-access-kicker">OOGLEX · 10% PREVIEW</div>' +
-          '<h2>注册并登录后访问完整内容</h2>' +
-          '<p>未注册用户可预览当前板块前 10%，登录后解锁剩余 90% 内容。</p>' +
-          '<div class="ogx-access-actions">' +
-            '<a class="ogx-access-primary" href="' + accountUrl() + '#signup">注册后完整访问</a>' +
-            '<a class="ogx-access-secondary" href="' + accountUrl() + '">已有账户 · 登录</a>' +
-          '</div>' +
-          '<div class="ogx-access-note">OOGLEX · 10% PREVIEW</div>' +
-        '</div>' +
-      '</section>';
-    document.body.appendChild(gate);
-    return gate;
+    if (!gate) {
+      gate = document.createElement("section");
+      gate.id = "ooglex-registration-preview";
+      gate.setAttribute("role", "region");
+      gate.setAttribute("aria-label", "公开预览限制");
+      gate.innerHTML =
+        '<div class="ogx-access-kicker">OOGLEX · 10% PREVIEW</div>' +
+        '<h2>继续查看完整数据</h2>' +
+        '<p>当前展示原版页面预览。登录 / 注册后可继续查看完整内容。</p>' +
+        '<a href="' + accountUrl() + '">登录 / 注册</a>' +
+        '<div class="ogx-access-note">完整内容不会发送给未登录浏览器；页面下方仅保留受限预览。</div>';
+      document.body.appendChild(gate);
+    }
+
+    var fade = document.getElementById("ooglex-registration-preview-fade");
+    if (!fade) {
+      fade = document.createElement("div");
+      fade.id = "ooglex-registration-preview-fade";
+      fade.setAttribute("aria-hidden", "true");
+      document.body.appendChild(fade);
+    }
+
+    var badge = document.getElementById("ooglex-registration-preview-badge");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.id = "ooglex-registration-preview-badge";
+      badge.textContent = "FREE · 10% PREVIEW";
+      document.body.appendChild(badge);
+    }
+
+    return { gate: gate, fade: fade, badge: badge };
   }
 
-  function clearCheckingClamp() {
-    document.documentElement.classList.remove("ooglex-access-checking");
-    if (document.body) document.body.style.removeProperty("overflow");
-  }
-
-  function naturalHeight(gate) {
+  function naturalHeight(parts) {
     var body = document.body;
     var root = document.documentElement;
     if (!body) return Math.max(root.scrollHeight || 0, window.innerHeight || 0);
 
-    var oldDisplay = gate ? gate.style.display : "";
-    if (gate) gate.style.display = "none";
+    var displays = [];
+    [parts && parts.gate, parts && parts.fade, parts && parts.badge].forEach(function (el) {
+      if (!el) return;
+      displays.push([el, el.style.display]);
+      el.style.display = "none";
+    });
+
+    restoreBodyState();
 
     var h = Math.max(
       body.scrollHeight || 0,
@@ -142,27 +173,39 @@
       window.innerHeight || 0
     );
 
-    if (gate) gate.style.display = oldDisplay;
+    displays.forEach(function (pair) { pair[0].style.display = pair[1]; });
     return h;
   }
 
   function layoutPreview() {
     var body = document.body;
     if (!body) return;
+    saveBodyState();
     var root = document.documentElement;
-    var gate = ensureGate();
+    var parts = ensureGate();
 
-    var measured = naturalHeight(gate);
+    var measured = naturalHeight(parts);
     if (measured > maxNaturalHeight) maxNaturalHeight = measured;
     var total = Math.max(maxNaturalHeight, measured, 1);
     var cutoff = Math.max(1, Math.floor(total * PREVIEW_RATIO));
-    var remaining = Math.max(total - cutoff, window.innerHeight || 0, 560);
+    var wallHeight = window.innerWidth <= 640 ? 238 : WALL_HEIGHT;
+    var fadeTop = Math.max(0, cutoff - FADE_HEIGHT);
 
-    gate.style.top = cutoff + "px";
-    gate.style.height = remaining + "px";
-    gate.style.minHeight = remaining + "px";
-    gate.style.display = "block";
+    if (window.getComputedStyle(body).position === "static") {
+      body.style.setProperty("position", "relative", "important");
+    }
+    body.style.setProperty("height", (cutoff + wallHeight) + "px", "important");
+    body.style.setProperty("max-height", (cutoff + wallHeight) + "px", "important");
+    body.style.setProperty("overflow", "hidden", "important");
 
+    parts.fade.style.top = fadeTop + "px";
+    parts.fade.style.display = "block";
+    parts.gate.style.top = cutoff + "px";
+    parts.gate.style.minHeight = wallHeight + "px";
+    parts.gate.style.display = "block";
+    parts.badge.style.display = "block";
+
+    root.classList.remove("ooglex-access-checking");
     root.classList.add("ooglex-access-preview");
     root.setAttribute("data-ooglex-preview-ratio", "10");
     root.setAttribute("data-ooglex-preview-cutoff", String(cutoff));
@@ -182,8 +225,10 @@
     observer = new MutationObserver(function (records) {
       for (var i = 0; i < records.length; i++) {
         var target = records[i].target;
-        if (target && (target.id === "ooglex-registration-preview" ||
-            (target.closest && target.closest("#ooglex-registration-preview")))) continue;
+        if (target && target.closest &&
+            (target.closest("#ooglex-registration-preview") ||
+             target.closest("#ooglex-registration-preview-fade") ||
+             target.closest("#ooglex-registration-preview-badge"))) continue;
         scheduleLayout(180);
         break;
       }
@@ -196,10 +241,8 @@
 
   function mountPreview() {
     addStyles();
-    clearCheckingClamp();
     layoutPreview();
     observeDynamicContent();
-
     [300, 800, 1600, 3000, 5000, 8000, 12000].forEach(function (ms) {
       setTimeout(layoutPreview, ms);
     });
@@ -222,9 +265,11 @@
     document.documentElement.removeAttribute("data-ooglex-preview-ratio");
     document.documentElement.removeAttribute("data-ooglex-preview-cutoff");
     document.documentElement.removeAttribute("data-ooglex-preview-total");
-    var gate = document.getElementById("ooglex-registration-preview");
-    if (gate) gate.remove();
-    if (document.body) document.body.style.removeProperty("overflow");
+    ["ooglex-registration-preview","ooglex-registration-preview-fade","ooglex-registration-preview-badge"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    });
+    restoreBodyState();
   }
 
   window.OoglexSiteAccess = Object.freeze({
@@ -249,7 +294,7 @@
     resolveReady(ok);
     try {
       document.dispatchEvent(new CustomEvent("ooglex:accessready", {
-        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "bloomberg-wall" }
+        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "supply-chain-block" }
       }));
     } catch (_) {}
   })();
