@@ -3,7 +3,8 @@
 // 点地面后主角到达（EF_ARRIVED）、
 // 控制台无报错、页面无横向溢出，并截图。
 //
-// 先在仓库根目录起静态服务器：python3 -m http.server 8765
+// 先在仓库根目录起静态服务器（用 gzip 压缩传输，模拟线上 CDN；python -m http.server 不压缩，测不出解压类问题）：
+//   python3 games/emberfall3d/tools/serve_gzip.py . 8765
 //   node games/emberfall3d/tools/smoke_web.js [截图目录] [地址]
 // 需要全局安装的 playwright（云端开发环境自带 /opt/node22/lib/node_modules/playwright 与预装 Chromium）。
 const path = require('path');

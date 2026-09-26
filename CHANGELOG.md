@@ -11,6 +11,13 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-09-26，**《余烬陷落》大作版线上章节包下载失败**（所有者实机截图：「章节包 ch_test：加载失败（下载失败：result=8 HTTP 200）」）。**已部署**（属于本次「3D 版全部上线」的修复）。
+  - 原因：线上 CDN 用 gzip 压缩传输 `.pck`，浏览器已自动解压，但响应头仍带 `Content-Encoding: gzip`，Godot 的 HTTPRequest 又解压一次，报 `RESULT_BODY_DECOMPRESS_FAILED`。本地测试用的 `python -m http.server` 不压缩，所以上线前没测出来。游戏本身不受影响，只是章节包这项技术测试失败。
+  - 修复：`core/pack_loader.gd` 在网页上关闭引擎的 gzip 处理（`accept_gzip = false`，交给浏览器）。重新导出 `play/`（`ef-8d48d18e.*`）。
+  - 测试补漏：新增 `tools/serve_gzip.py`（gzip 传输的静态服务器，模拟线上 CDN），冒烟测试说明与 `/emberfall` 技能改为用它。已先用它复现原故障（三宽度均 `EF_PACK_FAIL result=8`），修复后 gzip 与普通服务器下三宽度冒烟均通过、零报错。
+
 ### 新增
 
 - 2026-09-26，**《余烬陷落》大作版 3D 开发中预览上线**：新增 `/games/emberfall3d/` 介绍页与 `play/` 网页导出（步骤 2.3 光照氛围版本）。**已部署**（所有者要求「3d版 全部上线」并同意合并 `main`）。

@@ -26,7 +26,7 @@ description: 继续开发原创暗黑风 ARPG《余烬陷落》EMBERFALL 的大�
 - 大作版：`games/emberfall3d/`（`design/` 设计文档、`godot/` 工程、`tools/` 构建脚本、`play/` 网页导出）。
 - 构建与测试脚本先复用 `games/working-life/tools/`（`build_web.sh`、`run_tests.sh`、`stamp_web_build.py`），改路径，不另起一套。
 - Godot 网页导出只能用兼容渲染器（GL Compatibility），画质方案都按这个前提设计。
-- 本环境默认没有 Godot：运行 `python3 games/emberfall3d/tools/fetch_godot.py <scratchpad>/godot` 下载编辑器并只取网页导出模板（约 10 MB，不下 1.28 GB 的完整模板包），再 `export GODOT=…`。测试：`tools/run_tests.sh`；构建：`tools/build_web.sh`；网页冒烟：仓库根目录 `python3 -m http.server 8765` 后 `node games/emberfall3d/tools/smoke_web.js <截图目录>`。
+- 本环境默认没有 Godot：运行 `python3 games/emberfall3d/tools/fetch_godot.py <scratchpad>/godot` 下载编辑器并只取网页导出模板（约 10 MB，不下 1.28 GB 的完整模板包），再 `export GODOT=…`。测试：`tools/run_tests.sh`；构建：`tools/build_web.sh`；网页冒烟：仓库根目录 `python3 games/emberfall3d/tools/serve_gzip.py . 8765`（gzip 传输，模拟线上 CDN；普通 `http.server` 测不出线上的解压问题）后 `node games/emberfall3d/tools/smoke_web.js <截图目录>`。
 - 素材站可能被网络策略拦截。下不了就如实说明哪些没验证，并读 `read_documentation`（environment.network / environment.dependencies）告诉所有者怎么放行。
 - 章节包只放场景与资源，脚本一律留在主包（TECH.md 第 5.3 节）。
 

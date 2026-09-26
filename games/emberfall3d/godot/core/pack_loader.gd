@@ -28,6 +28,10 @@ func load_chapter(id: String, local_path: String = "") -> void:
 			pack_loaded.emit(id, false, 0, "不是网页环境，也没有给出本地路径")
 			return
 		var req := HTTPRequest.new()
+		# 网页上由浏览器自己下载并解压：线上 CDN 用 gzip 传输时，浏览器交给引擎的已经是解压后的数据，
+		# 但响应头仍带 Content-Encoding: gzip。不关掉这一项，Godot 会再解压一次并报
+		# RESULT_BODY_DECOMPRESS_FAILED（result=8）。本地 python -m http.server 不压缩，所以测不出来。
+		req.accept_gzip = not OS.has_feature("web")
 		add_child(req)
 		var err := req.request(url)
 		if err != OK:
