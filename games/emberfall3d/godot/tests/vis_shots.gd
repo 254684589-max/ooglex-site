@@ -1,6 +1,6 @@
 extends Node
 ## 固定机位截图（画质步骤前后对比用，开发用，不在 run_tests.sh 里）：
-##   xvfb-run -a godot --path games/emberfall3d/godot --rendering-driver opengl3 --resolution 1280x720 res://tests/vis_shots.tscn -- <输出目录> [画质档：low/medium/high]
+##   xvfb-run -a godot --path games/emberfall3d/godot --rendering-driver opengl3 --resolution 1280x720 res://tests/vis_shots.tscn -- <输出目录> [画质档：low/medium/high] [proc：用程序化贴图]
 ## 机位：room（房间，火把与木桩）、hall（大厅战斗，怪物围上来）；floor1 / 3 / 5 / 8（P2 随机地下城四种主题）。
 
 # 截图期间每帧回满血（不改最大生命，界面上显示的仍是正常数值）
@@ -16,6 +16,8 @@ func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	var out := args[0] if args.size() > 0 else "user://shots"
 	var tier := args[1] if args.size() > 1 else ""
+	if args.size() > 2 and args[2] == "proc":
+		Look.photo_enabled = false
 	DirAccess.make_dir_recursive_absolute(out)
 	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）

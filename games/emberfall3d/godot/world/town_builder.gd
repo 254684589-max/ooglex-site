@@ -9,7 +9,7 @@ const PROP_SIZES := {"fire": Vector3(1.4, 0.6, 1.4), "well": Vector3(1.8, 1.0, 1
 
 static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictionary:
 	var t0 := Time.get_ticks_usec()
-	var ground_mat := Look._triplanar(Look.ground_texture(), 6.0, Color(1, 1, 1))
+	var ground_mat := Look.ground_material()
 	var obstacles: Array = []
 	for p in m.props:
 		obstacles.append({"pos": TownGen.to_world(p.x, p.y), "size": PROP_SIZES.get(p.type, Vector3.ONE)})
@@ -39,7 +39,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		DungeonBuilder._quad(st, DungeonBuilder.cell_center(c) + Vector3(0, 0.012, 0), Vector3.UP, Vector3.FORWARD, DungeonBuilder.TILE / 2, DungeonBuilder.TILE / 2)
 	var pmi := MeshInstance3D.new()
 	pmi.mesh = st.commit()
-	pmi.material_override = Look._triplanar(Look.floor_texture(), 4.0, Color(0.95, 0.9, 0.82))
+	pmi.material_override = Look.floor_material(Color(0.95, 1.0, 1.05))
 	pmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	pmi.name = "Paths"
 	region.add_child(pmi)

@@ -73,7 +73,7 @@ static func theme_tints(theme: String) -> Dictionary:
 	var base_w := Color(th.crypt.wall_hex)
 	var w := Color(th[theme].wall_hex)
 	return {
-		"floor": Color(f[0] / base_f[0], f[1] / base_f[1], f[2] / base_f[2]) * Color(0.85, 0.82, 0.8),
+		"floor": Color(f[0] / base_f[0], f[1] / base_f[1], f[2] / base_f[2]),
 		"wall": Color(w.r / base_w.r, w.g / base_w.g, w.b / base_w.b),
 	}
 
@@ -89,7 +89,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	var w: int = m.w
 	var h: int = m.h
 	var t: PackedByteArray = m.t
-	var floor_mat: Material = opt.get("floor_material", Look._triplanar(Look.floor_texture(), 4.0, tints.floor, Look.floor_normal()))
+	var floor_mat: Material = opt.get("floor_material", Look.floor_material(tints.floor))
 	var pillars_used := {}            # 已经立过壁柱的格点（相邻两面墙、跨块时都只立一根）
 	var chunks := 0
 	var fog: Dictionary = {}          # 块坐标 → {meshes, deco: [[多实例网格, 下标, 变换]], torches}（只在 opt.fog 时填）

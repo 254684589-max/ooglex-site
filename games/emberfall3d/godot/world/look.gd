@@ -1,6 +1,9 @@
 class_name Look
 extends RefCounted
-## 画面风格（ART.md 第二、七节，阶段 2.3）：全部由代码生成，不使用外部素材。
+## 画面风格（ART.md 第二、七节，阶段 2.3）。
+## - 写实贴图（2.6 之二）：地牢地面、墙、镇上泥土地用 Poly Haven 的 CC0 照片扫描 PBR 贴图
+##   （颜色 + 法线 + ARM：遮蔽 / 粗糙度 / 金属度三合一），来源见 assets/SOURCES.md；导入为 Basis Universal
+##   （网页上一份文件，按设备转成显卡压缩格式）。缺文件或 photo_enabled = false 时退回下面的程序化贴图。
 ## - 程序化贴图：石板地面、砖墙（手绘感：每块石头颜色略有不同、上左亮边 / 下右暗边假装倒角、灰缝）。
 ##   贴图按世界坐标三向投影（triplanar），灰盒几何体不用做 UV。
 ## - 环境：暖光冷影（阴影偏冷紫、火光偏暖）、深度雾、泛光（让火焰发光）、对比度与饱和度微调。
@@ -167,6 +170,58 @@ static func radial_texture() -> GradientTexture2D:
 	return _radial_tex
 
 
+# ---------------- 写实贴图（2.6 之二） ----------------
+
+## kind → Poly Haven 素材名、贴图覆盖的米数（原始扫描约 1.8 / 1.8 / 3.15 米见方，按斜俯视镜头下的石块大小放大一点）、
+## 基础染色（照片本身的颜色已经对，只按场景的冷暖光压一压亮度）
+const PHOTO := {
+	"floor": {"id": "monastery_stone_floor", "meters": 2.6, "tint": Color(0.92, 0.9, 0.9)},
+	"wall": {"id": "rock_wall_08", "meters": 2.4, "tint": Color(1.3, 1.26, 1.22)},
+	"ground": {"id": "forest_ground_04", "meters": 4.5, "tint": Color(0.95, 0.92, 0.88)},
+}
+static var photo_dir := "res://assets/textures/%s/%s_%s_1k.jpg"   # 测试会临时改成不存在的路径，验证退回程序化贴图
+
+static var photo_enabled := true   # false：全部用程序化贴图（对比截图、网页 ?tex=proc）
+static var _photo := {}
+
+
+static func photo_set(kind: String) -> Dictionary:
+	## {albedo, normal, arm}；三张缺任何一张都返回空（调用方退回程序化贴图）
+	if not photo_enabled or not PHOTO.has(kind):
+		return {}
+	if not _photo.has(kind):
+		var id: String = PHOTO[kind].id
+		var d := {}
+		for pair in [["albedo", "diff"], ["normal", "nor_gl"], ["arm", "arm"]]:
+			var path := photo_dir % [id, id, pair[1]]
+			var tex: Texture2D = load(path) if ResourceLoader.exists(path) else null
+			if tex == null:
+				push_warning("写实贴图缺文件，退回程序化贴图：" + path)
+				d = {}
+				break
+			d[pair[0]] = tex
+		_photo[kind] = d
+	return _photo[kind]
+
+
+static func _photo_material(kind: String, tint: Color) -> StandardMaterial3D:
+	var p := photo_set(kind)
+	if p.is_empty():
+		return null
+	var cfg: Dictionary = PHOTO[kind]
+	var m := _triplanar(p.albedo, cfg.meters, cfg.tint * tint, p.normal)
+	# ARM：R = 环境光遮蔽（只影响环境光，火把直射不受影响）、G = 粗糙度；石头与泥土都不是金属
+	m.roughness_texture = p.arm
+	m.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_GREEN
+	m.roughness = 1.0
+	m.ao_enabled = true
+	m.ao_texture = p.arm
+	m.ao_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_RED
+	m.ao_light_affect = 0.25
+	m.metallic = 0.0
+	return m
+
+
 # ---------------- 材质 ----------------
 
 static func _triplanar(tex: Texture2D, meters: float, tint: Color, nrm: Texture2D = null) -> StandardMaterial3D:
@@ -188,13 +243,23 @@ static func _triplanar(tex: Texture2D, meters: float, tint: Color, nrm: Texture2
 	return m
 
 
-static func floor_material() -> StandardMaterial3D:
-	return _triplanar(floor_texture(), 4.0, Color(0.85, 0.82, 0.8), floor_normal())
+## 以下三个材质的 tint 都是「相对染色」（楼层主题、灰盒里各件的明暗），乘在各自的基础染色上。
+
+static func floor_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:
+	var m := _photo_material("floor", tint)
+	return m if m else _triplanar(floor_texture(), 4.0, Color(0.85, 0.82, 0.8) * tint, floor_normal())
 
 
 static func wall_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:
 	## 每面墙一个新材质（相机要单独把挡视线的墙变半透明），但共用同一张贴图
-	return _triplanar(brick_texture(), 2.0, tint, brick_normal())
+	var m := _photo_material("wall", tint)
+	return m if m else _triplanar(brick_texture(), 2.0, tint, brick_normal())
+
+
+static func ground_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:
+	## 烬原镇的露天泥土地
+	var m := _photo_material("ground", tint)
+	return m if m else _triplanar(ground_texture(), 6.0, tint)
 
 
 static func rim(m: StandardMaterial3D, amount := 0.3) -> StandardMaterial3D:

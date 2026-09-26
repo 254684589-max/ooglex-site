@@ -96,6 +96,9 @@ var floor_state: Dictionary = {}  # 楼层 → {killed: {刷怪下标: true}, it
 func _ready() -> void:
 	add_to_group("loot_host")
 	loot_rng.randomize()
+	# 2.6 之二：网页 ?tex=proc 改回程序化贴图（与写实贴图对比用）
+	if OS.has_feature("web"):
+		Look.photo_enabled = str(JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('tex') || ''", true)) != "proc"
 	_build_world()
 	_build_ui()
 	sfx = Sfx.new()

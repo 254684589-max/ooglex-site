@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit", "photo"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2803,7 +2803,7 @@ func test_kit() -> void:
 	# 材质：法线贴图 + 顶点色
 	var fm := (floors[0] as MeshInstance3D).material_override as StandardMaterial3D
 	var wm := (walls[0] as MeshInstance3D).material_override as StandardMaterial3D
-	check(fm.normal_enabled and fm.normal_texture == Look.floor_normal() and wm.normal_enabled and wm.normal_texture == Look.brick_normal() and fm.vertex_color_use_as_albedo and wm.vertex_color_use_as_albedo, "地面与墙用法线贴图，顶点色乘到颜色上")
+	check(fm.normal_enabled and fm.normal_texture == Look.photo_set("floor").normal and wm.normal_enabled and wm.normal_texture == Look.photo_set("wall").normal and fm.vertex_color_use_as_albedo and wm.vertex_color_use_as_albedo, "地面与墙用法线贴图（2.6 之二起是写实贴图的），顶点色乘到颜色上")
 	var ni := Look.brick_normal().get_image()
 	ni.decompress()
 	var avg := Color(0, 0, 0)
@@ -2817,4 +2817,74 @@ func test_kit() -> void:
 	tch.set_quality("high")
 	check(not tch.light.shadow_enabled and tch.flame.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "火把：高画质也不开点光源阴影，火苗不投影（墙上不再有硬边亮斑）")
 	root.queue_free()
+	await frames(2)
+
+
+# ---------------- 2.6 画质样板间（二）：写实贴图 ----------------
+
+func test_photo() -> void:
+	# 三套 Poly Haven CC0 贴图：文件齐全、导入为 Basis Universal + mipmap、法线贴图按法线压缩
+	var sources := FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://").path_join("../assets/SOURCES.md"))
+	var all_ok := true
+	for kind in Look.PHOTO:
+		var id: String = Look.PHOTO[kind].id
+		for map in ["diff", "nor_gl", "arm"]:
+			var path := Look.photo_dir % [id, id, map]
+			var imp := FileAccess.get_file_as_string(path + ".import")
+			var ok := ResourceLoader.exists(path) and imp.contains("compress/mode=4") and imp.contains("mipmaps/generate=true") \
+				and imp.contains("compress/normal_map=%d" % (1 if map == "nor_gl" else 0))
+			if not ok:
+				all_ok = false
+				print("  贴图或导入设置不对：", path)
+		if not sources.is_empty() and not sources.contains("polyhaven.com/a/" + id):
+			all_ok = false
+			print("  SOURCES.md 没记：", id)
+	check(all_ok, "地面 / 墙 / 泥土地三套贴图 × 颜色、法线、ARM 齐全，Basis Universal + mipmap，来源记入 SOURCES.md%s" % ("" if not sources.is_empty() else "（导出包里读不到 SOURCES.md，只查了贴图）"))
+	# 材质：颜色、法线、粗糙度（ARM 绿通道）、遮蔽（ARM 红通道），不是金属
+	var mats := {"floor": Look.floor_material(), "wall": Look.wall_material(), "ground": Look.ground_material()}
+	var mat_ok := true
+	for kind in mats:
+		var m: StandardMaterial3D = mats[kind]
+		var p := Look.photo_set(kind)
+		if p.is_empty() or m.albedo_texture != p.albedo or m.normal_texture != p.normal or not m.normal_enabled \
+				or m.roughness_texture != p.arm or m.roughness_texture_channel != BaseMaterial3D.TEXTURE_CHANNEL_GREEN \
+				or not m.ao_enabled or m.ao_texture != p.arm or m.ao_texture_channel != BaseMaterial3D.TEXTURE_CHANNEL_RED \
+				or m.metallic != 0.0 or not m.uv1_world_triplanar:
+			mat_ok = false
+	check(mat_ok, "三种材质都用写实贴图：颜色 + 法线 + ARM（红 = 遮蔽、绿 = 粗糙度），世界坐标三向投影")
+	check(is_equal_approx(mats.floor.uv1_scale.x, 1.0 / Look.PHOTO.floor.meters) and is_equal_approx(mats.wall.uv1_scale.x, 1.0 / Look.PHOTO.wall.meters), "平铺尺寸：地面每 %.1f 米、墙每 %.1f 米一张" % [Look.PHOTO.floor.meters, Look.PHOTO.wall.meters])
+	# 相对染色乘在基础染色上（楼层主题仍然生效）
+	var inf := DungeonBuilder.theme_tints("inferno")
+	var fi := Look.floor_material(inf.floor)
+	check(fi.albedo_color.is_equal_approx(Look.PHOTO.floor.tint * inf.floor) and not fi.albedo_color.is_equal_approx(mats.floor.albedo_color), "楼层主题染色仍然生效（熔渊的地面偏红）")
+	check(Look.photo_set("floor").albedo == Look.photo_set("floor").albedo and Look.floor_material() != Look.floor_material(), "贴图只加载一次；每次要材质都是新的（墙要单独变半透明）")
+	# 退回程序化贴图：关掉开关或缺文件时
+	Look.photo_enabled = false
+	var pf := Look.floor_material()
+	var pw := Look.wall_material()
+	var pg := Look.ground_material()
+	Look.photo_enabled = true
+	check(pf.albedo_texture == Look.floor_texture() and pw.albedo_texture == Look.brick_texture() and pg.albedo_texture == Look.ground_texture() and pf.normal_texture == Look.floor_normal(), "关掉写实贴图（?tex=proc）时退回程序化贴图")
+	var real_dir := Look.photo_dir
+	Look.photo_dir = "res://assets/textures/%s/missing_%s_%s.jpg"
+	Look._photo.clear()
+	var mf := Look.floor_material()
+	Look.photo_dir = real_dir
+	Look._photo.clear()
+	check(mf.albedo_texture == Look.floor_texture() and Look.photo_set("nope").is_empty() and Look.floor_material().albedo_texture == Look.photo_set("floor").albedo, "贴图文件缺失或没有登记：退回程序化贴图，不报错")
+	# 地下城、烬原镇实际用上了
+	var root := Node3D.new()
+	add_child(root)
+	DungeonBuilder.build(root, DungeonGen.generate(2, 20260926), {"seed": 3})
+	var fl: MeshInstance3D = root.find_children("Floor_*", "MeshInstance3D", true, false)[0]
+	var wl: MeshInstance3D = root.find_children("Walls_*", "MeshInstance3D", true, false)[0]
+	check((fl.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("floor").albedo and (wl.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("wall").albedo, "地下城的地面与墙用写实贴图")
+	root.queue_free()
+	var troot := Node3D.new()
+	add_child(troot)
+	TownBuilder.build(troot, TownGen.generate(), {"seed": 3})
+	var g: MeshInstance3D = troot.find_child("Ground", true, false)
+	var pth: MeshInstance3D = troot.find_child("Paths", true, false)
+	check((g.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("ground").albedo and (pth.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("floor").albedo, "烬原镇：泥土地与石板路用写实贴图")
+	troot.queue_free()
 	await frames(2)

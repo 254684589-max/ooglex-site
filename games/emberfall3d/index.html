@@ -124,9 +124,9 @@
         <div class="eyebrow">Ooglex Games · 原创 3D 暗黑风 · 开发中</div>
         <h1 class="serif">余烬陷落<span>EMBERFALL 大作版</span></h1>
         <p class="lead">《余烬陷落》的 3D 重制正在一步一步搭建：真正的三维场景、斜视角镜头、冷暖光与火把、会冲锋会召唤的怪物。这里放出的是当前的开发中版本，每完成一步就更新一次。</p>
-        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物、怪物和墙体目前都是占位几何体，还没有正式模型、动作、音效和剧情。现在从烬原镇出发：接下第一幕的三条任务，找镇上的人疗伤、买卖装备，再从修道院废墟的阶梯下到随机生成、有怪物和掉落的地下城；回城卷轴和传送石让你随时往返；第 3 层与第 6 层有首领把守。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
+        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物和怪物目前都是占位几何体；地面和墙已换成写实贴图，但场景造型仍由程序生成。还没有正式模型、动作、配乐和剧情演出。现在从烬原镇出发：接下第一幕的三条任务，找镇上的人疗伤、买卖装备，再从修道院废墟的阶梯下到随机生成、有怪物和掉落的地下城；回城卷轴和传送石让你随时往返；第 3 层与第 6 层有首领把守。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
         <div class="actions">
-          <a class="btn primary" href="play/?v=d7e256e6">▶ 进入 3D 预览</a>
+          <a class="btn primary" href="play/?v=e9b28583">▶ 进入 3D 预览</a>
           <a class="btn secondary" href="../emberfall/">玩 V0.1 完整版</a>
         </div>
         <p class="small">免下载安装 · 电脑和手机浏览器都能打开 · 首次加载约 40 MB（游戏引擎），之后浏览器会缓存 · 需要支持 WebGL 2</p>
@@ -163,7 +163,8 @@
         <div class="step"><b>地牢互动与战争迷雾<span class="tag done">已完成</span></b>房间里的木桶（有时窜出火坑小鬼）、宝箱、神殿（力量 / 守护 / 迅捷 / 秘法四种祝福，90 秒）；没去过的地方一片漆黑，走近看见才显示出来，看不见的怪物不显示；「明亮的」装备会扩大照明范围。</div>
         <div class="step"><b>存档、音效与无尽深渊<span class="tag done">已完成</span></b>自动保存到当前浏览器（每 30 秒、换层、交接任务时），下次打开可以「继续旅程」；25 种程序合成音效（打击、技能、拾取、升级、首领……，M 键开关）；第 7 层起是没有尽头的无尽深渊，每 5 层一个「深渊化身」。按 Esc 或点「菜单」保存、开关音效、删除存档。</div>
         <div class="step"><b>对齐验收<span class="tag done">已完成</span></b>逐项对照 V0.1 的全部功能，玩法已经全部覆盖；补上了 Shift 原地攻击、同一局里打过的楼层保持原样等细节。玩过经典版的话，第一次打开 3D 版可以把角色带过来。</div>
-        <div class="step"><b>正式美术<span class="tag todo">规划中</span></b>下一阶段：用 CC0 免费素材与原创设计替换占位几何体，先把烬原镇和地窖做到目标画质。</div>
+        <div class="step"><b>写实贴图<span class="tag done">已完成</span></b>地窖的石板地面与石墙、烬原镇的泥土地换成照片扫描的写实材质（Poly Haven，CC0 免费授权）：颜色、凹凸、粗糙度与缝隙阴影都来自真实石材，火把照过来有真实的起伏；墙脚、墙顶和壁柱也做了出来。</div>
+        <div class="step"><b>角色与怪物模型<span class="tag todo">规划中</span></b>人物和怪物仍是占位几何体；下一步等来源确定后替换，先把烬原镇和地窖做到目标画质。</div>
       </div>
       <p class="small">「进行中」「规划中」为计划，尚未实现。</p>
     </section>
@@ -188,7 +189,7 @@
           <figcaption>地窖第 2 层 · 回城传送门与小地图（高画质）</figcaption>
         </figure>
         <figure class="shot">
-          <img src="img/floor3.jpg" width="1280" height="720" loading="lazy" alt="随机地下城白骨墓穴第 3 层：两支火把照亮石砖房间，玩家（占位几何体）站在通往上一层的石阶旁，地上散落白骨与碎石">
+          <img src="img/floor3.jpg" width="1280" height="720" loading="lazy" alt="随机地下城白骨墓穴第 3 层：两支火把照亮石墙与不规则石板地面的房间，玩家（占位几何体）站在通往上一层的石阶旁，地上散落白骨与碎石">
           <figcaption>随机地下城 · 白骨墓穴第 3 层（高画质）</figcaption>
         </figure>
         <figure class="shot">
@@ -235,7 +236,7 @@
     </section>
 
     <div class="cta-bottom">
-      <a class="btn primary" href="play/?v=d7e256e6">▶ 进入 3D 预览</a>
+      <a class="btn primary" href="play/?v=e9b28583">▶ 进入 3D 预览</a>
     </div>
 
     <div class="notice">
