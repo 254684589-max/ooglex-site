@@ -6,6 +6,7 @@ on:
     paths:
       - "apps/tech-leaders/index.html"
       - "apps/tech-leaders/leaders*.json"
+      - "assets/tech-leaders-password-gate.js"
       - "scripts/tech-leaders/validate_page_js.mjs"
       - "scripts/tech-leaders/page_runtime_smoke.mjs"
       - ".github/workflows/tech-leaders-page-gate.yml"
@@ -14,6 +15,7 @@ on:
     paths:
       - "apps/tech-leaders/index.html"
       - "apps/tech-leaders/leaders*.json"
+      - "assets/tech-leaders-password-gate.js"
       - "scripts/tech-leaders/validate_page_js.mjs"
       - "scripts/tech-leaders/page_runtime_smoke.mjs"
       - ".github/workflows/tech-leaders-page-gate.yml"
@@ -60,7 +62,7 @@ jobs:
 
           sha = __import__("os").environ["GATE_SHA"]
           page_url = f"https://ooglex.com/apps/tech-leaders/?gate={sha}"
-          catalog_url = f"https://ooglex.com/apps/tech-leaders/leaders.json?gate={sha}"
+          catalog_url = f"https://pro-api.ooglex.com/v1/tech-leaders/catalog?catalog=leaders.json&gate={sha}"
 
           def fetch(url):
               req = urllib.request.Request(
@@ -85,26 +87,31 @@ jobs:
                       if (p.get("active_status") or p.get("admission_status") or "active") == "active"
                   ]
 
-                  route_at = html.find('var CATALOG_URL="./leaders.json"')
+                  route_at = html.find('var CATALOG_URL=API_BASE+"/v1/tech-leaders/catalog?catalog="')
                   if route_at < 0:
-                      raise RuntimeError("catalog_router_missing")
-                  route = html[route_at:route_at + 1800]
+                      raise RuntimeError("protected_catalog_router_missing")
+                  route = html[route_at:route_at + 2200]
                   if "\\n" in route:
                       raise RuntimeError("literal_backslash_n_in_router")
 
                   hero = re.search(r'id=["\']hero-account-count["\'][^>]*>\s*(\d+)\s+公开账号', html)
                   if not hero:
                       raise RuntimeError("hero_count_missing")
-                  if int(hero.group(1)) != len(active):
-                      raise RuntimeError(f"hero_catalog_count_mismatch:{hero.group(1)}!={len(active)}")
+                  full_count = int(hero.group(1))
+                  marker = data.get("ooglexAccess") or {}
+                  if marker.get("mode") != "preview" or float(marker.get("ratio", 0)) != 0.10:
+                      raise RuntimeError(f"preview_marker_invalid:{marker}")
                   if not active:
-                      raise RuntimeError("no_active_profiles")
+                      raise RuntimeError("no_preview_profiles")
+                  if len(active) > max(1, (full_count + 9) // 10):
+                      raise RuntimeError(f"preview_exceeds_10_percent:{len(active)}/{full_count}")
 
                   print(json.dumps({
                       "status": "pass",
                       "attempt": attempt,
-                      "live_active_count": len(active),
-                      "hero_count": int(hero.group(1)),
+                      "live_preview_count": len(active),
+                      "full_catalog_count": full_count,
+                      "ratio": marker.get("ratio"),
                   }, ensure_ascii=False))
                   break
               except Exception as exc:
