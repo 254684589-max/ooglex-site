@@ -22,7 +22,7 @@ description: 继续开发原创暗黑风 ARPG《余烬陷落》EMBERFALL 的大�
 
 ## 二、目录与复用
 
-- V0.1：`games/emberfall/`（Canvas 2D，已上线，URL 不变）。其物品、词缀、怪物、剧情数据是大作版的设计种子，可以移植，不要删。
+- V0.1：`games/emberfall/`（Canvas 2D，已上线，URL 不变）。**所有者决定 D9：先把 V0.1 的全部玩法与内容移植到 3D（路线图「阶段 P」），画质之后再提升**；V0.1 冻结，只修故障、不加功能，移植完成前不要删。移植的是玩法与数据，不搬 Canvas 绘制代码。
 - 大作版：`games/emberfall3d/`（`design/` 设计文档、`godot/` 工程、`tools/` 构建脚本、`play/` 网页导出）。
 - 构建与测试脚本先复用 `games/working-life/tools/`（`build_web.sh`、`run_tests.sh`、`stamp_web_build.py`），改路径，不另起一套。
 - Godot 网页导出只能用兼容渲染器（GL Compatibility），画质方案都按这个前提设计。
