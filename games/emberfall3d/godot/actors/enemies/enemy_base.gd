@@ -30,6 +30,7 @@ var rng := RandomNumberGenerator.new()
 var agent: NavigationAgent3D
 var move_dir := Vector3.ZERO     # 本帧想走的方向（_ai 设置）
 var move_speed := 0.0
+var slow_t := 0.0                 # 寂霜环减速剩余秒数（P4，V0.1：减速 3 秒、移动速度减半）
 var _repath_t := 0.0
 var _los_t := 0.0
 var _los_cached := false
@@ -226,6 +227,10 @@ func player_alive() -> bool:
 	return player != null and not player.get("dead")
 
 
+func apply_slow(seconds: float) -> void:
+	slow_t = maxf(slow_t, seconds)
+
+
 func has_los(fresh := false) -> bool:
 	## 视线检测：结果缓存 0.2 秒（60 只怪物每帧各打一条射线太浪费）；fresh = true 时强制重测
 	if player == null:
@@ -327,8 +332,10 @@ func _tick(delta: float) -> void:
 	if flash_t > 0.0:
 		flash_t -= delta
 	var white := flash_t > 0.0
+	if slow_t > 0.0:
+		slow_t -= delta
 	for i in _mats.size():
-		_mats[i].albedo_color = Color(1, 0.97, 0.92) if white else _base_colors[i]
+		_mats[i].albedo_color = Color(1, 0.97, 0.92) if white else (_base_colors[i].lerp(Color(0.55, 0.8, 1.0), 0.55) if slow_t > 0.0 else _base_colors[i])
 	stun_mark.visible = stun_t > 0.0
 	for k in cooldowns.keys():
 		cooldowns[k] = maxf(0.0, cooldowns[k] - delta)
@@ -352,7 +359,7 @@ func _tick(delta: float) -> void:
 			move_dir = Vector3.ZERO
 			_ai(_think_acc if far else delta)
 			_think_acc = 0.0
-		velocity = move_dir * move_speed
+		velocity = move_dir * move_speed * (Act1Data.rules().skill_formulas.nova.slow_mul if slow_t > 0.0 else 1.0)
 		velocity += _separation() * 2.0
 	move_and_slide()
 	global_position.y = 0.0

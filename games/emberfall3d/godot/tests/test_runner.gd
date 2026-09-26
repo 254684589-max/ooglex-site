@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -377,7 +377,6 @@ func test_combat() -> void:
 	check(absf(seen.get("hero_stop", 0.0) - 0.04) < 0.001 and absf(seen.get("dummy_stop", 0.0) - 0.04) < 0.001, "命中停顿：攻击方与受击方各冻结 40 毫秒")
 	check(seen.get("flash", 0.0) > 0.09, "受击闪白 0.1 秒")
 	check(seen.get("trauma", 0.0) > 0.0, "命中时镜头震动")
-	check(hero.kit.resource == 12.0, "命中获得 12 点誓火（实得 %.0f）" % hero.kit.resource)
 	check(_count_numbers(main) > labels_before, "弹出伤害数字")
 	var peak := 0.0
 	for i in 30:
@@ -410,36 +409,11 @@ func test_combat() -> void:
 	HitFeedback.numbers_enabled = true
 	await seconds(1.0)
 
-	# 焚地践踏：誓火不足时放不出来
-	hero.kit.resource = 10.0
-	check(not hero.cast_skill("scorch_stomp"), "誓火不足 30 时不能放焚地践踏")
-	# 把两个木桩都放到身边
+	# 技能（P4 起为 V0.1 流浪者的四个技能）见 skills 组
+	# 把第二个木桩挪开（原先由这里的焚地践踏测试挪开；否则它正好挡在下面「点击木桩」的路上，主角会被卡住）
 	d1.home = Vector3(0.8, 0, 0.6)
 	d1.global_position = d1.home
 	await physics(2)
-	hero.kit.resource = 50.0
-	var hp_a := d0.hp
-	var hp_b := d1.hp
-	check(hero.cast_skill("scorch_stomp"), "誓火足够时放出焚地践踏")
-	check(is_equal_approx(hero.kit.resource, 20.0), "消耗 30 点誓火")
-	check(not hero.cast_skill("scorch_stomp"), "冷却中不能连放")
-	await physics(20)
-	check(d0.hp < hp_a and d1.hp < hp_b, "范围内两个木桩都受到伤害")
-	check(d0.stun_t > 0.5 and d1.stun_t > 0.5, "被眩晕")
-	check(is_equal_approx(hero.kit.resource, 20.0), "践踏只消耗誓火、不产生（GDD 第 5.1 节：基础攻击生成，技能消耗）")
-	var zones := main.get_children().filter(func(c): return c is BurnZone)
-	check(zones.size() == 1, "留下燃烧地面")
-	var hp_after := d0.hp
-	await seconds(1.2)
-	check(d0.hp < hp_after, "燃烧地面持续造成火焰伤害（%d）" % (hp_after - d0.hp))
-	check(hero.kit.cooldowns.get("scorch_stomp", 0.0) > 0.0 and hero.kit.cooldowns.get("scorch_stomp", 0.0) < 4.0, "冷却计时中")
-	await seconds(2.5)
-	check(main.get_children().filter(func(c): return c is BurnZone).is_empty(), "燃烧地面 3 秒后消失")
-
-	# 誓火脱战衰减
-	var before := hero.kit.resource
-	await seconds(3.6)
-	check(hero.kit.resource < before, "脱战 3 秒后誓火开始衰减（%.0f → %.0f）" % [before, hero.kit.resource])
 
 	# 死亡与复活
 	d0.hp = 1.0
@@ -633,7 +607,7 @@ func test_monsters() -> void:
 	hero.hp = 1
 	hero.take_hit({"amount": 5, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
 	check(hero.dead, "玩家生命归零后倒下")
-	check(not hero.cast_skill("scorch_stomp"), "倒下后不能放技能")
+	check(not hero.cast_skill("fireball"), "倒下后不能放技能")
 	await seconds(1.6)    # 冲锋者此时还处于 1.2 秒眩晕中，眩晕结束才会回家
 	check(c.state == "return" or c.state == "idle", "玩家倒下后怪物回出生点")
 	await seconds(1.8)
@@ -1206,5 +1180,166 @@ func test_growth() -> void:
 	check(not panel.visible and not get_tree().paused, "再按 C 关闭，游戏继续")
 	await frames(2)
 	check(main.bag_label.text.contains("金币 %d" % sh.gold) and main.char_btn.text.contains("+1"), "界面显示金币、药水，属性按钮提示还有 1 点未分配")
+	main.queue_free()
+	await frames(2)
+
+
+# ---------- 阶段 P4：四个技能 ----------
+func _wait_idle(hero: Player) -> void:
+	## 等主角这一下出手（前摇 + 后摇）做完
+	for i in 120:
+		await physics(1)
+		if hero.action == "":
+			return
+
+
+func test_skills() -> void:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.spawn_monsters = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var pr: HeroProgress = hero.progress
+	var sf: Dictionary = Act1Data.rules().skill_formulas
+	hero.global_position = Vector3(0, 0, 13)      # 大厅中央，四周开阔
+	main.camera.snap()
+	await physics(3)
+
+	check(Player.skill_rule("fireball").mp == 5 and Player.skill_rule("whirl").lvl == 3 and Player.skill_rule("nova").cd == 3 and Player.skill_rule("blink").lvl == 10,
+		"技能数值来自 V0.1：火球 5 法力、烬环斩 3 级解锁、寂霜环冷却 3 秒、闪现 10 级解锁")
+	check(hero.skill_block_reason("whirl") == "烬环斩 需要 3 级" and not hero.cast_skill("whirl") and not hero.cast_skill("blink"), "1 级只会火球术，其余技能按等级解锁")
+
+	# 火球术：直线飞、打中爆炸、范围 50% 溅射
+	# 靶子：避开大厅的石柱（(0, 19) 等处有柱子），用长时间眩晕冻住，免得被打后反击把 64 血的主角打倒
+	var a := Monsters.spawn("ash_brute", main.stage, Vector3(3, 0, 18), hero)
+	var b := Monsters.spawn("ash_brute", main.stage, Vector3(4.2, 0, 18.6), hero)
+	for e in [a, b]:
+		e.stun_t = 1e6
+		e.max_hp = 1000.0
+		e.hp = 1000.0
+	await physics(2)
+	var mp0 := hero.mp
+	check(hero.cast_skill("fireball", a.global_position), "对准怪物放火球")
+	check(is_equal_approx(hero.mp, mp0 - 5.0) and hero.skill_cd.get("fireball", 0.0) > 0.0, "消耗 5 法力，进入 0.4 秒冷却")
+	check(not hero.cast_skill("fireball", a.global_position), "冷却中不能连放")
+	var dmg: float = (float(sf.fireball.base) + 1 * float(sf.fireball.per_lvl)) * pr.S.spell
+	for i in 90:
+		await physics(1)
+		if a.hp < 1000.0:
+			break
+	await physics(1)
+	var da := 1000.0 - a.hp
+	var db := 1000.0 - b.hp
+	check(da >= floor(dmg * 0.85) and da <= ceil(dmg * 1.15), "直接命中：伤害 = (4 + 1.6×等级) × 法术倍率 ±15%%（%.0f，期望约 %.1f）" % [da, dmg])
+	check(db > 0.0 and db <= ceil(dmg * 0.5 * 1.15), "旁边的怪受 50%% 溅射（%.0f）" % db)
+	# 撞墙也会爆炸：朝南墙放
+	await seconds(0.5)
+	var old_fb := hero.last_fireball
+	hero.cast_skill("fireball", Vector3(0, 0, 40))
+	await _wait_idle(hero)
+	var fb: Fireball = hero.last_fireball
+	check(fb != old_fb and is_instance_valid(fb), "前摇结束后火球飞出")
+	var exploded := false
+	for i in 90:
+		await physics(1)
+		if not is_instance_valid(fb):
+			exploded = true
+			break
+	check(exploded, "火球撞到墙爆炸消失")
+
+	# 升到 10 级，四个技能都能用
+	await _wait_idle(hero)
+	pr.sheet.lvl = 10
+	pr.recalc()
+	hero._apply_progress()
+	hero.mp = hero.max_mp
+	check(hero.skill_block_reason("blink") == "", "10 级四个技能都已解锁")
+
+	# 烬环斩：周围一圈，130% 武器伤害
+	a.global_position = hero.global_position + Vector3(1.5, 0, 0)
+	b.global_position = hero.global_position + Vector3(-1.2, 0, 1.2)
+	var far := Monsters.spawn("ash_brute", main.stage, hero.global_position + Vector3(3, 0, 5), hero)
+	far.stun_t = 1e6
+	far.max_hp = 1000.0
+	far.hp = 1000.0
+	await physics(3)
+	var ha := a.hp
+	var hb := b.hp
+	var hf := far.hp
+	check(hero.cast_skill("whirl"), "放烬环斩")
+	await _wait_idle(hero)
+	check(a.hp < ha and b.hp < hb and far.hp == hf, "身边一圈的怪都受伤，6 米外的不受影响")
+
+	# 寂霜环：伤害 + 减速 3 秒；墙后的不受影响
+	await seconds(0.3)
+	var hn := a.hp
+	check(hero.cast_skill("nova"), "放寂霜环")
+	await _wait_idle(hero)
+	var nova_dmg: float = (float(sf.nova.base) + 10 * float(sf.nova.per_lvl)) * pr.S.spell
+	check(a.hp < hn and hn - a.hp >= floor(nova_dmg * 0.85) and hn - a.hp <= ceil(nova_dmg * 1.15), "寂霜环伤害 = (6 + 2×等级) × 法术倍率 ±15%%（%.0f）" % (hn - a.hp))
+	check(a.slow_t > 2.5 and far.slow_t > 2.5, "范围内的怪被减速 3 秒（6 米内都算）")
+	check(not hero.cast_skill("nova"), "寂霜环冷却 3 秒")
+
+	# 暗影闪现：朝指定点瞬移，最远 10.5 米；不能闪进墙里
+	await seconds(0.3)
+	var p0 := hero.global_position
+	check(hero.cast_skill("blink", p0 + Vector3(-6, 0, 2)), "放暗影闪现")
+	await _wait_idle(hero)
+	check(hero.global_position.distance_to(p0 + Vector3(-6, 0, 2)) < 0.3, "瞬移到指定位置")
+	hero.skill_cd.clear()
+	var p1 := hero.global_position
+	hero.cast_skill("blink", p1 + Vector3(-40, 0, 0))
+	await _wait_idle(hero)
+	var moved := Vector2(hero.global_position.x - p1.x, hero.global_position.z - p1.z).length()
+	check(moved <= Balance.skill("blink").range + 0.01 and hero.global_position.x > -12.0, "闪现最远 10.5 米，不会穿到西墙外（移动 %.1f 米，x = %.1f）" % [moved, hero.global_position.x])
+	hero.skill_cd.clear()
+	hero.global_position = Vector3(0, 0, 0)      # 北边房间里
+	await physics(2)
+	# 朝北墙外闪：和 V0.1 一样沿原路往回退，最终停在墙这一侧（北墙内侧 z = -5.7）
+	hero.mp = hero.max_mp
+	hero.cast_skill("blink", Vector3(0, 0, -20))
+	await _wait_idle(hero)
+	check(hero.global_position.z > -5.7 and hero.global_position.z < -1.0, "隔着墙闪不过去：退回到墙这一侧（z = %.1f）" % hero.global_position.z)
+	hero.skill_cd.clear()
+	hero.global_position = Vector3(5.2, 0, -5.2)      # 房间东北角，紧贴两面墙
+	await physics(2)
+	hero.mp = hero.max_mp
+	var mp_b := hero.mp
+	check(not hero.cast_skill("blink", Vector3(12, 0, -12)) and hero.last_skill_fail == "无法闪现到那里" and hero.mp == mp_b, "完全没有落脚点时放不出来，也不扣法力")
+
+	# 法力不足
+	await _wait_idle(hero)
+	hero.skill_cd.clear()
+	hero.mp = 3.0
+	check(not hero.cast_skill("fireball") and hero.last_skill_fail == "法力不足", "法力不足时放不出来")
+
+	# 自动瞄准：不给瞄准点时对准最近的可见敌人
+	hero.global_position = Vector3(0, 0, 13)
+	hero.mp = hero.max_mp
+	hero.skill_cd.clear()
+	far.global_position = Vector3(3, 0, 17)
+	a.global_position = Vector3(-9, 0, 13)
+	b.global_position = Vector3(-9, 0, 22)
+	await physics(3)
+	var prev_fb := hero.last_fireball
+	check(hero.cast_skill("fireball"), "不给瞄准点也能放")
+	for i in 30:
+		await physics(1)
+		if hero.last_fireball != prev_fb:
+			break
+	var want := (Vector3(3, 0, 17) - hero.global_position).normalized()
+	check(is_instance_valid(hero.last_fireball) and hero.last_fireball.dir.dot(want) > 0.97, "手机按钮 / 不指向地面时，火球自动飞向最近的怪")
+
+	# 界面：电脑有技能栏，冷却与锁定显示在格子上
+	await frames(2)
+	var bar: SkillBar = main.skill_bar
+	check(bar != null and bar.slots.size() == 4 and bar.slots.fireball.text.contains("冷却"), "电脑下方技能栏四格，冷却中显示剩余时间")
+	pr.sheet.lvl = 1
+	pr.recalc()
+	hero._apply_progress()
+	await frames(2)
+	check(bar.slots.blink.text.contains("10 级解锁") and bar.slots.blink.disabled, "未解锁的技能显示解锁等级并置灰")
 	main.queue_free()
 	await frames(2)

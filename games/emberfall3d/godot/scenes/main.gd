@@ -18,8 +18,6 @@ var spawn_monsters := true
 var hp_bar: ProgressBar
 var hp_label: Label
 var dead_label: Label
-var res_bar: ProgressBar
-var res_label: Label
 var lvl_label: Label
 var xp_bar: ProgressBar
 var mp_bar: ProgressBar
@@ -30,7 +28,8 @@ var btn_hp: Button
 var btn_mp: Button
 var char_panel: CharPanel
 var btn_attack: Button
-var btn_stomp: Button
+var skill_btns := {}          # 手机：四个技能圆按钮（P4）
+var skill_bar: SkillBar       # 电脑：屏幕下方技能栏（P4）
 var torches: Array[Torch] = []
 var environment: Environment
 var moon: DirectionalLight3D
@@ -138,14 +137,16 @@ func _process(delta: float) -> void:
 	if banner:
 		banner_t = maxf(0.0, banner_t - delta)
 		banner.modulate.a = clampf(banner_t, 0.0, 1.0)
-	if res_bar and hero:
-		var k: EmberguardKit = hero.kit
-		res_bar.value = k.resource
-		var cd: float = k.cooldowns.get("scorch_stomp", 0.0)
-		var cost: int = Balance.skill("scorch_stomp").cost
-		res_label.text = "誓火 %d / %d　焚地践踏：%s" % [k.resource, k.resource_max, ("冷却 %.1f 秒" % cd) if cd > 0.0 else ("可用" if k.resource >= cost else "誓火不足（需要 %d）" % cost)]
-		if btn_stomp:
-			btn_stomp.disabled = not k.can_cast("scorch_stomp")
+	if hp_bar and hero:
+		if skill_bar:
+			skill_bar.refresh()
+		for id in skill_btns:
+			var r := Player.skill_rule(id)
+			var b: Button = skill_btns[id]
+			var cd: float = hero.skill_cd.get(id, 0.0)
+			var locked: bool = hero.progress.sheet.lvl < int(r.lvl)
+			b.text = ("%d级" % int(r.lvl)) if locked else (("%.0f" % ceilf(cd)) if cd > 0.0 else String(r.glyph))
+			b.disabled = locked or cd > 0.0 or hero.mp < float(r.mp)
 		hp_bar.max_value = hero.max_hp
 		hp_bar.value = hero.hp
 		hp_label.text = "生命 %d / %d" % [ceili(hero.hp), int(hero.max_hp)]
@@ -446,8 +447,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；Q / E 喝药；C 属性；WASD 移动；滚轮缩放；走到楼梯上换层"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P3 角色成长）\n模型仍是占位几何体。南边大厅的怪物给经验，升级得属性点；房间东北角的楼梯通往随机地下城（暂无怪物）。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；C 属性；WASD 移动；滚轮缩放；走到楼梯上换层"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P4 四个技能）\n模型仍是占位几何体。南边大厅的怪物给经验，升级得属性点；房间东北角的楼梯通往随机地下城（暂无怪物）。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -462,7 +463,6 @@ func _build_ui() -> void:
 	pack_label.add_theme_font_size_override("font_size", 14)
 	pack_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.7))
 	layer.add_child(pack_label)
-	# 职业资源条（占位；正式界面按 ART.md 第五节做成环绕技能栏的火焰）
 	var box := VBoxContainer.new()
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	top.add_child(box)
@@ -475,22 +475,6 @@ func _build_ui() -> void:
 	xp_bar.max_value = 1.0
 	xp_bar.step = 0.0
 	box.add_child(xp_bar)
-	res_bar = ProgressBar.new()
-	res_bar.custom_minimum_size = Vector2(220, 14)
-	res_bar.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	res_bar.max_value = hero.kit.resource_max
-	res_bar.show_percentage = false
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color(0.91, 0.52, 0.23)
-	res_bar.add_theme_stylebox_override("fill", fill)
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(0.1, 0.07, 0.05, 0.8)
-	res_bar.add_theme_stylebox_override("background", bg)
-	box.add_child(res_bar)
-	res_label = Label.new()
-	res_label.add_theme_font_size_override("font_size", 14)
-	res_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
-	box.add_child(res_label)
 	# 生命条（占位；正式界面按 ART.md 第五节做成左下角的「火盆」）
 	hp_bar = ProgressBar.new()
 	hp_bar.custom_minimum_size = Vector2(220, 14)
@@ -500,6 +484,8 @@ func _build_ui() -> void:
 	var hfill := StyleBoxFlat.new()
 	hfill.bg_color = Color(0.75, 0.18, 0.12)
 	hp_bar.add_theme_stylebox_override("fill", hfill)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.1, 0.07, 0.05, 0.8)
 	hp_bar.add_theme_stylebox_override("background", bg)
 	box.add_child(hp_bar)
 	hp_label = Label.new()
@@ -545,15 +531,20 @@ func _build_ui() -> void:
 	layer.add_child(touch)
 	if touch.visible:
 		btn_attack = _touch_button(layer, "攻击", Vector2(-130, -150), 96)
-		btn_stomp = _touch_button(layer, "践踏", Vector2(-230, -110), 72)
-		btn_hp = _touch_button(layer, "血", Vector2(-300, -66), 56)
-		btn_mp = _touch_button(layer, "蓝", Vector2(-214, -192), 56)
+		# 四个技能围在攻击键左上方一圈；药水在更外侧（P4）
+		for sp in [["fireball", Vector2(-209, -134)], ["whirl", Vector2(-181, -205)], ["nova", Vector2(-112, -236)], ["blink", Vector2(-181, -63)]]:
+			var sb := _touch_button(layer, "", sp[1], 60)
+			var sid: String = sp[0]
+			sb.pressed.connect(func(): hero.cast_skill(sid))
+			skill_btns[sid] = sb
+		btn_hp = _touch_button(layer, "血", Vector2(-282, -64), 52)
+		btn_mp = _touch_button(layer, "蓝", Vector2(-282, -130), 52)
 		btn_hp.pressed.connect(func(): hero.drink_potion("hp"))
 		btn_mp.pressed.connect(func(): hero.drink_potion("mp"))
 		btn_attack.button_down.connect(func(): hero.attack_nearest(true))
 		btn_attack.button_up.connect(func(): hero.attack_nearest(false))
-		btn_stomp.pressed.connect(func(): hero.cast_skill("scorch_stomp"))
-		hero.ui_blockers = [btn_attack, btn_stomp, btn_hp, btn_mp]
+		hero.ui_blockers = [btn_attack, btn_hp, btn_mp]
+		hero.ui_blockers.append_array(skill_btns.values())
 	touch.changed.connect(func(v: Vector2): hero.stick = v)
 	if touch.visible:
 		# 手机上底部有摇杆和按钮：状态文字挪到左上角那一列的最后
@@ -566,6 +557,18 @@ func _build_ui() -> void:
 		pack_label.offset_top = 0
 		pack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		top.add_child(pack_label)
+	if not touch.visible:
+		skill_bar = SkillBar.new()
+		skill_bar.hero = hero
+		skill_bar.anchor_left = 0.5
+		skill_bar.anchor_right = 0.5
+		skill_bar.anchor_top = 1.0
+		skill_bar.anchor_bottom = 1.0
+		skill_bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		skill_bar.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		skill_bar.offset_bottom = -80   # 底部状态文字在 1280 宽时占两行，技能栏放在它上面
+		layer.add_child(skill_bar)
+		hero.ui_blockers.append(skill_bar)
 	# 右上角「属性」按钮（电脑也能点；有未分配属性点时显示点数）与角色面板
 	char_btn = Button.new()
 	char_btn.anchor_left = 1.0

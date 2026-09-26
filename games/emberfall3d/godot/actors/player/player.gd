@@ -5,9 +5,10 @@ extends CharacterBody3D
 ## - 电脑：左键点地面移动，按住持续移动（每 0.15 秒刷新目标）；可选 WASD。
 ## - 手机：虚拟摇杆（TouchControls）直接按方向移动；点摇杆区域以外的地面也能移动。
 ## - 点击移动走导航网格（NavigationAgent3D）；摇杆 / 键盘不走寻路，靠碰撞体贴墙滑动。
-## 战斗（阶段 1.4，职业：烬卫）：
-## - 左键点敌人：走到攻击距离后「断誓斩」；按住持续攻击。手机用「攻击」按钮自动锁定最近的敌人。
-## - 右键 / 数字键 1 / 手机「践踏」按钮：「焚地践踏」（消耗誓火，范围伤害 + 眩晕 + 燃烧地面）。
+## 战斗（阶段 1.4 打击手感；P4 起为 V0.1 的「流浪者」，D10）：
+## - 左键点敌人：走到攻击距离后挥砍（断誓斩）；按住持续攻击。手机用「攻击」按钮自动锁定最近的敌人。
+## - 四个技能消耗法力、有冷却、按等级解锁（V0.1）：火球术（1 级，右键 / 1）、烬环斩（3 级，2）、
+##   寂霜环（6 级，3）、暗影闪现（10 级，4）。电脑朝鼠标所指的地面释放；手机按钮自动瞄准最近的可见敌人。
 ## - 命中停顿只冻结命中双方（hitstop_t），不改全局时间。
 ## 占位外观：胶囊 + 方块武器（阶段 2 换成正式模型）。
 
@@ -23,6 +24,8 @@ const LAYER_PLAYER := Layers.PLAYER
 const HOLD_REFRESH := 0.15
 const ARRIVE_DIST := 0.15
 const AUTO_TARGET_RANGE := 7.0
+const SKILL_KEYS := {KEY_1: "fireball", KEY_2: "whirl", KEY_3: "nova", KEY_4: "blink"}
+const SKILL_AIM_RANGE := 12.0            # 自动瞄准的最远距离（V0.1 autoAim 8 格）
 
 @export var speed := 5.0
 var camera: IsoCamera
@@ -38,7 +41,9 @@ var marker: MeshInstance3D
 var ui_blockers: Array[Control] = []   # 这些控件（手机按钮）范围内的触点不当成点地面
 
 # 战斗
-var kit := EmberguardKit.new()
+var skill_cd := {}                    # 技能冷却剩余秒数（P4）
+var aim_point := Vector3.ZERO           # 本次施法瞄准的地面点
+var last_skill_fail := ""               # 最近一次放不出技能的原因（界面提示用）
 var progress := HeroProgress.new()     # P3：等级、属性点、装备与计算后的属性（V0.1 规则）
 var stats: Dictionary = progress.combat_stats()
 var mp := 0.0
@@ -47,7 +52,7 @@ var last_gold_lost := 0
 var rng := RandomNumberGenerator.new()
 var attack_target: Node3D
 var attack_hold := false         # 按住鼠标 / 攻击按钮：打完一下继续打
-var action := ""                 # 正在进行的动作：""、"oath_cleave"、"scorch_stomp"
+var action := ""                 # 正在进行的动作：""、"oath_cleave"、"fireball"、"whirl"、"nova"、"blink"
 var action_t := 0.0
 var action_hit_done := false
 var hitstop_t := 0.0
@@ -164,7 +169,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				click_at(event.position)
 				attack_hold = attack_target != null
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			cast_skill("scorch_stomp")
+			cast_skill("fireball", pick_ground(event.position))
 	elif event is InputEventMouseMotion and event.device != InputEvent.DEVICE_ID_EMULATION:
 		if hold_active:
 			hold_screen = event.position
@@ -181,8 +186,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			attack_hold = false
 	elif event is InputEventScreenDrag and event.index == touch_index:
 		hold_screen = event.position
-	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_1:
-		cast_skill("scorch_stomp")
+	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in SKILL_KEYS:
+		cast_skill(SKILL_KEYS[event.physical_keycode], pick_ground(get_viewport().get_mouse_position()))
 
 
 func _over_ui(p: Vector2) -> bool:
@@ -408,13 +413,85 @@ func face_point(p: Vector3) -> void:
 		rotation.y = atan2(d.x, d.z)
 
 
-func cast_skill(id: String) -> bool:
-	if dead or action != "" or not kit.can_cast(id):
+## 技能定义：法力、冷却、解锁等级来自 act1_rules.json（V0.1 SK），动作节奏与距离来自 balance.json
+static func skill_rule(id: String) -> Dictionary:
+	for s in Act1Data.rules().skills:
+		if s.id == id:
+			return s
+	return {}
+
+
+## 能不能放：返回空字符串表示可以，否则是原因（V0.1 的提示语）
+func skill_block_reason(id: String) -> String:
+	var r := skill_rule(id)
+	if r.is_empty():
+		return "没有这个技能"
+	if dead:
+		return "倒下了"
+	if progress.sheet.lvl < int(r.lvl):
+		return "%s 需要 %d 级" % [r.name, int(r.lvl)]
+	if skill_cd.get(id, 0.0) > 0.0:
+		return "冷却中"
+	if action != "":
+		return "正在出手"
+	if mp < float(r.mp):
+		return "法力不足"
+	return ""
+
+
+## 放技能。target 为地面上的瞄准点；不给（手机按钮、键盘没有指向地面）就自动瞄准最近的可见敌人（V0.1 autoAim）
+func cast_skill(id: String, target = null) -> bool:
+	last_skill_fail = skill_block_reason(id)
+	if last_skill_fail != "":
 		return false
-	kit.on_cast(id)
+	var p: Vector3 = target if target is Vector3 else _auto_aim(id)
+	if id == "blink":
+		var dest = _blink_destination(p)
+		if dest == null:
+			last_skill_fail = "无法闪现到那里"
+			return false
+		p = dest
+	var r := skill_rule(id)
+	mp -= float(r.mp)
+	skill_cd[id] = float(r.cd)
 	moving_to = false
+	attack_target = null
+	aim_point = p
+	face_point(p)
 	_start_action(id)
 	return true
+
+
+func _auto_aim(id: String) -> Vector3:
+	var e := nearest_enemy(SKILL_AIM_RANGE if id != "blink" else 7.5)
+	if e != null:
+		return e.global_position
+	return global_position + facing() * (6.0 if id != "blink" else Balance.skill("blink").range)
+
+
+## 闪现落点：最远 10.5 米、需要视线、落在导航网格上；落不下就沿原路往回退（V0.1：退 10 次）
+func _blink_destination(p: Vector3):
+	var d := p - global_position
+	d.y = 0.0
+	var rng_m: float = Balance.skill("blink").range
+	if d.length() > rng_m:
+		d = d.normalized() * rng_m
+	if d.length() < 0.5:
+		return null
+	var space := get_world_3d().direct_space_state
+	var map := get_world_3d().navigation_map
+	var from := global_position + Vector3(0, 1.0, 0)
+	for k in 10:
+		# 退到原地附近（不足 0.5 米）就算失败，不白扣法力（V0.1 会原地「闪现」）
+		if d.length() * (1.0 - k * 0.1) < 0.5:
+			break
+		var cand := global_position + d * (1.0 - k * 0.1)
+		var q := PhysicsRayQueryParameters3D.create(from, cand + Vector3(0, 1.0, 0), LAYER_WORLD)
+		if space.intersect_ray(q).is_empty():
+			var on_nav := NavigationServer3D.map_get_closest_point(map, cand)
+			if Vector2(on_nav.x - cand.x, on_nav.z - cand.z).length() < 0.3:
+				return Vector3(cand.x, 0.0, cand.z)
+	return null
 
 
 func _start_action(id: String) -> void:
@@ -423,65 +500,114 @@ func _start_action(id: String) -> void:
 	action_hit_done = false
 
 
-func _resolve_action() -> void:
-	var s := Balance.skill(action)
-	var hits := 0
-	var knock: float = Balance.fb().knockback_m[s.knockback]
-	var heavy: bool = s.knockback == "heavy"
+func _enemies_within(radius: float, need_los := false) -> Array:
+	var out := []
+	var space := get_world_3d().direct_space_state
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if e.get("dead"):
 			continue
 		var d: Vector3 = e.global_position - global_position
 		d.y = 0.0
-		var dist := d.length()
-		var in_range := false
-		if action == "oath_cleave":
-			# 扇形：距离 ≤ 攻击距离 + 目标半径，且在正前方 arc_deg 度以内
-			var ang := rad_to_deg(facing().angle_to(d.normalized())) if dist > 0.01 else 0.0
-			in_range = dist <= s.range + 0.45 and ang <= s.arc_deg * 0.5
-		else:
-			in_range = dist <= s.radius + 0.45
-		if not in_range:
+		if d.length() > radius + float(e.def.get("radius", 0.45)):
 			continue
-		var r := DamageCalc.roll(stats, s.coef, s.type, e.combat_target(), rng)
-		e.take_hit(r, d, knock, s.get("stun_s", 0.0))
-		HitFeedback.apply(self, e, r, camera, heavy)
-		if progress.S.ls > 0:
-			hp = minf(max_hp, hp + r.amount * progress.S.ls / 100.0)
-		hits += 1
-	if action == "scorch_stomp":
-		_spawn_stomp_fx(s)
-		if camera:
-			camera.add_trauma(Balance.fb().shake.heavy)
-	kit.on_hit(action, hits)
+		if need_los:
+			var q := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 1, 0), e.global_position + Vector3(0, 1, 0), LAYER_WORLD)
+			if not space.intersect_ray(q).is_empty():
+				continue
+		out.append(e)
+	return out
+
+
+func _resolve_action() -> void:
+	var s := Balance.skill(action)
+	var hits := 0
+	var sf: Dictionary = Act1Data.rules().skill_formulas
+	var lvl: int = progress.sheet.lvl
+	match action:
+		"oath_cleave", "whirl":
+			# 普攻：正前方扇形；烬环斩：周围一圈、130% 武器伤害（V0.1 whirl）
+			var coef := 1.0 if action == "oath_cleave" else float(sf.whirl.weapon_mul)
+			var knock: float = Balance.fb().knockback_m[s.knockback]
+			var targets := []
+			if action == "whirl":
+				targets = _enemies_within(s.radius)
+			else:
+				for e in get_tree().get_nodes_in_group("enemy"):
+					if e.get("dead"):
+						continue
+					var d: Vector3 = e.global_position - global_position
+					d.y = 0.0
+					var ang := rad_to_deg(facing().angle_to(d.normalized())) if d.length() > 0.01 else 0.0
+					if d.length() <= s.range + 0.45 and ang <= s.arc_deg * 0.5:
+						targets.append(e)
+			for e in targets:
+				var d: Vector3 = e.global_position - global_position
+				d.y = 0.0
+				var r := DamageCalc.roll(stats, coef, "physical", e.combat_target(), rng)
+				e.take_hit(r, d, knock, 0.0)
+				HitFeedback.apply(self, e, r, camera, false)
+				if progress.S.ls > 0:
+					hp = minf(max_hp, hp + r.amount * progress.S.ls / 100.0)
+				hits += 1
+			if action == "whirl":
+				_ring_fx(Color(1.0, 0.62, 0.3), s.radius, 0.3)
+		"fireball":
+			var fb := Fireball.new()
+			var dir := aim_point - global_position
+			dir.y = 0.0
+			fb.dir = dir.normalized() if dir.length() > 0.01 else facing()
+			fb.speed = s.speed
+			fb.life = float(sf.fireball.life_s)
+			fb.hit_radius = s.hit_radius
+			fb.splash_radius = s.splash_radius
+			fb.damage = (float(sf.fireball.base) + lvl * float(sf.fireball.per_lvl)) * progress.S.spell
+			fb.owner_player = self
+			get_parent().add_child(fb)
+			fb.global_position = global_position + Vector3(0, 1.1, 0) + fb.dir * 0.6
+			last_fireball = fb
+			hit_landed.emit(action, 0)
+			return
+		"nova":
+			# 寂霜环：周围 6 米内看得见的敌人受冰霜伤害并减速 3 秒
+			var j: Array = sf.nova.jitter
+			for e in _enemies_within(s.radius, true):
+				var amount: float = (float(sf.nova.base) + lvl * float(sf.nova.per_lvl)) * progress.S.spell * rng.randf_range(j[0], j[1])
+				var r := {"amount": maxi(1, roundi(amount)), "crit": false, "type": "cold"}
+				e.take_hit(r, Vector3.ZERO, 0.0, 0.0)
+				e.apply_slow(float(sf.nova.slow_s))
+				HitFeedback.apply(self, e, r, camera, false)
+				hits += 1
+			_ring_fx(Color(0.6, 0.85, 1.0), s.radius, 0.45)
+		"blink":
+			_ring_fx(Color(0.7, 0.5, 1.0), 1.2, 0.3)
+			global_position = aim_point
+			stop()
+			_ring_fx(Color(0.7, 0.5, 1.0), 1.2, 0.3)
+			if camera:
+				camera.snap()
 	hit_landed.emit(action, hits)
 	if hits > 0:
 		print("EF_HIT skill=%s hits=%d" % [action, hits])
 
 
-func _spawn_stomp_fx(s: Dictionary) -> void:
-	var zone := BurnZone.new()
-	zone.radius = s.radius
-	zone.duration = s.burn.duration_s
-	zone.tick = s.burn.tick_s
-	zone.coef = s.burn.coef_per_tick
-	zone.attacker = stats
-	get_parent().add_child(zone)
-	zone.global_position = Vector3(global_position.x, 0, global_position.z)
-	# 冲击环（占位）：从脚下扩散到技能半径
+var last_fireball: Fireball
+
+
+func _ring_fx(c: Color, radius: float, dur: float) -> void:
+	## 技能的占位特效：从脚下扩散的一圈光环
 	var ring := MeshInstance3D.new()
-	ring.mesh = LowPoly.torus(0.85, 1.0)
-	var m := _mat(Color(1.0, 0.7, 0.3))
+	ring.mesh = LowPoly.torus(0.88, 1.0)
+	var m := _mat(c)
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	ring.material_override = m
 	get_parent().add_child(ring)
-	ring.global_position = zone.global_position + Vector3(0, 0.1, 0)
+	ring.global_position = Vector3(global_position.x, 0.12, global_position.z)
 	ring.scale = Vector3(0.3, 1, 0.3)
 	var tw := ring.create_tween()
 	tw.set_parallel(true)
-	tw.tween_property(ring, "scale", Vector3(s.radius, 1, s.radius), 0.25).set_ease(Tween.EASE_OUT)
-	tw.tween_property(m, "albedo_color:a", 0.0, 0.3).set_delay(0.1)
+	tw.tween_property(ring, "scale", Vector3(radius, 1, radius), dur).set_ease(Tween.EASE_OUT)
+	tw.tween_property(m, "albedo_color:a", 0.0, dur + 0.05).set_delay(dur * 0.3)
 	tw.chain().tween_callback(ring.queue_free)
 
 
@@ -496,6 +622,9 @@ func _update_action(delta: float) -> void:
 			_set_swing(0.0)
 		else:
 			_set_swing(clampf((action_t - s.windup_s) / 0.08, 0.0, 1.0))
+	elif action == "whirl":
+		# 烬环斩：整个人转一圈
+		_visual.rotation.y = clampf(action_t / total, 0.0, 1.0) * TAU
 	else:
 		_blade_pivot.position.y = 1.25 + (0.4 if action_t < s.windup_s else 0.0)
 	if not action_hit_done and action_t >= s.windup_s:
@@ -504,6 +633,7 @@ func _update_action(delta: float) -> void:
 	if action_t >= total:
 		action = ""
 		_set_swing(0.0)
+		_visual.rotation.y = 0.0
 		_blade_pivot.position.y = 1.25
 		if not attack_hold and attack_target != null:
 			attack_target = null
@@ -542,7 +672,8 @@ func camera_relative(v: Vector2) -> Vector3:
 
 
 func _physics_process(delta: float) -> void:
-	kit.tick(delta)
+	for k in skill_cd.keys():
+		skill_cd[k] = maxf(0.0, skill_cd[k] - delta)
 	_update_marker(delta)
 	if _hurt_t > 0.0:
 		_hurt_t -= delta

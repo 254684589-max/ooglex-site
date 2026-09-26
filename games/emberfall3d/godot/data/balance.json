@@ -1,22 +1,125 @@
 {
   "_说明": "所有战斗数值系数集中在这里（TECH.md 第 3 节 data/balance）。数值是起点，垂直切片实测后再调。",
-  "armor": { "base": 40, "per_level": 18, "cap": 0.75 },
-  "resist": { "per_level": 5, "cap": 0.70 },
-  "crit": { "base_chance": 0.05, "base_bonus": 0.5 },
+  "armor": {
+    "base": 40,
+    "per_level": 18,
+    "cap": 0.75
+  },
+  "resist": {
+    "per_level": 5,
+    "cap": 0.7
+  },
+  "crit": {
+    "base_chance": 0.05,
+    "base_bonus": 0.5
+  },
   "feedback": {
-    "hitstop_ms": { "normal": 40, "crit": 80, "heavy": 70, "boss_phase": 200 },
+    "hitstop_ms": {
+      "normal": 40,
+      "crit": 80,
+      "heavy": 70,
+      "boss_phase": 200
+    },
     "flash_s": 0.1,
-    "knockback_m": { "light": 0.35, "heavy": 0.6 },
-    "shake": { "normal": 0.12, "crit": 0.3, "heavy": 0.4 }
+    "knockback_m": {
+      "light": 0.35,
+      "heavy": 0.6
+    },
+    "shake": {
+      "normal": 0.12,
+      "crit": 0.3,
+      "heavy": 0.4
+    }
   },
   "classes": {
-    "emberguard": { "resource": "誓火", "resource_max": 100, "decay_delay_s": 3.0, "decay_per_s": 6.0 }
+    "emberguard": {
+      "resource": "誓火",
+      "resource_max": 100,
+      "decay_delay_s": 3.0,
+      "decay_per_s": 6.0
+    }
   },
   "skills": {
-    "oath_cleave": { "name": "断誓斩", "type": "physical", "coef": 1.0, "range": 1.9, "arc_deg": 120, "windup_s": 0.12, "recover_s": 0.26, "gain": 12, "knockback": "light" },
-    "scorch_stomp": { "name": "焚地践踏", "type": "fire", "coef": 1.8, "radius": 3.2, "cost": 30, "cooldown_s": 4.0, "stun_s": 1.2, "windup_s": 0.22, "recover_s": 0.34, "knockback": "heavy",
-      "burn": { "duration_s": 3.0, "tick_s": 0.5, "coef_per_tick": 0.15 } }
+    "oath_cleave": {
+      "name": "断誓斩",
+      "type": "physical",
+      "coef": 1.0,
+      "range": 1.9,
+      "arc_deg": 120,
+      "windup_s": 0.12,
+      "recover_s": 0.26,
+      "gain": 12,
+      "knockback": "light"
+    },
+    "scorch_stomp": {
+      "name": "焚地践踏",
+      "type": "fire",
+      "coef": 1.8,
+      "radius": 3.2,
+      "cost": 30,
+      "cooldown_s": 4.0,
+      "stun_s": 1.2,
+      "windup_s": 0.22,
+      "recover_s": 0.34,
+      "knockback": "heavy",
+      "burn": {
+        "duration_s": 3.0,
+        "tick_s": 0.5,
+        "coef_per_tick": 0.15
+      }
+    },
+    "_P4说明": "P4：流浪者的四个技能（V0.1 火球术 / 烬环斩 / 寂霜环 / 暗影闪现）。伤害公式、法力、冷却、解锁等级来自 data/act1_rules.json（skills、skill_formulas）；这里只放 3D 的动作节奏与距离。战斗距离按 V0.1 的 1 格 ≈ 1.5 米换算（与主角、怪物碰撞体的比例一致）。scorch_stomp 与誓火（EmberguardKit）暂不使用，阶段 4 做三职业时复用。",
+    "fireball": {
+      "name": "火球术",
+      "type": "fire",
+      "windup_s": 0.14,
+      "recover_s": 0.16,
+      "speed": 13.5,
+      "hit_radius": 0.45,
+      "splash_radius": 2.0,
+      "knockback": "light"
+    },
+    "whirl": {
+      "name": "烬环斩",
+      "type": "physical",
+      "radius": 2.85,
+      "windup_s": 0.1,
+      "recover_s": 0.25,
+      "knockback": "light"
+    },
+    "nova": {
+      "name": "寂霜环",
+      "type": "cold",
+      "radius": 6.0,
+      "windup_s": 0.15,
+      "recover_s": 0.3
+    },
+    "blink": {
+      "name": "暗影闪现",
+      "range": 10.5,
+      "windup_s": 0.0,
+      "recover_s": 0.12
+    }
   },
-  "placeholder_hero": { "_说明": "占位角色数值（正式装备系统在阶段 4）", "level": 1, "main_stat": 20, "weapon_min": 8, "weapon_max": 12, "damage_bonus": 0.0, "max_hp": 220, "armor": 20, "respawn_s": 3.0 },
-  "training_dummy": { "name": "训练木桩", "max_hp": 300, "armor": 30, "level": 1, "resist": { "fire": 0 }, "respawn_s": 2.5 }
+  "placeholder_hero": {
+    "_说明": "占位角色数值（正式装备系统在阶段 4）",
+    "level": 1,
+    "main_stat": 20,
+    "weapon_min": 8,
+    "weapon_max": 12,
+    "damage_bonus": 0.0,
+    "max_hp": 220,
+    "armor": 20,
+    "respawn_s": 3.0
+  },
+  "training_dummy": {
+    "name": "训练木桩",
+    "max_hp": 300,
+    "armor": 30,
+    "level": 1,
+    "resist": {
+      "fire": 0
+    },
+    "respawn_s": 2.5
+  }
 }

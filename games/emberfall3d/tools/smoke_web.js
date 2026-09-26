@@ -43,6 +43,16 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
       await page.waitForTimeout(300);
       await page.screenshot({ path: path.join(outDir, `ef3d-${name}-hit.png`) });
     }
+    // 火球术（P4，仅电脑）：鼠标停在木桩上按 1，要求出现 EF_HIT skill=fireball
+    let fire = 'n/a';
+    if (!mobile && ds) {
+      const dx = +/x=(\d+)/.exec(ds)[1], dy = +/y=(\d+)/.exec(ds)[1];
+      await page.mouse.move(dx, dy);
+      await page.waitForTimeout(600);
+      await page.keyboard.press('1');
+      fire = '';
+      for (let i = 0; i < 16 && !fire; i++) { await page.waitForTimeout(250); fire = logs.find(l => l.startsWith('EF_HIT skill=fireball')) || ''; }
+    }
     // 点地面移动：电脑用鼠标点，手机 / 平板用触屏点（点在摇杆与按钮区域以外）
     const tx = Math.round(w * 0.3), ty = Math.round(h * 0.38);
     if (mobile) await page.touchscreen.tap(tx, ty); else await page.mouse.click(tx, ty);
@@ -89,9 +99,9 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     await page.waitForTimeout(300);
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && errs.length === 0 && overflow <= 0;
+    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();
