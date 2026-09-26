@@ -98,7 +98,7 @@
     chip.id = "ooglex-rich-access";
     chip.textContent = access && access.access_level === "full"
       ? String(access.plan || "PRO").toUpperCase() + " · FULL"
-      : "FREE · TOP 10 PREVIEW";
+      : "FREE · 10% PREVIEW";
     chip.style.cssText = [
       "position:fixed","right:14px","bottom:14px","z-index:10001",
       "padding:7px 11px","border-radius:999px",
@@ -145,15 +145,15 @@
     ].join(";");
 
     var title = document.createElement("div");
-    title.textContent = "继续查看完整富豪榜";
+    title.textContent = "继续查看完整数据";
     title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
 
     var sub = document.createElement("div");
     sub.textContent = access && access.degraded
-      ? "当前网络连不上会员服务，已按 Top 10 预览显示。恢复连接后可查看完整榜单。"
+      ? "当前网络连不上会员服务，已按预览显示本页原版数据。恢复连接后可查看完整数据。"
       : access && access.authenticated
-        ? "当前为 FREE 预览，仅展示 Top 10。升级 PRO 后可查看完整榜单、搜索与排序。"
-        : "当前仅展示 Top 10 预览。登录 PRO 后可查看完整榜单、搜索与排序。";
+        ? "当前为 FREE 预览。升级 PRO 后可继续查看完整数据。"
+        : "当前展示原版页面预览。登录 PRO 后可继续查看完整数据。";
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:720px";
 
     var button = document.createElement("a");
@@ -166,7 +166,7 @@
     ].join(";");
 
     var note = document.createElement("div");
-    note.textContent = "FREE 浏览器只接收 Top 10 预览数据；完整榜单通过登录权限接口返回。";
+    note.textContent = "完整数据不会发送给 FREE 浏览器；页面下方仅保留受限预览。";
     note.style.cssText = "font-size:11px;color:#8f8f8f;margin-top:14px";
 
     wall.appendChild(title);
