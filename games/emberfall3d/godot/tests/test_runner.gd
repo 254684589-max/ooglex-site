@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -696,3 +696,208 @@ func test_pack() -> void:
 	await frames(1)
 	check(inst.get_child_count() >= 2, "章节包场景可以实例化，并使用主包里的脚本")
 	inst.queue_free()
+
+
+# ---------- 阶段 P1：V0.1 数据移植对照 ----------
+# 对照答案 tests/fixtures/v01_reference.json 由 tools/port_v01.js 用 V0.1 的原函数算出。
+func _near(a, b) -> bool:
+	if a is Array and b is Array:
+		if a.size() != b.size():
+			return false
+		for i in a.size():
+			if not _near(a[i], b[i]):
+				return false
+		return true
+	if typeof(a) in [TYPE_INT, TYPE_FLOAT] and typeof(b) in [TYPE_INT, TYPE_FLOAT]:
+		return absf(float(a) - float(b)) < 1e-9
+	return a == b
+
+
+func test_port() -> void:
+	var f := FileAccess.open("res://tests/fixtures/v01_reference.json", FileAccess.READ)
+	check(f != null, "V0.1 对照答案文件存在")
+	if f == null:
+		return
+	var ref: Dictionary = JSON.parse_string(f.get_as_text())
+	var items := Act1Data.items()
+	var mons := Act1Data.monsters()
+	var rules := Act1Data.rules()
+
+	# 数据完整性
+	check(items.bases.size() == 25 and items.affixes.size() == 16 and items.uniques.size() == 11 and items.slots.size() == 8,
+		"物品数据齐全：25 种底材、16 种词缀、11 件传奇、8 个部位")
+	check(mons.monsters.size() == 10 and mons.champions.size() == 5, "怪物数据齐全：10 种（含 2 个首领）、5 种精英特性")
+	check(rules.skills.size() == 4 and rules.shrines.list.size() == 4, "技能 4 个、神殿 4 种")
+	var slot_ids: Array = items.slots.map(func(s): return s.id)
+	var bad := []
+	for k in items.bases:
+		if not slot_ids.has(items.bases[k].slot):
+			bad.append(k)
+	for u in items.uniques:
+		if not items.bases.has(u.base):
+			bad.append(u.name)
+		for a in u.affixes:
+			if not items.affixes.has(a):
+				bad.append(u.name + "/" + a)
+	for p in mons.pools.values():
+		for m in p:
+			if not mons.monsters.has(m):
+				bad.append("pool/" + m)
+	for b in rules.floors.bosses.values():
+		if not mons.monsters.has(b) or not mons.monsters[b].get("boss", false):
+			bad.append("boss/" + b)
+	check(bad.is_empty(), "交叉引用都存在（部位、传奇底材与词缀、怪物池、首领）%s" % ("" if bad.is_empty() else str(bad)))
+	var names := JSON.stringify(items) + JSON.stringify(mons) + JSON.stringify(rules)
+	check(not names.contains("旋风斩") and not names.contains("冰霜新星") and not names.contains("屠夫"), "没有带回已从 V0.1 去掉的暗黑相似名称")
+
+	# 公式逐项对照
+	var mism := []
+	for i in 50:
+		if HeroStats.xp_need(i + 1) != int(ref.xp_need[i]):
+			mism.append(i + 1)
+	check(mism.is_empty(), "经验曲线 1–50 级与 V0.1 一致 %s" % str(mism))
+
+	mism = []
+	for key in ref.affix_range:
+		var p: PackedStringArray = key.split("@")
+		if not _near(ItemGen.affix_bounds(p[0], int(p[1])), ref.affix_range[key]):
+			mism.append(key)
+	check(mism.is_empty(), "词缀取值范围与 V0.1 一致（%d 组）%s" % [ref.affix_range.size(), str(mism)])
+
+	mism = []
+	for c in ref.rarity:
+		if ItemGen.rarity_from(c.r, c.mul) != int(c.out):
+			mism.append(c)
+	check(mism.is_empty(), "品质掷骰阈值与 V0.1 一致（%d 组）%s" % [ref.rarity.size(), str(mism)])
+
+	mism = []
+	for key in ref.base_stats:
+		var p: PackedStringArray = key.split("@")
+		var it := {"aff": {}}
+		ItemGen.apply_base_stats(it, Act1Data.base(p[0]), int(p[1]))
+		var want: Dictionary = ref.base_stats[key]
+		for fld in want:
+			if fld == "aff":
+				for ak in want.aff:
+					if not _near(it.aff.get(ak), want.aff[ak]):
+						mism.append(key + "/" + ak)
+			elif not _near(it.get(fld), want[fld]):
+				mism.append(key + "/" + fld)
+		for fld in it:
+			if not want.has(fld):
+				mism.append(key + "/多出 " + fld)
+	check(mism.is_empty(), "底材属性随物品等级成长与 V0.1 一致（%d 组）%s" % [ref.base_stats.size(), str(mism)])
+
+	mism = []
+	for c in ref.item_value:
+		var it: Dictionary = c.it.duplicate()
+		it.rarity = int(it.r)
+		if ItemGen.value(it) != int(c.value) or ItemGen.sell_value(it) != int(c.sell):
+			mism.append(c)
+	check(mism.is_empty(), "买价与卖价与 V0.1 一致 %s" % str(mism))
+
+	mism = []
+	for c in ref.calc_stats:
+		var hero: Dictionary = c.hero.duplicate(true)
+		var S := HeroStats.calc(hero)
+		for fld in c.stats:
+			if not _near(S.get(fld), c.stats[fld]):
+				mism.append("%s/%s: %s ≠ %s" % [c.name, fld, S.get(fld), c.stats[fld]])
+		for l in c.dr:
+			if not _near(HeroStats.damage_reduction(S, int(l)), c.dr[l]):
+				mism.append("%s/减伤@%s" % [c.name, l])
+	check(mism.is_empty(), "角色属性与护甲减伤与 V0.1 一致（%d 种配装，含 4 种神殿）%s" % [ref.calc_stats.size(), str(mism)])
+
+	mism = []
+	for c in ref.spawn:
+		var m := FloorRules.scale_monster(c.key, int(c.floor), c.champ if c.champ != null else "")
+		for fld in ["hp", "dmg", "xp", "lvl", "spd", "name"]:
+			if not _near(m[fld], c[fld]):
+				mism.append("%s@%d/%s/%s" % [c.key, c.floor, c.champ, fld])
+	check(mism.is_empty(), "怪物随楼层与精英特性的成长与 V0.1 一致（%d 组）%s" % [ref.spawn.size(), str(mism.slice(0, 5))])
+
+	mism = []
+	for c in ref.floors:
+		var fl := int(c.floor)
+		if FloorRules.theme_for(fl) != c.theme or FloorRules.floor_name(fl) != c.name or FloorRules.is_boss_floor(fl) != c.boss:
+			mism.append(fl)
+	check(mism.is_empty(), "楼层主题、名称、首领层（0–20 层）与 V0.1 一致 %s" % str(mism))
+	check(FloorRules.monster_pool(9) == FloorRules.monster_pool(7) and FloorRules.monster_pool(0) == FloorRules.monster_pool(1), "第 7 层以后用深渊怪物池，镇上按第 1 层算")
+
+	# 随机生成的性质（给定种子，可复现）
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20260926
+	var counts := [0, 0, 0, 0]
+	var problems := []
+	for i in 4000:
+		var il := 1 + i % 30
+		var it := ItemGen.generate(rng, il)
+		counts[it.rarity] += 1
+		var b := Act1Data.base(it.base)
+		if b.get("magic_only", false) and it.rarity == 0:
+			problems.append("戒指护符出了普通品质")
+		if it.rarity == 1 and not items.affixes.values().any(func(a): return String(it.name).begins_with(a.prefix)):
+			problems.append("魔法物品名缺前缀：" + it.name)
+		if it.rarity == 2 and not (items.rare_names.first.any(func(x): return String(it.name).begins_with(x)) and items.rare_names.second.any(func(x): return String(it.name).ends_with(x))):
+			problems.append("稀有物品名不合规：" + it.name)
+		if it.rarity == 3 and not items.uniques.any(func(u): return u.name == it.name and u.base == it.base):
+			problems.append("传奇名与底材不符：" + it.name)
+		if it.rarity < 3:
+			for k in it.aff:
+				var a := Act1Data.affix(k)
+				if a.has("max") and it.aff[k] > a.max:
+					problems.append("词缀超上限：%s %s" % [k, it.aff[k]])
+				if typeof(a.slots) != TYPE_STRING and not (a.slots as Array).has(b.slot) and not b.get("implicit", {}).has(k):
+					problems.append("词缀不该出现在该部位：%s/%s" % [k, b.slot])
+			if b.lvl > il + 1:
+				problems.append("底材等级超出物品等级：" + it.base)
+		var want_req := int(b.lvl) if it.rarity == 0 else (maxi(1, mini(40, maxi(int(b.lvl), int(floor(il * 0.6))))) if it.rarity == 3 else maxi(int(b.lvl), int(floor(il * 0.6))))
+		if it.req != want_req:
+			problems.append("需求等级不对：%s" % it.name)
+	check(problems.is_empty(), "4000 件随机物品都符合规则（品质、命名、词缀部位与上限、需求等级）%s" % str(problems.slice(0, 3)))
+	# 不带掉率加成时的期望：传奇 1.2%、稀有 7.8%、魔法 27%（戒指护符会把普通顶成魔法，略高）
+	check(counts[3] > 20 and counts[3] < 90 and counts[2] > 230 and counts[2] < 400 and counts[1] > 1000 and counts[1] < 1500,
+		"品质分布符合 V0.1 的掉率（普通 %d / 魔法 %d / 稀有 %d / 传奇 %d）" % counts)
+
+	rng.seed = 7
+	var a1 := ItemGen.generate(rng, 12)
+	rng.seed = 7
+	var a2 := ItemGen.generate(rng, 12)
+	a1.erase("id")
+	a2.erase("id")
+	check(a1 == a2, "同一种子生成同一件物品（可复现）")
+
+	# 成长与杂项
+	var hero := HeroStats.new_hero()
+	var S0 := HeroStats.calc(hero)
+	check(hero.hp == S0.maxHp and S0.maxHp == 64 and S0.maxMp == 34 and hero.gold == 60 and hero.pots.hp == 3,
+		"新角色：生命 64、法力 34、60 金币、3 瓶生命药水（%d / %d）" % [S0.maxHp, S0.maxMp])
+	var ups := HeroStats.gain_xp(hero, HeroStats.xp_need(1) + HeroStats.xp_need(2))
+	check(ups == 2 and hero.lvl == 3 and hero.pts == 10 and hero.xp == 0, "经验够两级时连升两级、得 10 点属性点")
+	var capped := HeroStats.new_hero()
+	capped.lvl = 50
+	check(HeroStats.gain_xp(capped, 999999) == 0 and capped.lvl == 50, "50 级封顶")
+	check(HeroStats.kill_xp(100, 12, 4) == 55 and HeroStats.kill_xp(100, 30, 2) == 10 and HeroStats.kill_xp(100, 9, 4) == 100,
+		"击杀经验：高 8 级得 55%、高太多保底 10%、高 5 级以内不衰减")
+	check(HeroStats.potion_amount("hp", S0) == 39 and HeroStats.potion_amount("mp", S0) == 22, "药水回复量：生命 45%+10、法力 50%+5")
+	check(HeroStats.death_gold_loss(275) == 27, "死亡掉落 10% 金币")
+	check(HeroStats.skills_known(5).map(func(s): return s.name) == ["火球术", "烬环斩"], "5 级学会火球术与烬环斩")
+
+	rng.seed = 42
+	var boss_drop := FloorRules.roll_loot(rng, 3, {"boss": true})
+	var boss_items: Array = boss_drop.filter(func(d): return d.has("item"))
+	check(boss_items.size() == 4 and boss_items[0].item.rarity >= 2 and boss_items[1].item.rarity == 2 and boss_items[0].item.ilvl == 9,
+		"首领掉落：4 件装备，第一件稀有或传奇、第二件稀有，物品等级 = 层数×2+3")
+	var any_drop := 0
+	var champ_items := 0
+	for i in 500:
+		any_drop += FloorRules.roll_loot(rng, 2, {}).size()
+		champ_items += FloorRules.roll_loot(rng, 2, {"champ": "fast"}).filter(func(d): return d.has("item")).size()
+	check(any_drop > 250 and any_drop < 420, "普通怪 500 只的掉落总数在预期范围（%d）" % any_drop)
+	check(champ_items >= 800 and champ_items <= 900, "精英怪每只掉 1–2 件装备（500 只共 %d 件）" % champ_items)
+	var shop := FloorRules.refresh_shop(rng, 5)
+	check(shop.smith.size() == 8 and shop.smith.all(func(it): return not Act1Data.base(it.base).get("magic_only", false) and it.ilvl == 6)
+		and shop.alchemist.size() == 2 and shop.alchemist.all(func(it): return it.base in ["ring", "amulet"] and it.rarity >= 1),
+		"商店：格伦 8 件（无戒指护符）、玛拉 2 件戒指或护符，物品等级 = 角色等级+1")
+	var chest := FloorRules.roll_chest(rng, 4)
+	check(chest[0].has("gold") and chest.filter(func(d): return d.has("item")).size() in [1, 2], "宝箱：金币 + 1–2 件装备")

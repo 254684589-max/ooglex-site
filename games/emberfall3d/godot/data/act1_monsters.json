@@ -1,0 +1,240 @@
+{
+ "_说明": "由 tools/port_v01.js 从 V0.1 的 MT / CHAMP / poolFor 转换（阶段 P1）。与大作版原有的 data/monsters.json（焦骨蛮兵等 4 种）并存，P5 再统一行为实现。",
+ "monsters": {
+  "zombie": {
+   "name": "腐尸",
+   "hp": 20,
+   "dmg": [
+    2,
+    5
+   ],
+   "spd": 1,
+   "cd": 1.7,
+   "range": 0.9,
+   "xp": 12,
+   "size": 1,
+   "kind": "melee",
+   "aggro": 6,
+   "look": "zombie"
+  },
+  "skel": {
+   "name": "骸骨战士",
+   "hp": 15,
+   "dmg": [
+    1,
+    5
+   ],
+   "spd": 1.9,
+   "cd": 1.2,
+   "range": 0.9,
+   "xp": 11,
+   "size": 0.95,
+   "kind": "melee",
+   "aggro": 8,
+   "look": "skel"
+  },
+  "imp": {
+   "name": "火坑小鬼",
+   "hp": 8,
+   "dmg": [
+    1,
+    3
+   ],
+   "spd": 2.8,
+   "cd": 0.9,
+   "range": 0.8,
+   "xp": 7,
+   "size": 0.7,
+   "kind": "melee",
+   "aggro": 9,
+   "look": "imp"
+  },
+  "archer": {
+   "name": "骸骨弓手",
+   "hp": 11,
+   "dmg": [
+    2,
+    4
+   ],
+   "spd": 1.7,
+   "cd": 1.9,
+   "range": 6.5,
+   "xp": 13,
+   "size": 0.95,
+   "kind": "ranged",
+   "aggro": 9,
+   "look": "archer",
+   "proj": "arrow"
+  },
+  "ghoul": {
+   "name": "食尸鬼",
+   "hp": 30,
+   "dmg": [
+    3,
+    7
+   ],
+   "spd": 2.2,
+   "cd": 1.3,
+   "range": 1,
+   "xp": 22,
+   "size": 1.05,
+   "kind": "melee",
+   "aggro": 7,
+   "look": "ghoul"
+  },
+  "cultist": {
+   "name": "邪教术士",
+   "hp": 20,
+   "dmg": [
+    3,
+    6
+   ],
+   "spd": 1.6,
+   "cd": 2.3,
+   "range": 7,
+   "xp": 26,
+   "size": 1,
+   "kind": "ranged",
+   "aggro": 9,
+   "look": "cultist",
+   "proj": "bolt",
+   "blink": true
+  },
+  "hound": {
+   "name": "熔渊猎犬",
+   "hp": 24,
+   "dmg": [
+    3,
+    6
+   ],
+   "spd": 3.3,
+   "cd": 1,
+   "range": 0.9,
+   "xp": 24,
+   "size": 0.9,
+   "kind": "melee",
+   "aggro": 10,
+   "look": "hound"
+  },
+  "knight": {
+   "name": "堕落骑士",
+   "hp": 45,
+   "dmg": [
+    5,
+    11
+   ],
+   "spd": 1.8,
+   "cd": 1.4,
+   "range": 1.1,
+   "xp": 42,
+   "size": 1.15,
+   "kind": "melee",
+   "aggro": 8,
+   "look": "knight"
+  },
+  "mog": {
+   "name": "腐肉监工 · 莫格",
+   "hp": 200,
+   "dmg": [
+    6,
+    13
+   ],
+   "spd": 1.9,
+   "cd": 1.3,
+   "range": 1.3,
+   "xp": 350,
+   "size": 1.6,
+   "kind": "melee",
+   "aggro": 7,
+   "look": "mog",
+   "boss": true
+  },
+  "abbot": {
+   "name": "堕落院长 · 摩登",
+   "hp": 520,
+   "dmg": [
+    7,
+    13
+   ],
+   "spd": 1.7,
+   "cd": 2,
+   "range": 8,
+   "xp": 900,
+   "size": 1.35,
+   "kind": "ranged",
+   "aggro": 10,
+   "look": "abbot",
+   "proj": "bolt",
+   "boss": true
+  }
+ },
+ "champions": {
+  "fast": {
+   "prefix": "迅捷的"
+  },
+  "stone": {
+   "prefix": "石肤的"
+  },
+  "fury": {
+   "prefix": "狂怒的"
+  },
+  "vamp": {
+   "prefix": "嗜血的"
+  },
+  "fire": {
+   "prefix": "焚烧的"
+  }
+ },
+ "pools": {
+  "1": [
+   "zombie",
+   "skel",
+   "imp",
+   "skel"
+  ],
+  "2": [
+   "zombie",
+   "skel",
+   "imp",
+   "archer"
+  ],
+  "3": [
+   "skel",
+   "archer",
+   "ghoul",
+   "cultist",
+   "zombie"
+  ],
+  "4": [
+   "skel",
+   "archer",
+   "ghoul",
+   "cultist",
+   "zombie"
+  ],
+  "5": [
+   "imp",
+   "cultist",
+   "hound",
+   "knight",
+   "ghoul"
+  ],
+  "6": [
+   "imp",
+   "cultist",
+   "hound",
+   "knight",
+   "ghoul"
+  ],
+  "7": [
+   "skel",
+   "archer",
+   "ghoul",
+   "cultist",
+   "hound",
+   "knight",
+   "imp"
+  ]
+ },
+ "_pools说明": "键为楼层；第 7 层起（无尽深渊）都用 \"7\" 的怪物池。"
+}

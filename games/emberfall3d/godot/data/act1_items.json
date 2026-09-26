@@ -1,0 +1,689 @@
+{
+ "_说明": "由 tools/port_v01.js 从 V0.1 games/emberfall/play/game.js 的 BASES / SLOTS / AFF / UNIQ / RARE_A / RARE_B / RNAME 转换（阶段 P1）。之后以本文件为准。",
+ "slots": [
+  {
+   "id": "weapon",
+   "name": "武器"
+  },
+  {
+   "id": "off",
+   "name": "副手"
+  },
+  {
+   "id": "helm",
+   "name": "头盔"
+  },
+  {
+   "id": "body",
+   "name": "护甲"
+  },
+  {
+   "id": "hands",
+   "name": "手套"
+  },
+  {
+   "id": "feet",
+   "name": "靴子"
+  },
+  {
+   "id": "ring",
+   "name": "戒指"
+  },
+  {
+   "id": "neck",
+   "name": "护符"
+  }
+ ],
+ "rarities": [
+  "普通",
+  "魔法",
+  "稀有",
+  "传奇"
+ ],
+ "bases": {
+  "dagger": {
+   "name": "匕首",
+   "glyph": "匕",
+   "slot": "weapon",
+   "lvl": 1,
+   "weapon_kind": "dagger",
+   "dmg": [
+    1,
+    4
+   ],
+   "spd": 1.3
+  },
+  "sword": {
+   "name": "短剑",
+   "glyph": "剑",
+   "slot": "weapon",
+   "lvl": 1,
+   "weapon_kind": "sword",
+   "dmg": [
+    2,
+    6
+   ],
+   "spd": 1.15
+  },
+  "mace": {
+   "name": "钉头锤",
+   "glyph": "锤",
+   "slot": "weapon",
+   "lvl": 3,
+   "weapon_kind": "mace",
+   "dmg": [
+    3,
+    8
+   ],
+   "spd": 1
+  },
+  "axe": {
+   "name": "战斧",
+   "glyph": "斧",
+   "slot": "weapon",
+   "lvl": 5,
+   "weapon_kind": "axe",
+   "dmg": [
+    4,
+    11
+   ],
+   "spd": 0.9
+  },
+  "lsword": {
+   "name": "长剑",
+   "glyph": "剑",
+   "slot": "weapon",
+   "lvl": 9,
+   "weapon_kind": "sword",
+   "dmg": [
+    6,
+    13
+   ],
+   "spd": 1.05
+  },
+  "gsword": {
+   "name": "巨剑",
+   "glyph": "剑",
+   "slot": "weapon",
+   "lvl": 14,
+   "weapon_kind": "gsword",
+   "dmg": [
+    10,
+    22
+   ],
+   "spd": 0.8
+  },
+  "maul": {
+   "name": "战锤",
+   "glyph": "锤",
+   "slot": "weapon",
+   "lvl": 20,
+   "weapon_kind": "mace",
+   "dmg": [
+    14,
+    28
+   ],
+   "spd": 0.75
+  },
+  "staff": {
+   "name": "橡木法杖",
+   "glyph": "杖",
+   "slot": "weapon",
+   "lvl": 1,
+   "weapon_kind": "staff",
+   "dmg": [
+    2,
+    5
+   ],
+   "spd": 1,
+   "implicit": {
+    "spellp": 15
+   }
+  },
+  "wstaff": {
+   "name": "符文法杖",
+   "glyph": "杖",
+   "slot": "weapon",
+   "lvl": 10,
+   "weapon_kind": "staff",
+   "dmg": [
+    4,
+    9
+   ],
+   "spd": 1,
+   "implicit": {
+    "spellp": 30
+   }
+  },
+  "buckler": {
+   "name": "小圆盾",
+   "glyph": "盾",
+   "slot": "off",
+   "lvl": 1,
+   "arm": 3
+  },
+  "kite": {
+   "name": "鸢盾",
+   "glyph": "盾",
+   "slot": "off",
+   "lvl": 7,
+   "arm": 8
+  },
+  "tower": {
+   "name": "塔盾",
+   "glyph": "盾",
+   "slot": "off",
+   "lvl": 15,
+   "arm": 15
+  },
+  "cap": {
+   "name": "皮帽",
+   "glyph": "盔",
+   "slot": "helm",
+   "lvl": 1,
+   "arm": 2
+  },
+  "helm": {
+   "name": "铁盔",
+   "glyph": "盔",
+   "slot": "helm",
+   "lvl": 5,
+   "arm": 5
+  },
+  "ghelm": {
+   "name": "巨盔",
+   "glyph": "盔",
+   "slot": "helm",
+   "lvl": 12,
+   "arm": 9
+  },
+  "cloth": {
+   "name": "亚麻布衣",
+   "glyph": "甲",
+   "slot": "body",
+   "lvl": 1,
+   "arm": 3,
+   "color": "#6b5b45"
+  },
+  "leather": {
+   "name": "皮甲",
+   "glyph": "甲",
+   "slot": "body",
+   "lvl": 2,
+   "arm": 6,
+   "color": "#6e4a2c"
+  },
+  "chain": {
+   "name": "锁子甲",
+   "glyph": "甲",
+   "slot": "body",
+   "lvl": 7,
+   "arm": 12,
+   "color": "#858a92"
+  },
+  "plate": {
+   "name": "板甲",
+   "glyph": "甲",
+   "slot": "body",
+   "lvl": 13,
+   "arm": 20,
+   "color": "#b6bac2"
+  },
+  "gloves": {
+   "name": "皮手套",
+   "glyph": "手",
+   "slot": "hands",
+   "lvl": 1,
+   "arm": 1
+  },
+  "gaunt": {
+   "name": "铁护手",
+   "glyph": "手",
+   "slot": "hands",
+   "lvl": 8,
+   "arm": 3
+  },
+  "boots": {
+   "name": "皮靴",
+   "glyph": "靴",
+   "slot": "feet",
+   "lvl": 1,
+   "arm": 1
+  },
+  "gboots": {
+   "name": "铁靴",
+   "glyph": "靴",
+   "slot": "feet",
+   "lvl": 9,
+   "arm": 4
+  },
+  "ring": {
+   "name": "戒指",
+   "glyph": "戒",
+   "slot": "ring",
+   "lvl": 1,
+   "magic_only": true
+  },
+  "amulet": {
+   "name": "护符",
+   "glyph": "符",
+   "slot": "neck",
+   "lvl": 4,
+   "magic_only": true
+  }
+ },
+ "affixes": {
+  "str": {
+   "text": "+{v} 力量",
+   "base": 1,
+   "per_ilvl": 0.5,
+   "prefix": "强壮的",
+   "slots": "all"
+  },
+  "vit": {
+   "text": "+{v} 体能",
+   "base": 1,
+   "per_ilvl": 0.5,
+   "prefix": "坚韧的",
+   "slots": "all"
+  },
+  "mag": {
+   "text": "+{v} 魔力",
+   "base": 1,
+   "per_ilvl": 0.5,
+   "prefix": "睿智的",
+   "slots": "all"
+  },
+  "life": {
+   "text": "+{v} 生命",
+   "base": 4,
+   "per_ilvl": 2,
+   "prefix": "活力的",
+   "slots": "all"
+  },
+  "mana": {
+   "text": "+{v} 法力",
+   "base": 3,
+   "per_ilvl": 1.5,
+   "prefix": "蓝焰的",
+   "slots": "all"
+  },
+  "dmgp": {
+   "text": "+{v}% 伤害",
+   "base": 5,
+   "per_ilvl": 1.5,
+   "prefix": "锋利的",
+   "slots": [
+    "weapon",
+    "ring",
+    "neck",
+    "hands"
+   ]
+  },
+  "spellp": {
+   "text": "+{v}% 法术伤害",
+   "base": 5,
+   "per_ilvl": 1.5,
+   "prefix": "秘法的",
+   "slots": [
+    "weapon",
+    "ring",
+    "neck",
+    "helm",
+    "off"
+   ]
+  },
+  "armp": {
+   "text": "+{v}% 护甲",
+   "base": 10,
+   "per_ilvl": 2,
+   "prefix": "坚固的",
+   "slots": [
+    "off",
+    "helm",
+    "body",
+    "hands",
+    "feet"
+   ]
+  },
+  "ias": {
+   "text": "+{v}% 攻击速度",
+   "base": 5,
+   "per_ilvl": 0.5,
+   "prefix": "迅捷的",
+   "slots": [
+    "weapon",
+    "hands",
+    "ring"
+   ],
+   "max": 30
+  },
+  "ls": {
+   "text": "{v}% 生命偷取",
+   "base": 1,
+   "per_ilvl": 0.15,
+   "prefix": "饮血的",
+   "slots": [
+    "weapon",
+    "ring",
+    "neck"
+   ],
+   "max": 8
+  },
+  "ms": {
+   "text": "+{v}% 移动速度",
+   "base": 5,
+   "per_ilvl": 0.5,
+   "prefix": "疾行的",
+   "slots": [
+    "feet"
+   ],
+   "max": 30
+  },
+  "regen": {
+   "text": "每秒回复 {v} 生命",
+   "base": 1,
+   "per_ilvl": 0.2,
+   "prefix": "再生的",
+   "slots": [
+    "body",
+    "ring",
+    "neck",
+    "helm"
+   ]
+  },
+  "crit": {
+   "text": "+{v}% 暴击几率",
+   "base": 2,
+   "per_ilvl": 0.2,
+   "prefix": "致命的",
+   "slots": [
+    "weapon",
+    "hands",
+    "ring",
+    "neck"
+   ],
+   "max": 15
+  },
+  "gf": {
+   "text": "+{v}% 金币掉落",
+   "base": 10,
+   "per_ilvl": 2,
+   "prefix": "贪婪的",
+   "slots": [
+    "ring",
+    "neck",
+    "hands",
+    "helm"
+   ]
+  },
+  "mf": {
+   "text": "+{v}% 魔法物品掉率",
+   "base": 5,
+   "per_ilvl": 1,
+   "prefix": "幸运的",
+   "slots": [
+    "ring",
+    "neck",
+    "helm",
+    "feet"
+   ]
+  },
+  "light": {
+   "text": "+{v} 照明范围",
+   "base": 1,
+   "per_ilvl": 0.05,
+   "prefix": "明亮的",
+   "slots": [
+    "helm",
+    "ring",
+    "neck"
+   ],
+   "max": 3
+  }
+ },
+ "uniques": [
+  {
+   "name": "灰烬之誓",
+   "base": "lsword",
+   "affixes": {
+    "dmgp": [
+     40,
+     60
+    ],
+    "ls": [
+     4,
+     6
+    ],
+    "str": [
+     5,
+     10
+    ],
+    "ias": [
+     10,
+     15
+    ]
+   }
+  },
+  {
+   "name": "守夜人之冠",
+   "base": "helm",
+   "affixes": {
+    "light": [
+     2,
+     3
+    ],
+    "vit": [
+     8,
+     12
+    ],
+    "life": [
+     20,
+     35
+    ],
+    "armp": [
+     30,
+     50
+    ]
+   }
+  },
+  {
+   "name": "巡礼者之靴",
+   "base": "boots",
+   "affixes": {
+    "ms": [
+     25,
+     30
+    ],
+    "regen": [
+     3,
+     5
+    ],
+    "vit": [
+     5,
+     8
+    ]
+   }
+  },
+  {
+   "name": "院长的指环",
+   "base": "ring",
+   "affixes": {
+    "mag": [
+     10,
+     15
+    ],
+    "spellp": [
+     20,
+     30
+    ],
+    "mana": [
+     20,
+     30
+    ]
+   }
+  },
+  {
+   "name": "碎誓护符",
+   "base": "amulet",
+   "affixes": {
+    "str": [
+     6,
+     10
+    ],
+    "vit": [
+     6,
+     10
+    ],
+    "mag": [
+     6,
+     10
+    ],
+    "crit": [
+     5,
+     8
+    ]
+   }
+  },
+  {
+   "name": "铁心",
+   "base": "plate",
+   "affixes": {
+    "armp": [
+     60,
+     90
+    ],
+    "life": [
+     40,
+     60
+    ],
+    "regen": [
+     4,
+     6
+    ]
+   }
+  },
+  {
+   "name": "剥皮者之怒",
+   "base": "axe",
+   "affixes": {
+    "dmgp": [
+     60,
+     90
+    ],
+    "crit": [
+     8,
+     12
+    ],
+    "ls": [
+     3,
+     5
+    ]
+   }
+  },
+  {
+   "name": "星火法杖",
+   "base": "wstaff",
+   "affixes": {
+    "spellp": [
+     50,
+     70
+    ],
+    "mag": [
+     10,
+     20
+    ],
+    "mana": [
+     30,
+     50
+    ]
+   }
+  },
+  {
+   "name": "贪婪之手",
+   "base": "gloves",
+   "affixes": {
+    "gf": [
+     80,
+     120
+    ],
+    "mf": [
+     30,
+     50
+    ],
+    "ias": [
+     10,
+     15
+    ]
+   }
+  },
+  {
+   "name": "守誓者壁垒",
+   "base": "kite",
+   "affixes": {
+    "armp": [
+     80,
+     120
+    ],
+    "vit": [
+     10,
+     15
+    ],
+    "life": [
+     20,
+     30
+    ]
+   }
+  },
+  {
+   "name": "暮光短刃",
+   "base": "dagger",
+   "affixes": {
+    "ias": [
+     20,
+     30
+    ],
+    "crit": [
+     10,
+     15
+    ],
+    "dmgp": [
+     30,
+     45
+    ]
+   }
+  }
+ ],
+ "rare_names": {
+  "first": [
+   "血鸦",
+   "灰烬",
+   "恶兆",
+   "骨语",
+   "暮光",
+   "裂魂",
+   "铁誓",
+   "焚心",
+   "噬影",
+   "霜痕",
+   "亡歌",
+   "猩红",
+   "渊火",
+   "荆冠"
+  ],
+  "second": [
+   "之牙",
+   "之誓",
+   "之拥",
+   "之冠",
+   "之咒",
+   "之痕",
+   "之心",
+   "之怒",
+   "之啸",
+   "之眼",
+   "之刺",
+   "之吻"
+  ]
+ }
+}

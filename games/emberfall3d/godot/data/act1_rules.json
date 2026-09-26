@@ -1,0 +1,433 @@
+{
+ "_说明": "阶段 P1 从 V0.1 game.js 函数体中整理出的规则常量（键名后的「出处」为 V0.1 的函数名）。之后以本文件为准。",
+ "hero": {
+  "_出处": "newHero / gainXp / calcStats / pickUp / die",
+  "start": {
+   "lvl": 1,
+   "str": 15,
+   "vit": 15,
+   "mag": 15,
+   "gold": 60,
+   "pots": {
+    "hp": 3,
+    "mp": 2,
+    "tp": 1
+   }
+  },
+  "level_cap": 50,
+  "points_per_level": 5,
+  "inventory_cap": 40,
+  "death_gold_loss": 0.1,
+  "xp_need": {
+   "base": 90,
+   "exp": 1.65
+  },
+  "stats": {
+   "hp": {
+    "base": 30,
+    "per_vit": 2,
+    "per_lvl": 4
+   },
+   "mp": {
+    "base": 10,
+    "per_mag": 1.5,
+    "per_lvl": 1.5
+   },
+   "str_dmg_div": 100,
+   "mag_spell_div": 40,
+   "base_crit": 5,
+   "base_move_speed": 4.3,
+   "regen": {
+    "base": 0.4,
+    "per_lvl": 0.05
+   },
+   "mana_regen": {
+    "base": 1.2,
+    "per_mag": 0.06
+   },
+   "base_light": 6,
+   "unarmed": {
+    "dmg": [
+     1,
+     3
+    ],
+    "spd": 1.1
+   }
+  },
+  "armor_dr": {
+   "_出处": "drAgainst",
+   "base": 40,
+   "per_mlvl": 18,
+   "cap": 0.75
+  },
+  "kill_xp": {
+   "_出处": "killMon：玩家比怪物高 5 级以上，每多 1 级经验 -15%，最低 10%",
+   "free_gap": 5,
+   "per_level": 0.15,
+   "floor": 0.1
+  },
+  "potions": {
+   "_出处": "drinkPotion",
+   "hp": {
+    "of_max": 0.45,
+    "flat": 10
+   },
+   "mp": {
+    "of_max": 0.5,
+    "flat": 5
+   }
+  }
+ },
+ "shrines": {
+  "duration_s": 90,
+  "list": [
+   {
+    "id": "might",
+    "name": "力量神殿",
+    "desc": "伤害 +50%"
+   },
+   {
+    "id": "guard",
+    "name": "守护神殿",
+    "desc": "护甲 +50%"
+   },
+   {
+    "id": "swift",
+    "name": "迅捷神殿",
+    "desc": "攻击速度 +25%、移动速度 +20%"
+   },
+   {
+    "id": "arcane",
+    "name": "秘法神殿",
+    "desc": "法力回复 ×3、法术伤害 +30%"
+   }
+  ],
+  "effects": {
+   "might": {
+    "dmg_mul": 1.5
+   },
+   "guard": {
+    "arm_mul": 1.5
+   },
+   "swift": {
+    "aps_mul": 1.25,
+    "move_mul": 1.2
+   },
+   "arcane": {
+    "mana_regen_mul": 3,
+    "spell_mul": 1.3
+   }
+  }
+ },
+ "skills": [
+  {
+   "id": "fireball",
+   "name": "火球术",
+   "key": "1",
+   "lvl": 1,
+   "mp": 5,
+   "cd": 0.4,
+   "glyph": "火",
+   "desc": "发射一枚火球，命中后爆炸，波及周围敌人。伤害受「魔力」和「法术伤害」加成。"
+  },
+  {
+   "id": "whirl",
+   "name": "烬环斩",
+   "key": "2",
+   "lvl": 3,
+   "mp": 9,
+   "cd": 0.8,
+   "glyph": "环",
+   "desc": "挥舞武器横扫周围所有敌人，造成 130% 武器伤害。"
+  },
+  {
+   "id": "nova",
+   "name": "寂霜环",
+   "key": "3",
+   "lvl": 6,
+   "mp": 14,
+   "cd": 3,
+   "glyph": "霜",
+   "desc": "向四周释放寒冰，伤害并减速敌人 3 秒。"
+  },
+  {
+   "id": "blink",
+   "name": "暗影闪现",
+   "key": "4",
+   "lvl": 10,
+   "mp": 10,
+   "cd": 4,
+   "glyph": "闪",
+   "desc": "瞬间传送到目标位置（最远 7 格，需要视线）。"
+  }
+ ],
+ "skill_formulas": {
+  "_出处": "castSkill / updProj",
+  "fireball": {
+   "base": 4,
+   "per_lvl": 1.6,
+   "speed": 9,
+   "life_s": 1.2,
+   "splash_radius": 1.3,
+   "splash_mul": 0.5,
+   "jitter": [
+    0.85,
+    1.15
+   ]
+  },
+  "whirl": {
+   "weapon_mul": 1.3,
+   "radius": 1.9
+  },
+  "nova": {
+   "base": 6,
+   "per_lvl": 2,
+   "radius": 4,
+   "slow_s": 3,
+   "slow_mul": 0.5,
+   "jitter": [
+    0.85,
+    1.15
+   ]
+  },
+  "blink": {
+   "range": 7,
+   "needs_los": true
+  }
+ },
+ "items": {
+  "_出处": "rollRarity / baseStats / genItem / itemValue",
+  "rarity": {
+   "legendary": 0.012,
+   "rare": 0.09,
+   "magic": 0.36,
+   "magic_mul_cap": 2
+  },
+  "growth": {
+   "weapon_dmg_per_ilvl": 0.025,
+   "armor_per_ilvl": 0.03,
+   "unique_affix_per_ilvl": 0.025,
+   "unique_flat_affixes": [
+    "ias",
+    "ls",
+    "ms",
+    "crit",
+    "light"
+   ]
+  },
+  "affix_count": {
+   "magic": [
+    1,
+    2
+   ],
+   "rare": [
+    3,
+    4
+   ]
+  },
+  "unique_base_lvl_slack": 4,
+  "base_lvl_slack": 1,
+  "req": {
+   "ilvl_mul": 0.6,
+   "unique_cap": 40
+  },
+  "value": {
+   "base": 12,
+   "per_ilvl": 5,
+   "rarity_mul": [
+    1,
+    2.5,
+    5,
+    10
+   ],
+   "per_arm": 2,
+   "per_max_dmg": 2,
+   "sell_div": 4
+  }
+ },
+ "monsters": {
+  "_出处": "spawnMon / hurtMon / hurtHero / updMon / killMon",
+  "hp_growth": {
+   "per_floor": 0.4,
+   "per_floor_sq": 0.03,
+   "boss_per_floor": 0.35
+  },
+  "dmg_growth_per_floor": 0.3,
+  "xp_growth_per_floor": 0.45,
+  "lvl": {
+   "per_floor": 2,
+   "boss_bonus": 3
+  },
+  "champion": {
+   "chance": 0.12,
+   "hp_mul": 2.6,
+   "dmg_mul": 1.35,
+   "xp_mul": 3,
+   "fast_speed_mul": 1.45,
+   "stone_taken_mul": 0.6,
+   "fury_cd_mul": 0.6,
+   "fire_dmg_mul": 1.25,
+   "fire_death_ring": {
+    "radius": 2.2
+   },
+   "vamp_heal_on_hit": true
+  },
+  "pack": {
+   "chance": 0.72,
+   "size": [
+    2,
+    4
+   ],
+   "deep_bonus_after_floor": 3,
+   "champion_size": [
+    2,
+    3
+   ],
+   "mixed_chance": 0.3
+  }
+ },
+ "floors": {
+  "_出处": "themeFor / floorName / isBossFloor / genDungeon",
+  "themes": {
+   "crypt": {
+    "name": "修道院地窖",
+    "floors": [
+     1,
+     2
+    ]
+   },
+   "catacomb": {
+    "name": "白骨墓穴",
+    "floors": [
+     3,
+     4
+    ]
+   },
+   "inferno": {
+    "name": "熔渊",
+    "floors": [
+     5,
+     6
+    ]
+   },
+   "abyss": {
+    "name": "无尽深渊",
+    "floors": [
+     7,
+     9999
+    ]
+   }
+  },
+  "town_name": "烬原镇",
+  "boss_floors": [
+   3,
+   6
+  ],
+  "abyss_boss_every": 5,
+  "bosses": {
+   "3": "mog",
+   "6": "abbot"
+  },
+  "abyss_boss_names": {
+   "mog": "深渊化身 · 缚链者",
+   "abbot": "深渊化身 · 焚誓者"
+  },
+  "boss_guards": {
+   "mog": "zombie",
+   "abbot": "skel"
+  },
+  "props": {
+   "barrels_per_room": [
+    0,
+    3
+   ],
+   "chest_chance": 0.2,
+   "shrine_floor_chance": 0.75,
+   "shrine_room_chance": 0.3
+  }
+ },
+ "loot": {
+  "_出处": "dropLoot / useProp",
+  "ilvl": {
+   "per_floor": 2,
+   "boss_bonus": 3,
+   "champion_bonus": 1
+  },
+  "normal": {
+   "gold_chance": 0.42,
+   "gold": [
+    3,
+    9
+   ],
+   "potion_chance": 0.08,
+   "potion_hp_share": 0.7,
+   "scroll_chance": 0.015,
+   "item_chance": 0.11
+  },
+  "champion": {
+   "gold_mul": 3,
+   "items_two_chance": 0.7,
+   "mf_mul": 2.5
+  },
+  "boss": {
+   "gold": [
+    40,
+    80
+   ],
+   "first_legendary_chance": 0.45,
+   "magic_find_mul": 3
+  },
+  "chest": {
+   "gold": [
+    8,
+    20
+   ],
+   "items": [
+    1,
+    2
+   ],
+   "ilvl_bonus": 1,
+   "mf_mul": 2,
+   "potion_chance": 0.5
+  },
+  "barrel": {
+   "gold_below": 0.3,
+   "gold": [
+    2,
+    6
+   ],
+   "potion_below": 0.42,
+   "item_below": 0.47,
+   "imps_below": 0.55,
+   "imps": [
+    1,
+    2
+   ]
+  }
+ },
+ "shop": {
+  "_出处": "refreshShops / buy",
+  "prices": {
+   "hp": 25,
+   "mp": 25,
+   "tp": 40
+  },
+  "smith": {
+   "count": 8,
+   "rare_chance": 0.12,
+   "magic_chance": 0.45
+  },
+  "alchemist": {
+   "count": 2,
+   "rare_chance": 0.15,
+   "bases": [
+    "ring",
+    "amulet"
+   ]
+  },
+  "ilvl": {
+   "min": 2,
+   "over_hero_lvl": 1
+  }
+ }
+}
