@@ -87,9 +87,10 @@ func _ready() -> void:
 func _build_placeholder() -> void:
 	_visual = Node3D.new()
 	add_child(_visual)
+	add_child(Look.blob_shadow(0.45))   # 圆形假阴影（不跟着倒地动画转）
 	var body := MeshInstance3D.new()
 	body.mesh = LowPoly.capsule(0.35, 1.8)
-	_body_mat = _mat(Color(0.55, 0.47, 0.38))
+	_body_mat = Look.rim(_mat(Color(0.55, 0.47, 0.38)))
 	body.material_override = _body_mat
 	body.position.y = 0.9
 	_visual.add_child(body)
@@ -114,9 +115,10 @@ func _build_placeholder() -> void:
 	nose.position = Vector3(0, 1.45, 0.34)
 	_visual.add_child(nose)
 	var light := OmniLight3D.new()
+	# 跟随主角的暖光（TECH.md 第 4.6 节：主角一盏 + 附近火把），照亮脚下一圈
 	light.light_color = Color(1.0, 0.72, 0.45)
-	light.light_energy = 1.3
-	light.omni_range = 6.0
+	light.light_energy = 0.9
+	light.omni_range = 7.0
 	light.position = Vector3(0, 2.4, 0)
 	add_child(light)
 	# 点击目标标记（占位：一个会淡出的圆环）

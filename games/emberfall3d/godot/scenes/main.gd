@@ -21,7 +21,11 @@ var res_bar: ProgressBar
 var res_label: Label
 var btn_attack: Button
 var btn_stomp: Button
-var torch_light: OmniLight3D
+var torches: Array[Torch] = []
+var environment: Environment
+var moon: DirectionalLight3D
+var quality := ""
+var vignette: ColorRect
 var camera: IsoCamera
 var info: Label
 var pack_label: Label
@@ -34,6 +38,12 @@ var t := 0.0
 func _ready() -> void:
 	_build_world()
 	_build_ui()
+	var q := Look.default_tier()
+	if OS.has_feature("web"):
+		var m = str(JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('q') || ''", true))
+		if m in Look.TIERS:
+			q = m
+	apply_quality(q)
 	PackLoader.pack_loaded.connect(_on_pack_loaded)
 	print("EF_READY renderer=%s web=%s" % [RenderingServer.get_current_rendering_method(), OS.has_feature("web")])
 	print("EF_NAV_BAKE room_ms=%.1f polygons=%d" % [nav_bake_ms, level.navigation_mesh.get_polygon_count()])
@@ -90,8 +100,6 @@ func perf_probe(wait_s: float = 3.0) -> Dictionary:
 
 func _process(delta: float) -> void:
 	t += delta
-	if torch_light:
-		torch_light.light_energy = 2.2 + sin(t * 11.0) * 0.18 + sin(t * 7.3) * 0.12
 	if res_bar and hero:
 		var k: EmberguardKit = hero.kit
 		res_bar.value = k.resource
@@ -143,8 +151,8 @@ func _box(size: Vector3, pos: Vector3, c: Color, solid := true) -> MeshInstance3
 	var b := BoxMesh.new()
 	b.size = size
 	mi.mesh = b
-	mi.material_override = _mat(c)
 	if not solid:
+		mi.material_override = _mat(c)
 		mi.position = pos
 		add_child(mi)
 		return mi
@@ -158,30 +166,26 @@ func _box(size: Vector3, pos: Vector3, c: Color, solid := true) -> MeshInstance3
 	shape.shape = bs
 	body.add_child(shape)
 	body.add_child(mi)
+	# 程序生成的砖墙贴图（world/look.gd），按原来的灰度换算成染色：墙 = 1.0，石柱略亮
+	mi.material_override = Look.wall_material(Color(c.r / 0.36, c.g / 0.33, c.b / 0.30))
 	body.set_meta("fade_meshes", [mi])
 	level.add_child(body)
 	return mi
 
 
 func _build_world() -> void:
-	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.04, 0.03, 0.03)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.26, 0.24, 0.34)
-	env.ambient_light_energy = 0.45
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.1, 0.08, 0.1)
-	env.fog_density = 0.02
+	# 环境：冷紫阴影 + 暖色火光、雾、泛光、调色（world/look.gd，阶段 2.3）
+	environment = Look.crypt_environment()
 	var we := WorldEnvironment.new()
-	we.environment = env
+	we.environment = environment
 	add_child(we)
 
-	var moon := DirectionalLight3D.new()
-	moon.light_color = Color(0.55, 0.6, 0.85)
-	moon.light_energy = 0.35
+	# 微弱的冷色「月光」：给墙体一个统一的明暗方向；主要光源是火把
+	moon = DirectionalLight3D.new()
+	moon.light_color = Color(0.5, 0.55, 0.85)
+	moon.light_energy = 0.28
 	moon.shadow_enabled = true
+	moon.directional_shadow_max_distance = 40.0
 	moon.rotation_degrees = Vector3(-60, 30, 0)
 	add_child(moon)
 
@@ -194,7 +198,7 @@ func _build_world() -> void:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(40, 40)
 	ground.mesh = plane
-	ground.material_override = _mat(Color(0.23, 0.21, 0.19))
+	ground.material_override = Look.floor_material()
 	var gbody := StaticBody3D.new()
 	gbody.collision_layer = Player.LAYER_GROUND
 	gbody.collision_mask = 0
@@ -227,31 +231,12 @@ func _build_world() -> void:
 
 	nav_bake_ms = NavBuilder.bake(level)
 
-	# 火把（占位）：柱 + 发光球 + 闪烁点光源
-	_box(Vector3(0.16, 1.6, 0.16), Vector3(-5.4, 0.8, -5.4), Color(0.3, 0.2, 0.12), false)
-	var flame := MeshInstance3D.new()
-	var sph := LowPoly.sphere(0.16)
-	flame.mesh = sph
-	flame.material_override = _mat(Color(1.0, 0.55, 0.16), 3.0)
-	flame.position = Vector3(-5.4, 1.7, -5.4)
-	add_child(flame)
-	torch_light = OmniLight3D.new()
-	torch_light.light_color = Color(1.0, 0.58, 0.25)
-	torch_light.omni_range = 7.0
-	torch_light.position = Vector3(-5.4, 1.9, -5.4)
-	add_child(torch_light)
-	for tp in [Vector3(-11.4, 1.9, 25.4), Vector3(13.4, 1.9, 25.4), Vector3(-11.4, 1.9, 9.0)]:
-		var tl := OmniLight3D.new()
-		tl.light_color = Color(1.0, 0.58, 0.25)
-		tl.light_energy = 1.8
-		tl.omni_range = 8.0
-		tl.position = tp
-		add_child(tl)
-		var fm := MeshInstance3D.new()
-		fm.mesh = sph
-		fm.material_override = flame.material_override
-		fm.position = tp - Vector3(0, 0.2, 0)
-		add_child(fm)
+	# 火把（world/torch.gd）：房间一支、大厅三支
+	for tp in [Vector3(-5.4, 1.7, -5.4), Vector3(-11.4, 1.8, 25.4), Vector3(13.4, 1.8, 25.4), Vector3(-11.4, 1.8, 9.0)]:
+		var tch := Torch.new()
+		add_child(tch)
+		tch.position = tp
+		torches.append(tch)
 
 	# 训练木桩（占位敌人）：房间里两个挨着（测试范围技能）；真正的怪物在南边大厅
 	for p in [Vector3(2.2, 0, -1.2), Vector3(3.0, 0, 0.3)]:
@@ -280,7 +265,19 @@ func _build_world() -> void:
 # ---------------- 界面 ----------------
 
 func _build_ui() -> void:
+	# 暗角（在界面下面一层，只压暗 3D 画面）
+	var vlayer := CanvasLayer.new()
+	vlayer.layer = 0
+	add_child(vlayer)
+	vignette = ColorRect.new()
+	vignette.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var vm := ShaderMaterial.new()
+	vm.shader = load("res://shaders/vignette.gdshader")
+	vignette.material = vm
+	vlayer.add_child(vignette)
 	var layer := CanvasLayer.new()
+	layer.layer = 1
 	add_child(layer)
 	# 左上角一列：说明文字 → 职业资源条 →（手机上）状态文字，按内容高度往下排，互不重叠
 	var top := VBoxContainer.new()
@@ -296,7 +293,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.5 怪物）\n画面全部为占位几何体，不代表最终美术。南边大厅有冲锋、弓手和召唤怪。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 2.3 光照氛围）\n模型仍是占位几何体；地面与墙面贴图由代码生成。南边大厅有冲锋、弓手和召唤怪。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -410,10 +407,35 @@ func _touch_button(layer: CanvasLayer, text: String, offset: Vector2, size: floa
 	return b
 
 
+func apply_quality(tier: String) -> void:
+	## 画质分档（TECH.md 第 5.1 节）：
+	##   low（手机默认）：3D 渲染 0.75 倍分辨率、关闭实时阴影与泛光，保留光晕贴片、假阴影与暗角
+	##   medium（电脑默认）：原分辨率、月光阴影、泛光
+	##   high：再加 2 倍多重采样抗锯齿、火把点光源阴影
+	if not tier in Look.TIERS:
+		tier = Look.default_tier()
+	quality = tier
+	var vp := get_viewport()
+	vp.scaling_3d_scale = 0.75 if tier == "low" else 1.0
+	vp.msaa_3d = Viewport.MSAA_2X if tier == "high" else Viewport.MSAA_DISABLED
+	moon.shadow_enabled = tier != "low"
+	environment.glow_enabled = tier != "low"
+	for tch in torches:
+		tch.set_quality(tier)
+	_refresh_labels()
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	# F7：轮换画质档（开发与试玩用；正式设置界面在后续步骤）
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F7:
+		apply_quality(Look.TIERS[(Look.TIERS.find(quality) + 1) % Look.TIERS.size()])
+
+
 func _refresh_labels() -> void:
 	if pack_label:
 		var lines := [pack_state, "房间导航烘焙 %.0f 毫秒" % nav_bake_ms]
 		if nav_state != "":
 			lines.append(nav_state)
 		lines.append("渲染器：%s" % RenderingServer.get_current_rendering_method())
+		lines.append("画质：%s（F7 切换）" % {"low": "低", "medium": "中", "high": "高"}.get(quality, "?"))
 		pack_label.text = "　·　".join(lines)

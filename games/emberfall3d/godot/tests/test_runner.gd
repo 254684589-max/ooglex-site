@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "camera", "move", "damage", "combat", "monsters", "perf", "pack"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -270,6 +270,41 @@ func test_move() -> void:
 	check(bench.polygons > 50, "整层地下城导航网格生成成功")
 	var bench2 := NavBuilder.bench_dungeon(7, 0.4)
 	print("  info 同一层用 0.4 米格子烘焙 %.0f 毫秒" % bench2.ms)
+
+
+func test_look() -> void:
+	# 阶段 2.3：程序化贴图、环境、火把、假阴影、画质分档
+	var ft := Look.floor_texture()
+	var bt := Look.brick_texture()
+	check(ft.get_width() == 256 and bt.get_width() == 256, "程序生成地面石板与砖墙贴图（256×256，不用外部素材）")
+	check(Look.floor_texture() == ft, "贴图全局缓存，只生成一次")
+	var img := ft.get_image()
+	var lum := {}
+	for i in 200:
+		var c := img.get_pixel((i * 37) % 256, (i * 91) % 256)
+		lum[snappedf(c.get_luminance(), 0.02)] = true
+	check(lum.size() > 8, "石板贴图有明暗变化（灰缝、倒角、颗粒），不是纯色")
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	check(main.torches.size() == 4, "场景里有 4 支火把（房间 1、大厅 3）")
+	check(main.hero.find_child("BlobShadow", false, false) != null, "主角脚下有圆形假阴影")
+	check(main.monsters.size() > 0 and main.monsters[0].find_child("BlobShadow", false, false) != null, "怪物脚下有圆形假阴影")
+	check(main.environment.fog_enabled and main.environment.adjustment_enabled, "环境：雾 + 调色")
+	check(main.vignette != null and main.vignette.material is ShaderMaterial, "暗角着色器")
+	main.apply_quality("low")
+	var vp: Viewport = main.get_viewport()
+	check(is_equal_approx(vp.scaling_3d_scale, 0.75) and not main.moon.shadow_enabled and not main.environment.glow_enabled, "低画质：0.75 倍 3D 分辨率、关闭实时阴影与泛光")
+	main.apply_quality("medium")
+	check(is_equal_approx(vp.scaling_3d_scale, 1.0) and main.moon.shadow_enabled and main.environment.glow_enabled and vp.msaa_3d == Viewport.MSAA_DISABLED, "中画质：原分辨率、月光阴影、泛光")
+	main.apply_quality("high")
+	check(vp.msaa_3d == Viewport.MSAA_2X and main.torches[0].light.shadow_enabled, "高画质：2 倍抗锯齿、火把投射阴影")
+	main.apply_quality("bogus")
+	check(main.quality == Look.default_tier(), "未知画质名回落到默认档（电脑：中）")
+	main.queue_free()
+	await frames(2)
 
 
 func test_damage() -> void:

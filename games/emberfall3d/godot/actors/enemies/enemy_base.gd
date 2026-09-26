@@ -68,6 +68,7 @@ func _ready() -> void:
 	visual = Node3D.new()
 	add_child(visual)
 	_build_visual()
+	add_child(Look.blob_shadow(def.get("radius", 0.45)))
 	hp_label = _label(18, Vector3(0, def.get("label_h", 2.45), 0))
 	stun_mark = _label(22, Vector3(0, def.get("label_h", 2.45) + 0.35, 0))
 	stun_mark.modulate = Color(1.0, 0.85, 0.3)
@@ -113,6 +114,7 @@ func part(mesh: Mesh, pos: Vector3, c: Color, emissive: float = 0.0, rot := Vect
 		mat.emission_enabled = true
 		mat.emission = c
 		mat.emission_energy_multiplier = emissive
+	Look.rim(mat, 0.25)       # 轮廓光：暗处也能看清剪影
 	mi.material_override = mat
 	mi.position = pos
 	mi.rotation_degrees = rot
