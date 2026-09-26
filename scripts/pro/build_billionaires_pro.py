@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build protected Ooglex Pro payloads for the Billionaires page.
 
-FREE users receive only a Top 10 same-schema preview at the legacy data.json path.
+Unregistered users receive only a ~10% same-schema preview at the legacy data.json path.
 The complete dataset is wrapped into .pro-build/billionaires/full.json for private
 R2 delivery through the entitlement Worker.
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / ".pro-build"
-TOP_N = 10
+RATIO = 0.10
 
 
 def load(rel: str):
@@ -31,16 +31,18 @@ def build() -> None:
     src = load("apps/billionaires/data.json")
     people = [x for x in (src.get("people") or []) if isinstance(x, dict)]
     ordered = sorted(people, key=lambda x: (x.get("rank") is None, x.get("rank") or 10**9))
-    visible = copy.deepcopy(ordered[:TOP_N])
+    visible_count = max(1, (len(ordered) + 9) // 10)
+    visible = copy.deepcopy(ordered[:visible_count])
 
     public_preview = copy.deepcopy(src)
     public_preview["people"] = visible
     public_preview["ooglexAccess"] = {
         "mode": "preview",
-        "presentation": "top-n-paywall",
+        "presentation": "ratio-registration-gate",
+        "ratio": RATIO,
         "visiblePeople": len(visible),
         "fullPeople": len(people),
-        "topN": TOP_N,
+        "registrationRequired": True,
     }
 
     api_preview = {
@@ -54,10 +56,12 @@ def build() -> None:
         "totalWorth": src.get("totalWorth"),
         "people": visible,
         "limits": {
+            "ratio": RATIO,
             "visiblePeople": len(visible),
             "fullPeople": len(people),
             "fullSearch": False,
             "fullSorting": False,
+            "registrationRequired": True,
         },
     }
 
