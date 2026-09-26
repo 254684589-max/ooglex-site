@@ -3,3 +3,15 @@
 
 /assets/access-gate.js
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+/assets/pro-preview-gate.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
+/assets/pro-rich-data.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
+/assets/pro-billionaires.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
+/assets/pro-finance-column.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
