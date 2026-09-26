@@ -301,6 +301,48 @@ def install_whats_latest_preview() -> None:
     print(f"What's Latest public preview: {len(selected_clean)}/{total} news items")
 
 
+SITE_REGISTRATION_GATE_EXCLUSIONS = (
+    "apps/supply-chain/",
+    "apps/macro-radar/",
+    "apps/finance-column/",
+    "apps/billionaires/",
+    "apps/whats-latest/",
+    "apps/tech-leaders/",
+)
+
+
+def inject_site_registration_gate() -> None:
+    """Give every ordinary app/game page a 10% anonymous preview.
+
+    Data-heavy products that already publish generated 10% datasets keep their
+    dedicated adapters, so they are not clipped a second time. The homepage and
+    account center remain public entry points.
+    """
+    snippet = '\n<script src="/assets/site-access.js?v=1"></script>\n'
+    prefixes = ("apps/", "games/")
+    injected = 0
+
+    for p in OUT.rglob("*.html"):
+        relpath = p.relative_to(OUT).as_posix()
+        if not relpath.startswith(prefixes):
+            continue
+        if any(relpath.startswith(prefix) for prefix in SITE_REGISTRATION_GATE_EXCLUSIONS):
+            continue
+
+        text = p.read_text(encoding="utf-8")
+        if "/assets/site-access.js" in text:
+            continue
+        if "</head>" not in text:
+            raise SystemExit(f"cannot inject site registration gate: {relpath}")
+        text = text.replace("</head>", snippet + "</head>", 1)
+        p.write_text(text, encoding="utf-8")
+        injected += 1
+
+    if injected <= 0:
+        raise SystemExit("site registration gate was not injected into any app/game pages")
+    print(f"Site registration preview gate: {injected} HTML pages")
+
+
 def inject_rich_access_adapter() -> None:
     """Keep original HTML/UI and install entitlement interception before app.js."""
     snippet = (
@@ -454,6 +496,7 @@ def build(protect_pro: bool) -> None:
     if protect_pro:
         install_rich_public_previews()
         install_whats_latest_preview()
+        inject_site_registration_gate()
         inject_rich_access_adapter()
 
         leaked = []
