@@ -88,7 +88,9 @@ var _fog_vis_t := 0.0
 var save_enabled := not OS.has_feature("editor")   # 编辑器里跑（自动化测试）默认不读写存档；测试可以打开并换存档路径
 var sfx: Sfx
 var menu_btn: Button
-var _autosave_t := 30.0       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
+var _autosave_t := 30.0
+# P12：同一局里楼层的状态（V0.1 maps 在一次游戏里一直保留）：打死的怪不再刷、地上的东西还在原处
+var floor_state: Dictionary = {}  # 楼层 → {killed: {刷怪下标: true}, items: [{data, pos}]}       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
 
 
 func _ready() -> void:
@@ -101,6 +103,8 @@ func _ready() -> void:
 	add_child(sfx)
 	_after_floor()
 	var saved := SaveGame.load_saved() if save_enabled and not use_test_area else {}
+	if saved.is_empty() and save_enabled and not use_test_area:
+		saved = SaveGame.load_v01()      # 没有 3D 存档但玩过 V0.1 经典版：可以把角色带过来（P12）
 	if not saved.is_empty():
 		_process(0.0)      # 先把血条、按钮文字等填好：开局选择时游戏是暂停的，_process 不会跑
 		_show_start(saved)
@@ -112,6 +116,10 @@ func _ready() -> void:
 		if m in Look.TIERS:
 			q = m
 	apply_quality(q)
+	# 系统设置了「减少动态效果」：关掉震屏（V0.1 REDUCED 同样不震屏）
+	if OS.has_feature("web") and str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
+		camera.shake_enabled = false
+		print("EF_REDUCED_MOTION")
 	PackLoader.pack_loaded.connect(_on_pack_loaded)
 	hero.arrived.connect(_on_hero_arrived)
 	print("EF_READY renderer=%s web=%s" % [RenderingServer.get_current_rendering_method(), OS.has_feature("web")])
@@ -589,6 +597,7 @@ func save_game() -> bool:
 
 ## 读档（V0.1 loadGame → startGame）：换上存档里的角色，回到烬原镇篝火旁
 func apply_save(d: Dictionary) -> void:
+	reset_session()
 	hero.progress.sheet = d.sheet
 	SaveGame.bump_item_ids(d.sheet)
 	hero.stats_changed()
@@ -604,14 +613,30 @@ func apply_save(d: Dictionary) -> void:
 	print("EF_LOAD lvl=%d floor=%d" % [hero.progress.sheet.lvl, hero.progress.sheet.maxFloor])
 
 
+## 读档或重新开始时清空本局的楼层记忆（V0.1 startGame：maps = {}、tp = null）
+func reset_session() -> void:
+	floor_state = {}
+	bosses_dead = {}
+	props_used = {}
+	seen_maps = {}
+	tp = {}
+	for g in get_tree().get_nodes_in_group("ground_item"):
+		g.queue_free()
+
+
 ## 开局有存档时（V0.1 标题画面）：继续旅程 / 新的旅程（要再确认一次，会覆盖存档）
 func _show_start(saved: Dictionary) -> void:
 	var sh: Dictionary = saved.sheet
-	dialog_panel.show_dialog("余烬陷落", "烬", ["欢迎回来，流浪者。", "存档：%d 级 · 最深到过第 %d 层 · 金币 %d" % [sh.lvl, sh.maxFloor, sh.gold]], [
-		{"t": "继续旅程（%d 级 · 最深第 %d 层）" % [sh.lvl, sh.maxFloor], "main": true, "fn": func():
+	var v01: bool = saved.get("from_v01", false)
+	var intro: Array = ["发现你在经典版（V0.1）里的旅程。可以把角色、装备、背包和任务进度带到 3D 版继续（经典版的存档不会被改动）。", "经典版存档：%d 级 · 最深到过第 %d 层 · 金币 %d" % [sh.lvl, sh.maxFloor, sh.gold]] if v01 else ["欢迎回来，流浪者。", "存档：%d 级 · 最深到过第 %d 层 · 金币 %d" % [sh.lvl, sh.maxFloor, sh.gold]]
+	dialog_panel.show_dialog("余烬陷落", "烬", intro, [
+		{"t": ("带上经典版的角色继续（%d 级 · 最深第 %d 层）" if v01 else "继续旅程（%d 级 · 最深第 %d 层）") % [sh.lvl, sh.maxFloor], "main": true, "fn": func():
 			dialog_panel.close()
-			apply_save(saved)},
-		{"t": "新的旅程", "fn": func(): dialog_panel.show_dialog("新的旅程", "烬", ["开始新的旅程会覆盖现有存档，确定吗？"], [
+			apply_save(saved)
+			if v01:
+				save_game()
+				add_log("已导入经典版的角色", Color(1.0, 0.82, 0.29))},
+		{"t": "新的旅程", "fn": func(): dialog_panel.show_dialog("新的旅程", "烬", ["从 1 级重新开始（经典版的存档不受影响），确定吗？" if v01 else "开始新的旅程会覆盖现有存档，确定吗？"], [
 			{"t": "确定，重新开始", "fn": func():
 				dialog_panel.close()
 				save_game()
@@ -633,6 +658,7 @@ func open_menu() -> void:
 			toggle_sound()
 			open_menu()},
 	]
+	opts.append({"t": "操作说明", "fn": func(): dialog_panel.show_dialog("操作说明", "烬", help_lines(), [{"t": "返回", "main": true, "fn": open_menu}])})
 	if OS.has_feature("web"):
 		opts.append({"t": "返回游戏介绍页", "fn": func(): JavaScriptBridge.eval("location.href = '../'")})
 	opts.append({"t": "删除存档，重新开始", "fn": func(): dialog_panel.show_dialog("删除存档", "烬", ["确定删除存档并重新开始吗？此操作无法撤销。"], [
@@ -645,6 +671,30 @@ func open_menu() -> void:
 				get_tree().reload_current_scene()},
 		{"t": "返回", "main": true, "fn": open_menu}])})
 	dialog_panel.show_dialog("菜单", "烬", lines, opts)
+
+
+## 操作说明（V0.1 helpHtml）：电脑与手机各一份
+func help_lines() -> Array:
+	if touch and touch.visible:
+		return [
+			"左下摇杆：移动；点地面：走过去（按住拖动持续移动）",
+			"点怪物：攻击；「攻击」按钮：打最近的敌人，按住连打",
+			"「火 环 霜 闪」：四个技能，自动瞄准最近的敌人",
+			"「血」「蓝」：喝药；「城」：回城卷轴",
+			"点镇上的人对话；点传送石、木桶、宝箱、神殿使用",
+			"右上角：菜单、地图、任务、背包、属性",
+			"小提示：打开面板时游戏暂停；升级后在「属性」里加点；名字发蓝的是精英；在镇上找伊莲免费回满。",
+		]
+	return [
+		"左键：点地面移动（按住持续移动）；点怪物攻击；点物品拾取；点人物对话",
+		"Shift + 左键：原地攻击；右键：朝鼠标方向放火球",
+		"1～4：朝鼠标位置放技能（火球术、烬环斩、寂霜环、暗影闪现）",
+		"WASD：键盘移动；滚轮：缩放镜头",
+		"Q / E：生命药水 / 法力药水；T：回城卷轴",
+		"I 或 B：背包；C：属性；J：任务；Tab：自动地图",
+		"M：音效开关；Esc：菜单；F7：切换画质",
+		"小提示：打开面板时游戏暂停；升级后在「属性」里加点；名字发蓝的是精英，金色是稀有、橙色是传奇；在镇上找伊莲免费回满。",
+	]
 
 
 func toggle_sound() -> void:
@@ -1028,6 +1078,7 @@ func go_floor(f: int, via: String = "down") -> void:
 	hero.stop()
 	hero.attack_target = null
 	hero.attack_hold = false
+	_stash_floor_items()
 	floor_i = f
 	var t0 := Time.get_ticks_usec()
 	if f > 0:
@@ -1069,13 +1120,17 @@ func go_floor(f: int, via: String = "down") -> void:
 		var jit := RandomNumberGenerator.new()
 		jit.seed = seed_for(f) + 17
 		_spawn_props(f)
-		for sp in dungeon.spawns:
+		for si in dungeon.spawns.size():
+			var sp: Dictionary = dungeon.spawns[si]
 			var pos := DungeonBuilder.cell_center(sp.cell) + Vector3(jit.randf_range(-0.5, 0.5), 0, jit.randf_range(-0.5, 0.5))
 			if sp.room == dungeon.boss_room and bosses_dead.has(f):
 				continue
 			if sp.get("boss", false):
 				pos = DungeonBuilder.cell_center(sp.cell)
+			if _fstate(f).killed.has(si):
+				continue
 			var e := Monsters.spawn(sp.key, stage, pos, hero, f, sp.champ)
+			e.set_meta("spawn_i", si)
 			monsters.append(e)
 			if sp.get("boss", false):
 				_setup_boss(e, sp)
@@ -1083,6 +1138,7 @@ func go_floor(f: int, via: String = "down") -> void:
 	camera.snap()
 	apply_quality(quality)
 	stair_lock = 0.8
+	_restore_floor_items()
 	_after_floor()
 	save_game()
 	var fname := FloorRules.floor_name(f) if f > 0 else ("测试区 · 灰盒房间与大厅" if use_test_area else "烬原镇")
@@ -1113,6 +1169,35 @@ func on_enemy_died(e: Node) -> void:
 	var S: Dictionary = hero.progress.S
 	var drops := FloorRules.roll_loot(loot_rng, maxi(1, floor_i), {"boss": e.def.get("boss", false), "champ": e.def.get("champ", "")}, S.mf, S.gf)
 	_scatter_drops(drops, e.global_position)
+	if e.has_meta("spawn_i"):
+		_fstate(floor_i).killed[int(e.get_meta("spawn_i"))] = true
+
+
+func _fstate(f: int) -> Dictionary:
+	if not floor_state.has(f):
+		floor_state[f] = {"killed": {}, "items": []}
+	return floor_state[f]
+
+
+## 离开楼层前记下地上的东西（金币、药水、装备）的位置，回来时原样摆回（V0.1 M.items）
+func _stash_floor_items() -> void:
+	if stage == null or use_test_area and floor_i == 0:
+		return
+	var items: Array = []
+	for g in get_tree().get_nodes_in_group("ground_item"):
+		if is_instance_valid(g) and not g.is_queued_for_deletion():
+			items.append({"data": g.data, "pos": g.global_position})
+	_fstate(floor_i).items = items
+
+
+func _restore_floor_items() -> void:
+	if use_test_area and floor_i == 0:
+		return
+	for it in _fstate(floor_i).items:
+		var g := GroundItem.make(it.data)
+		stage.add_child(g)
+		g.global_position = it.pos
+	_fstate(floor_i).items = []
 
 
 ## 把掉落散在某处周围的地面上（怪物、宝箱、木桶共用）

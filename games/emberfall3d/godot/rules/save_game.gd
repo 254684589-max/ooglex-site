@@ -10,8 +10,10 @@ const FORMAT := "ef3d-save"
 const VERSION := 1
 const WEB_KEY := "ooglex.emberfall3d.v1"
 const FILE := "user://emberfall3d_save.json"
+const V01_KEY := "ooglex.emberfall.v1"      # V0.1 经典版的存档（同一个网站，浏览器里能直接读到；P12 导入用）
 
 static var path_override := ""       # 测试用：换一个存档文件，不碰真存档
+static var v01_override := ""        # 测试用：假装浏览器里有这样一份 V0.1 存档（JSON 文本）
 
 
 static func serialize(sheet: Dictionary, hp: float, mp: float, snd: bool) -> String:
@@ -135,3 +137,63 @@ static func erase() -> void:
 
 static func load_saved() -> Dictionary:
 	return parse(read_raw())
+
+
+# ---------------- 导入 V0.1 经典版存档（P12） ----------------
+
+## V0.1 的物品字段是 b / r / n，3D 版是 base / rarity / name，其余字段（id、ilvl、aff、dmg、spd、arm、req）相同
+static func _item_from_v01(it) -> Variant:
+	if not it is Dictionary:
+		return null
+	var o: Dictionary = it.duplicate(true)
+	if o.has("b"):
+		o.base = o.b
+		o.erase("b")
+	if o.has("r"):
+		o.rarity = o.r
+		o.erase("r")
+	if o.has("n"):
+		o.name = o.n
+		o.erase("n")
+	if not o.has("ilvl"):
+		o.ilvl = int(o.get("req", 1))
+	return o
+
+
+## 把 V0.1 存档文本转成 3D 存档并校验；不合格返回 {}。V0.1 的角色字段与 3D 版相同（P1 起就按 V0.1 设计）
+static func parse_v01(text: String) -> Dictionary:
+	if text.strip_edges() == "":
+		return {}
+	var j := JSON.new()
+	if j.parse(text) != OK or not j.data is Dictionary:
+		return {}
+	var h: Dictionary = j.data
+	if int(h.get("v", 0)) != 1 or not (typeof(h.get("lvl")) in [TYPE_INT, TYPE_FLOAT]):
+		return {}
+	var sh := h.duplicate(true)
+	sh.inv = (h.get("inv", []) as Array).map(func(it): return _item_from_v01(it)) if h.get("inv") is Array else []
+	var eq := {}
+	if h.get("eq") is Dictionary:
+		for k in h.eq:
+			eq[k] = _item_from_v01(h.eq[k])
+	sh.eq = eq
+	var d := parse(JSON.stringify({"fmt": FORMAT, "v": VERSION, "sheet": sh, "hp": h.get("hp", 999), "mp": h.get("mp", 999), "snd": true}))
+	if not d.is_empty():
+		d.from_v01 = true
+	return d
+
+
+static func read_v01_raw() -> String:
+	if v01_override != "":
+		return v01_override
+	if not OS.has_feature("web"):
+		return ""
+	var ls = JavaScriptBridge.get_interface("localStorage")
+	if ls == null:
+		return ""
+	var v = ls.getItem(V01_KEY)
+	return str(v) if v != null else ""
+
+
+static func load_v01() -> Dictionary:
+	return parse_v01(read_v01_raw())

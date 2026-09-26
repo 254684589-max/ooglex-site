@@ -35,6 +35,7 @@ var stick := Vector2.ZERO        # 虚拟摇杆输入（-1..1，y 向下为正�
 var agent: NavigationAgent3D
 var moving_to := false
 var hold_active := false
+var stand_attack := false          # Shift + 左键：原地攻击，不移动（V0.1 pointerDown 的 shift）
 var hold_screen := Vector2.ZERO
 var hold_timer := 0.0
 var touch_index := -1
@@ -172,6 +173,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			hold_active = event.pressed
 			hold_screen = event.position
+			stand_attack = false
+			if event.pressed and event.shift_pressed and not dead and pick_enemy(event.position) == null:
+				# Shift + 左键点在空地上：站定朝鼠标方向挥击，按住连续挥击（V0.1「原地攻击」）
+				stop()                 # stop() 会清掉按住状态：先停下再标记
+				stand_attack = true
+				hold_active = true
+				attack_target = null
+				return
 			attack_hold = event.pressed and attack_target != null
 			if event.pressed:
 				click_at(event.position)
@@ -398,7 +407,10 @@ func allocate(stat: String) -> bool:
 
 ## 喝药（V0.1 drinkPotion）：满了不喝，没有了不喝；返回回复量（0 = 没喝）
 func drink_potion(kind: String) -> int:
-	if dead or progress.sheet.pots.get(kind, 0) <= 0:
+	if dead:
+		return 0
+	if progress.sheet.pots.get(kind, 0) <= 0:
+		message.emit("没有生命药水了" if kind == "hp" else "没有法力药水了", Color(0.88, 0.38, 0.29))
 		return 0
 	if (kind == "hp" and hp >= max_hp) or (kind == "mp" and mp >= max_mp):
 		return 0
@@ -831,6 +843,16 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		_update_action(delta)
 		return
+	if stand_attack:
+		if not hold_active:
+			stand_attack = false
+		else:
+			velocity = Vector3.ZERO
+			var gp = pick_ground(hold_screen)
+			if gp != null:
+				face_point(gp)
+			_start_action("oath_cleave")
+			return
 	var dir := Vector3.ZERO
 	var kb := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var s := stick if stick.length() > 0.15 else kb

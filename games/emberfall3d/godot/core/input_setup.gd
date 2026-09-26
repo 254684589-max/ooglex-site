@@ -10,7 +10,7 @@ const ACTIONS := {
 	"potion_hp": [KEY_Q],        # P3：与 V0.1 相同的按键
 	"potion_mp": [KEY_E],
 	"char_panel": [KEY_C],
-	"inv_panel": [KEY_I],        # P6：背包（V0.1 同键）
+	"inv_panel": [KEY_I, KEY_B],  # P6：背包（V0.1 同键，I 或 B）
 	"town_portal": [KEY_T],      # P8：回城卷轴（V0.1 同键）
 	"map_toggle": [KEY_TAB],     # P8：自动地图（V0.1 同键）
 	"sound_toggle": [KEY_M],     # P11：音效开关（V0.1 同键）

@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2535,5 +2535,125 @@ func test_save() -> void:
 	main.go_floor(15)
 	await frames(2)
 	check(main.boss != null and String(main.boss.def.name).begins_with("深渊化身") and not main.stairs.has("down"), "第 15 层：深渊化身把守，击败前没有下楼梯")
+	main.queue_free()
+	await frames(2)
+
+
+## P12：对齐 V0.1（导入经典版存档、楼层状态保留、Shift 原地攻击、B 键背包、没药提示、操作说明）
+const V01_SAVE := """{"v":1,"lvl":9,"xp":120,"str":30,"vit":25,"mag":18,"pts":2,"gold":845,"hp":80,"mp":20,
+"pots":{"hp":5,"mp":3,"tp":2},"maxFloor":4,"q":{"q1":3,"q2":1,"q3":0},"kills":210,"deaths":3,"won":false,"buff":null,
+"inv":[{"id":41,"b":"axe","r":1,"ilvl":8,"aff":{"str":5},"n":"强壮的战斧","dmg":[5,13],"spd":0.9,"req":5},
+{"id":42,"b":"不存在","r":0,"n":"坏数据"}],
+"eq":{"weapon":{"id":7,"b":"lsword","r":3,"ilvl":12,"aff":{"dmgp":50,"ls":5,"str":8,"ias":12},"n":"灰烬之誓","dmg":[9,19],"spd":1.05,"req":9},
+"body":{"id":8,"b":"leather","r":0,"ilvl":3,"aff":{},"n":"皮甲","arm":7,"req":2}},"savedAt":"2026-09-25T10:00:00.000Z"}"""
+
+
+func test_parity() -> void:
+	# ---- 导入 V0.1 经典版存档 ----
+	var d := SaveGame.parse_v01(V01_SAVE)
+	check(not d.is_empty() and d.from_v01 and d.sheet.lvl == 9 and d.sheet.gold == 845 and d.sheet.maxFloor == 4 and d.sheet.q.q2 == 1 and d.sheet.kills == 210, "V0.1 存档能读：等级、金币、最深层、任务、击杀数")
+	var w: Dictionary = d.sheet.eq.weapon
+	check(w.base == "lsword" and w.rarity == 3 and w.name == "灰烬之誓" and w.aff.dmgp == 50 and d.sheet.inv.size() == 1 and d.sheet.inv[0].base == "axe" and d.sheet.inv[0].name == "强壮的战斧", "V0.1 物品字段（b / r / n）换成 3D 版字段；未知底材的丢掉")
+	var S := HeroStats.calc(d.sheet)
+	check(S.dmg[1] > 19 and S.ls == 5 and S.arm > 7, "导入的装备立即生效（伤害 %s、生命偷取 %d%%、护甲 %d）" % [str(S.dmg), S.ls, S.arm])
+	check(Inventory.item_lines(w, 9).size() > 3, "导入的传奇物品能正常显示说明")
+	check(SaveGame.parse_v01("") == {} and SaveGame.parse_v01("{x") == {} and SaveGame.parse_v01(JSON.stringify({"v": 2, "lvl": 3})) == {}, "空的、坏的、版本不对的 V0.1 存档不导入")
+	# 场景：没有 3D 存档、有 V0.1 存档 → 开局询问是否带过来
+	SaveGame.path_override = "user://test_parity_save.json"
+	SaveGame.erase()
+	SaveGame.v01_override = V01_SAVE
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.save_enabled = true
+	add_child(main)
+	await frames(3)
+	var dp: DialogPanel = main.dialog_panel
+	var bt: Array = dp.opts.get_children().map(func(b): return b.text)
+	check(dp.visible and String(dp.body.get_child(0).text).contains("经典版") and String(bt[0]).begins_with("带上经典版的角色继续（9 级"), "开局发现经典版存档，询问是否带过来 %s" % str(bt))
+	dp.opts.get_child(0).pressed.emit()
+	await frames(2)
+	var hero: Player = main.hero
+	check(hero.progress.sheet.lvl == 9 and hero.progress.sheet.eq.weapon.name == "灰烬之誓" and SaveGame.load_saved().sheet.lvl == 9 and _logs(main).contains("已导入经典版"), "导入后角色是 9 级、拿着灰烬之誓，并存成 3D 版存档")
+	main.queue_free()
+	await frames(2)
+	SaveGame.v01_override = ""
+	SaveGame.erase()
+	SaveGame.path_override = ""
+
+	# ---- 同一局里楼层状态保留（V0.1 maps） ----
+	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	hero = main.hero
+	main.go_floor(2)
+	await frames(2)
+	var n0: int = main.monsters.size()
+	var victims: Array = main.monsters.slice(0, 3)
+	for e in victims:
+		e.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await frames(2)
+	var it := ItemGen.generate(RandomNumberGenerator.new(), 4, {"rarity": 1})
+	var gi := GroundItem.make({"item": it})
+	main.stage.add_child(gi)
+	gi.global_position = hero.global_position + Vector3(1.0, 0, 0)
+	var drop_pos: Vector3 = gi.global_position
+	main.go_floor(1)
+	await frames(2)
+	main.go_floor(2)
+	await frames(2)
+	var back: Array = get_tree().get_nodes_in_group("ground_item").filter(func(g): return g.data.has("item") and g.data.item.name == it.name)
+	check(main.monsters.size() == n0 - 3, "回到第 2 层：打死的 3 只怪不再出现（%d → %d）" % [n0, main.monsters.size()])
+	check(back.size() == 1 and back[0].global_position.distance_to(drop_pos) < 0.05, "地上的装备还在原处")
+	main.reset_session()
+	main.go_floor(1)
+	await frames(2)
+	main.go_floor(2)
+	await frames(2)
+	check(main.monsters.size() == n0, "读档或重新开始后楼层重新生成（同 V0.1）")
+	main.queue_free()
+	await frames(2)
+
+	# ---- 操作：Shift 原地攻击、B 键、没药提示、操作说明 ----
+	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	hero = main.hero
+	hero.global_position = Vector3(-3, 0, -2)
+	main.camera.snap()
+	await physics(3)
+	var p0 := hero.global_position
+	var ev := InputEventMouseButton.new()
+	ev.button_index = MOUSE_BUTTON_LEFT
+	ev.pressed = true
+	ev.shift_pressed = true
+	ev.position = main.camera.unproject_position(hero.global_position + Vector3(3, 0, 0))
+	hero._unhandled_input(ev)
+	var swung := false
+	for i in 40:
+		await physics(1)
+		if hero.action == "oath_cleave":
+			swung = true
+	check(hero.stand_attack and swung and hero.global_position.distance_to(p0) < 0.2, "Shift + 左键点空地：站着不动朝鼠标方向挥击（V0.1 原地攻击）%s" % str([hero.stand_attack, swung, hero.global_position.distance_to(p0), hero.pick_enemy(ev.position)]))
+	var up := ev.duplicate()
+	up.pressed = false
+	hero._unhandled_input(up)
+	await physics(40)
+	check(not hero.stand_attack and hero.action == "", "松开后停手")
+	check(InputMap.action_get_events("inv_panel").any(func(e): return e is InputEventKey and e.physical_keycode == KEY_B), "B 键也能打开背包（V0.1 同）")
+	hero.progress.sheet.pots.hp = 0
+	hero.hp = 5.0
+	check(hero.drink_potion("hp") == 0 and _logs(main).contains("没有生命药水了"), "没有药水时提示（V0.1 同）")
+	main.open_menu()
+	var help_btn: Array = main.dialog_panel.opts.get_children().filter(func(b): return b.text == "操作说明")
+	help_btn[0].pressed.emit()
+	var htxt := " ".join(main.dialog_panel.body.get_children().map(func(l): return l.text))
+	check(main.dialog_panel.who.text == "操作说明" and htxt.contains("Shift") and htxt.contains("Tab") and htxt.contains("回城卷轴"), "菜单里有「操作说明」（V0.1 helpHtml）")
+	main.dialog_panel.close()
 	main.queue_free()
 	await frames(2)
