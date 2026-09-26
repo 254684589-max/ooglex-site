@@ -1,27 +1,28 @@
-/* OOGLEX_ACCESS_GATE_V8
+/* OOGLEX_ACCESS_GATE_V9
    Unified 10% preview for non-password /apps/ and /games/ pages.
-   Standard: visible content -> 110px fade -> 218px dark access block.
-   The dark wall extends over all remaining content, so nothing can reappear below it. */
+   Standard: visible content -> 110px fade -> 218px in-flow dark access block.
+   The content root itself is clipped, so nothing can reappear underneath the wall. */
 (function () {
   "use strict";
   if (window.OoglexSiteAccess) return;
 
   var PATH = window.location.pathname || "/";
   var PREVIEW_RATIO = 0.10;
-  var WALL_HEIGHT = 218;
-  var FADE_HEIGHT = 110;
   var PROJECT_REF = "nwthqkpkvbtilafqpjlf";
   var AUTH_KEY = "sb-" + PROJECT_REF + "-auth-token";
   var SUPABASE_URL = "https://nwthqkpkvbtilafqpjlf.supabase.co";
   var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Vf8spXXXksPHKvfxp2XPcw_1dfaIR6r";
   var VERIFY_TIMEOUT_MS = 4500;
+  var WALL_HEIGHT = 218;
+  var FADE_HEIGHT = 110;
   var resolveReady;
   var ready = new Promise(function (resolve) { resolveReady = resolve; });
+  var previewRoot = null;
+  var rootState = null;
   var maxNaturalHeight = 0;
   var refreshTimer = 0;
   var observer = null;
   var observerTimer = 0;
-  var scrollClamp = null;
 
   function nativePasswordPage() {
     if (PATH === "/apps/tech-leaders/" || PATH === "/apps/tech-leaders" ||
@@ -80,8 +81,9 @@
     style.id = "ooglex-registration-preview-style";
     style.textContent =
       "html.ooglex-access-checking body{overflow:hidden!important}" +
-      "#ooglex-registration-preview-fade{position:absolute;left:0;right:0;z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.96))}" +
-      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;box-sizing:border-box;width:100%;padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "html.ooglex-access-preview body>#ooglex-registration-preview~*:not(script):not(style):not(link):not(template){display:none!important}" +
+      "#ooglex-registration-preview-fade{position:absolute;left:0;right:0;bottom:0;z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.96))}" +
+      "#ooglex-registration-preview{position:relative;z-index:2147483646;box-sizing:border-box;width:100%;min-height:max(218px,32vh);padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
       "#ooglex-registration-preview .ogx-access-kicker{font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#9aa1aa;margin-bottom:10px}" +
       "#ooglex-registration-preview h2{margin:1px 0 8px;font-size:27px;line-height:1.3;color:#f5f5f5;font-weight:760;letter-spacing:-.3px}" +
       "#ooglex-registration-preview p{margin:0 auto 17px;max-width:720px;color:#c8c8c8;font-size:14px;line-height:1.6}" +
@@ -96,7 +98,38 @@
     return "/account/?next=" + encodeURIComponent(PATH + window.location.search + window.location.hash);
   }
 
-  function ensureGate() {
+  function findPreviewRoot() {
+    var selectors = [
+      "body > .wrap", "body > .page", "body > .shell", "body > main",
+      "body > #app", "body > .app", "body > #root", "body > .container"
+    ];
+    for (var i = 0; i < selectors.length; i++) {
+      var el = document.querySelector(selectors[i]);
+      if (el && el.offsetHeight > 0) return el;
+    }
+    return null;
+  }
+
+  function saveRootState(root) {
+    if (!root || rootState) return;
+    rootState = {
+      maxHeight: root.style.getPropertyValue("max-height"),
+      height: root.style.getPropertyValue("height"),
+      overflow: root.style.getPropertyValue("overflow"),
+      position: root.style.getPropertyValue("position")
+    };
+  }
+
+  function restoreRootState() {
+    if (!previewRoot || !rootState) return;
+    var root = previewRoot;
+    if (rootState.maxHeight) root.style.setProperty("max-height", rootState.maxHeight); else root.style.removeProperty("max-height");
+    if (rootState.height) root.style.setProperty("height", rootState.height); else root.style.removeProperty("height");
+    if (rootState.overflow) root.style.setProperty("overflow", rootState.overflow); else root.style.removeProperty("overflow");
+    if (rootState.position) root.style.setProperty("position", rootState.position); else root.style.removeProperty("position");
+  }
+
+  function ensureGate(root) {
     var gate = document.getElementById("ooglex-registration-preview");
     if (!gate) {
       gate = document.createElement("section");
@@ -109,7 +142,8 @@
         '<p>当前展示原版页面预览。登录 / 注册后可继续查看完整内容。</p>' +
         '<a href="' + accountUrl() + '">登录 / 注册</a>' +
         '<div class="ogx-access-note">完整内容不会发送给未登录浏览器；页面下方仅保留受限预览。</div>';
-      document.body.appendChild(gate);
+      if (root && root.parentNode) root.parentNode.insertBefore(gate, root.nextSibling);
+      else document.body.appendChild(gate);
     }
 
     var fade = document.getElementById("ooglex-registration-preview-fade");
@@ -117,7 +151,8 @@
       fade = document.createElement("div");
       fade.id = "ooglex-registration-preview-fade";
       fade.setAttribute("aria-hidden", "true");
-      document.body.appendChild(fade);
+      if (root) root.appendChild(fade);
+      else document.body.appendChild(fade);
     }
 
     var badge = document.getElementById("ooglex-registration-preview-badge");
@@ -130,55 +165,75 @@
     return { gate: gate, fade: fade, badge: badge };
   }
 
-  function naturalHeight(parts) {
-    var body = document.body;
-    var root = document.documentElement;
-    if (!body) return Math.max(root.scrollHeight || 0, window.innerHeight || 0);
-    var els = [parts && parts.gate, parts && parts.fade, parts && parts.badge];
-    var states = [];
-    els.forEach(function (el) {
-      if (!el) return;
-      states.push([el, el.style.display]);
-      el.style.display = "none";
-    });
-    var h = Math.max(
-      body.scrollHeight || 0, body.offsetHeight || 0,
-      root.scrollHeight || 0, root.offsetHeight || 0,
-      root.clientHeight || 0, window.innerHeight || 0
-    );
-    states.forEach(function (p) { p[0].style.display = p[1]; });
-    return h;
-  }
+  function naturalHeight(root, parts) {
+    if (!root) return Math.max(document.body.scrollHeight || 0, document.documentElement.scrollHeight || 0, window.innerHeight || 0);
 
-  function installScrollClamp(cutoff) {
-    if (scrollClamp) window.removeEventListener("scroll", scrollClamp);
-    scrollClamp = function () {
-      var maxScroll = Math.max(0, cutoff + WALL_HEIGHT - (window.innerHeight || 0) + 24);
-      if (window.scrollY > maxScroll) {
-        window.scrollTo({ top: maxScroll, left: 0, behavior: "auto" });
-      }
-    };
-    window.addEventListener("scroll", scrollClamp, { passive: true });
-    scrollClamp();
+    var gateDisplay = parts && parts.gate ? parts.gate.style.display : "";
+    var fadeDisplay = parts && parts.fade ? parts.fade.style.display : "";
+    var badgeDisplay = parts && parts.badge ? parts.badge.style.display : "";
+    if (parts && parts.gate) parts.gate.style.display = "none";
+    if (parts && parts.fade) parts.fade.style.display = "none";
+    if (parts && parts.badge) parts.badge.style.display = "none";
+
+    restoreRootState();
+    var h = Math.max(root.scrollHeight || 0, root.offsetHeight || 0, root.clientHeight || 0);
+
+    if (parts && parts.gate) parts.gate.style.display = gateDisplay;
+    if (parts && parts.fade) parts.fade.style.display = fadeDisplay;
+    if (parts && parts.badge) parts.badge.style.display = badgeDisplay;
+    return h;
   }
 
   function layoutPreview() {
     if (!document.body) return;
-    var parts = ensureGate();
-    var measured = naturalHeight(parts);
+    var root = previewRoot || findPreviewRoot();
+
+    // Full-screen runtimes often have no normal content wrapper. For those, use a
+    // viewport-height preview rather than exposing the interactive canvas.
+    if (!root) {
+      var fallback = ensureGate(null);
+      var cutoff = Math.max(1, Math.floor((window.innerHeight || 720) * PREVIEW_RATIO));
+      fallback.fade.style.position = "fixed";
+      fallback.fade.style.top = Math.max(0, cutoff - FADE_HEIGHT) + "px";
+      fallback.fade.style.bottom = "auto";
+      fallback.fade.style.display = "block";
+      fallback.gate.style.position = "fixed";
+      fallback.gate.style.left = "0";
+      fallback.gate.style.right = "0";
+      fallback.gate.style.top = cutoff + "px";
+      fallback.gate.style.display = "block";
+      fallback.badge.style.display = "block";
+      document.documentElement.classList.remove("ooglex-access-checking");
+      document.documentElement.classList.add("ooglex-access-preview");
+      document.body.style.setProperty("overflow", "hidden", "important");
+      return;
+    }
+
+    previewRoot = root;
+    saveRootState(root);
+    var parts = ensureGate(root);
+    var measured = naturalHeight(root, parts);
     if (measured > maxNaturalHeight) maxNaturalHeight = measured;
-    var total = Math.max(maxNaturalHeight, measured, window.innerHeight || 0, 1);
+    var total = Math.max(maxNaturalHeight, measured, 1);
     var cutoff = Math.max(1, Math.floor(total * PREVIEW_RATIO));
-    var maskHeight = Math.max(WALL_HEIGHT, total - cutoff + (window.innerHeight || 0));
 
-    parts.fade.style.top = Math.max(0, cutoff - FADE_HEIGHT) + "px";
+    var computed = window.getComputedStyle(root);
+    if (!computed.position || computed.position === "static") {
+      root.style.setProperty("position", "relative", "important");
+    }
+    root.style.setProperty("max-height", cutoff + "px", "important");
+    root.style.setProperty("height", cutoff + "px", "important");
+    root.style.setProperty("overflow", "hidden", "important");
+
+    parts.fade.style.position = "absolute";
+    parts.fade.style.top = "auto";
+    parts.fade.style.bottom = "0";
     parts.fade.style.display = "block";
-
-    parts.gate.style.top = cutoff + "px";
-    parts.gate.style.minHeight = maskHeight + "px";
-    parts.gate.style.height = maskHeight + "px";
+    parts.gate.style.position = "relative";
+    parts.gate.style.left = "auto";
+    parts.gate.style.right = "auto";
+    parts.gate.style.top = "auto";
     parts.gate.style.display = "block";
-
     parts.badge.style.display = "block";
 
     var html = document.documentElement;
@@ -187,8 +242,6 @@
     html.setAttribute("data-ooglex-preview-ratio", "10");
     html.setAttribute("data-ooglex-preview-cutoff", String(cutoff));
     html.setAttribute("data-ooglex-preview-total", String(total));
-
-    installScrollClamp(cutoff);
   }
 
   function scheduleLayout(delay) {
@@ -240,7 +293,6 @@
   function unlock() {
     if (observer) { observer.disconnect(); observer = null; }
     if (observerTimer) clearTimeout(observerTimer);
-    if (scrollClamp) { window.removeEventListener("scroll", scrollClamp); scrollClamp = null; }
     document.documentElement.classList.remove("ooglex-access-checking", "ooglex-access-preview");
     document.documentElement.removeAttribute("data-ooglex-preview-ratio");
     document.documentElement.removeAttribute("data-ooglex-preview-cutoff");
@@ -249,6 +301,7 @@
       var el = document.getElementById(id);
       if (el) el.remove();
     });
+    restoreRootState();
     if (document.body) document.body.style.removeProperty("overflow");
   }
 
@@ -274,7 +327,7 @@
     resolveReady(ok);
     try {
       document.dispatchEvent(new CustomEvent("ooglex:accessready", {
-        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "supply-chain-block-v3" }
+        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "supply-chain-block-v4" }
       }));
     } catch (_) {}
   })();
