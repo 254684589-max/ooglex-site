@@ -64,9 +64,12 @@
       doc.offsetHeight || 0
     );
     var viewport = Math.max(window.innerHeight || 0, doc.clientHeight || 0, 640);
+    var singleScreen = fullHeight <= Math.ceil(viewport * 1.15);
     var ratioCutoff = Math.ceil(fullHeight * PREVIEW_RATIO);
-    var previewCutoff = Math.min(fullHeight, Math.max(Math.ceil(viewport * 1.05), ratioCutoff));
-    if (!Number.isFinite(previewCutoff) || previewCutoff < 1) previewCutoff = viewport;
+    var previewCutoff = singleScreen
+      ? Math.max(72, Math.ceil(viewport * PREVIEW_RATIO))
+      : Math.min(fullHeight, Math.max(Math.ceil(viewport * 1.05), ratioCutoff));
+    if (!Number.isFinite(previewCutoff) || previewCutoff < 1) previewCutoff = Math.ceil(viewport * PREVIEW_RATIO);
 
     var fadeHeight = window.matchMedia && window.matchMedia("(max-width: 640px)").matches ? 86 : 120;
     var wallHeight = window.matchMedia && window.matchMedia("(max-width: 640px)").matches ? 250 : 270;
@@ -74,19 +77,33 @@
 
     body.setAttribute("data-ooglex-registration-preview", "true");
     body.setAttribute("data-ooglex-preview-ratio", String(PREVIEW_RATIO));
-    body.style.height = (previewCutoff + wallHeight) + "px";
-    body.style.maxHeight = (previewCutoff + wallHeight) + "px";
-    body.style.overflow = "hidden";
+    body.setAttribute("data-ooglex-preview-layout", singleScreen ? "single-screen" : "document");
+
+    if (!singleScreen) {
+      body.style.height = (previewCutoff + wallHeight) + "px";
+      body.style.maxHeight = (previewCutoff + wallHeight) + "px";
+      body.style.overflow = "hidden";
+    }
 
     var fade = document.createElement("div");
     fade.id = "ooglex-registration-preview-fade";
     fade.setAttribute("aria-hidden", "true");
     fade.style.top = fadeTop + "px";
+    if (singleScreen) {
+      fade.style.position = "fixed";
+      fade.style.top = Math.max(0, previewCutoff - Math.min(fadeHeight, previewCutoff)) + "px";
+      fade.style.height = Math.min(fadeHeight, previewCutoff) + "px";
+    }
 
     var wall = document.createElement("section");
     wall.id = "ooglex-registration-preview-wall";
     wall.setAttribute("data-ooglex-preview-hard-stop", "true");
     wall.style.top = previewCutoff + "px";
+    if (singleScreen) {
+      wall.style.position = "fixed";
+      wall.style.bottom = "0";
+      wall.style.overflow = "auto";
+    }
     wall.innerHTML =
       '<div class="ogx-reg-card">' +
         '<div class="ogx-reg-kicker">OOGLEX · 10% PUBLIC PREVIEW</div>' +
