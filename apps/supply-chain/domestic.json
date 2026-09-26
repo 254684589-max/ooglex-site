@@ -8362,6 +8362,31 @@
         "ASYS"
       ]
     },
+    "ATCH": {
+      "annualForm": "10-K",
+      "cik": 1963088,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "AtlasClear Holdings, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "symbol": "ATCH",
+      "tickers": [
+        "ATCH",
+        "ATCHW"
+      ]
+    },
     "ATDS": {
       "annualForm": "10-K",
       "cik": 1068689,
@@ -15688,7 +15713,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-19",
       "name": "PEABODY ENERGY CORP",
       "offshoreIncorporation": false,
@@ -22667,6 +22692,30 @@
       "symbol": "CP",
       "tickers": [
         "CP"
+      ]
+    },
+    "CPB": {
+      "annualForm": "10-K",
+      "cik": 16732,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Large accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "CAMPBELL'S Co",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NJ",
+      "region": null,
+      "sic": 2000,
+      "sicDescription": "Food and Kindred Products",
+      "symbol": "CPB",
+      "tickers": [
+        "CPB"
       ]
     },
     "CPBI": {
@@ -30594,7 +30643,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-02-20",
       "name": "Evolution Metals & Technologies Corp.",
@@ -32113,7 +32162,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-19",
       "name": "Energy Transfer LP",
       "offshoreIncorporation": false,
@@ -48480,7 +48529,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-05",
       "name": "Intrepid Potash, Inc.",
       "offshoreIncorporation": false,
@@ -49543,7 +49592,7 @@
       "countryCode": "A1",
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-27",
       "name": "Jaguar Uranium Corp.",
@@ -51654,7 +51703,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-26",
       "name": "Kinetik Holdings Inc.",
       "offshoreIncorporation": false,
@@ -52367,6 +52416,30 @@
         "KTB"
       ]
     },
+    "KTCC": {
+      "annualForm": "10-K",
+      "cik": 719733,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-24",
+      "name": "KEY TRONIC CORP",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "WA",
+      "region": null,
+      "sic": 3672,
+      "sicDescription": "Printed Circuit Boards",
+      "symbol": "KTCC",
+      "tickers": [
+        "KTCC"
+      ]
+    },
     "KTEL": {
       "annualForm": "10-K",
       "cik": 845819,
@@ -52736,7 +52809,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-26",
       "name": "Kyverna Therapeutics, Inc.",
@@ -53672,7 +53745,7 @@
     },
     "LEG": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-24T01:34:19Z",
+      "carriedFrom": "2026-09-25T02:19:43Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 58492,
       "confirmedThisScan": false,
@@ -54010,6 +54083,30 @@
       "symbol": "LFWD",
       "tickers": [
         "LFWD"
+      ]
+    },
+    "LGCY": {
+      "annualForm": "10-K",
+      "cik": 1836754,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "Legacy Education Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 8200,
+      "sicDescription": "Services-Educational Services",
+      "symbol": "LGCY",
+      "tickers": [
+        "LGCY"
       ]
     },
     "LGIH": {
@@ -64736,7 +64833,7 @@
     },
     "NRDE": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-24T01:34:19Z",
+      "carriedFrom": "2026-09-25T02:19:43Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1759546,
       "confirmedThisScan": false,
@@ -76163,7 +76260,7 @@
       "countryCode": "P7",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "Quantum Cyber N.V.",
@@ -76278,7 +76375,7 @@
     },
     "QVCAQ": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-24T01:34:19Z",
+      "carriedFrom": "2026-09-25T02:19:43Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1355096,
       "confirmedThisScan": false,
@@ -76627,7 +76724,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2025-11-06",
+      "lastAnnual": "2026-09-24",
       "name": "RAVE RESTAURANT GROUP, INC.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -80721,6 +80818,30 @@
         "RYZ"
       ]
     },
+    "RZLT": {
+      "annualForm": "10-K",
+      "cik": 1509261,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "Rezolute, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "RZLT",
+      "tickers": [
+        "RZLT"
+      ]
+    },
     "S": {
       "annualForm": "10-K",
       "cik": 1583708,
@@ -82764,6 +82885,30 @@
         "SFDL"
       ]
     },
+    "SFIX": {
+      "annualForm": "10-K",
+      "cik": 1576942,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-24",
+      "name": "Stitch Fix, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 5961,
+      "sicDescription": "Retail-Catalog & Mail-Order Houses",
+      "symbol": "SFIX",
+      "tickers": [
+        "SFIX"
+      ]
+    },
     "SFM": {
       "annualForm": "10-K",
       "cik": 1575515,
@@ -83544,7 +83689,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "Shuttle Pharmaceuticals Holdings, Inc.",
@@ -84217,7 +84362,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "SkyAI, Inc.",
@@ -92801,6 +92946,30 @@
         "TRST"
       ]
     },
+    "TRT": {
+      "annualForm": "10-K",
+      "cik": 732026,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "TRIO-TECH INTERNATIONAL",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 3559,
+      "sicDescription": "Special Industry Machinery, NEC",
+      "symbol": "TRT",
+      "tickers": [
+        "TRT"
+      ]
+    },
     "TRTX": {
       "annualForm": "10-K",
       "cik": 1630472,
@@ -95326,7 +95495,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-17",
       "name": "USA Compression Partners, LP",
       "offshoreIncorporation": false,
@@ -96152,7 +96321,7 @@
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
       "lastAnnual": "2026-06-30",
-      "name": "Senmiao Technology Ltd",
+      "name": "Valor Energy Inc",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "United States",
@@ -103161,8 +103330,8 @@
   "contractVersion": 1,
   "coverage": {
     "alreadyInPool": 1,
-    "annualFilers": 6518,
-    "attempted": 4510,
+    "annualFilers": 6526,
+    "attempted": 4517,
     "carriedForward": 3,
     "carriedForwardSymbols": [
       "LEG",
@@ -103171,9 +103340,9 @@
     ],
     "droppedBlankCheck": 204,
     "droppedNoSic": 54,
-    "published": 4255,
-    "publishedFilesFormSd": 677,
-    "skippedNoTicker": 1592,
+    "published": 4262,
+    "publishedFilesFormSd": 684,
+    "skippedNoTicker": 1593,
     "skippedTickerCollision": 415,
     "submissionsFailed": 0
   },
@@ -103181,10 +103350,10 @@
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 3459213,
+      "bytes": 3494906,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 280306,
+      "rows": 283849,
       "unparsed": 7
     },
     {
@@ -103195,14 +103364,14 @@
       "unparsed": 7
     },
     {
-      "bytes": 4440857,
+      "bytes": 4441658,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370151,
       "unparsed": 7
     },
     {
-      "bytes": 3401618,
+      "bytes": 3401151,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276581,
@@ -103210,5 +103379,5 @@
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-25T02:19:43Z"
+  "updatedAt": "2026-09-26T00:40:30Z"
 }

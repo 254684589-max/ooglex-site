@@ -6055,7 +6055,7 @@
       "countryRejected": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-23",
       "name": "Chemomab Therapeutics Ltd.",
@@ -13189,7 +13189,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-11",
       "name": "ICL Group Ltd.",
       "offshoreIncorporation": false,
@@ -13582,6 +13582,31 @@
       "tickers": [
         "IMPP",
         "IMPPP"
+      ]
+    },
+    "IMRN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1660046,
+      "country": "Australia",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "C3",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "Immuron Ltd",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Australia",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "IMRN",
+      "tickers": [
+        "IMRN"
       ]
     },
     "IMTE": {
@@ -16530,6 +16555,31 @@
       "symbol": "MAMK",
       "tickers": [
         "MAMK"
+      ]
+    },
+    "MANU": {
+      "annualForm": "20-F/40-F",
+      "cik": 1549107,
+      "country": "United Kingdom",
+      "countryBasis": "business-address",
+      "countryCode": "X0",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "NYSE",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-24",
+      "name": "Manchester United plc",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United Kingdom",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 7900,
+      "sicDescription": "Services-Amusement & Recreation Services",
+      "symbol": "MANU",
+      "tickers": [
+        "MANU"
       ]
     },
     "MASK": {
@@ -26117,7 +26167,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-22",
       "name": "GAS TRANSPORTER OF THE SOUTH INC",
       "offshoreIncorporation": false,
@@ -30506,43 +30556,43 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 160,
-    "foreignAnnualFilers": 1229,
-    "formSdFilers": 1077,
-    "published": 1202,
-    "publishedFilesFormSd": 160,
+    "bothAnnualAndFormSd": 162,
+    "foreignAnnualFilers": 1231,
+    "formSdFilers": 1087,
+    "published": 1204,
+    "publishedFilesFormSd": 162,
     "skippedNoTicker": 27,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
-    "withTicker": 1202,
+    "withTicker": 1204,
     "withoutSic": 0
   },
   "dataset": "supply-chain-foreign-issuers",
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 3460504,
+      "bytes": 3494251,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 280306,
+      "rows": 283849,
       "unparsed": 7
     },
     {
-      "bytes": 4272632,
+      "bytes": 4273738,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353245,
       "unparsed": 7
     },
     {
-      "bytes": 4440877,
+      "bytes": 4441658,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370151,
       "unparsed": 7
     },
     {
-      "bytes": 3401618,
+      "bytes": 3401151,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276581,
@@ -30867,5 +30917,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-25T01:58:08Z"
+  "updatedAt": "2026-09-26T00:15:43Z"
 }
