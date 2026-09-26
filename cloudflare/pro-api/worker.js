@@ -207,15 +207,10 @@ async function techLeadersRequestAuthorized(request, env) {
   const internal = request.headers.get("x-ooglex-tech-secret") || "";
   if (env.TECH_LEADERS_SESSION_SECRET && internal && internal === env.TECH_LEADERS_SESSION_SECRET) return true;
 
-  const cookieToken = cookieValue(request, "ooglex_tech_session");
-  if (cookieToken && await verifyTechLeadersToken(cookieToken, env)) return true;
-
+  // Public users unlock the full catalog only with a valid Supabase login token.
+  // The former password/session-cookie path is intentionally not an entitlement.
   const bearer = bearerToken(request);
   if (!bearer) return false;
-  if (await verifyTechLeadersToken(bearer, env)) return true;
-
-  // Registration is the entitlement boundary for the site-wide access model.
-  // A valid Supabase access token is enough to unlock the full Tech Leaders catalog.
   const user = await getUser(bearer, env);
   return Boolean(user && user.id);
 }
@@ -2706,42 +2701,10 @@ export default {
     const token = bearerToken(request);
 
     if (url.pathname === "/v1/tech-leaders/auth") {
-      if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
-      if (!env.TECH_LEADERS_SESSION_SECRET) {
-        return json({ error: "tech_leaders_gate_not_configured" }, 503, { ...cors, "cache-control": "no-store" });
-      }
-      const rate = await techLeadersRateCheck(request, env);
-      if (!rate.allowed) {
-        return json({ error: "too_many_attempts", retry_after: rate.retry_after }, 429, {
-          ...cors,
-          "cache-control": "no-store",
-          "retry-after": String(rate.retry_after)
-        });
-      }
-      let password = "";
-      const contentType = String(request.headers.get("content-type") || "").toLowerCase();
-      if (contentType.includes("application/json")) {
-        let body = {};
-        try { body = await request.json(); } catch {}
-        password = String(body && body.password || "");
-      } else {
-        try { password = String(await request.text()); } catch {}
-      }
-      const ok = await verifyTechLeadersPassword(password);
-      if (!ok) {
-        await techLeadersRateRecordFailure(rate, env);
-        return json({ error: "invalid_password" }, 401, { ...cors, "cache-control": "no-store" });
-      }
-      await techLeadersRateClear(rate, env);
-      const accessToken = await issueTechLeadersToken(env);
       return json({
-        ok: true,
-        expires_in: Math.round(TECH_LEADERS_SESSION_TTL_MS / 1000)
-      }, 200, {
-        ...cors,
-        "cache-control": "no-store",
-        "set-cookie": techLeadersSessionCookie(accessToken)
-      });
+        error: "registration_required",
+        account: "https://www.ooglex.com/account/"
+      }, 410, { ...cors, "cache-control": "no-store" });
     }
 
     if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405, cors);
