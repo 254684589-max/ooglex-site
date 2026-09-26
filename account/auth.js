@@ -64,6 +64,26 @@ function tab(login) {
   say('');
 }
 
+function safeNextUrl() {
+  try {
+    const next = new URLSearchParams(location.search || '').get('next') || '';
+    if (!next || next[0] !== '/' || next.startsWith('//')) return '';
+    const u = new URL(next, location.origin);
+    if (u.origin !== location.origin) return '';
+    return u.pathname + u.search + u.hash;
+  } catch (_) {
+    return '';
+  }
+}
+
+function requestedSignupMode() {
+  try {
+    return new URLSearchParams(location.search || '').get('mode') === 'signup';
+  } catch (_) {
+    return false;
+  }
+}
+
 function readAuthUrlState() {
   const query = new URLSearchParams(location.search || '');
   const hash = new URLSearchParams((location.hash || '').replace(/^#/, ''));
@@ -274,6 +294,8 @@ async function boot() {
       });
       if (result.error) return say(friendlyError(result.error), 'error');
       say(tr('登录成功。', 'Signed in.'), 'ok');
+      const next = safeNextUrl();
+      if (next) location.assign(next);
     };
 
     $('signup-form').onsubmit = async (event) => {
@@ -294,6 +316,10 @@ async function boot() {
           : tr('注册成功，请查收验证邮件。', 'Account created. Check your email to confirm it.'),
         'ok'
       );
+      if (result.data.session) {
+        const next = safeNextUrl();
+        if (next) location.assign(next);
+      }
     };
 
     $('forgot-button').onclick = async () => {
