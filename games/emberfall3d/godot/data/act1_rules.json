@@ -294,28 +294,88 @@
     "floors": [
      1,
      2
-    ]
+    ],
+    "floor_rgb": [
+     56,
+     52,
+     48
+    ],
+    "wall_hex": "#433c36",
+    "lava": false
    },
    "catacomb": {
     "name": "白骨墓穴",
     "floors": [
      3,
      4
-    ]
+    ],
+    "floor_rgb": [
+     45,
+     52,
+     46
+    ],
+    "wall_hex": "#3c4339",
+    "lava": false
    },
    "inferno": {
     "name": "熔渊",
     "floors": [
      5,
      6
-    ]
+    ],
+    "floor_rgb": [
+     60,
+     36,
+     32
+    ],
+    "wall_hex": "#44231c",
+    "lava": true
    },
    "abyss": {
     "name": "无尽深渊",
     "floors": [
      7,
      9999
-    ]
+    ],
+    "floor_rgb": [
+     44,
+     36,
+     58
+    ],
+    "wall_hex": "#342848",
+    "lava": true
+   }
+  },
+  "_themes说明": "floor_rgb / wall_hex / lava 取自 V0.1 THEMES（fa / wl / lava），3D 版按修道院地窖为基准换算成材质染色。",
+  "generator": {
+   "_出处": "genDungeon / corridor / finishWalls",
+   "size": [
+    58,
+    58
+   ],
+   "boss_room": [
+    13,
+    13
+   ],
+   "rooms_base": 11,
+   "rooms_extra_max": 5,
+   "room_size": [
+    5,
+    10
+   ],
+   "room_margin": 2,
+   "room_gap": 1,
+   "room_tries": 200,
+   "extra_corridors": 3,
+   "corridor_width": 2,
+   "deco": {
+    "bones_below": 0.035,
+    "rubble_below": 0.08,
+    "lava_below": 0.1
+   },
+   "torch": {
+    "chance": 0.07,
+    "min_spacing": 6
    }
   },
   "town_name": "烬原镇",

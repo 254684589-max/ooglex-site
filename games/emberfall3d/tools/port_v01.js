@@ -54,6 +54,8 @@ literal.ALL = vm.runInNewContext(/\nconst ALL = ([^;]+);/.exec(src)[1]);
 const BASES = literal('BASES'), SLOTS = literal('SLOTS'), AFF = literal('AFF'), UNIQ = literal('UNIQ');
 const RARE_A = literal('RARE_A'), RARE_B = literal('RARE_B'), RNAME = literal('RNAME');
 const MT = literal('MT'), CHAMP = literal('CHAMP'), SK = literal('SK'), SHRINES = literal('SHRINES');
+const THEMES = literal('THEMES');
+const themeLook = k => ({ floor_rgb: THEMES[k].fa, wall_hex: THEMES[k].wl, lava: !!THEMES[k].lava });
 
 // ---------- 物品 ----------
 const items = {
@@ -127,7 +129,20 @@ const rules = {
   },
   floors: {
     _出处: 'themeFor / floorName / isBossFloor / genDungeon',
-    themes: { crypt: { name: '修道院地窖', floors: [1, 2] }, catacomb: { name: '白骨墓穴', floors: [3, 4] }, inferno: { name: '熔渊', floors: [5, 6] }, abyss: { name: '无尽深渊', floors: [7, 9999] } },
+    themes: {
+      crypt: Object.assign({ name: THEMES.crypt.n, floors: [1, 2] }, themeLook('crypt')),
+      catacomb: Object.assign({ name: THEMES.catacomb.n, floors: [3, 4] }, themeLook('catacomb')),
+      inferno: Object.assign({ name: THEMES.inferno.n, floors: [5, 6] }, themeLook('inferno')),
+      abyss: Object.assign({ name: THEMES.abyss.n, floors: [7, 9999] }, themeLook('abyss')),
+    },
+    _themes说明: 'floor_rgb / wall_hex / lava 取自 V0.1 THEMES（fa / wl / lava），3D 版按修道院地窖为基准换算成材质染色。',
+    generator: {
+      _出处: 'genDungeon / corridor / finishWalls',
+      size: [58, 58], boss_room: [13, 13], rooms_base: 11, rooms_extra_max: 5, room_size: [5, 10], room_margin: 2, room_gap: 1, room_tries: 200,
+      extra_corridors: 3, corridor_width: 2,
+      deco: { bones_below: 0.035, rubble_below: 0.08, lava_below: 0.1 },
+      torch: { chance: 0.07, min_spacing: 6 },
+    },
     town_name: '烬原镇', boss_floors: [3, 6], abyss_boss_every: 5,
     bosses: { '3': 'mog', '6': 'abbot' }, abyss_boss_names: { mog: '深渊化身 · 缚链者', abbot: '深渊化身 · 焚誓者' }, boss_guards: { mog: 'zombie', abbot: 'skel' },
     props: { barrels_per_room: [0, 3], chest_chance: 0.2, shrine_floor_chance: 0.75, shrine_room_chance: 0.3 },
@@ -220,7 +235,7 @@ const ref = { _说明: '由 tools/port_v01.js 用 V0.1 的原函数算出（阶�
 }
 // 楼层主题、名称、首领层
 {
-  const ctx = sandbox({ THEMES: literal('THEMES') });
+  const ctx = sandbox({ THEMES });
   for (const f of ['themeFor', 'floorName', 'isBossFloor']) run(ctx, fnSource(f));
   ref.floors = Array.from({ length: 21 }, (_, f) => ({ floor: f, theme: f ? run(ctx, `themeFor(${f})`) : 'town', name: run(ctx, `floorName(${f})`), boss: run(ctx, `isBossFloor(${f})`) }));
 }

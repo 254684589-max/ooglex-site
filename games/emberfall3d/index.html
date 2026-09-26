@@ -124,9 +124,9 @@
         <div class="eyebrow">Ooglex Games · 原创 3D 暗黑风 · 开发中</div>
         <h1 class="serif">余烬陷落<span>EMBERFALL 大作版</span></h1>
         <p class="lead">《余烬陷落》的 3D 重制正在一步一步搭建：真正的三维场景、斜视角镜头、冷暖光与火把、会冲锋会召唤的怪物。这里放出的是当前的开发中版本，每完成一步就更新一次。</p>
-        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物、怪物和墙体目前都是占位几何体，还没有正式模型、动作、音效和剧情；只能在一个房间和一座大厅里测试操作与战斗。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
+        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物、怪物和墙体目前都是占位几何体，还没有正式模型、动作、音效和剧情。现在可以在测试区试操作与战斗，再走楼梯下到随机生成的地下城（地下城里暂时还没有怪物）。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
         <div class="actions">
-          <a class="btn primary" href="play/?v=8d48d18e">▶ 进入 3D 预览</a>
+          <a class="btn primary" href="play/?v=3bf7867a">▶ 进入 3D 预览</a>
           <a class="btn secondary" href="../emberfall/">玩 V0.1 完整版</a>
         </div>
         <p class="small">免下载安装 · 电脑和手机浏览器都能打开 · 首次加载约 40 MB（游戏引擎），之后浏览器会缓存 · 需要支持 WebGL 2</p>
@@ -139,8 +139,8 @@
 
     <div class="facts">
       <div class="fact"><b>类型</b><span>3D 斜视角 · 动作角色扮演 · 地牢探索</span></div>
-      <div class="fact"><b>状态</b><span>开发中 · 灰盒原型（阶段 1 完成，阶段 2 进行中）</span></div>
-      <div class="fact"><b>可玩内容</b><span>1 个墓室 + 1 座大厅 · 2 个训练木桩 · 4 种怪物</span></div>
+      <div class="fact"><b>状态</b><span>开发中 · 正在把 V0.1 的全部内容移植到 3D</span></div>
+      <div class="fact"><b>可玩内容</b><span>测试区（墓室 + 大厅 + 4 种怪物）· 随机地下城（地窖 / 墓穴 / 熔渊 / 深渊）</span></div>
       <div class="fact"><b>技术</b><span>Godot 4 网页导出（WebGL 2 兼容渲染器）</span></div>
     </div>
 
@@ -151,10 +151,12 @@
         <div class="step"><b>战斗手感<span class="tag done">已完成</span></b>普攻「断誓斩」积攒「誓火」，技能「焚地践踏」范围眩晕并留下燃烧地面；受击停顿、击退、震屏、暴击与伤害数字。</div>
         <div class="step"><b>怪物 AI<span class="tag done">已完成</span></b>焦骨蛮兵（红色预警后冲锋）、骸骨弓手（保持距离放箭）、灰誓祭司（召唤腐尸）、腐尸。</div>
         <div class="step"><b>光照与氛围<span class="tag done">已完成</span></b>冷色环境 + 暖色火把、雾、泛光、暗角、圆形假阴影与轮廓光；低 / 中 / 高三档画质（按 F7 切换）。</div>
-        <div class="step"><b>正式美术素材<span class="tag todo">待开始</span></b>人物、怪物、场景模型与动作（采用 CC0 免费素材 + 原创设计），替换占位几何体。</div>
-        <div class="step"><b>序章垂直切片<span class="tag todo">规划中</span></b>完整的序章关卡、首领战、剧情与过场，达到可对外展示的画质。</div>
+        <div class="step"><b>V0.1 数据移植<span class="tag done">已完成</span></b>25 种装备底材、16 种词缀、11 件传奇、10 种怪物、成长与掉落规则，与 V0.1 逐项对照一致（还没接进画面）。</div>
+        <div class="step"><b>随机地下城<span class="tag done">已完成</span></b>V0.1 同款「房间 + 走廊」随机楼层：上下楼梯、首领房、火把与装饰；地窖、墓穴、熔渊、深渊四种色调，无限往下。</div>
+        <div class="step"><b>移植其余内容<span class="tag todo">进行中</span></b>接下来依次移植：升级加点、四个技能、全部怪物与掉落、背包装备、烬原镇、任务、两个首领、存档。</div>
+        <div class="step"><b>正式美术素材<span class="tag todo">规划中</span></b>内容移植完成后，用 CC0 免费素材与原创设计替换占位几何体，逐步提升画质。</div>
       </div>
-      <p class="small">「待开始」「规划中」为计划，尚未实现。</p>
+      <p class="small">「进行中」「规划中」为计划，尚未实现。</p>
     </section>
 
     <section>
@@ -165,12 +167,12 @@
           <figcaption>墓室 · 高画质</figcaption>
         </figure>
         <figure class="shot">
-          <img src="img/room-medium.jpg" width="1280" height="720" loading="lazy" alt="同一墓室的中画质：关闭泛光，保留雾和暗角">
-          <figcaption>墓室 · 中画质（手机默认）</figcaption>
+          <img src="img/floor3.jpg" width="1280" height="720" loading="lazy" alt="随机地下城白骨墓穴第 3 层：两支火把照亮石砖房间，玩家（占位几何体）站在通往上一层的石阶旁，地上散落白骨与碎石">
+          <figcaption>随机地下城 · 白骨墓穴第 3 层（高画质）</figcaption>
         </figure>
         <figure class="shot">
-          <img src="img/hall.jpg" width="1280" height="720" loading="lazy" alt="灰盒大厅：两只焦骨蛮兵（占位几何体，身上有发光裂纹）围住玩家，玩家头顶跳出伤害数字">
-          <figcaption>大厅 · 焦骨蛮兵围上来（高画质）</figcaption>
+          <img src="img/floor8.jpg" width="1280" height="720" loading="lazy" alt="无尽深渊第 8 层：幽紫色调的石砖地面与墙体，远处有熔岩裂缝发出橙光">
+          <figcaption>随机地下城 · 无尽深渊第 8 层（高画质）</figcaption>
         </figure>
       </div>
     </section>
@@ -186,6 +188,7 @@
             <span><kbd>右键</kbd> / <kbd>1</kbd></span><span>焚地践踏（消耗 30 誓火，冷却 4 秒）</span>
             <span><kbd>滚轮</kbd></span><span>镜头缩放</span>
             <span><kbd>F7</kbd></span><span>切换画质（低 / 中 / 高）</span>
+            <span><kbd>走上楼梯</kbd></span><span>换层（测试区房间东北角的楼梯通往地下城）</span>
           </div>
         </div>
         <div class="card">
@@ -195,6 +198,7 @@
             <span><kbd>点地面 / 怪物</kbd></span><span>移动或攻击</span>
             <span><kbd>攻击</kbd></span><span>攻击最近的敌人</span>
             <span><kbd>践踏</kbd></span><span>释放焚地践踏</span>
+            <span><kbd>走上楼梯</kbd></span><span>换层</span>
           </div>
           <p class="small">手机默认中画质。首次加载约 40 MB，建议在 Wi-Fi 下打开。</p>
         </div>
@@ -202,7 +206,7 @@
     </section>
 
     <div class="cta-bottom">
-      <a class="btn primary" href="play/?v=8d48d18e">▶ 进入 3D 预览</a>
+      <a class="btn primary" href="play/?v=3bf7867a">▶ 进入 3D 预览</a>
     </div>
 
     <div class="notice">

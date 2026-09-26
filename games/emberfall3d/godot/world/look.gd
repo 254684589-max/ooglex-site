@@ -178,5 +178,22 @@ static func crypt_environment() -> Environment:
 	return env
 
 
+## 各楼层主题的环境光与雾（阶段 P2）：地窖冷紫、墓穴阴绿、熔渊暗红、深渊幽紫。
+## 与 V0.1 THEMES 的色调对应；火把仍是主要的暖色光源。
+const THEME_ENV := {
+	"crypt": {"ambient": Color(0.28, 0.24, 0.42), "fog": Color(0.06, 0.04, 0.06), "bg": Color(0.035, 0.025, 0.03)},
+	"catacomb": {"ambient": Color(0.22, 0.32, 0.3), "fog": Color(0.035, 0.06, 0.05), "bg": Color(0.02, 0.035, 0.03)},
+	"inferno": {"ambient": Color(0.42, 0.2, 0.16), "fog": Color(0.1, 0.03, 0.02), "bg": Color(0.05, 0.012, 0.008)},
+	"abyss": {"ambient": Color(0.3, 0.2, 0.5), "fog": Color(0.05, 0.03, 0.09), "bg": Color(0.025, 0.015, 0.045)},
+}
+
+
+static func apply_theme(env: Environment, theme: String) -> void:
+	var e: Dictionary = THEME_ENV.get(theme, THEME_ENV.crypt)
+	env.ambient_light_color = e.ambient
+	env.fog_light_color = e.fog
+	env.background_color = e.bg
+
+
 static func default_tier() -> String:
 	return "low" if DisplayServer.is_touchscreen_available() else "medium"

@@ -5,6 +5,7 @@ extends Node3D
 
 const PITCH_DEG := 55.0
 const WORLD_MASK := 1 | IsoCamera.OCCLUDER_LAYER   # 墙体与柱子：世界碰撞（第 1 层）+ 遮挡视线（第 2 层）
+const TEST_STAIRS := Vector3(3.5, 0, -4.5)          # 测试区房间东北角：下到地窖第 1 层
 
 var auto_pack_test := true
 var run_nav_bench := true
@@ -33,6 +34,15 @@ var pack_state := "章节包：未测试"
 var nav_state := ""
 var nav_bake_ms := 0.0
 var t := 0.0
+var stage: Node3D
+var floor_i := 0
+var run_seed := 0
+var dungeon: Dictionary = {}
+var floor_info: Dictionary = {}
+var stairs: Dictionary = {}
+var stair_lock := 0.0
+var banner: Label
+var banner_t := 0.0
 
 
 func _ready() -> void:
@@ -45,6 +55,7 @@ func _ready() -> void:
 			q = m
 	apply_quality(q)
 	PackLoader.pack_loaded.connect(_on_pack_loaded)
+	hero.arrived.connect(_on_hero_arrived)
 	print("EF_READY renderer=%s web=%s" % [RenderingServer.get_current_rendering_method(), OS.has_feature("web")])
 	print("EF_NAV_BAKE room_ms=%.1f polygons=%d" % [nav_bake_ms, level.navigation_mesh.get_polygon_count()])
 	if auto_pack_test and OS.has_feature("web"):
@@ -56,6 +67,8 @@ func _ready() -> void:
 	# unproject_position 返回的是缩放后的视口坐标；换算成窗口像素（界面缩放 ≠ 1 时两者不同）
 	var sp := camera.unproject_position(dummies[0].global_position + Vector3(0, 1.0, 0)) * get_window().content_scale_factor
 	print("EF_DUMMY_SCREEN x=%d y=%d" % [sp.x, sp.y])
+	var ss := camera.unproject_position(TEST_STAIRS) * get_window().content_scale_factor
+	print("EF_STAIRS_SCREEN x=%d y=%d" % [ss.x, ss.y])
 	if run_nav_bench and OS.has_feature("web"):
 		# 等两帧再跑，避免和首帧渲染抢时间；结果打到控制台与左下角
 		await get_tree().process_frame
@@ -64,6 +77,11 @@ func _ready() -> void:
 		nav_state = "整层地下城导航烘焙 %.0f 毫秒（%d 个多边形）" % [b.ms, b.polygons]
 		print("EF_NAV_BENCH ms=%.1f polygons=%d floor_tiles=%d wall_tiles=%d cell=%.2f" % [b.ms, b.polygons, b.floor_tiles, b.wall_tiles, b.cell_size])
 		_refresh_labels()
+	# 网页上加 ?floor=N 直接从第 N 层开始（试玩与测试用）
+	if OS.has_feature("web"):
+		var fl := str(JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('floor') || ''", true))
+		if fl.is_valid_int() and int(fl) > 0:
+			go_floor(int(fl))
 	# 网页上加 ?perf=1 跑性能基准（tools/perf_web.js 用）
 	if OS.has_feature("web") and str(JavaScriptBridge.eval("window.location.search", true)).contains("perf=1"):
 		await perf_probe()
@@ -100,6 +118,17 @@ func perf_probe(wait_s: float = 3.0) -> Dictionary:
 
 func _process(delta: float) -> void:
 	t += delta
+	stair_lock = maxf(0.0, stair_lock - delta)
+	# 站在楼梯上等换层冷却结束也能触发（进入事件只在踏上的那一刻发一次）
+	if stair_lock <= 0.0 and hero and not hero.dead:
+		for k in stairs:
+			var st: Stairs = stairs[k]
+			if is_instance_valid(st) and st.overlaps_body(hero):
+				_on_stairs(st.kind)
+				break
+	if banner:
+		banner_t = maxf(0.0, banner_t - delta)
+		banner.modulate.a = clampf(banner_t, 0.0, 1.0)
 	if res_bar and hero:
 		var k: EmberguardKit = hero.kit
 		res_bar.value = k.resource
@@ -174,7 +203,7 @@ func _box(size: Vector3, pos: Vector3, c: Color, solid := true) -> MeshInstance3
 
 
 func _build_world() -> void:
-	# 环境：冷紫阴影 + 暖色火光、雾、泛光、调色（world/look.gd，阶段 2.3）
+	# 环境：冷紫阴影 + 暖色火光、雾、泛光、调色（world/look.gd，阶段 2.3）；各楼层按主题换色（P2）
 	environment = Look.crypt_environment()
 	var we := WorldEnvironment.new()
 	we.environment = environment
@@ -189,10 +218,40 @@ func _build_world() -> void:
 	moon.rotation_degrees = Vector3(-60, 30, 0)
 	add_child(moon)
 
+	# 玩家（占位外观）与斜俯视相机：跨楼层保留；楼层内容都挂在 stage 下，换层时整个换掉
+	hero = Player.new()
+	add_child(hero)
+	camera = IsoCamera.new()
+	camera.pitch_deg = PITCH_DEG
+	camera.target = hero
+	add_child(camera)
+	hero.camera = camera
+	run_seed = randi()
+	_build_test_area()
+	hero.respawn_point = Vector3.ZERO
+
+
+func _new_stage() -> void:
+	if stage:
+		remove_child(stage)
+		stage.queue_free()
+	stage = Node3D.new()
+	stage.name = "Stage"
+	add_child(stage)
+	torches.clear()
+	dummies.clear()
+	monsters.clear()
+	stairs.clear()
+
+
+func _build_test_area() -> void:
+	## 第 0 层：阶段 1 的灰盒测试区（房间 + 大厅 + 训练木桩 + 4 种怪物）。
+	## 烬原镇在 P7 接入之前，由它代替地面；房间东北角的楼梯通往修道院地窖第 1 层。
+	_new_stage()
+	Look.apply_theme(environment, "crypt")
 	# 关卡几何挂在导航区域下，运行时烘焙导航网格
 	level = NavBuilder.make_region()
-	add_child(level)
-
+	stage.add_child(level)
 	# 地面（占位）：地面层碰撞只用于点击拾取与导航解析，主角不与它碰撞（平面移动）
 	var ground := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
@@ -234,32 +293,105 @@ func _build_world() -> void:
 	# 火把（world/torch.gd）：房间一支、大厅三支
 	for tp in [Vector3(-5.4, 1.7, -5.4), Vector3(-11.4, 1.8, 25.4), Vector3(13.4, 1.8, 25.4), Vector3(-11.4, 1.8, 9.0)]:
 		var tch := Torch.new()
-		add_child(tch)
+		stage.add_child(tch)
 		tch.position = tp
 		torches.append(tch)
 
 	# 训练木桩（占位敌人）：房间里两个挨着（测试范围技能）；真正的怪物在南边大厅
 	for p in [Vector3(2.2, 0, -1.2), Vector3(3.0, 0, 0.3)]:
 		var d := TrainingDummy.new()
-		add_child(d)
+		stage.add_child(d)
 		d.global_position = p
 		d.home = p
 		dummies.append(d)
 
-	# 玩家（占位外观）与斜俯视相机
-	hero = Player.new()
-	add_child(hero)
-	camera = IsoCamera.new()
-	camera.pitch_deg = PITCH_DEG
-	camera.target = hero
-	add_child(camera)
-	hero.camera = camera
-	hero.respawn_point = Vector3.ZERO
+	# 下楼的楼梯（P2）
+	var sd := Stairs.make("down", "↓ " + FloorRules.floor_name(1))
+	stage.add_child(sd)
+	sd.position = TEST_STAIRS
+	sd.used.connect(_on_stairs)
+	stairs.down = sd
 
 	# 大厅里的怪物（1.5）：2 个冲锋、2 个弓手、1 个召唤祭司
 	if spawn_monsters:
 		for sp in [["ash_brute", Vector3(-5, 0, 18)], ["ash_brute", Vector3(5, 0, 17)], ["bone_archer", Vector3(-9, 0, 23)], ["bone_archer", Vector3(10, 0, 23)], ["ash_priest", Vector3(0, 0, 24)]]:
-			monsters.append(Monsters.spawn(sp[0], self, sp[1], hero))
+			monsters.append(Monsters.spawn(sp[0], stage, sp[1], hero))
+
+
+# ---------------- 楼层（P2） ----------------
+
+func seed_for(f: int) -> int:
+	## 本局的楼层种子：同一局里回到去过的楼层，布局不变
+	return run_seed * 1009 + f * 7919
+
+
+func _on_stairs(kind: String) -> void:
+	if stair_lock > 0.0 or hero.dead:
+		return
+	stair_lock = 1.0
+	# 在物理回调里不能删节点：推迟到本帧末尾换层
+	call_deferred("go_floor", floor_i + (1 if kind == "down" else -1), kind)
+
+
+func go_floor(f: int, via: String = "down") -> void:
+	## 换层：第 0 层是灰盒测试区，第 1 层起是随机地下城（V0.1 genDungeon 的布局）。
+	## 下楼到达新楼层的上楼梯旁；上楼到达上一层的下楼梯旁（V0.1 goFloor）。
+	f = maxi(0, f)
+	hero.stop()
+	hero.attack_target = null
+	hero.attack_hold = false
+	floor_i = f
+	var t0 := Time.get_ticks_usec()
+	if f == 0:
+		_build_test_area()
+		floor_info = {}
+		dungeon = {}
+		hero.global_position = TEST_STAIRS + Vector3(-2.4, 0, 1.2) if via == "up" else Vector3.ZERO
+	else:
+		_new_stage()
+		dungeon = DungeonGen.generate(f, seed_for(f))
+		floor_info = DungeonBuilder.build(stage, dungeon, {
+			"seed": seed_for(f), "on_stairs": _on_stairs,
+			"down_caption": "↓ " + FloorRules.floor_name(f + 1),
+			"up_caption": ("↑ " + FloorRules.floor_name(f - 1)) if f > 1 else "↑ 返回测试区"})
+		level = floor_info.region
+		torches.assign(floor_info.torches)
+		stairs = floor_info.stairs
+		nav_bake_ms = floor_info.nav_ms
+		var at: Vector2i = dungeon.up
+		if via == "up" and floor_info.down_cell.x >= 0:
+			at = floor_info.down_cell
+		hero.global_position = DungeonBuilder.cell_center(DungeonGen.near_free(dungeon, at))
+		Look.apply_theme(environment, dungeon.theme)
+	hero.respawn_point = hero.global_position
+	camera.snap()
+	apply_quality(quality)
+	stair_lock = 0.8
+	var fname := FloorRules.floor_name(f) if f > 0 else "测试区 · 灰盒房间与大厅"
+	_show_banner(fname + ("\n本层还没有怪物（后续步骤接入）" if f > 0 else ""))
+	var ms := (Time.get_ticks_usec() - t0) / 1000.0
+	print("EF_FLOOR n=%d theme=%s total_ms=%.1f nav_ms=%.1f chunks=%d torches=%d" % [f, dungeon.get("theme", "test"), ms, nav_bake_ms, floor_info.get("chunks", 0), torches.size()])
+
+
+func _on_hero_arrived() -> void:
+	## 给网页冒烟测试用：主角走到后（镜头跟上之后）再报一次测试区楼梯的屏幕坐标
+	if floor_i != 0 or not OS.has_feature("web"):
+		return
+	await get_tree().create_timer(1.0).timeout
+	if floor_i == 0:
+		var ss := camera.unproject_position(TEST_STAIRS) * get_window().content_scale_factor
+		print("EF_STAIRS_SCREEN x=%d y=%d" % [ss.x, ss.y])
+
+
+func _show_banner(text: String) -> void:
+	if banner:
+		banner.text = text
+		banner_t = 3.5
+		# 竖屏时左上角说明文字占到屏幕三分之一以下：楼层名放到主角下方、摇杆上方
+		var vs := get_viewport().get_visible_rect().size
+		var portrait := vs.y > vs.x
+		banner.offset_top = vs.y * 0.66 if portrait else 150.0
+		banner.add_theme_font_size_override("font_size", 24 if portrait else 28)
 
 
 # ---------------- 界面 ----------------
@@ -292,8 +424,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 2.3 光照氛围）\n模型仍是占位几何体；地面与墙面贴图由代码生成。南边大厅有冲锋、弓手和召唤怪。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放；走到楼梯上换层"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P2 随机地下城）\n模型仍是占位几何体。房间东北角的楼梯通往随机生成的地下城；南边大厅有冲锋、弓手和召唤怪。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -350,9 +482,23 @@ func _build_ui() -> void:
 	dead_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	dead_label.add_theme_font_size_override("font_size", 30)
 	dead_label.add_theme_color_override("font_color", Color(0.85, 0.2, 0.15))
-	dead_label.text = "你倒下了\n3 秒后在房间里复活"
+	dead_label.text = "你倒下了\n3 秒后在本层入口复活"
 	dead_label.visible = false
 	layer.add_child(dead_label)
+	# 换层时屏幕上方中间的楼层名（几秒后淡出）
+	banner = Label.new()
+	banner.anchor_left = 0.0
+	banner.anchor_right = 1.0
+	banner.offset_top = 150
+	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	banner.add_theme_font_size_override("font_size", 28)
+	banner.add_theme_color_override("font_color", Color(1.0, 0.82, 0.5))
+	banner.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.02))
+	banner.add_theme_constant_override("outline_size", 8)
+	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner.modulate.a = 0.0
+	layer.add_child(banner)
 	touch = TouchControls.new()
 	layer.add_child(touch)
 	if touch.visible:
@@ -433,7 +579,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _refresh_labels() -> void:
 	if pack_label:
-		var lines := [pack_state, "房间导航烘焙 %.0f 毫秒" % nav_bake_ms]
+		var lines := [FloorRules.floor_name(floor_i) if floor_i > 0 else "测试区", pack_state, "导航烘焙 %.0f 毫秒" % nav_bake_ms]
 		if nav_state != "":
 			lines.append(nav_state)
 		lines.append("渲染器：%s" % RenderingServer.get_current_rendering_method())

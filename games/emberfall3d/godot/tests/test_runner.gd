@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -153,6 +153,10 @@ func test_camera() -> void:
 	check(cam.h_offset == 0.0 and cam.v_offset == 0.0, "关闭震动后不再晃动（无障碍设置）")
 	main.queue_free()
 	await frames(1)
+
+
+func info(text: String) -> void:
+	print("  info " + text)
 
 
 func physics(n: int) -> void:
@@ -673,11 +677,8 @@ func test_perf() -> void:
 
 
 func _count_numbers(root: Node) -> int:
-	var n := 0
-	for c in root.get_children():
-		if c is Label3D:
-			n += 1
-	return n
+	# 伤害数字挂在受击者的父节点下（P2 起楼层内容都在 main/Stage 下），所以递归数；按前后差值判断
+	return root.find_children("*", "Label3D", true, false).size()
 
 
 func test_pack() -> void:
@@ -901,3 +902,174 @@ func test_port() -> void:
 		"商店：格伦 8 件（无戒指护符）、玛拉 2 件戒指或护符，物品等级 = 角色等级+1")
 	var chest := FloorRules.roll_chest(rng, 4)
 	check(chest[0].has("gold") and chest.filter(func(d): return d.has("item")).size() in [1, 2], "宝箱：金币 + 1–2 件装备")
+
+
+# ---------- 阶段 P2：随机地下城 ----------
+func test_dungeon() -> void:
+	# 格子布局：12 层 × 3 个种子
+	var G := DungeonGen
+	var problems := []
+	var gen_us := 0
+	var n_maps := 0
+	for f in range(1, 13):
+		for sd in [11, 222, 3333]:
+			var t0 := Time.get_ticks_usec()
+			var m := G.generate(f, sd)
+			gen_us += Time.get_ticks_usec() - t0
+			n_maps += 1
+			var tag := "第%d层/种子%d" % [f, sd]
+			var w: int = m.w
+			var boss := FloorRules.is_boss_floor(f)
+			if m.rooms.size() < 8:
+				problems.append(tag + " 房间太少 %d" % m.rooms.size())
+			if G.tile(m, m.up.x, m.up.y) != G.UP:
+				problems.append(tag + " 上楼梯不在 UP 格")
+			if boss:
+				var br: Dictionary = m.rooms[m.boss_room] if m.boss_room >= 0 else {}
+				if m.boss_room < 0 or br.w != 13 or br.h != 13:
+					problems.append(tag + " 首领层没有 13×13 首领房")
+				elif m.down != Vector2i(-1, -1) or m.boss_stairs != Vector2i(br.cx, br.cy):
+					problems.append(tag + " 首领层的下楼梯应在击败首领后才出现")
+				else:
+					var sr: Dictionary = m.rooms[m.start]
+					var dmax := 0
+					for i in m.rooms.size():
+						if i != m.boss_room:
+							dmax = maxi(dmax, absi(m.rooms[i].cx - br.cx) + absi(m.rooms[i].cy - br.cy))
+					if absi(sr.cx - br.cx) + absi(sr.cy - br.cy) != dmax:
+						problems.append(tag + " 起点不是离首领房最远的房间")
+			elif G.tile(m, m.down.x, m.down.y) != G.DOWN:
+				problems.append(tag + " 下楼梯不在 DOWN 格")
+			var dist: PackedInt32Array = m.dist
+			var far := -1
+			for i in m.rooms.size():
+				var d := dist[m.rooms[i].cy * w + m.rooms[i].cx]
+				if d < 0:
+					problems.append(tag + " 房间 %d 走不到" % i)
+				if i != m.start:
+					far = maxi(far, d)
+			if not boss and dist[m.down.y * w + m.down.x] != far:
+				problems.append(tag + " 下楼梯不在最远的房间")
+			for y in m.h:
+				for x in w:
+					var tt: int = m.t[y * w + x]
+					if not G.walkable(tt):
+						if m.deco[y * w + x] != 0:
+							problems.append(tag + " 装饰放在了非地面格")
+						continue
+					if x == 0 or y == 0 or x == w - 1 or y == m.h - 1:
+						problems.append(tag + " 地面贴着地图边缘")
+					for dy in [-1, 0, 1]:
+						for dx in [-1, 0, 1]:
+							if G.tile(m, x + dx, y + dy) == G.VOID:
+								problems.append(tag + " 地面旁边有缺口（没墙）")
+			for i in m.torches.size():
+				var tc: Dictionary = m.torches[i]
+				if G.tile(m, tc.cell.x, tc.cell.y) != G.WALL or not G.walkable(G.tile(m, tc.cell.x + tc.face.x, tc.cell.y + tc.face.y)):
+					problems.append(tag + " 火把不在朝向地面的墙上")
+				for j in range(i + 1, m.torches.size()):
+					if absi(tc.cell.x - m.torches[j].cell.x) + absi(tc.cell.y - m.torches[j].cell.y) < 6:
+						problems.append(tag + " 火把太密")
+			var lava: bool = Array(m.deco).has(G.DECO_LAVA)
+			if lava and not m.theme in ["inferno", "abyss"]:
+				problems.append(tag + " 非熔渊 / 深渊出现熔岩")
+	check(problems.is_empty(), "36 张随机地图都合规：房间连通、楼梯位置、首领房、墙体封闭、火把与装饰 %s" % str(problems.slice(0, 4)))
+	info("生成一张 58×58 格子地图平均 %.1f 毫秒" % (gen_us / 1000.0 / n_maps))
+	var a := G.generate(4, 99)
+	var b := G.generate(4, 99)
+	var c := G.generate(4, 100)
+	check(a.t == b.t and a.torches == b.torches and a.deco == b.deco, "同一层 + 同一种子 → 同一张地图")
+	check(a.t != c.t, "换种子 → 换一张地图")
+	check(G.generate(1, 5).theme == "crypt" and G.generate(3, 5).theme == "catacomb" and G.generate(5, 5).theme == "inferno" and G.generate(9, 5).theme == "abyss",
+		"楼层主题：1–2 地窖、3–4 墓穴、5–6 熔渊、7 起深渊")
+
+	# 3D：从测试区走楼梯下到第 1 层
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	check(main.floor_i == 0 and main.stairs.has("down"), "开局在测试区，房间里有下楼梯")
+	main.run_seed = 4242
+	hero.global_position = main.TEST_STAIRS
+	await physics(4)
+	await frames(2)
+	check(main.floor_i == 1, "走进楼梯格 → 到修道院地窖第 1 层")
+	var m1: Dictionary = main.dungeon
+	var up_pos := DungeonBuilder.cell_center(m1.up)
+	check(hero.global_position.distance_to(up_pos) < 4.5 and not main.stairs.up.overlaps_body(hero), "到达后站在上楼梯旁边，而不是楼梯上（%.1f 米）" % hero.global_position.distance_to(up_pos))
+	check(main.dummies.is_empty() and main.monsters.is_empty() and main.stage.find_children("*", "TrainingDummy", true, false).is_empty(), "测试区的木桩和怪物随楼层一起清掉")
+	check(main.level.navigation_mesh.get_polygon_count() > 50 and main.torches.size() > 3, "整层导航已烘焙（%d 个多边形，%.0f 毫秒），%d 支火把" % [main.level.navigation_mesh.get_polygon_count(), main.nav_bake_ms, main.torches.size()])
+	info("第 1 层搭建总耗时 %.0f 毫秒（几何 %.0f、导航 %.0f），%d 个地块" % [main.floor_info.build_ms, main.floor_info.geo_ms, main.floor_info.nav_ms, main.floor_info.chunks])
+	await physics(3)
+	var down_pos := DungeonBuilder.cell_center(main.floor_info.down_cell)
+	var path := NavigationServer3D.map_get_path(hero.get_world_3d().navigation_map, hero.global_position, down_pos, true)
+	var plen := 0.0
+	for i in range(1, path.size()):
+		plen += path[i - 1].distance_to(path[i])
+	check(path.size() > 1 and path[-1].distance_to(down_pos) < 1.0, "导航能从入口走到下楼梯（路径 %.0f 米，直线 %.0f 米）" % [plen, hero.global_position.distance_to(down_pos)])
+
+	# 墙挡路、地面可点
+	var space := hero.get_world_3d().direct_space_state
+	var wall_hits := 0
+	var wall_tries := 0
+	for y in range(1, m1.h - 1):
+		for x in range(1, m1.w - 1):
+			if wall_tries >= 20:
+				break
+			if m1.t[y * m1.w + x] == DungeonGen.FLOOR and m1.t[y * m1.w + x + 1] == DungeonGen.WALL:
+				wall_tries += 1
+				var from := DungeonBuilder.cell_center(Vector2i(x, y)) + Vector3(0, 1, 0)
+				var q := PhysicsRayQueryParameters3D.create(from, from + Vector3(DungeonBuilder.TILE, 0, 0), Layers.WORLD)
+				if not space.intersect_ray(q).is_empty():
+					wall_hits += 1
+	check(wall_tries > 0 and wall_hits == wall_tries, "墙体有碰撞，挡得住（%d / %d 处）" % [wall_hits, wall_tries])
+	var gq := PhysicsRayQueryParameters3D.create(hero.global_position + Vector3(0, 5, 0), hero.global_position + Vector3(0, -5, 0), Layers.GROUND)
+	check(not space.intersect_ray(gq).is_empty(), "脚下有地面碰撞（点地面移动要用）")
+	var wall_bodies: Array = main.stage.find_children("*", "StaticBody3D", true, false).filter(func(bd): return bd.has_meta("fade_meshes"))
+	var mats := {}
+	for bd in wall_bodies:
+		mats[bd.get_meta("fade_meshes")[0].material_override] = true
+	check(wall_bodies.size() > 10 and mats.size() == wall_bodies.size(), "每块墙有自己的材质（相机只淡化挡住主角的那一块）")
+
+	# 走下楼梯：站到楼梯旁，点过去（真实寻路 + 触发）
+	var near := DungeonGen.near_free(m1, main.floor_info.down_cell)
+	hero.global_position = DungeonBuilder.cell_center(near)
+	main.camera.snap()
+	await physics(3)
+	hero.move_to(down_pos)
+	for i in 180:
+		await physics(1)
+		if main.floor_i == 2:
+			break
+	await frames(2)
+	check(main.floor_i == 2, "寻路走到下楼梯 → 第 2 层")
+	# 刚到新楼层有 0.8 秒换层冷却；冷却期间站上楼梯，冷却一结束就换层
+	hero.global_position = DungeonBuilder.cell_center(main.dungeon.up)
+	await physics(4)
+	check(main.floor_i == 2, "刚到新楼层的冷却期内踩楼梯不会立刻来回跳")
+	for i in 120:
+		await physics(1)
+		if main.floor_i == 1:
+			break
+	await frames(2)
+	check(main.floor_i == 1 and main.dungeon.t == m1.t, "冷却结束后仍站在楼梯上 → 上楼回到第 1 层，布局和刚才一样")
+	check(hero.global_position.distance_to(down_pos) < 4.5, "上楼后站在第 1 层的下楼梯旁")
+
+	# 首领层与主题
+	main.go_floor(3)
+	await frames(2)
+	check(main.dungeon.boss_room >= 0 and main.floor_info.down_cell == main.dungeon.boss_stairs and main.stairs.has("down"),
+		"第 3 层（首领层）：首领房中间有下楼梯（首领在 P9 接入之前先开着）")
+	main.go_floor(5)
+	await frames(2)
+	check(main.environment.ambient_light_color == Look.THEME_ENV.inferno.ambient and main.environment.fog_light_color == Look.THEME_ENV.inferno.fog, "熔渊换成暗红的环境光与雾")
+	check(main.stage.find_child("Lava", true, false) != null, "熔渊地面有熔岩裂缝")
+	main.go_floor(0, "up")
+	await frames(2)
+	check(main.floor_i == 0 and main.torches.size() == 4 and main.dummies.size() == 2 and main.stage.find_children("Walls_*", "", true, false).is_empty()
+		and main.environment.ambient_light_color == Look.THEME_ENV.crypt.ambient, "回到测试区：房间、大厅、木桩、火把复原，地下城清掉")
+	check(hero.global_position.distance_to(main.TEST_STAIRS) < 3.5, "从第 1 层上来站在测试区楼梯旁")
+	main.queue_free()
+	await frames(2)

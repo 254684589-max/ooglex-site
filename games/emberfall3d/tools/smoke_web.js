@@ -1,6 +1,6 @@
 // 网页导出冒烟测试（TECH.md 第六节）：打开 play/，在 1280 / 768 / 360 三个宽度下检查
 // 引擎启动（EF_READY）、章节包加载（EF_PACK_OK）、导航烘焙耗时（EF_NAV_*）、点击 / 触屏点木桩后命中（EF_HIT）、
-// 点地面后主角到达（EF_ARRIVED）、
+// 点地面后主角到达（EF_ARRIVED）、走楼梯进入随机地下城第 1 层（EF_FLOOR，P2）、
 // 控制台无报错、页面无横向溢出，并截图。
 //
 // 先在仓库根目录起静态服务器（用 gzip 压缩传输，模拟线上 CDN；python -m http.server 不压缩，测不出解压类问题）：
@@ -50,11 +50,42 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     for (let i = 0; i < 40 && !arrived; i++) { await page.waitForTimeout(250); arrived = logs.find(l => l.startsWith('EF_ARRIVED')); }
     await page.waitForTimeout(600);
     await page.screenshot({ path: path.join(outDir, `ef3d-${name}.png`) });
+    // 走楼梯下到地窖第 1 层（P2）：主角到达后游戏会再报一次楼梯的屏幕坐标；在屏幕内就点过去，
+    // 不在屏幕内（手机竖屏视野窄）就改用 ?floor=1 直接进第 1 层，至少验证网页上能搭出整层地下城
+    let floorLog, floorHow = '';
+    const stairLogs = () => logs.filter(l => l.startsWith('EF_STAIRS_SCREEN'));
+    for (let i = 0; i < 12 && stairLogs().length < 2; i++) await page.waitForTimeout(250);
+    const yMax = h * (mobile ? 0.6 : 0.7);
+    for (let hop = 0; hop < 4 && !floorLog; hop++) {
+      const st = stairLogs().pop();
+      if (!st) break;
+      const sx = +/x=(-?\d+)/.exec(st)[1], sy = +/y=(-?\d+)/.exec(st)[1];
+      const inside = sx > 20 && sx < w - 20 && sy > 120 && sy < yMax;
+      // 楼梯在屏幕外：先朝它的方向走一段（到达后游戏会再报一次楼梯坐标）
+      const px = inside ? sx : Math.min(w - 30, Math.max(30, Math.round(w / 2 + (sx - w / 2) * 0.6)));
+      const py = inside ? sy : Math.min(yMax - 10, Math.max(130, Math.round(h / 2 + (sy - h / 2) * 0.6)));
+      const n0 = stairLogs().length;
+      if (mobile) await page.touchscreen.tap(px, py); else await page.mouse.click(px, py);
+      if (inside) {
+        floorHow = `点楼梯（第 ${hop + 1} 次点击）`;
+        for (let i = 0; i < 60 && !floorLog; i++) { await page.waitForTimeout(250); floorLog = logs.find(l => l.startsWith('EF_FLOOR n=1')); }
+      } else {
+        for (let i = 0; i < 40 && stairLogs().length <= n0 && !floorLog; i++) { await page.waitForTimeout(250); floorLog = logs.find(l => l.startsWith('EF_FLOOR n=1')); }
+        if (floorLog) floorHow = '朝楼梯走时踩到楼梯';
+      }
+    }
+    if (!floorLog) {
+      floorHow = (floorHow ? floorHow + '失败' : '走不到楼梯') + `，改用 ?floor=1 [${stairLogs().pop() || '无楼梯坐标'}]`;
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'floor=1', { waitUntil: 'load' });
+      for (let i = 0; i < 120 && !floorLog; i++) { await page.waitForTimeout(250); floorLog = logs.find(l => l.startsWith('EF_FLOOR n=1')); }
+    }
+    await page.waitForTimeout(1200);
+    await page.screenshot({ path: path.join(outDir, `ef3d-${name}-floor1.png`) });
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && errs.length === 0 && overflow <= 0;
+    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();
