@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -308,7 +308,7 @@ func test_look() -> void:
 	main.apply_quality("medium")
 	check(is_equal_approx(vp.scaling_3d_scale, 1.0) and main.moon.shadow_enabled and main.environment.glow_enabled and vp.msaa_3d == Viewport.MSAA_DISABLED, "中画质：原分辨率、月光阴影、泛光")
 	main.apply_quality("high")
-	check(vp.msaa_3d == Viewport.MSAA_2X and main.torches[0].light.shadow_enabled, "高画质：2 倍抗锯齿、火把投射阴影")
+	check(vp.msaa_3d == Viewport.MSAA_2X and not main.torches[0].light.shadow_enabled, "高画质：2 倍抗锯齿；火把点光源不投阴影（2.6：兼容渲染器里会把墙切出硬边亮斑）")
 	main.apply_quality("bogus")
 	check(main.quality == Look.default_tier(), "未知画质名回落到默认档（电脑：中）")
 	main.queue_free()
@@ -2733,4 +2733,88 @@ func test_fx() -> void:
 	await seconds(1.4)
 	check(not is_instance_valid(dummy_e), "烧尽后释放（倒下后约 2 秒）")
 	main.queue_free()
+	await frames(2)
+
+
+# ---------------- 2.6 画质样板间：程序化模块化地牢件 ----------------
+
+func test_kit() -> void:
+	var m := DungeonGen.generate(4, 20260926)
+	var t0 := Time.get_ticks_usec()
+	Look.floor_normal()
+	Look.brick_normal()
+	var tex_ms := (Time.get_ticks_usec() - t0) / 1000.0
+	var root := Node3D.new()
+	add_child(root)
+	var r := DungeonBuilder.build(root, m, {"seed": 7})
+	check(r.geo_ms < 250.0, "info 一层的地面与墙网格 %.0f 毫秒（整层 %.0f 毫秒；法线贴图首次生成 %.0f 毫秒，只生成一次）" % [r.geo_ms, r.build_ms, tex_ms])
+	# 壁柱都立在墙与可走地面交界的格点上
+	var pts: Array = r.pillars
+	var ok_pts := pts.size() > 20
+	for g in pts:
+		var nw := 0
+		var nf := 0
+		for c in [Vector2i(g.x - 1, g.y - 1), Vector2i(g.x, g.y - 1), Vector2i(g.x - 1, g.y), Vector2i(g.x, g.y)]:
+			var tt := DungeonGen.tile(m, c.x, c.y)
+			if tt == DungeonGen.WALL:
+				nw += 1
+			elif DungeonGen.walkable(tt):
+				nf += 1
+		if nw == 0 or nf == 0:
+			ok_pts = false
+	check(ok_pts, "壁柱 %d 根，都立在墙与地面交界的格点上（墙角、门洞两侧、长墙每 6 米）" % pts.size())
+	# 地面顶点色 = 遮蔽：贴墙最暗、房间中间不遮蔽
+	var floors: Array = root.find_children("Floor_*", "MeshInstance3D", true, false)
+	var walls: Array = root.find_children("Walls_*", "MeshInstance3D", true, false)
+	var lo := 1.0
+	var hi := 0.0
+	var wind_ok := true
+	var meshes: Array = (floors + walls).map(func(mi): return (mi as MeshInstance3D).mesh)
+	meshes.append(DungeonBuilder.face_mesh())
+	meshes.append(DungeonBuilder.pilaster_mesh())
+	for mesh in meshes:
+		var arr: Array = (mesh as Mesh).surface_get_arrays(0)
+		var v: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var n: PackedVector3Array = arr[Mesh.ARRAY_NORMAL]
+		var col: PackedColorArray = arr[Mesh.ARRAY_COLOR]
+		if col.size() != v.size():
+			wind_ok = false
+			continue
+		for i in range(0, v.size(), 3):
+			# Godot 的正面：从法线方向看顺时针 → (p1 - p0) × (p2 - p0) 与法线反向
+			if (v[i + 1] - v[i]).cross(v[i + 2] - v[i]).dot(n[i]) > 0.0:
+				wind_ok = false
+		if floors.any(func(f): return f.mesh == mesh):
+			for c in col:
+				lo = minf(lo, c.r)
+				hi = maxf(hi, c.r)
+	check(wind_ok, "地面、墙、石基、压檐、壁柱的每个三角形都朝外（绕向正确、都有顶点色）")
+	# 墙面件与壁柱用 MultiMesh 摆放，和所在块的墙共用材质（跟着一起半透明）
+	var faces_mm: Array = root.find_children("WallFaces_*", "MultiMeshInstance3D", true, false)
+	var pil_mm: Array = root.find_children("Pilasters_*", "MultiMeshInstance3D", true, false)
+	var n_pil := 0
+	for mmi in pil_mm:
+		n_pil += (mmi as MultiMeshInstance3D).multimesh.instance_count
+	var shared := faces_mm.all(func(mmi): return mmi.material_override == (mmi.get_parent().get_meta("fade_meshes")[0] as MeshInstance3D).material_override)
+	check(not faces_mm.is_empty() and n_pil == pts.size() and shared, "墙面件 %d 块、壁柱 %d 根用 MultiMesh 摆放，与墙共用材质" % [faces_mm.size(), n_pil])
+	check(absf(lo - DungeonBuilder.AO_FLOOR) < 0.01 and hi > 0.99, "地面遮蔽：贴墙处亮度 %.2f、房间中间 %.2f" % [lo, hi])
+	# 石基、壁柱伸进走道的深度小于导航的角色半径（0.4 米），不会挡路
+	check(0.78 / 2.0 < 0.4 and 0.12 < 0.4, "壁柱与石基外凸小于角色半径，导航不用改")
+	# 材质：法线贴图 + 顶点色
+	var fm := (floors[0] as MeshInstance3D).material_override as StandardMaterial3D
+	var wm := (walls[0] as MeshInstance3D).material_override as StandardMaterial3D
+	check(fm.normal_enabled and fm.normal_texture == Look.floor_normal() and wm.normal_enabled and wm.normal_texture == Look.brick_normal() and fm.vertex_color_use_as_albedo and wm.vertex_color_use_as_albedo, "地面与墙用法线贴图，顶点色乘到颜色上")
+	var ni := Look.brick_normal().get_image()
+	ni.decompress()
+	var avg := Color(0, 0, 0)
+	for i in 64:
+		avg += ni.get_pixel((i * 37) % ni.get_width(), (i * 53) % ni.get_height())
+	avg /= 64.0
+	check(avg.b > avg.r and avg.b > avg.g and absf(avg.r - 0.5) < 0.15, "法线贴图大体朝外（平均 %.2f, %.2f, %.2f）" % [avg.r, avg.g, avg.b])
+	check(Look.floor_normal() == Look.floor_normal(), "法线贴图全局缓存")
+	# 火把：木柄、火苗、光晕不投影，点光源不开阴影
+	var tch: Torch = r.torches[0]
+	tch.set_quality("high")
+	check(not tch.light.shadow_enabled and tch.flame.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "火把：高画质也不开点光源阴影，火苗不投影（墙上不再有硬边亮斑）")
+	root.queue_free()
 	await frames(2)

@@ -14,6 +14,9 @@ static var _floor_tex: ImageTexture
 static var _brick_tex: ImageTexture
 static var _radial_tex: GradientTexture2D
 static var _ground_tex: ImageTexture
+static var _floor_nrm: ImageTexture
+static var _brick_nrm: ImageTexture
+static var _heights := {}          # 画石块时顺手记下的高度图（灰缝低、石面高、边缘倒角），用来生成法线贴图
 
 
 # ---------------- 程序化贴图 ----------------
@@ -29,6 +32,8 @@ static func _stones(size: int, rows: int, cols_per_row: Array, base: Color, var_
 	## 画一张可平铺的「石块」贴图：rows 行，每行 cols 块；irregular = true 时每块宽度随机（0.6–1.4 倍），
 	## 石板看起来不像棋盘格。每块：底色小幅抖动 + 细颗粒 + 上左亮边 + 下右暗边；块间灰缝。
 	var img := Image.create(size, size, false, Image.FORMAT_RGB8)
+	var hmap := Image.create(size, size, false, Image.FORMAT_RGB8)
+	_heights[seed_v] = hmap
 	var row_h := size / rows
 	for r in rows:
 		var cols: int = cols_per_row[r % cols_per_row.size()]
@@ -56,7 +61,14 @@ static func _stones(size: int, rows: int, cols_per_row: Array, base: Color, var_
 					var col: Color
 					if xx < g or yy < g:
 						col = grout
+						hmap.set_pixel(px, py, Color(0.05, 0.05, 0.05))
 					else:
+						# 高度：离石块边缘越近越低（倒角），石面带一点起伏和每块不同的倾斜
+						var e := mini(mini(xx - g, yy - g), mini(col_w - 1 - xx, row_h - 1 - yy))
+						var bev := smoothstep(0.0, 6.0, float(e))
+						var tilt := (_h(r, c, seed_v + 41) - 0.5) * 0.12 * (float(xx) / col_w - 0.5)
+						var hv := clampf(0.25 + 0.55 * bev + (_h(px >> 2, py >> 2, stone_seed + 5) - 0.5) * 0.12 + tilt, 0.0, 1.0)
+						hmap.set_pixel(px, py, Color(hv, hv, hv))
 						var n := (_h(px, py, stone_seed) - 0.5) * 0.1
 						col = Color(tone.r + n, tone.g + n, tone.b + n)
 						if xx < g + 3 or yy < g + 3:
@@ -116,6 +128,28 @@ static func brick_texture() -> ImageTexture:
 	return _brick_tex
 
 
+## 法线贴图（2.6 样板间）：由石块高度图生成，火把从侧面照过来时石块的倒角和灰缝有真实的明暗
+static func _normal_from(seed_v: int, strength: float) -> ImageTexture:
+	var hm: Image = (_heights[seed_v] as Image).duplicate()
+	hm.bump_map_to_normal_map(strength)
+	hm.generate_mipmaps()
+	return ImageTexture.create_from_image(hm)
+
+
+static func floor_normal() -> ImageTexture:
+	if _floor_nrm == null:
+		floor_texture()
+		_floor_nrm = _normal_from(11, 6.0)
+	return _floor_nrm
+
+
+static func brick_normal() -> ImageTexture:
+	if _brick_nrm == null:
+		brick_texture()
+		_brick_nrm = _normal_from(29, 6.0)
+	return _brick_nrm
+
+
 static func radial_texture() -> GradientTexture2D:
 	## 中心白、边缘透明的径向渐变（假阴影、光晕共用，靠材质颜色染色）
 	if _radial_tex == null:
@@ -135,9 +169,15 @@ static func radial_texture() -> GradientTexture2D:
 
 # ---------------- 材质 ----------------
 
-static func _triplanar(tex: Texture2D, meters: float, tint: Color) -> StandardMaterial3D:
+static func _triplanar(tex: Texture2D, meters: float, tint: Color, nrm: Texture2D = null) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.albedo_texture = tex
+	if nrm:
+		m.normal_enabled = true
+		m.normal_texture = nrm
+		m.normal_scale = 1.0
+	# 顶点色当作「环境光遮蔽」乘到颜色上（地下城网格在墙脚、墙角写入较暗的顶点色；没有顶点色的网格按白色算，不受影响）
+	m.vertex_color_use_as_albedo = true
 	m.albedo_color = tint
 	m.uv1_triplanar = true
 	m.uv1_world_triplanar = true
@@ -149,12 +189,12 @@ static func _triplanar(tex: Texture2D, meters: float, tint: Color) -> StandardMa
 
 
 static func floor_material() -> StandardMaterial3D:
-	return _triplanar(floor_texture(), 4.0, Color(0.85, 0.82, 0.8))
+	return _triplanar(floor_texture(), 4.0, Color(0.85, 0.82, 0.8), floor_normal())
 
 
 static func wall_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:
 	## 每面墙一个新材质（相机要单独把挡视线的墙变半透明），但共用同一张贴图
-	return _triplanar(brick_texture(), 2.0, tint)
+	return _triplanar(brick_texture(), 2.0, tint, brick_normal())
 
 
 static func rim(m: StandardMaterial3D, amount := 0.3) -> StandardMaterial3D:
