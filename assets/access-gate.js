@@ -28,8 +28,19 @@
     catch (_) { return false; }
   }
 
+  function nativePreviewPage() {
+    if (PATH.indexOf("/apps/whats-latest/") === 0 ||
+        PATH.indexOf("/apps/supply-chain/") === 0 ||
+        PATH.indexOf("/apps/macro-radar/") === 0 ||
+        PATH.indexOf("/apps/finance-column/") === 0) return true;
+    try { return document.documentElement.hasAttribute("data-ooglex-native-preview"); }
+    catch (_) { return false; }
+  }
+
   function protectedPath() {
-    return /^\/(apps|games)(\/|$)/.test(PATH) && !nativePasswordPage();
+    return /^\/(apps|games)(\/|$)/.test(PATH) &&
+           !nativePasswordPage() &&
+           !nativePreviewPage();
   }
 
   function storedToken() {
