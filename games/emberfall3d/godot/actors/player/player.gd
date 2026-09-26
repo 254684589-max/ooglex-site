@@ -337,6 +337,12 @@ func on_enemy_killed(e: Node) -> void:
 		_level_fx()
 
 
+## 换装备后调用（P6）：重算属性并刷新战斗数值、生命法力上限、移动速度
+func stats_changed() -> void:
+	progress.recalc()
+	_apply_progress()
+
+
 func allocate(stat: String) -> bool:
 	if not progress.allocate(stat):
 		return false

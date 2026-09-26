@@ -10,6 +10,7 @@ const ACTIONS := {
 	"potion_hp": [KEY_Q],        # P3：与 V0.1 相同的按键
 	"potion_mp": [KEY_E],
 	"char_panel": [KEY_C],
+	"inv_panel": [KEY_I],        # P6：背包（V0.1 同键）
 }
 
 

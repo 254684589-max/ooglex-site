@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -1508,5 +1508,106 @@ func test_loot() -> void:
 		"第 2 层按生成结果刷怪：%d 只，全是 4 级（第 2 层）" % main.monsters.size())
 	var champs: Array = main.monsters.filter(func(e): return e.def.champ != "")
 	info("第 2 层：%d 只怪，其中精英 %d 只" % [main.monsters.size(), champs.size()])
+	main.queue_free()
+	await frames(2)
+
+
+# ---------- 阶段 P6：背包与装备 ----------
+func _test_item(base: String, rarity: int, ilvl: int, aff := {}, req := 1) -> Dictionary:
+	var it := {"id": 90000 + randi() % 9999, "base": base, "rarity": rarity, "ilvl": ilvl, "aff": aff.duplicate(), "name": "测试" + Act1Data.base(base).name, "req": req}
+	ItemGen.apply_base_stats(it, Act1Data.base(base), ilvl)
+	return it
+
+
+func test_inventory() -> void:
+	# 规则
+	var sh := HeroStats.new_hero()
+	var sword := _test_item("sword", 0, 1)
+	var axe := _test_item("axe", 1, 6, {"dmgp": 12}, 3)
+	sh.eq.weapon = sword
+	sh.inv = [_test_item("cap", 0, 1), axe]
+	check(not Inventory.equip(sh, 1) and sh.eq.weapon == sword, "等级不够（需要 3 级）穿不上")
+	sh.lvl = 3
+	check(Inventory.equip(sh, 1) and sh.eq.weapon == axe and sh.inv[1] == sword and sh.inv.size() == 2, "穿上战斧，原来的短剑放回同一个格子（V0.1 equip）")
+	check(Inventory.unequip(sh, "weapon") and not sh.eq.has("weapon") and sh.inv[-1] == axe, "卸下武器放回背包末尾")
+	while sh.inv.size() < 40:
+		sh.inv.append(_test_item("ring", 1, 1, {"str": 1}))
+	sh.eq.helm = _test_item("helm", 0, 5)
+	check(not Inventory.unequip(sh, "helm") and sh.eq.has("helm"), "背包满了卸不下")
+	var took := Inventory.take(sh, 0)
+	check(took.base == "cap" and sh.inv.size() == 39 and Inventory.take(sh, 99).is_empty(), "从背包取出一件（丢在地上用）")
+	var lines := Inventory.item_lines(axe, 1)
+	var texts := lines.map(func(l): return l[0])
+	check(texts[0] == axe.name and texts.has("+12% 伤害") and lines[-1][1] == "req_bad" and texts[1].begins_with("魔法 · 战斧 · 物品等级 6"), "物品说明：名字、品质与底材、伤害、词缀、需求等级（不够时标红）")
+	var a := {"dmg": [4, 9], "spd": 1.0, "aff": {"str": 5, "crit": 2}, "arm": 0}
+	var c := {"dmg": [2, 7], "spd": 1.15, "aff": {"str": 2, "ls": 3}, "arm": 0}
+	var diff := Inventory.compare(a, c)
+	var dmap := {}
+	for dd in diff:
+		dmap[dd[0]] = dd[1]
+	check(is_equal_approx(dmap.get("武器每秒伤害", 0.0), 1.3) and dmap.get("力量") == 3.0 and dmap.get("暴击几率（%）") == 2.0 and dmap.get("生命偷取（%）") == -3.0 and Inventory.affix_label("regen") == "每秒回复 生命", "与已装备的比较：武器每秒伤害 = (最小+最大)×攻速÷2 的差（同 V0.1），词缀逐项相减 %s" % str(dmap))
+	check(Inventory.compare(a, null).is_empty() and Inventory.compare(a, a).is_empty(), "没有同部位装备或和自己比时不显示比较")
+
+	# 界面
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.spawn_monsters = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var hs: Dictionary = hero.progress.sheet
+	var big := _test_item("lsword", 2, 12, {"dmgp": 30, "str": 5}, 1)
+	var high := _test_item("plate", 1, 20, {"life": 20}, 15)
+	hs.inv = [big, high]
+	var panel: InvPanel = main.inv_panel
+	var ev := InputEventKey.new()
+	ev.physical_keycode = KEY_I
+	ev.pressed = true
+	main._unhandled_key_input(ev)
+	check(panel.visible and get_tree().paused and panel.title.text.contains("背包 2 / 40"), "按 I 打开背包，游戏暂停")
+	await frames(1)
+	var sz := panel.get_global_rect().size
+	check(sz.x <= 470 and sz.y <= 700, "面板尺寸放得进手机竖屏与 1280×720（%d × %d）" % [sz.x, sz.y])
+	check(panel.eq_btns.weapon.text == "剑" and panel.inv_btns[0].text == "剑" and panel.inv_btns[5].text == "", "装备格与背包格显示物品字样，空格为空")
+	panel.inv_btns[0].pressed.emit()
+	await frames(1)
+	var dtexts := panel.detail.get_children().filter(func(n): return n is Label and not n.is_queued_for_deletion()).map(func(n): return n.text)
+	check(dtexts.has(big.name) and dtexts.any(func(t): return t.begins_with("与已装备的「")) and dtexts.any(func(t): return t.begins_with("▲")), "选中背包里的长剑：显示说明和与现在短剑的比较")
+	await frames(1)
+	var sz2 := panel.get_global_rect().size
+	check(sz2.y <= 700 and absf(sz2.y - sz.y) < 1.0, "选中物品、说明很长时面板尺寸不变（%d）" % sz2.y)
+	var wmax: int = hero.stats.weapon_max
+	check(not panel.act_equip.disabled and panel.act_unequip.disabled, "可以装备（「卸下」置灰）")
+	panel.act_equip.pressed.emit()
+	await frames(1)
+	check(hs.eq.weapon == big and hs.inv[0].base == "sword" and hero.stats.weapon_max > wmax, "装备后属性立即生效（伤害上限 %d → %d）" % [wmax, hero.stats.weapon_max])
+	check(not panel.act_unequip.disabled and panel.act_equip.disabled and panel.act_drop.disabled, "选中的是身上的装备：只能「卸下」")
+	panel.inv_btns[1].pressed.emit()
+	await frames(1)
+	check(panel.act_equip.disabled and (panel.inv_btns[1].get_theme_stylebox("normal") as StyleBoxFlat).bg_color.r > 0.3, "需要 15 级的板甲：不能装备，格子标红")
+	panel.eq_btns.weapon.pressed.emit()
+	await frames(1)
+	panel.act_unequip.pressed.emit()
+	await frames(1)
+	check(not hs.eq.has("weapon") and hs.inv[-1] == big, "卸下武器回到背包")
+	var gi_before := get_tree().get_nodes_in_group("ground_item").size()
+	panel.inv_btns[0].pressed.emit()
+	await frames(1)
+	var dropped_name: String = hs.inv[0].name
+	panel.act_drop.pressed.emit()
+	await frames(2)
+	var gis := get_tree().get_nodes_in_group("ground_item")
+	check(gis.size() == gi_before + 1 and gis.any(func(g): return g.title() == dropped_name) and hs.inv.size() == 2, "丢在地上：背包少一件，脚边出现同名物品（可以再捡回来）")
+	ev.physical_keycode = KEY_C
+	main._unhandled_key_input(ev)
+	check(main.char_panel.visible and not panel.visible and get_tree().paused, "按 C 打开角色面板时背包自动关上（同时只开一个）")
+	main.char_panel.close()
+	check(not get_tree().paused, "关上后游戏继续")
+	main.inv_btn.pressed.emit()
+	check(panel.visible, "右上角「背包」按钮也能打开")
+	ev.physical_keycode = KEY_I
+	panel._unhandled_key_input(ev)
+	check(not panel.visible and not get_tree().paused, "再按 I 关闭")
 	main.queue_free()
 	await frames(2)

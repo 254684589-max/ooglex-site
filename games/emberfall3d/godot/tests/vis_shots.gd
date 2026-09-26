@@ -72,6 +72,21 @@ func _ready() -> void:
 		var p3: String = out.path_join("fight%d%s.png" % [f, ("-" + tier) if tier != "" else ""])
 		img3.save_png(p3)
 		print("SHOT ", p3, " draw_calls=", Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), " primitives=", Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME), " monsters=", main.monsters.size())
+	# P6：背包面板（放几件随机装备，选中一件看说明与比较）
+	var irng := RandomNumberGenerator.new()
+	irng.seed = 26
+	for i in 14:
+		hero.progress.sheet.inv.append(ItemGen.generate(irng, 8, {"mul": 4.0}))
+	hero.progress.sheet.inv.append(ItemGen.generate(irng, 8, {"rarity": 2, "base": "lsword"}))
+	main.inv_panel.open()
+	main.inv_panel._select({"where": "inv", "idx": 14})
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var img4 := get_viewport().get_texture().get_image()
+	var p4: String = out.path_join("inv%s.png" % (("-" + tier) if tier != "" else ""))
+	img4.save_png(p4)
+	print("SHOT ", p4)
+	main.inv_panel.close()
 	get_tree().quit()
 
 

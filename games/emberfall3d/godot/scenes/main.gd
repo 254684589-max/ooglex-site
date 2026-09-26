@@ -27,6 +27,8 @@ var char_btn: Button
 var btn_hp: Button
 var btn_mp: Button
 var char_panel: CharPanel
+var inv_btn: Button
+var inv_panel: InvPanel
 var log_label: Label          # 左侧消息（拾取、背包已满……最近 4 条，几秒后淡出）
 var log_lines: Array = []     # [文字, 颜色, 剩余秒数]
 var loot_rng := RandomNumberGenerator.new()
@@ -171,6 +173,7 @@ func _process(delta: float) -> void:
 		log_label.text = "\n".join(lines)
 		log_label.add_theme_color_override("font_color", log_lines[-1][1] if not log_lines.is_empty() else Color.WHITE)
 		char_btn.text = ("属性 +%d" % sh.pts) if sh.pts > 0 else ("属性（C）" if keys else "属性")
+		inv_btn.text = "背包（I）" if keys else "背包"
 		if btn_hp:
 			btn_hp.text = "血 %d" % sh.pots.hp
 			btn_mp.text = "蓝 %d" % sh.pots.mp
@@ -441,6 +444,24 @@ func on_enemy_died(e: Node) -> void:
 		g.global_position = Vector3(p.x, 0, p.z)
 
 
+func _toggle_panel(p: Control) -> void:
+	## 角色面板与背包面板同时只开一个
+	for other in [char_panel, inv_panel]:
+		if other != p and other.visible:
+			other.close()
+	p.toggle()
+
+
+func _drop_item(it: Dictionary) -> void:
+	## 背包里「丢在地上」：放在主角脚边，之后还能捡回来（V0.1 drop）
+	var g := GroundItem.make({"item": it})
+	stage.add_child(g)
+	var a := loot_rng.randf() * TAU
+	var p := NavigationServer3D.map_get_closest_point(get_world_3d().navigation_map, hero.global_position + Vector3(cos(a), 0, sin(a)) * 0.8)
+	g.global_position = Vector3(p.x, 0, p.z)
+	add_log("丢下 " + String(it.name), GroundItem.RARITY_COLORS[int(it.rarity)])
+
+
 func add_log(text: String, c: Color) -> void:
 	log_lines.append([text, c, 5.0])
 	if log_lines.size() > 4:
@@ -488,8 +509,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；C 属性；WASD 移动；滚轮缩放；走到楼梯上换层"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P5 怪物与掉落）\n模型仍是占位几何体。南边大厅与楼梯下的随机地下城里有怪物，打倒后掉金币、药水和装备（点它拾取）。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；C 属性；I 背包；WASD 移动；滚轮缩放；走到楼梯上换层"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P6 背包与装备）\n模型仍是占位几何体。南边大厅与楼梯下的随机地下城里有怪物，打倒后掉金币、药水和装备（点它拾取）。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -624,11 +645,29 @@ func _build_ui() -> void:
 	char_btn.offset_bottom = 56
 	char_btn.add_theme_font_size_override("font_size", 16)
 	char_btn.focus_mode = Control.FOCUS_ALL
-	char_btn.pressed.connect(func(): char_panel.toggle())
+	char_btn.pressed.connect(func(): _toggle_panel(char_panel))
 	layer.add_child(char_btn)
 	char_panel = CharPanel.new()
 	layer.add_child(char_panel)
 	char_panel.bind(hero)
+	# 「背包」按钮（P6）在「属性」左边；两个面板同时只开一个
+	# 不用 char_btn.duplicate()：那会把「属性」按钮的点击回调一起复制过来
+	inv_btn = Button.new()
+	inv_btn.anchor_left = 1.0
+	inv_btn.anchor_right = 1.0
+	inv_btn.offset_left = -290
+	inv_btn.offset_right = -158
+	inv_btn.offset_top = 12
+	inv_btn.offset_bottom = 56
+	inv_btn.add_theme_font_size_override("font_size", 16)
+	inv_btn.pressed.connect(func(): _toggle_panel(inv_panel))
+	layer.add_child(inv_btn)
+	inv_panel = InvPanel.new()
+	layer.add_child(inv_panel)
+	inv_panel.bind(hero)
+	inv_panel.drop_requested.connect(_drop_item)
+	hero.ui_blockers.append(inv_btn)
+	hero.ui_blockers.append(inv_panel)
 	hero.ui_blockers.append(char_btn)
 	hero.ui_blockers.append(char_panel)
 	hero.message.connect(add_log)
@@ -708,7 +747,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		elif event.is_action("potion_mp"):
 			hero.drink_potion("mp")
 		elif event.is_action("char_panel") and not char_panel.visible:
-			char_panel.open()
+			_toggle_panel(char_panel)
+			get_viewport().set_input_as_handled()
+			return
+		elif event.is_action("inv_panel") and not inv_panel.visible:
+			_toggle_panel(inv_panel)
 			get_viewport().set_input_as_handled()
 			return
 	# F7：轮换画质档（开发与试玩用；正式设置界面在后续步骤）
