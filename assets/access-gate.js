@@ -45,7 +45,7 @@
     style.id = "ooglex-registration-preview-style";
     style.textContent =
       "html.ooglex-access-checking body{max-height:46vh!important;overflow:hidden!important}" +
-      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483000;min-height:520px;display:flex;justify-content:center;align-items:flex-start;padding:72px 20px 120px;background:linear-gradient(to bottom,rgba(11,14,19,0),#0b0e13 54px,#0b0e13 100%);color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483647;min-height:520px;display:flex;justify-content:center;align-items:flex-start;padding:72px 20px 120px;background:linear-gradient(to bottom,rgba(11,14,19,0),#0b0e13 54px,#0b0e13 100%);color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
       "#ooglex-registration-preview .ogx-access-card{width:min(560px,calc(100vw - 32px));padding:26px 28px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:#10141b;box-shadow:0 24px 72px rgba(0,0,0,.26);text-align:center}" +
       "#ooglex-registration-preview .ogx-access-kicker{font:700 11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.15em;color:#8b93a1}" +
       "#ooglex-registration-preview h2{margin:10px 0 8px;font-size:24px;line-height:1.25;color:#f1f5f9}" +
@@ -70,8 +70,8 @@
     var body = document.body;
     if (!body) return;
     var total = Math.max(body.scrollHeight || 0, root.scrollHeight || 0, root.clientHeight || 0, window.innerHeight || 0);
-    var cutoff = Math.max(80, Math.floor(total * 0.10));
-    var cap = cutoff + 520;
+    var cutoff = Math.max(220, Math.floor(total * 0.10));
+    var cap = cutoff + Math.max(560, window.innerHeight || 0);
     body.style.setProperty("height", cap + "px", "important");
     body.style.setProperty("max-height", cap + "px", "important");
     body.style.setProperty("overflow", "hidden", "important");
