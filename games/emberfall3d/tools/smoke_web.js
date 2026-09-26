@@ -1,7 +1,7 @@
 // 网页导出冒烟测试（TECH.md 第六节）：在 1280 / 768 / 360 三个宽度下，
 // 先打开 play/（默认第 0 层是烬原镇，P7）：引擎启动、点 NPC 走过去后弹出对话（EF_DIALOG），截图；
 // 再打开 play/?test=1（灰盒测试区）检查：引擎启动（EF_READY）、章节包加载（EF_PACK_OK）、导航烘焙耗时（EF_NAV_*）、点击 / 触屏点木桩后命中（EF_HIT）、
-// 点地面后主角到达（EF_ARRIVED）、走楼梯进入随机地下城第 1 层（EF_FLOOR，P2）、
+// 点地面后主角到达（EF_ARRIVED）、走楼梯进入随机地下城第 1 层（EF_FLOOR，P2）、按 T 打开回城传送门（EF_PORTAL，P8）、
 // 控制台无报错、页面无横向溢出，并截图。
 //
 // 先在仓库根目录起静态服务器（用 gzip 压缩传输，模拟线上 CDN；python -m http.server 不压缩，测不出解压类问题）：
@@ -112,6 +112,20 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     }
     await page.waitForTimeout(1200);
     await page.screenshot({ path: path.join(outDir, `ef3d-${name}-floor1.png`) });
+    // 回城卷轴（P8）：开局带 1 张，在第 1 层按 T 打开传送门（EF_PORTAL）；Tab 打开自动地图截图
+    await page.keyboard.press('t');
+    let portal;
+    for (let i = 0; i < 8 && !portal; i++) { await page.waitForTimeout(250); portal = logs.find(l => l.startsWith('EF_PORTAL open')); }
+    await page.keyboard.press('Tab');
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(outDir, `ef3d-${name}-map.png`) });
+    await page.keyboard.press('Tab');
+    // 任务日志（P8）：按 J 打开截图
+    await page.keyboard.press('j');
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(outDir, `ef3d-${name}-quests.png`) });
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
     // 角色面板（P3）：按 C 打开截图，再按 Esc 关闭
     await page.keyboard.press('c');
     await page.waitForTimeout(500);
@@ -126,9 +140,9 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     await page.waitForTimeout(300);
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!town && !!dialog && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
+    const ok = !!town && !!dialog && !!portal && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | 回城卷轴：${portal || '没有打开'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

@@ -194,7 +194,7 @@ func refresh() -> void:
 	var price := price_of(sel)
 	if sel.kind == "pot":
 		var l := Label.new()
-		l.text = {"hp": "回复 45% 生命 + 10", "mp": "回复 50% 法力 + 5", "tp": "打开一道回城的传送门（P8 起可用）"}[sel.pot]
+		l.text = {"hp": "回复 45% 生命 + 10", "mp": "回复 50% 法力 + 5", "tp": "在地下打开一道回镇上的传送门（T 键 / 手机「城」）"}[sel.pot]
 		l.add_theme_color_override("font_color", Color(0.9, 0.85, 0.76))
 		detail.add_child(l)
 	else:

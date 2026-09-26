@@ -18,7 +18,7 @@ signal hurt(amount: int)
 signal died
 signal respawned
 signal message(text: String, color: Color)     # 屏幕左侧的消息（拾取、背包已满等）
-signal talk_requested(npc: Npc)                # 走到 NPC 身边（P7）
+signal talk_requested(npc: Node3D)             # 走到 NPC（P7）或传送石 / 传送门 / 水井（P8，InteractSpot）身边
 
 const LAYER_WORLD := Layers.WORLD
 const LAYER_GROUND := Layers.GROUND
@@ -52,7 +52,7 @@ var mp := 0.0
 var max_mp := 1.0
 var last_gold_lost := 0
 var pickup_target: GroundItem = null
-var talk_target: Npc = null
+var talk_target: Node3D = null     # 要走过去对话 / 使用的 NPC 或 InteractSpot
 var in_town := false                   # 镇上不能施法（V0.1 castSkill）
 var rng := RandomNumberGenerator.new()
 var attack_target: Node3D
@@ -233,16 +233,16 @@ func click_at(screen_pos: Vector2) -> void:
 		_show_marker(last_target)
 
 
-## 屏幕上离点击位置最近的 NPC（身体或名字在 50 像素以内）
-func pick_npc(screen_pos: Vector2) -> Npc:
+## 屏幕上离点击位置最近的 NPC 或可使用的东西（传送石、传送门、水井；身体或名字在 50 像素以内）
+func pick_npc(screen_pos: Vector2) -> Node3D:
 	if camera == null:
 		return null
-	var best: Npc = null
+	var best: Node3D = null
 	var bd := 50.0 * get_window().content_scale_factor
-	for n in get_tree().get_nodes_in_group("npc"):
+	for n in get_tree().get_nodes_in_group("npc") + get_tree().get_nodes_in_group("interact"):
 		if camera.is_position_behind(n.global_position):
 			continue
-		for h in [0.8, 1.5, 2.15]:
+		for h in ([0.8, 1.5, 2.15] if n is Npc else n.pick_heights):
 			var d := camera.unproject_position(n.global_position + Vector3(0, h, 0)).distance_to(screen_pos)
 			if d < bd:
 				bd = d
@@ -362,6 +362,15 @@ func on_enemy_killed(e: Node) -> void:
 		hp = max_hp
 		mp = max_mp
 		print("EF_LEVEL lvl=%d pts=%d" % [progress.sheet.lvl, progress.sheet.pts])
+		_level_fx()
+
+
+## 任务奖励的经验（P8）：升级时同击杀升级一样回满并放光环
+func gain_xp(v: int) -> void:
+	if progress.gain_xp(v) > 0:
+		_apply_progress()
+		hp = max_hp
+		mp = max_mp
 		_level_fx()
 
 
@@ -775,7 +784,7 @@ func _physics_process(delta: float) -> void:
 	if talk_target != null:
 		if not is_instance_valid(talk_target):
 			talk_target = null
-		elif Vector2(talk_target.global_position.x - global_position.x, talk_target.global_position.z - global_position.z).length() <= Npc.TALK_RANGE:
+		elif Vector2(talk_target.global_position.x - global_position.x, talk_target.global_position.z - global_position.z).length() <= (Npc.TALK_RANGE if talk_target is Npc else talk_target.use_range):
 			var npc := talk_target
 			talk_target = null
 			stop()

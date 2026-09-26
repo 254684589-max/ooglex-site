@@ -11,6 +11,9 @@ const ACTIONS := {
 	"potion_mp": [KEY_E],
 	"char_panel": [KEY_C],
 	"inv_panel": [KEY_I],        # P6：背包（V0.1 同键）
+	"town_portal": [KEY_T],      # P8：回城卷轴（V0.1 同键）
+	"map_toggle": [KEY_TAB],     # P8：自动地图（V0.1 同键）
+	"quest_panel": [KEY_J],      # P8：任务日志（V0.1 放在角色面板里，3D 版单独一个面板）
 }
 
 

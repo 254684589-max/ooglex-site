@@ -55,6 +55,16 @@ func add_kill(mon_xp: int, mon_lvl: int) -> int:
 	return ups
 
 
+## 任务奖励等直接给的经验（V0.1 gainXp），返回升了几级
+func gain_xp(v: int) -> int:
+	var ups := HeroStats.gain_xp(sheet, v)
+	if ups > 0:
+		S = HeroStats.calc(sheet)
+		leveled.emit(sheet.lvl)
+	changed.emit()
+	return ups
+
+
 func allocate(stat: String) -> bool:
 	if sheet.pts <= 0 or not stat in ["str", "vit", "mag"]:
 		return false

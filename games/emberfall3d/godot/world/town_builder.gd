@@ -104,10 +104,16 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		roof.name = "Roof_" + String(hs.id)
 		region.add_child(roof)
 
-	# 道具
+	# 道具（传送石、水井可以点：InteractSpot，P8）
 	var torches: Array = info.torches.duplicate()
+	var use_spots: Array = []
 	for p in m.props:
 		var pos := TownGen.to_world(p.x, p.y)
+		if p.type in ["wp", "well"]:
+			var sp := InteractSpot.make(p.type, "传送石" if p.type == "wp" else "")
+			parent.add_child(sp)
+			sp.position = pos
+			use_spots.append(sp)
 		match p.type:
 			"fire":
 				for k in 3:
@@ -136,7 +142,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 				water.position = pos + Vector3(0, 0.8, 0)
 				region.add_child(water)
 			"wp":
-				# 传送石（功能在 P8）：竖立的石碑，符文发蓝光
+				# 传送石：竖立的石碑，符文发蓝光
 				var stone := MeshInstance3D.new()
 				var sb := BoxMesh.new()
 				sb.size = Vector3(0.8, 1.8, 0.5)
@@ -207,6 +213,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 
 	info.torches = torches
 	info.npcs = npcs
+	info.spots = use_spots
 	info.build_ms = (Time.get_ticks_usec() - t0) / 1000.0
 	return info
 

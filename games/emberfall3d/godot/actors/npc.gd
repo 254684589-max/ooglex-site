@@ -1,7 +1,8 @@
 class_name Npc
 extends Node3D
 ## 烬原镇的人物（P7）：老祭司伊莲、铁匠格伦、药剂师玛拉（V0.1 genTown 的 npcs）。
-## 点他们走过去对话（Player.talk_target）；头顶显示名字，之后的任务提示「!」「?」在 P8。外观是占位几何体。
+## P8 加上学徒托比（交了「铁匠的学徒」后回到镇上）。
+## 点他们走过去对话（Player.talk_target）；头顶显示名字与任务提示（「!」有新任务、「?」可以交任务，Quests.mark）。外观是占位几何体。
 
 const TALK_RANGE := 2.4
 
@@ -30,7 +31,9 @@ func _ready() -> void:
 	_t = randf() * 5.0
 	_body = Node3D.new()
 	add_child(_body)
-	var robe: Color = {"priest": Color(0.82, 0.8, 0.74), "smith": Color(0.38, 0.26, 0.16), "alch": Color(0.24, 0.36, 0.26)}.get(look, Color(0.5, 0.45, 0.4))
+	var robe: Color = {"priest": Color(0.82, 0.8, 0.74), "smith": Color(0.38, 0.26, 0.16), "alch": Color(0.24, 0.36, 0.26), "boy": Color(0.5, 0.4, 0.26)}.get(look, Color(0.5, 0.45, 0.4))
+	if look == "boy":
+		_body.scale = Vector3.ONE * 0.78
 	var skin := Color(0.78, 0.62, 0.5)
 	_part(LowPoly.cylinder(0.2, 0.34, 1.35), Vector3(0, 0.68, 0), robe)
 	_part(LowPoly.sphere(0.19), Vector3(0, 1.55, 0), skin)
@@ -47,6 +50,9 @@ func _ready() -> void:
 		"alch":
 			_part(LowPoly.sphere(0.13), Vector3(-0.28, 0.9, 0.12), Color(0.45, 0.3, 0.2))              # 挎包
 			_part(LowPoly.sphere(0.06), Vector3(0.3, 1.05, 0.2), Color(0.3, 0.9, 0.5), 2.0)            # 手里的药瓶
+		"boy":
+			_part(LowPoly.cylinder(0.17, 0.2, 0.12), Vector3(0, 1.66, 0), Color(0.3, 0.2, 0.12))        # 乱蓬蓬的头发
+			_part(EnemyBase.box(Vector3(0.36, 0.14, 0.05)), Vector3(0, 0.9, 0.3), Color(0.25, 0.18, 0.12)) # 皮围裙
 	add_child(Look.blob_shadow(0.4))
 	label = Label3D.new()
 	label.text = npc_name
@@ -67,8 +73,14 @@ func _ready() -> void:
 	mark.font_size = 36
 	mark.outline_size = 8
 	mark.modulate = Color(1.0, 0.85, 0.2)
-	mark.position.y = 2.5
+	mark.position.y = 2.8
 	add_child(mark)
+
+
+## 头顶任务提示（「!」「?」或空）
+func set_mark(m: String) -> void:
+	mark.text = m
+	mark.modulate = Color(1.0, 0.85, 0.2) if m == "!" else Color(0.75, 0.9, 1.0)
 
 
 func _part(mesh: Mesh, pos: Vector3, c: Color, glow := 0.0) -> MeshInstance3D:

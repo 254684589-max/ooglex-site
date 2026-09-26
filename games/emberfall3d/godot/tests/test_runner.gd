@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -1673,7 +1673,8 @@ func test_town() -> void:
 	check(Vector2(on_fire.x - fire.x, on_fire.z - fire.z).length() > 0.5, "篝火、水井等道具挡路（导航绕开）")
 	check(not hero.cast_skill("fireball") and hero.last_skill_fail == "镇上不能施法", "镇上不能施法（V0.1）")
 
-	# 点伊莲 → 走过去 → 对话，回满生命法力
+	# 点伊莲 → 走过去 → 对话，回满生命法力（先把任务设成进行中，这里只测日常对话；任务在 quests 组）
+	sh.q = {"q1": 1, "q2": 1, "q3": 0}
 	var elin: Npc = main.npc("elin")
 	hero.hp = 10.0
 	hero.mp = 1.0
@@ -1690,7 +1691,7 @@ func test_town() -> void:
 	check(dp.visible and get_tree().paused and dp.who.text == "老祭司 伊莲", "走到伊莲身边打开对话，游戏暂停")
 	check(hero.hp == hero.max_hp and hero.mp == hero.max_mp, "伊莲为你恢复全部生命与法力")
 	var btn_texts: Array = dp.opts.get_children().map(func(b): return b.text)
-	check(btn_texts == ["关于烬原镇", "告辞"], "伊莲的选项：关于烬原镇 / 告辞（任务对话在 P8）%s" % str(btn_texts))
+	check(btn_texts == ["关于烬原镇", "告辞"], "伊莲的选项（没有任务可接时）：关于烬原镇 / 告辞%s" % str(btn_texts))
 	dp.opts.get_child(0).pressed.emit()
 	await frames(1)
 	var body_texts: Array = dp.body.get_children().map(func(l): return l.text)
@@ -1771,5 +1772,219 @@ func test_town() -> void:
 	await seconds(3.5)
 	await frames(3)
 	check(main.floor_i == 0 and not hero.dead and hero.global_position.distance_to(TownGen.to_world(19.5, 21.5)) < 0.5 and sh.gold == 180, "倒下后在烬原镇篝火旁复活，掉 10% 金币")
+	main.queue_free()
+	await frames(2)
+
+
+## P8：任务、传送石、回城卷轴、小地图
+func _logs(main: Node) -> String:
+	return " | ".join(main.log_lines.map(func(l): return l[0]))
+
+
+func test_quests() -> void:
+	# ---- 规则（Quests，同 V0.1 talk / npcMark / goFloor / bossDown） ----
+	var sh := HeroStats.new_hero()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 8
+	check(Quests.mark("elin", sh) == "!" and Quests.mark("gren", sh) == "" and Quests.branch("elin", sh) == "elin_q1_offer" and Quests.log_entries(sh).is_empty(), "新角色：伊莲头顶「!」，格伦没有标记，任务日志为空")
+	Quests.accept("elin_q1_offer", sh, rng)
+	check(sh.q.q1 == 1 and Quests.mark("elin", sh) == "" and Quests.mark("gren", sh) == "!", "接下「地窖里的钟声」后格伦有新任务")
+	check(Quests.on_floor(sh, 1) == "" and sh.q.q1 == 1 and sh.maxFloor == 1, "到第 1 层：任务不变，记下最深到过第 1 层")
+	check(Quests.on_floor(sh, 2) != "" and sh.q.q1 == 2 and Quests.mark("elin", sh) == "?", "到第 2 层：任务可交付，伊莲头顶「?」")
+	var pots0: int = sh.pots.hp
+	var r := Quests.accept("elin_q1_turnin", sh, rng)
+	check(sh.q.q1 == 3 and sh.pots.hp == pots0 + 3 and r.xp == 120 and r.retalk, "交任务：生命药水 +3、法力药水 +2、120 经验（V0.1）")
+	check(Quests.branch("elin", sh) == "" and Quests.elin_idle(sh) == Act1Data.dialogs().elin.idle.default, "伊莲没有新任务时说日常的话")
+	Quests.accept("gren_q2_offer", sh, rng)
+	check(Quests.elin_idle(sh).begins_with("格伦的学徒"), "「铁匠的学徒」进行中，伊莲的话随之变化")
+	check(Quests.on_boss_down(sh, "mog").log != "" and sh.q.q2 == 2 and Quests.mark("gren", sh) == "?", "击败莫格（P9 调用）：救出托比，格伦头顶「?」")
+	r = Quests.accept("gren_q2_turnin", sh, rng)
+	var w: Dictionary = r.item
+	check(sh.q.q2 == 3 and w.rarity == 2 and Act1Data.base(w.base).slot == "weapon" and w.ilvl >= 8 and r.xp == 400 and r.toby, "交任务：稀有武器（物品等级至少 8）+ 400 经验，托比回镇（V0.1）")
+	check(Quests.branch("elin", sh) == "elin_q3_offer" and Quests.mark("elin", sh) == "!", "托比得救后伊莲给「余烬之心」")
+	var sh2 := HeroStats.new_hero()
+	sh2.q = {"q1": 3, "q2": 1, "q3": 0}
+	sh2.maxFloor = 4
+	check(Quests.branch("elin", sh2) == "elin_q3_offer", "或者到过第 4 层，伊莲也给「余烬之心」（V0.1）")
+	Quests.accept("elin_q3_offer", sh, rng)
+	var ob := Quests.on_boss_down(sh, "mordan")
+	check(sh.q.q3 == 2 and ob.epilogue and Quests.mark("elin", sh) == "?", "击败摩登：播放结局文字，伊莲头顶「?」")
+	r = Quests.accept("elin_q3_turnin", sh, rng)
+	check(sh.q.q3 == 3 and sh.won and r.item.rarity == 3 and r.xp == 1500, "交任务：传奇物品 + 1500 经验，通关（V0.1 won）")
+	var le := Quests.log_entries(sh)
+	check(le.size() == 3 and le.all(func(e): return e.state == 3) and le[1].title == "铁匠的学徒", "任务日志三条全部完成")
+
+	# ---- 场景：镇上接任务、交任务 ----
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var ps: Dictionary = hero.progress.sheet
+	var dp: DialogPanel = main.dialog_panel
+	var elin: Npc = main.npc("elin")
+	check(elin.mark.text == "!" and main.npc("gren").mark.text == "" and _logs(main).contains("头顶有「!」"), "开局伊莲头顶「!」，左侧提示去找她")
+	# 传送石：还没下过地窖时不能用
+	var wp: InteractSpot = null
+	var well: InteractSpot = null
+	for s in get_tree().get_nodes_in_group("interact"):
+		if s.kind == "wp":
+			wp = s
+		elif s.kind == "well":
+			well = s
+	check(wp != null and well != null and wp.global_position.distance_to(TownGen.to_world(21.5, 22.5)) < 0.5, "镇上有传送石与水井，可以点")
+	main._use_spot(wp)
+	check(not dp.visible and _logs(main).contains("传送石沉默着"), "还没到过地下任何一层：传送石沉默（V0.1）")
+	hero.hp = 5.0
+	main._use_spot(well)
+	check(hero.hp == hero.max_hp, "水井回满生命（V0.1）")
+	main.cast_town_portal()
+	check(_logs(main).contains("你已经在镇上了") and main.tp.is_empty(), "镇上用不了回城卷轴")
+
+	main._talk(elin)
+	var bt: Array = dp.opts.get_children().map(func(b): return b.text)
+	check(dp.visible and String(dp.body.get_child(0).text).begins_with("又一个旅人") and bt == ["我去地窖看看。", "告辞"], "伊莲讲述钟声的来历，给出任务 %s" % str(bt))
+	dp.opts.get_child(0).pressed.emit()
+	await frames(1)
+	check(not dp.visible and ps.q.q1 == 1 and elin.mark.text == "" and main.npc("gren").mark.text == "!", "接下任务：对话关闭，伊莲的「!」消失，格伦出现「!」")
+	main._talk(main.npc("gren"))
+	bt = dp.opts.get_children().map(func(b): return b.text)
+	check(bt == ["我会把托比带回来。", "先看看你的货", "告辞"], "格伦托付学徒的事，也可以先看货 %s" % str(bt))
+	dp.opts.get_child(1).pressed.emit()
+	check(main.shop_panel.visible and main.shop_panel.which == "smith" and ps.q.q2 == 0, "「先看看你的货」打开货架，任务还没接")
+	main.shop_panel.close()
+	main._talk(main.npc("gren"))
+	dp.opts.get_child(0).pressed.emit()
+	check(ps.q.q2 == 1 and main.npc("gren").mark.text == "", "接下「铁匠的学徒」")
+	# 任务日志
+	main._toggle_panel(main.quest_panel)
+	var qp: QuestPanel = main.quest_panel
+	await frames(1)
+	check(qp.visible and get_tree().paused and qp.list.get_child_count() == 2, "任务日志（J）列出两条进行中的任务，打开时暂停")
+	var qs := qp.get_combined_minimum_size()
+	check(qs.x <= 360 and qs.y <= 700, "任务日志放得进手机竖屏 %s" % str(qs))
+	qp.close()
+	check(not get_tree().paused, "关上任务日志游戏继续")
+
+	# 下到第 2 层：任务可交付；小地图与视野
+	main.go_floor(2)
+	await frames(2)
+	check(ps.q.q1 == 2 and ps.maxFloor == 2 and _logs(main).contains("回镇上告诉伊莲"), "到第 2 层：「地窖里的钟声」可交付")
+	var mm: Minimap = main.minimap
+	var n_seen := 0
+	for v in main.seen:
+		n_seen += v
+	var up_cell: Vector2i = main.dungeon.up
+	check(n_seen > 20 and n_seen < main.seen.size() / 3 and main.cell_visible(hero.global_position), "视野：只记下主角周围看得见的格子（%d / %d）" % [n_seen, main.seen.size()])
+	check(mm.visible and mm.size.x >= 110 and mm.size.x <= 160 and not mm.big, "右上角小地图 %s" % str(mm.size))
+	main.toggle_map()
+	await frames(1)
+	check(mm.big and mm.size == mm.get_viewport_rect().size, "Tab / 「地图」打开全屏自动地图")
+	main.toggle_map()
+	check(not mm.big, "再按一次关闭")
+	var c0: Vector2 = mm.project(hero.global_position)
+	var ahead: Vector3 = hero.global_position - main.camera.global_transform.basis.z.slide(Vector3.UP).normalized() * 4.0
+	check(c0.distance_to(mm.size / 2.0) < 0.5 and mm.project(ahead).y < c0.y - 2.0, "小地图以主角为中心，镜头前方在上")
+
+	# 回城卷轴：开门 → 穿过去回镇 → 从镇上那头回到原处
+	ps.pots.tp = 1
+	main.cast_town_portal()
+	await frames(1)
+	var portal: InteractSpot = null
+	for s in get_tree().get_nodes_in_group("interact"):
+		if s.kind == "portal":
+			portal = s
+	check(ps.pots.tp == 0 and portal != null and portal.to == "town" and main.tp.floor == 2, "回城卷轴：用掉一张，身边打开蓝色传送门")
+	main.cast_town_portal()
+	check(_logs(main).contains("没有回城卷轴"), "没有卷轴时提示去玛拉处买")
+	var back_pos: Vector3 = main.tp.pos
+	await seconds(0.9)
+	hero.global_position = portal.global_position
+	for i in 90:
+		await physics(1)
+		if main.floor_i == 0:
+			break
+	await frames(2)
+	var tportal: InteractSpot = null
+	for s in get_tree().get_nodes_in_group("interact"):
+		if s.kind == "portal" and is_instance_valid(s) and not s.is_queued_for_deletion():
+			tportal = s
+	check(main.floor_i == 0 and hero.global_position.distance_to(main.town_portal_spot()) < 3.0 and tportal != null and tportal.to == "dungeon" and tportal.label.text == "传送门：" + FloorRules.floor_name(2), "走进传送门回到镇上，镇上的传送点有通回去的门")
+	await seconds(1.1)
+	check(main.floor_i == 0, "刚到镇上站在门边不会被送回去")
+	# 交任务（顺便：伊莲说完会接着再对话一次）；换层后镇上的人是重新搭的
+	elin = main.npc("elin")
+	main._talk(elin)
+	bt = dp.opts.get_children().map(func(b): return b.text)
+	var hp0: int = ps.pots.hp
+	check(elin.mark.text == "?" and bt == ["收下药水"], "伊莲头顶「?」，交任务 %s" % str(bt))
+	dp.opts.get_child(0).pressed.emit()
+	await frames(1)
+	check(ps.q.q1 == 3 and ps.pots.hp == hp0 + 3 and dp.visible, "收下药水：生命药水 +3，伊莲接着说话")
+	dp.close()
+	# 从镇上那头回到原处
+	hero.global_position = tportal.global_position
+	for i in 90:
+		await physics(1)
+		if main.floor_i == 2:
+			break
+	await frames(2)
+	var left := 0
+	for s in get_tree().get_nodes_in_group("interact"):
+		if s.kind == "portal" and not s.is_queued_for_deletion():
+			left += 1
+	check(main.floor_i == 2 and Vector2(hero.global_position.x - back_pos.x, hero.global_position.z - back_pos.z).length() < 2.5 and main.tp.is_empty() and left == 0, "从镇上的门回到第 2 层原处，传送门关闭")
+	var n_seen2 := 0
+	for v in main.seen:
+		n_seen2 += v
+	check(n_seen2 >= n_seen, "回到去过的楼层，自动地图还记得（%d → %d）" % [n_seen, n_seen2])
+
+	# 传送石：列出到过的楼层
+	main.go_floor(0, "up")
+	await frames(2)
+	for s in get_tree().get_nodes_in_group("interact"):
+		if s.kind == "wp":
+			wp = s
+	hero.global_position = TownGen.to_world(19.5, 21.5)
+	main.camera.snap()
+	await physics(2)
+	var wsp: Vector2 = main.camera.unproject_position(wp.global_position + Vector3(0, 1.2, 0))
+	hero.click_at(wsp)
+	check(hero.talk_target == wp, "点传送石：走过去")
+	for i in 300:
+		await physics(1)
+		if dp.visible:
+			break
+	bt = dp.opts.get_children().map(func(b): return b.text)
+	check(dp.visible and dp.who.text == "传送石" and bt.size() == 3 and bt[1] == FloorRules.floor_name(2), "传送石：第 1、2 层可选 %s" % str(bt))
+	dp.opts.get_child(1).pressed.emit()
+	await frames(2)
+	check(main.floor_i == 2 and not dp.visible and hero.global_position.distance_to(DungeonBuilder.cell_center(main.dungeon.up)) < 4.5, "传送到第 2 层入口")
+
+	# 救出托比、结局文字（首领在 P9，这里直接调用）
+	main.go_floor(0, "up")
+	await frames(2)
+	main.on_boss_down("mog")
+	main._refresh_marks()
+	check(ps.q.q2 == 2 and main.npc("gren").mark.text == "?" and main.npc("toby") == null, "击败莫格后：格伦头顶「?」")
+	main._talk(main.npc("gren"))
+	var inv0: int = ps.inv.size()
+	dp.opts.get_child(0).pressed.emit()
+	await frames(1)
+	var toby: Npc = main.npc("toby")
+	check(ps.q.q2 == 3 and ps.inv.size() == inv0 + 1 and ps.inv[-1].rarity == 2 and toby != null and toby.global_position.distance_to(TownGen.to_world(12.4, 17.2)) < 0.5, "收下报酬：稀有武器进背包，学徒托比出现在铁匠铺旁")
+	main._talk(toby)
+	check(dp.visible and dp.who.text == "学徒 托比" and Act1Data.dialogs().toby.lines.has(dp.body.get_child(0).text), "托比说一句感谢的话")
+	dp.close()
+	main.go_floor(1)
+	await frames(2)
+	main.go_floor(0, "up")
+	await frames(2)
+	check(main.npc("toby") != null and main.npc("elin").mark.text == "!", "之后每次进镇托比都在；伊莲给「余烬之心」")
+	main.on_boss_down("mordan")
+	await seconds(1.8)
+	check(dp.visible and dp.who.text == "封印大厅" and String(dp.body.get_child(0).text).begins_with("摩登院长倒下时"), "击败摩登 1.6 秒后播放结局文字（V0.1 epilogue）")
+	dp.close()
 	main.queue_free()
 	await frames(2)

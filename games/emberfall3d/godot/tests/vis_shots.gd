@@ -105,6 +105,28 @@ func _ready() -> void:
 	main.shop_panel.refresh()
 	await _shot(out, "town-shop", tier)
 	main.shop_panel.close()
+	# P8：任务标记与小地图、任务日志、地下的回城传送门、自动地图
+	hero.global_position = TownGen.to_world(19.5, 21.5)
+	main.camera.snap()
+	await get_tree().create_timer(0.5).timeout
+	await _shot(out, "quest-town", tier)
+	main._talk(main.npc("elin"))
+	main.dialog_panel.opts.get_child(0).pressed.emit()
+	main._talk(main.npc("gren"))
+	main.dialog_panel.opts.get_child(0).pressed.emit()
+	main._toggle_panel(main.quest_panel)
+	await _shot(out, "quest-log", tier)
+	main.quest_panel.close()
+	main.go_floor(2)
+	await get_tree().create_timer(0.5).timeout
+	hero.progress.sheet.pots.tp = 1
+	main.cast_town_portal()
+	await get_tree().create_timer(0.8).timeout
+	await _shot(out, "portal", tier)
+	main.toggle_map()
+	await get_tree().create_timer(0.3).timeout
+	await _shot(out, "automap", tier)
+	main.toggle_map()
 	get_tree().quit()
 
 
