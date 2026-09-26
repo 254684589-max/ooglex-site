@@ -157,7 +157,7 @@
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:720px";
 
     var button = document.createElement("a");
-    button.href = "/account/";
+    button.href = "/account/?next=" + encodeURIComponent(location.pathname + location.search + location.hash);
     button.textContent = access && access.authenticated ? "重新验证登录" : "注册 / 登录";
     button.style.cssText = [
       "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:46px",
