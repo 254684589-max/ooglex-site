@@ -131,15 +131,14 @@
     fade.id = "ooglex-preview-fade";
     fade.setAttribute("aria-hidden", "true");
     fade.style.cssText = [
-      "height:140px","margin-top:-140px","position:relative","z-index:5","pointer-events:none",
+      "height:110px","margin-top:-110px","position:relative","z-index:5","pointer-events:none",
       "background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(18,18,18,.96))"
     ].join(";");
 
     var wall = document.createElement("section");
     wall.id = "ooglex-preview-wall";
     wall.style.cssText = [
-      "position:relative","z-index:6","box-sizing:border-box","width:100%","min-height:250px",
-      "padding:34px 20px 30px","text-align:center","background:#171717","color:#f5f5f5",
+      "position:relative","z-index:6","box-sizing:border-box","width:100%","min-height:218px","padding:24px 20px 22px","text-align:center","background:#171717","color:#f5f5f5",
       "border-top:1px solid rgba(255,255,255,.10)","box-shadow:0 -18px 50px rgba(0,0,0,.30)",
       "font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif"
     ].join(";");
@@ -160,7 +159,7 @@
     button.href = "/account/";
     button.textContent = access && access.authenticated ? "查看会员权限" : "登录 / 注册";
     button.style.cssText = [
-      "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:46px",
+      "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:44px",
       "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",
       "font-size:15px","font-weight:720","box-shadow:none"
     ].join(";");
