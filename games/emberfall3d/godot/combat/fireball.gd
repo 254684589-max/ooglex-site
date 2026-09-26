@@ -83,6 +83,7 @@ func explode(direct: Node3D) -> void:
 		owner_player.hit_landed.emit("fireball", hits)
 		if hits > 0:
 			print("EF_HIT skill=fireball hits=%d" % hits)
+	Sfx.play("boom")
 	_boom_fx()
 	queue_free()
 

@@ -60,12 +60,14 @@ func _ai(delta: float) -> void:
 	# 邪术弹扇形
 	if cooldowns.get("shot", 0.0) <= 0.0 and los:
 		var n: int = int(def.shot.count[ph])
+		Sfx.play("bolt")
 		for i in n:
 			_shoot((i - (n - 1) / 2.0) * float(def.shot.spread_rad))
 		cooldowns["shot"] = float(def.shot.cooldown_s[ph])
 	# 烈焰新星
 	if cooldowns.get("nova", 0.0) <= 0.0:
 		_ring(float(def.nova.radius), float(def.nova.speed), float(def.nova.dmg_mul))
+		Sfx.play("boom")
 		cooldowns["nova"] = float(def.nova.cooldown_s[ph])
 	# 召唤仆从
 	if cooldowns.get("summon", 0.0) <= 0.0:

@@ -104,6 +104,7 @@ func show_dialog(npc_name: String, glyph: String, lines: Array, options: Array) 
 	set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
 	if first:
 		first.grab_focus()
+	Sfx.play("click")
 	print("EF_DIALOG npc=%s" % npc_name)
 
 

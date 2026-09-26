@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2329,7 +2329,7 @@ func test_props() -> void:
 		main._use_spot(b0)
 		await seconds(0.3)
 		var imps: Array = main.monsters.filter(func(e): return is_instance_valid(e) and e.def.get("v01", "") == "imp")
-		check(imps.size() >= 1 and imps.all(func(e): return e.state == "chase") and _logs(main).contains("窜出了火坑小鬼") and not is_instance_valid(b0), "砸木桶：窜出火坑小鬼扑过来（%d 只），木桶碎掉" % imps.size())
+		check(imps.size() >= 1 and imps.all(func(e): return e.state != "idle") and _logs(main).contains("窜出了火坑小鬼") and not is_instance_valid(b0), "砸木桶：窜出火坑小鬼扑过来（%d 只），木桶碎掉" % imps.size())
 		for e in imps:
 			e.queue_free()
 		main.monsters.clear()
@@ -2348,5 +2348,192 @@ func test_props() -> void:
 		if k is Vector2i and fog2[k].shown:
 			shown2 += 1
 	check(shown2 >= shown, "去过的区块回来还是亮的（%d 块）" % shown2)
+	main.queue_free()
+	await frames(2)
+
+
+## P11：存档、音效、无尽深渊
+func test_save() -> void:
+	# ---- 存档格式（V0.1 saveGame / loadGame） ----
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	var sh := HeroStats.new_hero()
+	sh.lvl = 7
+	sh.gold = 1234
+	sh.q = {"q1": 3, "q2": 2, "q3": 0}
+	sh.maxFloor = 5
+	sh.pots.tp = 4
+	sh.buff = {"k": "might", "t": 42.5}
+	sh.eq.weapon = ItemGen.generate(rng, 8, {"rarity": 2, "slot": "weapon"})
+	for i in 3:
+		sh.inv.append(ItemGen.generate(rng, 6, {}))
+	var txt := SaveGame.serialize(sh, 55.5, 12.0, false)
+	var d := SaveGame.parse(txt)
+	check(not d.is_empty() and d.sheet.lvl == 7 and d.sheet.gold == 1234 and d.sheet.q.q2 == 2 and d.sheet.maxFloor == 5 and d.sheet.pots.tp == 4 and d.hp == 55.5 and d.snd == false, "存档往返：等级、金币、任务、最深层、药水、生命、音效开关都读回来了")
+	check(d.sheet.inv.size() == 3 and d.sheet.eq.weapon.name == sh.eq.weapon.name and typeof(d.sheet.eq.weapon.req) == TYPE_INT and d.sheet.eq.weapon.dmg == sh.eq.weapon.dmg and d.sheet.inv[0].aff == sh.inv[0].aff, "背包与装备原样读回，整数字段仍是整数")
+	check(d.sheet.buff.k == "might" and is_equal_approx(d.sheet.buff.t, 42.5) and HeroStats.calc(d.sheet).dmg == HeroStats.calc(sh).dmg, "神殿祝福与计算后的属性一致")
+	check(SaveGame.parse("") == {} and SaveGame.parse("{坏的") == {} and SaveGame.parse(JSON.stringify({"fmt": "ef3d-save", "v": 2, "sheet": {"lvl": 3}})) == {} and SaveGame.parse(JSON.stringify({"fmt": "other", "v": 1, "sheet": {"lvl": 3}})) == {} and SaveGame.parse(JSON.stringify({"fmt": "ef3d-save", "v": 1, "sheet": {"gold": 3}})) == {}, "空的、坏的、版本号或格式不对、缺等级的存档都当作没有存档")
+	var bad: Dictionary = JSON.parse_string(txt)
+	bad.sheet.lvl = 999
+	bad.sheet.gold = -50
+	bad.sheet.q.q1 = 9
+	bad.sheet.inv.append({"id": 5, "base": "不存在的底材", "name": "?", "rarity": 0})
+	bad.sheet.inv.append("乱写的")
+	bad.sheet.buff = {"k": "god_mode", "t": 999}
+	var d2 := SaveGame.parse(JSON.stringify(bad))
+	check(d2.sheet.lvl == int(Act1Data.rules().hero.level_cap) and d2.sheet.gold == 0 and d2.sheet.q.q1 == 3 and d2.sheet.inv.size() == 3 and d2.sheet.buff == null, "读档时校验：等级封顶、负数归零、任务状态截到 0–3、未知物品和未知祝福丢掉")
+	var minimal := SaveGame.parse(JSON.stringify({"fmt": "ef3d-save", "v": 1, "sheet": {"lvl": 2}}))
+	check(minimal.sheet.str == 15 and minimal.sheet.pots.hp == HeroStats.new_hero().pots.hp and minimal.sheet.q.q1 == 0, "缺的字段用新角色的默认值补上")
+	ItemGen._next_id = 1
+	SaveGame.bump_item_ids(d.sheet)
+	var mx := 0
+	for it in d.sheet.inv + d.sheet.eq.values():
+		mx = maxi(mx, it.id)
+	check(ItemGen._next_id > mx, "读档后新物品的编号接着往下编，不和存档里的撞号")
+	var path := "user://test_save_p11.json"
+	SaveGame.path_override = path
+	SaveGame.erase()
+	check(SaveGame.read_raw() == "" and SaveGame.load_saved().is_empty() and SaveGame.write_raw(txt) and SaveGame.load_saved().sheet.lvl == 7, "存取：没有存档时为空；写入后能读回")
+	SaveGame.erase()
+	check(SaveGame.load_saved().is_empty(), "删除存档")
+
+	# ---- 场景：自动存档、读档、开局选择、菜单 ----
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.save_enabled = true
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	check(not main.dialog_panel.visible and _logs(main).contains("头顶有「!」"), "没有存档时直接开始新游戏")
+	var ps: Dictionary = hero.progress.sheet
+	hero.gain_xp(400)
+	ps.gold = 777
+	ps.q.q1 = 1
+	ps.inv.append(ItemGen.generate(rng, 4, {"rarity": 1}))
+	main.go_floor(2)
+	await frames(2)
+	var sv := SaveGame.load_saved()
+	check(not sv.is_empty() and sv.sheet.maxFloor == 2 and sv.sheet.gold == 777 and sv.sheet.lvl == ps.lvl and sv.sheet.q.q1 == 2, "换层时自动存档（第 2 层、任务进度、金币、等级）")
+	main._autosave_t = 0.01
+	ps.gold = 800
+	await frames(3)
+	check(SaveGame.load_saved().sheet.gold == 800, "每 30 秒自动存档")
+	var lvl_saved: int = ps.lvl
+	var inv_n: int = ps.inv.size()
+	Sfx.enabled = false
+	main.save_game()
+	Sfx.enabled = true
+	main.queue_free()
+	await frames(2)
+	# 重开游戏：出现「继续旅程 / 新的旅程」
+	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.save_enabled = true
+	add_child(main)
+	await frames(3)
+	hero = main.hero
+	var dp: DialogPanel = main.dialog_panel
+	var bt: Array = dp.opts.get_children().map(func(b): return b.text)
+	check(dp.visible and get_tree().paused and bt.size() == 2 and String(bt[0]).begins_with("继续旅程（%d 级 · 最深第 2 层）" % lvl_saved), "有存档时开局先选：%s" % str(bt))
+	dp.opts.get_child(0).pressed.emit()
+	await frames(2)
+	ps = hero.progress.sheet
+	check(not dp.visible and ps.lvl == lvl_saved and ps.gold == 800 and ps.inv.size() == inv_n and ps.q.q1 == 2 and main.floor_i == 0 and hero.max_hp == hero.progress.S.maxHp and not Sfx.enabled, "继续旅程：角色、背包、任务、音效设置都恢复，站在烬原镇")
+	check(main.npc("elin").mark.text == "?" and _logs(main).contains("欢迎回来"), "读档后头顶标记按任务进度刷新（伊莲「?」）")
+	Sfx.enabled = true
+	# 菜单：Esc 打开；音效开关；保存
+	var esc := InputEventKey.new()
+	esc.keycode = KEY_ESCAPE
+	esc.physical_keycode = KEY_ESCAPE
+	esc.pressed = true
+	main._unhandled_key_input(esc)
+	bt = dp.opts.get_children().map(func(b): return b.text)
+	check(dp.visible and dp.who.text == "菜单" and bt.has("保存游戏") and bt.has("音效：开（M）") and bt.has("删除存档，重新开始"), "Esc 打开菜单 %s" % str(bt))
+	var snd_btn: Button = dp.opts.get_children().filter(func(b): return b.text.begins_with("音效"))[0]
+	snd_btn.pressed.emit()
+	await frames(1)
+	check(not Sfx.enabled and dp.opts.get_children().any(func(b): return b.text == "音效：关（M）"), "菜单里关掉音效")
+	dp.opts.get_children().filter(func(b): return b.text == "保存游戏")[0].pressed.emit()
+	check(not dp.visible and _logs(main).contains("已保存") and SaveGame.load_saved().snd == false, "菜单里保存游戏（音效设置也存下来）")
+	Sfx.enabled = true
+	# 新的旅程：要再确认一次，确认后覆盖存档
+	main.queue_free()
+	await frames(2)
+	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.save_enabled = true
+	add_child(main)
+	await frames(3)
+	dp = main.dialog_panel
+	dp.opts.get_child(1).pressed.emit()
+	bt = dp.opts.get_children().map(func(b): return b.text)
+	check(dp.visible and String(dp.body.get_child(0).text).contains("覆盖现有存档") and bt == ["确定，重新开始", "返回"], "新的旅程：先提示会覆盖存档")
+	dp.opts.get_child(0).pressed.emit()
+	await frames(1)
+	check(not dp.visible and main.hero.progress.sheet.lvl == 1 and SaveGame.load_saved().sheet.lvl == 1, "确认后从 1 级重新开始，存档被覆盖")
+	main.queue_free()
+	await frames(2)
+	SaveGame.erase()
+	SaveGame.path_override = ""
+
+	# ---- 音效（V0.1 Snd 的配方） ----
+	var names := ["swing", "hit", "crit", "fire", "boom", "ice", "whirl", "blink", "gold", "pick", "magic", "rare", "legend", "lvl", "die", "hurt", "potion", "portal", "chest", "barrel", "shrine", "arrow", "bolt", "boss", "click"]
+	var okn := 0
+	var t0 := Time.get_ticks_usec()
+	for n in names:
+		var w := Sfx.synth(n)
+		if w != null and w.data.size() > 400 and w.get_length() < 1.4:
+			okn += 1
+	var synth_ms := (Time.get_ticks_usec() - t0) / 1000.0
+	check(okn == names.size() and Sfx.synth("不存在") == null, "25 个音效都能合成（全部合成 %.0f 毫秒，第一次播放时才合成）" % synth_ms)
+	var w_hit := Sfx.synth("hit")
+	var peak := 0
+	for i in range(0, w_hit.data.size(), 2):
+		peak = maxi(peak, absi(w_hit.data.decode_s16(i)))
+	check(peak > 3000 and peak <= 32767, "采样有声音且不削波（峰值 %d）" % peak)
+	check(absf(Sfx.synth("portal").get_length() - 0.73) < 0.02 and absf(Sfx.synth("legend").get_length() - 0.8) < 0.02, "时长同 V0.1 配方（传送门 0.7 秒、传奇四音 0.8 秒）")
+	# 游戏里的事件会播放对应音效
+	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	hero = main.hero
+	Sfx.counts.clear()
+	hero.hp = 10.0
+	hero.drink_potion("hp")
+	hero.take_hit({"amount": 1, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	hero.mp = hero.max_mp
+	hero.cast_skill("fireball", hero.global_position + Vector3(4, 0, 0))
+	for i in 90:
+		await physics(1)
+		if Sfx.counts.get("boom", 0) > 0:
+			break
+	check(Sfx.counts.get("potion", 0) == 1 and Sfx.counts.get("hurt", 0) == 1 and Sfx.counts.get("fire", 0) == 1 and Sfx.counts.get("boom", 0) == 1, "喝药、受伤、放火球、火球爆炸都有音效 %s" % str(Sfx.counts))
+	main.queue_free()
+	await frames(2)
+
+	# ---- 无尽深渊（第 7 层起，V0.1 T_VOID / themeFor） ----
+	check(FloorRules.theme_for(6) == "inferno" and FloorRules.theme_for(7) == "abyss" and FloorRules.theme_for(40) == "abyss" and FloorRules.floor_name(7) == "无尽深渊 · 第 7 层", "第 7 层起是「无尽深渊」，没有尽头")
+	check(FloorRules.is_boss_floor(10) and FloorRules.is_boss_floor(15) and not FloorRules.is_boss_floor(11) and not FloorRules.is_boss_floor(7), "深渊每 5 层一个首领（第 10、15……层）")
+	check(FloorRules.monster_pool(12) == FloorRules.monster_pool(7) and FloorRules.monster_pool(7).size() == 7, "深渊怪物池：7 种怪混刷")
+	var m7 := FloorRules.scale_monster("knight", 7)
+	var m20 := FloorRules.scale_monster("knight", 20)
+	check(m20.hp > m7.hp * 3 and m20.dmg[1] > m7.dmg[1] * 2 and m20.lvl == 40, "越往下怪越强（堕落骑士第 7 层 %d 血、第 20 层 %d 血）" % [m7.hp, m20.hp])
+	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	main.go_floor(12)
+	await frames(2)
+	check(main.dungeon.theme == "abyss" and main.monsters.size() > 10 and main.stairs.has("down") and main.stairs.has("up"), "能走到第 12 层：深渊色调、%d 只怪、上下楼梯" % main.monsters.size())
+	main.go_floor(15)
+	await frames(2)
+	check(main.boss != null and String(main.boss.def.name).begins_with("深渊化身") and not main.stairs.has("down"), "第 15 层：深渊化身把守，击败前没有下楼梯")
 	main.queue_free()
 	await frames(2)

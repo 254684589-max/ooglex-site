@@ -249,6 +249,7 @@ func _do_act() -> void:
 		sh.inv.erase(it)
 		hero.message.emit("出售 %s，获得 %d 金币" % [it.name, price], Color(0.79, 0.64, 0.35))
 		sel = null
+	Sfx.play("gold")
 	print("EF_SHOP %s gold=%d" % [tab, sh.gold])
 	hero.progress.changed.emit()
 	refresh()

@@ -83,7 +83,12 @@ var boss_name: Label
 var boss_bar: ProgressBar
 # P10：地牢互动与战争迷雾
 var props_used: Dictionary = {}   # 楼层 → {道具下标: true}：同一局里开过的宝箱、砸过的木桶、用过的神殿回来还是用过的
-var _fog_vis_t := 0.0       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
+var _fog_vis_t := 0.0
+# P11：存档与音效
+var save_enabled := not OS.has_feature("editor")   # 编辑器里跑（自动化测试）默认不读写存档；测试可以打开并换存档路径
+var sfx: Sfx
+var menu_btn: Button
+var _autosave_t := 30.0       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
 
 
 func _ready() -> void:
@@ -91,8 +96,15 @@ func _ready() -> void:
 	loot_rng.randomize()
 	_build_world()
 	_build_ui()
+	sfx = Sfx.new()
+	sfx.name = "Sfx"
+	add_child(sfx)
 	_after_floor()
-	if not use_test_area and hero.progress.sheet.lvl == 1 and hero.progress.sheet.q.q1 == 0:
+	var saved := SaveGame.load_saved() if save_enabled and not use_test_area else {}
+	if not saved.is_empty():
+		_process(0.0)      # 先把血条、按钮文字等填好：开局选择时游戏是暂停的，_process 不会跑
+		_show_start(saved)
+	elif not use_test_area and hero.progress.sheet.lvl == 1 and hero.progress.sheet.q.q1 == 0:
 		add_log(Act1Data.dialogs().quest_log.hint_start, Color(1.0, 0.82, 0.29))
 	var q := Look.default_tier()
 	if OS.has_feature("web"):
@@ -175,6 +187,10 @@ func _process(delta: float) -> void:
 			if is_instance_valid(st) and st.overlaps_body(hero):
 				_on_stairs(st.kind)
 				break
+	_autosave_t -= delta
+	if _autosave_t <= 0.0:
+		_autosave_t = 30.0
+		save_game()
 	if hero and not hero.dead:
 		_update_fog()
 		_fog_vis_t -= delta
@@ -230,6 +246,7 @@ func _process(delta: float) -> void:
 		inv_btn.text = "背包（I）" if keys else "背包"
 		quest_btn.text = "任务（J）" if keys else "任务"
 		map_btn.text = "地图（Tab）" if keys else "地图"
+		menu_btn.text = "菜单（Esc）" if keys else "菜单"
 		if btn_hp:
 			btn_hp.text = "血 %d" % sh.pots.hp
 			btn_mp.text = "蓝 %d" % sh.pots.mp
@@ -520,6 +537,7 @@ func _accept_quest(key: String, n: Npc) -> void:
 	hero.progress.changed.emit()
 	_refresh_marks()
 	print("EF_QUEST %s q1=%d q2=%d q3=%d" % [key, hero.progress.sheet.q.q1, hero.progress.sheet.q.q2, hero.progress.sheet.q.q3])
+	save_game()
 	if r.retalk:
 		_talk(n)
 
@@ -558,6 +576,83 @@ func epilogue() -> void:
 	dialog_panel.show_dialog(E.name, E.glyph, E.lines, [{"t": E.ok, "main": true, "fn": dialog_panel.close}])
 
 
+# ---------------- 存档、菜单与音效（P11） ----------------
+
+## 存档（V0.1 saveGame：每 30 秒、换层、交接任务时自动存）；存不了（无痕模式等）返回 false，游戏照常进行
+func save_game() -> bool:
+	if not save_enabled or use_test_area or hero == null:
+		return false
+	var ok := SaveGame.write_raw(SaveGame.serialize(hero.progress.sheet, hero.hp, hero.mp, Sfx.enabled))
+	print("EF_SAVE ok=%s lvl=%d" % [ok, hero.progress.sheet.lvl])
+	return ok
+
+
+## 读档（V0.1 loadGame → startGame）：换上存档里的角色，回到烬原镇篝火旁
+func apply_save(d: Dictionary) -> void:
+	hero.progress.sheet = d.sheet
+	SaveGame.bump_item_ids(d.sheet)
+	hero.stats_changed()
+	hero.hp = hero.max_hp if d.hp <= 0.0 or d.hp > hero.max_hp else d.hp
+	hero.mp = minf(d.mp, hero.max_mp)
+	Sfx.enabled = d.snd
+	if floor_i != 0:
+		go_floor(0, "start")
+	shop_stock = FloorRules.refresh_shop(loot_rng, hero.progress.sheet.lvl)
+	_after_floor()
+	hero.progress.changed.emit()
+	add_log("欢迎回来，流浪者", Color(0.79, 0.64, 0.35))
+	print("EF_LOAD lvl=%d floor=%d" % [hero.progress.sheet.lvl, hero.progress.sheet.maxFloor])
+
+
+## 开局有存档时（V0.1 标题画面）：继续旅程 / 新的旅程（要再确认一次，会覆盖存档）
+func _show_start(saved: Dictionary) -> void:
+	var sh: Dictionary = saved.sheet
+	dialog_panel.show_dialog("余烬陷落", "烬", ["欢迎回来，流浪者。", "存档：%d 级 · 最深到过第 %d 层 · 金币 %d" % [sh.lvl, sh.maxFloor, sh.gold]], [
+		{"t": "继续旅程（%d 级 · 最深第 %d 层）" % [sh.lvl, sh.maxFloor], "main": true, "fn": func():
+			dialog_panel.close()
+			apply_save(saved)},
+		{"t": "新的旅程", "fn": func(): dialog_panel.show_dialog("新的旅程", "烬", ["开始新的旅程会覆盖现有存档，确定吗？"], [
+			{"t": "确定，重新开始", "fn": func():
+				dialog_panel.close()
+				save_game()
+				add_log(Act1Data.dialogs().quest_log.hint_start, Color(1.0, 0.82, 0.29))},
+			{"t": "返回", "main": true, "fn": func(): _show_start(saved)}])},
+	])
+
+
+## 菜单（V0.1 openMenu）：Esc 或右上角「菜单」
+func open_menu() -> void:
+	var lines: Array = ["游戏每 30 秒、换层和交接任务时自动保存到当前浏览器。" if save_enabled else "本机测试模式：不读写存档。"]
+	var opts: Array = [
+		{"t": "继续游戏", "main": true, "fn": dialog_panel.close},
+		{"t": "保存游戏", "fn": func():
+			var ok := save_game()
+			dialog_panel.close()
+			add_log("已保存" if ok else "无法保存（浏览器禁止了本地存储）", Color(0.79, 0.64, 0.35) if ok else Color(0.88, 0.38, 0.29))},
+		{"t": "音效：%s（M）" % ("开" if Sfx.enabled else "关"), "fn": func():
+			toggle_sound()
+			open_menu()},
+	]
+	if OS.has_feature("web"):
+		opts.append({"t": "返回游戏介绍页", "fn": func(): JavaScriptBridge.eval("location.href = '../'")})
+	opts.append({"t": "删除存档，重新开始", "fn": func(): dialog_panel.show_dialog("删除存档", "烬", ["确定删除存档并重新开始吗？此操作无法撤销。"], [
+		{"t": "确定删除", "fn": func():
+			SaveGame.erase()
+			dialog_panel.close()
+			if OS.has_feature("web"):
+				JavaScriptBridge.eval("location.reload()")
+			else:
+				get_tree().reload_current_scene()},
+		{"t": "返回", "main": true, "fn": open_menu}])})
+	dialog_panel.show_dialog("菜单", "烬", lines, opts)
+
+
+func toggle_sound() -> void:
+	Sfx.enabled = not Sfx.enabled
+	add_log("音效：" + ("开" if Sfx.enabled else "关"), Color(0.79, 0.64, 0.35))
+	save_game()
+
+
 # ---------------- 首领（P9） ----------------
 
 func _setup_boss(e: EnemyBase, sp: Dictionary) -> void:
@@ -566,13 +661,19 @@ func _setup_boss(e: EnemyBase, sp: Dictionary) -> void:
 		e.def.name = sp.name
 		e.update_label()
 	var orange := Color(0.91, 0.52, 0.23)
-	e.shouted.connect(func(txt: String): add_log(txt, orange))
+	e.shouted.connect(func(txt: String):
+		add_log(txt, orange)
+		Sfx.play("boss"))
 	if e is EnemyBossMog:
-		e.enraged_now.connect(func(): add_log("莫格暴怒了！", Color(0.88, 0.38, 0.29)))
+		e.enraged_now.connect(func():
+			add_log("莫格暴怒了！", Color(0.88, 0.38, 0.29))
+			Sfx.play("boss"))
 	elif e is EnemyBossAbbot:
 		var r: Dictionary = dungeon.rooms[dungeon.boss_room]
 		e.arena = Rect2(r.x * DungeonBuilder.TILE, r.y * DungeonBuilder.TILE, r.w * DungeonBuilder.TILE, r.h * DungeonBuilder.TILE)
-		e.phase_changed.connect(func(_p: int): add_log("余烬之心在摩登胸口燃烧——他正在变成别的东西！", orange))
+		e.phase_changed.connect(func(_p: int):
+			add_log("余烬之心在摩登胸口燃烧——他正在变成别的东西！", orange)
+			Sfx.play("boss"))
 	e.died.connect(_on_boss_died)
 	add_log("空气里弥漫着腐臭与焦灼……这一层有强大的存在", Color(0.88, 0.38, 0.29))
 
@@ -623,6 +724,7 @@ func _use_spot(s: InteractSpot) -> void:
 			open_waypoint()
 		"well":
 			hero.hp = hero.max_hp
+			Sfx.play("potion")
 			add_log("井水清凉，你的伤口愈合了", Color(0.6, 0.85, 1.0))
 		"portal":
 			use_portal(s)
@@ -686,6 +788,7 @@ func _use_prop(s: InteractSpot) -> void:
 			hero.hp = hero.max_hp
 			hero.mp = hero.max_mp
 			add_log("%s：%s，持续 %d 秒" % [sr.name, sr.desc, int(Act1Data.rules().shrines.duration_s)], Color(0.6, 0.85, 1.0))
+	Sfx.play(s.kind)
 	s.set_used()
 	print("EF_PROP %s floor=%d" % [s.kind, floor_i])
 
@@ -730,6 +833,7 @@ func cast_town_portal() -> void:
 		add_log("没有回城卷轴（可以在药剂师玛拉处购买）", Color(0.88, 0.38, 0.29))
 		return
 	sh.pots.tp -= 1
+	Sfx.play("portal")
 	var want := hero.global_position + hero.facing() * 1.6
 	var p := NavigationServer3D.map_get_closest_point(get_world_3d().navigation_map, want)
 	tp = {"floor": floor_i, "pos": Vector3(p.x, 0, p.z)}
@@ -745,6 +849,7 @@ func use_portal(s: InteractSpot) -> void:
 	if stair_lock > 0.0 or hero.dead:
 		return
 	stair_lock = 1.0
+	Sfx.play("portal")
 	if s.to == "town":
 		call_deferred("go_floor", 0, "portal")
 	elif not tp.is_empty():
@@ -979,6 +1084,7 @@ func go_floor(f: int, via: String = "down") -> void:
 	apply_quality(quality)
 	stair_lock = 0.8
 	_after_floor()
+	save_game()
 	var fname := FloorRules.floor_name(f) if f > 0 else ("测试区 · 灰盒房间与大厅" if use_test_area else "烬原镇")
 	_show_banner(fname)
 	var ms := (Time.get_ticks_usec() - t0) / 1000.0
@@ -1015,6 +1121,8 @@ func _scatter_drops(drops: Array, at: Vector3) -> void:
 	for d in drops:
 		var g := GroundItem.make(d)
 		stage.add_child(g)
+		if d.has("item") and int(d.item.rarity) >= 2:
+			Sfx.play("legend" if int(d.item.rarity) == 3 else "rare")
 		var a := loot_rng.randf() * TAU
 		var r := loot_rng.randf_range(0.45, 1.5)
 		var p: Vector3 = at + Vector3(cos(a), 0, sin(a)) * r
@@ -1087,8 +1195,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P10 地牢互动）\n模型仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；Esc 菜单；M 音效；WASD 移动；滚轮缩放"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n模型仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -1263,6 +1371,8 @@ func _build_ui() -> void:
 	quest_panel.hero = hero
 	layer.add_child(quest_panel)
 	map_btn = _top_button(layer, 3, toggle_map)
+	menu_btn = _top_button(layer, 4, open_menu)
+	hero.ui_blockers.append(menu_btn)
 	# 小地图在按钮下方；左上角那一列让出右边的位置
 	minimap = Minimap.new()
 	minimap.main = self
@@ -1311,8 +1421,9 @@ func _bar(c: Color, h: float) -> ProgressBar:
 ## 右上角一排按钮：0 属性、1 背包、2 任务、3 地图（从右往左）；手机上窄一些，四个放得进 360 像素宽
 func _top_button(layer: CanvasLayer, idx: int, cb: Callable) -> Button:
 	var narrow := DisplayServer.is_touchscreen_available()
-	var w := 80.0 if narrow else 118.0
-	var gap := 5.0 if narrow else 8.0
+	# 手机上五个按钮（P11 加了「菜单」）放进 360 像素宽：每个 64 像素
+	var w := 64.0 if narrow else 118.0
+	var gap := 4.0 if narrow else 8.0
 	var b := Button.new()
 	b.anchor_left = 1.0
 	b.anchor_right = 1.0
@@ -1320,7 +1431,7 @@ func _top_button(layer: CanvasLayer, idx: int, cb: Callable) -> Button:
 	b.offset_left = b.offset_right - w
 	b.offset_top = 12
 	b.offset_bottom = 56
-	b.add_theme_font_size_override("font_size", 14 if narrow else 16)
+	b.add_theme_font_size_override("font_size", 13 if narrow else 16)
 	b.focus_mode = Control.FOCUS_ALL
 	b.pressed.connect(cb)
 	layer.add_child(b)
@@ -1375,6 +1486,13 @@ func apply_quality(tier: String) -> void:
 	_refresh_labels()
 
 
+func _any_panel_open() -> bool:
+	for p in [char_panel, inv_panel, quest_panel, dialog_panel, shop_panel]:
+		if p and p.visible:
+			return true
+	return false
+
+
 func _input(event: InputEvent) -> void:
 	# Tab 在界面里默认用来切换焦点，所以在这里先接住（面板打开时不管）
 	if event is InputEventKey and event.is_pressed() and not event.is_echo() and event.is_action("map_toggle") and not get_tree().paused:
@@ -1407,6 +1525,12 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			minimap.set_big(false)
 			get_viewport().set_input_as_handled()
 			return
+		elif event.is_action("ui_cancel") and not _any_panel_open():
+			open_menu()
+			get_viewport().set_input_as_handled()
+			return
+		elif event.is_action("sound_toggle"):
+			toggle_sound()
 	# F7：轮换画质档（开发与试玩用；正式设置界面在后续步骤）
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F7:
 		apply_quality(Look.TIERS[(Look.TIERS.find(quality) + 1) % Look.TIERS.size()])

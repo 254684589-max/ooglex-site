@@ -43,6 +43,20 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
       await page.screenshot({ path: path.join(outDir, `ef3d-${name}-town-dialog.png`) });
       await page.keyboard.press('Escape');
     }
+    // 存档（P11）：按 M 切换音效会立即存档到 localStorage；刷新页面后开局出现「继续旅程」
+    await page.waitForTimeout(300);
+    await page.keyboard.press('m');
+    let saved;
+    for (let i = 0; i < 12 && !saved; i++) { await page.waitForTimeout(250); saved = logs.find(l => l.startsWith('EF_SAVE ok=true')); }
+    const stored = await page.evaluate(() => { try { return localStorage.getItem('ooglex.emberfall3d.v1') || ''; } catch (e) { return ''; } });
+    logs.length = 0;
+    await page.reload();
+    let resume;
+    for (let i = 0; i < 120 && !resume; i++) { await page.waitForTimeout(500); resume = logs.find(l => l.startsWith('EF_DIALOG npc=余烬陷落')); }
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(outDir, `ef3d-${name}-resume.png`) });
+    const saveOk = !!saved && stored.includes('"fmt":"ef3d-save"') && !!resume;
+    await page.evaluate(() => { try { localStorage.removeItem('ooglex.emberfall3d.v1'); } catch (e) {} });
     // 灰盒测试区（?test=1）：木桩、火球、点地面、楼梯
     logs.length = 0;
     await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=1');
@@ -149,9 +163,9 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     }
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!town && !!dialog && !!portal && !!boss3 && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
+    const ok = !!town && !!dialog && saveOk && !!portal && !!boss3 && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | 回城卷轴：${portal || '没有打开'} | 首领层：${boss3 || '没有进入第 3 层'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | 存档：${saveOk ? '写入 localStorage、刷新后可继续' : `失败（${saved || '没有 EF_SAVE'}，${stored ? '有' : '无'}存档，${resume ? '有' : '无'}继续画面）`} | 回城卷轴：${portal || '没有打开'} | 首领层：${boss3 || '没有进入第 3 层'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

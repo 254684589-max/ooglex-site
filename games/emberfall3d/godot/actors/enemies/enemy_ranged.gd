@@ -63,6 +63,7 @@ func _ai(delta: float) -> void:
 
 func _shoot() -> void:
 	var s: Dictionary = def.shot
+	Sfx.play("arrow" if s.get("kind", "arrow") == "arrow" else "bolt")
 	var p := Projectile.new()
 	p.attacker = attacker_stats(s.dmg)
 	p.source = self

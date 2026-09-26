@@ -290,6 +290,7 @@ func pick_up(g: GroundItem) -> bool:
 		sh.inv.append(g.data.item)
 		msg = "拾取 " + g.title()
 	message.emit(msg, g.color())
+	Sfx.play("gold" if g.data.has("gold") else ("magic" if g.data.has("item") and int(g.data.item.rarity) > 0 else "pick"))
 	print("EF_PICKUP ", g.title())
 	g.queue_free()
 	progress.changed.emit()
@@ -409,12 +410,14 @@ func drink_potion(kind: String) -> int:
 		mp = minf(max_mp, mp + v)
 	if HitFeedback.numbers_enabled:
 		HitFeedback.spawn_number(self, {"amount": v, "crit": false, "type": "heal" if kind == "hp" else "mana"})
+	Sfx.play("potion")
 	progress.changed.emit()
 	return v
 
 
 func _level_fx() -> void:
 	## 升级：脚下金色光环向外扩散（占位特效）
+	Sfx.play("lvl")
 	var ring := MeshInstance3D.new()
 	ring.mesh = LowPoly.torus(0.9, 1.0)
 	var m := _mat(Color(1.0, 0.85, 0.35))
@@ -440,6 +443,7 @@ func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, _stun_s: fl
 	hp = maxf(0.0, hp - result.amount)
 	_hurt_t = 0.12
 	hurt.emit(result.amount)
+	Sfx.play("hurt")
 	if knock_m > 0.0:
 		var d := from_dir
 		d.y = 0.0
@@ -458,6 +462,7 @@ func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, _stun_s: fl
 
 
 func _die() -> void:
+	Sfx.play("die")
 	dead = true
 	action = ""
 	attack_target = null
@@ -626,6 +631,7 @@ func _enemies_within(radius: float, need_los := false) -> Array:
 
 func _resolve_action() -> void:
 	var s := Balance.skill(action)
+	Sfx.play({"oath_cleave": "swing", "whirl": "whirl", "fireball": "fire", "nova": "ice", "blink": "blink"}.get(action, "swing"))
 	var hits := 0
 	var sf: Dictionary = Act1Data.rules().skill_formulas
 	var lvl: int = progress.sheet.lvl
@@ -651,6 +657,7 @@ func _resolve_action() -> void:
 				d.y = 0.0
 				var r := DamageCalc.roll(stats, coef, "physical", e.combat_target(), rng)
 				e.take_hit(r, d, knock, 0.0)
+				Sfx.play("crit" if r.get("crit", false) else "hit")
 				HitFeedback.apply(self, e, r, camera, false)
 				if progress.S.ls > 0:
 					hp = minf(max_hp, hp + r.amount * progress.S.ls / 100.0)
