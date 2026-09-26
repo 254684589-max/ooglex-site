@@ -252,11 +252,20 @@
     wall.innerHTML=
       "<div class='preview-wall-inner'>"+
         "<div class='preview-wall-kicker'>OOGLEX · 10% PREVIEW</div>"+
-        "<h2>当前仅展示约 10% 内容</h2>"+
-        "<p>公开页面只保留少量新闻预览，完整新闻、风险样本与更多简报内容不会发送到公共页面。</p>"+
+        "<h2>继续查看完整数据</h2>"+
+        "<p>当前展示原版页面预览。登录 / 注册后可继续查看完整内容。</p>"+
+        "<a class='preview-login' href='/account/'>登录 / 注册</a>"+
         "<div class='preview-wall-meta'>公开预览 "+esc((DATA.preview.visibleItems||0)+" / "+(DATA.preview.totalItems||0)+" 条新闻")+"</div>"+
       "</div>";
     shell.parentNode.insertBefore(wall,shell.nextSibling);
+
+    var badge=document.getElementById("whats-preview-badge");
+    if(!badge){
+      badge=document.createElement("div");
+      badge.id="whats-preview-badge";
+      badge.textContent="FREE · 10% PREVIEW";
+      document.body.appendChild(badge);
+    }
   }
 
   function setRiskMode(on){
