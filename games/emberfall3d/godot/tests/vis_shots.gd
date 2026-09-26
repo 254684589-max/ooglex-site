@@ -127,6 +127,27 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	await _shot(out, "automap", tier)
 	main.toggle_map()
+	# P10：木桶、宝箱、神殿与战争迷雾（找一层有神殿和宝箱的，站在神殿旁）
+	for f in range(2, 12):
+		main.go_floor(f)
+		await get_tree().create_timer(0.2).timeout
+		var shr: Array = main.stage.get_children().filter(func(n): return n is InteractSpot and n.kind == "shrine")
+		var chs: Array = main.stage.get_children().filter(func(n): return n is InteractSpot and n.kind == "chest")
+		if not shr.is_empty() and not chs.is_empty():
+			for e in main.monsters:
+				if is_instance_valid(e):
+					e.queue_free()
+			hero.global_position = shr[0].global_position + Vector3(2.0, 0, 2.0)
+			main.camera.snap()
+			await get_tree().create_timer(0.8).timeout
+			await _shot(out, "props", tier)
+			hero.global_position = chs[0].global_position + Vector3(1.8, 0, 1.8)
+			main.camera.snap()
+			await get_tree().create_timer(0.3).timeout
+			main._use_spot(chs[0])
+			await get_tree().create_timer(0.8).timeout
+			await _shot(out, "chest-open", tier)
+			break
 	# P9：两个首领（清掉护卫，站在首领房里；摩登打到二阶段）。之后不再恢复说明文字，首领截图放在最后
 	for f in [3, 6]:
 		main.go_floor(f)

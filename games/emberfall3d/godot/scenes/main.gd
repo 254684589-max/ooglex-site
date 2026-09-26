@@ -80,7 +80,10 @@ var boss: EnemyBase = null
 var bosses_dead: Dictionary = {}  # 本局已击败首领的楼层：回到这一层时不再刷首领与护卫，下楼梯直接开着
 var boss_box: VBoxContainer
 var boss_name: Label
-var boss_bar: ProgressBar       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
+var boss_bar: ProgressBar
+# P10：地牢互动与战争迷雾
+var props_used: Dictionary = {}   # 楼层 → {道具下标: true}：同一局里开过的宝箱、砸过的木桶、用过的神殿回来还是用过的
+var _fog_vis_t := 0.0       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
 
 
 func _ready() -> void:
@@ -174,6 +177,11 @@ func _process(delta: float) -> void:
 				break
 	if hero and not hero.dead:
 		_update_fog()
+		_fog_vis_t -= delta
+		if _fog_vis_t <= 0.0:
+			_fog_vis_t = 0.1
+			_update_fog_visibility()
+		_tick_buff(delta)
 		# 走进传送门直接穿过去（点它也行：走到跟前由 _use_spot 处理）
 		for s in get_tree().get_nodes_in_group("interact"):
 			if s.kind != "portal":
@@ -202,6 +210,9 @@ func _process(delta: float) -> void:
 		hp_label.text = "生命 %d / %d" % [ceili(hero.hp), int(hero.max_hp)]
 		var sh: Dictionary = hero.progress.sheet
 		lvl_label.text = "%d 级　经验 %d%%" % [sh.lvl, roundi(hero.progress.xp_fraction() * 100.0)]
+		var bf := HeroStats.active_buff(sh)
+		if bf != "":
+			lvl_label.text += "　%s %d 秒" % [_shrine(bf).name, ceili(sh.buff.t)]
 		xp_bar.value = hero.progress.xp_fraction()
 		mp_bar.max_value = hero.max_mp
 		mp_bar.value = hero.mp
@@ -615,6 +626,79 @@ func _use_spot(s: InteractSpot) -> void:
 			add_log("井水清凉，你的伤口愈合了", Color(0.6, 0.85, 1.0))
 		"portal":
 			use_portal(s)
+		"barrel", "chest", "shrine":
+			_use_prop(s)
+
+
+# ---------------- 木桶、宝箱、神殿（P10） ----------------
+
+func _spawn_props(f: int) -> void:
+	var used_here: Dictionary = props_used.get(f, {})
+	for i in dungeon.props.size():
+		var pr: Dictionary = dungeon.props[i]
+		if pr.type == "barrel" and used_here.has(i):
+			continue
+		var sp := InteractSpot.make(pr.type)
+		sp.index = i
+		stage.add_child(sp)
+		sp.global_position = DungeonBuilder.cell_center(pr.cell)
+		sp.rotation.y = float((pr.cell.x * 7 + pr.cell.y * 13) % 8) * PI / 4.0
+		if used_here.has(i):
+			sp.set_used(false)
+
+
+func _shrine(id: String) -> Dictionary:
+	for s in Act1Data.rules().shrines.list:
+		if s.id == id:
+			return s
+	return {}
+
+
+## 打开宝箱 / 砸木桶 / 拜神殿（V0.1 useProp）
+func _use_prop(s: InteractSpot) -> void:
+	if s.used:
+		return
+	if not props_used.has(floor_i):
+		props_used[floor_i] = {}
+	props_used[floor_i][s.index] = true
+	var S: Dictionary = hero.progress.S
+	var sh: Dictionary = hero.progress.sheet
+	match s.kind:
+		"chest":
+			_scatter_drops(FloorRules.roll_chest(loot_rng, floor_i, S.mf, S.gf), s.global_position)
+			add_log("宝箱打开了", Color(0.79, 0.64, 0.35))
+		"barrel":
+			var b := FloorRules.roll_barrel(loot_rng, floor_i)
+			if b.has("imps"):
+				for i in int(b.imps):
+					var p := NavigationServer3D.map_get_closest_point(get_world_3d().navigation_map, s.global_position + Vector3(loot_rng.randf_range(-1.2, 1.2), 0, loot_rng.randf_range(-1.2, 1.2)))
+					var e := Monsters.spawn("imp", stage, Vector3(p.x, 0, p.z), hero, floor_i)
+					e.set_state("chase")
+					monsters.append(e)
+				add_log("木桶里窜出了火坑小鬼！", Color(0.88, 0.38, 0.29))
+			elif not b.is_empty():
+				_scatter_drops([b], s.global_position)
+		"shrine":
+			var list: Array = Act1Data.rules().shrines.list
+			var sr: Dictionary = list[loot_rng.randi_range(0, list.size() - 1)]
+			sh.buff = {"k": sr.id, "t": float(Act1Data.rules().shrines.duration_s)}
+			hero.stats_changed()
+			hero.hp = hero.max_hp
+			hero.mp = hero.max_mp
+			add_log("%s：%s，持续 %d 秒" % [sr.name, sr.desc, int(Act1Data.rules().shrines.duration_s)], Color(0.6, 0.85, 1.0))
+	s.set_used()
+	print("EF_PROP %s floor=%d" % [s.kind, floor_i])
+
+
+## 神殿祝福倒计时（V0.1：90 秒后消失）
+func _tick_buff(delta: float) -> void:
+	var sh: Dictionary = hero.progress.sheet
+	if sh.buff is Dictionary:
+		sh.buff.t -= delta
+		if sh.buff.t <= 0.0:
+			sh.buff = null
+			hero.stats_changed()
+			add_log("神殿祝福消失了", Color(0.66, 0.6, 0.5))
 
 
 ## 传送石（V0.1 openWaypoint）：列出第 1 层到最深到过的一层，首领层标「（首领）」（V0.1 用骷髅符号，字体里没有）
@@ -722,7 +806,13 @@ func _reset_fog() -> void:
 	vis = PackedByteArray()
 	vis.resize(m.w * m.h)
 	vis.fill(1 if floor_i == 0 else 0)
+	var fog: Dictionary = floor_info.get("fog", {})
+	if not fog.is_empty():
+		for i in seen.size():
+			if seen[i]:
+				DungeonBuilder.reveal_chunk(fog, Vector2i(i % m.w, i / m.w) / DungeonBuilder.CHUNK)
 	_update_fog()
+	_update_fog_visibility()
 
 
 func _update_fog() -> void:
@@ -734,10 +824,44 @@ func _update_fog() -> void:
 	if c == _fog_cell:
 		return
 	_fog_cell = c
-	var r := Fog.compute(m, vis, seen, p, int(hero.progress.S.light) + 2)
+	var R := int(hero.progress.S.light) + 2
+	var r := Fog.compute(m, vis, seen, p, R)
 	vis = r[0]
 	seen = r[1]
 	seen_maps[floor_i] = seen
+	# 战争迷雾（P10）：看见过的格子所在的块显示出来
+	var fog: Dictionary = floor_info.get("fog", {})
+	if not fog.is_empty():
+		for y in range(maxi(0, c.y - R - 1), mini(m.h, c.y + R + 2)):
+			for x in range(maxi(0, c.x - R - 1), mini(m.w, c.x + R + 2)):
+				if seen[y * m.w + x]:
+					DungeonBuilder.reveal_chunk(fog, Vector2i(x, y) / DungeonBuilder.CHUNK)
+
+
+## 战争迷雾（P10，V0.1 只画看得见的怪物、看见过的道具与物品）：每 0.1 秒刷新一次谁该显示
+func _update_fog_visibility() -> void:
+	for e in monsters:
+		if is_instance_valid(e) and not e.dead:
+			e.visible = cell_visible(e.global_position)
+	var m := map_grid()
+	if m.is_empty() or floor_i == 0:
+		return
+	for g in get_tree().get_nodes_in_group("ground_item"):
+		g.visible = _cell_seen(g.global_position)
+	for sp in stage.get_children():
+		if sp is InteractSpot and sp.kind in ["barrel", "chest", "shrine"]:
+			sp.visible = _cell_seen(sp.global_position)
+
+
+func _cell_seen(pos: Vector3) -> bool:
+	var m := map_grid()
+	var x := floori(pos.x / DungeonBuilder.TILE)
+	var y := floori(pos.z / DungeonBuilder.TILE)
+	if m.is_empty() or seen.is_empty():
+		return true
+	if x < 0 or y < 0 or x >= m.w or y >= m.h:
+		return false
+	return seen[y * m.w + x] == 1
 
 
 func cell_visible(pos: Vector3) -> bool:
@@ -817,7 +941,7 @@ func go_floor(f: int, via: String = "down") -> void:
 		_new_stage()
 		dungeon = DungeonGen.generate(f, seed_for(f))
 		floor_info = DungeonBuilder.build(stage, dungeon, {
-			"seed": seed_for(f), "on_stairs": _on_stairs, "open_boss_stairs": bosses_dead.has(f),
+			"seed": seed_for(f), "on_stairs": _on_stairs, "open_boss_stairs": bosses_dead.has(f), "fog": true,
 			"down_caption": "↓ " + FloorRules.floor_name(f + 1),
 			"up_caption": ("↑ " + FloorRules.floor_name(f - 1)) if f > 1 else ("↑ 返回测试区" if use_test_area else "↑ 烬原镇")})
 		level = floor_info.region
@@ -839,6 +963,7 @@ func go_floor(f: int, via: String = "down") -> void:
 		# 房间里的怪物群（P5，V0.1 genDungeon）
 		var jit := RandomNumberGenerator.new()
 		jit.seed = seed_for(f) + 17
+		_spawn_props(f)
 		for sp in dungeon.spawns:
 			var pos := DungeonBuilder.cell_center(sp.cell) + Vector3(jit.randf_range(-0.5, 0.5), 0, jit.randf_range(-0.5, 0.5))
 			if sp.room == dungeon.boss_room and bosses_dead.has(f):
@@ -881,13 +1006,18 @@ func on_enemy_died(e: Node) -> void:
 	## 怪物死亡：按 V0.1 dropLoot 掷掉落，散落在尸体周围的地面上
 	var S: Dictionary = hero.progress.S
 	var drops := FloorRules.roll_loot(loot_rng, maxi(1, floor_i), {"boss": e.def.get("boss", false), "champ": e.def.get("champ", "")}, S.mf, S.gf)
+	_scatter_drops(drops, e.global_position)
+
+
+## 把掉落散在某处周围的地面上（怪物、宝箱、木桶共用）
+func _scatter_drops(drops: Array, at: Vector3) -> void:
 	var map := get_world_3d().navigation_map
 	for d in drops:
 		var g := GroundItem.make(d)
 		stage.add_child(g)
 		var a := loot_rng.randf() * TAU
 		var r := loot_rng.randf_range(0.45, 1.5)
-		var p: Vector3 = e.global_position + Vector3(cos(a), 0, sin(a)) * r
+		var p: Vector3 = at + Vector3(cos(a), 0, sin(a)) * r
 		p = NavigationServer3D.map_get_closest_point(map, p)
 		g.global_position = Vector3(p.x, 0, p.z)
 
@@ -958,7 +1088,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P9 首领）\n模型仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；第 3 层与第 6 层有首领，击败后才出现下楼梯。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P10 地牢互动）\n模型仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0

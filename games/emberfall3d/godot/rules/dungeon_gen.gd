@@ -175,7 +175,48 @@ static func generate(floor_i: int, seed_value: int) -> Dictionary:
 	m.boss_key = ""
 	if m.boss_room >= 0:
 		m.spawns.append_array(_boss_pack(m, rng))
+	# 木桶、宝箱、神殿（P10）用单独的随机数：不改变 P2–P9 已有的布局与刷怪
+	var prng := RandomNumberGenerator.new()
+	prng.seed = seed_value ^ 0x9e3779
+	m.props = _room_props(m, prng)
 	return m
+
+
+## 房间里的道具（P10，V0.1 genDungeon「房间内容」）：起点房与首领房以外，每个房间 0–3 个木桶、20% 一个宝箱；
+## 整层 75% 有一座神殿，出现在某个房间的概率每间 30%（先到先得）。不放在楼梯与怪物的格子上。
+## 返回 [{type: "barrel" / "chest" / "shrine", cell, room}]
+static func _room_props(m: Dictionary, rng: RandomNumberGenerator) -> Array:
+	var P: Dictionary = Act1Data.rules().floors.props
+	var used := {}
+	for sp in m.spawns:
+		used[sp.cell] = true
+	var out: Array = []
+	var shrine := rng.randf() < float(P.shrine_floor_chance)
+	for ri in m.rooms.size():
+		if ri == m.start or ri == m.boss_room:
+			continue
+		var r: Dictionary = m.rooms[ri]
+		var spot := func() -> Vector2i:
+			for k in 30:
+				var c := Vector2i(rng.randi_range(r.x + 1, r.x + r.w - 2), rng.randi_range(r.y + 1, r.y + r.h - 2))
+				if m.t[c.y * m.w + c.x] == FLOOR and not used.has(c):
+					used[c] = true
+					return c
+			return Vector2i(-1, -1)
+		for i in rng.randi_range(int(P.barrels_per_room[0]), int(P.barrels_per_room[1])):
+			var c: Vector2i = spot.call()
+			if c.x >= 0:
+				out.append({"type": "barrel", "cell": c, "room": ri})
+		if rng.randf() < float(P.chest_chance):
+			var c: Vector2i = spot.call()
+			if c.x >= 0:
+				out.append({"type": "chest", "cell": c, "room": ri})
+		if shrine and rng.randf() < float(P.shrine_room_chance):
+			var c: Vector2i = spot.call()
+			if c.x >= 0:
+				out.append({"type": "shrine", "cell": c, "room": ri})
+				shrine = false
+	return out
 
 
 ## 首领房（P9，V0.1 genDungeon）：房间正中是首领（第 3 层莫格、第 6 层摩登、深渊首领层随机一个并改名「深渊化身」），
@@ -187,7 +228,7 @@ static func _boss_pack(m: Dictionary, rng: RandomNumberGenerator) -> Array:
 	var boss := {"key": bk, "cell": Vector2i(r.cx, r.cy), "champ": "", "room": m.boss_room, "boss": true}
 	var abyss: bool = int(m.floor) > int(Act1Data.rules().floors.boss_floors[-1])
 	if abyss:
-		boss.name = "深渊化身 · " + ("缚链者" if bk == "mog" else "焚誓者")
+		boss.name = Act1Data.rules().floors.abyss_boss_names[bk]
 	var out: Array = [boss]
 	var pool := FloorRules.monster_pool(m.floor)
 	var used := {boss.cell: true}
@@ -196,7 +237,7 @@ static func _boss_pack(m: Dictionary, rng: RandomNumberGenerator) -> Array:
 			var c := Vector2i(rng.randi_range(r.x + 1, r.x + r.w - 2), rng.randi_range(r.y + 1, r.y + r.h - 2))
 			if m.t[c.y * m.w + c.x] == FLOOR and not used.has(c):
 				used[c] = true
-				var g: String = pool[rng.randi_range(0, pool.size() - 1)] if abyss else ("zombie" if bk == "mog" else "skel")
+				var g: String = pool[rng.randi_range(0, pool.size() - 1)] if abyss else Act1Data.rules().floors.boss_guards[bk]
 				out.append({"key": g, "cell": c, "champ": "", "room": m.boss_room})
 				break
 	return out

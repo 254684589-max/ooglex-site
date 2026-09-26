@@ -36,7 +36,8 @@ static func theme_tints(theme: String) -> Dictionary:
 	}
 
 
-## opt：seed（装饰随机）、on_stairs（Callable(kind)）、down_caption / up_caption、open_boss_stairs（首领层的下楼梯是否直接出现：P9 起只在首领已被击败时为 true）
+## opt：seed（装饰随机）、on_stairs（Callable(kind)）、down_caption / up_caption、open_boss_stairs（首领层的下楼梯是否直接出现：P9 起只在首领已被击败时为 true）、
+##   fog（P10 战争迷雾：地面、墙、装饰、火把先藏起来，按 4 × 4 格的块在走近看见后用 reveal_chunk 显示）
 static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictionary:
 	var t0 := Time.get_ticks_usec()
 	var tints := theme_tints(m.theme)
@@ -48,9 +49,13 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	var t: PackedByteArray = m.t
 	var floor_mat: Material = opt.get("floor_material", Look._triplanar(Look.floor_texture(), 4.0, tints.floor))
 	var chunks := 0
+	var fog: Dictionary = {}          # 块坐标 → {meshes, deco: [[多实例网格, 下标, 变换]], torches}（只在 opt.fog 时填）
+	var use_fog: bool = opt.get("fog", false)
+	if use_fog:
+		fog["_on"] = true
 	for cy in ceili(h / float(CHUNK)):
 		for cx in ceili(w / float(CHUNK)):
-			if _build_chunk(region, m, cx, cy, floor_mat, tints.wall):
+			if _build_chunk(region, m, cx, cy, floor_mat, tints.wall, fog if use_fog else {}):
 				chunks += 1
 	var geo_ms := (Time.get_ticks_usec() - t0) / 1000.0
 
@@ -103,7 +108,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	# 装饰
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(opt.get("seed", 1)) ^ 0x5eed
-	_build_deco(region, m, rng)
+	_build_deco(region, m, rng, fog if use_fog else {})
 
 	# 火把
 	var torches: Array[Torch] = []
@@ -117,6 +122,9 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		tch.light.distance_fade_begin = 22.0
 		tch.light.distance_fade_length = 6.0
 		torches.append(tch)
+		if use_fog:
+			_fog_add(fog, c / CHUNK, "torches", tch)
+			tch.visible = false
 
 	# 楼梯
 	var stairs := {}
@@ -128,7 +136,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	if m.up.x >= 0:
 		stairs.up = _stairs(parent, "up", opt.get("up_caption", "↑ 上一层"), m.up, opt.get("on_stairs", Callable()))
 
-	return {"region": region, "torches": torches, "stairs": stairs, "down_cell": down_cell, "chunks": chunks,
+	return {"region": region, "torches": torches, "stairs": stairs, "down_cell": down_cell, "chunks": chunks, "fog": fog,
 		"geo_ms": geo_ms, "nav_ms": nav_ms, "build_ms": (Time.get_ticks_usec() - t0) / 1000.0}
 
 
@@ -168,7 +176,7 @@ static func _quad(st: SurfaceTool, c: Vector3, n: Vector3, v: Vector3, hu: float
 		st.add_vertex(p)
 
 
-static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_mat: Material, wall_tint: Color) -> bool:
+static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_mat: Material, wall_tint: Color, fog: Dictionary = {}) -> bool:
 	var w: int = m.w
 	var t: PackedByteArray = m.t
 	var fst := SurfaceTool.new()
@@ -221,6 +229,7 @@ static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_
 			_add_run_box(gbody, r, 0.2, -0.1)
 		gbody.add_child(fmi)
 		region.add_child(gbody)
+		_fog_add(fog, Vector2i(cx, cy), "meshes", fmi)
 	if n_wall > 0:
 		var wmi := MeshInstance3D.new()
 		wmi.mesh = wst.commit()
@@ -234,6 +243,7 @@ static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_
 		wbody.add_child(wmi)
 		wbody.set_meta("fade_meshes", [wmi])
 		region.add_child(wbody)
+		_fog_add(fog, Vector2i(cx, cy), "meshes", wmi)
 	return true
 
 
@@ -249,7 +259,7 @@ static func _add_run_box(body: StaticBody3D, r: Array, height: float, y: float) 
 	body.add_child(cs)
 
 
-static func _build_deco(parent: Node3D, m: Dictionary, rng: RandomNumberGenerator) -> void:
+static func _build_deco(parent: Node3D, m: Dictionary, rng: RandomNumberGenerator, fog: Dictionary = {}) -> void:
 	var lists := {DungeonGen.DECO_BONES: [], DungeonGen.DECO_RUBBLE: [], DungeonGen.DECO_LAVA: []}
 	var deco: PackedByteArray = m.deco
 	for i in deco.size():
@@ -292,6 +302,9 @@ static func _build_deco(parent: Node3D, m: Dictionary, rng: RandomNumberGenerato
 				if s[0] == DungeonGen.DECO_RUBBLE:
 					basis = (basis * Basis(Vector3(1, 0, 0), rng.randf_range(-0.4, 0.4))).scaled(Vector3.ONE * rng.randf_range(0.5, 1.3))
 				mm.set_instance_transform(idx, Transform3D(basis, p))
+				if fog.has("_on"):
+					_fog_add(fog, c / CHUNK, "deco", [mm, idx, Transform3D(basis, p)])
+					mm.set_instance_transform(idx, Transform3D(Basis().scaled(Vector3.ZERO), p))
 				idx += 1
 		var mmi := MultiMeshInstance3D.new()
 		mmi.multimesh = mm
@@ -299,3 +312,30 @@ static func _build_deco(parent: Node3D, m: Dictionary, rng: RandomNumberGenerato
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mmi.name = s[4]
 		parent.add_child(mmi)
+
+
+static func _fog_add(fog: Dictionary, key: Vector2i, what: String, v) -> void:
+	if not fog.has("_on"):
+		return
+	if not fog.has(key):
+		fog[key] = {"meshes": [], "deco": [], "torches": [], "shown": false}
+	fog[key][what].append(v)
+	if what == "meshes":
+		v.visible = false
+
+
+## 战争迷雾（P10）：显示这一块的地面、墙、装饰与火把；返回这次是否新显示
+static func reveal_chunk(fog: Dictionary, key: Vector2i) -> bool:
+	if not fog.has(key) or fog[key].shown:
+		return false
+	var e: Dictionary = fog[key]
+	e.shown = true
+	for mi in e.meshes:
+		if is_instance_valid(mi):
+			mi.visible = true
+	for d in e.deco:
+		d[0].set_instance_transform(d[1], d[2])
+	for tch in e.torches:
+		if is_instance_valid(tch):
+			tch.visible = true
+	return true

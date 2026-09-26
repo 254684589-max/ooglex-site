@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2151,5 +2151,202 @@ func test_bosses() -> void:
 	await seconds(1.8)
 	check(main.dialog_panel.visible and main.dialog_panel.who.text == "封印大厅", "1.6 秒后播放结局文字")
 	main.dialog_panel.close()
+	main.queue_free()
+	await frames(2)
+
+
+## P10：木桶、宝箱、神殿、照明范围与战争迷雾
+func _spots(main: Node, kind: String) -> Array:
+	return main.stage.get_children().filter(func(n): return n is InteractSpot and n.kind == kind and not n.is_queued_for_deletion())
+
+
+func test_props() -> void:
+	# ---- 规则（V0.1 genDungeon「房间内容」） ----
+	var problems := []
+	var shrine_floors := 0
+	var rooms_n := 0
+	var chests := 0
+	var maps := 0
+	for f in range(1, 9):
+		for sd in [5, 66, 777, 4242]:
+			var m := DungeonGen.generate(f, sd)
+			maps += 1
+			var spawn_cells := {}
+			for sp in m.spawns:
+				spawn_cells[sp.cell] = true
+			var per_room := {}
+			var shrines := 0
+			for pr in m.props:
+				if pr.room == m.start or pr.room == m.boss_room:
+					problems.append("起点房或首领房里有道具")
+				if m.t[pr.cell.y * m.w + pr.cell.x] != DungeonGen.FLOOR or spawn_cells.has(pr.cell):
+					problems.append("道具不在空地上")
+				if not per_room.has(pr.room):
+					per_room[pr.room] = {"barrel": 0, "chest": 0, "shrine": 0}
+				per_room[pr.room][pr.type] += 1
+				if pr.type == "shrine":
+					shrines += 1
+			for ri in per_room:
+				if per_room[ri].barrel > 3 or per_room[ri].chest > 1:
+					problems.append("一个房间木桶超过 3 个或宝箱超过 1 个")
+				chests += per_room[ri].chest
+			rooms_n += m.rooms.size() - (2 if m.boss_room >= 0 else 1)
+			if shrines > 1:
+				problems.append("一层不止一座神殿")
+			shrine_floors += shrines
+	check(problems.is_empty(), "32 张地图的道具都合规：不在起点房和首领房、不占楼梯和怪物的格子、每间最多 3 个木桶 1 个宝箱、每层最多 1 座神殿 %s" % str(problems.slice(0, 3)))
+	check(shrine_floors >= maps * 0.5 and chests >= rooms_n * 0.1 and chests <= rooms_n * 0.32, "神殿 %d / %d 层、宝箱 %d / %d 间（V0.1：约 75%% 的层有神殿、每间 20%% 有宝箱）" % [shrine_floors, maps, chests, rooms_n])
+	check(DungeonGen.generate(3, 5).spawns == DungeonGen.generate(3, 5).spawns and DungeonGen.generate(3, 5).props == DungeonGen.generate(3, 5).props, "同一种子道具位置不变")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	var cnt := {"gold": 0, "pot": 0, "item": 0, "imps": 0, "none": 0}
+	for i in 4000:
+		var b := FloorRules.roll_barrel(rng, 2)
+		cnt[b.keys()[0] if not b.is_empty() else "none"] += 1
+	check(absf(cnt.gold / 4000.0 - 0.3) < 0.03 and absf(cnt.pot / 4000.0 - 0.12) < 0.02 and absf(cnt.item / 4000.0 - 0.05) < 0.015 and absf(cnt.imps / 4000.0 - 0.08) < 0.02, "木桶：30%% 金币、12%% 生命药水、5%% 装备、8%% 窜出小鬼（V0.1）%s" % str(cnt))
+
+	# ---- 场景 ----
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var sh: Dictionary = hero.progress.sheet
+	var hl: OmniLight3D = hero.get_node("HeroLight")
+	check(is_equal_approx(hl.omni_range, 7.0), "照明范围：基础 6 格，身上的光照 7 米")
+	sh.eq.helm = {"id": 999001, "base": "cap", "rarity": 1, "ilvl": 5, "name": "明亮的皮帽", "aff": {"light": 2}, "arm": 2, "req": 1}
+	hero.stats_changed()
+	check(is_equal_approx(hl.omni_range, 9.4) and hero.progress.S.light == 8, "「明亮的」+2 照明：光多照 2.4 米，看见的范围也大 2 格")
+	sh.eq.erase("helm")
+	hero.stats_changed()
+	var fl := 2
+	main.go_floor(fl)
+	await frames(3)
+	var fog: Dictionary = main.floor_info.fog
+	var shown := 0
+	var total := 0
+	for k in fog:
+		if k is Vector2i:
+			total += 1
+			if fog[k].shown:
+				shown += 1
+	var hc: Vector2i = Vector2i(floori(hero.global_position.x / DungeonBuilder.TILE), floori(hero.global_position.z / DungeonBuilder.TILE)) / DungeonBuilder.CHUNK
+	check(shown > 0 and shown < total / 3 and fog[hc].shown, "战争迷雾：只显示主角身边看见过的区块（%d / %d）" % [shown, total])
+	var hidden_torch: int = main.torches.filter(func(t): return not t.visible).size()
+	check(hidden_torch > 0, "没去过的地方火把也没亮（%d 支还藏着）" % hidden_torch)
+	var far_mon: Array = main.monsters.filter(func(e): return is_instance_valid(e) and e.global_position.distance_to(hero.global_position) > 30.0)
+	check(not far_mon.is_empty() and far_mon.all(func(e): return not e.visible), "看不见的地方的怪物不显示（%d 只）" % far_mon.size())
+	var props_n: int = main.dungeon.props.size()
+	var spawned := _spots(main, "barrel").size() + _spots(main, "chest").size() + _spots(main, "shrine").size()
+	check(props_n > 0 and spawned == props_n, "本层 %d 件道具都搭出来了" % props_n)
+
+	# 离主角近的怪：看得见、点得中；藏起来就点不中
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	await frames(1)
+	main.monsters.clear()
+	var near := Monsters.spawn("zombie", main.stage, hero.global_position + Vector3(2.0, 0, 0), hero, fl)
+	near.stun_t = 30.0
+	main.monsters.append(near)
+	await seconds(0.25)
+	main.camera.snap()
+	await physics(2)
+	var sp: Vector2 = main.camera.unproject_position(near.global_position + Vector3(0, 1.0, 0))
+	check(near.visible and hero.pick_enemy(sp) == near, "身边的怪看得见、点得中")
+	near.visible = false
+	check(hero.pick_enemy(sp) == null and hero.nearest_enemy() == null, "藏在迷雾里的怪点不中，也不会被自动瞄准")
+	near.queue_free()
+	main.monsters.clear()
+
+	# 宝箱
+	var chest: InteractSpot = null
+	for f2 in range(2, 12):
+		if f2 != fl:
+			main.go_floor(f2)
+			await frames(2)
+			fl = f2
+		if not _spots(main, "chest").is_empty() and not _spots(main, "shrine").is_empty():
+			break
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	main.monsters.clear()
+	chest = _spots(main, "chest")[0]
+	hero.global_position = chest.global_position + Vector3(1.6, 0, 1.6)
+	main.camera.snap()
+	await physics(3)
+	var items0 := get_tree().get_nodes_in_group("ground_item").size()
+	var csp: Vector2 = main.camera.unproject_position(chest.global_position + Vector3(0, 0.5, 0))
+	hero.click_at(csp)
+	check(hero.talk_target == chest, "点宝箱：走过去")
+	for i in 200:
+		await physics(1)
+		if chest.used:
+			break
+	await frames(1)
+	var got := get_tree().get_nodes_in_group("ground_item").size() - items0
+	check(chest.used and not chest.is_in_group("interact") and got >= 2 and got <= 4, "打开宝箱：金币 + 1–2 件装备（有时加一瓶药水），共 %d 件；开过的不能再点" % got)
+	check(main.props_used[fl].has(chest.index), "记下这个宝箱开过了")
+	# 神殿
+	var shrine: InteractSpot = _spots(main, "shrine")[0]
+	hero.hp = 5.0
+	var dmg0: Array = hero.progress.S.dmg.duplicate()
+	var arm0: int = hero.progress.S.arm
+	main._use_spot(shrine)
+	var bf := HeroStats.active_buff(sh)
+	check(bf in ["might", "guard", "swift", "arcane"] and is_equal_approx(sh.buff.t, 90.0) and hero.hp == hero.max_hp and shrine.used, "神殿：随机一种祝福 90 秒，并回满生命法力（%s）" % bf)
+	await frames(2)
+	var ok_fx := true
+	match bf:
+		"might":
+			ok_fx = hero.progress.S.dmg[1] > dmg0[1]
+		"guard":
+			ok_fx = hero.progress.S.arm > arm0
+		"swift":
+			ok_fx = hero.progress.S.aps > 1.0 and hero.speed > HeroProgress.BASE_MOVE_M
+		"arcane":
+			ok_fx = hero.progress.S.spell > 1.0
+	check(ok_fx and main.lvl_label.text.contains("神殿") and _logs(main).contains("持续 90 秒"), "祝福立即生效，左上角显示剩余秒数")
+	sh.buff.t = 0.05
+	await seconds(0.25)
+	check(sh.buff == null and _logs(main).contains("神殿祝福消失了") and hero.progress.S.dmg == dmg0 and hero.progress.S.arm == arm0, "90 秒后祝福消失，属性恢复")
+	# 木桶：强制一次窜出小鬼（找一个会掷出小鬼的种子）
+	var barrels := _spots(main, "barrel")
+	if barrels.is_empty():
+		check(false, "这一层没有木桶")
+	else:
+		var seed_imps := -1
+		for sd in 500:
+			var r := RandomNumberGenerator.new()
+			r.seed = sd
+			if FloorRules.roll_barrel(r, fl).has("imps"):
+				seed_imps = sd
+				break
+		main.loot_rng.seed = seed_imps
+		var b0: InteractSpot = barrels[0]
+		main._use_spot(b0)
+		await seconds(0.3)
+		var imps: Array = main.monsters.filter(func(e): return is_instance_valid(e) and e.def.get("v01", "") == "imp")
+		check(imps.size() >= 1 and imps.all(func(e): return e.state == "chase") and _logs(main).contains("窜出了火坑小鬼") and not is_instance_valid(b0), "砸木桶：窜出火坑小鬼扑过来（%d 只），木桶碎掉" % imps.size())
+		for e in imps:
+			e.queue_free()
+		main.monsters.clear()
+	# 离开再回来：开过的宝箱还开着，砸掉的木桶没了，神殿熄着
+	var n_barrels := _spots(main, "barrel").size()
+	var chest_i := chest.index
+	main.go_floor(fl - 1 if fl > 1 else fl + 1)
+	await frames(2)
+	main.go_floor(fl)
+	await frames(2)
+	var chests2: Array = _spots(main, "chest").filter(func(c): return c.index == chest_i)
+	check(chests2.size() == 1 and chests2[0].used and _spots(main, "shrine")[0].used and _spots(main, "barrel").size() == n_barrels, "回到这一层：宝箱开着、神殿熄着、砸掉的木桶没有再出现")
+	var fog2: Dictionary = main.floor_info.fog
+	var shown2 := 0
+	for k in fog2:
+		if k is Vector2i and fog2[k].shown:
+			shown2 += 1
+	check(shown2 >= shown, "去过的区块回来还是亮的（%d 块）" % shown2)
 	main.queue_free()
 	await frames(2)

@@ -98,6 +98,7 @@ func _ready() -> void:
 	mp = max_mp
 	respawn_point = global_position
 	_build_placeholder()
+	_apply_progress()      # 身上的光建好后再算一次照明范围
 
 
 func _build_placeholder() -> void:
@@ -136,6 +137,7 @@ func _build_placeholder() -> void:
 	light.light_energy = 0.9
 	light.omni_range = 7.0
 	light.position = Vector3(0, 2.4, 0)
+	light.name = "HeroLight"
 	add_child(light)
 	# 点击目标标记（占位：一个会淡出的圆环）
 	marker = MeshInstance3D.new()
@@ -208,12 +210,13 @@ func click_at(screen_pos: Vector2) -> void:
 		return
 	pickup_target = null
 	talk_target = null
-	var npc := pick_npc(screen_pos)
-	if npc != null:
-		# 点 NPC：走过去对话（V0.1 talk）
+	# 点选优先级同 V0.1 pickAt：地上物品的名字 > 怪物 > 人物与可以用的东西（传送石、木桶、宝箱……）
+	var gi := pick_item(screen_pos)
+	if gi != null:
+		# 点地上的东西：走过去拾取（V0.1 pickUp）
 		attack_target = null
-		talk_target = npc
-		move_to(npc.global_position)
+		pickup_target = gi
+		move_to(gi.global_position)
 		return
 	var enemy = pick_enemy(screen_pos)
 	if enemy:
@@ -221,11 +224,11 @@ func click_at(screen_pos: Vector2) -> void:
 		moving_to = false
 		return
 	attack_target = null
-	var gi := pick_item(screen_pos)
-	if gi != null:
-		# 点地上的东西：走过去拾取（V0.1 pickUp）
-		pickup_target = gi
-		move_to(gi.global_position)
+	var npc := pick_npc(screen_pos)
+	if npc != null:
+		# 点 NPC：走过去对话（V0.1 talk）
+		talk_target = npc
+		move_to(npc.global_position)
 		return
 	var p = pick_ground(screen_pos)
 	if p != null:
@@ -257,7 +260,7 @@ func pick_item(screen_pos: Vector2) -> GroundItem:
 	var best: GroundItem = null
 	var bd := 40.0 * get_window().content_scale_factor
 	for g in get_tree().get_nodes_in_group("ground_item"):
-		if not is_instance_valid(g) or camera.is_position_behind(g.global_position):
+		if not is_instance_valid(g) or not g.visible or camera.is_position_behind(g.global_position):
 			continue
 		for h in [0.3, 0.8]:
 			var sp := camera.unproject_position(g.global_position + Vector3(0, h, 0))
@@ -300,7 +303,8 @@ func pick_enemy(screen_pos: Vector2):
 	var dir := camera.project_ray_normal(screen_pos)
 	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 200.0, Layers.ENEMY)
 	var r := get_world_3d().direct_space_state.intersect_ray(q)
-	if not r.is_empty() and r.collider.is_in_group("enemy"):
+	# 战争迷雾里看不见的怪物（P10，visible = false）点不中
+	if not r.is_empty() and r.collider.is_in_group("enemy") and r.collider.visible:
 		return r.collider
 	return null
 
@@ -352,6 +356,10 @@ func _apply_progress() -> void:
 	hp = minf(hp, max_hp)
 	mp = minf(mp, max_mp)
 	speed = progress.move_speed()
+	# 照明范围（P10，V0.1 S.light：基础 6 格，「明亮的」词缀与守夜人之冠会加）：每多 1 格，身上的光多照 1.2 米
+	var hl := get_node_or_null("HeroLight") as OmniLight3D
+	if hl:
+		hl.omni_range = 7.0 + (float(progress.S.light) - float(Act1Data.rules().hero.stats.base_light)) * 1.2
 
 
 func on_enemy_killed(e: Node) -> void:
@@ -483,7 +491,7 @@ func nearest_enemy(max_dist: float = AUTO_TARGET_RANGE) -> Node3D:
 	var best: Node3D = null
 	var bd := max_dist
 	for e in get_tree().get_nodes_in_group("enemy"):
-		if e.get("dead"):
+		if e.get("dead") or not e.visible:
 			continue
 		var d: float = global_position.distance_to(e.global_position)
 		if d < bd:
