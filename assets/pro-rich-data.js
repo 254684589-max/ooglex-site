@@ -60,7 +60,7 @@
     if (access && access.access_level === "full") {
       return String(access.plan || "PRO").toUpperCase() + " · FULL";
     }
-    return "FREE · 10% PREVIEW";
+    return "GUEST · 10% PREVIEW";
   }
 
   function onReady(fn) {
@@ -109,20 +109,20 @@
       ].join(";");
 
       var title = document.createElement("div");
-      title.textContent = "继续查看完整数据";
+      title.textContent = "注册后查看完整数据";
       title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
 
       var sub = document.createElement("div");
       sub.textContent = access && access.degraded
-        ? "当前网络连不上会员服务，已按预览显示本页原版数据。恢复连接后可查看完整数据。"
+        ? "当前网络连不上账户权限服务，已按约 10% 预览显示。恢复连接后，已注册用户可查看完整数据。"
         : access && access.authenticated
-          ? "当前为 FREE 预览。升级 PRO 后继续使用同一原版页面查看全部数据。"
-          : "当前展示原版页面预览。登录 PRO 后可继续查看完整数据。";
+          ? "登录状态暂未通过权限校验，当前按约 10% 预览显示。权限恢复后可查看完整数据。"
+          : "当前仅展示约 10% 公开预览。免费注册并登录后可继续查看完整数据。";
       sub.style.cssText = "font-size:14px;line-height:1.6;color:#c8c8c8;margin:0 auto 17px;max-width:720px";
 
       var button = document.createElement("a");
-      button.href = "/account/";
-      button.textContent = access && access.authenticated ? "查看会员权限" : "登录 / 注册";
+      button.href = "/account/?next=" + encodeURIComponent(location.pathname + location.search + location.hash);
+      button.textContent = access && access.authenticated ? "重新验证登录" : "注册 / 登录";
       button.style.cssText = [
         "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:44px",
         "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",
@@ -130,7 +130,7 @@
       ].join(";");
 
       var note = document.createElement("div");
-      note.textContent = "完整数据不会发送给 FREE 浏览器；页面下方仅保留受限预览。";
+      note.textContent = "完整数据不会发送给未注册浏览器；页面下方仅保留约 10% 预览。";
       note.style.cssText = "font-size:11px;color:#8f8f8f;margin-top:14px";
 
       wall.appendChild(title);
