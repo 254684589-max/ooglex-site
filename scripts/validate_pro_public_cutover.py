@@ -187,7 +187,7 @@ def main() -> None:
             fail(f"Finance Column {label} preview generator marker missing")
 
     finance_adapter = (SITE / "assets/pro-finance-column.js").read_text(encoding="utf-8")
-    for token in ("finance_column", "FREE · 10% PREVIEW", "继续查看完整金融知识架构", "ooglex:finance-full-ready"):
+    for token in ("finance_column", "FREE · 10% PREVIEW", "继续查看完整数据", "ooglex:finance-full-ready"):
         if token not in finance_adapter:
             fail("Finance Column access adapter missing token: " + token)
 
