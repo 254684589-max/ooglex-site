@@ -172,12 +172,39 @@ static func generate(floor_i: int, seed_value: int) -> Dictionary:
 				m.torches.append({"cell": Vector2i(x, y), "face": face})
 	m.t = t
 	m.spawns = _room_packs(m, rng)
+	m.boss_key = ""
+	if m.boss_room >= 0:
+		m.spawns.append_array(_boss_pack(m, rng))
 	return m
+
+
+## 首领房（P9，V0.1 genDungeon）：房间正中是首领（第 3 层莫格、第 6 层摩登、深渊首领层随机一个并改名「深渊化身」），
+## 另有 4 只护卫：莫格带腐尸、摩登带骸骨战士，深渊层从本层怪物池里挑。首领条目带 boss = true。
+static func _boss_pack(m: Dictionary, rng: RandomNumberGenerator) -> Array:
+	var bk := FloorRules.boss_for(rng, m.floor)
+	m.boss_key = bk
+	var r: Dictionary = m.rooms[m.boss_room]
+	var boss := {"key": bk, "cell": Vector2i(r.cx, r.cy), "champ": "", "room": m.boss_room, "boss": true}
+	var abyss: bool = int(m.floor) > int(Act1Data.rules().floors.boss_floors[-1])
+	if abyss:
+		boss.name = "深渊化身 · " + ("缚链者" if bk == "mog" else "焚誓者")
+	var out: Array = [boss]
+	var pool := FloorRules.monster_pool(m.floor)
+	var used := {boss.cell: true}
+	for i in 4:
+		for tries in 30:
+			var c := Vector2i(rng.randi_range(r.x + 1, r.x + r.w - 2), rng.randi_range(r.y + 1, r.y + r.h - 2))
+			if m.t[c.y * m.w + c.x] == FLOOR and not used.has(c):
+				used[c] = true
+				var g: String = pool[rng.randi_range(0, pool.size() - 1)] if abyss else ("zombie" if bk == "mog" else "skel")
+				out.append({"key": g, "cell": c, "champ": "", "room": m.boss_room})
+				break
+	return out
 
 
 ## 房间里的怪物群（V0.1 genDungeon「房间内容」）：起点房与首领房不刷；每个房间 72% 有一群，
 ## 其中 12% 是精英群（同一种精英特性，2–3 只），否则 2–4 只（第 3 层以下 +1），30% 的群混合几种怪。
-## 返回 [{key, cell, champ, room}]；key 是 V0.1 的怪物键名。首领与护卫在 P9。
+## 返回 [{key, cell, champ, room}]；key 是 V0.1 的怪物键名。首领与护卫见 _boss_pack（P9）。
 static func _room_packs(m: Dictionary, rng: RandomNumberGenerator) -> Array:
 	var P: Dictionary = Act1Data.rules().monsters.pack
 	var C: Dictionary = Act1Data.rules().monsters.champion

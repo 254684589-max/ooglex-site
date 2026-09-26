@@ -74,7 +74,13 @@ var seen_maps: Dictionary = {}   # 楼层 → 到过的格子（Fog.seen）；�
 var seen := PackedByteArray()
 var vis := PackedByteArray()
 var _fog_cell := Vector2i(-999, -999)
-var _portal_armed := false       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
+var _portal_armed := false
+# P9：首领
+var boss: EnemyBase = null
+var bosses_dead: Dictionary = {}  # 本局已击败首领的楼层：回到这一层时不再刷首领与护卫，下楼梯直接开着
+var boss_box: VBoxContainer
+var boss_name: Label
+var boss_bar: ProgressBar       # 刚传送过来时站在门边不算「走进门」：先离开 1.5 米再说
 
 
 func _ready() -> void:
@@ -218,6 +224,7 @@ func _process(delta: float) -> void:
 			btn_mp.text = "蓝 %d" % sh.pots.mp
 			btn_tp.text = "城 %d" % sh.pots.tp
 		dead_label.visible = hero.dead
+		_update_boss_bar()
 
 
 func _on_pack_loaded(id: String, ok: bool, ms: int, detail: String) -> void:
@@ -325,6 +332,7 @@ func _new_stage() -> void:
 	dummies.clear()
 	monsters.clear()
 	stairs.clear()
+	boss = null
 	npcs.clear()
 	if hero:
 		hero.in_town = false
@@ -537,6 +545,63 @@ func on_boss_down(boss: String) -> void:
 func epilogue() -> void:
 	var E: Dictionary = Act1Data.dialogs().epilogue
 	dialog_panel.show_dialog(E.name, E.glyph, E.lines, [{"t": E.ok, "main": true, "fn": dialog_panel.close}])
+
+
+# ---------------- 首领（P9） ----------------
+
+func _setup_boss(e: EnemyBase, sp: Dictionary) -> void:
+	boss = e
+	if sp.has("name"):
+		e.def.name = sp.name
+		e.update_label()
+	var orange := Color(0.91, 0.52, 0.23)
+	e.shouted.connect(func(txt: String): add_log(txt, orange))
+	if e is EnemyBossMog:
+		e.enraged_now.connect(func(): add_log("莫格暴怒了！", Color(0.88, 0.38, 0.29)))
+	elif e is EnemyBossAbbot:
+		var r: Dictionary = dungeon.rooms[dungeon.boss_room]
+		e.arena = Rect2(r.x * DungeonBuilder.TILE, r.y * DungeonBuilder.TILE, r.w * DungeonBuilder.TILE, r.h * DungeonBuilder.TILE)
+		e.phase_changed.connect(func(_p: int): add_log("余烬之心在摩登胸口燃烧——他正在变成别的东西！", orange))
+	e.died.connect(_on_boss_died)
+	add_log("空气里弥漫着腐臭与焦灼……这一层有强大的存在", Color(0.88, 0.38, 0.29))
+
+
+## 首领倒下（V0.1 bossDown）：首领房中间出现下楼梯；第 3 层莫格、第 6 层摩登推进任务；深渊首领只开楼梯
+func _on_boss_died(e: EnemyBase) -> void:
+	bosses_dead[floor_i] = true
+	camera.add_trauma(0.9)
+	var key: String = e.def.get("v01", "")
+	if key == "mog" and floor_i == 3:
+		on_boss_down("mog")
+	elif key == "abbot" and floor_i == 6:
+		on_boss_down("mordan")
+	else:
+		add_log("深渊化身倒下了。更深处的裂隙打开了。", Color(1.0, 0.82, 0.29))
+	add_log("通往下一层的阶梯出现了", Color(0.79, 0.64, 0.35))
+	print("EF_BOSS_DOWN key=%s floor=%d" % [key, floor_i])
+	# 在物理回调里不能加区域节点：推迟到帧末
+	call_deferred("_open_boss_stairs")
+
+
+func _open_boss_stairs() -> void:
+	if floor_i <= 0 or dungeon.is_empty() or stairs.has("down"):
+		return
+	var c: Vector2i = dungeon.boss_stairs
+	stairs.down = DungeonBuilder._stairs(stage, "down", "↓ " + FloorRules.floor_name(floor_i + 1), c, _on_stairs)
+	floor_info.down_cell = c
+	var tt: PackedByteArray = dungeon.t
+	tt[c.y * dungeon.w + c.x] = DungeonGen.DOWN
+	dungeon.t = tt
+
+
+func _update_boss_bar() -> void:
+	## 首领血条（V0.1 bossbar）：首领被惊动后显示在屏幕下方中间
+	var show := boss != null and is_instance_valid(boss) and not boss.dead and not boss.state in ["idle", "return"]
+	boss_box.visible = show
+	if show:
+		boss_name.text = String(boss.def.name)
+		boss_bar.max_value = boss.max_hp
+		boss_bar.value = boss.hp
 
 
 # ---------------- 传送石、回城卷轴、水井（P8） ----------------
@@ -752,7 +817,7 @@ func go_floor(f: int, via: String = "down") -> void:
 		_new_stage()
 		dungeon = DungeonGen.generate(f, seed_for(f))
 		floor_info = DungeonBuilder.build(stage, dungeon, {
-			"seed": seed_for(f), "on_stairs": _on_stairs,
+			"seed": seed_for(f), "on_stairs": _on_stairs, "open_boss_stairs": bosses_dead.has(f),
 			"down_caption": "↓ " + FloorRules.floor_name(f + 1),
 			"up_caption": ("↑ " + FloorRules.floor_name(f - 1)) if f > 1 else ("↑ 返回测试区" if use_test_area else "↑ 烬原镇")})
 		level = floor_info.region
@@ -776,7 +841,14 @@ func go_floor(f: int, via: String = "down") -> void:
 		jit.seed = seed_for(f) + 17
 		for sp in dungeon.spawns:
 			var pos := DungeonBuilder.cell_center(sp.cell) + Vector3(jit.randf_range(-0.5, 0.5), 0, jit.randf_range(-0.5, 0.5))
-			monsters.append(Monsters.spawn(sp.key, stage, pos, hero, f, sp.champ))
+			if sp.room == dungeon.boss_room and bosses_dead.has(f):
+				continue
+			if sp.get("boss", false):
+				pos = DungeonBuilder.cell_center(sp.cell)
+			var e := Monsters.spawn(sp.key, stage, pos, hero, f, sp.champ)
+			monsters.append(e)
+			if sp.get("boss", false):
+				_setup_boss(e, sp)
 	hero.respawn_point = hero.global_position
 	camera.snap()
 	apply_quality(quality)
@@ -886,7 +958,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P8 任务与传送）\n模型仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；镇中央的传送石能去到过的楼层。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P9 首领）\n模型仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；第 3 层与第 6 层有首领，击败后才出现下楼梯。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -972,6 +1044,31 @@ func _build_ui() -> void:
 	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	banner.modulate.a = 0.0
 	layer.add_child(banner)
+	# 首领血条（P9）：屏幕下方中间，电脑在技能栏上方，手机在摇杆与按钮上方
+	boss_box = VBoxContainer.new()
+	boss_box.anchor_left = 0.5
+	boss_box.anchor_right = 0.5
+	boss_box.anchor_top = 1.0
+	boss_box.anchor_bottom = 1.0
+	boss_box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	boss_box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	boss_box.offset_left = -150
+	boss_box.offset_right = 150
+	boss_box.offset_bottom = -275 if DisplayServer.is_touchscreen_available() else -150
+	boss_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	boss_box.visible = false
+	boss_name = Label.new()
+	boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	boss_name.add_theme_font_size_override("font_size", 17)
+	boss_name.add_theme_color_override("font_color", Color(1.0, 0.6, 0.25))
+	boss_name.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.02))
+	boss_name.add_theme_constant_override("outline_size", 6)
+	boss_box.add_child(boss_name)
+	boss_bar = _bar(Color(0.8, 0.28, 0.1), 14)
+	boss_bar.custom_minimum_size = Vector2(300, 14)
+	boss_bar.size_flags_horizontal = Control.SIZE_FILL
+	boss_box.add_child(boss_bar)
+	layer.add_child(boss_box)
 	touch = TouchControls.new()
 	layer.add_child(touch)
 	if touch.visible:

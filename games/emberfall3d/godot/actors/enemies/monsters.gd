@@ -8,6 +8,8 @@ const BEHAVIORS := {
 	"charger": "res://actors/enemies/enemy_charger.gd",
 	"ranged": "res://actors/enemies/enemy_ranged.gd",
 	"summoner": "res://actors/enemies/enemy_summoner.gd",
+	"boss_mog": "res://actors/enemies/enemy_boss_mog.gd",        # P9 首领
+	"boss_abbot": "res://actors/enemies/enemy_boss_abbot.gd",
 }
 
 static var _defs: Dictionary = {}
@@ -44,6 +46,7 @@ static func scaled_def(id: String, floor_i: int = 1, champ: String = "") -> Dict
 							if d[k].has(f):
 								d[k][f] = float(d[k][f]) * float(C.fury_cd_mul)
 		d.hp = m.hp
+		d.boss = m.boss          # P9：首领掉落按 V0.1 dropLoot 的首领分支
 		d.level = m.lvl
 		d.xp = m.xp
 		d.armor = 0

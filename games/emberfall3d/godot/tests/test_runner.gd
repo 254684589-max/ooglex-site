@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -474,7 +474,7 @@ func test_monsters() -> void:
 	var defs := Monsters.defs()
 	check(defs.has("ash_brute") and defs.has("bone_archer") and defs.has("ash_priest") and defs.has("ash_corpse"), "测试区怪物数据：冲锋、远程、召唤、仆从 4 种")
 	var v01_keys := ["zombie", "skel", "imp", "archer", "ghoul", "cultist", "hound", "knight"]
-	check(defs.size() == 12 and v01_keys.all(func(k): return defs.has(k) and defs[k].v01 == k), "P5：V0.1 第一幕的 8 种怪物都有 3D 定义（共 12 种）")
+	check(defs.size() == 14 and v01_keys.all(func(k): return defs.has(k) and defs[k].v01 == k) and defs.has("mog") and defs.has("abbot"), "V0.1 第一幕的 8 种怪物（P5）与 2 个首领（P9）都有 3D 定义（共 14 种）")
 
 	# ---- 发现与群体惊动 ----
 	var main = await _arena()
@@ -1045,8 +1045,8 @@ func test_dungeon() -> void:
 	# 首领层与主题
 	main.go_floor(3)
 	await frames(2)
-	check(main.dungeon.boss_room >= 0 and main.floor_info.down_cell == main.dungeon.boss_stairs and main.stairs.has("down"),
-		"第 3 层（首领层）：首领房中间有下楼梯（首领在 P9 接入之前先开着）")
+	check(main.dungeon.boss_room >= 0 and main.floor_info.down_cell.x < 0 and not main.stairs.has("down"),
+		"第 3 层（首领层）：击败首领之前没有下楼梯（P9）")
 	main.go_floor(5)
 	await frames(2)
 	check(main.environment.ambient_light_color == Look.THEME_ENV.inferno.ambient and main.environment.fog_light_color == Look.THEME_ENV.inferno.fog, "熔渊换成暗红的环境光与雾")
@@ -1370,6 +1370,8 @@ func test_loot() -> void:
 			var pool := FloorRules.monster_pool(f)
 			var by_room := {}
 			for sp in m.spawns:
+				if sp.room == m.boss_room and m.boss_room >= 0:
+					continue      # 首领与护卫另测（bosses 组）
 				total += 1
 				var r: Dictionary = m.rooms[sp.room]
 				if not pool.has(sp.key):
@@ -1986,5 +1988,168 @@ func test_quests() -> void:
 	await seconds(1.8)
 	check(dp.visible and dp.who.text == "封印大厅" and String(dp.body.get_child(0).text).begins_with("摩登院长倒下时"), "击败摩登 1.6 秒后播放结局文字（V0.1 epilogue）")
 	dp.close()
+	main.queue_free()
+	await frames(2)
+
+
+## P9：两个首领
+func _boss_prep(main: Node, hero: Player) -> EnemyBase:
+	## 清掉首领的护卫，主角血量拉到很高（只测首领的招式），站在首领房里离首领 6 米的地方
+	for e in main.monsters:
+		if is_instance_valid(e) and e != main.boss:
+			e.queue_free()
+	hero.max_hp = 1e7
+	hero.hp = 1e7
+	var c := DungeonBuilder.cell_center(main.dungeon.boss_stairs)
+	hero.global_position = c + Vector3(6.0, 0, 0)
+	hero.stop()
+	main.camera.snap()
+	return main.boss
+
+
+func test_bosses() -> void:
+	# ---- 规则：首领房的刷怪（V0.1 genDungeon） ----
+	var m3 := DungeonGen.generate(3, 42)
+	var b3: Array = m3.spawns.filter(func(sp): return sp.get("boss", false))
+	var g3: Array = m3.spawns.filter(func(sp): return sp.room == m3.boss_room and not sp.get("boss", false))
+	check(b3.size() == 1 and b3[0].key == "mog" and b3[0].cell == m3.boss_stairs and g3.size() >= 3 and g3.all(func(sp): return sp.key == "zombie"), "第 3 层：首领房正中是莫格，带 %d 只腐尸护卫" % g3.size())
+	var m6 := DungeonGen.generate(6, 42)
+	var b6: Array = m6.spawns.filter(func(sp): return sp.get("boss", false))
+	var g6: Array = m6.spawns.filter(func(sp): return sp.room == m6.boss_room and not sp.get("boss", false))
+	check(b6.size() == 1 and b6[0].key == "abbot" and g6.all(func(sp): return sp.key == "skel"), "第 6 层：首领房正中是摩登，带骸骨战士护卫")
+	var m10 := DungeonGen.generate(10, 42)
+	var b10: Array = m10.spawns.filter(func(sp): return sp.get("boss", false))
+	check(b10.size() == 1 and String(b10[0].get("name", "")).begins_with("深渊化身 · ") and m10.down.x < 0, "深渊第 10 层：首领改名「深渊化身」，击败前没有下楼梯")
+	check(DungeonGen.generate(4, 42).spawns.all(func(sp): return not sp.get("boss", false)), "非首领层没有首领")
+	var dm := Monsters.scaled_def("mog", 3)
+	check(dm.hp == 340 and dm.level == 9 and dm.attack.dmg == [10, 21] and dm.boss, "莫格第 3 层数值同 V0.1：生命 200 ×（1 + 0.35 × 2）= 340、9 级、伤害 [6, 13] ×（1 + 0.3 × 2）= %s" % str(dm.attack.dmg))
+
+	# ---- 场景：第 3 层莫格 ----
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var sh: Dictionary = hero.progress.sheet
+	sh.q = {"q1": 3, "q2": 1, "q3": 0}
+	main.go_floor(3)
+	await frames(2)
+	var mog: EnemyBossMog = main.boss
+	check(mog != null and mog.global_position.distance_to(DungeonBuilder.cell_center(main.dungeon.boss_stairs)) < 0.5 and not main.stairs.has("down"), "进入第 3 层：莫格在首领房正中，还没有下楼梯")
+	check(_logs(main).contains("这一层有强大的存在") and not main.boss_box.visible, "进层提示有强大的存在；首领没被惊动时不显示血条")
+	_boss_prep(main, hero)
+	for i in 60:
+		await physics(1)
+		if mog.state != "idle":
+			break
+	await frames(1)
+	check(mog.state != "idle" and _logs(main).contains("监工要你干活") and main.boss_box.visible and main.boss_name.text == "腐肉监工 · 莫格", "发现主角：莫格喊话，屏幕下方出现首领血条")
+	# 拉开距离、冲锋冷却清零：下一次决策就该冲锋
+	var ctr := DungeonBuilder.cell_center(main.dungeon.boss_stairs)
+	hero.global_position = ctr + (ctr - mog.global_position).normalized() * 4.0 if mog.global_position.distance_to(ctr) > 1.0 else ctr + Vector3(-6.0, 0, 0)
+	mog.set_state("chase")
+	mog.cooldowns["rush"] = 0.0
+	var saw_warn := false
+	var hp0 := hero.hp
+	for i in 400:
+		await physics(1)
+		if mog.state == "windup" and mog.mode == 1 and mog.has_warning():
+			saw_warn = true
+		if saw_warn and hero.hp < hp0:
+			break
+	check(saw_warn and hero.hp < hp0, "冲锋：先亮红色长条预警，再冲过来撞中主角（掉血 %d）" % int(hp0 - hero.hp))
+	mog.hp = mog.max_hp * 0.45
+	for i in 30:
+		await physics(1)
+		if mog.enraged:
+			break
+	check(mog.enraged and _logs(main).contains("莫格暴怒了"), "生命低于一半：莫格暴怒")
+	var items0 := get_tree().get_nodes_in_group("ground_item").size()
+	mog.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await frames(2)
+	var drops := get_tree().get_nodes_in_group("ground_item").size() - items0
+	check(main.bosses_dead.has(3) and main.stairs.has("down") and main.stairs.down.global_position.distance_to(DungeonBuilder.cell_center(main.dungeon.boss_stairs)) < 0.5 and _logs(main).contains("阶梯出现了"), "击败莫格：首领房中间出现下楼梯")
+	check(sh.q.q2 == 2 and _logs(main).contains("找到了被锁住的托比"), "「铁匠的学徒」变为可交付：托比逃回了镇上")
+	check(drops >= 5, "首领掉落：金币、装备 4 件、生命药水（%d 件）" % drops)
+	check(not main.boss_box.visible, "首领倒下后血条消失")
+	main.go_floor(2)
+	await frames(2)
+	main.go_floor(3)
+	await frames(2)
+	check(main.boss == null and main.stairs.has("down") and main.monsters.all(func(e): return e.def.get("family", "") != "首领"), "回到第 3 层：莫格不再出现，下楼梯开着")
+
+	# ---- 第 6 层摩登 ----
+	sh.q.q3 = 1
+	main.go_floor(6)
+	await frames(2)
+	var ab: EnemyBossAbbot = main.boss
+	check(ab != null and ab.arena.has_area(), "进入第 6 层：摩登在封印大厅")
+	_boss_prep(main, hero)
+	hero.global_position = DungeonBuilder.cell_center(main.dungeon.boss_stairs) + Vector3(7.0, 0, 0)
+	for i in 60:
+		await physics(1)
+		if ab.state != "idle":
+			break
+	check(_logs(main).contains("火焰选中的"), "摩登喊话")
+	var bolts := 0
+	for i in 200:
+		await physics(1)
+		bolts = main.stage.get_children().filter(func(n): return n is Projectile).size()
+		if bolts >= 3:
+			break
+	check(bolts >= 3, "邪术弹一次 3 发扇形（%d）" % bolts)
+	ab.cooldowns["nova"] = 0.0
+	await physics(3)
+	var ring: NovaRing = null
+	for n in main.stage.get_children():
+		if n is NovaRing:
+			ring = n
+	hp0 = hero.hp
+	for i in 120:
+		await physics(1)
+		if not is_instance_valid(ring) or ring.hit:
+			break
+	check(ring != null and hero.hp < hp0, "烈焰新星：火环扩散，扫到主角造成火焰伤害")
+	var n_mon: int = main.get_tree().get_nodes_in_group("enemy").size()
+	ab.cooldowns["summon"] = 0.0
+	await physics(3)
+	check(ab.minions.size() == 2 and main.get_tree().get_nodes_in_group("enemy").size() == n_mon + 2, "召唤 2 只骸骨战士")
+	for mn in ab.minions:
+		mn.queue_free()
+	hero.global_position = ab.global_position + Vector3(2.0, 0, 0)
+	ab.cooldowns["blink"] = 0.0
+	var ab_pos := ab.global_position
+	for i in 30:
+		await physics(1)
+		if ab.global_position.distance_to(ab_pos) > 3.0:
+			break
+	check(ab.global_position.distance_to(ab_pos) >= 4.0 and ab.arena.has_point(Vector2(ab.global_position.x, ab.global_position.z)), "被贴近：摩登瞬移到 4.5 米以外，仍在封印大厅里")
+	ab.hp = ab.max_hp * 0.45
+	for i in 30:
+		await physics(1)
+		if ab.phase == 2:
+			break
+	await frames(1)
+	check(ab.phase == 2 and main.boss_name.text == "灰烬之王的容器 · 摩登" and ab.visual.scale.x > 1.2 and _logs(main).contains("正在变成别的东西"), "生命低于一半：二阶段「灰烬之王的容器 · 摩登」，体型变大")
+	ab.cooldowns["shot"] = 0.0
+	hero.global_position = ab.global_position + Vector3(7.0, 0, 0)
+	for n in main.stage.get_children():
+		if n is Projectile:
+			n.queue_free()
+	await physics(2)
+	bolts = 0
+	for i in 60:
+		await physics(1)
+		bolts = main.stage.get_children().filter(func(n): return n is Projectile and not n.is_queued_for_deletion()).size()
+		if bolts >= 5:
+			break
+	check(bolts >= 5, "二阶段邪术弹一次 5 发（%d）" % bolts)
+	ab.take_hit({"amount": 999999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await frames(2)
+	check(sh.q.q3 == 2 and main.stairs.has("down"), "击败摩登：「余烬之心」可交付，通往第 7 层的阶梯出现")
+	await seconds(1.8)
+	check(main.dialog_panel.visible and main.dialog_panel.who.text == "封印大厅", "1.6 秒后播放结局文字")
+	main.dialog_panel.close()
 	main.queue_free()
 	await frames(2)

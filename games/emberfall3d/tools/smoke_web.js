@@ -138,11 +138,20 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     await page.screenshot({ path: path.join(outDir, `ef3d-${name}-inv.png`) });
     await page.keyboard.press('Escape');
     await page.waitForTimeout(300);
+    // 首领层（P9，仅电脑）：?floor=3 直接进第 3 层，要求搭出首领层（EF_FLOOR n=3）且没有报错，截图
+    let boss3 = 'n/a';
+    if (!mobile) {
+      boss3 = '';
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'floor=3', { waitUntil: 'load' });
+      for (let i = 0; i < 120 && !boss3; i++) { await page.waitForTimeout(250); boss3 = logs.find(l => l.startsWith('EF_FLOOR n=3')) || ''; }
+      await page.waitForTimeout(1000);
+      await page.screenshot({ path: path.join(outDir, `ef3d-${name}-floor3.png`) });
+    }
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!town && !!dialog && !!portal && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
+    const ok = !!town && !!dialog && !!portal && !!boss3 && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | 回城卷轴：${portal || '没有打开'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | 回城卷轴：${portal || '没有打开'} | 首领层：${boss3 || '没有进入第 3 层'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

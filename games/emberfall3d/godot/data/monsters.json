@@ -1,5 +1,5 @@
 {
-  "_说明": "阶段 1.5 灰盒怪物（WORLD.md 第十一节的敌人家族），behavior 对应 actors/enemies/ 下的脚本。P3 起：生命、伤害、经验、等级不再写在这里，由 v01 指向的 V0.1 怪物（data/act1_monsters.json）按楼层换算（FloorRules.scale_monster），护甲为 0（V0.1 的怪物没有护甲）；冲锋伤害 = 近战伤害 × charge.dmg_mul。行为参数（距离、前摇、冷却等）仍在这里。 P5：新增 V0.1 第一幕的 8 种怪物（键名同 V0.1），速度按「V0.1 速度 ÷ 主角 4.3 × 主角 5 米/秒」、距离按 1 格 ≈ 1.5 米换算，攻击节奏 = V0.1 攻击间隔；外观按 look 字段选占位造型。地下城按 V0.1 怪物池刷这些怪；ash_* 四种只在测试区。",
+  "_说明": "阶段 1.5 灰盒怪物（WORLD.md 第十一节的敌人家族），behavior 对应 actors/enemies/ 下的脚本。P3 起：生命、伤害、经验、等级不再写在这里，由 v01 指向的 V0.1 怪物（data/act1_monsters.json）按楼层换算（FloorRules.scale_monster），护甲为 0（V0.1 的怪物没有护甲）；冲锋伤害 = 近战伤害 × charge.dmg_mul。行为参数（距离、前摇、冷却等）仍在这里。 P5：新增 V0.1 第一幕的 8 种怪物（键名同 V0.1），速度按「V0.1 速度 ÷ 主角 4.3 × 主角 5 米/秒」、距离按 1 格 ≈ 1.5 米换算，攻击节奏 = V0.1 攻击间隔；外观按 look 字段选占位造型。地下城按 V0.1 怪物池刷这些怪；ash_* 四种只在测试区。 P9：两个首领 mog（腐肉监工 · 莫格）与 abbot（堕落院长 · 摩登），behavior 为 boss_mog / boss_abbot；招式参数按 V0.1 bossAI 换算（距离 1 格 ≈ 1.5 米，速度同上），冷却与阶段阈值照搬。",
   "ash_corpse": {
     "name": "腐尸",
     "v01": "zombie",
@@ -232,5 +232,107 @@
       "windup_s": 0.28,
       "recover_s": 1.12
     }
+  },
+  "mog": {
+    "name": "腐肉监工 · 莫格",
+    "v01": "mog",
+    "family": "首领",
+    "look": "mog",
+    "behavior": "boss_mog",
+    "speed": 2.21,
+    "aggro": 10.5,
+    "radius": 0.72,
+    "label_h": 3.5,
+    "always_label": false,
+    "no_knockback": true,
+    "attack": {
+      "range": 1.95,
+      "arc_deg": 120,
+      "windup_s": 0.39,
+      "recover_s": 0.91
+    },
+    "rush": {
+      "min_dist": 3.75,
+      "max_dist": 12.0,
+      "first_s": 4.0,
+      "cooldown_s": 6.0,
+      "windup_s": 0.35,
+      "speed_mul": 3.2,
+      "duration_s": 0.6,
+      "dmg_mul": 1.4,
+      "width": 1.6
+    },
+    "enrage": {
+      "hp_frac": 0.5,
+      "speed_mul": 1.35,
+      "cd_mul": 0.7
+    },
+    "shout": "「监工要你干活——用你的骨头来干！」"
+  },
+  "abbot": {
+    "name": "堕落院长 · 摩登",
+    "v01": "abbot",
+    "family": "首领",
+    "look": "abbot",
+    "behavior": "boss_abbot",
+    "speed": 1.98,
+    "aggro": 15.0,
+    "radius": 0.6,
+    "label_h": 3.1,
+    "no_knockback": true,
+    "shot": {
+      "kind": "bolt",
+      "speed": 8.25,
+      "range": 12.0,
+      "count": [
+        3,
+        5
+      ],
+      "spread_rad": 0.22,
+      "first_s": 2.0,
+      "cooldown_s": [
+        2.3,
+        1.6
+      ]
+    },
+    "nova": {
+      "first_s": 8.0,
+      "cooldown_s": [
+        10.0,
+        6.0
+      ],
+      "radius": 10.5,
+      "speed": 6.75,
+      "dmg_mul": 1.2
+    },
+    "summon": {
+      "first_s": 6.0,
+      "cooldown_s": 13.0,
+      "count": 2,
+      "cap": 8,
+      "minion": [
+        "skel",
+        "imp"
+      ]
+    },
+    "blink": {
+      "trigger_dist": 3.6,
+      "min_m": 4.5,
+      "max_m": 9.0,
+      "cooldown_s": 5.0
+    },
+    "chase_beyond": 9.0,
+    "back_within": 5.25,
+    "back_speed_mul": 0.6,
+    "phase2": {
+      "hp_frac": 0.5,
+      "speed_mul": 1.2,
+      "scale": 1.26,
+      "name": "灰烬之王的容器 · 摩登",
+      "ring_radius": 9.0,
+      "ring_speed": 7.5,
+      "ring_dmg_mul": 1.0
+    },
+    "shout": "「流浪者……火焰选中的，究竟是我，还是你？」"
   }
 }

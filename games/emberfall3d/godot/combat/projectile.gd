@@ -9,6 +9,7 @@ var max_range := 13.0
 var attacker: Dictionary
 var source: Node                   # 发射者（嗜血精英打中后回血）
 var kind := "arrow"                # arrow 箭 / bolt 邪术弹（P5）
+var tint := Color(0.7, 0.35, 1.0)  # 邪术弹的颜色（P9：摩登的是橙色，V0.1 同）
 var rng := RandomNumberGenerator.new()
 var travelled := 0.0
 
@@ -20,11 +21,11 @@ func _ready() -> void:
 	mi.mesh = b
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	m.albedo_color = Color(1.0, 0.45, 0.3) if kind == "arrow" else Color(0.7, 0.35, 1.0)
+	m.albedo_color = Color(1.0, 0.45, 0.3) if kind == "arrow" else tint
 	if kind == "bolt":
 		b.size = Vector3(0.22, 0.22, 0.22)
 		m.emission_enabled = true
-		m.emission = Color(0.6, 0.3, 1.0)
+		m.emission = tint.darkened(0.1)
 		m.emission_energy_multiplier = 3.0
 	mi.material_override = m
 	add_child(mi)

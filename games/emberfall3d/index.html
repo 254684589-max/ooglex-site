@@ -124,9 +124,9 @@
         <div class="eyebrow">Ooglex Games · 原创 3D 暗黑风 · 开发中</div>
         <h1 class="serif">余烬陷落<span>EMBERFALL 大作版</span></h1>
         <p class="lead">《余烬陷落》的 3D 重制正在一步一步搭建：真正的三维场景、斜视角镜头、冷暖光与火把、会冲锋会召唤的怪物。这里放出的是当前的开发中版本，每完成一步就更新一次。</p>
-        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物、怪物和墙体目前都是占位几何体，还没有正式模型、动作、音效和剧情。现在从烬原镇出发：接下第一幕的三条任务，找镇上的人疗伤、买卖装备，再从修道院废墟的阶梯下到随机生成、有怪物和掉落的地下城；回城卷轴和传送石让你随时往返。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
+        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物、怪物和墙体目前都是占位几何体，还没有正式模型、动作、音效和剧情。现在从烬原镇出发：接下第一幕的三条任务，找镇上的人疗伤、买卖装备，再从修道院废墟的阶梯下到随机生成、有怪物和掉落的地下城；回城卷轴和传送石让你随时往返；第 3 层与第 6 层有首领把守。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
         <div class="actions">
-          <a class="btn primary" href="play/?v=bb52cedb">▶ 进入 3D 预览</a>
+          <a class="btn primary" href="play/?v=d1f9b128">▶ 进入 3D 预览</a>
           <a class="btn secondary" href="../emberfall/">玩 V0.1 完整版</a>
         </div>
         <p class="small">免下载安装 · 电脑和手机浏览器都能打开 · 首次加载约 40 MB（游戏引擎），之后浏览器会缓存 · 需要支持 WebGL 2</p>
@@ -140,7 +140,7 @@
     <div class="facts">
       <div class="fact"><b>类型</b><span>3D 斜视角 · 动作角色扮演 · 地牢探索</span></div>
       <div class="fact"><b>状态</b><span>开发中 · 正在把 V0.1 的全部内容移植到 3D</span></div>
-      <div class="fact"><b>可玩内容</b><span>烬原镇（任务 · 商店 · 治疗 · 传送石）· 随机地下城（地窖 / 墓穴 / 熔渊 / 深渊）· 8 种怪物 + 5 种精英 · 掉落</span></div>
+      <div class="fact"><b>可玩内容</b><span>烬原镇（任务 · 商店 · 治疗 · 传送石）· 随机地下城（地窖 / 墓穴 / 熔渊 / 深渊）· 8 种怪物 + 5 种精英 + 2 个首领 · 掉落</span></div>
       <div class="fact"><b>技术</b><span>Godot 4 网页导出（WebGL 2 兼容渲染器）</span></div>
     </div>
 
@@ -158,8 +158,9 @@
         <div class="step"><b>怪物、精英与掉落<span class="tag done">已完成</span></b>V0.1 第一幕的 8 种怪物按楼层刷在地下城房间里；五种精英（迅捷、石肤、狂怒、嗜血、焚烧）蓝名、带光环；打倒后掉金币、药水和随机词缀装备，点它拾取。</div>
         <div class="step"><b>背包与装备<span class="tag done">已完成</span></b>8 个装备部位 + 40 格背包；看物品说明、与身上装备比较，装备 / 卸下 / 丢在地上，属性立即生效；等级不够的格子标红。按 I 或点「背包」。</div>
         <div class="step"><b>烬原镇<span class="tag done">已完成</span></b>地面换成 V0.1 的烬原镇：修道院废墟、房屋、篝火与树林；老祭司伊莲免费疗伤，铁匠格伦卖武器护甲，药剂师玛拉卖药水与首饰，都能买也能卖；倒下后在镇上篝火旁复活。</div>
-        <div class="step"><b>任务与传送<span class="tag done">已完成</span></b>第一幕三条任务（地窖里的钟声、铁匠的学徒、余烬之心）：人物头顶「!」「?」提示、任务日志、任务奖励与结局文字；回城卷轴打开蓝色传送门、镇上的传送石去往到过的楼层；右上角小地图与全屏自动地图。后两条任务要等首领加入后才能完成。</div>
-        <div class="step"><b>移植其余内容<span class="tag todo">进行中</span></b>接下来依次移植：两个首领、神殿宝箱、存档与音效、无尽深渊。</div>
+        <div class="step"><b>任务与传送<span class="tag done">已完成</span></b>第一幕三条任务（地窖里的钟声、铁匠的学徒、余烬之心）：人物头顶「!」「?」提示、任务日志、任务奖励与结局文字；回城卷轴打开蓝色传送门、镇上的传送石去往到过的楼层；右上角小地图与全屏自动地图。</div>
+        <div class="step"><b>首领<span class="tag done">已完成</span></b>第 3 层「腐肉监工 · 莫格」：背着铁笼的巨汉，红色长条预警后冲锋，半血暴怒；第 6 层「堕落院长 · 摩登」：扇形邪术弹、扩散火环、召唤骷髅、被贴近就瞬移，半血变身「灰烬之王的容器」。屏幕下方首领血条；击败后才出现下楼梯，并推进任务、播放结局文字。</div>
+        <div class="step"><b>移植其余内容<span class="tag todo">进行中</span></b>接下来依次移植：神殿、宝箱与木桶、战争迷雾，然后是存档与音效、无尽深渊。</div>
         <div class="step"><b>正式美术素材<span class="tag todo">规划中</span></b>内容移植完成后，用 CC0 免费素材与原创设计替换占位几何体，逐步提升画质。</div>
       </div>
       <p class="small">「进行中」「规划中」为计划，尚未实现。</p>
@@ -175,6 +176,10 @@
         <figure class="shot">
           <img src="img/town.jpg" width="1280" height="720" loading="lazy" alt="烬原镇：石板路交汇处，篝火旁站着白袍的老祭司伊莲，玩家（占位几何体）站在路中间，远处是修道院废墟的石墙">
           <figcaption>烬原镇 · 篝火与老祭司伊莲（高画质）</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="img/boss.jpg" width="1280" height="720" loading="lazy" alt="熔渊第 6 层封印大厅：红袍高冠的首领摩登胸口燃着明亮的余烬之心，一圈橙色火环正从他脚下向外扩散，屏幕下方是首领血条">
+          <figcaption>第 6 层封印大厅 · 摩登二阶段与烈焰新星（高画质）</figcaption>
         </figure>
         <figure class="shot">
           <img src="img/portal.jpg" width="1280" height="720" loading="lazy" alt="修道院地窖第 2 层：主角身边竖着一道蓝色椭圆的回城传送门，右上角是小地图，左侧显示新接的任务">
@@ -227,7 +232,7 @@
     </section>
 
     <div class="cta-bottom">
-      <a class="btn primary" href="play/?v=bb52cedb">▶ 进入 3D 预览</a>
+      <a class="btn primary" href="play/?v=d1f9b128">▶ 进入 3D 预览</a>
     </div>
 
     <div class="notice">

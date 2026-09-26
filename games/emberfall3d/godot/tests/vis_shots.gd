@@ -127,6 +127,27 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	await _shot(out, "automap", tier)
 	main.toggle_map()
+	# P9：两个首领（清掉护卫，站在首领房里；摩登打到二阶段）。之后不再恢复说明文字，首领截图放在最后
+	for f in [3, 6]:
+		main.go_floor(f)
+		await get_tree().create_timer(0.3).timeout
+		var b: EnemyBase = main.boss
+		for e in main.monsters:
+			if is_instance_valid(e) and e != b:
+				e.queue_free()
+		hero.global_position = b.global_position + Vector3(2.6, 0, 2.6)
+		main.camera.snap()
+		b.set_physics_process(false)     # 定住首领拍照（不然它马上贴脸）
+		main.info.visible = false        # 说明文字挡住画面上方，首领截图时先藏起来
+		await get_tree().create_timer(0.5).timeout
+		await _shot(out, "boss%d" % f, tier)
+		if f == 6:
+			b.hp = b.max_hp * 0.45
+			b.set_physics_process(true)
+			await get_tree().create_timer(0.25).timeout
+			b.set_physics_process(false)
+			await get_tree().create_timer(0.6).timeout
+			await _shot(out, "boss6-phase2", tier)
 	get_tree().quit()
 
 

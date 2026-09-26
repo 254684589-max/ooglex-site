@@ -36,7 +36,7 @@ static func theme_tints(theme: String) -> Dictionary:
 	}
 
 
-## opt：seed（装饰随机）、on_stairs（Callable(kind)）、down_caption / up_caption、open_boss_stairs（P9 之前为 true）
+## opt：seed（装饰随机）、on_stairs（Callable(kind)）、down_caption / up_caption、open_boss_stairs（首领层的下楼梯是否直接出现：P9 起只在首领已被击败时为 true）
 static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictionary:
 	var t0 := Time.get_ticks_usec()
 	var tints := theme_tints(m.theme)
@@ -121,7 +121,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	# 楼梯
 	var stairs := {}
 	var down_cell: Vector2i = m.down
-	if down_cell.x < 0 and opt.get("open_boss_stairs", true):
+	if down_cell.x < 0 and opt.get("open_boss_stairs", false):
 		down_cell = m.boss_stairs
 	if down_cell.x >= 0:
 		stairs.down = _stairs(parent, "down", opt.get("down_caption", "↓ 下一层"), down_cell, opt.get("on_stairs", Callable()))
