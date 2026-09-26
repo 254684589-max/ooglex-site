@@ -40,17 +40,24 @@ if (routeBlock.includes("\\n")) {
 
 const gateAssetPath = "assets/tech-leaders-password-gate.js";
 if (!html.includes("/assets/tech-leaders-password-gate.js")) {
-  throw new Error("Tech Leaders password gate asset is not loaded.");
+  throw new Error("Tech Leaders registration access asset is not loaded.");
 }
 if (!fs.existsSync(gateAssetPath)) {
-  throw new Error("Tech Leaders password gate asset is missing.");
+  throw new Error("Tech Leaders registration access asset is missing.");
 }
 const gateSource = fs.readFileSync(gateAssetPath, "utf8");
-if (!gateSource.includes("/v1/tech-leaders/auth") || !gateSource.includes('credentials = "include"')) {
-  throw new Error("Tech Leaders gate is not wired to credentialed server-side auth.");
+for (const token of [
+  'sb-" + PROJECT_REF + "-auth-token',
+  'headers.set("Authorization", "Bearer " + current.access_token)',
+  '10% 公开预览',
+  '注册 / 登录',
+]) {
+  if (!gateSource.includes(token)) {
+    throw new Error("Tech Leaders registration access asset is missing token: " + token);
+  }
 }
-if (gateSource.includes("PBKDF2") || /PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
-  throw new Error("Tech Leaders client gate must not contain password verification material.");
+if (gateSource.includes("/v1/tech-leaders/auth") || gateSource.includes("PBKDF2") || /PASSWORD\s*=\s*["'][^"']+["']/.test(gateSource)) {
+  throw new Error("Tech Leaders client must not contain the retired password entitlement path.");
 }
 if (!html.includes("/v1/tech-leaders/catalog?catalog=") || !html.includes("techProtectedFetch")) {
   throw new Error("Tech Leaders catalog/feed are not wired through the protected server fetch path.");
