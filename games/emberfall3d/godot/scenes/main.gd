@@ -48,6 +48,12 @@ var nav_state := ""
 var nav_bake_ms := 0.0
 var t := 0.0
 var stage: Node3D
+var use_test_area := false      # true：第 0 层用阶段 1 的灰盒测试区（自动化测试用；网页 ?test=1）；false：烬原镇（P7）
+var town: Dictionary = {}
+var npcs: Array = []
+var shop_stock: Dictionary = {}
+var dialog_panel: DialogPanel
+var shop_panel: ShopPanel
 var floor_i := 0
 var run_seed := 0
 var dungeon: Dictionary = {}
@@ -80,10 +86,13 @@ func _ready() -> void:
 	# 给网页冒烟测试用：第一个木桩在屏幕上的位置
 	await get_tree().process_frame
 	# unproject_position 返回的是缩放后的视口坐标；换算成窗口像素（界面缩放 ≠ 1 时两者不同）
-	var sp := camera.unproject_position(dummies[0].global_position + Vector3(0, 1.0, 0)) * get_window().content_scale_factor
-	print("EF_DUMMY_SCREEN x=%d y=%d" % [sp.x, sp.y])
-	var ss := camera.unproject_position(TEST_STAIRS) * get_window().content_scale_factor
-	print("EF_STAIRS_SCREEN x=%d y=%d" % [ss.x, ss.y])
+	if not dummies.is_empty():
+		var sp := camera.unproject_position(dummies[0].global_position + Vector3(0, 1.0, 0)) * get_window().content_scale_factor
+		print("EF_DUMMY_SCREEN x=%d y=%d" % [sp.x, sp.y])
+	for n in npcs:
+		var ns := camera.unproject_position(n.global_position + Vector3(0, 1.2, 0)) * get_window().content_scale_factor
+		print("EF_NPC_SCREEN id=%s x=%d y=%d" % [n.npc_id, ns.x, ns.y])
+	_print_stairs_screen()
 	if run_nav_bench and OS.has_feature("web"):
 		# 等两帧再跑，避免和首帧渲染抢时间；结果打到控制台与左下角
 		await get_tree().process_frame
@@ -265,8 +274,13 @@ func _build_world() -> void:
 	add_child(camera)
 	hero.camera = camera
 	run_seed = randi()
-	_build_test_area()
-	hero.respawn_point = Vector3.ZERO
+	if OS.has_feature("web") and str(JavaScriptBridge.eval("window.location.search", true)).contains("test=1"):
+		use_test_area = true
+	if use_test_area:
+		_build_test_area()
+		hero.respawn_point = Vector3.ZERO
+	else:
+		_build_town("start")
 
 
 func _new_stage() -> void:
@@ -280,6 +294,11 @@ func _new_stage() -> void:
 	dummies.clear()
 	monsters.clear()
 	stairs.clear()
+	npcs.clear()
+	if hero:
+		hero.in_town = false
+	if moon:
+		moon.light_energy = 0.28
 
 
 func _build_test_area() -> void:
@@ -356,6 +375,63 @@ func _build_test_area() -> void:
 			monsters.append(Monsters.spawn(sp[0], stage, sp[1], hero))
 
 
+# ---------------- 烬原镇（P7） ----------------
+
+func _build_town(via: String) -> void:
+	## 第 0 层：烬原镇（V0.1 genTown）。进镇时商店重新进货（V0.1 enterMap → refreshShops）。
+	## 从地窖上来站在地窖入口旁；开局与倒下复活站在篝火边（V0.1 起点）。
+	_new_stage()
+	town = TownGen.generate()
+	floor_info = TownBuilder.build(stage, town, {"seed": 36, "on_stairs": _on_stairs, "down_caption": "↓ " + FloorRules.floor_name(1)})
+	level = floor_info.region
+	torches.assign(floor_info.torches)
+	stairs = floor_info.stairs
+	npcs = floor_info.npcs
+	nav_bake_ms = floor_info.nav_ms
+	Look.apply_theme(environment, "town")
+	moon.light_energy = 0.45
+	hero.in_town = true
+	shop_stock = FloorRules.refresh_shop(loot_rng, hero.progress.sheet.lvl)
+	if via == "up":
+		hero.global_position = DungeonBuilder.cell_center(DungeonGen.near_free(town, town.down))
+	else:
+		var sp: Vector2 = town.start_pos
+		hero.global_position = TownGen.to_world(sp.x, sp.y)
+	hero.respawn_point = hero.global_position
+	camera.snap()
+	_refresh_labels()
+
+
+func _talk(n: Npc) -> void:
+	## 与 NPC 对话（V0.1 talk 里与任务无关的部分；任务对话在 P8）。伊莲每次对话都回满生命与法力。
+	var d: Dictionary = Act1Data.dialogs().get(n.npc_id, {})
+	if d.get("heal", false):
+		hero.hp = hero.max_hp
+		hero.mp = hero.max_mp
+	var opts: Array = []
+	if d.has("shop"):
+		var sid: String = d.shop
+		opts.append({"t": "交易", "main": true, "fn": func():
+			dialog_panel.close()
+			open_shop(sid)})
+	for tp in d.get("topics", []):
+		var lines: Array = tp.lines
+		opts.append({"t": tp.title, "fn": func(): dialog_panel.show_dialog(n.npc_name, n.glyph, lines, [{"t": "返回", "fn": func(): _talk(n)}])})
+	opts.append({"t": "告辞", "fn": dialog_panel.close})
+	dialog_panel.show_dialog(n.npc_name, n.glyph, d.get("greet", ["……"]), opts)
+
+
+func open_shop(sid: String) -> void:
+	shop_panel.open_shop(hero, sid, shop_stock.get(sid, []))
+
+
+func npc(id: String) -> Npc:
+	for n in npcs:
+		if n.npc_id == id:
+			return n
+	return null
+
+
 # ---------------- 楼层（P2） ----------------
 
 func seed_for(f: int) -> int:
@@ -380,7 +456,10 @@ func go_floor(f: int, via: String = "down") -> void:
 	hero.attack_hold = false
 	floor_i = f
 	var t0 := Time.get_ticks_usec()
-	if f == 0:
+	if f == 0 and not use_test_area:
+		_build_town(via)
+		dungeon = {}
+	elif f == 0:
 		_build_test_area()
 		floor_info = {}
 		dungeon = {}
@@ -391,7 +470,7 @@ func go_floor(f: int, via: String = "down") -> void:
 		floor_info = DungeonBuilder.build(stage, dungeon, {
 			"seed": seed_for(f), "on_stairs": _on_stairs,
 			"down_caption": "↓ " + FloorRules.floor_name(f + 1),
-			"up_caption": ("↑ " + FloorRules.floor_name(f - 1)) if f > 1 else "↑ 返回测试区"})
+			"up_caption": ("↑ " + FloorRules.floor_name(f - 1)) if f > 1 else ("↑ 返回测试区" if use_test_area else "↑ 烬原镇")})
 		level = floor_info.region
 		torches.assign(floor_info.torches)
 		stairs = floor_info.stairs
@@ -411,10 +490,10 @@ func go_floor(f: int, via: String = "down") -> void:
 	camera.snap()
 	apply_quality(quality)
 	stair_lock = 0.8
-	var fname := FloorRules.floor_name(f) if f > 0 else "测试区 · 灰盒房间与大厅"
+	var fname := FloorRules.floor_name(f) if f > 0 else ("测试区 · 灰盒房间与大厅" if use_test_area else "烬原镇")
 	_show_banner(fname)
 	var ms := (Time.get_ticks_usec() - t0) / 1000.0
-	print("EF_FLOOR n=%d theme=%s total_ms=%.1f nav_ms=%.1f chunks=%d torches=%d monsters=%d" % [f, dungeon.get("theme", "test"), ms, nav_bake_ms, floor_info.get("chunks", 0), torches.size(), monsters.size()])
+	print("EF_FLOOR n=%d theme=%s total_ms=%.1f nav_ms=%.1f chunks=%d torches=%d monsters=%d" % [f, dungeon.get("theme", "test" if use_test_area else "town"), ms, nav_bake_ms, floor_info.get("chunks", 0), torches.size(), monsters.size()])
 
 
 func _on_hero_arrived() -> void:
@@ -423,7 +502,12 @@ func _on_hero_arrived() -> void:
 		return
 	await get_tree().create_timer(1.0).timeout
 	if floor_i == 0:
-		var ss := camera.unproject_position(TEST_STAIRS) * get_window().content_scale_factor
+		_print_stairs_screen()
+
+
+func _print_stairs_screen() -> void:
+	if stairs.has("down") and is_instance_valid(stairs.down):
+		var ss := camera.unproject_position(stairs.down.global_position) * get_window().content_scale_factor
 		print("EF_STAIRS_SCREEN x=%d y=%d" % [ss.x, ss.y])
 
 
@@ -510,7 +594,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；C 属性；I 背包；WASD 移动；滚轮缩放；走到楼梯上换层"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P6 背包与装备）\n模型仍是占位几何体。南边大厅与楼梯下的随机地下城里有怪物，打倒后掉金币、药水和装备（点它拾取）。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P7 烬原镇）\n模型仍是占位几何体。点镇上的人对话、交易（伊莲为你疗伤）；北边修道院废墟里的阶梯通往地窖，地下有怪物与掉落。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -613,6 +697,8 @@ func _build_ui() -> void:
 		hero.ui_blockers.append_array(skill_btns.values())
 	touch.changed.connect(func(v: Vector2): hero.stick = v)
 	if touch.visible:
+		# 手机窄屏：说明文字会折到右上角「背包」「属性」按钮底下，整列从按钮下方开始
+		top.offset_top = 64
 		# 手机上底部有摇杆和按钮：状态文字挪到左上角那一列的最后
 		pack_label.get_parent().remove_child(pack_label)
 		pack_label.anchor_top = 0.0
@@ -666,13 +752,24 @@ func _build_ui() -> void:
 	layer.add_child(inv_panel)
 	inv_panel.bind(hero)
 	inv_panel.drop_requested.connect(_drop_item)
+	dialog_panel = DialogPanel.new()
+	layer.add_child(dialog_panel)
+	shop_panel = ShopPanel.new()
+	layer.add_child(shop_panel)
+	hero.ui_blockers.append(dialog_panel)
+	hero.ui_blockers.append(shop_panel)
+	hero.talk_requested.connect(_talk)
+	# 倒下后在烬原镇复活（V0.1 die → 在烬原镇复活）；在物理回调里不能换层，推迟到帧末
+	hero.respawned.connect(func():
+		if not use_test_area and floor_i != 0:
+			call_deferred("go_floor", 0, "revive"))
 	hero.ui_blockers.append(inv_btn)
 	hero.ui_blockers.append(inv_panel)
 	hero.ui_blockers.append(char_btn)
 	hero.ui_blockers.append(char_panel)
 	hero.message.connect(add_log)
 	hero.progress.leveled.connect(func(lvl: int): _show_banner("升级！你现在是 %d 级\n获得 5 点属性点（按 C 或点「属性」分配）" % lvl))
-	hero.died.connect(func(): dead_label.text = "你倒下了\n%s3 秒后在本层入口复活" % (("掉落 %d 金币；" % hero.last_gold_lost) if hero.last_gold_lost > 0 else ""))
+	hero.died.connect(func(): dead_label.text = "你倒下了\n%s3 秒后在%s复活" % [("掉落 %d 金币；" % hero.last_gold_lost) if hero.last_gold_lost > 0 else "", "本层入口" if use_test_area else "烬原镇"])
 	_refresh_labels()
 
 
@@ -761,7 +858,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _refresh_labels() -> void:
 	if pack_label:
-		var lines := [FloorRules.floor_name(floor_i) if floor_i > 0 else "测试区", pack_state, "导航烘焙 %.0f 毫秒" % nav_bake_ms]
+		var lines := [FloorRules.floor_name(floor_i) if floor_i > 0 else ("测试区" if use_test_area else "烬原镇"), pack_state, "导航烘焙 %.0f 毫秒" % nav_bake_ms]
 		if nav_state != "":
 			lines.append(nav_state)
 		lines.append("渲染器：%s" % RenderingServer.get_current_rendering_method())

@@ -130,6 +130,7 @@ const rules = {
   floors: {
     _出处: 'themeFor / floorName / isBossFloor / genDungeon',
     themes: {
+      town: Object.assign({ name: THEMES.town.n, floors: [0, 0] }, themeLook('town')),
       crypt: Object.assign({ name: THEMES.crypt.n, floors: [1, 2] }, themeLook('crypt')),
       catacomb: Object.assign({ name: THEMES.catacomb.n, floors: [3, 4] }, themeLook('catacomb')),
       inferno: Object.assign({ name: THEMES.inferno.n, floors: [5, 6] }, themeLook('inferno')),
@@ -144,6 +145,18 @@ const rules = {
       torch: { chance: 0.07, min_spacing: 6 },
     },
     town_name: '烬原镇', boss_floors: [3, 6], abyss_boss_every: 5,
+    town: {
+      _出处: 'genTown（手工布局，36 × 36 格）',
+      size: [36, 36], forest_edge: 2, forest_fuzzy: 4, forest_chance: 0.45,
+      paths: [{ x: [17, 18], y: [9, 32] }, { x: [5, 30], y: [19, 20] }],
+      monastery: { walls: [[12, 2, 23, 2], [12, 2, 12, 8], [23, 2, 23, 8], [12, 8, 15, 8], [20, 8, 23, 8]], floor: [13, 3, 22, 7], pillars: [[15, 5], [20, 5]], down: [[17, 4], [18, 4]] },
+      houses: [{ id: 'smith', rect: [6, 12, 9, 14] }, { id: 'alch', rect: [26, 12, 29, 14] }, { id: 'house1', rect: [6, 24, 9, 27] }, { id: 'house2', rect: [25, 25, 28, 28] }, { id: 'house3', rect: [12, 27, 14, 29] }],
+      props: [{ type: 'fire', x: 20.5, y: 17.5 }, { type: 'well', x: 14.5, y: 22.5 }, { type: 'wp', x: 21.5, y: 22.5 }, { type: 'anvil', x: 10.5, y: 15.5 }],
+      torches: [{ x: 12.5, y: 8.5, face: [0, 1] }, { x: 23.5, y: 8.5, face: [0, 1] }, { x: 9.5, y: 13.5, face: [1, 0] }, { x: 26.5, y: 13.5, face: [-1, 0] }],
+      npcs: [{ id: 'elin', name: '老祭司 伊莲', glyph: '伊', x: 19.2, y: 18.6, face: 2.4, look: 'priest' }, { id: 'gren', name: '铁匠 格伦', glyph: '格', x: 10.6, y: 16.6, face: 0.6, look: 'smith' }, { id: 'mara', name: '药剂师 玛拉', glyph: '玛', x: 25.4, y: 15.8, face: 2.2, look: 'alch' }],
+      portal_spot: [23.5, 19.5], start: [19.5, 21.5],
+      flower_count: 60,
+    },
     bosses: { '3': 'mog', '6': 'abbot' }, abyss_boss_names: { mog: '深渊化身 · 缚链者', abbot: '深渊化身 · 焚誓者' }, boss_guards: { mog: 'zombie', abbot: 'skel' },
     props: { barrels_per_room: [0, 3], chest_chance: 0.2, shrine_floor_chance: 0.75, shrine_room_chance: 0.3 },
   },

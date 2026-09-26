@@ -1,5 +1,6 @@
-// 网页导出冒烟测试（TECH.md 第六节）：打开 play/，在 1280 / 768 / 360 三个宽度下检查
-// 引擎启动（EF_READY）、章节包加载（EF_PACK_OK）、导航烘焙耗时（EF_NAV_*）、点击 / 触屏点木桩后命中（EF_HIT）、
+// 网页导出冒烟测试（TECH.md 第六节）：在 1280 / 768 / 360 三个宽度下，
+// 先打开 play/（默认第 0 层是烬原镇，P7）：引擎启动、点 NPC 走过去后弹出对话（EF_DIALOG），截图；
+// 再打开 play/?test=1（灰盒测试区）检查：引擎启动（EF_READY）、章节包加载（EF_PACK_OK）、导航烘焙耗时（EF_NAV_*）、点击 / 触屏点木桩后命中（EF_HIT）、
 // 点地面后主角到达（EF_ARRIVED）、走楼梯进入随机地下城第 1 层（EF_FLOOR，P2）、
 // 控制台无报错、页面无横向溢出，并截图。
 //
@@ -24,7 +25,27 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     page.on('console', m => { logs.push(m.text()); if (m.type() === 'error') errs.push(m.text()); });
     page.on('pageerror', e => errs.push('pageerror ' + e.message));
     const t0 = Date.now();
+    // 烬原镇（P7）：点屏幕内的第一位 NPC，要求弹出对话
     await page.goto(url);
+    let town;
+    // 启动时游戏打出每位 NPC 的屏幕坐标（EF_NPC_SCREEN），有这几行就说明第 0 层是烬原镇
+    for (let i = 0; i < 120 && !town; i++) { await page.waitForTimeout(500); town = logs.find(l => l.startsWith('EF_NPC_SCREEN')); }
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: path.join(outDir, `ef3d-${name}-town.png`) });
+    let dialog, npcHow = '屏幕内没有 NPC';
+    const npcs = logs.filter(l => l.startsWith('EF_NPC_SCREEN')).map(l => l.match(/id=(\w+) x=(-?\d+) y=(-?\d+)/)).filter(m => m);
+    const vis = npcs.find(m => +m[2] > 20 && +m[2] < w - 20 && +m[3] > 120 && +m[3] < h * (mobile ? 0.6 : 0.75));
+    if (vis) {
+      npcHow = `点 ${vis[1]}`;
+      if (mobile) await page.touchscreen.tap(+vis[2], +vis[3]); else await page.mouse.click(+vis[2], +vis[3]);
+      for (let i = 0; i < 60 && !dialog; i++) { await page.waitForTimeout(250); dialog = logs.find(l => l.startsWith('EF_DIALOG')); }
+      await page.waitForTimeout(400);
+      await page.screenshot({ path: path.join(outDir, `ef3d-${name}-town-dialog.png`) });
+      await page.keyboard.press('Escape');
+    }
+    // 灰盒测试区（?test=1）：木桩、火球、点地面、楼梯
+    logs.length = 0;
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=1');
     let ready, pack;
     for (let i = 0; i < 120 && !(ready && pack); i++) {
       await page.waitForTimeout(500);
@@ -86,7 +107,7 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     }
     if (!floorLog) {
       floorHow = (floorHow ? floorHow + '失败' : '走不到楼梯') + `，改用 ?floor=1 [${stairLogs().pop() || '无楼梯坐标'}]`;
-      await page.goto(url + (url.includes('?') ? '&' : '?') + 'floor=1', { waitUntil: 'load' });
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=1&floor=1', { waitUntil: 'load' });
       for (let i = 0; i < 120 && !floorLog; i++) { await page.waitForTimeout(250); floorLog = logs.find(l => l.startsWith('EF_FLOOR n=1')); }
     }
     await page.waitForTimeout(1200);
@@ -105,9 +126,9 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     await page.waitForTimeout(300);
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
+    const ok = !!town && !!dialog && !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && !!fire && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | 烬原镇：${town ? 'ok' : '未进入'}，${npcHow}：${dialog || '没有对话'} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${hit || '点木桩后没有命中'} | ${arrived || '点地面后未到达'} | 火球：${fire || '没有命中'} | ${floorHow}：${floorLog || '没有进入第 1 层'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

@@ -6,6 +6,7 @@ extends Node
 
 func _ready() -> void:
 	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	add_child(main)

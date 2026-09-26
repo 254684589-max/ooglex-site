@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -62,6 +62,7 @@ func seconds(sec: float) -> void:
 func test_boot() -> void:
 	check(ProjectSettings.get_setting("rendering/renderer/rendering_method") == "gl_compatibility", "工程使用兼容渲染器（网页导出唯一支持的渲染器）")
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -80,6 +81,7 @@ func test_boot() -> void:
 
 func test_camera() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -166,6 +168,7 @@ func physics(n: int) -> void:
 
 func test_move() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -289,6 +292,7 @@ func test_look() -> void:
 		lum[snappedf(c.get_luminance(), 0.02)] = true
 	check(lum.size() > 8, "石板贴图有明暗变化（灰缝、倒角、颗粒），不是纯色")
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	add_child(main)
@@ -340,6 +344,7 @@ func test_damage() -> void:
 
 func test_combat() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -447,6 +452,7 @@ func test_combat() -> void:
 
 func _arena() -> Node:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -962,6 +968,7 @@ func test_dungeon() -> void:
 
 	# 3D：从测试区走楼梯下到第 1 层
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	add_child(main)
@@ -1056,6 +1063,7 @@ func test_dungeon() -> void:
 # ---------- 阶段 P3：角色成长 ----------
 func test_growth() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -1198,6 +1206,7 @@ func _wait_idle(hero: Player) -> void:
 
 func test_skills() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -1402,6 +1411,8 @@ func test_loot() -> void:
 	check(absf(fury.attack.recover_s - Monsters.get_def("skel").attack.recover_s * 0.6) < 0.001, "狂怒精英：攻击间隔 ×0.6")
 
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -1550,6 +1561,7 @@ func test_inventory() -> void:
 
 	# 界面
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	main.spawn_monsters = false
@@ -1609,5 +1621,155 @@ func test_inventory() -> void:
 	ev.physical_keycode = KEY_I
 	panel._unhandled_key_input(ev)
 	check(not panel.visible and not get_tree().paused, "再按 I 关闭")
+	main.queue_free()
+	await frames(2)
+
+
+# ---------- 阶段 P7：烬原镇 ----------
+func test_town() -> void:
+	var tw := TownGen.generate()
+	var T: Dictionary = Act1Data.rules().floors.town
+	var bad := []
+	for r in T.monastery.walls:
+		for y in range(int(r[1]), int(r[3]) + 1):
+			for x in range(int(r[0]), int(r[2]) + 1):
+				if tw.t[y * tw.w + x] != DungeonGen.WALL:
+					bad.append("修道院墙 %d,%d" % [x, y])
+	for hs in T.houses:
+		var r: Array = hs.rect
+		if tw.t[int(r[1]) * tw.w + int(r[0])] != DungeonGen.WALL:
+			bad.append("房屋 " + hs.id)
+	for x in [16, 17, 18, 19]:
+		if not DungeonGen.walkable(tw.t[8 * tw.w + x]):
+			bad.append("修道院门口 %d 被堵" % x)
+	for i in tw.w:
+		if tw.t[i] != TownGen.TREE or tw.t[(tw.h - 1) * tw.w + i] != TownGen.TREE:
+			bad.append("外圈不是树")
+			break
+	for c in tw.paths:
+		if tw.t[c.y * tw.w + c.x] == TownGen.TREE:
+			bad.append("石板路上长了树")
+			break
+	check(bad.is_empty() and tw.down == Vector2i(17, 4) and tw.t[4 * tw.w + 17] == DungeonGen.DOWN and tw.npcs.size() == 3,
+		"烬原镇布局同 V0.1 genTown：修道院废墟与门口、5 座房屋、外圈树林、石板路、地窖入口 (17, 4)、3 个人物 %s" % str(bad.slice(0, 3)))
+	check(TownGen.generate().t == tw.t, "每次进镇布局一样")
+
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var sh: Dictionary = hero.progress.sheet
+	check(main.floor_i == 0 and not main.use_test_area and main.npcs.size() == 3 and hero.in_town and main.monsters.is_empty(), "开局在烬原镇（P7 起第 0 层默认是镇子），镇上没有怪物")
+	check(hero.global_position.distance_to(TownGen.to_world(19.5, 21.5)) < 0.5, "开局站在篝火旁（V0.1 起点）")
+	check(main.level.navigation_mesh.get_polygon_count() > 20 and main.stairs.has("down") and not main.stairs.has("up"), "镇子导航已烘焙；只有往下的地窖入口")
+	await physics(3)
+	var map := hero.get_world_3d().navigation_map
+	var path := NavigationServer3D.map_get_path(map, hero.global_position, main.stairs.down.global_position, true)
+	check(path.size() > 1 and path[-1].distance_to(main.stairs.down.global_position) < 1.0, "从篝火能走到修道院里的地窖入口")
+	var fire := TownGen.to_world(20.5, 17.5)
+	var on_fire := NavigationServer3D.map_get_closest_point(map, fire)
+	check(Vector2(on_fire.x - fire.x, on_fire.z - fire.z).length() > 0.5, "篝火、水井等道具挡路（导航绕开）")
+	check(not hero.cast_skill("fireball") and hero.last_skill_fail == "镇上不能施法", "镇上不能施法（V0.1）")
+
+	# 点伊莲 → 走过去 → 对话，回满生命法力
+	var elin: Npc = main.npc("elin")
+	hero.hp = 10.0
+	hero.mp = 1.0
+	main.camera.snap()
+	await physics(2)
+	var sp: Vector2 = main.camera.unproject_position(elin.global_position + Vector3(0, 1.5, 0))
+	hero.click_at(sp)
+	check(hero.talk_target == elin, "点伊莲：锁定为对话目标")
+	var dp: DialogPanel = main.dialog_panel
+	for i in 240:
+		await physics(1)
+		if dp.visible:
+			break
+	check(dp.visible and get_tree().paused and dp.who.text == "老祭司 伊莲", "走到伊莲身边打开对话，游戏暂停")
+	check(hero.hp == hero.max_hp and hero.mp == hero.max_mp, "伊莲为你恢复全部生命与法力")
+	var btn_texts: Array = dp.opts.get_children().map(func(b): return b.text)
+	check(btn_texts == ["关于烬原镇", "告辞"], "伊莲的选项：关于烬原镇 / 告辞（任务对话在 P8）%s" % str(btn_texts))
+	dp.opts.get_child(0).pressed.emit()
+	await frames(1)
+	var body_texts: Array = dp.body.get_children().map(func(l): return l.text)
+	check(body_texts.size() == 2 and String(body_texts[0]).begins_with("烬原镇建在三十年前"), "「关于烬原镇」的话与 V0.1 一致")
+	dp.opts.get_child(0).pressed.emit()     # 返回
+	await frames(1)
+	dp.opts.get_children().back().pressed.emit()   # 告辞
+	check(not dp.visible and not get_tree().paused, "告辞关闭对话，游戏继续")
+
+	# 格伦：交易（买、卖）
+	main._talk(main.npc("gren"))
+	check(dp.visible and dp.opts.get_child(0).text == "交易", "格伦：交易")
+	dp.opts.get_child(0).pressed.emit()
+	var shp: ShopPanel = main.shop_panel
+	check(shp.visible and not dp.visible and get_tree().paused and shp.which == "smith" and shp.stock.size() == 8, "打开格伦的货架：8 件货")
+	check(shp.stock.all(func(it): return not Act1Data.base(it.base).get("magic_only", false)), "格伦不卖戒指护符")
+	sh.gold = 1000
+	var it0: Dictionary = shp.stock[0]
+	var price := ItemGen.value(it0)
+	var inv0: int = sh.inv.size()
+	shp.sel = {"kind": "item", "item": it0}
+	shp.refresh()
+	check(shp.act.text == "购买（%d 金币）" % price and not shp.act.disabled, "选中一件显示价格（V0.1 itemValue）")
+	shp.act.pressed.emit()
+	check(sh.gold == 1000 - price and sh.inv.size() == inv0 + 1 and shp.stock.size() == 7, "买下：扣 %d 金币、进背包、货架少一件" % price)
+	shp._set_tab("sell")
+	var sell_it: Dictionary = sh.inv[-1]
+	shp.sel = {"kind": "inv", "item": sell_it}
+	shp.refresh()
+	var g0: int = sh.gold
+	shp.act.pressed.emit()
+	check(sh.gold == g0 + ItemGen.sell_value(sell_it) and sh.inv.size() == inv0, "卖出：得到 1/4 价格（%d 金币）" % ItemGen.sell_value(sell_it))
+	shp._set_tab("buy")
+	sh.gold = 1
+	shp.sel = {"kind": "item", "item": shp.stock[0]}
+	shp.refresh()
+	check(shp.act.disabled, "金币不够时买不了")
+	shp.close()
+	check(not get_tree().paused, "关上货架游戏继续")
+
+	# 玛拉：药水与卷轴
+	main.open_shop("alchemist")
+	check(shp.stock.size() == 2 and shp.stock.all(func(it): return it.base in ["ring", "amulet"]), "玛拉的货架：药水、回城卷轴，外加 2 件戒指 / 护符")
+	sh.gold = 100
+	var hp_pots: int = sh.pots.hp
+	shp.sel = {"kind": "pot", "pot": "hp"}
+	shp.refresh()
+	shp.act.pressed.emit()
+	shp.sel = {"kind": "pot", "pot": "tp"}
+	shp.refresh()
+	shp.act.pressed.emit()
+	check(sh.pots.hp == hp_pots + 1 and sh.gold == 100 - 25 - 40, "买生命药水 25 金币、回城卷轴 40 金币（V0.1）")
+	shp.close()
+
+	# 下地窖再上来：站在地窖入口旁，商店重新进货
+	var stock_before: Array = main.shop_stock.smith
+	hero.global_position = main.stairs.down.global_position
+	for i in 60:
+		await physics(1)
+		if main.floor_i == 1:
+			break
+	await frames(2)
+	check(main.floor_i == 1 and not hero.in_town, "走进地窖入口 → 修道院地窖第 1 层")
+	check(main.stairs.up.label.text == "↑ 烬原镇", "第 1 层的上楼梯通往烬原镇")
+	main.go_floor(0, "up")
+	await frames(2)
+	check(main.floor_i == 0 and hero.in_town and hero.global_position.distance_to(DungeonBuilder.cell_center(Vector2i(17, 4))) < 4.5, "上楼回到镇上，站在地窖入口旁")
+	check(main.shop_stock.smith != stock_before, "每次进镇商店重新进货（V0.1）")
+
+	# 在地下倒下 → 在烬原镇复活
+	main.go_floor(2)
+	await frames(2)
+	sh.gold = 200
+	hero.hp = 1.0
+	hero.take_hit({"amount": 99, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await frames(1)
+	check(main.dead_label.text.contains("在烬原镇复活"), "倒下提示「3 秒后在烬原镇复活」")
+	await seconds(3.5)
+	await frames(3)
+	check(main.floor_i == 0 and not hero.dead and hero.global_position.distance_to(TownGen.to_world(19.5, 21.5)) < 0.5 and sh.gold == 180, "倒下后在烬原镇篝火旁复活，掉 10% 金币")
 	main.queue_free()
 	await frames(2)

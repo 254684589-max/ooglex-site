@@ -13,6 +13,7 @@ const TIERS := ["low", "medium", "high"]
 static var _floor_tex: ImageTexture
 static var _brick_tex: ImageTexture
 static var _radial_tex: GradientTexture2D
+static var _ground_tex: ImageTexture
 
 
 # ---------------- 程序化贴图 ----------------
@@ -65,6 +66,36 @@ static func _stones(size: int, rows: int, cols_per_row: Array, base: Color, var_
 					img.set_pixel(px, py, col)
 			x0 += col_w
 	return img
+
+
+static func ground_texture() -> ImageTexture:
+	## 烬原镇的泥土地（P7）：大块的深浅斑驳（4 级网格插值）+ 细颗粒 + 零星的枯草色，可平铺
+	if _ground_tex == null:
+		var size := 128
+		var img := Image.create(size, size, false, Image.FORMAT_RGB8)
+		var base := Color(0.36, 0.3, 0.22)
+		var grass := Color(0.3, 0.33, 0.18)
+		var cells := 8
+		for y in size:
+			for x in size:
+				var fx := float(x) / size * cells
+				var fy := float(y) / size * cells
+				var ix := int(fx)
+				var iy := int(fy)
+				var tx := fx - ix
+				var ty := fy - iy
+				var a := _h(ix % cells, iy % cells, 5)
+				var b := _h((ix + 1) % cells, iy % cells, 5)
+				var c := _h(ix % cells, (iy + 1) % cells, 5)
+				var d := _h((ix + 1) % cells, (iy + 1) % cells, 5)
+				var m := lerpf(lerpf(a, b, tx), lerpf(c, d, tx), ty)
+				var col := base.lerp(grass, clampf((m - 0.45) * 2.0, 0.0, 1.0))
+				var n := (_h(x, y, 11) - 0.5) * 0.08
+				col = Color(col.r * (0.85 + m * 0.3) + n, col.g * (0.85 + m * 0.3) + n, col.b * (0.85 + m * 0.3) + n)
+				img.set_pixel(x, y, col)
+		img.generate_mipmaps()
+		_ground_tex = ImageTexture.create_from_image(img)
+	return _ground_tex
 
 
 static func floor_texture() -> ImageTexture:
@@ -185,6 +216,8 @@ const THEME_ENV := {
 	"catacomb": {"ambient": Color(0.22, 0.32, 0.3), "fog": Color(0.035, 0.06, 0.05), "bg": Color(0.02, 0.035, 0.03)},
 	"inferno": {"ambient": Color(0.42, 0.2, 0.16), "fog": Color(0.1, 0.03, 0.02), "bg": Color(0.05, 0.012, 0.008)},
 	"abyss": {"ambient": Color(0.3, 0.2, 0.5), "fog": Color(0.05, 0.03, 0.09), "bg": Color(0.025, 0.015, 0.045)},
+	# 烬原镇（P7）：黄昏的露天小镇，环境光更亮、雾更淡，远处偏暮蓝
+	"town": {"ambient": Color(0.42, 0.36, 0.44), "fog": Color(0.13, 0.11, 0.15), "bg": Color(0.07, 0.06, 0.09), "fog_density": 0.012, "ambient_energy": 0.45},
 }
 
 
@@ -193,6 +226,8 @@ static func apply_theme(env: Environment, theme: String) -> void:
 	env.ambient_light_color = e.ambient
 	env.fog_light_color = e.fog
 	env.background_color = e.bg
+	env.fog_density = e.get("fog_density", 0.022)
+	env.ambient_light_energy = e.get("ambient_energy", 0.3)
 
 
 static func default_tier() -> String:

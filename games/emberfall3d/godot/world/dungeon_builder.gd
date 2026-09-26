@@ -46,7 +46,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	var w: int = m.w
 	var h: int = m.h
 	var t: PackedByteArray = m.t
-	var floor_mat := Look._triplanar(Look.floor_texture(), 4.0, tints.floor)
+	var floor_mat: Material = opt.get("floor_material", Look._triplanar(Look.floor_texture(), 4.0, tints.floor))
 	var chunks := 0
 	for cy in ceili(h / float(CHUNK)):
 		for cx in ceili(w / float(CHUNK)):
@@ -76,6 +76,25 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 			elif k == 1:
 				_box_faces(src, Vector3(x0m, -0.2, z0m), Vector3(x1m, 0, z1m))
 			x = x1 + 1
+	# 额外的障碍物（烬原镇的篝火、水井、铁砧、传送石）：导航避开，并加碰撞
+	var obstacles: Array = opt.get("obstacles", [])
+	if not obstacles.is_empty():
+		var ob := StaticBody3D.new()
+		ob.name = "Obstacles"
+		ob.collision_layer = Layers.WORLD
+		ob.collision_mask = 0
+		region.add_child(ob)
+		for o in obstacles:
+			var sz: Vector3 = o.size
+			var c: Vector3 = o.pos
+			# 导航源按墙高：矮道具（篝火 0.6 米）顶面会被烘成可走面
+			_box_faces(src, c - Vector3(sz.x / 2, 0, sz.z / 2), c + Vector3(sz.x / 2, maxf(sz.y, WALL_H), sz.z / 2))
+			var cs := CollisionShape3D.new()
+			var bs := BoxShape3D.new()
+			bs.size = sz
+			cs.shape = bs
+			cs.position = c + Vector3(0, sz.y / 2, 0)
+			ob.add_child(cs)
 	var nm := NavBuilder.make_navmesh()
 	NavigationServer3D.bake_from_source_geometry_data(nm, src, Callable())
 	region.navigation_mesh = nm
@@ -106,7 +125,8 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		down_cell = m.boss_stairs
 	if down_cell.x >= 0:
 		stairs.down = _stairs(parent, "down", opt.get("down_caption", "↓ 下一层"), down_cell, opt.get("on_stairs", Callable()))
-	stairs.up = _stairs(parent, "up", opt.get("up_caption", "↑ 上一层"), m.up, opt.get("on_stairs", Callable()))
+	if m.up.x >= 0:
+		stairs.up = _stairs(parent, "up", opt.get("up_caption", "↑ 上一层"), m.up, opt.get("on_stairs", Callable()))
 
 	return {"region": region, "torches": torches, "stairs": stairs, "down_cell": down_cell, "chunks": chunks,
 		"geo_ms": geo_ms, "nav_ms": nav_ms, "build_ms": (Time.get_ticks_usec() - t0) / 1000.0}

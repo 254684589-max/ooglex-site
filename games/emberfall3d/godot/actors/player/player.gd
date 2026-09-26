@@ -18,6 +18,7 @@ signal hurt(amount: int)
 signal died
 signal respawned
 signal message(text: String, color: Color)     # 屏幕左侧的消息（拾取、背包已满等）
+signal talk_requested(npc: Npc)                # 走到 NPC 身边（P7）
 
 const LAYER_WORLD := Layers.WORLD
 const LAYER_GROUND := Layers.GROUND
@@ -51,6 +52,8 @@ var mp := 0.0
 var max_mp := 1.0
 var last_gold_lost := 0
 var pickup_target: GroundItem = null
+var talk_target: Npc = null
+var in_town := false                   # 镇上不能施法（V0.1 castSkill）
 var rng := RandomNumberGenerator.new()
 var attack_target: Node3D
 var attack_hold := false         # 按住鼠标 / 攻击按钮：打完一下继续打
@@ -204,6 +207,14 @@ func click_at(screen_pos: Vector2) -> void:
 	if dead:
 		return
 	pickup_target = null
+	talk_target = null
+	var npc := pick_npc(screen_pos)
+	if npc != null:
+		# 点 NPC：走过去对话（V0.1 talk）
+		attack_target = null
+		talk_target = npc
+		move_to(npc.global_position)
+		return
 	var enemy = pick_enemy(screen_pos)
 	if enemy:
 		attack_target = enemy
@@ -220,6 +231,23 @@ func click_at(screen_pos: Vector2) -> void:
 	if p != null:
 		move_to(p)
 		_show_marker(last_target)
+
+
+## 屏幕上离点击位置最近的 NPC（身体或名字在 50 像素以内）
+func pick_npc(screen_pos: Vector2) -> Npc:
+	if camera == null:
+		return null
+	var best: Npc = null
+	var bd := 50.0 * get_window().content_scale_factor
+	for n in get_tree().get_nodes_in_group("npc"):
+		if camera.is_position_behind(n.global_position):
+			continue
+		for h in [0.8, 1.5, 2.15]:
+			var d := camera.unproject_position(n.global_position + Vector3(0, h, 0)).distance_to(screen_pos)
+			if d < bd:
+				bd = d
+				best = n
+	return best
 
 
 ## 屏幕上离点击位置最近的地上物品（名字标签或物品本身在 40 像素以内）
@@ -487,6 +515,8 @@ func skill_block_reason(id: String) -> String:
 		return "没有这个技能"
 	if dead:
 		return "倒下了"
+	if in_town:
+		return "镇上不能施法"
 	if progress.sheet.lvl < int(r.lvl):
 		return "%s 需要 %d 级" % [r.name, int(r.lvl)]
 	if skill_cd.get(id, 0.0) > 0.0:
@@ -742,6 +772,15 @@ func _physics_process(delta: float) -> void:
 		if _respawn_t <= 0.0:
 			respawn()
 		return
+	if talk_target != null:
+		if not is_instance_valid(talk_target):
+			talk_target = null
+		elif Vector2(talk_target.global_position.x - global_position.x, talk_target.global_position.z - global_position.z).length() <= Npc.TALK_RANGE:
+			var npc := talk_target
+			talk_target = null
+			stop()
+			face_point(npc.global_position)
+			talk_requested.emit(npc)
 	if pickup_target != null:
 		if not is_instance_valid(pickup_target):
 			pickup_target = null

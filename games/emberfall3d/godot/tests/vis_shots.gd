@@ -18,6 +18,7 @@ func _ready() -> void:
 	var tier := args[1] if args.size() > 1 else ""
 	DirAccess.make_dir_recursive_absolute(out)
 	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true      # 第 0 层用灰盒测试区（P7 起默认是烬原镇）
 	main.auto_pack_test = false
 	main.run_nav_bench = false
 	add_child(main)
@@ -87,7 +88,33 @@ func _ready() -> void:
 	img4.save_png(p4)
 	print("SHOT ", p4)
 	main.inv_panel.close()
+	# P7：烬原镇（开局位置、修道院入口、和伊莲对话、格伦的货架）
+	main.use_test_area = false
+	main.go_floor(0, "start")
+	await get_tree().create_timer(1.0).timeout
+	await _shot(out, "town", tier)
+	hero.global_position = DungeonBuilder.cell_center(Vector2i(17, 10))
+	main.camera.snap()
+	await get_tree().create_timer(0.8).timeout
+	await _shot(out, "town-gate", tier)
+	main._talk(main.npc("elin"))
+	await _shot(out, "town-dialog", tier)
+	main.dialog_panel.close()
+	main.open_shop("smith")
+	main.shop_panel.sel = {"kind": "item", "item": main.shop_stock.smith[0]}
+	main.shop_panel.refresh()
+	await _shot(out, "town-shop", tier)
+	main.shop_panel.close()
 	get_tree().quit()
+
+
+func _shot(out: String, name: String, tier: String) -> void:
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	var p: String = out.path_join("%s%s.png" % [name, ("-" + tier) if tier != "" else ""])
+	img.save_png(p)
+	print("SHOT ", p, " draw_calls=", Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), " primitives=", Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
 
 
 func _wait(n: int) -> void:
