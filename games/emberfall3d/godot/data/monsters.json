@@ -1,21 +1,86 @@
 {
-  "_说明": "阶段 1.5 灰盒怪物（WORLD.md 第十一节的敌人家族）。数值是起点，垂直切片再调。behavior 对应 actors/enemies/ 下的脚本。",
+  "_说明": "阶段 1.5 灰盒怪物（WORLD.md 第十一节的敌人家族），behavior 对应 actors/enemies/ 下的脚本。P3 起：生命、伤害、经验、等级不再写在这里，由 v01 指向的 V0.1 怪物（data/act1_monsters.json）按楼层换算（FloorRules.scale_monster），护甲为 0（V0.1 的怪物没有护甲）；冲锋伤害 = 近战伤害 × charge.dmg_mul。行为参数（距离、前摇、冷却等）仍在这里。",
   "ash_corpse": {
-    "name": "腐尸", "family": "灰尸", "behavior": "melee", "level": 1, "hp": 45, "armor": 15, "speed": 2.2, "aggro": 14,
-    "attack": { "range": 1.4, "arc_deg": 100, "windup_s": 0.5, "recover_s": 0.7, "dmg": [5, 8] }
+    "name": "腐尸",
+    "v01": "zombie",
+    "family": "灰尸",
+    "behavior": "melee",
+    "speed": 2.2,
+    "aggro": 14,
+    "attack": {
+      "range": 1.4,
+      "arc_deg": 100,
+      "windup_s": 0.5,
+      "recover_s": 0.7
+    }
   },
   "ash_brute": {
-    "name": "焦骨蛮兵", "family": "灰尸", "behavior": "charger", "level": 1, "hp": 130, "armor": 25, "speed": 3.0, "aggro": 11, "radius": 0.55, "label_h": 2.4,
-    "attack": { "range": 1.7, "arc_deg": 110, "windup_s": 0.45, "recover_s": 0.6, "dmg": [8, 12] },
-    "charge": { "min_dist": 4.0, "max_dist": 9.0, "windup_s": 0.65, "speed": 13.0, "distance": 9.0, "cooldown_s": 5.0, "recover_s": 0.8, "dmg": [14, 20], "knockback_m": 1.2, "wall_stun_s": 1.6 }
+    "name": "焦骨蛮兵",
+    "v01": "ghoul",
+    "family": "灰尸",
+    "behavior": "charger",
+    "speed": 3.0,
+    "aggro": 11,
+    "radius": 0.55,
+    "label_h": 2.4,
+    "attack": {
+      "range": 1.7,
+      "arc_deg": 110,
+      "windup_s": 0.45,
+      "recover_s": 0.6
+    },
+    "charge": {
+      "min_dist": 4.0,
+      "max_dist": 9.0,
+      "windup_s": 0.65,
+      "speed": 13.0,
+      "distance": 9.0,
+      "cooldown_s": 5.0,
+      "recover_s": 0.8,
+      "knockback_m": 1.2,
+      "wall_stun_s": 1.6,
+      "dmg_mul": 1.6
+    }
   },
   "bone_archer": {
-    "name": "骸骨弓手", "family": "灰尸", "behavior": "ranged", "level": 1, "hp": 60, "armor": 10, "speed": 2.8, "aggro": 12, "keep_min": 4.5, "keep_max": 8.5,
-    "shot": { "windup_s": 0.5, "recover_s": 0.4, "cooldown_s": 2.2, "speed": 11.0, "range": 13.0, "dmg": [6, 9] }
+    "name": "骸骨弓手",
+    "v01": "archer",
+    "family": "灰尸",
+    "behavior": "ranged",
+    "speed": 2.8,
+    "aggro": 12,
+    "keep_min": 4.5,
+    "keep_max": 8.5,
+    "shot": {
+      "windup_s": 0.5,
+      "recover_s": 0.4,
+      "cooldown_s": 2.2,
+      "speed": 11.0,
+      "range": 13.0
+    }
   },
   "ash_priest": {
-    "name": "灰誓祭司", "family": "凡人敌人（灰誓教团）", "behavior": "summoner", "level": 1, "hp": 85, "armor": 10, "speed": 2.4, "aggro": 12, "keep_min": 5.0, "keep_max": 9.0, "label_h": 2.5,
-    "attack": { "range": 1.5, "arc_deg": 100, "windup_s": 0.4, "recover_s": 0.8, "dmg": [4, 6] },
-    "summon": { "windup_s": 1.0, "cooldown_s": 9.0, "count": 2, "cap": 4, "minion": "ash_corpse" }
+    "name": "灰誓祭司",
+    "v01": "cultist",
+    "family": "凡人敌人（灰誓教团）",
+    "behavior": "summoner",
+    "speed": 2.4,
+    "aggro": 12,
+    "keep_min": 5.0,
+    "keep_max": 9.0,
+    "label_h": 2.5,
+    "attack": {
+      "range": 1.5,
+      "arc_deg": 100,
+      "windup_s": 0.4,
+      "recover_s": 0.8
+    },
+    "summon": {
+      "windup_s": 1.0,
+      "cooldown_s": 9.0,
+      "count": 2,
+      "cap": 4,
+      "minion": "ash_corpse"
+    }
   }
 }

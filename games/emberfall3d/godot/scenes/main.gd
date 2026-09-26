@@ -20,6 +20,15 @@ var hp_label: Label
 var dead_label: Label
 var res_bar: ProgressBar
 var res_label: Label
+var lvl_label: Label
+var xp_bar: ProgressBar
+var mp_bar: ProgressBar
+var mp_label: Label
+var bag_label: Label
+var char_btn: Button
+var btn_hp: Button
+var btn_mp: Button
+var char_panel: CharPanel
 var btn_attack: Button
 var btn_stomp: Button
 var torches: Array[Torch] = []
@@ -137,8 +146,21 @@ func _process(delta: float) -> void:
 		res_label.text = "誓火 %d / %d　焚地践踏：%s" % [k.resource, k.resource_max, ("冷却 %.1f 秒" % cd) if cd > 0.0 else ("可用" if k.resource >= cost else "誓火不足（需要 %d）" % cost)]
 		if btn_stomp:
 			btn_stomp.disabled = not k.can_cast("scorch_stomp")
+		hp_bar.max_value = hero.max_hp
 		hp_bar.value = hero.hp
 		hp_label.text = "生命 %d / %d" % [ceili(hero.hp), int(hero.max_hp)]
+		var sh: Dictionary = hero.progress.sheet
+		lvl_label.text = "%d 级　经验 %d%%" % [sh.lvl, roundi(hero.progress.xp_fraction() * 100.0)]
+		xp_bar.value = hero.progress.xp_fraction()
+		mp_bar.max_value = hero.max_mp
+		mp_bar.value = hero.mp
+		mp_label.text = "法力 %d / %d" % [floori(hero.mp), int(hero.max_mp)]
+		var keys := not touch.visible
+		bag_label.text = "金币 %d　生命药水 ×%d%s　法力药水 ×%d%s" % [sh.gold, sh.pots.hp, "（Q）" if keys else "", sh.pots.mp, "（E）" if keys else ""]
+		char_btn.text = ("属性 +%d" % sh.pts) if sh.pts > 0 else ("属性（C）" if keys else "属性")
+		if btn_hp:
+			btn_hp.text = "血 %d" % sh.pots.hp
+			btn_mp.text = "蓝 %d" % sh.pots.mp
 		dead_label.visible = hero.dead
 
 
@@ -424,8 +446,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放；走到楼梯上换层"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P2 随机地下城）\n模型仍是占位几何体。房间东北角的楼梯通往随机生成的地下城；南边大厅有冲锋、弓手和召唤怪。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能，「血」「蓝」喝药；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；Q / E 喝药；C 属性；WASD 移动；滚轮缩放；走到楼梯上换层"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P3 角色成长）\n模型仍是占位几何体。南边大厅的怪物给经验，升级得属性点；房间东北角的楼梯通往随机地下城（暂无怪物）。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -444,6 +466,15 @@ func _build_ui() -> void:
 	var box := VBoxContainer.new()
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	top.add_child(box)
+	# 等级与经验（P3）
+	lvl_label = Label.new()
+	lvl_label.add_theme_font_size_override("font_size", 15)
+	lvl_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.45))
+	box.add_child(lvl_label)
+	xp_bar = _bar(Color(0.95, 0.75, 0.3), 6)
+	xp_bar.max_value = 1.0
+	xp_bar.step = 0.0
+	box.add_child(xp_bar)
 	res_bar = ProgressBar.new()
 	res_bar.custom_minimum_size = Vector2(220, 14)
 	res_bar.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -475,6 +506,17 @@ func _build_ui() -> void:
 	hp_label.add_theme_font_size_override("font_size", 14)
 	hp_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
 	box.add_child(hp_label)
+	# 法力（P3；P4 的四个技能消耗法力）与金币、药水
+	mp_bar = _bar(Color(0.25, 0.42, 0.9), 12)
+	box.add_child(mp_bar)
+	mp_label = Label.new()
+	mp_label.add_theme_font_size_override("font_size", 14)
+	mp_label.add_theme_color_override("font_color", Color(0.75, 0.82, 1.0))
+	box.add_child(mp_label)
+	bag_label = Label.new()
+	bag_label.add_theme_font_size_override("font_size", 14)
+	bag_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
+	box.add_child(bag_label)
 	dead_label = Label.new()
 	dead_label.set_anchors_preset(Control.PRESET_CENTER)
 	dead_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -504,10 +546,14 @@ func _build_ui() -> void:
 	if touch.visible:
 		btn_attack = _touch_button(layer, "攻击", Vector2(-130, -150), 96)
 		btn_stomp = _touch_button(layer, "践踏", Vector2(-230, -110), 72)
+		btn_hp = _touch_button(layer, "血", Vector2(-300, -66), 56)
+		btn_mp = _touch_button(layer, "蓝", Vector2(-214, -192), 56)
+		btn_hp.pressed.connect(func(): hero.drink_potion("hp"))
+		btn_mp.pressed.connect(func(): hero.drink_potion("mp"))
 		btn_attack.button_down.connect(func(): hero.attack_nearest(true))
 		btn_attack.button_up.connect(func(): hero.attack_nearest(false))
 		btn_stomp.pressed.connect(func(): hero.cast_skill("scorch_stomp"))
-		hero.ui_blockers = [btn_attack, btn_stomp]
+		hero.ui_blockers = [btn_attack, btn_stomp, btn_hp, btn_mp]
 	touch.changed.connect(func(v: Vector2): hero.stick = v)
 	if touch.visible:
 		# 手机上底部有摇杆和按钮：状态文字挪到左上角那一列的最后
@@ -520,7 +566,41 @@ func _build_ui() -> void:
 		pack_label.offset_top = 0
 		pack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		top.add_child(pack_label)
+	# 右上角「属性」按钮（电脑也能点；有未分配属性点时显示点数）与角色面板
+	char_btn = Button.new()
+	char_btn.anchor_left = 1.0
+	char_btn.anchor_right = 1.0
+	char_btn.offset_left = -150
+	char_btn.offset_right = -16
+	char_btn.offset_top = 12
+	char_btn.offset_bottom = 56
+	char_btn.add_theme_font_size_override("font_size", 16)
+	char_btn.focus_mode = Control.FOCUS_ALL
+	char_btn.pressed.connect(func(): char_panel.toggle())
+	layer.add_child(char_btn)
+	char_panel = CharPanel.new()
+	layer.add_child(char_panel)
+	char_panel.bind(hero)
+	hero.ui_blockers.append(char_btn)
+	hero.ui_blockers.append(char_panel)
+	hero.progress.leveled.connect(func(lvl: int): _show_banner("升级！你现在是 %d 级\n获得 5 点属性点（按 C 或点「属性」分配）" % lvl))
+	hero.died.connect(func(): dead_label.text = "你倒下了\n%s3 秒后在本层入口复活" % (("掉落 %d 金币；" % hero.last_gold_lost) if hero.last_gold_lost > 0 else ""))
 	_refresh_labels()
+
+
+func _bar(c: Color, h: float) -> ProgressBar:
+	var b := ProgressBar.new()
+	b.custom_minimum_size = Vector2(220, h)
+	b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	b.show_percentage = false
+	b.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var f := StyleBoxFlat.new()
+	f.bg_color = c
+	b.add_theme_stylebox_override("fill", f)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.1, 0.07, 0.05, 0.8)
+	b.add_theme_stylebox_override("background", bg)
+	return b
 
 
 func _touch_button(layer: CanvasLayer, text: String, offset: Vector2, size: float) -> Button:
@@ -572,6 +652,16 @@ func apply_quality(tier: String) -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	# Q / E 喝药，C 打开角色面板（面板打开时由面板自己处理 C / Esc）
+	if event.is_pressed() and not event.is_echo():
+		if event.is_action("potion_hp"):
+			hero.drink_potion("hp")
+		elif event.is_action("potion_mp"):
+			hero.drink_potion("mp")
+		elif event.is_action("char_panel") and not char_panel.visible:
+			char_panel.open()
+			get_viewport().set_input_as_handled()
+			return
 	# F7：轮换画质档（开发与试玩用；正式设置界面在后续步骤）
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F7:
 		apply_quality(Look.TIERS[(Look.TIERS.find(quality) + 1) % Look.TIERS.size()])

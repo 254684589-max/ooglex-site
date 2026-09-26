@@ -39,7 +39,11 @@ var ui_blockers: Array[Control] = []   # 这些控件（手机按钮）范围内
 
 # 战斗
 var kit := EmberguardKit.new()
-var stats: Dictionary = Balance.data().placeholder_hero
+var progress := HeroProgress.new()     # P3：等级、属性点、装备与计算后的属性（V0.1 规则）
+var stats: Dictionary = progress.combat_stats()
+var mp := 0.0
+var max_mp := 1.0
+var last_gold_lost := 0
 var rng := RandomNumberGenerator.new()
 var attack_target: Node3D
 var attack_hold := false         # 按住鼠标 / 攻击按钮：打完一下继续打
@@ -78,8 +82,9 @@ func _ready() -> void:
 	agent.path_desired_distance = 0.35
 	agent.target_desired_distance = 0.25
 	add_child(agent)
-	max_hp = stats.get("max_hp", 200)
+	_apply_progress()
 	hp = max_hp
+	mp = max_mp
 	respawn_point = global_position
 	_build_placeholder()
 
@@ -251,6 +256,71 @@ func _show_marker(p: Vector3) -> void:
 
 # ---------------- 受击与死亡 ----------------
 
+# ---------------- 成长（P3） ----------------
+
+func _apply_progress() -> void:
+	## 属性变了（升级、加点、换装备）：刷新战斗数值、生命法力上限与移动速度；当前生命法力不超过上限
+	stats = progress.combat_stats()
+	max_hp = progress.S.maxHp
+	max_mp = progress.S.maxMp
+	hp = minf(hp, max_hp)
+	mp = minf(mp, max_mp)
+	speed = progress.move_speed()
+
+
+func on_enemy_killed(e: Node) -> void:
+	var d: Dictionary = e.def
+	var ups := progress.add_kill(int(d.get("xp", 0)), int(d.get("level", 1)))
+	if ups > 0:
+		_apply_progress()
+		hp = max_hp
+		mp = max_mp
+		print("EF_LEVEL lvl=%d pts=%d" % [progress.sheet.lvl, progress.sheet.pts])
+		_level_fx()
+
+
+func allocate(stat: String) -> bool:
+	if not progress.allocate(stat):
+		return false
+	_apply_progress()
+	return true
+
+
+## 喝药（V0.1 drinkPotion）：满了不喝，没有了不喝；返回回复量（0 = 没喝）
+func drink_potion(kind: String) -> int:
+	if dead or progress.sheet.pots.get(kind, 0) <= 0:
+		return 0
+	if (kind == "hp" and hp >= max_hp) or (kind == "mp" and mp >= max_mp):
+		return 0
+	progress.sheet.pots[kind] -= 1
+	var v := HeroStats.potion_amount(kind, progress.S)
+	if kind == "hp":
+		hp = minf(max_hp, hp + v)
+	else:
+		mp = minf(max_mp, mp + v)
+	if HitFeedback.numbers_enabled:
+		HitFeedback.spawn_number(self, {"amount": v, "crit": false, "type": "heal" if kind == "hp" else "mana"})
+	progress.changed.emit()
+	return v
+
+
+func _level_fx() -> void:
+	## 升级：脚下金色光环向外扩散（占位特效）
+	var ring := MeshInstance3D.new()
+	ring.mesh = LowPoly.torus(0.9, 1.0)
+	var m := _mat(Color(1.0, 0.85, 0.35))
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ring.material_override = m
+	get_parent().add_child(ring)
+	ring.global_position = global_position + Vector3(0, 0.15, 0)
+	var tw := ring.create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(ring, "scale", Vector3(2.4, 1, 2.4), 0.6).set_ease(Tween.EASE_OUT)
+	tw.tween_property(m, "albedo_color:a", 0.0, 0.7)
+	tw.chain().tween_callback(ring.queue_free)
+
+
 func combat_target() -> Dictionary:
 	return {"armor": stats.get("armor", 0), "resist": {}}
 
@@ -285,6 +355,10 @@ func _die() -> void:
 	moving_to = false
 	hold_active = false
 	_respawn_t = stats.get("respawn_s", 3.0)
+	# V0.1 die()：掉落 10% 金币
+	last_gold_lost = HeroStats.death_gold_loss(progress.sheet.gold)
+	progress.sheet.gold -= last_gold_lost
+	progress.sheet.deaths += 1
 	died.emit()
 	print("EF_PLAYER_DEAD")
 	var tw := create_tween()
@@ -294,6 +368,7 @@ func _die() -> void:
 func respawn() -> void:
 	dead = false
 	hp = max_hp
+	mp = max_mp
 	global_position = respawn_point
 	_visual.rotation_degrees = Vector3.ZERO
 	if camera:
@@ -371,6 +446,8 @@ func _resolve_action() -> void:
 		var r := DamageCalc.roll(stats, s.coef, s.type, e.combat_target(), rng)
 		e.take_hit(r, d, knock, s.get("stun_s", 0.0))
 		HitFeedback.apply(self, e, r, camera, heavy)
+		if progress.S.ls > 0:
+			hp = minf(max_hp, hp + r.amount * progress.S.ls / 100.0)
 		hits += 1
 	if action == "scorch_stomp":
 		_spawn_stomp_fx(s)
@@ -410,7 +487,8 @@ func _spawn_stomp_fx(s: Dictionary) -> void:
 
 func _update_action(delta: float) -> void:
 	var s := Balance.skill(action)
-	action_t += delta
+	# 普攻节奏随攻速变化（V0.1：攻击间隔 = 1 / 攻速）；技能不受影响
+	action_t += delta * (progress.attack_speed_scale() if action == "oath_cleave" else 1.0)
 	var total: float = s.windup_s + s.recover_s
 	if action == "oath_cleave":
 		# 前摇举刀 → 判定瞬间挥下 → 后摇收刀
@@ -474,6 +552,9 @@ func _physics_process(delta: float) -> void:
 		if _respawn_t <= 0.0:
 			respawn()
 		return
+	# 每秒回复（V0.1：生命 0.4 + 0.05×等级 + 装备；法力 1.2 + 0.06×魔力）
+	hp = minf(max_hp, hp + progress.S.regen * delta)
+	mp = minf(max_mp, mp + progress.S.mregen * delta)
 	if _knock_t > 0.0:
 		_knock_t -= delta
 		velocity = _knock_vel

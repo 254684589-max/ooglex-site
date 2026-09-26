@@ -81,6 +81,12 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
     }
     await page.waitForTimeout(1200);
     await page.screenshot({ path: path.join(outDir, `ef3d-${name}-floor1.png`) });
+    // 角色面板（P3）：按 C 打开截图，再按 Esc 关闭
+    await page.keyboard.press('c');
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(outDir, `ef3d-${name}-char.png`) });
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
     const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!hit && !!arrived && !!floorLog && errs.length === 0 && overflow <= 0;

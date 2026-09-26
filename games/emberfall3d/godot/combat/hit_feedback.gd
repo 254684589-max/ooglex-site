@@ -12,6 +12,8 @@ const COLORS := {
 	"poison": Color(0.56, 0.81, 0.23),
 	"void": Color(0.69, 0.42, 1.0),
 	"incoming": Color(1.0, 0.3, 0.25),   # 玩家受到的伤害
+	"heal": Color(0.44, 0.83, 0.44),     # 喝生命药水（P3）
+	"mana": Color(0.42, 0.6, 1.0),       # 喝法力药水（P3）
 }
 const CRIT_COLOR := Color(1.0, 0.82, 0.29)
 
@@ -37,7 +39,7 @@ static func apply(attacker: Node, target: Node, result: Dictionary, camera: IsoC
 
 static func spawn_number(target: Node3D, result: Dictionary) -> Label3D:
 	var l := Label3D.new()
-	l.text = str(result.amount) + ("!" if result.crit else "")
+	l.text = ("+" if result.type in ["heal", "mana"] else "") + str(result.amount) + ("!" if result.crit else "")
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.no_depth_test = true
 	l.fixed_size = true

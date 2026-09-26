@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -530,7 +530,8 @@ func test_monsters() -> void:
 		saw_act = saw_act or c.state == "act"
 	check(saw_warning, "冲锋前地面出现红色长条预警")
 	check(saw_act, "预警结束后冲锋")
-	check(hero.hp <= hp0 - 10, "站在冲锋路线上被撞（-%d）" % (hp0 - hero.hp))
+	# P3 起怪物按 V0.1 数值：焦骨蛮兵对应食尸鬼（第 1 层 3–7），冲锋 ×1.6 = 5–11，扣掉少量护甲减伤
+	check(hero.hp <= hp0 - 3, "站在冲锋路线上被撞（-%d）" % (hp0 - hero.hp))
 	main.queue_free()
 	await frames(2)
 
@@ -550,7 +551,7 @@ func test_monsters() -> void:
 	for i in 90:
 		await physics(1)
 		stunned = stunned or c.stun_t > 0.5
-	check(hero.hp == hp0, "闪开后冲锋落空")
+	check(hero.hp >= hp0 - 0.001, "闪开后冲锋落空")   # P3 起有生命回复，只会涨不会掉
 	check(stunned, "冲锋撞墙：把自己撞晕（反击窗口）")
 	main.queue_free()
 	await frames(2)
@@ -1071,5 +1072,139 @@ func test_dungeon() -> void:
 	check(main.floor_i == 0 and main.torches.size() == 4 and main.dummies.size() == 2 and main.stage.find_children("Walls_*", "", true, false).is_empty()
 		and main.environment.ambient_light_color == Look.THEME_ENV.crypt.ambient, "回到测试区：房间、大厅、木桩、火把复原，地下城清掉")
 	check(hero.global_position.distance_to(main.TEST_STAIRS) < 3.5, "从第 1 层上来站在测试区楼梯旁")
+	main.queue_free()
+	await frames(2)
+
+
+# ---------- 阶段 P3：角色成长 ----------
+func test_growth() -> void:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.spawn_monsters = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	var pr: HeroProgress = hero.progress
+	var sh: Dictionary = pr.sheet
+
+	# 开局与 V0.1 newGame 一致：短剑 + 布衣
+	check(sh.lvl == 1 and sh.str == 15 and sh.vit == 15 and sh.mag == 15 and sh.eq.weapon.base == "sword" and sh.eq.body.base == "cloth", "开局 1 级、三项属性各 15、短剑与亚麻布衣（同 V0.1）")
+	check(hero.max_hp == 64 and hero.max_mp == 34 and hero.stats.weapon_min == 2 and hero.stats.weapon_max == 7 and hero.stats.armor == 4 and absf(hero.stats.crit_chance - 0.05) < 1e-9,
+		"开局属性：生命 64、法力 34、伤害 2–7、护甲 4、暴击 5%%（%d / %d / %d–%d / %d）" % [hero.max_hp, hero.max_mp, hero.stats.weapon_min, hero.stats.weapon_max, hero.stats.armor])
+	check(is_equal_approx(pr.attack_speed_scale(), 1.0) and is_equal_approx(hero.speed, 5.0), "开局攻速与移动速度保持原来的手感（1.0 倍、5 米/秒）")
+
+	# 怪物换算到 V0.1 数值
+	var bd := Monsters.scaled_def("ash_brute", 1)
+	check(bd.hp == 30 and bd.attack.dmg == [3, 7] and bd.charge.dmg == [5, 11] and bd.xp == 22 and bd.level == 2 and bd.armor == 0,
+		"焦骨蛮兵按 V0.1 食尸鬼换算：第 1 层 30 血、近战 3–7、冲锋 5–11、22 经验、2 级、无护甲")
+	var g5 := FloorRules.scale_monster("ghoul", 5)
+	var bd5 := Monsters.scaled_def("ash_brute", 5)
+	check(bd5.hp == g5.hp and bd5.attack.dmg == g5.dmg and bd5.xp == g5.xp, "同一种怪到第 5 层按 V0.1 楼层成长变强（%d 血）" % bd5.hp)
+	check(Monsters.scaled_def("bone_archer").shot.dmg == [2, 4] and Monsters.scaled_def("ash_priest").hp == 20 and Monsters.scaled_def("ash_corpse").xp == 12,
+		"弓手 = V0.1 骸骨弓手、祭司 = 邪教术士、腐尸 = 腐尸")
+
+	# 击杀经验与升级
+	var z := Monsters.spawn("ash_corpse", main.stage, Vector3(0, 0, 3), hero)
+	await physics(2)
+	z.die()
+	check(sh.xp == 12 and sh.kills == 1, "击杀腐尸得 12 经验（%d）" % sh.xp)
+	var big := Monsters.spawn("ash_corpse", main.stage, Vector3(1, 0, 3), hero)
+	await physics(2)
+	big.def.xp = 500
+	hero.hp = 20
+	big.die()
+	await frames(1)
+	check(sh.lvl == 3 and sh.pts == 10 and sh.xp == 12 + 500 - 90 - 282, "经验够两级连升两级：3 级、10 点属性点、余下经验 %d" % sh.xp)
+	check(hero.hp == hero.max_hp and hero.mp == hero.max_mp and hero.max_hp == 64 + 8, "升级回满生命法力，生命上限每级 +4（%d）" % hero.max_hp)
+	check(main.banner.text.begins_with("升级！你现在是 3 级"), "屏幕提示升级与属性点")
+	var hp_before := hero.max_hp
+	check(hero.allocate("vit") and hero.allocate("vit") and hero.max_hp == hp_before + 4 and sh.pts == 8, "加 2 点体能：生命上限 +4")
+	var dmg_before: int = hero.stats.weapon_max
+	for i in 8:
+		hero.allocate("str")
+	check(sh.str == 23 and sh.pts == 0 and hero.stats.weapon_max >= dmg_before and not hero.allocate("mag") and not pr.allocate("luck"), "点数用完后不能再加，未知属性不能加")
+	var sheet_kills: int = sh.kills
+	var dummy := TrainingDummy.new()
+	main.stage.add_child(dummy)
+	dummy.global_position = Vector3(3, 0, 3)
+	await physics(2)
+	dummy.die()
+	check(sh.kills == sheet_kills, "打倒训练木桩不给经验")
+
+	# 药水与回复
+	hero.hp = 10.0
+	var v := hero.drink_potion("hp")
+	check(v == HeroStats.potion_amount("hp", pr.S) and is_equal_approx(hero.hp, 10.0 + v) and sh.pots.hp == 2, "喝生命药水：回复 45%%+10 = %d，剩 2 瓶" % v)
+	hero.hp = hero.max_hp
+	check(hero.drink_potion("hp") == 0 and sh.pots.hp == 2, "满血时不喝")
+	hero.mp = 0.0
+	check(hero.drink_potion("mp") > 0 and sh.pots.mp == 1, "喝法力药水")
+	sh.pots.hp = 0
+	hero.hp = 5.0
+	check(hero.drink_potion("hp") == 0, "没有药水时喝不了")
+	hero.hp = 10.0
+	var t0 := Time.get_ticks_msec()
+	await seconds(1.0)
+	var el := (Time.get_ticks_msec() - t0) / 1000.0
+	check(hero.hp > 10.0 and absf((hero.hp - 10.0) - pr.S.regen * el) < pr.S.regen * 0.35, "每秒回复生命 %.2f（1 秒回了 %.2f）" % [pr.S.regen, hero.hp - 10.0])
+
+	# 攻速、移动速度、生命偷取来自装备词缀
+	sh.eq.ring = {"id": 9999, "base": "ring", "rarity": 1, "ilvl": 10, "name": "测试戒指", "aff": {"ias": 20, "ms": 0, "ls": 50}, "req": 1}
+	sh.eq.feet = {"id": 9998, "base": "boots", "rarity": 1, "ilvl": 10, "name": "测试靴子", "aff": {"ms": 20}, "arm": 1, "req": 1}
+	pr.recalc()
+	hero._apply_progress()
+	check(is_equal_approx(pr.attack_speed_scale(), 1.2) and is_equal_approx(hero.speed, 6.0), "攻速 +20% → 普攻快 1.2 倍；移动速度 +20% → 6 米/秒")
+	var d2 := TrainingDummy.new()
+	main.stage.add_child(d2)
+	d2.global_position = hero.global_position + Vector3(0, 0, 1.2)
+	await physics(2)
+	hero.hp = 10.0
+	hero.face_point(d2.global_position)
+	hero.attack_target = d2
+	for i in 60:
+		await physics(1)
+		if d2.hp < d2.max_hp:
+			break
+	check(d2.hp < d2.max_hp and hero.hp > 10.0, "生命偷取：打中后回血（%.1f）" % hero.hp)
+	hero.attack_target = null
+	sh.eq.erase("ring")
+	sh.eq.erase("feet")
+	pr.recalc()
+	hero._apply_progress()
+
+	# 死亡掉 10% 金币
+	sh.gold = 275
+	hero.hp = 1.0
+	hero.take_hit({"amount": 50, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await frames(1)
+	check(hero.dead and sh.gold == 248 and sh.deaths == 1 and main.dead_label.text.contains("掉落 27 金币"), "倒下掉 10%% 金币（275 → %d），提示里写明" % sh.gold)
+	await seconds(3.3)
+	check(not hero.dead and hero.hp == hero.max_hp and hero.mp == hero.max_mp, "复活后生命法力全满")
+
+	# 角色面板：C 打开（暂停）、+ 加点、C 关闭
+	sh.pts = 2
+	pr.recalc()
+	var ev := InputEventKey.new()
+	ev.physical_keycode = KEY_C
+	ev.pressed = true
+	main._unhandled_key_input(ev)
+	var panel: CharPanel = main.char_panel
+	check(panel.visible and get_tree().paused and panel.pts_label.text.contains("2"), "按 C 打开角色面板，游戏暂停")
+	await frames(1)
+	var vr := panel.get_viewport_rect()
+	var pr_rect := panel.get_global_rect()
+	# 无头模式的窗口很小，放不下面板；这里只查居中与尺寸合理，放不放得下由网页冒烟在三种宽度截图确认
+	check(pr_rect.get_center().distance_to(vr.get_center()) < 2.0 and pr_rect.size.y < 700 and pr_rect.size.x <= 470,
+		"面板居中、尺寸合理（%d × %d）" % [pr_rect.size.x, pr_rect.size.y])
+	check(panel.derived.text.contains("生命 %d" % pr.S.maxHp) and panel.head.text.contains("%d 级" % sh.lvl), "面板显示等级与计算后的属性")
+	var mag0: int = sh.mag
+	panel.plus.mag.pressed.emit()
+	await frames(1)
+	check(sh.mag == mag0 + 1 and sh.pts == 1 and panel.pts_label.text.contains("1"), "点「+」给魔力加 1 点，面板立即刷新")
+	panel._unhandled_key_input(ev)
+	check(not panel.visible and not get_tree().paused, "再按 C 关闭，游戏继续")
+	await frames(2)
+	check(main.bag_label.text.contains("金币 %d" % sh.gold) and main.char_btn.text.contains("+1"), "界面显示金币、药水，属性按钮提示还有 1 点未分配")
 	main.queue_free()
 	await frames(2)

@@ -24,8 +24,27 @@ static func get_def(id: String) -> Dictionary:
 	return defs()[id]
 
 
-static func spawn(id: String, parent: Node, pos: Vector3, player: Node3D) -> EnemyBase:
-	var d := get_def(id)
+## 带 v01 的怪物：生命、伤害、经验、等级按所在楼层从 V0.1 对应怪物换算（P3）
+static func scaled_def(id: String, floor_i: int = 1) -> Dictionary:
+	var d: Dictionary = get_def(id).duplicate(true)
+	d.floor = floor_i
+	if d.has("v01"):
+		var m := FloorRules.scale_monster(d.v01, floor_i)
+		d.hp = m.hp
+		d.level = m.lvl
+		d.xp = m.xp
+		d.armor = 0
+		for k in ["attack", "shot"]:
+			if d.has(k):
+				d[k].dmg = m.dmg
+		if d.has("charge"):
+			var mul: float = d.charge.get("dmg_mul", 1.5)
+			d.charge.dmg = [maxi(1, roundi(m.dmg[0] * mul)), maxi(1, roundi(m.dmg[1] * mul))]
+	return d
+
+
+static func spawn(id: String, parent: Node, pos: Vector3, player: Node3D, floor_i: int = 1) -> EnemyBase:
+	var d := scaled_def(id, floor_i)
 	var e: EnemyBase = load(BEHAVIORS[d.behavior]).new()
 	e.setup(d, player)
 	e.home = pos

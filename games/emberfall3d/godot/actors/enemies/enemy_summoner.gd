@@ -71,6 +71,6 @@ func _pick_spots(n: int) -> Array[Vector3]:
 
 func _summon() -> void:
 	for p in summon_spots:
-		var m := Monsters.spawn(def.summon.minion, get_parent(), p, player)
+		var m := Monsters.spawn(def.summon.minion, get_parent(), p, player, def.get("floor", 1))
 		m.set_state("chase")
 		minions.append(m)

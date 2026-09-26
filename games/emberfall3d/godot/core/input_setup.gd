@@ -7,6 +7,9 @@ const ACTIONS := {
 	"move_down": [KEY_S, KEY_DOWN],
 	"move_left": [KEY_A, KEY_LEFT],
 	"move_right": [KEY_D, KEY_RIGHT],
+	"potion_hp": [KEY_Q],        # P3：与 V0.1 相同的按键
+	"potion_mp": [KEY_E],
+	"char_panel": [KEY_C],
 }
 
 

@@ -201,6 +201,9 @@ func die() -> void:
 	hp_label.visible = false
 	stun_mark.visible = false
 	died.emit(self)
+	# 击杀经验（P3）：木桩没有 xp 字段，不给经验
+	if def.get("xp", 0) > 0 and is_instance_valid(player) and player.has_method("on_enemy_killed"):
+		player.on_enemy_killed(self)
 	_on_dead()
 
 
