@@ -88,6 +88,14 @@
   .play { display:inline-block; margin-top:13px; padding:8px 18px; border-radius:999px; font-weight:700; font-size:0.88rem;
     color:#fff; background:linear-gradient(135deg, var(--ac), var(--ac2)); }
 
+  /* 一张卡片两个入口（余烬陷落：V0.1 + 3D 开发中预览）：卡片本身不是链接，里面分别放链接 */
+  .game.duo:hover { transform:none; }
+  .game.duo .cover, .game.duo .ttl { color:inherit; text-decoration:none; }
+  .game.duo .ttl:hover { text-decoration:underline; }
+  .plays { display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
+  .plays .play { margin-top:0; text-decoration:none; }
+  .play.alt { color:inherit; background:transparent; border:1px solid var(--ac2); padding:7px 16px; }
+  .game.duo a:focus-visible { outline:2px solid var(--ac2); outline-offset:3px; border-radius:999px; }
   footer { margin-top:24px; text-align:center; color:var(--dim); font-size:0.8rem; }
   @media (max-width:480px){ .hero h1 { font-size:1.6rem; } }
 /* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
@@ -125,22 +133,17 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game" href="../emberfall/" style="--ac:#b3241a;--ac2:#e8843a">
-        <div class="cover cv-ef"><span class="ico">🕯️</span></div>
+      <div class="game duo" style="--ac:#b3241a;--ac2:#e8843a">
+        <a class="cover cv-ef" href="../emberfall/" tabindex="-1" aria-hidden="true"><span class="ico">🕯️</span></a>
         <div class="body">
-          <h3>EMBERFALL · 原创暗黑风 ARPG</h3>
-          <p>2.5D 暗黑风动作角色扮演：深入修道院地下，斩杀亡灵、刷随机词缀装备、击败堕落院长，之后挑战无尽深渊。电脑手机浏览器直接玩，首次加载约 160 KB。</p>
-          <span class="play">🎮 开始游戏 →</span>
+          <h3><a class="ttl" href="../emberfall/">EMBERFALL · 原创暗黑风 ARPG</a></h3>
+          <p>2.5D 暗黑风动作角色扮演：深入修道院地下，斩杀亡灵、刷随机词缀装备、击败堕落院长，之后挑战无尽深渊。电脑手机浏览器直接玩，首次加载约 160 KB。3D 大作版正在开发，可先看灰盒预览（占位模型，约 40 MB）。</p>
+          <div class="plays">
+            <a class="play" href="../emberfall/">🎮 开始游戏 →</a>
+            <a class="play alt" href="../emberfall3d/">🧪 3D 预览（开发中）</a>
+          </div>
         </div>
-      </a>
-      <a class="game" href="../emberfall3d/" style="--ac:#8a2412;--ac2:#f3d34a">
-        <div class="cover cv-ef"><span class="ico">🔥</span></div>
-        <div class="body">
-          <h3>EMBERFALL 大作版 · 3D 开发中预览</h3>
-          <p>《余烬陷落》的 3D 重制，正在一步步开发：斜视角镜头、战斗手感、会冲锋和召唤的怪物、火把光照。目前是灰盒原型，模型为占位几何体。首次加载约 40 MB。</p>
-          <span class="play">🧪 进入预览 →</span>
-        </div>
-      </a>
+      </div>
       <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
         <div class="cover cv-gta"><span class="ico">🌆</span></div>
         <div class="body">
