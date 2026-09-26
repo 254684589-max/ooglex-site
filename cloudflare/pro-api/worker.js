@@ -14,6 +14,10 @@ const PRODUCTS = Object.freeze({
   finance_column: {
     previewKey: "finance-column/preview.json",
     fullKey: "finance-column/full.json"
+  },
+  whats_latest: {
+    previewKey: "whats-latest/preview.json",
+    fullKey: "whats-latest/full.json"
   }
 });
 
