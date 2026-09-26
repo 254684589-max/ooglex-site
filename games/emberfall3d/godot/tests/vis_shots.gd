@@ -127,6 +127,25 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	await _shot(out, "automap", tier)
 	main.toggle_map()
+	# 2.6 画质样板间：第 4 层，站在一面有火把的北墙前，镜头拉到最近，看墙脚石基、压檐、壁柱、石块法线与墙脚遮蔽
+	main.go_floor(4)
+	await get_tree().create_timer(0.3).timeout
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	for tc in main.dungeon.torches:
+		var c: Vector2i = tc.cell
+		if tc.face == Vector2i(0, 1) and DungeonGen.walkable(DungeonGen.tile(main.dungeon, c.x, c.y + 3)) and DungeonGen.walkable(DungeonGen.tile(main.dungeon, c.x + 1, c.y + 2)):
+			hero.global_position = DungeonBuilder.cell_center(c) + Vector3(1.2, 0, 4.6)
+			break
+	hero.stop()
+	main.info.visible = false
+	main.camera.distance = main.camera.min_distance
+	main.camera.snap()
+	await get_tree().create_timer(0.6).timeout
+	await _shot(out, "kit-room", tier)
+	main.camera.distance = 15.0
+	main.info.visible = true
 	# 阶段 2.5：特效（火球爆炸与焦痕、寂霜环、怪物烧尽消散）——第 4 层最大的房间中央（没有传送门挡着），主角 12 级
 	main.go_floor(4)
 	await get_tree().create_timer(0.3).timeout

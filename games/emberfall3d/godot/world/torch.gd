@@ -1,7 +1,7 @@
 class_name Torch
 extends Node3D
 ## 火把（ART.md 第六、七节）：木柄 + 发光火苗（高亮度自发光，配合环境泛光）+ 光晕贴片（加法混合）+ 闪烁点光源。
-## 画质 high 时点光源投射阴影；low 时光照范围略小。外观是程序生成的占位。
+## 点光源不投阴影（见 set_quality）；low 时光照范围略小。外观是程序生成的占位。
 
 var light: OmniLight3D
 var flame: MeshInstance3D
@@ -20,6 +20,8 @@ func _ready() -> void:
 	pm.albedo_color = Color(0.25, 0.16, 0.1)
 	post.material_override = pm
 	post.position.y = -0.3
+	# 火把自己的木柄和火苗紧贴着点光源，高画质开点光源阴影时会把大半面墙遮成一片黑、只剩一块硬边的亮斑（2.6 实测），所以不投影
+	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(post)
 	flame = MeshInstance3D.new()
 	flame.mesh = LowPoly.sphere(0.13)
@@ -30,6 +32,7 @@ func _ready() -> void:
 	fm.emission = Color(1.0, 0.5, 0.15)
 	fm.emission_energy_multiplier = 5.0
 	flame.material_override = fm
+	flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(flame)
 	# 光晕：加法混合的广告牌贴片，火把周围一圈暖光（便宜的「光」，低画质也保留）
 	halo = Sprite3D.new()
@@ -45,6 +48,7 @@ func _ready() -> void:
 	hm.no_depth_test = false
 	hm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
 	halo.material_override = hm
+	halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(halo)
 	light = OmniLight3D.new()
 	light.light_color = Color(1.0, 0.58, 0.25)
@@ -56,7 +60,9 @@ func _ready() -> void:
 
 
 func set_quality(tier: String) -> void:
-	light.shadow_enabled = tier == "high"
+	# 点光源阴影（原先高画质开）在兼容渲染器里把火把所在的墙切成一块硬边亮斑（2.6 实测：立方体 / 双抛物面两种模式、加大偏移都一样），
+	# 所以三档都不开；高画质仍有月光阴影和抗锯齿
+	light.shadow_enabled = false
 	light.omni_range = 6.5 if tier == "low" else 8.0
 
 

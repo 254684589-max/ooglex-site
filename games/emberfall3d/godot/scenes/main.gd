@@ -1558,7 +1558,7 @@ func apply_quality(tier: String) -> void:
 	## 画质分档（TECH.md 第 5.1 节）：
 	##   low（手机默认）：3D 渲染 0.75 倍分辨率、关闭实时阴影与泛光，保留光晕贴片、假阴影与暗角
 	##   medium（电脑默认）：原分辨率、月光阴影、泛光
-	##   high：再加 2 倍多重采样抗锯齿、火把点光源阴影
+	##   high：再加 2 倍多重采样抗锯齿（火把点光源阴影在 2.6 关掉：兼容渲染器里会把墙切出硬边亮斑）
 	if not tier in Look.TIERS:
 		tier = Look.default_tier()
 	quality = tier
