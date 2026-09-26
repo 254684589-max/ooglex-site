@@ -206,9 +206,18 @@ function techLeadersSessionCookie(token) {
 async function techLeadersRequestAuthorized(request, env) {
   const internal = request.headers.get("x-ooglex-tech-secret") || "";
   if (env.TECH_LEADERS_SESSION_SECRET && internal && internal === env.TECH_LEADERS_SESSION_SECRET) return true;
+
   const cookieToken = cookieValue(request, "ooglex_tech_session");
   if (cookieToken && await verifyTechLeadersToken(cookieToken, env)) return true;
-  return verifyTechLeadersToken(bearerToken(request), env);
+
+  const bearer = bearerToken(request);
+  if (!bearer) return false;
+  if (await verifyTechLeadersToken(bearer, env)) return true;
+
+  // Registration is the entitlement boundary for the site-wide access model.
+  // A valid Supabase access token is enough to unlock the full Tech Leaders catalog.
+  const user = await getUser(bearer, env);
+  return Boolean(user && user.id);
 }
 
 async function techLeadersRateKey(request) {
@@ -261,30 +270,17 @@ async function getUser(token, env) {
 }
 
 async function getAccess(product, token, env) {
-  if (!token) return { plan: "free", access_level: "preview", authenticated: false };
+  if (!token) return { plan: "guest", access_level: "preview", authenticated: false };
 
   const user = await getUser(token, env);
-  if (!user || !user.id) return { plan: "free", access_level: "preview", authenticated: false };
+  if (!user || !user.id) return { plan: "guest", access_level: "preview", authenticated: false };
 
-  const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/my_product_access`, {
-    method: "POST",
-    headers: {
-      apikey: env.SUPABASE_PUBLISHABLE_KEY,
-      Authorization: `Bearer ${token}`,
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({ p_product_key: product })
-  });
-
-  if (!res.ok) {
-    return { plan: "free", access_level: "preview", authenticated: true, user_id: user.id };
-  }
-
-  const rows = await res.json();
-  const row = Array.isArray(rows) && rows[0] ? rows[0] : null;
+  // Site-wide policy: completed registration/login unlocks the full product.
+  // OWNER/PRO profile fields remain useful for account display, but are no longer
+  // required for content access.
   return {
-    plan: row && row.plan ? row.plan : "free",
-    access_level: row && row.access_level ? row.access_level : "preview",
+    plan: "registered",
+    access_level: "full",
     authenticated: true,
     user_id: user.id
   };
@@ -2756,12 +2752,36 @@ export default {
     }
 
     if (url.pathname === "/v1/tech-leaders/catalog") {
-      if (!(await techLeadersRequestAuthorized(request, env))) {
-        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
-      }
       const catalog = techLeadersCatalogName(url.searchParams.get("catalog"));
       if (!catalog) return json({ error: "invalid_catalog" }, 400, cors);
-      const dataset = await readDataset(env.PRO_DATA, "tech-leaders/catalogs/" + catalog);
+      const key = "tech-leaders/catalogs/" + catalog;
+      const authorized = await techLeadersRequestAuthorized(request, env);
+
+      if (!authorized) {
+        const full = await readJson(env.PRO_DATA, key);
+        if (!full) return json({ error: "catalog_not_ready" }, 503, cors);
+        const all = Array.isArray(full.leaders) ? full.leaders : [];
+        const target = Math.max(1, Math.ceil(all.length * 0.10));
+        const leaders = [];
+        for (let i = 0; i < target; i += 1) {
+          const index = Math.min(all.length - 1, Math.floor(i * all.length / target));
+          if (all[index]) leaders.push(all[index]);
+        }
+        return json({
+          ...full,
+          leaders,
+          capacity: all.length,
+          ooglexAccess: {
+            mode: "preview",
+            ratio: 0.10,
+            visibleLeaders: leaders.length,
+            fullLeaders: all.length,
+            registrationRequired: true
+          }
+        }, 200, { ...cors, "cache-control": "public, max-age=120" });
+      }
+
+      const dataset = await readDataset(env.PRO_DATA, key);
       if (!dataset) return json({ error: "catalog_not_ready" }, 503, cors);
       const headers = new Headers(cors);
       dataset.headers.forEach((value, name) => headers.set(name, value));
