@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply Billionaires FREE/PRO cutover to an already-built .site artifact."""
+"""Apply Billionaires 10%/registered cutover to an already-built .site artifact."""
 from __future__ import annotations
 
 import json
@@ -15,7 +15,7 @@ HTML = SITE / "apps" / "billionaires" / "index.html"
 SNIPPET = """
 <meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">
 <script src="/assets/pro-access.js?v=6"></script>
-<script src="/assets/pro-billionaires.js?v=2"></script>
+<script src="/assets/pro-billionaires.js?v=3"></script>
 """
 
 
@@ -40,10 +40,21 @@ def main() -> None:
     preview = json.loads(TARGET.read_text(encoding="utf-8"))
     people = preview.get("people") or []
     access = preview.get("ooglexAccess") or {}
-    if len(people) > 10 or access.get("mode") != "preview":
-        raise SystemExit("Billionaires public artifact is not a Top 10 preview")
+    full_people = int(access.get("fullPeople") or 0)
+    ratio = float(access.get("ratio") or 0)
+    allowed = max(1, (full_people + 9) // 10) if full_people else 0
+    if (
+        access.get("mode") != "preview"
+        or ratio != 0.10
+        or full_people <= 0
+        or len(people) > allowed
+    ):
+        raise SystemExit("Billionaires public artifact is not a <=10% registration preview")
 
-    print(f"Billionaires cutover ready: {len(people)} public rows; full dataset excluded from Pages artifact")
+    print(
+        f"Billionaires cutover ready: {len(people)}/{full_people} public rows; "
+        "full dataset excluded from Pages artifact"
+    )
 
 
 if __name__ == "__main__":
