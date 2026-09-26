@@ -1,16 +1,13 @@
-/* OOGLEX_ACCESS_GATE_V11
-   Unified hard-stop preview for non-password /apps/ and /games/ pages.
-   Standard: original page preview on top -> fade -> fixed dark access wall at viewport bottom.
-   The document is scroll-locked for unauthenticated visitors, so no content can leak below the wall. */
+/* OOGLEX_ACCESS_GATE_V12
+   Generic 10% preview hard-stop for non-password /apps/ and /games/ pages.
+   Mobile-safe rule: clip the document to the visual viewport, keep the preview above,
+   and anchor the dark access wall to the real bottom edge. */
 (function () {
   "use strict";
   if (window.OoglexSiteAccess) return;
 
   var PATH = window.location.pathname || "/";
   var PREVIEW_RATIO = 0.10;
-  var PREVIEW_VIEWPORT_RATIO = 0.70;
-  var MIN_WALL_HEIGHT = 340;
-  var FADE_HEIGHT = 110;
   var PROJECT_REF = "nwthqkpkvbtilafqpjlf";
   var AUTH_KEY = "sb-" + PROJECT_REF + "-auth-token";
   var SUPABASE_URL = "https://nwthqkpkvbtilafqpjlf.supabase.co";
@@ -18,8 +15,7 @@
   var VERIFY_TIMEOUT_MS = 4500;
   var resolveReady;
   var ready = new Promise(function (resolve) { resolveReady = resolve; });
-  var resizeTimer = 0;
-  var scrollLock = null;
+  var original = null;
 
   function nativePasswordPage() {
     if (PATH === "/apps/tech-leaders/" || PATH === "/apps/tech-leaders" ||
@@ -77,16 +73,18 @@
     var style = document.createElement("style");
     style.id = "ooglex-registration-preview-style";
     style.textContent =
-      "html.ooglex-access-checking,html.ooglex-access-checking body,html.ooglex-access-preview,html.ooglex-access-preview body{overflow:hidden!important;overscroll-behavior:none!important}" +
-      "#ooglex-registration-preview-fade{position:fixed;left:0;right:0;z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.97))}" +
-      "#ooglex-registration-preview{position:fixed;left:0;right:0;bottom:0;z-index:2147483646;box-sizing:border-box;width:100%;overflow:auto;padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "html.ooglex-access-checking,html.ooglex-access-preview{height:100%!important;overflow:hidden!important;overscroll-behavior:none!important}" +
+      "html.ooglex-access-checking body,html.ooglex-access-preview body{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;min-height:0!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none}" +
+      "#ooglex-registration-preview-fade{position:fixed;left:0;right:0;bottom:clamp(290px,34dvh,390px);z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.97))}" +
+      "#ooglex-registration-preview{position:fixed;left:0;right:0;bottom:0;z-index:2147483646;box-sizing:border-box;width:100%;height:clamp(290px,34dvh,390px);min-height:0!important;max-height:390px;overflow:hidden;padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
       "#ooglex-registration-preview .ogx-access-kicker{font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#9aa1aa;margin-bottom:10px}" +
       "#ooglex-registration-preview h2{margin:1px 0 8px;font-size:27px;line-height:1.3;color:#f5f5f5;font-weight:760;letter-spacing:-.3px}" +
       "#ooglex-registration-preview p{margin:0 auto 17px;max-width:720px;color:#c8c8c8;font-size:14px;line-height:1.6}" +
-      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:270px;height:44px;padding:0 22px;border-radius:4px;background:#fff;color:#111;text-decoration:none;font-size:15px;font-weight:720;box-shadow:none}" +
+      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:270px;height:44px;padding:0 22px;border-radius:4px;background:#fff;color:#111;text-decoration:none;font-size:15px;font-weight:720;box-shadow:none;touch-action:manipulation}" +
       "#ooglex-registration-preview .ogx-access-note{font-size:11px;color:#8f8f8f;margin-top:14px}" +
       "#ooglex-registration-preview-badge{position:fixed;right:14px;bottom:14px;z-index:2147483647;padding:7px 11px;border-radius:999px;font:600 11px/1.2 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;letter-spacing:.4px;color:#dfe7ec;background:rgba(10,14,20,.88);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.28)}" +
-      "@media(max-width:640px){#ooglex-registration-preview{padding:24px 16px 22px}#ooglex-registration-preview h2{font-size:25px}#ooglex-registration-preview p{font-size:13px}#ooglex-registration-preview a{min-width:min(270px,calc(100vw - 48px));width:min(270px,calc(100vw - 48px))}}";
+      "@supports not (height:100dvh){html.ooglex-access-checking body,html.ooglex-access-preview body{height:100vh!important}#ooglex-registration-preview{height:34vh}#ooglex-registration-preview-fade{bottom:34vh}}" +
+      "@media(max-width:640px){#ooglex-registration-preview{padding:22px 16px 20px}#ooglex-registration-preview h2{font-size:25px}#ooglex-registration-preview p{font-size:13px}#ooglex-registration-preview a{min-width:min(270px,calc(100vw - 48px));width:min(270px,calc(100vw - 48px))}}";
     document.head.appendChild(style);
   }
 
@@ -128,83 +126,60 @@
     return { gate: gate, fade: fade, badge: badge };
   }
 
-  function lockScroll() {
+  function freezeDocument() {
+    var html = document.documentElement;
+    var body = document.body;
+    if (!body) return;
+
+    if (!original) {
+      original = {
+        htmlStyle: html.getAttribute("style"),
+        bodyStyle: body.getAttribute("style")
+      };
+    }
+
     try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (_) {}
     try { window.scrollTo({ top: 0, left: 0, behavior: "auto" }); } catch (_) { window.scrollTo(0, 0); }
-    if (scrollLock) window.removeEventListener("scroll", scrollLock);
-    scrollLock = function () {
-      if (window.scrollY !== 0 || window.scrollX !== 0) {
-        try { window.scrollTo({ top: 0, left: 0, behavior: "auto" }); }
-        catch (_) { window.scrollTo(0, 0); }
-      }
-    };
-    window.addEventListener("scroll", scrollLock, { passive: true });
-  }
 
-  function layoutPreview() {
-    if (!document.body) return;
-    var parts = ensureGate();
-    var vh = Math.max(window.innerHeight || 0, 1);
-    var wallHeight = Math.max(MIN_WALL_HEIGHT, Math.floor(vh * (1 - PREVIEW_VIEWPORT_RATIO)));
-    wallHeight = Math.min(vh, wallHeight);
-    var wallTop = Math.max(0, vh - wallHeight);
-    var fadeTop = Math.max(0, wallTop - FADE_HEIGHT);
-
-    parts.fade.style.top = fadeTop + "px";
-    parts.fade.style.display = "block";
-
-    parts.gate.style.top = wallTop + "px";
-    parts.gate.style.height = (vh - wallTop) + "px";
-    parts.gate.style.minHeight = (vh - wallTop) + "px";
-    parts.gate.style.display = "block";
-
-    parts.badge.style.display = "block";
-
-    var html = document.documentElement;
     html.classList.remove("ooglex-access-checking");
     html.classList.add("ooglex-access-preview");
     html.setAttribute("data-ooglex-preview-ratio", "10");
-    html.setAttribute("data-ooglex-preview-wall-top", String(wallTop));
-    html.setAttribute("data-ooglex-preview-mode", "viewport-hard-stop");
-
-    lockScroll();
-  }
-
-  function scheduleLayout() {
-    if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      resizeTimer = 0;
-      layoutPreview();
-    }, 100);
+    html.setAttribute("data-ooglex-preview-mode", "bottom-hard-stop");
   }
 
   function mountPreview() {
     addStyles();
-    layoutPreview();
-    window.addEventListener("load", function () { setTimeout(layoutPreview, 80); }, { once: true });
-    window.addEventListener("resize", scheduleLayout);
-    if (window.visualViewport) window.visualViewport.addEventListener("resize", scheduleLayout);
+    ensureGate();
+    freezeDocument();
   }
 
   function applyPreview() {
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { setTimeout(mountPreview, 40); }, { once: true });
+      document.addEventListener("DOMContentLoaded", function () { setTimeout(mountPreview, 30); }, { once: true });
     } else {
-      setTimeout(mountPreview, 40);
+      setTimeout(mountPreview, 30);
     }
   }
 
   function unlock() {
-    if (scrollLock) { window.removeEventListener("scroll", scrollLock); scrollLock = null; }
-    document.documentElement.classList.remove("ooglex-access-checking", "ooglex-access-preview");
-    document.documentElement.removeAttribute("data-ooglex-preview-ratio");
-    document.documentElement.removeAttribute("data-ooglex-preview-wall-top");
-    document.documentElement.removeAttribute("data-ooglex-preview-mode");
+    var html = document.documentElement;
+    var body = document.body;
+
+    html.classList.remove("ooglex-access-checking", "ooglex-access-preview");
+    html.removeAttribute("data-ooglex-preview-ratio");
+    html.removeAttribute("data-ooglex-preview-mode");
+
     ["ooglex-registration-preview","ooglex-registration-preview-fade","ooglex-registration-preview-badge"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.remove();
     });
-    if (document.body) document.body.style.removeProperty("overflow");
+
+    if (original) {
+      if (original.htmlStyle == null) html.removeAttribute("style"); else html.setAttribute("style", original.htmlStyle);
+      if (body) {
+        if (original.bodyStyle == null) body.removeAttribute("style"); else body.setAttribute("style", original.bodyStyle);
+      }
+    }
   }
 
   window.OoglexSiteAccess = Object.freeze({
@@ -229,7 +204,7 @@
     resolveReady(ok);
     try {
       document.dispatchEvent(new CustomEvent("ooglex:accessready", {
-        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "viewport-hard-stop-v11" }
+        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "bottom-hard-stop-v12" }
       }));
     } catch (_) {}
   })();
