@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "camera", "pack"]:
+	for g in ["boot", "camera", "move", "pack"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -63,6 +63,7 @@ func test_boot() -> void:
 	check(ProjectSettings.get_setting("rendering/renderer/rendering_method") == "gl_compatibility", "工程使用兼容渲染器（网页导出唯一支持的渲染器）")
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_pack_test = false
+	main.run_nav_bench = false
 	add_child(main)
 	await frames(3)
 	check(main.camera != null and main.camera.current, "斜俯视相机已创建并设为当前相机")
@@ -79,7 +80,7 @@ func test_boot() -> void:
 func test_camera() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_pack_test = false
-	main.demo_patrol = false
+	main.run_nav_bench = false
 	add_child(main)
 	await frames(3)
 	var cam: IsoCamera = main.camera
@@ -150,6 +151,122 @@ func test_camera() -> void:
 	check(cam.h_offset == 0.0 and cam.v_offset == 0.0, "关闭震动后不再晃动（无障碍设置）")
 	main.queue_free()
 	await frames(1)
+
+
+func physics(n: int) -> void:
+	for i in n:
+		await get_tree().physics_frame
+
+
+func test_move() -> void:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await physics(4)
+	var hero: Player = main.hero
+	var cam: IsoCamera = main.camera
+	var map := hero.get_world_3d().navigation_map
+	check(main.level.navigation_mesh.get_polygon_count() > 0, "房间导航网格已烘焙：%d 个多边形，用时 %.1f 毫秒" % [main.level.navigation_mesh.get_polygon_count(), main.nav_bake_ms])
+	check(InputMap.has_action("move_up") and InputMap.has_action("move_right"), "键盘移动动作已注册（WASD / 方向键）")
+
+	# 寻路绕墙：房间中心 → 南墙外，直线穿墙，路径必须从缺口绕出去
+	var a := Vector3(0, 0, 0)
+	var b := Vector3(-3.5, 0, 8.0)
+	# 导航地图在烘焙后的下一两个物理帧才同步完成：等到能查出路径再测（最多 60 帧）
+	var path := PackedVector3Array()
+	for i in 60:
+		path = NavigationServer3D.map_get_path(map, a, b, true)
+		if path.size() > 0:
+			break
+		await physics(1)
+	var plen := 0.0
+	for i in range(1, path.size()):
+		plen += path[i - 1].distance_to(path[i])
+	var via_gap := false
+	for pt in path:
+		if pt.x > -1.3 and pt.z > 5.0 and pt.z < 7.0:
+			via_gap = true
+	check(path.size() >= 3 and plen > a.distance_to(b) + 0.8, "路径绕开南墙：路径 %.1f 米 > 直线 %.1f 米" % [plen, a.distance_to(b)])
+	check(via_gap, "路径经过南墙的缺口（x > -1）")
+
+	# 点击移动：走到房间外，能到达并发出 arrived
+	var got := [false]
+	hero.arrived.connect(func(): got[0] = true)
+	hero.move_to(b)
+	for i in 400:
+		await physics(1)
+		if got[0]:
+			break
+	var end := hero.global_position
+	check(got[0], "点击移动到达目标并发出到达信号")
+	check(Vector2(end.x - hero.last_target.x, end.z - hero.last_target.z).length() < 0.2, "到达位置与目标相差 %.2f 米" % Vector2(end.x - hero.last_target.x, end.z - hero.last_target.z).length())
+
+	# 目标点在墙里：取导航网格上最近的可走点（可能在墙的另一侧，那就绕过去），不会卡进墙
+	hero.global_position = Vector3(0, 0, 0)
+	await physics(2)
+	hero.move_to(Vector3(0, 0, -5.8))   # 墙体 z ∈ [-6.3, -5.7]，这个点离房间内侧更近
+	for i in 300:
+		await physics(1)
+		if not hero.moving_to:
+			break
+	var z := hero.global_position.z
+	check(z > -5.75 and z < -4.6, "目标在墙体内部时停在墙前 1 米内（z = %.2f，墙面 -5.7）" % z)
+	check(not hero.moving_to, "到达最近可走点后停止移动")
+
+	# 屏幕中心拾取到主角附近的地面
+	cam.snap()
+	await physics(1)
+	var center: Vector2 = main.get_viewport().get_visible_rect().size * 0.5
+	var p = hero.pick_ground(center)
+	check(p != null and Vector2(p.x - cam.focus.x, p.z - cam.focus.z).length() < 2.0, "屏幕中心拾取到相机跟随点附近的地面")
+
+	# 摇杆「上」= 远离相机的方向
+	hero.global_position = Vector3(2, 0, 2)
+	await physics(2)
+	var start := hero.global_position
+	hero.stick = Vector2(0, -1)
+	await seconds(0.5)
+	hero.stick = Vector2.ZERO
+	var moved := hero.global_position - start
+	var fwd := Vector3(-sin(deg_to_rad(cam.yaw_deg)), 0, -cos(deg_to_rad(cam.yaw_deg)))
+	check(moved.length() > 1.5 and moved.normalized().dot(fwd) > 0.95, "摇杆向上：朝屏幕上方移动 %.1f 米" % moved.length())
+	check(not hero.moving_to, "使用摇杆时取消点击移动")
+
+	# 顶着墙推：不会穿墙，并沿墙滑动
+	hero.global_position = Vector3(0, 0, -2)
+	await physics(2)
+	hero.stick = Vector2(0, -1)
+	await seconds(2.5)
+	hero.stick = Vector2.ZERO
+	var q := hero.global_position
+	check(q.z > -5.75 and q.x > -5.75, "顶墙推 2.5 秒不穿墙（x = %.2f, z = %.2f）" % [q.x, q.z])
+	check(Vector2(q.x, q.z).length() > 4.0, "撞墙后沿墙滑到角落附近")
+
+	# 键盘（可选）
+	hero.global_position = Vector3(0, 0, 2)
+	await physics(2)
+	start = hero.global_position
+	Input.action_press("move_right")
+	await seconds(0.4)
+	Input.action_release("move_right")
+	var right := Vector3(cos(deg_to_rad(cam.yaw_deg)), 0, -sin(deg_to_rad(cam.yaw_deg)))
+	moved = hero.global_position - start
+	check(moved.length() > 1.0 and moved.normalized().dot(right) > 0.9, "键盘 D：朝屏幕右方移动")
+
+	# 虚拟摇杆控件：触点在左下区域时认领并输出方向
+	var tc: TouchControls = main.touch
+	var vs: Vector2 = main.get_viewport().get_visible_rect().size
+	check(tc.in_zone(vs * Vector2(0.1, 0.9)) and not tc.in_zone(vs * Vector2(0.9, 0.9)) and not tc.in_zone(vs * Vector2(0.1, 0.2)), "摇杆只认领屏幕左下区域的触点")
+	main.queue_free()
+	await frames(1)
+
+	# 整层地下城的运行时烘焙耗时（本机原生；网页上的数字由 EF_NAV_BENCH 日志给出）
+	var bench := NavBuilder.bench_dungeon(7, 0.25)
+	print("  info 整层地下城（%d 个房间、%d 格地面）烘焙 %.0f 毫秒，%d 个多边形" % [bench.rooms, bench.floor_tiles, bench.ms, bench.polygons])
+	check(bench.polygons > 50, "整层地下城导航网格生成成功")
+	var bench2 := NavBuilder.bench_dungeon(7, 0.4)
+	print("  info 同一层用 0.4 米格子烘焙 %.0f 毫秒" % bench2.ms)
 
 
 func test_pack() -> void:

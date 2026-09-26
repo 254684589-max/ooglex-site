@@ -1,5 +1,6 @@
 // 网页导出冒烟测试（TECH.md 第六节）：打开 play/，在 1280 / 768 / 360 三个宽度下检查
-// 引擎启动（EF_READY）、章节包加载（EF_PACK_OK）、控制台无报错、页面无横向溢出，并截图。
+// 引擎启动（EF_READY）、章节包加载（EF_PACK_OK）、导航烘焙耗时（EF_NAV_*）、点击 / 触屏点地面后主角到达（EF_ARRIVED）、
+// 控制台无报错、页面无横向溢出，并截图。
 //
 // 先在仓库根目录起静态服务器：python3 -m http.server 8765
 //   node games/emberfall3d/tools/smoke_web.js [截图目录] [地址]
@@ -28,12 +29,20 @@ const url = process.argv[3] || 'http://localhost:8765/games/emberfall3d/play/';
       ready = logs.find(l => l.startsWith('EF_READY'));
       pack = logs.find(l => l.startsWith('EF_PACK_'));
     }
-    await page.waitForTimeout(1500);
+    // 等整层地下城的导航基准跑完（启动后两帧开始）
+    for (let i = 0; i < 40 && !logs.some(l => l.startsWith('EF_NAV_BENCH')); i++) await page.waitForTimeout(250);
+    // 点地面移动：电脑用鼠标点，手机 / 平板用触屏点（点在摇杆区域以外）
+    const tx = Math.round(w * 0.68), ty = Math.round(h * 0.42);
+    if (mobile) await page.touchscreen.tap(tx, ty); else await page.mouse.click(tx, ty);
+    let arrived;
+    for (let i = 0; i < 40 && !arrived; i++) { await page.waitForTimeout(250); arrived = logs.find(l => l.startsWith('EF_ARRIVED')); }
+    await page.waitForTimeout(600);
     await page.screenshot({ path: path.join(outDir, `ef3d-${name}.png`) });
+    const nav = logs.filter(l => l.startsWith('EF_NAV')).join(' | ');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && errs.length === 0 && overflow <= 0;
+    const ok = !!ready && !!pack && pack.startsWith('EF_PACK_OK') && !!arrived && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | ${pack || '无章节包日志'} | ${nav || '无导航日志'} | ${arrived || '点地面后未到达'} | 启动 ${((Date.now() - t0) / 1000).toFixed(1)}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 
 PackLoader="*res://core/pack_loader.gd"
 UiScale="*res://core/ui_scale.gd"
+InputSetup="*res://core/input_setup.gd"
 
 [display]
 
@@ -39,3 +40,10 @@ textures/vram_compression/import_etc2_astc=true
 [gui]
 
 theme/custom_font="res://assets/fonts/NotoSansSC-EF.ttf"
+
+[layer_names]
+
+3d_physics/layer_1="世界"
+3d_physics/layer_2="遮挡视线"
+3d_physics/layer_3="地面拾取"
+3d_physics/layer_4="玩家"

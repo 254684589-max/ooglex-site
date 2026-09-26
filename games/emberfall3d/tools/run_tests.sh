@@ -22,5 +22,5 @@ echo "== 自动化测试"
 LOG="$TMP/test.log"
 timeout 300 "$GODOT" --headless --path "$PROJECT" res://tests/test_runner.tscn -- "$@" "--pack=$TMP/ch_test.pck" >"$LOG" 2>&1
 CODE=$?
-grep -vE "^\s*$" "$LOG" | grep -vE "^\s+at: " | grep -E "^== |ok |FAIL|SCRIPT ERROR|^ERROR|PASSED|FAILED|WATCHDOG"
+grep -vE "^\s*$" "$LOG" | grep -vE "^\s+at: " | grep -E "^== |ok |info |FAIL|SCRIPT ERROR|^ERROR|PASSED|FAILED|WATCHDOG"
 exit $CODE

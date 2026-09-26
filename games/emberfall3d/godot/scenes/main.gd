@@ -1,22 +1,22 @@
 extends Node3D
-## 阶段 1 灰盒场景：工程、渲染器、网页导出、章节包加载（1.1）与斜俯视相机（1.2）。
+## 阶段 1 灰盒场景：工程与网页导出（1.1）、斜俯视相机（1.2）、点击移动 / 摇杆 / 导航网格（1.3）。
 ## 画面里的所有模型都是代码生成的**占位几何体**，不代表最终美术（ART.md）。
-## 点击移动在 1.3 实现；在那之前主角沿固定路线走动，用来演示相机跟随与遮挡半透明。
 
 const PITCH_DEG := 55.0
 const WORLD_MASK := 1 | IsoCamera.OCCLUDER_LAYER   # 墙体与柱子：世界碰撞（第 1 层）+ 遮挡视线（第 2 层）
-const PATROL := [Vector3(0, 0, 0), Vector3(-3.6, 0, 5.1), Vector3(-4.6, 0, 1.0), Vector3(5.1, 0, -3.6), Vector3(1.0, 0, -4.6)]
-const PATROL_SPEED := 2.2
 
 var auto_pack_test := true
-var demo_patrol := true
-var patrol_i := 1
-var hero: Node3D
+var run_nav_bench := true
+var level: NavigationRegion3D
+var hero: Player
+var touch: TouchControls
 var torch_light: OmniLight3D
 var camera: IsoCamera
 var info: Label
 var pack_label: Label
 var pack_state := "章节包：未测试"
+var nav_state := ""
+var nav_bake_ms := 0.0
 var t := 0.0
 
 
@@ -25,25 +25,25 @@ func _ready() -> void:
 	_build_ui()
 	PackLoader.pack_loaded.connect(_on_pack_loaded)
 	print("EF_READY renderer=%s web=%s" % [RenderingServer.get_current_rendering_method(), OS.has_feature("web")])
+	print("EF_NAV_BAKE room_ms=%.1f polygons=%d" % [nav_bake_ms, level.navigation_mesh.get_polygon_count()])
 	if auto_pack_test and OS.has_feature("web"):
 		pack_state = "章节包：下载中……"
 		_refresh_labels()
 		PackLoader.load_chapter("ch_test")
+	if run_nav_bench and OS.has_feature("web"):
+		# 等两帧再跑，避免和首帧渲染抢时间；结果打到控制台与左下角
+		await get_tree().process_frame
+		await get_tree().process_frame
+		var b := NavBuilder.bench_dungeon(7, 0.25)
+		nav_state = "整层地下城导航烘焙 %.0f 毫秒（%d 个多边形）" % [b.ms, b.polygons]
+		print("EF_NAV_BENCH ms=%.1f polygons=%d floor_tiles=%d wall_tiles=%d cell=%.2f" % [b.ms, b.polygons, b.floor_tiles, b.wall_tiles, b.cell_size])
+		_refresh_labels()
 
 
 func _process(delta: float) -> void:
 	t += delta
 	if torch_light:
 		torch_light.light_energy = 2.2 + sin(t * 11.0) * 0.18 + sin(t * 7.3) * 0.12
-	if hero and demo_patrol:
-		var goal: Vector3 = PATROL[patrol_i]
-		var to := goal - hero.position
-		to.y = 0.0
-		if to.length() < 0.05:
-			patrol_i = (patrol_i + 1) % PATROL.size()
-		else:
-			hero.position += to.normalized() * minf(PATROL_SPEED * delta, to.length())
-			hero.rotation.y = atan2(to.x, to.z)
 
 
 func _on_pack_loaded(id: String, ok: bool, ms: int, detail: String) -> void:
@@ -78,7 +78,8 @@ func _mat(c: Color, emissive: float = 0.0) -> StandardMaterial3D:
 
 
 func _box(size: Vector3, pos: Vector3, c: Color, solid := true) -> MeshInstance3D:
-	## 占位方块。solid = true 时带静态碰撞体（世界 + 遮挡层），相机会在它挡住主角时把它变半透明。
+	## 占位方块。solid = true 时带静态碰撞体（世界 + 遮挡层），挂在导航区域下参与烘焙；
+	## 相机会在它挡住主角时把它变半透明。
 	var mi := MeshInstance3D.new()
 	var b := BoxMesh.new()
 	b.size = size
@@ -99,7 +100,7 @@ func _box(size: Vector3, pos: Vector3, c: Color, solid := true) -> MeshInstance3
 	body.add_child(shape)
 	body.add_child(mi)
 	body.set_meta("fade_meshes", [mi])
-	add_child(body)
+	level.add_child(body)
 	return mi
 
 
@@ -125,23 +126,41 @@ func _build_world() -> void:
 	moon.rotation_degrees = Vector3(-60, 30, 0)
 	add_child(moon)
 
-	# 地面（占位）
+	# 关卡几何挂在导航区域下，运行时烘焙导航网格
+	level = NavBuilder.make_region()
+	add_child(level)
+
+	# 地面（占位）：地面层碰撞只用于点击拾取与导航解析，主角不与它碰撞（平面移动）
 	var ground := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(28, 28)
 	ground.mesh = plane
 	ground.material_override = _mat(Color(0.23, 0.21, 0.19))
-	add_child(ground)
+	var gbody := StaticBody3D.new()
+	gbody.collision_layer = Player.LAYER_GROUND
+	gbody.collision_mask = 0
+	var gshape := CollisionShape3D.new()
+	var gbox := BoxShape3D.new()
+	gbox.size = Vector3(28, 0.2, 28)
+	gshape.shape = gbox
+	gshape.position.y = -0.1
+	gbody.add_child(gshape)
+	gbody.add_child(ground)
+	level.add_child(gbody)
 
-	# 一间有缺口的灰盒房间 + 石柱（占位）
+	# 一间有缺口的灰盒房间 + 石柱（占位）。墙高 3.2 米（约主角身高 1.8 倍）
 	var wall := Color(0.36, 0.33, 0.3)
-	# 墙高 3.2 米（约主角身高的 1.8 倍）：55° 俯角下能挡住墙后约 2.2 米，才需要半透明
 	_box(Vector3(12, 3.2, 0.6), Vector3(0, 1.6, -6), wall)
 	_box(Vector3(0.6, 3.2, 12), Vector3(-6, 1.6, 0), wall)
 	_box(Vector3(0.6, 3.2, 5), Vector3(6, 1.6, -3.5), wall)
 	_box(Vector3(5, 3.2, 0.6), Vector3(-3.5, 1.6, 6), wall)
 	for p in [Vector3(-3, 0, -3), Vector3(3, 0, 3), Vector3(-3, 0, 3)]:
 		_box(Vector3(0.7, 3.0, 0.7), p + Vector3(0, 1.5, 0), Color(0.42, 0.38, 0.34))
+	# 房间外的几块矮石，让门外也有东西可以绕
+	_box(Vector3(2.0, 1.0, 1.2), Vector3(8.5, 0.5, 4.0), Color(0.33, 0.3, 0.28))
+	_box(Vector3(1.2, 1.0, 2.4), Vector3(3.0, 0.5, 9.0), Color(0.33, 0.3, 0.28))
+
+	nav_bake_ms = NavBuilder.bake(level)
 
 	# 火把（占位）：柱 + 发光球 + 闪烁点光源
 	_box(Vector3(0.16, 1.6, 0.16), Vector3(-5.4, 0.8, -5.4), Color(0.3, 0.2, 0.12), false)
@@ -159,37 +178,14 @@ func _build_world() -> void:
 	torch_light.position = Vector3(-5.4, 1.9, -5.4)
 	add_child(torch_light)
 
-	# 主角占位：胶囊 + 「武器」方块 + 跟随暖光
-	hero = Node3D.new()
+	# 玩家（占位外观）与斜俯视相机
+	hero = Player.new()
 	add_child(hero)
-	var body := MeshInstance3D.new()
-	var cap := CapsuleMesh.new()
-	cap.radius = 0.35
-	cap.height = 1.8
-	body.mesh = cap
-	body.material_override = _mat(Color(0.55, 0.47, 0.38))
-	body.position.y = 0.9
-	hero.add_child(body)
-	var blade := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = Vector3(0.08, 1.1, 0.08)
-	blade.mesh = bm
-	blade.material_override = _mat(Color(0.8, 0.82, 0.86))
-	blade.position = Vector3(0.45, 1.0, 0)
-	blade.rotation_degrees.z = -20
-	hero.add_child(blade)
-	var hero_light := OmniLight3D.new()
-	hero_light.light_color = Color(1.0, 0.72, 0.45)
-	hero_light.light_energy = 1.3
-	hero_light.omni_range = 6.0
-	hero_light.position = Vector3(0, 2.4, 0)
-	hero.add_child(hero_light)
-
-	# 斜俯视相机（camera/iso_camera.gd）
 	camera = IsoCamera.new()
 	camera.pitch_deg = PITCH_DEG
 	camera.target = hero
 	add_child(camera)
+	hero.camera = camera
 
 
 # ---------------- 界面 ----------------
@@ -205,7 +201,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.2 斜俯视相机）\n画面全部为占位几何体，不代表最终美术。主角沿固定路线走动（点击移动在下一步），挡住主角的墙会变半透明；滚轮缩放。"
+	var how := "手机：左下拖动摇杆，或点地面移动" if DisplayServer.is_touchscreen_available() else "点地面移动，按住左键持续移动；也可以用 WASD；滚轮缩放"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.3 移动与寻路）\n画面全部为占位几何体，不代表最终美术。" + how
 	layer.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -215,13 +212,23 @@ func _build_ui() -> void:
 	pack_label.offset_right = -16
 	pack_label.offset_top = -56
 	pack_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	pack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	pack_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pack_label.add_theme_font_size_override("font_size", 16)
+	pack_label.add_theme_font_size_override("font_size", 14)
 	pack_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.7))
 	layer.add_child(pack_label)
+	touch = TouchControls.new()
+	layer.add_child(touch)
+	touch.changed.connect(func(v: Vector2): hero.stick = v)
+	if touch.visible:
+		pack_label.anchor_left = TouchControls.ZONE_W   # 手机上状态文字让开左下角的摇杆
 	_refresh_labels()
 
 
 func _refresh_labels() -> void:
 	if pack_label:
-		pack_label.text = "%s　·　渲染器：%s" % [pack_state, RenderingServer.get_current_rendering_method()]
+		var lines := [pack_state, "房间导航烘焙 %.0f 毫秒" % nav_bake_ms]
+		if nav_state != "":
+			lines.append(nav_state)
+		lines.append("渲染器：%s" % RenderingServer.get_current_rendering_method())
+		pack_label.text = "　·　".join(lines)
