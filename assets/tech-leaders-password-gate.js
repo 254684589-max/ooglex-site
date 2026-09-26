@@ -1,145 +1,71 @@
 (function () {
   "use strict";
 
-  var API_BASE = "https://pro-api.ooglex.com";
-  var resolveGate;
-  var gatePromise = new Promise(function (resolve) { resolveGate = resolve; });
-  var resolved = false;
+  var PROJECT_REF = "nwthqkpkvbtilafqpjlf";
+  var STORAGE_KEY = "sb-" + PROJECT_REF + "-auth-token";
 
-  function finish(value) {
-    if (resolved) return;
-    resolved = true;
-    resolveGate(!!value);
+  function session() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      var value = JSON.parse(raw);
+      return value && value.access_token && value.user ? value : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function registered() {
+    return !!session();
+  }
+
+  function accountUrl() {
+    return "/account/?next=" + encodeURIComponent(location.pathname + location.search + location.hash);
   }
 
   async function protectedFetch(input, init) {
     var options = Object.assign({}, init || {});
+    var headers = new Headers(options.headers || {});
+    var current = session();
+    if (current && current.access_token) {
+      headers.set("Authorization", "Bearer " + current.access_token);
+    }
+    options.headers = headers;
     options.credentials = "include";
     return fetch(input, options);
   }
 
-  async function validateSession() {
-    try {
-      var response = await protectedFetch(API_BASE + "/v1/tech-leaders/session", { cache: "no-store" });
-      return response.ok;
-    } catch (_) {
-      return false;
-    }
-  }
+  function mountPreviewNotice() {
+    if (registered() || document.getElementById("ooglex-tech-registration-preview")) return;
 
-  function addStyle() {
-    if (document.getElementById("ooglex-tech-gate-style")) return;
     var style = document.createElement("style");
-    style.id = "ooglex-tech-gate-style";
     style.textContent =
-      "html.ooglex-tech-locked,html.ooglex-tech-locked body{overflow:hidden!important}" +
-      "html.ooglex-tech-locked body>:not(#ooglex-tech-gate){visibility:hidden!important}" +
-      "#ooglex-tech-gate{visibility:visible!important;position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;padding:24px;background:var(--bg,#f7f1e9);color:var(--ink,#171717);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
-      "#ooglex-tech-gate .gate-card{width:min(430px,100%);padding:30px;border:1px solid var(--line,#ded5cb);border-radius:18px;background:var(--panel,#fffaf4);box-shadow:0 24px 70px rgba(0,0,0,.12)}" +
-      "#ooglex-tech-gate .gate-kicker{font:11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:var(--faint,#8b837b);text-transform:uppercase}" +
-      "#ooglex-tech-gate h1{margin:10px 0 7px;font-size:25px;line-height:1.2;letter-spacing:-.02em}" +
-      "#ooglex-tech-gate p{margin:0 0 20px;color:var(--dim,#655f59);font-size:13px;line-height:1.65}" +
-      "#ooglex-tech-gate .gate-row{display:flex;gap:9px}" +
-      "#ooglex-tech-gate input{min-width:0;flex:1;height:44px;border:1px solid var(--line,#ded5cb);border-radius:10px;background:transparent;color:inherit;padding:0 13px;outline:none;font:14px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}" +
-      "#ooglex-tech-gate input:focus{border-color:#2a6fa4;box-shadow:0 0 0 3px rgba(42,111,164,.10)}" +
-      "#ooglex-tech-gate button{height:44px;min-width:82px;border:0;border-radius:10px;background:#171717;color:#fff;padding:0 18px;font-weight:700;cursor:pointer}" +
-      "#ooglex-tech-gate button[disabled]{opacity:.55;cursor:wait}" +
-      "#ooglex-tech-gate .gate-error{min-height:18px;margin-top:10px;color:#b42318;font-size:12px}" +
-      "#ooglex-tech-gate .gate-back{display:inline-block;margin-top:10px;color:#2a6fa4;font-size:12px;text-decoration:none}";
+      "#ooglex-tech-registration-preview{position:fixed;right:14px;bottom:14px;z-index:10000;display:flex;align-items:center;gap:10px;max-width:min(520px,calc(100vw - 28px));padding:10px 12px;border:1px solid var(--line,rgba(255,255,255,.12));border-radius:12px;background:var(--panel,#10141b);color:var(--dim,#98a2b3);box-shadow:0 12px 34px rgba(0,0,0,.24);font:12px/1.45 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "#ooglex-tech-registration-preview b{color:var(--ink,#eef2f7)}" +
+      "#ooglex-tech-registration-preview a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 12px;border-radius:8px;background:var(--ink,#eef2f7);color:var(--bg,#0b0e13)!important;text-decoration:none!important;font-weight:750}" +
+      "@media(max-width:560px){#ooglex-tech-registration-preview{left:10px;right:10px;bottom:10px;align-items:flex-start;flex-wrap:wrap}#ooglex-tech-registration-preview a{width:100%}}";
     document.head.appendChild(style);
+
+    var notice = document.createElement("div");
+    notice.id = "ooglex-tech-registration-preview";
+    notice.setAttribute("data-ooglex-preview-ratio", "0.10");
+    notice.innerHTML =
+      "<span><b>10% 公开预览</b> · 注册并登录后可查看完整科技领袖目录与动态。</span>" +
+      '<a href="' + accountUrl().replace(/&/g, "&amp;").replace(/"/g, "&quot;") + '">注册 / 登录</a>';
+    document.body.appendChild(notice);
   }
 
-  function unlockUi(root) {
-    document.documentElement.classList.remove("ooglex-tech-locked");
-    if (root) root.remove();
-    finish(true);
-  }
-
-  function mountGate() {
-    if (document.getElementById("ooglex-tech-gate")) return;
-    var root = document.createElement("div");
-    root.id = "ooglex-tech-gate";
-    root.innerHTML =
-      '<section class="gate-card" role="dialog" aria-modal="true" aria-labelledby="ooglex-tech-gate-title">' +
-        '<div class="gate-kicker">OOGLEX · PRIVATE COLUMN</div>' +
-        '<h1 id="ooglex-tech-gate-title">科技领袖实时动态流</h1>' +
-        '<p>该专栏由服务器验证访问密码。密码通过后，本次浏览器会话内保持解锁。</p>' +
-        '<form class="gate-row" id="ooglex-tech-gate-form">' +
-          '<input id="ooglex-tech-gate-input" type="password" inputmode="numeric" autocomplete="current-password" maxlength="64" placeholder="请输入访问密码" aria-label="访问密码">' +
-          '<button id="ooglex-tech-gate-submit" type="submit">进入</button>' +
-        '</form>' +
-        '<div class="gate-error" id="ooglex-tech-gate-error" aria-live="polite"></div>' +
-        '<a class="gate-back" href="/">返回首页</a>' +
-      '</section>';
-    document.body.appendChild(root);
-
-    var form = document.getElementById("ooglex-tech-gate-form");
-    var input = document.getElementById("ooglex-tech-gate-input");
-    var submit = document.getElementById("ooglex-tech-gate-submit");
-    var error = document.getElementById("ooglex-tech-gate-error");
-
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-      error.textContent = "";
-      submit.disabled = true;
-      submit.textContent = "验证中…";
-      try {
-        // text/plain keeps this request CORS-simple and avoids a browser preflight
-        // that can fail on some networks even when the Worker itself is reachable.
-        var response = await fetch(API_BASE + "/v1/tech-leaders/auth", {
-          method: "POST",
-          cache: "no-store",
-          credentials: "include",
-          headers: { "content-type": "text/plain;charset=UTF-8" },
-          body: input.value
-        });
-        var data = {};
-        try { data = await response.json(); } catch (_) {}
-        if (!response.ok || !data.ok) {
-          if (response.status === 429) error.textContent = "尝试次数过多，请稍后再试。";
-          else if (response.status === 401) error.textContent = "密码错误，请重试。";
-          else if (response.status === 503) error.textContent = "服务器门禁正在部署，请稍后刷新。";
-          else error.textContent = "服务器验证失败，请稍后重试。";
-          input.select();
-          return;
-        }
-        if (!(await validateSession())) {
-          error.textContent = "密码已通过，但浏览器未保存访问会话，请刷新后重试。";
-          return;
-        }
-        unlockUi(root);
-      } catch (_) {
-        error.textContent = "当前网络无法连接验证服务器，请检查网络后重试。";
-      } finally {
-        submit.disabled = false;
-        submit.textContent = "进入";
-      }
-    });
-
-    setTimeout(function () { try { input.focus(); } catch (_) {} }, 0);
-  }
-
-  window.OoglexTechLeadersGate = {
-    wait: function () { return gatePromise; },
+  window.OoglexTechLeadersGate = Object.freeze({
+    wait: function () { return Promise.resolve(true); },
     fetch: protectedFetch,
+    registered: registered,
+    getSession: session,
     lock: function () { location.reload(); }
-  };
-
-  addStyle();
-  document.documentElement.classList.add("ooglex-tech-locked");
-
-  async function startGate() {
-    if (await validateSession()) {
-      document.documentElement.classList.remove("ooglex-tech-locked");
-      finish(true);
-      return;
-    }
-    mountGate();
-  }
+  });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startGate, { once: true });
+    document.addEventListener("DOMContentLoaded", mountPreviewNotice, { once: true });
   } else {
-    startGate();
+    mountPreviewNotice();
   }
 })();
