@@ -1,5 +1,5 @@
 ; Engine configuration file.
-; 《余烬陷落》EMBERFALL 大作版 —— Godot 4 工程配置（阶段 1.1：灰盒）
+; 《余烬陷落》EMBERFALL 大作版 —— Godot 4 工程配置（阶段 1：灰盒）
 
 config_version=5
 
@@ -17,13 +17,13 @@ config/icon="res://icon.svg"
 [autoload]
 
 PackLoader="*res://core/pack_loader.gd"
+UiScale="*res://core/ui_scale.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/mode="disabled"
 window/handheld/orientation=6
 
 [input_devices]
