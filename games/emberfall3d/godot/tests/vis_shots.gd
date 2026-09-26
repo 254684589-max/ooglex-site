@@ -3,6 +3,15 @@ extends Node
 ##   xvfb-run -a godot --path games/emberfall3d/godot --rendering-driver opengl3 --resolution 1280x720 res://tests/vis_shots.tscn -- <输出目录> [画质档：low/medium/high]
 ## 机位：room（房间，火把与木桩）、hall（大厅战斗，怪物围上来）。
 
+# 截图期间每帧回满血（不改最大生命，界面上显示的仍是正常数值）
+var hero: Player
+
+
+func _process(_delta: float) -> void:
+	if hero != null and not hero.dead:
+		hero.hp = hero.max_hp
+
+
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	var out := args[0] if args.size() > 0 else "user://shots"
@@ -14,9 +23,7 @@ func _ready() -> void:
 	add_child(main)
 	if tier != "" and main.has_method("apply_quality"):
 		main.apply_quality(tier)
-	var hero: Player = main.hero
-	hero.max_hp = 1e9
-	hero.hp = hero.max_hp
+	hero = main.hero
 	await _wait(20)
 	for shot in [["room", Vector3(-1.0, 0, -1.5), 0.5], ["hall", Vector3(0, 0, 13), 3.5]]:
 		hero.global_position = shot[1]

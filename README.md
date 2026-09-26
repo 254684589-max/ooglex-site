@@ -53,6 +53,7 @@ ZLQ6600E/
 │   ├── working-life/       # 🌃 打工 HUSTLE CITY（原创 Godot 4 3D 赛博朋克都市人生模拟 · godot/ 为工程源码，play/ 为网页导出）
 │   ├── construction-worker/ # 🏗️ 工地搬砖 BRICK BY BRICK（原创 Godot 4 3D 工地模拟 · godot/ 为工程源码，play/ 为网页导出）
 │   ├── emberfall/          # 🕯️ 余烬陷落 EMBERFALL（原创 2.5D 暗黑风 ARPG · Canvas 2D + 原生 JS · play/ 为游戏本体）
+│   ├── emberfall3d/        # 🔥 余烬陷落大作版（3D 开发中预览 · Godot 4 网页导出 · godot/ 工程源码，play/ 为导出产物）
 │   ├── gta-vice-city/      # 🌆 GTA Vice City 网页版
 │   └── red-alert/          # 🚩 红色警戒 2 网页版（嵌入红色井界/共和国之辉 · 战役/联机 · 双源可切换）
 ├── scripts/
