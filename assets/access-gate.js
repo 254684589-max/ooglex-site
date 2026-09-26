@@ -1,4 +1,4 @@
-/* OOGLEX_ACCESS_GATE_V3
+/* OOGLEX_ACCESS_GATE_V4
    Bloomberg-style registration wall.
    Anonymous visitors can read the first 10% of the natural page height.
    The remaining 90% stays in place behind a continuous dim/blur veil and cannot be interacted with.
@@ -57,18 +57,18 @@
     style.id = "ooglex-registration-preview-style";
     style.textContent =
       "html.ooglex-access-checking body{overflow:hidden!important}" +
-      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;display:block;pointer-events:auto;color:#f7f7f7;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;background:linear-gradient(to bottom,rgba(8,11,15,.12) 0,rgba(8,11,15,.62) 54px,rgba(8,11,15,.78) 150px,rgba(8,11,15,.82) 100%);-webkit-backdrop-filter:blur(3px) saturate(.72) brightness(.72);backdrop-filter:blur(3px) saturate(.72) brightness(.72)}" +
-      "#ooglex-registration-preview .ogx-access-panel{position:sticky;top:clamp(92px,24vh,230px);width:100%;margin:0;background:rgba(20,20,20,.96);border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 18px 58px rgba(0,0,0,.36);text-align:center}" +
-      "#ooglex-registration-preview .ogx-access-inner{width:min(760px,calc(100vw - 32px));margin:0 auto;padding:27px 18px 30px}" +
-      "#ooglex-registration-preview .ogx-access-kicker{font:700 11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#9ca3af}" +
-      "#ooglex-registration-preview h2{margin:10px 0 8px;font-size:clamp(22px,3vw,30px);line-height:1.2;color:#fff}" +
-      "#ooglex-registration-preview p{margin:0 auto;max-width:620px;color:#c7cbd1;font-size:14px;line-height:1.65}" +
-      "#ooglex-registration-preview .ogx-access-actions{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:20px}" +
-      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:164px;height:46px;padding:0 19px;border-radius:7px;text-decoration:none;font-weight:750;font-size:15px}" +
-      "#ooglex-registration-preview .ogx-access-primary{background:#fff;color:#111}" +
-      "#ooglex-registration-preview .ogx-access-secondary{border:1px solid rgba(255,255,255,.28);color:#fff;background:rgba(255,255,255,.04)}" +
-      "#ooglex-registration-preview .ogx-access-note{margin-top:12px;font-size:11px;color:#8d939b}" +
-      "@media(max-width:640px){#ooglex-registration-preview .ogx-access-panel{top:18vh}#ooglex-registration-preview .ogx-access-inner{padding:24px 16px 28px}#ooglex-registration-preview .ogx-access-actions{display:grid;grid-template-columns:1fr;max-width:290px;margin:18px auto 0}#ooglex-registration-preview a{width:100%}}";
+      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;display:block;pointer-events:auto;color:#f4f7fb;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;background:linear-gradient(to bottom,rgba(7,12,17,0) 0,rgba(7,12,17,.86) 72px,#070c11 150px,#070c11 100%)}" +
+      "#ooglex-registration-preview .ogx-access-panel{position:sticky;top:64px;width:min(650px,calc(100vw - 36px));margin:0 auto;border:1px solid #2a333d;border-radius:24px;background:#0d1319;box-shadow:0 28px 70px rgba(0,0,0,.34);text-align:center}" +
+      "#ooglex-registration-preview .ogx-access-inner{padding:46px 34px 44px}" +
+      "#ooglex-registration-preview .ogx-access-kicker{font:700 12px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.18em;color:#929cab}" +
+      "#ooglex-registration-preview h2{margin:22px 0 14px;font-size:clamp(25px,3vw,34px);line-height:1.24;color:#f5f7fa;font-weight:780}" +
+      "#ooglex-registration-preview p{margin:0 auto;max-width:520px;color:#aeb7c2;font-size:16px;line-height:1.8}" +
+      "#ooglex-registration-preview .ogx-access-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:30px}" +
+      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:188px;height:54px;padding:0 24px;border-radius:11px;text-decoration:none;font-weight:780;font-size:17px}" +
+      "#ooglex-registration-preview .ogx-access-primary{background:#2878f0;color:#fff;border:1px solid #2878f0}" +
+      "#ooglex-registration-preview .ogx-access-secondary{border:1px solid #37414d;color:#f0f3f7;background:#151b21}" +
+      "#ooglex-registration-preview .ogx-access-note{display:none}" +
+      "@media(max-width:640px){#ooglex-registration-preview .ogx-access-panel{top:38px;width:calc(100vw - 36px);border-radius:22px}#ooglex-registration-preview .ogx-access-inner{padding:42px 24px 44px}#ooglex-registration-preview h2{font-size:30px;margin-top:20px}#ooglex-registration-preview p{font-size:16px;line-height:1.8}#ooglex-registration-preview .ogx-access-actions{display:grid;grid-template-columns:1fr;max-width:282px;margin:28px auto 0;gap:16px}#ooglex-registration-preview a{width:100%;height:54px;font-size:17px}}";
     document.head.appendChild(style);
   }
 
@@ -87,13 +87,12 @@
       '<section class="ogx-access-panel">' +
         '<div class="ogx-access-inner">' +
           '<div class="ogx-access-kicker">OOGLEX · 10% PREVIEW</div>' +
-          '<h2>继续访问完整内容</h2>' +
-          '<p>未注册用户可预览当前板块前 10%。注册并登录后解锁剩余 90% 内容。</p>' +
+          '<h2>未注册用户仅开放约 10% 预览</h2>' +
+          '<p>注册并登录后可访问该板块全部内容。现有账户直接登录即可解锁。</p>' +
           '<div class="ogx-access-actions">' +
             '<a class="ogx-access-primary" href="' + accountUrl() + '#signup">注册后完整访问</a>' +
             '<a class="ogx-access-secondary" href="' + accountUrl() + '">已有账户 · 登录</a>' +
           '</div>' +
-          '<div class="ogx-access-note">FREE · 10% PREVIEW</div>' +
         '</div>' +
       '</section>';
     document.body.appendChild(gate);
@@ -229,7 +228,7 @@
     resolveReady(ok);
     try {
       document.dispatchEvent(new CustomEvent("ooglex:accessready", {
-        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "bloomberg" }
+        detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "ooglex-dark" }
       }));
     } catch (_) {}
   })();
