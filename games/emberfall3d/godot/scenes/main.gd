@@ -1,5 +1,6 @@
 extends Node3D
-## 阶段 1 灰盒场景：工程与网页导出（1.1）、斜俯视相机（1.2）、点击移动 / 摇杆 / 导航网格（1.3）。
+## 阶段 1 灰盒场景：工程与网页导出（1.1）、斜俯视相机（1.2）、点击移动 / 摇杆 / 导航网格（1.3）、
+## 战斗手感（1.4：烬卫断誓斩 + 焚地践踏，训练木桩）。
 ## 画面里的所有模型都是代码生成的**占位几何体**，不代表最终美术（ART.md）。
 
 const PITCH_DEG := 55.0
@@ -10,6 +11,11 @@ var run_nav_bench := true
 var level: NavigationRegion3D
 var hero: Player
 var touch: TouchControls
+var dummies: Array[TrainingDummy] = []
+var res_bar: ProgressBar
+var res_label: Label
+var btn_attack: Button
+var btn_stomp: Button
 var torch_light: OmniLight3D
 var camera: IsoCamera
 var info: Label
@@ -30,6 +36,11 @@ func _ready() -> void:
 		pack_state = "章节包：下载中……"
 		_refresh_labels()
 		PackLoader.load_chapter("ch_test")
+	# 给网页冒烟测试用：第一个木桩在屏幕上的位置
+	await get_tree().process_frame
+	# unproject_position 返回的是缩放后的视口坐标；换算成窗口像素（界面缩放 ≠ 1 时两者不同）
+	var sp := camera.unproject_position(dummies[0].global_position + Vector3(0, 1.0, 0)) * get_window().content_scale_factor
+	print("EF_DUMMY_SCREEN x=%d y=%d" % [sp.x, sp.y])
 	if run_nav_bench and OS.has_feature("web"):
 		# 等两帧再跑，避免和首帧渲染抢时间；结果打到控制台与左下角
 		await get_tree().process_frame
@@ -44,6 +55,14 @@ func _process(delta: float) -> void:
 	t += delta
 	if torch_light:
 		torch_light.light_energy = 2.2 + sin(t * 11.0) * 0.18 + sin(t * 7.3) * 0.12
+	if res_bar and hero:
+		var k: EmberguardKit = hero.kit
+		res_bar.value = k.resource
+		var cd: float = k.cooldowns.get("scorch_stomp", 0.0)
+		var cost: int = Balance.skill("scorch_stomp").cost
+		res_label.text = "誓火 %d / %d　焚地践踏：%s" % [k.resource, k.resource_max, ("冷却 %.1f 秒" % cd) if cd > 0.0 else ("可用" if k.resource >= cost else "誓火不足（需要 %d）" % cost)]
+		if btn_stomp:
+			btn_stomp.disabled = not k.can_cast("scorch_stomp")
 
 
 func _on_pack_loaded(id: String, ok: bool, ms: int, detail: String) -> void:
@@ -178,6 +197,14 @@ func _build_world() -> void:
 	torch_light.position = Vector3(-5.4, 1.9, -5.4)
 	add_child(torch_light)
 
+	# 训练木桩（占位敌人）：房间里两个挨着（测试范围技能）、门外一个
+	for p in [Vector3(2.2, 0, -1.2), Vector3(3.0, 0, 0.3), Vector3(-1.5, 0, 9.5)]:
+		var d := TrainingDummy.new()
+		add_child(d)
+		d.global_position = p
+		d.home = p
+		dummies.append(d)
+
 	# 玩家（占位外观）与斜俯视相机
 	hero = Player.new()
 	add_child(hero)
@@ -193,17 +220,22 @@ func _build_world() -> void:
 func _build_ui() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
+	# 左上角一列：说明文字 → 职业资源条 →（手机上）状态文字，按内容高度往下排，互不重叠
+	var top := VBoxContainer.new()
+	top.anchor_right = 1.0
+	top.offset_left = 16
+	top.offset_top = 12
+	top.offset_right = -16
+	top.add_theme_constant_override("separation", 8)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(top)
 	info = Label.new()
-	info.anchor_right = 1.0
-	info.offset_left = 16
-	info.offset_top = 12
-	info.offset_right = -16
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下拖动摇杆，或点地面移动" if DisplayServer.is_touchscreen_available() else "点地面移动，按住左键持续移动；也可以用 WASD；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.3 移动与寻路）\n画面全部为占位几何体，不代表最终美术。" + how
-	layer.add_child(info)
+	var how := "手机：左下摇杆移动；点木桩或按「攻击」打，「践踏」放技能" if DisplayServer.is_touchscreen_available() else "点地面移动；点木桩攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.4 战斗手感）\n画面全部为占位几何体，不代表最终美术。" + how
+	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
 	pack_label.anchor_bottom = 1.0
@@ -217,12 +249,78 @@ func _build_ui() -> void:
 	pack_label.add_theme_font_size_override("font_size", 14)
 	pack_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.7))
 	layer.add_child(pack_label)
+	# 职业资源条（占位；正式界面按 ART.md 第五节做成环绕技能栏的火焰）
+	var box := VBoxContainer.new()
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top.add_child(box)
+	res_bar = ProgressBar.new()
+	res_bar.custom_minimum_size = Vector2(220, 14)
+	res_bar.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	res_bar.max_value = hero.kit.resource_max
+	res_bar.show_percentage = false
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.91, 0.52, 0.23)
+	res_bar.add_theme_stylebox_override("fill", fill)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.1, 0.07, 0.05, 0.8)
+	res_bar.add_theme_stylebox_override("background", bg)
+	box.add_child(res_bar)
+	res_label = Label.new()
+	res_label.add_theme_font_size_override("font_size", 14)
+	res_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
+	box.add_child(res_label)
 	touch = TouchControls.new()
 	layer.add_child(touch)
+	if touch.visible:
+		btn_attack = _touch_button(layer, "攻击", Vector2(-130, -150), 96)
+		btn_stomp = _touch_button(layer, "践踏", Vector2(-230, -110), 72)
+		btn_attack.button_down.connect(func(): hero.attack_nearest(true))
+		btn_attack.button_up.connect(func(): hero.attack_nearest(false))
+		btn_stomp.pressed.connect(func(): hero.cast_skill("scorch_stomp"))
+		hero.ui_blockers = [btn_attack, btn_stomp]
 	touch.changed.connect(func(v: Vector2): hero.stick = v)
 	if touch.visible:
-		pack_label.anchor_left = TouchControls.ZONE_W   # 手机上状态文字让开左下角的摇杆
+		# 手机上底部有摇杆和按钮：状态文字挪到左上角那一列的最后
+		pack_label.get_parent().remove_child(pack_label)
+		pack_label.anchor_top = 0.0
+		pack_label.anchor_bottom = 0.0
+		pack_label.anchor_right = 0.0
+		pack_label.offset_left = 0
+		pack_label.offset_right = 0
+		pack_label.offset_top = 0
+		pack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		top.add_child(pack_label)
 	_refresh_labels()
+
+
+func _touch_button(layer: CanvasLayer, text: String, offset: Vector2, size: float) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.anchor_left = 1.0
+	b.anchor_right = 1.0
+	b.anchor_top = 1.0
+	b.anchor_bottom = 1.0
+	b.offset_left = offset.x
+	b.offset_top = offset.y
+	b.offset_right = offset.x + size
+	b.offset_bottom = offset.y + size
+	b.focus_mode = Control.FOCUS_NONE
+	b.add_theme_font_size_override("font_size", 18 if size > 80 else 15)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.35, 0.16, 0.08, 0.75)
+	sb.border_color = Color(0.79, 0.64, 0.35)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(int(size / 2))
+	b.add_theme_stylebox_override("normal", sb)
+	var sp := sb.duplicate()
+	sp.bg_color = Color(0.6, 0.28, 0.1, 0.9)
+	b.add_theme_stylebox_override("pressed", sp)
+	b.add_theme_stylebox_override("hover", sb)
+	var sd := sb.duplicate()
+	sd.bg_color = Color(0.15, 0.12, 0.1, 0.6)
+	b.add_theme_stylebox_override("disabled", sd)
+	layer.add_child(b)
+	return b
 
 
 func _refresh_labels() -> void:

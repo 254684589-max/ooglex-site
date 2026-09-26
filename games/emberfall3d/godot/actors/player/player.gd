@@ -1,18 +1,25 @@
 class_name Player
 extends CharacterBody3D
-## 玩家移动（TECH.md 第 4.1 节、GDD.md 第三节）：
+## 玩家（TECH.md 第 4.1、4.2 节，GDD.md 第三、四、五节）
+## 移动：
 ## - 电脑：左键点地面移动，按住持续移动（每 0.15 秒刷新目标）；可选 WASD。
 ## - 手机：虚拟摇杆（TouchControls）直接按方向移动；点摇杆区域以外的地面也能移动。
 ## - 点击移动走导航网格（NavigationAgent3D）；摇杆 / 键盘不走寻路，靠碰撞体贴墙滑动。
+## 战斗（阶段 1.4，职业：烬卫）：
+## - 左键点敌人：走到攻击距离后「断誓斩」；按住持续攻击。手机用「攻击」按钮自动锁定最近的敌人。
+## - 右键 / 数字键 1 / 手机「践踏」按钮：「焚地践踏」（消耗誓火，范围伤害 + 眩晕 + 燃烧地面）。
+## - 命中停顿只冻结命中双方（hitstop_t），不改全局时间。
 ## 占位外观：胶囊 + 方块武器（阶段 2 换成正式模型）。
 
 signal arrived
+signal hit_landed(skill_id: String, hits: int)
 
-const LAYER_WORLD := 1
-const LAYER_GROUND := 4          # 碰撞层第 3 层：地面，只用于鼠标 / 触屏拾取和导航网格解析
-const LAYER_PLAYER := 8
+const LAYER_WORLD := Layers.WORLD
+const LAYER_GROUND := Layers.GROUND
+const LAYER_PLAYER := Layers.PLAYER
 const HOLD_REFRESH := 0.15
 const ARRIVE_DIST := 0.15
+const AUTO_TARGET_RANGE := 7.0
 
 @export var speed := 5.0
 var camera: IsoCamera
@@ -25,12 +32,26 @@ var hold_timer := 0.0
 var touch_index := -1
 var last_target := Vector3.ZERO
 var marker: MeshInstance3D
+var ui_blockers: Array[Control] = []   # 这些控件（手机按钮）范围内的触点不当成点地面
+
+# 战斗
+var kit := EmberguardKit.new()
+var stats: Dictionary = Balance.data().placeholder_hero
+var rng := RandomNumberGenerator.new()
+var attack_target: Node3D
+var attack_hold := false         # 按住鼠标 / 攻击按钮：打完一下继续打
+var action := ""                 # 正在进行的动作：""、"oath_cleave"、"scorch_stomp"
+var action_t := 0.0
+var action_hit_done := false
+var hitstop_t := 0.0
+var _blade_pivot: Node3D
+var _repath_t := 0.0
 
 
 func _ready() -> void:
 	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
 	collision_layer = LAYER_PLAYER
-	collision_mask = LAYER_WORLD
+	collision_mask = LAYER_WORLD | Layers.ENEMY
 	var shape := CollisionShape3D.new()
 	var cap := CapsuleShape3D.new()
 	cap.radius = 0.35
@@ -56,14 +77,18 @@ func _build_placeholder() -> void:
 	body.material_override = _mat(Color(0.55, 0.47, 0.38))
 	body.position.y = 0.9
 	add_child(body)
+	# 武器挂在肩部支点上，挥砍时绕支点转动
+	_blade_pivot = Node3D.new()
+	_blade_pivot.position = Vector3(0.3, 1.25, 0)
+	add_child(_blade_pivot)
 	var blade := MeshInstance3D.new()
 	var bm := BoxMesh.new()
-	bm.size = Vector3(0.08, 1.1, 0.08)
+	bm.size = Vector3(0.1, 0.1, 1.3)
 	blade.mesh = bm
 	blade.material_override = _mat(Color(0.8, 0.82, 0.86))
-	blade.position = Vector3(0.45, 1.0, 0.1)
-	blade.rotation_degrees.z = -20
-	add_child(blade)
+	blade.position = Vector3(0, 0, 0.7)
+	_blade_pivot.add_child(blade)
+	_set_swing(0.0)
 	# 「鼻子」：让朝向看得出来
 	var nose := MeshInstance3D.new()
 	var nm := BoxMesh.new()
@@ -100,6 +125,11 @@ static func _mat(c: Color) -> StandardMaterial3D:
 	return m
 
 
+func _set_swing(k: float) -> void:
+	## k：0 = 举刀（右后上方），1 = 挥到左前方。占位动画，正式动作在阶段 2.4。
+	_blade_pivot.rotation = Vector3(deg_to_rad(lerpf(-60.0, 10.0, k)), deg_to_rad(lerpf(70.0, -80.0, k)), 0)
+
+
 # ---------------- 输入 ----------------
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -109,29 +139,62 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			hold_active = event.pressed
 			hold_screen = event.position
+			attack_hold = event.pressed and attack_target != null
 			if event.pressed:
 				click_at(event.position)
+				attack_hold = attack_target != null
+		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			cast_skill("scorch_stomp")
 	elif event is InputEventMouseMotion and event.device != InputEvent.DEVICE_ID_EMULATION:
 		if hold_active:
 			hold_screen = event.position
 	elif event is InputEventScreenTouch:
-		if event.pressed and touch_index == -1:
+		if event.pressed and touch_index == -1 and not _over_ui(event.position):
 			touch_index = event.index
 			hold_active = true
 			hold_screen = event.position
 			click_at(event.position)
+			attack_hold = attack_target != null
 		elif not event.pressed and event.index == touch_index:
 			touch_index = -1
 			hold_active = false
+			attack_hold = false
 	elif event is InputEventScreenDrag and event.index == touch_index:
 		hold_screen = event.position
+	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_1:
+		cast_skill("scorch_stomp")
+
+
+func _over_ui(p: Vector2) -> bool:
+	for c in ui_blockers:
+		if is_instance_valid(c) and c.is_visible_in_tree() and c.get_global_rect().has_point(p):
+			return true
+	return false
 
 
 func click_at(screen_pos: Vector2) -> void:
+	var enemy = pick_enemy(screen_pos)
+	if enemy:
+		attack_target = enemy
+		moving_to = false
+		return
+	attack_target = null
 	var p = pick_ground(screen_pos)
 	if p != null:
 		move_to(p)
 		_show_marker(last_target)
+
+
+func pick_enemy(screen_pos: Vector2):
+	if camera == null:
+		return null
+	var from := camera.project_ray_origin(screen_pos)
+	var dir := camera.project_ray_normal(screen_pos)
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 200.0, Layers.ENEMY)
+	var r := get_world_3d().direct_space_state.intersect_ray(q)
+	if not r.is_empty() and r.collider.is_in_group("enemy"):
+		return r.collider
+	return null
 
 
 func pick_ground(screen_pos: Vector2):
@@ -169,6 +232,161 @@ func _show_marker(p: Vector3) -> void:
 	mat.albedo_color.a = 0.9
 
 
+# ---------------- 战斗 ----------------
+
+func nearest_enemy(max_dist: float = AUTO_TARGET_RANGE) -> Node3D:
+	var best: Node3D = null
+	var bd := max_dist
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e.get("dead"):
+			continue
+		var d: float = global_position.distance_to(e.global_position)
+		if d < bd:
+			bd = d
+			best = e
+	return best
+
+
+func attack_nearest(hold: bool) -> void:
+	## 手机「攻击」按钮：锁定最近的敌人，按住持续攻击
+	attack_hold = hold
+	if hold:
+		attack_target = nearest_enemy()
+
+
+func facing() -> Vector3:
+	return Vector3(sin(rotation.y), 0, cos(rotation.y))
+
+
+func face_point(p: Vector3) -> void:
+	var d := p - global_position
+	if Vector2(d.x, d.z).length() > 0.01:
+		rotation.y = atan2(d.x, d.z)
+
+
+func cast_skill(id: String) -> bool:
+	if action != "" or not kit.can_cast(id):
+		return false
+	kit.on_cast(id)
+	moving_to = false
+	_start_action(id)
+	return true
+
+
+func _start_action(id: String) -> void:
+	action = id
+	action_t = 0.0
+	action_hit_done = false
+
+
+func _resolve_action() -> void:
+	var s := Balance.skill(action)
+	var hits := 0
+	var knock: float = Balance.fb().knockback_m[s.knockback]
+	var heavy: bool = s.knockback == "heavy"
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e.get("dead"):
+			continue
+		var d: Vector3 = e.global_position - global_position
+		d.y = 0.0
+		var dist := d.length()
+		var in_range := false
+		if action == "oath_cleave":
+			# 扇形：距离 ≤ 攻击距离 + 目标半径，且在正前方 arc_deg 度以内
+			var ang := rad_to_deg(facing().angle_to(d.normalized())) if dist > 0.01 else 0.0
+			in_range = dist <= s.range + 0.45 and ang <= s.arc_deg * 0.5
+		else:
+			in_range = dist <= s.radius + 0.45
+		if not in_range:
+			continue
+		var r := DamageCalc.roll(stats, s.coef, s.type, e.combat_target(), rng)
+		e.take_hit(r, d, knock, s.get("stun_s", 0.0))
+		HitFeedback.apply(self, e, r, camera, heavy)
+		hits += 1
+	if action == "scorch_stomp":
+		_spawn_stomp_fx(s)
+		if camera:
+			camera.add_trauma(Balance.fb().shake.heavy)
+	kit.on_hit(action, hits)
+	hit_landed.emit(action, hits)
+	if hits > 0:
+		print("EF_HIT skill=%s hits=%d" % [action, hits])
+
+
+func _spawn_stomp_fx(s: Dictionary) -> void:
+	var zone := BurnZone.new()
+	zone.radius = s.radius
+	zone.duration = s.burn.duration_s
+	zone.tick = s.burn.tick_s
+	zone.coef = s.burn.coef_per_tick
+	zone.attacker = stats
+	get_parent().add_child(zone)
+	zone.global_position = Vector3(global_position.x, 0, global_position.z)
+	# 冲击环（占位）：从脚下扩散到技能半径
+	var ring := MeshInstance3D.new()
+	var tm := TorusMesh.new()
+	tm.inner_radius = 0.85
+	tm.outer_radius = 1.0
+	ring.mesh = tm
+	var m := _mat(Color(1.0, 0.7, 0.3))
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ring.material_override = m
+	get_parent().add_child(ring)
+	ring.global_position = zone.global_position + Vector3(0, 0.1, 0)
+	ring.scale = Vector3(0.3, 1, 0.3)
+	var tw := ring.create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(ring, "scale", Vector3(s.radius, 1, s.radius), 0.25).set_ease(Tween.EASE_OUT)
+	tw.tween_property(m, "albedo_color:a", 0.0, 0.3).set_delay(0.1)
+	tw.chain().tween_callback(ring.queue_free)
+
+
+func _update_action(delta: float) -> void:
+	var s := Balance.skill(action)
+	action_t += delta
+	var total: float = s.windup_s + s.recover_s
+	if action == "oath_cleave":
+		# 前摇举刀 → 判定瞬间挥下 → 后摇收刀
+		if action_t < s.windup_s:
+			_set_swing(0.0)
+		else:
+			_set_swing(clampf((action_t - s.windup_s) / 0.08, 0.0, 1.0))
+	else:
+		_blade_pivot.position.y = 1.25 + (0.4 if action_t < s.windup_s else 0.0)
+	if not action_hit_done and action_t >= s.windup_s:
+		action_hit_done = true
+		_resolve_action()
+	if action_t >= total:
+		action = ""
+		_set_swing(0.0)
+		_blade_pivot.position.y = 1.25
+		if not attack_hold and attack_target != null:
+			attack_target = null
+
+
+func _update_attack_target() -> bool:
+	## 有攻击目标时：进入攻击距离就开打，否则寻路靠近。返回 true 表示本帧由攻击逻辑接管移动。
+	if attack_target == null:
+		return false
+	if not is_instance_valid(attack_target) or attack_target.get("dead"):
+		attack_target = null
+		return false
+	var d := attack_target.global_position - global_position
+	d.y = 0.0
+	var reach: float = Balance.skill("oath_cleave").range + 0.2
+	if d.length() <= reach:
+		moving_to = false
+		face_point(attack_target.global_position)
+		_start_action("oath_cleave")
+		return true
+	_repath_t -= get_physics_process_delta_time()
+	if _repath_t <= 0.0 or not moving_to:
+		_repath_t = 0.2
+		move_to(attack_target.global_position)
+	return false
+
+
 # ---------------- 移动 ----------------
 
 func camera_relative(v: Vector2) -> Vector3:
@@ -180,15 +398,29 @@ func camera_relative(v: Vector2) -> Vector3:
 
 
 func _physics_process(delta: float) -> void:
+	kit.tick(delta)
+	_update_marker(delta)
+	if hitstop_t > 0.0:
+		# 命中停顿：动作与移动都冻结
+		hitstop_t -= delta
+		velocity = Vector3.ZERO
+		return
+	if action != "":
+		velocity = Vector3.ZERO
+		_update_action(delta)
+		return
 	var dir := Vector3.ZERO
 	var kb := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var s := stick if stick.length() > 0.15 else kb
 	if s.length() > 0.15:
 		moving_to = false
 		hold_active = false
+		attack_target = null
 		dir = camera_relative(s.limit_length(1.0))
+	elif _update_attack_target():
+		return
 	else:
-		if hold_active:
+		if hold_active and attack_target == null:
 			hold_timer -= delta
 			if hold_timer <= 0.0:
 				hold_timer = HOLD_REFRESH
@@ -201,7 +433,7 @@ func _physics_process(delta: float) -> void:
 			var flat := Vector2(global_position.x - last_target.x, global_position.z - last_target.z)
 			if flat.length() < ARRIVE_DIST:
 				moving_to = false
-				if not hold_active:
+				if not hold_active and attack_target == null:
 					arrived.emit()
 					print("EF_ARRIVED x=%.2f z=%.2f" % [global_position.x, global_position.z])
 			else:
@@ -215,6 +447,9 @@ func _physics_process(delta: float) -> void:
 	global_position.y = 0.0
 	if dir.length() > 0.05:
 		rotation.y = lerp_angle(rotation.y, atan2(dir.x, dir.z), 1.0 - exp(-14.0 * delta))
+
+
+func _update_marker(delta: float) -> void:
 	if marker.visible:
 		var mat := marker.material_override as StandardMaterial3D
 		mat.albedo_color.a -= delta * 1.6

@@ -10,7 +10,12 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 "$GODOT" --headless --path "$PROJECT" --import >/dev/null 2>&1 || true
 echo "== 语法检查"
-if "$GODOT" --headless --path "$PROJECT" -s res://tests/parse_all.gd 2>&1 | grep -E "PARSE FAILED|SCRIPT ERROR|at: GDScript"; then
+# 先存输出再检查：用管道的话，pipefail 会让 if 取到 Godot 的非零退出码而判断反了（1.4 发现）
+PARSE_OUT="$("$GODOT" --headless --path "$PROJECT" -s res://tests/parse_all.gd 2>&1)"
+PARSE_CODE=$?
+if [[ $PARSE_CODE -ne 0 ]] || grep -qE "PARSE FAILED|SCRIPT ERROR" <<<"$PARSE_OUT"; then
+  grep -E "PARSE FAILED|SCRIPT ERROR|at: GDScript" <<<"$PARSE_OUT"
+  echo "FAIL 语法检查未通过"
   exit 1
 fi
 echo "PARSE OK"

@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "camera", "move", "pack"]:
+	for g in ["boot", "camera", "move", "damage", "combat", "pack"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -267,6 +267,173 @@ func test_move() -> void:
 	check(bench.polygons > 50, "整层地下城导航网格生成成功")
 	var bench2 := NavBuilder.bench_dungeon(7, 0.4)
 	print("  info 同一层用 0.4 米格子烘焙 %.0f 毫秒" % bench2.ms)
+
+
+func test_damage() -> void:
+	# 纯公式（GDD.md 第 4.2 节）
+	check(absf(DamageCalc.armor_reduction(30, 1) - 30.0 / 88.0) < 0.0001, "护甲减伤 = 30 / (30 + 40 + 18×1) = %.3f" % DamageCalc.armor_reduction(30, 1))
+	check(is_equal_approx(DamageCalc.armor_reduction(100000, 1), 0.75), "护甲减伤上限 75%")
+	check(is_equal_approx(DamageCalc.resist_reduction(50, 1), 0.70), "抗性减伤上限 70%（50 / 55 超过上限）")
+	check(DamageCalc.resist_reduction(0, 5) == 0.0, "没有抗性时不减伤")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	var atk := {"level": 1, "main_stat": 20, "weapon_min": 10, "weapon_max": 10, "damage_bonus": 0.0, "crit_chance": 0.0}
+	var r := DamageCalc.roll(atk, 1.0, "physical", {"armor": 0}, rng)
+	check(r.amount == 12 and not r.crit, "武器 10 × 系数 1 × (1 + 20/100) = 12（实得 %d）" % r.amount)
+	atk.crit_chance = 1.0
+	r = DamageCalc.roll(atk, 1.0, "physical", {"armor": 0}, rng)
+	check(r.amount == 18 and r.crit, "暴击 +50%%：18（实得 %d）" % r.amount)
+	atk.crit_chance = 0.0
+	r = DamageCalc.roll(atk, 1.0, "fire", {"armor": 0, "resist": {"fire": 50}}, rng)
+	check(r.amount == 4, "火焰抗性 50（封顶 70%%）：12 × 0.3 ≈ 4（实得 %d）" % r.amount)
+	r = DamageCalc.roll(atk, 1.0, "void", {"armor": 0, "resist": {"void": 50}}, rng)
+	check(r.amount == 12, "「虚」伤害无视抗性：12（实得 %d）" % r.amount)
+	atk.erase("crit_chance")
+	var crits := 0
+	for i in 4000:
+		if DamageCalc.roll(atk, 1.0, "physical", {}, rng).crit:
+			crits += 1
+	check(crits > 140 and crits < 260, "基础暴击率约 5%%：4000 次中 %d 次" % crits)
+
+
+func test_combat() -> void:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	add_child(main)
+	await physics(4)
+	var hero: Player = main.hero
+	var cam: IsoCamera = main.camera
+	var d0: TrainingDummy = main.dummies[0]
+	var d1: TrainingDummy = main.dummies[1]
+	hero.rng.seed = 42
+	hero.stats = hero.stats.duplicate()
+	hero.stats["crit_chance"] = 0.0      # 先测普通命中
+
+	# 断誓斩：站在木桩左侧 1.4 米、面朝它；另一个木桩放到身后
+	hero.global_position = Vector3(0.8, 0, -1.2)
+	d1.home = Vector3(-0.7, 0, -1.2)
+	d1.global_position = d1.home
+	await physics(2)
+	hero.face_point(d0.global_position)
+	var seen := {}
+	hero.hit_landed.connect(func(id, hits):
+		seen["id"] = id
+		seen["hits"] = hits
+		seen["hero_stop"] = hero.hitstop_t
+		seen["dummy_stop"] = d0.hitstop_t
+		seen["flash"] = d0.flash_t
+		seen["trauma"] = cam.trauma, CONNECT_ONE_SHOT)
+	var labels_before := _count_numbers(main)
+	hero.attack_target = d0
+	var hp0 := d0.hp
+	await physics(12)
+	check(seen.get("id") == "oath_cleave" and seen.get("hits") == 1, "断誓斩命中正前方的木桩（只命中 1 个）")
+	check(d0.hp < hp0, "木桩掉血 %d" % (hp0 - d0.hp))
+	check(d1.hp == d1.max_hp, "身后的木桩不在扇形范围内，没被打到")
+	check(absf(seen.get("hero_stop", 0.0) - 0.04) < 0.001 and absf(seen.get("dummy_stop", 0.0) - 0.04) < 0.001, "命中停顿：攻击方与受击方各冻结 40 毫秒")
+	check(seen.get("flash", 0.0) > 0.09, "受击闪白 0.1 秒")
+	check(seen.get("trauma", 0.0) > 0.0, "命中时镜头震动")
+	check(hero.kit.resource == 12.0, "命中获得 12 点誓火（实得 %.0f）" % hero.kit.resource)
+	check(_count_numbers(main) > labels_before, "弹出伤害数字")
+	var peak := 0.0
+	for i in 30:
+		peak = maxf(peak, Vector2(d0.global_position.x - d0.home.x, d0.global_position.z - d0.home.z).length())
+		await physics(1)
+	check(peak > 0.25 and peak < 0.7, "木桩被击退 %.2f 米（设计 0.3–0.6 米）" % peak)
+	var disp := 0.0
+	await seconds(2.0)
+	disp = Vector2(d0.global_position.x - d0.home.x, d0.global_position.z - d0.home.z).length()
+	check(disp < 0.1, "击退后木桩回到原位")
+	check(hero.attack_target == null and hero.action == "", "单击只打一下：打完清除目标")
+
+	# 暴击：停顿 80 毫秒、数字变大
+	hero.stats["crit_chance"] = 1.0
+	hero.face_point(d0.global_position)
+	var crit_seen := {}
+	hero.hit_landed.connect(func(id, hits): crit_seen["stop"] = hero.hitstop_t, CONNECT_ONE_SHOT)
+	hero.attack_target = d0
+	await physics(12)
+	check(absf(crit_seen.get("stop", 0.0) - 0.08) < 0.001, "暴击命中停顿 80 毫秒")
+	hero.stats["crit_chance"] = 0.0
+
+	# 关闭伤害数字（无障碍设置）
+	HitFeedback.numbers_enabled = false
+	var n_before := _count_numbers(main)
+	hero.face_point(d0.global_position)
+	hero.attack_target = d0
+	await physics(12)
+	check(_count_numbers(main) <= n_before, "关闭伤害数字后不再弹出")
+	HitFeedback.numbers_enabled = true
+	await seconds(1.0)
+
+	# 焚地践踏：誓火不足时放不出来
+	hero.kit.resource = 10.0
+	check(not hero.cast_skill("scorch_stomp"), "誓火不足 30 时不能放焚地践踏")
+	# 把两个木桩都放到身边
+	d1.home = Vector3(0.8, 0, 0.6)
+	d1.global_position = d1.home
+	await physics(2)
+	hero.kit.resource = 50.0
+	var hp_a := d0.hp
+	var hp_b := d1.hp
+	check(hero.cast_skill("scorch_stomp"), "誓火足够时放出焚地践踏")
+	check(is_equal_approx(hero.kit.resource, 20.0), "消耗 30 点誓火")
+	check(not hero.cast_skill("scorch_stomp"), "冷却中不能连放")
+	await physics(20)
+	check(d0.hp < hp_a and d1.hp < hp_b, "范围内两个木桩都受到伤害")
+	check(d0.stun_t > 0.5 and d1.stun_t > 0.5, "被眩晕")
+	check(is_equal_approx(hero.kit.resource, 20.0), "践踏只消耗誓火、不产生（GDD 第 5.1 节：基础攻击生成，技能消耗）")
+	var zones := main.get_children().filter(func(c): return c is BurnZone)
+	check(zones.size() == 1, "留下燃烧地面")
+	var hp_after := d0.hp
+	await seconds(1.2)
+	check(d0.hp < hp_after, "燃烧地面持续造成火焰伤害（%d）" % (hp_after - d0.hp))
+	check(hero.kit.cooldowns.get("scorch_stomp", 0.0) > 0.0 and hero.kit.cooldowns.get("scorch_stomp", 0.0) < 4.0, "冷却计时中")
+	await seconds(2.5)
+	check(main.get_children().filter(func(c): return c is BurnZone).is_empty(), "燃烧地面 3 秒后消失")
+
+	# 誓火脱战衰减
+	var before := hero.kit.resource
+	await seconds(3.6)
+	check(hero.kit.resource < before, "脱战 3 秒后誓火开始衰减（%.0f → %.0f）" % [before, hero.kit.resource])
+
+	# 死亡与复活
+	d0.hp = 1.0
+	hero.face_point(d0.global_position)
+	hero.attack_target = d0
+	await physics(12)
+	check(d0.dead and d0.collision_layer == 0, "生命归零后倒下，不再可被选中")
+	await seconds(d0.stats.respawn_s + 0.4)
+	check(not d0.dead and d0.hp == d0.max_hp, "数秒后原地复活、满血")
+
+	# 点击木桩：先走过去再打
+	hero.global_position = Vector3(-3.0, 0, -1.0)
+	cam.snap()
+	await physics(3)
+	var sp := cam.unproject_position(d0.global_position + Vector3(0, 1.0, 0))
+	hero.click_at(sp)
+	check(hero.attack_target == d0, "点击屏幕上的木桩：锁定它为攻击目标")
+	var hp_c := d0.hp
+	await seconds(2.0)
+	check(d0.hp < hp_c, "自动走到攻击距离并出手")
+
+	# 手机「攻击」按钮：锁定最近的敌人
+	hero.global_position = Vector3(1.0, 0, 0.0)
+	await physics(2)
+	hero.attack_nearest(true)
+	check(hero.attack_target != null and hero.attack_target.global_position.distance_to(hero.global_position) < 2.5, "「攻击」按钮锁定最近的木桩")
+	hero.attack_nearest(false)
+	main.queue_free()
+	await frames(2)
+
+
+func _count_numbers(root: Node) -> int:
+	var n := 0
+	for c in root.get_children():
+		if c is Label3D:
+			n += 1
+	return n
 
 
 func test_pack() -> void:
