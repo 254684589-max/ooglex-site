@@ -17,6 +17,6 @@
     "scorch_stomp": { "name": "焚地践踏", "type": "fire", "coef": 1.8, "radius": 3.2, "cost": 30, "cooldown_s": 4.0, "stun_s": 1.2, "windup_s": 0.22, "recover_s": 0.34, "knockback": "heavy",
       "burn": { "duration_s": 3.0, "tick_s": 0.5, "coef_per_tick": 0.15 } }
   },
-  "placeholder_hero": { "_说明": "占位角色数值（正式装备系统在阶段 4）", "level": 1, "main_stat": 20, "weapon_min": 8, "weapon_max": 12, "damage_bonus": 0.0 },
+  "placeholder_hero": { "_说明": "占位角色数值（正式装备系统在阶段 4）", "level": 1, "main_stat": 20, "weapon_min": 8, "weapon_max": 12, "damage_bonus": 0.0, "max_hp": 220, "armor": 20, "respawn_s": 3.0 },
   "training_dummy": { "name": "训练木桩", "max_hp": 300, "armor": 30, "level": 1, "resist": { "fire": 0 }, "respawn_s": 2.5 }
 }

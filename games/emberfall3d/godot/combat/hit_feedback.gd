@@ -11,6 +11,7 @@ const COLORS := {
 	"cold": Color(0.6, 0.85, 1.0),
 	"poison": Color(0.56, 0.81, 0.23),
 	"void": Color(0.69, 0.42, 1.0),
+	"incoming": Color(1.0, 0.3, 0.25),   # 玩家受到的伤害
 }
 const CRIT_COLOR := Color(1.0, 0.82, 0.29)
 

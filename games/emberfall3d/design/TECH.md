@@ -144,7 +144,10 @@ godot/
 | 显存中的贴图 | ≤ 512 MB（中档）/ 256 MB（低档） |
 | 帧率目标 | 电脑 60 FPS；中端手机 30 FPS（低档） |
 
-- `tests/perf_stats.tscn` 在固定机位统计绘制调用、三角面、帧时间，每个画质步骤都跑一次，写进测试报告。
+- `tests/perf_stats.tscn`（xvfb 原生渲染）与网页 `play/?perf=1`（`tools/perf_web.js`）在固定机位统计绘制调用、图元、可见物体，每个画质步骤都跑一次，写进 `TEST_REPORT.md`。
+- **阶段 1.5 基线**（2026-09-26）：大厅战斗镜头绘制调用 233–254、图元 1.3–1.5 万；60 只怪物每帧更新 2.3–2.5 毫秒（本机）。详见 `TEST_REPORT.md`。
+- 占位模型统一用 `core/low_poly.gd` 的低分段基本体：Godot 默认的球 / 胶囊等分段太高，1.5 实测同一镜头图元从 25.3 万降到 1.5 万。
+- 不要用 `Performance.TIME_PHYSICS_PROCESS` 衡量 AI 开销：无头模式下数值陈旧（1.5 实测）；用 `EnemyBase.prof_us` 直接计时。
 
 ### 5.3 包体与加载（D1：100–300 MB）
 

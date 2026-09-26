@@ -5,11 +5,7 @@ extends Node3D
 
 func _ready() -> void:
 	var mesh := MeshInstance3D.new()
-	var cyl := CylinderMesh.new()
-	cyl.top_radius = 0.35
-	cyl.bottom_radius = 0.5
-	cyl.height = 2.6
-	mesh.mesh = cyl
+	mesh.mesh = LowPoly.cylinder(0.35, 0.5, 2.6)
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.5, 0.8, 1.0)
 	mat.emission_enabled = true

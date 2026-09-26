@@ -21,11 +21,7 @@ func _ready() -> void:
 	_left = duration
 	_next = tick
 	var mi := MeshInstance3D.new()
-	var cyl := CylinderMesh.new()
-	cyl.top_radius = radius
-	cyl.bottom_radius = radius
-	cyl.height = 0.02
-	mi.mesh = cyl
+	mi.mesh = LowPoly.cylinder(radius, radius, 0.02)
 	_mat = StandardMaterial3D.new()
 	_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

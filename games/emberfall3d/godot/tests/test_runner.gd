@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "camera", "move", "damage", "combat", "pack"]:
+	for g in ["boot", "camera", "move", "damage", "combat", "monsters", "perf", "pack"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -64,6 +64,7 @@ func test_boot() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_pack_test = false
 	main.run_nav_bench = false
+	main.spawn_monsters = false
 	add_child(main)
 	await frames(3)
 	check(main.camera != null and main.camera.current, "斜俯视相机已创建并设为当前相机")
@@ -81,6 +82,7 @@ func test_camera() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_pack_test = false
 	main.run_nav_bench = false
+	main.spawn_monsters = false
 	add_child(main)
 	await frames(3)
 	var cam: IsoCamera = main.camera
@@ -162,6 +164,7 @@ func test_move() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_pack_test = false
 	main.run_nav_bench = false
+	main.spawn_monsters = false
 	add_child(main)
 	await physics(4)
 	var hero: Player = main.hero
@@ -300,6 +303,7 @@ func test_combat() -> void:
 	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	main.auto_pack_test = false
 	main.run_nav_bench = false
+	main.spawn_monsters = false
 	add_child(main)
 	await physics(4)
 	var hero: Player = main.hero
@@ -424,6 +428,211 @@ func test_combat() -> void:
 	hero.attack_nearest(true)
 	check(hero.attack_target != null and hero.attack_target.global_position.distance_to(hero.global_position) < 2.5, "「攻击」按钮锁定最近的木桩")
 	hero.attack_nearest(false)
+	main.queue_free()
+	await frames(2)
+
+
+func _arena() -> Node:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.spawn_monsters = false
+	add_child(main)
+	for i in 60:
+		await physics(1)
+		if NavigationServer3D.map_get_path(main.hero.get_world_3d().navigation_map, Vector3.ZERO, Vector3(0, 0, 12), true).size() > 0:
+			break
+	return main
+
+
+func _spawn(main: Node, id: String, pos: Vector3) -> EnemyBase:
+	var e := Monsters.spawn(id, main, pos, main.hero)
+	main.monsters.append(e)
+	return e
+
+
+func test_monsters() -> void:
+	var defs := Monsters.defs()
+	check(defs.size() == 4 and defs.has("ash_brute") and defs.has("bone_archer") and defs.has("ash_priest") and defs.has("ash_corpse"), "怪物数据：冲锋、远程、召唤、仆从 4 种")
+
+	# ---- 发现与群体惊动 ----
+	var main = await _arena()
+	var hero: Player = main.hero
+	var a := _spawn(main, "ash_corpse", Vector3(-4, 0, 18))
+	var b := _spawn(main, "ash_corpse", Vector3(-6, 0, 20))
+	await seconds(0.5)
+	check(a.state == "idle" and b.state == "idle", "玩家在房间里（隔着墙、距离远）时怪物待机")
+	hero.global_position = Vector3(-4, 0, 9)
+	await seconds(0.4)
+	check(a.state != "idle", "玩家进入视线与警戒距离：怪物开始追击")
+	check(b.state != "idle", "附近 6 米内的同伴一起被惊动")
+	var d0 := a.global_position.distance_to(hero.global_position)
+	await seconds(1.0)
+	check(a.global_position.distance_to(hero.global_position) < d0 - 1.0, "怪物朝玩家靠近")
+	# 近战打人
+	var hp0 := hero.hp
+	await seconds(3.0)
+	check(hero.hp < hp0, "腐尸追上后近战命中玩家（-%d）" % (hp0 - hero.hp))
+	main.queue_free()
+	await frames(2)
+
+	# ---- 冲锋：红色长条预警 → 冲刺命中 ----
+	main = await _arena()
+	hero = main.hero
+	hero.global_position = Vector3(4.5, 0, 11.0)
+	var c := _spawn(main, "ash_brute", Vector3(4.5, 0, 17.5))
+	c.set_state("chase")
+	var saw_warning := false
+	var saw_act := false
+	hp0 = hero.hp
+	for i in 150:
+		await physics(1)
+		saw_warning = saw_warning or (c.state == "windup" and c.has_warning())
+		saw_act = saw_act or c.state == "act"
+	check(saw_warning, "冲锋前地面出现红色长条预警")
+	check(saw_act, "预警结束后冲锋")
+	check(hero.hp <= hp0 - 10, "站在冲锋路线上被撞（-%d）" % (hp0 - hero.hp))
+	main.queue_free()
+	await frames(2)
+
+	# ---- 冲锋：躲开后撞墙把自己撞晕 ----
+	main = await _arena()
+	hero = main.hero
+	hero.global_position = Vector3(4.5, 0, 8.6)
+	c = _spawn(main, "ash_brute", Vector3(4.5, 0, 15.2))
+	c.set_state("chase")
+	for i in 90:
+		await physics(1)
+		if c.state == "windup" and c.has_warning():
+			break
+	hp0 = hero.hp
+	hero.global_position = Vector3(10.5, 0, 9.0)    # 预警期间闪开
+	var stunned := false
+	for i in 90:
+		await physics(1)
+		stunned = stunned or c.stun_t > 0.5
+	check(hero.hp == hp0, "闪开后冲锋落空")
+	check(stunned, "冲锋撞墙：把自己撞晕（反击窗口）")
+	main.queue_free()
+	await frames(2)
+
+	# ---- 远程：放箭、保持距离、箭会被墙挡住 ----
+	main = await _arena()
+	hero = main.hero
+	hero.global_position = Vector3(-2, 0, 13)
+	var ar := _spawn(main, "bone_archer", Vector3(-2, 0, 20.5))
+	ar.set_state("chase")
+	var saw_arrow := false
+	hp0 = hero.hp
+	for i in 180:
+		await physics(1)
+		for ch in main.get_children():
+			if ch is Projectile:
+				saw_arrow = true
+	check(saw_arrow, "弓手拉弓后射出箭")
+	check(hero.hp < hp0, "站着不动会被箭射中（-%d）" % (hp0 - hero.hp))
+	hero.global_position = ar.global_position + Vector3(1.5, 0, -1.5)
+	var close := ar.global_position.distance_to(hero.global_position)
+	await seconds(1.0)
+	check(ar.global_position.distance_to(hero.global_position) > close + 0.8, "玩家贴近时弓手后退拉开距离")
+	var arrow := Projectile.new()
+	arrow.attacker = ar.attacker_stats([6, 9])
+	arrow.dir = Vector3(0, 0, -1)
+	main.add_child(arrow)
+	arrow.global_position = Vector3(-3.5, 1.2, 8.0)   # 朝北飞向房间南墙（z = 6）
+	hp0 = hero.hp
+	await physics(20)
+	check(not is_instance_valid(arrow), "箭撞到墙就消失")
+	main.queue_free()
+	await frames(2)
+
+	# ---- 召唤：两个红圈 → 召唤两只腐尸；有上限 ----
+	main = await _arena()
+	hero = main.hero
+	hero.global_position = Vector3(2, 0, 16)
+	var pr := _spawn(main, "ash_priest", Vector3(2, 0, 23))
+	pr.set_state("chase")
+	var warn_n := 0
+	for i in 150:
+		await physics(1)
+		warn_n = maxi(warn_n, pr._warnings.size())
+	var minions := get_tree().get_nodes_in_group("enemy").filter(func(e): return e is EnemyMelee and not e.dead)
+	check(warn_n == 2, "召唤前出现两个红圈预警")
+	check(minions.size() == 2, "召唤出 2 只腐尸")
+	check(minions.all(func(m): return m.state != "idle"), "召唤出来的仆从直接追击玩家")
+	pr.cooldowns["summon"] = 0.0
+	await seconds(1.6)
+	pr.cooldowns["summon"] = 0.0
+	await seconds(1.6)
+	minions = get_tree().get_nodes_in_group("enemy").filter(func(e): return e is EnemyMelee and not e.dead)
+	check(minions.size() <= 4, "同时存活的仆从不超过上限 4（现有 %d）" % minions.size())
+
+	# ---- 眩晕打断蓄力；打死后倒下并消失 ----
+	for m in minions:
+		m.hp = 1
+		m.take_hit({"amount": 5, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	check(minions.all(func(m): return m.dead), "生命归零的怪物进入死亡状态")
+	await seconds(3.2)
+	check(minions.all(func(m): return not is_instance_valid(m)), "尸体数秒后移除")
+	main.queue_free()
+	await frames(2)
+
+	main = await _arena()
+	hero = main.hero
+	hero.global_position = Vector3(4.5, 0, 11.0)
+	c = _spawn(main, "ash_brute", Vector3(4.5, 0, 17.5))
+	c.set_state("chase")
+	for i in 120:
+		await physics(1)
+		if c.state == "windup" and c.has_warning():
+			break
+	c.take_hit({"amount": 1, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0, 1.2)
+	check(c.state == "recover" and not c.has_warning(), "眩晕打断冲锋蓄力并清除预警")
+
+	# ---- 玩家死亡：怪物回家，玩家在房间复活 ----
+	hero.hp = 1
+	hero.take_hit({"amount": 5, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	check(hero.dead, "玩家生命归零后倒下")
+	check(not hero.cast_skill("scorch_stomp"), "倒下后不能放技能")
+	await seconds(1.6)    # 冲锋者此时还处于 1.2 秒眩晕中，眩晕结束才会回家
+	check(c.state == "return" or c.state == "idle", "玩家倒下后怪物回出生点")
+	await seconds(1.8)
+	check(not hero.dead and hero.hp == hero.max_hp and hero.global_position.distance_to(Vector3.ZERO) < 0.5, "3 秒后在房间里满血复活")
+	main.queue_free()
+	await frames(2)
+
+
+func test_perf() -> void:
+	## 无头模式下的逻辑开销：大厅里 60 只腐尸同时追击，统计物理帧（含 AI、寻路、碰撞）的平均耗时。
+	## 绘制调用等渲染数字由 tests/perf_stats.tscn（xvfb）和网页 ?perf=1 给出，写进 TEST_REPORT.md。
+	var main = await _arena()
+	var hero: Player = main.hero
+	hero.max_hp = 1e9
+	hero.hp = hero.max_hp
+	hero.global_position = Vector3(1, 0, 16)
+	for i in 60:
+		var ang := TAU * i / 60.0
+		var r := 5.0 + (i % 3) * 2.5
+		var e := _spawn(main, "ash_corpse", Vector3(1 + cos(ang) * r, 0, 16 + sin(ang) * r * 0.75))
+		e.set_state("chase")
+	await seconds(1.0)
+	# 用 EnemyBase.prof_us 直接计时（1.5 实测：Performance 的 TIME_PHYSICS_PROCESS 在无头模式下数值陈旧，
+	# 连续几十帧读到同一个值，且怪物待机和追击读数一样，不能反映 AI 开销）
+	var n := 0
+	var worst := 0.0
+	var start := EnemyBase.prof_us
+	var last := start
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 2000:
+		await get_tree().physics_frame
+		worst = maxf(worst, (EnemyBase.prof_us - last) / 1000.0)
+		last = EnemyBase.prof_us
+		n += 1
+	var avg := (EnemyBase.prof_us - start) / 1000.0 / maxi(n, 1)
+	var alive := get_tree().get_nodes_in_group("enemy").filter(func(e): return not e.dead).size()
+	print("  info 60 只腐尸同时追击：敌人物理更新（AI + 寻路 + 移动碰撞）每帧平均 %.2f 毫秒、最慢 %.2f 毫秒（%d 帧，存活敌人 %d，本机原生）" % [avg, worst, n, alive])
+	check(alive >= 60, "60 只怪物同时活动")
+	check(avg < 5.0, "60 只怪物每帧更新平均耗时 < 5 毫秒（实测 %.2f）" % avg)
 	main.queue_free()
 	await frames(2)
 

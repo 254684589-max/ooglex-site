@@ -13,6 +13,9 @@ extends CharacterBody3D
 
 signal arrived
 signal hit_landed(skill_id: String, hits: int)
+signal hurt(amount: int)
+signal died
+signal respawned
 
 const LAYER_WORLD := Layers.WORLD
 const LAYER_GROUND := Layers.GROUND
@@ -44,6 +47,16 @@ var action := ""                 # 正在进行的动作：""、"oath_cleave"、
 var action_t := 0.0
 var action_hit_done := false
 var hitstop_t := 0.0
+var hp := 1.0
+var max_hp := 1.0
+var dead := false
+var respawn_point := Vector3.ZERO
+var _respawn_t := 0.0
+var _knock_vel := Vector3.ZERO
+var _knock_t := 0.0
+var _hurt_t := 0.0
+var _body_mat: StandardMaterial3D
+var _visual: Node3D
 var _blade_pivot: Node3D
 var _repath_t := 0.0
 
@@ -65,22 +78,25 @@ func _ready() -> void:
 	agent.path_desired_distance = 0.35
 	agent.target_desired_distance = 0.25
 	add_child(agent)
+	max_hp = stats.get("max_hp", 200)
+	hp = max_hp
+	respawn_point = global_position
 	_build_placeholder()
 
 
 func _build_placeholder() -> void:
+	_visual = Node3D.new()
+	add_child(_visual)
 	var body := MeshInstance3D.new()
-	var capm := CapsuleMesh.new()
-	capm.radius = 0.35
-	capm.height = 1.8
-	body.mesh = capm
-	body.material_override = _mat(Color(0.55, 0.47, 0.38))
+	body.mesh = LowPoly.capsule(0.35, 1.8)
+	_body_mat = _mat(Color(0.55, 0.47, 0.38))
+	body.material_override = _body_mat
 	body.position.y = 0.9
-	add_child(body)
+	_visual.add_child(body)
 	# 武器挂在肩部支点上，挥砍时绕支点转动
 	_blade_pivot = Node3D.new()
 	_blade_pivot.position = Vector3(0.3, 1.25, 0)
-	add_child(_blade_pivot)
+	_visual.add_child(_blade_pivot)
 	var blade := MeshInstance3D.new()
 	var bm := BoxMesh.new()
 	bm.size = Vector3(0.1, 0.1, 1.3)
@@ -96,7 +112,7 @@ func _build_placeholder() -> void:
 	nose.mesh = nm
 	nose.material_override = _mat(Color(0.91, 0.52, 0.23))
 	nose.position = Vector3(0, 1.45, 0.34)
-	add_child(nose)
+	_visual.add_child(nose)
 	var light := OmniLight3D.new()
 	light.light_color = Color(1.0, 0.72, 0.45)
 	light.light_energy = 1.3
@@ -105,10 +121,7 @@ func _build_placeholder() -> void:
 	add_child(light)
 	# 点击目标标记（占位：一个会淡出的圆环）
 	marker = MeshInstance3D.new()
-	var tm := TorusMesh.new()
-	tm.inner_radius = 0.28
-	tm.outer_radius = 0.38
-	marker.mesh = tm
+	marker.mesh = LowPoly.torus(0.28, 0.38)
 	var mm := _mat(Color(0.91, 0.64, 0.35))
 	mm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -173,6 +186,8 @@ func _over_ui(p: Vector2) -> bool:
 
 
 func click_at(screen_pos: Vector2) -> void:
+	if dead:
+		return
 	var enemy = pick_enemy(screen_pos)
 	if enemy:
 		attack_target = enemy
@@ -232,6 +247,58 @@ func _show_marker(p: Vector3) -> void:
 	mat.albedo_color.a = 0.9
 
 
+# ---------------- 受击与死亡 ----------------
+
+func combat_target() -> Dictionary:
+	return {"armor": stats.get("armor", 0), "resist": {}}
+
+
+func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, _stun_s: float = 0.0) -> void:
+	if dead:
+		return
+	hp = maxf(0.0, hp - result.amount)
+	_hurt_t = 0.12
+	hurt.emit(result.amount)
+	if knock_m > 0.0:
+		var d := from_dir
+		d.y = 0.0
+		if d.length() > 0.001:
+			_knock_t = 0.15
+			_knock_vel = d.normalized() * (knock_m / _knock_t)
+	if camera:
+		camera.add_trauma(0.18)
+	if HitFeedback.numbers_enabled:
+		var r := result.duplicate()
+		r["type"] = "incoming"
+		r["crit"] = false
+		HitFeedback.spawn_number(self, r)
+	if hp <= 0.0:
+		_die()
+
+
+func _die() -> void:
+	dead = true
+	action = ""
+	attack_target = null
+	moving_to = false
+	hold_active = false
+	_respawn_t = stats.get("respawn_s", 3.0)
+	died.emit()
+	print("EF_PLAYER_DEAD")
+	var tw := create_tween()
+	tw.tween_property(_visual, "rotation_degrees:x", -80.0, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+
+
+func respawn() -> void:
+	dead = false
+	hp = max_hp
+	global_position = respawn_point
+	_visual.rotation_degrees = Vector3.ZERO
+	if camera:
+		camera.snap()
+	respawned.emit()
+
+
 # ---------------- 战斗 ----------------
 
 func nearest_enemy(max_dist: float = AUTO_TARGET_RANGE) -> Node3D:
@@ -265,7 +332,7 @@ func face_point(p: Vector3) -> void:
 
 
 func cast_skill(id: String) -> bool:
-	if action != "" or not kit.can_cast(id):
+	if dead or action != "" or not kit.can_cast(id):
 		return false
 	kit.on_cast(id)
 	moving_to = false
@@ -324,10 +391,7 @@ func _spawn_stomp_fx(s: Dictionary) -> void:
 	zone.global_position = Vector3(global_position.x, 0, global_position.z)
 	# 冲击环（占位）：从脚下扩散到技能半径
 	var ring := MeshInstance3D.new()
-	var tm := TorusMesh.new()
-	tm.inner_radius = 0.85
-	tm.outer_radius = 1.0
-	ring.mesh = tm
+	ring.mesh = LowPoly.torus(0.85, 1.0)
 	var m := _mat(Color(1.0, 0.7, 0.3))
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -400,6 +464,20 @@ func camera_relative(v: Vector2) -> Vector3:
 func _physics_process(delta: float) -> void:
 	kit.tick(delta)
 	_update_marker(delta)
+	if _hurt_t > 0.0:
+		_hurt_t -= delta
+	_body_mat.albedo_color = Color(1.0, 0.35, 0.3) if _hurt_t > 0.0 else Color(0.55, 0.47, 0.38)
+	if dead:
+		_respawn_t -= delta
+		if _respawn_t <= 0.0:
+			respawn()
+		return
+	if _knock_t > 0.0:
+		_knock_t -= delta
+		velocity = _knock_vel
+		move_and_slide()
+		global_position.y = 0.0
+		return
 	if hitstop_t > 0.0:
 		# 命中停顿：动作与移动都冻结
 		hitstop_t -= delta

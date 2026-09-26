@@ -1,6 +1,6 @@
 extends Node3D
 ## 阶段 1 灰盒场景：工程与网页导出（1.1）、斜俯视相机（1.2）、点击移动 / 摇杆 / 导航网格（1.3）、
-## 战斗手感（1.4：烬卫断誓斩 + 焚地践踏，训练木桩）。
+## 战斗手感（1.4：烬卫断誓斩 + 焚地践踏，训练木桩）、灰盒大厅与 3 种怪物 AI（1.5：冲锋、远程、召唤）。
 ## 画面里的所有模型都是代码生成的**占位几何体**，不代表最终美术（ART.md）。
 
 const PITCH_DEG := 55.0
@@ -12,6 +12,11 @@ var level: NavigationRegion3D
 var hero: Player
 var touch: TouchControls
 var dummies: Array[TrainingDummy] = []
+var monsters: Array[EnemyBase] = []
+var spawn_monsters := true
+var hp_bar: ProgressBar
+var hp_label: Label
+var dead_label: Label
 var res_bar: ProgressBar
 var res_label: Label
 var btn_attack: Button
@@ -49,6 +54,38 @@ func _ready() -> void:
 		nav_state = "整层地下城导航烘焙 %.0f 毫秒（%d 个多边形）" % [b.ms, b.polygons]
 		print("EF_NAV_BENCH ms=%.1f polygons=%d floor_tiles=%d wall_tiles=%d cell=%.2f" % [b.ms, b.polygons, b.floor_tiles, b.wall_tiles, b.cell_size])
 		_refresh_labels()
+	# 网页上加 ?perf=1 跑性能基准（tools/perf_web.js 用）
+	if OS.has_feature("web") and str(JavaScriptBridge.eval("window.location.search", true)).contains("perf=1"):
+		await perf_probe()
+
+
+func perf_probe(wait_s: float = 3.0) -> Dictionary:
+	## 性能基准（TECH.md 第 5.2 节）：把玩家放到大厅中央（无敌，只观察），等怪物围上来、
+	## 召唤出仆从、弓手放箭，再连续采样 1 秒：绘制调用、图元、可见物体、帧率、物理与逻辑耗时。
+	hero.max_hp = 1e9
+	hero.hp = hero.max_hp
+	hero.global_position = Vector3(0, 0, 13)
+	camera.snap()
+	await get_tree().create_timer(wait_s).timeout
+	var dc := 0.0
+	var prim := 0.0
+	var obj := 0.0
+	var phys := 0.0
+	var proc := 0.0
+	var n := 0
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 1000:
+		await get_tree().process_frame
+		dc += Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+		prim += Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
+		obj += Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
+		phys += Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0
+		proc += Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
+		n += 1
+	var alive := get_tree().get_nodes_in_group("enemy").filter(func(e): return not e.dead).size()
+	var r := {"draw_calls": dc / n, "primitives": prim / n, "objects": obj / n, "fps": n, "physics_ms": phys / n, "process_ms": proc / n, "enemies": alive}
+	print("EF_PERF draw_calls=%.0f primitives=%.0f objects=%.0f fps=%d physics_ms=%.2f process_ms=%.2f enemies=%d" % [r.draw_calls, r.primitives, r.objects, r.fps, r.physics_ms, r.process_ms, r.enemies])
+	return r
 
 
 func _process(delta: float) -> void:
@@ -63,6 +100,9 @@ func _process(delta: float) -> void:
 		res_label.text = "誓火 %d / %d　焚地践踏：%s" % [k.resource, k.resource_max, ("冷却 %.1f 秒" % cd) if cd > 0.0 else ("可用" if k.resource >= cost else "誓火不足（需要 %d）" % cost)]
 		if btn_stomp:
 			btn_stomp.disabled = not k.can_cast("scorch_stomp")
+		hp_bar.value = hero.hp
+		hp_label.text = "生命 %d / %d" % [ceili(hero.hp), int(hero.max_hp)]
+		dead_label.visible = hero.dead
 
 
 func _on_pack_loaded(id: String, ok: bool, ms: int, detail: String) -> void:
@@ -152,7 +192,7 @@ func _build_world() -> void:
 	# 地面（占位）：地面层碰撞只用于点击拾取与导航解析，主角不与它碰撞（平面移动）
 	var ground := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(28, 28)
+	plane.size = Vector2(40, 40)
 	ground.mesh = plane
 	ground.material_override = _mat(Color(0.23, 0.21, 0.19))
 	var gbody := StaticBody3D.new()
@@ -160,33 +200,37 @@ func _build_world() -> void:
 	gbody.collision_mask = 0
 	var gshape := CollisionShape3D.new()
 	var gbox := BoxShape3D.new()
-	gbox.size = Vector3(28, 0.2, 28)
+	gbox.size = Vector3(40, 0.2, 40)
 	gshape.shape = gbox
 	gshape.position.y = -0.1
+	gbody.position = Vector3(1, 0, 10)
 	gbody.add_child(gshape)
 	gbody.add_child(ground)
 	level.add_child(gbody)
 
-	# 一间有缺口的灰盒房间 + 石柱（占位）。墙高 3.2 米（约主角身高 1.8 倍）
+	# 北边：灰盒房间（12 × 12 米）；南墙中间留 4 米宽的门（x ∈ [-1, 3]）通往南边的大厅。
+	# 南边：灰盒大厅（26 × 20 米），几根石柱，1.5 的怪物都在这里。墙高 3.2 米（约主角身高 1.8 倍）。
 	var wall := Color(0.36, 0.33, 0.3)
-	_box(Vector3(12, 3.2, 0.6), Vector3(0, 1.6, -6), wall)
-	_box(Vector3(0.6, 3.2, 12), Vector3(-6, 1.6, 0), wall)
-	_box(Vector3(0.6, 3.2, 5), Vector3(6, 1.6, -3.5), wall)
-	_box(Vector3(5, 3.2, 0.6), Vector3(-3.5, 1.6, 6), wall)
+	_box(Vector3(12, 3.2, 0.6), Vector3(0, 1.6, -6), wall)        # 房间北墙
+	_box(Vector3(0.6, 3.2, 12), Vector3(-6, 1.6, 0), wall)        # 房间西墙
+	_box(Vector3(0.6, 3.2, 12), Vector3(6, 1.6, 0), wall)         # 房间东墙
+	_box(Vector3(5, 3.2, 0.6), Vector3(-3.5, 1.6, 6), wall)       # 房间南墙（门的西侧）
+	_box(Vector3(11, 3.2, 0.6), Vector3(8.5, 1.6, 6), wall)       # 门的东侧，延伸到大厅东北角
+	_box(Vector3(6, 3.2, 0.6), Vector3(-9, 1.6, 6), wall)         # 大厅北墙西段
+	_box(Vector3(0.6, 3.2, 20), Vector3(-12, 1.6, 16), wall)      # 大厅西墙
+	_box(Vector3(0.6, 3.2, 20), Vector3(14, 1.6, 16), wall)       # 大厅东墙
+	_box(Vector3(26.6, 3.2, 0.6), Vector3(1, 1.6, 26), wall)      # 大厅南墙
 	for p in [Vector3(-3, 0, -3), Vector3(3, 0, 3), Vector3(-3, 0, 3)]:
 		_box(Vector3(0.7, 3.0, 0.7), p + Vector3(0, 1.5, 0), Color(0.42, 0.38, 0.34))
-	# 房间外的几块矮石，让门外也有东西可以绕
-	_box(Vector3(2.0, 1.0, 1.2), Vector3(8.5, 0.5, 4.0), Color(0.33, 0.3, 0.28))
-	_box(Vector3(1.2, 1.0, 2.4), Vector3(3.0, 0.5, 9.0), Color(0.33, 0.3, 0.28))
+	for p in [Vector3(-6, 0, 14), Vector3(6, 0, 14), Vector3(0, 0, 19), Vector3(-8, 0, 21), Vector3(9, 0, 20)]:
+		_box(Vector3(0.9, 3.0, 0.9), p + Vector3(0, 1.5, 0), Color(0.42, 0.38, 0.34))
 
 	nav_bake_ms = NavBuilder.bake(level)
 
 	# 火把（占位）：柱 + 发光球 + 闪烁点光源
 	_box(Vector3(0.16, 1.6, 0.16), Vector3(-5.4, 0.8, -5.4), Color(0.3, 0.2, 0.12), false)
 	var flame := MeshInstance3D.new()
-	var sph := SphereMesh.new()
-	sph.radius = 0.16
-	sph.height = 0.32
+	var sph := LowPoly.sphere(0.16)
 	flame.mesh = sph
 	flame.material_override = _mat(Color(1.0, 0.55, 0.16), 3.0)
 	flame.position = Vector3(-5.4, 1.7, -5.4)
@@ -196,9 +240,21 @@ func _build_world() -> void:
 	torch_light.omni_range = 7.0
 	torch_light.position = Vector3(-5.4, 1.9, -5.4)
 	add_child(torch_light)
+	for tp in [Vector3(-11.4, 1.9, 25.4), Vector3(13.4, 1.9, 25.4), Vector3(-11.4, 1.9, 9.0)]:
+		var tl := OmniLight3D.new()
+		tl.light_color = Color(1.0, 0.58, 0.25)
+		tl.light_energy = 1.8
+		tl.omni_range = 8.0
+		tl.position = tp
+		add_child(tl)
+		var fm := MeshInstance3D.new()
+		fm.mesh = sph
+		fm.material_override = flame.material_override
+		fm.position = tp - Vector3(0, 0.2, 0)
+		add_child(fm)
 
-	# 训练木桩（占位敌人）：房间里两个挨着（测试范围技能）、门外一个
-	for p in [Vector3(2.2, 0, -1.2), Vector3(3.0, 0, 0.3), Vector3(-1.5, 0, 9.5)]:
+	# 训练木桩（占位敌人）：房间里两个挨着（测试范围技能）；真正的怪物在南边大厅
+	for p in [Vector3(2.2, 0, -1.2), Vector3(3.0, 0, 0.3)]:
 		var d := TrainingDummy.new()
 		add_child(d)
 		d.global_position = p
@@ -213,6 +269,12 @@ func _build_world() -> void:
 	camera.target = hero
 	add_child(camera)
 	hero.camera = camera
+	hero.respawn_point = Vector3.ZERO
+
+	# 大厅里的怪物（1.5）：2 个冲锋、2 个弓手、1 个召唤祭司
+	if spawn_monsters:
+		for sp in [["ash_brute", Vector3(-5, 0, 18)], ["ash_brute", Vector3(5, 0, 17)], ["bone_archer", Vector3(-9, 0, 23)], ["bone_archer", Vector3(10, 0, 23)], ["ash_priest", Vector3(0, 0, 24)]]:
+			monsters.append(Monsters.spawn(sp[0], self, sp[1], hero))
 
 
 # ---------------- 界面 ----------------
@@ -233,8 +295,8 @@ func _build_ui() -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点木桩或按「攻击」打，「践踏」放技能" if DisplayServer.is_touchscreen_available() else "点地面移动；点木桩攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.4 战斗手感）\n画面全部为占位几何体，不代表最终美术。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「践踏」放技能" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1 键：焚地践踏；WASD 移动；滚轮缩放"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（阶段 1.5 怪物）\n画面全部为占位几何体，不代表最终美术。南边大厅有冲锋、弓手和召唤怪。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -269,6 +331,31 @@ func _build_ui() -> void:
 	res_label.add_theme_font_size_override("font_size", 14)
 	res_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
 	box.add_child(res_label)
+	# 生命条（占位；正式界面按 ART.md 第五节做成左下角的「火盆」）
+	hp_bar = ProgressBar.new()
+	hp_bar.custom_minimum_size = Vector2(220, 14)
+	hp_bar.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	hp_bar.max_value = hero.max_hp
+	hp_bar.show_percentage = false
+	var hfill := StyleBoxFlat.new()
+	hfill.bg_color = Color(0.75, 0.18, 0.12)
+	hp_bar.add_theme_stylebox_override("fill", hfill)
+	hp_bar.add_theme_stylebox_override("background", bg)
+	box.add_child(hp_bar)
+	hp_label = Label.new()
+	hp_label.add_theme_font_size_override("font_size", 14)
+	hp_label.add_theme_color_override("font_color", Color(0.9, 0.82, 0.7))
+	box.add_child(hp_label)
+	dead_label = Label.new()
+	dead_label.set_anchors_preset(Control.PRESET_CENTER)
+	dead_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	dead_label.grow_vertical = Control.GROW_DIRECTION_BOTH
+	dead_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	dead_label.add_theme_font_size_override("font_size", 30)
+	dead_label.add_theme_color_override("font_color", Color(0.85, 0.2, 0.15))
+	dead_label.text = "你倒下了\n3 秒后在房间里复活"
+	dead_label.visible = false
+	layer.add_child(dead_label)
 	touch = TouchControls.new()
 	layer.add_child(touch)
 	if touch.visible:
