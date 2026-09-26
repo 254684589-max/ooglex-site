@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-26T05:59:35Z",
+  "generated_at": "2026-09-26T10:24:37Z",
   "preview_catalog_version": "v599-europe-preview-2026-09-22",
   "preview_count": 599,
   "base_count": 594,
@@ -44,8 +44,8 @@
       "preview_record_ok": true,
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
-      "avatar_bytes": 23903,
-      "avatar_source": "fxtwitter_profile-r2-cache",
+      "avatar_bytes": 134995,
+      "avatar_source": "wikipedia-r2-cache",
       "native_feed_ok": false,
       "feed_http_status": 401,
       "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",
