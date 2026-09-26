@@ -13,8 +13,8 @@
   var SUPABASE_URL = "https://nwthqkpkvbtilafqpjlf.supabase.co";
   var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Vf8spXXXksPHKvfxp2XPcw_1dfaIR6r";
   var VERIFY_TIMEOUT_MS = 4500;
-  var WALL_HEIGHT = 250;
-  var FADE_HEIGHT = 140;
+  var WALL_HEIGHT = 218;
+  var FADE_HEIGHT = 110;
   var resolveReady;
   var ready = new Promise(function (resolve) { resolveReady = resolve; });
   var maxNaturalHeight = 0;
@@ -80,15 +80,15 @@
     style.id = "ooglex-registration-preview-style";
     style.textContent =
       "html.ooglex-access-checking body{overflow:hidden!important}" +
-      "#ooglex-registration-preview-fade{position:absolute;left:0;right:0;z-index:2147483645;height:140px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.96))}" +
-      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;box-sizing:border-box;width:100%;min-height:250px;padding:34px 20px 30px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
+      "#ooglex-registration-preview-fade{position:absolute;left:0;right:0;z-index:2147483645;height:110px;pointer-events:none;background:linear-gradient(to bottom,rgba(12,13,20,0),rgba(23,23,23,.96))}" +
+      "#ooglex-registration-preview{position:absolute;left:0;right:0;z-index:2147483646;box-sizing:border-box;width:100%;min-height:218px;padding:24px 20px 22px;text-align:center;background:#171717;color:#f5f5f5;border-top:1px solid rgba(255,255,255,.10);box-shadow:0 -18px 50px rgba(0,0,0,.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
       "#ooglex-registration-preview .ogx-access-kicker{font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:#9aa1aa;margin-bottom:10px}" +
       "#ooglex-registration-preview h2{margin:1px 0 8px;font-size:27px;line-height:1.3;color:#f5f5f5;font-weight:760;letter-spacing:-.3px}" +
       "#ooglex-registration-preview p{margin:0 auto 18px;max-width:720px;color:#c8c8c8;font-size:14px;line-height:1.7}" +
-      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:270px;height:46px;padding:0 22px;border-radius:4px;background:#fff;color:#111;text-decoration:none;font-size:15px;font-weight:720;box-shadow:none}" +
+      "#ooglex-registration-preview a{display:inline-flex;align-items:center;justify-content:center;min-width:270px;height:44px;padding:0 22px;border-radius:4px;background:#fff;color:#111;text-decoration:none;font-size:15px;font-weight:720;box-shadow:none}" +
       "#ooglex-registration-preview .ogx-access-note{font-size:11px;color:#8f8f8f;margin-top:14px}" +
       "#ooglex-registration-preview-badge{position:fixed;right:14px;bottom:14px;z-index:2147483647;padding:7px 11px;border-radius:999px;font:600 11px/1.2 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;letter-spacing:.4px;color:#dfe7ec;background:rgba(10,14,20,.88);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.28)}" +
-      "@media(max-width:640px){#ooglex-registration-preview{min-height:238px;padding:30px 16px 28px}#ooglex-registration-preview h2{font-size:25px}#ooglex-registration-preview p{font-size:13px}#ooglex-registration-preview a{min-width:min(270px,calc(100vw - 48px));width:min(270px,calc(100vw - 48px))}}";
+      "@media(max-width:640px){#ooglex-registration-preview{min-height:218px;padding:24px 16px 22px}#ooglex-registration-preview h2{font-size:25px}#ooglex-registration-preview p{font-size:13px}#ooglex-registration-preview a{min-width:min(270px,calc(100vw - 48px));width:min(270px,calc(100vw - 48px))}}";
     document.head.appendChild(style);
   }
 
@@ -188,7 +188,7 @@
     if (measured > maxNaturalHeight) maxNaturalHeight = measured;
     var total = Math.max(maxNaturalHeight, measured, 1);
     var cutoff = Math.max(1, Math.floor(total * PREVIEW_RATIO));
-    var wallHeight = window.innerWidth <= 640 ? 238 : WALL_HEIGHT;
+    var wallHeight = WALL_HEIGHT;
     var fadeTop = Math.max(0, cutoff - FADE_HEIGHT);
 
     if (window.getComputedStyle(body).position === "static") {
