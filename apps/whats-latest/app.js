@@ -241,7 +241,7 @@
     fade.id="whats-preview-fade";
     fade.setAttribute("aria-hidden","true");
     fade.style.cssText=[
-      "position:absolute","left:0","right:0","bottom:0","height:150px","z-index:40","pointer-events:none",
+      "position:absolute","left:0","right:0","bottom:0","height:110px","z-index:40","pointer-events:none",
       "background:linear-gradient(to bottom,rgba(246,239,230,0),rgba(246,239,230,.96) 72%,rgba(246,239,230,1))"
     ].join(";");
     shell.appendChild(fade);
