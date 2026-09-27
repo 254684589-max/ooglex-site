@@ -7,7 +7,7 @@
 - 路线图与进度台账：`../../docs/IRONCROWN_ROADMAP.md`
 - 开发规则与收尾流程：`../../.claude/skills/ironcrown/SKILL.md`
 
-当前是技术原型（阶段 1）：可以用第一人称在灰盒雾夜街道里走动（`play/?test=1` 是灰盒测试场），画面全部是占位几何体。已上线到 `/games/ironcrown/play/`（2026-09-27，开发中预览），游戏中心暂无入口；`play/` 随上线入库，每次上线前用 `tools/build_web.sh` 重新构建。
+当前是技术原型（阶段 1）：可以用第一人称在灰盒雾夜街道里走动（`play/?test=1` 是灰盒测试场），画面全部是占位几何体。已上线到 `/games/ironcrown/play/`（2026-09-27，开发中预览），游戏中心有「开发中预览」卡片（直接进游戏，还没有介绍页）；`play/` 随上线入库，每次上线前用 `tools/build_web.sh` 重新构建。
 
 ## 本地构建
 
