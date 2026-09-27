@@ -43,12 +43,12 @@ static func box(parent: Node, size: Vector3, pos: Vector3, material: Material, c
 	return body
 
 
-static func label(parent: Node, text: String, pos: Vector3, size := 48) -> Label3D:
+static func label(parent: Node, text: String, pos: Vector3, size := 48, pixel := 0.006) -> Label3D:
 	var l := Label3D.new()
 	l.text = text
 	l.font = load(FONT_PATH)
 	l.font_size = size
-	l.pixel_size = 0.006
+	l.pixel_size = pixel
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.modulate = Color("e8dcc0")
 	l.outline_size = 8

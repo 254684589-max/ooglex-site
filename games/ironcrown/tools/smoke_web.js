@@ -4,6 +4,7 @@
 //   1.2  电脑：点击画面后按住 W 走动（IC_MOVED）、Esc 打开 / 关闭暂停菜单（IC_PAUSE）；
 //        手机 / 平板：左半屏真实触屏拖动走动（IC_MOVED）、右半屏拖动转视角（IC_LOOK）、点「菜单」打开暂停菜单；
 //        再打开 ?test=1 灰盒测试场，走几步截图。
+//   1.3  测试场出生点对准灰盒 NPC（IC_TARGET）：电脑按 E、手机 / 平板点右下角交互按钮，要求和 NPC 说话（IC_INTERACT kind=npc），截图。
 //
 // 先在仓库根目录起静态服务器（gzip 传输，模拟线上 CDN）：
 //   python3 games/ironcrown/tools/serve_gzip.py . 8765
@@ -90,7 +91,21 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     logs.length = 0;
     await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=1');
     const range = await waitLog(logs, 'IC_READY', 240);
-    await page.waitForTimeout(800);
+    const target = await waitLog(logs, 'IC_TARGET name=灰盒路人', 16);
+    await page.waitForTimeout(500);
+    let talk = '';
+    if (!mobile) {
+      await page.keyboard.press('e');
+    } else {
+      const us = await waitLog(logs, 'IC_USE_SCREEN', 8);
+      if (us) {
+        const [, ux, uy] = us.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+        await page.touchscreen.tap(ux / dpr, uy / dpr);
+      }
+    }
+    talk = await waitLog(logs, 'IC_INTERACT kind=npc', 12);
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(outDir, `ic-${name}-talk.png`) });
     if (!mobile) {
       await page.keyboard.down('w');
       await page.waitForTimeout(900);
@@ -102,9 +117,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

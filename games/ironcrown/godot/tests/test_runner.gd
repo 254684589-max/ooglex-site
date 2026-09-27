@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -50,6 +50,10 @@ func check(cond: bool, what: String) -> void:
 func frames(n: int) -> void:
 	for i in n:
 		await get_tree().process_frame
+
+
+func seconds(sec: float) -> void:
+	await get_tree().create_timer(sec).timeout
 
 
 func physics(n: int) -> void:
@@ -119,7 +123,14 @@ func test_ui() -> void:
 	check(main.hud.title_label.text.contains("占位"), "画面明确标注「占位几何体」（AGENTS.md：占位必须写明）")
 	# 内置字体是子集：界面与场景标签上出现的每个字都必须在字体里，否则网页上会显示方块
 	var font := load("res://assets/fonts/NotoSansSC-IC.ttf") as FontFile
-	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站"]
+	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站交谈打开关上拾取[E]"]
+	texts.append_array(TestRange.NPC_LINES)
+	texts.append_array(Street.WATCH_LINES)
+	for n in main.find_children("*", "", true, false):
+		if n is Interactable:
+			texts.append(n.prompt())
+			if n is Door:
+				texts.append(n.locked_text)
 	for n in main.find_children("*", "", true, false):
 		if n is Label or n is Label3D or n is Button:
 			texts.append(n.text)
@@ -385,4 +396,121 @@ func test_pause() -> void:
 	Input.parse_input_event(ev)
 	await frames(3)
 	check(not get_tree().paused and not main.pause_menu.visible, "暂停菜单里再按 Esc 继续游戏")
+	await free_main(main)
+
+
+## 让玩家站在 pos、看向 look_at 点（水平转身 + 俯仰），然后刷新交互目标
+func aim(p: FpController, pos: Vector3, look_at: Vector3) -> void:
+	p.global_position = pos
+	p.velocity = Vector3.ZERO
+	await physics(4)
+	var eye := p.camera.global_position
+	var d := look_at - eye
+	p.rotation.y = atan2(-d.x, -d.z)
+	p.pitch = rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
+	p.head.rotation.x = deg_to_rad(p.pitch)
+	await physics(2)
+	p.interactor.refresh()
+
+
+func test_interact() -> void:
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var it: Interactor = p.interactor
+	await physics(5)
+	# 出生点正前方的灰盒 NPC
+	check(it.target is Npc and main.hud.prompt_label.text == "[E] 交谈 · 灰盒路人", "出生点对准灰盒 NPC，准星下方提示「[E] 交谈 · 灰盒路人」（实际：%s）" % main.hud.prompt_label.text)
+	var ev := InputEventAction.new()
+	ev.action = "interact"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	check(main.hud.subtitle_panel.visible and main.hud.subtitle_label.text == "灰盒路人：" + TestRange.NPC_LINES[0], "按 E 和 NPC 说话，底部字幕显示第一句")
+	await frames(2)
+	var sp: PanelContainer = main.hud.subtitle_panel
+	check(main.hud.subtitle_label.size.x > 300.0 and sp.size.y < 140.0 and sp.position.y + sp.size.y <= main.hud.size.y, "字幕框按宽度排版、不超出屏幕（%s @ %s）" % [sp.size, sp.position])
+	it.use()
+	check(main.hud.subtitle_label.text.ends_with(TestRange.NPC_LINES[1]), "再按一次说下一句")
+	# 离远了就没有目标
+	await aim(p, Vector3(0, 0, 4.8), TestRange.NPC_POS + Vector3(0, 1.2, 0))
+	check(it.target == null and main.hud.prompt_label.text == "", "超过 2.5 米对不上，提示消失")
+	# 桌上的面包
+	var bread_pos: Vector3 = TestRange.TABLE_POS + Vector3(-0.35, TestRange.TABLE_H + 0.06, 0)
+	await aim(p, TestRange.TABLE_POS + Vector3(-0.35, 0, 1.3), bread_pos)
+	check(it.target is Pickup and it.target.display_name == "面包", "低头看桌上的面包，目标是面包（提示：%s）" % main.hud.prompt_label.text)
+	# 中间放一块板挡住视线：隔着东西不能交互
+	var shield := Blocks.box(main.world, Vector3(1.2, 1.2, 0.05), TestRange.TABLE_POS + Vector3(-0.35, 1.2, 0.8), Blocks.mat(Color.GRAY))
+	await physics(2)
+	it.refresh()
+	check(it.target == null, "隔着挡板看不到面包，不能交互")
+	shield.queue_free()
+	await physics(2)
+	it.refresh()
+	var r := it.use()
+	await frames(2)
+	check(r.get("kind") == "pickup" and main.inventory.has("bread"), "拾取面包：放进背包（%s）" % str(main.inventory))
+	check(main.hud.toast_label.text == "拾取：面包", "屏幕上方提示「拾取：面包」")
+	await physics(2)
+	it.refresh()
+	check(not (it.target is Pickup and it.target.display_name == "面包"), "面包从场景里消失")
+	# 能开的木门：门在 z = 12，玩家在 -Z 一侧（z = 10.5）看向 +Z
+	var door_mid := Vector3(TestRange.DOOR_GAP_X, 1.2, TestRange.DOOR_WALL_Z)
+	await aim(p, Vector3(TestRange.DOOR_GAP_X, 0, TestRange.DOOR_WALL_Z - 1.5), door_mid)
+	check(it.target is Door and main.hud.prompt_label.text == "[E] 打开 · 木门", "对准木门，提示「打开 · 木门」")
+	var door: Door = it.target
+	p.rotation.y = PI      # 面朝 +Z 走过去之前先确认门挡路
+	Input.action_press("move_forward")
+	await physics(60)
+	Input.action_release("move_forward")
+	check(p.global_position.z < TestRange.DOOR_WALL_Z - 0.3, "门关着时走不过去（z = %.2f）" % p.global_position.z)
+	await aim(p, Vector3(TestRange.DOOR_GAP_X, 0, TestRange.DOOR_WALL_Z - 1.5), door_mid)
+	it.use()
+	await seconds(0.6)
+	# 门板沿本地 +X；绕 Y 轴 -90° 后门板指向 +Z，也就是远离站在 -Z 一侧的玩家
+	check(door.is_open and absf(rad_to_deg(door.rotation.y) + 90.0) < 1.0, "按 E 开门：门朝远离玩家的一侧（+Z）转开（%.1f°）" % rad_to_deg(door.rotation.y))
+	check(main.hud.prompt_label.text.contains("关上") or it.target != door, "门开着时提示变成「关上」")
+	p.rotation.y = PI
+	p.head.rotation.x = 0.0
+	p.pitch = 0.0
+	Input.action_press("move_forward")
+	await physics(90)
+	Input.action_release("move_forward")
+	check(p.global_position.z > TestRange.DOOR_WALL_Z + 0.5, "门开着能走过去（z = %.2f）" % p.global_position.z)
+	# 走过去以后，对着转开的门板（x = -0.5、z 12–13）按 E 关上
+	await aim(p, Vector3(TestRange.DOOR_GAP_X + 0.6, 0, TestRange.DOOR_WALL_Z + 1.8), Vector3(TestRange.DOOR_GAP_X - 0.5, 1.2, TestRange.DOOR_WALL_Z + 0.6))
+	check(it.target == door and main.hud.prompt_label.text == "[E] 关上 · 木门", "对着开着的门，提示「关上 · 木门」（%s）" % main.hud.prompt_label.text)
+	it.use()
+	await seconds(0.6)
+	check(not door.is_open and absf(door.rotation.y) < 0.02, "按 E 把门关上")
+	await aim(p, Vector3(TestRange.DOOR_GAP_X, 0, TestRange.DOOR_WALL_Z + 1.5), door_mid)
+	it.use()
+	await seconds(0.6)
+	check(door.is_open and absf(rad_to_deg(door.rotation.y) - 90.0) < 1.0, "从另一侧（+Z）开门：朝 -Z 转开（%.1f°），不会拍到人" % rad_to_deg(door.rotation.y))
+	# 锁着的门
+	var lock_mid := Vector3(TestRange.LOCKED_GAP_X, 1.2, TestRange.DOOR_WALL_Z)
+	await aim(p, Vector3(TestRange.LOCKED_GAP_X, 0, TestRange.DOOR_WALL_Z - 1.5), lock_mid)
+	check(it.target is Door and it.target.locked, "对准锁着的门")
+	var locked: Door = it.target
+	it.use()
+	await seconds(0.5)
+	check(not locked.is_open and main.hud.toast_label.text == "门锁着。", "锁着的门打不开，提示「门锁着。」")
+	# 触屏交互按钮：只在有目标时出现，点它等于按 E
+	var t: TouchControls = main.touch
+	t.visible = true
+	await aim(p, Vector3(0, 0, 4.2), TestRange.NPC_POS + Vector3(0, 1.3, 0))
+	check(t.button_centers().has("interact"), "对准东西时，触屏右下角出现交互按钮")
+	var before: int = (it.target as Npc).line_index if it.target is Npc else -1
+	var bc: Vector2 = t.button_centers().interact
+	t._input(touch_ev(5, bc, true))
+	t._input(touch_ev(5, bc, false))
+	check(it.target is Npc and (it.target as Npc).line_index == before + 1, "点交互按钮和 NPC 说话")
+	check(p.touch_move == Vector2.ZERO, "点交互按钮不会误触摇杆")
+	await aim(p, Vector3(10, 0, 8), Vector3(10, 1.5, 0))
+	check(not t.button_centers().has("interact"), "没对准东西时交互按钮隐藏")
+	await free_main(main)
+	# 街道：更夫与锁着的民居门
+	main = await make_main(false)
+	p = main.player
+	await aim(p, Street.WATCH_POS + Vector3(0, 0, 1.8), Street.WATCH_POS + Vector3(0, 1.4, 0))
+	check(p.interactor.target is Npc and p.interactor.target.display_name == "更夫", "街道上能和更夫说话")
 	await free_main(main)

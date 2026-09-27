@@ -21,6 +21,7 @@ const TOUCH_RUN_THRESHOLD := 0.95   # 摇杆推到边缘 = 跑
 const BOB_AMPLITUDE := 0.035
 
 var head: Node3D
+var interactor: Interactor
 var camera: Camera3D
 var shape: CollisionShape3D
 var capsule: CapsuleShape3D
@@ -53,6 +54,10 @@ func _init() -> void:
 	camera.near = 0.05
 	camera.fov = 75.0
 	head.add_child(camera)
+	interactor = Interactor.new()
+	interactor.name = "Interactor"
+	interactor.player = self
+	add_child(interactor)
 
 
 func _ready() -> void:
