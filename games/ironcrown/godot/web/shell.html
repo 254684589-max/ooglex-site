@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#101820">
+<title>铁冠之争 THE IRON CROWN · 灰盒原型 | Ooglex 游戏中心</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="《铁冠之争》THE IRON CROWN 开发中的灰盒原型（占位几何体）：原创第一人称中世纪权谋角色扮演游戏。">
+<link rel="canonical" href="https://www.ooglex.com/games/ironcrown/play/">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #101820; }
+body { color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif; touch-action: none; }
+#canvas { display: block; width: 100%; height: 100%; }
+#canvas:focus { outline: none; }
+
+#wl-loading {
+  position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 24px 16px; text-align: center;
+  background:
+    radial-gradient(700px 420px at 50% 18%, rgba(111, 143, 175, .22), transparent 65%),
+    radial-gradient(800px 500px at 50% 115%, rgba(255, 200, 115, .10), transparent 62%),
+    #101820;
+  transition: opacity .6s ease;
+}
+#wl-loading.hide { opacity: 0; pointer-events: none; }
+#wl-loading::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 10px;
+  background: linear-gradient(90deg, #1c2a3a, #6f8faf, #b8964e);
+}
+.wl-hat { width: 88px; height: 88px; filter: drop-shadow(0 0 18px rgba(255, 200, 115, .45)); animation: wl-bob 2.4s ease-in-out infinite; }
+@keyframes wl-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.wl-title { font-size: clamp(30px, 7vw, 46px); font-weight: 800; letter-spacing: 4px; color: #e8dcc0; text-shadow: 0 0 18px rgba(111, 143, 175, .6); }
+.wl-sub { color: #a9a69e; font-size: 14px; letter-spacing: 1px; margin-top: -10px; }
+.wl-bar { width: min(360px, 78vw); height: 8px; border-radius: 99px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.wl-bar i { display: block; height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, #6f8faf, #b8964e); transition: width .25s; }
+.wl-bar.indeterminate i { width: 35%; animation: wl-slide 1.4s ease-in-out infinite; }
+@keyframes wl-slide { 0% { margin-left: -35%; } 100% { margin-left: 100%; } }
+.wl-status { font-size: 14px; color: #d8d4ca; min-height: 20px; }
+.wl-tip { font-size: 13px; color: #8f8c85; max-width: 440px; line-height: 1.7; min-height: 44px; }
+.wl-note { font-size: 12px; color: #77746d; max-width: 440px; line-height: 1.7; }
+.wl-portrait { display: none; font-size: 13px; color: #ffc873; }
+@media (orientation: portrait) and (max-width: 820px) { .wl-portrait { display: block; } }
+.wl-back {
+  position: fixed; top: 20px; left: 16px; z-index: 11; color: #ffc873; text-decoration: none; font-size: 14px;
+  padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(184, 150, 78, .5); background: rgba(16, 24, 32, .75);
+}
+.wl-back:focus-visible, .wl-btn:focus-visible { outline: 2px solid #ffc873; outline-offset: 2px; }
+.wl-error { display: none; max-width: 480px; white-space: pre-line; background: #3a2020; border: 1px solid #8a3a30; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #ffd8cf; text-align: left; }
+.wl-error.show { display: block; }
+.wl-btn { display: inline-block; margin-top: 4px; padding: 9px 20px; border-radius: 99px; background: #b8964e; color: #101820; font-weight: 700; text-decoration: none; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .wl-hat, .wl-bar.indeterminate i { animation: none; } #wl-loading { transition: none; } }
+</style>
+$GODOT_HEAD_INCLUDE
+  <script src="/assets/access-gate.js?v=20260926p"></script>
+</head>
+<body>
+<canvas id="canvas" tabindex="0">你的浏览器不支持 canvas。</canvas>
+<noscript>本游戏需要启用 JavaScript 才能运行。</noscript>
+
+<div id="wl-loading" role="status" aria-live="polite">
+  <a class="wl-back" id="wl-back" href="/games/hub/">← 返回游戏中心</a>
+  <svg class="wl-hat" viewBox="0 0 128 128" aria-hidden="true"><path d="M24 92 L28 44 L46 62 L64 32 L82 62 L100 44 L104 92 Z" fill="#5e6670" stroke="#b8964e" stroke-width="4" stroke-linejoin="round"/><rect x="24" y="92" width="80" height="10" rx="2" fill="#b8964e"/><circle cx="64" cy="76" r="7" fill="#ffc873"/></svg>
+  <div class="wl-title">铁冠之争</div>
+  <div class="wl-sub">THE IRON CROWN · 灰盒原型（开发中）</div>
+  <div class="wl-bar indeterminate" id="wl-bar"><i id="wl-bar-fill"></i></div>
+  <div class="wl-status" id="wl-status">正在准备……</div>
+  <div class="wl-tip" id="wl-tip"></div>
+  <div class="wl-portrait">手机建议横屏</div>
+  <div class="wl-error" id="wl-error"></div>
+  <div class="wl-note">这是开发中的技术原型：画面全部为占位几何体，不代表最终美术。<br>首次打开需要下载约 40 MB 的游戏引擎，之后浏览器会缓存。</div>
+</div>
+
+<script src="$GODOT_URL"></script>
+<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+  const overlay = document.getElementById('wl-loading');
+  const bar = document.getElementById('wl-bar');
+  const fill = document.getElementById('wl-bar-fill');
+  const status = document.getElementById('wl-status');
+  const tip = document.getElementById('wl-tip');
+  const errorBox = document.getElementById('wl-error');
+  const tips = [
+    '老王死了，铁冠丢了，冬天不走了。',
+    '烽燧的火不能熄。',
+    '当前是技术原型：只有一段静止的雾夜街道，画面全部是占位几何体。',
+  ];
+  let tipIndex = Math.floor(Math.random() * tips.length);
+  function nextTip() { tip.textContent = tips[tipIndex % tips.length]; tipIndex += 1; }
+  nextTip();
+  const tipTimer = setInterval(nextTip, 4200);
+
+  function mb(bytes) { return (bytes / 1048576).toFixed(1); }
+
+  function showError(message) {
+    clearInterval(tipTimer);
+    bar.style.display = 'none';
+    status.textContent = '加载失败';
+    errorBox.textContent = message;
+    const retry = document.createElement('a');
+    retry.className = 'wl-btn';
+    retry.href = window.location.pathname;
+    retry.textContent = '刷新重试';
+    errorBox.appendChild(document.createElement('br'));
+    errorBox.appendChild(retry);
+    errorBox.classList.add('show');
+  }
+
+  const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+  if (missing.length !== 0) {
+    // 最常见的原因不是浏览器太旧，而是显卡加速被关掉，或显卡进程崩溃后浏览器暂时停用了 WebGL：给出能照着做的步骤
+    let webgl1 = false;
+    try { webgl1 = !!document.createElement('canvas').getContext('webgl'); } catch (e) { /* 不可用 */ }
+    const noGL = missing.some(function (m) { return m.indexOf('WebGL2') === 0; });
+    const steps = noGL ? [
+      webgl1 ? '浏览器现在只提供旧版 WebGL 1，本游戏需要 WebGL 2。' : '浏览器现在没有提供 WebGL（3D 绘图）功能。',
+      '通常是下面几种情况，按顺序试一下：',
+      '1. 完全退出浏览器再打开（显卡进程崩溃后，浏览器会在本次运行中停用 WebGL；同时开着别的 3D 网页也可能触发）。',
+      '2. Chrome / Edge：设置 → 系统 → 打开「使用图形加速功能（如果可用）」，然后重启浏览器。',
+      '3. 在地址栏打开 chrome://gpu，看「WebGL2」一行是否为 Hardware accelerated。',
+      '4. 换一个浏览器试试（Safari、Firefox、Edge）。',
+    ] : ['请换用最新版 Chrome、Edge、Firefox 或 Safari。'];
+    showError('无法启动游戏：你的浏览器缺少需要的功能\n（' + missing.join('；') + '）\n\n' + steps.join('\n'));
+    console.log('IC_NO_WEBGL2 webgl1=' + webgl1);
+    return;
+  }
+
+  status.textContent = '正在下载游戏……';
+  engine.startGame({
+    onProgress: function (current, total) {
+      if (current > 0 && total > 0) {
+        bar.classList.remove('indeterminate');
+        const pct = Math.min(100, Math.round(current / total * 100));
+        fill.style.width = pct + '%';
+        status.textContent = '正在下载游戏 ' + pct + '%（' + mb(current) + ' / ' + mb(total) + ' MB）';
+        if (current >= total) {
+          status.textContent = '下载完成，正在启动引擎……';
+        }
+      } else {
+        bar.classList.add('indeterminate');
+      }
+    },
+  }).then(function () {
+    clearInterval(tipTimer);
+    overlay.classList.add('hide');
+    setTimeout(function () { overlay.remove(); }, 700);
+    const canvas = document.getElementById('canvas');
+    canvas.focus();
+  }, function (err) {
+    console.error(err);
+    showError('游戏启动时出错：' + (err && err.message ? err.message : String(err)));
+  });
+}());
+</script>
+</body>
+</html>
