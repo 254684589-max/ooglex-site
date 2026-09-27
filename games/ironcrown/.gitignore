@@ -1,4 +1,4 @@
 # Godot 编辑器缓存
 godot/.godot/
-# 网页导出产物（tools/build_web.sh 生成）：所有者同意上线前不入库
-play/
+# 网页导出产物 play/：随上线提交（由 tools/build_web.sh 生成，文件名带内容哈希）
+# play/ 从 2026-09-27 起入库（所有者要求「部署上线」）

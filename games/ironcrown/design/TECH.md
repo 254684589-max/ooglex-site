@@ -27,8 +27,8 @@ games/ironcrown/
 ├── tools/             从 emberfall3d/tools 复制后改路径：fetch_godot.py · run_tests.sh · build_web.sh
 │                      stamp_web_build.py · build_font.py · serve_gzip.py · smoke_web.js · perf_web.js
 ├── godot/             Godot 工程（第三节）
-├── play/              网页导出产物（不入库，见 .gitignore）
-└── index.html         介绍页（垂直切片可玩、所有者同意后再建，此前网站上没有入口）
+├── play/              网页导出产物（2026-09-27 起随上线入库，文件名带内容哈希）
+└── index.html         介绍页（所有者同意在游戏中心加入口时再建；目前只能通过 /games/ironcrown/play/ 访问）
 ```
 
 两个 Godot 工程之间不能共享 `res://` 文件：需要复用《余烬陷落》的脚本（界面缩放、输入设置、音效合成、骨骼人形等）时，**复制过来并在文件头注明来源路径**，之后各自演进。

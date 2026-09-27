@@ -22,7 +22,7 @@ description: 继续开发原创第一人称中世纪权谋角色扮演游戏《�
 
 ## 二、目录与复用
 
-- 工程：`games/ironcrown/`（`design/` 设计文档、`godot/` 工程、`tools/` 构建脚本、`play/` 网页导出，不入库）。
+- 工程：`games/ironcrown/`（`design/` 设计文档、`godot/` 工程、`tools/` 构建脚本、`play/` 网页导出，2026-09-27 起随上线入库）。
 - 构建与测试脚本从 `games/emberfall3d/tools/` 复制后改路径，不另起一套；需要复用《余烬陷落》的 GDScript 时复制过来并在文件头注明来源。
 - 《余烬陷落》踩过的坑写在 `games/emberfall3d/design/TECH.md` 与 `docs/EMBERFALL_ROADMAP.md`，遇到导航、触屏、雾、贴图、网页 gzip、章节包问题先查那里。
 - Godot 网页导出只能用兼容渲染器（GL Compatibility）；本环境没有 Vulkan，无法烘焙光照贴图。
@@ -34,5 +34,5 @@ description: 继续开发原创第一人称中世纪权谋角色扮演游戏《�
 1. 运行适用的检查：GDScript 语法与自动化测试、网页导出、网页冒烟（360 / 768 / 1280px）、`git diff --check`。纯文档步骤写明「构建：不适用」。
 2. 画面类步骤必须把实机截图发给所有者。
 3. 更新 `docs/IRONCROWN_ROADMAP.md`：该步骤的状态、「当前状态」一段、新出现的待定问题。
-4. 更新根目录 `CHANGELOG.md`，写明「未部署」。
+4. 更新根目录 `CHANGELOG.md`，写明「未部署」；所有者同意上线时，先用 `tools/build_web.sh` 重新构建 `play/` 并提交，再合并到 `main`（推送 `main` 会触发「Deploy Protected Ooglex Pages」发布到网站）。
 5. 提交到功能分支。**合并 `main` / 上线 / 在游戏中心加入口必须所有者明确同意**。
