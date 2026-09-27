@@ -362,13 +362,13 @@ static func _tree_pine(rb: RigBuilder) -> void:
 	var tiers := [[0.8, 1.4, 1.7], [1.8, 1.1, 1.5], [2.8, 0.75, 1.5]]
 	for i in tiers.size():
 		var t: Array = tiers[i]
-		var col := Color(0.11, 0.18, 0.14).lerp(Color(0.24, 0.28, 0.24), i * 0.35)
+		var col := Color(0.14, 0.23, 0.17).lerp(Color(0.3, 0.34, 0.28), i * 0.35)
 		rb.spike(Vector3(0, t[0], 0), Vector3(0.03 * i, t[0] + t[2], 0), t[1], 0, col, RigBuilder.BODY, 7)
 
 
 static func _tree_dead(rb: RigBuilder) -> void:
 	# 被烧焦的枯树：弯曲的树干，几根向上斜伸的枯枝（每根再分一个小杈）
-	var bark := Color(0.2, 0.16, 0.13)
+	var bark := Color(0.25, 0.2, 0.16)
 	rb.tube([Vector3(0, 0, 0), Vector3(0.05, 1.2, 0.02), Vector3(-0.08, 2.4, 0.06), Vector3(0.02, 3.4, 0.0)], [Vector2(0.24, 0.24), Vector2(0.17, 0.17), Vector2(0.12, 0.12), Vector2(0.0, 0.0)], [0, 0, 0, 0], bark, RigBuilder.BODY, 5, true)
 	var branches := [[1.5, 0.3, 1.1, 0.6], [2.1, 2.5, 1.0, 0.8], [2.6, 4.4, 0.8, 0.6], [1.1, 5.2, 0.9, 0.3]]
 	for b in branches:
@@ -383,8 +383,8 @@ static func _tree_dead(rb: RigBuilder) -> void:
 static func _tree_broad(rb: RigBuilder) -> void:
 	# 阔叶树：短粗树干 + 四团枝叶（暗橄榄绿里夹一团锈红，像被余烬烤过的秋叶）
 	rb.tube([Vector3(0, 0, 0), Vector3(0, 1.8, 0)], [Vector2(0.26, 0.26), Vector2(0.17, 0.17)], [0, 0], Color(0.26, 0.18, 0.12), RigBuilder.BODY, 6, false)
-	var clumps := [[Vector3(0, 2.6, 0), 1.2, Color(0.18, 0.23, 0.13)], [Vector3(0.7, 2.2, 0.3), 0.85, Color(0.2, 0.25, 0.13)],
-		[Vector3(-0.6, 2.3, -0.4), 0.9, Color(0.33, 0.2, 0.1)], [Vector3(0.1, 3.3, -0.2), 0.8, Color(0.22, 0.27, 0.15)]]
+	var clumps := [[Vector3(0, 2.6, 0), 1.2, Color(0.22, 0.28, 0.15)], [Vector3(0.7, 2.2, 0.3), 0.85, Color(0.25, 0.31, 0.16)],
+		[Vector3(-0.6, 2.3, -0.4), 0.9, Color(0.4, 0.24, 0.12)], [Vector3(0.1, 3.3, -0.2), 0.8, Color(0.27, 0.33, 0.18)]]
 	for c in clumps:
 		var r: float = c[1]
 		rb.ellipsoid(c[0], Vector3(r, r * 0.8, r), 0, c[2], RigBuilder.BODY, Basis(Vector3.UP, r * 3.0), 4, 7)
@@ -462,8 +462,8 @@ static func _dummy(rb: RigBuilder) -> void:
 	rb.ellipsoid(Vector3(0, 1.8, 0.01), Vector3(0.2, 0.22, 0.19), 0, burlap.lightened(0.05), RigBuilder.BODY, Basis.IDENTITY, 5, 9)
 	rb.tube([Vector3(0, 1.6, 0), Vector3(0, 1.64, 0)], [Vector2(0.12, 0.12), Vector2(0.12, 0.12)], [0, 0], rope, RigBuilder.BODY, 8, false)
 	for sx in [1.0, -1.0]:
-		rb.block(Vector3(0.07 * sx, 1.84, 0.185), Vector3(0.07, 0.014, 0.01), 0, Color(0.15, 0.1, 0.07), RigBuilder.BODY, Basis(Vector3.FORWARD, 0.8))
-		rb.block(Vector3(0.07 * sx, 1.84, 0.185), Vector3(0.07, 0.014, 0.01), 0, Color(0.15, 0.1, 0.07), RigBuilder.BODY, Basis(Vector3.FORWARD, -0.8))
-	rb.block(Vector3(0, 1.73, 0.19), Vector3(0.12, 0.012, 0.01), 0, Color(0.15, 0.1, 0.07))
+		rb.block(Vector3(0.075 * sx, 1.85, 0.18), Vector3(0.09, 0.024, 0.02), 0, Color(0.12, 0.08, 0.06), RigBuilder.BODY, Basis(Vector3.FORWARD, 0.8))
+		rb.block(Vector3(0.075 * sx, 1.85, 0.18), Vector3(0.09, 0.024, 0.02), 0, Color(0.12, 0.08, 0.06), RigBuilder.BODY, Basis(Vector3.FORWARD, -0.8))
+	rb.block(Vector3(0, 1.73, 0.185), Vector3(0.14, 0.02, 0.02), 0, Color(0.12, 0.08, 0.06))
 	for k in 4:
-		rb.block(Vector3(-0.045 + k * 0.03, 1.73, 0.192), Vector3(0.006, 0.03, 0.01), 0, Color(0.15, 0.1, 0.07))
+		rb.block(Vector3(-0.054 + k * 0.036, 1.73, 0.19), Vector3(0.012, 0.05, 0.02), 0, Color(0.12, 0.08, 0.06))

@@ -2,6 +2,7 @@ extends Node
 ## 固定机位截图（画质步骤前后对比用，开发用，不在 run_tests.sh 里）：
 ##   xvfb-run -a godot --path games/emberfall3d/godot --rendering-driver opengl3 --resolution 1280x720 res://tests/vis_shots.tscn -- <输出目录> [画质档：low/medium/high] [proc：用程序化贴图]
 ## 机位：room（房间，火把与木桩）、hall（大厅战斗，怪物围上来）；floor1 / 3 / 5 / 8（P2 随机地下城四种主题）。
+## 第四个参数 six：只拍 2.6 之六的三张近景（dummy 训练木桩、town-trees 镇外树林、deco 熔渊地面装饰）。
 
 # 截图期间每帧回满血（不改最大生命，界面上显示的仍是正常数值）
 var hero: Player
@@ -28,6 +29,10 @@ func _ready() -> void:
 		main.apply_quality(tier)
 	hero = main.hero
 	await _wait(20)
+	if args.size() > 3 and args[3] == "six":
+		await _shots_six(main, out, tier)
+		get_tree().quit()
+		return
 	for shot in [["room", Vector3(-1.0, 0, -1.5), 0.5], ["hall", Vector3(0, 0, 13), 3.5]]:
 		hero.global_position = shot[1]
 		main.camera.snap()
@@ -317,6 +322,86 @@ func _shot(out: String, name: String, tier: String) -> void:
 	var p: String = out.path_join("%s%s.png" % [name, ("-" + tier) if tier != "" else ""])
 	img.save_png(p)
 	print("SHOT ", p, " draw_calls=", Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), " primitives=", Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
+
+
+func _shots_six(main: Node, out: String, tier: String) -> void:
+	## 2.6 之六：训练木桩、镇外树林、熔渊地面装饰（白骨、头骨、碎石、熔岩裂缝）近景
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	main.monsters.clear()
+	var d0: float = main.camera.distance
+	var dm: TrainingDummy = main.dummies[0]
+	hero.global_position = dm.global_position + Vector3(-1.6, 0, -1.2)
+	hero.face_point(dm.global_position)
+	main.camera.distance = main.camera.min_distance
+	main.camera.snap()
+	await get_tree().create_timer(0.3).timeout
+	await _shot(out, "dummy", tier)
+	# 镇外树林：找一格可走的地面，画面上方（西北方）是一片树
+	main.use_test_area = false
+	main.go_floor(0, "start")
+	await get_tree().create_timer(0.5).timeout
+	var tm: Dictionary = main.town
+	var trees := {}
+	for c in tm.trees:
+		trees[c] = true
+	var best := Vector2i(-1, -1)
+	var best_n := -1
+	for y in range(3, tm.h - 3):
+		for x in range(3, tm.w - 3):
+			if not DungeonGen.walkable(DungeonGen.tile(tm, x, y)):
+				continue
+			# 镜头从东南往西北看：紧挨着的西北方是一片树（画面上方、在主角的光照范围里），主角所在与镜头那一侧没有树
+			var n := 0
+			for dy in range(-4, 0):
+				for dx in range(-4, 0):
+					if trees.has(Vector2i(x + dx, y + dy)):
+						n += 1
+			for dy in range(0, 4):
+				for dx in range(0, 4):
+					if trees.has(Vector2i(x + dx, y + dy)):
+						n -= 20
+			if n > best_n:
+				best_n = n
+				best = Vector2i(x, y)
+	hero.global_position = DungeonBuilder.cell_center(best) + Vector3(0.6, 0, 0.6)
+	main.camera.distance = d0
+	main.camera.snap()
+	await get_tree().create_timer(0.8).timeout
+	await _shot(out, "town-trees", tier)
+	# 熔渊（第 5 层）：找周围 5 × 5 格里熔岩、白骨、碎石都有的一格
+	main.go_floor(5)
+	await get_tree().create_timer(0.3).timeout
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	main.monsters.clear()
+	var dg: Dictionary = main.dungeon
+	var bestd := Vector2i(-1, -1)
+	var bestk := -1
+	for y in range(2, dg.h - 2):
+		for x in range(2, dg.w - 2):
+			if dg.deco[y * dg.w + x] != DungeonGen.DECO_LAVA:
+				continue
+			var kinds := {}
+			var cnt := 0
+			for dy in range(-2, 3):
+				for dx in range(-2, 3):
+					var dv: int = dg.deco[(y + dy) * dg.w + x + dx]
+					if dv != 0:
+						kinds[dv] = true
+						cnt += 1
+			var k := kinds.size() * 10 + cnt
+			if k > bestk:
+				bestk = k
+				bestd = Vector2i(x, y)
+	hero.global_position = DungeonBuilder.cell_center(bestd) + Vector3(-1.0, 0, 1.0)
+	main.camera.distance = main.camera.min_distance
+	main.camera.snap()
+	await get_tree().create_timer(0.8).timeout
+	await _shot(out, "deco", tier)
+	main.camera.distance = d0
 
 
 func _wait(n: int) -> void:
