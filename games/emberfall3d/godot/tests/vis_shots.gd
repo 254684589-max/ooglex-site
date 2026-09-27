@@ -37,6 +37,27 @@ func _ready() -> void:
 		var path: String = out.path_join("%s%s.png" % [shot[0], ("-" + tier) if tier != "" else ""])
 		img.save_png(path)
 		print("SHOT ", path)
+	# 2.6 之三：骨骼角色近景（测试区房间：主角举剑，两只骸骨战士与一只骸骨弓手围上来）
+	var skels: Array = []
+	for sp in [["skel", Vector3(0.6, 0, 1.6)], ["skel", Vector3(-1.4, 0, 1.2)], ["archer", Vector3(1.8, 0, 3.4)]]:
+		var e := Monsters.spawn(sp[0], main.stage, (sp[1] as Vector3) + Vector3(-1.0, 0, -1.5), hero)
+		e.set_physics_process(false)
+		e.face(hero.global_position)
+		skels.append(e)
+	hero.global_position = Vector3(-1.0, 0, -1.5)
+	hero.face_point(skels[0].global_position)
+	var dist0: float = main.camera.distance
+	main.camera.distance = main.camera.min_distance      # 镜头拉到最近
+	main.camera.snap()
+	hero._start_action("oath_cleave")
+	skels[0].set_state("windup")
+	skels[2].set_state("windup")
+	for i in 12:
+		await get_tree().process_frame
+	await _shot(out, "rig-fight", tier)
+	for e in skels:
+		e.queue_free()
+	main.camera.distance = dist0
 	# P2：随机地下城（地窖、墓穴首领层、熔渊、深渊），固定种子，主角站在入口旁
 	main.run_seed = 1
 	for f in [1, 3, 5, 8]:

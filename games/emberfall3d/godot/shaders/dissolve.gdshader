@@ -6,6 +6,7 @@ render_mode cull_disabled;
 uniform vec4 albedo : source_color = vec4(0.5, 0.5, 0.5, 1.0);
 uniform vec4 edge_color : source_color = vec4(1.0, 0.45, 0.12, 1.0);
 uniform float progress : hint_range(0.0, 1.0) = 0.0;
+uniform bool use_vertex_color = false;   // 骨骼角色（2.6 之三）的颜色画在顶点色里
 uniform float edge_width = 0.07;
 
 varying vec3 lpos;
@@ -36,7 +37,7 @@ void fragment() {
 	if (h < 0.0) {
 		discard;
 	}
-	ALBEDO = albedo.rgb;
+	ALBEDO = albedo.rgb * (use_vertex_color ? COLOR.rgb : vec3(1.0));
 	ROUGHNESS = 1.0;
 	if (h < edge_width && progress > 0.001) {
 		ALBEDO = edge_color.rgb;

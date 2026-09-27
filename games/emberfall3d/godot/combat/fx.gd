@@ -146,16 +146,30 @@ static func dissolve_materials(root: Node, edge: Color = Color(1.0, 0.45, 0.12))
 	if _dissolve_shader == null:
 		_dissolve_shader = load("res://shaders/dissolve.gdshader")
 	var mats: Array = []
-	for mi in root.find_children("*", "MeshInstance3D", true, false):
-		var src := (mi as MeshInstance3D).material_override as StandardMaterial3D
-		var sm := ShaderMaterial.new()
-		sm.shader = _dissolve_shader
-		sm.set_shader_parameter("albedo", src.albedo_color if src else Color(0.5, 0.5, 0.5))
-		sm.set_shader_parameter("edge_color", edge)
-		sm.set_shader_parameter("progress", 0.0)
-		(mi as MeshInstance3D).material_override = sm
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi.material_override == null and mi.mesh != null and mi.mesh.get_surface_count() > 0 and mi.get_surface_override_material(0) != null:
+			# 骨骼角色（2.6 之三）：每个面各有材质、颜色画在顶点色里 → 逐面换成溶解材质，保留顶点色
+			for i in mi.mesh.get_surface_count():
+				var sm := _dissolve_mat(mi.get_surface_override_material(i) as StandardMaterial3D, edge)
+				mi.set_surface_override_material(i, sm)
+				mats.append(sm)
+			continue
+		var sm := _dissolve_mat(mi.material_override as StandardMaterial3D, edge)
+		mi.material_override = sm
 		mats.append(sm)
 	return mats
+
+
+static func _dissolve_mat(src: StandardMaterial3D, edge: Color) -> ShaderMaterial:
+	var sm := ShaderMaterial.new()
+	sm.shader = _dissolve_shader
+	var vcol := src != null and src.vertex_color_use_as_albedo
+	sm.set_shader_parameter("albedo", (Color(1, 1, 1) if vcol else src.albedo_color) if src else Color(0.5, 0.5, 0.5))
+	sm.set_shader_parameter("use_vertex_color", vcol)
+	sm.set_shader_parameter("edge_color", edge)
+	sm.set_shader_parameter("progress", 0.0)
+	return sm
 
 
 ## 一闪而过的点光（爆炸照亮周围的地面和墙），life 秒内熄灭

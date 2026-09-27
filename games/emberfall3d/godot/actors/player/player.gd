@@ -10,7 +10,7 @@ extends CharacterBody3D
 ## - 四个技能消耗法力、有冷却、按等级解锁（V0.1）：火球术（1 级，右键 / 1）、烬环斩（3 级，2）、
 ##   寂霜环（6 级，3）、暗影闪现（10 级，4）。电脑朝鼠标所指的地面释放；手机按钮自动瞄准最近的可见敌人。
 ## - 命中停顿只冻结命中双方（hitstop_t），不改全局时间。
-## 占位外观：胶囊 + 方块武器（阶段 2 换成正式模型）。
+## 外观（2.6 之三）：代码搭的「流浪者」角色（HumanoidRig + CharModels），动作由代码驱动；阶段 2 以后换正式模型时接口不变。
 
 signal arrived
 signal hit_landed(skill_id: String, hits: int)
@@ -70,9 +70,8 @@ var _respawn_t := 0.0
 var _knock_vel := Vector3.ZERO
 var _knock_t := 0.0
 var _hurt_t := 0.0
-var _body_mat: StandardMaterial3D
 var _visual: Node3D
-var _blade_pivot: Node3D
+var rig: HumanoidRig
 var _repath_t := 0.0
 
 
@@ -106,32 +105,8 @@ func _build_placeholder() -> void:
 	_visual = Node3D.new()
 	add_child(_visual)
 	add_child(Look.blob_shadow(0.45))   # 圆形假阴影（不跟着倒地动画转）
-	var body := MeshInstance3D.new()
-	body.mesh = LowPoly.capsule(0.35, 1.8)
-	_body_mat = Look.rim(_mat(Color(0.55, 0.47, 0.38)))
-	body.material_override = _body_mat
-	body.position.y = 0.9
-	_visual.add_child(body)
-	# 武器挂在肩部支点上，挥砍时绕支点转动
-	_blade_pivot = Node3D.new()
-	_blade_pivot.position = Vector3(0.3, 1.25, 0)
-	_visual.add_child(_blade_pivot)
-	var blade := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = Vector3(0.1, 0.1, 1.3)
-	blade.mesh = bm
-	blade.material_override = _mat(Color(0.8, 0.82, 0.86))
-	blade.position = Vector3(0, 0, 0.7)
-	_blade_pivot.add_child(blade)
-	_set_swing(0.0)
-	# 「鼻子」：让朝向看得出来
-	var nose := MeshInstance3D.new()
-	var nm := BoxMesh.new()
-	nm.size = Vector3(0.18, 0.12, 0.2)
-	nose.mesh = nm
-	nose.material_override = _mat(Color(0.91, 0.52, 0.23))
-	nose.position = Vector3(0, 1.45, 0.34)
-	_visual.add_child(nose)
+	rig = HumanoidRig.create("wanderer")
+	_visual.add_child(rig)
 	var light := OmniLight3D.new()
 	# 跟随主角的暖光（TECH.md 第 4.6 节：主角一盏 + 附近火把），照亮脚下一圈
 	light.light_color = Color(1.0, 0.72, 0.45)
@@ -159,9 +134,19 @@ static func _mat(c: Color) -> StandardMaterial3D:
 	return m
 
 
-func _set_swing(k: float) -> void:
-	## k：0 = 举刀（右后上方），1 = 挥到左前方。占位动画，正式动作在阶段 2.4。
-	_blade_pivot.rotation = Vector3(deg_to_rad(lerpf(-60.0, 10.0, k)), deg_to_rad(lerpf(70.0, -80.0, k)), 0)
+## 动作 → 角色姿势：普攻挥砍、火球单手施法、寂霜环双手施法、烬环斩张开双臂转一圈、闪现蹲身施法
+const RIG_ACTIONS := {"oath_cleave": "attack", "fireball": "cast", "nova": "cast2", "whirl": "spin", "blink": "cast2"}
+
+
+func _pose_action(s: Dictionary) -> void:
+	var kind: String = RIG_ACTIONS.get(action, "cast")
+	var strike_s := 0.08 if action == "oath_cleave" else 0.12
+	if action_t < s.windup_s:
+		rig.act(kind, "windup", action_t / maxf(s.windup_s, 0.001))
+	elif action_t < s.windup_s + strike_s:
+		rig.act(kind, "strike", (action_t - s.windup_s) / strike_s)
+	else:
+		rig.act(kind, "recover", (action_t - s.windup_s - strike_s) / maxf(s.recover_s - strike_s, 0.001))
 
 
 # ---------------- 输入 ----------------
@@ -455,6 +440,7 @@ func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, _stun_s: fl
 		return
 	hp = maxf(0.0, hp - result.amount)
 	_hurt_t = 0.12
+	rig.hurt()
 	hurt.emit(result.amount)
 	Sfx.play("hurt")
 	if knock_m > 0.0:
@@ -488,6 +474,7 @@ func _die() -> void:
 	progress.sheet.deaths += 1
 	died.emit()
 	print("EF_PLAYER_DEAD")
+	rig.dead = true
 	var tw := create_tween()
 	tw.tween_property(_visual, "rotation_degrees:x", -80.0, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
@@ -498,6 +485,7 @@ func respawn() -> void:
 	mp = max_mp
 	global_position = respawn_point
 	_visual.rotation_degrees = Vector3.ZERO
+	rig.reset_pose()
 	if camera:
 		camera.snap()
 	respawned.emit()
@@ -747,25 +735,17 @@ func _update_action(delta: float) -> void:
 	# 普攻节奏随攻速变化（V0.1：攻击间隔 = 1 / 攻速）；技能不受影响
 	action_t += delta * (progress.attack_speed_scale() if action == "oath_cleave" else 1.0)
 	var total: float = s.windup_s + s.recover_s
-	if action == "oath_cleave":
-		# 前摇举刀 → 判定瞬间挥下 → 后摇收刀
-		if action_t < s.windup_s:
-			_set_swing(0.0)
-		else:
-			_set_swing(clampf((action_t - s.windup_s) / 0.08, 0.0, 1.0))
-	elif action == "whirl":
+	# 前摇举刀 → 判定瞬间挥下 → 后摇收刀（姿势见 _pose_action）
+	_pose_action(s)
+	if action == "whirl":
 		# 烬环斩：整个人转一圈
 		_visual.rotation.y = clampf(action_t / total, 0.0, 1.0) * TAU
-	else:
-		_blade_pivot.position.y = 1.25 + (0.4 if action_t < s.windup_s else 0.0)
 	if not action_hit_done and action_t >= s.windup_s:
 		action_hit_done = true
 		_resolve_action()
 	if action_t >= total:
 		action = ""
-		_set_swing(0.0)
 		_visual.rotation.y = 0.0
-		_blade_pivot.position.y = 1.25
 		if not attack_hold and attack_target != null:
 			attack_target = null
 
@@ -802,13 +782,19 @@ func camera_relative(v: Vector2) -> Vector3:
 	return right * v.x + forward * (-v.y)
 
 
+func _process(delta: float) -> void:
+	# 角色动作按画面帧更新；命中停顿时定格
+	if rig != null and hitstop_t <= 0.0:
+		rig.tick(delta, Vector2(velocity.x, velocity.z).length() if not dead else 0.0)
+
+
 func _physics_process(delta: float) -> void:
 	for k in skill_cd.keys():
 		skill_cd[k] = maxf(0.0, skill_cd[k] - delta)
 	_update_marker(delta)
 	if _hurt_t > 0.0:
 		_hurt_t -= delta
-	_body_mat.albedo_color = Color(1.0, 0.35, 0.3) if _hurt_t > 0.0 else Color(0.55, 0.47, 0.38)
+	rig.set_tint(_hurt_t > 0.0, false, Color(0.9, 0.2, 0.12))
 	if dead:
 		_respawn_t -= delta
 		if _respawn_t <= 0.0:

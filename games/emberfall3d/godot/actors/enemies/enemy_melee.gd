@@ -3,17 +3,10 @@ extends EnemyBase
 ## 近战追击型（「腐尸」等）：发现玩家后追上去，进入攻击距离后前摇 → 挥击 → 收招。
 
 func _build_visual() -> void:
-	## 占位造型按 look 区分（P5：V0.1 的腐尸、骸骨战士、火坑小鬼、食尸鬼、熔渊猎犬、堕落骑士）
+	## 造型按 look 区分（P5：V0.1 的腐尸、骸骨战士、火坑小鬼、食尸鬼、熔渊猎犬、堕落骑士）；骸骨战士是骨骼角色，其余仍是占位几何体
 	match def.get("look", "zombie"):
 		"skel":
-			var bone := Color(0.8, 0.76, 0.66)
-			part(cyl(0.13, 0.17, 1.05), Vector3(0, 0.95, 0), bone)
-			part(sphere(0.21), Vector3(0, 1.66, 0), Color(0.86, 0.83, 0.74))
-			part(sphere(0.045), Vector3(-0.07, 1.68, 0.18), Color(0.4, 0.8, 1.0), 3.0)
-			part(sphere(0.045), Vector3(0.07, 1.68, 0.18), Color(0.4, 0.8, 1.0), 3.0)
-			part(box(Vector3(0.08, 0.62, 0.08)), Vector3(-0.1, 0.3, 0), bone)
-			part(box(Vector3(0.08, 0.62, 0.08)), Vector3(0.1, 0.3, 0), bone)
-			part(box(Vector3(0.06, 0.8, 0.12)), Vector3(0.32, 1.1, 0.3), Color(0.6, 0.6, 0.62), 0.0, Vector3(60, 0, 0))   # 锈剑
+			use_rig("skeleton")      # 2.6 之三：代码搭的骸骨战士（锈剑、破圆盾、锈肩甲）
 		"imp":
 			var red := Color(0.62, 0.16, 0.08)
 			part(sphere(0.3), Vector3(0, 0.55, 0), red, 0.4)

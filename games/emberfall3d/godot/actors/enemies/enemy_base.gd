@@ -4,7 +4,8 @@ extends CharacterBody3D
 ## 寻路与视线、地面预警、群体推开、思考频率分级。具体行为由子类的 _ai() 实现：
 ##   EnemyMelee（近战追击）· EnemyCharger（蓄力冲锋）· EnemyRanged（保持距离放箭）· EnemySummoner（召唤仆从）
 ##   TrainingDummy（训练木桩：不攻击，被打后弹回原位，倒下后复活）
-## 数值来自 data/monsters.json（木桩来自 data/balance.json）。外观都是占位几何体。
+## 数值来自 data/monsters.json（木桩来自 data/balance.json）。
+## 外观：骸骨战士、骸骨弓手用代码搭的骨骼角色（HumanoidRig，2.6 之三，动作跟着 AI 状态走）；其他怪物仍是占位几何体。
 
 signal died(enemy: EnemyBase)
 
@@ -42,6 +43,10 @@ var _warnings: Array[MeshInstance3D] = []
 var _mats: Array[StandardMaterial3D] = []
 var _base_colors: Array[Color] = []
 var visual: Node3D
+var rig: HumanoidRig             # 骨骼角色（没有就是占位几何体）
+var rig_attack := "attack"       # 蓄力 / 出手时用哪套姿势（HumanoidRig.ACTIONS）
+var _rig_acc := 0.0
+var _rig_tint := -1              # 上次设置的受击 / 减速染色（没变就不重复设置材质）
 var hp_label: Label3D
 var stun_mark: Label3D
 
@@ -113,6 +118,44 @@ func _on_dead() -> void:
 
 
 # ---------------- 外观工具 ----------------
+
+func use_rig(id: String, attack_kind := "attack") -> void:
+	## 用骨骼角色代替占位几何体（在 _build_visual 里调用）
+	rig = HumanoidRig.create(id)
+	rig_attack = attack_kind
+	visual.add_child(rig)
+
+
+func _process(delta: float) -> void:
+	## 骨骼角色的动作：看不见（战争迷雾）的不算；离玩家远的每 0.1 秒才更新一次
+	if rig == null or not is_visible_in_tree():
+		return
+	_rig_acc += delta
+	if hitstop_t > 0.0 and not dead:
+		return
+	if _rig_acc < 0.1 and player != null and dist_to_player() > FAR_THINK:
+		return
+	var dt := _rig_acc
+	_rig_acc = 0.0
+	if not dead:
+		_rig_pose()
+	var moving := not dead and stun_t <= 0.0 and knock_t <= 0.0
+	rig.tick(dt, Vector2(velocity.x, velocity.z).length() if moving else 0.0)
+
+
+func _rig_pose() -> void:
+	## AI 状态 → 姿势：蓄力（windup）举起，进入收招（recover）的前 0.12 秒挥出去，然后收回
+	if stun_t > 0.0:
+		return             # 被打断（眩晕会把蓄力直接切到收招）：不做挥出去的动作，动作层自己淡出
+	var a: Dictionary = def.get("attack", def.get("shot", {}))
+	if state == "windup":
+		rig.act(rig_attack, "windup", state_t / maxf(float(a.get("windup_s", 0.4)), 0.01))
+	elif state == "recover":
+		if state_t < 0.12:
+			rig.act(rig_attack, "strike", state_t / 0.12)
+		else:
+			rig.act(rig_attack, "recover", (state_t - 0.12) / maxf(float(a.get("recover_s", 0.5)) - 0.12, 0.05))
+
 
 func part(mesh: Mesh, pos: Vector3, c: Color, emissive: float = 0.0, rot := Vector3.ZERO) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
@@ -192,6 +235,8 @@ func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, stun_s: flo
 		result.amount = maxi(1, roundi(result.amount * Act1Data.rules().monsters.champion.stone_taken_mul))
 	hp = maxf(0.0, hp - result.amount)
 	flash_t = Balance.fb().flash_s
+	if rig != null:
+		rig.hurt()
 	if knock_m > 0.0 and not def.get("no_knockback", false):
 		var d := from_dir
 		d.y = 0.0
@@ -212,6 +257,9 @@ func take_hit(result: Dictionary, from_dir: Vector3, knock_m: float, stun_s: flo
 
 func die() -> void:
 	dead = true
+	if rig != null:
+		rig.dead = true
+		rig.set_tint(false, false)
 	set_state("dead")
 	collision_layer = 0
 	clear_warning()
@@ -408,6 +456,11 @@ func _tick(delta: float) -> void:
 		slow_t -= delta
 	for i in _mats.size():
 		_mats[i].albedo_color = Color(1, 0.97, 0.92) if white else (_base_colors[i].lerp(Color(0.55, 0.8, 1.0), 0.55) if slow_t > 0.0 else _base_colors[i])
+	if rig != null:
+		var tint := (1 if white else 0) + (2 if slow_t > 0.0 else 0)
+		if tint != _rig_tint:
+			_rig_tint = tint
+			rig.set_tint(white, slow_t > 0.0)
 	stun_mark.visible = stun_t > 0.0
 	for k in cooldowns.keys():
 		cooldowns[k] = maxf(0.0, cooldowns[k] - delta)

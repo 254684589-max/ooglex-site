@@ -14,14 +14,7 @@ func _build_visual() -> void:
 		part(cyl(0.03, 0.03, 1.7), Vector3(0.36, 0.9, 0.2), Color(0.35, 0.25, 0.15))
 		part(sphere(0.12), Vector3(0.36, 1.8, 0.2), Color(0.55, 0.3, 0.8))
 		return
-	var bone := Color(0.78, 0.74, 0.64)
-	part(cyl(0.12, 0.16, 1.1), Vector3(0, 0.95, 0), bone)
-	part(sphere(0.2), Vector3(0, 1.65, 0), Color(0.85, 0.82, 0.72))
-	part(box(Vector3(0.5, 0.08, 0.08)), Vector3(0, 1.3, 0), bone)
-	part(box(Vector3(0.08, 0.6, 0.08)), Vector3(-0.1, 0.3, 0), bone)
-	part(box(Vector3(0.08, 0.6, 0.08)), Vector3(0.1, 0.3, 0), bone)
-	var bow := LowPoly.torus(0.42, 0.47)
-	part(bow, Vector3(0.3, 1.25, 0.3), Color(0.45, 0.3, 0.16), 0.0, Vector3(0, 0, 90))
+	use_rig("skeleton_archer", "shoot")     # 2.6 之三：代码搭的骸骨弓手（长弓、箭袋、兜帽破布），拉弓动作跟着前摇走
 
 
 func _ai(delta: float) -> void:
@@ -48,17 +41,27 @@ func _ai(delta: float) -> void:
 				set_state("windup")
 		"windup":
 			face(player.global_position)
-			_mats[_mats.size() - 1].emission_enabled = true
-			_mats[_mats.size() - 1].emission = Color(1.0, 0.3, 0.2)
-			_mats[_mats.size() - 1].emission_energy_multiplier = 2.0 * state_t / s.windup_s
+			_windup_glow(state_t / s.windup_s)
 			if state_t >= s.windup_s:
-				_mats[_mats.size() - 1].emission_enabled = false
+				_windup_glow(-1.0)
 				_shoot()
 				cooldowns["shot"] = s.cooldown_s
 				set_state("recover")
 		"recover":
 			if state_t >= s.recover_s:
 				set_state("chase")
+
+
+func _windup_glow(k: float) -> void:
+	## 前摇时发光越来越亮（弓手：眼窝的冰蓝光；邪教术士：法杖顶端）；k < 0 = 恢复
+	if rig != null:
+		if rig.glow_material:
+			rig.glow_material.emission_energy_multiplier = 3.0 + 5.0 * k if k >= 0.0 else 3.0
+		return
+	var m := _mats[_mats.size() - 1]
+	m.emission_enabled = k >= 0.0
+	m.emission = Color(1.0, 0.3, 0.2)
+	m.emission_energy_multiplier = 2.0 * maxf(k, 0.0)
 
 
 func _shoot() -> void:

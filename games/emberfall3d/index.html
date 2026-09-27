@@ -11,7 +11,7 @@
   <link rel="canonical" href="https://www.ooglex.com/games/emberfall3d/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="余烬陷落 EMBERFALL 大作版 · 3D 开发中预览">
-  <meta property="og:description" content="原创 3D 暗黑风动作角色扮演游戏的灰盒原型：镜头、移动、战斗、怪物 AI 与光照氛围。模型为占位几何体。">
+  <meta property="og:description" content="原创 3D 暗黑风动作角色扮演游戏的灰盒原型：镜头、移动、战斗、怪物 AI 与光照氛围。主角与骸骨类怪物是代码生成的骨骼角色，其余模型为占位几何体。">
   <meta property="og:url" content="https://www.ooglex.com/games/emberfall3d/">
   <meta property="og:image" content="https://www.ooglex.com/games/emberfall3d/img/room.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -124,16 +124,16 @@
         <div class="eyebrow">Ooglex Games · 原创 3D 暗黑风 · 开发中</div>
         <h1 class="serif">余烬陷落<span>EMBERFALL 大作版</span></h1>
         <p class="lead">《余烬陷落》的 3D 重制正在一步一步搭建：真正的三维场景、斜视角镜头、冷暖光与火把、会冲锋会召唤的怪物。这里放出的是当前的开发中版本，每完成一步就更新一次。</p>
-        <p class="dev"><b>开发中预览 · 灰盒原型：</b>人物和怪物目前都是占位几何体；地面和墙已换成写实贴图，但场景造型仍由程序生成。还没有正式模型、动作、配乐和剧情演出。现在从烬原镇出发：接下第一幕的三条任务，找镇上的人疗伤、买卖装备，再从修道院废墟的阶梯下到随机生成、有怪物和掉落的地下城；回城卷轴和传送石让你随时往返；第 3 层与第 6 层有首领把守。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
+        <p class="dev"><b>开发中预览 · 灰盒原型：</b>主角和骸骨类怪物已换成代码搭的骨骼角色，其余怪物与镇民仍是占位几何体；地面和墙已换成写实贴图，但场景造型仍由程序生成。还没有正式模型、动作、配乐和剧情演出。现在从烬原镇出发：接下第一幕的三条任务，找镇上的人疗伤、买卖装备，再从修道院废墟的阶梯下到随机生成、有怪物和掉落的地下城；回城卷轴和传送石让你随时往返；第 3 层与第 6 层有首领把守。想玩完整的第一幕，请玩 <a href="../emberfall/">V0.1 版</a>。</p>
         <div class="actions">
-          <a class="btn primary" href="play/?v=e9b28583">▶ 进入 3D 预览</a>
+          <a class="btn primary" href="play/?v=c78815f8">▶ 进入 3D 预览</a>
           <a class="btn secondary" href="../emberfall/">玩 V0.1 完整版</a>
         </div>
         <p class="small">免下载安装 · 电脑和手机浏览器都能打开 · 首次加载约 40 MB（游戏引擎），之后浏览器会缓存 · 需要支持 WebGL 2</p>
       </div>
       <figure class="shot">
-        <img src="img/room.jpg" width="1280" height="720" alt="3D 灰盒原型：斜视角看向石砌墓室，暖色火把照亮地面，玩家角色（占位几何体）站在训练木桩前，四周被冷色的暗影和暗角包围">
-        <figcaption>网页版实机截图 · 灰盒墓室（高画质）· 模型为占位几何体</figcaption>
+        <img src="img/room.jpg" width="1280" height="720" alt="斜视角近景：火把照亮的石砌墓室里，身穿深红褐长外套、左肩铁肩甲的主角举着长剑，两只手持锈剑破盾的骸骨战士和一只背弓的骸骨弓手围上来">
+        <figcaption>网页版实机截图 · 主角与骸骨战士（高画质）· 角色由代码生成，其余怪物仍是占位几何体</figcaption>
       </figure>
     </div>
 
@@ -164,7 +164,8 @@
         <div class="step"><b>存档、音效与无尽深渊<span class="tag done">已完成</span></b>自动保存到当前浏览器（每 30 秒、换层、交接任务时），下次打开可以「继续旅程」；25 种程序合成音效（打击、技能、拾取、升级、首领……，M 键开关）；第 7 层起是没有尽头的无尽深渊，每 5 层一个「深渊化身」。按 Esc 或点「菜单」保存、开关音效、删除存档。</div>
         <div class="step"><b>对齐验收<span class="tag done">已完成</span></b>逐项对照 V0.1 的全部功能，玩法已经全部覆盖；补上了 Shift 原地攻击、同一局里打过的楼层保持原样等细节。玩过经典版的话，第一次打开 3D 版可以把角色带过来。</div>
         <div class="step"><b>写实贴图<span class="tag done">已完成</span></b>地窖的石板地面与石墙、烬原镇的泥土地换成照片扫描的写实材质（Poly Haven，CC0 免费授权）：颜色、凹凸、粗糙度与缝隙阴影都来自真实石材，火把照过来有真实的起伏；墙脚、墙顶和壁柱也做了出来。</div>
-        <div class="step"><b>角色与怪物模型<span class="tag todo">规划中</span></b>人物和怪物仍是占位几何体；下一步等来源确定后替换，先把烬原镇和地窖做到目标画质。</div>
+        <div class="step"><b>角色与动作（第一批）<span class="tag done">已完成</span></b>主角「流浪者」（长外套、铁肩甲、长剑、手臂上发光的灼痕）、骸骨战士、骸骨弓手换成有骨骼的角色：走跑迈腿摆臂、举剑劈砍、抬手施法、拉弓瞄准、被打中后仰、倒下后烧尽消散。</div>
+        <div class="step"><b>其余怪物、首领与镇民<span class="tag todo">规划中</span></b>腐尸、食尸鬼、邪教术士、堕落骑士、火坑小鬼、熔渊猎犬、两个首领和镇上的三位 NPC 仍是占位几何体，下一批换成骨骼角色。</div>
       </div>
       <p class="small">「进行中」「规划中」为计划，尚未实现。</p>
     </section>
@@ -173,11 +174,11 @@
       <h2>实机截图</h2>
       <div class="gallery">
         <figure class="shot">
-          <img src="img/room.jpg" width="1280" height="720" loading="lazy" alt="灰盒墓室高画质：暖色火把光晕、泛光与暗角">
-          <figcaption>墓室 · 高画质</figcaption>
+          <img src="img/room.jpg" width="1280" height="720" loading="lazy" alt="主角「流浪者」举剑迎战两只骸骨战士和一只骸骨弓手（高画质）">
+          <figcaption>墓室 · 主角与骸骨战士（高画质）</figcaption>
         </figure>
         <figure class="shot">
-          <img src="img/town.jpg" width="1280" height="720" loading="lazy" alt="烬原镇：石板路交汇处，篝火旁站着白袍的老祭司伊莲，玩家（占位几何体）站在路中间，远处是修道院废墟的石墙">
+          <img src="img/town.jpg" width="1280" height="720" loading="lazy" alt="烬原镇：石板路交汇处，篝火旁站着白袍的老祭司伊莲，主角站在路中间，远处是修道院废墟的石墙">
           <figcaption>烬原镇 · 篝火与老祭司伊莲（高画质）</figcaption>
         </figure>
         <figure class="shot">
@@ -189,7 +190,7 @@
           <figcaption>地窖第 2 层 · 回城传送门与小地图（高画质）</figcaption>
         </figure>
         <figure class="shot">
-          <img src="img/floor3.jpg" width="1280" height="720" loading="lazy" alt="随机地下城白骨墓穴第 3 层：两支火把照亮石墙与不规则石板地面的房间，玩家（占位几何体）站在通往上一层的石阶旁，地上散落白骨与碎石">
+          <img src="img/floor3.jpg" width="1280" height="720" loading="lazy" alt="随机地下城白骨墓穴第 3 层：两支火把照亮石墙与不规则石板地面的房间，主角站在通往上一层的石阶旁，地上散落白骨与碎石">
           <figcaption>随机地下城 · 白骨墓穴第 3 层（高画质）</figcaption>
         </figure>
         <figure class="shot">
@@ -236,7 +237,7 @@
     </section>
 
     <div class="cta-bottom">
-      <a class="btn primary" href="play/?v=e9b28583">▶ 进入 3D 预览</a>
+      <a class="btn primary" href="play/?v=c78815f8">▶ 进入 3D 预览</a>
     </div>
 
     <div class="notice">

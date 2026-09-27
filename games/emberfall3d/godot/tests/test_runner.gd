@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit", "photo"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit", "photo", "rig"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2887,4 +2887,166 @@ func test_photo() -> void:
 	var pth: MeshInstance3D = troot.find_child("Paths", true, false)
 	check((g.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("ground").albedo and (pth.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("floor").albedo, "烬原镇：泥土地与石板路用写实贴图")
 	troot.queue_free()
+	await frames(2)
+
+
+# ---------------- 2.6 画质样板间（三）：代码搭的骨骼角色 ----------------
+
+func _bone_y(r: HumanoidRig, b: String) -> Vector3:
+	## 骨骼在模型空间的位置：直接把各级局部姿势乘起来（骨架的全局姿势缓存是延迟更新的，测试里读会拿到旧值）
+	var sk := r.skeleton
+	var i := r.bone_index(b)
+	var t := Transform3D.IDENTITY
+	while i >= 0:
+		t = sk.get_bone_pose(i) * t
+		i = sk.get_bone_parent(i)
+	return t.origin
+
+
+func _pose_for(r: HumanoidRig, kind: String, stage: String, k: float, speed := 0.0, n := 30) -> void:
+	r.reset_pose()
+	for i in n:
+		if kind != "":
+			r.act(kind, stage, k)
+		r.tick(0.02, speed)
+
+
+func test_rig() -> void:
+	# ---- 网格：三角面预算、骨骼权重、绕向、同种角色共用网格 ----
+	var ok_mesh := true
+	var info := []
+	for id in CharModels.ids():
+		var m: Dictionary = CharModels.get_model(id)
+		var mesh: ArrayMesh = m.mesh
+		var budget := 15000 if id == "wanderer" else 5000       # ART.md 第九节：英雄 ≤ 15k、普通怪物 ≤ 5k
+		info.append("%s %d 面 / %.0f 毫秒" % [id, m.tris, m.build_ms])
+		if m.tris > budget or m.tris < 500 or mesh.get_surface_count() > 3:
+			ok_mesh = false
+		for si in mesh.get_surface_count():
+			var arr := mesh.surface_get_arrays(si)
+			var v: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+			var nr: PackedVector3Array = arr[Mesh.ARRAY_NORMAL]
+			var bo: PackedInt32Array = arr[Mesh.ARRAY_BONES]
+			var we: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
+			var ix: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
+			if bo.size() != v.size() * 4 or we.size() != v.size() * 4 or (arr[Mesh.ARRAY_COLOR] as PackedColorArray).size() != v.size():
+				ok_mesh = false
+			for i in v.size():
+				var sw := we[i * 4] + we[i * 4 + 1] + we[i * 4 + 2] + we[i * 4 + 3]
+				if absf(sw - 1.0) > 0.001 or bo[i * 4] < 0 or bo[i * 4] >= HumanoidRig.BONES.size() or bo[i * 4 + 1] >= HumanoidRig.BONES.size():
+					ok_mesh = false
+			for t in range(0, ix.size(), 3):
+				var a := v[ix[t]]
+				if (v[ix[t + 1]] - a).cross(v[ix[t + 2]] - a).dot(nr[ix[t]] + nr[ix[t + 1]] + nr[ix[t + 2]]) > 1e-6:
+					ok_mesh = false
+	check(ok_mesh, "三种角色的网格：三角面在预算内（%s）、最多 3 个面、每个顶点权重和为 1、骨骼编号有效、三角形都朝外" % ", ".join(info))
+	var r1 := HumanoidRig.create("skeleton")
+	var r2 := HumanoidRig.create("skeleton")
+	add_child(r1)
+	add_child(r2)
+	await frames(1)
+	check(r1.mesh_instance.mesh == r2.mesh_instance.mesh and r1.materials[0] != r2.materials[0], "同种角色共用一份网格；材质各自一份（受击闪白互不影响）")
+	var names := []
+	for b in HumanoidRig.BONES:
+		names.append(b[0])
+	check(r1.skeleton.get_bone_count() == 17 and r1.bone_index("RightHand") >= 0 and r1.mesh_instance.get_node_or_null(r1.mesh_instance.skeleton) == r1.skeleton, "骨架 17 根骨骼（Godot 人形骨骼命名：%s…），网格绑在骨架上" % ", ".join(names.slice(0, 5)))
+	r2.queue_free()
+
+	# ---- 动作：走路迈腿、蓄力举手过头、出手挥到身前、拉弓、受击、倒下、动作淡出 ----
+	var r := r1
+	_pose_for(r, "", "", 0.0, 0.0)
+	var head := _bone_y(r, "Head")
+	var hand0 := _bone_y(r, "RightHand")
+	var feet := []
+	for i in 12:
+		r.tick(0.05, 3.2)
+		feet.append(_bone_y(r, "LeftFoot").z - _bone_y(r, "RightFoot").z)
+	check(feet.max() > 0.25 and feet.min() < -0.25, "走路：两只脚前后交替（左右脚前后差 %.2f 到 %.2f 米）" % [feet.min(), feet.max()])
+	_pose_for(r, "attack", "windup", 1.0)
+	var up := _bone_y(r, "RightHand")
+	var reach := -9.0
+	for k in 11:
+		_pose_for(r, "attack", "strike", k / 10.0)
+		reach = maxf(reach, _bone_y(r, "RightHand").z)
+	var fwd := _bone_y(r, "RightHand")
+	check(up.y > head.y and reach > hand0.z + 0.2 and fwd.y < up.y - 0.4 and fwd.x > hand0.x + 0.3, "挥砍：蓄力时右手举过头顶（%.2f 米，头 %.2f），挥过身前（最远 %.2f 米，站姿 %.2f），收在另一侧腰下" % [up.y, head.y, reach, hand0.z])
+	_pose_for(r, "shoot", "windup", 1.0)
+	check(_bone_y(r, "LeftHand").z > 0.4 and absf(_bone_y(r, "LeftHand").y - 1.45) < 0.2, "拉弓：左手持弓平举向前（%.2f 米）" % _bone_y(r, "LeftHand").z)
+	_pose_for(r, "attack", "windup", 1.0)
+	for i in 10:
+		r.tick(0.02, 0.0)
+	check(r._act_w == 0.0 and _bone_y(r, "RightHand").y < head.y - 0.3, "不再调用 act 后 0.2 秒内收回动作")
+	r.hurt()
+	r.tick(0.02, 0.0)
+	var hurt_head := _bone_y(r, "Head")
+	for i in 30:
+		r.tick(0.02, 0.0)
+	check(hurt_head.z < _bone_y(r, "Head").z - 0.02, "受击：上身后仰，0.3 秒后恢复")
+	r.dead = true
+	for i in 30:
+		r.tick(0.02, 0.0)
+	check(_bone_y(r, "LeftHand").x > 0.4 and _bone_y(r, "RightHand").x < -0.4, "倒下：手脚发软张开")
+	r.set_tint(true, false)
+	var flashed := r.materials.all(func(m): return m.emission.r > 0.5)
+	r.set_tint(false, true)
+	check(flashed and r.materials.all(func(m): return m.emission == Color(0, 0, 0) and m.albedo_color.b > m.albedo_color.r), "受击闪白（发光）、减速偏冰蓝，都不切换着色器（发光常开）")
+	r1.queue_free()
+
+	# ---- 性能：60 个骨骼角色同时播动作 ----
+	var many := []
+	for i in 60:
+		var rr := HumanoidRig.create("skeleton" if i % 2 == 0 else "skeleton_archer")
+		add_child(rr)
+		many.append(rr)
+	var t0 := Time.get_ticks_usec()
+	for f in 30:
+		for rr in many:
+			rr.act("attack", "windup", f / 30.0)
+			rr.tick(0.016, 2.5)
+	var per_frame := (Time.get_ticks_usec() - t0) / 1000.0 / 30.0
+	check(per_frame < 6.0, "info 60 个骨骼角色每帧算姿势 %.2f 毫秒（本机原生；远处的每 0.1 秒才算一次，迷雾里的不算）" % per_frame)
+	for rr in many:
+		rr.queue_free()
+
+	# ---- 游戏里：主角、骸骨战士、骸骨弓手 ----
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_test_area = true
+	main.auto_pack_test = false
+	main.run_nav_bench = false
+	main.spawn_monsters = false
+	add_child(main)
+	await frames(3)
+	var hero: Player = main.hero
+	check(hero.rig != null and hero.rig.model_id == "wanderer" and hero.rig.get_parent() == hero._visual, "主角换成代码搭的「流浪者」")
+	hero._start_action("oath_cleave")
+	var wind: float = Balance.skill("oath_cleave").windup_s
+	await physics(maxi(2, int(wind * 60.0 * 0.8)))
+	await frames(2)
+	check(hero.rig._act_w > 0.5 and _bone_y(hero.rig, "RightHand").y > _bone_y(hero.rig, "Head").y - 0.1, "普攻前摇：主角把剑举起来")
+	var sk := _spawn(main, "skel", hero.global_position + Vector3(0, 0, 6))
+	var ar := _spawn(main, "archer", hero.global_position + Vector3(4, 0, 6))
+	await frames(2)
+	check(sk.rig != null and sk.rig.model_id == "skeleton" and sk._mats.is_empty() and ar.rig != null and ar.rig.model_id == "skeleton_archer" and ar.rig_attack == "shoot", "骸骨战士、骸骨弓手换成骨骼角色（不再有占位几何体）")
+	ar.set_state("windup")
+	ar.state_t = float(ar.def.shot.windup_s) * 0.9
+	ar._windup_glow(0.9)
+	check(ar.rig.glow_material.emission_energy_multiplier > 6.0, "弓手前摇时眼窝的光变亮")
+	ar._windup_glow(-1.0)
+	sk.visible = false
+	var t_hidden: float = sk.rig._t
+	await frames(5)
+	check(sk.rig._t == t_hidden, "被战争迷雾藏起来的怪物不算动作")
+	sk.visible = true
+	sk.take_hit({"amount": 1, "crit": false, "type": "physical"}, Vector3.FORWARD, 0.0)
+	check(sk.rig._hurt > 0.9, "骸骨被打中：受击后仰")
+	sk.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await seconds(1.2)
+	var mi: MeshInstance3D = sk.rig.mesh_instance
+	var dm := []
+	for i in mi.mesh.get_surface_count():
+		dm.append(mi.get_surface_override_material(i))
+	check(sk.rig.dead and dm.all(func(m): return m is ShaderMaterial) and dm.any(func(m): return m.get_shader_parameter("use_vertex_color")) and float(dm[0].get_shader_parameter("progress")) > 0.0, "骸骨倒下后逐面换成溶解材质，保留顶点色（正在烧尽）")
+	await seconds(1.4)
+	check(not is_instance_valid(sk), "烧尽后释放")
+	main.queue_free()
 	await frames(2)
