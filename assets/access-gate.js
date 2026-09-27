@@ -1,5 +1,6 @@
-/* OOGLEX_ACCESS_GATE_V12
-   Generic 10% preview hard-stop for non-password /apps/ and /games/ pages.
+/* OOGLEX_ACCESS_GATE_V13
+   Generic 10% preview hard-stop for non-password /apps/ pages.
+   /games/ is intentionally fully public.
    Mobile-safe rule: clip the document to the visual viewport, keep the preview above,
    and anchor the dark access wall to the real bottom edge. */
 (function () {
@@ -35,7 +36,7 @@
   }
 
   function protectedPath() {
-    return /^\/(apps|games)(\/|$)/.test(PATH) &&
+    return /^\/apps(\/|$)/.test(PATH) &&
            !nativePasswordPage() &&
            !nativePreviewPage();
   }

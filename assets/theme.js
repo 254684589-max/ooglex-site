@@ -479,11 +479,11 @@
 (function () {
   "use strict";
   var p = window.location.pathname || "/";
-  var protectedPage = p.indexOf("/apps/") === 0 || p === "/apps" ||
-                      p.indexOf("/games/") === 0 || p === "/games";
+  // Registration preview applies to data apps only. Games stay fully public.
+  var protectedPage = p.indexOf("/apps/") === 0 || p === "/apps";
   if (!protectedPage || window.OoglexSiteAccess) return;
   var s = document.createElement("script");
-  s.src = "/assets/access-gate.js?v=20260926p";
+  s.src = "/assets/access-gate.js?v=20260927-games-public";
   s.defer = true;
   (document.head || document.documentElement).appendChild(s);
 })();
