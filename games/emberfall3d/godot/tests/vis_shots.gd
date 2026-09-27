@@ -226,13 +226,13 @@ func _ready() -> void:
 			hero.global_position = DungeonBuilder.cell_center(c) + Vector3(1.2, 0, 4.6)
 			break
 	hero.stop()
-	main.info.visible = false
+	main.info_row.visible = false
 	main.camera.distance = main.camera.min_distance
 	main.camera.snap()
 	await get_tree().create_timer(0.6).timeout
 	await _shot(out, "kit-room", tier)
 	main.camera.distance = 15.0
-	main.info.visible = true
+	main.info_row.visible = true
 	# 阶段 2.5：特效（火球爆炸与焦痕、寂霜环、怪物烧尽消散）——第 4 层最大的房间中央（没有传送门挡着），主角 12 级
 	main.go_floor(4)
 	await get_tree().create_timer(0.3).timeout
@@ -245,7 +245,7 @@ func _ready() -> void:
 			big = r
 	hero.global_position = Vector3((big.cx + 0.5) * DungeonBuilder.TILE, 0, (big.cy + 0.5) * DungeonBuilder.TILE)
 	hero.stop()
-	main.info.visible = false
+	main.info_row.visible = false
 	hero.progress.sheet.lvl = 12
 	hero.stats_changed()
 	main.camera.snap()
@@ -274,7 +274,7 @@ func _ready() -> void:
 	z2.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
 	await get_tree().create_timer(1.35).timeout
 	await _shot(out, "fx-dissolve", tier)
-	main.info.visible = true
+	main.info_row.visible = true
 	# P10：木桶、宝箱、神殿与战争迷雾（找一层有神殿和宝箱的，站在神殿旁）
 	for f in range(2, 12):
 		main.go_floor(f)
@@ -307,7 +307,7 @@ func _ready() -> void:
 		hero.global_position = b.global_position + Vector3(2.6, 0, 2.6)
 		main.camera.snap()
 		b.set_physics_process(false)     # 定住首领拍照（不然它马上贴脸）
-		main.info.visible = false        # 说明文字挡住画面上方，首领截图时先藏起来
+		main.info_row.visible = false        # 说明那一行挡住画面左上角，首领截图时先藏起来
 		await get_tree().create_timer(0.5).timeout
 		await _shot(out, "boss%d" % f, tier)
 		if f == 6:
@@ -411,7 +411,7 @@ func _shots_six(main: Node, out: String, tier: String) -> void:
 
 func _shots_seven(main: Node, out: String, tier: String) -> void:
 	## 2.6 之七：楼梯、火把、篝火近景（说明文字先藏起来，免得挡住画面）
-	main.info.visible = false
+	main.info_row.visible = false
 	var d0: float = main.camera.distance
 	main.go_floor(2)
 	await get_tree().create_timer(0.3).timeout
@@ -459,7 +459,7 @@ func _shots_seven(main: Node, out: String, tier: String) -> void:
 	await get_tree().create_timer(0.6).timeout
 	await _shot(out, "town-fire", tier)
 	main.camera.distance = d0
-	main.info.visible = true
+	main.info_row.visible = true
 
 
 func _wait(n: int) -> void:

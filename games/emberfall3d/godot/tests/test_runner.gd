@@ -73,7 +73,18 @@ func test_boot() -> void:
 	var pitch := rad_to_deg(asin(-fwd.y))
 	check(absf(pitch - main.PITCH_DEG) < 3.0, "相机俯角约 55°（实测 %.1f°）" % pitch)
 	check(main.hero != null, "主角占位体已创建")
-	check(main.info.text.contains("占位"), "画面明确标注「占位几何体」")
+	check(main.info.text.contains("占位") and main.info_row.get_child(1).text.contains("占位"), "画面明确标注「占位几何体」（折叠后的标题行也写着「部分占位」）")
+	# 说明文字默认折叠：只剩「说明 ▼」一行，底部调试状态也藏起来；按 H 或点按钮展开 / 收起
+	var folded: bool = not main.info.visible and not main.pack_label.visible and main.info_btn.text == "说明 ▼"
+	var hk := InputEventKey.new()
+	hk.physical_keycode = KEY_H
+	hk.pressed = true
+	main._unhandled_key_input(hk)
+	var opened: bool = main.info.visible and main.pack_label.visible and main.info_btn.text == "收起 ▲"
+	main.info_btn.pressed.emit()
+	check(folded and opened and not main.info.visible and not main.pack_label.visible, "说明文字默认折叠成一行；按 H 展开（连同底部调试状态），点「收起 ▲」折回去")
+	# （无头模式下窗口很小，按布局参数比：左上角那一列的右边距要让出小地图的宽度 + 两边的留白）
+	check(-main.hud_top.offset_right >= 16 + main.minimap.size.x + 8, "左上角说明那一列不伸到小地图底下（右边距 %.0f，小地图宽 %.0f）" % [-main.hud_top.offset_right, main.minimap.size.x])
 	check(FileAccess.file_exists("res://assets/fonts/NotoSansSC-EF.ttf"), "中文字体已打包")
 	main.queue_free()
 	await frames(1)

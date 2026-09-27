@@ -41,7 +41,11 @@ var moon: DirectionalLight3D
 var quality := ""
 var vignette: ColorRect
 var camera: IsoCamera
-var info: Label
+var info: Label                  # 说明文字（模型进度 + 操作说明）；默认折叠，点左上角「说明」或按 H 展开
+var info_row: HBoxContainer      # 折叠后留下的一行：「说明 ▼」按钮 + 标题
+var info_btn: Button
+var info_open := false
+var hud_top: VBoxContainer       # 左上角那一列（说明、资源条、手机上的状态文字）
 var pack_label: Label
 var pack_state := "章节包：未测试"
 var nav_state := ""
@@ -1245,6 +1249,20 @@ func add_log(text: String, c: Color) -> void:
 		log_lines.pop_front()
 
 
+func set_info_open(v: bool) -> void:
+	## 展开 / 收起左上角的说明文字与底部的调试状态
+	info_open = v
+	info.visible = v
+	pack_label.visible = v
+	info_btn.text = "收起 ▲" if v else "说明 ▼"
+
+
+func _layout_top() -> void:
+	## 左上角那一列不伸到右上角的小地图底下（小地图：窄屏 110 宽、其余 160 宽，见 Minimap.layout）
+	var small := get_viewport().get_visible_rect().size.x < 640
+	hud_top.offset_right = -(16 + (110 if small else 160) + 12)
+
+
 func _show_banner(text: String) -> void:
 	if banner:
 		banner.text = text
@@ -1273,8 +1291,9 @@ func _build_ui() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 1
 	add_child(layer)
-	# 左上角一列：说明文字 → 职业资源条 →（手机上）状态文字，按内容高度往下排，互不重叠
+	# 左上角一列：说明（默认折叠成一行）→ 职业资源条 →（手机上）状态文字，按内容高度往下排，互不重叠
 	var top := VBoxContainer.new()
+	hud_top = top
 	top.anchor_right = 1.0
 	top.offset_left = 16
 	top.offset_top = 12
@@ -1282,12 +1301,37 @@ func _build_ui() -> void:
 	top.add_theme_constant_override("separation", 8)
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(top)
+	# 说明文字默认折叠（所有者：「把文字折叠一下」）：只留一行「说明 ▼」+ 标题；点它或按 H 展开，展开后才显示
+	# 模型进度、玩法提示、操作说明和底部的调试状态（章节包、导航烘焙、渲染器、画质）
+	info_row = HBoxContainer.new()
+	info_row.add_theme_constant_override("separation", 10)
+	info_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top.add_child(info_row)
+	info_btn = Button.new()
+	info_btn.name = "InfoToggle"
+	info_btn.text = "说明 ▼"
+	info_btn.tooltip_text = "展开 / 收起说明（H）"
+	info_btn.add_theme_font_size_override("font_size", 16)
+	info_btn.custom_minimum_size = Vector2(76, 34)
+	info_btn.pressed.connect(func(): set_info_open(not info_open))
+	info_row.add_child(info_btn)
+	var title := Label.new()
+	title.text = "余烬陷落 · 灰盒原型（部分占位）"
+	title.clip_text = true
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
+	title.add_theme_color_override("font_outline_color", Color(0.05, 0.03, 0.02))
+	title.add_theme_constant_override("outline_size", 4)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	info_row.add_child(title)
 	info = Label.new()
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
-	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；Esc 菜单；M 音效；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n角色、道具、房屋、树木、楼梯与火把已换成代码搭的精细模型；地上的掉落物仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
+	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；Esc 菜单；M 音效；H 收起这段说明；WASD 移动；滚轮缩放"
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型\n角色、道具、房屋、树木、楼梯与火把已换成代码搭的精细模型；地上的掉落物仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
+	info.visible = false
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0
@@ -1301,6 +1345,7 @@ func _build_ui() -> void:
 	pack_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	pack_label.add_theme_font_size_override("font_size", 14)
 	pack_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.7))
+	pack_label.visible = false        # 调试状态跟着说明一起折叠
 	layer.add_child(pack_label)
 	var box := VBoxContainer.new()
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1421,6 +1466,9 @@ func _build_ui() -> void:
 	touch.changed.connect(func(v: Vector2): hero.stick = v)
 	# 说明文字会折到右上角那排按钮底下：整列从按钮下方开始（P7 手机、P8 起电脑也是四个按钮）
 	top.offset_top = 64
+	_layout_top()
+	get_viewport().size_changed.connect(_layout_top)
+	hero.ui_blockers.append(info_btn)          # 手机上点「说明」不算点地面
 	if touch.visible:
 		# 手机上底部有摇杆和按钮：状态文字挪到左上角那一列的最后
 		pack_label.get_parent().remove_child(pack_label)
@@ -1623,6 +1671,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			return
 		elif event.is_action("sound_toggle"):
 			toggle_sound()
+		elif event.is_action("help_toggle"):
+			set_info_open(not info_open)
 	# F7：轮换画质档（开发与试玩用；正式设置界面在后续步骤）
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F7:
 		apply_quality(Look.TIERS[(Look.TIERS.find(quality) + 1) % Look.TIERS.size()])

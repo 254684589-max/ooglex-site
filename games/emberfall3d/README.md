@@ -1,6 +1,6 @@
 # 余烬陷落 EMBERFALL · 大作版（开发中）
 
-原创暗黑风动作角色扮演游戏的 3D 大作版本，Godot 4.7.2。已上线的 Canvas 2D 版在 `../emberfall/`（V0.1），两者互不影响。
+原创暗黑风动作角色扮演游戏的 3D 大作版本，Godot 4.7.2。原来的 Canvas 2D 版（V0.1，`../emberfall/`）已于 2026-09-27 下线，那个地址现在跳转到本版；V0.1 源码只在 git 历史里（提交 `43194b57`）。
 
 - 设计文档：`design/`（WORLD 世界观 · STORY 剧情 · GDD 玩法 · ART 美术 · TECH 技术）
 - 路线图与进度台账：`../../docs/EMBERFALL_ROADMAP.md`

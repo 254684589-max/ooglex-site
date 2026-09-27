@@ -1,6 +1,6 @@
 ---
 name: emberfall
-description: 继续开发原创暗黑风 ARPG《余烬陷落》EMBERFALL 的大作版本（games/emberfall3d，Godot 4）或维护 V0.1（games/emberfall）。加载路线图台账、原创红线和每步的收尾流程。用户说「继续开发余烬陷落」「余烬陷落下一步」「EMBERFALL 步骤 X.Y」或输入 /emberfall 时使用。
+description: 继续开发原创暗黑风 ARPG《余烬陷落》EMBERFALL（3D 版 games/emberfall3d，Godot 4；2D 版 V0.1 已下线）。加载路线图台账、原创红线和每步的收尾流程。用户说「继续开发余烬陷落」「余烬陷落下一步」「EMBERFALL 步骤 X.Y」或输入 /emberfall 时使用。
 ---
 
 # 余烬陷落：持续开发
@@ -22,7 +22,7 @@ description: 继续开发原创暗黑风 ARPG《余烬陷落》EMBERFALL 的大�
 
 ## 二、目录与复用
 
-- V0.1：`games/emberfall/`（Canvas 2D，已上线，URL 不变）。**所有者决定 D9：先把 V0.1 的全部玩法与内容移植到 3D（路线图「阶段 P」），画质之后再提升**；V0.1 冻结，只修故障、不加功能，移植完成前不要删。移植的是玩法与数据，不搬 Canvas 绘制代码。
+- V0.1：`games/emberfall/`（Canvas 2D）**已下线**（2026-09-27 所有者决定）：`/games/emberfall/` 与 `/games/emberfall/play/` 只是跳转到 `/games/emberfall3d/` 的页面，不要再往里加东西；V0.1 的源码只在 git 历史里（提交 `43194b57`）。玩法与数据已全部移植到 3D（阶段 P），以 `godot/data/*.json` 为准。
 - 大作版：`games/emberfall3d/`（`design/` 设计文档、`godot/` 工程、`tools/` 构建脚本、`play/` 网页导出）。
 - 构建与测试脚本先复用 `games/working-life/tools/`（`build_web.sh`、`run_tests.sh`、`stamp_web_build.py`），改路径，不另起一套。
 - Godot 网页导出只能用兼容渲染器（GL Compatibility），画质方案都按这个前提设计。

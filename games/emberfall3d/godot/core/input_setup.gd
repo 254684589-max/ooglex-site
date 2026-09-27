@@ -15,6 +15,7 @@ const ACTIONS := {
 	"map_toggle": [KEY_TAB],     # P8：自动地图（V0.1 同键）
 	"sound_toggle": [KEY_M],     # P11：音效开关（V0.1 同键）
 	"quest_panel": [KEY_J],      # P8：任务日志（V0.1 放在角色面板里，3D 版单独一个面板）
+	"help_toggle": [KEY_H],      # 展开 / 收起左上角的说明文字
 }
 
 
