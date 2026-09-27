@@ -24,7 +24,7 @@ func _ready() -> void:
 			pack_path = a.substr(7)
 		else:
 			only.append(a)
-	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit", "photo", "rig"]:
+	for g in ["boot", "look", "camera", "move", "damage", "combat", "monsters", "perf", "pack", "port", "dungeon", "growth", "skills", "loot", "inventory", "town", "quests", "bosses", "props", "save", "parity", "fx", "kit", "photo", "rig", "models"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -3224,4 +3224,55 @@ func test_rig() -> void:
 	await seconds(1.4)
 	check(not is_instance_valid(sk), "烧尽后释放")
 	main.queue_free()
+	await frames(2)
+
+
+# ---------------- 2.6 画质样板间（五）：代码搭的道具与房屋细节 ----------------
+
+func test_models() -> void:
+	var ok := true
+	var info := []
+	for id in PropModels.ids():
+		var m: Dictionary = PropModels.get_model(id)
+		var mesh: ArrayMesh = m.mesh
+		info.append("%s %d" % [id, m.tris])
+		if m.tris > 2000 or m.tris < 20:
+			ok = false
+		for si in mesh.get_surface_count():
+			var arr := mesh.surface_get_arrays(si)
+			if arr[Mesh.ARRAY_BONES] != null or (arr[Mesh.ARRAY_COLOR] as PackedColorArray).size() != (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array).size():
+				ok = false
+	check(ok and PropModels.get_model("barrel").mesh == PropModels.get_model("barrel").mesh, "道具网格：每种 ≤ 2000 面（%s），不带骨骼、都有顶点色，同种只生成一次" % ", ".join(info))
+	# 地下城道具：外观换成精细模型，开盖 / 熄灭 / 打碎照旧
+	var root := Node3D.new()
+	add_child(root)
+	var spots := {}
+	for k in ["barrel", "chest", "shrine"]:
+		var sp := InteractSpot.make(k)
+		root.add_child(sp)
+		spots[k] = sp
+	await frames(1)
+	check(spots.barrel.find_child("barrel", false, false) != null and spots.chest.find_child("chest", false, false) != null and spots.chest._lid.get_child(0).name == "chest_lid"
+		and spots.shrine.find_child("shrine", false, false) != null and spots.shrine._glow.mesh == PropModels.get_model("shrine_crystal").mesh, "木桶、宝箱（箱身 + 可以打开的盖子）、神殿（石台 + 悬浮晶石）换成精细模型")
+	for k in spots:
+		spots[k].set_used(false)
+	await frames(1)
+	check(is_equal_approx(spots.chest._lid.rotation_degrees.x, -105.0) and (spots.shrine._glow.material_override as StandardMaterial3D).emission_energy_multiplier == 0.0
+		and not spots.shrine._glow_light.visible and not is_instance_valid(spots.barrel), "用过：宝箱开盖、神殿晶石熄灭、木桶碎掉消失（行为不变）")
+	root.queue_free()
+	# 烬原镇：水井、传送石、铁砧、篝火、房屋细节；门开在离石板路最近的一面
+	var troot := Node3D.new()
+	add_child(troot)
+	var tm := TownGen.generate()
+	TownBuilder.build(troot, tm, {"seed": 3})
+	var props_ok := ["well", "waystone", "anvil", "campfire"].all(func(n): return troot.find_child(n, true, false) is MeshInstance3D)
+	var houses: Array = troot.find_children("House_*", "MeshInstance3D", true, false)
+	var tris := 0
+	for h in houses:
+		tris += int(h.get_meta("tris"))
+	var smith: Dictionary = tm.houses.filter(func(hs): return hs.id == "smith")[0]
+	var h3: Dictionary = tm.houses.filter(func(hs): return hs.id == "house3")[0]
+	check(props_ok and houses.size() == tm.houses.size() and tris < 20000, "烬原镇：水井、传送石、铁砧、篝火换成精细模型；%d 栋房子都有木构架、门、窗、烟囱（共 %d 面）" % [houses.size(), tris])
+	check(TownBuilder.door_dir(smith.rect, tm.paths) == Vector2i(0, 1) and TownBuilder.door_dir(h3.rect, tm.paths) == Vector2i(1, 0), "房门开在离石板路最近的一面（铁匠铺朝南、三号房朝东）")
+	troot.queue_free()
 	await frames(2)

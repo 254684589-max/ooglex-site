@@ -19,5 +19,5 @@
 | Plaster Stone Wall 01（烬原镇房屋的墙）；颜色、OpenGL 法线、ARM，1K JPG | `godot/assets/textures/plaster_stone_wall_01/` | Charlotte Baglioni / Poly Haven | CC0 1.0 | https://polyhaven.com/a/plaster_stone_wall_01 | 2026-09-27 | 2.6 之四；2.3 米见方，每 2.4 米平铺；导入时缩到 512 像素 |
 | Grey Roof Tiles 02（烬原镇房顶）；颜色、OpenGL 法线、ARM，1K JPG | `godot/assets/textures/grey_roof_tiles_02/` | Rob Tuytel / Poly Haven | CC0 1.0 | https://polyhaven.com/a/grey_roof_tiles_02 | 2026-09-27 | 2.6 之四；1.5 米见方，每 1.8 米平铺；导入时缩到 512 像素 |
 
-场景里的模型全部由代码生成（所有角色——主角、怪物、首领、镇民——是 `actors/rig/` 代码搭的骨骼角色，2.6 之三；训练木桩、道具与房屋是占位几何体），不用外部模型与动作；外部贴图只有上面这些 Poly Haven 贴图（2.6 之二起三套、2.6 之四再加九套），缺失时自动退回程序化贴图（`world/look.gd`）。
+场景里的模型全部由代码生成（所有角色是 `actors/rig/` 代码搭的骨骼角色，2.6 之三；道具与房屋细节是 `world/prop_models.gd` 代码搭的模型，2.6 之五；训练木桩与树木是占位几何体），不用外部模型与动作；外部贴图只有上面这些 Poly Haven 贴图（2.6 之二起三套、2.6 之四再加九套），缺失时自动退回程序化贴图（`world/look.gd`）。
 贴图原文件是 Poly Haven 下载的 1K JPG，未修改；导入设置为 Basis Universal + mipmap，法线贴图勾选 normal_map；2.6 之四的九套另设 size_limit = 512（`*.jpg.import`）。

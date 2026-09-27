@@ -5,7 +5,7 @@ extends Node3D
 ##   well   水井：回满生命（V0.1）
 ##   portal 回城卷轴打开的蓝色传送门（这里搭外观）：地下那一头通往镇上，镇上那一头通回原处；走进门里也会直接使用
 ##   barrel 木桶、chest 宝箱、shrine 神殿（P10，地下城房间里；这里搭外观）：用过后 set_used()，不能再点
-## 外观是程序生成的占位几何体。
+## 外观：传送门是程序生成的光环；木桶、宝箱、神殿是代码搭的精细模型（PropModels，2.6 之五）。
 
 const PORTAL_ENTER := 0.8      # 走到离传送门中心这么近就直接穿过去（米）
 
@@ -117,51 +117,35 @@ func _build_portal() -> void:
 	add_child(Look.blob_shadow(0.7))
 
 
-func _part(mesh: Mesh, pos: Vector3, c: Color, parent: Node3D = self, glow := 0.0) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	mi.mesh = mesh
-	var m := StandardMaterial3D.new()
-	m.albedo_color = c
-	m.roughness = 1.0
-	if glow > 0.0:
-		m.emission_enabled = true
-		m.emission = c
-		m.emission_energy_multiplier = glow
-	Look.rim(m, 0.2)
-	mi.material_override = m
-	mi.position = pos
-	parent.add_child(mi)
-	return mi
-
-
 func _build_barrel() -> void:
-	var wood := Color(0.4, 0.26, 0.14)
-	_part(LowPoly.cylinder(0.36, 0.36, 0.9), Vector3(0, 0.45, 0), wood)
-	for y in [0.18, 0.72]:
-		_part(LowPoly.cylinder(0.38, 0.38, 0.06), Vector3(0, y, 0), Color(0.22, 0.2, 0.2))   # 铁箍
+	add_child(PropModels.instance("barrel"))
 	add_child(Look.blob_shadow(0.45))
 
 
 func _build_chest() -> void:
-	var wood := Color(0.45, 0.28, 0.13)
-	var gold := Color(0.75, 0.58, 0.25)
-	_part(EnemyBase.box(Vector3(0.9, 0.5, 0.55)), Vector3(0, 0.25, 0), wood)
-	_part(EnemyBase.box(Vector3(0.94, 0.06, 0.59)), Vector3(0, 0.12, 0), gold)
+	add_child(PropModels.instance("chest"))
 	# 盖子绕后边的铰链打开
 	_lid = Node3D.new()
 	_lid.position = Vector3(0, 0.5, -0.275)
 	add_child(_lid)
-	_part(EnemyBase.box(Vector3(0.9, 0.2, 0.55)), Vector3(0, 0.1, 0.275), wood, _lid)
-	_part(EnemyBase.box(Vector3(0.14, 0.14, 0.06)), Vector3(0, 0.02, 0.56), gold, _lid)       # 锁扣
+	_lid.add_child(PropModels.instance("chest_lid"))
 	add_child(Look.blob_shadow(0.55))
 
 
 func _build_shrine() -> void:
-	# 石台 + 悬浮的蓝色晶石（用过后熄灭）
-	var stone := Color(0.42, 0.4, 0.44)
-	_part(LowPoly.cylinder(0.55, 0.65, 0.35), Vector3(0, 0.17, 0), stone)
-	_part(LowPoly.cylinder(0.22, 0.3, 0.8), Vector3(0, 0.75, 0), stone)
-	_glow = _part(LowPoly.sphere(0.2), Vector3(0, 1.4, 0), Color(0.45, 0.8, 1.0), self, 3.0)
+	# 台阶石台 + 石爪托着悬浮的蓝色晶石（用过后熄灭）
+	add_child(PropModels.instance("shrine"))
+	_glow = MeshInstance3D.new()
+	_glow.mesh = PropModels.get_model("shrine_crystal").mesh
+	var gm := StandardMaterial3D.new()
+	gm.albedo_color = Color(0.45, 0.8, 1.0)
+	gm.emission_enabled = true
+	gm.emission = Color(0.45, 0.8, 1.0)
+	gm.emission_energy_multiplier = 3.0
+	_glow.material_override = gm
+	_glow.position.y = 1.5
+	_glow.name = "Crystal"
+	add_child(_glow)
 	_glow_light = OmniLight3D.new()
 	_glow_light.light_color = Color(0.45, 0.75, 1.0)
 	_glow_light.light_energy = 1.2
@@ -197,7 +181,8 @@ func set_used(animate := true) -> void:
 func _process(delta: float) -> void:
 	if _glow and not used:
 		_t += delta
-		_glow.position.y = 1.4 + sin(_t * 2.2) * 0.06
+		_glow.position.y = 1.5 + sin(_t * 2.2) * 0.06
+		_glow.rotation.y = _t * 0.8
 	if _ring:
 		_t += delta
 		_ring.position.y = sin(_t * 2.0) * 0.03

@@ -162,11 +162,18 @@ func _ready() -> void:
 	main.camera.snap()
 	await get_tree().create_timer(0.8).timeout
 	await _shot(out, "town-gate", tier)
-	# 2.6 之四：铁匠铺（灰泥石墙 + 石板瓦房顶）
-	hero.global_position = DungeonBuilder.cell_center(Vector2i(10, 16))
+	# 2.6 之四 / 之五：铁匠铺（灰泥石墙、石板瓦房顶、木构架、门、亮灯的窗、烟囱）——主角站在门前，镜头拉近
+	var smith: Dictionary = main.town.houses.filter(func(hs): return hs.id == "smith")[0] if "town" in main and main.town else {}
+	var sr: Rect2i = smith.rect if not smith.is_empty() else Rect2i(6, 12, 4, 3)
+	var dd := TownBuilder.door_dir(sr, TownGen.generate().paths)
+	var door_cell := sr.position + sr.size / 2 + Vector2i(dd.x * (sr.size.x / 2 + 2), dd.y * (sr.size.y / 2 + 2))
+	hero.global_position = DungeonBuilder.cell_center(door_cell) + Vector3(1.2, 0, 0.6)
+	var d0: float = main.camera.distance
+	main.camera.distance = main.camera.min_distance
 	main.camera.snap()
 	await get_tree().create_timer(0.8).timeout
 	await _shot(out, "town-house", tier)
+	main.camera.distance = d0
 	main._talk(main.npc("elin"))
 	await _shot(out, "town-dialog", tier)
 	main.dialog_panel.close()

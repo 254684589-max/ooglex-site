@@ -114,26 +114,34 @@ func _apply_mesh(m: Dictionary) -> void:
 	glow_material = null
 	var surfaces: Array = m.surfaces
 	for s in surfaces.size():
-		var mat := StandardMaterial3D.new()
-		match surfaces[s]:
-			RigBuilder.GLOW:
-				mat.albedo_color = Color(0.05, 0.05, 0.05)
-				mat.emission_enabled = true
-				mat.emission = m.glow
-				mat.emission_energy_multiplier = 3.0
-				glow_material = mat
-			_:
-				mat.vertex_color_use_as_albedo = true
-				mat.roughness = 0.88
-				if surfaces[s] == RigBuilder.METAL:
-					mat.metallic = 0.55
-					mat.roughness = 0.42
-				# 常开发光、平时是黑的：受击闪白只改颜色，不切换着色器（避免卡顿）
-				mat.emission_enabled = true
-				mat.emission = Color(0, 0, 0)
-				Look.rim(mat, 0.3)
-				materials.append(mat)
+		var mat := surface_material(surfaces[s], m.glow)
+		if surfaces[s] == RigBuilder.GLOW:
+			glow_material = mat
+		else:
+			materials.append(mat)
 		mesh_instance.set_surface_override_material(s, mat)
+
+
+## RigBuilder 各种面对应的材质（角色与道具共用，2.6 之五）
+static func surface_material(kind: int, glow: Color, rim := 0.3) -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	if kind == RigBuilder.GLOW:
+		mat.albedo_color = Color(0.05, 0.05, 0.05)
+		mat.emission_enabled = true
+		mat.emission = glow
+		mat.emission_energy_multiplier = 3.0
+		return mat
+	mat.vertex_color_use_as_albedo = true
+	mat.roughness = 0.88
+	if kind == RigBuilder.METAL:
+		mat.metallic = 0.55
+		mat.roughness = 0.42
+	# 常开发光、平时是黑的：受击闪白只改颜色，不切换着色器（避免卡顿）
+	mat.emission_enabled = true
+	mat.emission = Color(0, 0, 0)
+	if rim > 0.0:
+		Look.rim(mat, rim)
+	return mat
 
 
 func bone_index(bone_name: String) -> int:

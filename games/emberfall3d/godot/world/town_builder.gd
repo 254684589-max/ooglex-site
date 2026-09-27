@@ -2,7 +2,7 @@ class_name TownBuilder
 extends RefCounted
 ## 把 TownGen 的布局搭成 3D 烬原镇（P7）。地面、墙（修道院废墟与房屋）、导航、楼梯、墙上火把复用 DungeonBuilder；
 ## 这里再加：整片泥土地面、石板路、外圈树林（带碰撞）、房顶、篝火、水井、铁砧、传送石、野花、三位 NPC。
-## 地面、墙、房顶用写实贴图（2.6 之二 / 之四），其余是程序生成的占位外观。
+## 地面、墙、房顶用写实贴图（2.6 之二 / 之四）；水井、铁砧、传送石、篝火与房屋细节是代码搭的模型（PropModels，2.6 之五）；树木仍是占位几何体。
 
 const PROP_SIZES := {"fire": Vector3(1.4, 0.6, 1.4), "well": Vector3(1.8, 1.0, 1.8), "wp": Vector3(1.0, 1.8, 1.0), "anvil": Vector3(1.1, 0.9, 0.7)}
 
@@ -114,6 +114,10 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		roof.position = Vector3((r.position.x + r.size.x / 2.0) * DungeonBuilder.TILE, DungeonBuilder.WALL_H + 1.1, (r.position.y + r.size.y / 2.0) * DungeonBuilder.TILE)
 		roof.name = "Roof_" + String(hs.id)
 		region.add_child(roof)
+		# 2.6 之五：木构架、门（开在离石板路最近的那一面）、亮灯的窗、烟囱、屋脊与封檐板
+		var det := PropModels.house(r, door_dir(r, m.paths), hash(String(hs.id)) & 7)
+		det.name = "House_" + String(hs.id)
+		region.add_child(det)
 
 	# 道具（传送石、水井可以点：InteractSpot，P8）
 	var torches: Array = info.torches.duplicate()
@@ -127,13 +131,9 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 			use_spots.append(sp)
 		match p.type:
 			"fire":
-				for k in 3:
-					var log := MeshInstance3D.new()
-					log.mesh = LowPoly.cylinder(0.1, 0.1, 1.2)
-					log.material_override = _mat(Color(0.3, 0.2, 0.12))
-					log.rotation_degrees = Vector3(80, k * 60, 0)
-					log.position = pos + Vector3(0, 0.12, 0)
-					region.add_child(log)
+				var cf := PropModels.instance("campfire")          # 2.6 之五：一圈石头 + 交叉的木柴 + 余烬
+				cf.position = pos
+				region.add_child(cf)
 				var fire := Torch.new()
 				parent.add_child(fire)
 				fire.position = pos + Vector3(0, 0.55, 0)
@@ -141,52 +141,13 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 				fire.energy = 2.6
 				fire.light.omni_range = 11.0
 				torches.append(fire)
-			"well":
-				var ring := MeshInstance3D.new()
-				ring.mesh = LowPoly.cylinder(0.85, 0.9, 0.9)
-				ring.material_override = Look.wall_material(Color(1.1, 1.05, 1.0))
-				ring.position = pos + Vector3(0, 0.45, 0)
-				region.add_child(ring)
-				var water := MeshInstance3D.new()
-				water.mesh = LowPoly.cylinder(0.7, 0.7, 0.05)
-				water.material_override = _mat(Color(0.05, 0.08, 0.12))
-				water.position = pos + Vector3(0, 0.8, 0)
-				region.add_child(water)
-			"wp":
-				# 传送石：竖立的石碑，符文发蓝光
-				var stone := MeshInstance3D.new()
-				var sb := BoxMesh.new()
-				sb.size = Vector3(0.8, 1.8, 0.5)
-				stone.mesh = sb
-				stone.material_override = _mat(Color(0.35, 0.34, 0.36))
-				stone.position = pos + Vector3(0, 0.9, 0)
-				region.add_child(stone)
-				var rune := MeshInstance3D.new()
-				var rb := BoxMesh.new()
-				rb.size = Vector3(0.4, 0.9, 0.52)
-				rune.mesh = rb
-				var rm2 := _mat(Color(0.35, 0.7, 1.0))
-				rm2.emission_enabled = true
-				rm2.emission = Color(0.3, 0.6, 1.0)
-				rm2.emission_energy_multiplier = 1.6
-				rune.material_override = rm2
-				rune.position = pos + Vector3(0, 1.0, 0)
-				region.add_child(rune)
-			"anvil":
-				var anvil := MeshInstance3D.new()
-				var ab := BoxMesh.new()
-				ab.size = Vector3(0.9, 0.3, 0.4)
-				anvil.mesh = ab
-				anvil.material_override = _mat(Color(0.28, 0.28, 0.3))
-				anvil.position = pos + Vector3(0, 0.75, 0)
-				region.add_child(anvil)
-				var foot := MeshInstance3D.new()
-				var fb := BoxMesh.new()
-				fb.size = Vector3(0.4, 0.6, 0.35)
-				foot.mesh = fb
-				foot.material_override = _mat(Color(0.3, 0.22, 0.15))
-				foot.position = pos + Vector3(0, 0.3, 0)
-				region.add_child(foot)
+			"well", "wp", "anvil":
+				# 2.6 之五：石砌水井（木架、顶棚、辘轳、水桶）、带符文的方尖传送石、树桩上的铁砧
+				var pm := PropModels.instance({"well": "well", "wp": "waystone", "anvil": "anvil"}[p.type])
+				pm.position = pos
+				if p.type == "anvil":
+					pm.rotation.y = 0.5
+				region.add_child(pm)
 
 	# 野花（V0.1 deco 5 / 6）
 	var fl := MultiMesh.new()
@@ -243,3 +204,22 @@ static func _mm(parent: Node3D, mm: MultiMesh, c: Color, n: String) -> void:
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.name = n
 	parent.add_child(mi)
+
+
+## 房门开在哪一面：四面各取门口外一格，离最近的石板路格子最近的那一面（曼哈顿距离）
+static func door_dir(r: Rect2i, paths: Array) -> Vector2i:
+	var best := Vector2i(0, 1)
+	var best_d := 1 << 30
+	var ctr := r.position + r.size / 2
+	for d in [Vector2i(0, 1), Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0)]:
+		var out := Vector2i(ctr.x, ctr.y)
+		if d.x != 0:
+			out.x = (r.end.x if d.x > 0 else r.position.x - 1)
+		else:
+			out.y = (r.end.y if d.y > 0 else r.position.y - 1)
+		for p in paths:
+			var dd: int = absi((p as Vector2i).x - out.x) + absi((p as Vector2i).y - out.y)
+			if dd < best_d:
+				best_d = dd
+				best = d
+	return best

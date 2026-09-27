@@ -26,7 +26,11 @@ func _ready() -> void:
 	var cam := Camera3D.new()
 	add_child(cam)
 	var all_ids := CharModels.ids()
-	var only := int(args[1]) if args.size() > 1 else -1       # 第二个参数：只拍第几组（0 起）
+	if args.size() > 1 and args[1] == "props":
+		await _props(cam, out)
+		get_tree().quit()
+		return
+	var only := int(args[1]) if args.size() > 1 else -1       # 第二个参数：只拍第几组（0 起）；"props"：拍道具与房屋（2.6 之五）
 	for g in ceili(all_ids.size() / 3.0):
 		if only < 0 or only == g:
 			await _group(cam, all_ids.slice(g * 3, g * 3 + 3), out, g)
@@ -76,3 +80,53 @@ func _group(cam: Camera3D, ids: Array, out: String, g: int) -> void:
 	print("SHOT game")
 	for r in rigs:
 		r.queue_free()
+
+
+func _props(cam: Camera3D, out: String) -> void:
+	## 道具一排（木桶、宝箱开盖与合盖、神殿、水井、铁砧、传送石、篝火）+ 后面一栋房子（灰泥墙 + 石板瓦 + 木构架）
+	var row := [["barrel", -4.2], ["chest", -3.0], ["shrine", -1.6], ["well", 0.3], ["anvil", 2.1], ["waystone", 3.3], ["campfire", 4.6]]
+	for it in row:
+		var mi := PropModels.instance(it[0])
+		mi.position = Vector3(it[1], 0, 1.5)
+		add_child(mi)
+		if it[0] == "chest":
+			var lid := PropModels.instance("chest_lid")
+			lid.position = Vector3(it[1], 0.5, 1.5 - 0.275)
+			lid.rotation_degrees.x = -70
+			add_child(lid)
+		if it[0] == "shrine":
+			var cr := MeshInstance3D.new()
+			cr.mesh = PropModels.get_model("shrine_crystal").mesh
+			var gm := StandardMaterial3D.new()
+			gm.emission_enabled = true
+			gm.emission = Color(0.45, 0.8, 1.0)
+			gm.emission_energy_multiplier = 3.0
+			cr.material_override = gm
+			cr.position = Vector3(it[1], 1.5, 1.5)
+			add_child(cr)
+	var r := Rect2i(-2, -4, 4, 3)
+	var walls := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(r.size.x * 2.0, DungeonBuilder.WALL_H, r.size.y * 2.0)
+	walls.mesh = bm
+	walls.material_override = Look.surface_material("wall_house")
+	walls.position = Vector3((r.position.x + r.size.x / 2.0) * 2.0, DungeonBuilder.WALL_H / 2.0, (r.position.y + r.size.y / 2.0) * 2.0)
+	add_child(walls)
+	var roof := MeshInstance3D.new()
+	var pm := PrismMesh.new()
+	pm.size = Vector3(r.size.x * 2.0 + 0.8, 2.2, r.size.y * 2.0 + 0.8)
+	roof.mesh = pm
+	roof.material_override = Look.surface_material("roof")
+	roof.position = walls.position + Vector3(0, DungeonBuilder.WALL_H / 2.0 + 1.1, 0)
+	add_child(roof)
+	add_child(PropModels.house(r, Vector2i(0, 1), 1))
+	var i := 0
+	for view in [[Vector3(0, 3.2, 9.5), Vector3(0, 1.2, 0)], [Vector3(-5.5, 3.5, 7.5), Vector3(-2, 0.8, 1.5)], [Vector3(5.0, 3.2, 7.0), Vector3(2.5, 0.8, 1.5)], [Vector3(0, 12.3, 8.6 + 1.5), Vector3(0, 0.8, 0)]]:
+		cam.position = view[0]
+		cam.look_at(view[1])
+		cam.fov = 60 if i < 3 else 40
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png(out.path_join("props-%d.png" % i))
+		print("SHOT props-%d" % i)
+		i += 1

@@ -189,6 +189,25 @@ func triangle_count() -> int:
 	return t
 
 
+## 不绑骨骼的静态网格（道具、房屋细节，2.6 之五）：同样的面种类与顶点色，只是不带骨骼与权重
+func commit_static() -> Dictionary:
+	var mesh := ArrayMesh.new()
+	var kinds: Array = []
+	for k in 3:
+		var s: Dictionary = _s[k]
+		if (s.i as PackedInt32Array).is_empty():
+			continue
+		var arr := []
+		arr.resize(Mesh.ARRAY_MAX)
+		arr[Mesh.ARRAY_VERTEX] = s.v
+		arr[Mesh.ARRAY_NORMAL] = s.n
+		arr[Mesh.ARRAY_COLOR] = s.c
+		arr[Mesh.ARRAY_INDEX] = s.i
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+		kinds.append(k)
+	return {"mesh": mesh, "surfaces": kinds, "tris": triangle_count()}
+
+
 ## 生成 ArrayMesh；返回 {mesh, surfaces: [面种类...]}（空的面不生成）
 func commit() -> Dictionary:
 	var mesh := ArrayMesh.new()
