@@ -61,7 +61,9 @@ godot/
 ### 4.1 第一人称控制器
 
 - `CharacterBody3D`（胶囊高 1.8 米、半径 0.35 米）+ 头部节点 + `Camera3D`（视高 1.65 米）；水平转身、垂直俯仰（限制 ±85°）。
-- 加速 / 减速平滑，贴墙滑动用 `move_and_slide()`；台阶自动跨越（≤ 0.3 米）**实测**：Godot 4 的 `CharacterBody3D` 没有内置跨台阶，需要自己做「向前探测 + 抬升」，或者把台阶碰撞做成斜坡（优先后者，更稳）。
+- 加速 / 减速平滑，贴墙滑动用 `move_and_slide()`。**台阶（1.2 已实现）**：Godot 4 的 `CharacterBody3D` 没有内置跨台阶，`FpController._try_step()` 用 `test_move()` 做「水平被挡 → 抬高 0.3 米不被挡 → 往前再往下探到平地 → 把身体抬上去」；落脚面太斜（超过 46°）不算台阶，所以陡坡上不去。`floor_snap_length` = 0.35 米，下台阶贴地不腾空。长楼梯仍建议碰撞做成斜坡，走起来更顺。
+- **界面铺满画面的坑（1.2 发现）**：挂在 CanvasLayer 下的 Control 用 `set_anchors_preset(PRESET_FULL_RECT)` 只改锚点，尺寸仍是 0；要用 `set_anchors_and_offsets_preset()`。
+- **无头测试的窗口只有 64×64**：测试开始时设 `get_tree().root.size = Vector2i(1280, 720)`。
 - **网页指针锁定（实测）**：浏览器只允许在用户点击后锁定指针。点击画面时设置 `Input.mouse_mode = MOUSE_MODE_CAPTURED`；Esc 被浏览器用来释放锁定，游戏要监听释放并自动打开暂停菜单，而不是再抢回来。
 - **手机**：左半屏虚拟摇杆移动、右半屏拖动转视角（按拖动像素 × 灵敏度，不是按屏幕比例），动作按钮在右下。触屏事件与模拟鼠标事件的区分沿用《余烬陷落》的经验（`TECH.md` 4.1：玩家控制只认真正的鼠标，触屏走 ScreenTouch / ScreenDrag）。
 - 头部摆动、镜头震动受「减少动态效果」和设置开关控制。

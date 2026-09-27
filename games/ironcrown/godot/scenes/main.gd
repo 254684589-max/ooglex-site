@@ -1,30 +1,67 @@
 extends Node3D
-## 《铁冠之争》主场景（阶段 1.1：灰盒）。
-## 只搭一段静止的雾夜街道，验证工程、兼容渲染器与网页导出跑得通；第一人称移动在 1.2，正式的霜渡镇主街在 1.4。
-## 画面全部是占位几何体，界面上明确标注。
+## 《铁冠之争》主场景（阶段 1.2：第一人称控制器）。
+## 默认是灰盒雾夜街道；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞）。
+## 画面全部是占位几何体，界面上明确标注。正式的霜渡镇主街在 1.4。
+##
+## 鼠标：电脑上点击画面锁定指针（浏览器只允许在点击后锁定）；Esc 或浏览器释放锁定时打开暂停菜单，
+## 不会自己把鼠标抢回来（TECH.md 4.1）。触屏设备不锁定鼠标，用 TouchControls。
 
-const EYE_HEIGHT := 1.65                        # 视高（GDD.md 第四节）
 const FOG_COLOR := Color("1c2a3a")              # 夜空与远雾（ART.md 第四节）
 const AMBIENT_COLOR := Color("6f8faf")          # 月光 / 环境光
-const WINDOW_COLOR := Color("ffc873")           # 窗光
-const LAMP_COLOR := Color("ff9a3c")             # 街灯
-const TITLE := "铁冠之争 · 灰盒原型（占位几何体）"
-const SUBTITLE := "阶段 1.1：静止的雾夜街道，只用来验证网页导出。第一人称移动在下一步加入。"
+const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
+const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角"
+const HINT_SECONDS := 8.0
 
-var camera: Camera3D
+@export var use_test_range := false
+
 var env: Environment
-var title_label: Label
-var status_label: Label
+var world: Node3D
+var player: FpController
+var camera: Camera3D
+var hud: Hud
+var touch: TouchControls
+var pause_menu: PauseMenu
+var touch_mode := false
+var spawn := Vector3.ZERO
+var yaw0 := 0.0
+var moved_logged := false
+var look_logged := false
+var lock_seen := false          # 指针真的锁定过（锁定失败时不要误开暂停菜单）
+var hint_left := HINT_SECONDS
+var started := false
 
 
 func _ready() -> void:
+	touch_mode = DisplayServer.is_touchscreen_available()
+	if OS.has_feature("web"):
+		if str(JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('test') || ''", true)) == "1":
+			use_test_range = true
+		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）
+		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
+			Settings.reduced_motion = true
+			Settings.head_bob = false
+			print("IC_REDUCED_MOTION")
 	_build_environment()
-	_build_street()
-	_build_camera()
+	world = Node3D.new()
+	world.name = "World"
+	add_child(world)
+	var t := TestRange.build(world) if use_test_range else Street.build(world)
+	player = FpController.new()
+	player.name = "Player"
+	add_child(player)
+	player.global_transform = t
+	camera = player.camera
+	camera.make_current()
+	spawn = t.origin
+	yaw0 = player.yaw_deg()
 	_build_ui()
-	print("IC_READY renderer=%s web=%s size=%s" % [
-		ProjectSettings.get_setting("rendering/renderer/rendering_method"),
-		OS.has_feature("web"), get_viewport().get_visible_rect().size])
+	print("IC_READY renderer=%s web=%s scene=%s touch=%s size=%s" % [
+		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
+		"test_range" if use_test_range else "street", touch_mode, get_viewport().get_visible_rect().size])
+	# 给网页冒烟测试用：「菜单」按钮在窗口里的位置（窗口像素，已乘界面缩放）
+	await get_tree().process_frame
+	var c := hud.menu_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+	print("IC_MENU_SCREEN x=%d y=%d" % [c.x, c.y])
 
 
 func _build_environment() -> void:
@@ -51,89 +88,77 @@ func _build_environment() -> void:
 	add_child(moon)
 
 
-func _mat(color: Color, emission := Color.BLACK) -> StandardMaterial3D:
-	var m := StandardMaterial3D.new()
-	m.albedo_color = color
-	m.roughness = 0.85
-	if emission != Color.BLACK:
-		m.emission_enabled = true
-		m.emission = emission
-		m.emission_energy_multiplier = 0.8
-	return m
-
-
-func _box(size: Vector3, pos: Vector3, mat: Material) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = size
-	bm.material = mat
-	mi.mesh = bm
-	mi.position = pos
-	add_child(mi)
-	return mi
-
-
-func _build_street() -> void:
-	var stone := _mat(Color("5e6670"))
-	stone.roughness = 0.45                      # 湿石板：稍亮的高光
-	_box(Vector3(12, 0.2, 80), Vector3(0, -0.1, -30), stone)             # 街道
-	var ground := _mat(Color("2a3036"))
-	_box(Vector3(80, 0.2, 80), Vector3(0, -0.12, -30), ground)           # 两侧泥地
-	var wall := _mat(Color("4a4c50"))
-	var timber := _mat(Color("3a2a20"))
-	var glow := _mat(WINDOW_COLOR, WINDOW_COLOR)
-	# 两排灰盒房子：石砌底层 + 木构上层 + 一扇亮窗（ART.md 第六节的比例，占位）
-	for i in 5:
-		for side in [-1, 1]:
-			var z := -6.0 - i * 11.0
-			var x: float = side * 10.0
-			_box(Vector3(7, 3, 8), Vector3(x, 1.5, z), wall)
-			_box(Vector3(7.4, 2.6, 8.4), Vector3(x, 4.3, z), timber)
-			_box(Vector3(0.1, 1.0, 1.2), Vector3(x - side * 3.52, 1.8, z), glow)
-	# 两盏街灯：真实点光源（TECH.md 4.6：视野内 ≤ 4 盏）
-	for z in [-8.0, -26.0]:
-		_box(Vector3(0.15, 3.2, 0.15), Vector3(4.5, 1.6, z), timber)
-		_box(Vector3(0.35, 0.35, 0.35), Vector3(4.5, 3.3, z), _mat(LAMP_COLOR, LAMP_COLOR))
-		var lamp := OmniLight3D.new()
-		lamp.light_color = LAMP_COLOR
-		lamp.light_energy = 2.0
-		lamp.omni_range = 9.0
-		lamp.position = Vector3(4.5, 3.0, z)
-		add_child(lamp)
-
-
-func _build_camera() -> void:
-	camera = Camera3D.new()
-	camera.fov = 75.0
-	camera.position = Vector3(0, EYE_HEIGHT, 4)
-	camera.rotation_degrees = Vector3(-4, 0, 0)
-	add_child(camera)
-	camera.make_current()
-
-
 func _build_ui() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
-	var box := VBoxContainer.new()
-	box.position = Vector2(16, 16)
-	layer.add_child(box)
-	title_label = Label.new()
-	title_label.text = TITLE
-	title_label.add_theme_font_size_override("font_size", 22)
-	title_label.add_theme_color_override("font_color", Color("e8dcc0"))
-	box.add_child(title_label)
-	status_label = Label.new()
-	status_label.text = SUBTITLE
-	status_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY   # 中文按字换行，不在空格处断开
-	status_label.custom_minimum_size = Vector2(300, 0)
-	status_label.add_theme_color_override("font_color", Color("a9b4c0"))
-	box.add_child(status_label)
-	get_tree().root.size_changed.connect(_fit_ui)
-	_fit_ui()
+	hud = Hud.new()
+	layer.add_child(hud)
+	hud.set_hint(HINT_TOUCH if touch_mode else HINT_DESKTOP)
+	hud.menu_pressed.connect(open_pause)
+	touch = TouchControls.new()
+	touch.player = player
+	layer.add_child(touch)
+	pause_menu = PauseMenu.new()
+	layer.add_child(pause_menu)
+	pause_menu.resume_requested.connect(close_pause)
 
 
-func _fit_ui() -> void:
-	# 界面按 UiScale 缩放后，说明文字不超过屏幕宽度（360px 手机也不横向溢出）
-	var w := get_tree().root
-	var logical_w := w.size.x / maxf(w.content_scale_factor, 0.01)
-	status_label.custom_minimum_size.x = clampf(logical_w - 32.0, 200.0, 640.0)
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		open_pause()
+		get_viewport().set_input_as_handled()
+		return
+	# 触屏产生的模拟鼠标事件（DEVICE_ID_EMULATION）不算鼠标（余烬陷落 TECH.md 4.1 的经验）
+	if event is InputEventMouseButton and event.pressed and event.device != InputEvent.DEVICE_ID_EMULATION and not touch_mode:
+		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			_start()
+	elif event is InputEventMouseMotion and event.device != InputEvent.DEVICE_ID_EMULATION:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			player.look(event.relative)
+
+
+func _start() -> void:
+	if not started:
+		started = true
+		hint_left = minf(hint_left, 3.0)
+
+
+func open_pause() -> void:
+	if get_tree().paused:
+		return
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	lock_seen = false
+	pause_menu.open()
+	print("IC_PAUSE open=true")
+
+
+func close_pause() -> void:
+	pause_menu.hide()
+	get_tree().paused = false
+	if not touch_mode:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED   # 「继续」按钮是一次点击，浏览器允许重新锁定
+	print("IC_PAUSE open=false")
+
+
+func _process(delta: float) -> void:
+	# 浏览器用 Esc 释放指针锁定时，游戏收不到 Esc：发现锁定没了就打开暂停菜单
+	var locked := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	if locked:
+		lock_seen = true
+	elif lock_seen:
+		lock_seen = false
+		open_pause()
+	if hint_left > 0.0:
+		hint_left -= delta
+		if hint_left <= 0.0:
+			hud.set_hint("")
+	var pos := player.global_position
+	if not moved_logged and Vector2(pos.x - spawn.x, pos.z - spawn.z).length() > 1.0:
+		moved_logged = true
+		_start()
+		print("IC_MOVED d=%.2f" % Vector2(pos.x - spawn.x, pos.z - spawn.z).length())
+	if not look_logged and absf(angle_difference(deg_to_rad(player.yaw_deg()), deg_to_rad(yaw0))) > deg_to_rad(15.0):
+		look_logged = true
+		print("IC_LOOK yaw=%.1f" % player.yaw_deg())
