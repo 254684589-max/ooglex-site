@@ -28,7 +28,7 @@ games/ironcrown/
 │                      stamp_web_build.py · build_font.py · serve_gzip.py · smoke_web.js · perf_web.js
 ├── godot/             Godot 工程（第三节）
 ├── play/              网页导出产物（2026-09-27 起随上线入库，文件名带内容哈希）
-└── index.html         介绍页（所有者同意在游戏中心加入口时再建；目前只能通过 /games/ironcrown/play/ 访问）
+└── index.html         介绍页（还没做；游戏中心卡片目前直接链到 play/）
 ```
 
 两个 Godot 工程之间不能共享 `res://` 文件：需要复用《余烬陷落》的脚本（界面缩放、输入设置、音效合成、骨骼人形等）时，**复制过来并在文件头注明来源路径**，之后各自演进。

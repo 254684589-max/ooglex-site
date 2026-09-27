@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏中心 · 网页小游戏</title>
-<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含原创 3D 赛博朋克都市人生模拟《打工》、原创 3D 工地模拟《工地搬砖》、原创暗黑风动作角色扮演《余烬陷落》、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
+<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含原创 3D 赛博朋克都市人生模拟《打工》、原创 3D 工地模拟《工地搬砖》、原创暗黑风动作角色扮演《余烬陷落》、原创第一人称中世纪权谋角色扮演《铁冠之争》（开发中）、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
 <link rel="canonical" href="https://www.ooglex.com/games/hub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏中心 · 网页小游戏">
@@ -64,6 +64,12 @@
   .cv-ef::before { content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1;
     background:repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 2px, transparent 2px 34px), repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 17px);
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
+  /* 铁冠之争 THE IRON CROWN：雾夜北境小镇的一扇亮窗 */
+  .cv-ic { background:radial-gradient(circle at 70% 58%,#ffc873 0%,#b8964e 7%,#2c4a6e 26%,#1c2a3a 58%,#0b121b 100%); }
+  .cv-ic::before { content:""; position:absolute; left:0; right:0; bottom:0; height:42%; z-index:1;
+    background:linear-gradient(180deg, transparent, rgba(111,143,175,.35) 45%, rgba(16,24,32,.9)),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.28) 0 2px, transparent 2px 30px);
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 50%); mask-image:linear-gradient(180deg, transparent, #000 50%); }
   /* GTA Vice City：迈阿密霓虹夕阳 */
   .cv-gta { background:linear-gradient(180deg,#2a0a4a 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
   .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
@@ -131,6 +137,14 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
           <h3>EMBERFALL · 原创暗黑风 3D ARPG</h3>
           <p>3D 暗黑风动作角色扮演（开发中预览）：深入修道院地下，斩杀亡灵、刷随机词缀装备、击败堕落院长，之后挑战无尽深渊。电脑手机浏览器直接玩，需要 WebGL 2，首次加载约 40 MB。</p>
           <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
+        <div class="cover cv-ic"><span class="ico">👑</span></div>
+        <div class="body">
+          <h3>铁冠之争 · 原创第一人称 RPG</h3>
+          <p>中世纪权谋角色扮演（开发中预览，技术原型）：现在只能在灰盒雾夜街道里走动，画面全部是占位几何体。电脑键鼠、手机双摇杆，需要 WebGL 2，首次加载约 40 MB。</p>
+          <span class="play">🎮 进入预览 →</span>
         </div>
       </a>
       <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
