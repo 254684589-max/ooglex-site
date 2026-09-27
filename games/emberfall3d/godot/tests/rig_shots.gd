@@ -34,7 +34,11 @@ func _ready() -> void:
 		await _props2(cam, out)
 		get_tree().quit()
 		return
-	var only := int(args[1]) if args.size() > 1 else -1       # 第二个参数：只拍第几组（0 起）；"props"：拍道具与房屋（2.6 之五）；"props2"：树、地面装饰、训练木桩（2.6 之六）
+	if args.size() > 1 and args[1] == "props3":
+		await _props3(cam, out)
+		get_tree().quit()
+		return
+	var only := int(args[1]) if args.size() > 1 else -1       # 第二个参数：只拍第几组（0 起）；"props"：拍道具与房屋（2.6 之五）；"props2"：树、地面装饰、训练木桩（2.6 之六）；"props3"：火把、楼梯、篝火火苗（2.6 之七）
 	for g in ceili(all_ids.size() / 3.0):
 		if only < 0 or only == g:
 			await _group(cam, all_ids.slice(g * 3, g * 3 + 3), out, g)
@@ -169,4 +173,44 @@ func _props2(cam: Camera3D, out: String) -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(out.path_join("props2-%d.png" % i))
 		print("SHOT props2-%d" % i)
+		i += 1
+
+
+func _props3(cam: Camera3D, out: String) -> void:
+	## 2.6 之七：后面一堵墙挂两支火把，前面下楼梯、上楼梯，右边篝火（只有火苗的 Torch）
+	var wall := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(12, DungeonBuilder.WALL_H, 0.6)
+	wall.mesh = bm
+	wall.material_override = Look.wall_material()
+	wall.position = Vector3(0, DungeonBuilder.WALL_H / 2.0, -3.3)
+	add_child(wall)
+	for x in [-2.5, 2.5]:
+		var t := Torch.new()
+		add_child(t)
+		t.position = Vector3(x, 1.8, -3.0 + 0.12)
+	var down := Stairs.make("down", "↓ 下一层")
+	add_child(down)
+	down.position = Vector3(-2.0, 0, 0.0)
+	var up := Stairs.make("up", "↑ 上一层")
+	add_child(up)
+	up.position = Vector3(1.4, 0, -0.6)
+	var cf := PropModels.instance("campfire")
+	cf.position = Vector3(4.4, 0, 1.2)
+	add_child(cf)
+	var fire := Torch.new()
+	fire.mounted = false
+	add_child(fire)
+	fire.position = Vector3(4.4, 0.55, 1.2)
+	fire.scale = Vector3.ONE * 2.2
+	await get_tree().create_timer(0.3).timeout
+	var i := 0
+	for view in [[Vector3(0, 3.4, 7.5), Vector3(0, 1.0, -1.0)], [Vector3(-1.6, 2.2, -1.2), Vector3(-2.5, 1.6, -3.0)], [Vector3(-2.0, 3.2, 3.0), Vector3(-2.0, 0.0, 0.0)], [Vector3(0, 12.3, 10.1), Vector3(0, 0.8, 0)]]:
+		cam.position = view[0]
+		cam.look_at(view[1])
+		cam.fov = 60 if i < 3 else 40
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png(out.path_join("props3-%d.png" % i))
+		print("SHOT props3-%d" % i)
 		i += 1

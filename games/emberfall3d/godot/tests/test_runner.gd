@@ -2824,7 +2824,7 @@ func test_kit() -> void:
 	# 火把：木柄、火苗、光晕不投影，点光源不开阴影
 	var tch: Torch = r.torches[0]
 	tch.set_quality("high")
-	check(not tch.light.shadow_enabled and tch.flame.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "火把：高画质也不开点光源阴影，火苗不投影（墙上不再有硬边亮斑）")
+	check(not tch.light.shadow_enabled and tch.flame.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF and tch.model.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "火把：高画质也不开点光源阴影，托架与火苗不投影（墙上不再有硬边亮斑）")
 	root.queue_free()
 	await frames(2)
 
@@ -3333,4 +3333,46 @@ func test_models() -> void:
 	await seconds(float(Balance.fb().flash_s) + 0.1)
 	check(lit and dmat.emission == Color(0, 0, 0), "训练木桩受击闪白，随后恢复")
 	broot.queue_free()
+	await frames(2)
+	# 2.6 之七：墙上的火把（托架贴墙、火把朝外）、火苗、篝火只有火苗；楼梯换成模型、石头用本层墙的写实材质
+	var sroot := Node3D.new()
+	add_child(sroot)
+	var fm := DungeonGen.generate(5, 777)
+	var finfo := DungeonBuilder.build(sroot, fm, {"open_boss_stairs": true})
+	await frames(1)
+	var mount_ok := true
+	for t in finfo.torches:
+		var tq: Torch = t
+		var out_dir := tq.global_basis.z
+		var behind := tq.global_position - out_dir * 0.5
+		var front := tq.global_position + out_dir * 0.5
+		var cb := Vector2i(floori(behind.x / DungeonBuilder.TILE), floori(behind.z / DungeonBuilder.TILE))
+		var cf := Vector2i(floori(front.x / DungeonBuilder.TILE), floori(front.z / DungeonBuilder.TILE))
+		if tq.model == null or tq.model.mesh != PropModels.get_model("torch").mesh or tq.flame.mesh != PropModels.get_model("torch_flame").mesh \
+				or DungeonGen.tile(fm, cb.x, cb.y) != DungeonGen.WALL or not DungeonGen.walkable(DungeonGen.tile(fm, cf.x, cf.y)):
+			mount_ok = false
+	check(mount_ok and finfo.torches.size() > 3, "第 5 层 %d 支火把：铁托架 + 火把 + 火舌模型，托架贴在墙上、火把朝向地面一侧" % finfo.torches.size())
+	var sd: Stairs = finfo.stairs.down
+	var su: Stairs = finfo.stairs.up
+	var stair_ok := true
+	for st in [sd, su]:
+		var mesh: Mesh = st.model.mesh
+		if mesh != PropModels.get_model("stairs_" + st.kind).mesh:
+			stair_ok = false
+			continue
+		var kinds_s: Array = PropModels.get_model("stairs_" + st.kind).surfaces
+		for i in kinds_s.size():
+			var mat: StandardMaterial3D = st.model.get_surface_override_material(i)
+			if kinds_s[i] == RigBuilder.GLOW and mat.shading_mode != BaseMaterial3D.SHADING_MODE_UNSHADED:
+				stair_ok = false
+			if kinds_s[i] == RigBuilder.BODY and (mat.albedo_texture != Look.photo_set("wall_inferno").albedo or not mat.vertex_color_use_as_albedo):
+				stair_ok = false
+	check(stair_ok and sd.get_child_count() == 3 and su.get_child_count() == 3, "楼梯换成模型：下楼是石砌井口与渐暗的台阶，上楼是石阶与拱门；石头用本层（熔渊）墙的贴图，黑洞与往下的台阶不受光照")
+	sroot.queue_free()
+	var troot2 := Node3D.new()
+	add_child(troot2)
+	var tinfo := TownBuilder.build(troot2, TownGen.generate(), {"seed": 3})
+	var fires: Array = tinfo.torches.filter(func(t): return not (t as Torch).mounted)
+	check(fires.size() == 1 and (fires[0] as Torch).model == null and (fires[0] as Torch).flame != null, "烬原镇篝火：只有火苗与火光，没有墙上的托架")
+	troot2.queue_free()
 	await frames(2)

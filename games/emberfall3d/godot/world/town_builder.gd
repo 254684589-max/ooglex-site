@@ -135,6 +135,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 				cf.position = pos
 				region.add_child(cf)
 				var fire := Torch.new()
+				fire.mounted = false                                  # 篝火只要火苗与火光，不要墙上的托架
 				parent.add_child(fire)
 				fire.position = pos + Vector3(0, 0.55, 0)
 				fire.scale = Vector3.ONE * 2.2

@@ -11,6 +11,11 @@ extends RefCounted
 ##   tree_pine 暗色针叶树 · tree_dead 被烧焦的枯树 · tree_broad 团簇状的阔叶树（整棵一个面、颜色画在顶点色里，一片林子一次绘制）
 ##   bone 腿骨 · skull 头骨 · rock 碎石块 · lava_crack 熔岩裂缝（地下城地面装饰）
 ##   dummy 训练木桩（木桩底座、麻袋塞草的身子、横杆手臂、缝着脸的麻袋头）
+## 2.6 之七：
+##   torch 墙上的火把（铁托架 + 木柄 + 缠布浸油的火把头 + 余烬；原点在火苗底部，+Z 朝外、墙面在 z = -0.12）· torch_flame 火苗（主火舌 + 两条小火舌，只有发光面）
+##   stairs_down 下楼梯（三面石砌井栏 + 四根角柱，北面敞开；井口里四级由亮到暗往下的台阶）
+##   stairs_up 上楼梯（四级往北升起的石阶 + 两侧扶墙 + 平台，尽头是通往黑暗的石拱门）
+##   楼梯的石头面由 Stairs 换成本层墙的写实材质（顶点色画明暗），发光面换成不受光照的顶点色材质（井口的黑洞与往下渐暗的台阶）
 
 const WOOD := Color(0.4, 0.27, 0.15)
 const DARK_WOOD := Color(0.24, 0.16, 0.1)
@@ -63,6 +68,16 @@ static func get_model(id: String) -> Dictionary:
 				glow = Color(1.0, 0.45, 0.12)
 			"dummy":
 				_dummy(rb)
+			"torch":
+				_torch(rb)
+				glow = Color(1.0, 0.45, 0.12)
+			"torch_flame":
+				_torch_flame(rb)
+				glow = Color(1.0, 0.5, 0.15)
+			"stairs_down":
+				_stairs_down(rb)
+			"stairs_up":
+				_stairs_up(rb)
 		var m := rb.commit_static()
 		m.glow = glow
 		_cache[id] = m
@@ -71,7 +86,8 @@ static func get_model(id: String) -> Dictionary:
 
 static func ids() -> Array:
 	return ["barrel", "chest", "chest_lid", "shrine", "shrine_crystal", "well", "anvil", "waystone", "campfire",
-		"tree_pine", "tree_dead", "tree_broad", "bone", "skull", "rock", "lava_crack", "dummy"]
+		"tree_pine", "tree_dead", "tree_broad", "bone", "skull", "rock", "lava_crack", "dummy",
+		"torch", "torch_flame", "stairs_down", "stairs_up"]
 
 
 ## 多实例摆放用的材质（顶点色；树、碎石、白骨）
@@ -467,3 +483,107 @@ static func _dummy(rb: RigBuilder) -> void:
 	rb.block(Vector3(0, 1.73, 0.185), Vector3(0.14, 0.02, 0.02), 0, Color(0.12, 0.08, 0.06))
 	for k in 4:
 		rb.block(Vector3(-0.054 + k * 0.036, 1.73, 0.19), Vector3(0.012, 0.05, 0.02), 0, Color(0.12, 0.08, 0.06))
+
+
+# ---------------- 2.6 之七：火把与楼梯 ----------------
+
+static func _torch(rb: RigBuilder) -> void:
+	# 墙上的铁托架（带两颗铆钉的底板 + 斜伸出来的托臂 + 箍住木柄的铁环）、略向外倾的木柄、缠布浸油的火把头、顶上的余烬
+	var iron := Color(0.24, 0.23, 0.24)
+	rb.block(Vector3(0, -0.36, -0.105), Vector3(0.13, 0.26, 0.03), 0, iron, RigBuilder.METAL)
+	for y in [-0.27, -0.45]:
+		rb.ellipsoid(Vector3(0, y, -0.088), Vector3(0.016, 0.016, 0.01), 0, iron.lightened(0.2), RigBuilder.METAL, Basis.IDENTITY, 2, 5)
+	rb.limb(Vector3(0, -0.42, -0.095), Vector3(0, -0.31, -0.01), 0.016, 0.014, 0, iron, -1, RigBuilder.METAL, 5)
+	var bot := Vector3(0, -0.62, -0.045)
+	var top := Vector3(0, -0.04, 0.02)
+	var ring := bot.lerp(top, 0.55)
+	var ax := (top - bot).normalized()
+	rb.tube([ring - ax * 0.03, ring + ax * 0.03], [Vector2(0.044, 0.044), Vector2(0.044, 0.044)], [0, 0], iron, RigBuilder.METAL, 8, false)
+	rb.limb(bot, top, 0.026, 0.034, 0, Color(0.36, 0.24, 0.14), -1, RigBuilder.BODY, 6)
+	var hb := bot.lerp(top, 0.78)
+	rb.tube([hb, top + ax * 0.01], [Vector2(0.05, 0.05), Vector2(0.056, 0.056)], [0, 0], Color(0.16, 0.1, 0.07), RigBuilder.BODY, 8, true)
+	for k in [0.3, 0.75]:
+		var bp := hb.lerp(top, k)
+		rb.tube([bp - ax * 0.012, bp + ax * 0.012], [Vector2(0.058, 0.058), Vector2(0.058, 0.058)], [0, 0], Color(0.34, 0.24, 0.14), RigBuilder.BODY, 8, false)
+	rb.ellipsoid(top + ax * 0.012, Vector3(0.048, 0.018, 0.048), 0, Color(1.0, 0.45, 0.12), RigBuilder.GLOW, Basis.IDENTITY, 2, 8)
+
+
+static func _torch_flame(rb: RigBuilder) -> void:
+	# 火苗（原点在底部）：一条主火舌（圆底 + 尖顶）和两条歪向两边的小火舌；火把每帧让它伸缩、慢慢转
+	var c := Color(1.0, 0.55, 0.18)
+	rb.ellipsoid(Vector3(0, 0.07, 0), Vector3(0.09, 0.08, 0.09), 0, c, RigBuilder.GLOW, Basis.IDENTITY, 3, 7)
+	rb.spike(Vector3(0, 0.07, 0), Vector3(0.01, 0.38, 0), 0.088, 0, c, RigBuilder.GLOW, 7)
+	for sd in [Vector3(0.05, 0, 0.02), Vector3(-0.04, 0, -0.03)]:
+		rb.spike(sd + Vector3(0, 0.06, 0), sd * 1.8 + Vector3(0, 0.25, 0), 0.045, 0, c, RigBuilder.GLOW, 5)
+
+
+## 贴地的矩形（发光面）：x0–x1、z0–z1，离地 y
+static func _flat_rect(rb: RigBuilder, x0: float, x1: float, z0: float, z1: float, y: float, col: Color) -> void:
+	var ids: Array = []
+	for p in [Vector3(x0, y, z0), Vector3(x1, y, z0), Vector3(x1, y, z1), Vector3(x0, y, z1)]:
+		ids.append(rb._vert(RigBuilder.GLOW, p, Vector3.UP, col, 0))
+	rb._tri(RigBuilder.GLOW, ids[0], ids[1], ids[2])
+	rb._tri(RigBuilder.GLOW, ids[0], ids[2], ids[3])
+
+
+static func _stone(i: int) -> Color:
+	## 楼梯石块的顶点色：接近白色（颜色来自墙的写实贴图），每块略有深浅
+	var v := 0.86 + 0.14 * RigBuilder._hash(i * 13 + 5)
+	return Color(v, v * 0.98, v * 0.95)
+
+
+static func _stairs_down(rb: RigBuilder) -> void:
+	# 一格 2 × 2 米。井口内侧 ±0.78 米：黑洞 + 四级往南一级比一级暗、也一级比一级窄的台阶（每级前沿一道亮边、下面一道阴影）
+	var inner := 0.78
+	_flat_rect(rb, -inner, inner, -inner, inner, 0.012, Color(0, 0, 0))
+	for i in 4:
+		var z0 := -inner + i * 0.3
+		var hw := 0.74 - i * 0.05
+		var v := 0.42 - i * 0.1
+		_flat_rect(rb, -hw, hw, z0, z0 + 0.24, 0.014, Color(v * 1.1, v * 0.94, v * 0.78))
+		_flat_rect(rb, -hw, hw, z0 + 0.24, z0 + 0.27, 0.016, Color(v * 1.5, v * 1.3, v * 1.08))
+		_flat_rect(rb, -hw, hw, z0 + 0.27, z0 + 0.3, 0.014, Color(v * 0.4, v * 0.35, v * 0.3))
+	# 东、西、南三面石砌井栏（北面敞开、铺一块磨平的门槛石），四角立石柱、柱顶压帽石
+	var k := 0
+	for sx in [-1.0, 1.0]:
+		for j in 3:
+			var z := -0.66 + j * 0.66
+			rb.block(Vector3(sx * 0.89, 0.15 + 0.02 * (j % 2), z), Vector3(0.22, 0.3 + 0.04 * (j % 2), 0.64), 0, _stone(k), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.82, 0.92))
+			k += 1
+	for j in 2:
+		rb.block(Vector3(-0.39 + j * 0.78, 0.16, 0.89), Vector3(0.76, 0.32, 0.22), 0, _stone(k), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.94, 0.82))
+		k += 1
+	rb.block(Vector3(0, 0.02, -0.9), Vector3(1.5, 0.04, 0.2), 0, _stone(k).darkened(0.1))
+	for sx in [-1.0, 1.0]:
+		for sz in [-1.0, 1.0]:
+			k += 1
+			rb.block(Vector3(sx * 0.87, 0.26, sz * 0.87), Vector3(0.28, 0.52, 0.28), 0, _stone(k), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.9, 0.9))
+			rb.block(Vector3(sx * 0.87, 0.555, sz * 0.87), Vector3(0.34, 0.07, 0.34), 0, _stone(k + 7).lightened(0.05), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.85, 0.85))
+
+
+static func _stairs_up(rb: RigBuilder) -> void:
+	# 四级往北升起的石阶（每级高 0.15 米，前沿略亮，像被踩磨过）、两侧扶墙、顶上的平台，尽头一座石拱门，门里是一片黑暗（通往上一层）
+	var k := 0
+	for i in 4:
+		var z1 := 0.9 - i * 0.34
+		var z0 := z1 - 0.34
+		var hgt := 0.15 * (i + 1)
+		rb.block(Vector3(0, hgt / 2.0, (z0 + z1) / 2.0), Vector3(1.4, hgt, 0.34), 0, _stone(k))
+		rb.block(Vector3(0, hgt - 0.01, z1 - 0.03), Vector3(1.38, 0.03, 0.06), 0, _stone(k).lightened(0.12))
+		for sx in [-1.0, 1.0]:
+			rb.block(Vector3(sx * 0.79, (hgt + 0.2) / 2.0, (z0 + z1) / 2.0), Vector3(0.18, hgt + 0.2, 0.34), 0, _stone(k + 3), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.85, 1.0))
+		k += 1
+	var land_z0 := -0.9
+	var land_z1 := 0.9 - 4 * 0.34
+	rb.block(Vector3(0, 0.3, (land_z0 + land_z1) / 2.0), Vector3(1.76, 0.6, land_z1 - land_z0), 0, _stone(k))
+	# 石拱门：两根方柱 + 过梁 + 拱顶石；门洞里是黑的
+	for sx in [-1.0, 1.0]:
+		rb.block(Vector3(sx * 0.82, 1.05, -0.78), Vector3(0.26, 2.1, 0.3), 0, _stone(k + (5 if sx > 0.0 else 6)))
+		rb.block(Vector3(sx * 0.82, 2.13, -0.78), Vector3(0.32, 0.08, 0.36), 0, _stone(k + 9).lightened(0.05))
+	rb.block(Vector3(0, 2.3, -0.78), Vector3(1.96, 0.26, 0.34), 0, _stone(k + 11))
+	rb.block(Vector3(0, 2.48, -0.78), Vector3(0.3, 0.18, 0.36), 0, _stone(k + 12).lightened(0.08), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.6, 1.0))
+	var ids: Array = []
+	for p in [Vector3(-0.69, 0.6, -0.86), Vector3(0.69, 0.6, -0.86), Vector3(0.69, 2.17, -0.86), Vector3(-0.69, 2.17, -0.86)]:
+		ids.append(rb._vert(RigBuilder.GLOW, p, Vector3.BACK, Color(0.02, 0.015, 0.01), 0))
+	rb._tri(RigBuilder.GLOW, ids[0], ids[1], ids[2])
+	rb._tri(RigBuilder.GLOW, ids[0], ids[2], ids[3])

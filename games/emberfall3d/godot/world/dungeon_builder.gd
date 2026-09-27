@@ -168,6 +168,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		var tch := Torch.new()
 		parent.add_child(tch)
 		tch.position = cell_center(c) + Vector3(f.x, 0, f.y) * (TILE / 2 + 0.12) + Vector3(0, 1.8, 0)
+		tch.rotation.y = atan2(f.x, f.y)          # 托架贴墙、火把朝外（2.6 之七）
 		tch.light.distance_fade_enabled = true
 		tch.light.distance_fade_begin = 22.0
 		tch.light.distance_fade_length = 6.0
@@ -182,9 +183,9 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	if down_cell.x < 0 and opt.get("open_boss_stairs", false):
 		down_cell = m.boss_stairs
 	if down_cell.x >= 0:
-		stairs.down = _stairs(parent, "down", opt.get("down_caption", "↓ 下一层"), down_cell, opt.get("on_stairs", Callable()))
+		stairs.down = _stairs(parent, "down", opt.get("down_caption", "↓ 下一层"), down_cell, opt.get("on_stairs", Callable()), wall_mat.call(""))
 	if m.up.x >= 0:
-		stairs.up = _stairs(parent, "up", opt.get("up_caption", "↑ 上一层"), m.up, opt.get("on_stairs", Callable()))
+		stairs.up = _stairs(parent, "up", opt.get("up_caption", "↑ 上一层"), m.up, opt.get("on_stairs", Callable()), wall_mat.call(""))
 
 	return {"region": region, "torches": torches, "stairs": stairs, "down_cell": down_cell, "chunks": chunks, "fog": fog, "pillars": pillars_used.keys(),
 		"geo_ms": geo_ms, "nav_ms": nav_ms, "build_ms": (Time.get_ticks_usec() - t0) / 1000.0}
@@ -205,8 +206,9 @@ static func _kind(tt: int) -> int:
 	return 1 if DungeonGen.walkable(tt) else (2 if tt == DungeonGen.WALL else 0)
 
 
-static func _stairs(parent: Node3D, kind: String, caption: String, c: Vector2i, cb: Callable) -> Stairs:
-	var s := Stairs.make(kind, caption)
+static func _stairs(parent: Node3D, kind: String, caption: String, c: Vector2i, cb: Callable, stone: Material = null) -> Stairs:
+	## stone：楼梯石头的材质（2.6 之七：用本层墙的写实材质，单独一份、不跟着墙一起变半透明）
+	var s := Stairs.make(kind, caption, stone)
 	parent.add_child(s)
 	s.position = cell_center(c)
 	if cb.is_valid():

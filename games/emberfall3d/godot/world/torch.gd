@@ -1,8 +1,12 @@
 class_name Torch
 extends Node3D
-## 火把（ART.md 第六、七节）：木柄 + 发光火苗（高亮度自发光，配合环境泛光）+ 光晕贴片（加法混合）+ 闪烁点光源。
-## 点光源不投阴影（见 set_quality）；low 时光照范围略小。外观是程序生成的占位。
+## 火把（ART.md 第六、七节）：墙上的铁托架与火把（PropModels「torch」，2.6 之七）+ 发光火苗（「torch_flame」：主火舌 + 两条小火舌，
+## 高亮度自发光、配合环境泛光，每帧伸缩摇曳、慢慢转）+ 光晕贴片（加法混合）+ 闪烁点光源。
+## 挂在墙上时节点的 +Z 朝外（墙面在身后 0.12 米）；mounted = false 时只有火苗（篝火用）。
+## 点光源不投阴影（见 set_quality）；low 时光照范围略小。
 
+var mounted := true               # 在 add_child 之前设置
+var model: MeshInstance3D         # 托架 + 火把（mounted 时才有）
 var light: OmniLight3D
 var flame: MeshInstance3D
 var halo: Sprite3D
@@ -12,20 +16,15 @@ var _t := 0.0
 
 func _ready() -> void:
 	_t = randf() * 10.0
-	var post := MeshInstance3D.new()
-	var b := BoxMesh.new()
-	b.size = Vector3(0.12, 0.5, 0.12)
-	post.mesh = b
-	var pm := StandardMaterial3D.new()
-	pm.albedo_color = Color(0.25, 0.16, 0.1)
-	post.material_override = pm
-	post.position.y = -0.3
-	# 火把自己的木柄和火苗紧贴着点光源，高画质开点光源阴影时会把大半面墙遮成一片黑、只剩一块硬边的亮斑（2.6 实测），所以不投影
-	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(post)
+	if mounted:
+		model = PropModels.instance("torch")
+		# 火把自己的托架和火苗紧贴着点光源，高画质开点光源阴影时会把大半面墙遮成一片黑、只剩一块硬边的亮斑（2.6 实测），所以不投影
+		model.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(model)
 	flame = MeshInstance3D.new()
-	flame.mesh = LowPoly.sphere(0.13)
-	flame.scale = Vector3(1, 1.6, 1)
+	flame.name = "Flame"
+	flame.mesh = PropModels.get_model("torch_flame").mesh
+	flame.position = Vector3(0, -0.04, 0.02) if mounted else Vector3(0, -0.2, 0)     # 挂墙：坐在火把头上；篝火：从柴堆中间冒出来
 	var fm := StandardMaterial3D.new()
 	fm.albedo_color = Color(1.0, 0.55, 0.18)
 	fm.emission_enabled = true
@@ -70,5 +69,6 @@ func _process(delta: float) -> void:
 	_t += delta
 	var f := sin(_t * 11.0) * 0.1 + sin(_t * 7.3) * 0.07 + sin(_t * 23.0) * 0.03
 	light.light_energy = energy * (1.0 + f)
-	flame.scale = Vector3(1.0 - f * 0.5, 1.6 + f * 1.5, 1.0 - f * 0.5)
+	flame.scale = Vector3(1.0 - f * 0.5, 1.0 + f * 0.9, 1.0 - f * 0.5)
+	flame.rotation = Vector3(f * 0.25, _t * 1.3, -f * 0.3)
 	(halo.material_override as StandardMaterial3D).albedo_color.a = 0.45 + f

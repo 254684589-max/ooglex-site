@@ -427,11 +427,12 @@ func _build_test_area() -> void:
 
 	nav_bake_ms = NavBuilder.bake(level)
 
-	# 火把（world/torch.gd）：房间一支、大厅三支
-	for tp in [Vector3(-5.4, 1.7, -5.4), Vector3(-11.4, 1.8, 25.4), Vector3(13.4, 1.8, 25.4), Vector3(-11.4, 1.8, 9.0)]:
+	# 火把（world/torch.gd）：房间一支、大厅三支，托架贴在墙上（墙面在火把身后 0.12 米；第二个值是火把朝外的方向）
+	for tp in [[Vector3(-5.58, 1.8, -5.0), Vector3.RIGHT], [Vector3(-11.4, 1.8, 25.58), Vector3.FORWARD], [Vector3(13.4, 1.8, 25.58), Vector3.FORWARD], [Vector3(-11.58, 1.8, 9.0), Vector3.RIGHT]]:
 		var tch := Torch.new()
 		stage.add_child(tch)
-		tch.position = tp
+		tch.position = tp[0]
+		tch.rotation.y = atan2((tp[1] as Vector3).x, (tp[1] as Vector3).z)
 		torches.append(tch)
 
 	# 训练木桩：房间里两个挨着（测试范围技能）；真正的怪物在南边大厅
@@ -753,7 +754,8 @@ func _open_boss_stairs() -> void:
 	if floor_i <= 0 or dungeon.is_empty() or stairs.has("down"):
 		return
 	var c: Vector2i = dungeon.boss_stairs
-	stairs.down = DungeonBuilder._stairs(stage, "down", "↓ " + FloorRules.floor_name(floor_i + 1), c, _on_stairs)
+	var stone := Look.wall_material(DungeonBuilder.theme_tints(dungeon.theme).wall, dungeon.theme)      # 和本层的墙同一种石头
+	stairs.down = DungeonBuilder._stairs(stage, "down", "↓ " + FloorRules.floor_name(floor_i + 1), c, _on_stairs, stone)
 	floor_info.down_cell = c
 	var tt: PackedByteArray = dungeon.t
 	tt[c.y * dungeon.w + c.x] = DungeonGen.DOWN
@@ -1285,7 +1287,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；Esc 菜单；M 音效；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n角色、道具、房屋、树木与训练木桩已换成代码搭的精细模型；楼梯、火把与地上的掉落物仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n角色、道具、房屋、树木、楼梯与火把已换成代码搭的精细模型；地上的掉落物仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0

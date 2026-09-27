@@ -2,7 +2,8 @@ extends Node
 ## 固定机位截图（画质步骤前后对比用，开发用，不在 run_tests.sh 里）：
 ##   xvfb-run -a godot --path games/emberfall3d/godot --rendering-driver opengl3 --resolution 1280x720 res://tests/vis_shots.tscn -- <输出目录> [画质档：low/medium/high] [proc：用程序化贴图]
 ## 机位：room（房间，火把与木桩）、hall（大厅战斗，怪物围上来）；floor1 / 3 / 5 / 8（P2 随机地下城四种主题）。
-## 第四个参数 six：只拍 2.6 之六的三张近景（dummy 训练木桩、town-trees 镇外树林、deco 熔渊地面装饰）。
+## 第四个参数 six：只拍 2.6 之六的三张近景（dummy 训练木桩、town-trees 镇外树林、deco 熔渊地面装饰）；
+## seven：只拍 2.6 之七的四张近景（stairs-down / stairs-up 第 2 层的上下楼梯、torch 墙上的火把、town-fire 镇上的篝火）。
 
 # 截图期间每帧回满血（不改最大生命，界面上显示的仍是正常数值）
 var hero: Player
@@ -31,6 +32,10 @@ func _ready() -> void:
 	await _wait(20)
 	if args.size() > 3 and args[3] == "six":
 		await _shots_six(main, out, tier)
+		get_tree().quit()
+		return
+	if args.size() > 3 and args[3] == "seven":
+		await _shots_seven(main, out, tier)
 		get_tree().quit()
 		return
 	for shot in [["room", Vector3(-1.0, 0, -1.5), 0.5], ["hall", Vector3(0, 0, 13), 3.5]]:
@@ -402,6 +407,48 @@ func _shots_six(main: Node, out: String, tier: String) -> void:
 	await get_tree().create_timer(0.8).timeout
 	await _shot(out, "deco", tier)
 	main.camera.distance = d0
+
+
+func _shots_seven(main: Node, out: String, tier: String) -> void:
+	## 2.6 之七：楼梯、火把、篝火近景（说明文字先藏起来，免得挡住画面）
+	main.info.visible = false
+	var d0: float = main.camera.distance
+	main.go_floor(2)
+	await get_tree().create_timer(0.3).timeout
+	for e in main.monsters:
+		if is_instance_valid(e):
+			e.queue_free()
+	main.monsters.clear()
+	main.camera.distance = main.camera.min_distance
+	for k in ["down", "up"]:
+		var st: Stairs = main.stairs[k]
+		var cell := Vector2i(floori(st.global_position.x / DungeonBuilder.TILE), floori(st.global_position.z / DungeonBuilder.TILE))
+		hero.global_position = DungeonBuilder.cell_center(DungeonGen.near_free(main.dungeon, cell))
+		hero.face_point(st.global_position)
+		hero.stop()
+		main.camera.snap()
+		await get_tree().create_timer(0.6).timeout
+		await _shot(out, "stairs-" + k, tier)
+	for tc in main.dungeon.torches:
+		var c: Vector2i = tc.cell
+		if tc.face == Vector2i(0, 1) and DungeonGen.walkable(DungeonGen.tile(main.dungeon, c.x, c.y + 2)) and DungeonGen.walkable(DungeonGen.tile(main.dungeon, c.x + 1, c.y + 2)):
+			hero.global_position = DungeonBuilder.cell_center(c) + Vector3(0.8, 0, 3.2)
+			break
+	hero.stop()
+	main.camera.snap()
+	await get_tree().create_timer(0.6).timeout
+	await _shot(out, "torch", tier)
+	main.use_test_area = false
+	main.go_floor(0, "start")
+	await get_tree().create_timer(0.5).timeout
+	var fire: Dictionary = main.town.props.filter(func(p): return p.type == "fire")[0]
+	hero.global_position = TownGen.to_world(fire.x, fire.y) + Vector3(-1.6, 0, 1.6)
+	hero.stop()
+	main.camera.snap()
+	await get_tree().create_timer(0.6).timeout
+	await _shot(out, "town-fire", tier)
+	main.camera.distance = d0
+	main.info.visible = true
 
 
 func _wait(n: int) -> void:
