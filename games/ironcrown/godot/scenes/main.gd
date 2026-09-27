@@ -1,5 +1,5 @@
 extends Node3D
-## 《铁冠之争》主场景（阶段 1.2：第一人称控制器）。
+## 《铁冠之争》主场景（阶段 1.3：第一人称控制器 + 交互）。
 ## 默认是灰盒雾夜街道；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞）。
 ## 画面全部是占位几何体，界面上明确标注。正式的霜渡镇主街在 1.4。
 ##
@@ -8,8 +8,8 @@ extends Node3D
 
 const FOG_COLOR := Color("1c2a3a")              # 夜空与远雾（ART.md 第四节）
 const AMBIENT_COLOR := Color("6f8faf")          # 月光 / 环境光
-const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
-const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角"
+const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E 交互 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
+const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 对准东西时点右下角的交互按钮"
 const HINT_SECONDS := 8.0
 
 @export var use_test_range := false
@@ -29,6 +29,8 @@ var look_logged := false
 var lock_seen := false          # 指针真的锁定过（锁定失败时不要误开暂停菜单）
 var hint_left := HINT_SECONDS
 var started := false
+var inventory: Array = []       # 捡到的物品编号（背包界面在 2.4）
+var use_screen_logged := false
 
 
 func _ready() -> void:
@@ -95,6 +97,10 @@ func _build_ui() -> void:
 	layer.add_child(hud)
 	hud.set_hint(HINT_TOUCH if touch_mode else HINT_DESKTOP)
 	hud.menu_pressed.connect(open_pause)
+	if touch_mode:
+		hud.key_hint = ""
+	player.interactor.target_changed.connect(_on_target_changed)
+	player.interactor.interacted.connect(_on_interacted)
 	touch = TouchControls.new()
 	touch.player = player
 	layer.add_child(touch)
@@ -108,6 +114,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		open_pause()
 		get_viewport().set_input_as_handled()
 		return
+	if event.is_action_pressed("interact"):
+		player.interactor.use()
+		get_viewport().set_input_as_handled()
+		return
 	# 触屏产生的模拟鼠标事件（DEVICE_ID_EMULATION）不算鼠标（余烬陷落 TECH.md 4.1 的经验）
 	if event is InputEventMouseButton and event.pressed and event.device != InputEvent.DEVICE_ID_EMULATION and not touch_mode:
 		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
@@ -116,6 +126,31 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and event.device != InputEvent.DEVICE_ID_EMULATION:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			player.look(event.relative)
+
+
+func _on_target_changed(target: Interactable) -> void:
+	hud.show_prompt(target.prompt() if target else "")
+	if target:
+		print("IC_TARGET name=%s verb=%s" % [target.display_name, target.verb_now()])
+		# 给网页冒烟测试用：触屏交互按钮在窗口里的位置
+		if touch_mode and not use_screen_logged:
+			use_screen_logged = true
+			var c: Vector2 = touch.button_centers().get("interact", Vector2.ZERO) * get_tree().root.content_scale_factor
+			print("IC_USE_SCREEN x=%d y=%d" % [c.x, c.y])
+
+
+func _on_interacted(r: Dictionary) -> void:
+	if r.is_empty():
+		return
+	if r.has("toast"):
+		hud.toast(r.toast)
+	if r.has("speech"):
+		hud.say(r.speech)
+	if r.get("kind") == "pickup":
+		inventory.append(r.item)
+	var t := player.interactor.target
+	hud.show_prompt(t.prompt() if t else "")     # 门开了以后提示从「打开」变「关上」
+	print("IC_INTERACT kind=%s name=%s" % [r.get("kind", ""), r.get("name", "")])
 
 
 func _start() -> void:

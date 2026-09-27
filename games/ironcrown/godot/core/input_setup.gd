@@ -9,6 +9,7 @@ const ACTIONS := {
 	"sprint": [KEY_SHIFT],
 	"crouch": [KEY_C, KEY_CTRL],   # 切换蹲下
 	"jump": [KEY_SPACE],
+	"interact": [KEY_E],          # 交互：对话、开门、拾取（1.3）
 	"pause": [KEY_ESCAPE],
 }
 

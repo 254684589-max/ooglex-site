@@ -21,6 +21,7 @@ node games/ironcrown/tools/smoke_web.js /tmp                  # 三个宽度的�
 ```
 
 - 工具脚本复制自 `games/emberfall3d/tools/`，只改路径与文件名前缀（`ic-`）；复用的 GDScript 在文件头注明来源。
-- 内置中文字体 `godot/assets/fonts/NotoSansSC-IC.ttf` 暂时直接复制《余烬陷落》的子集（Noto Sans SC，SIL OFL 1.1，许可见同目录 `OFL.txt`）；
-  界面文字是否都在字体里由自动化测试检查，缺字时再按本工程字符集重做子集。
+- 内置中文字体 `godot/assets/fonts/NotoSansSC-IC.ttf` 是按本工程字符集做的子集（Noto Sans SC，SIL OFL 1.1，许可见同目录 `OFL.txt`）。
+  界面与台词的字是否都在字体里由自动化测试检查；缺字时 `pip install fonttools` 后运行 `python3 games/ironcrown/tools/build_font.py path/to/NotoSansSC[wght].ttf` 重做
+  （原字体可从 https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf 下载）。
 - 测试结果：`TEST_REPORT.md`。
