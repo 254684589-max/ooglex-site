@@ -422,17 +422,28 @@ func _shots_seven(main: Node, out: String, tier: String) -> void:
 	main.camera.distance = main.camera.min_distance
 	for k in ["down", "up"]:
 		var st: Stairs = main.stairs[k]
-		var cell := Vector2i(floori(st.global_position.x / DungeonBuilder.TILE), floori(st.global_position.z / DungeonBuilder.TILE))
-		hero.global_position = DungeonBuilder.cell_center(DungeonGen.near_free(main.dungeon, cell))
+		# 主角站在楼梯东北侧（触发范围外），楼梯出现在主角左边、不被下方的技能栏挡住；那里是墙就换个方向
+		# （上楼梯：主角站在石阶东南侧，整段石阶和拱门在主角左上方）
+		var offs: Array = [Vector3(1.4, 0, -1.2), Vector3(1.3, 0, 1.3), Vector3(-1.3, 0, -1.3), Vector3(-1.4, 0, 1.2)]
+		if k == "up":
+			offs.push_front(Vector3(1.7, 0, 0.9))
+		var spot: Vector3 = st.global_position + offs[0]
+		for off in offs:
+			var pp: Vector3 = st.global_position + off
+			if DungeonGen.walkable(DungeonGen.tile(main.dungeon, floori(pp.x / DungeonBuilder.TILE), floori(pp.z / DungeonBuilder.TILE))):
+				spot = pp
+				break
+		hero.global_position = spot
 		hero.face_point(st.global_position)
 		hero.stop()
 		main.camera.snap()
+		main.banner_t = 0.0          # 楼层名横幅先收起来，免得和楼梯上方的字叠在一起
 		await get_tree().create_timer(0.6).timeout
 		await _shot(out, "stairs-" + k, tier)
 	for tc in main.dungeon.torches:
 		var c: Vector2i = tc.cell
 		if tc.face == Vector2i(0, 1) and DungeonGen.walkable(DungeonGen.tile(main.dungeon, c.x, c.y + 2)) and DungeonGen.walkable(DungeonGen.tile(main.dungeon, c.x + 1, c.y + 2)):
-			hero.global_position = DungeonBuilder.cell_center(c) + Vector3(0.8, 0, 3.2)
+			hero.global_position = DungeonBuilder.cell_center(c) + Vector3(1.0, 0, 2.5)
 			break
 	hero.stop()
 	main.camera.snap()
