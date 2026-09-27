@@ -2899,7 +2899,7 @@ func test_photo() -> void:
 
 # ---------------- 2.6 画质样板间（三）：代码搭的骨骼角色 ----------------
 
-func _bone_y(r: HumanoidRig, b: String) -> Vector3:
+func _bone_y(r: CharRig, b: String) -> Vector3:
 	## 骨骼在模型空间的位置：直接把各级局部姿势乘起来（骨架的全局姿势缓存是延迟更新的，测试里读会拿到旧值）
 	var sk := r.skeleton
 	var i := r.bone_index(b)
@@ -2910,7 +2910,7 @@ func _bone_y(r: HumanoidRig, b: String) -> Vector3:
 	return t.origin
 
 
-func _pose_for(r: HumanoidRig, kind: String, stage: String, k: float, speed := 0.0, n := 30) -> void:
+func _pose_for(r: CharRig, kind: String, stage: String, k: float, speed := 0.0, n := 30) -> void:
 	r.reset_pose()
 	for i in n:
 		if kind != "":
@@ -2926,6 +2926,7 @@ func test_rig() -> void:
 		var m: Dictionary = CharModels.get_model(id)
 		var mesh: ArrayMesh = m.mesh
 		var budget := 15000 if id == "wanderer" else 5000       # ART.md 第九节：英雄 ≤ 15k、普通怪物 ≤ 5k
+		var nb := (QuadrupedRig.BONES if m.get("kind", "") == "quadruped" else HumanoidRig.BONES).size()
 		info.append("%s %d 面 / %.0f 毫秒" % [id, m.tris, m.build_ms])
 		if m.tris > budget or m.tris < 500 or mesh.get_surface_count() > 3:
 			ok_mesh = false
@@ -2940,15 +2941,15 @@ func test_rig() -> void:
 				ok_mesh = false
 			for i in v.size():
 				var sw := we[i * 4] + we[i * 4 + 1] + we[i * 4 + 2] + we[i * 4 + 3]
-				if absf(sw - 1.0) > 0.001 or bo[i * 4] < 0 or bo[i * 4] >= HumanoidRig.BONES.size() or bo[i * 4 + 1] >= HumanoidRig.BONES.size():
+				if absf(sw - 1.0) > 0.001 or bo[i * 4] < 0 or bo[i * 4] >= nb or bo[i * 4 + 1] >= nb:
 					ok_mesh = false
 			for t in range(0, ix.size(), 3):
 				var a := v[ix[t]]
 				if (v[ix[t + 1]] - a).cross(v[ix[t + 2]] - a).dot(nr[ix[t]] + nr[ix[t + 1]] + nr[ix[t + 2]]) > 1e-6:
 					ok_mesh = false
 	check(ok_mesh, "%d 种角色的网格：三角面在预算内（%s）、最多 3 个面、每个顶点权重和为 1、骨骼编号有效、三角形都朝外" % [CharModels.ids().size(), ", ".join(info)])
-	var r1 := HumanoidRig.create("skeleton")
-	var r2 := HumanoidRig.create("skeleton")
+	var r1 := CharRig.create("skeleton")
+	var r2 := CharRig.create("skeleton")
 	add_child(r1)
 	add_child(r2)
 	await frames(1)
@@ -3002,7 +3003,7 @@ func test_rig() -> void:
 	# ---- 性能：60 个骨骼角色同时播动作 ----
 	var many := []
 	for i in 60:
-		var rr := HumanoidRig.create("skeleton" if i % 2 == 0 else "skeleton_archer")
+		var rr := CharRig.create("skeleton" if i % 2 == 0 else "skeleton_archer")
 		add_child(rr)
 		many.append(rr)
 	var t0 := Time.get_ticks_usec()
@@ -3049,10 +3050,50 @@ func test_rig() -> void:
 			ok_b2 = false
 		e.queue_free()
 	check(ok_b2, "第二批人形怪物换成骨骼角色（%s）" % ", ".join(got))
+	# 第三批：火坑小鬼（小体型人形）、熔渊猎犬（四足）
 	var imp := _spawn(main, "imp", hero.global_position + Vector3(-6, 0, 14))
+	var hd := _spawn(main, "hound", hero.global_position + Vector3(-4, 0, 14))
 	await frames(1)
-	check(imp.rig == null and not imp._mats.is_empty(), "火坑小鬼暂时仍是占位几何体（要另做小体型骨架）")
+	check(imp.rig is HumanoidRig and imp.rig.model_id == "imp" and imp.rig.scale.x < 0.8 and imp._mats.is_empty(), "火坑小鬼换成小个子骨骼角色（缩放 %.2f）" % imp.rig.scale.x)
+	var q: CharRig = hd.rig
+	check(q is QuadrupedRig and q.skeleton.get_bone_count() == 20 and q.fall_sideways and hd.rig_attack == "bite" and hd._mats.is_empty(), "熔渊猎犬换成四足骨骼角色（20 根骨骼，扑咬，倒下侧翻）")
+	hd.set_physics_process(false)
+	hd.set_process(false)
+	var fl := []
+	var hr := []
+	var fr := []
+	for i in 16:
+		q.tick(0.05, 3.8)
+		fl.append(_bone_y(q, "FrontLeftPaw").z)
+		hr.append(_bone_y(q, "HindRightPaw").z)
+		fr.append(_bone_y(q, "FrontRightPaw").z)
+	var same := 0
+	var opp := 0
+	for i in range(1, 16):
+		var a1: float = fl[i] - fl[i - 1]
+		if signf(a1) == signf(hr[i] - hr[i - 1]):
+			same += 1
+		if signf(a1) != signf(fr[i] - fr[i - 1]):
+			opp += 1
+	check(same >= 12 and opp >= 12 and (fl.max() - fl.min()) > 0.2, "猎犬小跑：左前与右后同步、左前与右前相反（对角步态，前爪摆幅 %.2f 米）" % (fl.max() - fl.min()))
+	q.reset_pose()
+	for i in 20:
+		q.tick(0.02, 0.0)         # 先站定（刚才小跑的姿势不算）
+	var head0 := _bone_y(q, "Head")
+	for i in 20:
+		q.act("bite", "windup", 1.0)
+		q.tick(0.02, 0.0)
+	var jaw_open: float = rad_to_deg(q.skeleton.get_bone_pose_rotation(q.bone_index("Jaw")).get_euler().x)
+	var head_up := _bone_y(q, "Head").y
+	for i in 20:
+		q.act("bite", "strike", 1.0)
+		q.tick(0.02, 0.0)
+	var head1 := _bone_y(q, "Head")
+	check(jaw_open > 25.0 and head_up > head0.y and head1.z > head0.z + 0.05 and head1.y < head_up, "猎犬扑咬：先仰头张嘴（下颌 %.0f°，头抬到 %.2f 米），再往前扑（头往前 %.2f 米）" % [jaw_open, head_up, head1.z - head0.z])
+	hd.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
 	imp.queue_free()
+	await seconds(0.5)
+	check(absf(hd.visual.rotation_degrees.z) > 45.0 and absf(hd.visual.rotation_degrees.x) < 1.0, "猎犬倒下时侧翻（绕 z 转 %.0f°），不是像人一样向后仰" % hd.visual.rotation_degrees.z)
 	var pr := _spawn(main, "ash_priest", hero.global_position + Vector3(-5, 0, 10))
 	await frames(1)
 	pr.mode = 1

@@ -12,6 +12,9 @@ extends RefCounted
 ##   knight：堕落骑士。全身板甲、头盔眼缝透红光、破旧暗红罩袍、双手大剑。
 ##   cultist / priest：邪教术士（紫袍兜帽）/ 灰誓祭司（灰袍、骨白面具；ART.md「教团：灰袍、面具」），拿顶端发光的法杖。
 ##   brute：焦骨蛮兵（测试区的冲锋怪）。高大魁梧的焦黑壮汉，裂缝透余烬光，头上一对角。
+## 第三批（2.6 之三）：
+##   imp：火坑小鬼。小个子（约 1.2 米）、大脑袋、圆肚子里烧着余烬、细长手臂与爪子、一对弯角、尖耳、带箭头的尾巴。
+##   hound：熔渊猎犬（四足，QuadrupedRig）。暗红褐的瘦长猎犬，背上一道熔火裂纹与黑曜石骨刺，眼睛和尾尖发光，张嘴有獠牙。
 
 static var _cache := {}
 const SWORD_TILT := Basis(Vector3(1, 0, 0), 0.87)     # 约 50°，剑尖朝前下方
@@ -39,6 +42,10 @@ static func get_model(id: String) -> Dictionary:
 				m = _robed(true)
 			"brute":
 				m = _brute()
+			"imp":
+				m = _imp()
+			"hound":
+				m = _hound()
 			_:
 				m = _wanderer()
 		m.build_ms = (Time.get_ticks_usec() - t0) / 1000.0
@@ -47,7 +54,7 @@ static func get_model(id: String) -> Dictionary:
 
 
 static func ids() -> Array:
-	return ["wanderer", "skeleton", "skeleton_archer", "zombie", "ghoul", "knight", "cultist", "priest", "brute"]
+	return ["wanderer", "skeleton", "skeleton_archer", "zombie", "ghoul", "knight", "cultist", "priest", "brute", "imp", "hound"]
 
 
 ## 关节位置（模型空间，静止姿势：面朝 +Z，手臂下垂；左侧在 +X）。o 里可以覆盖左侧关节，右侧自动镜像。
@@ -66,10 +73,10 @@ static func joints(o: Dictionary = {}) -> Dictionary:
 	return j
 
 
-static func _idx() -> Dictionary:
+static func _idx(bone_list: Array = HumanoidRig.BONES) -> Dictionary:
 	var d := {}
-	for i in HumanoidRig.BONES.size():
-		d[HumanoidRig.BONES[i][0]] = i
+	for i in bone_list.size():
+		d[bone_list[i][0]] = i
 	return d
 
 
@@ -517,3 +524,106 @@ static func _brute() -> Dictionary:
 		rb.ellipsoid(Vector3(0.05 * sx, 1.73, 0.25), Vector3(0.02, 0.016, 0.01), B.Head, ember, RigBuilder.GLOW, Basis.IDENTITY, 3, 5)
 	return _finish(rb, J, ember, {"scale": 1.25, "stride": 1.6, "walk_ref": 3.0, "arm_swing": 20.0, "idle_arms": 16.0, "hunch": 12.0,
 		"carry": {"RightUpperArm": Vector3(-14, 0, -6), "LeftUpperArm": Vector3(-14, 0, 6), "RightLowerArm": Vector3(-25, 0, 0), "LeftLowerArm": Vector3(-25, 0, 0)}})
+
+
+# ---------------- 第三批 ----------------
+
+static func _imp() -> Dictionary:
+	var J := joints({"Hips": Vector3(0, 0.82, 0), "Spine": Vector3(0, 0.96, 0), "Chest": Vector3(0, 1.12, 0), "Neck": Vector3(0, 1.3, 0.02), "Head": Vector3(0, 1.36, 0.03),
+		"LeftUpperArm": Vector3(0.22, 1.24, 0), "LeftLowerArm": Vector3(0.27, 0.97, 0.03), "LeftHand": Vector3(0.29, 0.72, 0.05),
+		"LeftUpperLeg": Vector3(0.12, 0.78, 0), "LeftLowerLeg": Vector3(0.13, 0.44, 0.03), "LeftFoot": Vector3(0.13, 0.1, -0.01)})
+	var B := _idx()
+	var rb := RigBuilder.new()
+	var red := Color(0.62, 0.17, 0.08)
+	var dark := Color(0.38, 0.1, 0.06)
+	var horn := Color(0.2, 0.11, 0.08)
+	var fire := Color(1.0, 0.68, 0.2)
+	_limbs(rb, J, B, {"thigh": red, "shin": dark, "foot_col": horn, "upper": red, "fore": dark, "hand_col": dark,
+		"thigh_r": 0.085, "shin_r": 0.06, "arm_r": 0.06, "hand": 1.2, "claw": horn, "claw_len": 0.09, "foot_s": 0.9})
+	# 圆肚子（里面烧着余烬）+ 窄胸
+	rb.ellipsoid(Vector3(0, 0.98, 0.04), Vector3(0.21, 0.2, 0.2), [B.Hips, B.Spine, 0.5], red, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+	rb.ellipsoid(Vector3(0, 0.97, 0.225), Vector3(0.1, 0.085, 0.03), [B.Hips, B.Spine, 0.5], fire, RigBuilder.GLOW, Basis.IDENTITY, 4, 8)
+	_cracks(rb, Vector3(0, 1.0, 0.2), 4, Vector3(0.26, 0.2, 0.0), [B.Hips, B.Spine, 0.5], fire, 71)
+	rb.tube([Vector3(0, 1.08, 0), Vector3(0, 1.2, 0.01), Vector3(0, 1.3, 0.02)], [Vector2(0.15, 0.12), Vector2(0.17, 0.12), Vector2(0.07, 0.06)],
+		[[B.Spine, B.Chest, 0.5], B.Chest, [B.Chest, B.Neck, 0.4]], red, RigBuilder.BODY, 9, true, Vector3.BACK)
+	# 大脑袋：咧开的大嘴、尖牙、发光的眼、一对弯角、向两边张开的尖耳
+	rb.ellipsoid(Vector3(0, 1.5, 0.05), Vector3(0.17, 0.155, 0.16), B.Head, red, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+	rb.block(Vector3(0, 1.42, 0.17), Vector3(0.2, 0.05, 0.06), B.Head, Color(0.12, 0.03, 0.02), RigBuilder.BODY, Basis.IDENTITY, Vector2(1.1, 1.0))
+	for k in 4:
+		var x := -0.065 + k * 0.043
+		rb.spike(Vector3(x, 1.445, 0.195), Vector3(x, 1.41, 0.2), 0.012, B.Head, Color(0.95, 0.9, 0.75), RigBuilder.BODY, 4)
+	for sx in [1.0, -1.0]:
+		rb.ellipsoid(Vector3(0.065 * sx, 1.54, 0.175), Vector3(0.03, 0.022, 0.015), B.Head, fire, RigBuilder.GLOW, Basis.IDENTITY, 3, 6)
+		rb.tube([Vector3(0.09 * sx, 1.6, 0.04), Vector3(0.15 * sx, 1.72, 0.0), Vector3(0.14 * sx, 1.82, -0.08), Vector3(0.1 * sx, 1.84, -0.16)],
+			[Vector2(0.04, 0.04), Vector2(0.032, 0.032), Vector2(0.02, 0.02), Vector2(0.0, 0.0)], [B.Head, B.Head, B.Head, B.Head], horn, RigBuilder.BODY, 6, true)
+		rb.spike(Vector3(0.15 * sx, 1.5, 0.0), Vector3(0.32 * sx, 1.58, -0.04), 0.045, B.Head, dark, RigBuilder.BODY, 4)
+	# 尾巴（从后腰伸出，末端一个箭头）
+	var tail := [Vector3(0, 0.84, -0.14), Vector3(0, 0.66, -0.34), Vector3(0, 0.5, -0.42), Vector3(0, 0.44, -0.58)]
+	rb.tube(tail, [Vector2(0.035, 0.035), Vector2(0.028, 0.028), Vector2(0.022, 0.022), Vector2(0.015, 0.015)], [B.Hips, B.Hips, B.Hips, B.Hips], dark, RigBuilder.BODY, 5, true)
+	rb.block(Vector3(0, 0.44, -0.64), Vector3(0.1, 0.02, 0.1), B.Hips, horn, RigBuilder.BODY, Basis(Vector3.UP, deg_to_rad(45)))
+	return _finish(rb, J, fire, {"scale": 0.72, "stride": 0.9, "walk_ref": 3.0, "arm_swing": 30.0, "idle_arms": 18.0, "hunch": 10.0,
+		"carry": {"RightUpperArm": Vector3(-25, 0, -10), "LeftUpperArm": Vector3(-25, 0, 10), "RightLowerArm": Vector3(-35, 0, 0), "LeftLowerArm": Vector3(-35, 0, 0)}})
+
+
+static func _hound() -> Dictionary:
+	var J := {
+		"Hips": Vector3(0, 0.62, -0.38), "Spine": Vector3(0, 0.66, -0.08), "Chest": Vector3(0, 0.68, 0.22), "Neck": Vector3(0, 0.76, 0.4),
+		"Head": Vector3(0, 0.86, 0.56), "Jaw": Vector3(0, 0.8, 0.62), "Tail": Vector3(0, 0.68, -0.52), "TailTip": Vector3(0, 0.56, -0.8),
+		"FrontLeftUpper": Vector3(0.13, 0.62, 0.3), "FrontLeftLower": Vector3(0.14, 0.32, 0.32), "FrontLeftPaw": Vector3(0.14, 0.05, 0.31),
+		"HindLeftUpper": Vector3(0.14, 0.6, -0.4), "HindLeftLower": Vector3(0.15, 0.3, -0.5), "HindLeftPaw": Vector3(0.15, 0.05, -0.42),
+	}
+	for part in ["FrontLeftUpper", "FrontLeftLower", "FrontLeftPaw", "HindLeftUpper", "HindLeftLower", "HindLeftPaw"]:
+		var l: Vector3 = J[part]
+		J[part.replace("Left", "Right")] = Vector3(-l.x, l.y, l.z)
+	var B := _idx(QuadrupedRig.BONES)
+	var rb := RigBuilder.new()
+	var hide := Color(0.3, 0.13, 0.08)
+	var dark := Color(0.17, 0.07, 0.05)
+	var obsidian := Color(0.12, 0.1, 0.1)
+	var fire := Color(1.0, 0.48, 0.1)
+	# 躯干：后臀 → 细腰 → 深胸（纵深方向朝上，截面是竖着的椭圆）
+	rb.tube([Vector3(0, 0.6, -0.56), Vector3(0, 0.63, -0.38), Vector3(0, 0.63, -0.12), Vector3(0, 0.66, 0.12), Vector3(0, 0.7, 0.3), Vector3(0, 0.74, 0.42)],
+		[Vector2(0.11, 0.12), Vector2(0.15, 0.16), Vector2(0.13, 0.14), Vector2(0.16, 0.2), Vector2(0.16, 0.2), Vector2(0.12, 0.13)],
+		[B.Hips, B.Hips, [B.Hips, B.Spine, 0.7], [B.Spine, B.Chest, 0.6], B.Chest, [B.Chest, B.Neck, 0.3]], hide, RigBuilder.BODY, 10, true, Vector3.UP)
+	# 背上熔火裂纹 + 黑曜石骨刺
+	for k in 6:
+		var z := -0.42 + k * 0.15
+		var y := 0.77 + (0.04 if z > 0.0 else 0.0) + 0.02 * sin(k * 1.3)
+		var bspec = B.Hips if z < -0.25 else (B.Spine if z < 0.08 else B.Chest)
+		rb.block(Vector3(0, y - 0.015, z), Vector3(0.05, 0.03, 0.12), bspec, fire, RigBuilder.GLOW)
+		rb.spike(Vector3(0.04 * (1 if k % 2 == 0 else -1), y, z), Vector3(0.06 * (1 if k % 2 == 0 else -1), y + 0.11, z - 0.06), 0.03, bspec, obsidian, RigBuilder.BODY, 4)
+	# 脖子、头：长吻、獠牙、下颌（单独一根骨骼，可以张嘴）、向后倒的尖耳、发光的眼
+	rb.tube([Vector3(0, 0.74, 0.38), Vector3(0, 0.8, 0.48), Vector3(0, 0.86, 0.56)], [Vector2(0.1, 0.12), Vector2(0.085, 0.1), Vector2(0.08, 0.09)],
+		[B.Chest, [B.Chest, B.Neck, 0.6], [B.Neck, B.Head, 0.5]], hide, RigBuilder.BODY, 8, false, Vector3.UP)
+	rb.ellipsoid(Vector3(0, 0.9, 0.6), Vector3(0.1, 0.09, 0.12), B.Head, hide, RigBuilder.BODY, Basis.IDENTITY, 5, 9)
+	rb.block(Vector3(0, 0.87, 0.75), Vector3(0.11, 0.08, 0.2), B.Head, dark, RigBuilder.BODY, Basis.IDENTITY, Vector2(0.8, 0.9))
+	rb.block(Vector3(0, 0.79, 0.73), Vector3(0.09, 0.035, 0.19), B.Jaw, dark)
+	for sx in [1.0, -1.0]:
+		rb.spike(Vector3(0.035 * sx, 0.84, 0.82), Vector3(0.035 * sx, 0.79, 0.83), 0.012, B.Head, Color(0.92, 0.88, 0.75), RigBuilder.BODY, 4)
+		rb.spike(Vector3(0.03 * sx, 0.8, 0.8), Vector3(0.03 * sx, 0.84, 0.8), 0.01, B.Jaw, Color(0.92, 0.88, 0.75), RigBuilder.BODY, 4)
+		rb.ellipsoid(Vector3(0.055 * sx, 0.93, 0.68), Vector3(0.02, 0.015, 0.012), B.Head, fire, RigBuilder.GLOW, Basis.IDENTITY, 3, 5)
+		rb.spike(Vector3(0.06 * sx, 0.97, 0.55), Vector3(0.1 * sx, 1.1, 0.44), 0.035, B.Head, dark, RigBuilder.BODY, 4)
+	# 四条腿：前腿细直、后腿大腿粗、跗关节向后
+	for side in ["Left", "Right"]:
+		var sx := 1.0 if side == "Left" else -1.0
+		var fu: Vector3 = J["Front" + side + "Upper"]
+		var fl: Vector3 = J["Front" + side + "Lower"]
+		var fp: Vector3 = J["Front" + side + "Paw"]
+		rb.ellipsoid(fu + Vector3(0.0, -0.04, 0.0), Vector3(0.07, 0.12, 0.09), [B.Chest, B["Front" + side + "Upper"], 0.7], hide)
+		rb.limb(fu, fl, 0.06, 0.045, B["Front" + side + "Upper"], hide, B["Front" + side + "Lower"], RigBuilder.BODY, 7)
+		rb.limb(fl, fp, 0.042, 0.035, B["Front" + side + "Lower"], dark, B["Front" + side + "Paw"], RigBuilder.BODY, 7)
+		rb.block(fp + Vector3(0, -0.02, 0.04), Vector3(0.07, 0.05, 0.11), B["Front" + side + "Paw"], dark)
+		var hu: Vector3 = J["Hind" + side + "Upper"]
+		var hl: Vector3 = J["Hind" + side + "Lower"]
+		var hp: Vector3 = J["Hind" + side + "Paw"]
+		rb.ellipsoid(hu + Vector3(0.01 * sx, -0.08, 0.0), Vector3(0.075, 0.16, 0.12), [B.Hips, B["Hind" + side + "Upper"], 0.8], hide, RigBuilder.BODY, Basis(Vector3.RIGHT, deg_to_rad(18)))
+		rb.limb(hu + Vector3(0, -0.05, 0), hl, 0.06, 0.04, B["Hind" + side + "Upper"], hide, B["Hind" + side + "Lower"], RigBuilder.BODY, 7)
+		rb.limb(hl, hp, 0.038, 0.033, B["Hind" + side + "Lower"], dark, B["Hind" + side + "Paw"], RigBuilder.BODY, 7)
+		rb.block(hp + Vector3(0, -0.02, 0.04), Vector3(0.07, 0.05, 0.11), B["Hind" + side + "Paw"], dark)
+	# 尾巴：尾尖是一团余烬
+	rb.tube([Vector3(0, 0.68, -0.5), Vector3(0, 0.62, -0.66), Vector3(0, 0.56, -0.8), Vector3(0, 0.5, -0.95)], [Vector2(0.045, 0.045), Vector2(0.038, 0.038), Vector2(0.03, 0.03), Vector2(0.015, 0.015)],
+		[B.Tail, B.Tail, [B.Tail, B.TailTip, 0.6], B.TailTip], hide, RigBuilder.BODY, 6, true)
+	rb.ellipsoid(Vector3(0, 0.5, -0.97), Vector3(0.035, 0.035, 0.05), B.TailTip, fire, RigBuilder.GLOW, Basis.IDENTITY, 3, 6)
+	var out := _finish(rb, J, fire, {"scale": 1.1, "stride": 1.4, "walk_ref": 3.8})
+	out.kind = "quadruped"
+	return out

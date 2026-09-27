@@ -10,7 +10,7 @@ extends CharacterBody3D
 ## - 四个技能消耗法力、有冷却、按等级解锁（V0.1）：火球术（1 级，右键 / 1）、烬环斩（3 级，2）、
 ##   寂霜环（6 级，3）、暗影闪现（10 级，4）。电脑朝鼠标所指的地面释放；手机按钮自动瞄准最近的可见敌人。
 ## - 命中停顿只冻结命中双方（hitstop_t），不改全局时间。
-## 外观（2.6 之三）：代码搭的「流浪者」角色（HumanoidRig + CharModels），动作由代码驱动；阶段 2 以后换正式模型时接口不变。
+## 外观（2.6 之三）：代码搭的「流浪者」角色（CharRig / HumanoidRig + CharModels），动作由代码驱动；阶段 2 以后换正式模型时接口不变。
 
 signal arrived
 signal hit_landed(skill_id: String, hits: int)
@@ -71,7 +71,7 @@ var _knock_vel := Vector3.ZERO
 var _knock_t := 0.0
 var _hurt_t := 0.0
 var _visual: Node3D
-var rig: HumanoidRig
+var rig: CharRig
 var _repath_t := 0.0
 
 
@@ -105,7 +105,7 @@ func _build_placeholder() -> void:
 	_visual = Node3D.new()
 	add_child(_visual)
 	add_child(Look.blob_shadow(0.45))   # 圆形假阴影（不跟着倒地动画转）
-	rig = HumanoidRig.create("wanderer")
+	rig = CharRig.create("wanderer")
 	_visual.add_child(rig)
 	var light := OmniLight3D.new()
 	# 跟随主角的暖光（TECH.md 第 4.6 节：主角一盏 + 附近火把），照亮脚下一圈

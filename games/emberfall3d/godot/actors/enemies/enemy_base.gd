@@ -5,7 +5,7 @@ extends CharacterBody3D
 ##   EnemyMelee（近战追击）· EnemyCharger（蓄力冲锋）· EnemyRanged（保持距离放箭）· EnemySummoner（召唤仆从）
 ##   TrainingDummy（训练木桩：不攻击，被打后弹回原位，倒下后复活）
 ## 数值来自 data/monsters.json（木桩来自 data/balance.json）。
-## 外观：人形怪物用代码搭的骨骼角色（HumanoidRig，2.6 之三，动作跟着 AI 状态走）；火坑小鬼、熔渊猎犬、训练木桩与首领仍是占位几何体。
+## 外观：普通怪物用代码搭的骨骼角色（CharRig：人形 / 四足，2.6 之三，动作跟着 AI 状态走）；训练木桩与首领仍是占位几何体。
 
 signal died(enemy: EnemyBase)
 
@@ -43,8 +43,8 @@ var _warnings: Array[MeshInstance3D] = []
 var _mats: Array[StandardMaterial3D] = []
 var _base_colors: Array[Color] = []
 var visual: Node3D
-var rig: HumanoidRig             # 骨骼角色（没有就是占位几何体）
-var rig_attack := "attack"       # 蓄力 / 出手时用哪套姿势（HumanoidRig.ACTIONS）
+var rig: CharRig                 # 骨骼角色（人形 / 四足；没有就是占位几何体）
+var rig_attack := "attack"       # 蓄力 / 出手时用哪套姿势（HumanoidRig / QuadrupedRig 的 ACTIONS）
 var _rig_acc := 0.0
 var _rig_tint := -1              # 上次设置的受击 / 减速染色（没变就不重复设置材质）
 var hp_label: Label3D
@@ -105,7 +105,10 @@ func _ai(_delta: float) -> void:
 func _on_dead() -> void:
 	## 倒地 → 停一下 → 从身上烧穿出洞、边缘发余烬光，整个消散（阶段 2.5 溶解着色器；之前是沉进地里）
 	var tw := create_tween()
-	tw.tween_property(visual, "rotation_degrees:x", -85.0, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	if rig != null and rig.fall_sideways:
+		tw.tween_property(visual, "rotation_degrees:z", 80.0, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)   # 四足：侧翻倒地
+	else:
+		tw.tween_property(visual, "rotation_degrees:x", -85.0, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_interval(0.6)
 	tw.tween_callback(func():
 		var mats := Fx.dissolve_materials(visual)
@@ -121,7 +124,7 @@ func _on_dead() -> void:
 
 func use_rig(id: String, attack_kind := "attack") -> void:
 	## 用骨骼角色代替占位几何体（在 _build_visual 里调用）
-	rig = HumanoidRig.create(id)
+	rig = CharRig.create(id)
 	rig_attack = attack_kind
 	visual.add_child(rig)
 

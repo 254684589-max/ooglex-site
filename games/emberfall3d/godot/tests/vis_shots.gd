@@ -83,6 +83,22 @@ func _ready() -> void:
 	await _shot(out, "rig-fight2", tier)
 	for e in b2:
 		e.queue_free()
+	# 第三批：火坑小鬼与熔渊猎犬（四足）
+	var b3: Array = []
+	for sp in [["imp", 30.0], ["imp", 75.0], ["imp", -20.0], ["hound", 150.0], ["hound", 250.0]]:
+		var a3 := deg_to_rad(sp[1])
+		var e3 := Monsters.spawn(sp[0], main.stage, hero.global_position + Vector3(cos(a3), 0, sin(a3)) * 2.6, hero)
+		e3.set_physics_process(false)
+		e3.face(hero.global_position)
+		b3.append(e3)
+	await get_tree().create_timer(0.3).timeout
+	b3[0].set_state("windup")
+	b3[3].set_state("windup")
+	for i in 14:
+		await get_tree().process_frame
+	await _shot(out, "rig-fight3", tier)
+	for e in b3:
+		e.queue_free()
 	main.camera.distance = dist0
 	# P2：随机地下城（地窖、墓穴首领层、熔渊、深渊），固定种子，主角站在入口旁
 	main.run_seed = 1
