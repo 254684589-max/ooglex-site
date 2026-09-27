@@ -8,11 +8,14 @@ var summon_spots: Array[Vector3] = []
 
 
 func _build_visual() -> void:
-	part(cyl(0.12, 0.5, 1.6), Vector3(0, 0.8, 0), Color(0.27, 0.24, 0.24))            # 灰袍
-	part(cyl(0.2, 0.26, 0.4), Vector3(0, 1.75, 0), Color(0.2, 0.18, 0.18))           # 兜帽
-	part(box(Vector3(0.06, 1.9, 0.06)), Vector3(0.42, 0.95, 0.1), Color(0.35, 0.25, 0.15))  # 法杖
-	part(sphere(0.12), Vector3(0.42, 1.95, 0.1), Color(0.69, 0.42, 1.0), 3.0)          # 虚之光
+	use_rig("priest")         # 2.6 之三：灰袍、骨白面具、发光的法杖（近身用法杖敲）
 
+
+func _rig_action() -> Array:
+	## 召唤时双手高举再压下；近身时用法杖挥击
+	if mode == 1:
+		return ["cast2", float(def.summon.windup_s), float(def.attack.recover_s)]
+	return super()
 
 func _ai(delta: float) -> void:
 	if leash_check() or notice_check():

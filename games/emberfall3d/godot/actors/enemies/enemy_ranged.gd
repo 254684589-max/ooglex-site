@@ -5,14 +5,7 @@ extends EnemyBase
 
 func _build_visual() -> void:
 	if def.get("look", "archer") == "cultist":
-		# 邪教术士（V0.1）：灰紫长袍、兜帽，法杖顶端发光（最后一个部件 = 发光件，前摇时变亮）
-		var robe := Color(0.24, 0.18, 0.3)
-		part(cyl(0.18, 0.42, 1.5), Vector3(0, 0.75, 0), robe)
-		part(sphere(0.22), Vector3(0, 1.62, 0), Color(0.2, 0.15, 0.26))
-		part(sphere(0.04), Vector3(-0.06, 1.62, 0.19), Color(0.8, 0.5, 1.0), 3.0)
-		part(sphere(0.04), Vector3(0.06, 1.62, 0.19), Color(0.8, 0.5, 1.0), 3.0)
-		part(cyl(0.03, 0.03, 1.7), Vector3(0.36, 0.9, 0.2), Color(0.35, 0.25, 0.15))
-		part(sphere(0.12), Vector3(0.36, 1.8, 0.2), Color(0.55, 0.3, 0.8))
+		use_rig("cultist", "cast")     # 2.6 之三：紫袍兜帽、发光的法杖，放邪术弹时举杖前指
 		return
 	use_rig("skeleton_archer", "shoot")     # 2.6 之三：代码搭的骸骨弓手（长弓、箭袋、兜帽破布），拉弓动作跟着前摇走
 

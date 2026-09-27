@@ -2726,10 +2726,17 @@ func test_fx() -> void:
 	check(Fx.spawned == k2 + 1, "命中时溅出火花 / 血雾")
 	dummy_e.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
 	await seconds(1.2)
-	var sm: Array = dummy_e.visual.find_children("*", "MeshInstance3D", true, false).map(func(m): return m.material_override)
+	# 占位几何体用 material_override；骨骼角色（2.6 之三起腐尸也是）逐面用 surface override
+	var sm: Array = []
+	for mi in dummy_e.visual.find_children("*", "MeshInstance3D", true, false):
+		if mi.material_override != null:
+			sm.append(mi.material_override)
+		else:
+			for i in mi.mesh.get_surface_count():
+				sm.append(mi.get_surface_override_material(i))
 	var prog: float = sm[0].get_shader_parameter("progress") if sm[0] is ShaderMaterial else -1.0
 	check(sm.all(func(m): return m is ShaderMaterial) and prog > 0.0 and prog < 1.0, "怪物倒下后换成溶解材质，正在「烧尽」（进度 %.2f）" % prog)
-	check((sm[0] as ShaderMaterial).get_shader_parameter("albedo") != Color(0.5, 0.5, 0.5), "溶解材质保留原来的颜色")
+	check(sm.all(func(m): return m.get_shader_parameter("use_vertex_color") or m.get_shader_parameter("albedo") != Color(0.5, 0.5, 0.5)), "溶解材质保留原来的颜色（顶点色或原来的颜色）")
 	await seconds(1.4)
 	check(not is_instance_valid(dummy_e), "烧尽后释放（倒下后约 2 秒）")
 	main.queue_free()
@@ -2939,7 +2946,7 @@ func test_rig() -> void:
 				var a := v[ix[t]]
 				if (v[ix[t + 1]] - a).cross(v[ix[t + 2]] - a).dot(nr[ix[t]] + nr[ix[t + 1]] + nr[ix[t + 2]]) > 1e-6:
 					ok_mesh = false
-	check(ok_mesh, "三种角色的网格：三角面在预算内（%s）、最多 3 个面、每个顶点权重和为 1、骨骼编号有效、三角形都朝外" % ", ".join(info))
+	check(ok_mesh, "%d 种角色的网格：三角面在预算内（%s）、最多 3 个面、每个顶点权重和为 1、骨骼编号有效、三角形都朝外" % [CharModels.ids().size(), ", ".join(info)])
 	var r1 := HumanoidRig.create("skeleton")
 	var r2 := HumanoidRig.create("skeleton")
 	add_child(r1)
@@ -3027,16 +3034,57 @@ func test_rig() -> void:
 	var ar := _spawn(main, "archer", hero.global_position + Vector3(4, 0, 6))
 	await frames(2)
 	check(sk.rig != null and sk.rig.model_id == "skeleton" and sk._mats.is_empty() and ar.rig != null and ar.rig.model_id == "skeleton_archer" and ar.rig_attack == "shoot", "骸骨战士、骸骨弓手换成骨骼角色（不再有占位几何体）")
+	# 第二批：人形怪物都换成骨骼角色，攻击姿势对应各自的打法
+	var want := {"zombie": ["zombie", "claw"], "ash_corpse": ["zombie", "claw"], "ghoul": ["ghoul", "claw"], "knight": ["knight", "attack"],
+		"cultist": ["cultist", "cast"], "ash_priest": ["priest", "attack"], "ash_brute": ["brute", "claw"]}
+	var got := []
+	var ok_b2 := true
+	var ex := 0.0
+	for id in want:
+		var e := _spawn(main, id, hero.global_position + Vector3(-8 + ex, 0, 12))
+		ex += 1.5
+		await frames(1)
+		got.append("%s→%s" % [id, e.rig.model_id if e.rig else "无"])
+		if e.rig == null or e.rig.model_id != want[id][0] or e.rig_attack != want[id][1] or not e._mats.is_empty():
+			ok_b2 = false
+		e.queue_free()
+	check(ok_b2, "第二批人形怪物换成骨骼角色（%s）" % ", ".join(got))
+	var imp := _spawn(main, "imp", hero.global_position + Vector3(-6, 0, 14))
+	await frames(1)
+	check(imp.rig == null and not imp._mats.is_empty(), "火坑小鬼暂时仍是占位几何体（要另做小体型骨架）")
+	imp.queue_free()
+	var pr := _spawn(main, "ash_priest", hero.global_position + Vector3(-5, 0, 10))
+	await frames(1)
+	pr.mode = 1
+	check(pr._rig_action()[0] == "cast2" and is_equal_approx(pr._rig_action()[1], float(pr.def.summon.windup_s)), "灰誓祭司召唤时双手高举（蓄力时长 = 吟唱 %.1f 秒）" % float(pr.def.summon.windup_s))
+	pr.mode = 0
+	check(pr._rig_action()[0] == "attack", "灰誓祭司近身时用法杖挥击")
+	pr.queue_free()
+	var br := _spawn(main, "ash_brute", hero.global_position + Vector3(-3, 0, 10))
+	await frames(1)
+	br.set_physics_process(false)
+	br.mode = 1
+	br.set_state("act")
+	for i in 20:
+		br._rig_pose()
+		br.rig.tick(0.02, 12.0)
+	var spine_lean: float = br.rig.skeleton.get_bone_pose_rotation(br.rig.bone_index("Spine")).get_euler().x
+	check(rad_to_deg(spine_lean) > 20.0, "焦骨蛮兵冲锋时低头弓背（脊柱前倾 %.0f°）" % rad_to_deg(spine_lean))
+	br.queue_free()
 	ar.set_state("windup")
 	ar.state_t = float(ar.def.shot.windup_s) * 0.9
 	ar._windup_glow(0.9)
 	check(ar.rig.glow_material.emission_energy_multiplier > 6.0, "弓手前摇时眼窝的光变亮")
 	ar._windup_glow(-1.0)
+	# 直接调用每帧的更新（主场景每帧会按迷雾重新设 visible，等几帧的话可能又被显示出来）
 	sk.visible = false
 	var t_hidden: float = sk.rig._t
-	await frames(5)
-	check(sk.rig._t == t_hidden, "被战争迷雾藏起来的怪物不算动作")
+	for i in 5:
+		sk._process(0.05)
+	var hidden_ok: bool = sk.rig._t == t_hidden
 	sk.visible = true
+	sk._process(0.05)
+	check(hidden_ok and sk.rig._t > t_hidden, "被战争迷雾藏起来的怪物不算动作，显示出来后继续")
 	sk.take_hit({"amount": 1, "crit": false, "type": "physical"}, Vector3.FORWARD, 0.0)
 	check(sk.rig._hurt > 0.9, "骸骨被打中：受击后仰")
 	sk.take_hit({"amount": 99999, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)

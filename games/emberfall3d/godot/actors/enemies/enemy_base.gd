@@ -5,7 +5,7 @@ extends CharacterBody3D
 ##   EnemyMelee（近战追击）· EnemyCharger（蓄力冲锋）· EnemyRanged（保持距离放箭）· EnemySummoner（召唤仆从）
 ##   TrainingDummy（训练木桩：不攻击，被打后弹回原位，倒下后复活）
 ## 数值来自 data/monsters.json（木桩来自 data/balance.json）。
-## 外观：骸骨战士、骸骨弓手用代码搭的骨骼角色（HumanoidRig，2.6 之三，动作跟着 AI 状态走）；其他怪物仍是占位几何体。
+## 外观：人形怪物用代码搭的骨骼角色（HumanoidRig，2.6 之三，动作跟着 AI 状态走）；火坑小鬼、熔渊猎犬、训练木桩与首领仍是占位几何体。
 
 signal died(enemy: EnemyBase)
 
@@ -147,14 +147,23 @@ func _rig_pose() -> void:
 	## AI 状态 → 姿势：蓄力（windup）举起，进入收招（recover）的前 0.12 秒挥出去，然后收回
 	if stun_t > 0.0:
 		return             # 被打断（眩晕会把蓄力直接切到收招）：不做挥出去的动作，动作层自己淡出
-	var a: Dictionary = def.get("attack", def.get("shot", {}))
+	var ra := _rig_action()
+	var kind: String = ra[0]
+	if kind == "":
+		return
 	if state == "windup":
-		rig.act(rig_attack, "windup", state_t / maxf(float(a.get("windup_s", 0.4)), 0.01))
+		rig.act(kind, "windup", state_t / maxf(float(ra[1]), 0.01))
 	elif state == "recover":
 		if state_t < 0.12:
-			rig.act(rig_attack, "strike", state_t / 0.12)
+			rig.act(kind, "strike", state_t / 0.12)
 		else:
-			rig.act(rig_attack, "recover", (state_t - 0.12) / maxf(float(a.get("recover_s", 0.5)) - 0.12, 0.05))
+			rig.act(kind, "recover", (state_t - 0.12) / maxf(float(ra[2]) - 0.12, 0.05))
+
+
+func _rig_action() -> Array:
+	## [姿势种类, 蓄力秒数, 收招秒数]；子类按当前招式覆盖（召唤、冲锋）
+	var a: Dictionary = def.get("attack", def.get("shot", {}))
+	return [rig_attack, float(a.get("windup_s", 0.4)), float(a.get("recover_s", 0.5))]
 
 
 func part(mesh: Mesh, pos: Vector3, c: Color, emissive: float = 0.0, rot := Vector3.ZERO) -> MeshInstance3D:

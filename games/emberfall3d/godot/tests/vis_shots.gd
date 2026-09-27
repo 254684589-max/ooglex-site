@@ -38,6 +38,11 @@ func _ready() -> void:
 		img.save_png(path)
 		print("SHOT ", path)
 	# 2.6 之三：骨骼角色近景（测试区房间：主角举剑，两只骸骨战士与一只骸骨弓手围上来）
+	# 先清掉测试区原有的怪（大厅那一拍惊动的怪会一路追回房间，挤在主角身边挡镜头）
+	for m0 in main.monsters:
+		if is_instance_valid(m0):
+			m0.queue_free()
+	main.monsters.clear()
 	var skels: Array = []
 	for sp in [["skel", Vector3(0.6, 0, 1.6)], ["skel", Vector3(-1.4, 0, 1.2)], ["archer", Vector3(1.8, 0, 3.4)]]:
 		var e := Monsters.spawn(sp[0], main.stage, (sp[1] as Vector3) + Vector3(-1.0, 0, -1.5), hero)
@@ -56,6 +61,27 @@ func _ready() -> void:
 		await get_tree().process_frame
 	await _shot(out, "rig-fight", tier)
 	for e in skels:
+		e.queue_free()
+	# 第二批：腐尸、食尸鬼、堕落骑士、邪教术士、灰誓祭司、焦骨蛮兵围着主角
+	var b2: Array = []
+	# 围成一圈（半径 2.8 米）：镜头在 +X +Z 方向，大个子（蛮兵、骑士）站在远处，矮的腐尸站在镜头这边，都不挡主角
+	var ring := [["zombie", 45.0], ["knight", 150.0], ["cultist", -30.0], ["ghoul", 100.0], ["ash_priest", 0.0], ["ash_brute", 280.0]]
+	for sp in ring:
+		var a := deg_to_rad(sp[1])
+		var e2 := Monsters.spawn(sp[0], main.stage, hero.global_position + Vector3(cos(a), 0, sin(a)) * 2.8, hero)
+		e2.set_physics_process(false)
+		e2.face(hero.global_position)
+		b2.append(e2)
+	await get_tree().create_timer(0.3).timeout
+	b2[0].set_state("windup")
+	b2[1].set_state("windup")
+	b2[2].set_state("windup")
+	b2[4].mode = 1
+	b2[4].set_state("windup")
+	for i in 14:
+		await get_tree().process_frame
+	await _shot(out, "rig-fight2", tier)
+	for e in b2:
 		e.queue_free()
 	main.camera.distance = dist0
 	# P2：随机地下城（地窖、墓穴首领层、熔渊、深渊），固定种子，主角站在入口旁

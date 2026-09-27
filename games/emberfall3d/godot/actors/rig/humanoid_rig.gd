@@ -35,6 +35,14 @@ const ACTIONS := {
 		"raised": {"RightUpperArm": Vector3(-70, 0, -75), "LeftUpperArm": Vector3(-40, 0, 75), "RightLowerArm": Vector3(-10, 0, 0), "LeftLowerArm": Vector3(-15, 0, 0), "Spine": Vector3(8, 0, 0)},
 		"follow": {"RightUpperArm": Vector3(-70, 0, -75), "LeftUpperArm": Vector3(-40, 0, 75), "RightLowerArm": Vector3(-10, 0, 0), "LeftLowerArm": Vector3(-15, 0, 0), "Spine": Vector3(8, 0, 0)},
 	},
+	"claw": {
+		"raised": {"RightUpperArm": Vector3(-150, 0, -25), "LeftUpperArm": Vector3(-150, 0, 25), "RightLowerArm": Vector3(-45, 0, 0), "LeftLowerArm": Vector3(-45, 0, 0), "Spine": Vector3(-8, 0, 0), "Head": Vector3(-10, 0, 0)},
+		"follow": {"RightUpperArm": Vector3(-40, 0, 12), "LeftUpperArm": Vector3(-40, 0, -12), "RightLowerArm": Vector3(-8, 0, 0), "LeftLowerArm": Vector3(-8, 0, 0), "Spine": Vector3(22, 0, 0), "Chest": Vector3(12, 0, 0)},
+	},
+	"charge": {
+		"raised": {"Spine": Vector3(28, 0, 0), "Chest": Vector3(12, 0, 0), "Neck": Vector3(-10, 0, 0), "Head": Vector3(-18, 0, 0), "RightUpperArm": Vector3(40, 0, -22), "LeftUpperArm": Vector3(40, 0, 22), "RightLowerArm": Vector3(-50, 0, 0), "LeftLowerArm": Vector3(-50, 0, 0)},
+		"follow": {"Spine": Vector3(28, 0, 0), "Chest": Vector3(12, 0, 0), "Neck": Vector3(-10, 0, 0), "Head": Vector3(-18, 0, 0), "RightUpperArm": Vector3(40, 0, -22), "LeftUpperArm": Vector3(40, 0, 22), "RightLowerArm": Vector3(-50, 0, 0), "LeftLowerArm": Vector3(-50, 0, 0)},
+	},
 	"shoot": {
 		"raised": {"LeftUpperArm": Vector3(-88, 0, 8), "LeftLowerArm": Vector3(-4, 0, 0), "RightUpperArm": Vector3(-88, 0, -30), "RightLowerArm": Vector3(-135, 0, 0), "Chest": Vector3(0, 22, 0), "Head": Vector3(0, -18, 0)},
 		"follow": {"LeftUpperArm": Vector3(-86, 0, 8), "LeftLowerArm": Vector3(-4, 0, 0), "RightUpperArm": Vector3(-70, 0, -55), "RightLowerArm": Vector3(-95, 0, 0), "Chest": Vector3(0, 18, 0), "Head": Vector3(0, -15, 0)},
@@ -190,8 +198,9 @@ func _base_pose() -> Dictionary:
 	var idle := clampf(1.0 - w * 2.0, 0.0, 1.0)
 	var s := sin(_phase)
 	var c := cos(_phase)
-	var leg := 34.0 * w
-	var knee := 55.0 * w
+	var leg_amp: float = style.get("leg_amp", 1.0)       # 长袍角色步子小（腿不从袍子里戳出来）
+	var leg := 34.0 * w * leg_amp
+	var knee := 55.0 * w * leg_amp
 	var arm: float = float(style.get("arm_swing", 28.0)) * w
 	var hunch: float = style.get("hunch", 0.0)
 	var breath := sin(_t * 2.1)
@@ -203,7 +212,7 @@ func _base_pose() -> Dictionary:
 	p.Spine = Vector3(7.0 * w + hunch, 0, 0)
 	p.Chest = Vector3(1.5 * breath * idle + hunch * 0.4, -11.0 * w * s, 0)
 	p.Neck = Vector3(-hunch * 0.8, 0, 0)
-	p.Head = Vector3(-4.0 * w, -2.0 * w * s, 0)
+	p.Head = Vector3(-4.0 * w, -2.0 * w * s, float(style.get("head_tilt", 0.0)))
 	p.LeftUpperLeg = Vector3(-leg * s - 3.0 * idle, 0, 0)
 	p.RightUpperLeg = Vector3(leg * s - 3.0 * idle, 0, 0)
 	p.LeftLowerLeg = Vector3(knee * pow(maxf(0.0, c), 1.3) + 6.0 * idle, 0, 0)

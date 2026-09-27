@@ -9,16 +9,22 @@ var charge_hit := false
 
 
 func _build_visual() -> void:
-	var c := Color(0.18, 0.15, 0.13)
-	part(box(Vector3(0.95, 1.0, 0.7)), Vector3(0, 1.0, 0), c)                          # 宽厚的躯干
-	part(box(Vector3(1.0, 0.08, 0.72)), Vector3(0, 1.15, 0), Color(1.0, 0.45, 0.12), 2.5)  # 裂缝里的余烬光
-	part(box(Vector3(0.9, 0.08, 0.72)), Vector3(0, 0.8, 0), Color(1.0, 0.45, 0.12), 2.0)
-	part(sphere(0.26), Vector3(0, 1.7, 0.18), Color(0.24, 0.2, 0.17))
-	part(box(Vector3(0.2, 0.2, 0.5)), Vector3(-0.2, 1.8, 0.38), Color(0.5, 0.45, 0.4), 0.0, Vector3(-20, 0, 0))  # 角
-	part(box(Vector3(0.2, 0.2, 0.5)), Vector3(0.2, 1.8, 0.38), Color(0.5, 0.45, 0.4), 0.0, Vector3(-20, 0, 0))
-	part(box(Vector3(0.3, 0.5, 0.3)), Vector3(-0.28, 0.25, 0), c)
-	part(box(Vector3(0.3, 0.5, 0.3)), Vector3(0.28, 0.25, 0), c)
+	use_rig("brute", "claw")      # 2.6 之三：焦黑壮汉，裂缝透余烬光，一对角
 
+
+func _rig_pose() -> void:
+	## 冲锋（mode 1）：蓄力时低头弓背、双臂后摆，冲刺中保持这个姿势，收招时直起身；近身挥击走通用的抓挠姿势
+	if mode != 1 or stun_t > 0.0:
+		super()
+		return
+	var ch: Dictionary = def.charge
+	match state:
+		"windup":
+			rig.act("charge", "windup", state_t / maxf(float(ch.windup_s), 0.01))
+		"act":
+			rig.act("charge", "windup", 1.0)
+		"recover":
+			rig.act("charge", "recover", state_t / maxf(float(ch.recover_s), 0.05))
 
 func _ai(delta: float) -> void:
 	if leash_check() or notice_check():

@@ -1285,7 +1285,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；Esc 菜单；M 音效；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n主角与骸骨类怪物已换成会动的角色模型，其余仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n主角与人形怪物已换成会动的角色模型，火坑小鬼、熔渊猎犬、首领与镇民仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0

@@ -1,11 +1,12 @@
 extends Node3D
 ## 程序化角色预览（2.6 之三，开发用，不在 run_tests.sh 里）：
 ##   xvfb-run -a godot --path games/emberfall3d/godot --rendering-driver opengl3 --resolution 1280x720 res://tests/rig_shots.tscn -- <输出目录>
-## 三个角色一排，依次拍：待机、走路、蓄力、出手、受击、倒下；再拍一张游戏镜头角度的近景。
+## 每三个角色一组排成一排，依次拍各种姿势（待机、走路、挥砍、施法、双手施法、抓挠、冲锋、拉弓、倒下），再拍一张游戏镜头角度的近景。
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	var out := args[0] if args.size() > 0 else "user://rig_shots"
+	Look.photo_enabled = false         # 软件渲染下压缩贴图很慢，预览用程序化地面
 	DirAccess.make_dir_recursive_absolute(out)
 	var env := WorldEnvironment.new()
 	env.environment = Look.crypt_environment()
@@ -24,17 +25,25 @@ func _ready() -> void:
 	add_child(ground)
 	var cam := Camera3D.new()
 	add_child(cam)
+	var all_ids := CharModels.ids()
+	for g in ceili(all_ids.size() / 3.0):
+		await _group(cam, all_ids.slice(g * 3, g * 3 + 3), out, g)
+	get_tree().quit()
+
+
+func _group(cam: Camera3D, ids: Array, out: String, g: int) -> void:
 	var rigs: Array = []
-	var ids := CharModels.ids()
 	for i in ids.size():
 		var r := HumanoidRig.create(ids[i])
-		r.position = Vector3((i - 1) * 1.3, 0, 0)
+		r.position = Vector3((i - 1) * 1.4, 0, 0)
 		add_child(r)
 		rigs.append(r)
 		print("RIG ", ids[i], " tris=", r.tris, " build_ms=", CharModels.get_model(ids[i]).build_ms)
 	var poses := [["idle", "", "", 0.0, 0.0], ["walk", "", "", 0.0, 4.0], ["windup", "attack", "windup", 1.0, 0.0], ["strike", "attack", "strike", 1.0, 0.0],
-		["cast", "cast", "strike", 0.6, 0.0], ["shoot", "shoot", "windup", 1.0, 0.0], ["dead", "", "", 0.0, 0.0]]
-	for fr in [["front", Vector3(0, 1.3, 4.2), Vector3(0, 1.0, 0)], ["side", Vector3(4.2, 1.3, 0.3), Vector3(0, 1.0, 0)]]:
+		["cast", "cast", "strike", 0.6, 0.0], ["cast2", "cast2", "windup", 1.0, 0.0], ["claw", "claw", "windup", 1.0, 0.0], ["charge", "charge", "windup", 1.0, 0.0],
+		["shoot", "shoot", "windup", 1.0, 0.0], ["dead", "", "", 0.0, 0.0]]
+	cam.fov = 75
+	for fr in [["front", Vector3(0, 1.3, 4.6), Vector3(0, 1.0, 0)], ["side", Vector3(4.6, 1.3, 0.3), Vector3(0, 1.0, 0)]]:
 		cam.position = fr[1]
 		cam.look_at(fr[2])
 		for p in poses:
@@ -48,7 +57,7 @@ func _ready() -> void:
 					r.tick(0.05 if p[0] != "walk" else 0.013, p[4])
 			await RenderingServer.frame_post_draw
 			await RenderingServer.frame_post_draw
-			var path: String = out.path_join("rig-%s-%s.png" % [fr[0], p[0]])
+			var path: String = out.path_join("rig%d-%s-%s.png" % [g, fr[0], p[0]])
 			get_viewport().get_texture().get_image().save_png(path)
 			print("SHOT ", path)
 	# 游戏镜头（55° 俯角、约 15 米）
@@ -61,6 +70,7 @@ func _ready() -> void:
 			r.tick(0.02, 4.0)
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png(out.path_join("rig-game.png"))
+	get_viewport().get_texture().get_image().save_png(out.path_join("rig%d-game.png" % g))
 	print("SHOT game")
-	get_tree().quit()
+	for r in rigs:
+		r.queue_free()
