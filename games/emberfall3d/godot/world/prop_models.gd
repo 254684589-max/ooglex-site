@@ -7,6 +7,10 @@ extends RefCounted
 ##   well 水井（石砌井圈 + 木架 + 小顶棚 + 辘轳 + 水桶）· anvil 铁砧（树桩 + 带角的铁砧）
 ##   waystone 传送石（带符文的方尖石碑）· campfire 篝火（一圈石头 + 交叉的木柴 + 余烬）
 ##   house(rect, door_dir)：房屋外立面的木构架、门、亮着灯的窗、烟囱、屋脊与封檐板（按房屋大小生成，不缓存）
+## 2.6 之六（多实例摆放的，面数要低：多实例网格不会逐个剔除）：
+##   tree_pine 暗色针叶树 · tree_dead 被烧焦的枯树 · tree_broad 团簇状的阔叶树（整棵一个面、颜色画在顶点色里，一片林子一次绘制）
+##   bone 腿骨 · skull 头骨 · rock 碎石块 · lava_crack 熔岩裂缝（地下城地面装饰）
+##   dummy 训练木桩（木桩底座、麻袋塞草的身子、横杆手臂、缝着脸的麻袋头）
 
 const WOOD := Color(0.4, 0.27, 0.15)
 const DARK_WOOD := Color(0.24, 0.16, 0.1)
@@ -42,6 +46,23 @@ static func get_model(id: String) -> Dictionary:
 			"campfire":
 				_campfire(rb)
 				glow = Color(1.0, 0.45, 0.12)
+			"tree_pine":
+				_tree_pine(rb)
+			"tree_dead":
+				_tree_dead(rb)
+			"tree_broad":
+				_tree_broad(rb)
+			"bone":
+				_bone(rb)
+			"skull":
+				_skull(rb)
+			"rock":
+				_rock(rb)
+			"lava_crack":
+				_lava_crack(rb)
+				glow = Color(1.0, 0.45, 0.12)
+			"dummy":
+				_dummy(rb)
 		var m := rb.commit_static()
 		m.glow = glow
 		_cache[id] = m
@@ -49,7 +70,15 @@ static func get_model(id: String) -> Dictionary:
 
 
 static func ids() -> Array:
-	return ["barrel", "chest", "chest_lid", "shrine", "shrine_crystal", "well", "anvil", "waystone", "campfire"]
+	return ["barrel", "chest", "chest_lid", "shrine", "shrine_crystal", "well", "anvil", "waystone", "campfire",
+		"tree_pine", "tree_dead", "tree_broad", "bone", "skull", "rock", "lava_crack", "dummy"]
+
+
+## 多实例摆放用的材质（顶点色；树、碎石、白骨）
+static func multi_material() -> StandardMaterial3D:
+	var m := CharRig.surface_material(RigBuilder.BODY, Color(0, 0, 0), 0.0)
+	m.emission_enabled = false
+	return m
 
 
 ## 生成一个道具的 MeshInstance3D（材质每个实例一份）
@@ -323,3 +352,118 @@ static func house(rect: Rect2i, door_dir: Vector2i, seed_v: int) -> MeshInstance
 	var mi := _mesh_instance(m, "HouseDetail")
 	mi.set_meta("tris", m.tris)
 	return mi
+
+
+# ---------------- 2.6 之六：树林与地面装饰 ----------------
+
+static func _tree_pine(rb: RigBuilder) -> void:
+	# 暗色针叶树：细树干 + 三层上小下大的锥形枝叶（颜色越往上越浅，像落了一层灰）
+	rb.tube([Vector3(0, 0, 0), Vector3(0, 1.4, 0)], [Vector2(0.2, 0.2), Vector2(0.13, 0.13)], [0, 0], Color(0.24, 0.17, 0.11), RigBuilder.BODY, 5, false)
+	var tiers := [[0.8, 1.4, 1.7], [1.8, 1.1, 1.5], [2.8, 0.75, 1.5]]
+	for i in tiers.size():
+		var t: Array = tiers[i]
+		var col := Color(0.11, 0.18, 0.14).lerp(Color(0.24, 0.28, 0.24), i * 0.35)
+		rb.spike(Vector3(0, t[0], 0), Vector3(0.03 * i, t[0] + t[2], 0), t[1], 0, col, RigBuilder.BODY, 7)
+
+
+static func _tree_dead(rb: RigBuilder) -> void:
+	# 被烧焦的枯树：弯曲的树干，几根向上斜伸的枯枝（每根再分一个小杈）
+	var bark := Color(0.2, 0.16, 0.13)
+	rb.tube([Vector3(0, 0, 0), Vector3(0.05, 1.2, 0.02), Vector3(-0.08, 2.4, 0.06), Vector3(0.02, 3.4, 0.0)], [Vector2(0.24, 0.24), Vector2(0.17, 0.17), Vector2(0.12, 0.12), Vector2(0.0, 0.0)], [0, 0, 0, 0], bark, RigBuilder.BODY, 5, true)
+	var branches := [[1.5, 0.3, 1.1, 0.6], [2.1, 2.5, 1.0, 0.8], [2.6, 4.4, 0.8, 0.6], [1.1, 5.2, 0.9, 0.3]]
+	for b in branches:
+		var a: float = b[1]
+		var d := Vector3(cos(a), 0, sin(a))
+		var p0 := Vector3(0, b[0], 0)
+		var p1: Vector3 = p0 + d * b[2] + Vector3(0, b[3], 0)
+		rb.spike(p0, p1, 0.07, 0, bark.lightened(0.05), RigBuilder.BODY, 4)
+		rb.spike(p0.lerp(p1, 0.5), p1 + d.rotated(Vector3.UP, 0.7) * 0.4 + Vector3(0, 0.5, 0), 0.035, 0, bark, RigBuilder.BODY, 3)
+
+
+static func _tree_broad(rb: RigBuilder) -> void:
+	# 阔叶树：短粗树干 + 四团枝叶（暗橄榄绿里夹一团锈红，像被余烬烤过的秋叶）
+	rb.tube([Vector3(0, 0, 0), Vector3(0, 1.8, 0)], [Vector2(0.26, 0.26), Vector2(0.17, 0.17)], [0, 0], Color(0.26, 0.18, 0.12), RigBuilder.BODY, 6, false)
+	var clumps := [[Vector3(0, 2.6, 0), 1.2, Color(0.18, 0.23, 0.13)], [Vector3(0.7, 2.2, 0.3), 0.85, Color(0.2, 0.25, 0.13)],
+		[Vector3(-0.6, 2.3, -0.4), 0.9, Color(0.33, 0.2, 0.1)], [Vector3(0.1, 3.3, -0.2), 0.8, Color(0.22, 0.27, 0.15)]]
+	for c in clumps:
+		var r: float = c[1]
+		rb.ellipsoid(c[0], Vector3(r, r * 0.8, r), 0, c[2], RigBuilder.BODY, Basis(Vector3.UP, r * 3.0), 4, 7)
+
+
+static func _bone(rb: RigBuilder) -> void:
+	# 腿骨：中间细、两头各鼓出两个关节头
+	var col := Color(0.78, 0.74, 0.64)
+	rb.tube([Vector3(-0.24, 0, 0), Vector3(0.24, 0, 0)], [Vector2(0.03, 0.03), Vector2(0.03, 0.03)], [0, 0], col, RigBuilder.BODY, 4, false)
+	for sx in [-1.0, 1.0]:
+		for sz in [-1.0, 1.0]:
+			rb.ellipsoid(Vector3(sx * 0.26, 0, sz * 0.025), Vector3(0.04, 0.035, 0.045), 0, col.lightened(0.05), RigBuilder.BODY, Basis.IDENTITY, 2, 4)
+
+
+static func _skull(rb: RigBuilder) -> void:
+	# 头骨：颅顶、脸、黑眼窝（侧躺在地上时也认得出来）
+	var col := Color(0.82, 0.78, 0.68)
+	rb.ellipsoid(Vector3(0, 0.1, 0), Vector3(0.1, 0.095, 0.12), 0, col, RigBuilder.BODY, Basis.IDENTITY, 3, 6)
+	rb.block(Vector3(0, 0.05, 0.08), Vector3(0.1, 0.06, 0.08), 0, col.darkened(0.1))
+	for sx in [1.0, -1.0]:
+		rb.ellipsoid(Vector3(0.04 * sx, 0.1, 0.1), Vector3(0.025, 0.022, 0.015), 0, Color(0.08, 0.06, 0.05), RigBuilder.BODY, Basis.IDENTITY, 2, 4)
+
+
+static func _rock(rb: RigBuilder) -> void:
+	# 碎石：两块压扁的石头叠在一起，棱角分明（面数低：一层几百块）
+	var col := Color(0.46, 0.43, 0.4)
+	rb.ellipsoid(Vector3(0, 0.05, 0), Vector3(0.15, 0.08, 0.12), 0, col, RigBuilder.BODY, Basis(Vector3.UP, 0.4), 3, 5)
+	rb.ellipsoid(Vector3(0.08, 0.1, 0.03), Vector3(0.08, 0.06, 0.07), 0, col.lightened(0.08), RigBuilder.BODY, Basis(Vector3.UP, 1.3), 2, 4)
+
+
+static func _lava_crack(rb: RigBuilder) -> void:
+	# 熔岩裂缝：贴在地面上的折线（主缝 4 段 + 岔缝 2 段）；每段是暗红的宽边上叠一条亮橙的缝芯。只有发光面（不受光照影响）
+	var main := [Vector3(-0.6, 0, -0.05), Vector3(-0.3, 0, 0.08), Vector3(-0.02, 0, -0.04), Vector3(0.28, 0, 0.06), Vector3(0.6, 0, -0.02)]
+	var fork := [Vector3(-0.02, 0, -0.04), Vector3(0.1, 0, -0.2), Vector3(0.3, 0, -0.28)]
+	for line in [[main, 0.13], [fork, 0.08]]:
+		var pts: Array = line[0]
+		for i in pts.size() - 1:
+			var w: float = float(line[1]) * (1.0 - 0.15 * i)
+			_flat_seg(rb, pts[i], pts[i + 1], w, Color(0.55, 0.12, 0.03), 0.0)
+			_flat_seg(rb, pts[i], pts[i + 1], w * 0.4, Color(1.0, 0.62, 0.2), 0.008)
+
+
+## 贴地的一段扁条（发光面）：a → b，宽 w，离地 y
+static func _flat_seg(rb: RigBuilder, a: Vector3, b: Vector3, w: float, col: Color, y: float) -> void:
+	var d := (b - a).normalized()
+	var side := Vector3(-d.z, 0, d.x) * (w / 2.0)
+	var ext := d * (w * 0.3)      # 两头各伸出一点，相邻两段接得上
+	var up := Vector3(0, y, 0)
+	var ids: Array = []
+	for p in [a - ext - side, a - ext + side, b + ext + side, b + ext - side]:
+		ids.append(rb._vert(RigBuilder.GLOW, (p as Vector3) + up, Vector3.UP, col, 0))
+	rb._tri(RigBuilder.GLOW, ids[0], ids[1], ids[2])
+	rb._tri(RigBuilder.GLOW, ids[0], ids[2], ids[3])
+
+
+static func _dummy(rb: RigBuilder) -> void:
+	# 训练木桩：圆木底座、立柱、麻袋塞草的身子（捆着绳子）、横杆手臂（两头露出稻草）、缝着脸的麻袋头
+	var wood := Color(0.42, 0.29, 0.17)
+	var burlap := Color(0.62, 0.5, 0.33)
+	var straw := Color(0.8, 0.68, 0.36)
+	var rope := Color(0.5, 0.42, 0.28)
+	rb.tube([Vector3(0, 0, 0), Vector3(0, 0.14, 0)], [Vector2(0.5, 0.5), Vector2(0.47, 0.47)], [0, 0], Color(0.34, 0.24, 0.15), RigBuilder.BODY, 10, false)
+	rb.ellipsoid(Vector3(0, 0.14, 0), Vector3(0.47, 0.012, 0.47), 0, Color(0.56, 0.42, 0.26), RigBuilder.BODY, Basis.IDENTITY, 2, 10)      # 锯开的圆木截面
+	rb.tube([Vector3(0, 0.1, 0), Vector3(0, 1.95, 0)], [Vector2(0.08, 0.08), Vector2(0.07, 0.07)], [0, 0], wood, RigBuilder.BODY, 6, false)
+	rb.tube([Vector3(0, 0.7, 0), Vector3(0, 0.95, 0.01), Vector3(0, 1.3, 0.02), Vector3(0, 1.55, 0.0)], [Vector2(0.26, 0.2), Vector2(0.32, 0.26), Vector2(0.33, 0.26), Vector2(0.2, 0.16)], [0, 0, 0, 0], burlap, RigBuilder.BODY, 10, true, Vector3.BACK)
+	for y in [0.88, 1.38]:
+		rb.tube([Vector3(0, y - 0.02, 0), Vector3(0, y + 0.02, 0)], [Vector2(0.33, 0.265), Vector2(0.33, 0.265)], [0, 0], rope, RigBuilder.BODY, 10, false, Vector3.BACK)
+	for k in 5:
+		rb.spike(Vector3(-0.05 + k * 0.025, 0.72, 0.1), Vector3(-0.08 + k * 0.04, 0.55, 0.14), 0.02, 0, straw, RigBuilder.BODY, 3)
+	rb.tube([Vector3(-0.72, 1.32, 0), Vector3(0.72, 1.32, 0)], [Vector2(0.055, 0.055), Vector2(0.055, 0.055)], [0, 0], wood, RigBuilder.BODY, 6, true)
+	for sx in [1.0, -1.0]:
+		for k in 4:
+			var a := TAU * k / 4.0
+			rb.spike(Vector3(sx * 0.7, 1.32, 0), Vector3(sx * 0.9, 1.32 + sin(a) * 0.08, cos(a) * 0.08), 0.025, 0, straw, RigBuilder.BODY, 3)
+	rb.ellipsoid(Vector3(0, 1.8, 0.01), Vector3(0.2, 0.22, 0.19), 0, burlap.lightened(0.05), RigBuilder.BODY, Basis.IDENTITY, 5, 9)
+	rb.tube([Vector3(0, 1.6, 0), Vector3(0, 1.64, 0)], [Vector2(0.12, 0.12), Vector2(0.12, 0.12)], [0, 0], rope, RigBuilder.BODY, 8, false)
+	for sx in [1.0, -1.0]:
+		rb.block(Vector3(0.07 * sx, 1.84, 0.185), Vector3(0.07, 0.014, 0.01), 0, Color(0.15, 0.1, 0.07), RigBuilder.BODY, Basis(Vector3.FORWARD, 0.8))
+		rb.block(Vector3(0.07 * sx, 1.84, 0.185), Vector3(0.07, 0.014, 0.01), 0, Color(0.15, 0.1, 0.07), RigBuilder.BODY, Basis(Vector3.FORWARD, -0.8))
+	rb.block(Vector3(0, 1.73, 0.19), Vector3(0.12, 0.012, 0.01), 0, Color(0.15, 0.1, 0.07))
+	for k in 4:
+		rb.block(Vector3(-0.045 + k * 0.03, 1.73, 0.192), Vector3(0.006, 0.03, 0.01), 0, Color(0.15, 0.1, 0.07))

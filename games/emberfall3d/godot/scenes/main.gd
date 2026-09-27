@@ -434,7 +434,7 @@ func _build_test_area() -> void:
 		tch.position = tp
 		torches.append(tch)
 
-	# 训练木桩（占位敌人）：房间里两个挨着（测试范围技能）；真正的怪物在南边大厅
+	# 训练木桩：房间里两个挨着（测试范围技能）；真正的怪物在南边大厅
 	for p in [Vector3(2.2, 0, -1.2), Vector3(3.0, 0, 0.3)]:
 		var d := TrainingDummy.new()
 		stage.add_child(d)
@@ -1285,7 +1285,7 @@ func _build_ui() -> void:
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", Color(0.91, 0.52, 0.23))
 	var how := "手机：左下摇杆移动；点敌人或按「攻击」打，「火 环 霜 闪」放技能，「血」「蓝」喝药，「城」开回城传送门；走到楼梯上换层" if DisplayServer.is_touchscreen_available() else "点地面移动；点敌人攻击（按住连打）；右键或 1、2、3、4 键：朝鼠标放技能（火球术、烬环斩、寂霜环、暗影闪现，随等级解锁）；Q / E 喝药；T 回城卷轴；C 属性；I 背包；J 任务；Tab 地图；Esc 菜单；M 音效；WASD 移动；滚轮缩放"
-	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n角色、道具与房屋已换成代码搭的精细模型；训练木桩与树木仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
+	info.text = "余烬陷落 EMBERFALL · 大作版灰盒原型（移植 V0.1：P11 存档与音效）\n角色、道具、房屋、树木与训练木桩已换成代码搭的精细模型；楼梯、火把与地上的掉落物仍是占位几何体。点镇上的人对话、接任务、交易；北边修道院废墟里的阶梯通往地窖；点木桶、宝箱、神殿；第 3 层与第 6 层有首领。" + how
 	top.add_child(info)
 	pack_label = Label.new()
 	pack_label.anchor_top = 1.0

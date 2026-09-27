@@ -3274,5 +3274,63 @@ func test_models() -> void:
 	var h3: Dictionary = tm.houses.filter(func(hs): return hs.id == "house3")[0]
 	check(props_ok and houses.size() == tm.houses.size() and tris < 20000, "烬原镇：水井、传送石、铁砧、篝火换成精细模型；%d 栋房子都有木构架、门、窗、烟囱（共 %d 面）" % [houses.size(), tris])
 	check(TownBuilder.door_dir(smith.rect, tm.paths) == Vector2i(0, 1) and TownBuilder.door_dir(h3.rect, tm.paths) == Vector2i(1, 0), "房门开在离石板路最近的一面（铁匠铺朝南、三号房朝东）")
+	# 2.6 之六：树林换成三种代码搭的树，按块分组（镜头外的整块不画），不投影；碰撞照旧每格一个
+	var tree_mms: Array = troot.find_children("Trees_*", "MultiMeshInstance3D", true, false)
+	var tree_n := 0
+	var tree_tris := 0
+	var kinds := {}
+	var tree_ok := true
+	for mi in tree_mms:
+		var mm: MultiMesh = mi.multimesh
+		var kind := "tree_" + String(mi.name).split("_")[1]
+		kinds[kind] = true
+		tree_n += mm.instance_count
+		tree_tris += mm.instance_count * int(PropModels.get_model(kind).tris)
+		if mm.mesh != PropModels.get_model(kind).mesh or mi.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+			tree_ok = false
+	var tbody: Node = troot.find_child("Trees", true, false)
+	check(tree_ok and tree_n == tm.trees.size() and kinds.size() == 3 and tree_mms.size() > 3 and tbody.get_child_count() == tm.trees.size()
+		and troot.find_child("TreeTrunks", true, false) == null, "烬原镇树林：%d 棵树换成针叶树 / 阔叶树 / 枯树三种模型，分 %d 块绘制、不投影（共 %d 面），每格仍有碰撞" % [tree_n, tree_mms.size(), tree_tris])
 	troot.queue_free()
+	await frames(2)
+	# 地下城地面装饰：腿骨 + 头骨、碎石、熔岩裂缝（熔渊层）；整层装饰面数有上限（多实例网格不会逐个剔除）
+	var droot := Node3D.new()
+	add_child(droot)
+	var dm := DungeonGen.generate(6, 4321)
+	var drng := RandomNumberGenerator.new()
+	drng.seed = 5
+	DungeonBuilder._build_deco(droot, dm, drng)
+	var cells := {DungeonGen.DECO_BONES: 0, DungeonGen.DECO_RUBBLE: 0, DungeonGen.DECO_LAVA: 0}
+	for d in dm.deco:
+		if cells.has(d):
+			cells[d] += 1
+	var want := {"Bones": ["bone", cells[DungeonGen.DECO_BONES] * 2], "Skulls": ["skull", cells[DungeonGen.DECO_BONES]],
+		"Rubble": ["rock", cells[DungeonGen.DECO_RUBBLE] * 4], "Lava": ["lava_crack", cells[DungeonGen.DECO_LAVA] * 2]}
+	var deco_ok := true
+	var deco_tris := 0
+	for n in want:
+		var mi: MultiMeshInstance3D = droot.find_child(n, false, false)
+		if mi == null or mi.multimesh.mesh != PropModels.get_model(want[n][0]).mesh or mi.multimesh.instance_count != want[n][1]:
+			deco_ok = false
+			continue
+		deco_tris += mi.multimesh.instance_count * int(PropModels.get_model(want[n][0]).tris)
+	var lava_mat: StandardMaterial3D = (droot.find_child("Lava", false, false) as MultiMeshInstance3D).material_override
+	check(deco_ok and lava_mat.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED and lava_mat.vertex_color_use_as_albedo and deco_tris < 25000,
+		"地下城地面装饰换成腿骨 + 头骨、碎石、熔岩裂缝模型（熔岩不受光照、自己发光），第 6 层装饰共 %d 面" % deco_tris)
+	droot.queue_free()
+	# 训练木桩：换成代码搭的木桩模型，受击照样闪白（走发光：顶点色材质不能靠改颜色闪白）
+	var broot := Node3D.new()
+	add_child(broot)
+	var dummy := TrainingDummy.new()
+	broot.add_child(dummy)
+	await physics(2)
+	var dmi: MeshInstance3D = dummy.visual.find_child("dummy", false, false)
+	var dmat: StandardMaterial3D = dmi.get_surface_override_material(0) if dmi != null else null
+	check(dmi != null and dmi.mesh == PropModels.get_model("dummy").mesh and dummy.visual.get_child_count() == 1 and dmat.emission == Color(0, 0, 0), "训练木桩换成精细模型（木桩底座、麻袋身子、横杆手臂、麻袋头）")
+	dummy.take_hit({"amount": 1, "crit": false, "type": "physical"}, Vector3.ZERO, 0.0)
+	await physics(2)
+	var lit := dmat.emission.r > 0.5
+	await seconds(float(Balance.fb().flash_s) + 0.1)
+	check(lit and dmat.emission == Color(0, 0, 0), "训练木桩受击闪白，随后恢复")
+	broot.queue_free()
 	await frames(2)

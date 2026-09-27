@@ -5,7 +5,7 @@ extends CharacterBody3D
 ##   EnemyMelee（近战追击）· EnemyCharger（蓄力冲锋）· EnemyRanged（保持距离放箭）· EnemySummoner（召唤仆从）
 ##   TrainingDummy（训练木桩：不攻击，被打后弹回原位，倒下后复活）
 ## 数值来自 data/monsters.json（木桩来自 data/balance.json）。
-## 外观：普通怪物用代码搭的骨骼角色（CharRig：人形 / 四足，2.6 之三，动作跟着 AI 状态走）；只有训练木桩仍是占位几何体。
+## 外观：普通怪物用代码搭的骨骼角色（CharRig：人形 / 四足，2.6 之三，动作跟着 AI 状态走）；训练木桩是代码搭的静态模型（PropModels，2.6 之六）。
 
 signal died(enemy: EnemyBase)
 
@@ -45,6 +45,7 @@ var _base_colors: Array[Color] = []
 var visual: Node3D
 var rig: CharRig                 # 骨骼角色（人形 / 四足；没有就是占位几何体）
 var rig_attack := "attack"       # 蓄力 / 出手时用哪套姿势（HumanoidRig / QuadrupedRig 的 ACTIONS）
+var _prop_mats: Array[StandardMaterial3D] = []   # 代码搭的静态模型（训练木桩，2.6 之六）：受击闪白、减速染色和骨骼角色一样走发光
 var _rig_acc := 0.0
 var _rig_tint := -1              # 上次设置的受击 / 减速染色（没变就不重复设置材质）
 var hp_label: Label3D
@@ -127,6 +128,15 @@ func use_rig(id: String, attack_kind := "attack") -> void:
 	rig = CharRig.create(id)
 	rig_attack = attack_kind
 	visual.add_child(rig)
+
+
+func use_prop(id: String) -> MeshInstance3D:
+	## 用代码搭的静态模型（PropModels）代替占位几何体（在 _build_visual 里调用）
+	var mi := PropModels.instance(id)
+	visual.add_child(mi)
+	for i in mi.mesh.get_surface_count():
+		_prop_mats.append(mi.get_surface_override_material(i))
+	return mi
 
 
 func _process(delta: float) -> void:
@@ -468,11 +478,15 @@ func _tick(delta: float) -> void:
 		slow_t -= delta
 	for i in _mats.size():
 		_mats[i].albedo_color = Color(1, 0.97, 0.92) if white else (_base_colors[i].lerp(Color(0.55, 0.8, 1.0), 0.55) if slow_t > 0.0 else _base_colors[i])
-	if rig != null:
+	if rig != null or not _prop_mats.is_empty():
 		var tint := (1 if white else 0) + (2 if slow_t > 0.0 else 0)
 		if tint != _rig_tint:
 			_rig_tint = tint
-			rig.set_tint(white, slow_t > 0.0)
+			if rig != null:
+				rig.set_tint(white, slow_t > 0.0)
+			for m in _prop_mats:
+				m.emission = Color(0.85, 0.8, 0.75) if white else Color(0, 0, 0)
+				m.albedo_color = Color(0.62, 0.82, 1.0) if slow_t > 0.0 else Color(1, 1, 1)
 	stun_mark.visible = stun_t > 0.0
 	for k in cooldowns.keys():
 		cooldowns[k] = maxf(0.0, cooldowns[k] - delta)

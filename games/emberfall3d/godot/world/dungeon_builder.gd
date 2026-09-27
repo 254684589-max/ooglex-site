@@ -476,42 +476,45 @@ static func _build_deco(parent: Node3D, m: Dictionary, rng: RandomNumberGenerato
 	for i in deco.size():
 		if lists.has(deco[i]):
 			lists[deco[i]].append(Vector2i(i % m.w, i / m.w))
-	var bone := StandardMaterial3D.new()
-	bone.albedo_color = Color(0.78, 0.74, 0.64)
-	bone.roughness = 1.0
-	var rubble := StandardMaterial3D.new()
-	rubble.albedo_color = Color(0.46, 0.43, 0.4)
-	rubble.roughness = 1.0
+	# 2.6 之六：白骨（腿骨 + 头骨）、碎石、熔岩裂缝换成代码搭的模型（PropModels），顶点色、共用一份材质。
+	# 多实例网格不会逐个剔除，每种一层只画一次：模型面数都压在几十面（整层装饰约 1.5 万面，见 test_models）
+	var props := PropModels.multi_material()
 	var lava := StandardMaterial3D.new()
 	lava.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	lava.albedo_color = Color(1.0, 0.38, 0.1)
+	lava.vertex_color_use_as_albedo = true
 	lava.emission_enabled = true
 	lava.emission = Color(1.0, 0.35, 0.08)
 	lava.emission_energy_multiplier = 2.2
-	var bone_mesh := BoxMesh.new()
-	bone_mesh.size = Vector3(0.55, 0.08, 0.1)
-	# 碎石用小方块（12 个三角形）：多实例绘制时不会被视锥逐个剔除，面数要低（P2 实测低分段球体一层就有 2.6 万个图元）
-	var rubble_mesh := BoxMesh.new()
-	rubble_mesh.size = Vector3(0.26, 0.14, 0.2)
-	var lava_mesh := PlaneMesh.new()
-	lava_mesh.size = Vector2(1.1, 0.22)
-	var specs := [[DungeonGen.DECO_BONES, bone_mesh, bone, 3, "Bones"], [DungeonGen.DECO_RUBBLE, rubble_mesh, rubble, 4, "Rubble"], [DungeonGen.DECO_LAVA, lava_mesh, lava, 3, "Lava"]]
+	var specs := [[DungeonGen.DECO_BONES, "bone", props, 2, "Bones"], [DungeonGen.DECO_BONES, "skull", props, 1, "Skulls"],
+		[DungeonGen.DECO_RUBBLE, "rock", props, 4, "Rubble"], [DungeonGen.DECO_LAVA, "lava_crack", lava, 2, "Lava"]]
 	for s in specs:
 		var cells: Array = lists[s[0]]
 		if cells.is_empty():
 			continue
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
-		mm.mesh = s[1]
+		mm.mesh = PropModels.get_model(s[1]).mesh
 		mm.instance_count = cells.size() * int(s[3])
 		var idx := 0
 		for c in cells:
 			var cc := cell_center(c)
 			for j in int(s[3]):
-				var p := cc + Vector3(rng.randf_range(-0.8, 0.8), 0.04 if s[0] != DungeonGen.DECO_LAVA else 0.02, rng.randf_range(-0.8, 0.8))
+				var p := cc + Vector3(rng.randf_range(-0.8, 0.8), 0.02, rng.randf_range(-0.8, 0.8))
 				var basis := Basis(Vector3.UP, rng.randf() * TAU)
-				if s[0] == DungeonGen.DECO_RUBBLE:
-					basis = (basis * Basis(Vector3(1, 0, 0), rng.randf_range(-0.4, 0.4))).scaled(Vector3.ONE * rng.randf_range(0.5, 1.3))
+				match s[1]:
+					"bone":
+						p.y = 0.04
+						basis = basis * Basis(Vector3.FORWARD, rng.randf_range(-0.15, 0.15))
+					"skull":
+						# 有的正放、有的侧躺（侧躺时抬高一点，不陷进地里）
+						var roll := rng.randf_range(-1.3, 0.3)
+						p.y = 0.05 * absf(roll)
+						basis = (basis * Basis(Vector3.FORWARD, roll)).scaled(Vector3.ONE * rng.randf_range(0.9, 1.15))
+					"rock":
+						p.y = 0.0
+						basis = (basis * Basis(Vector3(1, 0, 0), rng.randf_range(-0.4, 0.4))).scaled(Vector3.ONE * rng.randf_range(0.6, 1.4))
+					"lava_crack":
+						basis = basis.scaled(Vector3.ONE * rng.randf_range(0.8, 1.3))
 				mm.set_instance_transform(idx, Transform3D(basis, p))
 				if fog.has("_on"):
 					_fog_add(fog, c / CHUNK, "deco", [mm, idx, Transform3D(basis, p)])

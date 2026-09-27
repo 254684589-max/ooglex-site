@@ -2,8 +2,11 @@ class_name TownBuilder
 extends RefCounted
 ## 把 TownGen 的布局搭成 3D 烬原镇（P7）。地面、墙（修道院废墟与房屋）、导航、楼梯、墙上火把复用 DungeonBuilder；
 ## 这里再加：整片泥土地面、石板路、外圈树林（带碰撞）、房顶、篝火、水井、铁砧、传送石、野花、三位 NPC。
-## 地面、墙、房顶用写实贴图（2.6 之二 / 之四）；水井、铁砧、传送石、篝火与房屋细节是代码搭的模型（PropModels，2.6 之五）；树木仍是占位几何体。
+## 地面、墙、房顶用写实贴图（2.6 之二 / 之四）；水井、铁砧、传送石、篝火与房屋细节是代码搭的模型（PropModels，2.6 之五）；树林也是（2.6 之六）。
 
+## 树林分块（格）与三种树的比例：针叶树 < x ≤ 阔叶树 < y ≤ 枯树
+const TREE_BLOCK := 12
+const TREE_MIX := Vector2(0.5, 0.8)
 const PROP_SIZES := {"fire": Vector3(1.4, 0.6, 1.4), "well": Vector3(1.8, 1.0, 1.8), "wp": Vector3(1.0, 1.8, 1.0), "anvil": Vector3(1.1, 0.9, 0.7)}
 
 
@@ -52,29 +55,10 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	pmi.name = "Paths"
 	region.add_child(pmi)
 
-	# 树林：树干与两层树冠各一个多实例网格；每格一个碰撞盒
+	# 树林（2.6 之六）：针叶树、阔叶树、枯树三种代码搭的模型，按 12×12 格分块、每块每种一个多实例网格
+	# （多实例网格不会逐棵剔除：分块后镜头外的整块不画；树都不投影——P7 实测低分段 + 投影时一个镜头 35 万图元）。每格一个碰撞盒
 	var trees: Array = m.trees
-	var trunk := MultiMesh.new()
-	trunk.transform_format = MultiMesh.TRANSFORM_3D
-	# 多实例网格不会逐棵剔除、阴影每一层都要再画一遍：树用 6 边形、不投影（P7 实测：低分段 + 投影时一个镜头 35 万图元）
-	var tm := CylinderMesh.new()
-	tm.top_radius = 0.14
-	tm.bottom_radius = 0.22
-	tm.height = 2.0
-	tm.radial_segments = 6
-	tm.rings = 1
-	trunk.mesh = tm
-	trunk.instance_count = trees.size()
-	var crown := MultiMesh.new()
-	crown.transform_format = MultiMesh.TRANSFORM_3D
-	var cone := CylinderMesh.new()
-	cone.top_radius = 0.0
-	cone.bottom_radius = 1.3
-	cone.height = 2.6
-	cone.radial_segments = 6
-	cone.rings = 1
-	crown.mesh = cone
-	crown.instance_count = trees.size() * 2
+	var groups := {}        # [块 x, 块 y, 种类] → 变换列表
 	var tbody := StaticBody3D.new()
 	tbody.name = "Trees"
 	tbody.collision_layer = Layers.WORLD
@@ -85,17 +69,33 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		var p := DungeonBuilder.cell_center(c) + Vector3(rng.randf_range(-0.4, 0.4), 0, rng.randf_range(-0.4, 0.4))
 		var s := rng.randf_range(0.8, 1.35)
 		var b := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * s)
-		trunk.set_instance_transform(i, Transform3D(b, p + Vector3(0, 1.0 * s, 0)))
-		crown.set_instance_transform(i * 2, Transform3D(b, p + Vector3(0, 2.6 * s, 0)))
-		crown.set_instance_transform(i * 2 + 1, Transform3D(b.scaled(Vector3(0.75, 0.8, 0.75)), p + Vector3(0, 3.8 * s, 0)))
+		var r := rng.randf()
+		var kind := "tree_pine" if r < TREE_MIX.x else ("tree_broad" if r < TREE_MIX.y else "tree_dead")
+		var key := [c.x / TREE_BLOCK, c.y / TREE_BLOCK, kind]
+		if not groups.has(key):
+			groups[key] = []
+		groups[key].append(Transform3D(b, p))
 		var cs := CollisionShape3D.new()
 		var bs := BoxShape3D.new()
 		bs.size = Vector3(DungeonBuilder.TILE, 3.0, DungeonBuilder.TILE)
 		cs.shape = bs
 		cs.position = DungeonBuilder.cell_center(c) + Vector3(0, 1.5, 0)
 		tbody.add_child(cs)
-	_mm(region, trunk, Color(0.26, 0.18, 0.12), "TreeTrunks")
-	_mm(region, crown, Color(0.14, 0.22, 0.14), "TreeCrowns")
+	var tree_mat := PropModels.multi_material()
+	for key in groups:
+		var xs: Array = groups[key]
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = PropModels.get_model(key[2]).mesh
+		mm.instance_count = xs.size()
+		for i in xs.size():
+			mm.set_instance_transform(i, xs[i])
+		var mi := MultiMeshInstance3D.new()
+		mi.multimesh = mm
+		mi.material_override = tree_mat
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.name = "Trees_%s_%d_%d" % [String(key[2]).trim_prefix("tree_"), key[0], key[1]]
+		region.add_child(mi)
 
 	# 房顶
 	for hs in m.houses:
@@ -188,22 +188,6 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	info.spots = use_spots
 	info.build_ms = (Time.get_ticks_usec() - t0) / 1000.0
 	return info
-
-
-static func _mat(c: Color) -> StandardMaterial3D:
-	var m := StandardMaterial3D.new()
-	m.albedo_color = c
-	m.roughness = 1.0
-	return m
-
-
-static func _mm(parent: Node3D, mm: MultiMesh, c: Color, n: String) -> void:
-	var mi := MultiMeshInstance3D.new()
-	mi.multimesh = mm
-	mi.material_override = _mat(c)
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mi.name = n
-	parent.add_child(mi)
 
 
 ## 房门开在哪一面：四面各取门口外一格，离最近的石板路格子最近的那一面（曼哈顿距离）

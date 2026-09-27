@@ -30,7 +30,11 @@ func _ready() -> void:
 		await _props(cam, out)
 		get_tree().quit()
 		return
-	var only := int(args[1]) if args.size() > 1 else -1       # 第二个参数：只拍第几组（0 起）；"props"：拍道具与房屋（2.6 之五）
+	if args.size() > 1 and args[1] == "props2":
+		await _props2(cam, out)
+		get_tree().quit()
+		return
+	var only := int(args[1]) if args.size() > 1 else -1       # 第二个参数：只拍第几组（0 起）；"props"：拍道具与房屋（2.6 之五）；"props2"：树、地面装饰、训练木桩（2.6 之六）
 	for g in ceili(all_ids.size() / 3.0):
 		if only < 0 or only == g:
 			await _group(cam, all_ids.slice(g * 3, g * 3 + 3), out, g)
@@ -129,4 +133,40 @@ func _props(cam: Camera3D, out: String) -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(out.path_join("props-%d.png" % i))
 		print("SHOT props-%d" % i)
+		i += 1
+
+
+func _props2(cam: Camera3D, out: String) -> void:
+	## 2.6 之六：后排三种树（针叶、阔叶、枯树各两棵），前面训练木桩，地上散着腿骨、头骨、碎石和熔岩裂缝
+	var trees := [["tree_pine", -5.0, -3.0, 1.0], ["tree_broad", -2.2, -4.0, 1.1], ["tree_dead", 0.6, -3.2, 1.0], ["tree_pine", 3.2, -4.2, 1.25], ["tree_broad", 5.8, -3.0, 0.9], ["tree_dead", -7.4, -4.5, 1.2]]
+	for t in trees:
+		var mi := PropModels.instance(t[0])
+		mi.position = Vector3(t[1], 0, t[2])
+		mi.scale = Vector3.ONE * float(t[3])
+		mi.rotation.y = t[1]
+		add_child(mi)
+	var dummy := PropModels.instance("dummy")
+	dummy.position = Vector3(-2.2, 0, 1.2)
+	add_child(dummy)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var scatter := [["bone", 5], ["skull", 3], ["rock", 9], ["lava_crack", 3]]
+	for sc in scatter:
+		for k in int(sc[1]):
+			var mi := PropModels.instance(sc[0])
+			mi.position = Vector3(rng.randf_range(0.2, 4.2), 0.04 if sc[0] == "bone" else 0.02, rng.randf_range(0.2, 3.0))
+			mi.rotation.y = rng.randf() * TAU
+			if sc[0] == "skull" and k == 1:
+				mi.rotation.z = -1.2
+				mi.position.y = 0.06
+			add_child(mi)
+	var i := 0
+	for view in [[Vector3(0, 3.0, 10.0), Vector3(0, 2.0, -2.0)], [Vector3(2.2, 2.2, 5.6), Vector3(2.2, 0.0, 1.6)], [Vector3(-2.2, 1.6, 4.4), Vector3(-2.2, 1.2, 1.2)], [Vector3(0, 12.3, 10.1), Vector3(0, 0.8, 0)]]:
+		cam.position = view[0]
+		cam.look_at(view[1])
+		cam.fov = 60 if i < 3 else 40
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png(out.path_join("props2-%d.png" % i))
+		print("SHOT props2-%d" % i)
 		i += 1
