@@ -15,6 +15,9 @@ var glow_material: StandardMaterial3D
 var dead := false
 var tris := 0
 var fall_sideways := false       # 倒下时侧翻（四足）；人形向后倒
+var base_tint := Color(1, 1, 1)  # 平时的整体染色（莫格暴怒时涨红）；受击闪白、减速偏蓝都在它上面叠加
+var _flash_on := false
+var _slow_on := false
 
 var _bi := {}                    # 骨骼名 → 下标
 var _rest := {}                  # 骨骼名 → 静止姿势的局部位置
@@ -91,9 +94,24 @@ func _build(m: Dictionary) -> void:
 	skeleton.reset_bone_poses()
 	mesh_instance = MeshInstance3D.new()
 	mesh_instance.name = "Body"
-	mesh_instance.mesh = m.mesh
 	mesh_instance.skeleton = NodePath("..")  # 绑到上面的骨架（默认是空路径，不设就不会跟着骨骼动）
 	skeleton.add_child(mesh_instance)
+	_apply_mesh(m)
+
+
+## 换一套外观（同一副骨架、同样的关节位置），例如首领二阶段变身；动作状态保留
+func swap_model(id: String) -> void:
+	var m: Dictionary = CharModels.get_model(id)
+	model_id = id
+	tris = m.tris
+	_apply_mesh(m)
+	set_tint(_flash_on, _slow_on)
+
+
+func _apply_mesh(m: Dictionary) -> void:
+	mesh_instance.mesh = m.mesh
+	materials.clear()
+	glow_material = null
 	var surfaces: Array = m.surfaces
 	for s in surfaces.size():
 		var mat := StandardMaterial3D.new()
@@ -137,8 +155,10 @@ func hurt() -> void:
 
 func set_tint(flash: bool, slow: bool, flash_color := Color(0.85, 0.8, 0.75)) -> void:
 	## 受击闪白（发光；主角用红色）与寂霜环减速（偏冰蓝）
+	_flash_on = flash
+	_slow_on = slow
 	var e := flash_color if flash else Color(0, 0, 0)
-	var a := Color(0.62, 0.82, 1.0) if slow else Color(1, 1, 1)
+	var a := base_tint * (Color(0.62, 0.82, 1.0) if slow else Color(1, 1, 1))
 	for m in materials:
 		m.emission = e
 		m.albedo_color = a

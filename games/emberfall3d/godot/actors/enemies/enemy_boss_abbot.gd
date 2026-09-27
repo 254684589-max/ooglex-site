@@ -6,7 +6,8 @@ extends EnemyBase
 ##   召唤：每 13 秒在身边召唤 2 只骸骨战士（二阶段火坑小鬼），场上仆从最多 8 只；
 ##   被贴近（3.6 米内）瞬移走，只在首领房里落脚；离主角 9 米以上或没有视线就追，5.25 米以内往后退。
 ##   生命低于一半进入二阶段：改名「灰烬之王的容器 · 摩登」，体型变大、移动速度 × 1.2，并爆出一圈火环。
-## 占位造型：高瘦的院长长袍、高冠与法杖，胸口一枚发光的「余烬之心」（二阶段变亮变大）。
+## 外观（2.6 之三）：代码搭的骨骼角色（CharModels.abbot）：深红长袍、金披肩、高冠、金环法杖、胸口的「余烬之心」；
+## 放邪术弹时举杖前指、烈焰新星与召唤时双手高举再压下；二阶段换成 abbot2（长袍满是余烬裂缝、高冠碎裂长出灰烬之角、眼睛燃烧）。
 
 signal shouted(text: String)
 signal phase_changed(phase: int)
@@ -15,7 +16,9 @@ var phase := 1
 var arena := Rect2()             # 首领房（世界坐标 x / z）：瞬移只在房里落脚（V0.1 inRoom）
 var minions: Array = []
 var _shouted := false
-var _heart: MeshInstance3D
+var _cast_kind := ""             # 最近一次施法的姿势（摩登的招式是瞬发的，没有蓄力状态，姿势按时间播放）
+var _cast_start := -1.0
+var _cast_dur := 0.6
 
 
 func _ready() -> void:
@@ -26,19 +29,28 @@ func _ready() -> void:
 
 
 func _build_visual() -> void:
-	var robe := Color(0.36, 0.08, 0.08)
-	var gold := Color(0.7, 0.55, 0.25)
-	part(cyl(0.22, 0.55, 1.9), Vector3(0, 0.95, 0), robe)                                 # 长袍
-	part(cyl(0.3, 0.3, 0.12), Vector3(0, 1.9, 0), gold)                                   # 金色披肩
-	part(sphere(0.22), Vector3(0, 2.12, 0.02), Color(0.62, 0.55, 0.5))                   # 枯瘦的脸
-	part(cyl(0.08, 0.2, 0.5), Vector3(0, 2.5, -0.02), Color(0.9, 0.86, 0.78))           # 高冠
-	part(box(Vector3(0.05, 0.3, 0.05)), Vector3(0, 2.45, 0.17), gold, 1.0)
-	part(cyl(0.03, 0.03, 2.3), Vector3(0.5, 1.15, 0.2), Color(0.3, 0.22, 0.14))          # 法杖
-	part(LowPoly.torus(0.12, 0.16), Vector3(0.5, 2.35, 0.2), gold, 0.0, Vector3(90, 0, 0))
-	_heart = part(sphere(0.13), Vector3(0, 1.55, 0.28), Color(1.0, 0.5, 0.15), 3.0)       # 胸口的余烬之心
-	# 最后一个部件放发光的杖头：施法时变亮
-	part(sphere(0.1), Vector3(0.5, 2.35, 0.2), Color(1.0, 0.45, 0.2), 2.0)
+	use_rig("abbot", "cast")
 
+
+func _cast_anim(kind: String, dur: float) -> void:
+	_cast_kind = kind
+	_cast_start = rig._t if rig else 0.0
+	_cast_dur = dur
+
+
+func _rig_pose() -> void:
+	## 瞬发的招式：出手（前 30%）→ 收招
+	if rig == null or _cast_kind == "":
+		return
+	var e := rig._t - _cast_start
+	if e >= _cast_dur:
+		_cast_kind = ""
+		return
+	var k := e / _cast_dur
+	if k < 0.3:
+		rig.act(_cast_kind, "strike", k / 0.3)
+	else:
+		rig.act(_cast_kind, "recover", (k - 0.3) / 0.7)
 
 func _ai(delta: float) -> void:
 	if leash_check():
@@ -63,16 +75,19 @@ func _ai(delta: float) -> void:
 		Sfx.play("bolt")
 		for i in n:
 			_shoot((i - (n - 1) / 2.0) * float(def.shot.spread_rad))
+		_cast_anim("cast", 0.55)
 		cooldowns["shot"] = float(def.shot.cooldown_s[ph])
 	# 烈焰新星
 	if cooldowns.get("nova", 0.0) <= 0.0:
 		_ring(float(def.nova.radius), float(def.nova.speed), float(def.nova.dmg_mul))
+		_cast_anim("cast2", 0.8)
 		Sfx.play("boom")
 		cooldowns["nova"] = float(def.nova.cooldown_s[ph])
 	# 召唤仆从
 	if cooldowns.get("summon", 0.0) <= 0.0:
 		if _adds_alive() < int(def.summon.cap):
 			_summon(def.summon.minion[ph])
+			_cast_anim("cast2", 0.8)
 		cooldowns["summon"] = float(def.summon.cooldown_s)
 	# 被贴近：瞬移走
 	if d < float(def.blink.trigger_dist) and cooldowns.get("blink", 0.0) <= 0.0:
@@ -93,8 +108,11 @@ func _enter_phase2() -> void:
 	phase = 2
 	def.name = P2.name
 	visual.scale = Vector3.ONE * float(P2.scale)
-	_heart.scale = Vector3.ONE * 1.8
-	(_heart.material_override as StandardMaterial3D).emission_energy_multiplier = 6.0
+	rig.swap_model("abbot2")          # 灰烬之王的容器：长袍裂开透出余烬、高冠碎裂长角、余烬之心变大
+	_rig_tint = -1
+	if rig.glow_material:
+		rig.glow_material.emission_energy_multiplier = 5.0
+	_cast_anim("cast2", 1.0)
 	update_label()
 	_ring(float(P2.ring_radius), float(P2.ring_speed), float(P2.ring_dmg_mul))
 	if player.get("camera"):

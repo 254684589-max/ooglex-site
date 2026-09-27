@@ -15,6 +15,13 @@ extends RefCounted
 ## 第三批（2.6 之三）：
 ##   imp：火坑小鬼。小个子（约 1.2 米）、大脑袋、圆肚子里烧着余烬、细长手臂与爪子、一对弯角、尖耳、带箭头的尾巴。
 ##   hound：熔渊猎犬（四足，QuadrupedRig）。暗红褐的瘦长猎犬，背上一道熔火裂纹与黑曜石骨刺，眼睛和尾尖发光，张嘴有獠牙。
+## 第四批（2.6 之三）：首领与镇民
+##   mog：腐肉监工莫格。佝偻的巨汉（放大 1.45 倍、比主角宽一倍多）：铁栅面罩、铁项圈、交叉皮带，背上铁笼里缩着学徒托比，
+##     腰间拖着铁链，右手铁链连枷（V0.1 已去掉屠刀与围裙，这里也不用）。
+##   abbot / abbot2：堕落院长摩登（放大 1.3 倍）。深红长袍、金披肩、高冠、金环法杖、胸口发光的余烬之心；
+##     abbot2 是二阶段「灰烬之王的容器」：长袍满是余烬裂缝、高冠碎裂长出灰烬之角、眼睛燃烧、余烬之心变大。
+##   npc_elin / npc_gren / npc_mara / npc_toby：老祭司伊莲（米白长袍、兜帽、手杖顶上一朵圣焰）、铁匠格伦（皮坎肩、
+##     光膀子、络腮胡、铁锤）、药剂师玛拉（绿裙、头巾、挎包、发绿光的药瓶）、学徒托比（小个子、乱头发、皮围裙）。
 
 static var _cache := {}
 const SWORD_TILT := Basis(Vector3(1, 0, 0), 0.87)     # 约 50°，剑尖朝前下方
@@ -46,6 +53,14 @@ static func get_model(id: String) -> Dictionary:
 				m = _imp()
 			"hound":
 				m = _hound()
+			"mog":
+				m = _mog()
+			"abbot":
+				m = _abbot(false)
+			"abbot2":
+				m = _abbot(true)
+			"npc_elin", "npc_gren", "npc_mara", "npc_toby":
+				m = _townsfolk(id.substr(4))
 			_:
 				m = _wanderer()
 		m.build_ms = (Time.get_ticks_usec() - t0) / 1000.0
@@ -54,7 +69,7 @@ static func get_model(id: String) -> Dictionary:
 
 
 static func ids() -> Array:
-	return ["wanderer", "skeleton", "skeleton_archer", "zombie", "ghoul", "knight", "cultist", "priest", "brute", "imp", "hound"]
+	return ["wanderer", "skeleton", "skeleton_archer", "zombie", "ghoul", "knight", "cultist", "priest", "brute", "imp", "hound", "mog", "abbot", "abbot2", "npc_elin", "npc_gren", "npc_mara", "npc_toby"]
 
 
 ## 关节位置（模型空间，静止姿势：面朝 +Z，手臂下垂；左侧在 +X）。o 里可以覆盖左侧关节，右侧自动镜像。
@@ -627,3 +642,242 @@ static func _hound() -> Dictionary:
 	var out := _finish(rb, J, fire, {"scale": 1.1, "stride": 1.4, "walk_ref": 3.8})
 	out.kind = "quadruped"
 	return out
+
+
+# ---------------- 第四批：首领与镇民 ----------------
+
+static func _mog() -> Dictionary:
+	var J := joints({"Hips": Vector3(0, 0.94, 0), "Spine": Vector3(0, 1.1, 0.02), "Chest": Vector3(0, 1.3, 0.04), "Neck": Vector3(0, 1.5, 0.12), "Head": Vector3(0, 1.55, 0.18),
+		"LeftUpperArm": Vector3(0.38, 1.44, 0.04), "LeftLowerArm": Vector3(0.46, 1.1, 0.08), "LeftHand": Vector3(0.49, 0.8, 0.12),
+		"LeftUpperLeg": Vector3(0.17, 0.9, 0), "LeftLowerLeg": Vector3(0.19, 0.5, 0.03), "LeftFoot": Vector3(0.19, 0.1, -0.01)})
+	var B := _idx()
+	var rb := RigBuilder.new()
+	var flesh := Color(0.46, 0.34, 0.3)
+	var bruise := Color(0.36, 0.26, 0.26)
+	var leather := Color(0.24, 0.16, 0.1)
+	var iron := Color(0.33, 0.32, 0.34)
+	var rust := Color(0.4, 0.26, 0.18)
+	var ember := Color(1.0, 0.4, 0.15)
+	_limbs(rb, J, B, {"thigh": leather, "shin": bruise, "foot_col": leather, "upper": flesh, "fore": flesh, "hand_col": bruise,
+		"thigh_r": 0.15, "shin_r": 0.11, "arm_r": 0.15, "hand": 1.9, "foot_s": 1.35})
+	# 臃肿的身体：大肚子、驼背
+	rb.tube([Vector3(0, 0.82, 0), Vector3(0, 0.98, 0.04), Vector3(0, 1.14, 0.06), Vector3(0, 1.32, 0.03), Vector3(0, 1.48, 0.06), Vector3(0, 1.56, 0.14)],
+		[Vector2(0.27, 0.22), Vector2(0.34, 0.3), Vector2(0.37, 0.32), Vector2(0.4, 0.28), Vector2(0.37, 0.24), Vector2(0.15, 0.13)],
+		[B.Hips, B.Hips, [B.Hips, B.Spine, 0.8], [B.Spine, B.Chest, 0.8], B.Chest, [B.Chest, B.Neck, 0.3]], flesh, RigBuilder.BODY, 12, true, Vector3.BACK)
+	for sx in [1.0, -1.0]:
+		var side := "Left" if sx > 0 else "Right"
+		rb.ellipsoid(J[side + "UpperArm"] + Vector3(-0.03 * sx, 0.03, 0), Vector3(0.19, 0.16, 0.17), [B.Chest, B[side + "UpperArm"], 0.5], flesh)
+		# 交叉皮带
+		rb.block(Vector3(0, 1.28, 0.27), Vector3(0.08, 0.7, 0.03), B.Chest, leather, RigBuilder.BODY, Basis(Vector3.FORWARD, deg_to_rad(35 * sx)))
+	rb.tube([Vector3(0, 0.9, 0), Vector3(0, 0.99, 0)], [Vector2(0.36, 0.31), Vector2(0.36, 0.31)], [B.Hips, B.Hips], leather, RigBuilder.BODY, 12, false, Vector3.BACK)
+	rb.block(Vector3(0, 0.95, 0.32), Vector3(0.12, 0.1, 0.03), B.Hips, iron, RigBuilder.METAL)
+	# 铁项圈 + 铁栅面罩 + 余烬眼
+	rb.tube([Vector3(0, 1.46, 0.08), Vector3(0, 1.54, 0.12)], [Vector2(0.2, 0.18), Vector2(0.19, 0.17)], [B.Chest, B.Neck], iron, RigBuilder.METAL, 10, false)
+	rb.ellipsoid(Vector3(0, 1.66, 0.22), Vector3(0.15, 0.15, 0.15), B.Head, bruise, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+	rb.block(Vector3(0, 1.66, 0.35), Vector3(0.26, 0.2, 0.05), B.Head, iron, RigBuilder.METAL, Basis.IDENTITY, Vector2(0.9, 1.0))
+	for k in 4:
+		rb.block(Vector3(-0.075 + k * 0.05, 1.66, 0.38), Vector3(0.012, 0.19, 0.02), B.Head, Color(0.08, 0.07, 0.07))
+	for sx in [1.0, -1.0]:
+		rb.ellipsoid(Vector3(0.05 * sx, 1.7, 0.39), Vector3(0.02, 0.016, 0.01), B.Head, ember, RigBuilder.GLOW, Basis.IDENTITY, 3, 5)
+	# 背上的铁笼（绑在胸口骨骼上）与笼里缩着的托比
+	var cage := Vector3(0, 1.58, -0.52)
+	for x in [-0.3, 0.3]:
+		for z in [-0.24, 0.24]:
+			rb.block(cage + Vector3(x, 0, z), Vector3(0.04, 0.78, 0.04), B.Chest, rust, RigBuilder.METAL)
+	for x in [-0.1, 0.1]:
+		rb.block(cage + Vector3(x, 0, 0.24), Vector3(0.025, 0.78, 0.025), B.Chest, rust, RigBuilder.METAL)
+		rb.block(cage + Vector3(x, 0, -0.24), Vector3(0.025, 0.78, 0.025), B.Chest, rust, RigBuilder.METAL)
+	for y in [-0.39, 0.39]:
+		rb.block(cage + Vector3(0, y, 0), Vector3(0.66, 0.05, 0.54), B.Chest, iron, RigBuilder.METAL)
+	rb.ellipsoid(cage + Vector3(0, -0.2, 0), Vector3(0.12, 0.14, 0.11), B.Chest, Color(0.5, 0.4, 0.26))           # 托比缩成一团
+	rb.ellipsoid(cage + Vector3(0, 0.0, 0.02), Vector3(0.085, 0.09, 0.085), B.Chest, Color(0.78, 0.62, 0.5))
+	rb.ellipsoid(cage + Vector3(0, 0.04, 0.0), Vector3(0.09, 0.07, 0.09), B.Chest, Color(0.3, 0.2, 0.12))
+	for sx in [1.0, -1.0]:
+		rb.limb(cage + Vector3(0.08 * sx, -0.06, 0.04), cage + Vector3(0.14 * sx, 0.12, 0.2), 0.022, 0.018, B.Chest, Color(0.78, 0.62, 0.5), -1, RigBuilder.BODY, 5)   # 抓着栏杆的手
+	# 腰间拖地的铁链（左侧）
+	var chain := []
+	var cr := []
+	var cb := []
+	for i in 7:
+		chain.append(Vector3(0.36, 0.92 - i * 0.14, -0.08 - i * 0.1 + 0.02 * sin(i * 1.7)))
+		cr.append(Vector2(0.03, 0.03))
+		cb.append(B.Hips)
+	rb.tube(chain, cr, cb, iron, RigBuilder.METAL, 5, true)
+	# 右手铁链连枷：木柄 + 一段铁链 + 带刺的铁球
+	var h: Vector3 = J.RightHand + Vector3(0, -0.1, 0.02)
+	rb.limb(h + Vector3(0, 0.1, -0.06), h + Vector3(0, -0.05, 0.3), 0.035, 0.035, B.RightHand, leather, -1, RigBuilder.BODY, 6)
+	var fl := []
+	var fr := []
+	var fb := []
+	for i in 5:
+		fl.append(h + Vector3(0, -0.07 - i * 0.12, 0.32 + i * 0.04))
+		fr.append(Vector2(0.022, 0.022))
+		fb.append(B.RightHand)
+	rb.tube(fl, fr, fb, iron, RigBuilder.METAL, 5, true)
+	var ball := h + Vector3(0, -0.7, 0.52)
+	rb.ellipsoid(ball, Vector3(0.14, 0.14, 0.14), B.RightHand, iron.darkened(0.2), RigBuilder.METAL, Basis.IDENTITY, 5, 8)
+	for k in 8:
+		var d := Vector3(cos(k * 2.4) * sin(k * 1.1 + 0.5), cos(k * 1.1 + 0.5), sin(k * 2.4) * sin(k * 1.1 + 0.5)).normalized()
+		rb.spike(ball + d * 0.11, ball + d * 0.25, 0.035, B.RightHand, iron.lightened(0.1), RigBuilder.METAL, 4)
+	return _finish(rb, J, ember, {"scale": 1.45, "stride": 1.6, "walk_ref": 2.4, "arm_swing": 16.0, "idle_arms": 18.0, "hunch": 16.0,
+		"carry": {"RightUpperArm": Vector3(-12, 0, -8), "LeftUpperArm": Vector3(-10, 0, 8), "RightLowerArm": Vector3(-25, 0, 0), "LeftLowerArm": Vector3(-30, 0, 0)}})
+
+
+static func _abbot(vessel: bool) -> Dictionary:
+	var J := joints({"Neck": Vector3(0, 1.54, 0), "Head": Vector3(0, 1.62, 0.01)})
+	var B := _idx()
+	var rb := RigBuilder.new()
+	var robe := Color(0.4, 0.08, 0.08) if not vessel else Color(0.24, 0.06, 0.05)
+	var gold := Color(0.72, 0.56, 0.26)
+	var face := Color(0.64, 0.56, 0.5) if not vessel else Color(0.4, 0.33, 0.3)
+	var ember := Color(1.0, 0.5, 0.15)
+	var wood := Color(0.3, 0.22, 0.14)
+	_limbs(rb, J, B, {"thigh": robe.darkened(0.3), "shin": robe.darkened(0.4), "foot_col": Color(0.15, 0.1, 0.08), "upper": robe, "fore": robe, "hand_col": face,
+		"thigh_r": 0.07, "shin_r": 0.055, "arm_r": 0.075, "cuff": 1.1, "wrist": 1.8, "claw": ember if vessel else face, "claw_len": 0.08 if vessel else 0.02})
+	rb.tube([Vector3(0, 1.56, 0), Vector3(0, 1.44, 0), Vector3(0, 1.2, 0.0), Vector3(0, 0.98, 0), Vector3(0, 0.62, 0.01), Vector3(0, 0.3, 0.01), Vector3(0, 0.08, 0.01)],
+		[Vector2(0.1, 0.09), Vector2(0.22, 0.14), Vector2(0.19, 0.13), Vector2(0.2, 0.15), Vector2(0.28, 0.23), Vector2(0.36, 0.31), Vector2(0.42, 0.36)],
+		[[B.Chest, B.Neck, 0.3], B.Chest, [B.Spine, B.Chest, 0.5], B.Hips, B.Hips, B.Hips, B.Hips], robe, RigBuilder.BODY, 12, true, Vector3.BACK)
+	# 金披肩、前襟金带、金腰绳
+	rb.ellipsoid(Vector3(0, 1.47, -0.01), Vector3(0.27, 0.1, 0.18), B.Chest, gold, RigBuilder.METAL)
+	rb.block(Vector3(0, 1.0, 0.17), Vector3(0.1, 1.0, 0.02), [B.Spine, B.Hips, 0.5], gold, RigBuilder.METAL, Basis(Vector3.RIGHT, deg_to_rad(-6)), Vector2(0.8, 1.0))
+	rb.tube([Vector3(0, 0.96, 0), Vector3(0, 1.01, 0)], [Vector2(0.21, 0.16), Vector2(0.21, 0.16)], [B.Hips, B.Hips], gold, RigBuilder.METAL, 10, false, Vector3.BACK)
+	# 胸口的余烬之心（二阶段变大）
+	var hs := 1.8 if vessel else 1.0
+	rb.ellipsoid(Vector3(0, 1.32, 0.15), Vector3(0.06, 0.07, 0.03) * hs, B.Chest, ember, RigBuilder.GLOW, Basis.IDENTITY, 4, 8)
+	rb.tube([Vector3(0, 1.32, 0.14), Vector3(0, 1.32, 0.16)], [Vector2(0.085, 0.095) * hs, Vector2(0.08, 0.09) * hs], [B.Chest, B.Chest], gold, RigBuilder.METAL, 10, false)
+	# 枯瘦的脸、深陷的眼窝、高冠
+	rb.limb(Vector3(0, 1.52, 0), Vector3(0, 1.64, 0.01), 0.045, 0.045, B.Neck, face, B.Head)
+	rb.ellipsoid(Vector3(0, 1.74, 0.02), Vector3(0.1, 0.125, 0.11), B.Head, face, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+	for sx in [1.0, -1.0]:
+		rb.ellipsoid(Vector3(0.04 * sx, 1.755, 0.1), Vector3(0.026, 0.02, 0.018), B.Head, Color(0.08, 0.05, 0.05), RigBuilder.BODY, Basis.IDENTITY, 3, 6)
+		if vessel:
+			rb.ellipsoid(Vector3(0.04 * sx, 1.755, 0.115), Vector3(0.016, 0.014, 0.01), B.Head, ember, RigBuilder.GLOW, Basis.IDENTITY, 3, 5)
+	if not vessel:
+		rb.tube([Vector3(0, 1.8, 0.0), Vector3(0, 1.95, -0.01), Vector3(0, 2.14, -0.02)], [Vector2(0.11, 0.1), Vector2(0.14, 0.1), Vector2(0.08, 0.05)],
+			[B.Head, B.Head, B.Head], Color(0.9, 0.86, 0.78), RigBuilder.BODY, 10, true)
+		rb.block(Vector3(0, 1.98, 0.1), Vector3(0.04, 0.26, 0.02), B.Head, gold, RigBuilder.METAL)
+	else:
+		# 高冠碎裂：只剩下半截，从裂口长出两只灰烬之角；长袍上满是余烬裂缝
+		rb.tube([Vector3(0, 1.8, 0.0), Vector3(0, 1.9, -0.01)], [Vector2(0.11, 0.1), Vector2(0.13, 0.1)], [B.Head, B.Head], Color(0.5, 0.46, 0.4), RigBuilder.BODY, 10, true)
+		for sx in [1.0, -1.0]:
+			rb.tube([Vector3(0.07 * sx, 1.86, 0.0), Vector3(0.16 * sx, 2.0, -0.04), Vector3(0.2 * sx, 2.16, -0.02), Vector3(0.18 * sx, 2.28, 0.06)],
+				[Vector2(0.04, 0.04), Vector2(0.032, 0.032), Vector2(0.02, 0.02), Vector2(0.0, 0.0)], [B.Head, B.Head, B.Head, B.Head], Color(0.16, 0.13, 0.12), RigBuilder.BODY, 6, true)
+			rb.spike(J[("Left" if sx > 0 else "Right") + "UpperArm"] + Vector3(0.03 * sx, 0.06, -0.02), J[("Left" if sx > 0 else "Right") + "UpperArm"] + Vector3(0.12 * sx, 0.3, -0.08), 0.04, B.Chest, Color(0.16, 0.13, 0.12), RigBuilder.BODY, 5)
+		_cracks(rb, Vector3(0, 1.2, 0.16), 6, Vector3(0.34, 0.4, 0.0), [B.Spine, B.Chest, 0.5], ember, 91)
+		_cracks(rb, Vector3(0, 0.55, 0.26), 8, Vector3(0.5, 0.6, 0.0), B.Hips, ember, 93)
+		_cracks(rb, Vector3(0, 0.6, -0.26), 6, Vector3(0.5, 0.6, 0.0), B.Hips, ember, 97)
+	# 右手法杖：金环杖头里一团火
+	var h: Vector3 = J.RightHand + Vector3(0, -0.06, 0.01)
+	var R := STAFF_TILT
+	rb.limb(h + R * Vector3(0, -0.7, 0), h + R * Vector3(0, 1.25, 0), 0.024, 0.028, B.RightHand, wood, -1, RigBuilder.BODY, 6)
+	var ring := []
+	var rr := []
+	var rbn := []
+	for k in 13:
+		var a := TAU * k / 12.0
+		ring.append(h + R * Vector3(0, 1.42 + sin(a) * 0.15, cos(a) * 0.15))
+		rr.append(Vector2(0.022, 0.022))
+		rbn.append(B.RightHand)
+	rb.tube(ring, rr, rbn, gold, RigBuilder.METAL, 5, false)
+	rb.ellipsoid(h + R * Vector3(0, 1.42, 0), Vector3(0.07, 0.07, 0.07) * (1.4 if vessel else 1.0), B.RightHand, ember, RigBuilder.GLOW, Basis.IDENTITY, 4, 8)
+	return _finish(rb, J, ember, {"scale": 1.3, "stride": 1.2, "walk_ref": 2.0, "arm_swing": 8.0, "idle_arms": 8.0, "hunch": 8.0 if not vessel else 14.0, "leg_amp": 0.45,
+		"carry": {"RightUpperArm": Vector3(-20, 0, -8), "RightLowerArm": Vector3(-43, 0, 0), "LeftUpperArm": Vector3(-24, 0, 14), "LeftLowerArm": Vector3(-60, 0, 0)}})
+
+
+static func _townsfolk(who: String) -> Dictionary:
+	var skin := Color(0.8, 0.62, 0.5)
+	var J := joints()
+	if who == "toby":
+		J = joints({"Head": Vector3(0, 1.6, 0.0)})
+	var B := _idx()
+	var rb := RigBuilder.new()
+	var glow := Color(1.0, 0.7, 0.3)
+	var style := {"scale": 1.0, "stride": 1.3, "walk_ref": 3.0, "arm_swing": 16.0, "idle_arms": 7.0, "look": 22.0}
+	match who:
+		"elin":
+			# 老祭司伊莲：米白长袍、兜帽放下、灰白的头发、手杖顶上一朵圣焰
+			var robe := Color(0.84, 0.81, 0.74)
+			var trim := Color(0.7, 0.55, 0.3)
+			_limbs(rb, J, B, {"thigh": robe.darkened(0.3), "shin": robe.darkened(0.3), "foot_col": Color(0.3, 0.22, 0.15), "upper": robe, "fore": robe, "hand_col": skin.darkened(0.08),
+				"thigh_r": 0.065, "shin_r": 0.05, "arm_r": 0.07, "cuff": 1.1, "wrist": 1.6})
+			rb.tube([Vector3(0, 1.54, 0), Vector3(0, 1.42, 0), Vector3(0, 1.2, 0.0), Vector3(0, 0.98, 0), Vector3(0, 0.6, 0.01), Vector3(0, 0.28, 0.01), Vector3(0, 0.08, 0.01)],
+				[Vector2(0.1, 0.085), Vector2(0.2, 0.13), Vector2(0.18, 0.13), Vector2(0.19, 0.15), Vector2(0.25, 0.21), Vector2(0.3, 0.26), Vector2(0.33, 0.29)],
+				[[B.Chest, B.Neck, 0.3], B.Chest, [B.Spine, B.Chest, 0.5], B.Hips, B.Hips, B.Hips, B.Hips], robe, RigBuilder.BODY, 12, true, Vector3.BACK)
+			rb.tube([Vector3(0, 0.95, 0), Vector3(0, 1.0, 0)], [Vector2(0.2, 0.16), Vector2(0.2, 0.16)], [B.Hips, B.Hips], trim, RigBuilder.BODY, 10, false, Vector3.BACK)
+			rb.block(Vector3(0, 1.22, 0.15), Vector3(0.05, 0.56, 0.02), [B.Spine, B.Chest, 0.5], trim)
+			rb.ellipsoid(Vector3(0, 1.5, -0.1), Vector3(0.17, 0.1, 0.09), B.Chest, robe.darkened(0.08))                  # 放下的兜帽
+			rb.limb(Vector3(0, 1.5, 0), Vector3(0, 1.63, 0.01), 0.045, 0.045, B.Neck, skin, B.Head)
+			rb.ellipsoid(Vector3(0, 1.72, 0.015), Vector3(0.095, 0.115, 0.105), B.Head, skin.darkened(0.05), RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+			rb.ellipsoid(Vector3(0, 1.76, -0.03), Vector3(0.105, 0.1, 0.105), B.Head, Color(0.78, 0.76, 0.72))            # 灰白的头发
+			rb.ellipsoid(Vector3(0, 1.72, -0.11), Vector3(0.06, 0.06, 0.05), B.Head, Color(0.78, 0.76, 0.72))             # 发髻
+			var h: Vector3 = J.RightHand + Vector3(0, -0.06, 0.01)
+			var R := STAFF_TILT
+			rb.limb(h + R * Vector3(0, -0.7, 0), h + R * Vector3(0, 0.95, 0), 0.02, 0.024, B.RightHand, Color(0.42, 0.3, 0.17), -1, RigBuilder.BODY, 6)
+			rb.tube([h + R * Vector3(0, 0.95, 0), h + R * Vector3(0, 1.02, 0)], [Vector2(0.05, 0.05), Vector2(0.06, 0.06)], [B.RightHand, B.RightHand], trim, RigBuilder.METAL, 7, true)
+			rb.ellipsoid(h + R * Vector3(0, 1.1, 0), Vector3(0.045, 0.07, 0.045), B.RightHand, glow, RigBuilder.GLOW, Basis.IDENTITY, 4, 7)
+			style.merge({"hunch": 8.0, "leg_amp": 0.5, "carry": {"RightUpperArm": Vector3(-20, 0, -8), "RightLowerArm": Vector3(-43, 0, 0), "LeftUpperArm": Vector3(-20, 0, 6), "LeftLowerArm": Vector3(-55, 0, 0)}}, true)
+		"gren":
+			# 铁匠格伦：光膀子、皮坎肩、络腮胡、秃顶、右手铁锤
+			var leather := Color(0.34, 0.22, 0.13)
+			var hair := Color(0.3, 0.18, 0.1)
+			_limbs(rb, J, B, {"thigh": Color(0.3, 0.26, 0.2), "shin": leather.darkened(0.2), "foot_col": leather.darkened(0.3), "upper": skin, "fore": skin, "hand_col": skin.darkened(0.1),
+				"thigh_r": 0.1, "shin_r": 0.08, "arm_r": 0.1, "hand": 1.3})
+			rb.tube([Vector3(0, 0.86, 0), Vector3(0, 1.02, 0), Vector3(0, 1.2, 0.01), Vector3(0, 1.38, 0.01), Vector3(0, 1.48, 0), Vector3(0, 1.54, 0)],
+				[Vector2(0.2, 0.15), Vector2(0.23, 0.18), Vector2(0.24, 0.18), Vector2(0.27, 0.17), Vector2(0.26, 0.15), Vector2(0.11, 0.1)],
+				[B.Hips, B.Hips, [B.Hips, B.Spine, 0.8], [B.Spine, B.Chest, 0.8], B.Chest, [B.Chest, B.Neck, 0.3]], skin, RigBuilder.BODY, 10, true, Vector3.BACK)
+			rb.block(Vector3(0, 1.18, 0.12), Vector3(0.34, 0.62, 0.05), [B.Spine, B.Chest, 0.5], leather, RigBuilder.BODY, Basis.IDENTITY, Vector2(1.15, 1.0))   # 皮坎肩（前）
+			rb.block(Vector3(0, 1.22, -0.13), Vector3(0.4, 0.5, 0.04), B.Chest, leather)
+			rb.tube([Vector3(0, 0.95, 0), Vector3(0, 1.02, 0)], [Vector2(0.24, 0.19), Vector2(0.24, 0.19)], [B.Hips, B.Hips], Color(0.18, 0.12, 0.08), RigBuilder.BODY, 10, false, Vector3.BACK)
+			rb.limb(Vector3(0, 1.5, 0), Vector3(0, 1.63, 0.01), 0.065, 0.06, B.Neck, skin, B.Head)
+			rb.ellipsoid(Vector3(0, 1.73, 0.01), Vector3(0.11, 0.12, 0.115), B.Head, skin, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+			rb.ellipsoid(Vector3(0, 1.65, 0.07), Vector3(0.1, 0.1, 0.08), B.Head, hair)                                      # 络腮胡
+			rb.ellipsoid(Vector3(0, 1.75, -0.05), Vector3(0.105, 0.06, 0.08), B.Head, hair)                                  # 后脑一圈头发
+			for sx in [1.0, -1.0]:
+				rb.ellipsoid(Vector3(0.04 * sx, 1.745, 0.1), Vector3(0.02, 0.012, 0.01), B.Head, Color(0.15, 0.1, 0.08), RigBuilder.BODY, Basis.IDENTITY, 3, 5)
+			var h: Vector3 = J.RightHand + Vector3(0, -0.07, 0.02)
+			var R := SWORD_TILT
+			rb.limb(h + R * Vector3(0, 0, -0.1), h + R * Vector3(0, 0, 0.45), 0.025, 0.025, B.RightHand, Color(0.42, 0.3, 0.17), -1, RigBuilder.BODY, 6)
+			# 锤头横在柄的末端（T 字形、方头圆面），一眼看出是铁匠锤，不会被看成刀
+			rb.block(h + R * Vector3(0, 0, 0.5), Vector3(0.1, 0.24, 0.1), B.RightHand, Color(0.45, 0.45, 0.5), RigBuilder.METAL, R)
+			for sy in [1.0, -1.0]:
+				rb.tube([h + R * Vector3(0, 0.12 * sy, 0.5), h + R * Vector3(0, 0.15 * sy, 0.5)], [Vector2(0.06, 0.06), Vector2(0.055, 0.055)], [B.RightHand, B.RightHand], Color(0.52, 0.52, 0.56), RigBuilder.METAL, 8, true)
+			style.merge({"scale": 1.06, "arm_swing": 20.0, "idle_arms": 12.0, "look": 14.0, "carry": {"RightUpperArm": Vector3(-10, 0, -6), "RightLowerArm": Vector3(-35, 0, 0)}}, true)
+		"mara":
+			# 药剂师玛拉：绿裙、围裙、头巾、斜挎包、发绿光的药瓶
+			var dress := Color(0.24, 0.38, 0.27)
+			var cloth := Color(0.62, 0.55, 0.42)
+			glow = Color(0.35, 1.0, 0.55)
+			_limbs(rb, J, B, {"thigh": dress.darkened(0.3), "shin": dress.darkened(0.3), "foot_col": Color(0.25, 0.18, 0.12), "upper": cloth, "fore": cloth, "hand_col": skin,
+				"thigh_r": 0.065, "shin_r": 0.05, "arm_r": 0.065})
+			rb.tube([Vector3(0, 1.54, 0), Vector3(0, 1.42, 0), Vector3(0, 1.2, 0.0), Vector3(0, 1.0, 0), Vector3(0, 0.6, 0.01), Vector3(0, 0.28, 0.01), Vector3(0, 0.1, 0.01)],
+				[Vector2(0.09, 0.08), Vector2(0.19, 0.13), Vector2(0.15, 0.11), Vector2(0.18, 0.14), Vector2(0.26, 0.22), Vector2(0.31, 0.27), Vector2(0.33, 0.29)],
+				[[B.Chest, B.Neck, 0.3], B.Chest, [B.Spine, B.Chest, 0.5], B.Hips, B.Hips, B.Hips, B.Hips], dress, RigBuilder.BODY, 12, true, Vector3.BACK)
+			rb.block(Vector3(0, 0.72, 0.22), Vector3(0.3, 0.55, 0.02), B.Hips, cloth, RigBuilder.BODY, Basis(Vector3.RIGHT, deg_to_rad(-8)), Vector2(0.8, 1.0))   # 围裙
+			rb.block(Vector3(0, 1.28, 0.02), Vector3(0.05, 0.62, 0.26), B.Chest, Color(0.3, 0.2, 0.12), RigBuilder.BODY, Basis(Vector3.FORWARD, deg_to_rad(38)))     # 斜挎带
+			rb.ellipsoid(Vector3(-0.22, 0.95, 0.04), Vector3(0.1, 0.12, 0.07), B.Hips, Color(0.42, 0.28, 0.18))                                                   # 挎包
+			rb.limb(Vector3(0, 1.5, 0), Vector3(0, 1.63, 0.01), 0.04, 0.04, B.Neck, skin, B.Head)
+			rb.ellipsoid(Vector3(0, 1.72, 0.015), Vector3(0.095, 0.115, 0.105), B.Head, skin, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+			rb.ellipsoid(Vector3(0, 1.77, -0.02), Vector3(0.108, 0.1, 0.11), B.Head, Color(0.55, 0.22, 0.14))               # 红褐色头巾
+			rb.ellipsoid(Vector3(0, 1.62, -0.1), Vector3(0.07, 0.12, 0.05), B.Head, Color(0.25, 0.14, 0.08))                # 垂下的辫子
+			var h: Vector3 = J.RightHand + Vector3(0, -0.08, 0.04)
+			rb.ellipsoid(h, Vector3(0.05, 0.06, 0.05), B.RightHand, glow, RigBuilder.GLOW, Basis.IDENTITY, 4, 7)            # 药瓶
+			rb.limb(h + Vector3(0, 0.05, 0), h + Vector3(0, 0.1, 0), 0.02, 0.018, B.RightHand, Color(0.5, 0.4, 0.3), -1, RigBuilder.BODY, 5)
+			style.merge({"leg_amp": 0.6, "carry": {"RightUpperArm": Vector3(-28, 0, -6), "RightLowerArm": Vector3(-70, 0, 0)}}, true)
+		_:
+			# 学徒托比：小个子、乱头发、粗布衣、皮围裙
+			var tunic := Color(0.5, 0.4, 0.26)
+			var hair := Color(0.32, 0.2, 0.12)
+			_limbs(rb, J, B, {"thigh": Color(0.35, 0.3, 0.24), "shin": Color(0.35, 0.3, 0.24), "foot_col": Color(0.25, 0.17, 0.1), "upper": tunic, "fore": skin, "hand_col": skin,
+				"thigh_r": 0.075, "shin_r": 0.06, "arm_r": 0.065})
+			rb.tube([Vector3(0, 0.86, 0), Vector3(0, 1.02, 0), Vector3(0, 1.2, 0.0), Vector3(0, 1.4, 0), Vector3(0, 1.5, 0), Vector3(0, 1.54, 0)],
+				[Vector2(0.17, 0.12), Vector2(0.18, 0.13), Vector2(0.17, 0.12), Vector2(0.2, 0.12), Vector2(0.18, 0.11), Vector2(0.08, 0.07)],
+				[B.Hips, B.Hips, [B.Hips, B.Spine, 0.8], [B.Spine, B.Chest, 0.8], B.Chest, [B.Chest, B.Neck, 0.3]], tunic, RigBuilder.BODY, 10, true, Vector3.BACK)
+			rb.block(Vector3(0, 1.0, 0.14), Vector3(0.3, 0.6, 0.03), [B.Hips, B.Spine, 0.4], Color(0.25, 0.18, 0.12), RigBuilder.BODY, Basis.IDENTITY, Vector2(0.9, 1.0))   # 皮围裙
+			rb.limb(Vector3(0, 1.5, 0), Vector3(0, 1.63, 0.01), 0.045, 0.045, B.Neck, skin, B.Head)
+			rb.ellipsoid(Vector3(0, 1.72, 0.015), Vector3(0.11, 0.125, 0.115), B.Head, skin, RigBuilder.BODY, Basis.IDENTITY, 6, 10)
+			for k in 7:
+				var a := TAU * k / 7.0
+				rb.spike(Vector3(cos(a) * 0.05, 1.8, sin(a) * 0.05 - 0.02), Vector3(cos(a) * 0.14, 1.87 + 0.03 * sin(k * 2.0), sin(a) * 0.14 - 0.04), 0.05, B.Head, hair, RigBuilder.BODY, 4)   # 乱蓬蓬的头发
+			rb.ellipsoid(Vector3(0, 1.79, -0.02), Vector3(0.115, 0.08, 0.115), B.Head, hair)
+			style.merge({"scale": 0.8, "stride": 1.0, "arm_swing": 24.0, "look": 30.0}, true)
+	return _finish(rb, J, glow, style)

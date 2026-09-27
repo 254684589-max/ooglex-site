@@ -3094,6 +3094,57 @@ func test_rig() -> void:
 	imp.queue_free()
 	await seconds(0.5)
 	check(absf(hd.visual.rotation_degrees.z) > 45.0 and absf(hd.visual.rotation_degrees.x) < 1.0, "猎犬倒下时侧翻（绕 z 转 %.0f°），不是像人一样向后仰" % hd.visual.rotation_degrees.z)
+	# 第四批：首领与镇民
+	var mg := _spawn(main, "mog", hero.global_position + Vector3(-6, 0, 16))
+	var ab := _spawn(main, "abbot", hero.global_position + Vector3(6, 0, 16))
+	await frames(1)
+	check(mg.rig != null and mg.rig.model_id == "mog" and mg.rig.scale.x > 1.4 and mg._mats.is_empty() and ab.rig != null and ab.rig.model_id == "abbot" and ab._mats.is_empty(),
+		"两个首领换成骨骼角色（莫格放大 %.2f 倍、摩登 %.2f 倍）" % [mg.rig.scale.x, ab.rig.scale.x])
+	mg.set_physics_process(false)
+	mg.mode = 1
+	mg.set_state("act")
+	for i in 20:
+		mg._rig_pose()
+		mg.rig.tick(0.02, 7.0)
+	var mlean: float = rad_to_deg(mg.rig.skeleton.get_bone_pose_rotation(mg.rig.bone_index("Spine")).get_euler().x)
+	mg.set_state("chase")
+	mg.hp = mg.max_hp * 0.4
+	mg.enraged = false
+	mg.set_physics_process(true)
+	for i in 40:
+		await physics(1)
+		if mg.enraged:
+			break
+	check(mlean > 20.0 and mg.enraged and mg.rig.base_tint.r > 1.2 and mg.rig.base_tint.g < 0.8 and mg.rig.materials[0].albedo_color.r > mg.rig.materials[0].albedo_color.g,
+		"莫格冲锋时低头弓背（%.0f°）；暴怒后全身涨红" % mlean)
+	ab.set_physics_process(false)
+	ab._cast_anim("cast", 0.55)
+	for i in 5:
+		ab._rig_pose()
+		ab.rig.tick(0.02, 0.0)
+	var cast_w: float = ab.rig._act_w
+	var t1: int = ab.rig.tris
+	ab._enter_phase2()
+	check(cast_w > 0.3 and ab.rig.model_id == "abbot2" and ab.rig.tris > t1 and ab.rig.glow_material != null and ab.visual.scale.x > 1.2,
+		"摩登放邪术弹时举杖；二阶段换成「灰烬之王的容器」外观（%d → %d 面，长袍裂缝、灰烬之角）" % [t1, ab.rig.tris])
+	mg.queue_free()
+	ab.queue_free()
+	var folks := []
+	var ok_npc := true
+	for d in [["elin", "priest", "npc_elin"], ["gren", "smith", "npc_gren"], ["mara", "alch", "npc_mara"], ["toby", "boy", "npc_toby"]]:
+		var n := Npc.make({"id": d[0], "name": d[0], "glyph": "", "look": d[1]})
+		main.stage.add_child(n)
+		folks.append(n)
+	await frames(2)
+	for i in folks.size():
+		var n: Npc = folks[i]
+		if n.rig == null or n.rig.model_id != ["npc_elin", "npc_gren", "npc_mara", "npc_toby"][i] or n.find_children("*", "MeshInstance3D", true, false).size() != 2:
+			ok_npc = false
+	var t_a: float = folks[0].rig._t
+	var t_b: float = folks[1].rig._t
+	check(ok_npc and folks[3].rig.scale.x < 0.85 and t_a != t_b, "镇上四位人物换成骨骼角色（托比是小个子），站着呼吸、各自错开张望")
+	for n in folks:
+		n.queue_free()
 	var pr := _spawn(main, "ash_priest", hero.global_position + Vector3(-5, 0, 10))
 	await frames(1)
 	pr.mode = 1

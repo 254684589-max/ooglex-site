@@ -5,7 +5,7 @@ extends CharacterBody3D
 ##   EnemyMelee（近战追击）· EnemyCharger（蓄力冲锋）· EnemyRanged（保持距离放箭）· EnemySummoner（召唤仆从）
 ##   TrainingDummy（训练木桩：不攻击，被打后弹回原位，倒下后复活）
 ## 数值来自 data/monsters.json（木桩来自 data/balance.json）。
-## 外观：普通怪物用代码搭的骨骼角色（CharRig：人形 / 四足，2.6 之三，动作跟着 AI 状态走）；训练木桩与首领仍是占位几何体。
+## 外观：普通怪物用代码搭的骨骼角色（CharRig：人形 / 四足，2.6 之三，动作跟着 AI 状态走）；只有训练木桩仍是占位几何体。
 
 signal died(enemy: EnemyBase)
 

@@ -86,7 +86,8 @@ func _base_pose() -> Dictionary:
 	p.Spine = Vector3(7.0 * w + hunch, 0, 0)
 	p.Chest = Vector3(1.5 * breath * idle + hunch * 0.4, -11.0 * w * s, 0)
 	p.Neck = Vector3(-hunch * 0.8, 0, 0)
-	p.Head = Vector3(-4.0 * w, -2.0 * w * s, float(style.get("head_tilt", 0.0)))
+	# look：镇民站着时慢慢左右张望（度）
+	p.Head = Vector3(-4.0 * w, -2.0 * w * s + float(style.get("look", 0.0)) * sin(_t * 0.37) * idle, float(style.get("head_tilt", 0.0)))
 	p.LeftUpperLeg = Vector3(-leg * s - 3.0 * idle, 0, 0)
 	p.RightUpperLeg = Vector3(leg * s - 3.0 * idle, 0, 0)
 	p.LeftLowerLeg = Vector3(knee * pow(maxf(0.0, c), 1.3) + 6.0 * idle, 0, 0)

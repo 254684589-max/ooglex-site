@@ -4,7 +4,8 @@ extends EnemyBase
 ##   近战重击；每 6 秒一次冲锋（3.75–12 米、有视线时）：V0.1 是立刻冲，3D 版先亮 0.35 秒红色长条预警再冲，
 ##   冲锋速度 = 移动速度 × 3.2、持续 0.6 秒，撞到主角造成 伤害上限 × 1.4；
 ##   生命低于一半时暴怒：移动速度 × 1.35、攻击间隔 × 0.7。
-## 占位造型：佝偻的巨汉，背上一只铁笼（托比被关在里面）、腰间拖着铁链。
+## 外观（2.6 之三）：代码搭的骨骼角色（CharModels.mog）：佝偻的巨汉，铁栅面罩，背上铁笼里关着托比，腰间拖铁链，右手铁链连枷；
+## 冲锋时低头弓背，暴怒时全身涨红、眼睛更亮。
 
 signal shouted(text: String)
 signal enraged_now
@@ -12,7 +13,6 @@ signal enraged_now
 var enraged := false
 var rush_dir := Vector3.ZERO
 var rush_hit := false
-var _cage_boy: Node3D
 var _shouted := false
 
 
@@ -22,32 +22,21 @@ func _ready() -> void:
 
 
 func _build_visual() -> void:
-	var flesh := Color(0.42, 0.3, 0.26)
-	var leather := Color(0.24, 0.16, 0.1)
-	var iron := Color(0.3, 0.29, 0.3)
-	part(cyl(0.55, 0.62, 1.5), Vector3(0, 1.05, 0.05), flesh, 0.0, Vector3(14, 0, 0))     # 臃肿的身体
-	part(cyl(0.64, 0.64, 0.35), Vector3(0, 0.62, 0.02), leather)                           # 皮围腰
-	part(sphere(0.3), Vector3(0, 2.0, 0.42), Color(0.46, 0.33, 0.28))                      # 往前探的头
-	part(box(Vector3(0.44, 0.2, 0.3)), Vector3(0, 2.02, 0.58), iron)                       # 铁面罩
-	part(sphere(0.05), Vector3(-0.1, 2.06, 0.74), Color(1.0, 0.4, 0.15), 4.0)
-	part(sphere(0.05), Vector3(0.1, 2.06, 0.74), Color(1.0, 0.4, 0.15), 4.0)
-	part(box(Vector3(0.26, 1.1, 0.26)), Vector3(-0.7, 1.15, 0.35), flesh, 0.0, Vector3(35, 0, 10))   # 两条粗胳膊
-	part(box(Vector3(0.26, 1.1, 0.26)), Vector3(0.7, 1.15, 0.35), flesh, 0.0, Vector3(35, 0, -10))
-	part(box(Vector3(0.5, 0.5, 0.18)), Vector3(0.8, 0.6, 0.85), iron, 0.0, Vector3(20, 0, 0))        # 右手的屠刀
-	part(box(Vector3(0.34, 0.7, 0.34)), Vector3(-0.3, 0.3, 0), leather)
-	part(box(Vector3(0.34, 0.7, 0.34)), Vector3(0.3, 0.3, 0), leather)
-	# 背上的铁笼：四根立柱 + 顶底框，笼里缩着一个小人（托比）
-	var cage := Vector3(0, 1.95, -0.55)
-	for x in [-0.32, 0.32]:
-		for z in [-0.28, 0.28]:
-			part(box(Vector3(0.05, 0.8, 0.05)), cage + Vector3(x, 0, z), iron)
-	part(box(Vector3(0.72, 0.06, 0.64)), cage + Vector3(0, 0.4, 0), iron)
-	part(box(Vector3(0.72, 0.06, 0.64)), cage + Vector3(0, -0.4, 0), iron)
-	_cage_boy = part(sphere(0.16), cage + Vector3(0, -0.12, 0), Color(0.78, 0.62, 0.5))
-	# 腰间拖地的铁链
-	for i in 5:
-		part(LowPoly.torus(0.07, 0.1), Vector3(0.45 + i * 0.05, 0.6 - i * 0.13, -0.2 - i * 0.12), iron, 0.0, Vector3(90 * (i % 2), 0, 0))
+	use_rig("mog")
 
+
+func _rig_pose() -> void:
+	## 冲锋（mode 1）：预警时低头弓背、双臂后摆，冲刺中保持，收招时直起身；近身重击走通用的挥砍姿势（抡连枷）
+	if mode != 1 or stun_t > 0.0:
+		super()
+		return
+	match state:
+		"windup":
+			rig.act("charge", "windup", state_t / maxf(float(def.rush.windup_s), 0.01))
+		"act":
+			rig.act("charge", "windup", 1.0)
+		"recover":
+			rig.act("charge", "recover", state_t / 0.4)
 
 func _ai(delta: float) -> void:
 	if leash_check():
@@ -63,7 +52,11 @@ func _ai(delta: float) -> void:
 	if not enraged and hp < max_hp * float(E.hp_frac):
 		enraged = true
 		enraged_now.emit()
-		_base_colors[0] = Color(0.62, 0.2, 0.14)     # 暴怒：身体涨红
+		rig.base_tint = Color(1.35, 0.72, 0.66)      # 暴怒：身体涨红、眼睛更亮
+		rig.set_tint(false, false)
+		_rig_tint = -1
+		if rig.glow_material:
+			rig.glow_material.emission_energy_multiplier = 7.0
 	var spd: float = float(def.speed) * (float(E.speed_mul) if enraged else 1.0)
 	var cdm: float = float(E.cd_mul) if enraged else 1.0
 	var d := dist_to_player()
