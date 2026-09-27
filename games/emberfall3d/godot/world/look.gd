@@ -178,6 +178,16 @@ const PHOTO := {
 	"floor": {"id": "monastery_stone_floor", "meters": 2.6, "tint": Color(0.92, 0.9, 0.9)},
 	"wall": {"id": "rock_wall_08", "meters": 2.4, "tint": Color(1.3, 1.26, 1.22)},
 	"ground": {"id": "forest_ground_04", "meters": 4.5, "tint": Color(0.95, 0.92, 0.88)},
+	# 2.6 之四：各楼层主题自己的地面与墙（没有登记的主题用上面的地窖石板与石墙）；512 像素导入（斜俯视镜头下足够，省包体）
+	"floor_catacomb": {"id": "mixed_rock_tiles", "meters": 2.4, "tint": Color(0.82, 0.92, 0.84)},      # 白骨墓穴：方石板与卵石缝，偏阴绿
+	"wall_catacomb": {"id": "mossy_stone_wall", "meters": 2.4, "tint": Color(1.15, 1.25, 1.1)},        # 长满青苔的乱石墙
+	"floor_inferno": {"id": "dark_rock_02", "meters": 2.6, "tint": Color(2.4, 1.75, 1.45)},            # 熔渊：开裂的暗色岩层
+	"wall_inferno": {"id": "dark_rock", "meters": 2.6, "tint": Color(3.2, 2.3, 1.9)},                # 带金色矿脉的黑岩
+	"floor_abyss": {"id": "patterned_slate_tiles", "meters": 2.4, "tint": Color(1.0, 0.92, 1.18)},     # 深渊：暗色板岩铺地
+	"wall_abyss": {"id": "castle_wall_slates", "meters": 2.6, "tint": Color(0.82, 0.74, 1.05)},        # 叠砌的板岩墙，偏紫
+	"wall_town": {"id": "broken_wall", "meters": 3.0, "tint": Color(1.0, 0.97, 0.95)},                 # 烬原镇：修道院废墟的粗石墙
+	"wall_house": {"id": "plaster_stone_wall_01", "meters": 2.4, "tint": Color(0.88, 0.84, 0.8)},      # 镇上房屋：石墙上抹的灰泥
+	"roof": {"id": "grey_roof_tiles_02", "meters": 1.8, "tint": Color(0.85, 0.85, 0.9)},               # 房顶：灰色石板瓦
 }
 static var photo_dir := "res://assets/textures/%s/%s_%s_1k.jpg"   # 测试会临时改成不存在的路径，验证退回程序化贴图
 
@@ -243,17 +253,31 @@ static func _triplanar(tex: Texture2D, meters: float, tint: Color, nrm: Texture2
 	return m
 
 
-## 以下三个材质的 tint 都是「相对染色」（楼层主题、灰盒里各件的明暗），乘在各自的基础染色上。
+## 以下材质的 tint 都是「相对染色」（楼层主题、灰盒里各件的明暗），乘在各自的基础染色上。
+## theme：楼层主题（crypt / catacomb / inferno / abyss / town）；这个主题有自己的贴图（PHOTO 里的 floor_主题 / wall_主题）就用它，
+## 这时楼层主题的染色只留两成（照片本身已经是对的颜色），没有就用地窖的石板与石墙再按主题染色（阶段 P2 的做法）。
 
-static func floor_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:
-	var m := _photo_material("floor", tint)
+static func _themed(kind: String, theme: String, tint: Color) -> StandardMaterial3D:
+	if theme != "" and not photo_set(kind + "_" + theme).is_empty():
+		return _photo_material(kind + "_" + theme, Color(1, 1, 1).lerp(tint, 0.2))
+	return _photo_material(kind, tint)
+
+
+static func floor_material(tint := Color(1, 1, 1), theme := "") -> StandardMaterial3D:
+	var m := _themed("floor", theme, tint)
 	return m if m else _triplanar(floor_texture(), 4.0, Color(0.85, 0.82, 0.8) * tint, floor_normal())
 
 
-static func wall_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:
+static func wall_material(tint := Color(1, 1, 1), theme := "") -> StandardMaterial3D:
 	## 每面墙一个新材质（相机要单独把挡视线的墙变半透明），但共用同一张贴图
-	var m := _photo_material("wall", tint)
+	var m := _themed("wall", theme, tint)
 	return m if m else _triplanar(brick_texture(), 2.0, tint, brick_normal())
+
+
+static func surface_material(kind: String, tint := Color(1, 1, 1), fallback_tint := Color(1, 1, 1)) -> StandardMaterial3D:
+	## 其他写实表面（镇上房屋墙、房顶）；缺贴图时退回程序化砖墙 × fallback_tint
+	var m := _photo_material(kind, tint)
+	return m if m else _triplanar(brick_texture(), 2.0, fallback_tint, brick_normal())
 
 
 static func ground_material(tint := Color(1, 1, 1)) -> StandardMaterial3D:

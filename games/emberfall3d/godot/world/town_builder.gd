@@ -2,7 +2,7 @@ class_name TownBuilder
 extends RefCounted
 ## 把 TownGen 的布局搭成 3D 烬原镇（P7）。地面、墙（修道院废墟与房屋）、导航、楼梯、墙上火把复用 DungeonBuilder；
 ## 这里再加：整片泥土地面、石板路、外圈树林（带碰撞）、房顶、篝火、水井、铁砧、传送石、野花、三位 NPC。
-## 全部是程序生成的占位外观。
+## 地面、墙、房顶用写实贴图（2.6 之二 / 之四），其余是程序生成的占位外观。
 
 const PROP_SIZES := {"fire": Vector3(1.4, 0.6, 1.4), "well": Vector3(1.8, 1.0, 1.8), "wp": Vector3(1.0, 1.8, 1.0), "anvil": Vector3(1.1, 0.9, 0.7)}
 
@@ -15,6 +15,14 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		obstacles.append({"pos": TownGen.to_world(p.x, p.y), "size": PROP_SIZES.get(p.type, Vector3.ONE)})
 	var o := opt.duplicate()
 	o.floor_material = ground_mat
+	# 2.6 之四：修道院废墟用粗石墙（主题 town 的墙），房屋的墙用灰泥石墙
+	var house_rects: Array = m.houses.map(func(hs): return hs.rect)
+	o.wall_kind = func(c: Vector2i) -> String:
+		for r in house_rects:
+			if (r as Rect2i).has_point(c):
+				return "house"
+		return ""
+	o.wall_materials = {"house": func() -> Material: return Look.surface_material("wall_house", Color(1, 1, 1), Color(1.05, 0.98, 0.9))}
 	o.obstacles = obstacles
 	var info := DungeonBuilder.build(parent, m, o)
 	var region: Node3D = info.region
@@ -96,9 +104,12 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		var pm := PrismMesh.new()
 		pm.size = Vector3(r.size.x * DungeonBuilder.TILE + 0.8, 2.2, r.size.y * DungeonBuilder.TILE + 0.8)
 		roof.mesh = pm
-		var rm := StandardMaterial3D.new()
-		rm.albedo_color = Color(0.36, 0.14, 0.1)
-		rm.roughness = 1.0
+		# 灰色石板瓦（缺贴图时退回原来的暗红色）
+		var rm := Look.surface_material("roof")
+		if Look.photo_set("roof").is_empty():
+			rm = StandardMaterial3D.new()
+			rm.albedo_color = Color(0.36, 0.14, 0.1)
+			rm.roughness = 1.0
 		roof.material_override = rm
 		roof.position = Vector3((r.position.x + r.size.x / 2.0) * DungeonBuilder.TILE, DungeonBuilder.WALL_H + 1.1, (r.position.y + r.size.y / 2.0) * DungeonBuilder.TILE)
 		roof.name = "Roof_" + String(hs.id)

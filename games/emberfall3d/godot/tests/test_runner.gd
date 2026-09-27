@@ -2810,7 +2810,9 @@ func test_kit() -> void:
 	# 材质：法线贴图 + 顶点色
 	var fm := (floors[0] as MeshInstance3D).material_override as StandardMaterial3D
 	var wm := (walls[0] as MeshInstance3D).material_override as StandardMaterial3D
-	check(fm.normal_enabled and fm.normal_texture == Look.photo_set("floor").normal and wm.normal_enabled and wm.normal_texture == Look.photo_set("wall").normal and fm.vertex_color_use_as_albedo and wm.vertex_color_use_as_albedo, "地面与墙用法线贴图（2.6 之二起是写实贴图的），顶点色乘到颜色上")
+	var fk := "floor_" + String(m.theme) if Look.PHOTO.has("floor_" + String(m.theme)) else "floor"
+	var wk := "wall_" + String(m.theme) if Look.PHOTO.has("wall_" + String(m.theme)) else "wall"
+	check(fm.normal_enabled and fm.normal_texture == Look.photo_set(fk).normal and wm.normal_enabled and wm.normal_texture == Look.photo_set(wk).normal and fm.vertex_color_use_as_albedo and wm.vertex_color_use_as_albedo, "地面与墙用法线贴图（2.6 之二起是写实贴图的；第 4 层用 %s / %s），顶点色乘到颜色上" % [fk, wk])
 	var ni := Look.brick_normal().get_image()
 	ni.decompress()
 	var avg := Color(0, 0, 0)
@@ -2846,7 +2848,27 @@ func test_photo() -> void:
 		if not sources.is_empty() and not sources.contains("polyhaven.com/a/" + id):
 			all_ok = false
 			print("  SOURCES.md 没记：", id)
-	check(all_ok, "地面 / 墙 / 泥土地三套贴图 × 颜色、法线、ARM 齐全，Basis Universal + mipmap，来源记入 SOURCES.md%s" % ("" if not sources.is_empty() else "（导出包里读不到 SOURCES.md，只查了贴图）"))
+	check(all_ok, "%d 套贴图 × 颜色、法线、ARM 齐全，Basis Universal + mipmap，来源记入 SOURCES.md%s" % [Look.PHOTO.size(), "" if not sources.is_empty() else "（导出包里读不到 SOURCES.md，只查了贴图）"])
+	# 2.6 之四：新增的 9 套按 512 像素导入（包体）；每个楼层主题用自己的地面与墙
+	var small_ok := true
+	for kind in Look.PHOTO:
+		if kind in ["floor", "wall", "ground"]:
+			continue
+		var id2: String = Look.PHOTO[kind].id
+		if not FileAccess.get_file_as_string((Look.photo_dir % [id2, id2, "diff"]) + ".import").contains("process/size_limit=512"):
+			small_ok = false
+	check(small_ok, "新增的楼层 / 房屋 / 房顶贴图按 512 像素导入")
+	var theme_tex := {}
+	for th in ["crypt", "catacomb", "inferno", "abyss"]:
+		theme_tex[th] = [Look.floor_material(Color(1, 1, 1), th).albedo_texture, Look.wall_material(Color(1, 1, 1), th).albedo_texture]
+	var distinct := {}
+	for th in theme_tex:
+		distinct[theme_tex[th][0]] = true
+		distinct[theme_tex[th][1]] = true
+	check(distinct.size() == 8 and theme_tex.crypt[0] == Look.photo_set("floor").albedo and theme_tex.inferno[1] == Look.photo_set("wall_inferno").albedo,
+		"地窖 / 墓穴 / 熔渊 / 深渊各用一套自己的地面与墙（8 张不同的贴图）")
+	var fi2 := Look.floor_material(DungeonBuilder.theme_tints("inferno").floor, "inferno")
+	check(fi2.albedo_color.is_equal_approx(Look.PHOTO.floor_inferno.tint * Color(1, 1, 1).lerp(DungeonBuilder.theme_tints("inferno").floor, 0.2)), "有自己贴图的主题：楼层染色只留两成（照片本身已经是对的颜色）")
 	# 材质：颜色、法线、粗糙度（ARM 绿通道）、遮蔽（ARM 红通道），不是金属
 	var mats := {"floor": Look.floor_material(), "wall": Look.wall_material(), "ground": Look.ground_material()}
 	var mat_ok := true
@@ -2893,6 +2915,19 @@ func test_photo() -> void:
 	var g: MeshInstance3D = troot.find_child("Ground", true, false)
 	var pth: MeshInstance3D = troot.find_child("Paths", true, false)
 	check((g.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("ground").albedo and (pth.material_override as StandardMaterial3D).albedo_texture == Look.photo_set("floor").albedo, "烬原镇：泥土地与石板路用写实贴图")
+	var house_walls: Array = troot.find_children("Walls_*_house", "MeshInstance3D", true, false)
+	var ruin_walls: Array = troot.find_children("Walls_*", "MeshInstance3D", true, false).filter(func(w): return not String(w.name).ends_with("_house"))
+	var roofs: Array = troot.find_children("Roof_*", "MeshInstance3D", true, false)
+	check(not house_walls.is_empty() and not ruin_walls.is_empty() and house_walls.all(func(w): return w.material_override.albedo_texture == Look.photo_set("wall_house").albedo)
+		and ruin_walls.all(func(w): return w.material_override.albedo_texture == Look.photo_set("wall_town").albedo)
+		and roofs.size() == 5 and roofs.all(func(r): return r.material_override.albedo_texture == Look.photo_set("roof").albedo),
+		"烬原镇：房屋是灰泥石墙（%d 块）、修道院废墟是粗石墙（%d 块）、5 个房顶是石板瓦" % [house_walls.size(), ruin_walls.size()])
+	# 房屋的墙也跟着镜头变半透明（同一块碰撞体登记了所有种类的墙）
+	var fade_ok := true
+	for hw in house_walls:
+		if not (hw.get_parent().get_meta("fade_meshes") as Array).has(hw):
+			fade_ok = false
+	check(fade_ok, "房屋的墙与废墟的墙都登记在挡视线淡化列表里")
 	troot.queue_free()
 	await frames(2)
 

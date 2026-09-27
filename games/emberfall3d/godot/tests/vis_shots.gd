@@ -162,6 +162,11 @@ func _ready() -> void:
 	main.camera.snap()
 	await get_tree().create_timer(0.8).timeout
 	await _shot(out, "town-gate", tier)
+	# 2.6 之四：铁匠铺（灰泥石墙 + 石板瓦房顶）
+	hero.global_position = DungeonBuilder.cell_center(Vector2i(10, 16))
+	main.camera.snap()
+	await get_tree().create_timer(0.8).timeout
+	await _shot(out, "town-house", tier)
 	main._talk(main.npc("elin"))
 	await _shot(out, "town-dialog", tier)
 	main.dialog_panel.close()

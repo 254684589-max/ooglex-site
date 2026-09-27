@@ -89,7 +89,14 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 	var w: int = m.w
 	var h: int = m.h
 	var t: PackedByteArray = m.t
-	var floor_mat: Material = opt.get("floor_material", Look.floor_material(tints.floor))
+	var floor_mat: Material = opt.get("floor_material", Look.floor_material(tints.floor, m.theme))
+	# 墙的材质（2.6 之四）：默认按楼层主题；opt.wall_kind(格子) 返回非空的种类名时，用 opt.wall_materials[种类]（Callable，返回新材质）
+	var theme: String = m.theme
+	var wall_tint: Color = tints.wall
+	var extra_mats: Dictionary = opt.get("wall_materials", {})
+	var wall_mat := func(kind: String) -> Material:
+		return (extra_mats[kind] as Callable).call() if extra_mats.has(kind) else Look.wall_material(wall_tint, theme)
+	var wall_kind: Callable = opt.get("wall_kind", Callable())
 	var pillars_used := {}            # 已经立过壁柱的格点（相邻两面墙、跨块时都只立一根）
 	var chunks := 0
 	var fog: Dictionary = {}          # 块坐标 → {meshes, deco: [[多实例网格, 下标, 变换]], torches}（只在 opt.fog 时填）
@@ -98,7 +105,7 @@ static func build(parent: Node3D, m: Dictionary, opt: Dictionary = {}) -> Dictio
 		fog["_on"] = true
 	for cy in ceili(h / float(CHUNK)):
 		for cx in ceili(w / float(CHUNK)):
-			if _build_chunk(region, m, cx, cy, floor_mat, tints.wall, fog if use_fog else {}, pillars_used):
+			if _build_chunk(region, m, cx, cy, floor_mat, wall_mat, wall_kind, fog if use_fog else {}, pillars_used):
 				chunks += 1
 	var geo_ms := (Time.get_ticks_usec() - t0) / 1000.0
 
@@ -336,21 +343,18 @@ static func _face_pillars(m: Dictionary, x: int, y: int, d: Vector2i, used: Dict
 	return out
 
 
-static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_mat: Material, wall_tint: Color, fog: Dictionary = {}, pillars_used: Dictionary = {}) -> bool:
+static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_mat: Material, wall_mat: Callable, wall_kind: Callable = Callable(), fog: Dictionary = {}, pillars_used: Dictionary = {}) -> bool:
 	var w: int = m.w
 	var t: PackedByteArray = m.t
 	var fst := SurfaceTool.new()
 	fst.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var wst := SurfaceTool.new()
-	wst.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var walls := {}                   # 墙的种类 → {st, faces, pils}：同一块里不同种类的墙各出一个网格（各自的材质）
 	var n_floor := 0
 	var n_wall := 0
 	var ground_runs: Array = []
 	var wall_runs: Array = []
 	var dirs := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 	var ao_cache := {}                # 半格格点 → 遮蔽亮度（相邻小块共用顶点，只算一次）
-	var face_xf: Array = []
-	var pil_xf: Array = []
 	for y in range(cy * CHUNK, mini((cy + 1) * CHUNK, m.h)):
 		var run_kind := -1
 		var run_start := 0
@@ -394,6 +398,14 @@ static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_
 						_quad4(fst, Vector3.UP, pts, cols)
 				n_floor += 1
 			elif tt == DungeonGen.WALL:
+				var wk: String = wall_kind.call(Vector2i(x, y)) if wall_kind.is_valid() else ""
+				if not walls.has(wk):
+					var st0 := SurfaceTool.new()
+					st0.begin(Mesh.PRIMITIVE_TRIANGLES)
+					walls[wk] = {"st": st0, "faces": [], "pils": []}
+				var wst: SurfaceTool = walls[wk].st
+				var face_xf: Array = walls[wk].faces
+				var pil_xf: Array = walls[wk].pils
 				_quad_c(wst, cc + Vector3(0, WALL_H, 0), Vector3.UP, Vector3.FORWARD, TILE / 2, TILE / 2, 0.8, 0.8)
 				for d in dirs:
 					if DungeonGen.walkable(DungeonGen.tile(m, x + d.x, y + d.y)):
@@ -422,24 +434,27 @@ static func _build_chunk(region: Node3D, m: Dictionary, cx: int, cy: int, floor_
 		region.add_child(gbody)
 		_fog_add(fog, Vector2i(cx, cy), "meshes", fmi)
 	if n_wall > 0:
-		var wmi := MeshInstance3D.new()
-		wmi.mesh = wst.commit()
-		wmi.material_override = Look.wall_material(wall_tint)
-		wmi.name = "Walls_%d_%d" % [cx, cy]
 		var wbody := StaticBody3D.new()
 		wbody.collision_layer = WORLD_MASK
 		wbody.collision_mask = 0
 		for r in wall_runs:
 			_add_run_box(wbody, r, WALL_H, WALL_H / 2)
-		wbody.add_child(wmi)
-		wbody.set_meta("fade_meshes", [wmi])
+		var fades: Array = []
+		for wk in walls:
+			var wmi := MeshInstance3D.new()
+			wmi.mesh = (walls[wk].st as SurfaceTool).commit()
+			wmi.material_override = wall_mat.call(wk)
+			wmi.name = ("Walls_%d_%d" if wk == "" else "Walls_%d_%d_" + String(wk)) % [cx, cy]
+			wbody.add_child(wmi)
+			fades.append(wmi)
+			_fog_add(fog, Vector2i(cx, cy), "meshes", wmi)
+			for pair in [[face_mesh(), walls[wk].faces, "WallFaces_%d_%d"], [pilaster_mesh(), walls[wk].pils, "Pilasters_%d_%d"]]:
+				if not (pair[1] as Array).is_empty():
+					var mmi := _multi(pair[0], pair[1], wmi.material_override, (pair[2] + ("" if wk == "" else "_" + String(wk))) % [cx, cy])
+					wbody.add_child(mmi)
+					_fog_add(fog, Vector2i(cx, cy), "meshes", mmi)
+		wbody.set_meta("fade_meshes", fades)
 		region.add_child(wbody)
-		_fog_add(fog, Vector2i(cx, cy), "meshes", wmi)
-		for pair in [[face_mesh(), face_xf, "WallFaces_%d_%d"], [pilaster_mesh(), pil_xf, "Pilasters_%d_%d"]]:
-			if not (pair[1] as Array).is_empty():
-				var mmi := _multi(pair[0], pair[1], wmi.material_override, pair[2] % [cx, cy])
-				wbody.add_child(mmi)
-				_fog_add(fog, Vector2i(cx, cy), "meshes", mmi)
 	return true
 
 
