@@ -1,0 +1,4 @@
+# Godot 编辑器缓存
+godot/.godot/
+# 网页导出产物（tools/build_web.sh 生成）：所有者同意上线前不入库
+play/

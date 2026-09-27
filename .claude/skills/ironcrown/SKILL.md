@@ -26,7 +26,7 @@ description: 继续开发原创第一人称中世纪权谋角色扮演游戏《�
 - 构建与测试脚本从 `games/emberfall3d/tools/` 复制后改路径，不另起一套；需要复用《余烬陷落》的 GDScript 时复制过来并在文件头注明来源。
 - 《余烬陷落》踩过的坑写在 `games/emberfall3d/design/TECH.md` 与 `docs/EMBERFALL_ROADMAP.md`，遇到导航、触屏、雾、贴图、网页 gzip、章节包问题先查那里。
 - Godot 网页导出只能用兼容渲染器（GL Compatibility）；本环境没有 Vulkan，无法烘焙光照贴图。
-- 本环境默认没有 Godot：`python3 games/emberfall3d/tools/fetch_godot.py <scratchpad>/godot`（1.1 之后用本工程自己的副本），再 `export GODOT=…`。
+- 本环境默认没有 Godot：`python3 games/ironcrown/tools/fetch_godot.py <scratchpad>/godot`，再 `export GODOT=…`。测试 `tools/run_tests.sh`，构建 `tools/build_web.sh`，网页冒烟先在仓库根目录 `python3 games/ironcrown/tools/serve_gzip.py . 8765` 再 `node games/ironcrown/tools/smoke_web.js <截图目录>`；结果写进 `games/ironcrown/TEST_REPORT.md`。
 - 素材站可能被网络策略拦截（2026-09-27：Poly Haven、ambientCG 能访问；Quaternius、Kenney、OpenGameArt 被拦截）。下不了就如实说明，并读 `read_documentation`（environment.network）告诉所有者怎么放行。
 
 ## 三、每一步的收尾
