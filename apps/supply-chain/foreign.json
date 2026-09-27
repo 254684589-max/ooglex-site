@@ -6563,7 +6563,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-05-21",
+      "lastAnnual": "2026-09-25",
       "name": "Critical Metals Corp.",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
@@ -20313,7 +20313,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-09",
       "name": "Pampa Energy Inc.",
       "offshoreIncorporation": false,
@@ -21113,31 +21113,6 @@
       "symbol": "PLSM",
       "tickers": [
         "PLSM"
-      ]
-    },
-    "PLTS": {
-      "annualForm": "20-F/40-F",
-      "cik": 2053033,
-      "country": "Cayman Islands",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "E9",
-      "countryRejected": null,
-      "entityType": "other",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-01-30",
-      "name": "Platinum Analytics Cayman Ltd",
-      "offshoreIncorporation": true,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Singapore",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "symbol": "PLTS",
-      "tickers": [
-        "PLTS"
       ]
     },
     "PLTYF": {
@@ -27768,7 +27743,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-27",
       "name": "Vale S.A.",
       "offshoreIncorporation": false,
@@ -30556,46 +30531,46 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 162,
+    "bothAnnualAndFormSd": 165,
     "foreignAnnualFilers": 1231,
-    "formSdFilers": 1087,
-    "published": 1204,
-    "publishedFilesFormSd": 162,
-    "skippedNoTicker": 27,
+    "formSdFilers": 1099,
+    "published": 1203,
+    "publishedFilesFormSd": 164,
+    "skippedNoTicker": 28,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
-    "withTicker": 1204,
+    "withTicker": 1203,
     "withoutSic": 0
   },
   "dataset": "supply-chain-foreign-issuers",
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 3494251,
+      "bytes": 3536255,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 283849,
+      "rows": 288111,
       "unparsed": 7
     },
     {
-      "bytes": 4273738,
+      "bytes": 4272874,
       "gzip": true,
       "quarter": "2026QTR2",
-      "rows": 353245,
+      "rows": 353293,
       "unparsed": 7
     },
     {
-      "bytes": 4441658,
+      "bytes": 4441710,
       "gzip": true,
       "quarter": "2026QTR1",
-      "rows": 370151,
+      "rows": 370223,
       "unparsed": 7
     },
     {
-      "bytes": 3401151,
+      "bytes": 3402136,
       "gzip": true,
       "quarter": "2025QTR4",
-      "rows": 276581,
+      "rows": 276620,
       "unparsed": 7
     }
   ],
@@ -30917,5 +30892,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-26T00:15:43Z"
+  "updatedAt": "2026-09-27T01:51:53Z"
 }

@@ -8218,6 +8218,30 @@
         "SATA"
       ]
     },
+    "ASTC": {
+      "annualForm": "10-K",
+      "cik": 1001907,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "ASTROTECH Corp",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "TX",
+      "region": null,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "symbol": "ASTC",
+      "tickers": [
+        "ASTC"
+      ]
+    },
     "ASTE": {
       "annualForm": "10-K",
       "cik": 792987,
@@ -11570,6 +11594,31 @@
       "symbol": "BDPT",
       "tickers": [
         "BDPT"
+      ]
+    },
+    "BDRY": {
+      "annualForm": "10-K",
+      "cik": 1610940,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "Amplify Commodity Trust",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "IL",
+      "region": null,
+      "sic": 6221,
+      "sicDescription": "Commodity Contracts Brokers & Dealers",
+      "symbol": "BDRY",
+      "tickers": [
+        "BDRY",
+        "BWET"
       ]
     },
     "BDSX": {
@@ -17608,6 +17657,30 @@
         "CBNK"
       ]
     },
+    "CBRL": {
+      "annualForm": "10-K",
+      "cik": 1067294,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Large accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "CRACKER BARREL OLD COUNTRY STORE, INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "TN",
+      "region": null,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "symbol": "CBRL",
+      "tickers": [
+        "CBRL"
+      ]
+    },
     "CBSH": {
       "annualForm": "10-K",
       "cik": 22356,
@@ -18149,7 +18222,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-18",
       "name": "Coeur Mining, Inc.",
       "offshoreIncorporation": false,
@@ -24329,6 +24402,30 @@
         "CSTM"
       ]
     },
+    "CSUI": {
+      "annualForm": "10-K",
+      "cik": 1680132,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "CANNABIS SUISSE CORP.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 6500,
+      "sicDescription": "Real Estate",
+      "symbol": "CSUI",
+      "tickers": [
+        "CSUI"
+      ]
+    },
     "CSV": {
       "annualForm": "10-K",
       "cik": 1016281,
@@ -26194,7 +26291,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-11",
       "name": "CID Holdco, Inc.",
@@ -26792,6 +26889,30 @@
       "symbol": "DCH",
       "tickers": [
         "DCH"
+      ]
+    },
+    "DCI": {
+      "annualForm": "10-K",
+      "cik": 29644,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Large accelerated filer",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-25",
+      "name": "DONALDSON Co INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "MN",
+      "region": null,
+      "sic": 3564,
+      "sicDescription": "Industrial & Commercial Fans & Blowers & Air Purifing Equip",
+      "symbol": "DCI",
+      "tickers": [
+        "DCI"
       ]
     },
     "DCO": {
@@ -34612,7 +34733,7 @@
       "exchange": "OTC",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-15",
+      "lastAnnual": "2026-09-25",
       "name": "FERRELLGAS PARTNERS L P",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -39136,6 +39257,30 @@
         "GFF"
       ]
     },
+    "GFLT": {
+      "annualForm": "10-K",
+      "cik": 1796949,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "GenFlat Holdings, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "UT",
+      "region": null,
+      "sic": 8742,
+      "sicDescription": "Services-Management Consulting Services",
+      "symbol": "GFLT",
+      "tickers": [
+        "GFLT"
+      ]
+    },
     "GFMH": {
       "annualForm": "10-K",
       "cik": 820771,
@@ -42872,7 +43017,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-12",
       "name": "WARRIOR MET COAL, INC.",
       "offshoreIncorporation": false,
@@ -43226,6 +43371,30 @@
       "symbol": "HESM",
       "tickers": [
         "HESM"
+      ]
+    },
+    "HFBL": {
+      "annualForm": "10-K",
+      "cik": 1500375,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "Home Federal Bancorp, Inc. of Louisiana",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "LA",
+      "region": null,
+      "sic": 6035,
+      "sicDescription": "Savings Institution, Federally Chartered",
+      "symbol": "HFBL",
+      "tickers": [
+        "HFBL"
       ]
     },
     "HFFG": {
@@ -45045,7 +45214,7 @@
       "countryCode": "M0",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "HeartCore Enterprises, Inc.",
@@ -45761,6 +45930,30 @@
       "symbol": "HYPR",
       "tickers": [
         "HYPR"
+      ]
+    },
+    "HYSR": {
+      "annualForm": "10-K",
+      "cik": 1481028,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "SUNHYDROGEN, INC.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "IA",
+      "region": null,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "HYSR",
+      "tickers": [
+        "HYSR"
       ]
     },
     "HZEN": {
@@ -47312,6 +47505,30 @@
       "tickers": [
         "INBK",
         "INBKZ"
+      ]
+    },
+    "INBP": {
+      "annualForm": "10-K",
+      "cik": 1016504,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "INTEGRATED BIOPHARMA INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NJ",
+      "region": null,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "INBP",
+      "tickers": [
+        "INBP"
       ]
     },
     "INBS": {
@@ -49534,6 +49751,30 @@
         "IXAQF",
         "IXQUF",
         "IXQWF"
+      ]
+    },
+    "IXHL": {
+      "annualForm": "10-K",
+      "cik": 1873875,
+      "country": "Australia",
+      "countryBasis": "business-address",
+      "countryCode": "C3",
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "Incannex Healthcare Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Australia",
+      "operatingRegion": "NSW",
+      "region": "NSW",
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "IXHL",
+      "tickers": [
+        "IXHL"
       ]
     },
     "IZEA": {
@@ -53745,7 +53986,7 @@
     },
     "LEG": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-25T02:19:43Z",
+      "carriedFrom": "2026-09-26T00:40:30Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 58492,
       "confirmedThisScan": false,
@@ -57085,6 +57326,30 @@
         "MARA"
       ]
     },
+    "MARPS": {
+      "annualForm": "10-K",
+      "cik": 62362,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": null,
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "MARINE PETROLEUM TRUST",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "TX",
+      "region": null,
+      "sic": 6792,
+      "sicDescription": "Oil Royalty Traders",
+      "symbol": "MARPS",
+      "tickers": [
+        "MARPS"
+      ]
+    },
     "MASS": {
       "annualForm": "10-K",
       "cik": 1555279,
@@ -58940,7 +59205,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-12",
       "name": "Magnolia Oil & Gas Corp",
       "offshoreIncorporation": false,
@@ -62498,6 +62763,31 @@
         "NAVN"
       ]
     },
+    "NB": {
+      "annualForm": "10-K",
+      "cik": 1512228,
+      "country": "Canada",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "A1",
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "NIOCORP DEVELOPMENTS LTD",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CO",
+      "region": "British Columbia",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "NB",
+      "tickers": [
+        "NB",
+        "NIOBW"
+      ]
+    },
     "NBBK": {
       "annualForm": "10-K",
       "cik": 1979330,
@@ -64833,7 +65123,7 @@
     },
     "NRDE": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-25T02:19:43Z",
+      "carriedFrom": "2026-09-26T00:40:30Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1759546,
       "confirmedThisScan": false,
@@ -69669,7 +69959,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-18",
       "name": "OCCIDENTAL PETROLEUM CORP /DE/",
       "offshoreIncorporation": false,
@@ -73470,6 +73760,30 @@
         "PPC"
       ]
     },
+    "PPCB": {
+      "annualForm": "10-K",
+      "cik": 1517681,
+      "country": "Australia",
+      "countryBasis": "business-address",
+      "countryCode": "C3",
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "Propanc Biopharma, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Australia",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "PPCB",
+      "tickers": [
+        "PPCB"
+      ]
+    },
     "PPHC": {
       "annualForm": "10-K",
       "cik": 1903508,
@@ -75803,9 +76117,9 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-14",
+      "lastAnnual": "2026-09-25",
       "name": "Quanome Technologies, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -76375,7 +76689,7 @@
     },
     "QVCAQ": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-25T02:19:43Z",
+      "carriedFrom": "2026-09-26T00:40:30Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1355096,
       "confirmedThisScan": false,
@@ -86503,8 +86817,8 @@
       "operatingCountry": "United States",
       "operatingRegion": "FL",
       "region": null,
-      "sic": 3842,
-      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
       "symbol": "SPAI",
       "tickers": [
         "SPAI"
@@ -87164,6 +87478,30 @@
       "tickers": [
         "SR",
         "SRJN"
+      ]
+    },
+    "SRBK": {
+      "annualForm": "10-K",
+      "cik": 1951276,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "SR Bancorp, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NJ",
+      "region": null,
+      "sic": 6036,
+      "sicDescription": "Savings Institutions, Not Federally Chartered",
+      "symbol": "SRBK",
+      "tickers": [
+        "SRBK"
       ]
     },
     "SRCE": {
@@ -89923,6 +90261,31 @@
       "symbol": "TBLA",
       "tickers": [
         "TBLA"
+      ]
+    },
+    "TBN": {
+      "annualForm": "10-K",
+      "cik": 1997652,
+      "country": "Australia",
+      "countryBasis": "business-address",
+      "countryCode": "C3",
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "Tamboran Resources Corp",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Australia",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "TBN",
+      "tickers": [
+        "TBN",
+        "TBNRL"
       ]
     },
     "TBPH": {
@@ -99235,6 +99598,30 @@
         "WBI"
       ]
     },
+    "WBQNL": {
+      "annualForm": "10-K",
+      "cik": 1785494,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-25",
+      "name": "Woodbridge Liquidation Trust",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 6500,
+      "sicDescription": "Real Estate",
+      "symbol": "WBQNL",
+      "tickers": [
+        "WBQNL"
+      ]
+    },
     "WBSR": {
       "annualForm": "10-K",
       "cik": 1645155,
@@ -99485,7 +99872,7 @@
       "entityType": "operating",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-02-18",
       "name": "Western Midstream Partners, LP",
       "offshoreIncorporation": false,
@@ -103330,8 +103717,8 @@
   "contractVersion": 1,
   "coverage": {
     "alreadyInPool": 1,
-    "annualFilers": 6526,
-    "attempted": 4517,
+    "annualFilers": 6542,
+    "attempted": 4533,
     "carriedForward": 3,
     "carriedForwardSymbols": [
       "LEG",
@@ -103340,8 +103727,8 @@
     ],
     "droppedBlankCheck": 204,
     "droppedNoSic": 54,
-    "published": 4262,
-    "publishedFilesFormSd": 684,
+    "published": 4278,
+    "publishedFilesFormSd": 690,
     "skippedNoTicker": 1593,
     "skippedTickerCollision": 415,
     "submissionsFailed": 0
@@ -103350,34 +103737,34 @@
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 3494906,
+      "bytes": 3536255,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 283849,
+      "rows": 288111,
       "unparsed": 7
     },
     {
-      "bytes": 4273738,
+      "bytes": 4274432,
       "gzip": true,
       "quarter": "2026QTR2",
-      "rows": 353245,
+      "rows": 353293,
       "unparsed": 7
     },
     {
-      "bytes": 4441658,
+      "bytes": 4441720,
       "gzip": true,
       "quarter": "2026QTR1",
-      "rows": 370151,
+      "rows": 370223,
       "unparsed": 7
     },
     {
-      "bytes": 3401151,
+      "bytes": 3401731,
       "gzip": true,
       "quarter": "2025QTR4",
-      "rows": 276581,
+      "rows": 276620,
       "unparsed": 7
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-26T00:40:30Z"
+  "updatedAt": "2026-09-27T02:17:51Z"
 }

@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "bonds",
-  "generatedAt": "2026-09-25T21:28:11Z",
-  "status": "healthy",
+  "generatedAt": "2026-09-26T23:29:54Z",
+  "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-25T21:28:11Z",
-  "lastSuccessfulAt": "2026-09-25T21:28:11Z",
+  "lastAttemptAt": "2026-09-26T23:29:54Z",
+  "lastSuccessfulAt": "2026-09-26T23:29:54Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-25T21:28:11Z",
+  "publishedSnapshotAt": "2026-09-26T23:29:54Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,14 +15,14 @@
     "publishedRecords": 35,
     "dynamicRecords": 35,
     "counts": {
-      "market": 35,
-      "fallback": 0,
+      "market": 30,
+      "fallback": 5,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0,
+    "freshCoveragePct": 85.71,
     "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
@@ -31,8 +31,8 @@
     "published": true,
     "producedRecords": 35,
     "counts": {
-      "market": 35,
-      "fallback": 0,
+      "market": 30,
+      "fallback": 5,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
@@ -43,16 +43,16 @@
       "id": "fred-oecd",
       "name": "FRED / OECD Main Economic Indicators",
       "role": "primary",
-      "status": "healthy",
+      "status": "degraded",
       "records": 32,
       "counts": {
-        "market": 32,
-        "fallback": 0,
+        "market": 27,
+        "fallback": 5,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-25T21:28:11Z"
+      "lastSuccessAt": "2026-09-26T23:29:54Z"
     },
     {
       "id": "ecb-data-portal",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-25T21:28:11Z"
+      "lastSuccessAt": "2026-09-26T23:29:54Z"
     }
   ],
   "recovery": {
