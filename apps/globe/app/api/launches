@@ -16661,7 +16661,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-09-16T17:59:14Z",
+   "last_updated": "2026-09-27T18:39:52Z",
    "net": "2026-09-15T22:00:00Z",
    "net_precision": {
     "id": 1,
@@ -17133,7 +17133,16 @@
    "vid_urls": [],
    "timeline": [],
    "pad_turnaround": "P55DT19H6M",
-   "mission_patches": []
+   "mission_patches": [
+    {
+     "id": 1346,
+     "name": "Gravity-1 | SpaceSail Polar Group #16",
+     "priority": 10,
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/mission_patch_images/gravity-12520_mission_patch_20260927183948.png",
+     "agency": null,
+     "response_mode": "normal"
+    }
+   ]
   },
   {
    "id": "d793ba47-faf5-4bab-a386-39a9ccc49c90",
@@ -17638,8 +17647,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P10DT12H28M4S",
-       "time_docked": "P7DT12H17M38S",
+       "time_in_space": "P11DT12H37M15S",
+       "time_docked": "P8DT12H26M49S",
        "flights_count": 1,
        "mission_ends_count": 0,
        "status": {
@@ -17926,7 +17935,7 @@
         "description": "Spacecraft burned up in the atmosphere"
        }
       },
-      "duration": "P10DT12H31M56.733903S",
+      "duration": "P11DT12H41M5.661862S",
       "turn_around_time": null,
       "response_mode": "detailed",
       "launch_crew": [],
@@ -26252,7 +26261,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-09-24T22:30:09Z",
+   "last_updated": "2026-09-27T17:31:55Z",
    "net": "2026-09-23T13:32:00Z",
    "net_precision": {
     "id": 1,
@@ -27027,7 +27036,16 @@
    ],
    "timeline": [],
    "pad_turnaround": "P50DT4H40M",
-   "mission_patches": []
+   "mission_patches": [
+    {
+     "id": 1345,
+     "name": "CZ-8A Hainan",
+     "priority": 10,
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/mission_patch_images/cz-8a2520haina_mission_patch_20260927173148.png",
+     "agency": null,
+     "response_mode": "normal"
+    }
+   ]
   },
   {
    "id": "aed67837-b567-43e0-8071-c3ccc24aa496",
