@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-28T14:04:15Z",
+  "updatedAt": "2026-09-28T23:20:17Z",
   "asOf": "2026-09-28",
   "seed": false,
   "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
@@ -46,14 +46,14 @@
     "arena": {
       "ok": true,
       "count": 378,
-      "fetchedAt": "2026-09-28T14:03:57Z",
+      "fetchedAt": "2026-09-28T23:19:55Z",
       "source": "lmarena.ai/leaderboard/text"
     },
     "livebench": {
       "ok": true,
       "count": 62,
       "release": "2026-06-25",
-      "fetchedAt": "2026-09-28T14:04:10Z",
+      "fetchedAt": "2026-09-28T23:20:08Z",
       "source": "livebench.ai/table_2026_06_25.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -61,7 +61,7 @@
       "ok": true,
       "count": 18,
       "refreshed": 18,
-      "fetchedAt": "2026-09-28T14:04:15Z",
+      "fetchedAt": "2026-09-28T23:20:17Z",
       "snapshotDate": "2026-09-20",
       "source": "artificialanalysis.ai/models/*",
       "mode": "official_public_pages",
@@ -263,11 +263,11 @@
       "ctx": "1M",
       "price": 2.15,
       "arenaPercentile": 94.3,
-      "livebenchPercentile": 57.8,
+      "livebenchPercentile": 56.9,
       "aaPercentile": 64.7,
       "comboAxes": 3,
       "confidence": 100,
-      "combo": 68.5
+      "combo": 68.3
     },
     {
       "id": "qwen3-8",
@@ -355,10 +355,10 @@
       "ctx": "1M",
       "price": 2.25,
       "arenaPercentile": 96.1,
-      "livebenchPercentile": 67.2,
+      "livebenchPercentile": 65.5,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 64.4
+      "combo": 63.9
     },
     {
       "id": "claude-opus-4-7",
@@ -373,10 +373,10 @@
       "ctx": "1M",
       "price": 10.0,
       "arenaPercentile": 99.1,
-      "livebenchPercentile": 63.8,
+      "livebenchPercentile": 62.1,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 64.0
+      "combo": 63.4
     },
     {
       "id": "claude-opus-4-8",
@@ -391,10 +391,10 @@
       "ctx": "1M",
       "price": 10.0,
       "arenaPercentile": 94.3,
-      "livebenchPercentile": 61.2,
+      "livebenchPercentile": 59.5,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 62.2
+      "combo": 61.7
     },
     {
       "id": "gpt-5-6-terra",
@@ -428,10 +428,10 @@
       "ctx": "500K",
       "price": 3.0,
       "arenaPercentile": 75.7,
-      "livebenchPercentile": 69.8,
+      "livebenchPercentile": 68.1,
       "comboAxes": 2,
       "confidence": 50,
-      "combo": 61.1
+      "combo": 60.6
     },
     {
       "id": "muse-spark-1-1",
