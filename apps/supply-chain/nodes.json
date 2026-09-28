@@ -1,8 +1,8 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-27T02:17:59Z",
-  "asOf": "2026-09-25",
+  "updatedAt": "2026-09-28T00:27:27Z",
+  "asOf": "2026-09-27",
   "frequency": "daily",
   "status": "ok",
   "source": "站内 apps/companies/sp500.json",
@@ -199,7 +199,7 @@
       "id": "software-cloud",
       "label": "软件与云服务",
       "labelEn": "Software & Cloud",
-      "count": 540,
+      "count": 541,
       "edgeCount": 3451,
       "layer": 8
     },
@@ -30479,7 +30479,7 @@
         "country": "新加坡",
         "smelters": 8,
         "inPool": 0,
-        "poolCompanies": 83
+        "poolCompanies": 84
       },
       {
         "country": "津巴布韦",
@@ -97585,6 +97585,59 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "医疗与外科器械",
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
+    },
+    {
+      "id": "PLTS",
+      "symbol": "PLTS",
+      "name": "Platinum Analytics Cayman Ltd",
+      "nameEn": "Platinum Analytics Cayman Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "开曼群岛",
+      "countryEn": "Cayman Islands",
+      "region": null,
+      "countryBasis": "state-of-incorporation",
+      "filerCategory": "Non-accelerated filer · Emerging growth company",
+      "filerTier": "非加速申报人",
+      "smallerReporting": false,
+      "emergingGrowth": true,
+      "offshoreIncorporation": true,
+      "operatingCountry": "新加坡",
+      "operatingCountryEn": "Singapore",
+      "operatingRegion": null,
+      "operatingBasis": "business-address",
+      "geoCountry": "新加坡",
+      "exchange": "Nasdaq",
+      "cik": 2053033,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0002053033.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -346941,7 +346994,7 @@
     }
   },
   "stagePerformance": {
-    "asOf": "2026-09-25",
+    "asOf": "2026-09-27",
     "source": "站内 apps/companies/sp500.json",
     "method": "按价值链环节汇总当日涨跌；等权与市值加权并列给出，不互相冒充。行情值沿用站内成分股文件，未重算。",
     "stages": [
@@ -347239,15 +347292,15 @@
     "chainLinksTotal": 77,
     "chainDepth": 10,
     "poolSp500": 492,
-    "poolForeignIssuer": 1203,
+    "poolForeignIssuer": 1204,
     "poolDomesticFiler": 4277,
     "poolForeignSkippedCollision": 0,
-    "nodesWithoutQuote": 5480,
+    "nodesWithoutQuote": 5481,
     "upstreamPairs": 32928,
     "upstreamConcentrationTotal": 1693,
     "chainCounterflow": 6,
     "chainMulti": 691,
-    "nodesTotal": 5972,
+    "nodesTotal": 5973,
     "nodesWithEdges": 369,
     "edgesTotal": 86220,
     "edgesBySource": {
@@ -353216,7 +353269,7 @@
         {
           "stage": "technology",
           "label": "技术与平台",
-          "companies": 814
+          "companies": 815
         },
         {
           "stage": "end-service",
@@ -353264,7 +353317,7 @@
           "companies": 19
         }
       ],
-      "noFilingInNodes": 4659
+      "noFilingInNodes": 4660
     },
     "bySector": [
       {
@@ -353437,10 +353490,10 @@
       {
         "sector": "新加坡",
         "sectorEn": null,
-        "companies": 79,
+        "companies": 80,
         "withEdges": 0,
         "filedNoList": 3,
-        "noFiling": 74,
+        "noFiling": 75,
         "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 2
@@ -354783,10 +354836,10 @@
       {
         "sector": "非加速申报人",
         "sectorEn": null,
-        "companies": 2203,
+        "companies": 2204,
         "withEdges": 40,
         "filedNoList": 105,
-        "noFiling": 1968,
+        "noFiling": 1969,
         "resourceExtraction": 8,
         "failed": 0,
         "unscanned": 82
@@ -354826,7 +354879,7 @@
       }
     ],
     "countryBasis": {
-      "state-of-incorporation": 984,
+      "state-of-incorporation": 985,
       "business-address": 209,
       "unknown": 9,
       "mailing-address": 1
@@ -354898,20 +354951,20 @@
       "oldestYear": "2016"
     },
     "stageByBasis": {
-      "sic-refined": 5972
+      "sic-refined": 5973
     },
-    "stageResolvedNodes": 5972,
+    "stageResolvedNodes": 5973,
     "stageAmbiguousNodes": 0,
     "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 86220 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,
     "status": "ok",
-    "total": 5972,
+    "total": 5973,
     "byStage": {
       "component": 497,
       "finished-goods": 1404,
-      "technology": 924,
+      "technology": 925,
       "distribution": 382,
       "financial": 1410,
       "material-processing": 263,
@@ -354922,7 +354975,7 @@
       "raw-material": 372,
       "circular": 19
     },
-    "resolvedStage": 5972,
+    "resolvedStage": 5973,
     "ambiguousStage": 0,
     "unknownStage": 0
   }

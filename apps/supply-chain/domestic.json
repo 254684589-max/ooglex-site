@@ -53986,7 +53986,7 @@
     },
     "LEG": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-26T00:40:30Z",
+      "carriedFrom": "2026-09-27T02:17:51Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 58492,
       "confirmedThisScan": false,
@@ -65123,7 +65123,7 @@
     },
     "NRDE": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-26T00:40:30Z",
+      "carriedFrom": "2026-09-27T02:17:51Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1759546,
       "confirmedThisScan": false,
@@ -76689,7 +76689,7 @@
     },
     "QVCAQ": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-26T00:40:30Z",
+      "carriedFrom": "2026-09-27T02:17:51Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1355096,
       "confirmedThisScan": false,
@@ -103737,7 +103737,7 @@
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 3536255,
+      "bytes": 3536658,
       "gzip": true,
       "quarter": "2026QTR3",
       "rows": 288111,
@@ -103751,7 +103751,7 @@
       "unparsed": 7
     },
     {
-      "bytes": 4441720,
+      "bytes": 4442645,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370223,
@@ -103766,5 +103766,5 @@
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-27T02:17:51Z"
+  "updatedAt": "2026-09-28T00:27:21Z"
 }
