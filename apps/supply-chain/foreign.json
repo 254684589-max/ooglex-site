@@ -757,6 +757,31 @@
         "AGRO"
       ]
     },
+    "AGRZ": {
+      "annualForm": "20-F/40-F",
+      "cik": 2009233,
+      "country": "Cayman Islands",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "E9",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-28",
+      "name": "Agroz Inc.",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Malaysia",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 100,
+      "sicDescription": "Agricultural Production-Crops",
+      "symbol": "AGRZ",
+      "tickers": [
+        "AGRZ"
+      ]
+    },
     "AHG": {
       "annualForm": "20-F/40-F",
       "cik": 1702318,
@@ -20469,9 +20494,9 @@
       "countryRejected": null,
       "entityType": "other",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-02",
+      "lastAnnual": "2026-09-28",
       "name": "POWERBANK Corp",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -20546,7 +20571,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-09",
       "name": "PETROBRAS - PETROLEO BRASILEIRO SA",
       "offshoreIncorporation": false,
@@ -21113,31 +21138,6 @@
       "symbol": "PLSM",
       "tickers": [
         "PLSM"
-      ]
-    },
-    "PLTS": {
-      "annualForm": "20-F/40-F",
-      "cik": 2053033,
-      "country": "Cayman Islands",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "E9",
-      "countryRejected": null,
-      "entityType": "other",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-01-30",
-      "name": "Platinum Analytics Cayman Ltd",
-      "offshoreIncorporation": true,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Singapore",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "symbol": "PLTS",
-      "tickers": [
-        "PLTS"
       ]
     },
     "PLTYF": {
@@ -23140,6 +23140,31 @@
         "SAN"
       ]
     },
+    "SANG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1753368,
+      "country": "Canada",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "A6",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "<br>Emerging growth company",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-28",
+      "name": "Sangoma Technologies Corp",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Canada",
+      "operatingRegion": "Ontario",
+      "region": "Ontario",
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "symbol": "SANG",
+      "tickers": [
+        "SANG"
+      ]
+    },
     "SAP": {
       "annualForm": "20-F/40-F",
       "cik": 1000184,
@@ -23607,7 +23632,7 @@
       "entityType": "other",
       "exchange": "Nasdaq",
       "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-30",
       "name": "Sigma Lithium Corp",
       "offshoreIncorporation": false,
@@ -24195,7 +24220,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-27",
       "name": "Solaris Resources Inc.",
       "offshoreIncorporation": false,
@@ -24851,7 +24876,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-22",
       "name": "CHEMICAL & MINING CO OF CHILE INC",
       "offshoreIncorporation": false,
@@ -28044,7 +28069,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Large accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-28",
       "name": "Vista Energy, S.A.B. de C.V.",
       "offshoreIncorporation": false,
@@ -28248,7 +28273,7 @@
       "exchange": "NYSE",
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-07-27",
+      "lastAnnual": "2026-09-28",
       "name": "Vantage Corp (Singapore)",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -29126,8 +29151,8 @@
       "annualForm": "20-F/40-F",
       "cik": 1370416,
       "country": "Canada",
-      "countryBasis": "business-address",
-      "countryCode": "A1",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "A0",
       "countryRejected": null,
       "entityType": "other",
       "exchange": "Nasdaq",
@@ -29139,7 +29164,7 @@
       "operatingBasis": "business-address",
       "operatingCountry": "Canada",
       "operatingRegion": "British Columbia",
-      "region": "British Columbia",
+      "region": "Alberta",
       "sic": 3510,
       "sicDescription": "Engines & Turbines",
       "symbol": "WPRT",
@@ -29234,7 +29259,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-04-30",
+      "lastAnnual": "2026-09-28",
       "name": "WeShop Holdings Ltd",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
@@ -30556,43 +30581,43 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 165,
-    "foreignAnnualFilers": 1231,
-    "formSdFilers": 1099,
-    "published": 1204,
-    "publishedFilesFormSd": 164,
-    "skippedNoTicker": 27,
+    "bothAnnualAndFormSd": 171,
+    "foreignAnnualFilers": 1233,
+    "formSdFilers": 1110,
+    "published": 1205,
+    "publishedFilesFormSd": 170,
+    "skippedNoTicker": 28,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
-    "withTicker": 1204,
+    "withTicker": 1205,
     "withoutSic": 0
   },
   "dataset": "supply-chain-foreign-issuers",
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 3536658,
+      "bytes": 3581764,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 288111,
+      "rows": 293123,
       "unparsed": 7
     },
     {
-      "bytes": 4274432,
+      "bytes": 4272158,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353293,
       "unparsed": 7
     },
     {
-      "bytes": 4442645,
+      "bytes": 4441914,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370223,
       "unparsed": 7
     },
     {
-      "bytes": 3401731,
+      "bytes": 3401318,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276620,
@@ -30917,5 +30942,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-28T00:03:35Z"
+  "updatedAt": "2026-09-29T05:42:27Z"
 }
