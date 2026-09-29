@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-09-27T23:54:33Z",
+  "generatedAt": "2026-09-29T05:33:24Z",
   "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-27T23:54:33Z",
-  "lastSuccessfulAt": "2026-09-27T23:54:33Z",
+  "lastAttemptAt": "2026-09-29T05:33:24Z",
+  "lastSuccessfulAt": "2026-09-29T05:33:24Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-27T23:54:33Z",
+  "publishedSnapshotAt": "2026-09-29T05:33:24Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,14 +15,14 @@
     "publishedRecords": 250,
     "dynamicRecords": 234,
     "counts": {
-      "market": 234,
-      "fallback": 0,
+      "market": 232,
+      "fallback": 2,
       "estimate": 16,
       "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0,
+    "freshCoveragePct": 99.15,
     "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
@@ -31,8 +31,8 @@
     "published": true,
     "producedRecords": 250,
     "counts": {
-      "market": 234,
-      "fallback": 0,
+      "market": 232,
+      "fallback": 2,
       "estimate": 16,
       "unknown": 0,
       "unavailable": 0
@@ -43,31 +43,31 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "healthy",
-      "records": 228,
+      "status": "degraded",
+      "records": 232,
       "counts": {
-        "market": 228,
+        "market": 232,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-27T23:54:33Z"
+      "lastSuccessAt": "2026-09-29T05:33:24Z"
     },
     {
       "id": "coingecko",
       "name": "CoinGecko",
       "role": "primary",
-      "status": "healthy",
-      "records": 6,
+      "status": "degraded",
+      "records": 2,
       "counts": {
-        "market": 6,
-        "fallback": 0,
+        "market": 0,
+        "fallback": 2,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-27T23:54:33Z"
+      "lastSuccessAt": null
     },
     {
       "id": "companies-upstream",
@@ -82,13 +82,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-27T21:33:51Z",
+      "lastSuccessAt": "2026-09-28T23:55:21Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
         "status": "degraded",
-        "lastAttemptAt": "2026-09-27T21:33:51Z",
-        "lastSuccessfulAt": "2026-09-27T21:33:51Z",
+        "lastAttemptAt": "2026-09-28T23:55:21Z",
+        "lastSuccessfulAt": "2026-09-28T23:55:21Z",
         "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
@@ -107,7 +107,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-27T23:54:33Z"
+      "lastSuccessAt": "2026-09-29T05:33:24Z"
     }
   ],
   "recovery": {
