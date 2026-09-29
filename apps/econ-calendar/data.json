@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-28T23:56:25Z",
-  "asOf": "2026-09-28",
+  "updatedAt": "2026-09-29T18:11:50Z",
+  "asOf": "2026-09-29",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-27 ~ 2026-10-03",
   "count": 141,
@@ -211,19 +211,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-29T09:33:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "10 年期国债拍卖",
-      "titleEn": "Italian 10-y Bond Auction",
-      "impact": "low",
-      "forecast": null,
-      "previous": "4.10|1.6",
-      "actual": null
-    },
-    {
-      "ts": "2026-09-29T09:33:00Z",
+      "ts": "2026-09-29T09:02:00Z",
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
@@ -232,6 +220,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "5.16|3.6",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-29T09:04:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "10 年期国债拍卖",
+      "titleEn": "Italian 10-y Bond Auction",
+      "impact": "low",
+      "forecast": null,
+      "previous": "4.10|1.6",
       "actual": null
     },
     {
@@ -914,7 +914,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-1.9M",
       "previous": "3.0M",
       "actual": null
     },
