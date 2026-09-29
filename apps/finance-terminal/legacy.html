@@ -1402,12 +1402,15 @@ html[data-theme="ft"] .section-fold-summary, html[data-theme="paper"] .section-f
   <link rel="stylesheet" href="terminal-reference-home-v7.css?v=3aca9d97">
 </head>
 <body data-terminal-view="overview">
+  <!-- 跳转链接必须是 body 的第一个可聚焦元素：键盘用户按第一下 Tab 就该能跳过
+       导航直达正文。下面那条「旧版终端」提示条是后加的，当时插在了它上面，
+       把它挤到了第二位（focusables[0] 变成「打开新版终端 →」）。 -->
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
 <div style="background:#1a1400;border-bottom:1px solid #3a2e00;padding:6px 14px;font:13px/1.6 -apple-system,BlinkMacSystemFont,&quot;PingFang SC&quot;,sans-serif;color:#d8c88a;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
   <b style="color:#ffd24a">这是改版前的旧版终端</b>
   <span>新版终端已上线：近黑配色、彩色功能键条、命令行、宏观风险监测表。本页保留可用，其品类看板与地缘风险模块尚未迁入新版。</span>
   <a href="./" style="margin-left:auto;color:#ffd24a;border-bottom:1px solid currentColor">打开新版终端 →</a>
 </div>
-  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <div class="shell">
     <aside class="terminal-rail" aria-label="终端快捷导航">
       <a href="#overview-section" aria-label="全球市场总览"><span aria-hidden="true">01</span><b>总览</b></a>
