@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-09-28T23:55:37Z",
-  "asOf": "2026-09-28",
+  "updatedAt": "2026-09-29T21:21:57Z",
+  "asOf": "2026-09-29",
   "source": "CNN Business Fear & Greed Index",
-  "score": 34,
+  "score": 32,
   "rating": "fear",
   "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 34,
+      "score": 32,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "close": {
-      "score": 37,
+      "score": 34,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "week": {
-      "score": 34,
+      "score": 35,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
@@ -34,7 +34,7 @@
   },
   "indicators": [
     {
-      "score": 31,
+      "score": 29,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "market_momentum_sp500",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 40,
+      "score": 34,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "put_call_options",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 64,
+      "score": 57,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "junk_bond_demand",
