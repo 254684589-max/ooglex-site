@@ -1,1973 +1,8 @@
 {
- "count": 28,
+ "count": 27,
  "next": null,
  "previous": null,
  "results": [
-  {
-   "id": "521f3a1c-f977-4306-9b7f-495858719adf",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/521f3a1c-f977-4306-9b7f-495858719adf/",
-   "name": "Falcon Heavy | Nancy Grace Roman Space Telescope",
-   "response_mode": "detailed",
-   "slug": "falcon-heavy-nancy-grace-roman-space-telescope",
-   "launch_designator": "2026-199",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-09-13T03:03:39Z",
-   "net": "2026-08-30T11:26:04Z",
-   "net_precision": {
-    "id": 0,
-    "name": "Second",
-    "abbrev": "SEC",
-    "description": "The T-0 is accurate to the second."
-   },
-   "window_end": "2026-08-30T11:26:19Z",
-   "window_start": "2026-08-30T11:25:49Z",
-   "image": {
-    "id": 2800,
-    "name": "Falcon Heavy on LC-39A (Roman)",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_heavy_on_image_20260830111425.jpeg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_heavy_on_image_thumbnail_20260830111425.jpeg",
-    "credit": "SpaceX",
-    "license": {
-     "id": 1,
-     "name": "Unknown",
-     "priority": 9,
-     "link": null
-    },
-    "single_use": true,
-    "variants": []
-   },
-   "infographic": null,
-   "probability": 70,
-   "weather_concerns": "Cumulus Cloud Rule, Surface Electric Fields Rule",
-   "failreason": "",
-   "hashtag": null,
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 121,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-    "name": "SpaceX",
-    "abbrev": "SpX",
-    "type": {
-     "id": 3,
-     "name": "Commercial"
-    },
-    "featured": true,
-    "country": [
-     {
-      "id": 2,
-      "name": "United States of America",
-      "alpha_2_code": "US",
-      "alpha_3_code": "USA",
-      "nationality_name": "American",
-      "nationality_name_composed": "Americano"
-     }
-    ],
-    "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-    "administrator": "CEO: Elon Musk",
-    "founding_year": 2002,
-    "launchers": "Falcon | Starship",
-    "spacecraft": "Dragon",
-    "parent": null,
-    "image": {
-     "id": 1736,
-     "name": "Falcon 9 liftoff from LC-39A",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "logo": {
-     "id": 186,
-     "name": "SpaceX logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 94,
-     "name": "SpaceX social logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 732,
-    "consecutive_successful_launches": 217,
-    "successful_launches": 717,
-    "failed_launches": 15,
-    "pending_launches": 127,
-    "consecutive_successful_landings": 25,
-    "successful_landings": 676,
-    "failed_landings": 29,
-    "attempted_landings": 704,
-    "successful_landings_spacecraft": 63,
-    "failed_landings_spacecraft": 3,
-    "attempted_landings_spacecraft": 67,
-    "successful_landings_payload": 1,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 1,
-    "info_url": "https://www.spacex.com/",
-    "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-    "social_media_links": [
-     {
-      "id": 427,
-      "social_media": {
-       "id": 3,
-       "name": "Homepage",
-       "url": null,
-       "logo": null
-      },
-      "url": "https://www.spacex.com/"
-     },
-     {
-      "id": 428,
-      "social_media": {
-       "id": 1,
-       "name": "X",
-       "url": "https://x.com",
-       "logo": {
-        "id": 2320,
-        "name": "X logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-        "credit": "X",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://x.com/spacex/"
-     },
-     {
-      "id": 429,
-      "social_media": {
-       "id": 6,
-       "name": "Youtube",
-       "url": "https://www.youtube.com/",
-       "logo": {
-        "id": 2356,
-        "name": "YouTube logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-        "credit": "YouTube",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://www.youtube.com/@spacex"
-     },
-     {
-      "id": 430,
-      "social_media": {
-       "id": 4,
-       "name": "LinkedIn",
-       "url": "https://www.linkedin.com/",
-       "logo": {
-        "id": 2321,
-        "name": "LinkedIn logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-        "credit": "LinkedIn",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://www.linkedin.com/company/spacex/"
-     }
-    ]
-   },
-   "rocket": {
-    "id": 7615,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 161,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/161/",
-     "name": "Falcon Heavy",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 1,
-       "name": "Falcon",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 121,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-         "name": "SpaceX",
-         "abbrev": "SpX",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": true,
-         "country": [
-          {
-           "id": 2,
-           "name": "United States of America",
-           "alpha_2_code": "US",
-           "alpha_3_code": "USA",
-           "nationality_name": "American",
-           "nationality_name_composed": "Americano"
-          }
-         ],
-         "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-         "administrator": "CEO: Elon Musk",
-         "founding_year": 2002,
-         "launchers": "Falcon | Starship",
-         "spacecraft": "Dragon",
-         "parent": null,
-         "image": {
-          "id": 1736,
-          "name": "Falcon 9 liftoff from LC-39A",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": false,
-          "variants": []
-         },
-         "logo": {
-          "id": 186,
-          "name": "SpaceX logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 94,
-          "name": "SpaceX social logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 732,
-         "consecutive_successful_launches": 217,
-         "successful_launches": 717,
-         "failed_launches": 15,
-         "pending_launches": 127,
-         "consecutive_successful_landings": 25,
-         "successful_landings": 676,
-         "failed_landings": 29,
-         "attempted_landings": 704,
-         "successful_landings_spacecraft": 63,
-         "failed_landings_spacecraft": 3,
-         "attempted_landings_spacecraft": 67,
-         "successful_landings_payload": 1,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 1,
-         "info_url": "https://www.spacex.com/",
-         "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-         "social_media_links": [
-          {
-           "id": 427,
-           "social_media": {
-            "id": 3,
-            "name": "Homepage",
-            "url": null,
-            "logo": null
-           },
-           "url": "https://www.spacex.com/"
-          },
-          {
-           "id": 428,
-           "social_media": {
-            "id": 1,
-            "name": "X",
-            "url": "https://x.com",
-            "logo": {
-             "id": 2320,
-             "name": "X logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-             "credit": "X",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://x.com/spacex/"
-          },
-          {
-           "id": 429,
-           "social_media": {
-            "id": 6,
-            "name": "Youtube",
-            "url": "https://www.youtube.com/",
-            "logo": {
-             "id": 2356,
-             "name": "YouTube logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-             "credit": "YouTube",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.youtube.com/@spacex"
-          },
-          {
-           "id": 430,
-           "social_media": {
-            "id": 4,
-            "name": "LinkedIn",
-            "url": "https://www.linkedin.com/",
-            "logo": {
-             "id": 2321,
-             "name": "LinkedIn logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-             "credit": "LinkedIn",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.linkedin.com/company/spacex/"
-          }
-         ]
-        }
-       ],
-       "parent": null,
-       "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
-       "active": true,
-       "maiden_flight": "2006-03-24",
-       "total_launch_count": 709,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 702,
-       "failed_launches": 7,
-       "pending_launches": 123,
-       "attempted_landings": 682,
-       "successful_landings": 664,
-       "failed_landings": 19,
-       "consecutive_successful_landings": 323
-      }
-     ],
-     "full_name": "Falcon Heavy",
-     "variant": "Heavy",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 121,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-      "name": "SpaceX",
-      "abbrev": "SpX",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 2,
-        "name": "United States of America",
-        "alpha_2_code": "US",
-        "alpha_3_code": "USA",
-        "nationality_name": "American",
-        "nationality_name_composed": "Americano"
-       }
-      ],
-      "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-      "administrator": "CEO: Elon Musk",
-      "founding_year": 2002,
-      "launchers": "Falcon | Starship",
-      "spacecraft": "Dragon",
-      "parent": null,
-      "image": {
-       "id": 1736,
-       "name": "Falcon 9 liftoff from LC-39A",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 186,
-       "name": "SpaceX logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 94,
-       "name": "SpaceX social logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 732,
-      "consecutive_successful_launches": 217,
-      "successful_launches": 717,
-      "failed_launches": 15,
-      "pending_launches": 127,
-      "consecutive_successful_landings": 25,
-      "successful_landings": 676,
-      "failed_landings": 29,
-      "attempted_landings": 704,
-      "successful_landings_spacecraft": 63,
-      "failed_landings_spacecraft": 3,
-      "attempted_landings_spacecraft": 67,
-      "successful_landings_payload": 1,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 1,
-      "info_url": "https://www.spacex.com/",
-      "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-      "social_media_links": [
-       {
-        "id": 427,
-        "social_media": {
-         "id": 3,
-         "name": "Homepage",
-         "url": null,
-         "logo": null
-        },
-        "url": "https://www.spacex.com/"
-       },
-       {
-        "id": 428,
-        "social_media": {
-         "id": 1,
-         "name": "X",
-         "url": "https://x.com",
-         "logo": {
-          "id": 2320,
-          "name": "X logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-          "credit": "X",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://x.com/spacex/"
-       },
-       {
-        "id": 429,
-        "social_media": {
-         "id": 6,
-         "name": "Youtube",
-         "url": "https://www.youtube.com/",
-         "logo": {
-          "id": 2356,
-          "name": "YouTube logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-          "credit": "YouTube",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.youtube.com/@spacex"
-       },
-       {
-        "id": 430,
-        "social_media": {
-         "id": 4,
-         "name": "LinkedIn",
-         "url": "https://www.linkedin.com/",
-         "logo": {
-          "id": 2321,
-          "name": "LinkedIn logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-          "credit": "LinkedIn",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.linkedin.com/company/spacex/"
-       }
-      ]
-     },
-     "program": [],
-     "reusable": true,
-     "image": {
-      "id": 1739,
-      "name": "[AUTO] Falcon Heavy - image",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_heavy_image_20220129192819.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193632.jpeg",
-      "credit": null,
-      "license": {
-       "id": 1,
-       "name": "Unknown",
-       "priority": 9,
-       "link": null
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "info_url": "https://www.spacex.com/vehicles/falcon-heavy/index.html",
-     "wiki_url": "https://en.wikipedia.org/wiki/Falcon_Heavy",
-     "description": "The Falcon Heavy is a variant of the Falcon 9 full thrust launch vehicle and consists of a standard Falcon 9 rocket core, with two additional boosters derived from the Falcon 9 first stage.",
-     "alias": "",
-     "min_stage": 3,
-     "max_stage": 3,
-     "length": 70.0,
-     "diameter": 12.2,
-     "maiden_flight": "2018-02-06",
-     "launch_cost": 90000000,
-     "launch_mass": 1400.0,
-     "leo_capacity": 63800.0,
-     "gto_capacity": 26700.0,
-     "geo_capacity": null,
-     "sso_capacity": null,
-     "to_thrust": 22819.0,
-     "apogee": 200.0,
-     "total_launch_count": 13,
-     "consecutive_successful_launches": 13,
-     "successful_launches": 13,
-     "failed_launches": 0,
-     "pending_launches": 13,
-     "attempted_landings": 25,
-     "successful_landings": 23,
-     "failed_landings": 2,
-     "consecutive_successful_landings": 17,
-     "fastest_turnaround": "P74DT7H55M"
-    },
-    "launcher_stage": [
-     {
-      "id": 918,
-      "type": "Strap-On Booster",
-      "reused": true,
-      "launcher_flight_number": 3,
-      "launcher": {
-       "response_mode": "normal",
-       "id": 111,
-       "url": "https://ll.thespacedevs.com/2.3.0/launchers/111/",
-       "flight_proven": true,
-       "serial_number": "B1072",
-       "is_placeholder": false,
-       "status": {
-        "id": 3,
-        "name": "active"
-       },
-       "image": {
-        "id": 2120,
-        "name": "B1072 and B1086 during landing (GOES-U)",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/b1072_and_b1086_image_20240626195649.jpeg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/b1072_and_b1086_image_thumbnail_20240626195649.jpeg",
-        "credit": "SpaceX",
-        "license": {
-         "id": 5,
-         "name": "CC BY-NC 2.0",
-         "priority": 1,
-         "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-        },
-        "single_use": true,
-        "variants": []
-       },
-       "details": "Falcon Heavy side booster first flown during the GOES-U mission.",
-       "successful_landings": 3,
-       "attempted_landings": 3,
-       "flights": 3,
-       "last_launch_date": "2026-08-30T11:26:04Z",
-       "first_launch_date": "2024-06-25T21:26:00Z",
-       "fastest_turnaround": "P122DT21H13M4S"
-      },
-      "previous_flight_date": "2026-04-29T14:13:00Z",
-      "turn_around_time": "P122DT21H13M4S",
-      "landing": {
-       "id": 1913,
-       "url": "https://ll.thespacedevs.com/2.3.0/landings/1913/",
-       "attempt": true,
-       "success": true,
-       "description": "The Falcon Heavy side booster B1072 has landed back at the launch site at Landing Zone 2 after its 3rd flight.",
-       "downrange_distance": 14.6,
-       "landing_location": {
-        "id": 5,
-        "name": "Landing Zone 2",
-        "active": true,
-        "abbrev": "LZ-2",
-        "description": "LZ-2 Pad located at Cape Canaveral Space Force Station at the previous LC-13. Directly next to LZ-1",
-        "location": {
-         "response_mode": "normal",
-         "id": 12,
-         "url": "https://ll.thespacedevs.com/2.3.0/locations/12/",
-         "name": "Cape Canaveral SFS, FL, USA",
-         "active": true,
-         "country": {
-          "id": 2,
-          "name": "United States of America",
-          "alpha_2_code": "US",
-          "alpha_3_code": "USA",
-          "nationality_name": "American",
-          "nationality_name_composed": "Americano"
-         },
-         "description": "Cape Canaveral Space Force Station (CCSFS) is an installation of the United States Space Force's Space Launch Delta 45, located on Cape Canaveral in Brevard County, Florida.",
-         "image": {
-          "id": 2200,
-          "name": "Cape Canaveral & KSC seen from orbit (STS-43)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_20240918151615.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_thumbnail_20240918151616.jpeg",
-          "credit": "NASA",
-          "license": {
-           "id": 4,
-           "name": "NASA Image and Media Guidelines",
-           "priority": 0,
-           "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_12_20200803142519.jpg",
-         "longitude": -80.577778,
-         "latitude": 28.488889,
-         "timezone_name": "America/New_York",
-         "total_launch_count": 1129,
-         "total_landing_count": 79
-        },
-        "longitude": -80.544964,
-        "latitude": 28.48775,
-        "image": {
-         "id": 1976,
-         "name": "LZ-2",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/lz-2_image_20240310172018.png",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/lz-2_image_thumbnail_20240310172019.png",
-         "credit": "SpaceX",
-         "license": {
-          "id": 5,
-          "name": "CC BY-NC 2.0",
-          "priority": 1,
-          "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "successful_landings": 19,
-        "attempted_landings": 19,
-        "failed_landings": 0,
-        "celestial_body": {
-         "response_mode": "normal",
-         "id": 1,
-         "name": "Earth",
-         "type": {
-          "id": 1,
-          "name": "Planet"
-         },
-         "diameter": 12742000.0,
-         "mass": 5.972168e+24,
-         "gravity": 9.80655,
-         "length_of_day": "1 00:00:00",
-         "atmosphere": true,
-         "image": {
-          "id": 2040,
-          "name": "Earth (Apollo 17)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-          "credit": "NASA",
-          "license": {
-           "id": 4,
-           "name": "NASA Image and Media Guidelines",
-           "priority": 0,
-           "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-         "wiki_url": "https://en.wikipedia.org/wiki/Earth"
-        }
-       },
-       "type": {
-        "id": 2,
-        "name": "Return to Launch Site",
-        "abbrev": "RTLS",
-        "description": "A return to launch site usually means that after stage separation the booster flips and does a burn back towards the launch site, landing near where it initially launched from."
-       }
-      },
-      "previous_flight": {
-       "id": "4cc237b2-c61a-491e-9532-466cce81f524",
-       "url": "https://ll.thespacedevs.com/2.3.0/launches/4cc237b2-c61a-491e-9532-466cce81f524/",
-       "name": "Falcon Heavy | ViaSat-3 F3 (ViaSat-3 Asia-Pacific)"
-      }
-     },
-     {
-      "id": 917,
-      "type": "Strap-On Booster",
-      "reused": false,
-      "launcher_flight_number": 1,
-      "launcher": {
-       "response_mode": "normal",
-       "id": 250,
-       "url": "https://ll.thespacedevs.com/2.3.0/launchers/250/",
-       "flight_proven": true,
-       "serial_number": "B1104",
-       "is_placeholder": false,
-       "status": {
-        "id": 3,
-        "name": "active"
-       },
-       "image": {
-        "id": 1736,
-        "name": "Falcon 9 liftoff from LC-39A",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-        "credit": "SpaceX",
-        "license": {
-         "id": 5,
-         "name": "CC BY-NC 2.0",
-         "priority": 1,
-         "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-        },
-        "single_use": false,
-        "variants": []
-       },
-       "details": "Falcon 9 booster.",
-       "successful_landings": 1,
-       "attempted_landings": 1,
-       "flights": 1,
-       "last_launch_date": "2026-08-30T11:26:04Z",
-       "first_launch_date": "2026-08-30T11:26:04Z",
-       "fastest_turnaround": null
-      },
-      "previous_flight_date": null,
-      "turn_around_time": null,
-      "landing": {
-       "id": 1912,
-       "url": "https://ll.thespacedevs.com/2.3.0/landings/1912/",
-       "attempt": true,
-       "success": true,
-       "description": "The Falcon Heavy side booster B1104 has landed back at the launch site at Landing Zone 40 after its 1st flight.",
-       "downrange_distance": 5.8,
-       "landing_location": {
-        "id": 62,
-        "name": "Landing Zone 40",
-        "active": true,
-        "abbrev": "LZ-40",
-        "description": "Landing Pad at SLC-40 for Falcon 9 boosters. Built as an replacement for LZ-1 & LZ-2.",
-        "location": {
-         "response_mode": "normal",
-         "id": 12,
-         "url": "https://ll.thespacedevs.com/2.3.0/locations/12/",
-         "name": "Cape Canaveral SFS, FL, USA",
-         "active": true,
-         "country": {
-          "id": 2,
-          "name": "United States of America",
-          "alpha_2_code": "US",
-          "alpha_3_code": "USA",
-          "nationality_name": "American",
-          "nationality_name_composed": "Americano"
-         },
-         "description": "Cape Canaveral Space Force Station (CCSFS) is an installation of the United States Space Force's Space Launch Delta 45, located on Cape Canaveral in Brevard County, Florida.",
-         "image": {
-          "id": 2200,
-          "name": "Cape Canaveral & KSC seen from orbit (STS-43)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_20240918151615.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_thumbnail_20240918151616.jpeg",
-          "credit": "NASA",
-          "license": {
-           "id": 4,
-           "name": "NASA Image and Media Guidelines",
-           "priority": 0,
-           "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_12_20200803142519.jpg",
-         "longitude": -80.577778,
-         "latitude": 28.488889,
-         "timezone_name": "America/New_York",
-         "total_launch_count": 1129,
-         "total_landing_count": 79
-        },
-        "longitude": -80.5752619,
-        "latitude": 28.5634384,
-        "image": {
-         "id": 2695,
-         "name": "LZ-40 at SLC-40",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/lz-40_at_slc-40_image_20260213111727.jpg",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/lz-40_at_slc-40_image_thumbnail_20260213111727.jpeg",
-         "credit": "SpaceX",
-         "license": {
-          "id": 1,
-          "name": "Unknown",
-          "priority": 9,
-          "link": null
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "successful_landings": 6,
-        "attempted_landings": 6,
-        "failed_landings": 0,
-        "celestial_body": {
-         "response_mode": "normal",
-         "id": 1,
-         "name": "Earth",
-         "type": {
-          "id": 1,
-          "name": "Planet"
-         },
-         "diameter": 12742000.0,
-         "mass": 5.972168e+24,
-         "gravity": 9.80655,
-         "length_of_day": "1 00:00:00",
-         "atmosphere": true,
-         "image": {
-          "id": 2040,
-          "name": "Earth (Apollo 17)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-          "credit": "NASA",
-          "license": {
-           "id": 4,
-           "name": "NASA Image and Media Guidelines",
-           "priority": 0,
-           "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-         "wiki_url": "https://en.wikipedia.org/wiki/Earth"
-        }
-       },
-       "type": {
-        "id": 2,
-        "name": "Return to Launch Site",
-        "abbrev": "RTLS",
-        "description": "A return to launch site usually means that after stage separation the booster flips and does a burn back towards the launch site, landing near where it initially launched from."
-       }
-      },
-      "previous_flight": null
-     },
-     {
-      "id": 916,
-      "type": "Core",
-      "reused": false,
-      "launcher_flight_number": 1,
-      "launcher": {
-       "response_mode": "normal",
-       "id": 251,
-       "url": "https://ll.thespacedevs.com/2.3.0/launchers/251/",
-       "flight_proven": false,
-       "serial_number": "B1105",
-       "is_placeholder": false,
-       "status": {
-        "id": 2,
-        "name": "expended"
-       },
-       "image": {
-        "id": 1739,
-        "name": "[AUTO] Falcon Heavy - image",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_heavy_image_20220129192819.jpeg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193632.jpeg",
-        "credit": null,
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       },
-       "details": "Falcon Heavy core booster expended during the launch of the Nancy Grace Roman Space Telescope.",
-       "successful_landings": 0,
-       "attempted_landings": 0,
-       "flights": 1,
-       "last_launch_date": "2026-08-30T11:26:04Z",
-       "first_launch_date": "2026-08-30T11:26:04Z",
-       "fastest_turnaround": null
-      },
-      "previous_flight_date": null,
-      "turn_around_time": null,
-      "landing": {
-       "id": 1911,
-       "url": "https://ll.thespacedevs.com/2.3.0/landings/1911/",
-       "attempt": false,
-       "success": null,
-       "description": "The Falcon Heavy center core B1105 will be expended.",
-       "downrange_distance": null,
-       "landing_location": {
-        "id": 6,
-        "name": "Atlantic Ocean",
-        "active": true,
-        "abbrev": "ATL",
-        "description": "Atlantic Ocean",
-        "location": null,
-        "longitude": null,
-        "latitude": null,
-        "image": {
-         "id": 2230,
-         "name": "Sun glint on the Atlantic Ocean",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/sun_glint_on_th_image_20240920085841.jpg",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/sun_glint_on_th_image_thumbnail_20240920085841.jpeg",
-         "credit": "NASA",
-         "license": {
-          "id": 4,
-          "name": "NASA Image and Media Guidelines",
-          "priority": 0,
-          "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "successful_landings": 38,
-        "attempted_landings": 42,
-        "failed_landings": 4,
-        "celestial_body": {
-         "response_mode": "normal",
-         "id": 1,
-         "name": "Earth",
-         "type": {
-          "id": 1,
-          "name": "Planet"
-         },
-         "diameter": 12742000.0,
-         "mass": 5.972168e+24,
-         "gravity": 9.80655,
-         "length_of_day": "1 00:00:00",
-         "atmosphere": true,
-         "image": {
-          "id": 2040,
-          "name": "Earth (Apollo 17)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-          "credit": "NASA",
-          "license": {
-           "id": 4,
-           "name": "NASA Image and Media Guidelines",
-           "priority": 0,
-           "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-         "wiki_url": "https://en.wikipedia.org/wiki/Earth"
-        }
-       },
-       "type": {
-        "id": 8,
-        "name": "Expended",
-        "abbrev": "EXP",
-        "description": "Vehicle did not perform any landing operations after launch"
-       }
-      },
-      "previous_flight": null
-     }
-    ],
-    "spacecraft_stage": [],
-    "payloads": [
-     {
-      "response_mode": "detailed",
-      "id": 52,
-      "url": "https://ll.thespacedevs.com/2.3.0/payload_flights/52/",
-      "destination": "Sun–Earth L2",
-      "amount": 1,
-      "payload": {
-       "response_mode": "detailed",
-       "id": 45,
-       "name": "Nancy Grace Roman Space Telescope",
-       "type": {
-        "id": 6,
-        "name": "Space Telescope"
-       },
-       "manufacturer": {
-        "response_mode": "normal",
-        "id": 1086,
-        "url": "https://ll.thespacedevs.com/2.3.0/agencies/1086/",
-        "name": "NASA Goddard Space Flight Center",
-        "abbrev": "GSFC",
-        "type": {
-         "id": 1,
-         "name": "Government"
-        },
-        "featured": false,
-        "country": [
-         {
-          "id": 2,
-          "name": "United States of America",
-          "alpha_2_code": "US",
-          "alpha_3_code": "USA",
-          "nationality_name": "American",
-          "nationality_name_composed": "Americano"
-         }
-        ],
-        "description": "The Goddard Space Flight Center (GSFC) is a major NASA space research laboratory located northeast of Washington, D.C. in Greenbelt, Maryland, United States.",
-        "administrator": "Director: Makenzie Lystrup",
-        "founding_year": 1959,
-        "launchers": "",
-        "spacecraft": "",
-        "parent": "National Aeronautics and Space Administration",
-        "image": null,
-        "logo": null,
-        "social_logo": null,
-        "total_launch_count": 0,
-        "consecutive_successful_launches": 0,
-        "successful_launches": 0,
-        "failed_launches": 0,
-        "pending_launches": 0,
-        "consecutive_successful_landings": 0,
-        "successful_landings": 0,
-        "failed_landings": 0,
-        "attempted_landings": 0,
-        "successful_landings_spacecraft": 0,
-        "failed_landings_spacecraft": 0,
-        "attempted_landings_spacecraft": 0,
-        "successful_landings_payload": 0,
-        "failed_landings_payload": 0,
-        "attempted_landings_payload": 0,
-        "info_url": "https://www.nasa.gov/goddard",
-        "wiki_url": "https://en.wikipedia.org/wiki/Goddard_Space_Flight_Center",
-        "social_media_links": []
-       },
-       "operator": {
-        "response_mode": "normal",
-        "id": 44,
-        "url": "https://ll.thespacedevs.com/2.3.0/agencies/44/",
-        "name": "National Aeronautics and Space Administration",
-        "abbrev": "NASA",
-        "type": {
-         "id": 1,
-         "name": "Government"
-        },
-        "featured": true,
-        "country": [
-         {
-          "id": 2,
-          "name": "United States of America",
-          "alpha_2_code": "US",
-          "alpha_3_code": "USA",
-          "nationality_name": "American",
-          "nationality_name_composed": "Americano"
-         }
-        ],
-        "description": "The National Aeronautics and Space Administration is an independent agency of the executive branch of the United States federal government responsible for the civilian space program, as well as aeronautics and aerospace research. NASA have many launch facilities but most are inactive. The most commonly used pad will be LC-39B at Kennedy Space Center in Florida.",
-        "administrator": "Administrator: Jared Isaacman",
-        "founding_year": 1958,
-        "launchers": "Space Shuttle | SLS",
-        "spacecraft": "Orion",
-        "parent": null,
-        "image": {
-         "id": 19,
-         "name": "[AUTO] National Aeronautics and Space Administration - image",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/national2520aeronautics2520and2520space2520administration_image_20190207032448.jpeg",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184631.jpeg",
-         "credit": null,
-         "license": {
-          "id": 1,
-          "name": "Unknown",
-          "priority": 9,
-          "link": null
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "logo": {
-         "id": 161,
-         "name": "[AUTO] National Aeronautics and Space Administration - logo",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/national2520aeronautics2520and2520space2520administration_logo_20190207032448.png",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185043.png",
-         "credit": null,
-         "license": {
-          "id": 1,
-          "name": "Unknown",
-          "priority": 9,
-          "link": null
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "social_logo": {
-         "id": 76,
-         "name": "[AUTO] National Aeronautics and Space Administration - social_logo",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/national2520aeronautics2520and2520space2520administration_nation_20230803040809.jpg",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184823.jpeg",
-         "credit": null,
-         "license": {
-          "id": 1,
-          "name": "Unknown",
-          "priority": 9,
-          "link": null
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "total_launch_count": 142,
-        "consecutive_successful_launches": 12,
-        "successful_launches": 122,
-        "failed_launches": 20,
-        "pending_launches": 5,
-        "consecutive_successful_landings": 0,
-        "successful_landings": 0,
-        "failed_landings": 0,
-        "attempted_landings": 0,
-        "successful_landings_spacecraft": 179,
-        "failed_landings_spacecraft": 2,
-        "attempted_landings_spacecraft": 181,
-        "successful_landings_payload": 0,
-        "failed_landings_payload": 0,
-        "attempted_landings_payload": 0,
-        "info_url": "https://www.nasa.gov",
-        "wiki_url": "https://en.wikipedia.org/wiki/National_Aeronautics_and_Space_Administration",
-        "social_media_links": []
-       },
-       "image": {
-        "id": 2738,
-        "name": "Roman Space Telescope render",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/roman_space_tel_image_20260329084947.jpg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/roman_space_tel_image_thumbnail_20260329084947.jpeg",
-        "credit": "NASA",
-        "license": {
-         "id": 4,
-         "name": "NASA Image and Media Guidelines",
-         "priority": 0,
-         "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-        },
-        "single_use": false,
-        "variants": []
-       },
-       "wiki_link": "https://en.wikipedia.org/wiki/Nancy_Grace_Roman_Space_Telescope",
-       "info_link": "https://science.nasa.gov/mission/roman-space-telescope/",
-       "program": [],
-       "cost": null,
-       "mass": 4166.0,
-       "description": "The Nancy Grace Roman Space Telescope is a NASA infrared space telescope based on an existing 2.4 m (7.9 ft) wide field of view primary mirror and carrying two scientific instruments. The Wide-Field Instrument (WFI) is a 300.8-megapixel multi-band visible and near-infrared camera, providing a sharpness of images comparable to that achieved by the Hubble Space Telescope over a 0.28 square degree field of view, 100 times larger than imaging cameras on the Hubble. The Coronagraph Instrument (CGI) is a high-contrast, small field of view camera and spectrometer covering visible and near-infrared wavelengths using novel starlight-suppression technology."
-      },
-      "landing": null,
-      "docking_events": []
-     }
-    ]
-   },
-   "mission": {
-    "id": 6105,
-    "name": "Nancy Grace Roman Space Telescope",
-    "type": "Astrophysics",
-    "description": "The Nancy Grace Roman Space Telescope is a NASA infrared space telescope with a 2.4 m (7.9 ft) wide field of view primary mirror and two scientific instruments. The Wide-Field Instrument (WFI) is a 300.8-megapixel multi-band visible and near-infrared camera, providing a sharpness of images comparable to that achieved by the Hubble Space Telescope over a 0.28 square degree field of view, 100 times larger than imaging cameras on the Hubble. The Coronagraphic Instrument (CGI) is a high-contrast, small field of view camera and spectrometer covering visible and near-infrared wavelengths using novel starlight-suppression technology. Roman objectives include a search for extra-solar planets using gravitational microlensing, and probing the expansion history of the Universe and the growth of cosmic structure, with the goal of measuring the effects of dark energy, the consistency of general relativity, and the curvature of spacetime.",
-    "image": null,
-    "orbit": {
-     "id": 16,
-     "name": "Sun-Earth L2",
-     "abbrev": "L2",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 87,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/87/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 121,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-      "name": "SpaceX",
-      "abbrev": "SpX",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 2,
-        "name": "United States of America",
-        "alpha_2_code": "US",
-        "alpha_3_code": "USA",
-        "nationality_name": "American",
-        "nationality_name_composed": "Americano"
-       }
-      ],
-      "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-      "administrator": "CEO: Elon Musk",
-      "founding_year": 2002,
-      "launchers": "Falcon | Starship",
-      "spacecraft": "Dragon",
-      "parent": null,
-      "image": {
-       "id": 1736,
-       "name": "Falcon 9 liftoff from LC-39A",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 186,
-       "name": "SpaceX logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 94,
-       "name": "SpaceX social logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      }
-     }
-    ],
-    "name": "Launch Complex 39A",
-    "image": {
-     "id": 2119,
-     "name": "FH liftoff from LC-39A (GOES-U)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/fh_liftoff_from_image_20240626200232.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/fh_liftoff_from_image_thumbnail_20240626200233.jpeg",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "description": "",
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/Kennedy_Space_Center_Launch_Complex_39#Launch_Pad_39A",
-    "map_url": "https://www.google.com/maps?q=28.60822681,-80.60428186",
-    "latitude": 28.60822681,
-    "longitude": -80.60428186,
-    "country": {
-     "id": 2,
-     "name": "United States of America",
-     "alpha_2_code": "US",
-     "alpha_3_code": "USA",
-     "nationality_name": "American",
-     "nationality_name_composed": "Americano"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_87_20200803143537.jpg",
-    "total_launch_count": 223,
-    "orbital_launch_attempt_count": 222,
-    "fastest_turnaround": "P5DT6H20M30S",
-    "location": {
-     "response_mode": "normal",
-     "id": 27,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/27/",
-     "name": "Kennedy Space Center, FL, USA",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7630,
-      "successful_launches": 7073,
-      "failed_launches": 557,
-      "total_attempted_landings": 1372,
-      "successful_landings": 1323,
-      "failed_landings": 49
-     },
-     "active": true,
-     "country": {
-      "id": 2,
-      "name": "United States of America",
-      "alpha_2_code": "US",
-      "alpha_3_code": "USA",
-      "nationality_name": "American",
-      "nationality_name_composed": "Americano"
-     },
-     "description": "The John F. Kennedy Space Center, located on Merritt Island, Florida, is one of NASA's ten field centers. Since 1968, KSC has been NASA's primary launch center of American spaceflight, research, and technology. Launch operations for the Apollo, Skylab and Space Shuttle programs were carried out from Kennedy Space Center Launch Complex 39 and managed by KSC. Located on the east coast of Florida, KSC is adjacent to Cape Canaveral Space Force Station (CCSFS).",
-     "image": {
-      "id": 2200,
-      "name": "Cape Canaveral & KSC seen from orbit (STS-43)",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_20240918151615.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_thumbnail_20240918151616.jpeg",
-      "credit": "NASA",
-      "license": {
-       "id": 4,
-       "name": "NASA Image and Media Guidelines",
-       "priority": 0,
-       "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_27_20200803142447.jpg",
-     "longitude": -80.650833,
-     "latitude": 28.524167,
-     "timezone_name": "America/New_York",
-     "total_launch_count": 282,
-     "total_landing_count": 0
-    }
-   },
-   "webcast_live": false,
-   "program": [],
-   "orbital_launch_attempt_count": 7379,
-   "location_launch_attempt_count": 282,
-   "pad_launch_attempt_count": 223,
-   "agency_launch_attempt_count": 724,
-   "orbital_launch_attempt_count_year": 206,
-   "location_launch_attempt_count_year": 3,
-   "pad_launch_attempt_count_year": 2,
-   "agency_launch_attempt_count_year": 105,
-   "flightclub_url": "https://flightclub.io/result?llId=521f3a1c-f977-4306-9b7f-495858719adf",
-   "updates": [
-    {
-     "id": 15987,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Launch success with telescope solar panels/sunshade deployed.",
-     "info_url": "https://www.nasa.gov/news-release/nasas-dark-universe-seeking-nancy-grace-roman-space-telescope-launches/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-30T13:30:00Z"
-    },
-    {
-     "id": 15984,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/lucas2520stauder_profile_20230526163835.jpg",
-     "comment": "Payload deployed.",
-     "info_url": "https://x.com/i/broadcasts/1jxXgBanvZeJZ",
-     "created_by": "hitura-nobad",
-     "created_on": "2026-08-30T11:59:00Z"
-    },
-    {
-     "id": 15983,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/lucas2520stauder_profile_20230526163835.jpg",
-     "comment": "Liftoff!",
-     "info_url": "https://x.com/i/broadcasts/1jxXgBanvZeJZ",
-     "created_by": "hitura-nobad",
-     "created_on": "2026-08-30T11:26:00Z"
-    },
-    {
-     "id": 15982,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Updated launch weather, 70% GO.",
-     "info_url": "https://x.com/NASAKennedy/status/2094005808635781530",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-30T10:20:00Z"
-    },
-    {
-     "id": 15981,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/ll2_profile_20230311134739.png",
-     "comment": "Official Webcast by NASA has started",
-     "info_url": "https://www.youtube.com/watch?v=9wq3VHsL_bE",
-     "created_by": "LL2",
-     "created_on": "2026-08-30T10:19:00Z"
-    },
-    {
-     "id": 15980,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/lucas2520stauder_profile_20230526163835.jpg",
-     "comment": "Now targeting Aug 30 at 11:26 UTC",
-     "info_url": "https://www.spacex.com/launches/roman",
-     "created_by": "hitura-nobad",
-     "created_on": "2026-08-30T09:46:00Z"
-    },
-    {
-     "id": 15978,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Updated launch weather, 50% GO (launch window per https://x.com/spaceflightnow/status/2093717878302216462).",
-     "info_url": "https://45thweathersquadron.nebula.spaceforce.mil/assets/LaunchForecasts/Falcon%20Heavy%20Roman%20Space%20Telescope%20L-1%20Forecast%20-%2030%20Aug%20Launch.pdf",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-29T15:22:00Z"
-    },
-    {
-     "id": 15974,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/lucas2520stauder_profile_20230526163835.jpg",
-     "comment": "Now targeting Aug 30 at 11:25 UTC",
-     "info_url": "https://www.spacex.com/launches/roman",
-     "created_by": "hitura-nobad",
-     "created_on": "2026-08-29T11:45:00Z"
-    },
-    {
-     "id": 15967,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Updated launch weather, 60% GO.",
-     "info_url": "https://45thweathersquadron.nebula.spaceforce.mil/assets/LaunchForecasts/Falcon%20Heavy%20Roman%20Space%20Telescope%20L-2%20Forecast%20-%2030%20Aug%20Launch.pdf",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-28T14:50:00Z"
-    },
-    {
-     "id": 15912,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "GO for launch.",
-     "info_url": "https://www.spacex.com/launches/roman",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-20T20:34:00Z"
-    },
-    {
-     "id": 15679,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Tweaked T-0.",
-     "info_url": "https://science.nasa.gov/blogs/roman/2026/07/27/nasa-fuels-roman-space-telescope-for-late-august-launch/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-07-27T22:39:00Z"
-    },
-    {
-     "id": 15589,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Setting GO.",
-     "info_url": "https://www.nasa.gov/news-release/nasa-invites-media-to-roman-space-telescope-crew-13-launches/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-07-17T18:31:00Z"
-    },
-    {
-     "id": 15578,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Added tentative launch time.",
-     "info_url": "https://www.launchphotography.com/Launch_Viewing_Guide.html",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-07-16T20:48:00Z"
-    },
-    {
-     "id": 15152,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET August 30.",
-     "info_url": "https://x.com/jeff_foust/status/2061872245526405210",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-06-02T18:10:00Z"
-    },
-    {
-     "id": 14983,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET late August.",
-     "info_url": "https://www.launchphotography.com/Launch_Viewing_Guide.html",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-05-16T12:17:00Z"
-    },
-    {
-     "id": 14771,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "May move up to NET early September.",
-     "info_url": "https://x.com/NASAAdmin/status/2046595795583955209",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-04-21T15:02:00Z"
-    },
-    {
-     "id": 13558,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September 28.",
-     "info_url": "https://spacenews.com/roman-space-telescope-on-track-for-september-launch/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-01-08T20:09:00Z"
-    },
-    {
-     "id": 13540,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September.",
-     "info_url": "https://arstechnica.com/space/2026/01/here-are-the-launches-and-landings-were-most-excited-about-in-2026/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-01-07T15:51:00Z"
-    },
-    {
-     "id": 2108,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
-     "comment": "Adding launch NET October 2026",
-     "info_url": "https://www.nasa.gov/press-release/nasa-awards-launch-services-contract-for-roman-space-telescope",
-     "created_by": "Nosu",
-     "created_on": "2022-07-20T07:04:29Z"
-    }
-   ],
-   "info_urls": [
-    {
-     "priority": 10,
-     "source": "spacex.com",
-     "title": "SpaceX",
-     "description": "SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded in 2002 to revolutionize space technology, with the ultimate goal of enabling people to live on other planets.",
-     "feature_image": null,
-     "url": "https://www.spacex.com/launches/roman",
-     "type": {
-      "id": 1,
-      "name": "Official Page"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     }
-    }
-   ],
-   "vid_urls": [
-    {
-     "priority": 9,
-     "source": "youtube.com",
-     "publisher": "NASA",
-     "title": "Nancy Grace Roman Space Telescope Launch",
-     "description": "Tune in to watch our newest orbiting observatory launch to space. Our Roman Space Telescope is scheduled to lift off at 7:26 a.m. EDT (1126 UTC) on a SpaceX Falcon Heavy rocket from Launch Complex 39A at NASA's Kennedy Space Center in Florida.\n\nNamed after NASA’s first chief astronomer, the Nancy Grace Roman Space Telescope will have a deep, panoramic view of the cosmos, producing images over 100 times larger than our Hubble Space Telescope, but with the same crisp resolution. With its wide view and sophisticated host of tools, Roman will help us discover new exoplanets and untangle cosmic mysteries such as the nature of dark matter and dark energy.\n\nIt will make its home in orbit 1 million miles away from Earth at the second Sun-Earth Lagrange point, where gravitational forces balanc...",
-     "feature_image": "https://i.ytimg.com/vi/9wq3VHsL_bE/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=9wq3VHsL_bE",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-08-30T10:19:18Z",
-     "end_time": "2026-08-30T12:09:55Z",
-     "live": false
-    },
-    {
-     "priority": 10,
-     "source": "x.com",
-     "publisher": "SpaceX",
-     "title": "Roman Space Telescope Mission",
-     "description": "Livestream on X",
-     "feature_image": "https://pbs.twimg.com/media/HQLUbKEWQAA57v3.jpg",
-     "url": "https://x.com/i/broadcasts/1jxXgBanvZeJZ",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-08-30T10:17:55Z",
-     "end_time": "2026-08-30T12:09:26Z",
-     "live": false
-    },
-    {
-     "priority": 11,
-     "source": "plus.nasa.gov",
-     "publisher": "NASA",
-     "title": "Nancy Grace Roman Space Telescope Launch",
-     "description": "Watch the launch of the Nancy Grace Roman Space Telescope, which is equipped with tools to detect and study exoplanets orbiting distant stars.",
-     "feature_image": "https://plus.nasa.gov/wp-content/uploads/2026/08/roman-launch-day-option-key-art-r2-horizontal-program-tile-16-9-without-title.jpg",
-     "url": "https://plus.nasa.gov/scheduled-video/nancy-grace-roman-space-telescope-launch/",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-08-30T10:20:00Z",
-     "end_time": "2026-08-30T15:00:00Z",
-     "live": false
-    }
-   ],
-   "timeline": [
-    {
-     "type": {
-      "id": 1,
-      "abbrev": "GO for Prop Load",
-      "description": "Launch director verifies go for propellant load"
-     },
-     "relative_time": "-PT53M"
-    },
-    {
-     "type": {
-      "id": 108,
-      "abbrev": "Stage 1 Propellant Load",
-      "description": "Start of propellant loading in the first stage"
-     },
-     "relative_time": "-PT50M"
-    },
-    {
-     "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
-     },
-     "relative_time": "-PT45M"
-    },
-    {
-     "type": {
-      "id": 109,
-      "abbrev": "Stage 2 Propellant Load",
-      "description": "Start of propellant loading in the second stage"
-     },
-     "relative_time": "-PT35M"
-    },
-    {
-     "type": {
-      "id": 4,
-      "abbrev": "Stage 2 LOX Load",
-      "description": "Start of liquid oxygen loading in the second stage"
-     },
-     "relative_time": "-PT18M30S"
-    },
-    {
-     "type": {
-      "id": 5,
-      "abbrev": "Engine Chill",
-      "description": "Start of engine chilling"
-     },
-     "relative_time": "-PT7M"
-    },
-    {
-     "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
-     },
-     "relative_time": "-PT59S"
-    },
-    {
-     "type": {
-      "id": 8,
-      "abbrev": "GO for Launch",
-      "description": "Launch director verifies go for launch"
-     },
-     "relative_time": "-PT45S"
-    },
-    {
-     "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
-     },
-     "relative_time": "-PT20S"
-    },
-    {
-     "type": {
-      "id": 9,
-      "abbrev": "Ignition",
-      "description": "Start of the engine ignition sequence"
-     },
-     "relative_time": "-PT6S"
-    },
-    {
-     "type": {
-      "id": 10,
-      "abbrev": "Liftoff",
-      "description": "First upwards movement of the rocket"
-     },
-     "relative_time": "P0D"
-    },
-    {
-     "type": {
-      "id": 11,
-      "abbrev": "Max-Q",
-      "description": "Maximum dynamic pressure"
-     },
-     "relative_time": "PT1M8S"
-    },
-    {
-     "type": {
-      "id": 110,
-      "abbrev": "SBECO",
-      "description": "Cut-off of the side boosters"
-     },
-     "relative_time": "PT2M24S"
-    },
-    {
-     "type": {
-      "id": 111,
-      "abbrev": "Boosters Separation",
-      "description": "Separation of the side boosters"
-     },
-     "relative_time": "PT2M27S"
-    },
-    {
-     "type": {
-      "id": 259,
-      "abbrev": "Boosters Flip",
-      "description": "Flip maneuver of the side boosters"
-     },
-     "relative_time": "PT2M32S"
-    },
-    {
-     "type": {
-      "id": 112,
-      "abbrev": "Boosters Boostback Burn Startup",
-      "description": "Start of the boosters boostback burn"
-     },
-     "relative_time": "PT2M43S"
-    },
-    {
-     "type": {
-      "id": 113,
-      "abbrev": "Boosters Boostback Burn Shutdown",
-      "description": "End of the boosters boostback burn"
-     },
-     "relative_time": "PT3M48S"
-    },
-    {
-     "type": {
-      "id": 12,
-      "abbrev": "MECO",
-      "description": "Cut-off of the main engine"
-     },
-     "relative_time": "PT3M51S"
-    },
-    {
-     "type": {
-      "id": 13,
-      "abbrev": "Stage 2 Separation",
-      "description": "Separation of the second stage from the first"
-     },
-     "relative_time": "PT3M54S"
-    },
-    {
-     "type": {
-      "id": 14,
-      "abbrev": "SES-1",
-      "description": "First start of the second engine"
-     },
-     "relative_time": "PT4M"
-    },
-    {
-     "type": {
-      "id": 15,
-      "abbrev": "Fairing Separation",
-      "description": "Separation of the payload fairing"
-     },
-     "relative_time": "PT4M15S"
-    },
-    {
-     "type": {
-      "id": 114,
-      "abbrev": "Boosters Entry Burn Startup",
-      "description": "Start of the boosters atmospheric entry burn"
-     },
-     "relative_time": "PT6M19S"
-    },
-    {
-     "type": {
-      "id": 115,
-      "abbrev": "Boosters Entry Burn Shutdown",
-      "description": "End of the boosters atmospheric entry burn"
-     },
-     "relative_time": "PT6M29S"
-    },
-    {
-     "type": {
-      "id": 116,
-      "abbrev": "Boosters Landing Burn",
-      "description": "Start of the boosters landing burn"
-     },
-     "relative_time": "PT7M23S"
-    },
-    {
-     "type": {
-      "id": 117,
-      "abbrev": "Boosters Landing",
-      "description": "Landing of the boosters"
-     },
-     "relative_time": "PT7M40S"
-    },
-    {
-     "type": {
-      "id": 20,
-      "abbrev": "SECO-1",
-      "description": "First cut-off of the second engine"
-     },
-     "relative_time": "PT8M28S"
-    },
-    {
-     "type": {
-      "id": 21,
-      "abbrev": "SES-2",
-      "description": "Second start of the second engine"
-     },
-     "relative_time": "PT24M33S"
-    },
-    {
-     "type": {
-      "id": 22,
-      "abbrev": "SECO-2",
-      "description": "Second cut-off of the second engine"
-     },
-     "relative_time": "PT26M32S"
-    },
-    {
-     "type": {
-      "id": 35,
-      "abbrev": "Payload Separation",
-      "description": "Final deployment of the payload from the rocket"
-     },
-     "relative_time": "PT31M31S"
-    }
-   ],
-   "pad_turnaround": "P122DT21H13M4S",
-   "mission_patches": [
-    {
-     "id": 1341,
-     "name": "Roman",
-     "priority": 10,
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/mission_patch_images/roman_mission_patch_20260830094614.png",
-     "agency": {
-      "response_mode": "list",
-      "id": 121,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-      "name": "SpaceX",
-      "abbrev": "SpX",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      }
-     },
-     "response_mode": "normal"
-    }
-   ]
-  },
   {
    "id": "a927b2f9-f9a5-4196-9abb-2e275e4a6b96",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/a927b2f9-f9a5-4196-9abb-2e275e4a6b96/",
@@ -2740,7 +775,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -2927,7 +962,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -3121,7 +1156,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -3395,7 +1430,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -3675,7 +1710,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -3900,7 +1935,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -5605,7 +3640,7 @@
     "consecutive_successful_launches": 1,
     "successful_launches": 85,
     "failed_launches": 15,
-    "pending_launches": 21,
+    "pending_launches": 20,
     "consecutive_successful_landings": 0,
     "successful_landings": 0,
     "failed_landings": 0,
@@ -5709,7 +3744,7 @@
          "consecutive_successful_launches": 1,
          "successful_launches": 85,
          "failed_launches": 15,
-         "pending_launches": 21,
+         "pending_launches": 20,
          "consecutive_successful_landings": 0,
          "successful_landings": 0,
          "failed_landings": 0,
@@ -5733,7 +3768,7 @@
        "consecutive_successful_launches": 10,
        "successful_launches": 22,
        "failed_launches": 6,
-       "pending_launches": 12,
+       "pending_launches": 11,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -5820,7 +3855,7 @@
       "consecutive_successful_launches": 1,
       "successful_launches": 85,
       "failed_launches": 15,
-      "pending_launches": 21,
+      "pending_launches": 20,
       "consecutive_successful_landings": 0,
       "successful_landings": 0,
       "failed_landings": 0,
@@ -5873,7 +3908,7 @@
      "consecutive_successful_launches": 5,
      "successful_launches": 11,
      "failed_launches": 2,
-     "pending_launches": 5,
+     "pending_launches": 4,
      "attempted_landings": 0,
      "successful_landings": 0,
      "failed_landings": 0,
@@ -5977,7 +4012,7 @@
       "consecutive_successful_launches": 1,
       "successful_launches": 85,
       "failed_launches": 15,
-      "pending_launches": 21,
+      "pending_launches": 20,
       "consecutive_successful_landings": 0,
       "successful_landings": 0,
       "failed_landings": 0,
@@ -7569,7 +5604,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -7756,7 +5791,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -7950,7 +5985,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -8224,7 +6259,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -8504,7 +6539,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -8729,7 +6764,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -9505,7 +7540,7 @@
     "consecutive_successful_launches": 8,
     "successful_launches": 601,
     "failed_launches": 16,
-    "pending_launches": 7,
+    "pending_launches": 8,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -9609,7 +7644,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -9720,7 +7755,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -9911,7 +7946,7 @@
       "consecutive_successful_launches": 8,
       "successful_launches": 601,
       "failed_launches": 16,
-      "pending_launches": 7,
+      "pending_launches": 8,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -10271,7 +8306,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -10458,7 +8493,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -10652,7 +8687,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -10926,7 +8961,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -11206,7 +9241,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -11722,17 +9757,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -12639,7 +10674,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -12826,7 +10861,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -13020,7 +11055,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -13294,7 +11329,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -13574,7 +11609,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -14189,17 +12224,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -14221,17 +12256,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -17647,8 +15682,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P12DT12H40M3S",
-       "time_docked": "P9DT12H29M37S",
+       "time_in_space": "P13DT12H46M",
+       "time_docked": "P10DT12H35M35S",
        "flights_count": 1,
        "mission_ends_count": 0,
        "status": {
@@ -17935,7 +15970,7 @@
         "description": "Spacecraft burned up in the atmosphere"
        }
       },
-      "duration": "P12DT12H44M13.257994S",
+      "duration": "P13DT12H50M17.415283S",
       "turn_around_time": null,
       "response_mode": "detailed",
       "launch_crew": [],
@@ -18651,7 +16686,7 @@
     "consecutive_successful_launches": 8,
     "successful_launches": 601,
     "failed_launches": 16,
-    "pending_launches": 7,
+    "pending_launches": 8,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -18755,7 +16790,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -18866,7 +16901,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -19057,7 +17092,7 @@
       "consecutive_successful_launches": 8,
       "successful_launches": 601,
       "failed_launches": 16,
-      "pending_launches": 7,
+      "pending_launches": 8,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -19110,7 +17145,7 @@
      "consecutive_successful_launches": 8,
      "successful_launches": 8,
      "failed_launches": 0,
-     "pending_launches": 0,
+     "pending_launches": 1,
      "attempted_landings": 0,
      "successful_landings": 0,
      "failed_landings": 0,
@@ -19433,7 +17468,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -19620,7 +17655,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -19814,7 +17849,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -20088,7 +18123,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -20368,7 +18403,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -20916,17 +18951,17 @@
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
@@ -23278,7 +21313,7 @@
     "consecutive_successful_launches": 8,
     "successful_launches": 601,
     "failed_launches": 16,
-    "pending_launches": 7,
+    "pending_launches": 8,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -23382,7 +21417,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -23493,7 +21528,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -23684,7 +21719,7 @@
       "consecutive_successful_launches": 8,
       "successful_launches": 601,
       "failed_launches": 16,
-      "pending_launches": 7,
+      "pending_launches": 8,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -24036,7 +22071,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -24223,7 +22258,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -24417,7 +22452,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -24691,7 +22726,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -24971,7 +23006,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -25196,7 +23231,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -25656,17 +23691,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -26367,7 +24402,7 @@
     "consecutive_successful_launches": 8,
     "successful_launches": 601,
     "failed_launches": 16,
-    "pending_launches": 7,
+    "pending_launches": 8,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -26471,7 +24506,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -26582,7 +24617,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -26773,7 +24808,7 @@
       "consecutive_successful_launches": 8,
       "successful_launches": 601,
       "failed_launches": 16,
-      "pending_launches": 7,
+      "pending_launches": 8,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -27166,7 +25201,7 @@
     "consecutive_successful_launches": 8,
     "successful_launches": 601,
     "failed_launches": 16,
-    "pending_launches": 7,
+    "pending_launches": 8,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -27270,7 +25305,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -27381,7 +25416,7 @@
          "consecutive_successful_launches": 8,
          "successful_launches": 601,
          "failed_launches": 16,
-         "pending_launches": 7,
+         "pending_launches": 8,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -27572,7 +25607,7 @@
       "consecutive_successful_launches": 8,
       "successful_launches": 601,
       "failed_launches": 16,
-      "pending_launches": 7,
+      "pending_launches": 8,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -28671,7 +26706,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -28858,7 +26893,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -29052,7 +27087,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -29326,7 +27361,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -29606,7 +27641,7 @@
      "consecutive_successful_launches": 336,
      "successful_launches": 633,
      "failed_launches": 1,
-     "pending_launches": 110,
+     "pending_launches": 115,
      "attempted_landings": 624,
      "successful_landings": 619,
      "failed_landings": 5,
@@ -30122,17 +28157,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -30154,17 +28189,17 @@
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
@@ -30281,7 +28316,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-09-29T00:03:59Z",
+   "last_updated": "2026-09-29T15:33:32Z",
    "net": "2026-09-28T12:48:59Z",
    "net_precision": {
     "id": 0,
@@ -30292,10 +28327,10 @@
    "window_end": "2026-09-28T13:30:00Z",
    "window_start": "2026-09-28T12:15:00Z",
    "image": {
-    "id": 2791,
-    "name": "Starship on the launch pad during sunset (Flight-13)",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/starship_on_the_image_20260724044615.jpg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/starship_on_the_image_thumbnail_20260724044615.jpeg",
+    "id": 2807,
+    "name": "Starship liftoff from Pad 2 (Flight 14)",
+    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/starship_liftof_image_20260929153327.jpg",
+    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/starship_liftof_image_thumbnail_20260929153328.jpeg",
     "credit": "SpaceX",
     "license": {
      "id": 1,
@@ -30387,7 +28422,7 @@
     "consecutive_successful_launches": 217,
     "successful_launches": 717,
     "failed_launches": 15,
-    "pending_launches": 127,
+    "pending_launches": 132,
     "consecutive_successful_landings": 25,
     "successful_landings": 676,
     "failed_landings": 29,
@@ -30574,7 +28609,7 @@
          "consecutive_successful_launches": 217,
          "successful_launches": 717,
          "failed_launches": 15,
-         "pending_launches": 127,
+         "pending_launches": 132,
          "consecutive_successful_landings": 25,
          "successful_landings": 676,
          "failed_landings": 29,
@@ -30768,7 +28803,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -31473,7 +29508,7 @@
       "consecutive_successful_launches": 217,
       "successful_launches": 717,
       "failed_launches": 15,
-      "pending_launches": 127,
+      "pending_launches": 132,
       "consecutive_successful_landings": 25,
       "successful_landings": 676,
       "failed_landings": 29,
@@ -32215,17 +30250,17 @@
     },
     {
      "type": {
-      "id": 10,
-      "abbrev": "Liftoff",
-      "description": "First upwards movement of the rocket"
+      "id": 91,
+      "abbrev": "Excitement Guaranteed",
+      "description": "Excitement guaranteed"
      },
      "relative_time": "P0D"
     },
     {
      "type": {
-      "id": 91,
-      "abbrev": "Excitement Guaranteed",
-      "description": "Excitement guaranteed"
+      "id": 10,
+      "abbrev": "Liftoff",
+      "description": "First upwards movement of the rocket"
      },
      "relative_time": "P0D"
     },
