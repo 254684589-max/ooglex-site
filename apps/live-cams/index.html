@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>环球实景 · 转动地球看世界</title>
+<meta name="description" content="在 3D 地球上浏览全球公开摄像头与延时实景。首期使用 Windy Webcams 免费公开嵌入源。">
+<link rel="canonical" href="https://www.ooglex.com/apps/live-cams/">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<meta name="theme-color" content="#05070f">
+<script>
+(function(){try{var d=document.documentElement,t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",t||"dark");}catch(e){}})();
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#eef5ff;--dim:#93a4c8;--green:#3dff9e;--blue:#5b8cff;--amber:#ffd166;
+  --panel:rgba(8,13,28,.82);--panel2:rgba(13,20,42,.94);--line:rgba(130,160,225,.24);
+}
+html,body{width:100%;height:100%;overflow:hidden;background:#05070f;color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+button,input,select{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+#space{position:fixed;inset:0;background:
+radial-gradient(1000px 620px at 74% 16%,rgba(91,140,255,.16),transparent 60%),
+radial-gradient(900px 620px at 18% 82%,rgba(157,108,255,.13),transparent 60%),
+radial-gradient(circle at 50% 50%,#0a1024 0%,#05070f 72%,#020309 100%);z-index:0}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+#globe{position:fixed;inset:0;z-index:1}
+.top{position:fixed;left:0;right:0;top:0;z-index:8;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:inherit}
+.logo{font-weight:850;letter-spacing:.16em;background:linear-gradient(90deg,var(--green),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:.75rem;color:var(--dim);letter-spacing:.12em}
+.beta{font-size:.67rem;color:var(--amber);border:1px solid rgba(255,209,102,.35);padding:3px 8px;border-radius:999px;background:rgba(255,209,102,.08)}
+.home{margin-left:auto;color:var(--dim);text-decoration:none;font-size:.84rem}
+.search-row{flex-basis:100%;display:flex;gap:8px;max-width:680px}
+.search{flex:1;min-width:0;position:relative}
+.search input{width:100%;height:42px;border-radius:999px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(14px);color:var(--ink);padding:0 15px 0 40px}
+.search:before{content:"⌕";position:absolute;left:15px;top:8px;color:var(--dim);font-size:1.2rem}
+.mode{height:42px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:0 13px}
+#status{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9;display:none;max-width:min(88vw,420px);padding:14px 18px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);color:var(--dim);text-align:center;backdrop-filter:blur(14px)}
+#status.show{display:block}
+.stats{position:fixed;left:18px;bottom:18px;z-index:7;display:flex;gap:8px;flex-wrap:wrap;max-width:calc(100vw - 380px)}
+.pill{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px);border-radius:999px;padding:8px 11px;font-size:.76rem;color:var(--dim)}
+.pill b{color:var(--ink)}
+.actions{position:fixed;right:18px;bottom:18px;z-index:7;display:flex;gap:8px}
+.actions button{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:9px 13px;cursor:pointer;backdrop-filter:blur(12px)}
+.actions button:hover{border-color:var(--green)}
+#cameraList{position:fixed;right:18px;top:118px;z-index:7;width:min(330px,calc(100vw - 36px));max-height:calc(100vh - 190px);display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:var(--panel);backdrop-filter:blur(14px);overflow:hidden}
+.list-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.list-head h2{font-size:.88rem;letter-spacing:.08em}
+.list-head span{font-size:.72rem;color:var(--dim)}
+#listBody{overflow:auto;padding:6px}
+.cam-row{width:100%;border:0;background:transparent;color:inherit;text-align:left;border-radius:11px;padding:10px;cursor:pointer;display:grid;grid-template-columns:10px 1fr auto;gap:9px;align-items:center}
+.cam-row:hover,.cam-row.on{background:rgba(255,255,255,.06)}
+.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 9px currentColor}
+.dot.live{color:var(--green);background:var(--green)}
+.dot.timelapse{color:var(--blue);background:var(--blue)}
+.cam-main{min-width:0}
+.cam-name{display:block;font-size:.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cam-loc{display:block;font-size:.72rem;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cam-type{font-size:.66rem;color:var(--dim);border:1px solid var(--line);padding:2px 6px;border-radius:999px}
+#viewer{position:fixed;left:18px;bottom:18px;z-index:12;width:min(620px,calc(100vw - 36px));display:none;border:1px solid var(--line);border-radius:18px;background:var(--panel2);box-shadow:0 22px 70px rgba(0,0,0,.55);overflow:hidden}
+#viewer.show{display:block}
+.v-head{padding:12px 14px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--line)}
+.v-title{min-width:0;flex:1}
+.v-title h2{font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-title p{font-size:.76rem;color:var(--dim);margin-top:3px}
+.badge{font-size:.68rem;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.badge.live{color:#072116;background:var(--green)}
+.badge.timelapse{color:#eaf1ff;background:rgba(91,140,255,.28);border:1px solid rgba(91,140,255,.42)}
+.close{border:0;background:transparent;color:var(--dim);font-size:1.35rem;line-height:1;cursor:pointer;padding:2px 4px}
+.frame-wrap{aspect-ratio:16/9;background:#02040a;position:relative}
+#camFrame{width:100%;height:100%;border:0;display:block;background:#02040a}
+.v-foot{padding:10px 14px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.72rem;color:var(--dim)}
+.v-foot a{color:#9fc1ff;text-decoration:none}
+.note{margin-left:auto;max-width:58%;text-align:right}
+.legend{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;pointer-events:none;width:108px;height:108px;border:1px solid rgba(255,255,255,.28);border-radius:50%;box-shadow:0 0 30px rgba(255,255,255,.08)}
+.legend:after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:rgba(255,255,255,.72)}
+@media(max-width:860px){
+  #cameraList{top:auto;bottom:74px;right:12px;width:min(300px,calc(100vw - 24px));max-height:34vh}
+  .stats{left:12px;bottom:12px;max-width:calc(100vw - 150px)}
+  .actions{right:12px;bottom:12px}
+  .home{display:none}
+  #viewer{left:8px;bottom:8px;width:calc(100vw - 16px)}
+  .note{max-width:100%;margin-left:0;text-align:left}
+}
+@media(max-width:560px){
+  .top{padding:10px 12px;gap:8px}
+  .sub{display:none}
+  .search-row{gap:6px}
+  .mode{max-width:112px}
+  #cameraList{display:none}
+  .stats{max-width:calc(100vw - 120px)}
+  .pill:nth-child(3){display:none}
+  #viewer{border-radius:16px}
+  .v-head{padding:10px 12px}
+  .v-foot{padding:9px 12px 11px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="space"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div id="globe" aria-hidden="true"></div>
+<div class="legend" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="./" aria-label="环球实景首页"><span class="logo">OOGLEX</span><span class="sub">环球实景 · GLOBAL LIVE CAMS</span></a>
+  <span class="beta">V1 PREVIEW</span>
+  <a class="home" href="../../">← 返回 Ooglex</a>
+  <div class="search-row">
+    <label class="search"><span style="position:absolute;left:-9999px">搜索摄像头</span><input id="q" type="search" placeholder="搜索城市、国家或摄像头…" autocomplete="off"></label>
+    <label><span style="position:absolute;left:-9999px">类型筛选</span><select id="mode" class="mode"><option value="all">全部</option><option value="live">直播</option><option value="timelapse">延时/最新画面</option></select></label>
+  </div>
+</header>
+
+<div id="status" role="status" aria-live="polite"></div>
+
+<aside id="cameraList" aria-label="公开摄像头列表">
+  <div class="list-head"><h2>公开摄像头</h2><span id="listCount">0</span></div>
+  <div id="listBody"></div>
+</aside>
+
+<section id="viewer" role="dialog" aria-modal="false" aria-labelledby="camTitle">
+  <div class="v-head">
+    <div class="v-title"><h2 id="camTitle">摄像头</h2><p id="camLoc"></p></div>
+    <span id="camBadge" class="badge timelapse">延时</span>
+    <button id="closeViewer" class="close" type="button" aria-label="关闭播放器">×</button>
+  </div>
+  <div class="frame-wrap"><iframe id="camFrame" title="公开摄像头播放器" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+  <div class="v-foot">
+    <span id="camProvider"></span>
+    <a id="camSource" href="https://www.windy.com/webcams" target="_blank" rel="noopener noreferrer">查看来源 ↗</a>
+    <span class="note">Webcams provided by Windy.com · 直播与延时画面以源站状态为准</span>
+  </div>
+</section>
+
+<div class="stats" aria-live="polite">
+  <span class="pill"><b id="allN">0</b> 个公开点位</span>
+  <span class="pill"><b id="liveN">0</b> 个直播</span>
+  <span class="pill"><b id="tlN">0</b> 个延时/最新画面</span>
+</div>
+<div class="actions">
+  <button id="randomBtn" type="button">随机看看</button>
+  <button id="resetBtn" type="button">重置</button>
+</div>
+
+<script src="/apps/radio/vendor/globe.gl.min.js"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
