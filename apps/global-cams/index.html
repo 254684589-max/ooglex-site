@@ -6,41 +6,54 @@
 <title>环球实景 · Ooglex</title>
 <meta name="description" content="转动 3D 地球，查看全球公开摄像头与实时实景。">
 <style>
-:root{color-scheme:dark;--bg:#05070f;--panel:#0b1020;--line:#24304a;--text:#eef3ff;--muted:#9aa8c3;--accent:#4ee7b7}
+:root{color-scheme:dark;--bg:#05070f;--panel:#0b1020;--line:#24304a;--text:#eef3ff;--muted:#9aa8c3;--accent:#4ee7b7;--warn:#ffd36b}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+button,input{font:inherit}button{color:inherit}
 #globe{position:fixed;inset:0}
 .topbar{position:fixed;z-index:5;top:14px;left:14px;right:14px;display:flex;gap:10px;align-items:center;pointer-events:none}
-.brand,.search,.count{pointer-events:auto;background:rgba(5,7,15,.78);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
+.brand,.search,.count,.load-btn{pointer-events:auto;background:rgba(5,7,15,.80);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
 .brand{padding:10px 13px;font-weight:700}.brand span{color:var(--accent)}
-.search{flex:1;max-width:420px;padding:0 12px}.search input{width:100%;height:42px;border:0;outline:0;background:transparent;color:var(--text);font-size:14px}
-.count{padding:10px 12px;color:var(--muted);font-size:13px}
-.panel{position:fixed;z-index:6;right:16px;top:72px;width:min(390px,calc(100vw - 32px));max-height:calc(100vh - 88px);overflow:auto;background:rgba(7,11,24,.92);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:18px;padding:14px;display:none}
+.search{flex:1;max-width:380px;padding:0 12px}.search input{width:100%;height:42px;border:0;outline:0;background:transparent;color:var(--text);font-size:14px}
+.count{padding:10px 12px;color:var(--muted);font-size:13px;white-space:nowrap}
+.load-btn{height:42px;padding:0 14px;cursor:pointer}.load-btn:hover,.load-btn:focus-visible{border-color:var(--accent);outline:none}
+.status{position:fixed;z-index:5;left:14px;top:70px;max-width:min(520px,calc(100vw - 28px));padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(5,7,15,.78);color:var(--muted);font-size:12px;backdrop-filter:blur(12px)}
+.status[data-kind="demo"]{color:var(--warn)}.status[data-kind="error"]{color:#ff9b9b}.status[data-kind="live"]{color:var(--accent)}
+.panel{position:fixed;z-index:6;right:16px;top:72px;width:min(410px,calc(100vw - 32px));max-height:calc(100vh - 88px);overflow:auto;background:rgba(7,11,24,.94);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:18px;padding:14px;display:none}
 .panel.open{display:block}.panel h2{margin:0 0 6px;font-size:18px}.meta{color:var(--muted);font-size:13px;margin-bottom:12px}
 .viewer{aspect-ratio:16/9;background:#02040a;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;place-items:center}
-.viewer iframe,.viewer img{width:100%;height:100%;border:0;object-fit:cover}
-.actions{display:flex;gap:8px;margin-top:12px}.btn{flex:1;text-align:center;text-decoration:none;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#10172a}
-.btn.primary{background:#12382f;border-color:#246b59}.legend{position:fixed;left:14px;bottom:14px;z-index:5;background:rgba(5,7,15,.78);border:1px solid var(--line);border-radius:12px;padding:9px 11px;color:var(--muted);font-size:12px}
-@media(max-width:700px){.count{display:none}.panel{top:auto;bottom:12px;right:12px;left:12px;width:auto;max-height:52vh}.brand{font-size:14px}.topbar{right:12px;left:12px}}
+.viewer iframe,.viewer img{width:100%;height:100%;border:0;object-fit:cover}.viewer a{width:100%;height:100%;display:block}
+.actions{display:flex;gap:8px;margin-top:12px}.btn{flex:1;text-align:center;text-decoration:none;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#10172a;cursor:pointer}
+.btn.primary{background:#12382f;border-color:#246b59}
+.attribution{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.45}.attribution a{color:var(--muted)}
+.legend{position:fixed;left:14px;bottom:14px;z-index:5;background:rgba(5,7,15,.78);border:1px solid var(--line);border-radius:12px;padding:9px 11px;color:var(--muted);font-size:12px;max-width:calc(100vw - 28px)}
+@media(max-width:820px){.count{display:none}.topbar{flex-wrap:wrap}.search{order:3;flex-basis:100%;max-width:none}.status{top:118px}.panel{top:auto;bottom:12px;right:12px;left:12px;width:auto;max-height:50vh}.brand{font-size:14px}.load-btn{margin-left:auto}.legend{display:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <div id="globe"></div>
 <div class="topbar">
-  <div class="brand">🌐 环球实景 <span>V0.1</span></div>
-  <div class="search"><input id="search" placeholder="搜索国家、城市、摄像头…"></div>
+  <div class="brand">🌐 环球实景 <span>V0.2</span></div>
+  <div class="search"><input id="search" aria-label="搜索摄像头" placeholder="搜索已加载的国家、城市、摄像头…"></div>
+  <button class="load-btn" id="loadNearby" type="button">加载当前区域</button>
   <div class="count" id="count">载入中…</div>
 </div>
-<div class="panel" id="panel">
+<div class="status" id="status" data-kind="demo">正在载入演示点位…</div>
+<div class="panel" id="panel" aria-live="polite">
   <h2 id="camName">摄像头</h2>
   <div class="meta" id="camMeta"></div>
   <div class="viewer" id="viewer">选择地球上的摄像头点位</div>
   <div class="actions">
     <a class="btn primary" id="openSource" target="_blank" rel="noopener">打开官方来源</a>
-    <button class="btn" id="closePanel">关闭</button>
+    <button class="btn" id="closePanel" type="button">关闭</button>
+  </div>
+  <div class="attribution" id="attribution">
+    真实摄像头数据接入后显示来源与许可说明。
   </div>
 </div>
-<div class="legend">🟢 可播放/预览　⚪ 公开来源页 · 仅收录主动公开发布的摄像头</div>
+<div class="legend">🟢 可播放/预览　⚪ 来源页　· 仅收录主动公开发布的户外摄像头</div>
 <script src="../radio/vendor/globe.gl.min.js"></script>
+<script src="./config.js"></script>
 <script src="./app.js"></script>
 </body>
 </html>
