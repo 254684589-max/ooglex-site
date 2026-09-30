@@ -1,68 +1,74 @@
 [
   {
-    "name": "Times Square EarthCam（来源页）",
+    "name": "Times Square（演示点位）",
     "country": "United States",
     "city": "New York",
     "lat": 40.758,
     "lng": -73.9855,
     "category": "城市",
-    "source": "EarthCam",
+    "source": "演示数据",
     "source_url": "https://www.earthcam.com/usa/newyork/timessquare/",
-    "playable": false
+    "playable": false,
+    "demo": true
   },
   {
-    "name": "Shibuya Crossing（来源页）",
+    "name": "Shibuya Crossing（演示点位）",
     "country": "Japan",
     "city": "Tokyo",
     "lat": 35.6595,
     "lng": 139.7005,
     "category": "城市",
-    "source": "公开来源索引",
+    "source": "演示数据",
     "source_url": "https://www.youtube.com/results?search_query=shibuya+crossing+live+camera",
-    "playable": false
+    "playable": false,
+    "demo": true
   },
   {
-    "name": "Venice Grand Canal（来源页）",
+    "name": "Venice Grand Canal（演示点位）",
     "country": "Italy",
     "city": "Venice",
     "lat": 45.4372,
     "lng": 12.3346,
     "category": "城市/水岸",
-    "source": "公开来源索引",
+    "source": "演示数据",
     "source_url": "https://www.youtube.com/results?search_query=venice+live+webcam",
-    "playable": false
+    "playable": false,
+    "demo": true
   },
   {
-    "name": "Waikiki Beach（来源页）",
+    "name": "Waikiki Beach（演示点位）",
     "country": "United States",
     "city": "Honolulu",
     "lat": 21.2767,
     "lng": -157.8274,
     "category": "海滩",
-    "source": "公开来源索引",
+    "source": "演示数据",
     "source_url": "https://www.youtube.com/results?search_query=waikiki+live+camera",
-    "playable": false
+    "playable": false,
+    "demo": true
   },
   {
-    "name": "Reykjavík Harbor（来源页）",
+    "name": "Reykjavík Harbor（演示点位）",
     "country": "Iceland",
     "city": "Reykjavík",
     "lat": 64.1508,
     "lng": -21.939,
     "category": "港口",
-    "source": "公开来源索引",
+    "source": "演示数据",
     "source_url": "https://www.youtube.com/results?search_query=reykjavik+harbor+live+camera",
-    "playable": false
+    "playable": false,
+    "demo": true
   },
   {
-    "name": "Sydney Harbour（来源页）",
+    "name": "Sydney Harbour（演示点位）",
     "country": "Australia",
     "city": "Sydney",
     "lat": -33.8568,
     "lng": 151.2153,
     "category": "港口/城市",
-    "source": "公开来源索引",
+    "source": "演示数据",
     "source_url": "https://www.youtube.com/results?search_query=sydney+harbour+live+camera",
-    "playable": false
+    "playable": false,
+    "demo": true
   }
 ]
