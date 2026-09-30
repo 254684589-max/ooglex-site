@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "环球实景 V1 Preview",
+    "source": "Windy Webcams public embed",
+    "sourceUrl": "https://www.windy.com/webcams",
+    "asOf": "2026-10-01",
+    "updatedAt": "2026-10-01T00:50:00+08:00",
+    "status": "preview",
+    "demo": false,
+    "note": "首批公开摄像头为人工核对的 Windy 免费嵌入点位。live 表示上游提供直播入口；timelapse 表示最新画面/延时摄影，并非连续实时视频。地图坐标用于定位城市或景点，部分为地点级近似坐标。"
+  },
+  "cameras": [
+    {
+      "id": "windy-1793878258",
+      "name": "纽约 · 公共交通摄像头",
+      "city": "New York",
+      "country": "美国",
+      "lat": 40.7128,
+      "lng": -74.006,
+      "locationPrecision": "locality",
+      "mode": "timelapse",
+      "provider": "511NY · via Windy",
+      "embed": "https://webcams.windy.com/webcams/public/embed/player?forceFullScreenOnOverlayPlay=false&interactive=true&loop=false&playerType=day&webcamId=1793878258",
+      "sourceUrl": "https://webcams.windy.com/webcams/public/embed/player?forceFullScreenOnOverlayPlay=false&interactive=true&loop=false&playerType=lifetime&webcamId=1793878258"
+    },
+    {
+      "id": "windy-1420893641",
+      "name": "伦敦 · 特拉法加广场",
+      "city": "London",
+      "country": "英国",
+      "lat": 51.508,
+      "lng": -0.1281,
+      "locationPrecision": "landmark",
+      "mode": "timelapse",
+      "provider": "London Traffic · via Windy",
+      "embed": "https://webcams.windy.com/webcams/public/embed/player/1420893641/day",
+      "sourceUrl": "https://webcams.windy.com/webcams/public/embed/player/1420893641/day"
+    },
+    {
+      "id": "windy-1503353468",
+      "name": "悉尼 · 环形码头",
+      "city": "Sydney",
+      "country": "澳大利亚",
+      "lat": -33.861,
+      "lng": 151.2128,
+      "locationPrecision": "landmark",
+      "mode": "live",
+      "provider": "Public webcam · via Windy",
+      "embed": "https://webcams.windy.com/webcams/public/embed/player?forceFullScreenOnOverlayPlay=false&interactive=true&loop=true&playerType=day&webcamId=1503353468",
+      "sourceUrl": "https://webcams.windy.com/webcams/public/embed/player?forceFullScreenOnOverlayPlay=false&interactive=true&loop=true&playerType=year&webcamId=1503353468"
+    },
+    {
+      "id": "windy-1721795690",
+      "name": "悉尼 · 邦迪海滩",
+      "city": "Sydney",
+      "country": "澳大利亚",
+      "lat": -33.8915,
+      "lng": 151.2767,
+      "locationPrecision": "landmark",
+      "mode": "live",
+      "provider": "Bondi Surf Club · via Windy",
+      "embed": "https://webcams.windy.com/webcams/public/embed/player/1721795690/live",
+      "sourceUrl": "https://webcams.windy.com/webcams/public/embed/player/1721795690/live"
+    },
+    {
+      "id": "windy-1563307574",
+      "name": "布里恩茨 · 布里恩茨湖",
+      "city": "Brienz",
+      "country": "瑞士",
+      "lat": 46.7543,
+      "lng": 8.038,
+      "locationPrecision": "locality",
+      "mode": "timelapse",
+      "provider": "Public webcam · via Windy",
+      "embed": "https://webcams.windy.com/webcams/public/embed/player?forceFullScreenOnOverlayPlay=false&interactive=true&loop=false&playerType=day&webcamId=1563307574",
+      "sourceUrl": "https://embed.windy.com/config/webcam/1563307574"
+    },
+    {
+      "id": "windy-1606744814",
+      "name": "日本 · 美波町",
+      "city": "Minami",
+      "country": "日本",
+      "lat": 33.734,
+      "lng": 134.535,
+      "locationPrecision": "locality",
+      "mode": "timelapse",
+      "provider": "Kaifu public camera · via Windy",
+      "embed": "https://webcams.windy.com/webcams/public/embed/player?autoFullScreenOnOverlayPlay=0&autoPlay=0&interactive=1&loop=0&playerType=day&webcamId=1606744814",
+      "sourceUrl": "https://webcams.windy.com/webcams/public/embed/player?autoFullScreenOnOverlayPlay=0&autoPlay=0&interactive=1&loop=0&playerType=day&webcamId=1606744814"
+    }
+  ]
+}
