@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-29T21:22:48Z",
-  "asOf": "2026-09-29",
+  "updatedAt": "2026-09-30T18:03:41Z",
+  "asOf": "2026-09-30",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-27 ~ 2026-10-03",
-  "count": 141,
+  "count": 142,
   "highCount": 10,
   "events": [
     {
@@ -608,18 +608,6 @@
     },
     {
       "ts": "2026-09-30T06:00:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "零售销售 环比",
-      "titleEn": "German Retail Sales m/m",
-      "impact": "low",
-      "forecast": "1.6%",
-      "previous": "-3.4%",
-      "actual": null
-    },
-    {
-      "ts": "2026-09-30T06:00:00Z",
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
@@ -652,6 +640,18 @@
       "impact": "low",
       "forecast": "1.7%",
       "previous": "1.7%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-30T06:04:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "零售销售 环比",
+      "titleEn": "German Retail Sales m/m",
+      "impact": "low",
+      "forecast": "1.6%",
+      "previous": "-3.4%",
       "actual": null
     },
     {
@@ -698,7 +698,7 @@
       "title": "就业人数变化",
       "titleEn": "German Unemployment Change",
       "impact": "low",
-      "forecast": "0K",
+      "forecast": "1K",
       "previous": "4K",
       "actual": null
     },
@@ -751,7 +751,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-30T09:42:00Z",
+      "ts": "2026-09-30T09:32:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -914,7 +914,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "-1.9M",
+      "forecast": "-0.7M",
       "previous": "3.0M",
       "actual": null
     },
@@ -938,6 +938,18 @@
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Cook Speaks",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-30T19:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
@@ -973,7 +985,7 @@
       "flag": "🇺🇸",
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Kashkari Speaks",
-      "impact": "low",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
@@ -1130,7 +1142,7 @@
       "title": "制造业 PMI",
       "titleEn": "Manufacturing PMI",
       "impact": "low",
-      "forecast": "56.4",
+      "forecast": "56.3",
       "previous": "57.1",
       "actual": null
     },
@@ -1442,7 +1454,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "63B",
       "previous": "53B",
       "actual": null
     },
