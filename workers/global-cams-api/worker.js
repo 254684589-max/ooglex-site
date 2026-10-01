@@ -19,9 +19,10 @@ export default {
     const lng = numberParam(url.searchParams.get('lng'), -180, 180);
     const radius = numberParam(url.searchParams.get('radius') || '250', 1, 250);
     const limit = integerParam(url.searchParams.get('limit') || '50', 1, 50);
+    const offset = integerParam(url.searchParams.get('offset') || '0', 0, 1000);
     const lang = /^[a-z]{2}(?:-[A-Z]{2})?$/.test(url.searchParams.get('lang') || '') ? url.searchParams.get('lang') : 'en';
-    if (lat === null || lng === null || radius === null || limit === null) {
-      return json({ error: 'Invalid lat/lng/radius/limit' }, 400, cors);
+    if (lat === null || lng === null || radius === null || limit === null || offset === null) {
+      return json({ error: 'Invalid lat/lng/radius/limit/offset' }, 400, cors);
     }
 
     const upstream = new URL(WINDY_ENDPOINT);
@@ -29,6 +30,7 @@ export default {
     upstream.searchParams.set('include', 'categories,images,location,player,urls');
     upstream.searchParams.set('lang', lang);
     upstream.searchParams.set('limit', String(limit));
+    upstream.searchParams.set('offset', String(offset));
     upstream.searchParams.set('sortKey', 'popularity');
     upstream.searchParams.set('sortDirection', 'desc');
 
@@ -53,6 +55,8 @@ export default {
         source: 'Windy Webcams API',
         asOf: new Date().toISOString(),
         total: Number(payload.total) || webcams.length,
+        offset,
+        limit,
         webcams
       }, 200, {
         ...cors,

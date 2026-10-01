@@ -37,6 +37,21 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Validate Global Cams V0.3
+        run: node scripts/validate_global_cams.mjs
+
+      - name: Smoke Global Cams responsive layout
+        run: |
+          set +e
+          node scripts/smoke_global_cams.mjs
+          code=$?
+          set -e
+          if [ "$code" = "2" ]; then
+            echo "::warning::未找到 Chrome/Chromium，本次跳过环球实景三档浏览器冒烟"
+            exit 0
+          fi
+          exit "$code"
+
       - name: Build FREE/PRO payload split
         run: python scripts/pro/build_pro_datasets.py
 
