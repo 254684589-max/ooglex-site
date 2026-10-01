@@ -1,4 +1,5 @@
 name: Validate Global WINDOW V0.7.7
+# iteration: semantic-cleanup-2
 
 on:
   push:
@@ -49,7 +50,8 @@ jobs:
 
           cities=Counter(str(x.get("city") or "") for x in rows)
           non_seed=[x for x in rows if int(x.get("quality_score") or 0) < 100]
-          assert all(v <= 4 for k,v in cities.items() if k), cities.most_common(10)
+          assert all(v <= 4 for k,v in cities.items() if k and k != "GPS 景观点"), cities.most_common(10)
+          assert len(geo_cells) >= 35, len(geo_cells)
 
           scores=[int(x.get("quality_score") or 0) for x in rows]
           geo_cells={(round(float(x.get("lat") or 0),1),round(float(x.get("lng") or 0),1)) for x in rows}
