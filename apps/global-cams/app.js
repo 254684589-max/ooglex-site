@@ -25,6 +25,7 @@ const MAX_REGION_CAMERAS = 1000;
 let all = [];
 let filtered = [];
 let selectedId = '';
+let activeMedia = 'all';
 let mode = API_BASE ? 'live' : 'demo';
 let loading = false;
 let rowsById = new Map();
@@ -35,9 +36,9 @@ const globe = Globe()(globeEl)
   .globeImageUrl('../radio/vendor/earth-blue-marble.jpg')
   .backgroundColor('#05070f')
   .pointAltitude(0.015)
-  .pointRadius(d => cameraKey(d) === selectedId ? 0.29 : (d.playable ? 0.21 : 0.16))
-  .pointColor(d => cameraKey(d) === selectedId ? '#ffd36b' : (d.playable ? '#4ee7b7' : '#d8e2f2'))
-  .pointLabel(d => '<b>' + escapeHtml(d.name || '公开摄像头') + '</b><br>' + escapeHtml([cleanPlace(d.city), cleanPlace(d.country)].filter(Boolean).join(' · ')))
+  .pointRadius(d => cameraKey(d) === selectedId ? 0.29 : (mediaType(d) === 'live' ? 0.23 : mediaType(d) === 'timelapse' ? 0.20 : 0.16))
+  .pointColor(d => cameraKey(d) === selectedId ? '#ffd36b' : pointColorFor(d))
+  .pointLabel(d => '<b>' + escapeHtml(d.name || '公开摄像头') + '</b><br>' + escapeHtml(mediaLabel(d) + ' · ' + [cleanPlace(d.city), cleanPlace(d.country)].filter(Boolean).join(' · ')))
   .onPointClick(d => showCamera(d, { focus: true, reveal: true }));
 
 const controls = globe.controls();
@@ -141,8 +142,10 @@ async function loadNearby(options = {}) {
     } else if (totalText > MAX_REGION_CAMERAS) {
       setStatus('区域共有 ' + totalText + ' 个摄像头；免费接口本次显示前 ' + MAX_REGION_CAMERAS + ' 个。数据源 Windy Webcams API。', 'warn');
     } else {
+      const stats = mediaStats(region);
       setStatus(
         '当前区域已完整载入 ' + shown + ' / ' + totalText + ' 个公开摄像头' +
+        ' · LIVE ' + stats.live + ' · 24H ' + stats.timelapse + ' · 抓拍 ' + stats.snapshot +
         (accumulate.checked && !options.initial ? ' · 已累计 ' + all.length + ' 个点位' : '') +
         ' · 数据源 Windy Webcams API' +
         (asOf ? ' · ' + formatTime(asOf) : ''),
@@ -175,8 +178,11 @@ async function fetchRegionPage(lat, lng, offset) {
 
 function applySearch() {
   const q = search.value.trim().toLowerCase();
-  filtered = !q ? all.slice() : all.filter(d => {
-    const haystack = [d.name, d.city, d.country, d.category, d.source].filter(Boolean).join(' ').toLowerCase();
+  filtered = all.filter(d => {
+    const typeOk = activeMedia === 'all' || mediaType(d) === activeMedia;
+    if (!typeOk) return false;
+    if (!q) return true;
+    const haystack = [d.name, d.city, d.country, d.category, d.source, mediaLabel(d)].filter(Boolean).join(' ').toLowerCase();
     return haystack.includes(q);
   });
   render();
@@ -184,12 +190,13 @@ function applySearch() {
 
 function render() {
   globe.pointsData(filtered);
-  count.textContent = filtered.length === all.length
+  count.textContent = filtered.length === all.length && activeMedia === 'all' && !search.value.trim()
     ? all.length + (mode === 'demo' ? ' 个演示点位' : ' 个公开点位')
     : filtered.length + ' / ' + all.length + ' 个点位';
-  listCount.textContent = filtered.length === all.length
+  listCount.textContent = filtered.length === all.length && activeMedia === 'all' && !search.value.trim()
     ? all.length + ' 个信号源'
     : filtered.length + ' / ' + all.length + ' 个信号源';
+  renderFilterCounts();
   renderPlaylist();
 }
 
@@ -212,7 +219,7 @@ function renderPlaylist() {
     const id = cameraKey(d);
     const row = document.createElement('button');
     row.type = 'button';
-    row.className = 'cam-row' + (d.playable ? ' playable' : '') + (id === selectedId ? ' active' : '');
+    row.className = 'cam-row media-' + mediaType(d) + (id === selectedId ? ' active' : '');
     row.setAttribute('role', 'option');
     row.setAttribute('aria-selected', id === selectedId ? 'true' : 'false');
     row.dataset.camId = id;
@@ -228,7 +235,7 @@ function renderPlaylist() {
     name.textContent = d.name || '公开摄像头';
     const sub = document.createElement('span');
     sub.className = 'cam-sub';
-    sub.textContent = [cleanPlace(d.city), cleanPlace(d.country), d.category].filter(Boolean).join(' · ') || '公开来源';
+    sub.textContent = [mediaLabel(d), cleanPlace(d.city), cleanPlace(d.country), d.category].filter(Boolean).join(' · ') || '公开来源';
 
     main.append(name, sub);
     row.append(dot, main);
@@ -242,26 +249,32 @@ function renderPlaylist() {
 
 function showCamera(d, options = {}) {
   selectedId = cameraKey(d);
+  const type = mediaType(d);
   $('#camName').textContent = d.name || '公开摄像头';
-  $('#camMeta').textContent = [cleanPlace(d.city), cleanPlace(d.country), d.category, d.source].filter(Boolean).join(' · ');
+  $('#camMeta').textContent = [mediaLabel(d), cleanPlace(d.city), cleanPlace(d.country), d.category, d.source].filter(Boolean).join(' · ');
 
   const sourceUrl = safeHttpUrl(d.source_url);
   sourceLink.href = sourceUrl || '#';
   sourceLink.setAttribute('aria-disabled', sourceUrl ? 'false' : 'true');
   viewer.replaceChildren();
+  appendMediaBadge(type);
 
-  if (d.embed_url && safeHttpUrl(d.embed_url)) {
+  const liveUrl = type === 'live' ? safeHttpUrl(d.live_url || d.embed_url) : '';
+  const timelapseUrl = type === 'timelapse' ? safeHttpUrl(d.timelapse_url || d.embed_url) : '';
+  const previewUrl = safeHttpUrl(d.preview_url);
+
+  if (liveUrl || timelapseUrl) {
     const frame = document.createElement('iframe');
-    frame.src = d.embed_url;
-    frame.title = d.name || '公开摄像头播放器';
+    frame.src = liveUrl || timelapseUrl;
+    frame.title = (d.name || '公开摄像头') + ' · ' + mediaLabel(d);
     frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
     frame.allowFullscreen = true;
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     viewer.appendChild(frame);
-  } else if (d.preview_url && safeHttpUrl(d.preview_url)) {
+  } else if (previewUrl) {
     const img = document.createElement('img');
-    img.src = d.preview_url;
-    img.alt = d.name || '公开摄像头预览';
+    img.src = previewUrl;
+    img.alt = (d.name || '公开摄像头') + ' · 最新抓拍';
     img.referrerPolicy = 'no-referrer';
     if (sourceUrl) {
       const a = document.createElement('a');
@@ -278,7 +291,7 @@ function showCamera(d, options = {}) {
     box.className = 'viewer-empty';
     box.textContent = d.demo
       ? '演示点位：仅用于验证交互。'
-      : '该摄像头当前没有可嵌入画面，请打开官方来源。';
+      : '该摄像头当前没有实时、24H 延时摄影或最新抓拍，请打开官方来源。';
     viewer.appendChild(box);
   }
 
@@ -304,6 +317,58 @@ function showCamera(d, options = {}) {
   }
 }
 
+function renderFilterCounts() {
+  const stats = mediaStats(all);
+  $('#filterAllCount').textContent = String(all.length);
+  $('#filterLiveCount').textContent = String(stats.live);
+  $('#filterTimelapseCount').textContent = String(stats.timelapse);
+  $('#filterSnapshotCount').textContent = String(stats.snapshot);
+}
+
+function mediaStats(items) {
+  return items.reduce((acc, d) => {
+    const type = mediaType(d);
+    if (Object.prototype.hasOwnProperty.call(acc, type)) acc[type] += 1;
+    return acc;
+  }, { live: 0, timelapse: 0, snapshot: 0, source: 0 });
+}
+
+function mediaType(d) {
+  const declared = String(d && d.stream_type || '');
+  if (['live','timelapse','snapshot','source'].includes(declared)) return declared;
+  if (d && (d.is_live === true || safeHttpUrl(d.live_url))) return 'live';
+  if (d && safeHttpUrl(d.timelapse_url)) return 'timelapse';
+  if (d && safeHttpUrl(d.preview_url)) return 'snapshot';
+  // Backward compatibility: an unlabeled embed is never promoted to LIVE.
+  if (d && safeHttpUrl(d.embed_url)) return 'timelapse';
+  return 'source';
+}
+
+function mediaLabel(d) {
+  const type = typeof d === 'string' ? d : mediaType(d);
+  if (type === 'live') return 'LIVE 实时直播';
+  if (type === 'timelapse') return '24H 延时摄影';
+  if (type === 'snapshot') return '最新抓拍';
+  return '来源页';
+}
+
+function pointColorFor(d) {
+  const type = mediaType(d);
+  if (type === 'live') return '#ff6262';
+  if (type === 'timelapse') return '#4ee7b7';
+  if (type === 'snapshot') return '#d8e2f2';
+  return '#7f8ba2';
+}
+
+function appendMediaBadge(type) {
+  const badge = document.createElement('div');
+  badge.className = 'media-badge';
+  badge.id = 'mediaBadge';
+  badge.dataset.type = type || 'none';
+  badge.textContent = type === 'none' ? '' : mediaLabel(type);
+  viewer.appendChild(badge);
+}
+
 function clearSelection() {
   selectedId = '';
   $('#camName').textContent = '选择一个公开摄像头';
@@ -311,6 +376,7 @@ function clearSelection() {
   sourceLink.href = '#';
   sourceLink.setAttribute('aria-disabled', 'true');
   viewer.replaceChildren();
+  appendMediaBadge('none');
   const empty = document.createElement('div');
   empty.className = 'viewer-empty';
   empty.textContent = '摄像头画面将在这里播放';
@@ -378,6 +444,13 @@ async function toggleFullscreen(target) {
 }
 
 search.addEventListener('input', applySearch);
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeMedia = btn.dataset.filter || 'all';
+    document.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x === btn));
+    applySearch();
+  });
+});
 loadBtn.addEventListener('click', () => loadNearby());
 $('#clearAll').addEventListener('click', clearAll);
 $('#resetView').addEventListener('click', focusTokyo);

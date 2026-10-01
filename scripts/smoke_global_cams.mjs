@@ -56,6 +56,8 @@ setTimeout(() => {
     docWidth: document.documentElement.scrollWidth,
     bodyWidth: document.body.scrollWidth,
     rows: document.querySelectorAll('.cam-row').length,
+    filters: document.querySelectorAll('.filter-btn').length,
+    activeFilters: document.querySelectorAll('.filter-btn.active').length,
     version: (document.querySelector('.brand')?.textContent || '').trim(),
     errors: window.__gcSmokeErrors || [],
     sidebar: rect('.sidebar'),
@@ -136,7 +138,8 @@ try {
     const r = parseResult(dom);
     const desktop = width > 820;
 
-    if (!r.version.includes('V0.3')) failures.push(width + ': V0.3 label missing');
+    if (!r.version.includes('V0.4')) failures.push(width + ': V0.4 label missing');
+    if (r.filters !== 4 || r.activeFilters !== 1) failures.push(width + ': media filter controls invalid');
     if (r.rows < 1) failures.push(width + ': playlist did not render demo rows');
     if (r.errors.length) failures.push(width + ': browser errors: ' + r.errors.join(' | '));
     if (r.docWidth > r.width + 1 || r.bodyWidth > r.width + 1) failures.push(width + ': horizontal overflow');
