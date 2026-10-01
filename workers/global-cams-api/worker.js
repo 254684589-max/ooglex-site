@@ -79,7 +79,10 @@ export function normalizeWebcam(w) {
   const current = w.images && w.images.current || {};
   const preview = firstString(current.preview, current.small, current.thumbnail, current.icon, ...Object.values(current));
   const player = w.player || {};
-  const embed = firstString(player.live, player.day);
+  const live = firstString(player.live);
+  const timelapse = firstString(player.day);
+  const streamType = live ? 'live' : (timelapse ? 'timelapse' : (preview ? 'snapshot' : 'source'));
+  const embed = live || timelapse;
   return {
     id: String(w.webcamId || ''),
     name: String(w.title || 'Public webcam'),
@@ -89,6 +92,10 @@ export function normalizeWebcam(w) {
     lng,
     category: Array.isArray(w.categories) ? w.categories.map(x => x && x.name).filter(Boolean).slice(0, 3).join(' / ') : '',
     source: 'Windy Webcams API',
+    stream_type: streamType,
+    is_live: Boolean(live),
+    live_url: live || '',
+    timelapse_url: timelapse || '',
     preview_url: preview || '',
     embed_url: embed || '',
     source_url: String(w.urls && w.urls.detail || ''),
