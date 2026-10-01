@@ -69,8 +69,10 @@ ok(windowConfig.includes('bucket_name = "ooglex-global-windows"'), 'WINDOW R2 bu
 ok(windowConfig.includes('windows-cdn.ooglex.com'), 'WINDOW CDN custom domain missing');
 ok(windowWorker.includes('env.WINDOW_MEDIA.get'), 'WINDOW worker R2 read missing');
 ok(windowWorker.includes('Range'), 'WINDOW worker byte-range support missing');
-ok(windowWorker.includes('caches.default'), 'WINDOW CDN cache layer missing');
+ok(windowWorker.includes('caches.default'), 'WINDOW media cache helper missing');
+ok(windowWorker.includes('no-cache, max-age=0, must-revalidate'), 'WINDOW manifest freshness policy missing');
 ok(windowWorker.includes('manifest/windows.json'), 'WINDOW CDN manifest key missing');
+ok(windowWorker.includes('MANIFEST_KEY, cors, false, true'), 'WINDOW manifest must bypass manual edge cache');
 ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
 ok(Number(windowLocations.target) >= 100 && Number(windowLocations.target) <= 300, 'WINDOW target must be within 100-300 clips');
 ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
