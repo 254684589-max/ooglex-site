@@ -3,6 +3,7 @@ import fs from 'node:fs';
 const html = fs.readFileSync('apps/global-cams/index.html', 'utf8');
 const app = fs.readFileSync('apps/global-cams/app.js', 'utf8');
 const worker = fs.readFileSync('workers/global-cams-api/worker.js', 'utf8');
+const windows = JSON.parse(fs.readFileSync('apps/global-cams/windows.json', 'utf8'));
 
 const failures = [];
 const ok = (cond, msg) => { if (!cond) failures.push(msg); };
@@ -18,20 +19,28 @@ for (const id of [
   'stage','globe','playlist','viewer','camName','camMeta','openSource','expandViewer',
   'search','loadNearby','accumulate','clearAll','zoomIn','zoomOut','resetGlobe',
   'resetView','fullscreen','status','count','listCount','centerCoords','mediaFilters',
-  'filterAllCount','filterLiveCount','filterTimelapseCount','filterSnapshotCount'
+  'filterAllCount','filterLiveCount','filterTimelapseCount','filterSnapshotCount',
+  'sidebar','modeLive','modeWindow','playlistTitle','legend'
 ]) {
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V0.4</span>'), 'V0.4 label missing');
+ok(html.includes('环球实景 <span>V0.5</span>'), 'V0.5 label missing');
 ok(html.includes('播放列表'), 'playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
 ok(app.includes('controls.autoRotate = false'), 'globe auto-rotation is not disabled');
+ok(app.includes("activeLayer = 'live'"), 'dual-layer state missing');
+ok(app.includes("switchLayer('window')"), 'WINDOW mode switch missing');
+ok(app.includes("fetch('./windows.json'"), 'WINDOW manifest fetch missing');
+ok(app.includes("video.autoplay = true"), 'WINDOW autoplay missing');
+ok(app.includes("video.muted = true"), 'WINDOW muted autoplay guard missing');
+ok(app.includes("video.loop = true"), 'WINDOW loop missing');
+ok(app.includes("mediaLabel(type)"), 'media label helper missing');
 ok(!app.includes('controls.autoRotate = true'), 'auto-rotation true remains in app');
 ok(app.includes('const PAGE_SIZE = 50'), 'page size guard missing');
 ok(app.includes('const MAX_REGION_CAMERAS = 1000'), 'free-tier region cap missing');
 ok(app.includes("url.searchParams.set('offset', String(offset))"), 'frontend offset pagination missing');
-ok(app.includes('mergeCameras(all, region)'), 'accumulated-region merge missing');
+ok(app.includes('mergeCameras(liveCameras, region)'), 'accumulated-region merge missing');
 ok(app.includes("requestAnimationFrame(() => loadNearby({ initial: true }))"), 'Tokyo initial auto-load missing');
 ok(worker.includes("integerParam(url.searchParams.get('offset') || '0', 0, 1000)"), 'worker offset guard missing');
 ok(worker.includes("upstream.searchParams.set('offset', String(offset))"), 'worker offset passthrough missing');
@@ -46,6 +55,15 @@ ok(app.includes("LIVE 实时直播"), 'LIVE semantic label missing');
 ok(app.includes("24H 延时摄影"), 'timelapse semantic label missing');
 ok(app.includes("an unlabeled embed is never promoted to LIVE"), 'conservative backward-compatibility rule missing');
 ok(!/JoerI87|WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + worker), 'possible API key literal detected');
+
+ok(Array.isArray(windows) && windows.length >= 5, 'WINDOW seed library must contain at least 5 entries');
+for (const w of windows) {
+  ok(w.kind === 'window', 'WINDOW item missing kind=window');
+  ok(/^https:\/\/upload\.wikimedia\.org\//.test(String(w.video_url || '')), 'WINDOW video must use approved Wikimedia media URL');
+  ok(/^https:\/\/commons\.wikimedia\.org\//.test(String(w.source_url || '')), 'WINDOW source page missing');
+  ok(/^CC /.test(String(w.license || '')), 'WINDOW license missing');
+  ok(Number.isFinite(Number(w.lat)) && Number.isFinite(Number(w.lng)), 'WINDOW coordinates missing');
+}
 
 const normalizeWebcam = new Function(workerForParse + '; return normalizeWebcam;')();
 const baseFixture = {
@@ -93,8 +111,8 @@ ok(sourceFixture.stream_type === 'source', 'source-only fixture not classified s
 ok(sourceFixture.playable === false, 'source-only fixture incorrectly marked playable');
 
 if (failures.length) {
-  console.error('Global Cams V0.4 validation failed:');
+  console.error('Global Cams V0.5 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global Cams V0.4 validation passed.');
+console.log('Global Cams V0.5 validation passed.');
