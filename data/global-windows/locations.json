@@ -1,15 +1,15 @@
 {
-  "target": 100,
+  "target": 150,
   "min_catalog": 100,
-  "max_per_location": 4,
+  "max_per_location": 3,
   "max_file_mb": 25,
   "max_seed_file_mb": 30,
   "min_file_mb": 0.8,
   "min_quality_score": 5,
-  "existing_min_quality_score": 100,
+  "existing_min_quality_score": 5,
   "max_distance_km": 400,
-  "max_candidates_per_location": 80,
-  "theme_query_limit": 20,
+  "max_candidates_per_location": 100,
+  "theme_query_limit": 24,
   "seed_manifest": "apps/global-cams/windows.json",
   "locations": [
     {
@@ -3398,13 +3398,33 @@
     "waterfall timelapse",
     "ocean sunset",
     "harbor night",
-    "fog mountain"
+    "fog mountain",
+    "snowy street",
+    "snowy city night",
+    "rainy city night",
+    "rain street",
+    "coastal cliffs",
+    "ocean storm",
+    "mountain fog",
+    "alpine sunrise",
+    "lake fog",
+    "harbor rain",
+    "river night",
+    "canal night",
+    "aurora borealis",
+    "fjord sunset",
+    "fjord fog",
+    "winter lake",
+    "forest fog",
+    "waterfall mist",
+    "seascape sunset",
+    "mountain clouds timelapse"
   ],
-  "global_query_limit": 50,
-  "global_max_candidates": 1800,
+  "global_query_limit": 65,
+  "global_max_candidates": 3200,
   "global_match_distance_km": 120,
-  "global_max_per_location": 6,
-  "local_location_scan_limit": 60,
+  "global_max_per_location": 4,
+  "local_location_scan_limit": 120,
   "global_scenic_categories": [
     "Videos of sunsets",
     "Videos of sunrises",
@@ -3424,5 +3444,7 @@
     "Videos of auroras",
     "Time-lapse videos of clouds"
   ],
-  "global_category_limit": 100
+  "global_category_limit": 140,
+  "existing_keep_limit": 140,
+  "popularity_url": "https://windows-cdn.ooglex.com/stats/popular?days=30&limit=500"
 }
