@@ -76,8 +76,8 @@ ok(windowWorker.includes('MANIFEST_KEY, cors, false, true'), 'WINDOW manifest mu
 ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
 ok(Number(windowLocations.target) >= 100 && Number(windowLocations.target) <= 300, 'WINDOW target must be within 100-300 clips');
 ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
-ok(Number(windowLocations.min_quality_score) >= 7, 'WINDOW minimum quality score too low');
-ok(Number(windowLocations.existing_min_quality_score) >= 10, 'WINDOW existing manifest reuse threshold too low');
+ok(Number(windowLocations.min_quality_score) >= 5, 'WINDOW minimum quality score too low');
+ok(Number(windowLocations.existing_min_quality_score) >= 100, 'WINDOW existing manifest reuse threshold too low');
 ok(windowSync.includes('HARD_REJECT'), 'WINDOW hard-reject quality gate missing');
 ok(windowSync.includes('SCENIC_WEIGHTS'), 'WINDOW scenic scoring missing');
 ok(windowSync.includes('haversine_km'), 'WINDOW geographic validation missing');
@@ -93,8 +93,12 @@ ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.globa
 ok(Array.isArray(windowLocations.global_scenic_categories) && windowLocations.global_scenic_categories.length >= 12, 'WINDOW scenic category pool too small');
 ok(windowSync.includes('category_titles'), 'WINDOW scenic category discovery missing');
 ok(Number(windowLocations.global_max_candidates) >= 1500, 'WINDOW global scenic candidate pool too small');
-ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 60, 'WINDOW local scan limit must stay bounded');
+ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 70, 'WINDOW local scan limit must stay bounded');
 ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
+ok(windowSync.includes('STRICT_DESC_REJECT'), 'WINDOW strict description rejection missing');
+ok(windowSync.includes('scene_fingerprint'), 'WINDOW near-duplicate rejection missing');
+ok(windowSync.includes('text_has_alias'), 'WINDOW whole-word place matching missing');
+ok(windowSync.includes('distance <= 60'), 'WINDOW local GPS precision gate missing');
 ok(Number(windowLocations.request_interval_seconds) >= 0.8, 'WINDOW Wikimedia request pacing too aggressive');
 ok(Number(windowLocations.global_match_distance_km) <= 150, 'WINDOW global geolocation radius too broad');
 ok(windowSync.includes('_MEDIA_LAST'), 'WINDOW media-download pacing missing');

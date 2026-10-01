@@ -108,7 +108,8 @@ HARD_REJECT = {
     "coast guard", "defense force", "defence force", "smuggling",
     "naval", "warship", "destroyer", "frigate", "hmas",
     "volleyball", "arena", "samba", "dance performance",
-    "cow", "cows", "cattle", "pika", "pica",
+    "cow", "cows", "cattle", "pika", "pica", "seal", "seals",
+    "earth hour", "cable car", "funicular", "gondola lift",
 }
 
 STRICT_DESC_REJECT = {
@@ -117,7 +118,8 @@ STRICT_DESC_REJECT = {
     "coast guard", "defense force", "defence force", "military", "naval", "smuggling",
     "pika", "pica", "cow", "cows", "cattle", "wildlife",
     "samba", "dancer", "singer", "performer",
-    "subway", "metro", "train", "tram", "bus", "aircraft", "airplane",
+    "subway", "metro", "train", "tram", "bus", "aircraft", "airplane", "airport",
+    "seal", "seals", "cable car", "funicular", "gondola lift", "earth hour",
 }
 
 SOFT_REJECT = {
@@ -274,7 +276,7 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
             continue
 
         # Theme-first discovery: one simple query per scenic intent.
-        for theme in themes[:3]:
+        for theme in themes[:4]:
             run_query(alias, f'"{alias}" {theme} filemime:video/webm')
             if len(out) >= max_candidates:
                 break
@@ -419,7 +421,7 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
     # GPS is strong evidence only when it is reasonably close to the named
     # place. At larger radii, require a textual place match as a second signal.
     if distance is not None:
-        return distance <= 120 or alias_match
+        return distance <= 60 or alias_match
 
     return alias_match
 
@@ -782,7 +784,7 @@ def main() -> int:
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
     target = args.target or int(cfg.get("target") or 120)
     max_per_location = int(cfg.get("max_per_location") or 3)
-    min_quality = int(cfg.get("min_quality_score") or 7)
+    min_quality = int(cfg.get("min_quality_score") or 5)
     min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
     max_bytes = int(float(cfg.get("max_file_mb") or 12) * 1024 * 1024)
     max_candidates = int(cfg.get("max_candidates_per_location") or 40)
