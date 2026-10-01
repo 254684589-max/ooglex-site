@@ -897,7 +897,18 @@ def fetch_popularity(cfg: dict) -> dict[str, dict]:
         return {}
 
 
-def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str]) -> dict:
+def build_item(
+    info: dict,
+    loc: dict,
+    key: str,
+    size: int,
+    semantic_score: int,
+    reasons: list[str],
+    profile: dict,
+    quality_total: int,
+    breakdown: dict,
+    labels: dict,
+) -> dict:
     ext = info.get("extmetadata") or {}
     source_url = info.get("descriptionurl") or info.get("descriptionshorturl") or ""
     author = ext_value(ext, "Attribution") or ext_value(ext, "Artist") or "Wikimedia Commons contributor"
@@ -911,18 +922,30 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
     gps_lat, gps_lng = media_coords(info)
     lat = gps_lat if gps_lat is not None else float(loc["lat"])
     lng = gps_lng if gps_lng is not None else float(loc["lng"])
+    original_title = normalize_title(info.get("title", ""))
+    name_zh, city_zh, country_zh = display_name_zh(info, loc, labels)
 
     return {
         "id": "r2-" + hashlib.sha256(str(info.get("url", "")).encode()).hexdigest()[:16],
         "kind": "window",
-        "name": normalize_title(info.get("title", "")) or f'{loc["city"]} WINDOW',
-        "country": loc["country"],
-        "city": loc["city"],
+        "name": name_zh,
+        "name_zh": name_zh,
+        "original_title": original_title,
+        "country": loc.get("country", ""),
+        "country_zh": country_zh,
+        "city": loc.get("city", ""),
+        "city_zh": city_zh,
         "lat": lat,
         "lng": lng,
         "category": loc.get("category", "沉浸实景"),
-        "quality_score": score,
+        "quality_schema_version": 1,
+        "quality_score": quality_total,
+        "semantic_score": semantic_score,
+        "quality_breakdown": breakdown,
         "quality_reasons": reasons,
+        "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
+        "width": int(profile.get("width") or 0),
+        "height": int(profile.get("height") or 0),
         "source": "Wikimedia Commons → Ooglex R2",
         "author": author[:240],
         "license": license_name[:120],
@@ -937,7 +960,14 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
     }
 
 
-def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_quality: int) -> list[dict]:
+def ingest_existing(
+    cfg: dict,
+    seen_urls: set[str],
+    seen_keys: set[str],
+    min_quality: int,
+    labels: dict,
+    interval: float,
+) -> list[dict]:
     url = str(cfg.get("existing_manifest_url") or "").strip()
     if not url:
         return []
@@ -953,6 +983,8 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
     popularity = fetch_popularity(cfg)
     candidates: list[tuple[tuple[int, int, int, str], dict, str, str, str]] = []
     scene_fingerprints: set[str] = set()
+    rejected_technical = 0
+    rejected_semantic = 0
 
     for row in rows:
         key = str(row.get("r2_key") or "")
@@ -962,24 +994,49 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         if origin and origin in seen_urls:
             continue
 
-        stored_score = int(row.get("quality_score") or 0)
-        if stored_score < min_quality:
-            continue
+        original_title = str(row.get("original_title") or "").strip()
+        file_title = source_title_from_url(str(row.get("source_url") or ""), original_title or str(row.get("name") or ""))
+        if not original_title:
+            original_title = normalize_title(file_title)
 
         synthetic = {
-            "title": "File:" + str(row.get("name") or ""),
+            "title": file_title or ("File:" + original_title),
             "extmetadata": {"ImageDescription": {"value": ""}},
         }
-        gate_score, gate_reasons = quality_score(synthetic)
-        if gate_score < 0:
+        semantic_score, gate_reasons = quality_score(synthetic)
+        if semantic_score < 5:
+            rejected_semantic += 1
             continue
 
-        fingerprint = scene_fingerprint(str(row.get("name") or ""))
+        profile = {
+            "duration_seconds": row.get("duration_seconds"),
+            "width": row.get("width"),
+            "height": row.get("height"),
+            "size": row.get("bytes"),
+        }
+        if not profile.get("duration_seconds") or not profile.get("width") or not profile.get("height"):
+            profile = rest_media_profile(file_title, interval=interval)
+        technical_ok, technical_reasons = technical_gate(profile, cfg)
+        if not technical_ok:
+            rejected_technical += 1
+            continue
+
+        total_score, breakdown = v1_quality_score(synthetic, profile, semantic_score, cfg)
+        if total_score < min_quality:
+            continue
+
+        fingerprint = scene_fingerprint(original_title)
         if fingerprint and fingerprint in scene_fingerprints:
             continue
         if fingerprint:
             scene_fingerprints.add(fingerprint)
 
+        loc = {
+            "city": row.get("city") or "GPS 景观点",
+            "country": row.get("country") or "",
+            "category": row.get("category") or "沉浸实景",
+        }
+        name_zh, city_zh, country_zh = display_name_zh(synthetic, loc, labels)
         pop = popularity.get(str(row.get("id") or ""), {})
         plays30 = int(pop.get("plays30d") or pop.get("plays") or 0)
         total_plays = int(pop.get("total") or 0)
@@ -987,10 +1044,21 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         item = {
             **row,
             "kind": "window",
-            "quality_score": stored_score,
-            "quality_reasons": list(row.get("quality_reasons") or []) + gate_reasons + ["existing-r2"],
+            "name": name_zh,
+            "name_zh": name_zh,
+            "original_title": original_title,
+            "city_zh": city_zh,
+            "country_zh": country_zh,
+            "quality_schema_version": 1,
+            "quality_score": total_score,
+            "semantic_score": semantic_score,
+            "quality_breakdown": breakdown,
+            "quality_reasons": list(row.get("quality_reasons") or []) + gate_reasons + technical_reasons + ["existing-r2"],
+            "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
+            "width": int(profile.get("width") or 0),
+            "height": int(profile.get("height") or 0),
         }
-        candidates.append(((plays30, total_plays, stored_score, added_at), item, key, origin, fingerprint))
+        candidates.append(((plays30, total_plays, total_score, added_at), item, key, origin, fingerprint))
 
     candidates.sort(key=lambda x: x[0], reverse=True)
     keep_limit = int(cfg.get("existing_keep_limit") or len(candidates))
@@ -1002,17 +1070,27 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
             seen_urls.add(origin)
 
     print(
-        f"reused {len(out)} scenic clips from existing R2 manifest "
-        f"(eligible={len(candidates)}, keep_limit={keep_limit}, popularity={'on' if popularity else 'off'})"
+        f"reused {len(out)} V1-quality clips from existing R2 manifest "
+        f"(eligible={len(candidates)}, rejected_technical={rejected_technical}, "
+        f"rejected_semantic={rejected_semantic}, keep_limit={keep_limit}, "
+        f"popularity={'on' if popularity else 'off'})"
     )
     return out
 
-def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) -> tuple[list[dict], list[dict]]:
+
+def seed_items(
+    cfg: dict,
+    root: Path,
+    seen_urls: set[str],
+    seen_keys: set[str],
+    labels: dict,
+    interval: float,
+) -> tuple[list[dict], list[dict]]:
     path = Path(str(cfg.get("seed_manifest") or ""))
     if not path.exists():
         return [], []
 
-    max_bytes = int(float(cfg.get("max_seed_file_mb") or 30) * 1024 * 1024)
+    max_bytes = int(float(cfg.get("max_seed_file_mb") or 80) * 1024 * 1024)
     media_dir = root / "media"
     rows = json.loads(path.read_text(encoding="utf-8"))
     items: list[dict] = []
@@ -1023,6 +1101,24 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) 
         if not url or url in seen_urls:
             continue
         try:
+            file_title = source_title_from_url(str(seed.get("source_url") or ""), str(seed.get("name") or ""))
+            synthetic = {
+                "title": file_title,
+                "extmetadata": {"ImageDescription": {"value": ""}},
+            }
+            semantic_score, reasons = quality_score(synthetic)
+            if semantic_score < 5:
+                print(f"seed rejected semantic: {seed.get('name','?')} :: {semantic_score}")
+                continue
+            profile = rest_media_profile(file_title, interval=interval)
+            technical_ok, technical_reasons = technical_gate(profile, cfg)
+            if not technical_ok:
+                print(f"seed rejected technical: {seed.get('name','?')} :: {','.join(technical_reasons)}")
+                continue
+            total_score, breakdown = v1_quality_score(synthetic, profile, semantic_score, cfg)
+            if total_score < int(cfg.get("min_quality_score") or 60):
+                continue
+
             suffix = Path(urllib.parse.urlparse(url).path).suffix.lower()
             if suffix not in {".webm", ".ogv", ".ogg", ".mp4"}:
                 suffix = ".webm"
@@ -1037,16 +1133,36 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) 
             size = download(url, tmp, max_bytes)
             tmp.replace(dest)
             mime = "video/mp4" if suffix == ".mp4" else ("video/ogg" if suffix in {".ogv", ".ogg"} else "video/webm")
+
+            loc = {
+                "city": seed.get("city") or "GPS 景观点",
+                "country": seed.get("country") or "",
+                "category": seed.get("category") or "沉浸实景",
+            }
+            name_zh, city_zh, country_zh = display_name_zh(synthetic, loc, labels)
+            if contains_cjk(str(seed.get("name") or "")):
+                name_zh = str(seed.get("name"))
             item = {
                 **seed,
                 "id": "r2-seed-" + digest[:16],
                 "kind": "window",
+                "name": name_zh,
+                "name_zh": name_zh,
+                "original_title": normalize_title(file_title),
+                "city_zh": city_zh or (str(seed.get("city")) if contains_cjk(str(seed.get("city") or "")) else ""),
+                "country_zh": country_zh or (str(seed.get("country")) if contains_cjk(str(seed.get("country") or "")) else ""),
                 "source": "Curated seed → Ooglex R2",
                 "r2_key": key,
                 "bytes": size,
                 "origin_url": url,
-                "quality_score": 100,
-                "quality_reasons": ["manual-seed"],
+                "quality_schema_version": 1,
+                "quality_score": total_score,
+                "semantic_score": semantic_score,
+                "quality_breakdown": breakdown,
+                "quality_reasons": reasons + technical_reasons + ["manual-seed"],
+                "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
+                "width": int(profile.get("width") or 0),
+                "height": int(profile.get("height") or 0),
                 "source_published_at": seed.get("source_published_at"),
                 "source_updated_at": seed.get("source_updated_at"),
                 "catalog_added_at": seed.get("catalog_added_at") or RUN_AT,
@@ -1056,7 +1172,11 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) 
             plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
             seen_urls.add(url)
             seen_keys.add(key)
-            print(f"seed accepted: {seed.get('name','WINDOW')} :: {size/1024/1024:.1f} MiB")
+            print(
+                f"seed accepted: {name_zh} :: score={total_score} :: "
+                f"{profile.get('width')}x{profile.get('height')} :: "
+                f"{float(profile.get('duration_seconds') or 0):.1f}s :: {size/1024/1024:.1f} MiB"
+            )
         except Exception as exc:
             print(f"warn: seed skipped {seed.get('name','?')}: {exc}", file=sys.stderr)
 
