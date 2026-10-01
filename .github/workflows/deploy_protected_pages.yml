@@ -143,6 +143,7 @@ jobs:
           const b = JSON.parse(fs.readFileSync('/tmp/page50.json','utf8'));
           if (!h.ok || !h.windyConfigured) throw new Error('test Worker health/secret failed');
           if (a.status !== 'ok' || b.status !== 'ok') throw new Error('webcam API status failed');
+          console.log('offsets:', a.offset, b.offset);
           if (a.offset !== 0 || b.offset !== 50) throw new Error('offset passthrough failed');
           if (!(a.total > 50) || a.total !== b.total) throw new Error('unexpected Tokyo pagination total');
           if (!Array.isArray(a.webcams) || !Array.isArray(b.webcams) || !a.webcams.length || !b.webcams.length) throw new Error('empty pagination page');
