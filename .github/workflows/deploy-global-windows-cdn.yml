@@ -6,7 +6,7 @@ on:
       target:
         description: "Target WINDOW clip count"
         required: false
-        default: "120"
+        default: "100"
   push:
     branches: [main]
     paths:
@@ -69,13 +69,13 @@ jobs:
           TARGET_INPUT: ${{ github.event.inputs.target }}
         run: |
           set -euo pipefail
-          target="${TARGET_INPUT:-120}"
+          target="${TARGET_INPUT:-100}"
           python scripts/global-cams/sync_windows_to_r2.py --target "$target"
           python - <<'PY'
           import json
           from pathlib import Path
           manifest=json.loads(Path(".window-build/manifest/windows.json").read_text())
-          assert len(manifest) >= min(int(__import__("os").environ.get("TARGET_INPUT") or 120), 100), len(manifest)
+          assert len(manifest) >= min(int(__import__("os").environ.get("TARGET_INPUT") or 100), 100), len(manifest)
           assert all(int(x.get("quality_score") or 0) >= 5 for x in manifest), "quality gate missing"
           assert sum(1 for x in manifest if int(x.get("quality_score") or 0) == 100) >= 1, "curated seeds missing"
           assert all(x.get("r2_key","").startswith("media/") for x in manifest)
