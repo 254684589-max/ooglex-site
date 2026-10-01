@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Validate Global Cams V0.5
+      - name: Validate Global Cams V0.6
         run: node scripts/validate_global_cams.mjs
 
       - name: Smoke Global Cams responsive layout
