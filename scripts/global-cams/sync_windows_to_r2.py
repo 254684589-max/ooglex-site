@@ -29,7 +29,7 @@ from collections import Counter
 from pathlib import Path
 
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "Ooglex-Global-Windows/0.7.2 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
+UA = "Ooglex-Global-Windows/0.7.3 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
 ALLOWED_LICENSE_PREFIXES = ("CC BY", "CC0", "Public domain", "Public Domain", "PD")
 VIDEO_MIMES = {"video/webm", "video/ogg", "video/mp4"}
 
@@ -38,6 +38,30 @@ DEFAULT_GLOBAL_SCENIC_QUERIES = [
     "night skyline", "cityscape", "timelapse", "beach waves", "ocean waves",
     "mountain snow", "waterfall", "fjord", "lake mountain", "fog landscape",
     "harbor sunset", "aurora", "coast sunset", "river timelapse", "canal",
+    "storm clouds", "cloud timelapse", "mountain timelapse", "snow timelapse",
+    "rain timelapse", "beach sunset", "lake sunset", "forest mist",
+    "coast waves", "seascape", "canyon sunset", "desert sunset",
+    "glacier", "geyser", "alpine lake", "cliff coast", "island sunset",
+]
+
+DEFAULT_SCENIC_CATEGORIES = [
+    "Videos of sunsets",
+    "Videos of sunrises",
+    "Videos of snowfall",
+    "Videos of rain",
+    "Videos of waterfalls",
+    "Videos of waves",
+    "Videos of beaches",
+    "Videos of mountains",
+    "Videos of lakes",
+    "Videos of rivers",
+    "Videos of canals",
+    "Videos of clouds",
+    "Videos of fog",
+    "Videos of glaciers",
+    "Videos of fjords",
+    "Videos of auroras",
+    "Time-lapse videos of clouds",
 ]
 
 SCENIC_WEIGHTS = {
@@ -55,6 +79,10 @@ SCENIC_WEIGHTS = {
     "street": 3, "square": 2, "bridge": 3, "cloud": 2, "clouds": 3,
     "forest": 5, "woods": 4, "island": 4, "desert": 5, "village": 3,
     "park": 2, "architecture": 2, "temple": 2,
+    "falls": 6, "shore": 4, "seashore": 5, "seascape": 6, "coastline": 5,
+    "cliff": 4, "cliffs": 4, "canyon": 5, "dune": 4, "dunes": 5,
+    "volcano": 5, "volcanic": 4, "geyser": 6, "lagoon": 5, "reef": 4,
+    "alpine": 4, "glacial": 5, "meadow": 4, "creek": 3, "stream": 3,
 }
 
 HARD_REJECT = {
@@ -75,7 +103,8 @@ HARD_REJECT = {
     "motorcycle", "commuter", "rush hour", "venice beach",
     "cira", "satellite", "weather satellite", "sora",
     "friendship", "annual", "heroine", "renovation", "press conference",
-    "news report", "documentary", "commemoration",
+    "news report", "documentary", "commemoration", "wikimania", "surfing",
+    "railroad", "industrial", "funfair", "amusement", "fireworks",
 }
 
 SOFT_REJECT = {
@@ -151,6 +180,34 @@ def fetch_json_url(url: str) -> object:
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
+
+
+def category_titles(category: str, limit: int, interval: float) -> list[str]:
+    """Collect file titles from a Commons category with continuation."""
+    out: list[str] = []
+    cont: dict = {}
+    while len(out) < limit:
+        try:
+            data = http_json({
+                "action": "query",
+                "list": "categorymembers",
+                "cmtitle": "Category:" + category,
+                "cmtype": "file",
+                "cmlimit": min(50, limit - len(out)),
+                **cont,
+            }, interval=interval)
+        except Exception as exc:
+            print(f"warn: scenic category {category}: {exc}", file=sys.stderr)
+            break
+        for row in data.get("query", {}).get("categorymembers", []):
+            title = row.get("title", "")
+            if title:
+                out.append(title)
+        nxt = data.get("continue")
+        if not nxt:
+            break
+        cont = nxt
+    return out
 
 
 def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interval: float) -> list[str]:
@@ -350,12 +407,28 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
 
 
 def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
-    """Discover a broad scenic pool with a small number of global Commons searches."""
+    """Discover a broad scenic pool from both search and scenic categories."""
     queries = [str(x) for x in cfg.get("global_scenic_queries", DEFAULT_GLOBAL_SCENIC_QUERIES) if x]
+    categories = [str(x) for x in cfg.get("global_scenic_categories", DEFAULT_SCENIC_CATEGORIES) if x]
     per_query = int(cfg.get("global_query_limit") or 45)
-    max_candidates = int(cfg.get("global_max_candidates") or 700)
+    category_limit = int(cfg.get("global_category_limit") or 80)
+    max_candidates = int(cfg.get("global_max_candidates") or 1600)
     seen: set[str] = set()
     out: list[str] = []
+
+    def add_title(title: str) -> None:
+        if not title or title in seen or len(out) >= max_candidates:
+            return
+        seen.add(title)
+        score, _ = quality_score({"title": title, "extmetadata": {}})
+        if score >= 0:
+            out.append(title)
+
+    for category in categories:
+        if len(out) >= max_candidates:
+            break
+        for title in category_titles(category, category_limit, interval):
+            add_title(title)
 
     for term in queries:
         if len(out) >= max_candidates:
@@ -380,14 +453,7 @@ def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
                 print(f"warn: global scenic search {term}: {exc}", file=sys.stderr)
                 continue
             for page in data.get("query", {}).get("pages", []):
-                title = page.get("title", "")
-                if title and title not in seen:
-                    seen.add(title)
-                    score, _ = quality_score({"title": title, "extmetadata": {}})
-                    if score >= 0:
-                        out.append(title)
-                        if len(out) >= max_candidates:
-                            break
+                add_title(page.get("title", ""))
 
     out.sort(key=lambda title: quality_score({"title": title, "extmetadata": {}})[0], reverse=True)
     print(f"global scenic discovery produced {len(out)} unique candidates")
@@ -407,11 +473,20 @@ def match_global_location(info: dict, locations: list[dict], cfg: dict) -> tuple
             if nearest_distance is None or distance < nearest_distance:
                 nearest = loc
                 nearest_distance = distance
-        if nearest is not None and nearest_distance is not None and nearest_distance <= max_distance:
-            return nearest, nearest_distance
 
-        # Exact coordinates are better than inventing a city. Keep the map point
-        # accurate and label it as a generic scenic location.
+        text = norm(str(info.get("title") or "") + " " + ext_value(info.get("extmetadata") or {}, "ImageDescription"))
+        alias_match = False
+        if nearest is not None:
+            aliases = [nearest.get("city"), *(nearest.get("search_aliases") or [])]
+            alias_match = any(norm(str(a or "")) in text for a in aliases if a)
+
+        # Only assign a named place when GPS is very close or the title/description
+        # independently names it. Otherwise preserve the exact GPS point instead
+        # of inventing a nearby city.
+        if nearest is not None and nearest_distance is not None:
+            if nearest_distance <= 30 or (nearest_distance <= max_distance and alias_match):
+                return nearest, nearest_distance
+
         return {
             "city": "GPS 景观点",
             "country": "",
