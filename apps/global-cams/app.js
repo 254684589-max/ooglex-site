@@ -19,7 +19,13 @@ globe.controls().autoRotate=true;
 globe.controls().autoRotateSpeed=0.25;
 globe.pointOfView({lat:22,lng:15,altitude:2.2},0);
 
-loadDemo();
+if(API_BASE){
+  all=[]; filtered=[]; mode='live';
+  setStatus('真实摄像头服务已连接。转动地球后点击“加载当前区域”。','live');
+  render();
+}else{
+  loadDemo();
+}
 
 async function loadDemo(){
   try{
