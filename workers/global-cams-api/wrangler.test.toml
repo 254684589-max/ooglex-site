@@ -1,0 +1,6 @@
+name = "ooglex-global-cams-api-test"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"
