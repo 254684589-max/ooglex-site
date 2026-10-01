@@ -78,6 +78,11 @@ for (const w of windows) {
   ok(/^https:\/\/commons\.wikimedia\.org\//.test(String(w.source_url || '')), 'WINDOW source page missing');
   ok(/^CC /.test(String(w.license || '')), 'WINDOW license missing');
   ok(Number.isFinite(Number(w.lat)) && Number.isFinite(Number(w.lng)), 'WINDOW coordinates missing');
+  ok(Number(w.duration_seconds) >= 30 && Number(w.duration_seconds) <= 300, 'WINDOW fallback duration violates V1 gate');
+  ok(Number(w.width) >= 1280 && Number(w.height) >= 720, 'WINDOW fallback resolution below 720p');
+  ok(Number(w.width) > Number(w.height), 'WINDOW fallback must be landscape');
+  ok(Boolean(w.name_zh) && /[\u3400-\u9fff]/.test(String(w.name_zh)), 'WINDOW fallback Chinese name missing');
+  ok(Boolean(w.original_title), 'WINDOW fallback original title missing');
 }
 
 ok(windowConfig.includes('bucket_name = "ooglex-global-windows"'), 'WINDOW R2 bucket binding missing');
@@ -131,8 +136,11 @@ for (const token of [
   ok(windowSync.includes(token), 'WINDOW curator guard missing: ' + token);
 }
 ok(windowWorkflow.includes("cron: '25 19 * * *'"), 'daily WINDOW refresh schedule missing');
-ok(windowWorkflow.includes('exceeds hard cap 20'), 'stale R2 cleanup hard cap missing');
+ok(windowWorkflow.includes('manifest/gc-pending.json'), 'persistent R2 cleanup queue missing');
+ok(windowWorkflow.includes('queue[:20]'), 'R2 cleanup per-run cap missing');
+ok(windowWorkflow.includes('exceeds hard cap 500'), 'R2 cleanup queue safety cap missing');
 ok(windowWorkflow.includes('r2 object delete "$BUCKET/$key" --remote --force'), 'stale R2 cleanup command missing');
+ok(windowWorkflow.includes("'data/global-windows/zh_labels.json'"), 'Chinese label workflow trigger missing');
 ok(!/WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + config), 'camera API key literal detected');
 
 if (failures.length) {
