@@ -1,0 +1,79 @@
+name: Validate Global WINDOW V0.7.7
+
+on:
+  push:
+    branches:
+      - window-v0.7.7-expand-150
+    paths:
+      - '.github/workflows/validate-global-windows-v077.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-global-windows-v077
+  cancel-in-progress: true
+
+jobs:
+  build-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Compile curator
+        run: python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+
+      - name: Build 150-clip curated catalog
+        run: python scripts/global-cams/sync_windows_to_r2.py --target 150
+
+      - name: Validate manifest quality
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          rows=json.loads(Path(".window-build/manifest/windows.json").read_text())
+          assert 100 <= len(rows) <= 150, len(rows)
+          assert all(int(x.get("quality_score") or 0) >= 5 for x in rows)
+          assert all(x.get("source_url") for x in rows)
+          assert all(x.get("license") for x in rows)
+          assert all(x.get("r2_key","").startswith("media/") for x in rows)
+
+          cities=Counter(str(x.get("city") or "") for x in rows)
+          non_seed=[x for x in rows if int(x.get("quality_score") or 0) < 100]
+          assert all(v <= 4 for k,v in cities.items() if k), cities.most_common(10)
+
+          scores=[int(x.get("quality_score") or 0) for x in rows]
+          geo_cells={(round(float(x.get("lat") or 0),1),round(float(x.get("lng") or 0),1)) for x in rows}
+          summary={
+              "count": len(rows),
+              "locations": len(cities),
+              "geo_cells": len(geo_cells),
+              "score_min": min(scores),
+              "score_avg": round(sum(scores)/len(scores),2),
+              "score_max": max(scores),
+              "manual_seeds": sum(1 for x in rows if int(x.get("quality_score") or 0) == 100),
+              "top_cities": cities.most_common(12),
+          }
+          Path(".window-build/summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n")
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload manifest evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: window-v077-validation
+          path: |
+            .window-build/manifest/windows.json
+            .window-build/summary.json
+          if-no-files-found: warn
+          retention-days: 7
