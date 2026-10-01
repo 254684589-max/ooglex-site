@@ -782,7 +782,7 @@ def main() -> int:
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
     target = args.target or int(cfg.get("target") or 120)
     max_per_location = int(cfg.get("max_per_location") or 3)
-    min_quality = int(cfg.get("min_quality_score") or 5)
+    min_quality = int(cfg.get("min_quality_score") or 7)
     min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
     max_bytes = int(float(cfg.get("max_file_mb") or 12) * 1024 * 1024)
     max_candidates = int(cfg.get("max_candidates_per_location") or 40)
