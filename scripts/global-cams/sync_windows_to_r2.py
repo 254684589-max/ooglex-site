@@ -101,6 +101,9 @@ HARD_REJECT = {
     "tutorial", "lecture", "animation", "gameplay", "screen recording",
     "trailer", "short film", "film trailer", "movie", "official video",
     "motorcycle", "commuter", "rush hour", "venice beach",
+    "skate", "skating", "landing", "ferry", "cruise", "slow motion",
+    "solar eclipse", "eclipse", "google timelapse", "google earth",
+    "hospital", "ospedale", "cemetery", "panteón", "panteon", "jewel changi",
     "cira", "satellite", "weather satellite", "sora",
     "friendship", "annual", "heroine", "renovation", "press conference",
     "news report", "documentary", "commemoration", "wikimania", "surfing",
@@ -120,6 +123,7 @@ STRICT_DESC_REJECT = {
     "samba", "dancer", "singer", "performer",
     "subway", "metro", "train", "tram", "bus", "aircraft", "airplane", "airport",
     "seal", "seals", "cable car", "funicular", "gondola lift", "earth hour",
+    "indoor", "interior",
 }
 
 SOFT_REJECT = {
@@ -635,6 +639,8 @@ def scene_fingerprint(title: str) -> str:
     text = re.sub(r"\b(no audio|short|video|timelapse|time lapse|time-lapse)\b", " ", text)
     text = re.sub(r"\([^)]*\d{4,}[^)]*\)", " ", text)
     text = re.sub(r"\b\d{4,}\b", " ", text)
+    text = re.sub(r"\b(?:4k|8k|1080p|2160p|2560)\b", " ", text)
+    text = re.sub(r"\b\d{1,3}\b(?=\s*$)", " ", text)
     text = re.sub(r"[^0-9a-z\u00c0-\uffff]+", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
@@ -934,7 +940,11 @@ def main() -> int:
                     continue
 
                 city = str(loc.get("city") or "GPS 景观点")
-                if city != "GPS 景观点" and city_counts[city] >= global_cap:
+                generic_gps_cap = int(cfg.get("global_generic_gps_cap") or 8)
+                if city == "GPS 景观点":
+                    if city_counts[city] >= generic_gps_cap:
+                        continue
+                elif city_counts[city] >= global_cap:
                     continue
 
                 ext = media_ext(info)

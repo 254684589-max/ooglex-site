@@ -6,7 +6,7 @@ on:
       target:
         description: "Target WINDOW clip count"
         required: false
-        default: "100"
+        default: "150"
   push:
     branches: [main]
     paths:
@@ -77,7 +77,7 @@ jobs:
           TARGET_INPUT: ${{ github.event.inputs.target }}
         run: |
           set -euo pipefail
-          target="${TARGET_INPUT:-100}"
+          target="${TARGET_INPUT:-150}"
           python scripts/global-cams/sync_windows_to_r2.py --target "$target"
           python - <<'PY'
           import json
