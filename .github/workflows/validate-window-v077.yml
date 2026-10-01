@@ -1,0 +1,81 @@
+name: Validate WINDOW V0.7.7 150
+
+on:
+  push:
+    branches:
+      - window-v0.7.7-expand-150
+    paths:
+      - 'data/global-windows/locations.json'
+      - 'scripts/global-cams/sync_windows_to_r2.py'
+      - '.github/workflows/validate-window-v077.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-window-v077
+  cancel-in-progress: true
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Syntax check
+        run: python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+
+      - name: Build 150-scene candidate catalog
+        run: python scripts/global-cams/sync_windows_to_r2.py --target 150
+
+      - name: Analyze candidate catalog
+        run: |
+          python - <<'PY'
+          import json, statistics
+          from collections import Counter
+          from pathlib import Path
+
+          p=Path(".window-build/manifest/windows.json")
+          rows=json.loads(p.read_text(encoding="utf-8"))
+          scores=[int(x.get("quality_score") or 0) for x in rows]
+          cities=Counter(str(x.get("city") or "") for x in rows)
+          cats=Counter(str(x.get("category") or "") for x in rows)
+          report={
+            "count":len(rows),
+            "min_score":min(scores) if scores else None,
+            "median_score":statistics.median(scores) if scores else None,
+            "mean_score":round(statistics.mean(scores),2) if scores else None,
+            "score_distribution":dict(sorted(Counter(scores).items(), reverse=True)),
+            "unique_cities":len(cities),
+            "max_per_city":max(cities.values()) if cities else 0,
+            "top_cities":cities.most_common(15),
+            "top_categories":cats.most_common(20),
+            "quality_100_count":sum(1 for s in scores if s==100),
+            "under_7_count":sum(1 for s in scores if s<7),
+          }
+          Path(".window-build/quality-report.json").write_text(
+            json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8"
+          )
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          assert len(rows) >= 100, len(rows)
+          assert all(s >= 5 for s in scores)
+          assert report["max_per_city"] <= 4, report["max_per_city"]
+          PY
+
+      - name: Upload validation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: window-v077-validation
+          path: |
+            .window-build/manifest/windows.json
+            .window-build/quality-report.json
+            .window-build/upload-plan.json
+          retention-days: 7
