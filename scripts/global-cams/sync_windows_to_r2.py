@@ -1076,6 +1076,7 @@ def build_item(
     quality_total: int,
     breakdown: dict,
     labels: dict,
+    delivery: dict,
 ) -> dict:
     ext = info.get("extmetadata") or {}
     source_url = info.get("descriptionurl") or info.get("descriptionshorturl") or ""
@@ -1114,7 +1115,11 @@ def build_item(
         "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
         "width": int(profile.get("width") or 0),
         "height": int(profile.get("height") or 0),
-        "source": "Wikimedia Commons → Ooglex R2",
+        "source": (
+            "Wikimedia Commons official transcode → Ooglex R2"
+            if delivery.get("kind") == "transcode"
+            else "Wikimedia Commons original → Ooglex R2"
+        ),
         "author": author[:240],
         "license": license_name[:120],
         "license_url": license_url,
@@ -1122,6 +1127,9 @@ def build_item(
         "r2_key": key,
         "bytes": size,
         "origin_url": info.get("url", ""),
+        "delivery_variant_url": delivery.get("url", ""),
+        "delivery_kind": delivery.get("kind", "original"),
+        "transcode_key": delivery.get("transcode_key", ""),
         "source_published_at": source_published_at,
         "source_updated_at": source_updated_at,
         "catalog_added_at": RUN_AT,
@@ -1452,22 +1460,20 @@ def main() -> int:
                 continue
 
             try:
-                mime = str(info.get("mime") or "").lower()
-                url = str(info.get("url") or "")
-                size = int(info.get("size") or 0)
-                width_hint = int(info.get("width") or 0)
-                height_hint = int(info.get("height") or 0)
-                if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
+                origin_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+                origin_url = str(info.get("url") or "")
+                if origin_mime not in VIDEO_MIMES or not origin_url or origin_url in seen_urls or not license_ok(info):
                     continue
-                if size < min_bytes or size > max_bytes:
+
+                delivery, delivery_reasons = select_delivery_variant(info, cfg)
+                if not delivery:
                     rejected_size += 1
                     continue
-                if width_hint and height_hint:
-                    if width_hint < min_width or height_hint < min_height or (
-                        bool(cfg.get("require_landscape", True)) and width_hint <= height_hint
-                    ):
-                        rejected_technical += 1
-                        continue
+                profile = dict(delivery["profile"])
+                technical_ok, technical_reasons = technical_gate(profile, cfg)
+                if not technical_ok:
+                    rejected_technical += 1
+                    continue
 
                 semantic_score, reasons = quality_score(info)
                 if semantic_score < min_semantic:
@@ -1485,18 +1491,16 @@ def main() -> int:
                     rejected_location += 1
                     continue
 
-                profile = ensure_media_profile(info, title, interval=interval)
-                technical_ok, technical_reasons = technical_gate(profile, cfg)
-                if not technical_ok:
-                    rejected_technical += 1
-                    continue
                 total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
                 if total_score < min_quality:
                     rejected_quality += 1
                     continue
 
-                ext = media_ext(info)
-                digest = hashlib.sha256(url.encode()).hexdigest()[:24]
+                delivery_url = str(delivery["url"])
+                delivery_mime = str(delivery["mime"])
+                size = int(delivery["bytes"])
+                ext = ".mp4" if delivery_mime == "video/mp4" else (".ogv" if delivery_mime == "video/ogg" else ".webm")
+                digest = hashlib.sha256(delivery_url.encode()).hexdigest()[:24]
                 filename = digest + ext
                 key = "media/" + filename
                 if key in seen_keys:
@@ -1506,20 +1510,21 @@ def main() -> int:
                     tmp = dest.with_suffix(dest.suffix + ".part")
                     if tmp.exists():
                         tmp.unlink()
-                    got = download(url, tmp, max_bytes)
+                    got = download(delivery_url, tmp, max_bytes)
                     tmp.replace(dest)
                     size = got
+                    profile["size"] = size
 
                 item = build_item(
-                    info, loc, key, size, semantic_score, reasons + technical_reasons,
-                    profile, total_score, breakdown, labels
+                    info, loc, key, size, semantic_score, reasons + technical_reasons + [f"delivery:{delivery.get('transcode_key') or 'original'}"],
+                    profile, total_score, breakdown, labels, delivery
                 )
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
                 if not args.manifest_only:
-                    upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
-                seen_urls.add(url)
+                    upload_plan.append({"local": str(dest), "key": key, "content_type": delivery_mime, "bytes": size})
+                seen_urls.add(origin_url)
                 seen_keys.add(key)
                 used_here += 1
                 city_counts[city] += 1
@@ -1545,22 +1550,20 @@ def main() -> int:
             if not info:
                 continue
             try:
-                mime = str(info.get("mime") or "").lower()
-                url = str(info.get("url") or "")
-                size = int(info.get("size") or 0)
-                width_hint = int(info.get("width") or 0)
-                height_hint = int(info.get("height") or 0)
-                if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
+                origin_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+                origin_url = str(info.get("url") or "")
+                if origin_mime not in VIDEO_MIMES or not origin_url or origin_url in seen_urls or not license_ok(info):
                     continue
-                if size < min_bytes or size > max_bytes:
+
+                delivery, delivery_reasons = select_delivery_variant(info, cfg)
+                if not delivery:
                     rejected_size += 1
                     continue
-                if width_hint and height_hint:
-                    if width_hint < min_width or height_hint < min_height or (
-                        bool(cfg.get("require_landscape", True)) and width_hint <= height_hint
-                    ):
-                        rejected_technical += 1
-                        continue
+                profile = dict(delivery["profile"])
+                technical_ok, technical_reasons = technical_gate(profile, cfg)
+                if not technical_ok:
+                    rejected_technical += 1
+                    continue
 
                 semantic_score, reasons = quality_score(info)
                 if semantic_score < min_semantic:
@@ -1579,18 +1582,16 @@ def main() -> int:
                 if city != "GPS 景观点" and city_counts[city] >= global_cap:
                     continue
 
-                profile = ensure_media_profile(info, title, interval=interval)
-                technical_ok, technical_reasons = technical_gate(profile, cfg)
-                if not technical_ok:
-                    rejected_technical += 1
-                    continue
                 total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
                 if total_score < min_quality:
                     rejected_quality += 1
                     continue
 
-                ext = media_ext(info)
-                digest = hashlib.sha256(url.encode()).hexdigest()[:24]
+                delivery_url = str(delivery["url"])
+                delivery_mime = str(delivery["mime"])
+                size = int(delivery["bytes"])
+                ext = ".mp4" if delivery_mime == "video/mp4" else (".ogv" if delivery_mime == "video/ogg" else ".webm")
+                digest = hashlib.sha256(delivery_url.encode()).hexdigest()[:24]
                 filename = digest + ext
                 key = "media/" + filename
                 if key in seen_keys:
@@ -1600,21 +1601,22 @@ def main() -> int:
                     tmp = dest.with_suffix(dest.suffix + ".part")
                     if tmp.exists():
                         tmp.unlink()
-                    got = download(url, tmp, max_bytes)
+                    got = download(delivery_url, tmp, max_bytes)
                     tmp.replace(dest)
                     size = got
+                    profile["size"] = size
 
                 item = build_item(
                     info, loc, key, size, semantic_score,
-                    reasons + technical_reasons + ["global-scenic"],
-                    profile, total_score, breakdown, labels
+                    reasons + technical_reasons + ["global-scenic", f"delivery:{delivery.get('transcode_key') or 'original'}"],
+                    profile, total_score, breakdown, labels, delivery
                 )
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
                 if not args.manifest_only:
-                    upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
-                seen_urls.add(url)
+                    upload_plan.append({"local": str(dest), "key": key, "content_type": delivery_mime, "bytes": size})
+                seen_urls.add(origin_url)
                 seen_keys.add(key)
                 city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
