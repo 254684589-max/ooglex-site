@@ -2,11 +2,11 @@
   "target": 100,
   "min_catalog": 100,
   "max_per_location": 4,
-  "max_file_mb": 20,
+  "max_file_mb": 25,
   "max_seed_file_mb": 30,
   "min_file_mb": 0.8,
-  "min_quality_score": 7,
-  "existing_min_quality_score": 10,
+  "min_quality_score": 5,
+  "existing_min_quality_score": 100,
   "max_distance_km": 400,
   "max_candidates_per_location": 80,
   "theme_query_limit": 20,
@@ -587,9 +587,16 @@
       ],
       "search_aliases": [
         "New York City",
-        "New York"
+        "NYC",
+        "Manhattan"
       ],
-      "commons_category": "Videos of New York City"
+      "commons_category": "Videos of New York City",
+      "reject_terms": [
+        "Buffalo",
+        "Albany",
+        "Rochester",
+        "Syracuse"
+      ]
     },
     {
       "city": "Boston",
@@ -797,8 +804,7 @@
         "clouds"
       ],
       "search_aliases": [
-        "Rio de Janeiro",
-        "Rio"
+        "Rio de Janeiro"
       ],
       "commons_category": "Videos of Rio de Janeiro"
     },
@@ -3398,7 +3404,7 @@
   "global_max_candidates": 1800,
   "global_match_distance_km": 120,
   "global_max_per_location": 6,
-  "local_location_scan_limit": 48,
+  "local_location_scan_limit": 60,
   "global_scenic_categories": [
     "Videos of sunsets",
     "Videos of sunrises",
