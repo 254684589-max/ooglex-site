@@ -89,7 +89,11 @@ ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.globa
 ok(Number(windowLocations.global_max_candidates) >= 800, 'WINDOW global scenic candidate pool too small');
 ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 40, 'WINDOW local scan limit must stay bounded');
 ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
-ok(Number(windowLocations.request_interval_seconds) >= 0.5, 'WINDOW Wikimedia request pacing too aggressive');
+ok(Number(windowLocations.request_interval_seconds) >= 0.8, 'WINDOW Wikimedia request pacing too aggressive');
+ok(Number(windowLocations.global_match_distance_km) <= 150, 'WINDOW global geolocation radius too broad');
+ok(windowSync.includes('_MEDIA_LAST'), 'WINDOW media-download pacing missing');
+ok(windowSync.includes('media HTTP'), 'WINDOW media 429 retry missing');
+ok(windowSync.includes('title_score < 3'), 'WINDOW title scenic signal gate missing');
 ok(String(windowLocations.existing_manifest_url || '').includes('windows-cdn.ooglex.com/manifest.json'), 'WINDOW existing CDN manifest reuse URL missing');
 for (const w of windows) {
   ok(w.kind === 'window', 'WINDOW item missing kind=window');
