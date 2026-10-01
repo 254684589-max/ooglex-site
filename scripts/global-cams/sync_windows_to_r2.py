@@ -414,7 +414,7 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
     aliases = [str(loc.get("city") or "")]
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x)
     aliases = [norm(x) for x in aliases if x]
-    alias_match = any(alias and alias in text for alias in aliases)
+    alias_match = any(text_has_alias(text, alias) for alias in aliases)
 
     # GPS is strong evidence only when it is reasonably close to the named
     # place. At larger radii, require a textual place match as a second signal.
@@ -496,7 +496,7 @@ def match_global_location(info: dict, locations: list[dict], cfg: dict) -> tuple
         alias_match = False
         if nearest is not None:
             aliases = [nearest.get("city"), *(nearest.get("search_aliases") or [])]
-            alias_match = any(norm(str(a or "")) in text for a in aliases if a)
+            alias_match = any(text_has_alias(text, str(a or "")) for a in aliases if a)
 
         # Only assign a named place when GPS is very close or the title/description
         # independently names it. Otherwise preserve the exact GPS point instead
@@ -520,7 +520,7 @@ def match_global_location(info: dict, locations: list[dict], cfg: dict) -> tuple
     for loc in locations:
         for raw_alias in [loc.get("city"), *(loc.get("search_aliases") or [])]:
             alias = norm(str(raw_alias or ""))
-            if alias and alias in text and len(alias) > best_len:
+            if alias and text_has_alias(text, alias) and len(alias) > best_len:
                 if any(norm(str(bad)) in text for bad in loc.get("reject_terms", [])):
                     continue
                 best = loc
@@ -536,6 +536,9 @@ def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
     for term in HARD_REJECT:
         if phrase(title, term):
             return -100, [f"reject:{term}"]
+    for term in STRICT_DESC_REJECT:
+        if phrase(desc, term):
+            return -100, [f"reject-desc:{term}"]
 
     title_score = 0
     desc_score = 0
@@ -623,6 +626,15 @@ def download(url: str, dest: Path, max_bytes: int, interval: float = 1.5, retrie
 def normalize_title(title: str) -> str:
     title = str(title or "").removeprefix("File:")
     return re.sub(r"\.[A-Za-z0-9]{2,5}$", "", title).replace("_", " ").strip()
+
+
+def scene_fingerprint(title: str) -> str:
+    text = norm(normalize_title(title))
+    text = re.sub(r"\b(no audio|short|video|timelapse|time lapse|time-lapse)\b", " ", text)
+    text = re.sub(r"\([^)]*\d{4,}[^)]*\)", " ", text)
+    text = re.sub(r"\b\d{4,}\b", " ", text)
+    text = re.sub(r"[^0-9a-z\u00c0-\uffff]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str]) -> dict:
