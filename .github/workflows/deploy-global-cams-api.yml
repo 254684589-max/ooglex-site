@@ -1,0 +1,40 @@
+name: Deploy Global Cams API
+
+# Deploy the Global Cams Cloudflare Worker after production approval.
+# The Windy key is NOT stored in GitHub. It must be configured as the
+# Cloudflare Worker secret WINDY_WEBCAMS_API_KEY and survives code redeploys.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/global-cams-api/worker.js'
+      - 'workers/global-cams-api/wrangler.toml'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check Cloudflare API token
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Missing CLOUDFLARE_API_TOKEN. Configure it in repository Actions secrets before deployment."
+            exit 1
+          fi
+
+      - name: Deploy Global Cams Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: workers/global-cams-api
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
