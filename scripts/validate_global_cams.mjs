@@ -81,6 +81,8 @@ ok(windowSync.includes('haversine_km'), 'WINDOW geographic validation missing');
 ok(windowSync.includes('quality_score'), 'WINDOW quality score output missing');
 ok(windowSync.includes('seed_items'), 'WINDOW curated seed ingestion missing');
 ok(windowSync.includes('image_infos'), 'WINDOW batched metadata lookup missing');
+ok(windowSync.includes('_DOWNLOAD_LAST'), 'WINDOW media download pacing missing');
+ok(windowSync.includes('media HTTP'), 'WINDOW media 429 backoff missing');
 ok(windowSync.includes('ingest_existing'), 'WINDOW existing R2 reuse missing');
 ok(windowSync.includes('global_scenic_titles'), 'WINDOW global scenic fill missing');
 ok(windowSync.includes('match_global_location'), 'WINDOW global scenic geolocation missing');
