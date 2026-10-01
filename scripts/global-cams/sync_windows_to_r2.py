@@ -105,6 +105,19 @@ HARD_REJECT = {
     "friendship", "annual", "heroine", "renovation", "press conference",
     "news report", "documentary", "commemoration", "wikimania", "surfing",
     "railroad", "industrial", "funfair", "amusement", "fireworks",
+    "coast guard", "defense force", "defence force", "smuggling",
+    "naval", "warship", "destroyer", "frigate", "hmas",
+    "volleyball", "arena", "samba", "dance performance",
+    "cow", "cows", "cattle", "pika", "pica",
+}
+
+STRICT_DESC_REJECT = {
+    "protest", "parade", "rally", "crowd", "concert", "festival",
+    "football", "soccer", "basketball", "volleyball",
+    "coast guard", "defense force", "defence force", "military", "naval", "smuggling",
+    "pika", "pica", "cow", "cows", "cattle", "wildlife",
+    "samba", "dancer", "singer", "performer",
+    "subway", "metro", "train", "tram", "bus", "aircraft", "airplane",
 }
 
 SOFT_REJECT = {
@@ -128,6 +141,11 @@ def norm(value: str) -> str:
 
 def phrase(text: str, needle: str) -> bool:
     return re.search(r"(?<!\w)" + re.escape(needle.lower()) + r"(?!\w)", text, flags=re.IGNORECASE) is not None
+
+
+def text_has_alias(text: str, raw_alias: str) -> bool:
+    alias = norm(raw_alias)
+    return bool(alias and phrase(text, alias))
 
 
 def ext_value(ext: dict, key: str) -> str:
@@ -396,7 +414,7 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
     aliases = [str(loc.get("city") or "")]
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x)
     aliases = [norm(x) for x in aliases if x]
-    alias_match = any(alias and alias in text for alias in aliases)
+    alias_match = any(text_has_alias(text, alias) for alias in aliases)
 
     # GPS is strong evidence only when it is reasonably close to the named
     # place. At larger radii, require a textual place match as a second signal.
@@ -478,7 +496,7 @@ def match_global_location(info: dict, locations: list[dict], cfg: dict) -> tuple
         alias_match = False
         if nearest is not None:
             aliases = [nearest.get("city"), *(nearest.get("search_aliases") or [])]
-            alias_match = any(norm(str(a or "")) in text for a in aliases if a)
+            alias_match = any(text_has_alias(text, str(a or "")) for a in aliases if a)
 
         # Only assign a named place when GPS is very close or the title/description
         # independently names it. Otherwise preserve the exact GPS point instead
@@ -502,7 +520,7 @@ def match_global_location(info: dict, locations: list[dict], cfg: dict) -> tuple
     for loc in locations:
         for raw_alias in [loc.get("city"), *(loc.get("search_aliases") or [])]:
             alias = norm(str(raw_alias or ""))
-            if alias and alias in text and len(alias) > best_len:
+            if alias and text_has_alias(text, alias) and len(alias) > best_len:
                 if any(norm(str(bad)) in text for bad in loc.get("reject_terms", [])):
                     continue
                 best = loc
@@ -518,6 +536,9 @@ def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
     for term in HARD_REJECT:
         if phrase(title, term):
             return -100, [f"reject:{term}"]
+    for term in STRICT_DESC_REJECT:
+        if phrase(desc, term):
+            return -100, [f"reject-desc:{term}"]
 
     title_score = 0
     desc_score = 0
@@ -607,6 +628,15 @@ def normalize_title(title: str) -> str:
     return re.sub(r"\.[A-Za-z0-9]{2,5}$", "", title).replace("_", " ").strip()
 
 
+def scene_fingerprint(title: str) -> str:
+    text = norm(normalize_title(title))
+    text = re.sub(r"\b(no audio|short|video|timelapse|time lapse|time-lapse)\b", " ", text)
+    text = re.sub(r"\([^)]*\d{4,}[^)]*\)", " ", text)
+    text = re.sub(r"\b\d{4,}\b", " ", text)
+    text = re.sub(r"[^0-9a-z\u00c0-\uffff]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str]) -> dict:
     ext = info.get("extmetadata") or {}
     source_url = info.get("descriptionurl") or info.get("descriptionshorturl") or ""
@@ -654,6 +684,7 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         return []
 
     out: list[dict] = []
+    scene_fingerprints: set[str] = set()
     for row in rows:
         key = str(row.get("r2_key") or "")
         if not key.startswith("media/") or key in seen_keys:
@@ -668,6 +699,9 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         score, reasons = quality_score(synthetic)
         if score < min_quality:
             continue
+        fingerprint = scene_fingerprint(str(row.get("name") or ""))
+        if fingerprint and fingerprint in scene_fingerprints:
+            continue
         item = {
             **row,
             "kind": "window",
@@ -675,6 +709,8 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
             "quality_reasons": reasons + ["existing-r2"],
         }
         out.append(item)
+        if fingerprint:
+            scene_fingerprints.add(fingerprint)
         seen_keys.add(key)
         if origin:
             seen_urls.add(origin)
@@ -746,7 +782,7 @@ def main() -> int:
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
     target = args.target or int(cfg.get("target") or 120)
     max_per_location = int(cfg.get("max_per_location") or 3)
-    min_quality = int(cfg.get("min_quality_score") or 5)
+    min_quality = int(cfg.get("min_quality_score") or 7)
     min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
     max_bytes = int(float(cfg.get("max_file_mb") or 12) * 1024 * 1024)
     max_candidates = int(cfg.get("max_candidates_per_location") or 40)
@@ -764,10 +800,13 @@ def main() -> int:
     seen_keys: set[str] = set()
     upload_plan: list[dict] = []
 
-    items = ingest_existing(cfg, seen_urls, seen_keys, min_quality)
+    existing_min_quality = int(cfg.get("existing_min_quality_score") or max(min_quality, 10))
+    items = ingest_existing(cfg, seen_urls, seen_keys, existing_min_quality)
     seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys)
     items.extend(seeds)
     upload_plan.extend(seed_plan)
+    seen_scenes = {scene_fingerprint(str(x.get("name") or "")) for x in items}
+    seen_scenes.discard("")
 
     city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
@@ -811,6 +850,9 @@ def main() -> int:
                 if score < min_quality:
                     rejected_quality += 1
                     continue
+                fingerprint = scene_fingerprint(title)
+                if fingerprint and fingerprint in seen_scenes:
+                    continue
 
                 within, distance = geo_ok(info, loc, default_radius_km)
                 if not within:
@@ -837,6 +879,8 @@ def main() -> int:
 
                 item = build_item(info, loc, key, size, score, reasons)
                 items.append(item)
+                if fingerprint:
+                    seen_scenes.add(fingerprint)
                 upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)
@@ -878,6 +922,9 @@ def main() -> int:
                 if score < min_quality:
                     rejected_quality += 1
                     continue
+                fingerprint = scene_fingerprint(title)
+                if fingerprint and fingerprint in seen_scenes:
+                    continue
 
                 loc, distance = match_global_location(info, locations, cfg)
                 if not loc:
@@ -905,6 +952,8 @@ def main() -> int:
 
                 item = build_item(info, loc, key, size, score, reasons + ["global-scenic"])
                 items.append(item)
+                if fingerprint:
+                    seen_scenes.add(fingerprint)
                 upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)

@@ -76,7 +76,8 @@ ok(windowWorker.includes('MANIFEST_KEY, cors, false, true'), 'WINDOW manifest mu
 ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
 ok(Number(windowLocations.target) >= 100 && Number(windowLocations.target) <= 300, 'WINDOW target must be within 100-300 clips');
 ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
-ok(Number(windowLocations.min_quality_score) >= 5, 'WINDOW minimum quality score too low');
+ok(Number(windowLocations.min_quality_score) >= 7, 'WINDOW minimum quality score too low');
+ok(Number(windowLocations.existing_min_quality_score) >= 10, 'WINDOW existing manifest reuse threshold too low');
 ok(windowSync.includes('HARD_REJECT'), 'WINDOW hard-reject quality gate missing');
 ok(windowSync.includes('SCENIC_WEIGHTS'), 'WINDOW scenic scoring missing');
 ok(windowSync.includes('haversine_km'), 'WINDOW geographic validation missing');
