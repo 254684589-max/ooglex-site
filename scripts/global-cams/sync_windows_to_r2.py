@@ -143,27 +143,73 @@ def fetch_json_url(url: str) -> object:
         return json.load(r)
 
 
-def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interval: float) -> list[str]:
-    """Use Commons-compatible broad video searches, then rank scenic-looking titles locally.
+def category_titles(loc: dict, limit: int, interval: float) -> list[str]:
+    categories: list[str] = []
+    raw = loc.get("commons_categories") or []
+    if isinstance(raw, list):
+        categories.extend(str(x) for x in raw if x)
+    single = str(loc.get("commons_category") or "").strip()
+    if single:
+        categories.append(single)
 
-    CirrusSearch support for grouped quoted OR expressions is inconsistent on Commons.
-    Two simple queries are both cheaper and substantially more reliable.
+    out: list[str] = []
+    seen: set[str] = set()
+    for category in categories[:3]:
+        cont: dict = {}
+        for _ in range(2):
+            try:
+                data = http_json({
+                    "action": "query",
+                    "list": "categorymembers",
+                    "cmtitle": "Category:" + category,
+                    "cmtype": "file",
+                    "cmlimit": min(50, limit),
+                    **cont,
+                }, interval=interval)
+            except Exception as exc:
+                print(f"warn: category {category}: {exc}", file=sys.stderr)
+                break
+
+            for row in data.get("query", {}).get("categorymembers", []):
+                title = str(row.get("title") or "")
+                if title and title not in seen:
+                    seen.add(title)
+                    out.append(title)
+                    if len(out) >= limit:
+                        return out
+
+            if "continue" not in data:
+                break
+            cont = data["continue"]
+    return out
+
+
+def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interval: float) -> list[tuple[str, bool]]:
+    """Discover candidates from place categories plus Commons-compatible broad searches.
+
+    The boolean marks category membership, which is trusted as location evidence when
+    a file lacks GPS and the city name is absent from the title/description.
     """
     aliases = [str(loc.get("city") or "")]
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x and x != loc.get("city"))
 
-    out: list[str] = []
-    seen: set[str] = set()
+    trust: dict[str, bool] = {}
+    order: list[str] = []
+
+    for title in category_titles(loc, limit=min(60, max_candidates), interval=interval):
+        if title not in trust:
+            order.append(title)
+        trust[title] = True
 
     for alias in aliases[:2]:
-        if not alias:
+        if not alias or len(order) >= max_candidates:
             continue
         queries = [
             f'intitle:"{alias}" filemime:video/webm',
             f'"{alias}" filemime:video/webm',
         ]
         for query in queries:
-            if len(out) >= max_candidates:
+            if len(order) >= max_candidates:
                 break
             try:
                 data = http_json({
@@ -179,26 +225,22 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
                 continue
 
             for page in data.get("query", {}).get("pages", []):
-                title = page.get("title", "")
-                if title and title not in seen:
-                    seen.add(title)
-                    out.append(title)
-                    if len(out) >= max_candidates:
+                title = str(page.get("title") or "")
+                if title and title not in trust:
+                    trust[title] = False
+                    order.append(title)
+                    if len(order) >= max_candidates:
                         break
 
-        if len(out) >= max(15, int(loc.get("max_per_location") or 3) * 6):
-            break
-
-    # Rank obvious scenic titles first, but retain neutral titles because the
-    # description metadata may carry the scenic signal.
-    ranked: list[tuple[int, int, str]] = []
-    for index, title in enumerate(out):
+    ranked: list[tuple[int, int, int, str, bool]] = []
+    for index, title in enumerate(order):
         score, _ = quality_score({"title": title, "extmetadata": {}})
         if score < 0:
             continue
-        ranked.append((score, -index, title))
+        trusted = bool(trust.get(title))
+        ranked.append((score, 1 if trusted else 0, -index, title, trusted))
     ranked.sort(reverse=True)
-    return [title for _, _, title in ranked[:max_candidates]]
+    return [(title, trusted) for _, _, _, title, trusted in ranked[:max_candidates]]
 
 
 def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
@@ -280,7 +322,7 @@ def geo_ok(info: dict, loc: dict, default_radius_km: float) -> tuple[bool, float
     return distance <= radius, distance
 
 
-def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
+def location_relevant(info: dict, loc: dict, distance: float | None, trusted_category: bool = False) -> bool:
     """Reject search matches that are not actually about the configured place.
 
     GPS is authoritative when available. Without GPS, require the city/place or
@@ -294,7 +336,7 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
         if norm(str(bad)) in text:
             return False
 
-    if distance is not None:
+    if distance is not None or trusted_category:
         return True
 
     aliases = [str(loc.get("city") or "")]
@@ -307,9 +349,10 @@ def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
     ext = info.get("extmetadata") or {}
     title = norm(info.get("title", ""))
     desc = norm(ext_value(ext, "ImageDescription"))
+    combined = title + " " + desc
 
     for term in HARD_REJECT:
-        if phrase(title, term):
+        if phrase(combined, term):
             return -100, [f"reject:{term}"]
 
     score = 0
@@ -328,6 +371,17 @@ def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
             score -= max(1, weight // 2)
 
     return score, reasons[:8]
+
+
+def semantic_title_key(value: str) -> str:
+    """Collapse obvious label/year/short-variant duplicates without hashing media bytes."""
+    text = norm(value)
+    text = re.sub(r"\([^)]*\)", " ", text)
+    text = re.sub(r"\b(?:labels?|nolabels?|no labels?|portrait|landscape|short|version|ver)\b", " ", text)
+    text = re.sub(r"\b(?:19|20)\d{2}(?:[-_/]\d{1,2}){0,2}\b", " ", text)
+    text = re.sub(r"\b\d{2,}\b", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:180]
 
 
 def download(url: str, dest: Path, max_bytes: int) -> int:
@@ -516,6 +570,7 @@ def main() -> int:
     items.extend(seeds)
     upload_plan.extend(seed_plan)
 
+    seen_semantic = {semantic_title_key(str(x.get("name") or "")) for x in items if x.get("name")}
     city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
     rejected_geo = 0
@@ -531,16 +586,22 @@ def main() -> int:
         if used_here >= max_per_location:
             continue
 
-        titles = themed_search_titles(loc, per_query=per_query, max_candidates=max_candidates, interval=interval)
-        if not titles:
+        candidates = themed_search_titles(loc, per_query=per_query, max_candidates=max_candidates, interval=interval)
+        if not candidates:
             continue
+        titles = [title for title, _ in candidates]
+        trusted_by_title = {title: trusted for title, trusted in candidates}
         infos = image_infos(titles, interval=interval)
 
-        for title in titles:
+        for title, trusted_category in candidates:
             if len(items) >= target or used_here >= max_per_location:
                 break
             info = infos.get(title)
             if not info:
+                continue
+
+            semantic = semantic_title_key(title)
+            if semantic and semantic in seen_semantic:
                 continue
 
             try:
@@ -562,7 +623,7 @@ def main() -> int:
                 if not within:
                     rejected_geo += 1
                     continue
-                if not location_relevant(info, loc, distance):
+                if not location_relevant(info, loc, distance, trusted_category=trusted_category):
                     rejected_location += 1
                     continue
 
@@ -586,6 +647,8 @@ def main() -> int:
                 upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)
+                if semantic:
+                    seen_semantic.add(semantic)
                 used_here += 1
                 city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
