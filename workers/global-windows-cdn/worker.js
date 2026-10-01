@@ -24,7 +24,10 @@ export default {
     }
 
     if (url.pathname === "/manifest.json") {
-      return serveObject(request, env, ctx, MANIFEST_KEY, cors, true);
+      // The manifest is control-plane metadata and changes on every catalog
+      // deployment. Never serve it from caches.default: stale manifests can
+      // make a successful R2 upload look like an old 36-item deployment.
+      return serveObject(request, env, ctx, MANIFEST_KEY, cors, false, true);
     }
 
     if (url.pathname.startsWith("/media/")) {
@@ -43,7 +46,7 @@ export default {
   }
 };
 
-async function serveObject(request, env, ctx, key, cors, cacheable) {
+async function serveObject(request, env, ctx, key, cors, cacheable, manifest = false) {
   const isHead = request.method === "HEAD";
   const hasRange = request.headers.has("Range");
 
@@ -77,6 +80,9 @@ async function serveObject(request, env, ctx, key, cors, cacheable) {
 
   const headers = objectHeaders(object, cors);
   headers.set("Accept-Ranges", "bytes");
+  if (manifest) {
+    headers.set("Cache-Control", "no-cache, max-age=0, must-revalidate");
+  }
 
   let status = 200;
   if (!isHead && object.range) {
