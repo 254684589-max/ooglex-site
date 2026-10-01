@@ -321,6 +321,115 @@ def ensure_media_profile(info: dict, title: str, interval: float) -> dict:
     return profile
 
 
+def variant_estimated_bytes(variant: dict, duration_seconds: float) -> int | None:
+    """Estimate transcode bytes from TimedMediaHandler bandwidth metadata."""
+    try:
+        bandwidth = float(variant.get("bandwidth") or 0)
+    except Exception:
+        bandwidth = 0
+    if bandwidth <= 0 or duration_seconds <= 0:
+        return None
+    # bandwidth is bits/s. Keep 8% headroom for container/metadata variance.
+    return int((bandwidth * duration_seconds / 8.0) * 1.08)
+
+
+def select_delivery_variant(info: dict, cfg: dict) -> tuple[dict | None, list[str]]:
+    """Pick a browser-friendly Commons source that satisfies V1 technical gates.
+
+    Prefer official 1080p/720p WebM/MP4 transcodes to oversized originals. The
+    original Commons URL/title remains the attribution source in the manifest.
+    """
+    original = media_profile_from_info(info)
+    duration = float(original.get("duration_seconds") or 0)
+    min_width = int(cfg.get("min_width") or 1280)
+    min_height = int(cfg.get("min_height") or 720)
+    preferred_width = int(cfg.get("preferred_width") or 1920)
+    preferred_height = int(cfg.get("preferred_height") or 1080)
+    min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
+    max_bytes = int(float(cfg.get("max_file_mb") or 80) * 1024 * 1024)
+
+    candidates: list[dict] = []
+
+    original_url = str(info.get("url") or "")
+    original_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+    if original_url:
+        candidates.append({
+            "url": original_url,
+            "mime": original_mime,
+            "width": int(original.get("width") or 0),
+            "height": int(original.get("height") or 0),
+            "bytes": int(original.get("size") or 0),
+            "exact_bytes": True,
+            "transcode_key": "",
+            "kind": "original",
+        })
+
+    for row in info.get("derivatives") or []:
+        url = str(row.get("src") or "")
+        mime = str(row.get("type") or "").split(";", 1)[0].strip().lower()
+        try:
+            width = int(row.get("width") or 0)
+            height = int(row.get("height") or 0)
+        except Exception:
+            continue
+        estimated = variant_estimated_bytes(row, duration)
+        if not url or not estimated:
+            continue
+        candidates.append({
+            "url": url,
+            "mime": mime,
+            "width": width,
+            "height": height,
+            "bytes": estimated,
+            "exact_bytes": False,
+            "transcode_key": str(row.get("transcodekey") or ""),
+            "kind": "transcode",
+        })
+
+    eligible: list[dict] = []
+    for row in candidates:
+        width = int(row.get("width") or 0)
+        height = int(row.get("height") or 0)
+        size = int(row.get("bytes") or 0)
+        mime = str(row.get("mime") or "")
+        if mime not in VIDEO_MIMES:
+            continue
+        if width < min_width or height < min_height or width <= height:
+            continue
+        if size < min_bytes or size > max_bytes:
+            continue
+        eligible.append(row)
+
+    if not eligible:
+        return None, ["no-720p-under-80mb-variant"]
+
+    def rank(row: dict) -> tuple:
+        width = int(row["width"])
+        height = int(row["height"])
+        size = int(row["bytes"])
+        # Prefer 720p–1080p delivery because it gives the best quality/storage
+        # balance for a browser WINDOW. Above-1080p is a fallback, not a goal.
+        in_preferred = int(width <= preferred_width and height <= preferred_height)
+        exact_1080 = int(width >= 1920 and height >= 1080)
+        exact_720 = int(width >= 1280 and height >= 720)
+        transcode = int(row.get("kind") == "transcode")
+        return (in_preferred, exact_1080, exact_720, height, transcode, -size)
+
+    best = max(eligible, key=rank)
+    profile = {
+        "duration_seconds": duration,
+        "width": int(best["width"]),
+        "height": int(best["height"]),
+        "size": int(best["bytes"]),
+        "mediatype": "VIDEO",
+    }
+    return {
+        **best,
+        "profile": profile,
+        "original_url": original_url,
+    }, []
+
+
 def technical_gate(profile: dict, cfg: dict) -> tuple[bool, list[str]]:
     reasons: list[str] = []
     duration = parse_float(profile.get("duration_seconds"))
@@ -335,6 +444,9 @@ def technical_gate(profile: dict, cfg: dict) -> tuple[bool, list[str]]:
     max_duration = float(cfg.get("max_duration_seconds") or 300)
     min_width = int(cfg.get("min_width") or 1280)
     min_height = int(cfg.get("min_height") or 720)
+    size = parse_float(profile.get("size"))
+    min_bytes = float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024
+    max_bytes = float(cfg.get("max_file_mb") or 80) * 1024 * 1024
 
     if duration < min_duration:
         reasons.append(f"duration<{int(min_duration)}s")
@@ -344,6 +456,8 @@ def technical_gate(profile: dict, cfg: dict) -> tuple[bool, list[str]]:
         reasons.append(f"resolution<{min_width}x{min_height}")
     if bool(cfg.get("require_landscape", True)) and width <= height:
         reasons.append("not-landscape")
+    if size is not None and (size < min_bytes or size > max_bytes):
+        reasons.append("file-size-out-of-range")
     return not reasons, reasons
 
 
@@ -581,10 +695,10 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
             data = http_json({
                 "action": "query",
                 "titles": "|".join(batch),
-                "prop": "imageinfo|coordinates",
-                "iiprop": "url|mime|size|dimensions|mediatype|commonmetadata|timestamp|extmetadata",
-                "iiextmetadatalanguage": "en",
-                "iiextmetadatafilter": (
+                "prop": "videoinfo|coordinates",
+                "viprop": "url|mime|size|dimensions|mediatype|derivatives|timestamp|extmetadata",
+                "viextmetadatalanguage": "en",
+                "viextmetadatafilter": (
                     "Artist|Attribution|LicenseShortName|LicenseUrl|UsageTerms|NonFree|"
                     "GPSLatitude|GPSLongitude|ImageDescription|DateTimeOriginal|DateTimeDigitized"
                 ),
@@ -594,7 +708,7 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
             continue
 
         for page in data.get("query", {}).get("pages", []):
-            info = (page.get("imageinfo") or [None])[0]
+            info = (page.get("videoinfo") or [None])[0]
             title = page.get("title", "")
             if info and title:
                 info["title"] = title
