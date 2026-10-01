@@ -6,7 +6,9 @@ on:
       target:
         description: "Target WINDOW clip count"
         required: false
-        default: "100"
+        default: "150"
+  schedule:
+    - cron: '25 19 * * *'
   push:
     branches: [main]
     paths:
@@ -64,6 +66,22 @@ jobs:
             npx --yes wrangler@4 r2 bucket create "$BUCKET" --location apac
           fi
 
+      - name: Snapshot current WINDOW manifest
+        run: |
+          set -euo pipefail
+          if curl -fsS --connect-timeout 5 --max-time 20 -H 'Cache-Control: no-cache' "$CDN_BASE/manifest.json?before=$GITHUB_SHA" -o /tmp/windows-before.json; then
+            python - <<'PY'
+          import json
+          p="/tmp/windows-before.json"
+          rows=json.load(open(p,encoding="utf-8"))
+          assert isinstance(rows,list)
+          print("Previous manifest count:",len(rows))
+          PY
+          else
+            echo '[]' > /tmp/windows-before.json
+            echo "::warning::No previous WINDOW manifest; stale cleanup disabled for this run."
+          fi
+
       - name: Deploy WINDOW CDN Worker
         uses: cloudflare/wrangler-action@v3
         with:
@@ -77,7 +95,7 @@ jobs:
           TARGET_INPUT: ${{ github.event.inputs.target }}
         run: |
           set -euo pipefail
-          target="${TARGET_INPUT:-100}"
+          target="${TARGET_INPUT:-150}"
           python scripts/global-cams/sync_windows_to_r2.py --target "$target"
           python - <<'PY'
           import json
@@ -151,3 +169,27 @@ jobs:
           test "$code" = "206"
           test "$(wc -c </tmp/window-range.bin | tr -d ' ')" -eq 1024
           echo "R2 ranged video delivery verified."
+
+      - name: Remove rotated-out WINDOW objects
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/window-stale-keys.txt
+          import json,re
+          before=json.load(open("/tmp/windows-before.json",encoding="utf-8"))
+          after=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          old={str(x.get("r2_key") or "") for x in before}
+          new={str(x.get("r2_key") or "") for x in after}
+          stale=sorted(k for k in old-new if re.fullmatch(r"media/[A-Za-z0-9][A-Za-z0-9._-]{2,160}",k))
+          if len(stale)>20:
+              raise SystemExit(f"refusing stale cleanup: {len(stale)} keys exceeds hard cap 20")
+          print("\n".join(stale))
+          PY
+          count=0
+          while IFS= read -r key; do
+            [ -n "$key" ] || continue
+            npx --yes wrangler@4 r2 object delete "$BUCKET/$key" --remote
+            count=$((count+1))
+          done < /tmp/window-stale-keys.txt
+          echo "Removed $count rotated-out WINDOW objects."
