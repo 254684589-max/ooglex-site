@@ -1037,6 +1037,8 @@ def ingest_existing(
             "category": row.get("category") or "沉浸实景",
         }
         name_zh, city_zh, country_zh = display_name_zh(synthetic, loc, labels)
+        city_zh = city_zh or str(row.get("city_zh") or "")
+        country_zh = country_zh or str(row.get("country_zh") or "")
         pop = popularity.get(str(row.get("id") or ""), {})
         plays30 = int(pop.get("plays30d") or pop.get("plays") or 0)
         total_plays = int(pop.get("total") or 0)
@@ -1153,8 +1155,8 @@ def seed_items(
                 "name": name_zh,
                 "name_zh": name_zh,
                 "original_title": normalize_title(file_title),
-                "city_zh": city_zh or (str(seed.get("city")) if contains_cjk(str(seed.get("city") or "")) else ""),
-                "country_zh": country_zh or (str(seed.get("country")) if contains_cjk(str(seed.get("country") or "")) else ""),
+                "city_zh": str(seed.get("city_zh") or "") or city_zh or (str(seed.get("city")) if contains_cjk(str(seed.get("city") or "")) else ""),
+                "country_zh": str(seed.get("country_zh") or "") or country_zh or (str(seed.get("country")) if contains_cjk(str(seed.get("country") or "")) else ""),
                 "source": "Curated seed → Ooglex R2",
                 "r2_key": key,
                 "bytes": size,
