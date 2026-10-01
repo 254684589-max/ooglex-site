@@ -42,7 +42,7 @@ jobs:
       - name: Curate 100 V1-quality WINDOW clips
         run: |
           set -euo pipefail
-          python scripts/global-cams/sync_windows_to_r2.py --target 100
+          python scripts/global-cams/sync_windows_to_r2.py --target 100 --manifest-only
 
       - name: Verify V1 catalog contract
         run: |
@@ -62,6 +62,7 @@ jobs:
           total=sum(int(x.get("bytes") or 0) for x in rows)
           assert total <= 8*1024**3, total
           print("V1_CATALOG_COUNT=",len(rows))
+          assert len(plan) == 0, plan
           print("V1_NEW_DOWNLOADS=",len(plan))
           print("V1_TOTAL_MIB=",round(total/1024/1024,1))
           print("V1_MIN_SCORE=",min(int(x["quality_score"]) for x in rows))
