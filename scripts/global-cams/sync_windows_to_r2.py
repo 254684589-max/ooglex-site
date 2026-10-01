@@ -74,6 +74,8 @@ HARD_REJECT = {
     "trailer", "short film", "film trailer", "movie", "official video",
     "motorcycle", "commuter", "rush hour", "venice beach",
     "cira", "satellite", "weather satellite", "sora",
+    "friendship", "annual", "heroine", "renovation", "press conference",
+    "news report", "documentary", "commemoration",
 }
 
 SOFT_REJECT = {
@@ -82,6 +84,7 @@ SOFT_REJECT = {
 }
 
 _REQUEST_LAST = 0.0
+_MEDIA_LAST = 0.0
 
 
 def strip_html(value: str) -> str:
@@ -333,13 +336,17 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
         if norm(str(bad)) in text:
             return False
 
-    if distance is not None:
-        return True
-
     aliases = [str(loc.get("city") or "")]
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x)
     aliases = [norm(x) for x in aliases if x]
-    return any(alias and alias in text for alias in aliases)
+    alias_match = any(alias and alias in text for alias in aliases)
+
+    # GPS is strong evidence only when it is reasonably close to the named
+    # place. At larger radii, require a textual place match as a second signal.
+    if distance is not None:
+        return distance <= 120 or alias_match
+
+    return alias_match
 
 
 def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
@@ -437,40 +444,87 @@ def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
         if phrase(title, term):
             return -100, [f"reject:{term}"]
 
-    score = 0
+    title_score = 0
+    desc_score = 0
     reasons: list[str] = []
     for term, weight in SCENIC_WEIGHTS.items():
         if phrase(title, term):
-            score += weight
+            title_score += weight
             reasons.append(term)
         elif phrase(desc, term):
-            score += max(1, weight // 3)
+            desc_score += max(1, weight // 3)
 
+    score = title_score + desc_score
     for term, weight in SOFT_REJECT.items():
         if phrase(title, term):
             score -= weight
         elif phrase(desc, term):
             score -= max(1, weight // 2)
 
+    # Descriptions can contain incidental weather/place words. Require at least
+    # one meaningful scenic signal in the title for automatic admission.
+    if title_score < 3:
+        score = min(score, 4)
+
     return score, reasons[:8]
 
 
-def download(url: str, dest: Path, max_bytes: int) -> int:
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "video/*,*/*;q=0.8"})
-    total = 0
-    with urllib.request.urlopen(req, timeout=150) as r, dest.open("wb") as f:
-        declared = int(r.headers.get("Content-Length") or 0)
-        if declared and declared > max_bytes:
-            raise ValueError(f"remote file too large: {declared}")
-        while True:
-            chunk = r.read(1024 * 1024)
-            if not chunk:
-                break
-            total += len(chunk)
-            if total > max_bytes:
-                raise ValueError(f"download exceeded max bytes: {total}")
-            f.write(chunk)
-    return total
+def download(url: str, dest: Path, max_bytes: int, interval: float = 1.5, retries: int = 7) -> int:
+    """Polite Wikimedia media download with pacing and 429/5xx retry backoff."""
+    global _MEDIA_LAST
+
+    for attempt in range(retries):
+        wait = interval - (time.monotonic() - _MEDIA_LAST)
+        if wait > 0:
+            time.sleep(wait)
+
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA,
+            "Accept": "video/*,*/*;q=0.8",
+            "Accept-Encoding": "identity",
+        })
+        try:
+            total = 0
+            with urllib.request.urlopen(req, timeout=180) as r:
+                _MEDIA_LAST = time.monotonic()
+                declared = int(r.headers.get("Content-Length") or 0)
+                if declared and declared > max_bytes:
+                    raise ValueError(f"remote file too large: {declared}")
+                with dest.open("wb") as f:
+                    while True:
+                        chunk = r.read(1024 * 1024)
+                        if not chunk:
+                            break
+                        total += len(chunk)
+                        if total > max_bytes:
+                            raise ValueError(f"download exceeded max bytes: {total}")
+                        f.write(chunk)
+            return total
+        except urllib.error.HTTPError as exc:
+            _MEDIA_LAST = time.monotonic()
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == retries - 1:
+                raise
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                delay = float(retry_after) if retry_after else 0.0
+            except Exception:
+                delay = 0.0
+            delay = max(delay, min(60.0, 5.0 * (2 ** attempt)))
+            print(
+                f"warn: media HTTP {exc.code}; retry {attempt + 1}/{retries} after {delay:.1f}s :: "
+                f"{Path(urllib.parse.urlparse(url).path).name}",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError):
+            _MEDIA_LAST = time.monotonic()
+            if attempt == retries - 1:
+                raise
+            delay = min(45.0, 4.0 * (2 ** attempt))
+            print(f"warn: media network retry after {delay:.1f}s", file=sys.stderr)
+            time.sleep(delay)
+
+    raise RuntimeError("media download retry loop exhausted")
 
 
 def normalize_title(title: str) -> str:
