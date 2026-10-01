@@ -8,23 +8,28 @@ const windowWorker = fs.readFileSync('workers/global-windows-cdn/worker.js', 'ut
 const windowConfig = fs.readFileSync('workers/global-windows-cdn/wrangler.toml', 'utf8');
 const windowLocations = JSON.parse(fs.readFileSync('data/global-windows/locations.json', 'utf8'));
 const windowSync = fs.readFileSync('scripts/global-cams/sync_windows_to_r2.py', 'utf8');
+const windowWorkflow = fs.readFileSync('.github/workflows/deploy-global-windows-cdn.yml', 'utf8');
 
 const failures = [];
 const ok = (cond, msg) => { if (!cond) failures.push(msg); };
 
 try { new Function(app); } catch (e) { failures.push('app.js syntax: ' + e.message); }
-const windowWorkerForParse = windowWorker.replace('export default', 'const __windowWorker =');
+const windowWorkerForParse = windowWorker
+  .replace('export default', 'const __windowWorker =')
+  .replace('export class WindowStats', 'class WindowStats');
 try { new Function(windowWorkerForParse); } catch (e) { failures.push('global-windows worker syntax: ' + e.message); }
 
 for (const id of [
   'stage','globe','playlist','viewer','windowName','windowMeta','openSource','expandViewer',
   'search','randomWindow','randomTop','zoomIn','zoomOut','resetGlobe','resetView',
-  'fullscreen','status','count','listCount','centerCoords','sidebar'
+  'fullscreen','status','count','listCount','centerCoords','sidebar','playlistTabs'
 ]) {
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V0.8</span>'), 'V0.8 label missing');
+ok(html.includes('环球实景 <span>V0.9</span>'), 'V0.9 label missing');
+ok((html.match(/class="sort-btn/g) || []).length === 3, 'featured/latest/popular tabs missing');
+ok(html.includes('data-sort="featured"') && html.includes('data-sort="latest"') && html.includes('data-sort="popular"'), 'sort modes incomplete');
 ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
 ok(html.includes('WINDOW 播放列表'), 'WINDOW playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
@@ -54,6 +59,12 @@ ok(app.includes('video.loop = true'), 'WINDOW loop missing');
 ok(app.includes('video.playsInline = true'), 'WINDOW mobile inline playback missing');
 ok(app.includes('randomWindow'), 'WINDOW random picker missing');
 ok(app.includes('showWindow'), 'WINDOW selection renderer missing');
+ok(app.includes("'/stats/popular?days=7&limit=500'") || app.includes("'/stats/popular?days=7&limit=500"), 'popular stats fetch missing');
+ok(app.includes("'/stats/play'") || app.includes("'/stats/play"), 'play stats POST missing');
+ok(app.includes("currentTime || 0) < 8"), '8-second play qualification missing');
+ok(app.includes('ooglex-window-play-v1:'), 'once-per-day browser dedupe missing');
+ok(app.includes("activeSort === 'latest'"), 'latest sorting missing');
+ok(app.includes("activeSort === 'popular'"), 'popular sorting missing');
 ok(String(config).includes('https://windows-cdn.ooglex.com'), 'WINDOW CDN config missing');
 
 ok(Array.isArray(windows) && windows.length >= 5, 'WINDOW seed library must contain at least 5 entries');
@@ -72,9 +83,19 @@ ok(windowWorker.includes('Range'), 'WINDOW worker byte-range support missing');
 ok(windowWorker.includes('caches.default'), 'WINDOW media cache helper missing');
 ok(windowWorker.includes('no-cache, max-age=0, must-revalidate'), 'WINDOW manifest freshness policy missing');
 ok(windowWorker.includes('manifest/windows.json'), 'WINDOW CDN manifest key missing');
+ok(windowWorker.includes('export class WindowStats'), 'WINDOW popularity Durable Object missing');
+ok(windowWorker.includes('"/stats/play"'), 'WINDOW play endpoint missing');
+ok(windowWorker.includes('"/stats/popular"'), 'WINDOW popular endpoint missing');
+ok(windowWorker.includes('isAllowedWriteOrigin'), 'stats write-origin guard missing');
+ok(windowWorker.includes('payload_too_large'), 'stats payload size guard missing');
+ok(windowWorker.includes('recentClients'), 'stats transient rate limit missing');
+ok(windowConfig.includes('name = "WINDOW_STATS"'), 'WINDOW_STATS Durable Object binding missing');
+ok(windowConfig.includes('new_sqlite_classes = ["WindowStats"]'), 'WINDOW_STATS migration missing');
 
 ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
-ok(Number(windowLocations.target) >= 100 && Number(windowLocations.target) <= 300, 'WINDOW target must be within 100-300 clips');
+ok(Number(windowLocations.target) === 150, 'WINDOW V0.9 target must be 150');
+ok(Number(windowLocations.existing_keep_limit) >= 130 && Number(windowLocations.existing_keep_limit) < Number(windowLocations.target), 'WINDOW rotating keep limit invalid');
+ok(String(windowLocations.popularity_url || '').includes('/stats/popular'), 'WINDOW popularity ranking URL missing');
 ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
 ok(Number(windowLocations.min_quality_score) >= 5, 'WINDOW minimum quality score too low');
 ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
@@ -87,15 +108,19 @@ ok(Array.isArray(windowLocations.global_scenic_categories) && windowLocations.gl
 for (const token of [
   'HARD_REJECT','STRICT_DESC_REJECT','SCENIC_WEIGHTS','haversine_km','quality_score',
   'seed_items','image_infos','ingest_existing','global_scenic_titles','match_global_location',
-  'media_coords','category_titles','scene_fingerprint','text_has_alias','_MEDIA_LAST','title_score < 3'
+  'media_coords','category_titles','scene_fingerprint','text_has_alias','_MEDIA_LAST','title_score < 3',
+  'catalog_added_at','source_updated_at','fetch_popularity','existing_keep_limit'
 ]) {
   ok(windowSync.includes(token), 'WINDOW curator guard missing: ' + token);
 }
+ok(windowWorkflow.includes("cron: '25 19 * * *'"), 'daily WINDOW refresh schedule missing');
+ok(windowWorkflow.includes('exceeds hard cap 20'), 'stale R2 cleanup hard cap missing');
+ok(windowWorkflow.includes('r2 object delete "$BUCKET/$key" --remote --force'), 'stale R2 cleanup command missing');
 ok(!/WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + config), 'camera API key literal detected');
 
 if (failures.length) {
-  console.error('Global WINDOW V0.8 validation failed:');
+  console.error('Global WINDOW V0.9 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global WINDOW V0.8 validation passed.');
+console.log('Global WINDOW V0.9 validation passed.');
