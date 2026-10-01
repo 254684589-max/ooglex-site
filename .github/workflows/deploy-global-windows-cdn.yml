@@ -1,0 +1,149 @@
+name: Deploy Global WINDOW R2 CDN
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Target WINDOW clip count"
+        required: false
+        default: "36"
+  push:
+    branches: [main]
+    paths:
+      - 'workers/global-windows-cdn/**'
+      - 'scripts/global-cams/sync_windows_to_r2.py'
+      - 'data/global-windows/locations.json'
+      - 'apps/global-cams/app.js'
+      - 'apps/global-cams/config.js'
+      - '.github/workflows/deploy-global-windows-cdn.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: global-windows-cdn
+  cancel-in-progress: false
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      BUCKET: ooglex-global-windows
+      CDN_BASE: https://windows-cdn.ooglex.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Check Cloudflare credentials
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$TOKEN" || { echo "::error::Missing CLOUDFLARE_API_TOKEN"; exit 1; }
+          test -n "$ACCOUNT" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+
+      - name: Ensure R2 bucket exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if npx --yes wrangler@4 r2 bucket info "$BUCKET" --json >/tmp/window-bucket.json 2>/dev/null; then
+            echo "R2 bucket already exists: $BUCKET"
+          else
+            echo "Creating R2 bucket: $BUCKET"
+            npx --yes wrangler@4 r2 bucket create "$BUCKET" --location apac
+          fi
+
+      - name: Build licensed WINDOW catalog
+        env:
+          TARGET_INPUT: ${{ github.event.inputs.target }}
+        run: |
+          set -euo pipefail
+          target="${TARGET_INPUT:-36}"
+          python scripts/global-cams/sync_windows_to_r2.py --target "$target"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest=json.loads(Path(".window-build/manifest/windows.json").read_text())
+          assert len(manifest) >= 12, len(manifest)
+          assert all(x.get("r2_key","").startswith("media/") for x in manifest)
+          assert all(x.get("source_url") for x in manifest)
+          assert all(x.get("license") for x in manifest)
+          print("WINDOW manifest validated:", len(manifest))
+          PY
+
+      - name: Upload videos and manifest to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/window-upload.tsv
+          import json
+          from pathlib import Path
+          plan=json.loads(Path(".window-build/upload-plan.json").read_text())
+          for x in plan:
+              print("\t".join([x["local"],x["key"],x["content_type"]]))
+          PY
+          count=0
+          while IFS=$'\t' read -r file key ctype; do
+            [ -f "$file" ] || { echo "::error::Missing $file"; exit 1; }
+            npx --yes wrangler@4 r2 object put "$BUCKET/$key"               --file "$file" --remote               --content-type "$ctype"               --cache-control "public, max-age=31536000, immutable"
+            count=$((count+1))
+          done < /tmp/window-upload.tsv
+          npx --yes wrangler@4 r2 object put "$BUCKET/manifest/windows.json"             --file ".window-build/manifest/windows.json" --remote             --content-type "application/json; charset=utf-8"             --cache-control "public, max-age=300"
+          echo "Uploaded $count WINDOW video objects + manifest."
+
+      - name: Deploy WINDOW CDN Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4"
+          workingDirectory: workers/global-windows-cdn
+          command: deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Verify WINDOW CDN
+        run: |
+          set -euo pipefail
+          ok=0
+          for i in $(seq 1 30); do
+            body="$(curl -fsS --connect-timeout 5 --max-time 15 "$CDN_BASE/health" 2>/dev/null || true)"
+            if echo "$body" | grep -q '"ok":true'; then
+              echo "WINDOW CDN ready: $body"
+              ok=1
+              break
+            fi
+            echo "Waiting for WINDOW CDN ($i/30)..."
+            sleep 5
+          done
+          test "$ok" = "1"
+
+          curl -fsS --connect-timeout 5 --max-time 20 "$CDN_BASE/manifest.json" -o /tmp/windows.json
+          python - <<'PY'
+          import json
+          rows=json.load(open("/tmp/windows.json",encoding="utf-8"))
+          assert len(rows)>=12, len(rows)
+          print("CDN manifest count:",len(rows))
+          print("sample r2 key:",rows[0]["r2_key"])
+          PY
+
+          key="$(python -c 'import json,urllib.parse; x=json.load(open("/tmp/windows.json")); print(urllib.parse.quote(x[0]["r2_key"].removeprefix("media/"),safe=""))')"
+          code="$(curl -sS -o /tmp/window-range.bin -w '%{http_code}' -H 'Range: bytes=0-1023' "$CDN_BASE/media/$key")"
+          test "$code" = "206"
+          test "$(wc -c </tmp/window-range.bin | tr -d ' ')" -eq 1024
+          echo "R2 ranged video delivery verified."

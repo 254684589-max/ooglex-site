@@ -24,6 +24,7 @@ const modeWindow = $('#modeWindow');
 const clearAllBtn = $('#clearAll');
 const cfg = window.OOGLEX_GLOBAL_CAMS || {};
 const API_BASE = String(cfg.apiBase || '').replace(/\/$/, '');
+const WINDOW_CDN_BASE = String(cfg.windowCdnBase || '').replace(/\/$/, '');
 
 const TOKYO = Object.freeze({ lat: 35.6762, lng: 139.6503, altitude: 1.45 });
 const PAGE_SIZE = 50;
@@ -40,6 +41,7 @@ let mode = API_BASE ? 'live' : 'demo';
 let loading = false;
 let rowsById = new Map();
 let windowsPromise = null;
+let windowCatalogSource = 'fallback';
 
 const globe = Globe()(globeEl)
   .width(stage.clientWidth)
@@ -97,19 +99,45 @@ async function loadWindows(options = {}) {
   if (windowsPromise) return windowsPromise;
 
   windowsPromise = (async () => {
+    const candidates = [
+      WINDOW_CDN_BASE ? { url: WINDOW_CDN_BASE + '/manifest.json', source: 'cdn' } : null,
+      { url: './windows.json', source: 'fallback' }
+    ].filter(Boolean);
+    let lastError = null;
+
     try {
-      const r = await fetch('./windows.json', { cache: 'no-store' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const data = await r.json();
-      const rows = Array.isArray(data) ? data : [];
-      windowLibrary = rows
-        .filter(d => d && safeHttpUrl(d.video_url) && Number.isFinite(+d.lat) && Number.isFinite(+d.lng))
-        .map(d => ({ ...d, kind: 'window' }));
+      for (const candidate of candidates) {
+        try {
+          const r = await fetch(candidate.url, { cache: 'no-store', headers: { Accept: 'application/json' } });
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          const data = await r.json();
+          const rows = Array.isArray(data) ? data : [];
+          const normalized = rows
+            .map(d => ({ ...d, kind: 'window', video_url: resolveWindowVideoUrl(d) }))
+            .filter(d => d && safeHttpUrl(d.video_url) && Number.isFinite(+d.lat) && Number.isFinite(+d.lng));
+          if (!normalized.length) throw new Error('empty WINDOW catalog');
+
+          windowLibrary = normalized;
+          windowCatalogSource = candidate.source;
+          break;
+        } catch (err) {
+          lastError = err;
+          console.warn('WINDOW catalog source failed:', candidate.url, err);
+        }
+      }
+
+      if (!windowLibrary.length) throw lastError || new Error('WINDOW catalog unavailable');
 
       if (activeLayer === 'window') {
         all = windowLibrary.slice();
         applySearch();
-        if (!options.silent) setStatus('沉浸窗口库已加载 ' + windowLibrary.length + ' 个许可视频。', 'window');
+        if (!options.silent) {
+          setStatus(
+            '沉浸窗口库已加载 ' + windowLibrary.length + ' 个许可视频' +
+            (windowCatalogSource === 'cdn' ? ' · Ooglex R2/CDN' : ' · 本地备用目录') + '。',
+            'window'
+          );
+        }
       }
       return windowLibrary;
     } catch (err) {
@@ -158,7 +186,7 @@ async function switchLayer(layer) {
     applySearch();
     if (rows.length) {
       showWindow(rows[0], { focus: false, reveal: true, autoplay: true });
-      setStatus('沉浸窗口已启用 · ' + rows.length + ' 个许可视频 · 与实时摄像头分层展示。', 'window');
+      setStatus('沉浸窗口已启用 · ' + rows.length + ' 个许可视频 · ' + (windowCatalogSource === 'cdn' ? 'Ooglex R2/CDN 加速' : '本地备用目录') + ' · 与实时摄像头分层展示。', 'window');
     } else {
       setStatus('当前窗口库暂无可播放视频。', 'warn');
     }
@@ -648,6 +676,15 @@ function cameraKey(d) {
   const id = String(d && d.id || '').trim();
   if (id) return id;
   return [Number(d && d.lat).toFixed(5), Number(d && d.lng).toFixed(5), String(d && d.name || '')].join('|');
+}
+
+function resolveWindowVideoUrl(d) {
+  const direct = safeHttpUrl(d && d.video_url);
+  if (direct) return direct;
+
+  const key = String(d && d.r2_key || '').replace(/^\/+/, '');
+  if (!WINDOW_CDN_BASE || !/^media\/[a-z0-9][a-z0-9._-]{2,160}$/i.test(key)) return '';
+  return WINDOW_CDN_BASE + '/' + key;
 }
 
 function isWindow(d) {

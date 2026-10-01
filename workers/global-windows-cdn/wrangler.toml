@@ -1,0 +1,15 @@
+name = "ooglex-global-windows-cdn"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+routes = [
+  { pattern = "windows-cdn.ooglex.com", custom_domain = true }
+]
+
+[vars]
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"
+
+[[r2_buckets]]
+binding = "WINDOW_MEDIA"
+bucket_name = "ooglex-global-windows"
