@@ -18,7 +18,7 @@
   - 视频实际播放约 8 秒后才上报一次；同一浏览器同一视频同一天只上报一次。Cloudflare Worker 新增 SQLite-backed Durable Object `WindowStats`，仅持久化 WINDOW ID、每日/累计播放计数和最近播放时间，不持久化 IP、User-Agent、账号或设备 ID。
   - 目录目标提高到 150、生产安全底线保持 100；每次最多保留 140 条现有目录，为新素材预留轮换位。新素材继续经过版权、景观语义、地理位置、重复、文件大小和质量门禁。
   - 生产工作流计划每天 19:25 UTC 自动刷新；新清单通过验证后才清除退出目录的旧 R2 对象，且单次删除硬上限为 20 个，避免误清空存储。
-  - 新增 `docs/GLOBAL_WINDOW_DYNAMIC.md` 记录统计口径、隐私边界、成本风险、故障降级和回退方法。当前仅在分支 `window-v0.9-dynamic-catalog`，未合并 `main`、未部署生产。
+  - 新增 `docs/GLOBAL_WINDOW_DYNAMIC.md` 记录统计口径、隐私边界、成本风险、故障降级和回退方法。Draft PR #278；分支干跑确认 Wrangler 能识别 `WINDOW_STATS`，现网 100 条可全部复用且新增下载为 0。当前未合并 `main`、未部署生产。
 
 - 2026-10-01，**环球实景 V0.8 WINDOW-only（未部署）**：按所有者要求取消摄像头功能，只保留 WINDOW 沉浸窗口。
   - 删除 LIVE / 24H / 抓拍模式切换、摄像头列表、当前区域加载、累计区域、摄像头搜索与 Windy 摄像头 API 前端调用；删除本地 `cameras.json` 演示数据。
