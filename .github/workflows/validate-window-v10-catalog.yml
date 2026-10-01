@@ -46,7 +46,7 @@ jobs:
       - name: Curate 100 V1-quality WINDOW clips
         run: |
           set -euo pipefail
-          python scripts/global-cams/sync_windows_to_r2.py --target 100 --manifest-only
+          python scripts/global-cams/sync_windows_to_r2.py --target 100 --manifest-only --manifest-only
 
       - name: Verify V1 catalog contract
         run: |
@@ -67,12 +67,40 @@ jobs:
           assert total <= 8*1024**3, total
           print("V1_CATALOG_COUNT=",len(rows))
           assert len(plan) == 0, plan
+          assert len(plan) == 0, "manifest-only validation must not stage uploads"
+          transcodes=[x for x in rows if x.get("delivery_kind")=="transcode"]
+          print("V1_TRANSCODE_COUNT=",len(transcodes))
           print("V1_NEW_DOWNLOADS=",len(plan))
           print("V1_TOTAL_MIB=",round(total/1024/1024,1))
           print("V1_MIN_SCORE=",min(int(x["quality_score"]) for x in rows))
           print("V1_AVG_SCORE=",round(sum(int(x["quality_score"]) for x in rows)/len(rows),1))
           print("V1_DURATION_RANGE=",min(float(x["duration_seconds"]) for x in rows),max(float(x["duration_seconds"]) for x in rows))
           print("V1_RESOLUTION_FLOOR=",min(int(x["width"]) for x in rows),min(int(x["height"]) for x in rows))
+          PY
+
+      - name: Download sample official transcodes
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, urllib.request
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          picks=[x for x in rows if x.get("delivery_kind")=="transcode" and x.get("delivery_variant_url")][:3]
+          assert picks, "no official transcode selected; derivative path untested"
+          limit=80*1024*1024
+          for i,row in enumerate(picks,1):
+              url=row["delivery_variant_url"]
+              req=urllib.request.Request(url,headers={"User-Agent":"Ooglex-Global-Windows/1.0 (https://www.ooglex.com/)","Accept-Encoding":"identity"})
+              total=0
+              with urllib.request.urlopen(req,timeout=180) as r:
+                  with open(f"/tmp/v1-transcode-{i}.bin","wb") as out:
+                      while True:
+                          chunk=r.read(1024*1024)
+                          if not chunk: break
+                          total+=len(chunk)
+                          assert total<=limit,(row.get("original_title"),total)
+                          out.write(chunk)
+              assert total>0
+              print("TRANSCODE_SAMPLE_OK",i,row.get("width"),row.get("height"),round(total/1024/1024,1),row.get("transcode_key"))
           PY
 
       - name: Upload V1 catalog evidence
