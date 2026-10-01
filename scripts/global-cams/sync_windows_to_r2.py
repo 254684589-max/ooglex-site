@@ -654,20 +654,16 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
         # The V1 technical gate still decides whether a result is 30s+, 720p+
         # and landscape before it can enter the catalog.
         for theme in themes[:4]:
-            for mime in ("video/webm", "video/mp4"):
-                run_query(alias, f'"{alias}" {theme} filemime:{mime}')
-                if len(out) >= max_candidates:
-                    break
+            run_query(alias, f'"{alias}" {theme} filetype:video filew:>1279 fileh:>719')
             if len(out) >= max_candidates:
                 break
 
         # Fallback broad title search helps places whose Commons metadata does
-        # not use English theme terms. Local scoring still decides acceptance.
+        # not use English theme terms. Cirrus prefilters to HD video here;
+        # duration, landscape orientation, license and content still pass the
+        # stricter V1 gates later.
         if len(out) < max_candidates:
-            for mime in ("video/webm", "video/mp4"):
-                run_query(alias, f'intitle:"{alias}" filemime:{mime}')
-                if len(out) >= max_candidates:
-                    break
+            run_query(alias, f'intitle:"{alias}" filetype:video filew:>1279 fileh:>719')
 
         if len(out) >= max_candidates:
             break
@@ -837,10 +833,8 @@ def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
         if len(out) >= max_candidates:
             break
         search_forms = [
-            f'intitle:"{term}" filemime:video/webm',
-            f'"{term}" filemime:video/webm',
-            f'intitle:"{term}" filemime:video/mp4',
-            f'"{term}" filemime:video/mp4',
+            f'intitle:"{term}" filetype:video filew:>1279 fileh:>719',
+            f'"{term}" filetype:video filew:>1279 fileh:>719',
         ]
         for query in search_forms:
             if len(out) >= max_candidates:
