@@ -684,6 +684,7 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         return []
 
     out: list[dict] = []
+    scene_fingerprints: set[str] = set()
     for row in rows:
         key = str(row.get("r2_key") or "")
         if not key.startswith("media/") or key in seen_keys:
@@ -698,6 +699,9 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         score, reasons = quality_score(synthetic)
         if score < min_quality:
             continue
+        fingerprint = scene_fingerprint(str(row.get("name") or ""))
+        if fingerprint and fingerprint in scene_fingerprints:
+            continue
         item = {
             **row,
             "kind": "window",
@@ -705,6 +709,8 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
             "quality_reasons": reasons + ["existing-r2"],
         }
         out.append(item)
+        if fingerprint:
+            scene_fingerprints.add(fingerprint)
         seen_keys.add(key)
         if origin:
             seen_urls.add(origin)
@@ -794,10 +800,13 @@ def main() -> int:
     seen_keys: set[str] = set()
     upload_plan: list[dict] = []
 
-    items = ingest_existing(cfg, seen_urls, seen_keys, min_quality)
+    existing_min_quality = int(cfg.get("existing_min_quality_score") or max(min_quality, 10))
+    items = ingest_existing(cfg, seen_urls, seen_keys, existing_min_quality)
     seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys)
     items.extend(seeds)
     upload_plan.extend(seed_plan)
+    seen_scenes = {scene_fingerprint(str(x.get("name") or "")) for x in items}
+    seen_scenes.discard("")
 
     city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
@@ -841,6 +850,9 @@ def main() -> int:
                 if score < min_quality:
                     rejected_quality += 1
                     continue
+                fingerprint = scene_fingerprint(title)
+                if fingerprint and fingerprint in seen_scenes:
+                    continue
 
                 within, distance = geo_ok(info, loc, default_radius_km)
                 if not within:
@@ -867,6 +879,8 @@ def main() -> int:
 
                 item = build_item(info, loc, key, size, score, reasons)
                 items.append(item)
+                if fingerprint:
+                    seen_scenes.add(fingerprint)
                 upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)
@@ -908,6 +922,9 @@ def main() -> int:
                 if score < min_quality:
                     rejected_quality += 1
                     continue
+                fingerprint = scene_fingerprint(title)
+                if fingerprint and fingerprint in seen_scenes:
+                    continue
 
                 loc, distance = match_global_location(info, locations, cfg)
                 if not loc:
@@ -935,6 +952,8 @@ def main() -> int:
 
                 item = build_item(info, loc, key, size, score, reasons + ["global-scenic"])
                 items.append(item)
+                if fingerprint:
+                    seen_scenes.add(fingerprint)
                 upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)
