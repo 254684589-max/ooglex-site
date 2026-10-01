@@ -82,6 +82,7 @@ SOFT_REJECT = {
 }
 
 _REQUEST_LAST = 0.0
+_DOWNLOAD_LAST = 0.0
 
 
 def strip_html(value: str) -> str:
@@ -455,22 +456,68 @@ def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
     return score, reasons[:8]
 
 
-def download(url: str, dest: Path, max_bytes: int) -> int:
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "video/*,*/*;q=0.8"})
-    total = 0
-    with urllib.request.urlopen(req, timeout=150) as r, dest.open("wb") as f:
-        declared = int(r.headers.get("Content-Length") or 0)
-        if declared and declared > max_bytes:
-            raise ValueError(f"remote file too large: {declared}")
-        while True:
-            chunk = r.read(1024 * 1024)
-            if not chunk:
-                break
-            total += len(chunk)
-            if total > max_bytes:
-                raise ValueError(f"download exceeded max bytes: {total}")
-            f.write(chunk)
-    return total
+def download(url: str, dest: Path, max_bytes: int, interval: float = 1.0, retries: int = 7) -> int:
+    """Throttle Commons media starts and retry 429/5xx responses."""
+    global _DOWNLOAD_LAST
+
+    for attempt in range(retries):
+        wait = interval - (time.monotonic() - _DOWNLOAD_LAST)
+        if wait > 0:
+            time.sleep(wait)
+
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA,
+            "Accept": "video/*,*/*;q=0.8",
+            "Accept-Encoding": "identity",
+        })
+        total = 0
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r, dest.open("wb") as fh:
+                _DOWNLOAD_LAST = time.monotonic()
+                declared = int(r.headers.get("Content-Length") or 0)
+                if declared and declared > max_bytes:
+                    raise ValueError(f"remote file too large: {declared}")
+                while True:
+                    chunk = r.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    total += len(chunk)
+                    if total > max_bytes:
+                        raise ValueError(f"download exceeded max bytes: {total}")
+                    fh.write(chunk)
+            _DOWNLOAD_LAST = time.monotonic()
+            return total
+        except urllib.error.HTTPError as exc:
+            _DOWNLOAD_LAST = time.monotonic()
+            try:
+                if dest.exists():
+                    dest.unlink()
+            except Exception:
+                pass
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == retries - 1:
+                raise
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                delay = float(retry_after) if retry_after else 0.0
+            except Exception:
+                delay = 0.0
+            delay = max(delay, min(60.0, 4.0 * (2 ** attempt)))
+            print(f"warn: media HTTP {exc.code}; backing off {delay:.1f}s", file=sys.stderr)
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError) as exc:
+            _DOWNLOAD_LAST = time.monotonic()
+            try:
+                if dest.exists():
+                    dest.unlink()
+            except Exception:
+                pass
+            if attempt == retries - 1:
+                raise
+            delay = min(30.0, 3.0 * (2 ** attempt))
+            print(f"warn: media retry after {type(exc).__name__}: {delay:.1f}s", file=sys.stderr)
+            time.sleep(delay)
+
+    raise RuntimeError("media download retry loop exhausted")
 
 
 def normalize_title(title: str) -> str:
