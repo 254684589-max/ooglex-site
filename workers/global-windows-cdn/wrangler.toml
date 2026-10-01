@@ -13,3 +13,11 @@ ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"
 [[r2_buckets]]
 binding = "WINDOW_MEDIA"
 bucket_name = "ooglex-global-windows"
+
+[[durable_objects.bindings]]
+name = "WINDOW_STATS"
+class_name = "WindowStats"
+
+[[migrations]]
+tag = "window-stats-v1"
+new_sqlite_classes = ["WindowStats"]
