@@ -40,7 +40,7 @@ ok(!app.includes('controls.autoRotate = true'), 'auto-rotation true remains in a
 ok(app.includes('const PAGE_SIZE = 50'), 'page size guard missing');
 ok(app.includes('const MAX_REGION_CAMERAS = 1000'), 'free-tier region cap missing');
 ok(app.includes("url.searchParams.set('offset', String(offset))"), 'frontend offset pagination missing');
-ok(app.includes('mergeCameras(all, region)'), 'accumulated-region merge missing');
+ok(app.includes('mergeCameras(liveCameras, region)'), 'accumulated-region merge missing');
 ok(app.includes("requestAnimationFrame(() => loadNearby({ initial: true }))"), 'Tokyo initial auto-load missing');
 ok(worker.includes("integerParam(url.searchParams.get('offset') || '0', 0, 1000)"), 'worker offset guard missing');
 ok(worker.includes("upstream.searchParams.set('offset', String(offset))"), 'worker offset passthrough missing');
