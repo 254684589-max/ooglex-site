@@ -84,7 +84,7 @@ jobs:
           from pathlib import Path
           manifest=json.loads(Path(".window-build/manifest/windows.json").read_text())
           assert len(manifest) >= min(int(__import__("os").environ.get("TARGET_INPUT") or 100), 100), len(manifest)
-          assert all(int(x.get("quality_score") or 0) >= 5 for x in manifest), "quality gate missing"
+          assert all(int(x.get("quality_score") or 0) >= 7 for x in manifest), "quality gate missing"
           assert sum(1 for x in manifest if int(x.get("quality_score") or 0) == 100) >= 1, "curated seeds missing"
           assert all(x.get("r2_key","").startswith("media/") for x in manifest)
           assert all(x.get("source_url") for x in manifest)
