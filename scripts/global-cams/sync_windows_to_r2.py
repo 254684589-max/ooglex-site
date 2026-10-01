@@ -1107,9 +1107,13 @@ def seed_items(
                 "extmetadata": {"ImageDescription": {"value": ""}},
             }
             semantic_score, reasons = quality_score(synthetic)
-            if semantic_score < 5:
+            if semantic_score < 0:
                 print(f"seed rejected semantic: {seed.get('name','?')} :: {semantic_score}")
                 continue
+            # Manual seeds are explicitly reviewed. They may use place names
+            # without scenic keywords, but still must satisfy every technical
+            # gate and the final V1 quality score.
+            semantic_score = max(int(cfg.get("min_semantic_score") or 5), semantic_score)
             profile = rest_media_profile(file_title, interval=interval)
             technical_ok, technical_reasons = technical_gate(profile, cfg)
             if not technical_ok:
