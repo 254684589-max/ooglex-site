@@ -105,6 +105,19 @@ HARD_REJECT = {
     "friendship", "annual", "heroine", "renovation", "press conference",
     "news report", "documentary", "commemoration", "wikimania", "surfing",
     "railroad", "industrial", "funfair", "amusement", "fireworks",
+    "coast guard", "defense force", "defence force", "smuggling",
+    "naval", "warship", "destroyer", "frigate", "hmas",
+    "volleyball", "arena", "samba", "dance performance",
+    "cow", "cows", "cattle", "pika", "pica",
+}
+
+STRICT_DESC_REJECT = {
+    "protest", "parade", "rally", "crowd", "concert", "festival",
+    "football", "soccer", "basketball", "volleyball",
+    "coast guard", "defense force", "defence force", "military", "naval", "smuggling",
+    "pika", "pica", "cow", "cows", "cattle", "wildlife",
+    "samba", "dancer", "singer", "performer",
+    "subway", "metro", "train", "tram", "bus", "aircraft", "airplane",
 }
 
 SOFT_REJECT = {
@@ -128,6 +141,11 @@ def norm(value: str) -> str:
 
 def phrase(text: str, needle: str) -> bool:
     return re.search(r"(?<!\w)" + re.escape(needle.lower()) + r"(?!\w)", text, flags=re.IGNORECASE) is not None
+
+
+def text_has_alias(text: str, raw_alias: str) -> bool:
+    alias = norm(raw_alias)
+    return bool(alias and phrase(text, alias))
 
 
 def ext_value(ext: dict, key: str) -> str:
