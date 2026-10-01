@@ -142,36 +142,38 @@ def fetch_json_url(url: str) -> object:
 
 
 def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interval: float) -> list[str]:
+    """Use Commons-compatible broad video searches, then rank scenic-looking titles locally.
+
+    CirrusSearch support for grouped quoted OR expressions is inconsistent on Commons.
+    Two simple queries are both cheaper and substantially more reliable.
+    """
     aliases = [str(loc.get("city") or "")]
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x and x != loc.get("city"))
-    themes = [str(x) for x in loc.get("themes", []) if x]
-    if not themes:
-        themes = ["rain", "night", "sunset", "skyline", "landscape", "street"]
 
-    groups = [themes[:3], themes[3:6]]
     out: list[str] = []
     seen: set[str] = set()
 
     for alias in aliases[:2]:
         if not alias:
             continue
-        for group in groups:
-            group = [x for x in group if x]
-            if not group or len(out) >= max_candidates:
-                continue
-            ors = " OR ".join(f'"{x}"' for x in group)
-            query = f'"{alias}" ({ors}) filemime:video/webm'
+        queries = [
+            f'intitle:"{alias}" filemime:video/webm',
+            f'"{alias}" filemime:video/webm',
+        ]
+        for query in queries:
+            if len(out) >= max_candidates:
+                break
             try:
                 data = http_json({
                     "action": "query",
                     "generator": "search",
                     "gsrsearch": query,
                     "gsrnamespace": "6",
-                    "gsrlimit": min(30, per_query),
+                    "gsrlimit": min(50, per_query),
                     "prop": "info",
                 }, interval=interval)
             except Exception as exc:
-                print(f"warn: search {alias} {group}: {exc}", file=sys.stderr)
+                print(f"warn: search {alias}: {exc}", file=sys.stderr)
                 continue
 
             for page in data.get("query", {}).get("pages", []):
@@ -180,12 +182,21 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
                     seen.add(title)
                     out.append(title)
                     if len(out) >= max_candidates:
-                        return out
+                        break
 
-        if len(out) >= max(8, int(loc.get("max_per_location") or 3) * 4):
+        if len(out) >= max(15, int(loc.get("max_per_location") or 3) * 6):
             break
 
-    return out
+    # Rank obvious scenic titles first, but retain neutral titles because the
+    # description metadata may carry the scenic signal.
+    ranked: list[tuple[int, int, str]] = []
+    for index, title in enumerate(out):
+        score, _ = quality_score({"title": title, "extmetadata": {}})
+        if score < 0:
+            continue
+        ranked.append((score, -index, title))
+    ranked.sort(reverse=True)
+    return [title for _, _, title in ranked[:max_candidates]]
 
 
 def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
