@@ -110,7 +110,6 @@ jobs:
           wranglerVersion: "4"
           workingDirectory: workers/global-windows-cdn
           command: deploy
-        env:
 
       - name: Verify WINDOW CDN
         run: |
