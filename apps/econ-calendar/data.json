@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-30T22:34:25Z",
-  "asOf": "2026-09-30",
+  "updatedAt": "2026-10-01T18:31:21Z",
+  "asOf": "2026-10-01",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-27 ~ 2026-10-03",
   "count": 142,
@@ -1231,19 +1231,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-01T09:00:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "失业率",
-      "titleEn": "Unemployment Rate",
-      "impact": "low",
-      "forecast": "6.4%",
-      "previous": "6.4%",
-      "actual": null
-    },
-    {
-      "ts": "2026-10-01T09:03:00Z",
+      "ts": "2026-10-01T08:42:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -1255,7 +1243,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-01T09:18:00Z",
+      "ts": "2026-10-01T08:57:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -1264,6 +1252,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "4.23|2.3",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-01T09:00:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "失业率",
+      "titleEn": "Unemployment Rate",
+      "impact": "low",
+      "forecast": "6.4%",
+      "previous": "6.4%",
       "actual": null
     },
     {
@@ -1646,7 +1646,7 @@
       "title": "非农就业人数变化",
       "titleEn": "Non-Farm Employment Change",
       "impact": "high",
-      "forecast": "90K",
+      "forecast": "89K",
       "previous": "162K",
       "actual": null
     },
