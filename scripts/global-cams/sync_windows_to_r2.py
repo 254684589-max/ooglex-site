@@ -26,6 +26,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 
 API = "https://commons.wikimedia.org/w/api.php"
@@ -129,6 +130,7 @@ SOFT_REJECT = {
 
 _REQUEST_LAST = 0.0
 _MEDIA_LAST = 0.0
+RUN_AT = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def strip_html(value: str) -> str:
@@ -313,11 +315,11 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
                 "action": "query",
                 "titles": "|".join(batch),
                 "prop": "imageinfo|coordinates",
-                "iiprop": "url|mime|size|extmetadata",
+                "iiprop": "url|mime|size|timestamp|extmetadata",
                 "iiextmetadatalanguage": "en",
                 "iiextmetadatafilter": (
                     "Artist|Attribution|LicenseShortName|LicenseUrl|UsageTerms|NonFree|"
-                    "GPSLatitude|GPSLongitude|ImageDescription"
+                    "GPSLatitude|GPSLongitude|ImageDescription|DateTimeOriginal|DateTimeDigitized"
                 ),
             }, interval=interval)
         except Exception as exc:
@@ -639,12 +641,57 @@ def scene_fingerprint(title: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def normalize_date(value: str) -> str | None:
+    raw = strip_html(value)
+    if not raw:
+        return None
+    candidates = [
+        ("%Y:%m:%d %H:%M:%S", raw),
+        ("%Y-%m-%d %H:%M:%S", raw),
+        ("%Y-%m-%dT%H:%M:%SZ", raw),
+    ]
+    for fmt, text in candidates:
+        try:
+            dt = datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
+            return dt.isoformat().replace("+00:00", "Z")
+        except ValueError:
+            pass
+    try:
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    except ValueError:
+        return None
+
+
+def fetch_popularity(cfg: dict) -> dict[str, dict]:
+    url = str(cfg.get("popularity_url") or "").strip()
+    if not url:
+        return {}
+    try:
+        data = fetch_json_url(url)
+        rows = data.get("items", []) if isinstance(data, dict) else []
+        return {
+            str(row.get("id") or ""): row
+            for row in rows
+            if isinstance(row, dict) and row.get("id")
+        }
+    except Exception as exc:
+        print(f"warn: popularity unavailable: {exc}", file=sys.stderr)
+        return {}
+
+
 def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str]) -> dict:
     ext = info.get("extmetadata") or {}
     source_url = info.get("descriptionurl") or info.get("descriptionshorturl") or ""
     author = ext_value(ext, "Attribution") or ext_value(ext, "Artist") or "Wikimedia Commons contributor"
     license_name = ext_value(ext, "LicenseShortName") or ext_value(ext, "UsageTerms") or "Free license"
     license_url = ext_value(ext, "LicenseUrl")
+    source_published_at = normalize_date(
+        ext_value(ext, "DateTimeOriginal") or ext_value(ext, "DateTimeDigitized")
+    )
+    source_updated_at = normalize_date(str(info.get("timestamp") or ""))
 
     gps_lat, gps_lng = media_coords(info)
     lat = gps_lat if gps_lat is not None else float(loc["lat"])
@@ -669,6 +716,9 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
         "r2_key": key,
         "bytes": size,
         "origin_url": info.get("url", ""),
+        "source_published_at": source_published_at,
+        "source_updated_at": source_updated_at,
+        "catalog_added_at": RUN_AT,
     }
 
 
@@ -685,8 +735,10 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
     if not isinstance(rows, list):
         return []
 
-    out: list[dict] = []
+    popularity = fetch_popularity(cfg)
+    candidates: list[tuple[tuple[int, int, int, str], dict, str, str, str]] = []
     scene_fingerprints: set[str] = set()
+
     for row in rows:
         key = str(row.get("r2_key") or "")
         if not key.startswith("media/") or key in seen_keys:
@@ -694,32 +746,51 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         origin = str(row.get("origin_url") or "")
         if origin and origin in seen_urls:
             continue
+
+        stored_score = int(row.get("quality_score") or 0)
+        if stored_score < min_quality:
+            continue
+
         synthetic = {
             "title": "File:" + str(row.get("name") or ""),
             "extmetadata": {"ImageDescription": {"value": ""}},
         }
-        score, reasons = quality_score(synthetic)
-        if score < min_quality:
+        gate_score, gate_reasons = quality_score(synthetic)
+        if gate_score < 0:
             continue
+
         fingerprint = scene_fingerprint(str(row.get("name") or ""))
         if fingerprint and fingerprint in scene_fingerprints:
             continue
+        if fingerprint:
+            scene_fingerprints.add(fingerprint)
+
+        pop = popularity.get(str(row.get("id") or ""), {})
+        plays30 = int(pop.get("plays30d") or pop.get("plays") or 0)
+        total_plays = int(pop.get("total") or 0)
+        added_at = str(row.get("catalog_added_at") or "")
         item = {
             **row,
             "kind": "window",
-            "quality_score": score,
-            "quality_reasons": reasons + ["existing-r2"],
+            "quality_score": stored_score,
+            "quality_reasons": list(row.get("quality_reasons") or []) + gate_reasons + ["existing-r2"],
         }
+        candidates.append(((plays30, total_plays, stored_score, added_at), item, key, origin, fingerprint))
+
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    keep_limit = int(cfg.get("existing_keep_limit") or len(candidates))
+    out: list[dict] = []
+    for _, item, key, origin, _fingerprint in candidates[:keep_limit]:
         out.append(item)
-        if fingerprint:
-            scene_fingerprints.add(fingerprint)
         seen_keys.add(key)
         if origin:
             seen_urls.add(origin)
 
-    print(f"reused {len(out)} scenic clips from existing R2 manifest")
+    print(
+        f"reused {len(out)} scenic clips from existing R2 manifest "
+        f"(eligible={len(candidates)}, keep_limit={keep_limit}, popularity={'on' if popularity else 'off'})"
+    )
     return out
-
 
 def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) -> tuple[list[dict], list[dict]]:
     path = Path(str(cfg.get("seed_manifest") or ""))
@@ -761,6 +832,9 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) 
                 "origin_url": url,
                 "quality_score": 100,
                 "quality_reasons": ["manual-seed"],
+                "source_published_at": seed.get("source_published_at"),
+                "source_updated_at": seed.get("source_updated_at"),
+                "catalog_added_at": seed.get("catalog_added_at") or RUN_AT,
             }
             item.pop("video_url", None)
             items.append(item)
