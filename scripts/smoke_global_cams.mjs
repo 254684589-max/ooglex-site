@@ -138,7 +138,7 @@ try {
     const r = parseResult(dom);
     const desktop = width > 820;
 
-    if (!r.version.includes('V0.6')) failures.push(width + ': V0.6 label missing');
+    if (!r.version.includes('V0.7')) failures.push(width + ': V0.7 label missing');
     if (!dom.includes('id="modeLive"') || !dom.includes('id="modeWindow"')) failures.push(width + ': LIVE/WINDOW mode controls missing');
     if (r.filters !== 4 || r.activeFilters !== 1) failures.push(width + ': media filter controls invalid');
     if (r.rows < 1) failures.push(width + ': playlist did not render demo rows');
