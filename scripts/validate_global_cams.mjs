@@ -84,6 +84,8 @@ ok(windowSync.includes('image_infos'), 'WINDOW batched metadata lookup missing')
 ok(windowSync.includes('category_titles'), 'WINDOW place-category harvesting missing');
 ok(windowSync.includes('semantic_title_key'), 'WINDOW semantic duplicate guard missing');
 ok(windowSync.includes('trusted_category'), 'WINDOW trusted category evidence missing');
+ok(windowSync.includes('_DOWNLOAD_LAST'), 'WINDOW media download pacing missing');
+ok(windowSync.includes('media HTTP'), 'WINDOW media 429 retry/backoff missing');
 ok(windowSync.includes('ingest_existing'), 'WINDOW existing R2 reuse missing');
 ok(windowSync.includes('global_scenic_titles'), 'WINDOW global scenic fill missing');
 ok(windowSync.includes('match_global_location'), 'WINDOW global scenic geolocation missing');
