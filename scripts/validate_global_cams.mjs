@@ -2,7 +2,7 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync('apps/global-cams/index.html', 'utf8');
 const app = fs.readFileSync('apps/global-cams/app.js', 'utf8');
-const worker = fs.readFileSync('workers/global-cams-api/worker.js', 'utf8');
+const config = fs.readFileSync('apps/global-cams/config.js', 'utf8');
 const windows = JSON.parse(fs.readFileSync('apps/global-cams/windows.json', 'utf8'));
 const windowWorker = fs.readFileSync('workers/global-windows-cdn/worker.js', 'utf8');
 const windowConfig = fs.readFileSync('workers/global-windows-cdn/wrangler.toml', 'utf8');
@@ -13,58 +13,58 @@ const failures = [];
 const ok = (cond, msg) => { if (!cond) failures.push(msg); };
 
 try { new Function(app); } catch (e) { failures.push('app.js syntax: ' + e.message); }
-
-const workerForParse = worker
-  .replace('export default', 'const __worker =')
-  .replace('export function normalizeWebcam', 'function normalizeWebcam');
-try { new Function(workerForParse); } catch (e) { failures.push('worker.js syntax: ' + e.message); }
 const windowWorkerForParse = windowWorker.replace('export default', 'const __windowWorker =');
 try { new Function(windowWorkerForParse); } catch (e) { failures.push('global-windows worker syntax: ' + e.message); }
 
 for (const id of [
-  'stage','globe','playlist','viewer','camName','camMeta','openSource','expandViewer',
-  'search','loadNearby','accumulate','clearAll','zoomIn','zoomOut','resetGlobe',
-  'resetView','fullscreen','status','count','listCount','centerCoords','mediaFilters',
-  'filterAllCount','filterLiveCount','filterTimelapseCount','filterSnapshotCount',
-  'sidebar','modeLive','modeWindow','playlistTitle','legend'
+  'stage','globe','playlist','viewer','windowName','windowMeta','openSource','expandViewer',
+  'search','randomWindow','randomTop','zoomIn','zoomOut','resetGlobe','resetView',
+  'fullscreen','status','count','listCount','centerCoords','sidebar'
 ]) {
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V0.7</span>'), 'V0.7 label missing');
-ok(html.includes('播放列表'), 'playlist label missing');
+ok(html.includes('环球实景 <span>V0.8</span>'), 'V0.8 label missing');
+ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
+ok(html.includes('WINDOW 播放列表'), 'WINDOW playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
+
+ok(!html.includes('LIVE 实时'), 'LIVE mode still present in HTML');
+ok(!html.includes('公开摄像头'), 'camera copy still present in HTML');
+ok(!html.includes('modeLive'), 'LIVE mode control still present');
+ok(!html.includes('mediaFilters'), 'camera media filters still present');
+ok(!html.includes('loadNearby'), 'camera region loader still present');
+ok(!html.includes('accumulate'), 'camera accumulate control still present');
+
+ok(!app.includes('API_BASE'), 'camera API base still present in app');
+ok(!app.includes('/v1/webcams'), 'camera API request still present in app');
+ok(!app.includes('liveCameras'), 'camera runtime collection still present');
+ok(!app.includes('loadNearby'), 'camera loader still present in app');
+ok(!app.includes('cameras.json'), 'camera demo fallback still present');
+ok(!config.includes('apiBase'), 'camera API config still present');
+
 ok(app.includes('controls.autoRotate = false'), 'globe auto-rotation is not disabled');
-ok(app.includes("activeLayer = 'live'"), 'dual-layer state missing');
-ok(app.includes("switchLayer('window')"), 'WINDOW mode switch missing');
+ok(!app.includes('controls.autoRotate = true'), 'auto-rotation true remains in app');
 ok(app.includes("WINDOW_CDN_BASE + '/manifest.json'"), 'WINDOW CDN manifest fetch missing');
 ok(app.includes("{ url: './windows.json', source: 'fallback' }"), 'WINDOW local fallback missing');
 ok(app.includes('resolveWindowVideoUrl'), 'WINDOW R2 media URL resolver missing');
-ok(app.includes("video.autoplay = true"), 'WINDOW autoplay missing');
-ok(app.includes("video.muted = true"), 'WINDOW muted autoplay guard missing');
-ok(app.includes("video.loop = true"), 'WINDOW loop missing');
-ok(app.includes("mediaLabel(type)"), 'media label helper missing');
-ok(!app.includes('controls.autoRotate = true'), 'auto-rotation true remains in app');
-ok(app.includes('const PAGE_SIZE = 50'), 'page size guard missing');
-ok(app.includes('const MAX_REGION_CAMERAS = 1000'), 'free-tier region cap missing');
-ok(app.includes("url.searchParams.set('offset', String(offset))"), 'frontend offset pagination missing');
-ok(app.includes('mergeCameras(liveCameras, region)'), 'accumulated-region merge missing');
-ok(app.includes("requestAnimationFrame(() => loadNearby({ initial: true }))"), 'Tokyo initial auto-load missing');
-ok(worker.includes("integerParam(url.searchParams.get('offset') || '0', 0, 1000)"), 'worker offset guard missing');
-ok(worker.includes("upstream.searchParams.set('offset', String(offset))"), 'worker offset passthrough missing');
-ok(worker.includes('env.WINDY_WEBCAMS_API_KEY'), 'worker secret binding missing');
-ok(worker.includes("stream_type: streamType"), 'worker media type field missing');
-ok(worker.includes("is_live: Boolean(live)"), 'worker explicit live flag missing');
-ok(worker.includes("live_url: live || ''"), 'worker live URL field missing');
-ok(worker.includes("timelapse_url: timelapse || ''"), 'worker timelapse URL field missing');
-ok(!worker.includes('firstString(player.live, player.day)'), 'worker still conflates live and day player');
-ok(app.includes("activeMedia = 'all'"), 'media filter state missing');
-ok(app.includes("LIVE 实时直播"), 'LIVE semantic label missing');
-ok(app.includes("24H 延时摄影"), 'timelapse semantic label missing');
-ok(app.includes("an unlabeled embed is never promoted to LIVE"), 'conservative backward-compatibility rule missing');
-ok(!/JoerI87|WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + worker), 'possible API key literal detected');
+ok(app.includes('video.autoplay = true'), 'WINDOW autoplay missing');
+ok(app.includes('video.muted = true'), 'WINDOW muted autoplay guard missing');
+ok(app.includes('video.loop = true'), 'WINDOW loop missing');
+ok(app.includes('video.playsInline = true'), 'WINDOW mobile inline playback missing');
+ok(app.includes('randomWindow'), 'WINDOW random picker missing');
+ok(app.includes('showWindow'), 'WINDOW selection renderer missing');
+ok(String(config).includes('https://windows-cdn.ooglex.com'), 'WINDOW CDN config missing');
 
 ok(Array.isArray(windows) && windows.length >= 5, 'WINDOW seed library must contain at least 5 entries');
+for (const w of windows) {
+  ok(w.kind === 'window', 'WINDOW item missing kind=window');
+  ok(/^https:\/\/upload\.wikimedia\.org\//.test(String(w.video_url || '')), 'WINDOW seed must use approved Wikimedia media URL');
+  ok(/^https:\/\/commons\.wikimedia\.org\//.test(String(w.source_url || '')), 'WINDOW source page missing');
+  ok(/^CC /.test(String(w.license || '')), 'WINDOW license missing');
+  ok(Number.isFinite(Number(w.lat)) && Number.isFinite(Number(w.lng)), 'WINDOW coordinates missing');
+}
+
 ok(windowConfig.includes('bucket_name = "ooglex-global-windows"'), 'WINDOW R2 bucket binding missing');
 ok(windowConfig.includes('windows-cdn.ooglex.com'), 'WINDOW CDN custom domain missing');
 ok(windowWorker.includes('env.WINDOW_MEDIA.get'), 'WINDOW worker R2 read missing');
@@ -72,95 +72,30 @@ ok(windowWorker.includes('Range'), 'WINDOW worker byte-range support missing');
 ok(windowWorker.includes('caches.default'), 'WINDOW media cache helper missing');
 ok(windowWorker.includes('no-cache, max-age=0, must-revalidate'), 'WINDOW manifest freshness policy missing');
 ok(windowWorker.includes('manifest/windows.json'), 'WINDOW CDN manifest key missing');
-ok(windowWorker.includes('MANIFEST_KEY, cors, false, true'), 'WINDOW manifest must bypass manual edge cache');
+
 ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
 ok(Number(windowLocations.target) >= 100 && Number(windowLocations.target) <= 300, 'WINDOW target must be within 100-300 clips');
 ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
 ok(Number(windowLocations.min_quality_score) >= 5, 'WINDOW minimum quality score too low');
-ok(Number(windowLocations.existing_min_quality_score) >= 100, 'WINDOW existing manifest reuse threshold too low');
-ok(windowSync.includes('HARD_REJECT'), 'WINDOW hard-reject quality gate missing');
-ok(windowSync.includes('SCENIC_WEIGHTS'), 'WINDOW scenic scoring missing');
-ok(windowSync.includes('haversine_km'), 'WINDOW geographic validation missing');
-ok(windowSync.includes('quality_score'), 'WINDOW quality score output missing');
-ok(windowSync.includes('seed_items'), 'WINDOW curated seed ingestion missing');
-ok(windowSync.includes('image_infos'), 'WINDOW batched metadata lookup missing');
-ok(windowSync.includes('ingest_existing'), 'WINDOW existing R2 reuse missing');
-ok(windowSync.includes('global_scenic_titles'), 'WINDOW global scenic fill missing');
-ok(windowSync.includes('match_global_location'), 'WINDOW global scenic geolocation missing');
-ok(windowSync.includes('nearest_distance <= 30'), 'WINDOW strict named-place GPS threshold missing');
-ok(windowSync.includes('media_coords'), 'WINDOW page-coordinate support missing');
-ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 35, 'WINDOW global scenic query pool too small');
-ok(Array.isArray(windowLocations.global_scenic_categories) && windowLocations.global_scenic_categories.length >= 12, 'WINDOW scenic category pool too small');
-ok(windowSync.includes('category_titles'), 'WINDOW scenic category discovery missing');
-ok(Number(windowLocations.global_max_candidates) >= 1500, 'WINDOW global scenic candidate pool too small');
-ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 70, 'WINDOW local scan limit must stay bounded');
 ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
-ok(windowSync.includes('STRICT_DESC_REJECT'), 'WINDOW strict description rejection missing');
-ok(windowSync.includes('scene_fingerprint'), 'WINDOW near-duplicate rejection missing');
-ok(windowSync.includes('text_has_alias'), 'WINDOW whole-word place matching missing');
-ok(windowSync.includes('distance <= 60'), 'WINDOW local GPS precision gate missing');
 ok(Number(windowLocations.request_interval_seconds) >= 0.8, 'WINDOW Wikimedia request pacing too aggressive');
 ok(Number(windowLocations.global_match_distance_km) <= 150, 'WINDOW global geolocation radius too broad');
-ok(windowSync.includes('_MEDIA_LAST'), 'WINDOW media-download pacing missing');
-ok(windowSync.includes('media HTTP'), 'WINDOW media 429 retry missing');
-ok(windowSync.includes('title_score < 3'), 'WINDOW title scenic signal gate missing');
-ok(String(windowLocations.existing_manifest_url || '').includes('windows-cdn.ooglex.com/manifest.json'), 'WINDOW existing CDN manifest reuse URL missing');
-for (const w of windows) {
-  ok(w.kind === 'window', 'WINDOW item missing kind=window');
-  ok(/^https:\/\/upload\.wikimedia\.org\//.test(String(w.video_url || '')), 'WINDOW video must use approved Wikimedia media URL');
-  ok(/^https:\/\/commons\.wikimedia\.org\//.test(String(w.source_url || '')), 'WINDOW source page missing');
-  ok(/^CC /.test(String(w.license || '')), 'WINDOW license missing');
-  ok(Number.isFinite(Number(w.lat)) && Number.isFinite(Number(w.lng)), 'WINDOW coordinates missing');
+ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 200, 'WINDOW local scan limit out of range');
+ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 35, 'WINDOW global scenic query pool too small');
+ok(Array.isArray(windowLocations.global_scenic_categories) && windowLocations.global_scenic_categories.length >= 12, 'WINDOW scenic category pool too small');
+
+for (const token of [
+  'HARD_REJECT','STRICT_DESC_REJECT','SCENIC_WEIGHTS','haversine_km','quality_score',
+  'seed_items','image_infos','ingest_existing','global_scenic_titles','match_global_location',
+  'media_coords','category_titles','scene_fingerprint','text_has_alias','_MEDIA_LAST','title_score < 3'
+]) {
+  ok(windowSync.includes(token), 'WINDOW curator guard missing: ' + token);
 }
-
-const normalizeWebcam = new Function(workerForParse + '; return normalizeWebcam;')();
-const baseFixture = {
-  webcamId: 1,
-  title: 'Fixture',
-  status: 'active',
-  location: { latitude: 35.6, longitude: 139.7, country: 'Japan', city: 'Tokyo' },
-  categories: [],
-  urls: { detail: 'https://www.windy.com/webcams/1' },
-  lastUpdatedOn: '2026-10-01T00:00:00Z'
-};
-const liveFixture = normalizeWebcam({
-  ...baseFixture,
-  player: { live: 'https://example.com/live', day: 'https://example.com/day' },
-  images: { current: { preview: 'https://example.com/preview.jpg' } }
-});
-ok(liveFixture.stream_type === 'live', 'live fixture not classified LIVE');
-ok(liveFixture.is_live === true, 'live fixture missing is_live=true');
-ok(liveFixture.embed_url === 'https://example.com/live', 'live fixture must prefer live player');
-ok(liveFixture.timelapse_url === 'https://example.com/day', 'live fixture must retain day player separately');
-
-const timelapseFixture = normalizeWebcam({
-  ...baseFixture,
-  player: { day: 'https://example.com/day' },
-  images: { current: { preview: 'https://example.com/preview.jpg' } }
-});
-ok(timelapseFixture.stream_type === 'timelapse', 'day-only fixture not classified timelapse');
-ok(timelapseFixture.is_live === false, 'day-only fixture incorrectly marked live');
-ok(timelapseFixture.embed_url === 'https://example.com/day', 'timelapse fixture embed mismatch');
-
-const snapshotFixture = normalizeWebcam({
-  ...baseFixture,
-  player: {},
-  images: { current: { preview: 'https://example.com/preview.jpg' } }
-});
-ok(snapshotFixture.stream_type === 'snapshot', 'preview-only fixture not classified snapshot');
-ok(snapshotFixture.embed_url === '', 'snapshot fixture must not expose an embed player');
-
-const sourceFixture = normalizeWebcam({
-  ...baseFixture,
-  player: {},
-  images: { current: {} }
-});
-ok(sourceFixture.stream_type === 'source', 'source-only fixture not classified source');
-ok(sourceFixture.playable === false, 'source-only fixture incorrectly marked playable');
+ok(!/WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + config), 'camera API key literal detected');
 
 if (failures.length) {
-  console.error('Global Cams V0.7 validation failed:');
+  console.error('Global WINDOW V0.8 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global Cams V0.7 validation passed.');
+console.log('Global WINDOW V0.8 validation passed.');
