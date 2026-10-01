@@ -1,0 +1,74 @@
+name: Validate WINDOW V0.9 Branch
+
+on:
+  push:
+    branches:
+      - window-v0.9-dynamic-catalog
+    paths:
+      - '.github/workflows/validate-window-v09.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-window-v09
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Validate application and curator
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+          node scripts/validate_global_cams.mjs
+
+      - name: Dry-run WINDOW Worker
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4 deploy --dry-run --config workers/global-windows-cdn/wrangler.toml --outdir /tmp/window-v09-worker
+
+      - name: Rebuild current 100 with V0.9 reuse rules
+        run: |
+          set -euo pipefail
+          python scripts/global-cams/sync_windows_to_r2.py --target 100
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=json.loads(Path(".window-build/manifest/windows.json").read_text())
+          plan=json.loads(Path(".window-build/upload-plan.json").read_text())
+          assert len(rows) >= 100, len(rows)
+          assert all(int(x.get("quality_score") or 0) >= 5 for x in rows)
+          assert all(x.get("source_url") for x in rows)
+          assert all(x.get("license") for x in rows)
+          assert len(plan) <= 30, f"expected reuse-first build, new uploads={len(plan)}"
+          print("V0.9 validation catalog:",len(rows))
+          print("V0.9 validation new uploads:",len(plan))
+          PY
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: window-v09-validation
+          path: |
+            .window-build/manifest/windows.json
+            .window-build/upload-plan.json
+          if-no-files-found: warn
+          retention-days: 7
