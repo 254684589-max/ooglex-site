@@ -29,7 +29,7 @@ from collections import Counter
 from pathlib import Path
 
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "Ooglex-Global-Windows/0.7.1 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
+UA = "Ooglex-Global-Windows/0.7.2 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
 ALLOWED_LICENSE_PREFIXES = ("CC BY", "CC0", "Public domain", "Public Domain", "PD")
 VIDEO_MIMES = {"video/webm", "video/ogg", "video/mp4"}
 
@@ -144,53 +144,66 @@ def fetch_json_url(url: str) -> object:
 
 
 def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interval: float) -> list[str]:
-    """Use Commons-compatible broad video searches, then rank scenic-looking titles locally.
+    """Discover scenic candidates with Commons-compatible per-theme queries.
 
-    CirrusSearch support for grouped quoted OR expressions is inconsistent on Commons.
-    Two simple queries are both cheaper and substantially more reliable.
+    A plain city search is often dominated by events and transit. Querying each
+    configured scenic theme separately yields substantially more WindowSwap-like
+    footage while keeping every query simple enough for Commons CirrusSearch.
     """
     aliases = [str(loc.get("city") or "")]
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x and x != loc.get("city"))
+    themes = [str(x) for x in loc.get("themes", []) if x]
+    if not themes:
+        themes = ["rain", "night", "sunset", "skyline", "landscape", "street"]
 
     out: list[str] = []
     seen: set[str] = set()
+    query_limit = min(20, max(5, per_query))
+
+    def run_query(alias: str, query: str) -> None:
+        if len(out) >= max_candidates:
+            return
+        try:
+            data = http_json({
+                "action": "query",
+                "generator": "search",
+                "gsrsearch": query,
+                "gsrnamespace": "6",
+                "gsrlimit": query_limit,
+                "prop": "info",
+            }, interval=interval)
+        except Exception as exc:
+            print(f"warn: search {alias}: {exc}", file=sys.stderr)
+            return
+
+        for page in data.get("query", {}).get("pages", []):
+            title = page.get("title", "")
+            if title and title not in seen:
+                seen.add(title)
+                out.append(title)
+                if len(out) >= max_candidates:
+                    break
 
     for alias in aliases[:2]:
         if not alias:
             continue
-        queries = [
-            f'intitle:"{alias}" filemime:video/webm',
-            f'"{alias}" filemime:video/webm',
-        ]
-        for query in queries:
+
+        # Theme-first discovery: one simple query per scenic intent.
+        for theme in themes[:6]:
+            run_query(alias, f'"{alias}" {theme} filemime:video/webm')
             if len(out) >= max_candidates:
                 break
-            try:
-                data = http_json({
-                    "action": "query",
-                    "generator": "search",
-                    "gsrsearch": query,
-                    "gsrnamespace": "6",
-                    "gsrlimit": min(50, per_query),
-                    "prop": "info",
-                }, interval=interval)
-            except Exception as exc:
-                print(f"warn: search {alias}: {exc}", file=sys.stderr)
-                continue
 
-            for page in data.get("query", {}).get("pages", []):
-                title = page.get("title", "")
-                if title and title not in seen:
-                    seen.add(title)
-                    out.append(title)
-                    if len(out) >= max_candidates:
-                        break
+        # Fallback broad title search helps places whose Commons metadata does
+        # not use English theme terms. Local scoring still decides acceptance.
+        if len(out) < max_candidates:
+            run_query(alias, f'intitle:"{alias}" filemime:video/webm')
 
-        if len(out) >= max(15, int(loc.get("max_per_location") or 3) * 6):
+        if len(out) >= max_candidates:
             break
 
-    # Rank obvious scenic titles first, but retain neutral titles because the
-    # description metadata may carry the scenic signal.
+    # Scenic titles first. Neutral titles remain available because Commons
+    # descriptions can provide the actual scenic signal.
     ranked: list[tuple[int, int, str]] = []
     for index, title in enumerate(out):
         score, _ = quality_score({"title": title, "extmetadata": {}})
