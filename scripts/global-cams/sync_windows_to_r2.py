@@ -1188,18 +1188,24 @@ def main() -> int:
     ap.add_argument("--config", default="data/global-windows/locations.json")
     ap.add_argument("--output", default=".window-build")
     ap.add_argument("--target", type=int, default=0)
+    ap.add_argument("--audit-existing", action="store_true")
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
-    target = args.target or int(cfg.get("target") or 120)
+    target = args.target or int(cfg.get("target") or 150)
     max_per_location = int(cfg.get("max_per_location") or 3)
-    min_quality = int(cfg.get("min_quality_score") or 5)
+    min_quality = int(cfg.get("min_quality_score") or 60)
+    min_semantic = int(cfg.get("min_semantic_score") or 5)
     min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
-    max_bytes = int(float(cfg.get("max_file_mb") or 12) * 1024 * 1024)
+    max_bytes = int(float(cfg.get("max_file_mb") or 80) * 1024 * 1024)
+    max_catalog_bytes = int(float(cfg.get("max_catalog_gb") or 8) * 1024 * 1024 * 1024)
     max_candidates = int(cfg.get("max_candidates_per_location") or 40)
     per_query = int(cfg.get("theme_query_limit") or 24)
     default_radius_km = float(cfg.get("max_distance_km") or 400)
     interval = float(cfg.get("request_interval_seconds") or 0.8)
+    min_width = int(cfg.get("min_width") or 1280)
+    min_height = int(cfg.get("min_height") or 720)
+    labels = load_zh_labels(cfg)
 
     root = Path(args.output)
     media_dir = root / "media"
@@ -1211,16 +1217,32 @@ def main() -> int:
     seen_keys: set[str] = set()
     upload_plan: list[dict] = []
 
-    existing_min_quality = int(cfg.get("existing_min_quality_score") or max(min_quality, 10))
-    items = ingest_existing(cfg, seen_urls, seen_keys, existing_min_quality)
-    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys)
+    existing_min_quality = int(cfg.get("existing_min_quality_score") or min_quality)
+    items = ingest_existing(cfg, seen_urls, seen_keys, existing_min_quality, labels, interval)
+
+    if args.audit_existing:
+        audit_path = root / "audit-existing.json"
+        audit_path.write_text(json.dumps(items, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        total = sum(int(x.get("bytes") or 0) for x in items)
+        print(
+            f"V1 audit existing: pass={len(items)} :: {total/1024/1024:.1f} MiB :: "
+            f"min_duration={cfg.get('min_duration_seconds')}s :: "
+            f"min_resolution={min_width}x{min_height} :: min_score={min_quality}"
+        )
+        return 0
+
+    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys, labels, interval)
     items.extend(seeds)
     upload_plan.extend(seed_plan)
-    seen_scenes = {scene_fingerprint(str(x.get("name") or "")) for x in items}
+    seen_scenes = {
+        scene_fingerprint(str(x.get("original_title") or x.get("name") or ""))
+        for x in items
+    }
     seen_scenes.discard("")
 
     city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
+    rejected_technical = 0
     rejected_geo = 0
     rejected_location = 0
     rejected_size = 0
@@ -1251,14 +1273,22 @@ def main() -> int:
                 mime = str(info.get("mime") or "").lower()
                 url = str(info.get("url") or "")
                 size = int(info.get("size") or 0)
+                width_hint = int(info.get("width") or 0)
+                height_hint = int(info.get("height") or 0)
                 if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
                     continue
                 if size < min_bytes or size > max_bytes:
                     rejected_size += 1
                     continue
+                if width_hint and height_hint:
+                    if width_hint < min_width or height_hint < min_height or (
+                        bool(cfg.get("require_landscape", True)) and width_hint <= height_hint
+                    ):
+                        rejected_technical += 1
+                        continue
 
-                score, reasons = quality_score(info)
-                if score < min_quality:
+                semantic_score, reasons = quality_score(info)
+                if semantic_score < min_semantic:
                     rejected_quality += 1
                     continue
                 fingerprint = scene_fingerprint(title)
@@ -1271,6 +1301,16 @@ def main() -> int:
                     continue
                 if not location_relevant(info, loc, distance):
                     rejected_location += 1
+                    continue
+
+                profile = rest_media_profile(title, interval=interval)
+                technical_ok, technical_reasons = technical_gate(profile, cfg)
+                if not technical_ok:
+                    rejected_technical += 1
+                    continue
+                total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
+                if total_score < min_quality:
+                    rejected_quality += 1
                     continue
 
                 ext = media_ext(info)
@@ -1288,7 +1328,10 @@ def main() -> int:
                     tmp.replace(dest)
                     size = got
 
-                item = build_item(info, loc, key, size, score, reasons)
+                item = build_item(
+                    info, loc, key, size, semantic_score, reasons + technical_reasons,
+                    profile, total_score, breakdown, labels
+                )
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
@@ -1299,14 +1342,13 @@ def main() -> int:
                 city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
                 print(
-                    f"accepted {len(items):03d}/{target}: {city} :: score={score} :: "
-                    f"{title} :: {size/1024/1024:.1f} MiB{distance_note}"
+                    f"accepted {len(items):03d}/{target}: {item['name']} :: score={total_score} :: "
+                    f"{item['width']}x{item['height']} :: {item['duration_seconds']:.1f}s :: "
+                    f"{size/1024/1024:.1f} MiB{distance_note}"
                 )
             except Exception as exc:
                 print(f"warn: skip {title}: {exc}", file=sys.stderr)
 
-    # If place-by-place discovery is still short, fill from a global scenic
-    # pool. This keeps the 100+ gate strict without lowering the quality score.
     if len(items) < target:
         locations = list(cfg.get("locations", []))
         global_cap = int(cfg.get("global_max_per_location") or 6)
@@ -1323,14 +1365,22 @@ def main() -> int:
                 mime = str(info.get("mime") or "").lower()
                 url = str(info.get("url") or "")
                 size = int(info.get("size") or 0)
+                width_hint = int(info.get("width") or 0)
+                height_hint = int(info.get("height") or 0)
                 if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
                     continue
                 if size < min_bytes or size > max_bytes:
                     rejected_size += 1
                     continue
+                if width_hint and height_hint:
+                    if width_hint < min_width or height_hint < min_height or (
+                        bool(cfg.get("require_landscape", True)) and width_hint <= height_hint
+                    ):
+                        rejected_technical += 1
+                        continue
 
-                score, reasons = quality_score(info)
-                if score < min_quality:
+                semantic_score, reasons = quality_score(info)
+                if semantic_score < min_semantic:
                     rejected_quality += 1
                     continue
                 fingerprint = scene_fingerprint(title)
@@ -1344,6 +1394,16 @@ def main() -> int:
 
                 city = str(loc.get("city") or "GPS 景观点")
                 if city != "GPS 景观点" and city_counts[city] >= global_cap:
+                    continue
+
+                profile = rest_media_profile(title, interval=interval)
+                technical_ok, technical_reasons = technical_gate(profile, cfg)
+                if not technical_ok:
+                    rejected_technical += 1
+                    continue
+                total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
+                if total_score < min_quality:
+                    rejected_quality += 1
                     continue
 
                 ext = media_ext(info)
@@ -1361,7 +1421,11 @@ def main() -> int:
                     tmp.replace(dest)
                     size = got
 
-                item = build_item(info, loc, key, size, score, reasons + ["global-scenic"])
+                item = build_item(
+                    info, loc, key, size, semantic_score,
+                    reasons + technical_reasons + ["global-scenic"],
+                    profile, total_score, breakdown, labels
+                )
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
@@ -1371,8 +1435,9 @@ def main() -> int:
                 city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
                 print(
-                    f"global accepted {len(items):03d}/{target}: {city} :: score={score} :: "
-                    f"{title} :: {size/1024/1024:.1f} MiB{distance_note}"
+                    f"global accepted {len(items):03d}/{target}: {item['name']} :: score={total_score} :: "
+                    f"{item['width']}x{item['height']} :: {item['duration_seconds']:.1f}s :: "
+                    f"{size/1024/1024:.1f} MiB{distance_note}"
                 )
             except Exception as exc:
                 print(f"warn: global skip {title}: {exc}", file=sys.stderr)
@@ -1382,25 +1447,52 @@ def main() -> int:
     if len(items) < required:
         raise SystemExit(f"curated catalog too small: {len(items)} accepted; require at least {required}")
 
-    items.sort(key=lambda x: (-int(x.get("quality_score") or 0), str(x.get("city") or ""), str(x.get("name") or "")))
-    chosen = items[:target]
+    items.sort(key=lambda x: (
+        -int(x.get("quality_score") or 0),
+        int(x.get("bytes") or 0),
+        str(x.get("city_zh") or x.get("city") or ""),
+        str(x.get("name") or ""),
+    ))
+    chosen: list[dict] = []
+    chosen_bytes = 0
+    budget_skipped = 0
+    for item in items:
+        if len(chosen) >= target:
+            break
+        size = int(item.get("bytes") or 0)
+        if chosen_bytes + size > max_catalog_bytes:
+            budget_skipped += 1
+            continue
+        chosen.append(item)
+        chosen_bytes += size
+
+    if len(chosen) < required:
+        raise SystemExit(
+            f"catalog budget too small: {len(chosen)} fit within "
+            f"{max_catalog_bytes/1024/1024/1024:.1f} GiB; require {required}"
+        )
+
     selected_keys = {x["r2_key"] for x in chosen}
     upload_plan = [x for x in upload_plan if x["key"] in selected_keys]
 
     (manifest_dir / "windows.json").write_text(json.dumps(chosen, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (root / "upload-plan.json").write_text(json.dumps(upload_plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    total = sum(int(x.get("bytes") or 0) for x in chosen)
     scores = [int(x.get("quality_score") or 0) for x in chosen]
     cities = {str(x.get("city") or "") for x in chosen}
+    durations = [float(x.get("duration_seconds") or 0) for x in chosen]
+    widths = [int(x.get("width") or 0) for x in chosen]
+    heights = [int(x.get("height") or 0) for x in chosen]
     print(
-        f"built {len(chosen)} curated WINDOW clips across {len(cities)} locations, "
-        f"{total/1024/1024:.1f} MiB catalog size, score min/avg/max="
-        f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}"
+        f"built {len(chosen)} V1 WINDOW clips across {len(cities)} locations, "
+        f"{chosen_bytes/1024/1024:.1f} MiB catalog size, score min/avg/max="
+        f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}, "
+        f"duration min/avg/max={min(durations):.1f}/{sum(durations)/len(durations):.1f}/{max(durations):.1f}s"
     )
     print(
-        f"new uploads={len(upload_plan)}; rejected quality={rejected_quality}, "
-        f"geo={rejected_geo}, location={rejected_location}, size={rejected_size}"
+        f"resolution floor={min(widths)}x{min(heights)}; new uploads={len(upload_plan)}; "
+        f"rejected technical={rejected_technical}, quality={rejected_quality}, "
+        f"geo={rejected_geo}, location={rejected_location}, size={rejected_size}, budget={budget_skipped}"
     )
     return 0
 
