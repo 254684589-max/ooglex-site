@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-window-v10-transcodes-v2
+  group: validate-window-v10-transcodes-${{ github.sha }}
   cancel-in-progress: true
 
 jobs:
