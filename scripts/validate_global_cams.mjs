@@ -86,7 +86,9 @@ ok(windowSync.includes('global_scenic_titles'), 'WINDOW global scenic fill missi
 ok(windowSync.includes('match_global_location'), 'WINDOW global scenic geolocation missing');
 ok(windowSync.includes('media_coords'), 'WINDOW page-coordinate support missing');
 ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 15, 'WINDOW global scenic query pool too small');
-ok(Number(windowLocations.global_max_candidates) >= 500, 'WINDOW global scenic candidate pool too small');
+ok(Number(windowLocations.global_max_candidates) >= 800, 'WINDOW global scenic candidate pool too small');
+ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 40, 'WINDOW local scan limit must stay bounded');
+ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
 ok(Number(windowLocations.request_interval_seconds) >= 0.5, 'WINDOW Wikimedia request pacing too aggressive');
 ok(String(windowLocations.existing_manifest_url || '').includes('windows-cdn.ooglex.com/manifest.json'), 'WINDOW existing CDN manifest reuse URL missing');
 for (const w of windows) {
