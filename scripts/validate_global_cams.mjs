@@ -4,6 +4,9 @@ const html = fs.readFileSync('apps/global-cams/index.html', 'utf8');
 const app = fs.readFileSync('apps/global-cams/app.js', 'utf8');
 const worker = fs.readFileSync('workers/global-cams-api/worker.js', 'utf8');
 const windows = JSON.parse(fs.readFileSync('apps/global-cams/windows.json', 'utf8'));
+const windowWorker = fs.readFileSync('workers/global-windows-cdn/worker.js', 'utf8');
+const windowConfig = fs.readFileSync('workers/global-windows-cdn/wrangler.toml', 'utf8');
+const windowLocations = JSON.parse(fs.readFileSync('data/global-windows/locations.json', 'utf8'));
 
 const failures = [];
 const ok = (cond, msg) => { if (!cond) failures.push(msg); };
@@ -14,6 +17,8 @@ const workerForParse = worker
   .replace('export default', 'const __worker =')
   .replace('export function normalizeWebcam', 'function normalizeWebcam');
 try { new Function(workerForParse); } catch (e) { failures.push('worker.js syntax: ' + e.message); }
+const windowWorkerForParse = windowWorker.replace('export default', 'const __windowWorker =');
+try { new Function(windowWorkerForParse); } catch (e) { failures.push('global-windows worker syntax: ' + e.message); }
 
 for (const id of [
   'stage','globe','playlist','viewer','camName','camMeta','openSource','expandViewer',
@@ -25,13 +30,15 @@ for (const id of [
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V0.5</span>'), 'V0.5 label missing');
+ok(html.includes('环球实景 <span>V0.6</span>'), 'V0.6 label missing');
 ok(html.includes('播放列表'), 'playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
 ok(app.includes('controls.autoRotate = false'), 'globe auto-rotation is not disabled');
 ok(app.includes("activeLayer = 'live'"), 'dual-layer state missing');
 ok(app.includes("switchLayer('window')"), 'WINDOW mode switch missing');
-ok(app.includes("fetch('./windows.json'"), 'WINDOW manifest fetch missing');
+ok(app.includes("WINDOW_CDN_BASE + '/manifest.json'"), 'WINDOW CDN manifest fetch missing');
+ok(app.includes("{ url: './windows.json', source: 'fallback' }"), 'WINDOW local fallback missing');
+ok(app.includes('resolveWindowVideoUrl'), 'WINDOW R2 media URL resolver missing');
 ok(app.includes("video.autoplay = true"), 'WINDOW autoplay missing');
 ok(app.includes("video.muted = true"), 'WINDOW muted autoplay guard missing');
 ok(app.includes("video.loop = true"), 'WINDOW loop missing');
@@ -57,6 +64,14 @@ ok(app.includes("an unlabeled embed is never promoted to LIVE"), 'conservative b
 ok(!/JoerI87|WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + worker), 'possible API key literal detected');
 
 ok(Array.isArray(windows) && windows.length >= 5, 'WINDOW seed library must contain at least 5 entries');
+ok(windowConfig.includes('bucket_name = "ooglex-global-windows"'), 'WINDOW R2 bucket binding missing');
+ok(windowConfig.includes('windows-cdn.ooglex.com'), 'WINDOW CDN custom domain missing');
+ok(windowWorker.includes('env.WINDOW_MEDIA.get'), 'WINDOW worker R2 read missing');
+ok(windowWorker.includes('Range'), 'WINDOW worker byte-range support missing');
+ok(windowWorker.includes('caches.default'), 'WINDOW CDN cache layer missing');
+ok(windowWorker.includes('manifest/windows.json'), 'WINDOW CDN manifest key missing');
+ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 20, 'WINDOW discovery locations too small');
+ok(Number(windowLocations.target) >= 30, 'WINDOW target must be at least 30 clips');
 for (const w of windows) {
   ok(w.kind === 'window', 'WINDOW item missing kind=window');
   ok(/^https:\/\/upload\.wikimedia\.org\//.test(String(w.video_url || '')), 'WINDOW video must use approved Wikimedia media URL');
@@ -111,8 +126,8 @@ ok(sourceFixture.stream_type === 'source', 'source-only fixture not classified s
 ok(sourceFixture.playable === false, 'source-only fixture incorrectly marked playable');
 
 if (failures.length) {
-  console.error('Global Cams V0.5 validation failed:');
+  console.error('Global Cams V0.6 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global Cams V0.5 validation passed.');
+console.log('Global Cams V0.6 validation passed.');
