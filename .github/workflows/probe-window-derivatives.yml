@@ -1,0 +1,32 @@
+name: Probe WINDOW Wikimedia Derivatives
+
+on:
+  push:
+    branches: [window-v1.0-quality-gates]
+    paths:
+      - '.github/workflows/probe-window-derivatives.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe Commons videoinfo derivatives
+        run: |
+          set -euo pipefail
+          url='https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3A2018-09-25_Bootsfahrt_im_Canal_Grande_in_Venedig.webm&prop=videoinfo&viprop=url%7Csize%7Cmime%7Cdimensions%7Cderivatives'
+          curl -fsS -A 'Ooglex-Global-Windows/1.0 (https://www.ooglex.com/)' "$url" -o /tmp/vi.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/vi.json'))
+          vi=d['query']['pages'][0]['videoinfo'][0]
+          print('TOP_KEYS=',sorted(vi))
+          print('ORIGINAL=',{k:vi.get(k) for k in ('width','height','size','mime','url','duration')})
+          rows=vi.get('derivatives') or []
+          print('DERIVATIVE_COUNT=',len(rows))
+          for x in rows[:20]:
+              print('DERIV=',{k:x.get(k) for k in sorted(x)})
+          PY
