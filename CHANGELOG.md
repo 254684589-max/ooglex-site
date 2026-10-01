@@ -13,6 +13,12 @@
 
 ### 新增
 
+- 2026-10-01，**环球实景 V0.8 WINDOW-only（未部署）**：按所有者要求取消摄像头功能，只保留 WINDOW 沉浸窗口。
+  - 删除 LIVE / 24H / 抓拍模式切换、摄像头列表、当前区域加载、累计区域、摄像头搜索与 Windy 摄像头 API 前端调用；删除本地 `cameras.json` 演示数据。
+  - 页面改为单一 WINDOW 工作流：3D 地球蓝色窗口点、WINDOW 播放列表、搜索、随机窗口、视频播放器、素材来源/许可证、地球缩放/重置与全屏。
+  - `config.js` 仅保留 WINDOW R2/CDN 地址；浏览器只读取 `windows-cdn.ooglex.com/manifest.json`，CDN 不可用时回退到 `windows.json`。
+  - 验证与 360 / 768 / 1280 响应式冒烟同步改为 WINDOW-only。当前仅在分支 `global-window-only-v0.8`，未合并 `main`、未部署生产。
+
 - 2026-10-01，**环球实景 V0.4（已上线）**：修正“可播放 ≠ 实时直播”的语义。Windy 返回的媒体严格分为 **LIVE 实时直播 / 24H 延时摄影 / 最新抓拍 / 仅来源页**；只有上游明确提供 `player.live` 时才显示 LIVE，`player.day` 只标记为 24H 延时摄影，不再降级后冒充实时直播。
   - Worker 新增 `stream_type`、`is_live`、`live_url`、`timelapse_url` 字段，并保留 `preview_url`；兼容旧数据时，未标注的 embed 最多视为 24H，不会提升为 LIVE。
   - 前端新增“全部 / LIVE / 24H / 抓拍”筛选，地球点位、播放列表、播放器标签和状态统计同步区分类型：红色=LIVE、绿色=24H、白色=抓拍；播放器标题明确显示媒体类型。
