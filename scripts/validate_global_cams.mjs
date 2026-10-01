@@ -82,6 +82,11 @@ ok(windowSync.includes('quality_score'), 'WINDOW quality score output missing');
 ok(windowSync.includes('seed_items'), 'WINDOW curated seed ingestion missing');
 ok(windowSync.includes('image_infos'), 'WINDOW batched metadata lookup missing');
 ok(windowSync.includes('ingest_existing'), 'WINDOW existing R2 reuse missing');
+ok(windowSync.includes('global_scenic_titles'), 'WINDOW global scenic fill missing');
+ok(windowSync.includes('match_global_location'), 'WINDOW global scenic geolocation missing');
+ok(windowSync.includes('media_coords'), 'WINDOW page-coordinate support missing');
+ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 15, 'WINDOW global scenic query pool too small');
+ok(Number(windowLocations.global_max_candidates) >= 500, 'WINDOW global scenic candidate pool too small');
 ok(Number(windowLocations.request_interval_seconds) >= 0.5, 'WINDOW Wikimedia request pacing too aggressive');
 ok(String(windowLocations.existing_manifest_url || '').includes('windows-cdn.ooglex.com/manifest.json'), 'WINDOW existing CDN manifest reuse URL missing');
 for (const w of windows) {

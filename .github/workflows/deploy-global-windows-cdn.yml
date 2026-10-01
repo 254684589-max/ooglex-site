@@ -135,9 +135,10 @@ jobs:
           rows=json.load(open("/tmp/windows.json",encoding="utf-8"))
           assert len(rows)>=100, len(rows)
           assert all(int(x.get("quality_score") or 0) >= 5 for x in rows)
-          cities={str(x.get("city") or "") for x in rows}
-          assert len(cities)>=25, len(cities)
+          geo_cells={(round(float(x.get("lat") or 0),1),round(float(x.get("lng") or 0),1)) for x in rows}
+          assert len(geo_cells)>=25, len(geo_cells)
           print("CDN manifest count:",len(rows))
+          print("CDN geographic cells:",len(geo_cells))
           print("sample r2 key:",rows[0]["r2_key"])
           PY
 

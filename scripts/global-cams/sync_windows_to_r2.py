@@ -33,6 +33,13 @@ UA = "Ooglex-Global-Windows/0.7.2 (https://www.ooglex.com/apps/global-cams/; con
 ALLOWED_LICENSE_PREFIXES = ("CC BY", "CC0", "Public domain", "Public Domain", "PD")
 VIDEO_MIMES = {"video/webm", "video/ogg", "video/mp4"}
 
+DEFAULT_GLOBAL_SCENIC_QUERIES = [
+    "snow", "snowfall", "rain", "rainy night", "sunset", "sunrise",
+    "night skyline", "cityscape", "timelapse", "beach waves", "ocean waves",
+    "mountain snow", "waterfall", "fjord", "lake mountain", "fog landscape",
+    "harbor sunset", "aurora", "coast sunset", "river timelapse", "canal",
+]
+
 SCENIC_WEIGHTS = {
     "snow": 6, "snowfall": 7, "snowing": 7, "snowy": 6, "winter": 3,
     "rain": 6, "raining": 7, "rainy": 6, "storm": 4, "sandstorm": 6, "thunderstorm": 6,
@@ -215,7 +222,7 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
 
 
 def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
-    """Batch metadata lookups to avoid one API request per candidate."""
+    """Batch metadata + page coordinates to avoid one API request per candidate."""
     result: dict[str, dict] = {}
     for start in range(0, len(titles), 50):
         batch = titles[start:start + 50]
@@ -225,7 +232,7 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
             data = http_json({
                 "action": "query",
                 "titles": "|".join(batch),
-                "prop": "imageinfo",
+                "prop": "imageinfo|coordinates",
                 "iiprop": "url|mime|size|extmetadata",
                 "iiextmetadatalanguage": "en",
                 "iiextmetadatafilter": (
@@ -242,6 +249,13 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
             title = page.get("title", "")
             if info and title:
                 info["title"] = title
+                coord = (page.get("coordinates") or [None])[0]
+                if isinstance(coord, dict):
+                    try:
+                        info["_page_lat"] = float(coord.get("lat"))
+                        info["_page_lng"] = float(coord.get("lon"))
+                    except Exception:
+                        pass
                 result[title] = info
     return result
 
@@ -282,11 +296,23 @@ def haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     return 2 * r * math.asin(min(1.0, math.sqrt(a)))
 
 
-def geo_ok(info: dict, loc: dict, default_radius_km: float) -> tuple[bool, float | None]:
+def media_coords(info: dict) -> tuple[float | None, float | None]:
+    lat = parse_float(info.get("_page_lat"))
+    lng = parse_float(info.get("_page_lng"))
+    if lat is not None and lng is not None and -90 <= lat <= 90 and -180 <= lng <= 180:
+        return lat, lng
+
     ext = info.get("extmetadata") or {}
     lat = parse_float(ext_value(ext, "GPSLatitude"))
     lng = parse_float(ext_value(ext, "GPSLongitude"))
-    if lat is None or lng is None or not (-90 <= lat <= 90 and -180 <= lng <= 180):
+    if lat is not None and lng is not None and -90 <= lat <= 90 and -180 <= lng <= 180:
+        return lat, lng
+    return None, None
+
+
+def geo_ok(info: dict, loc: dict, default_radius_km: float) -> tuple[bool, float | None]:
+    lat, lng = media_coords(info)
+    if lat is None or lng is None:
         return True, None
     distance = haversine_km(float(loc["lat"]), float(loc["lng"]), lat, lng)
     radius = float(loc.get("radius_km") or default_radius_km)
@@ -314,6 +340,92 @@ def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
     aliases.extend(str(x) for x in loc.get("search_aliases", []) if x)
     aliases = [norm(x) for x in aliases if x]
     return any(alias and alias in text for alias in aliases)
+
+
+def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
+    """Discover a broad scenic pool with a small number of global Commons searches."""
+    queries = [str(x) for x in cfg.get("global_scenic_queries", DEFAULT_GLOBAL_SCENIC_QUERIES) if x]
+    per_query = int(cfg.get("global_query_limit") or 45)
+    max_candidates = int(cfg.get("global_max_candidates") or 700)
+    seen: set[str] = set()
+    out: list[str] = []
+
+    for term in queries:
+        if len(out) >= max_candidates:
+            break
+        search_forms = [
+            f'intitle:"{term}" filemime:video/webm',
+            f'"{term}" filemime:video/webm',
+        ]
+        for query in search_forms:
+            if len(out) >= max_candidates:
+                break
+            try:
+                data = http_json({
+                    "action": "query",
+                    "generator": "search",
+                    "gsrsearch": query,
+                    "gsrnamespace": "6",
+                    "gsrlimit": min(50, per_query),
+                    "prop": "info",
+                }, interval=interval)
+            except Exception as exc:
+                print(f"warn: global scenic search {term}: {exc}", file=sys.stderr)
+                continue
+            for page in data.get("query", {}).get("pages", []):
+                title = page.get("title", "")
+                if title and title not in seen:
+                    seen.add(title)
+                    score, _ = quality_score({"title": title, "extmetadata": {}})
+                    if score >= 0:
+                        out.append(title)
+                        if len(out) >= max_candidates:
+                            break
+
+    out.sort(key=lambda title: quality_score({"title": title, "extmetadata": {}})[0], reverse=True)
+    print(f"global scenic discovery produced {len(out)} unique candidates")
+    return out
+
+
+def match_global_location(info: dict, locations: list[dict], cfg: dict) -> tuple[dict | None, float | None]:
+    """Map a global scenic candidate to a configured place or its exact GPS point."""
+    lat, lng = media_coords(info)
+    max_distance = float(cfg.get("global_match_distance_km") or 350)
+
+    if lat is not None and lng is not None:
+        nearest = None
+        nearest_distance = None
+        for loc in locations:
+            distance = haversine_km(float(loc["lat"]), float(loc["lng"]), lat, lng)
+            if nearest_distance is None or distance < nearest_distance:
+                nearest = loc
+                nearest_distance = distance
+        if nearest is not None and nearest_distance is not None and nearest_distance <= max_distance:
+            return nearest, nearest_distance
+
+        # Exact coordinates are better than inventing a city. Keep the map point
+        # accurate and label it as a generic scenic location.
+        return {
+            "city": "GPS 景观点",
+            "country": "",
+            "lat": lat,
+            "lng": lng,
+            "category": "自然景观",
+            "search_aliases": [],
+        }, 0.0
+
+    text = norm(str(info.get("title") or "") + " " + ext_value(info.get("extmetadata") or {}, "ImageDescription"))
+    best = None
+    best_len = 0
+    for loc in locations:
+        for raw_alias in [loc.get("city"), *(loc.get("search_aliases") or [])]:
+            alias = norm(str(raw_alias or ""))
+            if alias and alias in text and len(alias) > best_len:
+                if any(norm(str(bad)) in text for bad in loc.get("reject_terms", [])):
+                    continue
+                best = loc
+                best_len = len(alias)
+    return best, None
 
 
 def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
@@ -373,10 +485,9 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
     license_name = ext_value(ext, "LicenseShortName") or ext_value(ext, "UsageTerms") or "Free license"
     license_url = ext_value(ext, "LicenseUrl")
 
-    gps_lat = parse_float(ext_value(ext, "GPSLatitude"))
-    gps_lng = parse_float(ext_value(ext, "GPSLongitude"))
-    lat = gps_lat if gps_lat is not None and -90 <= gps_lat <= 90 else float(loc["lat"])
-    lng = gps_lng if gps_lng is not None and -180 <= gps_lng <= 180 else float(loc["lng"])
+    gps_lat, gps_lng = media_coords(info)
+    lat = gps_lat if gps_lat is not None else float(loc["lat"])
+    lng = gps_lng if gps_lng is not None else float(loc["lng"])
 
     return {
         "id": "r2-" + hashlib.sha256(str(info.get("url", "")).encode()).hexdigest()[:16],
@@ -608,6 +719,73 @@ def main() -> int:
                 )
             except Exception as exc:
                 print(f"warn: skip {title}: {exc}", file=sys.stderr)
+
+    # If place-by-place discovery is still short, fill from a global scenic
+    # pool. This keeps the 100+ gate strict without lowering the quality score.
+    if len(items) < target:
+        locations = list(cfg.get("locations", []))
+        global_cap = int(cfg.get("global_max_per_location") or 6)
+        titles = global_scenic_titles(cfg, interval)
+        infos = image_infos(titles, interval=interval)
+
+        for title in titles:
+            if len(items) >= target:
+                break
+            info = infos.get(title)
+            if not info:
+                continue
+            try:
+                mime = str(info.get("mime") or "").lower()
+                url = str(info.get("url") or "")
+                size = int(info.get("size") or 0)
+                if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
+                    continue
+                if size < min_bytes or size > max_bytes:
+                    rejected_size += 1
+                    continue
+
+                score, reasons = quality_score(info)
+                if score < min_quality:
+                    rejected_quality += 1
+                    continue
+
+                loc, distance = match_global_location(info, locations, cfg)
+                if not loc:
+                    rejected_location += 1
+                    continue
+
+                city = str(loc.get("city") or "GPS 景观点")
+                if city != "GPS 景观点" and city_counts[city] >= global_cap:
+                    continue
+
+                ext = media_ext(info)
+                digest = hashlib.sha256(url.encode()).hexdigest()[:24]
+                filename = digest + ext
+                key = "media/" + filename
+                if key in seen_keys:
+                    continue
+                dest = media_dir / filename
+                if not dest.exists() or dest.stat().st_size != size:
+                    tmp = dest.with_suffix(dest.suffix + ".part")
+                    if tmp.exists():
+                        tmp.unlink()
+                    got = download(url, tmp, max_bytes)
+                    tmp.replace(dest)
+                    size = got
+
+                item = build_item(info, loc, key, size, score, reasons + ["global-scenic"])
+                items.append(item)
+                upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
+                seen_urls.add(url)
+                seen_keys.add(key)
+                city_counts[city] += 1
+                distance_note = "" if distance is None else f" · {distance:.0f} km"
+                print(
+                    f"global accepted {len(items):03d}/{target}: {city} :: score={score} :: "
+                    f"{title} :: {size/1024/1024:.1f} MiB{distance_note}"
+                )
+            except Exception as exc:
+                print(f"warn: global skip {title}: {exc}", file=sys.stderr)
 
     min_catalog = int(cfg.get("min_catalog") or 100)
     required = min(target, max(12, min_catalog))
