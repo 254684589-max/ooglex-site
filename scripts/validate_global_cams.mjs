@@ -115,6 +115,10 @@ ok(Number(windowLocations.preferred_duration_max_seconds) <= 180, 'WINDOW prefer
 ok(Number(windowLocations.min_width) >= 1280 && Number(windowLocations.min_height) >= 720, 'WINDOW minimum resolution must be 720p');
 ok(windowLocations.require_landscape === true, 'WINDOW must reject portrait video');
 ok(Number(windowLocations.max_file_mb) <= 80 && Number(windowLocations.max_file_mb) >= 60, 'WINDOW file-size ceiling must support high-quality video');
+ok(windowSync.includes('"prop": "videoinfo|coordinates"'), 'Wikimedia videoinfo batch metadata missing');
+ok(windowSync.includes('"viprop": "url|mime|size|dimensions|mediatype|derivatives|timestamp|extmetadata"'), 'Wikimedia derivative metadata request missing');
+ok(windowSync.includes('preferred_height = int(cfg.get("preferred_height") or 1080)'), '1080p delivery preference missing');
+ok(windowSync.includes('if mime not in VIDEO_MIMES'), 'browser-safe transcode MIME gate missing');
 ok(Number(windowLocations.max_catalog_gb) <= 8, 'WINDOW catalog storage budget must stay within 8GB');
 ok(Number(windowLocations.quality_schema_version) === 1, 'WINDOW quality schema version missing');
 ok(String(windowLocations.zh_labels || '').endsWith('zh_labels.json'), 'WINDOW Chinese label map missing');
@@ -131,7 +135,9 @@ for (const token of [
   'media_coords','category_titles','scene_fingerprint','text_has_alias','_MEDIA_LAST','title_score < 3',
   'catalog_added_at','source_updated_at','fetch_popularity','existing_keep_limit',
   'rest_media_profile','technical_gate','v1_quality_score','duration_seconds',
-  'original_title','name_zh','quality_breakdown','max_catalog_gb','audit-existing','manifest-only'
+  'original_title','name_zh','quality_breakdown','max_catalog_gb','audit-existing',
+  'videoinfo','derivatives','select_delivery_variant','delivery_variant_url',
+  'delivery_kind','transcode_key','no-720p-under-80mb-variant','manifest-only'
 ]) {
   ok(windowSync.includes(token), 'WINDOW curator guard missing: ' + token);
 }
