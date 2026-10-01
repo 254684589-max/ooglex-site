@@ -30,7 +30,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "Ooglex-Global-Windows/0.7.3 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
+FILE_API = "https://commons.wikimedia.org/w/rest.php/v1/file/"
+UA = "Ooglex-Global-Windows/1.0 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
 ALLOWED_LICENSE_PREFIXES = ("CC BY", "CC0", "Public domain", "Public Domain", "PD")
 VIDEO_MIMES = {"video/webm", "video/ogg", "video/mp4"}
 
@@ -111,6 +112,8 @@ HARD_REJECT = {
     "volleyball", "arena", "samba", "dance performance",
     "cow", "cows", "cattle", "pika", "pica", "seal", "seals",
     "earth hour", "cable car", "funicular", "gondola lift",
+    "montage", "compilation", "highlights", "slideshow", "showreel",
+    "promo", "promotional", "teaser",
 }
 
 STRICT_DESC_REJECT = {
@@ -130,6 +133,7 @@ SOFT_REJECT = {
 
 _REQUEST_LAST = 0.0
 _MEDIA_LAST = 0.0
+_PROFILE_CACHE: dict[str, dict] = {}
 RUN_AT = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
@@ -202,6 +206,217 @@ def fetch_json_url(url: str) -> object:
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
+
+
+def source_title_from_url(url: str, fallback: str = "") -> str:
+    try:
+        path = urllib.parse.unquote(urllib.parse.urlparse(str(url or "")).path)
+        if "/wiki/" in path:
+            title = path.split("/wiki/", 1)[1].replace("_", " ")
+            if title.startswith("File:"):
+                return title
+    except Exception:
+        pass
+    raw = str(fallback or "").strip()
+    if not raw:
+        return ""
+    return raw if raw.startswith("File:") else "File:" + raw
+
+
+def rest_media_profile(title: str, interval: float = 0.8) -> dict:
+    """Read duration/dimensions before downloading the original media."""
+    global _REQUEST_LAST
+    title = str(title or "").strip()
+    if not title:
+        return {}
+    if not title.startswith("File:"):
+        title = "File:" + title
+    if title in _PROFILE_CACHE:
+        return dict(_PROFILE_CACHE[title])
+
+    wait = interval - (time.monotonic() - _REQUEST_LAST)
+    if wait > 0:
+        time.sleep(wait)
+
+    url = FILE_API + urllib.parse.quote(title, safe=":")
+    req = urllib.request.Request(url, headers={
+        "User-Agent": UA,
+        "Accept": "application/json",
+        "Accept-Encoding": "identity",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=40) as r:
+            _REQUEST_LAST = time.monotonic()
+            data = json.load(r)
+    except Exception as exc:
+        _REQUEST_LAST = time.monotonic()
+        print(f"warn: media profile unavailable {title}: {exc}", file=sys.stderr)
+        _PROFILE_CACHE[title] = {}
+        return {}
+
+    rep = data.get("original") or data.get("preferred") or {}
+    try:
+        duration = float(rep.get("duration")) if rep.get("duration") is not None else None
+    except Exception:
+        duration = None
+    try:
+        width = int(rep.get("width")) if rep.get("width") is not None else None
+    except Exception:
+        width = None
+    try:
+        height = int(rep.get("height")) if rep.get("height") is not None else None
+    except Exception:
+        height = None
+    try:
+        size = int(rep.get("size")) if rep.get("size") is not None else None
+    except Exception:
+        size = None
+
+    out = {
+        "duration_seconds": duration,
+        "width": width,
+        "height": height,
+        "size": size,
+        "mediatype": str(rep.get("mediatype") or ""),
+    }
+    _PROFILE_CACHE[title] = out
+    return dict(out)
+
+
+def technical_gate(profile: dict, cfg: dict) -> tuple[bool, list[str]]:
+    reasons: list[str] = []
+    duration = parse_float(profile.get("duration_seconds"))
+    width = parse_float(profile.get("width"))
+    height = parse_float(profile.get("height"))
+    if duration is None:
+        return False, ["missing-duration"]
+    if width is None or height is None:
+        return False, ["missing-dimensions"]
+
+    min_duration = float(cfg.get("min_duration_seconds") or 30)
+    max_duration = float(cfg.get("max_duration_seconds") or 300)
+    min_width = int(cfg.get("min_width") or 1280)
+    min_height = int(cfg.get("min_height") or 720)
+
+    if duration < min_duration:
+        reasons.append(f"duration<{int(min_duration)}s")
+    if duration > max_duration:
+        reasons.append(f"duration>{int(max_duration)}s")
+    if width < min_width or height < min_height:
+        reasons.append(f"resolution<{min_width}x{min_height}")
+    if bool(cfg.get("require_landscape", True)) and width <= height:
+        reasons.append("not-landscape")
+    return not reasons, reasons
+
+
+def v1_quality_score(info: dict, profile: dict, semantic_score: int, cfg: dict) -> tuple[int, dict]:
+    width = int(profile.get("width") or 0)
+    height = int(profile.get("height") or 0)
+    duration = float(profile.get("duration_seconds") or 0)
+    title = norm(info.get("title", ""))
+
+    if width >= 3840 and height >= 2160:
+        visual = 25
+    elif width >= 2560 and height >= 1440:
+        visual = 24
+    elif width >= 1920 and height >= 1080:
+        visual = 23
+    elif width >= 1600 and height >= 900:
+        visual = 21
+    else:
+        visual = 18
+
+    preferred_min = float(cfg.get("preferred_duration_min_seconds") or 60)
+    preferred_max = float(cfg.get("preferred_duration_max_seconds") or 180)
+    if preferred_min <= duration <= preferred_max:
+        duration_score = 20
+    elif 45 <= duration < preferred_min:
+        duration_score = 17
+    elif duration < 45:
+        duration_score = 14
+    elif duration <= 240:
+        duration_score = 18
+    else:
+        duration_score = 16
+
+    scene = min(25, 12 + max(0, min(13, int(semantic_score))))
+    stable_terms = ("fixed", "stationary", "long take", "real time", "realtime", "ambient")
+    moving_terms = ("drone", "aerial", "hyperlapse")
+    if any(phrase(title, x) for x in stable_terms):
+        stability = 15
+    elif any(phrase(title, x) for x in moving_terms):
+        stability = 9
+    elif any(phrase(title, x) for x in ("timelapse", "time lapse", "time-lapse")):
+        stability = 12
+    else:
+        stability = 11
+
+    immersion = min(15, 9 + max(0, int(semantic_score)) // 2)
+    total = min(100, visual + duration_score + scene + stability + immersion)
+    return total, {
+        "visual": visual,
+        "duration": duration_score,
+        "scene": scene,
+        "stability": stability,
+        "immersion": immersion,
+    }
+
+
+def load_zh_labels(cfg: dict) -> dict:
+    path = Path(str(cfg.get("zh_labels") or ""))
+    if not path.exists():
+        return {"cities": {}, "countries": {}}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "cities": dict(data.get("cities") or {}),
+        "countries": dict(data.get("countries") or {}),
+    }
+
+
+def contains_cjk(value: str) -> bool:
+    return bool(re.search(r"[\u3400-\u9fff]", str(value or "")))
+
+
+def scene_name_zh(info: dict, loc: dict) -> str:
+    text = norm(str(info.get("title") or "") + " " + ext_value(info.get("extmetadata") or {}, "ImageDescription"))
+    tests = [
+        (("aurora",), "极光"),
+        (("snow", "snowfall", "snowy"), "雪景"),
+        (("rain", "rainy", "raining"), "雨景"),
+        (("sunset", "dusk"), "日落"),
+        (("sunrise", "dawn"), "日出"),
+        (("night", "nighttime"), "夜景"),
+        (("fog", "mist"), "云雾"),
+        (("waterfall", "falls"), "瀑布"),
+        (("glacier", "glacial"), "冰川"),
+        (("fjord",), "峡湾"),
+        (("beach", "ocean", "coast", "coastal", "seascape", "shore"), "海岸"),
+        (("mountain", "mountains", "alpine"), "山景"),
+        (("lake", "lagoon"), "湖景"),
+        (("river", "canal", "harbor", "harbour", "waterfront"), "水岸"),
+        (("forest", "woods"), "森林"),
+        (("desert", "dune", "dunes"), "沙漠"),
+        (("street",), "街景"),
+        (("skyline", "cityscape"), "城市天际线"),
+    ]
+    for terms, label in tests:
+        if any(phrase(text, t) for t in terms):
+            return label
+    category = str(loc.get("category") or "沉浸实景").split("/", 1)[0].strip()
+    return category or "沉浸实景"
+
+
+def display_name_zh(info: dict, loc: dict, labels: dict) -> tuple[str, str, str]:
+    city = str(loc.get("city") or "")
+    country = str(loc.get("country") or "")
+    city_zh = str((labels.get("cities") or {}).get(city) or "")
+    country_zh = str((labels.get("countries") or {}).get(country) or "")
+    if not city_zh and contains_cjk(city):
+        city_zh = city
+    if not country_zh and contains_cjk(country):
+        country_zh = country
+    place = city_zh or ("自然景观" if city == "GPS 景观点" else scene_name_zh(info, loc))
+    return f"{place} · {scene_name_zh(info, loc)}", city_zh, country_zh
 
 
 def category_titles(category: str, limit: int, interval: float) -> list[str]:
