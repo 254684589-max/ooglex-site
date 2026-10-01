@@ -313,7 +313,10 @@ async function reportPlay(d) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })
     });
-    if (r.ok) void loadPopularity();
+    if (r.ok) {
+      popularityLoaded = false;
+      void loadPopularity();
+    }
   } catch {}
 }
 
