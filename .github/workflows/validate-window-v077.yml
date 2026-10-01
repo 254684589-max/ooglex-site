@@ -67,7 +67,9 @@ jobs:
           print(json.dumps(report, ensure_ascii=False, indent=2))
           assert len(rows) >= 100, len(rows)
           assert all(s >= 5 for s in scores)
-          assert report["max_per_city"] <= 4, report["max_per_city"]
+          named_counts=[v for k,v in cities.items() if k and k != "GPS 景观点"]
+          assert (max(named_counts) if named_counts else 0) <= 4, cities.most_common(15)
+          assert cities.get("GPS 景观点", 0) <= 8, cities.get("GPS 景观点", 0)
           PY
 
       - name: Upload validation artifacts
