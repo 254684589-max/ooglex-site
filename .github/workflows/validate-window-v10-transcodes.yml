@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-window-v10-transcodes
+  group: validate-window-v10-transcodes-v2
   cancel-in-progress: true
 
 jobs:
