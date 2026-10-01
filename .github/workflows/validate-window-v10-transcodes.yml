@@ -5,6 +5,10 @@ on:
     branches: [window-v1.0-quality-gates]
     paths:
       - '.github/workflows/validate-window-v10-transcodes.yml'
+      - 'scripts/global-cams/sync_windows_to_r2.py'
+      - 'data/global-windows/locations.json'
+      - 'data/global-windows/zh_labels.json'
+      - 'apps/global-cams/windows.json'
 
 permissions:
   contents: read
