@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Build a curated Ooglex WINDOW catalog from freely reusable Wikimedia Commons videos.
 
-V0.7 adds a WindowSwap-style quality gate:
-- scenic/theme-first discovery instead of broad city-video harvesting;
-- hard rejection of people/events/sports/transit-centric clips;
-- location-distance checks when Commons GPS metadata is available;
-- minimum quality score and bounded media size;
-- curated seed ingestion for known-good WINDOW clips.
+The curator is intentionally conservative:
+- reuses high-quality objects already present in Ooglex R2;
+- imports known-good manual seeds;
+- performs scenic/theme-first Commons discovery;
+- batches metadata requests and politely rate-limits the Wikimedia API;
+- rejects people/events/sports/transit/wildlife-centric clips;
+- validates geographic distance when GPS metadata is available;
+- emits only clips above the configured scenic quality threshold.
 
 The script only builds a manifest + upload plan. R2 upload is handled by GitHub Actions.
 """
@@ -20,20 +22,22 @@ import math
 import re
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
+from collections import Counter
 from pathlib import Path
 
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "Ooglex-Global-Windows/0.7 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
+UA = "Ooglex-Global-Windows/0.7.1 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
 ALLOWED_LICENSE_PREFIXES = ("CC BY", "CC0", "Public domain", "Public Domain", "PD")
 VIDEO_MIMES = {"video/webm", "video/ogg", "video/mp4"}
 
 SCENIC_WEIGHTS = {
-    "snow": 6, "snowfall": 7, "snowing": 7, "winter": 3,
-    "rain": 6, "raining": 7, "storm": 4, "thunderstorm": 5,
+    "snow": 6, "snowfall": 7, "snowing": 7, "snowy": 6, "winter": 3,
+    "rain": 6, "raining": 7, "rainy": 6, "storm": 4, "sandstorm": 6, "thunderstorm": 6,
     "fog": 5, "mist": 4, "aurora": 7,
-    "night": 5, "nighttime": 5, "dusk": 4, "dawn": 4,
+    "night": 5, "nighttime": 5, "evening": 3, "dusk": 4, "dawn": 4,
     "sunset": 7, "sunrise": 7,
     "skyline": 6, "cityscape": 6, "timelapse": 6, "time lapse": 6, "time-lapse": 6,
     "harbor": 5, "harbour": 5, "waterfront": 5, "bay": 4,
@@ -49,14 +53,18 @@ SCENIC_WEIGHTS = {
 HARD_REJECT = {
     "protest", "protests", "demonstration", "demonstrations", "parade", "rally",
     "election", "campaign", "speech", "interview", "conference", "meeting",
-    "concert", "festival", "ceremony", "wedding", "funeral",
+    "concert", "festival", "ceremony", "wedding", "funeral", "party",
     "football", "soccer", "cricket", "baseball", "basketball", "marathon",
     "politician", "president", "mayor", "police", "military", "soldier",
+    "brigade", "medical", "medevac", "army", "navy", "air force",
     "crowd", "people", "person", "man", "woman", "boy", "girl",
     "dancer", "singer", "musician", "performer", "actor", "actress",
-    "animal", "zoo", "cicada", "insect", "turtle", "tortoise", "bird", "cat", "dog", "horse",
-    "subway", "metro", "train", "railway", "tram", "bus", "station", "airport", "aircraft", "airplane",
+    "animal", "wildlife", "zoo", "cicada", "insect", "turtle", "tortoise",
+    "bird", "heron", "cat", "dog", "horse",
+    "subway", "metro", "train", "railway", "tram", "bus", "station", "airport",
+    "aircraft", "airplane", "plane spotting", "flight",
     "tutorial", "lecture", "animation", "gameplay", "screen recording",
+    "trailer", "short film", "film trailer", "movie", "official video",
 }
 
 SOFT_REJECT = {
@@ -64,13 +72,7 @@ SOFT_REJECT = {
     "vehicle": 2, "car": 1, "traffic": 1, "construction": 2,
 }
 
-
-def http_json(params: dict) -> dict:
-    params = {"format": "json", "formatversion": "2", **params}
-    url = API + "?" + urllib.parse.urlencode(params)
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=35) as r:
-        return json.load(r)
+_REQUEST_LAST = 0.0
 
 
 def strip_html(value: str) -> str:
@@ -92,84 +94,130 @@ def ext_value(ext: dict, key: str) -> str:
     return strip_html(row.get("value", "")) if isinstance(row, dict) else strip_html(row)
 
 
-def category_titles(category: str, limit: int = 40) -> list[tuple[str, str]]:
-    out: list[tuple[str, str]] = []
-    cont = {}
-    for _ in range(3):
-        data = http_json({
-            "action": "query",
-            "list": "categorymembers",
-            "cmtitle": "Category:" + category,
-            "cmtype": "file",
-            "cmlimit": min(50, limit),
-            **cont,
+def http_json(params: dict, interval: float = 0.8, retries: int = 6) -> dict:
+    """Polite Wikimedia API client with global pacing and 429/5xx backoff."""
+    global _REQUEST_LAST
+    params = {"format": "json", "formatversion": "2", "maxlag": "5", **params}
+    url = API + "?" + urllib.parse.urlencode(params)
+
+    for attempt in range(retries):
+        wait = interval - (time.monotonic() - _REQUEST_LAST)
+        if wait > 0:
+            time.sleep(wait)
+
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA,
+            "Accept": "application/json",
+            "Accept-Encoding": "identity",
         })
-        for x in data.get("query", {}).get("categorymembers", []):
-            title = x.get("title", "")
-            if title:
-                out.append((title, "category"))
-        if len(out) >= limit or "continue" not in data:
-            break
-        cont = data["continue"]
-    return out[:limit]
+        try:
+            with urllib.request.urlopen(req, timeout=40) as r:
+                _REQUEST_LAST = time.monotonic()
+                return json.load(r)
+        except urllib.error.HTTPError as exc:
+            _REQUEST_LAST = time.monotonic()
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == retries - 1:
+                raise
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                delay = float(retry_after) if retry_after else 0.0
+            except Exception:
+                delay = 0.0
+            delay = max(delay, min(30.0, 2.5 * (2 ** attempt)))
+            print(f"warn: Wikimedia HTTP {exc.code}; backing off {delay:.1f}s", file=sys.stderr)
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError):
+            _REQUEST_LAST = time.monotonic()
+            if attempt == retries - 1:
+                raise
+            time.sleep(min(20.0, 2.0 * (2 ** attempt)))
+
+    raise RuntimeError("Wikimedia request retry loop exhausted")
 
 
-def themed_search_titles(loc: dict, per_query: int, max_candidates: int) -> list[tuple[str, str]]:
+def fetch_json_url(url: str) -> object:
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
+
+
+def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interval: float) -> list[str]:
     aliases = [str(loc.get("city") or "")]
-    aliases.extend(str(x) for x in loc.get("search_aliases", []) if x)
+    aliases.extend(str(x) for x in loc.get("search_aliases", []) if x and x != loc.get("city"))
     themes = [str(x) for x in loc.get("themes", []) if x]
     if not themes:
         themes = ["rain", "night", "sunset", "skyline", "landscape", "street"]
 
-    out: list[tuple[str, str]] = []
+    groups = [themes[:3], themes[3:6]]
+    out: list[str] = []
     seen: set[str] = set()
 
     for alias in aliases[:2]:
         if not alias:
             continue
-        for theme in themes:
-            if len(out) >= max_candidates:
-                return out
-            query = f'"{alias}" "{theme}" filemime:video/webm'
+        for group in groups:
+            group = [x for x in group if x]
+            if not group or len(out) >= max_candidates:
+                continue
+            ors = " OR ".join(f'"{x}"' for x in group)
+            query = f'"{alias}" ({ors}) filemime:video/webm'
             try:
                 data = http_json({
                     "action": "query",
                     "generator": "search",
                     "gsrsearch": query,
                     "gsrnamespace": "6",
-                    "gsrlimit": min(20, per_query),
+                    "gsrlimit": min(30, per_query),
                     "prop": "info",
-                })
-            except Exception:
+                }, interval=interval)
+            except Exception as exc:
+                print(f"warn: search {alias} {group}: {exc}", file=sys.stderr)
                 continue
+
             for page in data.get("query", {}).get("pages", []):
                 title = page.get("title", "")
                 if title and title not in seen:
                     seen.add(title)
-                    out.append((title, theme))
+                    out.append(title)
                     if len(out) >= max_candidates:
                         return out
+
+        if len(out) >= max(8, int(loc.get("max_per_location") or 3) * 4):
+            break
 
     return out
 
 
-def image_info(title: str) -> dict | None:
-    data = http_json({
-        "action": "query",
-        "titles": title,
-        "prop": "imageinfo",
-        "iiprop": "url|mime|size|extmetadata",
-        "iiextmetadatalanguage": "en",
-        "iiextmetadatafilter": "Artist|Attribution|LicenseShortName|LicenseUrl|UsageTerms|NonFree|GPSLatitude|GPSLongitude|ImageDescription",
-    })
-    pages = data.get("query", {}).get("pages", [])
-    if not pages:
-        return None
-    info = (pages[0].get("imageinfo") or [None])[0]
-    if not info:
-        return None
-    info["title"] = title
-    return info
+def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
+    """Batch metadata lookups to avoid one API request per candidate."""
+    result: dict[str, dict] = {}
+    for start in range(0, len(titles), 50):
+        batch = titles[start:start + 50]
+        if not batch:
+            continue
+        try:
+            data = http_json({
+                "action": "query",
+                "titles": "|".join(batch),
+                "prop": "imageinfo",
+                "iiprop": "url|mime|size|extmetadata",
+                "iiextmetadatalanguage": "en",
+                "iiextmetadatafilter": (
+                    "Artist|Attribution|LicenseShortName|LicenseUrl|UsageTerms|NonFree|"
+                    "GPSLatitude|GPSLongitude|ImageDescription"
+                ),
+            }, interval=interval)
+        except Exception as exc:
+            print(f"warn: metadata batch failed ({len(batch)} titles): {exc}", file=sys.stderr)
+            continue
+
+        for page in data.get("query", {}).get("pages", []):
+            info = (page.get("imageinfo") or [None])[0]
+            title = page.get("title", "")
+            if info and title:
+                info["title"] = title
+                result[title] = info
+    return result
 
 
 def license_ok(info: dict) -> bool:
@@ -219,11 +267,10 @@ def geo_ok(info: dict, loc: dict, default_radius_km: float) -> tuple[bool, float
     return distance <= radius, distance
 
 
-def quality_score(info: dict, search_hint: str) -> tuple[int, list[str]]:
+def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
     ext = info.get("extmetadata") or {}
     title = norm(info.get("title", ""))
     desc = norm(ext_value(ext, "ImageDescription"))
-    hint = norm(search_hint)
 
     for term in HARD_REJECT:
         if phrase(title, term):
@@ -231,17 +278,12 @@ def quality_score(info: dict, search_hint: str) -> tuple[int, list[str]]:
 
     score = 0
     reasons: list[str] = []
-
     for term, weight in SCENIC_WEIGHTS.items():
         if phrase(title, term):
             score += weight
             reasons.append(term)
         elif phrase(desc, term):
             score += max(1, weight // 3)
-
-    if hint and hint != "category":
-        score += 3
-        reasons.append("query:" + hint)
 
     for term, weight in SOFT_REJECT.items():
         if phrase(title, term):
@@ -255,7 +297,7 @@ def quality_score(info: dict, search_hint: str) -> tuple[int, list[str]]:
 def download(url: str, dest: Path, max_bytes: int) -> int:
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "video/*,*/*;q=0.8"})
     total = 0
-    with urllib.request.urlopen(req, timeout=120) as r, dest.open("wb") as f:
+    with urllib.request.urlopen(req, timeout=150) as r, dest.open("wb") as f:
         declared = int(r.headers.get("Content-Length") or 0)
         if declared and declared > max_bytes:
             raise ValueError(f"remote file too large: {declared}")
@@ -275,7 +317,7 @@ def normalize_title(title: str) -> str:
     return re.sub(r"\.[A-Za-z0-9]{2,5}$", "", title).replace("_", " ").strip()
 
 
-def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str], hint: str) -> dict:
+def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str]) -> dict:
     ext = info.get("extmetadata") or {}
     source_url = info.get("descriptionurl") or info.get("descriptionshorturl") or ""
     author = ext_value(ext, "Attribution") or ext_value(ext, "Artist") or "Wikimedia Commons contributor"
@@ -296,7 +338,6 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
         "lat": lat,
         "lng": lng,
         "category": loc.get("category", "沉浸实景"),
-        "theme": hint if hint != "category" else "",
         "quality_score": score,
         "quality_reasons": reasons,
         "source": "Wikimedia Commons → Ooglex R2",
@@ -310,7 +351,50 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
     }
 
 
-def seed_items(cfg: dict, root: Path, seen_urls: set[str]) -> tuple[list[dict], list[dict]]:
+def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_quality: int) -> list[dict]:
+    url = str(cfg.get("existing_manifest_url") or "").strip()
+    if not url:
+        return []
+    try:
+        rows = fetch_json_url(url)
+    except Exception as exc:
+        print(f"warn: existing manifest unavailable: {exc}", file=sys.stderr)
+        return []
+
+    if not isinstance(rows, list):
+        return []
+
+    out: list[dict] = []
+    for row in rows:
+        key = str(row.get("r2_key") or "")
+        if not key.startswith("media/") or key in seen_keys:
+            continue
+        origin = str(row.get("origin_url") or "")
+        if origin and origin in seen_urls:
+            continue
+        synthetic = {
+            "title": "File:" + str(row.get("name") or ""),
+            "extmetadata": {"ImageDescription": {"value": ""}},
+        }
+        score, reasons = quality_score(synthetic)
+        if score < min_quality:
+            continue
+        item = {
+            **row,
+            "kind": "window",
+            "quality_score": score,
+            "quality_reasons": reasons + ["existing-r2"],
+        }
+        out.append(item)
+        seen_keys.add(key)
+        if origin:
+            seen_urls.add(origin)
+
+    print(f"reused {len(out)} scenic clips from existing R2 manifest")
+    return out
+
+
+def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) -> tuple[list[dict], list[dict]]:
     path = Path(str(cfg.get("seed_manifest") or ""))
     if not path.exists():
         return [], []
@@ -330,13 +414,15 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str]) -> tuple[list[dict], 
             if suffix not in {".webm", ".ogv", ".ogg", ".mp4"}:
                 suffix = ".webm"
             digest = hashlib.sha256(url.encode()).hexdigest()[:24]
+            key = "media/" + digest + suffix
+            if key in seen_keys:
+                continue
             dest = media_dir / (digest + suffix)
             tmp = dest.with_suffix(dest.suffix + ".part")
             if tmp.exists():
                 tmp.unlink()
             size = download(url, tmp, max_bytes)
             tmp.replace(dest)
-            key = "media/" + dest.name
             mime = "video/mp4" if suffix == ".mp4" else ("video/ogg" if suffix in {".ogv", ".ogg"} else "video/webm")
             item = {
                 **seed,
@@ -348,12 +434,12 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str]) -> tuple[list[dict], 
                 "origin_url": url,
                 "quality_score": 100,
                 "quality_reasons": ["manual-seed"],
-                "theme": seed.get("category", "curated"),
             }
             item.pop("video_url", None)
             items.append(item)
             plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
             seen_urls.add(url)
+            seen_keys.add(key)
             print(f"seed accepted: {seed.get('name','WINDOW')} :: {size/1024/1024:.1f} MiB")
         except Exception as exc:
             print(f"warn: seed skipped {seed.get('name','?')}: {exc}", file=sys.stderr)
@@ -374,9 +460,10 @@ def main() -> int:
     min_quality = int(cfg.get("min_quality_score") or 5)
     min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
     max_bytes = int(float(cfg.get("max_file_mb") or 12) * 1024 * 1024)
-    max_candidates = int(cfg.get("max_candidates_per_location") or 70)
-    per_query = int(cfg.get("theme_query_limit") or 10)
+    max_candidates = int(cfg.get("max_candidates_per_location") or 40)
+    per_query = int(cfg.get("theme_query_limit") or 24)
     default_radius_km = float(cfg.get("max_distance_km") or 400)
+    interval = float(cfg.get("request_interval_seconds") or 0.8)
 
     root = Path(args.output)
     media_dir = root / "media"
@@ -385,8 +472,15 @@ def main() -> int:
     manifest_dir.mkdir(parents=True, exist_ok=True)
 
     seen_urls: set[str] = set()
-    items, upload_plan = seed_items(cfg, root, seen_urls)
+    seen_keys: set[str] = set()
+    upload_plan: list[dict] = []
 
+    items = ingest_existing(cfg, seen_urls, seen_keys, min_quality)
+    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys)
+    items.extend(seeds)
+    upload_plan.extend(seed_plan)
+
+    city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
     rejected_geo = 0
     rejected_size = 0
@@ -395,29 +489,24 @@ def main() -> int:
         if len(items) >= target:
             break
 
-        candidates = themed_search_titles(loc, per_query=per_query, max_candidates=max_candidates)
-        category = str(loc.get("commons_category") or "")
-        if category and len(candidates) < max_candidates:
-            try:
-                candidates.extend(category_titles(category, limit=min(30, max_candidates - len(candidates))))
-            except Exception as exc:
-                print(f"warn: category {category}: {exc}", file=sys.stderr)
+        city = str(loc["city"])
+        used_here = city_counts[city]
+        if used_here >= max_per_location:
+            continue
 
-        used_here = 0
-        seen_titles: set[str] = set()
-        candidates = list(dict.fromkeys(candidates))
+        titles = themed_search_titles(loc, per_query=per_query, max_candidates=max_candidates, interval=interval)
+        if not titles:
+            continue
+        infos = image_infos(titles, interval=interval)
 
-        for title, hint in candidates:
+        for title in titles:
             if len(items) >= target or used_here >= max_per_location:
                 break
-            if title in seen_titles:
+            info = infos.get(title)
+            if not info:
                 continue
-            seen_titles.add(title)
 
             try:
-                info = image_info(title)
-                if not info:
-                    continue
                 mime = str(info.get("mime") or "").lower()
                 url = str(info.get("url") or "")
                 size = int(info.get("size") or 0)
@@ -427,7 +516,7 @@ def main() -> int:
                     rejected_size += 1
                     continue
 
-                score, reasons = quality_score(info, hint)
+                score, reasons = quality_score(info)
                 if score < min_quality:
                     rejected_quality += 1
                     continue
@@ -440,6 +529,9 @@ def main() -> int:
                 ext = media_ext(info)
                 digest = hashlib.sha256(url.encode()).hexdigest()[:24]
                 filename = digest + ext
+                key = "media/" + filename
+                if key in seen_keys:
+                    continue
                 dest = media_dir / filename
                 if not dest.exists() or dest.stat().st_size != size:
                     tmp = dest.with_suffix(dest.suffix + ".part")
@@ -449,18 +541,18 @@ def main() -> int:
                     tmp.replace(dest)
                     size = got
 
-                key = "media/" + filename
-                item = build_item(info, loc, key, size, score, reasons, hint)
+                item = build_item(info, loc, key, size, score, reasons)
                 items.append(item)
                 upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
+                seen_keys.add(key)
                 used_here += 1
+                city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
                 print(
-                    f"accepted {len(items):03d}/{target}: {loc['city']} :: score={score} :: "
+                    f"accepted {len(items):03d}/{target}: {city} :: score={score} :: "
                     f"{title} :: {size/1024/1024:.1f} MiB{distance_note}"
                 )
-                time.sleep(0.05)
             except Exception as exc:
                 print(f"warn: skip {title}: {exc}", file=sys.stderr)
 
@@ -470,22 +562,24 @@ def main() -> int:
         raise SystemExit(f"curated catalog too small: {len(items)} accepted; require at least {required}")
 
     items.sort(key=lambda x: (-int(x.get("quality_score") or 0), str(x.get("city") or ""), str(x.get("name") or "")))
-    manifest = json.dumps(items[:target], ensure_ascii=False, indent=2) + "\n"
-    selected_keys = {x["r2_key"] for x in items[:target]}
+    chosen = items[:target]
+    selected_keys = {x["r2_key"] for x in chosen}
     upload_plan = [x for x in upload_plan if x["key"] in selected_keys]
 
-    (manifest_dir / "windows.json").write_text(manifest, encoding="utf-8")
+    (manifest_dir / "windows.json").write_text(json.dumps(chosen, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (root / "upload-plan.json").write_text(json.dumps(upload_plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    total = sum(x["bytes"] for x in upload_plan)
-    scores = [int(x.get("quality_score") or 0) for x in items[:target]]
+    total = sum(int(x.get("bytes") or 0) for x in chosen)
+    scores = [int(x.get("quality_score") or 0) for x in chosen]
+    cities = {str(x.get("city") or "") for x in chosen}
     print(
-        f"built {len(items[:target])} curated WINDOW clips, {total/1024/1024:.1f} MiB total, "
-        f"score min/avg/max={min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}"
+        f"built {len(chosen)} curated WINDOW clips across {len(cities)} locations, "
+        f"{total/1024/1024:.1f} MiB catalog size, score min/avg/max="
+        f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}"
     )
     print(
-        f"rejected: quality={rejected_quality}, geo={rejected_geo}, size={rejected_size}; "
-        f"seed={sum(1 for x in items[:target] if int(x.get('quality_score') or 0) == 100)}"
+        f"new uploads={len(upload_plan)}; rejected quality={rejected_quality}, "
+        f"geo={rejected_geo}, size={rejected_size}"
     )
     return 0
 
