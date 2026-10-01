@@ -1,14 +1,14 @@
 {
   "target": 100,
   "min_catalog": 100,
-  "max_per_location": 3,
+  "max_per_location": 4,
   "max_file_mb": 12,
   "max_seed_file_mb": 30,
   "min_file_mb": 0.8,
   "min_quality_score": 5,
   "max_distance_km": 400,
   "max_candidates_per_location": 80,
-  "theme_query_limit": 50,
+  "theme_query_limit": 20,
   "seed_manifest": "apps/global-cams/windows.json",
   "locations": [
     {
