@@ -21,13 +21,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: global-windows-cdn
+  group: global-windows-cdn-v07-final
   cancel-in-progress: false
 
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 75
     env:
       BUCKET: ooglex-global-windows
       CDN_BASE: https://windows-cdn.ooglex.com
