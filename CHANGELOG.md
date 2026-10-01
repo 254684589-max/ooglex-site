@@ -15,7 +15,7 @@
 
 - 2026-10-01，**环球实景 V0.2（未部署）**：在独立分支新增 `/apps/global-cams/` 全球公开摄像头地球原型；复用环球电波的自托管 Globe.GL 与地球纹理，支持旋转地球、点位、搜索、摄像头预览/嵌入与来源跳转。演示点位已显著标记为演示数据。
   - 新增 `workers/global-cams-api/`：预留 Windy Webcams API V3 服务端代理，API Key 仅允许放 Cloudflare Secret；按当前视角查询，半径最多 250 km、每次最多 50 个，不批量复制上游数据库。
-  - 前端加入 Windy attribution、错误/空数据/未配置状态与“加载当前区域”按钮；真实数据服务部署前保持演示模式。
+  - 前端加入 Windy attribution、错误/空数据/未配置状态与“加载当前区域”按钮；正式 API 已配置时不展示演示点位，仅在无 API 的开发环境保留 Demo。
   - 当前状态：正式 Cloudflare Worker `ooglex-global-cams-api` 已部署并通过 `/health`；前端已指向正式 Worker。**仍未合并 main、主站页面未上线、首页无入口**。
 
 - 2026-09-27，**《铁冠之争》阶段 1.3：交互**（`games/ironcrown/`）。**已上线**（2026-09-27，所有者要求「合并上线」）。
