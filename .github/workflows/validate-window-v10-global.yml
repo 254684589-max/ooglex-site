@@ -1,0 +1,65 @@
+name: Validate WINDOW V1.0 Global-First
+
+on:
+  push:
+    branches: [window-v1.0-quality-gates]
+    paths:
+      - '.github/workflows/validate-window-v10-global.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-window-v10-global
+  cancel-in-progress: true
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build global-first config
+        run: |
+          python - <<'PY'
+          import json
+          src="data/global-windows/locations.json"
+          dst="/tmp/window-v10-global.json"
+          cfg=json.load(open(src,encoding="utf-8"))
+          cfg["local_location_scan_limit"]=20
+          cfg["global_max_per_location"]=6
+          cfg["global_generic_gps_cap"]=12
+          json.dump(cfg,open(dst,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
+          print("local",cfg["local_location_scan_limit"],"global max",cfg["global_max_candidates"])
+          PY
+
+      - name: Curate global-first 100
+        run: |
+          set -euo pipefail
+          python scripts/global-cams/sync_windows_to_r2.py \
+            --config /tmp/window-v10-global.json \
+            --target 100 \
+            --manifest-only
+
+      - name: Verify strict contract
+        run: |
+          python - <<'PY'
+          import json
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          assert len(rows)>=100,len(rows)
+          assert all(int(x.get("quality_score") or 0)>=60 for x in rows)
+          assert all(30<=float(x.get("duration_seconds") or 0)<=300 for x in rows)
+          assert all(int(x.get("width") or 0)>=1280 and int(x.get("height") or 0)>=720 for x in rows)
+          assert all(int(x.get("width") or 0)>int(x.get("height") or 0) for x in rows)
+          assert all(x.get("name_zh") and x.get("original_title") for x in rows)
+          print("GLOBAL_FIRST_COUNT=",len(rows))
+          print("GLOBAL_FIRST_LOCATIONS=",len({x.get("city") for x in rows}))
+          print("GLOBAL_FIRST_SCORE_AVG=",round(sum(int(x["quality_score"]) for x in rows)/len(rows),1))
+          PY
