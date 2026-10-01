@@ -3345,5 +3345,32 @@
     }
   ],
   "existing_manifest_url": "https://windows-cdn.ooglex.com/manifest.json",
-  "request_interval_seconds": 0.8
+  "request_interval_seconds": 0.8,
+  "global_scenic_queries": [
+    "snow",
+    "snowfall",
+    "rain",
+    "rainy night",
+    "sunset",
+    "sunrise",
+    "night skyline",
+    "cityscape",
+    "timelapse",
+    "beach waves",
+    "ocean waves",
+    "mountain snow",
+    "waterfall",
+    "fjord",
+    "lake mountain",
+    "fog landscape",
+    "harbor sunset",
+    "aurora",
+    "coast sunset",
+    "river timelapse",
+    "canal"
+  ],
+  "global_query_limit": 45,
+  "global_max_candidates": 700,
+  "global_match_distance_km": 350,
+  "global_max_per_location": 6
 }
