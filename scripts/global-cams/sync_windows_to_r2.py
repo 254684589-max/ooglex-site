@@ -940,7 +940,11 @@ def main() -> int:
                     continue
 
                 city = str(loc.get("city") or "GPS 景观点")
-                if city != "GPS 景观点" and city_counts[city] >= global_cap:
+                generic_gps_cap = int(cfg.get("global_generic_gps_cap") or 8)
+                if city == "GPS 景观点":
+                    if city_counts[city] >= generic_gps_cap:
+                        continue
+                elif city_counts[city] >= global_cap:
                     continue
 
                 ext = media_ext(info)
