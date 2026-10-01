@@ -7,6 +7,7 @@ const windows = JSON.parse(fs.readFileSync('apps/global-cams/windows.json', 'utf
 const windowWorker = fs.readFileSync('workers/global-windows-cdn/worker.js', 'utf8');
 const windowConfig = fs.readFileSync('workers/global-windows-cdn/wrangler.toml', 'utf8');
 const windowLocations = JSON.parse(fs.readFileSync('data/global-windows/locations.json', 'utf8'));
+const zhLabels = JSON.parse(fs.readFileSync('data/global-windows/zh_labels.json', 'utf8'));
 const windowSync = fs.readFileSync('scripts/global-cams/sync_windows_to_r2.py', 'utf8');
 const windowWorkflow = fs.readFileSync('.github/workflows/deploy-global-windows-cdn.yml', 'utf8');
 
@@ -27,7 +28,7 @@ for (const id of [
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V0.9</span>'), 'V0.9 label missing');
+ok(html.includes('环球实景 <span>V1.0</span>'), 'V1.0 label missing');
 ok((html.match(/class="sort-btn/g) || []).length === 3, 'featured/latest/popular tabs missing');
 ok(html.includes('data-sort="featured"') && html.includes('data-sort="latest"') && html.includes('data-sort="popular"'), 'sort modes incomplete');
 ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
@@ -65,6 +66,9 @@ ok(app.includes("currentTime || 0) < 8"), '8-second play qualification missing')
 ok(app.includes('ooglex-window-play-v1:'), 'once-per-day browser dedupe missing');
 ok(app.includes("activeSort === 'latest'"), 'latest sorting missing');
 ok(app.includes("activeSort === 'popular'"), 'popular sorting missing');
+ok(app.includes('technicalLabel'), 'duration/resolution display helper missing');
+ok(app.includes('d.city_zh || d.city'), 'Chinese place label display missing');
+ok(app.includes('d.original_title'), 'original-title search support missing');
 ok(String(config).includes('https://windows-cdn.ooglex.com'), 'WINDOW CDN config missing');
 
 ok(Array.isArray(windows) && windows.length >= 5, 'WINDOW seed library must contain at least 5 entries');
@@ -93,12 +97,23 @@ ok(windowConfig.includes('name = "WINDOW_STATS"'), 'WINDOW_STATS Durable Object 
 ok(windowConfig.includes('new_sqlite_classes = ["WindowStats"]'), 'WINDOW_STATS migration missing');
 
 ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
-ok(Number(windowLocations.target) === 150, 'WINDOW V0.9 target must be 150');
+ok(Number(windowLocations.target) === 150, 'WINDOW V1.0 target must be 150');
 ok(Number(windowLocations.existing_keep_limit) >= 130 && Number(windowLocations.existing_keep_limit) < Number(windowLocations.target), 'WINDOW rotating keep limit invalid');
 ok(String(windowLocations.popularity_url || '').includes('/stats/popular'), 'WINDOW popularity ranking URL missing');
 ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
-ok(Number(windowLocations.min_quality_score) >= 5, 'WINDOW minimum quality score too low');
-ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
+ok(Number(windowLocations.min_quality_score) >= 60, 'WINDOW V1.0 100-point quality floor too low');
+ok(Number(windowLocations.min_semantic_score) >= 5, 'WINDOW scenic semantic floor too low');
+ok(Number(windowLocations.min_duration_seconds) >= 30, 'WINDOW minimum duration must be at least 30s');
+ok(Number(windowLocations.max_duration_seconds) <= 300, 'WINDOW maximum duration must be at most 300s');
+ok(Number(windowLocations.preferred_duration_min_seconds) >= 60, 'WINDOW preferred duration lower bound missing');
+ok(Number(windowLocations.preferred_duration_max_seconds) <= 180, 'WINDOW preferred duration upper bound missing');
+ok(Number(windowLocations.min_width) >= 1280 && Number(windowLocations.min_height) >= 720, 'WINDOW minimum resolution must be 720p');
+ok(windowLocations.require_landscape === true, 'WINDOW must reject portrait video');
+ok(Number(windowLocations.max_file_mb) <= 80 && Number(windowLocations.max_file_mb) >= 60, 'WINDOW file-size ceiling must support high-quality video');
+ok(Number(windowLocations.max_catalog_gb) <= 8, 'WINDOW catalog storage budget must stay within 8GB');
+ok(Number(windowLocations.quality_schema_version) === 1, 'WINDOW quality schema version missing');
+ok(String(windowLocations.zh_labels || '').endsWith('zh_labels.json'), 'WINDOW Chinese label map missing');
+ok(Object.keys(zhLabels.cities || {}).length >= 170, 'WINDOW Chinese city labels incomplete');
 ok(Number(windowLocations.request_interval_seconds) >= 0.8, 'WINDOW Wikimedia request pacing too aggressive');
 ok(Number(windowLocations.global_match_distance_km) <= 150, 'WINDOW global geolocation radius too broad');
 ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 200, 'WINDOW local scan limit out of range');
@@ -109,7 +124,9 @@ for (const token of [
   'HARD_REJECT','STRICT_DESC_REJECT','SCENIC_WEIGHTS','haversine_km','quality_score',
   'seed_items','image_infos','ingest_existing','global_scenic_titles','match_global_location',
   'media_coords','category_titles','scene_fingerprint','text_has_alias','_MEDIA_LAST','title_score < 3',
-  'catalog_added_at','source_updated_at','fetch_popularity','existing_keep_limit'
+  'catalog_added_at','source_updated_at','fetch_popularity','existing_keep_limit',
+  'rest_media_profile','technical_gate','v1_quality_score','duration_seconds',
+  'original_title','name_zh','quality_breakdown','max_catalog_gb','audit-existing'
 ]) {
   ok(windowSync.includes(token), 'WINDOW curator guard missing: ' + token);
 }
@@ -119,8 +136,8 @@ ok(windowWorkflow.includes('r2 object delete "$BUCKET/$key" --remote --force'), 
 ok(!/WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + config), 'camera API key literal detected');
 
 if (failures.length) {
-  console.error('Global WINDOW V0.9 validation failed:');
+  console.error('Global WINDOW V1.0 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global WINDOW V0.9 validation passed.');
+console.log('Global WINDOW V1.0 validation passed.');
