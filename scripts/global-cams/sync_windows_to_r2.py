@@ -378,7 +378,10 @@ def contains_cjk(value: str) -> bool:
 
 
 def scene_name_zh(info: dict, loc: dict) -> str:
-    text = norm(str(info.get("title") or "") + " " + ext_value(info.get("extmetadata") or {}, "ImageDescription"))
+    # Display labels should describe the actual file title, not incidental
+    # words buried in a long Commons description.
+    text = norm(str(info.get("title") or ""))
+    configured_themes = {norm(str(x)) for x in (loc.get("themes") or []) if x}
     tests = [
         (("aurora",), "极光"),
         (("snow", "snowfall", "snowy"), "雪景"),
@@ -400,6 +403,9 @@ def scene_name_zh(info: dict, loc: dict) -> str:
         (("skyline", "cityscape"), "城市天际线"),
     ]
     for terms, label in tests:
+        if configured_themes and str(loc.get("city") or "") != "GPS 景观点":
+            if not any(any(phrase(theme, t) or phrase(t, theme) for t in terms) for theme in configured_themes):
+                continue
         if any(phrase(text, t) for t in terms):
             return label
     category = str(loc.get("category") or "沉浸实景").split("/", 1)[0].strip()
@@ -462,7 +468,7 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
 
     out: list[str] = []
     seen: set[str] = set()
-    query_limit = min(20, max(5, per_query))
+    query_limit = min(40, max(8, per_query))
 
     def run_query(alias: str, query: str) -> None:
         if len(out) >= max_candidates:
@@ -488,20 +494,28 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
                 if len(out) >= max_candidates:
                     break
 
-    for alias in aliases[:2]:
+    for alias in aliases[:3]:
         if not alias:
             continue
 
-        # Theme-first discovery: one simple query per scenic intent.
-        for theme in themes[:4]:
-            run_query(alias, f'"{alias}" {theme} filemime:video/webm')
+        # Theme-first discovery across modern Commons video containers.
+        # The V1 technical gate still decides whether a result is 30s+, 720p+
+        # and landscape before it can enter the catalog.
+        for theme in themes[:6]:
+            for mime in ("video/webm", "video/mp4"):
+                run_query(alias, f'"{alias}" {theme} filemime:{mime}')
+                if len(out) >= max_candidates:
+                    break
             if len(out) >= max_candidates:
                 break
 
         # Fallback broad title search helps places whose Commons metadata does
         # not use English theme terms. Local scoring still decides acceptance.
         if len(out) < max_candidates:
-            run_query(alias, f'intitle:"{alias}" filemime:video/webm')
+            for mime in ("video/webm", "video/mp4"):
+                run_query(alias, f'intitle:"{alias}" filemime:{mime}')
+                if len(out) >= max_candidates:
+                    break
 
         if len(out) >= max_candidates:
             break
@@ -673,6 +687,8 @@ def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
         search_forms = [
             f'intitle:"{term}" filemime:video/webm',
             f'"{term}" filemime:video/webm',
+            f'intitle:"{term}" filemime:video/mp4',
+            f'"{term}" filemime:video/mp4',
         ]
         for query in search_forms:
             if len(out) >= max_candidates:
