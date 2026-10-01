@@ -21,8 +21,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: global-windows-cdn-v07-final
-  cancel-in-progress: false
+  group: global-windows-cdn
+  cancel-in-progress: true
 
 jobs:
   sync-and-deploy:
