@@ -283,6 +283,44 @@ def rest_media_profile(title: str, interval: float = 0.8) -> dict:
     return dict(out)
 
 
+def media_profile_from_info(info: dict) -> dict:
+    """Use batched imageinfo video properties before falling back to REST."""
+    try:
+        duration = float(info.get("duration")) if info.get("duration") is not None else None
+    except Exception:
+        duration = None
+    try:
+        width = int(info.get("width")) if info.get("width") is not None else None
+    except Exception:
+        width = None
+    try:
+        height = int(info.get("height")) if info.get("height") is not None else None
+    except Exception:
+        height = None
+    try:
+        size = int(info.get("size")) if info.get("size") is not None else None
+    except Exception:
+        size = None
+    return {
+        "duration_seconds": duration,
+        "width": width,
+        "height": height,
+        "size": size,
+        "mediatype": str(info.get("mediatype") or ""),
+    }
+
+
+def ensure_media_profile(info: dict, title: str, interval: float) -> dict:
+    profile = media_profile_from_info(info)
+    if profile.get("duration_seconds") is not None and profile.get("width") and profile.get("height"):
+        return profile
+    fallback = rest_media_profile(title, interval=interval)
+    for key in ("duration_seconds", "width", "height", "size", "mediatype"):
+        if fallback.get(key) is not None:
+            profile[key] = fallback.get(key)
+    return profile
+
+
 def technical_gate(profile: dict, cfg: dict) -> tuple[bool, list[str]]:
     reasons: list[str] = []
     duration = parse_float(profile.get("duration_seconds"))
@@ -544,7 +582,7 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
                 "action": "query",
                 "titles": "|".join(batch),
                 "prop": "imageinfo|coordinates",
-                "iiprop": "url|mime|size|timestamp|extmetadata",
+                "iiprop": "url|mime|size|dimensions|mediatype|commonmetadata|timestamp|extmetadata",
                 "iiextmetadatalanguage": "en",
                 "iiextmetadatafilter": (
                     "Artist|Attribution|LicenseShortName|LicenseUrl|UsageTerms|NonFree|"
@@ -1333,7 +1371,7 @@ def main() -> int:
                     rejected_location += 1
                     continue
 
-                profile = rest_media_profile(title, interval=interval)
+                profile = ensure_media_profile(info, title, interval=interval)
                 technical_ok, technical_reasons = technical_gate(profile, cfg)
                 if not technical_ok:
                     rejected_technical += 1
@@ -1427,7 +1465,7 @@ def main() -> int:
                 if city != "GPS 景观点" and city_counts[city] >= global_cap:
                     continue
 
-                profile = rest_media_profile(title, interval=interval)
+                profile = ensure_media_profile(info, title, interval=interval)
                 technical_ok, technical_reasons = technical_gate(profile, cfg)
                 if not technical_ok:
                     rejected_technical += 1
