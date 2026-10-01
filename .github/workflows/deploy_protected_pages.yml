@@ -104,31 +104,3 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
-
-
-  deploy-global-cams-production:
-    if: github.event_name == 'pull_request' && github.head_ref == 'feature/global-cams-v01'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Check Cloudflare API token
-        env:
-          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          if [ -z "$TOKEN" ]; then
-            echo "::error::Missing CLOUDFLARE_API_TOKEN"
-            exit 1
-          fi
-
-      - name: Deploy Global Cams production Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          wranglerVersion: "4"
-          workingDirectory: workers/global-cams-api
-          command: deploy --config wrangler.toml
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
