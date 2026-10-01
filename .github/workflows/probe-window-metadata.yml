@@ -1,0 +1,33 @@
+name: Probe WINDOW Wikimedia Metadata
+
+on:
+  push:
+    branches: [window-v1.0-quality-gates]
+    paths:
+      - '.github/workflows/probe-window-metadata.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe Commons imageinfo metadata
+        run: |
+          set -euo pipefail
+          url='https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3A2018-09-25_Bootsfahrt_im_Canal_Grande_in_Venedig.webm&prop=imageinfo&iiprop=url%7Cmime%7Csize%7Cdimensions%7Cmediatype%7Ccommonmetadata'
+          curl -fsS -A 'Ooglex-Global-Windows/1.0 (https://www.ooglex.com/)' "$url" -o /tmp/info.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/info.json'))
+          info=d['query']['pages'][0]['imageinfo'][0]
+          print('TOP_KEYS=',sorted(info))
+          print('WIDTH=',info.get('width'))
+          print('HEIGHT=',info.get('height'))
+          print('SIZE=',info.get('size'))
+          print('MEDIATYPE=',info.get('mediatype'))
+          common=info.get('commonmetadata') or []
+          print('COMMONMETADATA=',common)
+          PY
