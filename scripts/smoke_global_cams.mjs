@@ -22,15 +22,10 @@ function findChrome() {
 function mime(file) {
   const ext = path.extname(file).toLowerCase();
   return ({
-    '.html': 'text/html; charset=utf-8',
-    '.js': 'text/javascript; charset=utf-8',
-    '.mjs': 'text/javascript; charset=utf-8',
-    '.json': 'application/json; charset=utf-8',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.png': 'image/png',
-    '.svg': 'image/svg+xml',
-    '.css': 'text/css; charset=utf-8'
+    '.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
+    '.mjs':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8',
+    '.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml',
+    '.css':'text/css; charset=utf-8','.webm':'video/webm','.mp4':'video/mp4'
   })[ext] || 'application/octet-stream';
 }
 
@@ -49,16 +44,16 @@ setTimeout(() => {
     return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};
   };
   const within = r => !!r && r.left >= -1 && r.top >= -1 && r.right <= innerWidth + 1 && r.bottom <= innerHeight + 1;
-  const controls = ['#loadNearby','#search','#zoomIn','#zoomOut','#resetGlobe','#fullscreen'];
+  const controls = ['#randomTop','#search','#zoomIn','#zoomOut','#resetGlobe','#fullscreen'];
   const result = {
     width: innerWidth,
     height: innerHeight,
     docWidth: document.documentElement.scrollWidth,
     bodyWidth: document.body.scrollWidth,
-    rows: document.querySelectorAll('.cam-row').length,
-    filters: document.querySelectorAll('.filter-btn').length,
-    activeFilters: document.querySelectorAll('.filter-btn.active').length,
+    rows: document.querySelectorAll('.window-row').length,
     version: (document.querySelector('.brand')?.textContent || '').trim(),
+    windowOnly: (document.querySelector('.window-only')?.textContent || '').trim(),
+    liveControls: document.querySelectorAll('#modeLive,#loadNearby,#mediaFilters').length,
     errors: window.__gcSmokeErrors || [],
     sidebar: rect('.sidebar'),
     stage: rect('.stage'),
@@ -77,7 +72,7 @@ const server = http.createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
   if (pathname === CONFIG_PATH) {
     res.writeHead(200, {'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store'});
-    res.end('window.OOGLEX_GLOBAL_CAMS = Object.freeze({apiBase:""});');
+    res.end('window.OOGLEX_GLOBAL_CAMS = Object.freeze({windowCdnBase:""});');
     return;
   }
 
@@ -138,10 +133,10 @@ try {
     const r = parseResult(dom);
     const desktop = width > 820;
 
-    if (!r.version.includes('V0.7')) failures.push(width + ': V0.7 label missing');
-    if (!dom.includes('id="modeLive"') || !dom.includes('id="modeWindow"')) failures.push(width + ': LIVE/WINDOW mode controls missing');
-    if (r.filters !== 4 || r.activeFilters !== 1) failures.push(width + ': media filter controls invalid');
-    if (r.rows < 1) failures.push(width + ': playlist did not render demo rows');
+    if (!r.version.includes('V0.8')) failures.push(width + ': V0.8 label missing');
+    if (r.windowOnly !== 'WINDOW ONLY') failures.push(width + ': WINDOW ONLY badge missing');
+    if (r.liveControls !== 0) failures.push(width + ': camera controls still rendered');
+    if (r.rows < 5) failures.push(width + ': WINDOW playlist did not render seed rows');
     if (r.errors.length) failures.push(width + ': browser errors: ' + r.errors.join(' | '));
     if (r.docWidth > r.width + 1 || r.bodyWidth > r.width + 1) failures.push(width + ': horizontal overflow');
     if (!r.controlsInsideViewport) failures.push(width + ': key controls outside viewport');
@@ -153,7 +148,7 @@ try {
       if (!desktop && Math.abs(r.stage.bottom - r.sidebar.top) > 2) failures.push(width + ': mobile stage/sidebar not stacked');
     }
 
-    console.log('Global Cams smoke', width, {
+    console.log('Global WINDOW smoke', width, {
       rows: r.rows,
       docWidth: r.docWidth,
       sidebar: r.sidebar && [Math.round(r.sidebar.width), Math.round(r.sidebar.height)],
@@ -165,8 +160,8 @@ try {
 }
 
 if (failures.length) {
-  console.error('Global Cams responsive smoke failed:');
+  console.error('Global WINDOW responsive smoke failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global Cams responsive smoke passed at 360 / 768 / 1280.');
+console.log('Global WINDOW responsive smoke passed at 360 / 768 / 1280.');
