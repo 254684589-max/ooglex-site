@@ -37,6 +37,23 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Validate WINDOW curator Python
+        run: |
+          python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+          python - <<'PY'
+          import importlib.util
+          spec=importlib.util.spec_from_file_location("window_curator","scripts/global-cams/sync_windows_to_r2.py")
+          mod=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          good={"title":"File:Tokyo snowfall night skyline.webm","extmetadata":{"ImageDescription":{"value":"Snow falling over the city skyline at night"}}}
+          bad={"title":"File:Tokyo protest parade.webm","extmetadata":{"ImageDescription":{"value":"crowd event"}}}
+          gs,_=mod.quality_score(good,"snow")
+          bs,_=mod.quality_score(bad,"street")
+          assert gs >= 5, gs
+          assert bs < 0, bs
+          print("WINDOW curator quality gate OK:",gs,bs)
+          PY
+
       - name: Validate Global Cams V0.7
         run: node scripts/validate_global_cams.mjs
 
