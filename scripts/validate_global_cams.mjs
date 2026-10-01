@@ -80,6 +80,10 @@ ok(windowSync.includes('SCENIC_WEIGHTS'), 'WINDOW scenic scoring missing');
 ok(windowSync.includes('haversine_km'), 'WINDOW geographic validation missing');
 ok(windowSync.includes('quality_score'), 'WINDOW quality score output missing');
 ok(windowSync.includes('seed_items'), 'WINDOW curated seed ingestion missing');
+ok(windowSync.includes('image_infos'), 'WINDOW batched metadata lookup missing');
+ok(windowSync.includes('ingest_existing'), 'WINDOW existing R2 reuse missing');
+ok(Number(windowLocations.request_interval_seconds) >= 0.5, 'WINDOW Wikimedia request pacing too aggressive');
+ok(String(windowLocations.existing_manifest_url || '').includes('windows-cdn.ooglex.com/manifest.json'), 'WINDOW existing CDN manifest reuse URL missing');
 for (const w of windows) {
   ok(w.kind === 'window', 'WINDOW item missing kind=window');
   ok(/^https:\/\/upload\.wikimedia\.org\//.test(String(w.video_url || '')), 'WINDOW video must use approved Wikimedia media URL');
