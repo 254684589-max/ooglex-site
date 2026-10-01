@@ -196,7 +196,7 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
             continue
 
         # Theme-first discovery: one simple query per scenic intent.
-        for theme in themes[:6]:
+        for theme in themes[:3]:
             run_query(alias, f'"{alias}" {theme} filemime:video/webm')
             if len(out) >= max_candidates:
                 break
@@ -646,7 +646,8 @@ def main() -> int:
     rejected_location = 0
     rejected_size = 0
 
-    for loc in cfg.get("locations", []):
+    local_locations = list(cfg.get("locations", []))[:int(cfg.get("local_location_scan_limit") or 36)]
+    for loc in local_locations:
         if len(items) >= target:
             break
 
