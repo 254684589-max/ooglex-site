@@ -532,14 +532,14 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
                 if len(out) >= max_candidates:
                     break
 
-    for alias in aliases[:3]:
+    for alias in aliases[:2]:
         if not alias:
             continue
 
         # Theme-first discovery across modern Commons video containers.
         # The V1 technical gate still decides whether a result is 30s+, 720p+
         # and landscape before it can enter the catalog.
-        for theme in themes[:6]:
+        for theme in themes[:4]:
             for mime in ("video/webm", "video/mp4"):
                 run_query(alias, f'"{alias}" {theme} filemime:{mime}')
                 if len(out) >= max_candidates:
