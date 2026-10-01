@@ -1,0 +1,100 @@
+name: Validate WINDOW V1.0 Transcode Catalog
+
+on:
+  push:
+    branches: [window-v1.0-quality-gates]
+    paths:
+      - '.github/workflows/validate-window-v10-transcodes.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-window-v10-transcodes
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate syntax
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+          node scripts/validate_global_cams.mjs
+
+      - name: Build strict 100 metadata catalog
+        run: |
+          set -euo pipefail
+          python scripts/global-cams/sync_windows_to_r2.py --target 100 --manifest-only
+
+      - name: Verify V1 contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          assert len(rows)>=100,len(rows)
+          assert all(int(x.get("quality_schema_version") or 0)==1 for x in rows)
+          assert all(int(x.get("quality_score") or 0)>=60 for x in rows)
+          assert all(30<=float(x.get("duration_seconds") or 0)<=300 for x in rows)
+          assert all(int(x.get("width") or 0)>=1280 and int(x.get("height") or 0)>=720 for x in rows)
+          assert all(int(x.get("width") or 0)>int(x.get("height") or 0) for x in rows)
+          assert all(int(x.get("bytes") or 0)<=80*1024*1024 for x in rows)
+          assert all(x.get("name_zh") and x.get("original_title") for x in rows)
+          assert all(x.get("source_url") and x.get("license") for x in rows)
+          transcodes=[x for x in rows if x.get("delivery_kind")=="transcode"]
+          assert transcodes,"official transcode path was not selected"
+          total=sum(int(x.get("bytes") or 0) for x in rows)
+          assert total<=8*1024**3,total
+          print("V1_COUNT=",len(rows))
+          print("V1_TRANSCODES=",len(transcodes))
+          print("V1_TOTAL_MIB=",round(total/1024/1024,1))
+          print("V1_MIN_SCORE=",min(int(x["quality_score"]) for x in rows))
+          print("V1_AVG_SCORE=",round(sum(int(x["quality_score"]) for x in rows)/len(rows),1))
+          print("V1_DURATION_RANGE=",min(float(x["duration_seconds"]) for x in rows),max(float(x["duration_seconds"]) for x in rows))
+          print("V1_RESOLUTION_FLOOR=",min(int(x["width"]) for x in rows),min(int(x["height"]) for x in rows))
+          PY
+
+      - name: Download three official transcodes
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, urllib.request
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          picks=[x for x in rows if x.get("delivery_kind")=="transcode" and x.get("delivery_variant_url")][:3]
+          assert len(picks)>=3,len(picks)
+          limit=80*1024*1024
+          for i,row in enumerate(picks,1):
+              req=urllib.request.Request(row["delivery_variant_url"],headers={
+                  "User-Agent":"Ooglex-Global-Windows/1.0 (https://www.ooglex.com/)",
+                  "Accept-Encoding":"identity"
+              })
+              total=0
+              with urllib.request.urlopen(req,timeout=180) as r:
+                  while True:
+                      chunk=r.read(1024*1024)
+                      if not chunk: break
+                      total+=len(chunk)
+                      assert total<=limit,(row.get("original_title"),total)
+              assert total>0
+              print("TRANSCODE_OK",i,row.get("width"),row.get("height"),round(total/1024/1024,1),row.get("transcode_key"))
+          PY
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: window-v10-transcode-validation
+          path: .window-build/manifest/windows.json
+          if-no-files-found: warn
+          retention-days: 7
