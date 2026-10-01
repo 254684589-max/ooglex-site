@@ -51,7 +51,15 @@ jobs:
           bs,_=mod.quality_score(bad,"street")
           assert gs >= 5, gs
           assert bs < 0, bs
-          print("WINDOW curator quality gate OK:",gs,bs)
+
+          cfg={"min_duration_seconds":30,"max_duration_seconds":300,"min_width":1280,"min_height":720,"require_landscape":True,"preferred_duration_min_seconds":60,"preferred_duration_max_seconds":180}
+          assert mod.technical_gate({"duration_seconds":29.9,"width":1920,"height":1080},cfg)[0] is False
+          assert mod.technical_gate({"duration_seconds":30,"width":1280,"height":720},cfg)[0] is True
+          assert mod.technical_gate({"duration_seconds":60,"width":1080,"height":1920},cfg)[0] is False
+          v1,breakdown=mod.v1_quality_score(good,{"duration_seconds":90,"width":1920,"height":1080},gs,cfg)
+          assert v1 >= 60, (v1,breakdown)
+          assert sum(breakdown.values()) == v1, (v1,breakdown)
+          print("WINDOW V1 quality gates OK:",gs,bs,v1,breakdown)
           PY
 
       - name: Validate Global Cams V0.7
