@@ -3439,8 +3439,8 @@
   "global_query_limit": 80,
   "global_max_candidates": 5000,
   "global_match_distance_km": 120,
-  "global_max_per_location": 4,
-  "local_location_scan_limit": 120,
+  "global_max_per_location": 6,
+  "local_location_scan_limit": 40,
   "global_scenic_categories": [
     "Videos of sunsets",
     "Videos of sunrises",
@@ -3485,5 +3485,6 @@
   "max_catalog_gb": 8,
   "quality_schema_version": 1,
   "zh_labels": "data/global-windows/zh_labels.json",
-  "min_semantic_score": 5
+  "min_semantic_score": 5,
+  "global_generic_gps_cap": 12
 }
