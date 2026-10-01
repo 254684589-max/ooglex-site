@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-window-v10-catalog-v2
+  group: validate-window-v10-catalog-${{ github.sha }}
   cancel-in-progress: true
 
 jobs:
