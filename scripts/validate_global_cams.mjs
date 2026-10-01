@@ -7,6 +7,7 @@ const windows = JSON.parse(fs.readFileSync('apps/global-cams/windows.json', 'utf
 const windowWorker = fs.readFileSync('workers/global-windows-cdn/worker.js', 'utf8');
 const windowConfig = fs.readFileSync('workers/global-windows-cdn/wrangler.toml', 'utf8');
 const windowLocations = JSON.parse(fs.readFileSync('data/global-windows/locations.json', 'utf8'));
+const windowSync = fs.readFileSync('scripts/global-cams/sync_windows_to_r2.py', 'utf8');
 
 const failures = [];
 const ok = (cond, msg) => { if (!cond) failures.push(msg); };
@@ -30,7 +31,7 @@ for (const id of [
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V0.6</span>'), 'V0.6 label missing');
+ok(html.includes('环球实景 <span>V0.7</span>'), 'V0.7 label missing');
 ok(html.includes('播放列表'), 'playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
 ok(app.includes('controls.autoRotate = false'), 'globe auto-rotation is not disabled');
@@ -70,8 +71,15 @@ ok(windowWorker.includes('env.WINDOW_MEDIA.get'), 'WINDOW worker R2 read missing
 ok(windowWorker.includes('Range'), 'WINDOW worker byte-range support missing');
 ok(windowWorker.includes('caches.default'), 'WINDOW CDN cache layer missing');
 ok(windowWorker.includes('manifest/windows.json'), 'WINDOW CDN manifest key missing');
-ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 20, 'WINDOW discovery locations too small');
-ok(Number(windowLocations.target) >= 30, 'WINDOW target must be at least 30 clips');
+ok(Array.isArray(windowLocations.locations) && windowLocations.locations.length >= 50, 'WINDOW scenic discovery locations too small');
+ok(Number(windowLocations.target) >= 100 && Number(windowLocations.target) <= 300, 'WINDOW target must be within 100-300 clips');
+ok(Number(windowLocations.min_catalog) >= 100, 'WINDOW minimum production catalog must be 100+');
+ok(Number(windowLocations.min_quality_score) >= 5, 'WINDOW minimum quality score too low');
+ok(windowSync.includes('HARD_REJECT'), 'WINDOW hard-reject quality gate missing');
+ok(windowSync.includes('SCENIC_WEIGHTS'), 'WINDOW scenic scoring missing');
+ok(windowSync.includes('haversine_km'), 'WINDOW geographic validation missing');
+ok(windowSync.includes('quality_score'), 'WINDOW quality score output missing');
+ok(windowSync.includes('seed_items'), 'WINDOW curated seed ingestion missing');
 for (const w of windows) {
   ok(w.kind === 'window', 'WINDOW item missing kind=window');
   ok(/^https:\/\/upload\.wikimedia\.org\//.test(String(w.video_url || '')), 'WINDOW video must use approved Wikimedia media URL');
@@ -126,8 +134,8 @@ ok(sourceFixture.stream_type === 'source', 'source-only fixture not classified s
 ok(sourceFixture.playable === false, 'source-only fixture incorrectly marked playable');
 
 if (failures.length) {
-  console.error('Global Cams V0.6 validation failed:');
+  console.error('Global Cams V0.7 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global Cams V0.6 validation passed.');
+console.log('Global Cams V0.7 validation passed.');

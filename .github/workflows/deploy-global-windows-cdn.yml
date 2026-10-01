@@ -6,7 +6,7 @@ on:
       target:
         description: "Target WINDOW clip count"
         required: false
-        default: "36"
+        default: "120"
   push:
     branches: [main]
     paths:
@@ -27,7 +27,7 @@ concurrency:
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     env:
       BUCKET: ooglex-global-windows
       CDN_BASE: https://windows-cdn.ooglex.com
@@ -69,13 +69,15 @@ jobs:
           TARGET_INPUT: ${{ github.event.inputs.target }}
         run: |
           set -euo pipefail
-          target="${TARGET_INPUT:-36}"
+          target="${TARGET_INPUT:-120}"
           python scripts/global-cams/sync_windows_to_r2.py --target "$target"
           python - <<'PY'
           import json
           from pathlib import Path
           manifest=json.loads(Path(".window-build/manifest/windows.json").read_text())
-          assert len(manifest) >= 12, len(manifest)
+          assert len(manifest) >= min(int(__import__("os").environ.get("TARGET_INPUT") or 120), 100), len(manifest)
+          assert all(int(x.get("quality_score") or 0) >= 5 for x in manifest), "quality gate missing"
+          assert sum(1 for x in manifest if int(x.get("quality_score") or 0) == 100) >= 1, "curated seeds missing"
           assert all(x.get("r2_key","").startswith("media/") for x in manifest)
           assert all(x.get("source_url") for x in manifest)
           assert all(x.get("license") for x in manifest)
@@ -131,7 +133,10 @@ jobs:
           python - <<'PY'
           import json
           rows=json.load(open("/tmp/windows.json",encoding="utf-8"))
-          assert len(rows)>=12, len(rows)
+          assert len(rows)>=100, len(rows)
+          assert all(int(x.get("quality_score") or 0) >= 5 for x in rows)
+          cities={str(x.get("city") or "") for x in rows}
+          assert len(cities)>=25, len(cities)
           print("CDN manifest count:",len(rows))
           print("sample r2 key:",rows[0]["r2_key"])
           PY

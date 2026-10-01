@@ -1,46 +1,261 @@
 {
-  "target": 36,
-  "max_per_location": 2,
-  "max_file_mb": 15,
+  "target": 120,
+  "min_catalog": 100,
+  "max_per_location": 3,
+  "max_file_mb": 12,
+  "max_seed_file_mb": 30,
+  "min_file_mb": 0.8,
+  "min_quality_score": 5,
+  "max_distance_km": 400,
+  "max_candidates_per_location": 70,
+  "theme_query_limit": 10,
+  "seed_manifest": "apps/global-cams/windows.json",
   "locations": [
     {
       "city": "Tokyo",
       "country": "Japan",
       "lat": 35.6762,
       "lng": 139.6503,
-      "category": "城市",
+      "category": "城市 / 夜景",
+      "themes": [
+        "night",
+        "rain",
+        "snow",
+        "skyline",
+        "street",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Tokyo"
+      ],
       "commons_category": "Videos of Tokyo"
     },
     {
-      "city": "New York City",
-      "country": "United States",
-      "lat": 40.7128,
-      "lng": -74.006,
-      "category": "城市",
-      "commons_category": "Videos of New York City"
+      "city": "Sapporo",
+      "country": "Japan",
+      "lat": 43.0618,
+      "lng": 141.3545,
+      "category": "雪景 / 城市",
+      "themes": [
+        "snow",
+        "snowfall",
+        "winter",
+        "night",
+        "street",
+        "cityscape"
+      ],
+      "search_aliases": [
+        "Sapporo"
+      ],
+      "commons_category": "Videos of Sapporo"
     },
     {
-      "city": "London",
-      "country": "United Kingdom",
-      "lat": 51.5072,
-      "lng": -0.1276,
-      "category": "城市",
-      "commons_category": "Videos of London"
+      "city": "Kyoto",
+      "country": "Japan",
+      "lat": 35.0116,
+      "lng": 135.7681,
+      "category": "古城 / 雨雪",
+      "themes": [
+        "rain",
+        "snow",
+        "night",
+        "street",
+        "sunset",
+        "temple"
+      ],
+      "search_aliases": [
+        "Kyoto"
+      ],
+      "commons_category": "Videos of Kyoto"
     },
     {
-      "city": "Paris",
-      "country": "France",
-      "lat": 48.8566,
-      "lng": 2.3522,
-      "category": "城市",
-      "commons_category": "Videos of Paris"
+      "city": "Osaka",
+      "country": "Japan",
+      "lat": 34.6937,
+      "lng": 135.5023,
+      "category": "城市 / 夜景",
+      "themes": [
+        "night",
+        "skyline",
+        "rain",
+        "street",
+        "sunset",
+        "river"
+      ],
+      "search_aliases": [
+        "Osaka"
+      ],
+      "commons_category": "Videos of Osaka"
+    },
+    {
+      "city": "Seoul",
+      "country": "South Korea",
+      "lat": 37.5665,
+      "lng": 126.978,
+      "category": "城市 / 四季",
+      "themes": [
+        "night",
+        "rain",
+        "snow",
+        "skyline",
+        "street",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Seoul"
+      ],
+      "commons_category": "Videos of Seoul"
+    },
+    {
+      "city": "Busan",
+      "country": "South Korea",
+      "lat": 35.1796,
+      "lng": 129.0756,
+      "category": "海岸 / 城市",
+      "themes": [
+        "beach",
+        "coast",
+        "ocean",
+        "night",
+        "skyline",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Busan"
+      ],
+      "commons_category": "Videos of Busan"
+    },
+    {
+      "city": "Taipei",
+      "country": "Taiwan",
+      "lat": 25.033,
+      "lng": 121.5654,
+      "category": "城市 / 山景",
+      "themes": [
+        "night",
+        "rain",
+        "skyline",
+        "street",
+        "mountain",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Taipei"
+      ],
+      "commons_category": "Videos of Taipei"
+    },
+    {
+      "city": "Hong Kong",
+      "country": "China",
+      "lat": 22.3193,
+      "lng": 114.1694,
+      "category": "港湾 / 城市",
+      "themes": [
+        "harbor",
+        "skyline",
+        "night",
+        "rain",
+        "waterfront",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Hong Kong"
+      ],
+      "commons_category": "Videos of Hong Kong"
+    },
+    {
+      "city": "Singapore",
+      "country": "Singapore",
+      "lat": 1.3521,
+      "lng": 103.8198,
+      "category": "滨水 / 城市",
+      "themes": [
+        "skyline",
+        "night",
+        "rain",
+        "waterfront",
+        "sunset",
+        "bay"
+      ],
+      "search_aliases": [
+        "Singapore"
+      ],
+      "commons_category": "Videos of Singapore"
+    },
+    {
+      "city": "Bangkok",
+      "country": "Thailand",
+      "lat": 13.7563,
+      "lng": 100.5018,
+      "category": "城市 / 河流",
+      "themes": [
+        "night",
+        "rain",
+        "river",
+        "skyline",
+        "street",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Bangkok"
+      ],
+      "commons_category": "Videos of Bangkok"
+    },
+    {
+      "city": "Dubai",
+      "country": "United Arab Emirates",
+      "lat": 25.2048,
+      "lng": 55.2708,
+      "category": "城市 / 沙漠",
+      "themes": [
+        "skyline",
+        "desert",
+        "sunset",
+        "night",
+        "storm",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Dubai"
+      ],
+      "commons_category": "Videos of Dubai"
+    },
+    {
+      "city": "Istanbul",
+      "country": "Türkiye",
+      "lat": 41.0082,
+      "lng": 28.9784,
+      "category": "海峡 / 城市",
+      "themes": [
+        "sunset",
+        "waterfront",
+        "skyline",
+        "night",
+        "rain",
+        "sea"
+      ],
+      "search_aliases": [
+        "Istanbul"
+      ],
+      "commons_category": "Videos of Istanbul"
     },
     {
       "city": "Venice",
       "country": "Italy",
       "lat": 45.4408,
       "lng": 12.3155,
-      "category": "水岸 / 城市",
+      "category": "运河 / 城市",
+      "themes": [
+        "canal",
+        "rain",
+        "sunset",
+        "night",
+        "timelapse",
+        "waterfront"
+      ],
+      "search_aliases": [
+        "Venice"
+      ],
       "commons_category": "Videos of Venice"
     },
     {
@@ -48,23 +263,75 @@
       "country": "Italy",
       "lat": 41.9028,
       "lng": 12.4964,
-      "category": "城市",
+      "category": "城市 / 天气",
+      "themes": [
+        "rain",
+        "snow",
+        "sunset",
+        "night",
+        "skyline",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Rome"
+      ],
       "commons_category": "Videos of Rome"
     },
     {
-      "city": "Berlin",
-      "country": "Germany",
-      "lat": 52.52,
-      "lng": 13.405,
-      "category": "城市",
-      "commons_category": "Videos of Berlin"
+      "city": "Paris",
+      "country": "France",
+      "lat": 48.8566,
+      "lng": 2.3522,
+      "category": "城市 / 河流",
+      "themes": [
+        "rain",
+        "night",
+        "river",
+        "skyline",
+        "sunset",
+        "fog"
+      ],
+      "search_aliases": [
+        "Paris"
+      ],
+      "commons_category": "Videos of Paris"
+    },
+    {
+      "city": "London",
+      "country": "United Kingdom",
+      "lat": 51.5072,
+      "lng": -0.1276,
+      "category": "城市 / 雨雾",
+      "themes": [
+        "rain",
+        "night",
+        "river",
+        "skyline",
+        "fog",
+        "sunset"
+      ],
+      "search_aliases": [
+        "London"
+      ],
+      "commons_category": "Videos of London"
     },
     {
       "city": "Amsterdam",
       "country": "Netherlands",
       "lat": 52.3676,
       "lng": 4.9041,
-      "category": "水岸 / 城市",
+      "category": "运河 / 城市",
+      "themes": [
+        "canal",
+        "rain",
+        "night",
+        "sunset",
+        "waterfront",
+        "fog"
+      ],
+      "search_aliases": [
+        "Amsterdam"
+      ],
       "commons_category": "Videos of Amsterdam"
     },
     {
@@ -72,119 +339,37 @@
       "country": "Czech Republic",
       "lat": 50.0755,
       "lng": 14.4378,
-      "category": "城市",
+      "category": "古城 / 河流",
+      "themes": [
+        "snow",
+        "night",
+        "river",
+        "fog",
+        "sunset",
+        "rain"
+      ],
+      "search_aliases": [
+        "Prague"
+      ],
       "commons_category": "Videos of Prague"
-    },
-    {
-      "city": "Barcelona",
-      "country": "Spain",
-      "lat": 41.3874,
-      "lng": 2.1686,
-      "category": "城市",
-      "commons_category": "Videos of Barcelona"
-    },
-    {
-      "city": "Lisbon",
-      "country": "Portugal",
-      "lat": 38.7223,
-      "lng": -9.1393,
-      "category": "城市 / 水岸",
-      "commons_category": "Videos of Lisbon"
-    },
-    {
-      "city": "Istanbul",
-      "country": "Türkiye",
-      "lat": 41.0082,
-      "lng": 28.9784,
-      "category": "城市 / 水岸",
-      "commons_category": "Videos of Istanbul"
-    },
-    {
-      "city": "Dubai",
-      "country": "United Arab Emirates",
-      "lat": 25.2048,
-      "lng": 55.2708,
-      "category": "城市",
-      "commons_category": "Videos of Dubai"
-    },
-    {
-      "city": "Singapore",
-      "country": "Singapore",
-      "lat": 1.3521,
-      "lng": 103.8198,
-      "category": "城市",
-      "commons_category": "Videos of Singapore"
-    },
-    {
-      "city": "Hong Kong",
-      "country": "China",
-      "lat": 22.3193,
-      "lng": 114.1694,
-      "category": "城市 / 水岸",
-      "commons_category": "Videos of Hong Kong"
-    },
-    {
-      "city": "Seoul",
-      "country": "South Korea",
-      "lat": 37.5665,
-      "lng": 126.978,
-      "category": "城市",
-      "commons_category": "Videos of Seoul"
-    },
-    {
-      "city": "Sydney",
-      "country": "Australia",
-      "lat": -33.8688,
-      "lng": 151.2093,
-      "category": "港口 / 城市",
-      "commons_category": "Videos of Sydney"
-    },
-    {
-      "city": "San Francisco",
-      "country": "United States",
-      "lat": 37.7749,
-      "lng": -122.4194,
-      "category": "城市 / 海湾",
-      "commons_category": "Videos of San Francisco"
-    },
-    {
-      "city": "Los Angeles",
-      "country": "United States",
-      "lat": 34.0522,
-      "lng": -118.2437,
-      "category": "城市",
-      "commons_category": "Videos of Los Angeles"
-    },
-    {
-      "city": "Honolulu",
-      "country": "United States",
-      "lat": 21.3069,
-      "lng": -157.8583,
-      "category": "海岸 / 城市",
-      "commons_category": "Videos of Honolulu"
-    },
-    {
-      "city": "Reykjavík",
-      "country": "Iceland",
-      "lat": 64.1466,
-      "lng": -21.9426,
-      "category": "城市 / 海岸",
-      "commons_category": "Videos of Reykjavík"
-    },
-    {
-      "city": "Stockholm",
-      "country": "Sweden",
-      "lat": 59.3293,
-      "lng": 18.0686,
-      "category": "城市 / 水岸",
-      "commons_category": "Videos of Stockholm"
     },
     {
       "city": "Vienna",
       "country": "Austria",
       "lat": 48.2082,
       "lng": 16.3738,
-      "category": "城市",
+      "category": "城市 / 四季",
+      "themes": [
+        "snow",
+        "night",
+        "rain",
+        "skyline",
+        "sunset",
+        "street"
+      ],
+      "search_aliases": [
+        "Vienna"
+      ],
       "commons_category": "Videos of Vienna"
     },
     {
@@ -192,8 +377,716 @@
       "country": "Hungary",
       "lat": 47.4979,
       "lng": 19.0402,
-      "category": "城市 / 河流",
+      "category": "河流 / 夜景",
+      "themes": [
+        "river",
+        "night",
+        "skyline",
+        "sunset",
+        "snow",
+        "fog"
+      ],
+      "search_aliases": [
+        "Budapest"
+      ],
       "commons_category": "Videos of Budapest"
+    },
+    {
+      "city": "Stockholm",
+      "country": "Sweden",
+      "lat": 59.3293,
+      "lng": 18.0686,
+      "category": "水岸 / 雪景",
+      "themes": [
+        "snow",
+        "waterfront",
+        "night",
+        "sunset",
+        "winter",
+        "harbor"
+      ],
+      "search_aliases": [
+        "Stockholm"
+      ],
+      "commons_category": "Videos of Stockholm"
+    },
+    {
+      "city": "Reykjavik",
+      "country": "Iceland",
+      "lat": 64.1466,
+      "lng": -21.9426,
+      "category": "海岸 / 雪景",
+      "themes": [
+        "snow",
+        "winter",
+        "coast",
+        "mountain",
+        "sunset",
+        "aurora"
+      ],
+      "search_aliases": [
+        "Reykjavík",
+        "Reykjavik"
+      ],
+      "commons_category": "Videos of Reykjavik"
+    },
+    {
+      "city": "Tromso",
+      "country": "Norway",
+      "lat": 69.6492,
+      "lng": 18.9553,
+      "category": "极光 / 雪景",
+      "themes": [
+        "snow",
+        "aurora",
+        "night",
+        "mountain",
+        "winter",
+        "fjord"
+      ],
+      "search_aliases": [
+        "Tromsø",
+        "Tromso"
+      ],
+      "commons_category": "Videos of Tromso"
+    },
+    {
+      "city": "Bergen",
+      "country": "Norway",
+      "lat": 60.3913,
+      "lng": 5.3221,
+      "category": "峡湾 / 雨景",
+      "themes": [
+        "rain",
+        "fjord",
+        "waterfront",
+        "mountain",
+        "fog",
+        "harbor"
+      ],
+      "search_aliases": [
+        "Bergen"
+      ],
+      "commons_category": "Videos of Bergen"
+    },
+    {
+      "city": "Zermatt",
+      "country": "Switzerland",
+      "lat": 46.0207,
+      "lng": 7.7491,
+      "category": "雪山 / 冰川",
+      "themes": [
+        "mountain",
+        "snow",
+        "glacier",
+        "sunrise",
+        "sunset",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Zermatt",
+        "Matterhorn"
+      ],
+      "commons_category": "Videos of Zermatt"
+    },
+    {
+      "city": "Lucerne",
+      "country": "Switzerland",
+      "lat": 47.0502,
+      "lng": 8.3093,
+      "category": "湖泊 / 雪山",
+      "themes": [
+        "lake",
+        "mountain",
+        "snow",
+        "sunset",
+        "fog",
+        "waterfront"
+      ],
+      "search_aliases": [
+        "Lucerne",
+        "Luzern"
+      ],
+      "commons_category": "Videos of Lucerne"
+    },
+    {
+      "city": "Santorini",
+      "country": "Greece",
+      "lat": 36.3932,
+      "lng": 25.4615,
+      "category": "海岛 / 日落",
+      "themes": [
+        "sunset",
+        "sea",
+        "coast",
+        "village",
+        "night",
+        "panorama"
+      ],
+      "search_aliases": [
+        "Santorini"
+      ],
+      "commons_category": "Videos of Santorini"
+    },
+    {
+      "city": "Lisbon",
+      "country": "Portugal",
+      "lat": 38.7223,
+      "lng": -9.1393,
+      "category": "水岸 / 城市",
+      "themes": [
+        "sunset",
+        "waterfront",
+        "rain",
+        "street",
+        "night",
+        "river"
+      ],
+      "search_aliases": [
+        "Lisbon",
+        "Lisboa"
+      ],
+      "commons_category": "Videos of Lisbon"
+    },
+    {
+      "city": "Barcelona",
+      "country": "Spain",
+      "lat": 41.3874,
+      "lng": 2.1686,
+      "category": "海岸 / 城市",
+      "themes": [
+        "beach",
+        "sunset",
+        "night",
+        "skyline",
+        "rain",
+        "sea"
+      ],
+      "search_aliases": [
+        "Barcelona"
+      ],
+      "commons_category": "Videos of Barcelona"
+    },
+    {
+      "city": "New York City",
+      "country": "United States",
+      "lat": 40.7128,
+      "lng": -74.006,
+      "category": "城市 / 天气",
+      "themes": [
+        "snow",
+        "rain",
+        "skyline",
+        "night",
+        "street",
+        "sunset"
+      ],
+      "search_aliases": [
+        "New York City",
+        "New York"
+      ],
+      "commons_category": "Videos of New York City"
+    },
+    {
+      "city": "Boston",
+      "country": "United States",
+      "lat": 42.3601,
+      "lng": -71.0589,
+      "category": "港湾 / 雪景",
+      "themes": [
+        "snow",
+        "rain",
+        "harbor",
+        "night",
+        "street",
+        "waterfront"
+      ],
+      "search_aliases": [
+        "Boston"
+      ],
+      "commons_category": "Videos of Boston"
+    },
+    {
+      "city": "Chicago",
+      "country": "United States",
+      "lat": 41.8781,
+      "lng": -87.6298,
+      "category": "湖岸 / 城市",
+      "themes": [
+        "snow",
+        "skyline",
+        "lake",
+        "night",
+        "rain",
+        "fog"
+      ],
+      "search_aliases": [
+        "Chicago"
+      ],
+      "commons_category": "Videos of Chicago"
+    },
+    {
+      "city": "San Francisco",
+      "country": "United States",
+      "lat": 37.7749,
+      "lng": -122.4194,
+      "category": "海湾 / 雾景",
+      "themes": [
+        "fog",
+        "bay",
+        "bridge",
+        "sunset",
+        "night",
+        "coast"
+      ],
+      "search_aliases": [
+        "San Francisco"
+      ],
+      "commons_category": "Videos of San Francisco"
+    },
+    {
+      "city": "Seattle",
+      "country": "United States",
+      "lat": 47.6062,
+      "lng": -122.3321,
+      "category": "雨景 / 水岸",
+      "themes": [
+        "rain",
+        "fog",
+        "waterfront",
+        "skyline",
+        "night",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Seattle"
+      ],
+      "commons_category": "Videos of Seattle"
+    },
+    {
+      "city": "Vancouver",
+      "country": "Canada",
+      "lat": 49.2827,
+      "lng": -123.1207,
+      "category": "山海 / 城市",
+      "themes": [
+        "rain",
+        "mountain",
+        "waterfront",
+        "snow",
+        "sunset",
+        "fog"
+      ],
+      "search_aliases": [
+        "Vancouver"
+      ],
+      "commons_category": "Videos of Vancouver"
+    },
+    {
+      "city": "Honolulu",
+      "country": "United States",
+      "lat": 21.3069,
+      "lng": -157.8583,
+      "category": "海滩 / 日落",
+      "themes": [
+        "beach",
+        "ocean",
+        "waves",
+        "sunset",
+        "rain",
+        "coast"
+      ],
+      "search_aliases": [
+        "Honolulu",
+        "Waikiki"
+      ],
+      "commons_category": "Videos of Honolulu"
+    },
+    {
+      "city": "Miami",
+      "country": "United States",
+      "lat": 25.7617,
+      "lng": -80.1918,
+      "category": "海岸 / 城市",
+      "themes": [
+        "beach",
+        "ocean",
+        "storm",
+        "sunset",
+        "skyline",
+        "rain"
+      ],
+      "search_aliases": [
+        "Miami"
+      ],
+      "commons_category": "Videos of Miami"
+    },
+    {
+      "city": "Banff",
+      "country": "Canada",
+      "lat": 51.1784,
+      "lng": -115.5708,
+      "category": "雪山 / 湖泊",
+      "themes": [
+        "mountain",
+        "lake",
+        "snow",
+        "sunrise",
+        "forest",
+        "glacier"
+      ],
+      "search_aliases": [
+        "Banff"
+      ],
+      "commons_category": "Videos of Banff"
+    },
+    {
+      "city": "Yosemite",
+      "country": "United States",
+      "lat": 37.8651,
+      "lng": -119.5383,
+      "category": "山谷 / 瀑布",
+      "themes": [
+        "waterfall",
+        "mountain",
+        "snow",
+        "sunset",
+        "forest",
+        "landscape"
+      ],
+      "search_aliases": [
+        "Yosemite"
+      ],
+      "commons_category": "Videos of Yosemite"
+    },
+    {
+      "city": "Grand Canyon",
+      "country": "United States",
+      "lat": 36.0544,
+      "lng": -112.1401,
+      "category": "峡谷 / 日出日落",
+      "themes": [
+        "sunset",
+        "sunrise",
+        "desert",
+        "landscape",
+        "clouds",
+        "panorama"
+      ],
+      "search_aliases": [
+        "Grand Canyon"
+      ],
+      "commons_category": "Videos of Grand Canyon"
+    },
+    {
+      "city": "Rio de Janeiro",
+      "country": "Brazil",
+      "lat": -22.9068,
+      "lng": -43.1729,
+      "category": "海滩 / 山海",
+      "themes": [
+        "beach",
+        "mountain",
+        "sunset",
+        "skyline",
+        "ocean",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Rio de Janeiro",
+        "Rio"
+      ],
+      "commons_category": "Videos of Rio de Janeiro"
+    },
+    {
+      "city": "Patagonia",
+      "country": "Argentina",
+      "lat": -50.9423,
+      "lng": -73.4068,
+      "category": "冰川 / 山湖",
+      "themes": [
+        "mountain",
+        "glacier",
+        "lake",
+        "landscape",
+        "clouds",
+        "snow"
+      ],
+      "search_aliases": [
+        "Patagonia"
+      ],
+      "commons_category": "Videos of Patagonia"
+    },
+    {
+      "city": "Cape Town",
+      "country": "South Africa",
+      "lat": -33.9249,
+      "lng": 18.4241,
+      "category": "山海 / 日落",
+      "themes": [
+        "mountain",
+        "ocean",
+        "coast",
+        "sunset",
+        "clouds",
+        "beach"
+      ],
+      "search_aliases": [
+        "Cape Town"
+      ],
+      "commons_category": "Videos of Cape Town"
+    },
+    {
+      "city": "Sydney",
+      "country": "Australia",
+      "lat": -33.8688,
+      "lng": 151.2093,
+      "category": "港湾 / 海岸",
+      "themes": [
+        "harbor",
+        "beach",
+        "ocean",
+        "sunset",
+        "skyline",
+        "waves"
+      ],
+      "search_aliases": [
+        "Sydney"
+      ],
+      "commons_category": "Videos of Sydney"
+    },
+    {
+      "city": "Melbourne",
+      "country": "Australia",
+      "lat": -37.8136,
+      "lng": 144.9631,
+      "category": "城市 / 河流",
+      "themes": [
+        "rain",
+        "night",
+        "skyline",
+        "river",
+        "street",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Melbourne"
+      ],
+      "commons_category": "Videos of Melbourne"
+    },
+    {
+      "city": "Auckland",
+      "country": "New Zealand",
+      "lat": -36.8509,
+      "lng": 174.7645,
+      "category": "港湾 / 城市",
+      "themes": [
+        "harbor",
+        "ocean",
+        "sunset",
+        "skyline",
+        "rain",
+        "waterfront"
+      ],
+      "search_aliases": [
+        "Auckland"
+      ],
+      "commons_category": "Videos of Auckland"
+    },
+    {
+      "city": "Queenstown",
+      "country": "New Zealand",
+      "lat": -45.0312,
+      "lng": 168.6626,
+      "category": "山湖 / 雪景",
+      "themes": [
+        "mountain",
+        "lake",
+        "snow",
+        "sunset",
+        "landscape",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Queenstown"
+      ],
+      "commons_category": "Videos of Queenstown"
+    },
+    {
+      "city": "Maui",
+      "country": "United States",
+      "lat": 20.7984,
+      "lng": -156.3319,
+      "category": "海滩 / 海浪",
+      "themes": [
+        "beach",
+        "ocean",
+        "waves",
+        "sunset",
+        "rain",
+        "coast"
+      ],
+      "search_aliases": [
+        "Maui"
+      ],
+      "commons_category": "Videos of Maui"
+    },
+    {
+      "city": "Big Sur",
+      "country": "United States",
+      "lat": 36.2704,
+      "lng": -121.8081,
+      "category": "海岸 / 雾景",
+      "themes": [
+        "coast",
+        "ocean",
+        "waves",
+        "fog",
+        "sunset",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Big Sur"
+      ],
+      "commons_category": "Videos of Big Sur"
+    },
+    {
+      "city": "Swiss Alps",
+      "country": "Switzerland",
+      "lat": 46.8182,
+      "lng": 8.2275,
+      "category": "雪山 / 冰川",
+      "themes": [
+        "mountain",
+        "snow",
+        "glacier",
+        "sunrise",
+        "landscape",
+        "clouds"
+      ],
+      "search_aliases": [
+        "Swiss Alps",
+        "Alps"
+      ],
+      "commons_category": "Videos of Swiss Alps"
+    },
+    {
+      "city": "Norwegian Fjords",
+      "country": "Norway",
+      "lat": 61.2,
+      "lng": 6.8,
+      "category": "峡湾 / 山景",
+      "themes": [
+        "fjord",
+        "mountain",
+        "waterfall",
+        "fog",
+        "sunset",
+        "landscape"
+      ],
+      "search_aliases": [
+        "Norwegian fjord",
+        "Norway fjord"
+      ],
+      "commons_category": "Videos of Norwegian Fjords"
+    },
+    {
+      "city": "Iceland South Coast",
+      "country": "Iceland",
+      "lat": 63.55,
+      "lng": -19,
+      "category": "海岸 / 瀑布",
+      "themes": [
+        "waterfall",
+        "coast",
+        "glacier",
+        "snow",
+        "storm",
+        "landscape"
+      ],
+      "search_aliases": [
+        "Iceland south coast",
+        "Iceland"
+      ],
+      "commons_category": "Videos of Iceland South Coast"
+    },
+    {
+      "city": "Lake Como",
+      "country": "Italy",
+      "lat": 46.016,
+      "lng": 9.2572,
+      "category": "湖泊 / 山景",
+      "themes": [
+        "lake",
+        "mountain",
+        "sunset",
+        "waterfront",
+        "fog",
+        "village"
+      ],
+      "search_aliases": [
+        "Lake Como",
+        "Como"
+      ],
+      "commons_category": "Videos of Lake Como"
+    },
+    {
+      "city": "Dolomites",
+      "country": "Italy",
+      "lat": 46.5405,
+      "lng": 11.873,
+      "category": "雪山 / 山谷",
+      "themes": [
+        "mountain",
+        "snow",
+        "sunrise",
+        "sunset",
+        "clouds",
+        "landscape"
+      ],
+      "search_aliases": [
+        "Dolomites"
+      ],
+      "commons_category": "Videos of Dolomites"
+    },
+    {
+      "city": "Hallstatt",
+      "country": "Austria",
+      "lat": 47.5622,
+      "lng": 13.6493,
+      "category": "湖泊 / 雪景",
+      "themes": [
+        "lake",
+        "snow",
+        "mountain",
+        "fog",
+        "sunset",
+        "village"
+      ],
+      "search_aliases": [
+        "Hallstatt"
+      ],
+      "commons_category": "Videos of Hallstatt"
+    },
+    {
+      "city": "Lake Bled",
+      "country": "Slovenia",
+      "lat": 46.3625,
+      "lng": 14.0938,
+      "category": "湖泊 / 山景",
+      "themes": [
+        "lake",
+        "mountain",
+        "snow",
+        "fog",
+        "sunrise",
+        "sunset"
+      ],
+      "search_aliases": [
+        "Lake Bled",
+        "Bled"
+      ],
+      "commons_category": "Videos of Lake Bled"
     }
   ]
 }
