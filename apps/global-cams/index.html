@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-:root{color-scheme:dark;--bg:#05070f;--panel:#0b1020;--panel2:#10172a;--line:#24304a;--line2:#344463;--text:#eef3ff;--muted:#9aa8c3;--faint:#6f7d98;--accent:#4ee7b7;--accent2:#1ca77f;--warn:#ffd36b;--danger:#ff9b9b}
+:root{color-scheme:dark;--bg:#05070f;--panel:#0b1020;--panel2:#10172a;--line:#24304a;--line2:#344463;--text:#eef3ff;--muted:#9aa8c3;--faint:#6f7d98;--accent:#4ee7b7;--accent2:#1ca77f;--live:#ff6262;--snapshot:#d8e2f2;--warn:#ffd36b;--danger:#ff9b9b}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
 button,input{font:inherit}button{color:inherit}
@@ -30,6 +30,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .viewer{position:relative;aspect-ratio:16/9;background:#02040a;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;place-items:center;color:var(--faint);font-size:13px;text-align:center}
 .viewer iframe,.viewer img{width:100%;height:100%;border:0;object-fit:cover}.viewer a{width:100%;height:100%;display:block}
 .viewer-empty{padding:20px;line-height:1.7}
+.media-badge{position:absolute;z-index:3;top:8px;left:8px;display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(5,7,15,.82);backdrop-filter:blur(8px);font-size:10px;font-weight:800;letter-spacing:.04em;pointer-events:none}
+.media-badge[data-type="none"]{display:none}.media-badge[data-type="live"]{color:#fff;border-color:rgba(255,98,98,.55);background:rgba(112,20,28,.86)}.media-badge[data-type="timelapse"]{color:var(--accent);border-color:rgba(78,231,183,.4)}.media-badge[data-type="snapshot"]{color:var(--snapshot)}
 .selected-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);text-decoration:none;cursor:pointer}
 .btn:hover{border-color:var(--line2)}.btn.primary{background:#12382f;border-color:#246b59}.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
@@ -37,12 +39,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .playlist-head{display:flex;align-items:center;gap:8px;padding:10px 14px 8px}
 .playlist-head strong{font-size:14px}.playlist-head span{color:var(--muted);font-size:11px}.playlist-head .spacer{flex:1}
 .clear-mini{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:5px 7px;border-radius:8px}.clear-mini:hover{background:var(--panel2);color:var(--text)}
+.media-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:0 10px 9px}
+.filter-btn{min-width:0;border:1px solid var(--line);border-radius:9px;background:#0d1424;color:var(--muted);padding:7px 4px;font-size:10.5px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.filter-btn:hover{border-color:var(--line2);color:var(--text)}.filter-btn.active{border-color:var(--accent);color:var(--text);background:#11231f}
+.filter-btn[data-filter="live"].active{border-color:var(--live);background:#2a1217}.filter-btn .filter-count{opacity:.72;margin-left:2px}
 .playlist{flex:1;min-height:0;overflow:auto;padding:0 8px 12px;scrollbar-width:thin;scrollbar-color:#33415d transparent}
 .cam-row{width:100%;display:grid;grid-template-columns:18px minmax(0,1fr);gap:9px;text-align:left;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--text);padding:9px 9px;cursor:pointer}
 .cam-row:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.04)}
 .cam-row.active{background:rgba(78,231,183,.09);border-color:rgba(78,231,183,.34)}
-.cam-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:#d8e2f2;box-shadow:0 0 0 3px rgba(216,226,242,.08)}
-.cam-row.playable .cam-dot{background:var(--accent);box-shadow:0 0 0 3px rgba(78,231,183,.09)}
+.cam-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--snapshot);box-shadow:0 0 0 3px rgba(216,226,242,.08)}
+.cam-row.media-live .cam-dot{background:var(--live);box-shadow:0 0 0 3px rgba(255,98,98,.12)}.cam-row.media-timelapse .cam-dot{background:var(--accent);box-shadow:0 0 0 3px rgba(78,231,183,.09)}.cam-row.media-snapshot .cam-dot{background:var(--snapshot)}
 .cam-main{min-width:0}.cam-name{font-size:13px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cam-sub{margin-top:3px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty-list{padding:28px 16px;color:var(--muted);text-align:center;font-size:12px;line-height:1.7}
@@ -72,7 +78,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   .side-head{padding:8px 10px 7px}.brand{font-size:16px}.selected{display:grid;grid-template-columns:minmax(150px,42%) minmax(0,1fr);grid-template-rows:auto auto 1fr;gap:0 10px;padding:8px 10px}
   .selected-title{grid-column:2;margin-top:1px;font-size:14px}.selected-meta{grid-column:2;margin-bottom:5px;font-size:10.5px}.viewer{grid-column:1;grid-row:1/4;align-self:start}
   .selected-actions{grid-column:2;margin-top:2px}.selected-actions .btn{min-height:32px;font-size:11px}.attribution{display:none}
-  .playlist-head{padding:7px 10px 5px}.playlist{padding:0 5px 8px}.cam-row{padding:7px 8px}.cam-name{font-size:12px}
+  .playlist-head{padding:7px 10px 5px}.media-filters{padding:0 7px 6px;gap:4px}.filter-btn{padding:6px 3px;font-size:9.5px}.playlist{padding:0 5px 8px}.cam-row{padding:7px 8px}.cam-name{font-size:12px}
   .topbar{top:8px;left:8px;right:8px;gap:5px;flex-wrap:wrap}.search{order:3;flex-basis:100%;max-width:none}.search input{height:36px}.toolbar-btn,.toggle{height:36px;font-size:11px;padding:0 9px}.status{top:87px;left:8px;max-width:calc(100% - 16px);font-size:10.5px}
   .globe-tools{right:8px;bottom:8px;gap:6px}.tool-btn{width:38px;height:38px}.legend{display:none}.center-readout{bottom:10px;font-size:9.5px}
 }
@@ -84,13 +90,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <div class="app-shell">
   <aside class="sidebar" aria-label="摄像头播放列表">
     <div class="side-head">
-      <div class="brand">🌐 环球实景 <span>V0.3</span></div>
+      <div class="brand">🌐 环球实景 <span>V0.4</span></div>
       <span class="live">PUBLIC CAMS</span>
     </div>
     <section class="selected" aria-live="polite">
       <h2 class="selected-title" id="camName">选择一个公开摄像头</h2>
       <div class="selected-meta" id="camMeta">点地球上的信号点，或从下方播放列表选择。</div>
-      <div class="viewer" id="viewer"><div class="viewer-empty">摄像头画面将在这里播放</div></div>
+      <div class="viewer" id="viewer"><div class="media-badge" id="mediaBadge" data-type="none">类型</div><div class="viewer-empty">摄像头画面将在这里播放</div></div>
       <div class="selected-actions">
         <a class="btn primary" id="openSource" href="#" target="_blank" rel="noopener" aria-disabled="true">打开官方来源</a>
         <button class="btn" id="expandViewer" type="button">放大画面</button>
@@ -102,6 +108,12 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
       <span id="listCount">0 个信号源</span>
       <span class="spacer"></span>
       <button class="clear-mini" id="clearAll" type="button">清空</button>
+    </div>
+    <div class="media-filters" id="mediaFilters" aria-label="摄像头类型筛选">
+      <button class="filter-btn active" type="button" data-filter="all">全部 <span class="filter-count" id="filterAllCount">0</span></button>
+      <button class="filter-btn" type="button" data-filter="live">🔴 LIVE <span class="filter-count" id="filterLiveCount">0</span></button>
+      <button class="filter-btn" type="button" data-filter="timelapse">🟢 24H <span class="filter-count" id="filterTimelapseCount">0</span></button>
+      <button class="filter-btn" type="button" data-filter="snapshot">⚪ 抓拍 <span class="filter-count" id="filterSnapshotCount">0</span></button>
     </div>
     <div class="playlist" id="playlist" role="listbox" aria-label="已加载摄像头">
       <div class="empty-list">正在连接公开摄像头服务…</div>
@@ -129,7 +141,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
       <button class="tool-btn" id="resetGlobe" type="button" title="重置视角" aria-label="重置视角">⌂</button>
       <button class="tool-btn" id="fullscreen" type="button" title="全屏" aria-label="全屏">⛶</button>
     </div>
-    <div class="legend">🟢 可播放/预览　⚪ 来源页　· 中心准星 = 当前区域查询中心</div>
+    <div class="legend">🔴 LIVE = 上游明确提供实时播放器　🟢 24H = 延时摄影　⚪ = 最新抓拍　· 中心准星 = 查询中心</div>
   </main>
 </div>
 <script src="../radio/vendor/globe.gl.min.js"></script>
