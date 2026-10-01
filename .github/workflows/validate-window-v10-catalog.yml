@@ -1,0 +1,82 @@
+name: Validate WINDOW V1.0 Catalog 100
+
+on:
+  push:
+    branches:
+      - window-v1.0-quality-gates
+    paths:
+      - '.github/workflows/validate-window-v10-catalog.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-window-v10-catalog
+  cancel-in-progress: true
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate Python and JSON
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+          python - <<'PY'
+          import json
+          json.load(open("data/global-windows/locations.json",encoding="utf-8"))
+          json.load(open("data/global-windows/zh_labels.json",encoding="utf-8"))
+          json.load(open("apps/global-cams/windows.json",encoding="utf-8"))
+          print("V1 config JSON valid")
+          PY
+
+      - name: Curate 100 V1-quality WINDOW clips
+        run: |
+          set -euo pipefail
+          python scripts/global-cams/sync_windows_to_r2.py --target 100
+
+      - name: Verify V1 catalog contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          plan=json.load(open(".window-build/upload-plan.json",encoding="utf-8"))
+          assert len(rows) >= 100, len(rows)
+          assert all(int(x.get("quality_schema_version") or 0)==1 for x in rows)
+          assert all(int(x.get("quality_score") or 0)>=60 for x in rows)
+          assert all(30 <= float(x.get("duration_seconds") or 0) <= 300 for x in rows)
+          assert all(int(x.get("width") or 0)>=1280 and int(x.get("height") or 0)>=720 for x in rows)
+          assert all(int(x.get("width") or 0)>int(x.get("height") or 0) for x in rows)
+          assert all(x.get("name_zh") and x.get("original_title") for x in rows)
+          assert all(x.get("source_url") and x.get("license") for x in rows)
+          total=sum(int(x.get("bytes") or 0) for x in rows)
+          assert total <= 8*1024**3, total
+          print("V1_CATALOG_COUNT=",len(rows))
+          print("V1_NEW_DOWNLOADS=",len(plan))
+          print("V1_TOTAL_MIB=",round(total/1024/1024,1))
+          print("V1_MIN_SCORE=",min(int(x["quality_score"]) for x in rows))
+          print("V1_AVG_SCORE=",round(sum(int(x["quality_score"]) for x in rows)/len(rows),1))
+          print("V1_DURATION_RANGE=",min(float(x["duration_seconds"]) for x in rows),max(float(x["duration_seconds"]) for x in rows))
+          print("V1_RESOLUTION_FLOOR=",min(int(x["width"]) for x in rows),min(int(x["height"]) for x in rows))
+          PY
+
+      - name: Upload V1 catalog evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: window-v10-catalog-100
+          path: |
+            .window-build/manifest/windows.json
+            .window-build/upload-plan.json
+          if-no-files-found: warn
+          retention-days: 7
