@@ -8,8 +8,8 @@
   "min_quality_score": 5,
   "existing_min_quality_score": 100,
   "max_distance_km": 400,
-  "max_candidates_per_location": 80,
-  "theme_query_limit": 20,
+  "max_candidates_per_location": 90,
+  "theme_query_limit": 22,
   "seed_manifest": "apps/global-cams/windows.json",
   "locations": [
     {
@@ -3412,11 +3412,11 @@
     "river night",
     "canal night"
   ],
-  "global_query_limit": 60,
-  "global_max_candidates": 2600,
+  "global_query_limit": 65,
+  "global_max_candidates": 3200,
   "global_match_distance_km": 120,
   "global_max_per_location": 4,
-  "local_location_scan_limit": 60,
+  "local_location_scan_limit": 120,
   "global_scenic_categories": [
     "Videos of sunsets",
     "Videos of sunrises",
@@ -3436,5 +3436,5 @@
     "Videos of auroras",
     "Time-lapse videos of clouds"
   ],
-  "global_category_limit": 120
+  "global_category_limit": 140
 }
