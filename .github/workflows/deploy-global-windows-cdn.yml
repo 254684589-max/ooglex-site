@@ -15,6 +15,7 @@ on:
       - 'workers/global-windows-cdn/**'
       - 'scripts/global-cams/sync_windows_to_r2.py'
       - 'data/global-windows/locations.json'
+      - 'data/global-windows/zh_labels.json'
       - 'apps/global-cams/app.js'
       - 'apps/global-cams/config.js'
       - '.github/workflows/deploy-global-windows-cdn.yml'
@@ -102,12 +103,18 @@ jobs:
           from pathlib import Path
           manifest=json.loads(Path(".window-build/manifest/windows.json").read_text())
           assert len(manifest) >= min(int(__import__("os").environ.get("TARGET_INPUT") or 100), 100), len(manifest)
-          assert all(int(x.get("quality_score") or 0) >= 5 for x in manifest), "quality gate missing"
-          assert sum(1 for x in manifest if int(x.get("quality_score") or 0) == 100) >= 1, "curated seeds missing"
+          assert all(int(x.get("quality_score") or 0) >= 60 for x in manifest), "V1 quality score gate missing"
+          assert all(float(x.get("duration_seconds") or 0) >= 30 for x in manifest), "short video admitted"
+          assert all(float(x.get("duration_seconds") or 0) <= 300 for x in manifest), "overlong video admitted"
+          assert all(int(x.get("width") or 0) >= 1280 and int(x.get("height") or 0) >= 720 for x in manifest), "sub-720p video admitted"
+          assert all(int(x.get("width") or 0) > int(x.get("height") or 0) for x in manifest), "portrait video admitted"
+          assert all(int(x.get("quality_schema_version") or 0) == 1 for x in manifest), "quality schema missing"
+          assert all(x.get("name_zh") and x.get("original_title") for x in manifest), "Chinese/original title fields missing"
           assert all(x.get("r2_key","").startswith("media/") for x in manifest)
           assert all(x.get("source_url") for x in manifest)
           assert all(x.get("license") for x in manifest)
-          print("WINDOW manifest validated:", len(manifest))
+          assert sum(int(x.get("bytes") or 0) for x in manifest) <= 8 * 1024**3, "catalog exceeds 8GiB"
+          print("WINDOW V1 manifest validated:", len(manifest))
           PY
 
       - name: Upload videos and manifest to R2
@@ -156,7 +163,12 @@ jobs:
           import json
           rows=json.load(open("/tmp/windows.json",encoding="utf-8"))
           assert len(rows)>=100, len(rows)
-          assert all(int(x.get("quality_score") or 0) >= 5 for x in rows)
+          assert all(int(x.get("quality_score") or 0) >= 60 for x in rows)
+          assert all(30 <= float(x.get("duration_seconds") or 0) <= 300 for x in rows)
+          assert all(int(x.get("width") or 0) >= 1280 and int(x.get("height") or 0) >= 720 for x in rows)
+          assert all(int(x.get("width") or 0) > int(x.get("height") or 0) for x in rows)
+          assert all(x.get("name_zh") and x.get("original_title") for x in rows)
+          assert sum(int(x.get("bytes") or 0) for x in rows) <= 8 * 1024**3
           geo_cells={(round(float(x.get("lat") or 0),1),round(float(x.get("lng") or 0),1)) for x in rows}
           assert len(geo_cells)>=25, len(geo_cells)
           print("CDN manifest count:",len(rows))
