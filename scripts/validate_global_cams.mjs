@@ -84,10 +84,13 @@ ok(windowSync.includes('image_infos'), 'WINDOW batched metadata lookup missing')
 ok(windowSync.includes('ingest_existing'), 'WINDOW existing R2 reuse missing');
 ok(windowSync.includes('global_scenic_titles'), 'WINDOW global scenic fill missing');
 ok(windowSync.includes('match_global_location'), 'WINDOW global scenic geolocation missing');
+ok(windowSync.includes('nearest_distance <= 30'), 'WINDOW strict named-place GPS threshold missing');
 ok(windowSync.includes('media_coords'), 'WINDOW page-coordinate support missing');
-ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 15, 'WINDOW global scenic query pool too small');
-ok(Number(windowLocations.global_max_candidates) >= 800, 'WINDOW global scenic candidate pool too small');
-ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 40, 'WINDOW local scan limit must stay bounded');
+ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 35, 'WINDOW global scenic query pool too small');
+ok(Array.isArray(windowLocations.global_scenic_categories) && windowLocations.global_scenic_categories.length >= 12, 'WINDOW scenic category pool too small');
+ok(windowSync.includes('category_titles'), 'WINDOW scenic category discovery missing');
+ok(Number(windowLocations.global_max_candidates) >= 1500, 'WINDOW global scenic candidate pool too small');
+ok(Number(windowLocations.local_location_scan_limit) >= 30 && Number(windowLocations.local_location_scan_limit) <= 60, 'WINDOW local scan limit must stay bounded');
 ok(Number(windowLocations.max_file_mb) >= 15 && Number(windowLocations.max_file_mb) <= 25, 'WINDOW quality file-size ceiling out of range');
 ok(Number(windowLocations.request_interval_seconds) >= 0.8, 'WINDOW Wikimedia request pacing too aggressive');
 ok(Number(windowLocations.global_match_distance_km) <= 150, 'WINDOW global geolocation radius too broad');
