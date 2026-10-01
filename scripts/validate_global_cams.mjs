@@ -131,7 +131,7 @@ for (const token of [
   'media_coords','category_titles','scene_fingerprint','text_has_alias','_MEDIA_LAST','title_score < 3',
   'catalog_added_at','source_updated_at','fetch_popularity','existing_keep_limit',
   'rest_media_profile','technical_gate','v1_quality_score','duration_seconds',
-  'original_title','name_zh','quality_breakdown','max_catalog_gb','audit-existing'
+  'original_title','name_zh','quality_breakdown','max_catalog_gb','audit-existing','manifest-only'
 ]) {
   ok(windowSync.includes(token), 'WINDOW curator guard missing: ' + token);
 }
