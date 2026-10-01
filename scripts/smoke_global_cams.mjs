@@ -54,6 +54,8 @@ setTimeout(() => {
     version: (document.querySelector('.brand')?.textContent || '').trim(),
     windowOnly: (document.querySelector('.window-only')?.textContent || '').trim(),
     liveControls: document.querySelectorAll('#modeLive,#loadNearby,#mediaFilters').length,
+    sortTabs: document.querySelectorAll('.sort-btn').length,
+    activeSortTabs: document.querySelectorAll('.sort-btn.active').length,
     errors: window.__gcSmokeErrors || [],
     sidebar: rect('.sidebar'),
     stage: rect('.stage'),
@@ -133,9 +135,10 @@ try {
     const r = parseResult(dom);
     const desktop = width > 820;
 
-    if (!r.version.includes('V0.8')) failures.push(width + ': V0.8 label missing');
+    if (!r.version.includes('V0.9')) failures.push(width + ': V0.9 label missing');
     if (r.windowOnly !== 'WINDOW ONLY') failures.push(width + ': WINDOW ONLY badge missing');
     if (r.liveControls !== 0) failures.push(width + ': camera controls still rendered');
+    if (r.sortTabs !== 3 || r.activeSortTabs !== 1) failures.push(width + ': WINDOW sort tabs invalid');
     if (r.rows < 5) failures.push(width + ': WINDOW playlist did not render seed rows');
     if (r.errors.length) failures.push(width + ': browser errors: ' + r.errors.join(' | '));
     if (r.docWidth > r.width + 1 || r.bodyWidth > r.width + 1) failures.push(width + ': horizontal overflow');
