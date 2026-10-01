@@ -1087,6 +1087,7 @@ def seed_items(
     seen_keys: set[str],
     labels: dict,
     interval: float,
+    manifest_only: bool = False,
 ) -> tuple[list[dict], list[dict]]:
     path = Path(str(cfg.get("seed_manifest") or ""))
     if not path.exists():
@@ -1133,12 +1134,17 @@ def seed_items(
             if key in seen_keys:
                 continue
             dest = media_dir / (digest + suffix)
-            tmp = dest.with_suffix(dest.suffix + ".part")
-            if tmp.exists():
-                tmp.unlink()
-            size = download(url, tmp, max_bytes)
-            tmp.replace(dest)
             mime = "video/mp4" if suffix == ".mp4" else ("video/ogg" if suffix in {".ogv", ".ogg"} else "video/webm")
+            if manifest_only:
+                size = int(profile.get("size") or 0)
+                if size <= 0 or size > max_bytes:
+                    continue
+            else:
+                tmp = dest.with_suffix(dest.suffix + ".part")
+                if tmp.exists():
+                    tmp.unlink()
+                size = download(url, tmp, max_bytes)
+                tmp.replace(dest)
 
             loc = {
                 "city": seed.get("city") or "GPS 景观点",
@@ -1175,7 +1181,8 @@ def seed_items(
             }
             item.pop("video_url", None)
             items.append(item)
-            plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
+            if not manifest_only:
+                plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
             seen_urls.add(url)
             seen_keys.add(key)
             print(
@@ -1195,6 +1202,7 @@ def main() -> int:
     ap.add_argument("--output", default=".window-build")
     ap.add_argument("--target", type=int, default=0)
     ap.add_argument("--audit-existing", action="store_true")
+    ap.add_argument("--manifest-only", action="store_true", help="Build and validate metadata without downloading new media")
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
@@ -1237,7 +1245,7 @@ def main() -> int:
         )
         return 0
 
-    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys, labels, interval)
+    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys, labels, interval, args.manifest_only)
     items.extend(seeds)
     upload_plan.extend(seed_plan)
     seen_scenes = {
@@ -1326,7 +1334,7 @@ def main() -> int:
                 if key in seen_keys:
                     continue
                 dest = media_dir / filename
-                if not dest.exists() or dest.stat().st_size != size:
+                if not args.manifest_only and (not dest.exists() or dest.stat().st_size != size):
                     tmp = dest.with_suffix(dest.suffix + ".part")
                     if tmp.exists():
                         tmp.unlink()
@@ -1341,7 +1349,8 @@ def main() -> int:
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
-                upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
+                if not args.manifest_only:
+                    upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)
                 used_here += 1
@@ -1419,7 +1428,7 @@ def main() -> int:
                 if key in seen_keys:
                     continue
                 dest = media_dir / filename
-                if not dest.exists() or dest.stat().st_size != size:
+                if not args.manifest_only and (not dest.exists() or dest.stat().st_size != size):
                     tmp = dest.with_suffix(dest.suffix + ".part")
                     if tmp.exists():
                         tmp.unlink()
@@ -1435,7 +1444,8 @@ def main() -> int:
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
-                upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
+                if not args.manifest_only:
+                    upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
                 seen_urls.add(url)
                 seen_keys.add(key)
                 city_counts[city] += 1
