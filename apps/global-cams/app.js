@@ -13,6 +13,7 @@ const status = $('#status');
 const sourceLink = $('#openSource');
 const attribution = $('#attribution');
 const centerCoords = $('#centerCoords');
+const playlistTabs = $('#playlistTabs');
 const cfg = window.OOGLEX_GLOBAL_CAMS || {};
 const WINDOW_CDN_BASE = String(cfg.windowCdnBase || '').replace(/\/$/, '');
 
@@ -21,6 +22,11 @@ let windows = [];
 let filtered = [];
 let selectedId = '';
 let catalogSource = 'fallback';
+let activeSort = 'featured';
+let popularity = new Map();
+let popularityLoaded = false;
+let popularityPromise = null;
+const reportedWindowPlays = new Set();
 
 const globe = Globe()(globeEl)
   .width(stage.clientWidth)
@@ -67,6 +73,7 @@ async function loadWindows() {
       windows = normalized;
       catalogSource = candidate.source;
       applySearch();
+      void loadPopularity();
       setStatus(
         'WINDOW 窗口库已加载 · ' + windows.length + ' 个窗口' +
         (candidate.source === 'cdn' ? ' · Ooglex R2/CDN' : ' · 本地备用清单'),
@@ -86,13 +93,91 @@ async function loadWindows() {
 
 function applySearch() {
   const q = String(search.value || '').trim().toLowerCase();
-  filtered = !q ? windows.slice() : windows.filter(d => {
+  const rows = !q ? windows.slice() : windows.filter(d => {
     const haystack = [
       d.name, d.city, d.country, d.category, d.license, d.author
     ].map(v => String(v || '').toLowerCase()).join(' ');
     return haystack.includes(q);
   });
+  filtered = sortWindows(rows);
   render();
+}
+
+function sortWindows(rows) {
+  const out = rows.slice();
+  if (activeSort === 'latest') {
+    out.sort((a, b) =>
+      catalogTimestamp(b) - catalogTimestamp(a) ||
+      Number(b.quality_score || 0) - Number(a.quality_score || 0) ||
+      String(a.name || '').localeCompare(String(b.name || ''))
+    );
+  } else if (activeSort === 'popular') {
+    out.sort((a, b) => {
+      const pa = popularityFor(a);
+      const pb = popularityFor(b);
+      return pb.plays - pa.plays ||
+        pb.plays30d - pa.plays30d ||
+        Number(b.quality_score || 0) - Number(a.quality_score || 0) ||
+        String(a.name || '').localeCompare(String(b.name || ''));
+    });
+  }
+  return out;
+}
+
+async function loadPopularity() {
+  if (popularityLoaded || popularityPromise || !WINDOW_CDN_BASE) return popularityPromise;
+  popularityPromise = (async () => {
+    try {
+      const r = await fetch(WINDOW_CDN_BASE + '/stats/popular?days=7&limit=500', {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' }
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      const rows = Array.isArray(data && data.items) ? data.items : [];
+      popularity = new Map(rows.map(x => [String(x.id || ''), {
+        plays: Number(x.plays || 0),
+        plays30d: Number(x.plays30d || 0),
+        total: Number(x.total || 0),
+        lastPlayedAt: x.lastPlayedAt || null
+      }]));
+      popularityLoaded = true;
+      if (activeSort === 'popular') applySearch();
+    } catch (err) {
+      popularityLoaded = false;
+      if (activeSort === 'popular') {
+        setStatus('热门统计暂不可用，当前仍可正常浏览精选 WINDOW。', 'warn');
+      }
+    } finally {
+      popularityPromise = null;
+    }
+  })();
+  return popularityPromise;
+}
+
+function popularityFor(d) {
+  return popularity.get(String(d && d.id || '')) || { plays: 0, plays30d: 0, total: 0, lastPlayedAt: null };
+}
+
+function catalogTimestamp(d) {
+  for (const value of [d && d.catalog_added_at, d && d.source_updated_at, d && d.source_published_at]) {
+    const ts = Date.parse(String(value || ''));
+    if (Number.isFinite(ts)) return ts;
+  }
+  return 0;
+}
+
+function listSubLabel(d) {
+  const base = itemSubLabel(d);
+  if (activeSort === 'popular') {
+    const p = popularityFor(d);
+    return (popularityLoaded ? '🔥 7天 ' + p.plays + ' 次 · ' : '') + base;
+  }
+  if (activeSort === 'latest') {
+    const ts = catalogTimestamp(d);
+    return (ts ? '新加入 ' + new Date(ts).toISOString().slice(0, 10) + ' · ' : '较早收录 · ') + base;
+  }
+  return base;
 }
 
 function render() {
@@ -128,7 +213,7 @@ function render() {
     name.textContent = d.name || '沉浸窗口';
     const sub = document.createElement('span');
     sub.className = 'window-sub';
-    sub.textContent = itemSubLabel(d);
+    sub.textContent = listSubLabel(d);
     main.append(name, sub);
     row.append(dot, main);
     row.addEventListener('click', () => showWindow(d, { focus: true }));
@@ -163,6 +248,7 @@ function showWindow(d, options = {}) {
   video.addEventListener('error', () => {
     setStatus('该 WINDOW 暂时无法播放，可查看原始素材来源。', 'warn');
   });
+  armPlayReport(video, d);
   viewer.appendChild(video);
 
   const source = safeHttpUrl(d.source_url);
@@ -193,6 +279,42 @@ function showWindow(d, options = {}) {
     const row = playlist.querySelector('[data-key="' + cssEscape(selectedId) + '"]');
     if (row) row.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   }
+}
+
+function armPlayReport(video, d) {
+  let fired = false;
+  const check = () => {
+    if (fired || Number(video.currentTime || 0) < 8) return;
+    fired = true;
+    void reportPlay(d);
+  };
+  video.addEventListener('timeupdate', check);
+}
+
+async function reportPlay(d) {
+  const id = String(d && d.id || '');
+  if (!WINDOW_CDN_BASE || catalogSource !== 'cdn' || !/^r2-(?:seed-)?[a-z0-9]{8,32}$/i.test(id)) return;
+  const day = new Date().toISOString().slice(0, 10);
+  const memoryKey = id + '|' + day;
+  if (reportedWindowPlays.has(memoryKey)) return;
+  reportedWindowPlays.add(memoryKey);
+
+  const storageKey = 'ooglex-window-play-v1:' + memoryKey;
+  try {
+    if (localStorage.getItem(storageKey)) return;
+    localStorage.setItem(storageKey, '1');
+  } catch {}
+
+  try {
+    const r = await fetch(WINDOW_CDN_BASE + '/stats/play', {
+      method: 'POST',
+      mode: 'cors',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    if (r.ok) void loadPopularity();
+  } catch {}
 }
 
 function randomWindow() {
@@ -318,6 +440,14 @@ function cssEscape(value) {
 }
 
 search.addEventListener('input', applySearch);
+playlistTabs.addEventListener('click', event => {
+  const btn = event.target.closest('.sort-btn');
+  if (!btn) return;
+  activeSort = btn.dataset.sort || 'featured';
+  playlistTabs.querySelectorAll('.sort-btn').forEach(x => x.classList.toggle('active', x === btn));
+  if (activeSort === 'popular') void loadPopularity();
+  applySearch();
+});
 $('#randomWindow').addEventListener('click', randomWindow);
 $('#randomTop').addEventListener('click', randomWindow);
 $('#resetView').addEventListener('click', focusTokyo);
