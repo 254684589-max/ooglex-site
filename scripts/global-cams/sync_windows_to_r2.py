@@ -65,6 +65,8 @@ HARD_REJECT = {
     "aircraft", "airplane", "plane spotting", "flight",
     "tutorial", "lecture", "animation", "gameplay", "screen recording",
     "trailer", "short film", "film trailer", "movie", "official video",
+    "motorcycle", "commuter", "rush hour", "venice beach",
+    "cira", "satellite", "weather satellite", "sora",
 }
 
 SOFT_REJECT = {
@@ -276,6 +278,29 @@ def geo_ok(info: dict, loc: dict, default_radius_km: float) -> tuple[bool, float
     distance = haversine_km(float(loc["lat"]), float(loc["lng"]), lat, lng)
     radius = float(loc.get("radius_km") or default_radius_km)
     return distance <= radius, distance
+
+
+def location_relevant(info: dict, loc: dict, distance: float | None) -> bool:
+    """Reject search matches that are not actually about the configured place.
+
+    GPS is authoritative when available. Without GPS, require the city/place or
+    one of its aliases to appear in the file title/description. This prevents
+    matches such as Washington-state rivers being assigned to Seattle.
+    """
+    ext = info.get("extmetadata") or {}
+    text = norm(str(info.get("title") or "") + " " + ext_value(ext, "ImageDescription"))
+
+    for bad in loc.get("reject_terms", []):
+        if norm(str(bad)) in text:
+            return False
+
+    if distance is not None:
+        return True
+
+    aliases = [str(loc.get("city") or "")]
+    aliases.extend(str(x) for x in loc.get("search_aliases", []) if x)
+    aliases = [norm(x) for x in aliases if x]
+    return any(alias and alias in text for alias in aliases)
 
 
 def quality_score(info: dict, search_hint: str = "") -> tuple[int, list[str]]:
@@ -494,6 +519,7 @@ def main() -> int:
     city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
     rejected_geo = 0
+    rejected_location = 0
     rejected_size = 0
 
     for loc in cfg.get("locations", []):
@@ -535,6 +561,9 @@ def main() -> int:
                 within, distance = geo_ok(info, loc, default_radius_km)
                 if not within:
                     rejected_geo += 1
+                    continue
+                if not location_relevant(info, loc, distance):
+                    rejected_location += 1
                     continue
 
                 ext = media_ext(info)
@@ -590,7 +619,7 @@ def main() -> int:
     )
     print(
         f"new uploads={len(upload_plan)}; rejected quality={rejected_quality}, "
-        f"geo={rejected_geo}, size={rejected_size}"
+        f"geo={rejected_geo}, location={rejected_location}, size={rejected_size}"
     )
     return 0
 
