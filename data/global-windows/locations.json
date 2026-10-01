@@ -3345,7 +3345,7 @@
     }
   ],
   "existing_manifest_url": "https://windows-cdn.ooglex.com/manifest.json",
-  "request_interval_seconds": 0.8,
+  "request_interval_seconds": 1,
   "global_scenic_queries": [
     "snow",
     "snowfall",
@@ -3371,7 +3371,7 @@
   ],
   "global_query_limit": 50,
   "global_max_candidates": 900,
-  "global_match_distance_km": 350,
+  "global_match_distance_km": 120,
   "global_max_per_location": 6,
   "local_location_scan_limit": 36
 }
