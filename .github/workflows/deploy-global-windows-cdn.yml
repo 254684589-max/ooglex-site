@@ -189,7 +189,7 @@ jobs:
           count=0
           while IFS= read -r key; do
             [ -n "$key" ] || continue
-            npx --yes wrangler@4 r2 object delete "$BUCKET/$key" --remote
+            npx --yes wrangler@4 r2 object delete "$BUCKET/$key" --remote --force
             count=$((count+1))
           done < /tmp/window-stale-keys.txt
           echo "Removed $count rotated-out WINDOW objects."
