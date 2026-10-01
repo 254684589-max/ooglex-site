@@ -32,10 +32,27 @@ jobs:
           python -m py_compile scripts/global-cams/sync_windows_to_r2.py
           node scripts/validate_global_cams.mjs
 
+      - name: Build global-first validation config
+        run: |
+          python - <<'PY'
+          import json
+          src="data/global-windows/locations.json"
+          dst="/tmp/window-v10-transcodes.json"
+          cfg=json.load(open(src,encoding="utf-8"))
+          cfg["local_location_scan_limit"]=0
+          cfg["global_max_per_location"]=8
+          cfg["global_generic_gps_cap"]=12
+          json.dump(cfg,open(dst,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
+          print("validation local scan:",cfg["local_location_scan_limit"])
+          PY
+
       - name: Build strict 100 metadata catalog
         run: |
           set -euo pipefail
-          python scripts/global-cams/sync_windows_to_r2.py --target 100 --manifest-only
+          python scripts/global-cams/sync_windows_to_r2.py \
+            --config /tmp/window-v10-transcodes.json \
+            --target 100 \
+            --manifest-only
 
       - name: Verify V1 contract
         run: |
