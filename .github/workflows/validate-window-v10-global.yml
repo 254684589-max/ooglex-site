@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-window-v10-global
+  group: validate-window-v10-global-v2
   cancel-in-progress: true
 
 jobs:
