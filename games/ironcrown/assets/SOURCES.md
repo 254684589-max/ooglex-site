@@ -23,6 +23,26 @@
 | Snow 03 | `godot/assets/textures/snow_03/` | Rob Tuytel | https://polyhaven.com/a/snow_03 | 2026-09-27 | 1.4 路边雪泥、屋脊积雪；2 米见方，平铺 3 米；导入缩到 512 |
 | Bark Brown 02 | `godot/assets/textures/bark_brown_02/` | Rob Tuytel | https://polyhaven.com/a/bark_brown_02 | 2026-09-27 | 1.4 小广场上的枯树；1 米见方，平铺 1.2 米；导入缩到 512 |
 
+## 候选素材（D4 = B，尚未下载、尚未入库）
+
+2026-10-02 读取 quaternius.com 各包页面（页面标注 License CC0，并写明「个人、教育、商业项目均可使用」）。**下载只提供 itch.io 入口，本环境访问不了 itch.io，所以一个都还没下**；下载到、核对许可后再移到上面的正式表里。
+
+| 包 | 内容 | 许可（页面标注） | 格式 | 原始链接 | 下载入口 | 状态 |
+|---|---|---|---|---|---|---|
+| Universal Base Characters（2025-08） | 6 个人体底模（超级英雄 / 常规 / 少年体型，男女），平均约 1.3 万三角面，20 种发型，统一人形骨架；页面写明与 Universal Animation Library 兼容、Godot 4.3 测试过 | CC0 | FBX、glTF（Source 版另有 blend） | https://quaternius.com/packs/universalbasecharacters.html | https://quaternius.itch.io/universal-base-characters | 待下载（itch.io 被拦） |
+| Modular Character Outfits – Fantasy（2025-11） | 12 套奇幻服装、62 个模块部件，每套 3 种颜色贴图；与 Universal Base Characters 兼容，统一人形骨架 | CC0 | FBX、glTF | https://quaternius.com/packs/modularcharacteroutfitsfantasy.html | https://quaternius.itch.io/modular-character-outfits-fantasy | 待下载（itch.io 被拦） |
+| Universal Animation Library（2025-03） | 120+ 动作：八方向移动、慢跑、冲刺、蹲伏、爬行、游泳、坐、死亡、战斗、表情等；任意版本 Godot 可用 | CC0 | FBX、GLB | https://quaternius.com/packs/universalanimationlibrary.html | https://quaternius.itch.io/universal-animation-library | 待下载（itch.io 被拦） |
+| Universal Animation Library 2（2026-01） | 130+ 动作：近战与持械连击（3 段、4 段连击，拆成单击与收招，另有整套连击）、跑酷、农活、钓鱼、僵尸移动等 | CC0 | FBX、GLB | https://quaternius.com/packs/universalanimationlibrary2.html | https://quaternius.itch.io/universal-animation-library-2 | 待下载（itch.io 被拦） |
+
+四个包用同一套「通用人形骨架」，动作不用改骨骼就能套在任何一个底模和服装上。
+
+## 看过但不用
+
+| 包 | 为什么不用 |
+|---|---|
+| Quaternius RPG Characters（6 个角色，Google Drive 能下） | 粗描边的卡通风，与 `ART.md`「写实倾向」冲突 |
+| Quaternius Ultimate Modular Women（10 个，Google Drive 能下） | 现代服装、纯色平涂的低多边形，没有中世纪服装 |
+
 ## 不用的来源
 
 - 所有者 2026-09-27 发来的参考截图（疑似其他商业游戏画面）：只用来理解氛围，不进仓库、不作生成输入（`design/ART.md` 第一节）。

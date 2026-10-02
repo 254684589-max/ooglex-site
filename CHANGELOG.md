@@ -136,6 +136,12 @@
 
 ### 文档
 
+- 2026-10-02，**《铁冠之争》阶段 A：人物（D4 = B）素材调研与拆分**（`docs/IRONCROWN_ROADMAP.md`、`games/ironcrown/assets/SOURCES.md`、`games/ironcrown/design/ART.md`）。**未部署**（只改文档，不涉及游戏代码与 `play/`）。
+  - 选定 Quaternius 的 Universal 系列作为 CC0 人物素材：Universal Base Characters（人物底模）、Modular Character Outfits – Fantasy（服装）、Universal Animation Library 1 / 2（动作，含近战连击）；许可（页面标注 CC0）、格式、来源链接记入素材台账的「候选」表，尚未下载、尚未入库。
+  - 实测 quaternius.com 已能访问，但新包的下载入口只有 itch.io，本环境打不开，所以「人物（一）」还没有开始导入；台账里写明了需要所有者放行的域名，或改为所有者上传文件。
+  - 路线图新增「阶段 A」步骤表：A.1 人物（一）（主角与动作）、A.2 人物（二）（NPC 与敌人换装）、A.3 第一人称武器与手臂、声音。
+  - 验证：构建不适用（只改文档）；`git diff --check` 通过。
+
 - 2026-09-27，**新游戏《铁冠之争》THE IRON CROWN 立项（阶段 0 设计文档）**。所有者要求以《权力的游戏》为题做第一人称角色扮演游戏，定名《铁冠之争》，优先于《余烬陷落》开发。**已合并**（纯文档，随 1.2 一起合并到 main）。
   - 设计文档 `games/ironcrown/design/`：世界观 `WORLD.md`（原创的诺德瑞王国、铁冠与「长眠」、五大家族，附原创性自查表：不用原作任何专有名词、不复刻标志性情节与徽记）、主线 `STORY.md`（序章 + 五章 + 三结局；序章「霜渡镇之夜」写到任务步骤，作为垂直切片）、玩法 `GDD.md`、美术 `ART.md`（所有者参考截图只用于理解氛围）、技术 `TECH.md`（复用《余烬陷落》的 Godot 4.7 网页管线）。
   - 路线图与台账 `docs/IRONCROWN_ROADMAP.md`（待确认的决定 D1–D5）、开发 skill `.claude/skills/ironcrown/SKILL.md`、`games/ironcrown/README.md`。
