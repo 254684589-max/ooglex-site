@@ -104,7 +104,7 @@ try{ if (localStorage.getItem('ooglex_tv_gate') === '1') document.documentElemen
     display:flex; align-items:center; justify-content:center; gap:8px; flex:0 0 auto; color:var(--dim); }
   #player .phandle .grab{ width:40px; height:4px; border-radius:2px; background:rgba(150,170,220,0.45); }
   #player .phandle .chev{ font-size:0.7rem; }
-  #player.min #stage, #player.min .plabel, #player.min .plist, #player.min .ctrl{ display:none; }
+  #player.min #stage, #player.min .plabel, #player.min .plist, #player.min .ctrl, #player.min .vol-row{ display:none; }
   #player.min .ptabs{ margin-top:10px; }
 
   /* 视频舞台 */
@@ -127,16 +127,19 @@ try{ if (localStorage.getItem('ooglex_tv_gate') === '1') document.documentElemen
   #player .loc{ color:var(--dim); font-size:0.82rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #player .state{ font-size:0.78rem; margin-top:2px; }
   #player .state.ok{ color:var(--cyan); } #player .state.err{ color:#ff8a7a; } #player .state.load{ color:var(--dim); }
-  #player .ctrl{ display:flex; align-items:center; gap:10px; margin-top:14px; flex:0 0 auto; }
+  #player .ctrl{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:14px; flex:0 0 auto; }
   #player button{ border:1px solid var(--line); background:rgba(255,255,255,0.05); color:var(--ink);
-    border-radius:999px; padding:8px 14px; font-family:inherit; font-size:0.9rem; cursor:pointer;
-    white-space:nowrap; flex:0 0 auto; }
+    border-radius:999px; font-family:inherit; cursor:pointer; white-space:nowrap; flex:0 0 auto; touch-action:manipulation; }
   #player button:hover{ border-color:var(--cyan); }
-  #player button.play{ background:linear-gradient(135deg,var(--cyan),#2f95d1); color:#04121b; border:none; font-weight:700; }
-  #player button.skip{ padding:8px 12px; font-size:0.82rem; }
-  #player button.icon{ padding:8px 12px; }
-  #player button.icon.on{ border-color:var(--cyan); }
-  #player input[type=range]{ flex:1; min-width:40px; accent-color:var(--cyan); }
+  #player .ctrl button{ width:58px; height:58px; padding:0; display:grid; place-items:center; font-size:1.15rem;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12); }
+  #player .ctrl button.play{ width:74px; height:74px; background:linear-gradient(135deg,var(--cyan),#2f95d1);
+    color:#04121b; border:none; font-weight:800; font-size:1.35rem; }
+  #player .ctrl button.icon.on{ border-color:var(--cyan); }
+  #player .vol-row{ display:flex; align-items:center; gap:9px; margin-top:8px; padding:0 4px; color:var(--dim);
+    font-size:0.78rem; flex:0 0 auto; }
+  #player .vol-row input[type=range]{ flex:1; min-width:40px; accent-color:var(--cyan); }
+  #player .ptab, #player .favbtn, #player .pr-star, #player .phandle{ padding-left:inherit; padding-right:inherit; }
   #player .ptabs{ display:flex; gap:8px; margin-top:14px; flex:0 0 auto; }
   #player .ptab{ flex:1; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--dim);
     border-radius:10px; padding:7px 6px; font-family:inherit; font-size:0.82rem; cursor:pointer; }
@@ -156,11 +159,30 @@ try{ if (localStorage.getItem('ooglex_tv_gate') === '1') document.documentElemen
   #player .plist::-webkit-scrollbar{ width:6px; }
   #player .plist::-webkit-scrollbar-thumb{ background:rgba(130,150,220,0.3); border-radius:3px; }
 
-  /* 底部工具条 */
-  .tools{ position:fixed; right:18px; bottom:18px; z-index:6; display:flex; flex-direction:column; gap:10px; }
-  .tools button{ width:46px; height:46px; border-radius:50%; border:1px solid var(--line);
-    background:var(--panel); backdrop-filter:blur(12px); color:var(--ink); font-size:1.1rem; cursor:pointer; }
-  .tools button:hover{ border-color:var(--cyan); }
+  /* 右侧悬浮工具栏：全屏 / 分享 / 随机 / 首页 / 刷新 */
+  .tools{ position:fixed; right:18px; bottom:18px; z-index:6; display:flex; flex-direction:column; gap:12px; }
+  .tools button{ width:62px; height:62px; border-radius:50%; border:1px solid var(--line);
+    background:var(--panel); backdrop-filter:blur(14px); color:var(--ink); font-size:1.25rem; cursor:pointer;
+    display:grid; place-items:center; padding:0; box-shadow:0 8px 24px rgba(0,0,0,0.18); touch-action:manipulation; }
+  .tools button:hover{ border-color:var(--cyan); transform:translateY(-1px); }
+  @media (max-width:640px){
+    #player{ left:10px; bottom:10px; width:calc(100vw - 20px); padding:9px 12px 14px; border-radius:20px;
+      max-height:calc(100dvh - 84px); }
+    #player .row1{ gap:10px; margin-top:10px; }
+    #player .ctrl{ gap:6px; margin-top:12px; }
+    #player .ctrl button{ width:50px; height:50px; font-size:1.02rem; }
+    #player .ctrl button.play{ width:62px; height:62px; font-size:1.18rem; }
+    #player .vol-row{ margin-top:7px; }
+    #player .plist{ max-height:min(28dvh,220px); }
+    .tools{ right:10px; bottom:12px; gap:9px; }
+    .tools button{ width:56px; height:56px; font-size:1.12rem; }
+  }
+  @media (max-width:370px){
+    #player .ctrl{ gap:4px; }
+    #player .ctrl button{ width:46px; height:46px; }
+    #player .ctrl button.play{ width:56px; height:56px; }
+    .tools button{ width:52px; height:52px; }
+  }
 
   /* 中央照准圆圈 */
   #reticle{
@@ -402,12 +424,16 @@ html[data-theme="ft"] #gate #gerr, html[data-theme="paper"] #gate #gerr { color:
     <button class="favbtn" id="pStar" title="收藏当前频道" aria-label="收藏当前频道">☆</button>
   </div>
   <div class="ctrl">
-    <button class="skip" id="pPrev" title="上一台" aria-label="上一台">⏮</button>
-    <button class="play" id="pToggle">▶ 播放</button>
-    <button class="skip" id="pNext" title="下一台" aria-label="下一台">⏭</button>
-    <button class="icon on" id="pMute" title="静音">🔊</button>
-    <button class="icon" id="pFull" title="全屏观看">⛶</button>
+    <button id="pPrev" title="上一台" aria-label="上一台">⏮</button>
+    <button class="play" id="pToggle" title="播放" aria-label="播放">▶</button>
+    <button id="pNext" title="下一台" aria-label="下一台">⏭</button>
+    <button class="icon" id="pSource" title="切换信号源" aria-label="切换信号源">📡</button>
+    <button class="icon" id="pFull" title="全屏观看" aria-label="全屏观看">⛶</button>
+  </div>
+  <div class="vol-row" aria-label="音量">
+    <span aria-hidden="true">🔈</span>
     <input type="range" id="pVol" min="0" max="100" value="100" title="音量">
+    <span aria-hidden="true">🔊</span>
   </div>
   <div class="ptabs">
     <button class="ptab on" id="tabRegion">本区 <span id="cntRegion">0</span></button>
@@ -417,12 +443,12 @@ html[data-theme="ft"] #gate #gerr, html[data-theme="paper"] #gate #gerr { color:
   <div class="plist" id="plist"></div>
 </div>
 
-<div class="tools">
-  <button id="tFull" title="全屏沉浸模式：隐藏浏览器地址栏">⛶</button>
-  <button id="tInstall" title="安装到手机">📲</button>
-  <button id="tRandom" title="随机一台">🎲</button>
-  <button id="tHome" title="回到中国上空">🏠</button>
-  <button id="tRotate" title="开始/停止自转">↻</button>
+<div class="tools" aria-label="快捷工具">
+  <button id="tFull" title="全屏沉浸模式" aria-label="全屏沉浸模式">⛶</button>
+  <button id="tShare" title="分享环球TV" aria-label="分享环球TV">📲</button>
+  <button id="tRandom" title="随机切换频道" aria-label="随机切换频道">🎲</button>
+  <button id="tHome" title="回首页" aria-label="回首页">🏠</button>
+  <button id="tRefresh" title="刷新页面" aria-label="刷新页面">↻</button>
 </div>
 
 <div id="installModal">
@@ -467,7 +493,7 @@ html[data-theme="ft"] #gate #gerr, html[data-theme="paper"] #gate #gerr { color:
       🎯 <b>拖动地球</b>，把想看的地方转进<b>中间的圆圈</b>，松手即自动观看<br>
       🔵 也可直接<b>点击任意蓝点</b>观看该台<br>
       🔍 顶部<b>搜索</b>城市 / 国家 / 频道名<br>
-      🎲 随机一台 · 🏠 回到中国上空 · ↻ 自转
+      ⏮ 上一台 · ⏭ 下一台 · 🎲 随机切换 · 🏠 回首页
     </div>
     <p style="font-size:0.8rem;margin-top:14px;">说明：仅收录 HTTPS 直连的公开直播源，华语区及多数亚洲频道可直接观看。<b style="color:var(--cyan)">连不上的台会自动跳到附近可用频道</b>；部分欧美频道服务器在墙外，国内需代理才行，属正常现象。</p>
     <button class="go" id="introGo">进入 · 开始观看</button>
@@ -483,7 +509,7 @@ html[data-theme="ft"] #gate #gerr, html[data-theme="paper"] #gate #gerr { color:
 
 <script src="vendor/globe.gl.min.js"></script>
 <script src="vendor/hls.min.js"></script>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 <script>
 /* PWA：注册 Service Worker + 处理"安装到手机" */
 (function(){
