@@ -13,6 +13,9 @@ function markerSummary(html, app) {
     viewerControls: html.includes('viewer-controls'),
     appMarkerSync: app.includes('getScreenCoords'),
     appViewerControls: app.includes('buildViewerControls'),
+    appExitControl: app.includes("['close', '退出放大'"),
+    appKeyboardNav: app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"),
+    appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchend'"),
     oldTopListener: app.includes("$('#randomTop')")
   };
 }
@@ -25,6 +28,9 @@ function valid(summary) {
     summary.viewerControls &&
     summary.appMarkerSync &&
     summary.appViewerControls &&
+    summary.appExitControl &&
+    summary.appKeyboardNav &&
+    summary.appSwipeNav &&
     !summary.oldTopListener;
 }
 
