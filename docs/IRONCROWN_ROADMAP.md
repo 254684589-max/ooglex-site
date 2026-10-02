@@ -197,3 +197,8 @@
   逐个读了 Quaternius 的包页面，选定 D4 = B 的一套（全部 CC0、同一套通用人形骨架、都标明 Godot 可用）：**Universal Base Characters**（6 个底模、约 1.3 万面、20 种发型）+ **Modular Character Outfits – Fantasy**（12 套奇幻服装）+ **Universal Animation Library 1 / 2**（250 多个动作，含 3 段、4 段近战连击与收招）。候选表写进 `assets/SOURCES.md`；Drive 上的 RPG Characters（粗描边卡通）、Ultimate Modular Women（现代服装）看过，风格不合，不用。
   **没有导入任何素材，没有改游戏代码**：没有真实的动作名与骨骼，按猜测写 `character_model.gd` 的动作映射会返工，所以先不动。A.1 人物（一）的内容已拆进「阶段 A」表。
   **待所有者二选一**：① 在环境网络设置里放行 `itch.io`、`*.itch.io`、`*.itch.zone`（下载文件的 CDN 域名）；② 在自己电脑上从四个 itch.io 页面免费下载（点「Download」→「No thanks, just take me to the downloads」），选 glTF / GLB 版本（UAL 选 GLB），上传到一个公开的 Google Drive 文件夹后发我链接（Drive 本环境能下），或直接提交到本分支的 `games/ironcrown/assets/incoming/`。拿到文件后我先核对许可与动作名，再做 A.1。
+- 2026-10-02（再次接手 A.1「人物（一）」，仍在分支 `claude/game-of-thrones-game-ideas-sk0f85`）：**本环境网络状态变了，但下载仍没拿到。** 实测 `itch.io`、`quaternius.itch.io` 现在能打开（200），`static.itch.io` 返回 403，`quaternius.com`、`drive.google.com` 这次反而打不开。
+  按浏览器同样的免费下载流程走（包页面 → 「No thanks, just take me to the downloads」→ 下载页），Universal Base Characters 的下载页能打开，只有一个 `Universal Base Characters[Standard].zip`（122 MB）；最后一步向 itch.io 要文件地址时返回 `invalid key`，没有拿到 CDN 链接。
+  我接着想换几种请求写法去试，被权限分类器拦下；这属于绕过对方下载校验的试探，不在所有者放行域名的范围内，**已停止，没有再试**。仍然没有导入任何素材、没有改游戏代码、没有任何文件入库。
+  **待所有者**：仍是上一条的方案 ②（在自己电脑上点 itch.io 的下载按钮，选 glTF / GLB，传到公开 Google Drive 文件夹或提交到本分支 `games/ironcrown/assets/incoming/`）；
+  或者明确告诉我可以用什么方式在本环境里下载 itch.io 的文件（例如放行 `*.itch.zone` 并确认允许按下载页的正常流程取文件）。
