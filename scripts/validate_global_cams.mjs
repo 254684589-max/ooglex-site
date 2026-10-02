@@ -64,6 +64,10 @@ ok(app.includes('video.playsInline = true'), 'WINDOW mobile inline playback miss
 ok(app.includes('randomWindow'), 'WINDOW random picker missing');
 ok(app.includes('stepWindow(-1)') && app.includes('stepWindow(1)'), 'fullscreen previous/next navigation missing');
 ok(app.includes('toggleCurrentVideo'), 'fullscreen play/pause control missing');
+ok(app.includes("['close', '退出放大'"), 'fullscreen exit control missing');
+ok(app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"), 'fullscreen keyboard navigation missing');
+ok(app.includes("event.key === 'r'") || app.includes("event.key === 'R'"), 'fullscreen random keyboard shortcut missing');
+ok(app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchend'"), 'fullscreen swipe navigation missing');
 ok(app.includes('buildViewerControls'), 'fullscreen control builder missing');
 ok(app.includes('getScreenCoords'), 'selected marker screen-coordinate tracking missing');
 ok(app.includes('angularDistanceDeg'), 'selected marker visibility guard missing');
