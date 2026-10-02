@@ -16,6 +16,7 @@ const ACTIONS := {
 	"character": [KEY_K],         # 角色：属性、技能、声望（2.7）
 	"quick_save": [KEY_F8],       # 快速存档（2.8；不用 F5：浏览器里 F5 是刷新页面）
 	"quick_load": [KEY_F9],       # 快速读档（2.8）
+	"camera_toggle": [KEY_V],     # 第一 / 第三人称切换（2.9）
 	"sheathe": [KEY_R],           # 拔剑 / 收剑（2.4）
 	"attack_key": [KEY_F],        # 攻击的键盘键（2.4；主要是鼠标左键，在 main 里处理）
 	"block_key": [KEY_Q],         # 格挡的键盘键（2.5；主要是鼠标右键按住）

@@ -11,8 +11,8 @@ extends Node3D
 
 const FOG_COLOR := Color("22344a")              # 夜空与远雾（ART.md 第四节 #1C2A3A 提亮一点，远处是「雾」而不是「黑」）
 const AMBIENT_COLOR := Color("6f8faf")          # 月光 / 环境光
-const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E 交互 · 左键 / F 出剑（按住是重击）· R 收剑 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
-const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 点「攻」出剑（按住是重击）· 对准东西时点交互按钮"
+const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E 交互 · 左键 / F 出剑（按住是重击）· R 收剑 · V 切换视角 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
+const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 点「攻」出剑（按住是重击）· 「视角」切换第一 / 第三人称 · 对准东西时点交互按钮"
 const HINT_ARENA_DESKTOP := "训练场：左键 / F 出剑（按住重击）· 右键 / Q 按住格挡 · 在对方劈下前一瞬间举剑 = 完美格挡（对方失衡）· WASD 移动 · Esc 暂停"
 const HINT_ARENA_TOUCH := "训练场：点「攻」出剑（按住重击）· 按住「挡」格挡 · 在对方劈下前一瞬间按「挡」= 完美格挡（对方失衡）"
 const HINT_SECONDS := 8.0
@@ -125,6 +125,8 @@ func _ready() -> void:
 		print("IC_ATTACK_SCREEN x=%d y=%d" % [ac.x, ac.y])
 		var gc: Vector2 = touch.button_centers().guard * get_tree().root.content_scale_factor
 		print("IC_GUARD_SCREEN x=%d y=%d" % [gc.x, gc.y])
+		var vc: Vector2 = touch.button_centers().camera * get_tree().root.content_scale_factor
+		print("IC_CAMERA_SCREEN x=%d y=%d" % [vc.x, vc.y])
 
 
 func _build_environment() -> void:
@@ -283,6 +285,7 @@ func _build_ui() -> void:
 	player.interactor.interacted.connect(_on_interacted)
 	touch = TouchControls.new()
 	touch.player = player
+	touch.camera_pressed.connect(toggle_camera)
 	layer.add_child(touch)
 	perf_overlay = PerfOverlay.new()
 	perf_overlay.main = self
@@ -344,6 +347,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("inventory"):
 		open_inventory()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("camera_toggle"):
+		toggle_camera()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("quick_save"):
@@ -449,6 +456,13 @@ func _retry() -> void:
 		return
 	GameState.new_game()
 	_reload()
+
+
+## 第一 / 第三人称切换（2.9，D6）：设置里记住，下次打开还是这个视角
+func toggle_camera() -> void:
+	Settings.set_value("third_person", not Settings.third_person)
+	hud.toast("视角：%s" % ("第三人称（越肩）" if Settings.third_person else "第一人称"), 1.5)
+	print("IC_CAMERA mode=%s" % ("third" if Settings.third_person else "first"))
 
 
 # ---------------- 存档（2.8） ----------------

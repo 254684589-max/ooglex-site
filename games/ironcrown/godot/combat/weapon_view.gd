@@ -23,6 +23,7 @@ var pose_dir := Vector3.UP
 var pose_face := Vector3.RIGHT
 var kick := Vector3.ZERO          # 命中时的小回弹（位置偏移，逐帧衰减）
 var model := ""
+var model_hidden := false
 var mesh_node: MeshInstance3D
 
 
@@ -76,6 +77,14 @@ func set_model(m: String) -> void:
 	mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mesh_node.name = "Model"
 	add_child(mesh_node)
+	mesh_node.visible = not model_hidden
+
+
+## 第三人称时藏起第一人称的武器（剑由 PlayerAvatar 拿着）
+func hide_model(on: bool) -> void:
+	model_hidden = on
+	if mesh_node:
+		mesh_node.visible = not on
 
 
 ## 直接摆到某个姿势

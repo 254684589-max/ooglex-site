@@ -20,10 +20,17 @@ const PITCH_LIMIT := 85.0
 const TOUCH_RUN_THRESHOLD := 0.95   # 摇杆推到边缘 = 跑
 const BOB_AMPLITUDE := 0.035
 const GUARD_SPEED := 1.7          # 举剑格挡、失衡时只能慢慢挪（2.5）
+## 第三人称越肩镜头（2.9，D6）：相机在头部后方 TP_DIST 米、偏右 TP_SIDE 米、高 TP_UP 米；身后有墙就往前收
+const TP_DIST := 2.6
+const TP_SIDE := 0.55
+const TP_UP := 0.25
+const TP_MARGIN := 0.25
 
 var head: Node3D
 var interactor: Interactor
 var melee: Melee
+var avatar: PlayerAvatar
+var third_person := false
 var camera: Camera3D
 var shape: CollisionShape3D
 var capsule: CapsuleShape3D
@@ -65,6 +72,10 @@ func _init() -> void:
 	melee.name = "Melee"
 	melee.player = self
 	add_child(melee)
+	avatar = PlayerAvatar.new()
+	avatar.name = "Avatar"
+	avatar.player = self
+	add_child(avatar)
 
 
 func _ready() -> void:
@@ -75,6 +86,27 @@ func _ready() -> void:
 
 func _apply_settings() -> void:
 	camera.fov = Settings.fov
+	if Settings.third_person != third_person:
+		set_third_person(Settings.third_person)
+
+
+## 切换第一 / 第三人称（2.9）：第三人称显示占位人形、藏起第一人称的武器；身体跟着镜头的水平朝向转（越肩视角）
+func set_third_person(on: bool) -> void:
+	third_person = on
+	avatar.visible = on
+	if melee and melee.view:
+		melee.view.hide_model(on)
+	if not on:
+		camera.position = Vector3.ZERO
+
+
+## 瞄准 / 交互 / 命中判定的起点：总是眼睛的位置（第三人称时相机在身后，不能从相机算）
+func aim_origin() -> Vector3:
+	return head.global_position
+
+
+func aim_forward() -> Vector3:
+	return -camera.global_transform.basis.z
 
 
 ## 鼠标转视角：relative 是鼠标移动的像素
@@ -207,6 +239,9 @@ func can_stand() -> bool:
 func _update_head(delta: float) -> void:
 	var eye := EYE_CROUCH if crouching else EYE_STAND
 	head.position.y = move_toward(head.position.y, eye, 4.0 * delta)
+	if third_person:
+		_update_third_person(delta)
+		return
 	var speed := Vector2(velocity.x, velocity.z).length()
 	if Settings.head_bob and is_on_floor() and speed > 0.5:
 		bob_time += delta * speed * 2.2
@@ -215,3 +250,19 @@ func _update_head(delta: float) -> void:
 		camera.position = camera.position.move_toward(Vector3.ZERO, 0.2 * delta)
 		if not Settings.head_bob:
 			camera.position = Vector3.ZERO
+
+
+## 越肩镜头：从眼睛往身后右上方打一条射线（只看世界层），撞到墙就把相机收到墙前面，避免穿墙
+func _update_third_person(delta: float) -> void:
+	var want_local := Vector3(TP_SIDE, TP_UP, TP_DIST)
+	var from := head.global_position
+	var to := head.global_transform * want_local
+	var q := PhysicsRayQueryParameters3D.create(from, to, 1, [get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	var local := want_local
+	if not hit.is_empty():
+		var d := maxf(from.distance_to(hit.position) - TP_MARGIN, 0.2)
+		local = want_local.normalized() * d
+	# 往前收要快（不然会先穿墙一下），往后退慢一点
+	var speed := 30.0 if local.length() < camera.position.length() else 6.0
+	camera.position = camera.position.lerp(local, clampf(delta * speed, 0.0, 1.0))

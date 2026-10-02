@@ -339,7 +339,7 @@ func can_see_player() -> bool:
 		if rad_to_deg(forward().angle_to(_flat(to).normalized())) > FOV_HALF:
 			return false
 	var from := global_position + Vector3(0, EYE, 0)
-	var ray := PhysicsRayQueryParameters3D.create(from, player.camera.global_position, 1, [get_rid()])
+	var ray := PhysicsRayQueryParameters3D.create(from, player.aim_origin(), 1, [get_rid()])
 	return get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
 
 
@@ -478,7 +478,7 @@ func _strike_player() -> void:
 		return
 	if rad_to_deg(forward().angle_to(_flat(to).normalized())) > 60.0:
 		return
-	var ray := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 1.3, 0), player.camera.global_position, 1, [get_rid()])
+	var ray := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 1.3, 0), player.aim_origin(), 1, [get_rid()])
 	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
 		return
 	var dmg := DamageCalc.compute(float(data.weapon_base), int(data.strength), int(data.skill), attack_kind, player.melee.staggered(), GameState.armor_total())

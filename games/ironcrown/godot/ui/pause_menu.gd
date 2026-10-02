@@ -15,6 +15,7 @@ var fov_slider: HSlider
 var sens_slider: HSlider
 var invert_check: CheckButton
 var bob_check: CheckButton
+var tp_check: CheckButton
 var fov_value: Label
 var sens_value: Label
 var perf_check: CheckButton
@@ -62,6 +63,7 @@ func _ready() -> void:
 	sens_slider = _slider(box, "转视角灵敏度", sens_value, Settings.SENS_MIN, Settings.SENS_MAX, 0.1, Settings.sensitivity, "sensitivity")
 	invert_check = _check(box, "反转上下视角", Settings.invert_y, "invert_y")
 	bob_check = _check(box, "走路时镜头摆动", Settings.head_bob, "head_bob")
+	tp_check = _check(box, "第三人称越肩视角（V）", Settings.third_person, "third_person")
 	# 画质三档（TECH.md 第五节；1.5 起可以在菜单里切换，方便在同一台设备上对比）
 	var qrow := HBoxContainer.new()
 	var ql := Label.new()
@@ -80,11 +82,13 @@ func _ready() -> void:
 		quality_btns[t] = b
 	box.add_child(qrow)
 	perf_check = _check(box, "显示性能数据（F3）", Settings.show_perf, "show_perf")
-	Settings.changed.connect(func(): perf_check.set_pressed_no_signal(Settings.show_perf))
+	Settings.changed.connect(func():
+		perf_check.set_pressed_no_signal(Settings.show_perf)
+		tp_check.set_pressed_no_signal(Settings.third_person))
 	var help := Label.new()
 	help.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
 	help.add_theme_color_override("font_color", Color("a9b4c0"))
-	help.text = "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · R 收剑 · I 背包 · J 任务 · K 角色 · F8 快速存档 · F9 快速读档 · F3 性能数据 · Esc 暂停\n手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」· 右上角「角色」「背包」「任务」「菜单」"
+	help.text = "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · F8 快速存档 · F9 快速读档 · F3 性能数据 · Esc 暂停\n手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」「视角」· 右上角「角色」「背包」「任务」「菜单」"
 	box.add_child(help)
 	help_label = help
 	get_tree().root.size_changed.connect(_fit)

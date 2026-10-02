@@ -450,7 +450,7 @@ func _resolve_hit() -> Dictionary:
 		armor = 0.0                                   # 钝器 50「破甲」
 	var dmg := DamageCalc.compute(float(w.get("base", 1)), GameState.strength, int(GameState.skills.get(sk, 0)), kind,
 		bool(target.get("staggered")) if "staggered" in target else false, armor)
-	var dir := -player.camera.global_transform.basis.z
+	var dir := player.aim_forward()
 	var info := {"damage": dmg, "kind": kind, "dir": dir, "stop": tm.stop, "weapon": str(w.get("name", ""))}
 	stop_left = tm.stop
 	view.kick = Vector3(0, 0, 0.04)
@@ -468,8 +468,9 @@ func _resolve_hit() -> Dictionary:
 
 func find_target() -> Node3D:
 	var cam := player.camera
+	var eye := player.aim_origin()               # 第三人称时相机在身后：剑程从眼睛算（2.9）
 	var basis := cam.global_transform.basis.orthonormalized()
-	var center := cam.global_position - basis.z * (REACH_NEAR + HIT_BOX.z * 0.5)
+	var center := eye - basis.z * (REACH_NEAR + HIT_BOX.z * 0.5)
 	var box := BoxShape3D.new()
 	box.size = HIT_BOX
 	var q := PhysicsShapeQueryParameters3D.new()
@@ -485,11 +486,11 @@ func find_target() -> Node3D:
 		if not (c is Node3D) or not c.has_method("take_hit"):
 			continue
 		var n := c as Node3D
-		var aim := n.global_position + Vector3(0, clampf(cam.global_position.y - n.global_position.y, 0.3, 1.6), 0)
-		var d := cam.global_position.distance_to(aim)
+		var aim := n.global_position + Vector3(0, clampf(eye.y - n.global_position.y, 0.3, 1.6), 0)
+		var d := eye.distance_to(aim)
 		if d >= best_d:
 			continue
-		var ray := PhysicsRayQueryParameters3D.create(cam.global_position, aim, WORLD_LAYER, [player.get_rid(), n.get_rid()])
+		var ray := PhysicsRayQueryParameters3D.create(eye, aim, WORLD_LAYER, [player.get_rid(), n.get_rid()])
 		if not space.intersect_ray(ray).is_empty():
 			continue
 		best = n

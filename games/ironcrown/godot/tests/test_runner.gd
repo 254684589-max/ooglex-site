@@ -22,7 +22,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "camera"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -164,6 +164,8 @@ func test_ui() -> void:
 		texts.append(str(pd.factions[k].name))
 	texts.append_array([main.hud.TITLE_SHORT, "角色等级再提升次技能升级可分配属性点＋给加 1 点生命上限体力上限负重上限护甲技能（用什么涨什么）◆◇「」（到解锁）声望敌视冷淡中立友善信任（+-）■□｜",
 		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
+	# 第三人称（2.9）
+	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
 	texts.append("存档 / 读档覆盖存到这里读取（空）（损坏，读不了：）存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。✓ 已存档：× 没有存档：读不了已读取：有存档：点「菜单」，按 Esc 打开菜单，里「存档 / 读档」可以继续（F9 读快速存档）级游戏时间分钟读取最近的存档重新开始附近有敌人在和你打，不能存档你已经倒下了这一份存档坏了已退回上一份存档内容损坏（不是有效的 JSON）这是更新版本的游戏写的存档写不进浏览器存储（可能是无痕模式或空间满了）")
@@ -474,12 +476,14 @@ func aim(p: FpController, pos: Vector3, look_at: Vector3) -> void:
 	p.global_position = pos
 	p.velocity = Vector3.ZERO
 	await physics(4)
-	var eye := p.camera.global_position
-	var d := look_at - eye
-	p.rotation.y = atan2(-d.x, -d.z)
-	p.pitch = rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
-	p.head.rotation.x = deg_to_rad(p.pitch)
-	await physics(2)
+	# 让屏幕中心（相机的视线）对准目标；第三人称时相机在头侧后方、跟着转，要迭代几次才对得准
+	for i in (4 if p.third_person else 1):
+		var eye := p.camera.global_position
+		var d := look_at - eye
+		p.rotation.y = atan2(-d.x, -d.z)
+		p.pitch = rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
+		p.head.rotation.x = deg_to_rad(p.pitch)
+		await physics(2)
 	p.interactor.refresh()
 
 
@@ -1976,3 +1980,72 @@ func test_saves() -> void:
 	Settings.set_value("fov", 75)
 	Settings.set_value("quality", "")
 	GameState.new_game(1)
+
+
+func test_camera() -> void:
+	Settings.set_value("third_person", false)
+	GameState.new_game(21)
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	check(not p.third_person and not p.avatar.visible and p.camera.position.length() < 0.1, "默认第一人称：看不到自己的身体")
+	main._unhandled_input(key_ev(KEY_V))
+	await physics(90)
+	check(Settings.third_person and p.third_person and p.avatar.visible, "按 V 切到第三人称：看得到占位人形")
+	check(not m.view.mesh_node.visible, "第三人称时藏起第一人称的武器")
+	check(Saves.load_settings().get("third_person") == true, "视角设置存进浏览器，下次打开还是第三人称")
+	var want := Vector3(FpController.TP_SIDE, FpController.TP_UP, FpController.TP_DIST).length()
+	check(absf(p.camera.position.length() - want) < 0.1 and p.camera.position.z > 2.0 and p.camera.position.x > 0.3, "空旷处：相机在头部后方偏右（越肩，%.2f 米）" % p.camera.position.length())
+	check(p.camera.global_position.distance_to(p.aim_origin()) > 2.0, "瞄准起点仍是眼睛，不是相机")
+	# 身后有墙：相机往前收
+	await place(p, -3.0, 11.0)
+	await physics(30)
+	check(p.camera.position.length() < 1.2, "背靠墙：相机收到墙前面，不穿墙（%.2f 米）" % p.camera.position.length())
+	# 交互：准星对准 NPC
+	await aim(p, TestRange.NPC_POS + Vector3(0, 0, 2.3), TestRange.NPC_POS + Vector3(0, 1.2, 0))
+	await physics(20)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc, "第三人称对准灰盒路人：能交谈（%s）" % p.interactor.target)
+	await aim(p, TestRange.NPC_POS + Vector3(0, 0, 4.0), TestRange.NPC_POS + Vector3(0, 1.2, 0))
+	await physics(20)
+	p.interactor.refresh()
+	check(p.interactor.target == null, "离 NPC 4 米：相机虽然离得更近，也够不着（按眼睛算 2.5 米）")
+	# 出剑打木桩
+	var dummy: TrainingDummy = main.world.get_children().filter(func(c): return c is TrainingDummy)[0]
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.5)
+	check(m.drawn() and p.avatar.weapon_mesh.visible, "拔剑：人形手里出现剑")
+	var h0 := dummy.hits
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(dummy.hits == h0 + 1, "第三人称出剑也能打中木桩")
+	m.block_press()
+	await seconds(0.4)
+	check(absf(p.avatar.arm.rotation_degrees.z - 75.0) < 8.0, "举剑格挡：人形把剑横过来")
+	m.block_release()
+	p.crouch_wanted = true
+	await seconds(0.6)
+	check(p.avatar.body.scale.y < 0.8, "蹲下：人形矮一截")
+	p.crouch_wanted = false
+	await seconds(0.3)
+	# 菜单勾选框、触屏按钮
+	check(main.pause_menu.tp_check.button_pressed, "暂停菜单里的「第三人称越肩视角」已勾上")
+	var t: TouchControls = main.touch
+	t.visible = true
+	var bc: Dictionary = t.button_centers()
+	var others := bc.keys().filter(func(k): return k != "camera")
+	check(bc.has("camera") and others.all(func(k): return bc[k].distance_to(bc.camera) > TouchControls.BTN_R * 2.5), "触屏有「视角」按钮，不和其他按钮挤在一起")
+	t._input(touch_ev(5, bc.camera, true))
+	t._input(touch_ev(5, bc.camera, false))
+	await physics(5)
+	check(not Settings.third_person and not p.avatar.visible and m.view.mesh_node.visible and p.camera.position.length() < 0.1, "点「视角」切回第一人称")
+	await free_main(main)
+	# 下次打开页面：按保存的视角开始
+	Settings.set_value("third_person", true)
+	main = await make_main(true)
+	check(main.player.third_person and main.player.avatar.visible, "设置里是第三人称：打开就是第三人称")
+	await free_main(main)
+	Settings.set_value("third_person", false)

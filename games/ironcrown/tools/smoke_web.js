@@ -7,6 +7,7 @@
 //   2.3  霜渡镇 ?view=4（管家面前）：电脑按 E、按 1 两次接下主线，按 J 打开任务日志；手机 / 平板点右上角「任务」按钮打开任务日志（IC_QUEST），截图。
 //   2.1  霜渡镇 ?view=3（更夫面前）：电脑按 E 打开对话、按 2 选第二个选项、Esc 结束；手机 / 平板真实点交互按钮与第一个选项（IC_DIALOG），截图。
 //   2.4  霜渡镇 ?view=5（木桩假人面前）：电脑点击画面后按 F 两下（拔剑、轻击），再按一下左键出剑；手机 / 平板点两下「攻」按钮；要求打中木桩（IC_HIT），截图。
+//   2.9  霜渡镇出生点：电脑按 V、手机 / 平板点「视角」切到第三人称（IC_CAMERA mode=third），截图。
 //   2.7  霜渡镇出生点：电脑按 K、手机 / 平板点右上角「角色」，打开角色面板（IC_CHAR open），截图。
 //   2.8  霜渡镇：电脑按 F8 快速存档（IC_SAVE）→ 确认浏览器 localStorage 里有 ooglex.ironcrown.v1.quick → 刷新页面 → 按 F9 读档（IC_LOAD，场景重新载入）；
 //        手机 / 平板点「菜单」→「存档 / 读档」打开存档面板（IC_SAVES open）；截图。
@@ -240,8 +241,22 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     logs.length = 0;
     await page.goto(url);
     let charOpen = '';
+    let camMode = '';
     if (await waitLog(logs, 'IC_CHAR_SCREEN', 240)) {
       await page.waitForTimeout(400);
+      // 第三人称（2.9）：电脑按 V、手机 / 平板点「视角」
+      if (!mobile) {
+        await page.keyboard.press('v');
+      } else {
+        const vs = logs.find(l => l.startsWith('IC_CAMERA_SCREEN'));
+        if (vs) {
+          const [, vx, vy] = vs.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(vx / dpr, vy / dpr);
+        }
+      }
+      camMode = await waitLog(logs, 'IC_CAMERA mode=third', 12);
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-third.png`) });
       if (!mobile) {
         await page.keyboard.press('k');
       } else {
@@ -353,9 +368,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!camMode && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

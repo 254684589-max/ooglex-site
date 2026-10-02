@@ -15,6 +15,7 @@ var move_index := -1
 var move_center := Vector2.ZERO
 var knob := Vector2.ZERO
 var look_index := -1
+signal camera_pressed
 var attack_index := -1
 var guard_index := -1
 
@@ -35,7 +36,8 @@ func button_centers() -> Dictionary:
 	var c := {"jump": Vector2(r.x - 24.0 - BTN_R, r.y - 40.0 - BTN_R),
 		"crouch": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 24.0 - BTN_R),
 		"attack": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 48.0 - BTN_R * 3.0),
-		"guard": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 72.0 - BTN_R * 5.0)}
+		"guard": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 72.0 - BTN_R * 5.0),
+		"camera": Vector2(r.x - 24.0 - BTN_R, r.y - 88.0 - BTN_R * 5.0)}
 	if has_target():
 		c["interact"] = Vector2(r.x - 24.0 - BTN_R, r.y - 64.0 - BTN_R * 3.0)
 	return c
@@ -87,6 +89,8 @@ func _input(event: InputEvent) -> void:
 			elif b == "attack" and attack_index == -1:
 				attack_index = event.index       # 按下 = 开始蓄力，松开时按住的时间决定轻 / 重
 				player.melee.press()
+			elif b == "camera":
+				camera_pressed.emit()          # 第一 / 第三人称切换（2.9）
 			elif b == "guard" and guard_index == -1:
 				guard_index = event.index        # 按住「挡」格挡，松开放下
 				player.melee.block_press()
@@ -135,7 +139,7 @@ func _draw() -> void:
 	draw_arc(c, RADIUS, 0.0, TAU, 48, Color(0.72, 0.59, 0.31, a + 0.2), 2.0)
 	draw_circle(c + knob, RADIUS * 0.42, Color(0.91, 0.86, 0.75, a + 0.2))
 	var font := get_theme_default_font()
-	var labels := {"jump": "跳", "crouch": "站" if player and player.crouch_wanted else "蹲", "attack": "攻", "guard": "挡"}
+	var labels := {"jump": "跳", "crouch": "站" if player and player.crouch_wanted else "蹲", "attack": "攻", "guard": "挡", "camera": "视角"}
 	if has_target():
 		labels["interact"] = player.interactor.target.verb_now()
 	var centers := button_centers()
