@@ -3486,5 +3486,6 @@
   "quality_schema_version": 1,
   "zh_labels": "data/global-windows/zh_labels.json",
   "min_semantic_score": 5,
-  "global_generic_gps_cap": 18
+  "global_generic_gps_cap": 18,
+  "discovery_mode": "global-first"
 }
