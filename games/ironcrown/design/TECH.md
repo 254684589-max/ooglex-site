@@ -91,6 +91,7 @@ godot/
 
 - 对话文件 `data/dialogue/<区域>.json`：节点表 + 选项（条件、效果）。**2.1 已实现节点与选项**（`quest/dialogue_runner.gd` 规则 + 校验、`ui/dialogue_panel.gd` 界面，打开时暂停、镜头转向说话人）；条件与效果在 2.2。**坑**：这个脚本用 `static var` 缓存时退出释放不掉（引擎报资源泄漏），改存 `Engine` 元数据；`run_tests.sh` 遇到退出泄漏判失败。条件与效果是一个小的白名单指令集（`flag`、`rep`、`skill_check`、`has_item`、`give_item`、`start_quest`、`advance_quest`、`start_combat`），**不执行任意表达式**。
 - 对话检定的随机数：用「存档种子 + 检定编号」算出，读档不会改变结果（`GDD.md` 5.3）。**2.2 已实现**（`core/game_state.gd`）：哈希值只当随机数生成器的种子——直接取哈希低位时编号相近的检定分布不均（把握 70% 实测成功 85%）；掷过的检定结果记在 `checks` 里，2.8 一起存档。
+- **任务（2.3 已实现）**：`data/quests.json` 定义任务（阶段、目标、`advance_when` 自动推进）与线索；状态在 `GameState`（`quests` / `clues` / `inventory`），`quest_event` 信号驱动屏幕提示；对话的条件与效果白名单扩展了任务、线索、物品几类，校验时检查编号都存在。
 - 自动化测试遍历所有对话文件：每个节点可达、每个选项指向存在的节点、每个旗标都在 `flags.json` 里登记。
 
 ### 4.6 画面（参考图的雾夜）

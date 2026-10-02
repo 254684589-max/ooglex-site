@@ -11,6 +11,7 @@ const ACTIONS := {
 	"jump": [KEY_SPACE],
 	"interact": [KEY_E],          # 交互：对话、开门、拾取（1.3）
 	"perf_toggle": [KEY_F3],      # 性能浮层（1.5）
+	"quest_log": [KEY_J],         # 任务日志（2.3）
 	"pause": [KEY_ESCAPE],
 }
 

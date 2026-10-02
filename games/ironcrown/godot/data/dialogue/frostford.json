@@ -81,6 +81,9 @@
         "do": [
           {
             "set": "heard_edric_to_ferry"
+          },
+          {
+            "clue": "ferry"
           }
         ]
       },
@@ -105,6 +108,9 @@
         "do": [
           {
             "set": "knows_double_key_ring"
+          },
+          {
+            "clue": "ring"
           }
         ]
       },
@@ -193,6 +199,9 @@
         "do": [
           {
             "set": "heard_cloaked_men"
+          },
+          {
+            "clue": "cloaked"
           }
         ],
         "options": [
@@ -219,6 +228,9 @@
           },
           {
             "set": "heard_cloaked_men"
+          },
+          {
+            "clue": "cloaked"
           }
         ],
         "options": [
@@ -271,5 +283,153 @@
         "node": "cold"
       }
     ]
+  },
+  "steward": {
+    "speaker": "管家",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "quest_active": "edric_missing"
+          }
+        ],
+        "node": "waiting"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "总算等到你了。少爷……埃德里克少爷天黑以后就没回来。老爷不想惊动全镇，让你悄悄把人找回来。",
+        "options": [
+          {
+            "text": "我这就去找。",
+            "next": "accept"
+          },
+          {
+            "text": "少爷最近有什么不对劲吗？",
+            "next": "odd"
+          }
+        ]
+      },
+      "odd": {
+        "text": "他这几天常往酒馆跑，跟一个南方来的客人喝酒。老爷正打算给他说一门亲事，他……不太乐意。",
+        "options": [
+          {
+            "text": "明白了，我这就去找。",
+            "next": "accept"
+          }
+        ]
+      },
+      "accept": {
+        "text": "多问问街上的人。更夫整夜都在巡街，酒馆门口那个醉鬼也什么都看得见——只要他还清醒。",
+        "do": [
+          {
+            "quest": "edric_missing"
+          }
+        ],
+        "options": [
+          {
+            "text": "放心。",
+            "end": true
+          }
+        ]
+      },
+      "waiting": {
+        "text": "有少爷的消息了吗？老爷一直坐在书房里等着。",
+        "options": [
+          {
+            "text": "还在找，再给我点时间。",
+            "end": true
+          },
+          {
+            "text": "线索都指向渡口，我这就去。",
+            "if": [
+              {
+                "quest_stage": "edric_missing",
+                "eq": "to_ferry"
+              }
+            ],
+            "next": "ferry"
+          }
+        ]
+      },
+      "ferry": {
+        "text": "渡口……这种天气？快去吧。镇外桦林那条近路不太平，带上你的剑。",
+        "options": [
+          {
+            "text": "知道了。",
+            "end": true
+          }
+        ]
+      }
+    }
+  },
+  "hob": {
+    "speaker": "老霍布",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "quest_done": "hob_debt"
+          }
+        ],
+        "node": "after"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "嗝……誓剑大人，行行好。骰子输光了，酒馆也关了，我两天没吃东西了。给口吃的，我告诉你一件值钱的事。",
+        "do": [
+          {
+            "quest": "hob_debt"
+          }
+        ],
+        "options": [
+          {
+            "text": "（把面包递给他）给你。",
+            "if": [
+              {
+                "has_item": "bread"
+              }
+            ],
+            "next": "fed"
+          },
+          {
+            "text": "我身上没吃的，回头再说。",
+            "end": true
+          }
+        ]
+      },
+      "fed": {
+        "text": "（他狼吞虎咽地啃了两口）……昨晚跟我赌骰子的那几个，披着斗篷，是无旗者。拿的银币崭新崭新的，上头压着两把交叉的钥匙。今天傍晚他们全往渡口那边去了。",
+        "do": [
+          {
+            "take_item": "bread"
+          },
+          {
+            "quest_done": "hob_debt"
+          },
+          {
+            "clue": "dice"
+          }
+        ],
+        "options": [
+          {
+            "text": "这消息确实值一块面包。",
+            "end": true
+          }
+        ]
+      },
+      "after": {
+        "text": "嗝……面包很好吃。银币的事，我可只跟你一个人说过。",
+        "options": [
+          {
+            "text": "保重。",
+            "end": true
+          }
+        ]
+      }
+    }
   }
 }

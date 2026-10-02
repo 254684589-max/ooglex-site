@@ -13,6 +13,8 @@ const NORTH_END := -48.0         # 领主宅邸正面
 const WATCH_POS := Vector3(2.3, 0, -3.4)
 const WATCH_LINES := ["夜里雾大，少往渡口那边走。", "三年没见过春天了……烽燧那边的消息一天比一天坏。", "灯要是灭了，就回屋待着，别在街上晃。"]
 const TREE_POS := Vector3(-8.6, 0, -23.5)
+const STEWARD_POS := Vector3(0.0, 0, -46.6)       # 领主宅邸门前，面朝街道（+Z）
+const HOB_POS := Vector3(-3.7, 0, -10.6)          # 「倒钩鱼」酒馆门口
 const WELL_POS := Vector3(-6.4, 0, -25.6)
 const LAMPS := [Vector3(3.7, 0, -2.0), Vector3(-3.7, 0, -13.0), Vector3(3.7, 0, -24.5), Vector3(-3.7, 0, -37.0)]
 const VIEW_NAMES := ["出生点看街道", "小广场看枯树", "领主宅邸前回望"]
@@ -22,6 +24,7 @@ const VIEWS := [
 	[Vector3(1.6, 0, -12.5), 32.0, 4.0],
 	[Vector3(-0.8, 0, -41.0), 180.0, 1.0],
 	[Vector3(2.3, 0, -1.6), 0.0, -8.0],        # 3：更夫面前（冒烟测试对话用，不进基准测试）
+	[Vector3(0.0, 0, -44.8), 0.0, -6.0],       # 4：管家面前（冒烟测试接任务用）
 ]
 
 ## 左侧房子：[北端 z, 南端 z（较大）... ] → 用 [z_south, z_north, spec]
@@ -87,6 +90,19 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	watch.position = WATCH_POS
 	watch.rotation.y = PI
 	parent.add_child(watch)
+	# 2.3：领主宅邸门口的管家（交代主线）、酒馆门口的醉汉老霍布（支线）
+	var steward := Npc.make("管家", [], Color("2e2a3a"))
+	steward.dialogue_area = "frostford"
+	steward.dialogue_id = "steward"
+	steward.position = STEWARD_POS
+	steward.rotation.y = PI
+	parent.add_child(steward)
+	var hob := Npc.make("老霍布", [], Color("5a4a3a"))
+	hob.dialogue_area = "frostford"
+	hob.dialogue_id = "hob"
+	hob.position = HOB_POS
+	hob.rotation.y = -PI / 2
+	parent.add_child(hob)
 	var bread := Pickup.make("bread", "面包", Color("c8a060"))
 	bread.position = Vector3(-3.95, 0.62, 1.2)
 	parent.add_child(bread)

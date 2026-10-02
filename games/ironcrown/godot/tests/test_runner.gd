@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -128,6 +128,15 @@ func test_ui() -> void:
 	texts.append_array(Frostford.VIEW_NAMES)
 	texts.append_array(TestRange.NPC_LINES)
 	texts.append_array(Frostford.WATCH_LINES)
+	# 任务日志（2.3）：任务名、简介、目标、线索、提示语
+	var qd := GameState.quest_data()
+	texts.append("任务日志主线支线关闭（已完成）当前目标：线索：这件事已经办完了。还没有任务◆新任务：（按J查看）（点「任务」查看）任务更新：✓任务完成：◇新线索已记入任务日志▶")
+	for qid in qd.quests:
+		texts.append(str(qd.quests[qid].title) + str(qd.quests[qid].summary))
+		for st in qd.quests[qid].stages:
+			texts.append(str(qd.quests[qid].stages[st].objective))
+	for cid in qd.clues:
+		texts.append(str(qd.clues[cid].text))
 	# 全部对话台词与选项（2.1）
 	var dlg := DialogueRunner.load_file("frostford")
 	for did in dlg:
@@ -465,7 +474,7 @@ func test_interact() -> void:
 	it.refresh()
 	var r := it.use()
 	await frames(2)
-	check(r.get("kind") == "pickup" and main.inventory.has("bread"), "拾取面包：放进背包（%s）" % str(main.inventory))
+	check(r.get("kind") == "pickup" and GameState.has_item("bread"), "拾取面包：放进背包（%s）" % str(GameState.inventory))
 	check(main.hud.toast_label.text == "拾取：面包", "屏幕上方提示「拾取：面包」")
 	await physics(2)
 	it.refresh()
@@ -581,7 +590,7 @@ func test_frostford() -> void:
 	Input.action_press("sprint")
 	await hold("move_forward", 10.0)
 	Input.action_release("sprint")
-	check(p.global_position.z > Frostford.NORTH_END and p.global_position.z < Frostford.NORTH_END + 2.0, "沿街往北跑到尽头，停在领主宅邸门前（z = %.2f）" % p.global_position.z)
+	check(p.global_position.z > Frostford.NORTH_END and p.global_position.z < Frostford.NORTH_END + 3.0, "沿街往北跑到尽头，停在领主宅邸门前（门口站着管家，z = %.2f）" % p.global_position.z)
 	# 从小广场钻到房子背后，往西一直走：被看不见的围墙挡住
 	await place(p, -6.0, -23.0)
 	p.rotation.y = PI / 2
@@ -839,5 +848,102 @@ func test_checks() -> void:
 	await frames(2)
 	check(dp.name_label.text.contains("√ 洞察检定成功") and dp.runner.node_id == "edric_more", "检定后说话人旁边显示「√ 洞察检定成功」（文字 + 符号）")
 	dp.close()
+	await free_main(main)
+	GameState.new_game(1)
+
+
+func test_quests() -> void:
+	# 数据：每个任务的开始阶段、自动推进的目标阶段、线索所属的任务都存在
+	var qd := GameState.quest_data()
+	var bad := []
+	for qid in qd.quests:
+		var q: Dictionary = qd.quests[qid]
+		if not q.stages.has(str(q.first)):
+			bad.append("%s 的开始阶段不存在" % qid)
+		if not str(q.kind) in ["main", "side"]:
+			bad.append("%s 的种类不对" % qid)
+		for st in q.stages:
+			var to := str(q.stages[st].get("advance_when", {}).get("to", ""))
+			if to != "" and not q.stages.has(to):
+				bad.append("%s/%s 自动推进到不存在的阶段 %s" % [qid, st, to])
+	for cid in qd.clues:
+		if not qd.quests.has(str(qd.clues[cid].quest)):
+			bad.append("线索 %s 属于不存在的任务" % cid)
+	check(qd.quests.has("edric_missing") and qd.quests.has("hob_debt") and bad.is_empty(), "data/quests.json：主线「雾里的少爷」、支线「醉汉的赌债」，阶段与线索都对得上（问题：%s）" % str(bad))
+	# 管家交代主线
+	GameState.new_game(1)
+	var events := []
+	var rec := func(k: String, id: String): events.append(k + ":" + id)
+	GameState.quest_event.connect(rec)
+	var r := DialogueRunner.new()
+	r.start("frostford", "steward")
+	check(r.node_id == "greet" and not GameState.quests.has("edric_missing"), "第一次找管家：他说少爷失踪了，任务还没接")
+	r.choose(0)
+	check(GameState.quest_active("edric_missing") and GameState.quest_stage("edric_missing") == "find_clues" and events.has("started:edric_missing"), "答应下来：接到主线「雾里的少爷」，目标是打探少爷的下落")
+	r.start("frostford", "steward")
+	check(r.node_id == "waiting" and r.options().size() == 1, "接了任务再找管家：他问有没有消息；还没线索时没有「去渡口」的选项")
+	# 更夫给两条线索 → 主线自动推进
+	r.start("frostford", "watchman")
+	r.choose(1)
+	check(GameState.clues == ["ferry"] and events.has("clue:ferry") and GameState.quest_stage("edric_missing") == "find_clues", "问更夫少爷的去向：记下线索「往渡口去了」")
+	r.choose(0)
+	check(GameState.clues_for("edric_missing").size() == 2 and GameState.quest_stage("edric_missing") == "to_ferry" and events.has("advanced:edric_missing"), "再问南方人：第二条线索（双钥印戒），任务自动更新为「去渡口找少爷」")
+	r.start("frostford", "watchman")
+	r.choose(1)
+	check(GameState.clues.size() == 2, "同一条线索不会记两次")
+	r.start("frostford", "steward")
+	check(r.options().size() == 2 and r.choose(1) and r.node_id == "ferry", "线索够了再找管家：多出「线索都指向渡口」的选项")
+	# 醉汉的赌债：要有面包
+	r.start("frostford", "hob")
+	check(GameState.quest_active("hob_debt") and r.options().size() == 1, "找老霍布：接到支线；身上没吃的，只能「回头再说」")
+	GameState.add_item("bread")
+	r.start("frostford", "hob")
+	check(r.options().size() == 2, "捡到面包后，多出「把面包递给他」")
+	r.choose(0)
+	check(not GameState.has_item("bread") and GameState.quest_done("hob_debt") and GameState.clues.has("dice") and events.has("done:hob_debt"), "给了面包：面包没了，支线完成，得到线索「斗篷人是无旗者，银币上压着双钥」")
+	r.start("frostford", "hob")
+	check(r.node_id == "after", "办完以后再找他，他只说面包很好吃")
+	GameState.quest_event.disconnect(rec)
+	# 先拿到线索、后接任务：一接就直接推进
+	GameState.new_game(1)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(0)
+	r.start("frostford", "steward")
+	r.choose(0)
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "先从更夫那里问到两条线索、再去找管家接任务：任务一接就更新到「去渡口」")
+	# 游戏里：任务日志
+	GameState.new_game(1)
+	var main := await make_main(false)
+	GameState.start_quest("edric_missing")
+	GameState.add_clue("ferry")
+	GameState.add_item("bread")
+	GameState.start_quest("hob_debt")
+	await frames(2)
+	check(main.hud.toast_label.text.contains("新任务：雾里的少爷") and main.hud.toast_label.text.contains("新线索"), "接任务、得线索时屏幕上方提示（%s）" % main.hud.toast_label.text.replace("\n", " / "))
+	var ev := InputEventAction.new()
+	ev.action = "quest_log"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	var qp: QuestPanel = main.quest_panel
+	check(qp.visible and get_tree().paused, "按 J 打开任务日志，游戏暂停")
+	check(qp.detail.text.contains("当前目标：打探埃德里克少爷的下落") and qp.detail.text.contains("往渡口去了"), "主线页显示当前目标和已得到的线索")
+	qp.tab_side.pressed.emit()
+	await frames(2)
+	check(qp.detail.text.contains("醉汉的赌债") and qp.detail.text.contains("面包"), "切到支线页：显示「醉汉的赌债」")
+	Input.parse_input_event(ev)
+	await frames(3)
+	check(not qp.visible and not get_tree().paused, "再按 J（或 Esc）关闭任务日志")
+	main.hud.quest_pressed.emit()
+	await frames(2)
+	check(qp.visible, "右上角「任务」按钮打开任务日志（手机用）")
+	qp.close()
+	await frames(2)
+	var rect: Rect2 = qp.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x, "任务日志面板不超出画面")
+	# 对准管家按 E
+	await aim(main.player, Frostford.STEWARD_POS + Vector3(0, 0, 1.8), Frostford.STEWARD_POS + Vector3(0, 1.4, 0))
+	check(main.player.interactor.target is Npc and main.player.interactor.target.display_name == "管家", "领主宅邸门口站着管家，可以交谈")
 	await free_main(main)
 	GameState.new_game(1)

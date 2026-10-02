@@ -4,12 +4,14 @@ extends Control
 ## 1.3 起：准星下方的交互提示、屏幕上方的短提示（拾取、门锁着）、底部的 NPC 字幕。
 
 signal menu_pressed
+signal quest_pressed
 
 const TITLE := "铁冠之争 · 技术原型（人物为占位）"
 
 var title_label: Label
 var hint_label: Label
 var menu_btn: Button
+var quest_btn: Button
 var prompt_label: Label
 var toast_label: Label
 var subtitle_panel: PanelContainer
@@ -40,6 +42,11 @@ func _ready() -> void:
 	menu_btn.focus_mode = Control.FOCUS_NONE
 	menu_btn.pressed.connect(func(): menu_pressed.emit())
 	add_child(menu_btn)
+	quest_btn = Button.new()
+	quest_btn.text = "任务"
+	quest_btn.focus_mode = Control.FOCUS_NONE
+	quest_btn.pressed.connect(func(): quest_pressed.emit())
+	add_child(quest_btn)
 	prompt_label = _center_label(20)
 	toast_label = _center_label(18)
 	subtitle_panel = PanelContainer.new()
@@ -78,9 +85,13 @@ func show_prompt(text: String) -> void:
 	_layout()
 
 
+## 短提示；上一条还没消失时接在下面（一次对话里可能同时「新线索」+「任务更新」）
 func toast(text: String, sec := 2.5) -> void:
-	toast_label.text = text
-	toast_left = sec
+	if toast_left > 0.0 and toast_label.text != "" and not toast_label.text.contains(text):
+		toast_label.text += "\n" + text
+	else:
+		toast_label.text = text
+	toast_left = maxf(toast_left, sec)
 	_layout()
 
 
@@ -109,6 +120,7 @@ func set_hint(text: String) -> void:
 
 func _layout() -> void:
 	menu_btn.position = Vector2(size.x - menu_btn.size.x - 12.0, 10.0)
+	quest_btn.position = Vector2(menu_btn.position.x - quest_btn.size.x - 8.0, 10.0)
 	var w := minf(size.x - 32.0, 760.0)
 	hint_label.size = Vector2(w, 0)
 	hint_label.position = Vector2((size.x - w) * 0.5, size.y * 0.62)

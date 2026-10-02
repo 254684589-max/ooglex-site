@@ -20,6 +20,7 @@ var moon: DirectionalLight3D
 var quality := ""
 var perf_overlay: PerfOverlay
 var dialogue: DialoguePanel
+var quest_panel: QuestPanel
 var bench_results: Array = []
 
 var env: Environment
@@ -37,7 +38,6 @@ var look_logged := false
 var lock_seen := false          # 指针真的锁定过（锁定失败时不要误开暂停菜单）
 var hint_left := HINT_SECONDS
 var started := false
-var inventory: Array = []       # 捡到的物品编号（背包界面在 2.4）
 var use_screen_logged := false
 
 
@@ -85,6 +85,8 @@ func _ready() -> void:
 	await get_tree().process_frame
 	var c := hud.menu_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
 	print("IC_MENU_SCREEN x=%d y=%d" % [c.x, c.y])
+	var qc := hud.quest_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+	print("IC_QUEST_SCREEN x=%d y=%d" % [qc.x, qc.y])
 
 
 func _build_environment() -> void:
@@ -233,6 +235,11 @@ func _build_ui() -> void:
 	dialogue = DialoguePanel.new()
 	layer.add_child(dialogue)
 	dialogue.closed.connect(_on_dialogue_closed)
+	quest_panel = QuestPanel.new()
+	layer.add_child(quest_panel)
+	quest_panel.closed.connect(_on_quest_closed)
+	hud.quest_pressed.connect(open_quests)
+	GameState.quest_event.connect(_on_quest_event)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
 	pause_menu.quality_selected.connect(func(t: String):
@@ -244,6 +251,10 @@ func _build_ui() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		open_pause()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("quest_log"):
+		open_quests()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("perf_toggle"):
@@ -283,7 +294,7 @@ func _on_interacted(r: Dictionary) -> void:
 	if r.has("speech"):
 		hud.say(r.speech)
 	if r.get("kind") == "pickup":
-		inventory.append(r.item)
+		GameState.add_item(r.item)
 	if r.get("kind") == "dialogue":
 		open_dialogue(r.area, r.id, r.get("npc"))
 	var t := player.interactor.target
@@ -314,6 +325,42 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if touch:
 		touch.release_all()
+
+
+## 任务日志（2.3）：打开时暂停，和暂停菜单一样放出鼠标
+func open_quests() -> void:
+	if get_tree().paused:
+		return
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	lock_seen = false
+	if touch:
+		touch.release_all()
+	quest_panel.open()
+
+
+func _on_quest_closed() -> void:
+	get_tree().paused = false
+	if not touch_mode:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+## 任务事件 → 屏幕上方的短提示（文字 + 符号）
+func _on_quest_event(kind: String, id: String) -> void:
+	var qd := GameState.quest_data()
+	var text := ""
+	match kind:
+		"started":
+			text = "◆ 新任务：%s（按 J 查看）" % qd.quests[id].title if not touch_mode else "◆ 新任务：%s（点「任务」查看）" % qd.quests[id].title
+		"advanced":
+			text = "◆ 任务更新：%s" % qd.quests[id].title
+		"done":
+			text = "✓ 任务完成：%s" % qd.quests[id].title
+		"clue":
+			text = "◇ 新线索已记入任务日志"
+	if text != "":
+		hud.toast(text, 3.5)
+	print("IC_QUEST_EVENT %s %s" % [kind, id])
 
 
 func _on_dialogue_closed() -> void:

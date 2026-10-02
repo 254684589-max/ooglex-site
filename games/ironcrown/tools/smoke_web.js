@@ -4,6 +4,7 @@
 //   1.2  电脑：点击画面后按住 W 走动（IC_MOVED）、Esc 打开 / 关闭暂停菜单（IC_PAUSE）；
 //        手机 / 平板：左半屏真实触屏拖动走动（IC_MOVED）、右半屏拖动转视角（IC_LOOK）、点「菜单」打开暂停菜单；
 //        再打开 ?test=1 灰盒测试场，走几步截图。
+//   2.3  霜渡镇 ?view=4（管家面前）：电脑按 E、按 1 两次接下主线，按 J 打开任务日志；手机 / 平板点右上角「任务」按钮打开任务日志（IC_QUEST），截图。
 //   2.1  霜渡镇 ?view=3（更夫面前）：电脑按 E 打开对话、按 2 选第二个选项、Esc 结束；手机 / 平板真实点交互按钮与第一个选项（IC_DIALOG），截图。
 //   1.3  测试场出生点对准灰盒 NPC（IC_TARGET）：电脑按 E、手机 / 平板点右下角交互按钮，要求和 NPC 说话（IC_INTERACT kind=npc），截图。
 //
@@ -121,6 +122,33 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
         dClose = await waitLog(logs, 'IC_DIALOG closed', 12);
       }
     }
+    // 任务日志（2.3）：管家面前
+    logs.length = 0;
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'view=4');
+    let qStart = 'n/a', qOpen = '';
+    if (await waitLog(logs, 'IC_TARGET name=管家', 240)) {
+      await page.waitForTimeout(400);
+      if (!mobile) {
+        await page.keyboard.press('e');
+        await waitLog(logs, 'IC_DIALOG open id=steward', 12);
+        await page.keyboard.press('1');
+        await waitLog(logs, 'IC_DIALOG node=accept', 12);
+        qStart = await waitLog(logs, 'IC_QUEST_EVENT started edric_missing', 12);
+        await page.keyboard.press('1');
+        await waitLog(logs, 'IC_DIALOG closed', 12);
+        await page.waitForTimeout(300);
+        await page.keyboard.press('j');
+      } else {
+        const qs = logs.find(l => l.startsWith('IC_QUEST_SCREEN'));
+        if (qs) {
+          const [, qx, qy] = qs.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(qx / dpr, qy / dpr);
+        }
+      }
+      qOpen = await waitLog(logs, 'IC_QUEST open', 12);
+      await page.waitForTimeout(500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-quests.png`) });
+    }
     // 灰盒测试场
     logs.length = 0;
     await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=1');
@@ -151,9 +179,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();
