@@ -223,8 +223,13 @@ def source_title_from_url(url: str, fallback: str = "") -> str:
     return raw if raw.startswith("File:") else "File:" + raw
 
 
-def rest_media_profile(title: str, interval: float = 0.8) -> dict:
-    """Read duration/dimensions before downloading the original media."""
+def rest_media_profile(title: str, interval: float = 0.8, retries: int = 5) -> dict:
+    """Read duration/dimensions before downloading the original media.
+
+    This REST path is only a fallback when batched imageinfo is incomplete.
+    Retry transient Wikimedia throttling/network failures so a temporary 429
+    cannot silently shrink an otherwise valid V1 catalog.
+    """
     global _REQUEST_LAST
     title = str(title or "").strip()
     if not title:
@@ -234,23 +239,61 @@ def rest_media_profile(title: str, interval: float = 0.8) -> dict:
     if title in _PROFILE_CACHE:
         return dict(_PROFILE_CACHE[title])
 
-    wait = interval - (time.monotonic() - _REQUEST_LAST)
-    if wait > 0:
-        time.sleep(wait)
-
     url = FILE_API + urllib.parse.quote(title, safe=":")
-    req = urllib.request.Request(url, headers={
-        "User-Agent": UA,
-        "Accept": "application/json",
-        "Accept-Encoding": "identity",
-    })
-    try:
-        with urllib.request.urlopen(req, timeout=40) as r:
+    data = None
+    last_exc = None
+
+    for attempt in range(retries):
+        wait = interval - (time.monotonic() - _REQUEST_LAST)
+        if wait > 0:
+            time.sleep(wait)
+
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA,
+            "Accept": "application/json",
+            "Accept-Encoding": "identity",
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=40) as r:
+                _REQUEST_LAST = time.monotonic()
+                data = json.load(r)
+            break
+        except urllib.error.HTTPError as exc:
             _REQUEST_LAST = time.monotonic()
-            data = json.load(r)
-    except Exception as exc:
-        _REQUEST_LAST = time.monotonic()
-        print(f"warn: media profile unavailable {title}: {exc}", file=sys.stderr)
+            last_exc = exc
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == retries - 1:
+                break
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                delay = float(retry_after) if retry_after else 0.0
+            except Exception:
+                delay = 0.0
+            delay = max(delay, min(30.0, 2.5 * (2 ** attempt)))
+            print(
+                f"warn: media profile HTTP {exc.code}; retry {attempt + 1}/{retries} "
+                f"after {delay:.1f}s :: {title}",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError) as exc:
+            _REQUEST_LAST = time.monotonic()
+            last_exc = exc
+            if attempt == retries - 1:
+                break
+            delay = min(20.0, 2.0 * (2 ** attempt))
+            print(
+                f"warn: media profile network retry {attempt + 1}/{retries} "
+                f"after {delay:.1f}s :: {title}",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+        except Exception as exc:
+            _REQUEST_LAST = time.monotonic()
+            last_exc = exc
+            break
+
+    if not isinstance(data, dict):
+        print(f"warn: media profile unavailable {title}: {last_exc}", file=sys.stderr)
         _PROFILE_CACHE[title] = {}
         return {}
 
@@ -281,7 +324,6 @@ def rest_media_profile(title: str, interval: float = 0.8) -> dict:
     }
     _PROFILE_CACHE[title] = out
     return dict(out)
-
 
 def media_profile_from_info(info: dict) -> dict:
     """Use batched imageinfo video properties before falling back to REST."""
@@ -839,20 +881,41 @@ def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
         for query in search_forms:
             if len(out) >= max_candidates:
                 break
-            try:
-                data = http_json({
+
+            fetched = 0
+            continuation: dict = {}
+            while fetched < per_query and len(out) < max_candidates:
+                params = {
                     "action": "query",
                     "generator": "search",
                     "gsrsearch": query,
                     "gsrnamespace": "6",
-                    "gsrlimit": min(50, per_query),
+                    "gsrlimit": min(50, per_query - fetched),
                     "prop": "info",
-                }, interval=interval)
-            except Exception as exc:
-                print(f"warn: global scenic search {term}: {exc}", file=sys.stderr)
-                continue
-            for page in data.get("query", {}).get("pages", []):
-                add_title(page.get("title", ""))
+                }
+                params.update(continuation)
+                try:
+                    data = http_json(params, interval=interval)
+                except Exception as exc:
+                    print(f"warn: global scenic search {term}: {exc}", file=sys.stderr)
+                    break
+
+                pages = data.get("query", {}).get("pages", [])
+                if not pages:
+                    break
+                fetched += len(pages)
+                for page in pages:
+                    add_title(page.get("title", ""))
+
+                next_cont = data.get("continue") or {}
+                if "gsroffset" not in next_cont:
+                    break
+                next_state = {"gsroffset": next_cont["gsroffset"]}
+                if "continue" in next_cont:
+                    next_state["continue"] = next_cont["continue"]
+                if next_state == continuation:
+                    break
+                continuation = next_state
 
     out.sort(key=lambda title: quality_score({"title": title, "extmetadata": {}})[0], reverse=True)
     print(f"global scenic discovery produced {len(out)} unique candidates")
