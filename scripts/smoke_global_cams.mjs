@@ -44,7 +44,7 @@ setTimeout(() => {
     return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};
   };
   const within = r => !!r && r.left >= -1 && r.top >= -1 && r.right <= innerWidth + 1 && r.bottom <= innerHeight + 1;
-  const controls = ['#randomTop','#search','#zoomIn','#zoomOut','#resetGlobe','#fullscreen'];
+  const controls = innerWidth > 820 ? ['#search','#zoomIn','#zoomOut','#resetGlobe','#fullscreen'] : ['#expandViewer','#openSource'];
   const result = {
     width: innerWidth,
     height: innerHeight,
@@ -135,7 +135,7 @@ try {
     const r = parseResult(dom);
     const desktop = width > 820;
 
-    if (!r.version.includes('V1.0')) failures.push(width + ': V1.0 label missing');
+    if (!r.version.includes('V1.1')) failures.push(width + ': V1.1 label missing');
     if (r.windowOnly !== 'WINDOW ONLY') failures.push(width + ': WINDOW ONLY badge missing');
     if (r.liveControls !== 0) failures.push(width + ': camera controls still rendered');
     if (r.sortTabs !== 3 || r.activeSortTabs !== 1) failures.push(width + ': WINDOW sort tabs invalid');
@@ -148,7 +148,7 @@ try {
 
     if (r.sidebar && r.stage) {
       if (desktop && Math.abs(r.sidebar.right - r.stage.left) > 2) failures.push(width + ': desktop sidebar/stage not side-by-side');
-      if (!desktop && Math.abs(r.stage.bottom - r.sidebar.top) > 2) failures.push(width + ': mobile stage/sidebar not stacked');
+      if (!desktop && Math.abs(r.sidebar.bottom - r.stage.top) > 2) failures.push(width + ': mobile video-first sidebar/stage not stacked');
     }
 
     console.log('Global WINDOW smoke', width, {
