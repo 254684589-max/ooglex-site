@@ -1,0 +1,159 @@
+name: Validate WINDOW V1.1 Content Quality 150
+
+on:
+  push:
+    branches:
+      - window-v1.1-content-quality
+    paths:
+      - '.github/workflows/validate-window-v11-content-quality.yml'
+      - 'scripts/global-cams/sync_windows_to_r2.py'
+      - 'data/global-windows/locations.json'
+      - 'data/global-windows/zh_labels.json'
+      - 'apps/global-cams/windows.json'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/validate-window-v11-content-quality.yml'
+      - 'scripts/global-cams/sync_windows_to_r2.py'
+      - 'data/global-windows/locations.json'
+      - 'data/global-windows/zh_labels.json'
+      - 'apps/global-cams/windows.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-window-v11-content-quality-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate V1.1 configuration
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/global-cams/sync_windows_to_r2.py
+          python - <<'PY'
+          import json
+          cfg=json.load(open("data/global-windows/locations.json",encoding="utf-8"))
+          assert int(cfg["target"]) == 150
+          assert int(cfg["min_duration_seconds"]) == 30
+          assert int(cfg["preferred_duration_min_seconds"]) >= 90
+          assert int(cfg["preferred_duration_max_seconds"]) <= 180
+          assert int(cfg["min_width"]) >= 1280 and int(cfg["min_height"]) >= 720
+          assert int(cfg["preferred_width"]) >= 1920 and int(cfg["preferred_height"]) >= 1080
+          assert cfg["require_landscape"] is True
+          assert int(cfg["min_quality_score"]) >= 60
+          assert str(cfg.get("content_profile")) == "immersive-longform-hd"
+          assert str(cfg.get("validation_contract")) == "v1.1-content-quality"
+          assert int(cfg.get("local_location_scan_limit")) == 0
+          assert bool(cfg.get("fallback_local_enabled")) is True
+          assert int(cfg.get("fallback_local_location_scan_limit")) >= 36
+          print("WINDOW V1.1 configuration OK")
+          PY
+
+      - name: Curate 150 V1.1-quality WINDOW clips
+        run: |
+          set -euo pipefail
+          python scripts/global-cams/sync_windows_to_r2.py --target 150 --manifest-only
+
+      - name: Verify hard gates and report content-quality baseline
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, statistics
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          plan=json.load(open(".window-build/upload-plan.json",encoding="utf-8"))
+
+          assert len(rows) >= 150, len(rows)
+          assert len(plan) == 0, "manifest-only validation must not stage uploads"
+          assert all(int(x.get("quality_schema_version") or 0)==1 for x in rows)
+          assert all(int(x.get("quality_score") or 0)>=60 for x in rows)
+          assert all(30 <= float(x.get("duration_seconds") or 0) <= 300 for x in rows)
+          assert all(int(x.get("width") or 0)>=1280 and int(x.get("height") or 0)>=720 for x in rows)
+          assert all(int(x.get("width") or 0)>int(x.get("height") or 0) for x in rows)
+          assert all(x.get("name_zh") and x.get("original_title") for x in rows)
+          assert all(x.get("source_url") and x.get("license") for x in rows)
+          assert len({x.get("id") for x in rows}) == len(rows)
+          assert len({x.get("r2_key") for x in rows}) == len(rows)
+          assert len({x.get("source_url") for x in rows}) == len(rows)
+
+          total=sum(int(x.get("bytes") or 0) for x in rows)
+          assert total <= 8*1024**3, total
+
+          hd=[x for x in rows if int(x.get("width") or 0)>=1920 and int(x.get("height") or 0)>=1080]
+          longform=[x for x in rows if 90 <= float(x.get("duration_seconds") or 0) <= 180]
+          both=[x for x in rows if int(x.get("width") or 0)>=1920 and int(x.get("height") or 0)>=1080 and 90 <= float(x.get("duration_seconds") or 0) <= 180]
+          stable=[x for x in rows if int((x.get("quality_breakdown") or {}).get("stability") or 0)>=11]
+          transcodes=[x for x in rows if x.get("delivery_kind")=="transcode"]
+          durations=[float(x.get("duration_seconds") or 0) for x in rows]
+          scores=[int(x.get("quality_score") or 0) for x in rows]
+
+          print("V11_COUNT=",len(rows))
+          print("V11_TOTAL_MIB=",round(total/1024/1024,1))
+          print("V11_1080P_COUNT=",len(hd),"PCT=",round(len(hd)*100/len(rows),1))
+          print("V11_90_180S_COUNT=",len(longform),"PCT=",round(len(longform)*100/len(rows),1))
+          print("V11_HD_LONGFORM_COUNT=",len(both),"PCT=",round(len(both)*100/len(rows),1))
+          print("V11_STABLE_COUNT=",len(stable),"PCT=",round(len(stable)*100/len(rows),1))
+          print("V11_TRANSCODE_COUNT=",len(transcodes))
+          print("V11_SCORE_MIN_AVG_MAX=",min(scores),round(sum(scores)/len(scores),1),max(scores))
+          print("V11_DURATION_MIN_MEDIAN_MAX=",round(min(durations),1),round(statistics.median(durations),1),round(max(durations),1))
+          print("V11_UNIQUE_CITIES=",len({x.get("city_zh") or x.get("city") for x in rows}))
+          PY
+
+      - name: Download three selected official transcodes
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, urllib.request
+          rows=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          picks=[
+              x for x in rows
+              if x.get("delivery_kind")=="transcode"
+              and x.get("delivery_variant_url")
+              and int(x.get("width") or 0)>=1920
+              and int(x.get("height") or 0)>=1080
+          ][:3]
+          if len(picks) < 3:
+              picks=[x for x in rows if x.get("delivery_kind")=="transcode" and x.get("delivery_variant_url")][:3]
+          assert len(picks)==3, f"need 3 transcode samples, got {len(picks)}"
+          limit=80*1024*1024
+          for i,row in enumerate(picks,1):
+              req=urllib.request.Request(
+                  row["delivery_variant_url"],
+                  headers={"User-Agent":"Ooglex-Global-Windows/1.1 (https://www.ooglex.com/)","Accept-Encoding":"identity"}
+              )
+              total=0
+              with urllib.request.urlopen(req,timeout=180) as r:
+                  while True:
+                      chunk=r.read(1024*1024)
+                      if not chunk:
+                          break
+                      total += len(chunk)
+                      assert total <= limit,(row.get("original_title"),total)
+              assert total>0
+              print("V11_TRANSCODE_SAMPLE_OK",i,row.get("width"),row.get("height"),round(total/1024/1024,1),row.get("original_title"))
+          PY
+
+      - name: Upload V1.1 catalog evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: window-v11-content-quality-150
+          path: |
+            .window-build/manifest/windows.json
+            .window-build/upload-plan.json
+          if-no-files-found: warn
+          retention-days: 7

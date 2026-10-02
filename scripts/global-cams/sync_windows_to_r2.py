@@ -142,6 +142,13 @@ def strip_html(value: str) -> str:
     value = re.sub(r"<[^>]+>", " ", value)
     return re.sub(r"\s+", " ", value).strip()
 
+def config_int(cfg: dict, key: str, default: int) -> int:
+    """Read an integer config value without treating an explicit zero as missing."""
+    if key not in cfg or cfg.get(key) is None:
+        return int(default)
+    return int(cfg[key])
+
+
 
 def norm(value: str) -> str:
     return strip_html(value).lower().replace("_", " ")
@@ -539,9 +546,9 @@ def v1_quality_score(info: dict, profile: dict, semantic_score: int, cfg: dict) 
     if any(phrase(title, x) for x in stable_terms):
         stability = 15
     elif any(phrase(title, x) for x in moving_terms):
-        stability = 9
+        stability = 6
     elif any(phrase(title, x) for x in ("timelapse", "time lapse", "time-lapse")):
-        stability = 12
+        stability = 10
     else:
         stability = 11
 
@@ -1075,6 +1082,8 @@ def normalize_title(title: str) -> str:
 def scene_fingerprint(title: str) -> str:
     text = norm(normalize_title(title))
     text = re.sub(r"\b(no audio|short|video|timelapse|time lapse|time-lapse)\b", " ", text)
+    text = re.sub(r"\b(4k|uhd|fhd|full hd|1080p|720p|2160p)\b", " ", text)
+    text = re.sub(r"\b(part|clip|take)\s*\d+\b", " ", text)
     text = re.sub(r"\([^)]*\d{4,}[^)]*\)", " ", text)
     text = re.sub(r"\b\d{4,}\b", " ", text)
     text = re.sub(r"[^0-9a-z\u00c0-\uffff]+", " ", text)
@@ -1494,7 +1503,9 @@ def main() -> int:
     rejected_location = 0
     rejected_size = 0
 
-    local_locations = list(cfg.get("locations", []))[:int(cfg.get("local_location_scan_limit") or 36)]
+    local_scan_limit = max(0, config_int(cfg, "local_location_scan_limit", 36))
+    local_locations = list(cfg.get("locations", []))[:local_scan_limit]
+    print(f"local scenic scan locations={len(local_locations)} (configured={local_scan_limit})")
     for loc in local_locations:
         if len(items) >= target:
             break
@@ -1685,17 +1696,150 @@ def main() -> int:
             except Exception as exc:
                 print(f"warn: global skip {title}: {exc}", file=sys.stderr)
 
-    min_catalog = int(cfg.get("min_catalog") or 100)
-    required = min(target, max(12, min_catalog))
-    if len(items) < required:
-        raise SystemExit(f"curated catalog too small: {len(items)} accepted; require at least {required}")
+    if len(items) < target and bool(cfg.get("fallback_local_enabled", False)):
+        fallback_limit = max(0, config_int(cfg, "fallback_local_location_scan_limit", 0))
+        fallback_locations = list(cfg.get("locations", []))[:fallback_limit]
+        print(
+            f"global-first shortfall={target-len(items)}; "
+            f"starting local fallback across {len(fallback_locations)} locations"
+        )
 
-    items.sort(key=lambda x: (
-        -int(x.get("quality_score") or 0),
-        int(x.get("bytes") or 0),
-        str(x.get("city_zh") or x.get("city") or ""),
-        str(x.get("name") or ""),
-    ))
+        for loc in fallback_locations:
+            if len(items) >= target:
+                break
+
+            city = str(loc["city"])
+            used_here = city_counts[city]
+            if used_here >= max_per_location:
+                continue
+
+            titles = themed_search_titles(loc, per_query=per_query, max_candidates=max_candidates, interval=interval)
+            if not titles:
+                continue
+            infos = image_infos(titles, interval=interval)
+
+            for title in titles:
+                if len(items) >= target or used_here >= max_per_location:
+                    break
+                info = infos.get(title)
+                if not info:
+                    continue
+
+                try:
+                    origin_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+                    origin_url = str(info.get("url") or "")
+                    if origin_mime not in VIDEO_MIMES or not origin_url or origin_url in seen_urls or not license_ok(info):
+                        continue
+
+                    delivery, delivery_reasons = select_delivery_variant(info, cfg)
+                    if not delivery:
+                        rejected_size += 1
+                        continue
+                    profile = dict(delivery["profile"])
+                    technical_ok, technical_reasons = technical_gate(profile, cfg)
+                    if not technical_ok:
+                        rejected_technical += 1
+                        continue
+
+                    semantic_score, reasons = quality_score(info)
+                    if semantic_score < min_semantic:
+                        rejected_quality += 1
+                        continue
+                    fingerprint = scene_fingerprint(title)
+                    if fingerprint and fingerprint in seen_scenes:
+                        continue
+
+                    within, distance = geo_ok(info, loc, default_radius_km)
+                    if not within:
+                        rejected_geo += 1
+                        continue
+                    if not location_relevant(info, loc, distance):
+                        rejected_location += 1
+                        continue
+
+                    total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
+                    if total_score < min_quality:
+                        rejected_quality += 1
+                        continue
+
+                    delivery_url = str(delivery["url"])
+                    delivery_mime = str(delivery["mime"])
+                    size = int(delivery["bytes"])
+                    ext = ".mp4" if delivery_mime == "video/mp4" else (".ogv" if delivery_mime == "video/ogg" else ".webm")
+                    digest = hashlib.sha256(delivery_url.encode()).hexdigest()[:24]
+                    filename = digest + ext
+                    key = "media/" + filename
+                    if key in seen_keys:
+                        continue
+
+                    dest = media_dir / filename
+                    if not args.manifest_only and (not dest.exists() or dest.stat().st_size != size):
+                        tmp = dest.with_suffix(dest.suffix + ".part")
+                        if tmp.exists():
+                            tmp.unlink()
+                        got = download(delivery_url, tmp, max_bytes)
+                        tmp.replace(dest)
+                        size = got
+                        profile["size"] = size
+
+                    item = build_item(
+                        info, loc, key, size, semantic_score,
+                        reasons + technical_reasons + ["local-fallback", f"delivery:{delivery.get('transcode_key') or 'original'}"],
+                        profile, total_score, breakdown, labels, delivery
+                    )
+                    items.append(item)
+                    if fingerprint:
+                        seen_scenes.add(fingerprint)
+                    if not args.manifest_only:
+                        upload_plan.append({"local": str(dest), "key": key, "content_type": delivery_mime, "bytes": size})
+                    seen_urls.add(origin_url)
+                    seen_keys.add(key)
+                    used_here += 1
+                    city_counts[city] += 1
+                    distance_note = "" if distance is None else f" · {distance:.0f} km"
+                    print(
+                        f"fallback accepted {len(items):03d}/{target}: {item['name']} :: score={total_score} :: "
+                        f"{item['width']}x{item['height']} :: {item['duration_seconds']:.1f}s :: "
+                        f"{size/1024/1024:.1f} MiB{distance_note}"
+                    )
+                except Exception as exc:
+                    print(f"warn: fallback skip {title}: {exc}", file=sys.stderr)
+
+    min_catalog = int(cfg.get("min_catalog") or 100)
+    strict_target_count = bool(cfg.get("strict_target_count", False))
+    required = target if strict_target_count else min(target, max(12, min_catalog))
+    if len(items) < required:
+        raise SystemExit(
+            f"curated catalog too small: {len(items)} accepted; require at least {required} "
+            f"(strict_target_count={strict_target_count})"
+        )
+
+    preferred_duration_min = float(cfg.get("preferred_duration_min_seconds") or 90)
+    preferred_duration_max = float(cfg.get("preferred_duration_max_seconds") or 180)
+    preferred_width = int(cfg.get("preferred_width") or 1920)
+    preferred_height = int(cfg.get("preferred_height") or 1080)
+
+    def selection_rank_key(x: dict) -> tuple:
+        width = int(x.get("width") or 0)
+        height = int(x.get("height") or 0)
+        duration = float(x.get("duration_seconds") or 0)
+        breakdown = x.get("quality_breakdown") or {}
+        preferred_resolution = int(width >= preferred_width and height >= preferred_height)
+        preferred_duration = int(preferred_duration_min <= duration <= preferred_duration_max)
+        stability = int(breakdown.get("stability") or 0)
+        duration_distance = abs(duration - 120.0)
+        return (
+            -int(x.get("quality_score") or 0),
+            -preferred_resolution,
+            -preferred_duration,
+            -stability,
+            duration_distance,
+            int(x.get("bytes") or 0),
+            str(x.get("city_zh") or x.get("city") or ""),
+            str(x.get("name") or ""),
+        )
+
+    items.sort(key=selection_rank_key)
     chosen: list[dict] = []
     chosen_bytes = 0
     budget_skipped = 0
@@ -1727,7 +1871,7 @@ def main() -> int:
     widths = [int(x.get("width") or 0) for x in chosen]
     heights = [int(x.get("height") or 0) for x in chosen]
     print(
-        f"built {len(chosen)} V1 WINDOW clips across {len(cities)} locations, "
+        f"built {len(chosen)} V1.1 WINDOW clips across {len(cities)} locations, "
         f"{chosen_bytes/1024/1024:.1f} MiB catalog size, score min/avg/max="
         f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}, "
         f"duration min/avg/max={min(durations):.1f}/{sum(durations)/len(durations):.1f}/{max(durations):.1f}s"
