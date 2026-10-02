@@ -8,6 +8,7 @@
 //   2.1  霜渡镇 ?view=3（更夫面前）：电脑按 E 打开对话、按 2 选第二个选项、Esc 结束；手机 / 平板真实点交互按钮与第一个选项（IC_DIALOG），截图。
 //   2.4  霜渡镇 ?view=5（木桩假人面前）：电脑点击画面后按 F 两下（拔剑、轻击），再按一下左键出剑；手机 / 平板点两下「攻」按钮；要求打中木桩（IC_HIT），截图。
 //   2.9  霜渡镇出生点：电脑按 V、手机 / 平板点「视角」切到第三人称（IC_CAMERA mode=third），截图。
+//   A.1  切到第三人称后人物模型与动作库加载成功（IC_AVATAR loaded=true、IC_AVATAR role=idle）；电脑再按 F 拔剑、按住 F 蓄力（role=Sword_Attack 停在最高处）、按住 Q 格挡（role=block），各截一张图。
 //   2.7  霜渡镇出生点：电脑按 K、手机 / 平板点右上角「角色」，打开角色面板（IC_CHAR open），截图。
 //   2.8  霜渡镇：电脑按 F8 快速存档（IC_SAVE）→ 确认浏览器 localStorage 里有 ooglex.ironcrown.v1.quick → 刷新页面 → 按 F9 读档（IC_LOAD，场景重新载入）；
 //        手机 / 平板点「菜单」→「存档 / 读档」打开存档面板（IC_SAVES open）；截图。
@@ -241,7 +242,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     logs.length = 0;
     await page.goto(url);
     let charOpen = '';
-    let camMode = '';
+    let camMode = '', avatarLoad = '', avatarIdle = '', avatarArmed = 'n/a', avatarCharge = 'n/a', avatarBlock = 'n/a';
     if (await waitLog(logs, 'IC_CHAR_SCREEN', 240)) {
       await page.waitForTimeout(400);
       // 第三人称（2.9）：电脑按 V、手机 / 平板点「视角」
@@ -255,8 +256,29 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
         }
       }
       camMode = await waitLog(logs, 'IC_CAMERA mode=third', 12);
+      avatarLoad = await waitLog(logs, 'IC_AVATAR loaded=true', 40);
+      avatarIdle = await waitLog(logs, 'IC_AVATAR role=idle', 20);
       await page.waitForTimeout(1500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-third.png`) });
+      if (!mobile) {
+        // 拔剑 → 按住 F 蓄力（剑举到最高处停住）→ 松开出重击 → 按住 Q 格挡；各截一张图
+        await page.keyboard.press('f');
+        avatarArmed = await waitLog(logs, 'IC_AVATAR role=idle_armed', 20);
+        await page.waitForTimeout(600);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-third-armed.png`) });
+        await page.keyboard.down('f');
+        avatarCharge = await waitLog(logs, 'IC_AVATAR role=Sword_Attack', 20);
+        await page.waitForTimeout(900);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-third-charge.png`) });
+        await page.keyboard.up('f');
+        await page.waitForTimeout(700);
+        await page.keyboard.down('q');
+        avatarBlock = await waitLog(logs, 'IC_AVATAR role=block', 20);
+        await page.waitForTimeout(900);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-third-block.png`) });
+        await page.keyboard.up('q');
+        await page.waitForTimeout(500);
+      }
       // 切回第一人称：视角会存进浏览器设置，不切回来后面几步就都在第三人称里跑
       if (!mobile) {
         await page.keyboard.press('v');
@@ -379,9 +401,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!camMode && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

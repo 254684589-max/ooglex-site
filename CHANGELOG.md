@@ -13,6 +13,13 @@
 
 ### 新增
 
+- 2026-10-02，**《铁冠之争》阶段 A.1：人物（一）——主角换上 CC0 人物模型与动作**（`games/ironcrown/`）。**未部署**（在功能分支 `claude/game-of-thrones-game-ideas-sk0f85` 上，按所有者要求不合并 `main`）。
+  - 第三人称里的主角不再是占位胶囊：换成 Quaternius 的 Universal Base Characters 男性人物模型（CC0，1.8 米、约 1.4 万三角面），握着剑；动作来自 Universal Animation Library 1 / 2（CC0）。
+  - 站、走、跑、蹲、蹲走、跳；拔剑后持剑待机；轻击两段连击、按住蓄力的重击（剑抬到最高处停住，松手劈下）、格挡举剑；挨打、被击退、倒下；斜着走、侧着走时身体转向移动方向，倒着走时动作倒放。
+  - 出招动作的命中那一刻对齐近战判定（测试实测：轻击 0.22 / 0.23 秒、重击 0.39 秒，目标 0.23 / 0.40）。倒下时人物继续播完倒地动作（测试抓到过它会停在挨打的一帧）。
+  - 人物在第一次切到第三人称时才加载，不开第三人称的人不付加载和显存的钱；网页包 52.3 → 56.2 MB。界面标题改为「NPC 与敌人为占位」。
+  - 如实说明的限制：免费版底模只有「Superhero」体型男性（偏健壮），没有头发、只穿内裤（服装与头发在后面的 A.2）；免费动画没有侧走、倒走、拔剑、收剑；NPC 与敌人仍是占位胶囊；第三人称下的帧率还没测。
+  - 验证：自动化测试 475 项通过（新增 54 项）；网页冒烟 1280 / 768 / 360 三宽度通过（0 报错、0 溢出，含真实键盘拔剑 / 蓄力 / 格挡）。详见 `games/ironcrown/TEST_REPORT.md`。
 - 2026-10-02，**《铁冠之争》第三人称越肩视角（步骤 2.9，所有者决定 D6 方案 2）**（`games/ironcrown/`）。**已上线**（2026-10-02，所有者要求「合并上线」，1.5 与 2.1–2.9 一并合并到 main，合并提交 `78118ca`，部署运行 #1538 成功）。
   - 电脑按 V、手机点右下角「视角」、或在暂停菜单里勾选，就能在第一人称和第三人称越肩视角之间切换，游戏会记住你的选择。
   - 第三人称时相机在主角右肩后方，身后有墙会自动拉近、不穿墙；交互和出剑的距离与第一人称一样。
@@ -136,6 +143,7 @@
 
 ### 文档
 
+- 2026-10-02，《铁冠之争》素材台账与设计文档更新（`games/ironcrown/assets/SOURCES.md`、`design/ART.md`、`design/TECH.md` 4.4b、`docs/IRONCROWN_ROADMAP.md`）：记录 Quaternius 三个包的来源、许可（CC0 1.0）、下载日期与处理方式；**更正**了之前按页面介绍写的说法（免费版底模只有 Superhero 男女各一个、动画库各 43 个动作、底模没有头发、Dark / Ligh 贴图只差内裤颜色）。新增 `tools/build_character_anims.gd`、`tools/patch_character_gltf.py`、`tools/character_sheet.gd`（见上一条）。**未部署。**
 - 2026-10-02，**《铁冠之争》阶段 A：人物（D4 = B）素材调研与拆分**（`docs/IRONCROWN_ROADMAP.md`、`games/ironcrown/assets/SOURCES.md`、`games/ironcrown/design/ART.md`）。**未部署**（只改文档，不涉及游戏代码与 `play/`）。
   - 选定 Quaternius 的 Universal 系列作为 CC0 人物素材：Universal Base Characters（人物底模）、Modular Character Outfits – Fantasy（服装）、Universal Animation Library 1 / 2（动作，含近战连击）；许可（页面标注 CC0）、格式、来源链接记入素材台账的「候选」表，尚未下载、尚未入库。
   - 实测 quaternius.com 已能访问，但新包的下载入口只有 itch.io，本环境打不开，所以「人物（一）」还没有开始导入；台账里写明了需要所有者放行的域名，或改为所有者上传文件。

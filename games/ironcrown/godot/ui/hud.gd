@@ -8,8 +8,8 @@ signal quest_pressed
 signal bag_pressed
 signal char_pressed
 
-const TITLE := "铁冠之争 · 技术原型（人物为占位）"
-const TITLE_SHORT := "铁冠之争（人物为占位）"     # 窄屏：右上角四个按钮放不下长标题（2.7）
+const TITLE := "铁冠之争 · 技术原型（NPC 与敌人为占位）"
+const TITLE_SHORT := "铁冠之争（NPC 为占位）"     # 窄屏：右上角四个按钮放不下长标题（2.7）
 
 var title_label: Label
 var hint_label: Label

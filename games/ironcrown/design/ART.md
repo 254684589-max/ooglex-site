@@ -68,7 +68,7 @@
 |---|---|---|---|---|
 | Poly Haven | 写实 PBR 贴图、HDRI、少量模型 | CC0 | ✅ 能（《余烬陷落》已从这里下载过贴图） | **首选**：石板路、石墙、木头、泥地、雪、屋顶 |
 | ambientCG | 写实 PBR 贴图 | CC0 | ✅ 能 | 补充 Poly Haven 没有的材质 |
-| Quaternius | 低多边形模型、带动作的角色；2025 年起的 Universal 系列（人物底模、服装、动画库）风格偏写实 | CC0 | ⚠️ 2026-10-02 站点本身能访问，**但新包的下载全部托管在 itch.io，本环境打不开**（旧包在 Google Drive，能下，但风格是卡通） | **D4 = B 的首选**：Universal Base Characters + Modular Character Outfits – Fantasy + Universal Animation Library 1 / 2，详见 `assets/SOURCES.md` 候选表 |
+| Quaternius | 低多边形模型、带动作的角色；2025 年起的 Universal 系列（人物底模、服装、动画库）风格偏写实 | CC0 | ✅ 2026-10-02 所有者在自己电脑上从 itch.io 下载后上传（本环境的自动下载被 itch.io 拦下）；免费「Standard」版比页面介绍的少：底模只有 Superhero 体型男女各一个、每个动画库 43 个动作（没有八方向移动） | **D4 = B 在用**：Universal Base Characters 的男性底模 + Universal Animation Library 1 / 2（A.1 已接入）；Modular Character Outfits – Fantasy 留给 A.2。详见 `assets/SOURCES.md` |
 | Kenney | 卡通模型、音效 | CC0 | ❌ 被拦截 | 风格不合，主要看音效 |
 | OpenGameArt | 混合许可 | 逐个核对 | ❌ 被拦截 | 逐个看，许可不清的不用 |
 | 所有者用 AI 工具生成 | 概念图、贴图 | 按工具条款 | —— | 需要所有者提供；记录工具名、提示词、日期 |
@@ -96,4 +96,4 @@
 
 1. 风格定为「写实倾向」（照片扫描贴图、写实比例）可以吗？《余烬陷落》是风格化，这款刻意区分。
 2. ~~人物方案先走第 1 种……~~ **已定（D4 = B，2026-10-02）**：CC0 人物底模 + CC0 动作库（Quaternius 等），阶段 3 之后视情况外包升级主要角色。
-3. 能否在云端环境设置里放行 quaternius.com（CC0 动作库）？不放行也不阻塞阶段 1。
+3. ~~能否放行 quaternius.com？~~ 已由所有者手动下载上传解决（2026-10-02）。

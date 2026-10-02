@@ -69,7 +69,7 @@ godot/
 - 头部摆动、镜头震动受「减少动态效果」和设置开关控制。
 
 - **第三人称越肩（2.9，D6）**：相机仍挂在头部节点下，第三人称时本地偏移 (0.55, 0.25, 2.6)，每帧从眼睛向偏移点打世界层射线，撞墙就收到墙前 0.25 米（往前收快、往后退慢）。
-  瞄准相关的代码一律用 `FpController.aim_origin()`（眼睛）而不是相机位置：交互射线从相机穿过屏幕中心、只认离眼睛 2.5 米内的东西；命中盒子、敌人视线都从眼睛算。占位人形在 `player/avatar.gd`。
+  瞄准相关的代码一律用 `FpController.aim_origin()`（眼睛）而不是相机位置：交互射线从相机穿过屏幕中心、只认离眼睛 2.5 米内的东西；命中盒子、敌人视线都从眼睛算。人物在 `player/avatar.gd`（2.9 是占位人形，A.1 换成人物模型，见 4.4b）。
 
 ### 4.2 交互
 
@@ -96,6 +96,23 @@ godot/
 - **2.5 已实现**（`actors/enemy.gd`，数值在 `data/enemies.json`）：视野锥 + 射线，亮处看组 `light_source`（街灯、火把，元数据 `radius`）；听觉按玩家动静（跑 10 / 走 4 / 蹲 1.5 / 挥剑 8 米）；感知每 0.1 秒算一次；
   怀疑值 0..1（0.35 起疑、1 警觉，起疑后再看到涨三倍）；战斗中看不到 6 秒回到起疑。攻击令牌在 `combat/combat_director.gd`。随机数用「存档种子 + 敌人编号」做种子。
   **寻路还没上导航网格**：训练场是平地，直线走 + 碰撞滑动够用；敌人进街巷（阶段 3）时再烘焙导航网格。玩家的格挡、完美格挡、失衡与生命在 `combat/melee.gd`（`receive_hit()`）。
+
+### 4.4b 人物模型与动作（A.1，D4 = B）
+
+- **素材**：Quaternius 的 Universal Base Characters（男性底模）+ Universal Animation Library 1 / 2，全部 CC0，同一套 65 根骨头的骨架，动作不用重定向。来源与处理见 `assets/SOURCES.md`。
+- **代码**：`actors/character_model.gd`（`CharacterModel`：加载底模 + 动画库、`play_loop` / `play_once` / `hold`、纯函数 `pick_locomotion` / `light_attack`；玩家、NPC、敌人以后共用）；
+  `player/avatar.gd`（`PlayerAvatar`：按 `Melee.state` 与移动速度选动作，第一次显示第三人称时才加载模型）。**动作与「角色」的对应、播放速度参考值、命中时刻都在 `data/character_anims.json`**，改了之后重新运行
+  `godot --headless --path games/ironcrown/godot -s ../tools/build_character_anims.gd` 重新打包动画库（只带用到的动作，原包的 glb 每个 7.6 MB）。
+- **与近战对齐**：动作播放速度 = 动作里的命中时刻（`impact`，从每帧右手位置的速度峰值量出）÷ 近战从起点到命中帧的时间（`Melee.TIMING`）。重击蓄力时把动作从 0 推到 `wind_peak`（抬到最高）停住，松手后从那里劈下。
+  改了 `Melee.TIMING` 或换了动作，测试里「动作播放速度在合理范围」和「命中帧动作在最前」两组检查会报出来。
+- **坑**：
+  - glTF 人物面朝 **+Z**，游戏里向前是 -Z：`CharacterModel` 外面转 180°。
+  - 动作库只有朝前走 / 跑 / 蹲走，没有侧走、倒走：`PlayerAvatar` 把身体转向移动方向，超过 100° 就倒放前进动作。
+  - 步行速度 3 米 / 秒对走路动作（约 1 米 / 秒）太快，改用放慢到 ×0.56 的慢跑动作；速度参考值从 `UAL1_Standard_RM` 的根骨骼位移量出。
+  - **倒下时游戏树会暂停**（`main._on_defeated`），动画也会停在挨打的一帧：`PlayerAvatar` 在 `defeated` 时把自己的 `process_mode` 改成 ALWAYS，倒地动作才播得出来（测试抓到的）。
+  - 无头模式下 `Skeleton3D.get_bone_global_pose()` 读到的是缓存的旧值；测试用 `get_bone_pose_rotation()`（动画写进去的局部姿势）判断动作有没有驱动骨架。
+  - 贴图：2048² 的 PNG 导入时缩到 1024、Basis 压缩、生成 mipmap（和 Poly Haven 贴图同一套设置），整套人物网页包里约 4 MB；glTF 材质默认双面，导入后改成背面剔除，并加一点点自发光，背光时不会变成黑影。
+  - 本环境可以用 `xvfb-run` + Mesa 软件渲染做离屏截图：`tools/character_sheet.gd` 把人物摆在几个动作的某一刻渲成拼图，校准拿剑位置用的（剑身沿手骨 +Z 再向 +Y 偏 45°，剑面法线朝手心；免费动作库没有带剑的标准握法，朝向是按手骨轴向估的，待机时剑偏向右侧垂下，之后可手调或换带剑的动作）。
 
 ### 4.5 对话与任务
 

@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 120.0
+	dog.wait_time = 240.0
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -19,10 +19,11 @@ func _ready() -> void:
 	add_child(dog)
 	dog.start()
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
+	Settings.set_value("third_person", false)    # 上一次测试被中断时，设置文件里可能留着第三人称（Settings 在测试开始前已经读过它）
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "camera"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -1991,7 +1992,8 @@ func test_camera() -> void:
 	check(not p.third_person and not p.avatar.visible and p.camera.position.length() < 0.1, "默认第一人称：看不到自己的身体")
 	main._unhandled_input(key_ev(KEY_V))
 	await physics(90)
-	check(Settings.third_person and p.third_person and p.avatar.visible, "按 V 切到第三人称：看得到占位人形")
+	check(Settings.third_person and p.third_person and p.avatar.visible, "按 V 切到第三人称：看得到人物")
+	check(p.avatar.character != null and p.avatar.character.loaded, "第一次切到第三人称时才加载人物模型与动作库")
 	check(not m.view.mesh_node.visible, "第三人称时藏起第一人称的武器")
 	check(Saves.load_settings().get("third_person") == true, "视角设置存进浏览器，下次打开还是第三人称")
 	var want := Vector3(FpController.TP_SIDE, FpController.TP_UP, FpController.TP_DIST).length()
@@ -2023,7 +2025,7 @@ func test_camera() -> void:
 	m.press()
 	m.release()
 	await seconds(0.5)
-	check(m.drawn() and p.avatar.weapon_mesh.visible, "拔剑：人形手里出现剑")
+	check(m.drawn() and p.avatar.weapon_mesh.visible and p.avatar.weapon_mesh.get_parent() == p.avatar.character.grip, "拔剑：人物右手里出现剑（挂在手骨骼上）")
 	var h0 := dummy.hits
 	m.press()
 	m.release()
@@ -2031,11 +2033,11 @@ func test_camera() -> void:
 	check(dummy.hits == h0 + 1, "第三人称出剑也能打中木桩")
 	m.block_press()
 	await seconds(0.4)
-	check(absf(p.avatar.arm.rotation_degrees.z - 75.0) < 8.0, "举剑格挡：人形把剑横过来")
+	check(p.avatar.character.role == "block" and p.avatar.character.anim.get_playing_speed() == 0.0, "举剑格挡：人物举剑并停住（%s）" % p.avatar.character.role)
 	m.block_release()
 	p.crouch_wanted = true
 	await seconds(0.6)
-	check(p.avatar.body.scale.y < 0.8, "蹲下：人形矮一截")
+	check(p.avatar.character.role == "crouch_idle", "蹲下：人物换蹲姿待机（%s）" % p.avatar.character.role)
 	p.crouch_wanted = false
 	await seconds(0.3)
 	# 菜单勾选框、触屏按钮
@@ -2054,5 +2056,206 @@ func test_camera() -> void:
 	Settings.set_value("third_person", true)
 	main = await make_main(true)
 	check(main.player.third_person and main.player.avatar.visible, "设置里是第三人称：打开就是第三人称")
+	await free_main(main)
+	Settings.set_value("third_person", false)
+
+
+## 人物模型与动作（路线图 A.1）：数据一致性、模型与骨架、动作真的驱动骨架、动作与近战判定对齐、角色选择
+func test_character() -> void:
+	# —— 数据：动作映射、动画库
+	var map := CharacterModel.load_map()
+	check(not map.is_empty() and map.has("roles") and map.has("clips") and map.has("attacks") and map.has("locomotion"), "动作映射文件 data/character_anims.json 能读，有 roles / clips / attacks / locomotion")
+	var lib := load(CharacterModel.ANIMS) as AnimationLibrary
+	check(lib != null, "动画库 ual_core.res 能加载")
+	var missing: Array = []
+	for c in map.clips.keys():
+		if not lib.has_animation(c):
+			missing.append(c)
+	check(missing.is_empty(), "映射里列的 %d 个动作动画库里都有（缺：%s）" % [map.clips.size(), missing])
+	check(lib.get_animation_list().size() == map.clips.size(), "动画库里没有多余的动作（只打包用到的）")
+	var bad_roles: Array = []
+	for r in map.roles.keys():
+		if not map.clips.has(map.roles[r]):
+			bad_roles.append(r)
+	check(bad_roles.is_empty(), "每个角色（站、走、跑……）指向的动作都在 clips 里（%s）" % [bad_roles])
+	var loops_ok := true
+	for c in map.clips.keys():
+		if lib.has_animation(c) and (lib.get_animation(c).loop_mode != Animation.LOOP_NONE) != bool(map.clips[c].loop):
+			loops_ok = false
+	check(loops_ok, "循环方式与映射一致（站走跑蹲循环，出招挨打倒下只播一遍）")
+	var h: Dictionary = map.attacks.heavy
+	var hl := lib.get_animation(h.clip).length
+	check(0.0 < float(h.wind_peak) and float(h.wind_peak) < float(h.impact) and float(h.impact) < hl, "重击标记合理：蓄力到顶 %.2f < 命中 %.2f < 动作长 %.2f 秒" % [h.wind_peak, h.impact, hl])
+	var light_ok := true
+	for a in map.attacks.light:
+		light_ok = light_ok and float(a.impact) > 0.0 and float(a.impact) < lib.get_animation(a.clip).length
+	check(light_ok and (map.attacks.light as Array).size() == 2, "轻击两段，命中时刻都在动作长度之内")
+	# 动作播放速度对齐近战判定的命中帧（改了 Melee.TIMING 之后动作不会变得离谱）
+	var lt: Dictionary = Melee.TIMING.light
+	var light_scale := float(CharacterModel.light_attack(map, 0).impact) / (float(lt.wind) + float(lt.strike) * float(lt.hit_at))
+	var ht: Dictionary = Melee.TIMING.heavy
+	var heavy_scale := (float(h.impact) - float(h.wind_peak)) / (float(ht.strike) * float(ht.hit_at))
+	check(light_scale > 0.8 and light_scale < 2.2, "轻击动作播放速度 ×%.2f（0.8–2.2 内）" % light_scale)
+	check(heavy_scale > 0.5 and heavy_scale < 1.8, "重击劈下的播放速度 ×%.2f（0.5–1.8 内）" % heavy_scale)
+	check(CharacterModel.light_attack(map, 0).clip == "Sword_Regular_A" and CharacterModel.light_attack(map, 1).clip == "Sword_Regular_B" and CharacterModel.light_attack(map, 2).clip == "Sword_Regular_A", "轻击连击：第一段 A、第二段 B、第三段（剑术专长）回到 A")
+	# 站 / 走 / 跑 / 蹲走的选择
+	var pk := CharacterModel.pick_locomotion(map, 0.0, false, false)
+	check(pk.role == "idle", "不动：待机")
+	check(CharacterModel.pick_locomotion(map, 0.1, false, true).role == "idle_armed", "拔剑后不动：持剑待机")
+	check(CharacterModel.pick_locomotion(map, 0.0, true, true).role == "crouch_idle", "蹲着不动：蹲姿待机")
+	pk = CharacterModel.pick_locomotion(map, 1.5, false, false)
+	check(pk.role == "walk" and pk.scale > 1.0 and pk.scale <= 1.8, "1.5 米 / 秒：走路动作加速 ×%.2f（不超过 1.8）" % pk.scale)
+	pk = CharacterModel.pick_locomotion(map, FpController.RUN_SPEED, false, false)
+	check(pk.role == "run" and absf(pk.scale - 1.0) < 0.15, "跑速 5.5 米 / 秒：跑步动作约 ×1（×%.2f）" % pk.scale)
+	pk = CharacterModel.pick_locomotion(map, FpController.WALK_SPEED, false, false)
+	check(pk.role == "run" and pk.scale >= 0.5 and pk.scale < 0.7, "步行速度 3 米 / 秒：慢跑动作放慢 ×%.2f（走路动作的周期太小，3 米 / 秒要放大 3 倍才跟得上）" % pk.scale)
+	pk = CharacterModel.pick_locomotion(map, FpController.CROUCH_SPEED, true, true)
+	check(pk.role == "crouch_move" and pk.scale >= 0.6 and pk.scale <= 1.8, "蹲着走：蹲走动作 ×%.2f" % pk.scale)
+	# —— 模型：节点、骨架、身高、动作驱动骨架
+	var cm := CharacterModel.new()
+	add_child(cm)
+	await frames(2)
+	check(cm.loaded and cm.skeleton != null and cm.anim != null, "人物模型加载成功（节点：Model / Skeleton3D / AnimationPlayer）")
+	check(cm.skeleton.get_bone_count() == 65 and cm.skeleton.find_bone("hand_r") >= 0 and cm.skeleton.find_bone("pelvis") >= 0, "骨架 65 根骨头，有 pelvis 与 hand_r")
+	var unknown: Array = []
+	for c in lib.get_animation_list():
+		var a := lib.get_animation(c)
+		for i in a.get_track_count():
+			var bone := str(a.track_get_path(i)).get_slice(":", 1)
+			if cm.skeleton.find_bone(bone) < 0 and not unknown.has(bone):
+				unknown.append(bone)
+	check(unknown.is_empty(), "所有动作用到的骨头模型骨架里都有，不用重定向（缺：%s）" % [unknown])
+	var meshes := cm.scene_root.find_children("*", "MeshInstance3D", true, false)
+	var tris := 0
+	var body: MeshInstance3D = null
+	for mi: MeshInstance3D in meshes:
+		for s in mi.mesh.get_surface_count():
+			var arr := mi.mesh.surface_get_arrays(s)
+			tris += (arr[Mesh.ARRAY_INDEX] as PackedInt32Array).size() / 3
+		if mi.name == "SuperHero_Male":
+			body = mi
+	check(meshes.size() == 3 and tris > 12000 and tris < 16000, "三个网格（身体、眼睛、眉毛），共 %d 个三角面（约 1.4 万）" % tris)
+	var top := (body.global_transform * body.get_aabb()).end.y
+	check(top > 1.7 and top < 1.95, "身高约 1.8 米，和玩家碰撞体（1.8 米）匹配（%.2f）" % top)
+	var mats_ok := true
+	for mi: MeshInstance3D in meshes:
+		var mat := mi.get_surface_override_material(0) as StandardMaterial3D
+		mats_ok = mats_ok and mat != null and mat.emission_enabled
+	check(mats_ok, "三个网格都有一点自发光，背光时不会变成黑影")
+	check(cm.hand != null and cm.grip != null and cm.hand.bone_name == "hand_r" and cm.hand.get_parent() == cm.skeleton, "右手骨骼上有挂点（拿剑用）")
+	var rest_pose := {}
+	for bn in ["upperarm_r", "lowerarm_r", "spine_02", "thigh_l"]:
+		rest_pose[bn] = cm.skeleton.get_bone_pose_rotation(cm.skeleton.find_bone(bn))
+	cm.hold("Sword_Attack", 0.33, 0.0)
+	await frames(3)
+	var turned := 0.0
+	for bn in rest_pose.keys():
+		turned = maxf(turned, (rest_pose[bn] as Quaternion).angle_to(cm.skeleton.get_bone_pose_rotation(cm.skeleton.find_bone(bn))))
+	check(turned > 0.3, "动作真的驱动了骨架：抬剑起手时骨头从 T 姿势最多转了 %.0f°" % rad_to_deg(turned))
+	cm.queue_free()
+	await frames(2)
+	# —— 不开第三人称：不加载模型
+	Settings.set_value("third_person", false)
+	GameState.new_game(22)
+	var main := await make_main(true)
+	check(main.player.avatar.character == null, "默认第一人称：不加载人物模型（省加载与显存）")
+	await free_main(main)
+	# —— 玩家的人物：站 / 走 / 跑 / 倒着走 / 侧着走 / 跳 / 蹲
+	Settings.set_value("third_person", true)
+	GameState.new_game(23)
+	main = await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var av := p.avatar
+	await place(p, 0.0, 10.0)
+	await seconds(0.4)
+	var c: CharacterModel = av.character
+	check(c != null and c.loaded, "设置里是第三人称：开局就加载人物")
+	check(c.role == "idle" and c.playing() == "Idle_Loop", "站着不动：待机动作（%s）" % c.playing())
+	check(absf(c.rotation.y - PI) < 0.05, "人物模型面朝 -Z（和玩家的「向前」一致）")
+	p.touch_move = Vector2(0, -0.5)
+	await seconds(0.5)
+	check(c.role == "walk" and c.playing() == "Walk_Loop" and c.anim.get_playing_speed() > 1.0, "半推摇杆：走路动作（加速 ×%.2f）" % c.anim.get_playing_speed())
+	p.touch_move = Vector2(0, -1.0)
+	await seconds(0.5)
+	check(c.role == "run" and c.playing() == "Jog_Fwd_Loop" and absf(c.anim.get_playing_speed() - 1.0) < 0.25, "推到底：跑步动作（×%.2f）" % c.anim.get_playing_speed())
+	await place(p, 0.0, 10.0)
+	p.touch_move = Vector2(0, 0.5)
+	await seconds(0.6)
+	check(av.reversed and c.role == "walk" and c.anim.get_playing_speed() < 0.0, "倒着走：走路动作倒放（×%.2f），身体仍朝前" % c.anim.get_playing_speed())
+	check(absf(av.face_deg) < 10.0, "倒着走时身体朝向镜头方向（偏转 %.0f°）" % av.face_deg)
+	await place(p, 0.0, 10.0)
+	p.touch_move = Vector2(0.5, 0)
+	await seconds(0.6)
+	check(not av.reversed and absf(av.face_deg - 90.0) < 10.0 and c.role == "walk", "向右侧着走：腿朝右（偏转 %.0f°）" % av.face_deg)
+	p.touch_move = Vector2.ZERO
+	await seconds(0.6)
+	check(absf(av.face_deg) < 10.0 and c.role == "idle", "停下：身体转回朝向镜头方向")
+	await place(p, 0.0, 10.0)
+	p.request_jump()
+	await seconds(0.35)
+	check(c.role == "air" and c.playing() == "Jump_Loop", "跳起来：空中动作（%s）" % c.playing())
+	await seconds(1.0)
+	check(c.role == "idle", "落地：回到待机（%s）" % c.role)
+	p.crouch_wanted = true
+	await seconds(0.5)
+	check(c.role == "crouch_idle", "蹲下：蹲姿待机")
+	p.touch_move = Vector2(0, -1.0)
+	await seconds(0.4)
+	check(c.role == "crouch_move" and c.playing() == "Crouch_Fwd_Loop", "蹲着走：蹲走动作（%s）" % c.playing())
+	p.touch_move = Vector2.ZERO
+	p.crouch_wanted = false
+	await seconds(0.6)
+	# —— 战斗：拔剑、出招对齐命中帧、蓄力、格挡、挨打、失衡、倒下
+	var dummy: TrainingDummy = main.world.get_children().filter(func(n): return n is TrainingDummy)[0]
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(m.drawn() and c.role == "idle_armed" and c.playing() == "Sword_Idle", "拔剑后：持剑待机（%s）" % c.playing())
+	var rec: Array = []
+	m.hit.connect(func(_t, _info): rec.append([c.playing(), c.anim.current_animation_position]))
+	m.press()
+	m.release()
+	await seconds(0.3)
+	check(rec.size() == 1 and rec[0][0] == "Sword_Regular_A" and absf(rec[0][1] - float(map.attacks.light[0].impact)) < 0.08, "轻击第一段：命中帧时动作正好在挥到最前（%s，第 %.2f 秒，目标 %.2f）" % [rec[0][0] if rec.size() > 0 else "-", rec[0][1] if rec.size() > 0 else -1.0, float(map.attacks.light[0].impact)])
+	m.press()
+	m.release()
+	await seconds(0.4)
+	check(rec.size() == 2 and rec[1][0] == "Sword_Regular_B" and absf(rec[1][1] - float(map.attacks.light[1].impact)) < 0.08, "轻击第二段：换成 B 动作，同样对齐命中帧（%s，第 %.2f 秒）" % [rec[1][0] if rec.size() > 1 else "-", rec[1][1] if rec.size() > 1 else -1.0])
+	await seconds(0.8)
+	check(m.state == Melee.State.IDLE and c.role == "idle_armed", "收招后回到持剑待机（%s）" % c.role)
+	rec.clear()
+	m.press()
+	await seconds(0.5)
+	check(m.state == Melee.State.CHARGE and c.playing() == "Sword_Attack" and c.anim.get_playing_speed() == 0.0 and absf(c.anim.current_animation_position - float(h.wind_peak)) < 0.02, "按住攻击蓄力：剑举到最高处停住（第 %.2f 秒）" % c.anim.current_animation_position)
+	m.release()
+	await seconds(0.5)
+	check(rec.size() == 1 and rec[0][0] == "Sword_Attack" and absf(rec[0][1] - float(h.impact)) < 0.08, "重击：松手后劈下，命中帧对齐（第 %.2f 秒，目标 %.2f）" % [rec[0][1] if rec.size() > 0 else -1.0, float(h.impact)])
+	await seconds(0.8)
+	m.block_press()
+	await seconds(0.5)
+	check(m.blocking() and c.role == "block" and c.anim.get_playing_speed() == 0.0 and absf(c.anim.current_animation_position - float(map.block.hold)) < 0.03, "按住格挡：举剑停住（第 %.2f 秒）" % c.anim.current_animation_position)
+	m.block_release()
+	await seconds(0.6)
+	check(c.role == "idle_armed", "松开格挡：回到持剑待机（%s）" % c.role)
+	m.receive_hit({"damage": 4, "kind": "light", "attacker": null})
+	await frames(3)
+	check(c.role == "hit" and c.playing() == "Hit_Chest", "挨打（没在出招）：受击动作（%s）" % c.playing())
+	await seconds(0.7)
+	check(c.role == "idle_armed", "受击动作播完回到待机（%s）" % c.role)
+	m.stagger_left = 0.6
+	await frames(3)
+	check(c.role == "stagger" and c.playing() == "Hit_Knockback", "失衡：被击退的动作（%s）" % c.playing())
+	m.stagger_left = 0.0
+	await seconds(0.5)
+	m.health = 3
+	m.receive_hit({"damage": 9, "kind": "light", "attacker": null})
+	await seconds(0.5)
+	check(m.down and c.role == "death" and c.playing() == "Death01", "生命归零：倒下动作（%s）" % c.playing())
+	await seconds(2.2)
+	check(not c.anim.is_playing() and c.anim.current_animation_position > 2.2, "倒下后停在最后一帧，不会爬起来（第 %.2f 秒）" % c.anim.current_animation_position)
+	# 切回第一人称：动画停掉
+	GameState.new_game(23)
 	await free_main(main)
 	Settings.set_value("third_person", false)

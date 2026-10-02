@@ -90,7 +90,7 @@ func _apply_settings() -> void:
 		set_third_person(Settings.third_person)
 
 
-## 切换第一 / 第三人称（2.9）：第三人称显示占位人形、藏起第一人称的武器；身体跟着镜头的水平朝向转（越肩视角）
+## 切换第一 / 第三人称（2.9）：第三人称显示人物模型（A.1）、藏起第一人称的武器；身体跟着镜头的水平朝向转（越肩视角）
 func set_third_person(on: bool) -> void:
 	third_person = on
 	avatar.visible = on
