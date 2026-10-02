@@ -40,7 +40,8 @@ ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
 ok(html.includes('display:flex;align-items:center;gap:6px'), 'compact viewer controls must be visible');
 ok(html.includes('display:grid;grid-template-columns:repeat(5,minmax(0,1fr))'), 'mobile compact viewer controls grid missing');
 ok(html.includes('touch-action:pan-x'), 'mobile vertical swipe touch-action guard missing');
-ok(html.includes('app.js?v=12'), 'Global Cams app cache-bust version missing');
+ok(html.includes('app.js?v=13'), 'Global Cams app cache-bust version missing');
+ok(html.includes('background:rgba(236,242,250,.78)'), 'light viewer control bar missing');
 
 ok(!html.includes('LIVE 实时'), 'LIVE mode still present in HTML');
 ok(!html.includes('公开摄像头'), 'camera copy still present in HTML');
@@ -62,7 +63,10 @@ ok(app.includes("WINDOW_CDN_BASE + '/manifest.json'"), 'WINDOW CDN manifest fetc
 ok(app.includes("{ url: './windows.json', source: 'fallback' }"), 'WINDOW local fallback missing');
 ok(app.includes('resolveWindowVideoUrl'), 'WINDOW R2 media URL resolver missing');
 ok(app.includes('video.autoplay = true'), 'WINDOW autoplay missing');
-ok(app.includes('video.muted = true'), 'WINDOW muted autoplay guard missing');
+ok(app.includes('let audioUnlocked = false'), 'WINDOW initial autoplay audio guard missing');
+ok(app.includes('video.muted = !audioUnlocked'), 'WINDOW conditional mute policy missing');
+ok(app.includes('activateAudio'), 'WINDOW user-gesture audio unlock missing');
+ok(app.includes('video.muted = false') && app.includes('video.volume = 1'), 'WINDOW sound-on behavior missing');
 ok(app.includes('video.loop = true'), 'WINDOW loop missing');
 ok(app.includes('video.playsInline = true'), 'WINDOW mobile inline playback missing');
 ok(app.includes('randomWindow'), 'WINDOW random picker missing');
