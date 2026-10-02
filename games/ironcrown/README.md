@@ -7,7 +7,7 @@
 - 路线图与进度台账：`../../docs/IRONCROWN_ROADMAP.md`
 - 开发规则与收尾流程：`../../.claude/skills/ironcrown/SKILL.md`
 
-当前是技术原型（阶段 1）：可以用第一人称在灰盒雾夜街道里走动（`play/?test=1` 是灰盒测试场），画面全部是占位几何体。已上线到 `/games/ironcrown/play/`（2026-09-27，开发中预览），游戏中心有「开发中预览」卡片（直接进游戏，还没有介绍页）；`play/` 随上线入库，每次上线前用 `tools/build_web.sh` 重新构建。
+当前是技术原型（阶段 1）：可以用第一人称在雾夜里的霜渡镇主街走动、交互（`play/?test=1` 是灰盒测试场），建筑用写实贴图，人物仍是占位胶囊。已上线到 `/games/ironcrown/play/`（2026-09-27，开发中预览），游戏中心有「开发中预览」卡片（直接进游戏，还没有介绍页）；`play/` 随上线入库，每次上线前用 `tools/build_web.sh` 重新构建。
 
 ## 本地构建
 
@@ -18,10 +18,15 @@ games/ironcrown/tools/run_tests.sh                            # 语法检查 + �
 games/ironcrown/tools/build_web.sh                            # 测试后导出到 play/
 python3 games/ironcrown/tools/serve_gzip.py . 8765 &          # 在仓库根目录（gzip 传输，模拟线上）
 node games/ironcrown/tools/smoke_web.js /tmp                  # 三个宽度的网页冒烟测试 + 截图
+node games/ironcrown/tools/shots_web.js /tmp medium           # 3 个固定机位截图 + 性能统计（画质类步骤给所有者看）
+xvfb-run -a $GODOT --path games/ironcrown/godot --rendering-driver opengl3 res://tests/perf_stats.tscn   # 本机渲染开销对照
 ```
+
+网页参数：`?test=1` 灰盒测试场、`?q=low|medium|high` 画质、`?view=0|1|2` 固定机位、`?perf=1` 打出性能统计。
 
 - 工具脚本复制自 `games/emberfall3d/tools/`，只改路径与文件名前缀（`ic-`）；复用的 GDScript 在文件头注明来源。
 - 内置中文字体 `godot/assets/fonts/NotoSansSC-IC.ttf` 是按本工程字符集做的子集（Noto Sans SC，SIL OFL 1.1，许可见同目录 `OFL.txt`）。
   界面与台词的字是否都在字体里由自动化测试检查；缺字时 `pip install fonttools` 后运行 `python3 games/ironcrown/tools/build_font.py path/to/NotoSansSC[wght].ttf` 重做
   （原字体可从 https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf 下载）。
+- 外部素材（贴图、字体）的来源与许可：`assets/SOURCES.md`。
 - 测试结果：`TEST_REPORT.md`。

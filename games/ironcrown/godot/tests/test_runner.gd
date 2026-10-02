@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -104,17 +104,17 @@ func test_boot() -> void:
 	await physics(20)
 	var p: FpController = main.player
 	check(main.camera != null and main.camera.current and main.camera == p.camera, "第一人称相机挂在玩家头部并设为当前相机")
-	check(p.is_on_floor() and absf(p.global_position.y) < 0.05, "街道场景：玩家站在地面上（地面有碰撞，y = %.3f）" % p.global_position.y)
+	check(p.is_on_floor() and absf(p.global_position.y) < 0.05, "霜渡镇：玩家站在地面上（地面有碰撞，y = %.3f）" % p.global_position.y)
 	check(absf(main.camera.global_position.y - p.EYE_STAND) < 0.06, "相机在视高 1.65 米（GDD.md 第四节，实测 %.2f）" % main.camera.global_position.y)
 	check(is_equal_approx(main.camera.fov, 75.0), "视野角默认 75°")
-	check(main.env.fog_enabled and main.env.background_color == main.FOG_COLOR, "开启深度雾，背景与雾同为夜雾蓝（ART.md 第四节）")
+	check(main.env.fog_enabled and main.env.fog_mode == Environment.FOG_MODE_DEPTH and main.env.background_color == main.FOG_COLOR, "开启深度雾，背景与雾同为夜雾蓝（ART.md 第四节）")
 	check(main.env.tonemap_mode == Environment.TONE_MAPPER_ACES, "色调映射为 ACES")
 	var lamps := main.find_children("*", "OmniLight3D", true, false)
 	check(lamps.size() >= 1 and lamps.size() <= 4, "实时点光源 1–4 盏（TECH.md 4.6 预算，实际 %d）" % lamps.size())
-	# 街道的房子挡路：站在第一排房子旁边往左（-X）一直走，会被左侧房子挡住（房子外墙在 x = -6.5）
+	# 房子挡路：站在酒馆前往左（-X）一直走，会被房子挡住（正面石基在 x = -4.42）
 	await place(p, 0.0, -6.0)
 	await hold("move_left", 3.0)
-	check(p.global_position.x > -6.3, "街道两侧的灰盒房子有碰撞，走不进墙里（x = %.2f）" % p.global_position.x)
+	check(p.global_position.x > -4.3, "街道两侧的房子有碰撞，走不进墙里（x = %.2f）" % p.global_position.x)
 	await free_main(main)
 
 
@@ -125,7 +125,7 @@ func test_ui() -> void:
 	var font := load("res://assets/fonts/NotoSansSC-IC.ttf") as FontFile
 	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站交谈打开关上拾取[E]"]
 	texts.append_array(TestRange.NPC_LINES)
-	texts.append_array(Street.WATCH_LINES)
+	texts.append_array(Frostford.WATCH_LINES)
 	for n in main.find_children("*", "", true, false):
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -511,6 +511,83 @@ func test_interact() -> void:
 	# 街道：更夫与锁着的民居门
 	main = await make_main(false)
 	p = main.player
-	await aim(p, Street.WATCH_POS + Vector3(0, 0, 1.8), Street.WATCH_POS + Vector3(0, 1.4, 0))
+	await aim(p, Frostford.WATCH_POS + Vector3(0, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
 	check(p.interactor.target is Npc and p.interactor.target.display_name == "更夫", "街道上能和更夫说话")
+	await free_main(main)
+
+
+func test_frostford() -> void:
+	var main := await make_main(false)
+	var p: FpController = main.player
+	await physics(5)
+	var houses := get_tree().get_nodes_in_group("house")
+	check(houses.size() == 12, "霜渡镇主街有 12 栋房子（两侧 11 栋 + 领主宅邸，实际 %d）" % houses.size())
+	var photo_ok := true
+	for k in Look.PHOTO:
+		photo_ok = photo_ok and bool(Look.mat(k).get_meta("photo", false)) and Look.mat(k).albedo_texture != null
+	check(photo_ok, "7 套 Poly Haven 写实贴图全部加载（石板路、石墙、灰泥、木板、石板瓦、雪、树皮）")
+	var hm: ArrayMesh = (houses[0].get_node("Mesh") as MeshInstance3D).mesh
+	var arr := hm.surface_get_arrays(0)
+	check(not Look.mat("stone").uv1_triplanar and Look.mat("stone").normal_texture != null and arr[Mesh.ARRAY_TEX_UV] != null and arr[Mesh.ARRAY_TANGENT] != null, "贴图用网格自带的按米 UV 与切线（不用三向投影，省采样），带法线贴图")
+	var max_surf := 0
+	var lit := 0
+	var dark := 0
+	for h in houses:
+		var mi: MeshInstance3D = h.get_node("Mesh")
+		max_surf = maxi(max_surf, mi.mesh.get_surface_count())
+		lit += int(h.get_meta("windows").lit)
+		dark += int(h.get_meta("windows").dark)
+	check(max_surf <= 8, "每栋房子按材质合并成一个网格，最多 %d 个表面（每个表面一次绘制调用，预算 ≤ 8）" % max_surf)
+	check(lit >= 15 and dark >= 10, "窗户有亮有暗（亮 %d 扇、暗 %d 扇）" % [lit, dark])
+	var lamps := get_tree().get_nodes_in_group("street_lamp")
+	var omni := main.find_children("*", "OmniLight3D", true, false)
+	check(lamps.size() == 4 and omni.size() <= 4, "4 盏街灯，整条街实时点光源不超过 4 盏（%d）" % omni.size())
+	var signs := main.find_children("*", "Label3D", true, false).filter(func(l): return l.text == "倒钩鱼")
+	check(signs.size() == 2, "「倒钩鱼」酒馆招牌两面都有字")
+	var doors := main.find_children("*", "Door", true, false).filter(func(d): return d.locked)
+	check(doors.size() == 3, "三扇锁着的门：民居、酒馆、领主宅邸（%d）" % doors.size())
+	var fog := get_tree().get_nodes_in_group("fog_band")
+	check(fog.size() >= 10, "贴地雾带 %d 片" % fog.size())
+	# 画质分档
+	main.apply_quality("low")
+	var shown := fog.filter(func(f): return f.visible).size()
+	check(is_equal_approx(main.get_viewport().scaling_3d_scale, 0.75) and not main.moon.shadow_enabled and not main.env.glow_enabled and shown < fog.size(), "低画质：0.75 倍分辨率、无阴影、无泛光、雾带减半（%d / %d）" % [shown, fog.size()])
+	main.apply_quality("high")
+	check(main.get_viewport().msaa_3d == Viewport.MSAA_2X and main.moon.shadow_enabled and main.env.glow_enabled, "高画质：2 倍抗锯齿、月光阴影、泛光")
+	main.apply_quality("medium")
+	check(is_equal_approx(main.get_viewport().scaling_3d_scale, 1.0) and main.get_viewport().msaa_3d == Viewport.MSAA_DISABLED and main.moon.shadow_enabled, "中画质：原分辨率、月光阴影")
+	# 固定机位
+	main.set_view(2)
+	check(p.global_position.is_equal_approx(Frostford.VIEWS[2][0]) and absf(p.yaw_deg() - 180.0) < 0.1, "?view=2：从领主宅邸前回望街道")
+	# 往北一直跑：被领主宅邸挡住，不会穿过去
+	await place(p, 0.0, 0.0)
+	Input.action_press("sprint")
+	await hold("move_forward", 10.0)
+	Input.action_release("sprint")
+	check(p.global_position.z > Frostford.NORTH_END and p.global_position.z < Frostford.NORTH_END + 2.0, "沿街往北跑到尽头，停在领主宅邸门前（z = %.2f）" % p.global_position.z)
+	# 从小广场钻到房子背后，往西一直走：被看不见的围墙挡住
+	await place(p, -6.0, -23.0)
+	p.rotation.y = PI / 2
+	await hold("move_forward", 6.0)
+	check(p.global_position.x > -15.5 and p.global_position.x < -13.0, "走到房子背后，被区域边界挡住（x = %.2f）" % p.global_position.x)
+	# 更夫在灯下，可以交谈
+	await aim(p, Frostford.WATCH_POS + Vector3(0, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
+	check(p.interactor.target is Npc and p.interactor.target.display_name == "更夫", "更夫站在第一盏街灯下，可以交谈")
+	await free_main(main)
+	# 贴图缺文件：退回纯色，不崩
+	var saved := Look.photo_dir
+	Look.photo_dir = "res://assets/textures/%s/missing_%s_%s.jpg"
+	Look.clear_cache()
+	var m := Look.mat("stone")
+	check(not bool(m.get_meta("photo", true)) and m.albedo_texture == null and m.albedo_color == Look.PHOTO.stone.fallback, "贴图缺文件时退回纯色材质")
+	Look.photo_dir = saved
+	Look.clear_cache()
+	# 系统「减少动态效果」：街灯不闪、雾带不飘
+	Settings.reduced_motion = true
+	main = await make_main(false)
+	var lamp: StreetLamp = get_tree().get_nodes_in_group("street_lamp")[0]
+	await frames(5)
+	var band: MeshInstance3D = get_tree().get_nodes_in_group("fog_band")[0]
+	check(not lamp.flicker and is_equal_approx(lamp.light.light_energy, lamp.ENERGY) and band.material_override.get_shader_parameter("drift") == Vector2.ZERO, "减少动态效果：街灯不闪烁、雾带不飘动")
+	Settings.reduced_motion = false
 	await free_main(main)

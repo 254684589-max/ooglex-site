@@ -33,22 +33,18 @@ func _ready() -> void:
 	cs.shape = bs
 	cs.position = Vector3(width * 0.5, height * 0.5, 0)
 	add_child(cs)
-	var wood := Blocks.mat(Color("5a3e2a") if not locked else Color("4a3428"))
-	var mi := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = bs.size
-	bm.material = wood
-	mi.mesh = bm
-	mi.position = cs.position
-	add_child(mi)
-	# 门把手：在门轴对面的一侧，两面都有
-	var knob := MeshInstance3D.new()
-	var km := BoxMesh.new()
-	km.size = Vector3(0.06, 0.06, 0.2)
-	km.material = Blocks.mat(Color("b8964e"))
-	knob.mesh = km
-	knob.position = Vector3(width - 0.12, 1.0, 0)
-	add_child(knob)
+	# 门板与把手用 MeshKit 搭（贴图按米计算 UV，比例和墙上的木梁一致）
+	var kit := MeshKit.new()
+	kit.box("timber", cs.position, bs.size, Basis.IDENTITY, 0.85, 0.6, true)
+	for z in [-0.06, 0.06]:   # 门把手：在门轴对面的一侧，两面都有
+		kit.box("iron", Vector3(width - 0.12, 1.0, z), Vector3(0.06, 0.06, 0.06))
+	kit.box("timber", Vector3(width * 0.5, height * 0.25, 0.045), Vector3(width - 0.1, 0.1, 0.02), Basis.IDENTITY, 0.7, 0.7)
+	kit.box("timber", Vector3(width * 0.5, height * 0.75, 0.045), Vector3(width - 0.1, 0.1, 0.02), Basis.IDENTITY, 0.7, 0.7)
+	var iron := StandardMaterial3D.new()
+	iron.albedo_color = Color("2a2a2e")
+	iron.metallic = 0.6
+	iron.roughness = 0.5
+	add_child(kit.build({"timber": Look.mat("timber"), "iron": iron}))
 
 
 func verb_now() -> String:

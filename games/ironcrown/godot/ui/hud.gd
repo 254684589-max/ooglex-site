@@ -5,7 +5,7 @@ extends Control
 
 signal menu_pressed
 
-const TITLE := "铁冠之争 · 灰盒原型（占位几何体）"
+const TITLE := "铁冠之争 · 技术原型（人物为占位）"
 
 var title_label: Label
 var hint_label: Label
