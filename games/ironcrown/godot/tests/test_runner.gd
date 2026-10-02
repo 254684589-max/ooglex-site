@@ -2010,6 +2010,13 @@ func test_camera() -> void:
 	await physics(20)
 	p.interactor.refresh()
 	check(p.interactor.target == null, "离 NPC 4 米：相机虽然离得更近，也够不着（按眼睛算 2.5 米）")
+	await place(p, TestRange.NPC_POS.x, TestRange.NPC_POS.z + 2.0)
+	p.rotation.y = 0.0
+	p.pitch = 0.0
+	p.head.rotation.x = 0.0
+	await physics(10)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc, "正对 2 米外的 NPC（越肩视差让准星偏在旁边）：照样能交谈")
 	# 出剑打木桩
 	var dummy: TrainingDummy = main.world.get_children().filter(func(c): return c is TrainingDummy)[0]
 	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))

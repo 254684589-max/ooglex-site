@@ -257,6 +257,17 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       camMode = await waitLog(logs, 'IC_CAMERA mode=third', 12);
       await page.waitForTimeout(1500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-third.png`) });
+      // 切回第一人称：视角会存进浏览器设置，不切回来后面几步就都在第三人称里跑
+      if (!mobile) {
+        await page.keyboard.press('v');
+      } else {
+        const vs2 = logs.find(l => l.startsWith('IC_CAMERA_SCREEN'));
+        if (vs2) {
+          const [, vx, vy] = vs2.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(vx / dpr, vy / dpr);
+        }
+      }
+      camMode = camMode && await waitLog(logs, 'IC_CAMERA mode=first', 12) ? camMode : '';
       if (!mobile) {
         await page.keyboard.press('k');
       } else {

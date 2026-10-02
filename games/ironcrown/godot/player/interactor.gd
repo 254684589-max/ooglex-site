@@ -29,6 +29,13 @@ func refresh() -> void:
 		var hit := player.get_world_3d().direct_space_state.intersect_ray(q)
 		if not hit.is_empty() and hit.collider is Interactable and hit.collider.can_interact() and (hit.position as Vector3).distance_to(eye) <= REACH + 0.3:
 			found = hit.collider
+		elif player.third_person:
+			# 越肩视差：近处的东西在准星左边一点，屏幕中心的射线擦过去了；再从眼睛往前看一眼
+			var q2 := PhysicsRayQueryParameters3D.create(eye, eye + player.aim_forward() * REACH,
+				Interactable.LAYER_WORLD | Interactable.LAYER_INTERACT, [player.get_rid()])
+			var hit2 := player.get_world_3d().direct_space_state.intersect_ray(q2)
+			if not hit2.is_empty() and hit2.collider is Interactable and hit2.collider.can_interact():
+				found = hit2.collider
 	if found != target:
 		target = found
 		target_changed.emit(target)
