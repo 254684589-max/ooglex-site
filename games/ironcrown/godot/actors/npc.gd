@@ -28,16 +28,25 @@ func _ready() -> void:
 	cs.shape = cap
 	cs.position.y = 0.875
 	add_child(cs)
+	Npc.build_body(self, coat)
+	Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+
+
+## 占位人形（胶囊身子 + 头 + 看得出朝向的小鼻子）；敌人（2.5）也用它。脸朝本地 -Z。
+static func build_body(parent: Node3D, coat_color: Color) -> Node3D:
+	var root := Node3D.new()
+	root.name = "Body"
+	parent.add_child(root)
 	var body := MeshInstance3D.new()
 	var cm := CapsuleMesh.new()
 	cm.radius = 0.3
 	cm.height = 1.45
 	cm.radial_segments = 12
 	cm.rings = 4
-	cm.material = Blocks.mat(coat)
+	cm.material = Blocks.mat(coat_color)
 	body.mesh = cm
 	body.position.y = 0.725
-	add_child(body)
+	root.add_child(body)
 	var head := MeshInstance3D.new()
 	var sm := SphereMesh.new()
 	sm.radius = 0.14
@@ -47,15 +56,15 @@ func _ready() -> void:
 	sm.material = Blocks.mat(Color("c8a88a"))
 	head.mesh = sm
 	head.position = Vector3(0, 1.6, 0)
-	add_child(head)
+	root.add_child(head)
 	var nose := MeshInstance3D.new()    # 看得出朝向的小鼻子（占位）
 	var nm := BoxMesh.new()
 	nm.size = Vector3(0.05, 0.05, 0.08)
 	nm.material = sm.material
 	nose.mesh = nm
 	nose.position = Vector3(0, 1.6, -0.15)
-	add_child(nose)
-	Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+	root.add_child(nose)
+	return root
 
 
 func interact(who: FpController) -> Dictionary:

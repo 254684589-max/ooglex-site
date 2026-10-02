@@ -15,6 +15,8 @@ var seed_offset := 0.0
 
 func _ready() -> void:
 	add_to_group("street_lamp")
+	add_to_group("light_source")      # 敌人感知：站在灯下 20 米外就能被看见（2.5）
+	set_meta("radius", 6.0)
 	seed_offset = randf() * 10.0
 	var kit := MeshKit.new()
 	kit.box("timber", Vector3(0, HEIGHT / 2, 0), Vector3(0.16, HEIGHT, 0.16), Basis.IDENTITY, 0.9, 0.55)

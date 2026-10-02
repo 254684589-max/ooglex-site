@@ -22,12 +22,16 @@ var key_hint := "[E] "        # 触屏上不显示按键
 var melee: Melee              # 体力条读它（2.4）
 var bars_top := false         # 触屏：左下角是摇杆，体力条放到左上标题下面
 var stamina_label: Label
+var health_label: Label
+var hurt_left := 0.0
 var marker_left := 0.0
 var marker_heavy := false
 
 const BAR_W := 180.0
 const BAR_H := 6.0
 const MARKER_TIME := 0.18
+const HURT_TIME := 0.45
+const ROW := 34.0             # 生命条与体力条的行距
 
 
 func _ready() -> void:
@@ -79,6 +83,8 @@ func _ready() -> void:
 	stamina_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stamina_label.hide()
 	add_child(stamina_label)
+	health_label = stamina_label.duplicate()
+	add_child(health_label)
 	resized.connect(_layout)
 	_layout()
 
@@ -132,8 +138,23 @@ func stamina_visible() -> bool:
 
 
 func bar_rect() -> Rect2:
-	var y := 64.0 if bars_top else size.y - 28.0
+	var y := 64.0 + ROW if bars_top else size.y - 28.0
 	return Rect2(Vector2(16.0, y), Vector2(BAR_W, BAR_H))
+
+
+## 生命条（2.5）：在体力条上面一行；受过伤或拔剑时显示
+func health_rect() -> Rect2:
+	return Rect2(bar_rect().position - Vector2(0, ROW), bar_rect().size)
+
+
+func health_visible() -> bool:
+	return melee != null and (melee.health < Melee.HEALTH_MAX or stamina_visible())
+
+
+## 受伤：画面四周闪一圈暗红（同时生命条的数字变小，不只靠颜色）
+func hurt_flash() -> void:
+	hurt_left = HURT_TIME
+	queue_redraw()
 
 
 func _process(delta: float) -> void:
@@ -143,7 +164,14 @@ func _process(delta: float) -> void:
 		if show:
 			stamina_label.text = "体力 %d / %d%s" % [roundi(melee.stamina), roundi(Melee.STAMINA_MAX), " · 喘息中" if melee.exhausted else ""]
 			stamina_label.position = bar_rect().position - Vector2(0, 22)
+		var hs := health_visible()
+		health_label.visible = hs
+		if hs:
+			health_label.text = "生命 %d / %d%s" % [melee.health, Melee.HEALTH_MAX, " · 失衡" if melee.staggered() else ""]
+			health_label.position = health_rect().position - Vector2(0, 22)
 		queue_redraw()
+	if hurt_left > 0.0:
+		hurt_left -= delta
 	if marker_left > 0.0:
 		marker_left -= delta
 		queue_redraw()
@@ -191,6 +219,18 @@ func _draw() -> void:
 	else:
 		draw_circle(c, 3.0, Color(0, 0, 0, 0.6))
 		draw_circle(c, 2.0, Color("e8dcc0"))
+	if hurt_left > 0.0:
+		var a := 0.45 * hurt_left / HURT_TIME
+		var t := 26.0
+		var col := Color(0.55, 0.05, 0.03, a)
+		draw_rect(Rect2(0, 0, size.x, t), col)
+		draw_rect(Rect2(0, size.y - t, size.x, t), col)
+		draw_rect(Rect2(0, 0, t, size.y), col)
+		draw_rect(Rect2(size.x - t, 0, t, size.y), col)
+	if melee and health_visible():
+		var hr := health_rect()
+		draw_rect(hr.grow(1.0), Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(hr.position, Vector2(hr.size.x * clampf(float(melee.health) / Melee.HEALTH_MAX, 0.0, 1.0), hr.size.y)), Color("b0483a"))
 	if melee and stamina_visible():
 		var br := bar_rect()
 		draw_rect(br.grow(1.0), Color(0, 0, 0, 0.6))

@@ -14,6 +14,7 @@ const POSES := {
 	"l2_end": [Vector3(0.34, -0.28, -0.52), Vector3(0.85, 0.0, -0.50), Vector3(0, 1, -0.1)],
 	"h_wind": [Vector3(0.22, 0.06, -0.28), Vector3(0.10, 0.70, 0.70), Vector3(1, 0, 0)],
 	"h_end": [Vector3(0.04, -0.46, -0.58), Vector3(0.0, -0.35, -0.94), Vector3(1, 0, 0)],
+	"block": [Vector3(0.20, -0.26, -0.68), Vector3(-0.68, 0.66, -0.30), Vector3(0, 0.3, 1)],     # 剑斜架在面前（不糊满画面）
 }
 const BLADE_LEN := 0.62
 
@@ -44,6 +45,10 @@ func _ready() -> void:
 	leather.roughness = 0.9
 	for m in [steel, iron, leather]:
 		m.vertex_color_use_as_albedo = true
+		# 一点点自发光：背光站着时（训练场火把在敌人身后）剑也不会变成一根黑棍（2.5 截图）
+		m.emission_enabled = true
+		m.emission = m.albedo_color
+		m.emission_energy_multiplier = 0.12
 	var mi := kit.build({"steel": steel, "iron": iron, "leather": leather})
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.name = "Sword"

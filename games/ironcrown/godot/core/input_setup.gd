@@ -14,6 +14,7 @@ const ACTIONS := {
 	"quest_log": [KEY_J],         # 任务日志（2.3）
 	"sheathe": [KEY_R],           # 拔剑 / 收剑（2.4）
 	"attack_key": [KEY_F],        # 攻击的键盘键（2.4；主要是鼠标左键，在 main 里处理）
+	"block_key": [KEY_Q],         # 格挡的键盘键（2.5；主要是鼠标右键按住）
 	"pause": [KEY_ESCAPE],
 }
 

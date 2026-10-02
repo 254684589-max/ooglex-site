@@ -19,6 +19,7 @@ const STEP_HEIGHT := 0.3        # 能直接跨上的台阶高度
 const PITCH_LIMIT := 85.0
 const TOUCH_RUN_THRESHOLD := 0.95   # 摇杆推到边缘 = 跑
 const BOB_AMPLITUDE := 0.035
+const GUARD_SPEED := 1.7          # 举剑格挡、失衡时只能慢慢挪（2.5）
 
 var head: Node3D
 var interactor: Interactor
@@ -67,6 +68,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	add_to_group("player")
 	_apply_settings()
 	Settings.changed.connect(_apply_settings)
 
@@ -112,13 +114,15 @@ func move_input() -> Vector2:
 func current_speed(input: Vector2) -> float:
 	if crouching:
 		return CROUCH_SPEED
+	if melee and (melee.blocking() or melee.staggered()):
+		return GUARD_SPEED
 	return RUN_SPEED if wants_run() else WALK_SPEED
 
 
 ## 想跑并且体力够（体力耗尽后要缓过气才能再跑，2.4）
 func wants_run() -> bool:
 	var run := Input.is_action_pressed("sprint") or touch_move.length() >= TOUCH_RUN_THRESHOLD
-	return run and (melee == null or melee.can_sprint())
+	return run and (melee == null or (melee.can_sprint() and not melee.blocking() and not melee.staggered()))
 
 
 func _physics_process(delta: float) -> void:

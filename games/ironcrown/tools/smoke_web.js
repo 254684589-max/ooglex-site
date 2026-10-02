@@ -7,6 +7,7 @@
 //   2.3  霜渡镇 ?view=4（管家面前）：电脑按 E、按 1 两次接下主线，按 J 打开任务日志；手机 / 平板点右上角「任务」按钮打开任务日志（IC_QUEST），截图。
 //   2.1  霜渡镇 ?view=3（更夫面前）：电脑按 E 打开对话、按 2 选第二个选项、Esc 结束；手机 / 平板真实点交互按钮与第一个选项（IC_DIALOG），截图。
 //   2.4  霜渡镇 ?view=5（木桩假人面前）：电脑点击画面后按 F 两下（拔剑、轻击），再按一下左键出剑；手机 / 平板点两下「攻」按钮；要求打中木桩（IC_HIT），截图。
+//   2.5  训练场 ?test=2：等敌人发现你、转入战斗（IC_ENEMY state=combat），电脑按住 Q、手机 / 平板真实按住「挡」，要求挡下一次攻击（IC_BLOCK），截图。
 //   1.3  测试场出生点对准灰盒 NPC（IC_TARGET）：电脑按 E、手机 / 平板点右下角交互按钮，要求和 NPC 说话（IC_INTERACT kind=npc），截图。
 //
 // 先在仓库根目录起静态服务器（gzip 传输，模拟线上 CDN）：
@@ -189,6 +190,39 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
         }
       }
     }
+    // 训练场（2.5）：敌人发现你 → 举剑格挡
+    logs.length = 0;
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=2');
+    let fight = '', guard = '';
+    if (await waitLog(logs, 'IC_READY', 240)) {
+      fight = await (async () => {
+        for (let i = 0; i < 160; i++) {
+          const hit = logs.find(l => l.startsWith('IC_ENEMY') && l.includes('state=combat'));
+          if (hit) return hit;
+          await new Promise(r => setTimeout(r, 250));
+        }
+        return '';
+      })();
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-arena.png`) });
+      if (!mobile) {
+        await page.keyboard.down('q');
+        guard = await waitLog(logs, 'IC_BLOCK', 120);
+        await page.waitForTimeout(150);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-guard.png`) });
+        await page.keyboard.up('q');
+      } else {
+        const gs = logs.find(l => l.startsWith('IC_GUARD_SCREEN'));
+        if (gs) {
+          const [, gx, gy] = gs.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          const cdp = await ctx.newCDPSession(page);
+          await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: gx / dpr, y: gy / dpr, id: 7 }] });
+          guard = await waitLog(logs, 'IC_BLOCK', 120);
+          await page.waitForTimeout(150);
+          await page.screenshot({ path: path.join(outDir, `ic-${name}-guard.png`) });
+          await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        }
+      }
+    }
     // 灰盒测试场
     logs.length = 0;
     await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=1');
@@ -219,9 +253,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

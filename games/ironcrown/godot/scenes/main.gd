@@ -1,6 +1,7 @@
 extends Node3D
 ## 《铁冠之争》主场景（阶段 1.4：霜渡镇主街）。
-## 默认是霜渡镇主街（world/frostford.gd）；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞、交互）。
+## 默认是霜渡镇主街（world/frostford.gd）；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞、交互）；
+## ?test=2 或 use_arena = true 打开训练场（2.5：三个无旗者，练格挡与近战）。
 ## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
 ## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
 ## 人物仍是占位胶囊，界面上明确标注。
@@ -12,9 +13,12 @@ const FOG_COLOR := Color("22344a")              # 夜空与远雾（ART.md 第�
 const AMBIENT_COLOR := Color("6f8faf")          # 月光 / 环境光
 const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E 交互 · 左键 / F 出剑（按住是重击）· R 收剑 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
 const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 点「攻」出剑（按住是重击）· 对准东西时点交互按钮"
+const HINT_ARENA_DESKTOP := "训练场：左键 / F 出剑（按住重击）· 右键 / Q 按住格挡 · 在对方劈下前一瞬间举剑 = 完美格挡（对方失衡）· WASD 移动 · Esc 暂停"
+const HINT_ARENA_TOUCH := "训练场：点「攻」出剑（按住重击）· 按住「挡」格挡 · 在对方劈下前一瞬间按「挡」= 完美格挡（对方失衡）"
 const HINT_SECONDS := 8.0
 
 @export var use_test_range := false
+@export var use_arena := false
 
 var moon: DirectionalLight3D
 var quality := ""
@@ -30,6 +34,7 @@ var camera: Camera3D
 var hud: Hud
 var touch: TouchControls
 var pause_menu: PauseMenu
+var defeat_panel: DefeatPanel
 var touch_mode := false
 var spawn := Vector3.ZERO
 var yaw0 := 0.0
@@ -46,6 +51,8 @@ func _ready() -> void:
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
+		elif _query("test") == "2":
+			use_arena = true
 		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）
 		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 			Settings.reduced_motion = true
@@ -55,7 +62,9 @@ func _ready() -> void:
 	world = Node3D.new()
 	world.name = "World"
 	add_child(world)
-	var t := TestRange.build(world) if use_test_range else Frostford.build(world, Settings.reduced_motion)
+	if use_arena:
+		use_test_range = false
+	var t := CombatArena.build(world) if use_arena else (TestRange.build(world) if use_test_range else Frostford.build(world, Settings.reduced_motion))
 	player = FpController.new()
 	player.name = "Player"
 	add_child(player)
@@ -63,7 +72,7 @@ func _ready() -> void:
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
-	if not use_test_range and view.is_valid_int() and int(view) >= 0 and int(view) < Frostford.VIEWS.size():
+	if not use_test_range and not use_arena and view.is_valid_int() and int(view) >= 0 and int(view) < Frostford.VIEWS.size():
 		set_view(int(view))
 	spawn = player.global_position
 	yaw0 = player.yaw_deg()
@@ -72,10 +81,10 @@ func _ready() -> void:
 	apply_quality(q if q in Look.TIERS else Look.default_tier())
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
-		"test_range" if use_test_range else "frostford", touch_mode, quality, get_viewport().get_visible_rect().size])
+		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
-		if view != "" or use_test_range:
+		if view != "" or use_test_range or use_arena:
 			await perf_probe()          # 截图工具：只测一次，不显示浮层（截图要干净）
 		else:
 			Settings.set_value("show_perf", true)
@@ -90,6 +99,8 @@ func _ready() -> void:
 	if touch_mode:
 		var ac: Vector2 = touch.button_centers().attack * get_tree().root.content_scale_factor
 		print("IC_ATTACK_SCREEN x=%d y=%d" % [ac.x, ac.y])
+		var gc: Vector2 = touch.button_centers().guard * get_tree().root.content_scale_factor
+		print("IC_GUARD_SCREEN x=%d y=%d" % [gc.x, gc.y])
 
 
 func _build_environment() -> void:
@@ -102,7 +113,7 @@ func _build_environment() -> void:
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.fog_enabled = true
 	env.fog_light_color = FOG_COLOR
-	if use_test_range:
+	if use_test_range or use_arena:
 		env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
 		env.fog_density = 0.045
 	else:
@@ -130,6 +141,10 @@ func _build_environment() -> void:
 	moon.rotation_degrees = Vector3(-38, 150, 0)     # 从背后偏左照过来，给房子勾一道冷色轮廓
 	moon.directional_shadow_max_distance = 25.0
 	add_child(moon)
+
+
+func scene_name() -> String:
+	return "arena" if use_arena else ("test_range" if use_test_range else "frostford")
 
 
 func _query(key: String) -> String:
@@ -223,12 +238,21 @@ func _build_ui() -> void:
 	vignette.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud = Hud.new()
 	layer.add_child(hud)
-	hud.set_hint(HINT_TOUCH if touch_mode else HINT_DESKTOP)
+	if use_arena:
+		hud.set_hint(HINT_ARENA_TOUCH if touch_mode else HINT_ARENA_DESKTOP)
+		hint_left = HINT_SECONDS * 1.5
+	else:
+		hud.set_hint(HINT_TOUCH if touch_mode else HINT_DESKTOP)
 	hud.menu_pressed.connect(open_pause)
 	hud.melee = player.melee
 	hud.bars_top = touch_mode               # 触屏上左下角是摇杆，体力条放到左上
 	player.melee.swung.connect(func(k: String): print("IC_ATTACK kind=%s stamina=%.0f" % [k, player.melee.stamina]))
 	player.melee.hit.connect(_on_hit)
+	player.melee.guarded.connect(_on_guarded)
+	player.melee.damaged.connect(_on_damaged)
+	player.melee.defeated.connect(_on_defeated)
+	for e in get_tree().get_nodes_in_group("enemy"):
+		e.state_changed.connect(_on_enemy_state)
 	if touch_mode:
 		hud.key_hint = ""
 	player.interactor.target_changed.connect(_on_target_changed)
@@ -253,6 +277,9 @@ func _build_ui() -> void:
 		apply_quality(t)
 		print("IC_QUALITY %s" % t))
 	pause_menu.resume_requested.connect(close_pause)
+	defeat_panel = DefeatPanel.new()
+	layer.add_child(defeat_panel)
+	defeat_panel.retry_requested.connect(_retry)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -281,6 +308,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		player.melee.release()
 		get_viewport().set_input_as_handled()
 		return
+	if event.is_action_pressed("block_key"):
+		player.melee.block_press()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_released("block_key"):
+		player.melee.block_release()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("sheathe"):
 		player.melee.toggle_draw()
 		get_viewport().set_input_as_handled()
@@ -296,6 +331,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				player.melee.press()
 			else:
 				player.melee.release()
+		elif event.button_index == MOUSE_BUTTON_RIGHT:     # 右键按住格挡（2.5）
+			if event.pressed:
+				player.melee.block_press()
+			else:
+				player.melee.block_release()
 	elif event is InputEventMouseMotion and event.device != InputEvent.DEVICE_ID_EMULATION:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			player.look(event.relative)
@@ -305,6 +345,49 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_hit(target: Node, info: Dictionary) -> void:
 	hud.hit_marker(info.kind == "heavy")
 	print("IC_HIT target=%s dmg=%d kind=%s" % [target.get("display_name"), info.damage, info.kind])
+
+
+## 格挡结果（2.5）：屏幕上方短提示（文字 + 符号）
+func _on_guarded(result: String, info: Dictionary) -> void:
+	match result:
+		"perfect":
+			hud.toast("◆ 完美格挡！对方失衡", 1.2)
+		"block":
+			hud.toast("挡住了（体力 −%d）" % roundi(info.damage * Melee.GUARD_COST * (1.5 if info.kind == "heavy" else 1.0)), 1.0)
+		"guard_break":
+			hud.toast("× 格挡被打破！", 1.2)
+	print("IC_BLOCK result=%s dmg=%d stamina=%.0f" % [result, info.damage, player.melee.stamina])
+
+
+func _on_damaged(amount: int, _info: Dictionary) -> void:
+	hud.hurt_flash()
+	print("IC_PLAYER_HIT dmg=%d hp=%d" % [amount, player.melee.health])
+
+
+func _on_defeated() -> void:
+	print("IC_DEFEAT")
+	player.melee.cancel_press()
+	if touch:
+		touch.release_all()
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	lock_seen = false
+	defeat_panel.open()
+
+
+## 倒下后「重来」：重新载入当前场景（网页地址里的 ?test=2 等参数不变）
+func _retry() -> void:
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
+func _on_enemy_state(e: Enemy, state: String) -> void:
+	print("IC_ENEMY id=%s state=%s hp=%d" % [e.enemy_id, state, e.hp])
+	if state in ["dead", "yield"]:
+		var left := get_tree().get_nodes_in_group("enemy").filter(func(x): return x.state not in [Enemy.State.DEAD, Enemy.State.YIELD])
+		if left.is_empty():
+			hud.toast("✓ 训练场清空了（按 Esc 打开菜单，刷新页面再来一次）" if not touch_mode else "✓ 训练场清空了（刷新页面再来一次）", 5.0)
+			print("IC_ARENA_CLEAR")
 
 
 func _on_target_changed(target: Interactable) -> void:

@@ -8,8 +8,6 @@ const HEIGHT := 1.75
 const RADIUS := 0.3
 const SPRING := 60.0
 const DAMP := 7.0
-const NUMBER_TIME := 0.9
-const NUMBER_RISE := 0.4
 const NUMBER_Y := 1.35            # 从草袋胸口冒出来，不压住头顶的名字
 
 var display_name := "木桩假人"
@@ -25,7 +23,6 @@ var tilt_vel := Vector2.ZERO
 var stop_left := 0.0
 var pending := Vector2.ZERO       # 命中停顿结束后要加上的晃动
 var flash := 0.0
-var numbers: Array = []           # [Label3D, 剩余时间]
 
 
 func _ready() -> void:
@@ -84,11 +81,8 @@ func take_hit(info: Dictionary) -> void:
 
 
 func _spawn_number(dmg: int, heavy: bool) -> void:
-	var l := Blocks.label(self, ("重击 −%d" if heavy else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), NUMBER_Y, 0), 36 if heavy else 30, 0.0026)
-	l.modulate = Color("ffcf6a") if heavy else Color("f2e6c8")
-	l.no_depth_test = true
-	l.render_priority = 1
-	numbers.append([l, NUMBER_TIME])
+	FloatText.spawn(self, ("重击 −%d" if heavy else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), NUMBER_Y, 0),
+		Color("ffcf6a") if heavy else Color("f2e6c8"), 36 if heavy else 30)
 
 
 func _update_stats() -> void:
@@ -96,15 +90,6 @@ func _update_stats() -> void:
 
 
 func _process(delta: float) -> void:
-	for n in numbers.duplicate():
-		var l: Label3D = n[0]
-		n[1] -= delta
-		var k: float = 1.0 - n[1] / NUMBER_TIME
-		l.position.y = NUMBER_Y + NUMBER_RISE * k
-		l.modulate.a = clampf(n[1] / (NUMBER_TIME * 0.4), 0.0, 1.0)
-		if n[1] <= 0.0:
-			numbers.erase(n)
-			l.queue_free()
 	if stop_left > 0.0:
 		stop_left -= delta
 		return

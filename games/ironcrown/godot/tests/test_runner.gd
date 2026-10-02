@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -130,6 +130,15 @@ func test_ui() -> void:
 	texts.append_array(Frostford.WATCH_LINES)
 	# 近战（2.4）：触屏按钮、体力条、木桩假人上的字
 	texts.append("攻体力 / 0123456789 · 喘息中命中次 · 最高左键（手机点「攻」）出剑重击 −木桩假人")
+	# 敌人与格挡（2.5）
+	texts.append_array([main.HINT_ARENA_DESKTOP, main.HINT_ARENA_TOUCH, "挡生命 · 失衡你倒下了重来举剑格挡能把伤害换成体力；对方劈下前一瞬间格挡，能让他失衡。",
+		"◆ 完美格挡！对方失衡挡住了（体力 −）× 格挡被打破！✓ 训练场清空了（按 Esc 打开菜单，刷新页面再来一次）（刷新页面再来一次）",
+		"训练场 · 三个无旗者在那儿！失衡格挡别打了，我认输！快跑！（倒下）"])
+	for t in Enemy.STATE_LABELS:
+		texts.append(t)
+	for k in Enemy.types():
+		if not str(k).begins_with("_"):
+			texts.append(str(Enemy.types()[k].name))
 	# 任务日志（2.3）：任务名、简介、目标、线索、提示语
 	var qd := GameState.quest_data()
 	texts.append("任务日志主线支线关闭（已完成）当前目标：线索：这件事已经办完了。还没有任务◆新任务：（按J查看）（点「任务」查看）任务更新：✓任务完成：◇新线索已记入任务日志▶")
@@ -1000,7 +1009,8 @@ func test_melee() -> void:
 	check(hits.size() == 1 and hits[0][0] == dummy, "轻击在命中帧打中前方 1.6 米的木桩")
 	check(dummy.hits == 1 and dummy.best == 12 and hits[0][1].damage == 12, "木桩记下这一击：12 点（与公式一致）")
 	check(m.stop_left > 0.0 and dummy.stop_left > 0.0 and scale_seen.all(func(x): return x == 1.0), "命中停顿只冻结挥剑与木桩，不改全局时间流速")
-	check(dummy.numbers.size() == 1 and (dummy.numbers[0][0] as Label3D).text == "−12", "木桩头上冒出伤害数字「−12」")
+	var floats := dummy.get_children().filter(func(c): return c is FloatText)
+	check(floats.size() == 1 and (floats[0] as FloatText).text == "−12", "木桩头上冒出伤害数字「−12」")
 	check(main.hud.marker_left > 0.0, "准星闪成 ×（命中提示不只靠颜色）")
 	check(is_equal_approx(m.stamina, 88.0), "轻击消耗 12 点体力（剩 %.1f）" % m.stamina)
 	await melee_tick(0.7)
@@ -1119,4 +1129,304 @@ func test_melee() -> void:
 	await physics(4)
 	var fd: Node3D = main.player.melee.find_target()
 	check(fd is TrainingDummy and fd.global_position.distance_to(Frostford.DUMMY_POS) < 0.01, "霜渡镇机位 5：剑程内正对木桩假人")
+	await free_main(main)
+
+
+func make_arena() -> Node3D:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_arena = true
+	add_child(main)
+	await frames(3)
+	return main
+
+
+func arena_enemy(main: Node3D, id: String) -> Enemy:
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		if e.enemy_id == id:
+			return e
+	return null
+
+
+## 只留一个敌人在动，其余冻住（单项测试不受干扰）
+func solo(main: Node3D, keep: Enemy) -> void:
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		if e != keep:
+			e.process_mode = Node.PROCESS_MODE_DISABLED
+			e.global_position = Vector3(-14, 0, -15) + Vector3(e.get_index() * 0.9, 0, 0)
+
+
+func put_enemy(e: Enemy, pos: Vector3, yaw: float) -> void:
+	e.global_position = pos
+	e.rotation.y = yaw
+	e.velocity = Vector3.ZERO
+
+
+func test_enemies() -> void:
+	# 数据校验
+	check(Enemy.validate_types(Enemy.types()).is_empty(), "敌人数据（data/enemies.json）字段齐全、数值合理：%s" % [Enemy.validate_types(Enemy.types())])
+	check(Enemy.validate_types({"x": {"name": "x", "bogus": 1}}).size() > 5, "校验能抓出缺字段和不认识的字段")
+	GameState.new_game(7)
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	check(main.scene_name() == "arena" and main.get_tree().get_nodes_in_group("enemy").size() == 3, "训练场：三个无旗者")
+	check(main.get_tree().get_first_node_in_group("combat_director") is CombatDirector, "训练场有攻击令牌调度（CombatDirector）")
+	check(main.get_tree().get_nodes_in_group("light_source").size() == 4, "四支火把（敌人据此判断你在不在亮处）")
+	var a := arena_enemy(main, "a")
+	check(a.state == Enemy.State.PATROL and a.display_name == "无旗者 · 棍手" and a.hp == 50, "开局在巡逻：棍手 50 点生命")
+	solo(main, a)
+	a.process_mode = Node.PROCESS_MODE_DISABLED         # 感知单项：直接调用
+	# 视野
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	await physics(2)
+	check(not a.player_lit() and a.can_see_player(), "暗处 5 米、在视野锥里：看得见")
+	put_enemy(a, Vector3(0, 0, -2), 0.0)
+	await physics(2)
+	check(not a.can_see_player(), "背对玩家：看不见（视野锥 110°）")
+	put_enemy(a, Vector3(0, 0, -9), PI)
+	await physics(2)
+	check(not a.can_see_player(), "暗处 12 米：看不见（暗处只有 8 米）")
+	await place(p, 0.0, 10.0)
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	await physics(2)
+	check(a.player_lit() and a.can_see_player(), "站在火把旁 12 米：看得见（亮处 20 米）")
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, -4), PI)
+	p.crouch_wanted = true
+	await physics(10)
+	check(not a.can_see_player(), "暗处 7 米蹲着：看不见（蹲下视距打六折）")
+	p.crouch_wanted = false
+	await physics(10)
+	check(a.can_see_player(), "站起来就被看见")
+	var wall := Blocks.box(main.world, Vector3(3, 3, 0.2), Vector3(0, 1.5, 1.5), Blocks.mat(Color.GRAY))
+	await physics(2)
+	check(not a.can_see_player(), "中间隔着墙：看不见")
+	wall.queue_free()
+	await physics(2)
+	# 起疑 → 警觉 → 战斗
+	var seen_states: Array = []
+	a.state_changed.connect(func(_e, st): seen_states.append(st))
+	a.process_mode = Node.PROCESS_MODE_INHERIT
+	await place(p, 0.0, 4.0)
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	a.waypoints = [a.global_position]               # 站岗：不转身去巡逻点
+	await seconds(2.5)
+	check(seen_states.slice(0, 3) == ["suspicious", "alert", "combat"], "暗处被看见：起疑 → 警觉 → 战斗（%s）" % [seen_states])
+	check(a.status_label.text.begins_with("！"), "战斗中头顶写「！」和生命（%s）" % a.status_label.text)
+	await free_main(main)
+	# 听觉 + 喊同伙
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	a = arena_enemy(main, "a")
+	var b := arena_enemy(main, "b")
+	var sw := arena_enemy(main, "s")
+	solo(main, a)
+	b.process_mode = Node.PROCESS_MODE_INHERIT
+	put_enemy(a, Vector3(0, 0, -4), 0.0)                # 背对玩家
+	put_enemy(b, Vector3(6, 0, -12), 0.0)               # 8 米外、也背对
+	b.waypoints = [b.global_position]
+	a.waypoints = [a.global_position]
+	await place(p, 0.0, -1.5)
+	Input.action_press("move_left")
+	await physics(20)
+	Input.action_release("move_left")
+	check(a.state in [Enemy.State.SUSPICIOUS, Enemy.State.ALERT, Enemy.State.COMBAT], "身后 3 米走动：被听见，起疑（%s）" % a.state_name())
+	check(b.state == Enemy.State.PATROL, "8 米外背对的同伙还没察觉")
+	a.alert()
+	await physics(2)
+	check(b.state in [Enemy.State.ALERT, Enemy.State.COMBAT], "警觉时喊上 12 米内的同伙（%s）" % b.state_name())
+	await free_main(main)
+	# 攻击令牌：三个都来打，同时出招的不超过 2 个
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	m.health = 100000                                    # 测令牌时别被打倒
+	var dir: CombatDirector = main.get_tree().get_first_node_in_group("combat_director")
+	await place(p, 0.0, 2.0)
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		e.alert(false)
+	var max_tokens := 0
+	var circled := false
+	var attacked := 0
+	for i in 240:
+		await get_tree().physics_frame
+		max_tokens = maxi(max_tokens, dir.count())
+		var n := 0
+		for e in main.get_tree().get_nodes_in_group("enemy"):
+			if e.action == "circle":
+				circled = true
+			if e.action in ["windup", "strike"]:
+				n += 1
+		attacked = maxi(attacked, n)
+	check(max_tokens <= 2 and max_tokens >= 1, "攻击令牌最多 2 个（最多同时 %d 个）" % max_tokens)
+	check(circled, "没拿到令牌的敌人在外圈绕圈")
+	check(m.health < 100000, "敌人上来出招打中了玩家（剩 %d）" % m.health)
+	await free_main(main)
+	# 格挡 / 完美格挡 / 破防（直接调用 receive_hit）
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	a = arena_enemy(main, "a")
+	solo(main, a)
+	a.process_mode = Node.PROCESS_MODE_DISABLED
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	m.block_press()
+	check(m.state == Melee.State.DRAWING, "收着剑时按格挡：先拔剑")
+	await seconds(0.5)
+	check(m.blocking(), "拔出来还按着：举剑格挡")
+	var r := m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "perfect" and m.health == 100 and is_equal_approx(m.stamina, Melee.STAMINA_MAX), "刚举剑 0.2 秒内被打：完美格挡，不掉血不耗体力")
+	await seconds(0.3)
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "block" and m.health == 100 and is_equal_approx(m.stamina, 90.0), "一直举着：普通格挡，伤害变成体力消耗（10）")
+	r = m.receive_hit({"damage": 10, "kind": "heavy", "attacker": a})
+	check(r == "block" and is_equal_approx(m.stamina, 75.0), "挡重击耗 1.5 倍体力（15）")
+	put_enemy(a, Vector3(0, 0, 4.5), 0.0)              # 绕到身后
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "hit" and m.health == 90, "背后来的攻击挡不住")
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	m.stamina = 4.0
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "guard_break" and m.staggered() and m.health == 85 and not m.blocking(), "体力不够挡：格挡被打破、失衡、吃一半伤害")
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "hit" and m.health == 65, "失衡时受到的伤害加倍")
+	m.press()
+	m.release()
+	check(m.staggered() and m.state != Melee.State.WINDUP, "失衡时不能出招")
+	await frames(3)
+	check(main.hud.health_label.visible and main.hud.health_label.text.begins_with("生命 65"), "生命条显示数值（%s）" % main.hud.health_label.text)
+	check(main.hud.hurt_left > 0.0, "受伤时画面四周闪一下")
+	await seconds(1.0)
+	m.block_release()
+	check(not m.staggered() and not m.blocking(), "失衡 0.8 秒后恢复")
+	# 举剑格挡时走得慢、不能跑
+	m.block_press()
+	await seconds(0.3)
+	check(p.current_speed(Vector2(0, -1)) == FpController.GUARD_SPEED and not p.wants_run(), "举剑格挡时只能慢慢挪")
+	m.block_release()
+	await seconds(0.3)
+	# 完美格挡（真实时机）：棍手起手快劈下时才举剑
+	a.process_mode = Node.PROCESS_MODE_INHERIT
+	m.health = 100
+	m.stamina = Melee.STAMINA_MAX
+	var results: Array = []
+	m.guarded.connect(func(res, _i): results.append(res))
+	a.alert(false)
+	var parried := false
+	for i in 600:
+		await get_tree().physics_frame
+		if a.action == "windup" and not m.blocking():
+			var wt := float(a.data.heavy_windup if a.attack_kind == "heavy" else a.data.windup)
+			if a.action_t >= wt - 0.08:
+				m.block_press()
+		if a.action == "recover" and m.blocking():
+			m.block_release()
+		if a.state == Enemy.State.STAGGER:
+			parried = true
+			break
+	check(parried and results.has("perfect"), "对方劈下前一瞬间举剑：完美格挡，对方失衡（%s）" % [results])
+	m.block_release()
+	# 失衡的敌人挨打伤害加倍
+	if parried:
+		await aim(p, p.global_position, a.global_position + Vector3(0, 1.2, 0))
+		a.stop_left = 0.0
+		m.block_release()
+		await seconds(0.3)
+		var hp0 := a.hp
+		m.press()
+		m.release()
+		await seconds(0.3)
+		check(hp0 - a.hp == 24, "失衡时挨一记轻击：伤害加倍 12 → 24（实际 %d）" % (hp0 - a.hp))
+	await free_main(main)
+	# 剑手格挡轻击、重击破防；受重伤求饶 / 逃跑；倒下
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	sw = arena_enemy(main, "s")
+	solo(main, sw)
+	sw.process_mode = Node.PROCESS_MODE_DISABLED
+	await place(p, 0.0, 3.0)
+	put_enemy(sw, Vector3(0, 0, 1.4), PI)
+	sw.data = sw.data.duplicate()
+	sw.data.block_chance = 1.0
+	sw._enter(Enemy.State.COMBAT)
+	sw.player = p
+	var hp1 := sw.hp
+	sw.take_hit({"damage": 12, "kind": "light", "stop": 0.0})
+	check(sw.hp == hp1 and sw.action == "block" and m.stop_left > 0.0, "剑手挡住轻击：不掉血，玩家的剑被弹回来")
+	sw.action = ""
+	sw.take_hit({"damage": 22, "kind": "heavy", "stop": 0.0})
+	check(sw.state == Enemy.State.STAGGER and sw.hp == hp1 - 22, "重击破防：剑手失衡并挨了这一下")
+	sw.data.yield_chance = 1.0
+	sw.data.block_chance = 0.0
+	sw._enter(Enemy.State.COMBAT)
+	sw.hp = 14
+	sw.take_hit({"damage": 3, "kind": "light", "stop": 0.0})
+	check(sw.state == Enemy.State.YIELD and sw.status_label.text == "求饶", "受重伤（生命 ≤ 20%%）：求饶（%s）" % sw.state_name())
+	sw.take_hit({"damage": 30, "kind": "light", "stop": 0.0})
+	check(sw.state == Enemy.State.DEAD and sw.collision_layer == 0 and sw.name_label.text.ends_with("（倒下）"), "生命归零：倒下，不再挡路")
+	check(m.find_target() != sw, "倒下的敌人不再是攻击目标")
+	var cl := arena_enemy(main, "a")
+	cl.process_mode = Node.PROCESS_MODE_DISABLED
+	put_enemy(cl, Vector3(2, 0, 1.4), PI)
+	cl.data = cl.data.duplicate()
+	cl.data.yield_chance = 0.0
+	cl.player = p
+	cl._enter(Enemy.State.COMBAT)
+	cl.hp = 12
+	cl.take_hit({"damage": 2, "kind": "light", "stop": 0.0})
+	check(cl.state == Enemy.State.FLEE, "棍手受重伤：逃跑")
+	cl._enter(Enemy.State.COMBAT)
+	cl.hp = 50
+	cl.stamina = 10.0
+	cl._combat(0.016)
+	check(cl.state == Enemy.State.RETREAT, "棍手体力见底：先退开")
+	await free_main(main)
+	# 真实出剑打敌人：没察觉的敌人挨一下立刻进入战斗
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	a = arena_enemy(main, "a")
+	solo(main, a)
+	put_enemy(a, Vector3(0, 0, 1.4), 0.0)
+	a.waypoints = [a.global_position]
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press(); m.release()
+	await seconds(0.5)
+	m.press(); m.release()
+	await seconds(0.4)
+	check(a.hp == 38 and a.state in [Enemy.State.ALERT, Enemy.State.COMBAT], "从背后打没察觉的棍手：12 点，他立刻转入战斗（%s）" % a.state_name())
+	# 触屏「挡」按钮、Q 键
+	var t: TouchControls = main.touch
+	t.visible = true
+	var bc: Dictionary = t.button_centers()
+	check(bc.has("guard") and t.button_at(bc.guard) == "guard" and bc.guard.distance_to(bc.attack) > TouchControls.BTN_R * 2.5, "触屏有「挡」按钮，在「攻」上方")
+	a.process_mode = Node.PROCESS_MODE_DISABLED
+	await seconds(0.8)
+	t._input(touch_ev(4, bc.guard, true))
+	await seconds(0.3)
+	check(m.blocking(), "按住「挡」：举剑格挡")
+	t._input(touch_ev(4, bc.guard, false))
+	await seconds(0.3)
+	check(not m.blocking(), "松开「挡」：放下")
+	main._unhandled_input(key_ev(KEY_Q))
+	await seconds(0.3)
+	check(m.blocking(), "按住 Q：格挡")
+	main.open_pause()
+	check(not m.blocking() and not m.block_held, "打开菜单时放下格挡")
+	main.close_pause()
+	await seconds(0.2)
+	# 倒下
+	m.health = 5
+	m.receive_hit({"damage": 9, "kind": "light", "attacker": null})
+	check(m.down and main.defeat_panel.visible and get_tree().paused, "生命归零：「你倒下了」画面，游戏暂停")
+	check(main.defeat_panel.retry_btn.text == "重来", "有「重来」按钮")
+	get_tree().paused = false
 	await free_main(main)
