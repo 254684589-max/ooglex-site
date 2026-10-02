@@ -95,7 +95,7 @@ function applySearch() {
   const q = String(search.value || '').trim().toLowerCase();
   const rows = !q ? windows.slice() : windows.filter(d => {
     const haystack = [
-      d.name, d.city, d.country, d.category, d.license, d.author
+      d.name, d.name_zh, d.original_title, d.city_zh, d.city, d.country_zh, d.country, d.category, d.license, d.author
     ].map(v => String(v || '').toLowerCase()).join(' ');
     return haystack.includes(q);
   });
@@ -347,8 +347,31 @@ function itemKey(d) {
 }
 
 function itemSubLabel(d) {
-  return [cleanPlace(d.city), cleanPlace(d.country), d.category, d.license]
-    .filter(Boolean).join(' · ') || 'WINDOW 沉浸窗口';
+  return [
+    cleanPlace(d.city_zh || d.city),
+    cleanPlace(d.country_zh || d.country),
+    d.category,
+    technicalLabel(d),
+    d.license
+  ].filter(Boolean).join(' · ') || 'WINDOW 沉浸窗口';
+}
+
+function technicalLabel(d) {
+  const width = Number(d && d.width || 0);
+  const height = Number(d && d.height || 0);
+  const duration = Number(d && d.duration_seconds || 0);
+  const parts = [];
+  if (width >= 3840 && height >= 2160) parts.push('4K');
+  else if (width >= 1920 && height >= 1080) parts.push('1080p');
+  else if (width >= 1280 && height >= 720) parts.push('720p');
+  else if (width && height) parts.push(width + '×' + height);
+  if (duration > 0) {
+    const total = Math.round(duration);
+    const mm = Math.floor(total / 60);
+    const ss = String(total % 60).padStart(2, '0');
+    parts.push(mm ? mm + ':' + ss : total + '秒');
+  }
+  return parts.join(' · ');
 }
 
 function cleanPlace(value) {

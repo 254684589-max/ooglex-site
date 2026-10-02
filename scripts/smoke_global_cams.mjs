@@ -135,7 +135,7 @@ try {
     const r = parseResult(dom);
     const desktop = width > 820;
 
-    if (!r.version.includes('V0.9')) failures.push(width + ': V0.9 label missing');
+    if (!r.version.includes('V1.0')) failures.push(width + ': V1.0 label missing');
     if (r.windowOnly !== 'WINDOW ONLY') failures.push(width + ': WINDOW ONLY badge missing');
     if (r.liveControls !== 0) failures.push(width + ': camera controls still rendered');
     if (r.sortTabs !== 3 || r.activeSortTabs !== 1) failures.push(width + ': WINDOW sort tabs invalid');

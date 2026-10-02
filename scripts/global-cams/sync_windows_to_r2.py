@@ -30,7 +30,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "Ooglex-Global-Windows/0.7.3 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
+FILE_API = "https://commons.wikimedia.org/w/rest.php/v1/file/"
+UA = "Ooglex-Global-Windows/1.0 (https://www.ooglex.com/apps/global-cams/; contact via ooglex.com)"
 ALLOWED_LICENSE_PREFIXES = ("CC BY", "CC0", "Public domain", "Public Domain", "PD")
 VIDEO_MIMES = {"video/webm", "video/ogg", "video/mp4"}
 
@@ -111,6 +112,8 @@ HARD_REJECT = {
     "volleyball", "arena", "samba", "dance performance",
     "cow", "cows", "cattle", "pika", "pica", "seal", "seals",
     "earth hour", "cable car", "funicular", "gondola lift",
+    "montage", "compilation", "highlights", "slideshow", "showreel",
+    "promo", "promotional", "teaser",
 }
 
 STRICT_DESC_REJECT = {
@@ -130,6 +133,7 @@ SOFT_REJECT = {
 
 _REQUEST_LAST = 0.0
 _MEDIA_LAST = 0.0
+_PROFILE_CACHE: dict[str, dict] = {}
 RUN_AT = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
@@ -204,6 +208,417 @@ def fetch_json_url(url: str) -> object:
         return json.load(r)
 
 
+def source_title_from_url(url: str, fallback: str = "") -> str:
+    try:
+        path = urllib.parse.unquote(urllib.parse.urlparse(str(url or "")).path)
+        if "/wiki/" in path:
+            title = path.split("/wiki/", 1)[1].replace("_", " ")
+            if title.startswith("File:"):
+                return title
+    except Exception:
+        pass
+    raw = str(fallback or "").strip()
+    if not raw:
+        return ""
+    return raw if raw.startswith("File:") else "File:" + raw
+
+
+def rest_media_profile(title: str, interval: float = 0.8, retries: int = 5) -> dict:
+    """Read duration/dimensions before downloading the original media.
+
+    This REST path is only a fallback when batched imageinfo is incomplete.
+    Retry transient Wikimedia throttling/network failures so a temporary 429
+    cannot silently shrink an otherwise valid V1 catalog.
+    """
+    global _REQUEST_LAST
+    title = str(title or "").strip()
+    if not title:
+        return {}
+    if not title.startswith("File:"):
+        title = "File:" + title
+    if title in _PROFILE_CACHE:
+        return dict(_PROFILE_CACHE[title])
+
+    url = FILE_API + urllib.parse.quote(title, safe=":")
+    data = None
+    last_exc = None
+
+    for attempt in range(retries):
+        wait = interval - (time.monotonic() - _REQUEST_LAST)
+        if wait > 0:
+            time.sleep(wait)
+
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA,
+            "Accept": "application/json",
+            "Accept-Encoding": "identity",
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=40) as r:
+                _REQUEST_LAST = time.monotonic()
+                data = json.load(r)
+            break
+        except urllib.error.HTTPError as exc:
+            _REQUEST_LAST = time.monotonic()
+            last_exc = exc
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == retries - 1:
+                break
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                delay = float(retry_after) if retry_after else 0.0
+            except Exception:
+                delay = 0.0
+            delay = max(delay, min(30.0, 2.5 * (2 ** attempt)))
+            print(
+                f"warn: media profile HTTP {exc.code}; retry {attempt + 1}/{retries} "
+                f"after {delay:.1f}s :: {title}",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError) as exc:
+            _REQUEST_LAST = time.monotonic()
+            last_exc = exc
+            if attempt == retries - 1:
+                break
+            delay = min(20.0, 2.0 * (2 ** attempt))
+            print(
+                f"warn: media profile network retry {attempt + 1}/{retries} "
+                f"after {delay:.1f}s :: {title}",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+        except Exception as exc:
+            _REQUEST_LAST = time.monotonic()
+            last_exc = exc
+            break
+
+    if not isinstance(data, dict):
+        print(f"warn: media profile unavailable {title}: {last_exc}", file=sys.stderr)
+        _PROFILE_CACHE[title] = {}
+        return {}
+
+    rep = data.get("original") or data.get("preferred") or {}
+    try:
+        duration = float(rep.get("duration")) if rep.get("duration") is not None else None
+    except Exception:
+        duration = None
+    try:
+        width = int(rep.get("width")) if rep.get("width") is not None else None
+    except Exception:
+        width = None
+    try:
+        height = int(rep.get("height")) if rep.get("height") is not None else None
+    except Exception:
+        height = None
+    try:
+        size = int(rep.get("size")) if rep.get("size") is not None else None
+    except Exception:
+        size = None
+
+    out = {
+        "duration_seconds": duration,
+        "width": width,
+        "height": height,
+        "size": size,
+        "mediatype": str(rep.get("mediatype") or ""),
+    }
+    _PROFILE_CACHE[title] = out
+    return dict(out)
+
+def media_profile_from_info(info: dict) -> dict:
+    """Use batched imageinfo video properties before falling back to REST."""
+    try:
+        duration = float(info.get("duration")) if info.get("duration") is not None else None
+    except Exception:
+        duration = None
+    try:
+        width = int(info.get("width")) if info.get("width") is not None else None
+    except Exception:
+        width = None
+    try:
+        height = int(info.get("height")) if info.get("height") is not None else None
+    except Exception:
+        height = None
+    try:
+        size = int(info.get("size")) if info.get("size") is not None else None
+    except Exception:
+        size = None
+    return {
+        "duration_seconds": duration,
+        "width": width,
+        "height": height,
+        "size": size,
+        "mediatype": str(info.get("mediatype") or ""),
+    }
+
+
+def ensure_media_profile(info: dict, title: str, interval: float) -> dict:
+    profile = media_profile_from_info(info)
+    if profile.get("duration_seconds") is not None and profile.get("width") and profile.get("height"):
+        return profile
+    fallback = rest_media_profile(title, interval=interval)
+    for key in ("duration_seconds", "width", "height", "size", "mediatype"):
+        if fallback.get(key) is not None:
+            profile[key] = fallback.get(key)
+    return profile
+
+
+def variant_estimated_bytes(variant: dict, duration_seconds: float) -> int | None:
+    """Estimate transcode bytes from TimedMediaHandler bandwidth metadata."""
+    try:
+        bandwidth = float(variant.get("bandwidth") or 0)
+    except Exception:
+        bandwidth = 0
+    if bandwidth <= 0 or duration_seconds <= 0:
+        return None
+    # bandwidth is bits/s. Keep 8% headroom for container/metadata variance.
+    return int((bandwidth * duration_seconds / 8.0) * 1.08)
+
+
+def select_delivery_variant(info: dict, cfg: dict) -> tuple[dict | None, list[str]]:
+    """Pick a browser-friendly Commons source that satisfies V1 technical gates.
+
+    Prefer official 1080p/720p WebM/MP4 transcodes to oversized originals. The
+    original Commons URL/title remains the attribution source in the manifest.
+    """
+    original = media_profile_from_info(info)
+    duration = float(original.get("duration_seconds") or 0)
+    min_width = int(cfg.get("min_width") or 1280)
+    min_height = int(cfg.get("min_height") or 720)
+    preferred_width = int(cfg.get("preferred_width") or 1920)
+    preferred_height = int(cfg.get("preferred_height") or 1080)
+    min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
+    max_bytes = int(float(cfg.get("max_file_mb") or 80) * 1024 * 1024)
+
+    candidates: list[dict] = []
+
+    original_url = str(info.get("url") or "")
+    original_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+    if original_url:
+        candidates.append({
+            "url": original_url,
+            "mime": original_mime,
+            "width": int(original.get("width") or 0),
+            "height": int(original.get("height") or 0),
+            "bytes": int(original.get("size") or 0),
+            "exact_bytes": True,
+            "transcode_key": "",
+            "kind": "original",
+        })
+
+    for row in info.get("derivatives") or []:
+        url = str(row.get("src") or "")
+        mime = str(row.get("type") or "").split(";", 1)[0].strip().lower()
+        try:
+            width = int(row.get("width") or 0)
+            height = int(row.get("height") or 0)
+        except Exception:
+            continue
+        estimated = variant_estimated_bytes(row, duration)
+        if not url or not estimated:
+            continue
+        candidates.append({
+            "url": url,
+            "mime": mime,
+            "width": width,
+            "height": height,
+            "bytes": estimated,
+            "exact_bytes": False,
+            "transcode_key": str(row.get("transcodekey") or ""),
+            "kind": "transcode",
+        })
+
+    eligible: list[dict] = []
+    for row in candidates:
+        width = int(row.get("width") or 0)
+        height = int(row.get("height") or 0)
+        size = int(row.get("bytes") or 0)
+        mime = str(row.get("mime") or "")
+        if mime not in VIDEO_MIMES:
+            continue
+        if width < min_width or height < min_height or width <= height:
+            continue
+        if size < min_bytes or size > max_bytes:
+            continue
+        eligible.append(row)
+
+    if not eligible:
+        return None, ["no-720p-under-80mb-variant"]
+
+    def rank(row: dict) -> tuple:
+        width = int(row["width"])
+        height = int(row["height"])
+        size = int(row["bytes"])
+        # Prefer 720p–1080p delivery because it gives the best quality/storage
+        # balance for a browser WINDOW. Above-1080p is a fallback, not a goal.
+        in_preferred = int(width <= preferred_width and height <= preferred_height)
+        exact_1080 = int(width >= 1920 and height >= 1080)
+        exact_720 = int(width >= 1280 and height >= 720)
+        transcode = int(row.get("kind") == "transcode")
+        return (in_preferred, exact_1080, exact_720, height, transcode, -size)
+
+    best = max(eligible, key=rank)
+    profile = {
+        "duration_seconds": duration,
+        "width": int(best["width"]),
+        "height": int(best["height"]),
+        "size": int(best["bytes"]),
+        "mediatype": "VIDEO",
+    }
+    return {
+        **best,
+        "profile": profile,
+        "original_url": original_url,
+    }, []
+
+
+def technical_gate(profile: dict, cfg: dict) -> tuple[bool, list[str]]:
+    reasons: list[str] = []
+    duration = parse_float(profile.get("duration_seconds"))
+    width = parse_float(profile.get("width"))
+    height = parse_float(profile.get("height"))
+    if duration is None:
+        return False, ["missing-duration"]
+    if width is None or height is None:
+        return False, ["missing-dimensions"]
+
+    min_duration = float(cfg.get("min_duration_seconds") or 30)
+    max_duration = float(cfg.get("max_duration_seconds") or 300)
+    min_width = int(cfg.get("min_width") or 1280)
+    min_height = int(cfg.get("min_height") or 720)
+    size = parse_float(profile.get("size"))
+    min_bytes = float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024
+    max_bytes = float(cfg.get("max_file_mb") or 80) * 1024 * 1024
+
+    if duration < min_duration:
+        reasons.append(f"duration<{int(min_duration)}s")
+    if duration > max_duration:
+        reasons.append(f"duration>{int(max_duration)}s")
+    if width < min_width or height < min_height:
+        reasons.append(f"resolution<{min_width}x{min_height}")
+    if bool(cfg.get("require_landscape", True)) and width <= height:
+        reasons.append("not-landscape")
+    if size is not None and (size < min_bytes or size > max_bytes):
+        reasons.append("file-size-out-of-range")
+    return not reasons, reasons
+
+
+def v1_quality_score(info: dict, profile: dict, semantic_score: int, cfg: dict) -> tuple[int, dict]:
+    width = int(profile.get("width") or 0)
+    height = int(profile.get("height") or 0)
+    duration = float(profile.get("duration_seconds") or 0)
+    title = norm(info.get("title", ""))
+
+    if width >= 3840 and height >= 2160:
+        visual = 25
+    elif width >= 2560 and height >= 1440:
+        visual = 24
+    elif width >= 1920 and height >= 1080:
+        visual = 23
+    elif width >= 1600 and height >= 900:
+        visual = 21
+    else:
+        visual = 18
+
+    preferred_min = float(cfg.get("preferred_duration_min_seconds") or 60)
+    preferred_max = float(cfg.get("preferred_duration_max_seconds") or 180)
+    if preferred_min <= duration <= preferred_max:
+        duration_score = 20
+    elif 45 <= duration < preferred_min:
+        duration_score = 17
+    elif duration < 45:
+        duration_score = 14
+    elif duration <= 240:
+        duration_score = 18
+    else:
+        duration_score = 16
+
+    scene = min(25, 12 + max(0, min(13, int(semantic_score))))
+    stable_terms = ("fixed", "stationary", "long take", "real time", "realtime", "ambient")
+    moving_terms = ("drone", "aerial", "hyperlapse")
+    if any(phrase(title, x) for x in stable_terms):
+        stability = 15
+    elif any(phrase(title, x) for x in moving_terms):
+        stability = 9
+    elif any(phrase(title, x) for x in ("timelapse", "time lapse", "time-lapse")):
+        stability = 12
+    else:
+        stability = 11
+
+    immersion = min(15, 9 + max(0, int(semantic_score)) // 2)
+    total = min(100, visual + duration_score + scene + stability + immersion)
+    return total, {
+        "visual": visual,
+        "duration": duration_score,
+        "scene": scene,
+        "stability": stability,
+        "immersion": immersion,
+    }
+
+
+def load_zh_labels(cfg: dict) -> dict:
+    path = Path(str(cfg.get("zh_labels") or ""))
+    if not path.exists():
+        return {"cities": {}, "countries": {}}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "cities": dict(data.get("cities") or {}),
+        "countries": dict(data.get("countries") or {}),
+    }
+
+
+def contains_cjk(value: str) -> bool:
+    return bool(re.search(r"[\u3400-\u9fff]", str(value or "")))
+
+
+def scene_name_zh(info: dict, loc: dict) -> str:
+    # Display labels should describe the actual file title, not incidental
+    # words buried in a long Commons description.
+    text = norm(str(info.get("title") or ""))
+    configured_themes = {norm(str(x)) for x in (loc.get("themes") or []) if x}
+    tests = [
+        (("aurora",), "极光"),
+        (("snow", "snowfall", "snowy"), "雪景"),
+        (("rain", "rainy", "raining"), "雨景"),
+        (("sunset", "dusk"), "日落"),
+        (("sunrise", "dawn"), "日出"),
+        (("night", "nighttime"), "夜景"),
+        (("fog", "mist"), "云雾"),
+        (("waterfall", "falls"), "瀑布"),
+        (("glacier", "glacial"), "冰川"),
+        (("fjord",), "峡湾"),
+        (("beach", "ocean", "coast", "coastal", "seascape", "shore"), "海岸"),
+        (("mountain", "mountains", "alpine"), "山景"),
+        (("lake", "lagoon"), "湖景"),
+        (("river", "canal", "harbor", "harbour", "waterfront"), "水岸"),
+        (("forest", "woods"), "森林"),
+        (("desert", "dune", "dunes"), "沙漠"),
+        (("street",), "街景"),
+        (("skyline", "cityscape"), "城市天际线"),
+    ]
+    for terms, label in tests:
+        if configured_themes and str(loc.get("city") or "") != "GPS 景观点":
+            if not any(any(phrase(theme, t) or phrase(t, theme) for t in terms) for theme in configured_themes):
+                continue
+        if any(phrase(text, t) for t in terms):
+            return label
+    category = str(loc.get("category") or "沉浸实景").split("/", 1)[0].strip()
+    return category or "沉浸实景"
+
+
+def display_name_zh(info: dict, loc: dict, labels: dict) -> tuple[str, str, str]:
+    city = str(loc.get("city") or "")
+    country = str(loc.get("country") or "")
+    city_zh = str((labels.get("cities") or {}).get(city) or "")
+    country_zh = str((labels.get("countries") or {}).get(country) or "")
+    if not city_zh and contains_cjk(city):
+        city_zh = city
+    if not country_zh and contains_cjk(country):
+        country_zh = country
+    place = city_zh or ("自然景观" if city == "GPS 景观点" else scene_name_zh(info, loc))
+    return f"{place} · {scene_name_zh(info, loc)}", city_zh, country_zh
+
+
 def category_titles(category: str, limit: int, interval: float) -> list[str]:
     """Collect file titles from a Commons category with continuation."""
     out: list[str] = []
@@ -247,7 +662,7 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
 
     out: list[str] = []
     seen: set[str] = set()
-    query_limit = min(20, max(5, per_query))
+    query_limit = min(40, max(8, per_query))
 
     def run_query(alias: str, query: str) -> None:
         if len(out) >= max_candidates:
@@ -277,16 +692,20 @@ def themed_search_titles(loc: dict, per_query: int, max_candidates: int, interva
         if not alias:
             continue
 
-        # Theme-first discovery: one simple query per scenic intent.
+        # Theme-first discovery across modern Commons video containers.
+        # The V1 technical gate still decides whether a result is 30s+, 720p+
+        # and landscape before it can enter the catalog.
         for theme in themes[:4]:
-            run_query(alias, f'"{alias}" {theme} filemime:video/webm')
+            run_query(alias, f'"{alias}" {theme} filetype:video filew:>1279 fileh:>719')
             if len(out) >= max_candidates:
                 break
 
         # Fallback broad title search helps places whose Commons metadata does
-        # not use English theme terms. Local scoring still decides acceptance.
+        # not use English theme terms. Cirrus prefilters to HD video here;
+        # duration, landscape orientation, license and content still pass the
+        # stricter V1 gates later.
         if len(out) < max_candidates:
-            run_query(alias, f'intitle:"{alias}" filemime:video/webm')
+            run_query(alias, f'intitle:"{alias}" filetype:video filew:>1279 fileh:>719')
 
         if len(out) >= max_candidates:
             break
@@ -314,10 +733,10 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
             data = http_json({
                 "action": "query",
                 "titles": "|".join(batch),
-                "prop": "imageinfo|coordinates",
-                "iiprop": "url|mime|size|timestamp|extmetadata",
-                "iiextmetadatalanguage": "en",
-                "iiextmetadatafilter": (
+                "prop": "videoinfo|coordinates",
+                "viprop": "url|mime|size|dimensions|mediatype|derivatives|timestamp|extmetadata",
+                "viextmetadatalanguage": "en",
+                "viextmetadatafilter": (
                     "Artist|Attribution|LicenseShortName|LicenseUrl|UsageTerms|NonFree|"
                     "GPSLatitude|GPSLongitude|ImageDescription|DateTimeOriginal|DateTimeDigitized"
                 ),
@@ -327,7 +746,7 @@ def image_infos(titles: list[str], interval: float) -> dict[str, dict]:
             continue
 
         for page in data.get("query", {}).get("pages", []):
-            info = (page.get("imageinfo") or [None])[0]
+            info = (page.get("videoinfo") or [None])[0]
             title = page.get("title", "")
             if info and title:
                 info["title"] = title
@@ -456,26 +875,47 @@ def global_scenic_titles(cfg: dict, interval: float) -> list[str]:
         if len(out) >= max_candidates:
             break
         search_forms = [
-            f'intitle:"{term}" filemime:video/webm',
-            f'"{term}" filemime:video/webm',
+            f'intitle:"{term}" filetype:video filew:>1279 fileh:>719',
+            f'"{term}" filetype:video filew:>1279 fileh:>719',
         ]
         for query in search_forms:
             if len(out) >= max_candidates:
                 break
-            try:
-                data = http_json({
+
+            fetched = 0
+            continuation: dict = {}
+            while fetched < per_query and len(out) < max_candidates:
+                params = {
                     "action": "query",
                     "generator": "search",
                     "gsrsearch": query,
                     "gsrnamespace": "6",
-                    "gsrlimit": min(50, per_query),
+                    "gsrlimit": min(50, per_query - fetched),
                     "prop": "info",
-                }, interval=interval)
-            except Exception as exc:
-                print(f"warn: global scenic search {term}: {exc}", file=sys.stderr)
-                continue
-            for page in data.get("query", {}).get("pages", []):
-                add_title(page.get("title", ""))
+                }
+                params.update(continuation)
+                try:
+                    data = http_json(params, interval=interval)
+                except Exception as exc:
+                    print(f"warn: global scenic search {term}: {exc}", file=sys.stderr)
+                    break
+
+                pages = data.get("query", {}).get("pages", [])
+                if not pages:
+                    break
+                fetched += len(pages)
+                for page in pages:
+                    add_title(page.get("title", ""))
+
+                next_cont = data.get("continue") or {}
+                if "gsroffset" not in next_cont:
+                    break
+                next_state = {"gsroffset": next_cont["gsroffset"]}
+                if "continue" in next_cont:
+                    next_state["continue"] = next_cont["continue"]
+                if next_state == continuation:
+                    break
+                continuation = next_state
 
     out.sort(key=lambda title: quality_score({"title": title, "extmetadata": {}})[0], reverse=True)
     print(f"global scenic discovery produced {len(out)} unique candidates")
@@ -682,7 +1122,19 @@ def fetch_popularity(cfg: dict) -> dict[str, dict]:
         return {}
 
 
-def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: list[str]) -> dict:
+def build_item(
+    info: dict,
+    loc: dict,
+    key: str,
+    size: int,
+    semantic_score: int,
+    reasons: list[str],
+    profile: dict,
+    quality_total: int,
+    breakdown: dict,
+    labels: dict,
+    delivery: dict,
+) -> dict:
     ext = info.get("extmetadata") or {}
     source_url = info.get("descriptionurl") or info.get("descriptionshorturl") or ""
     author = ext_value(ext, "Attribution") or ext_value(ext, "Artist") or "Wikimedia Commons contributor"
@@ -696,19 +1148,35 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
     gps_lat, gps_lng = media_coords(info)
     lat = gps_lat if gps_lat is not None else float(loc["lat"])
     lng = gps_lng if gps_lng is not None else float(loc["lng"])
+    original_title = normalize_title(info.get("title", ""))
+    name_zh, city_zh, country_zh = display_name_zh(info, loc, labels)
 
     return {
         "id": "r2-" + hashlib.sha256(str(info.get("url", "")).encode()).hexdigest()[:16],
         "kind": "window",
-        "name": normalize_title(info.get("title", "")) or f'{loc["city"]} WINDOW',
-        "country": loc["country"],
-        "city": loc["city"],
+        "name": name_zh,
+        "name_zh": name_zh,
+        "original_title": original_title,
+        "country": loc.get("country", ""),
+        "country_zh": country_zh,
+        "city": loc.get("city", ""),
+        "city_zh": city_zh,
         "lat": lat,
         "lng": lng,
         "category": loc.get("category", "沉浸实景"),
-        "quality_score": score,
+        "quality_schema_version": 1,
+        "quality_score": quality_total,
+        "semantic_score": semantic_score,
+        "quality_breakdown": breakdown,
         "quality_reasons": reasons,
-        "source": "Wikimedia Commons → Ooglex R2",
+        "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
+        "width": int(profile.get("width") or 0),
+        "height": int(profile.get("height") or 0),
+        "source": (
+            "Wikimedia Commons official transcode → Ooglex R2"
+            if delivery.get("kind") == "transcode"
+            else "Wikimedia Commons original → Ooglex R2"
+        ),
         "author": author[:240],
         "license": license_name[:120],
         "license_url": license_url,
@@ -716,13 +1184,23 @@ def build_item(info: dict, loc: dict, key: str, size: int, score: int, reasons: 
         "r2_key": key,
         "bytes": size,
         "origin_url": info.get("url", ""),
+        "delivery_variant_url": delivery.get("url", ""),
+        "delivery_kind": delivery.get("kind", "original"),
+        "transcode_key": delivery.get("transcode_key", ""),
         "source_published_at": source_published_at,
         "source_updated_at": source_updated_at,
         "catalog_added_at": RUN_AT,
     }
 
 
-def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_quality: int) -> list[dict]:
+def ingest_existing(
+    cfg: dict,
+    seen_urls: set[str],
+    seen_keys: set[str],
+    min_quality: int,
+    labels: dict,
+    interval: float,
+) -> list[dict]:
     url = str(cfg.get("existing_manifest_url") or "").strip()
     if not url:
         return []
@@ -738,6 +1216,8 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
     popularity = fetch_popularity(cfg)
     candidates: list[tuple[tuple[int, int, int, str], dict, str, str, str]] = []
     scene_fingerprints: set[str] = set()
+    rejected_technical = 0
+    rejected_semantic = 0
 
     for row in rows:
         key = str(row.get("r2_key") or "")
@@ -747,24 +1227,51 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         if origin and origin in seen_urls:
             continue
 
-        stored_score = int(row.get("quality_score") or 0)
-        if stored_score < min_quality:
-            continue
+        original_title = str(row.get("original_title") or "").strip()
+        file_title = source_title_from_url(str(row.get("source_url") or ""), original_title or str(row.get("name") or ""))
+        if not original_title:
+            original_title = normalize_title(file_title)
 
         synthetic = {
-            "title": "File:" + str(row.get("name") or ""),
+            "title": file_title or ("File:" + original_title),
             "extmetadata": {"ImageDescription": {"value": ""}},
         }
-        gate_score, gate_reasons = quality_score(synthetic)
-        if gate_score < 0:
+        semantic_score, gate_reasons = quality_score(synthetic)
+        if semantic_score < 5:
+            rejected_semantic += 1
             continue
 
-        fingerprint = scene_fingerprint(str(row.get("name") or ""))
+        profile = {
+            "duration_seconds": row.get("duration_seconds"),
+            "width": row.get("width"),
+            "height": row.get("height"),
+            "size": row.get("bytes"),
+        }
+        if not profile.get("duration_seconds") or not profile.get("width") or not profile.get("height"):
+            profile = rest_media_profile(file_title, interval=interval)
+        technical_ok, technical_reasons = technical_gate(profile, cfg)
+        if not technical_ok:
+            rejected_technical += 1
+            continue
+
+        total_score, breakdown = v1_quality_score(synthetic, profile, semantic_score, cfg)
+        if total_score < min_quality:
+            continue
+
+        fingerprint = scene_fingerprint(original_title)
         if fingerprint and fingerprint in scene_fingerprints:
             continue
         if fingerprint:
             scene_fingerprints.add(fingerprint)
 
+        loc = {
+            "city": row.get("city") or "GPS 景观点",
+            "country": row.get("country") or "",
+            "category": row.get("category") or "沉浸实景",
+        }
+        name_zh, city_zh, country_zh = display_name_zh(synthetic, loc, labels)
+        city_zh = city_zh or str(row.get("city_zh") or "")
+        country_zh = country_zh or str(row.get("country_zh") or "")
         pop = popularity.get(str(row.get("id") or ""), {})
         plays30 = int(pop.get("plays30d") or pop.get("plays") or 0)
         total_plays = int(pop.get("total") or 0)
@@ -772,10 +1279,21 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
         item = {
             **row,
             "kind": "window",
-            "quality_score": stored_score,
-            "quality_reasons": list(row.get("quality_reasons") or []) + gate_reasons + ["existing-r2"],
+            "name": name_zh,
+            "name_zh": name_zh,
+            "original_title": original_title,
+            "city_zh": city_zh,
+            "country_zh": country_zh,
+            "quality_schema_version": 1,
+            "quality_score": total_score,
+            "semantic_score": semantic_score,
+            "quality_breakdown": breakdown,
+            "quality_reasons": list(row.get("quality_reasons") or []) + gate_reasons + technical_reasons + ["existing-r2"],
+            "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
+            "width": int(profile.get("width") or 0),
+            "height": int(profile.get("height") or 0),
         }
-        candidates.append(((plays30, total_plays, stored_score, added_at), item, key, origin, fingerprint))
+        candidates.append(((plays30, total_plays, total_score, added_at), item, key, origin, fingerprint))
 
     candidates.sort(key=lambda x: x[0], reverse=True)
     keep_limit = int(cfg.get("existing_keep_limit") or len(candidates))
@@ -787,17 +1305,28 @@ def ingest_existing(cfg: dict, seen_urls: set[str], seen_keys: set[str], min_qua
             seen_urls.add(origin)
 
     print(
-        f"reused {len(out)} scenic clips from existing R2 manifest "
-        f"(eligible={len(candidates)}, keep_limit={keep_limit}, popularity={'on' if popularity else 'off'})"
+        f"reused {len(out)} V1-quality clips from existing R2 manifest "
+        f"(eligible={len(candidates)}, rejected_technical={rejected_technical}, "
+        f"rejected_semantic={rejected_semantic}, keep_limit={keep_limit}, "
+        f"popularity={'on' if popularity else 'off'})"
     )
     return out
 
-def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) -> tuple[list[dict], list[dict]]:
+
+def seed_items(
+    cfg: dict,
+    root: Path,
+    seen_urls: set[str],
+    seen_keys: set[str],
+    labels: dict,
+    interval: float,
+    manifest_only: bool = False,
+) -> tuple[list[dict], list[dict]]:
     path = Path(str(cfg.get("seed_manifest") or ""))
     if not path.exists():
         return [], []
 
-    max_bytes = int(float(cfg.get("max_seed_file_mb") or 30) * 1024 * 1024)
+    max_bytes = int(float(cfg.get("max_seed_file_mb") or 80) * 1024 * 1024)
     media_dir = root / "media"
     rows = json.loads(path.read_text(encoding="utf-8"))
     items: list[dict] = []
@@ -808,6 +1337,28 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) 
         if not url or url in seen_urls:
             continue
         try:
+            file_title = source_title_from_url(str(seed.get("source_url") or ""), str(seed.get("name") or ""))
+            synthetic = {
+                "title": file_title,
+                "extmetadata": {"ImageDescription": {"value": ""}},
+            }
+            semantic_score, reasons = quality_score(synthetic)
+            if semantic_score < 0:
+                print(f"seed rejected semantic: {seed.get('name','?')} :: {semantic_score}")
+                continue
+            # Manual seeds are explicitly reviewed. They may use place names
+            # without scenic keywords, but still must satisfy every technical
+            # gate and the final V1 quality score.
+            semantic_score = max(int(cfg.get("min_semantic_score") or 5), semantic_score)
+            profile = rest_media_profile(file_title, interval=interval)
+            technical_ok, technical_reasons = technical_gate(profile, cfg)
+            if not technical_ok:
+                print(f"seed rejected technical: {seed.get('name','?')} :: {','.join(technical_reasons)}")
+                continue
+            total_score, breakdown = v1_quality_score(synthetic, profile, semantic_score, cfg)
+            if total_score < int(cfg.get("min_quality_score") or 60):
+                continue
+
             suffix = Path(urllib.parse.urlparse(url).path).suffix.lower()
             if suffix not in {".webm", ".ogv", ".ogg", ".mp4"}:
                 suffix = ".webm"
@@ -816,32 +1367,62 @@ def seed_items(cfg: dict, root: Path, seen_urls: set[str], seen_keys: set[str]) 
             if key in seen_keys:
                 continue
             dest = media_dir / (digest + suffix)
-            tmp = dest.with_suffix(dest.suffix + ".part")
-            if tmp.exists():
-                tmp.unlink()
-            size = download(url, tmp, max_bytes)
-            tmp.replace(dest)
             mime = "video/mp4" if suffix == ".mp4" else ("video/ogg" if suffix in {".ogv", ".ogg"} else "video/webm")
+            if manifest_only:
+                size = int(profile.get("size") or 0)
+                if size <= 0 or size > max_bytes:
+                    continue
+            else:
+                tmp = dest.with_suffix(dest.suffix + ".part")
+                if tmp.exists():
+                    tmp.unlink()
+                size = download(url, tmp, max_bytes)
+                tmp.replace(dest)
+
+            loc = {
+                "city": seed.get("city") or "GPS 景观点",
+                "country": seed.get("country") or "",
+                "category": seed.get("category") or "沉浸实景",
+            }
+            name_zh, city_zh, country_zh = display_name_zh(synthetic, loc, labels)
+            if contains_cjk(str(seed.get("name") or "")):
+                name_zh = str(seed.get("name"))
             item = {
                 **seed,
                 "id": "r2-seed-" + digest[:16],
                 "kind": "window",
+                "name": name_zh,
+                "name_zh": name_zh,
+                "original_title": normalize_title(file_title),
+                "city_zh": str(seed.get("city_zh") or "") or city_zh or (str(seed.get("city")) if contains_cjk(str(seed.get("city") or "")) else ""),
+                "country_zh": str(seed.get("country_zh") or "") or country_zh or (str(seed.get("country")) if contains_cjk(str(seed.get("country") or "")) else ""),
                 "source": "Curated seed → Ooglex R2",
                 "r2_key": key,
                 "bytes": size,
                 "origin_url": url,
-                "quality_score": 100,
-                "quality_reasons": ["manual-seed"],
+                "quality_schema_version": 1,
+                "quality_score": total_score,
+                "semantic_score": semantic_score,
+                "quality_breakdown": breakdown,
+                "quality_reasons": reasons + technical_reasons + ["manual-seed"],
+                "duration_seconds": round(float(profile.get("duration_seconds") or 0), 2),
+                "width": int(profile.get("width") or 0),
+                "height": int(profile.get("height") or 0),
                 "source_published_at": seed.get("source_published_at"),
                 "source_updated_at": seed.get("source_updated_at"),
                 "catalog_added_at": seed.get("catalog_added_at") or RUN_AT,
             }
             item.pop("video_url", None)
             items.append(item)
-            plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
+            if not manifest_only:
+                plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
             seen_urls.add(url)
             seen_keys.add(key)
-            print(f"seed accepted: {seed.get('name','WINDOW')} :: {size/1024/1024:.1f} MiB")
+            print(
+                f"seed accepted: {name_zh} :: score={total_score} :: "
+                f"{profile.get('width')}x{profile.get('height')} :: "
+                f"{float(profile.get('duration_seconds') or 0):.1f}s :: {size/1024/1024:.1f} MiB"
+            )
         except Exception as exc:
             print(f"warn: seed skipped {seed.get('name','?')}: {exc}", file=sys.stderr)
 
@@ -853,18 +1434,25 @@ def main() -> int:
     ap.add_argument("--config", default="data/global-windows/locations.json")
     ap.add_argument("--output", default=".window-build")
     ap.add_argument("--target", type=int, default=0)
+    ap.add_argument("--audit-existing", action="store_true")
+    ap.add_argument("--manifest-only", action="store_true", help="Build and validate metadata without downloading new media")
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
-    target = args.target or int(cfg.get("target") or 120)
+    target = args.target or int(cfg.get("target") or 150)
     max_per_location = int(cfg.get("max_per_location") or 3)
-    min_quality = int(cfg.get("min_quality_score") or 5)
+    min_quality = int(cfg.get("min_quality_score") or 60)
+    min_semantic = int(cfg.get("min_semantic_score") or 5)
     min_bytes = int(float(cfg.get("min_file_mb") or 0.8) * 1024 * 1024)
-    max_bytes = int(float(cfg.get("max_file_mb") or 12) * 1024 * 1024)
+    max_bytes = int(float(cfg.get("max_file_mb") or 80) * 1024 * 1024)
+    max_catalog_bytes = int(float(cfg.get("max_catalog_gb") or 8) * 1024 * 1024 * 1024)
     max_candidates = int(cfg.get("max_candidates_per_location") or 40)
     per_query = int(cfg.get("theme_query_limit") or 24)
     default_radius_km = float(cfg.get("max_distance_km") or 400)
     interval = float(cfg.get("request_interval_seconds") or 0.8)
+    min_width = int(cfg.get("min_width") or 1280)
+    min_height = int(cfg.get("min_height") or 720)
+    labels = load_zh_labels(cfg)
 
     root = Path(args.output)
     media_dir = root / "media"
@@ -876,16 +1464,32 @@ def main() -> int:
     seen_keys: set[str] = set()
     upload_plan: list[dict] = []
 
-    existing_min_quality = int(cfg.get("existing_min_quality_score") or max(min_quality, 10))
-    items = ingest_existing(cfg, seen_urls, seen_keys, existing_min_quality)
-    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys)
+    existing_min_quality = int(cfg.get("existing_min_quality_score") or min_quality)
+    items = ingest_existing(cfg, seen_urls, seen_keys, existing_min_quality, labels, interval)
+
+    if args.audit_existing:
+        audit_path = root / "audit-existing.json"
+        audit_path.write_text(json.dumps(items, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        total = sum(int(x.get("bytes") or 0) for x in items)
+        print(
+            f"V1 audit existing: pass={len(items)} :: {total/1024/1024:.1f} MiB :: "
+            f"min_duration={cfg.get('min_duration_seconds')}s :: "
+            f"min_resolution={min_width}x{min_height} :: min_score={min_quality}"
+        )
+        return 0
+
+    seeds, seed_plan = seed_items(cfg, root, seen_urls, seen_keys, labels, interval, args.manifest_only)
     items.extend(seeds)
     upload_plan.extend(seed_plan)
-    seen_scenes = {scene_fingerprint(str(x.get("name") or "")) for x in items}
+    seen_scenes = {
+        scene_fingerprint(str(x.get("original_title") or x.get("name") or ""))
+        for x in items
+    }
     seen_scenes.discard("")
 
     city_counts = Counter(str(x.get("city") or "") for x in items)
     rejected_quality = 0
+    rejected_technical = 0
     rejected_geo = 0
     rejected_location = 0
     rejected_size = 0
@@ -913,17 +1517,23 @@ def main() -> int:
                 continue
 
             try:
-                mime = str(info.get("mime") or "").lower()
-                url = str(info.get("url") or "")
-                size = int(info.get("size") or 0)
-                if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
-                    continue
-                if size < min_bytes or size > max_bytes:
-                    rejected_size += 1
+                origin_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+                origin_url = str(info.get("url") or "")
+                if origin_mime not in VIDEO_MIMES or not origin_url or origin_url in seen_urls or not license_ok(info):
                     continue
 
-                score, reasons = quality_score(info)
-                if score < min_quality:
+                delivery, delivery_reasons = select_delivery_variant(info, cfg)
+                if not delivery:
+                    rejected_size += 1
+                    continue
+                profile = dict(delivery["profile"])
+                technical_ok, technical_reasons = technical_gate(profile, cfg)
+                if not technical_ok:
+                    rejected_technical += 1
+                    continue
+
+                semantic_score, reasons = quality_score(info)
+                if semantic_score < min_semantic:
                     rejected_quality += 1
                     continue
                 fingerprint = scene_fingerprint(title)
@@ -938,40 +1548,52 @@ def main() -> int:
                     rejected_location += 1
                     continue
 
-                ext = media_ext(info)
-                digest = hashlib.sha256(url.encode()).hexdigest()[:24]
+                total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
+                if total_score < min_quality:
+                    rejected_quality += 1
+                    continue
+
+                delivery_url = str(delivery["url"])
+                delivery_mime = str(delivery["mime"])
+                size = int(delivery["bytes"])
+                ext = ".mp4" if delivery_mime == "video/mp4" else (".ogv" if delivery_mime == "video/ogg" else ".webm")
+                digest = hashlib.sha256(delivery_url.encode()).hexdigest()[:24]
                 filename = digest + ext
                 key = "media/" + filename
                 if key in seen_keys:
                     continue
                 dest = media_dir / filename
-                if not dest.exists() or dest.stat().st_size != size:
+                if not args.manifest_only and (not dest.exists() or dest.stat().st_size != size):
                     tmp = dest.with_suffix(dest.suffix + ".part")
                     if tmp.exists():
                         tmp.unlink()
-                    got = download(url, tmp, max_bytes)
+                    got = download(delivery_url, tmp, max_bytes)
                     tmp.replace(dest)
                     size = got
+                    profile["size"] = size
 
-                item = build_item(info, loc, key, size, score, reasons)
+                item = build_item(
+                    info, loc, key, size, semantic_score, reasons + technical_reasons + [f"delivery:{delivery.get('transcode_key') or 'original'}"],
+                    profile, total_score, breakdown, labels, delivery
+                )
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
-                upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
-                seen_urls.add(url)
+                if not args.manifest_only:
+                    upload_plan.append({"local": str(dest), "key": key, "content_type": delivery_mime, "bytes": size})
+                seen_urls.add(origin_url)
                 seen_keys.add(key)
                 used_here += 1
                 city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
                 print(
-                    f"accepted {len(items):03d}/{target}: {city} :: score={score} :: "
-                    f"{title} :: {size/1024/1024:.1f} MiB{distance_note}"
+                    f"accepted {len(items):03d}/{target}: {item['name']} :: score={total_score} :: "
+                    f"{item['width']}x{item['height']} :: {item['duration_seconds']:.1f}s :: "
+                    f"{size/1024/1024:.1f} MiB{distance_note}"
                 )
             except Exception as exc:
                 print(f"warn: skip {title}: {exc}", file=sys.stderr)
 
-    # If place-by-place discovery is still short, fill from a global scenic
-    # pool. This keeps the 100+ gate strict without lowering the quality score.
     if len(items) < target:
         locations = list(cfg.get("locations", []))
         global_cap = int(cfg.get("global_max_per_location") or 6)
@@ -985,17 +1607,23 @@ def main() -> int:
             if not info:
                 continue
             try:
-                mime = str(info.get("mime") or "").lower()
-                url = str(info.get("url") or "")
-                size = int(info.get("size") or 0)
-                if mime not in VIDEO_MIMES or not url or url in seen_urls or not license_ok(info):
-                    continue
-                if size < min_bytes or size > max_bytes:
-                    rejected_size += 1
+                origin_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+                origin_url = str(info.get("url") or "")
+                if origin_mime not in VIDEO_MIMES or not origin_url or origin_url in seen_urls or not license_ok(info):
                     continue
 
-                score, reasons = quality_score(info)
-                if score < min_quality:
+                delivery, delivery_reasons = select_delivery_variant(info, cfg)
+                if not delivery:
+                    rejected_size += 1
+                    continue
+                profile = dict(delivery["profile"])
+                technical_ok, technical_reasons = technical_gate(profile, cfg)
+                if not technical_ok:
+                    rejected_technical += 1
+                    continue
+
+                semantic_score, reasons = quality_score(info)
+                if semantic_score < min_semantic:
                     rejected_quality += 1
                     continue
                 fingerprint = scene_fingerprint(title)
@@ -1011,33 +1639,48 @@ def main() -> int:
                 if city != "GPS 景观点" and city_counts[city] >= global_cap:
                     continue
 
-                ext = media_ext(info)
-                digest = hashlib.sha256(url.encode()).hexdigest()[:24]
+                total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
+                if total_score < min_quality:
+                    rejected_quality += 1
+                    continue
+
+                delivery_url = str(delivery["url"])
+                delivery_mime = str(delivery["mime"])
+                size = int(delivery["bytes"])
+                ext = ".mp4" if delivery_mime == "video/mp4" else (".ogv" if delivery_mime == "video/ogg" else ".webm")
+                digest = hashlib.sha256(delivery_url.encode()).hexdigest()[:24]
                 filename = digest + ext
                 key = "media/" + filename
                 if key in seen_keys:
                     continue
                 dest = media_dir / filename
-                if not dest.exists() or dest.stat().st_size != size:
+                if not args.manifest_only and (not dest.exists() or dest.stat().st_size != size):
                     tmp = dest.with_suffix(dest.suffix + ".part")
                     if tmp.exists():
                         tmp.unlink()
-                    got = download(url, tmp, max_bytes)
+                    got = download(delivery_url, tmp, max_bytes)
                     tmp.replace(dest)
                     size = got
+                    profile["size"] = size
 
-                item = build_item(info, loc, key, size, score, reasons + ["global-scenic"])
+                item = build_item(
+                    info, loc, key, size, semantic_score,
+                    reasons + technical_reasons + ["global-scenic", f"delivery:{delivery.get('transcode_key') or 'original'}"],
+                    profile, total_score, breakdown, labels, delivery
+                )
                 items.append(item)
                 if fingerprint:
                     seen_scenes.add(fingerprint)
-                upload_plan.append({"local": str(dest), "key": key, "content_type": mime, "bytes": size})
-                seen_urls.add(url)
+                if not args.manifest_only:
+                    upload_plan.append({"local": str(dest), "key": key, "content_type": delivery_mime, "bytes": size})
+                seen_urls.add(origin_url)
                 seen_keys.add(key)
                 city_counts[city] += 1
                 distance_note = "" if distance is None else f" · {distance:.0f} km"
                 print(
-                    f"global accepted {len(items):03d}/{target}: {city} :: score={score} :: "
-                    f"{title} :: {size/1024/1024:.1f} MiB{distance_note}"
+                    f"global accepted {len(items):03d}/{target}: {item['name']} :: score={total_score} :: "
+                    f"{item['width']}x{item['height']} :: {item['duration_seconds']:.1f}s :: "
+                    f"{size/1024/1024:.1f} MiB{distance_note}"
                 )
             except Exception as exc:
                 print(f"warn: global skip {title}: {exc}", file=sys.stderr)
@@ -1047,25 +1690,52 @@ def main() -> int:
     if len(items) < required:
         raise SystemExit(f"curated catalog too small: {len(items)} accepted; require at least {required}")
 
-    items.sort(key=lambda x: (-int(x.get("quality_score") or 0), str(x.get("city") or ""), str(x.get("name") or "")))
-    chosen = items[:target]
+    items.sort(key=lambda x: (
+        -int(x.get("quality_score") or 0),
+        int(x.get("bytes") or 0),
+        str(x.get("city_zh") or x.get("city") or ""),
+        str(x.get("name") or ""),
+    ))
+    chosen: list[dict] = []
+    chosen_bytes = 0
+    budget_skipped = 0
+    for item in items:
+        if len(chosen) >= target:
+            break
+        size = int(item.get("bytes") or 0)
+        if chosen_bytes + size > max_catalog_bytes:
+            budget_skipped += 1
+            continue
+        chosen.append(item)
+        chosen_bytes += size
+
+    if len(chosen) < required:
+        raise SystemExit(
+            f"catalog budget too small: {len(chosen)} fit within "
+            f"{max_catalog_bytes/1024/1024/1024:.1f} GiB; require {required}"
+        )
+
     selected_keys = {x["r2_key"] for x in chosen}
     upload_plan = [x for x in upload_plan if x["key"] in selected_keys]
 
     (manifest_dir / "windows.json").write_text(json.dumps(chosen, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (root / "upload-plan.json").write_text(json.dumps(upload_plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    total = sum(int(x.get("bytes") or 0) for x in chosen)
     scores = [int(x.get("quality_score") or 0) for x in chosen]
     cities = {str(x.get("city") or "") for x in chosen}
+    durations = [float(x.get("duration_seconds") or 0) for x in chosen]
+    widths = [int(x.get("width") or 0) for x in chosen]
+    heights = [int(x.get("height") or 0) for x in chosen]
     print(
-        f"built {len(chosen)} curated WINDOW clips across {len(cities)} locations, "
-        f"{total/1024/1024:.1f} MiB catalog size, score min/avg/max="
-        f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}"
+        f"built {len(chosen)} V1 WINDOW clips across {len(cities)} locations, "
+        f"{chosen_bytes/1024/1024:.1f} MiB catalog size, score min/avg/max="
+        f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}, "
+        f"duration min/avg/max={min(durations):.1f}/{sum(durations)/len(durations):.1f}/{max(durations):.1f}s"
     )
     print(
-        f"new uploads={len(upload_plan)}; rejected quality={rejected_quality}, "
-        f"geo={rejected_geo}, location={rejected_location}, size={rejected_size}"
+        f"resolution floor={min(widths)}x{min(heights)}; new uploads={len(upload_plan)}; "
+        f"rejected technical={rejected_technical}, quality={rejected_quality}, "
+        f"geo={rejected_geo}, location={rejected_location}, size={rejected_size}, budget={budget_skipped}"
     )
     return 0
 

@@ -15,6 +15,7 @@ on:
       - 'workers/global-windows-cdn/**'
       - 'scripts/global-cams/sync_windows_to_r2.py'
       - 'data/global-windows/locations.json'
+      - 'data/global-windows/zh_labels.json'
       - 'apps/global-cams/app.js'
       - 'apps/global-cams/config.js'
       - '.github/workflows/deploy-global-windows-cdn.yml'
@@ -66,6 +67,26 @@ jobs:
             npx --yes wrangler@4 r2 bucket create "$BUCKET" --location apac
           fi
 
+      - name: Load pending R2 cleanup queue
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if npx --yes wrangler@4 r2 object get "$BUCKET/manifest/gc-pending.json" \
+              --file /tmp/window-gc-pending-before.json --remote >/dev/null 2>&1; then
+            python - <<'PY'
+          import json,re
+          path="/tmp/window-gc-pending-before.json"
+          rows=json.load(open(path,encoding="utf-8"))
+          assert isinstance(rows,list)
+          assert all(re.fullmatch(r"media/[A-Za-z0-9][A-Za-z0-9._-]{2,160}",str(x)) for x in rows)
+          print("Pending cleanup queue:",len(rows))
+          PY
+          else
+            echo '[]' > /tmp/window-gc-pending-before.json
+            echo "Pending cleanup queue: 0"
+          fi
+
       - name: Snapshot current WINDOW manifest
         run: |
           set -euo pipefail
@@ -102,12 +123,43 @@ jobs:
           from pathlib import Path
           manifest=json.loads(Path(".window-build/manifest/windows.json").read_text())
           assert len(manifest) >= min(int(__import__("os").environ.get("TARGET_INPUT") or 100), 100), len(manifest)
-          assert all(int(x.get("quality_score") or 0) >= 5 for x in manifest), "quality gate missing"
-          assert sum(1 for x in manifest if int(x.get("quality_score") or 0) == 100) >= 1, "curated seeds missing"
+          assert all(int(x.get("quality_score") or 0) >= 60 for x in manifest), "V1 quality score gate missing"
+          assert all(float(x.get("duration_seconds") or 0) >= 30 for x in manifest), "short video admitted"
+          assert all(float(x.get("duration_seconds") or 0) <= 300 for x in manifest), "overlong video admitted"
+          assert all(int(x.get("width") or 0) >= 1280 and int(x.get("height") or 0) >= 720 for x in manifest), "sub-720p video admitted"
+          assert all(int(x.get("width") or 0) > int(x.get("height") or 0) for x in manifest), "portrait video admitted"
+          assert all(int(x.get("quality_schema_version") or 0) == 1 for x in manifest), "quality schema missing"
+          assert all(x.get("name_zh") and x.get("original_title") for x in manifest), "Chinese/original title fields missing"
           assert all(x.get("r2_key","").startswith("media/") for x in manifest)
           assert all(x.get("source_url") for x in manifest)
           assert all(x.get("license") for x in manifest)
-          print("WINDOW manifest validated:", len(manifest))
+          assert sum(int(x.get("bytes") or 0) for x in manifest) <= 8 * 1024**3, "catalog exceeds 8GiB"
+          print("WINDOW V1 manifest validated:", len(manifest))
+          PY
+
+      - name: Prepare bounded R2 cleanup queue
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,re
+          before=json.load(open("/tmp/windows-before.json",encoding="utf-8"))
+          after=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
+          pending=json.load(open("/tmp/window-gc-pending-before.json",encoding="utf-8"))
+          valid=lambda k: bool(re.fullmatch(r"media/[A-Za-z0-9][A-Za-z0-9._-]{2,160}",str(k)))
+          old={str(x.get("r2_key") or "") for x in before if valid(x.get("r2_key") or "")}
+          active={str(x.get("r2_key") or "") for x in after if valid(x.get("r2_key") or "")}
+          queue={str(k) for k in pending if valid(k)}
+          queue.update(old-active)
+          queue.difference_update(active)
+          queue=sorted(queue)
+          if len(queue)>500:
+              raise SystemExit(f"refusing cleanup queue: {len(queue)} keys exceeds hard cap 500")
+          delete_now=queue[:20]
+          remaining=queue[20:]
+          json.dump(queue,open("/tmp/window-gc-pending.json","w",encoding="utf-8"),indent=2)
+          json.dump(remaining,open("/tmp/window-gc-remaining.json","w",encoding="utf-8"),indent=2)
+          open("/tmp/window-gc-delete.txt","w",encoding="utf-8").write("\n".join(delete_now)+("\n" if delete_now else ""))
+          print(f"Cleanup queue total={len(queue)}; delete_this_run={len(delete_now)}; remaining={len(remaining)}")
           PY
 
       - name: Upload videos and manifest to R2
@@ -156,7 +208,12 @@ jobs:
           import json
           rows=json.load(open("/tmp/windows.json",encoding="utf-8"))
           assert len(rows)>=100, len(rows)
-          assert all(int(x.get("quality_score") or 0) >= 5 for x in rows)
+          assert all(int(x.get("quality_score") or 0) >= 60 for x in rows)
+          assert all(30 <= float(x.get("duration_seconds") or 0) <= 300 for x in rows)
+          assert all(int(x.get("width") or 0) >= 1280 and int(x.get("height") or 0) >= 720 for x in rows)
+          assert all(int(x.get("width") or 0) > int(x.get("height") or 0) for x in rows)
+          assert all(x.get("name_zh") and x.get("original_title") for x in rows)
+          assert sum(int(x.get("bytes") or 0) for x in rows) <= 8 * 1024**3
           geo_cells={(round(float(x.get("lat") or 0),1),round(float(x.get("lng") or 0),1)) for x in rows}
           assert len(geo_cells)>=25, len(geo_cells)
           print("CDN manifest count:",len(rows))
@@ -170,26 +227,30 @@ jobs:
           test "$(wc -c </tmp/window-range.bin | tr -d ' ')" -eq 1024
           echo "R2 ranged video delivery verified."
 
-      - name: Remove rotated-out WINDOW objects
+      - name: Remove up to 20 rotated-out WINDOW objects
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           set -euo pipefail
-          python - <<'PY' > /tmp/window-stale-keys.txt
-          import json,re
-          before=json.load(open("/tmp/windows-before.json",encoding="utf-8"))
-          after=json.load(open(".window-build/manifest/windows.json",encoding="utf-8"))
-          old={str(x.get("r2_key") or "") for x in before}
-          new={str(x.get("r2_key") or "") for x in after}
-          stale=sorted(k for k in old-new if re.fullmatch(r"media/[A-Za-z0-9][A-Za-z0-9._-]{2,160}",k))
-          if len(stale)>20:
-              raise SystemExit(f"refusing stale cleanup: {len(stale)} keys exceeds hard cap 20")
-          print("\n".join(stale))
-          PY
+
+          # Persist the complete queue before any irreversible delete. If this
+          # step later fails, the next run can safely retry the same keys.
+          npx --yes wrangler@4 r2 object put "$BUCKET/manifest/gc-pending.json" \
+            --file /tmp/window-gc-pending.json --remote \
+            --content-type "application/json; charset=utf-8" \
+            --cache-control "no-store"
+
           count=0
           while IFS= read -r key; do
             [ -n "$key" ] || continue
             npx --yes wrangler@4 r2 object delete "$BUCKET/$key" --remote --force
             count=$((count+1))
-          done < /tmp/window-stale-keys.txt
-          echo "Removed $count rotated-out WINDOW objects."
+          done < /tmp/window-gc-delete.txt
+
+          npx --yes wrangler@4 r2 object put "$BUCKET/manifest/gc-pending.json" \
+            --file /tmp/window-gc-remaining.json --remote \
+            --content-type "application/json; charset=utf-8" \
+            --cache-control "no-store"
+
+          remaining="$(python -c 'import json; print(len(json.load(open("/tmp/window-gc-remaining.json"))))')"
+          echo "Removed $count rotated-out WINDOW objects; cleanup queue remaining=$remaining."
