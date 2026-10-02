@@ -13,9 +13,9 @@ function markerSummary(html, app) {
     viewerControls: html.includes('viewer-controls'),
     appMarkerSync: app.includes('getScreenCoords'),
     appViewerControls: app.includes('buildViewerControls'),
-    appExitControl: app.includes("['close', '退出放大'"),
+    appIconControls: app.includes("['prev', '⏮'") && app.includes("['next', '⏭'") && app.includes("['random', '随机窗口'") && app.includes("['expand', '⛶'"),
     appKeyboardNav: app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"),
-    appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchend'"),
+    appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchmove'") && app.includes("viewer.addEventListener('touchend'") && app.includes('stepWindow(dy < 0 ? 1 : -1)'),
     oldTopListener: app.includes("$('#randomTop')")
   };
 }
@@ -28,7 +28,7 @@ function valid(summary) {
     summary.viewerControls &&
     summary.appMarkerSync &&
     summary.appViewerControls &&
-    summary.appExitControl &&
+    summary.appIconControls &&
     summary.appKeyboardNav &&
     summary.appSwipeNav &&
     !summary.oldTopListener;
