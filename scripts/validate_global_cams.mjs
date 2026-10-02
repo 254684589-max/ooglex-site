@@ -37,7 +37,7 @@ ok(html.includes('data-sort="featured"') && html.includes('data-sort="latest"') 
 ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
 ok(html.includes('WINDOW 播放列表'), 'WINDOW playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
-ok(html.includes('display:flex;align-items:center;gap:6px'), 'compact viewer controls must be visible');
+ok(html.includes('.viewer-controls{position:absolute') && html.includes('display:flex;align-items:center;justify-content:center;gap:6px'), 'compact viewer controls must be visible');
 ok(html.includes('left:50%;right:auto;transform:translateX(-50%);display:flex'), 'mobile floating viewer controls missing');
 ok(html.includes('touch-action:pan-x'), 'mobile vertical swipe touch-action guard missing');
 ok(html.includes('app.js?v=14'), 'Global Cams app cache-bust version missing');
