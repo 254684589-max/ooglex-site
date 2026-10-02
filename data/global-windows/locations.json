@@ -3474,7 +3474,7 @@
   "existing_keep_limit": 140,
   "popularity_url": "https://windows-cdn.ooglex.com/stats/popular?days=30&limit=500",
   "min_duration_seconds": 30,
-  "preferred_duration_min_seconds": 60,
+  "preferred_duration_min_seconds": 90,
   "preferred_duration_max_seconds": 180,
   "max_duration_seconds": 300,
   "min_width": 1280,
@@ -3488,5 +3488,6 @@
   "min_semantic_score": 5,
   "global_generic_gps_cap": 18,
   "discovery_mode": "global-first",
-  "validation_contract": "v1-transcode-global-first"
+  "content_profile": "immersive-longform-hd",
+  "validation_contract": "v1.1-content-quality"
 }
