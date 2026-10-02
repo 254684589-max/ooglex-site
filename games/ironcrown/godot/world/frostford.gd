@@ -13,13 +13,23 @@ const NORTH_END := -48.0         # 领主宅邸正面
 const WATCH_POS := Vector3(2.3, 0, -3.4)
 const WATCH_LINES := ["夜里雾大，少往渡口那边走。", "三年没见过春天了……烽燧那边的消息一天比一天坏。", "灯要是灭了，就回屋待着，别在街上晃。"]
 const TREE_POS := Vector3(-8.6, 0, -23.5)
+const STEWARD_POS := Vector3(0.0, 0, -46.6)       # 领主宅邸门前，面朝街道（+Z）
+const HOB_POS := Vector3(-3.7, 0, -10.6)          # 「倒钩鱼」酒馆门口
 const WELL_POS := Vector3(-6.4, 0, -25.6)
+const DUMMY_POS := Vector3(-2.2, 0, -5.0)         # 更夫岗哨对面的练剑木桩（2.4）
+const CRATE_POS := Vector3(-4.9, 0, -22.2)        # 小广场上没人要的破木箱（2.6 搜刮）
+const CRATE_ITEMS := ["bandage", "silver_spoon"]
 const LAMPS := [Vector3(3.7, 0, -2.0), Vector3(-3.7, 0, -13.0), Vector3(3.7, 0, -24.5), Vector3(-3.7, 0, -37.0)]
+const VIEW_NAMES := ["出生点看街道", "小广场看枯树", "领主宅邸前回望"]
 ## 网页 ?view=N 的固定机位（截图用）：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
 const VIEWS := [
 	[Vector3(0, 0, 6), 0.0, -1.0],
 	[Vector3(1.6, 0, -12.5), 32.0, 4.0],
 	[Vector3(-0.8, 0, -41.0), 180.0, 1.0],
+	[Vector3(2.3, 0, -1.6), 0.0, -8.0],        # 3：更夫面前（冒烟测试对话用，不进基准测试）
+	[Vector3(0.0, 0, -44.8), 0.0, -6.0],       # 4：管家面前（冒烟测试接任务用）
+	[Vector3(-2.2, 0, -3.5), 0.0, -6.0],       # 5：木桩假人面前（冒烟测试近战用）
+	[Vector3(-4.9, 0, -20.6), 0.0, -35.0],     # 6：破木箱前（冒烟测试搜刮用）
 ]
 
 ## 左侧房子：[北端 z, 南端 z（较大）... ] → 用 [z_south, z_north, spec]
@@ -80,12 +90,36 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_bounds(parent)
 	# 1.3 的交互物：更夫、木箱上的面包（锁着的门在房子里）
 	var watch := Npc.make("更夫", WATCH_LINES, Color("3e4a3a"))
+	watch.dialogue_area = "frostford"           # 2.1 起用对话树（data/dialogue/frostford.json）
+	watch.dialogue_id = "watchman"
 	watch.position = WATCH_POS
 	watch.rotation.y = PI
 	parent.add_child(watch)
+	# 2.3：领主宅邸门口的管家（交代主线）、酒馆门口的醉汉老霍布（支线）
+	var steward := Npc.make("管家", [], Color("2e2a3a"))
+	steward.dialogue_area = "frostford"
+	steward.dialogue_id = "steward"
+	steward.position = STEWARD_POS
+	steward.rotation.y = PI
+	parent.add_child(steward)
+	var hob := Npc.make("老霍布", [], Color("5a4a3a"))
+	hob.dialogue_area = "frostford"
+	hob.dialogue_id = "hob"
+	hob.position = HOB_POS
+	hob.rotation.y = -PI / 2
+	parent.add_child(hob)
 	var bread := Pickup.make("bread", "面包", Color("c8a060"))
+	bread.pickup_id = "frostford_bread"
 	bread.position = Vector3(-3.95, 0.62, 1.2)
 	parent.add_child(bread)
+	var crate := LootContainer.make("frostford_crate", "破木箱", CRATE_ITEMS, 3)
+	crate.position = CRATE_POS
+	crate.rotation.y = 0.2
+	parent.add_child(crate)
+	var dummy := TrainingDummy.new()
+	dummy.position = DUMMY_POS
+	dummy.rotation.y = 0.3
+	parent.add_child(dummy)
 	return Transform3D(Basis.IDENTITY, SPAWN)
 
 

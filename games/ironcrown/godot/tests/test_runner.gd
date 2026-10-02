@@ -19,14 +19,16 @@ func _ready() -> void:
 	add_child(dog)
 	dog.start()
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
+	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "camera"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
 		current_group = g
 		await call("test_" + g)
+	wipe_test_saves()
 	print("")
 	if failures.is_empty():
 		print("ALL %d CHECKS PASSED" % checks)
@@ -45,6 +47,15 @@ func check(cond: bool, what: String) -> void:
 	else:
 		print("  FAIL " + what)
 		failures.append(what)
+
+
+## 测试用的存档目录（Saves 在测试里自动改到 user://test_saves/），开始和结束时清空
+func wipe_test_saves() -> void:
+	var d := DirAccess.open(Saves.dir)
+	if d == null:
+		return
+	for f in d.get_files():
+		d.remove(f)
 
 
 func frames(n: int) -> void:
@@ -123,17 +134,78 @@ func test_ui() -> void:
 	check(main.hud.title_label.text.contains("占位"), "画面明确标注「占位几何体」（AGENTS.md：占位必须写明）")
 	# 内置字体是子集：界面与场景标签上出现的每个字都必须在字体里，否则网页上会显示方块
 	var font := load("res://assets/fonts/NotoSansSC-IC.ttf") as FontFile
-	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站交谈打开关上拾取[E]"]
+	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站交谈打开关上拾取[E]",
+		"性能低中高画质分辨率帧率最慢一帧毫秒绘制调用图元万物体显卡基准测试进行中不要操作结果电脑触屏设备机位平均测完了请截图发给开发者按可换菜单里后刷新页面再"]
+	texts.append_array(Frostford.VIEW_NAMES)
 	texts.append_array(TestRange.NPC_LINES)
 	texts.append_array(Frostford.WATCH_LINES)
-	for n in main.find_children("*", "", true, false):
+	# 近战（2.4）：触屏按钮、体力条、木桩假人上的字
+	texts.append("攻体力 / 0123456789 · 喘息中命中次 · 最高左键（手机点「攻」）出剑重击 −木桩假人")
+	# 敌人与格挡（2.5）
+	texts.append_array([main.HINT_ARENA_DESKTOP, main.HINT_ARENA_TOUCH, "挡生命 · 失衡你倒下了重来举剑格挡能把伤害换成体力；对方劈下前一瞬间格挡，能让他失衡。",
+		"◆ 完美格挡！对方失衡挡住了（体力 −）× 格挡被打破！✓ 训练场清空了（按 Esc 打开菜单，刷新页面再来一次）（刷新页面再来一次）",
+		"训练场 · 三个无旗者在那儿！失衡格挡别打了，我认输！快跑！（倒下）"])
+	for t in Enemy.STATE_LABELS:
+		texts.append(t)
+	# 背包与搜刮（2.6）：物品名字与说明、面板文字
+	for id in GameState.items():
+		if not str(id).begins_with("_"):
+			texts.append(str(GameState.items()[id].name) + str(GameState.items()[id].desc))
+	texts.append_array(GameState.SLOT_NAMES.values() + GameState.KIND_NAMES.values())
+	# 角色（2.7）：属性、技能、专长、势力与面板文字
+	var pd := GameState.progression()
+	for k in pd.attributes:
+		texts.append(str(pd.attributes[k].name) + str(pd.attributes[k].desc))
+	for k in pd.skills:
+		texts.append(str(pd.skills[k].name) + str(pd.skills[k].desc))
+		for pk in pd.skills[k].perks:
+			texts.append(str(pk.name) + str(pk.desc))
+	for k in pd.factions:
+		texts.append(str(pd.factions[k].name))
+	texts.append_array([main.hud.TITLE_SHORT, "角色等级再提升次技能升级可分配属性点＋给加 1 点生命上限体力上限负重上限护甲技能（用什么涨什么）◆◇「」（到解锁）声望敌视冷淡中立友善信任（+-）■□｜",
+		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
+	# 第三人称（2.9）
+	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
+	# 存档（2.8）
+	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
+	texts.append("存档 / 读档覆盖存到这里读取（空）（损坏，读不了：）存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。✓ 已存档：× 没有存档：读不了已读取：有存档：点「菜单」，按 Esc 打开菜单，里「存档 / 读档」可以继续（F9 读快速存档）级游戏时间分钟读取最近的存档重新开始附近有敌人在和你打，不能存档你已经倒下了这一份存档坏了已退回上一份存档内容损坏（不是有效的 JSON）这是更新版本的游戏写的存档写不进浏览器存储（可能是无痕模式或空间满了）")
+	texts.append(main.pause_menu.help_label.text + main.pause_menu.saves_btn.text)
+	texts.append("背包搜刮：护甲负重斤银币超重：不能跑装备（空）（已装备）×卸下使用选一件东西看看。伤害部走动更吵不能丢弃值什么都没有了。全部拿走拿到：、没有装备武器（点「背包」按 I 打开背包装备）打开破木箱补给箱")
+	for k in Enemy.types():
+		if not str(k).begins_with("_"):
+			texts.append(str(Enemy.types()[k].name))
+	# 任务日志（2.3）：任务名、简介、目标、线索、提示语
+	var qd := GameState.quest_data()
+	texts.append("任务日志主线支线关闭（已完成）当前目标：线索：这件事已经办完了。还没有任务◆新任务：（按J查看）（点「任务」查看）任务更新：✓任务完成：◇新线索已记入任务日志▶")
+	for qid in qd.quests:
+		texts.append(str(qd.quests[qid].title) + str(qd.quests[qid].summary))
+		for st in qd.quests[qid].stages:
+			texts.append(str(qd.quests[qid].stages[st].objective))
+	for cid in qd.clues:
+		texts.append(str(qd.clues[cid].text))
+	# 全部对话台词与选项（2.1）
+	var dlg := DialogueRunner.load_file("frostford")
+	for did in dlg:
+		if did.begins_with("_"):
+			continue
+		texts.append(str(dlg[did].speaker))
+		for nid in dlg[did].nodes:
+			texts.append(str(dlg[did].nodes[nid].text))
+			for o in dlg[did].nodes[nid].options:
+				texts.append(str(o.text))
+	# 测试场和霜渡镇两个场景都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
+	var town := await make_main(false)
+	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false)
+	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
 			if n is Door:
 				texts.append(n.locked_text)
-	for n in main.find_children("*", "", true, false):
+	for n in nodes:
 		if n is Label or n is Label3D or n is Button:
 			texts.append(n.text)
+	town.queue_free()
+	await frames(2)
 	var missing := ""
 	for text: String in texts:
 		for i in text.length():
@@ -404,12 +476,14 @@ func aim(p: FpController, pos: Vector3, look_at: Vector3) -> void:
 	p.global_position = pos
 	p.velocity = Vector3.ZERO
 	await physics(4)
-	var eye := p.camera.global_position
-	var d := look_at - eye
-	p.rotation.y = atan2(-d.x, -d.z)
-	p.pitch = rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
-	p.head.rotation.x = deg_to_rad(p.pitch)
-	await physics(2)
+	# 让屏幕中心（相机的视线）对准目标；第三人称时相机在头侧后方、跟着转，要迭代几次才对得准
+	for i in (4 if p.third_person else 1):
+		var eye := p.camera.global_position
+		var d := look_at - eye
+		p.rotation.y = atan2(-d.x, -d.z)
+		p.pitch = rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length()))
+		p.head.rotation.x = deg_to_rad(p.pitch)
+		await physics(2)
 	p.interactor.refresh()
 
 
@@ -448,7 +522,7 @@ func test_interact() -> void:
 	it.refresh()
 	var r := it.use()
 	await frames(2)
-	check(r.get("kind") == "pickup" and main.inventory.has("bread"), "拾取面包：放进背包（%s）" % str(main.inventory))
+	check(r.get("kind") == "pickup" and GameState.has_item("bread"), "拾取面包：放进背包（%s）" % str(GameState.inventory))
 	check(main.hud.toast_label.text == "拾取：面包", "屏幕上方提示「拾取：面包」")
 	await physics(2)
 	it.refresh()
@@ -564,7 +638,7 @@ func test_frostford() -> void:
 	Input.action_press("sprint")
 	await hold("move_forward", 10.0)
 	Input.action_release("sprint")
-	check(p.global_position.z > Frostford.NORTH_END and p.global_position.z < Frostford.NORTH_END + 2.0, "沿街往北跑到尽头，停在领主宅邸门前（z = %.2f）" % p.global_position.z)
+	check(p.global_position.z > Frostford.NORTH_END and p.global_position.z < Frostford.NORTH_END + 3.0, "沿街往北跑到尽头，停在领主宅邸门前（门口站着管家，z = %.2f）" % p.global_position.z)
 	# 从小广场钻到房子背后，往西一直走：被看不见的围墙挡住
 	await place(p, -6.0, -23.0)
 	p.rotation.y = PI / 2
@@ -591,3 +665,1394 @@ func test_frostford() -> void:
 	check(not lamp.flicker and is_equal_approx(lamp.light.light_energy, lamp.ENERGY) and band.material_override.get_shader_parameter("drift") == Vector2.ZERO, "减少动态效果：街灯不闪烁、雾带不飘动")
 	Settings.reduced_motion = false
 	await free_main(main)
+
+
+func test_perf() -> void:
+	var main := await make_main(false)
+	var ov: PerfOverlay = main.perf_overlay
+	check(not ov.visible, "性能浮层默认不显示")
+	var ev := InputEventAction.new()
+	ev.action = "perf_toggle"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	check(ov.visible and Settings.show_perf, "按 F3 打开性能浮层")
+	await seconds(0.7)
+	var t: String = ov.label.text
+	check(t.contains("帧率") and t.contains("绘制调用") and t.contains("中画质") and t.contains("显卡"), "浮层显示帧率、最慢一帧、绘制调用、画质档、显卡（%s）" % t.replace("\n", " / "))
+	check(main.pause_menu.perf_check.button_pressed, "暂停菜单里「显示性能数据」同步打勾")
+	main.pause_menu.perf_check.button_pressed = false
+	await frames(2)
+	check(not ov.visible, "在暂停菜单里关掉性能浮层")
+	# 暂停菜单的画质按钮
+	check(main.pause_menu.quality_btns.medium.button_pressed, "暂停菜单的画质按钮显示当前档（中）")
+	main.pause_menu.quality_btns.low.pressed.emit()
+	await frames(2)
+	check(main.quality == "low" and is_equal_approx(main.get_viewport().scaling_3d_scale, 0.75), "在暂停菜单里切到低画质，立即生效")
+	main.apply_quality("medium")
+	check(main.pause_menu.quality_btns.medium.button_pressed, "代码切换画质时按钮跟着变")
+	# 基准测试：3 个机位（测试里缩短等待与采样时间）
+	var res: Array = await main.run_benchmark(0.2, 0.4)
+	check(res.size() == 3 and res.all(func(r): return r.fps > 0.0 and r.draw_calls >= 0.0 and r.has("worst_ms")), "基准测试依次测 3 个机位，每个都有平均帧率、最慢一帧、绘制调用")
+	check(ov.bench_text.contains("基准测试结果") and ov.bench_text.contains(Frostford.VIEW_NAMES[2]) and ov.bench_text.contains("请截图"), "结果表显示在性能浮层上，提示截图")
+	check(main.player.global_position.is_equal_approx(Frostford.VIEWS[0][0]), "测完回到出生点")
+	Settings.set_value("show_perf", false)
+	await free_main(main)
+
+
+func key_ev(code: Key) -> InputEventKey:
+	var e := InputEventKey.new()
+	e.physical_keycode = code
+	e.keycode = code
+	e.pressed = true
+	return e
+
+
+func test_dialogue() -> void:
+	GameState.new_game(1)        # 旗标会影响对话：每次从一局新游戏开始
+	# 数据：霜渡镇所有对话都通过校验
+	var all := DialogueRunner.load_file("frostford")
+	var bad := []
+	for did in all:
+		if did.begins_with("_"):
+			continue
+		for e in DialogueRunner.validate(all[did]):
+			bad.append("%s：%s" % [did, e])
+	check(all.has("watchman") and bad.is_empty(), "霜渡镇的对话全部通过校验：节点都走得到、选项都指向存在的节点、能结束（问题：%s）" % str(bad))
+	var broken := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [{"text": "去 b", "next": "b"}, {"text": "去 x", "next": "x"}]},
+		"b": {"text": "b", "options": [{"text": "回 a", "next": "a"}]}, "c": {"text": "孤岛", "options": [{"text": "走", "end": true}]}}}
+	var errs := DialogueRunner.validate(broken)
+	check(errs.any(func(e): return e.contains("不存在的节点 x")) and errs.any(func(e): return e.contains("c：从开始节点走不到")) and errs.any(func(e): return e.contains("没有任何选项能结束")), "校验能抓出：指向不存在的节点、走不到的节点、从开始走不到结束（%s）" % str(errs))
+	# 规则：按选项推进
+	var r := DialogueRunner.new()
+	check(r.start("frostford", "watchman") and r.speaker() == "更夫" and r.options().size() == 4, "更夫的对话从「greet」开始，4 个选项")
+	check(r.choose(1) and r.node_id == "edric" and r.choose(0) and r.node_id == "stranger", "选「你今晚见过埃德里克少爷吗」→ 再问南方人，台词跟着走")
+	check(r.choose(r.options().size() - 1) and r.node_id == "menu" and not r.choose(r.options().size() - 1) and r.node_id == "", "回到「还有什么要问的」，选「没有了」对话结束")
+	check(not r.start("frostford", "nobody"), "找不到的对话不会打开")
+	# 游戏里：对准更夫按 E
+	GameState.new_game(1)
+	var main := await make_main(false)
+	var p: FpController = main.player
+	await aim(p, Frostford.WATCH_POS + Vector3(1.2, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
+	var ev := InputEventAction.new()
+	ev.action = "interact"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	var dp: DialoguePanel = main.dialogue
+	check(dp.visible and get_tree().paused and dp.name_label.text == "更夫" and dp.buttons.size() == 4, "对准更夫按 E：弹出对话面板（说话人、台词、4 个选项），游戏暂停")
+	check(main.hud.prompt_label.text == "" and main.hud.hint_label.text == "", "对话时准星下的交互提示、底部的操作提示都隐藏")
+	# 镜头转向：先关掉对话、把人转开，再直接打开对话，看镜头会不会转回来
+	dp.close()
+	await frames(2)
+	p.rotation.y += 1.2
+	var turned_away := p.rotation.y
+	var npc: Npc = main.find_children("*", "Npc", true, false)[0]
+	main.open_dialogue("frostford", "watchman", npc)
+	await seconds(0.5)
+	var to := npc.global_position - p.global_position
+	var want := atan2(-to.x, -to.z)
+	check(absf(angle_difference(p.rotation.y, want)) < 0.08 and absf(angle_difference(turned_away, want)) > 0.3, "镜头转向说话人（打开对话前转开了 %.2f 弧度，暂停时照样转回来）" % absf(angle_difference(turned_away, want)))
+	var pz := p.global_position
+	Input.action_press("move_forward")
+	await physics(20)
+	Input.action_release("move_forward")
+	check(p.global_position.is_equal_approx(pz), "对话时玩家不会走动")
+	Input.parse_input_event(key_ev(KEY_2))
+	await frames(2)
+	check(dp.runner.node_id == "edric" and dp.text_label.text.contains("渡口"), "按数字键 2 选第二个选项")
+	dp.buttons[0].pressed.emit()
+	await frames(2)
+	check(dp.runner.node_id == "stranger" and dp.buttons.size() == 2, "点选项按钮（鼠标 / 触屏）推进对话")
+	await frames(2)
+	var pr := dp.panel.get_global_rect()
+	check(pr.position.x >= 0 and pr.end.x <= main.hud.size.x and pr.end.y <= main.hud.size.y + 1 and pr.position.y > main.hud.size.y * 0.3, "对话面板在屏幕下方、不超出画面（%s）" % pr)
+	var esc := InputEventAction.new()
+	esc.action = "pause"
+	esc.pressed = true
+	Input.parse_input_event(esc)
+	await frames(3)
+	check(not dp.visible and not get_tree().paused and not main.pause_menu.visible, "按 Esc 结束对话（不会打开暂停菜单），游戏继续")
+	check(main.hud.prompt_label.text.contains("交谈 · 更夫"), "对话结束后交互提示回来")
+	main.player.interactor.use()
+	await frames(2)
+	dp.choose(dp.buttons.size() - 1)     # 最后一个选项是「没事，你接着巡夜吧」（问过少爷以后会多出一个选项）
+	await frames(2)
+	check(not dp.visible and not get_tree().paused, "选「没事，你接着巡夜吧」也会结束对话")
+	await free_main(main)
+
+
+## 找一个能让某个检定成功（want = true）或失败的存档种子
+func seed_for(check_id: String, skill: String, dc: int, want: bool) -> int:
+	for sd in 500:
+		GameState.new_game(sd)
+		if (GameState.roll_for(check_id) < GameState.check_chance(skill, dc)) == want:
+			return sd
+	return -1
+
+
+func test_checks() -> void:
+	GameState.new_game(1)
+	# 把握：检定值 = 技能 + 机敏 × 2，每比难度高 1 点 +5%，限制在 5%–95%
+	check(GameState.check_value("speech") == 16 and is_equal_approx(GameState.check_chance("speech", 12), 0.7), "口才检定值 10 + 3×2 = 16，难度 12 → 把握 70%")
+	check(is_equal_approx(GameState.check_chance("speech", 40), 0.05) and is_equal_approx(GameState.check_chance("speech", 0), 0.95), "把握限制在 5%–95%（不会必成或必败）")
+	check(GameState.chance_label(0.85) == "把握很大" and GameState.chance_label(0.6) == "把握较大" and GameState.chance_label(0.5) == "一半一半" and GameState.chance_label(0.25) == "把握较小" and GameState.chance_label(0.1) == "几乎没把握", "把握分五档文字")
+	# 不能刷：同一种子同一检定结果相同；掷过的检定，技能变了也不变
+	GameState.new_game(42)
+	var first := GameState.check("t_a", "insight", 12)
+	GameState.new_game(42)
+	check(GameState.check("t_a", "insight", 12) == first, "同一个存档种子、同一个检定，结果永远一样（读档刷不出别的结果）")
+	GameState.skills.insight = 100
+	check(GameState.check("t_a", "insight", 12) == first, "掷过的检定记下来了：之后技能变高也不会改变结果")
+	GameState.new_game(7)
+	var wins := 0
+	for i in 600:
+		GameState.skills.speech = 10          # 检定会练技能（2.7），这里只测掷骰分布，每次复原
+		if GameState.check("dist_%d" % i, "speech", 12):
+			wins += 1
+	check(wins > 360 and wins < 480, "600 次把握 70%% 的检定成功 %d 次（约 70%%）" % wins)
+	var differ := false
+	for i in 20:
+		GameState.new_game(1)
+		var a := GameState.check("cmp_%d" % i, "speech", 16)
+		GameState.new_game(2)
+		differ = differ or a != GameState.check("cmp_%d" % i, "speech", 16)
+	check(differ, "不同存档种子的结果不一样（不是写死的）")
+	# 旗标登记：对话里用到的都登记了，登记的都有地方设置
+	var reg := GameState.flag_registry()
+	var text := FileAccess.get_file_as_string("res://data/dialogue/frostford.json")
+	var unused := []
+	for f in reg:
+		if not f.begins_with("_") and not text.contains('"set": "%s"' % f):
+			unused.append(f)
+	check(reg.size() >= 5 and unused.is_empty(), "data/flags.json 登记的旗标都在对话里有地方设置（没设置的：%s）" % str(unused))
+	var bad := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [
+		{"text": "去", "next": "a", "if": [{"flag": "no_such_flag"}]},
+		{"text": "怪", "next": "a", "jump": "b"},
+		{"text": "检", "check": {"id": "x", "skill": "dance", "dc": 10, "pass": "a", "fail": "nowhere"}},
+		{"text": "走", "end": true}]}}}
+	var errs := DialogueRunner.validate(bad)
+	check(errs.any(func(e): return e.contains("no_such_flag 没有登记")) and errs.any(func(e): return e.contains("不认识的键 jump")) and errs.any(func(e): return e.contains("技能不认识：dance")) and errs.any(func(e): return e.contains("fail 指向不存在的节点 nowhere")), "校验能抓出：没登记的旗标、不认识的键、不认识的技能、检定分支指向不存在的节点")
+	# 条件与效果
+	GameState.new_game(1)
+	var r := DialogueRunner.new()
+	r.start("frostford", "watchman")
+	var before := r.options().size()
+	check(not r.options().any(func(o): return str(o.text).contains("再想想")), "没听说少爷的去向时，「关于埃德里克少爷，你再想想」不出现")
+	r.choose(1)
+	check(GameState.has_flag("heard_edric_to_ferry"), "进入「少爷的去向」那段，记下旗标 heard_edric_to_ferry")
+	r.start("frostford", "watchman")
+	check(r.options().size() == before + 1, "听说以后再找更夫，多出「关于埃德里克少爷，你再想想」")
+	var lbl := DialogueRunner.option_label({"text": "你还看见了别的，对吧？", "check": {"id": "x", "skill": "insight", "dc": 12}})
+	check(lbl == "[洞察 · 把握较大] 你还看见了别的，对吧？", "检定选项前面直接显示技能和把握（%s）" % lbl)
+	# 洞察检定：成功 / 失败各走一条路
+	var sd_pass := seed_for("watchman_edric_insight", "insight", 12, true)
+	var sd_fail := seed_for("watchman_edric_insight", "insight", 12, false)
+	GameState.new_game(sd_pass)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(1)
+	check(r.node_id == "edric_more" and r.last_check.ok and GameState.has_flag("heard_cloaked_men"), "洞察检定成功：更夫说出斗篷人，记下旗标 heard_cloaked_men")
+	GameState.new_game(sd_fail)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(1)
+	check(r.node_id == "edric_shut" and not r.last_check.ok and not GameState.has_flag("heard_cloaked_men"), "洞察检定失败：更夫不肯再说")
+	r.choose(0)
+	var idx := -1
+	for i in r.options().size():
+		if str(r.options()[i].text).contains("再想想"):
+			idx = i
+	r.choose(idx)
+	r.choose(0)
+	check(r.node_id == "edric_shut", "失败后换个说法再问同一个检定，结果还是失败（不能刷）")
+	# 换条路：塞银币（只能塞一次）
+	r.start("frostford", "watchman")
+	r.choose(2)
+	r.choose(1)
+	check(r.node_id == "edric_paid" and GameState.has_flag("watchman_paid") and GameState.has_flag("heard_cloaked_men"), "检定失败还可以塞银币换消息")
+	r.choose(0)
+	r.choose(2)
+	check(not r.options().any(func(o): return str(o.text).contains("银币")), "银币只能塞一次")
+	# 威吓失败：更夫翻脸，之后换成冷淡开场
+	var sd_off := seed_for("watchman_stranger_intimidate", "intimidate", 14, false)
+	GameState.new_game(sd_off)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(0)
+	r.choose(0)
+	check(r.node_id == "watch_offended" and GameState.has_flag("watchman_offended") and GameState.has_flag("knows_double_key_ring"), "威吓更夫失败：他翻脸，记下旗标 watchman_offended")
+	r.start("frostford", "watchman")
+	check(r.node_id == "cold" and r.options().size() == 1, "惹恼更夫以后，再找他只有一句冷淡的话")
+	# 游戏里：面板显示检定结果
+	GameState.new_game(sd_pass)
+	var main := await make_main(false)
+	main.open_dialogue("frostford", "watchman")
+	await frames(2)
+	var dp: DialoguePanel = main.dialogue
+	dp.choose(1)
+	await frames(2)
+	check(dp.buttons[1].text.contains("[洞察 · 把握较大]"), "对话面板里的检定选项显示把握（%s）" % dp.buttons[1].text)
+	dp.choose(1)
+	await frames(2)
+	check(dp.name_label.text.contains("√ 洞察检定成功") and dp.runner.node_id == "edric_more", "检定后说话人旁边显示「√ 洞察检定成功」（文字 + 符号）")
+	dp.close()
+	await free_main(main)
+	GameState.new_game(1)
+
+
+func test_quests() -> void:
+	# 数据：每个任务的开始阶段、自动推进的目标阶段、线索所属的任务都存在
+	var qd := GameState.quest_data()
+	var bad := []
+	for qid in qd.quests:
+		var q: Dictionary = qd.quests[qid]
+		if not q.stages.has(str(q.first)):
+			bad.append("%s 的开始阶段不存在" % qid)
+		if not str(q.kind) in ["main", "side"]:
+			bad.append("%s 的种类不对" % qid)
+		for st in q.stages:
+			var to := str(q.stages[st].get("advance_when", {}).get("to", ""))
+			if to != "" and not q.stages.has(to):
+				bad.append("%s/%s 自动推进到不存在的阶段 %s" % [qid, st, to])
+	for cid in qd.clues:
+		if not qd.quests.has(str(qd.clues[cid].quest)):
+			bad.append("线索 %s 属于不存在的任务" % cid)
+	check(qd.quests.has("edric_missing") and qd.quests.has("hob_debt") and bad.is_empty(), "data/quests.json：主线「雾里的少爷」、支线「醉汉的赌债」，阶段与线索都对得上（问题：%s）" % str(bad))
+	# 管家交代主线
+	GameState.new_game(1)
+	var events := []
+	var rec := func(k: String, id: String): events.append(k + ":" + id)
+	GameState.quest_event.connect(rec)
+	var r := DialogueRunner.new()
+	r.start("frostford", "steward")
+	check(r.node_id == "greet" and not GameState.quests.has("edric_missing"), "第一次找管家：他说少爷失踪了，任务还没接")
+	r.choose(0)
+	check(GameState.quest_active("edric_missing") and GameState.quest_stage("edric_missing") == "find_clues" and events.has("started:edric_missing"), "答应下来：接到主线「雾里的少爷」，目标是打探少爷的下落")
+	r.start("frostford", "steward")
+	check(r.node_id == "waiting" and r.options().size() == 1, "接了任务再找管家：他问有没有消息；还没线索时没有「去渡口」的选项")
+	# 更夫给两条线索 → 主线自动推进
+	r.start("frostford", "watchman")
+	r.choose(1)
+	check(GameState.clues == ["ferry"] and events.has("clue:ferry") and GameState.quest_stage("edric_missing") == "find_clues", "问更夫少爷的去向：记下线索「往渡口去了」")
+	r.choose(0)
+	check(GameState.clues_for("edric_missing").size() == 2 and GameState.quest_stage("edric_missing") == "to_ferry" and events.has("advanced:edric_missing"), "再问南方人：第二条线索（双钥印戒），任务自动更新为「去渡口找少爷」")
+	r.start("frostford", "watchman")
+	r.choose(1)
+	check(GameState.clues.size() == 2, "同一条线索不会记两次")
+	r.start("frostford", "steward")
+	check(r.options().size() == 2 and r.choose(1) and r.node_id == "ferry", "线索够了再找管家：多出「线索都指向渡口」的选项")
+	# 醉汉的赌债：要有面包
+	r.start("frostford", "hob")
+	check(GameState.quest_active("hob_debt") and r.options().size() == 1, "找老霍布：接到支线；身上没吃的，只能「回头再说」")
+	GameState.add_item("bread")
+	r.start("frostford", "hob")
+	check(r.options().size() == 2, "捡到面包后，多出「把面包递给他」")
+	r.choose(0)
+	check(not GameState.has_item("bread") and GameState.quest_done("hob_debt") and GameState.clues.has("dice") and events.has("done:hob_debt"), "给了面包：面包没了，支线完成，得到线索「斗篷人是无旗者，银币上压着双钥」")
+	r.start("frostford", "hob")
+	check(r.node_id == "after", "办完以后再找他，他只说面包很好吃")
+	GameState.quest_event.disconnect(rec)
+	# 先拿到线索、后接任务：一接就直接推进
+	GameState.new_game(1)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(0)
+	r.start("frostford", "steward")
+	r.choose(0)
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "先从更夫那里问到两条线索、再去找管家接任务：任务一接就更新到「去渡口」")
+	# 游戏里：任务日志
+	GameState.new_game(1)
+	var main := await make_main(false)
+	GameState.start_quest("edric_missing")
+	GameState.add_clue("ferry")
+	GameState.add_item("bread")
+	GameState.start_quest("hob_debt")
+	await frames(2)
+	check(main.hud.toast_label.text.contains("新任务：雾里的少爷") and main.hud.toast_label.text.contains("新线索"), "接任务、得线索时屏幕上方提示（%s）" % main.hud.toast_label.text.replace("\n", " / "))
+	var ev := InputEventAction.new()
+	ev.action = "quest_log"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	var qp: QuestPanel = main.quest_panel
+	check(qp.visible and get_tree().paused, "按 J 打开任务日志，游戏暂停")
+	check(qp.detail.text.contains("当前目标：打探埃德里克少爷的下落") and qp.detail.text.contains("往渡口去了"), "主线页显示当前目标和已得到的线索")
+	qp.tab_side.pressed.emit()
+	await frames(2)
+	check(qp.detail.text.contains("醉汉的赌债") and qp.detail.text.contains("面包"), "切到支线页：显示「醉汉的赌债」")
+	Input.parse_input_event(ev)
+	await frames(3)
+	check(not qp.visible and not get_tree().paused, "再按 J（或 Esc）关闭任务日志")
+	main.hud.quest_pressed.emit()
+	await frames(2)
+	check(qp.visible, "右上角「任务」按钮打开任务日志（手机用）")
+	qp.close()
+	await frames(2)
+	var rect: Rect2 = qp.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x, "任务日志面板不超出画面")
+	# 对准管家按 E
+	await aim(main.player, Frostford.STEWARD_POS + Vector3(0, 0, 1.8), Frostford.STEWARD_POS + Vector3(0, 1.4, 0))
+	check(main.player.interactor.target is Npc and main.player.interactor.target.display_name == "管家", "领主宅邸门口站着管家，可以交谈")
+	await free_main(main)
+	GameState.new_game(1)
+
+
+func melee_tick(sec: float) -> void:
+	await seconds(sec)
+
+
+func test_melee() -> void:
+	# 伤害公式（GDD.md 6.3）
+	check(DamageCalc.compute(10.0, 5, 15, "light") == 12, "伤害公式：短剑 10 × (1 + 力量 5 × 0.03 + 剑术 15 × 0.005) = 12（轻击）")
+	check(DamageCalc.compute(10.0, 5, 15, "heavy") == 22, "重击 × 1.8 = 22")
+	check(DamageCalc.compute(10.0, 0, 0, "light", true) == 20, "对方失衡时伤害加倍（10 → 20）")
+	check(DamageCalc.compute(10.0, 0, 0, "light", false, 4.0) == 8, "护甲 4 减 2 点")
+	check(DamageCalc.compute(10.0, 0, 0, "light", false, 30.0) == 2, "护甲再高也至少造成 20%")
+	GameState.new_game(1)
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var dummy: TrainingDummy = null
+	for c in main.world.get_children():
+		if c is TrainingDummy:
+			dummy = c
+	check(dummy != null and dummy.is_in_group("damageable") and dummy.collision_layer & 8 != 0, "测试场有木桩假人（物理层 4「可受击」）")
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	check(m.state == Melee.State.SHEATHED and not m.view.visible, "开局剑在鞘里，手里看不到武器")
+	check(not main.hud.stamina_visible(), "收着剑、体力满：不显示体力条")
+	m.press()
+	m.release()
+	check(m.state == Melee.State.DRAWING, "收着剑时按攻击：先拔剑，不直接出招")
+	await melee_tick(0.5)
+	check(m.state == Melee.State.IDLE and m.view.visible and m.drawn(), "拔剑完成，手里出现短剑")
+	check(main.hud.stamina_visible() and main.hud.stamina_label.text.begins_with("体力 100"), "拔剑后左下角显示体力条和数值")
+	var tip: Vector3 = m.view.to_global(Vector3(0, 0.7, 0))
+	check(p.camera.is_position_in_frustum(m.view.global_position) and p.camera.is_position_in_frustum(tip), "持剑姿势：剑柄和剑尖都在画面里")
+	var kinds: Array = []
+	m.swung.connect(func(k: String): kinds.append(k))
+	var hits: Array = []
+	m.hit.connect(func(t: Node, info: Dictionary): hits.append([t, info]))
+	# 轻击：点一下
+	m.press()
+	await frames(2)
+	m.release()
+	check(m.state == Melee.State.WINDUP and kinds == ["light"], "点一下 = 轻击（起手）")
+	var scale_seen := []
+	for i in 30:
+		await get_tree().process_frame
+		scale_seen.append(Engine.time_scale)
+		if not hits.is_empty():
+			break
+	check(hits.size() == 1 and hits[0][0] == dummy, "轻击在命中帧打中前方 1.6 米的木桩")
+	check(dummy.hits == 1 and dummy.best == 12 and hits[0][1].damage == 12, "木桩记下这一击：12 点（与公式一致）")
+	check(m.stop_left > 0.0 and dummy.stop_left > 0.0 and scale_seen.all(func(x): return x == 1.0), "命中停顿只冻结挥剑与木桩，不改全局时间流速")
+	var floats := dummy.get_children().filter(func(c): return c is FloatText)
+	check(floats.size() == 1 and (floats[0] as FloatText).text == "−12", "木桩头上冒出伤害数字「−12」")
+	check(main.hud.marker_left > 0.0, "准星闪成 ×（命中提示不只靠颜色）")
+	check(is_equal_approx(m.stamina, 88.0), "轻击消耗 12 点体力（剩 %.1f）" % m.stamina)
+	await melee_tick(0.7)
+	check(m.state == Melee.State.IDLE, "收招后回到持剑姿势")
+	# 两段连击：出招中再点一下
+	var h0 := dummy.hits
+	m.press()
+	m.release()
+	await melee_tick(0.15)
+	m.press()
+	m.release()
+	await melee_tick(0.9)
+	check(kinds.size() == 3 and dummy.hits == h0 + 2, "出招中再点一下：接第二段，两段都命中（共 %d 次）" % dummy.hits)
+	check(m.combo == 0 and m.state == Melee.State.IDLE, "两段打完连击归零")
+	# 连点第三下：最多两段（剑术 25 后三段在 2.7）
+	m.press(); m.release()
+	await melee_tick(0.15)
+	m.press(); m.release()
+	await melee_tick(0.3)
+	m.press(); m.release()
+	await melee_tick(1.2)
+	var n_after := kinds.size()
+	check(n_after == 5 or n_after == 6, "一套最多两段；第三下要等收招后才算新的一套（出招 %d 次）" % (n_after - 3))
+	await melee_tick(0.8)
+	# 重击：按住 0.35 秒以上松开
+	m.stamina = Melee.STAMINA_MAX
+	var best0 := dummy.best
+	m.press()
+	await melee_tick(0.45)
+	check(m.state == Melee.State.CHARGE and m.held >= Melee.HEAVY_HOLD, "按住攻击：举剑蓄力")
+	m.release()
+	check(kinds.back() == "heavy", "按住 0.35 秒以上松开 = 重击")
+	await melee_tick(0.3)
+	check(hits.back()[1].kind == "heavy" and hits.back()[1].damage == 22 and dummy.best == maxi(best0, 22), "重击打中木桩：22 点")
+	check(is_equal_approx(m.stamina, 75.0), "重击消耗 25 点体力（剩 %.1f）" % m.stamina)
+	await melee_tick(0.8)
+	# 背对木桩、离得太远：打空
+	var hn := dummy.hits
+	p.rotation.y += PI
+	await physics(2)
+	m.press(); m.release()
+	await melee_tick(0.7)
+	check(dummy.hits == hn and m.last_hit.is_empty(), "背对木桩挥剑：打空")
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 3.0), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.press(); m.release()
+	await melee_tick(0.7)
+	check(dummy.hits == hn, "离木桩 3 米（超出 2 米剑程）：打空")
+	# 中间隔着墙：放一堵墙在玩家与木桩之间
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	var wall := Blocks.box(main.world, Vector3(2.0, 2.5, 0.1), TestRange.DUMMY_POS + Vector3(0, 1.25, 0.55), Blocks.mat(Color.GRAY))
+	await physics(2)
+	m.press(); m.release()
+	await melee_tick(0.7)
+	check(dummy.hits == hn, "中间隔着墙：打不到墙后的木桩")
+	wall.queue_free()
+	await physics(2)
+	# 体力：耗尽后出招变慢、不能跑，缓过气才恢复
+	m.stamina = 5.0
+	m.press(); m.release()
+	check(m.speed == Melee.TIRED_SPEED and m.exhausted and m.stamina == 0.0, "体力不够一击：照样出招但变慢，体力见底")
+	await frames(2)                   # 刚从物理帧回来：同一帧的 process_frame 先于界面的 _process，等两帧
+	check(main.hud.stamina_label.text.contains("喘息中"), "体力条写明「喘息中」")
+	Input.action_press("sprint")
+	Input.action_press("move_back")
+	await physics(10)
+	check(not p.running and not p.wants_run(), "体力耗尽时按住 Shift 也跑不起来")
+	Input.action_release("sprint")
+	Input.action_release("move_back")
+	await melee_tick(2.0)
+	check(not m.exhausted and m.stamina >= Melee.RECOVER_AT, "停手一会儿体力恢复、缓过气（%.0f）" % m.stamina)
+	# 跑步消耗体力
+	m.stamina = Melee.STAMINA_MAX
+	await place(p, -3.0, 8.0)
+	Input.action_press("sprint")
+	await hold("move_forward", 1.0)
+	Input.action_release("sprint")
+	check(m.stamina < Melee.STAMINA_MAX - 8.0, "跑 1 秒消耗体力（剩 %.0f）" % m.stamina)
+	# 蓄力中打开暂停菜单：不攒着重击
+	m.press()
+	await melee_tick(0.2)
+	main.open_pause()
+	check(m.state != Melee.State.CHARGE and not m.pressed, "蓄力时打开菜单：放弃蓄力")
+	main.close_pause()
+	await melee_tick(0.4)
+	# 收剑
+	m.toggle_draw()
+	await melee_tick(0.5)
+	check(m.state == Melee.State.SHEATHED and not m.view.visible, "R 收剑：武器放下并隐藏")
+	# 触屏「攻」按钮：点按轻击、按住重击
+	var t: TouchControls = main.touch
+	t.visible = true
+	var bc: Dictionary = t.button_centers()
+	check(bc.has("attack") and t.button_at(bc.attack) == "attack", "触屏有「攻」按钮")
+	var others := ["jump", "crouch"]
+	check(others.all(func(k): return bc[k].distance_to(bc.attack) > TouchControls.BTN_R * 2.5), "「攻」不和「跳」「蹲」挤在一起")
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	t._input(touch_ev(3, bc.attack, true))
+	t._input(touch_ev(3, bc.attack, false))
+	await melee_tick(0.5)
+	check(m.drawn(), "收着剑时点「攻」：拔剑")
+	var k0 := kinds.size()
+	t._input(touch_ev(3, bc.attack, true))
+	await melee_tick(0.45)
+	t._input(touch_ev(3, bc.attack, false))
+	check(kinds.size() == k0 + 1 and kinds.back() == "heavy", "按住「攻」0.35 秒以上松开 = 重击")
+	await melee_tick(0.8)
+	t._input(touch_ev(3, bc.attack, true))
+	await frames(2)
+	t._input(touch_ev(3, bc.attack, false))
+	check(kinds.back() == "light", "点一下「攻」= 轻击")
+	await melee_tick(0.6)
+	await free_main(main)
+	# 霜渡镇：更夫岗哨对面有木桩，机位 5 正对着它
+	main = await make_main(false)
+	main.set_view(5)
+	await physics(4)
+	var fd: Node3D = main.player.melee.find_target()
+	check(fd is TrainingDummy and fd.global_position.distance_to(Frostford.DUMMY_POS) < 0.01, "霜渡镇机位 5：剑程内正对木桩假人")
+	await free_main(main)
+
+
+func make_arena() -> Node3D:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.use_arena = true
+	add_child(main)
+	await frames(3)
+	return main
+
+
+func arena_enemy(main: Node3D, id: String) -> Enemy:
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		if e.enemy_id == id:
+			return e
+	return null
+
+
+## 只留一个敌人在动，其余冻住（单项测试不受干扰）
+func solo(main: Node3D, keep: Enemy) -> void:
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		if e != keep:
+			e.process_mode = Node.PROCESS_MODE_DISABLED
+			e.global_position = Vector3(-14, 0, -15) + Vector3(e.get_index() * 0.9, 0, 0)
+
+
+func put_enemy(e: Enemy, pos: Vector3, yaw: float) -> void:
+	e.global_position = pos
+	e.rotation.y = yaw
+	e.velocity = Vector3.ZERO
+
+
+func test_enemies() -> void:
+	# 数据校验
+	check(Enemy.validate_types(Enemy.types()).is_empty(), "敌人数据（data/enemies.json）字段齐全、数值合理：%s" % [Enemy.validate_types(Enemy.types())])
+	check(Enemy.validate_types({"x": {"name": "x", "bogus": 1}}).size() > 5, "校验能抓出缺字段和不认识的字段")
+	GameState.new_game(7)
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	check(main.scene_name() == "arena" and main.get_tree().get_nodes_in_group("enemy").size() == 3, "训练场：三个无旗者")
+	check(main.get_tree().get_first_node_in_group("combat_director") is CombatDirector, "训练场有攻击令牌调度（CombatDirector）")
+	check(main.get_tree().get_nodes_in_group("light_source").size() == 4, "四支火把（敌人据此判断你在不在亮处）")
+	var a := arena_enemy(main, "a")
+	check(a.state == Enemy.State.PATROL and a.display_name == "无旗者 · 棍手" and a.hp == 50, "开局在巡逻：棍手 50 点生命")
+	solo(main, a)
+	a.process_mode = Node.PROCESS_MODE_DISABLED         # 感知单项：直接调用
+	# 视野
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	await physics(2)
+	check(not a.player_lit() and a.can_see_player(), "暗处 5 米、在视野锥里：看得见")
+	put_enemy(a, Vector3(0, 0, -2), 0.0)
+	await physics(2)
+	check(not a.can_see_player(), "背对玩家：看不见（视野锥 110°）")
+	put_enemy(a, Vector3(0, 0, -9), PI)
+	await physics(2)
+	check(not a.can_see_player(), "暗处 12 米：看不见（暗处只有 8 米）")
+	await place(p, 0.0, 10.0)
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	await physics(2)
+	check(a.player_lit() and a.can_see_player(), "站在火把旁 12 米：看得见（亮处 20 米）")
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, -4), PI)
+	p.crouch_wanted = true
+	await physics(10)
+	check(not a.can_see_player(), "暗处 7 米蹲着：看不见（蹲下视距打六折）")
+	p.crouch_wanted = false
+	await physics(10)
+	check(a.can_see_player(), "站起来就被看见")
+	var wall := Blocks.box(main.world, Vector3(3, 3, 0.2), Vector3(0, 1.5, 1.5), Blocks.mat(Color.GRAY))
+	await physics(2)
+	check(not a.can_see_player(), "中间隔着墙：看不见")
+	wall.queue_free()
+	await physics(2)
+	# 起疑 → 警觉 → 战斗
+	var seen_states: Array = []
+	a.state_changed.connect(func(_e, st): seen_states.append(st))
+	a.process_mode = Node.PROCESS_MODE_INHERIT
+	await place(p, 0.0, 4.0)
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	a.waypoints = [a.global_position]               # 站岗：不转身去巡逻点
+	await seconds(2.5)
+	check(seen_states.slice(0, 3) == ["suspicious", "alert", "combat"], "暗处被看见：起疑 → 警觉 → 战斗（%s）" % [seen_states])
+	check(a.status_label.text.begins_with("！"), "战斗中头顶写「！」和生命（%s）" % a.status_label.text)
+	await free_main(main)
+	# 听觉 + 喊同伙
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	a = arena_enemy(main, "a")
+	var b := arena_enemy(main, "b")
+	var sw := arena_enemy(main, "s")
+	solo(main, a)
+	b.process_mode = Node.PROCESS_MODE_INHERIT
+	put_enemy(a, Vector3(0, 0, -4), 0.0)                # 背对玩家
+	put_enemy(b, Vector3(6, 0, -12), 0.0)               # 8 米外、也背对
+	b.waypoints = [b.global_position]
+	a.waypoints = [a.global_position]
+	await place(p, 0.0, -1.5)
+	Input.action_press("move_left")
+	await physics(20)
+	Input.action_release("move_left")
+	check(a.state in [Enemy.State.SUSPICIOUS, Enemy.State.ALERT, Enemy.State.COMBAT], "身后 3 米走动：被听见，起疑（%s）" % a.state_name())
+	check(b.state == Enemy.State.PATROL, "8 米外背对的同伙还没察觉")
+	a.alert()
+	await physics(2)
+	check(b.state in [Enemy.State.ALERT, Enemy.State.COMBAT], "警觉时喊上 12 米内的同伙（%s）" % b.state_name())
+	await free_main(main)
+	# 攻击令牌：三个都来打，同时出招的不超过 2 个
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	m.health = 100000                                    # 测令牌时别被打倒
+	var dir: CombatDirector = main.get_tree().get_first_node_in_group("combat_director")
+	await place(p, 0.0, 2.0)
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		e.alert(false)
+	var max_tokens := 0
+	var circled := false
+	var attacked := 0
+	for i in 240:
+		await get_tree().physics_frame
+		max_tokens = maxi(max_tokens, dir.count())
+		var n := 0
+		for e in main.get_tree().get_nodes_in_group("enemy"):
+			if e.action == "circle":
+				circled = true
+			if e.action in ["windup", "strike"]:
+				n += 1
+		attacked = maxi(attacked, n)
+	check(max_tokens <= 2 and max_tokens >= 1, "攻击令牌最多 2 个（最多同时 %d 个）" % max_tokens)
+	check(circled, "没拿到令牌的敌人在外圈绕圈")
+	check(m.health < 100000, "敌人上来出招打中了玩家（剩 %d）" % m.health)
+	await free_main(main)
+	# 格挡 / 完美格挡 / 破防（直接调用 receive_hit）
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	a = arena_enemy(main, "a")
+	solo(main, a)
+	a.process_mode = Node.PROCESS_MODE_DISABLED
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	m.block_press()
+	check(m.state == Melee.State.DRAWING, "收着剑时按格挡：先拔剑")
+	await seconds(0.5)
+	check(m.blocking(), "拔出来还按着：举剑格挡")
+	var r := m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "perfect" and m.health == 100 and is_equal_approx(m.stamina, Melee.STAMINA_MAX), "刚举剑 0.2 秒内被打：完美格挡，不掉血不耗体力")
+	await seconds(0.3)
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "block" and m.health == 100 and is_equal_approx(m.stamina, 90.0), "一直举着：普通格挡，伤害变成体力消耗（10）")
+	r = m.receive_hit({"damage": 10, "kind": "heavy", "attacker": a})
+	check(r == "block" and is_equal_approx(m.stamina, 75.0), "挡重击耗 1.5 倍体力（15）")
+	put_enemy(a, Vector3(0, 0, 4.5), 0.0)              # 绕到身后
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "hit" and m.health == 90, "背后来的攻击挡不住")
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	m.stamina = 4.0
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "guard_break" and m.staggered() and m.health == 85 and not m.blocking(), "体力不够挡：格挡被打破、失衡、吃一半伤害")
+	r = m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(r == "hit" and m.health == 65, "失衡时受到的伤害加倍")
+	m.press()
+	m.release()
+	check(m.staggered() and m.state != Melee.State.WINDUP, "失衡时不能出招")
+	await frames(3)
+	check(main.hud.health_label.visible and main.hud.health_label.text.begins_with("生命 65"), "生命条显示数值（%s）" % main.hud.health_label.text)
+	check(main.hud.hurt_left > 0.0, "受伤时画面四周闪一下")
+	await seconds(1.0)
+	m.block_release()
+	check(not m.staggered() and not m.blocking(), "失衡 0.8 秒后恢复")
+	# 举剑格挡时走得慢、不能跑
+	m.block_press()
+	await seconds(0.3)
+	check(p.current_speed(Vector2(0, -1)) == FpController.GUARD_SPEED and not p.wants_run(), "举剑格挡时只能慢慢挪")
+	m.block_release()
+	await seconds(0.3)
+	# 完美格挡（真实时机）：棍手起手快劈下时才举剑
+	a.process_mode = Node.PROCESS_MODE_INHERIT
+	m.health = 100
+	m.stamina = Melee.STAMINA_MAX
+	var results: Array = []
+	m.guarded.connect(func(res, _i): results.append(res))
+	a.alert(false)
+	var parried := false
+	for i in 600:
+		await get_tree().physics_frame
+		if a.action == "windup" and not m.blocking():
+			var wt := float(a.data.heavy_windup if a.attack_kind == "heavy" else a.data.windup)
+			if a.action_t >= wt - 0.08:
+				m.block_press()
+		if a.action == "recover" and m.blocking():
+			m.block_release()
+		if a.state == Enemy.State.STAGGER:
+			parried = true
+			break
+	check(parried and results.has("perfect"), "对方劈下前一瞬间举剑：完美格挡，对方失衡（%s）" % [results])
+	m.block_release()
+	# 失衡的敌人挨打伤害加倍
+	if parried:
+		await aim(p, p.global_position, a.global_position + Vector3(0, 1.2, 0))
+		a.stop_left = 0.0
+		m.block_release()
+		await seconds(0.3)
+		var hp0 := a.hp
+		m.press()
+		m.release()
+		await seconds(0.3)
+		var expect := DamageCalc.compute(10.0, GameState.strength, int(GameState.skills.blade), "light", true)
+		check(hp0 - a.hp == expect and expect >= 24, "失衡时挨一记轻击：伤害加倍（剑术 %d：%d，实际 %d）" % [GameState.skills.blade, expect, hp0 - a.hp])
+	await free_main(main)
+	# 剑手格挡轻击、重击破防；受重伤求饶 / 逃跑；倒下
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	sw = arena_enemy(main, "s")
+	solo(main, sw)
+	sw.process_mode = Node.PROCESS_MODE_DISABLED
+	await place(p, 0.0, 3.0)
+	put_enemy(sw, Vector3(0, 0, 1.4), PI)
+	sw.data = sw.data.duplicate()
+	sw.data.block_chance = 1.0
+	sw._enter(Enemy.State.COMBAT)
+	sw.player = p
+	var hp1 := sw.hp
+	sw.take_hit({"damage": 12, "kind": "light", "stop": 0.0})
+	check(sw.hp == hp1 and sw.action == "block" and m.stop_left > 0.0, "剑手挡住轻击：不掉血，玩家的剑被弹回来")
+	sw.action = ""
+	sw.take_hit({"damage": 22, "kind": "heavy", "stop": 0.0})
+	check(sw.state == Enemy.State.STAGGER and sw.hp == hp1 - 22, "重击破防：剑手失衡并挨了这一下")
+	sw.data.yield_chance = 1.0
+	sw.data.block_chance = 0.0
+	sw._enter(Enemy.State.COMBAT)
+	sw.hp = 14
+	sw.take_hit({"damage": 3, "kind": "light", "stop": 0.0})
+	check(sw.state == Enemy.State.YIELD and sw.status_label.text == "求饶", "受重伤（生命 ≤ 20%%）：求饶（%s）" % sw.state_name())
+	sw.take_hit({"damage": 30, "kind": "light", "stop": 0.0})
+	check(sw.state == Enemy.State.DEAD and sw.collision_layer == 0 and sw.name_label.text.ends_with("（倒下）"), "生命归零：倒下，不再挡路")
+	check(m.find_target() != sw, "倒下的敌人不再是攻击目标")
+	var cl := arena_enemy(main, "a")
+	cl.process_mode = Node.PROCESS_MODE_DISABLED
+	put_enemy(cl, Vector3(2, 0, 1.4), PI)
+	cl.data = cl.data.duplicate()
+	cl.data.yield_chance = 0.0
+	cl.player = p
+	cl._enter(Enemy.State.COMBAT)
+	cl.hp = 12
+	cl.take_hit({"damage": 2, "kind": "light", "stop": 0.0})
+	check(cl.state == Enemy.State.FLEE, "棍手受重伤：逃跑")
+	cl._enter(Enemy.State.COMBAT)
+	cl.hp = 50
+	cl.stamina = 10.0
+	cl._combat(0.016)
+	check(cl.state == Enemy.State.RETREAT, "棍手体力见底：先退开")
+	await free_main(main)
+	# 真实出剑打敌人：没察觉的敌人挨一下立刻进入战斗
+	GameState.new_game(7)
+	main = await make_arena()
+	p = main.player
+	m = p.melee
+	a = arena_enemy(main, "a")
+	solo(main, a)
+	put_enemy(a, Vector3(0, 0, 1.4), 0.0)
+	a.waypoints = [a.global_position]
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press(); m.release()
+	await seconds(0.5)
+	m.press(); m.release()
+	await seconds(0.4)
+	check(a.hp == 38 and a.state in [Enemy.State.ALERT, Enemy.State.COMBAT], "从背后打没察觉的棍手：12 点，他立刻转入战斗（%s）" % a.state_name())
+	# 触屏「挡」按钮、Q 键
+	var t: TouchControls = main.touch
+	t.visible = true
+	var bc: Dictionary = t.button_centers()
+	check(bc.has("guard") and t.button_at(bc.guard) == "guard" and bc.guard.distance_to(bc.attack) > TouchControls.BTN_R * 2.5, "触屏有「挡」按钮，在「攻」上方")
+	a.process_mode = Node.PROCESS_MODE_DISABLED
+	await seconds(0.8)
+	t._input(touch_ev(4, bc.guard, true))
+	await seconds(0.3)
+	check(m.blocking(), "按住「挡」：举剑格挡")
+	t._input(touch_ev(4, bc.guard, false))
+	await seconds(0.3)
+	check(not m.blocking(), "松开「挡」：放下")
+	main._unhandled_input(key_ev(KEY_Q))
+	await seconds(0.3)
+	check(m.blocking(), "按住 Q：格挡")
+	main.open_pause()
+	check(not m.blocking() and not m.block_held, "打开菜单时放下格挡")
+	main.close_pause()
+	await seconds(0.2)
+	# 倒下
+	wipe_test_saves()
+	m.health = 5
+	m.receive_hit({"damage": 9, "kind": "light", "attacker": null})
+	check(m.down and main.defeat_panel.visible and get_tree().paused, "生命归零：「你倒下了」画面，游戏暂停")
+	check(main.defeat_panel.retry_btn.text == "重新开始", "没有存档时按钮是「重新开始」")
+	get_tree().paused = false
+	await free_main(main)
+
+
+func find_button(root: Node, text: String) -> Button:
+	for c in root.find_children("*", "Button", true, false):
+		if (c as Button).text.strip_edges().ends_with(text) or (c as Button).text == text:
+			return c
+	return null
+
+
+func test_inventory() -> void:
+	check(GameState.validate_items(GameState.items()).is_empty(), "物品数据（data/items.json）完整：%s" % [GameState.validate_items(GameState.items())])
+	check(GameState.validate_items({"x": {"name": "x", "kind": "armor", "weight": 1, "value": 1, "desc": "", "slot": "tail", "armor": 1, "noise": 0}}).size() == 1, "校验能抓出不对的部位")
+	check(Enemy.validate_types(Enemy.types()).is_empty(), "敌人的掉落都在物品表里")
+	GameState.new_game(3)
+	check(GameState.equipped.get("weapon") == "short_sword" and GameState.equipped.get("body") == "padded_jacket" and GameState.silver == 12, "开局：短剑、棉甲外衣、12 银币")
+	check(GameState.armor_total() == 3.0 and is_equal_approx(GameState.carry_weight(), 6.5) and GameState.carry_limit() == 40.0, "护甲 3、负重 6.5 / 40 斤（30 + 力量 5 × 2）")
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		e.process_mode = Node.PROCESS_MODE_DISABLED
+	# 换武器：外观与伤害跟着变
+	GameState.add_item("club")
+	check(GameState.equip("club") and m.view.model == "club" and m.weapon().base == 8, "装备木棍：手里换成木棍，基础伤害 8")
+	check(GameState.has_item("short_sword") and not GameState.is_equipped("short_sword"), "换下来的短剑还在背包里")
+	GameState.unequip("weapon")
+	var no_w := [false]
+	m.no_weapon.connect(func(): no_w[0] = true)
+	m.toggle_draw()
+	check(no_w[0] and m.state == Melee.State.SHEATHED, "卸下武器后拔不出剑，提示去背包装备")
+	GameState.equip("short_sword")
+	check(m.view.model == "sword", "重新装备短剑")
+	m.toggle_draw()
+	await seconds(0.5)
+	GameState.take_item("short_sword")
+	check(m.state == Melee.State.SHEATHED and GameState.weapon_id() == "", "拿着的武器没了：自动收起，装备栏空")
+	GameState.add_item("short_sword")
+	GameState.equip("short_sword")
+	# 护甲减伤
+	var a := arena_enemy(main, "a")
+	put_enemy(a, Vector3(0, 0, 1.3), PI)
+	await place(p, 0.0, 2.5)
+	a.player = p
+	a.attack_kind = "light"
+	a._strike_player()
+	check(m.health == 100 - DamageCalc.compute(8, 4, 5, "light", false, 3.0) and m.health == 92, "穿棉甲（护甲 3）挨棍手一下：9 → 8（剩 %d）" % m.health)
+	GameState.add_item("mail_shirt")
+	GameState.equip("mail_shirt")
+	check(GameState.armor_total() == 8.0 and GameState.has_item("padded_jacket") and not GameState.is_equipped("padded_jacket"), "换上锁甲衫：护甲 8，棉甲换下来")
+	a._strike_player()
+	check(m.health == 92 - 5, "穿锁甲挨同样一下：只掉 5（剩 %d）" % m.health)
+	p.velocity = Vector3(2, 0, 0)
+	check(is_equal_approx(a.player_noise(), Enemy.NOISE.walk + 2.0), "穿锁甲走路更吵：声音传 6 米")
+	# 负重
+	GameState.add_item("mail_shirt", 2)
+	check(GameState.over_encumbered(), "背三件锁甲：超重（%.1f / 40 斤）" % GameState.carry_weight())
+	Input.action_press("sprint")
+	check(not p.wants_run(), "超重时按 Shift 也跑不起来")
+	Input.action_release("sprint")
+	GameState.take_item("mail_shirt")
+	GameState.take_item("mail_shirt")
+	check(not GameState.over_encumbered() and GameState.is_equipped("mail_shirt"), "扔掉两件就不超重；身上那件还穿着")
+	# 背包面板
+	var ip: InventoryPanel = main.inventory_panel
+	main._unhandled_input(key_ev(KEY_I))
+	await frames(2)
+	check(ip.visible and get_tree().paused, "按 I 打开背包，游戏暂停")
+	check(ip.summary.text.begins_with("护甲 8 · 负重") and ip.summary.text.contains("银币 12"), "背包顶部写护甲、负重、银币（%s）" % ip.summary.text)
+	check(find_button(ip, "武器：短剑") != null and find_button(ip, "身：锁甲衫") != null and find_button(ip, "头：（空）") != null, "五个装备部位（空的写「（空）」）")
+	check(find_button(ip, "棉甲外衣") != null and find_button(ip, "木棍") != null, "随身物品按种类列出")
+	find_button(ip, "棉甲外衣").pressed.emit()
+	await frames(1)
+	check(ip.detail.text.contains("身部 · 护甲 3") and find_button(ip, "装备") != null, "选中一件看说明，有「装备」按钮")
+	find_button(ip, "装备").pressed.emit()
+	await frames(1)
+	check(GameState.equipped.body == "padded_jacket" and ip.summary.text.begins_with("护甲 3"), "在背包里换回棉甲外衣")
+	m.health = 50
+	GameState.add_item("bread")
+	ip.selected = "bread"
+	ip.refresh()
+	find_button(ip, "使用").pressed.emit()
+	await frames(1)
+	check(m.health == 60 and not GameState.has_item("bread"), "吃面包：生命 50 → 60，面包没了")
+	var rect: Rect2 = ip.f.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "背包面板不超出画面（%s）" % rect.size)
+	main._unhandled_input(key_ev(KEY_I))
+	ip._unhandled_input(key_ev(KEY_I))
+	await frames(2)
+	check(not ip.visible and not get_tree().paused, "再按 I 关上背包")
+	main.hud.bag_pressed.emit()
+	await frames(2)
+	check(ip.visible, "右上角「背包」按钮打开背包（手机用）")
+	ip.close()
+	await frames(2)
+	# 补给箱
+	var chest: LootContainer = null
+	for c in main.get_tree().get_nodes_in_group("loot"):
+		if c.loot_id == "arena_chest":
+			chest = c
+	check(chest != null and not chest.is_empty() and chest.prompt() == "打开 · 补给箱", "训练场出生点旁有补给箱")
+	main.open_loot(chest)
+	await frames(2)
+	var lp: LootPanel = main.loot_panel
+	check(lp.visible and get_tree().paused and find_button(lp, "银币 ×6") != null, "打开补给箱：搜刮面板列出银币和东西")
+	var got: Array = []
+	lp.took.connect(func(n): got.append_array(n))
+	find_button(lp, "银币 ×6").pressed.emit()
+	await frames(1)
+	check(GameState.silver == 18 and got == ["6 枚银币"], "点银币：拿到 6 枚")
+	var n0 := GameState.count_item("bandage")
+	lp.take_everything()
+	await frames(1)
+	check(chest.is_empty() and GameState.count_item("bandage") == n0 + 2 and GameState.has_item("wool_trousers"), "全部拿走")
+	check(chest.prompt().ends_with("（空）") and GameState.looted.has("arena_chest"), "搜空后提示「（空）」，记进存档数据")
+	check(lp.take_all_btn.disabled, "空了「全部拿走」按钮变灰")
+	lp.close()
+	await frames(2)
+	check(not get_tree().paused, "关上搜刮面板继续游戏")
+	# 搜刮倒下的敌人
+	a.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	var corpse: LootContainer = null
+	for c in main.get_tree().get_nodes_in_group("loot"):
+		if c.loot_id == "loot:a":
+			corpse = c
+	check(corpse != null and corpse.corpse and corpse.verb_now() == "搜刮", "敌人倒下的地方可以搜刮")
+	check(corpse != null and corpse.contents().items == ["club", "bread", "dice"] and corpse.contents().silver == 4, "棍手身上：木棍、面包、骨骰子、4 枚银币")
+	var sw := arena_enemy(main, "s")
+	sw.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	await free_main(main)
+	# 霜渡镇：小广场的破木箱，机位 6 对准它按 E
+	GameState.new_game(3)
+	main = await make_main(false)
+	main.set_view(6)
+	await physics(6)
+	main.player.interactor.refresh()
+	var tgt = main.player.interactor.target
+	check(tgt is LootContainer and tgt.display_name == "破木箱", "霜渡镇机位 6：对准小广场的破木箱")
+	main.player.interactor.use()
+	await frames(2)
+	check(main.loot_panel.visible and find_button(main.loot_panel, "绷带（消耗品 · 0.1 斤）") != null, "按 E 打开破木箱：里面有绷带")
+	main.loot_panel.close()
+	await free_main(main)
+	# 银币条件与付钱（更夫的消息要 5 银币）
+	GameState.new_game(3)
+	check(DialogueRunner.conds_ok([{"silver": 5}]), "身上有 12 银币：满足「至少 5 银币」")
+	DialogueRunner.apply([{"pay": 5}])
+	check(GameState.silver == 7, "付 5 银币后剩 7")
+	GameState.silver = 3
+	check(not DialogueRunner.conds_ok([{"silver": 5}]), "只有 3 银币：塞钱的选项不出现")
+
+
+func test_growth() -> void:
+	check(GameState.validate_progression(GameState.progression()).is_empty(), "成长数据（data/progression.json）完整：%s" % [GameState.validate_progression(GameState.progression())])
+	var bad := GameState.progression().duplicate(true)
+	bad.skills.blade.perks.append({"at": 30, "name": "x", "desc": "x", "effect": "fly"})
+	check(GameState.validate_progression(bad).size() >= 2, "校验能抓出不对的门槛和不在白名单里的专长效果")
+	GameState.new_game(5)
+	check(GameState.strength == 5 and GameState.agility == 5 and GameState.constitution == 5 and GameState.wits == 3, "开局属性：力量 5、敏捷 5、体魄 5、机敏 3")
+	check(GameState.skills.blade == 15 and GameState.skills.stealth == 5 and GameState.skills.size() == 8, "八项技能，剑术 15")
+	check(GameState.get_rep("valen") == 10 and GameState.get_rep("outlaws") == -20 and GameState.rep.size() == 8, "八个势力：瓦伦家 +10（你的雇主）、无旗者 −20")
+	# 用什么涨什么
+	var ups: Array = []
+	GameState.skill_up.connect(func(sk, v): ups.append([sk, v]))
+	GameState.train("blade", 4.9)
+	check(GameState.skills.blade == 15 and is_equal_approx(GameState.skill_progress("blade"), 0.98), "剑术 15 → 16 要 5 点进度（2 + 15 × 0.2）")
+	GameState.train("blade", 0.1)
+	check(GameState.skills.blade == 16 and ups.back() == ["blade", 16], "攒够了：剑术升到 16")
+	var lv: Array = []
+	GameState.level_up.connect(func(l): lv.append(l))
+	GameState.train("survival", 100.0)
+	check(GameState.skill_ups >= 10 and GameState.level >= 2 and GameState.attr_points == GameState.level - 1 and lv.size() == GameState.level - 1, "技能累计提升 10 次升一级、得 1 个属性点（现在 %d 级）" % GameState.level)
+	# 属性
+	GameState.attr_points = 1
+	check(GameState.raise_attr("constitution") and GameState.constitution == 6 and GameState.health_max() == 104 and GameState.stamina_max() == 104.0, "加 1 点体魄：生命、体力上限各 +4")
+	check(not GameState.raise_attr("agility"), "没有属性点就加不了")
+	GameState.agility = 7
+	check(is_equal_approx(GameState.stamina_regen_mult(), 1.1), "敏捷 7：体力恢复快 10%")
+	# 专长
+	GameState.new_game(5)
+	var perks: Array = []
+	GameState.perk_unlocked.connect(func(sk, pk): perks.append(pk.name))
+	GameState.skills.blade = 24
+	GameState.train("blade", GameState.skill_need(24))
+	check(GameState.skills.blade == 25 and perks == ["连环"] and GameState.has_perk("blade", "combo3"), "剑术到 25：解锁「连环」")
+	GameState.skills.insight = 25
+	check(GameState.check_value("insight") == 25 + 6 + 5, "洞察到 25「察言」：洞察检定 +5")
+	GameState.skills.survival = 50
+	check(GameState.carry_limit() == 50.0, "生存 25「背夫」：负重上限 +10")
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		e.process_mode = Node.PROCESS_MODE_DISABLED
+	check(m.combo_max() == 3, "剑术 25：轻击可以连三段")
+	var chest: LootContainer = null
+	for c in main.get_tree().get_nodes_in_group("loot"):
+		if c.loot_id == "arena_chest":
+			chest = c
+	var s0 := GameState.silver
+	chest.take(-1)
+	check(GameState.silver == s0 + 8, "生存 50「搜刮老手」：补给箱 6 枚银币多拿 2 枚")
+	var sv0 := float(GameState.skill_xp.get("survival", 0.0))
+	chest.take(0)
+	check(float(GameState.skill_xp.get("survival", 0.0)) > sv0, "搜刮一件东西：生存涨进度")
+	# 反击（剑术 50）与定心（剑术 75）
+	GameState.skills.blade = 50
+	var a := arena_enemy(main, "a")
+	a.disable_mode = CollisionObject3D.DISABLE_MODE_KEEP_ACTIVE     # 冻住思考但留着碰撞：停了处理的物理体默认会从物理世界里拿掉，剑就砍不到
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	m.block_press()
+	await seconds(0.5)
+	check(m.perfect_window() == Melee.PERFECT_WINDOW, "剑术 50：完美格挡时机还是 0.2 秒")
+	m.block_release()
+	m.block_press()
+	await frames(2)
+	m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(m.counter_ready, "剑术 50「反击」：完美格挡后记下一次反击")
+	m.block_release()
+	await seconds(0.3)
+	var kinds: Array = []
+	m.swung.connect(func(k): kinds.append(k))
+	m.press()
+	m.release()
+	check(kinds == ["heavy"] and not m.counter_ready, "反击：点一下也是重击")
+	await seconds(0.8)
+	GameState.skills.blade = 75
+	check(m.perfect_window() == 0.3, "剑术 75「定心」：完美格挡时机放宽到 0.3 秒")
+	# 命中练技能：打木桩一半、打人全额；钝器用木棍
+	GameState.skills.blade = 30
+	GameState.skill_xp.blade = 0.0
+	a.data = a.data.duplicate()
+	a.data.block_chance = 0.0
+	a.hp = 50
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.5)
+	check(is_equal_approx(float(GameState.skill_xp.blade), Melee.TRAIN_HIT), "用剑砍中敌人：剑术涨 1 点进度（%.2f）" % float(GameState.skill_xp.blade))
+	GameState.add_item("club")
+	GameState.equip("club")
+	check(m.weapon_skill() == "blunt" and m.combo_max() == 2, "换上木棍：用钝器技能，「连环」只对剑有效")
+	GameState.skills.blunt = 25
+	a.hp = 50
+	a._enter(Enemy.State.COMBAT)
+	await seconds(0.6)
+	var hp0 := a.hp
+	m.press()
+	await seconds(0.45)
+	m.release()
+	await seconds(0.3)
+	check(a.state == Enemy.State.STAGGER and a.hp < hp0, "钝器 25「震骨」：木棍重击打中让对方失衡（%s，%d → %d）" % [a.state_name(), hp0, a.hp])
+	check(float(GameState.skill_xp.get("blunt", 0.0)) > 0.0, "用木棍打中：钝器涨进度")
+	await seconds(0.9)
+	# 轻步（潜行 25）：被察觉得慢
+	GameState.equip("short_sword")
+	a.state = Enemy.State.PATROL
+	a.suspicion = 0.0
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	await place(p, 0.0, 3.0)
+	a._perceive(0.1)
+	var plain := a.suspicion
+	a.suspicion = 0.0
+	GameState.skills.stealth = 25
+	a._perceive(0.1)
+	check(plain > 0.0 and is_equal_approx(a.suspicion, plain * 0.7), "潜行 25「轻步」：敌人察觉的速度降低三成")
+	# 蹲着在没察觉你的敌人旁边走：潜行涨
+	GameState.skills.stealth = 5
+	GameState.skill_xp.stealth = 0.0
+	a.state = Enemy.State.PATROL
+	p.crouch_wanted = true
+	await physics(10)
+	await hold("move_left", 1.0)
+	check(float(GameState.skill_xp.get("stealth", 0.0)) > 0.3, "蹲着在没察觉你的敌人附近走动：潜行涨进度（%.2f）" % float(GameState.skill_xp.get("stealth", 0.0)))
+	p.crouch_wanted = false
+	# 声望
+	var reps: Array = []
+	GameState.rep_changed.connect(func(f, d, v): reps.append([f, d, v]))
+	a.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	check(GameState.get_rep("outlaws") == -25 and reps.back() == ["outlaws", -5, -25], "杀了一个无旗者：无旗者声望 −5")
+	check(main.hud.toast_label.text.contains("无旗者 · 声望下降 ↓（冷淡）"), "屏幕提示「无旗者 · 声望下降 ▼（冷淡）」（%s）" % main.hud.toast_label.text)
+	GameState.change_rep("valen", 500)
+	check(GameState.get_rep("valen") == 100, "声望最高 100")
+	check([GameState.rep_tier(-60), GameState.rep_tier(-20), GameState.rep_tier(0), GameState.rep_tier(20), GameState.rep_tier(60)] == ["敌视", "冷淡", "中立", "友善", "信任"], "声望五档：敌视 / 冷淡 / 中立 / 友善 / 信任")
+	# 角色面板
+	GameState.attr_points = 1
+	var cp: CharacterPanel = main.char_panel
+	main._unhandled_input(key_ev(KEY_K))
+	await frames(2)
+	check(cp.visible and get_tree().paused and cp.header.text.contains("可分配属性点 1"), "按 K 打开角色面板，写着可分配的属性点（%s）" % cp.header.text)
+	var plus := find_button(cp, "＋")
+	check(plus != null, "有属性点时属性旁出现「＋」")
+	var str0 := GameState.strength
+	plus.pressed.emit()
+	await frames(1)
+	check(GameState.strength == str0 + 1 and GameState.attr_points == 0 and find_button(cp, "＋") == null, "点「＋」给力量加 1，点数用完「＋」消失")
+	var all_text := "\n".join(cp.box.find_children("*", "Label", true, false).map(func(l): return l.text))
+	check(all_text.contains("◆ 25「连环」") and all_text.contains("◇ 25「轻步」") or all_text.contains("◆ 25「轻步」"), "专长写明解锁了没有（◆ / ◇）")
+	check(all_text.contains("瓦伦家　信任（+100）") and all_text.contains("渡工行会　中立（+0）"), "声望列出八个势力的档位与数值")
+	var rect: Rect2 = cp.f.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "角色面板不超出画面（%s）" % rect.size)
+	cp._unhandled_input(key_ev(KEY_K))
+	await frames(2)
+	check(not cp.visible and not get_tree().paused, "再按 K 关上")
+	main.hud.char_pressed.emit()
+	await frames(2)
+	check(cp.visible, "右上角「角色」按钮打开（手机用）")
+	cp.close()
+	await frames(1)
+	# 窄屏标题
+	var hud: Hud = main.hud
+	hud.size = Vector2(480, 900)
+	hud._layout()
+	check(hud.title_label.text == Hud.TITLE_SHORT and hud.title_label.get_minimum_size().x + 16.0 < hud.char_btn.position.x, "窄屏：标题缩短，不和右上角四个按钮重叠")
+	hud.size = Vector2(1280, 720)
+	hud._layout()
+	check(hud.title_label.text == Hud.TITLE, "宽屏：完整标题")
+	await free_main(main)
+	# 检定练技能、对话改声望
+	GameState.new_game(5)
+	GameState.check("grow_a", "insight", 12)
+	check(float(GameState.skill_xp.get("insight", 0.0)) in [1.0, 3.0], "做一次洞察检定：洞察涨进度（成功 3、失败 1）")
+	check(DialogueRunner.conds_ok([{"rep": "valen", "at_least": 10}]) and not DialogueRunner.conds_ok([{"rep": "valen", "at_least": 11}]), "对话条件：声望至少多少")
+	var r := DialogueRunner.new()
+	r.start("frostford", "steward")
+	r.choose(0)
+	check(GameState.quest_active("edric_missing") and GameState.get_rep("valen") == 15, "接下管家的委托：瓦伦家声望 +5")
+
+
+## 把 main 的「读档后重新载入场景」接到测试里：释放旧的 main、建新的
+func reload_main(main: Node3D, test_range := false) -> Node3D:
+	var scene: String = GameState.pending_load.get("scene", "frostford")
+	await free_main(main)
+	if scene == "arena":
+		return await make_arena()
+	return await make_main(scene == "test_range" or test_range)
+
+
+func test_saves() -> void:
+	wipe_test_saves()                      # 前面几组里接任务会触发自动存档
+	check(Saves.dir == "user://test_saves/", "自动化测试用单独的存档目录，不碰真正的存档")
+	check(not Saves.has_any() and Saves.latest_slot() == "", "开始时没有存档")
+	# 校验
+	var good := {"version": Saves.VERSION, "saved_at": "2026-10-02T10:00:00Z", "scene": "frostford", "player": {"pos": [0, 0, 6]}, "state": {"seed": 1, "inventory": []}}
+	check(Saves.check_save(good) == "", "完整的存档通过校验")
+	check(Saves.check_save({"scene": "frostford"}).contains("版本号"), "缺版本号：不认")
+	var future := good.duplicate(true)
+	future.version = Saves.VERSION + 1
+	check(Saves.check_save(future).contains("更新版本"), "更新版本写的存档：说明读不了")
+	var no_player := good.duplicate(true)
+	no_player.erase("player")
+	check(not Saves.write_slot("slot2", no_player) and Saves.read_slot("slot2").is_empty(), "内容不完整的存档不写入")
+	# 存一份：霜渡镇里改一些状态
+	GameState.new_game(11)
+	var main := await make_main(false)
+	var p: FpController = main.player
+	GameState.set_flag("heard_edric_to_ferry")
+	GameState.start_quest("edric_missing")
+	GameState.add_clue("ferry")
+	GameState.add_item("bandage", 2)
+	GameState.add_silver(5)
+	GameState.skills.speech = 22
+	GameState.skill_xp.speech = 1.5
+	GameState.change_rep("valen", 7)
+	GameState.check("save_chk", "insight", 12)
+	var chk: bool = GameState.checks.save_chk
+	main.set_view(6)
+	await physics(6)
+	main.player.interactor.refresh()
+	(main.player.interactor.target as LootContainer).take(-1)
+	var bread_node: Node = null
+	for c in main.world.get_children():
+		if c is Pickup and c.pickup_id == "frostford_bread":
+			bread_node = c
+	bread_node.interact(p)
+	await frames(2)
+	await place(p, -2.0, -12.0)
+	p.rotation.y = 0.7
+	p.melee.health = 63
+	var before: Dictionary = JSON.parse_string(JSON.stringify(GameState.to_dict()))
+	check(main.save_game("slot1"), "存到栏位 1")
+	check(Saves.read_slot("slot1").has("data") and Saves.has_any(), "栏位 1 读得出来")
+	# 读档回来
+	GameState.new_game(99)
+	GameState.silver = 0
+	var reloads := [0]
+	main.reload_requested.connect(func(): reloads[0] += 1)
+	check(main.load_game("slot1") and reloads[0] == 1, "读栏位 1：重新载入场景")
+	var after: Dictionary = JSON.parse_string(JSON.stringify(GameState.to_dict()))
+	check(after.hash() == before.hash() or JSON.stringify(after) == JSON.stringify(before), "游戏状态原样读回（旗标、任务、线索、背包、银币、技能、声望、检定、搜刮、拾取）")
+	check(GameState.seed_value == 11 and GameState.checks.save_chk == chk and GameState.silver == 12 + 5 + 3, "检定种子和结果、银币都对（%d）" % GameState.silver)
+	check(GameState.skills.speech == 22 and typeof(GameState.skills.speech) == TYPE_INT and GameState.get_rep("valen") == 17, "技能是整数、声望对")
+	main = await reload_main(main)
+	p = main.player
+	check(p.global_position.distance_to(Vector3(-2, 0.05, -12)) < 0.3 and absf(p.rotation.y - 0.7) < 0.01, "读档后站在存档时的位置、朝向（%s）" % p.global_position)
+	check(p.melee.health == 63, "生命也读回来了（63）")
+	var still_bread: bool = main.world.get_children().any(func(c): return c is Pickup and c.pickup_id == "frostford_bread")
+	check(not still_bread, "捡走的面包读档后不再出现")
+	var crate: LootContainer = main.get_tree().get_nodes_in_group("loot").filter(func(c): return c.loot_id == "frostford_crate")[0]
+	check(int(crate.contents().silver) == 0 and (crate.contents().items as Array).size() == 2, "破木箱里拿走的银币没有回来")
+	check(main.hud.toast_label.text.contains("已读取：栏位 1"), "读档后提示「已读取：栏位 1」")
+	# 当前 + 上一份；坏档退回上一份
+	GameState.add_silver(1)
+	check(main.save_game("slot1", true), "再存一次栏位 1")
+	check(Saves.read_slot("slot1").data.state.silver == 21, "当前这份是新的")
+	Saves._write_raw(Saves._key("slot1"), "{坏掉的数据")
+	var r := Saves.read_slot("slot1")
+	check(r.has("data") and int(r.data.state.silver) == 20 and r.note.contains("已退回上一份"), "当前这份坏了：退回上一份并说明（%s）" % r.get("note", ""))
+	Saves._write_raw(Saves._key("slot1") + ".prev", "也坏了")
+	r = Saves.read_slot("slot1")
+	check(r.has("error") and not r.has("data"), "两份都坏了：报错，不给空数据")
+	check(not main.load_game("slot1") and main.hud.toast_label.text.contains("读不了"), "读坏档：提示读不了，不重新载入")
+	check(main.save_game("slot1", true) and Saves.read_slot("slot1").has("data"), "坏档的栏位可以重新存")
+	# 版本迁移
+	var old := good.duplicate(true)
+	old.version = 0
+	old.erase("scene")
+	Saves._write_raw(Saves._key("slot3"), JSON.stringify(old))
+	check(Saves.read_slot("slot3").has("error"), "没有迁移办法的旧版本：读不了")
+	Saves.migrations[0] = func(d: Dictionary) -> Dictionary:
+		d["scene"] = "frostford"
+		return d
+	r = Saves.read_slot("slot3")
+	check(r.has("data") and r.data.version == Saves.VERSION and r.data.scene == "frostford", "有迁移办法：逐版本升到当前版本再读")
+	Saves.migrations.clear()
+	Saves._write_raw(Saves._key("slot3"), JSON.stringify(future))
+	check(Saves.read_slot("slot3").get("error", "").contains("更新版本"), "栏位里是更新版本的存档：说明读不了")
+	Saves.delete_slot("slot3")
+	# 快速存档 / 读档、最近一份
+	main._unhandled_input(key_ev(KEY_F8))
+	check(Saves.read_slot("quick").has("data"), "F8 快速存档")
+	check(Saves.latest_slot() in ["quick", "slot1"], "最近一份存档（%s）" % Saves.latest_slot())
+	var rl := [0]
+	main.reload_requested.connect(func(): rl[0] += 1)
+	main._unhandled_input(key_ev(KEY_F9))
+	await frames(1)
+	check(rl[0] == 1 and GameState.pending_load.get("slot") == "quick", "F9 读快速存档")
+	main = await reload_main(main)
+	# 自动存档：接任务时
+	Saves.delete_slot("auto")
+	GameState.new_game(12)
+	var dr := DialogueRunner.new()
+	dr.start("frostford", "steward")
+	dr.choose(0)
+	await frames(3)
+	check(Saves.read_slot("auto").has("data") and Saves.read_slot("auto").data.state.quests.has("edric_missing"), "接下主线时自动存档")
+	# 存档面板
+	main.open_pause()
+	main.pause_menu.saves_requested.emit()
+	await frames(2)
+	var sp: SavePanel = main.save_panel
+	check(sp.visible and find_button(sp, "覆盖") != null and find_button(sp, "存到这里") != null, "暂停菜单「存档 / 读档」：栏位 1 写「覆盖」、空栏位写「存到这里」")
+	var labels: Array = sp.box.get_children().filter(func(c): return c is Label).map(func(l): return l.text)
+	check(labels.any(func(t): return t.begins_with("自动存档") and t.contains("霜渡镇")), "自动存档一行写着场景（%s）" % [labels])
+	find_button(sp, "存到这里").pressed.emit()
+	await frames(1)
+	check(Saves.read_slot("slot2").has("data"), "点「存到这里」存进栏位 2")
+	var rect: Rect2 = sp.f.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "存档面板不超出画面")
+	sp.close()
+	main.close_pause()
+	await free_main(main)
+	# 训练场：战斗中不能存；倒下的敌人读档后还是倒下的
+	GameState.new_game(13)
+	main = await make_arena()
+	var a := arena_enemy(main, "a")
+	solo(main, a)
+	await place(main.player, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	a.alert(false)
+	await physics(2)
+	check(main.can_save() != "" and not main.save_game("slot3"), "敌人在和你打的时候不能存档")
+	var rep0 := 0
+	a.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	rep0 = GameState.get_rep("outlaws")
+	var corpse_pos := a.global_position
+	(main.get_tree().get_nodes_in_group("loot").filter(func(c): return c.loot_id == "loot:a")[0] as LootContainer).take(0)
+	check(main.save_game("slot3"), "敌人倒下以后可以存档")
+	main.load_game("slot3")
+	main = await reload_main(main)
+	await frames(3)
+	a = arena_enemy(main, "a")
+	check(a.state == Enemy.State.DEAD and a.collision_layer == 0 and a.global_position.distance_to(corpse_pos) < 0.2, "读档后倒下的敌人还倒在原地")
+	var corpses: Array = main.get_tree().get_nodes_in_group("loot").filter(func(c): return c.loot_id == "loot:a")
+	check(corpses.size() == 1 and corpses[0].contents().items == ["bread", "dice"], "尸体上拿走的木棍没有回来")
+	check(GameState.get_rep("outlaws") == rep0, "读档恢复倒下的敌人不会再扣一次声望")
+	# 倒下：有存档时「读取最近的存档」
+	main.player.melee.health = 3
+	main.player.melee.receive_hit({"damage": 9, "kind": "light", "attacker": null})
+	check(main.defeat_panel.visible and main.defeat_panel.retry_btn.text == "读取最近的存档", "倒下时有存档：按钮是「读取最近的存档」")
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	main.defeat_panel.retry_btn.pressed.emit()
+	await frames(1)
+	check(rr[0] == 1 and GameState.pending_load.has("slot"), "点一下读最近的存档")
+	GameState.pending_load = {}
+	get_tree().paused = false
+	await free_main(main)
+	# 设置也会保存
+	Settings.set_value("fov", 90)
+	check(int(Saves.load_settings().get("fov", 0)) == 90, "改了视野角马上存进浏览器")
+	Settings.set_value("quality", "high")
+	check(Saves.load_settings().get("quality") == "high", "选过的画质也记住")
+	Settings.set_value("fov", 75)
+	Settings.set_value("quality", "")
+	GameState.new_game(1)
+
+
+func test_camera() -> void:
+	Settings.set_value("third_person", false)
+	GameState.new_game(21)
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	check(not p.third_person and not p.avatar.visible and p.camera.position.length() < 0.1, "默认第一人称：看不到自己的身体")
+	main._unhandled_input(key_ev(KEY_V))
+	await physics(90)
+	check(Settings.third_person and p.third_person and p.avatar.visible, "按 V 切到第三人称：看得到占位人形")
+	check(not m.view.mesh_node.visible, "第三人称时藏起第一人称的武器")
+	check(Saves.load_settings().get("third_person") == true, "视角设置存进浏览器，下次打开还是第三人称")
+	var want := Vector3(FpController.TP_SIDE, FpController.TP_UP, FpController.TP_DIST).length()
+	check(absf(p.camera.position.length() - want) < 0.1 and p.camera.position.z > 2.0 and p.camera.position.x > 0.3, "空旷处：相机在头部后方偏右（越肩，%.2f 米）" % p.camera.position.length())
+	check(p.camera.global_position.distance_to(p.aim_origin()) > 2.0, "瞄准起点仍是眼睛，不是相机")
+	# 身后有墙：相机往前收
+	await place(p, -3.0, 11.0)
+	await physics(30)
+	check(p.camera.position.length() < 1.2, "背靠墙：相机收到墙前面，不穿墙（%.2f 米）" % p.camera.position.length())
+	# 交互：准星对准 NPC
+	await aim(p, TestRange.NPC_POS + Vector3(0, 0, 2.3), TestRange.NPC_POS + Vector3(0, 1.2, 0))
+	await physics(20)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc, "第三人称对准灰盒路人：能交谈（%s）" % p.interactor.target)
+	await aim(p, TestRange.NPC_POS + Vector3(0, 0, 4.0), TestRange.NPC_POS + Vector3(0, 1.2, 0))
+	await physics(20)
+	p.interactor.refresh()
+	check(p.interactor.target == null, "离 NPC 4 米：相机虽然离得更近，也够不着（按眼睛算 2.5 米）")
+	await place(p, TestRange.NPC_POS.x, TestRange.NPC_POS.z + 2.0)
+	p.rotation.y = 0.0
+	p.pitch = 0.0
+	p.head.rotation.x = 0.0
+	await physics(10)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc, "正对 2 米外的 NPC（越肩视差让准星偏在旁边）：照样能交谈")
+	# 出剑打木桩
+	var dummy: TrainingDummy = main.world.get_children().filter(func(c): return c is TrainingDummy)[0]
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.5)
+	check(m.drawn() and p.avatar.weapon_mesh.visible, "拔剑：人形手里出现剑")
+	var h0 := dummy.hits
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(dummy.hits == h0 + 1, "第三人称出剑也能打中木桩")
+	m.block_press()
+	await seconds(0.4)
+	check(absf(p.avatar.arm.rotation_degrees.z - 75.0) < 8.0, "举剑格挡：人形把剑横过来")
+	m.block_release()
+	p.crouch_wanted = true
+	await seconds(0.6)
+	check(p.avatar.body.scale.y < 0.8, "蹲下：人形矮一截")
+	p.crouch_wanted = false
+	await seconds(0.3)
+	# 菜单勾选框、触屏按钮
+	check(main.pause_menu.tp_check.button_pressed, "暂停菜单里的「第三人称越肩视角」已勾上")
+	var t: TouchControls = main.touch
+	t.visible = true
+	var bc: Dictionary = t.button_centers()
+	var others := bc.keys().filter(func(k): return k != "camera")
+	check(bc.has("camera") and others.all(func(k): return bc[k].distance_to(bc.camera) > TouchControls.BTN_R * 2.5), "触屏有「视角」按钮，不和其他按钮挤在一起")
+	t._input(touch_ev(5, bc.camera, true))
+	t._input(touch_ev(5, bc.camera, false))
+	await physics(5)
+	check(not Settings.third_person and not p.avatar.visible and m.view.mesh_node.visible and p.camera.position.length() < 0.1, "点「视角」切回第一人称")
+	await free_main(main)
+	# 下次打开页面：按保存的视角开始
+	Settings.set_value("third_person", true)
+	main = await make_main(true)
+	check(main.player.third_person and main.player.avatar.visible, "设置里是第三人称：打开就是第三人称")
+	await free_main(main)
+	Settings.set_value("third_person", false)

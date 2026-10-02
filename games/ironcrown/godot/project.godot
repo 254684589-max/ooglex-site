@@ -18,7 +18,9 @@ config/icon="res://icon.svg"
 
 UiScale="*res://core/ui_scale.gd"
 InputSetup="*res://core/input_setup.gd"
+Saves="*res://core/saves.gd"
 Settings="*res://core/settings.gd"
+GameState="*res://core/game_state.gd"
 
 [display]
 
@@ -46,3 +48,4 @@ pointing/emulate_mouse_from_touch=true
 3d_physics/layer_1="世界"
 3d_physics/layer_2="玩家"
 3d_physics/layer_3="可交互"
+3d_physics/layer_4="可受击"

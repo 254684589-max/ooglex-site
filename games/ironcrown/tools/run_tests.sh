@@ -24,4 +24,9 @@ LOG="$TMP/test.log"
 timeout 300 "$GODOT" --headless --path "$PROJECT" res://tests/test_runner.tscn -- "$@" >"$LOG" 2>&1
 CODE=$?
 grep -vE "^\s*$" "$LOG" | grep -vE "^\s+at: " | grep -E "^== |ok |info |FAIL|SCRIPT ERROR|^ERROR|PASSED|FAILED|WATCHDOG"
+# 退出时资源 / 对象泄漏也算失败（2.1 起：脚本里的 static var 曾导致脚本释放不掉）
+if grep -qE "still in use at exit|instances were leaked at exit" "$LOG"; then
+  echo "FAIL 退出时有资源或对象泄漏（用 --verbose 运行测试查看是哪个）"
+  exit 1
+fi
 exit $CODE

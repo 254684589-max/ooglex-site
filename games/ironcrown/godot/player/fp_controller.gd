@@ -19,9 +19,18 @@ const STEP_HEIGHT := 0.3        # 能直接跨上的台阶高度
 const PITCH_LIMIT := 85.0
 const TOUCH_RUN_THRESHOLD := 0.95   # 摇杆推到边缘 = 跑
 const BOB_AMPLITUDE := 0.035
+const GUARD_SPEED := 1.7          # 举剑格挡、失衡时只能慢慢挪（2.5）
+## 第三人称越肩镜头（2.9，D6）：相机在头部后方 TP_DIST 米、偏右 TP_SIDE 米、高 TP_UP 米；身后有墙就往前收
+const TP_DIST := 2.6
+const TP_SIDE := 0.55
+const TP_UP := 0.25
+const TP_MARGIN := 0.25
 
 var head: Node3D
 var interactor: Interactor
+var melee: Melee
+var avatar: PlayerAvatar
+var third_person := false
 var camera: Camera3D
 var shape: CollisionShape3D
 var capsule: CapsuleShape3D
@@ -30,6 +39,7 @@ var crouch_wanted := false
 var touch_move := Vector2.ZERO      # 触屏摇杆，-1..1，y 负 = 向前
 var jump_requested := false
 var pitch := 0.0                    # 度，正 = 抬头
+var running := false                # 这一帧在跑（消耗体力，2.4）
 var bob_time := 0.0
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 
@@ -58,15 +68,45 @@ func _init() -> void:
 	interactor.name = "Interactor"
 	interactor.player = self
 	add_child(interactor)
+	melee = Melee.new()
+	melee.name = "Melee"
+	melee.player = self
+	add_child(melee)
+	avatar = PlayerAvatar.new()
+	avatar.name = "Avatar"
+	avatar.player = self
+	add_child(avatar)
 
 
 func _ready() -> void:
+	add_to_group("player")
 	_apply_settings()
 	Settings.changed.connect(_apply_settings)
 
 
 func _apply_settings() -> void:
 	camera.fov = Settings.fov
+	if Settings.third_person != third_person:
+		set_third_person(Settings.third_person)
+
+
+## 切换第一 / 第三人称（2.9）：第三人称显示占位人形、藏起第一人称的武器；身体跟着镜头的水平朝向转（越肩视角）
+func set_third_person(on: bool) -> void:
+	third_person = on
+	avatar.visible = on
+	if melee and melee.view:
+		melee.view.hide_model(on)
+	if not on:
+		camera.position = Vector3.ZERO
+
+
+## 瞄准 / 交互 / 命中判定的起点：总是眼睛的位置（第三人称时相机在身后，不能从相机算）
+func aim_origin() -> Vector3:
+	return head.global_position
+
+
+func aim_forward() -> Vector3:
+	return -camera.global_transform.basis.z
 
 
 ## 鼠标转视角：relative 是鼠标移动的像素
@@ -106,8 +146,15 @@ func move_input() -> Vector2:
 func current_speed(input: Vector2) -> float:
 	if crouching:
 		return CROUCH_SPEED
+	if melee and (melee.blocking() or melee.staggered()):
+		return GUARD_SPEED
+	return RUN_SPEED if wants_run() else WALK_SPEED
+
+
+## 想跑并且体力够（体力耗尽后要缓过气才能再跑，2.4）
+func wants_run() -> bool:
 	var run := Input.is_action_pressed("sprint") or touch_move.length() >= TOUCH_RUN_THRESHOLD
-	return RUN_SPEED if run else WALK_SPEED
+	return run and not GameState.over_encumbered() and (melee == null or (melee.can_sprint() and not melee.blocking() and not melee.staggered()))
 
 
 func _physics_process(delta: float) -> void:
@@ -119,6 +166,7 @@ func _physics_process(delta: float) -> void:
 	dir.y = 0.0
 	dir = dir.normalized() * minf(input.length(), 1.0)
 	var target := dir * current_speed(input)
+	running = not crouching and is_on_floor() and input.length() > 0.1 and wants_run()
 	var accel := GROUND_ACCEL if is_on_floor() else AIR_ACCEL
 	var h := Vector2(velocity.x, velocity.z).move_toward(Vector2(target.x, target.z), accel * delta)
 	velocity.x = h.x
@@ -191,6 +239,9 @@ func can_stand() -> bool:
 func _update_head(delta: float) -> void:
 	var eye := EYE_CROUCH if crouching else EYE_STAND
 	head.position.y = move_toward(head.position.y, eye, 4.0 * delta)
+	if third_person:
+		_update_third_person(delta)
+		return
 	var speed := Vector2(velocity.x, velocity.z).length()
 	if Settings.head_bob and is_on_floor() and speed > 0.5:
 		bob_time += delta * speed * 2.2
@@ -199,3 +250,22 @@ func _update_head(delta: float) -> void:
 		camera.position = camera.position.move_toward(Vector3.ZERO, 0.2 * delta)
 		if not Settings.head_bob:
 			camera.position = Vector3.ZERO
+
+
+## 越肩镜头：从眼睛往身后右上方打一条射线（只看世界层），撞到墙就把相机收到墙前面，避免穿墙
+func _update_third_person(delta: float) -> void:
+	# 竖屏手机水平视野窄（相机按高度保持视野）：右肩偏移按宽高比收拢，人不会被挤到屏幕左边去压住摇杆
+	var r := get_viewport().get_visible_rect().size
+	var narrow := clampf((r.x / maxf(r.y, 1.0)) / (16.0 / 9.0), 0.3, 1.0)
+	var want_local := Vector3(TP_SIDE * narrow, TP_UP, TP_DIST)
+	var from := head.global_position
+	var to := head.global_transform * want_local
+	var q := PhysicsRayQueryParameters3D.create(from, to, 1, [get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	var local := want_local
+	if not hit.is_empty():
+		var d := maxf(from.distance_to(hit.position) - TP_MARGIN, 0.2)
+		local = want_local.normalized() * d
+	# 往前收要快（不然会先穿墙一下），往后退慢一点
+	var speed := 30.0 if local.length() < camera.position.length() else 6.0
+	camera.position = camera.position.lerp(local, clampf(delta * speed, 0.0, 1.0))

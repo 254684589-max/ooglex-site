@@ -1,0 +1,8 @@
+{
+  "_说明": "旗标清单（路线图 2.2；GDD.md 7.4）。所有关键选择写成旗标存进存档。每个旗标写明含义、在哪里设置（set_in）、在哪里读取（read_in），防止写了没人用。对话里用到没登记的旗标，自动化测试会报错。",
+  "heard_edric_to_ferry": {"desc": "从更夫那里听说埃德里克少爷天黑前往渡口去了", "set_in": "frostford.json watchman/edric", "read_in": "frostford.json watchman/greet（之后序章任务「雾里的少爷」2.3 读取）"},
+  "heard_cloaked_men": {"desc": "看穿更夫有所隐瞒：少爷身后还跟着几个披斗篷的人（洞察检定成功）", "set_in": "frostford.json watchman/edric_more", "read_in": "序章任务线索（2.3）"},
+  "knows_double_key_ring": {"desc": "知道南方人戴着双钥印戒（卡斯韦尔家）", "set_in": "frostford.json watchman/stranger", "read_in": "frostford.json watchman/stranger_ring（之后与塞拉斯对话时读取）"},
+  "watchman_offended": {"desc": "威吓更夫失败，更夫不再搭理你", "set_in": "frostford.json watchman/watch_offended", "read_in": "frostford.json watchman start_if（更夫换成冷淡的开场）"},
+  "watchman_paid": {"desc": "塞给更夫几枚银币，他说出了斗篷人的去向", "set_in": "frostford.json watchman/edric_paid", "read_in": "之后的银币与声望（2.6 / 2.7）"}
+}
