@@ -17,7 +17,7 @@ function markerSummary(html, app) {
     appKeyboardNav: app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"),
     appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchmove'") && app.includes("viewer.addEventListener('touchend'") && app.includes('stepWindow(dy < 0 ? 1 : -1)'),
     appAudioUnlock: app.includes('let audioUnlocked = false') && app.includes('video.muted = !audioUnlocked') && app.includes('activateAudio') && app.includes('video.muted = false'),
-    lightControls: html.includes('background:rgba(236,242,250,.78)') && html.includes('app.js?v=13'),
+    floatingControls: html.includes('background:transparent;backdrop-filter:none;box-shadow:none') && html.includes('.viewer-control.icon{width:36px;min-width:36px') && html.includes('app.js?v=14'),
     oldTopListener: app.includes("$('#randomTop')")
   };
 }
@@ -34,7 +34,7 @@ function valid(summary) {
     summary.appKeyboardNav &&
     summary.appSwipeNav &&
     summary.appAudioUnlock &&
-    summary.lightControls &&
+    summary.floatingControls &&
     !summary.oldTopListener;
 }
 

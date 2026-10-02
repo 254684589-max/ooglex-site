@@ -37,11 +37,12 @@ ok(html.includes('data-sort="featured"') && html.includes('data-sort="latest"') 
 ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
 ok(html.includes('WINDOW 播放列表'), 'WINDOW playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
-ok(html.includes('display:flex;align-items:center;gap:6px'), 'compact viewer controls must be visible');
-ok(html.includes('display:grid;grid-template-columns:repeat(5,minmax(0,1fr))'), 'mobile compact viewer controls grid missing');
+ok(html.includes('.viewer-controls{position:absolute') && html.includes('display:flex;align-items:center;justify-content:center;gap:6px'), 'compact viewer controls must be visible');
+ok(html.includes('left:50%;right:auto;transform:translateX(-50%);display:flex'), 'mobile floating viewer controls missing');
 ok(html.includes('touch-action:pan-x'), 'mobile vertical swipe touch-action guard missing');
-ok(html.includes('app.js?v=13'), 'Global Cams app cache-bust version missing');
-ok(html.includes('background:rgba(236,242,250,.78)'), 'light viewer control bar missing');
+ok(html.includes('app.js?v=14'), 'Global Cams app cache-bust version missing');
+ok(html.includes('background:transparent;backdrop-filter:none;box-shadow:none'), 'viewer control strip background must be removed');
+ok(html.includes('.viewer-control.icon{width:36px;min-width:36px'), 'compact icon button sizing missing');
 
 ok(!html.includes('LIVE 实时'), 'LIVE mode still present in HTML');
 ok(!html.includes('公开摄像头'), 'camera copy still present in HTML');
