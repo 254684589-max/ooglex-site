@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -652,6 +652,7 @@ func key_ev(code: Key) -> InputEventKey:
 
 
 func test_dialogue() -> void:
+	GameState.new_game(1)        # 旗标会影响对话：每次从一局新游戏开始
 	# 数据：霜渡镇所有对话都通过校验
 	var all := DialogueRunner.load_file("frostford")
 	var bad := []
@@ -669,9 +670,10 @@ func test_dialogue() -> void:
 	var r := DialogueRunner.new()
 	check(r.start("frostford", "watchman") and r.speaker() == "更夫" and r.options().size() == 4, "更夫的对话从「greet」开始，4 个选项")
 	check(r.choose(1) and r.node_id == "edric" and r.choose(0) and r.node_id == "stranger", "选「你今晚见过埃德里克少爷吗」→ 再问南方人，台词跟着走")
-	check(r.choose(0) and r.node_id == "menu" and not r.choose(3) and r.node_id == "", "回到「还有什么要问的」，选「没有了」对话结束")
+	check(r.choose(r.options().size() - 1) and r.node_id == "menu" and not r.choose(r.options().size() - 1) and r.node_id == "", "回到「还有什么要问的」，选「没有了」对话结束")
 	check(not r.start("frostford", "nobody"), "找不到的对话不会打开")
 	# 游戏里：对准更夫按 E
+	GameState.new_game(1)
 	var main := await make_main(false)
 	var p: FpController = main.player
 	await aim(p, Frostford.WATCH_POS + Vector3(1.2, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
@@ -704,7 +706,7 @@ func test_dialogue() -> void:
 	check(dp.runner.node_id == "edric" and dp.text_label.text.contains("渡口"), "按数字键 2 选第二个选项")
 	dp.buttons[0].pressed.emit()
 	await frames(2)
-	check(dp.runner.node_id == "stranger" and dp.buttons.size() == 1, "点选项按钮（鼠标 / 触屏）推进对话")
+	check(dp.runner.node_id == "stranger" and dp.buttons.size() == 2, "点选项按钮（鼠标 / 触屏）推进对话")
 	await frames(2)
 	var pr := dp.panel.get_global_rect()
 	check(pr.position.x >= 0 and pr.end.x <= main.hud.size.x and pr.end.y <= main.hud.size.y + 1 and pr.position.y > main.hud.size.y * 0.3, "对话面板在屏幕下方、不超出画面（%s）" % pr)
@@ -717,7 +719,125 @@ func test_dialogue() -> void:
 	check(main.hud.prompt_label.text.contains("交谈 · 更夫"), "对话结束后交互提示回来")
 	main.player.interactor.use()
 	await frames(2)
-	dp.choose(3)
+	dp.choose(dp.buttons.size() - 1)     # 最后一个选项是「没事，你接着巡夜吧」（问过少爷以后会多出一个选项）
 	await frames(2)
 	check(not dp.visible and not get_tree().paused, "选「没事，你接着巡夜吧」也会结束对话")
 	await free_main(main)
+
+
+## 找一个能让某个检定成功（want = true）或失败的存档种子
+func seed_for(check_id: String, skill: String, dc: int, want: bool) -> int:
+	for sd in 500:
+		GameState.new_game(sd)
+		if (GameState.roll_for(check_id) < GameState.check_chance(skill, dc)) == want:
+			return sd
+	return -1
+
+
+func test_checks() -> void:
+	GameState.new_game(1)
+	# 把握：检定值 = 技能 + 机敏 × 2，每比难度高 1 点 +5%，限制在 5%–95%
+	check(GameState.check_value("speech") == 16 and is_equal_approx(GameState.check_chance("speech", 12), 0.7), "口才检定值 10 + 3×2 = 16，难度 12 → 把握 70%")
+	check(is_equal_approx(GameState.check_chance("speech", 40), 0.05) and is_equal_approx(GameState.check_chance("speech", 0), 0.95), "把握限制在 5%–95%（不会必成或必败）")
+	check(GameState.chance_label(0.85) == "把握很大" and GameState.chance_label(0.6) == "把握较大" and GameState.chance_label(0.5) == "一半一半" and GameState.chance_label(0.25) == "把握较小" and GameState.chance_label(0.1) == "几乎没把握", "把握分五档文字")
+	# 不能刷：同一种子同一检定结果相同；掷过的检定，技能变了也不变
+	GameState.new_game(42)
+	var first := GameState.check("t_a", "insight", 12)
+	GameState.new_game(42)
+	check(GameState.check("t_a", "insight", 12) == first, "同一个存档种子、同一个检定，结果永远一样（读档刷不出别的结果）")
+	GameState.skills.insight = 100
+	check(GameState.check("t_a", "insight", 12) == first, "掷过的检定记下来了：之后技能变高也不会改变结果")
+	GameState.new_game(7)
+	var wins := 0
+	for i in 600:
+		if GameState.check("dist_%d" % i, "speech", 12):
+			wins += 1
+	check(wins > 360 and wins < 480, "600 次把握 70%% 的检定成功 %d 次（约 70%%）" % wins)
+	var differ := false
+	for i in 20:
+		GameState.new_game(1)
+		var a := GameState.check("cmp_%d" % i, "speech", 16)
+		GameState.new_game(2)
+		differ = differ or a != GameState.check("cmp_%d" % i, "speech", 16)
+	check(differ, "不同存档种子的结果不一样（不是写死的）")
+	# 旗标登记：对话里用到的都登记了，登记的都有地方设置
+	var reg := GameState.flag_registry()
+	var text := FileAccess.get_file_as_string("res://data/dialogue/frostford.json")
+	var unused := []
+	for f in reg:
+		if not f.begins_with("_") and not text.contains('"set": "%s"' % f):
+			unused.append(f)
+	check(reg.size() >= 5 and unused.is_empty(), "data/flags.json 登记的旗标都在对话里有地方设置（没设置的：%s）" % str(unused))
+	var bad := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [
+		{"text": "去", "next": "a", "if": [{"flag": "no_such_flag"}]},
+		{"text": "怪", "next": "a", "jump": "b"},
+		{"text": "检", "check": {"id": "x", "skill": "dance", "dc": 10, "pass": "a", "fail": "nowhere"}},
+		{"text": "走", "end": true}]}}}
+	var errs := DialogueRunner.validate(bad)
+	check(errs.any(func(e): return e.contains("no_such_flag 没有登记")) and errs.any(func(e): return e.contains("不认识的键 jump")) and errs.any(func(e): return e.contains("技能不认识：dance")) and errs.any(func(e): return e.contains("fail 指向不存在的节点 nowhere")), "校验能抓出：没登记的旗标、不认识的键、不认识的技能、检定分支指向不存在的节点")
+	# 条件与效果
+	GameState.new_game(1)
+	var r := DialogueRunner.new()
+	r.start("frostford", "watchman")
+	var before := r.options().size()
+	check(not r.options().any(func(o): return str(o.text).contains("再想想")), "没听说少爷的去向时，「关于埃德里克少爷，你再想想」不出现")
+	r.choose(1)
+	check(GameState.has_flag("heard_edric_to_ferry"), "进入「少爷的去向」那段，记下旗标 heard_edric_to_ferry")
+	r.start("frostford", "watchman")
+	check(r.options().size() == before + 1, "听说以后再找更夫，多出「关于埃德里克少爷，你再想想」")
+	var lbl := DialogueRunner.option_label({"text": "你还看见了别的，对吧？", "check": {"id": "x", "skill": "insight", "dc": 12}})
+	check(lbl == "[洞察 · 把握较大] 你还看见了别的，对吧？", "检定选项前面直接显示技能和把握（%s）" % lbl)
+	# 洞察检定：成功 / 失败各走一条路
+	var sd_pass := seed_for("watchman_edric_insight", "insight", 12, true)
+	var sd_fail := seed_for("watchman_edric_insight", "insight", 12, false)
+	GameState.new_game(sd_pass)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(1)
+	check(r.node_id == "edric_more" and r.last_check.ok and GameState.has_flag("heard_cloaked_men"), "洞察检定成功：更夫说出斗篷人，记下旗标 heard_cloaked_men")
+	GameState.new_game(sd_fail)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(1)
+	check(r.node_id == "edric_shut" and not r.last_check.ok and not GameState.has_flag("heard_cloaked_men"), "洞察检定失败：更夫不肯再说")
+	r.choose(0)
+	var idx := -1
+	for i in r.options().size():
+		if str(r.options()[i].text).contains("再想想"):
+			idx = i
+	r.choose(idx)
+	r.choose(0)
+	check(r.node_id == "edric_shut", "失败后换个说法再问同一个检定，结果还是失败（不能刷）")
+	# 换条路：塞银币（只能塞一次）
+	r.start("frostford", "watchman")
+	r.choose(2)
+	r.choose(1)
+	check(r.node_id == "edric_paid" and GameState.has_flag("watchman_paid") and GameState.has_flag("heard_cloaked_men"), "检定失败还可以塞银币换消息")
+	r.choose(0)
+	r.choose(2)
+	check(not r.options().any(func(o): return str(o.text).contains("银币")), "银币只能塞一次")
+	# 威吓失败：更夫翻脸，之后换成冷淡开场
+	var sd_off := seed_for("watchman_stranger_intimidate", "intimidate", 14, false)
+	GameState.new_game(sd_off)
+	r.start("frostford", "watchman")
+	r.choose(1)
+	r.choose(0)
+	r.choose(0)
+	check(r.node_id == "watch_offended" and GameState.has_flag("watchman_offended") and GameState.has_flag("knows_double_key_ring"), "威吓更夫失败：他翻脸，记下旗标 watchman_offended")
+	r.start("frostford", "watchman")
+	check(r.node_id == "cold" and r.options().size() == 1, "惹恼更夫以后，再找他只有一句冷淡的话")
+	# 游戏里：面板显示检定结果
+	GameState.new_game(sd_pass)
+	var main := await make_main(false)
+	main.open_dialogue("frostford", "watchman")
+	await frames(2)
+	var dp: DialoguePanel = main.dialogue
+	dp.choose(1)
+	await frames(2)
+	check(dp.buttons[1].text.contains("[洞察 · 把握较大]"), "对话面板里的检定选项显示把握（%s）" % dp.buttons[1].text)
+	dp.choose(1)
+	await frames(2)
+	check(dp.name_label.text.contains("√ 洞察检定成功") and dp.runner.node_id == "edric_more", "检定后说话人旁边显示「√ 洞察检定成功」（文字 + 符号）")
+	dp.close()
+	await free_main(main)
+	GameState.new_game(1)

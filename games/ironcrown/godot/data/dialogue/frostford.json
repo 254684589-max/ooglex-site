@@ -7,60 +7,269 @@
       "greet": {
         "text": "站住——哦，是你，领主家的誓剑。这么晚了还在街上晃？雾这么大，连自己的手都看不清。",
         "options": [
-          {"text": "镇上最近怎么样？", "next": "town"},
-          {"text": "你今晚见过埃德里克少爷吗？", "next": "edric"},
-          {"text": "烽燧那边有什么消息？", "next": "beacons"},
-          {"text": "没事，你接着巡夜吧。", "end": true}
+          {
+            "text": "镇上最近怎么样？",
+            "next": "town"
+          },
+          {
+            "text": "你今晚见过埃德里克少爷吗？",
+            "next": "edric"
+          },
+          {
+            "text": "关于埃德里克少爷，你再想想。",
+            "next": "edric_again",
+            "if": [
+              {
+                "flag": "heard_edric_to_ferry"
+              }
+            ]
+          },
+          {
+            "text": "烽燧那边有什么消息？",
+            "next": "beacons"
+          },
+          {
+            "text": "没事，你接着巡夜吧。",
+            "end": true
+          }
         ]
       },
       "town": {
         "text": "还能怎样。三年没开春，粮价一天一个样。南边的货船半个月没来，渡口的人都闲得在酒馆里赌钱。",
         "options": [
-          {"text": "酒馆今晚怎么关门了？", "next": "tavern"},
-          {"text": "我再问点别的。", "next": "menu"}
+          {
+            "text": "酒馆今晚怎么关门了？",
+            "next": "tavern"
+          },
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
         ]
       },
       "tavern": {
         "text": "玛蒂尔达说是去渡口进货。要我说，这种天气谁会半夜进货……她那个人，消息比谁都灵通，生意也比谁都多。",
         "options": [
-          {"text": "我再问点别的。", "next": "menu"}
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
         ]
       },
       "edric": {
         "text": "少爷？……天黑前我在街尾瞧见他，裹着斗篷往渡口那边去了，跟着个穿好靴子的南方人。我可什么都没说过，明白吗？",
         "options": [
-          {"text": "那个南方人长什么样？", "next": "stranger"},
-          {"text": "放心，我不会说是你讲的。", "next": "menu"}
+          {
+            "text": "那个南方人长什么样？",
+            "next": "stranger"
+          },
+          {
+            "text": "你还看见了别的，对吧？",
+            "check": {
+              "id": "watchman_edric_insight",
+              "skill": "insight",
+              "dc": 12,
+              "pass": "edric_more",
+              "fail": "edric_shut"
+            }
+          },
+          {
+            "text": "放心，我不会说是你讲的。",
+            "next": "menu"
+          }
+        ],
+        "do": [
+          {
+            "set": "heard_edric_to_ferry"
+          }
         ]
       },
       "stranger": {
         "text": "个子不高，说话慢条斯理，手上戴着一枚印戒——两把钥匙交叉的那种。这年头，戴得起那种戒指的人，可不会来霜渡镇看风景。",
         "options": [
-          {"text": "我再问点别的。", "next": "menu"}
+          {
+            "text": "说清楚点，不然我告诉领主你当值偷喝酒。",
+            "check": {
+              "id": "watchman_stranger_intimidate",
+              "skill": "intimidate",
+              "dc": 14,
+              "pass": "stranger_ring",
+              "fail": "watch_offended"
+            }
+          },
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
+        ],
+        "do": [
+          {
+            "set": "knows_double_key_ring"
+          }
         ]
       },
       "beacons": {
         "text": "听说北边又灭了两座。守烽燧的人缺柴缺粮，王都那边一句话都没有。老人们说，火灭了，长眠的人就会走过来……我宁可不信。",
         "options": [
-          {"text": "长眠的人？", "next": "sleepers"},
-          {"text": "我再问点别的。", "next": "menu"}
+          {
+            "text": "长眠的人？",
+            "next": "sleepers"
+          },
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
         ]
       },
       "sleepers": {
         "text": "冬夜里睡下去、再也没醒来的人。身子冰凉，闭着眼站起来，一起往北走。拦在路上的，会被推倒、踩过去……别问了，夜里说这个不吉利。",
         "options": [
-          {"text": "我再问点别的。", "next": "menu"}
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
         ]
       },
       "menu": {
         "text": "还有什么要问的？问完了我还得把这条街巡完。",
         "options": [
-          {"text": "镇上最近怎么样？", "next": "town"},
-          {"text": "你今晚见过埃德里克少爷吗？", "next": "edric"},
-          {"text": "烽燧那边有什么消息？", "next": "beacons"},
-          {"text": "没有了，你忙吧。", "end": true}
+          {
+            "text": "镇上最近怎么样？",
+            "next": "town"
+          },
+          {
+            "text": "你今晚见过埃德里克少爷吗？",
+            "next": "edric"
+          },
+          {
+            "text": "关于埃德里克少爷，你再想想。",
+            "next": "edric_again",
+            "if": [
+              {
+                "flag": "heard_edric_to_ferry"
+              }
+            ]
+          },
+          {
+            "text": "烽燧那边有什么消息？",
+            "next": "beacons"
+          },
+          {
+            "text": "没有了，你忙吧。",
+            "end": true
+          }
+        ]
+      },
+      "edric_again": {
+        "text": "我说过了，往渡口去了。别逼我，我只是个打更的。",
+        "options": [
+          {
+            "text": "你还看见了别的，对吧？",
+            "check": {
+              "id": "watchman_edric_insight",
+              "skill": "insight",
+              "dc": 12,
+              "pass": "edric_more",
+              "fail": "edric_shut"
+            }
+          },
+          {
+            "text": "（塞给他几枚银币）这样能想起来点什么吗？",
+            "next": "edric_paid",
+            "if": [
+              {
+                "not_flag": "watchman_paid"
+              }
+            ]
+          },
+          {
+            "text": "好吧。",
+            "next": "menu"
+          }
+        ]
+      },
+      "edric_more": {
+        "text": "……你眼睛倒是尖。少爷后头还远远跟着四五个披斗篷的，不像是一路的，倒像是在盯着他。我当时就觉得不对劲。",
+        "do": [
+          {
+            "set": "heard_cloaked_men"
+          }
+        ],
+        "options": [
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
+        ]
+      },
+      "edric_shut": {
+        "text": "别的？没有了，就这些。（他把灯笼往身前一挡，不肯再看你的眼睛。）",
+        "options": [
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
+        ]
+      },
+      "edric_paid": {
+        "text": "（他飞快地把银币揣进怀里）……斗篷人往桦林那条近路去了。夜里那边常有无旗者出没，你可小心。",
+        "do": [
+          {
+            "set": "watchman_paid"
+          },
+          {
+            "set": "heard_cloaked_men"
+          }
+        ],
+        "options": [
+          {
+            "text": "多谢。",
+            "next": "menu"
+          }
+        ]
+      },
+      "stranger_ring": {
+        "text": "你、你别乱说！……那人在酒馆跟玛蒂尔达嘀咕了好一阵，走的时候塞给她一个钱袋。我就知道这么多，真的。",
+        "options": [
+          {
+            "text": "我再问点别的。",
+            "next": "menu"
+          }
+        ]
+      },
+      "watch_offended": {
+        "text": "嘿，你拿领主吓唬我？我在这条街打了二十年更。你自己找去吧，誓剑大人。",
+        "do": [
+          {
+            "set": "watchman_offended"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "cold": {
+        "text": "（更夫把脸扭到一边）我在巡夜，没空。",
+        "options": [
+          {
+            "text": "那算了。",
+            "end": true
+          }
         ]
       }
-    }
+    },
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "watchman_offended"
+          }
+        ],
+        "node": "cold"
+      }
+    ]
   }
 }

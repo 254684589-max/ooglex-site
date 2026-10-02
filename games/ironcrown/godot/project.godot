@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 UiScale="*res://core/ui_scale.gd"
 InputSetup="*res://core/input_setup.gd"
 Settings="*res://core/settings.gd"
+GameState="*res://core/game_state.gd"
 
 [display]
 
