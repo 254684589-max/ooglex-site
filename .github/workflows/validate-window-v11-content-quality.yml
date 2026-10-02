@@ -59,6 +59,8 @@ jobs:
           assert str(cfg.get("content_profile")) == "immersive-longform-hd"
           assert str(cfg.get("validation_contract")) == "v1.1-content-quality"
           assert int(cfg.get("local_location_scan_limit")) == 0
+          assert bool(cfg.get("fallback_local_enabled")) is True
+          assert int(cfg.get("fallback_local_location_scan_limit")) >= 36
           print("WINDOW V1.1 configuration OK")
           PY
 
