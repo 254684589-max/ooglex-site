@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "note": "人物动作映射（路线图 A.1，D4 = B）。动作全部来自 Quaternius Universal Animation Library 1 / 2 [Standard]（CC0，见 assets/SOURCES.md）；换动作只改这个文件，再运行 tools/build_character_anims.gd 重新打包动画库。时间单位都是秒（动作文件里的时间，不是游戏时间）。",
+  "sources": {
+    "ual1": {
+      "zip": "assets/source/quaternius/Universal Animation Library[Standard].zip",
+      "member": "Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb"
+    },
+    "ual2": {
+      "zip": "assets/source/quaternius/Universal Animation Library 2[Standard].zip",
+      "member": "Universal Animation Library 2[Standard]/Unreal-Godot/UAL2_Standard.glb"
+    }
+  },
+  "clips": {
+    "Idle_Loop": {"src": "ual1", "loop": true},
+    "Sword_Idle": {"src": "ual1", "loop": true},
+    "Walk_Loop": {"src": "ual1", "loop": true},
+    "Jog_Fwd_Loop": {"src": "ual1", "loop": true},
+    "Crouch_Idle_Loop": {"src": "ual1", "loop": true},
+    "Crouch_Fwd_Loop": {"src": "ual1", "loop": true},
+    "Jump_Loop": {"src": "ual1", "loop": true},
+    "Sword_Attack": {"src": "ual1", "loop": false},
+    "Hit_Chest": {"src": "ual1", "loop": false},
+    "Death01": {"src": "ual1", "loop": false},
+    "Sword_Regular_A": {"src": "ual2", "loop": false},
+    "Sword_Regular_B": {"src": "ual2", "loop": false},
+    "Sword_Block": {"src": "ual2", "loop": false},
+    "Hit_Knockback": {"src": "ual2", "loop": false}
+  },
+  "roles": {
+    "idle": "Idle_Loop",
+    "idle_armed": "Sword_Idle",
+    "crouch_idle": "Crouch_Idle_Loop",
+    "crouch_move": "Crouch_Fwd_Loop",
+    "walk": "Walk_Loop",
+    "run": "Jog_Fwd_Loop",
+    "air": "Jump_Loop",
+    "hit": "Hit_Chest",
+    "stagger": "Hit_Knockback",
+    "death": "Death01",
+    "block": "Sword_Block"
+  },
+  "locomotion": {
+    "note": "ref_speed = 动作本身一个周期走过的距离 ÷ 时长（米 / 秒，从 UAL1_Standard_RM 的根骨骼位移量出）；播放速度 = 实际移动速度 ÷ ref_speed，夹在 [scale_min, scale_max]。低于 stop_below 算站着；高于 run_from 换成跑步动作。",
+    "stop_below": 0.3,
+    "run_from": 2.0,
+    "walk": {"ref_speed": 0.97, "scale_min": 0.6, "scale_max": 1.8},
+    "run": {"ref_speed": 5.36, "scale_min": 0.5, "scale_max": 1.3},
+    "crouch_move": {"ref_speed": 0.75, "scale_min": 0.6, "scale_max": 1.8}
+  },
+  "attacks": {
+    "note": "出招动作与近战判定对齐：impact = 动作里剑最靠前、速度最快的时刻（从每帧右手位置量出）。播放速度 = (impact − 起点) ÷ 近战从起点到命中帧的时间（combat/melee.gd TIMING）。heavy 先蓄力：按住时把动作从 0 推到 wind_peak（抬到最高）停住，松手后从 wind_peak 打到 impact。",
+    "light": [
+      {"clip": "Sword_Regular_A", "impact": 0.23},
+      {"clip": "Sword_Regular_B", "impact": 0.23}
+    ],
+    "heavy": {"clip": "Sword_Attack", "wind_peak": 0.33, "impact": 0.40}
+  },
+  "block": {"hold": 0.17},
+  "grip": {
+    "note": "剑挂在 hand_r 骨骼上的位置与朝向（米 / 度），用截图校准：剑身沿手骨的 +Z（拇指一侧）再向手指方向（+Y）偏 45°（偏小时待机像把剑举向一侧，偏大时格挡像横着指向旁边，45° 折中），剑面法线朝手心（-X）；位置在手掌中心。",
+    "position": [-0.025, 0.06, 0.0],
+    "rotation_deg": [0.0, 90.0, 45.0]
+  }
+}
