@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-01T18:31:21Z",
-  "asOf": "2026-10-01",
+  "updatedAt": "2026-10-02T00:09:06Z",
+  "asOf": "2026-10-02",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-27 ~ 2026-10-03",
   "count": 142,
@@ -1519,18 +1519,6 @@
       "actual": null
     },
     {
-      "ts": "2026-10-01T22:45:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "美联储官员讲话",
-      "titleEn": "FOMC Member Logan Speaks",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
       "ts": "2026-10-01T23:01:00Z",
       "ccy": "CNY",
       "country": "中国",
@@ -1538,6 +1526,18 @@
       "title": "银行假日",
       "titleEn": "Bank Holiday",
       "impact": "holiday",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-01T23:20:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Logan Speaks",
+      "impact": "low",
       "forecast": null,
       "previous": null,
       "actual": null
