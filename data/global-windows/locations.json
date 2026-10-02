@@ -3575,5 +3575,7 @@
   "discovery_mode": "global-first",
   "content_profile": "immersive-longform-hd",
   "validation_contract": "v1.1-content-quality",
-  "strict_target_count": true
+  "strict_target_count": true,
+  "fallback_local_location_scan_limit": 60,
+  "fallback_local_enabled": true
 }
