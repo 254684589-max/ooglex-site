@@ -1,0 +1,119 @@
+{
+  "_说明": "「倒钩鱼」酒馆的对话（路线图 3.1；STORY.md 第三节「酒馆：玛蒂尔达说少爷最近常和一个南方口音、穿好靴子的人喝酒；给钱、口才检定、或者跟醉汉打一架都能问出来」）。打架那条问法等 3.3 徒手格斗。",
+  "matilda": {
+    "speaker": "玛蒂尔达",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "matilda_told_edric"}], "node": "greet_again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（她擦着杯子，抬眼看了看你腰上的剑）进来暖暖身子吧。今晚雾大，客人都早早回家了。要点什么？",
+        "options": [
+          {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "matilda_told_edric"}], "next": "edric"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "镇上最近怎么样？", "next": "town"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "greet_again": {
+        "text": "又来了？角落那张桌子还空着。",
+        "options": [
+          {"text": "再说说少爷和那个南方人。", "next": "edric_recap"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "镇上最近怎么样？", "next": "town"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还要什么？",
+        "options": [
+          {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "matilda_told_edric"}], "next": "edric"},
+          {"text": "再说说少爷和那个南方人。", "if": [{"flag": "matilda_told_edric"}], "next": "edric_recap"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "镇上最近怎么样？", "next": "town"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "town": {
+        "text": "冬天赖着不走，渡船一个月比一个月少。烽燧那边的消息一天比一天坏，可镇上的人还是照样喝酒、赌骰子、等春天。",
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "bread": {
+        "text": "（她从吧台底下摸出一块还温着的黑面包）两枚银币。……门口那个老霍布要是又来讨，你别理他。算了，理也行，他其实不坏。",
+        "do": [{"pay": 2}, {"give_item": "bread"}],
+        "options": [
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "edric": {
+        "text": "（她手上的活停了一下，朝门口看了一眼）少爷的事……不该从我这张嘴里说出去。",
+        "options": [
+          {"text": "（把 5 枚银币推过去）就当我买你一句话。", "if": [{"silver": 5}], "do": [{"pay": 5}, {"set": "matilda_paid"}], "next": "edric_told"},
+          {"text": "我是替管家来的。少爷要是出了事，这间酒馆也躲不过。", "if": [{"not_flag": "matilda_refused"}],
+            "check": {"id": "matilda_edric_speech", "skill": "speech", "dc": 13, "pass": "edric_told", "fail": "edric_refuse"}},
+          {"text": "那我不为难你。", "next": "menu"}
+        ]
+      },
+      "edric_refuse": {
+        "text": "（她把杯子放下）誓剑大人，喝酒我欢迎，打听人就算了。",
+        "do": [{"set": "matilda_refused"}],
+        "options": [
+          {"text": "（把 5 枚银币推过去）那这样呢？", "if": [{"silver": 5}], "do": [{"pay": 5}, {"set": "matilda_paid"}], "next": "edric_told"},
+          {"text": "好吧。", "next": "menu"}
+        ]
+      },
+      "edric_told": {
+        "text": "……这半个月，少爷差不多天天来，跟一个南方口音的人坐在角落里喝酒。那人穿一双好靴子，付账用的是新铸的银币，从来不让我找零。昨晚他们走的时候，少爷没喝多少，倒是那个南方人一直盯着门口。",
+        "do": [{"set": "matilda_told_edric"}, {"clue": "boots"}],
+        "options": [
+          {"text": "那个南方人住在哪儿？", "next": "edric_where"},
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "edric_where": {
+        "text": "住哪儿？那种人不住镇上。他的马拴在渡口的棚子里——这是渡工说的，可不是我说的。",
+        "options": [
+          {"text": "明白。", "next": "menu"}
+        ]
+      },
+      "edric_recap": {
+        "text": "我说过了：南方口音，好靴子，新银币，马拴在渡口。别的我真不知道。",
+        "options": [
+          {"text": "好。", "next": "menu"}
+        ]
+      }
+    }
+  },
+  "woodcutter": {
+    "speaker": "伐木工",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "woodcutter_talked"}], "node": "asleep"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（他迷迷糊糊地抬起头，眯着眼看你）你看什么？……没看？没看就好。这么大的雾，砍不了柴，只能喝。",
+        "options": [
+          {"text": "雾里出过什么事吗？", "next": "fires"},
+          {"text": "少喝点。", "end": true}
+        ]
+      },
+      "fires": {
+        "text": "前天夜里，我在桦林边上看见营火，不止一堆。那边可没有正经人过夜……我没敢过去，扛着斧子就回来了。",
+        "do": [{"set": "woodcutter_talked"}, {"clue": "birch_fires"}],
+        "options": [
+          {"text": "多谢提醒。", "end": true}
+        ]
+      },
+      "asleep": {
+        "text": "（他已经趴在桌上睡着了，鼻子里一下一下地出着粗气。）",
+        "options": [
+          {"text": "（不吵他了）", "end": true}
+        ]
+      }
+    }
+  }
+}

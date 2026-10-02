@@ -155,6 +155,19 @@ godot/
   **坑**：`JSON.parse_string` 解析失败会打引擎报错，坏档要用 `JSON.new().parse()`；浏览器里 F5 是刷新页面，快速存档用 F8；自动化测试检测到命令行里的 `res://tests/` 时改用 `user://test_saves/`，不碰真存档。
   不存：门的开关、半血求饶的敌人、进行到一半的对话。
 
+### 4.7b 区域与切换（3.1）
+
+- **区域 = 一个名字**（`world/areas.gd` 的 `Areas.NAMES`：`frostford`、`tavern`、`test_range`、`arena`）。`main.area` 决定搭哪个场景、用室内还是室外的光；存档里的 `scene` 字段就是区域名（`Saves.SCENE_NAMES = Areas.NAMES`）。
+- **门通往别处**：`Door.to_area` / `to_spawn`（房子的门规格里写 `{"to_area": "tavern", "to_spawn": "front", "verb": "进入"}`）。交互结果 `kind = "travel"` → `main.travel()`：战斗中或倒下了走不开；先淡出（0.25 秒，减少动态效果时直接切），
+  把「去哪个区域、站哪个出生点、生命 / 体力 / 蹲着」放进 `GameState.pending_load`，**重新载入主场景**（和读档同一条路；`GameState` 是自动加载的，任务、背包、已拾取都不受影响）。
+  `main._ready` 看到 `pending_load.spawn` 就把玩家放到 `Areas.spawn(区域, 名字)`，淡入、提示区域名、关掉开场操作提示，**自动存档到「自动存档」栏位**（GDD 第十节「进入新区域时」）。
+- **命名出生点**：各区域脚本的 `SPAWNS`（名字 → [位置, 水平朝向（度，0 = 面朝 -Z，正 = 向左转）]）。固定机位 `VIEWS` 也按区域取（网页 `?area=tavern&view=N`）。
+- **室内**（`Areas.INDOOR`）：没有月光与夜雾，暖色的暗环境光（0.5）+ 薄烟似的指数雾；亮度来自炉火（`Tavern.FireLight`，减少动态效果时不闪）、油灯、蜡烛，室内一共 3 盏点光源。
+- **坑**：
+  - 用 `godot -s 脚本` 跑的工具脚本里，**不能直接写依赖自动加载（Settings、GameState）的类名**（比如 `Areas` → `Frostford` → … → `Settings`）：脚本在自动加载注册之前编译，会报「Identifier not found: Settings」，后面的脚本全部编译失败、场景跑一半卡住。截图工具只能在运行时 `load()` 场景，不引用这些类。
+  - 新对话很容易用到字体子集里没有的字（这次是「樵」「瞟」「醺」「噜」）：自动化测试会报出来，换常用字，或者重新跑 `tools/build_font.py`。
+  - 换区域靠重新载入整个场景，门开着、敌人半血之类的状态不保留（和读档一样，见 4.7）；以后室外区域连成片时再考虑不重载的流式加载。
+
 ### 4.8 音频
 
 - 三条总线：音乐、音效、环境声。首发音效用代码合成（参照《余烬陷落》`core/sfx.gd`），环境声（风、河水、远处狗叫）优先找 CC0 录音，记入 `SOURCES.md`。

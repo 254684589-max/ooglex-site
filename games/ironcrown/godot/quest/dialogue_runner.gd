@@ -8,7 +8,7 @@ extends RefCounted
 ##   check 检定：{"id": 唯一编号, "skill": speech|intimidate|insight, "dc": 难度, "pass": 成功去的节点, "fail": 失败去的节点}
 ##   do    效果列表（选中时 / 进入节点时执行）：{"set": 旗标名, "value": 值（默认 true）}；
 ##         2.3 起：{"quest": 任务}（接任务）、{"quest": 任务, "stage": 阶段}（推进）、{"quest_done": 任务}、{"clue": 线索}、{"take_item": 物品}；
-##         2.6 起：{"pay": 数量}（付银币）；2.7 起：{"rep": 势力, "delta": 变化}（改声望）
+##         2.6 起：{"pay": 数量}（付银币）；2.7 起：{"rep": 势力, "delta": 变化}（改声望）；3.1 起：{"give_item": 物品}（给玩家一件物品，例如买面包）
 ## 对话可以有 start_if：[{"if": [...], "node": 节点}]，第一个满足的决定从哪个节点开始（旗标改变 NPC 的态度）。
 ## 只认上面这些键（白名单），不执行任意表达式；用到的旗标必须登记在 data/flags.json。
 
@@ -23,7 +23,7 @@ var last_check := {}          # 刚做过的检定：{skill, ok}（界面显示�
 const OPTION_KEYS := ["text", "next", "end", "if", "check", "do"]
 const NODE_KEYS := ["text", "options", "do"]
 const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least"]
-const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "pay", "rep", "delta"]
+const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta"]
 
 
 ## 读过的对话文件缓存在 Engine 的元数据里：这个脚本用 static var 做缓存时，退出时脚本释放不掉（2.1 实测，引擎报「resources still in use」）
@@ -162,11 +162,12 @@ static func _validate_effects(effects: Array, where: String, registry: Dictionar
 			errors.append("%s：任务 %s 没有阶段 %s" % [where, e.quest, e.stage])
 		if e.has("clue") and not qd.clues.has(str(e.clue)):
 			errors.append("%s：线索 %s 不在 data/quests.json 里" % [where, e.clue])
-		if e.has("take_item") and GameState.item(str(e.take_item)).is_empty():
-			errors.append("%s：物品 %s 不在 data/items.json 里" % [where, e.take_item])
+		for ik in ["take_item", "give_item"]:
+			if e.has(ik) and GameState.item(str(e[ik])).is_empty():
+				errors.append("%s：物品 %s 不在 data/items.json 里" % [where, e[ik]])
 		if e.has("rep") and (not GameState.progression().get("factions", {}).has(str(e.rep)) or int(e.get("delta", 0)) == 0):
 			errors.append("%s：声望效果的势力或变化不对" % where)
-		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("pay") or e.has("rep")):
+		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("give_item") or e.has("pay") or e.has("rep")):
 			errors.append("%s：效果缺内容" % where)
 
 
@@ -220,6 +221,8 @@ static func apply(effects: Array) -> void:
 			GameState.add_clue(str(e.clue))
 		if e.has("take_item"):
 			GameState.take_item(str(e.take_item))
+		if e.has("give_item"):
+			GameState.add_item(str(e.give_item))
 		if e.has("pay"):
 			GameState.add_silver(-int(e.pay))
 		if e.has("rep"):

@@ -2,9 +2,11 @@ extends Node3D
 ## 《铁冠之争》主场景（阶段 1.4：霜渡镇主街）。
 ## 默认是霜渡镇主街（world/frostford.gd）；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞、交互）；
 ## ?test=2 或 use_arena = true 打开训练场（2.5：三个无旗者，练格挡与近战）。
+## 3.1 起有多个区域（world/areas.gd）：主街、「倒钩鱼」酒馆……；走进通往别处的门 = travel()：淡出、记下去哪、重新载入本场景、
+## 放到命名出生点、淡入、自动存档（GDD 第十节：进入新区域时）。网页 ?area=tavern 直接从酒馆开始（截图与冒烟测试用）。
 ## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
 ## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
-## 人物仍是占位胶囊，界面上明确标注。
+## NPC 与敌人仍是占位胶囊，界面上明确标注（主角的第三人称人物在 A.1 换成了模型）。
 ##
 ## 鼠标：电脑上点击画面锁定指针（浏览器只允许在点击后锁定）；Esc 或浏览器释放锁定时打开暂停菜单，
 ## 不会自己把鼠标抢回来（TECH.md 4.1）。触屏设备不锁定鼠标，用 TouchControls。
@@ -16,6 +18,7 @@ const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖�
 const HINT_ARENA_DESKTOP := "训练场：左键 / F 出剑（按住重击）· 右键 / Q 按住格挡 · 在对方劈下前一瞬间举剑 = 完美格挡（对方失衡）· WASD 移动 · Esc 暂停"
 const HINT_ARENA_TOUCH := "训练场：点「攻」出剑（按住重击）· 按住「挡」格挡 · 在对方劈下前一瞬间按「挡」= 完美格挡（对方失衡）"
 const HINT_SECONDS := 8.0
+const FADE_TIME := 0.25           # 换区域时淡出 / 淡入（减少动态效果时直接切）
 
 @export var use_test_range := false
 @export var use_arena := false
@@ -49,6 +52,9 @@ var started := false
 var use_screen_logged := false
 var save_panel: SavePanel
 var loaded_from := ""           # 这次是从哪个栏位读档进来的（空 = 新游戏）
+var area := "frostford"         # 现在所在的区域（Areas.NAMES；3.1）
+var arrived_by := ""            # 从门走进来的（换区域）时是出生点名字；读档 / 新游戏时为空
+var fade: ColorRect
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
@@ -62,22 +68,37 @@ func _ready() -> void:
 			use_test_range = true
 		elif _query("test") == "2":
 			use_arena = true
+		elif Areas.known(_query("area")):
+			area = _query("area")
 		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）；玩家自己存过设置就听玩家的
 		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 			Settings.reduced_motion = true
 			if not Settings.loaded:
 				Settings.head_bob = false
 			print("IC_REDUCED_MOTION")
-	if not pending.is_empty():           # 读档：场景以存档为准（2.8）
-		use_arena = pending.scene == "arena"
-		use_test_range = pending.scene == "test_range"
+	if not pending.is_empty():           # 读档 / 换区域：场景以它为准（2.8、3.1）
+		area = str(pending.scene) if Areas.known(str(pending.scene)) else "frostford"
+		use_arena = area == "arena"
+		use_test_range = area == "test_range"
+	elif use_arena:
+		area = "arena"
+		use_test_range = false
+	elif use_test_range:
+		area = "test_range"
 	_build_environment()
 	world = Node3D.new()
 	world.name = "World"
 	add_child(world)
-	if use_arena:
-		use_test_range = false
-	var t := CombatArena.build(world) if use_arena else (TestRange.build(world) if use_test_range else Frostford.build(world, Settings.reduced_motion))
+	var t: Transform3D
+	match area:
+		"arena":
+			t = CombatArena.build(world)
+		"test_range":
+			t = TestRange.build(world)
+		"tavern":
+			t = Tavern.build(world, Settings.reduced_motion)
+		_:
+			t = Frostford.build(world, Settings.reduced_motion)
 	player = FpController.new()
 	player.name = "Player"
 	add_child(player)
@@ -85,10 +106,15 @@ func _ready() -> void:
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
-	if not use_test_range and not use_arena and view.is_valid_int() and int(view) >= 0 and int(view) < Frostford.VIEWS.size():
+	if view.is_valid_int() and int(view) >= 0 and int(view) < Areas.views(area).size():
 		set_view(int(view))
 	if not pending.is_empty():
-		_restore_player(pending.player)
+		if pending.has("spawn"):              # 从门走进来：站到那扇门对应的出生点
+			arrived_by = str(pending.spawn)
+			var st: Variant = Areas.spawn(area, arrived_by)
+			if st != null:
+				player.global_transform = st
+		_restore_player(pending.get("player", {}))
 		loaded_from = str(pending.get("slot", ""))
 	spawn = player.global_position
 	yaw0 = player.yaw_deg()
@@ -98,15 +124,19 @@ func _ready() -> void:
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
+	if arrived_by != "":
+		_arrive()
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
-		if view != "" or use_test_range or use_arena:
+		if view != "" or area != "frostford":
 			await perf_probe()          # 截图工具：只测一次，不显示浮层（截图要干净）
 		else:
 			Settings.set_value("show_perf", true)
 			await run_benchmark()
 		return
-	if loaded_from != "":
+	if arrived_by != "":
+		pass                          # 换区域进来的：_arrive() 已经提示过区域名
+	elif loaded_from != "":
 		hud.toast("已读取：%s%s" % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
 	elif Saves.has_any():
 		hud.toast("有存档：%s里「存档 / 读档」可以继续（F9 读快速存档）" % ("点「菜单」，" if touch_mode else "按 Esc 打开菜单，"), 6.0)
@@ -142,6 +172,14 @@ func _build_environment() -> void:
 	if use_test_range or use_arena:
 		env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
 		env.fog_density = 0.045
+	elif Areas.is_indoor(area):
+		# 室内（3.1 酒馆）：没有月光与夜雾，暖色的暗环境光 + 一点炉烟似的薄雾；亮度主要来自炉火与油灯
+		env.background_color = Color("0c0a08")
+		env.ambient_light_color = Color("8a6a4c")
+		env.ambient_light_energy = 0.5
+		env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
+		env.fog_light_color = Color("2a2119")
+		env.fog_density = 0.035
 	else:
 		# 霜渡镇：深度雾从 3 米开始、50 米处完全吞没（ART.md 第三节「雾是构图工具」），再加一点贴地的高度雾
 		env.fog_mode = Environment.FOG_MODE_DEPTH
@@ -166,11 +204,12 @@ func _build_environment() -> void:
 	moon.light_energy = 0.32
 	moon.rotation_degrees = Vector3(-38, 150, 0)     # 从背后偏左照过来，给房子勾一道冷色轮廓
 	moon.directional_shadow_max_distance = 25.0
+	moon.visible = not Areas.is_indoor(area)
 	add_child(moon)
 
 
 func scene_name() -> String:
-	return "arena" if use_arena else ("test_range" if use_test_range else "frostford")
+	return area
 
 
 func _query(key: String) -> String:
@@ -181,7 +220,7 @@ func _query(key: String) -> String:
 
 ## 从固定机位开始（Frostford.VIEWS；截图与冒烟测试用）
 func set_view(i: int) -> void:
-	var v: Array = Frostford.VIEWS[i]
+	var v: Array = Areas.views(area)[i]
 	player.global_position = v[0]
 	player.rotation.y = deg_to_rad(v[1])
 	player.pitch = v[2]
@@ -197,7 +236,7 @@ func apply_quality(tier: String) -> void:
 	var vp := get_viewport()
 	vp.scaling_3d_scale = 0.75 if tier == "low" else 1.0
 	vp.msaa_3d = Viewport.MSAA_2X if tier == "high" else Viewport.MSAA_DISABLED
-	moon.shadow_enabled = tier != "low"
+	moon.shadow_enabled = tier != "low" and moon.visible
 	# 默认 4 段级联阴影会把场景重画 4 遍（1.4 实测：绘制调用 154 → 393）；中档 1 段、高档 2 段
 	moon.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if tier == "high" else DirectionalLight3D.SHADOW_ORTHOGONAL
 	env.glow_enabled = tier != "low"
@@ -262,6 +301,16 @@ func _build_ui() -> void:
 	vignette.material = vm
 	layer.add_child(vignette)
 	vignette.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# 换区域时的黑屏（3.1）：压在所有界面上面，平时全透明、不挡点击
+	var top := CanvasLayer.new()
+	top.layer = 90
+	add_child(top)
+	fade = ColorRect.new()
+	fade.name = "Fade"
+	fade.color = Color(0, 0, 0, 0)
+	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top.add_child(fade)
+	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud = Hud.new()
 	layer.add_child(hud)
 	if use_arena:
@@ -471,10 +520,54 @@ func toggle_camera() -> void:
 func can_save() -> String:
 	if player.melee.down:
 		return "你已经倒下了"
+	if in_combat():
+		return "附近有敌人在和你打，不能存档"
+	return ""
+
+
+## 有敌人正在和你打（警觉 / 战斗 / 后退 / 失衡）：不能存档，也不能走进别的区域
+func in_combat() -> bool:
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
-			return "附近有敌人在和你打，不能存档"
-	return ""
+			return true
+	return false
+
+
+## 换区域（3.1）：从门走进另一个区域。先淡出，记下去哪、站哪、生命与体力，再重新载入本场景（和读档同一条路）。
+## 返回是否出发了（战斗中、倒下了、区域不存在都不走）
+func travel(to: String, spawn_id: String) -> bool:
+	if not Areas.known(to):
+		return false
+	var why := "你已经倒下了" if player.melee.down else ("附近有敌人在和你打，走不开" if in_combat() else "")
+	if why != "":
+		hud.toast("× %s" % why, 2.5)
+		print("IC_TRAVEL_FAIL to=%s %s" % [to, why])
+		return false
+	player.melee.cancel_press()
+	GameState.pending_load = {"scene": to, "spawn": spawn_id,
+		"player": {"health": player.melee.health, "stamina": player.melee.stamina, "crouch": player.crouch_wanted}}
+	print("IC_TRAVEL from=%s to=%s spawn=%s" % [area, to, spawn_id])
+	if not Settings.reduced_motion:
+		var tw := create_tween()
+		tw.tween_property(fade, "color:a", 1.0, FADE_TIME)
+		await tw.finished
+	_reload()
+	return true
+
+
+## 刚从门走进来：从黑屏淡入、提示区域名、不再显示开场的操作提示，进入新区域自动存档（GDD 第十节）
+func _arrive() -> void:
+	started = true
+	hint_left = 0.0
+	hud.set_hint("")
+	hud.toast(Areas.display_name(area), 2.0)
+	print("IC_ARRIVE area=%s spawn=%s" % [area, arrived_by])
+	if Settings.reduced_motion:
+		fade.color.a = 0.0
+	else:
+		fade.color.a = 1.0
+		create_tween().tween_property(fade, "color:a", 0.0, FADE_TIME * 1.5)
+	save_game.call_deferred("auto", true)
 
 
 ## 存档内容：版本、时间、场景、玩家（位置、朝向、生命、体力、蹲着）、游戏状态
@@ -540,12 +633,14 @@ func _reload() -> void:
 		reload_requested.emit()
 
 
+## 位置与朝向只有读档时才有（换区域时站到出生点）；生命、体力、蹲着两种情况都有
 func _restore_player(p: Dictionary) -> void:
-	var pos: Array = p.get("pos", [0, 0, 0])
-	player.global_position = Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
-	player.rotation.y = float(p.get("yaw", 0.0))
-	player.pitch = float(p.get("pitch", 0.0))
-	player.head.rotation.x = deg_to_rad(player.pitch)
+	if p.has("pos"):
+		var pos: Array = p.pos
+		player.global_position = Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
+		player.rotation.y = float(p.get("yaw", 0.0))
+		player.pitch = float(p.get("pitch", 0.0))
+		player.head.rotation.x = deg_to_rad(player.pitch)
 	player.crouch_wanted = bool(p.get("crouch", false))
 	player.melee.health = clampi(int(p.get("health", player.melee.health_max())), 1, player.melee.health_max())
 	player.melee.stamina = clampf(float(p.get("stamina", player.melee.stamina_max())), 0.0, player.melee.stamina_max())
@@ -584,6 +679,8 @@ func _on_interacted(r: Dictionary) -> void:
 		open_dialogue(r.area, r.id, r.get("npc"))
 	if r.get("kind") == "loot":
 		open_loot(r.container)
+	if r.get("kind") == "travel":
+		travel(str(r.area), str(r.spawn))
 	var t := player.interactor.target
 	if not dialogue.visible:
 		hud.show_prompt(t.prompt() if t else "")     # 门开了以后提示从「打开」变「关上」

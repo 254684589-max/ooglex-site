@@ -13,6 +13,13 @@
 
 ### 新增
 
+- 2026-10-02，**《铁冠之争》步骤 3.1：能走进「倒钩鱼」酒馆（垂直切片开始）**（`games/ironcrown/`）。**未部署**（在功能分支 `claude/game-of-thrones-game-ideas-sk0f85` 上，没有合并 `main`）。
+  - 霜渡镇主街的「倒钩鱼」酒馆现在能进去：对准门按 E（手机点交互按钮），画面淡黑后站进酒馆；在门内再按一次回到街上。
+  - 酒馆里有烧着的壁炉（火光会轻微闪动）、吧台和酒架、长桌、通往楼上客房的木梯（锁着）；室内换成温暖昏暗的光线。
+  - 老板娘玛蒂尔达知道少爷的事：塞她 5 枚银币，或者用口才说服她（选项上直接显示把握，没说动就不能再试），她会告诉你少爷常和一个穿好靴子的南方人喝酒；还能花 2 枚银币买面包。喝醉的伐木工说桦林边上有不明的营火。
+  - 进出酒馆时会自动存档；在酒馆里存档、读档会回到酒馆里；和敌人打的时候走不开。
+  - 人物仍是占位胶囊；没有新增外部素材。
+  - 验证：自动化测试 522 项通过（新增 47 项）；网页冒烟 1280 / 768 / 360 三宽度通过（含在浏览器里进酒馆、说话、走出来，0 报错、0 溢出）。详见 `games/ironcrown/TEST_REPORT.md`。
 - 2026-10-02，**《铁冠之争》阶段 A.1：人物（一）——主角换上 CC0 人物模型与动作**（`games/ironcrown/`）。**已上线**（2026-10-02，所有者要求「合并上线」，合并提交 `12650cb`，部署运行 #1539 成功）。
   - 第三人称里的主角不再是占位胶囊：换成 Quaternius 的 Universal Base Characters 男性人物模型（CC0，1.8 米、约 1.4 万三角面），握着剑；动作来自 Universal Animation Library 1 / 2（CC0）。
   - 站、走、跑、蹲、蹲走、跳；拔剑后持剑待机；轻击两段连击、按住蓄力的重击（剑抬到最高处停住，松手劈下）、格挡举剑；挨打、被击退、倒下；斜着走、侧着走时身体转向移动方向，倒着走时动作倒放。
@@ -143,6 +150,7 @@
 
 ### 文档
 
+- 2026-10-02，《铁冠之争》阶段 3（垂直切片「霜渡镇之夜」）细化成 3.1–3.8 八个步骤（`docs/IRONCROWN_ROADMAP.md`）；`design/TECH.md` 新增 4.7b「区域与切换」（含 `godot -s` 工具脚本不能引用依赖自动加载的类、对话用字超出字体子集两个坑）。**未部署。**
 - 2026-10-02，《铁冠之争》素材台账与设计文档更新（`games/ironcrown/assets/SOURCES.md`、`design/ART.md`、`design/TECH.md` 4.4b、`docs/IRONCROWN_ROADMAP.md`）：记录 Quaternius 三个包的来源、许可（CC0 1.0）、下载日期与处理方式；**更正**了之前按页面介绍写的说法（免费版底模只有 Superhero 男女各一个、动画库各 43 个动作、底模没有头发、Dark / Ligh 贴图只差内裤颜色）。新增 `tools/build_character_anims.gd`、`tools/patch_character_gltf.py`、`tools/character_sheet.gd`（见上一条）。**已上线**（同上，合并提交 `12650cb`，部署运行 #1539 成功）。
 - 2026-10-02，**《铁冠之争》阶段 A：人物（D4 = B）素材调研与拆分**（`docs/IRONCROWN_ROADMAP.md`、`games/ironcrown/assets/SOURCES.md`、`games/ironcrown/design/ART.md`）。**未部署**（只改文档，不涉及游戏代码与 `play/`）。
   - 选定 Quaternius 的 Universal 系列作为 CC0 人物素材：Universal Base Characters（人物底模）、Modular Character Outfits – Fantasy（服装）、Universal Animation Library 1 / 2（动作，含近战连击）；许可（页面标注 CC0）、格式、来源链接记入素材台账的「候选」表，尚未下载、尚未入库。

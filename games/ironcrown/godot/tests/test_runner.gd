@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -79,6 +79,25 @@ func make_main(test_range := true) -> Node3D:
 	add_child(main)
 	await frames(3)
 	return main
+
+
+## 直接在某个区域开一局（3.1；和网页 ?area= 一样）
+func make_area(area: String) -> Node3D:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.area = area
+	add_child(main)
+	await frames(3)
+	return main
+
+
+## data/dialogue/ 下所有区域的对话文件（不带扩展名）
+func dialogue_areas() -> Array:
+	var out := []
+	for f in DirAccess.get_files_at("res://data/dialogue"):
+		if f.ends_with(".json"):
+			out.append(f.get_basename())
+	out.sort()
+	return out
 
 
 func free_main(main: Node3D) -> void:
@@ -184,19 +203,21 @@ func test_ui() -> void:
 			texts.append(str(qd.quests[qid].stages[st].objective))
 	for cid in qd.clues:
 		texts.append(str(qd.clues[cid].text))
-	# 全部对话台词与选项（2.1）
-	var dlg := DialogueRunner.load_file("frostford")
-	for did in dlg:
-		if did.begins_with("_"):
-			continue
-		texts.append(str(dlg[did].speaker))
-		for nid in dlg[did].nodes:
-			texts.append(str(dlg[did].nodes[nid].text))
-			for o in dlg[did].nodes[nid].options:
-				texts.append(str(o.text))
-	# 测试场和霜渡镇两个场景都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
+	# 全部对话台词与选项（2.1；3.1 起每个区域一个对话文件，全都查）
+	for darea in dialogue_areas():
+		var dlg := DialogueRunner.load_file(darea)
+		for did in dlg:
+			if did.begins_with("_"):
+				continue
+			texts.append(str(dlg[did].speaker))
+			for nid in dlg[did].nodes:
+				texts.append(str(dlg[did].nodes[nid].text))
+				for o in dlg[did].nodes[nid].options:
+					texts.append(str(o.text))
+	# 测试场、霜渡镇、酒馆都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
 	var town := await make_main(false)
-	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false)
+	var inn := await make_area("tavern")
+	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false)
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -206,6 +227,7 @@ func test_ui() -> void:
 		if n is Label or n is Label3D or n is Button:
 			texts.append(n.text)
 	town.queue_free()
+	inn.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -620,7 +642,9 @@ func test_frostford() -> void:
 	var signs := main.find_children("*", "Label3D", true, false).filter(func(l): return l.text == "倒钩鱼")
 	check(signs.size() == 2, "「倒钩鱼」酒馆招牌两面都有字")
 	var doors := main.find_children("*", "Door", true, false).filter(func(d): return d.locked)
-	check(doors.size() == 3, "三扇锁着的门：民居、酒馆、领主宅邸（%d）" % doors.size())
+	check(doors.size() == 2, "两扇锁着的门：民居、领主宅邸（%d；酒馆 3.1 起能进去）" % doors.size())
+	var tavern_door := main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "tavern")
+	check(tavern_door.size() == 1 and not tavern_door[0].locked and tavern_door[0].prompt() == "进入 · 「倒钩鱼」酒馆", "酒馆的门通往酒馆内部（3.1）")
 	var fog := get_tree().get_nodes_in_group("fog_band")
 	check(fog.size() >= 10, "贴地雾带 %d 片" % fog.size())
 	# 画质分档
@@ -711,15 +735,17 @@ func key_ev(code: Key) -> InputEventKey:
 
 func test_dialogue() -> void:
 	GameState.new_game(1)        # 旗标会影响对话：每次从一局新游戏开始
-	# 数据：霜渡镇所有对话都通过校验
-	var all := DialogueRunner.load_file("frostford")
+	# 数据：每个区域的对话都通过校验（3.1 起不止霜渡镇）
 	var bad := []
-	for did in all:
-		if did.begins_with("_"):
-			continue
-		for e in DialogueRunner.validate(all[did]):
-			bad.append("%s：%s" % [did, e])
-	check(all.has("watchman") and bad.is_empty(), "霜渡镇的对话全部通过校验：节点都走得到、选项都指向存在的节点、能结束（问题：%s）" % str(bad))
+	var areas := dialogue_areas()
+	for darea in areas:
+		var all := DialogueRunner.load_file(darea)
+		for did in all:
+			if did.begins_with("_"):
+				continue
+			for e in DialogueRunner.validate(all[did]):
+				bad.append("%s/%s：%s" % [darea, did, e])
+	check(areas.has("frostford") and areas.has("tavern") and bad.is_empty(), "所有区域的对话（%s）全部通过校验：节点都走得到、选项都指向存在的节点、能结束（问题：%s）" % [", ".join(areas), str(bad)])
 	var broken := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [{"text": "去 b", "next": "b"}, {"text": "去 x", "next": "x"}]},
 		"b": {"text": "b", "options": [{"text": "回 a", "next": "a"}]}, "c": {"text": "孤岛", "options": [{"text": "走", "end": true}]}}}
 	var errs := DialogueRunner.validate(broken)
@@ -821,7 +847,9 @@ func test_checks() -> void:
 	check(differ, "不同存档种子的结果不一样（不是写死的）")
 	# 旗标登记：对话里用到的都登记了，登记的都有地方设置
 	var reg := GameState.flag_registry()
-	var text := FileAccess.get_file_as_string("res://data/dialogue/frostford.json")
+	var text := ""
+	for darea in dialogue_areas():
+		text += FileAccess.get_file_as_string("res://data/dialogue/%s.json" % darea)
 	var unused := []
 	for f in reg:
 		if not f.begins_with("_") and not text.contains('"set": "%s"' % f):
@@ -2259,3 +2287,169 @@ func test_character() -> void:
 	GameState.new_game(23)
 	await free_main(main)
 	Settings.set_value("third_person", false)
+
+
+## 区域切换与「倒钩鱼」酒馆（路线图 3.1）
+func test_areas() -> void:
+	Settings.set_value("third_person", false)
+	check(Areas.known("tavern") and Areas.is_indoor("tavern") and not Areas.is_indoor("frostford") and Saves.SCENE_NAMES.has("tavern"), "区域登记：酒馆是室内区域，存档认得它")
+	check(Areas.spawn("frostford", "tavern_door") is Transform3D and Areas.spawn("tavern", "front") is Transform3D and Areas.spawn("tavern", "nowhere") == null, "两个区域都有命名出生点，名字不对返回空")
+	# —— 主街：走到酒馆门口，按交互进门
+	GameState.new_game(31)
+	GameState.start_quest("edric_missing")
+	var main := await make_main(false)
+	var p: FpController = main.player
+	var door: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "tavern")[0]
+	var door_mid := door.global_position + door.global_transform.basis.x * 0.55 + Vector3(0, 1.1, 0)
+	await aim(p, Vector3(-3.1, 0.05, -7.1), door_mid)
+	check(p.interactor.target == door and p.interactor.target.prompt() == "进入 · 「倒钩鱼」酒馆", "站在酒馆门外对准门：提示「进入 · 「倒钩鱼」酒馆」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
+	p.melee.health = 77
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	p.interactor.use()
+	await seconds(0.45)
+	var pend: Dictionary = GameState.pending_load
+	check(rr[0] == 1 and pend.get("scene") == "tavern" and pend.get("spawn") == "front", "按交互：淡出后去酒馆（%s）" % str(pend))
+	check(main.fade.color.a > 0.9, "出门前画面淡成黑色")
+	check(int(pend.get("player", {}).get("health", 0)) == 77, "生命值带过去（77）")
+	main = await reload_main(main)
+	p = main.player
+	await frames(5)
+	check(main.area == "tavern" and main.scene_name() == "tavern", "换到了酒馆区域")
+	check(flat(p.global_position).distance_to(Vector2(Tavern.DOOR_X, 2.6)) < 0.3 and absf(p.rotation.y) < 0.05, "站在酒馆门内的出生点、面朝大堂（%s）" % str(p.global_position))
+	check(p.melee.health == 77 and main.arrived_by == "front", "生命值还是 77，记得是从门走进来的")
+	check(main.hud.toast_label.text == "「倒钩鱼」酒馆" and main.hud.hint_label.text == "", "进门提示区域名，不再显示开场的操作提示")
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and auto.data.scene == "tavern", "进入新区域自动存档（GDD 第十节）")
+	await seconds(0.5)
+	check(main.fade.color.a < 0.05, "黑屏淡出，看得见酒馆")
+	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and main.env.background_color.r < 0.1, "室内：没有月光，换成暖暗的环境光和薄烟")
+	var omni := main.find_children("*", "OmniLight3D", true, false)
+	var fire := omni.filter(func(l): return l is Tavern.FireLight)
+	check(omni.size() == 3 and fire.size() == 1, "三盏光：炉火、吧台油灯、桌上蜡烛（%d）" % omni.size())
+	var e0: float = fire[0].light_energy
+	await seconds(0.2)
+	check(fire[0].flicker and absf(fire[0].light_energy - e0) > 0.001, "炉火在闪")
+	var npcs := main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(npcs.has("玛蒂尔达") and npcs.has("伐木工") and npcs.has("货郎"), "酒馆里有玛蒂尔达、伐木工、货郎（%s）" % str(npcs))
+	var room: MeshInstance3D = main.world.get_node("Tavern")
+	check(room.mesh.get_surface_count() <= 7, "整间酒馆按材质合并成一个网格，%d 个表面" % room.mesh.get_surface_count())
+	# 碰撞：墙、壁炉、吧台、楼梯
+	await place(p, 0.5, -0.8)
+	await hold("move_left", 2.5)
+	check(p.global_position.x < -2.0 and p.global_position.x > -2.9, "从吧台前沿过道往西走到壁炉前，被炉台挡住、走不进火里（x = %.2f）" % p.global_position.x)
+	await place(p, -0.5, 2.5)
+	await hold("move_back", 2.0)
+	check(p.global_position.z > 2.9 and p.global_position.z < 3.5, "往南走到墙根被南墙挡住，出不去（z = %.2f）" % p.global_position.z)
+	await place(p, 0.5, -0.8)
+	await hold("move_forward", 1.5)
+	check(p.global_position.z > -1.85, "吧台挡着，走不到玛蒂尔达身后（z = %.2f）" % p.global_position.z)
+	await place(p, 2.4, 1.5)
+	await hold("move_right", 2.0)
+	check(p.global_position.x < 3.05, "楼梯上不去（x = %.2f）" % p.global_position.x)
+	var gate: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.locked)[0]
+	var r0: Dictionary = gate.interact(p)
+	check(r0.get("locked", false) and str(r0.get("toast", "")).contains("客房"), "梯口的栅门锁着：玛蒂尔达说楼上客房住满了")
+	# 固定机位：吧台前对准玛蒂尔达
+	main.set_view(1)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc and p.interactor.target.display_name == "玛蒂尔达", "?view=1 站在吧台前，对准玛蒂尔达能交谈")
+	# —— 玛蒂尔达：付钱问出线索
+	var r := DialogueRunner.new()
+	GameState.new_game(31)
+	GameState.start_quest("edric_missing")
+	check(r.start("tavern", "matilda") and r.speaker() == "玛蒂尔达", "玛蒂尔达的对话能打开")
+	var labels: Array = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("打听埃德里克少爷的事。") and labels.has("来块面包。（2 银币）"), "接了少爷的任务才能打听；有钱能买面包（%s）" % str(labels))
+	var s0 := GameState.silver
+	r.choose(labels.find("来块面包。（2 银币）"))
+	check(GameState.silver == s0 - 2 and GameState.has_item("bread") and r.node_id == "bread", "买面包：花 2 银币，背包里多一块面包")
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	r.choose(labels.find("打听埃德里克少爷的事。"))
+	check(r.node_id == "edric", "打听少爷：她先不肯说")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	s0 = GameState.silver
+	r.choose(0)
+	check(r.node_id == "edric_told" and GameState.silver == s0 - 5 and GameState.has_flag("matilda_paid") and GameState.clues.has("boots"), "塞 5 枚银币：她说出南方人的事，记下线索「好靴子」")
+	r.choose(0)
+	check(r.node_id == "edric_where" and r.text().contains("渡口"), "追问：南方人的马拴在渡口")
+	check(r.start("tavern", "matilda") and r.node_id == "greet_again", "说过以后再来：换成熟客的开场")
+	# 口才检定：成功 / 失败（读档刷不出别的结果）
+	var sd_pass := seed_for("matilda_edric_speech", "speech", 13, true)
+	var sd_fail := seed_for("matilda_edric_speech", "speech", 13, false)
+	GameState.new_game(sd_pass)
+	GameState.start_quest("edric_missing")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	var speech_i := -1
+	for i in labels.size():
+		if labels[i].contains("口才"):
+			speech_i = i
+	check(speech_i >= 0 and labels[speech_i].contains("把握"), "口才选项显示把握（%s）" % (labels[speech_i] if speech_i >= 0 else "没有"))
+	r.choose(speech_i)
+	check(r.node_id == "edric_told" and GameState.clues.has("boots") and GameState.silver == 12, "口才检定成功：不花钱也问出来")
+	GameState.new_game(sd_fail)
+	GameState.start_quest("edric_missing")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	r.choose(speech_i)
+	check(r.node_id == "edric_refuse" and GameState.has_flag("matilda_refused") and not GameState.clues.has("boots"), "口才检定失败：她不肯说")
+	r.choose(1)
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(r.node_id == "edric" and not labels.any(func(l): return l.contains("口才")) and labels.any(func(l): return l.contains("银币")), "失败后不能再试口才，只剩付钱（%s）" % str(labels))
+	GameState.silver = 1
+	r.start("tavern", "matilda")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(not labels.has("来块面包。（2 银币）"), "钱不够：不显示买面包")
+	# 伐木工：桦林边的营火；两条线索凑齐，主线推进到「去渡口」
+	GameState.new_game(32)
+	GameState.start_quest("edric_missing")
+	r.start("tavern", "woodcutter")
+	r.choose(0)
+	check(GameState.clues.has("birch_fires") and GameState.has_flag("woodcutter_talked"), "伐木工说了桦林边的营火（线索）")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	r.choose(0)
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "两条线索凑齐：主线推进到「去渡口找少爷」")
+	check(r.start("tavern", "woodcutter") and r.node_id == "asleep", "再找伐木工：他睡着了")
+	# —— 出门：回到主街酒馆门外
+	await place(p, Tavern.DOOR_X, 2.3)
+	p.rotation.y = PI
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "离开 · 回到主街", "门内对准门：提示「离开 · 回到主街」")
+	rr = [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	p.interactor.use()
+	await seconds(0.45)
+	check(rr[0] == 1 and GameState.pending_load.get("scene") == "frostford" and GameState.pending_load.get("spawn") == "tavern_door", "出门：回主街")
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(-3.1, -7.1)) < 0.3 and absf(p.rotation.y + PI / 2) < 0.05, "站在酒馆门外、背对酒馆（%s）" % str(p.global_position))
+	check(main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_DEPTH, "回到室外：月光与夜雾回来了")
+	# —— 酒馆里存档、读档：回到酒馆同一个位置
+	await free_main(main)
+	main = await make_area("tavern")
+	p = main.player
+	await place(p, -1.0, -1.0)
+	check(main.save_game("slot2", true), "酒馆里能存档")
+	GameState.new_game(1)
+	check(main.load_game("slot2"), "读这个存档")
+	main = await reload_main(main)
+	check(main.area == "tavern" and flat(main.player.global_position).distance_to(Vector2(-1.0, -1.0)) < 0.2 and main.arrived_by == "", "读档回到酒馆里同一个位置（不是门口）")
+	await free_main(main)
+	# —— 战斗中走不开
+	main = await make_arena()
+	var e: Enemy = main.get_tree().get_nodes_in_group("enemy")[0]
+	e.state = Enemy.State.COMBAT
+	var went: bool = await main.travel("tavern", "front")
+	check(not went and GameState.pending_load.is_empty() and main.hud.toast_label.text.contains("走不开"), "有敌人和你打的时候走不进别的区域")
+	e.state = Enemy.State.PATROL
+	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)

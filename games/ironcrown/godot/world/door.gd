@@ -2,6 +2,7 @@ class_name Door
 extends Interactable
 ## 门（路线图 1.3）：节点原点就是门轴，门板沿本地 +X 伸出 width 米。
 ## 打开时总是朝远离玩家的一侧转 90°（不会拍到人）；locked = true 时只提示「门锁着」。
+## 3.1 起：to_area 不为空的门通往另一个区域（酒馆、教堂……），交互结果 kind = "travel"，由 main 淡出、换区域、放到 to_spawn 出生点。
 
 const OPEN_DEG := 90.0
 const SWING_SEC := 0.35
@@ -11,6 +12,8 @@ var height := 2.1
 var locked := false
 var locked_text := "门锁着。"
 var is_open := false
+var to_area := ""                 # 通往的区域（world/areas.gd）；空 = 普通的门
+var to_spawn := ""                # 到了那边站在哪个出生点
 var target_deg := 0.0
 var closed_rot := 0.0
 
@@ -25,7 +28,8 @@ static func make(name_text: String, w := 1.0, h := 2.1, lock := false) -> Door:
 
 
 func _ready() -> void:
-	verb = "打开"
+	if to_area == "":
+		verb = "打开"
 	closed_rot = rotation.y
 	var cs := CollisionShape3D.new()
 	var bs := BoxShape3D.new()
@@ -48,12 +52,16 @@ func _ready() -> void:
 
 
 func verb_now() -> String:
+	if to_area != "" and not locked:
+		return verb
 	return "关上" if is_open else "打开"
 
 
 func interact(who: FpController) -> Dictionary:
 	if locked:
 		return {"kind": "door", "name": display_name, "locked": true, "toast": locked_text}
+	if to_area != "":
+		return {"kind": "travel", "name": display_name, "area": to_area, "spawn": to_spawn}
 	if is_open:
 		target_deg = 0.0
 	else:

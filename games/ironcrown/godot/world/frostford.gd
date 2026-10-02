@@ -4,9 +4,15 @@ extends RefCounted
 ## 一条往北（-Z）的石板街，两侧 11 栋半木结构房屋，左手边有「倒钩鱼」酒馆和一个种着枯树、有口井的小广场，
 ## 街尽头是领主宅邸。雾夜：深度雾 + 贴地雾带 + 冷月光 + 暖色窗光与 4 盏街灯。
 ## 房屋、街灯、枯树都是代码搭的几何体 + Poly Haven 写实贴图（assets/SOURCES.md）；人物仍是占位胶囊。
-## 1.3 的更夫、锁着的门、木箱上的面包都搬到这里。
+## 1.3 的更夫、锁着的门、木箱上的面包都搬到这里。3.1 起「倒钩鱼」酒馆的门能进去（world/tavern.gd）。
 
 const SPAWN := Vector3(0, 0, 6)
+## 命名出生点（3.1，world/areas.gd）：[位置, 水平朝向（度，0 = 面朝 -Z，正 = 向左转）]
+## tavern_door：从「倒钩鱼」酒馆出来，站在门外街边、背对酒馆（面朝 +X）
+const SPAWNS := {
+	"start": [SPAWN, 0.0],
+	"tavern_door": [Vector3(-3.1, 0, -7.1), -90.0],
+}
 const STREET_HALF := 3.4         # 石板路半宽
 const FRONT := 4.5               # 两侧房子正面离街中线的距离
 const NORTH_END := -48.0         # 领主宅邸正面
@@ -36,7 +42,7 @@ const VIEWS := [
 const LEFT := [
 	[4.0, -3.5, {"floors": 1, "roof": "eaves", "chimney": true, "door_x": -1.6, "seed": 11, "lit": 0.6}],
 	[-5.0, -12.0, {"floors": 2, "roof": "gable", "door_x": -1.4, "seed": 12, "lit": 0.9, "sign": "倒钩鱼",
-		"door": {"name": "「倒钩鱼」酒馆的门", "text": "酒馆今晚打烊了，门上挂着木牌：「东家去渡口了」。"}}],
+		"door": {"name": "「倒钩鱼」酒馆", "to_area": "tavern", "to_spawn": "front", "verb": "进入"}}],     # 3.1 起能进去
 	[-13.5, -20.0, {"floors": 1, "roof": "eaves", "door_x": 0.8, "seed": 13, "lit": 0.4}],
 	[-27.0, -34.0, {"floors": 2, "roof": "eaves", "chimney": true, "door_x": 1.6, "seed": 14, "lit": 0.55}],
 	[-35.5, -41.5, {"floors": 1, "roof": "gable", "door_x": 0.0, "seed": 15, "lit": 0.5}],

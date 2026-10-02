@@ -7,7 +7,7 @@
       "summary": "领主维克托·瓦伦的幼子埃德里克天黑后没有回家。管家托你悄悄把人找回来，别惊动全镇。",
       "first": "find_clues",
       "stages": {
-        "find_clues": {"objective": "打探埃德里克少爷的下落：问问街上的人（至少两条线索）", "advance_when": {"clues_at_least": 2, "to": "to_ferry"}},
+        "find_clues": {"objective": "打探埃德里克少爷的下落：问问镇上的人——街上的更夫、「倒钩鱼」的老板娘……（至少两条线索）", "advance_when": {"clues_at_least": 2, "to": "to_ferry"}},
         "to_ferry": {"objective": "线索都指向渡口。穿过镇外桦林去渡口找少爷（渡口与桦林在后续版本开放）"}
       }
     },
@@ -17,7 +17,7 @@
       "summary": "酒馆门口的醉汉老霍布输光了钱，又冷又饿，说只要有口吃的，就告诉你一件「值钱的事」。",
       "first": "feed_hob",
       "stages": {
-        "feed_hob": {"objective": "给老霍布找点吃的（街上的木箱上好像有块面包）"}
+        "feed_hob": {"objective": "给老霍布找点吃的（街上的木箱上好像有块面包，「倒钩鱼」酒馆里也买得到）"}
       }
     }
   },
@@ -25,6 +25,8 @@
     "ferry": {"quest": "edric_missing", "text": "更夫：天黑前看见少爷裹着斗篷往渡口去了，身边跟着一个穿好靴子的南方人。"},
     "cloaked": {"quest": "edric_missing", "text": "更夫：少爷身后远远跟着四五个披斗篷的人，不像同路，倒像在盯梢。"},
     "ring": {"quest": "edric_missing", "text": "更夫：那个南方人戴着一枚两把钥匙交叉的印戒。"},
-    "dice": {"quest": "edric_missing", "text": "老霍布：那几个斗篷人是无旗者，拿崭新的银币赌钱，银币上压着双钥的印。"}
+    "dice": {"quest": "edric_missing", "text": "老霍布：那几个斗篷人是无旗者，拿崭新的银币赌钱，银币上压着双钥的印。"},
+    "boots": {"quest": "edric_missing", "text": "玛蒂尔达：这半个月少爷几乎天天和一个南方口音、穿好靴子的人在酒馆角落喝酒，那人用新铸的银币付账，马拴在渡口的棚子里。"},
+    "birch_fires": {"quest": "edric_missing", "text": "伐木工：前天夜里桦林边上有好几堆营火，那边可没有正经人过夜。"}
   }
 }
