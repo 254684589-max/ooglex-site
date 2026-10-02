@@ -1,7 +1,8 @@
 extends Node3D
 ## 《铁冠之争》主场景（阶段 1.4：霜渡镇主街）。
 ## 默认是霜渡镇主街（world/frostford.gd）；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞、交互）。
-## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；?perf=1 两秒后打出一次性能统计（IC_PERF）。
+## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
+## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
 ## 人物仍是占位胶囊，界面上明确标注。
 ##
 ## 鼠标：电脑上点击画面锁定指针（浏览器只允许在点击后锁定）；Esc 或浏览器释放锁定时打开暂停菜单，
@@ -17,6 +18,8 @@ const HINT_SECONDS := 8.0
 
 var moon: DirectionalLight3D
 var quality := ""
+var perf_overlay: PerfOverlay
+var bench_results: Array = []
 
 var env: Environment
 var world: Node3D
@@ -71,7 +74,11 @@ func _ready() -> void:
 		"test_range" if use_test_range else "frostford", touch_mode, quality, get_viewport().get_visible_rect().size])
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
-		await perf_probe()
+		if view != "" or use_test_range:
+			await perf_probe()          # 截图工具：只测一次，不显示浮层（截图要干净）
+		else:
+			Settings.set_value("show_perf", true)
+			await run_benchmark()
 		return
 	# 给网页冒烟测试用：「菜单」按钮在窗口里的位置（窗口像素，已乘界面缩放）
 	await get_tree().process_frame
@@ -138,6 +145,8 @@ func set_view(i: int) -> void:
 ## 中 = 原分辨率、月光阴影（1 段）、泛光；高 = 再加 2 倍抗锯齿、阴影 2 段
 func apply_quality(tier: String) -> void:
 	quality = tier
+	if pause_menu:
+		pause_menu.show_quality(tier)
 	var vp := get_viewport()
 	vp.scaling_3d_scale = 0.75 if tier == "low" else 1.0
 	vp.msaa_3d = Viewport.MSAA_2X if tier == "high" else Viewport.MSAA_DISABLED
@@ -150,23 +159,49 @@ func apply_quality(tier: String) -> void:
 		f.visible = tier != "low" or int(f.get_meta("fog_index", 0)) % 2 == 0
 
 
-## 性能统计（TECH.md 第五节）：在当前机位连续采样 1 秒
-func perf_probe() -> Dictionary:
+## 性能统计（TECH.md 第五节）：在当前机位连续采样 seconds 秒：平均帧率、最慢一帧、绘制调用、图元、可见物体
+func perf_probe(seconds := 1.0) -> Dictionary:
 	var dc := 0.0
 	var prim := 0.0
 	var obj := 0.0
 	var n := 0
-	var t0 := Time.get_ticks_msec()
-	while Time.get_ticks_msec() - t0 < 1000:
+	var worst := 0
+	var t0 := Time.get_ticks_usec()
+	var last := t0
+	while Time.get_ticks_usec() - t0 < int(seconds * 1000000.0):
 		await get_tree().process_frame
+		var now := Time.get_ticks_usec()
+		worst = maxi(worst, now - last)
+		last = now
 		dc += Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
 		prim += Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
 		obj += Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
 		n += 1
-	var r := {"draw_calls": dc / n, "primitives": prim / n, "objects": obj / n, "fps": n, "quality": quality,
-		"occlusion": get_viewport().use_occlusion_culling}
-	print("IC_PERF draw_calls=%.0f primitives=%.0f objects=%.0f fps=%d quality=%s occlusion=%s" % [r.draw_calls, r.primitives, r.objects, r.fps, quality, r.occlusion])
+	n = maxi(n, 1)
+	var elapsed := float(Time.get_ticks_usec() - t0) / 1000000.0
+	var r := {"draw_calls": dc / n, "primitives": prim / n, "objects": obj / n, "fps": n / elapsed, "worst_ms": worst / 1000.0, "quality": quality}
+	print("IC_PERF draw_calls=%.0f primitives=%.0f objects=%.0f fps=%.1f worst_ms=%.0f quality=%s" % [r.draw_calls, r.primitives, r.objects, r.fps, r.worst_ms, quality])
 	return r
+
+
+## 基准测试（路线图 1.5）：依次站到 3 个固定机位，等 settle 秒再测 sample 秒，结果表显示在性能浮层上
+func run_benchmark(settle := 1.5, sample := 3.0) -> Array:
+	bench_results.clear()
+	perf_overlay.bench_text = "基准测试进行中……（%s画质，不要操作）" % PerfOverlay.tier_name(quality)
+	for i in Frostford.VIEWS.size():
+		set_view(i)
+		await get_tree().create_timer(settle).timeout
+		var r := await perf_probe(sample)
+		r["view"] = i
+		bench_results.append(r)
+	var lines := ["基准测试结果（%s画质，%s）" % [PerfOverlay.tier_name(quality), "电脑" if not touch_mode else "触屏设备"]]
+	for r in bench_results:
+		lines.append("机位 %d %s：平均 %.0f 帧，最慢一帧 %.0f 毫秒，绘制调用 %.0f" % [r.view, Frostford.VIEW_NAMES[r.view], r.fps, r.worst_ms, r.draw_calls])
+	lines.append("测完了：请截图发给开发者。按 Esc 可换画质（菜单里）后刷新页面再测。")
+	perf_overlay.bench_text = "\n".join(lines)
+	set_view(0)
+	print("IC_BENCH done quality=%s %s" % [quality, " | ".join(bench_results.map(func(r): return "v%d fps=%.1f worst=%.0f dc=%.0f" % [r.view, r.fps, r.worst_ms, r.draw_calls]))])
+	return bench_results
 
 
 func _build_ui() -> void:
@@ -191,14 +226,24 @@ func _build_ui() -> void:
 	touch = TouchControls.new()
 	touch.player = player
 	layer.add_child(touch)
+	perf_overlay = PerfOverlay.new()
+	perf_overlay.main = self
+	layer.add_child(perf_overlay)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
+	pause_menu.quality_selected.connect(func(t: String):
+		apply_quality(t)
+		print("IC_QUALITY %s" % t))
 	pause_menu.resume_requested.connect(close_pause)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		open_pause()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("perf_toggle"):
+		Settings.set_value("show_perf", not Settings.show_perf)
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("interact"):

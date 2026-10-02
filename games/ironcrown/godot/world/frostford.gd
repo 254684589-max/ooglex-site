@@ -15,6 +15,7 @@ const WATCH_LINES := ["夜里雾大，少往渡口那边走。", "三年没见�
 const TREE_POS := Vector3(-8.6, 0, -23.5)
 const WELL_POS := Vector3(-6.4, 0, -25.6)
 const LAMPS := [Vector3(3.7, 0, -2.0), Vector3(-3.7, 0, -13.0), Vector3(3.7, 0, -24.5), Vector3(-3.7, 0, -37.0)]
+const VIEW_NAMES := ["出生点看街道", "小广场看枯树", "领主宅邸前回望"]
 ## 网页 ?view=N 的固定机位（截图用）：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
 const VIEWS := [
 	[Vector3(0, 0, 6), 0.0, -1.0],

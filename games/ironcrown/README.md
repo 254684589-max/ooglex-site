@@ -19,10 +19,11 @@ games/ironcrown/tools/build_web.sh                            # 测试后导出�
 python3 games/ironcrown/tools/serve_gzip.py . 8765 &          # 在仓库根目录（gzip 传输，模拟线上）
 node games/ironcrown/tools/smoke_web.js /tmp                  # 三个宽度的网页冒烟测试 + 截图
 node games/ironcrown/tools/shots_web.js /tmp medium           # 3 个固定机位截图 + 性能统计（画质类步骤给所有者看）
+node games/ironcrown/tools/bench_web.js /tmp medium           # 网页自动基准测试（?perf=1），等结果表出来截图
 xvfb-run -a $GODOT --path games/ironcrown/godot --rendering-driver opengl3 res://tests/perf_stats.tscn   # 本机渲染开销对照
 ```
 
-网页参数：`?test=1` 灰盒测试场、`?q=low|medium|high` 画质、`?view=0|1|2` 固定机位、`?perf=1` 打出性能统计。
+网页参数：`?test=1` 灰盒测试场、`?q=low|medium|high` 画质、`?view=0|1|2` 固定机位、`?perf=1` 自动基准测试（结果表显示在画面上）。游戏里按 F3 显示性能浮层。
 
 - 工具脚本复制自 `games/emberfall3d/tools/`，只改路径与文件名前缀（`ic-`）；复用的 GDScript 在文件头注明来源。
 - 内置中文字体 `godot/assets/fonts/NotoSansSC-IC.ttf` 是按本工程字符集做的子集（Noto Sans SC，SIL OFL 1.1，许可见同目录 `OFL.txt`）。

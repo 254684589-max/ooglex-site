@@ -15,6 +15,7 @@ var sensitivity := 1.0           # 倍数
 var invert_y := false
 var head_bob := true             # 系统「减少动态效果」时默认关闭（main.gd 启动时设置）
 var reduced_motion := false
+var show_perf := false           # 左上角性能浮层（F3 或暂停菜单；网页 ?perf=1 时自动打开）
 
 
 func set_value(key: String, value) -> void:
@@ -27,6 +28,8 @@ func set_value(key: String, value) -> void:
 			invert_y = bool(value)
 		"head_bob":
 			head_bob = bool(value)
+		"show_perf":
+			show_perf = bool(value)
 		_:
 			push_warning("未知设置项：" + key)
 			return

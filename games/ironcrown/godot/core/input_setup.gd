@@ -10,6 +10,7 @@ const ACTIONS := {
 	"crouch": [KEY_C, KEY_CTRL],   # 切换蹲下
 	"jump": [KEY_SPACE],
 	"interact": [KEY_E],          # 交互：对话、开门、拾取（1.3）
+	"perf_toggle": [KEY_F3],      # 性能浮层（1.5）
 	"pause": [KEY_ESCAPE],
 }
 

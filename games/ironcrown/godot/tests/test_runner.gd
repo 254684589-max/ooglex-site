@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -123,17 +123,24 @@ func test_ui() -> void:
 	check(main.hud.title_label.text.contains("占位"), "画面明确标注「占位几何体」（AGENTS.md：占位必须写明）")
 	# 内置字体是子集：界面与场景标签上出现的每个字都必须在字体里，否则网页上会显示方块
 	var font := load("res://assets/fonts/NotoSansSC-IC.ttf") as FontFile
-	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站交谈打开关上拾取[E]"]
+	var texts: Array = [main.HINT_DESKTOP, main.HINT_TOUCH, "跳蹲站交谈打开关上拾取[E]",
+		"性能低中高画质分辨率帧率最慢一帧毫秒绘制调用图元万物体显卡基准测试进行中不要操作结果电脑触屏设备机位平均测完了请截图发给开发者按可换菜单里后刷新页面再"]
+	texts.append_array(Frostford.VIEW_NAMES)
 	texts.append_array(TestRange.NPC_LINES)
 	texts.append_array(Frostford.WATCH_LINES)
-	for n in main.find_children("*", "", true, false):
+	# 测试场和霜渡镇两个场景都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
+	var town := await make_main(false)
+	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false)
+	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
 			if n is Door:
 				texts.append(n.locked_text)
-	for n in main.find_children("*", "", true, false):
+	for n in nodes:
 		if n is Label or n is Label3D or n is Button:
 			texts.append(n.text)
+	town.queue_free()
+	await frames(2)
 	var missing := ""
 	for text: String in texts:
 		for i in text.length():
@@ -590,4 +597,37 @@ func test_frostford() -> void:
 	var band: MeshInstance3D = get_tree().get_nodes_in_group("fog_band")[0]
 	check(not lamp.flicker and is_equal_approx(lamp.light.light_energy, lamp.ENERGY) and band.material_override.get_shader_parameter("drift") == Vector2.ZERO, "减少动态效果：街灯不闪烁、雾带不飘动")
 	Settings.reduced_motion = false
+	await free_main(main)
+
+
+func test_perf() -> void:
+	var main := await make_main(false)
+	var ov: PerfOverlay = main.perf_overlay
+	check(not ov.visible, "性能浮层默认不显示")
+	var ev := InputEventAction.new()
+	ev.action = "perf_toggle"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	check(ov.visible and Settings.show_perf, "按 F3 打开性能浮层")
+	await seconds(0.7)
+	var t: String = ov.label.text
+	check(t.contains("帧率") and t.contains("绘制调用") and t.contains("中画质") and t.contains("显卡"), "浮层显示帧率、最慢一帧、绘制调用、画质档、显卡（%s）" % t.replace("\n", " / "))
+	check(main.pause_menu.perf_check.button_pressed, "暂停菜单里「显示性能数据」同步打勾")
+	main.pause_menu.perf_check.button_pressed = false
+	await frames(2)
+	check(not ov.visible, "在暂停菜单里关掉性能浮层")
+	# 暂停菜单的画质按钮
+	check(main.pause_menu.quality_btns.medium.button_pressed, "暂停菜单的画质按钮显示当前档（中）")
+	main.pause_menu.quality_btns.low.pressed.emit()
+	await frames(2)
+	check(main.quality == "low" and is_equal_approx(main.get_viewport().scaling_3d_scale, 0.75), "在暂停菜单里切到低画质，立即生效")
+	main.apply_quality("medium")
+	check(main.pause_menu.quality_btns.medium.button_pressed, "代码切换画质时按钮跟着变")
+	# 基准测试：3 个机位（测试里缩短等待与采样时间）
+	var res: Array = await main.run_benchmark(0.2, 0.4)
+	check(res.size() == 3 and res.all(func(r): return r.fps > 0.0 and r.draw_calls >= 0.0 and r.has("worst_ms")), "基准测试依次测 3 个机位，每个都有平均帧率、最慢一帧、绘制调用")
+	check(ov.bench_text.contains("基准测试结果") and ov.bench_text.contains(Frostford.VIEW_NAMES[2]) and ov.bench_text.contains("请截图"), "结果表显示在性能浮层上，提示截图")
+	check(main.player.global_position.is_equal_approx(Frostford.VIEWS[0][0]), "测完回到出生点")
+	Settings.set_value("show_perf", false)
 	await free_main(main)
