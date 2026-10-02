@@ -16,6 +16,8 @@ function markerSummary(html, app) {
     appIconControls: app.includes("['prev', '⏮'") && app.includes("['next', '⏭'") && app.includes("['random', '随机窗口'") && app.includes("['expand', '⛶'"),
     appKeyboardNav: app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"),
     appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchmove'") && app.includes("viewer.addEventListener('touchend'") && app.includes('stepWindow(dy < 0 ? 1 : -1)'),
+    appAudioUnlock: app.includes('let audioUnlocked = false') && app.includes('video.muted = !audioUnlocked') && app.includes('activateAudio') && app.includes('video.muted = false'),
+    lightControls: html.includes('background:rgba(236,242,250,.78)') && html.includes('app.js?v=13'),
     oldTopListener: app.includes("$('#randomTop')")
   };
 }
@@ -31,6 +33,8 @@ function valid(summary) {
     summary.appIconControls &&
     summary.appKeyboardNav &&
     summary.appSwipeNav &&
+    summary.appAudioUnlock &&
+    summary.lightControls &&
     !summary.oldTopListener;
 }
 
