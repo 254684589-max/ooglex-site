@@ -12,7 +12,16 @@ var model := ""
 
 
 func _ready() -> void:
-	body = Npc.build_body(self, Color("4a3e32"))
+	body = Npc.build_body(self, Color("6a5a48"))
+	# 一点自发光：镜头在背后、灯在前面时，人形不至于是一团黑影（2.9 截图）
+	for c in body.get_children():
+		if c is MeshInstance3D and c.mesh.material is StandardMaterial3D:
+			var mat := (c.mesh.material as StandardMaterial3D).duplicate() as StandardMaterial3D
+			mat.emission_enabled = true
+			mat.emission = mat.albedo_color
+			mat.emission_energy_multiplier = 0.18
+			c.mesh = c.mesh.duplicate()
+			c.mesh.material = mat
 	arm = Node3D.new()
 	arm.name = "Arm"
 	arm.position = Vector3(0.34, 1.3, -0.05)

@@ -254,7 +254,10 @@ func _update_head(delta: float) -> void:
 
 ## 越肩镜头：从眼睛往身后右上方打一条射线（只看世界层），撞到墙就把相机收到墙前面，避免穿墙
 func _update_third_person(delta: float) -> void:
-	var want_local := Vector3(TP_SIDE, TP_UP, TP_DIST)
+	# 竖屏手机水平视野窄（相机按高度保持视野）：右肩偏移按宽高比收拢，人不会被挤到屏幕左边去压住摇杆
+	var r := get_viewport().get_visible_rect().size
+	var narrow := clampf((r.x / maxf(r.y, 1.0)) / (16.0 / 9.0), 0.3, 1.0)
+	var want_local := Vector3(TP_SIDE * narrow, TP_UP, TP_DIST)
 	var from := head.global_position
 	var to := head.global_transform * want_local
 	var q := PhysicsRayQueryParameters3D.create(from, to, 1, [get_rid()])
