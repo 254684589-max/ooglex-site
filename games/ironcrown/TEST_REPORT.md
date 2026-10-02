@@ -9,7 +9,7 @@
 | 语法 | `tools/run_tests.sh` | PARSE OK |
 | 自动化测试 | 同上（新增 saves 组 43 项；测试用单独的存档目录 `user://test_saves/`，开始与结束时清空） | **403 项全部通过**，无引擎报错、无退出泄漏 |
 | 网页导出 | `tools/build_web.sh`（导出到临时目录，未改动已上线的 `play/`） | 通过，52.3 MB |
-| 网页冒烟 | `tools/smoke_web.js` | 第一遍：平板、手机 PASS（「菜单」→「存档 / 读档」打开面板）；电脑 FAIL——F8 实际已写进 localStorage、F9 也读回来了，但网页上判断「写入成功」用的 eval 返回值不是布尔，误报失败；F9 在按键处理里直接重载场景，引擎报 1 条错。两处已修，正在重跑（结果更新在下一次提交） |
+| 网页冒烟 | `tools/smoke_web.js` | 第一遍：平板、手机 PASS（「菜单」→「存档 / 读档」打开面板）；电脑 FAIL——F8 实际已写进 localStorage、F9 也读回来了，但网页上判断「写入成功」用的 eval 返回值不是布尔，误报失败；F9 在按键处理里直接重载场景，引擎报 1 条错。两处已修。**重跑：三个宽度全部 PASS，0 报错、0 横向溢出**——电脑按 F8（`IC_SAVE slot=quick`）、localStorage 里有 `ooglex.ironcrown.v1.quick`、刷新页面后按 F9（`IC_LOAD slot=quick`）场景重新载入并提示「已读取：快速存档」；平板 / 手机真实点「菜单」→「存档 / 读档」打开面板（`IC_SAVES open`） |
 | 站点资源版本 / 空白 | `scripts/validate_asset_versions.py` / `git diff --check` | 通过 |
 
 saves 组覆盖：校验（完整、缺版本号、更新版本、缺玩家）；不完整的存档不写入；霜渡镇里改状态后存栏位 1 → 打乱状态 → 读回（旗标、任务、线索、背包、银币、技能是整数、声望、检定种子与结果、搜刮、拾取都原样）；
