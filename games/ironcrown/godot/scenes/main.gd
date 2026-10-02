@@ -19,6 +19,7 @@ const HINT_SECONDS := 8.0
 var moon: DirectionalLight3D
 var quality := ""
 var perf_overlay: PerfOverlay
+var dialogue: DialoguePanel
 var bench_results: Array = []
 
 var env: Environment
@@ -188,7 +189,7 @@ func perf_probe(seconds := 1.0) -> Dictionary:
 func run_benchmark(settle := 1.5, sample := 3.0) -> Array:
 	bench_results.clear()
 	perf_overlay.bench_text = "基准测试进行中……（%s画质，不要操作）" % PerfOverlay.tier_name(quality)
-	for i in Frostford.VIEWS.size():
+	for i in Frostford.VIEW_NAMES.size():
 		set_view(i)
 		await get_tree().create_timer(settle).timeout
 		var r := await perf_probe(sample)
@@ -229,6 +230,9 @@ func _build_ui() -> void:
 	perf_overlay = PerfOverlay.new()
 	perf_overlay.main = self
 	layer.add_child(perf_overlay)
+	dialogue = DialoguePanel.new()
+	layer.add_child(dialogue)
+	dialogue.closed.connect(_on_dialogue_closed)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
 	pause_menu.quality_selected.connect(func(t: String):
@@ -280,9 +284,45 @@ func _on_interacted(r: Dictionary) -> void:
 		hud.say(r.speech)
 	if r.get("kind") == "pickup":
 		inventory.append(r.item)
+	if r.get("kind") == "dialogue":
+		open_dialogue(r.area, r.id, r.get("npc"))
 	var t := player.interactor.target
-	hud.show_prompt(t.prompt() if t else "")     # 门开了以后提示从「打开」变「关上」
+	if not dialogue.visible:
+		hud.show_prompt(t.prompt() if t else "")     # 门开了以后提示从「打开」变「关上」
 	print("IC_INTERACT kind=%s name=%s" % [r.get("kind", ""), r.get("name", "")])
+
+
+## 打开对话（2.1）：镜头平滑转向说话人，游戏暂停，鼠标放出来点选项
+func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
+	if not dialogue.open(area, id):
+		return
+	hud.show_prompt("")
+	hud.set_hint("")              # 底部的操作提示不再压在对话上
+	hint_left = 0.0
+	if npc:
+		var head := npc.global_position + Vector3(0, 1.55, 0)
+		var d := head - player.camera.global_position
+		var yaw := atan2(-d.x, -d.z)
+		var pitch := clampf(rad_to_deg(atan2(d.y, Vector2(d.x, d.z).length())), -30.0, 30.0)
+		var tw := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_parallel()
+		tw.tween_property(player, "rotation:y", player.rotation.y + angle_difference(player.rotation.y, yaw), 0.35).set_trans(Tween.TRANS_SINE)
+		tw.tween_method(func(p: float):
+			player.pitch = p
+			player.head.rotation.x = deg_to_rad(p), player.pitch, pitch, 0.35).set_trans(Tween.TRANS_SINE)
+	lock_seen = false
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if touch:
+		touch.release_all()
+
+
+func _on_dialogue_closed() -> void:
+	get_tree().paused = false
+	if not touch_mode:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
+	player.interactor.refresh()
+	var t := player.interactor.target
+	hud.show_prompt(t.prompt() if t else "")
 
 
 func _start() -> void:

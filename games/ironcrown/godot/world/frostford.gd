@@ -21,6 +21,7 @@ const VIEWS := [
 	[Vector3(0, 0, 6), 0.0, -1.0],
 	[Vector3(1.6, 0, -12.5), 32.0, 4.0],
 	[Vector3(-0.8, 0, -41.0), 180.0, 1.0],
+	[Vector3(2.3, 0, -1.6), 0.0, -8.0],        # 3：更夫面前（冒烟测试对话用，不进基准测试）
 ]
 
 ## 左侧房子：[北端 z, 南端 z（较大）... ] → 用 [z_south, z_north, spec]
@@ -81,6 +82,8 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_bounds(parent)
 	# 1.3 的交互物：更夫、木箱上的面包（锁着的门在房子里）
 	var watch := Npc.make("更夫", WATCH_LINES, Color("3e4a3a"))
+	watch.dialogue_area = "frostford"           # 2.1 起用对话树（data/dialogue/frostford.json）
+	watch.dialogue_id = "watchman"
 	watch.position = WATCH_POS
 	watch.rotation.y = PI
 	parent.add_child(watch)

@@ -1,11 +1,14 @@
 class_name Npc
 extends Interactable
-## 灰盒 NPC（路线图 1.3）：对着按交互键说一句话，轮流说 lines 里的台词，说话时转身面向玩家。
-## 外观是占位的胶囊 + 头（正式人物在阶段 A）；完整的对话树在 2.1。
+## 灰盒 NPC（路线图 1.3）：说话时转身面向玩家。
+## 有 dialogue_id（2.1 起）：按交互键打开对话树（data/dialogue/<dialogue_area>.json）；没有：轮流说 lines 里的一句话，显示在底部字幕。
+## 外观是占位的胶囊 + 头（正式人物在阶段 A）。
 
 var lines: Array = []
 var line_index := 0
 var coat := Color("4a5a6a")
+var dialogue_area := ""
+var dialogue_id := ""
 
 
 static func make(name_text: String, speech: Array, c := Color("4a5a6a")) -> Npc:
@@ -59,6 +62,8 @@ func interact(who: FpController) -> Dictionary:
 	var to := who.global_position - global_position
 	if Vector2(to.x, to.z).length() > 0.01:
 		rotation.y = atan2(-to.x, -to.z)     # 本地 -Z 是脸的朝向
+	if dialogue_id != "":
+		return {"kind": "dialogue", "name": display_name, "area": dialogue_area, "id": dialogue_id, "npc": self}
 	var text := "……"
 	if not lines.is_empty():
 		text = str(lines[line_index % lines.size()])

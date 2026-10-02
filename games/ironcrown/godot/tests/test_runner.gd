@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -128,6 +128,16 @@ func test_ui() -> void:
 	texts.append_array(Frostford.VIEW_NAMES)
 	texts.append_array(TestRange.NPC_LINES)
 	texts.append_array(Frostford.WATCH_LINES)
+	# 全部对话台词与选项（2.1）
+	var dlg := DialogueRunner.load_file("frostford")
+	for did in dlg:
+		if did.begins_with("_"):
+			continue
+		texts.append(str(dlg[did].speaker))
+		for nid in dlg[did].nodes:
+			texts.append(str(dlg[did].nodes[nid].text))
+			for o in dlg[did].nodes[nid].options:
+				texts.append(str(o.text))
 	# 测试场和霜渡镇两个场景都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
 	var town := await make_main(false)
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false)
@@ -630,4 +640,84 @@ func test_perf() -> void:
 	check(ov.bench_text.contains("基准测试结果") and ov.bench_text.contains(Frostford.VIEW_NAMES[2]) and ov.bench_text.contains("请截图"), "结果表显示在性能浮层上，提示截图")
 	check(main.player.global_position.is_equal_approx(Frostford.VIEWS[0][0]), "测完回到出生点")
 	Settings.set_value("show_perf", false)
+	await free_main(main)
+
+
+func key_ev(code: Key) -> InputEventKey:
+	var e := InputEventKey.new()
+	e.physical_keycode = code
+	e.keycode = code
+	e.pressed = true
+	return e
+
+
+func test_dialogue() -> void:
+	# 数据：霜渡镇所有对话都通过校验
+	var all := DialogueRunner.load_file("frostford")
+	var bad := []
+	for did in all:
+		if did.begins_with("_"):
+			continue
+		for e in DialogueRunner.validate(all[did]):
+			bad.append("%s：%s" % [did, e])
+	check(all.has("watchman") and bad.is_empty(), "霜渡镇的对话全部通过校验：节点都走得到、选项都指向存在的节点、能结束（问题：%s）" % str(bad))
+	var broken := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [{"text": "去 b", "next": "b"}, {"text": "去 x", "next": "x"}]},
+		"b": {"text": "b", "options": [{"text": "回 a", "next": "a"}]}, "c": {"text": "孤岛", "options": [{"text": "走", "end": true}]}}}
+	var errs := DialogueRunner.validate(broken)
+	check(errs.any(func(e): return e.contains("不存在的节点 x")) and errs.any(func(e): return e.contains("c：从开始节点走不到")) and errs.any(func(e): return e.contains("没有任何选项能结束")), "校验能抓出：指向不存在的节点、走不到的节点、从开始走不到结束（%s）" % str(errs))
+	# 规则：按选项推进
+	var r := DialogueRunner.new()
+	check(r.start("frostford", "watchman") and r.speaker() == "更夫" and r.options().size() == 4, "更夫的对话从「greet」开始，4 个选项")
+	check(r.choose(1) and r.node_id == "edric" and r.choose(0) and r.node_id == "stranger", "选「你今晚见过埃德里克少爷吗」→ 再问南方人，台词跟着走")
+	check(r.choose(0) and r.node_id == "menu" and not r.choose(3) and r.node_id == "", "回到「还有什么要问的」，选「没有了」对话结束")
+	check(not r.start("frostford", "nobody"), "找不到的对话不会打开")
+	# 游戏里：对准更夫按 E
+	var main := await make_main(false)
+	var p: FpController = main.player
+	await aim(p, Frostford.WATCH_POS + Vector3(1.2, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
+	var ev := InputEventAction.new()
+	ev.action = "interact"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await frames(3)
+	var dp: DialoguePanel = main.dialogue
+	check(dp.visible and get_tree().paused and dp.name_label.text == "更夫" and dp.buttons.size() == 4, "对准更夫按 E：弹出对话面板（说话人、台词、4 个选项），游戏暂停")
+	check(main.hud.prompt_label.text == "" and main.hud.hint_label.text == "", "对话时准星下的交互提示、底部的操作提示都隐藏")
+	# 镜头转向：先关掉对话、把人转开，再直接打开对话，看镜头会不会转回来
+	dp.close()
+	await frames(2)
+	p.rotation.y += 1.2
+	var turned_away := p.rotation.y
+	var npc: Npc = main.find_children("*", "Npc", true, false)[0]
+	main.open_dialogue("frostford", "watchman", npc)
+	await seconds(0.5)
+	var to := npc.global_position - p.global_position
+	var want := atan2(-to.x, -to.z)
+	check(absf(angle_difference(p.rotation.y, want)) < 0.08 and absf(angle_difference(turned_away, want)) > 0.3, "镜头转向说话人（打开对话前转开了 %.2f 弧度，暂停时照样转回来）" % absf(angle_difference(turned_away, want)))
+	var pz := p.global_position
+	Input.action_press("move_forward")
+	await physics(20)
+	Input.action_release("move_forward")
+	check(p.global_position.is_equal_approx(pz), "对话时玩家不会走动")
+	Input.parse_input_event(key_ev(KEY_2))
+	await frames(2)
+	check(dp.runner.node_id == "edric" and dp.text_label.text.contains("渡口"), "按数字键 2 选第二个选项")
+	dp.buttons[0].pressed.emit()
+	await frames(2)
+	check(dp.runner.node_id == "stranger" and dp.buttons.size() == 1, "点选项按钮（鼠标 / 触屏）推进对话")
+	await frames(2)
+	var pr := dp.panel.get_global_rect()
+	check(pr.position.x >= 0 and pr.end.x <= main.hud.size.x and pr.end.y <= main.hud.size.y + 1 and pr.position.y > main.hud.size.y * 0.3, "对话面板在屏幕下方、不超出画面（%s）" % pr)
+	var esc := InputEventAction.new()
+	esc.action = "pause"
+	esc.pressed = true
+	Input.parse_input_event(esc)
+	await frames(3)
+	check(not dp.visible and not get_tree().paused and not main.pause_menu.visible, "按 Esc 结束对话（不会打开暂停菜单），游戏继续")
+	check(main.hud.prompt_label.text.contains("交谈 · 更夫"), "对话结束后交互提示回来")
+	main.player.interactor.use()
+	await frames(2)
+	dp.choose(3)
+	await frames(2)
+	check(not dp.visible and not get_tree().paused, "选「没事，你接着巡夜吧」也会结束对话")
 	await free_main(main)
