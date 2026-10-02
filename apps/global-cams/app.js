@@ -262,6 +262,7 @@ function showWindow(d, options = {}) {
   viewer.appendChild(video);
   viewer.appendChild(buildViewerControls());
   updatePlayPauseButton();
+  updateExpandButton();
 
   const source = safeHttpUrl(d.source_url);
   if (source) {
@@ -375,18 +376,20 @@ function buildViewerControls() {
   bar.className = 'viewer-controls';
   bar.setAttribute('aria-label', 'WINDOW 播放控制');
   const controls = [
-    ['prev', '上一个', ''],
-    ['toggle', '暂停', ''],
-    ['next', '下一个', ''],
-    ['random', '随机窗口', 'random'],
-    ['close', '退出放大', 'close']
+    ['prev', '⏮', 'icon', '上一个窗口'],
+    ['toggle', '⏸', 'icon', '暂停当前 WINDOW'],
+    ['next', '⏭', 'icon', '下一个窗口'],
+    ['random', '随机窗口', 'random', '随机窗口'],
+    ['expand', '⛶', 'icon expand', '放大 WINDOW']
   ];
-  for (const [action, label, extra] of controls) {
+  for (const [action, label, extra, title] of controls) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'viewer-control' + (extra ? ' ' + extra : '');
     btn.dataset.viewerAction = action;
     btn.textContent = label;
+    btn.title = title;
+    btn.setAttribute('aria-label', title);
     bar.appendChild(btn);
   }
   return bar;
@@ -406,6 +409,16 @@ async function closeViewer() {
   }
   viewer.classList.remove('is-expanded');
   document.documentElement.style.overflow = '';
+  updateExpandButton();
+}
+
+async function toggleViewerExpanded() {
+  if (isViewerExpanded()) {
+    await closeViewer();
+    return;
+  }
+  await toggleFullscreen(viewer);
+  updateExpandButton();
 }
 
 function updatePlayPauseButton() {
@@ -413,9 +426,19 @@ function updatePlayPauseButton() {
   if (!btn) return;
   const video = currentVideo();
   const paused = !video || video.paused;
-  btn.textContent = paused ? '播放' : '暂停';
-  btn.setAttribute('aria-label', paused ? '播放当前 WINDOW' : '暂停当前 WINDOW');
+  btn.textContent = paused ? '▶' : '⏸';
+  btn.title = paused ? '播放当前 WINDOW' : '暂停当前 WINDOW';
+  btn.setAttribute('aria-label', btn.title);
   btn.disabled = !video;
+}
+
+function updateExpandButton() {
+  const btn = viewer.querySelector('[data-viewer-action="expand"]');
+  if (!btn) return;
+  const expanded = isViewerExpanded();
+  btn.textContent = expanded ? '⤢' : '⛶';
+  btn.title = expanded ? '退出放大' : '放大 WINDOW';
+  btn.setAttribute('aria-label', btn.title);
 }
 
 function syncSelectionRing() {
@@ -620,22 +643,33 @@ viewer.addEventListener('click', event => {
   else if (action === 'next') stepWindow(1);
   else if (action === 'random') randomWindow();
   else if (action === 'toggle') toggleCurrentVideo();
-  else if (action === 'close') void closeViewer();
+  else if (action === 'expand') void toggleViewerExpanded();
 });
 $('#resetGlobe').addEventListener('click', focusTokyo);
 $('#zoomIn').addEventListener('click', () => zoomBy(0.72));
 $('#zoomOut').addEventListener('click', () => zoomBy(1.38));
 $('#fullscreen').addEventListener('click', () => toggleFullscreen(document.documentElement));
-$('#expandViewer').addEventListener('click', () => toggleFullscreen(viewer));
+$('#expandViewer').addEventListener('click', () => void toggleViewerExpanded());
+
+function isMobileSwipeMode() {
+  return matchMedia('(max-width: 820px)').matches || matchMedia('(pointer: coarse)').matches;
+}
 
 let swipeStart = null;
 viewer.addEventListener('touchstart', event => {
-  if (!isViewerExpanded() || event.touches.length !== 1) return;
+  if (event.touches.length !== 1) return;
   const t = event.touches[0];
   swipeStart = { x: t.clientX, y: t.clientY };
 }, { passive: true });
+viewer.addEventListener('touchmove', event => {
+  if (!swipeStart || event.touches.length !== 1 || !isMobileSwipeMode()) return;
+  const t = event.touches[0];
+  const dx = t.clientX - swipeStart.x;
+  const dy = t.clientY - swipeStart.y;
+  if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx) * 1.08) event.preventDefault();
+}, { passive: false });
 viewer.addEventListener('touchend', event => {
-  if (!isViewerExpanded() || !swipeStart || event.changedTouches.length !== 1) {
+  if (!swipeStart || event.changedTouches.length !== 1) {
     swipeStart = null;
     return;
   }
@@ -643,6 +677,14 @@ viewer.addEventListener('touchend', event => {
   const dx = t.clientX - swipeStart.x;
   const dy = t.clientY - swipeStart.y;
   swipeStart = null;
+
+  if (isMobileSwipeMode()) {
+    if (Math.abs(dy) < 58 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
+    stepWindow(dy < 0 ? 1 : -1);
+    return;
+  }
+
+  if (!isViewerExpanded()) return;
   if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.35) return;
   stepWindow(dx < 0 ? 1 : -1);
 }, { passive: true });
@@ -674,5 +716,11 @@ addEventListener('resize', sizeGlobe);
 document.addEventListener('fullscreenchange', () => {
   sizeGlobe();
   updatePlayPauseButton();
+  updateExpandButton();
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  sizeGlobe();
+  updatePlayPauseButton();
+  updateExpandButton();
 });
 })();
