@@ -1688,9 +1688,13 @@ def main() -> int:
                 print(f"warn: global skip {title}: {exc}", file=sys.stderr)
 
     min_catalog = int(cfg.get("min_catalog") or 100)
-    required = min(target, max(12, min_catalog))
+    strict_target_count = bool(cfg.get("strict_target_count", False))
+    required = target if strict_target_count else min(target, max(12, min_catalog))
     if len(items) < required:
-        raise SystemExit(f"curated catalog too small: {len(items)} accepted; require at least {required}")
+        raise SystemExit(
+            f"curated catalog too small: {len(items)} accepted; require at least {required} "
+            f"(strict_target_count={strict_target_count})"
+        )
 
     preferred_duration_min = float(cfg.get("preferred_duration_min_seconds") or 90)
     preferred_duration_max = float(cfg.get("preferred_duration_max_seconds") or 180)
