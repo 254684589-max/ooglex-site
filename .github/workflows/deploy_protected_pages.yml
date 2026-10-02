@@ -150,3 +150,13 @@ jobs:
 
       - name: Verify live Global Cams V1.1
         run: node scripts/verify_global_cams_live.mjs
+
+      - name: Verify live TV V1.2
+        run: |
+          url="https://www.ooglex.com/apps/tv/?deploy=${GITHUB_SHA}"
+          html="$(curl -fsSL --retry 8 --retry-delay 3 -H 'Cache-Control: no-cache' "$url")"
+          printf '%s' "$html" | grep -q 'id="pSource"'
+          printf '%s' "$html" | grep -q 'id="tShare"'
+          printf '%s' "$html" | grep -q 'id="tRefresh"'
+          printf '%s' "$html" | grep -q 'app.js?v=9'
+          echo "Live TV V1.2 verified at $url"
