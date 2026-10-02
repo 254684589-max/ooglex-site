@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/validate-window-v10-catalog.yml'
       - 'scripts/global-cams/sync_windows_to_r2.py'
+      - 'scripts/validate_global_cams.mjs'
       - 'data/global-windows/locations.json'
       - 'data/global-windows/zh_labels.json'
       - 'apps/global-cams/windows.json'
