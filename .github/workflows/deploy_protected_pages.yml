@@ -139,6 +139,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout deployment verifier
+        uses: actions/checkout@v6
+
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
