@@ -501,19 +501,37 @@ function showPlayer(st){
   updateMediaMeta(st);
 }
 function setState(cls, txt){ const e = $('pState'); e.className = 'state ' + cls; e.textContent = txt; }
-function toggleBtn(txt){ $('pToggle').textContent = txt; }
+function toggleBtn(txt){
+  const b = $('pToggle');
+  const playing = txt.indexOf('暂停') >= 0;
+  b.textContent = playing ? '⏸' : '▶';
+  b.title = playing ? '暂停' : '播放';
+  b.setAttribute('aria-label', b.title);
+}
 
 $('pToggle').onclick = () => {
   if (!current) return;
   if (video.paused){ const p = video.play(); if (p && p.catch) p.catch(() => {}); }
   else stopVideo();
 };
-$('pMute').onclick = () => {
-  video.muted = !video.muted;
-  $('pMute').textContent = video.muted ? '🔇' : '🔊';
-  $('pMute').classList.toggle('on', !video.muted);
+$('pSource').onclick = () => {
+  if (!current) return;
+  const urls = stationUrls(current);
+  if (urls.length < 2){
+    status('当前频道只有 1 个可用信号源', false, 1800);
+    return;
+  }
+  clearTimeout(watchdog);
+  srcIdx = (srcIdx + 1) % urls.length;
+  tries = 0;
+  setState('load', '切换信号源 ' + (srcIdx + 1) + '/' + urls.length + '…');
+  attachStream(urls[srcIdx]);
+  armWatchdog();
 };
-$('pVol').oninput = () => { video.volume = $('pVol').value / 100; if (video.volume > 0) video.muted = false; };
+$('pVol').oninput = () => {
+  video.volume = $('pVol').value / 100;
+  video.muted = video.volume === 0;
+};
 $('pFull').onclick = () => {
   const stage = $('stage');
   if (document.fullscreenElement){ document.exitFullscreen().catch(() => {}); return; }
@@ -627,16 +645,35 @@ $('plist').addEventListener('click', e => {
 })();
 
 /* ---------------- 工具按钮 ---------------- */
-$('tRandom').onclick = () => {
+function randomStation(){
   if (!allStations.length) return;
-  const s = allStations[Math.floor(Math.random() * allStations.length)];
-  setRegion(s.lat, s.lng); showTab('region'); playAt(s, true);
-};
-$('tHome').onclick = () => world.pointOfView({ lat: 30, lng: 110, altitude: 2.2 }, 900);
-$('tRotate').onclick = () => {
-  rotating = !rotating;
-  world.controls().autoRotate = rotating;
-  $('tRotate').textContent = rotating ? '⏸' : '↻';
+  const local = stepPool();
+  const pool = (local && local.length > 1) ? local : allStations;
+  const choices = current ? pool.filter(s => s.url !== current.url) : pool.slice();
+  if (!choices.length) return;
+  const s = choices[Math.floor(Math.random() * choices.length)];
+  if (pool === allStations){
+    setRegion(s.lat, s.lng);
+    showTab('region');
+  }
+  playAt(s, true);
+}
+$('tRandom').onclick = randomStation;
+$('tHome').onclick = () => { location.href = '../../'; };
+$('tRefresh').onclick = () => { location.reload(); };
+$('tShare').onclick = async () => {
+  const data = { title: '环球TV · Ooglex', text: '转动地球，看世界电视直播', url: location.href };
+  try{
+    if (navigator.share){ await navigator.share(data); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(location.href);
+      status('链接已复制，可直接分享', false, 1800);
+      return;
+    }
+  }catch(e){
+    if (e && e.name === 'AbortError') return;
+  }
+  status('请复制浏览器地址栏链接进行分享', false, 2200);
 };
 
 /* ---------------- 搜索 ---------------- */
