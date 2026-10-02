@@ -127,6 +127,7 @@ ok(Number(windowLocations.request_interval_seconds) >= 0.8, 'WINDOW Wikimedia re
 ok(Number(windowLocations.global_match_distance_km) <= 150, 'WINDOW global geolocation radius too broad');
 ok(Number(windowLocations.local_location_scan_limit) >= 0 && Number(windowLocations.local_location_scan_limit) <= 200, 'WINDOW local scan limit out of range');
 ok(Number(windowLocations.local_location_scan_limit) === 0, 'WINDOW V1.0 production discovery must use validated global-first mode');
+ok(String(windowLocations.discovery_mode || '') === 'global-first', 'WINDOW V1.0 discovery_mode must be global-first');
 ok(Array.isArray(windowLocations.global_scenic_queries) && windowLocations.global_scenic_queries.length >= 35, 'WINDOW global scenic query pool too small');
 ok(Array.isArray(windowLocations.global_scenic_categories) && windowLocations.global_scenic_categories.length >= 12, 'WINDOW scenic category pool too small');
 
