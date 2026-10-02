@@ -58,6 +58,7 @@ jobs:
           assert int(cfg["min_quality_score"]) >= 60
           assert str(cfg.get("content_profile")) == "immersive-longform-hd"
           assert str(cfg.get("validation_contract")) == "v1.1-content-quality"
+          assert int(cfg.get("local_location_scan_limit")) == 0
           print("WINDOW V1.1 configuration OK")
           PY
 
