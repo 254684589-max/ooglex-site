@@ -28,6 +28,7 @@ let activeSort = 'featured';
 let popularity = new Map();
 let popularityLoaded = false;
 let popularityPromise = null;
+let audioUnlocked = false;
 const reportedWindowPlays = new Set();
 
 const globe = Globe()(globeEl)
@@ -40,7 +41,10 @@ const globe = Globe()(globeEl)
   .pointColor(d => itemKey(d) === selectedId ? '#ffd36b' : '#68a8ff')
   .pointLabel(d => '<b>' + escapeHtml(d.name || '沉浸窗口') + '</b><br>' + escapeHtml(itemSubLabel(d)))
   .onPointHover(d => { globeEl.style.cursor = d ? 'pointer' : 'grab'; })
-  .onPointClick(d => showWindow(d, { focus: true, reveal: true }));
+  .onPointClick(d => {
+    activateAudio();
+    showWindow(d, { focus: true, reveal: true });
+  });
 
 const controls = globe.controls();
 controls.autoRotate = false;
@@ -223,7 +227,10 @@ function render() {
     sub.textContent = listSubLabel(d);
     main.append(name, sub);
     row.append(dot, main);
-    row.addEventListener('click', () => showWindow(d, { focus: true }));
+    row.addEventListener('click', () => {
+      activateAudio();
+      showWindow(d, { focus: true });
+    });
     frag.appendChild(row);
   }
   playlist.appendChild(frag);
@@ -248,7 +255,9 @@ function showWindow(d, options = {}) {
   const video = document.createElement('video');
   video.src = d.video_url;
   video.autoplay = true;
-  video.muted = true;
+  video.defaultMuted = !audioUnlocked;
+  video.muted = !audioUnlocked;
+  video.volume = 1;
   video.loop = true;
   video.playsInline = true;
   video.controls = true;
@@ -261,6 +270,12 @@ function showWindow(d, options = {}) {
   video.addEventListener('pause', updatePlayPauseButton);
   viewer.appendChild(video);
   viewer.appendChild(buildViewerControls());
+  if (audioUnlocked) {
+    video.muted = false;
+    video.defaultMuted = false;
+    const p = video.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  }
   updatePlayPauseButton();
   updateExpandButton();
 
@@ -359,9 +374,19 @@ function currentVideo() {
   return viewer.querySelector('video');
 }
 
+function activateAudio() {
+  audioUnlocked = true;
+  const video = currentVideo();
+  if (!video) return;
+  video.defaultMuted = false;
+  video.muted = false;
+  video.volume = 1;
+}
+
 function toggleCurrentVideo() {
   const video = currentVideo();
   if (!video) return;
+  activateAudio();
   if (video.paused) {
     const p = video.play();
     if (p && typeof p.catch === 'function') p.catch(() => {});
@@ -639,6 +664,7 @@ viewer.addEventListener('click', event => {
   const btn = event.target.closest('[data-viewer-action]');
   if (!btn) return;
   const action = btn.dataset.viewerAction;
+  if (action !== 'expand') activateAudio();
   if (action === 'prev') stepWindow(-1);
   else if (action === 'next') stepWindow(1);
   else if (action === 'random') randomWindow();
@@ -680,12 +706,14 @@ viewer.addEventListener('touchend', event => {
 
   if (isMobileSwipeMode()) {
     if (Math.abs(dy) < 58 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
+    activateAudio();
     stepWindow(dy < 0 ? 1 : -1);
     return;
   }
 
   if (!isViewerExpanded()) return;
   if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.35) return;
+  activateAudio();
   stepWindow(dx < 0 ? 1 : -1);
 }, { passive: true });
 
