@@ -3440,7 +3440,7 @@
   "global_max_candidates": 5000,
   "global_match_distance_km": 120,
   "global_max_per_location": 8,
-  "local_location_scan_limit": 40,
+  "local_location_scan_limit": 0,
   "global_scenic_categories": [
     "Videos of sunsets",
     "Videos of sunrises",
