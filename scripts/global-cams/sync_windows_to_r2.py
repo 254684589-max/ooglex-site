@@ -539,9 +539,9 @@ def v1_quality_score(info: dict, profile: dict, semantic_score: int, cfg: dict) 
     if any(phrase(title, x) for x in stable_terms):
         stability = 15
     elif any(phrase(title, x) for x in moving_terms):
-        stability = 9
+        stability = 6
     elif any(phrase(title, x) for x in ("timelapse", "time lapse", "time-lapse")):
-        stability = 12
+        stability = 10
     else:
         stability = 11
 
@@ -1075,6 +1075,8 @@ def normalize_title(title: str) -> str:
 def scene_fingerprint(title: str) -> str:
     text = norm(normalize_title(title))
     text = re.sub(r"\b(no audio|short|video|timelapse|time lapse|time-lapse)\b", " ", text)
+    text = re.sub(r"\b(4k|uhd|fhd|full hd|1080p|720p|2160p)\b", " ", text)
+    text = re.sub(r"\b(part|clip|take)\s*\d+\b", " ", text)
     text = re.sub(r"\([^)]*\d{4,}[^)]*\)", " ", text)
     text = re.sub(r"\b\d{4,}\b", " ", text)
     text = re.sub(r"[^0-9a-z\u00c0-\uffff]+", " ", text)
@@ -1690,12 +1692,32 @@ def main() -> int:
     if len(items) < required:
         raise SystemExit(f"curated catalog too small: {len(items)} accepted; require at least {required}")
 
-    items.sort(key=lambda x: (
-        -int(x.get("quality_score") or 0),
-        int(x.get("bytes") or 0),
-        str(x.get("city_zh") or x.get("city") or ""),
-        str(x.get("name") or ""),
-    ))
+    preferred_duration_min = float(cfg.get("preferred_duration_min_seconds") or 90)
+    preferred_duration_max = float(cfg.get("preferred_duration_max_seconds") or 180)
+    preferred_width = int(cfg.get("preferred_width") or 1920)
+    preferred_height = int(cfg.get("preferred_height") or 1080)
+
+    def selection_rank_key(x: dict) -> tuple:
+        width = int(x.get("width") or 0)
+        height = int(x.get("height") or 0)
+        duration = float(x.get("duration_seconds") or 0)
+        breakdown = x.get("quality_breakdown") or {}
+        preferred_resolution = int(width >= preferred_width and height >= preferred_height)
+        preferred_duration = int(preferred_duration_min <= duration <= preferred_duration_max)
+        stability = int(breakdown.get("stability") or 0)
+        duration_distance = abs(duration - 120.0)
+        return (
+            -int(x.get("quality_score") or 0),
+            -preferred_resolution,
+            -preferred_duration,
+            -stability,
+            duration_distance,
+            int(x.get("bytes") or 0),
+            str(x.get("city_zh") or x.get("city") or ""),
+            str(x.get("name") or ""),
+        )
+
+    items.sort(key=selection_rank_key)
     chosen: list[dict] = []
     chosen_bytes = 0
     budget_skipped = 0
@@ -1727,7 +1749,7 @@ def main() -> int:
     widths = [int(x.get("width") or 0) for x in chosen]
     heights = [int(x.get("height") or 0) for x in chosen]
     print(
-        f"built {len(chosen)} V1 WINDOW clips across {len(cities)} locations, "
+        f"built {len(chosen)} V1.1 WINDOW clips across {len(cities)} locations, "
         f"{chosen_bytes/1024/1024:.1f} MiB catalog size, score min/avg/max="
         f"{min(scores)}/{sum(scores)/len(scores):.1f}/{max(scores)}, "
         f"duration min/avg/max={min(durations):.1f}/{sum(durations)/len(durations):.1f}/{max(durations):.1f}s"
