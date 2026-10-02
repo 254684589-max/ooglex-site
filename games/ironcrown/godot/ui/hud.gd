@@ -19,6 +19,15 @@ var subtitle_label: Label
 var toast_left := 0.0
 var subtitle_left := 0.0
 var key_hint := "[E] "        # 触屏上不显示按键
+var melee: Melee              # 体力条读它（2.4）
+var bars_top := false         # 触屏：左下角是摇杆，体力条放到左上标题下面
+var stamina_label: Label
+var marker_left := 0.0
+var marker_heavy := false
+
+const BAR_W := 180.0
+const BAR_H := 6.0
+const MARKER_TIME := 0.18
 
 
 func _ready() -> void:
@@ -62,6 +71,14 @@ func _ready() -> void:
 	subtitle_panel.add_child(subtitle_label)
 	subtitle_panel.hide()
 	add_child(subtitle_panel)
+	stamina_label = Label.new()
+	stamina_label.add_theme_font_size_override("font_size", 14)
+	stamina_label.add_theme_color_override("font_color", Color("e8dcc0"))
+	stamina_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+	stamina_label.add_theme_constant_override("outline_size", 4)
+	stamina_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stamina_label.hide()
+	add_child(stamina_label)
 	resized.connect(_layout)
 	_layout()
 
@@ -102,7 +119,34 @@ func say(text: String, sec := 4.5) -> void:
 	_layout()
 
 
+## 命中时准星变成 ×（重击更大），文字之外再加形状，不只靠颜色
+func hit_marker(heavy := false) -> void:
+	marker_left = MARKER_TIME
+	marker_heavy = heavy
+	queue_redraw()
+
+
+## 体力条：拔剑或体力没满时显示；文字写出数值，体力耗尽时写「喘息中」
+func stamina_visible() -> bool:
+	return melee != null and (melee.state != Melee.State.SHEATHED or melee.stamina < Melee.STAMINA_MAX)
+
+
+func bar_rect() -> Rect2:
+	var y := 64.0 if bars_top else size.y - 28.0
+	return Rect2(Vector2(16.0, y), Vector2(BAR_W, BAR_H))
+
+
 func _process(delta: float) -> void:
+	if melee:
+		var show := stamina_visible()
+		stamina_label.visible = show
+		if show:
+			stamina_label.text = "体力 %d / %d%s" % [roundi(melee.stamina), roundi(Melee.STAMINA_MAX), " · 喘息中" if melee.exhausted else ""]
+			stamina_label.position = bar_rect().position - Vector2(0, 22)
+		queue_redraw()
+	if marker_left > 0.0:
+		marker_left -= delta
+		queue_redraw()
 	if toast_left > 0.0:
 		toast_left -= delta
 		if toast_left <= 0.0:
@@ -139,5 +183,16 @@ func _layout() -> void:
 
 func _draw() -> void:
 	var c := size * 0.5
-	draw_circle(c, 3.0, Color(0, 0, 0, 0.6))
-	draw_circle(c, 2.0, Color("e8dcc0"))
+	if marker_left > 0.0:
+		var r := 11.0 if marker_heavy else 7.0
+		for s in [Vector2(1, 1), Vector2(1, -1)]:
+			draw_line(c - s * r, c + s * r, Color(0, 0, 0, 0.7), 4.0)
+			draw_line(c - s * r, c + s * r, Color("ffcf6a") if marker_heavy else Color("e8dcc0"), 2.0)
+	else:
+		draw_circle(c, 3.0, Color(0, 0, 0, 0.6))
+		draw_circle(c, 2.0, Color("e8dcc0"))
+	if melee and stamina_visible():
+		var br := bar_rect()
+		draw_rect(br.grow(1.0), Color(0, 0, 0, 0.6))
+		var k := clampf(melee.stamina / Melee.STAMINA_MAX, 0.0, 1.0)
+		draw_rect(Rect2(br.position, Vector2(br.size.x * k, br.size.y)), Color("b08a3e") if melee.exhausted else Color("d8c9a0"))

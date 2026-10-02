@@ -2,7 +2,7 @@ class_name TouchControls
 extends Control
 ## 手机 / 平板的双摇杆（GDD.md 第三节）：
 ## - 左半屏：按下处出现浮动摇杆，拖动走路，推到边缘 = 跑；
-## - 右半屏：拖动转视角；右下角两个按钮「跳」「蹲」；对准可交互物体时，「跳」上方多出交互按钮（文字是动作：交谈 / 打开 / 拾取）。
+## - 右半屏：拖动转视角；右下角按钮「跳」「蹲」「攻」（2.4：点按轻击、按住 0.35 秒重击）；对准可交互物体时，「跳」上方多出交互按钮（文字是动作：交谈 / 打开 / 拾取）。
 ## 顶部一条留给「菜单」按钮。只在有触屏的设备上显示；force_visible 用于测试。
 
 const RADIUS := 60.0
@@ -15,6 +15,7 @@ var move_index := -1
 var move_center := Vector2.ZERO
 var knob := Vector2.ZERO
 var look_index := -1
+var attack_index := -1
 
 
 func _ready() -> void:
@@ -31,7 +32,8 @@ func _notification(what: int) -> void:
 func button_centers() -> Dictionary:
 	var r := size
 	var c := {"jump": Vector2(r.x - 24.0 - BTN_R, r.y - 40.0 - BTN_R),
-		"crouch": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 24.0 - BTN_R)}
+		"crouch": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 24.0 - BTN_R),
+		"attack": Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 48.0 - BTN_R * 3.0)}
 	if has_target():
 		c["interact"] = Vector2(r.x - 24.0 - BTN_R, r.y - 64.0 - BTN_R * 3.0)
 	return c
@@ -56,6 +58,7 @@ func rest_center() -> Vector2:
 func release_all() -> void:
 	move_index = -1
 	look_index = -1
+	attack_index = -1
 	knob = Vector2.ZERO
 	if player:
 		player.touch_move = Vector2.ZERO
@@ -76,6 +79,9 @@ func _input(event: InputEvent) -> void:
 				player.toggle_crouch()
 			elif b == "interact":
 				player.interactor.use()
+			elif b == "attack" and attack_index == -1:
+				attack_index = event.index       # 按下 = 开始蓄力，松开时按住的时间决定轻 / 重
+				player.melee.press()
 			elif event.position.x < size.x * 0.5 and move_index == -1:
 				move_index = event.index
 				move_center = event.position
@@ -93,6 +99,9 @@ func _input(event: InputEvent) -> void:
 			queue_redraw()
 		elif event.index == look_index:
 			look_index = -1
+		elif event.index == attack_index:
+			attack_index = -1
+			player.melee.release()
 	elif event is InputEventScreenDrag:
 		if event.index == move_index:
 			knob = (event.position - move_center).limit_length(RADIUS)
@@ -115,7 +124,7 @@ func _draw() -> void:
 	draw_arc(c, RADIUS, 0.0, TAU, 48, Color(0.72, 0.59, 0.31, a + 0.2), 2.0)
 	draw_circle(c + knob, RADIUS * 0.42, Color(0.91, 0.86, 0.75, a + 0.2))
 	var font := get_theme_default_font()
-	var labels := {"jump": "跳", "crouch": "站" if player and player.crouch_wanted else "蹲"}
+	var labels := {"jump": "跳", "crouch": "站" if player and player.crouch_wanted else "蹲", "attack": "攻"}
 	if has_target():
 		labels["interact"] = player.interactor.target.verb_now()
 	var centers := button_centers()

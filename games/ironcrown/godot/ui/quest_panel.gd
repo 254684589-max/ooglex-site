@@ -123,7 +123,7 @@ func refresh() -> void:
 	var qd: Dictionary = GameState.quest_data().quests
 	for id in ids:
 		var b := Button.new()
-		b.text = ("▶ " if id == selected else "　 ") + str(qd[id].title) + ("（已完成）" if GameState.quest_done(id) else "")
+		b.text = ("▶ " if id == selected else "    ") + str(qd[id].title) + ("（已完成）" if GameState.quest_done(id) else "")
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.custom_minimum_size.y = 32
 		b.pressed.connect(func():

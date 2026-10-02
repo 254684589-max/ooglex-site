@@ -8,16 +8,18 @@ signal flag_changed(name: String, value)
 ## 任务事件：kind = started / advanced / done / clue；id = 任务编号或线索编号
 signal quest_event(kind: String, id: String)
 
-const SKILL_NAMES := {"speech": "口才", "intimidate": "威吓", "insight": "洞察"}
+const SKILL_NAMES := {"speech": "口才", "intimidate": "威吓", "insight": "洞察", "blade": "剑术"}
 ## 默认值（出身三选一在阶段 3 做，到时按出身改开局数值）
-const DEFAULT_SKILLS := {"speech": 10, "intimidate": 6, "insight": 8}
+const DEFAULT_SKILLS := {"speech": 10, "intimidate": 6, "insight": 8, "blade": 15}
 const DEFAULT_WITS := 3
+const DEFAULT_STRENGTH := 5     # 力量（近战伤害，GDD.md 6.3；属性界面在 2.7）
 const FLAGS_PATH := "res://data/flags.json"
 const QUESTS_PATH := "res://data/quests.json"
 
 var flags := {}
 var skills := DEFAULT_SKILLS.duplicate()
 var wits := DEFAULT_WITS
+var strength := DEFAULT_STRENGTH
 var seed_value := 0
 var checks := {}          # 检定编号 → 是否成功（已经掷过的）
 var quests := {}          # 任务编号 → {stage, done}
@@ -37,6 +39,7 @@ func new_game(seed_override := -1) -> void:
 	inventory.clear()
 	skills = DEFAULT_SKILLS.duplicate()
 	wits = DEFAULT_WITS
+	strength = DEFAULT_STRENGTH
 	seed_value = seed_override if seed_override >= 0 else randi()
 
 

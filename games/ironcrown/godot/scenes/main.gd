@@ -10,8 +10,8 @@ extends Node3D
 
 const FOG_COLOR := Color("22344a")              # 夜空与远雾（ART.md 第四节 #1C2A3A 提亮一点，远处是「雾」而不是「黑」）
 const AMBIENT_COLOR := Color("6f8faf")          # 月光 / 环境光
-const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E 交互 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
-const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 对准东西时点右下角的交互按钮"
+const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E 交互 · 左键 / F 出剑（按住是重击）· R 收剑 · Shift 跑 · C 蹲下 · 空格 跳 · Esc 暂停"
+const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 点「攻」出剑（按住是重击）· 对准东西时点交互按钮"
 const HINT_SECONDS := 8.0
 
 @export var use_test_range := false
@@ -87,6 +87,9 @@ func _ready() -> void:
 	print("IC_MENU_SCREEN x=%d y=%d" % [c.x, c.y])
 	var qc := hud.quest_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
 	print("IC_QUEST_SCREEN x=%d y=%d" % [qc.x, qc.y])
+	if touch_mode:
+		var ac: Vector2 = touch.button_centers().attack * get_tree().root.content_scale_factor
+		print("IC_ATTACK_SCREEN x=%d y=%d" % [ac.x, ac.y])
 
 
 func _build_environment() -> void:
@@ -222,6 +225,10 @@ func _build_ui() -> void:
 	layer.add_child(hud)
 	hud.set_hint(HINT_TOUCH if touch_mode else HINT_DESKTOP)
 	hud.menu_pressed.connect(open_pause)
+	hud.melee = player.melee
+	hud.bars_top = touch_mode               # 触屏上左下角是摇杆，体力条放到左上
+	player.melee.swung.connect(func(k: String): print("IC_ATTACK kind=%s stamina=%.0f" % [k, player.melee.stamina]))
+	player.melee.hit.connect(_on_hit)
 	if touch_mode:
 		hud.key_hint = ""
 	player.interactor.target_changed.connect(_on_target_changed)
@@ -265,14 +272,39 @@ func _unhandled_input(event: InputEvent) -> void:
 		player.interactor.use()
 		get_viewport().set_input_as_handled()
 		return
+	# F 键也能出剑（只用键盘的玩家；按住同样是重击）
+	if event.is_action_pressed("attack_key"):
+		player.melee.press()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_released("attack_key"):
+		player.melee.release()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("sheathe"):
+		player.melee.toggle_draw()
+		get_viewport().set_input_as_handled()
+		return
 	# 触屏产生的模拟鼠标事件（DEVICE_ID_EMULATION）不算鼠标（余烬陷落 TECH.md 4.1 的经验）
-	if event is InputEventMouseButton and event.pressed and event.device != InputEvent.DEVICE_ID_EMULATION and not touch_mode:
-		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	# 第一次点击只用来锁定指针；锁定以后左键是攻击（按下 / 松开分开传，按住是重击）
+	if event is InputEventMouseButton and event.device != InputEvent.DEVICE_ID_EMULATION and not touch_mode:
+		if event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			_start()
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				player.melee.press()
+			else:
+				player.melee.release()
 	elif event is InputEventMouseMotion and event.device != InputEvent.DEVICE_ID_EMULATION:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			player.look(event.relative)
+
+
+## 命中（2.4）：准星闪一下 ×，日志给冒烟测试
+func _on_hit(target: Node, info: Dictionary) -> void:
+	hud.hit_marker(info.kind == "heavy")
+	print("IC_HIT target=%s dmg=%d kind=%s" % [target.get("display_name"), info.damage, info.kind])
 
 
 func _on_target_changed(target: Interactable) -> void:
@@ -320,6 +352,7 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 		tw.tween_method(func(p: float):
 			player.pitch = p
 			player.head.rotation.x = deg_to_rad(p), player.pitch, pitch, 0.35).set_trans(Tween.TRANS_SINE)
+	player.melee.cancel_press()      # 蓄力中打开界面：不攒着一记重击
 	lock_seen = false
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -331,6 +364,7 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 func open_quests() -> void:
 	if get_tree().paused:
 		return
+	player.melee.cancel_press()      # 蓄力中打开界面：不攒着一记重击
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	lock_seen = false
@@ -381,6 +415,7 @@ func _start() -> void:
 func open_pause() -> void:
 	if get_tree().paused:
 		return
+	player.melee.cancel_press()      # 蓄力中打开界面：不攒着一记重击
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	lock_seen = false

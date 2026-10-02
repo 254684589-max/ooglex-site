@@ -22,6 +22,7 @@ const BOB_AMPLITUDE := 0.035
 
 var head: Node3D
 var interactor: Interactor
+var melee: Melee
 var camera: Camera3D
 var shape: CollisionShape3D
 var capsule: CapsuleShape3D
@@ -30,6 +31,7 @@ var crouch_wanted := false
 var touch_move := Vector2.ZERO      # 触屏摇杆，-1..1，y 负 = 向前
 var jump_requested := false
 var pitch := 0.0                    # 度，正 = 抬头
+var running := false                # 这一帧在跑（消耗体力，2.4）
 var bob_time := 0.0
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 
@@ -58,6 +60,10 @@ func _init() -> void:
 	interactor.name = "Interactor"
 	interactor.player = self
 	add_child(interactor)
+	melee = Melee.new()
+	melee.name = "Melee"
+	melee.player = self
+	add_child(melee)
 
 
 func _ready() -> void:
@@ -106,8 +112,13 @@ func move_input() -> Vector2:
 func current_speed(input: Vector2) -> float:
 	if crouching:
 		return CROUCH_SPEED
+	return RUN_SPEED if wants_run() else WALK_SPEED
+
+
+## 想跑并且体力够（体力耗尽后要缓过气才能再跑，2.4）
+func wants_run() -> bool:
 	var run := Input.is_action_pressed("sprint") or touch_move.length() >= TOUCH_RUN_THRESHOLD
-	return RUN_SPEED if run else WALK_SPEED
+	return run and (melee == null or melee.can_sprint())
 
 
 func _physics_process(delta: float) -> void:
@@ -119,6 +130,7 @@ func _physics_process(delta: float) -> void:
 	dir.y = 0.0
 	dir = dir.normalized() * minf(input.length(), 1.0)
 	var target := dir * current_speed(input)
+	running = not crouching and is_on_floor() and input.length() > 0.1 and wants_run()
 	var accel := GROUND_ACCEL if is_on_floor() else AIR_ACCEL
 	var h := Vector2(velocity.x, velocity.z).move_toward(Vector2(target.x, target.z), accel * delta)
 	velocity.x = h.x

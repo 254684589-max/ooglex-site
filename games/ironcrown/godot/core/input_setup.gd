@@ -12,6 +12,8 @@ const ACTIONS := {
 	"interact": [KEY_E],          # 交互：对话、开门、拾取（1.3）
 	"perf_toggle": [KEY_F3],      # 性能浮层（1.5）
 	"quest_log": [KEY_J],         # 任务日志（2.3）
+	"sheathe": [KEY_R],           # 拔剑 / 收剑（2.4）
+	"attack_key": [KEY_F],        # 攻击的键盘键（2.4；主要是鼠标左键，在 main 里处理）
 	"pause": [KEY_ESCAPE],
 }
 

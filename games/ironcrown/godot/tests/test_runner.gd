@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -128,6 +128,8 @@ func test_ui() -> void:
 	texts.append_array(Frostford.VIEW_NAMES)
 	texts.append_array(TestRange.NPC_LINES)
 	texts.append_array(Frostford.WATCH_LINES)
+	# 近战（2.4）：触屏按钮、体力条、木桩假人上的字
+	texts.append("攻体力 / 0123456789 · 喘息中命中次 · 最高左键（手机点「攻」）出剑重击 −木桩假人")
 	# 任务日志（2.3）：任务名、简介、目标、线索、提示语
 	var qd := GameState.quest_data()
 	texts.append("任务日志主线支线关闭（已完成）当前目标：线索：这件事已经办完了。还没有任务◆新任务：（按J查看）（点「任务」查看）任务更新：✓任务完成：◇新线索已记入任务日志▶")
@@ -947,3 +949,174 @@ func test_quests() -> void:
 	check(main.player.interactor.target is Npc and main.player.interactor.target.display_name == "管家", "领主宅邸门口站着管家，可以交谈")
 	await free_main(main)
 	GameState.new_game(1)
+
+
+func melee_tick(sec: float) -> void:
+	await seconds(sec)
+
+
+func test_melee() -> void:
+	# 伤害公式（GDD.md 6.3）
+	check(DamageCalc.compute(10.0, 5, 15, "light") == 12, "伤害公式：短剑 10 × (1 + 力量 5 × 0.03 + 剑术 15 × 0.005) = 12（轻击）")
+	check(DamageCalc.compute(10.0, 5, 15, "heavy") == 22, "重击 × 1.8 = 22")
+	check(DamageCalc.compute(10.0, 0, 0, "light", true) == 20, "对方失衡时伤害加倍（10 → 20）")
+	check(DamageCalc.compute(10.0, 0, 0, "light", false, 4.0) == 8, "护甲 4 减 2 点")
+	check(DamageCalc.compute(10.0, 0, 0, "light", false, 30.0) == 2, "护甲再高也至少造成 20%")
+	GameState.new_game(1)
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var dummy: TrainingDummy = null
+	for c in main.world.get_children():
+		if c is TrainingDummy:
+			dummy = c
+	check(dummy != null and dummy.is_in_group("damageable") and dummy.collision_layer & 8 != 0, "测试场有木桩假人（物理层 4「可受击」）")
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	check(m.state == Melee.State.SHEATHED and not m.view.visible, "开局剑在鞘里，手里看不到武器")
+	check(not main.hud.stamina_visible(), "收着剑、体力满：不显示体力条")
+	m.press()
+	m.release()
+	check(m.state == Melee.State.DRAWING, "收着剑时按攻击：先拔剑，不直接出招")
+	await melee_tick(0.5)
+	check(m.state == Melee.State.IDLE and m.view.visible and m.drawn(), "拔剑完成，手里出现短剑")
+	check(main.hud.stamina_visible() and main.hud.stamina_label.text.begins_with("体力 100"), "拔剑后左下角显示体力条和数值")
+	var tip: Vector3 = m.view.to_global(Vector3(0, 0.7, 0))
+	check(p.camera.is_position_in_frustum(m.view.global_position) and p.camera.is_position_in_frustum(tip), "持剑姿势：剑柄和剑尖都在画面里")
+	var kinds: Array = []
+	m.swung.connect(func(k: String): kinds.append(k))
+	var hits: Array = []
+	m.hit.connect(func(t: Node, info: Dictionary): hits.append([t, info]))
+	# 轻击：点一下
+	m.press()
+	await frames(2)
+	m.release()
+	check(m.state == Melee.State.WINDUP and kinds == ["light"], "点一下 = 轻击（起手）")
+	var scale_seen := []
+	for i in 30:
+		await get_tree().process_frame
+		scale_seen.append(Engine.time_scale)
+		if not hits.is_empty():
+			break
+	check(hits.size() == 1 and hits[0][0] == dummy, "轻击在命中帧打中前方 1.6 米的木桩")
+	check(dummy.hits == 1 and dummy.best == 12 and hits[0][1].damage == 12, "木桩记下这一击：12 点（与公式一致）")
+	check(m.stop_left > 0.0 and dummy.stop_left > 0.0 and scale_seen.all(func(x): return x == 1.0), "命中停顿只冻结挥剑与木桩，不改全局时间流速")
+	check(dummy.numbers.size() == 1 and (dummy.numbers[0][0] as Label3D).text == "−12", "木桩头上冒出伤害数字「−12」")
+	check(main.hud.marker_left > 0.0, "准星闪成 ×（命中提示不只靠颜色）")
+	check(is_equal_approx(m.stamina, 88.0), "轻击消耗 12 点体力（剩 %.1f）" % m.stamina)
+	await melee_tick(0.7)
+	check(m.state == Melee.State.IDLE, "收招后回到持剑姿势")
+	# 两段连击：出招中再点一下
+	var h0 := dummy.hits
+	m.press()
+	m.release()
+	await melee_tick(0.15)
+	m.press()
+	m.release()
+	await melee_tick(0.9)
+	check(kinds.size() == 3 and dummy.hits == h0 + 2, "出招中再点一下：接第二段，两段都命中（共 %d 次）" % dummy.hits)
+	check(m.combo == 0 and m.state == Melee.State.IDLE, "两段打完连击归零")
+	# 连点第三下：最多两段（剑术 25 后三段在 2.7）
+	m.press(); m.release()
+	await melee_tick(0.15)
+	m.press(); m.release()
+	await melee_tick(0.3)
+	m.press(); m.release()
+	await melee_tick(1.2)
+	var n_after := kinds.size()
+	check(n_after == 5 or n_after == 6, "一套最多两段；第三下要等收招后才算新的一套（出招 %d 次）" % (n_after - 3))
+	await melee_tick(0.8)
+	# 重击：按住 0.35 秒以上松开
+	m.stamina = Melee.STAMINA_MAX
+	var best0 := dummy.best
+	m.press()
+	await melee_tick(0.45)
+	check(m.state == Melee.State.CHARGE and m.held >= Melee.HEAVY_HOLD, "按住攻击：举剑蓄力")
+	m.release()
+	check(kinds.back() == "heavy", "按住 0.35 秒以上松开 = 重击")
+	await melee_tick(0.3)
+	check(hits.back()[1].kind == "heavy" and hits.back()[1].damage == 22 and dummy.best == maxi(best0, 22), "重击打中木桩：22 点")
+	check(is_equal_approx(m.stamina, 75.0), "重击消耗 25 点体力（剩 %.1f）" % m.stamina)
+	await melee_tick(0.8)
+	# 背对木桩、离得太远：打空
+	var hn := dummy.hits
+	p.rotation.y += PI
+	await physics(2)
+	m.press(); m.release()
+	await melee_tick(0.7)
+	check(dummy.hits == hn and m.last_hit.is_empty(), "背对木桩挥剑：打空")
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 3.0), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.press(); m.release()
+	await melee_tick(0.7)
+	check(dummy.hits == hn, "离木桩 3 米（超出 2 米剑程）：打空")
+	# 中间隔着墙：放一堵墙在玩家与木桩之间
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	var wall := Blocks.box(main.world, Vector3(2.0, 2.5, 0.1), TestRange.DUMMY_POS + Vector3(0, 1.25, 0.55), Blocks.mat(Color.GRAY))
+	await physics(2)
+	m.press(); m.release()
+	await melee_tick(0.7)
+	check(dummy.hits == hn, "中间隔着墙：打不到墙后的木桩")
+	wall.queue_free()
+	await physics(2)
+	# 体力：耗尽后出招变慢、不能跑，缓过气才恢复
+	m.stamina = 5.0
+	m.press(); m.release()
+	check(m.speed == Melee.TIRED_SPEED and m.exhausted and m.stamina == 0.0, "体力不够一击：照样出招但变慢，体力见底")
+	await frames(2)                   # 刚从物理帧回来：同一帧的 process_frame 先于界面的 _process，等两帧
+	check(main.hud.stamina_label.text.contains("喘息中"), "体力条写明「喘息中」")
+	Input.action_press("sprint")
+	Input.action_press("move_back")
+	await physics(10)
+	check(not p.running and not p.wants_run(), "体力耗尽时按住 Shift 也跑不起来")
+	Input.action_release("sprint")
+	Input.action_release("move_back")
+	await melee_tick(2.0)
+	check(not m.exhausted and m.stamina >= Melee.RECOVER_AT, "停手一会儿体力恢复、缓过气（%.0f）" % m.stamina)
+	# 跑步消耗体力
+	m.stamina = Melee.STAMINA_MAX
+	await place(p, -3.0, 8.0)
+	Input.action_press("sprint")
+	await hold("move_forward", 1.0)
+	Input.action_release("sprint")
+	check(m.stamina < Melee.STAMINA_MAX - 8.0, "跑 1 秒消耗体力（剩 %.0f）" % m.stamina)
+	# 蓄力中打开暂停菜单：不攒着重击
+	m.press()
+	await melee_tick(0.2)
+	main.open_pause()
+	check(m.state != Melee.State.CHARGE and not m.pressed, "蓄力时打开菜单：放弃蓄力")
+	main.close_pause()
+	await melee_tick(0.4)
+	# 收剑
+	m.toggle_draw()
+	await melee_tick(0.5)
+	check(m.state == Melee.State.SHEATHED and not m.view.visible, "R 收剑：武器放下并隐藏")
+	# 触屏「攻」按钮：点按轻击、按住重击
+	var t: TouchControls = main.touch
+	t.visible = true
+	var bc: Dictionary = t.button_centers()
+	check(bc.has("attack") and t.button_at(bc.attack) == "attack", "触屏有「攻」按钮")
+	var others := ["jump", "crouch"]
+	check(others.all(func(k): return bc[k].distance_to(bc.attack) > TouchControls.BTN_R * 2.5), "「攻」不和「跳」「蹲」挤在一起")
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	t._input(touch_ev(3, bc.attack, true))
+	t._input(touch_ev(3, bc.attack, false))
+	await melee_tick(0.5)
+	check(m.drawn(), "收着剑时点「攻」：拔剑")
+	var k0 := kinds.size()
+	t._input(touch_ev(3, bc.attack, true))
+	await melee_tick(0.45)
+	t._input(touch_ev(3, bc.attack, false))
+	check(kinds.size() == k0 + 1 and kinds.back() == "heavy", "按住「攻」0.35 秒以上松开 = 重击")
+	await melee_tick(0.8)
+	t._input(touch_ev(3, bc.attack, true))
+	await frames(2)
+	t._input(touch_ev(3, bc.attack, false))
+	check(kinds.back() == "light", "点一下「攻」= 轻击")
+	await melee_tick(0.6)
+	await free_main(main)
+	# 霜渡镇：更夫岗哨对面有木桩，机位 5 正对着它
+	main = await make_main(false)
+	main.set_view(5)
+	await physics(4)
+	var fd: Node3D = main.player.melee.find_target()
+	check(fd is TrainingDummy and fd.global_position.distance_to(Frostford.DUMMY_POS) < 0.01, "霜渡镇机位 5：剑程内正对木桩假人")
+	await free_main(main)

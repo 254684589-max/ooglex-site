@@ -25,6 +25,7 @@ const TUNNEL_LEN := 4.0
 const NPC_POS := Vector3(0, 0, 1.5)
 const TABLE_POS := Vector3(-3, 0, 1.5)
 const TABLE_H := 0.8
+const DUMMY_POS := Vector3(3, 0, 1.5)   # 木桩假人（2.4 近战）
 const DOOR_WALL_Z := 12.0
 const DOOR_GAP_X := 0.0          # 能开的木门（门洞 1.0 米）
 const LOCKED_GAP_X := 3.5        # 锁着的门
@@ -83,6 +84,9 @@ static func build(parent: Node3D) -> Transform3D:
 	var key := Pickup.make("iron_key", "铁钥匙", Color("8a8e96"), Vector3(0.2, 0.04, 0.08))
 	key.position = TABLE_POS + Vector3(0.35, TABLE_H, 0)
 	parent.add_child(key)
+	var dummy := TrainingDummy.new()
+	dummy.position = DUMMY_POS
+	parent.add_child(dummy)
 	# 身后一堵墙（x -6..6）：两个 1.0 米门洞，一扇能开，一扇锁着
 	var wall_h := 2.6
 	var gaps := [DOOR_GAP_X, LOCKED_GAP_X]
