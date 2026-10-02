@@ -1,5 +1,7 @@
 name: Validate WINDOW V1.0 Transcode Catalog
 
+# Current-head V1 validation
+
 on:
   push:
     branches: [window-v1.0-quality-gates]
