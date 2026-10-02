@@ -1696,6 +1696,115 @@ def main() -> int:
             except Exception as exc:
                 print(f"warn: global skip {title}: {exc}", file=sys.stderr)
 
+    if len(items) < target and bool(cfg.get("fallback_local_enabled", False)):
+        fallback_limit = max(0, config_int(cfg, "fallback_local_location_scan_limit", 0))
+        fallback_locations = list(cfg.get("locations", []))[:fallback_limit]
+        print(
+            f"global-first shortfall={target-len(items)}; "
+            f"starting local fallback across {len(fallback_locations)} locations"
+        )
+
+        for loc in fallback_locations:
+            if len(items) >= target:
+                break
+
+            city = str(loc["city"])
+            used_here = city_counts[city]
+            if used_here >= max_per_location:
+                continue
+
+            titles = themed_search_titles(loc, per_query=per_query, max_candidates=max_candidates, interval=interval)
+            if not titles:
+                continue
+            infos = image_infos(titles, interval=interval)
+
+            for title in titles:
+                if len(items) >= target or used_here >= max_per_location:
+                    break
+                info = infos.get(title)
+                if not info:
+                    continue
+
+                try:
+                    origin_mime = str(info.get("mime") or "").split(";", 1)[0].strip().lower()
+                    origin_url = str(info.get("url") or "")
+                    if origin_mime not in VIDEO_MIMES or not origin_url or origin_url in seen_urls or not license_ok(info):
+                        continue
+
+                    delivery, delivery_reasons = select_delivery_variant(info, cfg)
+                    if not delivery:
+                        rejected_size += 1
+                        continue
+                    profile = dict(delivery["profile"])
+                    technical_ok, technical_reasons = technical_gate(profile, cfg)
+                    if not technical_ok:
+                        rejected_technical += 1
+                        continue
+
+                    semantic_score, reasons = quality_score(info)
+                    if semantic_score < min_semantic:
+                        rejected_quality += 1
+                        continue
+                    fingerprint = scene_fingerprint(title)
+                    if fingerprint and fingerprint in seen_scenes:
+                        continue
+
+                    within, distance = geo_ok(info, loc, default_radius_km)
+                    if not within:
+                        rejected_geo += 1
+                        continue
+                    if not location_relevant(info, loc, distance):
+                        rejected_location += 1
+                        continue
+
+                    total_score, breakdown = v1_quality_score(info, profile, semantic_score, cfg)
+                    if total_score < min_quality:
+                        rejected_quality += 1
+                        continue
+
+                    delivery_url = str(delivery["url"])
+                    delivery_mime = str(delivery["mime"])
+                    size = int(delivery["bytes"])
+                    ext = ".mp4" if delivery_mime == "video/mp4" else (".ogv" if delivery_mime == "video/ogg" else ".webm")
+                    digest = hashlib.sha256(delivery_url.encode()).hexdigest()[:24]
+                    filename = digest + ext
+                    key = "media/" + filename
+                    if key in seen_keys:
+                        continue
+
+                    dest = media_dir / filename
+                    if not args.manifest_only and (not dest.exists() or dest.stat().st_size != size):
+                        tmp = dest.with_suffix(dest.suffix + ".part")
+                        if tmp.exists():
+                            tmp.unlink()
+                        got = download(delivery_url, tmp, max_bytes)
+                        tmp.replace(dest)
+                        size = got
+                        profile["size"] = size
+
+                    item = build_item(
+                        info, loc, key, size, semantic_score,
+                        reasons + technical_reasons + ["local-fallback", f"delivery:{delivery.get('transcode_key') or 'original'}"],
+                        profile, total_score, breakdown, labels, delivery
+                    )
+                    items.append(item)
+                    if fingerprint:
+                        seen_scenes.add(fingerprint)
+                    if not args.manifest_only:
+                        upload_plan.append({"local": str(dest), "key": key, "content_type": delivery_mime, "bytes": size})
+                    seen_urls.add(origin_url)
+                    seen_keys.add(key)
+                    used_here += 1
+                    city_counts[city] += 1
+                    distance_note = "" if distance is None else f" · {distance:.0f} km"
+                    print(
+                        f"fallback accepted {len(items):03d}/{target}: {item['name']} :: score={total_score} :: "
+                        f"{item['width']}x{item['height']} :: {item['duration_seconds']:.1f}s :: "
+                        f"{size/1024/1024:.1f} MiB{distance_note}"
+                    )
+                except Exception as exc:
+                    print(f"warn: fallback skip {title}: {exc}", file=sys.stderr)
+
     min_catalog = int(cfg.get("min_catalog") or 100)
     strict_target_count = bool(cfg.get("strict_target_count", False))
     required = target if strict_target_count else min(target, max(12, min_catalog))
