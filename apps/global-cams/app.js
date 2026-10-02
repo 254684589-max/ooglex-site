@@ -378,7 +378,8 @@ function buildViewerControls() {
     ['prev', '上一个', ''],
     ['toggle', '暂停', ''],
     ['next', '下一个', ''],
-    ['random', '随机窗口', 'random']
+    ['random', '随机窗口', 'random'],
+    ['close', '退出放大', 'close']
   ];
   for (const [action, label, extra] of controls) {
     const btn = document.createElement('button');
@@ -389,6 +390,22 @@ function buildViewerControls() {
     bar.appendChild(btn);
   }
   return bar;
+}
+
+function isViewerExpanded() {
+  return document.fullscreenElement === viewer ||
+    document.webkitFullscreenElement === viewer ||
+    viewer.classList.contains('is-expanded');
+}
+
+async function closeViewer() {
+  if (document.fullscreenElement === viewer && document.exitFullscreen) {
+    await document.exitFullscreen();
+  } else if (document.webkitFullscreenElement === viewer && document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+  viewer.classList.remove('is-expanded');
+  document.documentElement.style.overflow = '';
 }
 
 function updatePlayPauseButton() {
@@ -603,12 +620,56 @@ viewer.addEventListener('click', event => {
   else if (action === 'next') stepWindow(1);
   else if (action === 'random') randomWindow();
   else if (action === 'toggle') toggleCurrentVideo();
+  else if (action === 'close') void closeViewer();
 });
 $('#resetGlobe').addEventListener('click', focusTokyo);
 $('#zoomIn').addEventListener('click', () => zoomBy(0.72));
 $('#zoomOut').addEventListener('click', () => zoomBy(1.38));
 $('#fullscreen').addEventListener('click', () => toggleFullscreen(document.documentElement));
 $('#expandViewer').addEventListener('click', () => toggleFullscreen(viewer));
+
+let swipeStart = null;
+viewer.addEventListener('touchstart', event => {
+  if (!isViewerExpanded() || event.touches.length !== 1) return;
+  const t = event.touches[0];
+  swipeStart = { x: t.clientX, y: t.clientY };
+}, { passive: true });
+viewer.addEventListener('touchend', event => {
+  if (!isViewerExpanded() || !swipeStart || event.changedTouches.length !== 1) {
+    swipeStart = null;
+    return;
+  }
+  const t = event.changedTouches[0];
+  const dx = t.clientX - swipeStart.x;
+  const dy = t.clientY - swipeStart.y;
+  swipeStart = null;
+  if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.35) return;
+  stepWindow(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+document.addEventListener('keydown', event => {
+  if (!isViewerExpanded()) return;
+  const tag = String(event.target && event.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || event.ctrlKey || event.metaKey || event.altKey) return;
+
+  if (event.key === 'ArrowLeft') {
+    event.preventDefault();
+    stepWindow(-1);
+  } else if (event.key === 'ArrowRight') {
+    event.preventDefault();
+    stepWindow(1);
+  } else if (event.key === ' ' || event.code === 'Space') {
+    event.preventDefault();
+    toggleCurrentVideo();
+  } else if (event.key === 'r' || event.key === 'R') {
+    event.preventDefault();
+    randomWindow();
+  } else if (event.key === 'Escape' && viewer.classList.contains('is-expanded')) {
+    event.preventDefault();
+    void closeViewer();
+  }
+});
+
 addEventListener('resize', sizeGlobe);
 document.addEventListener('fullscreenchange', () => {
   sizeGlobe();
