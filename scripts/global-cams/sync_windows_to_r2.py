@@ -142,6 +142,13 @@ def strip_html(value: str) -> str:
     value = re.sub(r"<[^>]+>", " ", value)
     return re.sub(r"\s+", " ", value).strip()
 
+def config_int(cfg: dict, key: str, default: int) -> int:
+    """Read an integer config value without treating an explicit zero as missing."""
+    if key not in cfg or cfg.get(key) is None:
+        return int(default)
+    return int(cfg[key])
+
+
 
 def norm(value: str) -> str:
     return strip_html(value).lower().replace("_", " ")
@@ -1496,7 +1503,9 @@ def main() -> int:
     rejected_location = 0
     rejected_size = 0
 
-    local_locations = list(cfg.get("locations", []))[:int(cfg.get("local_location_scan_limit") or 36)]
+    local_scan_limit = max(0, config_int(cfg, "local_location_scan_limit", 36))
+    local_locations = list(cfg.get("locations", []))[:local_scan_limit]
+    print(f"local scenic scan locations={len(local_locations)} (configured={local_scan_limit})")
     for loc in local_locations:
         if len(items) >= target:
             break
