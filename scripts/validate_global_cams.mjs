@@ -37,6 +37,8 @@ ok(html.includes('data-sort="featured"') && html.includes('data-sort="latest"') 
 ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
 ok(html.includes('WINDOW 播放列表'), 'WINDOW playlist label missing');
 ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
+ok(!html.includes('display:grid!important;grid-template-columns:repeat(4'), 'mobile viewer controls must remain hidden until expanded');
+ok(html.includes('.viewer:fullscreen .viewer-controls,.viewer:-webkit-full-screen .viewer-controls,.viewer.is-expanded .viewer-controls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}'), 'mobile expanded viewer controls grid missing');
 
 ok(!html.includes('LIVE 实时'), 'LIVE mode still present in HTML');
 ok(!html.includes('公开摄像头'), 'camera copy still present in HTML');
