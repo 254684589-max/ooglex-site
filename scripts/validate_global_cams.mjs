@@ -22,13 +22,16 @@ try { new Function(windowWorkerForParse); } catch (e) { failures.push('global-wi
 
 for (const id of [
   'stage','globe','playlist','viewer','windowName','windowMeta','openSource','expandViewer',
-  'search','randomWindow','randomTop','zoomIn','zoomOut','resetGlobe','resetView',
+  'search','zoomIn','zoomOut','resetGlobe',
   'fullscreen','status','count','listCount','centerCoords','sidebar','playlistTabs'
 ]) {
   ok(html.includes('id="' + id + '"'), 'missing HTML id #' + id);
 }
 
-ok(html.includes('环球实景 <span>V1.0</span>'), 'V1.0 label missing');
+ok(html.includes('环球实景 <span>V1.1</span>'), 'V1.1 label missing');
+ok(!html.includes('回到东京'), 'deprecated 回到东京 control still present');
+ok(!html.includes('id="randomTop"') && !html.includes('id="randomWindow"') && !html.includes('id="resetView"'), 'deprecated top/list controls still present');
+ok(html.includes('viewer-controls'), 'fullscreen viewer controls style missing');
 ok((html.match(/class="sort-btn/g) || []).length === 3, 'featured/latest/popular tabs missing');
 ok(html.includes('data-sort="featured"') && html.includes('data-sort="latest"') && html.includes('data-sort="popular"'), 'sort modes incomplete');
 ok(html.includes('WINDOW ONLY'), 'WINDOW-only badge missing');
@@ -59,6 +62,11 @@ ok(app.includes('video.muted = true'), 'WINDOW muted autoplay guard missing');
 ok(app.includes('video.loop = true'), 'WINDOW loop missing');
 ok(app.includes('video.playsInline = true'), 'WINDOW mobile inline playback missing');
 ok(app.includes('randomWindow'), 'WINDOW random picker missing');
+ok(app.includes('stepWindow(-1)') && app.includes('stepWindow(1)'), 'fullscreen previous/next navigation missing');
+ok(app.includes('toggleCurrentVideo'), 'fullscreen play/pause control missing');
+ok(app.includes('buildViewerControls'), 'fullscreen control builder missing');
+ok(app.includes('getScreenCoords'), 'selected marker screen-coordinate tracking missing');
+ok(app.includes('angularDistanceDeg'), 'selected marker visibility guard missing');
 ok(app.includes('showWindow'), 'WINDOW selection renderer missing');
 ok(app.includes("'/stats/popular?days=7&limit=500'") || app.includes("'/stats/popular?days=7&limit=500"), 'popular stats fetch missing');
 ok(app.includes("'/stats/play'") || app.includes("'/stats/play"), 'play stats POST missing');
@@ -152,8 +160,8 @@ ok(windowWorkflow.includes("'data/global-windows/zh_labels.json'"), 'Chinese lab
 ok(!/WINDY_WEBCAMS_API_KEY\s*=\s*['"][A-Za-z0-9]{20,}/.test(html + app + config), 'camera API key literal detected');
 
 if (failures.length) {
-  console.error('Global WINDOW V1.0 validation failed:');
+  console.error('Global WINDOW V1.1 validation failed:');
   failures.forEach(x => console.error(' - ' + x));
   process.exit(1);
 }
-console.log('Global WINDOW V1.0 validation passed.');
+console.log('Global WINDOW V1.1 validation passed.');

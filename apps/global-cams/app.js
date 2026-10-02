@@ -14,6 +14,7 @@ const sourceLink = $('#openSource');
 const attribution = $('#attribution');
 const centerCoords = $('#centerCoords');
 const playlistTabs = $('#playlistTabs');
+const crosshair = $('.crosshair');
 const cfg = window.OOGLEX_GLOBAL_CAMS || {};
 const WINDOW_CDN_BASE = String(cfg.windowCdnBase || '').replace(/\/$/, '');
 
@@ -21,6 +22,7 @@ const TOKYO = Object.freeze({ lat: 35.6762, lng: 139.6503, altitude: 1.45 });
 let windows = [];
 let filtered = [];
 let selectedId = '';
+let selectedWindow = null;
 let catalogSource = 'fallback';
 let activeSort = 'featured';
 let popularity = new Map();
@@ -34,15 +36,19 @@ const globe = Globe()(globeEl)
   .globeImageUrl('../radio/vendor/earth-blue-marble.jpg')
   .backgroundColor('#05070f')
   .pointAltitude(0.015)
-  .pointRadius(d => itemKey(d) === selectedId ? 0.29 : 0.20)
+  .pointRadius(d => itemKey(d) === selectedId ? 0.34 : 0.26)
   .pointColor(d => itemKey(d) === selectedId ? '#ffd36b' : '#68a8ff')
   .pointLabel(d => '<b>' + escapeHtml(d.name || '沉浸窗口') + '</b><br>' + escapeHtml(itemSubLabel(d)))
+  .onPointHover(d => { globeEl.style.cursor = d ? 'pointer' : 'grab'; })
   .onPointClick(d => showWindow(d, { focus: true, reveal: true }));
 
 const controls = globe.controls();
 controls.autoRotate = false;
 controls.enableDamping = true;
-controls.addEventListener('change', updateCenterReadout);
+controls.addEventListener('change', () => {
+  updateCenterReadout();
+  syncSelectionRing();
+});
 globe.pointOfView(TOKYO, 0);
 updateCenterReadout();
 void loadWindows();
@@ -182,6 +188,7 @@ function listSubLabel(d) {
 
 function render() {
   globe.pointsData(filtered);
+  requestAnimationFrame(syncSelectionRing);
   count.textContent = filtered.length + ' 个 WINDOW';
   listCount.textContent = filtered.length + ' 个窗口';
 
@@ -225,6 +232,7 @@ function render() {
 function showWindow(d, options = {}) {
   if (!d) return;
   selectedId = itemKey(d);
+  selectedWindow = d;
 
   $('#windowName').textContent = d.name || '沉浸窗口';
   $('#windowMeta').textContent = itemSubLabel(d);
@@ -249,7 +257,11 @@ function showWindow(d, options = {}) {
     setStatus('该 WINDOW 暂时无法播放，可查看原始素材来源。', 'warn');
   });
   armPlayReport(video, d);
+  video.addEventListener('play', updatePlayPauseButton);
+  video.addEventListener('pause', updatePlayPauseButton);
   viewer.appendChild(video);
+  viewer.appendChild(buildViewerControls());
+  updatePlayPauseButton();
 
   const source = safeHttpUrl(d.source_url);
   if (source) {
@@ -275,6 +287,8 @@ function showWindow(d, options = {}) {
   }
 
   render();
+  requestAnimationFrame(syncSelectionRing);
+  if (options.focus && !prefersReducedMotion()) setTimeout(syncSelectionRing, 700);
   if (options.reveal) {
     const row = playlist.querySelector('[data-key="' + cssEscape(selectedId) + '"]');
     if (row) row.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
@@ -323,8 +337,102 @@ async function reportPlay(d) {
 function randomWindow() {
   const pool = filtered.length ? filtered : windows;
   if (!pool.length) return;
-  const d = pool[Math.floor(Math.random() * pool.length)];
+  let d = pool[Math.floor(Math.random() * pool.length)];
+  if (pool.length > 1 && itemKey(d) === selectedId) {
+    const current = pool.findIndex(x => itemKey(x) === selectedId);
+    d = pool[(current + 1 + Math.floor(Math.random() * (pool.length - 1))) % pool.length];
+  }
   showWindow(d, { focus: true, reveal: true });
+}
+
+function stepWindow(delta) {
+  const pool = filtered.length ? filtered : windows;
+  if (!pool.length) return;
+  let index = pool.findIndex(d => itemKey(d) === selectedId);
+  if (index < 0) index = 0;
+  index = (index + delta + pool.length) % pool.length;
+  showWindow(pool[index], { focus: true, reveal: true });
+}
+
+function currentVideo() {
+  return viewer.querySelector('video');
+}
+
+function toggleCurrentVideo() {
+  const video = currentVideo();
+  if (!video) return;
+  if (video.paused) {
+    const p = video.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  } else {
+    video.pause();
+  }
+  updatePlayPauseButton();
+}
+
+function buildViewerControls() {
+  const bar = document.createElement('div');
+  bar.className = 'viewer-controls';
+  bar.setAttribute('aria-label', 'WINDOW 播放控制');
+  const controls = [
+    ['prev', '上一个', ''],
+    ['toggle', '暂停', ''],
+    ['next', '下一个', ''],
+    ['random', '随机窗口', 'random']
+  ];
+  for (const [action, label, extra] of controls) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'viewer-control' + (extra ? ' ' + extra : '');
+    btn.dataset.viewerAction = action;
+    btn.textContent = label;
+    bar.appendChild(btn);
+  }
+  return bar;
+}
+
+function updatePlayPauseButton() {
+  const btn = viewer.querySelector('[data-viewer-action="toggle"]');
+  if (!btn) return;
+  const video = currentVideo();
+  const paused = !video || video.paused;
+  btn.textContent = paused ? '播放' : '暂停';
+  btn.setAttribute('aria-label', paused ? '播放当前 WINDOW' : '暂停当前 WINDOW');
+  btn.disabled = !video;
+}
+
+function syncSelectionRing() {
+  if (!crosshair || !selectedWindow || typeof globe.getScreenCoords !== 'function') {
+    if (crosshair) crosshair.classList.remove('active');
+    return;
+  }
+  const lat = Number(selectedWindow.lat);
+  const lng = Number(selectedWindow.lng);
+  const pov = globe.pointOfView();
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) ||
+      angularDistanceDeg(lat, lng, Number(pov.lat) || 0, Number(pov.lng) || 0) > 92) {
+    crosshair.classList.remove('active');
+    return;
+  }
+  const pt = globe.getScreenCoords(lat, lng, 0.015);
+  if (!pt || !Number.isFinite(pt.x) || !Number.isFinite(pt.y) ||
+      pt.x < -30 || pt.y < -30 || pt.x > stage.clientWidth + 30 || pt.y > stage.clientHeight + 30) {
+    crosshair.classList.remove('active');
+    return;
+  }
+  crosshair.style.left = pt.x + 'px';
+  crosshair.style.top = pt.y + 'px';
+  crosshair.classList.add('active');
+}
+
+function angularDistanceDeg(lat1, lng1, lat2, lng2) {
+  const toRad = v => v * Math.PI / 180;
+  const a1 = toRad(lat1);
+  const a2 = toRad(lat2);
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a1) * Math.cos(a2) * Math.sin(dLng / 2) ** 2;
+  return 2 * Math.atan2(Math.sqrt(h), Math.sqrt(Math.max(0, 1 - h))) * 180 / Math.PI;
 }
 
 function resolveWindowVideoUrl(d) {
@@ -401,12 +509,24 @@ async function toggleFullscreen(target) {
   try {
     if (document.fullscreenElement) {
       await document.exitFullscreen();
-    } else if (target && target.requestFullscreen) {
-      await target.requestFullscreen();
-    } else {
-      setStatus('当前浏览器不支持全屏 API。', 'warn');
+      return;
     }
+    if (target && target.requestFullscreen) {
+      await target.requestFullscreen();
+      return;
+    }
+    if (target === viewer) {
+      viewer.classList.toggle('is-expanded');
+      document.documentElement.style.overflow = viewer.classList.contains('is-expanded') ? 'hidden' : '';
+      return;
+    }
+    setStatus('当前浏览器不支持全屏 API。', 'warn');
   } catch (err) {
+    if (target === viewer) {
+      viewer.classList.toggle('is-expanded');
+      document.documentElement.style.overflow = viewer.classList.contains('is-expanded') ? 'hidden' : '';
+      return;
+    }
     setStatus('无法进入全屏：' + safeMessage(err), 'warn');
   }
 }
@@ -414,6 +534,7 @@ async function toggleFullscreen(target) {
 function sizeGlobe() {
   globe.width(stage.clientWidth).height(stage.clientHeight);
   updateCenterReadout();
+  requestAnimationFrame(syncSelectionRing);
 }
 
 function setStatus(message, kind) {
@@ -474,14 +595,23 @@ playlistTabs.addEventListener('click', event => {
   if (activeSort === 'popular') void loadPopularity();
   applySearch();
 });
-$('#randomWindow').addEventListener('click', randomWindow);
-$('#randomTop').addEventListener('click', randomWindow);
-$('#resetView').addEventListener('click', focusTokyo);
+viewer.addEventListener('click', event => {
+  const btn = event.target.closest('[data-viewer-action]');
+  if (!btn) return;
+  const action = btn.dataset.viewerAction;
+  if (action === 'prev') stepWindow(-1);
+  else if (action === 'next') stepWindow(1);
+  else if (action === 'random') randomWindow();
+  else if (action === 'toggle') toggleCurrentVideo();
+});
 $('#resetGlobe').addEventListener('click', focusTokyo);
 $('#zoomIn').addEventListener('click', () => zoomBy(0.72));
 $('#zoomOut').addEventListener('click', () => zoomBy(1.38));
 $('#fullscreen').addEventListener('click', () => toggleFullscreen(document.documentElement));
 $('#expandViewer').addEventListener('click', () => toggleFullscreen(viewer));
 addEventListener('resize', sizeGlobe);
-document.addEventListener('fullscreenchange', sizeGlobe);
+document.addEventListener('fullscreenchange', () => {
+  sizeGlobe();
+  updatePlayPauseButton();
+});
 })();
