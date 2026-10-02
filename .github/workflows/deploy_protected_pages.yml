@@ -144,3 +144,6 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
+
+      - name: Verify live Global Cams V1.1
+        run: node scripts/verify_global_cams_live.mjs
