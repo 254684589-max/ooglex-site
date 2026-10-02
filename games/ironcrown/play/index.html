@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#101820">
-<title>铁冠之争 THE IRON CROWN · 灰盒原型 | Ooglex 游戏中心</title>
+<title>铁冠之争 THE IRON CROWN · 技术原型 | Ooglex 游戏中心</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="《铁冠之争》THE IRON CROWN 开发中的灰盒原型（占位几何体）：原创第一人称中世纪权谋角色扮演游戏。">
+<meta name="description" content="《铁冠之争》THE IRON CROWN 开发中的技术原型：原创第一人称中世纪权谋角色扮演游戏，雾夜里的霜渡镇主街（人物为占位）。">
 <link rel="canonical" href="https://www.ooglex.com/games/ironcrown/play/">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <style>
@@ -64,18 +64,18 @@ body { color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, "PingFang
   <a class="wl-back" id="wl-back" href="/games/hub/">← 返回游戏中心</a>
   <svg class="wl-hat" viewBox="0 0 128 128" aria-hidden="true"><path d="M24 92 L28 44 L46 62 L64 32 L82 62 L100 44 L104 92 Z" fill="#5e6670" stroke="#b8964e" stroke-width="4" stroke-linejoin="round"/><rect x="24" y="92" width="80" height="10" rx="2" fill="#b8964e"/><circle cx="64" cy="76" r="7" fill="#ffc873"/></svg>
   <div class="wl-title">铁冠之争</div>
-  <div class="wl-sub">THE IRON CROWN · 灰盒原型（开发中）</div>
+  <div class="wl-sub">THE IRON CROWN · 技术原型（开发中）</div>
   <div class="wl-bar indeterminate" id="wl-bar"><i id="wl-bar-fill"></i></div>
   <div class="wl-status" id="wl-status">正在准备……</div>
   <div class="wl-tip" id="wl-tip"></div>
   <div class="wl-portrait">手机建议横屏</div>
   <div class="wl-error" id="wl-error"></div>
-  <div class="wl-note">这是开发中的技术原型：画面全部为占位几何体，不代表最终美术。<br>首次打开需要下载约 40 MB 的游戏引擎，之后浏览器会缓存。</div>
+  <div class="wl-note">这是开发中的技术原型：人物是占位的胶囊，不代表最终美术。<br>首次打开需要下载约 52 MB（游戏引擎与贴图），之后浏览器会缓存。</div>
 </div>
 
-<script src="ic-cddfe5e2.js?v=33c94cb3"></script>
+<script src="ic-2c4d6d0b.js?v=33c94cb3"></script>
 <script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"ic-cddfe5e2","experimentalVK":false,"fileSizes":{"ic-cddfe5e2.pck":1080064,"ic-cddfe5e2.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"mainPack":"ic-cddfe5e2.pck"};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"ic-2c4d6d0b","experimentalVK":false,"fileSizes":{"ic-2c4d6d0b.pck":14850080,"ic-2c4d6d0b.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"mainPack":"ic-2c4d6d0b.pck"};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -89,7 +89,7 @@ const engine = new Engine(GODOT_CONFIG);
   const tips = [
     '老王死了，铁冠丢了，冬天不走了。',
     '烽燧的火不能熄。',
-    '当前是技术原型：只有一段静止的雾夜街道，画面全部是占位几何体。',
+    '当前是技术原型：可以在雾夜里的霜渡镇主街走动、和更夫说话，人物仍是占位。',
   ];
   let tipIndex = Math.floor(Math.random() * tips.length);
   function nextTip() { tip.textContent = tips[tipIndex % tips.length]; tipIndex += 1; }

@@ -54,7 +54,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(1200);
     await page.screenshot({ path: path.join(outDir, `ic-${name}.png`) });
     const overlayGone = await page.evaluate(() => !document.getElementById('wl-loading'));
-    const compat = !!ready && ready.includes('renderer=gl_compatibility') && ready.includes('web=true') && ready.includes('scene=street');
+    const compat = !!ready && ready.includes('renderer=gl_compatibility') && ready.includes('web=true') && ready.includes('scene=frostford');
     const dpr = await page.evaluate(() => devicePixelRatio);
     let moved = '', look = 'n/a', pauseOpen = '', pauseClose = 'n/a';
     if (!mobile) {
