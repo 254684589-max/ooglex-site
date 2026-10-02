@@ -9,7 +9,8 @@
 | 语法 | `tools/run_tests.sh` | PARSE OK |
 | 自动化测试 | 同上（新增 character 组 53 项；camera 组改 5 项、加 1 项；测试看门狗 120 → 240 秒；开测前重置第三人称设置） | **475 项全部通过**（421 → 475），无引擎报错、无退出泄漏 |
 | 动画库打包 | `godot --headless --path games/ironcrown/godot -s ../tools/build_character_anims.gd` | 14 个动作 → `ual_core.res` 954 KB；测试逐条核对「映射里列的动作库里都有、库里没有多余的」（第一次就抓到旧库里多了一个删掉的 `Hit_Head`，重新打包） |
-| 网页导出 | `tools/build_web.sh`（导出到临时目录，**没有改动已上线的 `play/`**） | 通过，**56.2 MB**（上一版 52.3 MB，人物模型 + 贴图 + 动画库约 +4 MB） |
+| 网页导出 | `tools/build_web.sh`（先导出到临时目录验证；上线时再导出到 `play/`） | 通过，**56.2 MB**（上一版 52.3 MB，人物模型 + 贴图 + 动画库约 +4 MB） |
+| 上线前复测 | 合并 `origin/main` 后 `tools/build_web.sh`（自动化测试 475 项通过）→ 用仓库里的 `play/`（`ic-69119856`）跑 `tools/smoke_web.js` | 三个宽度全部 PASS，0 报错、0 溢出（启动 3.0 / 2.6 / 2.6 秒）；合并提交 `12650cb`，部署运行 #1539 成功 |
 | 网页冒烟 | `tools/smoke_web.js`（加了人物检查）；先在仓库根目录起 `serve_gzip.py` | **三个宽度全部 PASS，0 报错、0 横向溢出**：1280×720 启动 3.0 秒、768×1024 2.6 秒、360×740 2.6 秒；三个宽度都切到第三人称后人物模型加载成功（`IC_AVATAR loaded=true`）、播待机（`role=idle`）；电脑再验证真实键盘按 F 拔剑（`idle_armed`）、按住 F 蓄力（`Sword_Attack` 停在最高处）、按住 Q 格挡（`block`），各截一张图 |
 | 离屏渲染看姿势 | `xvfb-run … godot --rendering-driver opengl3 -s ../tools/character_sheet.gd` | 本环境用 xvfb + Mesa 软件渲染能离屏截图，用它校准拿剑位置、检查九个动作的姿势（拼图见下） |
 | 站点资源版本 / 空白 / JSON / Python | `scripts/validate_asset_versions.py` / `git diff --check` / JSON 解析 / `python3 -m py_compile tools/patch_character_gltf.py` | 通过 |
