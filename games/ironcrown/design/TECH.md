@@ -101,6 +101,8 @@ godot/
 - **任务（2.3 已实现）**：`data/quests.json` 定义任务（阶段、目标、`advance_when` 自动推进）与线索；状态在 `GameState`（`quests` / `clues` / `inventory`），`quest_event` 信号驱动屏幕提示；对话的条件与效果白名单扩展了任务、线索、物品几类，校验时检查编号都存在。
 - **背包与搜刮（2.6 已实现）**：物品在 `data/items.json`；背包、装备、银币、搜刮记录在 `GameState`（`inventory` 是物品编号数组，同一物品可重复；`equipped` 部位 → 编号；`looted` 容器编号 → 剩下的东西），`inventory_changed` 信号驱动武器外观；
   面板外框共用 `ui/ui_kit.gd`。**坑**：自动换行的 Label 在第一次排版前按 0 宽度算最小高度，面板会被撑满整屏——先给宽度、排版一帧后再定滚动区高度。对话白名单加了 `silver`（条件）与 `pay`（效果）。
+- **成长与声望（2.7 已实现）**：`data/progression.json`；`GameState.train(技能, 进度)` 是唯一的涨技能入口（命中、格挡、检定、搜刮、潜行都调它），专长效果只认 `PERK_EFFECTS` 白名单，各系统用 `has_perk()` 查；声望 `change_rep()` 发 `rep_changed` 信号。
+  **坑**：停掉处理（`PROCESS_MODE_DISABLED`）的物理体默认会被移出物理世界（`disable_mode = REMOVE`），测试里冻住的敌人砍不到，要改成 `DISABLE_MODE_KEEP_ACTIVE`；字体子集只有 GB2312 的几何符号（■□▲◆◇↑↓），没有 ▰▱▼。
 - 自动化测试遍历所有对话文件：每个节点可达、每个选项指向存在的节点、每个旗标都在 `flags.json` 里登记。
 
 ### 4.6 画面（参考图的雾夜）

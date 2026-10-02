@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -141,6 +141,18 @@ func test_ui() -> void:
 		if not str(id).begins_with("_"):
 			texts.append(str(GameState.items()[id].name) + str(GameState.items()[id].desc))
 	texts.append_array(GameState.SLOT_NAMES.values() + GameState.KIND_NAMES.values())
+	# 角色（2.7）：属性、技能、专长、势力与面板文字
+	var pd := GameState.progression()
+	for k in pd.attributes:
+		texts.append(str(pd.attributes[k].name) + str(pd.attributes[k].desc))
+	for k in pd.skills:
+		texts.append(str(pd.skills[k].name) + str(pd.skills[k].desc))
+		for pk in pd.skills[k].perks:
+			texts.append(str(pk.name) + str(pk.desc))
+	for k in pd.factions:
+		texts.append(str(pd.factions[k].name))
+	texts.append_array([main.hud.TITLE_SHORT, "角色等级再提升次技能升级可分配属性点＋给加 1 点生命上限体力上限负重上限护甲技能（用什么涨什么）◆◇「」（到解锁）声望敌视冷淡中立友善信任（+-）■□｜",
+		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
 	texts.append("背包搜刮：护甲负重斤银币超重：不能跑装备（空）（已装备）×卸下使用选一件东西看看。伤害部走动更吵不能丢弃值什么都没有了。全部拿走拿到：、没有装备武器（点「背包」按 I 打开背包装备）打开破木箱补给箱")
 	for k in Enemy.types():
 		if not str(k).begins_with("_"):
@@ -776,6 +788,7 @@ func test_checks() -> void:
 	GameState.new_game(7)
 	var wins := 0
 	for i in 600:
+		GameState.skills.speech = 10          # 检定会练技能（2.7），这里只测掷骰分布，每次复原
 		if GameState.check("dist_%d" % i, "speech", 12):
 			wins += 1
 	check(wins > 360 and wins < 480, "600 次把握 70%% 的检定成功 %d 次（约 70%%）" % wins)
@@ -1347,7 +1360,8 @@ func test_enemies() -> void:
 		m.press()
 		m.release()
 		await seconds(0.3)
-		check(hp0 - a.hp == 24, "失衡时挨一记轻击：伤害加倍 12 → 24（实际 %d）" % (hp0 - a.hp))
+		var expect := DamageCalc.compute(10.0, GameState.strength, int(GameState.skills.blade), "light", true)
+		check(hp0 - a.hp == expect and expect >= 24, "失衡时挨一记轻击：伤害加倍（剑术 %d：%d，实际 %d）" % [GameState.skills.blade, expect, hp0 - a.hp])
 	await free_main(main)
 	# 剑手格挡轻击、重击破防；受重伤求饶 / 逃跑；倒下
 	GameState.new_game(7)
@@ -1587,3 +1601,182 @@ func test_inventory() -> void:
 	check(GameState.silver == 7, "付 5 银币后剩 7")
 	GameState.silver = 3
 	check(not DialogueRunner.conds_ok([{"silver": 5}]), "只有 3 银币：塞钱的选项不出现")
+
+
+func test_growth() -> void:
+	check(GameState.validate_progression(GameState.progression()).is_empty(), "成长数据（data/progression.json）完整：%s" % [GameState.validate_progression(GameState.progression())])
+	var bad := GameState.progression().duplicate(true)
+	bad.skills.blade.perks.append({"at": 30, "name": "x", "desc": "x", "effect": "fly"})
+	check(GameState.validate_progression(bad).size() >= 2, "校验能抓出不对的门槛和不在白名单里的专长效果")
+	GameState.new_game(5)
+	check(GameState.strength == 5 and GameState.agility == 5 and GameState.constitution == 5 and GameState.wits == 3, "开局属性：力量 5、敏捷 5、体魄 5、机敏 3")
+	check(GameState.skills.blade == 15 and GameState.skills.stealth == 5 and GameState.skills.size() == 8, "八项技能，剑术 15")
+	check(GameState.get_rep("valen") == 10 and GameState.get_rep("outlaws") == -20 and GameState.rep.size() == 8, "八个势力：瓦伦家 +10（你的雇主）、无旗者 −20")
+	# 用什么涨什么
+	var ups: Array = []
+	GameState.skill_up.connect(func(sk, v): ups.append([sk, v]))
+	GameState.train("blade", 4.9)
+	check(GameState.skills.blade == 15 and is_equal_approx(GameState.skill_progress("blade"), 0.98), "剑术 15 → 16 要 5 点进度（2 + 15 × 0.2）")
+	GameState.train("blade", 0.1)
+	check(GameState.skills.blade == 16 and ups.back() == ["blade", 16], "攒够了：剑术升到 16")
+	var lv: Array = []
+	GameState.level_up.connect(func(l): lv.append(l))
+	GameState.train("survival", 100.0)
+	check(GameState.skill_ups >= 10 and GameState.level >= 2 and GameState.attr_points == GameState.level - 1 and lv.size() == GameState.level - 1, "技能累计提升 10 次升一级、得 1 个属性点（现在 %d 级）" % GameState.level)
+	# 属性
+	GameState.attr_points = 1
+	check(GameState.raise_attr("constitution") and GameState.constitution == 6 and GameState.health_max() == 104 and GameState.stamina_max() == 104.0, "加 1 点体魄：生命、体力上限各 +4")
+	check(not GameState.raise_attr("agility"), "没有属性点就加不了")
+	GameState.agility = 7
+	check(is_equal_approx(GameState.stamina_regen_mult(), 1.1), "敏捷 7：体力恢复快 10%")
+	# 专长
+	GameState.new_game(5)
+	var perks: Array = []
+	GameState.perk_unlocked.connect(func(sk, pk): perks.append(pk.name))
+	GameState.skills.blade = 24
+	GameState.train("blade", GameState.skill_need(24))
+	check(GameState.skills.blade == 25 and perks == ["连环"] and GameState.has_perk("blade", "combo3"), "剑术到 25：解锁「连环」")
+	GameState.skills.insight = 25
+	check(GameState.check_value("insight") == 25 + 6 + 5, "洞察到 25「察言」：洞察检定 +5")
+	GameState.skills.survival = 50
+	check(GameState.carry_limit() == 50.0, "生存 25「背夫」：负重上限 +10")
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		e.process_mode = Node.PROCESS_MODE_DISABLED
+	check(m.combo_max() == 3, "剑术 25：轻击可以连三段")
+	var chest: LootContainer = null
+	for c in main.get_tree().get_nodes_in_group("loot"):
+		if c.loot_id == "arena_chest":
+			chest = c
+	var s0 := GameState.silver
+	chest.take(-1)
+	check(GameState.silver == s0 + 8, "生存 50「搜刮老手」：补给箱 6 枚银币多拿 2 枚")
+	var sv0 := float(GameState.skill_xp.get("survival", 0.0))
+	chest.take(0)
+	check(float(GameState.skill_xp.get("survival", 0.0)) > sv0, "搜刮一件东西：生存涨进度")
+	# 反击（剑术 50）与定心（剑术 75）
+	GameState.skills.blade = 50
+	var a := arena_enemy(main, "a")
+	a.disable_mode = CollisionObject3D.DISABLE_MODE_KEEP_ACTIVE     # 冻住思考但留着碰撞：停了处理的物理体默认会从物理世界里拿掉，剑就砍不到
+	await place(p, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	m.block_press()
+	await seconds(0.5)
+	check(m.perfect_window() == Melee.PERFECT_WINDOW, "剑术 50：完美格挡时机还是 0.2 秒")
+	m.block_release()
+	m.block_press()
+	await frames(2)
+	m.receive_hit({"damage": 10, "kind": "light", "attacker": a})
+	check(m.counter_ready, "剑术 50「反击」：完美格挡后记下一次反击")
+	m.block_release()
+	await seconds(0.3)
+	var kinds: Array = []
+	m.swung.connect(func(k): kinds.append(k))
+	m.press()
+	m.release()
+	check(kinds == ["heavy"] and not m.counter_ready, "反击：点一下也是重击")
+	await seconds(0.8)
+	GameState.skills.blade = 75
+	check(m.perfect_window() == 0.3, "剑术 75「定心」：完美格挡时机放宽到 0.3 秒")
+	# 命中练技能：打木桩一半、打人全额；钝器用木棍
+	GameState.skills.blade = 30
+	GameState.skill_xp.blade = 0.0
+	a.data = a.data.duplicate()
+	a.data.block_chance = 0.0
+	a.hp = 50
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.5)
+	check(is_equal_approx(float(GameState.skill_xp.blade), Melee.TRAIN_HIT), "用剑砍中敌人：剑术涨 1 点进度（%.2f）" % float(GameState.skill_xp.blade))
+	GameState.add_item("club")
+	GameState.equip("club")
+	check(m.weapon_skill() == "blunt" and m.combo_max() == 2, "换上木棍：用钝器技能，「连环」只对剑有效")
+	GameState.skills.blunt = 25
+	a.hp = 50
+	a._enter(Enemy.State.COMBAT)
+	await seconds(0.6)
+	var hp0 := a.hp
+	m.press()
+	await seconds(0.45)
+	m.release()
+	await seconds(0.3)
+	check(a.state == Enemy.State.STAGGER and a.hp < hp0, "钝器 25「震骨」：木棍重击打中让对方失衡（%s，%d → %d）" % [a.state_name(), hp0, a.hp])
+	check(float(GameState.skill_xp.get("blunt", 0.0)) > 0.0, "用木棍打中：钝器涨进度")
+	await seconds(0.9)
+	# 轻步（潜行 25）：被察觉得慢
+	GameState.equip("short_sword")
+	a.state = Enemy.State.PATROL
+	a.suspicion = 0.0
+	put_enemy(a, Vector3(0, 0, -2), PI)
+	await place(p, 0.0, 3.0)
+	a._perceive(0.1)
+	var plain := a.suspicion
+	a.suspicion = 0.0
+	GameState.skills.stealth = 25
+	a._perceive(0.1)
+	check(plain > 0.0 and is_equal_approx(a.suspicion, plain * 0.7), "潜行 25「轻步」：敌人察觉的速度降低三成")
+	# 蹲着在没察觉你的敌人旁边走：潜行涨
+	GameState.skills.stealth = 5
+	GameState.skill_xp.stealth = 0.0
+	a.state = Enemy.State.PATROL
+	p.crouch_wanted = true
+	await physics(10)
+	await hold("move_left", 1.0)
+	check(float(GameState.skill_xp.get("stealth", 0.0)) > 0.3, "蹲着在没察觉你的敌人附近走动：潜行涨进度（%.2f）" % float(GameState.skill_xp.get("stealth", 0.0)))
+	p.crouch_wanted = false
+	# 声望
+	var reps: Array = []
+	GameState.rep_changed.connect(func(f, d, v): reps.append([f, d, v]))
+	a.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	check(GameState.get_rep("outlaws") == -25 and reps.back() == ["outlaws", -5, -25], "杀了一个无旗者：无旗者声望 −5")
+	check(main.hud.toast_label.text.contains("无旗者 · 声望下降 ↓（冷淡）"), "屏幕提示「无旗者 · 声望下降 ▼（冷淡）」（%s）" % main.hud.toast_label.text)
+	GameState.change_rep("valen", 500)
+	check(GameState.get_rep("valen") == 100, "声望最高 100")
+	check([GameState.rep_tier(-60), GameState.rep_tier(-20), GameState.rep_tier(0), GameState.rep_tier(20), GameState.rep_tier(60)] == ["敌视", "冷淡", "中立", "友善", "信任"], "声望五档：敌视 / 冷淡 / 中立 / 友善 / 信任")
+	# 角色面板
+	GameState.attr_points = 1
+	var cp: CharacterPanel = main.char_panel
+	main._unhandled_input(key_ev(KEY_K))
+	await frames(2)
+	check(cp.visible and get_tree().paused and cp.header.text.contains("可分配属性点 1"), "按 K 打开角色面板，写着可分配的属性点（%s）" % cp.header.text)
+	var plus := find_button(cp, "＋")
+	check(plus != null, "有属性点时属性旁出现「＋」")
+	var str0 := GameState.strength
+	plus.pressed.emit()
+	await frames(1)
+	check(GameState.strength == str0 + 1 and GameState.attr_points == 0 and find_button(cp, "＋") == null, "点「＋」给力量加 1，点数用完「＋」消失")
+	var all_text := "\n".join(cp.box.find_children("*", "Label", true, false).map(func(l): return l.text))
+	check(all_text.contains("◆ 25「连环」") and all_text.contains("◇ 25「轻步」") or all_text.contains("◆ 25「轻步」"), "专长写明解锁了没有（◆ / ◇）")
+	check(all_text.contains("瓦伦家　信任（+100）") and all_text.contains("渡工行会　中立（+0）"), "声望列出八个势力的档位与数值")
+	var rect: Rect2 = cp.f.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "角色面板不超出画面（%s）" % rect.size)
+	cp._unhandled_input(key_ev(KEY_K))
+	await frames(2)
+	check(not cp.visible and not get_tree().paused, "再按 K 关上")
+	main.hud.char_pressed.emit()
+	await frames(2)
+	check(cp.visible, "右上角「角色」按钮打开（手机用）")
+	cp.close()
+	await frames(1)
+	# 窄屏标题
+	var hud: Hud = main.hud
+	hud.size = Vector2(480, 900)
+	hud._layout()
+	check(hud.title_label.text == Hud.TITLE_SHORT and hud.title_label.get_minimum_size().x + 16.0 < hud.char_btn.position.x, "窄屏：标题缩短，不和右上角四个按钮重叠")
+	hud.size = Vector2(1280, 720)
+	hud._layout()
+	check(hud.title_label.text == Hud.TITLE, "宽屏：完整标题")
+	await free_main(main)
+	# 检定练技能、对话改声望
+	GameState.new_game(5)
+	GameState.check("grow_a", "insight", 12)
+	check(float(GameState.skill_xp.get("insight", 0.0)) in [1.0, 3.0], "做一次洞察检定：洞察涨进度（成功 3、失败 1）")
+	check(DialogueRunner.conds_ok([{"rep": "valen", "at_least": 10}]) and not DialogueRunner.conds_ok([{"rep": "valen", "at_least": 11}]), "对话条件：声望至少多少")
+	var r := DialogueRunner.new()
+	r.start("frostford", "steward")
+	r.choose(0)
+	check(GameState.quest_active("edric_missing") and GameState.get_rep("valen") == 15, "接下管家的委托：瓦伦家声望 +5")

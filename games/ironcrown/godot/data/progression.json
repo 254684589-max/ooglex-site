@@ -1,0 +1,47 @@
+{
+  "_note": "角色成长（路线图 2.7；GDD.md 第五节、7.3）。属性 4 项、技能 8 项（0–100，用什么涨什么）、专长（技能到 25 / 50 / 75 解锁，effect 只用 game_state.gd 里 PERK_EFFECTS 白名单里的效果）、势力 8 个（声望 −100..100）。gain：每次使用涨多少进度；技能每涨一级需要的进度 = 2 + 当前等级 × 0.2。",
+  "attributes": {
+    "strength": {"name": "力量", "desc": "近战伤害、负重上限", "start": 5},
+    "agility": {"name": "敏捷", "desc": "体力恢复速度（每点 +5%）", "start": 5},
+    "constitution": {"name": "体魄", "desc": "生命上限与体力上限（每点 +4）", "start": 5},
+    "wits": {"name": "机敏", "desc": "对话检定（每点 +2）", "start": 3}
+  },
+  "skills": {
+    "blade": {"name": "剑术", "desc": "用剑命中、格挡时提升", "start": 15, "perks": [
+      {"at": 25, "name": "连环", "desc": "轻击可以连三段", "effect": "combo3"},
+      {"at": 50, "name": "反击", "desc": "完美格挡后的下一击必定是重击", "effect": "counter"},
+      {"at": 75, "name": "定心", "desc": "完美格挡的时机从 0.2 秒放宽到 0.3 秒", "effect": "parry_window"}
+    ]},
+    "blunt": {"name": "钝器", "desc": "用木棍、锤子命中时提升", "start": 5, "perks": [
+      {"at": 25, "name": "震骨", "desc": "钝器重击打中会让对方失衡", "effect": "blunt_stagger"},
+      {"at": 50, "name": "破甲", "desc": "钝器无视对方的护甲", "effect": "armor_pierce"}
+    ]},
+    "brawl": {"name": "格斗", "desc": "徒手打斗时提升（徒手打斗在后续版本加入）", "start": 5, "perks": []},
+    "speech": {"name": "口才", "desc": "口才检定时提升（成功涨得多）", "start": 10, "perks": [
+      {"at": 25, "name": "巧舌", "desc": "口才检定 +5", "effect": "check_bonus"}
+    ]},
+    "intimidate": {"name": "威吓", "desc": "威吓检定时提升（成功涨得多）", "start": 6, "perks": [
+      {"at": 25, "name": "凶相", "desc": "威吓检定 +5", "effect": "check_bonus"}
+    ]},
+    "insight": {"name": "洞察", "desc": "洞察检定时提升（成功涨得多）", "start": 8, "perks": [
+      {"at": 25, "name": "察言", "desc": "洞察检定 +5", "effect": "check_bonus"}
+    ]},
+    "stealth": {"name": "潜行", "desc": "蹲着在没察觉你的敌人附近走动时提升", "start": 5, "perks": [
+      {"at": 25, "name": "轻步", "desc": "敌人察觉你的速度降低三成", "effect": "stealth_slow"}
+    ]},
+    "survival": {"name": "生存", "desc": "搜刮东西时提升", "start": 5, "perks": [
+      {"at": 25, "name": "背夫", "desc": "负重上限 +10 斤", "effect": "carry"},
+      {"at": 50, "name": "搜刮老手", "desc": "搜到银币时多拿 2 枚", "effect": "loot_bonus"}
+    ]}
+  },
+  "factions": {
+    "valen": {"name": "瓦伦家", "start": 10},
+    "severin": {"name": "塞弗林家", "start": 0},
+    "lomond": {"name": "洛蒙德家", "start": 0},
+    "caswell": {"name": "卡斯韦尔家", "start": 0},
+    "eld": {"name": "厄尔德家", "start": 0},
+    "beacon_oath": {"name": "烽誓团", "start": 0},
+    "ferrymen": {"name": "渡工行会", "start": 0},
+    "outlaws": {"name": "无旗者", "start": -20}
+  }
+}

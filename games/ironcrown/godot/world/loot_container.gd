@@ -79,7 +79,10 @@ func take(i: int) -> String:
 			return ""
 		c.silver = 0
 		_save(c)
+		if GameState.has_perk("survival", "loot_bonus"):
+			n += 2                                  # 生存 50「搜刮老手」
 		GameState.add_silver(n)
+		GameState.train("survival", 0.5)
 		return "%d 枚银币" % n
 	if i < 0 or i >= (c.items as Array).size():
 		return ""
@@ -87,6 +90,7 @@ func take(i: int) -> String:
 	c.items.remove_at(i)
 	_save(c)
 	GameState.add_item(id)
+	GameState.train("survival", 0.5)            # 用什么涨什么：搜刮（2.7）
 	return GameState.item_name(id)
 
 

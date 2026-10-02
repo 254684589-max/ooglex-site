@@ -108,7 +108,13 @@ func refresh() -> void:
 			_action("使用", func(): _use(selected))
 	_fit()
 	if focus_btn and visible:
-		focus_btn.grab_focus.call_deferred()
+		_focus_later.call_deferred(focus_btn)
+
+
+## 列表可能在同一帧里又重建了一次：按钮已经不在树里就不抢焦点
+func _focus_later(b: Button) -> void:
+	if is_instance_valid(b) and b.is_inside_tree():
+		b.grab_focus()
 
 
 func _action(text: String, cb: Callable) -> Button:

@@ -18,7 +18,7 @@ const STATE_LABELS := ["", "？ 起疑", "！ 警觉", "！", "后退", "失衡"
 const DATA_PATH := "res://data/enemies.json"
 const DATA_KEYS := ["name", "coat", "weapon", "hp", "armor", "weapon_base", "strength", "skill", "walk", "run", "reach",
 	"windup", "heavy_windup", "strike", "recover", "heavy_chance", "block_chance", "stamina", "attack_cost", "stamina_regen",
-	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver"]
+	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction"]
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
 const SIGHT_DARK := 8.0
@@ -95,6 +95,8 @@ static func validate_types(d: Dictionary) -> Array:
 		for key in t:
 			if not key in DATA_KEYS:
 				errs.append("%s 有不认识的字段 %s" % [k, key])
+		if not GameState.progression().get("factions", {}).has(str(t.get("faction", ""))):
+			errs.append("%s 的势力 %s 不在 progression.json 里" % [k, t.get("faction", "")])
 		for it in t.get("loot", []):
 			if GameState.item(str(it)).is_empty():
 				errs.append("%s 的掉落 %s 不在 items.json 里" % [k, it])
@@ -363,6 +365,8 @@ func _perceive(dt: float) -> void:
 		State.PATROL, State.SUSPICIOUS:
 			if sees_player:
 				var rate := 0.8 * clampf(1.3 - d / sight_range(), 0.25, 1.3)
+				if GameState.has_perk("stealth", "stealth_slow"):
+					rate *= 0.7               # 潜行 25「轻步」（2.7）
 				if state == State.SUSPICIOUS:
 					rate *= 3.0          # 起疑后再看到你就很快发现（GDD 6.2）
 				suspicion += rate * dt
@@ -536,6 +540,7 @@ func _die() -> void:
 	var loot := LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
 	loot.position = global_position
 	get_parent().add_child(loot)
+	GameState.change_rep(str(data.get("faction", "")), -5)     # 杀了他们的人，这个势力更恨你（2.7）
 	died.emit(self)
 
 

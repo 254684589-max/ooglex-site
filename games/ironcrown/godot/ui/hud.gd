@@ -6,14 +6,17 @@ extends Control
 signal menu_pressed
 signal quest_pressed
 signal bag_pressed
+signal char_pressed
 
 const TITLE := "铁冠之争 · 技术原型（人物为占位）"
+const TITLE_SHORT := "铁冠之争（人物为占位）"     # 窄屏：右上角四个按钮放不下长标题（2.7）
 
 var title_label: Label
 var hint_label: Label
 var menu_btn: Button
 var quest_btn: Button
 var bag_btn: Button
+var char_btn: Button
 var prompt_label: Label
 var toast_label: Label
 var subtitle_panel: PanelContainer
@@ -67,6 +70,11 @@ func _ready() -> void:
 	bag_btn.focus_mode = Control.FOCUS_NONE
 	bag_btn.pressed.connect(func(): bag_pressed.emit())
 	add_child(bag_btn)
+	char_btn = Button.new()
+	char_btn.text = "角色"
+	char_btn.focus_mode = Control.FOCUS_NONE
+	char_btn.pressed.connect(func(): char_pressed.emit())
+	add_child(char_btn)
 	prompt_label = _center_label(20)
 	toast_label = _center_label(18)
 	subtitle_panel = PanelContainer.new()
@@ -141,7 +149,7 @@ func hit_marker(heavy := false) -> void:
 
 ## 体力条：拔剑或体力没满时显示；文字写出数值，体力耗尽时写「喘息中」
 func stamina_visible() -> bool:
-	return melee != null and (melee.state != Melee.State.SHEATHED or melee.stamina < Melee.STAMINA_MAX)
+	return melee != null and (melee.state != Melee.State.SHEATHED or melee.stamina < melee.stamina_max())
 
 
 func bar_rect() -> Rect2:
@@ -155,7 +163,7 @@ func health_rect() -> Rect2:
 
 
 func health_visible() -> bool:
-	return melee != null and (melee.health < Melee.HEALTH_MAX or stamina_visible())
+	return melee != null and (melee.health < melee.health_max() or stamina_visible())
 
 
 ## 受伤：画面四周闪一圈暗红（同时生命条的数字变小，不只靠颜色）
@@ -169,12 +177,12 @@ func _process(delta: float) -> void:
 		var show := stamina_visible()
 		stamina_label.visible = show
 		if show:
-			stamina_label.text = "体力 %d / %d%s" % [roundi(melee.stamina), roundi(Melee.STAMINA_MAX), " · 喘息中" if melee.exhausted else ""]
+			stamina_label.text = "体力 %d / %d%s" % [roundi(melee.stamina), roundi(melee.stamina_max()), " · 喘息中" if melee.exhausted else ""]
 			stamina_label.position = bar_rect().position - Vector2(0, 22)
 		var hs := health_visible()
 		health_label.visible = hs
 		if hs:
-			health_label.text = "生命 %d / %d%s" % [melee.health, Melee.HEALTH_MAX, " · 失衡" if melee.staggered() else ""]
+			health_label.text = "生命 %d / %d%s" % [melee.health, melee.health_max(), " · 失衡" if melee.staggered() else ""]
 			health_label.position = health_rect().position - Vector2(0, 22)
 		queue_redraw()
 	if hurt_left > 0.0:
@@ -201,6 +209,10 @@ func _layout() -> void:
 	menu_btn.position = Vector2(size.x - menu_btn.size.x - 12.0, 10.0)
 	quest_btn.position = Vector2(menu_btn.position.x - quest_btn.size.x - 8.0, 10.0)
 	bag_btn.position = Vector2(quest_btn.position.x - bag_btn.size.x - 8.0, 10.0)
+	char_btn.position = Vector2(bag_btn.position.x - char_btn.size.x - 8.0, 10.0)
+	title_label.text = TITLE
+	if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
+		title_label.text = TITLE_SHORT
 	var w := minf(size.x - 32.0, 760.0)
 	hint_label.size = Vector2(w, 0)
 	hint_label.position = Vector2((size.x - w) * 0.5, size.y * 0.62)
@@ -238,9 +250,9 @@ func _draw() -> void:
 	if melee and health_visible():
 		var hr := health_rect()
 		draw_rect(hr.grow(1.0), Color(0, 0, 0, 0.6))
-		draw_rect(Rect2(hr.position, Vector2(hr.size.x * clampf(float(melee.health) / Melee.HEALTH_MAX, 0.0, 1.0), hr.size.y)), Color("b0483a"))
+		draw_rect(Rect2(hr.position, Vector2(hr.size.x * clampf(float(melee.health) / melee.health_max(), 0.0, 1.0), hr.size.y)), Color("b0483a"))
 	if melee and stamina_visible():
 		var br := bar_rect()
 		draw_rect(br.grow(1.0), Color(0, 0, 0, 0.6))
-		var k := clampf(melee.stamina / Melee.STAMINA_MAX, 0.0, 1.0)
+		var k := clampf(melee.stamina / melee.stamina_max(), 0.0, 1.0)
 		draw_rect(Rect2(br.position, Vector2(br.size.x * k, br.size.y)), Color("b08a3e") if melee.exhausted else Color("d8c9a0"))

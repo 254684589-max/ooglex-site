@@ -18,7 +18,7 @@ signal no_weapon                  # 想拔剑但没装备武器（2.6）
 
 enum State { SHEATHED, DRAWING, IDLE, CHARGE, WINDUP, STRIKE, RECOVER, SHEATHING, BLOCK }
 
-const FALLBACK_SKILL := "blade"   # 各类武器的技能在 2.7 细分；现在都按剑术算
+const WEAPON_SKILL := {"sword": "blade", "club": "blunt"}     # 武器外观 → 用的技能（2.7）
 const HEAVY_HOLD := 0.35          # 按住超过这个时间松开 = 重击（GDD.md 第三节）
 const DRAW_TIME := 0.35
 const SHEATHE_TIME := 0.3
@@ -27,8 +27,8 @@ const TIMING := {
 	"light": {"wind": 0.10, "strike": 0.12, "recover": 0.30, "hit_at": 0.5, "cost": 12.0, "stop": 0.05, "kick": 0.6},
 	"heavy": {"wind": 0.0, "strike": 0.15, "recover": 0.45, "hit_at": 0.55, "cost": 25.0, "stop": 0.09, "kick": 1.4},
 }
-const COMBO_MAX := 2              # 轻击连击段数（剑术 25 后 3 段，2.7）
-const STAMINA_MAX := 100.0
+const COMBO_MAX := 2              # 轻击连击段数（剑术 25 专长「连环」后 3 段，见 combo_max()）
+const STAMINA_MAX := 100.0        # 体魄 5 时的体力上限；实际上限看 GameState.stamina_max()
 const SPRINT_COST := 12.0         # 每秒
 const REGEN := 28.0               # 每秒
 const REGEN_DELAY := 0.7          # 最后一次消耗后多久开始恢复
@@ -37,8 +37,13 @@ const TIRED_SPEED := 0.65         # 体力不足时出招变慢
 const REACH_NEAR := 0.4
 const REACH_FAR := 2.0
 const HIT_BOX := Vector3(1.4, 1.2, REACH_FAR - REACH_NEAR)
-const HEALTH_MAX := 100
-const PERFECT_WINDOW := 0.2       # 完美格挡：在对方命中前这么久之内按下
+const HEALTH_MAX := 100           # 体魄 5 时的生命上限；实际上限看 GameState.health_max()
+const PERFECT_WINDOW := 0.2       # 完美格挡：在对方命中前这么久之内按下（剑术 75 专长「定心」放宽到 0.3）
+const PERFECT_WINDOW_WIDE := 0.3
+## 用什么涨什么（2.7）：命中一次、挡住一次、完美格挡一次各涨多少进度；打木桩只算一半
+const TRAIN_HIT := 1.0
+const TRAIN_BLOCK := 0.5
+const TRAIN_PERFECT := 2.0
 const GUARD_COST := 1.0           # 挡住时每点伤害换成多少体力（重击再 × 1.5）
 const GUARD_ANGLE := 70.0         # 正面这么大角度内的攻击才挡得住
 const STAGGER_TIME := 0.8
@@ -71,6 +76,7 @@ var block_since := 0.0            # 进入格挡的时刻（clock，秒）
 var clock := 0.0                  # 自己的时钟：暂停时不走
 var stagger_left := 0.0
 var down := false                 # 生命归零
+var counter_ready := false        # 剑术 50「反击」：完美格挡后下一击必定是重击
 
 
 func _ready() -> void:
@@ -79,6 +85,8 @@ func _ready() -> void:
 	player.camera.add_child(view)
 	view.set_model(str(weapon().get("model", "sword")))
 	GameState.inventory_changed.connect(_on_inventory_changed)
+	health = health_max()
+	stamina = stamina_max()
 
 
 ## 装备中的武器（data/items.json 里的一条；没装备武器时是空字典）
@@ -132,7 +140,7 @@ func block_release() -> void:
 		from_pose = view.current()
 		_enter(State.RECOVER, 0.15)
 		kind = "light"
-		combo = COMBO_MAX
+		combo = 99
 
 
 func _enter_block() -> void:
@@ -157,13 +165,17 @@ func receive_hit(info: Dictionary) -> String:
 		fwd.y = 0.0
 		front = to.length() < 0.01 or rad_to_deg(fwd.angle_to(to.normalized())) <= GUARD_ANGLE
 	if state == State.BLOCK and front:
-		if clock - block_since <= PERFECT_WINDOW:
+		if clock - block_since <= perfect_window():
 			view.kick = Vector3(0, 0, 0.05)
+			GameState.train(weapon_skill(), TRAIN_PERFECT)
+			if GameState.has_perk("blade", "counter"):
+				counter_ready = true
 			guarded.emit("perfect", info)
 			return "perfect"
 		var cost := dmg * GUARD_COST * (1.5 if info.get("kind") == "heavy" else 1.0)
 		if stamina >= cost:
 			_spend(cost)
+			GameState.train(weapon_skill(), TRAIN_BLOCK)
 			view.kick = Vector3(0, 0, 0.04)
 			guarded.emit("block", info)
 			return "block"
@@ -199,7 +211,7 @@ func _stagger_self() -> void:
 		from_pose = view.current()
 		_enter(State.RECOVER, STAGGER_TIME)
 		kind = "light"
-		combo = COMBO_MAX
+		combo = 99
 
 
 ## 自己的轻击被对方挡住：剑弹回来，停顿一下（2.5）
@@ -276,7 +288,31 @@ func _enter(s: State, d: float) -> void:
 	dur = maxf(d, 0.0001)
 
 
+## 现在这把武器用的技能（剑 → 剑术，木棍 → 钝器）
+func weapon_skill() -> String:
+	return str(WEAPON_SKILL.get(str(weapon().get("model", "sword")), "blade"))
+
+
+func combo_max() -> int:
+	return 3 if GameState.has_perk("blade", "combo3") and weapon_skill() == "blade" else COMBO_MAX
+
+
+func perfect_window() -> float:
+	return PERFECT_WINDOW_WIDE if GameState.has_perk("blade", "parry_window") else PERFECT_WINDOW
+
+
+func health_max() -> int:
+	return GameState.health_max()
+
+
+func stamina_max() -> float:
+	return GameState.stamina_max()
+
+
 func _start_attack(k: String) -> void:
+	if counter_ready:
+		k = "heavy"               # 反击
+		counter_ready = false
 	kind = k
 	if k == "heavy":
 		combo = 0
@@ -369,7 +405,7 @@ func _process(delta: float) -> void:
 		State.RECOVER:
 			view.blend(from_pose, WeaponView.POSES.rest, e)
 			# 轻击收招的前半段再按一次：接下一段（不用等完全收回）
-			if queued and kind == "light" and combo + 1 < COMBO_MAX and k >= 0.15:
+			if queued and kind == "light" and combo + 1 < combo_max() and k >= 0.15:
 				combo += 1
 				_start_attack("light")
 			elif k >= 1.0:
@@ -388,7 +424,7 @@ func _update_stamina(delta: float) -> void:
 	if player.running:
 		_spend(SPRINT_COST * delta)
 	elif since_use >= REGEN_DELAY and not busy():
-		stamina = minf(stamina + REGEN * delta, STAMINA_MAX)
+		stamina = minf(stamina + REGEN * GameState.stamina_regen_mult() * delta, stamina_max())
 	if exhausted and stamina >= RECOVER_AT:
 		exhausted = false
 
@@ -408,8 +444,12 @@ func _resolve_hit() -> Dictionary:
 		return {}
 	var tm: Dictionary = TIMING[kind]
 	var w := weapon()
-	var dmg := DamageCalc.compute(float(w.get("base", 1)), GameState.strength, int(GameState.skills.get(FALLBACK_SKILL, 0)), kind,
-		bool(target.get("staggered")) if "staggered" in target else false, float(target.get("armor")) if "armor" in target else 0.0)
+	var sk := weapon_skill()
+	var armor := float(target.get("armor")) if "armor" in target else 0.0
+	if sk == "blunt" and GameState.has_perk("blunt", "armor_pierce"):
+		armor = 0.0                                   # 钝器 50「破甲」
+	var dmg := DamageCalc.compute(float(w.get("base", 1)), GameState.strength, int(GameState.skills.get(sk, 0)), kind,
+		bool(target.get("staggered")) if "staggered" in target else false, armor)
 	var dir := -player.camera.global_transform.basis.z
 	var info := {"damage": dmg, "kind": kind, "dir": dir, "stop": tm.stop, "weapon": str(w.get("name", ""))}
 	stop_left = tm.stop
@@ -417,6 +457,10 @@ func _resolve_hit() -> Dictionary:
 	if not Settings.reduced_motion:
 		cam_kick = -float(tm.kick)
 	target.take_hit(info)
+	# 钝器 25「震骨」：重击打中让对方失衡
+	if sk == "blunt" and kind == "heavy" and GameState.has_perk("blunt", "blunt_stagger") and target.has_method("stagger"):
+		target.stagger()
+	GameState.train(sk, TRAIN_HIT * (0.5 if target is TrainingDummy else 1.0))
 	last_hit = info.merged({"target": target})
 	hit.emit(target, info)
 	return info

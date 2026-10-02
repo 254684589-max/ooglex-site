@@ -37,6 +37,7 @@ var pause_menu: PauseMenu
 var defeat_panel: DefeatPanel
 var inventory_panel: InventoryPanel
 var loot_panel: LootPanel
+var char_panel: CharacterPanel
 var touch_mode := false
 var spawn := Vector3.ZERO
 var yaw0 := 0.0
@@ -100,6 +101,8 @@ func _ready() -> void:
 	print("IC_QUEST_SCREEN x=%d y=%d" % [qc.x, qc.y])
 	var bc := hud.bag_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
 	print("IC_BAG_SCREEN x=%d y=%d" % [bc.x, bc.y])
+	var cc := hud.char_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+	print("IC_CHAR_SCREEN x=%d y=%d" % [cc.x, cc.y])
 	if touch_mode:
 		var ac: Vector2 = touch.button_centers().attack * get_tree().root.content_scale_factor
 		print("IC_ATTACK_SCREEN x=%d y=%d" % [ac.x, ac.y])
@@ -279,6 +282,17 @@ func _build_ui() -> void:
 	inventory_panel.closed.connect(_on_quest_closed)
 	inventory_panel.used.connect(_on_item_used)
 	hud.bag_pressed.connect(open_inventory)
+	char_panel = CharacterPanel.new()
+	layer.add_child(char_panel)
+	char_panel.closed.connect(_on_quest_closed)
+	hud.char_pressed.connect(open_character)
+	GameState.skill_up.connect(_on_skill_up)
+	GameState.perk_unlocked.connect(func(s: String, p: Dictionary):
+		hud.toast("◆ 解锁专长：%s ·「%s」%s" % [GameState.SKILL_NAMES[s], p.name, p.desc], 4.0))
+	GameState.level_up.connect(func(lv: int):
+		hud.toast("▲ 升到 %d 级：获得 1 个属性点（%s）" % [lv, "点「角色」分配" if touch_mode else "按 K 分配"], 4.0)
+		print("IC_LEVEL %d" % lv))
+	GameState.rep_changed.connect(_on_rep_changed)
 	loot_panel = LootPanel.new()
 	layer.add_child(loot_panel)
 	loot_panel.closed.connect(_on_loot_closed)
@@ -307,6 +321,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("inventory"):
 		open_inventory()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("character"):
+		open_character()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("perf_toggle"):
@@ -484,6 +502,25 @@ func open_inventory() -> void:
 	inventory_panel.open()
 
 
+## 角色（2.7）
+func open_character() -> void:
+	if get_tree().paused:
+		return
+	_pause_for_panel()
+	char_panel.open()
+
+
+func _on_skill_up(skill: String, value: int) -> void:
+	hud.toast("%s ↑ %d" % [GameState.SKILL_NAMES.get(skill, skill), value], 2.0)
+	print("IC_SKILL %s=%d" % [skill, value])
+
+
+## 声望变化：「瓦伦家 · 声望上升 ↑（友善）」（文字 + 箭头，GDD 7.3；字体里没有 ▼，用 ↑ ↓）
+func _on_rep_changed(faction: String, delta: int, value: int) -> void:
+	hud.toast("%s · 声望%s %s（%s）" % [GameState.faction_name(faction), "上升" if delta > 0 else "下降", "↑" if delta > 0 else "↓", GameState.rep_tier(value)], 3.0)
+	print("IC_REP %s %+d = %d" % [faction, delta, value])
+
+
 ## 搜刮（2.6）
 func open_loot(c: LootContainer) -> void:
 	if get_tree().paused:
@@ -512,8 +549,8 @@ func _on_loot_closed() -> void:
 ## 用了消耗品：回生命 / 体力（不超过上限）
 func _on_item_used(eff: Dictionary, id: String) -> void:
 	var m := player.melee
-	m.health = mini(m.health + int(eff.get("health", 0)), Melee.HEALTH_MAX)
-	m.stamina = minf(m.stamina + float(eff.get("stamina", 0)), Melee.STAMINA_MAX)
+	m.health = mini(m.health + int(eff.get("health", 0)), m.health_max())
+	m.stamina = minf(m.stamina + float(eff.get("stamina", 0)), m.stamina_max())
 	print("IC_USE item=%s hp=%d stamina=%.0f" % [id, m.health, m.stamina])
 
 
@@ -548,6 +585,16 @@ func _on_dialogue_closed() -> void:
 	player.interactor.refresh()
 	var t := player.interactor.target
 	hud.show_prompt(t.prompt() if t else "")
+
+
+## 潜行（2.7）：蹲着走、附近 10 米内有还没察觉你的敌人，每秒涨 0.5 进度
+func _train_stealth(delta: float) -> void:
+	if not player.crouching or Vector2(player.velocity.x, player.velocity.z).length() < 0.3:
+		return
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e.state in [Enemy.State.PATROL, Enemy.State.SUSPICIOUS] and e.global_position.distance_to(player.global_position) <= 10.0:
+			GameState.train("stealth", 0.5 * delta)
+			return
 
 
 func _start() -> void:
@@ -587,6 +634,7 @@ func _process(delta: float) -> void:
 		hint_left -= delta
 		if hint_left <= 0.0:
 			hud.set_hint("")
+	_train_stealth(delta)
 	var pos := player.global_position
 	if not moved_logged and Vector2(pos.x - spawn.x, pos.z - spawn.z).length() > 1.0:
 		moved_logged = true

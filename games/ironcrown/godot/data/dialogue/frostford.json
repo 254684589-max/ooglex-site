@@ -262,6 +262,10 @@
         "do": [
           {
             "set": "watchman_offended"
+          },
+          {
+            "rep": "valen",
+            "delta": -5
           }
         ],
         "options": [
@@ -333,6 +337,10 @@
         "do": [
           {
             "quest": "edric_missing"
+          },
+          {
+            "rep": "valen",
+            "delta": 5
           }
         ],
         "options": [

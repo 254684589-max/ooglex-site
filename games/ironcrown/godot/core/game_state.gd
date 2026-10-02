@@ -8,11 +8,20 @@ signal flag_changed(name: String, value)
 ## 任务事件：kind = started / advanced / done / clue；id = 任务编号或线索编号
 signal quest_event(kind: String, id: String)
 
-const SKILL_NAMES := {"speech": "口才", "intimidate": "威吓", "insight": "洞察", "blade": "剑术"}
+const SKILL_NAMES := {"blade": "剑术", "blunt": "钝器", "brawl": "格斗", "speech": "口才", "intimidate": "威吓", "insight": "洞察", "stealth": "潜行", "survival": "生存"}
 ## 默认值（出身三选一在阶段 3 做，到时按出身改开局数值）
-const DEFAULT_SKILLS := {"speech": 10, "intimidate": 6, "insight": 8, "blade": 15}
+## 开局数值在 data/progression.json（2.7）；这里的常量只是读不到数据时的后备
+const DEFAULT_SKILLS := {"blade": 15, "blunt": 5, "brawl": 5, "speech": 10, "intimidate": 6, "insight": 8, "stealth": 5, "survival": 5}
 const DEFAULT_WITS := 3
-const DEFAULT_STRENGTH := 5     # 力量（近战伤害，GDD.md 6.3；属性界面在 2.7）
+const DEFAULT_STRENGTH := 5
+const PROGRESSION_PATH := "res://data/progression.json"
+const ATTRS := ["strength", "agility", "constitution", "wits"]
+## 专长效果白名单（data/progression.json 的 effect 只能用这些）
+const PERK_EFFECTS := ["combo3", "counter", "parry_window", "blunt_stagger", "armor_pierce", "check_bonus", "stealth_slow", "carry", "loot_bonus"]
+const SKILL_MAX := 100
+const LEVEL_EVERY := 10          # 技能每累计提升 10 次，角色升一级、得 1 个属性点
+const REP_MIN := -100
+const REP_MAX := 100
 const FLAGS_PATH := "res://data/flags.json"
 const QUESTS_PATH := "res://data/quests.json"
 const ITEMS_PATH := "res://data/items.json"
@@ -30,6 +39,19 @@ var flags := {}
 var skills := DEFAULT_SKILLS.duplicate()
 var wits := DEFAULT_WITS
 var strength := DEFAULT_STRENGTH
+var agility := 5
+var constitution := 5
+var skill_xp := {}        # 技能 → 当前这一级的进度
+var skill_ups := 0        # 开局以来技能一共提升了几次（每 LEVEL_EVERY 次升一级）
+var level := 1
+var attr_points := 0
+var rep := {}             # 势力 → 声望 −100..100
+
+## 技能提升 / 解锁专长 / 角色升级 / 声望变化（main 显示提示）
+signal skill_up(skill: String, value: int)
+signal perk_unlocked(skill: String, perk: Dictionary)
+signal level_up(new_level: int)
+signal rep_changed(faction: String, delta: int, value: int)
 var seed_value := 0
 var checks := {}          # 检定编号 → 是否成功（已经掷过的）
 var quests := {}          # 任务编号 → {stage, done}
@@ -56,9 +78,22 @@ func new_game(seed_override := -1) -> void:
 	equipped = START_EQUIP.duplicate()
 	silver = START_SILVER
 	looted.clear()
+	var pd := progression()
 	skills = DEFAULT_SKILLS.duplicate()
-	wits = DEFAULT_WITS
-	strength = DEFAULT_STRENGTH
+	for s in pd.get("skills", {}):
+		skills[s] = int(pd.skills[s].start)
+	var at: Dictionary = pd.get("attributes", {})
+	strength = int(at.get("strength", {}).get("start", DEFAULT_STRENGTH))
+	agility = int(at.get("agility", {}).get("start", 5))
+	constitution = int(at.get("constitution", {}).get("start", 5))
+	wits = int(at.get("wits", {}).get("start", DEFAULT_WITS))
+	skill_xp.clear()
+	skill_ups = 0
+	level = 1
+	attr_points = 0
+	rep.clear()
+	for f in pd.get("factions", {}):
+		rep[f] = int(pd.factions[f].start)
 	seed_value = seed_override if seed_override >= 0 else randi()
 
 
@@ -75,9 +110,9 @@ func has_flag(name: String) -> bool:
 	return flags.has(name) and bool(flags[name])
 
 
-## 检定值 = 技能 + 机敏 × 2（情境修正：声望、情报、衣着、贿赂在之后的步骤加）
+## 检定值 = 技能 + 机敏 × 2 + 专长加成（情境修正：声望、情报、衣着、贿赂在之后的步骤加）
 func check_value(skill: String) -> int:
-	return int(skills.get(skill, 0)) + wits * 2
+	return int(skills.get(skill, 0)) + wits * 2 + (5 if has_perk(skill, "check_bonus") else 0)
 
 
 ## 成功把握 0.05..0.95：检定值每比难度高 1 点，把握 +5%
@@ -111,6 +146,7 @@ func check(check_id: String, skill: String, dc: int) -> bool:
 		return checks[check_id]
 	var ok := roll_for(check_id) < check_chance(skill, dc)
 	checks[check_id] = ok
+	train(skill, 3.0 if ok else 1.0)        # 用什么涨什么：检定成功涨得多（2.7）
 	return ok
 
 
@@ -251,7 +287,7 @@ func carry_weight() -> float:
 
 
 func carry_limit() -> float:
-	return CARRY_BASE + strength * CARRY_PER_STR
+	return CARRY_BASE + strength * CARRY_PER_STR + (10.0 if has_perk("survival", "carry") else 0.0)
 
 
 ## 超重：不能跑（GDD.md 第八节）
@@ -362,3 +398,154 @@ static func flag_registry() -> Dictionary:
 		d = {}
 	Engine.set_meta("ic_flags", d)
 	return d
+
+
+# ---------------- 属性、技能、专长、声望（2.7） ----------------
+
+static func progression() -> Dictionary:
+	if not Engine.has_meta("ic_progression"):
+		var f := FileAccess.open(PROGRESSION_PATH, FileAccess.READ)
+		var d = JSON.parse_string(f.get_as_text()) if f else null
+		Engine.set_meta("ic_progression", d if typeof(d) == TYPE_DICTIONARY else {})
+	return Engine.get_meta("ic_progression")
+
+
+## 成长数据校验（自动化测试用）
+static func validate_progression(d: Dictionary) -> Array:
+	var errs := []
+	for a in ATTRS:
+		if not d.get("attributes", {}).has(a):
+			errs.append("缺属性 %s" % a)
+	for s in SKILL_NAMES:
+		if not d.get("skills", {}).has(s):
+			errs.append("缺技能 %s" % s)
+	for s in d.get("skills", {}):
+		var sk: Dictionary = d.skills[s]
+		if not SKILL_NAMES.has(s):
+			errs.append("技能 %s 不在 SKILL_NAMES 里" % s)
+		elif str(sk.get("name", "")) != SKILL_NAMES[s]:
+			errs.append("技能 %s 的名字与 SKILL_NAMES 不一致" % s)
+		var last := 0
+		for p in sk.get("perks", []):
+			if not int(p.get("at", 0)) in [25, 50, 75] or int(p.at) <= last:
+				errs.append("%s 的专长门槛应是 25 / 50 / 75 且递增" % s)
+			last = int(p.get("at", 0))
+			if not str(p.get("effect", "")) in PERK_EFFECTS:
+				errs.append("%s 的专长效果 %s 不在白名单里" % [s, p.get("effect", "")])
+			for k in ["name", "desc"]:
+				if str(p.get(k, "")) == "":
+					errs.append("%s 的专长缺 %s" % [s, k])
+	if (d.get("factions", {}) as Dictionary).size() != 8:
+		errs.append("势力应有 8 个（五大家族 + 烽誓团 + 渡工行会 + 无旗者，GDD 7.3）")
+	return errs
+
+
+static func attr_name(a: String) -> String:
+	return str(progression().get("attributes", {}).get(a, {}).get("name", a))
+
+
+func attr(a: String) -> int:
+	match a:
+		"strength":
+			return strength
+		"agility":
+			return agility
+		"constitution":
+			return constitution
+		"wits":
+			return wits
+	return 0
+
+
+## 花 1 个属性点
+func raise_attr(a: String) -> bool:
+	if attr_points <= 0 or not a in ATTRS:
+		return false
+	attr_points -= 1
+	set(a, attr(a) + 1)
+	inventory_changed.emit()              # 负重上限可能变了
+	return true
+
+
+## 生命上限、体力上限：80 + 体魄 × 4（体魄 5 = 100）
+func health_max() -> int:
+	return 80 + constitution * 4
+
+
+func stamina_max() -> float:
+	return 80.0 + constitution * 4.0
+
+
+## 体力恢复倍率：敏捷每点 ±5%（以 5 为准）
+func stamina_regen_mult() -> float:
+	return 1.0 + (agility - 5) * 0.05
+
+
+## 这一级还要多少进度才升到下一级
+static func skill_need(value: int) -> float:
+	return 2.0 + value * 0.2
+
+
+func skill_progress(skill: String) -> float:
+	return clampf(float(skill_xp.get(skill, 0.0)) / skill_need(int(skills.get(skill, 0))), 0.0, 1.0)
+
+
+## 用了一次技能：加进度，够了就升级（可能连升），到 25 / 50 / 75 解锁专长；技能每累计升 10 次角色升一级
+func train(skill: String, amount: float) -> void:
+	if not skills.has(skill) or amount <= 0.0:
+		return
+	var xp := float(skill_xp.get(skill, 0.0)) + amount
+	while int(skills[skill]) < SKILL_MAX and xp >= skill_need(int(skills[skill])):
+		xp -= skill_need(int(skills[skill]))
+		skills[skill] = int(skills[skill]) + 1
+		skill_up.emit(skill, int(skills[skill]))
+		for p in perks_of(skill):
+			if int(p.at) == int(skills[skill]):
+				perk_unlocked.emit(skill, p)
+		skill_ups += 1
+		if skill_ups % LEVEL_EVERY == 0:
+			level += 1
+			attr_points += 1
+			level_up.emit(level)
+	skill_xp[skill] = xp if int(skills[skill]) < SKILL_MAX else 0.0
+
+
+static func perks_of(skill: String) -> Array:
+	return progression().get("skills", {}).get(skill, {}).get("perks", [])
+
+
+func has_perk(skill: String, effect: String) -> bool:
+	for p in perks_of(skill):
+		if str(p.effect) == effect and int(skills.get(skill, 0)) >= int(p.at):
+			return true
+	return false
+
+
+static func faction_name(f: String) -> String:
+	return str(progression().get("factions", {}).get(f, {}).get("name", f))
+
+
+func get_rep(f: String) -> int:
+	return int(rep.get(f, 0))
+
+
+func change_rep(f: String, delta: int) -> void:
+	if delta == 0 or not progression().get("factions", {}).has(f):
+		return
+	var before := get_rep(f)
+	rep[f] = clampi(before + delta, REP_MIN, REP_MAX)
+	if rep[f] != before:
+		rep_changed.emit(f, rep[f] - before, rep[f])
+
+
+## 声望五档（GDD 7.3）
+static func rep_tier(v: int) -> String:
+	if v <= -50:
+		return "敌视"
+	if v <= -15:
+		return "冷淡"
+	if v < 15:
+		return "中立"
+	if v < 50:
+		return "友善"
+	return "信任"
