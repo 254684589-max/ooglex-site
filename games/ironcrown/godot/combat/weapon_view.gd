@@ -22,17 +22,37 @@ var pose_pos := Vector3.ZERO
 var pose_dir := Vector3.UP
 var pose_face := Vector3.RIGHT
 var kick := Vector3.ZERO          # 命中时的小回弹（位置偏移，逐帧衰减）
+var model := ""
+var mesh_node: MeshInstance3D
 
 
 func _ready() -> void:
+	if model == "":
+		set_model("sword")
+	set_pose(POSES.lowered)
+	visible = false
+
+
+## 换外观：sword（剑身、护手、握柄、剑首）/ club（裹铁皮的木棍）（2.6）
+func set_model(m: String) -> void:
+	if m == model and mesh_node:
+		return
+	model = m
+	if mesh_node:
+		remove_child(mesh_node)
+		mesh_node.queue_free()
 	var kit := MeshKit.new()
-	kit.box("steel", Vector3(0, 0.09 + BLADE_LEN * 0.5, 0), Vector3(0.045, BLADE_LEN, 0.008))
-	kit.box("steel", Vector3(0, 0.09 + BLADE_LEN + 0.025, 0), Vector3(0.02, 0.05, 0.006))      # 剑尖收窄
-	kit.box("iron", Vector3(0, 0.08, 0), Vector3(0.20, 0.025, 0.03))                          # 护手
-	kit.box("leather", Vector3(0, -0.02, 0), Vector3(0.032, 0.18, 0.032))                     # 握柄
-	kit.box("iron", Vector3(0, -0.125, 0), Vector3(0.05, 0.04, 0.05))                         # 剑首
+	if m == "club":
+		kit.cylinder("leather", Vector3(0, -0.12, 0), Vector3(0, 0.08, 0), 0.022, 0.022, 6)
+		kit.cylinder("wood", Vector3(0, 0.08, 0), Vector3(0, 0.62, 0), 0.026, 0.045, 6)
+		kit.cylinder("iron", Vector3(0, 0.48, 0), Vector3(0, 0.62, 0), 0.05, 0.05, 6)
+	else:
+		kit.box("steel", Vector3(0, 0.09 + BLADE_LEN * 0.5, 0), Vector3(0.045, BLADE_LEN, 0.008))
+		kit.box("steel", Vector3(0, 0.09 + BLADE_LEN + 0.025, 0), Vector3(0.02, 0.05, 0.006))      # 剑尖收窄
+		kit.box("iron", Vector3(0, 0.08, 0), Vector3(0.20, 0.025, 0.03))                          # 护手
+		kit.box("leather", Vector3(0, -0.02, 0), Vector3(0.032, 0.18, 0.032))                     # 握柄
+		kit.box("iron", Vector3(0, -0.125, 0), Vector3(0.05, 0.04, 0.05))                         # 剑首
 	var steel := StandardMaterial3D.new()
-	# 金属度不能太高：场景里没有反射探针和天空，高金属度的剑身在兼容渲染器里是一根黑棍（2.4 截图）
 	steel.albedo_color = Color("b4bcc6")
 	steel.metallic = 0.35
 	steel.roughness = 0.4
@@ -43,18 +63,19 @@ func _ready() -> void:
 	var leather := StandardMaterial3D.new()
 	leather.albedo_color = Color("3a2a1e")
 	leather.roughness = 0.9
-	for m in [steel, iron, leather]:
-		m.vertex_color_use_as_albedo = true
+	var wood := StandardMaterial3D.new()
+	wood.albedo_color = Color("6a4a30")
+	wood.roughness = 0.85
+	for mat in [steel, iron, leather, wood]:
+		mat.vertex_color_use_as_albedo = true
 		# 一点点自发光：背光站着时（训练场火把在敌人身后）剑也不会变成一根黑棍（2.5 截图）
-		m.emission_enabled = true
-		m.emission = m.albedo_color
-		m.emission_energy_multiplier = 0.12
-	var mi := kit.build({"steel": steel, "iron": iron, "leather": leather})
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mi.name = "Sword"
-	add_child(mi)
-	set_pose(POSES.lowered)
-	visible = false
+		mat.emission_enabled = true
+		mat.emission = mat.albedo_color
+		mat.emission_energy_multiplier = 0.12
+	mesh_node = kit.build({"steel": steel, "iron": iron, "leather": leather, "wood": wood})
+	mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mesh_node.name = "Model"
+	add_child(mesh_node)
 
 
 ## 直接摆到某个姿势

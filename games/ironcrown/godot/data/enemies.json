@@ -1,5 +1,5 @@
 {
-  "_note": "敌人数值（路线图 2.5；GDD.md 6.2、6.3）。时间单位秒、距离米。伤害按 DamageCalc 公式：weapon × (1 + strength×0.03 + skill×0.005) × 轻 1.0 / 重 1.8。",
+  "_note": "敌人数值（路线图 2.5；GDD.md 6.2、6.3）。时间单位秒、距离米。伤害按 DamageCalc 公式：weapon × (1 + strength×0.03 + skill×0.005) × 轻 1.0 / 重 1.8。 loot = 倒下后能搜到的物品（编号见 items.json），silver = 银币（2.6）。",
   "clubber": {
     "name": "无旗者 · 棍手",
     "coat": "5a3a2e",
@@ -24,7 +24,13 @@
     "retreat_below": 25,
     "circle_side": 0.6,
     "flee_below": 0.25,
-    "yield_chance": 0.5
+    "yield_chance": 0.5,
+    "loot": [
+      "club",
+      "bread",
+      "dice"
+    ],
+    "silver": 4
   },
   "swordsman": {
     "name": "无旗者 · 剑手",
@@ -50,6 +56,12 @@
     "retreat_below": 0,
     "circle_side": 1.0,
     "flee_below": 0.2,
-    "yield_chance": 0.7
+    "yield_chance": 0.7,
+    "loot": [
+      "outlaw_sword",
+      "leather_cap",
+      "strong_spirit"
+    ],
+    "silver": 9
   }
 }

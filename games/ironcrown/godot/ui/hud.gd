@@ -5,6 +5,7 @@ extends Control
 
 signal menu_pressed
 signal quest_pressed
+signal bag_pressed
 
 const TITLE := "铁冠之争 · 技术原型（人物为占位）"
 
@@ -12,6 +13,7 @@ var title_label: Label
 var hint_label: Label
 var menu_btn: Button
 var quest_btn: Button
+var bag_btn: Button
 var prompt_label: Label
 var toast_label: Label
 var subtitle_panel: PanelContainer
@@ -60,6 +62,11 @@ func _ready() -> void:
 	quest_btn.focus_mode = Control.FOCUS_NONE
 	quest_btn.pressed.connect(func(): quest_pressed.emit())
 	add_child(quest_btn)
+	bag_btn = Button.new()
+	bag_btn.text = "背包"
+	bag_btn.focus_mode = Control.FOCUS_NONE
+	bag_btn.pressed.connect(func(): bag_pressed.emit())
+	add_child(bag_btn)
 	prompt_label = _center_label(20)
 	toast_label = _center_label(18)
 	subtitle_panel = PanelContainer.new()
@@ -193,6 +200,7 @@ func set_hint(text: String) -> void:
 func _layout() -> void:
 	menu_btn.position = Vector2(size.x - menu_btn.size.x - 12.0, 10.0)
 	quest_btn.position = Vector2(menu_btn.position.x - quest_btn.size.x - 8.0, 10.0)
+	bag_btn.position = Vector2(quest_btn.position.x - bag_btn.size.x - 8.0, 10.0)
 	var w := minf(size.x - 32.0, 760.0)
 	hint_label.size = Vector2(w, 0)
 	hint_label.position = Vector2((size.x - w) * 0.5, size.y * 0.62)

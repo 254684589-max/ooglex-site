@@ -3,10 +3,12 @@ extends RefCounted
 ## 对话树（路线图 2.1；TECH.md 4.5）：读 data/dialogue/<区域>.json，按节点推进。只管规则，不碰界面。
 ## 节点 = {text, options, do?}；选项 = {text, next | end | check, if?, do?}（2.2 起）：
 ##   if    条件列表，全部满足才显示：{"flag": 名}（为真）、{"flag": 名, "eq": 值}、{"not_flag": 名}；
-##         2.3 起：{"quest_active": 任务}、{"quest_done": 任务}、{"not_quest": 任务}（还没接）、{"quest_stage": 任务, "eq": 阶段}、{"has_item": 物品}
+##         2.3 起：{"quest_active": 任务}、{"quest_done": 任务}、{"not_quest": 任务}（还没接）、{"quest_stage": 任务, "eq": 阶段}、{"has_item": 物品}；
+##         2.6 起：{"silver": 数量}（身上至少有这么多银币）
 ##   check 检定：{"id": 唯一编号, "skill": speech|intimidate|insight, "dc": 难度, "pass": 成功去的节点, "fail": 失败去的节点}
 ##   do    效果列表（选中时 / 进入节点时执行）：{"set": 旗标名, "value": 值（默认 true）}；
-##         2.3 起：{"quest": 任务}（接任务）、{"quest": 任务, "stage": 阶段}（推进）、{"quest_done": 任务}、{"clue": 线索}、{"take_item": 物品}
+##         2.3 起：{"quest": 任务}（接任务）、{"quest": 任务, "stage": 阶段}（推进）、{"quest_done": 任务}、{"clue": 线索}、{"take_item": 物品}；
+##         2.6 起：{"pay": 数量}（付银币）
 ## 对话可以有 start_if：[{"if": [...], "node": 节点}]，第一个满足的决定从哪个节点开始（旗标改变 NPC 的态度）。
 ## 只认上面这些键（白名单），不执行任意表达式；用到的旗标必须登记在 data/flags.json。
 
@@ -20,8 +22,8 @@ var last_check := {}          # 刚做过的检定：{skill, ok}（界面显示�
 
 const OPTION_KEYS := ["text", "next", "end", "if", "check", "do"]
 const NODE_KEYS := ["text", "options", "do"]
-const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item"]
-const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item"]
+const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver"]
+const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "pay"]
 
 
 ## 读过的对话文件缓存在 Engine 的元数据里：这个脚本用 static var 做缓存时，退出时脚本释放不掉（2.1 实测，引擎报「resources still in use」）
@@ -135,7 +137,11 @@ static func _validate_conds(conds: Array, where: String, registry: Dictionary, e
 			var name := str(c.get("flag", c.get("not_flag", "")))
 			if not registry.has(name):
 				errors.append("%s：旗标 %s 没有登记在 data/flags.json" % [where, name])
-		elif not (c.has("quest_active") or c.has("quest_done") or c.has("not_quest") or c.has("quest_stage") or c.has("has_item")):
+		elif c.has("has_item") and GameState.item(str(c.has_item)).is_empty():
+			errors.append("%s：物品 %s 不在 data/items.json 里" % [where, c.has_item])
+		elif c.has("silver") and int(c.silver) <= 0:
+			errors.append("%s：银币条件要大于 0" % where)
+		elif not (c.has("quest_active") or c.has("quest_done") or c.has("not_quest") or c.has("quest_stage") or c.has("has_item") or c.has("silver")):
 			errors.append("%s：条件缺内容" % where)
 
 
@@ -154,7 +160,9 @@ static func _validate_effects(effects: Array, where: String, registry: Dictionar
 			errors.append("%s：任务 %s 没有阶段 %s" % [where, e.quest, e.stage])
 		if e.has("clue") and not qd.clues.has(str(e.clue)):
 			errors.append("%s：线索 %s 不在 data/quests.json 里" % [where, e.clue])
-		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item")):
+		if e.has("take_item") and GameState.item(str(e.take_item)).is_empty():
+			errors.append("%s：物品 %s 不在 data/items.json 里" % [where, e.take_item])
+		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("pay")):
 			errors.append("%s：效果缺内容" % where)
 
 
@@ -175,6 +183,9 @@ static func conds_ok(conds: Array) -> bool:
 				return false
 		elif c.has("has_item"):
 			if not GameState.has_item(str(c.has_item)):
+				return false
+		elif c.has("silver"):
+			if GameState.silver < int(c.silver):
 				return false
 		elif c.has("not_flag"):
 			if GameState.has_flag(str(c.not_flag)):
@@ -202,6 +213,8 @@ static func apply(effects: Array) -> void:
 			GameState.add_clue(str(e.clue))
 		if e.has("take_item"):
 			GameState.take_item(str(e.take_item))
+		if e.has("pay"):
+			GameState.add_silver(-int(e.pay))
 
 
 func _enter(nid: String) -> void:

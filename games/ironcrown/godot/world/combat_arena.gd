@@ -15,6 +15,8 @@ const ENEMIES := [
 	["swordsman", "s", [Vector3(-2, 0, -11), Vector3(2, 0, -11)]],
 ]
 const CRATES := [Vector3(-8, 0.4, 2), Vector3(5, 0.4, 3), Vector3(-3, 0.4, -7)]
+const CHEST_POS := Vector3(2.6, 0, 9.0)           # 出生点右手边的补给箱（2.6）
+const CHEST_ITEMS := ["mail_shirt", "wool_trousers", "leather_gloves", "bandage", "bandage"]
 
 
 static func build(parent: Node3D) -> Transform3D:
@@ -28,6 +30,10 @@ static func build(parent: Node3D) -> Transform3D:
 		Blocks.box(parent, Vector3(0.8, 0.8, 0.8), c, Look.mat("timber"))
 	for p in TORCHES:
 		_torch(parent, p)
+	var chest := LootContainer.make("arena_chest", "补给箱", CHEST_ITEMS, 6)
+	chest.position = CHEST_POS
+	chest.rotation.y = -PI / 2
+	parent.add_child(chest)
 	Blocks.label(parent, "训练场 · 三个无旗者", Vector3(0, 3.6, -HALF - 1.6))     # 北墙上方，不挡出生点的视线
 	var director := CombatDirector.new()
 	director.name = "CombatDirector"

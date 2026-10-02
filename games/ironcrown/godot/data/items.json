@@ -1,0 +1,17 @@
+{
+  "_note": "物品（路线图 2.6；GDD.md 第八节）。kind：weapon / armor / consumable / quest / misc。weight 单位斤（负重上限 = 30 + 力量 × 2），value 单位银币。武器 base = 基础伤害、model = 第一人称外观（sword / club）；护甲 slot = head / body / hands / legs，armor = 护甲值，noise = 走动时多传出的米数（越重越吵）；消耗品 health / stamina = 恢复量。耐久与修理在后续步骤（铁匠）。",
+  "short_sword": {"name": "短剑", "kind": "weapon", "weight": 2.5, "value": 30, "base": 10, "model": "sword", "desc": "一把磨得发亮的旧短剑，剑柄缠着新换的皮绳。"},
+  "outlaw_sword": {"name": "无旗者的长剑", "kind": "weapon", "weight": 3.5, "value": 45, "base": 12, "model": "sword", "desc": "剑身有几处缺口，护手上的家徽被人用锉刀磨掉了。"},
+  "club": {"name": "木棍", "kind": "weapon", "weight": 2.0, "value": 3, "base": 8, "model": "club", "desc": "一头裹着铁皮的硬木棍，打人很疼，卖不了几个钱。"},
+  "padded_jacket": {"name": "棉甲外衣", "kind": "armor", "slot": "body", "weight": 4.0, "value": 20, "armor": 3, "noise": 0.0, "desc": "絮了好几层麻布的厚外衣，能挡住刀口，也能挡住北风。"},
+  "mail_shirt": {"name": "锁甲衫", "kind": "armor", "slot": "body", "weight": 12.0, "value": 90, "armor": 8, "noise": 2.0, "desc": "铁环缀成的短衫，护得住要害，走起路来哗啦作响。"},
+  "leather_cap": {"name": "皮帽", "kind": "armor", "slot": "head", "weight": 1.0, "value": 8, "armor": 2, "noise": 0.0, "desc": "硬皮压成的圆帽，里面垫着羊毛。"},
+  "leather_gloves": {"name": "皮手套", "kind": "armor", "slot": "hands", "weight": 0.5, "value": 6, "armor": 1, "noise": 0.0, "desc": "掌心磨薄了，手背还算结实。"},
+  "wool_trousers": {"name": "厚呢裤", "kind": "armor", "slot": "legs", "weight": 1.5, "value": 7, "armor": 1, "noise": 0.0, "desc": "粗呢子缝的长裤，膝盖处补过两回。"},
+  "bread": {"name": "面包", "kind": "consumable", "weight": 0.3, "value": 1, "health": 10, "stamina": 0, "desc": "黑麦面包，硬得能当锤子使。吃下去恢复 10 点生命。"},
+  "bandage": {"name": "绷带", "kind": "consumable", "weight": 0.1, "value": 3, "health": 25, "stamina": 0, "desc": "煮过的干净麻布条。包扎伤口，恢复 25 点生命。"},
+  "strong_spirit": {"name": "烈酒", "kind": "consumable", "weight": 0.5, "value": 4, "health": 0, "stamina": 60, "desc": "一小瓶烧喉咙的谷物酒。喝下去恢复 60 点体力。"},
+  "iron_key": {"name": "铁钥匙", "kind": "quest", "weight": 0.1, "value": 0, "desc": "一把生锈的铁钥匙，不知道开哪扇门。"},
+  "silver_spoon": {"name": "银勺", "kind": "misc", "weight": 0.2, "value": 8, "desc": "勺柄上刻着一朵小花，大概是谁家的陪嫁。"},
+  "dice": {"name": "骨骰子", "kind": "misc", "weight": 0.1, "value": 1, "desc": "一对磨圆了角的骨骰子，其中一颗灌过铅。"}
+}

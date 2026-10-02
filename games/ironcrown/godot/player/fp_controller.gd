@@ -122,7 +122,7 @@ func current_speed(input: Vector2) -> float:
 ## 想跑并且体力够（体力耗尽后要缓过气才能再跑，2.4）
 func wants_run() -> bool:
 	var run := Input.is_action_pressed("sprint") or touch_move.length() >= TOUCH_RUN_THRESHOLD
-	return run and (melee == null or (melee.can_sprint() and not melee.blocking() and not melee.staggered()))
+	return run and not GameState.over_encumbered() and (melee == null or (melee.can_sprint() and not melee.blocking() and not melee.staggered()))
 
 
 func _physics_process(delta: float) -> void:

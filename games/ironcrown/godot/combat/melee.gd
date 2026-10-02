@@ -14,10 +14,11 @@ signal drawn_changed(drawn: bool)
 signal guarded(result: String, info: Dictionary)      # perfect / block / guard_break
 signal damaged(amount: int, info: Dictionary)
 signal defeated
+signal no_weapon                  # 想拔剑但没装备武器（2.6）
 
 enum State { SHEATHED, DRAWING, IDLE, CHARGE, WINDUP, STRIKE, RECOVER, SHEATHING, BLOCK }
 
-const WEAPON := {"name": "短剑", "base": 10.0}     # 背包与装备在 2.6，到时从装备里读
+const FALLBACK_SKILL := "blade"   # 各类武器的技能在 2.7 细分；现在都按剑术算
 const HEAVY_HOLD := 0.35          # 按住超过这个时间松开 = 重击（GDD.md 第三节）
 const DRAW_TIME := 0.35
 const SHEATHE_TIME := 0.3
@@ -76,6 +77,26 @@ func _ready() -> void:
 	view = WeaponView.new()
 	view.name = "Weapon"
 	player.camera.add_child(view)
+	view.set_model(str(weapon().get("model", "sword")))
+	GameState.inventory_changed.connect(_on_inventory_changed)
+
+
+## 装备中的武器（data/items.json 里的一条；没装备武器时是空字典）
+func weapon() -> Dictionary:
+	return GameState.item(GameState.weapon_id())
+
+
+## 背包里换了武器：换外观；武器卸下了就收剑
+func _on_inventory_changed() -> void:
+	var w := weapon()
+	if w.is_empty():
+		if state != State.SHEATHED:
+			cancel_press()
+			view.visible = false
+			_enter(State.SHEATHED, 1.0)
+			drawn_changed.emit(false)
+		return
+	view.set_model(str(w.model))
 
 
 func drawn() -> bool:
@@ -201,6 +222,9 @@ func toggle_draw() -> void:
 
 
 func _draw_weapon() -> void:
+	if weapon().is_empty():
+		no_weapon.emit()
+		return
 	view.visible = true
 	view.set_pose(WeaponView.POSES.lowered)
 	from_pose = view.current()
@@ -383,10 +407,11 @@ func _resolve_hit() -> Dictionary:
 		last_hit = {}
 		return {}
 	var tm: Dictionary = TIMING[kind]
-	var dmg := DamageCalc.compute(WEAPON.base, GameState.strength, int(GameState.skills.get("blade", 0)), kind,
+	var w := weapon()
+	var dmg := DamageCalc.compute(float(w.get("base", 1)), GameState.strength, int(GameState.skills.get(FALLBACK_SKILL, 0)), kind,
 		bool(target.get("staggered")) if "staggered" in target else false, float(target.get("armor")) if "armor" in target else 0.0)
 	var dir := -player.camera.global_transform.basis.z
-	var info := {"damage": dmg, "kind": kind, "dir": dir, "stop": tm.stop, "weapon": WEAPON.name}
+	var info := {"damage": dmg, "kind": kind, "dir": dir, "stop": tm.stop, "weapon": str(w.get("name", ""))}
 	stop_left = tm.stop
 	view.kick = Vector3(0, 0, 0.04)
 	if not Settings.reduced_motion:

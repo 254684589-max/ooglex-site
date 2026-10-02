@@ -15,6 +15,16 @@ const DEFAULT_WITS := 3
 const DEFAULT_STRENGTH := 5     # 力量（近战伤害，GDD.md 6.3；属性界面在 2.7）
 const FLAGS_PATH := "res://data/flags.json"
 const QUESTS_PATH := "res://data/quests.json"
+const ITEMS_PATH := "res://data/items.json"
+const SLOTS := ["weapon", "head", "body", "hands", "legs"]
+const SLOT_NAMES := {"weapon": "武器", "head": "头", "body": "身", "hands": "手", "legs": "腿"}
+const KIND_NAMES := {"weapon": "武器", "armor": "护甲", "consumable": "消耗品", "quest": "任务物品", "misc": "杂物"}
+## 开局随身（出身三选一在阶段 3，到时按出身改）
+const START_ITEMS := ["short_sword", "padded_jacket"]
+const START_EQUIP := {"weapon": "short_sword", "body": "padded_jacket"}
+const START_SILVER := 12
+const CARRY_BASE := 30.0          # 负重上限 = 30 + 力量 × 2（斤）
+const CARRY_PER_STR := 2.0
 
 var flags := {}
 var skills := DEFAULT_SKILLS.duplicate()
@@ -24,7 +34,12 @@ var seed_value := 0
 var checks := {}          # 检定编号 → 是否成功（已经掷过的）
 var quests := {}          # 任务编号 → {stage, done}
 var clues: Array = []     # 得到的线索编号（按得到的先后）
-var inventory: Array = [] # 物品编号（2.3 从 main 挪过来；背包界面在 2.6）
+var inventory: Array = [] # 物品编号（同一物品可以有多个；2.6 起装备中的物品也在这里）
+var equipped := {}        # 部位 → 物品编号（2.6）
+var silver := 0
+var looted := {}          # 搜刮过的容器编号 → 剩下的东西（2.8 一起存档）
+
+signal inventory_changed
 
 
 func _ready() -> void:
@@ -37,6 +52,10 @@ func new_game(seed_override := -1) -> void:
 	quests.clear()
 	clues.clear()
 	inventory.clear()
+	inventory.append_array(START_ITEMS)
+	equipped = START_EQUIP.duplicate()
+	silver = START_SILVER
+	looted.clear()
 	skills = DEFAULT_SKILLS.duplicate()
 	wits = DEFAULT_WITS
 	strength = DEFAULT_STRENGTH
@@ -95,22 +114,158 @@ func check(check_id: String, skill: String, dc: int) -> bool:
 	return ok
 
 
-# ---------------- 物品（2.6 做背包界面） ----------------
+# ---------------- 物品、装备、银币（2.6） ----------------
 
-func add_item(item: String) -> void:
-	inventory.append(item)
+## 物品数据（data/items.json），缓存在 Engine 元数据里（静态变量退出时释放不掉，见 2.1）
+static func items() -> Dictionary:
+	if not Engine.has_meta("ic_items"):
+		var f := FileAccess.open(ITEMS_PATH, FileAccess.READ)
+		var d = JSON.parse_string(f.get_as_text()) if f else null
+		Engine.set_meta("ic_items", d if typeof(d) == TYPE_DICTIONARY else {})
+	return Engine.get_meta("ic_items")
 
 
-func has_item(item: String) -> bool:
-	return inventory.has(item)
+static func item(id: String) -> Dictionary:
+	return items().get(id, {})
 
 
-func take_item(item: String) -> bool:
-	var i := inventory.find(item)
+static func item_name(id: String) -> String:
+	return str(item(id).get("name", id))
+
+
+## 物品数据校验（自动化测试用）：返回错误列表
+static func validate_items(d: Dictionary) -> Array:
+	var errs := []
+	var need := {"weapon": ["base", "model"], "armor": ["slot", "armor", "noise"], "consumable": ["health", "stamina"], "quest": [], "misc": []}
+	for id in d:
+		if str(id).begins_with("_"):
+			continue
+		var it: Dictionary = d[id]
+		for k in ["name", "kind", "weight", "value", "desc"]:
+			if not it.has(k):
+				errs.append("%s 缺少 %s" % [id, k])
+		var kind := str(it.get("kind", ""))
+		if not need.has(kind):
+			errs.append("%s 的种类 %s 不认识" % [id, kind])
+			continue
+		for k in need[kind]:
+			if not it.has(k):
+				errs.append("%s（%s）缺少 %s" % [id, kind, k])
+		if kind == "armor" and not str(it.get("slot", "")) in ["head", "body", "hands", "legs"]:
+			errs.append("%s 的部位不对" % id)
+		if kind == "weapon" and not str(it.get("model", "")) in ["sword", "club"]:
+			errs.append("%s 的外观不对" % id)
+		if float(it.get("weight", -1)) < 0.0:
+			errs.append("%s 的重量不对" % id)
+	return errs
+
+
+func add_item(id: String, n := 1) -> void:
+	for i in n:
+		inventory.append(id)
+	inventory_changed.emit()
+
+
+func has_item(id: String) -> bool:
+	return inventory.has(id)
+
+
+func count_item(id: String) -> int:
+	return inventory.count(id)
+
+
+## 拿走一个；装备着的最后一件会先卸下
+func take_item(id: String) -> bool:
+	var i := inventory.find(id)
 	if i < 0:
 		return false
 	inventory.remove_at(i)
+	if not inventory.has(id):
+		for s in equipped.keys():
+			if equipped[s] == id:
+				equipped.erase(s)
+	inventory_changed.emit()
 	return true
+
+
+func add_silver(n: int) -> void:
+	silver = maxi(silver + n, 0)
+	inventory_changed.emit()
+
+
+func is_equipped(id: String) -> bool:
+	return id in equipped.values()
+
+
+func slot_of(id: String) -> String:
+	var it := item(id)
+	if it.get("kind") == "weapon":
+		return "weapon"
+	if it.get("kind") == "armor":
+		return str(it.slot)
+	return ""
+
+
+## 装备：同部位原来的那件换下来（还在背包里）；返回是否成功
+func equip(id: String) -> bool:
+	var s := slot_of(id)
+	if s == "" or not has_item(id):
+		return false
+	equipped[s] = id
+	inventory_changed.emit()
+	return true
+
+
+## 卸下：武器卸下后就拔不出剑（空手打架在之后的步骤）
+func unequip(slot: String) -> void:
+	if equipped.erase(slot):
+		inventory_changed.emit()
+
+
+func weapon_id() -> String:
+	return str(equipped.get("weapon", ""))
+
+
+func armor_total() -> float:
+	var a := 0.0
+	for s in ["head", "body", "hands", "legs"]:
+		if equipped.has(s):
+			a += float(item(equipped[s]).get("armor", 0))
+	return a
+
+
+## 护甲越重越吵：走动时声音多传出去的米数（敌人听觉，2.5）
+func armor_noise() -> float:
+	var n := 0.0
+	for s in ["head", "body", "hands", "legs"]:
+		if equipped.has(s):
+			n += float(item(equipped[s]).get("noise", 0))
+	return n
+
+
+func carry_weight() -> float:
+	var w := 0.0
+	for id in inventory:
+		w += float(item(id).get("weight", 0))
+	return w
+
+
+func carry_limit() -> float:
+	return CARRY_BASE + strength * CARRY_PER_STR
+
+
+## 超重：不能跑（GDD.md 第八节）
+func over_encumbered() -> bool:
+	return carry_weight() > carry_limit()
+
+
+## 用掉一个消耗品；返回 {health, stamina}（由 main 交给玩家），不是消耗品返回空字典
+func use_item(id: String) -> Dictionary:
+	var it := item(id)
+	if it.get("kind") != "consumable" or not has_item(id):
+		return {}
+	take_item(id)
+	return {"health": int(it.get("health", 0)), "stamina": float(it.get("stamina", 0))}
 
 
 # ---------------- 任务与线索（2.3） ----------------

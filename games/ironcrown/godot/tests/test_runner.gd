@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -136,6 +136,12 @@ func test_ui() -> void:
 		"训练场 · 三个无旗者在那儿！失衡格挡别打了，我认输！快跑！（倒下）"])
 	for t in Enemy.STATE_LABELS:
 		texts.append(t)
+	# 背包与搜刮（2.6）：物品名字与说明、面板文字
+	for id in GameState.items():
+		if not str(id).begins_with("_"):
+			texts.append(str(GameState.items()[id].name) + str(GameState.items()[id].desc))
+	texts.append_array(GameState.SLOT_NAMES.values() + GameState.KIND_NAMES.values())
+	texts.append("背包搜刮：护甲负重斤银币超重：不能跑装备（空）（已装备）×卸下使用选一件东西看看。伤害部走动更吵不能丢弃值什么都没有了。全部拿走拿到：、没有装备武器（点「背包」按 I 打开背包装备）打开破木箱补给箱")
 	for k in Enemy.types():
 		if not str(k).begins_with("_"):
 			texts.append(str(Enemy.types()[k].name))
@@ -1430,3 +1436,154 @@ func test_enemies() -> void:
 	check(main.defeat_panel.retry_btn.text == "重来", "有「重来」按钮")
 	get_tree().paused = false
 	await free_main(main)
+
+
+func find_button(root: Node, text: String) -> Button:
+	for c in root.find_children("*", "Button", true, false):
+		if (c as Button).text.strip_edges().ends_with(text) or (c as Button).text == text:
+			return c
+	return null
+
+
+func test_inventory() -> void:
+	check(GameState.validate_items(GameState.items()).is_empty(), "物品数据（data/items.json）完整：%s" % [GameState.validate_items(GameState.items())])
+	check(GameState.validate_items({"x": {"name": "x", "kind": "armor", "weight": 1, "value": 1, "desc": "", "slot": "tail", "armor": 1, "noise": 0}}).size() == 1, "校验能抓出不对的部位")
+	check(Enemy.validate_types(Enemy.types()).is_empty(), "敌人的掉落都在物品表里")
+	GameState.new_game(3)
+	check(GameState.equipped.get("weapon") == "short_sword" and GameState.equipped.get("body") == "padded_jacket" and GameState.silver == 12, "开局：短剑、棉甲外衣、12 银币")
+	check(GameState.armor_total() == 3.0 and is_equal_approx(GameState.carry_weight(), 6.5) and GameState.carry_limit() == 40.0, "护甲 3、负重 6.5 / 40 斤（30 + 力量 5 × 2）")
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		e.process_mode = Node.PROCESS_MODE_DISABLED
+	# 换武器：外观与伤害跟着变
+	GameState.add_item("club")
+	check(GameState.equip("club") and m.view.model == "club" and m.weapon().base == 8, "装备木棍：手里换成木棍，基础伤害 8")
+	check(GameState.has_item("short_sword") and not GameState.is_equipped("short_sword"), "换下来的短剑还在背包里")
+	GameState.unequip("weapon")
+	var no_w := [false]
+	m.no_weapon.connect(func(): no_w[0] = true)
+	m.toggle_draw()
+	check(no_w[0] and m.state == Melee.State.SHEATHED, "卸下武器后拔不出剑，提示去背包装备")
+	GameState.equip("short_sword")
+	check(m.view.model == "sword", "重新装备短剑")
+	m.toggle_draw()
+	await seconds(0.5)
+	GameState.take_item("short_sword")
+	check(m.state == Melee.State.SHEATHED and GameState.weapon_id() == "", "拿着的武器没了：自动收起，装备栏空")
+	GameState.add_item("short_sword")
+	GameState.equip("short_sword")
+	# 护甲减伤
+	var a := arena_enemy(main, "a")
+	put_enemy(a, Vector3(0, 0, 1.3), PI)
+	await place(p, 0.0, 2.5)
+	a.player = p
+	a.attack_kind = "light"
+	a._strike_player()
+	check(m.health == 100 - DamageCalc.compute(8, 4, 5, "light", false, 3.0) and m.health == 92, "穿棉甲（护甲 3）挨棍手一下：9 → 8（剩 %d）" % m.health)
+	GameState.add_item("mail_shirt")
+	GameState.equip("mail_shirt")
+	check(GameState.armor_total() == 8.0 and GameState.has_item("padded_jacket") and not GameState.is_equipped("padded_jacket"), "换上锁甲衫：护甲 8，棉甲换下来")
+	a._strike_player()
+	check(m.health == 92 - 5, "穿锁甲挨同样一下：只掉 5（剩 %d）" % m.health)
+	p.velocity = Vector3(2, 0, 0)
+	check(is_equal_approx(a.player_noise(), Enemy.NOISE.walk + 2.0), "穿锁甲走路更吵：声音传 6 米")
+	# 负重
+	GameState.add_item("mail_shirt", 2)
+	check(GameState.over_encumbered(), "背三件锁甲：超重（%.1f / 40 斤）" % GameState.carry_weight())
+	Input.action_press("sprint")
+	check(not p.wants_run(), "超重时按 Shift 也跑不起来")
+	Input.action_release("sprint")
+	GameState.take_item("mail_shirt")
+	GameState.take_item("mail_shirt")
+	check(not GameState.over_encumbered() and GameState.is_equipped("mail_shirt"), "扔掉两件就不超重；身上那件还穿着")
+	# 背包面板
+	var ip: InventoryPanel = main.inventory_panel
+	main._unhandled_input(key_ev(KEY_I))
+	await frames(2)
+	check(ip.visible and get_tree().paused, "按 I 打开背包，游戏暂停")
+	check(ip.summary.text.begins_with("护甲 8 · 负重") and ip.summary.text.contains("银币 12"), "背包顶部写护甲、负重、银币（%s）" % ip.summary.text)
+	check(find_button(ip, "武器：短剑") != null and find_button(ip, "身：锁甲衫") != null and find_button(ip, "头：（空）") != null, "五个装备部位（空的写「（空）」）")
+	check(find_button(ip, "棉甲外衣") != null and find_button(ip, "木棍") != null, "随身物品按种类列出")
+	find_button(ip, "棉甲外衣").pressed.emit()
+	await frames(1)
+	check(ip.detail.text.contains("身部 · 护甲 3") and find_button(ip, "装备") != null, "选中一件看说明，有「装备」按钮")
+	find_button(ip, "装备").pressed.emit()
+	await frames(1)
+	check(GameState.equipped.body == "padded_jacket" and ip.summary.text.begins_with("护甲 3"), "在背包里换回棉甲外衣")
+	m.health = 50
+	GameState.add_item("bread")
+	ip.selected = "bread"
+	ip.refresh()
+	find_button(ip, "使用").pressed.emit()
+	await frames(1)
+	check(m.health == 60 and not GameState.has_item("bread"), "吃面包：生命 50 → 60，面包没了")
+	var rect: Rect2 = ip.f.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "背包面板不超出画面（%s）" % rect.size)
+	main._unhandled_input(key_ev(KEY_I))
+	ip._unhandled_input(key_ev(KEY_I))
+	await frames(2)
+	check(not ip.visible and not get_tree().paused, "再按 I 关上背包")
+	main.hud.bag_pressed.emit()
+	await frames(2)
+	check(ip.visible, "右上角「背包」按钮打开背包（手机用）")
+	ip.close()
+	await frames(2)
+	# 补给箱
+	var chest: LootContainer = null
+	for c in main.get_tree().get_nodes_in_group("loot"):
+		if c.loot_id == "arena_chest":
+			chest = c
+	check(chest != null and not chest.is_empty() and chest.prompt() == "打开 · 补给箱", "训练场出生点旁有补给箱")
+	main.open_loot(chest)
+	await frames(2)
+	var lp: LootPanel = main.loot_panel
+	check(lp.visible and get_tree().paused and find_button(lp, "银币 ×6") != null, "打开补给箱：搜刮面板列出银币和东西")
+	var got: Array = []
+	lp.took.connect(func(n): got.append_array(n))
+	find_button(lp, "银币 ×6").pressed.emit()
+	await frames(1)
+	check(GameState.silver == 18 and got == ["6 枚银币"], "点银币：拿到 6 枚")
+	var n0 := GameState.count_item("bandage")
+	lp.take_everything()
+	await frames(1)
+	check(chest.is_empty() and GameState.count_item("bandage") == n0 + 2 and GameState.has_item("wool_trousers"), "全部拿走")
+	check(chest.prompt().ends_with("（空）") and GameState.looted.has("arena_chest"), "搜空后提示「（空）」，记进存档数据")
+	check(lp.take_all_btn.disabled, "空了「全部拿走」按钮变灰")
+	lp.close()
+	await frames(2)
+	check(not get_tree().paused, "关上搜刮面板继续游戏")
+	# 搜刮倒下的敌人
+	a.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	var corpse: LootContainer = null
+	for c in main.get_tree().get_nodes_in_group("loot"):
+		if c.loot_id == "loot:a":
+			corpse = c
+	check(corpse != null and corpse.corpse and corpse.verb_now() == "搜刮", "敌人倒下的地方可以搜刮")
+	check(corpse != null and corpse.contents().items == ["club", "bread", "dice"] and corpse.contents().silver == 4, "棍手身上：木棍、面包、骨骰子、4 枚银币")
+	var sw := arena_enemy(main, "s")
+	sw.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	await free_main(main)
+	# 霜渡镇：小广场的破木箱，机位 6 对准它按 E
+	GameState.new_game(3)
+	main = await make_main(false)
+	main.set_view(6)
+	await physics(6)
+	main.player.interactor.refresh()
+	var tgt = main.player.interactor.target
+	check(tgt is LootContainer and tgt.display_name == "破木箱", "霜渡镇机位 6：对准小广场的破木箱")
+	main.player.interactor.use()
+	await frames(2)
+	check(main.loot_panel.visible and find_button(main.loot_panel, "绷带（消耗品 · 0.1 斤）") != null, "按 E 打开破木箱：里面有绷带")
+	main.loot_panel.close()
+	await free_main(main)
+	# 银币条件与付钱（更夫的消息要 5 银币）
+	GameState.new_game(3)
+	check(DialogueRunner.conds_ok([{"silver": 5}]), "身上有 12 银币：满足「至少 5 银币」")
+	DialogueRunner.apply([{"pay": 5}])
+	check(GameState.silver == 7, "付 5 银币后剩 7")
+	GameState.silver = 3
+	check(not DialogueRunner.conds_ok([{"silver": 5}]), "只有 3 银币：塞钱的选项不出现")

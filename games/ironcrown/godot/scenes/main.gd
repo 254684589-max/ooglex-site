@@ -35,6 +35,8 @@ var hud: Hud
 var touch: TouchControls
 var pause_menu: PauseMenu
 var defeat_panel: DefeatPanel
+var inventory_panel: InventoryPanel
+var loot_panel: LootPanel
 var touch_mode := false
 var spawn := Vector3.ZERO
 var yaw0 := 0.0
@@ -96,6 +98,8 @@ func _ready() -> void:
 	print("IC_MENU_SCREEN x=%d y=%d" % [c.x, c.y])
 	var qc := hud.quest_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
 	print("IC_QUEST_SCREEN x=%d y=%d" % [qc.x, qc.y])
+	var bc := hud.bag_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+	print("IC_BAG_SCREEN x=%d y=%d" % [bc.x, bc.y])
 	if touch_mode:
 		var ac: Vector2 = touch.button_centers().attack * get_tree().root.content_scale_factor
 		print("IC_ATTACK_SCREEN x=%d y=%d" % [ac.x, ac.y])
@@ -270,6 +274,16 @@ func _build_ui() -> void:
 	layer.add_child(quest_panel)
 	quest_panel.closed.connect(_on_quest_closed)
 	hud.quest_pressed.connect(open_quests)
+	inventory_panel = InventoryPanel.new()
+	layer.add_child(inventory_panel)
+	inventory_panel.closed.connect(_on_quest_closed)
+	inventory_panel.used.connect(_on_item_used)
+	hud.bag_pressed.connect(open_inventory)
+	loot_panel = LootPanel.new()
+	layer.add_child(loot_panel)
+	loot_panel.closed.connect(_on_loot_closed)
+	loot_panel.took.connect(func(names: Array): hud.toast("拿到：" + "、".join(names), 2.5))
+	player.melee.no_weapon.connect(func(): hud.toast("没有装备武器（%s打开背包装备）" % ("点「背包」" if touch_mode else "按 I ")))
 	GameState.quest_event.connect(_on_quest_event)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
@@ -289,6 +303,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("quest_log"):
 		open_quests()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("inventory"):
+		open_inventory()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("perf_toggle"):
@@ -412,6 +430,8 @@ func _on_interacted(r: Dictionary) -> void:
 		GameState.add_item(r.item)
 	if r.get("kind") == "dialogue":
 		open_dialogue(r.area, r.id, r.get("npc"))
+	if r.get("kind") == "loot":
+		open_loot(r.container)
 	var t := player.interactor.target
 	if not dialogue.visible:
 		hud.show_prompt(t.prompt() if t else "")     # 门开了以后提示从「打开」变「关上」
@@ -454,6 +474,47 @@ func open_quests() -> void:
 	if touch:
 		touch.release_all()
 	quest_panel.open()
+
+
+## 背包（2.6）：和任务日志一样暂停、放出鼠标
+func open_inventory() -> void:
+	if get_tree().paused:
+		return
+	_pause_for_panel()
+	inventory_panel.open()
+
+
+## 搜刮（2.6）
+func open_loot(c: LootContainer) -> void:
+	if get_tree().paused:
+		return
+	_pause_for_panel()
+	hud.show_prompt("")
+	loot_panel.open(c)
+
+
+func _pause_for_panel() -> void:
+	player.melee.cancel_press()
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	lock_seen = false
+	if touch:
+		touch.release_all()
+
+
+func _on_loot_closed() -> void:
+	_on_quest_closed()
+	player.interactor.refresh()
+	var t := player.interactor.target
+	hud.show_prompt(t.prompt() if t else "")       # 搜空了提示变成「（空）」
+
+
+## 用了消耗品：回生命 / 体力（不超过上限）
+func _on_item_used(eff: Dictionary, id: String) -> void:
+	var m := player.melee
+	m.health = mini(m.health + int(eff.get("health", 0)), Melee.HEALTH_MAX)
+	m.stamina = minf(m.stamina + float(eff.get("stamina", 0)), Melee.STAMINA_MAX)
+	print("IC_USE item=%s hp=%d stamina=%.0f" % [id, m.health, m.stamina])
 
 
 func _on_quest_closed() -> void:
