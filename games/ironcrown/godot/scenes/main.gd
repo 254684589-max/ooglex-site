@@ -47,20 +47,30 @@ var lock_seen := false          # 指针真的锁定过（锁定失败时不要�
 var hint_left := HINT_SECONDS
 var started := false
 var use_screen_logged := false
+var save_panel: SavePanel
+var loaded_from := ""           # 这次是从哪个栏位读档进来的（空 = 新游戏）
+
+signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
 
 func _ready() -> void:
 	touch_mode = DisplayServer.is_touchscreen_available()
+	var pending := GameState.pending_load
+	GameState.pending_load = {}
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
 		elif _query("test") == "2":
 			use_arena = true
-		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）
+		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）；玩家自己存过设置就听玩家的
 		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 			Settings.reduced_motion = true
-			Settings.head_bob = false
+			if not Settings.loaded:
+				Settings.head_bob = false
 			print("IC_REDUCED_MOTION")
+	if not pending.is_empty():           # 读档：场景以存档为准（2.8）
+		use_arena = pending.scene == "arena"
+		use_test_range = pending.scene == "test_range"
 	_build_environment()
 	world = Node3D.new()
 	world.name = "World"
@@ -77,11 +87,14 @@ func _ready() -> void:
 	var view := _query("view")
 	if not use_test_range and not use_arena and view.is_valid_int() and int(view) >= 0 and int(view) < Frostford.VIEWS.size():
 		set_view(int(view))
+	if not pending.is_empty():
+		_restore_player(pending.player)
+		loaded_from = str(pending.get("slot", ""))
 	spawn = player.global_position
 	yaw0 = player.yaw_deg()
 	_build_ui()
 	var q := _query("q")
-	apply_quality(q if q in Look.TIERS else Look.default_tier())
+	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
@@ -93,6 +106,10 @@ func _ready() -> void:
 			Settings.set_value("show_perf", true)
 			await run_benchmark()
 		return
+	if loaded_from != "":
+		hud.toast("已读取：%s%s" % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
+	elif Saves.has_any():
+		hud.toast("有存档：%s里「存档 / 读档」可以继续（F9 读快速存档）" % ("点「菜单」，" if touch_mode else "按 Esc 打开菜单，"), 6.0)
 	# 给网页冒烟测试用：「菜单」按钮在窗口里的位置（窗口像素，已乘界面缩放）
 	await get_tree().process_frame
 	var c := hud.menu_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
@@ -303,11 +320,17 @@ func _build_ui() -> void:
 	layer.add_child(pause_menu)
 	pause_menu.quality_selected.connect(func(t: String):
 		apply_quality(t)
+		Settings.set_value("quality", t)          # 记住玩家选的画质（2.8）
 		print("IC_QUALITY %s" % t))
+	save_panel = SavePanel.new()
+	save_panel.main = self
+	layer.add_child(save_panel)
+	pause_menu.saves_requested.connect(func(): save_panel.open())
+	GameState.quest_event.connect(_autosave_on_quest)
 	pause_menu.resume_requested.connect(close_pause)
 	defeat_panel = DefeatPanel.new()
 	layer.add_child(defeat_panel)
-	defeat_panel.retry_requested.connect(_retry)
+	defeat_panel.retry_requested.connect(func(): _retry.call_deferred())
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -322,6 +345,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("inventory"):
 		open_inventory()
 		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("quick_save"):
+		get_viewport().set_input_as_handled()
+		quick_save()
+		return
+	if event.is_action_pressed("quick_load"):
+		get_viewport().set_input_as_handled()      # 读档会重新载入场景，先标记已处理
+		load_game.call_deferred("quick")
 		return
 	if event.is_action_pressed("character"):
 		open_character()
@@ -411,10 +442,99 @@ func _on_defeated() -> void:
 	defeat_panel.open()
 
 
-## 倒下后「重来」：重新载入当前场景（网页地址里的 ?test=2 等参数不变）
+## 倒下后：有存档就读最近的一份；没有存档就开一局新游戏（2.8）
 func _retry() -> void:
+	var slot := Saves.latest_slot()
+	if slot != "" and load_game(slot):
+		return
+	GameState.new_game()
+	_reload()
+
+
+# ---------------- 存档（2.8） ----------------
+
+## 现在能不能存档：有敌人正在和你打（警觉 / 战斗 / 后退 / 失衡）就不行；倒下了也不行
+func can_save() -> String:
+	if player.melee.down:
+		return "你已经倒下了"
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
+			return "附近有敌人在和你打，不能存档"
+	return ""
+
+
+## 存档内容：版本、时间、场景、玩家（位置、朝向、生命、体力、蹲着）、游戏状态
+func collect_save() -> Dictionary:
+	var p := player.global_position
+	return {
+		"version": Saves.VERSION,
+		"saved_at": Time.get_datetime_string_from_system(true) + "Z",
+		"scene": scene_name(),
+		"player": {"pos": [p.x, p.y, p.z], "yaw": player.rotation.y, "pitch": player.pitch, "health": player.melee.health,
+			"stamina": player.melee.stamina, "crouch": player.crouch_wanted},
+		"state": GameState.to_dict(),
+	}
+
+
+## 存到一个栏位；返回是否成功（失败时屏幕提示原因）
+func save_game(slot: String, quiet := false) -> bool:
+	var why := can_save()
+	if why == "":
+		if Saves.write_slot(slot, collect_save()):
+			if not quiet:
+				hud.toast("✓ 已存档：%s" % Saves.SLOT_NAMES[slot], 2.0)
+			print("IC_SAVE slot=%s" % slot)
+			return true
+		why = Saves.last_error
+	if not quiet:
+		hud.toast("× 没有存档：%s" % why, 3.0)
+	print("IC_SAVE_FAIL slot=%s %s" % [slot, why])
+	return false
+
+
+func quick_save() -> void:
+	save_game("quick")
+
+
+## 自动存档：接任务、任务更新、任务完成时（GDD 第十节）；战斗中跳过，不提示
+func _autosave_on_quest(kind: String, _id: String) -> void:
+	if kind in ["started", "advanced", "done"]:
+		save_game.call_deferred("auto", true)
+
+
+## 读档：把状态装回 GameState，记下场景与玩家，重新载入场景。返回是否读到了
+func load_game(slot: String) -> bool:
+	var r := Saves.read_slot(slot)
+	if not r.has("data"):
+		var why := str(r.get("error", "这个栏位是空的"))
+		hud.toast("× 读不了%s：%s" % [Saves.SLOT_NAMES.get(slot, slot), why], 3.0)
+		print("IC_LOAD_FAIL slot=%s %s" % [slot, why])
+		return false
+	var d: Dictionary = r.data
+	GameState.from_dict(d.state)
+	GameState.pending_load = {"scene": str(d.scene), "player": d.player, "slot": slot, "note": str(r.note)}
+	print("IC_LOAD slot=%s scene=%s%s" % [slot, d.scene, " note=" + r.note if r.note != "" else ""])
+	_reload()
+	return true
+
+
+func _reload() -> void:
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	if get_tree().current_scene == self:
+		get_tree().reload_current_scene()
+	else:
+		reload_requested.emit()
+
+
+func _restore_player(p: Dictionary) -> void:
+	var pos: Array = p.get("pos", [0, 0, 0])
+	player.global_position = Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
+	player.rotation.y = float(p.get("yaw", 0.0))
+	player.pitch = float(p.get("pitch", 0.0))
+	player.head.rotation.x = deg_to_rad(player.pitch)
+	player.crouch_wanted = bool(p.get("crouch", false))
+	player.melee.health = clampi(int(p.get("health", player.melee.health_max())), 1, player.melee.health_max())
+	player.melee.stamina = clampf(float(p.get("stamina", player.melee.stamina_max())), 0.0, player.melee.stamina_max())
 
 
 func _on_enemy_state(e: Enemy, state: String) -> void:
@@ -612,6 +732,10 @@ func open_pause() -> void:
 	lock_seen = false
 	pause_menu.open()
 	print("IC_PAUSE open=true")
+	if touch_mode:                    # 给网页冒烟测试用：「存档 / 读档」按钮的位置
+		await get_tree().process_frame
+		var c := pause_menu.saves_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+		print("IC_SAVES_SCREEN x=%d y=%d" % [c.x, c.y])
 
 
 func close_pause() -> void:
@@ -635,6 +759,7 @@ func _process(delta: float) -> void:
 		if hint_left <= 0.0:
 			hud.set_hint("")
 	_train_stealth(delta)
+	GameState.playtime += delta
 	var pos := player.global_position
 	if not moved_logged and Vector2(pos.x - spawn.x, pos.z - spawn.z).length() > 1.0:
 		moved_logged = true

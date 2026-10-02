@@ -5,9 +5,12 @@ extends Control
 
 signal resume_requested
 signal quality_selected(tier: String)
+signal saves_requested
 
 var panel: PanelContainer
 var resume_btn: Button
+var saves_btn: Button
+var help_label: Label
 var fov_slider: HSlider
 var sens_slider: HSlider
 var invert_check: CheckButton
@@ -49,6 +52,10 @@ func _ready() -> void:
 	resume_btn.text = "继续游戏"
 	resume_btn.pressed.connect(func(): resume_requested.emit())
 	box.add_child(resume_btn)
+	saves_btn = Button.new()
+	saves_btn.text = "存档 / 读档"
+	saves_btn.pressed.connect(func(): saves_requested.emit())
+	box.add_child(saves_btn)
 	fov_value = Label.new()
 	fov_slider = _slider(box, "视野角", fov_value, Settings.FOV_MIN, Settings.FOV_MAX, 1.0, Settings.fov, "fov")
 	sens_value = Label.new()
@@ -77,8 +84,9 @@ func _ready() -> void:
 	var help := Label.new()
 	help.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
 	help.add_theme_color_override("font_color", Color("a9b4c0"))
-	help.text = "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · F3 性能数据 · Esc 暂停\n手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」"
+	help.text = "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · R 收剑 · I 背包 · J 任务 · K 角色 · F8 快速存档 · F9 快速读档 · F3 性能数据 · Esc 暂停\n手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」· 右上角「角色」「背包」「任务」「菜单」"
 	box.add_child(help)
+	help_label = help
 	get_tree().root.size_changed.connect(_fit)
 	_fit()
 	_refresh_values()

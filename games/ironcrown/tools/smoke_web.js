@@ -8,6 +8,8 @@
 //   2.1  霜渡镇 ?view=3（更夫面前）：电脑按 E 打开对话、按 2 选第二个选项、Esc 结束；手机 / 平板真实点交互按钮与第一个选项（IC_DIALOG），截图。
 //   2.4  霜渡镇 ?view=5（木桩假人面前）：电脑点击画面后按 F 两下（拔剑、轻击），再按一下左键出剑；手机 / 平板点两下「攻」按钮；要求打中木桩（IC_HIT），截图。
 //   2.7  霜渡镇出生点：电脑按 K、手机 / 平板点右上角「角色」，打开角色面板（IC_CHAR open），截图。
+//   2.8  霜渡镇：电脑按 F8 快速存档（IC_SAVE）→ 确认浏览器 localStorage 里有 ooglex.ironcrown.v1.quick → 刷新页面 → 按 F9 读档（IC_LOAD，场景重新载入）；
+//        手机 / 平板点「菜单」→「存档 / 读档」打开存档面板（IC_SAVES open）；截图。
 //   2.5  训练场 ?test=2：等敌人发现你、转入战斗（IC_ENEMY state=combat），电脑按住 Q、手机 / 平板真实按住「挡」，要求挡下一次攻击（IC_BLOCK），截图。
 //   2.6  霜渡镇 ?view=6（破木箱前）：电脑按 E 打开搜刮面板（IC_LOOT open）、Esc 关上、按 I 打开背包（IC_BAG open）；
 //        手机 / 平板先点右上角「背包」（IC_BAG open），再重新打开页面点交互按钮搜刮（IC_LOOT open）；截图。
@@ -251,6 +253,43 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       await page.waitForTimeout(500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-char.png`) });
     }
+    // 存档（2.8）
+    logs.length = 0;
+    await page.goto(url);
+    let saved = 'n/a', stored = 'n/a', loaded = 'n/a', savesOpen = 'n/a';
+    if (await waitLog(logs, 'IC_MENU_SCREEN', 240)) {
+      await page.waitForTimeout(400);
+      if (!mobile) {
+        await page.keyboard.press('F8');
+        saved = await waitLog(logs, 'IC_SAVE slot=quick', 12);
+        stored = String(await page.evaluate(() => Object.keys(localStorage).filter(k => k.startsWith('ooglex.ironcrown.v1.')).join(',')));
+        stored = stored.includes('ooglex.ironcrown.v1.quick') ? stored : '';
+        logs.length = 0;
+        await page.goto(url);
+        await waitLog(logs, 'IC_MENU_SCREEN', 240);
+        await page.waitForTimeout(400);
+        await page.keyboard.press('F9');
+        loaded = await waitLog(logs, 'IC_LOAD slot=quick', 12);
+        // 读档会重新载入场景：等第二个 IC_READY
+        for (let i = 0; i < 120 && loaded && logs.filter(l => l.startsWith('IC_READY')).length < 2; i++) await new Promise(r => setTimeout(r, 250));
+        if (logs.filter(l => l.startsWith('IC_READY')).length < 2) loaded = '';
+        await page.waitForTimeout(600);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-loaded.png`) });
+      } else {
+        const ms2 = logs.find(l => l.startsWith('IC_MENU_SCREEN'));
+        const [, mx, my] = ms2.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+        await page.touchscreen.tap(mx / dpr, my / dpr);
+        const ss = await waitLog(logs, 'IC_SAVES_SCREEN', 12);
+        if (ss) {
+          await page.waitForTimeout(300);
+          const [, sx, sy] = ss.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(sx / dpr, sy / dpr);
+        }
+        savesOpen = await waitLog(logs, 'IC_SAVES open', 12);
+        await page.waitForTimeout(500);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-saves.png`) });
+      }
+    }
     // 训练场（2.5）：敌人发现你 → 举剑格挡
     logs.length = 0;
     await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=2');
@@ -314,9 +353,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 角色：${charOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

@@ -79,7 +79,7 @@ func refresh() -> void:
 	_fit()
 
 
-## 进度条：■■■□□（文字符号，不只靠颜色；字体子集里只有 GB2312 的几何符号，没有 ▰▱）
+## 进度条：■■■□□（文字符号，不只靠颜色；字体子集里只有 GB2312 的几何符号，没有更细的进度条字符）
 static func _bar(k: float, n: int) -> String:
 	var full := clampi(roundi(k * n), 0, n)
 	return "■".repeat(full) + "□".repeat(n - full)

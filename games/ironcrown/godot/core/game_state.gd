@@ -2,7 +2,7 @@ extends Node
 ## 游戏状态（路线图 2.2；GDD.md 5.3、7.2、7.4）：旗标、对话检定用的技能与属性、检定结果；2.3 起还有任务、线索、背包。
 ## 旗标清单登记在 data/flags.json（每个旗标写明在哪里设置、在哪里读取），没登记的旗标校验时报错。
 ## 检定结果由「存档种子 + 检定编号」决定，并记下来：读档、重开对话都刷不出别的结果（GDD.md 5.3「不能刷」）。
-## 存档在 2.8：到时把 flags / seed / checks / skills 一起写进存档；现在每次打开页面是一局新游戏。
+## 2.8 起由 core/saves.gd 存档：to_dict() / from_dict() 是游戏状态与存档之间唯一的转换。
 
 signal flag_changed(name: String, value)
 ## 任务事件：kind = started / advanced / done / clue；id = 任务编号或线索编号
@@ -59,7 +59,11 @@ var clues: Array = []     # 得到的线索编号（按得到的先后）
 var inventory: Array = [] # 物品编号（同一物品可以有多个；2.6 起装备中的物品也在这里）
 var equipped := {}        # 部位 → 物品编号（2.6）
 var silver := 0
-var looted := {}          # 搜刮过的容器编号 → 剩下的东西（2.8 一起存档）
+var looted := {}          # 搜刮过的容器编号 → 剩下的东西
+var picked: Array = []    # 已经捡走的地上物品（Pickup.pickup_id），读档后不再出现（2.8）
+var dead := {}            # 已经倒下的敌人编号 → 倒下的位置 [x, y, z]，读档后直接是倒下的样子（2.8）
+var playtime := 0.0       # 游戏时间（秒，暂停时不算）
+var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
 
 signal inventory_changed
 
@@ -78,6 +82,9 @@ func new_game(seed_override := -1) -> void:
 	equipped = START_EQUIP.duplicate()
 	silver = START_SILVER
 	looted.clear()
+	picked.clear()
+	dead.clear()
+	playtime = 0.0
 	var pd := progression()
 	skills = DEFAULT_SKILLS.duplicate()
 	for s in pd.get("skills", {}):
@@ -549,3 +556,61 @@ static func rep_tier(v: int) -> String:
 	if v < 50:
 		return "友善"
 	return "信任"
+
+
+# ---------------- 存档转换（2.8） ----------------
+
+## 游戏状态 → 可以写成 JSON 的字典
+func to_dict() -> Dictionary:
+	return {
+		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "clues": clues.duplicate(),
+		"inventory": inventory.duplicate(), "equipped": equipped.duplicate(), "silver": silver, "looted": looted.duplicate(true),
+		"picked": picked.duplicate(), "dead": dead.duplicate(true), "playtime": playtime,
+		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
+		"skills": skills.duplicate(), "skill_xp": skill_xp.duplicate(), "skill_ups": skill_ups, "level": level, "attr_points": attr_points,
+		"rep": rep.duplicate(),
+	}
+
+
+## 存档字典 → 游戏状态。JSON 读回来数字都是浮点，这里转回整数；缺的字段用新游戏的默认值（旧存档少字段也能读）
+func from_dict(d: Dictionary) -> void:
+	new_game(int(d.get("seed", 0)))
+	flags = (d.get("flags", {}) as Dictionary).duplicate(true)
+	checks = (d.get("checks", {}) as Dictionary).duplicate()
+	quests = {}
+	for q in d.get("quests", {}):
+		var v: Dictionary = d.quests[q]
+		quests[q] = {"stage": str(v.get("stage", "")), "done": bool(v.get("done", false))}
+	clues = Array(d.get("clues", [])).map(func(x): return str(x))
+	if d.has("inventory"):
+		inventory = Array(d.inventory).map(func(x): return str(x))
+	if d.has("equipped"):
+		equipped = {}
+		for s in d.equipped:
+			equipped[str(s)] = str(d.equipped[s])
+	silver = int(d.get("silver", silver))
+	looted = {}
+	for k in d.get("looted", {}):
+		var c: Dictionary = d.looted[k]
+		looted[k] = {"items": Array(c.get("items", [])).map(func(x): return str(x)), "silver": int(c.get("silver", 0))}
+	picked = Array(d.get("picked", [])).map(func(x): return str(x))
+	dead = {}
+	for k in d.get("dead", {}):
+		dead[str(k)] = Array(d.dead[k]).map(func(x): return float(x))
+	playtime = float(d.get("playtime", 0.0))
+	var at: Dictionary = d.get("attributes", {})
+	strength = int(at.get("strength", strength))
+	agility = int(at.get("agility", agility))
+	constitution = int(at.get("constitution", constitution))
+	wits = int(at.get("wits", wits))
+	for s in d.get("skills", {}):
+		skills[s] = int(d.skills[s])
+	skill_xp = {}
+	for s in d.get("skill_xp", {}):
+		skill_xp[s] = float(d.skill_xp[s])
+	skill_ups = int(d.get("skill_ups", 0))
+	level = int(d.get("level", 1))
+	attr_points = int(d.get("attr_points", 0))
+	for f in d.get("rep", {}):
+		rep[f] = int(d.rep[f])
+	inventory_changed.emit()

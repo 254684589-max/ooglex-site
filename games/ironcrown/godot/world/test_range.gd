@@ -79,9 +79,11 @@ static func build(parent: Node3D) -> Transform3D:
 	parent.add_child(npc)
 	Blocks.box(parent, Vector3(1.4, TABLE_H, 0.8), TABLE_POS + Vector3(0, TABLE_H * 0.5, 0), Blocks.mat(Color("5a4636")))
 	var bread := Pickup.make("bread", "面包", Color("c8a060"))
+	bread.pickup_id = "range_bread"
 	bread.position = TABLE_POS + Vector3(-0.35, TABLE_H, 0)
 	parent.add_child(bread)
 	var key := Pickup.make("iron_key", "铁钥匙", Color("8a8e96"), Vector3(0.2, 0.04, 0.08))
+	key.pickup_id = "range_key"
 	key.position = TABLE_POS + Vector3(0.35, TABLE_H, 0)
 	parent.add_child(key)
 	var dummy := TrainingDummy.new()

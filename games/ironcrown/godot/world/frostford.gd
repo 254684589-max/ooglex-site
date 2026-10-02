@@ -109,6 +109,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	hob.rotation.y = -PI / 2
 	parent.add_child(hob)
 	var bread := Pickup.make("bread", "面包", Color("c8a060"))
+	bread.pickup_id = "frostford_bread"
 	bread.position = Vector3(-3.95, 0.62, 1.2)
 	parent.add_child(bread)
 	var crate := LootContainer.make("frostford_crate", "破木箱", CRATE_ITEMS, 3)

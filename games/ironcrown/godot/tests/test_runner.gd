@@ -19,14 +19,16 @@ func _ready() -> void:
 	add_child(dog)
 	dog.start()
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
+	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
 		current_group = g
 		await call("test_" + g)
+	wipe_test_saves()
 	print("")
 	if failures.is_empty():
 		print("ALL %d CHECKS PASSED" % checks)
@@ -45,6 +47,15 @@ func check(cond: bool, what: String) -> void:
 	else:
 		print("  FAIL " + what)
 		failures.append(what)
+
+
+## 测试用的存档目录（Saves 在测试里自动改到 user://test_saves/），开始和结束时清空
+func wipe_test_saves() -> void:
+	var d := DirAccess.open(Saves.dir)
+	if d == null:
+		return
+	for f in d.get_files():
+		d.remove(f)
 
 
 func frames(n: int) -> void:
@@ -153,6 +164,10 @@ func test_ui() -> void:
 		texts.append(str(pd.factions[k].name))
 	texts.append_array([main.hud.TITLE_SHORT, "角色等级再提升次技能升级可分配属性点＋给加 1 点生命上限体力上限负重上限护甲技能（用什么涨什么）◆◇「」（到解锁）声望敌视冷淡中立友善信任（+-）■□｜",
 		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
+	# 存档（2.8）
+	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
+	texts.append("存档 / 读档覆盖存到这里读取（空）（损坏，读不了：）存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。✓ 已存档：× 没有存档：读不了已读取：有存档：点「菜单」，按 Esc 打开菜单，里「存档 / 读档」可以继续（F9 读快速存档）级游戏时间分钟读取最近的存档重新开始附近有敌人在和你打，不能存档你已经倒下了这一份存档坏了已退回上一份存档内容损坏（不是有效的 JSON）这是更新版本的游戏写的存档写不进浏览器存储（可能是无痕模式或空间满了）")
+	texts.append(main.pause_menu.help_label.text + main.pause_menu.saves_btn.text)
 	texts.append("背包搜刮：护甲负重斤银币超重：不能跑装备（空）（已装备）×卸下使用选一件东西看看。伤害部走动更吵不能丢弃值什么都没有了。全部拿走拿到：、没有装备武器（点「背包」按 I 打开背包装备）打开破木箱补给箱")
 	for k in Enemy.types():
 		if not str(k).begins_with("_"):
@@ -1444,10 +1459,11 @@ func test_enemies() -> void:
 	main.close_pause()
 	await seconds(0.2)
 	# 倒下
+	wipe_test_saves()
 	m.health = 5
 	m.receive_hit({"damage": 9, "kind": "light", "attacker": null})
 	check(m.down and main.defeat_panel.visible and get_tree().paused, "生命归零：「你倒下了」画面，游戏暂停")
-	check(main.defeat_panel.retry_btn.text == "重来", "有「重来」按钮")
+	check(main.defeat_panel.retry_btn.text == "重新开始", "没有存档时按钮是「重新开始」")
 	get_tree().paused = false
 	await free_main(main)
 
@@ -1780,3 +1796,183 @@ func test_growth() -> void:
 	r.start("frostford", "steward")
 	r.choose(0)
 	check(GameState.quest_active("edric_missing") and GameState.get_rep("valen") == 15, "接下管家的委托：瓦伦家声望 +5")
+
+
+## 把 main 的「读档后重新载入场景」接到测试里：释放旧的 main、建新的
+func reload_main(main: Node3D, test_range := false) -> Node3D:
+	var scene: String = GameState.pending_load.get("scene", "frostford")
+	await free_main(main)
+	if scene == "arena":
+		return await make_arena()
+	return await make_main(scene == "test_range" or test_range)
+
+
+func test_saves() -> void:
+	wipe_test_saves()                      # 前面几组里接任务会触发自动存档
+	check(Saves.dir == "user://test_saves/", "自动化测试用单独的存档目录，不碰真正的存档")
+	check(not Saves.has_any() and Saves.latest_slot() == "", "开始时没有存档")
+	# 校验
+	var good := {"version": Saves.VERSION, "saved_at": "2026-10-02T10:00:00Z", "scene": "frostford", "player": {"pos": [0, 0, 6]}, "state": {"seed": 1, "inventory": []}}
+	check(Saves.check_save(good) == "", "完整的存档通过校验")
+	check(Saves.check_save({"scene": "frostford"}).contains("版本号"), "缺版本号：不认")
+	var future := good.duplicate(true)
+	future.version = Saves.VERSION + 1
+	check(Saves.check_save(future).contains("更新版本"), "更新版本写的存档：说明读不了")
+	var no_player := good.duplicate(true)
+	no_player.erase("player")
+	check(not Saves.write_slot("slot2", no_player) and Saves.read_slot("slot2").is_empty(), "内容不完整的存档不写入")
+	# 存一份：霜渡镇里改一些状态
+	GameState.new_game(11)
+	var main := await make_main(false)
+	var p: FpController = main.player
+	GameState.set_flag("heard_edric_to_ferry")
+	GameState.start_quest("edric_missing")
+	GameState.add_clue("ferry")
+	GameState.add_item("bandage", 2)
+	GameState.add_silver(5)
+	GameState.skills.speech = 22
+	GameState.skill_xp.speech = 1.5
+	GameState.change_rep("valen", 7)
+	GameState.check("save_chk", "insight", 12)
+	var chk: bool = GameState.checks.save_chk
+	main.set_view(6)
+	await physics(6)
+	main.player.interactor.refresh()
+	(main.player.interactor.target as LootContainer).take(-1)
+	var bread_node: Node = null
+	for c in main.world.get_children():
+		if c is Pickup and c.pickup_id == "frostford_bread":
+			bread_node = c
+	bread_node.interact(p)
+	await frames(2)
+	await place(p, -2.0, -12.0)
+	p.rotation.y = 0.7
+	p.melee.health = 63
+	var before: Dictionary = JSON.parse_string(JSON.stringify(GameState.to_dict()))
+	check(main.save_game("slot1"), "存到栏位 1")
+	check(Saves.read_slot("slot1").has("data") and Saves.has_any(), "栏位 1 读得出来")
+	# 读档回来
+	GameState.new_game(99)
+	GameState.silver = 0
+	var reloads := [0]
+	main.reload_requested.connect(func(): reloads[0] += 1)
+	check(main.load_game("slot1") and reloads[0] == 1, "读栏位 1：重新载入场景")
+	var after: Dictionary = JSON.parse_string(JSON.stringify(GameState.to_dict()))
+	check(after.hash() == before.hash() or JSON.stringify(after) == JSON.stringify(before), "游戏状态原样读回（旗标、任务、线索、背包、银币、技能、声望、检定、搜刮、拾取）")
+	check(GameState.seed_value == 11 and GameState.checks.save_chk == chk and GameState.silver == 12 + 5 + 3, "检定种子和结果、银币都对（%d）" % GameState.silver)
+	check(GameState.skills.speech == 22 and typeof(GameState.skills.speech) == TYPE_INT and GameState.get_rep("valen") == 17, "技能是整数、声望对")
+	main = await reload_main(main)
+	p = main.player
+	check(p.global_position.distance_to(Vector3(-2, 0.05, -12)) < 0.3 and absf(p.rotation.y - 0.7) < 0.01, "读档后站在存档时的位置、朝向（%s）" % p.global_position)
+	check(p.melee.health == 63, "生命也读回来了（63）")
+	var still_bread: bool = main.world.get_children().any(func(c): return c is Pickup and c.pickup_id == "frostford_bread")
+	check(not still_bread, "捡走的面包读档后不再出现")
+	var crate: LootContainer = main.get_tree().get_nodes_in_group("loot").filter(func(c): return c.loot_id == "frostford_crate")[0]
+	check(int(crate.contents().silver) == 0 and (crate.contents().items as Array).size() == 2, "破木箱里拿走的银币没有回来")
+	check(main.hud.toast_label.text.contains("已读取：栏位 1"), "读档后提示「已读取：栏位 1」")
+	# 当前 + 上一份；坏档退回上一份
+	GameState.add_silver(1)
+	check(main.save_game("slot1", true), "再存一次栏位 1")
+	check(Saves.read_slot("slot1").data.state.silver == 21, "当前这份是新的")
+	Saves._write_raw(Saves._key("slot1"), "{坏掉的数据")
+	var r := Saves.read_slot("slot1")
+	check(r.has("data") and int(r.data.state.silver) == 20 and r.note.contains("已退回上一份"), "当前这份坏了：退回上一份并说明（%s）" % r.get("note", ""))
+	Saves._write_raw(Saves._key("slot1") + ".prev", "也坏了")
+	r = Saves.read_slot("slot1")
+	check(r.has("error") and not r.has("data"), "两份都坏了：报错，不给空数据")
+	check(not main.load_game("slot1") and main.hud.toast_label.text.contains("读不了"), "读坏档：提示读不了，不重新载入")
+	check(main.save_game("slot1", true) and Saves.read_slot("slot1").has("data"), "坏档的栏位可以重新存")
+	# 版本迁移
+	var old := good.duplicate(true)
+	old.version = 0
+	old.erase("scene")
+	Saves._write_raw(Saves._key("slot3"), JSON.stringify(old))
+	check(Saves.read_slot("slot3").has("error"), "没有迁移办法的旧版本：读不了")
+	Saves.migrations[0] = func(d: Dictionary) -> Dictionary:
+		d["scene"] = "frostford"
+		return d
+	r = Saves.read_slot("slot3")
+	check(r.has("data") and r.data.version == Saves.VERSION and r.data.scene == "frostford", "有迁移办法：逐版本升到当前版本再读")
+	Saves.migrations.clear()
+	Saves._write_raw(Saves._key("slot3"), JSON.stringify(future))
+	check(Saves.read_slot("slot3").get("error", "").contains("更新版本"), "栏位里是更新版本的存档：说明读不了")
+	Saves.delete_slot("slot3")
+	# 快速存档 / 读档、最近一份
+	main._unhandled_input(key_ev(KEY_F8))
+	check(Saves.read_slot("quick").has("data"), "F8 快速存档")
+	check(Saves.latest_slot() in ["quick", "slot1"], "最近一份存档（%s）" % Saves.latest_slot())
+	var rl := [0]
+	main.reload_requested.connect(func(): rl[0] += 1)
+	main._unhandled_input(key_ev(KEY_F9))
+	await frames(1)
+	check(rl[0] == 1 and GameState.pending_load.get("slot") == "quick", "F9 读快速存档")
+	main = await reload_main(main)
+	# 自动存档：接任务时
+	Saves.delete_slot("auto")
+	GameState.new_game(12)
+	var dr := DialogueRunner.new()
+	dr.start("frostford", "steward")
+	dr.choose(0)
+	await frames(3)
+	check(Saves.read_slot("auto").has("data") and Saves.read_slot("auto").data.state.quests.has("edric_missing"), "接下主线时自动存档")
+	# 存档面板
+	main.open_pause()
+	main.pause_menu.saves_requested.emit()
+	await frames(2)
+	var sp: SavePanel = main.save_panel
+	check(sp.visible and find_button(sp, "覆盖") != null and find_button(sp, "存到这里") != null, "暂停菜单「存档 / 读档」：栏位 1 写「覆盖」、空栏位写「存到这里」")
+	var labels: Array = sp.box.get_children().filter(func(c): return c is Label).map(func(l): return l.text)
+	check(labels.any(func(t): return t.begins_with("自动存档") and t.contains("霜渡镇")), "自动存档一行写着场景（%s）" % [labels])
+	find_button(sp, "存到这里").pressed.emit()
+	await frames(1)
+	check(Saves.read_slot("slot2").has("data"), "点「存到这里」存进栏位 2")
+	var rect: Rect2 = sp.f.panel.get_global_rect()
+	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "存档面板不超出画面")
+	sp.close()
+	main.close_pause()
+	await free_main(main)
+	# 训练场：战斗中不能存；倒下的敌人读档后还是倒下的
+	GameState.new_game(13)
+	main = await make_arena()
+	var a := arena_enemy(main, "a")
+	solo(main, a)
+	await place(main.player, 0.0, 3.0)
+	put_enemy(a, Vector3(0, 0, 1.5), PI)
+	a.alert(false)
+	await physics(2)
+	check(main.can_save() != "" and not main.save_game("slot3"), "敌人在和你打的时候不能存档")
+	var rep0 := 0
+	a.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	rep0 = GameState.get_rep("outlaws")
+	var corpse_pos := a.global_position
+	(main.get_tree().get_nodes_in_group("loot").filter(func(c): return c.loot_id == "loot:a")[0] as LootContainer).take(0)
+	check(main.save_game("slot3"), "敌人倒下以后可以存档")
+	main.load_game("slot3")
+	main = await reload_main(main)
+	await frames(3)
+	a = arena_enemy(main, "a")
+	check(a.state == Enemy.State.DEAD and a.collision_layer == 0 and a.global_position.distance_to(corpse_pos) < 0.2, "读档后倒下的敌人还倒在原地")
+	var corpses: Array = main.get_tree().get_nodes_in_group("loot").filter(func(c): return c.loot_id == "loot:a")
+	check(corpses.size() == 1 and corpses[0].contents().items == ["bread", "dice"], "尸体上拿走的木棍没有回来")
+	check(GameState.get_rep("outlaws") == rep0, "读档恢复倒下的敌人不会再扣一次声望")
+	# 倒下：有存档时「读取最近的存档」
+	main.player.melee.health = 3
+	main.player.melee.receive_hit({"damage": 9, "kind": "light", "attacker": null})
+	check(main.defeat_panel.visible and main.defeat_panel.retry_btn.text == "读取最近的存档", "倒下时有存档：按钮是「读取最近的存档」")
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	main.defeat_panel.retry_btn.pressed.emit()
+	await frames(1)
+	check(rr[0] == 1 and GameState.pending_load.has("slot"), "点一下读最近的存档")
+	GameState.pending_load = {}
+	get_tree().paused = false
+	await free_main(main)
+	# 设置也会保存
+	Settings.set_value("fov", 90)
+	check(int(Saves.load_settings().get("fov", 0)) == 90, "改了视野角马上存进浏览器")
+	Settings.set_value("quality", "high")
+	check(Saves.load_settings().get("quality") == "high", "选过的画质也记住")
+	Settings.set_value("fov", 75)
+	Settings.set_value("quality", "")
+	GameState.new_game(1)

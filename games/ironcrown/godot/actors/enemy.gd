@@ -152,6 +152,10 @@ func _ready() -> void:
 	if waypoints.is_empty():
 		waypoints = [global_position]
 	last_known = global_position
+	if GameState.dead.has(enemy_id):              # 读档：已经倒下的，直接摆成倒下的样子（2.8）
+		var p: Array = GameState.dead[enemy_id]
+		global_position = Vector3(p[0], p[1], p[2])
+		_die.call_deferred(true)
 
 
 func _build_arm() -> void:
@@ -528,18 +532,26 @@ func take_hit(info: Dictionary) -> void:
 	_update_status()
 
 
-func _die() -> void:
+## restoring = 读档恢复：不再改声望、不发信号、直接倒在地上
+func _die(restoring := false) -> void:
 	_enter(State.DEAD)
 	collision_layer = 0
 	collision_mask = 1
 	name_label.text = display_name + "（倒下）"
-	var tw := create_tween()
-	tw.tween_property(body, "rotation:x", deg_to_rad(-88.0), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.parallel().tween_property(body, "position:y", 0.3, 0.45)
+	if restoring:
+		body.rotation.x = deg_to_rad(-88.0)
+		body.position.y = 0.3
+	else:
+		var tw := create_tween()
+		tw.tween_property(body, "rotation:x", deg_to_rad(-88.0), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(body, "position:y", 0.3, 0.45)
+		GameState.dead[enemy_id] = [global_position.x, global_position.y, global_position.z]
 	# 倒下的地方留一个可搜刮的「尸体」（2.6）：带着他的兵器和随身的东西
 	var loot := LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
 	loot.position = global_position
 	get_parent().add_child(loot)
+	if restoring:
+		return
 	GameState.change_rep(str(data.get("faction", "")), -5)     # 杀了他们的人，这个势力更恨你（2.7）
 	died.emit(self)
 

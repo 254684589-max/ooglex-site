@@ -130,6 +130,10 @@ godot/
 - 网页上写入浏览器 `localStorage`（键名 `ooglex.ironcrown.v1`，《余烬陷落》用的方式），其他平台写 `user://`。
 - JSON，带 `version`；每个栏位保留「当前 + 上一份」，读档失败回退上一份，**不用空数据覆盖有效存档**。
 - 存档只记录「与初始状态的差异」（已拾取、已死亡、已打开的对象用唯一 ID 记录），场景本身每次重新加载。
+- **2.8 已实现**：`core/saves.gd`（自动加载 `Saves`）。栏位 slot1–3 / auto / quick；读档 = `GameState.from_dict()` + `GameState.pending_load`（场景、玩家）+ 重新载入场景，`main` 启动时取走。
+  捡走的地上物品用 `Pickup.pickup_id` 记进 `GameState.picked`；倒下的敌人记进 `GameState.dead`（编号 → 位置），`Enemy._ready` 里直接摆成倒下的样子、不再扣声望。
+  **坑**：`JSON.parse_string` 解析失败会打引擎报错，坏档要用 `JSON.new().parse()`；浏览器里 F5 是刷新页面，快速存档用 F8；自动化测试检测到命令行里的 `res://tests/` 时改用 `user://test_saves/`，不碰真存档。
+  不存：门的开关、半血求饶的敌人、进行到一半的对话。
 
 ### 4.8 音频
 

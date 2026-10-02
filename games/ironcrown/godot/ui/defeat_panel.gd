@@ -1,7 +1,7 @@
 class_name DefeatPanel
 extends Control
-## 倒下画面（路线图 2.5）：生命归零时游戏暂停，显示「你倒下了」与「重来」按钮（重新载入当前场景）。
-## 存档在 2.8：到时改成「读取最近的存档」。
+## 倒下画面（路线图 2.5）：生命归零时游戏暂停，显示「你倒下了」。
+## 2.8 起：有存档时按钮是「读取最近的存档」，没有存档时是「重新开始」（新游戏）。
 
 signal retry_requested
 
@@ -44,5 +44,6 @@ func _ready() -> void:
 
 
 func open() -> void:
+	retry_btn.text = "读取最近的存档" if Saves.has_any() else "重新开始"
 	show()
 	retry_btn.grab_focus.call_deferred()
