@@ -10,6 +10,15 @@ on:
       - 'data/global-windows/locations.json'
       - 'data/global-windows/zh_labels.json'
       - 'apps/global-cams/windows.json'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/validate-window-v11-content-quality.yml'
+      - 'scripts/global-cams/sync_windows_to_r2.py'
+      - 'data/global-windows/locations.json'
+      - 'data/global-windows/zh_labels.json'
+      - 'apps/global-cams/windows.json'
 
 permissions:
   contents: read
