@@ -23,6 +23,7 @@ const LEVEL_EVERY := 10          # 技能每累计提升 10 次，角色升一�
 const REP_MIN := -100
 const REP_MAX := 100
 const FLAGS_PATH := "res://data/flags.json"
+const TIPS_PATH := "res://data/tips.json"
 const QUESTS_PATH := "res://data/quests.json"
 const ITEMS_PATH := "res://data/items.json"
 const SLOTS := ["weapon", "head", "body", "hands", "legs"]
@@ -64,11 +65,13 @@ var picked: Array = []    # 已经捡走的地上物品（Pickup.pickup_id），
 var dead := {}            # 已经倒下的敌人编号 → 倒下的位置 [x, y, z]，读档后直接是倒下的样子（2.8）
 var yielded := {}         # 求饶（或逃跑后认输）的敌人编号 → 跪下的位置 [x, y, z]，读档后还跪在那里、能搜身（3.5）
 var playtime := 0.0       # 游戏时间（秒，暂停时不算）
+var tips_seen: Array = [] # 看过的教学提示编号（data/tips.json；3.8），每条只显示一次，跟着存档走
 var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
 var pending_brawl := {}   # 对话里说好要打一架：{brawl, win, lose}，对话关上后由 main 取走开打（3.3；不存档）
 var pending_fight := {}   # 对话说崩了要动手：{fight, win}，对话关上后由 main 取走开打（3.6；不存档）
 var pending_leave := ""   # 对话里说好了，这组人走了：编号，对话关上后由 main 撤掉（3.6；不存档）
 var pending_ending := ""  # 对话里到了结局：编号（prologue），对话关上后由 main 显示结束画面（3.7；不存档）
+var pending_tips: Array = [] # 换区域时还没轮到显示的教学提示，带到下一个区域接着排（3.8；不存档）
 
 signal inventory_changed
 
@@ -91,6 +94,7 @@ func new_game(seed_override := -1) -> void:
 	dead.clear()
 	yielded.clear()
 	playtime = 0.0
+	tips_seen.clear()
 	var pd := progression()
 	skills = DEFAULT_SKILLS.duplicate()
 	for s in pd.get("skills", {}):
@@ -431,6 +435,15 @@ static func flag_registry() -> Dictionary:
 
 # ---------------- 属性、技能、专长、声望（2.7） ----------------
 
+## 教学提示（data/tips.json；3.8）：编号 → {desktop, touch, sec}
+static func tips_data() -> Dictionary:
+	if not Engine.has_meta("ic_tips"):
+		var f := FileAccess.open(TIPS_PATH, FileAccess.READ)
+		var d = JSON.parse_string(f.get_as_text()) if f else null
+		Engine.set_meta("ic_tips", d if typeof(d) == TYPE_DICTIONARY else {})
+	return Engine.get_meta("ic_tips")
+
+
 static func progression() -> Dictionary:
 	if not Engine.has_meta("ic_progression"):
 		var f := FileAccess.open(PROGRESSION_PATH, FileAccess.READ)
@@ -587,7 +600,7 @@ func to_dict() -> Dictionary:
 	return {
 		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "clues": clues.duplicate(),
 		"inventory": inventory.duplicate(), "equipped": equipped.duplicate(), "silver": silver, "looted": looted.duplicate(true),
-		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime,
+		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime, "tips": tips_seen.duplicate(),
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
 		"skills": skills.duplicate(), "skill_xp": skill_xp.duplicate(), "skill_ups": skill_ups, "level": level, "attr_points": attr_points,
 		"rep": rep.duplicate(),
@@ -623,6 +636,7 @@ func from_dict(d: Dictionary) -> void:
 	for k in d.get("yielded", {}):
 		yielded[str(k)] = Array(d.yielded[k]).map(func(x): return float(x))
 	playtime = float(d.get("playtime", 0.0))
+	tips_seen = Array(d.get("tips", [])).map(func(x): return str(x))
 	var at: Dictionary = d.get("attributes", {})
 	strength = int(at.get("strength", strength))
 	agility = int(at.get("agility", agility))

@@ -11,6 +11,11 @@ var panel: PanelContainer
 var resume_btn: Button
 var saves_btn: Button
 var help_label: Label
+var sound_check: CheckButton
+var tips_check: CheckButton
+
+const HELP_DESKTOP := "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · F8 快速存档 · F9 快速读档 · F3 性能数据 · Esc 暂停"
+const HELP_TOUCH := "手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」「视角」· 右上角「角色」「背包」「任务」「菜单」"
 var fov_slider: HSlider
 var sens_slider: HSlider
 var invert_check: CheckButton
@@ -81,6 +86,8 @@ func _ready() -> void:
 		qrow.add_child(b)
 		quality_btns[t] = b
 	box.add_child(qrow)
+	sound_check = _check(box, "声音", Settings.sound, "sound")
+	tips_check = _check(box, "教学提示", Settings.tips, "tips")
 	perf_check = _check(box, "显示性能数据（F3）", Settings.show_perf, "show_perf")
 	Settings.changed.connect(func():
 		perf_check.set_pressed_no_signal(Settings.show_perf)
@@ -88,13 +95,18 @@ func _ready() -> void:
 	var help := Label.new()
 	help.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
 	help.add_theme_color_override("font_color", Color("a9b4c0"))
-	help.text = "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · F8 快速存档 · F9 快速读档 · F3 性能数据 · Esc 暂停\n手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」「视角」· 右上角「角色」「背包」「任务」「菜单」"
+	help.text = HELP_DESKTOP + "\n" + HELP_TOUCH
 	box.add_child(help)
 	help_label = help
 	get_tree().root.size_changed.connect(_fit)
 	_fit()
 	_refresh_values()
 	hide()
+
+
+## 操作说明只写这台设备的（3.8 加了两个开关，手机竖屏上菜单放不下两段说明）
+func set_touch(touch: bool) -> void:
+	help_label.text = HELP_TOUCH if touch else HELP_DESKTOP
 
 
 func show_quality(tier: String) -> void:

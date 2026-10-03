@@ -4,12 +4,14 @@ extends Control
 ## 选项可以用鼠标点、触屏点、数字键 1–9、方向键 + 回车；Esc 直接结束对话。打开时游戏暂停（本节点照常处理输入）。
 
 signal closed
+signal node_shown(has_check: bool)     # 每换一个节点（3.8：有检定选项时 main 显示一次检定的教学提示）
 
 var runner := DialogueRunner.new()
 var panel: PanelContainer
 var name_label: Label
 var text_label: Label
 var options_box: VBoxContainer
+var tip_label: Label                   # 教学提示（3.8）：只在这一个节点上显示
 var buttons: Array = []
 
 
@@ -37,6 +39,12 @@ func _ready() -> void:
 	text_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
 	text_label.add_theme_color_override("font_color", Color("e8dcc0"))
 	box.add_child(text_label)
+	tip_label = Label.new()
+	tip_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	tip_label.add_theme_color_override("font_color", Color("9fb2c6"))
+	tip_label.add_theme_font_size_override("font_size", 14)
+	tip_label.hide()
+	box.add_child(tip_label)
 	options_box = VBoxContainer.new()
 	options_box.add_theme_constant_override("separation", 4)
 	box.add_child(options_box)
@@ -77,6 +85,7 @@ func _refresh() -> void:
 	if not runner.last_check.is_empty():     # 2.2：刚做过的检定结果（文字 + 符号，不只靠颜色）
 		name_label.text += "  %s %s检定%s" % ["√" if runner.last_check.ok else "×", GameState.SKILL_NAMES.get(runner.last_check.skill, ""), "成功" if runner.last_check.ok else "失败"]
 	text_label.text = runner.text()
+	tip_label.hide()
 	for b in buttons:
 		options_box.remove_child(b)        # 立即移出：只 queue_free 的话，这一帧排版时新旧按钮叠在一起，面板会被撑高
 		b.queue_free()
@@ -91,9 +100,17 @@ func _refresh() -> void:
 		b.pressed.connect(choose.bind(i))
 		options_box.add_child(b)
 		buttons.append(b)
+	node_shown.emit(opts.any(func(o: Dictionary): return o.has("check")))
 	_focus_first.call_deferred()
 	_layout()
 	_layout.call_deferred()          # 选项按钮换行后高度下一帧才确定，再排一次
+
+
+## 在台词和选项之间显示一行教学提示（3.8），换节点时自动藏起来
+func show_tip(text: String) -> void:
+	tip_label.text = "◇ " + text
+	tip_label.show()
+	_layout.call_deferred()
 
 
 ## 第一个选项拿到焦点（方向键 + 回车可用）；延迟调用时这一批按钮可能已经被下一次刷新换掉，先确认还在场景里
@@ -122,6 +139,7 @@ func _layout() -> void:
 	var w := minf(size.x - 24.0, 720.0)
 	panel.custom_minimum_size = Vector2(w, 0)
 	text_label.custom_minimum_size = Vector2(w - 28.0, 0)
+	tip_label.custom_minimum_size = Vector2(w - 28.0, 0)
 	for b in buttons:
 		b.custom_minimum_size.x = w - 28.0
 	panel.reset_size()

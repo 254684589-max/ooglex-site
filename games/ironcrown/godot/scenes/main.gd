@@ -44,6 +44,10 @@ var pause_menu: PauseMenu
 var defeat_panel: DefeatPanel
 var ending_panel: EndingPanel    # 结束画面（3.7）
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
+var opening: Opening             # 开场（3.8）：只在新游戏时有
+var title_card: TitleCard        # 开场的标题卡（3.8）
+var tip_queue: Array = []        # 等着显示的教学提示编号（3.8；有界面开着、上一条还没消失时排队）
+var tip_now := ""                # 底部正在显示的教学提示（空 = 显示的是别的提示或什么都没有）
 var inventory_panel: InventoryPanel
 var loot_panel: LootPanel
 var char_panel: CharacterPanel
@@ -77,6 +81,8 @@ func _ready() -> void:
 	GameState.pending_fight = {}
 	GameState.pending_leave = ""
 	GameState.pending_ending = ""
+	tip_queue = GameState.pending_tips.duplicate() if pending.has("spawn") else []    # 从门走进来：没轮到的教学提示接着排
+	GameState.pending_tips = []
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
@@ -143,6 +149,11 @@ func _ready() -> void:
 				player.global_transform = st
 		_restore_player(pending.get("player", {}))
 		loaded_from = str(pending.get("slot", ""))
+	var want_opening := Opening.wanted(self, pending, _query)
+	if want_opening:                     # 开场（3.8）：站在领主宅邸门口
+		var st: Variant = Areas.spawn(area, "manor")
+		if st != null:
+			player.global_transform = st
 	spawn = player.global_position
 	yaw0 = player.yaw_deg()
 	_build_ui()
@@ -153,6 +164,14 @@ func _ready() -> void:
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
 	if arrived_by != "":
 		_arrive()
+	if want_opening:
+		opening = Opening.new()
+		opening.name = "Opening"
+		opening.main = self
+		add_child(opening)
+		hud.set_hint("")                 # 操作说明改由开场开始后的教学提示给
+		hint_left = 0.0
+		opening.start(title_card, touch_mode)
 	if area == "birch":                  # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）
 		hud.set_hint(Birch.TEACH_TOUCH if touch_mode else Birch.TEACH_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
@@ -165,7 +184,8 @@ func _ready() -> void:
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
 		if view != "" or area != "frostford":
-			await perf_probe()          # 截图工具：只测一次，不显示浮层（截图要干净）
+			var secs := float(_query("probe")) if _query("probe").is_valid_float() else 1.0
+			await perf_probe(clampf(secs, 0.5, 10.0))      # 截图 / 逐区域基准（tools/bench_areas.js）：只测一次，不显示浮层
 		else:
 			Settings.set_value("show_perf", true)
 			await run_benchmark()
@@ -349,6 +369,9 @@ func _build_ui() -> void:
 	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud = Hud.new()
 	layer.add_child(hud)
+	title_card = TitleCard.new()         # 开场的标题卡（3.8）：压在 HUD 上、在各种面板下面，平时藏着
+	title_card.hide()
+	layer.add_child(title_card)
 	if use_arena:
 		hud.set_hint(HINT_ARENA_TOUCH if touch_mode else HINT_ARENA_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
@@ -372,12 +395,14 @@ func _build_ui() -> void:
 	touch.player = player
 	touch.camera_pressed.connect(toggle_camera)
 	layer.add_child(touch)
+	hud.touch_ref = touch
 	perf_overlay = PerfOverlay.new()
 	perf_overlay.main = self
 	layer.add_child(perf_overlay)
 	dialogue = DialoguePanel.new()
 	layer.add_child(dialogue)
 	dialogue.closed.connect(_on_dialogue_closed)
+	dialogue.node_shown.connect(_on_dialogue_node)
 	quest_panel = QuestPanel.new()
 	layer.add_child(quest_panel)
 	quest_panel.closed.connect(_on_quest_closed)
@@ -398,6 +423,7 @@ func _build_ui() -> void:
 		hud.toast("▲ 升到 %d 级：获得 1 个属性点（%s）" % [lv, "点「角色」分配" if touch_mode else "按 K 分配"], 4.0)
 		print("IC_LEVEL %d" % lv))
 	GameState.rep_changed.connect(_on_rep_changed)
+	GameState.inventory_changed.connect(func(): show_tip("bag"))
 	loot_panel = LootPanel.new()
 	layer.add_child(loot_panel)
 	loot_panel.closed.connect(_on_loot_closed)
@@ -405,6 +431,7 @@ func _build_ui() -> void:
 	GameState.quest_event.connect(_on_quest_event)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
+	pause_menu.set_touch(touch_mode)
 	pause_menu.quality_selected.connect(func(t: String):
 		apply_quality(t)
 		Settings.set_value("quality", t)          # 记住玩家选的画质（2.8）
@@ -587,6 +614,7 @@ func travel(to: String, spawn_id: String) -> bool:
 	player.melee.cancel_press()
 	GameState.pending_load = {"scene": to, "spawn": spawn_id,
 		"player": {"health": player.melee.health, "stamina": player.melee.stamina, "crouch": player.crouch_wanted}}
+	GameState.pending_tips = tip_queue.duplicate()
 	print("IC_TRAVEL from=%s to=%s spawn=%s" % [area, to, spawn_id])
 	if not Settings.reduced_motion:
 		var tw := create_tween()
@@ -603,6 +631,7 @@ func _arrive() -> void:
 	hud.set_hint("")
 	hud.toast(Areas.display_name(area), 2.0)
 	print("IC_ARRIVE area=%s spawn=%s" % [area, arrived_by])
+	show_tip("save")                     # 进入新区域会自动存档：第一次走进别处时讲存档
 	if Settings.reduced_motion:
 		fade.color.a = 0.0
 	else:
@@ -698,6 +727,8 @@ func _on_enemy_state(e: Enemy, state: String) -> void:
 
 func _on_target_changed(target: Interactable) -> void:
 	hud.show_prompt(target.prompt() if target else "")
+	if target is LootContainer:
+		show_tip("loot")
 	if target:
 		print("IC_TARGET name=%s verb=%s" % [target.display_name, target.verb_now()])
 		# 给网页冒烟测试用：触屏交互按钮在窗口里的位置
@@ -740,6 +771,7 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 	hud.show_prompt("")
 	hud.set_hint("")              # 底部的操作提示不再压在对话上
 	hint_left = 0.0
+	tip_now = ""
 	if npc:
 		var head := npc.global_position + Vector3(0, 1.55, 0)
 		var d := head - player.camera.global_position
@@ -795,6 +827,7 @@ func _on_skill_up(skill: String, value: int) -> void:
 ## 声望变化：「瓦伦家 · 声望上升 ↑（友善）」（文字 + 箭头，GDD 7.3；字体里没有 ▼，用 ↑ ↓）
 func _on_rep_changed(faction: String, delta: int, value: int) -> void:
 	hud.toast("%s · 声望%s %s（%s）" % [GameState.faction_name(faction), "上升" if delta > 0 else "下降", "↑" if delta > 0 else "↓", GameState.rep_tier(value)], 3.0)
+	show_tip("rep")
 	print("IC_REP %s %+d = %d" % [faction, delta, value])
 
 
@@ -852,6 +885,10 @@ func _on_quest_event(kind: String, id: String) -> void:
 			text = "◇ 新线索已记入任务日志"
 	if text != "":
 		hud.toast(text, 3.5)
+	if kind == "started":
+		show_tip("quest")
+	elif kind == "clue":
+		show_tip("clue")
 	print("IC_QUEST_EVENT %s %s" % [kind, id])
 
 
@@ -1004,7 +1041,8 @@ func _train_stealth(delta: float) -> void:
 func _start() -> void:
 	if not started:
 		started = true
-		hint_left = minf(hint_left, 3.0)
+		if tip_now == "":                # 开局的操作说明在开始走动后再停 3 秒；教学提示照常显示完
+			hint_left = minf(hint_left, 3.0)
 
 
 func open_pause() -> void:
@@ -1030,6 +1068,41 @@ func close_pause() -> void:
 	print("IC_PAUSE open=false")
 
 
+# ---------------- 开场与教学提示（3.8） ----------------
+
+## 教学提示（data/tips.json）：每条只显示一次（看过的记进存档），暂停菜单可以关；
+## now = 立刻换掉底部正在显示的提示（开场用），否则排队：有界面开着（游戏暂停）或上一条还没消失时等着
+func show_tip(id: String, now := false) -> void:
+	if not Settings.tips or id in GameState.tips_seen or id == tip_now or not GameState.tips_data().has(id):
+		return
+	if now:
+		tip_queue.erase(id)
+		_show_tip(id)
+	elif not tip_queue.has(id):
+		tip_queue.append(id)
+
+
+func _show_tip(id: String) -> void:
+	if id in GameState.tips_seen:
+		return
+	GameState.tips_seen.append(id)
+	var d: Dictionary = GameState.tips_data()[id]
+	hud.set_hint(str(d.touch if touch_mode else d.desktop))
+	hint_left = float(d.get("sec", 7))
+	tip_now = id
+	print("IC_TIP %s" % id)
+
+
+## 对话换了节点：第一次遇到检定选项时，在对话面板里讲一下检定（游戏暂停着，底部提示看不到）
+func _on_dialogue_node(has_check: bool) -> void:
+	if not has_check or not Settings.tips or "check" in GameState.tips_seen:
+		return
+	GameState.tips_seen.append("check")
+	var d: Dictionary = GameState.tips_data().get("check", {})
+	dialogue.show_tip(str(d.get("touch" if touch_mode else "desktop", "")))
+	print("IC_TIP check")
+
+
 func _process(delta: float) -> void:
 	# 浏览器用 Esc 释放指针锁定时，游戏收不到 Esc：发现锁定没了就打开暂停菜单
 	var locked := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
@@ -1042,6 +1115,9 @@ func _process(delta: float) -> void:
 		hint_left -= delta
 		if hint_left <= 0.0:
 			hud.set_hint("")
+			tip_now = ""
+	if hint_left <= 0.0 and not tip_queue.is_empty():
+		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
 	GameState.playtime += delta
 	var pos := player.global_position
