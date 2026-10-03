@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-10-02T05:26:35Z",
+  "generatedAt": "2026-10-03T00:41:05Z",
   "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-10-02T05:26:35Z",
-  "lastSuccessfulAt": "2026-10-02T05:26:35Z",
+  "lastAttemptAt": "2026-10-03T00:41:05Z",
+  "lastSuccessfulAt": "2026-10-03T00:41:05Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-10-02T05:26:35Z",
+  "publishedSnapshotAt": "2026-10-03T00:41:05Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -44,51 +44,51 @@
       "name": "Yahoo Finance",
       "role": "primary",
       "status": "healthy",
-      "records": 227,
+      "records": 228,
       "counts": {
-        "market": 227,
+        "market": 228,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-02T05:26:35Z"
+      "lastSuccessAt": "2026-10-03T00:41:05Z"
     },
     {
       "id": "coingecko",
       "name": "CoinGecko",
       "role": "primary",
       "status": "healthy",
-      "records": 7,
+      "records": 6,
       "counts": {
-        "market": 7,
+        "market": 6,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-02T05:26:35Z"
+      "lastSuccessAt": "2026-10-03T00:41:05Z"
     },
     {
       "id": "companies-upstream",
       "name": "companies/data.json上游快照",
       "role": "upstream",
       "status": "degraded",
-      "records": 228,
+      "records": 229,
       "counts": {
-        "market": 218,
+        "market": 219,
         "fallback": 0,
         "estimate": 10,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-02T00:07:56Z",
+      "lastSuccessAt": "2026-10-02T21:17:09Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
         "status": "degraded",
-        "lastAttemptAt": "2026-10-02T00:07:56Z",
-        "lastSuccessfulAt": "2026-10-02T00:07:56Z",
+        "lastAttemptAt": "2026-10-02T21:17:09Z",
+        "lastSuccessfulAt": "2026-10-02T21:17:09Z",
         "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
@@ -107,7 +107,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-02T05:26:35Z"
+      "lastSuccessAt": "2026-10-03T00:41:05Z"
     }
   ],
   "recovery": {
