@@ -45,12 +45,14 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	exit.to_spawn = "chapel_door"
 	exit.position = Vector3(-DOOR_W * 0.5, 0, D * 0.5 - 0.02)
 	parent.add_child(exit)
-	var alban := Npc.make("奥尔本修士", [], Color("3a3a4a"))
-	alban.dialogue_area = "chapel"
-	alban.dialogue_id = "alban"
-	alban.position = ALBAN_POS
-	alban.rotation.y = PI                        # 面朝中殿（+Z）
-	parent.add_child(alban)
+	# 3.7：序章抉择之后修士提着灯去了渡口（world/ferry.gd），把书交给你（prologue_done）以前小教堂里没有他
+	if not GameState.has_flag("prologue_edric") or GameState.has_flag("prologue_done"):
+		var alban := Npc.make("奥尔本修士", [], Color("3a3a4a"))
+		alban.dialogue_area = "chapel"
+		alban.dialogue_id = "alban"
+		alban.position = ALBAN_POS
+		alban.rotation.y = PI                        # 面朝中殿（+Z）
+		parent.add_child(alban)
 	var s: Array = SPAWNS.front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 

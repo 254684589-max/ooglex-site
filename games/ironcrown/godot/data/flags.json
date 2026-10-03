@@ -22,5 +22,11 @@
   "heard_debt": {"desc": "塞拉斯说了那笔买卖：少爷用瓦伦家的借据换去南方的路", "set_in": "ferry.json silas/deal", "read_in": "3.7 抉择（勒索塞拉斯时读取）"},
   "silas_admitted": {"desc": "塞拉斯承认桦林里的无旗者是他雇的", "set_in": "ferry.json silas/hired", "read_in": "ferry.json silas（不再问一次）；3.7 抉择"},
   "edric_showed_debt": {"desc": "埃德里克给你看了借据（主线推进到抉择）", "set_in": "ferry.json edric/debt", "read_in": "ferry.json edric start_if；3.7 抉择"},
+  "saw_royal_seal": {"desc": "埃德里克把借据翻过来：背面压着王室的星铁冠印", "set_in": "ferry.json edric/after", "read_in": "ferry.json alban_ferry（修士认出印鉴）；第一章"},
+  "prologue_edric": {"desc": "序章抉择（STORY 第三节）：deliver = 交出（少爷和借据交回瓦伦家），release = 放走（少爷带着借据坐船南下），extort = 勒索（扣下借据、收塞拉斯的钱）", "set_in": "ferry.json edric/deliver、release、extort", "read_in": "world/ferry.gd（人走了、修士来了）、ferry.json alban_ferry、结束画面（ui/ending_panel.gd）；第一章"},
+  "edric_hates_you": {"desc": "把埃德里克交回瓦伦家：他恨你", "set_in": "ferry.json edric/deliver", "read_in": "第一章（埃德里克的态度）"},
+  "edric_owes_you": {"desc": "放埃德里克南下：他欠你一个人情（STORY：第四章会还）", "set_in": "ferry.json edric/release", "read_in": "第四章"},
+  "valen_may_learn": {"desc": "扣下借据勒索塞拉斯：瓦伦家可能会知道（STORY：后续概率事件）", "set_in": "ferry.json edric/extort_silas", "read_in": "第一章以后的事件"},
+  "prologue_done": {"desc": "奥尔本修士把旧书交给你，序章「霜渡镇之夜」结束", "set_in": "ferry.json alban_ferry/book", "read_in": "world/ferry.gd、world/chapel.gd（修士回小教堂）、chapel.json / ferry.json 修士的开场"},
   "alban_saw_letter": {"desc": "把少爷的信给奥尔本修士看过", "set_in": "chapel.json alban/letter", "read_in": "chapel.json alban（不再重复给他看）；3.7 尾声修士交书时可以读"}
 }

@@ -1,5 +1,5 @@
 {
-  "_说明": "渡口的对话（路线图 3.6；STORY.md 第三节第 4 步「渡口：雾中找到埃德里克和塞拉斯……强盗头目「灰手」奥弗临时改了主意，想把两人都劫走。战斗：与奥弗和剩下的强盗（奥弗可以被说服退走：口才或威吓检定，或者付钱）」）。奥弗：让饿肚子的人活下去（STORY 人物表），说崩了就动手（fight 效果，combat/encounter.gd），说通了就带人走（leave 效果）。塞拉斯：讲道理的坏人。埃德里克：不想被当成联姻的筹码。抉择（交出 / 放走 / 勒索）在 3.7。",
+  "_说明": "渡口的对话（路线图 3.6；STORY.md 第三节第 4 步「渡口：雾中找到埃德里克和塞拉斯……强盗头目「灰手」奥弗临时改了主意，想把两人都劫走。战斗：与奥弗和剩下的强盗（奥弗可以被说服退走：口才或威吓检定，或者付钱）」）。奥弗：让饿肚子的人活下去（STORY 人物表），说崩了就动手（fight 效果，combat/encounter.gd），说通了就带人走（leave 效果）。塞拉斯：讲道理的坏人。埃德里克：不想被当成联姻的筹码。3.7：埃德里克拿出借据后三选一（交出 / 放走 / 勒索，旗标 prologue_edric），借据背面压着王室的星铁冠印；之后奥尔本修士提着灯来到渡口（alban_ferry），交给你一本旧书，序章结束（ending 效果）。",
   "offer": {
     "speaker": "「灰手」奥弗",
     "start": "greet",
@@ -60,6 +60,42 @@
         "text": "（他笑了，慢慢抽出剑）说得好听。弟兄们——",
         "options": [
           {"text": "（拔剑）", "do": [{"fight": "ferry_offer", "win": "offer_defeated"}], "end": true}
+        ]
+      }
+    }
+  },
+  "alban_ferry": {
+    "speaker": "奥尔本修士",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "prologue_done"}], "node": "farewell"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（老修士提着一盏风灯，喘着气走下坡来）孩子……我放心不下埃德里克，一路跟了过来。他怎么样了？",
+        "options": [
+          {"text": "他跟我回去了。借据在我这儿，交给他父亲。", "if": [{"flag": "prologue_edric", "eq": "deliver"}], "next": "seal"},
+          {"text": "他上船走了，借据他带走了。", "if": [{"flag": "prologue_edric", "eq": "release"}], "next": "seal"},
+          {"text": "他自己回镇上了。借据在我手里。", "if": [{"flag": "prologue_edric", "eq": "extort"}], "next": "seal"}
+        ]
+      },
+      "seal": {
+        "text": "（他听你说起借据背面那枚印，手里的灯晃了一下）一顶星铁冠？……那是王室的印鉴。老王生前亲手担保过这笔债——难怪卡斯韦尔家这么急着要它。",
+        "options": [
+          {"text": "这意味着什么？", "next": "book"}
+        ]
+      },
+      "book": {
+        "text": "（他从怀里摸出一本封皮烧焦了一角的旧书，塞进你手里）我说不清，也不敢说。去黑鹭堡，别让任何人看见。",
+        "do": [{"give_item": "old_book"}, {"set": "prologue_done"}, {"quest_done": "edric_missing"}, {"ending": "prologue"}],
+        "options": [
+          {"text": "（收下旧书）", "end": true}
+        ]
+      },
+      "farewell": {
+        "text": "去黑鹭堡吧，孩子。那本书，收好。",
+        "options": [
+          {"text": "（点点头）", "end": true}
         ]
       }
     }
@@ -148,13 +184,46 @@
         "text": "（他打开皮夹，露出一张盖着好几个印的厚纸）就是这个。瓦伦家欠卡斯韦尔家的债，担保是渡口的税权。我拿它换去南方的路——这是我自己的选择。",
         "do": [{"set": "edric_showed_debt"}, {"quest": "edric_missing", "stage": "choice"}],
         "options": [
-          {"text": "……", "end": true}
+          {"text": "……", "next": "after"}
         ]
       },
       "after": {
-        "text": "（他把皮夹抱得更紧了）你打算怎么办，誓剑？",
+        "text": "（他把借据翻过来，背面还压着一枚印——一顶星铁冠）你认得这个吗？我也是今天才注意到……你打算怎么办，誓剑？",
+        "do": [{"set": "saw_royal_seal"}],
         "options": [
+          {"text": "跟我回去。借据交给你父亲。", "next": "deliver"},
+          {"text": "走吧，船在等你。借据你带走。", "next": "release"},
+          {"text": "借据给我。", "next": "extort"},
           {"text": "（还没想好）", "end": true}
+        ]
+      },
+      "deliver": {
+        "text": "（他攥紧了皮夹，过了很久才递给你）……我恨你，誓剑。（他转身往镇上走，没再回头。塞拉斯叹了口气：「卡斯韦尔家会记住今晚的。」）",
+        "do": [{"give_item": "debt_note"}, {"set": "prologue_edric", "value": "deliver"}, {"set": "edric_hates_you"},
+          {"rep": "valen", "delta": 10}, {"rep": "caswell", "delta": -10}, {"quest": "edric_missing", "stage": "after_choice"}],
+        "options": [
+          {"text": "（看着他走进雾里）", "end": true}
+        ]
+      },
+      "release": {
+        "text": "（他怔住了，然后笑了）谢谢你。这份人情，我记着。（他跳上渡船，塞拉斯解开缆绳，船慢慢滑进雾里。）",
+        "do": [{"set": "prologue_edric", "value": "release"}, {"set": "edric_owes_you"}, {"quest": "edric_missing", "stage": "after_choice"}],
+        "options": [
+          {"text": "（看着船消失在雾里）", "end": true}
+        ]
+      },
+      "extort": {
+        "text": "（他看着你，像看一个陌生人，慢慢把借据递过来）……你和我父亲有什么两样。",
+        "do": [{"give_item": "debt_note"}, {"set": "prologue_edric", "value": "extort"}],
+        "options": [
+          {"text": "（转向塞拉斯）", "next": "extort_silas"}
+        ]
+      },
+      "extort_silas": {
+        "text": "（塞拉斯走过来，看了一眼你手里的借据）你扣着借据，又知道我雇了无旗者……好吧。（他扔过来一只沉甸甸的钱袋）一百二十枚，买你今晚什么都没看见。借据你留着——卡斯韦尔家会记住你的。（埃德里克一个人往镇上走去，塞拉斯解开缆绳上了船。）",
+        "do": [{"earn": 120}, {"rep": "caswell", "delta": -30}, {"set": "valen_may_learn"}, {"quest": "edric_missing", "stage": "after_choice"}],
+        "options": [
+          {"text": "（掂了掂钱袋）", "end": true}
         ]
       }
     }

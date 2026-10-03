@@ -3,6 +3,9 @@
   "alban": {
     "speaker": "奥尔本修士",
     "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "prologue_done"}], "node": "after_book"}
+    ],
     "nodes": {
       "greet": {
         "text": "（老修士从经台后面抬起头，烛光照着他满是皱纹的脸）愿坠星照着你，孩子。这么晚了，是来祷告，还是来打听事？",
@@ -69,6 +72,12 @@
         "options": [
           {"text": "什么誓？", "next": "oath"},
           {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "after_book": {
+        "text": "（他不敢抬头看你）那本书，收好了吗？……去黑鹭堡的路上，别跟任何人提起它。",
+        "options": [
+          {"text": "（点点头）", "end": true}
         ]
       },
       "oath": {

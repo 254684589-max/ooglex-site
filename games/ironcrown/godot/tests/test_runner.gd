@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -189,6 +189,7 @@ func test_ui() -> void:
 	# 徒手格斗（3.3）
 	texts.append_array([Birch.TEACH_DESKTOP, Birch.TEACH_TOUCH, "（求饶）"])     # 桦林（3.5）
 	texts.append_array(Ferry.FERRYMAN_LINES + Ferry.THUG_LINES + ["◆ 动手了！✓ 渡口的无旗者都解决了。踢！包抄他！"])     # 渡口（3.6）
+	texts.append_array(EndingPanel.RECAP.values() + [EndingPanel.SEAL, "序章「霜渡镇之夜」完第一章 · 黑鹭堡开发中在雾里再走走从头再来", "雾里有人提着灯走下坡来……"])     # 尾声（3.7）
 	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
@@ -3318,5 +3319,109 @@ func test_ferry() -> void:
 	await frames(3)
 	check(main.area == "birch" and flat(main.player.global_position).distance_to(Vector2(0, Birch.SOUTH - 3.2)) < 0.3, "回到桦林南头")
 	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)
+
+
+## 3.7 抉择与尾声：埃德里克三选一（交出 / 放走 / 勒索）、声望与旗标结算、借据背面的王室印鉴、修士来渡口交书、「第一章 · 黑鹭堡　开发中」结束画面
+func test_ending() -> void:
+	check(GameState.item("debt_note").kind == "quest" and str(GameState.item("debt_note").desc).contains("星铁冠") and GameState.item("old_book").kind == "quest", "借据（背面压着星铁冠印）与烧焦的旧书都是任务物品")
+	var branches := [
+		["deliver", "跟我回去。借据交给你父亲。", "（看着他走进雾里）", "他跟我回去了。借据在我这儿，交给他父亲。", "交回了瓦伦家"],
+		["release", "走吧，船在等你。借据你带走。", "（看着船消失在雾里）", "他上船走了，借据他带走了。", "坐船南下"],
+		["extort", "借据给我。", "（转向塞拉斯）", "他自己回镇上了。借据在我手里。", "一百二十枚"],
+	]
+	for b in branches:
+		var choice: String = b[0]
+		GameState.new_game(81)
+		GameState.start_quest("edric_missing")
+		GameState.set_flag("offer_left")
+		GameState.set_flag("edric_showed_debt")
+		GameState.set_stage("edric_missing", "choice")
+		GameState.silver = 20
+		var valen0 := GameState.get_rep("valen")
+		var cas0 := GameState.get_rep("caswell")
+		GameState.pending_load = {"scene": "ferry", "player": {}}
+		var main := await make_main(false)
+		var p: FpController = main.player
+		await frames(3)
+		var edric: Npc = main._npc_by_dialogue("edric")
+		check(edric != null and main._npc_by_dialogue("silas") != null and main._npc_by_dialogue("alban_ferry") == null, "[%s] 抉择以前：埃德里克和塞拉斯在码头上，修士还没来" % choice)
+		main.open_dialogue("ferry", "edric", edric)
+		await frames(1)
+		check(main.dialogue.runner.node_id == "after" and GameState.has_flag("saw_royal_seal") and main.dialogue.runner.text().contains("星铁冠"), "[%s] 埃德里克把借据翻过来：背面压着一顶星铁冠；问你打算怎么办" % choice)
+		find_button(main.dialogue, str(b[1])).pressed.emit()
+		await frames(1)
+		find_button(main.dialogue, str(b[2])).pressed.emit()
+		await frames(1)
+		if choice == "extort":
+			check(main.dialogue.runner.node_id == "extort_silas", "[extort] 拿了借据，转向塞拉斯")
+			find_button(main.dialogue, "（掂了掂钱袋）").pressed.emit()
+			await frames(1)
+		await frames(3)
+		check(not main.dialogue.visible and GameState.get_flag("prologue_edric") == choice and GameState.quest_stage("edric_missing") == "after_choice", "[%s] 做了抉择（prologue_edric = %s），主线：雾里有人提着灯走过来" % [choice, choice])
+		match choice:
+			"deliver":
+				check(GameState.has_item("debt_note") and GameState.has_flag("edric_hates_you") and GameState.get_rep("valen") == valen0 + 10 and GameState.get_rep("caswell") == cas0 - 10, "[deliver] 借据在你手里；埃德里克恨你；瓦伦家 +10、卡斯韦尔家 −10")
+			"release":
+				check(not GameState.has_item("debt_note") and GameState.has_flag("edric_owes_you") and GameState.get_rep("valen") == valen0 and GameState.get_rep("caswell") == cas0, "[release] 借据跟他走了；他欠你一个人情；声望不变（瓦伦家要等谎言被识破）")
+			"extort":
+				check(GameState.has_item("debt_note") and GameState.silver == 140 and GameState.get_rep("caswell") == cas0 - 30 and GameState.has_flag("valen_may_learn"), "[extort] 扣下借据、收了 120 枚银币；卡斯韦尔家 −30；瓦伦家可能会知道")
+		await frames(2)
+		var alban: Npc = main._npc_by_dialogue("alban_ferry")
+		check(main._npc_by_dialogue("edric") == null and main._npc_by_dialogue("silas") == null and alban != null, "[%s] 埃德里克和塞拉斯离开了渡口，奥尔本修士提着灯来了" % choice)
+		main.open_dialogue("ferry", "alban_ferry", alban)
+		await frames(1)
+		var opts: Array = main.dialogue.runner.options().map(func(o): return o.text)
+		check(opts == [str(b[3])], "[%s] 修士问少爷怎么样了：只有和你的抉择对得上的回答（%s）" % [choice, str(opts)])
+		find_button(main.dialogue, str(b[3])).pressed.emit()
+		await frames(1)
+		check(main.dialogue.runner.node_id == "seal" and main.dialogue.runner.text().contains("王室的印鉴"), "[%s] 修士听说那枚印：王室的印鉴，老王亲手担保过这笔债" % choice)
+		find_button(main.dialogue, "这意味着什么？").pressed.emit()
+		await frames(1)
+		main.touch.visible = true                       # 当成有触屏：结束画面要把触屏按钮藏起来、关掉后还原
+		find_button(main.dialogue, "（收下旧书）").pressed.emit()
+		await frames(4)
+		check(GameState.has_item("old_book") and GameState.has_flag("prologue_done") and GameState.quest_done("edric_missing"), "[%s] 收下旧书：主线「雾里的少爷」完成" % choice)
+		check(main.ending_panel.visible and get_tree().paused and main.ending_panel.title.text == "第一章 · 黑鹭堡" and main.ending_panel.sub.text == "开发中", "[%s] 结束画面：「第一章 · 黑鹭堡　开发中」，游戏暂停" % choice)
+		check(main.ending_panel.recap.text.contains(str(b[4])) and main.ending_panel.seal.text.contains("黑鹭堡"), "[%s] 回顾按抉择写（%s）" % [choice, main.ending_panel.recap.text.left(16)])
+		var rect: Rect2 = main.ending_panel.box.get_global_rect()
+		check(rect.size.x <= main.hud.size.x, "[%s] 结束画面不超出画面宽度" % choice)
+		check(not main.hud.visible and not main.touch.visible, "[%s] 结束画面打开时提示和触屏按钮藏起来（不叠在回顾上）" % choice)
+		find_button(main.ending_panel, "在雾里再走走").pressed.emit()
+		await frames(2)
+		check(not main.ending_panel.visible and not get_tree().paused and main.hud.visible and main.touch.visible, "[%s] 「在雾里再走走」：关掉画面接着玩（提示与触屏按钮回来）" % choice)
+		if choice == "deliver":
+			# 读档 / 再来渡口：人走了、修士回小教堂
+			await place(p, 0.0, -8.0)
+			check(main.save_game("slot3"), "[deliver] 结局之后能存档")
+			check(Saves.read_slot("auto").has("data"), "[deliver] 主线完成时自动存档")
+			check(main.load_game("slot3"), "[deliver] 读这个存档")
+			main = await reload_main(main)
+			await frames(3)
+			check(main.area == "ferry" and main._npc_by_dialogue("edric") == null and main._npc_by_dialogue("alban_ferry") == null, "[deliver] 读档：少爷和塞拉斯不在了，修士已经回去")
+			await free_main(main)
+			main = await make_area("chapel")
+			var ab: Npc = main._npc_by_dialogue("alban")
+			var r := DialogueRunner.new()
+			r.start("chapel", "alban")
+			check(ab != null and r.node_id == "after_book", "[deliver] 修士回到小教堂：「那本书，收好了吗？」")
+		elif choice == "release":
+			# 抉择之后、交书之前：小教堂里没有修士（他去渡口了）
+			await free_main(main)
+			GameState.flags.erase("prologue_done")
+			main = await make_area("chapel")
+			check(main._npc_by_dialogue("alban") == null, "[release] 修士去了渡口时，小教堂里没有他")
+			GameState.set_flag("prologue_done")
+		else:
+			# 从头再来
+			var rr := [0]
+			main.reload_requested.connect(func(): rr[0] += 1)
+			main.show_ending("prologue", "extort")
+			await frames(2)
+			find_button(main.ending_panel, "从头再来").pressed.emit()
+			await frames(3)
+			check(rr[0] == 1 and not GameState.has_flag("prologue_done") and GameState.silver == GameState.START_SILVER and not get_tree().paused, "[extort] 「从头再来」：新游戏，重新载入")
+		await free_main(main)
 	GameState.pending_load = {}
 	GameState.new_game(1)
