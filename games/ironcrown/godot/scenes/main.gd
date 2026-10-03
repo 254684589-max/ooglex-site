@@ -5,6 +5,7 @@ extends Node3D
 ## 3.1 起有多个区域（world/areas.gd）：主街、「倒钩鱼」酒馆……；走进通往别处的门 = travel()：淡出、记下去哪、重新载入本场景、
 ## 放到命名出生点、淡入、自动存档（GDD 第十节：进入新区域时）。网页 ?area=tavern 直接从酒馆开始（截图与冒烟测试用）。
 ## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
+## ?area=tavern&brawl=1 一进酒馆就和醉汉「大桶」打起来（3.3，截图与冒烟测试用；不设旗标）。
 ## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
 ## NPC 与敌人仍是占位胶囊，界面上明确标注（主角的第三人称人物在 A.1 换成了模型）。
 ##
@@ -17,6 +18,8 @@ const HINT_DESKTOP := "点击画面开始 · WASD 移动 · 鼠标转视角 · E
 const HINT_TOUCH := "左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 点「攻」出剑（按住是重击）· 「视角」切换第一 / 第三人称 · 对准东西时点交互按钮"
 const HINT_ARENA_DESKTOP := "训练场：左键 / F 出剑（按住重击）· 右键 / Q 按住格挡 · 在对方劈下前一瞬间举剑 = 完美格挡（对方失衡）· WASD 移动 · Esc 暂停"
 const HINT_ARENA_TOUCH := "训练场：点「攻」出剑（按住重击）· 按住「挡」格挡 · 在对方劈下前一瞬间按「挡」= 完美格挡（对方失衡）"
+const HINT_BRAWL_DESKTOP := "徒手打一架（不许动刀）：左键 / F 出拳，按住是重拳 · 右键 / Q 按住格挡 · 把对方打到认输就赢"
+const HINT_BRAWL_TOUCH := "徒手打一架（不许动刀）：点「攻」出拳，按住是重拳 · 按住「挡」格挡 · 把对方打到认输就赢"
 const HINT_SECONDS := 8.0
 const FADE_TIME := 0.25           # 换区域时淡出 / 淡入（减少动态效果时直接切）
 
@@ -55,6 +58,8 @@ var loaded_from := ""           # 这次是从哪个栏位读档进来的（空 
 var area := "frostford"         # 现在所在的区域（Areas.NAMES；3.1）
 var arrived_by := ""            # 从门走进来的（换区域）时是出生点名字；读档 / 新游戏时为空
 var fade: ColorRect
+var brawl: Brawl                # 正在打的一架（3.3）；打完自己释放
+var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
@@ -63,6 +68,7 @@ func _ready() -> void:
 	touch_mode = DisplayServer.is_touchscreen_available()
 	var pending := GameState.pending_load
 	GameState.pending_load = {}
+	GameState.pending_brawl = {}
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
@@ -130,6 +136,10 @@ func _ready() -> void:
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
 	if arrived_by != "":
 		_arrive()
+	if area == "tavern" and _query("brawl") == "1":
+		var dagu := _npc_by_dialogue("dagu")
+		if dagu:
+			start_brawl.call_deferred(dagu, {"brawl": "drunk"})
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
 		if view != "" or area != "frostford":
@@ -370,7 +380,6 @@ func _build_ui() -> void:
 	layer.add_child(loot_panel)
 	loot_panel.closed.connect(_on_loot_closed)
 	loot_panel.took.connect(func(names: Array): hud.toast("拿到：" + "、".join(names), 2.5))
-	player.melee.no_weapon.connect(func(): hud.toast("没有装备武器（%s打开背包装备）" % ("点「背包」" if touch_mode else "按 I ")))
 	GameState.quest_event.connect(_on_quest_event)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
@@ -480,7 +489,7 @@ func _on_guarded(result: String, info: Dictionary) -> void:
 		"perfect":
 			hud.toast("◆ 完美格挡！对方失衡", 1.2)
 		"block":
-			hud.toast("挡住了（体力 −%d）" % roundi(info.damage * Melee.GUARD_COST * (1.5 if info.kind == "heavy" else 1.0)), 1.0)
+			hud.toast("挡住了（体力 −%d）" % roundi(player.melee.guard_cost(info)), 1.0)
 		"guard_break":
 			hud.toast("× 格挡被打破！", 1.2)
 	print("IC_BLOCK result=%s dmg=%d stamina=%.0f" % [result, info.damage, player.melee.stamina])
@@ -529,8 +538,10 @@ func can_save() -> String:
 	return ""
 
 
-## 有敌人正在和你打（警觉 / 战斗 / 后退 / 失衡）：不能存档，也不能走进别的区域
+## 有敌人正在和你打（警觉 / 战斗 / 后退 / 失衡），或者正在打架（3.3）：不能存档，也不能走进别的区域
 func in_combat() -> bool:
+	if brawl_active():
+		return true
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
 			return true
@@ -652,7 +663,7 @@ func _restore_player(p: Dictionary) -> void:
 
 func _on_enemy_state(e: Enemy, state: String) -> void:
 	print("IC_ENEMY id=%s state=%s hp=%d" % [e.enemy_id, state, e.hp])
-	if state in ["dead", "yield"]:
+	if use_arena and state in ["dead", "yield"]:
 		var left := get_tree().get_nodes_in_group("enemy").filter(func(x): return x.state not in [Enemy.State.DEAD, Enemy.State.YIELD])
 		if left.is_empty():
 			hud.toast("✓ 训练场清空了（按 Esc 打开菜单，刷新页面再来一次）" if not touch_mode else "✓ 训练场清空了（刷新页面再来一次）", 5.0)
@@ -680,6 +691,10 @@ func _on_interacted(r: Dictionary) -> void:
 	if r.get("kind") == "pickup":
 		GameState.add_item(r.item)
 	if r.get("kind") == "dialogue":
+		if brawl_active():
+			hud.toast("先把这一架打完。", 1.5)
+			print("IC_INTERACT kind=busy name=%s" % r.get("name", ""))
+			return
 		open_dialogue(r.area, r.id, r.get("npc"))
 	if r.get("kind") == "loot":
 		open_loot(r.container)
@@ -695,6 +710,7 @@ func _on_interacted(r: Dictionary) -> void:
 func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 	if not dialogue.open(area, id):
 		return
+	dialogue_npc = npc
 	hud.show_prompt("")
 	hud.set_hint("")              # 底部的操作提示不再压在对话上
 	hint_left = 0.0
@@ -817,9 +833,55 @@ func _on_dialogue_closed() -> void:
 	get_tree().paused = false
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
+	var b := GameState.pending_brawl
+	GameState.pending_brawl = {}
+	if not b.is_empty() and dialogue_npc is Npc:
+		start_brawl(dialogue_npc, b)                   # 对话里说好了打一架（3.3）
 	player.interactor.refresh()
 	var t := player.interactor.target
 	hud.show_prompt(t.prompt() if t else "")
+
+
+# ---------------- 打架（3.3） ----------------
+
+func brawl_active() -> bool:
+	return brawl != null and is_instance_valid(brawl) and brawl.active()
+
+
+## 和一个 NPC 徒手打一架：spec = {brawl: 敌人种类, win: 旗标, lose: 旗标}（对话效果，DialogueRunner）
+func start_brawl(npc: Npc, spec: Dictionary) -> void:
+	if brawl_active() or player.melee.down:
+		return
+	brawl = Brawl.new()
+	brawl.name = "Brawl"
+	add_child(brawl)
+	brawl.ended.connect(_on_brawl_ended)
+	brawl.begin(world, player, npc, str(spec.brawl), str(spec.get("win", "")), str(spec.get("lose", "")))
+	brawl.enemy.state_changed.connect(_on_enemy_state)
+	hud.show_prompt("")
+	hud.toast("◆ 和%s徒手打一架" % npc.display_name, 2.5)
+	hud.set_hint(HINT_BRAWL_TOUCH if touch_mode else HINT_BRAWL_DESKTOP)     # 底部的操作提示换成打架的（不许动刀）
+	hint_left = HINT_SECONDS
+	print("IC_BRAWL start kind=%s with=%s" % [spec.brawl, npc.display_name])
+
+
+func _on_brawl_ended(won: bool) -> void:
+	var who := brawl.npc.display_name if is_instance_valid(brawl) else ""
+	if won:
+		hud.toast("✓ %s认输了。" % who, 3.0)
+	else:
+		hud.toast("× 你被%s打倒了。（生命 %d）" % [who, player.melee.health], 3.5)
+		if not Settings.reduced_motion:
+			fade.color.a = 0.85                     # 眼前一黑，再慢慢缓过来
+			create_tween().tween_property(fade, "color:a", 0.0, 1.2)
+	save_game.call_deferred("auto", true)
+
+
+func _npc_by_dialogue(id: String) -> Npc:
+	for n in world.find_children("*", "", true, false):
+		if n is Npc and (n as Npc).dialogue_id == id:
+			return n
+	return null
 
 
 ## 潜行（2.7）：蹲着走、附近 10 米内有还没察觉你的敌人，每秒涨 0.5 进度

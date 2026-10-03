@@ -17,7 +17,7 @@ const DEFAULT_STRENGTH := 5
 const PROGRESSION_PATH := "res://data/progression.json"
 const ATTRS := ["strength", "agility", "constitution", "wits"]
 ## 专长效果白名单（data/progression.json 的 effect 只能用这些）
-const PERK_EFFECTS := ["combo3", "counter", "parry_window", "blunt_stagger", "armor_pierce", "check_bonus", "stealth_slow", "carry", "loot_bonus"]
+const PERK_EFFECTS := ["combo3", "counter", "parry_window", "blunt_stagger", "armor_pierce", "fist_stagger", "guard_cheap", "check_bonus", "stealth_slow", "carry", "loot_bonus"]
 const SKILL_MAX := 100
 const LEVEL_EVERY := 10          # 技能每累计提升 10 次，角色升一级、得 1 个属性点
 const REP_MIN := -100
@@ -64,6 +64,7 @@ var picked: Array = []    # 已经捡走的地上物品（Pickup.pickup_id），
 var dead := {}            # 已经倒下的敌人编号 → 倒下的位置 [x, y, z]，读档后直接是倒下的样子（2.8）
 var playtime := 0.0       # 游戏时间（秒，暂停时不算）
 var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
+var pending_brawl := {}   # 对话里说好要打一架：{brawl, win, lose}，对话关上后由 main 取走开打（3.3；不存档）
 
 signal inventory_changed
 

@@ -6,6 +6,7 @@ extends Node3D
 ## 动作与近战判定的时间对齐见 data/character_anims.json 的 attacks（命中帧 = 动作里剑最靠前的那一刻）。
 ## 动作库里只有朝前走、跑、蹲走：侧着走、倒着走时把身体转向移动方向（超过 REVERSE_FROM 度就倒着播放前进动作）。
 ## 模型在第一次显示时才加载（不开第三人称的人不付这笔加载和显存的钱）。
+## 3.3 空手（Melee.unarmed()）：手里不挂剑；举拳待机是护脸的架势，出拳 / 重拳 / 格挡换成 character_anims.json 的 fists 一组动作。
 
 const TURN_SPEED := 10.0          # 身体朝向跟上移动方向的快慢（每秒）
 const REVERSE_FROM := 100.0       # 移动方向与镜头方向夹角超过这么多度：倒着走
@@ -84,7 +85,7 @@ func _process(delta: float) -> void:
 		return
 	var m := player.melee
 	_set_model(str(m.weapon().get("model", "sword")))
-	weapon_mesh.visible = m.state != Melee.State.SHEATHED and not m.weapon().is_empty()
+	weapon_mesh.visible = m.state != Melee.State.SHEATHED and not m.unarmed()
 	_update_facing(delta)
 	_update_anim(delta)
 	if character.role != _last_role:
@@ -124,8 +125,13 @@ func _update_anim(delta: float) -> void:
 		return
 	if _hit_left > 0.0 and not m.busy():
 		return                                                # 挨打的动作还没播完
+	var fists := m.unarmed()
+	var fm: Dictionary = character.map.get("fists", {})
 	match st:
 		Melee.State.BLOCK:
+			if fists:
+				character.hold("block_fists", float(fm.block_at), 0.1)     # 小臂横在胸前，停住直到松开
+				return
 			var hold_at := float(character.map.block.hold)
 			if changed or character.role != "block":
 				character.play_once("block", 1.3, 0.08)
@@ -134,7 +140,7 @@ func _update_anim(delta: float) -> void:
 			return
 		Melee.State.CHARGE:
 			if m.held > CHARGE_DELAY:
-				var a: Dictionary = character.map.attacks.heavy
+				var a: Dictionary = fm.heavy if fists else character.map.attacks.heavy
 				var k := clampf((m.held - CHARGE_DELAY) / (Melee.HEAVY_HOLD - CHARGE_DELAY), 0.0, 1.0)
 				character.hold(str(a.clip), float(a.wind_peak) * k, HOLD_BLEND)
 				return
@@ -142,15 +148,22 @@ func _update_anim(delta: float) -> void:
 			return                                              # 出招动作是 _on_swung 里开始的，播它的
 		Melee.State.RECOVER:
 			if changed:
-				character.play_loop("idle_armed", 1.0, 0.25)   # 收招：缓缓回到持剑待机
+				if fists:
+					character.hold("idle_fists", float(fm.idle_at), 0.25)     # 收拳：回到护脸的架势
+				else:
+					character.play_loop("idle_armed", 1.0, 0.25)   # 收招：缓缓回到持剑待机
 			return
-	var armed := st != Melee.State.SHEATHED and not m.weapon().is_empty()
+	var armed := st != Melee.State.SHEATHED
 	var hspeed := Vector2(player.velocity.x, player.velocity.z).length()
 	_air_time = 0.0 if player.is_on_floor() else _air_time + delta
 	if _air_time > AIR_DELAY:
 		character.play_loop("air", 1.0, 0.12)
 		return
 	var pick := CharacterModel.pick_locomotion(character.map, hspeed, player.crouching, armed)
+	if pick.role == "idle_armed" and fists:
+		if character.role != "idle_fists":
+			character.hold("idle_fists", float(fm.idle_at), 0.18)          # 举着拳头站着：护脸的架势
+		return
 	character.play_loop(str(pick.role), float(pick.scale), 0.18, reversed and pick.role in ["walk", "run", "crouch_move"])
 
 
@@ -160,14 +173,15 @@ func _on_swung(kind: String) -> void:
 		return
 	var m := player.melee
 	var tm: Dictionary = Melee.TIMING[kind]
+	var moves: Dictionary = character.map.fists if m.unarmed() else character.map.attacks     # 空手出拳（3.3）
 	var to_hit: float
 	if kind == "heavy":
-		var a: Dictionary = character.map.attacks.heavy
+		var a: Dictionary = moves.heavy
 		to_hit = float(tm.strike) * float(tm.hit_at) / m.speed
 		var from_t := float(a.wind_peak)                      # 蓄力已经把剑推到最高处，从那里劈下
 		character.play_once(str(a.clip), (float(a.impact) - from_t) / to_hit, 0.04, from_t)
 	else:
-		var a := CharacterModel.light_attack(character.map, m.combo)
+		var a := CharacterModel.light_attack(moves, m.combo)
 		to_hit = (float(tm.wind) + float(tm.strike) * float(tm.hit_at)) / m.speed
 		character.play_once(str(a.clip), float(a.impact) / to_hit, 0.06)
 

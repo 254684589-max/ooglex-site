@@ -7,6 +7,8 @@ extends CharacterBody3D
 ## 剑手会格挡轻击；重击破防让它失衡。完美格挡它的攻击也会让它失衡 0.8 秒，失衡期间受到的伤害加倍（DamageCalc）。
 ## 寻路：现在只在平坦的训练场里直线走（加碰撞滑动）；进街巷时再用导航网格（TECH.md 4.4）。
 ## 外观是占位胶囊人（正式人物在阶段 A）。
+## 3.3：nonlethal 的种类（酒馆醉汉）用拳头、打不死：生命最少留 1，到 flee_below 就认输；它打玩家也不致命（Melee.KO_FLOOR）。
+## 打架时由 Brawl 现场生成（engage() 直接进入战斗；display_override 用 NPC 的名字）。
 
 signal state_changed(enemy: Enemy, state: String)
 signal died(enemy: Enemy)
@@ -18,7 +20,7 @@ const STATE_LABELS := ["", "？ 起疑", "！ 警觉", "！", "后退", "失衡"
 const DATA_PATH := "res://data/enemies.json"
 const DATA_KEYS := ["name", "coat", "weapon", "hp", "armor", "weapon_base", "strength", "skill", "walk", "run", "reach",
 	"windup", "heavy_windup", "strike", "recover", "heavy_chance", "block_chance", "stamina", "attack_cost", "stamina_regen",
-	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction"]
+	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction", "nonlethal"]
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
 const SIGHT_DARK := 8.0
@@ -36,6 +38,7 @@ const THINK_STEP := 0.1           # 感知每 0.1 秒算一次（射线不必每
 
 var kind := "clubber"
 var enemy_id := ""
+var display_override := ""       # 打架时用说话那个 NPC 的名字（3.3）
 var data: Dictionary = {}
 var display_name := ""
 var hp := 1
@@ -105,6 +108,10 @@ static func validate_types(d: Dictionary) -> Array:
 		for key in ["heavy_chance", "block_chance", "flee_below", "yield_chance"]:
 			if float(t.get(key, 0)) < 0.0 or float(t.get(key, 0)) > 1.0:
 				errs.append("%s 的 %s 应在 0..1" % [k, key])
+		if not str(t.get("weapon", "")) in ["sword", "club", "fists"]:
+			errs.append("%s 的兵器 %s 不认识" % [k, t.get("weapon", "")])
+		if bool(t.get("nonlethal", false)) and (float(t.get("flee_below", 0)) <= 0.0 or float(t.get("yield_chance", 0)) < 1.0):
+			errs.append("%s 打不死，打到 flee_below 必须认输（yield_chance = 1）" % k)
 	return errs
 
 
@@ -120,7 +127,7 @@ func _ready() -> void:
 	add_to_group("enemy")
 	add_to_group("damageable")
 	data = types()[kind]
-	display_name = str(data.name)
+	display_name = display_override if display_override != "" else str(data.name)
 	hp_max = int(data.hp)
 	hp = hp_max
 	armor = float(data.armor)
@@ -165,7 +172,17 @@ func _build_arm() -> void:
 	body.add_child(arm)
 	var kit := MeshKit.new()
 	var mats := {}
-	if data.weapon == "sword":
+	if data.weapon == "fists":
+		kit.box("coat", Vector3(0, -0.2, 0), Vector3(0.1, 0.32, 0.1))       # 小臂
+		kit.box("skin", Vector3(0, 0.02, 0), Vector3(0.11, 0.12, 0.11))     # 拳头
+		var coat := StandardMaterial3D.new()
+		coat.albedo_color = Color(str(data.coat)).darkened(0.15)
+		coat.vertex_color_use_as_albedo = true
+		var skin := StandardMaterial3D.new()
+		skin.albedo_color = Color("c8a88a")
+		skin.vertex_color_use_as_albedo = true
+		mats = {"coat": coat, "skin": skin}
+	elif data.weapon == "sword":
 		kit.box("steel", Vector3(0, 0.45, 0), Vector3(0.05, 0.7, 0.012))
 		kit.box("wood", Vector3(0, 0.08, 0), Vector3(0.18, 0.03, 0.03))
 		kit.box("wood", Vector3(0, 0.0, 0), Vector3(0.035, 0.16, 0.035))
@@ -408,6 +425,17 @@ func alert(call_others := true) -> void:
 
 # ---- 战斗 ----
 
+## 直接进入战斗（3.3 打架：一开打就知道你在哪，不用先起疑、喊话）
+func engage() -> void:
+	if not alive() or state == State.YIELD:
+		return
+	suspicion = 1.0
+	_find_refs()
+	if player:
+		last_known = player.global_position
+	_enter(State.COMBAT)
+
+
 func _release_token() -> void:
 	if has_token and director:
 		director.release(self)
@@ -482,7 +510,8 @@ func _strike_player() -> void:
 	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
 		return
 	var dmg := DamageCalc.compute(float(data.weapon_base), int(data.strength), int(data.skill), attack_kind, player.melee.staggered(), GameState.armor_total())
-	var result := player.melee.receive_hit({"damage": dmg, "kind": attack_kind, "attacker": self, "stop": 0.06})
+	var result := player.melee.receive_hit({"damage": dmg, "kind": attack_kind, "attacker": self, "stop": 0.06,
+		"nonlethal": bool(data.get("nonlethal", false))})
 	if result == "perfect":
 		stagger()
 	elif result == "block":
@@ -515,7 +544,7 @@ func take_hit(info: Dictionary) -> void:
 			return
 		stagger()              # 想挡重击：被破防
 	var dmg := int(info.get("damage", 0))
-	hp = maxi(hp - dmg, 0)
+	hp = maxi(hp - dmg, 1 if bool(data.get("nonlethal", false)) else 0)     # 打不死的（醉汉）最少留 1，到 flee_below 认输
 	flash = 1.0
 	FloatText.spawn(self, ("重击 −%d" if k == "heavy" else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), 1.45, 0),
 		Color("ffcf6a") if k == "heavy" else Color("f2e6c8"), 36 if k == "heavy" else 30)

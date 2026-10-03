@@ -8,7 +8,8 @@ extends RefCounted
 ##   check 检定：{"id": 唯一编号, "skill": speech|intimidate|insight, "dc": 难度, "pass": 成功去的节点, "fail": 失败去的节点}
 ##   do    效果列表（选中时 / 进入节点时执行）：{"set": 旗标名, "value": 值（默认 true）}；
 ##         2.3 起：{"quest": 任务}（接任务）、{"quest": 任务, "stage": 阶段}（推进）、{"quest_done": 任务}、{"clue": 线索}、{"take_item": 物品}；
-##         2.6 起：{"pay": 数量}（付银币）；2.7 起：{"rep": 势力, "delta": 变化}（改声望）；3.1 起：{"give_item": 物品}（给玩家一件物品，例如买面包）
+##         2.6 起：{"pay": 数量}（付银币）；2.7 起：{"rep": 势力, "delta": 变化}（改声望）；3.1 起：{"give_item": 物品}（给玩家一件物品，例如买面包）；
+##         3.3 起：{"brawl": 敌人种类, "win": 旗标, "lose": 旗标}（和说话的人徒手打一架，只能放在结束对话的选项上；种类必须是 enemies.json 里打不死的）
 ## 对话可以有 start_if：[{"if": [...], "node": 节点}]，第一个满足的决定从哪个节点开始（旗标改变 NPC 的态度）。
 ## 只认上面这些键（白名单），不执行任意表达式；用到的旗标必须登记在 data/flags.json。
 
@@ -23,7 +24,7 @@ var last_check := {}          # 刚做过的检定：{skill, ok}（界面显示�
 const OPTION_KEYS := ["text", "next", "end", "if", "check", "do"]
 const NODE_KEYS := ["text", "options", "do"]
 const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least"]
-const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta"]
+const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta", "brawl", "win", "lose"]
 
 
 ## 读过的对话文件缓存在 Engine 的元数据里：这个脚本用 static var 做缓存时，退出时脚本释放不掉（2.1 实测，引擎报「resources still in use」）
@@ -74,12 +75,18 @@ static func validate(d: Dictionary) -> Array:
 			if not key in NODE_KEYS:
 				errors.append("%s：不认识的键 %s" % [nid, key])
 		_validate_effects(n.get("do", []), nid, registry, errors)
+		for e in n.get("do", []):
+			if e.has("brawl"):
+				errors.append("%s：打架只能放在选项上（选了就结束对话开打）" % nid)
 		for o in n.get("options", []):
 			for key in o:
 				if not key in OPTION_KEYS:
 					errors.append("%s：选项「%s」有不认识的键 %s" % [nid, o.get("text", ""), key])
 			_validate_conds(o.get("if", []), nid, registry, errors)
 			_validate_effects(o.get("do", []), nid, registry, errors)
+			for e in o.get("do", []):
+				if e.has("brawl") and not o.get("end", false):
+					errors.append("%s：选项「%s」开打要同时结束对话（end）" % [nid, o.get("text", "")])
 			if o.has("check"):
 				var c: Dictionary = o.check
 				if not GameState.SKILL_NAMES.has(str(c.get("skill", ""))):
@@ -167,7 +174,14 @@ static func _validate_effects(effects: Array, where: String, registry: Dictionar
 				errors.append("%s：物品 %s 不在 data/items.json 里" % [where, e[ik]])
 		if e.has("rep") and (not GameState.progression().get("factions", {}).has(str(e.rep)) or int(e.get("delta", 0)) == 0):
 			errors.append("%s：声望效果的势力或变化不对" % where)
-		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("give_item") or e.has("pay") or e.has("rep")):
+		if e.has("brawl"):
+			var t: Dictionary = Enemy.types().get(str(e.brawl), {})
+			if t.is_empty() or not bool(t.get("nonlethal", false)):
+				errors.append("%s：打架的对手 %s 不是 enemies.json 里打不死的种类" % [where, e.brawl])
+			for fk in ["win", "lose"]:
+				if not registry.has(str(e.get(fk, ""))):
+					errors.append("%s：打架的 %s 旗标 %s 没有登记在 data/flags.json" % [where, fk, e.get(fk, "")])
+		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("give_item") or e.has("pay") or e.has("rep") or e.has("brawl")):
 			errors.append("%s：效果缺内容" % where)
 
 
@@ -227,6 +241,8 @@ static func apply(effects: Array) -> void:
 			GameState.add_silver(-int(e.pay))
 		if e.has("rep"):
 			GameState.change_rep(str(e.rep), int(e.get("delta", 0)))
+		if e.has("brawl"):
+			GameState.pending_brawl = {"brawl": str(e.brawl), "win": str(e.get("win", "")), "lose": str(e.get("lose", ""))}
 
 
 func _enter(nid: String) -> void:

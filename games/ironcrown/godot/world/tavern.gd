@@ -4,6 +4,7 @@ extends RefCounted
 ## 一间 8 × 7 米、3 米高的大堂：西墙石砌壁炉（炉火照亮半个屋子，轻微闪烁）、北边吧台与酒架、一张长桌和长凳、窗边一张小方桌、
 ## 东墙一道通到楼上客房的木梯（梯口的栅门锁着，楼上不做）、南墙两扇看得见夜雾的窗和出去的门。
 ## 老板娘玛蒂尔达在吧台后面（对话给少爷的线索，也卖面包）；一个喝多了的伐木工、一个烤火的货郎。人物仍是占位胶囊（A.2 换装）。
+## 3.3：吧台东头靠着赖账的醉汉「大桶」（渡口扛包的）：玛蒂尔达请你让他结账，和他徒手打一架（combat/brawl.gd）；东半边空地就是打架的地方。
 ## 坐标：原点在大堂地面中心，北 = -Z；出口门在南墙（z = +3.5）。
 
 const W := 8.0
@@ -22,14 +23,16 @@ const TABLE_POS := Vector3(-1.2, 0, 0.9)          # 长桌（沿东西方向，�
 const SMALL_TABLE_POS := Vector3(-2.75, 0, 2.75)  # 西南角窗边的小方桌
 const WOODCUTTER_POS := Vector3(-2.7, 0, 0.9)     # 长桌西头，背靠炉火
 const PEDDLER_POS := Vector3(-2.7, 0, -1.9)
+const DAGU_POS := Vector3(2.5, 0, -1.35)          # 吧台东头（3.3）
 const PEDDLER_LINES := ["这么大的雾，明天的渡船怕是开不了。", "南边来的货一个月比一个月少。听说冠城那边……算了，不说了。", "炉子边上最暖和，你也过来烤烤？"]
-const VIEW_NAMES := ["进门看大堂", "吧台前（玛蒂尔达）", "看壁炉", "门内对着出口"]
+const VIEW_NAMES := ["进门看大堂", "吧台前（玛蒂尔达）", "看壁炉", "门内对着出口", "对着吧台东头（大桶）"]
 ## 网页 ?area=tavern&view=N 的固定机位：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
 const VIEWS := [
 	[Vector3(DOOR_X, 0, 2.6), 12.0, -4.0],
 	[Vector3(0.6, 0, -0.95), 0.0, -12.0],
 	[Vector3(0.9, 0, 1.9), 66.0, -6.0],
 	[Vector3(DOOR_X, 0, 1.9), 180.0, -8.0],     # 3：门内对着出口（冒烟测试出门用）
+	[Vector3(1.9, 0, 0.2), -21.0, -8.0],        # 4：对着大桶（3.3）
 ]
 
 
@@ -58,7 +61,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	gate.locked_text = "栅门上挂着锁。玛蒂尔达头也不抬：「楼上是客房，今晚住满了。」"
 	gate.position = Vector3(W * 0.5 - 0.95, 0, 2.78)
 	parent.add_child(gate)
-	# 人：老板娘（对话树）、醉醺醺的伐木工（对话树）、烤火的货郎（轮流说一句）
+	# 人：老板娘（对话树）、醉醺醺的伐木工（对话树）、赖账的大桶（对话树，3.3 打架）、烤火的货郎（轮流说一句）
 	var matilda := Npc.make("玛蒂尔达", [], Color("6a3a3a"))
 	matilda.dialogue_area = "tavern"
 	matilda.dialogue_id = "matilda"
@@ -71,6 +74,12 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	woodcutter.position = WOODCUTTER_POS
 	woodcutter.rotation.y = -PI / 2          # 面朝长桌（+X）
 	parent.add_child(woodcutter)
+	var dagu := Npc.make("大桶", [], Color("5a4a3a"))
+	dagu.dialogue_area = "tavern"
+	dagu.dialogue_id = "dagu"
+	dagu.position = DAGU_POS
+	dagu.rotation.y = 2.5                    # 侧靠吧台，面朝大堂（西南）
+	parent.add_child(dagu)
 	var peddler := Npc.make("货郎", PEDDLER_LINES, Color("3a4a5a"))
 	peddler.position = PEDDLER_POS
 	peddler.rotation.y = 2.65                # 面朝炉火（西南方向）

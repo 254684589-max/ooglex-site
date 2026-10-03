@@ -1,5 +1,5 @@
 {
-  "_note": "敌人数值（路线图 2.5；GDD.md 6.2、6.3）。时间单位秒、距离米。伤害按 DamageCalc 公式：weapon × (1 + strength×0.03 + skill×0.005) × 轻 1.0 / 重 1.8。 loot = 倒下后能搜到的物品（编号见 items.json），silver = 银币（2.6）。 faction = 所属势力（data/progression.json 的 factions；杀死一个声望 −5，2.7）。",
+  "_note": "敌人数值（路线图 2.5；GDD.md 6.2、6.3）。drunk = 酒馆里打架的醉汉（3.3）：徒手、动作慢、打不死（nonlethal：打到 flee_below 认输，它打你也只会把你打倒），由对话开打时现场生成。时间单位秒、距离米。伤害按 DamageCalc 公式：weapon × (1 + strength×0.03 + skill×0.005) × 轻 1.0 / 重 1.8。 loot = 倒下后能搜到的物品（编号见 items.json），silver = 银币（2.6）。 faction = 所属势力（data/progression.json 的 factions；杀死一个声望 −5，2.7）。",
   "clubber": {
     "name": "无旗者 · 棍手",
     "coat": "5a3a2e",
@@ -31,7 +31,8 @@
       "dice"
     ],
     "silver": 4,
-    "faction": "outlaws"
+    "faction": "outlaws",
+    "nonlethal": false
   },
   "swordsman": {
     "name": "无旗者 · 剑手",
@@ -64,6 +65,37 @@
       "strong_spirit"
     ],
     "silver": 9,
-    "faction": "outlaws"
+    "faction": "outlaws",
+    "nonlethal": false
+  },
+  "drunk": {
+    "name": "醉汉",
+    "coat": "5a4a3a",
+    "weapon": "fists",
+    "hp": 45,
+    "armor": 0,
+    "weapon_base": 6,
+    "strength": 6,
+    "skill": 10,
+    "walk": 1.3,
+    "run": 2.6,
+    "reach": 1.35,
+    "windup": 0.7,
+    "heavy_windup": 1.0,
+    "strike": 0.12,
+    "recover": 0.75,
+    "heavy_chance": 0.3,
+    "block_chance": 0.2,
+    "stamina": 90,
+    "attack_cost": 20,
+    "stamina_regen": 12,
+    "retreat_below": 0,
+    "circle_side": 0.4,
+    "flee_below": 0.3,
+    "yield_chance": 1.0,
+    "loot": [],
+    "silver": 0,
+    "faction": "ferrymen",
+    "nonlethal": true
   }
 }

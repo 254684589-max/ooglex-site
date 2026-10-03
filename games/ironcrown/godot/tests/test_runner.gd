@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -186,6 +186,8 @@ func test_ui() -> void:
 		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
 	# 第三人称（2.9）
 	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
+	# 徒手格斗（3.3）
+	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
 	texts.append("存档 / 读档覆盖存到这里读取（空）（损坏，读不了：）存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。✓ 已存档：× 没有存档：读不了已读取：有存档：点「菜单」，按 Esc 打开菜单，里「存档 / 读档」可以继续（F9 读快速存档）级游戏时间分钟读取最近的存档重新开始附近有敌人在和你打，不能存档你已经倒下了这一份存档坏了已退回上一份存档内容损坏（不是有效的 JSON）这是更新版本的游戏写的存档写不进浏览器存储（可能是无痕模式或空间满了）")
@@ -857,7 +859,8 @@ func test_checks() -> void:
 		text += FileAccess.get_file_as_string("res://data/dialogue/%s.json" % darea)
 	var unused := []
 	for f in reg:
-		if not f.begins_with("_") and not text.contains('"set": "%s"' % f):
+		# 打架的输赢旗标（3.3）写在 brawl 效果的 win / lose 上
+		if not f.begins_with("_") and not text.contains('"set": "%s"' % f) and not text.contains('"win": "%s"' % f) and not text.contains('"lose": "%s"' % f):
 			unused.append(f)
 	check(reg.size() >= 5 and unused.is_empty(), "data/flags.json 登记的旗标都在对话里有地方设置（没设置的：%s）" % str(unused))
 	var bad := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [
@@ -1530,12 +1533,12 @@ func test_inventory() -> void:
 	check(GameState.equip("club") and m.view.model == "club" and m.weapon().base == 8, "装备木棍：手里换成木棍，基础伤害 8")
 	check(GameState.has_item("short_sword") and not GameState.is_equipped("short_sword"), "换下来的短剑还在背包里")
 	GameState.unequip("weapon")
-	var no_w := [false]
-	m.no_weapon.connect(func(): no_w[0] = true)
+	check(m.unarmed() and m.view.model == "fists" and m.weapon_skill() == "brawl", "卸下武器：手里是拳头，用格斗技能（3.3）")
 	m.toggle_draw()
-	check(no_w[0] and m.state == Melee.State.SHEATHED, "卸下武器后拔不出剑，提示去背包装备")
+	await seconds(0.45)
+	check(m.state == Melee.State.IDLE and m.view.visible, "空手按 R：举起拳头（3.3；以前是提示去背包装备）")
 	GameState.equip("short_sword")
-	check(m.view.model == "sword", "重新装备短剑")
+	check(m.view.model == "sword" and m.state == Melee.State.SHEATHED, "重新装备短剑：拳头放下，换回剑（再按一次拔剑）")
 	m.toggle_draw()
 	await seconds(0.5)
 	GameState.take_item("short_sword")
@@ -2402,7 +2405,7 @@ func test_areas() -> void:
 	r.choose(0)
 	r.choose(speech_i)
 	check(r.node_id == "edric_refuse" and GameState.has_flag("matilda_refused") and not GameState.clues.has("boots"), "口才检定失败：她不肯说")
-	r.choose(1)
+	r.choose(r.options().map(func(o): return o.text).find("好吧。"))
 	r.choose(0)
 	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
 	check(r.node_id == "edric" and not labels.any(func(l): return l.contains("口才")) and labels.any(func(l): return l.contains("银币")), "失败后不能再试口才，只剩付钱（%s）" % str(labels))
@@ -2626,4 +2629,269 @@ func test_chapel() -> void:
 	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(3.3, -27.25)) < 0.3 and absf(p.rotation.y - PI / 2) < 0.05, "回到主街：站在小路门外、面朝街心")
 	await free_main(main)
 	GameState.pending_load = {}
+	GameState.new_game(1)
+
+
+## 3.3 徒手格斗：拳头、格斗专长、不致命的打斗；酒馆里和大桶打一架（玛蒂尔达的第三种问法）
+func test_brawl() -> void:
+	# —— 数据：格斗专长、醉汉
+	var bp: Array = GameState.perks_of("brawl")
+	check(bp.size() == 3 and bp.map(func(x): return x.effect) == ["combo3", "fist_stagger", "guard_cheap"] and GameState.validate_progression(GameState.progression()).is_empty(),
+		"格斗三个专长：连拳 25、重拳 50、硬骨头 75（%s）" % str(bp.map(func(x): return x.name)))
+	var dk: Dictionary = Enemy.types().drunk
+	check(dk.weapon == "fists" and bool(dk.nonlethal) and float(dk.yield_chance) == 1.0 and Enemy.validate_types(Enemy.types()).is_empty(), "醉汉：徒手、打不死、打到三成生命一定认输")
+	# —— 训练场里练拳头
+	GameState.new_game(41)
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var a := arena_enemy(main, "a")
+	solo(main, a)
+	a._enter(Enemy.State.YIELD)                # 跪着不还手，但还挨得着（停用的节点会被移出物理世界，打不到）
+	GameState.unequip("weapon")
+	check(m.unarmed() and m.view.model == "fists" and m.weapon_skill() == "brawl" and is_equal_approx(m.reach_far(), Melee.FIST_REACH), "没装备武器：手里是拳头，用格斗，够得着 1.5 米")
+	m.toggle_draw()
+	await seconds(0.45)
+	check(m.state == Melee.State.IDLE and m.view.off_node != null and m.view.off_node.visible, "按 R 举起拳头：两只拳头都在画面里")
+	put_enemy(a, Vector3(0, 0, 1.75), PI)
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	var hp0 := a.hp
+	var st0 := m.stamina
+	m.press()
+	m.release()
+	await seconds(0.4)
+	var want := DamageCalc.compute(5.0, GameState.strength, int(GameState.skills.brawl), "light", false, a.armor)
+	check(hp0 - a.hp == want, "轻拳打中：伤害按拳头 5 + 格斗算（%d，应为 %d）" % [hp0 - a.hp, want])
+	check(is_equal_approx(st0 - m.stamina, Melee.TIMING.light.cost * Melee.FIST_COST) or m.stamina > st0 - Melee.TIMING.light.cost, "出拳比挥剑省体力（−%.1f）" % (st0 - m.stamina))
+	check(float(GameState.skill_xp.get("brawl", 0.0)) >= Melee.TRAIN_HIT, "拳头打中：格斗涨进度")
+	await seconds(0.4)
+	put_enemy(a, Vector3(0, 0, 1.1), PI)       # 隔 1.9 米（身子外沿 1.6 米）：拳头够不着，剑够得着
+	hp0 = a.hp
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(a.hp == hp0, "隔 1.9 米：拳头够不着")
+	GameState.equip("short_sword")
+	check(m.view.model == "sword" and m.state == Melee.State.SHEATHED and not m.unarmed(), "装上剑：拳头放下，换回剑")
+	m.toggle_draw()
+	await seconds(0.45)
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(a.hp < hp0, "同样的距离，剑够得着")
+	# 专长
+	GameState.skills.blade = 25
+	GameState.skills.brawl = 5
+	m.set_fists_only(true)
+	check(m.state == Melee.State.SHEATHED and m.view.model == "fists" and m.combo_max() == 2, "只许用拳头：剑收起来；剑术的「连环」不管拳头")
+	GameState.skills.brawl = 25
+	check(m.combo_max() == 3, "格斗 25「连拳」：轻拳三连")
+	var info := {"damage": 10, "kind": "light"}
+	var c0 := m.guard_cost(info)
+	GameState.skills.brawl = 75
+	check(is_equal_approx(m.guard_cost(info), c0 * 0.5), "格斗 75「硬骨头」：空手格挡体力减半（%.1f → %.1f）" % [c0, m.guard_cost(info)])
+	m.set_fists_only(false)
+	check(is_equal_approx(m.guard_cost(info), c0), "拿剑格挡不减半")
+	m.set_fists_only(true)
+	GameState.skills.brawl = 50
+	a.process_mode = Node.PROCESS_MODE_INHERIT
+	a.data = a.data.duplicate()
+	a.data.block_chance = 0.0
+	a.hp = 50
+	put_enemy(a, Vector3(0, 0, 1.75), PI)
+	a._enter(Enemy.State.COMBAT)
+	m.toggle_draw()
+	await seconds(0.45)
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	await seconds(0.45)
+	m.release()
+	await seconds(0.25)
+	check(a.state == Enemy.State.STAGGER and a.hp < 50, "格斗 50「重拳」：重拳打中让对方失衡（%s）" % a.state_name())
+	a.process_mode = Node.PROCESS_MODE_DISABLED
+	m.set_fists_only(false)
+	# 不致命：被打到 KO_FLOOR 就算被打倒，不会倒下死去
+	var ko := [0]
+	m.knocked_out.connect(func(_i): ko[0] += 1)
+	m.health = 40
+	m.receive_hit({"damage": 30, "kind": "light", "nonlethal": true})
+	check(ko[0] == 1 and m.health == Melee.KO_FLOOR and not m.down, "不致命的一拳：生命停在 %d，被打倒（不是倒下）" % m.health)
+	m.health = 10
+	m.receive_hit({"damage": 3, "kind": "light", "nonlethal": true})
+	check(ko[0] == 2 and m.health == 10 and not m.down, "已经在这条线以下：挨一下就倒，生命不再减")
+	m.health = m.health_max()
+	await seconds(0.9)
+	# 醉汉打不死：最少留 1 点，认输
+	var d := Enemy.make("drunk", "t")
+	main.world.add_child(d)
+	d.global_position = Vector3(4, 0, 4)
+	await physics(2)
+	d.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	check(d.alive() and d.hp == 1 and d.state == Enemy.State.YIELD, "醉汉挨了重手也不死：生命 1，认输（%s）" % d.state_name())
+	check(d.arm.get_child_count() > 0 and d.display_name == "醉汉", "醉汉手里没有兵器（拳头）")
+	await free_main(main)
+	# —— 酒馆：玛蒂尔达请你让大桶结账
+	GameState.new_game(43)
+	GameState.start_quest("edric_missing")
+	main = await make_area("tavern")
+	p = main.player
+	m = p.melee
+	var npcs := main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(npcs.has("大桶") and npcs.size() == 4, "酒馆里多了靠在吧台东头的大桶（%s）" % str(npcs))
+	var dagu: Npc = main._npc_by_dialogue("dagu")
+	var home := dagu.global_position
+	var r := DialogueRunner.new()
+	r.start("tavern", "dagu")
+	var labels: Array = r.options().map(func(o): return o.text)
+	check(not labels.any(func(l): return l.contains("酒钱")), "没受玛蒂尔达之托：不能找大桶要账")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	labels = r.options().map(func(o): return o.text)
+	var off_i := labels.find(labels.filter(func(l): return l.contains("大个子"))[0] if labels.any(func(l): return l.contains("大个子")) else "")
+	check(r.node_id == "edric" and off_i >= 0, "打听少爷时可以问「那个大个子」（%s）" % str(labels))
+	r.choose(off_i)
+	check(r.node_id == "dagu_offer" and GameState.has_flag("matilda_brawl_offer"), "玛蒂尔达：让大桶把账结了（不许动刀），她就说")
+	# 和大桶说话 → 开打（走真的对话面板，对话关上后开打）
+	m.toggle_draw()
+	await seconds(0.45)
+	await aim(p, Vector3(1.9, 0, 0.2), dagu.global_position + Vector3(0, 1.5, 0))
+	check(p.interactor.target == dagu, "对准大桶")
+	p.interactor.use()
+	await frames(2)
+	check(main.dialogue.visible and main.dialogue.runner.id == "dagu", "大桶的对话能打开")
+	find_button(main.dialogue, "玛蒂尔达说你欠了三个晚上的酒钱。").pressed.emit()
+	await frames(1)
+	check(main.dialogue.runner.node_id == "challenge", "大桶：想要钱，先把我放倒；不许动刀子")
+	find_button(main.dialogue, "那就来吧。（徒手打一架）").pressed.emit()
+	await frames(3)
+	var e: Enemy = null
+	for x in main.get_tree().get_nodes_in_group("enemy"):
+		e = x
+	check(main.brawl_active() and e != null and e.display_name == "大桶" and e.state == Enemy.State.COMBAT, "对话关上就开打：大桶站起来动手（%s）" % (e.state_name() if e else "没有"))
+	check(not dagu.visible and dagu.collision_layer == 0, "说话的大桶先藏起来（换成打架的那个）")
+	check(main.hud.hint_label.text == main.HINT_BRAWL_DESKTOP, "底部提示换成打架的操作（出拳、格挡、不许动刀）")
+	check(m.fists_only and m.state == Melee.State.SHEATHED and m.view.model == "fists", "剑收起来了，只许用拳头")
+	var went: bool = await main.travel("frostford", "tavern_door")
+	check(main.in_combat() and main.can_save() != "" and not went, "打架的时候不能存档、不能出门")
+	var matilda: Npc = main._npc_by_dialogue("matilda")
+	main._on_interacted(matilda.interact(p))
+	check(not main.dialogue.visible, "打架的时候不能和别人搭话")
+	# 站着不动：大桶会上来打你（不致命）
+	var hp_start := m.health
+	var hits := [0]
+	m.damaged.connect(func(_a, inf): hits[0] += (1 if bool(inf.get("nonlethal", false)) else 0))
+	await place(p, 1.9, 0.6)
+	p.rotation.y = atan2(-(e.global_position.x - 1.9), -(e.global_position.z - 0.6))
+	await seconds(4.0)
+	check(hits[0] >= 1 and m.health < hp_start and not m.down, "大桶冲上来出拳打中你（%d 下，生命 %d → %d，不致命）" % [hits[0], hp_start, m.health])
+	# 还手：真的出一拳（先把他定住，免得他的拳头打断这一下），再把他打到认输
+	e.stop_left = 5.0
+	e.action = ""
+	e.data = e.data.duplicate()
+	e.data.block_chance = 0.0
+	await seconds(0.9)
+	var ehp := e.hp
+	m.toggle_draw()
+	await seconds(0.45)
+	await aim(p, e.global_position + (p.global_position - e.global_position).normalized() * 1.0, e.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.4)
+	check(e.hp < ehp, "出拳打中大桶（%d → %d）" % [ehp, e.hp])
+	e.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	check(not main.brawl_active() and GameState.has_flag("dagu_beaten") and not main.in_combat(), "打到认输：打赢了，不再算战斗中")
+	check(not m.fists_only, "打完了：又能拔剑")
+	await seconds(Brawl.END_DELAY + 0.3)
+	check(not is_instance_valid(e) and dagu.visible and dagu.collision_layer != 0, "跪了一会儿：大桶变回能说话的人")
+	check(Saves.read_slot("auto").has("data") and bool(Saves.read_slot("auto").data.state.flags.get("dagu_beaten", false)), "打完自动存档（记着打赢了）")
+	r.start("tavern", "dagu")
+	check(r.node_id == "beaten", "再找大桶：他揉着下巴把账结了")
+	r.start("tavern", "matilda")
+	labels = r.options().map(func(o): return o.text)
+	check(labels[0] == "大桶把账结了。", "玛蒂尔达：多了「大桶把账结了」")
+	r.choose(0)
+	r.choose(0)
+	check(r.node_id == "edric_told" and GameState.clues.has("boots") and GameState.has_flag("matilda_told_edric") and GameState.silver == 12, "说话算话：不花钱也问出了南方人的事（线索）")
+	await free_main(main)
+	# —— 输了：被大桶打倒，生命停在 25，他回原处接着喝，可以再来一场
+	GameState.new_game(44)
+	GameState.start_quest("edric_missing")
+	GameState.set_flag("matilda_brawl_offer")
+	main = await make_area("tavern")
+	p = main.player
+	m = p.melee
+	dagu = main._npc_by_dialogue("dagu")
+	main.start_brawl(dagu, {"brawl": "drunk", "win": "dagu_beaten", "lose": "dagu_won"})
+	await frames(2)
+	e = main.brawl.enemy
+	m.receive_hit({"damage": 200, "kind": "heavy", "attacker": e, "nonlethal": true})
+	await frames(3)
+	check(not main.brawl_active() and GameState.has_flag("dagu_won") and not GameState.has_flag("dagu_beaten"), "被打倒：这一架输了")
+	check(m.health == Melee.KO_FLOOR and not m.down and not get_tree().paused, "生命停在 %d，没有倒下（不出倒下界面）" % m.health)
+	check(not is_instance_valid(e) or e.is_queued_for_deletion(), "打架的大桶撤掉了")
+	await frames(2)
+	check(dagu.visible and flat(dagu.global_position).distance_to(flat(home)) < 0.05, "大桶回到吧台东头接着喝")
+	r.start("tavern", "dagu")
+	labels = r.options().map(func(o): return o.text)
+	check(r.node_id == "won" and labels.has("再来一场。（徒手打一架）"), "再找大桶：他笑你，可以再来一场")
+	await free_main(main)
+	# —— 第三人称的出拳动作（character_anims.json 的 fists）
+	var map := CharacterModel.load_map()
+	var fm: Dictionary = map.fists
+	var lib := load(CharacterModel.ANIMS) as AnimationLibrary
+	var fh: Dictionary = fm.heavy
+	var marks_ok: bool = float(fh.wind_peak) < float(fh.impact) and float(fh.impact) < lib.get_animation(fh.clip).length
+	for x in fm.light:
+		marks_ok = marks_ok and float(x.impact) > 0.0 and float(x.impact) < lib.get_animation(x.clip).length
+	var lt: Dictionary = Melee.TIMING.light
+	var ht: Dictionary = Melee.TIMING.heavy
+	var ls1 := float(fm.light[0].impact) / (float(lt.wind) + float(lt.strike) * float(lt.hit_at))
+	var ls2 := float(fm.light[1].impact) / (float(lt.wind) + float(lt.strike) * float(lt.hit_at))
+	var hs := (float(fh.impact) - float(fh.wind_peak)) / (float(ht.strike) * float(ht.hit_at))
+	check(marks_ok and ls1 > 0.8 and ls2 < 2.2 and hs > 0.5 and hs < 1.8, "出拳动作的命中时刻在动作之内，播放速度合理（刺拳 ×%.2f、直拳 ×%.2f、重拳 ×%.2f）" % [ls1, ls2, hs])
+	Settings.set_value("third_person", true)
+	GameState.new_game(45)
+	main = await make_main(true)
+	p = main.player
+	m = p.melee
+	GameState.unequip("weapon")
+	await place(p, 0.0, 10.0)
+	await seconds(0.4)
+	var c: CharacterModel = p.avatar.character
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.3), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.toggle_draw()
+	await seconds(0.6)
+	check(c.role == "idle_fists" and c.playing() == "Punch_Jab" and c.anim.get_playing_speed() == 0.0 and not p.avatar.weapon_mesh.visible, "第三人称举起拳头：护脸的架势，手里没有剑（%s）" % c.role)
+	var rec: Array = []
+	m.hit.connect(func(_t, _info): rec.append([c.playing(), c.anim.current_animation_position]))
+	m.press()
+	m.release()
+	await seconds(0.3)
+	check(rec.size() == 1 and rec[0][0] == "Punch_Jab" and absf(rec[0][1] - float(fm.light[0].impact)) < 0.08, "第一拳刺拳：打中时拳头正好伸到最前（%s，第 %.2f 秒）" % [rec[0][0] if rec.size() > 0 else "-", rec[0][1] if rec.size() > 0 else -1.0])
+	m.press()
+	m.release()
+	await seconds(0.4)
+	check(rec.size() == 2 and rec[1][0] == "Punch_Cross" and absf(rec[1][1] - float(fm.light[1].impact)) < 0.08, "第二拳直拳：换右手（%s，第 %.2f 秒）" % [rec[1][0] if rec.size() > 1 else "-", rec[1][1] if rec.size() > 1 else -1.0])
+	await seconds(0.8)
+	check(c.role == "idle_fists", "收拳回到架势（%s）" % c.role)
+	rec.clear()
+	m.press()
+	await seconds(0.5)
+	check(c.playing() == "OverhandThrow" and c.anim.get_playing_speed() == 0.0 and absf(c.anim.current_animation_position - float(fh.wind_peak)) < 0.02, "按住蓄重拳：拳头抡到身后停住（第 %.2f 秒）" % c.anim.current_animation_position)
+	m.release()
+	await seconds(0.5)
+	check(rec.size() == 1 and rec[0][0] == "OverhandThrow" and absf(rec[0][1] - float(fh.impact)) < 0.08, "重拳：松手砸下，命中帧对齐（第 %.2f 秒，目标 %.2f）" % [rec[0][1] if rec.size() > 0 else -1.0, float(fh.impact)])
+	await seconds(0.8)
+	m.block_press()
+	await seconds(0.4)
+	check(m.blocking() and c.role == "block_fists" and c.playing() == "Idle_Shield_Loop" and c.anim.get_playing_speed() == 0.0, "空手格挡：小臂横在胸前停住（%s）" % c.role)
+	m.block_release()
+	await seconds(0.5)
+	GameState.equip("short_sword")
+	await seconds(0.2)
+	check(p.avatar.weapon_mesh != null and not p.avatar.weapon_mesh.visible and m.state == Melee.State.SHEATHED, "装上剑：拳头放下，剑还在鞘里")
+	await free_main(main)
+	Settings.set_value("third_person", false)
 	GameState.new_game(1)

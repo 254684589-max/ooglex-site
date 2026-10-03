@@ -16,7 +16,11 @@
       {"at": 25, "name": "震骨", "desc": "钝器重击打中会让对方失衡", "effect": "blunt_stagger"},
       {"at": 50, "name": "破甲", "desc": "钝器无视对方的护甲", "effect": "armor_pierce"}
     ]},
-    "brawl": {"name": "格斗", "desc": "徒手打斗时提升（徒手打斗在后续版本加入）", "start": 5, "perks": []},
+    "brawl": {"name": "格斗", "desc": "徒手打中、空手挡住时提升", "start": 5, "perks": [
+      {"at": 25, "name": "连拳", "desc": "轻拳可以连打三下", "effect": "combo3"},
+      {"at": 50, "name": "重拳", "desc": "重拳打中会让对方失衡", "effect": "fist_stagger"},
+      {"at": 75, "name": "硬骨头", "desc": "空手格挡消耗的体力减半", "effect": "guard_cheap"}
+    ]},
     "speech": {"name": "口才", "desc": "口才检定时提升（成功涨得多）", "start": 10, "perks": [
       {"at": 25, "name": "巧舌", "desc": "口才检定 +5", "effect": "check_bonus"}
     ]},
