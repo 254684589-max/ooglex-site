@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -2894,4 +2894,110 @@ func test_brawl() -> void:
 	check(p.avatar.weapon_mesh != null and not p.avatar.weapon_mesh.visible and m.state == Melee.State.SHEATHED, "装上剑：拳头放下，剑还在鞘里")
 	await free_main(main)
 	Settings.set_value("third_person", false)
+	GameState.new_game(1)
+
+
+## 3.4 导航网格与街巷 AI：运行时烘焙、敌人绕房子追击、沿路巡逻、酒馆里绕桌子；没有导航网格的区域照旧直线走
+func test_nav() -> void:
+	GameState.new_game(51)
+	var main := await make_main(false)
+	var p: FpController = main.player
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 50 and (main.nav.region as Node).is_inside_tree(),
+		"霜渡镇载入时烘焙了导航网格（%d 个多边形，%.0f 毫秒）" % [int(main.nav.get("polygons", 0)), float(main.nav.get("ms", 0.0))])
+	check(float(main.nav.ms) < 300.0, "烘焙耗时 %.0f 毫秒（无头模式；网页实测见冒烟测试）" % float(main.nav.ms))
+	var nb := Areas.nav_bounds("frostford").grow(0.3)
+	var inside := true
+	var low := true
+	for v in (main.nav.region as NavigationRegion3D).navigation_mesh.get_vertices():
+		inside = inside and nb.has_point(v)
+		low = low and (v.y < 1.2)
+	check(inside and low, "导航网格只铺在围墙里能走的地方（不铺到墙外、屋顶上）")
+	await physics(10)
+	var map: RID = main.get_world_3d().navigation_map
+	var gp := NavigationServer3D.map_get_closest_point(map, Vector3(0, 0, -15))
+	check(absf(gp.y) < 0.2 and flat(gp).distance_to(Vector2(0, -15)) < 0.1, "网格面贴着地面（街心的点高 %.2f 米）" % gp.y)
+	# 房子背后到街心：房子之间的窄缝挤不过去，要从这一排房子的尽头绕；路径不穿墙
+	var space := main.get_world_3d().direct_space_state
+	var path := NavigationServer3D.map_get_path(map, Vector3(-13.5, 0, -8.5), Vector3(0, 0, -8.5), true)
+	var clear := path.size() >= 3
+	for i in range(1, path.size()):
+		var q := PhysicsRayQueryParameters3D.create(Vector3(path[i - 1].x, 0.6, path[i - 1].z), Vector3(path[i].x, 0.6, path[i].z), 1)
+		clear = clear and space.intersect_ray(q).is_empty()
+	check(clear and NavBuilder.path_length(path) > 25.0, "从酒馆背后到街心：绕过整排房子（路径 %.0f 米，直线 13.5 米），不穿墙" % NavBuilder.path_length(path))
+	# 追击：敌人在房子背后，你在小广场上；隔着房子看不见你，沿路绕过房角追过来
+	var director := CombatDirector.new()
+	main.world.add_child(director)
+	var e := Enemy.make("clubber", "nav_a")
+	main.world.add_child(e)
+	e.global_position = Vector3(-13.5, 0, -16.75)
+	await place(p, -8.0, -24.5)
+	await physics(2)
+	check(e.nav_ready(), "敌人用得上这个区域的导航网格")
+	var straight := Vector3(-8.0, 0.6, -24.5)
+	var blocked := not space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(-13.5, 0.6, -16.75), straight, 1)).is_empty()
+	e.engage()
+	var t := 0.0
+	var reached := false
+	var corner_ok := true
+	while t < 9.0 and not reached:
+		await seconds(0.25)
+		t += 0.25
+		var ep := e.global_position
+		corner_ok = corner_ok and not (ep.x > -11.5 and ep.x < -4.5 and ep.z < -13.5 and ep.z > -20.0)     # 没钻进房子里
+		reached = flat(ep).distance_to(flat(p.global_position)) < 3.2
+	check(blocked and reached and corner_ok, "敌人隔着房子：绕过房角追到你跟前（%.1f 秒）" % t)
+	e.queue_free()
+	await frames(2)
+	# 巡逻：井的两边各一个巡逻点，沿路绕过井走，不卡在井栏上
+	await place(p, 0.0, 8.0)
+	p.crouch_wanted = true
+	var g := Enemy.make("clubber", "nav_b", [Vector3(-4.6, 0, -25.6), Vector3(-8.3, 0, -25.6)])
+	main.world.add_child(g)
+	g.global_position = Vector3(-4.6, 0, -25.6)
+	var max_wp := 0
+	var in_well := false
+	t = 0.0
+	while t < 12.0 and max_wp < 1:
+		await seconds(0.25)
+		t += 0.25
+		in_well = in_well or flat(g.global_position).distance_to(Vector2(-6.4, -25.6)) < 0.9
+		if g.wp_index >= 1 and flat(g.global_position).distance_to(Vector2(-8.3, -25.6)) < 0.6:
+			max_wp = 1
+	check(max_wp == 1 and not in_well and g.state == Enemy.State.PATROL, "巡逻：从井的东边绕到西边的巡逻点（%.1f 秒，%s，在 %s）" % [t, g.state_name(), str(flat(g.global_position))])
+	p.crouch_wanted = false
+	await free_main(main)
+	# 酒馆：大桶绕过长桌过来
+	GameState.new_game(52)
+	main = await make_area("tavern")
+	p = main.player
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 0, "酒馆也烘焙了导航网格（%.0f 毫秒）" % float(main.nav.ms))
+	await place(p, -2.0, 2.7)
+	main.start_brawl(main._npc_by_dialogue("dagu"), {"brawl": "drunk"})
+	await physics(2)
+	var d: Enemy = main.brawl.enemy
+	space = main.get_world_3d().direct_space_state
+	var low_ray := PhysicsRayQueryParameters3D.create(Vector3(2.5, 0.5, -1.35), Vector3(-2.0, 0.5, 2.7), 1)
+	low_ray.exclude = [d.get_rid()]
+	var table_between := not space.intersect_ray(low_ray).is_empty()
+	t = 0.0
+	reached = false
+	while t < 8.0 and not reached:
+		await seconds(0.25)
+		t += 0.25
+		reached = flat(d.global_position).distance_to(flat(p.global_position)) < 1.6
+	check(table_between and reached, "打架时大桶绕过长桌走到你跟前（%.1f 秒）" % t)
+	await free_main(main)
+	# 没有导航网格的区域（墓园）：照旧直线走
+	main = await make_area("churchyard")
+	check(main.nav.is_empty(), "墓园没有敌人，不烘焙导航网格")
+	var c := Enemy.make("clubber", "nav_c")
+	main.world.add_child(c)
+	c.global_position = Vector3(0, 0, 5)
+	await physics(3)
+	var v: Vector3 = c._steer(Vector3(4, 0, 5), 2.0)
+	var direct_dir := Vector3(4, 0, 5) - c.global_position
+	direct_dir.y = 0.0
+	check(not c.nav_ready() and v.normalized().dot(direct_dir.normalized()) > 0.999, "没有导航网格：直线朝目标走（方向 %s）" % str(v.normalized()))
+	c.queue_free()
+	await free_main(main)
 	GameState.new_game(1)

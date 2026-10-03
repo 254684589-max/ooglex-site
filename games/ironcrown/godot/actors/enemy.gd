@@ -5,7 +5,9 @@ extends CharacterBody3D
 ## 感知：前方 110° 视野锥 + 视线射线，距离看光照（玩家站在灯火旁 20 米，暗处 8 米，蹲着再打六折）；听觉看玩家动静（跑 10 米、走 4 米、蹲 1.5 米、挥剑 8 米）。
 ## 战斗：向 CombatDirector 要攻击令牌，拿到才上前出招（起手 → 命中帧 → 收招），没拿到就在 3.5 米外绕圈。
 ## 剑手会格挡轻击；重击破防让它失衡。完美格挡它的攻击也会让它失衡 0.8 秒，失衡期间受到的伤害加倍（DamageCalc）。
-## 寻路：现在只在平坦的训练场里直线走（加碰撞滑动）；进街巷时再用导航网格（TECH.md 4.4）。
+## 寻路（3.4）：区域烘焙了导航网格（main 按 Areas.nav_bounds 烘焙）就用 NavigationAgent3D 沿路径走——追你时绕开房子和桌子、
+## 起疑时去你最后出现的地方找、巡逻点之间沿路走、逃跑时往远处能走到的地方跑；没有导航网格的区域（或刚载入、导航还没同步）照旧直线走加碰撞滑动。
+## 离你很近、看得见你的时候直接朝你走（贴身时不绕路）。
 ## 外观是占位胶囊人（正式人物在阶段 A）。
 ## 3.3：nonlethal 的种类（酒馆醉汉）用拳头、打不死：生命最少留 1，到 flee_below 就认输；它打玩家也不致命（Melee.KO_FLOOR）。
 ## 打架时由 Brawl 现场生成（engage() 直接进入战斗；display_override 用 NPC 的名字）。
@@ -35,6 +37,9 @@ const STAGGER_TIME := 0.8
 const TURN_SPEED := 7.0
 const EYE := 1.6
 const THINK_STEP := 0.1           # 感知每 0.1 秒算一次（射线不必每帧打）
+const REPATH_MOVE := 0.5          # 目标挪动超过这么多米才重新寻路
+const REPATH_AGE := 0.5           # 或者路径用了这么久（秒）
+const DIRECT_NEAR := 2.5          # 看得见你、又在这个距离以内：直接朝你走
 
 var kind := "clubber"
 var enemy_id := ""
@@ -73,6 +78,10 @@ var name_label: Label3D
 var status_label: Label3D
 var coat_mat: StandardMaterial3D
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
+var agent: NavigationAgent3D
+var nav_target := Vector3.INF
+var nav_age := 0.0
+var move_dir := Vector3.ZERO      # 这一帧沿路径要走的方向（水平；没在走时是零）
 var staggered: bool:
 	get:
 		return state == State.STAGGER
@@ -144,6 +153,14 @@ func _ready() -> void:
 	cs.shape = cap
 	cs.position.y = 0.875
 	add_child(cs)
+	agent = NavigationAgent3D.new()
+	agent.name = "Agent"
+	agent.radius = 0.35
+	agent.height = 1.75
+	agent.path_desired_distance = 0.6
+	agent.target_desired_distance = 0.5
+	agent.avoidance_enabled = false
+	add_child(agent)
 	body = Npc.build_body(self, Color(str(data.coat)))
 	coat_mat = (body.get_child(0) as MeshInstance3D).mesh.material
 	coat_mat.emission_enabled = true
@@ -248,6 +265,8 @@ func _physics_process(delta: float) -> void:
 		stop_left -= delta
 		return
 	state_t += delta
+	nav_age += delta
+	move_dir = Vector3.ZERO
 	token_cd = maxf(token_cd - delta, 0.0)
 	stamina = minf(stamina + float(data.stamina_regen) * delta * (0.4 if action in ["windup", "strike"] else 1.0), float(data.stamina))
 	think_t -= delta
@@ -259,8 +278,8 @@ func _physics_process(delta: float) -> void:
 		State.PATROL:
 			move = _patrol(delta)
 		State.SUSPICIOUS:
-			move = _go_to(last_known, float(data.walk), 1.2)
-			_face(last_known, delta)
+			move = _steer(last_known, float(data.walk), 1.2)          # 去你最后出现的地方找
+			_face(global_position + move_dir if move_dir != Vector3.ZERO else last_known, delta)
 		State.ALERT:
 			if player:
 				_face(player.global_position, delta)
@@ -281,8 +300,8 @@ func _physics_process(delta: float) -> void:
 		State.FLEE:
 			if player:
 				var away := _flat(global_position - player.global_position).normalized()
-				move = away * float(data.run)
-				_face(global_position + away, delta)
+				move = _steer(global_position + away * 8.0, float(data.run), 0.5)     # 往远处能走到的地方跑，不撞墙
+				_face(global_position + (move_dir if move_dir != Vector3.ZERO else away), delta)
 			if state_t >= 4.0:
 				_enter(State.YIELD)
 		State.YIELD:
@@ -307,23 +326,45 @@ func _face(p: Vector3, delta: float) -> void:
 	rotation.y += clampf(angle_difference(rotation.y, target), -TURN_SPEED * delta, TURN_SPEED * delta)
 
 
-func _go_to(p: Vector3, speed: float, stop := 0.3) -> Vector3:
+## 这个区域有没有能用的导航网格（导航服务器同步过、地图上有区域）
+func nav_ready() -> bool:
+	if agent == null or not agent.is_inside_tree():
+		return false
+	var map := agent.get_navigation_map()
+	return map.is_valid() and NavigationServer3D.map_get_iteration_id(map) > 0 and not NavigationServer3D.map_get_regions(map).is_empty()
+
+
+## 朝 p 走：有导航网格就沿路径走（目标挪远了或路径旧了才重新寻路），没有就直线走；到 stop 以内停下。返回水平速度，方向记在 move_dir
+func _steer(p: Vector3, speed: float, stop := 0.3) -> Vector3:
 	var d := _flat(p - global_position)
 	if d.length() <= stop:
 		return Vector3.ZERO
-	return d.normalized() * speed
+	var dir := d.normalized()
+	if nav_ready():
+		if nav_target == Vector3.INF or _flat(nav_target - p).length() > REPATH_MOVE or nav_age >= REPATH_AGE:
+			agent.target_position = p
+			nav_target = p
+			nav_age = 0.0
+		var step := _flat(agent.get_next_path_position() - global_position)
+		if step.length() > 0.05:
+			dir = step.normalized()
+	move_dir = dir
+	return dir * speed
 
 
 func _patrol(delta: float) -> Vector3:
 	var p: Vector3 = waypoints[wp_index % waypoints.size()]
-	if _flat(p - global_position).length() <= 0.4:
+	# 到了：离巡逻点 0.4 米以内；巡逻点贴着墙、导航网格够不到时，走到路径的终点也算到了
+	var at_end := nav_ready() and nav_target == p and _flat(agent.get_final_position() - global_position).length() <= 0.45
+	if _flat(p - global_position).length() <= 0.4 or at_end:
 		wp_wait += delta
 		if wp_wait >= 1.5:
 			wp_wait = 0.0
 			wp_index += 1
 		return Vector3.ZERO
-	_face(p, delta)
-	return _go_to(p, float(data.walk) * 0.7)
+	var v := _steer(p, float(data.walk) * 0.7, 0.3)                   # 巡逻点之间沿路走（3.4）
+	_face(global_position + move_dir if move_dir != Vector3.ZERO else p, delta)
+	return v
 
 
 # ---- 感知 ----
@@ -447,8 +488,11 @@ func _combat(delta: float) -> Vector3:
 		return Vector3.ZERO
 	var to := _flat(player.global_position - global_position)
 	var d := to.length()
-	_face(player.global_position, delta)
 	var reach := float(data.reach)
+	# 看得见你或离得近：正对着你；隔着房子绕路时：脸朝走的方向（3.4）
+	var direct := sees_player and d <= DIRECT_NEAR
+	if action in ["windup", "strike", "recover", "block"] or sees_player or d <= CIRCLE_DIST:
+		_face(player.global_position, delta)
 	action_t += delta
 	match action:
 		"windup":
@@ -483,7 +527,17 @@ func _combat(delta: float) -> Vector3:
 		if d <= reach * 0.9:
 			_start_attack()
 			return Vector3.ZERO
-		return to.normalized() * float(data.run)
+		var v := to.normalized() * float(data.run) if direct else _steer(player.global_position, float(data.run), reach * 0.85)
+		if not sees_player and move_dir != Vector3.ZERO and d > CIRCLE_DIST:
+			_face(global_position + move_dir, delta)
+		return v
+	# 看不见你（隔着房子）：先沿路走过来，到绕圈的距离再说
+	if not sees_player and d > CIRCLE_DIST + 0.5:
+		action = "approach"
+		var v := _steer(player.global_position, float(data.walk) * 1.4, CIRCLE_DIST)
+		if move_dir != Vector3.ZERO:
+			_face(global_position + move_dir, delta)
+		return v
 	# 没拿到令牌：在 CIRCLE_DIST 外绕圈（剑手绕得更多，往你侧面去）
 	action = "circle"
 	var radial := to.normalized() * clampf(d - CIRCLE_DIST, -1.0, 1.0) * float(data.walk)

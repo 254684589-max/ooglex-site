@@ -8,6 +8,12 @@ extends RefCounted
 const NAMES := {"frostford": "霜渡镇", "tavern": "「倒钩鱼」酒馆", "churchyard": "星铁小教堂墓园", "chapel": "星铁小教堂",
 	"test_range": "灰盒测试场", "arena": "训练场"}
 const INDOOR := ["tavern", "chapel"]
+## 要烘焙导航网格的区域（3.4）：敌人会出现的地方。范围 = 能走的那片地（地面碰撞盒比它大）；墓园、小教堂、测试场没有敌人，不烘焙（敌人在那里直线走）
+const NAV_BOUNDS := {
+	"frostford": AABB(Vector3(-15.5, -0.5, -59.0), Vector3(31.0, 4.0, 70.5)),
+	"tavern": AABB(Vector3(-4.0, -0.5, -3.5), Vector3(8.0, 3.0, 7.0)),
+	"arena": AABB(Vector3(-16.0, -0.5, -17.0), Vector3(32.0, 4.0, 32.0)),
+}
 
 
 static func known(area: String) -> bool:
@@ -43,6 +49,11 @@ static func spawn(area: String, id: String) -> Variant:
 		return null
 	var s: Array = table[id]
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+## 导航网格的烘焙范围；不烘焙的区域返回空的 AABB
+static func nav_bounds(area: String) -> AABB:
+	return NAV_BOUNDS.get(area, AABB())
 
 
 ## 网页 ?view=N 的固定机位（截图、冒烟测试用）：[位置, 水平朝向（度）, 俯仰（度）]

@@ -60,6 +60,7 @@ var arrived_by := ""            # 从门走进来的（换区域）时是出生�
 var fade: ColorRect
 var brawl: Brawl                # 正在打的一架（3.3）；打完自己释放
 var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
+var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
@@ -109,6 +110,11 @@ func _ready() -> void:
 			t = Chapel.build(world, Settings.reduced_motion)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
+	# 导航网格（3.4）：区域搭好、玩家还没放进去之前烘焙（玩家不是静态碰撞体，本来也不会被算进去）
+	var nb := Areas.nav_bounds(area)
+	if nb.has_volume():
+		nav = NavBuilder.bake(world, nb)
+		print("IC_NAV area=%s ms=%.0f polygons=%d" % [area, nav.ms, nav.polygons])
 	player = FpController.new()
 	player.name = "Player"
 	add_child(player)
