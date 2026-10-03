@@ -11,6 +11,8 @@ extends CharacterBody3D
 ## 外观是占位胶囊人（正式人物在阶段 A）。
 ## 3.5：求饶（或逃跑后认输）的敌人跪在原地，能搜身（和倒下的一样留一个搜刮点，东西是同一份）；跪下的位置记进存档（GameState.yielded），读档后还跪着。
 ## 打架时（nonlethal）的认输不算：那是 Brawl 管的，打完就变回 NPC。
+## 3.6：头目（outlaw_boss，「灰手」奥弗）会踢——kick_chance 的概率出一记踢，起手时头上冒「踢！」，踢中时格挡挡不住（破防，Melee.receive_hit）；
+## flank_call 的种类第一次掉到半血时喊「包抄他！」，附近的同伙立刻冲上来、往你两侧绕。逃跑一开始就记进 GameState.yielded（读档后按认输算，不会再站起来）。
 ## 3.3：nonlethal 的种类（酒馆醉汉）用拳头、打不死：生命最少留 1，到 flee_below 就认输；它打玩家也不致命（Melee.KO_FLOOR）。
 ## 打架时由 Brawl 现场生成（engage() 直接进入战斗；display_override 用 NPC 的名字）。
 
@@ -24,7 +26,7 @@ const STATE_LABELS := ["", "？ 起疑", "！ 警觉", "！", "后退", "失衡"
 const DATA_PATH := "res://data/enemies.json"
 const DATA_KEYS := ["name", "coat", "weapon", "hp", "armor", "weapon_base", "strength", "skill", "walk", "run", "reach",
 	"windup", "heavy_windup", "strike", "recover", "heavy_chance", "block_chance", "stamina", "attack_cost", "stamina_regen",
-	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction", "nonlethal"]
+	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction", "nonlethal", "kick_chance", "flank_call"]
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
 const SIGHT_DARK := 8.0
@@ -85,6 +87,7 @@ var nav_target := Vector3.INF
 var nav_age := 0.0
 var move_dir := Vector3.ZERO      # 这一帧沿路径要走的方向（水平；没在走时是零）
 var loot_node: LootContainer      # 倒下或求饶后留下的搜刮点（只放一个）
+var flank_called := false         # 半血时已经喊过「包抄他！」（3.6）
 var staggered: bool:
 	get:
 		return state == State.STAGGER
@@ -117,7 +120,7 @@ static func validate_types(d: Dictionary) -> Array:
 				errs.append("%s 的掉落 %s 不在 items.json 里" % [k, it])
 		if float(t.get("hp", 0)) <= 0 or float(t.get("reach", 0)) <= 0:
 			errs.append("%s 的生命或攻击距离不对" % k)
-		for key in ["heavy_chance", "block_chance", "flee_below", "yield_chance"]:
+		for key in ["heavy_chance", "block_chance", "flee_below", "yield_chance", "kick_chance"]:
 			if float(t.get(key, 0)) < 0.0 or float(t.get(key, 0)) > 1.0:
 				errs.append("%s 的 %s 应在 0..1" % [k, key])
 		if not str(t.get("weapon", "")) in ["sword", "club", "fists"]:
@@ -245,6 +248,8 @@ func _enter(s: State) -> void:
 	_update_status()
 	if s == State.YIELD:
 		_kneel(false)
+	elif s == State.FLEE and not bool(data.get("nonlethal", false)):
+		GameState.yielded[enemy_id] = [global_position.x, global_position.y, global_position.z]     # 逃了：读档后按认输算（3.6）
 	state_changed.emit(self, state_name())
 
 
@@ -579,6 +584,9 @@ func _combat(delta: float) -> Vector3:
 
 func _start_attack() -> void:
 	attack_kind = "heavy" if rng.randf() < float(data.heavy_chance) else "light"
+	if rng.randf() < float(data.get("kick_chance", 0.0)):
+		attack_kind = "kick"                     # 踢（3.6）：格挡挡不住，看到「踢！」就往后退
+		FloatText.spawn(self, "踢！", Vector3(0, 1.9, 0), Color("ff8a6a"), 30)
 	stamina = maxf(stamina - float(data.attack_cost), 0.0)
 	action = "windup"
 	action_t = 0.0
@@ -595,7 +603,8 @@ func _strike_player() -> void:
 	var ray := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 1.3, 0), player.aim_origin(), 1, [get_rid()])
 	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
 		return
-	var dmg := DamageCalc.compute(float(data.weapon_base), int(data.strength), int(data.skill), attack_kind, player.melee.staggered(), GameState.armor_total())
+	var base := float(data.weapon_base) * (0.6 if attack_kind == "kick" else 1.0)
+	var dmg := DamageCalc.compute(base, int(data.strength), int(data.skill), attack_kind, player.melee.staggered(), GameState.armor_total())
 	var result := player.melee.receive_hit({"damage": dmg, "kind": attack_kind, "attacker": self, "stop": 0.06,
 		"nonlethal": bool(data.get("nonlethal", false))})
 	if result == "perfect":
@@ -641,10 +650,28 @@ func take_hit(info: Dictionary) -> void:
 		alert()
 	if state == State.ALERT:
 		_enter(State.COMBAT)
+	if bool(data.get("flank_call", false)) and not flank_called and hp <= int(hp_max * 0.5) and state not in [State.YIELD, State.FLEE]:
+		_call_flank()
 	if state != State.YIELD and state != State.FLEE and hp <= int(ceil(hp_max * float(data.flee_below))):
 		_enter(State.YIELD if rng.randf() < float(data.yield_chance) else State.FLEE)
 		FloatText.spawn(self, "别打了，我认输！" if state == State.YIELD else "快跑！", Vector3(0, 1.9, 0), Color("ffcf6a"), 26)
 	_update_status()
+
+
+## 半血喊包抄（3.6，GDD 6.2「灰手奥弗：半血时喊手下包抄」）：附近还能打的同伙立刻冲上来，一左一右往你两侧绕
+func _call_flank() -> void:
+	flank_called = true
+	FloatText.spawn(self, "包抄他！", Vector3(0, 2.0, 0), Color("ff8a6a"), 30)
+	var side := 1.0
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e == self or not e.alive() or e.state in [State.YIELD, State.FLEE] or e.global_position.distance_to(global_position) > 15.0:
+			continue
+		e.data = e.data.duplicate()
+		e.data.circle_side = 1.6                 # 绕得更开：往你侧面去
+		e.circle_dir = side
+		e.token_cd = 0.0
+		side = -side
+		e.engage()
 
 
 ## restoring = 读档恢复：不再改声望、不发信号、直接倒在地上

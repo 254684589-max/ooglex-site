@@ -59,6 +59,7 @@ var area := "frostford"         # 现在所在的区域（Areas.NAMES；3.1）
 var arrived_by := ""            # 从门走进来的（换区域）时是出生点名字；读档 / 新游戏时为空
 var fade: ColorRect
 var brawl: Brawl                # 正在打的一架（3.3）；打完自己释放
+var encounter: Encounter        # 正在打的对峙（3.6，渡口的「灰手」奥弗）
 var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
 var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
 
@@ -70,6 +71,8 @@ func _ready() -> void:
 	var pending := GameState.pending_load
 	GameState.pending_load = {}
 	GameState.pending_brawl = {}
+	GameState.pending_fight = {}
+	GameState.pending_leave = ""
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
@@ -110,6 +113,8 @@ func _ready() -> void:
 			t = Chapel.build(world, Settings.reduced_motion)
 		"birch":
 			t = Birch.build(world, Settings.reduced_motion)
+		"ferry":
+			t = Ferry.build(world, Settings.reduced_motion)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	# 导航网格（3.4）：区域搭好、玩家还没放进去之前烘焙（玩家不是静态碰撞体，本来也不会被算进去）
@@ -551,7 +556,7 @@ func can_save() -> String:
 
 ## 有敌人正在和你打（警觉 / 战斗 / 后退 / 失衡），或者正在打架（3.3）：不能存档，也不能走进别的区域
 func in_combat() -> bool:
-	if brawl_active():
+	if brawl_active() or encounter_active():
 		return true
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
@@ -702,7 +707,7 @@ func _on_interacted(r: Dictionary) -> void:
 	if r.get("kind") == "pickup":
 		GameState.add_item(r.item)
 	if r.get("kind") == "dialogue":
-		if brawl_active():
+		if brawl_active() or encounter_active():
 			hud.toast("先把这一架打完。", 1.5)
 			print("IC_INTERACT kind=busy name=%s" % r.get("name", ""))
 			return
@@ -848,6 +853,15 @@ func _on_dialogue_closed() -> void:
 	GameState.pending_brawl = {}
 	if not b.is_empty() and dialogue_npc is Npc:
 		start_brawl(dialogue_npc, b)                   # 对话里说好了打一架（3.3）
+	var f := GameState.pending_fight
+	GameState.pending_fight = {}
+	if not f.is_empty():
+		start_encounter(str(f.fight), str(f.get("win", "")))      # 对峙说崩了，动手（3.6）
+	var lv := GameState.pending_leave
+	GameState.pending_leave = ""
+	if lv != "":
+		var n := Encounter.leave(world, lv)
+		print("IC_ENCOUNTER leave id=%s npcs=%d" % [lv, n])
 	player.interactor.refresh()
 	var t := player.interactor.target
 	hud.show_prompt(t.prompt() if t else "")
@@ -885,6 +899,33 @@ func _on_brawl_ended(won: bool) -> void:
 		if not Settings.reduced_motion:
 			fade.color.a = 0.85                     # 眼前一黑，再慢慢缓过来
 			create_tween().tween_property(fade, "color:a", 0.0, 1.2)
+	save_game.call_deferred("auto", true)
+
+
+# ---------------- 对峙转战斗（3.6） ----------------
+
+func encounter_active() -> bool:
+	return encounter != null and is_instance_valid(encounter) and encounter.active()
+
+
+## 区域里那组 NPC 换成敌人，开打（渡口的「灰手」奥弗和他的两个手下）
+func start_encounter(id: String, win: String) -> void:
+	if encounter_active():
+		return
+	encounter = Encounter.new()
+	encounter.name = "Encounter"
+	add_child(encounter)
+	encounter.ended.connect(_on_encounter_ended)
+	encounter.begin(world, id, win)
+	for e in encounter.enemies:
+		e.state_changed.connect(_on_enemy_state)
+	hud.show_prompt("")
+	hud.toast("◆ 动手了！", 2.0)
+	print("IC_ENCOUNTER start id=%s enemies=%d" % [id, encounter.enemies.size()])
+
+
+func _on_encounter_ended(_won: bool) -> void:
+	hud.toast("✓ 渡口的无旗者都解决了。", 3.0)
 	save_game.call_deferred("auto", true)
 
 

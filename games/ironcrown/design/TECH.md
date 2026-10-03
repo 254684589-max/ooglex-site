@@ -178,6 +178,11 @@ godot/
   把「去哪个区域、站哪个出生点、生命 / 体力 / 蹲着」放进 `GameState.pending_load`，**重新载入主场景**（和读档同一条路；`GameState` 是自动加载的，任务、背包、已拾取都不受影响）。
   `main._ready` 看到 `pending_load.spawn` 就把玩家放到 `Areas.spawn(区域, 名字)`，淡入、提示区域名、关掉开场操作提示，**自动存档到「自动存档」栏位**（GDD 第十节「进入新区域时」）。
 - **命名出生点**：各区域脚本的 `SPAWNS`（名字 → [位置, 水平朝向（度，0 = 面朝 -Z，正 = 向左转）]）。固定机位 `VIEWS` 也按区域取（网页 `?area=tavern&view=N`）。
+- **3.6**：桦林南头 → `ferry`（渡口，室外，`world/ferry.gd`，出生点 `north`；桦林多了出生点 `south`）。岸上雪地有厚度、河面是低一截的深色平面，岸边和码头两侧是看不见的栏杆；码头面高 0.25 米（攀爬 0.3 米以内，走得上去，导航网格也铺上去）。
+  **对峙转战斗**（`combat/encounter.gd`）：区域里一组 NPC 进组 `encounter:<编号>`、带元数据 `enemy_kind` / `enemy_id`；对话效果 `{"fight": 编号, "win": 旗标}` 让它们原地换成同名敌人开打（真打：会死人、声望照常变），全部倒下 / 认输 / 逃跑算打赢；`{"leave": 编号}` 让它们走掉。
+  区域搭场景时按存档还原：编号在 `GameState.dead` / `yielded` 里的直接放敌人（倒着 / 跪着、能搜身），说服走了（旗标）的不放，其余放 NPC。打的时候 `main.in_combat()` 为真。
+  头目 `outlaw_boss`（「灰手」奥弗）：`kick_chance` 出踢（起手冒「踢！」，`Melee.receive_hit` 里 kind = kick 举着格挡也破防）；`flank_call` 第一次掉到半血喊「包抄他！」，附近的同伙立刻冲上来、一左一右往两侧绕。逃跑一开始也记进 `yielded`（读档后按认输算）。
+  `Birch.add_tree()` 抽成公用的，渡口岸上也种一片白桦。
 - **3.5**：主街南门（`Frostford.SOUTH_GATE_Z`，出生点 `south_gate`）→ `birch`（镇外桦林，室外，`world/birch.gd`，出生点 `north`）；桦林南头「去渡口的路」先锁着（渡口在 3.6）。
   白桦是代码搭的（细长树干 + 树梢几根枝条，96 棵合成一个网格，每棵一个圆柱碰撞体）；没有现成的白桦贴图，`Look.birch()` 在主线程用固定种子画一张 64 × 128 的树皮（灰白底、横向皮孔、几块深斑），不新增外部素材。
   哨卡的三个无旗者是 `Enemy`（`clubber` × 2 + `outlaw_leader`），营火在组 `light_source`（半径 7 米）；进桦林时底部提示换成拿武器战斗的教学（STORY 第三节）。任务阶段的 `advance_when` 多了 `{"clue": 线索, "to": 阶段}`。

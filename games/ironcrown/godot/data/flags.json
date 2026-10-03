@@ -15,5 +15,12 @@
   "alban_told": {"desc": "奥尔本修士说了少爷昨天借墓园钥匙的事", "set_in": "chapel.json alban/edric", "read_in": "chapel.json alban（之后能开口借钥匙，不再问一次）"},
   "alban_lent_key": {"desc": "奥尔本修士把墓园钥匙借给了你（口才说服或往捐献箱放 3 枚银币）", "set_in": "chapel.json alban/key_given", "read_in": "chapel.json alban（不再借第二次）"},
   "alban_refused": {"desc": "口才没说动奥尔本修士（不能再试，只剩捐钱）", "set_in": "chapel.json alban/key_refused", "read_in": "chapel.json alban/key（藏起口才选项）"},
+  "offer_parley": {"desc": "和渡口的「灰手」奥弗搭过话（再找他时直接说正事）", "set_in": "ferry.json offer/greet", "read_in": "ferry.json offer start_if"},
+  "offer_left": {"desc": "说服、吓退或花钱打发了「灰手」奥弗，他带着两个手下走了（不再出现在渡口）", "set_in": "ferry.json offer/convinced、scared、paid", "read_in": "world/ferry.gd（不再放他们）、ferry.json silas / edric start_if；第二章可能的盟友（STORY 人物表）"},
+  "offer_paid": {"desc": "给了奥弗 30 枚银币让他走", "set_in": "ferry.json offer/why", "read_in": "之后与无旗者的关系（阶段 4 以后）"},
+  "offer_defeated": {"desc": "和奥弗一伙打了一仗，他们都倒下、认输或逃了", "set_in": "ferry.json offer/why、laugh（动手的 win 旗标，combat/encounter.gd）", "read_in": "ferry.json silas / edric start_if"},
+  "heard_debt": {"desc": "塞拉斯说了那笔买卖：少爷用瓦伦家的借据换去南方的路", "set_in": "ferry.json silas/deal", "read_in": "3.7 抉择（勒索塞拉斯时读取）"},
+  "silas_admitted": {"desc": "塞拉斯承认桦林里的无旗者是他雇的", "set_in": "ferry.json silas/hired", "read_in": "ferry.json silas（不再问一次）；3.7 抉择"},
+  "edric_showed_debt": {"desc": "埃德里克给你看了借据（主线推进到抉择）", "set_in": "ferry.json edric/debt", "read_in": "ferry.json edric start_if；3.7 抉择"},
   "alban_saw_letter": {"desc": "把少爷的信给奥尔本修士看过", "set_in": "chapel.json alban/letter", "read_in": "chapel.json alban（不再重复给他看）；3.7 尾声修士交书时可以读"}
 }

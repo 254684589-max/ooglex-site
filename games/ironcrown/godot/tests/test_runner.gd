@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -188,6 +188,7 @@ func test_ui() -> void:
 	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
 	# 徒手格斗（3.3）
 	texts.append_array([Birch.TEACH_DESKTOP, Birch.TEACH_TOUCH, "（求饶）"])     # 桦林（3.5）
+	texts.append_array(Ferry.FERRYMAN_LINES + Ferry.THUG_LINES + ["◆ 动手了！✓ 渡口的无旗者都解决了。踢！包抄他！"])     # 渡口（3.6）
 	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
@@ -223,8 +224,9 @@ func test_ui() -> void:
 	var yard := await make_area("churchyard")
 	var nave := await make_area("chapel")
 	var woods := await make_area("birch")
+	var dock := await make_area("ferry")
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
-		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false)
+		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false)
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -238,6 +240,7 @@ func test_ui() -> void:
 	yard.queue_free()
 	nave.queue_free()
 	woods.queue_free()
+	dock.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -3054,10 +3057,9 @@ func test_birch() -> void:
 	names.sort()
 	check(enemies.size() == 3 and names == ["无旗者 · 头目", "无旗者 · 棍手", "无旗者 · 棍手"], "哨卡有三个无旗者：头目和两个棍手（%s）" % str(names))
 	check(enemies.all(func(e): return e.state == Enemy.State.PATROL), "开始时都在巡逻，还没发现你")
-	# 南头去渡口的路：还走不过去
+	# 南头去渡口的路：3.6 起能走
 	var south: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.display_name == "去渡口的路")[0]
-	var sr: Dictionary = south.interact(p)
-	check(sr.get("locked", false) and str(sr.toast).contains("渡口在后续版本开放"), "南头去渡口的路：还走不过去，说明渡口在后续版本开放")
+	check(not south.locked and south.to_area == "ferry" and south.prompt() == "前往 · 去渡口的路", "南头去渡口的路：能走（3.6，前往渡口）")
 	# 伏击：沿路往南走，被路上巡逻的棍手看见，喊上营火边的人
 	var leader: Enemy = enemies.filter(func(e): return e.kind == "outlaw_leader")[0]
 	var road: Enemy = enemies.filter(func(e): return e.enemy_id == "birch_a")[0]
@@ -3113,6 +3115,208 @@ func test_birch() -> void:
 	p = main.player
 	await frames(3)
 	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(0, 9.9)) < 0.3 and absf(p.rotation.y) < 0.05, "回到主街：站在南门里、面朝街道")
+	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)
+
+
+## 3.6 渡口：码头、渡船、雾中的河面；「灰手」奥弗（付钱 / 口才 / 威吓，说崩了就动手：会踢、半血喊包抄）；塞拉斯与埃德里克说出借据的事
+func test_ferry() -> void:
+	check(Areas.known("ferry") and not Areas.is_indoor("ferry") and Areas.nav_bounds("ferry").has_volume(), "新区域：渡口（室外，烘焙导航网格）")
+	# —— 桦林南头 → 渡口
+	GameState.new_game(71)
+	GameState.start_quest("edric_missing")
+	GameState.pending_load = {"scene": "birch", "spawn": "south", "player": {}}
+	var main := await make_main(false)
+	var p: FpController = main.player
+	await frames(3)
+	check(main.area == "birch" and flat(p.global_position).distance_to(Vector2(0, Birch.SOUTH - 3.2)) < 0.3, "桦林南头有出生点（从渡口回来站这里）")
+	await place(p, 0.0, Birch.SOUTH - 1.7)
+	p.rotation.y = PI
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "前往 · 去渡口的路", "桦林南头：提示「前往 · 去渡口的路」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "ferry" and flat(p.global_position).distance_to(Vector2(0, Ferry.NORTH + 3.5)) < 0.3 and absf(absf(p.rotation.y) - PI) < 0.05, "到了渡口北头、面朝河")
+	check(main.moon.visible and not main.nav.is_empty(), "渡口是室外，有导航网格（%d 个多边形）" % int(main.nav.get("polygons", 0)))
+	var group := main.get_tree().get_nodes_in_group(Encounter.group_name(Ferry.ENCOUNTER))
+	var gnames: Array = group.map(func(n): return n.display_name)
+	gnames.sort()
+	check(group.size() == 3 and gnames == ["「灰手」奥弗", "无旗者", "无旗者"] and group.all(func(n): return n is Npc and n.has_meta("enemy_kind")), "码头根上站着「灰手」奥弗和两个手下（还没动手，是 NPC）")
+	var names: Array = main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(names.has("埃德里克") and names.has("塞拉斯") and names.has("渡工"), "码头上是埃德里克和塞拉斯，渡工在小屋门口")
+	var edric: Npc = main._npc_by_dialogue("edric")
+	check(edric.global_position.z > Ferry.PIER_END - 4.0 and edric.global_position.y > 0.2, "埃德里克在码头尽头（站在码头面上）")
+	var r := DialogueRunner.new()
+	r.start("ferry", "silas")
+	check(r.node_id == "tense", "奥弗还在：塞拉斯叫你先把他打发了")
+	r.start("ferry", "edric")
+	check(r.node_id == "tense", "奥弗还在：埃德里克吓得发白")
+	# 码头：走得上去，掉不下水
+	await place(p, 2.1, -3.0)
+	await hold("move_forward", 0.1)
+	await place(p, 2.1, 4.5)
+	await physics(10)
+	check(p.global_position.y > 0.2 and p.is_on_floor(), "能站上码头（码头面高 %.2f 米）" % p.global_position.y)
+	p.rotation.y = PI / 2
+	await hold("move_forward", 1.5)
+	check(p.global_position.x > Ferry.PIER_X0 - 0.1 and p.global_position.y > 0.2, "码头边有栏杆：掉不下水（x = %.2f）" % p.global_position.x)
+	await place(p, 6.0, -3.0)
+	p.rotation.y = PI
+	await hold("move_forward", 2.0)
+	check(p.global_position.z < Ferry.SHORE_Z + 0.2, "岸边走不进河里（z = %.2f）" % p.global_position.z)
+	# —— 付钱：奥弗带人走
+	GameState.silver = 40
+	var rep0 := GameState.get_rep("outlaws")
+	r.start("ferry", "offer")
+	check(r.node_id == "greet" and GameState.has_flag("offer_parley"), "和奥弗搭话")
+	r.choose(0)
+	var labels: Array = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(r.node_id == "why" and labels.any(func(l): return l.contains("30 枚银币")) and labels.any(func(l): return l.contains("威吓")) and not labels.any(func(l): return l.contains("雇佣信") or l.contains("蜡印")), "奥弗：想把两个人一起劫走；能付钱、能说、能吓（没有雇佣信时没有亮信的选项）")
+	r.choose(labels.find(labels.filter(func(l): return l.contains("30 枚银币"))[0]))
+	check(r.node_id == "paid" and GameState.silver == 10 and GameState.has_flag("offer_left") and GameState.get_rep("outlaws") == rep0 + 10, "付 30 枚银币：奥弗收钱走人（无旗者声望 +10）")
+	r.choose(0)
+	check(GameState.pending_leave == "ferry_offer", "对话结束时：这一伙人要走")
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.get_tree().get_nodes_in_group(Encounter.group_name(Ferry.ENCOUNTER)).is_empty() and not main.in_combat(), "奥弗一伙走了，没打起来")
+	r.start("ferry", "silas")
+	check(r.node_id == "greet", "奥弗走了：塞拉斯肯好好说话了")
+	await free_main(main)
+	# 读档：说服走了的，不再出现
+	GameState.pending_load = {"scene": "ferry", "player": {}}
+	main = await make_main(false)
+	await frames(3)
+	check(main.area == "ferry" and main.get_tree().get_nodes_in_group(Encounter.group_name(Ferry.ENCOUNTER)).is_empty() and main.get_tree().get_nodes_in_group("enemy").is_empty(), "再来渡口：奥弗一伙不在了")
+	await free_main(main)
+	# —— 有雇佣信：亮信的口才检定更容易
+	var sd := seed_for("offer_letter_speech", "speech", 11, true)
+	GameState.new_game(sd)
+	GameState.add_item("hire_letter")
+	r.start("ferry", "offer")
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	var li: int = labels.find(labels.filter(func(l): return l.contains("蜡印"))[0])
+	var ei: int = labels.find(labels.filter(func(l): return l.contains("灰鲸河两岸"))[0])
+	check(GameState.check_chance("speech", 11) > GameState.check_chance("speech", 16) and labels[li].contains("口才"), "有雇佣信：亮信的说法把握更大（%s / %s）" % [labels[li].left(12), labels[ei].left(12)])
+	r.choose(li)
+	check(r.node_id == "convinced" and GameState.has_flag("offer_left"), "亮出雇佣信说动了奥弗：双钥港的人不会给他们留活路")
+	# —— 威吓没吓住：动手
+	sd = seed_for("offer_intimidate", "intimidate", 15, false)
+	GameState.new_game(sd)
+	GameState.start_quest("edric_missing")
+	GameState.set_stage("edric_missing", "warned")
+	GameState.add_item("hire_letter")
+	GameState.add_item("edric_letter")
+	GameState.pending_load = {"scene": "ferry", "player": {}}
+	main = await make_main(false)
+	p = main.player
+	await frames(3)
+	var offer_npc: Npc = main._npc_by_dialogue("offer")
+	await aim(p, Vector3(2.1, 0.3, 0.7), offer_npc.global_position + Vector3(0, 1.5, 0))
+	check(p.interactor.target == offer_npc, "对准奥弗")
+	p.interactor.use()
+	await frames(2)
+	check(main.dialogue.visible and main.dialogue.runner.id == "offer", "奥弗的对话能打开")
+	find_button(main.dialogue, "我来接瓦伦家的少爷。").pressed.emit()
+	await frames(1)
+	find_button(main.dialogue, "滚。不然今晚渡口多几具尸体。").pressed.emit()
+	await frames(1)
+	check(main.dialogue.runner.node_id == "laugh", "威吓没吓住：奥弗笑着抽出剑")
+	find_button(main.dialogue, "（拔剑）").pressed.emit()
+	await frames(3)
+	var enemies: Array = main.get_tree().get_nodes_in_group("enemy")
+	var boss: Enemy = null
+	for e in enemies:
+		if e.kind == "outlaw_boss":
+			boss = e
+	check(main.encounter_active() and enemies.size() == 3 and boss != null and boss.display_name == "「灰手」奥弗" and enemies.all(func(e): return e.state == Enemy.State.COMBAT), "动手了：奥弗和两个手下换成敌人，直接进入战斗")
+	check(main.get_tree().get_nodes_in_group(Encounter.group_name(Ferry.ENCOUNTER)).is_empty(), "原来站着的 NPC 撤掉了")
+	var went: bool = await main.travel("birch", "south")
+	check(main.in_combat() and main.can_save() != "" and not went, "打的时候不能存档、不能走")
+	# 头目的踢：举着格挡也会被踢破防
+	for e in enemies:
+		if e != boss:
+			e.process_mode = Node.PROCESS_MODE_DISABLED
+	boss.stop_left = 10.0
+	await place(p, 2.1, 0.8)
+	p.rotation.y = PI
+	put_enemy(boss, Vector3(2.1, Ferry.DECK_Y, 2.2), 0.0)
+	await physics(2)
+	var m: Melee = p.melee
+	m.toggle_draw()
+	await seconds(0.45)
+	m.block_press()
+	await seconds(0.4)
+	boss.attack_kind = "kick"
+	boss._strike_player()
+	check(m.staggered() and not m.blocking(), "奥弗的踢：举着格挡也被踢破防（%s）" % ("失衡" if m.staggered() else "没失衡"))
+	m.block_release()
+	m.health = m.health_max()
+	# 半血喊包抄
+	for e in enemies:
+		e.process_mode = Node.PROCESS_MODE_INHERIT
+	boss.stop_left = 0.0
+	boss.data = boss.data.duplicate()
+	boss.data.block_chance = 0.0
+	boss.data.yield_chance = 1.0
+	boss.take_hit({"damage": boss.hp - boss.hp_max / 2 + 1, "kind": "light", "stop": 0.0})
+	var thugs := enemies.filter(func(e): return e != boss)
+	check(boss.flank_called and thugs.all(func(e): return float(e.data.circle_side) > 1.2) and thugs[0].circle_dir != thugs[1].circle_dir, "奥弗半血：喊「包抄他！」，两个手下一左一右绕过来")
+	# 打完：两个手下倒下，奥弗认输
+	for e in thugs:
+		e.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	boss.take_hit({"damage": boss.hp - 3, "kind": "heavy", "stop": 0.0})
+	await frames(3)
+	check(boss.state == Enemy.State.YIELD and GameState.has_flag("offer_defeated") and not main.encounter_active() and not main.in_combat(), "两个手下倒下、奥弗认输：这一仗打赢了")
+	var lc: Array = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "loot:ferry_offer")
+	var got: Array = lc[0].take_all() if lc.size() == 1 else []
+	check(got.has("灰皮手套") and GameState.has_item("grey_glove"), "搜奥弗的身：那只灰皮手套（%s）" % str(got))
+	await frames(2)
+	check(Saves.read_slot("auto").has("data"), "打完自动存档")
+	# 塞拉斯与埃德里克
+	r.start("ferry", "silas")
+	check(r.node_id == "greet", "塞拉斯：多谢，替卡斯韦尔家办事")
+	r.choose(0)
+	check(r.node_id == "deal" and GameState.has_flag("heard_debt") and r.text().contains("借据") and r.text().contains("税权"), "塞拉斯说出那笔买卖：瓦伦家的借据，担保是渡口的税权")
+	r.choose(0)
+	labels = r.options().map(func(o): return o.text)
+	r.choose(labels.find("桦林里那些无旗者，是你雇的。"))
+	check(r.node_id == "hired" and GameState.has_flag("silas_admitted"), "拿着雇佣信问他：塞拉斯承认无旗者是他雇的")
+	r.start("ferry", "edric")
+	check(r.node_id == "greet", "埃德里克：你是我父亲派来的？我不回去")
+	r.choose(0)
+	check(r.node_id == "letter" and r.text().contains("联姻"), "提起那封信：父亲要送他去联姻，他不想当棋子")
+	r.choose(0)
+	check(r.node_id == "debt" and GameState.has_flag("edric_showed_debt") and GameState.quest_stage("edric_missing") == "choice", "埃德里克拿出借据：主线推进到抉择（3.7）")
+	r.start("ferry", "edric")
+	check(r.node_id == "after", "再找埃德里克：你打算怎么办？")
+	# 读档：倒下的还倒着、奥弗还跪着，不会再站成 NPC
+	await place(p, 0.0, -6.0)
+	check(main.save_game("slot2"), "仗打完了能存档")
+	check(main.load_game("slot2"), "读这个存档")
+	main = await reload_main(main)
+	p = main.player
+	await frames(4)
+	enemies = main.get_tree().get_nodes_in_group("enemy")
+	check(main.area == "ferry" and enemies.size() == 3 and enemies.filter(func(e): return not e.alive()).size() == 2 and main.get_tree().get_nodes_in_group(Encounter.group_name(Ferry.ENCOUNTER)).is_empty(), "读档：两个手下还倒着，奥弗一伙不会再站成 NPC")
+	boss = enemies.filter(func(e): return e.kind == "outlaw_boss")[0]
+	check(boss.state == Enemy.State.YIELD and boss.display_name == "「灰手」奥弗", "读档：奥弗还跪着")
+	# 回桦林
+	await place(p, 0.0, Ferry.NORTH + 1.6)
+	p.rotation.y = 0.0
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "回到 · 回桦林的路", "北头：提示「回到 · 回桦林的路」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	await frames(3)
+	check(main.area == "birch" and flat(main.player.global_position).distance_to(Vector2(0, Birch.SOUTH - 3.2)) < 0.3, "回到桦林南头")
 	await free_main(main)
 	GameState.pending_load = {}
 	GameState.new_game(1)

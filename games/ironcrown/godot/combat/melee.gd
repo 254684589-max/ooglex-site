@@ -4,6 +4,7 @@ extends Node
 ## 输入只有 press() / release() / toggle_draw() 三个入口：鼠标左键、触屏「攻」按钮、测试都调用它们。
 ## 命中判定：挥砍的「命中帧」做一次形状查询（相机前方 0.4–2.0 米的盒子，物理层 4「可受击」），再用一条射线确认中间没有墙。
 ## 命中停顿只冻结自己的挥砍动画和被打的目标（局部），不改全局 Engine.time_scale。
+## 3.6：敌人的「踢」（kind = kick）挡不住，举着格挡也会被踢破防。
 ## 2.5：格挡（右键 / Q / 触屏「挡」按住）、完美格挡（敌人命中前 0.2 秒内按下：不耗体力、对方失衡 0.8 秒）、失衡、生命。
 ## 格挡住普通攻击时伤害变成体力消耗（重击 1.5 倍）；体力不够挡：格挡被打破，自己失衡 0.8 秒并吃一半伤害。失衡期间受到的伤害加倍、不能出招。
 ## 属性与技能在 2.7（现在用 GameState 里的默认力量与剑术）。
@@ -192,6 +193,13 @@ func receive_hit(info: Dictionary) -> String:
 		var fwd := -player.global_transform.basis.z
 		fwd.y = 0.0
 		front = to.length() < 0.01 or rad_to_deg(fwd.angle_to(to.normalized())) <= GUARD_ANGLE
+	if state == State.BLOCK and front and info.get("kind") == "kick":
+		# 踢（3.6，头目「灰手」奥弗）：格挡挡不住，直接破防；看到「踢！」就该往后退
+		_spend(minf(stamina, dmg * GUARD_COST))
+		_stagger_self()
+		guarded.emit("guard_break", info)
+		_take(dmg, info)
+		return "guard_break"
 	if state == State.BLOCK and front:
 		if clock - block_since <= perfect_window():
 			view.kick = Vector3(0, 0, 0.05)

@@ -7,6 +7,7 @@
   "mail_shirt": {"name": "锁甲衫", "kind": "armor", "slot": "body", "weight": 12.0, "value": 90, "armor": 8, "noise": 2.0, "desc": "铁环缀成的短衫，护得住要害，走起路来哗啦作响。"},
   "leather_cap": {"name": "皮帽", "kind": "armor", "slot": "head", "weight": 1.0, "value": 8, "armor": 2, "noise": 0.0, "desc": "硬皮压成的圆帽，里面垫着羊毛。"},
   "leather_gloves": {"name": "皮手套", "kind": "armor", "slot": "hands", "weight": 0.5, "value": 6, "armor": 1, "noise": 0.0, "desc": "掌心磨薄了，手背还算结实。"},
+  "grey_glove": {"name": "灰皮手套", "kind": "armor", "slot": "hands", "weight": 0.5, "value": 15, "armor": 2, "noise": 0.0, "desc": "奥弗左手上那只灰皮手套，磨得发亮，指节处缝过好几回。「灰手」的外号就是这么来的。"},
   "wool_trousers": {"name": "厚呢裤", "kind": "armor", "slot": "legs", "weight": 1.5, "value": 7, "armor": 1, "noise": 0.0, "desc": "粗呢子缝的长裤，膝盖处补过两回。"},
   "bread": {"name": "面包", "kind": "consumable", "weight": 0.3, "value": 1, "health": 10, "stamina": 0, "desc": "黑麦面包，硬得能当锤子使。吃下去恢复 10 点生命。"},
   "bandage": {"name": "绷带", "kind": "consumable", "weight": 0.1, "value": 3, "health": 25, "stamina": 0, "desc": "煮过的干净麻布条。包扎伤口，恢复 25 点生命。"},
