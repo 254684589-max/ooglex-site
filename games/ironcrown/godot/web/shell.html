@@ -89,7 +89,7 @@ const engine = new Engine(GODOT_CONFIG);
   const tips = [
     '老王死了，铁冠丢了，冬天不走了。',
     '烽燧的火不能熄。',
-    '开发中预览：霜渡镇主街、「倒钩鱼」酒馆、星铁小教堂与墓园、镇外桦林、渡口都能去，序章能玩到结尾，NPC 与敌人仍是占位。',
+    '开发中预览：霜渡镇主街、「倒钩鱼」酒馆、星铁小教堂与墓园、镇外桦林、渡口都能去，序章能从开场玩到结尾（开场有钟声，菜单里可以关掉声音），NPC 与敌人仍是占位。',
   ];
   let tipIndex = Math.floor(Math.random() * tips.length);
   function nextTip() { tip.textContent = tips[tipIndex % tips.length]; tipIndex += 1; }
