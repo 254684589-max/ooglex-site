@@ -1,0 +1,82 @@
+{
+  "_说明": "星铁小教堂的对话（路线图 3.2；STORY.md 第三节「教堂：奥尔本修士说少爷昨天来借过墓园钥匙；墓穴里藏着一个包袱」）。奥尔本修士是霜渡镇星铁教会的老修士，守着教会的旧书，害怕长眠（STORY.md 人物表）。",
+  "alban": {
+    "speaker": "奥尔本修士",
+    "start": "greet",
+    "nodes": {
+      "greet": {
+        "text": "（老修士从经台后面抬起头，烛光照着他满是皱纹的脸）愿坠星照着你，孩子。这么晚了，是来祷告，还是来打听事？",
+        "options": [
+          {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "alban_told"}], "next": "edric"},
+          {"text": "能借墓园的钥匙吗？", "if": [{"flag": "alban_told"}, {"not_flag": "alban_lent_key"}], "next": "key"},
+          {"text": "（把墓室里找到的信递给他）", "if": [{"has_item": "edric_letter"}, {"not_flag": "alban_saw_letter"}], "next": "letter"},
+          {"text": "坠星是什么？", "next": "faith"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还有什么事？",
+        "options": [
+          {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "alban_told"}], "next": "edric"},
+          {"text": "能借墓园的钥匙吗？", "if": [{"flag": "alban_told"}, {"not_flag": "alban_lent_key"}], "next": "key"},
+          {"text": "（把墓室里找到的信递给他）", "if": [{"has_item": "edric_letter"}, {"not_flag": "alban_saw_letter"}], "next": "letter"},
+          {"text": "坠星是什么？", "next": "faith"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "edric": {
+        "text": "埃德里克？……昨天傍晚他来过，说想去墓园给他母亲上坟，借走了墓园的钥匙。天黑前钥匙是还回来了，可那孩子的脸色——不像是去上坟，倒像是去道别。",
+        "do": [{"set": "alban_told"}, {"clue": "chapel_key"}],
+        "options": [
+          {"text": "墓园钥匙还在您这儿吗？", "next": "key"},
+          {"text": "多谢，修士。", "next": "menu"}
+        ]
+      },
+      "key": {
+        "text": "（他摸了摸袍子里的钥匙）在是在。可墓园里躺着的是镇上人的先祖，我不能随便交给外人。",
+        "options": [
+          {"text": "少爷要是出了事，瓦伦家的墓室就是唯一的线索。", "if": [{"not_flag": "alban_refused"}],
+            "check": {"id": "alban_key_speech", "skill": "speech", "dc": 11, "pass": "key_given", "fail": "key_refused"}},
+          {"text": "（往捐献箱里放 3 枚银币）给教堂添点灯油。", "if": [{"silver": 3}], "do": [{"pay": 3}], "next": "key_given"},
+          {"text": "那就算了。", "next": "menu"}
+        ]
+      },
+      "key_refused": {
+        "text": "不行，孩子。死人也有他们的安宁。",
+        "do": [{"set": "alban_refused"}],
+        "options": [
+          {"text": "（往捐献箱里放 3 枚银币）给教堂添点灯油。", "if": [{"silver": 3}], "do": [{"pay": 3}], "next": "key_given"},
+          {"text": "好吧。", "next": "menu"}
+        ]
+      },
+      "key_given": {
+        "text": "（他犹豫了一会儿，从袍子里摸出一把黑铁钥匙）瓦伦家的墓室在墓园西边。看完了，记得把钥匙还回来——我是说，哪天你想起来的话。",
+        "do": [{"give_item": "crypt_key"}, {"set": "alban_lent_key"}],
+        "options": [
+          {"text": "我会的。", "end": true}
+        ]
+      },
+      "letter": {
+        "text": "（他读着信，手指在发抖）……「不想做一枚被摆来摆去的棋子」。这孩子，跟他母亲一个脾气。要是他想坐船南下，今夜只有渡口还点着灯。",
+        "do": [{"set": "alban_saw_letter"}],
+        "options": [
+          {"text": "我这就去渡口。", "end": true},
+          {"text": "还有别的事。", "next": "menu"}
+        ]
+      },
+      "faith": {
+        "text": "冠历元年，一颗星从天上坠下来，开国的哈尔文就在它落地的地方加冕。我们供奉的就是那颗星。……现在的人只记得戴冠游行，却忘了加冕的时候，还要发一个誓。",
+        "options": [
+          {"text": "什么誓？", "next": "oath"},
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "oath": {
+        "text": "（他看了一眼书架）老书里只剩半页，烧掉的那半页说的是什么，我也不知道。……长眠的人一年比一年多，往北走的那些，你见过吗？算了，等你哪天不忙了，再来问我这个老头子吧。",
+        "options": [
+          {"text": "好。", "next": "menu"}
+        ]
+      }
+    }
+  }
+}

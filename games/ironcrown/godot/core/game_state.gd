@@ -207,6 +207,10 @@ func add_item(id: String, n := 1) -> void:
 	for i in n:
 		inventory.append(id)
 	inventory_changed.emit()
+	# 物品数据里写了 clue 的（3.2：墓室里那封没写完的信），拿到手就记下线索
+	var c := str(item(id).get("clue", ""))
+	if c != "":
+		add_clue(c)
 
 
 func has_item(id: String) -> bool:

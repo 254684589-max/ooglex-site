@@ -8,6 +8,8 @@
 //   2.1  霜渡镇 ?view=3（更夫面前）：电脑按 E 打开对话、按 2 选第二个选项、Esc 结束；手机 / 平板真实点交互按钮与第一个选项（IC_DIALOG），截图。
 //   3.1  酒馆 ?area=tavern&view=1（吧台前）：电脑按 E、手机 / 平板点交互按钮，和玛蒂尔达说话（IC_DIALOG open id=matilda），截图；
 //        再打开 ?area=tavern&view=3（门内对着出口）：按 E / 点交互按钮走出酒馆，回到主街（IC_TRAVEL → IC_ARRIVE area=frostford），截图。
+//   3.2  小教堂 ?area=chapel&view=1（奥尔本修士面前）：按 E / 点交互按钮和修士说话（IC_DIALOG open id=alban），截图；
+//        墓园 ?area=churchyard&view=1（瓦伦家墓室门前）：按 E / 点交互按钮，铁门锁着（IC_INTERACT kind=door name=瓦伦家墓室的铁门），截图；电脑再在 view=0 截一张墓园全景。
 //   2.4  霜渡镇 ?view=5（木桩假人面前）：电脑点击画面后按 F 两下（拔剑、轻击），再按一下左键出剑；手机 / 平板点两下「攻」按钮；要求打中木桩（IC_HIT），截图。
 //   2.9  霜渡镇出生点：电脑按 V、手机 / 平板点「视角」切到第三人称（IC_CAMERA mode=third），截图。
 //   A.1  切到第三人称后人物模型与动作库加载成功（IC_AVATAR loaded=true、IC_AVATAR role=idle）；电脑再按 F 拔剑、按住 F 蓄力（role=Sword_Attack 停在最高处）、按住 Q 格挡（role=block），各截一张图。
@@ -169,6 +171,45 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       tOut = await waitLog(logs, 'IC_ARRIVE area=frostford', 60);
       await page.waitForTimeout(1200);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-tavern-out.png`) });
+    }
+    // 小教堂与墓园（3.2）：和奥尔本修士说话；墓室铁门锁着
+    async function useHere() {
+      if (!mobile) {
+        await page.keyboard.press('e');
+      } else {
+        const us = await waitLog(logs, 'IC_USE_SCREEN', 8);
+        if (us) {
+          const [, ux, uy] = us.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(ux / dpr, uy / dpr);
+        }
+      }
+    }
+    logs.length = 0;
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=chapel&view=1');
+    let cTalk = '', cCrypt = '';
+    if (await waitLog(logs, 'IC_TARGET name=奥尔本修士', 240)) {
+      await page.waitForTimeout(400);
+      await useHere();
+      cTalk = await waitLog(logs, 'IC_DIALOG open id=alban', 12);
+      await page.waitForTimeout(500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-chapel.png`) });
+    }
+    logs.length = 0;
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=churchyard&view=1');
+    if (await waitLog(logs, 'IC_TARGET name=瓦伦家墓室的铁门', 240)) {
+      await page.waitForTimeout(400);
+      await useHere();
+      cCrypt = await waitLog(logs, 'IC_INTERACT kind=door name=瓦伦家墓室的铁门', 12);
+      await page.waitForTimeout(500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-crypt.png`) });
+    }
+    if (!mobile) {
+      logs.length = 0;
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=churchyard&view=0');
+      if (await waitLog(logs, 'IC_READY', 240)) {
+        await page.waitForTimeout(2500);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-churchyard.png`) });
+      }
     }
     // 任务日志（2.3）：管家面前
     logs.length = 0;
@@ -440,9 +481,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

@@ -13,5 +13,7 @@
   "strong_spirit": {"name": "烈酒", "kind": "consumable", "weight": 0.5, "value": 4, "health": 0, "stamina": 60, "desc": "一小瓶烧喉咙的谷物酒。喝下去恢复 60 点体力。"},
   "iron_key": {"name": "铁钥匙", "kind": "quest", "weight": 0.1, "value": 0, "desc": "一把生锈的铁钥匙，不知道开哪扇门。"},
   "silver_spoon": {"name": "银勺", "kind": "misc", "weight": 0.2, "value": 8, "desc": "勺柄上刻着一朵小花，大概是谁家的陪嫁。"},
-  "dice": {"name": "骨骰子", "kind": "misc", "weight": 0.1, "value": 1, "desc": "一对磨圆了角的骨骰子，其中一颗灌过铅。"}
+  "dice": {"name": "骨骰子", "kind": "misc", "weight": 0.1, "value": 1, "desc": "一对磨圆了角的骨骰子，其中一颗灌过铅。"},
+  "crypt_key": {"name": "墓园钥匙", "kind": "quest", "weight": 0.1, "value": 0, "desc": "奥尔本修士的黑铁钥匙，能打开墓园里瓦伦家墓室的铁门。"},
+  "edric_letter": {"name": "没写完的信", "kind": "quest", "weight": 0.05, "value": 0, "clue": "letter", "desc": "「父亲：等您读到这封信的时候，我已经在往南去的船上了。我不是逃，我只是不想做一枚被摆来摆去的棋子。卡斯韦尔家的人答应我……」后面几行被墨划掉了，看不清。"}
 }

@@ -7,7 +7,7 @@
       "summary": "领主维克托·瓦伦的幼子埃德里克天黑后没有回家。管家托你悄悄把人找回来，别惊动全镇。",
       "first": "find_clues",
       "stages": {
-        "find_clues": {"objective": "打探埃德里克少爷的下落：问问镇上的人——街上的更夫、「倒钩鱼」的老板娘……（至少两条线索）", "advance_when": {"clues_at_least": 2, "to": "to_ferry"}},
+        "find_clues": {"objective": "打探埃德里克少爷的下落：问问镇上的人——街上的更夫、「倒钩鱼」的老板娘、星铁小教堂的修士……（至少两条线索）", "advance_when": {"clues_at_least": 2, "to": "to_ferry"}},
         "to_ferry": {"objective": "线索都指向渡口。穿过镇外桦林去渡口找少爷（渡口与桦林在后续版本开放）"}
       }
     },
@@ -27,6 +27,8 @@
     "ring": {"quest": "edric_missing", "text": "更夫：那个南方人戴着一枚两把钥匙交叉的印戒。"},
     "dice": {"quest": "edric_missing", "text": "老霍布：那几个斗篷人是无旗者，拿崭新的银币赌钱，银币上压着双钥的印。"},
     "boots": {"quest": "edric_missing", "text": "玛蒂尔达：这半个月少爷几乎天天和一个南方口音、穿好靴子的人在酒馆角落喝酒，那人用新铸的银币付账，马拴在渡口的棚子里。"},
-    "birch_fires": {"quest": "edric_missing", "text": "伐木工：前天夜里桦林边上有好几堆营火，那边可没有正经人过夜。"}
+    "birch_fires": {"quest": "edric_missing", "text": "伐木工：前天夜里桦林边上有好几堆营火，那边可没有正经人过夜。"},
+    "chapel_key": {"quest": "edric_missing", "text": "奥尔本修士：少爷昨天傍晚借走了墓园钥匙，说是给母亲上坟，天黑前还了回来，脸色却像是去道别。"},
+    "letter": {"quest": "edric_missing", "text": "瓦伦家墓室里藏着少爷的包袱：一封没写完的信——他打算坐船南下，「卡斯韦尔家的人答应我……」后面被划掉了。"}
   }
 }

@@ -97,6 +97,10 @@ func _ready() -> void:
 			t = TestRange.build(world)
 		"tavern":
 			t = Tavern.build(world, Settings.reduced_motion)
+		"churchyard":
+			t = Churchyard.build(world, Settings.reduced_motion)
+		"chapel":
+			t = Chapel.build(world, Settings.reduced_motion)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	player = FpController.new()

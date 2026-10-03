@@ -3,6 +3,7 @@ extends Interactable
 ## 门（路线图 1.3）：节点原点就是门轴，门板沿本地 +X 伸出 width 米。
 ## 打开时总是朝远离玩家的一侧转 90°（不会拍到人）；locked = true 时只提示「门锁着」。
 ## 3.1 起：to_area 不为空的门通往另一个区域（酒馆、教堂……），交互结果 kind = "travel"，由 main 淡出、换区域、放到 to_spawn 出生点。
+## 3.2 起：key_item 不为空的锁着的门，身上有那把钥匙就能打开（瓦伦家墓室的铁门要墓园钥匙）。
 
 const OPEN_DEG := 90.0
 const SWING_SEC := 0.35
@@ -14,6 +15,7 @@ var locked_text := "门锁着。"
 var is_open := false
 var to_area := ""                 # 通往的区域（world/areas.gd）；空 = 普通的门
 var to_spawn := ""                # 到了那边站在哪个出生点
+var key_item := ""                # 能开这把锁的钥匙（data/items.json）；空 = 打不开
 var target_deg := 0.0
 var closed_rot := 0.0
 
@@ -58,8 +60,12 @@ func verb_now() -> String:
 
 
 func interact(who: FpController) -> Dictionary:
+	var unlocked_now := false
 	if locked:
-		return {"kind": "door", "name": display_name, "locked": true, "toast": locked_text}
+		if key_item == "" or not GameState.has_item(key_item):
+			return {"kind": "door", "name": display_name, "locked": true, "toast": locked_text}
+		locked = false
+		unlocked_now = true
 	if to_area != "":
 		return {"kind": "travel", "name": display_name, "area": to_area, "spawn": to_spawn}
 	if is_open:
@@ -71,4 +77,8 @@ func interact(who: FpController) -> Dictionary:
 	is_open = not is_open
 	var tw := create_tween()
 	tw.tween_property(self, "rotation:y", closed_rot + deg_to_rad(target_deg), SWING_SEC).set_trans(Tween.TRANS_SINE)
-	return {"kind": "door", "name": display_name, "open": is_open}
+	var r := {"kind": "door", "name": display_name, "open": is_open}
+	if unlocked_now:
+		r["toast"] = "用%s打开了%s。" % [GameState.item_name(key_item), display_name]
+		r["unlocked"] = true
+	return r

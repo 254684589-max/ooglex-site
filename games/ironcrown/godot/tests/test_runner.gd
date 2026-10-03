@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 240.0
+	dog.wait_time = 420.0
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -217,7 +217,10 @@ func test_ui() -> void:
 	# 测试场、霜渡镇、酒馆都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
 	var town := await make_main(false)
 	var inn := await make_area("tavern")
-	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false)
+	var yard := await make_area("churchyard")
+	var nave := await make_area("chapel")
+	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
+		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false)
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -228,6 +231,8 @@ func test_ui() -> void:
 			texts.append(n.text)
 	town.queue_free()
 	inn.queue_free()
+	yard.queue_free()
+	nave.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -2450,6 +2455,175 @@ func test_areas() -> void:
 	var went: bool = await main.travel("tavern", "front")
 	check(not went and GameState.pending_load.is_empty() and main.hud.toast_label.text.contains("走不开"), "有敌人和你打的时候走不进别的区域")
 	e.state = Enemy.State.PATROL
+	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)
+
+
+## 星铁小教堂与墓园（路线图 3.2）
+func test_chapel() -> void:
+	Settings.set_value("third_person", false)
+	check(Areas.known("churchyard") and Areas.known("chapel") and Areas.is_indoor("chapel") and not Areas.is_indoor("churchyard"), "两个新区域：墓园（室外）、小教堂（室内）")
+	GameState.new_game(41)
+	GameState.start_quest("edric_missing")
+	GameState.add_item("edric_letter")
+	check(GameState.clues.has("letter"), "拿到那封没写完的信：自动记下线索（物品数据里的 clue）")
+	check(GameState.item("crypt_key").kind == "quest" and GameState.item("edric_letter").desc.contains("棋子"), "墓园钥匙、少爷的信是任务物品，信的内容写在物品说明里")
+	# —— 主街：小路门 → 墓园
+	GameState.new_game(41)
+	GameState.start_quest("edric_missing")
+	var main := await make_main(false)
+	var p: FpController = main.player
+	var lane: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "churchyard")[0]
+	await aim(p, Vector3(3.3, 0.05, -27.25), lane.global_position + lane.global_transform.basis.x * 0.55 + Vector3(0, 1.1, 0))
+	check(p.interactor.target == lane and lane.prompt() == "前往 · 通往星铁小教堂的小路", "主街右手边的窄巷口：对准木门提示「前往 · 通往星铁小教堂的小路」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
+	var signs := main.find_children("*", "Label3D", true, false).filter(func(l): return l.text == "星铁小教堂")
+	check(signs.size() == 1, "门边挂着「星铁小教堂」的木牌")
+	p.interactor.use()
+	await seconds(0.45)
+	check(GameState.pending_load.get("scene") == "churchyard" and GameState.pending_load.get("spawn") == "lane", "进小路：去墓园")
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "churchyard" and flat(p.global_position).distance_to(Vector2(0, 9.4)) < 0.3 and absf(p.rotation.y) < 0.05, "站在墓园院门内、面朝小教堂（%s）" % str(p.global_position))
+	check(main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_DEPTH, "墓园是室外：月光与夜雾")
+	var omni := main.find_children("*", "OmniLight3D", true, false)
+	check(omni.size() == 3, "三盏灯：小教堂门口、守墓人的灯笼、墓室门边（%d）" % omni.size())
+	var npcs := main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(npcs == ["守墓人"], "墓园里有守墓人（%s）" % str(npcs))
+	var stones: int = (main.world.get_node("Churchyard") as MeshInstance3D).mesh.get_surface_count()
+	check(stones <= 8, "墓园的墙、路、墓碑、墓室按材质合并成一个网格（%d 个表面）" % stones)
+	# 墙翻不过去
+	await place(p, 0.0, 9.0)
+	await hold("move_right", 3.5)
+	check(p.global_position.x > 8.0 and p.global_position.x < 12.8, "往东一直走：被墓碑或东墙挡住，翻不出去（x = %.2f）" % p.global_position.x)
+	await place(p, 0.0, 9.6)
+	await hold("move_back", 1.5)
+	check(p.global_position.z < 10.9, "院门关着：往南出不去（出门靠交互，z = %.2f）" % p.global_position.z)
+	# 守墓人：把人引向墓室与修士的钥匙
+	var r := DialogueRunner.new()
+	check(r.start("churchyard", "gravedigger") and r.speaker() == "守墓人", "守墓人的对话能打开")
+	r.choose(0)
+	check(r.text().contains("墓室") and r.text().contains("修士"), "守墓人：少爷昨天在瓦伦家墓室待了好一阵，钥匙在修士那儿")
+	# 墓室：没钥匙打不开
+	var crypt: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.key_item == "crypt_key")[0]
+	main.set_view(1)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target == crypt, "?view=1 站在墓室门前，对准铁门")
+	var rr: Dictionary = crypt.interact(p)
+	check(rr.get("locked", false) and crypt.locked and str(rr.get("toast", "")).contains("瓦伦"), "没有钥匙：铁门锁着，门楣上刻着「瓦伦」")
+	var bundle: LootContainer = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "valen_crypt_bundle")[0]
+	check(bundle.global_position.x < Churchyard.CRYPT_FRONT_X, "少爷的包袱在墓室里面（铁门后）")
+	# —— 墓园 → 小教堂
+	main.set_view(3)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "进入 · 星铁小教堂", "小教堂门前：提示「进入 · 星铁小教堂」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "chapel" and flat(p.global_position).distance_to(Vector2(0, 4.1)) < 0.3, "进了小教堂，站在门内")
+	check(not main.moon.visible and main.find_children("*", "OmniLight3D", true, false).size() == 3, "室内：没有月光；祭坛两座烛台 + 门边油灯三盏光")
+	check(main.find_children("*", "Npc", true, false).map(func(n): return n.display_name) == ["奥尔本修士"], "小教堂里有奥尔本修士")
+	await place(p, 0.0, 3.5)
+	await hold("move_forward", 3.0)
+	check(p.global_position.z < -2.0 and p.global_position.z > -3.7, "沿中间走道走到祭坛前，被祭台挡住（z = %.2f）" % p.global_position.z)
+	await place(p, 1.65, 3.7)
+	await hold("move_forward", 1.5)
+	check(p.global_position.z > 2.9, "长椅挡着，从长椅中间穿不过去（z = %.2f）" % p.global_position.z)
+	main.set_view(1)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc and p.interactor.target.display_name == "奥尔本修士", "?view=1 对准奥尔本修士能交谈")
+	# —— 奥尔本修士：线索、借钥匙（捐钱）
+	check(r.start("chapel", "alban") and r.speaker() == "奥尔本修士", "修士的对话能打开")
+	var labels: Array = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("打听埃德里克少爷的事。") and not labels.has("能借墓园的钥匙吗？"), "先打听少爷，才会想到借钥匙（%s）" % str(labels))
+	r.choose(labels.find("打听埃德里克少爷的事。"))
+	check(GameState.clues.has("chapel_key") and GameState.has_flag("alban_told") and r.text().contains("钥匙"), "修士：少爷昨天傍晚借走了墓园钥匙（线索）")
+	r.choose(0)
+	check(r.node_id == "key", "追问钥匙")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	var s0 := GameState.silver
+	r.choose(labels.find("（往捐献箱里放 3 枚银币）给教堂添点灯油。"))
+	check(r.node_id == "key_given" and GameState.has_item("crypt_key") and GameState.silver == s0 - 3 and GameState.has_flag("alban_lent_key"), "捐 3 枚银币：修士把墓园钥匙借给你")
+	r.start("chapel", "alban")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(not labels.has("能借墓园的钥匙吗？") and not labels.has("打听埃德里克少爷的事。"), "借到以后不再借第二次、不再重复打听")
+	# 口才：成功 / 失败（失败后只剩捐钱）
+	var sd_pass := seed_for("alban_key_speech", "speech", 11, true)
+	var sd_fail := seed_for("alban_key_speech", "speech", 11, false)
+	for sd in [sd_pass, sd_fail]:
+		GameState.new_game(sd)
+		GameState.start_quest("edric_missing")
+		r.start("chapel", "alban")
+		r.choose(0)
+		r.choose(0)
+		labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+		var si := -1
+		for i in labels.size():
+			if labels[i].contains("口才"):
+				si = i
+		r.choose(si)
+		if sd == sd_pass:
+			check(r.node_id == "key_given" and GameState.has_item("crypt_key") and GameState.silver == 12, "口才说服修士：不花钱借到钥匙")
+		else:
+			check(r.node_id == "key_refused" and not GameState.has_item("crypt_key") and GameState.has_flag("alban_refused"), "口才没说动：「死人也有他们的安宁」")
+			labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+			r.choose(labels.find("（往捐献箱里放 3 枚银币）给教堂添点灯油。"))
+			check(GameState.has_item("crypt_key"), "没说动也还能捐钱借到")
+			r.start("chapel", "alban")
+			check(not r.options().map(func(o): return DialogueRunner.option_label(o)).any(func(l): return l.contains("口才")), "口才失败后不能再试")
+	r.start("chapel", "alban")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("坠星是什么？"), "可以问坠星（星铁教会的来历）")
+	r.choose(labels.find("坠星是什么？"))
+	check(r.text().contains("哈尔文") and r.text().contains("誓"), "修士讲坠星：开国的哈尔文在坠星落地处加冕，加冕时还要发一个誓")
+	# —— 回墓园：用钥匙开墓室、搜包袱、读信
+	main.set_view(3)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "离开 · 回到墓园", "门内对准门：提示「离开 · 回到墓园」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "churchyard" and flat(p.global_position).distance_to(Vector2(0, -6.4)) < 0.3 and absf(absf(p.rotation.y) - PI) < 0.05, "回到墓园：站在小教堂门前、背对着门")
+	crypt = main.find_children("*", "Door", true, false).filter(func(d): return d.key_item == "crypt_key")[0]
+	main.set_view(1)
+	await physics(4)
+	rr = crypt.interact(p)
+	check(not crypt.locked and crypt.is_open and str(rr.get("toast", "")).contains("用墓园钥匙打开了"), "有钥匙：铁门打开，提示「用墓园钥匙打开了瓦伦家墓室的铁门」")
+	bundle = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "valen_crypt_bundle")[0]
+	var got: Array = bundle.take_all()
+	check(got.has("没写完的信") and got.has("6 枚银币") and GameState.has_item("edric_letter") and GameState.clues.has("letter"), "搜包袱：拿到少爷没写完的信，记下线索（%s）" % str(got))
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "修士的线索 + 信：主线推进到「去渡口找少爷」")
+	r.start("chapel", "alban")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("（把墓室里找到的信递给他）"), "带着信回去：可以给修士看")
+	r.choose(labels.find("（把墓室里找到的信递给他）"))
+	check(r.text().contains("渡口") and GameState.has_flag("alban_saw_letter"), "修士读信：今夜只有渡口还点着灯")
+	# —— 墓园存档、读档
+	await place(p, 2.0, 0.0)
+	check(main.save_game("slot2", true), "墓园里能存档")
+	check(main.load_game("slot2"), "读这个存档")
+	main = await reload_main(main)
+	check(main.area == "churchyard" and flat(main.player.global_position).distance_to(Vector2(2.0, 0.0)) < 0.2, "读档回到墓园同一个位置")
+	p = main.player
+	# —— 院门回主街
+	var gate: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "frostford")[0]
+	await aim(p, Vector3(0, 0.05, 9.4), gate.global_position + Vector3(0.7, 1.0, 0))
+	check(p.interactor.target == gate and gate.prompt() == "回到 · 霜渡镇主街", "院门：提示「回到 · 霜渡镇主街」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(3.3, -27.25)) < 0.3 and absf(p.rotation.y - PI / 2) < 0.05, "回到主街：站在小路门外、面朝街心")
 	await free_main(main)
 	GameState.pending_load = {}
 	GameState.new_game(1)

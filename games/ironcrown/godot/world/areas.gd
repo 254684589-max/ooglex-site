@@ -5,8 +5,9 @@ extends RefCounted
 ## 换区域 = 记下去哪、站在哪个出生点 → 重新载入主场景（和读档同一条路，GameState 是自动加载的，不受影响）。
 ## 存档里的 "scene" 字段就是区域名（core/saves.gd 用 NAMES 校验）。
 
-const NAMES := {"frostford": "霜渡镇", "tavern": "「倒钩鱼」酒馆", "test_range": "灰盒测试场", "arena": "训练场"}
-const INDOOR := ["tavern"]
+const NAMES := {"frostford": "霜渡镇", "tavern": "「倒钩鱼」酒馆", "churchyard": "星铁小教堂墓园", "chapel": "星铁小教堂",
+	"test_range": "灰盒测试场", "arena": "训练场"}
+const INDOOR := ["tavern", "chapel"]
 
 
 static func known(area: String) -> bool:
@@ -28,6 +29,10 @@ static func spawns(area: String) -> Dictionary:
 			return Frostford.SPAWNS
 		"tavern":
 			return Tavern.SPAWNS
+		"churchyard":
+			return Churchyard.SPAWNS
+		"chapel":
+			return Chapel.SPAWNS
 	return {}
 
 
@@ -47,4 +52,8 @@ static func views(area: String) -> Array:
 			return Frostford.VIEWS
 		"tavern":
 			return Tavern.VIEWS
+		"churchyard":
+			return Churchyard.VIEWS
+		"chapel":
+			return Chapel.VIEWS
 	return []

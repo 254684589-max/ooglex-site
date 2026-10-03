@@ -8,5 +8,9 @@
   "matilda_told_edric": {"desc": "玛蒂尔达说出了少爷常和南方人在酒馆喝酒（付钱或口才检定成功）", "set_in": "tavern.json matilda/edric_told", "read_in": "tavern.json matilda start_if / menu（换成回顾的说法，不再问一次）"},
   "matilda_paid": {"desc": "给了玛蒂尔达 5 枚银币换消息", "set_in": "tavern.json matilda/edric、edric_refuse", "read_in": "之后的声望或店家态度（阶段 3 以后）"},
   "matilda_refused": {"desc": "口才检定没说动玛蒂尔达（不能再试，读档也刷不出别的结果）", "set_in": "tavern.json matilda/edric_refuse", "read_in": "tavern.json matilda/edric（藏起口才选项，只剩付钱）"},
-  "woodcutter_talked": {"desc": "听伐木工说了桦林边的营火", "set_in": "tavern.json woodcutter/fires", "read_in": "tavern.json woodcutter start_if（之后他睡着了）"}
+  "woodcutter_talked": {"desc": "听伐木工说了桦林边的营火", "set_in": "tavern.json woodcutter/fires", "read_in": "tavern.json woodcutter start_if（之后他睡着了）"},
+  "alban_told": {"desc": "奥尔本修士说了少爷昨天借墓园钥匙的事", "set_in": "chapel.json alban/edric", "read_in": "chapel.json alban（之后能开口借钥匙，不再问一次）"},
+  "alban_lent_key": {"desc": "奥尔本修士把墓园钥匙借给了你（口才说服或往捐献箱放 3 枚银币）", "set_in": "chapel.json alban/key_given", "read_in": "chapel.json alban（不再借第二次）"},
+  "alban_refused": {"desc": "口才没说动奥尔本修士（不能再试，只剩捐钱）", "set_in": "chapel.json alban/key_refused", "read_in": "chapel.json alban/key（藏起口才选项）"},
+  "alban_saw_letter": {"desc": "把少爷的信给奥尔本修士看过", "set_in": "chapel.json alban/letter", "read_in": "chapel.json alban（不再重复给他看）；3.7 尾声修士交书时可以读"}
 }
