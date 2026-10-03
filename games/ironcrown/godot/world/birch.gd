@@ -3,7 +3,7 @@ extends RefCounted
 ## 镇外桦林（路线图 3.5；STORY.md 第三节「镇外桦林：枯桦、雪地、营火；无旗者强盗营地」「去渡口的近路穿过桦林，遭遇无旗者的哨卡」）：原创布局。
 ## 一条往南的林间小路（踩实的雪），两边是白桦林；路中间偏南是无旗者的哨卡：路边的营火、横在路上的拒马、营火后面的窝棚和木箱。
 ## 三个无旗者守着哨卡（两个棍手、一个头目），头目身上有那封盖双钥印的雇佣信（items.json hire_letter）。
-## 北头的木门回霜渡镇（主街南门），南头是去渡口的路（渡口在 3.6，现在走不过去，提示说明）。
+## 北头的木门回霜渡镇（主街南门），南头的门是去渡口的路（3.6 起能走，world/ferry.gd）。
 ## 白桦是代码搭的（细长的树干 + 树梢几根枝条，树皮是 Look.birch() 画出来的贴图），整片树林合成一个网格；每棵树一个圆柱碰撞体（敌人寻路会绕开）。
 ## 坐标：原点在哨卡附近的路中间，北 = -Z（回镇上），南 = +Z（去渡口）。
 
@@ -25,6 +25,7 @@ const ENEMIES := [
 ## 命名出生点（world/areas.gd）：north = 从霜渡镇南门出来，站在桦林北头、面朝南
 const SPAWNS := {
 	"north": [Vector3(0, 0, NORTH + 3.2), 180.0],
+	"south": [Vector3(0, 0, SOUTH - 3.2), 0.0],          # 从渡口回来：站在南头、面朝北（3.6）
 }
 const VIEW_NAMES := ["北头看林间小路", "走近哨卡", "营火边", "南头去渡口的路"]
 ## 网页 ?area=birch&view=N 的固定机位：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
@@ -135,31 +136,7 @@ static func _trees(kit: MeshKit, parent: Node3D) -> void:
 		if not ok:
 			continue
 		placed.append(p)
-		var h := rng.randf_range(7.0, 10.5)
-		var r := rng.randf_range(0.12, 0.2)
-		var lean := Vector3(rng.randf_range(-0.25, 0.25), 0, rng.randf_range(-0.25, 0.25))
-		var top := p + Vector3(0, h, 0) + lean
-		kit.cylinder("birch", p + Vector3(0, -0.1, 0), p + (top - p) * 0.55, r, r * 0.75, 7, 1.0)
-		kit.cylinder("birch", p + (top - p) * 0.55, top, r * 0.75, r * 0.25, 6, 1.0)
-		for k in rng.randi_range(4, 6):                        # 树梢的枝条：往上斜着长，细而黑
-			var at := p + (top - p) * rng.randf_range(0.55, 0.92)
-			var ang := rng.randf() * TAU
-			var dir := Vector3(cos(ang), rng.randf_range(0.6, 1.2), sin(ang)).normalized()
-			var l := rng.randf_range(1.2, 2.6)
-			var mid := at + dir * l * 0.6
-			kit.cylinder("bark", at, mid, r * 0.3, r * 0.18, 4, 0.7)
-			kit.cylinder("bark", mid, mid + (dir + Vector3(rng.randf_range(-0.4, 0.4), 0.3, rng.randf_range(-0.4, 0.4))).normalized() * l * 0.5, r * 0.18, 0.01, 4, 0.7)
-		var body := StaticBody3D.new()
-		body.collision_layer = 1
-		body.collision_mask = 0
-		body.position = p + Vector3(0, 1.5, 0)
-		var cs := CollisionShape3D.new()
-		var cyl := CylinderShape3D.new()
-		cyl.radius = r + 0.05
-		cyl.height = 3.0
-		cs.shape = cyl
-		body.add_child(cs)
-		parent.add_child(body)
+		add_tree(kit, parent, p, rng)
 	# 倒在雪里的枯木（路东边两截、西边一截）
 	for spec in [[Vector3(8.5, 0.2, -14.0), 0.5, 4.0], [Vector3(11.0, 0.2, 15.0), 2.2, 3.2], [Vector3(-10.5, 0.2, -20.0), 1.1, 3.6]]:
 		var c: Vector3 = spec[0]
@@ -178,17 +155,48 @@ static func _trees(kit: MeshKit, parent: Node3D) -> void:
 		parent.add_child(body)
 
 
-## 两头的门：北头回霜渡镇（主街南门的外面）；南头是去渡口的路，渡口还没开放（3.6），走不过去，提示说明
+## 一棵白桦（3.6 起渡口也用）：细长的树干（上下两节）、树梢四到六根往上斜的黑枝条；一个圆柱碰撞体
+static func add_tree(kit: MeshKit, parent: Node3D, p: Vector3, rng: RandomNumberGenerator) -> void:
+	var h := rng.randf_range(7.0, 10.5)
+	var r := rng.randf_range(0.12, 0.2)
+	var lean := Vector3(rng.randf_range(-0.25, 0.25), 0, rng.randf_range(-0.25, 0.25))
+	var top := p + Vector3(0, h, 0) + lean
+	kit.cylinder("birch", p + Vector3(0, -0.1, 0), p + (top - p) * 0.55, r, r * 0.75, 7, 1.0)
+	kit.cylinder("birch", p + (top - p) * 0.55, top, r * 0.75, r * 0.25, 6, 1.0)
+	for k in rng.randi_range(4, 6):                        # 树梢的枝条：往上斜着长，细而黑
+		var at := p + (top - p) * rng.randf_range(0.55, 0.92)
+		var ang := rng.randf() * TAU
+		var dir := Vector3(cos(ang), rng.randf_range(0.6, 1.2), sin(ang)).normalized()
+		var l := rng.randf_range(1.2, 2.6)
+		var mid := at + dir * l * 0.6
+		kit.cylinder("bark", at, mid, r * 0.3, r * 0.18, 4, 0.7)
+		kit.cylinder("bark", mid, mid + (dir + Vector3(rng.randf_range(-0.4, 0.4), 0.3, rng.randf_range(-0.4, 0.4))).normalized() * l * 0.5, r * 0.18, 0.01, 4, 0.7)
+	var body := StaticBody3D.new()
+	body.collision_layer = 1
+	body.collision_mask = 0
+	body.position = p + Vector3(0, 1.5, 0)
+	var cs := CollisionShape3D.new()
+	var cyl := CylinderShape3D.new()
+	cyl.radius = r + 0.05
+	cyl.height = 3.0
+	cs.shape = cyl
+	body.add_child(cs)
+	parent.add_child(body)
+
+
+## 两头的门：北头回霜渡镇（主街南门的外面）；南头去渡口（3.6）
 static func _gates(kit: MeshKit, parent: Node3D) -> void:
 	for spec in [[NORTH + 0.6, "回霜渡镇的木门", false], [SOUTH - 0.6, "去渡口的路", true]]:
 		var z: float = spec[0]
 		for sx in [-1.0, 1.0]:
 			kit.box("timber", Vector3(sx * 1.05, 1.2, z), Vector3(0.2, 2.4, 0.2), Basis.IDENTITY, 0.85, 0.5)
 		kit.box("timber", Vector3(0, 2.36, z), Vector3(2.5, 0.16, 0.2))
-		var gate := Door.make(str(spec[1]), 1.9, 2.0, bool(spec[2]))
+		var gate := Door.make(str(spec[1]), 1.9, 2.0, false)
 		gate.position = Vector3(-0.95, 0, z)
 		if spec[2]:
-			gate.locked_text = "雾越来越浓，再往前就是渡口了。（渡口在后续版本开放）"
+			gate.verb = "前往"
+			gate.to_area = "ferry"
+			gate.to_spawn = "north"
 		else:
 			gate.verb = "回到"
 			gate.to_area = "frostford"

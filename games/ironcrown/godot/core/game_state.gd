@@ -66,6 +66,8 @@ var yielded := {}         # 求饶（或逃跑后认输）的敌人编号 → �
 var playtime := 0.0       # 游戏时间（秒，暂停时不算）
 var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
 var pending_brawl := {}   # 对话里说好要打一架：{brawl, win, lose}，对话关上后由 main 取走开打（3.3；不存档）
+var pending_fight := {}   # 对话说崩了要动手：{fight, win}，对话关上后由 main 取走开打（3.6；不存档）
+var pending_leave := ""   # 对话里说好了，这组人走了：编号，对话关上后由 main 撤掉（3.6；不存档）
 
 signal inventory_changed
 

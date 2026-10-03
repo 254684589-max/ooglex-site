@@ -1,0 +1,162 @@
+{
+  "_说明": "渡口的对话（路线图 3.6；STORY.md 第三节第 4 步「渡口：雾中找到埃德里克和塞拉斯……强盗头目「灰手」奥弗临时改了主意，想把两人都劫走。战斗：与奥弗和剩下的强盗（奥弗可以被说服退走：口才或威吓检定，或者付钱）」）。奥弗：让饿肚子的人活下去（STORY 人物表），说崩了就动手（fight 效果，combat/encounter.gd），说通了就带人走（leave 效果）。塞拉斯：讲道理的坏人。埃德里克：不想被当成联姻的筹码。抉择（交出 / 放走 / 勒索）在 3.7。",
+  "offer": {
+    "speaker": "「灰手」奥弗",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "offer_parley"}], "node": "why"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（一个灰白头发的高个子转过身来，左手戴着一只磨亮了的灰皮手套）又来一个。誓剑，渡口今晚不开张，回你的镇上去。",
+        "do": [{"set": "offer_parley"}],
+        "options": [
+          {"text": "我来接瓦伦家的少爷。", "next": "why"},
+          {"text": "你就是「灰手」？", "next": "who"}
+        ]
+      },
+      "who": {
+        "text": "无旗者都这么叫我。前年冬天，税官收走了我们最后一袋麦子，饿死了三个人——这只手，就是那年冬天冻坏的。",
+        "options": [
+          {"text": "我来接瓦伦家的少爷。", "next": "why"}
+        ]
+      },
+      "why": {
+        "text": "（他朝码头上扬了扬下巴）那个南方人雇我们，等他和少爷做完买卖，再把少爷「护送」回双钥港。我想了想——两个人一起带走，赎金能翻三倍。你说，这买卖划不划算？",
+        "options": [
+          {"text": "（亮出雇佣信）信上的蜡印你认得。双钥港的人，会让你们拿着钱活着回去吗？", "if": [{"has_item": "hire_letter"}],
+            "check": {"id": "offer_letter_speech", "skill": "speech", "dc": 11, "pass": "convinced", "fail": "laugh"}},
+          {"text": "他们是瓦伦家的人。动了他们，灰鲸河两岸再没有你们落脚的地方。",
+            "check": {"id": "offer_speech", "skill": "speech", "dc": 16, "pass": "convinced", "fail": "laugh"}},
+          {"text": "滚。不然今晚渡口多几具尸体。",
+            "check": {"id": "offer_intimidate", "skill": "intimidate", "dc": 15, "pass": "scared", "fail": "laugh"}},
+          {"text": "（掂了掂钱袋）30 枚银币，够你们的人过冬。", "if": [{"silver": 30}], "do": [{"pay": 30}, {"set": "offer_paid"}], "next": "paid"},
+          {"text": "那就动手吧。", "do": [{"fight": "ferry_offer", "win": "offer_defeated"}], "end": true},
+          {"text": "我再想想。", "end": true}
+        ]
+      },
+      "convinced": {
+        "text": "（他沉默了很久，摘下那只灰手套，又戴上）……你说得对。双钥港的人从来不给我们留活路。弟兄们，收家伙，走。（他回头看了一眼码头）南方人，你的账，下回再算。",
+        "do": [{"set": "offer_left"}, {"rep": "outlaws", "delta": 5}],
+        "options": [
+          {"text": "（看着他们走进雾里）", "do": [{"leave": "ferry_offer"}], "end": true}
+        ]
+      },
+      "scared": {
+        "text": "（他打量着你手里的剑，又看了看身边两个瘦得脱了形的手下）……为一个南方人的钱，不值得。走。",
+        "do": [{"set": "offer_left"}],
+        "options": [
+          {"text": "（看着他们走进雾里）", "do": [{"leave": "ferry_offer"}], "end": true}
+        ]
+      },
+      "paid": {
+        "text": "（他把钱袋掂了掂，扔给身边的人）够买二十袋麦子。这买卖，我们不做了。誓剑，你是个怪人。",
+        "do": [{"set": "offer_left"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "（看着他们走进雾里）", "do": [{"leave": "ferry_offer"}], "end": true}
+        ]
+      },
+      "laugh": {
+        "text": "（他笑了，慢慢抽出剑）说得好听。弟兄们——",
+        "options": [
+          {"text": "（拔剑）", "do": [{"fight": "ferry_offer", "win": "offer_defeated"}], "end": true}
+        ]
+      }
+    }
+  },
+  "silas": {
+    "speaker": "塞拉斯",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"not_flag": "offer_left"}, {"not_flag": "offer_defeated"}], "node": "tense"}
+    ],
+    "nodes": {
+      "tense": {
+        "text": "（一个穿着好靴子的南方人，手按在剑柄上，眼睛一直盯着岸上）誓剑，先把那位「灰手」先生打发了，我们再聊。",
+        "options": [
+          {"text": "好。", "end": true}
+        ]
+      },
+      "greet": {
+        "text": "（他松开剑柄，整了整衣领）多谢，誓剑。在下塞拉斯，替双钥港的卡斯韦尔家办事。少爷是自愿跟我走的——我们只是做一笔买卖。",
+        "options": [
+          {"text": "什么买卖？", "next": "deal"},
+          {"text": "桦林里那些无旗者，是你雇的。", "if": [{"has_item": "hire_letter"}, {"not_flag": "silas_admitted"}], "next": "hired"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还有什么要问的？",
+        "options": [
+          {"text": "再说说那笔买卖。", "next": "deal"},
+          {"text": "桦林里那些无旗者，是你雇的。", "if": [{"has_item": "hire_letter"}, {"not_flag": "silas_admitted"}], "next": "hired"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "deal": {
+        "text": "少爷手里有一张借据：瓦伦家欠我家主人一大笔钱，担保是霜渡镇渡口的税权。他把借据带出来，我家主人给他一条去南方的路，再给他一份体面的差事。各取所需。",
+        "do": [{"set": "heard_debt"}],
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "hired": {
+        "text": "（他笑了笑，一点也不慌）雇他们是为了保险——买卖做完，把少爷「护送」回双钥港，免得他半路后悔。谁知道那位「灰手」先生胃口这么大。",
+        "do": [{"set": "silas_admitted"}],
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      }
+    }
+  },
+  "edric": {
+    "speaker": "埃德里克",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"not_flag": "offer_left"}, {"not_flag": "offer_defeated"}], "node": "tense"},
+      {"if": [{"flag": "edric_showed_debt"}], "node": "after"}
+    ],
+    "nodes": {
+      "tense": {
+        "text": "（年轻人把一只皮夹抱在怀里，脸色发白）……他们是冲我来的？",
+        "options": [
+          {"text": "待在这儿别动。", "end": true}
+        ]
+      },
+      "greet": {
+        "text": "（他把皮夹往怀里收了收）你是我父亲派来的？……我不回去。",
+        "options": [
+          {"text": "你在信里说，不想做一枚被摆来摆去的棋子。", "if": [{"has_item": "edric_letter"}], "next": "letter"},
+          {"text": "你父亲很担心你。", "next": "father"},
+          {"text": "那张借据在你手里？", "next": "debt"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "letter": {
+        "text": "（他怔了一下）你去过我母亲那儿了……是。父亲要把我送去塞弗林家联姻，换他们在摄政会议上替瓦伦家说话。在他眼里，我就是一枚棋子。",
+        "options": [
+          {"text": "那张借据在你手里？", "next": "debt"}
+        ]
+      },
+      "father": {
+        "text": "担心？他担心的是联姻黄了。",
+        "options": [
+          {"text": "那张借据在你手里？", "next": "debt"}
+        ]
+      },
+      "debt": {
+        "text": "（他打开皮夹，露出一张盖着好几个印的厚纸）就是这个。瓦伦家欠卡斯韦尔家的债，担保是渡口的税权。我拿它换去南方的路——这是我自己的选择。",
+        "do": [{"set": "edric_showed_debt"}, {"quest": "edric_missing", "stage": "choice"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "after": {
+        "text": "（他把皮夹抱得更紧了）你打算怎么办，誓剑？",
+        "options": [
+          {"text": "（还没想好）", "end": true}
+        ]
+      }
+    }
+  }
+}
