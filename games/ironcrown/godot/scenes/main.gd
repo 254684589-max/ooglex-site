@@ -5,6 +5,7 @@ extends Node3D
 ## 3.1 起有多个区域（world/areas.gd）：主街、「倒钩鱼」酒馆……；走进通往别处的门 = travel()：淡出、记下去哪、重新载入本场景、
 ## 放到命名出生点、淡入、自动存档（GDD 第十节：进入新区域时）。网页 ?area=tavern 直接从酒馆开始（截图与冒烟测试用）。
 ## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
+## ?area=ferry&ending=deliver|release|extort 直接显示结束画面（3.7，截图与冒烟测试用；不改存档与旗标）。
 ## ?area=tavern&brawl=1 一进酒馆就和醉汉「大桶」打起来（3.3，截图与冒烟测试用；不设旗标）。
 ## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
 ## NPC 与敌人仍是占位胶囊，界面上明确标注（主角的第三人称人物在 A.1 换成了模型）。
@@ -41,6 +42,8 @@ var hud: Hud
 var touch: TouchControls
 var pause_menu: PauseMenu
 var defeat_panel: DefeatPanel
+var ending_panel: EndingPanel    # 结束画面（3.7）
+var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
 var inventory_panel: InventoryPanel
 var loot_panel: LootPanel
 var char_panel: CharacterPanel
@@ -73,6 +76,7 @@ func _ready() -> void:
 	GameState.pending_brawl = {}
 	GameState.pending_fight = {}
 	GameState.pending_leave = ""
+	GameState.pending_ending = ""
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
@@ -152,6 +156,8 @@ func _ready() -> void:
 	if area == "birch":                  # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）
 		hud.set_hint(Birch.TEACH_TOUCH if touch_mode else Birch.TEACH_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
+	if _query("ending") in EndingPanel.RECAP:
+		show_ending.call_deferred("prologue", _query("ending"))
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:
@@ -412,6 +418,10 @@ func _build_ui() -> void:
 	defeat_panel = DefeatPanel.new()
 	layer.add_child(defeat_panel)
 	defeat_panel.retry_requested.connect(func(): _retry.call_deferred())
+	ending_panel = EndingPanel.new()
+	layer.add_child(ending_panel)
+	ending_panel.closed.connect(_on_ending_closed)
+	ending_panel.restart_requested.connect(func(): _restart.call_deferred())
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -862,6 +872,15 @@ func _on_dialogue_closed() -> void:
 	if lv != "":
 		var n := Encounter.leave(world, lv)
 		print("IC_ENCOUNTER leave id=%s npcs=%d" % [lv, n])
+	if area == "ferry":                                     # 渡口（3.7）：抉择之后人走了、修士来了
+		match Ferry.refresh(world):
+			"arrived":
+				hud.toast("雾里有人提着灯走下坡来……", 3.0)
+				print("IC_FERRY alban_arrived")
+	var ending := GameState.pending_ending
+	GameState.pending_ending = ""
+	if ending != "":
+		show_ending.call_deferred(ending)
 	player.interactor.refresh()
 	var t := player.interactor.target
 	hud.show_prompt(t.prompt() if t else "")
@@ -900,6 +919,42 @@ func _on_brawl_ended(won: bool) -> void:
 			fade.color.a = 0.85                     # 眼前一黑，再慢慢缓过来
 			create_tween().tween_property(fade, "color:a", 0.0, 1.2)
 	save_game.call_deferred("auto", true)
+
+
+# ---------------- 结束画面（3.7） ----------------
+
+## 序章结束：暂停，渐显「第一章 · 黑鹭堡　开发中」和这一夜的回顾
+func show_ending(id: String, choice := "") -> void:
+	if choice == "":
+		choice = str(GameState.get_flag("prologue_edric"))
+	player.melee.cancel_press()
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	lock_seen = false
+	if touch:
+		touch.release_all()
+	hud.show_prompt("")
+	hud.set_hint("")
+	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
+	touch_was_visible = touch.visible
+	touch.visible = false
+	ending_panel.open(choice, Settings.reduced_motion)
+	print("IC_ENDING id=%s choice=%s" % [id, choice])
+
+
+func _on_ending_closed() -> void:
+	get_tree().paused = false
+	hud.visible = true
+	touch.visible = touch_was_visible
+	if not touch_mode:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	print("IC_ENDING closed")
+
+
+## 从头再来：新游戏（存档不动），回到霜渡镇主街
+func _restart() -> void:
+	GameState.new_game()
+	_reload()
 
 
 # ---------------- 对峙转战斗（3.6） ----------------

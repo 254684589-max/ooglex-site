@@ -138,6 +138,11 @@ godot/
   面板外框共用 `ui/ui_kit.gd`。**坑**：自动换行的 Label 在第一次排版前按 0 宽度算最小高度，面板会被撑满整屏——先给宽度、排版一帧后再定滚动区高度。对话白名单加了 `silver`（条件）与 `pay`（效果）。
 - **成长与声望（2.7 已实现）**：`data/progression.json`；`GameState.train(技能, 进度)` 是唯一的涨技能入口（命中、格挡、检定、搜刮、潜行都调它），专长效果只认 `PERK_EFFECTS` 白名单，各系统用 `has_perk()` 查；声望 `change_rep()` 发 `rep_changed` 信号。
   **坑**：停掉处理（`PROCESS_MODE_DISABLED`）的物理体默认会被移出物理世界（`disable_mode = REMOVE`），测试里冻住的敌人砍不到，要改成 `DISABLE_MODE_KEEP_ACTIVE`；字体子集只有 GB2312 的几何符号（■□▲◆◇↑↓），没有 ▰▱▼。
+- **抉择与尾声（3.7 已实现）**：抉择记在**字符串旗标** `prologue_edric`（`deliver` / `release` / `extort`），对话条件用 `{"flag": 名, "eq": 值}` 分支；`GameState.has_flag()` 按类型判断真假（布尔 / 数字照旧，字符串非空即真）。
+  **坑**：原来写成 `bool(flags[名])`，字符串值会报「Nonexistent 'bool' constructor」，渡口和小教堂判断「做没做抉择」全错。
+  对话白名单加了 `earn`（收银币，大于 0）和 `ending`（结束画面编号，只认 `EndingPanel.ENDINGS`）：`ending` 只记在 `GameState.pending_ending`，对话关上后 `main.show_ending()` 打开 `ui/ending_panel.gd`（暂停、显示鼠标、按抉择写回顾，宽度跟窗口收；HUD 和触屏按钮先藏起来，否则提示和「挡」「攻」会叠在回顾文字上，关掉画面再还原）。
+  「在雾里再走走」关掉画面接着玩，「从头再来」= `GameState.new_game()` + 重新载入（存档不动）。渡口的对话关上时 `Ferry.refresh()` 按旗标撤掉埃德里克和塞拉斯、放奥尔本修士；修士在渡口时小教堂里没有他，交完书回小教堂（`after_book`）。
+  网页 `?ending=deliver|release|extort` 直接打开结束画面（截图与冒烟测试用，不改旗标）。
 - 自动化测试遍历所有对话文件：每个节点可达、每个选项指向存在的节点、每个旗标都在 `flags.json` 里登记。
 
 ### 4.6 画面（参考图的雾夜）

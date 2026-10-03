@@ -10,7 +10,8 @@
         "find_clues": {"objective": "打探埃德里克少爷的下落：问问镇上的人——街上的更夫、「倒钩鱼」的老板娘、星铁小教堂的修士……（至少两条线索）", "advance_when": {"clues_at_least": 2, "to": "to_ferry"}},
         "to_ferry": {"objective": "线索都指向渡口。出主街南门，穿过镇外桦林去渡口找少爷", "advance_when": {"clue": "hire_letter", "to": "warned"}},
         "warned": {"objective": "桦林里的无旗者收了钱，要在渡口劫下一个年轻人——雇主的信上压着双钥印。赶在他们前头去渡口"},
-        "choice": {"objective": "埃德里克抱着借据不肯回去，塞拉斯等着做完买卖。决定怎么办：带他回去、放他走，还是扣下借据（抉择在后续版本开放）"}
+        "choice": {"objective": "埃德里克抱着借据不肯回去，塞拉斯等着做完买卖。决定怎么办：带他回去、放他走，还是扣下借据"},
+        "after_choice": {"objective": "雾里有人提着灯走下坡来——是奥尔本修士"}
       }
     },
     "hob_debt": {

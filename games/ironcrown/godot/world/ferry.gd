@@ -5,6 +5,8 @@ extends RefCounted
 ## 一道木码头伸进雾里的河面，码头尽头东边泊着平底渡船。
 ## 人：码头上是埃德里克少爷和南方人塞拉斯；码头根上「灰手」奥弗带着两个手下堵着路（对话：说服 / 威吓 / 付钱，或者动手——combat/encounter.gd）；渡工躲在小屋门口。
 ## 奥弗那伙人倒下 / 认输了（GameState.dead / yielded）就按敌人放回去（倒着或跪着、能搜身）；说服走了（旗标 offer_left）就不再出现。
+## 3.7：埃德里克拿出借据后三选一（旗标 prologue_edric）——之后埃德里克和塞拉斯都离开渡口（回镇上 / 坐船南下），奥尔本修士提着灯来到岸上（alban_ferry），
+## 交出旧书后序章结束；修士在渡口时小教堂里没有他，序章结束（prologue_done）后他回小教堂。refresh() 在对话关上后按旗标把人对上（main 调用）。
 ## 坐标：原点在码头根的岸边，北 = -Z（回桦林），南 = +Z（河面）。人物仍是占位胶囊，马是占位的方块。
 
 const HALF_X := 16.0
@@ -25,6 +27,7 @@ const OFFER_GROUP := [
 	["无旗者", "clubber", "ferry_thug_a", Vector3(-0.6, 0, -1.4), 2.8, "", Color("5a3a2e")],
 	["无旗者", "swordsman", "ferry_thug_b", Vector3(4.8, 0, -1.4), -2.8, "", Color("3a3e4a")],
 ]
+const ALBAN_POS := Vector3(-1.4, 0, -4.2)        # 3.7：修士从北边的坡上下来，站在码头根旁边的岸上
 const EDRIC_POS := Vector3(2.0, DECK_Y, 11.6)
 const SILAS_POS := Vector3(2.6, DECK_Y, 10.2)
 const FERRYMAN_POS := Vector3(-6.2, 0, -4.4)
@@ -260,16 +263,67 @@ static func _people(parent: Node3D) -> void:
 		n.set_meta("enemy_id", id)
 		n.add_to_group(Encounter.group_name(ENCOUNTER))
 		parent.add_child(n)
+	_pair(parent)
+	_alban(parent)
+	var fm := Npc.make("渡工", FERRYMAN_LINES, Color("4a5a4a"))
+	fm.position = FERRYMAN_POS
+	fm.rotation.y = -PI / 2                             # 面朝东（码头）
+	parent.add_child(fm)
+
+
+## 埃德里克与塞拉斯：做出抉择以前在码头上（之后都走了）
+static func _pair(parent: Node3D) -> void:
+	if GameState.has_flag("prologue_edric"):
+		return
 	for spec in [["埃德里克", "edric", EDRIC_POS, Color("2e3a4e")], ["塞拉斯", "silas", SILAS_POS, Color("3a2e44")]]:
 		var p := Npc.make(str(spec[0]), [], spec[3])
 		p.dialogue_area = "ferry"
 		p.dialogue_id = str(spec[1])
 		p.position = spec[2]
 		parent.add_child(p)                             # 脸朝北（岸上）
-	var fm := Npc.make("渡工", FERRYMAN_LINES, Color("4a5a4a"))
-	fm.position = FERRYMAN_POS
-	fm.rotation.y = -PI / 2                             # 面朝东（码头）
-	parent.add_child(fm)
+
+
+## 奥尔本修士：抉择之后提着灯来到岸上，序章结束后回小教堂
+static func _alban(parent: Node3D) -> void:
+	if not GameState.has_flag("prologue_edric") or GameState.has_flag("prologue_done"):
+		return
+	var a := Npc.make("奥尔本修士", [], Color("3a3a4a"))
+	a.dialogue_area = "ferry"
+	a.dialogue_id = "alban_ferry"
+	a.position = ALBAN_POS
+	a.rotation.y = PI * 0.85                            # 面朝码头（东南）
+	var lantern := MeshInstance3D.new()                 # 手里的风灯：一小块亮的灯罩 + 一盏不投影的暖光
+	var bm := BoxMesh.new()
+	bm.size = Vector3(0.14, 0.2, 0.14)
+	bm.material = _ember_mat()
+	lantern.mesh = bm
+	lantern.position = Vector3(0.38, 0.85, -0.1)
+	a.add_child(lantern)
+	var l := OmniLight3D.new()
+	l.light_color = Look.LAMP_COLOR
+	l.light_energy = 0.9
+	l.omni_range = 4.0
+	l.position = lantern.position
+	a.add_child(l)
+	parent.add_child(a)
+
+
+## 对话关上后按旗标把人对上（3.7）：抉择后埃德里克和塞拉斯离开、修士来了。返回发生了什么（"left" / "arrived" / ""）给 main 提示
+static func refresh(parent: Node3D) -> String:
+	var what := ""
+	if GameState.has_flag("prologue_edric"):
+		for n in parent.find_children("*", "", true, false):
+			if n is Npc and (n as Npc).dialogue_id in ["edric", "silas"]:
+				n.queue_free()
+				what = "left"
+		var has_alban := false
+		for n in parent.find_children("*", "", true, false):
+			if n is Npc and (n as Npc).dialogue_id == "alban_ferry" and not n.is_queued_for_deletion():
+				has_alban = true
+		if not has_alban and not GameState.has_flag("prologue_done"):
+			_alban(parent)
+			what = "arrived"
+	return what
 
 
 static func _water_mat() -> StandardMaterial3D:
