@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "人物动作映射（路线图 A.1，D4 = B）。动作全部来自 Quaternius Universal Animation Library 1 / 2 [Standard]（CC0，见 assets/SOURCES.md）；换动作只改这个文件，再运行 tools/build_character_anims.gd 重新打包动画库。时间单位都是秒（动作文件里的时间，不是游戏时间）。",
+  "note": "人物动作映射（路线图 A.1，D4 = B；3.3 加了徒手的四个动作）。动作全部来自 Quaternius Universal Animation Library 1 / 2 [Standard]（CC0，见 assets/SOURCES.md）；换动作只改这个文件，再运行 tools/build_character_anims.gd 重新打包动画库。时间单位都是秒（动作文件里的时间，不是游戏时间）。",
   "sources": {
     "ual1": {
       "zip": "assets/source/quaternius/Universal Animation Library[Standard].zip",
@@ -25,7 +25,11 @@
     "Sword_Regular_A": {"src": "ual2", "loop": false},
     "Sword_Regular_B": {"src": "ual2", "loop": false},
     "Sword_Block": {"src": "ual2", "loop": false},
-    "Hit_Knockback": {"src": "ual2", "loop": false}
+    "Hit_Knockback": {"src": "ual2", "loop": false},
+    "Punch_Jab": {"src": "ual1", "loop": false},
+    "Punch_Cross": {"src": "ual1", "loop": false},
+    "OverhandThrow": {"src": "ual2", "loop": false},
+    "Idle_Shield_Loop": {"src": "ual2", "loop": true}
   },
   "roles": {
     "idle": "Idle_Loop",
@@ -38,7 +42,9 @@
     "hit": "Hit_Chest",
     "stagger": "Hit_Knockback",
     "death": "Death01",
-    "block": "Sword_Block"
+    "block": "Sword_Block",
+    "idle_fists": "Punch_Jab",
+    "block_fists": "Idle_Shield_Loop"
   },
   "locomotion": {
     "note": "ref_speed = 动作本身一个周期走过的距离 ÷ 时长（米 / 秒，从 UAL1_Standard_RM 的根骨骼位移量出）；播放速度 = 实际移动速度 ÷ ref_speed，夹在 [scale_min, scale_max]。低于 stop_below 算站着；高于 run_from 换成跑步动作。",
@@ -57,6 +63,16 @@
     "heavy": {"clip": "Sword_Attack", "wind_peak": 0.33, "impact": 0.40}
   },
   "block": {"hold": 0.17},
+  "fists": {
+    "note": "徒手（3.3）。举拳待机停在 Punch_Jab 第 0 帧（双拳护脸的架势，idle_at）；轻拳一刺拳（左手）、二直拳（右手）；重拳借用 OverhandThrow（抡圆了从上往下砸，手是张开的，占位）；空手格挡停在 Idle_Shield_Loop 第 0 帧（小臂横在胸前，block_at）。impact = 出拳那只手最靠前、最快的时刻（逐帧量手骨的位置）；播放速度的算法和持剑一样（见 attacks）。",
+    "idle_at": 0.0,
+    "block_at": 0.0,
+    "light": [
+      {"clip": "Punch_Jab", "impact": 0.19},
+      {"clip": "Punch_Cross", "impact": 0.27}
+    ],
+    "heavy": {"clip": "OverhandThrow", "wind_peak": 0.25, "impact": 0.36}
+  },
   "grip": {
     "note": "剑挂在 hand_r 骨骼上的位置与朝向（米 / 度），用截图校准：剑身沿手骨的 +Z（拇指一侧）再向手指方向（+Y）偏 45°（偏小时待机像把剑举向一侧，偏大时格挡像横着指向旁边，45° 折中），剑面法线朝手心（-X）；位置在手掌中心。",
     "position": [-0.025, 0.06, 0.0],

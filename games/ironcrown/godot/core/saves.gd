@@ -13,7 +13,7 @@ const VERSION := 1
 const SLOTS := ["slot1", "slot2", "slot3", "auto", "quick"]
 const MANUAL := ["slot1", "slot2", "slot3"]
 const SLOT_NAMES := {"slot1": "栏位 1", "slot2": "栏位 2", "slot3": "栏位 3", "auto": "自动存档", "quick": "快速存档"}
-const SCENE_NAMES := {"frostford": "霜渡镇", "test_range": "灰盒测试场", "arena": "训练场"}
+const SCENE_NAMES := Areas.NAMES          # 存档里的场景 = 区域名（3.1 起由 world/areas.gd 统一登记）
 
 ## 版本迁移：旧版本号 → 把字典升到下一版的函数（第一版还没有旧格式；测试里会临时塞一条验证流程）
 var migrations := {}

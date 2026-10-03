@@ -17,7 +17,7 @@ const DEFAULT_STRENGTH := 5
 const PROGRESSION_PATH := "res://data/progression.json"
 const ATTRS := ["strength", "agility", "constitution", "wits"]
 ## 专长效果白名单（data/progression.json 的 effect 只能用这些）
-const PERK_EFFECTS := ["combo3", "counter", "parry_window", "blunt_stagger", "armor_pierce", "check_bonus", "stealth_slow", "carry", "loot_bonus"]
+const PERK_EFFECTS := ["combo3", "counter", "parry_window", "blunt_stagger", "armor_pierce", "fist_stagger", "guard_cheap", "check_bonus", "stealth_slow", "carry", "loot_bonus"]
 const SKILL_MAX := 100
 const LEVEL_EVERY := 10          # 技能每累计提升 10 次，角色升一级、得 1 个属性点
 const REP_MIN := -100
@@ -62,8 +62,10 @@ var silver := 0
 var looted := {}          # 搜刮过的容器编号 → 剩下的东西
 var picked: Array = []    # 已经捡走的地上物品（Pickup.pickup_id），读档后不再出现（2.8）
 var dead := {}            # 已经倒下的敌人编号 → 倒下的位置 [x, y, z]，读档后直接是倒下的样子（2.8）
+var yielded := {}         # 求饶（或逃跑后认输）的敌人编号 → 跪下的位置 [x, y, z]，读档后还跪在那里、能搜身（3.5）
 var playtime := 0.0       # 游戏时间（秒，暂停时不算）
 var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
+var pending_brawl := {}   # 对话里说好要打一架：{brawl, win, lose}，对话关上后由 main 取走开打（3.3；不存档）
 
 signal inventory_changed
 
@@ -84,6 +86,7 @@ func new_game(seed_override := -1) -> void:
 	looted.clear()
 	picked.clear()
 	dead.clear()
+	yielded.clear()
 	playtime = 0.0
 	var pd := progression()
 	skills = DEFAULT_SKILLS.duplicate()
@@ -207,6 +210,10 @@ func add_item(id: String, n := 1) -> void:
 	for i in n:
 		inventory.append(id)
 	inventory_changed.emit()
+	# 物品数据里写了 clue 的（3.2：墓室里那封没写完的信），拿到手就记下线索
+	var c := str(item(id).get("clue", ""))
+	if c != "":
+		add_clue(c)
 
 
 func has_item(id: String) -> bool:
@@ -384,13 +391,16 @@ func clues_for(quest: String) -> Array:
 	return out
 
 
-## 阶段的 advance_when：{"clues_at_least": n, "to": 下一阶段}——线索够了自动推进
+## 阶段的 advance_when：{"clues_at_least": n, "to": 下一阶段}——线索够了自动推进；{"clue": 线索, "to": 下一阶段}——拿到这条线索就推进（3.5）。
+## set_stage 推进以后会再查一次新阶段（先拿到雇佣信、后凑够线索时，一口气推到底）
 func _auto_advance(id: String) -> void:
 	if not quest_active(id):
 		return
 	var st: Dictionary = quest_data().quests[id].stages.get(quest_stage(id), {})
 	var rule: Dictionary = st.get("advance_when", {})
 	if rule.has("clues_at_least") and clues_for(id).size() >= int(rule.clues_at_least):
+		set_stage(id, str(rule.to))
+	elif rule.has("clue") and clues.has(str(rule.clue)):
 		set_stage(id, str(rule.to))
 
 
@@ -565,7 +575,7 @@ func to_dict() -> Dictionary:
 	return {
 		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "clues": clues.duplicate(),
 		"inventory": inventory.duplicate(), "equipped": equipped.duplicate(), "silver": silver, "looted": looted.duplicate(true),
-		"picked": picked.duplicate(), "dead": dead.duplicate(true), "playtime": playtime,
+		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime,
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
 		"skills": skills.duplicate(), "skill_xp": skill_xp.duplicate(), "skill_ups": skill_ups, "level": level, "attr_points": attr_points,
 		"rep": rep.duplicate(),
@@ -597,6 +607,9 @@ func from_dict(d: Dictionary) -> void:
 	dead = {}
 	for k in d.get("dead", {}):
 		dead[str(k)] = Array(d.dead[k]).map(func(x): return float(x))
+	yielded = {}
+	for k in d.get("yielded", {}):
+		yielded[str(k)] = Array(d.yielded[k]).map(func(x): return float(x))
 	playtime = float(d.get("playtime", 0.0))
 	var at: Dictionary = d.get("attributes", {})
 	strength = int(at.get("strength", strength))

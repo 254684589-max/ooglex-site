@@ -4,9 +4,21 @@ extends RefCounted
 ## 一条往北（-Z）的石板街，两侧 11 栋半木结构房屋，左手边有「倒钩鱼」酒馆和一个种着枯树、有口井的小广场，
 ## 街尽头是领主宅邸。雾夜：深度雾 + 贴地雾带 + 冷月光 + 暖色窗光与 4 盏街灯。
 ## 房屋、街灯、枯树都是代码搭的几何体 + Poly Haven 写实贴图（assets/SOURCES.md）；人物仍是占位胶囊。
-## 1.3 的更夫、锁着的门、木箱上的面包都搬到这里。
+## 1.3 的更夫、锁着的门、木箱上的面包都搬到这里。3.1 起「倒钩鱼」酒馆的门能进去（world/tavern.gd）；
+## 3.2 起右手边一条窄巷口有扇木门，通往星铁小教堂与墓园（world/churchyard.gd）。
+## 3.5 起街南头（出生点背后）有一道南门，出去是镇外桦林（world/birch.gd），再往南是渡口。
 
 const SPAWN := Vector3(0, 0, 6)
+## 命名出生点（3.1，world/areas.gd）：[位置, 水平朝向（度，0 = 面朝 -Z，正 = 向左转）]
+## tavern_door：从「倒钩鱼」酒馆出来，站在门外街边、背对酒馆（面朝 +X）
+const SPAWNS := {
+	"start": [SPAWN, 0.0],
+	"tavern_door": [Vector3(-3.1, 0, -7.1), -90.0],
+	"chapel_lane": [Vector3(3.3, 0, -27.25), 90.0],     # 从墓园的小路回来：站在小路门外、面朝街心（-X）
+	"south_gate": [Vector3(0, 0, 9.9), 0.0],            # 从桦林回来：站在南门里、面朝街道（3.5）
+}
+const SOUTH_GATE_Z := 11.1        # 南门（3.5）：在南边看不见的围墙前面
+const LANE_Z := -27.25           # 右手边第 4、5 栋房子之间的窄巷：通往星铁小教堂墓园的小路门（3.2）
 const STREET_HALF := 3.4         # 石板路半宽
 const FRONT := 4.5               # 两侧房子正面离街中线的距离
 const NORTH_END := -48.0         # 领主宅邸正面
@@ -36,7 +48,7 @@ const VIEWS := [
 const LEFT := [
 	[4.0, -3.5, {"floors": 1, "roof": "eaves", "chimney": true, "door_x": -1.6, "seed": 11, "lit": 0.6}],
 	[-5.0, -12.0, {"floors": 2, "roof": "gable", "door_x": -1.4, "seed": 12, "lit": 0.9, "sign": "倒钩鱼",
-		"door": {"name": "「倒钩鱼」酒馆的门", "text": "酒馆今晚打烊了，门上挂着木牌：「东家去渡口了」。"}}],
+		"door": {"name": "「倒钩鱼」酒馆", "to_area": "tavern", "to_spawn": "front", "verb": "进入"}}],     # 3.1 起能进去
 	[-13.5, -20.0, {"floors": 1, "roof": "eaves", "door_x": 0.8, "seed": 13, "lit": 0.4}],
 	[-27.0, -34.0, {"floors": 2, "roof": "eaves", "chimney": true, "door_x": 1.6, "seed": 14, "lit": 0.55}],
 	[-35.5, -41.5, {"floors": 1, "roof": "gable", "door_x": 0.0, "seed": 15, "lit": 0.5}],
@@ -116,11 +128,51 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	crate.position = CRATE_POS
 	crate.rotation.y = 0.2
 	parent.add_child(crate)
+	_lane_gate(parent)
+	_south_gate(parent)
 	var dummy := TrainingDummy.new()
 	dummy.position = DUMMY_POS
 	dummy.rotation.y = 0.3
 	parent.add_child(dummy)
 	return Transform3D(Basis.IDENTITY, SPAWN)
+
+
+## 去墓园的小路门（3.2）：两栋房子之间 1.5 米的窄巷口，两根木柱 + 横梁 + 小檐，一扇木门；门柱上挂着写「星铁小教堂」的木牌
+static func _lane_gate(parent: Node3D) -> void:
+	var kit := MeshKit.new()
+	var x := FRONT + 0.05
+	for dz in [-0.72, 0.72]:
+		kit.box("timber", Vector3(x, 1.2, LANE_Z + dz), Vector3(0.16, 2.4, 0.16), Basis.IDENTITY, 0.85, 0.5)
+	kit.box("timber", Vector3(x, 2.36, LANE_Z), Vector3(0.18, 0.16, 1.6))
+	kit.box("roof", Vector3(x - 0.1, 2.55, LANE_Z), Vector3(0.7, 0.08, 1.9), Basis(Vector3.BACK, deg_to_rad(18.0)))
+	kit.box("timber", Vector3(x - 0.25, 1.85, LANE_Z - 0.95), Vector3(0.04, 0.3, 0.7))           # 木牌
+	parent.add_child(kit.build({"timber": Look.mat("timber"), "roof": Look.mat("roof")}))
+	var gate := Door.make("通往星铁小教堂的小路", 1.1, 2.0, false)
+	gate.verb = "前往"
+	gate.to_area = "churchyard"
+	gate.to_spawn = "lane"
+	gate.position = Vector3(x, 0, LANE_Z - 0.55)
+	gate.rotation.y = -PI / 2                     # 门板沿 +Z 方向伸出，正面朝街
+	parent.add_child(gate)
+	Blocks.label(parent, "星铁小教堂", Vector3(x - 0.3, 1.85, LANE_Z - 0.95), 30, 0.006)
+
+
+## 南门（3.5）：街南头两根木柱 + 横梁，一扇对开宽的木门，出去是镇外桦林；横梁上写着「南门」
+static func _south_gate(parent: Node3D) -> void:
+	var kit := MeshKit.new()
+	var z := SOUTH_GATE_Z
+	for sx in [-1.0, 1.0]:
+		kit.box("timber", Vector3(sx * 1.05, 1.3, z), Vector3(0.22, 2.6, 0.22), Basis.IDENTITY, 0.85, 0.5)
+	kit.box("timber", Vector3(0, 2.55, z), Vector3(2.7, 0.18, 0.22))
+	kit.box("roof", Vector3(0, 2.75, z), Vector3(3.0, 0.08, 0.7))
+	parent.add_child(kit.build({"timber": Look.mat("timber"), "roof": Look.mat("roof")}))
+	var gate := Door.make("南门（往桦林、渡口）", 1.9, 2.2, false)
+	gate.verb = "前往"
+	gate.to_area = "birch"
+	gate.to_spawn = "north"
+	gate.position = Vector3(-0.95, 0, z)
+	parent.add_child(gate)
+	Blocks.label(parent, "南门", Vector3(0, 3.05, z - 0.05), 30, 0.006)
 
 
 ## 地面：大片雪泥地（带碰撞）+ 石板路 + 两侧路缘石

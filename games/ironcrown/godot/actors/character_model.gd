@@ -76,9 +76,10 @@ static func pick_locomotion(m: Dictionary, speed: float, crouching: bool, armed:
 	return {"role": r, "scale": clampf(speed / float(c.ref_speed), float(c.scale_min), float(c.scale_max))}
 
 
-## 轻击第 combo 段用哪个动作（只有两个，第三段回到第一个）：{clip, impact}
-static func light_attack(m: Dictionary, combo: int) -> Dictionary:
-	var list: Array = m.attacks.light
+## 轻击第 combo 段用哪个动作（只有两个，第三段回到第一个）：{clip, impact}。
+## moves = 整张映射（用持剑的 attacks）或者直接传 attacks / fists 一组（3.3 空手出拳）
+static func light_attack(moves: Dictionary, combo: int) -> Dictionary:
+	var list: Array = moves.attacks.light if moves.has("attacks") else moves.light
 	return list[combo % list.size()]
 
 

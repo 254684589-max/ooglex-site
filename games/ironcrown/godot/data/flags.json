@@ -4,5 +4,16 @@
   "heard_cloaked_men": {"desc": "看穿更夫有所隐瞒：少爷身后还跟着几个披斗篷的人（洞察检定成功）", "set_in": "frostford.json watchman/edric_more", "read_in": "序章任务线索（2.3）"},
   "knows_double_key_ring": {"desc": "知道南方人戴着双钥印戒（卡斯韦尔家）", "set_in": "frostford.json watchman/stranger", "read_in": "frostford.json watchman/stranger_ring（之后与塞拉斯对话时读取）"},
   "watchman_offended": {"desc": "威吓更夫失败，更夫不再搭理你", "set_in": "frostford.json watchman/watch_offended", "read_in": "frostford.json watchman start_if（更夫换成冷淡的开场）"},
-  "watchman_paid": {"desc": "塞给更夫几枚银币，他说出了斗篷人的去向", "set_in": "frostford.json watchman/edric_paid", "read_in": "之后的银币与声望（2.6 / 2.7）"}
+  "watchman_paid": {"desc": "塞给更夫几枚银币，他说出了斗篷人的去向", "set_in": "frostford.json watchman/edric_paid", "read_in": "之后的银币与声望（2.6 / 2.7）"},
+  "matilda_told_edric": {"desc": "玛蒂尔达说出了少爷常和南方人在酒馆喝酒（付钱或口才检定成功）", "set_in": "tavern.json matilda/edric_told", "read_in": "tavern.json matilda start_if / menu（换成回顾的说法，不再问一次）"},
+  "matilda_paid": {"desc": "给了玛蒂尔达 5 枚银币换消息", "set_in": "tavern.json matilda/edric、edric_refuse", "read_in": "之后的声望或店家态度（阶段 3 以后）"},
+  "matilda_refused": {"desc": "口才检定没说动玛蒂尔达（不能再试，读档也刷不出别的结果）", "set_in": "tavern.json matilda/edric_refuse", "read_in": "tavern.json matilda/edric（藏起口才选项，只剩付钱）"},
+  "woodcutter_talked": {"desc": "听伐木工说了桦林边的营火", "set_in": "tavern.json woodcutter/fires", "read_in": "tavern.json woodcutter start_if（之后他睡着了）"},
+  "matilda_brawl_offer": {"desc": "玛蒂尔达说：让赖账的大桶把账结了（不许动刀），她就说少爷的事", "set_in": "tavern.json matilda/dagu_offer", "read_in": "tavern.json matilda/edric（不再提一次）、dagu（能找他要账）"},
+  "dagu_beaten": {"desc": "和大桶徒手打了一架，把他打到认输（他结了酒钱）", "set_in": "tavern.json dagu/challenge、won（打架的 win 旗标，combat/brawl.gd）", "read_in": "tavern.json matilda（「大桶把账结了」）、dagu start_if"},
+  "dagu_won": {"desc": "和大桶打架被他打倒了（可以再来一场）", "set_in": "tavern.json dagu/challenge、won（打架的 lose 旗标，combat/brawl.gd）", "read_in": "tavern.json dagu start_if（换成嘲笑你的开场）"},
+  "alban_told": {"desc": "奥尔本修士说了少爷昨天借墓园钥匙的事", "set_in": "chapel.json alban/edric", "read_in": "chapel.json alban（之后能开口借钥匙，不再问一次）"},
+  "alban_lent_key": {"desc": "奥尔本修士把墓园钥匙借给了你（口才说服或往捐献箱放 3 枚银币）", "set_in": "chapel.json alban/key_given", "read_in": "chapel.json alban（不再借第二次）"},
+  "alban_refused": {"desc": "口才没说动奥尔本修士（不能再试，只剩捐钱）", "set_in": "chapel.json alban/key_refused", "read_in": "chapel.json alban/key（藏起口才选项）"},
+  "alban_saw_letter": {"desc": "把少爷的信给奥尔本修士看过", "set_in": "chapel.json alban/letter", "read_in": "chapel.json alban（不再重复给他看）；3.7 尾声修士交书时可以读"}
 }

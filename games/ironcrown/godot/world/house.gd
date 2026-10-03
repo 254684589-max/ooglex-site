@@ -11,7 +11,8 @@ extends RefCounted
 ##   seed          随机种子（哪些窗亮着）
 ##   lit           亮窗比例 0..1
 ##   door_x        门在正面的位置（本地 x）
-##   door          {} = 普通木门（不能交互）；{"name": "...", "text": "..."} = 锁着的门（可交互，提示 text）
+##   door          {} = 普通木门（不能交互）；{"name": "...", "text": "..."} = 锁着的门（可交互，提示 text）；
+##                 {"name": "...", "to_area": "tavern", "to_spawn": "front", "verb": "进入"} = 通往另一个区域的门（3.1）
 ##   sign          酒馆招牌上的字（"" = 没有招牌）
 ##   chimney       是否有烟囱
 ##   stone_upper   上层也用石砌（领主宅邸）
@@ -94,8 +95,11 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 	# 门：锁着的门可以交互；普通门只是一块木板
 	var dspec: Dictionary = spec.get("door", {})
 	if not dspec.is_empty():
-		var door := Door.make(dspec.get("name", "门"), 1.1, 2.1, true)
+		var door := Door.make(dspec.get("name", "门"), 1.1, 2.1, not dspec.has("to_area"))
 		door.locked_text = dspec.get("text", "门锁着。")
+		door.to_area = str(dspec.get("to_area", ""))
+		door.to_spawn = str(dspec.get("to_spawn", ""))
+		door.verb = str(dspec.get("verb", "进入"))
 		door.position = Vector3(door_x - 0.55, 0, 0.05)
 		root.add_child(door)
 	var sign_text: String = spec.get("sign", "")

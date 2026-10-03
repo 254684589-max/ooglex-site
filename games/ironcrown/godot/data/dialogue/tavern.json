@@ -1,0 +1,182 @@
+{
+  "_说明": "「倒钩鱼」酒馆的对话（路线图 3.1；STORY.md 第三节「酒馆：玛蒂尔达说少爷最近常和一个南方口音、穿好靴子的人喝酒；给钱、口才检定、或者跟醉汉打一架都能问出来」）。3.3 起有第三种问法：玛蒂尔达请你让赖账的醉汉「大桶」把账结了（不许动刀），和他徒手打一架，打赢了她就说。",
+  "matilda": {
+    "speaker": "玛蒂尔达",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "matilda_told_edric"}], "node": "greet_again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（她擦着杯子，抬眼看了看你腰上的剑）进来暖暖身子吧。今晚雾大，客人都早早回家了。要点什么？",
+        "options": [
+          {"text": "大桶把账结了。", "if": [{"flag": "dagu_beaten"}, {"not_flag": "matilda_told_edric"}], "next": "brawl_paid"},
+          {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "matilda_told_edric"}], "next": "edric"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "镇上最近怎么样？", "next": "town"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "greet_again": {
+        "text": "又来了？角落那张桌子还空着。",
+        "options": [
+          {"text": "再说说少爷和那个南方人。", "next": "edric_recap"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "镇上最近怎么样？", "next": "town"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还要什么？",
+        "options": [
+          {"text": "大桶把账结了。", "if": [{"flag": "dagu_beaten"}, {"not_flag": "matilda_told_edric"}], "next": "brawl_paid"},
+          {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "matilda_told_edric"}], "next": "edric"},
+          {"text": "再说说少爷和那个南方人。", "if": [{"flag": "matilda_told_edric"}], "next": "edric_recap"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "镇上最近怎么样？", "next": "town"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "town": {
+        "text": "冬天赖着不走，渡船一个月比一个月少。烽燧那边的消息一天比一天坏，可镇上的人还是照样喝酒、赌骰子、等春天。",
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "bread": {
+        "text": "（她从吧台底下摸出一块还温着的黑面包）两枚银币。……门口那个老霍布要是又来讨，你别理他。算了，理也行，他其实不坏。",
+        "do": [{"pay": 2}, {"give_item": "bread"}],
+        "options": [
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "edric": {
+        "text": "（她手上的活停了一下，朝门口看了一眼）少爷的事……不该从我这张嘴里说出去。",
+        "options": [
+          {"text": "（把 5 枚银币推过去）就当我买你一句话。", "if": [{"silver": 5}], "do": [{"pay": 5}, {"set": "matilda_paid"}], "next": "edric_told"},
+          {"text": "我是替管家来的。少爷要是出了事，这间酒馆也躲不过。", "if": [{"not_flag": "matilda_refused"}],
+            "check": {"id": "matilda_edric_speech", "skill": "speech", "dc": 13, "pass": "edric_told", "fail": "edric_refuse"}},
+          {"text": "（朝吧台那头的大个子扬了扬下巴）那个人，是不是给你添了麻烦？", "if": [{"not_flag": "matilda_brawl_offer"}], "next": "dagu_offer"},
+          {"text": "那我不为难你。", "next": "menu"}
+        ]
+      },
+      "edric_refuse": {
+        "text": "（她把杯子放下）誓剑大人，喝酒我欢迎，打听人就算了。",
+        "do": [{"set": "matilda_refused"}],
+        "options": [
+          {"text": "（把 5 枚银币推过去）那这样呢？", "if": [{"silver": 5}], "do": [{"pay": 5}, {"set": "matilda_paid"}], "next": "edric_told"},
+          {"text": "（朝吧台那头的大个子扬了扬下巴）那个人，是不是给你添了麻烦？", "if": [{"not_flag": "matilda_brawl_offer"}], "next": "dagu_offer"},
+          {"text": "好吧。", "next": "menu"}
+        ]
+      },
+      "dagu_offer": {
+        "text": "（她压低了声音）大桶，渡口扛包的。三个晚上的酒钱没付，昨晚还砸了我一张凳子。……你要是能让他老老实实把账结了——不许动刀子——少爷的事，我就告诉你。",
+        "do": [{"set": "matilda_brawl_offer"}],
+        "options": [
+          {"text": "交给我。", "end": true},
+          {"text": "再说吧。", "next": "menu"}
+        ]
+      },
+      "brawl_paid": {
+        "text": "（她看了一眼正揉着下巴的大桶，嘴角动了一下）三个晚上的酒钱，一个子儿不少。行，说话算话——",
+        "options": [
+          {"text": "说吧。", "next": "edric_told"}
+        ]
+      },
+      "edric_told": {
+        "text": "……这半个月，少爷差不多天天来，跟一个南方口音的人坐在角落里喝酒。那人穿一双好靴子，付账用的是新铸的银币，从来不让我找零。昨晚他们走的时候，少爷没喝多少，倒是那个南方人一直盯着门口。",
+        "do": [{"set": "matilda_told_edric"}, {"clue": "boots"}],
+        "options": [
+          {"text": "那个南方人住在哪儿？", "next": "edric_where"},
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "edric_where": {
+        "text": "住哪儿？那种人不住镇上。他的马拴在渡口的棚子里——这是渡工说的，可不是我说的。",
+        "options": [
+          {"text": "明白。", "next": "menu"}
+        ]
+      },
+      "edric_recap": {
+        "text": "我说过了：南方口音，好靴子，新银币，马拴在渡口。别的我真不知道。",
+        "options": [
+          {"text": "好。", "next": "menu"}
+        ]
+      }
+    }
+  },
+  "dagu": {
+    "speaker": "大桶",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "dagu_beaten"}], "node": "beaten"},
+      {"if": [{"flag": "dagu_won"}], "node": "won"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（一个比你高出半个头的大个子靠在吧台边，斜着眼看你）看什么看？要请我喝一杯，就坐下；不请，就站远点。",
+        "options": [
+          {"text": "玛蒂尔达说你欠了三个晚上的酒钱。", "if": [{"flag": "matilda_brawl_offer"}], "next": "challenge"},
+          {"text": "你是做什么的？", "next": "who"},
+          {"text": "打扰了。", "end": true}
+        ]
+      },
+      "who": {
+        "text": "渡口扛包的。一包盐二十斤，我一趟扛四包。……现在？雾这么大，船不开，没包可扛，只能喝。",
+        "options": [
+          {"text": "玛蒂尔达说你欠了三个晚上的酒钱。", "if": [{"flag": "matilda_brawl_offer"}], "next": "challenge"},
+          {"text": "不打扰你喝了。", "end": true}
+        ]
+      },
+      "challenge": {
+        "text": "（他把杯子往吧台上一墩，站直了身子）酒钱？想让我掏钱，先把我放倒。说好了，不许动刀子——在酒馆里动刀子的，算不上汉子。",
+        "options": [
+          {"text": "那就来吧。（徒手打一架）", "do": [{"brawl": "drunk", "win": "dagu_beaten", "lose": "dagu_won"}], "end": true},
+          {"text": "算了。", "end": true}
+        ]
+      },
+      "won": {
+        "text": "（他哈哈大笑，又灌了一口酒）还站得起来？还想再挨一顿？",
+        "options": [
+          {"text": "再来一场。（徒手打一架）", "if": [{"flag": "matilda_brawl_offer"}], "do": [{"brawl": "drunk", "win": "dagu_beaten", "lose": "dagu_won"}], "end": true},
+          {"text": "改天。", "end": true}
+        ]
+      },
+      "beaten": {
+        "text": "（他揉着下巴，把几枚银币拍在吧台上）结了，结了！……你这拳头，渡口扛包的都比不上。",
+        "options": [
+          {"text": "以后少喝点。", "end": true}
+        ]
+      }
+    }
+  },
+  "woodcutter": {
+    "speaker": "伐木工",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "woodcutter_talked"}], "node": "asleep"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（他迷迷糊糊地抬起头，眯着眼看你）你看什么？……没看？没看就好。这么大的雾，砍不了柴，只能喝。",
+        "options": [
+          {"text": "雾里出过什么事吗？", "next": "fires"},
+          {"text": "少喝点。", "end": true}
+        ]
+      },
+      "fires": {
+        "text": "前天夜里，我在桦林边上看见营火，不止一堆。那边可没有正经人过夜……我没敢过去，扛着斧子就回来了。",
+        "do": [{"set": "woodcutter_talked"}, {"clue": "birch_fires"}],
+        "options": [
+          {"text": "多谢提醒。", "end": true}
+        ]
+      },
+      "asleep": {
+        "text": "（他已经趴在桌上睡着了，鼻子里一下一下地出着粗气。）",
+        "options": [
+          {"text": "（不吵他了）", "end": true}
+        ]
+      }
+    }
+  }
+}

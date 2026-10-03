@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 240.0
+	dog.wait_time = 420.0
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -79,6 +79,25 @@ func make_main(test_range := true) -> Node3D:
 	add_child(main)
 	await frames(3)
 	return main
+
+
+## 直接在某个区域开一局（3.1；和网页 ?area= 一样）
+func make_area(area: String) -> Node3D:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.area = area
+	add_child(main)
+	await frames(3)
+	return main
+
+
+## data/dialogue/ 下所有区域的对话文件（不带扩展名）
+func dialogue_areas() -> Array:
+	var out := []
+	for f in DirAccess.get_files_at("res://data/dialogue"):
+		if f.ends_with(".json"):
+			out.append(f.get_basename())
+	out.sort()
+	return out
 
 
 func free_main(main: Node3D) -> void:
@@ -167,6 +186,9 @@ func test_ui() -> void:
 		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
 	# 第三人称（2.9）
 	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
+	# 徒手格斗（3.3）
+	texts.append_array([Birch.TEACH_DESKTOP, Birch.TEACH_TOUCH, "（求饶）"])     # 桦林（3.5）
+	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
 	texts.append("存档 / 读档覆盖存到这里读取（空）（损坏，读不了：）存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。✓ 已存档：× 没有存档：读不了已读取：有存档：点「菜单」，按 Esc 打开菜单，里「存档 / 读档」可以继续（F9 读快速存档）级游戏时间分钟读取最近的存档重新开始附近有敌人在和你打，不能存档你已经倒下了这一份存档坏了已退回上一份存档内容损坏（不是有效的 JSON）这是更新版本的游戏写的存档写不进浏览器存储（可能是无痕模式或空间满了）")
@@ -184,19 +206,25 @@ func test_ui() -> void:
 			texts.append(str(qd.quests[qid].stages[st].objective))
 	for cid in qd.clues:
 		texts.append(str(qd.clues[cid].text))
-	# 全部对话台词与选项（2.1）
-	var dlg := DialogueRunner.load_file("frostford")
-	for did in dlg:
-		if did.begins_with("_"):
-			continue
-		texts.append(str(dlg[did].speaker))
-		for nid in dlg[did].nodes:
-			texts.append(str(dlg[did].nodes[nid].text))
-			for o in dlg[did].nodes[nid].options:
-				texts.append(str(o.text))
-	# 测试场和霜渡镇两个场景都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
+	# 全部对话台词与选项（2.1；3.1 起每个区域一个对话文件，全都查）
+	for darea in dialogue_areas():
+		var dlg := DialogueRunner.load_file(darea)
+		for did in dlg:
+			if did.begins_with("_"):
+				continue
+			texts.append(str(dlg[did].speaker))
+			for nid in dlg[did].nodes:
+				texts.append(str(dlg[did].nodes[nid].text))
+				for o in dlg[did].nodes[nid].options:
+					texts.append(str(o.text))
+	# 测试场、霜渡镇、酒馆都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
 	var town := await make_main(false)
-	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false)
+	var inn := await make_area("tavern")
+	var yard := await make_area("churchyard")
+	var nave := await make_area("chapel")
+	var woods := await make_area("birch")
+	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
+		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false)
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -206,6 +234,10 @@ func test_ui() -> void:
 		if n is Label or n is Label3D or n is Button:
 			texts.append(n.text)
 	town.queue_free()
+	inn.queue_free()
+	yard.queue_free()
+	nave.queue_free()
+	woods.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -620,7 +652,9 @@ func test_frostford() -> void:
 	var signs := main.find_children("*", "Label3D", true, false).filter(func(l): return l.text == "倒钩鱼")
 	check(signs.size() == 2, "「倒钩鱼」酒馆招牌两面都有字")
 	var doors := main.find_children("*", "Door", true, false).filter(func(d): return d.locked)
-	check(doors.size() == 3, "三扇锁着的门：民居、酒馆、领主宅邸（%d）" % doors.size())
+	check(doors.size() == 2, "两扇锁着的门：民居、领主宅邸（%d；酒馆 3.1 起能进去）" % doors.size())
+	var tavern_door := main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "tavern")
+	check(tavern_door.size() == 1 and not tavern_door[0].locked and tavern_door[0].prompt() == "进入 · 「倒钩鱼」酒馆", "酒馆的门通往酒馆内部（3.1）")
 	var fog := get_tree().get_nodes_in_group("fog_band")
 	check(fog.size() >= 10, "贴地雾带 %d 片" % fog.size())
 	# 画质分档
@@ -711,15 +745,17 @@ func key_ev(code: Key) -> InputEventKey:
 
 func test_dialogue() -> void:
 	GameState.new_game(1)        # 旗标会影响对话：每次从一局新游戏开始
-	# 数据：霜渡镇所有对话都通过校验
-	var all := DialogueRunner.load_file("frostford")
+	# 数据：每个区域的对话都通过校验（3.1 起不止霜渡镇）
 	var bad := []
-	for did in all:
-		if did.begins_with("_"):
-			continue
-		for e in DialogueRunner.validate(all[did]):
-			bad.append("%s：%s" % [did, e])
-	check(all.has("watchman") and bad.is_empty(), "霜渡镇的对话全部通过校验：节点都走得到、选项都指向存在的节点、能结束（问题：%s）" % str(bad))
+	var areas := dialogue_areas()
+	for darea in areas:
+		var all := DialogueRunner.load_file(darea)
+		for did in all:
+			if did.begins_with("_"):
+				continue
+			for e in DialogueRunner.validate(all[did]):
+				bad.append("%s/%s：%s" % [darea, did, e])
+	check(areas.has("frostford") and areas.has("tavern") and bad.is_empty(), "所有区域的对话（%s）全部通过校验：节点都走得到、选项都指向存在的节点、能结束（问题：%s）" % [", ".join(areas), str(bad)])
 	var broken := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [{"text": "去 b", "next": "b"}, {"text": "去 x", "next": "x"}]},
 		"b": {"text": "b", "options": [{"text": "回 a", "next": "a"}]}, "c": {"text": "孤岛", "options": [{"text": "走", "end": true}]}}}
 	var errs := DialogueRunner.validate(broken)
@@ -821,10 +857,13 @@ func test_checks() -> void:
 	check(differ, "不同存档种子的结果不一样（不是写死的）")
 	# 旗标登记：对话里用到的都登记了，登记的都有地方设置
 	var reg := GameState.flag_registry()
-	var text := FileAccess.get_file_as_string("res://data/dialogue/frostford.json")
+	var text := ""
+	for darea in dialogue_areas():
+		text += FileAccess.get_file_as_string("res://data/dialogue/%s.json" % darea)
 	var unused := []
 	for f in reg:
-		if not f.begins_with("_") and not text.contains('"set": "%s"' % f):
+		# 打架的输赢旗标（3.3）写在 brawl 效果的 win / lose 上
+		if not f.begins_with("_") and not text.contains('"set": "%s"' % f) and not text.contains('"win": "%s"' % f) and not text.contains('"lose": "%s"' % f):
 			unused.append(f)
 	check(reg.size() >= 5 and unused.is_empty(), "data/flags.json 登记的旗标都在对话里有地方设置（没设置的：%s）" % str(unused))
 	var bad := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [
@@ -916,6 +955,9 @@ func test_quests() -> void:
 			var to := str(q.stages[st].get("advance_when", {}).get("to", ""))
 			if to != "" and not q.stages.has(to):
 				bad.append("%s/%s 自动推进到不存在的阶段 %s" % [qid, st, to])
+			var need := str(q.stages[st].get("advance_when", {}).get("clue", ""))
+			if need != "" and not qd.clues.has(need):
+				bad.append("%s/%s 等的线索 %s 不存在" % [qid, st, need])
 	for cid in qd.clues:
 		if not qd.quests.has(str(qd.clues[cid].quest)):
 			bad.append("线索 %s 属于不存在的任务" % cid)
@@ -1497,12 +1539,12 @@ func test_inventory() -> void:
 	check(GameState.equip("club") and m.view.model == "club" and m.weapon().base == 8, "装备木棍：手里换成木棍，基础伤害 8")
 	check(GameState.has_item("short_sword") and not GameState.is_equipped("short_sword"), "换下来的短剑还在背包里")
 	GameState.unequip("weapon")
-	var no_w := [false]
-	m.no_weapon.connect(func(): no_w[0] = true)
+	check(m.unarmed() and m.view.model == "fists" and m.weapon_skill() == "brawl", "卸下武器：手里是拳头，用格斗技能（3.3）")
 	m.toggle_draw()
-	check(no_w[0] and m.state == Melee.State.SHEATHED, "卸下武器后拔不出剑，提示去背包装备")
+	await seconds(0.45)
+	check(m.state == Melee.State.IDLE and m.view.visible, "空手按 R：举起拳头（3.3；以前是提示去背包装备）")
 	GameState.equip("short_sword")
-	check(m.view.model == "sword", "重新装备短剑")
+	check(m.view.model == "sword" and m.state == Melee.State.SHEATHED, "重新装备短剑：拳头放下，换回剑（再按一次拔剑）")
 	m.toggle_draw()
 	await seconds(0.5)
 	GameState.take_item("short_sword")
@@ -2259,3 +2301,818 @@ func test_character() -> void:
 	GameState.new_game(23)
 	await free_main(main)
 	Settings.set_value("third_person", false)
+
+
+## 区域切换与「倒钩鱼」酒馆（路线图 3.1）
+func test_areas() -> void:
+	Settings.set_value("third_person", false)
+	check(Areas.known("tavern") and Areas.is_indoor("tavern") and not Areas.is_indoor("frostford") and Saves.SCENE_NAMES.has("tavern"), "区域登记：酒馆是室内区域，存档认得它")
+	check(Areas.spawn("frostford", "tavern_door") is Transform3D and Areas.spawn("tavern", "front") is Transform3D and Areas.spawn("tavern", "nowhere") == null, "两个区域都有命名出生点，名字不对返回空")
+	# —— 主街：走到酒馆门口，按交互进门
+	GameState.new_game(31)
+	GameState.start_quest("edric_missing")
+	var main := await make_main(false)
+	var p: FpController = main.player
+	var door: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "tavern")[0]
+	var door_mid := door.global_position + door.global_transform.basis.x * 0.55 + Vector3(0, 1.1, 0)
+	await aim(p, Vector3(-3.1, 0.05, -7.1), door_mid)
+	check(p.interactor.target == door and p.interactor.target.prompt() == "进入 · 「倒钩鱼」酒馆", "站在酒馆门外对准门：提示「进入 · 「倒钩鱼」酒馆」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
+	p.melee.health = 77
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	p.interactor.use()
+	await seconds(0.45)
+	var pend: Dictionary = GameState.pending_load
+	check(rr[0] == 1 and pend.get("scene") == "tavern" and pend.get("spawn") == "front", "按交互：淡出后去酒馆（%s）" % str(pend))
+	check(main.fade.color.a > 0.9, "出门前画面淡成黑色")
+	check(int(pend.get("player", {}).get("health", 0)) == 77, "生命值带过去（77）")
+	main = await reload_main(main)
+	p = main.player
+	await frames(5)
+	check(main.area == "tavern" and main.scene_name() == "tavern", "换到了酒馆区域")
+	check(flat(p.global_position).distance_to(Vector2(Tavern.DOOR_X, 2.6)) < 0.3 and absf(p.rotation.y) < 0.05, "站在酒馆门内的出生点、面朝大堂（%s）" % str(p.global_position))
+	check(p.melee.health == 77 and main.arrived_by == "front", "生命值还是 77，记得是从门走进来的")
+	check(main.hud.toast_label.text == "「倒钩鱼」酒馆" and main.hud.hint_label.text == "", "进门提示区域名，不再显示开场的操作提示")
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and auto.data.scene == "tavern", "进入新区域自动存档（GDD 第十节）")
+	await seconds(0.5)
+	check(main.fade.color.a < 0.05, "黑屏淡出，看得见酒馆")
+	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and main.env.background_color.r < 0.1, "室内：没有月光，换成暖暗的环境光和薄烟")
+	var omni := main.find_children("*", "OmniLight3D", true, false)
+	var fire := omni.filter(func(l): return l is Tavern.FireLight)
+	check(omni.size() == 3 and fire.size() == 1, "三盏光：炉火、吧台油灯、桌上蜡烛（%d）" % omni.size())
+	var e0: float = fire[0].light_energy
+	await seconds(0.2)
+	check(fire[0].flicker and absf(fire[0].light_energy - e0) > 0.001, "炉火在闪")
+	var npcs := main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(npcs.has("玛蒂尔达") and npcs.has("伐木工") and npcs.has("货郎"), "酒馆里有玛蒂尔达、伐木工、货郎（%s）" % str(npcs))
+	var room: MeshInstance3D = main.world.get_node("Tavern")
+	check(room.mesh.get_surface_count() <= 7, "整间酒馆按材质合并成一个网格，%d 个表面" % room.mesh.get_surface_count())
+	# 碰撞：墙、壁炉、吧台、楼梯
+	await place(p, 0.5, -0.8)
+	await hold("move_left", 2.5)
+	check(p.global_position.x < -2.0 and p.global_position.x > -2.9, "从吧台前沿过道往西走到壁炉前，被炉台挡住、走不进火里（x = %.2f）" % p.global_position.x)
+	await place(p, -0.5, 2.5)
+	await hold("move_back", 2.0)
+	check(p.global_position.z > 2.9 and p.global_position.z < 3.5, "往南走到墙根被南墙挡住，出不去（z = %.2f）" % p.global_position.z)
+	await place(p, 0.5, -0.8)
+	await hold("move_forward", 1.5)
+	check(p.global_position.z > -1.85, "吧台挡着，走不到玛蒂尔达身后（z = %.2f）" % p.global_position.z)
+	await place(p, 2.4, 1.5)
+	await hold("move_right", 2.0)
+	check(p.global_position.x < 3.05, "楼梯上不去（x = %.2f）" % p.global_position.x)
+	var gate: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.locked)[0]
+	var r0: Dictionary = gate.interact(p)
+	check(r0.get("locked", false) and str(r0.get("toast", "")).contains("客房"), "梯口的栅门锁着：玛蒂尔达说楼上客房住满了")
+	# 固定机位：吧台前对准玛蒂尔达
+	main.set_view(1)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc and p.interactor.target.display_name == "玛蒂尔达", "?view=1 站在吧台前，对准玛蒂尔达能交谈")
+	# —— 玛蒂尔达：付钱问出线索
+	var r := DialogueRunner.new()
+	GameState.new_game(31)
+	GameState.start_quest("edric_missing")
+	check(r.start("tavern", "matilda") and r.speaker() == "玛蒂尔达", "玛蒂尔达的对话能打开")
+	var labels: Array = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("打听埃德里克少爷的事。") and labels.has("来块面包。（2 银币）"), "接了少爷的任务才能打听；有钱能买面包（%s）" % str(labels))
+	var s0 := GameState.silver
+	r.choose(labels.find("来块面包。（2 银币）"))
+	check(GameState.silver == s0 - 2 and GameState.has_item("bread") and r.node_id == "bread", "买面包：花 2 银币，背包里多一块面包")
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	r.choose(labels.find("打听埃德里克少爷的事。"))
+	check(r.node_id == "edric", "打听少爷：她先不肯说")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	s0 = GameState.silver
+	r.choose(0)
+	check(r.node_id == "edric_told" and GameState.silver == s0 - 5 and GameState.has_flag("matilda_paid") and GameState.clues.has("boots"), "塞 5 枚银币：她说出南方人的事，记下线索「好靴子」")
+	r.choose(0)
+	check(r.node_id == "edric_where" and r.text().contains("渡口"), "追问：南方人的马拴在渡口")
+	check(r.start("tavern", "matilda") and r.node_id == "greet_again", "说过以后再来：换成熟客的开场")
+	# 口才检定：成功 / 失败（读档刷不出别的结果）
+	var sd_pass := seed_for("matilda_edric_speech", "speech", 13, true)
+	var sd_fail := seed_for("matilda_edric_speech", "speech", 13, false)
+	GameState.new_game(sd_pass)
+	GameState.start_quest("edric_missing")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	var speech_i := -1
+	for i in labels.size():
+		if labels[i].contains("口才"):
+			speech_i = i
+	check(speech_i >= 0 and labels[speech_i].contains("把握"), "口才选项显示把握（%s）" % (labels[speech_i] if speech_i >= 0 else "没有"))
+	r.choose(speech_i)
+	check(r.node_id == "edric_told" and GameState.clues.has("boots") and GameState.silver == 12, "口才检定成功：不花钱也问出来")
+	GameState.new_game(sd_fail)
+	GameState.start_quest("edric_missing")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	r.choose(speech_i)
+	check(r.node_id == "edric_refuse" and GameState.has_flag("matilda_refused") and not GameState.clues.has("boots"), "口才检定失败：她不肯说")
+	r.choose(r.options().map(func(o): return o.text).find("好吧。"))
+	r.choose(0)
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(r.node_id == "edric" and not labels.any(func(l): return l.contains("口才")) and labels.any(func(l): return l.contains("银币")), "失败后不能再试口才，只剩付钱（%s）" % str(labels))
+	GameState.silver = 1
+	r.start("tavern", "matilda")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(not labels.has("来块面包。（2 银币）"), "钱不够：不显示买面包")
+	# 伐木工：桦林边的营火；两条线索凑齐，主线推进到「去渡口」
+	GameState.new_game(32)
+	GameState.start_quest("edric_missing")
+	r.start("tavern", "woodcutter")
+	r.choose(0)
+	check(GameState.clues.has("birch_fires") and GameState.has_flag("woodcutter_talked"), "伐木工说了桦林边的营火（线索）")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	r.choose(0)
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "两条线索凑齐：主线推进到「去渡口找少爷」")
+	check(r.start("tavern", "woodcutter") and r.node_id == "asleep", "再找伐木工：他睡着了")
+	# —— 出门：回到主街酒馆门外
+	await place(p, Tavern.DOOR_X, 2.3)
+	p.rotation.y = PI
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "离开 · 回到主街", "门内对准门：提示「离开 · 回到主街」")
+	rr = [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	p.interactor.use()
+	await seconds(0.45)
+	check(rr[0] == 1 and GameState.pending_load.get("scene") == "frostford" and GameState.pending_load.get("spawn") == "tavern_door", "出门：回主街")
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(-3.1, -7.1)) < 0.3 and absf(p.rotation.y + PI / 2) < 0.05, "站在酒馆门外、背对酒馆（%s）" % str(p.global_position))
+	check(main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_DEPTH, "回到室外：月光与夜雾回来了")
+	# —— 酒馆里存档、读档：回到酒馆同一个位置
+	await free_main(main)
+	main = await make_area("tavern")
+	p = main.player
+	await place(p, -1.0, -1.0)
+	check(main.save_game("slot2", true), "酒馆里能存档")
+	GameState.new_game(1)
+	check(main.load_game("slot2"), "读这个存档")
+	main = await reload_main(main)
+	check(main.area == "tavern" and flat(main.player.global_position).distance_to(Vector2(-1.0, -1.0)) < 0.2 and main.arrived_by == "", "读档回到酒馆里同一个位置（不是门口）")
+	await free_main(main)
+	# —— 战斗中走不开
+	main = await make_arena()
+	var e: Enemy = main.get_tree().get_nodes_in_group("enemy")[0]
+	e.state = Enemy.State.COMBAT
+	var went: bool = await main.travel("tavern", "front")
+	check(not went and GameState.pending_load.is_empty() and main.hud.toast_label.text.contains("走不开"), "有敌人和你打的时候走不进别的区域")
+	e.state = Enemy.State.PATROL
+	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)
+
+
+## 星铁小教堂与墓园（路线图 3.2）
+func test_chapel() -> void:
+	Settings.set_value("third_person", false)
+	check(Areas.known("churchyard") and Areas.known("chapel") and Areas.is_indoor("chapel") and not Areas.is_indoor("churchyard"), "两个新区域：墓园（室外）、小教堂（室内）")
+	GameState.new_game(41)
+	GameState.start_quest("edric_missing")
+	GameState.add_item("edric_letter")
+	check(GameState.clues.has("letter"), "拿到那封没写完的信：自动记下线索（物品数据里的 clue）")
+	check(GameState.item("crypt_key").kind == "quest" and GameState.item("edric_letter").desc.contains("棋子"), "墓园钥匙、少爷的信是任务物品，信的内容写在物品说明里")
+	# —— 主街：小路门 → 墓园
+	GameState.new_game(41)
+	GameState.start_quest("edric_missing")
+	var main := await make_main(false)
+	var p: FpController = main.player
+	var lane: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "churchyard")[0]
+	await aim(p, Vector3(3.3, 0.05, -27.25), lane.global_position + lane.global_transform.basis.x * 0.55 + Vector3(0, 1.1, 0))
+	check(p.interactor.target == lane and lane.prompt() == "前往 · 通往星铁小教堂的小路", "主街右手边的窄巷口：对准木门提示「前往 · 通往星铁小教堂的小路」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
+	var signs := main.find_children("*", "Label3D", true, false).filter(func(l): return l.text == "星铁小教堂")
+	check(signs.size() == 1, "门边挂着「星铁小教堂」的木牌")
+	p.interactor.use()
+	await seconds(0.45)
+	check(GameState.pending_load.get("scene") == "churchyard" and GameState.pending_load.get("spawn") == "lane", "进小路：去墓园")
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "churchyard" and flat(p.global_position).distance_to(Vector2(0, 9.4)) < 0.3 and absf(p.rotation.y) < 0.05, "站在墓园院门内、面朝小教堂（%s）" % str(p.global_position))
+	check(main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_DEPTH, "墓园是室外：月光与夜雾")
+	var omni := main.find_children("*", "OmniLight3D", true, false)
+	check(omni.size() == 3, "三盏灯：小教堂门口、守墓人的灯笼、墓室门边（%d）" % omni.size())
+	var npcs := main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(npcs == ["守墓人"], "墓园里有守墓人（%s）" % str(npcs))
+	var stones: int = (main.world.get_node("Churchyard") as MeshInstance3D).mesh.get_surface_count()
+	check(stones <= 8, "墓园的墙、路、墓碑、墓室按材质合并成一个网格（%d 个表面）" % stones)
+	# 墙翻不过去
+	await place(p, 0.0, 9.0)
+	await hold("move_right", 3.5)
+	check(p.global_position.x > 8.0 and p.global_position.x < 12.8, "往东一直走：被墓碑或东墙挡住，翻不出去（x = %.2f）" % p.global_position.x)
+	await place(p, 0.0, 9.6)
+	await hold("move_back", 1.5)
+	check(p.global_position.z < 10.9, "院门关着：往南出不去（出门靠交互，z = %.2f）" % p.global_position.z)
+	# 守墓人：把人引向墓室与修士的钥匙
+	var r := DialogueRunner.new()
+	check(r.start("churchyard", "gravedigger") and r.speaker() == "守墓人", "守墓人的对话能打开")
+	r.choose(0)
+	check(r.text().contains("墓室") and r.text().contains("修士"), "守墓人：少爷昨天在瓦伦家墓室待了好一阵，钥匙在修士那儿")
+	# 墓室：没钥匙打不开
+	var crypt: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.key_item == "crypt_key")[0]
+	main.set_view(1)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target == crypt, "?view=1 站在墓室门前，对准铁门")
+	var rr: Dictionary = crypt.interact(p)
+	check(rr.get("locked", false) and crypt.locked and str(rr.get("toast", "")).contains("瓦伦"), "没有钥匙：铁门锁着，门楣上刻着「瓦伦」")
+	var bundle: LootContainer = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "valen_crypt_bundle")[0]
+	check(bundle.global_position.x < Churchyard.CRYPT_FRONT_X, "少爷的包袱在墓室里面（铁门后）")
+	# —— 墓园 → 小教堂
+	main.set_view(3)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "进入 · 星铁小教堂", "小教堂门前：提示「进入 · 星铁小教堂」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "chapel" and flat(p.global_position).distance_to(Vector2(0, 4.1)) < 0.3, "进了小教堂，站在门内")
+	check(not main.moon.visible and main.find_children("*", "OmniLight3D", true, false).size() == 3, "室内：没有月光；祭坛两座烛台 + 门边油灯三盏光")
+	check(main.find_children("*", "Npc", true, false).map(func(n): return n.display_name) == ["奥尔本修士"], "小教堂里有奥尔本修士")
+	await place(p, 0.0, 3.5)
+	await hold("move_forward", 3.0)
+	check(p.global_position.z < -2.0 and p.global_position.z > -3.7, "沿中间走道走到祭坛前，被祭台挡住（z = %.2f）" % p.global_position.z)
+	await place(p, 1.65, 3.7)
+	await hold("move_forward", 1.5)
+	check(p.global_position.z > 2.9, "长椅挡着，从长椅中间穿不过去（z = %.2f）" % p.global_position.z)
+	main.set_view(1)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Npc and p.interactor.target.display_name == "奥尔本修士", "?view=1 对准奥尔本修士能交谈")
+	# —— 奥尔本修士：线索、借钥匙（捐钱）
+	check(r.start("chapel", "alban") and r.speaker() == "奥尔本修士", "修士的对话能打开")
+	var labels: Array = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("打听埃德里克少爷的事。") and not labels.has("能借墓园的钥匙吗？"), "先打听少爷，才会想到借钥匙（%s）" % str(labels))
+	r.choose(labels.find("打听埃德里克少爷的事。"))
+	check(GameState.clues.has("chapel_key") and GameState.has_flag("alban_told") and r.text().contains("钥匙"), "修士：少爷昨天傍晚借走了墓园钥匙（线索）")
+	r.choose(0)
+	check(r.node_id == "key", "追问钥匙")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	var s0 := GameState.silver
+	r.choose(labels.find("（往捐献箱里放 3 枚银币）给教堂添点灯油。"))
+	check(r.node_id == "key_given" and GameState.has_item("crypt_key") and GameState.silver == s0 - 3 and GameState.has_flag("alban_lent_key"), "捐 3 枚银币：修士把墓园钥匙借给你")
+	r.start("chapel", "alban")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(not labels.has("能借墓园的钥匙吗？") and not labels.has("打听埃德里克少爷的事。"), "借到以后不再借第二次、不再重复打听")
+	# 口才：成功 / 失败（失败后只剩捐钱）
+	var sd_pass := seed_for("alban_key_speech", "speech", 11, true)
+	var sd_fail := seed_for("alban_key_speech", "speech", 11, false)
+	for sd in [sd_pass, sd_fail]:
+		GameState.new_game(sd)
+		GameState.start_quest("edric_missing")
+		r.start("chapel", "alban")
+		r.choose(0)
+		r.choose(0)
+		labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+		var si := -1
+		for i in labels.size():
+			if labels[i].contains("口才"):
+				si = i
+		r.choose(si)
+		if sd == sd_pass:
+			check(r.node_id == "key_given" and GameState.has_item("crypt_key") and GameState.silver == 12, "口才说服修士：不花钱借到钥匙")
+		else:
+			check(r.node_id == "key_refused" and not GameState.has_item("crypt_key") and GameState.has_flag("alban_refused"), "口才没说动：「死人也有他们的安宁」")
+			labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+			r.choose(labels.find("（往捐献箱里放 3 枚银币）给教堂添点灯油。"))
+			check(GameState.has_item("crypt_key"), "没说动也还能捐钱借到")
+			r.start("chapel", "alban")
+			check(not r.options().map(func(o): return DialogueRunner.option_label(o)).any(func(l): return l.contains("口才")), "口才失败后不能再试")
+	r.start("chapel", "alban")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("坠星是什么？"), "可以问坠星（星铁教会的来历）")
+	r.choose(labels.find("坠星是什么？"))
+	check(r.text().contains("哈尔文") and r.text().contains("誓"), "修士讲坠星：开国的哈尔文在坠星落地处加冕，加冕时还要发一个誓")
+	# —— 回墓园：用钥匙开墓室、搜包袱、读信
+	main.set_view(3)
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "离开 · 回到墓园", "门内对准门：提示「离开 · 回到墓园」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "churchyard" and flat(p.global_position).distance_to(Vector2(0, -6.4)) < 0.3 and absf(absf(p.rotation.y) - PI) < 0.05, "回到墓园：站在小教堂门前、背对着门")
+	crypt = main.find_children("*", "Door", true, false).filter(func(d): return d.key_item == "crypt_key")[0]
+	main.set_view(1)
+	await physics(4)
+	rr = crypt.interact(p)
+	check(not crypt.locked and crypt.is_open and str(rr.get("toast", "")).contains("用墓园钥匙打开了"), "有钥匙：铁门打开，提示「用墓园钥匙打开了瓦伦家墓室的铁门」")
+	bundle = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "valen_crypt_bundle")[0]
+	var got: Array = bundle.take_all()
+	check(got.has("没写完的信") and got.has("6 枚银币") and GameState.has_item("edric_letter") and GameState.clues.has("letter"), "搜包袱：拿到少爷没写完的信，记下线索（%s）" % str(got))
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "修士的线索 + 信：主线推进到「去渡口找少爷」")
+	r.start("chapel", "alban")
+	labels = r.options().map(func(o): return DialogueRunner.option_label(o))
+	check(labels.has("（把墓室里找到的信递给他）"), "带着信回去：可以给修士看")
+	r.choose(labels.find("（把墓室里找到的信递给他）"))
+	check(r.text().contains("渡口") and GameState.has_flag("alban_saw_letter"), "修士读信：今夜只有渡口还点着灯")
+	# —— 墓园存档、读档
+	await place(p, 2.0, 0.0)
+	check(main.save_game("slot2", true), "墓园里能存档")
+	check(main.load_game("slot2"), "读这个存档")
+	main = await reload_main(main)
+	check(main.area == "churchyard" and flat(main.player.global_position).distance_to(Vector2(2.0, 0.0)) < 0.2, "读档回到墓园同一个位置")
+	p = main.player
+	# —— 院门回主街
+	var gate: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "frostford")[0]
+	await aim(p, Vector3(0, 0.05, 9.4), gate.global_position + Vector3(0.7, 1.0, 0))
+	check(p.interactor.target == gate and gate.prompt() == "回到 · 霜渡镇主街", "院门：提示「回到 · 霜渡镇主街」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(3.3, -27.25)) < 0.3 and absf(p.rotation.y - PI / 2) < 0.05, "回到主街：站在小路门外、面朝街心")
+	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)
+
+
+## 3.3 徒手格斗：拳头、格斗专长、不致命的打斗；酒馆里和大桶打一架（玛蒂尔达的第三种问法）
+func test_brawl() -> void:
+	# —— 数据：格斗专长、醉汉
+	var bp: Array = GameState.perks_of("brawl")
+	check(bp.size() == 3 and bp.map(func(x): return x.effect) == ["combo3", "fist_stagger", "guard_cheap"] and GameState.validate_progression(GameState.progression()).is_empty(),
+		"格斗三个专长：连拳 25、重拳 50、硬骨头 75（%s）" % str(bp.map(func(x): return x.name)))
+	var dk: Dictionary = Enemy.types().drunk
+	check(dk.weapon == "fists" and bool(dk.nonlethal) and float(dk.yield_chance) == 1.0 and Enemy.validate_types(Enemy.types()).is_empty(), "醉汉：徒手、打不死、打到三成生命一定认输")
+	# —— 训练场里练拳头
+	GameState.new_game(41)
+	var main := await make_arena()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var a := arena_enemy(main, "a")
+	solo(main, a)
+	a._enter(Enemy.State.YIELD)                # 跪着不还手，但还挨得着（停用的节点会被移出物理世界，打不到）
+	GameState.unequip("weapon")
+	check(m.unarmed() and m.view.model == "fists" and m.weapon_skill() == "brawl" and is_equal_approx(m.reach_far(), Melee.FIST_REACH), "没装备武器：手里是拳头，用格斗，够得着 1.5 米")
+	m.toggle_draw()
+	await seconds(0.45)
+	check(m.state == Melee.State.IDLE and m.view.off_node != null and m.view.off_node.visible, "按 R 举起拳头：两只拳头都在画面里")
+	put_enemy(a, Vector3(0, 0, 1.75), PI)
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	var hp0 := a.hp
+	var st0 := m.stamina
+	m.press()
+	m.release()
+	await seconds(0.4)
+	var want := DamageCalc.compute(5.0, GameState.strength, int(GameState.skills.brawl), "light", false, a.armor)
+	check(hp0 - a.hp == want, "轻拳打中：伤害按拳头 5 + 格斗算（%d，应为 %d）" % [hp0 - a.hp, want])
+	check(is_equal_approx(st0 - m.stamina, Melee.TIMING.light.cost * Melee.FIST_COST) or m.stamina > st0 - Melee.TIMING.light.cost, "出拳比挥剑省体力（−%.1f）" % (st0 - m.stamina))
+	check(float(GameState.skill_xp.get("brawl", 0.0)) >= Melee.TRAIN_HIT, "拳头打中：格斗涨进度")
+	await seconds(0.4)
+	put_enemy(a, Vector3(0, 0, 1.1), PI)       # 隔 1.9 米（身子外沿 1.6 米）：拳头够不着，剑够得着
+	hp0 = a.hp
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(a.hp == hp0, "隔 1.9 米：拳头够不着")
+	GameState.equip("short_sword")
+	check(m.view.model == "sword" and m.state == Melee.State.SHEATHED and not m.unarmed(), "装上剑：拳头放下，换回剑")
+	m.toggle_draw()
+	await seconds(0.45)
+	m.press()
+	m.release()
+	await seconds(0.6)
+	check(a.hp < hp0, "同样的距离，剑够得着")
+	# 专长
+	GameState.skills.blade = 25
+	GameState.skills.brawl = 5
+	m.set_fists_only(true)
+	check(m.state == Melee.State.SHEATHED and m.view.model == "fists" and m.combo_max() == 2, "只许用拳头：剑收起来；剑术的「连环」不管拳头")
+	GameState.skills.brawl = 25
+	check(m.combo_max() == 3, "格斗 25「连拳」：轻拳三连")
+	var info := {"damage": 10, "kind": "light"}
+	var c0 := m.guard_cost(info)
+	GameState.skills.brawl = 75
+	check(is_equal_approx(m.guard_cost(info), c0 * 0.5), "格斗 75「硬骨头」：空手格挡体力减半（%.1f → %.1f）" % [c0, m.guard_cost(info)])
+	m.set_fists_only(false)
+	check(is_equal_approx(m.guard_cost(info), c0), "拿剑格挡不减半")
+	m.set_fists_only(true)
+	GameState.skills.brawl = 50
+	a.process_mode = Node.PROCESS_MODE_INHERIT
+	a.data = a.data.duplicate()
+	a.data.block_chance = 0.0
+	a.hp = 50
+	put_enemy(a, Vector3(0, 0, 1.75), PI)
+	a._enter(Enemy.State.COMBAT)
+	m.toggle_draw()
+	await seconds(0.45)
+	await aim(p, Vector3(0, 0, 3.0), a.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	await seconds(0.45)
+	m.release()
+	await seconds(0.25)
+	check(a.state == Enemy.State.STAGGER and a.hp < 50, "格斗 50「重拳」：重拳打中让对方失衡（%s）" % a.state_name())
+	a.process_mode = Node.PROCESS_MODE_DISABLED
+	m.set_fists_only(false)
+	# 不致命：被打到 KO_FLOOR 就算被打倒，不会倒下死去
+	var ko := [0]
+	m.knocked_out.connect(func(_i): ko[0] += 1)
+	m.health = 40
+	m.receive_hit({"damage": 30, "kind": "light", "nonlethal": true})
+	check(ko[0] == 1 and m.health == Melee.KO_FLOOR and not m.down, "不致命的一拳：生命停在 %d，被打倒（不是倒下）" % m.health)
+	m.health = 10
+	m.receive_hit({"damage": 3, "kind": "light", "nonlethal": true})
+	check(ko[0] == 2 and m.health == 10 and not m.down, "已经在这条线以下：挨一下就倒，生命不再减")
+	m.health = m.health_max()
+	await seconds(0.9)
+	# 醉汉打不死：最少留 1 点，认输
+	var d := Enemy.make("drunk", "t")
+	main.world.add_child(d)
+	d.global_position = Vector3(4, 0, 4)
+	await physics(2)
+	d.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	check(d.alive() and d.hp == 1 and d.state == Enemy.State.YIELD, "醉汉挨了重手也不死：生命 1，认输（%s）" % d.state_name())
+	check(d.arm.get_child_count() > 0 and d.display_name == "醉汉", "醉汉手里没有兵器（拳头）")
+	await free_main(main)
+	# —— 酒馆：玛蒂尔达请你让大桶结账
+	GameState.new_game(43)
+	GameState.start_quest("edric_missing")
+	main = await make_area("tavern")
+	p = main.player
+	m = p.melee
+	var npcs := main.find_children("*", "Npc", true, false).map(func(n): return n.display_name)
+	check(npcs.has("大桶") and npcs.size() == 4, "酒馆里多了靠在吧台东头的大桶（%s）" % str(npcs))
+	var dagu: Npc = main._npc_by_dialogue("dagu")
+	var home := dagu.global_position
+	var r := DialogueRunner.new()
+	r.start("tavern", "dagu")
+	var labels: Array = r.options().map(func(o): return o.text)
+	check(not labels.any(func(l): return l.contains("酒钱")), "没受玛蒂尔达之托：不能找大桶要账")
+	r.start("tavern", "matilda")
+	r.choose(0)
+	labels = r.options().map(func(o): return o.text)
+	var off_i := labels.find(labels.filter(func(l): return l.contains("大个子"))[0] if labels.any(func(l): return l.contains("大个子")) else "")
+	check(r.node_id == "edric" and off_i >= 0, "打听少爷时可以问「那个大个子」（%s）" % str(labels))
+	r.choose(off_i)
+	check(r.node_id == "dagu_offer" and GameState.has_flag("matilda_brawl_offer"), "玛蒂尔达：让大桶把账结了（不许动刀），她就说")
+	# 和大桶说话 → 开打（走真的对话面板，对话关上后开打）
+	m.toggle_draw()
+	await seconds(0.45)
+	await aim(p, Vector3(1.9, 0, 0.2), dagu.global_position + Vector3(0, 1.5, 0))
+	check(p.interactor.target == dagu, "对准大桶")
+	p.interactor.use()
+	await frames(2)
+	check(main.dialogue.visible and main.dialogue.runner.id == "dagu", "大桶的对话能打开")
+	find_button(main.dialogue, "玛蒂尔达说你欠了三个晚上的酒钱。").pressed.emit()
+	await frames(1)
+	check(main.dialogue.runner.node_id == "challenge", "大桶：想要钱，先把我放倒；不许动刀子")
+	find_button(main.dialogue, "那就来吧。（徒手打一架）").pressed.emit()
+	await frames(3)
+	var e: Enemy = null
+	for x in main.get_tree().get_nodes_in_group("enemy"):
+		e = x
+	check(main.brawl_active() and e != null and e.display_name == "大桶" and e.state == Enemy.State.COMBAT, "对话关上就开打：大桶站起来动手（%s）" % (e.state_name() if e else "没有"))
+	check(not dagu.visible and dagu.collision_layer == 0, "说话的大桶先藏起来（换成打架的那个）")
+	check(main.hud.hint_label.text == main.HINT_BRAWL_DESKTOP, "底部提示换成打架的操作（出拳、格挡、不许动刀）")
+	check(m.fists_only and m.state == Melee.State.SHEATHED and m.view.model == "fists", "剑收起来了，只许用拳头")
+	var went: bool = await main.travel("frostford", "tavern_door")
+	check(main.in_combat() and main.can_save() != "" and not went, "打架的时候不能存档、不能出门")
+	var matilda: Npc = main._npc_by_dialogue("matilda")
+	main._on_interacted(matilda.interact(p))
+	check(not main.dialogue.visible, "打架的时候不能和别人搭话")
+	# 站着不动：大桶会上来打你（不致命）
+	var hp_start := m.health
+	var hits := [0]
+	m.damaged.connect(func(_a, inf): hits[0] += (1 if bool(inf.get("nonlethal", false)) else 0))
+	await place(p, 1.9, 0.6)
+	p.rotation.y = atan2(-(e.global_position.x - 1.9), -(e.global_position.z - 0.6))
+	await seconds(4.0)
+	check(hits[0] >= 1 and m.health < hp_start and not m.down, "大桶冲上来出拳打中你（%d 下，生命 %d → %d，不致命）" % [hits[0], hp_start, m.health])
+	# 还手：真的出一拳（先把他定住，免得他的拳头打断这一下），再把他打到认输
+	e.stop_left = 5.0
+	e.action = ""
+	e.data = e.data.duplicate()
+	e.data.block_chance = 0.0
+	await seconds(0.9)
+	var ehp := e.hp
+	m.toggle_draw()
+	await seconds(0.45)
+	await aim(p, e.global_position + (p.global_position - e.global_position).normalized() * 1.0, e.global_position + Vector3(0, 1.2, 0))
+	m.press()
+	m.release()
+	await seconds(0.4)
+	check(e.hp < ehp, "出拳打中大桶（%d → %d）" % [ehp, e.hp])
+	e.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(2)
+	check(not main.brawl_active() and GameState.has_flag("dagu_beaten") and not main.in_combat(), "打到认输：打赢了，不再算战斗中")
+	check(not m.fists_only, "打完了：又能拔剑")
+	await seconds(Brawl.END_DELAY + 0.3)
+	check(not is_instance_valid(e) and dagu.visible and dagu.collision_layer != 0, "跪了一会儿：大桶变回能说话的人")
+	check(Saves.read_slot("auto").has("data") and bool(Saves.read_slot("auto").data.state.flags.get("dagu_beaten", false)), "打完自动存档（记着打赢了）")
+	r.start("tavern", "dagu")
+	check(r.node_id == "beaten", "再找大桶：他揉着下巴把账结了")
+	r.start("tavern", "matilda")
+	labels = r.options().map(func(o): return o.text)
+	check(labels[0] == "大桶把账结了。", "玛蒂尔达：多了「大桶把账结了」")
+	r.choose(0)
+	r.choose(0)
+	check(r.node_id == "edric_told" and GameState.clues.has("boots") and GameState.has_flag("matilda_told_edric") and GameState.silver == 12, "说话算话：不花钱也问出了南方人的事（线索）")
+	await free_main(main)
+	# —— 输了：被大桶打倒，生命停在 25，他回原处接着喝，可以再来一场
+	GameState.new_game(44)
+	GameState.start_quest("edric_missing")
+	GameState.set_flag("matilda_brawl_offer")
+	main = await make_area("tavern")
+	p = main.player
+	m = p.melee
+	dagu = main._npc_by_dialogue("dagu")
+	main.start_brawl(dagu, {"brawl": "drunk", "win": "dagu_beaten", "lose": "dagu_won"})
+	await frames(2)
+	e = main.brawl.enemy
+	m.receive_hit({"damage": 200, "kind": "heavy", "attacker": e, "nonlethal": true})
+	await frames(3)
+	check(not main.brawl_active() and GameState.has_flag("dagu_won") and not GameState.has_flag("dagu_beaten"), "被打倒：这一架输了")
+	check(m.health == Melee.KO_FLOOR and not m.down and not get_tree().paused, "生命停在 %d，没有倒下（不出倒下界面）" % m.health)
+	check(not is_instance_valid(e) or e.is_queued_for_deletion(), "打架的大桶撤掉了")
+	await frames(2)
+	check(dagu.visible and flat(dagu.global_position).distance_to(flat(home)) < 0.05, "大桶回到吧台东头接着喝")
+	r.start("tavern", "dagu")
+	labels = r.options().map(func(o): return o.text)
+	check(r.node_id == "won" and labels.has("再来一场。（徒手打一架）"), "再找大桶：他笑你，可以再来一场")
+	await free_main(main)
+	# —— 第三人称的出拳动作（character_anims.json 的 fists）
+	var map := CharacterModel.load_map()
+	var fm: Dictionary = map.fists
+	var lib := load(CharacterModel.ANIMS) as AnimationLibrary
+	var fh: Dictionary = fm.heavy
+	var marks_ok: bool = float(fh.wind_peak) < float(fh.impact) and float(fh.impact) < lib.get_animation(fh.clip).length
+	for x in fm.light:
+		marks_ok = marks_ok and float(x.impact) > 0.0 and float(x.impact) < lib.get_animation(x.clip).length
+	var lt: Dictionary = Melee.TIMING.light
+	var ht: Dictionary = Melee.TIMING.heavy
+	var ls1 := float(fm.light[0].impact) / (float(lt.wind) + float(lt.strike) * float(lt.hit_at))
+	var ls2 := float(fm.light[1].impact) / (float(lt.wind) + float(lt.strike) * float(lt.hit_at))
+	var hs := (float(fh.impact) - float(fh.wind_peak)) / (float(ht.strike) * float(ht.hit_at))
+	check(marks_ok and ls1 > 0.8 and ls2 < 2.2 and hs > 0.5 and hs < 1.8, "出拳动作的命中时刻在动作之内，播放速度合理（刺拳 ×%.2f、直拳 ×%.2f、重拳 ×%.2f）" % [ls1, ls2, hs])
+	Settings.set_value("third_person", true)
+	GameState.new_game(45)
+	main = await make_main(true)
+	p = main.player
+	m = p.melee
+	GameState.unequip("weapon")
+	await place(p, 0.0, 10.0)
+	await seconds(0.4)
+	var c: CharacterModel = p.avatar.character
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.3), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.toggle_draw()
+	await seconds(0.6)
+	check(c.role == "idle_fists" and c.playing() == "Punch_Jab" and c.anim.get_playing_speed() == 0.0 and not p.avatar.weapon_mesh.visible, "第三人称举起拳头：护脸的架势，手里没有剑（%s）" % c.role)
+	var rec: Array = []
+	m.hit.connect(func(_t, _info): rec.append([c.playing(), c.anim.current_animation_position]))
+	m.press()
+	m.release()
+	await seconds(0.3)
+	check(rec.size() == 1 and rec[0][0] == "Punch_Jab" and absf(rec[0][1] - float(fm.light[0].impact)) < 0.08, "第一拳刺拳：打中时拳头正好伸到最前（%s，第 %.2f 秒）" % [rec[0][0] if rec.size() > 0 else "-", rec[0][1] if rec.size() > 0 else -1.0])
+	m.press()
+	m.release()
+	await seconds(0.4)
+	check(rec.size() == 2 and rec[1][0] == "Punch_Cross" and absf(rec[1][1] - float(fm.light[1].impact)) < 0.08, "第二拳直拳：换右手（%s，第 %.2f 秒）" % [rec[1][0] if rec.size() > 1 else "-", rec[1][1] if rec.size() > 1 else -1.0])
+	await seconds(0.8)
+	check(c.role == "idle_fists", "收拳回到架势（%s）" % c.role)
+	rec.clear()
+	m.press()
+	await seconds(0.5)
+	check(c.playing() == "OverhandThrow" and c.anim.get_playing_speed() == 0.0 and absf(c.anim.current_animation_position - float(fh.wind_peak)) < 0.02, "按住蓄重拳：拳头抡到身后停住（第 %.2f 秒）" % c.anim.current_animation_position)
+	m.release()
+	await seconds(0.5)
+	check(rec.size() == 1 and rec[0][0] == "OverhandThrow" and absf(rec[0][1] - float(fh.impact)) < 0.08, "重拳：松手砸下，命中帧对齐（第 %.2f 秒，目标 %.2f）" % [rec[0][1] if rec.size() > 0 else -1.0, float(fh.impact)])
+	await seconds(0.8)
+	m.block_press()
+	await seconds(0.4)
+	check(m.blocking() and c.role == "block_fists" and c.playing() == "Idle_Shield_Loop" and c.anim.get_playing_speed() == 0.0, "空手格挡：小臂横在胸前停住（%s）" % c.role)
+	m.block_release()
+	await seconds(0.5)
+	GameState.equip("short_sword")
+	await seconds(0.2)
+	check(p.avatar.weapon_mesh != null and not p.avatar.weapon_mesh.visible and m.state == Melee.State.SHEATHED, "装上剑：拳头放下，剑还在鞘里")
+	await free_main(main)
+	Settings.set_value("third_person", false)
+	GameState.new_game(1)
+
+
+## 3.4 导航网格与街巷 AI：运行时烘焙、敌人绕房子追击、沿路巡逻、酒馆里绕桌子；没有导航网格的区域照旧直线走
+func test_nav() -> void:
+	GameState.new_game(51)
+	var main := await make_main(false)
+	var p: FpController = main.player
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 50 and (main.nav.region as Node).is_inside_tree(),
+		"霜渡镇载入时烘焙了导航网格（%d 个多边形，%.0f 毫秒）" % [int(main.nav.get("polygons", 0)), float(main.nav.get("ms", 0.0))])
+	check(float(main.nav.ms) < 300.0, "烘焙耗时 %.0f 毫秒（无头模式；网页实测见冒烟测试）" % float(main.nav.ms))
+	var nb := Areas.nav_bounds("frostford").grow(0.3)
+	var inside := true
+	var low := true
+	for v in (main.nav.region as NavigationRegion3D).navigation_mesh.get_vertices():
+		inside = inside and nb.has_point(v)
+		low = low and (v.y < 1.2)
+	check(inside and low, "导航网格只铺在围墙里能走的地方（不铺到墙外、屋顶上）")
+	await physics(10)
+	var map: RID = main.get_world_3d().navigation_map
+	var gp := NavigationServer3D.map_get_closest_point(map, Vector3(0, 0, -15))
+	check(absf(gp.y) < 0.2 and flat(gp).distance_to(Vector2(0, -15)) < 0.1, "网格面贴着地面（街心的点高 %.2f 米）" % gp.y)
+	# 房子背后到街心：房子之间的窄缝挤不过去，要从这一排房子的尽头绕；路径不穿墙
+	var space := main.get_world_3d().direct_space_state
+	var path := NavigationServer3D.map_get_path(map, Vector3(-13.5, 0, -8.5), Vector3(0, 0, -8.5), true)
+	var clear := path.size() >= 3
+	for i in range(1, path.size()):
+		var q := PhysicsRayQueryParameters3D.create(Vector3(path[i - 1].x, 0.6, path[i - 1].z), Vector3(path[i].x, 0.6, path[i].z), 1)
+		clear = clear and space.intersect_ray(q).is_empty()
+	check(clear and NavBuilder.path_length(path) > 25.0, "从酒馆背后到街心：绕过整排房子（路径 %.0f 米，直线 13.5 米），不穿墙" % NavBuilder.path_length(path))
+	# 追击：敌人在房子背后，你在小广场上；隔着房子看不见你，沿路绕过房角追过来
+	var director := CombatDirector.new()
+	main.world.add_child(director)
+	var e := Enemy.make("clubber", "nav_a")
+	main.world.add_child(e)
+	e.global_position = Vector3(-13.5, 0, -16.75)
+	await place(p, -8.0, -24.5)
+	await physics(2)
+	check(e.nav_ready(), "敌人用得上这个区域的导航网格")
+	var straight := Vector3(-8.0, 0.6, -24.5)
+	var blocked := not space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(-13.5, 0.6, -16.75), straight, 1)).is_empty()
+	e.engage()
+	var t := 0.0
+	var reached := false
+	var corner_ok := true
+	while t < 9.0 and not reached:
+		await seconds(0.25)
+		t += 0.25
+		var ep := e.global_position
+		corner_ok = corner_ok and not (ep.x > -11.5 and ep.x < -4.5 and ep.z < -13.5 and ep.z > -20.0)     # 没钻进房子里
+		reached = flat(ep).distance_to(flat(p.global_position)) < 3.2
+	check(blocked and reached and corner_ok, "敌人隔着房子：绕过房角追到你跟前（%.1f 秒）" % t)
+	e.queue_free()
+	await frames(2)
+	# 巡逻：井的两边各一个巡逻点，沿路绕过井走，不卡在井栏上
+	await place(p, 0.0, 8.0)
+	p.crouch_wanted = true
+	var g := Enemy.make("clubber", "nav_b", [Vector3(-4.6, 0, -25.6), Vector3(-8.3, 0, -25.6)])
+	main.world.add_child(g)
+	g.global_position = Vector3(-4.6, 0, -25.6)
+	var max_wp := 0
+	var in_well := false
+	t = 0.0
+	while t < 12.0 and max_wp < 1:
+		await seconds(0.25)
+		t += 0.25
+		in_well = in_well or flat(g.global_position).distance_to(Vector2(-6.4, -25.6)) < 0.9
+		if g.wp_index >= 1 and flat(g.global_position).distance_to(Vector2(-8.3, -25.6)) < 0.6:
+			max_wp = 1
+	check(max_wp == 1 and not in_well and g.state == Enemy.State.PATROL, "巡逻：从井的东边绕到西边的巡逻点（%.1f 秒，%s，在 %s）" % [t, g.state_name(), str(flat(g.global_position))])
+	p.crouch_wanted = false
+	await free_main(main)
+	# 酒馆：大桶绕过长桌过来
+	GameState.new_game(52)
+	main = await make_area("tavern")
+	p = main.player
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 0, "酒馆也烘焙了导航网格（%.0f 毫秒）" % float(main.nav.ms))
+	await place(p, -2.0, 2.7)
+	main.start_brawl(main._npc_by_dialogue("dagu"), {"brawl": "drunk"})
+	await physics(2)
+	var d: Enemy = main.brawl.enemy
+	space = main.get_world_3d().direct_space_state
+	var low_ray := PhysicsRayQueryParameters3D.create(Vector3(2.5, 0.5, -1.35), Vector3(-2.0, 0.5, 2.7), 1)
+	low_ray.exclude = [d.get_rid()]
+	var table_between := not space.intersect_ray(low_ray).is_empty()
+	t = 0.0
+	reached = false
+	while t < 8.0 and not reached:
+		await seconds(0.25)
+		t += 0.25
+		reached = flat(d.global_position).distance_to(flat(p.global_position)) < 1.6
+	check(table_between and reached, "打架时大桶绕过长桌走到你跟前（%.1f 秒）" % t)
+	await free_main(main)
+	# 没有导航网格的区域（墓园）：照旧直线走
+	main = await make_area("churchyard")
+	check(main.nav.is_empty(), "墓园没有敌人，不烘焙导航网格")
+	var c := Enemy.make("clubber", "nav_c")
+	main.world.add_child(c)
+	c.global_position = Vector3(0, 0, 5)
+	await physics(3)
+	var v: Vector3 = c._steer(Vector3(4, 0, 5), 2.0)
+	var direct_dir := Vector3(4, 0, 5) - c.global_position
+	direct_dir.y = 0.0
+	check(not c.nav_ready() and v.normalized().dot(direct_dir.normalized()) > 0.999, "没有导航网格：直线朝目标走（方向 %s）" % str(v.normalized()))
+	c.queue_free()
+	await free_main(main)
+	GameState.new_game(1)
+
+
+## 3.5 镇外桦林：主街南门、白桦林、营火哨卡的三个无旗者（伏击）、头目身上的雇佣信、求饶的人能搜身、读档后原样
+func test_birch() -> void:
+	check(Areas.known("birch") and not Areas.is_indoor("birch") and Areas.nav_bounds("birch").has_volume(), "新区域：镇外桦林（室外，烘焙导航网格）")
+	var it := GameState.item("hire_letter")
+	check(it.kind == "quest" and str(it.get("clue", "")) == "hire_letter" and str(it.desc).contains("两把钥匙交叉"), "雇佣信：任务物品，拿到记下线索，压着双钥蜡印")
+	check(Enemy.types().outlaw_leader.loot.has("hire_letter"), "雇佣信在哨卡头目身上")
+	# 线索推进：先拿到雇佣信、后凑够线索，也能一口气推到「赶在他们前头去渡口」
+	GameState.new_game(61)
+	GameState.start_quest("edric_missing")
+	GameState.add_item("hire_letter")
+	check(GameState.quest_stage("edric_missing") == "find_clues", "只有雇佣信一条线索：还在打探")
+	GameState.add_clue("ferry")
+	check(GameState.quest_stage("edric_missing") == "warned", "再凑一条线索：推进到「去渡口」，有雇佣信就接着推进到「赶在他们前头去渡口」")
+	# —— 主街南门 → 桦林
+	GameState.new_game(62)
+	GameState.start_quest("edric_missing")
+	GameState.add_clue("ferry")
+	GameState.add_clue("boots")
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "主线在「穿过桦林去渡口」")
+	var main := await make_main(false)
+	var p: FpController = main.player
+	await place(p, 0.0, 9.6)
+	p.rotation.y = PI
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "前往 · 南门（往桦林、渡口）", "主街南头：对准南门提示「前往 · 南门（往桦林、渡口）」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
+	p.interactor.use()
+	await seconds(0.45)
+	check(GameState.pending_load.get("scene") == "birch" and GameState.pending_load.get("spawn") == "north", "出南门：去桦林")
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "birch" and flat(p.global_position).distance_to(Vector2(0, Birch.NORTH + 3.2)) < 0.3 and absf(absf(p.rotation.y) - PI) < 0.05, "站在桦林北头、面朝南边的小路")
+	check(main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_DEPTH, "桦林是室外：月光与夜雾")
+	check(main.hud.hint_label.text == Birch.TEACH_DESKTOP, "进桦林：提示拿武器战斗的操作（教学）")
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 100, "桦林烘焙了导航网格（%d 个多边形，%.0f 毫秒）" % [int(main.nav.get("polygons", 0)), float(main.nav.get("ms", 0.0))])
+	var trees: Array = main.world.find_children("*", "StaticBody3D", true, false).filter(func(b): return b.get_child_count() > 0 and b.get_child(0) is CollisionShape3D and (b.get_child(0) as CollisionShape3D).shape is CylinderShape3D)
+	check(trees.size() >= 80 and (main.world.get_node("Birch") as MeshInstance3D).mesh.get_surface_count() <= 8, "白桦林：%d 棵树（每棵一个碰撞体），整片林子一个网格" % trees.size())
+	var fires := main.get_tree().get_nodes_in_group("light_source")
+	check(fires.size() == 1 and flat(fires[0].global_position).distance_to(flat(Birch.FIRE_POS)) < 0.1, "哨卡的营火：站在火光里，远处的人也看得见你")
+	var enemies := main.get_tree().get_nodes_in_group("enemy")
+	var names: Array = enemies.map(func(e): return e.display_name)
+	names.sort()
+	check(enemies.size() == 3 and names == ["无旗者 · 头目", "无旗者 · 棍手", "无旗者 · 棍手"], "哨卡有三个无旗者：头目和两个棍手（%s）" % str(names))
+	check(enemies.all(func(e): return e.state == Enemy.State.PATROL), "开始时都在巡逻，还没发现你")
+	# 南头去渡口的路：还走不过去
+	var south: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.display_name == "去渡口的路")[0]
+	var sr: Dictionary = south.interact(p)
+	check(sr.get("locked", false) and str(sr.toast).contains("渡口在后续版本开放"), "南头去渡口的路：还走不过去，说明渡口在后续版本开放")
+	# 伏击：沿路往南走，被路上巡逻的棍手看见，喊上营火边的人
+	var leader: Enemy = enemies.filter(func(e): return e.kind == "outlaw_leader")[0]
+	var road: Enemy = enemies.filter(func(e): return e.enemy_id == "birch_a")[0]
+	var east: Enemy = enemies.filter(func(e): return e.enemy_id == "birch_b")[0]
+	await place(p, 0.4, -9.0)
+	p.rotation.y = PI
+	var t := 0.0
+	var hostile := 0
+	while t < 8.0 and hostile < 2:
+		await hold("move_forward", 0.25)
+		t += 0.25
+		hostile = enemies.filter(func(e): return e.state in [Enemy.State.ALERT, Enemy.State.COMBAT]).size()
+	check(hostile >= 2, "沿路往南走：哨卡的人发现你、喊上同伙（%d 个敌人在战斗，%.1f 秒）" % [hostile, t])
+	# 解决：两个棍手倒下，头目求饶
+	var rep0 := GameState.get_rep("outlaws")
+	road.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	east.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	leader.data = leader.data.duplicate()
+	leader.data.yield_chance = 1.0
+	leader.data.block_chance = 0.0
+	leader.take_hit({"damage": leader.hp - 5, "kind": "heavy", "stop": 0.0})
+	await frames(3)
+	check(not road.alive() and not east.alive() and GameState.get_rep("outlaws") == rep0 - 10, "两个棍手倒下（无旗者声望 −10）")
+	check(leader.alive() and leader.state == Enemy.State.YIELD and GameState.yielded.has("birch_leader"), "头目求饶：跪在地上，记进存档")
+	var lc: Array = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "loot:birch_leader")
+	check(lc.size() == 1 and lc[0].corpse, "求饶的头目也能搜身")
+	var got: Array = lc[0].take_all()
+	check(got.has("雇佣信") and GameState.has_item("hire_letter") and GameState.clues.has("hire_letter"), "搜出雇佣信，记下线索（%s）" % str(got))
+	check(GameState.quest_stage("edric_missing") == "warned", "主线推进：他们收了钱要在渡口劫人，赶在他们前头去渡口")
+	# 存档读档：倒下的还倒着、求饶的还跪着，搜过的不会再有
+	await place(p, 0.0, -2.0)
+	check(main.save_game("slot1"), "仗打完了，能存档")
+	check(main.load_game("slot1"), "读这个存档")
+	main = await reload_main(main)
+	p = main.player
+	await frames(4)
+	enemies = main.get_tree().get_nodes_in_group("enemy")
+	leader = enemies.filter(func(e): return e.kind == "outlaw_leader")[0]
+	check(main.area == "birch" and enemies.filter(func(e): return not e.alive()).size() == 2, "读档：两个棍手还倒在地上")
+	check(leader.state == Enemy.State.YIELD and leader.body.position.y < -0.3 and leader.name_label.text.contains("求饶"), "读档：头目还跪着")
+	lc = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "loot:birch_leader")
+	check(lc.size() == 1 and lc[0].is_empty(), "头目身上已经搜过了")
+	check(not main.in_combat() and main.can_save() == "", "求饶的人不算在和你打")
+	# 回镇上
+	await place(p, 0.0, Birch.NORTH + 1.6)
+	p.rotation.y = 0.0
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "回到 · 回霜渡镇的木门", "北头：提示「回到 · 回霜渡镇的木门」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(0, 9.9)) < 0.3 and absf(p.rotation.y) < 0.05, "回到主街：站在南门里、面朝街道")
+	await free_main(main)
+	GameState.pending_load = {}
+	GameState.new_game(1)

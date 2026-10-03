@@ -5,8 +5,14 @@ extends CharacterBody3D
 ## 感知：前方 110° 视野锥 + 视线射线，距离看光照（玩家站在灯火旁 20 米，暗处 8 米，蹲着再打六折）；听觉看玩家动静（跑 10 米、走 4 米、蹲 1.5 米、挥剑 8 米）。
 ## 战斗：向 CombatDirector 要攻击令牌，拿到才上前出招（起手 → 命中帧 → 收招），没拿到就在 3.5 米外绕圈。
 ## 剑手会格挡轻击；重击破防让它失衡。完美格挡它的攻击也会让它失衡 0.8 秒，失衡期间受到的伤害加倍（DamageCalc）。
-## 寻路：现在只在平坦的训练场里直线走（加碰撞滑动）；进街巷时再用导航网格（TECH.md 4.4）。
+## 寻路（3.4）：区域烘焙了导航网格（main 按 Areas.nav_bounds 烘焙）就用 NavigationAgent3D 沿路径走——追你时绕开房子和桌子、
+## 起疑时去你最后出现的地方找、巡逻点之间沿路走、逃跑时往远处能走到的地方跑；没有导航网格的区域（或刚载入、导航还没同步）照旧直线走加碰撞滑动。
+## 离你很近、看得见你的时候直接朝你走（贴身时不绕路）。
 ## 外观是占位胶囊人（正式人物在阶段 A）。
+## 3.5：求饶（或逃跑后认输）的敌人跪在原地，能搜身（和倒下的一样留一个搜刮点，东西是同一份）；跪下的位置记进存档（GameState.yielded），读档后还跪着。
+## 打架时（nonlethal）的认输不算：那是 Brawl 管的，打完就变回 NPC。
+## 3.3：nonlethal 的种类（酒馆醉汉）用拳头、打不死：生命最少留 1，到 flee_below 就认输；它打玩家也不致命（Melee.KO_FLOOR）。
+## 打架时由 Brawl 现场生成（engage() 直接进入战斗；display_override 用 NPC 的名字）。
 
 signal state_changed(enemy: Enemy, state: String)
 signal died(enemy: Enemy)
@@ -18,7 +24,7 @@ const STATE_LABELS := ["", "？ 起疑", "！ 警觉", "！", "后退", "失衡"
 const DATA_PATH := "res://data/enemies.json"
 const DATA_KEYS := ["name", "coat", "weapon", "hp", "armor", "weapon_base", "strength", "skill", "walk", "run", "reach",
 	"windup", "heavy_windup", "strike", "recover", "heavy_chance", "block_chance", "stamina", "attack_cost", "stamina_regen",
-	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction"]
+	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction", "nonlethal"]
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
 const SIGHT_DARK := 8.0
@@ -33,9 +39,13 @@ const STAGGER_TIME := 0.8
 const TURN_SPEED := 7.0
 const EYE := 1.6
 const THINK_STEP := 0.1           # 感知每 0.1 秒算一次（射线不必每帧打）
+const REPATH_MOVE := 0.5          # 目标挪动超过这么多米才重新寻路
+const REPATH_AGE := 0.5           # 或者路径用了这么久（秒）
+const DIRECT_NEAR := 2.5          # 看得见你、又在这个距离以内：直接朝你走
 
 var kind := "clubber"
 var enemy_id := ""
+var display_override := ""       # 打架时用说话那个 NPC 的名字（3.3）
 var data: Dictionary = {}
 var display_name := ""
 var hp := 1
@@ -70,6 +80,11 @@ var name_label: Label3D
 var status_label: Label3D
 var coat_mat: StandardMaterial3D
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
+var agent: NavigationAgent3D
+var nav_target := Vector3.INF
+var nav_age := 0.0
+var move_dir := Vector3.ZERO      # 这一帧沿路径要走的方向（水平；没在走时是零）
+var loot_node: LootContainer      # 倒下或求饶后留下的搜刮点（只放一个）
 var staggered: bool:
 	get:
 		return state == State.STAGGER
@@ -105,6 +120,10 @@ static func validate_types(d: Dictionary) -> Array:
 		for key in ["heavy_chance", "block_chance", "flee_below", "yield_chance"]:
 			if float(t.get(key, 0)) < 0.0 or float(t.get(key, 0)) > 1.0:
 				errs.append("%s 的 %s 应在 0..1" % [k, key])
+		if not str(t.get("weapon", "")) in ["sword", "club", "fists"]:
+			errs.append("%s 的兵器 %s 不认识" % [k, t.get("weapon", "")])
+		if bool(t.get("nonlethal", false)) and (float(t.get("flee_below", 0)) <= 0.0 or float(t.get("yield_chance", 0)) < 1.0):
+			errs.append("%s 打不死，打到 flee_below 必须认输（yield_chance = 1）" % k)
 	return errs
 
 
@@ -120,7 +139,7 @@ func _ready() -> void:
 	add_to_group("enemy")
 	add_to_group("damageable")
 	data = types()[kind]
-	display_name = str(data.name)
+	display_name = display_override if display_override != "" else str(data.name)
 	hp_max = int(data.hp)
 	hp = hp_max
 	armor = float(data.armor)
@@ -137,6 +156,14 @@ func _ready() -> void:
 	cs.shape = cap
 	cs.position.y = 0.875
 	add_child(cs)
+	agent = NavigationAgent3D.new()
+	agent.name = "Agent"
+	agent.radius = 0.35
+	agent.height = 1.75
+	agent.path_desired_distance = 0.6
+	agent.target_desired_distance = 0.5
+	agent.avoidance_enabled = false
+	add_child(agent)
 	body = Npc.build_body(self, Color(str(data.coat)))
 	coat_mat = (body.get_child(0) as MeshInstance3D).mesh.material
 	coat_mat.emission_enabled = true
@@ -156,6 +183,10 @@ func _ready() -> void:
 		var p: Array = GameState.dead[enemy_id]
 		global_position = Vector3(p[0], p[1], p[2])
 		_die.call_deferred(true)
+	elif GameState.yielded.has(enemy_id):         # 读档：求饶的，还跪在那里（3.5）
+		var p: Array = GameState.yielded[enemy_id]
+		global_position = Vector3(p[0], p[1], p[2])
+		_kneel.call_deferred(true)
 
 
 func _build_arm() -> void:
@@ -165,7 +196,17 @@ func _build_arm() -> void:
 	body.add_child(arm)
 	var kit := MeshKit.new()
 	var mats := {}
-	if data.weapon == "sword":
+	if data.weapon == "fists":
+		kit.box("coat", Vector3(0, -0.2, 0), Vector3(0.1, 0.32, 0.1))       # 小臂
+		kit.box("skin", Vector3(0, 0.02, 0), Vector3(0.11, 0.12, 0.11))     # 拳头
+		var coat := StandardMaterial3D.new()
+		coat.albedo_color = Color(str(data.coat)).darkened(0.15)
+		coat.vertex_color_use_as_albedo = true
+		var skin := StandardMaterial3D.new()
+		skin.albedo_color = Color("c8a88a")
+		skin.vertex_color_use_as_albedo = true
+		mats = {"coat": coat, "skin": skin}
+	elif data.weapon == "sword":
 		kit.box("steel", Vector3(0, 0.45, 0), Vector3(0.05, 0.7, 0.012))
 		kit.box("wood", Vector3(0, 0.08, 0), Vector3(0.18, 0.03, 0.03))
 		kit.box("wood", Vector3(0, 0.0, 0), Vector3(0.035, 0.16, 0.035))
@@ -202,7 +243,32 @@ func _enter(s: State) -> void:
 	action = ""
 	action_t = 0.0
 	_update_status()
+	if s == State.YIELD:
+		_kneel(false)
 	state_changed.emit(self, state_name())
+
+
+## 求饶：跪下，留一个能搜身的搜刮点，位置记进存档（打架的醉汉不算，3.3）
+func _kneel(restoring: bool) -> void:
+	if bool(data.get("nonlethal", false)):
+		return
+	if restoring:
+		state = State.YIELD
+		body.position.y = -0.45
+		_update_status()
+	else:
+		GameState.yielded[enemy_id] = [global_position.x, global_position.y, global_position.z]
+	name_label.text = display_name + "（求饶）"
+	_drop_loot()
+
+
+## 倒下或求饶的地方留一个搜刮点（2.6）：带着他的兵器和随身的东西；同一个人只留一个
+func _drop_loot() -> void:
+	if loot_node != null and is_instance_valid(loot_node):
+		return
+	loot_node = LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
+	loot_node.position = global_position
+	get_parent().add_child(loot_node)
 
 
 func _update_status() -> void:
@@ -231,6 +297,8 @@ func _physics_process(delta: float) -> void:
 		stop_left -= delta
 		return
 	state_t += delta
+	nav_age += delta
+	move_dir = Vector3.ZERO
 	token_cd = maxf(token_cd - delta, 0.0)
 	stamina = minf(stamina + float(data.stamina_regen) * delta * (0.4 if action in ["windup", "strike"] else 1.0), float(data.stamina))
 	think_t -= delta
@@ -242,8 +310,8 @@ func _physics_process(delta: float) -> void:
 		State.PATROL:
 			move = _patrol(delta)
 		State.SUSPICIOUS:
-			move = _go_to(last_known, float(data.walk), 1.2)
-			_face(last_known, delta)
+			move = _steer(last_known, float(data.walk), 1.2)          # 去你最后出现的地方找
+			_face(global_position + move_dir if move_dir != Vector3.ZERO else last_known, delta)
 		State.ALERT:
 			if player:
 				_face(player.global_position, delta)
@@ -264,8 +332,8 @@ func _physics_process(delta: float) -> void:
 		State.FLEE:
 			if player:
 				var away := _flat(global_position - player.global_position).normalized()
-				move = away * float(data.run)
-				_face(global_position + away, delta)
+				move = _steer(global_position + away * 8.0, float(data.run), 0.5)     # 往远处能走到的地方跑，不撞墙
+				_face(global_position + (move_dir if move_dir != Vector3.ZERO else away), delta)
 			if state_t >= 4.0:
 				_enter(State.YIELD)
 		State.YIELD:
@@ -290,23 +358,45 @@ func _face(p: Vector3, delta: float) -> void:
 	rotation.y += clampf(angle_difference(rotation.y, target), -TURN_SPEED * delta, TURN_SPEED * delta)
 
 
-func _go_to(p: Vector3, speed: float, stop := 0.3) -> Vector3:
+## 这个区域有没有能用的导航网格（导航服务器同步过、地图上有区域）
+func nav_ready() -> bool:
+	if agent == null or not agent.is_inside_tree():
+		return false
+	var map := agent.get_navigation_map()
+	return map.is_valid() and NavigationServer3D.map_get_iteration_id(map) > 0 and not NavigationServer3D.map_get_regions(map).is_empty()
+
+
+## 朝 p 走：有导航网格就沿路径走（目标挪远了或路径旧了才重新寻路），没有就直线走；到 stop 以内停下。返回水平速度，方向记在 move_dir
+func _steer(p: Vector3, speed: float, stop := 0.3) -> Vector3:
 	var d := _flat(p - global_position)
 	if d.length() <= stop:
 		return Vector3.ZERO
-	return d.normalized() * speed
+	var dir := d.normalized()
+	if nav_ready():
+		if nav_target == Vector3.INF or _flat(nav_target - p).length() > REPATH_MOVE or nav_age >= REPATH_AGE:
+			agent.target_position = p
+			nav_target = p
+			nav_age = 0.0
+		var step := _flat(agent.get_next_path_position() - global_position)
+		if step.length() > 0.05:
+			dir = step.normalized()
+	move_dir = dir
+	return dir * speed
 
 
 func _patrol(delta: float) -> Vector3:
 	var p: Vector3 = waypoints[wp_index % waypoints.size()]
-	if _flat(p - global_position).length() <= 0.4:
+	# 到了：离巡逻点 0.4 米以内；巡逻点贴着墙、导航网格够不到时，走到路径的终点也算到了
+	var at_end := nav_ready() and nav_target == p and _flat(agent.get_final_position() - global_position).length() <= 0.45
+	if _flat(p - global_position).length() <= 0.4 or at_end:
 		wp_wait += delta
 		if wp_wait >= 1.5:
 			wp_wait = 0.0
 			wp_index += 1
 		return Vector3.ZERO
-	_face(p, delta)
-	return _go_to(p, float(data.walk) * 0.7)
+	var v := _steer(p, float(data.walk) * 0.7, 0.3)                   # 巡逻点之间沿路走（3.4）
+	_face(global_position + move_dir if move_dir != Vector3.ZERO else p, delta)
+	return v
 
 
 # ---- 感知 ----
@@ -408,6 +498,17 @@ func alert(call_others := true) -> void:
 
 # ---- 战斗 ----
 
+## 直接进入战斗（3.3 打架：一开打就知道你在哪，不用先起疑、喊话）
+func engage() -> void:
+	if not alive() or state == State.YIELD:
+		return
+	suspicion = 1.0
+	_find_refs()
+	if player:
+		last_known = player.global_position
+	_enter(State.COMBAT)
+
+
 func _release_token() -> void:
 	if has_token and director:
 		director.release(self)
@@ -419,8 +520,11 @@ func _combat(delta: float) -> Vector3:
 		return Vector3.ZERO
 	var to := _flat(player.global_position - global_position)
 	var d := to.length()
-	_face(player.global_position, delta)
 	var reach := float(data.reach)
+	# 看得见你或离得近：正对着你；隔着房子绕路时：脸朝走的方向（3.4）
+	var direct := sees_player and d <= DIRECT_NEAR
+	if action in ["windup", "strike", "recover", "block"] or sees_player or d <= CIRCLE_DIST:
+		_face(player.global_position, delta)
 	action_t += delta
 	match action:
 		"windup":
@@ -455,7 +559,17 @@ func _combat(delta: float) -> Vector3:
 		if d <= reach * 0.9:
 			_start_attack()
 			return Vector3.ZERO
-		return to.normalized() * float(data.run)
+		var v := to.normalized() * float(data.run) if direct else _steer(player.global_position, float(data.run), reach * 0.85)
+		if not sees_player and move_dir != Vector3.ZERO and d > CIRCLE_DIST:
+			_face(global_position + move_dir, delta)
+		return v
+	# 看不见你（隔着房子）：先沿路走过来，到绕圈的距离再说
+	if not sees_player and d > CIRCLE_DIST + 0.5:
+		action = "approach"
+		var v := _steer(player.global_position, float(data.walk) * 1.4, CIRCLE_DIST)
+		if move_dir != Vector3.ZERO:
+			_face(global_position + move_dir, delta)
+		return v
 	# 没拿到令牌：在 CIRCLE_DIST 外绕圈（剑手绕得更多，往你侧面去）
 	action = "circle"
 	var radial := to.normalized() * clampf(d - CIRCLE_DIST, -1.0, 1.0) * float(data.walk)
@@ -482,7 +596,8 @@ func _strike_player() -> void:
 	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
 		return
 	var dmg := DamageCalc.compute(float(data.weapon_base), int(data.strength), int(data.skill), attack_kind, player.melee.staggered(), GameState.armor_total())
-	var result := player.melee.receive_hit({"damage": dmg, "kind": attack_kind, "attacker": self, "stop": 0.06})
+	var result := player.melee.receive_hit({"damage": dmg, "kind": attack_kind, "attacker": self, "stop": 0.06,
+		"nonlethal": bool(data.get("nonlethal", false))})
 	if result == "perfect":
 		stagger()
 	elif result == "block":
@@ -515,7 +630,7 @@ func take_hit(info: Dictionary) -> void:
 			return
 		stagger()              # 想挡重击：被破防
 	var dmg := int(info.get("damage", 0))
-	hp = maxi(hp - dmg, 0)
+	hp = maxi(hp - dmg, 1 if bool(data.get("nonlethal", false)) else 0)     # 打不死的（醉汉）最少留 1，到 flee_below 认输
 	flash = 1.0
 	FloatText.spawn(self, ("重击 −%d" if k == "heavy" else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), 1.45, 0),
 		Color("ffcf6a") if k == "heavy" else Color("f2e6c8"), 36 if k == "heavy" else 30)
@@ -546,10 +661,8 @@ func _die(restoring := false) -> void:
 		tw.tween_property(body, "rotation:x", deg_to_rad(-88.0), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		tw.parallel().tween_property(body, "position:y", 0.3, 0.45)
 		GameState.dead[enemy_id] = [global_position.x, global_position.y, global_position.z]
-	# 倒下的地方留一个可搜刮的「尸体」（2.6）：带着他的兵器和随身的东西
-	var loot := LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
-	loot.position = global_position
-	get_parent().add_child(loot)
+	GameState.yielded.erase(enemy_id)            # 求饶以后又被杀了：按倒下算
+	_drop_loot()
 	if restoring:
 		return
 	GameState.change_rep(str(data.get("faction", "")), -5)     # 杀了他们的人，这个势力更恨你（2.7）
