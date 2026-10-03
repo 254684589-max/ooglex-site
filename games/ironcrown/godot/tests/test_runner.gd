@@ -20,10 +20,11 @@ func _ready() -> void:
 	dog.start()
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	Settings.set_value("third_person", false)    # 上一次测试被中断时，设置文件里可能留着第三人称（Settings 在测试开始前已经读过它）
+	Engine.set_meta("ic_skip_opening", true)     # 开场（3.8）只在 opening 组里测，其余测试照旧从主街南头开始
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -189,6 +190,10 @@ func test_ui() -> void:
 	# 徒手格斗（3.3）
 	texts.append_array([Birch.TEACH_DESKTOP, Birch.TEACH_TOUCH, "（求饶）"])     # 桦林（3.5）
 	texts.append_array(Ferry.FERRYMAN_LINES + Ferry.THUG_LINES + ["◆ 动手了！✓ 渡口的无旗者都解决了。踢！包抄他！"])     # 渡口（3.6）
+	for id in GameState.tips_data():                                       # 教学提示与开场（3.8）
+		if not str(id).begins_with("_"):
+			texts.append(str(GameState.tips_data()[id].desktop) + str(GameState.tips_data()[id].touch))
+	texts.append_array([Opening.CALL_LINE, Opening.BELL_LINE, PauseMenu.HELP_DESKTOP, PauseMenu.HELP_TOUCH, "序章霜渡镇之夜灰鲸河畔 · 入夜轻触画面开始点击画面或按任意键开始声音教学提示◇ "])
 	texts.append_array(EndingPanel.RECAP.values() + [EndingPanel.SEAL, "序章「霜渡镇之夜」完第一章 · 黑鹭堡开发中在雾里再走走从头再来", "雾里有人提着灯走下坡来……"])     # 尾声（3.7）
 	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
@@ -867,7 +872,8 @@ func test_checks() -> void:
 	var unused := []
 	for f in reg:
 		# 打架的输赢旗标（3.3）写在 brawl 效果的 win / lose 上
-		if not f.begins_with("_") and not text.contains('"set": "%s"' % f) and not text.contains('"win": "%s"' % f) and not text.contains('"lose": "%s"' % f):
+		# 代码里设置的（set_in 写着 .gd，例如开场的 opening_done）不在对话里找
+		if not f.begins_with("_") and not str(reg[f].get("set_in", "")).contains(".gd") and not text.contains('"set": "%s"' % f) and not text.contains('"win": "%s"' % f) and not text.contains('"lose": "%s"' % f):
 			unused.append(f)
 	check(reg.size() >= 5 and unused.is_empty(), "data/flags.json 登记的旗标都在对话里有地方设置（没设置的：%s）" % str(unused))
 	var bad := {"start": "a", "nodes": {"a": {"text": "嗨", "options": [
@@ -2336,7 +2342,8 @@ func test_areas() -> void:
 	check(main.area == "tavern" and main.scene_name() == "tavern", "换到了酒馆区域")
 	check(flat(p.global_position).distance_to(Vector2(Tavern.DOOR_X, 2.6)) < 0.3 and absf(p.rotation.y) < 0.05, "站在酒馆门内的出生点、面朝大堂（%s）" % str(p.global_position))
 	check(p.melee.health == 77 and main.arrived_by == "front", "生命值还是 77，记得是从门走进来的")
-	check(main.hud.toast_label.text == "「倒钩鱼」酒馆" and main.hud.hint_label.text == "", "进门提示区域名，不再显示开场的操作提示")
+	check(main.hud.toast_label.text == "「倒钩鱼」酒馆" and main.hud.hint_label.text != main.HINT_DESKTOP, "进门提示区域名，不再显示开场的操作提示")
+	check(main.tip_now == "save" and main.hud.hint_label.text == str(GameState.tips_data().save.desktop), "第一次走进别处：教学提示讲自动存档（3.8）")
 	var auto := Saves.read_slot("auto")
 	check(auto.has("data") and auto.data.scene == "tavern", "进入新区域自动存档（GDD 第十节）")
 	await seconds(0.5)
@@ -3425,3 +3432,332 @@ func test_ending() -> void:
 		await free_main(main)
 	GameState.pending_load = {}
 	GameState.new_game(1)
+
+# ---------------- 开场与教学提示（3.8） ----------------
+
+func test_opening() -> void:
+	Engine.set_meta("ic_skip_opening", false)
+	Settings.tips = true
+	Settings.sound = true
+	GameState.new_game(83)
+	var main := await make_main(false)
+	var p: FpController = main.player
+	var op: Opening = main.opening
+	check(op != null and op.stage == "card" and main.title_card.visible and main.title_card.title.text == "霜渡镇之夜" and main.title_card.prompt.text == "点击画面或按任意键开始",
+		"新游戏：标题卡「序章 · 霜渡镇之夜」，等玩家开始")
+	var manor: Transform3D = Areas.spawn("frostford", "manor")
+	check(p.global_position.distance_to(manor.origin) < 0.3 and absf(angle_difference(deg_to_rad(p.yaw_deg()), PI)) < 0.05, "站在领主宅邸门口，背对大门望着街道（%s）" % p.global_position)
+	var steward: Npc = main._npc_by_dialogue("steward")
+	var to_steward := steward.global_position - p.global_position
+	check(to_steward.length() < 4.5 and to_steward.dot(-p.global_transform.basis.z) < 0.0, "管家在身后的宅邸门口（%.1f 米）" % to_steward.length())
+	check(main.hud.hint_label.text == "", "开场前不显示旧的操作说明")
+	await frames(4)
+	check(op.bell.stream is AudioStreamWAV and (op.bell.stream as AudioStreamWAV).data.size() == int(Bell.RATE * Bell.SECONDS) * 2, "标题卡显示时先合成好钟声（%.1f 秒，16 位单声道）" % Bell.SECONDS)
+	var pcm: PackedByteArray = (op.bell.stream as AudioStreamWAV).data
+	var peak := 0
+	var tail_peak := 0
+	for i in range(0, pcm.size(), 2):
+		var v: int = absi(pcm.decode_s16(i))
+		peak = maxi(peak, v)
+		if i > pcm.size() - 400:
+			tail_peak = maxi(tail_peak, v)
+	check(peak > 20000 and peak <= 32767 and tail_peak < 300, "钟声有响度、不削顶，结尾淡出到静音（峰值 %d，结尾 %d）" % [peak, tail_peak])
+	check(op.stage == "card" and op.tolls == 0, "玩家没动之前不敲钟（网页要有一次操作才能出声）")
+	# 触屏：第一下触摸既开始开场，也照样按下摇杆（不被吞掉）
+	main.touch.visible = true
+	var tev := InputEventScreenTouch.new()
+	tev.index = 0
+	tev.position = Vector2(200, 500)
+	tev.pressed = true
+	get_viewport().push_input(tev)
+	await frames(1)
+	check(op.stage == "bell" and op.tolls == 1 and main.touch.move_index == 0, "第一下触摸：开场开始（第一下钟声），左半屏的摇杆也照样按下")
+	var rel := tev.duplicate()
+	rel.pressed = false
+	get_viewport().push_input(rel)
+	main.touch.visible = false
+	var tips: Dictionary = GameState.tips_data()
+	check(main.hud.subtitle_label.text == Opening.BELL_LINE and main.hud.hint_label.text == str(tips.move.desktop) and main.tip_now == "move", "字幕「%s」，底部是走动与转视角的教学提示" % Opening.BELL_LINE)
+	await frames(2)
+	check(main.title_card.prompt.text == "" and main.title_card.modulate.a <= 1.0, "标题卡收起「点击开始」并开始淡出")
+	op.t = Opening.CALL_AT + 0.01            # 无头模式帧很快，直接把时间拨过喊人的时刻
+	await frames(6)
+	check(op.tolls == Opening.TOLLS and op.stage == "called" and GameState.has_flag("opening_done"), "钟敲了 %d 下，管家喊人；记下旗标 opening_done" % Opening.TOLLS)
+	check(main.hud.subtitle_label.text == Opening.CALL_LINE and main.hud.hint_label.text == str(tips.talk.desktop) and main.tip_now == "talk", "「%s」，提示转身对准管家说话" % Opening.CALL_LINE)
+	await aim(p, p.global_position, steward.global_position + Vector3(0, 1.4, 0))
+	await frames(2)
+	check(p.interactor.target != null and p.interactor.target.display_name == "管家", "转过身：对准了管家")
+	main._unhandled_input(key_ev(KEY_E))
+	await frames(2)
+	check(main.dialogue.visible and main.dialogue.runner.id == "steward" and main.hud.hint_label.text == "", "按 E 和管家说话，底部提示让开对话面板")
+	find_button(main.dialogue, "我这就去找。").pressed.emit()
+	await frames(1)
+	find_button(main.dialogue, "放心。").pressed.emit()
+	await frames(3)
+	check(GameState.quest_active("edric_missing") and main.tip_now == "quest" and main.hud.hint_label.text == str(tips.quest.desktop) and main.tip_queue == ["rep"], "接下主线：对话关上后提示任务日志（声望的提示排在后面）")
+	main.hint_left = 0.01
+	await frames(3)
+	check(main.tip_now == "rep" and main.hud.hint_label.text == str(tips.rep.desktop), "上一条消失后接着讲声望（管家那里瓦伦家声望 +5）")
+	check(GameState.tips_seen == ["move", "talk", "quest", "rep"], "看过的提示按顺序记下（%s）" % str(GameState.tips_seen))
+	main.hint_left = 0.01
+	await frames(3)
+	main.show_tip("quest")
+	main.show_tip("rep")
+	await frames(2)
+	check(main.tip_now == "" and main.tip_queue.is_empty(), "看过的提示不再显示")
+	# 检定的提示在对话面板里显示一次
+	main.open_dialogue("frostford", "watchman", main._npc_by_dialogue("watchman"))
+	await frames(1)
+	check(not main.dialogue.tip_label.visible, "没有检定选项的节点不讲检定")
+	find_button(main.dialogue, "你今晚见过埃德里克少爷吗？").pressed.emit()
+	await frames(1)
+	var found_check: bool = main.dialogue.runner.options().any(func(o): return o.has("check"))
+	check(found_check and main.dialogue.tip_label.visible and main.dialogue.tip_label.text.contains("检定") and "check" in GameState.tips_seen, "第一次遇到检定选项：对话面板里讲检定（%s）" % main.dialogue.runner.node_id)
+	main.dialogue.close()
+	await frames(2)
+	main.open_dialogue("frostford", "watchman", main._npc_by_dialogue("watchman"))
+	await frames(1)
+	find_button(main.dialogue, "关于埃德里克少爷，你再想想。").pressed.emit()
+	await frames(1)
+	check(main.dialogue.runner.options().any(func(o): return o.has("check")) and not main.dialogue.tip_label.visible, "检定提示只讲一次（再遇到检定选项不讲了）")
+	main.dialogue.close()
+	await frames(2)
+	# 存档带着看过的提示和开场旗标；读档不再播开场
+	main.hint_left = 0.0
+	check(main.save_game("slot2", true), "开场以后存档")
+	var saved: Dictionary = Saves.read_slot("slot2")
+	check(Array(saved.data.state.get("tips", [])).has("talk") and bool(saved.data.state.flags.get("opening_done", false)), "存档里记着看过的提示和 opening_done")
+	check(main.load_game("slot2"), "读这个存档")
+	main = await reload_main(main)
+	check(main.opening == null and not main.title_card.visible and GameState.tips_seen.has("check"), "读档：不再播开场，看过的提示还记着")
+	await free_main(main)
+	# 开过一次开场的新游戏（旗标在）也不再播；新开一局（旗标清空）再播
+	GameState.set_flag("opening_done")
+	main = await make_main(false)
+	check(main.opening == null, "这一局播过开场：重新载入主街不再播")
+	await free_main(main)
+	# 关掉声音：不合成、不敲钟（字幕照样有）；关掉教学提示：一条都不显示
+	Settings.sound = false
+	Settings.tips = false
+	GameState.new_game(84)
+	main = await make_main(false)
+	op = main.opening
+	await frames(4)
+	main._unhandled_input(key_ev(KEY_W))
+	op.begin()
+	await frames(2)
+	check(op.bell.stream == null and op.tolls == 1 and main.hud.subtitle_label.text == Opening.BELL_LINE, "关掉声音：不合成、不出声，字幕照样有")
+	check(main.tip_now == "" and main.hud.hint_label.text == "" and GameState.tips_seen.is_empty(), "关掉教学提示：一条都不显示")
+	main.open_pause()
+	await frames(1)
+	check(main.pause_menu.sound_check.text == "声音" and not main.pause_menu.sound_check.button_pressed and main.pause_menu.tips_check.text == "教学提示" and not main.pause_menu.tips_check.button_pressed,
+		"暂停菜单里有「声音」「教学提示」两个开关")
+	check(main.pause_menu.help_label.text == PauseMenu.HELP_DESKTOP, "暂停菜单只写这台设备的操作说明（电脑）")
+	main.close_pause()
+	# 触屏：底部提示和字幕不压在右下角的按钮列上（竖屏挪到上半屏，横屏收窄到摇杆和按钮之间）
+	main.touch.visible = true
+	main.hud.say(Opening.CALL_LINE, 5.0)
+	main.hud.set_hint(str(GameState.tips_data().talk.touch))
+	for sz in [Vector2(360, 740), Vector2(540, 720), Vector2(740, 360), Vector2(1280, 720)]:
+		main.hud.size = sz
+		main.touch.size = sz
+		main.hud._layout()
+		await frames(1)
+		var br: Rect2 = main.touch.buttons_rect()
+		var hr: Rect2 = main.hud.hint_label.get_rect()
+		var sr: Rect2 = main.hud.subtitle_panel.get_rect()
+		check(not hr.intersects(br) and not sr.intersects(br) and not hr.intersects(sr) and hr.end.x <= sz.x and sr.end.x <= sz.x,
+			"触屏 %dx%d：提示和字幕都不压在按钮上、互不重叠（提示 %s，字幕 %s，按钮 %s）" % [sz.x, sz.y, hr, sr, br])
+	main.touch.visible = false
+	main.hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	main.touch.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	main.open_pause()
+	await frames(1)
+	main.pause_menu.tips_check.button_pressed = true
+	main.pause_menu.sound_check.button_pressed = true
+	check(Settings.tips and Settings.sound and bool(Saves.load_settings().get("tips", false)) and bool(Saves.load_settings().get("sound", false)), "打开两个开关：马上存进设置")
+	main.close_pause()
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
+
+# ---------------- 三个分支的全流程（3.8） ----------------
+
+## 和某人按选项文字说一串话；对话还开着就关上。找不到选项时打印当前节点和选项，返回 false
+func fl_say(main: Node3D, area: String, id: String, picks: Array, keep_open := false) -> bool:
+	if not main.dialogue.visible:
+		main.open_dialogue(area, id, main._npc_by_dialogue(id))
+		await frames(1)
+	if not main.dialogue.visible:
+		print("  （%s 的对话没打开）" % id)
+		return false
+	for t in picks:
+		var b := find_button(main.dialogue, str(t))
+		if b == null:
+			print("  （%s 的节点 %s 没有选项「%s」：%s）" % [id, main.dialogue.runner.node_id, t, str(main.dialogue.runner.options().map(func(o): return o.text))])
+			main.dialogue.close()
+			await frames(2)
+			return false
+		b.pressed.emit()
+		await frames(1)
+	if main.dialogue.visible and not keep_open:
+		main.dialogue.close()
+	await frames(3)
+	return true
+
+
+## 走区域里通往 to_area 的那扇门（检查路是通的），载入新区域
+func fl_go(main: Node3D, to_area: String) -> Node3D:
+	var doors: Array = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == to_area and not d.locked)
+	if doors.is_empty():
+		print("  （%s 没有去 %s 的门）" % [main.area, to_area])
+		return main
+	var went: bool = await main.travel(doors[0].to_area, doors[0].to_spawn)
+	if not went:
+		return main
+	main = await reload_main(main)
+	await frames(3)
+	return main
+
+
+## 打赢眼前这一仗：在场的敌人都吃一记重击（倒下或认输）
+func fl_win_fight(main: Node3D) -> void:
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		if e.alive() and e.state != Enemy.State.YIELD:
+			e.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(4)
+
+
+## 搜身：编号以 loot: 开头的尸体 / 跪着的人都搜一遍，返回搜到的东西
+func fl_loot_all(main: Node3D) -> Array:
+	var got: Array = []
+	for c in main.find_children("*", "LootContainer", true, false):
+		if str(c.loot_id).begins_with("loot:"):
+			got.append_array(c.take_all())
+	return got
+
+
+func test_fullflow() -> void:
+	# ===== 一、交出：开场 → 管家 → 更夫（两条免费线索）→ 桦林（打完搜身，拿雇佣信和银币）→ 渡口（付 30 银币）→ 交出 =====
+	Engine.set_meta("ic_skip_opening", false)
+	Settings.tips = true
+	GameState.new_game(91)
+	var main := await make_main(false)
+	check(main.opening != null and main.area == "frostford", "[交出] 新游戏：开场（标题卡、宅邸门口）")
+	main.opening.begin()
+	main.opening.t = Opening.CALL_AT + 0.01
+	await frames(4)
+	check(GameState.has_flag("opening_done") and main.tip_now == "talk", "[交出] 钟声过后管家喊住你")
+	check(await fl_say(main, "frostford", "steward", ["我这就去找。", "放心。"]), "[交出] 管家：接下主线")
+	check(GameState.quest_stage("edric_missing") == "find_clues" and GameState.get_rep("valen") > 0, "[交出] 主线「雾里的少爷」：打探少爷的下落；瓦伦家记着你答应了")
+	check(await fl_say(main, "frostford", "watchman", ["你今晚见过埃德里克少爷吗？", "那个南方人长什么样？", "我再问点别的。", "没有了，你忙吧。"]), "[交出] 更夫：少爷往渡口去了，南方人戴双钥印戒")
+	check(GameState.clues.has("ferry") and GameState.clues.has("ring") and GameState.quest_stage("edric_missing") == "to_ferry", "[交出] 两条线索：主线推进到「去渡口」（%s）" % str(GameState.clues))
+	main = await fl_go(main, "birch")
+	check(main.area == "birch" and main.get_tree().get_nodes_in_group("enemy").size() == 3, "[交出] 出南门到桦林：哨卡三个无旗者")
+	await fl_win_fight(main)
+	var got := fl_loot_all(main)
+	check(got.has("雇佣信") and GameState.quest_stage("edric_missing") == "warned" and GameState.silver >= 30, "[交出] 打完搜身：雇佣信（主线：赶在他们前头去渡口），银币 %d 枚" % GameState.silver)
+	main = await fl_go(main, "ferry")
+	check(main.area == "ferry" and main._npc_by_dialogue("offer") != null, "[交出] 到了渡口：「灰手」奥弗堵着码头")
+	var s0 := GameState.silver
+	check(await fl_say(main, "ferry", "offer", ["我来接瓦伦家的少爷。", "（掂了掂钱袋）30 枚银币，够你们的人过冬。", "（看着他们走进雾里）"]), "[交出] 付 30 枚银币")
+	check(GameState.has_flag("offer_left") and GameState.silver == s0 - 30 and main._npc_by_dialogue("offer") == null, "[交出] 奥弗收钱带人走了")
+	check(await fl_say(main, "ferry", "silas", ["什么买卖？", "明白了。", "桦林里那些无旗者，是你雇的。", "……", "告辞。"]), "[交出] 塞拉斯：借据的买卖；拿着雇佣信问，他承认雇了无旗者")
+	check(await fl_say(main, "ferry", "edric", ["你父亲很担心你。", "那张借据在你手里？", "……", "跟我回去。借据交给你父亲。", "（看着他走进雾里）"]), "[交出] 埃德里克：看到借据背面的星铁冠印；带他回去")
+	check(GameState.get_flag("prologue_edric") == "deliver" and GameState.has_item("debt_note") and main._npc_by_dialogue("alban_ferry") != null, "[交出] 抉择记下，借据到手，修士提着灯来了")
+	check(await fl_say(main, "ferry", "alban_ferry", ["他跟我回去了。借据在我这儿，交给他父亲。", "这意味着什么？", "（收下旧书）"], true), "[交出] 修士认出王室的印鉴，交出旧书")
+	await frames(3)
+	check(main.ending_panel.visible and GameState.quest_done("edric_missing") and main.ending_panel.recap.text.contains("交回了瓦伦家"), "[交出] 结束画面：「第一章 · 黑鹭堡　开发中」，回顾写着交回了瓦伦家")
+	find_button(main.ending_panel, "在雾里再走走").pressed.emit()
+	await frames(2)
+	main = await fl_go(main, "birch")
+	main = await fl_go(main, "frostford")
+	check(main.area == "frostford" and await fl_say(main, "frostford", "steward", [], true) and main.dialogue.runner.node_id == "thanks", "[交出] 回到镇上：管家说少爷回来了，不会再派一次任务")
+	main.dialogue.close()
+	await frames(2)
+	var seen: Array = GameState.tips_seen + main.tip_queue
+	check(["move", "talk", "quest", "rep", "check", "clue", "save", "bag"].all(func(t): return seen.has(t)), "[交出] 一路上的教学提示都出现过或排着队（看过 %s，排队 %s；换区域时排队的带过去）" % [str(GameState.tips_seen), str(main.tip_queue)])
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
+
+	# ===== 二、放走：管家 → 酒馆（帮玛蒂尔达和大桶打一架；伐木工）→ 桦林（打完不搜）→ 渡口（直接动手）→ 放走 =====
+	GameState.new_game(92)
+	main = await make_main(false)
+	check(main.opening == null, "[放走] （测试从主街南头开始，不播开场）")
+	check(await fl_say(main, "frostford", "steward", ["少爷最近有什么不对劲吗？", "明白了，我这就去找。", "放心。"]), "[放走] 管家：少爷最近和一个南方客人喝酒，不想联姻")
+	main = await fl_go(main, "tavern")
+	check(main.area == "tavern", "[放走] 走进「倒钩鱼」酒馆")
+	check(await fl_say(main, "tavern", "matilda", ["打听埃德里克少爷的事。", "（朝吧台那头的大个子扬了扬下巴）那个人，是不是给你添了麻烦？", "交给我。"]), "[放走] 玛蒂尔达：让大桶把酒钱结了就告诉你")
+	check(await fl_say(main, "tavern", "dagu", ["玛蒂尔达说你欠了三个晚上的酒钱。", "那就来吧。（徒手打一架）"]), "[放走] 找大桶要账")
+	check(main.brawl_active(), "[放走] 徒手打起来了")
+	await fl_win_fight(main)
+	await seconds(Brawl.END_DELAY + 0.3)
+	check(GameState.has_flag("dagu_beaten") and not main.brawl_active(), "[放走] 大桶认输，结了账")
+	check(await fl_say(main, "tavern", "matilda", ["大桶把账结了。", "说吧。", "多谢。", "告辞。"]), "[放走] 玛蒂尔达说出南方人的事")
+	check(await fl_say(main, "tavern", "woodcutter", ["雾里出过什么事吗？", "多谢提醒。"]), "[放走] 伐木工：桦林边有营火")
+	check(GameState.clues.has("boots") and GameState.clues.has("birch_fires") and GameState.quest_stage("edric_missing") == "to_ferry", "[放走] 两条线索：去渡口（%s）" % str(GameState.clues))
+	main = await fl_go(main, "frostford")
+	main = await fl_go(main, "birch")
+	await fl_win_fight(main)
+	check(not main.in_combat() and GameState.quest_stage("edric_missing") == "to_ferry", "[放走] 桦林：打完不搜身，主线还在「去渡口」")
+	main = await fl_go(main, "ferry")
+	check(main.area == "ferry", "[放走] 到了渡口")
+	check(await fl_say(main, "ferry", "offer", ["我来接瓦伦家的少爷。", "那就动手吧。"]), "[放走] 和奥弗：「那就动手吧。」")
+	check(main.encounter_active(), "[放走] 奥弗和两个手下动手了")
+	await fl_win_fight(main)
+	check(GameState.has_flag("offer_defeated") and not main.in_combat(), "[放走] 打赢了渡口这一仗")
+	check(fl_loot_all(main).has("灰皮手套"), "[放走] 从奥弗身上搜出灰皮手套")
+	check(await fl_say(main, "ferry", "silas", ["什么买卖？", "明白了。", "告辞。"]), "[放走] 塞拉斯说出借据的买卖")
+	check(await fl_say(main, "ferry", "edric", ["你父亲很担心你。", "那张借据在你手里？", "……", "走吧，船在等你。借据你带走。", "（看着船消失在雾里）"]), "[放走] 放埃德里克坐船南下")
+	check(GameState.get_flag("prologue_edric") == "release" and not GameState.has_item("debt_note") and GameState.has_flag("edric_owes_you"), "[放走] 借据跟他走了，他欠你一个人情")
+	check(await fl_say(main, "ferry", "alban_ferry", ["他上船走了，借据他带走了。", "这意味着什么？", "（收下旧书）"], true), "[放走] 修士交出旧书")
+	await frames(3)
+	check(main.ending_panel.visible and main.ending_panel.recap.text.contains("坐船南下") and GameState.quest_done("edric_missing"), "[放走] 结束画面，回顾写着坐船南下")
+	find_button(main.ending_panel, "在雾里再走走").pressed.emit()
+	await frames(2)
+	await free_main(main)
+
+	# ===== 三、勒索：管家 → 小教堂（捐钱借钥匙）→ 墓室（少爷的信）→ 桦林（搜出雇佣信）→ 渡口（亮信说服）→ 勒索 → 从头再来 =====
+	GameState.new_game(93)
+	main = await make_main(false)
+	check(await fl_say(main, "frostford", "steward", ["我这就去找。", "放心。"]), "[勒索] 管家：接下主线")
+	main = await fl_go(main, "churchyard")
+	main = await fl_go(main, "chapel")
+	check(main.area == "chapel", "[勒索] 窄巷 → 墓园 → 星铁小教堂")
+	check(await fl_say(main, "chapel", "alban", ["打听埃德里克少爷的事。", "墓园钥匙还在您这儿吗？", "（往捐献箱里放 3 枚银币）给教堂添点灯油。", "我会的。"]), "[勒索] 修士：少爷借过墓园钥匙；捐 3 银币借到钥匙")
+	check(GameState.has_item("crypt_key") and GameState.clues.has("chapel_key"), "[勒索] 拿到墓园钥匙，记下线索")
+	main = await fl_go(main, "churchyard")
+	var crypt: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.key_item == "crypt_key")[0]
+	crypt.interact(main.player)
+	var bundle: LootContainer = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "valen_crypt_bundle")[0]
+	check(not crypt.locked and bundle.take_all().has("没写完的信") and GameState.quest_stage("edric_missing") == "to_ferry", "[勒索] 打开墓室，包袱里是少爷没写完的信：去渡口")
+	main = await fl_go(main, "frostford")
+	main = await fl_go(main, "birch")
+	await fl_win_fight(main)
+	check(fl_loot_all(main).has("雇佣信") and GameState.quest_stage("edric_missing") == "warned", "[勒索] 桦林：打完搜出雇佣信")
+	main = await fl_go(main, "ferry")
+	check(await fl_say(main, "ferry", "offer", ["我来接瓦伦家的少爷。", "（亮出雇佣信）信上的蜡印你认得。双钥港的人，会让你们拿着钱活着回去吗？"], true), "[勒索] 亮出雇佣信（口才检定）")
+	var node: String = main.dialogue.runner.node_id
+	if node == "convinced":
+		check(await fl_say(main, "ferry", "offer", ["（看着他们走进雾里）"]) and GameState.has_flag("offer_left"), "[勒索] 说动了：奥弗带人走了")
+	else:
+		check(node == "laugh" and await fl_say(main, "ferry", "offer", ["（拔剑）"]), "[勒索] 没说动：奥弗拔剑（%s）" % node)
+		await fl_win_fight(main)
+		check(GameState.has_flag("offer_defeated"), "[勒索] 打赢了")
+	print("  （亮信的检定：%s）" % ("说动了" if node == "convinced" else "没说动"))
+	var cas0 := GameState.get_rep("caswell")
+	s0 = GameState.silver
+	check(await fl_say(main, "ferry", "edric", ["那张借据在你手里？", "……", "借据给我。", "（转向塞拉斯）", "（掂了掂钱袋）"]), "[勒索] 扣下借据，转向塞拉斯要钱")
+	check(GameState.get_flag("prologue_edric") == "extort" and GameState.has_item("debt_note") and GameState.silver == s0 + 120 and GameState.get_rep("caswell") == cas0 - 30, "[勒索] 借据在手、收了 120 银币、卡斯韦尔家 −30")
+	check(await fl_say(main, "ferry", "alban_ferry", ["他自己回镇上了。借据在我手里。", "这意味着什么？", "（收下旧书）"], true), "[勒索] 修士交出旧书")
+	await frames(3)
+	check(main.ending_panel.visible and main.ending_panel.recap.text.contains("一百二十"), "[勒索] 结束画面，回顾写着一百二十枚银币")
+	Engine.set_meta("ic_skip_opening", false)
+	var reloads := [0]
+	main.reload_requested.connect(func(): reloads[0] += 1)
+	find_button(main.ending_panel, "从头再来").pressed.emit()
+	await frames(3)
+	check(reloads[0] == 1 and GameState.quest_stage("edric_missing") == "" and not GameState.has_flag("opening_done"), "[勒索] 从头再来：新游戏")
+	main = await reload_main(main)
+	check(main.opening != null and main.title_card.visible, "[勒索] 新游戏又从开场（宅邸门口、标题卡）开始")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)

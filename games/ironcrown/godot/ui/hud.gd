@@ -31,6 +31,7 @@ var health_label: Label
 var hurt_left := 0.0
 var marker_left := 0.0
 var marker_heavy := false
+var touch_ref: Control        # 触屏按钮（TouchControls）：显示时底部提示和字幕要让开右下角的按钮列（3.8）
 
 const BAR_W := 180.0
 const BAR_H := 6.0
@@ -198,6 +199,7 @@ func _process(delta: float) -> void:
 		subtitle_left -= delta
 		if subtitle_left <= 0.0:
 			subtitle_panel.hide()
+			_layout()                 # 竖屏触屏时提示排在字幕下面：字幕没了，提示往上挪
 
 
 func set_hint(text: String) -> void:
@@ -214,18 +216,39 @@ func _layout() -> void:
 	if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
 		title_label.text = TITLE_SHORT
 	var w := minf(size.x - 32.0, 760.0)
-	hint_label.size = Vector2(w, 0)
-	hint_label.position = Vector2((size.x - w) * 0.5, size.y * 0.62)
 	for l in [prompt_label, toast_label]:
 		l.size = Vector2(w, 0)
 	prompt_label.position = Vector2((size.x - w) * 0.5, size.y * 0.5 + 18.0)
 	toast_label.position = Vector2((size.x - w) * 0.5, size.y * 0.2)
 	var sw := minf(size.x - 32.0, 640.0)
+	var hint_y := size.y * 0.62
+	var sub_y := size.y * 0.72
+	var portrait_touch := false
+	var landscape_touch := false
+	if touch_ref and touch_ref.visible:
+		# 触屏：右下角的按钮列会压住底部的提示和字幕。横屏收窄到摇杆和按钮列之间；竖屏放不下，挪到上半屏（短提示下面、准星上面）
+		var side: float = size.x - touch_ref.buttons_rect().position.x + 8.0
+		var band := size.x - side * 2.0
+		if band >= 300.0:
+			w = minf(w, band)
+			sw = minf(sw, band)
+			landscape_touch = true
+		else:
+			portrait_touch = true
+			sub_y = size.y * 0.28
 	# 自动换行的 Label 必须先给定宽度，否则按 0 宽度排版，字幕框变得很高却看不到字
 	subtitle_label.custom_minimum_size = Vector2(sw - 24.0, 0)
 	subtitle_panel.custom_minimum_size = Vector2(sw, 0)
 	subtitle_panel.reset_size()
-	subtitle_panel.position = Vector2((size.x - sw) * 0.5, size.y * 0.72)
+	if landscape_touch:                # 横屏触屏：字幕贴着底边（摇杆和按钮列都在两侧）
+		sub_y = size.y - subtitle_panel.size.y - 12.0
+	subtitle_panel.position = Vector2((size.x - sw) * 0.5, sub_y)
+	if portrait_touch:
+		hint_y = sub_y + (subtitle_panel.size.y + 8.0 if subtitle_panel.visible else 0.0)
+	hint_label.size = Vector2(w, 0)
+	if subtitle_panel.visible and not portrait_touch:      # 矮屏幕上提示放在字幕上面，不叠在一起
+		hint_y = minf(hint_y, sub_y - hint_label.size.y - 6.0)
+	hint_label.position = Vector2((size.x - w) * 0.5, hint_y)
 	queue_redraw()
 
 

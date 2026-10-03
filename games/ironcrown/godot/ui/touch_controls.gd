@@ -43,6 +43,17 @@ func button_centers() -> Dictionary:
 	return c
 
 
+## 右下角按钮列占的矩形（交互按钮不管有没有都算上，排版才稳定）；HUD 用它让开底部提示和字幕（3.8）
+func buttons_rect() -> Rect2:
+	var c := button_centers()
+	c["interact"] = Vector2(size.x - 24.0 - BTN_R, size.y - 64.0 - BTN_R * 3.0)
+	var pad := Vector2.ONE * BTN_R * 1.25
+	var r := Rect2(c.jump - pad, pad * 2.0)
+	for id in c:
+		r = r.merge(Rect2(c[id] - pad, pad * 2.0))
+	return r
+
+
 func has_target() -> bool:
 	return player != null and player.interactor != null and player.interactor.target != null
 

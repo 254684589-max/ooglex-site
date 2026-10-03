@@ -303,6 +303,23 @@
       {
         "if": [
           {
+            "flag": "prologue_edric",
+            "eq": "deliver"
+          }
+        ],
+        "node": "thanks"
+      },
+      {
+        "if": [
+          {
+            "flag": "prologue_edric"
+          }
+        ],
+        "node": "no_news"
+      },
+      {
+        "if": [
+          {
             "quest_active": "edric_missing"
           }
         ],
@@ -374,6 +391,24 @@
         "options": [
           {
             "text": "知道了。",
+            "end": true
+          }
+        ]
+      },
+      "thanks": {
+        "text": "少爷回来了，一句话也没说，直接上了楼。老爷在书房里坐了很久……他说，天亮以后要亲自谢你。",
+        "options": [
+          {
+            "text": "让他好好歇着吧。",
+            "end": true
+          }
+        ]
+      },
+      "no_news": {
+        "text": "渡口那边……有少爷的消息吗？老爷一夜没合眼，书房的灯到现在还亮着。",
+        "options": [
+          {
+            "text": "（这件事，还是等天亮了再说）",
             "end": true
           }
         ]

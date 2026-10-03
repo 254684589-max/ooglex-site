@@ -18,9 +18,11 @@ var reduced_motion := false
 var show_perf := false           # 左上角性能浮层（F3 或暂停菜单；网页 ?perf=1 时自动打开）
 var quality := ""                # 玩家在菜单里选过的画质档（空 = 按设备自动）
 var third_person := false        # 第三人称越肩视角（2.9，D6；V 键 / 菜单 / 触屏「视角」切换）
+var sound := true                # 声音（3.8 起有开场的钟声；暂停菜单可以关）
+var tips := true                 # 教学提示（3.8；每条只显示一次，暂停菜单可以关）
 var loaded := false              # 读到过保存的设置（那就不再按系统「减少动态效果」改镜头摆动）
 
-const SAVED_KEYS := ["fov", "sensitivity", "invert_y", "head_bob", "quality", "third_person"]
+const SAVED_KEYS := ["fov", "sensitivity", "invert_y", "head_bob", "quality", "third_person", "sound", "tips"]
 
 
 func _ready() -> void:
@@ -60,6 +62,10 @@ func _apply(key: String, value) -> bool:
 			show_perf = bool(value)
 		"third_person":
 			third_person = bool(value)
+		"sound":
+			sound = bool(value)
+		"tips":
+			tips = bool(value)
 		"quality":
 			quality = str(value) if str(value) in ["", "low", "medium", "high"] else ""
 		_:
