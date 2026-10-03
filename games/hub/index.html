@@ -40,7 +40,7 @@
     background:linear-gradient(92deg,#a98bff,#ff6ec7 50%,#7ed957); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .hero p { color:var(--dim); margin-top:7px; font-size:0.92rem; }
 
-  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:18px; max-width:900px; margin:0 auto; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); grid-auto-flow:row dense; gap:18px; max-width:900px; margin:0 auto; }
   .game { display:flex; flex-direction:column; text-decoration:none; color:inherit; border-radius:18px; overflow:hidden;
     background:var(--card); border:1px solid var(--line); box-shadow:0 22px 54px -34px rgba(0,0,0,.85);
     transition:transform .18s, border-color .18s; }
@@ -64,9 +64,16 @@
   .cv-ef::before { content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1;
     background:repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 2px, transparent 2px 34px), repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 17px);
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
-  /* 铁冠之争 THE IRON CROWN：所有者提供的封面海报（裁出标题一段；图片没载入时显示深色底） */
-  .cv-ic { background:#1b1c22; }
-  .cover .cv-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 40%; }
+  /* 铁冠之争 THE IRON CROWN：整张竖版海报（所有者用 AI 生成；图片没载入时显示深色底）。
+     这张卡占满一行：手机上海报在上、完整显示，宽屏上海报在左、文字在右 */
+  .game.feature { grid-column:1 / -1; }
+  .cv-ic { background:#1b1c22; height:auto; aspect-ratio:3 / 4; }
+  .cover .cv-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  @media (min-width:600px){
+    .game.feature { flex-direction:row; }
+    .game.feature .cv-ic { flex:0 0 min(46%, 340px); }
+    .game.feature .body { align-self:center; padding:22px 26px; }
+  }
   /* GTA Vice City：迈阿密霓虹夕阳 */
   .cv-gta { background:linear-gradient(180deg,#2a0a4a 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
   .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
@@ -136,11 +143,11 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
-        <div class="cover cv-ic"><img class="cv-img" src="img/ironcrown-cover.webp?v=dfcac948" alt="《铁冠之争》封面" width="880" height="445" loading="lazy" decoding="async"></div>
+      <a class="game feature" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
+        <div class="cover cv-ic"><img class="cv-img" src="img/ironcrown-poster.webp?v=c6d671e8" alt="《铁冠之争》海报：戴冠持剑的骑士站在燃烧的城堡前，脚下是碎裂的铁冠" width="900" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>铁冠之争 · 原创第一人称 RPG</h3>
-          <p>中世纪权谋角色扮演（开发中预览）：在雾夜里的霜渡镇打听失踪少爷的下落——「倒钩鱼」酒馆、星铁小教堂与墓园、镇外桦林的强盗哨卡、雾里的渡口与「灰手」奥弗，序章从开场（钟声与管家）一路玩到结尾的三选一抉择，有新手提示；对话检定、任务、持剑与徒手近战、格挡、背包与搜刮、角色成长、存档，可切换第一 / 第三人称（主角在第三人称里已有人物模型与动作，NPC 与敌人仍是占位）。电脑键鼠、手机触屏，需要 WebGL 2，首次加载约 57 MB。</p>
+          <p>中世纪权谋角色扮演（开发中预览）：雾夜里的霜渡镇，寻找失踪的少爷。序章已可完整游玩，电脑、手机浏览器直接玩（需 WebGL 2，约 57 MB）。</p>
           <span class="play">🎮 进入预览 →</span>
         </div>
       </a>
