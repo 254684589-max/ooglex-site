@@ -1,5 +1,5 @@
 {
-  "_说明": "任务与线索（路线图 2.3；GDD.md 7.2）。任务：title 名字、kind main（主线）/ side（支线）、summary 简介、first 开始阶段、stages 阶段表（objective 当前目标；advance_when 自动推进条件，目前支持 clues_at_least 线索数）。线索：text 记进任务日志的文字、quest 属于哪个任务。对话里用 do 推进任务、记线索。",
+  "_说明": "任务与线索（路线图 2.3；GDD.md 7.2）。任务：title 名字、kind main（主线）/ side（支线）、summary 简介、first 开始阶段、stages 阶段表（objective 当前目标；advance_when 自动推进条件：clues_at_least 线索数，或 clue 拿到某条线索（3.5））。线索：text 记进任务日志的文字、quest 属于哪个任务。对话里用 do 推进任务、记线索。",
   "quests": {
     "edric_missing": {
       "title": "雾里的少爷",
@@ -8,7 +8,8 @@
       "first": "find_clues",
       "stages": {
         "find_clues": {"objective": "打探埃德里克少爷的下落：问问镇上的人——街上的更夫、「倒钩鱼」的老板娘、星铁小教堂的修士……（至少两条线索）", "advance_when": {"clues_at_least": 2, "to": "to_ferry"}},
-        "to_ferry": {"objective": "线索都指向渡口。穿过镇外桦林去渡口找少爷（渡口与桦林在后续版本开放）"}
+        "to_ferry": {"objective": "线索都指向渡口。出主街南门，穿过镇外桦林去渡口找少爷", "advance_when": {"clue": "hire_letter", "to": "warned"}},
+        "warned": {"objective": "桦林里的无旗者收了钱，要在渡口劫下一个年轻人——雇主的信上压着双钥印。赶在他们前头去渡口（渡口在后续版本开放）"}
       }
     },
     "hob_debt": {
@@ -29,6 +30,7 @@
     "boots": {"quest": "edric_missing", "text": "玛蒂尔达：这半个月少爷几乎天天和一个南方口音、穿好靴子的人在酒馆角落喝酒，那人用新铸的银币付账，马拴在渡口的棚子里。"},
     "birch_fires": {"quest": "edric_missing", "text": "伐木工：前天夜里桦林边上有好几堆营火，那边可没有正经人过夜。"},
     "chapel_key": {"quest": "edric_missing", "text": "奥尔本修士：少爷昨天傍晚借走了墓园钥匙，说是给母亲上坟，天黑前还了回来，脸色却像是去道别。"},
+    "hire_letter": {"quest": "edric_missing", "text": "桦林哨卡的头目身上搜出一封信：「明晚渡口，劫下那个年轻人，要活的。」没有落款，只压着一枚双钥交叉的蜡印。"},
     "letter": {"quest": "edric_missing", "text": "瓦伦家墓室里藏着少爷的包袱：一封没写完的信——他打算坐船南下，「卡斯韦尔家的人答应我……」后面被划掉了。"}
   }
 }

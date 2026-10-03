@@ -108,6 +108,8 @@ func _ready() -> void:
 			t = Churchyard.build(world, Settings.reduced_motion)
 		"chapel":
 			t = Chapel.build(world, Settings.reduced_motion)
+		"birch":
+			t = Birch.build(world, Settings.reduced_motion)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	# 导航网格（3.4）：区域搭好、玩家还没放进去之前烘焙（玩家不是静态碰撞体，本来也不会被算进去）
@@ -142,6 +144,9 @@ func _ready() -> void:
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
 	if arrived_by != "":
 		_arrive()
+	if area == "birch":                  # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）
+		hud.set_hint(Birch.TEACH_TOUCH if touch_mode else Birch.TEACH_DESKTOP)
+		hint_left = HINT_SECONDS * 1.5
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:

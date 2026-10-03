@@ -168,7 +168,8 @@ godot/
 - **2.8 已实现**：`core/saves.gd`（自动加载 `Saves`）。栏位 slot1–3 / auto / quick；读档 = `GameState.from_dict()` + `GameState.pending_load`（场景、玩家）+ 重新载入场景，`main` 启动时取走。
   捡走的地上物品用 `Pickup.pickup_id` 记进 `GameState.picked`；倒下的敌人记进 `GameState.dead`（编号 → 位置），`Enemy._ready` 里直接摆成倒下的样子、不再扣声望。
   **坑**：`JSON.parse_string` 解析失败会打引擎报错，坏档要用 `JSON.new().parse()`；浏览器里 F5 是刷新页面，快速存档用 F8；自动化测试检测到命令行里的 `res://tests/` 时改用 `user://test_saves/`，不碰真存档。
-  不存：门的开关、半血求饶的敌人、进行到一半的对话。
+  不存：门的开关、进行到一半的对话。**3.5 起**求饶（或逃跑后认输）的敌人记进 `GameState.yielded`（编号 → 跪下的位置），读档后还跪着；求饶的人和倒下的人一样留一个搜刮点（同一个 `loot:编号`，只留一个），求饶以后又被杀就改记进 `dead`。
+  旧存档没有 `yielded` 字段，按空的读。
 
 ### 4.7b 区域与切换（3.1）
 
@@ -177,6 +178,9 @@ godot/
   把「去哪个区域、站哪个出生点、生命 / 体力 / 蹲着」放进 `GameState.pending_load`，**重新载入主场景**（和读档同一条路；`GameState` 是自动加载的，任务、背包、已拾取都不受影响）。
   `main._ready` 看到 `pending_load.spawn` 就把玩家放到 `Areas.spawn(区域, 名字)`，淡入、提示区域名、关掉开场操作提示，**自动存档到「自动存档」栏位**（GDD 第十节「进入新区域时」）。
 - **命名出生点**：各区域脚本的 `SPAWNS`（名字 → [位置, 水平朝向（度，0 = 面朝 -Z，正 = 向左转）]）。固定机位 `VIEWS` 也按区域取（网页 `?area=tavern&view=N`）。
+- **3.5**：主街南门（`Frostford.SOUTH_GATE_Z`，出生点 `south_gate`）→ `birch`（镇外桦林，室外，`world/birch.gd`，出生点 `north`）；桦林南头「去渡口的路」先锁着（渡口在 3.6）。
+  白桦是代码搭的（细长树干 + 树梢几根枝条，96 棵合成一个网格，每棵一个圆柱碰撞体）；没有现成的白桦贴图，`Look.birch()` 在主线程用固定种子画一张 64 × 128 的树皮（灰白底、横向皮孔、几块深斑），不新增外部素材。
+  哨卡的三个无旗者是 `Enemy`（`clubber` × 2 + `outlaw_leader`），营火在组 `light_source`（半径 7 米）；进桦林时底部提示换成拿武器战斗的教学（STORY 第三节）。任务阶段的 `advance_when` 多了 `{"clue": 线索, "to": 阶段}`。
 - **3.2 起的区域**：`frostford`（主街）→ 酒馆门 → `tavern`；主街右手边窄巷口的木门 → `churchyard`（墓园，室外）→ 小教堂门 → `chapel`（室内）。
 - **钥匙门**（3.2）：`Door.key_item`。锁着的门身上有那把钥匙就打开（提示「用墓园钥匙打开了……」），没有就提示 `locked_text`。门开着的状态不存档，读档后要再开一次（钥匙还在身上，按一下就开）。
 - **带线索的物品**（3.2）：`data/items.json` 里写了 `"clue"` 的物品，`GameState.add_item()` 时自动记下那条线索（墓室里那封没写完的信）；信的全文写在物品说明里，背包里选中就能读。

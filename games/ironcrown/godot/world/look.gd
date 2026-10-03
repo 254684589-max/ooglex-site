@@ -129,6 +129,45 @@ static func halo_texture() -> GradientTexture2D:
 	return _halo
 
 
+## 白桦树皮（3.5）：没有现成的白桦贴图，用代码画一张——灰白底子、横向的深色皮孔和几块深色斑（主线程同步生成，固定种子）
+static func birch() -> StandardMaterial3D:
+	if not _mats.has("birch"):
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 35
+		var img := Image.create(64, 128, false, Image.FORMAT_RGB8)
+		img.fill(Color(0.82, 0.81, 0.78))
+		for i in 900:                                         # 底子上一点点明暗起伏
+			var x := rng.randi_range(0, 63)
+			var y := rng.randi_range(0, 127)
+			var v := rng.randf_range(0.72, 0.9)
+			img.set_pixel(x, y, Color(v, v * 0.99, v * 0.95))
+		for i in 60:                                          # 横向的皮孔：短而扁的深色横纹
+			var x0 := rng.randi_range(0, 63)
+			var y0 := rng.randi_range(0, 127)
+			var dash := rng.randi_range(4, 14)
+			var dark := rng.randf_range(0.12, 0.3)
+			for k in dash:
+				img.set_pixel((x0 + k) % 64, y0, Color(dark, dark, dark * 0.95))
+				if k % 3 != 0:
+					img.set_pixel((x0 + k) % 64, (y0 + 1) % 128, Color(dark + 0.1, dark + 0.1, dark + 0.08))
+		for i in 6:                                           # 几块深色斑（树皮剥落、枝条脱落的疤）
+			var cx := rng.randi_range(0, 63)
+			var cy := rng.randi_range(0, 127)
+			for k in 40:
+				var px := (cx + rng.randi_range(-4, 4)) % 64
+				var py := clampi(cy + rng.randi_range(-3, 3), 0, 127)
+				img.set_pixel(px if px >= 0 else px + 64, py, Color(0.16, 0.15, 0.14))
+		img.generate_mipmaps()
+		var m := StandardMaterial3D.new()
+		m.albedo_texture = ImageTexture.create_from_image(img)
+		m.roughness = 0.9
+		m.vertex_color_use_as_albedo = true
+		m.uv1_scale = Vector3(2.0, 0.5, 1.0)                  # 一圈约半米、竖着两米一个循环
+		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		_mats["birch"] = m
+	return _mats["birch"]
+
+
 ## 雾带用的无缝噪声（主线程同步生成：网页无线程版不能依赖 NoiseTexture2D 的后台生成）
 static func noise_texture() -> ImageTexture:
 	if _noise == null:

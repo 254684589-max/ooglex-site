@@ -9,6 +9,8 @@ extends CharacterBody3D
 ## 起疑时去你最后出现的地方找、巡逻点之间沿路走、逃跑时往远处能走到的地方跑；没有导航网格的区域（或刚载入、导航还没同步）照旧直线走加碰撞滑动。
 ## 离你很近、看得见你的时候直接朝你走（贴身时不绕路）。
 ## 外观是占位胶囊人（正式人物在阶段 A）。
+## 3.5：求饶（或逃跑后认输）的敌人跪在原地，能搜身（和倒下的一样留一个搜刮点，东西是同一份）；跪下的位置记进存档（GameState.yielded），读档后还跪着。
+## 打架时（nonlethal）的认输不算：那是 Brawl 管的，打完就变回 NPC。
 ## 3.3：nonlethal 的种类（酒馆醉汉）用拳头、打不死：生命最少留 1，到 flee_below 就认输；它打玩家也不致命（Melee.KO_FLOOR）。
 ## 打架时由 Brawl 现场生成（engage() 直接进入战斗；display_override 用 NPC 的名字）。
 
@@ -82,6 +84,7 @@ var agent: NavigationAgent3D
 var nav_target := Vector3.INF
 var nav_age := 0.0
 var move_dir := Vector3.ZERO      # 这一帧沿路径要走的方向（水平；没在走时是零）
+var loot_node: LootContainer      # 倒下或求饶后留下的搜刮点（只放一个）
 var staggered: bool:
 	get:
 		return state == State.STAGGER
@@ -180,6 +183,10 @@ func _ready() -> void:
 		var p: Array = GameState.dead[enemy_id]
 		global_position = Vector3(p[0], p[1], p[2])
 		_die.call_deferred(true)
+	elif GameState.yielded.has(enemy_id):         # 读档：求饶的，还跪在那里（3.5）
+		var p: Array = GameState.yielded[enemy_id]
+		global_position = Vector3(p[0], p[1], p[2])
+		_kneel.call_deferred(true)
 
 
 func _build_arm() -> void:
@@ -236,7 +243,32 @@ func _enter(s: State) -> void:
 	action = ""
 	action_t = 0.0
 	_update_status()
+	if s == State.YIELD:
+		_kneel(false)
 	state_changed.emit(self, state_name())
+
+
+## 求饶：跪下，留一个能搜身的搜刮点，位置记进存档（打架的醉汉不算，3.3）
+func _kneel(restoring: bool) -> void:
+	if bool(data.get("nonlethal", false)):
+		return
+	if restoring:
+		state = State.YIELD
+		body.position.y = -0.45
+		_update_status()
+	else:
+		GameState.yielded[enemy_id] = [global_position.x, global_position.y, global_position.z]
+	name_label.text = display_name + "（求饶）"
+	_drop_loot()
+
+
+## 倒下或求饶的地方留一个搜刮点（2.6）：带着他的兵器和随身的东西；同一个人只留一个
+func _drop_loot() -> void:
+	if loot_node != null and is_instance_valid(loot_node):
+		return
+	loot_node = LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
+	loot_node.position = global_position
+	get_parent().add_child(loot_node)
 
 
 func _update_status() -> void:
@@ -629,10 +661,8 @@ func _die(restoring := false) -> void:
 		tw.tween_property(body, "rotation:x", deg_to_rad(-88.0), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		tw.parallel().tween_property(body, "position:y", 0.3, 0.45)
 		GameState.dead[enemy_id] = [global_position.x, global_position.y, global_position.z]
-	# 倒下的地方留一个可搜刮的「尸体」（2.6）：带着他的兵器和随身的东西
-	var loot := LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
-	loot.position = global_position
-	get_parent().add_child(loot)
+	GameState.yielded.erase(enemy_id)            # 求饶以后又被杀了：按倒下算
+	_drop_loot()
 	if restoring:
 		return
 	GameState.change_rep(str(data.get("faction", "")), -5)     # 杀了他们的人，这个势力更恨你（2.7）

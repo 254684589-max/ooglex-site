@@ -23,7 +23,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "camera", "character"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -187,6 +187,7 @@ func test_ui() -> void:
 	# 第三人称（2.9）
 	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
 	# 徒手格斗（3.3）
+	texts.append_array([Birch.TEACH_DESKTOP, Birch.TEACH_TOUCH, "（求饶）"])     # 桦林（3.5）
 	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
@@ -221,8 +222,9 @@ func test_ui() -> void:
 	var inn := await make_area("tavern")
 	var yard := await make_area("churchyard")
 	var nave := await make_area("chapel")
+	var woods := await make_area("birch")
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
-		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false)
+		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false)
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -235,6 +237,7 @@ func test_ui() -> void:
 	inn.queue_free()
 	yard.queue_free()
 	nave.queue_free()
+	woods.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -952,6 +955,9 @@ func test_quests() -> void:
 			var to := str(q.stages[st].get("advance_when", {}).get("to", ""))
 			if to != "" and not q.stages.has(to):
 				bad.append("%s/%s 自动推进到不存在的阶段 %s" % [qid, st, to])
+			var need := str(q.stages[st].get("advance_when", {}).get("clue", ""))
+			if need != "" and not qd.clues.has(need):
+				bad.append("%s/%s 等的线索 %s 不存在" % [qid, st, need])
 	for cid in qd.clues:
 		if not qd.quests.has(str(qd.clues[cid].quest)):
 			bad.append("线索 %s 属于不存在的任务" % cid)
@@ -3000,4 +3006,113 @@ func test_nav() -> void:
 	check(not c.nav_ready() and v.normalized().dot(direct_dir.normalized()) > 0.999, "没有导航网格：直线朝目标走（方向 %s）" % str(v.normalized()))
 	c.queue_free()
 	await free_main(main)
+	GameState.new_game(1)
+
+
+## 3.5 镇外桦林：主街南门、白桦林、营火哨卡的三个无旗者（伏击）、头目身上的雇佣信、求饶的人能搜身、读档后原样
+func test_birch() -> void:
+	check(Areas.known("birch") and not Areas.is_indoor("birch") and Areas.nav_bounds("birch").has_volume(), "新区域：镇外桦林（室外，烘焙导航网格）")
+	var it := GameState.item("hire_letter")
+	check(it.kind == "quest" and str(it.get("clue", "")) == "hire_letter" and str(it.desc).contains("两把钥匙交叉"), "雇佣信：任务物品，拿到记下线索，压着双钥蜡印")
+	check(Enemy.types().outlaw_leader.loot.has("hire_letter"), "雇佣信在哨卡头目身上")
+	# 线索推进：先拿到雇佣信、后凑够线索，也能一口气推到「赶在他们前头去渡口」
+	GameState.new_game(61)
+	GameState.start_quest("edric_missing")
+	GameState.add_item("hire_letter")
+	check(GameState.quest_stage("edric_missing") == "find_clues", "只有雇佣信一条线索：还在打探")
+	GameState.add_clue("ferry")
+	check(GameState.quest_stage("edric_missing") == "warned", "再凑一条线索：推进到「去渡口」，有雇佣信就接着推进到「赶在他们前头去渡口」")
+	# —— 主街南门 → 桦林
+	GameState.new_game(62)
+	GameState.start_quest("edric_missing")
+	GameState.add_clue("ferry")
+	GameState.add_clue("boots")
+	check(GameState.quest_stage("edric_missing") == "to_ferry", "主线在「穿过桦林去渡口」")
+	var main := await make_main(false)
+	var p: FpController = main.player
+	await place(p, 0.0, 9.6)
+	p.rotation.y = PI
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "前往 · 南门（往桦林、渡口）", "主街南头：对准南门提示「前往 · 南门（往桦林、渡口）」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
+	p.interactor.use()
+	await seconds(0.45)
+	check(GameState.pending_load.get("scene") == "birch" and GameState.pending_load.get("spawn") == "north", "出南门：去桦林")
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "birch" and flat(p.global_position).distance_to(Vector2(0, Birch.NORTH + 3.2)) < 0.3 and absf(absf(p.rotation.y) - PI) < 0.05, "站在桦林北头、面朝南边的小路")
+	check(main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_DEPTH, "桦林是室外：月光与夜雾")
+	check(main.hud.hint_label.text == Birch.TEACH_DESKTOP, "进桦林：提示拿武器战斗的操作（教学）")
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 100, "桦林烘焙了导航网格（%d 个多边形，%.0f 毫秒）" % [int(main.nav.get("polygons", 0)), float(main.nav.get("ms", 0.0))])
+	var trees: Array = main.world.find_children("*", "StaticBody3D", true, false).filter(func(b): return b.get_child_count() > 0 and b.get_child(0) is CollisionShape3D and (b.get_child(0) as CollisionShape3D).shape is CylinderShape3D)
+	check(trees.size() >= 80 and (main.world.get_node("Birch") as MeshInstance3D).mesh.get_surface_count() <= 8, "白桦林：%d 棵树（每棵一个碰撞体），整片林子一个网格" % trees.size())
+	var fires := main.get_tree().get_nodes_in_group("light_source")
+	check(fires.size() == 1 and flat(fires[0].global_position).distance_to(flat(Birch.FIRE_POS)) < 0.1, "哨卡的营火：站在火光里，远处的人也看得见你")
+	var enemies := main.get_tree().get_nodes_in_group("enemy")
+	var names: Array = enemies.map(func(e): return e.display_name)
+	names.sort()
+	check(enemies.size() == 3 and names == ["无旗者 · 头目", "无旗者 · 棍手", "无旗者 · 棍手"], "哨卡有三个无旗者：头目和两个棍手（%s）" % str(names))
+	check(enemies.all(func(e): return e.state == Enemy.State.PATROL), "开始时都在巡逻，还没发现你")
+	# 南头去渡口的路：还走不过去
+	var south: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.display_name == "去渡口的路")[0]
+	var sr: Dictionary = south.interact(p)
+	check(sr.get("locked", false) and str(sr.toast).contains("渡口在后续版本开放"), "南头去渡口的路：还走不过去，说明渡口在后续版本开放")
+	# 伏击：沿路往南走，被路上巡逻的棍手看见，喊上营火边的人
+	var leader: Enemy = enemies.filter(func(e): return e.kind == "outlaw_leader")[0]
+	var road: Enemy = enemies.filter(func(e): return e.enemy_id == "birch_a")[0]
+	var east: Enemy = enemies.filter(func(e): return e.enemy_id == "birch_b")[0]
+	await place(p, 0.4, -9.0)
+	p.rotation.y = PI
+	var t := 0.0
+	var hostile := 0
+	while t < 8.0 and hostile < 2:
+		await hold("move_forward", 0.25)
+		t += 0.25
+		hostile = enemies.filter(func(e): return e.state in [Enemy.State.ALERT, Enemy.State.COMBAT]).size()
+	check(hostile >= 2, "沿路往南走：哨卡的人发现你、喊上同伙（%d 个敌人在战斗，%.1f 秒）" % [hostile, t])
+	# 解决：两个棍手倒下，头目求饶
+	var rep0 := GameState.get_rep("outlaws")
+	road.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	east.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	leader.data = leader.data.duplicate()
+	leader.data.yield_chance = 1.0
+	leader.data.block_chance = 0.0
+	leader.take_hit({"damage": leader.hp - 5, "kind": "heavy", "stop": 0.0})
+	await frames(3)
+	check(not road.alive() and not east.alive() and GameState.get_rep("outlaws") == rep0 - 10, "两个棍手倒下（无旗者声望 −10）")
+	check(leader.alive() and leader.state == Enemy.State.YIELD and GameState.yielded.has("birch_leader"), "头目求饶：跪在地上，记进存档")
+	var lc: Array = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "loot:birch_leader")
+	check(lc.size() == 1 and lc[0].corpse, "求饶的头目也能搜身")
+	var got: Array = lc[0].take_all()
+	check(got.has("雇佣信") and GameState.has_item("hire_letter") and GameState.clues.has("hire_letter"), "搜出雇佣信，记下线索（%s）" % str(got))
+	check(GameState.quest_stage("edric_missing") == "warned", "主线推进：他们收了钱要在渡口劫人，赶在他们前头去渡口")
+	# 存档读档：倒下的还倒着、求饶的还跪着，搜过的不会再有
+	await place(p, 0.0, -2.0)
+	check(main.save_game("slot1"), "仗打完了，能存档")
+	check(main.load_game("slot1"), "读这个存档")
+	main = await reload_main(main)
+	p = main.player
+	await frames(4)
+	enemies = main.get_tree().get_nodes_in_group("enemy")
+	leader = enemies.filter(func(e): return e.kind == "outlaw_leader")[0]
+	check(main.area == "birch" and enemies.filter(func(e): return not e.alive()).size() == 2, "读档：两个棍手还倒在地上")
+	check(leader.state == Enemy.State.YIELD and leader.body.position.y < -0.3 and leader.name_label.text.contains("求饶"), "读档：头目还跪着")
+	lc = main.find_children("*", "LootContainer", true, false).filter(func(c): return c.loot_id == "loot:birch_leader")
+	check(lc.size() == 1 and lc[0].is_empty(), "头目身上已经搜过了")
+	check(not main.in_combat() and main.can_save() == "", "求饶的人不算在和你打")
+	# 回镇上
+	await place(p, 0.0, Birch.NORTH + 1.6)
+	p.rotation.y = 0.0
+	await physics(4)
+	p.interactor.refresh()
+	check(p.interactor.target is Door and p.interactor.target.prompt() == "回到 · 回霜渡镇的木门", "北头：提示「回到 · 回霜渡镇的木门」")
+	p.interactor.use()
+	await seconds(0.45)
+	main = await reload_main(main)
+	p = main.player
+	await frames(3)
+	check(main.area == "frostford" and flat(p.global_position).distance_to(Vector2(0, 9.9)) < 0.3 and absf(p.rotation.y) < 0.05, "回到主街：站在南门里、面朝街道")
+	await free_main(main)
+	GameState.pending_load = {}
 	GameState.new_game(1)
