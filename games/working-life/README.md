@@ -1,4 +1,4 @@
-# 《打工》HUSTLE CITY（原名 WORKING LIFE）
+# 《都会人生》LIFE SIMULATOR（原名 HUSTLE CITY / 打工 / WORKING LIFE）
 
 第三人称 3D **赛博朋克都市人生模拟**游戏。2088 年，你带着 ¥2000、一部旧手机和一个行李箱走出新澜市中央火车站：
 没有背景、没有工作、没有住处。先活过今晚——然后找工作、上班、学习、升职、租房、交朋友、投资、创业，
@@ -6,7 +6,7 @@
 
 - 引擎：**Godot 4.7.x 标准版** · GDScript · Compatibility 渲染器（WebGL 2 / OpenGL 3.3）
 - 网页版：`/games/working-life/`（介绍页）→ `/games/working-life/play/`（游戏本体）
-- 版本：**1.0.0**（`version.txt`、`godot/project.godot` 的 `config/version`）
+- 版本：**1.12.2**（`version.txt`、`godot/project.godot` 的 `config/version`）
 
 ## 启动方法
 
@@ -95,7 +95,7 @@ games/working-life/
   开发用逐帧图：`tests/anim_shots.tscn`（待机 / 走 / 跑 / 搬箱子 / 拖行李箱 / 转身 / 坐 / 干活）。
 - 音频：`tools/gen_audio.py` 合成；按 `music_* / amb_* / sfx_*` 命名覆盖 `godot/assets/audio/` 下同名 wav 即可替换，缺文件不会报错。
 - 字体：思源黑体子集（OFL），新增生僻字后运行 `tools/build_font.py`。
-- 游戏中心封面：`games/hub/img/hustle-poster.webp`（800×1200，约 190 KB），所有者 2026-10-04 提供的海报「都会人生 LIFE SIMULATOR」，整张显示（来源 / 生成方式待所有者补充）。
+- 游戏中心封面：`games/hub/img/hustle-poster.webp`（800×1200，约 190 KB），所有者 2026-10-04 提供的海报「都会人生 LIFE SIMULATOR」（所有者用 AI 生成），整张显示；游戏名按海报改为「都会人生」。
 
 ## 已知问题
 - 建筑、人物、车辆、植物由代码程序化生成（路面、混凝土、石材等使用真实照片材质，来源见 `godot/assets/textures/photo/SOURCES.md`），近看仍是简化几何；人物是程序化骨骼动画（没有动作捕捉数据），五官为简化造型。
