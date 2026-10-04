@@ -3,8 +3,9 @@ extends Node
 ## 在训练场里放 N 个兵，测每帧逻辑耗时与绘制调用。不是自动化测试（test_runner 不跑它）。
 ##   原生（无头，只测 CPU）：godot --headless --path games/ironcrown/godot --fixed-fps 60 res://tests/army_bench.tscn -- mode=combat model=1
 ##   网页（WASM）：tools/army_bench_web.sh "mode=combat&model=1&no3d=1"
-## 参数：mode=combat|crowd  model=0|1  counts=0,10,25,...  settle=秒  sample=秒  no3d=1（不画 3D，只测逻辑）  q=low|medium|high
+## 参数：mode=combat|battle|crowd  model=0|1  counts=0,10,25,...  settle=秒  sample=秒  no3d=1（不画 3D，只测逻辑）  q=low|medium|high
 ## combat：现有 Enemy（完整 AI：感知、导航、令牌、出招、move_and_slide）全部 engage() 冲向玩家——所有人挤成一团，是最坏情况
+## battle：B.1 的军阵——N 个 Soldier 分两边（各一半）在军阵试验场里互相打，玩家不参战（目标按人分散，是真实战斗的样子）
 ## crowd ：只摆人（没有 AI），model=1 时每人一个带骨骼动画的 CharacterModel，model=0 时是现在的占位胶囊
 ## model=1 时 Enemy 的占位身体藏起来，换成 CharacterModel（模拟 A.2 之后每个兵都是正式人物）
 ## 输出 ICB 行：frame_ms 是每帧总时间（网页上含软件渲染，不可比）；logic60_ms = 一步物理 + 一帧逻辑（physics_frame → frame_pre_draw），
@@ -17,6 +18,7 @@ var settle := 2.0
 var sample := 4.0
 var main: Node3D
 var spawned: Array = []
+var battle: Battle
 var results: Array = []
 # 每帧逻辑耗时：physics_frame（第一帧物理）→ process_frame → frame_pre_draw；网页上 rAF 的空等不算进去
 var t_phys := 0
@@ -27,6 +29,8 @@ var acc_proc := 0.0
 var acc_ticks := 0
 var acc_frames := 0
 var measuring := false
+var game_t := 0.0                 # 游戏时间（秒）：settle / sample 按游戏时间算——原生 --fixed-fps 60 一帧就是 1/60 秒，
+                                  # 无头每秒跑几千帧，按墙钟算的话军阵早打完了（B.1 实测）
 
 
 func _on_phys() -> void:
@@ -76,13 +80,19 @@ func _ready() -> void:
 	if a.has("counts"):
 		counts = Array(str(a.counts).split(",")).map(func(s): return int(s))
 	main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
-	main.use_arena = true
+	if mode == "battle":
+		main.area = "battle"                 # 军阵试验场（B.1），不自动开打
+		main.battle_autostart = false
+	else:
+		main.use_arena = true
 	add_child(main)
 	for i in 5:
 		await get_tree().process_frame
-	# 原有的三个敌人拿走，只留玩家和场地
-	for e in get_tree().get_nodes_in_group("enemy"):
+	# 原有的兵拿走，只留玩家和场地
+	for e in get_tree().get_nodes_in_group("enemy") + get_tree().get_nodes_in_group("soldier"):
 		e.queue_free()
+	if main.battle:
+		main.battle.queue_free()
 	await get_tree().process_frame
 	get_tree().physics_frame.connect(_on_phys)
 	get_tree().process_frame.connect(_on_proc)
@@ -98,7 +108,8 @@ func _ready() -> void:
 	get_tree().quit()
 
 
-func _process(_d: float) -> void:
+func _process(d: float) -> void:
+	game_t += d
 	if main and main.player and main.player.melee:     # 玩家不死，测试一直打下去
 		main.player.melee.health = main.player.melee.health_max()
 		main.player.melee.down = false
@@ -109,9 +120,33 @@ func _clear() -> void:
 		if is_instance_valid(s):
 			s.queue_free()
 	spawned.clear()
+	if battle:
+		battle.queue_free()
+		battle = null
 
 
 func _spawn(n: int) -> void:
+	if mode == "battle":
+		battle = Battle.new()
+		battle.add_side("white", "白带")
+		battle.add_side("black", "黑带")
+		battle.max_active = maxi(n, Battle.MAX_ACTIVE)      # 压力测试要测超过上限的人数：全部进场
+		main.world.add_child(battle)
+		var half := n / 2
+		for i in n:
+			var sd := "white" if i < half else "black"
+			var k := i if i < half else i - half
+			var s := Soldier.create("levy" if k % 10 in [2, 5, 8] else "soldier", "bench%d" % i, sd, Color(BattleArena.SIDES[sd].coat), Color(BattleArena.SIDES[sd].band))
+			s.position = BattleArena.slot(sd, k, maxi(half, n - half))
+			s.rotation.y = 0.0 if sd == "white" else PI
+			battle.enlist(s, main.world)
+			if model:
+				s.body.visible = false
+				_add_model(s)
+			spawned.append(s)
+		await get_tree().process_frame
+		battle.start()
+		return
 	var side := int(ceil(sqrt(float(n))))
 	var gap := minf(1.4, 26.0 / maxf(side, 1))
 	for i in n:
@@ -146,7 +181,7 @@ func _add_model(parent: Node3D) -> void:
 	var cm := CharacterModel.new()
 	cm.rotation.y = PI
 	parent.add_child(cm)
-	cm.play_loop("run" if mode == "combat" else "idle_armed", 1.0)
+	cm.play_loop("idle_armed" if mode == "crowd" else "run", 1.0)
 	if cm.loaded:
 		cm.anim.seek(randf() * 0.5, true)
 
@@ -155,8 +190,8 @@ func _run(n: int) -> void:
 	_clear()
 	await get_tree().process_frame
 	await _spawn(n)
-	var t_end := Time.get_ticks_msec() + int(settle * 1000)
-	while Time.get_ticks_msec() < t_end:
+	var g_end := game_t + settle
+	while game_t < g_end:
 		await get_tree().process_frame
 	var frames := 0
 	acc_phys = 0.0
@@ -170,7 +205,8 @@ func _run(n: int) -> void:
 	var worst := 0
 	var t0 := Time.get_ticks_usec()
 	var last := t0
-	while Time.get_ticks_usec() - t0 < int(sample * 1000000.0):
+	var g_stop := game_t + sample
+	while game_t < g_stop:
 		await get_tree().process_frame
 		var now := Time.get_ticks_usec()
 		worst = maxi(worst, now - last)
@@ -187,9 +223,9 @@ func _run(n: int) -> void:
 	var proc_frame := acc_proc / maxi(acc_frames, 1) / 1000.0 if acc_frames > 0 else -1.0
 	var alive := 0
 	var fighting := 0
-	if mode == "combat":
+	if mode != "crowd":
 		for e in spawned:
-			if is_instance_valid(e) and e.alive():
+			if is_instance_valid(e) and (e.fighting() if e is Soldier else e.alive()):
 				alive += 1
 				if e.has_token:
 					fighting += 1

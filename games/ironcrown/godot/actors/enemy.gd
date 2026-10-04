@@ -15,6 +15,9 @@ extends CharacterBody3D
 ## flank_call 的种类第一次掉到半血时喊「包抄他！」，附近的同伙立刻冲上来、往你两侧绕。逃跑一开始就记进 GameState.yielded（读档后按认输算，不会再站起来）。
 ## 3.3：nonlethal 的种类（酒馆醉汉）用拳头、打不死：生命最少留 1，到 flee_below 就认输；它打玩家也不致命（Melee.KO_FLOOR）。
 ## 打架时由 Brawl 现场生成（engage() 直接进入战斗；display_override 用 NPC 的名字）。
+## B.1（军阵战斗）：「对手」抽成 foe()——基类永远是玩家（序章的行为不变），Soldier 改成军阵里挑中的敌方（可能是另一个兵）。
+## 出招命中走 _strike_target()：对手是玩家调 Melee.receive_hit()，是兵就调它的 take_hit()；take_hit() 按攻击者的位置判断正面能不能挡；
+## 只有玩家打倒的才扣声望；transient（军阵的普通兵）倒下、求饶不写进存档，drops_loot = false 的不留搜刮点。
 
 signal state_changed(enemy: Enemy, state: String)
 signal died(enemy: Enemy)
@@ -88,6 +91,10 @@ var nav_age := 0.0
 var move_dir := Vector3.ZERO      # 这一帧沿路径要走的方向（水平；没在走时是零）
 var loot_node: LootContainer      # 倒下或求饶后留下的搜刮点（只放一个）
 var flank_called := false         # 半血时已经喊过「包抄他！」（3.6）
+var sees_foe := false             # 看得见对手（B.1；基类 = sees_player，士兵在军阵里总当作看得见）
+var transient := false            # 军阵战斗的普通兵（B.1）：倒下、求饶、逃跑不写进存档
+var drops_loot := true            # 倒下或求饶后留不留搜刮点（军阵的普通兵不留，GDD 6.4）
+var last_attacker: Node3D         # 最后一次打中自己的（null = 玩家）：只有玩家打倒才扣声望（B.1）
 var staggered: bool:
 	get:
 		return state == State.STAGGER
@@ -236,6 +243,16 @@ func alive() -> bool:
 	return state != State.DEAD
 
 
+## 现在的对手（B.1）：基类敌人永远是玩家；Soldier 覆盖成军阵里挑中的目标（可能是另一个兵，也可能是空）
+func foe() -> Node3D:
+	return player
+
+
+## 声望按哪个势力算（玩家打倒时扣）；Soldier 按军阵的设定覆盖
+func rep_faction() -> String:
+	return str(data.get("faction", ""))
+
+
 func _enter(s: State) -> void:
 	if s == state:
 		return
@@ -248,7 +265,7 @@ func _enter(s: State) -> void:
 	_update_status()
 	if s == State.YIELD:
 		_kneel(false)
-	elif s == State.FLEE and not bool(data.get("nonlethal", false)):
+	elif s == State.FLEE and not bool(data.get("nonlethal", false)) and not transient:
 		GameState.yielded[enemy_id] = [global_position.x, global_position.y, global_position.z]     # 逃了：读档后按认输算（3.6）
 	state_changed.emit(self, state_name())
 
@@ -261,7 +278,7 @@ func _kneel(restoring: bool) -> void:
 		state = State.YIELD
 		body.position.y = -0.45
 		_update_status()
-	else:
+	elif not transient:
 		GameState.yielded[enemy_id] = [global_position.x, global_position.y, global_position.z]
 	name_label.text = display_name + "（求饶）"
 	_drop_loot()
@@ -269,7 +286,7 @@ func _kneel(restoring: bool) -> void:
 
 ## 倒下或求饶的地方留一个搜刮点（2.6）：带着他的兵器和随身的东西；同一个人只留一个
 func _drop_loot() -> void:
-	if loot_node != null and is_instance_valid(loot_node):
+	if not drops_loot or (loot_node != null and is_instance_valid(loot_node)):
 		return
 	loot_node = LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
 	loot_node.position = global_position
@@ -325,25 +342,28 @@ func _physics_process(delta: float) -> void:
 		State.COMBAT:
 			move = _combat(delta)
 		State.RETREAT:
-			if player:
-				_face(player.global_position, delta)
-				var away := _flat(global_position - player.global_position).normalized()
-				move = away * float(data.walk) if _flat(global_position - player.global_position).length() < 5.0 else Vector3.ZERO
+			var f := foe()
+			if f:
+				_face(f.global_position, delta)
+				var away := _flat(global_position - f.global_position).normalized()
+				move = away * float(data.walk) if _flat(global_position - f.global_position).length() < 5.0 else Vector3.ZERO
 			if state_t >= 2.0:
 				_enter(State.COMBAT)
 		State.STAGGER:
 			if state_t >= STAGGER_TIME:
 				_enter(State.COMBAT)
 		State.FLEE:
-			if player:
-				var away := _flat(global_position - player.global_position).normalized()
+			var f := foe()
+			if f:
+				var away := _flat(global_position - f.global_position).normalized()
 				move = _steer(global_position + away * 8.0, float(data.run), 0.5)     # 往远处能走到的地方跑，不撞墙
 				_face(global_position + (move_dir if move_dir != Vector3.ZERO else away), delta)
 			if state_t >= 4.0:
 				_enter(State.YIELD)
 		State.YIELD:
-			if player:
-				_face(player.global_position, delta)
+			var f := foe()
+			if f:
+				_face(f.global_position, delta)
 	_animate(delta)
 	velocity.x = move.x
 	velocity.z = move.z
@@ -453,6 +473,7 @@ func _perceive(dt: float) -> void:
 	if state in [State.DEAD, State.YIELD, State.FLEE]:
 		return
 	sees_player = can_see_player()
+	sees_foe = sees_player
 	var d := _flat(player.global_position - global_position).length()
 	var heard := d <= player_noise()
 	if sees_player or heard:
@@ -521,15 +542,16 @@ func _release_token() -> void:
 
 
 func _combat(delta: float) -> Vector3:
-	if player == null:
+	var f := foe()
+	if f == null:
 		return Vector3.ZERO
-	var to := _flat(player.global_position - global_position)
+	var to := _flat(f.global_position - global_position)
 	var d := to.length()
 	var reach := float(data.reach)
 	# 看得见你或离得近：正对着你；隔着房子绕路时：脸朝走的方向（3.4）
-	var direct := sees_player and d <= DIRECT_NEAR
-	if action in ["windup", "strike", "recover", "block"] or sees_player or d <= CIRCLE_DIST:
-		_face(player.global_position, delta)
+	var direct := sees_foe and d <= DIRECT_NEAR
+	if action in ["windup", "strike", "recover", "block"] or sees_foe or d <= CIRCLE_DIST:
+		_face(f.global_position, delta)
 	action_t += delta
 	match action:
 		"windup":
@@ -542,7 +564,7 @@ func _combat(delta: float) -> Vector3:
 		"strike":
 			if not hit_done and action_t >= float(data.strike) * 0.5:
 				hit_done = true
-				_strike_player()
+				_strike_target()
 			if action_t >= float(data.strike):
 				action = "recover"
 				action_t = 0.0
@@ -559,19 +581,19 @@ func _combat(delta: float) -> Vector3:
 		_enter(State.RETREAT)
 		return Vector3.ZERO
 	if not has_token and token_cd <= 0.0 and director:
-		has_token = director.request(self)
+		has_token = director.request(self, f)
 	if has_token:
 		if d <= reach * 0.9:
 			_start_attack()
 			return Vector3.ZERO
-		var v := to.normalized() * float(data.run) if direct else _steer(player.global_position, float(data.run), reach * 0.85)
-		if not sees_player and move_dir != Vector3.ZERO and d > CIRCLE_DIST:
+		var v := to.normalized() * float(data.run) if direct else _steer(f.global_position, float(data.run), reach * 0.85)
+		if not sees_foe and move_dir != Vector3.ZERO and d > CIRCLE_DIST:
 			_face(global_position + move_dir, delta)
 		return v
 	# 看不见你（隔着房子）：先沿路走过来，到绕圈的距离再说
-	if not sees_player and d > CIRCLE_DIST + 0.5:
+	if not sees_foe and d > CIRCLE_DIST + 0.5:
 		action = "approach"
-		var v := _steer(player.global_position, float(data.walk) * 1.4, CIRCLE_DIST)
+		var v := _steer(f.global_position, float(data.walk) * 1.4, CIRCLE_DIST)
 		if move_dir != Vector3.ZERO:
 			_face(global_position + move_dir, delta)
 		return v
@@ -592,18 +614,31 @@ func _start_attack() -> void:
 	action_t = 0.0
 
 
-## 命中帧：玩家在剑程内、在正面 60° 内、中间没有墙，才算打到
-func _strike_player() -> void:
-	var to := player.global_position - global_position
+## 命中帧：对手在剑程内、在正面 60° 内、中间没有墙，才算打到。对手是玩家走 Melee.receive_hit()，是兵（B.1）走它的 take_hit()
+func _strike_target() -> void:
+	var f := foe()
+	if f == null:
+		return
+	var to := f.global_position - global_position
 	var d := _flat(to).length()
 	if d > float(data.reach) + 0.35:
 		return
 	if rad_to_deg(forward().angle_to(_flat(to).normalized())) > 60.0:
 		return
-	var ray := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 1.3, 0), player.aim_origin(), 1, [get_rid()])
+	var at_player := f == player
+	var aim := player.aim_origin() if at_player else f.global_position + Vector3(0, 1.3, 0)
+	var skip := [get_rid()] if at_player else [get_rid(), (f as CollisionObject3D).get_rid()]
+	var ray := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 1.3, 0), aim, 1, skip)
 	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
 		return
 	var base := float(data.weapon_base) * (0.6 if attack_kind == "kick" else 1.0)
+	if not at_player:
+		var e := f as Enemy
+		var hit := DamageCalc.compute(base, int(data.strength), int(data.skill), attack_kind, e.staggered, e.armor)
+		if e.take_hit({"damage": hit, "kind": attack_kind, "attacker": self, "stop": 0.06}) == "block":
+			action = "recover"
+			action_t = float(data.recover) * 0.3        # 被挡住弹开，收招稍快
+		return
 	var dmg := DamageCalc.compute(base, int(data.strength), int(data.skill), attack_kind, player.melee.staggered(), GameState.armor_total())
 	var result := player.melee.receive_hit({"damage": dmg, "kind": attack_kind, "attacker": self, "stop": 0.06,
 		"nonlethal": bool(data.get("nonlethal", false))})
@@ -617,35 +652,44 @@ func _strike_player() -> void:
 func stagger() -> void:
 	if alive() and state != State.YIELD:
 		_enter(State.STAGGER)
-		FloatText.spawn(self, "失衡", Vector3(0, 1.7, 0), Color("ffcf6a"), 28)
+		if _near_player(12.0):
+			FloatText.spawn(self, "失衡", Vector3(0, 1.7, 0), Color("ffcf6a"), 28)
 
 
-## Melee 命中时调用（与木桩同一个接口）
-func take_hit(info: Dictionary) -> void:
+## Melee 命中时调用（与木桩同一个接口）；军阵里别的兵打中自己也走这里（info.attacker = 那个兵，B.1）。
+## 返回 "block" / "hit" / "dead" / "none"（兵打兵时出招的一方据此收招）
+func take_hit(info: Dictionary) -> String:
 	if not alive():
-		return
+		return "none"
 	stop_left = float(info.get("stop", 0.0))
 	var k := str(info.get("kind", "light"))
+	var by: Variant = info.get("attacker")
+	var attacker: Node3D = by if by is Node3D and is_instance_valid(by) else player      # 没写攻击者 = 玩家（Melee 不写）
+	var from_player := attacker == player
+	last_attacker = null if from_player else attacker
+	var fx := from_player or _near_player(12.0)      # 军阵里远处兵打兵不冒字（Label3D 多了费绘制调用）
 	# 剑手：正面、没在出招、没失衡时可能挡住轻击；重击破防
-	var facing := forward().dot(_flat(player.global_position - global_position).normalized()) > 0.4 if player else false
+	var facing := forward().dot(_flat(attacker.global_position - global_position).normalized()) > 0.4 if attacker else false
 	var can_block := state == State.COMBAT and action not in ["windup", "strike"] and facing
 	if can_block and rng.randf() < float(data.block_chance):
 		if k == "light":
 			action = "block"
 			action_t = 0.0
-			FloatText.spawn(self, "格挡", Vector3(0, 1.6, 0), Color("c8d8e8"), 28)
-			if player:
+			if fx:
+				FloatText.spawn(self, "格挡", Vector3(0, 1.6, 0), Color("c8d8e8"), 28)
+			if from_player and player:
 				player.melee.on_blocked()
-			return
+			return "block"
 		stagger()              # 想挡重击：被破防
 	var dmg := int(info.get("damage", 0))
 	hp = maxi(hp - dmg, 1 if bool(data.get("nonlethal", false)) else 0)     # 打不死的（醉汉）最少留 1，到 flee_below 认输
 	flash = 1.0
-	FloatText.spawn(self, ("重击 −%d" if k == "heavy" else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), 1.45, 0),
-		Color("ffcf6a") if k == "heavy" else Color("f2e6c8"), 36 if k == "heavy" else 30)
+	if fx:
+		FloatText.spawn(self, ("重击 −%d" if k == "heavy" else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), 1.45, 0),
+			Color("ffcf6a") if k == "heavy" else Color("f2e6c8"), 36 if k == "heavy" else 30)
 	if hp <= 0:
 		_die()
-		return
+		return "dead"
 	if state in [State.PATROL, State.SUSPICIOUS]:
 		alert()
 	if state == State.ALERT:
@@ -654,8 +698,15 @@ func take_hit(info: Dictionary) -> void:
 		_call_flank()
 	if state != State.YIELD and state != State.FLEE and hp <= int(ceil(hp_max * float(data.flee_below))):
 		_enter(State.YIELD if rng.randf() < float(data.yield_chance) else State.FLEE)
-		FloatText.spawn(self, "别打了，我认输！" if state == State.YIELD else "快跑！", Vector3(0, 1.9, 0), Color("ffcf6a"), 26)
+		if fx:
+			FloatText.spawn(self, "别打了，我认输！" if state == State.YIELD else "快跑！", Vector3(0, 1.9, 0), Color("ffcf6a"), 26)
 	_update_status()
+	return "hit"
+
+
+## 离玩家多近（水平距离）；没有玩家时当作很远
+func _near_player(r: float) -> bool:
+	return player != null and is_instance_valid(player) and _flat(player.global_position - global_position).length() <= r
 
 
 ## 半血喊包抄（3.6，GDD 6.2「灰手奥弗：半血时喊手下包抄」）：附近还能打的同伙立刻冲上来，一左一右往你两侧绕
@@ -687,12 +738,15 @@ func _die(restoring := false) -> void:
 		var tw := create_tween()
 		tw.tween_property(body, "rotation:x", deg_to_rad(-88.0), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		tw.parallel().tween_property(body, "position:y", 0.3, 0.45)
-		GameState.dead[enemy_id] = [global_position.x, global_position.y, global_position.z]
-	GameState.yielded.erase(enemy_id)            # 求饶以后又被杀了：按倒下算
+		if not transient:
+			GameState.dead[enemy_id] = [global_position.x, global_position.y, global_position.z]
+	if not transient:
+		GameState.yielded.erase(enemy_id)            # 求饶以后又被杀了：按倒下算
 	_drop_loot()
 	if restoring:
 		return
-	GameState.change_rep(str(data.get("faction", "")), -5)     # 杀了他们的人，这个势力更恨你（2.7）
+	if last_attacker == null:
+		GameState.change_rep(rep_faction(), -5)     # 杀了他们的人，这个势力更恨你（2.7）；兵打倒兵不算（B.1）
 	died.emit(self)
 
 

@@ -2,6 +2,7 @@ extends Node3D
 ## 《铁冠之争》主场景（阶段 1.4：霜渡镇主街）。
 ## 默认是霜渡镇主街（world/frostford.gd）；网页 ?test=1 或 use_test_range = true 打开灰盒测试场（台阶、斜坡、窄门、矮洞、交互）；
 ## ?test=2 或 use_arena = true 打开训练场（2.5：三个无旗者，练格挡与近战）。
+## ?test=3 打开军阵试验场（B.1，D8：白带对黑带各 10 人，你站在白带一边；&n=30 每边 30 人），开局 3 秒后开打。
 ## 3.1 起有多个区域（world/areas.gd）：主街、「倒钩鱼」酒馆……；走进通往别处的门 = travel()：淡出、记下去哪、重新载入本场景、
 ## 放到命名出生点、淡入、自动存档（GDD 第十节：进入新区域时）。网页 ?area=tavern 直接从酒馆开始（截图与冒烟测试用）。
 ## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
@@ -21,11 +22,15 @@ const HINT_ARENA_DESKTOP := "训练场：左键 / F 出剑（按住重击）· �
 const HINT_ARENA_TOUCH := "训练场：点「攻」出剑（按住重击）· 按住「挡」格挡 · 在对方劈下前一瞬间按「挡」= 完美格挡（对方失衡）"
 const HINT_BRAWL_DESKTOP := "徒手打一架（不许动刀）：左键 / F 出拳，按住是重拳 · 右键 / Q 按住格挡 · 把对方打到认输就赢"
 const HINT_BRAWL_TOUCH := "徒手打一架（不许动刀）：点「攻」出拳，按住是重拳 · 按住「挡」格挡 · 把对方打到认输就赢"
+const HINT_BATTLE_DESKTOP := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 左键 / F 出剑（按住重击）· 右键 / Q 格挡 · 你的剑砍不到白带 · 身后的观战台可以上去看"
+const HINT_BATTLE_TOUCH := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 点「攻」出剑 · 按住「挡」格挡 · 你的剑砍不到白带"
+const BATTLE_DELAY := 3.0         # 军阵试验场开局几秒后开打（B.1）
 const HINT_SECONDS := 8.0
 const FADE_TIME := 0.25           # 换区域时淡出 / 淡入（减少动态效果时直接切）
 
 @export var use_test_range := false
 @export var use_arena := false
+var battle_autostart := true      # 军阵试验场开局自动开打（B.1；测试里关掉，自己调 battle.start()）
 
 var moon: DirectionalLight3D
 var quality := ""
@@ -70,6 +75,7 @@ var brawl: Brawl                # 正在打的一架（3.3）；打完自己释�
 var encounter: Encounter        # 正在打的对峙（3.6，渡口的「灰手」奥弗）
 var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
 var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
+var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
@@ -89,6 +95,8 @@ func _ready() -> void:
 			use_test_range = true
 		elif _query("test") == "2":
 			use_arena = true
+		elif _query("test") == "3":
+			area = "battle"
 		elif Areas.known(_query("area")):
 			area = _query("area")
 		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）；玩家自己存过设置就听玩家的
@@ -126,6 +134,8 @@ func _ready() -> void:
 			t = Birch.build(world, Settings.reduced_motion)
 		"ferry":
 			t = Ferry.build(world, Settings.reduced_motion)
+		"battle":
+			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	# 导航网格（3.4）：区域搭好、玩家还没放进去之前烘焙（玩家不是静态碰撞体，本来也不会被算进去）
@@ -178,6 +188,14 @@ func _ready() -> void:
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP:
 		show_ending.call_deferred("prologue", _query("ending"))
+	battle = world.get_node_or_null("Battle") as Battle
+	if battle:
+		battle.ended.connect(_on_battle_ended)
+		if battle_autostart:
+			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
+				if is_instance_valid(battle) and not battle.started:
+					battle.start()
+					hud.toast("◆ 开打！", 2.0))
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:
@@ -385,6 +403,9 @@ func _build_ui() -> void:
 	layer.add_child(title_card)
 	if use_arena:
 		hud.set_hint(HINT_ARENA_TOUCH if touch_mode else HINT_ARENA_DESKTOP)
+		hint_left = HINT_SECONDS * 1.5
+	elif area == "battle":
+		hud.set_hint(HINT_BATTLE_TOUCH if touch_mode else HINT_BATTLE_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
 	else:
 		hud.set_hint(HINT_TOUCH if touch_mode else HINT_DESKTOP)
@@ -606,7 +627,7 @@ func can_save() -> String:
 
 ## 有敌人正在和你打（警觉 / 战斗 / 后退 / 失衡），或者正在打架（3.3）：不能存档，也不能走进别的区域
 func in_combat() -> bool:
-	if brawl_active() or encounter_active():
+	if brawl_active() or encounter_active() or (battle != null and is_instance_valid(battle) and battle.active()):
 		return true
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
@@ -1035,6 +1056,17 @@ func start_encounter(id: String, win: String) -> void:
 	hud.show_prompt("")
 	hud.toast("◆ 动手了！", 2.0)
 	print("IC_ENCOUNTER start id=%s enemies=%d" % [id, encounter.enemies.size()])
+
+
+## 军阵试验场打完了（B.1）：只有一方还站着
+func _on_battle_ended(winner: String) -> void:
+	var refresh := "（刷新页面再来一次）"
+	if winner == "":
+		hud.toast("两边都打光了。" + refresh, 6.0)
+	elif winner == battle.player_side:
+		hud.toast("✓ %s赢了！%s" % [battle.sides.get(winner, winner), refresh], 6.0)
+	else:
+		hud.toast("× %s赢了……%s" % [battle.sides.get(winner, winner), refresh], 6.0)
 
 
 func _on_encounter_ended(_won: bool) -> void:
