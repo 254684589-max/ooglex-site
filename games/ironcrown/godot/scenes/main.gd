@@ -44,6 +44,7 @@ var pause_menu: PauseMenu
 var defeat_panel: DefeatPanel
 var ending_panel: EndingPanel    # 结束画面（3.7）
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
+var touch_hidden_by_dialogue := false   # 对话打开时藏起了触屏按钮（对话结束时还原）
 var opening: Opening             # 开场（3.8）：只在新游戏时有
 var title_card: TitleCard        # 开场的标题卡（3.8）
 var tip_queue: Array = []        # 等着显示的教学提示编号（3.8；有界面开着、上一条还没消失时排队）
@@ -339,11 +340,21 @@ func run_benchmark(settle := 1.5, sample := 3.0) -> Array:
 	var lines := ["基准测试结果（%s画质，%s）" % [PerfOverlay.tier_name(quality), "电脑" if not touch_mode else "触屏设备"]]
 	for r in bench_results:
 		lines.append("机位 %d %s：平均 %.0f 帧，最慢一帧 %.0f 毫秒，绘制调用 %.0f" % [r.view, Frostford.VIEW_NAMES[r.view], r.fps, r.worst_ms, r.draw_calls])
-	lines.append("测完了：请截图发给开发者。按 Esc 可换画质（菜单里）后刷新页面再测。")
+	lines.append(bench_done_line())
 	perf_overlay.bench_text = "\n".join(lines)
 	set_view(0)
 	print("IC_BENCH done quality=%s %s" % [quality, " | ".join(bench_results.map(func(r): return "v%d fps=%.1f worst=%.0f dc=%.0f" % [r.view, r.fps, r.worst_ms, r.draw_calls]))])
 	return bench_results
+
+
+## 基准测试的最后一行：手机上没有 Esc（2026-10-04 手机实测）
+func bench_done_line() -> String:
+	return "测完了：请截图发给开发者。%s可换画质，换完刷新页面再测。" % ("点右上角「菜单」" if touch_mode else "按 Esc 打开菜单")
+
+
+## 性能浮层的位置：触屏上生命 / 体力条在左上角，浮层放到它们下面，不压住（2026-10-04 手机实测）
+func place_perf_overlay() -> void:
+	perf_overlay.position = Vector2(12, hud.bar_rect().end.y + 14.0 if hud.bars_top else 44.0)
 
 
 func _build_ui() -> void:
@@ -399,6 +410,8 @@ func _build_ui() -> void:
 	perf_overlay = PerfOverlay.new()
 	perf_overlay.main = self
 	layer.add_child(perf_overlay)
+	layer.move_child(perf_overlay, hud.get_index())    # 画在 HUD 底下：触屏上浮层挪低后，屏幕上方的短提示会叠到浮层上，字要在上面
+	place_perf_overlay()
 	dialogue = DialoguePanel.new()
 	layer.add_child(dialogue)
 	dialogue.closed.connect(_on_dialogue_closed)
@@ -768,6 +781,7 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 	if not dialogue.open(area, id):
 		return
 	dialogue_npc = npc
+	player.set_dialogue_view(true)   # 第三人称时先把镜头收回眼睛，主角不挡说话人（再按眼睛的位置算转向）
 	hud.show_prompt("")
 	hud.set_hint("")              # 底部的操作提示不再压在对话上
 	hint_left = 0.0
@@ -788,6 +802,9 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if touch:
 		touch.release_all()
+		if touch.visible:
+			touch.visible = false     # 暂停时按钮不响应，压在对话框底下只是碍眼（2026-10-04 手机实测）
+			touch_hidden_by_dialogue = true
 
 
 ## 任务日志（2.3）：打开时暂停，和暂停菜单一样放出鼠标
@@ -893,6 +910,10 @@ func _on_quest_event(kind: String, id: String) -> void:
 
 
 func _on_dialogue_closed() -> void:
+	player.set_dialogue_view(false)
+	if touch_hidden_by_dialogue:
+		touch_hidden_by_dialogue = false
+		touch.visible = true            # 先还原：结束画面（show_ending）要记下触屏按钮原来显不显示
 	get_tree().paused = false
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
@@ -1103,6 +1124,14 @@ func _on_dialogue_node(has_check: bool) -> void:
 	print("IC_TIP check")
 
 
+## 贴地雾带在主角脚边淡出（fog_plane.gdshader 的 clear_at）：第三人称时小腿不会被雾片盖成灰白一截（2026-10-04 手机实测）
+func _clear_fog_at(pos: Vector3) -> void:
+	for f in get_tree().get_nodes_in_group("fog_band"):
+		var m := (f as MeshInstance3D).material_override as ShaderMaterial
+		if m:
+			m.set_shader_parameter("clear_at", pos)
+
+
 func _process(delta: float) -> void:
 	# 浏览器用 Esc 释放指针锁定时，游戏收不到 Esc：发现锁定没了就打开暂停菜单
 	var locked := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
@@ -1121,6 +1150,7 @@ func _process(delta: float) -> void:
 	_train_stealth(delta)
 	GameState.playtime += delta
 	var pos := player.global_position
+	_clear_fog_at(pos)
 	if not moved_logged and Vector2(pos.x - spawn.x, pos.z - spawn.z).length() > 1.0:
 		moved_logged = true
 		_start()

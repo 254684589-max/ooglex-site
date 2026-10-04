@@ -64,19 +64,34 @@ func refresh() -> void:
 	UiKit.label(box, "生命上限 %d · 体力上限 %d · 负重上限 %.0f 斤 · 护甲 %d" % [GameState.health_max(), GameState.stamina_max(), GameState.carry_limit(), GameState.armor_total()], true, 14)
 	box.add_child(HSeparator.new())
 	UiKit.label(box, "技能（用什么涨什么）", true)
+	UiKit.label(box, "方框是升到下一级的进度，10 格满了技能 +1；后面的数字是已攒的进度 / 升级需要的进度", true, 14)
 	for s in GameState.SKILL_NAMES:
 		var sk: Dictionary = pd.skills[s]
 		var v := int(GameState.skills.get(s, 0))
-		UiKit.label(box, "%s %d　%s　%s" % [sk.name, v, _bar(GameState.skill_progress(s), 10), sk.desc])
+		UiKit.label(box, "%s %d　%s %s" % [sk.name, v, _bar(GameState.skill_progress(s), 10), progress_text(s, v)])
+		UiKit.label(box, "    %s" % sk.desc, true, 14)     # 说明单独一行：加了数字以后窄屏上一行放不下（2026-10-04）
 		for p in sk.perks:
 			var got := v >= int(p.at)
 			UiKit.label(box, "    %s %d「%s」%s%s" % ["◆" if got else "◇", int(p.at), p.name, p.desc, "" if got else "（%s到 %d 解锁）" % [sk.name, int(p.at)]], not got, 14)
 	box.add_child(HSeparator.new())
 	UiKit.label(box, "声望", true)
+	UiKit.label(box, "竖线「｜」是 0：右边是好感、左边是敌意，每格约 20 点（−100 到 +100）", true, 14)
 	for fid in pd.factions:
 		var v := GameState.get_rep(fid)
 		UiKit.label(box, "%s　%s（%+d）　%s" % [pd.factions[fid].name, GameState.rep_tier(v), v, _rep_bar(v)])
 	_fit()
+
+
+## 进度条后面的数字：「1.5/5」（打木桩只算半次，所以会有小数）；练满了写「已满」
+static func progress_text(skill: String, value: int) -> String:
+	if value >= GameState.SKILL_MAX:
+		return "已满"
+	return "%s/%s" % [_num(float(GameState.skill_xp.get(skill, 0.0))), _num(GameState.skill_need(value))]
+
+
+## 整数不带小数点（「0/5」，不是「0.0/5.0」），其余保留一位
+static func _num(x: float) -> String:
+	return str(roundi(x)) if is_equal_approx(x, roundf(x)) else "%.1f" % x
 
 
 ## 进度条：■■■□□（文字符号，不只靠颜色；字体子集里只有 GB2312 的几何符号，没有更细的进度条字符）

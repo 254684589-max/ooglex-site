@@ -187,6 +187,12 @@ func test_ui() -> void:
 		"↑↓◆ 解锁专长：·▲ 升到级：获得 1 个属性点（点「角色」分配按 K 分配）声望上升下降"])
 	# 第三人称（2.9）
 	texts.append("视角：第三人称（越肩）第一人称" + main.pause_menu.tp_check.text)
+	# 2026-10-04 手机实测后的说明文字
+	main.touch_mode = true
+	texts.append_array([main.bench_done_line(), "已满0123456789./%检定 · 约 [] 方框是升到下一级的进度，10 格满了技能 +1；后面的数字是已攒的进度 / 升级需要的进度",
+		"竖线「｜」是 0：右边是好感、左边是敌意，每格约 20 点（−100 到 +100）"])
+	main.touch_mode = false
+	texts.append(main.bench_done_line())
 	# 徒手格斗（3.3）
 	texts.append_array([Birch.TEACH_DESKTOP, Birch.TEACH_TOUCH, "（求饶）"])     # 桦林（3.5）
 	texts.append_array(Ferry.FERRYMAN_LINES + Ferry.THUG_LINES + ["◆ 动手了！✓ 渡口的无旗者都解决了。踢！包抄他！"])     # 渡口（3.6）
@@ -691,6 +697,10 @@ func test_frostford() -> void:
 	# 更夫在灯下，可以交谈
 	await aim(p, Frostford.WATCH_POS + Vector3(0, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
 	check(p.interactor.target is Npc and p.interactor.target.display_name == "更夫", "更夫站在第一盏街灯下，可以交谈")
+	# 贴地雾带在主角脚边淡出（2026-10-04 手机实测：第三人称时雾片以下的小腿被盖成灰白一截）
+	await frames(2)
+	var bands := get_tree().get_nodes_in_group("fog_band")
+	check(bands.all(func(f): return (f.material_override.get_shader_parameter("clear_at") as Vector3).distance_to(p.global_position) < 0.05), "每片贴地雾带都跟着主角的位置在脚边淡出（clear_at，%d 片）" % bands.size())
 	await free_main(main)
 	# 贴图缺文件：退回纯色，不崩
 	var saved := Look.photo_dir
@@ -740,6 +750,19 @@ func test_perf() -> void:
 	check(res.size() == 3 and res.all(func(r): return r.fps > 0.0 and r.draw_calls >= 0.0 and r.has("worst_ms")), "基准测试依次测 3 个机位，每个都有平均帧率、最慢一帧、绘制调用")
 	check(ov.bench_text.contains("基准测试结果") and ov.bench_text.contains(Frostford.VIEW_NAMES[2]) and ov.bench_text.contains("请截图"), "结果表显示在性能浮层上，提示截图")
 	check(main.player.global_position.is_equal_approx(Frostford.VIEWS[0][0]), "测完回到出生点")
+	check(ov.bench_text.contains("按 Esc 打开菜单"), "电脑：结束语写「按 Esc 打开菜单」换画质")
+	main.touch_mode = true
+	check(main.bench_done_line().contains("点右上角「菜单」") and not main.bench_done_line().contains("Esc"), "手机：结束语写「点右上角『菜单』」，不提 Esc（2026-10-04 手机实测）")
+	main.touch_mode = false
+	# 触屏上生命 / 体力条在左上角：性能浮层放到它们下面（2026-10-04 手机实测：浮层压住了生命条）
+	main.hud.bars_top = true
+	main.place_perf_overlay()
+	var bars := Rect2(main.hud.health_rect().position - Vector2(0, 22), Vector2(main.hud.BAR_W, main.hud.bar_rect().end.y - main.hud.health_rect().position.y + 22))
+	check(ov.position.y > bars.end.y, "触屏：性能浮层在生命 / 体力条和它们的文字下面（浮层顶 %.0f，条底 %.0f）" % [ov.position.y, bars.end.y])
+	main.hud.bars_top = false
+	main.place_perf_overlay()
+	check(is_equal_approx(ov.position.y, 44.0), "电脑：性能浮层仍在标题下面（体力条在左下角）")
+	check(ov.get_index() < main.hud.get_index(), "性能浮层画在 HUD 底下：短提示叠上来时字在上面")
 	Settings.set_value("show_perf", false)
 	await free_main(main)
 
@@ -894,7 +917,7 @@ func test_checks() -> void:
 	r.start("frostford", "watchman")
 	check(r.options().size() == before + 1, "听说以后再找更夫，多出「关于埃德里克少爷，你再想想」")
 	var lbl := DialogueRunner.option_label({"text": "你还看见了别的，对吧？", "check": {"id": "x", "skill": "insight", "dc": 12}})
-	check(lbl == "[洞察 · 把握较大] 你还看见了别的，对吧？", "检定选项前面直接显示技能和把握（%s）" % lbl)
+	check(lbl == "[洞察检定 · 约 60%] 你还看见了别的，对吧？", "检定选项前面直接显示技能和成功的百分比（%s）" % lbl)
 	# 洞察检定：成功 / 失败各走一条路
 	var sd_pass := seed_for("watchman_edric_insight", "insight", 12, true)
 	var sd_fail := seed_for("watchman_edric_insight", "insight", 12, false)
@@ -942,7 +965,7 @@ func test_checks() -> void:
 	var dp: DialoguePanel = main.dialogue
 	dp.choose(1)
 	await frames(2)
-	check(dp.buttons[1].text.contains("[洞察 · 把握较大]"), "对话面板里的检定选项显示把握（%s）" % dp.buttons[1].text)
+	check(dp.buttons[1].text.contains("[洞察检定 · 约 60%]"), "对话面板里的检定选项显示成功的百分比（%s）" % dp.buttons[1].text)
 	dp.choose(1)
 	await frames(2)
 	check(dp.name_label.text.contains("√ 洞察检定成功") and dp.runner.node_id == "edric_more", "检定后说话人旁边显示「√ 洞察检定成功」（文字 + 符号）")
@@ -1825,6 +1848,13 @@ func test_growth() -> void:
 	var all_text := "\n".join(cp.box.find_children("*", "Label", true, false).map(func(l): return l.text))
 	check(all_text.contains("◆ 25「连环」") and all_text.contains("◇ 25「轻步」") or all_text.contains("◆ 25「轻步」"), "专长写明解锁了没有（◆ / ◇）")
 	check(all_text.contains("瓦伦家　信任（+100）") and all_text.contains("渡工行会　中立（+0）"), "声望列出八个势力的档位与数值")
+	# 2026-10-04 所有者问「方框是什么意思」：技能进度条后面写数字，两段都有一行说明
+	var sw_line: String = cp.box.find_children("*", "Label", true, false).map(func(l): return l.text).filter(func(t): return t.begins_with("剑术 "))[0]
+	var sw_need := CharacterPanel._num(GameState.skill_need(int(GameState.skills.blade)))
+	check(sw_line.ends_with("/" + sw_need) and not sw_line.contains(".0/") and all_text.contains("方框是升到下一级的进度") and all_text.contains("    用剑命中、格挡时提升"), "技能进度条后面写「已攒/需要」的数字（剑术 %d 升级要 %s 点：%s），说明另起一行" % [GameState.skills.blade, sw_need, sw_line])
+	check(CharacterPanel._num(0.5) == "0.5" and CharacterPanel._num(3.2) == "3.2" and CharacterPanel._num(5.0) == "5", "进度数字：整数不带小数点，打木桩的半次保留一位")
+	check(all_text.contains("竖线「｜」是 0"), "声望上面一行说明：竖线是 0、每格约 20 点")
+	check(CharacterPanel.progress_text("blade", GameState.SKILL_MAX) == "已满", "技能练满了写「已满」")
 	var rect: Rect2 = cp.f.panel.get_global_rect()
 	check(rect.size.x <= main.hud.size.x and rect.size.y <= main.hud.size.y + 1.0, "角色面板不超出画面（%s）" % rect.size)
 	cp._unhandled_input(key_ev(KEY_K))
@@ -2092,6 +2122,17 @@ func test_camera() -> void:
 	check(p.avatar.character.role == "crouch_idle", "蹲下：人物换蹲姿待机（%s）" % p.avatar.character.role)
 	p.crouch_wanted = false
 	await seconds(0.3)
+	# 对话：临时换成第一人称镜头、藏起人物和触屏按钮；对话结束后还原（2026-10-04 手机实测：竖屏时主角挡住说话人）
+	var npc: Npc = main.world.get_children().filter(func(c): return c is Npc)[0]
+	main.touch.visible = true
+	main.open_dialogue("frostford", "watchman", npc)
+	await frames(2)
+	check(p.camera.position.length() < 0.01 and not p.avatar.visible and Settings.third_person, "第三人称里对话：镜头收回眼睛、看不到主角，设置仍是第三人称")
+	check(not main.touch.visible, "对话时藏起触屏按钮（暂停时它们本来就不响应）")
+	main.dialogue.close()
+	await physics(30)
+	check(p.avatar.visible and main.touch.visible and p.camera.position.length() > 1.0, "对话结束：主角重新出现、触屏按钮回来、相机退回肩后（%.2f 米）" % p.camera.position.length())
+	main.touch.visible = false
 	# 菜单勾选框、触屏按钮
 	check(main.pause_menu.tp_check.button_pressed, "暂停菜单里的「第三人称越肩视角」已勾上")
 	var t: TouchControls = main.touch
@@ -2413,7 +2454,7 @@ func test_areas() -> void:
 	for i in labels.size():
 		if labels[i].contains("口才"):
 			speech_i = i
-	check(speech_i >= 0 and labels[speech_i].contains("把握"), "口才选项显示把握（%s）" % (labels[speech_i] if speech_i >= 0 else "没有"))
+	check(speech_i >= 0 and labels[speech_i].contains("口才检定 · 约 "), "口才选项显示成功的百分比（%s）" % (labels[speech_i] if speech_i >= 0 else "没有"))
 	r.choose(speech_i)
 	check(r.node_id == "edric_told" and GameState.clues.has("boots") and GameState.silver == 12, "口才检定成功：不花钱也问出来")
 	GameState.new_game(sd_fail)
