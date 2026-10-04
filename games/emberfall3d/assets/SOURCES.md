@@ -18,6 +18,7 @@
 | Broken Wall（烬原镇修道院废墟的墙）；颜色、OpenGL 法线、ARM，1K JPG | `godot/assets/textures/broken_wall/` | Rob Tuytel / Poly Haven | CC0 1.0 | https://polyhaven.com/a/broken_wall | 2026-09-27 | 2.6 之四；3 米见方，每 3 米平铺；导入时缩到 512 像素 |
 | Plaster Stone Wall 01（烬原镇房屋的墙）；颜色、OpenGL 法线、ARM，1K JPG | `godot/assets/textures/plaster_stone_wall_01/` | Charlotte Baglioni / Poly Haven | CC0 1.0 | https://polyhaven.com/a/plaster_stone_wall_01 | 2026-09-27 | 2.6 之四；2.3 米见方，每 2.4 米平铺；导入时缩到 512 像素 |
 | Grey Roof Tiles 02（烬原镇房顶）；颜色、OpenGL 法线、ARM，1K JPG | `godot/assets/textures/grey_roof_tiles_02/` | Rob Tuytel / Poly Haven | CC0 1.0 | https://polyhaven.com/a/grey_roof_tiles_02 | 2026-09-27 | 2.6 之四；1.5 米见方，每 1.8 米平铺；导入时缩到 512 像素 |
+| 游戏中心封面海报「余烬陷落 EMBERFALL 大作版」（800×1200 WebP，约 205 KB，整张显示） | `games/hub/img/emberfall-poster.webp`（不在游戏包里） | 所有者用 AI 生成，2026-10-04 在对话里提供 | 所有者提供并要求使用 | — | 2026-10-04 | 只缩小尺寸、转 WebP，画面未改 |
 
 场景里的模型全部由代码生成（所有角色是 `actors/rig/` 代码搭的骨骼角色，2.6 之三；道具与房屋细节是 `world/prop_models.gd` 代码搭的模型，2.6 之五；树林、地面装饰与训练木桩也是，2.6 之六；楼梯与火把也是，2.6 之七），不用外部模型与动作；外部贴图只有上面这些 Poly Haven 贴图（2.6 之二起三套、2.6 之四再加九套），缺失时自动退回程序化贴图（`world/look.gd`）。
 贴图原文件是 Poly Haven 下载的 1K JPG，未修改；导入设置为 Basis Universal + mipmap，法线贴图勾选 normal_map；2.6 之四的九套另设 size_limit = 512（`*.jpg.import`）。

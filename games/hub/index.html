@@ -48,12 +48,7 @@
   .cover { height:150px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
   .cover .ico { font-size:4.6rem; filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)); z-index:2; }
   .cover::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
-  /* 余烬陷落 EMBERFALL：黑暗地牢里的一簇火光 */
-  .cv-ef { background:radial-gradient(circle at 50% 62%,#e8843a 0%,#8a2412 16%,#2a0a07 42%,#0a0504 100%); }
-  .cv-ef::before { content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1;
-    background:repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 2px, transparent 2px 34px), repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 17px);
-    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
-  /* 整张竖版海报的卡（都会人生、工地搬砖、铁冠之争；海报由所有者提供）：占满一行，手机上海报在上、完整显示，
+  /* 整张竖版海报的卡（都会人生、工地搬砖、余烬陷落、铁冠之争；海报由所有者提供）：占满一行，手机上海报在上、完整显示，
      宽屏上海报在左、文字在右。海报按自身比例显示（img 的 width / height 先占好位置），没载入时是深色底 */
   .game.feature { grid-column:1 / -1; }
   .cover.cv-poster { height:auto; display:block; background:#1b1c22; }
@@ -124,8 +119,8 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game" href="../emberfall3d/" style="--ac:#b3241a;--ac2:#e8843a">
-        <div class="cover cv-ef"><span class="ico">🕯️</span></div>
+      <a class="game feature" href="../emberfall3d/" style="--ac:#b3241a;--ac2:#e8843a">
+        <div class="cover cv-poster"><img class="cv-img" src="img/emberfall-poster.webp?v=cc606d1a" alt="《余烬陷落》EMBERFALL 大作版海报：持火焰长剑的骑士迎战熔岩巨魔与骷髅兵" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>EMBERFALL · 原创暗黑风 3D ARPG</h3>
           <p>3D 暗黑风动作角色扮演（开发中预览）：深入修道院地下，斩杀亡灵、刷随机词缀装备、击败堕落院长，之后挑战无尽深渊。电脑手机浏览器直接玩，需要 WebGL 2，首次加载约 40 MB。</p>
