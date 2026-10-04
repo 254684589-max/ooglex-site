@@ -50,7 +50,7 @@ ZLQ6600E/
 │   └── telescope/          # 🔭 星瞳望远镜（手机摄像头数码望远镜）
 ├── games/                  # 网页小游戏
 │   ├── hub/                # 🎮 游戏中心（游戏合集入口）
-│   ├── working-life/       # 🌃 打工 HUSTLE CITY（原创 Godot 4 3D 赛博朋克都市人生模拟 · godot/ 为工程源码，play/ 为网页导出）
+│   ├── working-life/       # 🌃 都会人生 LIFE SIMULATOR（原名 HUSTLE CITY / 打工；原创 Godot 4 3D 赛博朋克都市人生模拟 · godot/ 为工程源码，play/ 为网页导出）
 │   ├── construction-worker/ # 🏗️ 工地搬砖 BRICK BY BRICK（原创 Godot 4 3D 工地模拟 · godot/ 为工程源码，play/ 为网页导出）
 │   ├── emberfall/          # 🕯️ 余烬陷落 EMBERFALL（原创 2.5D 暗黑风 ARPG · Canvas 2D + 原生 JS · play/ 为游戏本体）
 │   ├── emberfall3d/        # 🔥 余烬陷落大作版（3D 开发中预览 · Godot 4 网页导出 · godot/ 工程源码，play/ 为导出产物）

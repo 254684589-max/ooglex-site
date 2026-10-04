@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏中心 · 网页小游戏</title>
-<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含原创 3D 赛博朋克都市人生模拟《打工》、原创 3D 工地模拟《工地搬砖》、原创暗黑风动作角色扮演《余烬陷落》、原创第一人称中世纪权谋角色扮演《铁冠之争》（开发中）、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
+<meta name="description" content="Ooglex 游戏中心：网页小游戏与正版游戏官方入口，包含原创 3D 赛博朋克都市人生模拟《都会人生》、原创 3D 工地模拟《工地搬砖》、原创暗黑风动作角色扮演《余烬陷落》、原创第一人称中世纪权谋角色扮演《铁冠之争》（开发中）、GTA Vice City、红色警戒 2、暗黑破坏神 IV 等。">
 <link rel="canonical" href="https://www.ooglex.com/games/hub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏中心 · 网页小游戏">
@@ -48,13 +48,6 @@
   .cover { height:150px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
   .cover .ico { font-size:4.6rem; filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)); z-index:2; }
   .cover::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
-  /* 打工 HUSTLE CITY：霓虹夜城 */
-  .cv-wl { background:linear-gradient(180deg,#0b0716 0%,#2a0f4a 45%,#7a1a6a 78%,#ff2e88 100%); }
-  .cv-wl::before { content:""; position:absolute; left:0; right:0; bottom:0; height:62%; z-index:1;
-    background:
-      linear-gradient(90deg, transparent 0 8%, rgba(34,228,255,.55) 8% 9%, transparent 9% 22%, rgba(255,46,136,.5) 22% 23%, transparent 23% 61%, rgba(255,210,63,.45) 61% 62%, transparent 62% 84%, rgba(34,228,255,.5) 84% 85%, transparent 85%),
-      repeating-linear-gradient(180deg, rgba(255,255,255,.18) 0 3px, transparent 3px 11px);
-    -webkit-mask-image:linear-gradient(180deg, transparent, #000 35%); mask-image:linear-gradient(180deg, transparent, #000 35%); }
   /* 工地搬砖 BRICK BY BRICK：黄黑警示条 + 夕阳下的工地 */
   .cv-cw { background:linear-gradient(180deg,#2b3a55 0%,#6e5a4a 55%,#e0a13a 100%); }
   .cv-cw::before { content:""; position:absolute; left:0; right:0; bottom:0; height:16px; z-index:1;
@@ -64,14 +57,14 @@
   .cv-ef::before { content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1;
     background:repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 2px, transparent 2px 34px), repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 17px);
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
-  /* 铁冠之争 THE IRON CROWN：整张竖版海报（所有者用 AI 生成；图片没载入时显示深色底）。
-     这张卡占满一行：手机上海报在上、完整显示，宽屏上海报在左、文字在右 */
+  /* 整张竖版海报的卡（都会人生、铁冠之争；海报由所有者提供）：占满一行，手机上海报在上、完整显示，
+     宽屏上海报在左、文字在右。海报按自身比例显示（img 的 width / height 先占好位置），没载入时是深色底 */
   .game.feature { grid-column:1 / -1; }
-  .cv-ic { background:#1b1c22; height:auto; aspect-ratio:3 / 4; }
-  .cover .cv-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .cover.cv-poster { height:auto; display:block; background:#1b1c22; }
+  .cover .cv-img { display:block; width:100%; height:auto; }
   @media (min-width:600px){
     .game.feature { flex-direction:row; }
-    .game.feature .cv-ic { flex:0 0 min(46%, 340px); }
+    .game.feature .cv-poster { flex:0 0 min(46%, 340px); align-self:flex-start; }
     .game.feature .body { align-self:center; padding:22px 26px; }
   }
   /* GTA Vice City：迈阿密霓虹夕阳 */
@@ -119,10 +112,10 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
       <p>网页小游戏 · 正版游戏官方入口 · 点击进入</p>
     </div>
     <div class="grid">
-      <a class="game" href="../working-life/" style="--ac:#22e4ff;--ac2:#ff2e88">
-        <div class="cover cv-wl"><span class="ico">🌃</span></div>
+      <a class="game feature" href="../working-life/" style="--ac:#22e4ff;--ac2:#ff2e88">
+        <div class="cover cv-poster"><img class="cv-img" src="img/hustle-poster.webp?v=34863809" alt="《都会人生》海报：雨夜的霓虹街头，拖着行李箱的年轻人望向城市" width="800" height="1200" decoding="async"></div>
         <div class="body">
-          <h3>HUSTLE CITY · 原创 3D 游戏</h3>
+          <h3>都会人生 · 原创 3D 游戏</h3>
           <p>赛博朋克都市人生模拟：带着 ¥2000 走出火车站，找工作、上班、升职、租房、交朋友、投资、创业，7 章主线、5 种人生结局。电脑手机浏览器直接玩，首次加载约 42 MB。</p>
           <span class="play">🎮 开始游戏 →</span>
         </div>
@@ -144,7 +137,7 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
         </div>
       </a>
       <a class="game feature" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
-        <div class="cover cv-ic"><img class="cv-img" src="img/ironcrown-poster.webp?v=c6d671e8" alt="《铁冠之争》海报：戴冠持剑的骑士站在燃烧的城堡前，脚下是碎裂的铁冠" width="900" height="1200" loading="lazy" decoding="async"></div>
+        <div class="cover cv-poster"><img class="cv-img" src="img/ironcrown-poster.webp?v=c6d671e8" alt="《铁冠之争》海报：戴冠持剑的骑士站在燃烧的城堡前，脚下是碎裂的铁冠" width="900" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>铁冠之争 · 原创第一人称 RPG</h3>
           <p>中世纪权谋角色扮演（开发中预览）：雾夜里的霜渡镇，寻找失踪的少爷。序章已可完整游玩，电脑、手机浏览器直接玩（需 WebGL 2，约 57 MB）。</p>
