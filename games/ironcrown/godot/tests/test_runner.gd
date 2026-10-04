@@ -201,6 +201,7 @@ func test_ui() -> void:
 			texts.append(str(GameState.tips_data()[id].desktop) + str(GameState.tips_data()[id].touch))
 	texts.append_array([Opening.CALL_LINE, Opening.BELL_LINE, PauseMenu.HELP_DESKTOP, PauseMenu.HELP_TOUCH, "序章霜渡镇之夜灰鲸河畔 · 入夜轻触画面开始点击画面或按任意键开始声音教学提示◇ "])
 	texts.append_array(EndingPanel.RECAP.values() + [EndingPanel.SEAL, "序章「霜渡镇之夜」完第一章 · 黑鹭堡开发中在雾里再走走从头再来", "雾里有人提着灯走下坡来……"])     # 尾声（3.7）
+	texts.append("· （需要：枚银币（身上 枚））、")     # 3.9 灰色选项
 	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
 	for sd in BattleArena.SIDES.values():
 		texts.append(str(sd.name))
@@ -854,6 +855,42 @@ func test_dialogue() -> void:
 	dp.choose(dp.buttons.size() - 1)     # 最后一个选项是「没事，你接着巡夜吧」（问过少爷以后会多出一个选项）
 	await frames(2)
 	check(not dp.visible and not get_tree().paused, "选「没事，你接着巡夜吧」也会结束对话")
+	await free_main(main)
+	# —— 3.9：剧情条件满足、只差银币或物品的选项灰色显示「需要……」；会剧透的（locked: hide）照旧隐藏
+	GameState.new_game(5)
+	var o30 := {"text": "给钱", "if": [{"silver": 30}]}
+	check(DialogueRunner.option_state(o30) == "locked" and DialogueRunner.option_needs(o30) == "30 枚银币（身上 12 枚）", "只差银币：灰色，写明要 30 枚、身上 12 枚（%s）" % DialogueRunner.option_needs(o30))
+	check(DialogueRunner.option_state({"text": "x", "if": [{"silver": 30}, {"flag": "offer_parley"}]}) == "hide", "剧情条件不满足：照旧隐藏（不剧透）")
+	check(DialogueRunner.option_state({"text": "x", "if": [{"has_item": "hire_letter"}], "locked": "hide"}) == "hide", "写了 locked: hide 的：差物品时也隐藏")
+	check(DialogueRunner.option_needs({"text": "x", "if": [{"has_item": "hire_letter"}, {"silver": 30}]}) == "雇佣信、30 枚银币（身上 12 枚）", "差好几样：用顿号连起来")
+	GameState.add_silver(30)
+	check(DialogueRunner.option_state(o30) == "show", "银币够了：能选")
+	var bad_locked := {"start": "a", "nodes": {"a": {"text": "t", "options": [{"text": "x", "end": true, "locked": "maybe"}]}}}
+	check(DialogueRunner.validate(bad_locked).any(func(e): return str(e).contains("locked")), "校验：locked 只能写 hide，而且要有银币或物品条件")
+	GameState.new_game(5)
+	var lr := DialogueRunner.new()
+	lr.start("ferry", "offer")
+	lr.node_id = "why"
+	var locked_texts: Array = lr.entries().filter(func(e): return e.locked).map(func(e): return [str(e.option.text).left(6), e.need])
+	check(locked_texts.size() == 2 and locked_texts[0] == ["（亮出雇佣信", "雇佣信"] and str(locked_texts[1][1]).begins_with("30 枚银币"), "渡口奥弗：没有雇佣信、钱不够时，两个选项灰色显示（%s）" % [locked_texts])
+	check(lr.options().size() == lr.entries().size() - 2 and not lr.options().any(func(o): return str(o.text).contains("雇佣信")), "灰色的选项不算在能选的里面（数字键、下标不变）")
+	GameState.add_item("hire_letter")
+	check(lr.entries().filter(func(e): return e.locked).size() == 1 and lr.options().any(func(o): return str(o.text).contains("雇佣信")), "拿到雇佣信：那个选项变成能选")
+	lr.start("chapel", "alban")
+	check(not lr.entries().any(func(e): return str(e.option.text).contains("墓室里找到的信")), "修士：没找到墓室里的信时，「把信递给他」照旧隐藏（不剧透）")
+	# 面板：灰色的选项不编号、点不了、方向键跳过；能选的照旧 1、2、3……
+	GameState.new_game(5)
+	GameState.silver = 0
+	main = await make_main(false)
+	dp = main.dialogue
+	dp.open("tavern", "matilda")
+	await frames(2)
+	var lb: Button = dp.locked_buttons[0] if not dp.locked_buttons.is_empty() else null
+	check(lb != null and lb.text == "· 来块面包。（2 银币）（需要：2 枚银币（身上 0 枚））" and lb.disabled and lb.focus_mode == Control.FOCUS_NONE, "玛蒂尔达：没钱买面包，选项灰色、写明还差什么（%s）" % (lb.text if lb else "-"))
+	var nums: Array = dp.buttons.map(func(b): return str(b.text).left(2))
+	check(nums == ["1.", "2."] and dp.options_box.get_child_count() == 3, "能选的选项照旧编号 1、2，灰色的不编号（%s）" % [nums])
+	check(dp.options_box.get_child(0) == lb and str(dp.buttons[0].text).contains("镇上最近怎么样"), "灰色的选项留在原来的位置（「镇上最近怎么样？」前面；新游戏时前两个剧情选项隐藏）")
+	dp.close()
 	await free_main(main)
 
 

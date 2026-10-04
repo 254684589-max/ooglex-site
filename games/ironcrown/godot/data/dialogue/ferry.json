@@ -117,7 +117,7 @@
         "text": "（他松开剑柄，整了整衣领）多谢，誓剑。在下塞拉斯，替双钥港的卡斯韦尔家办事。少爷是自愿跟我走的——我们只是做一笔买卖。",
         "options": [
           {"text": "什么买卖？", "next": "deal"},
-          {"text": "桦林里那些无旗者，是你雇的。", "if": [{"has_item": "hire_letter"}, {"not_flag": "silas_admitted"}], "next": "hired"},
+          {"text": "桦林里那些无旗者，是你雇的。", "if": [{"has_item": "hire_letter"}, {"not_flag": "silas_admitted"}], "locked": "hide", "next": "hired"},
           {"text": "告辞。", "end": true}
         ]
       },
@@ -125,7 +125,7 @@
         "text": "还有什么要问的？",
         "options": [
           {"text": "再说说那笔买卖。", "next": "deal"},
-          {"text": "桦林里那些无旗者，是你雇的。", "if": [{"has_item": "hire_letter"}, {"not_flag": "silas_admitted"}], "next": "hired"},
+          {"text": "桦林里那些无旗者，是你雇的。", "if": [{"has_item": "hire_letter"}, {"not_flag": "silas_admitted"}], "locked": "hide", "next": "hired"},
           {"text": "告辞。", "end": true}
         ]
       },
@@ -162,7 +162,7 @@
       "greet": {
         "text": "（他把皮夹往怀里收了收）你是我父亲派来的？……我不回去。",
         "options": [
-          {"text": "你在信里说，不想做一枚被摆来摆去的棋子。", "if": [{"has_item": "edric_letter"}], "next": "letter"},
+          {"text": "你在信里说，不想做一枚被摆来摆去的棋子。", "if": [{"has_item": "edric_letter"}], "locked": "hide", "next": "letter"},
           {"text": "你父亲很担心你。", "next": "father"},
           {"text": "那张借据在你手里？", "next": "debt"},
           {"text": "告辞。", "end": true}

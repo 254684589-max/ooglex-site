@@ -13,6 +13,8 @@ extends RefCounted
 ##         3.6 起：{"fight": 对峙编号, "win": 旗标}（区域里那组 NPC 换成敌人开打，只能放在结束对话的选项上，combat/encounter.gd）、{"leave": 对峙编号}（那组人走了）；
 ##         3.7 起：{"earn": 数量}（得到银币，例如塞拉斯的封口费）、{"ending": 结局编号}（对话关上后显示结束画面，ui/ending_panel.gd）
 ## 对话可以有 start_if：[{"if": [...], "node": 节点}]，第一个满足的决定从哪个节点开始（旗标改变 NPC 的态度）。
+## 3.9 起：剧情条件（旗标、任务、声望）都满足、只差银币或物品（silver、has_item）的选项不再隐藏，灰色显示「需要……」（entries()）；
+##         选项写 "locked": "hide" 时照旧隐藏——用于会剧透的选项（例如「把墓室里找到的信递给他」，没找到信之前不该知道有这封信）。
 ## 只认上面这些键（白名单），不执行任意表达式；用到的旗标必须登记在 data/flags.json。
 
 const DIR := "res://data/dialogue/%s.json"
@@ -23,9 +25,10 @@ var id := ""
 var node_id := ""
 var last_check := {}          # 刚做过的检定：{skill, ok}（界面显示「洞察检定成功」）
 
-const OPTION_KEYS := ["text", "next", "end", "if", "check", "do"]
+const OPTION_KEYS := ["text", "next", "end", "if", "check", "do", "locked"]
 const NODE_KEYS := ["text", "options", "do"]
 const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least"]
+const RESOURCE_KEYS := ["silver", "has_item"]     # 「差东西」的条件（3.9）：只差这些时灰色显示「需要……」，不隐藏
 const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta", "brawl", "win", "lose", "fight", "leave", "earn", "ending"]
 
 
@@ -89,6 +92,13 @@ static func validate(d: Dictionary) -> Array:
 			for e in o.get("do", []):
 				if (e.has("brawl") or e.has("fight")) and not o.get("end", false):
 					errors.append("%s：选项「%s」开打要同时结束对话（end）" % [nid, o.get("text", "")])
+			if o.has("locked"):
+				var has_res := false
+				for c in o.get("if", []):
+					if c.has("silver") or c.has("has_item"):
+						has_res = true
+				if str(o.locked) != "hide" or not has_res:
+					errors.append("%s：选项「%s」的 locked 只能写 \"hide\"，而且要有银币或物品条件" % [nid, o.get("text", "")])
 			if o.has("check"):
 				var c: Dictionary = o.check
 				if not GameState.SKILL_NAMES.has(str(c.get("skill", ""))):
@@ -297,13 +307,48 @@ func text() -> String:
 	return str(node().get("text", ""))
 
 
-## 现在能看到的选项（条件不满足的隐藏）
+## 现在能选的选项（条件全部满足的）；choose(i) 的 i 是这里的下标
 func options() -> Array:
 	var out := []
 	for o in node().get("options", []):
 		if conds_ok(o.get("if", [])):
 			out.append(o)
 	return out
+
+
+## 要显示的全部选项，按原来的顺序（3.9）：[{option, locked, need}]。locked = 只差银币或物品（灰色、不能选），need = 「需要……」那段文字
+func entries() -> Array:
+	var out := []
+	for o in node().get("options", []):
+		var st := option_state(o)
+		if st != "hide":
+			out.append({"option": o, "locked": st == "locked", "need": option_needs(o) if st == "locked" else ""})
+	return out
+
+
+## 选项现在的样子（3.9）："show" 能选；"locked" 剧情条件都满足、只差银币或物品；"hide" 不显示
+static func option_state(o: Dictionary) -> String:
+	var conds: Array = o.get("if", [])
+	var story: Array = []
+	for c in conds:                      # 不用匿名函数（见 validate 里的说明）
+		if not (c.has("silver") or c.has("has_item")):
+			story.append(c)
+	if not conds_ok(story):
+		return "hide"
+	if conds_ok(conds):
+		return "show"
+	return "hide" if str(o.get("locked", "")) == "hide" else "locked"
+
+
+## 还差什么（3.9）：「30 枚银币（身上 12 枚）」「雇佣信」，多样用顿号连起来
+static func option_needs(o: Dictionary) -> String:
+	var parts: Array = []
+	for c in o.get("if", []):
+		if c.has("silver") and GameState.silver < int(c.silver):
+			parts.append("%d 枚银币（身上 %d 枚）" % [int(c.silver), GameState.silver])
+		elif c.has("has_item") and not GameState.has_item(str(c.has_item)):
+			parts.append(str(GameState.item(str(c.has_item)).get("name", c.has_item)))
+	return "、".join(parts)
 
 
 ## 选项显示的文字：检定选项前面加「[口才检定 · 约 50%]」
