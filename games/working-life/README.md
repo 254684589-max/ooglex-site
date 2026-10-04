@@ -95,6 +95,7 @@ games/working-life/
   开发用逐帧图：`tests/anim_shots.tscn`（待机 / 走 / 跑 / 搬箱子 / 拖行李箱 / 转身 / 坐 / 干活）。
 - 音频：`tools/gen_audio.py` 合成；按 `music_* / amb_* / sfx_*` 命名覆盖 `godot/assets/audio/` 下同名 wav 即可替换，缺文件不会报错。
 - 字体：思源黑体子集（OFL），新增生僻字后运行 `tools/build_font.py`。
+- 游戏中心封面：`games/hub/img/hustle-poster.webp`（800×1200，约 190 KB），所有者 2026-10-04 提供的海报「都会人生 LIFE SIMULATOR」，整张显示（来源 / 生成方式待所有者补充）。
 
 ## 已知问题
 - 建筑、人物、车辆、植物由代码程序化生成（路面、混凝土、石材等使用真实照片材质，来源见 `godot/assets/textures/photo/SOURCES.md`），近看仍是简化几何；人物是程序化骨骼动画（没有动作捕捉数据），五官为简化造型。
