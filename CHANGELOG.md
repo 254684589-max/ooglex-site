@@ -210,6 +210,11 @@
 
 ### 文档
 
+- 2026-10-04，**《铁冠之争》第一台手机的真机性能数字与截图检查**（`games/ironcrown/TEST_REPORT.md`、`docs/IRONCROWN_ROADMAP.md`）。**未部署**（只改文档）。
+  - 所有者用手机打开线上 `?perf=1`：低画质下三个机位平均 88–116 帧，第三人称 60–76 帧，绘制调用都低于预算；记为 1.5 的第一组真机数字。
+  - 截图里查出 4 个待修问题：主角小腿被贴地雾片盖成灰白色（不是贴图问题）、竖屏第三人称对话时主角挡住说话人、手机上的测试结束语写成「按 Esc」、对话时触屏按钮仍显示在对话框底下。都还没修。
+  - 验证：构建不适用（只改文档）；`git diff --check` 通过。
+
 - 2026-10-02，《铁冠之争》阶段 3（垂直切片「霜渡镇之夜」）细化成 3.1–3.8 八个步骤（`docs/IRONCROWN_ROADMAP.md`）；`design/TECH.md` 新增 4.7b「区域与切换」（含 `godot -s` 工具脚本不能引用依赖自动加载的类、对话用字超出字体子集两个坑）。**未部署。**
 - 2026-10-02，《铁冠之争》素材台账与设计文档更新（`games/ironcrown/assets/SOURCES.md`、`design/ART.md`、`design/TECH.md` 4.4b、`docs/IRONCROWN_ROADMAP.md`）：记录 Quaternius 三个包的来源、许可（CC0 1.0）、下载日期与处理方式；**更正**了之前按页面介绍写的说法（免费版底模只有 Superhero 男女各一个、动画库各 43 个动作、底模没有头发、Dark / Ligh 贴图只差内裤颜色）。新增 `tools/build_character_anims.gd`、`tools/patch_character_gltf.py`、`tools/character_sheet.gd`（见上一条）。**已上线**（同上，合并提交 `12650cb`，部署运行 #1539 成功）。
 - 2026-10-02，**《铁冠之争》阶段 A：人物（D4 = B）素材调研与拆分**（`docs/IRONCROWN_ROADMAP.md`、`games/ironcrown/assets/SOURCES.md`、`games/ironcrown/design/ART.md`）。**未部署**（只改文档，不涉及游戏代码与 `play/`）。
