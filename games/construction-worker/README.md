@@ -238,6 +238,7 @@ games/construction-worker/
 - 中文字体：Noto Sans SC（思源黑体）子集，SIL Open Font License 1.1，见 `godot/assets/fonts/OFL.txt`。
 - 音效：`tools/gen_sfx.py` 代码合成，无第三方素材。
 - 游戏中的「宏远建设」「滨江中心」等公司与项目名称均为虚构。
+- 游戏中心封面：`games/hub/img/brick-poster.webp`（800×1000，约 125 KB），所有者 2026-10-04 提供的海报「BRICK BY BRICK · VERSION 0.1」（所有者用 AI 生成），整张显示。
 
 ## 版本记录
 

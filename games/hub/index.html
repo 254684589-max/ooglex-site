@@ -48,16 +48,12 @@
   .cover { height:150px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
   .cover .ico { font-size:4.6rem; filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)); z-index:2; }
   .cover::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
-  /* 工地搬砖 BRICK BY BRICK：黄黑警示条 + 夕阳下的工地 */
-  .cv-cw { background:linear-gradient(180deg,#2b3a55 0%,#6e5a4a 55%,#e0a13a 100%); }
-  .cv-cw::before { content:""; position:absolute; left:0; right:0; bottom:0; height:16px; z-index:1;
-    background:repeating-linear-gradient(-45deg,#f5be28 0 14px,#1d1d1f 14px 28px); }
   /* 余烬陷落 EMBERFALL：黑暗地牢里的一簇火光 */
   .cv-ef { background:radial-gradient(circle at 50% 62%,#e8843a 0%,#8a2412 16%,#2a0a07 42%,#0a0504 100%); }
   .cv-ef::before { content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1;
     background:repeating-linear-gradient(90deg, rgba(0,0,0,.35) 0 2px, transparent 2px 34px), repeating-linear-gradient(180deg, rgba(0,0,0,.35) 0 2px, transparent 2px 17px);
     -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
-  /* 整张竖版海报的卡（都会人生、铁冠之争；海报由所有者提供）：占满一行，手机上海报在上、完整显示，
+  /* 整张竖版海报的卡（都会人生、工地搬砖、铁冠之争；海报由所有者提供）：占满一行，手机上海报在上、完整显示，
      宽屏上海报在左、文字在右。海报按自身比例显示（img 的 width / height 先占好位置），没载入时是深色底 */
   .game.feature { grid-column:1 / -1; }
   .cover.cv-poster { height:auto; display:block; background:#1b1c22; }
@@ -120,8 +116,8 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game" href="../construction-worker/" style="--ac:#f5be28;--ac2:#ff8a2b">
-        <div class="cover cv-cw"><span class="ico">🏗️</span></div>
+      <a class="game feature" href="../construction-worker/" style="--ac:#f5be28;--ac2:#ff8a2b">
+        <div class="cover cv-poster"><img class="cv-img" src="img/brick-poster.webp?v=6141ecd9" alt="BRICK BY BRICK 海报：戴安全帽的年轻工人抱着一摞砖，身后是塔吊和在建的高楼" width="800" height="1000" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>BRICK BY BRICK · 原创 3D 游戏</h3>
           <p>第三人称工地模拟：揣着 300 元来到大城市，找工头老王接活，搬砖、搬水泥、扛钢筋，领工资、吃饭、睡觉，一天天成长。电脑手机浏览器直接玩，首次加载约 40 MB。</p>
