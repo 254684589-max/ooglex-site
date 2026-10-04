@@ -31,6 +31,7 @@ var interactor: Interactor
 var melee: Melee
 var avatar: PlayerAvatar
 var third_person := false
+var dialogue_view := false    # 对话时临时用第一人称的镜头（不改设置）
 var camera: Camera3D
 var shape: CollisionShape3D
 var capsule: CapsuleShape3D
@@ -93,10 +94,21 @@ func _apply_settings() -> void:
 ## 切换第一 / 第三人称（2.9）：第三人称显示人物模型（A.1）、藏起第一人称的武器；身体跟着镜头的水平朝向转（越肩视角）
 func set_third_person(on: bool) -> void:
 	third_person = on
-	avatar.visible = on
+	avatar.visible = on and not dialogue_view
 	if melee and melee.view:
 		melee.view.hide_model(on)
 	if not on:
+		camera.position = Vector3.ZERO
+
+
+## 对话时临时换成第一人称的镜头、藏起人物（2026-10-04 手机实测：竖屏第三人称时主角正好挡在说话人前面）；
+## 只改镜头，不改「第三人称」设置，对话结束后相机再慢慢退回肩后
+func set_dialogue_view(on: bool) -> void:
+	dialogue_view = on
+	if not third_person:
+		return
+	avatar.visible = not on
+	if on:
 		camera.position = Vector3.ZERO
 
 
@@ -239,7 +251,7 @@ func can_stand() -> bool:
 func _update_head(delta: float) -> void:
 	var eye := EYE_CROUCH if crouching else EYE_STAND
 	head.position.y = move_toward(head.position.y, eye, 4.0 * delta)
-	if third_person:
+	if third_person and not dialogue_view:
 		_update_third_person(delta)
 		return
 	var speed := Vector2(velocity.x, velocity.z).length()

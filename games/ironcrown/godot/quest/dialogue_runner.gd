@@ -306,12 +306,13 @@ func options() -> Array:
 	return out
 
 
-## 选项显示的文字：检定选项前面加「[口才 · 把握较大]」
+## 选项显示的文字：检定选项前面加「[口才检定 · 约 50%]」
+## 2026-10-04 起直接写百分比：所有者看不懂「一半一半」「把握较小」是什么意思
 static func option_label(o: Dictionary) -> String:
 	if o.has("check"):
 		var c: Dictionary = o.check
 		var chance := GameState.check_chance(str(c.skill), int(c.dc))
-		return "[%s · %s] %s" % [GameState.SKILL_NAMES.get(str(c.skill), c.skill), GameState.chance_label(chance), o.text]
+		return "[%s检定 · 约 %d%%] %s" % [GameState.SKILL_NAMES.get(str(c.skill), c.skill), roundi(chance * 100.0), o.text]
 	return str(o.text)
 
 
