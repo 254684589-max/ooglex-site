@@ -138,7 +138,11 @@ function applyRecoveryCopy() {
     'recovery-error-help': ['重新申请后，请只使用最新收到的重置邮件。', 'Request a new email and use only the newest reset message.'],
     'retry-email-label': ['邮箱', 'Email'],
     'retry-recovery-submit': ['重新发送重置邮件', 'Send a new reset email'],
-    'back-account-button': ['返回账户中心 / 登录', 'Back to account / sign in']
+    'back-account-button': ['返回账户中心 / 登录', 'Back to account / sign in'],
+    'mail-note': ['收不到邮件？注册的验证邮件和找回密码的重置邮件，有时会被归进「垃圾邮件 / 垃圾箱」「广告 / 推广」或「订阅」等文件夹。收件箱里没有时请去这些文件夹找一找，并把发件人标记为「不是垃圾邮件」；等几分钟仍没收到，可以稍后再发一次。',
+      "Can't find the email? Confirmation and password-reset emails sometimes land in Spam / Junk, Promotions or Updates. If it isn't in your inbox, check those folders and mark the sender as not spam. Still nothing after a few minutes? Try again a little later."],
+    'retry-mail-note': ['重置邮件有时会被归进「垃圾邮件 / 垃圾箱」或「广告 / 推广」文件夹，收件箱里没有时请去那里找一找。',
+      "Reset emails sometimes land in Spam / Junk or Promotions — check there if it isn't in your inbox."]
   };
   Object.entries(pairs).forEach(([id, copy]) => {
     const el = $(id);
@@ -248,7 +252,8 @@ async function boot() {
         return false;
       }
       say(
-        tr('如果该邮箱已注册，你会收到一封新的重置邮件。', 'If that email is registered, a new reset email will be sent.'),
+        tr('如果该邮箱已注册，你会收到一封新的重置邮件；收件箱里没有的话，请看看「垃圾邮件」或「广告 / 推广」文件夹。',
+           "If that email is registered, a new reset email will be sent. If it isn't in your inbox, check Spam / Junk or Promotions."),
         'ok'
       );
       return true;
@@ -313,7 +318,8 @@ async function boot() {
       say(
         result.data.session
           ? tr('注册成功并已登录。', 'Account created and signed in.')
-          : tr('注册成功，请查收验证邮件。', 'Account created. Check your email to confirm it.'),
+          : tr('注册成功，请查收验证邮件；收件箱里没有的话，请看看「垃圾邮件」或「广告 / 推广」文件夹。',
+               "Account created. Check your email to confirm it — if it isn't in your inbox, look in Spam / Junk or Promotions."),
         'ok'
       );
       if (result.data.session) {
