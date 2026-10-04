@@ -21,6 +21,8 @@ node games/ironcrown/tools/smoke_web.js /tmp                  # 三个宽度的�
 node games/ironcrown/tools/shots_web.js /tmp medium           # 3 个固定机位截图 + 性能统计（画质类步骤给所有者看）
 node games/ironcrown/tools/bench_web.js /tmp medium           # 网页自动基准测试（?perf=1），等结果表出来截图
 xvfb-run -a $GODOT --path games/ironcrown/godot --rendering-driver opengl3 res://tests/perf_stats.tscn   # 本机渲染开销对照
+$GODOT --headless --path games/ironcrown/godot --fixed-fps 60 res://tests/army_bench.tscn -- mode=combat model=1   # 军队规模压力测试（D8）
+games/ironcrown/tools/army_bench_web.sh "mode=combat&model=1&no3d=1"                                           # 同上，网页版（临时导出，不动 play/）
 ```
 
 网页参数：`?test=1` 灰盒测试场、`?q=low|medium|high` 画质、`?view=0|1|2` 固定机位、`?perf=1` 自动基准测试（结果表显示在画面上）。游戏里按 F3 显示性能浮层。
