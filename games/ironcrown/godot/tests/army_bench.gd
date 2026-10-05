@@ -136,7 +136,8 @@ func _spawn(n: int) -> void:
 		for i in n:
 			var sd := "white" if i < half else "black"
 			var k := i if i < half else i - half
-			var s := Soldier.create("levy" if k % 10 in [2, 5, 8] else "soldier", "bench%d" % i, sd, Color(BattleArena.SIDES[sd].coat), Color(BattleArena.SIDES[sd].band))
+			var kind := BattleArena.kind_for(k, half + 1)      # 和试验场同样的兵种搭配（B.4；+1 让最后一个也不是队长）
+			var s := Soldier.create(kind, "bench%d" % i, sd, Color(BattleArena.SIDES[sd].coat), Color(BattleArena.SIDES[sd].band))
 			s.position = BattleArena.slot(sd, k, maxi(half, n - half))
 			s.rotation.y = 0.0 if sd == "white" else PI
 			battle.enlist(s, main.world)

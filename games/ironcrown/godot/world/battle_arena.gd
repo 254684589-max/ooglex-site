@@ -2,7 +2,8 @@ class_name BattleArena
 extends RefCounted
 ## 军阵试验场（路线图 B.1，D8；网页 ?test=3）：一片围起来的雪地，白带（你这边）对黑带，每边默认 10 人（?test=3&n=30 每边最多 30 人，共 60）。
 ## 开局 3 秒后开打（main）；你站在白带后面，可以冲上去帮忙，也可以上身后的观战台看。黑带的人也会来打你，白带的人你砍不到。
-## 兵是占位胶囊：罩袍按阵营上色，胸前一道白 / 黑布带（正式外观在 B.6）。剑兵与持棍民兵大约七三开。
+## 兵是占位胶囊：罩袍按阵营上色，胸前一道白 / 黑布带（正式外观在 B.6）。
+## B.4 兵种搭配（每 10 人，kind_for）：前排两头剑盾兵、中间两个长枪兵、剑兵 2、持棍民兵 2，后排一个弓手和队长。
 ## B.2：白带前排的 6 个人（n 大时是 6 成，最多 12 个）是你的小队，头顶有 ◆，听 1 / 2 / 3（触屏「令」）的命令；默认冲锋。
 ## B.3：每边最后一个人是队长（背上插小旗，倒下时全队士气大掉）；黑带开打 12 秒后有 4 个援军从北头进场（每边 3 人以上时）——不帮忙的话白带多半要输。
 
@@ -15,6 +16,7 @@ const SQUAD_MAX := 12              # 小队最多几个人（GDD 6.4：6–12 �
 const WAVE_SIZE := 4               # 黑带援军人数（B.3）
 const WAVE_DELAY := 12.0           # 开打后多少秒到（满血 10 对 10 一般 13–19 秒分出胜负，20 秒时援军常常赶不上）
 const WAVE_Z := NORTH + 2.5        # 援军从北头进场
+const WAVE_KINDS := ["shield", "soldier", "archer", "levy"]
 const MAX_PER_SIDE := 30
 const WHITE_Z := 6.0               # 白带第一排
 const BLACK_Z := -10.0             # 黑带第一排
@@ -60,9 +62,7 @@ static func build(parent: Node3D, per_side := PER_SIDE) -> Transform3D:
 	var n := clampi(per_side, 1, MAX_PER_SIDE)
 	for id in ["white", "black"]:
 		for i in n:
-			var kind := "levy" if i % 10 in [2, 5, 8] else "soldier"      # 大约七三开
-			if i == n - 1 and n >= 3:
-				kind = "captain"                                             # 每边最后一个（后排）是队长（B.3）
+			var kind := kind_for(i, n)
 			var c: Dictionary = SIDES[id]
 			var s := Soldier.create(kind, "%s%02d" % [id, i], id, Color(c.coat), Color(c.band))
 			s.display_override = "%s · %s" % [c.name, Enemy.types()[kind].name]
@@ -74,7 +74,7 @@ static func build(parent: Node3D, per_side := PER_SIDE) -> Transform3D:
 	if n >= 3:                                                               # 黑带的援军（B.3）
 		var wave: Array = []
 		for i in WAVE_SIZE:
-			var kind := "levy" if i == WAVE_SIZE - 1 else "soldier"
+			var kind: String = WAVE_KINDS[i % WAVE_KINDS.size()]
 			var c: Dictionary = SIDES.black
 			var s := Soldier.create(kind, "blackw%d" % i, "black", Color(c.coat), Color(c.band))
 			s.display_override = "%s · %s（援军）" % [c.name, Enemy.types()[kind].name]
@@ -83,6 +83,22 @@ static func build(parent: Node3D, per_side := PER_SIDE) -> Transform3D:
 			wave.append(s)
 		battle.add_wave("black", wave, parent, WAVE_DELAY)
 	return Transform3D(Basis.IDENTITY, SPAWN)
+
+
+## 第 i 个兵是什么兵（B.4）：每 10 人里 0、7 剑盾兵，3、4 长枪兵，2、5 民兵，8 弓手，其余剑兵；每边最后一个是队长（B.3）
+static func kind_for(i: int, n: int) -> String:
+	if i == n - 1 and n >= 3:
+		return "captain"
+	match i % 10:
+		0, 7:
+			return "shield"
+		3, 4:
+			return "spear"
+		2, 5:
+			return "levy"
+		8:
+			return "archer"
+	return "soldier"
 
 
 ## 小队人数：每边人数的六成，1–12 人（10 人时 6 个）

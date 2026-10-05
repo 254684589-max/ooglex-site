@@ -18,6 +18,8 @@ extends CharacterBody3D
 ## B.1（军阵战斗）：「对手」抽成 foe()——基类永远是玩家（序章的行为不变），Soldier 改成军阵里挑中的敌方（可能是另一个兵）。
 ## 出招命中走 _strike_target()：对手是玩家调 Melee.receive_hit()，是兵就调它的 take_hit()；take_hit() 按攻击者的位置判断正面能不能挡；
 ## 只有玩家打倒的才扣声望；transient（军阵的普通兵）倒下、求饶不写进存档，drops_loot = false 的不留搜刮点。
+## B.4 兵种：兵器多了 spear（长枪：够得远，出招是往前刺）与 bow（弓：远射，行为在 Soldier）；数据可选 "shield": true（左手一面盾：
+## 正面的轻击多半挡住、正面射来的箭全挡，重击照旧破防）。箭（combat/arrow.gd）打中时 kind = "arrow"：有盾、正对着就挡，不然不能挡。
 
 signal state_changed(enemy: Enemy, state: String)
 signal died(enemy: Enemy)
@@ -30,6 +32,9 @@ const DATA_PATH := "res://data/enemies.json"
 const DATA_KEYS := ["name", "coat", "weapon", "hp", "armor", "weapon_base", "strength", "skill", "walk", "run", "reach",
 	"windup", "heavy_windup", "strike", "recover", "heavy_chance", "block_chance", "stamina", "attack_cost", "stamina_regen",
 	"retreat_below", "circle_side", "flee_below", "yield_chance", "loot", "silver", "faction", "nonlethal", "kick_chance", "flank_call"]
+const OPTIONAL_KEYS := ["shield"]  # 可以不写的字段（B.4）
+const WEAPONS := ["sword", "club", "fists", "spear", "bow"]
+const ARM_POS := Vector3(0.34, 1.3, -0.05)
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
 const SIGHT_DARK := 8.0
@@ -84,6 +89,7 @@ var arm: Node3D
 var name_label: Label3D
 var status_label: Label3D
 var coat_mat: StandardMaterial3D
+var shield: MeshInstance3D        # 左手的盾（B.4，数据 "shield": true）
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 var agent: NavigationAgent3D
 var nav_target := Vector3.INF
@@ -118,7 +124,7 @@ static func validate_types(d: Dictionary) -> Array:
 			if not t.has(key):
 				errs.append("%s 缺少 %s" % [k, key])
 		for key in t:
-			if not key in DATA_KEYS:
+			if not key in DATA_KEYS and not key in OPTIONAL_KEYS:
 				errs.append("%s 有不认识的字段 %s" % [k, key])
 		if not GameState.progression().get("factions", {}).has(str(t.get("faction", ""))):
 			errs.append("%s 的势力 %s 不在 progression.json 里" % [k, t.get("faction", "")])
@@ -130,7 +136,7 @@ static func validate_types(d: Dictionary) -> Array:
 		for key in ["heavy_chance", "block_chance", "flee_below", "yield_chance", "kick_chance"]:
 			if float(t.get(key, 0)) < 0.0 or float(t.get(key, 0)) > 1.0:
 				errs.append("%s 的 %s 应在 0..1" % [k, key])
-		if not str(t.get("weapon", "")) in ["sword", "club", "fists"]:
+		if not str(t.get("weapon", "")) in WEAPONS:
 			errs.append("%s 的兵器 %s 不认识" % [k, t.get("weapon", "")])
 		if bool(t.get("nonlethal", false)) and (float(t.get("flee_below", 0)) <= 0.0 or float(t.get("yield_chance", 0)) < 1.0):
 			errs.append("%s 打不死，打到 flee_below 必须认输（yield_chance = 1）" % k)
@@ -202,7 +208,7 @@ func _ready() -> void:
 func _build_arm() -> void:
 	arm = Node3D.new()
 	arm.name = "Arm"
-	arm.position = Vector3(0.34, 1.3, -0.05)
+	arm.position = ARM_POS
 	body.add_child(arm)
 	var kit := MeshKit.new()
 	var mats := {}
@@ -226,13 +232,52 @@ func _build_arm() -> void:
 		steel.roughness = 0.4
 		steel.vertex_color_use_as_albedo = true
 		mats = {"steel": steel, "wood": Look.mat("timber")}
+	elif data.weapon == "spear":                                          # 长枪（B.4）：2.4 米的杆子 + 枪头
+		kit.cylinder("wood", Vector3(0, -0.7, 0), Vector3(0, 1.6, 0), 0.025, 0.025, 6)
+		kit.box("steel", Vector3(0, 1.72, 0), Vector3(0.05, 0.24, 0.02))
+		var tip := StandardMaterial3D.new()
+		tip.albedo_color = Color("aab2bc")
+		tip.vertex_color_use_as_albedo = true
+		mats = {"wood": Look.mat("timber"), "steel": tip}
+	elif data.weapon == "bow":                                            # 弓（B.4）：竖着的弓身 + 一根弦
+		kit.box("wood", Vector3(0, 0.0, 0.06), Vector3(0.03, 1.1, 0.03))
+		kit.box("string", Vector3(0, 0.0, -0.03), Vector3(0.008, 1.05, 0.008))
+		var cord := StandardMaterial3D.new()
+		cord.albedo_color = Color("d8d0bc")
+		cord.vertex_color_use_as_albedo = true
+		mats = {"wood": Look.mat("timber"), "string": cord}
 	else:
 		kit.cylinder("wood", Vector3(0, -0.05, 0), Vector3(0, 0.75, 0), 0.03, 0.055, 6)
 		mats = {"wood": Look.mat("timber")}
 	var mi := kit.build(mats)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	arm.add_child(mi)
-	arm.rotation_degrees = Vector3(-40, 0, 0)
+	arm.rotation_degrees = _rest_pose()
+	if bool(data.get("shield", false)):
+		_build_shield()
+
+
+## 手臂平时的姿势：剑和棍斜举（-40°），长枪端平往前（-80°），弓竖着（-10°）
+func _rest_pose() -> Vector3:
+	match str(data.weapon):
+		"spear":
+			return Vector3(-80, 0, 0)
+		"bow":
+			return Vector3(-10, 0, 0)
+	return Vector3(-40, 0, 0)
+
+
+## 左手的盾（B.4）：一块木盾挡在身前左侧；Soldier 会把它涂成阵营布带的颜色
+func _build_shield() -> void:
+	shield = MeshInstance3D.new()
+	shield.name = "Shield"
+	var bm := BoxMesh.new()
+	bm.size = Vector3(0.5, 0.62, 0.05)
+	bm.material = Look.mat("timber")
+	shield.mesh = bm
+	shield.position = Vector3(-0.3, 1.0, -0.3)
+	shield.rotation_degrees = Vector3(0, 20, 0)
+	body.add_child(shield)
 
 
 func state_name() -> String:
@@ -671,6 +716,12 @@ func take_hit(info: Dictionary) -> String:
 	# 剑手：正面、没在出招、没失衡时可能挡住轻击；重击破防
 	var facing := forward().dot(_flat(attacker.global_position - global_position).normalized()) > 0.4 if attacker else false
 	var can_block := state == State.COMBAT and action not in ["windup", "strike"] and facing
+	if k == "arrow":                     # 箭（B.4）：有盾、正对着就挡住；没盾挡不了
+		if shield != null and facing and alive() and state != State.YIELD:
+			if fx:
+				FloatText.spawn(self, "挡箭", Vector3(0, 1.6, 0), Color("c8d8e8"), 26)
+			return "block"
+		can_block = false
 	if can_block and rng.randf() < float(data.block_chance):
 		if k == "light":
 			action = "block"
@@ -752,6 +803,9 @@ func _die(restoring := false) -> void:
 
 ## 手臂动作：持械、起手举高（重击举得更高更久）、劈下、格挡横架；求饶时跪下
 func _animate(delta: float) -> void:
+	if data.weapon in ["spear", "bow"]:
+		_animate_reach(delta)
+		return
 	var target := Vector3(-40, 0, 0)
 	match action:
 		"windup":
@@ -770,3 +824,30 @@ func _animate(delta: float) -> void:
 		target = Vector3(-10, 0, 0)
 		body.position.y = move_toward(body.position.y, -0.45, delta * 1.5)
 	arm.rotation_degrees = arm.rotation_degrees.lerp(target, clampf(delta * 10.0, 0.0, 1.0))
+
+
+## 长枪：起手往回收、出招往前捅（手臂整个前后移，不是挥）；弓：拉弓时举平往前、放箭后回到竖着（B.4）
+func _animate_reach(delta: float) -> void:
+	var rot := _rest_pose()
+	var z := ARM_POS.z
+	var k := clampf(delta * 12.0, 0.0, 1.0)
+	if data.weapon == "spear":
+		match action:
+			"windup":
+				var wt := float(data.heavy_windup if attack_kind == "heavy" else data.windup)
+				z = ARM_POS.z + 0.3 * clampf(action_t / wt, 0.0, 1.0)
+				k = 1.0
+			"strike":
+				z = ARM_POS.z - 0.45
+				rot = Vector3(-88, 0, 0)
+				k = clampf(delta * 30.0, 0.0, 1.0)
+			"block":
+				rot = Vector3(-30, 0, 60)
+	elif action in ["draw", "loose"]:
+		rot = Vector3(-90, 0, 0)
+		z = ARM_POS.z - (0.25 if action == "draw" else 0.35)
+	if state == State.YIELD:
+		rot = Vector3(-10, 0, 0)
+		body.position.y = move_toward(body.position.y, -0.45, delta * 1.5)
+	arm.rotation_degrees = arm.rotation_degrees.lerp(rot, k)
+	arm.position.z = lerpf(arm.position.z, z, k)

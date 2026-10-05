@@ -9,6 +9,8 @@ extends Enemy
 ## B.2：编进玩家小队的兵头顶有金色 ◆；跟随 / 坚守时只挑拴绳范围里的对手（Battle.leash），没有对手时走到自己的位置（Battle.post_of）站好。
 ## B.3：士气 morale（剑兵 70、民兵 55、队长 100，最多再涨 20）：规则在 Battle（on_fall、morale_tick），掉到 MORALE_BREAK 以下就逃跑或求饶（break_rank）。
 ## 队长（kind = captain）背上插一面小旗（阵营布带的颜色），隔着人群也看得见。
+## B.4 兵种：剑盾兵（shield，盾涂成布带颜色）、长枪兵（spear，规则在 Enemy）、弓手（archer / bow）：和对手保持 BOW_MIN–BOW_MAX 米，
+## 每 SHOOT_EVERY 秒拉弓 DRAW_TIME 秒射一箭（combat/arrow.gd，越远越散）；敌人贴近到 BOW_MIN 以内就边退边对着他；弓手不拿攻击令牌（不近身）。
 
 const RETARGET := 0.25            # 多久重新挑一次对手（秒）
 const LABEL_NEAR := 6.0           # 敌方的兵离玩家这么近才显示头顶的状态（几十个兵都显示，Label3D 太费绘制调用，画面也乱；友军不显示）
@@ -16,7 +18,11 @@ const STUCK_TIME := 2.5           # 拿着攻击令牌却这么久没能出招�
 const BLOCKED_TIME := 0.25        # 走向自己的位置时这么久几乎没挪动（迎面撞上人）：往旁边绕一下（B.2 实测：正对着玩家或别的兵会卡住不动）
 const DODGE_TIME := 0.7
 const DODGE_ANGLE := 75.0
-const MORALE_START := {"soldier": 70.0, "levy": 55.0, "captain": 100.0}
+const MORALE_START := {"soldier": 70.0, "levy": 55.0, "captain": 100.0, "shield": 70.0, "spear": 70.0, "archer": 60.0}
+const SHOOT_EVERY := 2.4          # 弓手：两箭之间（秒）
+const DRAW_TIME := 0.7            # 拉弓多久放箭
+const BOW_MIN := 5.0              # 敌人比这近：往后退
+const BOW_MAX := 16.0             # 比这远：往前走
 const MORALE_BREAK := 15.0        # 士气掉到这里就撑不住了
 const MORALE_TICK := 1.0          # 多久看一次身边（秒，相位错开）
 
@@ -46,6 +52,8 @@ var is_captain := false
 var counted_fall := false         # 倒下 / 求饶 / 逃跑已经报给军阵了（只算一次）
 var broke := false                # 是被吓跑的（士气崩了），不是被打倒的：对同伴的影响减半
 var pennant: Node3D
+var is_archer := false
+var shot_cd := 0.0
 
 
 static func create(kind_id: String, id: String, side_id: String, coat: Color, band_c: Color) -> Soldier:
@@ -69,6 +77,10 @@ func _ready() -> void:
 	status_label.visible = false
 	retarget_t = randf() * RETARGET           # 相位错开：不让所有兵在同一帧挑对手
 	is_captain = kind == "captain"
+	is_archer = str(data.weapon) == "bow"
+	shot_cd = randf() * SHOOT_EVERY * 0.5
+	if shield:
+		shield.material_override = Blocks.mat(band_color.lerp(Color("6a5a48"), 0.25))      # 盾涂成布带颜色（掺一点木色，不刺眼）
 	morale = float(MORALE_START.get(kind, 70.0))
 	morale_max = minf(morale + 20.0, 100.0)
 	morale_t = randf() * MORALE_TICK
@@ -277,13 +289,57 @@ func _patrol(delta: float) -> Vector3:
 	return super._patrol(delta)
 
 
-## 打着仗但拴绳范围里没有对手：回到自己的位置
+## 打着仗但拴绳范围里没有对手：回到自己的位置；弓手走自己的一套（不近身）
 func _combat(delta: float) -> Vector3:
 	if foe() == null:
 		var p: Variant = post()
 		if p != null:
 			return _go_post(delta, p)
+	if is_archer and foe() != null:
+		return _archer(delta)
 	return super._combat(delta)
+
+
+## 弓手（B.4）：太近往后退、太远往前走、距离合适就站定拉弓放箭
+func _archer(delta: float) -> Vector3:
+	var f := foe()
+	var to := _flat(f.global_position - global_position)
+	var d := to.length()
+	_face(f.global_position, delta)
+	shot_cd -= delta
+	action_t += delta
+	if action == "draw":
+		if action_t >= DRAW_TIME:
+			_loose(f)
+			action = "loose"
+			action_t = 0.0
+			shot_cd = SHOOT_EVERY
+		return Vector3.ZERO
+	if action == "loose":
+		if action_t >= 0.3:
+			action = ""
+		return Vector3.ZERO
+	if d < BOW_MIN:                                  # 太近：边退边对着他
+		var away := (global_position - f.global_position)
+		away.y = 0.0
+		var v := _steer(global_position + away.normalized() * 4.0, float(data.walk) * 1.3, 0.2)
+		_face(f.global_position, delta)
+		return v
+	if d > BOW_MAX:
+		return _steer(f.global_position, float(data.run), BOW_MAX - 1.0)
+	if shot_cd <= 0.0:
+		action = "draw"
+		action_t = 0.0
+	return Vector3.ZERO
+
+
+## 放箭：瞄准对手胸口，越远散得越开（10 米约 ±0.28 米）
+func _loose(f: Node3D) -> void:
+	var from := global_position + Vector3(0, 1.45, 0) + forward() * 0.5
+	var aim := (f as FpController).aim_origin() - Vector3(0, 0.35, 0) if f is FpController else f.global_position + Vector3(0, 1.2, 0)
+	var spread := 0.08 + from.distance_to(aim) * 0.02
+	aim += Vector3(rng.randf_range(-spread, spread), rng.randf_range(-spread, spread) * 0.6, rng.randf_range(-spread, spread))
+	Arrow.shoot(get_parent(), from, aim, self, float(data.weapon_base))
 
 
 ## 仗打完了：还站着的人收手，原地站着（不再算「附近有敌人在和你打」）
