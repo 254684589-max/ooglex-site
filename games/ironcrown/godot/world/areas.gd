@@ -6,7 +6,7 @@ extends RefCounted
 ## 存档里的 "scene" 字段就是区域名（core/saves.gd 用 NAMES 校验）。
 
 const NAMES := {"frostford": "霜渡镇", "tavern": "「倒钩鱼」酒馆", "churchyard": "星铁小教堂墓园", "chapel": "星铁小教堂",
-	"birch": "镇外桦林", "ferry": "渡口", "test_range": "灰盒测试场", "arena": "训练场"}
+	"birch": "镇外桦林", "ferry": "渡口", "test_range": "灰盒测试场", "arena": "训练场", "battle": "军阵试验场"}
 const INDOOR := ["tavern", "chapel"]
 ## 要烘焙导航网格的区域（3.4）：敌人会出现的地方。范围 = 能走的那片地（地面碰撞盒比它大）；墓园、小教堂、测试场没有敌人，不烘焙（敌人在那里直线走）
 const NAV_BOUNDS := {
@@ -15,6 +15,7 @@ const NAV_BOUNDS := {
 	"arena": AABB(Vector3(-16.0, -0.5, -17.0), Vector3(32.0, 4.0, 32.0)),
 	"birch": AABB(Vector3(-18.0, -0.5, -36.0), Vector3(36.0, 4.0, 72.0)),
 	"ferry": AABB(Vector3(-16.0, -0.5, -30.0), Vector3(32.0, 4.0, 44.5)),
+	"battle": AABB(Vector3(-22.0, -0.5, -24.0), Vector3(44.0, 4.0, 44.0)),      # 军阵试验场（B.1）
 }
 
 
@@ -77,4 +78,6 @@ static func views(area: String) -> Array:
 			return Birch.VIEWS
 		"ferry":
 			return Ferry.VIEWS
+		"battle":
+			return BattleArena.VIEWS
 	return []

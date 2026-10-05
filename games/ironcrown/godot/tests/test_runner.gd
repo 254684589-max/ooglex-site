@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -201,6 +201,14 @@ func test_ui() -> void:
 			texts.append(str(GameState.tips_data()[id].desktop) + str(GameState.tips_data()[id].touch))
 	texts.append_array([Opening.CALL_LINE, Opening.BELL_LINE, PauseMenu.HELP_DESKTOP, PauseMenu.HELP_TOUCH, "序章霜渡镇之夜灰鲸河畔 · 入夜轻触画面开始点击画面或按任意键开始声音教学提示◇ "])
 	texts.append_array(EndingPanel.RECAP.values() + [EndingPanel.SEAL, "序章「霜渡镇之夜」完第一章 · 黑鹭堡开发中在雾里再走走从头再来", "雾里有人提着灯走下坡来……"])     # 尾声（3.7）
+	texts.append("· （需要：枚银币（身上 枚））、")     # 3.9 灰色选项
+	texts.append_array(Battle.ORDERS.values() + TouchControls.ORDER_LABELS.values() + ["◆ 小队 人：· 1 跟随 2 坚守 3 冲锋点「令」下命令◆ 小队："])     # 小队命令（B.2）
+	texts.append("挡箭")     # 兵种（B.4）
+	texts.append_array(["军阵基准测试进行中……（ 人，画质，不要操作）", "军阵基准测试结果（ 人，画质，电脑触屏设备）", "：平均 帧，最慢一帧 毫秒，绘制调用 ，逻辑约 — 毫秒"])     # 军阵基准（B.5）
+	texts.append_array(["战况：人 +援军（士气 ）· 胜（溃逃）两边都打光了", "稳动摇快崩了", "◆ 的队长倒下了！溃逃了！来了 个援军", "撤！别打了！", "（援军）"])     # 士气与胜负（B.3）
+	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
+	for sd in BattleArena.SIDES.values():
+		texts.append(str(sd.name))
 	texts.append_array([main.HINT_BRAWL_DESKTOP, main.HINT_BRAWL_TOUCH, "先把这一架打完。✓ 认输了。× 你被打倒了。（生命 ）◆ 和徒手打一架", str(Melee.FISTS.name)])
 	# 存档（2.8）
 	texts.append_array(Saves.SLOT_NAMES.values() + Saves.SCENE_NAMES.values())
@@ -237,8 +245,10 @@ func test_ui() -> void:
 	var nave := await make_area("chapel")
 	var woods := await make_area("birch")
 	var dock := await make_area("ferry")
+	var field := await make_area("battle")
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
-		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false)
+		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false) \
+		+ field.find_children("*", "", true, false)
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -253,6 +263,7 @@ func test_ui() -> void:
 	nave.queue_free()
 	woods.queue_free()
 	dock.queue_free()
+	field.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -848,6 +859,42 @@ func test_dialogue() -> void:
 	dp.choose(dp.buttons.size() - 1)     # 最后一个选项是「没事，你接着巡夜吧」（问过少爷以后会多出一个选项）
 	await frames(2)
 	check(not dp.visible and not get_tree().paused, "选「没事，你接着巡夜吧」也会结束对话")
+	await free_main(main)
+	# —— 3.9：剧情条件满足、只差银币或物品的选项灰色显示「需要……」；会剧透的（locked: hide）照旧隐藏
+	GameState.new_game(5)
+	var o30 := {"text": "给钱", "if": [{"silver": 30}]}
+	check(DialogueRunner.option_state(o30) == "locked" and DialogueRunner.option_needs(o30) == "30 枚银币（身上 12 枚）", "只差银币：灰色，写明要 30 枚、身上 12 枚（%s）" % DialogueRunner.option_needs(o30))
+	check(DialogueRunner.option_state({"text": "x", "if": [{"silver": 30}, {"flag": "offer_parley"}]}) == "hide", "剧情条件不满足：照旧隐藏（不剧透）")
+	check(DialogueRunner.option_state({"text": "x", "if": [{"has_item": "hire_letter"}], "locked": "hide"}) == "hide", "写了 locked: hide 的：差物品时也隐藏")
+	check(DialogueRunner.option_needs({"text": "x", "if": [{"has_item": "hire_letter"}, {"silver": 30}]}) == "雇佣信、30 枚银币（身上 12 枚）", "差好几样：用顿号连起来")
+	GameState.add_silver(30)
+	check(DialogueRunner.option_state(o30) == "show", "银币够了：能选")
+	var bad_locked := {"start": "a", "nodes": {"a": {"text": "t", "options": [{"text": "x", "end": true, "locked": "maybe"}]}}}
+	check(DialogueRunner.validate(bad_locked).any(func(e): return str(e).contains("locked")), "校验：locked 只能写 hide，而且要有银币或物品条件")
+	GameState.new_game(5)
+	var lr := DialogueRunner.new()
+	lr.start("ferry", "offer")
+	lr.node_id = "why"
+	var locked_texts: Array = lr.entries().filter(func(e): return e.locked).map(func(e): return [str(e.option.text).left(6), e.need])
+	check(locked_texts.size() == 2 and locked_texts[0] == ["（亮出雇佣信", "雇佣信"] and str(locked_texts[1][1]).begins_with("30 枚银币"), "渡口奥弗：没有雇佣信、钱不够时，两个选项灰色显示（%s）" % [locked_texts])
+	check(lr.options().size() == lr.entries().size() - 2 and not lr.options().any(func(o): return str(o.text).contains("雇佣信")), "灰色的选项不算在能选的里面（数字键、下标不变）")
+	GameState.add_item("hire_letter")
+	check(lr.entries().filter(func(e): return e.locked).size() == 1 and lr.options().any(func(o): return str(o.text).contains("雇佣信")), "拿到雇佣信：那个选项变成能选")
+	lr.start("chapel", "alban")
+	check(not lr.entries().any(func(e): return str(e.option.text).contains("墓室里找到的信")), "修士：没找到墓室里的信时，「把信递给他」照旧隐藏（不剧透）")
+	# 面板：灰色的选项不编号、点不了、方向键跳过；能选的照旧 1、2、3……
+	GameState.new_game(5)
+	GameState.silver = 0
+	main = await make_main(false)
+	dp = main.dialogue
+	dp.open("tavern", "matilda")
+	await frames(2)
+	var lb: Button = dp.locked_buttons[0] if not dp.locked_buttons.is_empty() else null
+	check(lb != null and lb.text == "· 来块面包。（2 银币）（需要：2 枚银币（身上 0 枚））" and lb.disabled and lb.focus_mode == Control.FOCUS_NONE, "玛蒂尔达：没钱买面包，选项灰色、写明还差什么（%s）" % (lb.text if lb else "-"))
+	var nums: Array = dp.buttons.map(func(b): return str(b.text).left(2))
+	check(nums == ["1.", "2."] and dp.options_box.get_child_count() == 3, "能选的选项照旧编号 1、2，灰色的不编号（%s）" % [nums])
+	check(dp.options_box.get_child(0) == lb and str(dp.buttons[0].text).contains("镇上最近怎么样"), "灰色的选项留在原来的位置（「镇上最近怎么样？」前面；新游戏时前两个剧情选项隐藏）")
+	dp.close()
 	await free_main(main)
 
 
@@ -1590,12 +1637,12 @@ func test_inventory() -> void:
 	await place(p, 0.0, 2.5)
 	a.player = p
 	a.attack_kind = "light"
-	a._strike_player()
+	a._strike_target()
 	check(m.health == 100 - DamageCalc.compute(8, 4, 5, "light", false, 3.0) and m.health == 92, "穿棉甲（护甲 3）挨棍手一下：9 → 8（剩 %d）" % m.health)
 	GameState.add_item("mail_shirt")
 	GameState.equip("mail_shirt")
 	check(GameState.armor_total() == 8.0 and GameState.has_item("padded_jacket") and not GameState.is_equipped("padded_jacket"), "换上锁甲衫：护甲 8，棉甲换下来")
-	a._strike_player()
+	a._strike_target()
 	check(m.health == 92 - 5, "穿锁甲挨同样一下：只掉 5（剩 %d）" % m.health)
 	p.velocity = Vector3(2, 0, 0)
 	check(is_equal_approx(a.player_noise(), Enemy.NOISE.walk + 2.0), "穿锁甲走路更吵：声音传 6 米")
@@ -3302,7 +3349,7 @@ func test_ferry() -> void:
 	m.block_press()
 	await seconds(0.4)
 	boss.attack_kind = "kick"
-	boss._strike_player()
+	boss._strike_target()
 	check(m.staggered() and not m.blocking(), "奥弗的踢：举着格挡也被踢破防（%s）" % ("失衡" if m.staggered() else "没失衡"))
 	m.block_release()
 	m.health = m.health_max()
@@ -3802,3 +3849,648 @@ func test_fullflow() -> void:
 	check(main.opening != null and main.title_card.visible, "[勒索] 新游戏又从开场（宅邸门口、标题卡）开始")
 	await free_main(main)
 	Engine.set_meta("ic_skip_opening", true)
+
+
+## 军阵战斗（路线图 B.1，D8；GDD 6.4）：试验场、按目标分配的攻击令牌、友军砍不到、兵打兵、声望只算玩家打倒的、普通兵不进存档、名额排队
+func make_battle() -> Node3D:
+	var main := (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	main.area = "battle"
+	main.battle_autostart = false
+	add_child(main)
+	await frames(3)
+	return main
+
+
+func soldiers_of(main: Node3D, side: String) -> Array:
+	return main.get_tree().get_nodes_in_group("soldier").filter(func(s): return s.side == side)
+
+
+func test_battle() -> void:
+	# —— 攻击令牌按目标分配（不进场景的单元检查）
+	var dir := CombatDirector.new()
+	var t1 := Node3D.new()
+	var t2 := Node3D.new()
+	var who: Array = [Node.new(), Node.new(), Node.new(), Node.new()]
+	check(dir.request(who[0], t1) and dir.request(who[1], t1) and not dir.request(who[2], t1), "每个目标最多 2 个攻击者：第三个要不到")
+	check(dir.count_for(t1) == 2 and dir.request(who[2], t2) and dir.count_for(t2) == 1, "换一个目标就要得到（目标一 2 个、目标二 1 个）")
+	check(dir.request(who[0], t2) and dir.count_for(t1) == 1 and dir.count_for(t2) == 2, "攻击者换目标：原来那一份自动交回")
+	dir.release(who[1])
+	check(dir.count_for(t1) == 0 and dir.by_target.is_empty() == false and dir.count() == 0, "交回令牌；兵的令牌不占玩家那一份")
+	check(dir.request(who[3]) and dir.count() == 1, "不写目标（序章的敌人）仍是打玩家的那一份")
+	for n in who + [t1, t2, dir]:
+		n.free()
+	check(Areas.known("battle") and Areas.nav_bounds("battle").has_volume() and Areas.views("battle").size() == BattleArena.VIEWS.size(), "新区域：军阵试验场（有导航范围、固定机位）")
+	check(Enemy.types().has("soldier") and Enemy.types().has("levy") and Enemy.types().soldier.loot.is_empty(), "敌人数据：剑兵、民兵（普通兵不留东西）")
+	# —— 试验场
+	GameState.new_game(7)
+	var main := await make_battle()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var black := soldiers_of(main, "black")
+	check(main.scene_name() == "battle" and b != null and b.player_side == "white" and white.size() == 10 and black.size() == 10, "试验场：白带 10 人（你这边）对黑带 10 人")
+	check(white.all(func(s): return s.is_in_group("ally") and not s.is_in_group("enemy") and s.collision_layer & 8 == 0), "白带是友军：不在敌人组、不在可受击层")
+	check(black.all(func(s): return s.is_in_group("enemy") and s.collision_layer & 8 != 0), "黑带是敌人：在敌人组、可受击")
+	check(range(10).all(func(i): return white[i].kind == BattleArena.kind_for(i, 10)) and white.all(func(s): return s.transient and not s.drops_loot), "兵种按搭配排（B.4 起）；普通兵不进存档、不留东西")
+	check(white[1].display_name == "白带 · 剑兵" and not white[1].name_label.visible and "Band" in white[1].look_parts and look_has(white[1], Color(BattleArena.SIDES.white.band)), "名字「白带 · 剑兵」、头顶不挂名字、胸前白布带")
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 0, "试验场烘焙了导航网格（%s 个多边形）" % main.nav.get("polygons", 0))
+	check(main.hud.hint_label.text == main.HINT_BATTLE_DESKTOP, "进试验场：提示两边是谁、怎么打")
+	check(not b.started and not main.in_combat() and main.can_save() == "", "开打前：不算战斗，可以存档")
+	# 观战台走得上去
+	await place(p, 0.0, 13.5)
+	p.rotation.y = PI                                    # 转身朝南（观战台在白带身后）
+	Input.action_press("move_forward")
+	await physics(90)
+	Input.action_release("move_forward")
+	check(p.global_position.y > BattleArena.STAND_TOP - 0.1 and p.global_position.z > 16.5, "转身走上观战台（高 %.2f 米）" % p.global_position.y)
+	# 玩家的剑：砍不到白带，砍得到黑带
+	await place(p, 0.0, 12.0)
+	var ally: Soldier = white[0]
+	var foe_s: Soldier = black[0]
+	ally.global_position = Vector3(0, 0, 10.7)
+	foe_s.global_position = Vector3(6, 0, 10.7)
+	await physics(3)
+	check(m.find_target() == null, "白带的人站在剑前：剑扫不到自己人")
+	ally.global_position = Vector3(-6, 0, 10.7)
+	foe_s.global_position = Vector3(0, 0, 10.7)
+	await physics(3)
+	check(m.find_target() == foe_s, "换成黑带的人：剑扫得到")
+	foe_s.global_position = BattleArena.slot("black", 0, 10)
+	ally.global_position = BattleArena.slot("white", 0, 10)
+	await physics(3)
+	# —— 开打：玩家站到黑带跟前，有人来打玩家，但同时最多 2 个
+	m.health = 100000
+	await place(p, 0.0, -6.5)
+	b.start()
+	await physics(2)
+	check(b.active() and main.in_combat() and main.can_save() == "附近有敌人在和你打，不能存档", "开打后：在战斗中，不能存档")
+	check(black.all(func(s): return s.state == Enemy.State.COMBAT) and white.all(func(s): return s.state == Enemy.State.COMBAT), "两边都进入战斗")
+	var game_dir: CombatDirector = main.get_tree().get_first_node_in_group("combat_director")
+	var most := 0
+	var most_player := 0
+	var on_player := false
+	var white_on_player := false
+	for i in 420:                                        # 最多 7 秒：黑带要先挑中你、走过来、起手（3 秒有时不够）
+		if i >= 180 and m.health < 100000:
+			break
+		await get_tree().physics_frame
+		most_player = maxi(most_player, game_dir.count())
+		for list in game_dir.by_target.values():
+			most = maxi(most, list.filter(func(h): return is_instance_valid(h)).size())
+		for s in black:
+			if s.target == p:
+				on_player = true
+		for s in white:
+			if s.target == p:
+				white_on_player = true
+	check(on_player and not white_on_player, "黑带有人冲你来，白带的人从不把你当对手")
+	check(most_player >= 1 and most_player <= 2, "同时打你的最多 2 个（最多 %d 个）" % most_player)
+	check(most >= 1 and most <= 2, "每个兵同时最多被 2 个人打（最多 %d 个）" % most)
+	check(m.health < 100000, "黑带的人打中了你（剩 %d）" % m.health)
+	# 声望：玩家打倒的才扣，兵打倒兵不扣
+	var r0: int = GameState.get_rep("valen")
+	var h1: Soldier = black[1]
+	var h2: Soldier = black[2]
+	h1.faction_id = "valen"
+	h2.faction_id = "valen"
+	h1.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	check(not h1.alive() and GameState.get_rep("valen") == r0 - 5, "你打倒的：按设定的势力扣声望（−5）")
+	h2.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": white[3]})
+	check(not h2.alive() and GameState.get_rep("valen") == r0 - 5 and h2.last_attacker == white[3], "白带的兵打倒的：不扣声望")
+	check(not GameState.dead.has(h1.enemy_id) and not GameState.dead.has(h2.enemy_id), "普通兵倒下不写进存档")
+	check(main.world.find_children("*", "LootContainer", true, false).filter(func(c): return str(c.container_id).begins_with("loot:")).is_empty(), "普通兵倒下不留搜刮点")
+	await free_main(main)
+	# —— 两队自己打到底（玩家不参战）：同阵营不互伤、目标分散、打到只剩一方
+	GameState.new_game(11)
+	main = await make_battle()
+	p = main.player
+	b = main.battle
+	white = soldiers_of(main, "white")
+	black = soldiers_of(main, "black")
+	b.player_side = ""                                   # 兵不打玩家
+	await place(p, 0.0, 18.0)
+	var all_s: Array = white + black
+	for s in all_s:
+		s.hp = 14                                        # 打快一点：一两下就倒、求饶或逃
+		s.hp_max = 14
+	var rep0: Dictionary = GameState.rep.duplicate()
+	var winner := ["?"]
+	b.ended.connect(func(w): winner[0] = w)
+	var last_hp := {}
+	for s in all_s:
+		last_hp[s] = s.hp
+	b.start()
+	var friendly_hits := 0
+	var hits := 0
+	var spread := 0
+	most = 0
+	var frames_n := 0
+	while winner[0] == "?" and frames_n < 60 * 90:
+		await get_tree().physics_frame
+		frames_n += 1
+		for s in all_s:
+			if s.hp < last_hp[s]:
+				hits += 1
+				if s.last_attacker == null or s.last_attacker.side == s.side:
+					friendly_hits += 1
+				last_hp[s] = s.hp
+		for list in game_dir.by_target.values() if is_instance_valid(game_dir) else []:
+			most = maxi(most, list.filter(func(h): return is_instance_valid(h)).size())
+		spread = maxi(spread, b.aimed.size())
+		game_dir = main.get_tree().get_first_node_in_group("combat_director")
+	check(winner[0] in ["white", "black"], "两队打到只剩一方：%s 赢（%.0f 秒，%d 次打中）" % [winner[0], frames_n / 60.0, hits])
+	check(hits >= 5 and friendly_hits == 0, "兵只打别一边的人：%d 次打中，自己人打自己人 %d 次（B.3 起有溃逃，仗打得更短）" % [hits, friendly_hits])
+	check(most <= 2, "整场每个兵同时最多被 2 个人打（最多 %d 个）" % most)
+	check(spread >= 6, "目标是分散的：同一时刻最多有 %d 个不同的人被盯着（不是全挤向一个）" % spread)
+	var loser := "black" if winner[0] == "white" else "white"
+	check(b.side_count(loser) == 0 and b.side_count(winner[0]) > 0 and not b.active(), "输的一方没有还在打的人；战斗结束")
+	check(GameState.rep == rep0 and GameState.dead.is_empty() and GameState.yielded.is_empty(), "兵打兵：声望不变、存档里没有倒下 / 求饶的记录")
+	check(not main.in_combat() and all_s.all(func(s): return not s.fighting() or (s.state == Enemy.State.PATROL and s.target == null)), "打完了：赢的一方收手站着，不再算战斗中")
+	await free_main(main)
+	# —— 名额：同时在打的人超过上限就排队，有人倒下再补上；排队的没进场景，战斗释放时一起释放（不泄漏）
+	GameState.new_game(7)
+	main = await make_battle()
+	var b2 := Battle.new()
+	b2.max_active = 4
+	b2.add_side("a", "甲")
+	b2.add_side("c", "乙")
+	main.world.add_child(b2)
+	var mine: Array = []
+	for i in 6:
+		var sd := "a" if i % 2 == 0 else "c"
+		var s := Soldier.create("soldier", "q%d" % i, sd, Color.GRAY, Color.WHITE)
+		s.position = Vector3(-18 + i * 1.5, 0, 16 if sd == "a" else 13)
+		b2.enlist(s, main.world)
+		mine.append(s)
+	check(b2.roster.size() == 4 and b2.reserve.size() == 2 and not mine[5].is_inside_tree(), "上限 4 人：4 个进场，2 个排队（没进场景）")
+	b2.start()
+	await physics(2)
+	mine[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": mine[1]})
+	await seconds(0.4)
+	check(b2.roster.size() == 5 and b2.reserve.size() == 1 and mine[4].is_inside_tree() and mine[4].state == Enemy.State.COMBAT, "倒下一个：排队的补上来，直接进入战斗")
+	await free_main(main)
+	check(not is_instance_valid(mine[5]), "战斗释放时，还在排队的兵一起释放")
+
+
+## 小队与指令（路线图 B.2，GDD 6.4）：试验场里白带前排 6 个人听玩家指挥——跟随我 / 原地坚守 / 冲锋；键盘 1 / 2 / 3、触屏「令」；右上角写小队与命令
+func test_squad() -> void:
+	GameState.new_game(7)
+	var main := await make_battle()
+	var p: FpController = main.player
+	var b: Battle = main.battle
+	b.morale_on = false                                   # 这一组只测命令：士气与溃逃在 morale 组
+	var squad: Array = b.squad
+	var white := soldiers_of(main, "white")
+	check(squad.size() == 6 and squad.all(func(s): return s.side == "white" and s.in_squad and s.marker != null and s.marker.visible), "白带有 6 个人编进小队，头顶有 ◆")
+	check(white.filter(func(s): return not s.in_squad).all(func(s): return s.marker == null), "小队以外的白带头顶没有 ◆")
+	check(BattleArena.squad_size(10) == 6 and BattleArena.squad_size(30) == 12 and BattleArena.squad_size(1) == 1, "小队人数：每边人数的六成，1–12 人")
+	check(b.squad_order == "charge" and squad.all(func(s): return s.order == "charge") and b.leash(squad[0]).is_empty() and b.post_of(squad[0]) == null, "默认冲锋：不拴绳、没有固定位置（和 B.1 一样）")
+	check(main.hud.squad_label.visible and main.hud.squad_label.text == "◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋", "右上角写小队人数与命令（%s）" % main.hud.squad_label.text)
+	var hr: Rect2 = main.hud.squad_label.get_global_rect()
+	check(hr.end.x <= main.hud.size.x and hr.position.y >= main.hud.menu_btn.get_global_rect().end.y, "小队一行在右上角按钮下面、不出屏幕")
+	# —— 跟随（开打前）：站到玩家身后的队形里，玩家走开就跟上
+	await place(p, -8.0, 10.0)
+	Input.parse_input_event(key_ev(KEY_1))
+	await frames(2)
+	check(b.squad_order == "follow" and main.hud.toast_label.text.contains("◆ 小队：跟随我") and main.hud.squad_label.text.contains("：跟随我"), "按 1：小队跟随我（%s / %s / %s）" % [b.squad_order, main.hud.toast_label.text, main.hud.squad_label.text])
+	await seconds(6.0)
+	var near := squad.filter(func(s): return flat(s.global_position).distance_to(flat(b._follow_slot(s.slot, p))) < 1.0)
+	check(near.size() >= 5, "跟到玩家身后的队形里（%d / 6 个到位）" % near.size())
+	var behind := squad.filter(func(s): return (s.global_position - p.global_position).dot(-p.global_transform.basis.z) < 0.0)
+	check(behind.size() == 6, "队形在玩家身后（%d / 6）" % behind.size())
+	p.global_position = Vector3(6.0, 0.05, 10.0)
+	await seconds(5.0)
+	var caught := squad.filter(func(s): return flat(s.global_position).distance_to(flat(p.global_position)) < 6.0)
+	check(caught.size() == 6, "玩家走开 14 米：小队跟上来（%d / 6）" % caught.size())
+	# —— 原地坚守（开打前）：在玩家面前 2 米排成一线；玩家走开也不跟
+	await place(p, -8.0, 10.0)
+	await seconds(3.0)
+	Input.parse_input_event(key_ev(KEY_2))
+	await frames(2)
+	check(b.squad_order == "hold" and squad.all(func(s): return s.anchor != Vector3.INF and absf(s.anchor.z - 8.0) < 0.01), "按 2：原地坚守，坚守点在玩家面前 2 米、排成一线")
+	var anchors := {}
+	for s in squad:
+		anchors[s] = s.anchor
+	await seconds(4.0)
+	p.global_position = Vector3(-8.0, 0.05, 15.0)
+	await seconds(3.0)
+	var at_post := squad.filter(func(s): return flat(s.global_position).distance_to(flat(anchors[s])) < 1.0)
+	check(at_post.size() >= 5, "玩家走开 5 米：小队站在坚守点不动（%d / 6 在位）" % at_post.size())
+	# —— 开打以后跟随：只打离玩家 7 米以内的敌人；玩家站在后面角落里，小队不冲上去
+	await place(p, -16.0, 16.0)
+	Input.parse_input_event(key_ev(KEY_1))
+	await seconds(4.0)
+	b.start()
+	var far_fight := 0
+	var others_fight := false
+	for i in 240:
+		await get_tree().physics_frame
+		for s in squad:
+			if s.target != null and is_instance_valid(s.target) and flat(s.target.global_position).distance_to(flat(p.global_position)) > Battle.FOLLOW_LEASH + 0.5:
+				far_fight += 1
+		for s in white:
+			if not s.in_squad and s.target != null:
+				others_fight = true
+	check(far_fight == 0, "跟随时小队不去打离你 7 米以外的敌人")
+	check(others_fight, "小队以外的白带照样冲上去打")
+	check(squad.all(func(s): return not s.fighting() or flat(s.global_position).distance_to(flat(p.global_position)) < 8.0), "小队一直待在你身边")
+	# —— 坚守（打着仗）：只打坚守点 5 米以内的敌人
+	Input.parse_input_event(key_ev(KEY_2))
+	await frames(2)
+	var hold_far := 0
+	for i in 180:
+		await get_tree().physics_frame
+		for s in squad:
+			if s.fighting() and s.target != null and is_instance_valid(s.target) and flat(s.target.global_position).distance_to(flat(s.anchor)) > Battle.HOLD_LEASH + 0.5:
+				hold_far += 1
+	check(hold_far == 0, "坚守时只打坚守点 5 米以内的敌人")
+	# —— 冲锋：放开打
+	Input.parse_input_event(key_ev(KEY_3))
+	await frames(2)
+	check(b.squad_order == "charge" and b.leash(squad[0]).is_empty(), "按 3：冲锋，不再拴绳")
+	var charged := false
+	for i in 300:
+		await get_tree().physics_frame
+		if squad.any(func(s): return s.target != null and is_instance_valid(s.target) and flat(s.target.global_position).distance_to(flat(p.global_position)) > Battle.FOLLOW_LEASH + 1.0):
+			charged = true
+			break
+	check(charged, "冲锋：小队去打远处的敌人")
+	await free_main(main)
+	# —— 触屏：「令」只在有小队时出现，点开三个命令
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	var t: TouchControls = main.touch
+	t.force_visible = true
+	t.visible = true
+	t.player = main.player
+	await frames(2)
+	check(t.order_enabled and t.button_centers().has("order") and not t.button_centers().has("order_hold"), "触屏：有小队时多一个「令」，命令按钮先收着")
+	var tap := func(pos: Vector2):
+		var ev := touch_ev(5, pos, true)
+		t._input(ev)
+		t._input(touch_ev(5, pos, false))
+	tap.call(t.button_centers().order)
+	check(t.order_open and t.button_centers().has("order_follow") and t.button_centers().has("order_charge"), "点「令」：往左展开「跟随」「坚守」「冲锋」")
+	var cs: Dictionary = t.button_centers()
+	check(cs.order_charge.x < cs.order_hold.x and cs.order_hold.x < cs.order_follow.x and cs.order_follow.x < cs.order.x and cs.order_charge.x > 0.0, "三个命令按钮在「令」左边一字排开、不出屏幕")
+	check(not t.buttons_rect().has_point(cs.order_charge), "展开的命令按钮不算进右下角按钮列（底部提示不跟着挪）")
+	tap.call(cs.order_hold)
+	await frames(2)
+	check(b.squad_order == "hold" and not t.order_open and main.hud.squad_label.text == "◆ 小队 6 人：原地坚守 · 1 跟随 2 坚守 3 冲锋", "点「坚守」：下了命令，按钮收起")
+	await free_main(main)
+	# —— 别的区域没有小队：数字键不下命令、没有「令」
+	main = await make_main(false)
+	Input.parse_input_event(key_ev(KEY_1))
+	await frames(2)
+	check(main.battle == null and not main.touch.order_enabled and not main.hud.squad_label.visible and main.hud.toast_label.text != "◆ 小队：跟随我", "霜渡镇没有小队：数字键不下命令，不显示小队、没有「令」")
+	await free_main(main)
+
+
+## 合并后的占位外观（B.5）里有没有这个颜色；顶点色按 8 位存，差半格以内算一样
+func look_has(s: Soldier, c: Color) -> bool:
+	var cols: PackedColorArray = s.look.mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR]
+	for x in cols:
+		if absf(x.r - c.r) < 0.004 and absf(x.g - c.g) < 0.004 and absf(x.b - c.b) < 0.004:
+			return true
+	return false
+
+
+func captain_of(list: Array) -> Soldier:
+	for s in list:
+		if s.is_captain:
+			return s
+	return null
+
+
+## 士气、溃逃与胜负（路线图 B.3，GDD 6.4）：队长、援军、同伴倒下与队长倒下的士气、撑不住就跑、过半全体溃逃、胜负写旗标、开打前自动存档、战况一行
+func test_morale() -> void:
+	check(Enemy.types().has("captain") and int(Enemy.types().captain.hp) > int(Enemy.types().soldier.hp), "敌人数据：队长（血更多）")
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var black := soldiers_of(main, "black")
+	var wc := captain_of(white)
+	var bc := captain_of(black)
+	check(wc != null and bc != null and wc.is_captain and "Flag" in wc.look_parts and look_has(wc, wc.band_color) and not "Flag" in white[0].look_parts and wc.display_name == "白带 · 队长", "每边一个队长，背上插小旗（%s）" % (wc.display_name if wc else "-"))
+	check(white[1].morale == 70.0 and white[2].morale == 55.0 and wc.morale == 100.0, "士气：剑兵 70、民兵 55、队长 100")
+	check(b.waves.size() == 1 and b.side_total("black") == 14 and b.side_count("black", false) == 10 and b.side_count("black") == 14, "黑带还有 4 个援军没到（一共 14 人）")
+	check(not main.hud.battle_label.visible, "开打前不显示战况")
+	var all_s: Array = white + black
+	for s in all_s:
+		s.morale_t = 1000.0                               # 不让每秒的身边判断干扰下面的数
+	wipe_test_saves()
+	main.start_battle()
+	await frames(3)
+	var auto := Saves.read_slot("auto")
+	check(b.started and str(auto.get("data", {}).get("scene", "")) == "battle", "开打前先自动存档（读档回到试验场）")
+	check(main.hud.battle_label.visible and main.hud.battle_label.text == "战况：白带 10 人（士气 稳）· 黑带 10 人 +4 援军（士气 稳）", "右上角写战况（%s）" % main.hud.battle_label.text)
+	# 同伴倒下：附近 8 米的慌（剑兵 −10、民兵 −15），远的不受影响
+	white[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+	check(white[1].morale == 60.0 and white[2].morale == 40.0 and wc.morale == 90.0 and white[7].morale == 70.0, "身边的同伴倒下：附近的剑兵 70 → 60、民兵 55 → 40、队长 100 → 90，11 米外的不变（%.0f / %.0f / %.0f / %.0f）" % [white[1].morale, white[2].morale, wc.morale, white[7].morale])
+	# 队长倒下：己方全队 −30，对面全队 +15
+	var b1: float = black[1].morale
+	wc.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+	await frames(2)
+	check(white[1].morale == 40.0 and white[7].morale == 50.0 and white.filter(func(s): return s.fighting()).size() == 8 and black[1].morale == minf(b1 + 15.0, black[1].morale_max), "白带的队长倒下：白带全队 −20（没有连锁崩掉），黑带全队 +15（%.0f / %.0f / %.0f → %.0f）" % [white[1].morale, white[7].morale, b1, black[1].morale])
+	check(main.hud.toast_label.text.contains("◆ 白带的队长倒下了！"), "提示「白带的队长倒下了！」")
+	# 撑不住：士气掉到 20 以下就逃或求饶
+	white[1].shake(-30.0)
+	check(not white[1].fighting() and white[1].state in [Enemy.State.FLEE, Enemy.State.YIELD] and white[1].broke, "士气掉到 15 以下：逃跑或跪地求饶（%s）" % white[1].state_name())
+	# 过半全体溃逃：一个个打倒白带，超过一半的那一下，剩下的全跑
+	b.result_flag = "test_battle_result"
+	var killed := 0
+	while b.routed == "" and killed < 10:
+		var left := white.filter(func(s): return s.fighting())
+		if left.is_empty():
+			break
+		left[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+		killed += 1
+	check(b.routed == "white" and killed <= 3 and int(b.fallen.white) * 2 > b.side_total("white"), "白带倒下 / 逃跑过半就全体溃逃（队长倒了、民兵只剩 20 士气，吓跑一个就连锁崩掉；之后又打倒 %d 个）" % killed)
+	check(white.all(func(s): return not s.fighting()), "溃逃以后白带没有还在打的人")
+	await seconds(0.4)
+	check(b.finished and b.winner == "black" and main.hud.toast_label.text.contains("◆ 白带溃逃了！"), "你这边溃逃：仗打输了（你还站着也算输）")
+	check(GameState.get_flag("test_battle_result") == "lost", "结果写进旗标：lost")
+	check(main.hud.battle_label.text == "战况：黑带胜（白带溃逃）", "战况一行写谁赢了（%s）" % main.hud.battle_label.text)
+	await free_main(main)
+	# 援军：开打 20 秒后从北头进场，直接进入战斗；对面过半溃逃时，还没到的援军不来了
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	var wave: Array = b.waves[0].soldiers.duplicate()
+	b.start()
+	b.elapsed = BattleArena.WAVE_DELAY - 0.1
+	await seconds(0.5)
+	check(b.waves.is_empty() and wave.all(func(s): return s.is_inside_tree() and s.state == Enemy.State.COMBAT and s.global_position.z < -18.0), "开打 12 秒：4 个援军从北头进场，直接开打")
+	check(main.hud.toast_label.text.contains("◆ 黑带来了 4 个援军"), "提示「黑带来了 4 个援军」")
+	await free_main(main)
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	black = soldiers_of(main, "black")
+	wave = b.waves[0].soldiers.duplicate()
+	b.start()
+	for s in black:
+		if b.routed != "":
+			break
+		if s.fighting():
+			s.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": soldiers_of(main, "white")[0]})
+	check(b.routed == "black" and b.waves.is_empty() and wave.all(func(s): return not is_instance_valid(s)), "黑带过半溃逃（算上援军一共 14 人）：还没到的援军不来了")
+	await seconds(0.4)
+	check(b.finished and b.winner == "white", "你这边赢")
+	await free_main(main)
+	# 每秒看一次身边：敌多我少 −3；你在身边 +2；同时被两个人打 −3
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	white = soldiers_of(main, "white")
+	black = soldiers_of(main, "black")
+	b.start()
+	await frames(1)
+	var x: Soldier = white[1]
+	x.global_position = Vector3(-18, 0, -2)
+	for i in 3:
+		black[i + 3].global_position = Vector3(-18 + (i - 1) * 1.2, 0, -0.8)
+	main.player.global_position = Vector3(10, 0.05, 14)
+	var m0: float = x.morale
+	b.morale_tick(x, 1.0)
+	check(is_equal_approx(x.morale, m0 - 3.0), "身边 8 米：1 个自己人对 3 个敌人，士气 −3（%.0f → %.0f）" % [m0, x.morale])
+	main.player.global_position = Vector3(-18, 0.05, -4)
+	m0 = x.morale
+	b.morale_tick(x, 1.0)
+	check(is_equal_approx(x.morale, m0 - 3.0 + 2.0), "你站到他身边：多一个自己人，还 +2（%.0f → %.0f）" % [m0, x.morale])
+	await free_main(main)
+
+
+## 兵种（路线图 B.4，GDD 6.4）：剑盾兵、长枪兵、弓手（箭）；试验场的搭配
+func test_troops() -> void:
+	var t := Enemy.types()
+	check(Enemy.validate_types(t).is_empty() and bool(t.shield.get("shield", false)) and t.spear.weapon == "spear" and float(t.spear.reach) > float(t.soldier.reach) + 0.5 and t.archer.weapon == "bow", "敌人数据：剑盾兵（带盾）、长枪兵（够得更远）、弓手（弓）")
+	var counts := {}
+	for i in 10:
+		var k := BattleArena.kind_for(i, 10)
+		counts[k] = int(counts.get(k, 0)) + 1
+	check(counts == {"shield": 2, "soldier": 2, "levy": 2, "spear": 2, "archer": 1, "captain": 1}, "每边 10 人：剑盾 2、剑兵 2、长枪 2、民兵 2、弓手 1、队长 1（%s）" % [counts])
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var black := soldiers_of(main, "black")
+	var sh: Soldier = white[0]
+	var sp: Soldier = white[3]
+	var ar: Soldier = white[8]
+	check(sh.has_shield and "Shield" in sh.look_parts and look_has(sh, sh.band_color.lerp(Color("6a5a48"), 0.25)) and not sp.has_shield and not "Shield" in sp.look_parts, "剑盾兵左手有盾（涂成布带颜色），别的兵没有")
+	check(sp.arm.rotation_degrees.x < -70.0 and ar.is_archer and not sh.is_archer and ar.display_name == "白带 · 弓手", "长枪端平往前，弓手拿弓")
+	check(b.waves[0].soldiers.map(func(s): return s.kind) == BattleArena.WAVE_KINDS, "黑带援军：剑盾、剑兵、弓手、民兵")
+	# —— 剑盾兵：正面的轻击多半挡住，重击破防，正面的箭全挡，背后的箭挡不住
+	var foe_s: Soldier = black[1]
+	sh.engage()
+	sh.global_position = Vector3(-10, 0, 0)
+	sh.rotation.y = 0.0                                   # 面朝 -Z
+	foe_s.global_position = Vector3(-10, 0, -1.5)
+	await physics(2)
+	var blocks := 0
+	for i in 20:
+		sh.action = ""
+		sh.state = Enemy.State.COMBAT
+		sh.hp = sh.hp_max
+		if sh.take_hit({"damage": 5, "kind": "light", "stop": 0.0, "attacker": foe_s}) == "block":
+			blocks += 1
+	check(blocks >= 10, "剑盾兵挡住正面的轻击 %d / 20 次（七成上下）" % blocks)
+	sh.action = ""
+	sh.state = Enemy.State.COMBAT
+	var hp0: int = sh.hp
+	var r := ""
+	for i in 5:
+		sh.action = ""
+		sh.state = Enemy.State.COMBAT
+		r = sh.take_hit({"damage": 5, "kind": "heavy", "stop": 0.0, "attacker": foe_s})
+		if r != "block":
+			break
+	check(r == "hit" and sh.hp < hp0, "重击：盾挡不住（想挡就被破防），掉血")
+	sh.state = Enemy.State.COMBAT
+	sh.action = ""
+	sh.hp = sh.hp_max
+	check(sh.take_hit({"damage": 9, "kind": "arrow", "stop": 0.0, "attacker": foe_s}) == "block" and sh.hp == sh.hp_max, "正面射来的箭：盾全挡住")
+	foe_s.global_position = Vector3(-10, 0, 1.5)
+	await physics(1)
+	check(sh.take_hit({"damage": 9, "kind": "arrow", "stop": 0.0, "attacker": foe_s}) == "hit" and sh.hp < sh.hp_max, "背后射来的箭：挡不住")
+	var sw: Soldier = white[1]
+	sw.state = Enemy.State.COMBAT
+	sw.action = ""
+	foe_s.global_position = sw.global_position + sw.forward() * 1.5
+	await physics(1)
+	check(sw.take_hit({"damage": 9, "kind": "arrow", "stop": 0.0, "attacker": foe_s}) == "hit", "没盾的兵：正面的箭也挡不住")
+	await free_main(main)
+	# —— 长枪兵：2.4 米外捅得到，剑兵够不着
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	white = soldiers_of(main, "white")
+	black = soldiers_of(main, "black")
+	b.start()
+	await physics(1)
+	sp = white[3]
+	sw = white[1]
+	var dummy: Soldier = black[1]
+	for x in [sp, sw, dummy]:
+		x.process_mode = Node.PROCESS_MODE_PAUSABLE
+	dummy.global_position = Vector3(12, 0, -2)
+	for pair in [[sp, Vector3(12, 0, 0.4)], [sw, Vector3(12, 0, 0.4)]]:
+		var a: Soldier = pair[0]
+		a.global_position = pair[1]
+		a.rotation.y = 0.0
+		a.target = dummy
+	await physics(2)
+	var before: int = dummy.hp
+	dummy.state = Enemy.State.PATROL                        # 不让它挡
+	sp.target = dummy
+	sp.attack_kind = "light"
+	sp.global_position = Vector3(12, 0, 0.4)
+	sp.rotation.y = 0.0
+	sp._strike_target()
+	check(dummy.hp < before, "长枪兵：2.4 米外捅得到（%d → %d）" % [before, dummy.hp])
+	before = dummy.hp
+	sw.target = dummy
+	sw.attack_kind = "light"
+	sw.global_position = Vector3(12, 0, 0.4)
+	sw.rotation.y = 0.0
+	sp.global_position = Vector3(16, 0, 6)
+	sw._strike_target()
+	check(dummy.hp == before, "剑兵在同样的距离够不着")
+	await free_main(main)
+	# —— 弓手：站在合适的距离射你；太近就往后退；箭穿过自己人；正面举剑能挡箭
+	GameState.new_game(7)
+	main = await make_battle()
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	m.health = 100000
+	var b2 := Battle.new()
+	b2.add_side("a", "甲")
+	b2.add_side("c", "乙")
+	b2.player_side = "a"
+	main.world.add_child(b2)
+	var archer := Soldier.create("archer", "qa", "c", Color.GRAY, Color.BLACK)
+	archer.position = Vector3(-16, 0, -14)
+	archer.rotation.y = PI
+	b2.enlist(archer, main.world)
+	var mate := Soldier.create("soldier", "qm", "c", Color.GRAY, Color.BLACK)     # 射手的自己人，站在箭道上（不在这场战斗里，原地不动）
+	mate.position = Vector3(-16, 0, -10)
+	main.world.add_child(mate)
+	await place(p, -16.0, -4.0)
+	p.rotation.y = 0.0
+	b2.start()
+	var shots := 0
+	var t0 := m.health
+	for i in 60 * 8:
+		await get_tree().physics_frame
+		shots = maxi(shots, main.get_tree().get_nodes_in_group("arrow").size())
+		if m.health < t0:
+			break
+	check(shots >= 1 and m.health < t0, "弓手在 10 米外拉弓射你，射中了（生命 %d → %d）" % [t0, m.health])
+	check(mate.hp == mate.hp_max, "箭穿过射手的自己人，不伤他")
+	check(archer.target == p and flat(archer.global_position).distance_to(flat(p.global_position)) > Soldier.BOW_MIN, "弓手站在 5 米以外")
+	# 正面举剑挡箭（耗体力、不掉血）
+	m.health = 100000
+	await seconds(0.3)
+	m.block_press()
+	await seconds(0.6)
+	var st0: float = m.stamina
+	var h0: int = m.health
+	var blocked := false
+	for i in 60 * 8:
+		await get_tree().physics_frame
+		if m.stamina < st0 - 0.5:
+			blocked = true
+			break
+	m.block_release()
+	check(blocked and m.health == h0, "正面举剑：挡住了箭（体力 %.0f → %.0f，生命不掉）" % [st0, m.stamina])
+	# 太近：往后退
+	await place(p, -16.0, -12.0)
+	var d0 := flat(archer.global_position).distance_to(flat(p.global_position))
+	await seconds(1.5)
+	var d1 := flat(archer.global_position).distance_to(flat(p.global_position))
+	check(d0 < Soldier.BOW_MIN and d1 > d0 + 1.0, "你贴近到 %.1f 米：弓手往后退（%.1f 米）" % [d0, d1])
+	await free_main(main)
+
+
+## 60 人性能（路线图 B.5，TECH.md 4.10）：占位外观合并成两份网格、站着不动不做碰撞移动、跪定了停算、远处动作降频、军阵基准测试
+func test_armyperf() -> void:
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var kinds := {}
+	var two := true
+	for s: Soldier in white:
+		kinds[s.kind] = true
+		var meshes: Array = s.body.find_children("*", "MeshInstance3D", true, false).filter(func(m): return m.visible)
+		var surfaces := 0
+		for m in meshes:
+			surfaces += m.mesh.get_surface_count()
+		two = two and meshes.size() == 2 and surfaces == 2 and s.look in meshes
+	check(two and kinds.size() == 6, "每个兵合并成两份网格（身子、兵器），各一个表面：剑兵、剑盾、长枪、民兵、弓手、队长都是（%d 种）" % kinds.size())
+	var s0: Soldier = white[1]
+	check(look_has(s0, s0.coat_color) and look_has(s0, Color("c8a88a")) and Array(s0.look_parts) == ["Coat", "Head", "Nose", "Band"], "合并后颜色不变：罩袍、脸、布带（%s）" % ", ".join(s0.look_parts))
+	check(s0.look.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON and s0.arm.get_child(0).cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "身子投影，兵器不投影（和原来一样）")
+	# 打中时整个人闪红
+	var foe_s: Soldier = soldiers_of(main, "black")[1]
+	s0.take_hit({"damage": 3, "kind": "heavy", "stop": 0.0, "attacker": foe_s})
+	await physics(2)                      # physics_frame 在各节点的 _physics_process 之前发出：等两帧
+	check(s0.coat_mat == s0.look.material_override and s0.coat_mat.emission_energy_multiplier > 0.0, "打中时整个人闪一下红（自发光 %.2f）" % s0.coat_mat.emission_energy_multiplier)
+	# 站着不动不做碰撞移动；悬空的照样落地
+	var still: Soldier = white[2]
+	var p0 := still.global_position
+	await physics(30)
+	check(still.is_on_floor() and still.global_position.distance_to(p0) < 0.01, "开打前站着的兵不漂（%.3f 米）" % still.global_position.distance_to(p0))
+	still.global_position = p0 + Vector3(0, 0.6, 0)
+	await physics(40)
+	check(still.is_on_floor() and absf(still.global_position.y - p0.y) < 0.05, "悬空的兵照样落到地上（%.2f → %.2f）" % [p0.y + 0.6, still.global_position.y])
+	# 开打后照样走得动
+	b.morale_on = false
+	b.start()
+	var white_far: Soldier = white[4]
+	var q0 := white_far.global_position
+	await seconds(1.0)
+	check(white_far.global_position.distance_to(q0) > 1.0, "开打以后照样走过去打（走了 %.1f 米）" % white_far.global_position.distance_to(q0))
+	# 跪定了停算
+	var y: Soldier = white[5]
+	y._enter(Enemy.State.YIELD)
+	await seconds(0.8)
+	check(not y.is_physics_processing() and y.body.position.y < -0.4 and y.collision_layer == 0, "跪地求饶的兵跪定了就停掉每帧计算（身子 %.2f）" % y.body.position.y)
+	# 人物模型的动作降频（B.6 起兵才挂人物模型；这里挂一个试）
+	var cm := CharacterModel.new()
+	white[6].add_child(cm)
+	await frames(2)
+	if cm.loaded:
+		cm.play_loop("run", 1.0)
+		cm.set_anim_every(2)
+		var a0: float = cm.anim.current_animation_position
+		await frames(6)
+		var a1: float = cm.anim.current_animation_position
+		check(cm.anim.callback_mode_process == AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL and cm.is_processing() and not is_equal_approx(a0, a1), "动作降频：每 2 帧手动推进一次，动作照样往前走（%.2f → %.2f 秒）" % [a0, a1])
+		cm.set_anim_every(1)
+		check(cm.anim.callback_mode_process == AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE and not cm.is_processing(), "离近了：改回引擎每帧推进")
+		var sm: Soldier = white[6]
+		sm.model = cm
+		main.player.global_position = sm.global_position + Vector3(0, 0, 30)
+		await seconds(0.4)
+		var far_every := cm.anim_every
+		main.player.global_position = sm.global_position + Vector3(0, 0, 4)
+		await seconds(0.4)
+		check(far_every == 2 and cm.anim_every == 1, "兵离镜头 15 米以外动作每 2 帧推进，走近了恢复每帧（远 %d、近 %d）" % [far_every, cm.anim_every])
+	else:
+		check(false, "人物模型没加载成功，测不了动作降频")
+	await free_main(main)
+	# 军阵基准测试（真机用）：你不参战，直接开打（不存档），两个机位各测一次，结果表显示在画面上
+	GameState.new_game(7)
+	var main2 := await make_battle()
+	var saved_before := Saves.read_slot("auto")
+	var rs: Array = await main2.run_battle_benchmark(-1, 0.3, 0.3)
+	var text: String = main2.perf_overlay.bench_text
+	check(rs.size() == 2 and rs.all(func(r): return r.has("logic_ms") and r.has("draw_calls")) and main2.battle.started and main2.battle.player_side == "" and not main2.battle.morale_on and main2.battle_bench, "军阵基准：直接开打、你不参战、关掉士气（没人溃逃）、军阵提示不弹，观战台上和两军之间各测一次（%d 项）" % rs.size())
+	check(text.contains("军阵基准测试结果（20 人") and text.contains("观战台上：平均") and text.contains("两军之间：平均") and text.contains("逻辑约") and Array(text.split("\n")).all(func(l): return l.length() <= 30), "结果表写在画面上，每行不超过 30 个字（手机竖屏放得下）（%s）" % text.get_slice("\n", 0))
+	check(Saves.read_slot("auto") == saved_before, "基准测试不自动存档（不覆盖你的自动存档）")
+	await free_main(main2)

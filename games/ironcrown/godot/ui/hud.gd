@@ -32,6 +32,9 @@ var hurt_left := 0.0
 var marker_left := 0.0
 var marker_heavy := false
 var touch_ref: Control        # 触屏按钮（TouchControls）：显示时底部提示和字幕要让开右下角的按钮列（3.8）
+var battle: Battle            # 军阵（B.2）：有小队时，右上角按钮下面写小队还剩几个人、现在是什么命令
+var squad_label: Label
+var battle_label: Label       # 战况一行（B.3）：两边还剩几个人、士气怎样；打完写谁赢了
 
 const BAR_W := 180.0
 const BAR_H := 6.0
@@ -101,6 +104,18 @@ func _ready() -> void:
 	add_child(stamina_label)
 	health_label = stamina_label.duplicate()
 	add_child(health_label)
+	squad_label = Label.new()
+	squad_label.add_theme_font_size_override("font_size", 15)
+	squad_label.add_theme_color_override("font_color", Color("e8c88a"))
+	squad_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+	squad_label.add_theme_constant_override("outline_size", 4)
+	squad_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	squad_label.hide()
+	add_child(squad_label)
+	battle_label = squad_label.duplicate()
+	battle_label.add_theme_color_override("font_color", Color("e8dcc0"))
+	battle_label.add_theme_font_size_override("font_size", 14)
+	add_child(battle_label)
 	resized.connect(_layout)
 	_layout()
 
@@ -186,6 +201,7 @@ func _process(delta: float) -> void:
 			health_label.text = "生命 %d / %d%s" % [melee.health, melee.health_max(), " · 失衡" if melee.staggered() else ""]
 			health_label.position = health_rect().position - Vector2(0, 22)
 		queue_redraw()
+	refresh_squad()
 	if hurt_left > 0.0:
 		hurt_left -= delta
 	if marker_left > 0.0:
@@ -200,6 +216,50 @@ func _process(delta: float) -> void:
 		if subtitle_left <= 0.0:
 			subtitle_panel.hide()
 			_layout()                 # 竖屏触屏时提示排在字幕下面：字幕没了，提示往上挪
+
+
+## 小队一行（B.2）：「◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋」（触屏写「点「令」下命令」），右对齐在右上角按钮下面
+func squad_text() -> String:
+	if battle == null or not is_instance_valid(battle) or battle.squad.is_empty():
+		return ""
+	return "◆ 小队 %d 人：%s · %s" % [battle.squad_alive(), Battle.ORDERS.get(battle.squad_order, ""),
+		"1 跟随 2 坚守 3 冲锋" if key_hint != "" else "点「令」下命令"]
+
+
+func refresh_squad() -> void:
+	var t := squad_text()
+	squad_label.visible = t != ""
+	if t != "" and t != squad_label.text:
+		squad_label.text = t
+		squad_label.reset_size()
+	var y := menu_btn.position.y + menu_btn.size.y + 6.0
+	if squad_label.visible:
+		squad_label.position = Vector2(size.x - squad_label.size.x - 12.0, y)
+		y += squad_label.size.y + 2.0
+	var bt := battle_text()
+	battle_label.visible = bt != ""
+	if bt != "" and bt != battle_label.text:
+		battle_label.text = bt
+		battle_label.reset_size()
+	if battle_label.visible:
+		battle_label.position = Vector2(size.x - battle_label.size.x - 12.0, y)
+
+
+## 战况一行（B.3）：「战况：白带 8 人（士气 稳）· 黑带 5 人 +4 援军（士气 动摇）」；打完「战况：白带胜（黑带溃逃）」
+func battle_text() -> String:
+	if battle == null or not is_instance_valid(battle) or not battle.started:
+		return ""
+	if battle.finished:
+		if battle.winner == "":
+			return "战况：两边都打光了"
+		var why := "（%s溃逃）" % battle.sides.get(battle.routed, "") if battle.routed != "" and battle.routed != battle.winner else ""
+		return "战况：%s胜%s" % [battle.sides.get(battle.winner, battle.winner), why]
+	var parts: Array = []
+	for side in battle.sides:
+		var here := battle.side_count(side, false)
+		var later := battle.side_count(side) - here
+		parts.append("%s %d 人%s（士气 %s）" % [battle.sides[side], here, " +%d 援军" % later if later > 0 else "", Battle.morale_word(battle.side_morale(side))])
+	return "战况：" + "· ".join(parts)
 
 
 func set_hint(text: String) -> void:

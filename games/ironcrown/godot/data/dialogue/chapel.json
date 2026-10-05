@@ -12,7 +12,7 @@
         "options": [
           {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "alban_told"}], "next": "edric"},
           {"text": "能借墓园的钥匙吗？", "if": [{"flag": "alban_told"}, {"not_flag": "alban_lent_key"}], "next": "key"},
-          {"text": "（把墓室里找到的信递给他）", "if": [{"has_item": "edric_letter"}, {"not_flag": "alban_saw_letter"}], "next": "letter"},
+          {"text": "（把墓室里找到的信递给他）", "if": [{"has_item": "edric_letter"}, {"not_flag": "alban_saw_letter"}], "locked": "hide", "next": "letter"},
           {"text": "坠星是什么？", "next": "faith"},
           {"text": "告辞。", "end": true}
         ]
@@ -22,7 +22,7 @@
         "options": [
           {"text": "打听埃德里克少爷的事。", "if": [{"quest_active": "edric_missing"}, {"not_flag": "alban_told"}], "next": "edric"},
           {"text": "能借墓园的钥匙吗？", "if": [{"flag": "alban_told"}, {"not_flag": "alban_lent_key"}], "next": "key"},
-          {"text": "（把墓室里找到的信递给他）", "if": [{"has_item": "edric_letter"}, {"not_flag": "alban_saw_letter"}], "next": "letter"},
+          {"text": "（把墓室里找到的信递给他）", "if": [{"has_item": "edric_letter"}, {"not_flag": "alban_saw_letter"}], "locked": "hide", "next": "letter"},
           {"text": "坠星是什么？", "next": "faith"},
           {"text": "告辞。", "end": true}
         ]

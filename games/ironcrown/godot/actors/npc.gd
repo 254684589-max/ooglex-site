@@ -38,6 +38,7 @@ static func build_body(parent: Node3D, coat_color: Color) -> Node3D:
 	root.name = "Body"
 	parent.add_child(root)
 	var body := MeshInstance3D.new()
+	body.name = "Coat"
 	var cm := CapsuleMesh.new()
 	cm.radius = 0.3
 	cm.height = 1.45
@@ -48,6 +49,7 @@ static func build_body(parent: Node3D, coat_color: Color) -> Node3D:
 	body.position.y = 0.725
 	root.add_child(body)
 	var head := MeshInstance3D.new()
+	head.name = "Head"
 	var sm := SphereMesh.new()
 	sm.radius = 0.14
 	sm.height = 0.28
@@ -58,6 +60,7 @@ static func build_body(parent: Node3D, coat_color: Color) -> Node3D:
 	head.position = Vector3(0, 1.6, 0)
 	root.add_child(head)
 	var nose := MeshInstance3D.new()    # 看得出朝向的小鼻子（占位）
+	nose.name = "Nose"
 	var nm := BoxMesh.new()
 	nm.size = Vector3(0.05, 0.05, 0.08)
 	nm.material = sm.material

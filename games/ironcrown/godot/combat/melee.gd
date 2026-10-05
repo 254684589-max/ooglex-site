@@ -201,7 +201,7 @@ func receive_hit(info: Dictionary) -> String:
 		_take(dmg, info)
 		return "guard_break"
 	if state == State.BLOCK and front:
-		if clock - block_since <= perfect_window():
+		if clock - block_since <= perfect_window() and info.get("kind") != "arrow":      # 箭（B.4）没有完美格挡：射手站在远处，失衡不了
 			view.kick = Vector3(0, 0, 0.05)
 			GameState.train(weapon_skill(), TRAIN_PERFECT)
 			if GameState.has_perk("blade", "counter"):

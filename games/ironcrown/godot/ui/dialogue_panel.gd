@@ -2,6 +2,7 @@ class_name DialoguePanel
 extends Control
 ## 对话面板（路线图 2.1；GDD.md 7.1）：屏幕下方的深色条，说话人名字 + 台词 + 竖排选项。
 ## 选项可以用鼠标点、触屏点、数字键 1–9、方向键 + 回车；Esc 直接结束对话。打开时游戏暂停（本节点照常处理输入）。
+## 3.9：只差银币或物品的选项灰色显示在原来的位置，前面是「·」不编号，后面写「（需要：……）」，点不了、方向键也跳过它；数字键只对应能选的选项。
 
 signal closed
 signal node_shown(has_check: bool)     # 每换一个节点（3.8：有检定选项时 main 显示一次检定的教学提示）
@@ -12,7 +13,8 @@ var name_label: Label
 var text_label: Label
 var options_box: VBoxContainer
 var tip_label: Label                   # 教学提示（3.8）：只在这一个节点上显示
-var buttons: Array = []
+var buttons: Array = []                # 能选的选项按钮（下标 = runner.options() 的下标，数字键按这个算）
+var locked_buttons: Array = []         # 灰色的选项（3.9）
 
 
 func _ready() -> void:
@@ -86,17 +88,27 @@ func _refresh() -> void:
 		name_label.text += "  %s %s检定%s" % ["√" if runner.last_check.ok else "×", GameState.SKILL_NAMES.get(runner.last_check.skill, ""), "成功" if runner.last_check.ok else "失败"]
 	text_label.text = runner.text()
 	tip_label.hide()
-	for b in buttons:
+	for b in buttons + locked_buttons:
 		options_box.remove_child(b)        # 立即移出：只 queue_free 的话，这一帧排版时新旧按钮叠在一起，面板会被撑高
 		b.queue_free()
 	buttons.clear()
+	locked_buttons.clear()
 	var opts := runner.options()
-	for i in opts.size():
+	for e in runner.entries():
 		var b := Button.new()
-		b.text = "%d. %s" % [i + 1, DialogueRunner.option_label(opts[i])]
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.custom_minimum_size.y = 34          # 手机上手指好点
 		b.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+		if e.locked:                          # 只差银币或物品（3.9）：灰色、不编号、点不了，写明还差什么
+			b.text = "· %s（需要：%s）" % [DialogueRunner.option_label(e.option), e.need]
+			b.disabled = true
+			b.focus_mode = Control.FOCUS_NONE
+			b.add_theme_color_override("font_disabled_color", Color("8c8678"))
+			options_box.add_child(b)
+			locked_buttons.append(b)
+			continue
+		var i := buttons.size()
+		b.text = "%d. %s" % [i + 1, DialogueRunner.option_label(e.option)]
 		b.pressed.connect(choose.bind(i))
 		options_box.add_child(b)
 		buttons.append(b)
@@ -140,7 +152,7 @@ func _layout() -> void:
 	panel.custom_minimum_size = Vector2(w, 0)
 	text_label.custom_minimum_size = Vector2(w - 28.0, 0)
 	tip_label.custom_minimum_size = Vector2(w - 28.0, 0)
-	for b in buttons:
+	for b in buttons + locked_buttons:
 		b.custom_minimum_size.x = w - 28.0
 	panel.reset_size()
 	panel.position = Vector2((size.x - w) * 0.5, size.y - panel.size.y - 16.0)

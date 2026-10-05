@@ -91,6 +91,77 @@ func cylinder(key: String, a: Vector3, b: Vector3, r0: float, r1: float, sides :
 		quad(key, [a + n0 * r0, a + n1 * r0, b + n1 * r1, b + n0 * r1], mid, [shade * 0.8, shade * 0.8, shade, shade])
 
 
+## 把几个网格（各自可能有几个表面、几种材质）压成**一个表面**：每个表面的颜色写进顶点色，配一种开了顶点色的材质就能画，
+## 一次绘制调用（B.5：军阵的占位兵原来身子、头、鼻子、布带、盾、小旗、兵器各一次，60 人超预算）。
+## 坐标换算到 root 的本地坐标；带贴图的材质（木头）写不进顶点色，用 wood 代替；材质本身开了顶点色的（遮蔽亮度）乘进去。
+## 返回的网格配 flat_mat() 那种材质（vertex_color_is_srgb：顶点色和材质颜色一样按 sRGB 算，颜色和原来一致）。
+static func flatten(parts: Array, root: Node3D, wood := Color("4a3a2e")) -> ArrayMesh:
+	var verts := PackedVector3Array()
+	var norms := PackedVector3Array()
+	var cols := PackedColorArray()
+	var idx := PackedInt32Array()
+	for mi: MeshInstance3D in parts:
+		var xf := _relative(mi, root)
+		var nb := xf.basis.inverse().transposed()
+		var m := mi.mesh
+		for si in m.get_surface_count():
+			var a := m.surface_get_arrays(si)
+			var v: PackedVector3Array = a[Mesh.ARRAY_VERTEX]
+			var n: Variant = a[Mesh.ARRAY_NORMAL]
+			var has_n := n is PackedVector3Array and (n as PackedVector3Array).size() == v.size()
+			var vc: Variant = a[Mesh.ARRAY_COLOR]
+			var ix: Variant = a[Mesh.ARRAY_INDEX]
+			var mat := mi.material_override
+			if mat == null:
+				mat = mi.get_surface_override_material(si) if mi.get_surface_override_material(si) else m.surface_get_material(si)
+			var base := Color.WHITE
+			var shade := false
+			if mat is BaseMaterial3D:
+				base = wood if (mat as BaseMaterial3D).albedo_texture != null else (mat as BaseMaterial3D).albedo_color
+				shade = (mat as BaseMaterial3D).vertex_color_use_as_albedo and vc is PackedColorArray and (vc as PackedColorArray).size() == v.size()
+			var start := verts.size()
+			for i in v.size():
+				verts.append(xf * v[i])
+				norms.append((nb * (n as PackedVector3Array)[i]).normalized() if has_n else Vector3.UP)
+				var s: Color = (vc as PackedColorArray)[i] if shade else Color.WHITE
+				cols.append(Color(base.r * s.r, base.g * s.g, base.b * s.b))
+			if ix is PackedInt32Array and (ix as PackedInt32Array).size() > 0:
+				for i in ix:
+					idx.append(start + i)
+			else:
+				for i in v.size():
+					idx.append(start + i)
+	var arr := []
+	arr.resize(Mesh.ARRAY_MAX)
+	arr[Mesh.ARRAY_VERTEX] = verts
+	arr[Mesh.ARRAY_NORMAL] = norms
+	arr[Mesh.ARRAY_COLOR] = cols
+	arr[Mesh.ARRAY_INDEX] = idx
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+	return mesh
+
+
+## 配 flatten() 网格的材质：颜色全在顶点色里
+static func flat_mat(roughness := 0.85) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.vertex_color_use_as_albedo = true
+	m.vertex_color_is_srgb = true
+	m.roughness = roughness
+	return m
+
+
+## node 相对 root 的变换（不要求已经进场景树）
+static func _relative(node: Node3D, root: Node3D) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var n: Node = node
+	while n != null and n != root:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	return xf
+
+
 ## 合并成一个网格；keys 的顺序就是表面的顺序，没有内容的材质跳过
 func build(materials: Dictionary) -> MeshInstance3D:
 	var mesh := ArrayMesh.new()

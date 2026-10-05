@@ -4,6 +4,7 @@ extends Control
 ## - 左半屏：按下处出现浮动摇杆，拖动走路，推到边缘 = 跑；
 ## - 右半屏：拖动转视角；右下角按钮「跳」「蹲」「攻」（2.4：点按轻击、按住 0.35 秒重击）「挡」（2.5：按住格挡）；对准可交互物体时，「跳」上方多出交互按钮（文字是动作：交谈 / 打开 / 拾取）。
 ## 顶部一条留给「菜单」按钮。只在有触屏的设备上显示；force_visible 用于测试。
+## B.2：军阵里有小队时，「视角」上方多一个「令」，点一下往左展开「跟随」「坚守」「冲锋」三个按钮，点哪个就下哪个命令（order_pressed）。
 
 const RADIUS := 60.0
 const BTN_R := 34.0
@@ -16,6 +17,11 @@ var move_center := Vector2.ZERO
 var knob := Vector2.ZERO
 var look_index := -1
 signal camera_pressed
+signal order_pressed(order: String)
+const ORDER_BTNS := ["follow", "hold", "charge"]
+const ORDER_LABELS := {"order": "令", "order_follow": "跟随", "order_hold": "坚守", "order_charge": "冲锋"}
+var order_enabled := false        # 有小队可以指挥（main 设）
+var order_open := false           # 三个命令按钮展开着
 var attack_index := -1
 var guard_index := -1
 
@@ -40,6 +46,11 @@ func button_centers() -> Dictionary:
 		"camera": Vector2(r.x - 24.0 - BTN_R, r.y - 88.0 - BTN_R * 5.0)}
 	if has_target():
 		c["interact"] = Vector2(r.x - 24.0 - BTN_R, r.y - 64.0 - BTN_R * 3.0)
+	if order_enabled:
+		c["order"] = Vector2(r.x - 24.0 - BTN_R, r.y - 112.0 - BTN_R * 7.0)
+		if order_open:
+			for i in ORDER_BTNS.size():
+				c["order_" + ORDER_BTNS[i]] = c.order - Vector2((i + 1) * (BTN_R * 2.0 + 12.0), 0.0)
 	return c
 
 
@@ -47,6 +58,8 @@ func button_centers() -> Dictionary:
 func buttons_rect() -> Rect2:
 	var c := button_centers()
 	c["interact"] = Vector2(size.x - 24.0 - BTN_R, size.y - 64.0 - BTN_R * 3.0)
+	for b in ORDER_BTNS:
+		c.erase("order_" + b)              # 展开的命令按钮是临时的，不算进按钮列（排版才稳定）
 	var pad := Vector2.ONE * BTN_R * 1.25
 	var r := Rect2(c.jump - pad, pad * 2.0)
 	for id in c:
@@ -102,6 +115,11 @@ func _input(event: InputEvent) -> void:
 				player.melee.press()
 			elif b == "camera":
 				camera_pressed.emit()          # 第一 / 第三人称切换（2.9）
+			elif b == "order":
+				order_open = not order_open    # 展开 / 收起三个命令（B.2）
+			elif b.begins_with("order_"):
+				order_open = false
+				order_pressed.emit(b.trim_prefix("order_"))
 			elif b == "guard" and guard_index == -1:
 				guard_index = event.index        # 按住「挡」格挡，松开放下
 				player.melee.block_press()
@@ -151,6 +169,7 @@ func _draw() -> void:
 	draw_circle(c + knob, RADIUS * 0.42, Color(0.91, 0.86, 0.75, a + 0.2))
 	var font := get_theme_default_font()
 	var labels := {"jump": "跳", "crouch": "站" if player and player.crouch_wanted else "蹲", "attack": "攻", "guard": "挡", "camera": "视角"}
+	labels.merge(ORDER_LABELS)
 	if has_target():
 		labels["interact"] = player.interactor.target.verb_now()
 	var centers := button_centers()
