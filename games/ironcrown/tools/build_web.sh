@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 《铁冠之争》网页构建：Godot 工程 → games/ironcrown/play/
-# 复制自 games/emberfall3d/tools/build_web.sh（阶段 1.1），去掉了章节包导出。
+# 复制自 games/emberfall3d/tools/build_web.sh（阶段 1.1）。章节包导出在 4.1 加回来（第一章起每章一个包，TECH.md 第六节）。
 #
 # 需要：Godot 4.7.2 编辑器 + 同版本网页导出模板（只用到 web_nothreads_release.zip，tools/fetch_godot.py 会下载）。
 #   GODOT=/path/to/Godot_v4.7.2-stable_linux.x86_64 games/ironcrown/tools/build_web.sh [输出目录]
@@ -25,6 +25,10 @@ fi
 
 echo "== 导出 Web"
 "$GODOT" --headless --path "$PROJECT" --export-release "Web" "$OUT/index.html"
+echo "== 导出章节包"
+# 主包排除了 chapters/*（export_presets.cfg 的 Web 预设）；每章一个预设，只导出那一章的场景与资源（脚本留在主包）
+mkdir -p "$OUT/packs"
+"$GODOT" --headless --path "$PROJECT" --export-pack "Chapter1" "$OUT/packs/ch1.pck"
 
 echo "== 整理到 $DEST"
 python3 "$HERE/tools/stamp_web_build.py" "$OUT" "$DEST"

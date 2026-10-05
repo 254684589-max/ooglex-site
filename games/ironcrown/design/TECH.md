@@ -298,6 +298,16 @@ godot/
 
 - 首次加载目标：≤ 60 MB（引擎约 30 MB 压缩前 + 序章贴图与字体）。每章以后做成章节资源包按需下载（《余烬陷落》1.1 已验证可行，脚本留在主包）。
 - 加载画面显示真实进度与失败重试（沿用 `web/shell.html`）。
+- **章节包已实现（路线图 4.1，2026-10-05）**：
+  - `core/chapters.gd`（`Chapters`）登记每一章：名字、章节包编号（序章 `""` 在主包里，第一章 `ch1`）、探针资源（包里一定有的一个场景，`ResourceLoader.exists()` 找得到就说明内容到了）、起点。`PLAYABLE` = 做到第几章能玩了：第一章的开场（4.3）做好以前是 0，序章结束画面不出「继续」（网页 `?preview=1` 和测试里可以打开）。
+  - 章节内容放在 `godot/chapters/ch1/`：**只放场景与资源，脚本留在主包**（测试检查）。`export_presets.cfg` 的 Web 预设排除 `chapters/*`，每章一个预设（`Chapter1`，`export_files` 正好列出 `chapters/ch1/` 底下的全部文件，测试检查两边一致）；`build_web.sh` 用 `--export-pack "Chapter1"` 导出。
+  - `stamp_web_build.py` 把包改名成 `packs/ic-ch1-<内容哈希>.pck`，再把「编号 → 路径和大小」写进页面（`<script>window.IC_PACKS = {...}</script>`，放在引擎脚本前面）。《余烬陷落》是固定的 `packs/<编号>.pck`，包更新以后回访的玩家可能拿到旧包。
+  - `core/pack_loader.gd`（`PackLoader`，改自《余烬陷落》）：内容已经在（编辑器、无头测试、这次已挂载）就不下载；网页上先看 `user://packs/` 里有没有同名的包（下载过就直接挂载，**实测第二次进只要 3–4 毫秒**），没有再 `HTTPRequest` 下载、写进 `user://`、`ProjectSettings.load_resource_pack(path, false)`，挂上以后再看一眼探针资源；同一章旧版本的包顺手删掉。`accept_gzip = false`（线上 CDN gzip 传输，浏览器已经解压过，《余烬陷落》踩过）。失败原因写成中文（超时、网络、HTTP、存不下）。
+  - `ui/pack_panel.gd`（`PackPanel`）：章节名、进度条、「已下载 1.2 / 3.4 MB」（大小来自 `IC_PACKS`，gzip 传输时响应头的长度不准）；失败时写原因，「重试」「返回」。`main.ensure_chapter()` 下载时暂停游戏，点「返回」什么都不改。
+  - 入口：结束画面「继续：第一章 · 黑鹭堡」→ `main.start_chapter(1)`（确保章节包 → `GameState.chapter = 1`、旗标 `ch1_started` → 霜渡镇宅邸门口，到了自动存档、先报章节名）；**读第一章的存档**（`load_game`）也先确保章节包，拿不到就不读、现在的游戏不动。`GameState.chapter` 写进存档，以前的存档没有这一项 = 序章（不用升存档版本）。
+  - 第一章包里现在只有一块路牌（`chapters/ch1/road_sign.tscn`，脚本 `world/road_sign.gd` 在主包），32 KB：Godot 导出包时总会带上自动加载的脚本和项目设置的副本（挂载时 `replace_files = false`，用的还是主包里的）。
+  - **已知限制**：Godot 导出的包不是逐字节可复现的，每次重新构建包的哈希都会变，回访玩家每次更新后会重新下载章节包（现在 32 KB，以后几 MB）；以后可以改成按章节内容文件算哈希。
+  - 实测时抓到：网页地址带着测试参数（`?ending=`）时，「继续」之后场景重新载入，结束画面又弹了一次——`?ending=` 改成只在打开页面时生效（换区域、读档以后不再弹）。
 
 ## 七、测试与验证
 

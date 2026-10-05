@@ -61,7 +61,24 @@ def main() -> int:
     if old_tag not in html:
         print(f"导出的 index.html 里找不到 {old_tag}", file=sys.stderr)
         return 1
-    html = html.replace(old_tag, f'<script src="{new}.js?v={sha8(js)}"></script>')
+    # 章节包（路线图 4.1；TECH.md 第六节）：packs/<编号>.pck → play/packs/ic-<编号>-<哈希>.pck，
+    # 再把「编号 → 路径和大小」写进页面（window.IC_PACKS），游戏按它下载（core/pack_loader.gd）。
+    # 包名带哈希：包一变名字就变，回访玩家不会拿到旧包，下载过的包也能放心留在浏览器里复用。
+    packs_src = src / "packs"
+    packs_dst = dst / "packs"
+    if packs_dst.exists():
+        for old in packs_dst.iterdir():
+            old.unlink()
+    registry = {}
+    if packs_src.is_dir():
+        packs_dst.mkdir(exist_ok=True)
+        for f in sorted(packs_src.glob("*.pck")):
+            data = f.read_bytes()
+            name = f"ic-{f.stem}-{sha8(data)}.pck"
+            (packs_dst / name).write_bytes(data)
+            registry[f.stem] = {"path": f"packs/{name}", "size": len(data)}
+    packs_tag = "<script>window.IC_PACKS = " + json.dumps(registry, separators=(",", ":")) + ";</script>\n"
+    html = html.replace(old_tag, packs_tag + f'<script src="{new}.js?v={sha8(js)}"></script>')
     (dst / "index.html").write_text(html.rstrip() + "\n", encoding="utf-8")
     # 介绍页的「开始游戏」链接带上构建号：play/ 的地址不变，浏览器 / CDN 会把旧的 index.html
     # 缓存约 10 分钟，更新后回访玩家可能还在玩旧版；换一个查询参数就是一个新的缓存键。
@@ -70,16 +87,6 @@ def main() -> int:
         page = intro.read_text(encoding="utf-8")
         page = re.sub(r'href="play/(\?v=[0-9a-f]+)?"', f'href="play/?v={new[3:]}"', page)
         intro.write_text(page, encoding="utf-8")
-    # 章节包（TECH.md 第 5.3 节）：原样复制到 play/packs/，由游戏运行时按需下载
-    packs_src = src / "packs"
-    packs_dst = dst / "packs"
-    if packs_dst.exists():
-        for old in packs_dst.iterdir():
-            old.unlink()
-    if packs_src.is_dir():
-        packs_dst.mkdir(exist_ok=True)
-        for f in packs_src.glob("*.pck"):
-            (packs_dst / f.name).write_bytes(f.read_bytes())
     total = sum(p.stat().st_size for p in dst.rglob("*") if p.is_file())
     print(f"已写入 {dst}：{new}.*，共 {total / 1048576:.1f} MB")
     return 0
