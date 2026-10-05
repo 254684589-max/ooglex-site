@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -203,6 +203,7 @@ func test_ui() -> void:
 	texts.append_array(EndingPanel.RECAP.values() + [EndingPanel.SEAL, "序章「霜渡镇之夜」完第一章 · 黑鹭堡开发中在雾里再走走从头再来", "雾里有人提着灯走下坡来……"])     # 尾声（3.7）
 	texts.append("· （需要：枚银币（身上 枚））、")     # 3.9 灰色选项
 	texts.append_array(Battle.ORDERS.values() + TouchControls.ORDER_LABELS.values() + ["◆ 小队 人：· 1 跟随 2 坚守 3 冲锋点「令」下命令◆ 小队："])     # 小队命令（B.2）
+	texts.append_array(["战况：人 +援军（士气 ）· 胜（溃逃）两边都打光了", "稳动摇快崩了", "◆ 的队长倒下了！溃逃了！来了 个援军", "撤！别打了！", "（援军）"])     # 士气与胜负（B.3）
 	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
 	for sd in BattleArena.SIDES.values():
 		texts.append(str(sd.name))
@@ -3997,7 +3998,7 @@ func test_battle() -> void:
 		spread = maxi(spread, b.aimed.size())
 		game_dir = main.get_tree().get_first_node_in_group("combat_director")
 	check(winner[0] in ["white", "black"], "两队打到只剩一方：%s 赢（%.0f 秒，%d 次打中）" % [winner[0], frames_n / 60.0, hits])
-	check(hits >= 8 and friendly_hits == 0, "兵只打别一边的人：%d 次打中，自己人打自己人 %d 次" % [hits, friendly_hits])
+	check(hits >= 5 and friendly_hits == 0, "兵只打别一边的人：%d 次打中，自己人打自己人 %d 次（B.3 起有溃逃，仗打得更短）" % [hits, friendly_hits])
 	check(most <= 2, "整场每个兵同时最多被 2 个人打（最多 %d 个）" % most)
 	check(spread >= 6, "目标是分散的：同一时刻最多有 %d 个不同的人被盯着（不是全挤向一个）" % spread)
 	var loser := "black" if winner[0] == "white" else "white"
@@ -4036,6 +4037,7 @@ func test_squad() -> void:
 	var main := await make_battle()
 	var p: FpController = main.player
 	var b: Battle = main.battle
+	b.morale_on = false                                   # 这一组只测命令：士气与溃逃在 morale 组
 	var squad: Array = b.squad
 	var white := soldiers_of(main, "white")
 	check(squad.size() == 6 and squad.all(func(s): return s.side == "white" and s.in_squad and s.marker != null and s.marker.visible), "白带有 6 个人编进小队，头顶有 ◆")
@@ -4141,4 +4143,111 @@ func test_squad() -> void:
 	Input.parse_input_event(key_ev(KEY_1))
 	await frames(2)
 	check(main.battle == null and not main.touch.order_enabled and not main.hud.squad_label.visible and main.hud.toast_label.text != "◆ 小队：跟随我", "霜渡镇没有小队：数字键不下命令，不显示小队、没有「令」")
+	await free_main(main)
+
+
+func captain_of(list: Array) -> Soldier:
+	for s in list:
+		if s.is_captain:
+			return s
+	return null
+
+
+## 士气、溃逃与胜负（路线图 B.3，GDD 6.4）：队长、援军、同伴倒下与队长倒下的士气、撑不住就跑、过半全体溃逃、胜负写旗标、开打前自动存档、战况一行
+func test_morale() -> void:
+	check(Enemy.types().has("captain") and int(Enemy.types().captain.hp) > int(Enemy.types().soldier.hp), "敌人数据：队长（血更多）")
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var black := soldiers_of(main, "black")
+	var wc := captain_of(white)
+	var bc := captain_of(black)
+	check(wc != null and bc != null and wc.pennant != null and wc.display_name == "白带 · 队长", "每边一个队长，背上插小旗（%s）" % (wc.display_name if wc else "-"))
+	check(white[1].morale == 70.0 and white[2].morale == 55.0 and wc.morale == 100.0, "士气：剑兵 70、民兵 55、队长 100")
+	check(b.waves.size() == 1 and b.side_total("black") == 14 and b.side_count("black", false) == 10 and b.side_count("black") == 14, "黑带还有 4 个援军没到（一共 14 人）")
+	check(not main.hud.battle_label.visible, "开打前不显示战况")
+	var all_s: Array = white + black
+	for s in all_s:
+		s.morale_t = 1000.0                               # 不让每秒的身边判断干扰下面的数
+	wipe_test_saves()
+	main.start_battle()
+	await frames(3)
+	var auto := Saves.read_slot("auto")
+	check(b.started and str(auto.get("data", {}).get("scene", "")) == "battle", "开打前先自动存档（读档回到试验场）")
+	check(main.hud.battle_label.visible and main.hud.battle_label.text == "战况：白带 10 人（士气 稳）· 黑带 10 人 +4 援军（士气 稳）", "右上角写战况（%s）" % main.hud.battle_label.text)
+	# 同伴倒下：附近 8 米的慌（剑兵 −10、民兵 −15），远的不受影响
+	white[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+	check(white[1].morale == 60.0 and white[2].morale == 40.0 and wc.morale == 90.0 and white[7].morale == 70.0, "身边的同伴倒下：附近的剑兵 70 → 60、民兵 55 → 40、队长 100 → 90，11 米外的不变（%.0f / %.0f / %.0f / %.0f）" % [white[1].morale, white[2].morale, wc.morale, white[7].morale])
+	# 队长倒下：己方全队 −30，对面全队 +15
+	var b1: float = black[1].morale
+	wc.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+	await frames(2)
+	check(white[1].morale == 40.0 and white[7].morale == 50.0 and white.filter(func(s): return s.fighting()).size() == 8 and black[1].morale == minf(b1 + 15.0, black[1].morale_max), "白带的队长倒下：白带全队 −20（没有连锁崩掉），黑带全队 +15（%.0f / %.0f / %.0f → %.0f）" % [white[1].morale, white[7].morale, b1, black[1].morale])
+	check(main.hud.toast_label.text.contains("◆ 白带的队长倒下了！"), "提示「白带的队长倒下了！」")
+	# 撑不住：士气掉到 20 以下就逃或求饶
+	white[1].shake(-30.0)
+	check(not white[1].fighting() and white[1].state in [Enemy.State.FLEE, Enemy.State.YIELD] and white[1].broke, "士气掉到 15 以下：逃跑或跪地求饶（%s）" % white[1].state_name())
+	# 过半全体溃逃：一个个打倒白带，超过一半的那一下，剩下的全跑
+	b.result_flag = "test_battle_result"
+	var killed := 0
+	while b.routed == "" and killed < 10:
+		var left := white.filter(func(s): return s.fighting())
+		if left.is_empty():
+			break
+		left[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+		killed += 1
+	check(b.routed == "white" and killed <= 3 and int(b.fallen.white) * 2 > b.side_total("white"), "白带倒下 / 逃跑过半就全体溃逃（队长倒了、民兵只剩 20 士气，吓跑一个就连锁崩掉；之后又打倒 %d 个）" % killed)
+	check(white.all(func(s): return not s.fighting()), "溃逃以后白带没有还在打的人")
+	await seconds(0.4)
+	check(b.finished and b.winner == "black" and main.hud.toast_label.text.contains("◆ 白带溃逃了！"), "你这边溃逃：仗打输了（你还站着也算输）")
+	check(GameState.get_flag("test_battle_result") == "lost", "结果写进旗标：lost")
+	check(main.hud.battle_label.text == "战况：黑带胜（白带溃逃）", "战况一行写谁赢了（%s）" % main.hud.battle_label.text)
+	await free_main(main)
+	# 援军：开打 20 秒后从北头进场，直接进入战斗；对面过半溃逃时，还没到的援军不来了
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	var wave: Array = b.waves[0].soldiers.duplicate()
+	b.start()
+	b.elapsed = BattleArena.WAVE_DELAY - 0.1
+	await seconds(0.5)
+	check(b.waves.is_empty() and wave.all(func(s): return s.is_inside_tree() and s.state == Enemy.State.COMBAT and s.global_position.z < -18.0), "开打 12 秒：4 个援军从北头进场，直接开打")
+	check(main.hud.toast_label.text.contains("◆ 黑带来了 4 个援军"), "提示「黑带来了 4 个援军」")
+	await free_main(main)
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	black = soldiers_of(main, "black")
+	wave = b.waves[0].soldiers.duplicate()
+	b.start()
+	for s in black:
+		if b.routed != "":
+			break
+		if s.fighting():
+			s.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": soldiers_of(main, "white")[0]})
+	check(b.routed == "black" and b.waves.is_empty() and wave.all(func(s): return not is_instance_valid(s)), "黑带过半溃逃（算上援军一共 14 人）：还没到的援军不来了")
+	await seconds(0.4)
+	check(b.finished and b.winner == "white", "你这边赢")
+	await free_main(main)
+	# 每秒看一次身边：敌多我少 −3；你在身边 +2；同时被两个人打 −3
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	white = soldiers_of(main, "white")
+	black = soldiers_of(main, "black")
+	b.start()
+	await frames(1)
+	var x: Soldier = white[1]
+	x.global_position = Vector3(-18, 0, -2)
+	for i in 3:
+		black[i + 3].global_position = Vector3(-18 + (i - 1) * 1.2, 0, -0.8)
+	main.player.global_position = Vector3(10, 0.05, 14)
+	var m0: float = x.morale
+	b.morale_tick(x, 1.0)
+	check(is_equal_approx(x.morale, m0 - 3.0), "身边 8 米：1 个自己人对 3 个敌人，士气 −3（%.0f → %.0f）" % [m0, x.morale])
+	main.player.global_position = Vector3(-18, 0.05, -4)
+	m0 = x.morale
+	b.morale_tick(x, 1.0)
+	check(is_equal_approx(x.morale, m0 - 3.0 + 2.0), "你站到他身边：多一个自己人，还 +2（%.0f → %.0f）" % [m0, x.morale])
 	await free_main(main)

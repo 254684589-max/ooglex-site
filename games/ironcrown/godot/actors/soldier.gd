@@ -7,6 +7,8 @@ extends Enemy
 ## 玩家这一边的兵（友军）不在组 enemy、不在可受击层：玩家的剑砍不到自己人，存档、出门的「附近有敌人」也不算它们。
 ## 普通兵 transient：倒下、求饶不写进存档，不留搜刮点（存不存在 B.3 定）。外观仍是占位胶囊：罩袍按阵营上色，胸前一道白 / 黑布带。
 ## B.2：编进玩家小队的兵头顶有金色 ◆；跟随 / 坚守时只挑拴绳范围里的对手（Battle.leash），没有对手时走到自己的位置（Battle.post_of）站好。
+## B.3：士气 morale（剑兵 70、民兵 55、队长 100，最多再涨 20）：规则在 Battle（on_fall、morale_tick），掉到 MORALE_BREAK 以下就逃跑或求饶（break_rank）。
+## 队长（kind = captain）背上插一面小旗（阵营布带的颜色），隔着人群也看得见。
 
 const RETARGET := 0.25            # 多久重新挑一次对手（秒）
 const LABEL_NEAR := 6.0           # 敌方的兵离玩家这么近才显示头顶的状态（几十个兵都显示，Label3D 太费绘制调用，画面也乱；友军不显示）
@@ -14,6 +16,9 @@ const STUCK_TIME := 2.5           # 拿着攻击令牌却这么久没能出招�
 const BLOCKED_TIME := 0.25        # 走向自己的位置时这么久几乎没挪动（迎面撞上人）：往旁边绕一下（B.2 实测：正对着玩家或别的兵会卡住不动）
 const DODGE_TIME := 0.7
 const DODGE_ANGLE := 75.0
+const MORALE_START := {"soldier": 70.0, "levy": 55.0, "captain": 100.0}
+const MORALE_BREAK := 15.0        # 士气掉到这里就撑不住了
+const MORALE_TICK := 1.0          # 多久看一次身边（秒，相位错开）
 
 var side := ""                    # 阵营编号（Battle.sides 的键）
 var battle: Battle
@@ -34,6 +39,13 @@ var blocked_t := 0.0
 var dodge_t := 0.0
 var dodge_dir := 1.0
 var last_pos := Vector3.INF
+var morale := 70.0
+var morale_max := 90.0
+var morale_t := 0.0
+var is_captain := false
+var counted_fall := false         # 倒下 / 求饶 / 逃跑已经报给军阵了（只算一次）
+var broke := false                # 是被吓跑的（士气崩了），不是被打倒的：对同伴的影响减半
+var pennant: Node3D
 
 
 static func create(kind_id: String, id: String, side_id: String, coat: Color, band_c: Color) -> Soldier:
@@ -56,6 +68,12 @@ func _ready() -> void:
 	name_label.visible = false
 	status_label.visible = false
 	retarget_t = randf() * RETARGET           # 相位错开：不让所有兵在同一帧挑对手
+	is_captain = kind == "captain"
+	morale = float(MORALE_START.get(kind, 70.0))
+	morale_max = minf(morale + 20.0, 100.0)
+	morale_t = randf() * MORALE_TICK
+	if is_captain:
+		_build_pennant()
 	if battle and battle.is_friendly(side):
 		remove_from_group("enemy")
 		remove_from_group("damageable")
@@ -71,6 +89,50 @@ func set_squad(i: int) -> void:
 	slot = i
 	if is_inside_tree():
 		_build_marker()
+
+
+## 队长背上的小旗：一根细杆 + 一面布带颜色的旗（挂在身子上，倒下时跟着倒）
+func _build_pennant() -> void:
+	pennant = Node3D.new()
+	pennant.name = "Pennant"
+	pennant.position = Vector3(-0.12, 0.0, 0.22)
+	body.add_child(pennant)
+	var pole := MeshInstance3D.new()
+	var pm := BoxMesh.new()
+	pm.size = Vector3(0.03, 1.1, 0.03)
+	pm.material = Look.mat("timber")
+	pole.mesh = pm
+	pole.position.y = 1.65
+	pole.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	pennant.add_child(pole)
+	var flag := MeshInstance3D.new()
+	var fm := BoxMesh.new()
+	fm.size = Vector3(0.02, 0.26, 0.4)
+	fm.material = Blocks.mat(band_color)
+	flag.mesh = fm
+	flag.position = Vector3(0.0, 2.05, 0.2)
+	flag.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	pennant.add_child(flag)
+
+
+## 士气变化（B.3）；掉到 MORALE_BREAK 以下就撑不住了
+func shake(d: float) -> void:
+	if not fighting() or d == 0.0:
+		return
+	morale = clampf(morale + d, 0.0, morale_max)
+	if morale <= MORALE_BREAK and battle and battle.active():
+		break_rank()
+
+
+## 撑不住了：逃跑，或者（看性子）原地跪地求饶；全军溃逃时也走这里
+func break_rank() -> void:
+	if not fighting():
+		return
+	morale = 0.0
+	broke = true
+	_enter(State.YIELD if rng.randf() < float(data.yield_chance) * 0.5 else State.FLEE)
+	if _near_player(12.0):
+		FloatText.spawn(self, "撤！" if state == State.FLEE else "别打了！", Vector3(0, 1.9, 0), Color("ffcf6a"), 26)
 
 
 func _build_marker() -> void:
@@ -133,6 +195,11 @@ func _physics_process(delta: float) -> void:
 		if lost or (retarget_t <= 0.0 and action not in ["windup", "strike", "recover", "block"]):
 			retarget_t = RETARGET
 			_retarget(lost)
+	if battle and battle.active() and fighting():
+		morale_t -= delta
+		if morale_t <= 0.0:
+			morale_t = MORALE_TICK
+			battle.morale_tick(self, MORALE_TICK)
 	want_speed = 0.0
 	super._physics_process(delta)
 	_check_blocked(delta)
@@ -243,3 +310,6 @@ func _enter(s: State) -> void:
 		battle.set_aim(self, null)            # 不打了：不再占着那个目标的「被盯」名额（逃跑的仍记得 target，好知道躲着谁）
 		if s != State.FLEE:
 			target = null
+		if not counted_fall:
+			counted_fall = true
+			battle.on_fall(self)              # 士气与溃逃（B.3）

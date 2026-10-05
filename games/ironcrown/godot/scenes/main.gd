@@ -191,15 +191,20 @@ func _ready() -> void:
 	battle = world.get_node_or_null("Battle") as Battle
 	if battle:
 		battle.ended.connect(_on_battle_ended)
-		if not battle.squad.is_empty():     # 有小队（B.2）：右上角写小队与命令，触屏多一个「令」
-			hud.battle = battle
+		hud.battle = battle                 # 右上角：小队一行（B.2）、战况一行（B.3）
+		if not battle.squad.is_empty():     # 有小队（B.2）：触屏多一个「令」
 			touch.order_enabled = true
 			touch.order_pressed.connect(give_order)
+		battle.captain_down.connect(func(side: String):
+			hud.toast("◆ %s的队长倒下了！" % battle.sides.get(side, side), 3.0))
+		battle.routed_side.connect(func(side: String):
+			hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
+		battle.wave_arrived.connect(func(side: String, count: int):
+			hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
 		if battle_autostart:
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
-					battle.start()
-					hud.toast("◆ 开打！", 2.0))
+					start_battle())
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:
@@ -1070,6 +1075,15 @@ func start_encounter(id: String, win: String) -> void:
 	hud.show_prompt("")
 	hud.toast("◆ 动手了！", 2.0)
 	print("IC_ENCOUNTER start id=%s enemies=%d" % [id, encounter.enemies.size()])
+
+
+## 开打（B.3）：先自动存档（GDD 6.4「开战前自动存档，玩家倒下就读档」），再让两边动起来
+func start_battle() -> void:
+	if battle == null or not is_instance_valid(battle) or battle.started:
+		return
+	save_game("auto", true)
+	battle.start()
+	hud.toast("◆ 开打！", 2.0)
 
 
 ## 给小队下命令（B.2）；没有小队时什么都不做，返回 false

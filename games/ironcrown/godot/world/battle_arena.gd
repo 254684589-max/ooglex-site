@@ -4,6 +4,7 @@ extends RefCounted
 ## 开局 3 秒后开打（main）；你站在白带后面，可以冲上去帮忙，也可以上身后的观战台看。黑带的人也会来打你，白带的人你砍不到。
 ## 兵是占位胶囊：罩袍按阵营上色，胸前一道白 / 黑布带（正式外观在 B.6）。剑兵与持棍民兵大约七三开。
 ## B.2：白带前排的 6 个人（n 大时是 6 成，最多 12 个）是你的小队，头顶有 ◆，听 1 / 2 / 3（触屏「令」）的命令；默认冲锋。
+## B.3：每边最后一个人是队长（背上插小旗，倒下时全队士气大掉）；黑带开打 12 秒后有 4 个援军从北头进场（每边 3 人以上时）——不帮忙的话白带多半要输。
 
 const HALF_X := 22.0
 const NORTH := -24.0
@@ -11,6 +12,9 @@ const SOUTH := 20.0
 const SPAWN := Vector3(0, 0, 12)
 const PER_SIDE := 10
 const SQUAD_MAX := 12              # 小队最多几个人（GDD 6.4：6–12 人）
+const WAVE_SIZE := 4               # 黑带援军人数（B.3）
+const WAVE_DELAY := 12.0           # 开打后多少秒到（满血 10 对 10 一般 13–19 秒分出胜负，20 秒时援军常常赶不上）
+const WAVE_Z := NORTH + 2.5        # 援军从北头进场
 const MAX_PER_SIDE := 30
 const WHITE_Z := 6.0               # 白带第一排
 const BLACK_Z := -10.0             # 黑带第一排
@@ -57,6 +61,8 @@ static func build(parent: Node3D, per_side := PER_SIDE) -> Transform3D:
 	for id in ["white", "black"]:
 		for i in n:
 			var kind := "levy" if i % 10 in [2, 5, 8] else "soldier"      # 大约七三开
+			if i == n - 1 and n >= 3:
+				kind = "captain"                                             # 每边最后一个（后排）是队长（B.3）
 			var c: Dictionary = SIDES[id]
 			var s := Soldier.create(kind, "%s%02d" % [id, i], id, Color(c.coat), Color(c.band))
 			s.display_override = "%s · %s" % [c.name, Enemy.types()[kind].name]
@@ -65,6 +71,17 @@ static func build(parent: Node3D, per_side := PER_SIDE) -> Transform3D:
 			if id == "white" and i < squad_size(n):
 				battle.add_to_squad(s)
 			battle.enlist(s, parent)
+	if n >= 3:                                                               # 黑带的援军（B.3）
+		var wave: Array = []
+		for i in WAVE_SIZE:
+			var kind := "levy" if i == WAVE_SIZE - 1 else "soldier"
+			var c: Dictionary = SIDES.black
+			var s := Soldier.create(kind, "blackw%d" % i, "black", Color(c.coat), Color(c.band))
+			s.display_override = "%s · %s（援军）" % [c.name, Enemy.types()[kind].name]
+			s.position = Vector3((i - (WAVE_SIZE - 1) * 0.5) * GAP, 0, WAVE_Z)
+			s.rotation.y = PI
+			wave.append(s)
+		battle.add_wave("black", wave, parent, WAVE_DELAY)
 	return Transform3D(Basis.IDENTITY, SPAWN)
 
 
