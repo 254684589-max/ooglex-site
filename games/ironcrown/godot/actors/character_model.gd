@@ -22,6 +22,9 @@ var grip: Node3D
 var role := ""                    # 现在在演哪个「角色」（站 / 走 / 跑 / 出招……），测试与调试用
 var loaded := false
 var _reverse := false
+var anim_every := 1               # 每几帧推进一次动作（B.5：军阵里离镜头远的兵 2；1 = 每帧，引擎自己推进）
+var _anim_frames := 0
+var _anim_dt := 0.0
 
 
 func _ready() -> void:
@@ -84,6 +87,32 @@ static func light_attack(moves: Dictionary, combo: int) -> Dictionary:
 
 
 ## 角色名 → 动作名（也可以直接传动作名）
+## 动作降频（B.5，军阵 60 人）：n > 1 时改成手动推进，每 n 帧把攒下的时间一次推进（骨骼姿势也每 n 帧算一次）
+func set_anim_every(n: int) -> void:
+	n = maxi(n, 1)
+	if n == anim_every or anim == null:
+		return
+	anim_every = n
+	anim.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE if n == 1 else AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
+	if n == 1 and _anim_dt > 0.0:
+		anim.advance(_anim_dt)
+	_anim_frames = 0
+	_anim_dt = 0.0
+	set_process(n > 1)
+
+
+func _process(delta: float) -> void:
+	if anim_every <= 1 or anim == null:
+		set_process(false)
+		return
+	_anim_dt += delta
+	_anim_frames += 1
+	if _anim_frames >= anim_every:
+		anim.advance(_anim_dt)
+		_anim_frames = 0
+		_anim_dt = 0.0
+
+
 func clip(r: String) -> String:
 	return str(map.get("roles", {}).get(r, r))
 

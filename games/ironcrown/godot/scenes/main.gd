@@ -9,6 +9,7 @@ extends Node3D
 ## ?area=ferry&ending=deliver|release|extort 直接显示结束画面（3.7，截图与冒烟测试用；不改存档与旗标）。
 ## ?area=tavern&brawl=1 一进酒馆就和醉汉「大桶」打起来（3.3，截图与冒烟测试用；不设旗标）。
 ## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
+## 军阵试验场 ?test=3&n=30&perf=1：60 人开打后在观战台、两军之间各测一次，结果表显示在画面上（B.5，真机用；你不参战、不自动存档）。
 ## NPC 与敌人仍是占位胶囊，界面上明确标注（主角的第三人称人物在 A.1 换成了模型）。
 ##
 ## 鼠标：电脑上点击画面锁定指针（浏览器只允许在点击后锁定）；Esc 或浏览器释放锁定时打开暂停菜单，
@@ -25,6 +26,9 @@ const HINT_BRAWL_TOUCH := "徒手打一架（不许动刀）：点「攻」出�
 const HINT_BATTLE_DESKTOP := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 头顶有 ◆ 的 6 个人听你指挥：1 跟随我 · 2 原地坚守 · 3 冲锋 · 左键 / F 出剑 · 右键 / Q 格挡 · 你的剑砍不到白带"
 const HINT_BATTLE_TOUCH := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 头顶有 ◆ 的 6 个人听你指挥：点「令」选跟随 / 坚守 / 冲锋 · 你的剑砍不到白带"
 const BATTLE_DELAY := 3.0         # 军阵试验场开局几秒后开打（B.1）
+const BATTLE_BENCH_WARM := 3.0    # 军阵基准测试：开打几秒后开始测（两军已经接上）（B.5）
+const BATTLE_BENCH_SAMPLE := 4.0  # 每个机位测几秒
+const BATTLE_BENCH_VIEWS := [1, 2]   # 观战台上（看全场）、两军之间（贴近混战）
 const HINT_SECONDS := 8.0
 const FADE_TIME := 0.25           # 换区域时淡出 / 淡入（减少动态效果时直接切）
 
@@ -38,6 +42,7 @@ var perf_overlay: PerfOverlay
 var dialogue: DialoguePanel
 var quest_panel: QuestPanel
 var bench_results: Array = []
+var battle_bench := false         # 军阵基准测试在跑（B.5）：军阵的提示不弹出来，免得盖住结果表
 
 var env: Environment
 var world: Node3D
@@ -196,12 +201,12 @@ func _ready() -> void:
 			touch.order_enabled = true
 			touch.order_pressed.connect(give_order)
 		battle.captain_down.connect(func(side: String):
-			hud.toast("◆ %s的队长倒下了！" % battle.sides.get(side, side), 3.0))
+			if not battle_bench: hud.toast("◆ %s的队长倒下了！" % battle.sides.get(side, side), 3.0))
 		battle.routed_side.connect(func(side: String):
-			hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
+			if not battle_bench: hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
 		battle.wave_arrived.connect(func(side: String, count: int):
-			hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
-		if battle_autostart:
+			if not battle_bench: hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
+		if battle_autostart and _query("perf") != "1":       # 基准测试自己开打（不存档）
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
 					start_battle())
@@ -211,7 +216,12 @@ func _ready() -> void:
 			start_brawl.call_deferred(dagu, {"brawl": "drunk"})
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
-		if view != "" or area != "frostford":
+		if battle:
+			if view == "":
+				Settings.set_value("show_perf", true)
+			var secs := float(_query("probe")) if _query("probe").is_valid_float() else BATTLE_BENCH_SAMPLE
+			await run_battle_benchmark(int(view) if view.is_valid_int() else -1, BATTLE_BENCH_WARM, clampf(secs, 0.5, 10.0))
+		elif view != "" or area != "frostford":
 			var secs := float(_query("probe")) if _query("probe").is_valid_float() else 1.0
 			await perf_probe(clampf(secs, 0.5, 10.0))      # 截图 / 逐区域基准（tools/bench_areas.js）：只测一次，不显示浮层
 		else:
@@ -341,6 +351,20 @@ func perf_probe(seconds := 1.0) -> Dictionary:
 	var obj := 0.0
 	var n := 0
 	var worst := 0
+	# 逻辑耗时（B.5）：每帧从第一步物理（没有物理就从处理）开始，到开始画画为止；和 army_bench 的 logic60_ms 同一个量法。
+	# 引擎的 TIME_PROCESS 在网页上差不多是整帧时间（含等画画），分不出逻辑和显卡，不用它。无头运行没有 frame_pre_draw，记 -1。
+	var lg := {"start": 0, "sum": 0, "frames": 0}
+	var mark := func() -> void:
+		if lg.start == 0:
+			lg.start = Time.get_ticks_usec()
+	var cut := func() -> void:
+		if lg.start > 0:
+			lg.sum += Time.get_ticks_usec() - lg.start
+			lg.frames += 1
+		lg.start = 0
+	get_tree().physics_frame.connect(mark)
+	get_tree().process_frame.connect(mark)
+	RenderingServer.frame_pre_draw.connect(cut)
 	var t0 := Time.get_ticks_usec()
 	var last := t0
 	while Time.get_ticks_usec() - t0 < int(seconds * 1000000.0):
@@ -352,10 +376,14 @@ func perf_probe(seconds := 1.0) -> Dictionary:
 		prim += Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
 		obj += Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
 		n += 1
+	get_tree().physics_frame.disconnect(mark)
+	get_tree().process_frame.disconnect(mark)
+	RenderingServer.frame_pre_draw.disconnect(cut)
 	n = maxi(n, 1)
 	var elapsed := float(Time.get_ticks_usec() - t0) / 1000000.0
-	var r := {"draw_calls": dc / n, "primitives": prim / n, "objects": obj / n, "fps": n / elapsed, "worst_ms": worst / 1000.0, "quality": quality}
-	print("IC_PERF draw_calls=%.0f primitives=%.0f objects=%.0f fps=%.1f worst_ms=%.0f quality=%s" % [r.draw_calls, r.primitives, r.objects, r.fps, r.worst_ms, quality])
+	var r := {"draw_calls": dc / n, "primitives": prim / n, "objects": obj / n, "fps": n / elapsed, "worst_ms": worst / 1000.0, "quality": quality,
+		"logic_ms": float(lg.sum) / lg.frames / 1000.0 if lg.frames > 0 else -1.0}     # 真机上帧率低时分得清是逻辑慢还是显卡慢（B.5）
+	print("IC_PERF draw_calls=%.0f primitives=%.0f objects=%.0f fps=%.1f worst_ms=%.0f quality=%s logic_ms=%.2f" % [r.draw_calls, r.primitives, r.objects, r.fps, r.worst_ms, quality, r.logic_ms])
 	return r
 
 
@@ -379,9 +407,42 @@ func run_benchmark(settle := 1.5, sample := 3.0) -> Array:
 	return bench_results
 
 
-## 基准测试的最后一行：手机上没有 Esc（2026-10-04 手机实测）
+## 军阵基准测试（B.5；?test=3&n=30&perf=1，真机上请所有者跑）：你站到一边不参战（兵不打你），直接开打（不自动存档），
+## 开打 warm 秒后依次在观战台上、两军之间各测 sample 秒；only_view >= 0 时只在当前机位测一次、不显示结果表（截图、逐画质复测用）。
+## 关掉士气（没人溃逃）：测的是打得最凶的时候——开着士气的话，手机上 60 人十来秒就溃逃完了，第二个机位测的是打完的场面（B.5 实测）。
+func run_battle_benchmark(only_view := -1, warm := BATTLE_BENCH_WARM, sample := BATTLE_BENCH_SAMPLE) -> Array:
+	bench_results.clear()
+	battle_bench = true
+	battle.player_side = ""
+	battle.morale_on = false
+	var n := get_tree().get_nodes_in_group("soldier").size()      # 在场上的兵（不算还没到的援军）
+	if only_view < 0:
+		perf_overlay.bench_text = "军阵基准测试进行中……（%d 人，%s画质，不要操作）" % [n, PerfOverlay.tier_name(quality)]
+	if not battle.started:
+		battle.start()
+	await get_tree().create_timer(warm).timeout
+	if only_view >= 0:
+		bench_results.append(await perf_probe(sample))
+		return bench_results
+	for v in BATTLE_BENCH_VIEWS:
+		set_view(v)
+		await get_tree().create_timer(1.0).timeout
+		var r := await perf_probe(sample)
+		r["view"] = v
+		bench_results.append(r)
+	var lines := ["军阵基准测试结果（%d 人，%s画质，%s）" % [n, PerfOverlay.tier_name(quality), "电脑" if not touch_mode else "触屏设备"]]
+	for r in bench_results:
+		lines.append("%s：平均 %.0f 帧，最慢一帧 %.0f 毫秒" % [BattleArena.VIEW_NAMES[r.view], r.fps, r.worst_ms])      # 分两行：手机上一行放不下（B.5 截图）
+		lines.append("　　绘制调用 %.0f，逻辑约 %s 毫秒" % [r.draw_calls, "%.1f" % r.logic_ms if r.logic_ms >= 0.0 else "—"])
+	lines.append(bench_done_line())
+	perf_overlay.bench_text = "\n".join(lines)
+	print("IC_BENCH done battle=%d quality=%s %s" % [n, quality, " | ".join(bench_results.map(func(r): return "v%d fps=%.1f worst=%.0f dc=%.0f logic=%.1f" % [r.view, r.fps, r.worst_ms, r.draw_calls, r.logic_ms]))])
+	return bench_results
+
+
+## 基准测试的最后一行：手机上没有 Esc（2026-10-04 手机实测）；分两行，手机竖屏上一行放不下（B.5 截图）
 func bench_done_line() -> String:
-	return "测完了：请截图发给开发者。%s可换画质，换完刷新页面再测。" % ("点右上角「菜单」" if touch_mode else "按 Esc 打开菜单")
+	return "测完了：请截图发给开发者。\n%s可换画质，换完刷新页面再测。" % ("点右上角「菜单」" if touch_mode else "按 Esc 打开菜单")
 
 
 ## 性能浮层的位置：触屏上生命 / 体力条在左上角，浮层放到它们下面，不压住（2026-10-04 手机实测）
@@ -1097,6 +1158,8 @@ func give_order(o: String) -> bool:
 
 ## 军阵试验场打完了（B.1）：只有一方还站着
 func _on_battle_ended(winner: String) -> void:
+	if battle_bench:
+		return
 	var refresh := "（刷新页面再来一次）"
 	if winner == "":
 		hud.toast("两边都打光了。" + refresh, 6.0)

@@ -143,7 +143,7 @@ func _spawn(n: int) -> void:
 			battle.enlist(s, main.world)
 			if model:
 				s.body.visible = false
-				_add_model(s)
+				s.model = _add_model(s)           # 远处每 2 帧推进一次动作（B.5，Soldier._lod）
 			spawned.append(s)
 		await get_tree().process_frame
 		battle.start()
@@ -178,13 +178,14 @@ func _spawn(n: int) -> void:
 			e.engage()
 
 
-func _add_model(parent: Node3D) -> void:
+func _add_model(parent: Node3D) -> CharacterModel:
 	var cm := CharacterModel.new()
 	cm.rotation.y = PI
 	parent.add_child(cm)
 	cm.play_loop("idle_armed" if mode == "crowd" else "run", 1.0)
 	if cm.loaded:
 		cm.anim.seek(randf() * 0.5, true)
+	return cm
 
 
 func _run(n: int) -> void:

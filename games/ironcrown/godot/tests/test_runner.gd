@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -204,6 +204,7 @@ func test_ui() -> void:
 	texts.append("· （需要：枚银币（身上 枚））、")     # 3.9 灰色选项
 	texts.append_array(Battle.ORDERS.values() + TouchControls.ORDER_LABELS.values() + ["◆ 小队 人：· 1 跟随 2 坚守 3 冲锋点「令」下命令◆ 小队："])     # 小队命令（B.2）
 	texts.append("挡箭")     # 兵种（B.4）
+	texts.append_array(["军阵基准测试进行中……（ 人，画质，不要操作）", "军阵基准测试结果（ 人，画质，电脑触屏设备）", "：平均 帧，最慢一帧 毫秒，绘制调用 ，逻辑约 — 毫秒"])     # 军阵基准（B.5）
 	texts.append_array(["战况：人 +援军（士气 ）· 胜（溃逃）两边都打光了", "稳动摇快崩了", "◆ 的队长倒下了！溃逃了！来了 个援军", "撤！别打了！", "（援军）"])     # 士气与胜负（B.3）
 	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
 	for sd in BattleArena.SIDES.values():
@@ -3892,7 +3893,7 @@ func test_battle() -> void:
 	check(white.all(func(s): return s.is_in_group("ally") and not s.is_in_group("enemy") and s.collision_layer & 8 == 0), "白带是友军：不在敌人组、不在可受击层")
 	check(black.all(func(s): return s.is_in_group("enemy") and s.collision_layer & 8 != 0), "黑带是敌人：在敌人组、可受击")
 	check(range(10).all(func(i): return white[i].kind == BattleArena.kind_for(i, 10)) and white.all(func(s): return s.transient and not s.drops_loot), "兵种按搭配排（B.4 起）；普通兵不进存档、不留东西")
-	check(white[1].display_name == "白带 · 剑兵" and not white[1].name_label.visible and white[1].band.mesh.material.albedo_color == Color(BattleArena.SIDES.white.band), "名字「白带 · 剑兵」、头顶不挂名字、胸前白布带")
+	check(white[1].display_name == "白带 · 剑兵" and not white[1].name_label.visible and "Band" in white[1].look_parts and look_has(white[1], Color(BattleArena.SIDES.white.band)), "名字「白带 · 剑兵」、头顶不挂名字、胸前白布带")
 	check(not main.nav.is_empty() and int(main.nav.polygons) > 0, "试验场烘焙了导航网格（%s 个多边形）" % main.nav.get("polygons", 0))
 	check(main.hud.hint_label.text == main.HINT_BATTLE_DESKTOP, "进试验场：提示两边是谁、怎么打")
 	check(not b.started and not main.in_combat() and main.can_save() == "", "开打前：不算战斗，可以存档")
@@ -4147,6 +4148,15 @@ func test_squad() -> void:
 	await free_main(main)
 
 
+## 合并后的占位外观（B.5）里有没有这个颜色；顶点色按 8 位存，差半格以内算一样
+func look_has(s: Soldier, c: Color) -> bool:
+	var cols: PackedColorArray = s.look.mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR]
+	for x in cols:
+		if absf(x.r - c.r) < 0.004 and absf(x.g - c.g) < 0.004 and absf(x.b - c.b) < 0.004:
+			return true
+	return false
+
+
 func captain_of(list: Array) -> Soldier:
 	for s in list:
 		if s.is_captain:
@@ -4164,7 +4174,7 @@ func test_morale() -> void:
 	var black := soldiers_of(main, "black")
 	var wc := captain_of(white)
 	var bc := captain_of(black)
-	check(wc != null and bc != null and wc.pennant != null and wc.display_name == "白带 · 队长", "每边一个队长，背上插小旗（%s）" % (wc.display_name if wc else "-"))
+	check(wc != null and bc != null and wc.is_captain and "Flag" in wc.look_parts and look_has(wc, wc.band_color) and not "Flag" in white[0].look_parts and wc.display_name == "白带 · 队长", "每边一个队长，背上插小旗（%s）" % (wc.display_name if wc else "-"))
 	check(white[1].morale == 70.0 and white[2].morale == 55.0 and wc.morale == 100.0, "士气：剑兵 70、民兵 55、队长 100")
 	check(b.waves.size() == 1 and b.side_total("black") == 14 and b.side_count("black", false) == 10 and b.side_count("black") == 14, "黑带还有 4 个援军没到（一共 14 人）")
 	check(not main.hud.battle_label.visible, "开打前不显示战况")
@@ -4271,7 +4281,7 @@ func test_troops() -> void:
 	var sh: Soldier = white[0]
 	var sp: Soldier = white[3]
 	var ar: Soldier = white[8]
-	check(sh.shield != null and sh.shield.material_override != null and sp.shield == null, "剑盾兵左手有盾（涂成布带颜色），别的兵没有")
+	check(sh.has_shield and "Shield" in sh.look_parts and look_has(sh, sh.band_color.lerp(Color("6a5a48"), 0.25)) and not sp.has_shield and not "Shield" in sp.look_parts, "剑盾兵左手有盾（涂成布带颜色），别的兵没有")
 	check(sp.arm.rotation_degrees.x < -70.0 and ar.is_archer and not sh.is_archer and ar.display_name == "白带 · 弓手", "长枪端平往前，弓手拿弓")
 	check(b.waves[0].soldiers.map(func(s): return s.kind) == BattleArena.WAVE_KINDS, "黑带援军：剑盾、剑兵、弓手、民兵")
 	# —— 剑盾兵：正面的轻击多半挡住，重击破防，正面的箭全挡，背后的箭挡不住
@@ -4404,3 +4414,83 @@ func test_troops() -> void:
 	var d1 := flat(archer.global_position).distance_to(flat(p.global_position))
 	check(d0 < Soldier.BOW_MIN and d1 > d0 + 1.0, "你贴近到 %.1f 米：弓手往后退（%.1f 米）" % [d0, d1])
 	await free_main(main)
+
+
+## 60 人性能（路线图 B.5，TECH.md 4.10）：占位外观合并成两份网格、站着不动不做碰撞移动、跪定了停算、远处动作降频、军阵基准测试
+func test_armyperf() -> void:
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var kinds := {}
+	var two := true
+	for s: Soldier in white:
+		kinds[s.kind] = true
+		var meshes: Array = s.body.find_children("*", "MeshInstance3D", true, false).filter(func(m): return m.visible)
+		var surfaces := 0
+		for m in meshes:
+			surfaces += m.mesh.get_surface_count()
+		two = two and meshes.size() == 2 and surfaces == 2 and s.look in meshes
+	check(two and kinds.size() == 6, "每个兵合并成两份网格（身子、兵器），各一个表面：剑兵、剑盾、长枪、民兵、弓手、队长都是（%d 种）" % kinds.size())
+	var s0: Soldier = white[1]
+	check(look_has(s0, s0.coat_color) and look_has(s0, Color("c8a88a")) and Array(s0.look_parts) == ["Coat", "Head", "Nose", "Band"], "合并后颜色不变：罩袍、脸、布带（%s）" % ", ".join(s0.look_parts))
+	check(s0.look.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON and s0.arm.get_child(0).cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "身子投影，兵器不投影（和原来一样）")
+	# 打中时整个人闪红
+	var foe_s: Soldier = soldiers_of(main, "black")[1]
+	s0.take_hit({"damage": 3, "kind": "heavy", "stop": 0.0, "attacker": foe_s})
+	await physics(2)                      # physics_frame 在各节点的 _physics_process 之前发出：等两帧
+	check(s0.coat_mat == s0.look.material_override and s0.coat_mat.emission_energy_multiplier > 0.0, "打中时整个人闪一下红（自发光 %.2f）" % s0.coat_mat.emission_energy_multiplier)
+	# 站着不动不做碰撞移动；悬空的照样落地
+	var still: Soldier = white[2]
+	var p0 := still.global_position
+	await physics(30)
+	check(still.is_on_floor() and still.global_position.distance_to(p0) < 0.01, "开打前站着的兵不漂（%.3f 米）" % still.global_position.distance_to(p0))
+	still.global_position = p0 + Vector3(0, 0.6, 0)
+	await physics(40)
+	check(still.is_on_floor() and absf(still.global_position.y - p0.y) < 0.05, "悬空的兵照样落到地上（%.2f → %.2f）" % [p0.y + 0.6, still.global_position.y])
+	# 开打后照样走得动
+	b.morale_on = false
+	b.start()
+	var white_far: Soldier = white[4]
+	var q0 := white_far.global_position
+	await seconds(1.0)
+	check(white_far.global_position.distance_to(q0) > 1.0, "开打以后照样走过去打（走了 %.1f 米）" % white_far.global_position.distance_to(q0))
+	# 跪定了停算
+	var y: Soldier = white[5]
+	y._enter(Enemy.State.YIELD)
+	await seconds(0.8)
+	check(not y.is_physics_processing() and y.body.position.y < -0.4 and y.collision_layer == 0, "跪地求饶的兵跪定了就停掉每帧计算（身子 %.2f）" % y.body.position.y)
+	# 人物模型的动作降频（B.6 起兵才挂人物模型；这里挂一个试）
+	var cm := CharacterModel.new()
+	white[6].add_child(cm)
+	await frames(2)
+	if cm.loaded:
+		cm.play_loop("run", 1.0)
+		cm.set_anim_every(2)
+		var a0: float = cm.anim.current_animation_position
+		await frames(6)
+		var a1: float = cm.anim.current_animation_position
+		check(cm.anim.callback_mode_process == AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL and cm.is_processing() and not is_equal_approx(a0, a1), "动作降频：每 2 帧手动推进一次，动作照样往前走（%.2f → %.2f 秒）" % [a0, a1])
+		cm.set_anim_every(1)
+		check(cm.anim.callback_mode_process == AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE and not cm.is_processing(), "离近了：改回引擎每帧推进")
+		var sm: Soldier = white[6]
+		sm.model = cm
+		main.player.global_position = sm.global_position + Vector3(0, 0, 30)
+		await seconds(0.4)
+		var far_every := cm.anim_every
+		main.player.global_position = sm.global_position + Vector3(0, 0, 4)
+		await seconds(0.4)
+		check(far_every == 2 and cm.anim_every == 1, "兵离镜头 15 米以外动作每 2 帧推进，走近了恢复每帧（远 %d、近 %d）" % [far_every, cm.anim_every])
+	else:
+		check(false, "人物模型没加载成功，测不了动作降频")
+	await free_main(main)
+	# 军阵基准测试（真机用）：你不参战，直接开打（不存档），两个机位各测一次，结果表显示在画面上
+	GameState.new_game(7)
+	var main2 := await make_battle()
+	var saved_before := Saves.read_slot("auto")
+	var rs: Array = await main2.run_battle_benchmark(-1, 0.3, 0.3)
+	var text: String = main2.perf_overlay.bench_text
+	check(rs.size() == 2 and rs.all(func(r): return r.has("logic_ms") and r.has("draw_calls")) and main2.battle.started and main2.battle.player_side == "" and not main2.battle.morale_on and main2.battle_bench, "军阵基准：直接开打、你不参战、关掉士气（没人溃逃）、军阵提示不弹，观战台上和两军之间各测一次（%d 项）" % rs.size())
+	check(text.contains("军阵基准测试结果（20 人") and text.contains("观战台上：平均") and text.contains("两军之间：平均") and text.contains("逻辑约") and Array(text.split("\n")).all(func(l): return l.length() <= 30), "结果表写在画面上，每行不超过 30 个字（手机竖屏放得下）（%s）" % text.get_slice("\n", 0))
+	check(Saves.read_slot("auto") == saved_before, "基准测试不自动存档（不覆盖你的自动存档）")
+	await free_main(main2)

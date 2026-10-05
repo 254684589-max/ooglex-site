@@ -11,6 +11,8 @@ extends Enemy
 ## 队长（kind = captain）背上插一面小旗（阵营布带的颜色），隔着人群也看得见。
 ## B.4 兵种：剑盾兵（shield，盾涂成布带颜色）、长枪兵（spear，规则在 Enemy）、弓手（archer / bow）：和对手保持 BOW_MIN–BOW_MAX 米，
 ## 每 SHOOT_EVERY 秒拉弓 DRAW_TIME 秒射一箭（combat/arrow.gd，越远越散）；敌人贴近到 BOW_MIN 以内就边退边对着他；弓手不拿攻击令牌（不近身）。
+## B.5 性能：占位外观合并成两份网格（_bake_look：身子一份、兵器一份，每人 2 次绘制调用）；站着不动时不做 move_and_slide（rest_still）；
+## 跪定了就停掉每帧计算；人物模型（model，B.6 起才有，现在只有 army_bench 的 model=1 挂）离镜头 ANIM_FAR 以外每 2 帧推进一次动作。
 
 const RETARGET := 0.25            # 多久重新挑一次对手（秒）
 const LABEL_NEAR := 6.0           # 敌方的兵离玩家这么近才显示头顶的状态（几十个兵都显示，Label3D 太费绘制调用，画面也乱；友军不显示）
@@ -25,6 +27,8 @@ const BOW_MIN := 5.0              # 敌人比这近：往后退
 const BOW_MAX := 16.0             # 比这远：往前走
 const MORALE_BREAK := 15.0        # 士气掉到这里就撑不住了
 const MORALE_TICK := 1.0          # 多久看一次身边（秒，相位错开）
+const LOD_STEP := 0.25            # 多久按离镜头的远近调一次动作频率（秒，相位错开）
+const ANIM_FAR := 15.0            # 离镜头这么远以外：人物动作每 2 帧推进一次（看不出来，60 人时省下骨骼动作约一半）
 
 var side := ""                    # 阵营编号（Battle.sides 的键）
 var battle: Battle
@@ -34,7 +38,10 @@ var coat_color := Color("4a5260")
 var band_color := Color.WHITE
 var retarget_t := 0.0
 var approach_t := 0.0             # 拿着令牌往前凑了多久还没出招
-var band: MeshInstance3D
+var look: MeshInstance3D          # 合并后的占位外观（B.5）
+var look_parts := PackedStringArray()   # 合并进去的部件名（测试用：Coat、Head、Nose、Band、Shield、Pole、Flag）
+var model: CharacterModel         # 人物模型（B.6；现在只有 army_bench 挂）
+var lod_t := 0.0
 var in_squad := false             # 归玩家指挥（B.2）
 var order := ""                   # 小队命令：follow / hold / charge（不在小队为空）
 var slot := 0                     # 小队里的序号（排队形用）
@@ -51,7 +58,6 @@ var morale_t := 0.0
 var is_captain := false
 var counted_fall := false         # 倒下 / 求饶 / 逃跑已经报给军阵了（只算一次）
 var broke := false                # 是被吓跑的（士气崩了），不是被打倒的：对同伴的影响减半
-var pennant: Node3D
 var is_archer := false
 var shot_cd := 0.0
 
@@ -86,6 +92,9 @@ func _ready() -> void:
 	morale_t = randf() * MORALE_TICK
 	if is_captain:
 		_build_pennant()
+	_bake_look()
+	rest_still = true
+	lod_t = randf() * LOD_STEP
 	if battle and battle.is_friendly(side):
 		remove_from_group("enemy")
 		remove_from_group("damageable")
@@ -105,11 +114,12 @@ func set_squad(i: int) -> void:
 
 ## 队长背上的小旗：一根细杆 + 一面布带颜色的旗（挂在身子上，倒下时跟着倒）
 func _build_pennant() -> void:
-	pennant = Node3D.new()
+	var pennant := Node3D.new()
 	pennant.name = "Pennant"
 	pennant.position = Vector3(-0.12, 0.0, 0.22)
 	body.add_child(pennant)
 	var pole := MeshInstance3D.new()
+	pole.name = "Pole"
 	var pm := BoxMesh.new()
 	pm.size = Vector3(0.03, 1.1, 0.03)
 	pm.material = Look.mat("timber")
@@ -118,6 +128,7 @@ func _build_pennant() -> void:
 	pole.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	pennant.add_child(pole)
 	var flag := MeshInstance3D.new()
+	flag.name = "Flag"
 	var fm := BoxMesh.new()
 	fm.size = Vector3(0.02, 0.26, 0.4)
 	fm.material = Blocks.mat(band_color)
@@ -158,7 +169,7 @@ func _build_marker() -> void:
 
 ## 胸前一道布带（白 / 黑），隔着一段距离也认得出是哪一边
 func _build_band() -> void:
-	band = MeshInstance3D.new()
+	var band := MeshInstance3D.new()
 	band.name = "Band"
 	var cm := CylinderMesh.new()
 	cm.top_radius = 0.315
@@ -171,6 +182,36 @@ func _build_band() -> void:
 	band.position.y = 1.05
 	band.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	body.add_child(band)
+
+
+## 占位外观合并（B.5）：身子底下除了兵器以外的网格（罩袍、头、鼻子、布带、盾、小旗）压成一份，兵器压成一份。
+## 原来每人 6–8 次绘制调用（60 人中画质 656 次，预算 400），现在 2 次（中画质身子再画一次影子）。颜色写在顶点色里，
+## 打中时的红光（coat_mat 的自发光）现在整个人一起闪。倒下、跪下时整个身子一起动（都挂在 body 底下），和原来一样。
+func _bake_look() -> void:
+	var parts: Array = body.find_children("*", "MeshInstance3D", true, false).filter(func(n): return not arm.is_ancestor_of(n))
+	look_parts = PackedStringArray(parts.map(func(n): return str(n.name)))
+	var mat := MeshKit.flat_mat()
+	mat.emission_enabled = true
+	mat.emission = coat_mat.emission
+	mat.emission_energy_multiplier = 0.0
+	look = MeshInstance3D.new()
+	look.name = "Look"
+	look.mesh = MeshKit.flatten(parts, body)
+	look.material_override = mat
+	body.add_child(look)
+	coat_mat = mat
+	for n: Node in parts:
+		var holder := n.get_parent()
+		holder.remove_child(n)
+		n.free()
+		if holder != body and holder.get_child_count() == 0:       # 小旗的空壳
+			holder.get_parent().remove_child(holder)
+			holder.free()
+	shield = null
+	var weapon := arm.get_child(0) as MeshInstance3D
+	if weapon and weapon.mesh and weapon.mesh.get_surface_count() > 1:
+		weapon.mesh = MeshKit.flatten([weapon], weapon)
+		weapon.material_override = MeshKit.flat_mat(0.6)
 
 
 func foe() -> Node3D:
@@ -201,6 +242,11 @@ func _perceive(_dt: float) -> void:
 func _physics_process(delta: float) -> void:
 	if state == State.DEAD:
 		return
+	if state == State.YIELD and body.position.y <= -0.44 and is_on_floor():
+		set_physics_process(false)            # 跪定了（B.5）：不挡路、不能当对手，没有要每帧算的了
+		return
+	if model:
+		_lod(delta)
 	if battle and battle.active() and fighting():
 		retarget_t -= delta
 		var lost := target != null and not battle.can_fight(target)
@@ -225,6 +271,16 @@ func _physics_process(delta: float) -> void:
 			retarget_t = 0.0
 	else:
 		approach_t = 0.0
+
+
+## 人物模型的动作频率（B.5）：离镜头 ANIM_FAR 以外每 2 帧推进一次
+func _lod(delta: float) -> void:
+	lod_t -= delta
+	if lod_t > 0.0:
+		return
+	lod_t = LOD_STEP
+	var cam := get_viewport().get_camera_3d()
+	model.set_anim_every(2 if cam != null and cam.global_position.distance_to(global_position) > ANIM_FAR else 1)
 
 
 ## 挑对手（Battle.pick_target）；换了人就先把手里的攻击令牌交回

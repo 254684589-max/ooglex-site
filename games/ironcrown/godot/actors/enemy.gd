@@ -35,6 +35,7 @@ const DATA_KEYS := ["name", "coat", "weapon", "hp", "armor", "weapon_base", "str
 const OPTIONAL_KEYS := ["shield"]  # 可以不写的字段（B.4）
 const WEAPONS := ["sword", "club", "fists", "spear", "bow"]
 const ARM_POS := Vector3(0.34, 1.3, -0.05)
+const REST_MAX := 12              # 站着不动时最多隔几帧还是做一次 move_and_slide（脚下的地有变化也能察觉）
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
 const SIGHT_DARK := 8.0
@@ -89,7 +90,11 @@ var arm: Node3D
 var name_label: Label3D
 var status_label: Label3D
 var coat_mat: StandardMaterial3D
-var shield: MeshInstance3D        # 左手的盾（B.4，数据 "shield": true）
+var shield: MeshInstance3D        # 左手的盾（B.4，数据 "shield": true）；Soldier 合并网格以后为空（B.5），看 has_shield
+var has_shield := false
+var rest_still := false           # 站着不动、脚踩在地上时这一帧不做 move_and_slide（B.5：军阵的兵打开；60 人里这一步占逻辑耗时一半）
+var slid_at := Vector3.INF        # 上次 move_and_slide 以后站在哪：被挪过（读档、测试摆位置）就得重新算，不然悬在半空也以为踩着地
+var rest_frames := 0
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 var agent: NavigationAgent3D
 var nav_target := Vector3.INF
@@ -269,6 +274,7 @@ func _rest_pose() -> Vector3:
 
 ## 左手的盾（B.4）：一块木盾挡在身前左侧；Soldier 会把它涂成阵营布带的颜色
 func _build_shield() -> void:
+	has_shield = true
 	shield = MeshInstance3D.new()
 	shield.name = "Shield"
 	var bm := BoxMesh.new()
@@ -413,7 +419,12 @@ func _physics_process(delta: float) -> void:
 	velocity.x = move.x
 	velocity.z = move.z
 	velocity.y = 0.0 if is_on_floor() else velocity.y - gravity * delta
+	if rest_still and move == Vector3.ZERO and is_on_floor() and global_position == slid_at and rest_frames < REST_MAX:
+		rest_frames += 1
+		return                    # 原地站着：位置不变，碰撞由走过来的人去处理
+	rest_frames = 0
 	move_and_slide()
+	slid_at = global_position
 
 
 static func _flat(v: Vector3) -> Vector3:
@@ -717,7 +728,7 @@ func take_hit(info: Dictionary) -> String:
 	var facing := forward().dot(_flat(attacker.global_position - global_position).normalized()) > 0.4 if attacker else false
 	var can_block := state == State.COMBAT and action not in ["windup", "strike"] and facing
 	if k == "arrow":                     # 箭（B.4）：有盾、正对着就挡住；没盾挡不了
-		if shield != null and facing and alive() and state != State.YIELD:
+		if has_shield and facing and alive() and state != State.YIELD:
 			if fx:
 				FloatText.spawn(self, "挡箭", Vector3(0, 1.6, 0), Color("c8d8e8"), 26)
 			return "block"
