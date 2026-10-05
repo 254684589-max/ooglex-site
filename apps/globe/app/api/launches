@@ -11263,8 +11263,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P17DT11H16M13S",
-       "time_docked": "P14DT11H5M47S",
+       "time_in_space": "P18DT11H15M3S",
+       "time_docked": "P15DT11H4M37S",
        "flights_count": 1,
        "mission_ends_count": 0,
        "status": {
@@ -11551,7 +11551,7 @@
         "description": "Spacecraft burned up in the atmosphere"
        }
       },
-      "duration": "P17DT11H17M24.242425S",
+      "duration": "P18DT11H16M8.528651S",
       "turn_around_time": null,
       "response_mode": "detailed",
       "launch_crew": [],
@@ -27292,8 +27292,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P22DT12H38M3S",
-       "time_docked": "P20DT2H29M1S",
+       "time_in_space": "P23DT12H36M55S",
+       "time_docked": "P21DT2H27M53S",
        "flights_count": 2,
        "mission_ends_count": 1,
        "status": {
@@ -27692,7 +27692,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P2DT9H41M11.362517S",
+      "duration": "P3DT9H39M55.233585S",
       "turn_around_time": "P443DT5H40M6S",
       "response_mode": "detailed",
       "launch_crew": [
@@ -27743,7 +27743,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P172DT22H39M20S",
+         "time_in_space": "P173DT22H38M18S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -27812,7 +27812,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P2DT9H37M26S",
+         "time_in_space": "P3DT9H36M24S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -27930,7 +27930,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P2DT9H37M46S",
+         "time_in_space": "P3DT9H36M43S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -27999,7 +27999,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P2DT9H38M28S",
+         "time_in_space": "P3DT9H37M24S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -28071,7 +28071,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P172DT22H39M20S",
+         "time_in_space": "P173DT22H38M18S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -28140,7 +28140,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P2DT9H37M26S",
+         "time_in_space": "P3DT9H36M24S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -28258,7 +28258,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P2DT9H37M46S",
+         "time_in_space": "P3DT9H36M43S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -28327,7 +28327,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P2DT9H38M28S",
+         "time_in_space": "P3DT9H37M24S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
