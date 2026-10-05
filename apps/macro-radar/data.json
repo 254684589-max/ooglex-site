@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-10-03T22:24:03Z",
-  "asOf": "2026-10-03",
-  "asOfSh": "2026-10-04 06:24",
+  "updatedAt": "2026-10-04T21:51:49Z",
+  "asOf": "2026-10-04",
+  "asOfSh": "2026-10-05 05:51",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
-    "score": 41,
+    "score": 39,
     "labelZh": "中性偏紧",
     "labelEn": "NEUTRAL-TIGHT",
-    "desc": "实际利率、市场广度走弱压制风险偏好；期限溢价、波动率相对稳健，尚未进入系统性压力区。"
+    "desc": "实际利率、市场广度走弱压制风险偏好；波动率、增长动能相对稳健，已进入压力区。"
   },
   "signals": [
     {
@@ -117,10 +117,10 @@
       "key": "term",
       "en": "TERM PREMIUM",
       "zh": "期限溢价",
-      "score": 100,
-      "status": "support",
-      "statusZh": "支持",
-      "desc": "收益率曲线 10Y−3M +109bp，曲线陡峭",
+      "score": 55,
+      "status": "neutral",
+      "statusZh": "中性",
+      "desc": "10Y−3M +109bp，期限溢价 1.02%（熊陡偏紧）",
       "spark": [
         0.55,
         0.56,
@@ -270,7 +270,7 @@
       "key": "growth",
       "en": "GROWTH",
       "zh": "增长动能",
-      "score": 74,
+      "score": 75,
       "status": "support",
       "statusZh": "支持",
       "desc": "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)",
@@ -437,7 +437,7 @@
       "text": "广度代理处于近两年 0% 分位，涨势集中"
     }
   ],
-  "mutSummary": "今日 3 条市场异动，风险偏好占优、结构偏支持；与机制读数 41（中性偏紧）方向一致。",
+  "mutSummary": "今日 3 条市场异动，风险偏好占优、结构偏支持；与机制读数 39（中性偏紧）方向一致。",
   "macro": [
     {
       "zh": "利率走廊",
@@ -472,7 +472,7 @@
           "val": "4.00%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-03",
+          "asOf": "2026-10-04",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -480,7 +480,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-03",
+          "asOf": "2026-10-04",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -551,8 +551,8 @@
           "changeBps": -5,
           "asOf": "2026-10-01",
           "previousAsOf": "2026-09-30",
-          "updatedAt": "2026-10-03T22:24:03Z",
-          "lastAttemptAt": "2026-10-03T22:24:03Z",
+          "updatedAt": "2026-10-04T21:51:49Z",
+          "lastAttemptAt": "2026-10-04T21:51:49Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -672,6 +672,14 @@
           "asOf": "2026-10-02",
           "name": "10Y−3M 期限利差",
           "id": "T10Y3M"
+        },
+        {
+          "val": "1.02%",
+          "chg": "+0bp",
+          "tone": "down",
+          "asOf": "2026-09-25",
+          "name": "10Y 期限溢价 (ACM/KW)",
+          "id": "THREEFYTP10"
         }
       ]
     },
@@ -753,24 +761,24 @@
         {
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
-          "val": "1.56",
-          "chg": "+1.1%",
+          "val": "1.57",
+          "chg": "+2.0%",
           "asOf": "2026-10-02",
           "tone": "up"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "69.4",
-          "chg": "+0.3%",
+          "val": "68.9",
+          "chg": "-0.4%",
           "asOf": "2026-10-02",
-          "tone": "up"
+          "tone": "down"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "14.03",
-          "chg": "-2.0%",
+          "val": "13.91",
+          "chg": "-2.9%",
           "asOf": "2026-10-02",
           "tone": "down"
         },
@@ -892,8 +900,8 @@
       "changePct": -0.18423569560380715,
       "asOf": "2026-09-25",
       "previousAsOf": "2026-09-24",
-      "updatedAt": "2026-10-03T22:24:03Z",
-      "lastAttemptAt": "2026-10-03T22:24:03Z",
+      "updatedAt": "2026-10-04T21:51:49Z",
+      "lastAttemptAt": "2026-10-04T21:51:49Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -947,8 +955,8 @@
       "changePct": -3.230351212639637,
       "asOf": "2026-09-29",
       "previousAsOf": "2026-09-28",
-      "updatedAt": "2026-10-03T22:24:03Z",
-      "lastAttemptAt": "2026-10-03T22:24:03Z",
+      "updatedAt": "2026-10-04T21:51:49Z",
+      "lastAttemptAt": "2026-10-04T21:51:49Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
