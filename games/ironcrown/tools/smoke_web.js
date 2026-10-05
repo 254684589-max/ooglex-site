@@ -278,7 +278,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.goto(url + (url.includes('?') ? '&' : '?') + 'test=3&view=1');
     let aStart = '', aFall = '', aOrder = '';
     if ((aStart = await waitLog(logs, 'IC_BATTLE start', 280))) {
-      for (let i = 0; i < 240 && !aFall; i++) {      // 最多等 60 秒：电脑中画质软件渲染每秒只有一两帧，游戏时间走得比墙钟慢（B.2 时 30 秒没等到）
+      for (let i = 0; i < 480 && !aFall; i++) {      // 最多等 120 秒：电脑中画质软件渲染每秒只有一两帧，游戏时间只有墙钟的三分之一左右（B.2 时 30 秒没等到）；B.4 有了盾，第一个人倒下要 8–12 秒游戏时间，实测墙钟 27–41 秒，机器忙时超过 60 秒
         aFall = logs.find(l => l.startsWith('IC_ENEMY') && (l.includes('state=yield') || l.includes('state=dead') || l.includes('state=flee'))) || '';
         if (!aFall) await new Promise(r => setTimeout(r, 250));
       }
