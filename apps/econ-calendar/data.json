@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-04T21:54:21Z",
-  "asOf": "2026-10-04",
+  "updatedAt": "2026-10-05T20:49:21Z",
+  "asOf": "2026-10-05",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-04 ~ 2026-10-10",
-  "count": 79,
-  "highCount": 4,
+  "count": 82,
+  "highCount": 5,
   "events": [
     {
       "ts": "2026-10-04T09:15:00Z",
@@ -278,7 +278,7 @@
       "title": "工厂订单 环比",
       "titleEn": "German Factory Orders m/m",
       "impact": "low",
-      "forecast": "-1.0%",
+      "forecast": "-0.9%",
       "previous": "2.5%",
       "actual": null
     },
@@ -374,7 +374,7 @@
       "title": "零售销售 环比",
       "titleEn": "Retail Sales m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.2%",
       "previous": "-0.6%",
       "actual": null
     },
@@ -410,7 +410,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "1.3B",
+      "forecast": "1.5B",
       "previous": "0.8B",
       "actual": null
     },
@@ -422,7 +422,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "-95.2B",
+      "forecast": "-100.8B",
       "previous": "-88.6B",
       "actual": null
     },
@@ -472,6 +472,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "-1.1%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-06T17:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Schmid Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -715,6 +727,18 @@
       "actual": null
     },
     {
+      "ts": "2026-10-08T08:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Waller Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-10-08T09:15:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -758,6 +782,18 @@
       "title": "ECB Monetary Policy Meeting Accounts",
       "titleEn": "ECB Monetary Policy Meeting Accounts",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-08T12:15:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "英央行行长讲话",
+      "titleEn": "BOE Gov Bailey Speaks",
+      "impact": "high",
       "forecast": null,
       "previous": null,
       "actual": null
