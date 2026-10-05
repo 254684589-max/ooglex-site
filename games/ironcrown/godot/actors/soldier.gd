@@ -6,10 +6,14 @@ extends Enemy
 ## 开战即进入战斗，不走潜行感知（对兵不打视线射线）；数值在 data/enemies.json（soldier 剑兵、levy 民兵）。
 ## 玩家这一边的兵（友军）不在组 enemy、不在可受击层：玩家的剑砍不到自己人，存档、出门的「附近有敌人」也不算它们。
 ## 普通兵 transient：倒下、求饶不写进存档，不留搜刮点（存不存在 B.3 定）。外观仍是占位胶囊：罩袍按阵营上色，胸前一道白 / 黑布带。
+## B.2：编进玩家小队的兵头顶有金色 ◆；跟随 / 坚守时只挑拴绳范围里的对手（Battle.leash），没有对手时走到自己的位置（Battle.post_of）站好。
 
 const RETARGET := 0.25            # 多久重新挑一次对手（秒）
 const LABEL_NEAR := 6.0           # 敌方的兵离玩家这么近才显示头顶的状态（几十个兵都显示，Label3D 太费绘制调用，画面也乱；友军不显示）
 const STUCK_TIME := 2.5           # 拿着攻击令牌却这么久没能出招（被人挡住了）：交回令牌，让别人上
+const BLOCKED_TIME := 0.25        # 走向自己的位置时这么久几乎没挪动（迎面撞上人）：往旁边绕一下（B.2 实测：正对着玩家或别的兵会卡住不动）
+const DODGE_TIME := 0.7
+const DODGE_ANGLE := 75.0
 
 var side := ""                    # 阵营编号（Battle.sides 的键）
 var battle: Battle
@@ -20,6 +24,16 @@ var band_color := Color.WHITE
 var retarget_t := 0.0
 var approach_t := 0.0             # 拿着令牌往前凑了多久还没出招
 var band: MeshInstance3D
+var in_squad := false             # 归玩家指挥（B.2）
+var order := ""                   # 小队命令：follow / hold / charge（不在小队为空）
+var slot := 0                     # 小队里的序号（排队形用）
+var anchor := Vector3.INF         # 坚守点
+var marker: Label3D               # 头顶的 ◆
+var want_speed := 0.0             # 这一帧想走多快（走向位置时）
+var blocked_t := 0.0
+var dodge_t := 0.0
+var dodge_dir := 1.0
+var last_pos := Vector3.INF
 
 
 static func create(kind_id: String, id: String, side_id: String, coat: Color, band_c: Color) -> Soldier:
@@ -47,6 +61,25 @@ func _ready() -> void:
 		remove_from_group("damageable")
 		add_to_group("ally")
 		collision_layer = 1                   # 不在第 4 层「可受击」：玩家的剑扫不到
+	if in_squad:
+		_build_marker()
+
+
+## 编进玩家的小队（Battle.add_to_squad 调用；进场景之前之后都行）
+func set_squad(i: int) -> void:
+	in_squad = true
+	slot = i
+	if is_inside_tree():
+		_build_marker()
+
+
+func _build_marker() -> void:
+	if marker != null:
+		return
+	marker = Blocks.label(self, "◆", Vector3(0, 2.3, 0), 30, 0.0012)
+	marker.fixed_size = true
+	marker.modulate = Color("e8c060")
+	marker.visible = fighting()
 
 
 ## 胸前一道布带（白 / 黑），隔着一段距离也认得出是哪一边
@@ -100,7 +133,9 @@ func _physics_process(delta: float) -> void:
 		if lost or (retarget_t <= 0.0 and action not in ["windup", "strike", "recover", "block"]):
 			retarget_t = RETARGET
 			_retarget(lost)
+	want_speed = 0.0
 	super._physics_process(delta)
+	_check_blocked(delta)
 	# 挤在人堆里够不着对手：别一直占着令牌（试验场里实测会互相卡死）
 	if has_token and action not in ["windup", "strike", "recover", "block"]:
 		approach_t += delta
@@ -128,6 +163,62 @@ func _retarget(force: bool) -> void:
 	status_label.visible = not (battle and battle.is_friendly(side)) and _near_player(LABEL_NEAR)
 
 
+## 小队的兵该站的位置（B.2）；没有就是 null（冲锋、不在小队）
+func post() -> Variant:
+	return battle.post_of(self) if battle and in_squad else null
+
+
+## 走到自己的位置；到了就面朝队形的方向站好
+func _go_post(delta: float, p: Vector3) -> Vector3:
+	var d := _flat(p - global_position).length()
+	if d <= 0.6:
+		_face(global_position + battle.post_facing(self), delta)
+		return Vector3.ZERO
+	var v := _steer(p, float(data.run) if d > 1.5 else float(data.walk), 0.5)      # 离位置远就跑，最后一两步走
+	if dodge_t > 0.0:                    # 正被人挡着：往旁边偏着走一会儿
+		dodge_t -= delta
+		v = v.rotated(Vector3.UP, deg_to_rad(DODGE_ANGLE) * dodge_dir)
+		move_dir = v.normalized()
+	want_speed = v.length()
+	if move_dir != Vector3.ZERO:
+		_face(global_position + move_dir, delta)
+	return v
+
+
+## 想走却几乎没挪动（迎面撞上玩家或别的兵，滑不开）：往左或往右绕一下
+func _check_blocked(delta: float) -> void:
+	var moved := _flat(global_position - last_pos).length() if last_pos != Vector3.INF else 0.0
+	last_pos = global_position
+	if want_speed < 0.5 or dodge_t > 0.0:
+		blocked_t = 0.0
+		return
+	if moved < want_speed * delta * 0.3:
+		blocked_t += delta
+		if blocked_t >= BLOCKED_TIME:
+			blocked_t = 0.0
+			dodge_t = DODGE_TIME
+			dodge_dir = 1.0 if rng.randf() < 0.5 else -1.0
+	else:
+		blocked_t = 0.0
+
+
+## 没开打（或打完收手）时：小队跟随 / 坚守就去自己的位置，否则照常站岗
+func _patrol(delta: float) -> Vector3:
+	var p: Variant = post()
+	if p != null:
+		return _go_post(delta, p)
+	return super._patrol(delta)
+
+
+## 打着仗但拴绳范围里没有对手：回到自己的位置
+func _combat(delta: float) -> Vector3:
+	if foe() == null:
+		var p: Variant = post()
+		if p != null:
+			return _go_post(delta, p)
+	return super._combat(delta)
+
+
 ## 仗打完了：还站着的人收手，原地站着（不再算「附近有敌人在和你打」）
 func stand_down() -> void:
 	if not fighting():
@@ -146,6 +237,8 @@ func _enter(s: State) -> void:
 	super._enter(s)
 	if s == State.YIELD:
 		collision_layer = 0                   # 跪地求饶的不挡路（试验场里实测：跪着的人堆在中间，两边都挤不过去）
+	if marker:
+		marker.visible = s not in [State.DEAD, State.YIELD, State.FLEE]
 	if s in [State.DEAD, State.YIELD, State.FLEE] and battle:
 		battle.set_aim(self, null)            # 不打了：不再占着那个目标的「被盯」名额（逃跑的仍记得 target，好知道躲着谁）
 		if s != State.FLEE:

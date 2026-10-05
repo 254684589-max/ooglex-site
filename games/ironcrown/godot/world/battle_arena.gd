@@ -3,12 +3,14 @@ extends RefCounted
 ## 军阵试验场（路线图 B.1，D8；网页 ?test=3）：一片围起来的雪地，白带（你这边）对黑带，每边默认 10 人（?test=3&n=30 每边最多 30 人，共 60）。
 ## 开局 3 秒后开打（main）；你站在白带后面，可以冲上去帮忙，也可以上身后的观战台看。黑带的人也会来打你，白带的人你砍不到。
 ## 兵是占位胶囊：罩袍按阵营上色，胸前一道白 / 黑布带（正式外观在 B.6）。剑兵与持棍民兵大约七三开。
+## B.2：白带前排的 6 个人（n 大时是 6 成，最多 12 个）是你的小队，头顶有 ◆，听 1 / 2 / 3（触屏「令」）的命令；默认冲锋。
 
 const HALF_X := 22.0
 const NORTH := -24.0
 const SOUTH := 20.0
 const SPAWN := Vector3(0, 0, 12)
 const PER_SIDE := 10
+const SQUAD_MAX := 12              # 小队最多几个人（GDD 6.4：6–12 人）
 const MAX_PER_SIDE := 30
 const WHITE_Z := 6.0               # 白带第一排
 const BLACK_Z := -10.0             # 黑带第一排
@@ -60,8 +62,15 @@ static func build(parent: Node3D, per_side := PER_SIDE) -> Transform3D:
 			s.display_override = "%s · %s" % [c.name, Enemy.types()[kind].name]
 			s.position = slot(id, i, n)
 			s.rotation.y = 0.0 if id == "white" else PI      # 白带面朝北（-Z），黑带面朝南
+			if id == "white" and i < squad_size(n):
+				battle.add_to_squad(s)
 			battle.enlist(s, parent)
 	return Transform3D(Basis.IDENTITY, SPAWN)
+
+
+## 小队人数：每边人数的六成，1–12 人（10 人时 6 个）
+static func squad_size(per_side: int) -> int:
+	return clampi(per_side * 6 / 10, 1, SQUAD_MAX)
 
 
 ## 第 i 个兵在队列里的位置：每排 ROW 人，左右居中；白带往南排、黑带往北排

@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -202,6 +202,7 @@ func test_ui() -> void:
 	texts.append_array([Opening.CALL_LINE, Opening.BELL_LINE, PauseMenu.HELP_DESKTOP, PauseMenu.HELP_TOUCH, "序章霜渡镇之夜灰鲸河畔 · 入夜轻触画面开始点击画面或按任意键开始声音教学提示◇ "])
 	texts.append_array(EndingPanel.RECAP.values() + [EndingPanel.SEAL, "序章「霜渡镇之夜」完第一章 · 黑鹭堡开发中在雾里再走走从头再来", "雾里有人提着灯走下坡来……"])     # 尾声（3.7）
 	texts.append("· （需要：枚银币（身上 枚））、")     # 3.9 灰色选项
+	texts.append_array(Battle.ORDERS.values() + TouchControls.ORDER_LABELS.values() + ["◆ 小队 人：· 1 跟随 2 坚守 3 冲锋点「令」下命令◆ 小队："])     # 小队命令（B.2）
 	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
 	for sd in BattleArena.SIDES.values():
 		texts.append(str(sd.name))
@@ -4027,3 +4028,117 @@ func test_battle() -> void:
 	check(b2.roster.size() == 5 and b2.reserve.size() == 1 and mine[4].is_inside_tree() and mine[4].state == Enemy.State.COMBAT, "倒下一个：排队的补上来，直接进入战斗")
 	await free_main(main)
 	check(not is_instance_valid(mine[5]), "战斗释放时，还在排队的兵一起释放")
+
+
+## 小队与指令（路线图 B.2，GDD 6.4）：试验场里白带前排 6 个人听玩家指挥——跟随我 / 原地坚守 / 冲锋；键盘 1 / 2 / 3、触屏「令」；右上角写小队与命令
+func test_squad() -> void:
+	GameState.new_game(7)
+	var main := await make_battle()
+	var p: FpController = main.player
+	var b: Battle = main.battle
+	var squad: Array = b.squad
+	var white := soldiers_of(main, "white")
+	check(squad.size() == 6 and squad.all(func(s): return s.side == "white" and s.in_squad and s.marker != null and s.marker.visible), "白带有 6 个人编进小队，头顶有 ◆")
+	check(white.filter(func(s): return not s.in_squad).all(func(s): return s.marker == null), "小队以外的白带头顶没有 ◆")
+	check(BattleArena.squad_size(10) == 6 and BattleArena.squad_size(30) == 12 and BattleArena.squad_size(1) == 1, "小队人数：每边人数的六成，1–12 人")
+	check(b.squad_order == "charge" and squad.all(func(s): return s.order == "charge") and b.leash(squad[0]).is_empty() and b.post_of(squad[0]) == null, "默认冲锋：不拴绳、没有固定位置（和 B.1 一样）")
+	check(main.hud.squad_label.visible and main.hud.squad_label.text == "◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋", "右上角写小队人数与命令（%s）" % main.hud.squad_label.text)
+	var hr: Rect2 = main.hud.squad_label.get_global_rect()
+	check(hr.end.x <= main.hud.size.x and hr.position.y >= main.hud.menu_btn.get_global_rect().end.y, "小队一行在右上角按钮下面、不出屏幕")
+	# —— 跟随（开打前）：站到玩家身后的队形里，玩家走开就跟上
+	await place(p, -8.0, 10.0)
+	Input.parse_input_event(key_ev(KEY_1))
+	await frames(2)
+	check(b.squad_order == "follow" and main.hud.toast_label.text.contains("◆ 小队：跟随我") and main.hud.squad_label.text.contains("：跟随我"), "按 1：小队跟随我（%s / %s / %s）" % [b.squad_order, main.hud.toast_label.text, main.hud.squad_label.text])
+	await seconds(6.0)
+	var near := squad.filter(func(s): return flat(s.global_position).distance_to(flat(b._follow_slot(s.slot, p))) < 1.0)
+	check(near.size() >= 5, "跟到玩家身后的队形里（%d / 6 个到位）" % near.size())
+	var behind := squad.filter(func(s): return (s.global_position - p.global_position).dot(-p.global_transform.basis.z) < 0.0)
+	check(behind.size() == 6, "队形在玩家身后（%d / 6）" % behind.size())
+	p.global_position = Vector3(6.0, 0.05, 10.0)
+	await seconds(5.0)
+	var caught := squad.filter(func(s): return flat(s.global_position).distance_to(flat(p.global_position)) < 6.0)
+	check(caught.size() == 6, "玩家走开 14 米：小队跟上来（%d / 6）" % caught.size())
+	# —— 原地坚守（开打前）：在玩家面前 2 米排成一线；玩家走开也不跟
+	await place(p, -8.0, 10.0)
+	await seconds(3.0)
+	Input.parse_input_event(key_ev(KEY_2))
+	await frames(2)
+	check(b.squad_order == "hold" and squad.all(func(s): return s.anchor != Vector3.INF and absf(s.anchor.z - 8.0) < 0.01), "按 2：原地坚守，坚守点在玩家面前 2 米、排成一线")
+	var anchors := {}
+	for s in squad:
+		anchors[s] = s.anchor
+	await seconds(4.0)
+	p.global_position = Vector3(-8.0, 0.05, 15.0)
+	await seconds(3.0)
+	var at_post := squad.filter(func(s): return flat(s.global_position).distance_to(flat(anchors[s])) < 1.0)
+	check(at_post.size() >= 5, "玩家走开 5 米：小队站在坚守点不动（%d / 6 在位）" % at_post.size())
+	# —— 开打以后跟随：只打离玩家 7 米以内的敌人；玩家站在后面角落里，小队不冲上去
+	await place(p, -16.0, 16.0)
+	Input.parse_input_event(key_ev(KEY_1))
+	await seconds(4.0)
+	b.start()
+	var far_fight := 0
+	var others_fight := false
+	for i in 240:
+		await get_tree().physics_frame
+		for s in squad:
+			if s.target != null and is_instance_valid(s.target) and flat(s.target.global_position).distance_to(flat(p.global_position)) > Battle.FOLLOW_LEASH + 0.5:
+				far_fight += 1
+		for s in white:
+			if not s.in_squad and s.target != null:
+				others_fight = true
+	check(far_fight == 0, "跟随时小队不去打离你 7 米以外的敌人")
+	check(others_fight, "小队以外的白带照样冲上去打")
+	check(squad.all(func(s): return not s.fighting() or flat(s.global_position).distance_to(flat(p.global_position)) < 8.0), "小队一直待在你身边")
+	# —— 坚守（打着仗）：只打坚守点 5 米以内的敌人
+	Input.parse_input_event(key_ev(KEY_2))
+	await frames(2)
+	var hold_far := 0
+	for i in 180:
+		await get_tree().physics_frame
+		for s in squad:
+			if s.fighting() and s.target != null and is_instance_valid(s.target) and flat(s.target.global_position).distance_to(flat(s.anchor)) > Battle.HOLD_LEASH + 0.5:
+				hold_far += 1
+	check(hold_far == 0, "坚守时只打坚守点 5 米以内的敌人")
+	# —— 冲锋：放开打
+	Input.parse_input_event(key_ev(KEY_3))
+	await frames(2)
+	check(b.squad_order == "charge" and b.leash(squad[0]).is_empty(), "按 3：冲锋，不再拴绳")
+	var charged := false
+	for i in 300:
+		await get_tree().physics_frame
+		if squad.any(func(s): return s.target != null and is_instance_valid(s.target) and flat(s.target.global_position).distance_to(flat(p.global_position)) > Battle.FOLLOW_LEASH + 1.0):
+			charged = true
+			break
+	check(charged, "冲锋：小队去打远处的敌人")
+	await free_main(main)
+	# —— 触屏：「令」只在有小队时出现，点开三个命令
+	GameState.new_game(7)
+	main = await make_battle()
+	b = main.battle
+	var t: TouchControls = main.touch
+	t.force_visible = true
+	t.visible = true
+	t.player = main.player
+	await frames(2)
+	check(t.order_enabled and t.button_centers().has("order") and not t.button_centers().has("order_hold"), "触屏：有小队时多一个「令」，命令按钮先收着")
+	var tap := func(pos: Vector2):
+		var ev := touch_ev(5, pos, true)
+		t._input(ev)
+		t._input(touch_ev(5, pos, false))
+	tap.call(t.button_centers().order)
+	check(t.order_open and t.button_centers().has("order_follow") and t.button_centers().has("order_charge"), "点「令」：往左展开「跟随」「坚守」「冲锋」")
+	var cs: Dictionary = t.button_centers()
+	check(cs.order_charge.x < cs.order_hold.x and cs.order_hold.x < cs.order_follow.x and cs.order_follow.x < cs.order.x and cs.order_charge.x > 0.0, "三个命令按钮在「令」左边一字排开、不出屏幕")
+	check(not t.buttons_rect().has_point(cs.order_charge), "展开的命令按钮不算进右下角按钮列（底部提示不跟着挪）")
+	tap.call(cs.order_hold)
+	await frames(2)
+	check(b.squad_order == "hold" and not t.order_open and main.hud.squad_label.text == "◆ 小队 6 人：原地坚守 · 1 跟随 2 坚守 3 冲锋", "点「坚守」：下了命令，按钮收起")
+	await free_main(main)
+	# —— 别的区域没有小队：数字键不下命令、没有「令」
+	main = await make_main(false)
+	Input.parse_input_event(key_ev(KEY_1))
+	await frames(2)
+	check(main.battle == null and not main.touch.order_enabled and not main.hud.squad_label.visible and main.hud.toast_label.text != "◆ 小队：跟随我", "霜渡镇没有小队：数字键不下命令，不显示小队、没有「令」")
+	await free_main(main)

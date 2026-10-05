@@ -20,6 +20,9 @@ const ACTIONS := {
 	"sheathe": [KEY_R],           # 拔剑 / 收剑（2.4）
 	"attack_key": [KEY_F],        # 攻击的键盘键（2.4；主要是鼠标左键，在 main 里处理）
 	"block_key": [KEY_Q],         # 格挡的键盘键（2.5；主要是鼠标右键按住）
+	"order_follow": [KEY_1],      # 小队命令（B.2，军阵战斗里）：跟随我
+	"order_hold": [KEY_2],        # 原地坚守
+	"order_charge": [KEY_3],      # 冲锋（对话面板打开时数字键选选项，游戏暂停，不会误下命令）
 	"pause": [KEY_ESCAPE],
 }
 

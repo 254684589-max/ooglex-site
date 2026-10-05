@@ -6,6 +6,10 @@ extends Node
 ## 看哪一方还站着：只剩一方（玩家那一方算上玩家本人）时结束，还站着的兵收手（stand_down），发 ended(winner)。士气、溃逃、胜负旗标在 B.3。
 ## 60 人以内直接遍历找最近的敌人（每帧约 4 个兵重挑 × 60 次比较），不做空间分格。
 ## 攻击令牌（每个目标最多 2 个人同时出招）在 CombatDirector；这里只管「谁盯着谁」，用来分散目标。
+## B.2 小队：玩家这一边的一部分兵归玩家指挥（squad，头顶有 ◆），三个命令（order()）：
+##   跟随我（follow）：在玩家身后排成三人一排的队形跟着走，只打离玩家 FOLLOW_LEASH 米以内的敌人；
+##   原地坚守（hold）：在玩家下令时站的地方前面排成一线，只打离自己坚守点 HOLD_LEASH 米以内的敌人，打完回到坚守点；
+##   冲锋（charge）：和不在小队的兵一样，自己找最近的敌人打（B.1 的样子）。默认是冲锋。
 
 signal ended(winner: String)
 
@@ -13,6 +17,11 @@ const MAX_ACTIVE := 60            # 同时活着、在打的兵（双方合计�
 const CHECK_STEP := 0.25          # 多久检查一次名额与胜负（秒）
 const SPREAD := 3.0               # 挑对手时：目标每多一个别人盯着，就当它远 3 米
 const STICK := 1.0                # 现在的对手比新找到的最多只「远」这么多米，就不换（免得来回换）
+const ORDERS := {"follow": "跟随我", "hold": "原地坚守", "charge": "冲锋"}      # 小队命令（B.2）
+const FOLLOW_LEASH := 7.0         # 跟随时只打离玩家这么近的敌人
+const HOLD_LEASH := 5.0           # 坚守时只打离坚守点这么近的敌人
+const RANK := 3                   # 跟随队形每排几个人
+const LINE := 6                   # 坚守队形每排几个人
 
 var sides := {}                   # 阵营编号 → 显示名
 var player_side := ""             # 玩家站哪一边（"" = 玩家不参战：兵不打玩家，玩家也不算一方）
@@ -27,6 +36,9 @@ var aimed := {}                   # 目标的 instance id → 被几个兵盯着
 var check_t := 0.0
 var t_start := 0
 var player: FpController
+var squad: Array = []             # 归玩家指挥的兵（B.2）
+var squad_order := "charge"
+var hold_dir := Vector3.FORWARD   # 坚守时面朝哪边（玩家下令时的朝向）
 
 
 func _ready() -> void:
@@ -117,14 +129,17 @@ func can_fight(t: Node) -> bool:
 
 
 ## 给兵挑对手：最近的敌方（另一方的兵，或者站在别一方的玩家）；被别人盯着的目标按每人 SPREAD 米算远；
-## 现在的对手还能打、又只比最好的「远」STICK 米以内，就不换
+## 现在的对手还能打、又只比最好的「远」STICK 米以内，就不换。小队跟随 / 坚守时只挑拴绳（leash）范围里的
 func pick_target(s: Soldier) -> Node3D:
 	var best: Node3D = null
 	var best_score := INF
 	var cur_score := INF
 	var pos := s.global_position
+	var lc := leash(s)
 	for o in roster:
 		if not is_instance_valid(o) or o.side == s.side or not o.fighting():
+			continue
+		if not lc.is_empty() and _flat_dist(o.global_position, lc[0]) > lc[1]:
 			continue
 		var sc := _score(s, o, pos)
 		if o == s.target:
@@ -132,7 +147,7 @@ func pick_target(s: Soldier) -> Node3D:
 		if sc < best_score:
 			best = o
 			best_score = sc
-	if _player_fights() and s.side != player_side:
+	if _player_fights() and s.side != player_side and (lc.is_empty() or _flat_dist(player.global_position, lc[0]) <= lc[1]):
 		var sc := _score(s, player, pos)
 		if player == s.target:
 			cur_score = sc
@@ -150,6 +165,97 @@ func _score(s: Soldier, o: Node3D, pos: Vector3) -> float:
 		n -= 1                                     # 自己盯着它不算「别人」
 	var d := Vector2(o.global_position.x - pos.x, o.global_position.z - pos.z).length()
 	return d + SPREAD * maxi(n, 0)
+
+
+static func _flat_dist(a: Vector3, b: Vector3) -> float:
+	return Vector2(a.x - b.x, a.z - b.z).length()
+
+
+# ---- 小队（B.2） ----
+
+## 把兵编进玩家的小队（序号决定队形里的位置）
+func add_to_squad(s: Soldier) -> void:
+	s.set_squad(squad.size())
+	s.order = squad_order
+	squad.append(s)
+
+
+## 小队里还能打的人数
+func squad_alive() -> int:
+	var n := 0
+	for s in squad:
+		if is_instance_valid(s) and s.fighting():
+			n += 1
+	return n
+
+
+## 下命令：follow / hold / charge；没有小队或命令不认识时返回 false
+func order(o: String) -> bool:
+	if not ORDERS.has(o) or squad.is_empty():
+		return false
+	squad_order = o
+	var p := _player()
+	if p:
+		hold_dir = -p.global_transform.basis.z
+		hold_dir.y = 0.0
+		hold_dir = hold_dir.normalized() if hold_dir.length() > 0.01 else Vector3.FORWARD
+	for s in squad:
+		if not is_instance_valid(s) or not s.fighting():
+			continue
+		s.order = o
+		if o == "hold" and p:
+			s.anchor = _hold_slot(s.slot, p)
+		s.retarget_t = 0.0                # 马上按新命令重挑对手
+		s.nav_target = Vector3.INF
+	print("IC_ORDER order=%s squad=%d" % [o, squad_alive()])
+	return true
+
+
+## 拴绳：小队的兵只打这个圈里的敌人，[中心, 半径]；空 = 不限（冲锋、不在小队）
+func leash(s: Soldier) -> Array:
+	if not s.in_squad:
+		return []
+	if s.order == "follow" and _player() != null:
+		return [player.global_position, FOLLOW_LEASH]
+	if s.order == "hold" and s.anchor != Vector3.INF:
+		return [s.anchor, HOLD_LEASH]
+	return []
+
+
+## 小队的兵没有对手时该站在哪：跟随 → 玩家身后的队形；坚守 → 坚守点；冲锋 → 没有（null）
+func post_of(s: Soldier) -> Variant:
+	if not s.in_squad:
+		return null
+	if s.order == "follow" and _player() != null:
+		return _follow_slot(s.slot, player)
+	if s.order == "hold" and s.anchor != Vector3.INF:
+		return s.anchor
+	return null
+
+
+## 站到位以后面朝哪边：跟随 → 和玩家同一个方向；坚守 → 下令时玩家的朝向
+func post_facing(s: Soldier) -> Vector3:
+	if s.order == "follow" and _player() != null:
+		var f := -player.global_transform.basis.z
+		f.y = 0.0
+		return f.normalized() if f.length() > 0.01 else hold_dir
+	return hold_dir
+
+
+## 跟随队形：玩家身后，每排 RANK 人，排距 1.6 米
+func _follow_slot(i: int, p: Node3D) -> Vector3:
+	var col := i % RANK
+	var row := i / RANK
+	var local := Vector3((col - (RANK - 1) * 0.5) * 1.6, 0.0, 2.2 + row * 1.6)      # 本地 +Z 是身后
+	return p.global_position + Basis(Vector3.UP, p.global_rotation.y) * local
+
+
+## 坚守队形：玩家下令时站的地方前面 2 米，横着排成一线，每排 LINE 人
+func _hold_slot(i: int, p: Node3D) -> Vector3:
+	var col := i % LINE
+	var row := i / LINE
+	var local := Vector3((col - (LINE - 1) * 0.5) * 1.5, 0.0, -2.0 - row * 1.5)     # 本地 -Z 是前面
+	return p.global_position + Basis(Vector3.UP, p.global_rotation.y) * local
 
 
 ## 记下兵 s 现在盯着谁（t = null：不盯了）；可以重复调用

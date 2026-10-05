@@ -22,8 +22,8 @@ const HINT_ARENA_DESKTOP := "训练场：左键 / F 出剑（按住重击）· �
 const HINT_ARENA_TOUCH := "训练场：点「攻」出剑（按住重击）· 按住「挡」格挡 · 在对方劈下前一瞬间按「挡」= 完美格挡（对方失衡）"
 const HINT_BRAWL_DESKTOP := "徒手打一架（不许动刀）：左键 / F 出拳，按住是重拳 · 右键 / Q 按住格挡 · 把对方打到认输就赢"
 const HINT_BRAWL_TOUCH := "徒手打一架（不许动刀）：点「攻」出拳，按住是重拳 · 按住「挡」格挡 · 把对方打到认输就赢"
-const HINT_BATTLE_DESKTOP := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 左键 / F 出剑（按住重击）· 右键 / Q 格挡 · 你的剑砍不到白带 · 身后的观战台可以上去看"
-const HINT_BATTLE_TOUCH := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 点「攻」出剑 · 按住「挡」格挡 · 你的剑砍不到白带"
+const HINT_BATTLE_DESKTOP := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 头顶有 ◆ 的 6 个人听你指挥：1 跟随我 · 2 原地坚守 · 3 冲锋 · 左键 / F 出剑 · 右键 / Q 格挡 · 你的剑砍不到白带"
+const HINT_BATTLE_TOUCH := "军阵试验场：白带是你这边，黑带是对面，3 秒后开打 · 头顶有 ◆ 的 6 个人听你指挥：点「令」选跟随 / 坚守 / 冲锋 · 你的剑砍不到白带"
 const BATTLE_DELAY := 3.0         # 军阵试验场开局几秒后开打（B.1）
 const HINT_SECONDS := 8.0
 const FADE_TIME := 0.25           # 换区域时淡出 / 淡入（减少动态效果时直接切）
@@ -191,6 +191,10 @@ func _ready() -> void:
 	battle = world.get_node_or_null("Battle") as Battle
 	if battle:
 		battle.ended.connect(_on_battle_ended)
+		if not battle.squad.is_empty():     # 有小队（B.2）：右上角写小队与命令，触屏多一个「令」
+			hud.battle = battle
+			touch.order_enabled = true
+			touch.order_pressed.connect(give_order)
 		if battle_autostart:
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
@@ -232,6 +236,11 @@ func _ready() -> void:
 		print("IC_GUARD_SCREEN x=%d y=%d" % [gc.x, gc.y])
 		var vc: Vector2 = touch.button_centers().camera * get_tree().root.content_scale_factor
 		print("IC_CAMERA_SCREEN x=%d y=%d" % [vc.x, vc.y])
+		if touch.order_enabled:          # 「令」和展开后「跟随」的位置（B.2，冒烟测试用）
+			var oc: Vector2 = touch.button_centers().order
+			var fc: Vector2 = (oc - Vector2(TouchControls.BTN_R * 2.0 + 12.0, 0.0)) * get_tree().root.content_scale_factor
+			oc *= get_tree().root.content_scale_factor
+			print("IC_ORDER_SCREEN x=%d y=%d fx=%d fy=%d" % [oc.x, oc.y, fc.x, fc.y])
 
 
 func _build_environment() -> void:
@@ -514,6 +523,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		open_character()
 		get_viewport().set_input_as_handled()
 		return
+	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋
+		if event.is_action_pressed("order_" + o):
+			if give_order(o):
+				get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed("perf_toggle"):
 		Settings.set_value("show_perf", not Settings.show_perf)
 		get_viewport().set_input_as_handled()
@@ -1056,6 +1070,15 @@ func start_encounter(id: String, win: String) -> void:
 	hud.show_prompt("")
 	hud.toast("◆ 动手了！", 2.0)
 	print("IC_ENCOUNTER start id=%s enemies=%d" % [id, encounter.enemies.size()])
+
+
+## 给小队下命令（B.2）；没有小队时什么都不做，返回 false
+func give_order(o: String) -> bool:
+	if battle == null or not is_instance_valid(battle) or not battle.order(o):
+		return false
+	hud.toast("◆ 小队：%s" % Battle.ORDERS[o], 2.0)
+	hud.refresh_squad()
+	return true
 
 
 ## 军阵试验场打完了（B.1）：只有一方还站着
