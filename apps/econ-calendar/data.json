@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-05T22:33:25Z",
-  "asOf": "2026-10-05",
+  "updatedAt": "2026-10-06T18:32:11Z",
+  "asOf": "2026-10-06",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-04 ~ 2026-10-10",
   "count": 82,
@@ -347,11 +347,11 @@
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
-      "title": "英央行 MPC 委员讲话",
-      "titleEn": "MPC Member Mann Speaks",
+      "title": "Housing Equity Withdrawal q/q",
+      "titleEn": "Housing Equity Withdrawal q/q",
       "impact": "low",
-      "forecast": null,
-      "previous": null,
+      "forecast": "-11.9B",
+      "previous": "-12.6B",
       "actual": null
     },
     {
@@ -359,11 +359,11 @@
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
-      "title": "Housing Equity Withdrawal q/q",
-      "titleEn": "Housing Equity Withdrawal q/q",
+      "title": "英央行 MPC 委员讲话",
+      "titleEn": "MPC Member Mann Speaks",
       "impact": "low",
-      "forecast": "-11.9B",
-      "previous": "-12.6B",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -379,19 +379,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-06T12:15:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "就业人数变化",
-      "titleEn": "ADP Weekly Employment Change",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-10-06T12:16:00Z",
+      "ts": "2026-10-06T12:14:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -400,6 +388,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "20.0K",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-06T12:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "就业人数变化",
+      "titleEn": "ADP Weekly Employment Change",
+      "impact": "low",
+      "forecast": null,
+      "previous": "22.5K",
       "actual": null
     },
     {
@@ -439,7 +439,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-06T14:10:00Z",
+      "ts": "2026-10-06T14:01:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -463,7 +463,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-06T14:50:00Z",
+      "ts": "2026-10-06T15:46:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -530,7 +530,7 @@
       "title": "Leading Indicators",
       "titleEn": "Leading Indicators",
       "impact": "low",
-      "forecast": "118.1%",
+      "forecast": "118.3%",
       "previous": "117.9%",
       "actual": null
     },
@@ -590,7 +590,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "2.1M",
       "previous": "0.9M",
       "actual": null
     },
@@ -626,7 +626,7 @@
       "title": "Consumer Credit m/m",
       "titleEn": "Consumer Credit m/m",
       "impact": "low",
-      "forecast": "15.4B",
+      "forecast": "14.4B",
       "previous": "18.1B",
       "actual": null
     },
@@ -650,7 +650,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "2.10T",
+      "forecast": "2.13T",
       "previous": "2.52T",
       "actual": null
     },
@@ -686,7 +686,7 @@
       "title": "Economy Watchers Sentiment",
       "titleEn": "Economy Watchers Sentiment",
       "impact": "low",
-      "forecast": "46.6",
+      "forecast": "46.7",
       "previous": "46.4",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "9.0K",
+      "forecast": "6.2K",
       "previous": "-41.7K",
       "actual": null
     },
