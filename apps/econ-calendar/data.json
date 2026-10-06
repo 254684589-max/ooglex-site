@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-06T18:32:11Z",
+  "updatedAt": "2026-10-06T21:12:58Z",
   "asOf": "2026-10-06",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-04 ~ 2026-10-10",
@@ -530,7 +530,7 @@
       "title": "Leading Indicators",
       "titleEn": "Leading Indicators",
       "impact": "low",
-      "forecast": "118.3%",
+      "forecast": "118.1%",
       "previous": "117.9%",
       "actual": null
     },
@@ -554,7 +554,7 @@
       "title": "房价指数 环比",
       "titleEn": "Lloyds HPI m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.0%",
       "previous": "-0.2%",
       "actual": null
     },
@@ -590,7 +590,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "2.1M",
+      "forecast": "1.9M",
       "previous": "0.9M",
       "actual": null
     },
@@ -626,7 +626,7 @@
       "title": "Consumer Credit m/m",
       "titleEn": "Consumer Credit m/m",
       "impact": "low",
-      "forecast": "14.4B",
+      "forecast": "14.5B",
       "previous": "18.1B",
       "actual": null
     },
@@ -650,7 +650,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "2.13T",
+      "forecast": "2.14T",
       "previous": "2.52T",
       "actual": null
     },
@@ -698,7 +698,7 @@
       "title": "贸易帐",
       "titleEn": "German Trade Balance",
       "impact": "low",
-      "forecast": "18.9B",
+      "forecast": "19.0B",
       "previous": "21.3B",
       "actual": null
     },
@@ -842,7 +842,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "79B",
       "previous": "64B",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "6.2K",
+      "forecast": "6.3K",
       "previous": "-41.7K",
       "actual": null
     },
@@ -962,7 +962,7 @@
       "title": "消费者信心指数",
       "titleEn": "Prelim UoM Consumer Sentiment",
       "impact": "medium",
-      "forecast": "47.6",
+      "forecast": "47.5",
       "previous": "47.8",
       "actual": null
     },
