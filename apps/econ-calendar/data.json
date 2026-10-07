@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-06T21:12:58Z",
-  "asOf": "2026-10-06",
+  "updatedAt": "2026-10-07T19:01:56Z",
+  "asOf": "2026-10-07",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-04 ~ 2026-10-10",
-  "count": 82,
+  "count": 83,
   "highCount": 5,
   "events": [
     {
@@ -592,6 +592,18 @@
       "impact": "low",
       "forecast": "1.9M",
       "previous": "0.9M",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-07T17:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
