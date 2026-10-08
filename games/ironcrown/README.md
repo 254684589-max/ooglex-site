@@ -25,7 +25,7 @@ $GODOT --headless --path games/ironcrown/godot --fixed-fps 60 res://tests/army_b
 games/ironcrown/tools/army_bench_web.sh "mode=combat&model=1&no3d=1"                                           # 同上，网页版（临时导出，不动 play/）
 ```
 
-网页参数：`?test=1` 灰盒测试场、`?test=2` 训练场、`?test=3` 军阵试验场（`&n=` 每边人数，最多 30）、`?q=low|medium|high` 画质、`?view=0|1|2` 固定机位、`?perf=1` 自动基准测试（结果表显示在画面上；军阵试验场里测的是一场军阵，加 `&n=30` 是 60 人，B.5）。游戏里按 F3 显示性能浮层。
+网页参数：`?test=1` 灰盒测试场、`?test=2` 训练场、`?test=3` 军阵试验场（`&n=` 每边人数，最多 30）、`?q=low|medium|high` 画质、`?view=0|1|2` 固定机位、`?perf=1` 自动基准测试（结果表显示在画面上；军阵试验场里测的是一场军阵，加 `&n=30` 是 60 人，B.5）、`?preview=1` 预览下一章的入口（序章结束画面出「继续：第一章」，4.1；第一章开场做好以前正常玩不出现）。游戏里按 F3 显示性能浮层。
 
 - 工具脚本复制自 `games/emberfall3d/tools/`，只改路径与文件名前缀（`ic-`）；复用的 GDScript 在文件头注明来源。
 - 内置中文字体 `godot/assets/fonts/NotoSansSC-IC.ttf` 是按本工程字符集做的子集（Noto Sans SC，SIL OFL 1.1，许可见同目录 `OFL.txt`）。

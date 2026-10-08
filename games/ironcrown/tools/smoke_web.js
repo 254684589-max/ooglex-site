@@ -14,6 +14,9 @@
 //   3.5  桦林 ?area=birch&view=2（营火边、站在火光里）：哨卡的无旗者发现你（IC_ENEMY … state=alert / combat），截图；电脑再在 view=1 截一张走近哨卡的画面。
 //   3.6  渡口 ?area=ferry&view=4（码头根上、「灰手」奥弗面前）：按 E / 点交互按钮和奥弗说话（IC_DIALOG open id=offer），截图；电脑再在 view=2 截一张码头上的少爷和塞拉斯。
 //   3.7  渡口 ?area=ferry&ending=deliver：直接打开结束画面「第一章 · 黑鹭堡　开发中」（IC_ENDING id=prologue），截图；按回车关掉（IC_ENDING closed）。
+//   4.1  章节包：?area=ferry&ending=deliver&preview=1，结束画面多一行「继续：第一章」（IC_ENDING … next=1，焦点就在它上面）：电脑按回车、手机 / 平板点它
+//        → 下载并挂载第一章的章节包（IC_PACK id=ch1 ok=true from=download：主包里没有这一章，线上同样 gzip 传输）→ 宅邸门口的路牌（IC_CH1_SIGN），截图；
+//        再开一次同样的地址点「继续」，记下这次是 cache（用浏览器里存着的那份）还是又下载了一次（只记录，不算失败）。
 //   3.4  霜渡镇载入时在网页里运行时烘焙导航网格（IC_NAV area=frostford ms=…），要求 1 秒以内。
 //   3.3  酒馆 ?area=tavern&brawl=1：一进门就和醉汉大桶徒手打起来（IC_BRAWL start）；电脑按 F、手机 / 平板点「攻」举拳、出拳，
 //        他走过来要几秒，每隔一会儿出一拳，直到打中他（IC_HIT target=大桶），截图。
@@ -89,12 +92,12 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     if (!mobile) {
       await page.mouse.click(w / 2, h / 2);             // 点击画面（尝试锁定指针）
       await page.keyboard.down('w');
-      moved = await waitLog(logs, 'IC_MOVED', 16);
+      moved = await waitLog(logs, 'IC_MOVED', 80);      // 按住 W 最多 20 秒：软件渲染慢时走够 1 米要 9 秒左右（2026-10-08 实测）
       await page.keyboard.up('w');
       await page.waitForTimeout(300);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-walk.png`) });
       opBegin = await waitLog(logs, 'IC_OPENING begin', 4);                        // 3.8：第一下点击开始开场（钟声）
-      opCall = await waitLog(logs, 'IC_OPENING call', 240);   // 软件渲染每秒只有一两帧，游戏时间走得慢                          // 钟声落下，管家喊人
+      opCall = await waitLog(logs, 'IC_OPENING call', 960);   // 960 次 × 250 毫秒 = 240 秒：软件渲染每秒只有一两帧，游戏时间走得慢（电脑宽度实测要 110 秒）                          // 钟声落下，管家喊人
       await page.waitForTimeout(500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-call.png`) });
       await page.keyboard.press('Escape');
@@ -112,7 +115,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       await page.waitForTimeout(300);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-walk.png`) });
       opBegin = await waitLog(logs, 'IC_OPENING begin', 4);                        // 3.8：第一下触摸开始开场（钟声）
-      opCall = await waitLog(logs, 'IC_OPENING call', 240);   // 软件渲染每秒只有一两帧，游戏时间走得慢
+      opCall = await waitLog(logs, 'IC_OPENING call', 960);   // 960 次 × 250 毫秒 = 240 秒：软件渲染每秒只有一两帧，游戏时间走得慢（电脑宽度实测要 110 秒）
       await page.waitForTimeout(500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-call.png`) });
       const ms = logs.find(l => l.startsWith('IC_MENU_SCREEN'));
@@ -334,6 +337,33 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       await page.screenshot({ path: path.join(outDir, `ic-${name}-ending.png`) });
       await page.keyboard.press('Enter');
       eClose = await waitLog(logs, 'IC_ENDING closed', 12);
+    }
+    // 章节包（4.1）
+    let cNext = '', cPack = '', cSign = '', cAgain = '';
+    for (let round = 0; round < 2; round++) {
+      logs.length = 0;
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=ferry&ending=deliver&preview=1');
+      const next = await waitLog(logs, 'IC_ENDING id=prologue choice=deliver next=1', 240);
+      if (!next) break;
+      const cs = await waitLog(logs, 'IC_CONTINUE_SCREEN', 12);
+      await page.waitForTimeout(2200);                 // 结束画面渐显 1.6 秒
+      if (!mobile) {
+        await page.keyboard.press('Enter');
+      } else if (cs) {
+        const [, cx, cy] = cs.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+        await page.touchscreen.tap(cx / dpr, cy / dpr);
+      }
+      const pk = await waitLog(logs, 'IC_PACK id=ch1 ok=true', 240);
+      const sg = await waitLog(logs, 'IC_CH1_SIGN', 240);
+      if (round === 0) {
+        cNext = next;
+        cPack = pk.includes('from=download') ? pk : '';
+        cSign = sg;
+        await page.waitForTimeout(1500);
+        await page.screenshot({ path: path.join(outDir, `ic-${name}-chapter1.png`) });
+      } else {
+        cAgain = pk ? (pk.match(/from=(\w+)/) || [, '?'])[1] : '没测到';
+      }
     }
     // 任务日志（2.3）：管家面前
     logs.length = 0;
@@ -605,9 +635,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!opCard && !!opBegin && !!opCall && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!bStart && !!bHit && !!wReady && !!wSpot && !!aStart && !!aFall && !!aOrder && !!fTalk && !!eOpen && !!eClose && navMs >= 0 && navMs < 1000 && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!opCard && !!opBegin && !!opCall && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!bStart && !!bHit && !!wReady && !!wSpot && !!aStart && !!aFall && !!aOrder && !!fTalk && !!eOpen && !!eClose && !!cNext && !!cPack && !!cSign && navMs >= 0 && navMs < 1000 && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 开场：${opCard ? '标题卡' : '没有标题卡'} / ${opBegin ? '钟声' : '没开始'} / ${opCall ? '管家喊人' : '没喊'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 打架：${bStart ? '开打' : '没开打'} / ${bHit ? '打中大桶' : '没打中'} | 桦林：${wReady ? '进得去' : '没打开'} / ${wSpot ? '被哨卡发现' : '没被发现'} | 军阵：${aStart ? '开打' : '没开打'} / ${aFall ? '有人倒下或求饶' : '没分出人'} / ${aOrder ? '小队跟随' : '命令没下成'} | 渡口：${fTalk ? '和奥弗说上话' : '没说上话'} | 尾声：${eOpen ? '结束画面' : '没打开'} / ${eClose ? '关得掉' : '没关掉'} | 导航：${navLine ? `霜渡镇烘焙 ${navMs} 毫秒` : '没烘焙'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 开场：${opCard ? '标题卡' : '没有标题卡'} / ${opBegin ? '钟声' : '没开始'} / ${opCall ? '管家喊人' : '没喊'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 打架：${bStart ? '开打' : '没开打'} / ${bHit ? '打中大桶' : '没打中'} | 桦林：${wReady ? '进得去' : '没打开'} / ${wSpot ? '被哨卡发现' : '没被发现'} | 军阵：${aStart ? '开打' : '没开打'} / ${aFall ? '有人倒下或求饶' : '没分出人'} / ${aOrder ? '小队跟随' : '命令没下成'} | 渡口：${fTalk ? '和奥弗说上话' : '没说上话'} | 尾声：${eOpen ? '结束画面' : '没打开'} / ${eClose ? '关得掉' : '没关掉'} | 章节包：${cNext ? '有「继续」' : '没有「继续」'} / ${cPack ? '下载并挂载' : '没下载成'} / ${cSign ? '路牌' : '没路牌'} / 再进一次 ${cAgain || '—'} | 导航：${navLine ? `霜渡镇烘焙 ${navMs} 毫秒` : '没烘焙'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

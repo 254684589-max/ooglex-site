@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -204,6 +204,9 @@ func test_ui() -> void:
 	texts.append("· （需要：枚银币（身上 枚））、")     # 3.9 灰色选项
 	texts.append_array(Battle.ORDERS.values() + TouchControls.ORDER_LABELS.values() + ["◆ 小队 人：· 1 跟随 2 坚守 3 冲锋点「令」下命令◆ 小队："])     # 小队命令（B.2）
 	texts.append("挡箭")     # 兵种（B.4）
+	texts.append_array(["正在载入 第一章 · 黑鹭堡", "正在下载这一章的内容……", "已下载 1.2 / 3.4 MB", "× 没能载入：", "重试返回", "继续：第一章 · 黑鹭堡", "往鹭沼 · 黑鹭堡",
+		"× 没能载入第一章 · 黑鹭堡，存档没读", "这一章的内容不在这个版本里", "正在下载别的章节，请稍等", "下载好了，但浏览器不让存（存储空间不够或隐私模式）",
+		"下载的章节包打不开，请重试", "下载没能开始（错误 ）", "网络太慢，下载超时了", "网络出错了（），请检查网络后重试", "服务器没给这一章（HTTP ）"])     # 章节包（4.1）
 	texts.append_array(["军阵基准测试进行中……（ 人，画质，不要操作）", "军阵基准测试结果（ 人，画质，电脑触屏设备）", "：平均 帧，最慢一帧 毫秒，绘制调用 ，逻辑约 — 毫秒"])     # 军阵基准（B.5）
 	texts.append_array(["战况：人 +援军（士气 ）· 胜（溃逃）两边都打光了", "稳动摇快崩了", "◆ 的队长倒下了！溃逃了！来了 个援军", "撤！别打了！", "（援军）"])     # 士气与胜负（B.3）
 	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
@@ -4494,3 +4497,152 @@ func test_armyperf() -> void:
 	check(text.contains("军阵基准测试结果（20 人") and text.contains("观战台上：平均") and text.contains("两军之间：平均") and text.contains("逻辑约") and Array(text.split("\n")).all(func(l): return l.length() <= 30), "结果表写在画面上，每行不超过 30 个字（手机竖屏放得下）（%s）" % text.get_slice("\n", 0))
 	check(Saves.read_slot("auto") == saved_before, "基准测试不自动存档（不覆盖你的自动存档）")
 	await free_main(main2)
+
+
+## 测试用的章节包下载器（4.1）：内容永远「不在」，前 fails 次下载失败，之后成功（不真下载）
+class FakePacks extends PackLoader:
+	var fails := 0
+	var calls := 0
+
+	func has_pack(_id: String) -> bool:
+		return false
+
+	func ensure(_id: String) -> Dictionary:
+		calls += 1
+		await get_tree().process_frame
+		if calls <= fails:
+			return {"ok": false, "detail": "网络出错了（4），请检查网络后重试", "ms": 0, "from": ""}
+		return {"ok": true, "detail": "测试", "ms": 0, "from": "download"}
+
+
+## 目录底下的文件（不含 .import / .uid），res:// 路径
+func files_under(dir: String) -> Array:
+	var out: Array = []
+	var d := DirAccess.open(dir)
+	if d == null:
+		return out
+	for f in d.get_files():
+		if not (f.ends_with(".import") or f.ends_with(".uid")):
+			out.append(dir.path_join(f))
+	for sub in d.get_directories():
+		out.append_array(files_under(dir.path_join(sub)))
+	return out
+
+
+## 换上测试用的下载器（下载画面的进度信号不接，测不到也无妨）
+func fake_packs(main: Node3D, fails: int) -> FakePacks:
+	var fp := FakePacks.new()
+	fp.fails = fails
+	fp.process_mode = Node.PROCESS_MODE_ALWAYS
+	main.add_child(fp)
+	main.packs = fp
+	return fp
+
+
+## 章节衔接与章节包（路线图 4.1；TECH.md 第六节）：章节登记、导出预设、存档里的章节、下载器、下载画面、结束画面的「继续」、读第一章的存档
+func test_chapters() -> void:
+	check(Chapters.PLAYABLE == 0 and Chapters.name_of(1) == "第一章 · 黑鹭堡" and Chapters.pack_of(0) == "" and Chapters.pack_of(1) == "ch1", "章节登记：序章在主包里，第一章在章节包 ch1；第一章开场（4.3）做好以前不能继续（PLAYABLE = 0）")
+	check(Chapters.probe_for_pack("ch1") == Chapters.probe_of(1) and Chapters.content_ready(0) and Chapters.content_ready(1), "编辑器 / 无头测试里第一章的内容本来就在 res://（网页上挂了章节包才在）")
+	# 章节包只放场景与资源，脚本留在主包；主包排除 chapters/*；第一章的预设正好列出 chapters/ch1 底下的全部文件
+	var files := files_under("res://chapters/ch1")
+	files.sort()
+	var cfg := ConfigFile.new()
+	cfg.load("res://export_presets.cfg")
+	var listed: Array = []
+	var web_excl := ""
+	for sec in cfg.get_sections():
+		if sec.ends_with(".options"):
+			continue
+		if cfg.get_value(sec, "name", "") == "Chapter1":
+			listed = Array(cfg.get_value(sec, "export_files", PackedStringArray()))
+		elif cfg.get_value(sec, "name", "") == "Web":
+			web_excl = str(cfg.get_value(sec, "exclude_filter", ""))
+	listed.sort()
+	check(not files.is_empty() and files.all(func(f): return not str(f).ends_with(".gd")), "章节包里只放场景与资源，脚本一律留在主包（%d 个文件）" % files.size())
+	check(listed == files and web_excl.contains("chapters/*"), "导出预设：主包排除 chapters/*；第一章的预设正好列出 chapters/ch1 底下的全部文件（%s）" % ", ".join(listed))
+	# 存档：章节跟着走；4.1 以前的存档没有这一项 = 序章
+	GameState.new_game(5)
+	check(GameState.chapter == 0 and int(GameState.to_dict().chapter) == 0, "新游戏是序章（chapter = 0）")
+	GameState.chapter = 1
+	var d := JSON.parse_string(JSON.stringify(GameState.to_dict())) as Dictionary
+	GameState.new_game(5)
+	GameState.from_dict(d)
+	var back := GameState.chapter
+	d.erase("chapter")
+	GameState.from_dict(d)
+	check(back == 1 and GameState.chapter == 0, "章节写进存档、读得回来；以前的存档没有这一项，读出来是序章")
+	# 下载器：内容已经在就不下载；不是网页、内容又不在时说明原因、不卡住
+	var pl := PackLoader.new()
+	add_child(pl)
+	var r1: Dictionary = await pl.ensure("ch1")
+	var r2: Dictionary = await pl.ensure("ch9")
+	check(r1.ok and r1.from == "present" and not r2.ok and str(r2.detail) == "这一章的内容不在这个版本里" and pl.busy == "", "下载器：内容已经在就不下载；没有的章节说明原因")
+	pl.free()
+	# 下载画面
+	wipe_test_saves()
+	GameState.new_game(81)
+	var main := await make_main(false)
+	var pp: PackPanel = main.pack_panel
+	pp.open("第一章 · 黑鹭堡", true)
+	pp.set_progress(1258291, 3565158)
+	check(pp.visible and pp.title.text == "正在载入 第一章 · 黑鹭堡" and pp.detail.text == "已下载 1.2 / 3.4 MB" and absf(pp.bar.value - 0.353) < 0.01 and not pp.retry_btn.visible, "下载画面：章节名、进度条、「已下载 1.2 / 3.4 MB」")
+	pp.set_progress(2097152, 0)
+	check(pp.detail.text == "已下载 2.0 MB", "不知道总大小时只写下了多少")
+	pp.fail("网络出错了（4），请检查网络后重试")
+	await frames(2)
+	check(pp.retry_btn.visible and pp.cancel_btn.visible and pp.retry_btn.has_focus() and not pp.bar.visible and pp.detail.text == "× 没能载入：网络出错了（4），请检查网络后重试", "失败：写明原因，「重试」「返回」，焦点在「重试」上（键盘能直接按）")
+	pp.close()
+	check(await main.ensure_chapter(1) and not pp.visible, "第一章的内容已经在：不开下载画面")
+	# 结束画面：第一章开场做好以前没有「继续」；能玩以后有，默认焦点在它上面
+	main.show_ending("prologue", "deliver")
+	await frames(3)
+	check(main.ending_panel.visible and not main.ending_panel.continue_btn.visible and main.ending_panel.back_btn.has_focus(), "第一章开场做好以前：结束画面没有「继续」（和原来一样）")
+	main.ending_panel.close()
+	await frames(2)
+	main.playable_chapter = 1
+	main.show_ending("prologue", "deliver")
+	await frames(3)
+	var eb: EndingPanel = main.ending_panel
+	check(eb.continue_btn.visible and eb.continue_btn.text == "继续：第一章 · 黑鹭堡" and eb.continue_btn.has_focus() and eb.box.get_global_rect().size.x <= main.hud.size.x, "能玩以后：结束画面多一行「继续：第一章 · 黑鹭堡」，焦点在它上面，不超出画面宽度")
+	# 继续：第一章——去霜渡镇宅邸门口，路牌在，章节记进存档
+	var rl := [0]
+	main.reload_requested.connect(func(): rl[0] += 1)
+	eb.continue_btn.pressed.emit()
+	await frames(3)
+	check(rl[0] == 1 and GameState.chapter == 1 and GameState.has_flag("ch1_started") and GameState.pending_load.get("scene") == "frostford" and GameState.pending_load.get("spawn") == "manor", "「继续」：记下第一章，去霜渡镇宅邸门口")
+	main = await reload_main(main)
+	await frames(4)
+	var sign := main.world.get_node_or_null("RoadSignCh1") as Node3D
+	check(main.area == "frostford" and sign != null and (sign.get_node("Text") as Label3D).text == "往鹭沼 · 黑鹭堡", "第一章：宅邸门口立着「往鹭沼 · 黑鹭堡」的路牌（场景在章节包里）")
+	var to: Vector3 = sign.global_position - main.player.global_position if sign else Vector3.ZERO
+	check(to.length() < 5.0 and (-main.player.global_basis.z).dot(to.normalized()) > 0.3, "路牌就在出门的人前方几步（%.1f 米）" % to.length())
+	check(main.hud.toast_label.text.contains("第一章 · 黑鹭堡") and GameState.has_flag("ch1_intro"), "刚进第一章先报章节名")
+	await frames(3)
+	var au: Dictionary = Saves.read_slot("auto")
+	check(au.has("data") and int(au.data.state.chapter) == 1 and au.data.scene == "frostford", "进第一章自动存档：存档里写着第一章")
+	# 读第一章的存档：章节包拿不到时下载画面说原因；点「返回」，存档没读、现在的游戏不动
+	var fp := fake_packs(main, 99)
+	GameState.silver = 7
+	var rl2 := [0]
+	main.reload_requested.connect(func(): rl2[0] += 1)
+	check(main.load_game("auto"), "读第一章的存档：先去拿章节包")
+	await frames(4)
+	check(main.pack_panel.visible and main.pack_panel.failed and main.pack_panel.retry_btn.visible and get_tree().paused, "章节包拿不到：下载画面写明原因、给「重试」「返回」，游戏暂停")
+	main.pack_panel.retry_btn.pressed.emit()
+	await frames(4)
+	check(fp.calls == 2 and main.pack_panel.failed, "点「重试」：再下载一次（又失败了）")
+	main.pack_panel.cancel_btn.pressed.emit()
+	await frames(3)
+	check(not main.pack_panel.visible and rl2[0] == 0 and GameState.silver == 7 and not get_tree().paused and main.hud.toast_label.text.contains("存档没读"), "点「返回」：存档没读，现在的游戏不动，接着玩")
+	# 重试一次就成了：读进来
+	fp.fails = fp.calls + 1
+	check(main.load_game("auto"), "再读一次")
+	await frames(4)
+	main.pack_panel.retry_btn.pressed.emit()
+	await frames(6)
+	check(rl2[0] == 1 and GameState.chapter == 1 and GameState.silver != 7 and not main.pack_panel.visible, "重试成功：读进第一章的存档")
+	main = await reload_main(main)
+	await frames(3)
+	check(main.world.get_node_or_null("RoadSignCh1") != null, "读档回来：路牌还在")
+	await free_main(main)
+	GameState.new_game()

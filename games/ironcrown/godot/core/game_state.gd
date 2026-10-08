@@ -66,6 +66,7 @@ var dead := {}            # 已经倒下的敌人编号 → 倒下的位置 [x, 
 var yielded := {}         # 求饶（或逃跑后认输）的敌人编号 → 跪下的位置 [x, y, z]，读档后还跪在那里、能搜身（3.5）
 var playtime := 0.0       # 游戏时间（秒，暂停时不算）
 var tips_seen: Array = [] # 看过的教学提示编号（data/tips.json；3.8），每条只显示一次，跟着存档走
+var chapter := 0          # 第几章（0 = 序章；4.1）：读这一章的存档前要先有这一章的章节包（Chapters）
 var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
 var pending_brawl := {}   # 对话里说好要打一架：{brawl, win, lose}，对话关上后由 main 取走开打（3.3；不存档）
 var pending_fight := {}   # 对话说崩了要动手：{fight, win}，对话关上后由 main 取走开打（3.6；不存档）
@@ -95,6 +96,7 @@ func new_game(seed_override := -1) -> void:
 	yielded.clear()
 	playtime = 0.0
 	tips_seen.clear()
+	chapter = 0
 	var pd := progression()
 	skills = DEFAULT_SKILLS.duplicate()
 	for s in pd.get("skills", {}):
@@ -603,7 +605,7 @@ func to_dict() -> Dictionary:
 		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime, "tips": tips_seen.duplicate(),
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
 		"skills": skills.duplicate(), "skill_xp": skill_xp.duplicate(), "skill_ups": skill_ups, "level": level, "attr_points": attr_points,
-		"rep": rep.duplicate(),
+		"rep": rep.duplicate(), "chapter": chapter,
 	}
 
 
@@ -611,6 +613,7 @@ func to_dict() -> Dictionary:
 func from_dict(d: Dictionary) -> void:
 	new_game(int(d.get("seed", 0)))
 	flags = (d.get("flags", {}) as Dictionary).duplicate(true)
+	chapter = int(d.get("chapter", 0))              # 4.1 以前的存档没有这一项：都是序章
 	checks = (d.get("checks", {}) as Dictionary).duplicate()
 	quests = {}
 	for q in d.get("quests", {}):

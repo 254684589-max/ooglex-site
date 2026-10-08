@@ -29,5 +29,7 @@
   "valen_may_learn": {"desc": "扣下借据勒索塞拉斯：瓦伦家可能会知道（STORY：后续概率事件）", "set_in": "ferry.json edric/extort_silas", "read_in": "第一章以后的事件"},
   "prologue_done": {"desc": "奥尔本修士把旧书交给你，序章「霜渡镇之夜」结束", "set_in": "ferry.json alban_ferry/book", "read_in": "world/ferry.gd、world/chapel.gd（修士回小教堂）、chapel.json / ferry.json 修士的开场"},
   "alban_saw_letter": {"desc": "把少爷的信给奥尔本修士看过", "set_in": "chapel.json alban/letter", "read_in": "chapel.json alban（不再重复给他看）；3.7 尾声修士交书时可以读"},
-  "opening_done": {"desc": "开场（钟声、管家叫住）已经播过，读档和换区域不再播", "set_in": "scenes/opening.gd（代码，管家喊人的时候）", "read_in": "scenes/opening.gd Opening.wanted()"}
+  "opening_done": {"desc": "开场（钟声、管家叫住）已经播过，读档和换区域不再播", "set_in": "scenes/opening.gd（代码，管家喊人的时候）", "read_in": "scenes/opening.gd Opening.wanted()"},
+  "ch1_started": {"desc": "进了第一章「黑鹭堡」（序章结束画面点「继续：第一章」，4.1）", "set_in": "scenes/main.gd start_chapter()（代码）", "read_in": "第一章（4.3 起：霜渡镇清晨的开场）"},
+  "ch1_intro": {"desc": "刚进第一章时报过章节名（只报一次，4.1）", "set_in": "scenes/main.gd _arrive()（代码）", "read_in": "scenes/main.gd _arrive()"}
 }

@@ -53,6 +53,10 @@ var touch: TouchControls
 var pause_menu: PauseMenu
 var defeat_panel: DefeatPanel
 var ending_panel: EndingPanel    # 结束画面（3.7）
+var packs: PackLoader            # 章节资源包（4.1）
+var pack_panel: PackPanel        # 章节包的下载画面（4.1）
+var pack_answer := ""            # 下载失败时玩家点的：retry / cancel
+var playable_chapter := Chapters.PLAYABLE   # 做到第几章能玩了（4.1；网页 ?preview=1 预览下一章的入口，测试里也改它）
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
 var touch_hidden_by_dialogue := false   # 对话打开时藏起了触屏按钮（对话结束时还原）
 var opening: Opening             # 开场（3.8）：只在新游戏时有
@@ -171,6 +175,9 @@ func _ready() -> void:
 		if st != null:
 			player.global_transform = st
 	spawn = player.global_position
+	if _query("preview") == "1":
+		playable_chapter = maxi(playable_chapter, 1)
+	_place_chapter_content()
 	yaw0 = player.yaw_deg()
 	_build_ui()
 	var q := _query("q")
@@ -191,7 +198,7 @@ func _ready() -> void:
 	if area == "birch":                  # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）
 		hud.set_hint(Birch.TEACH_TOUCH if touch_mode else Birch.TEACH_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
-	if _query("ending") in EndingPanel.RECAP:
+	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
 		show_ending.call_deferred("prologue", _query("ending"))
 	battle = world.get_node_or_null("Battle") as Battle
 	if battle:
@@ -558,6 +565,16 @@ func _build_ui() -> void:
 	layer.add_child(ending_panel)
 	ending_panel.closed.connect(_on_ending_closed)
 	ending_panel.restart_requested.connect(func(): _restart.call_deferred())
+	ending_panel.continue_requested.connect(func(n: int): start_chapter(n))
+	packs = PackLoader.new()
+	packs.name = "Packs"
+	packs.process_mode = Node.PROCESS_MODE_ALWAYS       # 下载时游戏是暂停的，HTTPRequest 和进度照样要走
+	add_child(packs)
+	pack_panel = PackPanel.new()
+	layer.add_child(pack_panel)
+	packs.progress.connect(func(_id: String, done: int, total: int): pack_panel.set_progress(done, total))
+	pack_panel.retry_requested.connect(func(): pack_answer = "retry")
+	pack_panel.cancel_requested.connect(func(): pack_answer = "cancel")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -743,8 +760,13 @@ func _arrive() -> void:
 	started = true
 	hint_left = 0.0
 	hud.set_hint("")
-	hud.toast(Areas.display_name(area), 2.0)
-	print("IC_ARRIVE area=%s spawn=%s" % [area, arrived_by])
+	var intro := "ch%d_intro" % GameState.chapter
+	if GameState.chapter > 0 and not GameState.get_flag(intro):
+		GameState.set_flag(intro, true)                  # 刚进这一章：先报章节名（只报一次）
+		hud.toast("%s\n%s" % [Chapters.name_of(GameState.chapter), Areas.display_name(area)], 3.0)
+	else:
+		hud.toast(Areas.display_name(area), 2.0)
+	print("IC_ARRIVE area=%s spawn=%s chapter=%d" % [area, arrived_by, GameState.chapter])
 	show_tip("save")                     # 进入新区域会自动存档：第一次走进别处时讲存档
 	if Settings.reduced_motion:
 		fade.color.a = 0.0
@@ -802,11 +824,27 @@ func load_game(slot: String) -> bool:
 		print("IC_LOAD_FAIL slot=%s %s" % [slot, why])
 		return false
 	var d: Dictionary = r.data
-	GameState.from_dict(d.state)
-	GameState.pending_load = {"scene": str(d.scene), "player": d.player, "slot": slot, "note": str(r.note)}
-	print("IC_LOAD slot=%s scene=%s%s" % [slot, d.scene, " note=" + r.note if r.note != "" else ""])
-	_reload()
+	var ch := int((d.state as Dictionary).get("chapter", 0))
+	if not packs.has_pack(Chapters.pack_of(ch)):
+		_load_after_pack(slot, d, str(r.note), ch)          # 第一章以后的存档：先把那一章的章节包拿到（4.1），拿不到就不读、存档不动
+		return true
+	_finish_load(slot, d, str(r.note))
 	return true
+
+
+func _finish_load(slot: String, d: Dictionary, note: String) -> void:
+	GameState.from_dict(d.state)
+	GameState.pending_load = {"scene": str(d.scene), "player": d.player, "slot": slot, "note": note}
+	print("IC_LOAD slot=%s scene=%s%s" % [slot, d.scene, " note=" + note if note != "" else ""])
+	_reload()
+
+
+func _load_after_pack(slot: String, d: Dictionary, note: String, ch: int) -> void:
+	if await ensure_chapter(ch):
+		_finish_load(slot, d, note)
+	else:
+		hud.toast("× 没能载入%s，存档没读" % Chapters.name_of(ch), 3.0)
+		print("IC_LOAD_FAIL slot=%s 章节包没到" % slot)
 
 
 func _reload() -> void:
@@ -1097,8 +1135,12 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	ending_panel.open(choice, Settings.reduced_motion)
-	print("IC_ENDING id=%s choice=%s" % [id, choice])
+	ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
+	print("IC_ENDING id=%s choice=%s next=%d" % [id, choice, ending_panel.next_chapter])
+	if ending_panel.next_chapter > 0:
+		await get_tree().process_frame
+		var c := ending_panel.continue_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+		print("IC_CONTINUE_SCREEN x=%d y=%d" % [c.x, c.y])          # 给网页冒烟测试点（窗口像素，已乘界面缩放）
 
 
 func _on_ending_closed() -> void:
@@ -1114,6 +1156,66 @@ func _on_ending_closed() -> void:
 func _restart() -> void:
 	GameState.new_game()
 	_reload()
+
+
+# ---------------- 章节（4.1） ----------------
+
+## 进第 n 章：章节包先到（网页上下载，失败可以重试或返回），再记章节、写旗标，到这一章的起点（到了自动存档）
+func start_chapter(n: int) -> void:
+	if not Chapters.known(n) or n > playable_chapter:
+		return
+	if not await ensure_chapter(n):
+		return
+	GameState.chapter = n
+	GameState.set_flag("ch%d_started" % n, true)
+	var c: Dictionary = Chapters.LIST[n]
+	GameState.pending_load = {"scene": str(c.area), "spawn": str(c.spawn),
+		"player": {"health": player.melee.health_max(), "stamina": player.melee.stamina_max()}}
+	print("IC_CHAPTER start=%d area=%s" % [n, c.area])
+	ending_panel.hide()
+	_reload()
+
+
+## 确保第 n 章的内容到了：已经在就直接返回 true；否则打开下载画面，失败时等玩家点「重试」或「返回」（返回 = false，什么都不改）
+func ensure_chapter(n: int) -> bool:
+	var id := Chapters.pack_of(n)
+	if packs.has_pack(id):
+		return true
+	var was_paused := get_tree().paused
+	get_tree().paused = true
+	while true:
+		pack_panel.open(Chapters.name_of(n), Settings.reduced_motion)
+		var r: Dictionary = await packs.ensure(id)
+		if r.ok:
+			pack_panel.close()
+			get_tree().paused = was_paused
+			return true
+		pack_panel.fail(str(r.detail))
+		pack_answer = ""
+		while pack_answer == "":
+			await get_tree().process_frame
+		if pack_answer == "cancel":
+			pack_panel.close()
+			get_tree().paused = was_paused
+			return false
+	return false
+
+
+## 这一章在当前区域放的东西。4.1：第一章在霜渡镇宅邸门口立一块「往鹭沼 · 黑鹭堡」的路牌——场景在章节包里，看得到它就说明包挂上了
+func _place_chapter_content() -> void:
+	if GameState.chapter < 1 or area != "frostford":
+		return
+	var path := Chapters.probe_of(1)
+	var ps: PackedScene = load(path) if ResourceLoader.exists(path) else null
+	if ps == null:
+		print("IC_PACK_MISSING chapter=1")             # 不该走到这里（读档、进章都先确保了章节包）：不放路牌，游戏照常
+		return
+	var sign := ps.instantiate() as Node3D
+	sign.name = "RoadSignCh1"
+	world.add_child(sign)
+	sign.position = Vector3(1.3, 0, -39.8)          # 宅邸门口出生点（0, 0, -44.3，面朝 +Z）往前 4.5 米、路的左边，木板伸向路中间：
+	sign.rotation.y = atan2(1.3, 4.5)               # 手机竖屏视野窄，板子在正前方 2°–20° 以内才看得全（4.1 截图）；板面转过来对着出门的人
+	print("IC_CH1_SIGN")
 
 
 # ---------------- 对峙转战斗（3.6） ----------------
