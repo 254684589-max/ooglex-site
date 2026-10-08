@@ -92,12 +92,12 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     if (!mobile) {
       await page.mouse.click(w / 2, h / 2);             // 点击画面（尝试锁定指针）
       await page.keyboard.down('w');
-      moved = await waitLog(logs, 'IC_MOVED', 16);
+      moved = await waitLog(logs, 'IC_MOVED', 80);      // 按住 W 最多 20 秒：软件渲染慢时走够 1 米要 9 秒左右（2026-10-08 实测）
       await page.keyboard.up('w');
       await page.waitForTimeout(300);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-walk.png`) });
       opBegin = await waitLog(logs, 'IC_OPENING begin', 4);                        // 3.8：第一下点击开始开场（钟声）
-      opCall = await waitLog(logs, 'IC_OPENING call', 240);   // 软件渲染每秒只有一两帧，游戏时间走得慢                          // 钟声落下，管家喊人
+      opCall = await waitLog(logs, 'IC_OPENING call', 960);   // 960 次 × 250 毫秒 = 240 秒：软件渲染每秒只有一两帧，游戏时间走得慢（电脑宽度实测要 110 秒）                          // 钟声落下，管家喊人
       await page.waitForTimeout(500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-call.png`) });
       await page.keyboard.press('Escape');
@@ -115,7 +115,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       await page.waitForTimeout(300);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-walk.png`) });
       opBegin = await waitLog(logs, 'IC_OPENING begin', 4);                        // 3.8：第一下触摸开始开场（钟声）
-      opCall = await waitLog(logs, 'IC_OPENING call', 240);   // 软件渲染每秒只有一两帧，游戏时间走得慢
+      opCall = await waitLog(logs, 'IC_OPENING call', 960);   // 960 次 × 250 毫秒 = 240 秒：软件渲染每秒只有一两帧，游戏时间走得慢（电脑宽度实测要 110 秒）
       await page.waitForTimeout(500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-call.png`) });
       const ms = logs.find(l => l.startsWith('IC_MENU_SCREEN'));
