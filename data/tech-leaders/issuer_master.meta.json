@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "stage": "v1_1_universe_1000",
-  "generated_at": "2026-09-28T11:03:59Z",
+  "generated_at": "2026-10-05T11:40:03Z",
   "requested_limit": 1000,
   "record_count": 1000,
   "exchange_counts": {
@@ -12,10 +12,10 @@
     "Unknown": 633,
     "科技": 61,
     "金融": 59,
-    "工业": 56,
+    "工业": 55,
     "医疗健康": 45,
     "可选消费": 36,
-    "公用事业": 26,
+    "公用事业": 27,
     "必需消费": 24,
     "能源": 20,
     "房地产": 14,
@@ -26,7 +26,7 @@
     "market_cap": 367,
     "sec_filer_category_proxy": 633
   },
-  "market_data_as_of": "2026-09-27",
+  "market_data_as_of": "2026-10-04",
   "sources": {
     "sec_identity": "https://www.sec.gov/files/company_tickers_exchange.json",
     "market_cap_priority": "apps/companies/data.json",

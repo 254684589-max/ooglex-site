@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-04T21:54:21Z",
-  "asOf": "2026-10-04",
+  "updatedAt": "2026-10-08T00:11:07Z",
+  "asOf": "2026-10-08",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-04 ~ 2026-10-10",
-  "count": 79,
-  "highCount": 4,
+  "count": 83,
+  "highCount": 5,
   "events": [
     {
       "ts": "2026-10-04T09:15:00Z",
@@ -278,7 +278,7 @@
       "title": "工厂订单 环比",
       "titleEn": "German Factory Orders m/m",
       "impact": "low",
-      "forecast": "-1.0%",
+      "forecast": "-0.9%",
       "previous": "2.5%",
       "actual": null
     },
@@ -347,11 +347,11 @@
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
-      "title": "英央行 MPC 委员讲话",
-      "titleEn": "MPC Member Mann Speaks",
+      "title": "Housing Equity Withdrawal q/q",
+      "titleEn": "Housing Equity Withdrawal q/q",
       "impact": "low",
-      "forecast": null,
-      "previous": null,
+      "forecast": "-11.9B",
+      "previous": "-12.6B",
       "actual": null
     },
     {
@@ -359,11 +359,11 @@
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
-      "title": "Housing Equity Withdrawal q/q",
-      "titleEn": "Housing Equity Withdrawal q/q",
+      "title": "英央行 MPC 委员讲话",
+      "titleEn": "MPC Member Mann Speaks",
       "impact": "low",
-      "forecast": "-11.9B",
-      "previous": "-12.6B",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -374,24 +374,12 @@
       "title": "零售销售 环比",
       "titleEn": "Retail Sales m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.2%",
       "previous": "-0.6%",
       "actual": null
     },
     {
-      "ts": "2026-10-06T12:15:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "就业人数变化",
-      "titleEn": "ADP Weekly Employment Change",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-10-06T12:16:00Z",
+      "ts": "2026-10-06T12:14:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -403,6 +391,18 @@
       "actual": null
     },
     {
+      "ts": "2026-10-06T12:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "就业人数变化",
+      "titleEn": "ADP Weekly Employment Change",
+      "impact": "low",
+      "forecast": null,
+      "previous": "22.5K",
+      "actual": null
+    },
+    {
       "ts": "2026-10-06T12:30:00Z",
       "ccy": "CAD",
       "country": "加拿大",
@@ -410,7 +410,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "1.3B",
+      "forecast": "1.5B",
       "previous": "0.8B",
       "actual": null
     },
@@ -422,7 +422,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "-95.2B",
+      "forecast": "-100.8B",
       "previous": "-88.6B",
       "actual": null
     },
@@ -439,7 +439,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-06T14:10:00Z",
+      "ts": "2026-10-06T14:01:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -463,7 +463,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-06T14:50:00Z",
+      "ts": "2026-10-06T15:46:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -472,6 +472,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "-1.1%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-06T17:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Schmid Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -542,7 +554,7 @@
       "title": "房价指数 环比",
       "titleEn": "Lloyds HPI m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.0%",
       "previous": "-0.2%",
       "actual": null
     },
@@ -578,8 +590,20 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "1.9M",
       "previous": "0.9M",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-07T17:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -614,7 +638,7 @@
       "title": "Consumer Credit m/m",
       "titleEn": "Consumer Credit m/m",
       "impact": "low",
-      "forecast": "15.4B",
+      "forecast": "14.5B",
       "previous": "18.1B",
       "actual": null
     },
@@ -638,7 +662,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "2.10T",
+      "forecast": "2.14T",
       "previous": "2.52T",
       "actual": null
     },
@@ -674,7 +698,7 @@
       "title": "Economy Watchers Sentiment",
       "titleEn": "Economy Watchers Sentiment",
       "impact": "low",
-      "forecast": "46.6",
+      "forecast": "46.7",
       "previous": "46.4",
       "actual": null
     },
@@ -686,7 +710,7 @@
       "title": "贸易帐",
       "titleEn": "German Trade Balance",
       "impact": "low",
-      "forecast": "18.9B",
+      "forecast": "19.0B",
       "previous": "21.3B",
       "actual": null
     },
@@ -710,6 +734,18 @@
       "title": "英央行信贷状况调查",
       "titleEn": "BOE Credit Conditions Survey",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-08T08:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Waller Speaks",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
@@ -763,6 +799,18 @@
       "actual": null
     },
     {
+      "ts": "2026-10-08T12:15:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "英央行行长讲话",
+      "titleEn": "BOE Gov Bailey Speaks",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-10-08T12:30:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -806,7 +854,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "79B",
       "previous": "64B",
       "actual": null
     },
@@ -902,7 +950,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "9.0K",
+      "forecast": "6.3K",
       "previous": "-41.7K",
       "actual": null
     },
@@ -926,7 +974,7 @@
       "title": "消费者信心指数",
       "titleEn": "Prelim UoM Consumer Sentiment",
       "impact": "medium",
-      "forecast": "47.6",
+      "forecast": "47.5",
       "previous": "47.8",
       "actual": null
     },
