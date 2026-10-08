@@ -23,6 +23,7 @@ const ACTIONS := {
 	"order_follow": [KEY_1],      # 小队命令（B.2，军阵战斗里）：跟随我
 	"order_hold": [KEY_2],        # 原地坚守
 	"order_charge": [KEY_3],      # 冲锋（对话面板打开时数字键选选项，游戏暂停，不会误下命令）
+	"travel_map": [KEY_M],        # 旅行地图（4.2；第一章起）
 	"pause": [KEY_ESCAPE],
 }
 

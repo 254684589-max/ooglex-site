@@ -56,6 +56,8 @@ var ending_panel: EndingPanel    # 结束画面（3.7）
 var packs: PackLoader            # 章节资源包（4.1）
 var pack_panel: PackPanel        # 章节包的下载画面（4.1）
 var pack_answer := ""            # 下载失败时玩家点的：retry / cancel
+var travel_map: TravelMap        # 旅行地图（4.2）
+var leaving := false             # 已经出发、正在淡出换区域（4.2）：这时不再打开地图
 var playable_chapter := Chapters.PLAYABLE   # 做到第几章能玩了（4.1；网页 ?preview=1 预览下一章的入口，测试里也改它）
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
 var touch_hidden_by_dialogue := false   # 对话打开时藏起了触屏按钮（对话结束时还原）
@@ -85,6 +87,7 @@ var encounter: Encounter        # 正在打的对峙（3.6，渡口的「灰手�
 var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
 var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
 var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
+var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
@@ -108,12 +111,17 @@ func _ready() -> void:
 			area = "battle"
 		elif Areas.known(_query("area")):
 			area = _query("area")
+		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
+			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
+			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
 		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）；玩家自己存过设置就听玩家的
 		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 			Settings.reduced_motion = true
 			if not Settings.loaded:
 				Settings.head_bob = false
 			print("IC_REDUCED_MOTION")
+	if Daypart.valid(str(pending.get("daypart", ""))):
+		GameState.daypart = str(pending.daypart)   # 走旅行地图到了：路上过了大半天（4.2；出发时不改，免得半路存档存成「人还在原地、时辰已经到了」）
 	if not pending.is_empty():           # 读档 / 换区域：场景以它为准（2.8、3.1）
 		area = str(pending.scene) if Areas.known(str(pending.scene)) else "frostford"
 		use_arena = area == "arena"
@@ -152,6 +160,10 @@ func _ready() -> void:
 	if nb.has_volume():
 		nav = NavBuilder.bake(world, nb)
 		print("IC_NAV area=%s ms=%.0f polygons=%d" % [area, nav.ms, nav.polygons])
+	# 时段（4.2）：区域搭好以后套光（窗户、夜灯、雾带都在了）；画质在后面（月光阴影、泛光开关、雾带减半归画质）
+	daypart = Daypart.effective(area, GameState.daypart)
+	Daypart.apply(self, daypart)
+	print("IC_DAYPART id=%s area=%s" % [daypart, area])
 	player = FpController.new()
 	player.name = "Player"
 	add_child(player)
@@ -200,6 +212,9 @@ func _ready() -> void:
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
 		show_ending.call_deferred("prologue", _query("ending"))
+	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done"):
+		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
+		open_travel_map.call_deferred(near_travel_point())
 	battle = world.get_node_or_null("Battle") as Battle
 	if battle:
 		battle.ended.connect(_on_battle_ended)
@@ -566,6 +581,10 @@ func _build_ui() -> void:
 	ending_panel.closed.connect(_on_ending_closed)
 	ending_panel.restart_requested.connect(func(): _restart.call_deferred())
 	ending_panel.continue_requested.connect(func(n: int): start_chapter(n))
+	travel_map = TravelMap.new()
+	layer.add_child(travel_map)
+	travel_map.closed.connect(_on_map_closed)
+	travel_map.depart_requested.connect(func(id: String): depart(id))
 	packs = PackLoader.new()
 	packs.name = "Packs"
 	packs.process_mode = Node.PROCESS_MODE_ALWAYS       # 下载时游戏是暂停的，HTTPRequest 和进度照样要走
@@ -604,6 +623,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("character"):
 		open_character()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("travel_map"):
+		open_travel_map(near_travel_point())
 		get_viewport().set_input_as_handled()
 		return
 	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋
@@ -734,7 +757,7 @@ func in_combat() -> bool:
 
 ## 换区域（3.1）：从门走进另一个区域。先淡出，记下去哪、站哪、生命与体力，再重新载入本场景（和读档同一条路）。
 ## 返回是否出发了（战斗中、倒下了、区域不存在都不走）
-func travel(to: String, spawn_id: String) -> bool:
+func travel(to: String, spawn_id: String, arrive_daypart := "") -> bool:
 	if not Areas.known(to):
 		return false
 	var why := "你已经倒下了" if player.melee.down else ("附近有敌人在和你打，走不开" if in_combat() else "")
@@ -745,7 +768,10 @@ func travel(to: String, spawn_id: String) -> bool:
 	player.melee.cancel_press()
 	GameState.pending_load = {"scene": to, "spawn": spawn_id,
 		"player": {"health": player.melee.health, "stamina": player.melee.stamina, "crouch": player.crouch_wanted}}
+	if Daypart.valid(arrive_daypart):
+		GameState.pending_load["daypart"] = arrive_daypart      # 到了再改时段（旅行地图的路线，4.2）
 	GameState.pending_tips = tip_queue.duplicate()
+	leaving = true
 	print("IC_TRAVEL from=%s to=%s spawn=%s" % [area, to, spawn_id])
 	if not Settings.reduced_motion:
 		var tw := create_tween()
@@ -772,7 +798,8 @@ func _arrive() -> void:
 		fade.color.a = 0.0
 	else:
 		fade.color.a = 1.0
-		create_tween().tween_property(fade, "color:a", 0.0, FADE_TIME * 1.5)
+		# 暂停时也要淡完（4.2 实测：刚到就打开地图 / 暂停菜单，淡入停在半路，黑幕一直盖在面板上）
+		create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, FADE_TIME * 1.5)
 	save_game.call_deferred("auto", true)
 
 
@@ -909,6 +936,8 @@ func _on_interacted(r: Dictionary) -> void:
 		open_loot(r.container)
 	if r.get("kind") == "travel":
 		travel(str(r.area), str(r.spawn))
+	if r.get("kind") == "map":
+		open_travel_map(true)                  # 对着路牌：打开旅行地图，能从这里出发（4.2）
 	var t := player.interactor.target
 	if not dialogue.visible:
 		hud.show_prompt(t.prompt() if t else "")     # 门开了以后提示从「打开」变「关上」
@@ -1074,6 +1103,10 @@ func _on_dialogue_closed() -> void:
 			"arrived":
 				hud.toast("雾里有人提着灯走下坡来……", 3.0)
 				print("IC_FERRY alban_arrived")
+	var pd := GameState.pending_daypart
+	GameState.pending_daypart = ""
+	if pd != "":
+		set_daypart(pd)                                     # 剧情推进到别的时段（4.2）
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
 	if ending != "":
@@ -1114,7 +1147,7 @@ func _on_brawl_ended(won: bool) -> void:
 		hud.toast("× 你被%s打倒了。（生命 %d）" % [who, player.melee.health], 3.5)
 		if not Settings.reduced_motion:
 			fade.color.a = 0.85                     # 眼前一黑，再慢慢缓过来
-			create_tween().tween_property(fade, "color:a", 0.0, 1.2)
+			create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, 1.2)     # 暂停时也淡完（同 _arrive）
 	save_game.call_deferred("auto", true)
 
 
@@ -1168,6 +1201,7 @@ func start_chapter(n: int) -> void:
 		return
 	GameState.chapter = n
 	GameState.set_flag("ch%d_started" % n, true)
+	GameState.daypart = Chapters.daypart_of(n)           # 第一章从清晨开始（4.2）
 	var c: Dictionary = Chapters.LIST[n]
 	GameState.pending_load = {"scene": str(c.area), "spawn": str(c.spawn),
 		"player": {"health": player.melee.health_max(), "stamina": player.melee.stamina_max()}}
@@ -1216,6 +1250,112 @@ func _place_chapter_content() -> void:
 	sign.position = Vector3(1.3, 0, -39.8)          # 宅邸门口出生点（0, 0, -44.3，面朝 +Z）往前 4.5 米、路的左边，木板伸向路中间：
 	sign.rotation.y = atan2(1.3, 4.5)               # 手机竖屏视野窄，板子在正前方 2°–20° 以内才看得全（4.1 截图）；板面转过来对着出门的人
 	print("IC_CH1_SIGN")
+
+
+# ---------------- 旅行地图（4.2） ----------------
+
+## 站在出发的地方旁边（路牌，组 travel_point）：按 M 打开地图也能出发
+func near_travel_point() -> bool:
+	for t in get_tree().get_nodes_in_group("travel_point"):
+		var d: Vector3 = (t as Node3D).global_position - player.global_position
+		if Vector2(d.x, d.z).length() <= Travel.DEPART_RADIUS:
+			return true
+	return false
+
+
+## 打开旅行地图：departure = 站在出发的地方（能出发），否则只能看。序章没有旅行地图。打开时暂停，藏起提示和触屏按钮（和结束画面一样）
+func open_travel_map(departure := false) -> void:
+	if get_tree().paused or leaving:
+		return
+	if Travel.places(GameState.chapter).is_empty():
+		hud.toast("序章没有旅行地图，第一章起才有。", 2.5)
+		print("IC_MAP none chapter=%d" % GameState.chapter)
+		return
+	player.melee.cancel_press()
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	lock_seen = false
+	if touch:
+		touch.release_all()
+	hud.visible = false                 # 只藏起来：交互提示和正在显示的教学提示关上地图后还在（审查发现：清掉了就回不来）
+	touch_was_visible = touch.visible
+	touch.visible = false
+	var here := Travel.place_of_area(area)
+	travel_map.open(GameState.chapter, here, departure, Settings.reduced_motion)
+	print("IC_MAP open here=%s departure=%s places=%d selected=%s" % [here, departure, travel_map.place_btns.size(), travel_map.selected])
+	await get_tree().process_frame
+	await get_tree().process_frame                 # 地点按钮摆好位置以后（_place_buttons 是延后调用的）
+	var k := get_tree().root.content_scale_factor
+	for id in travel_map.place_btns:            # 给网页冒烟测试点（窗口像素，已乘界面缩放）
+		var pc: Vector2 = (travel_map.place_btns[id] as Button).get_global_rect().get_center() * k
+		print("IC_MAP_PLACE id=%s x=%d y=%d" % [id, pc.x, pc.y])
+	var gc := travel_map.go_btn.get_global_rect().get_center() * k
+	var cc := travel_map.close_btn.get_global_rect().get_center() * k
+	print("IC_MAP_SCREEN x=%d y=%d cx=%d cy=%d" % [gc.x, gc.y, cc.x, cc.y])
+
+
+func _on_map_closed() -> void:
+	get_tree().paused = false
+	hud.visible = true
+	touch.visible = touch_was_visible
+	if not touch_mode:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	player.interactor.refresh()
+	var t := player.interactor.target
+	hud.show_prompt(t.prompt() if t else "")
+	print("IC_MAP closed")
+
+
+## 从地图出发去 id：先看能不能走（Travel.check：做好了没有、有没有路、是不是站在出发的地方），再看是不是倒下了、在打（和存档、走门一样），
+## **出发前自动存档**（存的是出发前的样子，GDD 第十节「做出关键抉择之前」）——浏览器存不进去（无痕模式、空间满）时提示一句照样走，
+## 和走门一样（审查发现：不然这样的浏览器永远出不了门）；然后和走门一样换区域，路线写的时段（例如走大半天到了是白天）到了再改。
+## 返回不能走的原因（"" = 走了）；地图上的状态行写这个原因
+func depart(id: String) -> String:
+	var here := Travel.place_of_area(area)
+	var c := Travel.check(GameState.chapter, here, id, travel_map.at_departure)
+	var why := str(c.why)
+	if why == "":
+		why = can_save()
+		if why != "":
+			why = "%s。" % why
+	if why != "":
+		travel_map.show_status("× " + why)
+		print("IC_DEPART_FAIL to=%s %s" % [id, why])
+		return why
+	if not save_game("auto", true):
+		hud.toast("× 自动存档没存上（%s），照样出发。" % Saves.last_error, 3.0)
+	var p := Travel.place(id)
+	var dp := str((c.route as Dictionary).get("daypart", ""))
+	print("IC_DEPART from=%s to=%s daypart=%s" % [here, id, dp if Daypart.valid(dp) else GameState.daypart])
+	travel_map.hide()
+	_on_map_closed()
+	if not await travel(str(p.area), str(p.spawn), dp):
+		return "走不了。"                            # 不该发生：上面都查过了
+	return ""
+
+
+# ---------------- 时段（4.2） ----------------
+
+## 剧情推进到另一个时段：记进游戏状态；这个区域受时段影响时短暂黑一下再换光（减少动态效果时直接换），上方提示「到黄昏了」之类。
+## 不重新载入场景（门开着、敌人在哪都不变）；室内只记下来，走出去才看得到
+func set_daypart(id: String, announce := true) -> void:
+	if not Daypart.valid(id):
+		return
+	GameState.daypart = id
+	var eff := Daypart.effective(area, id)
+	if eff != daypart:
+		var dim := not Settings.reduced_motion and fade != null
+		if dim:
+			var tw := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+			tw.tween_property(fade, "color:a", 1.0, FADE_TIME * 2.0)
+			await tw.finished
+		daypart = eff
+		Daypart.apply(self, daypart)
+		if dim:
+			create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, FADE_TIME * 3.0)
+	print("IC_DAYPART id=%s area=%s changed=true" % [daypart, area])
+	if announce:
+		hud.toast(str(Daypart.CHANGE_TEXT.get(id, "")), 2.5)
 
 
 # ---------------- 对峙转战斗（3.6） ----------------

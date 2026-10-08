@@ -67,12 +67,14 @@ var yielded := {}         # 求饶（或逃跑后认输）的敌人编号 → �
 var playtime := 0.0       # 游戏时间（秒，暂停时不算）
 var tips_seen: Array = [] # 看过的教学提示编号（data/tips.json；3.8），每条只显示一次，跟着存档走
 var chapter := 0          # 第几章（0 = 序章；4.1）：读这一章的存档前要先有这一章的章节包（Chapters）
+var daypart := "night"    # 时段（4.2，Daypart）：清晨 / 白天 / 黄昏 / 夜，按剧情切换（进一章、走旅行地图、对话效果），跟着存档走
 var pending_load := {}    # 读档：{scene, player}，场景重新载入后由 main 取走（2.8）
 var pending_brawl := {}   # 对话里说好要打一架：{brawl, win, lose}，对话关上后由 main 取走开打（3.3；不存档）
 var pending_fight := {}   # 对话说崩了要动手：{fight, win}，对话关上后由 main 取走开打（3.6；不存档）
 var pending_leave := ""   # 对话里说好了，这组人走了：编号，对话关上后由 main 撤掉（3.6；不存档）
 var pending_ending := ""  # 对话里到了结局：编号（prologue），对话关上后由 main 显示结束画面（3.7；不存档）
 var pending_tips: Array = [] # 换区域时还没轮到显示的教学提示，带到下一个区域接着排（3.8；不存档）
+var pending_daypart := ""   # 对话里剧情推进到别的时段：编号，对话关上后由 main 换光（4.2；不存档，GameState.daypart 已经改了）
 
 signal inventory_changed
 
@@ -97,6 +99,7 @@ func new_game(seed_override := -1) -> void:
 	playtime = 0.0
 	tips_seen.clear()
 	chapter = 0
+	daypart = "night"
 	var pd := progression()
 	skills = DEFAULT_SKILLS.duplicate()
 	for s in pd.get("skills", {}):
@@ -605,7 +608,7 @@ func to_dict() -> Dictionary:
 		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime, "tips": tips_seen.duplicate(),
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
 		"skills": skills.duplicate(), "skill_xp": skill_xp.duplicate(), "skill_ups": skill_ups, "level": level, "attr_points": attr_points,
-		"rep": rep.duplicate(), "chapter": chapter,
+		"rep": rep.duplicate(), "chapter": chapter, "daypart": daypart,
 	}
 
 
@@ -614,6 +617,9 @@ func from_dict(d: Dictionary) -> void:
 	new_game(int(d.get("seed", 0)))
 	flags = (d.get("flags", {}) as Dictionary).duplicate(true)
 	chapter = int(d.get("chapter", 0))              # 4.1 以前的存档没有这一项：都是序章
+	daypart = str(d.get("daypart", Chapters.daypart_of(chapter)))   # 4.2 以前的存档没有这一项：按这一章开头的时段（序章是夜）
+	if not Daypart.valid(daypart):
+		daypart = Chapters.daypart_of(chapter)
 	checks = (d.get("checks", {}) as Dictionary).duplicate()
 	quests = {}
 	for q in d.get("quests", {}):

@@ -1,0 +1,17 @@
+{
+  "_说明": "旅行地图（路线图 4.2；STORY.md 4.2、4.5）。places：地点——名字、区域与出生点（area 为空 = 这个地方还没做好，地图上灰着、去不了）、从第几章起出现在地图上、地图上的位置（0..1，左上角为原点）、图标（town / village / castle）、一句话介绍、在哪里出发（depart_at）、还没做好时的说明（pending）。routes：从哪到哪、路上怎么走、到了是什么时段（空 = 不变；Daypart）。本章路上没有随机遭遇。出发前自动存档（main.depart）。",
+  "places": {
+    "frostford": {"name": "霜渡镇", "area": "frostford", "spawn": "manor", "chapter": 1, "pos": [0.8, 0.5], "icon": "town",
+      "blurb": "灰鲸河上游的渡口小镇，霜渡镇领主维克托·瓦伦的地方。", "depart_at": "宅邸门口的路牌"},
+    "reedwharf": {"name": "芦栈村", "area": "", "spawn": "", "chapter": 1, "pos": [0.46, 0.6], "icon": "village",
+      "blurb": "鹭沼边上的高脚屋村子，木栈道连着一栋栋高脚屋；客栈是村里最大的一栋。", "depart_at": "村口", "pending": "芦栈村还没做好（路线图 4.4）"},
+    "blackheron": {"name": "黑鹭堡", "area": "", "spawn": "", "chapter": 1, "pos": [0.29, 0.4], "icon": "castle",
+      "blurb": "沼中石岛上的城堡，瓦伦家本家。只有芦栈村那头一条石砌堤道通进去。", "depart_at": "堡门", "pending": "黑鹭堡还没做好（路线图 4.5）"}
+  },
+  "routes": [
+    {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},
+    {"from": "reedwharf", "to": "frostford", "text": "往东回霜渡镇，大半天的路", "daypart": ""},
+    {"from": "reedwharf", "to": "blackheron", "text": "走石砌堤道，一刻钟", "daypart": ""},
+    {"from": "blackheron", "to": "reedwharf", "text": "沿堤道回芦栈村，一刻钟", "daypart": ""}
+  ]
+}

@@ -4,6 +4,7 @@ extends Node3D
 ## 从正面看，木板伸向桩的右边（本地 -X）——立在路的左边时，木板朝着路中间。
 ## 第一章章节包里的第一件东西：场景 res://chapters/ch1/road_sign.tscn 只在章节包里（脚本留在主包，Chapters 的约定），
 ## 网页上看得到它，就说明章节包下载、挂载成功了。4.3 起它是霜渡镇宅邸门口去鹭沼的路口。
+## 4.2：对着路牌按交互打开旅行地图（TravelPoint，加在自己身上：场景文件在章节包里不用改，脚本在主包）。
 
 @export var text := "往鹭沼 · 黑鹭堡"
 
@@ -23,3 +24,7 @@ func _ready() -> void:
 	l.position = Vector3(-0.45, 1.72, -0.125)
 	l.rotation_degrees = Vector3(0, 180, 0)
 	add_child(l)
+	var tp := TravelPoint.make(text)            # 罩住木桩和木板：看着路牌就能交互
+	tp.name = "MapPoint"
+	tp.position = Vector3(-0.35, 0, -0.09)
+	add_child(tp)

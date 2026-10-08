@@ -209,6 +209,7 @@ static func _lamps(parent: Node3D, reduced_motion: bool) -> void:
 		if spec[1]:
 			l.add_to_group("light_source")
 			l.set_meta("radius", 5.0)
+		Daypart.mark_night_light(l, halo)         # 白天灭掉（4.2）
 		parent.add_child(l)
 	parent.add_child(kit.build({"ember": _ember_mat(), "timber": Look.mat("timber")}))
 

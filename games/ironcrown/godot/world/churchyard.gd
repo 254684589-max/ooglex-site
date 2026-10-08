@@ -225,6 +225,7 @@ static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 		l.flicker = not reduced_motion
 		l.add_to_group("light_source")
 		l.set_meta("radius", 5.0)
+		Daypart.mark_night_light(l, halo)         # 白天灭掉（4.2）
 		parent.add_child(l)
 
 

@@ -214,6 +214,7 @@ static func _gates(kit: MeshKit, parent: Node3D) -> void:
 		l.omni_range = 6.0
 		l.omni_attenuation = 1.2
 		l.position = p + Vector3(0, 0, (1.0 if p.z < 0 else -1.0) * 0.5)
+		Daypart.mark_night_light(l)               # 白天灭掉（4.2）；营火不算夜灯
 		parent.add_child(l)
 
 

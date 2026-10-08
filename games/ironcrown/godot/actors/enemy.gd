@@ -3,6 +3,7 @@ extends CharacterBody3D
 ## 敌人（路线图 2.5；GDD.md 6.1、6.2；TECH.md 4.3、4.4）。数值在 data/enemies.json（棍手、剑手）。
 ## 状态：巡逻 → 起疑（头顶「？ 起疑」）→ 警觉（「！ 警觉」，喊附近同伙）→ 战斗 → 受重伤时逃跑或求饶；另有失衡、后退、倒下。
 ## 感知：前方 110° 视野锥 + 视线射线，距离看光照（玩家站在灯火旁 20 米，暗处 8 米，蹲着再打六折）；听觉看玩家动静（跑 10 米、走 4 米、蹲 1.5 米、挥剑 8 米）。
+## 4.2 起「暗处」的视距看时段（Daypart.sight_dark()）：夜 8 米、黄昏 12、清晨 14、白天 20；只算亮着的灯（白天灭掉的夜灯不在组 light_source 里）。
 ## 战斗：向 CombatDirector 要攻击令牌，拿到才上前出招（起手 → 命中帧 → 收招），没拿到就在 3.5 米外绕圈。
 ## 剑手会格挡轻击；重击破防让它失衡。完美格挡它的攻击也会让它失衡 0.8 秒，失衡期间受到的伤害加倍（DamageCalc）。
 ## 寻路（3.4）：区域烘焙了导航网格（main 按 Areas.nav_bounds 烘焙）就用 NavigationAgent3D 沿路径走——追你时绕开房子和桌子、
@@ -38,7 +39,7 @@ const ARM_POS := Vector3(0.34, 1.3, -0.05)
 const REST_MAX := 12              # 站着不动时最多隔几帧还是做一次 move_and_slide（脚下的地有变化也能察觉）
 const FOV_HALF := 55.0            # 视野锥 110°
 const SIGHT_LIT := 20.0
-const SIGHT_DARK := 8.0
+const SIGHT_DARK := 8.0          # 夜里暗处的视距；其他时段见 Daypart.PRESETS 的 sight_dark（4.2）
 const CROUCH_SIGHT := 0.6
 const NOISE := {"run": 10.0, "walk": 4.0, "crouch": 1.5, "fight": 8.0}
 const SUSPECT_AT := 0.35          # 怀疑值到这里进入「起疑」
@@ -487,7 +488,7 @@ func forward() -> Vector3:
 
 
 func sight_range() -> float:
-	var r := SIGHT_LIT if player_lit() else SIGHT_DARK
+	var r := SIGHT_LIT if player_lit() else Daypart.sight_dark()
 	return r * (CROUCH_SIGHT if player.crouching else 1.0)
 
 

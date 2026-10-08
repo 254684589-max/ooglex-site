@@ -7,9 +7,10 @@ extends RefCounted
 
 ## 做到第几章能玩了：第一章的开场（4.3）做好以前是 0，序章结束画面不出「继续：第一章」（main.playable_chapter 可在测试和 ?preview=1 里改）
 const PLAYABLE := 0
+## daypart：这一章开头的时段（4.2，Daypart）——序章一直是夜；第一章从霜渡镇的清晨开始（STORY.md 4.5 第 1 步）
 const LIST := {
-	0: {"name": "序章 · 霜渡镇之夜", "pack": "", "probe": "", "area": "frostford", "spawn": "manor"},
-	1: {"name": "第一章 · 黑鹭堡", "pack": "ch1", "probe": "res://chapters/ch1/road_sign.tscn", "area": "frostford", "spawn": "manor"},
+	0: {"name": "序章 · 霜渡镇之夜", "pack": "", "probe": "", "area": "frostford", "spawn": "manor", "daypart": "night"},
+	1: {"name": "第一章 · 黑鹭堡", "pack": "ch1", "probe": "res://chapters/ch1/road_sign.tscn", "area": "frostford", "spawn": "manor", "daypart": "dawn"},
 }
 
 
@@ -19,6 +20,11 @@ static func known(n: int) -> bool:
 
 static func name_of(n: int) -> String:
 	return str(LIST.get(n, {}).get("name", ""))
+
+
+## 这一章开头的时段（没登记的章节按夜）
+static func daypart_of(n: int) -> String:
+	return str(LIST.get(n, {}).get("daypart", "night"))
 
 
 ## 这一章的章节包编号（"" = 在主包里）
