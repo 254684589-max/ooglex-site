@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-07T11:52:06Z",
+  "updatedAt": "2026-10-08T12:07:00Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -20,7 +20,7 @@
   "items": {
     "celestrak/stations": {
       "ok": true,
-      "detail": "20 颗"
+      "detail": "19 颗"
     },
     "celestrak/visual": {
       "ok": true,
