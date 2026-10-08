@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-08T00:12:15Z",
+  "updatedAt": "2026-10-08T06:12:39Z",
   "asOf": "2026-10-08",
   "seed": false,
   "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
@@ -46,14 +46,14 @@
     "arena": {
       "ok": true,
       "count": 382,
-      "fetchedAt": "2026-10-08T00:11:30Z",
+      "fetchedAt": "2026-10-08T06:12:20Z",
       "source": "lmarena.ai/leaderboard/text"
     },
     "livebench": {
       "ok": true,
       "count": 65,
       "release": "2026-06-25",
-      "fetchedAt": "2026-10-08T00:11:46Z",
+      "fetchedAt": "2026-10-08T06:12:33Z",
       "source": "livebench.ai/table_2026_06_25.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -61,7 +61,7 @@
       "ok": true,
       "count": 18,
       "refreshed": 18,
-      "fetchedAt": "2026-10-08T00:12:15Z",
+      "fetchedAt": "2026-10-08T06:12:39Z",
       "snapshotDate": "2026-09-20",
       "source": "artificialanalysis.ai/models/*",
       "mode": "official_public_pages",
@@ -242,8 +242,8 @@
       "arena": 1483,
       "livebench": 81.6,
       "aa": null,
-      "ctx": null,
-      "price": null,
+      "ctx": "1.1M",
+      "price": 4.0,
       "arenaPercentile": 94.9,
       "livebenchPercentile": 92.6,
       "comboAxes": 2,
