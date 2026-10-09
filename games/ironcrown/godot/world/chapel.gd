@@ -12,6 +12,8 @@ const H := 5.0
 const WALL_T := 0.3
 const DOOR_W := 1.2
 const ALTAR_Z := -4.0
+const EXIT_NAME := "回到墓园"
+const DAIS := Rect2(-W * 0.5, -D * 0.5, W, D * 0.5 + ALTAR_Z + 0.6)     # 祭坛台（XZ）：从北墙到祭坛前 0.6 米；搭场景和地图共用
 const ALBAN_POS := Vector3(1.3, 0, -2.75)        # 祭坛台前、长椅前排的右手边
 ## 命名出生点（world/areas.gd）：front = 从墓园进门，站在门内、面朝祭坛（-Z）
 const SPAWNS := {
@@ -39,7 +41,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	parent.add_child(mi)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
-	var exit := Door.make("回到墓园", DOOR_W, 2.4, false)
+	var exit := Door.make(EXIT_NAME, DOOR_W, 2.4, false)
 	exit.verb = "离开"
 	exit.to_area = "churchyard"
 	exit.to_spawn = "chapel_door"
@@ -58,6 +60,24 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 
 
 ## 石板地、石墙（南墙留门、东西墙各三扇高窄窗）、木屋架与檩条
+## 地图（3.11，core/area_map.gd 的格式）：长椅、祭坛、书架、出口。修士不画
+static func map_spec() -> Dictionary:
+	var shapes := [
+		{"k": "square", "rect": DAIS},                                                         # 祭坛台
+		{"k": "furniture", "rect": Rect2(-1.65 - 1.05, 0.4 - 2.5, 2.1, 5.0), "label": "长椅"},
+		{"k": "furniture", "rect": Rect2(1.65 - 1.05, 0.4 - 2.5, 2.1, 5.0)},
+		{"k": "furniture", "rect": Rect2(-0.9, ALTAR_Z - 0.4, 1.8, 0.8), "label": "祭坛"},
+		{"k": "furniture", "rect": Rect2(-W * 0.5 + 0.025, -1.6, 0.45, 1.4), "label": "书架"},
+	]
+	for sx in [-1.0, 1.0]:
+		shapes.append({"k": "furniture", "rect": Rect2(sx * 1.6 - 0.22, ALTAR_Z + 0.2 - 0.22, 0.45, 0.45)})
+	return {
+		"bounds": Rect2(-W * 0.5, -D * 0.5, W, D),
+		"shapes": shapes,
+		"exits": [{"at": Vector2(0, D * 0.5), "dir": Vector2(0, 1), "to": "churchyard", "spawn": "chapel_door", "name": EXIT_NAME}],
+	}
+
+
 static func _room(kit: MeshKit) -> void:
 	var hw := W * 0.5
 	var hd := D * 0.5
@@ -114,7 +134,8 @@ static func _pews(kit: MeshKit) -> void:
 ## 祭坛：高一级的石台、石砌祭台、铺着布，两座三枝烛台；后墙上的「坠星」铁徽
 static func _altar(kit: MeshKit) -> void:
 	var hd := D * 0.5
-	kit.box("stone", Vector3(0, 0.1, (ALTAR_Z - 0.6 - hd) * 0.5), Vector3(W, 0.2, hd + ALTAR_Z + 0.6), Basis.IDENTITY, 0.9, 0.7)   # 祭坛台
+	# 祭坛台：原来中心算反了，往北偏了 0.6 米（一半埋进北墙，祭坛前半截和烛台底座悬空 0.2 米；3.11 审查对照地图时发现）
+	kit.box("stone", Vector3(0, 0.1, DAIS.get_center().y), Vector3(DAIS.size.x, 0.2, DAIS.size.y), Basis.IDENTITY, 0.9, 0.7)
 	kit.box("stone", Vector3(0, 0.7, ALTAR_Z), Vector3(1.8, 1.0, 0.8), Basis.IDENTITY, 0.85, 0.55)
 	kit.box("cloth", Vector3(0, 1.22, ALTAR_Z), Vector3(1.9, 0.04, 0.9))
 	kit.box("cloth", Vector3(0, 0.95, ALTAR_Z + 0.44), Vector3(0.7, 0.55, 0.02))

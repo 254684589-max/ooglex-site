@@ -7,9 +7,13 @@ signal menu_pressed
 signal quest_pressed
 signal bag_pressed
 signal char_pressed
+signal map_pressed             # 3.11：右上角「地图」
 
 const TITLE := "铁冠之争 · 技术原型（NPC 与敌人为占位）"
-const TITLE_SHORT := "铁冠之争（NPC 为占位）"     # 窄屏：右上角四个按钮放不下长标题（2.7）
+const TITLE_SHORT := "铁冠之争（NPC 为占位）"     # 窄屏：右上角几个按钮放不下长标题（2.7）
+const TITLE_FS := 18
+const TITLE_FS_SMALL := 15     # 3.11：右上角五个按钮时，手机竖屏连短标题 18 号也放不下，再缩一号
+const BTN_MIN := Vector2(44, 44)      # 右上角按钮最小 44 × 44（触屏点得准；都在触屏层放行的顶部 56 像素以内）
 
 var title_label: Label
 var hint_label: Label
@@ -17,6 +21,7 @@ var menu_btn: Button
 var quest_btn: Button
 var bag_btn: Button
 var char_btn: Button
+var map_btn: Button
 var prompt_label: Label
 var toast_label: Label
 var subtitle_panel: PanelContainer
@@ -49,7 +54,7 @@ func _ready() -> void:
 	title_label = Label.new()
 	title_label.text = TITLE
 	title_label.position = Vector2(16, 12)
-	title_label.add_theme_font_size_override("font_size", 18)
+	title_label.add_theme_font_size_override("font_size", TITLE_FS)
 	title_label.add_theme_color_override("font_color", Color("e8dcc0"))
 	add_child(title_label)
 	hint_label = Label.new()
@@ -79,6 +84,13 @@ func _ready() -> void:
 	char_btn.focus_mode = Control.FOCUS_NONE
 	char_btn.pressed.connect(func(): char_pressed.emit())
 	add_child(char_btn)
+	map_btn = Button.new()
+	map_btn.text = "地图"
+	map_btn.focus_mode = Control.FOCUS_NONE
+	map_btn.pressed.connect(func(): map_pressed.emit())
+	add_child(map_btn)
+	for b in [menu_btn, map_btn, quest_btn, bag_btn, char_btn]:
+		b.custom_minimum_size = BTN_MIN
 	prompt_label = _center_label(20)
 	toast_label = _center_label(18)
 	subtitle_panel = PanelContainer.new()
@@ -268,13 +280,20 @@ func set_hint(text: String) -> void:
 
 
 func _layout() -> void:
-	menu_btn.position = Vector2(size.x - menu_btn.size.x - 12.0, 10.0)
-	quest_btn.position = Vector2(menu_btn.position.x - quest_btn.size.x - 8.0, 10.0)
-	bag_btn.position = Vector2(quest_btn.position.x - bag_btn.size.x - 8.0, 10.0)
-	char_btn.position = Vector2(bag_btn.position.x - char_btn.size.x - 8.0, 10.0)
+	# 从右往左：菜单、地图（3.11）、任务、背包、角色
+	var x := size.x - 12.0
+	for b: Button in [menu_btn, map_btn, quest_btn, bag_btn, char_btn]:
+		b.size = b.get_combined_minimum_size()
+		x -= b.size.x
+		b.position = Vector2(x, 10.0)
+		x -= 8.0
+	# 标题放不下就换短的，还放不下就再缩一号字
 	title_label.text = TITLE
+	title_label.add_theme_font_size_override("font_size", TITLE_FS)
 	if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
 		title_label.text = TITLE_SHORT
+		if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
+			title_label.add_theme_font_size_override("font_size", TITLE_FS_SMALL)
 	var w := minf(size.x - 32.0, 760.0)
 	for l in [prompt_label, toast_label]:
 		l.size = Vector2(w, 0)

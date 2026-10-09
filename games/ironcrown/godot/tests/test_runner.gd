@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -212,6 +212,8 @@ func test_ui() -> void:
 	texts.append_array(["旅行地图 · 北境西部", "关上地图", "出发去", "（你在这里）", " · 你在这里", "路：，到了是", "× ", "鹭 沼", "灰鲸河", "堤道", "北", "查看地图",
 		"序章没有旅行地图，第一章起才有。", "这一章去不了那里。", "你就在这里。", "要先回到地图上的地方才能出发。", "从这里去不了，先到。", "从这里没有路过去。",
 		"走到那里才能出发。", "出发的地方", "还没做好。", "自动存档没存上，先别走。", "走不了。"])     # 旅行地图（4.2）
+	texts.append_array(AreaMap.texts())     # 地图册（3.11）：规格的标签和出口名、一带、页签、面板上的固定文字
+	texts.append(str(GameState.tips_data().get("map", {})))
 	for tid in Travel.data().get("places", {}):
 		var tp: Dictionary = Travel.place(tid)
 		texts.append(str(tp.name) + str(tp.blurb) + str(tp.get("depart_at", "")) + str(tp.get("pending", "")))
@@ -285,6 +287,13 @@ func test_ui() -> void:
 			if c > 32 and not font.has_char(c) and not missing.contains(text[i]):
 				missing += text[i]
 	check(font != null and missing == "", "界面与场景标签的文字全部在内置字体子集里（%d 段，缺：%s）" % [texts.size(), missing])
+	# 2026-10-09 重做字体子集：剧本（design/*.md）里的字也收进来了，后面章节的人名不用再等重做字体
+	var cast := "伊薇特蜷鼾噜弑曦樵橘瞟辎鳟"
+	var lack := ""
+	for i in cast.length():
+		if not font.has_char(cast.unicode_at(i)):
+			lack += cast[i]
+	check(font != null and lack == "", "字体子集里有剧本里的人名和二级字库的字（伊薇特……；缺：%s）" % lack)
 	check(ProjectSettings.get_setting("gui/theme/custom_font") == "res://assets/fonts/NotoSansSC-IC.ttf", "工程默认字体是内置中文字体")
 	check(is_equal_approx(UiScale.scale_for(Vector2(1280, 720)), 1.0), "界面缩放：1280×720 → 1.0")
 	check(is_equal_approx(UiScale.scale_for(Vector2(360, 740)), 0.75), "界面缩放：手机竖屏 360×740 → 0.75（下限）")
@@ -1930,7 +1939,7 @@ func test_growth() -> void:
 	var hud: Hud = main.hud
 	hud.size = Vector2(480, 900)
 	hud._layout()
-	check(hud.title_label.text == Hud.TITLE_SHORT and hud.title_label.get_minimum_size().x + 16.0 < hud.char_btn.position.x, "窄屏：标题缩短，不和右上角四个按钮重叠")
+	check(hud.title_label.text == Hud.TITLE_SHORT and hud.title_label.get_minimum_size().x + 16.0 < hud.char_btn.position.x, "窄屏：标题缩短，不和右上角五个按钮重叠")
 	hud.size = Vector2(1280, 720)
 	hud._layout()
 	check(hud.title_label.text == Hud.TITLE, "宽屏：完整标题")
@@ -4855,13 +4864,15 @@ func test_travelmap() -> void:
 	var f4 := Travel.check(1, "", "reedwharf", true)
 	check(f1.why == "走到宅邸门口的路牌那里才能出发。" and f2.ok and f3.why == "从这里去不了，先到芦栈村。" and f4.why == "要先回到地图上的地方才能出发。", "做好了以后：要站在路牌那里；黑鹭堡要先到芦栈村再走堤道")
 	Travel.override(null)
-	# 序章：按 M 只提示没有地图
+	# 序章：没有旅行地图；3.11 起按 M 打开地图册的「本地」页（原来只弹一句「序章没有旅行地图，第一章起才有」）
 	wipe_test_saves()
 	GameState.new_game(51)
 	var main := await make_main(false)
 	main._unhandled_input(key_ev(KEY_M))
 	await frames(2)
-	check(not main.travel_map.visible and not get_tree().paused and main.hud.toast_label.text == "序章没有旅行地图，第一章起才有。", "序章按 M：提示第一章起才有旅行地图")
+	check(not main.travel_map.visible and main.map_panel.visible and main.map_panel.view == "local" and get_tree().paused and not main.map_panel.tabs.btns.travel.visible, "序章按 M：打开地图册的「本地」页，没有「北境西部」（旅行地图第一章起才有）")
+	main.map_panel._unhandled_input(key_ev(KEY_ESCAPE))
+	await frames(2)
 	await free_main(main)
 	# 第一章：对着路牌按交互打开
 	GameState.new_game(52)
@@ -4894,10 +4905,13 @@ func test_travelmap() -> void:
 	check(not main.near_travel_point(), "主街南头离路牌很远")
 	main._unhandled_input(key_ev(KEY_M))
 	await frames(4)
-	check(tm.visible and not tm.at_departure and tm.status.text == "走到宅邸门口的路牌那里才能出发。" and tm.go_btn.disabled, "离路牌远时按 M：只能看，写明要走到路牌那里")
+	check(main.map_panel.visible and main.map_panel.view == "local" and not tm.visible, "离路牌远时按 M：先打开地图册的「本地」页（3.11；看得到路牌在哪）")
+	main.map_panel.tabs.btns.travel.pressed.emit()
+	await frames(4)
+	check(tm.visible and not main.map_panel.visible and not tm.at_departure and tm.status.text == "走到宅邸门口的路牌那里才能出发。" and tm.go_btn.disabled and get_tree().paused, "切到「北境西部」：只能看，写明要走到路牌那里")
 	tm._unhandled_input(key_ev(KEY_M))
 	await frames(2)
-	check(not tm.visible, "再按 M 关上")
+	check(not tm.visible and not main.map_panel.visible and not get_tree().paused and main.hud.visible, "再按 M 关上")
 	main.player.global_position = mp.global_position + Vector3(0, 0, -2.0)
 	await physics(2)
 	main._unhandled_input(key_ev(KEY_M))
@@ -5305,4 +5319,288 @@ func test_edges() -> void:
 	m2 = await make_main(false)
 	check(m2.world.find_children("GateLantern", "Node3D", true, false).size() == 1 and m2.find_children("*", "OmniLight3D", true, false).size() <= 4, "霜渡镇南门也挂了灯笼（假光，不多占实时光源：仍不超过 4 盏）")
 	await free_main(m2)
+	GameState.new_game()
+
+
+## 地图册（路线图 3.11；core/area_map.gd、ui/map_panel.gd、ui/map_tabs.gd）：数据检查、和场景对照、剧透、按 M、切页、关上、各种窗口尺寸、大地图缩放、右上角按钮
+func test_areamap() -> void:
+	AreaMap.override_regions(null)
+	var errs := AreaMap.validate()
+	check(errs.is_empty(), "地图数据通过检查（%s）" % "; ".join(errs))
+	var story := ["frostford", "tavern", "churchyard", "chapel", "birch", "ferry"]
+	check(story.all(func(a): return AreaMap.region_of(a) == "frostford") and AreaMap.region_of("test_range") == "" and not AreaMap.has_map("test_range") and not AreaMap.has_map("battle"), "六个剧情区域都在「霜渡镇一带」；测试场、军阵试验场没有地图")
+	var links: Array = AreaMap.links("frostford").map(func(p): return "%s-%s" % p)
+	links.sort()
+	check(links == ["birch-ferry", "birch-frostford", "chapel-churchyard", "churchyard-frostford", "frostford-tavern"], "一带的连线从各处的出口推出来，正好 5 条（%s）" % ", ".join(links))
+	check(AreaMap.views("frostford", 0) == ["local", "region"] and AreaMap.views("frostford", 1) == ["local", "region", "travel"] and AreaMap.views("test_range", 0) == ["local"], "地图册的页：序章本地、一带；第一章多「北境西部」；测试场只有本地")
+	check(AreaMap.default_view("frostford") == "local" and AreaMap.default_view("tavern") == "region" and AreaMap.default_view("chapel") == "region", "按 M 先看哪页：室外本地，室内一带")
+	check(AreaMap.heading_text(0) == "北" and AreaMap.heading_text(45) == "西北" and AreaMap.heading_text(90) == "西" and AreaMap.heading_text(135) == "西南" and AreaMap.heading_text(180) == "南" and AreaMap.heading_text(-180) == "南" and AreaMap.heading_text(-90) == "东" and AreaMap.heading_text(-45) == "东北" and AreaMap.heading_text(359) == "北", "朝向的名字（0 = 北，向左转 90 = 西）")
+	check(AreaMap.bearing_text(Vector2.ZERO, Vector2(0, 34)) == "南边约 34 米" and AreaMap.bearing_text(Vector2.ZERO, Vector2(-20, 0)) == "西边约 20 米" and AreaMap.bearing_text(Vector2.ZERO, Vector2(1, 1)) == "就在你旁边", "方位：「南边约 34 米」，太近说「就在你旁边」")
+	# 规格和场景对照：通往别处的门 = 地图上的出口（锁着的门不算）；室外的范围 = Edges 记的范围；每栋房子都画在地图上
+	for a in story:
+		GameState.new_game(80)
+		var main := await make_area(a)
+		var ex := AreaMap.exits(a)
+		var doors: Array = main.world.find_children("*", "Door", true, false).filter(func(d): return (d as Door).to_area != "")
+		var bad := []
+		for d: Door in doors:
+			var c := d.global_transform * Vector3(d.width * 0.5, 0, 0)
+			var hit := ex.filter(func(e): return str(e.to) == d.to_area and str(e.spawn) == d.to_spawn and str(e.name) == d.display_name and Vector2(c.x, c.z).distance_to(e.at) < 1.5)
+			if hit.size() != 1:
+				bad.append(d.display_name)
+		check(doors.size() == ex.size() and bad.is_empty(), "%s：通往别处的门和地图上的出口一一对上（%d 个；对不上：%s）" % [Areas.display_name(a), ex.size(), ", ".join(bad)])
+		var edge: Node = main.world.get_node_or_null("Edges")
+		if edge:
+			var near_all: bool = (edge.get_meta("exits", []) as Array).all(func(ee): return ex.any(func(e): return Vector2(ee.at.x, ee.at.z).distance_to(e.at) < 2.0))
+			check(edge.get_meta("area") == AreaMap.bounds(a) and near_all, "%s：地图的范围就是区域边缘（Edges）的范围；边缘的路口都是地图上的出口" % Areas.display_name(a))
+		var houses_ok := true
+		var polys := AreaMap.shapes(a).filter(func(sh): return str(sh.k) == "house")
+		for h in main.get_tree().get_nodes_in_group("house"):
+			var sz: Vector2 = h.get_meta("size", Vector2.ZERO)
+			var hc := House.local_xz(h.position, h.rotation_degrees.y, Vector2(0, -sz.y * 0.5))
+			if not polys.any(func(sh): return Geometry2D.is_point_in_polygon(hc, sh.pts) if sh.has("pts") else (sh.rect as Rect2).has_point(hc)):
+				houses_ok = false
+		check(houses_ok, "%s：每栋房子都画在地图上" % Areas.display_name(a))
+		var nb := Areas.nav_bounds(a)
+		if nb.size != Vector3.ZERO:
+			var nr := Rect2(nb.position.x, nb.position.z, nb.size.x, nb.size.z)
+			check(AreaMap.bounds(a) == nr if a != "ferry" else AreaMap.view_rect(a).grow(0.01).encloses(nr), "%s：地图的范围和导航网格的范围一致（渡口：地图框住了码头）" % Areas.display_name(a))
+		await free_main(main)
+	check(is_equal_approx(Chapel.DAIS.position.y, -Chapel.D * 0.5) and is_equal_approx(Chapel.DAIS.end.y, Chapel.ALTAR_Z + 0.6) and AreaMap.shapes("chapel").any(func(sh): return sh.get("rect") == Chapel.DAIS), "小教堂的祭坛台：从北墙到祭坛前 0.6 米，搭场景和地图用同一个矩形（原来往北偏了 0.6 米，烛台底座悬空）")
+	# 剧透：桦林的哨卡、墓园的钥匙和包袱、渡口的人都不在地图上
+	var spoil := ""
+	for a in ["birch", "churchyard", "ferry"]:
+		var words := JSON.stringify(AreaMap.spec(a))
+		for w in ["营地", "哨卡", "拒马", "包袱", "钥匙", "埃德里克", "塞拉斯", "奥弗", "无旗者", "营火"]:
+			if words.contains(w):
+				spoil += "%s:%s " % [a, w]
+	var near_fire := AreaMap.shapes("birch").any(func(sh): return sh.has("at") and (sh.at as Vector2).distance_to(Vector2(Birch.FIRE_POS.x, Birch.FIRE_POS.z)) < 6.0)
+	check(spoil == "" and not near_fire, "地图不剧透：桦林的哨卡、墓园的钥匙和包袱、渡口的人都不画（%s）" % spoil)
+	# 条件：第一章才画路牌
+	GameState.new_game(81)
+	check(not AreaMap.shapes("frostford").any(func(sh): return str(sh.get("icon", "")) == "sign"), "序章：地图上没有路牌")
+	# 序章按 M：打开「本地」页
+	var before := ""
+	var main := await make_main(false)
+	var before_d := GameState.to_dict()
+	before_d.erase("playtime")
+	before = JSON.stringify(before_d)
+	var mp: MapPanel = main.map_panel
+	main.touch_mode = true
+	main.touch.visible = true
+	main._unhandled_input(key_ev(KEY_M))
+	await frames(3)
+	check(mp.visible and get_tree().paused and not main.hud.visible and not main.touch.visible and not main.travel_map.visible and mp.view == "local", "序章按 M：打开地图册的「本地」页；游戏暂停，提示和触屏按钮藏起来")
+	check(mp.tabs.visible and mp.tabs.btns.local.visible and mp.tabs.btns.region.visible and not mp.tabs.btns.travel.visible and mp.tabs.btns.local.text == "◆ 本地" and mp.tabs.btns.local.has_focus(), "页签只有「本地」「一带」，当前页写「◆ 本地」，焦点在它上面（键盘能用）")
+	check(mp.where_text().begins_with("你在：霜渡镇，面朝") and mp.where_label.text == mp.where_text(), "写着你在哪、面朝哪（%s）" % mp.where_text())
+	check(mp.process_mode == Node.PROCESS_MODE_ALWAYS and mp.can_process() and mp.tabs.can_process(), "游戏暂停时地图照样收按键、渐显照样走（不然暂停了就关不掉）")
+	var names: Array = mp.exit_btns.map(func(b): return (b as Button).text)
+	check(names == ["1 → 镇外桦林", "2 → 星铁小教堂墓园", "3 → 「倒钩鱼」酒馆"], "三个出口按编号列出来（%s）" % ", ".join(names))
+	var pc := mp.canvas.world_to_canvas(Vector2(main.player.global_position.x, main.player.global_position.z))
+	check(Rect2(Vector2.ZERO, mp.canvas.size).has_point(pc) and not mp.canvas.zoomable and not mp.zoom_row.visible and mp.canvas.px_per_m >= MapPanel.MIN_PX_PER_M, "「你」在图上；霜渡镇整张放得下（每米 %.1f 像素），不出缩放按钮" % mp.canvas.px_per_m)
+	(mp.exit_btns[0] as Button).pressed.emit()
+	await frames(1)
+	check(mp.selected_exit == 0 and mp.detail_label.text.begins_with("南门（往桦林、渡口）：通往镇外桦林。在你南边约"), "选出口 1：写它通往哪里、在你哪边多远（%s）" % mp.detail_label.text)
+	check(mp.legend.text.contains("▲ 出口") and mp.legend.text.contains("■ 房屋") and not mp.legend.text.contains("≈ 水"), "图例只列这张图里有的（%s）" % mp.legend.text)
+	# 一带页
+	mp.tabs.btns.region.pressed.emit()
+	await frames(3)
+	var nodes: Array = mp.node_btns.values()
+	var overlap := false
+	var cr := mp.canvas.get_global_rect()
+	var inside := true
+	for i in nodes.size():
+		inside = inside and cr.grow(0.5).encloses((nodes[i] as Button).get_global_rect())
+		for j in range(i + 1, nodes.size()):
+			if (nodes[i] as Button).get_global_rect().intersects((nodes[j] as Button).get_global_rect()):
+				overlap = true
+	check(mp.view == "region" and nodes.size() == 6 and (mp.node_btns.frostford as Button).text == "霜渡镇\n（你在这里）" and (mp.node_btns.tavern as Button).text == "「倒钩鱼」酒馆\n（室内）" and inside and not overlap and get_tree().paused, "切到「一带」：6 处都在图里、不重叠，你在的地方写「你在这里」，室内写「室内」")
+	check(mp.detail_label.text.begins_with("霜渡镇：") and mp.detail_label.text.contains("南门（往桦林、渡口） → 镇外桦林") and mp.tabs.btns.region.text == "◆ 一带", "默认选中你在的地方：它的出口都通往哪里")
+	mp.select_node("birch")
+	check(mp.detail_label.text == "镇外桦林：回霜渡镇的木门 → 霜渡镇；去渡口的路 → 渡口", "选桦林：两头的门通往哪里")
+	main.hud.set_hint("测试用的教学提示")
+	mp._unhandled_input(key_ev(KEY_ESCAPE))
+	await frames(2)
+	check(not mp.visible and not get_tree().paused and main.hud.visible and main.touch.visible and main.hud.hint_label.text == "测试用的教学提示", "Esc 关上：接着玩，触屏按钮回来了，底部的教学提示还在")
+	main.hud.set_hint("")
+	main.player.rotation.y = deg_to_rad(90.0)              # 向左转 90 度 = 面朝西
+	main.open_map()
+	await frames(2)
+	check(mp.where_text().ends_with("面朝西"), "转向西边再打开：写「面朝西」（%s）" % mp.where_text())
+	mp.close()
+	main.player.rotation.y = 0.0
+	await frames(1)
+	main.touch_mode = false
+	main.touch.visible = false
+	main.hud.map_pressed.emit()
+	await frames(2)
+	check(mp.visible and mp.view == "local", "右上角「地图」按钮也能打开")
+	mp._unhandled_input(key_ev(KEY_M))
+	await frames(2)
+	check(not mp.visible and not get_tree().paused, "再按 M 关上")
+	var after_d := GameState.to_dict()
+	after_d.erase("playtime")                    # 游戏时间在两步之间照常走
+	check(JSON.stringify(after_d) == before, "看地图不改存档里的任何东西（游戏时间除外）")
+	# 不该打开的时候：暂停菜单开着、正在出发
+	main.open_pause()
+	await frames(1)
+	main.open_map()
+	await frames(1)
+	check(not mp.visible, "暂停菜单开着：不打开地图")
+	main.close_pause()
+	await frames(1)
+	main.leaving = true
+	main.open_map()
+	await frames(1)
+	check(not mp.visible and not get_tree().paused, "已经出发、正在淡出：不打开地图")
+	main.leaving = false
+	# 减少动态效果：不渐显
+	var rm := Settings.reduced_motion
+	Settings.reduced_motion = true
+	main.open_map()
+	await frames(1)
+	check(mp.visible and is_equal_approx(mp.box.modulate.a, 1.0), "减少动态效果：地图直接显示，不渐显")
+	mp.close()
+	Settings.reduced_motion = rm
+	await frames(1)
+	# 右上角五个按钮：从右往左 菜单、地图、任务、背包、角色；都不小于 44 × 44，在触屏层放行的顶部 56 像素以内
+	var hud: Hud = main.hud
+	hud.size = Vector2(480, 900)
+	hud._layout()
+	var row: Array = [hud.menu_btn, hud.map_btn, hud.quest_btn, hud.bag_btn, hud.char_btn]
+	var ordered := true
+	for i in row.size() - 1:
+		ordered = ordered and (row[i] as Button).position.x > (row[i + 1] as Button).position.x
+	var big: bool = row.all(func(b): return (b as Button).size.x >= 44.0 and (b as Button).size.y >= 44.0 and (b as Button).position.y + (b as Button).size.y <= TouchControls.TOP_BAND)
+	check(ordered and big and hud.title_label.get_minimum_size().x + 16.0 < hud.char_btn.position.x, "手机竖屏（480 宽）：右上角五个按钮不小于 44 × 44、不出顶部 56 像素，标题不和它们重叠")
+	hud.size = Vector2(1280, 720)
+	hud._layout()
+	check(hud.title_label.text == Hud.TITLE and hud.title_label.get_theme_font_size("font_size") == Hud.TITLE_FS, "宽屏：完整标题、18 号字")
+	await free_main(main)
+	# 室内：先看「一带」
+	GameState.new_game(82)
+	main = await make_area("tavern")
+	main.open_map()
+	await frames(3)
+	check(main.map_panel.visible and main.map_panel.view == "region" and (main.map_panel.node_btns.tavern as Button).text == "「倒钩鱼」酒馆\n（你在这里）", "酒馆里按 M：先看「一带」，酒馆写「你在这里」")
+	main.map_panel.tabs.btns.local.pressed.emit()
+	await frames(2)
+	main.map_panel.player_xz = Vector2(0.0, -1.0)
+	main.map_panel.select_exit(0)
+	check(main.map_panel.where_text() == "你在：「倒钩鱼」酒馆" and main.map_panel.detail_label.text == "回到主街：通往霜渡镇。离你约 5 米。" and not AreaMap.has_compass("tavern"), "酒馆的「本地」页不说东南西北（屋里的图和镇上的方向对不上）：只说离你多远（%s）" % main.map_panel.detail_label.text)
+	main.map_panel.close()
+	await free_main(main)
+	# 测试场：没有地图
+	GameState.new_game(83)
+	main = await make_main(true)
+	main.open_map()
+	await frames(3)
+	check(main.map_panel.visible and main.map_panel.where_label.text == MapPanel.NO_MAP and not main.map_panel.tabs.visible, "测试场：写「这里没有地图。」，没有别的页")
+	main.map_panel.close()
+	await free_main(main)
+	# 第一章：路牌旁打开旅行地图；切到本地再切回来照样能出发；关上只还原一次
+	GameState.new_game(84)
+	main = await make_ch1("dawn")
+	main.touch_mode = true
+	main.touch.visible = true
+	check(AreaMap.shapes("frostford").any(func(sh): return str(sh.get("icon", "")) == "sign" and (sh.at as Vector2).distance_to(Vector2(main.world.get_node("RoadSignCh1").global_position.x, main.world.get_node("RoadSignCh1").global_position.z)) < 0.5), "第一章：地图上画了路牌，就在路牌那里")
+	main.open_map()
+	await frames(4)
+	var tm: TravelMap = main.travel_map
+	check(tm.visible and tm.at_departure and tm.tabs.visible and tm.tabs.btns.travel.text == "◆ 北境西部" and tm.tabs.btns.local.visible and tm.tabs.btns.region.visible, "第一章站在路牌旁按 M：旅行地图（能出发），顶上三个页签")
+	tm.tabs.btns.local.pressed.emit()
+	await frames(3)
+	check(main.map_panel.visible and not tm.visible and get_tree().paused and not main.hud.visible and main.map_panel.view == "local" and main.map_panel.tabs.btns.travel.visible, "切到「本地」：换成地图册，仍然暂停，提示仍藏着")
+	main.map_panel.tabs.btns.travel.pressed.emit()
+	await frames(3)
+	check(tm.visible and not main.map_panel.visible and tm.at_departure, "再切回「北境西部」：照样能出发")
+	tm._unhandled_input(key_ev(KEY_ESCAPE))
+	await frames(2)
+	check(not tm.visible and not main.map_panel.visible and not get_tree().paused and main.hud.visible and main.touch.visible, "Esc 关上：接着玩，切过页也只还原一次，触屏按钮回来了")
+	await free_main(main)
+	# 各种窗口尺寸：六个区域整张放得下、按钮够大、都在画面里；一带的节点不重叠
+	for sz in [Vector2i(360, 740), Vector2i(740, 360), Vector2i(768, 1024), Vector2i(1280, 720)]:
+		get_tree().root.size = sz
+		await frames(3)
+		GameState.new_game(85)
+		main = await make_main(false)
+		mp = main.map_panel
+		var view_r := Rect2(Vector2.ZERO, UiKit.logical_size(mp))
+		var lines := []
+		var ok := true
+		for a in story:
+			var sp: Transform3D = Areas.spawn(a, Areas.spawns(a).keys()[0])
+			mp.open(a, "local", AreaMap.views(a, 0), Vector2(sp.origin.x, sp.origin.z), 0.0, true)
+			await frames(3)
+			var cs := mp.canvas.get_global_rect().size
+			var a_ok: bool = view_r.grow(0.5).encloses(mp.box.get_global_rect()) and mp.canvas.px_per_m >= MapPanel.MIN_PX_PER_M and not mp.zoom_row.visible \
+				and cs.x >= 200.0 and cs.y >= 200.0 and mp.close_btn.get_global_rect().size.y >= 44.0 and mp.tabs.btns.local.get_global_rect().size.y >= 44.0 \
+				and mp.exit_btns.all(func(b): return (b as Button).get_global_rect().size.y >= 44.0) and mp.wide == (sz.x > sz.y)
+			var skipped: Array = mp.canvas.place_labels().skipped
+			if a == "frostford" and not skipped.is_empty():
+				a_ok = false
+			if not a_ok:
+				ok = false
+				lines.append("%s %.1f 像素/米 跳过%s" % [a, mp.canvas.px_per_m, skipped])
+			mp.show_view("region", false)
+			await frames(3)
+			var nb: Array = mp.node_btns.values()
+			var crr := mp.canvas.get_global_rect().grow(0.5)
+			for i in nb.size():
+				if not crr.encloses((nb[i] as Button).get_global_rect()):
+					ok = false
+					lines.append("%s 一带：%s 出了画布" % [a, (nb[i] as Button).text])
+				for j in range(i + 1, nb.size()):
+					if (nb[i] as Button).get_global_rect().intersects((nb[j] as Button).get_global_rect()):
+						ok = false
+						lines.append("%s 一带：%s 和 %s 重叠" % [a, (nb[i] as Button).text, (nb[j] as Button).text])
+			if not view_r.grow(0.5).encloses(mp.box.get_global_rect()):
+				ok = false
+				lines.append("%s 一带：面板出了画面" % a)
+			mp.close()
+			await frames(1)
+		check(ok, "%d × %d：六个区域的地图整张放得下、按钮够大、都在画面里，一带的节点不重叠（%s）" % [sz.x, sz.y, "；".join(lines) if not lines.is_empty() else ("横排" if mp.wide else "竖排")])
+		await free_main(main)
+	get_tree().root.size = Vector2i(1280, 720)
+	await frames(3)
+	# 4.4 那种大地图（假数据 600 × 400 米，带一个分块）：放不下就从你这里放大看，能缩放、拖动、回到你这里
+	GameState.new_game(86)
+	AreaMap.override("frostford", {"bounds": Rect2(-300, -200, 600, 400), "shapes": [{"k": "road", "rect": Rect2(-2, -200, 4, 400)}], "exits": [],
+		"zones": [{"id": "t", "name": "测试区", "pts": PackedVector2Array([Vector2(-50, -50), Vector2(50, -50), Vector2(50, 50), Vector2(-50, 50)])}]})
+	main = await make_main(false)
+	mp = main.map_panel
+	main.open_map()
+	await frames(3)
+	var cv := mp.canvas
+	var you := cv.world_to_canvas(Vector2(main.player.global_position.x, main.player.global_position.z))
+	check(cv.zoomable and mp.zoom_row.visible and cv.focus_mode == Control.FOCUS_ALL and you.distance_to(cv.size * 0.5) < 2.0, "大地图：放不下就从你这里放大看（「你」在画布中间），出缩放按钮，画布能拿到焦点")
+	var px0 := cv.px_per_m
+	mp.zoom_in_btn.pressed.emit()
+	check(cv.px_per_m > px0, "「放大」：每米像素变多（%.1f → %.1f）" % [px0, cv.px_per_m])
+	cv.grab_focus()
+	for i in 30:
+		cv._gui_input(key_ev(KEY_RIGHT))
+	var vr := AreaMap.view_rect("frostford")
+	check(vr.has_point(cv.center) and cv.center.x > 0.0, "方向键拖动地图，拖到头也不出地图范围")
+	# 真的触屏拖动（走 Input.parse_input_event，工程开着「触屏模拟鼠标」）：地图跟着手指走，不多走一倍
+	mp.recenter_btn.pressed.emit()
+	await frames(1)
+	var c0 := cv.center
+	var k := get_tree().root.content_scale_factor
+	var p0 := cv.get_global_rect().get_center() * k
+	Input.parse_input_event(touch_ev(0, p0, true))
+	await frames(1)
+	for i in 6:
+		Input.parse_input_event(drag_ev(0, p0 + Vector2(-10.0 * (i + 1), 0) * k, Vector2(-10.0, 0) * k))
+		await frames(1)
+	Input.parse_input_event(touch_ev(0, p0 + Vector2(-60.0, 0) * k, false))
+	await frames(2)
+	var moved_m := cv.center.x - c0.x
+	check(absf(moved_m - 60.0 / cv.px_per_m) < 0.6, "触屏拖动：手指往左拖 60 像素，地图正好跟着走 %.1f 米（不是两倍）" % moved_m)
+	mp.recenter_btn.pressed.emit()
+	you = cv.world_to_canvas(Vector2(main.player.global_position.x, main.player.global_position.z))
+	check(you.distance_to(cv.size * 0.5) < 2.0 and mp.where_text().contains(" · 测试区"), "「回到你这里」；你在哪写上分块的名字（%s）" % mp.where_text())
+	mp.close()
+	AreaMap.override("frostford", null)
+	await free_main(main)
 	GameState.new_game()

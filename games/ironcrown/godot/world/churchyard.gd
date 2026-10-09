@@ -15,6 +15,9 @@ const CRYPT := Vector3(-9.0, 0, -2.0)          # 墓室中心；正面朝东（+
 const CRYPT_FRONT_X := -7.25
 const HUT := Vector3(8.5, 0, 2.5)              # 守墓人小屋正面墙脚中点；正面朝西（-X）
 const GRAVEDIGGER_POS := Vector3(6.6, 0, 3.6)
+const GATE_NAME := "霜渡镇主街"                 # 院门（回主街）
+const CHAPEL_NAME := "星铁小教堂"               # 小教堂的门（进室内）
+const TREES := [[Vector3(-5.2, 0, 6.6), 51, 5.5], [Vector3(10.6, 0, -11.0), 52, 6.5]]     # 两棵枯树：位置、种子、高
 ## 命名出生点（world/areas.gd）：lane = 从主街的小路进来，站在院门内、面朝北；chapel_door = 从小教堂出来，站在门前、面朝南
 const SPAWNS := {
 	"lane": [Vector3(0, 0, 9.4), 0.0],
@@ -45,16 +48,16 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	# 小教堂：石砌、山墙朝院子，门通往室内
 	House.build(parent, Vector3(0, 0, CHAPEL_FRONT), 0.0, {"w": 7.0, "d": 9.0, "floors": 1, "stone_upper": true, "roof": "gable",
 		"door_x": 0.0, "seed": 41, "lit": 0.8,
-		"door": {"name": "星铁小教堂", "to_area": "chapel", "to_spawn": "front", "verb": "进入"}})
+		"door": {"name": CHAPEL_NAME, "to_area": "chapel", "to_spawn": "front", "verb": "进入"}})
 	# 守墓人小屋：一层、窗里亮着
 	House.build(parent, HUT, -90.0, {"w": 4.0, "d": 4.0, "floors": 0, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 42, "lit": 1.0,
 		"door": {"name": "守墓人的小屋", "text": "门从里面闩上了。守墓人就站在门外，用不着进去。"}})
-	BareTree.build(parent, Vector3(-5.2, 0, 6.6), 51, 5.5)
-	BareTree.build(parent, Vector3(10.6, 0, -11.0), 52, 6.5)
+	for t in TREES:
+		BareTree.build(parent, t[0], t[1], t[2])
 	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), [         # 墙外是林子，院门外的小路伸回镇上（3.10）
 		{"at": Vector3(0, 0, SOUTH), "out": Vector3(0, 0, 1), "half": 1.1}], [], 3612)
 	# 院门：回到主街（站在小路门外）
-	var gate := Door.make("霜渡镇主街", 1.4, 1.9, false)
+	var gate := Door.make(GATE_NAME, 1.4, 1.9, false)
 	gate.verb = "回到"
 	gate.to_area = "frostford"
 	gate.to_spawn = "chapel_lane"
@@ -84,6 +87,34 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_fog(parent, reduced_motion)
 	var s: Array = SPAWNS.lane
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+## 地图（3.11，core/area_map.gd 的格式）：围墙、石板路、小教堂、守墓人小屋、墓室、两片墓地、出口。
+## 钥匙、包袱、守墓人都不画；墓室的铁门锁着，不算出口
+static func map_spec() -> Dictionary:
+	var shapes := [
+		{"k": "graves", "rect": Rect2(-HALF_X + 0.8, -6.8, HALF_X - 4.0, 15.6), "label": "墓地"},
+		{"k": "graves", "rect": Rect2(3.2, -6.8, HALF_X - 4.0, 15.6)},
+		{"k": "road", "rect": Rect2(-1.2, CHAPEL_FRONT, 2.4, SOUTH - CHAPEL_FRONT)},
+		{"k": "road", "rect": Rect2(CRYPT_FRONT_X - 1.2, CRYPT.z - 0.8, -CRYPT_FRONT_X + 1.2, 1.6)},
+		{"k": "road", "rect": Rect2(1.2, HUT.z - 0.7, HUT.x - 1.2, 1.4)},
+		{"k": "wall", "rect": Rect2(-HALF_X - 0.25, NORTH - 0.25, HALF_X * 2 + 0.5, 0.5)},
+		{"k": "wall", "rect": Rect2(-HALF_X - 0.25, NORTH, 0.5, SOUTH - NORTH)},
+		{"k": "wall", "rect": Rect2(HALF_X - 0.25, NORTH, 0.5, SOUTH - NORTH)},
+		{"k": "wall", "rect": Rect2(-HALF_X, SOUTH - 0.25, HALF_X - 0.8, 0.5)},
+		{"k": "wall", "rect": Rect2(0.8, SOUTH - 0.25, HALF_X - 0.8, 0.5)},
+		{"k": "house", "pts": House.footprint(Vector3(0, 0, CHAPEL_FRONT), 0.0, 7.0, 9.0), "label": CHAPEL_NAME},
+		{"k": "house", "pts": House.footprint(HUT, -90.0, 4.0, 4.0)},
+		{"k": "house", "rect": Rect2(CRYPT_FRONT_X - 3.5, CRYPT.z - 1.5, 3.5, 3.0), "label": "瓦伦家"},
+	]
+	for t in TREES:
+		var p: Vector3 = t[0]
+		shapes.append({"k": "mark", "at": Vector2(p.x, p.z), "icon": "tree"})
+	var exits := [
+		{"at": Vector2(0, SOUTH), "dir": Vector2(0, 1), "to": "frostford", "spawn": "chapel_lane", "name": GATE_NAME},
+		{"at": House.door_xz(Vector3(0, 0, CHAPEL_FRONT), 0.0, 0.0), "dir": -House.facing(0.0), "to": "chapel", "spawn": "front", "name": CHAPEL_NAME},
+	]
+	return {"bounds": Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), "shapes": shapes, "exits": exits}
 
 
 ## 雪地（带碰撞）、往北的石板路、通往墓室与小屋的两条岔路

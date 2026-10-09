@@ -16,6 +16,8 @@ const CAMP_POS := Vector3(-7.4, 0, 0.6)           # 窝棚（开口朝东，对�
 const CHEST_POS := Vector3(-6.2, 0, 3.4)
 const CHEST_ITEMS := ["bread", "bandage", "strong_spirit"]
 const BARRICADE_Z := 6.0
+const NORTH_GATE_NAME := "回霜渡镇的木门"
+const SOUTH_GATE_NAME := "去渡口的路"
 ## 守哨卡的无旗者：[种类, 编号, 巡逻点...]
 const ENEMIES := [
 	["outlaw_leader", "birch_leader", [Vector3(-2.6, 0, 0.6), Vector3(-2.4, 0, 3.6)]],
@@ -67,6 +69,24 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		parent.add_child(e)
 	var s: Array = SPAWNS.north
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+## 地图（3.11，core/area_map.gd 的格式）：林间小路、两边的树林、两头的门。
+## 哨卡（营火、窝棚、木箱、拒马）和无旗者都不画——进林子撞上哨卡是突袭（STORY 第三节）
+static func map_spec() -> Dictionary:
+	var side := HALF_X - ROAD_HALF - 0.6
+	return {
+		"bounds": Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH),
+		"shapes": [
+			{"k": "wood", "rect": Rect2(-HALF_X, NORTH, side, SOUTH - NORTH), "label": "白桦林"},
+			{"k": "wood", "rect": Rect2(HALF_X - side, NORTH, side, SOUTH - NORTH)},
+			{"k": "road", "rect": Rect2(-ROAD_HALF, NORTH, ROAD_HALF * 2, SOUTH - NORTH), "label": "林间小路"},
+		],
+		"exits": [
+			{"at": Vector2(0, NORTH + 0.6), "dir": Vector2(0, -1), "to": "frostford", "spawn": "south_gate", "name": NORTH_GATE_NAME},
+			{"at": Vector2(0, SOUTH - 0.6), "dir": Vector2(0, 1), "to": "ferry", "spawn": "north", "name": SOUTH_GATE_NAME},
+		],
+	}
 
 
 ## 雪地（比区域大一圈）+ 往南的林间小路（踩实的雪，颜色暗一点）+ 路边被踩乱的雪
@@ -191,7 +211,7 @@ static func add_tree(kit: MeshKit, parent: Node3D, p: Vector3, rng: RandomNumber
 
 ## 两头的门：北头回霜渡镇（主街南门的外面）；南头去渡口（3.6）
 static func _gates(kit: MeshKit, parent: Node3D) -> void:
-	for spec in [[NORTH + 0.6, "回霜渡镇的木门", false], [SOUTH - 0.6, "去渡口的路", true]]:
+	for spec in [[NORTH + 0.6, NORTH_GATE_NAME, false], [SOUTH - 0.6, SOUTH_GATE_NAME, true]]:
 		var z: float = spec[0]
 		for sx in [-1.0, 1.0]:
 			kit.box("timber", Vector3(sx * 1.05, 1.2, z), Vector3(0.2, 2.4, 0.2), Basis.IDENTITY, 0.85, 0.5)

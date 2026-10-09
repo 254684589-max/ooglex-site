@@ -20,6 +20,13 @@ const SPAWNS := {
 	"ch1_dawn": [Vector3(0, 0, -43.4), 0.0],            # 第一章开场（4.3）：面朝宅邸门口，维克托就在眼前；去鹭沼的路牌在身后 4 米
 }
 const SOUTH_GATE_Z := 11.1        # 南门（3.5）：在南边看不见的围墙前面
+## 走得到的范围（XZ：x、z、宽、高）：看不见的围墙、区域边缘（Edges）、地图（3.11）共用
+const BOUNDS := Rect2(-15.5, -59.0, 31.0, 70.5)
+const SQUARE := Rect2(-8.6, -26.6, 5.2, 6.2)      # 小广场那块石板地
+const SIGN_POS := Vector3(1.3, 0, -39.8)          # 第一章去鹭沼的路牌（4.1；main._place_chapter_content 放，地图也画它）
+const SOUTH_GATE_NAME := "南门（往桦林、渡口）"
+const LANE_GATE_NAME := "通往星铁小教堂的小路"
+const LANE_GATE_X := 4.55                         # 小路门在右手边房子正面那条线上（FRONT + 0.05）
 const LANE_Z := -27.25           # 右手边第 4、5 栋房子之间的窄巷：通往星铁小教堂墓园的小路门（3.2）
 const STREET_HALF := 3.4         # 石板路半宽
 const FRONT := 4.5               # 两侧房子正面离街中线的距离
@@ -107,7 +114,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		lamp.flicker = not reduced_motion
 		parent.add_child(lamp)
 	_fog(parent, reduced_motion)
-	Edges.dress(parent, Rect2(-15.5, -59.0, 31.0, 70.5), [                          # 镇子外面是白桦林；南门外的路伸进林子，南门两边一段栅栏、一盏灯笼（3.10）
+	Edges.dress(parent, BOUNDS, [                          # 镇子外面是白桦林；南门外的路伸进林子，南门两边一段栅栏、一盏灯笼（3.10）
 		{"at": Vector3(0, 0, SOUTH_GATE_Z), "out": Vector3(0, 0, 1), "half": 1.6, "fence": true, "lantern": true}], [], 3613)
 	# 去墓园的小路不算出口：小路门在两栋房子之间（x 4.55），房子后面到东墙只有窄窄一条，那里伸出一条路反倒像走得出去（审查）
 	_bounds(parent)
@@ -168,17 +175,47 @@ static func place_ch1(parent: Node3D) -> void:
 		parent.add_child(edric)
 
 
+## 地图（3.11，core/area_map.gd 的格式）：走得到的范围、街、广场、房子、出口。只读这里的常量，不读场景节点
+static func map_spec() -> Dictionary:
+	var shapes := [
+		{"k": "road", "rect": Rect2(-STREET_HALF, NORTH_END, STREET_HALF * 2.0, 12.0 - NORTH_END), "label": "主街"},
+		{"k": "square", "rect": SQUARE, "label": "小广场"},
+		{"k": "mark", "at": Vector2(WELL_POS.x, WELL_POS.z), "icon": "well", "label": "井"},
+		{"k": "mark", "at": Vector2(TREE_POS.x, TREE_POS.z), "icon": "tree"},
+		{"k": "house", "pts": House.footprint(Vector3(0, 0, NORTH_END), 0.0, 14.0, 9.0), "label": "领主宅邸"},
+		{"k": "mark", "at": Vector2(SIGN_POS.x, SIGN_POS.z), "icon": "sign", "label": "路牌", "if": {"chapter_min": 1}},
+	]
+	for sx in [-1.0, 1.0]:
+		shapes.append({"k": "wall", "rect": Rect2(sx * 11.0 - 4.0, NORTH_END - 0.8, 8.0, 0.6)})
+	var exits := [
+		{"at": Vector2(0, SOUTH_GATE_Z), "dir": Vector2(0, 1), "to": "birch", "spawn": "north", "name": SOUTH_GATE_NAME},
+		{"at": Vector2(LANE_GATE_X, LANE_Z), "dir": Vector2(1, 0), "to": "churchyard", "spawn": "lane", "name": LANE_GATE_NAME},
+	]
+	for side in [[LEFT, -FRONT, 90.0], [RIGHT, FRONT, -90.0]]:
+		for row in side[0]:
+			var pos := Vector3(float(side[1]), 0, (float(row[0]) + float(row[1])) * 0.5)
+			var yaw := float(side[2])
+			var hs: Dictionary = row[2]
+			var door: Dictionary = hs.get("door", {})
+			var goes := door.has("to_area")
+			shapes.append({"k": "house", "pts": House.footprint(pos, yaw, float(row[0]) - float(row[1]), 7.0), "label": str(door.name) if goes else ""})
+			if goes:
+				exits.append({"at": House.door_xz(pos, yaw, float(hs.get("door_x", 0.0))), "dir": -House.facing(yaw),
+					"to": str(door.to_area), "spawn": str(door.to_spawn), "name": str(door.name)})
+	return {"bounds": BOUNDS, "shapes": shapes, "exits": exits}
+
+
 ## 去墓园的小路门（3.2）：两栋房子之间 1.5 米的窄巷口，两根木柱 + 横梁 + 小檐，一扇木门；门柱上挂着写「星铁小教堂」的木牌
 static func _lane_gate(parent: Node3D) -> void:
 	var kit := MeshKit.new()
-	var x := FRONT + 0.05
+	var x := LANE_GATE_X
 	for dz in [-0.72, 0.72]:
 		kit.box("timber", Vector3(x, 1.2, LANE_Z + dz), Vector3(0.16, 2.4, 0.16), Basis.IDENTITY, 0.85, 0.5)
 	kit.box("timber", Vector3(x, 2.36, LANE_Z), Vector3(0.18, 0.16, 1.6))
 	kit.box("roof", Vector3(x - 0.1, 2.55, LANE_Z), Vector3(0.7, 0.08, 1.9), Basis(Vector3.BACK, deg_to_rad(18.0)))
 	kit.box("timber", Vector3(x - 0.25, 1.85, LANE_Z - 0.95), Vector3(0.04, 0.3, 0.7))           # 木牌
 	parent.add_child(kit.build({"timber": Look.mat("timber"), "roof": Look.mat("roof")}))
-	var gate := Door.make("通往星铁小教堂的小路", 1.1, 2.0, false)
+	var gate := Door.make(LANE_GATE_NAME, 1.1, 2.0, false)
 	gate.verb = "前往"
 	gate.to_area = "churchyard"
 	gate.to_spawn = "lane"
@@ -197,7 +234,7 @@ static func _south_gate(parent: Node3D) -> void:
 	kit.box("timber", Vector3(0, 2.55, z), Vector3(2.7, 0.18, 0.22))
 	kit.box("roof", Vector3(0, 2.75, z), Vector3(3.0, 0.08, 0.7))
 	parent.add_child(kit.build({"timber": Look.mat("timber"), "roof": Look.mat("roof")}))
-	var gate := Door.make("南门（往桦林、渡口）", 1.9, 2.2, false)
+	var gate := Door.make(SOUTH_GATE_NAME, 1.9, 2.2, false)
 	gate.verb = "前往"
 	gate.to_area = "birch"
 	gate.to_spawn = "north"
@@ -216,7 +253,7 @@ static func _ground(parent: Node3D) -> void:
 	for sx in [-1.0, 1.0]:
 		kit.box("stone", Vector3(sx * (STREET_HALF + 0.12), 0.04, zc), Vector3(0.24, 0.1, length), Basis.IDENTITY, 0.8, 0.6)
 	# 小广场：铺一块不规则的石板地
-	kit.box("street", Vector3(-6.0, 0.0, -23.5), Vector3(5.2, 0.02, 6.2), Basis.IDENTITY, 0.85, 0.85)
+	kit.box("street", Vector3(SQUARE.get_center().x, 0.0, SQUARE.get_center().y), Vector3(SQUARE.size.x, 0.02, SQUARE.size.y), Basis.IDENTITY, 0.85, 0.85)
 	var mi := kit.build({"snow": Look.mat("snow"), "street": Look.mat("street"), "stone": Look.mat("stone")})
 	mi.name = "Ground"
 	parent.add_child(mi)
@@ -280,8 +317,8 @@ static func _fog(parent: Node3D, reduced_motion: bool) -> void:
 
 ## 看不见的围墙：走不出这片区域（房子背后留了一圈雪地）
 static func _bounds(parent: Node3D) -> void:
-	for w in [[Vector3(32, 6, 0.4), Vector3(0, 3, 11.5)], [Vector3(32, 6, 0.4), Vector3(0, 3, -59)],
-			[Vector3(0.4, 6, 72), Vector3(15.5, 3, -24)], [Vector3(0.4, 6, 72), Vector3(-15.5, 3, -24)]]:
+	for w in [[Vector3(32, 6, 0.4), Vector3(0, 3, BOUNDS.end.y)], [Vector3(32, 6, 0.4), Vector3(0, 3, BOUNDS.position.y)],
+			[Vector3(0.4, 6, 72), Vector3(BOUNDS.end.x, 3, -24)], [Vector3(0.4, 6, 72), Vector3(BOUNDS.position.x, 3, -24)]]:
 		_solid(parent, w[1], w[0])
 
 
