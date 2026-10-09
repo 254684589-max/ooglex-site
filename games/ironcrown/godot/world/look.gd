@@ -92,6 +92,17 @@ static func glass_dark() -> StandardMaterial3D:
 	return _mats["glass_dark"]
 
 
+## 看不见的材质（4.2）：合并网格里的一个表面没法单独隐藏，白天把窗外的光晕表面换成它
+static func hidden() -> StandardMaterial3D:
+	if not _mats.has("hidden"):
+		var m := StandardMaterial3D.new()
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.albedo_color = Color(0, 0, 0, 0)
+		_mats["hidden"] = m
+	return _mats["hidden"]
+
+
 ## 光晕面片：加法混合的径向渐变，不受雾影响（否则雾色会被叠亮）
 static func halo(color: Color, strength := 0.55) -> StandardMaterial3D:
 	var key := "halo_%s_%.2f" % [color.to_html(), strength]

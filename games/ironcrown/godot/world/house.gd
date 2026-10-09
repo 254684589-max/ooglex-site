@@ -80,6 +80,7 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 	mi.name = "Mesh"
 	root.add_child(mi)
 	root.set_meta("windows", windows)
+	root.set_meta("seed", int(spec.get("seed", 1)))     # 时段（4.2）：清晨按种子挑一部分房子还亮着灯
 	# 碰撞：整栋房子一个盒子（屋顶、挑出的上层在头顶以上，不用碰撞）
 	var body := StaticBody3D.new()
 	body.collision_layer = 1

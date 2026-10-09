@@ -3,7 +3,16 @@
   "gravedigger": {
     "speaker": "守墓人",
     "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "ch1_started"}], "node": "dawn"}
+    ],
     "nodes": {
+      "dawn": {
+        "text": "（他在扫墓碑上的雪）一大早的……瓦伦家的墓室，我又锁上了。修士在小教堂里，一夜没睡。",
+        "options": [
+          {"text": "打扰了。", "end": true}
+        ]
+      },
       "greet": {
         "text": "（他提着灯笼，往手心里哈气）墓园晚上不开门。……算了，你都进来了。",
         "options": [

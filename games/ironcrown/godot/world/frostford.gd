@@ -17,6 +17,7 @@ const SPAWNS := {
 	"chapel_lane": [Vector3(3.3, 0, -27.25), 90.0],     # 从墓园的小路回来：站在小路门外、面朝街心（-X）
 	"south_gate": [Vector3(0, 0, 9.9), 0.0],            # 从桦林回来：站在南门里、面朝街道（3.5）
 	"manor": [Vector3(0, 0, -44.3), 180.0],             # 开场（3.8）：刚走出领主宅邸，背对大门望着雾里的街道；管家在身后门口（转过身就够得着说话）
+	"ch1_dawn": [Vector3(0, 0, -43.4), 0.0],            # 第一章开场（4.3）：面朝宅邸门口，维克托就在眼前；去鹭沼的路牌在身后 4 米
 }
 const SOUTH_GATE_Z := 11.1        # 南门（3.5）：在南边看不见的围墙前面
 const LANE_Z := -27.25           # 右手边第 4、5 栋房子之间的窄巷：通往星铁小教堂墓园的小路门（3.2）
@@ -27,6 +28,12 @@ const WATCH_POS := Vector3(2.3, 0, -3.4)
 const WATCH_LINES := ["夜里雾大，少往渡口那边走。", "三年没见过春天了……烽燧那边的消息一天比一天坏。", "灯要是灭了，就回屋待着，别在街上晃。"]
 const TREE_POS := Vector3(-8.6, 0, -23.5)
 const STEWARD_POS := Vector3(0.0, 0, -46.6)       # 领主宅邸门前，面朝街道（+Z）
+## 第一章开场（4.3）：维克托站在门前正中，管家让到右边，埃德里克（交出、勒索时在）靠在左边门框旁
+const VICTOR_POS := Vector3(0.0, 0, -45.9)
+const STEWARD_CH1 := Vector3(1.8, 0, -46.5)
+const EDRIC_POS := Vector3(-1.9, 0, -46.3)
+const MANOR_DOOR_TEXT := "宅邸的大门闩着，门缝里透出一点灯光。"
+const MANOR_DOOR_CH1 := "宅邸的大门半掩着，仆人们在里面收拾行装。老爷就在门口，用不着进去。"
 const HOB_POS := Vector3(-3.7, 0, -10.6)          # 「倒钩鱼」酒馆门口
 const WELL_POS := Vector3(-6.4, 0, -25.6)
 const DUMMY_POS := Vector3(-2.2, 0, -5.0)         # 更夫岗哨对面的练剑木桩（2.4）
@@ -82,7 +89,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	# 街尽头：领主宅邸（两层石砌）+ 两侧矮石墙
 	House.build(parent, Vector3(0, 0, NORTH_END), 0.0, {"w": 14.0, "d": 9.0, "floors": 2, "stone_upper": true, "roof": "eaves",
 		"chimney": true, "door_x": 0.0, "seed": 31, "lit": 0.3,
-		"door": {"name": "领主宅邸的大门", "text": "宅邸的大门闩着，门缝里透出一点灯光。"}})
+		"door": {"name": "领主宅邸的大门", "text": MANOR_DOOR_CH1 if GameState.chapter >= 1 else MANOR_DOOR_TEXT}})
 	var walls := MeshKit.new()
 	for sx in [-1.0, 1.0]:
 		walls.box("stone", Vector3(sx * 11.0, 1.1, NORTH_END - 0.5), Vector3(8.0, 2.2, 0.6), Basis.IDENTITY, 0.9, 0.5)
@@ -100,6 +107,9 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		lamp.flicker = not reduced_motion
 		parent.add_child(lamp)
 	_fog(parent, reduced_motion)
+	Edges.dress(parent, Rect2(-15.5, -59.0, 31.0, 70.5), [                          # 镇子外面是白桦林；南门外的路伸进林子，南门两边一段栅栏、一盏灯笼（3.10）
+		{"at": Vector3(0, 0, SOUTH_GATE_Z), "out": Vector3(0, 0, 1), "half": 1.6, "fence": true, "lantern": true}], [], 3613)
+	# 去墓园的小路不算出口：小路门在两栋房子之间（x 4.55），房子后面到东墙只有窄窄一条，那里伸出一条路反倒像走得出去（审查）
 	_bounds(parent)
 	# 1.3 的交互物：更夫、木箱上的面包（锁着的门在房子里）
 	var watch := Npc.make("更夫", WATCH_LINES, Color("3e4a3a"))
@@ -112,7 +122,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var steward := Npc.make("管家", [], Color("2e2a3a"))
 	steward.dialogue_area = "frostford"
 	steward.dialogue_id = "steward"
-	steward.position = STEWARD_POS
+	steward.position = STEWARD_CH1 if GameState.chapter >= 1 else STEWARD_POS     # 第一章开场让出门口正中给维克托（4.3）
 	steward.rotation.y = PI
 	parent.add_child(steward)
 	var hob := Npc.make("老霍布", [], Color("5a4a3a"))
@@ -136,6 +146,26 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	dummy.rotation.y = 0.3
 	parent.add_child(dummy)
 	return Transform3D(Basis.IDENTITY, SPAWN)
+
+
+## 第一章开场的人（4.3；STORY.md 4.4）：维克托在宅邸门口等你；交出时埃德里克在门边一言不发，勒索时他在门边盯着你；放走时他已经坐船南下，不在。
+## 由 main._place_chapter_content() 在第一章的霜渡镇调用（脚本在主包里，章节包只放场景，Chapters 的约定）
+static func place_ch1(parent: Node3D) -> void:
+	var victor := Npc.make("维克托", [], Color("4a2e2a"))
+	victor.name = "Victor"
+	victor.dialogue_area = "frostford"
+	victor.dialogue_id = "victor"
+	victor.position = VICTOR_POS
+	victor.rotation.y = PI
+	parent.add_child(victor)
+	if str(GameState.get_flag("prologue_edric")) in ["deliver", "extort"]:
+		var edric := Npc.make("埃德里克", [], Color("2a3a4e"))
+		edric.name = "Edric"
+		edric.dialogue_area = "frostford"
+		edric.dialogue_id = "edric_ch1"
+		edric.position = EDRIC_POS
+		edric.rotation.y = PI * 0.92
+		parent.add_child(edric)
 
 
 ## 去墓园的小路门（3.2）：两栋房子之间 1.5 米的窄巷口，两根木柱 + 横梁 + 小檐，一扇木门；门柱上挂着写「星铁小教堂」的木牌

@@ -2,12 +2,16 @@ class_name StreetLamp
 extends Node3D
 ## 街灯（TECH.md 4.6）：木灯柱 + 横臂 + 吊着的灯笼（暖色玻璃）+ 一盏真实点光源 + 光晕。
 ## 火光轻微闪烁；系统「减少动态效果」时不闪。整条街的实时点光源不超过 4 盏（视野内预算）。
+## 4.2 起是夜灯（Daypart）：清晨、白天灭掉（set_lit）——灯、光晕藏起来，灯笼玻璃换成暗玻璃，也不再算敌人感知的光源。
 
 const HEIGHT := 3.4
 const ENERGY := 2.0
 const RANGE := 10.0
 
 var light: OmniLight3D
+var halo_node: MeshInstance3D
+var lantern: MeshInstance3D
+var lit := true
 var flicker := true
 var t := 0.0
 var seed_offset := 0.0
@@ -16,6 +20,7 @@ var seed_offset := 0.0
 func _ready() -> void:
 	add_to_group("street_lamp")
 	add_to_group("light_source")      # 敌人感知：站在灯下 20 米外就能被看见（2.5）
+	add_to_group("night_light")       # 时段（4.2）：白天灭掉
 	set_meta("radius", 6.0)
 	seed_offset = randf() * 10.0
 	var kit := MeshKit.new()
@@ -28,6 +33,7 @@ func _ready() -> void:
 	kit.box("timber", Vector3(0, HEIGHT - 0.6, -0.85), Vector3(0.3, 0.04, 0.3))
 	var mi := kit.build({"timber": Look.mat("timber"), "stone": Look.mat("stone"), "glass_lit": Look.glass_lit()})
 	add_child(mi)
+	lantern = mi
 	var halo := MeshInstance3D.new()
 	var q := QuadMesh.new()
 	q.size = Vector2(1.6, 1.6)
@@ -37,6 +43,7 @@ func _ready() -> void:
 	halo.mesh = q
 	halo.position = Vector3(0, HEIGHT - 0.42, -0.85)
 	add_child(halo)
+	halo_node = halo
 	light = OmniLight3D.new()
 	light.light_color = Look.LAMP_COLOR
 	light.light_energy = ENERGY
@@ -56,7 +63,23 @@ func _ready() -> void:
 	add_child(body)
 
 
+## 点亮 / 熄灭（时段，4.2）
+func set_lit(on: bool) -> void:
+	lit = on
+	light.visible = on
+	halo_node.visible = on
+	for i in lantern.mesh.get_surface_count():
+		if lantern.mesh.surface_get_material(i) == Look.glass_lit():
+			lantern.set_surface_override_material(i, null if on else Look.glass_dark())
+	if on and not is_in_group("light_source"):
+		add_to_group("light_source")
+	elif not on and is_in_group("light_source"):
+		remove_from_group("light_source")
+
+
 func _process(delta: float) -> void:
+	if not lit:
+		return
 	if not flicker:
 		light.light_energy = ENERGY
 		return

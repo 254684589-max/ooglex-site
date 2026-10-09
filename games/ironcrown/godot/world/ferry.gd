@@ -32,6 +32,7 @@ const EDRIC_POS := Vector3(2.0, DECK_Y, 11.6)
 const SILAS_POS := Vector3(2.6, DECK_Y, 10.2)
 const FERRYMAN_POS := Vector3(-6.2, 0, -4.4)
 const FERRYMAN_LINES := ["灰手那伙人一来，我就躲到屋门口了……誓剑大人，您可小心点。", "雾不散，船不开。要过河，等天亮吧。", "那个南方人的马拴在棚子里，喂了三天的料钱还没给呢。"]
+const FERRYMAN_LINES_CH1 := ["雾散了一半，今天的渡船照常开。", "今天码头上忙，南边的货都堵在河上。", "往南的船都满了——冠城那边的消息一天比一天坏。"]     # 第一章的清晨（4.3）
 const THUG_LINES := ["头儿说了算。", "……"]
 ## 命名出生点（world/areas.gd）：north = 从桦林下来，站在北头、面朝河
 const SPAWNS := {
@@ -65,6 +66,9 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_bounds(parent)
 	_lamps(parent, reduced_motion)
 	_fog(parent, reduced_motion)
+	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), [      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
+		{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}],
+		[Rect2(-400.0, SHORE_Z, 800.0, 400.0)], 3611)                                # 南边是河：不种树、不铺雪（雪地铺到岸边，和水接上）
 	var exit := Door.make("回桦林的路", 1.9, 2.0, false)
 	exit.verb = "回到"
 	exit.to_area = "birch"
@@ -85,8 +89,9 @@ static func _ground(kit: MeshKit, parent: Node3D) -> void:
 	kit.box("snow", Vector3(0, -0.1, (SHORE_Z + NORTH - 4.0) * 0.5), Vector3(HALF_X * 2 + 6, 0.2, len_z), Basis.IDENTITY, 1.0, 0.9)
 	kit.box("snow", Vector3(0, 0.004, -14.0), Vector3(3.2, 0.02, 28.0), Basis.IDENTITY, 0.62, 0.62)                # 从桦林下来的小路
 	kit.box("snow", Vector3(1.0, 0.006, -3.0), Vector3(12.0, 0.02, 6.0), Basis(Vector3.UP, 0.05), 0.68, 0.68)       # 码头根被踩乱的一片
-	kit.box("stone", Vector3(0, -0.05, SHORE_Z - 0.15), Vector3(HALF_X * 2 + 6, 0.3, 0.5), Basis.IDENTITY, 0.5, 0.3)   # 岸边的石头
-	kit.box("water", Vector3(0, WATER_Y, SHORE_Z + 30.0), Vector3(HALF_X * 2 + 60, 0.02, 60.0))
+	# 岸边的石头、河面：和边界外的雪地一样宽、一样远（3.10：原来只有区域那么宽，雪地铺出去以后两头露出河的边）
+	kit.box("stone", Vector3(0, -0.05, SHORE_Z - 0.15), Vector3((HALF_X + Edges.GROUND_MARGIN) * 2, 0.3, 0.5), Basis.IDENTITY, 0.5, 0.3)
+	kit.box("water", Vector3(0, WATER_Y, SHORE_Z + Edges.GROUND_MARGIN * 0.5), Vector3((HALF_X + Edges.GROUND_MARGIN) * 2, 0.02, Edges.GROUND_MARGIN))
 	_solid(parent, Vector3(0, -0.1, (SHORE_Z + NORTH - 4.0) * 0.5), Vector3(HALF_X * 2 + 6, 0.2, len_z))
 
 
@@ -209,6 +214,7 @@ static func _lamps(parent: Node3D, reduced_motion: bool) -> void:
 		if spec[1]:
 			l.add_to_group("light_source")
 			l.set_meta("radius", 5.0)
+		Daypart.mark_night_light(l, halo)         # 白天灭掉（4.2）
 		parent.add_child(l)
 	parent.add_child(kit.build({"ember": _ember_mat(), "timber": Look.mat("timber")}))
 
@@ -265,7 +271,7 @@ static func _people(parent: Node3D) -> void:
 		parent.add_child(n)
 	_pair(parent)
 	_alban(parent)
-	var fm := Npc.make("渡工", FERRYMAN_LINES, Color("4a5a4a"))
+	var fm := Npc.make("渡工", FERRYMAN_LINES_CH1 if GameState.chapter >= 1 else FERRYMAN_LINES, Color("4a5a4a"))
 	fm.position = FERRYMAN_POS
 	fm.rotation.y = -PI / 2                             # 面朝东（码头）
 	parent.add_child(fm)

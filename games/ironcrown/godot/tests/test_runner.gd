@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -207,6 +207,16 @@ func test_ui() -> void:
 	texts.append_array(["正在载入 第一章 · 黑鹭堡", "正在下载这一章的内容……", "已下载 1.2 / 3.4 MB", "× 没能载入：", "重试返回", "继续：第一章 · 黑鹭堡", "往鹭沼 · 黑鹭堡",
 		"× 没能载入第一章 · 黑鹭堡，存档没读", "这一章的内容不在这个版本里", "正在下载别的章节，请稍等", "下载好了，但浏览器不让存（存储空间不够或隐私模式）",
 		"下载的章节包打不开，请重试", "下载没能开始（错误 ）", "网络太慢，下载超时了", "网络出错了（），请检查网络后重试", "服务器没给这一章（HTTP ）"])     # 章节包（4.1）
+	texts.append_array(Daypart.NAMES.values() + Daypart.CHANGE_TEXT.values())     # 时段（4.2）
+	texts.append_array([Frostford.MANOR_DOOR_CH1, "维克托", "埃德里克", "栅门上挂着锁。玛蒂尔达头也不抬：「楼上的客人还没起。」"] + Tavern.PEDDLER_LINES_CH1 + Ferry.FERRYMAN_LINES_CH1 + [main.CH1_LATER])     # 第一章开场（4.3）
+	texts.append_array(["旅行地图 · 北境西部", "关上地图", "出发去", "（你在这里）", " · 你在这里", "路：，到了是", "× ", "鹭 沼", "灰鲸河", "堤道", "北", "查看地图",
+		"序章没有旅行地图，第一章起才有。", "这一章去不了那里。", "你就在这里。", "要先回到地图上的地方才能出发。", "从这里去不了，先到。", "从这里没有路过去。",
+		"走到那里才能出发。", "出发的地方", "还没做好。", "自动存档没存上，先别走。", "走不了。"])     # 旅行地图（4.2）
+	for tid in Travel.data().get("places", {}):
+		var tp: Dictionary = Travel.place(tid)
+		texts.append(str(tp.name) + str(tp.blurb) + str(tp.get("depart_at", "")) + str(tp.get("pending", "")))
+	for tr in Travel.data().get("routes", []):
+		texts.append(str(tr.text))
 	texts.append_array(["军阵基准测试进行中……（ 人，画质，不要操作）", "军阵基准测试结果（ 人，画质，电脑触屏设备）", "：平均 帧，最慢一帧 毫秒，绘制调用 ，逻辑约 — 毫秒"])     # 军阵基准（B.5）
 	texts.append_array(["战况：人 +援军（士气 ）· 胜（溃逃）两边都打光了", "稳动摇快崩了", "◆ 的队长倒下了！溃逃了！来了 个援军", "撤！别打了！", "（援军）"])     # 士气与胜负（B.3）
 	texts.append_array([main.HINT_BATTLE_DESKTOP, main.HINT_BATTLE_TOUCH, "◆ 开打！✓ 赢了！× 赢了……两边都打光了。（刷新页面再来一次）"] + BattleArena.VIEW_NAMES)     # 军阵试验场（B.1）
@@ -778,6 +788,7 @@ func test_perf() -> void:
 	check(is_equal_approx(ov.position.y, 44.0), "电脑：性能浮层仍在标题下面（体力条在左下角）")
 	check(ov.get_index() < main.hud.get_index(), "性能浮层画在 HUD 底下：短提示叠上来时字在上面")
 	Settings.set_value("show_perf", false)
+	Settings.set_value("quality", "")                  # 上面在暂停菜单里点过低画质，记进了设置：放回自动，别带进后面的测试组
 	await free_main(main)
 
 
@@ -4541,7 +4552,7 @@ func fake_packs(main: Node3D, fails: int) -> FakePacks:
 
 ## 章节衔接与章节包（路线图 4.1；TECH.md 第六节）：章节登记、导出预设、存档里的章节、下载器、下载画面、结束画面的「继续」、读第一章的存档
 func test_chapters() -> void:
-	check(Chapters.PLAYABLE == 0 and Chapters.name_of(1) == "第一章 · 黑鹭堡" and Chapters.pack_of(0) == "" and Chapters.pack_of(1) == "ch1", "章节登记：序章在主包里，第一章在章节包 ch1；第一章开场（4.3）做好以前不能继续（PLAYABLE = 0）")
+	check(Chapters.PLAYABLE == 1 and Chapters.name_of(1) == "第一章 · 黑鹭堡" and Chapters.pack_of(0) == "" and Chapters.pack_of(1) == "ch1", "章节登记：序章在主包里，第一章在章节包 ch1；第一章开场（4.3）做好了，能继续（PLAYABLE = 1）")
 	check(Chapters.probe_for_pack("ch1") == Chapters.probe_of(1) and Chapters.content_ready(0) and Chapters.content_ready(1), "编辑器 / 无头测试里第一章的内容本来就在 res://（网页上挂了章节包才在）")
 	# 章节包只放场景与资源，脚本留在主包；主包排除 chapters/*；第一章的预设正好列出 chapters/ch1 底下的全部文件
 	var files := files_under("res://chapters/ch1")
@@ -4593,7 +4604,8 @@ func test_chapters() -> void:
 	check(pp.retry_btn.visible and pp.cancel_btn.visible and pp.retry_btn.has_focus() and not pp.bar.visible and pp.detail.text == "× 没能载入：网络出错了（4），请检查网络后重试", "失败：写明原因，「重试」「返回」，焦点在「重试」上（键盘能直接按）")
 	pp.close()
 	check(await main.ensure_chapter(1) and not pp.visible, "第一章的内容已经在：不开下载画面")
-	# 结束画面：第一章开场做好以前没有「继续」；能玩以后有，默认焦点在它上面
+	# 结束画面：能玩的章节是 0 时（第一章开场做好以前）没有「继续」；能玩以后有，默认焦点在它上面
+	main.playable_chapter = 0
 	main.show_ending("prologue", "deliver")
 	await frames(3)
 	check(main.ending_panel.visible and not main.ending_panel.continue_btn.visible and main.ending_panel.back_btn.has_focus(), "第一章开场做好以前：结束画面没有「继续」（和原来一样）")
@@ -4609,13 +4621,13 @@ func test_chapters() -> void:
 	main.reload_requested.connect(func(): rl[0] += 1)
 	eb.continue_btn.pressed.emit()
 	await frames(3)
-	check(rl[0] == 1 and GameState.chapter == 1 and GameState.has_flag("ch1_started") and GameState.pending_load.get("scene") == "frostford" and GameState.pending_load.get("spawn") == "manor", "「继续」：记下第一章，去霜渡镇宅邸门口")
+	check(rl[0] == 1 and GameState.chapter == 1 and GameState.has_flag("ch1_started") and GameState.pending_load.get("scene") == "frostford" and GameState.pending_load.get("spawn") == "ch1_dawn", "「继续」：记下第一章，去霜渡镇宅邸门口（面朝门口等着的维克托，4.3）")
 	main = await reload_main(main)
 	await frames(4)
 	var sign := main.world.get_node_or_null("RoadSignCh1") as Node3D
 	check(main.area == "frostford" and sign != null and (sign.get_node("Text") as Label3D).text == "往鹭沼 · 黑鹭堡", "第一章：宅邸门口立着「往鹭沼 · 黑鹭堡」的路牌（场景在章节包里）")
 	var to: Vector3 = sign.global_position - main.player.global_position if sign else Vector3.ZERO
-	check(to.length() < 5.0 and (-main.player.global_basis.z).dot(to.normalized()) > 0.3, "路牌就在出门的人前方几步（%.1f 米）" % to.length())
+	check(to.length() < 5.0 and (-main.player.global_basis.z).dot(to.normalized()) < -0.3, "路牌就在身后几步（%.1f 米；4.3 起开场面朝宅邸门口的维克托）" % to.length())
 	check(main.hud.toast_label.text.contains("第一章 · 黑鹭堡") and GameState.has_flag("ch1_intro"), "刚进第一章先报章节名")
 	await frames(3)
 	var au: Dictionary = Saves.read_slot("auto")
@@ -4645,4 +4657,652 @@ func test_chapters() -> void:
 	await frames(3)
 	check(main.world.get_node_or_null("RoadSignCh1") != null, "读档回来：路牌还在")
 	await free_main(main)
+	GameState.new_game()
+
+
+## 第一章的霜渡镇（4.2 起的测试用）：章节、时段、站在宅邸门口（路牌前）
+func make_ch1(daypart := "dawn") -> Node3D:
+	GameState.chapter = 1
+	GameState.daypart = daypart
+	GameState.pending_load = {"scene": "frostford", "spawn": "manor", "player": {}}
+	return await make_main(false)
+
+
+## 有多少栋房子此刻亮着灯（Daypart.set_windows 记的 lit_now；没套过时段的按建的时候算亮）
+func houses_lit(main: Node3D) -> Array:
+	var on := 0
+	var all := 0
+	for h in main.get_tree().get_nodes_in_group("house"):
+		all += 1
+		if bool(h.get_meta("lit_now", true)):
+			on += 1
+	return [on, all]
+
+
+## 时段（路线图 4.2；STORY.md 4.9；world/daypart.gd）：预设、存档、霜渡镇的清晨、白天 / 黄昏现场换光、室内不受影响、敌人视距、对话效果、进第一章是清晨
+func test_daypart() -> void:
+	check(Daypart.IDS.size() == 4 and Daypart.IDS.all(func(i): return Daypart.PRESETS.has(i) and Daypart.NAMES.has(i) and Daypart.CHANGE_TEXT.has(i)), "四个时段：清晨 / 白天 / 黄昏 / 夜，各有预设、名字和换时段的提示")
+	var keys: Array = Daypart.PRESETS.night.keys()
+	check(Daypart.IDS.all(func(i): return Daypart.PRESETS[i].keys().size() == keys.size() and keys.all(func(k): return Daypart.PRESETS[i].has(k))), "每个预设的项一样多（%d 项），不会漏改哪一项" % keys.size())
+	var nt: Dictionary = Daypart.PRESETS.night
+	check(nt.sky == Color("22344a") and nt.ambient == Color("6f8faf") and nt.sun == Color("8fb0d6") and is_equal_approx(nt.sun_energy, 0.32) and nt.sun_rot == Vector3(-38, 150, 0) and is_equal_approx(nt.fog_end, 36.0), "夜的预设和序章原来的数值一字不差（天色、月光、雾）")
+	check(is_equal_approx(Daypart.PRESETS.night.sight_dark, Enemy.SIGHT_DARK) and is_equal_approx(Daypart.PRESETS.day.sight_dark, Enemy.SIGHT_LIT) and Daypart.PRESETS.dusk.sight_dark < Daypart.PRESETS.dawn.sight_dark, "敌人在暗处的视距：夜 8 米、黄昏 12、清晨 14、白天 20（= 灯下）")
+	check(Chapters.daypart_of(0) == "night" and Chapters.daypart_of(1) == "dawn" and Chapters.daypart_of(9) == "night", "序章是夜；第一章从清晨开始")
+	check(not Daypart.affects("tavern") and not Daypart.affects("chapel") and not Daypart.affects("arena") and not Daypart.affects("test_range") and Daypart.affects("frostford") and Daypart.affects("birch"), "受时段影响的是室外区域；室内、训练场、灰盒测试场不受")
+	check(Daypart.effective("tavern", "day") == "night" and Daypart.effective("frostford", "day") == "day" and Daypart.effective("frostford", "noon") == "night", "室内永远按夜的样子；不认识的时段当夜")
+	# 存档
+	GameState.new_game(5)
+	check(GameState.daypart == "night" and str(GameState.to_dict().daypart) == "night", "新游戏是夜")
+	GameState.chapter = 1
+	GameState.daypart = "dusk"
+	var d := JSON.parse_string(JSON.stringify(GameState.to_dict())) as Dictionary
+	GameState.new_game(5)
+	GameState.from_dict(d)
+	var back := GameState.daypart
+	d.erase("daypart")
+	GameState.from_dict(d)
+	var old1 := GameState.daypart
+	d.chapter = 0
+	GameState.from_dict(d)
+	var old0 := GameState.daypart
+	d.daypart = "noon"
+	d.chapter = 1
+	GameState.from_dict(d)
+	check(back == "dusk" and old1 == "dawn" and old0 == "night" and GameState.daypart == "dawn", "时段写进存档、读得回来；4.2 以前的存档没有这一项：按这一章开头的时段（序章夜、第一章清晨）；坏值也按这个")
+	# 序章的霜渡镇：夜，和原来一样
+	GameState.new_game(41)
+	var main := await make_main(false)
+	var hl := houses_lit(main)
+	var lamps := main.get_tree().get_nodes_in_group("street_lamp")
+	check(main.daypart == "night" and Daypart.current == "night" and main.env.background_color == main.FOG_COLOR and hl[0] == hl[1] and hl[1] == 12, "序章：夜，12 栋房子都按原来的样子亮着灯")
+	check(lamps.size() == 4 and lamps.all(func(l): return l.lit and l.light.visible and l.is_in_group("light_source")), "夜里 4 盏街灯亮着，算敌人感知的光源")
+	await free_main(main)
+	# 第一章的清晨
+	main = await make_ch1("dawn")
+	var dp: Dictionary = Daypart.PRESETS.dawn
+	hl = houses_lit(main)
+	lamps = main.get_tree().get_nodes_in_group("street_lamp")
+	check(main.daypart == "dawn" and Daypart.current == "dawn" and main.env.background_color == dp.sky and main.env.fog_light_color == dp.sky and is_equal_approx(main.env.fog_depth_end, dp.fog_end), "第一章的霜渡镇是清晨：天色、远雾换成清晨（雾散了一半：%.0f 米才吞没）" % main.env.fog_depth_end)
+	check(main.moon.light_color == dp.sun and is_equal_approx(main.moon.light_energy, dp.sun_energy) and main.moon.visible and main.moon.rotation_degrees.is_equal_approx(dp.sun_rot), "清晨的太阳偏暖")
+	var sun_dir: Vector3 = -main.moon.global_basis.z
+	check(sun_dir.x < -0.6 and sun_dir.z < -0.3 and sun_dir.y < 0.0 and sun_dir.y > -0.35, "清晨的太阳从东南低低地照过来，往西北照进街里（方向 %s）" % str(sun_dir))
+	check(hl[0] >= 2 and hl[0] <= hl[1] - 4, "清晨只有几栋房子还亮着灯（%d / %d 栋）" % [hl[0], hl[1]])
+	check(lamps.all(func(l): return not l.lit and not l.light.visible and not l.halo_node.visible and not l.is_in_group("light_source")) and main.get_tree().get_nodes_in_group("light_source").is_empty(), "清晨街灯灭了：灯、光晕都藏起来，也不再算敌人感知的光源")
+	var dark_house: Node3D = null
+	for h in main.get_tree().get_nodes_in_group("house"):
+		if not bool(h.get_meta("lit_now", true)) and int(h.get_meta("windows").lit) > 0:
+			dark_house = h
+			break
+	var swapped := false
+	if dark_house:
+		var mi := dark_house.get_node("Mesh") as MeshInstance3D
+		for i in mi.mesh.get_surface_count():
+			if mi.mesh.surface_get_material(i) == Look.glass_lit():
+				swapped = mi.get_surface_override_material(i) == Look.glass_dark()
+	check(swapped and Look.glass_lit().albedo_color == Color("d99a48"), "灭了灯的房子：亮窗换成暗玻璃（表面覆盖，共用的材质不改）")
+	var band: MeshInstance3D = main.get_tree().get_nodes_in_group("fog_band")[0]
+	var bm := band.material_override as ShaderMaterial
+	check(bm.get_shader_parameter("color") == dp.band and is_equal_approx(float(bm.get_shader_parameter("density")), float(band.get_meta("base_density")) * dp.band_density), "贴地雾带换成清晨的颜色、淡一点")
+	main.apply_quality("low")
+	check(main.env.background_color == dp.sky and not main.moon.shadow_enabled and not main.env.glow_enabled, "换画质不会把时段冲掉（阴影、泛光归画质）")
+	main.apply_quality("medium")
+	# 现场换到白天：不重新载入，再套一次
+	var rl := [0]
+	main.reload_requested.connect(func(): rl[0] += 1)
+	await main.set_daypart("day")
+	await frames(2)
+	hl = houses_lit(main)
+	check(rl[0] == 0 and main.daypart == "day" and GameState.daypart == "day" and main.env.background_color == Daypart.PRESETS.day.sky and hl[0] == 0, "剧情推进到白天：不重新载入，直接换光；白天家家都不点灯")
+	check(main.hud.toast_label.text.contains(Daypart.CHANGE_TEXT.day) and main.moon.shadow_enabled, "上方提示「%s」；画质的阴影还在" % Daypart.CHANGE_TEXT.day)
+	await main.set_daypart("dusk")
+	hl = houses_lit(main)
+	check(hl[0] == hl[1] and lamps.all(func(l): return l.lit and l.light.visible and l.is_in_group("light_source")) and main.env.background_color == Daypart.PRESETS.dusk.sky, "黄昏：街灯点上、家家亮灯")
+	var b2 := float(bm.get_shader_parameter("density"))
+	Daypart.apply(main, "dusk")
+	Daypart.apply(main, "dusk")
+	hl = houses_lit(main)
+	check(is_equal_approx(float(bm.get_shader_parameter("density")), b2) and is_equal_approx(b2, float(band.get_meta("base_density")) * Daypart.PRESETS.dusk.band_density) and hl[0] == hl[1], "同一个时段再套两次没有变化（雾带浓度不会越乘越淡）")
+	# 对话效果与条件
+	var errs := []
+	DialogueRunner._validate_effects([{"daypart": "noon"}], "测试", {}, errs)
+	DialogueRunner._validate_conds([{"daypart": ["dawn", "teatime"]}], "测试", {}, errs)
+	var ok_errs := []
+	DialogueRunner._validate_effects([{"daypart": "dusk"}], "测试", {}, ok_errs)
+	DialogueRunner._validate_conds([{"daypart": "day"}, {"daypart": ["dawn", "dusk"]}], "测试", {}, ok_errs)
+	check(errs.size() == 2 and ok_errs.is_empty(), "对话里的时段效果与条件：认识的时段才过检查（%s）" % "; ".join(errs))
+	GameState.daypart = "dusk"
+	check(DialogueRunner.conds_ok([{"daypart": "dusk"}]) and DialogueRunner.conds_ok([{"daypart": ["day", "dusk"]}]) and not DialogueRunner.conds_ok([{"daypart": ["dawn", "day"]}]), "条件：现在是这个时段（或这几个之一）")
+	DialogueRunner.apply([{"daypart": "night"}])
+	check(GameState.daypart == "night" and GameState.pending_daypart == "night" and main.daypart == "dusk", "效果：存档里马上是夜，画面等对话关上再换")
+	main._on_dialogue_closed()
+	await seconds(1.6)
+	check(main.daypart == "night" and GameState.pending_daypart == "" and main.env.background_color == main.FOG_COLOR and main.fade.color.a < 0.05, "对话关上：黑一下换成夜，再亮回来")
+	await free_main(main)
+	# 室内不受影响：白天进酒馆，还是炉火和暖暗的环境光
+	GameState.daypart = "day"
+	main = await make_area("tavern")
+	check(main.daypart == "night" and Daypart.current == "night" and not main.moon.visible and main.env.background_color.r < 0.1 and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL, "白天进酒馆：室内照旧（时段只记着，不换光）")
+	await free_main(main)
+	# 敌人视距：桦林的白天，暗处也看得见 20 米；营火不是夜灯，门口的风灯是
+	GameState.new_game(43)
+	GameState.daypart = "day"
+	main = await make_area("birch")
+	await frames(3)
+	var e: Enemy = main.get_tree().get_nodes_in_group("enemy")[0]
+	var nl := main.get_tree().get_nodes_in_group("night_light")
+	check(nl.size() == 2 and nl.all(func(l): return not l.visible) and main.get_tree().get_nodes_in_group("light_source").size() == 1, "桦林的白天：门口两盏风灯灭了，营火照烧（仍是光源）")
+	main.player.global_position = Birch.SPAWNS.north[0]
+	check(not e.player_lit() and is_equal_approx(e.sight_range(), 20.0), "白天站在暗处，敌人也能看 20 米")
+	await free_main(main)
+	GameState.daypart = "night"
+	main = await make_area("birch")
+	await frames(3)
+	e = main.get_tree().get_nodes_in_group("enemy")[0]
+	main.player.global_position = Birch.SPAWNS.north[0]
+	check(not e.player_lit() and is_equal_approx(e.sight_range(), Enemy.SIGHT_DARK) and main.get_tree().get_nodes_in_group("night_light").all(func(l): return l.visible), "夜里照旧 8 米；风灯亮着")
+	await free_main(main)
+	# 墓园、渡口的夜灯：白天灭、光源组跟着进出
+	GameState.daypart = "day"
+	main = await make_area("ferry")
+	nl = main.get_tree().get_nodes_in_group("night_light")
+	check(nl.size() == 5 and nl.filter(func(l): return l is OmniLight3D).size() == 4 and nl.all(func(l): return not l.visible and not l.is_in_group("light_source")), "渡口的白天：4 盏风灯和北头路口的灯笼（3.10）都灭了，不算光源")
+	await main.set_daypart("dusk", false)
+	check(main.get_tree().get_nodes_in_group("light_source").size() >= 2 and nl.all(func(l): return l.visible), "黄昏点上：码头的两盏又算光源了")
+	await free_main(main)
+	# 进第一章：从清晨开始
+	wipe_test_saves()
+	GameState.new_game(44)
+	main = await make_main(false)
+	main.playable_chapter = 1
+	var rl2 := [0]
+	main.reload_requested.connect(func(): rl2[0] += 1)
+	await main.start_chapter(1)
+	check(rl2[0] == 1 and GameState.daypart == "dawn", "「继续：第一章」：时段记成清晨")
+	main = await reload_main(main)
+	await frames(3)
+	check(main.daypart == "dawn" and main.env.background_color == Daypart.PRESETS.dawn.sky, "到了霜渡镇宅邸门口：清晨")
+	var au: Dictionary = Saves.read_slot("auto")
+	check(au.has("data") and str(au.data.state.daypart) == "dawn", "进第一章自动存档：存档里写着清晨")
+	await free_main(main)
+	GameState.new_game()
+
+
+## 测试用的旅行数据：芦栈村「做好了」（借酒馆当目的地），黑鹭堡借小教堂，用来走完出发的整条路
+func travel_fixture() -> Dictionary:
+	var d: Dictionary = Travel.data().duplicate(true)
+	d.places.reedwharf.area = "tavern"
+	d.places.reedwharf.spawn = "front"
+	d.places.blackheron.area = "chapel"
+	d.places.blackheron.spawn = Chapel.SPAWNS.keys()[0]
+	return d
+
+
+## 旅行地图（路线图 4.2；STORY.md 4.2；core/travel.gd、ui/travel_map.gd）：数据、能不能走、序章没有、路牌打开、只能看、出发前自动存档、到了是白天、窄屏
+func test_travelmap() -> void:
+	Travel.override(null)
+	check(Travel.validate().is_empty(), "旅行数据通过检查（%s）" % "; ".join(Travel.validate()))
+	check(Travel.places(0).is_empty() and Travel.places(1) == ["frostford", "reedwharf", "blackheron"], "序章没有旅行地图；第一章：霜渡镇、芦栈村、黑鹭堡")
+	check(Travel.place_of_area("frostford") == "frostford" and Travel.place_of_area("tavern") == "" and Travel.built("frostford") and not Travel.built("reedwharf") and not Travel.built("blackheron"), "霜渡镇是地图上的地点；芦栈村、黑鹭堡还没做好")
+	var c1 := Travel.check(1, "frostford", "reedwharf", true)
+	var c2 := Travel.check(1, "frostford", "frostford", true)
+	var c3 := Travel.check(1, "frostford", "blackheron", true)
+	check(not c1.ok and c1.why == "芦栈村还在开发中，现在还去不了。" and c2.why == "你就在这里。" and c3.why == "黑鹭堡还在开发中，现在还去不了。" and str(c1.route.daypart) == "day", "现在哪儿都去不了：写明还在开发中（4.4 / 4.5）")
+	Travel.override(travel_fixture())
+	check(Travel.validate().is_empty(), "测试数据（借酒馆、小教堂当目的地）也通过检查")
+	var f1 := Travel.check(1, "frostford", "reedwharf", false)
+	var f2 := Travel.check(1, "frostford", "reedwharf", true)
+	var f3 := Travel.check(1, "frostford", "blackheron", true)
+	var f4 := Travel.check(1, "", "reedwharf", true)
+	check(f1.why == "走到宅邸门口的路牌那里才能出发。" and f2.ok and f3.why == "从这里去不了，先到芦栈村。" and f4.why == "要先回到地图上的地方才能出发。", "做好了以后：要站在路牌那里；黑鹭堡要先到芦栈村再走堤道")
+	Travel.override(null)
+	# 序章：按 M 只提示没有地图
+	wipe_test_saves()
+	GameState.new_game(51)
+	var main := await make_main(false)
+	main._unhandled_input(key_ev(KEY_M))
+	await frames(2)
+	check(not main.travel_map.visible and not get_tree().paused and main.hud.toast_label.text == "序章没有旅行地图，第一章起才有。", "序章按 M：提示第一章起才有旅行地图")
+	await free_main(main)
+	# 第一章：对着路牌按交互打开
+	GameState.new_game(52)
+	main = await make_ch1("dawn")
+	var sign := main.world.get_node("RoadSignCh1") as Node3D
+	var mp := sign.get_node("MapPoint") as TravelPoint
+	await aim(main.player, sign.global_position + Vector3(0, 0, -2.0), mp.global_position + Vector3(0, 1.6, 0))
+	var t: Interactable = main.player.interactor.target
+	check(t == mp and t.prompt() == "查看地图 · 往鹭沼 · 黑鹭堡", "对着路牌：「查看地图 · 往鹭沼 · 黑鹭堡」")
+	main.player.interactor.use()
+	await frames(4)
+	var tm: TravelMap = main.travel_map
+	check(tm.visible and get_tree().paused and tm.at_departure and tm.here == "frostford" and tm.place_btns.size() == 3 and not main.hud.visible, "打开旅行地图：游戏暂停，提示和触屏按钮藏起来；站在路牌旁能出发")
+	check(tm.selected == "reedwharf" and tm.go_btn.disabled and tm.status.text == "芦栈村还在开发中，现在还去不了。" and tm.route_label.text == "路：出镇往西，沿着沼地边上的路走大半天，到了是白天" and (tm.place_btns.reedwharf as Button).has_focus(), "默认选芦栈村：路线、到了是白天；还没做好，出发灰着；焦点在地点上（键盘能用）")
+	check((tm.place_btns.frostford as Button).text == "霜渡镇（你在这里）" and tm.go_btn.text == "出发去芦栈村", "霜渡镇标着「你在这里」")
+	tm.select("frostford")
+	check(tm.status.text == "你就在这里。" and tm.go_btn.disabled, "选霜渡镇：你就在这里")
+	var cr := tm.canvas.get_global_rect()
+	var inside := true
+	for b in tm.place_btns.values():
+		inside = inside and cr.encloses((b as Button).get_global_rect())
+	check(inside and Rect2(Vector2.ZERO, main.hud.size).encloses(tm.box.get_global_rect()), "地点按钮都在地图里，地图和按钮都在画面里（1280 × 720）")
+	tm._unhandled_input(key_ev(KEY_ESCAPE))
+	await frames(2)
+	check(not tm.visible and not get_tree().paused and main.hud.visible, "Esc 关上地图，接着玩")
+	# 换成测试数据：芦栈村做好了
+	Travel.override(travel_fixture())
+	main.player.global_position = Frostford.SPAWNS.start[0]
+	await physics(2)
+	check(not main.near_travel_point(), "主街南头离路牌很远")
+	main._unhandled_input(key_ev(KEY_M))
+	await frames(4)
+	check(tm.visible and not tm.at_departure and tm.status.text == "走到宅邸门口的路牌那里才能出发。" and tm.go_btn.disabled, "离路牌远时按 M：只能看，写明要走到路牌那里")
+	tm._unhandled_input(key_ev(KEY_M))
+	await frames(2)
+	check(not tm.visible, "再按 M 关上")
+	main.player.global_position = mp.global_position + Vector3(0, 0, -2.0)
+	await physics(2)
+	main._unhandled_input(key_ev(KEY_M))
+	await frames(4)
+	check(tm.visible and tm.at_departure and tm.selected == "reedwharf" and not tm.go_btn.disabled, "站在路牌旁按 M 也能出发：芦栈村（测试数据）可以去了")
+	# 倒下了不能走
+	var before := JSON.stringify(Saves.read_slot("auto"))
+	main.player.melee.down = true
+	tm.go_btn.pressed.emit()
+	await frames(2)
+	check(tm.visible and tm.status.text == "× 你已经倒下了。" and JSON.stringify(Saves.read_slot("auto")) == before and GameState.daypart == "dawn", "倒下了：不能走，自动存档没动、时段不变")
+	main.player.melee.down = false
+	# 出发：先自动存档（出发前的样子），再改时段、换区域
+	var rl := [0]
+	main.reload_requested.connect(func(): rl[0] += 1)
+	GameState.silver = 23
+	tm.go_btn.pressed.emit()
+	await seconds(0.6)
+	var au: Dictionary = Saves.read_slot("auto")
+	check(au.has("data") and au.data.scene == "frostford" and str(au.data.state.daypart) == "dawn" and int(au.data.state.silver) == 23, "出发前自动存档：存的是出发前的样子（霜渡镇、清晨）")
+	check(rl[0] == 1 and GameState.daypart == "dawn" and GameState.pending_load.get("daypart") == "day" and GameState.pending_load.get("scene") == "tavern" and GameState.pending_load.get("spawn") == "front" and not tm.visible, "出发：换区域；路上的大半天记在换区域的信息里，人还没到时段不变")
+	main.open_travel_map(true)
+	await frames(2)
+	check(main.leaving and not tm.visible and not get_tree().paused, "已经出发、正在淡出：不能再打开地图")
+	main = await reload_main(main)
+	await frames(4)
+	check(main.area == "tavern" and main.arrived_by == "front" and GameState.daypart == "day", "到了（测试数据借酒馆当芦栈村）：白天了")
+	var prev := Saves._parse(Saves._read_raw(Saves._key("auto") + ".prev"))
+	var au2: Dictionary = Saves.read_slot("auto")
+	check(au2.has("data") and au2.data.scene == "tavern" and prev.get("scene", "") == "frostford", "到了又自动存一次；出发前那份留作上一份")
+	await free_main(main)
+	Travel.override(null)
+	# 窄屏：手机竖屏、横屏都放得下
+	for sz in [Vector2i(360, 740), Vector2i(740, 360), Vector2i(768, 1024)]:
+		get_tree().root.size = sz
+		await frames(3)
+		main = await make_ch1("dawn")
+		main.open_travel_map(true)
+		await frames(5)
+		tm = main.travel_map
+		var view := Rect2(Vector2.ZERO, UiKit.logical_size(tm))
+		cr = tm.canvas.get_global_rect()
+		inside = view.encloses(tm.box.get_global_rect())
+		for b in tm.place_btns.values():
+			inside = inside and cr.encloses((b as Button).get_global_rect())
+		check(inside and tm.go_btn.get_global_rect().size.y >= 44.0 and tm.wide == (sz.x > sz.y), "%d × %d：地图、介绍、按钮都在画面里，地点按钮在地图里（%s）" % [sz.x, sz.y, "介绍在地图右边" if tm.wide else "竖排"])
+		tm.close()
+		await free_main(main)
+	get_tree().root.size = Vector2i(1280, 720)
+	await frames(3)
+	GameState.new_game()
+
+
+## 序章打完、进了第一章的样子（4.3 测试用）：按 ferry.json 三种结局给的东西摆好游戏状态，再进第一章的霜渡镇（宅邸门口，面朝维克托）
+func ch1_after(choice: String, sd := 1) -> Node3D:
+	GameState.new_game(sd)                        # 先清空（检定的种子也在这里定）
+	GameState.set_flag("opening_done")
+	GameState.start_quest("edric_missing")
+	GameState.set_flag("offer_left")
+	GameState.set_flag("edric_showed_debt")
+	GameState.set_flag("saw_royal_seal")
+	GameState.set_stage("edric_missing", "after_choice")
+	GameState.set_flag("prologue_edric", choice)
+	match choice:
+		"deliver":
+			GameState.add_item("debt_note")
+			GameState.set_flag("edric_hates_you")
+			GameState.change_rep("valen", 10)
+			GameState.change_rep("caswell", -10)
+		"release":
+			GameState.set_flag("edric_owes_you")
+		"extort":
+			GameState.add_item("debt_note")
+			GameState.add_silver(120)
+			GameState.change_rep("caswell", -30)
+			GameState.set_flag("valen_may_learn")
+	GameState.add_item("old_book")
+	GameState.set_flag("prologue_done")
+	GameState.complete_quest("edric_missing")
+	GameState.chapter = 1
+	GameState.daypart = "dawn"
+	GameState.set_flag("ch1_started")
+	GameState.pending_load = {"scene": "frostford", "spawn": "ch1_dawn", "player": {}}
+	var main := await make_main(false)
+	await physics(4)
+	main.player.interactor.refresh()
+	return main
+
+
+## 第一章开场（路线图 4.3；STORY.md 4.4、4.5 第 1 步）：谁在场、面朝维克托、三种结局各自的对话与结果（引荐信、撒谎检定、让埃德里克闭嘴）、
+## 中途关掉对话不会重复扣声望、主线「黑鹭之争」、教学提示、序章 NPC 清晨换了说法、代码里写死的夜里台词
+func test_ch1open() -> void:
+	wipe_test_saves()
+	check(Chapters.LIST[1].spawn == "ch1_dawn" and Areas.spawn("frostford", "ch1_dawn") != null and GameState.quest_data().quests.has("ch1_main") and not GameState.item("intro_letter").is_empty(), "第一章从宅邸门口开始（出生点 ch1_dawn），有主线「黑鹭之争」和引荐信")
+	# —— 交出 ——
+	var main := await ch1_after("deliver", 61)
+	var victor: Npc = main._npc_by_dialogue("victor")
+	var edric: Npc = main._npc_by_dialogue("edric_ch1")
+	var steward: Npc = main._npc_by_dialogue("steward")
+	check(victor != null and edric != null and steward != null and steward.position.distance_to(Frostford.STEWARD_CH1) < 0.01, "交出：维克托在门口正中，埃德里克在门边，管家让到一旁")
+	check(main.player.interactor.target == victor and main.player.interactor.target.prompt().contains("维克托"), "一进第一章，准星就对着维克托（不用转身）")
+	check(main.tip_now == "ch1_victor" and main.hud.hint_label.text == str(GameState.tips_data().ch1_victor.desktop), "教学提示：维克托在门口等你")
+	var sign := main.world.get_node_or_null("RoadSignCh1") as Node3D
+	check(sign != null and flat(sign.global_position).distance_to(flat(main.player.global_position)) < Travel.DEPART_RADIUS, "路牌就在身后，站在开场的地方按 M 也能出发")
+	check(await fl_say(main, "frostford", "edric_ch1", ["过不了几天，你就要在黑鹭堡和塞弗林家定亲了。", "……"]), "交出：埃德里克别过脸去，问一句只回「你满意了？」（定亲的是塞弗林家，序章他自己说的）")
+	check(await fl_say(main, "frostford", "steward", [], true) and main.dialogue.runner.node_id == "ch1", "管家：老爷在门口等你（不再说序章的夜里那几句）")
+	main.dialogue.close()
+	await frames(2)
+	var valen0 := GameState.get_rep("valen")
+	check(await fl_say(main, "frostford", "victor", ["少爷还好吗？"], true) and main.dialogue.runner.node_id == "deliver_edric" and main.dialogue.runner.text().contains("门边"), "交出：问少爷——维克托朝门边的埃德里克扬了扬下巴（人就在门口，不说「在里头」）")
+	main.dialogue.close()
+	await frames(2)
+	check(not GameState.has_flag("ch1_victor_done") and not GameState.has_item("intro_letter"), "中途关掉：什么都还没定")
+	check(await fl_say(main, "frostford", "victor", ["这是我该做的。", "要我做什么？", "借据呢？", "明白。", "（告辞）"]), "交出：和维克托说完（这是我该做的 → 要我做什么 → 借据呢 → 告辞）")
+	check(GameState.has_flag("ch1_letter") and GameState.has_flag("ch1_victor_done") and GameState.has_item("intro_letter") and GameState.has_item("debt_note") and GameState.get_rep("valen") == valen0, "交出：拿到引荐信，借据还在身上（维克托要你亲手交给家主）")
+	check(GameState.quest_active("ch1_main") and GameState.quest_stage("ch1_main") == "to_reedwharf" and not GameState.has_flag("ch1_debt"), "主线「黑鹭之争」：去芦栈村；借据的下落先不定")
+	check(main.tip_now == "travel_map" or main.tip_queue.has("travel_map"), "说完了：教学提示讲身后的路牌和旅行地图")
+	check(await fl_say(main, "frostford", "victor", [], true) and main.dialogue.runner.node_id == "after_letter", "再找维克托：只催你上路")
+	main.dialogue.close()
+	await frames(2)
+	check(await fl_say(main, "frostford", "steward", [], true) and main.dialogue.runner.node_id == "ch1_after", "管家：路上小心")
+	main.dialogue.close()
+	await frames(2)
+	var door: Door = null
+	for d in main.world.find_children("*", "Door", true, false):
+		if (d as Door).display_name == "领主宅邸的大门":
+			door = d
+	check(door != null and door.locked_text == Frostford.MANOR_DOOR_CH1, "宅邸的大门：第一章换了说法（不再是「门缝里透出一点灯光」）")
+	await free_main(main)
+	# —— 放走：撒谎成功 ——
+	var sd := seed_for("victor_lie_speech", "speech", 14, true)
+	main = await ch1_after("release", sd)
+	check(main._npc_by_dialogue("victor") != null and main._npc_by_dialogue("edric_ch1") == null, "放走：埃德里克坐船南下了，门口没有他")
+	check(await fl_say(main, "frostford", "victor", ["我追到渡口的时候，船已经开了。他是自己走的。", "老爷节哀。", "要我做什么？", "我这就动身。", "（告辞）"]), "放走：向维克托撒谎（口才检定）")
+	check(GameState.get_flag("victor_lie") == "lied_ok" and GameState.get_flag("ch1_debt") == "with_edric" and GameState.has_item("intro_letter") and GameState.get_rep("valen") == 10, "撒谎成功：他以为儿子是自己跑的，照样写引荐信；借据跟埃德里克走了")
+	await free_main(main)
+	main = await ch1_after("release", sd)
+	check(await fl_say(main, "frostford", "victor", ["我追到渡口的时候，船已经开了。他是自己走的。"]) and GameState.get_flag("victor_lie") == "lied_ok" and not GameState.has_flag("ch1_victor_done"), "撒谎成功后马上关掉对话")
+	check(await fl_say(main, "frostford", "victor", [], true) and main.dialogue.runner.node_id == "news", "再找维克托：接着说黑鹭堡的事，不会再问一遍少爷去哪了（也不会再给说实话的机会）")
+	main.dialogue.close()
+	await frames(2)
+	await free_main(main)
+	# —— 放走：被识破（中途关掉对话再打开，声望只扣一次）——
+	sd = seed_for("victor_lie_speech", "speech", 14, false)
+	main = await ch1_after("release", sd)
+	check(await fl_say(main, "frostford", "victor", ["我追到渡口的时候，船已经开了。他是自己走的。"]), "放走：撒谎，没说圆，中途关掉对话")
+	var v1 := GameState.get_rep("valen")
+	check(GameState.get_flag("victor_lie") == "lied_caught" and v1 == -5 and not GameState.has_flag("ch1_letter") and GameState.has_flag("ch1_victor_done") and GameState.quest_active("ch1_main"), "被识破：瓦伦家声望 -15（10 → -5），没有引荐信；主线照样开始")
+	check(await fl_say(main, "frostford", "victor", [], true) and main.dialogue.runner.node_id == "after_cold" and GameState.get_rep("valen") == v1, "再找维克托：他转过身去不理你，声望没有再扣")
+	main.dialogue.close()
+	await frames(2)
+	await free_main(main)
+	# —— 放走：说实话 ——
+	main = await ch1_after("release", 7)
+	check(await fl_say(main, "frostford", "victor", ["我放他走了。他不想被拿去换粮食和名分。", "他是你儿子，不是一张借据。", "（转身离开）"]), "放走：说实话")
+	check(GameState.get_flag("victor_lie") == "told_truth" and GameState.get_rep("valen") == 0 and not GameState.has_item("intro_letter") and GameState.has_flag("ch1_victor_done"), "说实话：瓦伦家声望 -10，没有引荐信，被赶出门")
+	await free_main(main)
+	# —— 勒索：先找了维克托——可以先去跟埃德里克说句话 ——
+	main = await ch1_after("extort", 8)
+	check(await fl_say(main, "frostford", "victor", ["（瞥了一眼门边的埃德里克）老爷稍等，我先跟少爷说句话。"]) and not GameState.has_flag("edric_quiet") and not GameState.has_flag("ch1_victor_done") and GameState.get_rep("valen") == 10, "勒索：先找维克托时可以先走开（什么都没定、声望不变），去找埃德里克")
+	await free_main(main)
+	# —— 勒索：随他去，埃德里克当着维克托说出来 ——
+	main = await ch1_after("extort", 8)
+	edric = main._npc_by_dialogue("edric_ch1")
+	check(edric != null and await fl_say(main, "frostford", "edric_ch1", ["随你。"]), "勒索：埃德里克在门边盯着你；随他去")
+	check(await fl_say(main, "frostford", "victor", ["少爷平安就好。", "……", "（转身离开）"]), "和维克托说话：埃德里克插嘴")
+	check(GameState.get_flag("edric_quiet") == "told" and GameState.get_rep("valen") == -20 and GameState.get_rep("caswell") == -30 and not GameState.has_flag("ch1_letter") and GameState.has_item("debt_note"), "他说出去了：瓦伦家声望大降（10 → -20），没有引荐信；借据还在你手里")
+	check(await fl_say(main, "frostford", "edric_ch1", [], true) and main.dialogue.runner.node_id == "told_after", "埃德里克：现在大家都知道了")
+	main.dialogue.close()
+	await frames(2)
+	await free_main(main)
+	# —— 勒索：口才说服他闭嘴 ——
+	sd = seed_for("edric_quiet_speech", "speech", 13, true)
+	main = await ch1_after("extort", sd)
+	check(await fl_say(main, "frostford", "edric_ch1", ["偷借据的是你。要说，我们一起说。", "一言为定。"]) and GameState.get_flag("edric_quiet") == "kept", "勒索：口才说服埃德里克闭嘴（偷借据的是他自己）")
+	check(await fl_say(main, "frostford", "victor", ["少爷平安就好。", "要我做什么？", "我这就动身。", "（告辞）"]) and GameState.has_item("intro_letter") and GameState.get_rep("valen") == 10, "他没说出去：维克托什么也不知道，照样写引荐信")
+	await free_main(main)
+	# —— 勒索：口才没说动，只剩给钱；钱不够时灰着 ——
+	sd = seed_for("edric_quiet_speech", "speech", 13, false)
+	main = await ch1_after("extort", sd)
+	check(await fl_say(main, "frostford", "edric_ch1", ["偷借据的是你。要说，我们一起说。", "……"]) and GameState.has_flag("edric_quiet_refused") and not GameState.has_flag("edric_quiet"), "口才没说动：他不答应（不能再试）")
+	GameState.silver = 30
+	check(await fl_say(main, "frostford", "edric_ch1", [], true) and main.dialogue.runner.node_id == "refused_again" and main.dialogue.locked_buttons.size() == 1 and (main.dialogue.locked_buttons[0] as Button).text.contains("40"), "再找他：只剩给钱，身上不够 40 枚时灰着写「需要」")
+	main.dialogue.close()
+	await frames(2)
+	GameState.silver = 132
+	check(await fl_say(main, "frostford", "edric_ch1", ["（塞给他 40 枚银币）拿着，就当什么都没发生。", "很好。"]) and GameState.get_flag("edric_quiet") == "kept" and GameState.silver == 92, "给他 40 枚银币：他什么都没看见")
+	await free_main(main)
+	# —— 序章没喂老霍布（支线还开着）：清晨也能把面包给他，支线能做完 ——
+	main = await ch1_after("deliver", 62)
+	GameState.start_quest("hob_debt")
+	check(await fl_say(main, "frostford", "hob", [], true) and main.dialogue.runner.node_id == "dawn_hungry" and main.dialogue.locked_buttons.size() == 1, "老霍布的支线还开着：清晨他醒过来要吃的；身上没面包时「给他面包」灰着")
+	main.dialogue.close()
+	await frames(2)
+	GameState.add_item("bread")
+	check(await fl_say(main, "frostford", "hob", ["（把面包递给他）给你。", "保重。"]) and GameState.quest_done("hob_debt") and not GameState.has_item("bread") and not GameState.clues.has("dice"), "给他面包：支线做完（不再给序章那条已经用不上的线索）")
+	await free_main(main)
+	# —— 玛蒂尔达的清晨：买面包以后就结束，不回序章的菜单 ——
+	GameState.new_game(63)
+	GameState.set_flag("ch1_started")
+	GameState.set_flag("matilda_told_edric")
+	var rm := DialogueRunner.new()
+	rm.start("tavern", "matilda")
+	var bi := -1
+	for i in rm.options().size():
+		if str(rm.options()[i].text).begins_with("来块面包"):
+			bi = i
+	rm.choose(bi)
+	var silver_left := GameState.silver
+	check(rm.node_id == "bread_dawn" and GameState.has_item("bread") and not rm.choose(0), "玛蒂尔达的清晨：买了面包「多谢」就结束（不会掉进序章的「还要什么？」菜单、再说一遍少爷的事；还剩 %d 枚）" % silver_left)
+	# —— 序章结束画面点了「在雾里再走走」：去小教堂找修士还能进第一章 ——
+	GameState.new_game(64)
+	GameState.set_flag("prologue_edric", "deliver")
+	GameState.set_flag("prologue_done")
+	main = await make_main(false)
+	main.show_ending("prologue", "deliver")
+	await frames(3)
+	check(main.ending_panel.continue_btn.visible, "第一章开放了：序章结束画面有「继续：第一章」")
+	main.ending_panel.back_btn.pressed.emit()
+	await frames(2)
+	check(main.hud.toast_label.text.contains("星铁小教堂找奥尔本修士"), "点「在雾里再走走」：提示之后去小教堂找修士还能进第一章")
+	await free_main(main)
+	main = await make_area("chapel")
+	check(await fl_say(main, "chapel", "alban", ["我准备好了，这就去黑鹭堡。"]), "小教堂：对修士说「我准备好了，这就去黑鹭堡」")
+	await frames(3)
+	check(main.ending_panel.visible and main.ending_panel.continue_btn.visible, "又打开结束画面，「继续：第一章」就在上面")
+	main.ending_panel.close()
+	await frames(2)
+	GameState.set_flag("ch1_started")
+	check(await fl_say(main, "chapel", "alban", [], true) and main.dialogue.buttons.size() == 1, "进了第一章以后：修士那里不再有这个选项")
+	main.dialogue.close()
+	await frames(2)
+	await free_main(main)
+	# —— 序章的人到了清晨：换了说法，不再重开序章的事 ——
+	GameState.new_game(9)
+	var r := DialogueRunner.new()
+	var night := {}
+	for pair in [["frostford", "watchman"], ["frostford", "hob"], ["tavern", "matilda"], ["tavern", "dagu"], ["tavern", "woodcutter"], ["churchyard", "gravedigger"]]:
+		r.start(pair[0], pair[1])
+		night[pair[1]] = r.node_id
+	GameState.new_game(9)                          # 上面进了序章的开场节点（老霍布的开场会接支线）：清掉再进第一章
+	GameState.set_flag("prologue_done")
+	GameState.set_flag("prologue_edric", "deliver")
+	GameState.set_flag("ch1_started")
+	var dawn := {}
+	for pair in [["frostford", "watchman"], ["frostford", "hob"], ["frostford", "steward"], ["tavern", "matilda"], ["tavern", "dagu"], ["tavern", "woodcutter"], ["churchyard", "gravedigger"], ["chapel", "alban"]]:
+		r.start(pair[0], pair[1])
+		dawn[pair[1]] = r.node_id
+	check(night.watchman == "greet" and night.hob == "greet" and night.matilda == "greet" and night.gravedigger == "greet", "序章里照旧（更夫、老霍布、玛蒂尔达、守墓人都从原来的开场白说起）")
+	check(dawn.watchman == "dawn" and dawn.hob == "dawn" and dawn.steward == "ch1" and dawn.matilda == "dawn" and dawn.dagu == "dawn" and dawn.woodcutter == "asleep" and dawn.gravedigger == "dawn" and dawn.alban == "after_book", "第一章的清晨：更夫换班、老霍布睡着、管家指路、玛蒂尔达生炉子、大桶和伐木工睡着、守墓人扫雪、修士照旧（%s）" % str(dawn))
+	r.start("frostford", "watchman")
+	var opts: Array = r.options().map(func(o): return str(o.text))
+	check(opts.size() == 1 and r.options()[0].get("end", false), "更夫的清晨只有一句告别，不会再从头打听少爷（%s）" % ", ".join(opts))
+	r.start("frostford", "hob")
+	check(r.node_id == "dawn" and r.options().size() == 1 and not GameState.quests.has("hob_debt"), "老霍布睡着了：不会在第一章重开序章的支线")
+	# —— 代码里写死的夜里台词 ——
+	GameState.new_game(10)
+	GameState.chapter = 1
+	GameState.daypart = "dawn"
+	GameState.set_flag("ch1_started")
+	main = await make_area("tavern")
+	var peddler: Npc = null
+	for n in main.world.find_children("*", "Npc", true, false):
+		if (n as Npc).display_name == "货郎":
+			peddler = n
+	var gate_ok := false
+	for d in main.world.find_children("*", "Door", true, false):
+		gate_ok = gate_ok or (d as Door).locked_text.contains("楼上的客人还没起")
+	check(peddler != null and peddler.lines == Tavern.PEDDLER_LINES_CH1 and gate_ok, "酒馆：货郎和楼梯栅门换成清晨的说法")
+	await free_main(main)
+	main = await make_area("ferry")
+	var fm: Npc = null
+	for n in main.world.find_children("*", "Npc", true, false):
+		if (n as Npc).display_name == "渡工":
+			fm = n
+	check(fm != null and fm.lines == Ferry.FERRYMAN_LINES_CH1, "渡口：渡工换成清晨的说法（雾散了、船照常开）")
+	await free_main(main)
+	main = await make_area("birch")
+	check(main.hud.hint_label.text != Birch.TEACH_DESKTOP, "桦林：第一章不再弹「前面有火光，是无旗者的哨卡」")
+	await free_main(main)
+	GameState.new_game()
+
+
+## 区域边缘（路线图 3.10；所有者 2026-10-09 定「A + B」的 A）：四个户外区域走得到的范围外面有地、有林子，出口的路伸出去、不种树，
+## 边界外的树没有碰撞（多出来的只是画面），新做的路口有门柱、地名、栅栏、灯笼，灯笼白天灭；搭场景不变慢
+func test_edges() -> void:
+	var spec := {                                       # 区域矩形（走得到的范围）、几个出口
+		"frostford": [Rect2(-15.5, -59.0, 31.0, 70.5), 1],
+		"churchyard": [Rect2(-13.0, -19.0, 26.0, 30.0), 1],
+		"birch": [Rect2(-18.0, -36.0, 36.0, 72.0), 2],
+		"ferry": [Rect2(-16.0, -30.0, 32.0, 30.0), 1],
+	}
+	for a in spec:
+		GameState.new_game(70)
+		var t0 := Time.get_ticks_msec()
+		var main := await make_area(a)
+		var ms := Time.get_ticks_msec() - t0
+		var edge := main.world.get_node_or_null("Edges") as MeshInstance3D
+		var trees := int(edge.get_meta("trees", 0)) if edge else 0
+		var aabb := edge.get_aabb() if edge else AABB()
+		var rect: Rect2 = spec[a][0]
+		var tris := 0
+		var mms: Array = main.world.find_children("EdgeTrees*", "MultiMeshInstance3D", true, false)
+		var models := {}
+		var widest := 0.0                                  # 一块里的树最远隔多远（米）：块够小，引擎才能按视野、影子范围整块裁掉
+		for n in mms:
+			var mm := (n as MultiMeshInstance3D).multimesh
+			models[mm.mesh] = true
+			for si in mm.mesh.get_surface_count():
+				tris += mm.mesh.surface_get_array_len(si) / 3 * mm.instance_count
+			var lo := Vector2(INF, INF)
+			var hi := Vector2(-INF, -INF)
+			for o: Vector3 in n.get_meta("spots", PackedVector3Array()):    # 无界面时读不回多实例的变换，用 Edges 另记的位置
+				lo = lo.min(Vector2(o.x, o.z))
+				hi = hi.max(Vector2(o.x, o.z))
+			widest = maxf(widest, maxf(hi.x - lo.x, hi.y - lo.y) / (2.0 if bool(n.get_meta("far", false)) else 1.0))
+		var holder := Node3D.new()
+		add_child(holder)
+		var t1 := Time.get_ticks_usec()
+		Edges.dress(holder, rect, [], [], 1)
+		var dress_ms := (Time.get_ticks_usec() - t1) / 1000.0
+		holder.free()
+		check(edge != null and trees >= 150 and models.size() == 3 and aabb.position.x < rect.position.x - 40.0 and aabb.end.x > rect.end.x + 40.0 and tris < 120000 and dress_ms < 60.0, "%s：边界外两圈白桦（%d 棵、%d 个三角面，三种树的模型多实例），地面一直铺到 40 米外（收边 %.1f 毫秒，搭整个区域 %d 毫秒）" % [Areas.display_name(a), trees, tris, dress_ms, ms])
+		check(mms.size() >= 4 and widest <= Edges.CHUNK, "%s：树按块分成 %d 个多实例节点（一块最宽 %.1f 米，不超过 %d 米；远圈的块大一倍），看不见的块整块不画" % [Areas.display_name(a), mms.size(), widest, int(Edges.CHUNK)])
+		# 每个出口都是真的门（通往别的区域的门就在出口那里），不是在墙上凭空开一条路（审查：霜渡镇第一版在房子后面伸出一条走不到的路）
+		var exits: Array = edge.get_meta("exits", []) if edge else []
+		var doors: Array = main.world.find_children("*", "Door", true, false).filter(func(d): return (d as Door).to_area != "")
+		var real_exits: bool = exits.size() == int(spec[a][1]) and exits.all(func(e): return doors.any(func(d): return Vector2(d.global_position.x - e.at.x, d.global_position.z - e.at.z).length() < 1.5))
+		check(real_exits, "%s：%d 个出口，每个都站着一扇通往别处的门" % [Areas.display_name(a), exits.size()])
+		# 出口外的路上没有树：查每棵树的位置——从出口那条线（往里 1 米）到路的尽头，离路中线「路宽一半 + 1 米」以内不能有
+		var clear := true
+		var placed := 0
+		for n in mms:
+			var spots: PackedVector3Array = n.get_meta("spots", PackedVector3Array())
+			placed += spots.size()
+			for o in spots:
+				for e in exits:
+					var out: Vector3 = e.out
+					var d: Vector3 = o - e.at
+					var along := d.dot(out)
+					if along > -1.0 and along < Edges.ROAD_LEN and (d - out * along).length() < float(e.half) + 1.0:
+						clear = false
+		check(clear and placed == trees, "%s：出口外的路中间、路边一米都没有树（路伸进林子里；查了 %d 棵树的位置）" % [Areas.display_name(a), placed])
+		# 栅栏、门柱有碰撞（审查：渡口北头的栅栏在看不见的墙里面 0.6 米，没碰撞时人能穿过去站到栅栏外）
+		var fenced := exits.filter(func(e): return bool(e.get("fence", false)))
+		var solids := main.world.get_node_or_null("EdgeSolids") as StaticBody3D
+		var boxes := solids.get_child_count() if solids else 0
+		var want := fenced.size() * 2 + exits.filter(func(e): return str(e.get("frame", "")) != "").size() * 2
+		check(boxes == want, "%s：出口两边的栅栏、新做的门柱有碰撞（%d 个碰撞盒）" % [Areas.display_name(a), boxes])
+		if a == "ferry":
+			# 审查里人站得到的地方：北头栅栏和看不见的墙之间（x 4、z -29.65）——现在一个人的身子放在那里会撞上栅栏
+			for i in 2:
+				await get_tree().physics_frame
+			var q := PhysicsShapeQueryParameters3D.new()
+			var cap := CapsuleShape3D.new()
+			cap.radius = 0.35
+			cap.height = 1.8
+			q.shape = cap
+			q.transform = Transform3D(Basis.IDENTITY, Vector3(4.0, 0.95, Ferry.NORTH + 0.35))
+			var hits: Array = main.get_world_3d().direct_space_state.intersect_shape(q)
+			check(hits.any(func(h): return h.collider == solids), "渡口：北头栅栏挡人（栅栏和墙之间站不进去）")
+		# 边界外的树没有碰撞：从区域里看，走不出去的围墙照旧，没多出一堆树的碰撞体
+		var bodies: Array = main.world.find_children("*", "StaticBody3D", true, false).filter(func(b): return b.name != "EdgeSolids" and not rect.grow(0.6).has_point(Vector2(b.global_position.x, b.global_position.z)) and (a != "ferry" or b.global_position.z < Ferry.SHORE_Z - 0.6))     # 渡口的码头本来就伸进河里
+		check(bodies.size() <= 2, "%s：边界外的树不加碰撞（边界外的碰撞体 %d 个）" % [Areas.display_name(a), bodies.size()])
+		await free_main(main)
+	# 画多少树：夜里、黄昏雾近，远圈不画；清晨、白天画；低画质近圈只画六成、远圈不画
+	GameState.new_game(73)
+	var m3 := await make_area("birch")
+	m3.apply_quality("medium")                          # 前面的测试组可能把画质设置留在低档（单独跑 perf edges 时出过）
+	await m3.set_daypart("night", false)
+	var fars: Array = m3.world.find_children("EdgeTreesFar_*", "MultiMeshInstance3D", true, false)
+	var nears: Array = m3.world.find_children("EdgeTrees_*", "MultiMeshInstance3D", true, false)
+	var shown := func(list: Array) -> int: return list.filter(func(n): return (n as Node3D).visible).size()
+	var drawn := func() -> Array:                      # 近圈实际画几棵 / 一共几棵
+		var d := 0
+		var all := 0
+		for n in nears:
+			var mm := (n as MultiMeshInstance3D).multimesh
+			all += mm.instance_count
+			d += mm.instance_count if mm.visible_instance_count < 0 else mm.visible_instance_count
+		return [d, all]
+	var night_far: int = shown.call(fars)
+	await m3.set_daypart("day", false)
+	var day_far: int = shown.call(fars)
+	m3.apply_quality("low")
+	var low_far: int = shown.call(fars)
+	var low_near: Array = drawn.call()
+	m3.apply_quality("medium")
+	var med_near: Array = drawn.call()
+	Edges.refresh(get_tree(), false, Edges.FAR_SEEN - 1.0)
+	var thick_far: int = shown.call(fars)
+	m3.apply_quality("medium")
+	check(fars.size() > 0 and night_far == fars.size() and day_far == fars.size() and thick_far == 0 and low_far == 0 and absf(float(low_near[0]) / low_near[1] - Edges.LOW_SHARE) < 0.05 and med_near[0] == med_near[1] and shown.call(fars) == fars.size(), "画多少树：夜里、白天远圈都画（站在边界上，远圈头几排夜里也透得出来），雾浓到 %d 米以内才不画；低画质近圈只画六成（%d / %d）、远圈不画" % [int(Edges.FAR_SEEN), low_near[0], low_near[1]])
+	await free_main(m3)
+	# 渡口北头：原来只有一块门板，现在有门柱、地名牌「桦林」、栅栏、灯笼；白天灯笼灭
+	GameState.new_game(71)
+	var m2 := await make_area("ferry")
+	var label_ok: bool = m2.world.find_children("*", "Label3D", true, false).any(func(l): return (l as Label3D).text == "桦林" and absf(l.global_position.z - (Ferry.NORTH + 0.6)) < 0.3)
+	var lanterns: Array = m2.world.find_children("GateLantern", "Node3D", true, false)
+	check(label_ok and lanterns.size() == 1 and (lanterns[0] as Node3D).visible, "渡口北头的路口：门柱上写着「桦林」，挂着一盏夜里亮的灯笼")
+	await m2.set_daypart("day", false)
+	check(not (lanterns[0] as Node3D).visible, "白天：路口的灯笼灭了")
+	await free_main(m2)
+	GameState.new_game(72)
+	m2 = await make_main(false)
+	check(m2.world.find_children("GateLantern", "Node3D", true, false).size() == 1 and m2.find_children("*", "OmniLight3D", true, false).size() <= 4, "霜渡镇南门也挂了灯笼（假光，不多占实时光源：仍不超过 4 盏）")
+	await free_main(m2)
 	GameState.new_game()
