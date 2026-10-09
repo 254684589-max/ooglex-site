@@ -1366,19 +1366,7 @@ func _show_area_map(v: String, switched: bool) -> void:
 	else:
 		print("IC_AREAMAP open view=%s area=%s exits=%d nodes=%d px=%.1f zoom=%s" % [map_panel.view, area, AreaMap.exits(area).size(),
 			map_panel.node_btns.size(), map_panel.canvas.px_per_m, map_panel.canvas.zoomable])
-	await get_tree().process_frame
-	await get_tree().process_frame                 # 布局摆好以后（节点按钮是延后摆的）
-	if not map_panel.visible:
-		return
-	var k := get_tree().root.content_scale_factor
-	var pts := []
-	for t in ["local", "region", "travel"]:
-		var b: Button = map_panel.tabs.btns.get(t)
-		var c := b.get_global_rect().get_center() * k if b and b.is_visible_in_tree() else Vector2(-1, -1)
-		pts.append_array([c.x, c.y])
-	var cc := map_panel.close_btn.get_global_rect().get_center() * k
-	pts.append_array([cc.x, cc.y])
-	print("IC_AREAMAP_SCREEN lx=%d ly=%d rx=%d ry=%d tx=%d ty=%d cx=%d cy=%d" % pts)
+	map_panel.print_screen()                      # 给网页冒烟测试点的坐标（等布局摆好）
 
 
 func _show_travel_map(departure: bool) -> void:

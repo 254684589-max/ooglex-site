@@ -205,6 +205,24 @@ func show_view(v: String, log_switch := true) -> void:
 		var t := tabs.active_button()
 		if t:
 			_focus_later.call_deferred(t)
+		print_screen()
+
+
+## 给网页冒烟测试点：三个页签和「关上地图」的中心（窗口像素，已乘界面缩放；没有的写 -1）。布局摆好以后再打（等两帧）
+func print_screen() -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if not visible:
+		return
+	var k := get_tree().root.content_scale_factor
+	var pts := []
+	for t in MapTabs.ORDER:
+		var b: Button = tabs.btns.get(t)
+		var c := b.get_global_rect().get_center() * k if b and b.is_visible_in_tree() else Vector2(-1, -1)
+		pts.append_array([c.x, c.y])
+	var cc := close_btn.get_global_rect().get_center() * k
+	pts.append_array([cc.x, cc.y])
+	print("IC_AREAMAP_SCREEN lx=%d ly=%d rx=%d ry=%d tx=%d ty=%d cx=%d cy=%d" % pts)
 
 
 func _build_local() -> void:
@@ -331,13 +349,15 @@ func _fit() -> void:
 	var w: float
 	var h: float
 	var iw: float
+	var ih := INFO_H
 	if wide:
 		w = minf(logical.x - 32.0 - INFO_W - 12.0, 900.0)
 		h = clampf(logical.y - head - 10.0, 160.0, 600.0)
 		iw = INFO_W
 	else:
 		w = minf(logical.x - 32.0, 600.0)
-		h = clampf(logical.y - head - INFO_H - 10.0 - 10.0, 200.0, w * 1.4)
+		ih = clampf(logical.y * 0.3, INFO_H, 300.0)        # 高的手机上信息栏高一点，三个出口不用滚动就看得全
+		h = clampf(logical.y - head - ih - 10.0 - 10.0, 200.0, w * 1.4)
 		iw = w
 	# 本地页：画布按地图的长宽比收窄，不留一大片走不到的地方（竖排时宽度还是给信息栏用满）；一带页不用比高还宽太多
 	if view == "region":
@@ -348,7 +368,7 @@ func _fit() -> void:
 			var px := minf(w / vr.size.x, h / vr.size.y)
 			w = clampf(vr.size.x * px + 40.0, minf(280.0, w), w)
 	canvas.custom_minimum_size = Vector2(w, h)
-	info.custom_minimum_size = Vector2(iw, h if wide else INFO_H)
+	info.custom_minimum_size = Vector2(iw, h if wide else ih)
 	for l in [where_label, detail_label, legend]:
 		l.custom_minimum_size = Vector2(iw - 12.0, 0)
 	canvas.setup(Vector2(w, h))
