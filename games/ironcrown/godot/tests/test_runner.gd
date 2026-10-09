@@ -788,6 +788,7 @@ func test_perf() -> void:
 	check(is_equal_approx(ov.position.y, 44.0), "电脑：性能浮层仍在标题下面（体力条在左下角）")
 	check(ov.get_index() < main.hud.get_index(), "性能浮层画在 HUD 底下：短提示叠上来时字在上面")
 	Settings.set_value("show_perf", false)
+	Settings.set_value("quality", "")                  # 上面在暂停菜单里点过低画质，记进了设置：放回自动，别带进后面的测试组
 	await free_main(main)
 
 
@@ -5183,12 +5184,11 @@ func test_ch1open() -> void:
 ## 区域边缘（路线图 3.10；所有者 2026-10-09 定「A + B」的 A）：四个户外区域走得到的范围外面有地、有林子，出口的路伸出去、不种树，
 ## 边界外的树没有碰撞（多出来的只是画面），新做的路口有门柱、地名、栅栏、灯笼，灯笼白天灭；搭场景不变慢
 func test_edges() -> void:
-	var spec := {
-		# 区域矩形、出口外的路（起点、往外的方向）
-		"frostford": [Rect2(-15.5, -59.0, 31.0, 70.5), [[Vector3(0, 0, 13.0), Vector3.BACK], [Vector3(17.0, 0, Frostford.LANE_Z), Vector3.RIGHT]]],
-		"churchyard": [Rect2(-13.0, -19.0, 26.0, 30.0), [[Vector3(0, 0, 13.0), Vector3.BACK]]],
-		"birch": [Rect2(-18.0, -36.0, 36.0, 72.0), [[Vector3(0, 0, -38.0), Vector3.FORWARD], [Vector3(0, 0, 38.0), Vector3.BACK]]],
-		"ferry": [Rect2(-16.0, -30.0, 32.0, 30.0), [[Vector3(0, 0, -32.0), Vector3.FORWARD]]],
+	var spec := {                                       # 区域矩形（走得到的范围）、几个出口
+		"frostford": [Rect2(-15.5, -59.0, 31.0, 70.5), 1],
+		"churchyard": [Rect2(-13.0, -19.0, 26.0, 30.0), 1],
+		"birch": [Rect2(-18.0, -36.0, 36.0, 72.0), 2],
+		"ferry": [Rect2(-16.0, -30.0, 32.0, 30.0), 1],
 	}
 	for a in spec:
 		GameState.new_game(70)
@@ -5222,26 +5222,52 @@ func test_edges() -> void:
 		holder.free()
 		check(edge != null and trees >= 150 and models.size() == 3 and aabb.position.x < rect.position.x - 40.0 and aabb.end.x > rect.end.x + 40.0 and tris < 120000 and dress_ms < 60.0, "%s：边界外两圈白桦（%d 棵、%d 个三角面，三种树的模型多实例），地面一直铺到 40 米外（收边 %.1f 毫秒，搭整个区域 %d 毫秒）" % [Areas.display_name(a), trees, tris, dress_ms, ms])
 		check(mms.size() >= 4 and widest <= Edges.CHUNK, "%s：树按块分成 %d 个多实例节点（一块最宽 %.1f 米，不超过 %d 米；远圈的块大一倍），看不见的块整块不画" % [Areas.display_name(a), mms.size(), widest, int(Edges.CHUNK)])
-		# 出口外的路上没有树：查每棵树的位置，离路中线（出口往外 30 米）1.5 米以内的不能有
+		# 每个出口都是真的门（通往别的区域的门就在出口那里），不是在墙上凭空开一条路（审查：霜渡镇第一版在房子后面伸出一条走不到的路）
+		var exits: Array = edge.get_meta("exits", []) if edge else []
+		var doors: Array = main.world.find_children("*", "Door", true, false).filter(func(d): return (d as Door).to_area != "")
+		var real_exits: bool = exits.size() == int(spec[a][1]) and exits.all(func(e): return doors.any(func(d): return Vector2(d.global_position.x - e.at.x, d.global_position.z - e.at.z).length() < 1.5))
+		check(real_exits, "%s：%d 个出口，每个都站着一扇通往别处的门" % [Areas.display_name(a), exits.size()])
+		# 出口外的路上没有树：查每棵树的位置——从出口那条线（往里 1 米）到路的尽头，离路中线「路宽一半 + 1 米」以内不能有
 		var clear := true
 		var placed := 0
 		for n in mms:
 			var spots: PackedVector3Array = n.get_meta("spots", PackedVector3Array())
 			placed += spots.size()
 			for o in spots:
-				for road in spec[a][1]:
-					var d: Vector3 = o - road[0]
-					var along := d.dot(road[1])
-					if along > 0.0 and along < Edges.ROAD_LEN and (d - road[1] * along).length() < 1.5:
+				for e in exits:
+					var out: Vector3 = e.out
+					var d: Vector3 = o - e.at
+					var along := d.dot(out)
+					if along > -1.0 and along < Edges.ROAD_LEN and (d - out * along).length() < float(e.half) + 1.0:
 						clear = false
-		check(clear and placed == trees, "%s：出口外的路中间没有树（路伸进林子里；查了 %d 棵树的位置）" % [Areas.display_name(a), placed])
+		check(clear and placed == trees, "%s：出口外的路中间、路边一米都没有树（路伸进林子里；查了 %d 棵树的位置）" % [Areas.display_name(a), placed])
+		# 栅栏、门柱有碰撞（审查：渡口北头的栅栏在看不见的墙里面 0.6 米，没碰撞时人能穿过去站到栅栏外）
+		var fenced := exits.filter(func(e): return bool(e.get("fence", false)))
+		var solids := main.world.get_node_or_null("EdgeSolids") as StaticBody3D
+		var boxes := solids.get_child_count() if solids else 0
+		var want := fenced.size() * 2 + exits.filter(func(e): return str(e.get("frame", "")) != "").size() * 2
+		check(boxes == want, "%s：出口两边的栅栏、新做的门柱有碰撞（%d 个碰撞盒）" % [Areas.display_name(a), boxes])
+		if a == "ferry":
+			# 审查里人站得到的地方：北头栅栏和看不见的墙之间（x 4、z -29.65）——现在一个人的身子放在那里会撞上栅栏
+			for i in 2:
+				await get_tree().physics_frame
+			var q := PhysicsShapeQueryParameters3D.new()
+			var cap := CapsuleShape3D.new()
+			cap.radius = 0.35
+			cap.height = 1.8
+			q.shape = cap
+			q.transform = Transform3D(Basis.IDENTITY, Vector3(4.0, 0.95, Ferry.NORTH + 0.35))
+			var hits: Array = main.get_world_3d().direct_space_state.intersect_shape(q)
+			check(hits.any(func(h): return h.collider == solids), "渡口：北头栅栏挡人（栅栏和墙之间站不进去）")
 		# 边界外的树没有碰撞：从区域里看，走不出去的围墙照旧，没多出一堆树的碰撞体
-		var bodies: Array = main.world.find_children("*", "StaticBody3D", true, false).filter(func(b): return not rect.grow(0.6).has_point(Vector2(b.global_position.x, b.global_position.z)) and (a != "ferry" or b.global_position.z < Ferry.SHORE_Z - 0.6))     # 渡口的码头本来就伸进河里
+		var bodies: Array = main.world.find_children("*", "StaticBody3D", true, false).filter(func(b): return b.name != "EdgeSolids" and not rect.grow(0.6).has_point(Vector2(b.global_position.x, b.global_position.z)) and (a != "ferry" or b.global_position.z < Ferry.SHORE_Z - 0.6))     # 渡口的码头本来就伸进河里
 		check(bodies.size() <= 2, "%s：边界外的树不加碰撞（边界外的碰撞体 %d 个）" % [Areas.display_name(a), bodies.size()])
 		await free_main(main)
 	# 画多少树：夜里、黄昏雾近，远圈不画；清晨、白天画；低画质近圈只画六成、远圈不画
 	GameState.new_game(73)
 	var m3 := await make_area("birch")
+	m3.apply_quality("medium")                          # 前面的测试组可能把画质设置留在低档（单独跑 perf edges 时出过）
+	await m3.set_daypart("night", false)
 	var fars: Array = m3.world.find_children("EdgeTreesFar_*", "MultiMeshInstance3D", true, false)
 	var nears: Array = m3.world.find_children("EdgeTrees_*", "MultiMeshInstance3D", true, false)
 	var shown := func(list: Array) -> int: return list.filter(func(n): return (n as Node3D).visible).size()
@@ -5261,7 +5287,10 @@ func test_edges() -> void:
 	var low_near: Array = drawn.call()
 	m3.apply_quality("medium")
 	var med_near: Array = drawn.call()
-	check(fars.size() > 0 and night_far == 0 and day_far == fars.size() and low_far == 0 and absf(float(low_near[0]) / low_near[1] - Edges.LOW_SHARE) < 0.05 and med_near[0] == med_near[1] and shown.call(fars) == fars.size(), "画多少树：夜里远圈不画（雾吞没了），白天画；低画质近圈只画六成（%d / %d）、远圈不画" % [low_near[0], low_near[1]])
+	Edges.refresh(get_tree(), false, Edges.FAR_SEEN - 1.0)
+	var thick_far: int = shown.call(fars)
+	m3.apply_quality("medium")
+	check(fars.size() > 0 and night_far == fars.size() and day_far == fars.size() and thick_far == 0 and low_far == 0 and absf(float(low_near[0]) / low_near[1] - Edges.LOW_SHARE) < 0.05 and med_near[0] == med_near[1] and shown.call(fars) == fars.size(), "画多少树：夜里、白天远圈都画（站在边界上，远圈头几排夜里也透得出来），雾浓到 %d 米以内才不画；低画质近圈只画六成（%d / %d）、远圈不画" % [int(Edges.FAR_SEEN), low_near[0], low_near[1]])
 	await free_main(m3)
 	# 渡口北头：原来只有一块门板，现在有门柱、地名牌「桦林」、栅栏、灯笼；白天灯笼灭
 	GameState.new_game(71)

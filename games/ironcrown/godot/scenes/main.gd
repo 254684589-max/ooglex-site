@@ -180,6 +180,7 @@ func _ready() -> void:
 		player.rotation.y = deg_to_rad(float(cam[3]))
 		player.pitch = float(cam[4])
 		player.head.rotation.x = deg_to_rad(float(cam[4]))
+		player.set_physics_process(false)        # 镜头定住：区域外面的地面没有碰撞，不定住会掉下去（只截图用，走不了）
 	if not pending.is_empty():
 		if pending.has("spawn"):              # 从门走进来：站到那扇门对应的出生点
 			arrived_by = str(pending.spawn)

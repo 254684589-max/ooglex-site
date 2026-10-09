@@ -2,12 +2,13 @@ class_name Edges
 extends RefCounted
 ## 区域边缘（路线图 3.10；所有者 2026-10-09 定「A + B」里的 A：区域之间仍用路口连，但边界要做实）。
 ## 走得到的范围外面不能是空的：2026-10-09 所有者截图里渡口北头「回桦林的路」是空雪地上一块黑门板，
-## 逐个区域截图查下来，霜渡镇南门、桦林两头和两侧、渡口三面、墓园墙外都一样——雪地只比走得到的地方大三米，再往外就是天。
+## 逐个区域截图查下来，霜渡镇南门、桦林两头和两侧、渡口三面、墓园墙外都一样：桦林和渡口的雪地只比走得到的地方大三四米，再往外就是天；
+## 霜渡镇、墓园的地面本来铺得够远（15–45 米），缺的是墙外的树和出口外的路（墓园 15 米外的地面边夜里也看得见）。
 ## 这里给户外区域统一收边，全部代码搭、不加外部素材：
-##   1. 地面一直铺到雾里（只有画面、没有碰撞：人走不过去，看不见尽头）；
-##   2. 边界外两圈白桦：近圈 1–14 米密（夜里雾 36 米吞没，近圈就够挡），远圈 18–46 米疏（清晨、白天雾远，看得到更远）；
+##   1. 地面一直铺到雾里（90 米，比白天的雾 85 米还远；只有画面、没有碰撞：人走不过去，看不见尽头）；
+##   2. 边界外两圈白桦：近圈 1–14 米密，远圈 18–46 米疏（雾按离镜头的远近算：站在边界上，远圈头几排夜里也还透得出来）；
 ##      远圈的树只有树干和两根枝，省三角面；树不加碰撞（走不到那里，区域原来的看不见的围墙照旧）；
-##   3. 出口留一条路伸进林子和雾里（不种树），出口两边各一段木栅栏，门柱上挂一盏夜里亮的灯笼（灯光是假的：发光的玻璃 + 光晕，
+##   3. 出口留一条路伸进林子和雾里（不种树，路一直铺到地面尽头），出口两边各一段木栅栏，门柱上挂一盏夜里亮的灯笼（灯光是假的：发光的玻璃 + 光晕，
 ##      不加实时光源，白天跟着时段灭，Daypart.mark_night_light）。门柱、横梁、地名牌：已有的出口不动，新做的出口给 frame（_frame）。
 ## 种树用网格抖动（每格一棵、在格子里随机偏一点），不用逐棵比距离。
 ## 树用多实例（MultiMesh）画：近圈两种、远圈一种树的模型各做一份，按位置、转向、高矮摆几百个副本——
@@ -15,18 +16,19 @@ extends RefCounted
 ## 树按 48 米的块分成几个多实例节点（远圈 96 米）：一整圈做成一个节点的话，引擎没法按视野和影子范围裁掉，身后的树、
 ## 25 米影子范围外的树都照画（中画质近圈的树连影子那一遍约八万个图元）；分块以后整块裁掉。块不能太小：每块每种树两次绘制，
 ## 24 米的块图元少一到三成，但霜渡镇绘制调用到了 390（预算 400）；48 米的块比没收边时多二三十次（2026-10-09 网页实测，TEST_REPORT）。
-## 远圈的树不投影子；夜里、黄昏雾在 46 米以内就吞没了，远圈根本看不见，干脆不画（refresh，按时段和画质）。
+## 栅栏和新做的门柱有碰撞（审查发现：渡口北头的栅栏在看不见的墙里面 0.6 米，没有碰撞人能穿过去、站到栅栏外面）；树、地面、路没有。
+## 远圈的树不投影子；雾在 24 米以内就吞没时（现在的四个时段都没有这么浓，留给以后的大雪）远圈不画（refresh，按时段和画质）。
 ## 低画质（触屏默认）近圈只画六成、远圈不画：副本的顺序打乱过，只画前一部分也是均匀稀疏的。
 
-const GROUND_MARGIN := 60.0      # 地面往外铺多远（夜雾 36 米、白天 85 米吞没）
+const GROUND_MARGIN := 90.0      # 地面往外铺多远（雾在夜里 36 米、白天 85 米吞没；只有四块，铺远不费）
 const NEAR := [1.0, 14.0, 2.9]   # 近圈：离边界几米到几米、格子边长
 const FAR := [18.0, 46.0, 7.0]   # 远圈
 const CORRIDOR := 1.6            # 出口那条路两边再空出多宽不种树
-const ROAD_LEN := 30.0           # 出口外的路伸多远（再远就在雾里了）
+const ROAD_LEN := GROUND_MARGIN  # 出口外的路伸多远：一直到地面尽头（30 米的话清晨、白天看得见路断在雪地里，审查截图）
 const FENCE := 6.0               # 出口两边的栅栏各多长
 const NEAR_KINDS := 2            # 近圈有几种树（每种一份模型，相邻的块轮流用）
 const CHUNK := 48.0              # 树按多大的块分（米；远圈两倍）：一块一个多实例节点，看不见的块、影子范围外的块整块跳过
-const FAR_SEEN := 50.0           # 雾在这么远以外才吞没时（清晨、白天）才画远圈
+const FAR_SEEN := 24.0           # 雾在这么远以外才吞没时才画远圈（远圈从边界外 18 米起；四个时段都画）
 const LOW_SHARE := 0.6           # 低画质近圈画几成
 
 
@@ -34,7 +36,8 @@ const LOW_SHARE := 0.6           # 低画质近圈画几成
 ## exits：出口 [{"at": 出口的门所在的点 Vector3, "out": 往外的方向 Vector3（水平单位向量）, "half": 路宽的一半,
 ##         "fence": 两边要不要栅栏, "lantern": 门柱上要不要灯笼, "frame": 地名（不空 = 新做门柱、横梁、小檐和地名牌）}]
 ## skip：不种树、不铺地的矩形（Rect2，XZ），例如渡口的河面
-## 返回地面、路、栅栏、门框合并成的网格（已挂在 parent 下）；树是另外几个多实例节点（组 edge_trees）
+## 返回地面、路、栅栏、门框合并成的网格（已挂在 parent 下，元数据 exits 记着出口）；树是另外几个多实例节点（组 edge_trees），
+## 栅栏和门柱的碰撞是另外一个 StaticBody3D（EdgeSolids）
 static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_value: int) -> MeshInstance3D:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -64,22 +67,41 @@ static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_v
 			var mesh: Mesh = far_mesh if far else meshes[k]
 			_instances(parent, mesh, chunks[c], rng, far, ("EdgeTreesFar_%d_%d" if far else "EdgeTrees_%d_%d") % [c.x, c.y])
 		trees += spots.size()
+	var solids := StaticBody3D.new()
+	solids.name = "EdgeSolids"
+	solids.collision_layer = 1
+	solids.collision_mask = 0
 	for e in exits:
 		if str(e.get("frame", "")) != "":
-			_frame(parent, kit, e)
+			_frame(parent, kit, solids, e)
 		if bool(e.get("fence", false)):
-			_fence(kit, e)
+			_fence(kit, solids, e)
 		if bool(e.get("lantern", false)):
 			_lantern(parent, kit, e)
 	var mi := kit.build({"snow": Look.mat("snow"), "birch": Look.birch(), "bark": Look.mat("bark"), "timber": Look.mat("timber"), "roof": Look.mat("roof")})
 	mi.name = "Edges"
 	mi.set_meta("trees", trees)
+	mi.set_meta("exits", exits)
 	parent.add_child(mi)
+	if solids.get_child_count() > 0:
+		parent.add_child(solids)
+	else:
+		solids.free()
 	return mi
 
 
+## 栅栏、门柱的碰撞：一个盒子（中心、尺寸、朝向）
+static func _solid(solids: StaticBody3D, center: Vector3, size: Vector3, basis: Basis) -> void:
+	var cs := CollisionShape3D.new()
+	var bs := BoxShape3D.new()
+	bs.size = size
+	cs.shape = bs
+	cs.transform = Transform3D(basis, center)
+	solids.add_child(cs)
+
+
 ## 新做的出口门框（渡口北头这种原来只有一块门板的）：两根门柱、横梁、小檐、地名牌。门板本身（Door）由区域自己放，宽 1.9 米
-static func _frame(parent: Node3D, kit: MeshKit, e: Dictionary) -> void:
+static func _frame(parent: Node3D, kit: MeshKit, solids: StaticBody3D, e: Dictionary) -> void:
 	var at: Vector3 = e.at
 	var out: Vector3 = e.out
 	var label := str(e.frame)
@@ -89,6 +111,7 @@ static func _frame(parent: Node3D, kit: MeshKit, e: Dictionary) -> void:
 	var half := width * 0.5 + 0.12
 	for s in [-1.0, 1.0]:
 		kit.box("timber", at + side * s * half + Vector3(0, 1.25, 0), Vector3(0.22, 2.5, 0.22), basis, 0.85, 0.5)
+		_solid(solids, at + side * s * half + Vector3(0, 1.25, 0), Vector3(0.22, 2.5, 0.22), basis)
 	kit.box("timber", at + Vector3(0, 2.45, 0), Vector3(width + 0.7, 0.18, 0.22), basis)
 	kit.box("roof", at + Vector3(0, 2.66, 0), Vector3(width + 1.0, 0.08, 0.7), basis)
 	var l := Blocks.label(parent, label, at + Vector3(0, 2.95, 0) - out * 0.05)
@@ -242,8 +265,8 @@ static func _far_tree(kit: MeshKit, p: Vector3, rng: RandomNumberGenerator) -> v
 		kit.cylinder("bark", at, at + Vector3(cos(ang), rng.randf_range(0.7, 1.1), sin(ang)).normalized() * rng.randf_range(1.4, 2.4), r * 0.3, 0.02, 3, 0.7)
 
 
-## 出口两边的木栅栏：每 2 米一根桩、两道横杆，沿着边界往两边各 FENCE 米
-static func _fence(kit: MeshKit, e: Dictionary) -> void:
+## 出口两边的木栅栏：每 2 米一根桩、两道横杆，沿着边界往两边各 FENCE 米；每边一个碰撞盒（人穿不过去）
+static func _fence(kit: MeshKit, solids: StaticBody3D, e: Dictionary) -> void:
 	var at: Vector3 = e.at
 	var out: Vector3 = e.out
 	var side := Vector3(-out.z, 0, out.x)
@@ -257,6 +280,7 @@ static func _fence(kit: MeshKit, e: Dictionary) -> void:
 		var mid: Vector3 = at + side * s * (start + FENCE * 0.5)
 		for y in [0.45, 0.95]:
 			kit.box("timber", mid + Vector3(0, y, 0), Vector3(FENCE, 0.08, 0.06), basis)
+		_solid(solids, mid + Vector3(0, 0.6, 0), Vector3(FENCE + 0.12, 1.2, 0.15), basis)
 
 
 ## 门柱上的灯笼：木框 + 发光的玻璃 + 光晕（不是实时光源）；夜灯，白天灭

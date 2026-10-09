@@ -68,7 +68,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_fog(parent, reduced_motion)
 	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), [      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
 		{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}],
-		[Rect2(-400.0, SHORE_Z - 0.6, 800.0, 400.0)], 3611)                          # 南边是河：不种树、不铺雪
+		[Rect2(-400.0, SHORE_Z, 800.0, 400.0)], 3611)                                # 南边是河：不种树、不铺雪（雪地铺到岸边，和水接上）
 	var exit := Door.make("回桦林的路", 1.9, 2.0, false)
 	exit.verb = "回到"
 	exit.to_area = "birch"
@@ -89,8 +89,9 @@ static func _ground(kit: MeshKit, parent: Node3D) -> void:
 	kit.box("snow", Vector3(0, -0.1, (SHORE_Z + NORTH - 4.0) * 0.5), Vector3(HALF_X * 2 + 6, 0.2, len_z), Basis.IDENTITY, 1.0, 0.9)
 	kit.box("snow", Vector3(0, 0.004, -14.0), Vector3(3.2, 0.02, 28.0), Basis.IDENTITY, 0.62, 0.62)                # 从桦林下来的小路
 	kit.box("snow", Vector3(1.0, 0.006, -3.0), Vector3(12.0, 0.02, 6.0), Basis(Vector3.UP, 0.05), 0.68, 0.68)       # 码头根被踩乱的一片
-	kit.box("stone", Vector3(0, -0.05, SHORE_Z - 0.15), Vector3(HALF_X * 2 + 6, 0.3, 0.5), Basis.IDENTITY, 0.5, 0.3)   # 岸边的石头
-	kit.box("water", Vector3(0, WATER_Y, SHORE_Z + 30.0), Vector3(HALF_X * 2 + 60, 0.02, 60.0))
+	# 岸边的石头、河面：和边界外的雪地一样宽、一样远（3.10：原来只有区域那么宽，雪地铺出去以后两头露出河的边）
+	kit.box("stone", Vector3(0, -0.05, SHORE_Z - 0.15), Vector3((HALF_X + Edges.GROUND_MARGIN) * 2, 0.3, 0.5), Basis.IDENTITY, 0.5, 0.3)
+	kit.box("water", Vector3(0, WATER_Y, SHORE_Z + Edges.GROUND_MARGIN * 0.5), Vector3((HALF_X + Edges.GROUND_MARGIN) * 2, 0.02, Edges.GROUND_MARGIN))
 	_solid(parent, Vector3(0, -0.1, (SHORE_Z + NORTH - 4.0) * 0.5), Vector3(HALF_X * 2 + 6, 0.2, len_z))
 
 
