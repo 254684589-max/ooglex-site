@@ -82,6 +82,7 @@ static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_v
 	mi.name = "Edges"
 	mi.set_meta("trees", trees)
 	mi.set_meta("exits", exits)
+	mi.set_meta("area", area)                     # 走得到的范围（地图 3.11 的测试拿它和区域的地图规格对照）
 	parent.add_child(mi)
 	if solids.get_child_count() > 0:
 		parent.add_child(solids)

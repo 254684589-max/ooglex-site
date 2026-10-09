@@ -96,6 +96,17 @@ static func button(parent: Node, text: String, cb: Callable) -> Button:
 	return b
 
 
+## 看得清的焦点框（3.11）：默认主题的焦点框在羊皮纸底的地图上几乎看不见；不填充，3 像素金边，往外扩 2 像素
+static func focus_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.draw_center = false
+	sb.border_color = Color("b8964e")
+	sb.set_border_width_all(3)
+	sb.set_corner_radius_all(6)
+	sb.set_expand_margin_all(2)
+	return sb
+
+
 static func clear(box: Node) -> void:
 	for c in box.get_children():
 		box.remove_child(c)

@@ -81,6 +81,7 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 	root.add_child(mi)
 	root.set_meta("windows", windows)
 	root.set_meta("seed", int(spec.get("seed", 1)))     # 时段（4.2）：清晨按种子挑一部分房子还亮着灯
+	root.set_meta("size", Vector2(w, d))                 # 地图（3.11）：测试按它查地图上画的房子和场景对得上
 	# 碰撞：整栋房子一个盒子（屋顶、挑出的上层在头顶以上，不用碰撞）
 	var body := StaticBody3D.new()
 	body.collision_layer = 1
@@ -107,6 +108,31 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 	if sign_text != "":
 		_sign(root, door_x + 1.3, sign_text)
 	return root
+
+
+## 地图用（3.11）：本地坐标（x, z）→ 世界 XZ。本地 +Z 是正面朝向；绕 Y 转 yaw 度
+static func local_xz(pos: Vector3, yaw: float, p: Vector2) -> Vector2:
+	var r := deg_to_rad(yaw)
+	return Vector2(pos.x + p.x * cos(r) + p.y * sin(r), pos.z - p.x * sin(r) + p.y * cos(r))
+
+
+## 正面朝向（世界 XZ 的单位向量）
+static func facing(yaw: float) -> Vector2:
+	var r := deg_to_rad(yaw)
+	return Vector2(sin(r), cos(r))
+
+
+## 房子占地的四个角（世界 XZ，顺时针或逆时针都行）：正面墙脚在 pos，往背后纵深 d
+static func footprint(pos: Vector3, yaw: float, w: float, d: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for c in [Vector2(-w * 0.5, 0), Vector2(w * 0.5, 0), Vector2(w * 0.5, -d), Vector2(-w * 0.5, -d)]:
+		out.append(local_xz(pos, yaw, c))
+	return out
+
+
+## 门的中心（世界 XZ）：门宽 1.1，门轴在 door_x - 0.55
+static func door_xz(pos: Vector3, yaw: float, door_x: float) -> Vector2:
+	return local_xz(pos, yaw, Vector2(door_x, 0.05))
 
 
 ## 一扇窗：玻璃（亮 / 暗）+ 木窗框 + 窗台；亮窗外加一片光晕，暗窗有一半关着百叶

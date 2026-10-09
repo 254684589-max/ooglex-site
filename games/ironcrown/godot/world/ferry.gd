@@ -21,6 +21,7 @@ const HUT := Vector3(-7.0, 0, -6.0)            # 渡工小屋正面墙脚中点�
 const SHED := Vector3(8.6, 0, -6.2)            # 马棚中心
 const BOAT := Vector3(5.6, 0, 10.0)            # 渡船中心
 const ENCOUNTER := "ferry_offer"
+const EXIT_NAME := "回桦林的路"
 ## 「灰手」奥弗一伙：[名字, 敌人种类, 敌人编号, 位置, 朝向（弧度）, 对话编号（空 = 只说一句）, 外衣颜色]
 const OFFER_GROUP := [
 	["「灰手」奥弗", "outlaw_boss", "ferry_offer", Vector3(2.1, DECK_Y, 2.4), PI, "offer", Color("4a4a50")],
@@ -69,7 +70,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), [      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
 		{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}],
 		[Rect2(-400.0, SHORE_Z, 800.0, 400.0)], 3611)                                # 南边是河：不种树、不铺雪（雪地铺到岸边，和水接上）
-	var exit := Door.make("回桦林的路", 1.9, 2.0, false)
+	var exit := Door.make(EXIT_NAME, 1.9, 2.0, false)
 	exit.verb = "回到"
 	exit.to_area = "birch"
 	exit.to_spawn = "south"
@@ -81,6 +82,26 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_people(parent)
 	var s: Array = SPAWNS.north
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+## 地图（3.11，core/area_map.gd 的格式）：小路、河、码头、渡船、小屋和马棚、北头的路口。人和马鞍袋都不画。
+## 码头和渡船伸到岸外，地图框住的范围（view）比走得到的岸上大
+static func map_spec() -> Dictionary:
+	return {
+		"bounds": Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH),
+		"view": Rect2(-HALF_X, NORTH, HALF_X * 2, PIER_END + 2.0 - NORTH),
+		"shapes": [
+			{"k": "water", "rect": Rect2(-HALF_X, SHORE_Z, HALF_X * 2, PIER_END + 2.0 - SHORE_Z), "label": "灰鲸河"},
+			{"k": "road", "rect": Rect2(-1.6, NORTH + 0.6, 3.2, SHORE_Z - NORTH - 0.6)},
+			{"k": "pier", "rect": Rect2(PIER_X0, SHORE_Z - 1.0, PIER_X1 - PIER_X0, PIER_END - SHORE_Z + 1.0), "label": "码头"},
+			{"k": "boat", "rect": Rect2(BOAT.x - 1.7, BOAT.z - 3.3, 3.4, 6.6), "label": "渡船"},
+			{"k": "house", "pts": House.footprint(HUT, 90.0, 4.2, 4.0)},
+			{"k": "house", "rect": Rect2(SHED.x - 1.7, SHED.z - 1.5, 3.4, 3.0)},
+		],
+		"exits": [
+			{"at": Vector2(0, NORTH + 0.6), "dir": Vector2(0, -1), "to": "birch", "spawn": "south", "name": EXIT_NAME},
+		],
+	}
 
 
 ## 岸上的雪地（到岸边为止，有厚度）、岸边一溜泥和冰、河面（低一截的深色平面，伸进雾里）

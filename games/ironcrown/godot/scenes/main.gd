@@ -58,6 +58,8 @@ var packs: PackLoader            # 章节资源包（4.1）
 var pack_panel: PackPanel        # 章节包的下载画面（4.1）
 var pack_answer := ""            # 下载失败时玩家点的：retry / cancel
 var travel_map: TravelMap        # 旅行地图（4.2）
+var map_panel: MapPanel          # 地图册的「本地」「一带」两页（3.11）；第三页「北境西部」是 travel_map
+var map_departure := false       # 这次打开地图册时能不能出发（从路牌打开的才能；切走再切回「北境西部」照旧）
 var leaving := false             # 已经出发、正在淡出换区域（4.2）：这时不再打开地图
 var playable_chapter := Chapters.PLAYABLE   # 做到第几章能玩了（4.1；网页 ?preview=1 预览下一章的入口，测试里也改它）
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
@@ -278,6 +280,8 @@ func _ready() -> void:
 	print("IC_BAG_SCREEN x=%d y=%d" % [bc.x, bc.y])
 	var cc := hud.char_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
 	print("IC_CHAR_SCREEN x=%d y=%d" % [cc.x, cc.y])
+	var mc := hud.map_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
+	print("IC_HUDMAP_SCREEN x=%d y=%d" % [mc.x, mc.y])
 	if touch_mode:
 		var ac: Vector2 = touch.button_centers().attack * get_tree().root.content_scale_factor
 		print("IC_ATTACK_SCREEN x=%d y=%d" % [ac.x, ac.y])
@@ -566,6 +570,7 @@ func _build_ui() -> void:
 	layer.add_child(char_panel)
 	char_panel.closed.connect(_on_quest_closed)
 	hud.char_pressed.connect(open_character)
+	hud.map_pressed.connect(open_map)
 	GameState.skill_up.connect(_on_skill_up)
 	GameState.perk_unlocked.connect(func(s: String, p: Dictionary):
 		hud.toast("◆ 解锁专长：%s ·「%s」%s" % [GameState.SKILL_NAMES[s], p.name, p.desc], 4.0))
@@ -604,6 +609,11 @@ func _build_ui() -> void:
 	layer.add_child(travel_map)
 	travel_map.closed.connect(_on_map_closed)
 	travel_map.depart_requested.connect(func(id: String): depart(id))
+	travel_map.view_requested.connect(_switch_map)
+	map_panel = MapPanel.new()
+	layer.add_child(map_panel)
+	map_panel.closed.connect(_on_area_map_closed)
+	map_panel.view_requested.connect(_switch_map)
 	packs = PackLoader.new()
 	packs.name = "Packs"
 	packs.process_mode = Node.PROCESS_MODE_ALWAYS       # 下载时游戏是暂停的，HTTPRequest 和进度照样要走
@@ -645,7 +655,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("travel_map"):
-		open_travel_map(near_travel_point())
+		open_map()
 		get_viewport().set_input_as_handled()
 		return
 	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋
@@ -815,6 +825,7 @@ func _arrive() -> void:
 	if GameState.chapter >= 1 and area == "frostford" and not GameState.has_flag("ch1_victor_done"):
 		show_tip("ch1_victor", true)     # 第一章开场（4.3）：维克托就在眼前
 	show_tip("save")                     # 进入新区域会自动存档：第一次走进别处时讲存档
+	show_tip("map")                      # 地图（3.11）：排在存档后面
 	if Settings.reduced_motion:
 		fade.color.a = 0.0
 	else:
@@ -1273,7 +1284,7 @@ func _place_chapter_content() -> void:
 	var sign := ps.instantiate() as Node3D
 	sign.name = "RoadSignCh1"
 	world.add_child(sign)
-	sign.position = Vector3(1.3, 0, -39.8)          # 宅邸门口出生点（0, 0, -44.3，面朝 +Z）往前 4.5 米、路的左边，木板伸向路中间：
+	sign.position = Frostford.SIGN_POS              # 宅邸门口出生点（0, 0, -44.3，面朝 +Z）往前 4.5 米、路的左边，木板伸向路中间：
 	sign.rotation.y = atan2(1.3, 4.5)               # 手机竖屏视野窄，板子在正前方 2°–20° 以内才看得全（4.1 截图）；板面转过来对着出门的人
 	print("IC_CH1_SIGN")
 
@@ -1289,6 +1300,26 @@ func near_travel_point() -> bool:
 	return false
 
 
+## M 键和右上角「地图」（3.11）：第一章起站在路牌旁边打开旅行地图（能出发，和以前一样）；
+## 别的时候打开地图册——室外先看「本地」（你在哪、出口通往哪里），室内先看「一带」。序章也有（原来只弹一句「序章没有旅行地图」）
+func open_map() -> void:
+	if get_tree().paused or leaving:
+		return
+	if not Travel.places(GameState.chapter).is_empty() and near_travel_point():
+		open_travel_map(true)
+		return
+	open_area_map(AreaMap.default_view(area))
+
+
+## 打开地图册的「本地」或「一带」页：只能看，不能从这里出发
+func open_area_map(v: String) -> void:
+	if get_tree().paused or leaving:
+		return
+	map_departure = false
+	_pause_for_map()
+	_show_area_map(v, false)
+
+
 ## 打开旅行地图：departure = 站在出发的地方（能出发），否则只能看。序章没有旅行地图。打开时暂停，藏起提示和触屏按钮（和结束画面一样）
 func open_travel_map(departure := false) -> void:
 	if get_tree().paused or leaving:
@@ -1297,6 +1328,13 @@ func open_travel_map(departure := false) -> void:
 		hud.toast("序章没有旅行地图，第一章起才有。", 2.5)
 		print("IC_MAP none chapter=%d" % GameState.chapter)
 		return
+	map_departure = departure
+	_pause_for_map()
+	_show_travel_map(departure)
+
+
+## 暂停、放出鼠标、藏起提示和触屏按钮（地图册几页共用；切页时不再来一遍）
+func _pause_for_map() -> void:
 	player.melee.cancel_press()
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -1306,6 +1344,45 @@ func open_travel_map(departure := false) -> void:
 	hud.visible = false                 # 只藏起来：交互提示和正在显示的教学提示关上地图后还在（审查发现：清掉了就回不来）
 	touch_was_visible = touch.visible
 	touch.visible = false
+
+
+## 地图册里换一页（页签条，3.11）：先藏起现在这一页的面板（不发 closed，不还原暂停），再打开另一页；一直暂停着
+func _switch_map(v: String) -> void:
+	if v == "travel":
+		map_panel.hide()
+		_show_travel_map(map_departure)
+	else:
+		travel_map.hide()
+		_show_area_map(v, true)
+
+
+func _show_area_map(v: String, switched: bool) -> void:
+	var p := player.global_position
+	map_panel.open(area, v, AreaMap.views(area, GameState.chapter), Vector2(p.x, p.z), player.yaw_deg(), Settings.reduced_motion)
+	var region := AreaMap.region_of(area)
+	if switched:
+		print("IC_AREAMAP view=%s area=%s exits=%d nodes=%d links=%d" % [map_panel.view, area, AreaMap.exits(area).size(), map_panel.node_btns.size(),
+			AreaMap.links(region).size() if map_panel.view == "region" else 0])
+	else:
+		print("IC_AREAMAP open view=%s area=%s exits=%d nodes=%d px=%.1f zoom=%s" % [map_panel.view, area, AreaMap.exits(area).size(),
+			map_panel.node_btns.size(), map_panel.canvas.px_per_m, map_panel.canvas.zoomable])
+	await get_tree().process_frame
+	await get_tree().process_frame                 # 布局摆好以后（节点按钮是延后摆的）
+	if not map_panel.visible:
+		return
+	var k := get_tree().root.content_scale_factor
+	var pts := []
+	for t in ["local", "region", "travel"]:
+		var b: Button = map_panel.tabs.btns.get(t)
+		var c := b.get_global_rect().get_center() * k if b and b.is_visible_in_tree() else Vector2(-1, -1)
+		pts.append_array([c.x, c.y])
+	var cc := map_panel.close_btn.get_global_rect().get_center() * k
+	pts.append_array([cc.x, cc.y])
+	print("IC_AREAMAP_SCREEN lx=%d ly=%d rx=%d ry=%d tx=%d ty=%d cx=%d cy=%d" % pts)
+
+
+func _show_travel_map(departure: bool) -> void:
+	travel_map.tabs.setup(AreaMap.views(area, GameState.chapter), "travel")
 	var here := Travel.place_of_area(area)
 	travel_map.open(GameState.chapter, here, departure, Settings.reduced_motion)
 	print("IC_MAP open here=%s departure=%s places=%d selected=%s" % [here, departure, travel_map.place_btns.size(), travel_map.selected])
@@ -1320,7 +1397,8 @@ func open_travel_map(departure := false) -> void:
 	print("IC_MAP_SCREEN x=%d y=%d cx=%d cy=%d" % [gc.x, gc.y, cc.x, cc.y])
 
 
-func _on_map_closed() -> void:
+## 关上地图（任一页）：取消暂停，还原提示和触屏按钮，电脑上重新锁定鼠标，刷新交互提示
+func _resume_from_map() -> void:
 	get_tree().paused = false
 	hud.visible = true
 	touch.visible = touch_was_visible
@@ -1329,7 +1407,16 @@ func _on_map_closed() -> void:
 	player.interactor.refresh()
 	var t := player.interactor.target
 	hud.show_prompt(t.prompt() if t else "")
+
+
+func _on_map_closed() -> void:
+	_resume_from_map()
 	print("IC_MAP closed")
+
+
+func _on_area_map_closed() -> void:
+	_resume_from_map()
+	print("IC_AREAMAP closed")
 
 
 ## 从地图出发去 id：先看能不能走（Travel.check：做好了没有、有没有路、是不是站在出发的地方），再看是不是倒下了、在打（和存档、走门一样），

@@ -7,6 +7,7 @@ extends Control
 
 signal depart_requested(id: String)
 signal closed
+signal view_requested(view: String)       # 3.11：地图册的页签条，切到「本地」「一带」（main._switch_map）
 
 const PARCHMENT := Color("d6c6a0")
 const INK := Color("4a3a28")
@@ -22,6 +23,7 @@ const MARSH_SHAPE := [Vector2(0.04, 0.16), Vector2(0.3, 0.1), Vector2(0.5, 0.2),
 ## 灰鲸河（自北向南）
 const RIVER := [Vector2(0.9, 0.0), Vector2(0.87, 0.2), Vector2(0.9, 0.38), Vector2(0.86, 0.56), Vector2(0.89, 0.78), Vector2(0.87, 1.0)]
 
+var tabs: MapTabs                 # 3.11：顶上的页签条（本地 / 一带 / 北境西部）
 var title: Label
 var canvas: Control
 var name_label: Label
@@ -54,6 +56,10 @@ func _ready() -> void:
 	box = VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
 	center.add_child(box)
+	tabs = MapTabs.new()
+	tabs.view_requested.connect(func(v: String): view_requested.emit(v))
+	tabs.visible = false
+	box.add_child(tabs)
 	title = Label.new()
 	title.text = "旅行地图 · 北境西部"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -116,6 +122,7 @@ func open(c: int, h: String, departure: bool, reduced_motion := false) -> void:
 		var b := Button.new()
 		b.text = Travel.name_of(id) + ("（你在这里）" if id == here else "")
 		b.custom_minimum_size = Vector2(0, 44)
+		b.add_theme_stylebox_override("focus", UiKit.focus_style())     # 默认的焦点框在羊皮纸上看不清（3.11）
 		b.focus_entered.connect(select.bind(id))
 		b.pressed.connect(func():
 			select(id)
@@ -195,7 +202,8 @@ func _fit() -> void:
 	if not is_inside_tree() or not visible:
 		return
 	var logical := UiKit.logical_size(self)
-	var room := logical.y - 290.0
+	var th := (MapTabs.HEIGHT + 8.0) if tabs.visible else 0.0     # 页签条（3.11）
+	var room := logical.y - 290.0 - th
 	wide = room < 220.0 and logical.x >= 640.0
 	body.vertical = not wide
 	var iw := 300.0
@@ -203,7 +211,7 @@ func _fit() -> void:
 	var h: float
 	if wide:
 		w = clampf(logical.x - 32.0 - iw - 10.0, 280.0, 560.0)
-		h = minf(w * 0.56, logical.y - 90.0)
+		h = minf(w * 0.56, logical.y - 90.0 - th)
 		w = minf(w, h / 0.56)
 	else:
 		w = clampf(logical.x - 32.0, 280.0, 560.0)

@@ -13,6 +13,12 @@ const H := 3.0
 const WALL_T := 0.2
 const DOOR_X := 1.55              # 出口门中心
 const DOOR_W := 1.1
+const EXIT_NAME := "回到主街"
+## 家具占地（XZ：x、z、宽、高）：碰撞和地图（3.11）共用
+const BAR := Rect2(-1.3, -2.48, 3.6, 0.66)         # 吧台
+const SHELF := Rect2(-1.0, -3.5, 3.0, 0.4)         # 吧台后面的酒架
+const STAIRS := Rect2(3.0, -2.7, 1.0, 5.2)         # 东墙的楼梯（连梯下一整块）
+const BARRELS := [Vector2(-1.75, -2.95), Vector2(2.85, -2.95)]
 ## 命名出生点（world/areas.gd）：front = 刚从主街进门，背对门站在门内、面朝大堂（-Z）
 const SPAWNS := {
 	"front": [Vector3(DOOR_X, 0, 2.6), 0.0],
@@ -51,7 +57,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	# 出口：回到主街（站在酒馆门外）
-	var exit := Door.make("回到主街", DOOR_W, 2.1, false)
+	var exit := Door.make(EXIT_NAME, DOOR_W, 2.1, false)
 	exit.verb = "离开"
 	exit.to_area = "frostford"
 	exit.to_spawn = "tavern_door"
@@ -90,6 +96,27 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 
 
 ## 地板、四面墙（南墙留门洞和两扇窗）、天花板与横梁、墙上的木柱与护墙板
+## 地图（3.11，core/area_map.gd 的格式）：吧台、壁炉、桌子、酒桶、楼梯、出口。人都不画；梯口的栅门锁着，不算出口
+static func map_spec() -> Dictionary:
+	var hw := W * 0.5
+	var shapes := [
+		{"k": "furniture", "rect": BAR, "label": "吧台"},
+		{"k": "furniture", "rect": SHELF},
+		{"k": "furniture", "rect": Rect2(-hw, FIRE_POS.z - 1.1, 0.7, 2.2)},
+		{"k": "mark", "at": Vector2(-hw + 1.0, FIRE_POS.z), "icon": "fire", "label": "壁炉"},
+		{"k": "furniture", "rect": Rect2(TABLE_POS.x - 1.2, TABLE_POS.z - 0.87, 2.4, 1.74), "label": "长桌"},
+		{"k": "furniture", "rect": Rect2(SMALL_TABLE_POS.x - 0.5, SMALL_TABLE_POS.z - 0.8, 1.3, 1.3)},
+		{"k": "furniture", "rect": STAIRS, "label": "楼梯"},
+	]
+	for c: Vector2 in BARRELS:
+		shapes.append({"k": "furniture", "rect": Rect2(c.x - 0.36, c.y - 0.36, 0.72, 0.72)})
+	return {
+		"bounds": Rect2(-hw, -D * 0.5, W, D),
+		"shapes": shapes,
+		"exits": [{"at": Vector2(DOOR_X, D * 0.5), "dir": Vector2(0, 1), "to": "frostford", "spawn": "tavern_door", "name": EXIT_NAME}],
+	}
+
+
 static func _room(kit: MeshKit) -> void:
 	var hw := W * 0.5
 	var hd := D * 0.5
@@ -223,14 +250,14 @@ static func _colliders(parent: Node3D) -> void:
 	_solid(parent, Vector3(DOOR_X, H * 0.5, zs + 0.15), Vector3(DOOR_W, H, 0.1))            # 门外：出不去（出门靠交互）
 	_solid(parent, Vector3(-hw + 0.35, H * 0.5, FIRE_POS.z), Vector3(0.7, H, 2.2))
 	_solid(parent, Vector3(-hw + 0.95, 0.55, FIRE_POS.z), Vector3(0.5, 1.1, 2.3))          # 炉台挡住，人走不进火里
-	_solid(parent, Vector3(0.5, 0.55, -2.15), Vector3(3.6, 1.1, 0.66))                      # 吧台
-	_solid(parent, Vector3(0.5, 1.2, -hd + 0.2), Vector3(3.0, 2.4, 0.4))                    # 酒架
-	for c in [Vector3(-1.75, 0.48, -2.95), Vector3(2.85, 0.48, -2.95)]:
-		_solid(parent, c, Vector3(0.72, 0.96, 0.72))
+	_solid(parent, Vector3(BAR.get_center().x, 0.55, BAR.get_center().y), Vector3(BAR.size.x, 1.1, BAR.size.y))          # 吧台
+	_solid(parent, Vector3(SHELF.get_center().x, 1.2, SHELF.get_center().y), Vector3(SHELF.size.x, 2.4, SHELF.size.y))    # 酒架
+	for c: Vector2 in BARRELS:
+		_solid(parent, Vector3(c.x, 0.48, c.y), Vector3(0.72, 0.96, 0.72))
 	_solid(parent, TABLE_POS + Vector3(0, 0.4, 0), Vector3(2.4, 0.8, 1.74))              # 长桌连长凳
 	_solid(parent, SMALL_TABLE_POS + Vector3(0.15, 0.4, -0.15), Vector3(1.3, 0.8, 1.3))  # 小方桌连凳子
 	# 楼梯：栅门锁着，上不去；整段楼梯连同梯下的空间当一块实心挡住
-	_solid(parent, Vector3(W * 0.5 - 0.5, H * 0.5, -0.1), Vector3(1.0, H, 5.2))
+	_solid(parent, Vector3(STAIRS.get_center().x, H * 0.5, STAIRS.get_center().y), Vector3(STAIRS.size.x, H, STAIRS.size.y))
 
 
 ## 光：炉火（暖橙、闪烁）、吧台上方的油灯、长桌上的蜡烛。室内一共 3 盏点光源
