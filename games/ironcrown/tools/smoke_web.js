@@ -524,7 +524,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     }
     // 地图册（3.11）：序章霜渡镇，本地 → 一带 → 关上
     logs.length = 0;
-    await page.goto(url + '?view=1');
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'view=1');
     let amOpen = '', amRegion = '', amClose = '';
     const screens = () => logs.filter(l => l.startsWith('IC_AREAMAP_SCREEN'));
     if (await waitLog(logs, 'IC_HUDMAP_SCREEN', 240)) {

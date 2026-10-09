@@ -32,7 +32,7 @@ const LEGEND := {"exit": "▲ 出口", "house": "■ 房屋", "furniture": "■ 
 	"graves": "+ 墓地", "you": "△ 你（尖头朝你面对的方向）"}
 ## 面板上会显示的固定文字（字体测试用，AreaMap.texts() 收）
 const TEXTS := ["关上地图", "放大", "缩小", "回到你这里", NO_MAP, EXIT_HINT, NODE_HINT, "你在：", "，面朝", " · ", "：通往", "。在你", "。就在你旁边。",
-	"边约", " 米", "就在你旁边", "；", " → ", "你", "北", "▲ 出口 · ■ 房屋 · ■ 家具 · □ 路 · ≈ 水 · ○ 树林 · + 墓地 · △ 你（尖头朝你面对的方向）", "1234567890"]
+	"边约", " 米", "就在你旁边", "离你约", "；", " → ", "你", "北", "▲ 出口 · ■ 房屋 · ■ 家具 · □ 路 · ≈ 水 · ○ 树林 · + 墓地 · △ 你（尖头朝你面对的方向）", "1234567890"]
 
 var tabs: MapTabs
 var title: Label
@@ -276,8 +276,8 @@ func where_text() -> String:
 	var z := AreaMap.zone_at(area, player_xz)
 	if z != "":
 		t += " · " + z
-	if view == "region":
-		return t
+	if view == "region" or not AreaMap.has_compass(area):
+		return t                                         # 室内不说朝向（屋里的图和镇上的东南西北对不上）
 	return t + "，面朝" + AreaMap.heading_text(player_yaw)
 
 
@@ -304,8 +304,10 @@ func select_exit(i: int) -> void:
 		return
 	selected_exit = i
 	var e: Dictionary = ex[i]
-	var b := AreaMap.bearing_text(player_xz, e.at)
-	detail_label.text = "%s：通往%s。%s" % [e.name, Areas.display_name(str(e.to)), ("在你" + b + "。") if b != "就在你旁边" else "就在你旁边。"]
+	var compass := AreaMap.has_compass(area)
+	var b := AreaMap.bearing_text(player_xz, e.at, compass)
+	var where := "就在你旁边。" if b == "就在你旁边" else (("在你" + b + "。") if compass else (b + "。"))
+	detail_label.text = "%s：通往%s。%s" % [e.name, Areas.display_name(str(e.to)), where]
 	canvas.queue_redraw()
 
 
@@ -465,6 +467,8 @@ class MapCanvas extends Control:
 	func _gui_input(e: InputEvent) -> void:
 		if not zoomable:
 			return
+		if (e is InputEventMouseButton or e is InputEventMouseMotion) and e.device == InputEvent.DEVICE_ID_EMULATION:
+			return                 # 触屏拖动由 ScreenDrag 管；工程开着「触屏模拟鼠标」，模拟出来的鼠标再拖一遍就走两倍远（审查）
 		if e is InputEventMouseButton:
 			var mb := e as InputEventMouseButton
 			if mb.button_index == MOUSE_BUTTON_LEFT:
@@ -553,7 +557,8 @@ class MapCanvas extends Control:
 			draw_string_outline(font, at, str(pl[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
 			draw_string(font, at, str(pl[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
 		_draw_player(font)
-		_draw_north(s, font)
+		if AreaMap.has_compass(area):
+			_draw_north(s, font)                           # 室内不画指北（屋里的图按屋子自己的朝向画）
 		_draw_scale(s, font)
 
 	func _draw_shape(sh: Dictionary) -> void:
@@ -609,16 +614,22 @@ class MapCanvas extends Control:
 				draw_polyline(ol, INK, 1.0)
 
 	## 在多边形里每隔 step 像素画一个小花纹（水的波纹、树林的圈、墓地的十字）
+	## 只在画布看得见的那一块里画（放大看大地图时，一大片树林、水面的外接矩形有几千像素）；花纹的格子仍按图形的左上角对齐，拖动时不跳
 	func _pattern(r: Rect2, pts: PackedVector2Array, step: float, f: Callable) -> void:
-		var y := r.position.y + step * 0.5
-		var row := 0
-		while y < r.end.y:
-			var x := r.position.x + step * (0.5 if row % 2 == 0 else 1.0)
-			while x < r.end.x:
+		var vis := r.intersection(Rect2(Vector2.ZERO, _size()).grow(step))
+		if vis.size.x <= 0.0 or vis.size.y <= 0.0:
+			return
+		var dy := step * 0.8
+		var row := maxi(0, floori((vis.position.y - r.position.y - step * 0.5) / dy))
+		var y := r.position.y + step * 0.5 + row * dy
+		while y < vis.end.y:
+			var x0 := r.position.x + step * (0.5 if row % 2 == 0 else 1.0)
+			var x := x0 + maxi(0, floori((vis.position.x - x0) / step)) * step
+			while x < vis.end.x:
 				if Geometry2D.is_point_in_polygon(Vector2(x, y), pts):
 					f.call(Vector2(x, y))
 				x += step
-			y += step * 0.8
+			y += dy
 			row += 1
 
 	func _draw_mark(sh: Dictionary) -> void:

@@ -5366,6 +5366,7 @@ func test_areamap() -> void:
 			var nr := Rect2(nb.position.x, nb.position.z, nb.size.x, nb.size.z)
 			check(AreaMap.bounds(a) == nr if a != "ferry" else AreaMap.view_rect(a).grow(0.01).encloses(nr), "%s：地图的范围和导航网格的范围一致（渡口：地图框住了码头）" % Areas.display_name(a))
 		await free_main(main)
+	check(is_equal_approx(Chapel.DAIS.position.y, -Chapel.D * 0.5) and is_equal_approx(Chapel.DAIS.end.y, Chapel.ALTAR_Z + 0.6) and AreaMap.shapes("chapel").any(func(sh): return sh.get("rect") == Chapel.DAIS), "小教堂的祭坛台：从北墙到祭坛前 0.6 米，搭场景和地图用同一个矩形（原来往北偏了 0.6 米，烛台底座悬空）")
 	# 剧透：桦林的哨卡、墓园的钥匙和包袱、渡口的人都不在地图上
 	var spoil := ""
 	for a in ["birch", "churchyard", "ferry"]:
@@ -5392,6 +5393,7 @@ func test_areamap() -> void:
 	check(mp.visible and get_tree().paused and not main.hud.visible and not main.touch.visible and not main.travel_map.visible and mp.view == "local", "序章按 M：打开地图册的「本地」页；游戏暂停，提示和触屏按钮藏起来")
 	check(mp.tabs.visible and mp.tabs.btns.local.visible and mp.tabs.btns.region.visible and not mp.tabs.btns.travel.visible and mp.tabs.btns.local.text == "◆ 本地" and mp.tabs.btns.local.has_focus(), "页签只有「本地」「一带」，当前页写「◆ 本地」，焦点在它上面（键盘能用）")
 	check(mp.where_text().begins_with("你在：霜渡镇，面朝") and mp.where_label.text == mp.where_text(), "写着你在哪、面朝哪（%s）" % mp.where_text())
+	check(mp.process_mode == Node.PROCESS_MODE_ALWAYS and mp.can_process() and mp.tabs.can_process(), "游戏暂停时地图照样收按键、渐显照样走（不然暂停了就关不掉）")
 	var names: Array = mp.exit_btns.map(func(b): return (b as Button).text)
 	check(names == ["1 → 镇外桦林", "2 → 星铁小教堂墓园", "3 → 「倒钩鱼」酒馆"], "三个出口按编号列出来（%s）" % ", ".join(names))
 	var pc := mp.canvas.world_to_canvas(Vector2(main.player.global_position.x, main.player.global_position.z))
@@ -5416,9 +5418,18 @@ func test_areamap() -> void:
 	check(mp.detail_label.text.begins_with("霜渡镇：") and mp.detail_label.text.contains("南门（往桦林、渡口） → 镇外桦林") and mp.tabs.btns.region.text == "◆ 一带", "默认选中你在的地方：它的出口都通往哪里")
 	mp.select_node("birch")
 	check(mp.detail_label.text == "镇外桦林：回霜渡镇的木门 → 霜渡镇；去渡口的路 → 渡口", "选桦林：两头的门通往哪里")
+	main.hud.set_hint("测试用的教学提示")
 	mp._unhandled_input(key_ev(KEY_ESCAPE))
 	await frames(2)
-	check(not mp.visible and not get_tree().paused and main.hud.visible and main.touch.visible, "Esc 关上：接着玩，提示和触屏按钮回来了")
+	check(not mp.visible and not get_tree().paused and main.hud.visible and main.touch.visible and main.hud.hint_label.text == "测试用的教学提示", "Esc 关上：接着玩，触屏按钮回来了，底部的教学提示还在")
+	main.hud.set_hint("")
+	main.player.rotation.y = deg_to_rad(90.0)              # 向左转 90 度 = 面朝西
+	main.open_map()
+	await frames(2)
+	check(mp.where_text().ends_with("面朝西"), "转向西边再打开：写「面朝西」（%s）" % mp.where_text())
+	mp.close()
+	main.player.rotation.y = 0.0
+	await frames(1)
 	main.touch_mode = false
 	main.touch.visible = false
 	main.hud.map_pressed.emit()
@@ -5472,6 +5483,11 @@ func test_areamap() -> void:
 	main.open_map()
 	await frames(3)
 	check(main.map_panel.visible and main.map_panel.view == "region" and (main.map_panel.node_btns.tavern as Button).text == "「倒钩鱼」酒馆\n（你在这里）", "酒馆里按 M：先看「一带」，酒馆写「你在这里」")
+	main.map_panel.tabs.btns.local.pressed.emit()
+	await frames(2)
+	main.map_panel.player_xz = Vector2(0.0, -1.0)
+	main.map_panel.select_exit(0)
+	check(main.map_panel.where_text() == "你在：「倒钩鱼」酒馆" and main.map_panel.detail_label.text == "回到主街：通往霜渡镇。离你约 5 米。" and not AreaMap.has_compass("tavern"), "酒馆的「本地」页不说东南西北（屋里的图和镇上的方向对不上）：只说离你多远（%s）" % main.map_panel.detail_label.text)
 	main.map_panel.close()
 	await free_main(main)
 	# 测试场：没有地图
@@ -5485,6 +5501,8 @@ func test_areamap() -> void:
 	# 第一章：路牌旁打开旅行地图；切到本地再切回来照样能出发；关上只还原一次
 	GameState.new_game(84)
 	main = await make_ch1("dawn")
+	main.touch_mode = true
+	main.touch.visible = true
 	check(AreaMap.shapes("frostford").any(func(sh): return str(sh.get("icon", "")) == "sign" and (sh.at as Vector2).distance_to(Vector2(main.world.get_node("RoadSignCh1").global_position.x, main.world.get_node("RoadSignCh1").global_position.z)) < 0.5), "第一章：地图上画了路牌，就在路牌那里")
 	main.open_map()
 	await frames(4)
@@ -5498,7 +5516,7 @@ func test_areamap() -> void:
 	check(tm.visible and not main.map_panel.visible and tm.at_departure, "再切回「北境西部」：照样能出发")
 	tm._unhandled_input(key_ev(KEY_ESCAPE))
 	await frames(2)
-	check(not tm.visible and not main.map_panel.visible and not get_tree().paused and main.hud.visible, "Esc 关上：接着玩")
+	check(not tm.visible and not main.map_panel.visible and not get_tree().paused and main.hud.visible and main.touch.visible, "Esc 关上：接着玩，切过页也只还原一次，触屏按钮回来了")
 	await free_main(main)
 	# 各种窗口尺寸：六个区域整张放得下、按钮够大、都在画面里；一带的节点不重叠
 	for sz in [Vector2i(360, 740), Vector2i(740, 360), Vector2i(768, 1024), Vector2i(1280, 720)]:
@@ -5564,6 +5582,21 @@ func test_areamap() -> void:
 		cv._gui_input(key_ev(KEY_RIGHT))
 	var vr := AreaMap.view_rect("frostford")
 	check(vr.has_point(cv.center) and cv.center.x > 0.0, "方向键拖动地图，拖到头也不出地图范围")
+	# 真的触屏拖动（走 Input.parse_input_event，工程开着「触屏模拟鼠标」）：地图跟着手指走，不多走一倍
+	mp.recenter_btn.pressed.emit()
+	await frames(1)
+	var c0 := cv.center
+	var k := get_tree().root.content_scale_factor
+	var p0 := cv.get_global_rect().get_center() * k
+	Input.parse_input_event(touch_ev(0, p0, true))
+	await frames(1)
+	for i in 6:
+		Input.parse_input_event(drag_ev(0, p0 + Vector2(-10.0 * (i + 1), 0) * k, Vector2(-10.0, 0) * k))
+		await frames(1)
+	Input.parse_input_event(touch_ev(0, p0 + Vector2(-60.0, 0) * k, false))
+	await frames(2)
+	var moved_m := cv.center.x - c0.x
+	check(absf(moved_m - 60.0 / cv.px_per_m) < 0.6, "触屏拖动：手指往左拖 60 像素，地图正好跟着走 %.1f 米（不是两倍）" % moved_m)
 	mp.recenter_btn.pressed.emit()
 	you = cv.world_to_canvas(Vector2(main.player.global_position.x, main.player.global_position.z))
 	check(you.distance_to(cv.size * 0.5) < 2.0 and mp.where_text().contains(" · 测试区"), "「回到你这里」；你在哪写上分块的名字（%s）" % mp.where_text())

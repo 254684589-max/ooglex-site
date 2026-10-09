@@ -183,13 +183,22 @@ static func heading_text(yaw_deg: float) -> String:
 	return HEADINGS[posmod(roundi(yaw_deg / 45.0), 8)]
 
 
-## 从 from 看 to 在哪个方向、多远：「南边约 34 米」；太近说「就在你旁边」
-static func bearing_text(from: Vector2, to: Vector2) -> String:
+## 从 from 看 to 在哪个方向、多远：「南边约 34 米」；太近说「就在你旁边」。
+## compass = false（室内）只说远近「离你约 5 米」：室内的平面图按屋子自己的朝向画，和镇上的东南西北对不上
+## （审查：酒馆的门在屋里是南墙，在镇上朝东），所以室内不说方向、不画指北
+static func bearing_text(from: Vector2, to: Vector2, compass := true) -> String:
 	var d := to - from
 	if d.length() < NEAR:
 		return "就在你旁边"
+	if not compass:
+		return "离你约 %d 米" % roundi(d.length())
 	var yaw := rad_to_deg(atan2(-d.x, -d.y))          # 朝向 yaw 的方向是 (-sin yaw, -cos yaw)
 	return "%s边约 %d 米" % [heading_text(yaw), roundi(d.length())]
+
+
+## 这张图说不说东南西北：室外说；室内的平面图按屋子自己的朝向画，不说（见 bearing_text）
+static func has_compass(area: String) -> bool:
+	return not Areas.is_indoor(area)
 
 
 ## 区域在「一带」示意图上的名字：当前区域加「（你在这里）」，室内加「（室内）」（两行，按钮窄一点）
@@ -246,10 +255,18 @@ static func validate() -> Array:
 			if str(sh.get("label", "")).contains("　"):
 				errors.append("%s：标签里有全角空格" % a)
 			var box := shape_rect(sh)
-			if box.size == Vector2.ZERO and not sh.has("at"):
-				errors.append("%s：%s 没有 rect / pts / at" % [a, k])
+			if k == "mark" and not sh.has("at"):
+				errors.append("%s：地标要有 at（一个点）" % a)
+			elif k != "mark" and not sh.has("rect") and (sh.get("pts", PackedVector2Array()) as PackedVector2Array).size() < 3:
+				errors.append("%s：%s 要有 rect 或者至少三个点的 pts" % [a, k])
 			elif k != "water" and not v.grow(2.0).encloses(box):
 				errors.append("%s：%s「%s」超出了地图范围" % [a, k, sh.get("label", "")])
+		if not v.grow(0.01).encloses(b):
+			errors.append("%s：view 没框住 bounds" % a)
+		for z in s.get("zones", []):
+			if str(z.get("name", "")) == "" or (z.get("pts", PackedVector2Array()) as PackedVector2Array).size() < 3:
+				errors.append("%s：分块要有名字和至少三个点" % a)
+			errors.append_array(_check_if(a, z))
 		for e in s.get("exits", []):
 			var to := str(e.get("to", ""))
 			if not Areas.known(to):
