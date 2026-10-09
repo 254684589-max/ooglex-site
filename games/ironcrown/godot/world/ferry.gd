@@ -32,6 +32,7 @@ const EDRIC_POS := Vector3(2.0, DECK_Y, 11.6)
 const SILAS_POS := Vector3(2.6, DECK_Y, 10.2)
 const FERRYMAN_POS := Vector3(-6.2, 0, -4.4)
 const FERRYMAN_LINES := ["灰手那伙人一来，我就躲到屋门口了……誓剑大人，您可小心点。", "雾不散，船不开。要过河，等天亮吧。", "那个南方人的马拴在棚子里，喂了三天的料钱还没给呢。"]
+const FERRYMAN_LINES_CH1 := ["雾散了一半，今天的渡船照常开。", "今天码头上忙，南边的货都堵在河上。", "往南的船都满了——冠城那边的消息一天比一天坏。"]     # 第一章的清晨（4.3）
 const THUG_LINES := ["头儿说了算。", "……"]
 ## 命名出生点（world/areas.gd）：north = 从桦林下来，站在北头、面朝河
 const SPAWNS := {
@@ -266,7 +267,7 @@ static func _people(parent: Node3D) -> void:
 		parent.add_child(n)
 	_pair(parent)
 	_alban(parent)
-	var fm := Npc.make("渡工", FERRYMAN_LINES, Color("4a5a4a"))
+	var fm := Npc.make("渡工", FERRYMAN_LINES_CH1 if GameState.chapter >= 1 else FERRYMAN_LINES, Color("4a5a4a"))
 	fm.position = FERRYMAN_POS
 	fm.rotation.y = -PI / 2                             # 面朝东（码头）
 	parent.add_child(fm)

@@ -77,6 +77,7 @@
       "after_book": {
         "text": "（他不敢抬头看你）那本书，收好了吗？……去黑鹭堡的路上，别跟任何人提起它。",
         "options": [
+          {"text": "我准备好了，这就去黑鹭堡。", "if": [{"not_flag": "ch1_started"}], "do": [{"ending": "prologue"}], "end": true},
           {"text": "（点点头）", "end": true}
         ]
       },

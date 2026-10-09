@@ -25,6 +25,7 @@ const WOODCUTTER_POS := Vector3(-2.7, 0, 0.9)     # 长桌西头，背靠炉火
 const PEDDLER_POS := Vector3(-2.7, 0, -1.9)
 const DAGU_POS := Vector3(2.5, 0, -1.35)          # 吧台东头（3.3）
 const PEDDLER_LINES := ["这么大的雾，明天的渡船怕是开不了。", "南边来的货一个月比一个月少。听说冠城那边……算了，不说了。", "炉子边上最暖和，你也过来烤烤？"]
+const PEDDLER_LINES_CH1 := ["天一亮就有人往鹭沼那边赶，说是黑鹭堡出事了。", "要火石、针线吗？出远门用得着。", "芦苇荡里的路不好走，别一个人摸黑去。"]     # 第一章的清晨（4.3）
 const VIEW_NAMES := ["进门看大堂", "吧台前（玛蒂尔达）", "看壁炉", "门内对着出口", "对着吧台东头（大桶）"]
 ## 网页 ?area=tavern&view=N 的固定机位：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
 const VIEWS := [
@@ -58,7 +59,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	parent.add_child(exit)
 	# 梯口的栅门：锁着（楼上客房不做）
 	var gate := Door.make("上楼的栅门", 0.9, 1.0, true)
-	gate.locked_text = "栅门上挂着锁。玛蒂尔达头也不抬：「楼上是客房，今晚住满了。」"
+	gate.locked_text = "栅门上挂着锁。玛蒂尔达头也不抬：「楼上的客人还没起。」" if GameState.chapter >= 1 else "栅门上挂着锁。玛蒂尔达头也不抬：「楼上是客房，今晚住满了。」"
 	gate.position = Vector3(W * 0.5 - 0.95, 0, 2.78)
 	parent.add_child(gate)
 	# 人：老板娘（对话树）、醉醺醺的伐木工（对话树）、赖账的大桶（对话树，3.3 打架）、烤火的货郎（轮流说一句）
@@ -80,7 +81,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	dagu.position = DAGU_POS
 	dagu.rotation.y = 2.5                    # 侧靠吧台，面朝大堂（西南）
 	parent.add_child(dagu)
-	var peddler := Npc.make("货郎", PEDDLER_LINES, Color("3a4a5a"))
+	var peddler := Npc.make("货郎", PEDDLER_LINES_CH1 if GameState.chapter >= 1 else PEDDLER_LINES, Color("3a4a5a"))
 	peddler.position = PEDDLER_POS
 	peddler.rotation.y = 2.65                # 面朝炉火（西南方向）
 	parent.add_child(peddler)

@@ -4,6 +4,7 @@
     "speaker": "玛蒂尔达",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "ch1_started"}], "node": "dawn"},
       {"if": [{"flag": "matilda_told_edric"}], "node": "greet_again"}
     ],
     "nodes": {
@@ -41,6 +42,20 @@
         "text": "冬天赖着不走，渡船一个月比一个月少。烽燧那边的消息一天比一天坏，可镇上的人还是照样喝酒、赌骰子、等春天。",
         "options": [
           {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "dawn": {
+        "text": "（她正往炉子里添柴）这么早？汤还没热。要赶路的话，拿块面包路上吃。",
+        "options": [
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread_dawn"},
+          {"text": "不用了。", "end": true}
+        ]
+      },
+      "bread_dawn": {
+        "text": "（她从吧台底下摸出一块刚出炉的黑面包）两枚银币。路上慢点吃。",
+        "do": [{"pay": 2}, {"give_item": "bread"}],
+        "options": [
+          {"text": "多谢。", "end": true}
         ]
       },
       "bread": {
@@ -109,6 +124,7 @@
     "speaker": "大桶",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "ch1_started"}], "node": "dawn"},
       {"if": [{"flag": "dagu_beaten"}], "node": "beaten"},
       {"if": [{"flag": "dagu_won"}], "node": "won"}
     ],
@@ -142,6 +158,12 @@
           {"text": "改天。", "end": true}
         ]
       },
+      "dawn": {
+        "text": "（大桶趴在桌上睡得正沉，手里还攥着空杯子）",
+        "options": [
+          {"text": "（不吵醒他）", "end": true}
+        ]
+      },
       "beaten": {
         "text": "（他揉着下巴，把几枚银币拍在吧台上）结了，结了！……你这拳头，渡口扛包的都比不上。",
         "options": [
@@ -154,6 +176,7 @@
     "speaker": "伐木工",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "ch1_started"}], "node": "asleep"},
       {"if": [{"flag": "woodcutter_talked"}], "node": "asleep"}
     ],
     "nodes": {

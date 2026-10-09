@@ -31,6 +31,7 @@ const BATTLE_BENCH_SAMPLE := 4.0  # 每个机位测几秒
 const BATTLE_BENCH_VIEWS := [1, 2]   # 观战台上（看全场）、两军之间（贴近混战）
 const HINT_SECONDS := 8.0
 const FADE_TIME := 0.25           # 换区域时淡出 / 淡入（减少动态效果时直接切）
+const CH1_LATER := "想好了就去星铁小教堂找奥尔本修士——第一章 · 黑鹭堡从那里出发。"   # 序章打完还没进第一章时（4.3）
 
 @export var use_test_range := false
 @export var use_arena := false
@@ -189,6 +190,8 @@ func _ready() -> void:
 	spawn = player.global_position
 	if _query("preview") == "1":
 		playable_chapter = maxi(playable_chapter, 1)
+	elif _query("preview") == "0":
+		playable_chapter = 0                     # 截图、冒烟用：看第一章开放以前的结束画面（只有两个按钮，4.3）
 	_place_chapter_content()
 	yaw0 = player.yaw_deg()
 	_build_ui()
@@ -207,7 +210,7 @@ func _ready() -> void:
 		hud.set_hint("")                 # 操作说明改由开场开始后的教学提示给
 		hint_left = 0.0
 		opening.start(title_card, touch_mode)
-	if area == "birch":                  # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）
+	if area == "birch" and GameState.chapter == 0:     # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）；第一章哨卡的事已经过去了
 		hud.set_hint(Birch.TEACH_TOUCH if touch_mode else Birch.TEACH_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
@@ -254,6 +257,8 @@ func _ready() -> void:
 		pass                          # 换区域进来的：_arrive() 已经提示过区域名
 	elif loaded_from != "":
 		hud.toast("已读取：%s%s" % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
+		if GameState.chapter == 0 and GameState.has_flag("prologue_done") and playable_chapter >= 1:
+			hud.toast(CH1_LATER, 6.0)        # 序章打完以后的存档：告诉玩家怎么进第一章（4.3）
 	elif Saves.has_any():
 		hud.toast("有存档：%s里「存档 / 读档」可以继续（F9 读快速存档）" % ("点「菜单」，" if touch_mode else "按 Esc 打开菜单，"), 6.0)
 	# 给网页冒烟测试用：「菜单」按钮在窗口里的位置（窗口像素，已乘界面缩放）
@@ -793,6 +798,8 @@ func _arrive() -> void:
 	else:
 		hud.toast(Areas.display_name(area), 2.0)
 	print("IC_ARRIVE area=%s spawn=%s chapter=%d" % [area, arrived_by, GameState.chapter])
+	if GameState.chapter >= 1 and area == "frostford" and not GameState.has_flag("ch1_victor_done"):
+		show_tip("ch1_victor", true)     # 第一章开场（4.3）：维克托就在眼前
 	show_tip("save")                     # 进入新区域会自动存档：第一次走进别处时讲存档
 	if Settings.reduced_motion:
 		fade.color.a = 0.0
@@ -1103,6 +1110,8 @@ func _on_dialogue_closed() -> void:
 			"arrived":
 				hud.toast("雾里有人提着灯走下坡来……", 3.0)
 				print("IC_FERRY alban_arrived")
+	if area == "frostford" and GameState.chapter >= 1 and GameState.has_flag("ch1_victor_done"):
+		show_tip("travel_map")                              # 和维克托说完了：讲旅行地图（4.3；STORY 4.5 第 1 步的教学）
 	var pd := GameState.pending_daypart
 	GameState.pending_daypart = ""
 	if pd != "":
@@ -1182,6 +1191,8 @@ func _on_ending_closed() -> void:
 	touch.visible = touch_was_visible
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if ending_panel.next_chapter > 0:
+		hud.toast(CH1_LATER, 6.0)            # 在雾里再走走：之后去小教堂找修士还能进第一章（4.3，审查发现：不然再也进不去）
 	print("IC_ENDING closed")
 
 
@@ -1239,6 +1250,7 @@ func ensure_chapter(n: int) -> bool:
 func _place_chapter_content() -> void:
 	if GameState.chapter < 1 or area != "frostford":
 		return
+	Frostford.place_ch1(world)                      # 第一章开场的人：维克托、埃德里克（4.3；脚本和对话都在主包里，章节包没到也照样在）
 	var path := Chapters.probe_of(1)
 	var ps: PackedScene = load(path) if ResourceLoader.exists(path) else null
 	if ps == null:

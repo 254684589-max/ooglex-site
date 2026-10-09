@@ -13,13 +13,16 @@
 //        墓园 ?area=churchyard&view=1（瓦伦家墓室门前）：按 E / 点交互按钮，铁门锁着（IC_INTERACT kind=door name=瓦伦家墓室的铁门），截图；电脑再在 view=0 截一张墓园全景。
 //   3.5  桦林 ?area=birch&view=2（营火边、站在火光里）：哨卡的无旗者发现你（IC_ENEMY … state=alert / combat），截图；电脑再在 view=1 截一张走近哨卡的画面。
 //   3.6  渡口 ?area=ferry&view=4（码头根上、「灰手」奥弗面前）：按 E / 点交互按钮和奥弗说话（IC_DIALOG open id=offer），截图；电脑再在 view=2 截一张码头上的少爷和塞拉斯。
-//   3.7  渡口 ?area=ferry&ending=deliver：直接打开结束画面「第一章 · 黑鹭堡　开发中」（IC_ENDING id=prologue），截图；按回车关掉（IC_ENDING closed）。
+//   3.7  渡口 ?area=ferry&ending=deliver&preview=0：直接打开结束画面「第一章 · 黑鹭堡　开发中」（IC_ENDING id=prologue），截图；按回车关掉（IC_ENDING closed）。
+//        4.3 起第一章开放了，结束画面默认焦点在「继续」上；preview=0 看开放以前的样子（只有两个按钮，回车 = 在雾里再走走），不在这一步下载章节包。
 //   4.1  章节包：?area=ferry&ending=deliver&preview=1，结束画面多一行「继续：第一章」（IC_ENDING … next=1，焦点就在它上面）：电脑按回车、手机 / 平板点它
 //        → 下载并挂载第一章的章节包（IC_PACK id=ch1 ok=true from=download：主包里没有这一章，线上同样 gzip 传输）→ 宅邸门口的路牌（IC_CH1_SIGN），截图；
 //        再开一次同样的地址点「继续」，记下这次是 cache（用浏览器里存着的那份）还是又下载了一次（只记录，不算失败）。
 //   4.2  时段与旅行地图：上面那一步的地址多带 &map=1——进了第一章，霜渡镇是清晨（IC_DAYPART id=dawn area=frostford），
 //        旅行地图自己打开（IC_MAP open here=frostford departure=true：开场站在路牌旁边，能出发），截图 ic-*-map.png；
 //        电脑按 M、手机 / 平板点「关上地图」关掉（IC_MAP closed），再截一张清晨的宅邸门口 ic-*-chapter1.png。
+//   4.3  第一章开场：准星一开始就对着门口的维克托（IC_TARGET name=维克托），电脑按 E、手机 / 平板点交互按钮和他说话（IC_DIALOG open id=victor），
+//        截图 ic-*-victor.png；选第一个选项，对话往下走（IC_DIALOG node=news：冒烟用的 ?ending= 不写序章结局，维克托从通用的开场白说起）。
 //   3.4  霜渡镇载入时在网页里运行时烘焙导航网格（IC_NAV area=frostford ms=…），要求 1 秒以内。
 //   3.3  酒馆 ?area=tavern&brawl=1：一进门就和醉汉大桶徒手打起来（IC_BRAWL start）；电脑按 F、手机 / 平板点「攻」举拳、出拳，
 //        他走过来要几秒，每隔一会儿出一拳，直到打中他（IC_HIT target=大桶），截图。
@@ -331,9 +334,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
         await page.screenshot({ path: path.join(outDir, `ic-${name}-ferry-pier.png`) });
       }
     }
-    // 尾声（3.7）：?area=ferry&ending=deliver 直接打开结束画面，截图；按回车（焦点在「在雾里再走走」）关掉
+    // 尾声（3.7）：?area=ferry&ending=deliver&preview=0 直接打开结束画面（第一章开放以前的样子），截图；按回车（焦点在「在雾里再走走」）关掉
     logs.length = 0;
-    await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=ferry&ending=deliver');
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=ferry&ending=deliver&preview=0');
     let eOpen = '', eClose = '';
     if ((eOpen = await waitLog(logs, 'IC_ENDING id=prologue', 240))) {
       await page.waitForTimeout(2200);
@@ -342,7 +345,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
       eClose = await waitLog(logs, 'IC_ENDING closed', 12);
     }
     // 章节包（4.1）
-    let cNext = '', cPack = '', cSign = '', cAgain = '', dDawn = '', mOpen = '', mClose = '';
+    let cNext = '', cPack = '', cSign = '', cAgain = '', dDawn = '', mOpen = '', mClose = '', vTalk = '', vNext = '';
     for (let round = 0; round < 2; round++) {
       logs.length = 0;
       await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=ferry&ending=deliver&preview=1' + (round === 0 ? '&map=1' : ''));
@@ -379,6 +382,33 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
         }
         await page.waitForTimeout(1500);
         await page.screenshot({ path: path.join(outDir, `ic-${name}-chapter1.png`) });
+        // 第一章开场（4.3）：和门口的维克托说话
+        if (await waitLog(logs, 'IC_TARGET name=维克托', 240)) {
+          if (!mobile) {
+            await page.keyboard.press('e');
+          } else {
+            const us = await waitLog(logs, 'IC_USE_SCREEN', 12);
+            if (us) {
+              const [, ux, uy] = us.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+              await page.touchscreen.tap(ux / dpr, uy / dpr);
+            }
+          }
+          vTalk = await waitLog(logs, 'IC_DIALOG open id=victor', 120);
+          if (vTalk) {
+            await page.waitForTimeout(1200);
+            await page.screenshot({ path: path.join(outDir, `ic-${name}-victor.png`) });
+            if (!mobile) {
+              await page.keyboard.press('1');
+            } else {
+              const ol = logs.filter(l => l.startsWith('IC_DIALOG_OPT')).pop();
+              if (ol) {
+                const [, ox, oy] = ol.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+                await page.touchscreen.tap(ox / dpr, oy / dpr);
+              }
+            }
+            vNext = await waitLog(logs, 'IC_DIALOG node=news', 120);
+          }
+        }
       } else {
         cAgain = pk ? (pk.match(/from=(\w+)/) || [, '?'])[1] : '没测到';
       }
@@ -653,9 +683,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!opCard && !!opBegin && !!opCall && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!bStart && !!bHit && !!wReady && !!wSpot && !!aStart && !!aFall && !!aOrder && !!fTalk && !!eOpen && !!eClose && !!cNext && !!cPack && !!cSign && !!dDawn && !!mOpen && !!mClose && navMs >= 0 && navMs < 1000 && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!opCard && !!opBegin && !!opCall && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!bStart && !!bHit && !!wReady && !!wSpot && !!aStart && !!aFall && !!aOrder && !!fTalk && !!eOpen && !!eClose && !!cNext && !!cPack && !!cSign && !!dDawn && !!mOpen && !!mClose && !!vTalk && !!vNext && navMs >= 0 && navMs < 1000 && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 开场：${opCard ? '标题卡' : '没有标题卡'} / ${opBegin ? '钟声' : '没开始'} / ${opCall ? '管家喊人' : '没喊'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 打架：${bStart ? '开打' : '没开打'} / ${bHit ? '打中大桶' : '没打中'} | 桦林：${wReady ? '进得去' : '没打开'} / ${wSpot ? '被哨卡发现' : '没被发现'} | 军阵：${aStart ? '开打' : '没开打'} / ${aFall ? '有人倒下或求饶' : '没分出人'} / ${aOrder ? '小队跟随' : '命令没下成'} | 渡口：${fTalk ? '和奥弗说上话' : '没说上话'} | 尾声：${eOpen ? '结束画面' : '没打开'} / ${eClose ? '关得掉' : '没关掉'} | 章节包：${cNext ? '有「继续」' : '没有「继续」'} / ${cPack ? '下载并挂载' : '没下载成'} / ${cSign ? '路牌' : '没路牌'} / 再进一次 ${cAgain || '—'} | 时段与地图：${dDawn ? '清晨' : '不是清晨'} / ${mOpen ? '地图打开（能出发）' : '地图没打开'} / ${mClose ? '关得掉' : '没关掉'} | 导航：${navLine ? `霜渡镇烘焙 ${navMs} 毫秒` : '没烘焙'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 开场：${opCard ? '标题卡' : '没有标题卡'} / ${opBegin ? '钟声' : '没开始'} / ${opCall ? '管家喊人' : '没喊'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 打架：${bStart ? '开打' : '没开打'} / ${bHit ? '打中大桶' : '没打中'} | 桦林：${wReady ? '进得去' : '没打开'} / ${wSpot ? '被哨卡发现' : '没被发现'} | 军阵：${aStart ? '开打' : '没开打'} / ${aFall ? '有人倒下或求饶' : '没分出人'} / ${aOrder ? '小队跟随' : '命令没下成'} | 渡口：${fTalk ? '和奥弗说上话' : '没说上话'} | 尾声：${eOpen ? '结束画面' : '没打开'} / ${eClose ? '关得掉' : '没关掉'} | 章节包：${cNext ? '有「继续」' : '没有「继续」'} / ${cPack ? '下载并挂载' : '没下载成'} / ${cSign ? '路牌' : '没路牌'} / 再进一次 ${cAgain || '—'} | 时段与地图：${dDawn ? '清晨' : '不是清晨'} / ${mOpen ? '地图打开（能出发）' : '地图没打开'} / ${mClose ? '关得掉' : '没关掉'} | 第一章开场：${vTalk ? '和维克托说上话' : '没说上话'} / ${vNext ? '对话往下走' : '选项没生效'} | 导航：${navLine ? `霜渡镇烘焙 ${navMs} 毫秒` : '没烘焙'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

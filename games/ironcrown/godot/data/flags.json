@@ -31,5 +31,11 @@
   "alban_saw_letter": {"desc": "把少爷的信给奥尔本修士看过", "set_in": "chapel.json alban/letter", "read_in": "chapel.json alban（不再重复给他看）；3.7 尾声修士交书时可以读"},
   "opening_done": {"desc": "开场（钟声、管家叫住）已经播过，读档和换区域不再播", "set_in": "scenes/opening.gd（代码，管家喊人的时候）", "read_in": "scenes/opening.gd Opening.wanted()"},
   "ch1_started": {"desc": "进了第一章「黑鹭堡」（序章结束画面点「继续：第一章」，4.1）", "set_in": "scenes/main.gd start_chapter()（代码）", "read_in": "第一章（4.3 起：霜渡镇清晨的开场）"},
+  "ch1_victor_done": {"desc": "第一章开场和维克托把话说完了（拿到引荐信，或者被赶出门；4.3）", "set_in": "frostford.json victor/letter、dismiss、lie_caught、truth、extort_told", "read_in": "frostford.json victor / steward start_if；scenes/main.gd（讲旅行地图的教学提示）"},
+  "ch1_letter": {"desc": "维克托写了引荐信（交出；放走时撒谎成功；勒索时埃德里克没说出去）（4.3）", "set_in": "frostford.json victor/letter", "read_in": "frostford.json victor start_if；4.5 进黑鹭堡（有引荐信走堡门）"},
+  "victor_lie": {"desc": "放走：维克托问少爷去哪了——lied_ok 撒谎成功 / lied_caught 被识破 / told_truth 说了实话（4.3）", "set_in": "frostford.json victor/lie_ok、lie_caught、truth", "read_in": "第一章以后（维克托的态度）"},
+  "edric_quiet": {"desc": "勒索：埃德里克说没说出去——kept 闭嘴了（口才说服或给钱）/ told 当着维克托说了（4.3）", "set_in": "frostford.json edric_ch1/quiet_ok、paid，victor/extort_told", "read_in": "frostford.json victor / edric_ch1 start_if"},
+  "edric_quiet_refused": {"desc": "勒索：口才没说动埃德里克（不能再试，只剩给钱）（4.3）", "set_in": "frostford.json edric_ch1/quiet_fail", "read_in": "frostford.json edric_ch1 start_if"},
+  "ch1_debt": {"desc": "借据的下落：with_edric 跟埃德里克走了（放走）；之后的 given_osric / sold / given_heir / kept 在 4.4–4.10 定（交出、勒索时借据还在你身上，先不设）", "set_in": "frostford.json victor/lie_ok、lie_caught、truth", "read_in": "4.4 吉尔伯特、4.10 家主临终"},
   "ch1_intro": {"desc": "刚进第一章时报过章节名（只报一次，4.1）", "set_in": "scenes/main.gd _arrive()（代码）", "read_in": "scenes/main.gd _arrive()"}
 }

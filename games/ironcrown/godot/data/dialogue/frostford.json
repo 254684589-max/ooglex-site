@@ -283,9 +283,26 @@
             "end": true
           }
         ]
+      },
+      "dawn": {
+        "text": "（更夫打着哈欠，把灯笼吹灭了）天亮了，我这就换班回去睡。……夜里的事，我什么也没看见。",
+        "options": [
+          {
+            "text": "辛苦了。",
+            "end": true
+          }
+        ]
       }
     },
     "start_if": [
+      {
+        "if": [
+          {
+            "flag": "ch1_started"
+          }
+        ],
+        "node": "dawn"
+      },
       {
         "if": [
           {
@@ -300,6 +317,25 @@
     "speaker": "管家",
     "start": "greet",
     "start_if": [
+      {
+        "if": [
+          {
+            "flag": "ch1_started"
+          },
+          {
+            "flag": "ch1_victor_done"
+          }
+        ],
+        "node": "ch1_after"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch1_started"
+          }
+        ],
+        "node": "ch1"
+      },
       {
         "if": [
           {
@@ -412,6 +448,24 @@
             "end": true
           }
         ]
+      },
+      "ch1": {
+        "text": "老爷天没亮就在门口等你了。有什么话，跟他说吧。",
+        "options": [
+          {
+            "text": "知道了。",
+            "end": true
+          }
+        ]
+      },
+      "ch1_after": {
+        "text": "路上小心。黑鹭堡的人说话都留着三分，你别全信。",
+        "options": [
+          {
+            "text": "多谢。",
+            "end": true
+          }
+        ]
       }
     }
   },
@@ -426,6 +480,25 @@
           }
         ],
         "node": "after"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch1_started"
+          },
+          {
+            "quest_active": "hob_debt"
+          }
+        ],
+        "node": "dawn_hungry"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch1_started"
+          }
+        ],
+        "node": "dawn"
       }
     ],
     "nodes": {
@@ -477,6 +550,583 @@
         "options": [
           {
             "text": "保重。",
+            "end": true
+          }
+        ]
+      },
+      "dawn": {
+        "text": "（老霍布缩在酒馆门口睡着了，睡得正香。）",
+        "options": [
+          {
+            "text": "（不吵醒他）",
+            "end": true
+          }
+        ]
+      },
+      "dawn_hungry": {
+        "text": "（老霍布缩在酒馆门口，听见脚步声睁开一只眼）……誓剑大人？有吃的吗？饿了一宿了。",
+        "options": [
+          {
+            "text": "（把面包递给他）给你。",
+            "if": [
+              {
+                "has_item": "bread"
+              }
+            ],
+            "next": "fed_dawn"
+          },
+          {
+            "text": "我身上没吃的，回头再说。",
+            "end": true
+          }
+        ]
+      },
+      "fed_dawn": {
+        "text": "（他三两口把面包吞了下去）……好人有好报，誓剑大人。路上小心。",
+        "do": [
+          {
+            "take_item": "bread"
+          },
+          {
+            "quest_done": "hob_debt"
+          }
+        ],
+        "options": [
+          {
+            "text": "保重。",
+            "end": true
+          }
+        ]
+      }
+    }
+  },
+  "victor": {
+    "speaker": "维克托",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "ch1_victor_done"
+          },
+          {
+            "flag": "ch1_letter"
+          }
+        ],
+        "node": "after_letter"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch1_victor_done"
+          }
+        ],
+        "node": "after_cold"
+      },
+      {
+        "if": [
+          {
+            "flag": "victor_lie",
+            "eq": "lied_ok"
+          }
+        ],
+        "node": "news"
+      },
+      {
+        "if": [
+          {
+            "flag": "prologue_edric",
+            "eq": "deliver"
+          }
+        ],
+        "node": "deliver_greet"
+      },
+      {
+        "if": [
+          {
+            "flag": "prologue_edric",
+            "eq": "release"
+          }
+        ],
+        "node": "release_greet"
+      },
+      {
+        "if": [
+          {
+            "flag": "prologue_edric",
+            "eq": "extort"
+          }
+        ],
+        "node": "extort_greet"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（维克托·瓦伦披着斗篷站在宅邸门口，眼睛熬得通红）天亮了。你来得正好。",
+        "options": [
+          {
+            "text": "老爷有什么吩咐？",
+            "next": "news"
+          }
+        ]
+      },
+      "deliver_greet": {
+        "text": "（维克托·瓦伦站在宅邸门口，眼睛熬得通红）你把他带回来了。这份情，我记着。",
+        "options": [
+          {
+            "text": "少爷还好吗？",
+            "next": "deliver_edric"
+          },
+          {
+            "text": "这是我该做的。",
+            "next": "news"
+          }
+        ]
+      },
+      "deliver_edric": {
+        "text": "（他朝门边扬了扬下巴）一早上一句话也不跟我说。随他去吧——过不了几天，他就要去黑鹭堡定亲了。",
+        "options": [
+          {
+            "text": "……",
+            "next": "news"
+          }
+        ]
+      },
+      "release_greet": {
+        "text": "（维克托·瓦伦站在宅邸门口，眼睛熬得通红）埃德里克呢？管家说你天亮前是一个人回来的。",
+        "options": [
+          {
+            "text": "我追到渡口的时候，船已经开了。他是自己走的。",
+            "check": {
+              "id": "victor_lie_speech",
+              "skill": "speech",
+              "dc": 14,
+              "pass": "lie_ok",
+              "fail": "lie_caught"
+            }
+          },
+          {
+            "text": "我放他走了。他不想被拿去换粮食和名分。",
+            "next": "truth"
+          }
+        ]
+      },
+      "lie_ok": {
+        "text": "（他盯着你看了很久，长长地叹了一口气）……这孩子。他娘走的时候也是这样，一声不吭。",
+        "do": [
+          {
+            "set": "victor_lie",
+            "value": "lied_ok"
+          },
+          {
+            "set": "ch1_debt",
+            "value": "with_edric"
+          }
+        ],
+        "options": [
+          {
+            "text": "老爷节哀。",
+            "next": "news"
+          }
+        ]
+      },
+      "lie_caught": {
+        "text": "你在撒谎。渡工天没亮就来报信了——是你看着他上的船。",
+        "do": [
+          {
+            "set": "victor_lie",
+            "value": "lied_caught"
+          },
+          {
+            "set": "ch1_debt",
+            "value": "with_edric"
+          },
+          {
+            "rep": "valen",
+            "delta": -15
+          },
+          {
+            "set": "ch1_victor_done"
+          },
+          {
+            "quest": "ch1_main"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "dismiss"
+          }
+        ]
+      },
+      "truth": {
+        "text": "（他一拳砸在门框上）你知道他带走的是什么吗？那张借据，够把瓦伦家的半个北境卖掉。",
+        "do": [
+          {
+            "set": "victor_lie",
+            "value": "told_truth"
+          },
+          {
+            "set": "ch1_debt",
+            "value": "with_edric"
+          },
+          {
+            "rep": "valen",
+            "delta": -10
+          },
+          {
+            "set": "ch1_victor_done"
+          },
+          {
+            "quest": "ch1_main"
+          }
+        ],
+        "options": [
+          {
+            "text": "他是你儿子，不是一张借据。",
+            "next": "dismiss"
+          }
+        ]
+      },
+      "extort_greet": {
+        "text": "（埃德里克抱着胳膊站在门边，一直盯着你）维克托：你回来了。他说他是自己走回来的——一个人，在雾里。",
+        "options": [
+          {
+            "text": "少爷平安就好。",
+            "if": [
+              {
+                "flag": "edric_quiet",
+                "eq": "kept"
+              }
+            ],
+            "next": "news"
+          },
+          {
+            "text": "少爷平安就好。",
+            "if": [
+              {
+                "not_flag": "edric_quiet"
+              }
+            ],
+            "next": "extort_told"
+          },
+          {
+            "text": "（瞥了一眼门边的埃德里克）老爷稍等，我先跟少爷说句话。",
+            "if": [
+              {
+                "not_flag": "edric_quiet"
+              }
+            ],
+            "end": true
+          },
+          {
+            "text": "……",
+            "if": [
+              {
+                "flag": "edric_quiet",
+                "eq": "told"
+              }
+            ],
+            "next": "dismiss"
+          }
+        ]
+      },
+      "extort_told": {
+        "text": "埃德里克：父亲，借据在他手里——那是我从家里偷出去的。他扣下了它，还收了南方人一百二十枚银币。（维克托的脸一下子白了）",
+        "do": [
+          {
+            "set": "edric_quiet",
+            "value": "told"
+          },
+          {
+            "rep": "valen",
+            "delta": -30
+          },
+          {
+            "set": "ch1_victor_done"
+          },
+          {
+            "quest": "ch1_main"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "dismiss"
+          }
+        ]
+      },
+      "dismiss": {
+        "text": "你走吧。从今天起，你不再是霜渡镇的誓剑。（他压低声音）家主快不行了，黑鹭堡正乱着——这种时候，瓦伦家用不着一个靠不住的人。",
+        "do": [
+          {
+            "set": "ch1_victor_done"
+          },
+          {
+            "quest": "ch1_main"
+          }
+        ],
+        "options": [
+          {
+            "text": "（转身离开）",
+            "end": true
+          }
+        ]
+      },
+      "news": {
+        "text": "天亮前黑鹭堡来了信使：家主奥斯瑞克快不行了。阿尔里克和他妹妹都守在堡里，谁也不让谁。",
+        "options": [
+          {
+            "text": "要我做什么？",
+            "next": "letter"
+          }
+        ]
+      },
+      "letter": {
+        "text": "我写了一封信给黑鹭堡的堡守赫尔曼，盖着霜渡镇的印。你带着它，替我去黑鹭堡看着——家主最后要说什么、交给谁，我得知道。",
+        "do": [
+          {
+            "set": "ch1_letter"
+          },
+          {
+            "give_item": "intro_letter"
+          },
+          {
+            "set": "ch1_victor_done"
+          },
+          {
+            "quest": "ch1_main"
+          }
+        ],
+        "options": [
+          {
+            "text": "借据呢？",
+            "if": [
+              {
+                "flag": "prologue_edric",
+                "eq": "deliver"
+              },
+              {
+                "has_item": "debt_note"
+              }
+            ],
+            "locked": "hide",
+            "next": "letter_debt"
+          },
+          {
+            "text": "我这就动身。",
+            "next": "go"
+          }
+        ]
+      },
+      "letter_debt": {
+        "text": "你收着。亲手交给家主，别经第三个人的手——尤其别让堡里那兄妹俩的人看见。",
+        "options": [
+          {
+            "text": "明白。",
+            "next": "go"
+          }
+        ]
+      },
+      "go": {
+        "text": "出了门，路牌那边就是去鹭沼的路。先到芦栈村，再走堤道进堡。",
+        "options": [
+          {
+            "text": "（告辞）",
+            "end": true
+          }
+        ]
+      },
+      "after_letter": {
+        "text": "还没走？路牌那边就是去鹭沼的路。",
+        "options": [
+          {
+            "text": "这就走。",
+            "end": true
+          }
+        ]
+      },
+      "after_cold": {
+        "text": "（维克托转过身去，不再看你）",
+        "options": [
+          {
+            "text": "（离开）",
+            "end": true
+          }
+        ]
+      }
+    }
+  },
+  "edric_ch1": {
+    "speaker": "埃德里克",
+    "start": "extort_greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "prologue_edric",
+            "eq": "deliver"
+          }
+        ],
+        "node": "sulk"
+      },
+      {
+        "if": [
+          {
+            "flag": "edric_quiet",
+            "eq": "told"
+          }
+        ],
+        "node": "told_after"
+      },
+      {
+        "if": [
+          {
+            "flag": "edric_quiet",
+            "eq": "kept"
+          }
+        ],
+        "node": "kept_after"
+      },
+      {
+        "if": [
+          {
+            "flag": "edric_quiet_refused"
+          }
+        ],
+        "node": "refused_again"
+      }
+    ],
+    "nodes": {
+      "sulk": {
+        "text": "（埃德里克别过脸去，一句话也不说）",
+        "options": [
+          {
+            "text": "过不了几天，你就要在黑鹭堡和塞弗林家定亲了。",
+            "next": "sulk2"
+          },
+          {
+            "text": "（不打扰他）",
+            "end": true
+          }
+        ]
+      },
+      "sulk2": {
+        "text": "……你满意了？",
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "extort_greet": {
+        "text": "你倒睡得着。借据在你怀里，南方人的银币在你钱袋里——父亲要是知道了，会怎么想？",
+        "options": [
+          {
+            "text": "偷借据的是你。要说，我们一起说。",
+            "check": {
+              "id": "edric_quiet_speech",
+              "skill": "speech",
+              "dc": 13,
+              "pass": "quiet_ok",
+              "fail": "quiet_fail"
+            }
+          },
+          {
+            "text": "（塞给他 40 枚银币）拿着，就当什么都没发生。",
+            "if": [
+              {
+                "silver": 40
+              }
+            ],
+            "next": "paid"
+          },
+          {
+            "text": "随你。",
+            "end": true
+          }
+        ]
+      },
+      "quiet_ok": {
+        "text": "（他咬着嘴唇，半天才开口）……好。这件事，我们谁也不提。",
+        "do": [
+          {
+            "set": "edric_quiet",
+            "value": "kept"
+          }
+        ],
+        "options": [
+          {
+            "text": "一言为定。",
+            "end": true
+          }
+        ]
+      },
+      "quiet_fail": {
+        "text": "你吓不住我。等着吧。",
+        "do": [
+          {
+            "set": "edric_quiet_refused"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "paid": {
+        "text": "（他把钱袋掂了掂，塞进怀里）……我什么都没看见。",
+        "do": [
+          {
+            "pay": 40
+          },
+          {
+            "set": "edric_quiet",
+            "value": "kept"
+          }
+        ],
+        "options": [
+          {
+            "text": "很好。",
+            "end": true
+          }
+        ]
+      },
+      "refused_again": {
+        "text": "还有什么好说的？",
+        "options": [
+          {
+            "text": "（塞给他 40 枚银币）拿着，就当什么都没发生。",
+            "if": [
+              {
+                "silver": 40
+              }
+            ],
+            "next": "paid"
+          },
+          {
+            "text": "随你。",
+            "end": true
+          }
+        ]
+      },
+      "kept_after": {
+        "text": "（他看都不看你）",
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "told_after": {
+        "text": "现在大家都知道了。你满意了？",
+        "options": [
+          {
+            "text": "……",
             "end": true
           }
         ]

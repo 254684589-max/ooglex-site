@@ -14,6 +14,15 @@
         "after_choice": {"objective": "雾里有人提着灯走下坡来——是奥尔本修士"}
       }
     },
+    "ch1_main": {
+      "title": "黑鹭之争",
+      "kind": "main",
+      "summary": "瓦伦家主奥斯瑞克病重，长子阿尔里克和他妹妹都守在黑鹭堡，谁也不让谁。修士的旧书还在你身上：去黑鹭堡。",
+      "first": "to_reedwharf",
+      "stages": {
+        "to_reedwharf": {"objective": "从宅邸门口的路牌出发，去鹭沼边上的芦栈村（对准路牌打开旅行地图）"}
+      }
+    },
     "hob_debt": {
       "title": "醉汉的赌债",
       "kind": "side",

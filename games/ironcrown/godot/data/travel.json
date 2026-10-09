@@ -4,9 +4,9 @@
     "frostford": {"name": "霜渡镇", "area": "frostford", "spawn": "manor", "chapter": 1, "pos": [0.8, 0.5], "icon": "town",
       "blurb": "灰鲸河上游的渡口小镇，霜渡镇领主维克托·瓦伦的地方。", "depart_at": "宅邸门口的路牌"},
     "reedwharf": {"name": "芦栈村", "area": "", "spawn": "", "chapter": 1, "pos": [0.46, 0.6], "icon": "village",
-      "blurb": "鹭沼边上的高脚屋村子，木栈道连着一栋栋高脚屋；客栈是村里最大的一栋。", "depart_at": "村口", "pending": "芦栈村还没做好（路线图 4.4）"},
+      "blurb": "鹭沼边上的高脚屋村子，木栈道连着一栋栋高脚屋；客栈是村里最大的一栋。", "depart_at": "村口", "pending": "芦栈村还在开发中，现在还去不了。"},
     "blackheron": {"name": "黑鹭堡", "area": "", "spawn": "", "chapter": 1, "pos": [0.29, 0.4], "icon": "castle",
-      "blurb": "沼中石岛上的城堡，瓦伦家本家。只有芦栈村那头一条石砌堤道通进去。", "depart_at": "堡门", "pending": "黑鹭堡还没做好（路线图 4.5）"}
+      "blurb": "沼中石岛上的城堡，瓦伦家本家。只有芦栈村那头一条石砌堤道通进去。", "depart_at": "堡门", "pending": "黑鹭堡还在开发中，现在还去不了。"}
   },
   "routes": [
     {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},
