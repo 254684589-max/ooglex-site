@@ -66,6 +66,9 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_bounds(parent)
 	_lamps(parent, reduced_motion)
 	_fog(parent, reduced_motion)
+	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), [      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
+		{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}],
+		[Rect2(-400.0, SHORE_Z - 0.6, 800.0, 400.0)], 3611)                          # 南边是河：不种树、不铺雪
 	var exit := Door.make("回桦林的路", 1.9, 2.0, false)
 	exit.verb = "回到"
 	exit.to_area = "birch"

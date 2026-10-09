@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -4804,7 +4804,7 @@ func test_daypart() -> void:
 	GameState.daypart = "day"
 	main = await make_area("ferry")
 	nl = main.get_tree().get_nodes_in_group("night_light")
-	check(nl.size() == 4 and nl.all(func(l): return not l.visible and not l.is_in_group("light_source")), "渡口的白天：4 盏风灯灭了，不算光源")
+	check(nl.size() == 5 and nl.filter(func(l): return l is OmniLight3D).size() == 4 and nl.all(func(l): return not l.visible and not l.is_in_group("light_source")), "渡口的白天：4 盏风灯和北头路口的灯笼（3.10）都灭了，不算光源")
 	await main.set_daypart("dusk", false)
 	check(main.get_tree().get_nodes_in_group("light_source").size() >= 2 and nl.all(func(l): return l.visible), "黄昏点上：码头的两盏又算光源了")
 	await free_main(main)
@@ -5177,4 +5177,103 @@ func test_ch1open() -> void:
 	main = await make_area("birch")
 	check(main.hud.hint_label.text != Birch.TEACH_DESKTOP, "桦林：第一章不再弹「前面有火光，是无旗者的哨卡」")
 	await free_main(main)
+	GameState.new_game()
+
+
+## 区域边缘（路线图 3.10；所有者 2026-10-09 定「A + B」的 A）：四个户外区域走得到的范围外面有地、有林子，出口的路伸出去、不种树，
+## 边界外的树没有碰撞（多出来的只是画面），新做的路口有门柱、地名、栅栏、灯笼，灯笼白天灭；搭场景不变慢
+func test_edges() -> void:
+	var spec := {
+		# 区域矩形、出口外的路（起点、往外的方向）
+		"frostford": [Rect2(-15.5, -59.0, 31.0, 70.5), [[Vector3(0, 0, 13.0), Vector3.BACK], [Vector3(17.0, 0, Frostford.LANE_Z), Vector3.RIGHT]]],
+		"churchyard": [Rect2(-13.0, -19.0, 26.0, 30.0), [[Vector3(0, 0, 13.0), Vector3.BACK]]],
+		"birch": [Rect2(-18.0, -36.0, 36.0, 72.0), [[Vector3(0, 0, -38.0), Vector3.FORWARD], [Vector3(0, 0, 38.0), Vector3.BACK]]],
+		"ferry": [Rect2(-16.0, -30.0, 32.0, 30.0), [[Vector3(0, 0, -32.0), Vector3.FORWARD]]],
+	}
+	for a in spec:
+		GameState.new_game(70)
+		var t0 := Time.get_ticks_msec()
+		var main := await make_area(a)
+		var ms := Time.get_ticks_msec() - t0
+		var edge := main.world.get_node_or_null("Edges") as MeshInstance3D
+		var trees := int(edge.get_meta("trees", 0)) if edge else 0
+		var aabb := edge.get_aabb() if edge else AABB()
+		var rect: Rect2 = spec[a][0]
+		var tris := 0
+		var mms: Array = main.world.find_children("EdgeTrees*", "MultiMeshInstance3D", true, false)
+		var models := {}
+		var widest := 0.0                                  # 一块里的树最远隔多远（米）：块够小，引擎才能按视野、影子范围整块裁掉
+		for n in mms:
+			var mm := (n as MultiMeshInstance3D).multimesh
+			models[mm.mesh] = true
+			for si in mm.mesh.get_surface_count():
+				tris += mm.mesh.surface_get_array_len(si) / 3 * mm.instance_count
+			var lo := Vector2(INF, INF)
+			var hi := Vector2(-INF, -INF)
+			for o: Vector3 in n.get_meta("spots", PackedVector3Array()):    # 无界面时读不回多实例的变换，用 Edges 另记的位置
+				lo = lo.min(Vector2(o.x, o.z))
+				hi = hi.max(Vector2(o.x, o.z))
+			widest = maxf(widest, maxf(hi.x - lo.x, hi.y - lo.y) / (2.0 if bool(n.get_meta("far", false)) else 1.0))
+		var holder := Node3D.new()
+		add_child(holder)
+		var t1 := Time.get_ticks_usec()
+		Edges.dress(holder, rect, [], [], 1)
+		var dress_ms := (Time.get_ticks_usec() - t1) / 1000.0
+		holder.free()
+		check(edge != null and trees >= 150 and models.size() == 3 and aabb.position.x < rect.position.x - 40.0 and aabb.end.x > rect.end.x + 40.0 and tris < 120000 and dress_ms < 60.0, "%s：边界外两圈白桦（%d 棵、%d 个三角面，三种树的模型多实例），地面一直铺到 40 米外（收边 %.1f 毫秒，搭整个区域 %d 毫秒）" % [Areas.display_name(a), trees, tris, dress_ms, ms])
+		check(mms.size() >= 4 and widest <= Edges.CHUNK, "%s：树按块分成 %d 个多实例节点（一块最宽 %.1f 米，不超过 %d 米；远圈的块大一倍），看不见的块整块不画" % [Areas.display_name(a), mms.size(), widest, int(Edges.CHUNK)])
+		# 出口外的路上没有树：查每棵树的位置，离路中线（出口往外 30 米）1.5 米以内的不能有
+		var clear := true
+		var placed := 0
+		for n in mms:
+			var spots: PackedVector3Array = n.get_meta("spots", PackedVector3Array())
+			placed += spots.size()
+			for o in spots:
+				for road in spec[a][1]:
+					var d: Vector3 = o - road[0]
+					var along := d.dot(road[1])
+					if along > 0.0 and along < Edges.ROAD_LEN and (d - road[1] * along).length() < 1.5:
+						clear = false
+		check(clear and placed == trees, "%s：出口外的路中间没有树（路伸进林子里；查了 %d 棵树的位置）" % [Areas.display_name(a), placed])
+		# 边界外的树没有碰撞：从区域里看，走不出去的围墙照旧，没多出一堆树的碰撞体
+		var bodies: Array = main.world.find_children("*", "StaticBody3D", true, false).filter(func(b): return not rect.grow(0.6).has_point(Vector2(b.global_position.x, b.global_position.z)) and (a != "ferry" or b.global_position.z < Ferry.SHORE_Z - 0.6))     # 渡口的码头本来就伸进河里
+		check(bodies.size() <= 2, "%s：边界外的树不加碰撞（边界外的碰撞体 %d 个）" % [Areas.display_name(a), bodies.size()])
+		await free_main(main)
+	# 画多少树：夜里、黄昏雾近，远圈不画；清晨、白天画；低画质近圈只画六成、远圈不画
+	GameState.new_game(73)
+	var m3 := await make_area("birch")
+	var fars: Array = m3.world.find_children("EdgeTreesFar_*", "MultiMeshInstance3D", true, false)
+	var nears: Array = m3.world.find_children("EdgeTrees_*", "MultiMeshInstance3D", true, false)
+	var shown := func(list: Array) -> int: return list.filter(func(n): return (n as Node3D).visible).size()
+	var drawn := func() -> Array:                      # 近圈实际画几棵 / 一共几棵
+		var d := 0
+		var all := 0
+		for n in nears:
+			var mm := (n as MultiMeshInstance3D).multimesh
+			all += mm.instance_count
+			d += mm.instance_count if mm.visible_instance_count < 0 else mm.visible_instance_count
+		return [d, all]
+	var night_far: int = shown.call(fars)
+	await m3.set_daypart("day", false)
+	var day_far: int = shown.call(fars)
+	m3.apply_quality("low")
+	var low_far: int = shown.call(fars)
+	var low_near: Array = drawn.call()
+	m3.apply_quality("medium")
+	var med_near: Array = drawn.call()
+	check(fars.size() > 0 and night_far == 0 and day_far == fars.size() and low_far == 0 and absf(float(low_near[0]) / low_near[1] - Edges.LOW_SHARE) < 0.05 and med_near[0] == med_near[1] and shown.call(fars) == fars.size(), "画多少树：夜里远圈不画（雾吞没了），白天画；低画质近圈只画六成（%d / %d）、远圈不画" % [low_near[0], low_near[1]])
+	await free_main(m3)
+	# 渡口北头：原来只有一块门板，现在有门柱、地名牌「桦林」、栅栏、灯笼；白天灯笼灭
+	GameState.new_game(71)
+	var m2 := await make_area("ferry")
+	var label_ok: bool = m2.world.find_children("*", "Label3D", true, false).any(func(l): return (l as Label3D).text == "桦林" and absf(l.global_position.z - (Ferry.NORTH + 0.6)) < 0.3)
+	var lanterns: Array = m2.world.find_children("GateLantern", "Node3D", true, false)
+	check(label_ok and lanterns.size() == 1 and (lanterns[0] as Node3D).visible, "渡口北头的路口：门柱上写着「桦林」，挂着一盏夜里亮的灯笼")
+	await m2.set_daypart("day", false)
+	check(not (lanterns[0] as Node3D).visible, "白天：路口的灯笼灭了")
+	await free_main(m2)
+	GameState.new_game(72)
+	m2 = await make_main(false)
+	check(m2.world.find_children("GateLantern", "Node3D", true, false).size() == 1 and m2.find_children("*", "OmniLight3D", true, false).size() <= 4, "霜渡镇南门也挂了灯笼（假光，不多占实时光源：仍不超过 4 盏）")
+	await free_main(m2)
 	GameState.new_game()

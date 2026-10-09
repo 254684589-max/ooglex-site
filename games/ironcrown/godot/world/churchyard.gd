@@ -51,6 +51,8 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		"door": {"name": "守墓人的小屋", "text": "门从里面闩上了。守墓人就站在门外，用不着进去。"}})
 	BareTree.build(parent, Vector3(-5.2, 0, 6.6), 51, 5.5)
 	BareTree.build(parent, Vector3(10.6, 0, -11.0), 52, 6.5)
+	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), [         # 墙外是林子，院门外的小路伸回镇上（3.10）
+		{"at": Vector3(0, 0, SOUTH), "out": Vector3(0, 0, 1), "half": 1.1}], [], 3612)
 	# 院门：回到主街（站在小路门外）
 	var gate := Door.make("霜渡镇主街", 1.4, 1.9, false)
 	gate.verb = "回到"

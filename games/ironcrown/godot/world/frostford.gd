@@ -107,6 +107,9 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		lamp.flicker = not reduced_motion
 		parent.add_child(lamp)
 	_fog(parent, reduced_motion)
+	Edges.dress(parent, Rect2(-15.5, -59.0, 31.0, 70.5), [                          # 镇子外面是白桦林；南门外的路伸进林子，南门两边一段栅栏、一盏灯笼（3.10）
+		{"at": Vector3(0, 0, SOUTH_GATE_Z), "out": Vector3(0, 0, 1), "half": 1.6, "fence": true, "lantern": true},
+		{"at": Vector3(15.5, 0, LANE_Z), "out": Vector3(1, 0, 0), "half": 0.8}], [], 3613)   # 去墓园的小路也伸出去
 	_bounds(parent)
 	# 1.3 的交互物：更夫、木箱上的面包（锁着的门在房子里）
 	var watch := Npc.make("更夫", WATCH_LINES, Color("3e4a3a"))

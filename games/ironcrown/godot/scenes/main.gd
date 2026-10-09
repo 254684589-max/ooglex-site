@@ -174,6 +174,12 @@ func _ready() -> void:
 	var view := _query("view")
 	if view.is_valid_int() and int(view) >= 0 and int(view) < Areas.views(area).size():
 		set_view(int(view))
+	var cam := _query("cam").split(",")           # 截图用（3.10）：?cam=x,y,z,朝向,俯仰（度）把镜头放到任意位置，检查出口和区域边界
+	if cam.size() == 5 and Array(cam).all(func(c): return str(c).is_valid_float()):
+		player.global_position = Vector3(float(cam[0]), float(cam[1]), float(cam[2]))
+		player.rotation.y = deg_to_rad(float(cam[3]))
+		player.pitch = float(cam[4])
+		player.head.rotation.x = deg_to_rad(float(cam[4]))
 	if not pending.is_empty():
 		if pending.has("spawn"):              # 从门走进来：站到那扇门对应的出生点
 			arrived_by = str(pending.spawn)
@@ -369,6 +375,13 @@ func apply_quality(tier: String) -> void:
 	Look.set_anisotropic(tier != "low")
 	for f in get_tree().get_nodes_in_group("fog_band"):
 		f.visible = tier != "low" or int(f.get_meta("fog_index", 0)) % 2 == 0
+	_refresh_edges()
+
+
+## 区域边上的树画多少（3.10）：看画质和当前时段的雾有多远
+func _refresh_edges() -> void:
+	var fog_end := float(Daypart.PRESETS[daypart].fog_end) if Daypart.affects(area) else 0.0
+	Edges.refresh(get_tree(), quality == "low", fog_end)
 
 
 ## 性能统计（TECH.md 第五节）：在当前机位连续采样 seconds 秒：平均帧率、最慢一帧、绘制调用、图元、可见物体
@@ -1363,6 +1376,7 @@ func set_daypart(id: String, announce := true) -> void:
 			await tw.finished
 		daypart = eff
 		Daypart.apply(self, daypart)
+		_refresh_edges()
 		if dim:
 			create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, FADE_TIME * 3.0)
 	print("IC_DAYPART id=%s area=%s changed=true" % [daypart, area])

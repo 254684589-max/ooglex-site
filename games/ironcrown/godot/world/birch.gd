@@ -50,6 +50,9 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	mi.name = "Birch"
 	parent.add_child(mi)
 	_solid(parent, Vector3(0, -0.1, 0), Vector3(HALF_X * 2 + 6, 0.2, SOUTH - NORTH + 6))     # 地面（有厚度：导航网格贴着地面）
+	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), [         # 林子外面还是林子，两头的路伸进雾里（3.10）
+		{"at": Vector3(0, 0, NORTH), "out": Vector3(0, 0, -1), "half": ROAD_HALF, "fence": true},
+		{"at": Vector3(0, 0, SOUTH), "out": Vector3(0, 0, 1), "half": ROAD_HALF, "fence": true}], [], 3610)
 	_bounds(parent)
 	_fire(parent, reduced_motion)
 	_fog(parent, reduced_motion)
@@ -171,6 +174,8 @@ static func add_tree(kit: MeshKit, parent: Node3D, p: Vector3, rng: RandomNumber
 		var mid := at + dir * l * 0.6
 		kit.cylinder("bark", at, mid, r * 0.3, r * 0.18, 4, 0.7)
 		kit.cylinder("bark", mid, mid + (dir + Vector3(rng.randf_range(-0.4, 0.4), 0.3, rng.randf_range(-0.4, 0.4))).normalized() * l * 0.5, r * 0.18, 0.01, 4, 0.7)
+	if parent == null:
+		return                                             # 区域边界外的树（Edges，3.10）：走不到，不要碰撞
 	var body := StaticBody3D.new()
 	body.collision_layer = 1
 	body.collision_mask = 0

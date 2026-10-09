@@ -14,7 +14,7 @@ const TOLL_GAP := 2.4               # 两下钟声之间（秒）
 const CALL_AT := 6.6                # 开始后几秒管家喊人（第三下钟声快落下时）
 const CALL_LINE := "管家：誓剑大人！请留步——"
 const BELL_LINE := "（镇上的钟敲响了。入夜了。）"
-const SKIP_QUERY := ["view", "area", "test", "ending", "brawl", "perf", "daypart"]   # 网址带这些参数是截图 / 测试 / 基准用的，不播开场
+const SKIP_QUERY := ["view", "area", "test", "ending", "brawl", "perf", "daypart", "cam"]   # 网址带这些参数是截图 / 测试 / 基准用的，不播开场
 
 var main: Node3D
 var card: TitleCard
