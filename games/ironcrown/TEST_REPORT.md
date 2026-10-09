@@ -2,6 +2,19 @@
 
 每一步的实际命令与结果，最新的在上面。
 
+## 2026-10-09 · 3.10、4.2、4.3 上线前复测（所有者说「下一步上线」）
+
+功能分支 `claude/admiring-franklin-tnsj2r` 先合并最新主分支（这几天只有数据刷新，没碰《铁冠之争》），再在仓库里重新构建 `play/`。
+
+| 检查 | 命令 | 结果 |
+|---|---|---|
+| 语法 + 自动化测试 | `tools/run_tests.sh`（`build_web.sh` 里跑） | **1163 项全部通过** |
+| 网页导出 | `tools/build_web.sh`（写进仓库的 `play/`） | 通过，`ic-d5da3d08`，56.8 MB；第一章章节包 `play/packs/ic-ch1-856d5eaa.pck` 32 KB，页面里 `window.IC_PACKS` 指向它 |
+| 网页冒烟 | 仓库根目录 `serve_gzip.py . 8765` → `tools/smoke_web.js` | **1280 / 768 / 360 三个宽度 PASS，0 报错、0 横向溢出**（启动 2.8–4.4 秒）：开场、序章各区域、章节包「继续」→ 下载并挂载 → 路牌 → 再进一次走浏览器缓存、第一章清晨与旅行地图、和维克托说话都通过 |
+| 站点资源版本 | `python3 scripts/validate_asset_versions.py` | 通过（316 处引用） |
+| 网站发布脚本 | `scripts/build_public_site.py` 的排除规则 | `play/packs/*.pck` 不在排除名单里，会随网站一起发布 |
+| 空白 | `git diff --check` | 通过 |
+
 ## 2026-10-09 · 步骤 3.10 区域出口与边界做实（D10-A；所有者说「A + B吧」）
 
 | 检查 | 命令 | 结果 |
