@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-08T00:11:07Z",
-  "asOf": "2026-10-08",
+  "updatedAt": "2026-10-09T00:17:13Z",
+  "asOf": "2026-10-09",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-04 ~ 2026-10-10",
   "count": 83,
@@ -751,6 +751,18 @@
       "actual": null
     },
     {
+      "ts": "2026-10-08T09:00:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "英央行 MPC 委员讲话",
+      "titleEn": "MPC Member Pill Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-10-08T09:15:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -769,18 +781,6 @@
       "flag": "🇪🇺",
       "title": "Eurogroup Meetings",
       "titleEn": "Eurogroup Meetings",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-10-08T10:30:00Z",
-      "ccy": "GBP",
-      "country": "英国",
-      "flag": "🇬🇧",
-      "title": "英央行 MPC 委员讲话",
-      "titleEn": "MPC Member Pill Speaks",
       "impact": "low",
       "forecast": null,
       "previous": null,
@@ -950,7 +950,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "6.3K",
+      "forecast": "6.1K",
       "previous": "-41.7K",
       "actual": null
     },
