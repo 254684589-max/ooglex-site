@@ -285,6 +285,13 @@ func test_ui() -> void:
 			if c > 32 and not font.has_char(c) and not missing.contains(text[i]):
 				missing += text[i]
 	check(font != null and missing == "", "界面与场景标签的文字全部在内置字体子集里（%d 段，缺：%s）" % [texts.size(), missing])
+	# 2026-10-09 重做字体子集：剧本（design/*.md）里的字也收进来了，后面章节的人名不用再等重做字体
+	var cast := "伊薇特蜷鼾噜弑曦樵橘瞟辎鳟"
+	var lack := ""
+	for i in cast.length():
+		if not font.has_char(cast.unicode_at(i)):
+			lack += cast[i]
+	check(font != null and lack == "", "字体子集里有剧本里的人名和二级字库的字（伊薇特……；缺：%s）" % lack)
 	check(ProjectSettings.get_setting("gui/theme/custom_font") == "res://assets/fonts/NotoSansSC-IC.ttf", "工程默认字体是内置中文字体")
 	check(is_equal_approx(UiScale.scale_for(Vector2(1280, 720)), 1.0), "界面缩放：1280×720 → 1.0")
 	check(is_equal_approx(UiScale.scale_for(Vector2(360, 740)), 0.75), "界面缩放：手机竖屏 360×740 → 0.75（下限）")
