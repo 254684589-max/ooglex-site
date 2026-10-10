@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -261,9 +261,12 @@ func test_ui() -> void:
 	var woods := await make_area("birch")
 	var dock := await make_area("ferry")
 	var field := await make_area("battle")
+	var marsh := await make_area("marsh")
+	marsh.streamer.build_all()                     # 鹭沼（4.4）：分帧搭的块（客栈招牌、堤道头的指路牌）也搭出来再查
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
 		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false) \
-		+ field.find_children("*", "", true, false)
+		+ field.find_children("*", "", true, false) + marsh.find_children("*", "", true, false)
+	texts.append_array(Marsh.VIEW_NAMES + [Surface.label("mud"), "水太深，你爬回了刚才站稳的地方。", " · "])     # 鹭沼（4.4a）
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -279,6 +282,7 @@ func test_ui() -> void:
 	woods.queue_free()
 	dock.queue_free()
 	field.queue_free()
+	marsh.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -4851,11 +4855,13 @@ func test_travelmap() -> void:
 	Travel.override(null)
 	check(Travel.validate().is_empty(), "旅行数据通过检查（%s）" % "; ".join(Travel.validate()))
 	check(Travel.places(0).is_empty() and Travel.places(1) == ["frostford", "reedwharf", "blackheron"], "序章没有旅行地图；第一章：霜渡镇、芦栈村、黑鹭堡")
-	check(Travel.place_of_area("frostford") == "frostford" and Travel.place_of_area("tavern") == "" and Travel.built("frostford") and not Travel.built("reedwharf") and not Travel.built("blackheron"), "霜渡镇是地图上的地点；芦栈村、黑鹭堡还没做好")
+	check(Travel.place_of_area("frostford") == "frostford" and Travel.place_of_area("tavern") == "" and Travel.built("frostford") and Travel.built("reedwharf") and Travel.built("blackheron")
+		and str(Travel.place("reedwharf").area) == "marsh" and str(Travel.place("blackheron").area) == "marsh", "霜渡镇是地图上的地点；芦栈村、黑鹭堡做好了（4.4a：都在鹭沼这张连片地图上）")
 	var c1 := Travel.check(1, "frostford", "reedwharf", true)
 	var c2 := Travel.check(1, "frostford", "frostford", true)
 	var c3 := Travel.check(1, "frostford", "blackheron", true)
-	check(not c1.ok and c1.why == "芦栈村还在开发中，现在还去不了。" and c2.why == "你就在这里。" and c3.why == "黑鹭堡还在开发中，现在还去不了。" and str(c1.route.daypart) == "day", "现在哪儿都去不了：写明还在开发中（4.4 / 4.5）")
+	var c4 := Travel.check(1, "reedwharf", "blackheron", true)
+	check(c1.ok and c2.why == "你就在这里。" and c3.why == "从这里去不了，先到芦栈村。" and c4.ok and str(c1.route.daypart) == "day", "从霜渡镇能去芦栈村（到了是白天）；黑鹭堡要先到芦栈村再走堤道")
 	Travel.override(travel_fixture())
 	check(Travel.validate().is_empty(), "测试数据（借酒馆、小教堂当目的地）也通过检查")
 	var f1 := Travel.check(1, "frostford", "reedwharf", false)
@@ -4886,7 +4892,7 @@ func test_travelmap() -> void:
 	await frames(4)
 	var tm: TravelMap = main.travel_map
 	check(tm.visible and get_tree().paused and tm.at_departure and tm.here == "frostford" and tm.place_btns.size() == 3 and not main.hud.visible, "打开旅行地图：游戏暂停，提示和触屏按钮藏起来；站在路牌旁能出发")
-	check(tm.selected == "reedwharf" and tm.go_btn.disabled and tm.status.text == "芦栈村还在开发中，现在还去不了。" and tm.route_label.text == "路：出镇往西，沿着沼地边上的路走大半天，到了是白天" and (tm.place_btns.reedwharf as Button).has_focus(), "默认选芦栈村：路线、到了是白天；还没做好，出发灰着；焦点在地点上（键盘能用）")
+	check(tm.selected == "reedwharf" and not tm.go_btn.disabled and not tm.status.visible and tm.route_label.text == "路：出镇往西，沿着沼地边上的路走大半天，到了是白天" and (tm.place_btns.reedwharf as Button).has_focus(), "默认选芦栈村：路线、到了是白天；能出发（4.4a）；焦点在地点上（键盘能用）")
 	check((tm.place_btns.frostford as Button).text == "霜渡镇（你在这里）" and tm.go_btn.text == "出发去芦栈村", "霜渡镇标着「你在这里」")
 	tm.select("frostford")
 	check(tm.status.text == "你就在这里。" and tm.go_btn.disabled, "选霜渡镇：你就在这里")
@@ -5369,7 +5375,7 @@ func test_areamap() -> void:
 	check(is_equal_approx(Chapel.DAIS.position.y, -Chapel.D * 0.5) and is_equal_approx(Chapel.DAIS.end.y, Chapel.ALTAR_Z + 0.6) and AreaMap.shapes("chapel").any(func(sh): return sh.get("rect") == Chapel.DAIS), "小教堂的祭坛台：从北墙到祭坛前 0.6 米，搭场景和地图用同一个矩形（原来往北偏了 0.6 米，烛台底座悬空）")
 	# 剧透：桦林的哨卡、墓园的钥匙和包袱、渡口的人都不在地图上
 	var spoil := ""
-	for a in ["birch", "churchyard", "ferry"]:
+	for a in ["birch", "churchyard", "ferry", "marsh"]:
 		var words := JSON.stringify(AreaMap.spec(a))
 		for w in ["营地", "哨卡", "拒马", "包袱", "钥匙", "埃德里克", "塞拉斯", "奥弗", "无旗者", "营火"]:
 			if words.contains(w):
@@ -5602,5 +5608,222 @@ func test_areamap() -> void:
 	check(you.distance_to(cv.size * 0.5) < 2.0 and mp.where_text().contains(" · 测试区"), "「回到你这里」；你在哪写上分块的名字（%s）" % mp.where_text())
 	mp.close()
 	AreaMap.override("frostford", null)
+	await free_main(main)
+	GameState.new_game()
+
+
+## 鹭沼连片地图（路线图 4.4a；world/marsh.gd、world/marsh_layout.gd、world/chunk_streamer.gd、core/surface.gd）：
+## 布局（都在图里、栈道台阶、堤道尺寸）、出生点脚下一载入就有地、深水边都有墙（从村口出发把走得到的地方都走一遍）、碰撞一次建完、
+## 分帧搭建（附近的块先搭、全搭完、每件活多快）、按距离显示 / 隐藏、后搭的块补时段和画质、泥潭、掉进水里放回来、地图分块和旅行地图的地点、读档
+func test_marsh() -> void:
+	var fl := MarshLayout.floors()
+	var inside: bool = fl.all(func(f): return MarshLayout.BOUNDS.grow(0.01).encloses(MarshLayout.aabb(f)))
+	check(inside and fl.size() >= 20, "布局：%d 块地面都在图里（%s）" % [fl.size(), MarshLayout.BOUNDS])
+	var cw_len := MarshLayout.cw(0).distance_to(MarshLayout.cw(MarshLayout.APRON_T.x))
+	check(cw_len > 78.0 and cw_len < 84.0 and is_equal_approx(MarshLayout.CW_W, 4.0) and MarshLayout.GAP.y - MarshLayout.GAP.x >= 4.0 and MarshLayout.BRIDGE_W >= 1.5 and MarshLayout.ARCH_GAP >= 2.5,
+		"堤道 %.0f 米长、4 米宽；中段断口 %.0f 米、搭的木板 %.1f 米宽；石拱下 %.1f 米宽（STORY：宽约 4 米、长约 80 米）" % [cw_len, MarshLayout.GAP.y - MarshLayout.GAP.x, MarshLayout.BRIDGE_W, MarshLayout.ARCH_GAP])
+	var steps_ok: bool = MarshLayout.DECK_Y - MarshLayout.MUD_Y <= 0.25 and MarshLayout.DECK_Y - MarshLayout.BANK_Y <= 0.25 and MarshLayout.WALKS.all(func(w): return float(w[3]) >= 1.5)
+	check(steps_ok, "栈道比泥滩高 %.2f 米、比干地高 %.2f 米（掉下去一步就上得来，台阶 0.3 米以内）；每段栈道至少 1.5 米宽" % [MarshLayout.DECK_Y - MarshLayout.MUD_Y, MarshLayout.DECK_Y - MarshLayout.BANK_Y])
+	var reach := House.stair_reach(MarshLayout.STILTS)
+	var stairs_ok := true
+	for h in MarshLayout.HOUSES:
+		var foot: Vector2 = House.local_xz(MarshLayout.house_pos(h), float(h[2]), Vector2(float(h[3].get("door_x", 0.0)), reach + 0.15))
+		if not fl.any(func(f): return f.k == "deck" and MarshLayout.contains(f, foot)):
+			stairs_ok = false
+	check(stairs_ok, "%d 栋高脚屋的台阶都落在栈道上" % MarshLayout.HOUSES.size())
+	# 载入：碰撞一次建完，出生点脚下马上有地（还没分帧搭画面的时候）
+	GameState.new_game(440)
+	var main := await make_area("marsh")
+	var st: ChunkStreamer = main.streamer
+	var space := main.get_world_3d().direct_space_state
+	var ground_at := func(x: float, z: float, top := 3.0) -> Dictionary:
+		var q := PhysicsRayQueryParameters3D.create(Vector3(x, top, z), Vector3(x, -3.0, z), 1)
+		return space.intersect_ray(q)
+	var spawn_ok := true
+	for k in MarshLayout.SPAWNS:
+		var sp: Vector3 = MarshLayout.SPAWNS[k][0]
+		var hit: Dictionary = ground_at.call(sp.x, sp.z, sp.y + 0.6)
+		if hit.is_empty() or absf(hit.position.y - sp.y) > 0.05:
+			spawn_ok = false
+	check(st != null and spawn_ok, "两个出生点（村口、堡门前）脚下一载入就有地（碰撞同步建完）")
+	await physics(10)
+	var p: FpController = main.player
+	check(p.is_on_floor() and p.global_position.distance_to(MarshLayout.SPAWNS.reedwharf[0]) < 0.3, "新开一局：站在芦栈村村口（%s）" % p.global_position)
+	var near_id := MarshLayout.cell_id(MarshLayout.cell_of(Vector2(p.global_position.x, p.global_position.z)))
+	check(st.chunks[near_id].done and (st.root_of(near_id) as Node3D).visible, "脚下这块（%s）载入时就搭好、显示着" % near_id)
+	var waited := 0
+	while not st.is_done() and waited < 600:
+		await frames(1)
+		waited += 1
+	check(st.is_done() and st.primed < st.chunks.size() and st.primed >= 1, "载入时同步搭了附近 %d 块，其余的进场以后分帧搭完（%d 件活，最慢一件 %.1f 毫秒、合计 %.0f 毫秒）" % [st.primed, st.stats.jobs, st.stats.max_job_ms, st.stats.total_ms])
+	check(float(st.stats.max_job_ms) < 40.0, "每件活都不长（最慢 %.1f 毫秒；网页上每帧最多做 %d 毫秒）" % [st.stats.max_job_ms, ChunkStreamer.BUDGET_USEC / 1000])
+	# 深水边都有墙：从村口出发，按 1 米的格子把走得到的地方都走一遍；每一步走到没有地的格子，中间都要撞上墙（层 5）或别的东西
+	var grid := Marsh.make_index(fl, MarshLayout.SHORE + 1.0)
+	var start := Vector2i(roundi(MarshLayout.SPAWNS.reedwharf[0].x), roundi(MarshLayout.SPAWNS.reedwharf[0].z))
+	var seen := {start: true}
+	var todo := [start]
+	var leaks := []
+	var edges := 0
+	while not todo.is_empty() and seen.size() < 40000:
+		var c: Vector2i = todo.pop_back()
+		var cp := Vector2(c)
+		for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var n: Vector2i = c + d
+			if seen.has(n):
+				continue
+			var np := Vector2(n)
+			if Marsh.on_floor(fl, grid, np):
+				seen[n] = true
+				todo.append(n)
+				continue
+			edges += 1
+			var hit: Dictionary = ground_at.call(cp.x, cp.y, 1.2)       # 从 1.2 米往下找地面（地面最高是堤道 0.5 米；别打到路口的门柱顶上）
+			var y: float = (hit.position.y if not hit.is_empty() else 0.0) + 0.9
+			var from := cp - Vector2(d) * 0.45                     # 格子正好在地面边上时，从里面一点打（射线从墙面上起头打不中墙）
+			var q := PhysicsRayQueryParameters3D.create(Vector3(from.x, y, from.y), Vector3(np.x, y, np.y), 1 | FpController.LAYER_BOUNDARY)
+			if space.intersect_ray(q).is_empty():
+				leaks.append(np)
+	check(leaks.is_empty() and seen.size() > 3000, "走得到的地方（%d 个 1 米格子）的 %d 条边上都有墙，掉不进深水（漏的：%s）" % [seen.size(), edges, str(leaks.slice(0, 6))])
+	var gate := Vector2i(roundi(MarshLayout.SPAWNS.castle_gate[0].x), roundi(MarshLayout.SPAWNS.castle_gate[0].z))
+	check(seen.has(gate) or seen.has(gate + Vector2i(1, 0)), "从村口沿栈道、堤道走得到堡门前")
+	# 墙在物理层 5：挡人走，不挡视线和镜头（层 1 的射线穿过去）
+	var walls := main.world.get_node_or_null("MarshWalls") as StaticBody3D
+	check(walls != null and walls.collision_layer == FpController.LAYER_BOUNDARY and p.collision_mask & FpController.LAYER_BOUNDARY != 0 and walls.get_child_count() > 20,
+		"看不见的墙 %d 段，在物理层 5「边界」（主角撞得上；视线、镜头、箭的射线只看层 1，穿得过去）" % (walls.get_child_count() if walls else 0))
+	# 按距离显示 / 隐藏
+	main.apply_quality("medium")
+	await main.set_daypart("day", false)
+	var village := MarshLayout.cell_id(MarshLayout.cell_of(Vector2(80, 30)))
+	var gate_id := MarshLayout.cell_id(MarshLayout.cell_of(MarshLayout.cw(MarshLayout.CASTLE_T)))
+	var day_ids: Array = st.visible_ids()
+	check(village in day_ids and not gate_id in day_ids, "白天在村口：村子的块显示，黑鹭堡那块在雾外藏着（显示 %s）" % str(day_ids))
+	p.global_position = MarshLayout.SPAWNS.castle_gate[0]
+	st.update_visibility(true)                       # 一下子传过去（读档、走地图）：按显示的门槛重新定
+	var at_gate: Array = st.visible_ids()
+	p.global_position += Vector3(2, 0, 2)
+	st.update_visibility()
+	var nudged: Array = st.visible_ids()
+	check(gate_id in at_gate and not village in at_gate and nudged == at_gate, "到了堡门前：黑鹭堡那块显示、村子藏起来；来回走两步不闪（%s）" % str(at_gate))
+	await main.set_daypart("night", false)
+	var night_ids: Array = st.visible_ids()
+	check(night_ids.size() < at_gate.size(), "夜里雾近（%d 米），显示的块更少（%s）" % [int(Daypart.PRESETS.night.fog_end), str(night_ids)])
+	var in_chunks := 0                                   # 块里除了门、路牌这类可交互物，不该有碰撞体（碰撞都在 world 下的 Marsh* 里，块隐藏不影响）
+	for id in st.chunks:
+		var r: Node = st.root_of(id)
+		if r:
+			in_chunks += r.find_children("*", "CollisionObject3D", true, false).filter(func(b): return not b is Interactable).size()
+	var bodies_ok := ["MarshFloor", "MarshMud", "MarshWalls", "MarshSolids"].all(func(n): return main.world.get_node_or_null(n) is StaticBody3D)
+	check(in_chunks == 0 and bodies_ok, "碰撞体都不在块里（块只管画面，隐藏时碰撞照旧；块里多出来的碰撞体 %d 个）" % in_chunks)
+	# 断口的木板桥、码头两头：看不见的墙不伸到木板上（审查：第一版墙多伸了 0.3 米，2.4 米宽的桥只剩 1.4 米）
+	var cap := CapsuleShape3D.new()
+	cap.radius = 0.35
+	cap.height = 1.6
+	var pinched := []
+	var probes := []
+	for t in [MarshLayout.GAP.x - 0.2, MarshLayout.GAP.x + 0.2, MarshLayout.GAP.y - 0.2, MarshLayout.GAP.y + 0.2]:
+		for off in [-0.75, 0.75]:
+			probes.append(MarshLayout.cw3(t, off, MarshLayout.CAUSE_Y + 0.95))
+	for z in [52.2, 57.8]:
+		for x in [49.1, 50.9]:
+			probes.append(Vector3(x, MarshLayout.DECK_Y + 0.95, z))
+	for pr in probes:
+		var sq := PhysicsShapeQueryParameters3D.new()
+		sq.shape = cap
+		sq.transform = Transform3D(Basis.IDENTITY, pr)
+		sq.collision_mask = 1 | FpController.LAYER_BOUNDARY
+		if not space.intersect_shape(sq).is_empty():
+			pinched.append(pr)
+	check(pinched.is_empty(), "断口的木板桥两头、码头两头站得下一个人靠边走（%d 处，被墙挤着的：%s）" % [probes.size(), str(pinched)])
+	# 石拱是窄口：两边的泥滩被矮石墙截断，绕不过去
+	var around := 0
+	for side in [-1.0, 1.0]:
+		for off in [5.0, 7.0, 9.0]:
+			var a3 := MarshLayout.cw3(MarshLayout.ARCH_T - 3.0, side * off, MarshLayout.MUD_Y + 0.9)
+			var b3 := MarshLayout.cw3(MarshLayout.ARCH_T + 3.0, side * off, MarshLayout.MUD_Y + 0.9)
+			if space.intersect_ray(PhysicsRayQueryParameters3D.create(a3, b3, 1 | FpController.LAYER_BOUNDARY)).is_empty():
+				around += 1
+	check(around == 0, "石拱两边的泥滩有矮石墙截断：从泥里绕不过石拱（绕得过去的 %d 处）" % around)
+	# 泥潭：慢、不能跑，HUD 写着；踩上栈道就好了
+	await main.set_daypart("day", false)
+	var mud_spot: Vector3 = MarshLayout.VIEWS[5][0]
+	p.global_position = mud_spot + Vector3(0, 0.05, 0)
+	p.velocity = Vector3.ZERO
+	await physics(20)
+	Input.action_press("sprint")
+	await physics(3)
+	var mud_speed := p.current_speed(Vector2(0, -1))
+	var mud_run := p.wants_run()
+	Input.action_release("sprint")
+	check(p.surface == "mud" and is_equal_approx(mud_speed, FpController.WALK_SPEED * Surface.mult("mud")) and not mud_run and main.hud.surface_label.visible and main.hud.surface_label.text == Surface.label("mud"),
+		"泥滩里：速度 %.2f（走路的 %.0f%%）、按着冲刺也跑不起来，左下角写着「%s」" % [mud_speed, Surface.mult("mud") * 100.0, Surface.label("mud")])
+	check(main.tip_now == "mud" or GameState.tips_seen.has("mud") or main.tip_queue.has("mud"), "第一次踩进泥里：教学提示讲泥潭")
+	p.global_position = Vector3(70, MarshLayout.DECK_Y + 0.05, 30)
+	await physics(20)
+	Input.action_press("sprint")
+	await physics(3)
+	var deck_run := p.wants_run()
+	Input.action_release("sprint")
+	check(p.surface == "" and deck_run and not main.hud.surface_label.visible, "踩上栈道（栈道铺在泥滩上面）：又能跑了，那行字没了")
+	# 掉进水里（墙漏了的话）：放回最近站稳的地方
+	await physics(40)
+	var safe := p.last_safe
+	p.global_position = Vector3(20, -8, 40)
+	await physics(3)
+	check(safe != Vector3.INF and p.global_position.distance_to(safe) < 0.5, "掉出地图：放回最近站稳的地方（%s）" % p.global_position)
+	# 地图：分块、旅行地图上的地点
+	var errs := AreaMap.validate()
+	check(errs.is_empty(), "地图数据通过检查（鹭沼的规格由布局表生成；%s）" % "; ".join(errs))
+	var vz := Vector2(MarshLayout.SPAWNS.reedwharf[0].x, MarshLayout.SPAWNS.reedwharf[0].z)
+	var gz := Vector2(MarshLayout.SPAWNS.castle_gate[0].x, MarshLayout.SPAWNS.castle_gate[0].z)
+	var mid := MarshLayout.cw(30.0)
+	check(AreaMap.zone_at("marsh", vz) == "芦栈村" and AreaMap.zone_at("marsh", gz) == "黑鹭堡外" and AreaMap.zone_at("marsh", mid) == "堤道", "地图分块：村口在「芦栈村」、堡门前在「黑鹭堡外」、堤道中间在「堤道」")
+	check(Travel.place_of_area("marsh", vz) == "reedwharf" and Travel.place_of_area("marsh", gz) == "blackheron" and Travel.place_of_area("marsh", mid) == "" and Travel.place_of_area("frostford") == "frostford",
+		"旅行地图上的地点按站的地方分：村口是芦栈村、堡门前是黑鹭堡、堤道中间哪个都不是")
+	check(Travel.built("reedwharf") and Travel.built("blackheron") and Travel.validate().is_empty(), "芦栈村、黑鹭堡都能去了（都在鹭沼这张图上，出生点不同）")
+	var tps: Array = main.find_children("*", "TravelPoint", true, false)
+	check(tps.size() == 3 and tps.any(func(t): return (t as TravelPoint).display_name == Marsh.EXIT_NAME), "三处能出发：村口的路牌、东头路口「%s」、堡门前的路牌" % Marsh.EXIT_NAME)
+	var gate_door: Array = main.world.find_children("*", "Door", true, false).filter(func(d): return (d as Door).display_name == Marsh.GATE_NAME)
+	check(gate_door.size() == 1 and gate_door[0].locked and gate_door[0].locked_text.contains("开发中"), "黑鹭堡的堡门锁着，写明还在开发中")
+	# 高脚屋：每栋不超过 8 次绘制；地图上的房子和场景对得上
+	var houses: Array = main.world.find_children("House_*", "Node3D", true, false)
+	var surf_ok: bool = houses.all(func(h): return (h.get_node("Mesh") as MeshInstance3D).mesh.get_surface_count() <= 8)
+	check(houses.size() == MarshLayout.HOUSES.size() + 1 and surf_ok, "%d 栋房子（高脚屋 + 托宾的小屋）都搭好了，每栋不超过 8 个表面" % houses.size())
+	await free_main(main)
+	# 后搭的块补上时段：白天进场，远处的块晚搭，窗也按白天熄着、夜灯灭着（不补的话是搭的时候那样：窗亮、灯亮）
+	GameState.new_game(441)
+	GameState.daypart = "day"
+	main = await make_area("marsh")
+	st = main.streamer
+	var late: Array = st.chunks.keys().filter(func(id): return not st.chunks[id].done)
+	st.build_all()
+	var late_houses: Array = []
+	for id in late:
+		late_houses.append_array((st.root_of(id) as Node).find_children("House_*", "Node3D", false, false))
+	var lit_ok: bool = late_houses.all(func(h): return h.has_meta("lit_now") and not bool(h.get_meta("lit_now")))
+	var late_lamps: Array = []
+	for id in late:
+		late_lamps.append_array((st.root_of(id) as Node).find_children("*", "Node3D", true, false).filter(func(n): return n.is_in_group("night_light")))
+	var lamps_off: bool = late_lamps.all(func(l): return not (l as Node3D).visible)
+	check(not late.is_empty() and not late_houses.is_empty() and lit_ok and not late_lamps.is_empty() and lamps_off, "白天进场：后搭的 %d 块里的 %d 栋房子窗熄着、%d 盏夜灯灭着" % [late.size(), late_houses.size(), late_lamps.size()])
+	main.apply_quality("low")
+	var reeds: Array = main.get_tree().get_nodes_in_group("reeds")
+	var half: bool = reeds.all(func(r): return (r as MultiMeshInstance3D).multimesh.visible_instance_count == int((r as MultiMeshInstance3D).multimesh.instance_count * Marsh.REED_LOW_SHARE))
+	var bands := main.get_tree().get_nodes_in_group("fog_band")
+	var shown := bands.filter(func(f): return (f as Node3D).visible).size()
+	check(reeds.size() > 10 and half and shown < bands.size(), "低画质：%d 片芦苇都只画一半，雾带减半（%d / %d）" % [reeds.size(), shown, bands.size()])
+	main.apply_quality("medium")
+	# 读档：在堤道上存，读回来脚下有地、站得住
+	main.player.global_position = MarshLayout.cw3(60.0, 0.0, MarshLayout.CAUSE_Y + 0.05)
+	await physics(10)
+	var d := main.collect_save() as Dictionary
+	check(Saves.describe(d).begins_with("鹭沼 · 堤道"), "存档栏位写上在哪一块（%s）" % Saves.describe(d))
+	await free_main(main)
+	GameState.from_dict(d.state)
+	GameState.pending_load = {"scene": "marsh", "player": d.player, "slot": "test"}
+	main = await make_main(false)
+	await physics(10)
+	var pp: Vector3 = main.player.global_position
+	var cid := MarshLayout.cell_id(MarshLayout.cell_of(Vector2(pp.x, pp.z)))
+	check(main.area == "marsh" and main.player.is_on_floor() and absf(pp.y - MarshLayout.CAUSE_Y) < 0.1 and main.streamer.chunks[cid].done, "在堤道上存档、读回来：站在堤道上（y = %.2f），脚下这块先搭好了" % pp.y)
 	await free_main(main)
 	GameState.new_game()

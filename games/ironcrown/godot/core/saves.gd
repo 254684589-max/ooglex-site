@@ -196,7 +196,14 @@ func delete_slot(slot: String) -> void:
 ## 一行说明：「霜渡镇 · 2 级 · 雾里的少爷 · 游戏时间 12 分钟」
 func describe(d: Dictionary) -> String:
 	var s: Dictionary = d.get("state", {})
-	var parts := [str(SCENE_NAMES.get(str(d.get("scene", "")), "?")), "%d 级" % int(s.get("level", 1))]
+	var scene := str(d.get("scene", ""))
+	var place := str(SCENE_NAMES.get(scene, "?"))
+	var pos: Variant = (d.get("player", {}) as Dictionary).get("pos", []) if d.get("player") is Dictionary else []
+	if pos is Array and (pos as Array).size() == 3 and SCENE_NAMES.has(scene):
+		var z := AreaMap.zone_at(scene, Vector2(float(pos[0]), float(pos[2])))      # 连片地图（4.4 鹭沼）：写上在哪一块
+		if z != "":
+			place += " · " + z
+	var parts := [place, "%d 级" % int(s.get("level", 1))]
 	var qd := GameState.quest_data()
 	for q in s.get("quests", {}):
 		if qd.quests.has(q) and str(qd.quests[q].kind) == "main" and not bool(s.quests[q].get("done", false)):

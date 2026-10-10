@@ -40,6 +40,7 @@ var touch_ref: Control        # 触屏按钮（TouchControls）：显示时底�
 var battle: Battle            # 军阵（B.2）：有小队时，右上角按钮下面写小队还剩几个人、现在是什么命令
 var squad_label: Label
 var battle_label: Label       # 战况一行（B.3）：两边还剩几个人、士气怎样；打完写谁赢了
+var surface_label: Label      # 脚下（4.4）：在泥潭里写「泥潭：走得慢，不能跑」（不只靠画面）；普通地面藏起来
 
 const BAR_W := 180.0
 const BAR_H := 6.0
@@ -128,6 +129,9 @@ func _ready() -> void:
 	battle_label.add_theme_color_override("font_color", Color("e8dcc0"))
 	battle_label.add_theme_font_size_override("font_size", 14)
 	add_child(battle_label)
+	surface_label = squad_label.duplicate()
+	surface_label.name = "Surface"
+	add_child(surface_label)
 	resized.connect(_layout)
 	_layout()
 
@@ -274,12 +278,28 @@ func battle_text() -> String:
 	return "战况：" + "· ".join(parts)
 
 
+## 脚下的地面（Surface.label；"" = 藏起来）：电脑在左下角生命条上面，触屏在左上角体力条下面（左下角是摇杆）
+func set_surface(text: String) -> void:
+	surface_label.text = text
+	surface_label.visible = text != ""
+	_place_surface()
+
+
+func _place_surface() -> void:
+	if bars_top:
+		surface_label.position = bar_rect().position + Vector2(BAR_W + 14.0, -22.0)   # 体力条右边（下面是屏幕上方的短提示、性能浮层，审查）
+	else:
+		surface_label.position = health_rect().position - Vector2(0, 46)
+
+
 func set_hint(text: String) -> void:
 	hint_label.text = text
 	_layout()
 
 
 func _layout() -> void:
+	if surface_label:
+		_place_surface()
 	# 从右往左：菜单、地图（3.11）、任务、背包、角色
 	var x := size.x - 12.0
 	for b: Button in [menu_btn, map_btn, quest_btn, bag_btn, char_btn]:

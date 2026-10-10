@@ -10,14 +10,14 @@ extends RefCounted
 ##   view    Rect2（可选）       整图显示时框住的范围，默认 = bounds（渡口要把码头和渡船框进来）
 ##   shapes  [{k: 种类, rect: Rect2 | pts: PackedVector2Array | at: Vector2, label?: 字, icon?: 图标, if?: 条件}]
 ##   exits   [{at: Vector2, dir: 往外走的方向（单位向量）, to: 区域, spawn: 出生点, name: 和门上的名字一字不差, if?: 条件}]
-##   zones   [{id, name, pts, if?}]（可选，4.4 鹭沼用：你在「鹭沼 · 芦栈村」）
+##   zones   [{id, name, pts, place?, if?}]（可选，4.4 鹭沼用：你在「鹭沼 · 芦栈村」；place = 旅行地图上的哪个地点，连片地图上有几个地点时按它分）
 ## 条件 if：{chapter_min, chapter_max, flag, not_flag}，打开地图时现算（第一章才有的路牌、以后按旗标才显示的秘密地点）。
 ## 地图上不画人、不画东西、不标任务（GDD 7.2：任务标记以后单独做）。
 ## 读过的 regions.json 缓存在 Engine 的元数据里（static var 存字典退出时报资源没释放，travel.gd 同样的做法）；测试可以换一份。
 
 const REGIONS_PATH := "res://data/regions.json"
 const META := "ic_area_map"
-const KINDS := ["road", "square", "house", "wall", "water", "pier", "boat", "wood", "graves", "furniture", "mark"]
+const KINDS := ["road", "square", "house", "wall", "water", "pier", "boat", "wood", "graves", "furniture", "mark", "land", "mud", "reeds"]
 const ICONS := ["well", "tree", "sign", "fire"]
 const IF_KEYS := ["chapter_min", "chapter_max", "flag", "not_flag"]
 ## 朝向的名字：下标 = posmod(roundi(yaw / 45), 8)；yaw 0 = 面朝 -Z = 北，正 = 向左转（西）
@@ -51,6 +51,8 @@ static func spec(area: String) -> Dictionary:
 			return Birch.map_spec()
 		"ferry":
 			return Ferry.map_spec()
+		"marsh":
+			return Marsh.map_spec()
 	return {}
 
 
@@ -105,10 +107,20 @@ static func view_rect(area: String) -> Rect2:
 
 ## 你在这片地图的哪一块（规格里有 zones 时；4.4 鹭沼用）；"" = 没有分块
 static func zone_at(area: String, xz: Vector2) -> String:
+	return str(zone_info(area, xz).get("name", ""))
+
+
+## 你在的那一块的整条数据（{} = 不在任何一块里，或者这张图没有分块）
+static func zone_info(area: String, xz: Vector2) -> Dictionary:
 	for z in spec(area).get("zones", []):
 		if passes(z) and Geometry2D.is_point_in_polygon(xz, z.pts):
-			return str(z.name)
-	return ""
+			return z
+	return {}
+
+
+## 这一点是旅行地图上的哪个地点（分块的 place；"" = 不在哪个地点，例如堤道中间）
+static func place_at(area: String, xz: Vector2) -> String:
+	return str(zone_info(area, xz).get("place", ""))
 
 
 static func regions() -> Dictionary:

@@ -53,13 +53,21 @@ static func places(chapter: int) -> Array:
 	return out
 
 
-## 这个区域是地图上的哪个地点（"" = 不是地图上的地点，例如酒馆里）
-static func place_of_area(area: String) -> String:
+## 这个区域是地图上的哪个地点（"" = 不是地图上的地点，例如酒馆里）。
+## 连片地图（4.4 鹭沼）上有几个地点（芦栈村、黑鹭堡）：按你站的位置在哪一块分（AreaMap.place_at），在堤道中间这种不属于哪个地点的地方是 ""；
+## 没给位置时取第一个
+static func place_of_area(area: String, xz := Vector2.INF) -> String:
+	if area == "":
+		return ""
 	var ps: Dictionary = data().get("places", {})
+	var hits := []
 	for id in ps:
-		if str(ps[id].get("area", "")) == area and area != "":
-			return str(id)
-	return ""
+		if str(ps[id].get("area", "")) == area:
+			hits.append(str(id))
+	if hits.size() <= 1 or not xz.is_finite():
+		return hits[0] if not hits.is_empty() else ""
+	var at := AreaMap.place_at(area, xz)
+	return at if at in hits else ""
 
 
 ## 这个地点做好了没有（区域登记过）

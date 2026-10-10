@@ -23,6 +23,11 @@
 //        电脑按 M、手机 / 平板点「关上地图」关掉（IC_MAP closed），再截一张清晨的宅邸门口 ic-*-chapter1.png。
 //   4.3  第一章开场：准星一开始就对着门口的维克托（IC_TARGET name=维克托），电脑按 E、手机 / 平板点交互按钮和他说话（IC_DIALOG open id=victor），
 //        截图 ic-*-victor.png；选第一个选项，对话往下走（IC_DIALOG node=news：冒烟用的 ?ending= 不写序章结局，维克托从通用的开场白说起）。
+//   4.4a 鹭沼：上面章节包那一步的第二遍也带 &map=1，路牌旁的旅行地图里点「出发去芦栈村」（IC_DEPART from=frostford to=reedwharf）
+//        → 到鹭沼（IC_ARRIVE area=marsh spawn=reedwharf … zone=芦栈村），分帧搭完（IC_CHUNKS ready），截图 ic-*-reedwharf.png；
+//        村口离路牌不到 6 米，按 M / 点「地图」打开的是能出发的旅行地图，而且知道你在芦栈村（IC_MAP open here=reedwharf departure=true）。
+//        再打开 ?area=marsh&view=5（泥滩里）：脚下是泥（IC_SURFACE id=mud run=false），截图 ic-*-mud.png；
+//        按 M / 点「地图」→ 鹭沼的「本地」页（IC_AREAMAP open view=local area=marsh），截图 ic-*-marshmap.png，关上。
 //   3.4  霜渡镇载入时在网页里运行时烘焙导航网格（IC_NAV area=frostford ms=…），要求 1 秒以内。
 //   3.3  酒馆 ?area=tavern&brawl=1：一进门就和醉汉大桶徒手打起来（IC_BRAWL start）；电脑按 F、手机 / 平板点「攻」举拳、出拳，
 //        他走过来要几秒，每隔一会儿出一拳，直到打中他（IC_HIT target=大桶），截图。
@@ -348,9 +353,10 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     }
     // 章节包（4.1）
     let cNext = '', cPack = '', cSign = '', cAgain = '', dDawn = '', mOpen = '', mClose = '', vTalk = '', vNext = '';
+    let rDepart = '', rArrive = '', rChunks = '', rMap = '';
     for (let round = 0; round < 2; round++) {
       logs.length = 0;
-      await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=ferry&ending=deliver&preview=1' + (round === 0 ? '&map=1' : ''));
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=ferry&ending=deliver&preview=1&map=1');
       const next = await waitLog(logs, 'IC_ENDING id=prologue choice=deliver next=1', 240);
       if (!next) break;
       const cs = await waitLog(logs, 'IC_CONTINUE_SCREEN', 12);
@@ -413,6 +419,70 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
         }
       } else {
         cAgain = pk ? (pk.match(/from=(\w+)/) || [, '?'])[1] : '没测到';
+        // 鹭沼（4.4a）：从路牌出发去芦栈村
+        const mo = await waitLog(logs, 'IC_MAP open here=frostford departure=true places=3', 240);
+        const ms = await waitLog(logs, 'IC_MAP_SCREEN', 40);
+        if (mo && ms) {
+          await page.waitForTimeout(1200);
+          const [, gx, gy] = ms.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          if (!mobile) await page.mouse.click(gx / dpr, gy / dpr);
+          else await page.touchscreen.tap(gx / dpr, gy / dpr);
+          rDepart = await waitLog(logs, 'IC_DEPART from=frostford to=reedwharf', 40);
+          rArrive = await waitLog(logs, 'IC_ARRIVE area=marsh spawn=reedwharf chapter=1 zone=芦栈村', 240);
+          rChunks = await waitLog(logs, 'IC_CHUNKS ready n=12', 240);
+          await page.waitForTimeout(2000);
+          await page.screenshot({ path: path.join(outDir, `ic-${name}-reedwharf.png`) });
+          if (rArrive) {
+            if (!mobile) {
+              await page.mouse.click(w / 2, h / 2);
+              await page.waitForTimeout(300);
+              await page.keyboard.press('m');
+            } else {
+              const hm = logs.filter(l => l.startsWith('IC_HUDMAP_SCREEN')).pop();
+              if (hm) {
+                const [, hx, hy] = hm.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+                await page.touchscreen.tap(hx / dpr, hy / dpr);
+              }
+            }
+            rMap = await waitLog(logs, 'IC_MAP open here=reedwharf departure=true', 40);
+            await page.waitForTimeout(1200);
+            await page.screenshot({ path: path.join(outDir, `ic-${name}-map-reedwharf.png`) });
+          }
+        }
+      }
+    }
+    // 鹭沼（4.4a）：泥滩里、鹭沼的「本地」地图
+    logs.length = 0;
+    await page.goto(url + (url.includes('?') ? '&' : '?') + 'area=marsh&view=5');
+    let mud = '', mmOpen = '', mmClose = '', mSync = '';
+    if (await waitLog(logs, 'IC_CHUNKS ready', 240)) {
+      mSync = logs.find(l => l.startsWith('IC_MARSH sync')) || '';
+      mud = await waitLog(logs, 'IC_SURFACE id=mud run=false', 40);
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-mud.png`) });
+      if (!mobile) {
+        await page.mouse.click(w / 2, h / 2);
+        await page.waitForTimeout(300);
+        await page.keyboard.press('m');
+      } else {
+        const hm = logs.filter(l => l.startsWith('IC_HUDMAP_SCREEN')).pop();
+        if (hm) {
+          const [, hx, hy] = hm.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(hx / dpr, hy / dpr);
+        }
+      }
+      mmOpen = await waitLog(logs, 'IC_AREAMAP open view=local area=marsh', 40);
+      const scr = await waitLog(logs, 'IC_AREAMAP_SCREEN', 40);
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-marshmap.png`) });
+      if (mmOpen) {
+        if (!mobile) {
+          await page.keyboard.press('Escape');
+        } else if (scr) {
+          const [, cx, cy] = scr.match(/cx=(-?\d+) cy=(-?\d+)/).map(Number);
+          await page.touchscreen.tap(cx / dpr, cy / dpr);
+        }
+        mmClose = await waitLog(logs, 'IC_AREAMAP closed', 40);
       }
     }
     // 任务日志（2.3）：管家面前
@@ -726,9 +796,9 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: path.join(outDir, `ic-${name}-range.png`) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    const ok = compat && overlayGone && !!opCard && !!opBegin && !!opCall && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!bStart && !!bHit && !!wReady && !!wSpot && !!aStart && !!aFall && !!aOrder && !!fTalk && !!eOpen && !!eClose && !!cNext && !!cPack && !!cSign && !!dDawn && !!mOpen && !!mClose && !!amOpen && !!amRegion && !!amClose && !!vTalk && !!vNext && navMs >= 0 && navMs < 1000 && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
+    const ok = compat && overlayGone && !!opCard && !!opBegin && !!opCall && !!moved && !!look && !!pauseOpen && !!pauseClose && range.includes('scene=test_range') && !!target && !!talk && !!dOpen && !!dStep && !!dClose && !!qStart && !!qOpen && !!hit && !!mouseAtk && !!fight && !!guard && !!lootOpen && !!bagOpen && !!charOpen && !!tReady && !!tTalk && !!tOut && !!cTalk && !!cCrypt && !!bStart && !!bHit && !!wReady && !!wSpot && !!aStart && !!aFall && !!aOrder && !!fTalk && !!eOpen && !!eClose && !!cNext && !!cPack && !!cSign && !!dDawn && !!mOpen && !!mClose && !!amOpen && !!amRegion && !!amClose && !!vTalk && !!vNext && !!rDepart && !!rArrive && !!rChunks && !!rMap && !!mud && !!mmOpen && !!mmClose && navMs >= 0 && navMs < 1000 && !!camMode && !!avatarLoad && !!avatarIdle && avatarArmed !== '' && avatarCharge !== '' && avatarBlock !== '' && !!saved && !!stored && !!loaded && !!savesOpen && errs.length === 0 && overflow <= 0;
     if (!ok) failed++;
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 开场：${opCard ? '标题卡' : '没有标题卡'} / ${opBegin ? '钟声' : '没开始'} / ${opCall ? '管家喊人' : '没喊'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 打架：${bStart ? '开打' : '没开打'} / ${bHit ? '打中大桶' : '没打中'} | 桦林：${wReady ? '进得去' : '没打开'} / ${wSpot ? '被哨卡发现' : '没被发现'} | 军阵：${aStart ? '开打' : '没开打'} / ${aFall ? '有人倒下或求饶' : '没分出人'} / ${aOrder ? '小队跟随' : '命令没下成'} | 渡口：${fTalk ? '和奥弗说上话' : '没说上话'} | 尾声：${eOpen ? '结束画面' : '没打开'} / ${eClose ? '关得掉' : '没关掉'} | 章节包：${cNext ? '有「继续」' : '没有「继续」'} / ${cPack ? '下载并挂载' : '没下载成'} / ${cSign ? '路牌' : '没路牌'} / 再进一次 ${cAgain || '—'} | 时段与地图：${dDawn ? '清晨' : '不是清晨'} / ${mOpen ? '地图打开（能出发）' : '地图没打开'} / ${mClose ? '关得掉' : '没关掉'} | 区域地图：${amOpen ? '打开' : '没打开'} / ${amRegion ? '一带' : '没切到一带'} / ${amClose ? '关得掉' : '没关掉'} | 第一章开场：${vTalk ? '和维克托说上话' : '没说上话'} / ${vNext ? '对话往下走' : '选项没生效'} | 导航：${navLine ? `霜渡镇烘焙 ${navMs} 毫秒` : '没烘焙'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
+    console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${w}x${h} | ${ready || '未启动'} | 加载画面${overlayGone ? '已消失' : '仍在'} | 开场：${opCard ? '标题卡' : '没有标题卡'} / ${opBegin ? '钟声' : '没开始'} / ${opCall ? '管家喊人' : '没喊'} | 走动：${moved || '没有移动'} | 转视角：${look || '没有转'} | 暂停：${pauseOpen || '没打开'} / ${pauseClose || '没关闭'} | 测试场：${range ? 'ok' : '未启动'} | 交互：${target ? '对准 NPC' : '没对准'}，${talk || '没说上话'} | 对话：${dOpen ? '打开' : '没打开'} / ${dStep || '选项没生效'} / ${dClose || '没结束'} | 任务：${qStart || '没接到'} / ${qOpen || '日志没打开'} | 酒馆：${tReady ? '进得去' : '没打开'} / ${tTalk ? '和玛蒂尔达说上话' : '没说上话'} / ${tOut || '没走出来'} | 教堂：${cTalk ? '和修士说上话' : '没说上话'} / 墓室：${cCrypt ? '铁门锁着' : '没对准'} | 打架：${bStart ? '开打' : '没开打'} / ${bHit ? '打中大桶' : '没打中'} | 桦林：${wReady ? '进得去' : '没打开'} / ${wSpot ? '被哨卡发现' : '没被发现'} | 军阵：${aStart ? '开打' : '没开打'} / ${aFall ? '有人倒下或求饶' : '没分出人'} / ${aOrder ? '小队跟随' : '命令没下成'} | 渡口：${fTalk ? '和奥弗说上话' : '没说上话'} | 尾声：${eOpen ? '结束画面' : '没打开'} / ${eClose ? '关得掉' : '没关掉'} | 章节包：${cNext ? '有「继续」' : '没有「继续」'} / ${cPack ? '下载并挂载' : '没下载成'} / ${cSign ? '路牌' : '没路牌'} / 再进一次 ${cAgain || '—'} | 时段与地图：${dDawn ? '清晨' : '不是清晨'} / ${mOpen ? '地图打开（能出发）' : '地图没打开'} / ${mClose ? '关得掉' : '没关掉'} | 区域地图：${amOpen ? '打开' : '没打开'} / ${amRegion ? '一带' : '没切到一带'} / ${amClose ? '关得掉' : '没关掉'} | 第一章开场：${vTalk ? '和维克托说上话' : '没说上话'} / ${vNext ? '对话往下走' : '选项没生效'} | 鹭沼：${rDepart ? '从路牌出发' : '没出发'} / ${rArrive ? '到了芦栈村' : '没到'} / ${rChunks ? '分帧搭完' : '没搭完'} / ${rMap ? '村口能出发' : '村口地图不对'} / ${mud ? '泥里不能跑' : '没踩到泥'} / ${mmOpen ? '本地地图' : '地图没打开'} / ${mmClose ? '关得掉' : '没关掉'} / ${(mSync.match(/ms=\d+/) || ['同步 ?'])[0]} | 导航：${navLine ? `霜渡镇烘焙 ${navMs} 毫秒` : '没烘焙'} | 近战：${atk ? '出剑' : '没出剑'} / ${hit || '没打中'} / 左键：${mouseAtk || '没出剑'} | 搜刮：${lootOpen || '没打开'} / 背包：${bagOpen || '没打开'} | 视角：${camMode || '没切换'} / 人物：${avatarLoad ? '加载' : '没加载'} / 待机 ${avatarIdle ? 'ok' : '无'} / 拔剑 ${avatarArmed === 'n/a' ? 'n/a' : avatarArmed ? 'ok' : '无'} / 蓄力 ${avatarCharge === 'n/a' ? 'n/a' : avatarCharge ? 'ok' : '无'} / 格挡 ${avatarBlock === 'n/a' ? 'n/a' : avatarBlock ? 'ok' : '无'} | 角色：${charOpen || '没打开'} | 存档：${saved || '没存上'} / ${stored ? '浏览器里有' : '浏览器里没有'} / ${loaded || '没读回'} / 面板：${savesOpen || '没打开'} | 训练场：${fight || '敌人没来'} / ${guard || '没挡住'} | 启动 ${bootSec}s | 溢出 ${overflow}px | 报错 ${errs.length}${errs.length ? '：' + errs.slice(0, 3).join(' || ') : ''}`);
     await ctx.close();
   }
   await browser.close();

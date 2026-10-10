@@ -6,8 +6,9 @@ extends RefCounted
 ## 存档里的 "scene" 字段就是区域名（core/saves.gd 用 NAMES 校验）。
 
 const NAMES := {"frostford": "霜渡镇", "tavern": "「倒钩鱼」酒馆", "churchyard": "星铁小教堂墓园", "chapel": "星铁小教堂",
-	"birch": "镇外桦林", "ferry": "渡口", "test_range": "灰盒测试场", "arena": "训练场", "battle": "军阵试验场"}
+	"birch": "镇外桦林", "ferry": "渡口", "marsh": "鹭沼", "test_range": "灰盒测试场", "arena": "训练场", "battle": "军阵试验场"}
 const INDOOR := ["tavern", "chapel"]
+## 鹭沼（4.4，连片地图）不在这里：整张图 256 × 192 米一次烘焙太慢（网页上要一秒左右），有敌人的那几块按块烘焙（4.4c）。
 ## 要烘焙导航网格的区域（3.4）：敌人会出现的地方。范围 = 能走的那片地（地面碰撞盒比它大）；墓园、小教堂、测试场没有敌人，不烘焙（敌人在那里直线走）
 const NAV_BOUNDS := {
 	"frostford": AABB(Vector3(-15.5, -0.5, -59.0), Vector3(31.0, 4.0, 70.5)),
@@ -46,6 +47,8 @@ static func spawns(area: String) -> Dictionary:
 			return Birch.SPAWNS
 		"ferry":
 			return Ferry.SPAWNS
+		"marsh":
+			return Marsh.SPAWNS
 	return {}
 
 
@@ -78,6 +81,8 @@ static func views(area: String) -> Array:
 			return Birch.VIEWS
 		"ferry":
 			return Ferry.VIEWS
+		"marsh":
+			return Marsh.VIEWS
 		"battle":
 			return BattleArena.VIEWS
 	return []

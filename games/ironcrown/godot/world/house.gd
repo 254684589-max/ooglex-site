@@ -16,6 +16,13 @@ extends RefCounted
 ##   sign          酒馆招牌上的字（"" = 没有招牌）
 ##   chimney       是否有烟囱
 ##   stone_upper   上层也用石砌（领主宅邸）
+## 鹭沼的高脚屋（4.4 芦栈村）另有几个选项，不写时和原来一样：
+##   base          "stone"（默认，石砌底层）或 "timber"（木板墙底层，没有石基；窗台、门楣也是木头）
+##   upper         上层的墙："plaster"（默认，灰泥）或 "timber"（木板）
+##   roof_mat      "roof"（默认，石板瓦）或 "thatch"（茅草，Look.thatch()）
+##   snow          屋顶积雪（默认 true）
+##   stilts        高脚的高度（米，默认 0）：pos 是屋里地板的高度，地板下面立桩子，门前一块小平台、几级台阶下到 pos.y - stilts
+##   solid         自己建碰撞（默认 true）；false = 由区域在搭场景时先用 House.solids() 建好（鹭沼：碰撞一次建完，网格分帧搭）
 
 const GROUND_H := 3.0
 const FLOOR_H := 2.6
@@ -23,6 +30,10 @@ const JETTY := 0.35          # 上层向街面挑出
 const PITCH := 48.0
 const EAVE := 0.45
 const T := 0.14              # 木梁粗细
+const PORCH_D := 1.3         # 高脚屋门前平台的进深、宽
+const PORCH_W := 2.4
+const STAIR_SLOPE := 32.0    # 高脚屋台阶的坡度（度）：碰撞是一块斜板，主角走得上去（地面最陡 46°）
+const STAIR_W := 1.4
 
 ## 建一栋房子，挂在 parent 下；pos 是正面墙脚中点（世界坐标），yaw 是绕 Y 轴的角度（度）
 static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) -> Node3D:
@@ -42,57 +53,81 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 	var door_x: float = spec.get("door_x", 0.0)
 	var kit := MeshKit.new()
 	var top := GROUND_H + floors * FLOOR_H
-	var upper := "stone" if stone_upper else "plaster"
+	var upper := "stone" if stone_upper else str(spec.get("upper", "plaster"))
 	var jetty := 0.0 if stone_upper else JETTY
 	var windows := {"lit": 0, "dark": 0}
+	var timber_base := str(spec.get("base", "stone")) == "timber"
+	var trim := "timber" if timber_base else "stone"           # 窗台、门楣、门前台阶
+	var roof_key := str(spec.get("roof_mat", "roof"))
+	var snow: bool = spec.get("snow", true)
+	var stilts := float(spec.get("stilts", 0.0))
 
-	# 底层石砌：墙脚压暗（顶点色遮蔽）
-	kit.box("stone", Vector3(0, GROUND_H * 0.5, -d * 0.5), Vector3(w, GROUND_H, d), Basis.IDENTITY, 1.0, 0.55)
-	# 墙脚一圈略宽的石基
-	kit.box("stone", Vector3(0, 0.2, -d * 0.5), Vector3(w + 0.16, 0.4, d + 0.16), Basis.IDENTITY, 0.7, 0.45)
+	if timber_base:
+		# 木板墙底层（4.4 高脚屋）：墙脚压暗；四角立柱、墙脚一道地梁
+		kit.box("timber", Vector3(0, GROUND_H * 0.5, -d * 0.5), Vector3(w, GROUND_H, d), Basis.IDENTITY, 1.0, 0.6)
+		for cx in [-w * 0.5, w * 0.5]:
+			for cz in [0.0, -d]:
+				kit.box("timber", Vector3(cx, GROUND_H * 0.5, cz), Vector3(0.22, GROUND_H, 0.22), Basis.IDENTITY, 0.75, 0.55)
+		kit.box("timber", Vector3(0, 0.12, -d * 0.5), Vector3(w + 0.14, 0.24, d + 0.14), Basis.IDENTITY, 0.6, 0.45)
+	else:
+		# 底层石砌：墙脚压暗（顶点色遮蔽）
+		kit.box("stone", Vector3(0, GROUND_H * 0.5, -d * 0.5), Vector3(w, GROUND_H, d), Basis.IDENTITY, 1.0, 0.55)
+		# 墙脚一圈略宽的石基
+		kit.box("stone", Vector3(0, 0.2, -d * 0.5), Vector3(w + 0.16, 0.4, d + 0.16), Basis.IDENTITY, 0.7, 0.45)
+	if stilts > 0.0:
+		_stilts(kit, w, d, stilts, float(spec.get("door_x", 0.0)))
 	# 上层：灰泥（或石砌），向街面挑出 jetty
 	for f in floors:
 		var y0 := GROUND_H + f * FLOOR_H
 		kit.box(upper, Vector3(0, y0 + FLOOR_H * 0.5, -d * 0.5 + jetty * 0.5), Vector3(w, FLOOR_H, d + jetty), Basis.IDENTITY, 0.8, 1.0)
 		if not stone_upper:
-			_timber_frame(kit, w, d, y0, jetty, rng, lit, windows)
+			_timber_frame(kit, w, d, y0, jetty, rng, lit, windows, trim)
 		else:
 			_upper_windows_stone(kit, w, y0, rng, lit, windows)
 		# 楼层之间一道横梁（挑出处的托梁）
 		kit.box("timber", Vector3(0, y0 - 0.06, jetty * 0.5 + 0.02), Vector3(w + 0.12, 0.16, jetty + 0.2), Basis.IDENTITY, 0.6, 0.5)
 	# 底层的窗与门
-	_ground_floor(kit, w, door_x, rng, lit, windows, spec)
-	# 屋顶
+	_ground_floor(kit, w, door_x, rng, lit, windows, spec, trim)
+	# 屋顶（山墙三角：有上层时跟上层的墙，只有一层时跟底层的墙）
 	var roof: String = spec.get("roof", "eaves")
+	var gable_wall := "timber" if timber_base and floors == 0 else upper
+	var front := -1.0                                        # 山墙三角的前沿（-1 = 原来的算法）；木底层的高脚屋按有没有上层算
+	if timber_base:
+		front = jetty if floors > 0 else 0.0
 	if roof == "gable":
-		_roof_gable(kit, w, d, top, jetty, upper, rng.randf() < lit, windows)
+		_roof_gable(kit, w, d, top, jetty, gable_wall, rng.randf() < lit, windows, roof_key, snow, trim, front)
 	else:
-		_roof_eaves(kit, w, d, top, jetty, upper)
+		_roof_eaves(kit, w, d, top, jetty, gable_wall, roof_key, snow, front)
 	if spec.get("chimney", false):
 		var cx := w * 0.28
 		var cz := -d * 0.62
 		var ch := 4.2 if roof == "eaves" else 3.6
 		kit.box("stone", Vector3(cx, top + ch * 0.5, cz), Vector3(0.7, ch, 0.7), Basis.IDENTITY, 1.0, 0.7)
 		kit.box("stone", Vector3(cx, top + ch + 0.06, cz), Vector3(0.86, 0.12, 0.86))
-	var mi := kit.build({"stone": Look.mat("stone"), "plaster": Look.mat("plaster"), "timber": Look.mat("timber"),
+	var mats := {"stone": Look.mat("stone"), "plaster": Look.mat("plaster"), "timber": Look.mat("timber"),
 		"roof": Look.mat("roof"), "snow": Look.mat("snow"), "glass_lit": Look.glass_lit(), "glass_dark": Look.glass_dark(),
-		"halo": Look.halo(Look.WINDOW_COLOR, 0.32)})
+		"halo": Look.halo(Look.WINDOW_COLOR, 0.32)}
+	if roof_key == "thatch":
+		mats["thatch"] = Look.thatch()
+	var mi := kit.build(mats)
 	mi.name = "Mesh"
 	root.add_child(mi)
 	root.set_meta("windows", windows)
 	root.set_meta("seed", int(spec.get("seed", 1)))     # 时段（4.2）：清晨按种子挑一部分房子还亮着灯
 	root.set_meta("size", Vector2(w, d))                 # 地图（3.11）：测试按它查地图上画的房子和场景对得上
-	# 碰撞：整栋房子一个盒子（屋顶、挑出的上层在头顶以上，不用碰撞）
-	var body := StaticBody3D.new()
-	body.collision_layer = 1
-	body.collision_mask = 0
-	var cs := CollisionShape3D.new()
-	var bs := BoxShape3D.new()
-	bs.size = Vector3(w + 0.16, top, d + 0.16)
-	cs.shape = bs
-	cs.position = Vector3(0, top * 0.5, -d * 0.5)
-	body.add_child(cs)
-	root.add_child(body)
+	# 碰撞：整栋房子一个盒子（屋顶、挑出的上层在头顶以上，不用碰撞）；高脚屋另有门前平台和台阶（House.solids）
+	if spec.get("solid", true):
+		var body := StaticBody3D.new()
+		body.collision_layer = 1
+		body.collision_mask = 0
+		for b in solids(Vector3.ZERO, 0.0, spec):
+			var cs := CollisionShape3D.new()
+			var bs := BoxShape3D.new()
+			bs.size = b[1]
+			cs.shape = bs
+			cs.transform = b[0]
+			body.add_child(cs)
+		root.add_child(body)
 	# 不放遮挡体：网页导出模板编译时去掉了遮挡剔除，场景里有 OccluderInstance3D 就会报错（1.4 实测，TECH.md 4.6）
 	# 门：锁着的门可以交互；普通门只是一块木板
 	var dspec: Dictionary = spec.get("door", {})
@@ -108,6 +143,31 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 	if sign_text != "":
 		_sign(root, door_x + 1.3, sign_text)
 	return root
+
+
+## 房子的碰撞盒：[[变换, 尺寸], ...]，变换是相对 pos、yaw 摆好的（pos = 正面墙脚中点，同 build）。
+## 房身一个盒子（高脚屋从桩脚算起）；高脚屋再加门前平台、一块斜板当台阶。区域可以先用它把碰撞建好、网格以后再搭（spec.solid = false）
+static func solids(pos: Vector3, yaw: float, spec: Dictionary) -> Array:
+	var w: float = spec.get("w", 7.0)
+	var d: float = spec.get("d", 7.0)
+	var top := GROUND_H + int(spec.get("floors", 1)) * FLOOR_H
+	var h := float(spec.get("stilts", 0.0))
+	var door_x: float = spec.get("door_x", 0.0)
+	var place := Transform3D(Basis(Vector3.UP, deg_to_rad(yaw)), pos)
+	var out := [[place * Transform3D(Basis.IDENTITY, Vector3(0, (top - h) * 0.5, -d * 0.5)), Vector3(w + 0.16, top + h, d + 0.16)]]
+	if h > 0.0:
+		out.append([place * Transform3D(Basis.IDENTITY, Vector3(door_x, -0.1, PORCH_D * 0.5)), Vector3(PORCH_W, 0.2, PORCH_D)])
+		var run := h / tan(deg_to_rad(STAIR_SLOPE))
+		var length := sqrt(h * h + run * run)
+		var b := Basis(Vector3.RIGHT, deg_to_rad(STAIR_SLOPE))      # 绕 x 转：往 +Z（屋外）走是下坡
+		var mid := Vector3(door_x, -h * 0.5, PORCH_D + run * 0.5) - b.y * 0.1
+		out.append([place * Transform3D(b, mid), Vector3(STAIR_W, 0.2, length)])
+	return out
+
+
+## 高脚屋台阶的落脚点（本地 z）：门前平台进深 + 台阶的水平长度；区域按它把房子摆在栈道边上
+static func stair_reach(stilts: float) -> float:
+	return PORCH_D + stilts / tan(deg_to_rad(STAIR_SLOPE))
 
 
 ## 地图用（3.11）：本地坐标（x, z）→ 世界 XZ。本地 +Z 是正面朝向；绕 Y 转 yaw 度
@@ -136,7 +196,7 @@ static func door_xz(pos: Vector3, yaw: float, door_x: float) -> Vector2:
 
 
 ## 一扇窗：玻璃（亮 / 暗）+ 木窗框 + 窗台；亮窗外加一片光晕，暗窗有一半关着百叶
-static func _window(kit: MeshKit, c: Vector3, ww: float, wh: float, on: bool, closed: bool, windows: Dictionary) -> void:
+static func _window(kit: MeshKit, c: Vector3, ww: float, wh: float, on: bool, closed: bool, windows: Dictionary, sill := "stone") -> void:
 	var z := c.z
 	var g := "glass_lit" if on else "glass_dark"
 	kit.quad(g, [c + Vector3(-ww / 2, wh / 2, 0.005), c + Vector3(ww / 2, wh / 2, 0.005), c + Vector3(ww / 2, -wh / 2, 0.005), c + Vector3(-ww / 2, -wh / 2, 0.005)], Vector3.BACK)
@@ -146,11 +206,14 @@ static func _window(kit: MeshKit, c: Vector3, ww: float, wh: float, on: bool, cl
 	kit.box("timber", c + Vector3(-ww / 2 - f / 2, 0, 0.03), Vector3(f, wh, 0.08), Basis.IDENTITY, 0.85, 0.85)
 	kit.box("timber", c + Vector3(ww / 2 + f / 2, 0, 0.03), Vector3(f, wh, 0.08), Basis.IDENTITY, 0.85, 0.85)
 	kit.box("timber", c + Vector3(0, 0, 0.03), Vector3(0.04, wh, 0.05), Basis.IDENTITY, 0.8, 0.8)   # 竖窗棂
-	kit.box("stone", c + Vector3(0, -wh / 2 - f - 0.05, 0.08), Vector3(ww + 0.3, 0.1, 0.22), Basis.IDENTITY, 0.9, 0.7)
+	kit.box(sill, c + Vector3(0, -wh / 2 - f - 0.05, 0.08), Vector3(ww + 0.3, 0.1, 0.22), Basis.IDENTITY, 0.9, 0.7)
 	if on:
 		var hw := ww * 1.6
 		var hh := wh * 1.5
-		kit.quad("halo", [c + Vector3(-hw, hh, 0.07), c + Vector3(hw, hh, 0.07), c + Vector3(hw, -hh, 0.07), c + Vector3(-hw, -hh, 0.07)], Vector3.BACK)
+		# 光晕的图（径向渐变）要铺满整个面片：UV 给 0..1。原来按米投影，一张 2.4 × 2.7 米的光晕里图重复了好几遍，
+		# 窗外是一格一格的光斑（4.4 芦栈村深色木板墙上一眼就看出来；霜渡镇的灰泥墙上淡一些，一直都有）
+		kit.quad("halo", [c + Vector3(-hw, hh, 0.07), c + Vector3(hw, hh, 0.07), c + Vector3(hw, -hh, 0.07), c + Vector3(-hw, -hh, 0.07)], Vector3.BACK,
+			[1.0, 1.0, 1.0, 1.0], [Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)])
 		windows.lit += 1
 	else:
 		windows.dark += 1
@@ -159,14 +222,15 @@ static func _window(kit: MeshKit, c: Vector3, ww: float, wh: float, on: bool, cl
 			kit.box("timber", c + Vector3(ww / 4, 0, 0.06), Vector3(ww / 2 - 0.01, wh, 0.04), Basis.IDENTITY, 0.75, 0.7)
 
 
-static func _ground_floor(kit: MeshKit, w: float, door_x: float, rng: RandomNumberGenerator, lit: float, windows: Dictionary, spec: Dictionary) -> void:
+static func _ground_floor(kit: MeshKit, w: float, door_x: float, rng: RandomNumberGenerator, lit: float, windows: Dictionary, spec: Dictionary, trim := "stone") -> void:
 	# 门洞：木门框 + 门楣石；门板另外放（可交互的 Door 或一块木板）
 	var dw := 1.1
 	var dh := 2.1
 	kit.box("timber", Vector3(door_x - dw / 2 - 0.07, dh / 2, 0.04), Vector3(0.14, dh, 0.12), Basis.IDENTITY, 0.8, 0.6)
 	kit.box("timber", Vector3(door_x + dw / 2 + 0.07, dh / 2, 0.04), Vector3(0.14, dh, 0.12), Basis.IDENTITY, 0.8, 0.6)
-	kit.box("stone", Vector3(door_x, dh + 0.12, 0.06), Vector3(dw + 0.5, 0.24, 0.16), Basis.IDENTITY, 0.9, 0.8)
-	kit.box("stone", Vector3(door_x, 0.06, 0.3), Vector3(dw + 0.4, 0.12, 0.6), Basis.IDENTITY, 0.8, 0.6)   # 门前台阶
+	kit.box(trim, Vector3(door_x, dh + 0.12, 0.06), Vector3(dw + 0.5, 0.24, 0.16), Basis.IDENTITY, 0.9, 0.8)
+	if float(spec.get("stilts", 0.0)) <= 0.0:
+		kit.box(trim, Vector3(door_x, 0.06, 0.3), Vector3(dw + 0.4, 0.12, 0.6), Basis.IDENTITY, 0.8, 0.6)   # 门前台阶（高脚屋是平台和台阶，_stilts）
 	if (spec.get("door", {}) as Dictionary).is_empty():
 		kit.box("timber", Vector3(door_x, dh / 2, 0.02), Vector3(dw, dh, 0.06), Basis.IDENTITY, 0.8, 0.6)
 	# 窗：避开门，间隔 1.9 米
@@ -174,12 +238,12 @@ static func _ground_floor(kit: MeshKit, w: float, door_x: float, rng: RandomNumb
 	while x <= w / 2 - 1.0:
 		if absf(x - door_x) > 1.3:
 			var on := rng.randf() < lit
-			_window(kit, Vector3(x, 1.55, 0.0), 0.75, 0.9, on, rng.randf() < 0.5, windows)
+			_window(kit, Vector3(x, 1.55, 0.0), 0.75, 0.9, on, rng.randf() < 0.5, windows, trim)
 		x += 1.9
 
 
 ## 上层正面的木构架：底梁、顶梁、立柱，两端的斜撑；立柱之间开窗。两个侧面也有角柱和梁。
-static func _timber_frame(kit: MeshKit, w: float, d: float, y0: float, jetty: float, rng: RandomNumberGenerator, lit: float, windows: Dictionary) -> void:
+static func _timber_frame(kit: MeshKit, w: float, d: float, y0: float, jetty: float, rng: RandomNumberGenerator, lit: float, windows: Dictionary, trim := "stone") -> void:
 	var zf := jetty + 0.025
 	var n := maxi(2, roundi(w / 1.5))
 	kit.box("timber", Vector3(0, y0 + T / 2, zf), Vector3(w + 0.06, T + 0.04, 0.1), Basis.IDENTITY, 0.8, 0.7)
@@ -198,7 +262,7 @@ static func _timber_frame(kit: MeshKit, w: float, d: float, y0: float, jetty: fl
 			kit.box("timber", Vector3(cx, y0 + FLOOR_H / 2, zf), Vector3(len, T * 0.9, 0.09), Basis(Vector3.BACK, ang * sgn), 0.75, 0.75)
 		else:
 			var on := rng.randf() < lit
-			_window(kit, Vector3(cx, y0 + 1.35, jetty), minf(0.7, bay - 0.5), 0.9, on, rng.randf() < 0.4, windows)
+			_window(kit, Vector3(cx, y0 + 1.35, jetty), minf(0.7, bay - 0.5), 0.9, on, rng.randf() < 0.4, windows, trim)
 			kit.box("timber", Vector3(cx, y0 + 0.62, zf), Vector3(bay - T, T * 0.8, 0.09), Basis.IDENTITY, 0.75, 0.75)   # 窗下横档
 	# 两个侧面：角柱 + 中柱 + 底梁 / 顶梁
 	for s in [-1.0, 1.0]:
@@ -218,7 +282,7 @@ static func _upper_windows_stone(kit: MeshKit, w: float, y0: float, rng: RandomN
 
 
 ## 屋脊平行街面：前后两片斜面 + 两侧山墙三角 + 积雪
-static func _roof_eaves(kit: MeshKit, w: float, d: float, top: float, jetty: float, wall: String) -> void:
+static func _roof_eaves(kit: MeshKit, w: float, d: float, top: float, jetty: float, wall: String, roof_key := "roof", snow := true, front := -1.0) -> void:
 	var t := tan(deg_to_rad(PITCH))
 	var zr := (jetty - d) * 0.5
 	var half := (jetty + d) * 0.5
@@ -228,19 +292,24 @@ static func _roof_eaves(kit: MeshKit, w: float, d: float, top: float, jetty: flo
 	for side in [1.0, -1.0]:
 		var b := Basis(Vector3.RIGHT, deg_to_rad(PITCH) * side)
 		var center := Vector3(0, top + rise_wall - s * 0.5 * t + 0.08, zr + side * s * 0.5)
-		kit.box("roof", center, Vector3(w + 0.6, 0.16, length), b, 1.0, 0.6, true)
-		# 积雪：靠屋脊的四成
-		var up := b * Vector3.UP
-		var snow_c := Vector3(0, top + rise_wall - s * 0.18 * t + 0.08, zr + side * s * 0.18) + up * 0.1
-		kit.box("snow", snow_c, Vector3(w + 0.62, 0.06, length * 0.36), b)
+		kit.box(roof_key, center, Vector3(w + 0.6, 0.16, length), b, 1.0, 0.6, true)
+		if snow:
+			# 积雪：靠屋脊的四成
+			var up := b * Vector3.UP
+			var snow_c := Vector3(0, top + rise_wall - s * 0.18 * t + 0.08, zr + side * s * 0.18) + up * 0.1
+			kit.box("snow", snow_c, Vector3(w + 0.62, 0.06, length * 0.36), b)
 	for sx in [-1.0, 1.0]:
 		var x: float = sx * w / 2
-		kit.tri(wall, Vector3(x, top, jetty if wall == "plaster" else 0.0), Vector3(x, top, -d), Vector3(x, top + rise_wall, zr), Vector3(sx, 0, 0), 0.85)
-	kit.box("snow", Vector3(0, top + rise_wall + 0.2, zr), Vector3(w + 0.62, 0.12, 0.36))   # 屋脊上的雪
+		var fz := front if front >= 0.0 else (jetty if wall == "plaster" else 0.0)
+		kit.tri(wall, Vector3(x, top, fz), Vector3(x, top, -d), Vector3(x, top + rise_wall, zr), Vector3(sx, 0, 0), 0.85)
+	if snow:
+		kit.box("snow", Vector3(0, top + rise_wall + 0.2, zr), Vector3(w + 0.62, 0.12, 0.36))   # 屋脊上的雪
+	else:
+		kit.box(roof_key, Vector3(0, top + rise_wall + 0.16, zr), Vector3(w + 0.62, 0.16, 0.42), Basis.IDENTITY, 0.8, 0.7)   # 屋脊压一道
 
 
 ## 山墙朝街：左右两片斜面 + 前后山墙三角（正面山墙有木构架和一扇阁楼窗）
-static func _roof_gable(kit: MeshKit, w: float, d: float, top: float, jetty: float, wall: String, attic_lit: bool, windows: Dictionary) -> void:
+static func _roof_gable(kit: MeshKit, w: float, d: float, top: float, jetty: float, wall: String, attic_lit: bool, windows: Dictionary, roof_key := "roof", snow := true, trim := "stone", front := -1.0) -> void:
 	var t := tan(deg_to_rad(PITCH))
 	var half := w * 0.5
 	var s := half + 0.35
@@ -252,18 +321,48 @@ static func _roof_gable(kit: MeshKit, w: float, d: float, top: float, jetty: flo
 		# side = 1：右片（+X 一侧，往 +X 下斜）
 		var b := Basis(Vector3.BACK, -deg_to_rad(PITCH) * side)
 		var center := Vector3(side * s * 0.5, top + rise_wall - s * 0.5 * t + 0.08, zc)
-		kit.box("roof", center, Vector3(length, 0.16, depth), b, 1.0, 0.6, true)
-		var up := b * Vector3.UP
-		kit.box("snow", Vector3(side * s * 0.18, top + rise_wall - s * 0.18 * t + 0.08, zc) + up * 0.1, Vector3(length * 0.36, 0.06, depth + 0.02), b)
-	var zf := jetty
+		kit.box(roof_key, center, Vector3(length, 0.16, depth), b, 1.0, 0.6, true)
+		if snow:
+			var up := b * Vector3.UP
+			kit.box("snow", Vector3(side * s * 0.18, top + rise_wall - s * 0.18 * t + 0.08, zc) + up * 0.1, Vector3(length * 0.36, 0.06, depth + 0.02), b)
+	var zf := front if front >= 0.0 else jetty
 	kit.tri(wall, Vector3(-half, top, zf), Vector3(half, top, zf), Vector3(0, top + rise_wall, zf), Vector3.BACK, 0.85)
 	kit.tri(wall, Vector3(-half, top, -d), Vector3(half, top, -d), Vector3(0, top + rise_wall, -d), Vector3.FORWARD, 0.85)
-	kit.box("snow", Vector3(0, top + rise_wall + 0.2, zc), Vector3(0.36, 0.12, depth + 0.02))
+	if snow:
+		kit.box("snow", Vector3(0, top + rise_wall + 0.2, zc), Vector3(0.36, 0.12, depth + 0.02))
+	else:
+		kit.box(roof_key, Vector3(0, top + rise_wall + 0.16, zc), Vector3(0.42, 0.16, depth + 0.02), Basis.IDENTITY, 0.8, 0.7)
 	if wall == "plaster":
 		# 山墙上的木构架：中柱 + 一道横梁 + 一扇小阁楼窗
 		kit.box("timber", Vector3(0, top + rise_wall * 0.5, zf + 0.025), Vector3(T, rise_wall, 0.1), Basis.IDENTITY, 0.7, 0.8)
 		kit.box("timber", Vector3(0, top + rise_wall * 0.35, zf + 0.025), Vector3(w * 0.62, T, 0.1), Basis.IDENTITY, 0.7, 0.7)
-		_window(kit, Vector3(-w * 0.17, top + rise_wall * 0.18 + 0.05, zf), 0.5, 0.6, attic_lit, false, windows)
+		_window(kit, Vector3(-w * 0.17, top + rise_wall * 0.18 + 0.05, zf), 0.5, 0.6, attic_lit, false, windows, trim)
+
+
+## 高脚（4.4）：地板下一道地梁、一排排桩子插进泥里；门前一块小平台（两根桩），台阶一级级下到 -h（碰撞是 solids() 里的斜板）
+static func _stilts(kit: MeshKit, w: float, d: float, h: float, door_x: float) -> void:
+	kit.box("timber", Vector3(0, -0.12, -d * 0.5), Vector3(w + 0.1, 0.24, d + 0.1), Basis.IDENTITY, 0.55, 0.4)
+	var nx := maxi(2, ceili(w / 2.4) + 1)
+	var nz := maxi(2, ceili(d / 2.4) + 1)
+	for i in nx:
+		for j in nz:
+			var x := -w * 0.5 + 0.2 + (w - 0.4) * i / (nx - 1)
+			var z := -0.2 - (d - 0.4) * j / (nz - 1)
+			kit.cylinder("timber", Vector3(x, -h - 0.5, z), Vector3(x, -0.2, z), 0.13, 0.11, 6, 0.6)
+	# 门前平台：木板面 + 两根桩
+	kit.box("timber", Vector3(door_x, -0.08, PORCH_D * 0.5), Vector3(PORCH_W, 0.16, PORCH_D), Basis.IDENTITY, 0.9, 0.5)
+	for sx in [-1.0, 1.0]:
+		kit.cylinder("timber", Vector3(door_x + sx * (PORCH_W * 0.5 - 0.15), -h - 0.5, PORCH_D - 0.15), Vector3(door_x + sx * (PORCH_W * 0.5 - 0.15), 0.9, PORCH_D - 0.15), 0.08, 0.07, 5, 0.7)
+	# 台阶：每级约 0.18 米高；两边各一根斜梁
+	var run := h / tan(deg_to_rad(STAIR_SLOPE))
+	var n := maxi(2, ceili(h / 0.2))
+	for k in n:
+		var y := -h * (k + 1) / n
+		var z := PORCH_D + run * (k + 0.5) / n
+		kit.box("timber", Vector3(door_x, y + 0.03, z), Vector3(STAIR_W, 0.06, run / n + 0.04), Basis.IDENTITY, 0.85, 0.6)
+	var b := Basis(Vector3.RIGHT, deg_to_rad(STAIR_SLOPE))
+	for sx in [-1.0, 1.0]:
+		kit.box("timber", Vector3(door_x + sx * (STAIR_W * 0.5 + 0.05), -h * 0.5 - 0.08, PORCH_D + run * 0.5), Vector3(0.1, 0.18, sqrt(h * h + run * run)), b, 0.7, 0.5)
 
 
 ## 酒馆招牌：从墙上伸出的木臂，下面吊一块木牌，牌子两面写字

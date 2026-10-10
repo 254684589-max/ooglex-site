@@ -16,6 +16,7 @@ const INK := TravelMap.INK
 const INK_SOFT := TravelMap.INK_SOFT
 const WATER := TravelMap.WATER
 const ROAD := TravelMap.ROAD
+const MUD := Color("7a6448")               # 泥潭（4.4 鹭沼）
 const HERE := TravelMap.HERE
 const MIN_PX_PER_M := 4.0                 # 整张放得下且每米不少于 4 像素：整张显示，不出缩放按钮
 const DEFAULT_PX_PER_M := 6.0             # 放不下时一打开的缩放
@@ -29,10 +30,11 @@ const EXIT_HINT := "图上带编号的三角是出口；选一个出口，看它
 const NODE_HINT := "示意图：只画各处怎么连，不按比例。"
 ## 图例：只列这张图里真有的
 const LEGEND := {"exit": "▲ 出口", "house": "■ 房屋", "furniture": "■ 家具", "road": "□ 路", "water": "≈ 水", "wood": "○ 树林",
-	"graves": "+ 墓地", "you": "△ 你（尖头朝你面对的方向）"}
+	"graves": "+ 墓地", "mud": "褐色：泥潭（走得慢）", "reeds": "| 芦苇", "you": "△ 你（尖头朝你面对的方向）"}
 ## 面板上会显示的固定文字（字体测试用，AreaMap.texts() 收）
 const TEXTS := ["关上地图", "放大", "缩小", "回到你这里", NO_MAP, EXIT_HINT, NODE_HINT, "你在：", "，面朝", " · ", "：通往", "。在你", "。就在你旁边。",
-	"边约", " 米", "就在你旁边", "离你约", "；", " → ", "你", "北", "▲ 出口 · ■ 房屋 · ■ 家具 · □ 路 · ≈ 水 · ○ 树林 · + 墓地 · △ 你（尖头朝你面对的方向）", "1234567890"]
+	"边约", " 米", "就在你旁边", "离你约", "；", " → ", "你", "北", "▲ 出口 · ■ 房屋 · ■ 家具 · □ 路 · ≈ 水 · ○ 树林 · + 墓地 · △ 你（尖头朝你面对的方向）", "1234567890",
+	"褐色：泥潭（走得慢） · | 芦苇"]
 
 var tabs: MapTabs
 var title: Label
@@ -286,11 +288,11 @@ func legend_text() -> String:
 	var kinds := {}
 	for sh in AreaMap.shapes(area):
 		var k := str(sh.get("k", ""))
-		kinds[{"square": "road", "pier": "road", "wall": "house", "boat": "house"}.get(k, k)] = true
+		kinds[{"square": "road", "pier": "road", "wall": "house", "boat": "house", "land": ""}.get(k, k)] = true
 	var parts := []
 	if not AreaMap.exits(area).is_empty():
 		parts.append(LEGEND.exit)
-	for k in ["house", "furniture", "road", "water", "wood", "graves"]:
+	for k in ["house", "furniture", "road", "water", "mud", "reeds", "wood", "graves"]:
 		if kinds.has(k):
 			parts.append(LEGEND[k])
 	parts.append(LEGEND.you)
@@ -538,7 +540,7 @@ class MapCanvas extends Control:
 		draw_colored_polygon(b, PARCHMENT)
 		var shown := Rect2(center - s * 0.5 / px_per_m, s / px_per_m).grow(2.0)      # 只画看得见的
 		var shs := AreaMap.shapes(area).filter(func(sh): return shown.intersects(AreaMap.shape_rect(sh), true))
-		for k in ["water", "wood", "graves", "road", "square", "pier", "wall", "boat", "house", "furniture", "mark"]:
+		for k in ["water", "reeds", "land", "mud", "wood", "graves", "road", "square", "pier", "wall", "boat", "house", "furniture", "mark"]:
 			for sh in shs:
 				if str(sh.k) == k:
 					_draw_shape(sh)
@@ -578,6 +580,15 @@ class MapCanvas extends Control:
 					draw_arc(c + Vector2(3, 2), 3.5, PI * 1.1, PI * 1.9, 6, Color("4f6578"), 1.2))
 			"wood":
 				_pattern(r, pts, 14.0, func(c: Vector2): draw_arc(c, 3.2, 0.0, TAU, 10, INK_SOFT, 1.2))
+			"land":                                                    # 干地（4.4 鹭沼）：羊皮纸底色，和走得到的地面一样
+				draw_colored_polygon(pts, PARCHMENT)
+			"mud":                                                     # 泥潭：褐色底、一点点的点
+				draw_colored_polygon(pts, Color(MUD, 0.55))
+				_pattern(r, pts, 10.0, func(c: Vector2): draw_circle(c, 1.3, Color(INK, 0.55)))
+			"reeds":                                                   # 芦苇：一簇簇短竖线
+				_pattern(r, pts, 12.0, func(c: Vector2):
+					for dx in [-2.5, 0.0, 2.5]:
+						draw_line(c + Vector2(dx, 3), c + Vector2(dx * 1.3, -4), Color("5d6a48"), 1.2))
 			"graves":
 				_pattern(r, pts, 14.0, func(c: Vector2):
 					draw_line(c + Vector2(-3, 0), c + Vector2(3, 0), INK_SOFT, 1.4)

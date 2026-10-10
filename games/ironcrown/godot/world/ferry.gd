@@ -58,7 +58,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_shed(kit, parent)
 	_trees(kit, parent)
 	var mi := kit.build({"snow": Look.mat("snow"), "timber": Look.mat("timber"), "stone": Look.mat("stone"), "roof": Look.mat("roof"),
-		"water": _water_mat(), "horse": _horse_mat(), "mane": _mane_mat(), "hay": _hay_mat(), "ember": _ember_mat(), "rope": _rope_mat(),
+		"water": Look.water(), "horse": _horse_mat(), "mane": _mane_mat(), "hay": _hay_mat(), "ember": _ember_mat(), "rope": _rope_mat(),
 		"birch": Look.birch(), "bark": Look.mat("bark")})
 	mi.name = "Ferry"
 	parent.add_child(mi)
@@ -351,14 +351,6 @@ static func refresh(parent: Node3D) -> String:
 			_alban(parent)
 			what = "arrived"
 	return what
-
-
-static func _water_mat() -> StandardMaterial3D:
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color("0e1a24")
-	m.roughness = 0.12
-	m.metallic = 0.2
-	return m
 
 
 static func _horse_mat() -> StandardMaterial3D:
