@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-13T02:00:20Z",
+  "updatedAt": "2026-10-13T19:26:28Z",
   "asOf": "2026-10-13",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-11 ~ 2026-10-17",
-  "count": 108,
+  "count": 110,
   "highCount": 13,
   "events": [
     {
@@ -184,30 +184,6 @@
       "impact": "low",
       "forecast": null,
       "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-10-13T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "货币供应 同比",
-      "titleEn": "M2 Money Supply y/y",
-      "impact": "low",
-      "forecast": "7.4%",
-      "previous": "7.5%",
-      "actual": null
-    },
-    {
-      "ts": "2026-10-13T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Loans",
-      "titleEn": "New Loans",
-      "impact": "low",
-      "forecast": "1025B",
-      "previous": "60B",
       "actual": null
     },
     {
@@ -451,6 +427,30 @@
       "actual": null
     },
     {
+      "ts": "2026-10-14T08:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "货币供应 同比",
+      "titleEn": "M2 Money Supply y/y",
+      "impact": "low",
+      "forecast": "7.4%",
+      "previous": "7.5%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-14T08:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Loans",
+      "titleEn": "New Loans",
+      "impact": "low",
+      "forecast": "1025B",
+      "previous": "60B",
+      "actual": null
+    },
+    {
       "ts": "2026-10-14T08:30:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -482,6 +482,18 @@
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Bowman Speaks",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-14T10:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "EU Economic Summit",
+      "titleEn": "EU Economic Summit",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
@@ -856,6 +868,18 @@
       "impact": "low",
       "forecast": "0.0%",
       "previous": "-0.1%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-15T10:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "EU Economic Summit",
+      "titleEn": "EU Economic Summit",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
