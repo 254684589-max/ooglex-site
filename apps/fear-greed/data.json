@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-10-13T01:59:31Z",
+  "updatedAt": "2026-10-13T21:49:36Z",
   "asOf": "2026-10-13",
   "source": "CNN Business Fear & Greed Index",
-  "score": 46,
-  "rating": "neutral",
-  "ratingZh": "中性",
+  "score": 45,
+  "rating": "fear",
+  "ratingZh": "恐惧",
   "refs": {
     "now": {
+      "score": 45,
+      "rating": "fear",
+      "ratingZh": "恐惧"
+    },
+    "close": {
       "score": 46,
       "rating": "neutral",
       "ratingZh": "中性"
     },
-    "close": {
-      "score": 45,
+    "week": {
+      "score": 47,
       "rating": "neutral",
       "ratingZh": "中性"
-    },
-    "week": {
-      "score": 44,
-      "rating": "fear",
-      "ratingZh": "恐惧"
     },
     "month": {
       "score": 33,
@@ -34,7 +34,7 @@
   },
   "indicators": [
     {
-      "score": 70,
+      "score": 68,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "market_momentum_sp500",
@@ -42,7 +42,7 @@
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 8,
+      "score": 10,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 4,
+      "score": 6,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "stock_price_breadth",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 35,
+      "score": 33,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 69,
+      "score": 72,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 85,
+      "score": 75,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪",
       "key": "junk_bond_demand",
