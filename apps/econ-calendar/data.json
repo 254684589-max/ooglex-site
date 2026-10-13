@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-12T21:21:33Z",
-  "asOf": "2026-10-12",
+  "updatedAt": "2026-10-13T02:00:20Z",
+  "asOf": "2026-10-13",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-11 ~ 2026-10-17",
   "count": 108,
@@ -242,7 +242,7 @@
       "title": "成屋销售",
       "titleEn": "Existing Home Sales",
       "impact": "low",
-      "forecast": "3.96M",
+      "forecast": "3.95M",
       "previous": "3.98M",
       "actual": null
     },
@@ -350,7 +350,7 @@
       "title": "PPI（生产者物价指数） 同比",
       "titleEn": "PPI y/y",
       "impact": "low",
-      "forecast": "4.5%",
+      "forecast": "4.4%",
       "previous": "3.8%",
       "actual": null
     },
@@ -362,7 +362,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "805B",
+      "forecast": "790B",
       "previous": "809B",
       "actual": null
     },
@@ -374,7 +374,7 @@
       "title": "贸易帐",
       "titleEn": "USD-Denominated Trade Balance",
       "impact": "low",
-      "forecast": "118.1B",
+      "forecast": "116.8B",
       "previous": "119.1B",
       "actual": null
     },
@@ -422,7 +422,7 @@
       "title": "German WPI m/m",
       "titleEn": "German WPI m/m",
       "impact": "low",
-      "forecast": "0.7%",
+      "forecast": "0.6%",
       "previous": "0.9%",
       "actual": null
     },
@@ -494,7 +494,7 @@
       "title": "营建许可 环比",
       "titleEn": "Building Permits m/m",
       "impact": "low",
-      "forecast": "3.1%",
+      "forecast": "2.9%",
       "previous": "-17.3%",
       "actual": null
     },
@@ -614,7 +614,7 @@
       "title": "Core Machinery Orders m/m",
       "titleEn": "Core Machinery Orders m/m",
       "impact": "low",
-      "forecast": "2.5%",
+      "forecast": "2.2%",
       "previous": "-3.7%",
       "actual": null
     },
@@ -626,7 +626,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "20.0K",
+      "forecast": "19.6K",
       "previous": "39.5K",
       "actual": null
     },
@@ -734,7 +734,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "-21.8B",
+      "forecast": "-21.9B",
       "previous": "-21.0B",
       "actual": null
     },
@@ -746,7 +746,7 @@
       "title": "Index of Services 3m/3m",
       "titleEn": "Index of Services 3m/3m",
       "impact": "low",
-      "forecast": "0.7%",
+      "forecast": "0.8%",
       "previous": "0.6%",
       "actual": null
     },
@@ -770,7 +770,7 @@
       "title": "Manufacturing Production m/m",
       "titleEn": "Manufacturing Production m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "-0.1%",
       "previous": "0.9%",
       "actual": null
     },
@@ -782,7 +782,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI m/m",
       "impact": "low",
-      "forecast": "0.5%",
+      "forecast": "0.6%",
       "previous": "0.7%",
       "actual": null
     },
@@ -854,7 +854,7 @@
       "title": "工业产出 环比",
       "titleEn": "Industrial Production m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "0.0%",
       "previous": "-0.1%",
       "actual": null
     },
@@ -878,7 +878,7 @@
       "title": "Wholesale Sales m/m",
       "titleEn": "Wholesale Sales m/m",
       "impact": "low",
-      "forecast": "-1.4%",
+      "forecast": "-1.5%",
       "previous": "0.3%",
       "actual": null
     },
@@ -902,7 +902,7 @@
       "title": "核心零售销售 环比",
       "titleEn": "Core Retail Sales m/m",
       "impact": "high",
-      "forecast": "0.5%",
+      "forecast": "0.6%",
       "previous": "1.4%",
       "actual": null
     },
@@ -914,7 +914,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI m/m",
       "impact": "high",
-      "forecast": "0.5%",
+      "forecast": "0.6%",
       "previous": "0.4%",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "Philly Fed Manufacturing Index",
       "titleEn": "Philly Fed Manufacturing Index",
       "impact": "medium",
-      "forecast": "26.5",
+      "forecast": "28.2",
       "previous": "37.8",
       "actual": null
     },
@@ -950,7 +950,7 @@
       "title": "申请失业金人数",
       "titleEn": "Unemployment Claims",
       "impact": "medium",
-      "forecast": "195K",
+      "forecast": "199K",
       "previous": "197K",
       "actual": null
     },
@@ -962,7 +962,7 @@
       "title": "纽约联储制造业指数",
       "titleEn": "Empire State Manufacturing Index",
       "impact": "low",
-      "forecast": "3.2",
+      "forecast": "12.1",
       "previous": "7.6",
       "actual": null
     },
@@ -1166,7 +1166,7 @@
       "title": "新屋开工",
       "titleEn": "Housing Starts",
       "impact": "low",
-      "forecast": "230K",
+      "forecast": "234K",
       "previous": "229K",
       "actual": null
     },
@@ -1190,7 +1190,7 @@
       "title": "进口物价 环比",
       "titleEn": "Import Prices m/m",
       "impact": "low",
-      "forecast": "0.6%",
+      "forecast": "0.9%",
       "previous": "0.7%",
       "actual": null
     },
@@ -1238,7 +1238,7 @@
       "title": "Federal Budget Balance",
       "titleEn": "Federal Budget Balance",
       "impact": "low",
-      "forecast": "75.3B",
+      "forecast": "-34.7B",
       "previous": "-166.8B",
       "actual": null
     },
@@ -1250,7 +1250,7 @@
       "title": "TIC Long-Term Purchases",
       "titleEn": "TIC Long-Term Purchases",
       "impact": "low",
-      "forecast": "125.7B",
+      "forecast": "75.2B",
       "previous": "-27.9B",
       "actual": null
     },
