@@ -1,4 +1,4 @@
-/* 全球新闻简报：只渲染同目录 data.json。外部文字一律 textContent。 */
+/* 全球新闻扫描简报概览：只渲染同目录 data.json。外部文字一律 textContent。 */
 (function () {
   "use strict";
 

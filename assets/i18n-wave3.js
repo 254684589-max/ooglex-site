@@ -1307,6 +1307,7 @@
 
   var LATEST = {
     "最新消息是什么？": "What's Latest?",
+    "全球新闻扫描简报概览": "Global News Scan Brief Overview",
     "新闻 · 市场 · 情报": "News · Markets · Intelligence",
     "📊 市场快照": "📊 Market Snapshot",
     "今日重点": "Top Story",
