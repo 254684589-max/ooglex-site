@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-13T21:50:28Z",
-  "asOf": "2026-10-13",
+  "updatedAt": "2026-10-14T17:27:24Z",
+  "asOf": "2026-10-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-11 ~ 2026-10-17",
-  "count": 110,
+  "count": 111,
   "highCount": 13,
   "events": [
     {
@@ -331,7 +331,19 @@
       "actual": null
     },
     {
-      "ts": "2026-10-14T02:03:00Z",
+      "ts": "2026-10-14T02:10:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "欧央行行长讲话",
+      "titleEn": "ECB President Lagarde Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-14T02:31:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -343,7 +355,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-14T02:04:00Z",
+      "ts": "2026-10-14T02:31:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -352,18 +364,6 @@
       "impact": "low",
       "forecast": "116.8B",
       "previous": "119.1B",
-      "actual": null
-    },
-    {
-      "ts": "2026-10-14T02:10:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "欧央行行长讲话",
-      "titleEn": "ECB President Lagarde Speaks",
-      "impact": "medium",
-      "forecast": null,
-      "previous": null,
       "actual": null
     },
     {
@@ -427,30 +427,6 @@
       "actual": null
     },
     {
-      "ts": "2026-10-14T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "货币供应 同比",
-      "titleEn": "M2 Money Supply y/y",
-      "impact": "low",
-      "forecast": "7.4%",
-      "previous": "7.5%",
-      "actual": null
-    },
-    {
-      "ts": "2026-10-14T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Loans",
-      "titleEn": "New Loans",
-      "impact": "low",
-      "forecast": "1025B",
-      "previous": "60B",
-      "actual": null
-    },
-    {
       "ts": "2026-10-14T08:30:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -463,7 +439,31 @@
       "actual": null
     },
     {
-      "ts": "2026-10-14T09:34:00Z",
+      "ts": "2026-10-14T09:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "货币供应 同比",
+      "titleEn": "M2 Money Supply y/y",
+      "impact": "low",
+      "forecast": "7.4%",
+      "previous": "7.5%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-14T09:01:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Loans",
+      "titleEn": "New Loans",
+      "impact": "low",
+      "forecast": "1025B",
+      "previous": "60B",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-14T09:38:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -601,6 +601,18 @@
       "flag": "🇺🇸",
       "title": "Beige Book",
       "titleEn": "Beige Book",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-14T19:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Goolsbee Speaks",
       "impact": "low",
       "forecast": null,
       "previous": null,
@@ -1022,7 +1034,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "76B",
       "previous": "85B",
       "actual": null
     },
@@ -1034,7 +1046,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-0.2M",
       "previous": "-3.2M",
       "actual": null
     },
@@ -1202,7 +1214,7 @@
       "title": "Foreign Securities Purchases",
       "titleEn": "Foreign Securities Purchases",
       "impact": "low",
-      "forecast": null,
+      "forecast": "23.59B",
       "previous": "20.65B",
       "actual": null
     },
