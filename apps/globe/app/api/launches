@@ -1,1871 +1,8 @@
 {
- "count": 26,
+ "count": 25,
  "next": null,
  "previous": null,
  "results": [
-  {
-   "id": "ad358a4d-c541-409b-9366-9c2f2da4aeb9",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/ad358a4d-c541-409b-9366-9c2f2da4aeb9/",
-   "name": "Falcon 9 Block 5 | O3b mPower 11-13",
-   "response_mode": "detailed",
-   "slug": "falcon-9-block-5-o3b-mpower-11-13",
-   "launch_designator": "2026-208",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-09-14T00:37:56Z",
-   "net": "2026-09-13T18:49:00Z",
-   "net_precision": {
-    "id": 1,
-    "name": "Minute",
-    "abbrev": "MIN",
-    "description": "The T-0 is accurate to the minute."
-   },
-   "window_end": "2026-09-13T20:16:00Z",
-   "window_start": "2026-09-13T18:49:00Z",
-   "image": {
-    "id": 1736,
-    "name": "Falcon 9 liftoff from LC-39A",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-    "credit": "SpaceX",
-    "license": {
-     "id": 5,
-     "name": "CC BY-NC 2.0",
-     "priority": 1,
-     "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-    },
-    "single_use": false,
-    "variants": []
-   },
-   "infographic": null,
-   "probability": 75,
-   "weather_concerns": "Cumulus Cloud Rule, Surface Electric Fields Rule, Anvil Cloud Rules",
-   "failreason": "",
-   "hashtag": null,
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 121,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-    "name": "SpaceX",
-    "abbrev": "SpX",
-    "type": {
-     "id": 3,
-     "name": "Commercial"
-    },
-    "featured": true,
-    "country": [
-     {
-      "id": 2,
-      "name": "United States of America",
-      "alpha_2_code": "US",
-      "alpha_3_code": "USA",
-      "nationality_name": "American",
-      "nationality_name_composed": "Americano"
-     }
-    ],
-    "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-    "administrator": "CEO: Elon Musk",
-    "founding_year": 2002,
-    "launchers": "Falcon | Starship",
-    "spacecraft": "Dragon",
-    "parent": null,
-    "image": {
-     "id": 1736,
-     "name": "Falcon 9 liftoff from LC-39A",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "logo": {
-     "id": 186,
-     "name": "SpaceX logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 94,
-     "name": "SpaceX social logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 738,
-    "consecutive_successful_launches": 223,
-    "successful_launches": 723,
-    "failed_launches": 15,
-    "pending_launches": 131,
-    "consecutive_successful_landings": 32,
-    "successful_landings": 683,
-    "failed_landings": 29,
-    "attempted_landings": 711,
-    "successful_landings_spacecraft": 63,
-    "failed_landings_spacecraft": 3,
-    "attempted_landings_spacecraft": 68,
-    "successful_landings_payload": 1,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 1,
-    "info_url": "https://www.spacex.com/",
-    "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-    "social_media_links": [
-     {
-      "id": 427,
-      "social_media": {
-       "id": 3,
-       "name": "Homepage",
-       "url": null,
-       "logo": null
-      },
-      "url": "https://www.spacex.com/"
-     },
-     {
-      "id": 428,
-      "social_media": {
-       "id": 1,
-       "name": "X",
-       "url": "https://x.com",
-       "logo": {
-        "id": 2320,
-        "name": "X logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-        "credit": "X",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://x.com/spacex/"
-     },
-     {
-      "id": 429,
-      "social_media": {
-       "id": 6,
-       "name": "Youtube",
-       "url": "https://www.youtube.com/",
-       "logo": {
-        "id": 2356,
-        "name": "YouTube logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-        "credit": "YouTube",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://www.youtube.com/@spacex"
-     },
-     {
-      "id": 430,
-      "social_media": {
-       "id": 4,
-       "name": "LinkedIn",
-       "url": "https://www.linkedin.com/",
-       "logo": {
-        "id": 2321,
-        "name": "LinkedIn logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-        "credit": "LinkedIn",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://www.linkedin.com/company/spacex/"
-     }
-    ]
-   },
-   "rocket": {
-    "id": 8448,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 164,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/164/",
-     "name": "Falcon 9",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 1,
-       "name": "Falcon",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 121,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-         "name": "SpaceX",
-         "abbrev": "SpX",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": true,
-         "country": [
-          {
-           "id": 2,
-           "name": "United States of America",
-           "alpha_2_code": "US",
-           "alpha_3_code": "USA",
-           "nationality_name": "American",
-           "nationality_name_composed": "Americano"
-          }
-         ],
-         "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-         "administrator": "CEO: Elon Musk",
-         "founding_year": 2002,
-         "launchers": "Falcon | Starship",
-         "spacecraft": "Dragon",
-         "parent": null,
-         "image": {
-          "id": 1736,
-          "name": "Falcon 9 liftoff from LC-39A",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": false,
-          "variants": []
-         },
-         "logo": {
-          "id": 186,
-          "name": "SpaceX logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 94,
-          "name": "SpaceX social logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 738,
-         "consecutive_successful_launches": 223,
-         "successful_launches": 723,
-         "failed_launches": 15,
-         "pending_launches": 131,
-         "consecutive_successful_landings": 32,
-         "successful_landings": 683,
-         "failed_landings": 29,
-         "attempted_landings": 711,
-         "successful_landings_spacecraft": 63,
-         "failed_landings_spacecraft": 3,
-         "attempted_landings_spacecraft": 68,
-         "successful_landings_payload": 1,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 1,
-         "info_url": "https://www.spacex.com/",
-         "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-         "social_media_links": [
-          {
-           "id": 427,
-           "social_media": {
-            "id": 3,
-            "name": "Homepage",
-            "url": null,
-            "logo": null
-           },
-           "url": "https://www.spacex.com/"
-          },
-          {
-           "id": 428,
-           "social_media": {
-            "id": 1,
-            "name": "X",
-            "url": "https://x.com",
-            "logo": {
-             "id": 2320,
-             "name": "X logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-             "credit": "X",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://x.com/spacex/"
-          },
-          {
-           "id": 429,
-           "social_media": {
-            "id": 6,
-            "name": "Youtube",
-            "url": "https://www.youtube.com/",
-            "logo": {
-             "id": 2356,
-             "name": "YouTube logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-             "credit": "YouTube",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.youtube.com/@spacex"
-          },
-          {
-           "id": 430,
-           "social_media": {
-            "id": 4,
-            "name": "LinkedIn",
-            "url": "https://www.linkedin.com/",
-            "logo": {
-             "id": 2321,
-             "name": "LinkedIn logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-             "credit": "LinkedIn",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.linkedin.com/company/spacex/"
-          }
-         ]
-        }
-       ],
-       "parent": null,
-       "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
-       "active": true,
-       "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
-       "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
-       "failed_landings": 19,
-       "consecutive_successful_landings": 328
-      },
-      {
-       "response_mode": "detailed",
-       "id": 176,
-       "name": "Falcon 9",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 121,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-         "name": "SpaceX",
-         "abbrev": "SpX",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": true,
-         "country": [
-          {
-           "id": 2,
-           "name": "United States of America",
-           "alpha_2_code": "US",
-           "alpha_3_code": "USA",
-           "nationality_name": "American",
-           "nationality_name_composed": "Americano"
-          }
-         ],
-         "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-         "administrator": "CEO: Elon Musk",
-         "founding_year": 2002,
-         "launchers": "Falcon | Starship",
-         "spacecraft": "Dragon",
-         "parent": null,
-         "image": {
-          "id": 1736,
-          "name": "Falcon 9 liftoff from LC-39A",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": false,
-          "variants": []
-         },
-         "logo": {
-          "id": 186,
-          "name": "SpaceX logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 94,
-          "name": "SpaceX social logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-          "credit": "SpaceX",
-          "license": {
-           "id": 5,
-           "name": "CC BY-NC 2.0",
-           "priority": 1,
-           "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 738,
-         "consecutive_successful_launches": 223,
-         "successful_launches": 723,
-         "failed_launches": 15,
-         "pending_launches": 131,
-         "consecutive_successful_landings": 32,
-         "successful_landings": 683,
-         "failed_landings": 29,
-         "attempted_landings": 711,
-         "successful_landings_spacecraft": 63,
-         "failed_landings_spacecraft": 3,
-         "attempted_landings_spacecraft": 68,
-         "successful_landings_payload": 1,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 1,
-         "info_url": "https://www.spacex.com/",
-         "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-         "social_media_links": [
-          {
-           "id": 427,
-           "social_media": {
-            "id": 3,
-            "name": "Homepage",
-            "url": null,
-            "logo": null
-           },
-           "url": "https://www.spacex.com/"
-          },
-          {
-           "id": 428,
-           "social_media": {
-            "id": 1,
-            "name": "X",
-            "url": "https://x.com",
-            "logo": {
-             "id": 2320,
-             "name": "X logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-             "credit": "X",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://x.com/spacex/"
-          },
-          {
-           "id": 429,
-           "social_media": {
-            "id": 6,
-            "name": "Youtube",
-            "url": "https://www.youtube.com/",
-            "logo": {
-             "id": 2356,
-             "name": "YouTube logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-             "credit": "YouTube",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.youtube.com/@spacex"
-          },
-          {
-           "id": 430,
-           "social_media": {
-            "id": 4,
-            "name": "LinkedIn",
-            "url": "https://www.linkedin.com/",
-            "logo": {
-             "id": 2321,
-             "name": "LinkedIn logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-             "credit": "LinkedIn",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.linkedin.com/company/spacex/"
-          }
-         ]
-        }
-       ],
-       "parent": {
-        "response_mode": "normal",
-        "id": 1,
-        "name": "Falcon",
-        "manufacturer": [
-         {
-          "response_mode": "normal",
-          "id": 121,
-          "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-          "name": "SpaceX",
-          "abbrev": "SpX",
-          "type": {
-           "id": 3,
-           "name": "Commercial"
-          },
-          "featured": true,
-          "country": [
-           {
-            "id": 2,
-            "name": "United States of America",
-            "alpha_2_code": "US",
-            "alpha_3_code": "USA",
-            "nationality_name": "American",
-            "nationality_name_composed": "Americano"
-           }
-          ],
-          "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-          "administrator": "CEO: Elon Musk",
-          "founding_year": 2002,
-          "launchers": "Falcon | Starship",
-          "spacecraft": "Dragon",
-          "parent": null,
-          "image": {
-           "id": 1736,
-           "name": "Falcon 9 liftoff from LC-39A",
-           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-           "credit": "SpaceX",
-           "license": {
-            "id": 5,
-            "name": "CC BY-NC 2.0",
-            "priority": 1,
-            "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-           },
-           "single_use": false,
-           "variants": []
-          },
-          "logo": {
-           "id": 186,
-           "name": "SpaceX logo",
-           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-           "credit": "SpaceX",
-           "license": {
-            "id": 5,
-            "name": "CC BY-NC 2.0",
-            "priority": 1,
-            "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-           },
-           "single_use": true,
-           "variants": []
-          },
-          "social_logo": {
-           "id": 94,
-           "name": "SpaceX social logo",
-           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-           "credit": "SpaceX",
-           "license": {
-            "id": 5,
-            "name": "CC BY-NC 2.0",
-            "priority": 1,
-            "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-           },
-           "single_use": true,
-           "variants": []
-          }
-         }
-        ],
-        "parent": null
-       },
-       "description": "",
-       "active": true,
-       "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
-       "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
-       "failed_landings": 15,
-       "consecutive_successful_landings": 322
-      }
-     ],
-     "full_name": "Falcon 9 Block 5",
-     "variant": "Block 5",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 121,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-      "name": "SpaceX",
-      "abbrev": "SpX",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 2,
-        "name": "United States of America",
-        "alpha_2_code": "US",
-        "alpha_3_code": "USA",
-        "nationality_name": "American",
-        "nationality_name_composed": "Americano"
-       }
-      ],
-      "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-      "administrator": "CEO: Elon Musk",
-      "founding_year": 2002,
-      "launchers": "Falcon | Starship",
-      "spacecraft": "Dragon",
-      "parent": null,
-      "image": {
-       "id": 1736,
-       "name": "Falcon 9 liftoff from LC-39A",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 186,
-       "name": "SpaceX logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 94,
-       "name": "SpaceX social logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 738,
-      "consecutive_successful_launches": 223,
-      "successful_launches": 723,
-      "failed_launches": 15,
-      "pending_launches": 131,
-      "consecutive_successful_landings": 32,
-      "successful_landings": 683,
-      "failed_landings": 29,
-      "attempted_landings": 711,
-      "successful_landings_spacecraft": 63,
-      "failed_landings_spacecraft": 3,
-      "attempted_landings_spacecraft": 68,
-      "successful_landings_payload": 1,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 1,
-      "info_url": "https://www.spacex.com/",
-      "wiki_url": "https://en.wikipedia.org/wiki/SpaceX",
-      "social_media_links": [
-       {
-        "id": 427,
-        "social_media": {
-         "id": 3,
-         "name": "Homepage",
-         "url": null,
-         "logo": null
-        },
-        "url": "https://www.spacex.com/"
-       },
-       {
-        "id": 428,
-        "social_media": {
-         "id": 1,
-         "name": "X",
-         "url": "https://x.com",
-         "logo": {
-          "id": 2320,
-          "name": "X logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-          "credit": "X",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://x.com/spacex/"
-       },
-       {
-        "id": 429,
-        "social_media": {
-         "id": 6,
-         "name": "Youtube",
-         "url": "https://www.youtube.com/",
-         "logo": {
-          "id": 2356,
-          "name": "YouTube logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_20250321073112.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/youtube_logo_image_thumbnail_20250321073112.png",
-          "credit": "YouTube",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.youtube.com/@spacex"
-       },
-       {
-        "id": 430,
-        "social_media": {
-         "id": 4,
-         "name": "LinkedIn",
-         "url": "https://www.linkedin.com/",
-         "logo": {
-          "id": 2321,
-          "name": "LinkedIn logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-          "credit": "LinkedIn",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.linkedin.com/company/spacex/"
-       }
-      ]
-     },
-     "program": [
-      {
-       "response_mode": "normal",
-       "id": 5,
-       "url": "https://ll.thespacedevs.com/2.3.0/programs/5/",
-       "name": "Commercial Crew Program",
-       "image": {
-        "id": 1869,
-        "name": "Commercial Crew Program logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/commercial2520_program_20200820201209.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305194004.png",
-        "credit": "NASA",
-        "license": {
-         "id": 4,
-         "name": "NASA Image and Media Guidelines",
-         "priority": 0,
-         "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-        },
-        "single_use": true,
-        "variants": []
-       },
-       "info_url": "https://www.nasa.gov/exploration/commercial/crew/index.html",
-       "wiki_url": "https://en.wikipedia.org/wiki/Commercial_Crew_Program",
-       "description": "The Commercial Crew Program (CCP) is a human spaceflight program operated by NASA, in association with American aerospace manufacturers Boeing and SpaceX. The program conducts rotations between the expeditions of the International Space Station program, transporting crews to and from the International Space Station (ISS) aboard Boeing Starliner and SpaceX Crew Dragon capsules, in the first crewed orbital spaceflights operated by private companies.",
-       "agencies": [
-        {
-         "response_mode": "list",
-         "id": 80,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/80/",
-         "name": "Boeing",
-         "abbrev": "BA",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         }
-        },
-        {
-         "response_mode": "list",
-         "id": 44,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/44/",
-         "name": "National Aeronautics and Space Administration",
-         "abbrev": "NASA",
-         "type": {
-          "id": 1,
-          "name": "Government"
-         }
-        },
-        {
-         "response_mode": "list",
-         "id": 121,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-         "name": "SpaceX",
-         "abbrev": "SpX",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         }
-        }
-       ],
-       "start_date": "2011-04-18T00:00:00Z",
-       "end_date": null,
-       "mission_patches": [],
-       "type": {
-        "id": 2,
-        "name": "Human Spaceflight"
-       }
-      },
-      {
-       "response_mode": "normal",
-       "id": 11,
-       "url": "https://ll.thespacedevs.com/2.3.0/programs/11/",
-       "name": "Commercial Resupply Services",
-       "image": {
-        "id": 1878,
-        "name": "[AUTO] Commercial Resupply Services - image",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/commercial2520_program_20201129212219.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305194021.png",
-        "credit": null,
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       },
-       "info_url": null,
-       "wiki_url": "https://en.wikipedia.org/wiki/Commercial_Resupply_Services#Commercial_Resupply_Services",
-       "description": "Commercial Resupply Services (CRS) are a series of flights awarded by NASA for the delivery of cargo and supplies to the International Space Station.The first CRS contracts were signed in 2008 and awarded $1.6 billion to SpaceX for twelve cargo Dragon and $1.9 billion to Orbital Sciences for eight Cygnus flights, covering deliveries to 2016. The Falcon 9 and Antares rockets were also developed under the CRS program to deliver cargo spacecraft to the ISS.",
-       "agencies": [
-        {
-         "response_mode": "list",
-         "id": 44,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/44/",
-         "name": "National Aeronautics and Space Administration",
-         "abbrev": "NASA",
-         "type": {
-          "id": 1,
-          "name": "Government"
-         }
-        },
-        {
-         "response_mode": "list",
-         "id": 257,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/257/",
-         "name": "Northrop Grumman Space Systems",
-         "abbrev": "NGSS",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         }
-        },
-        {
-         "response_mode": "list",
-         "id": 1020,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/1020/",
-         "name": "Sierra Nevada Corporation",
-         "abbrev": "SNC",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         }
-        },
-        {
-         "response_mode": "list",
-         "id": 121,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-         "name": "SpaceX",
-         "abbrev": "SpX",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         }
-        }
-       ],
-       "start_date": "2008-12-23T00:00:00Z",
-       "end_date": null,
-       "mission_patches": [],
-       "type": {
-        "id": 2,
-        "name": "Human Spaceflight"
-       }
-      }
-     ],
-     "reusable": true,
-     "image": {
-      "id": 1736,
-      "name": "Falcon 9 liftoff from LC-39A",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-      "credit": "SpaceX",
-      "license": {
-       "id": 5,
-       "name": "CC BY-NC 2.0",
-       "priority": 1,
-       "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-      },
-      "single_use": false,
-      "variants": []
-     },
-     "info_url": "https://www.spacex.com/vehicles/falcon-9/",
-     "wiki_url": "https://en.wikipedia.org/wiki/Falcon_9",
-     "description": "Falcon 9 is a two-stage rocket designed and manufactured by SpaceX for the reliable and safe transport of satellites and the Dragon spacecraft into orbit. The Block 5 variant is the fifth major interval aimed at improving upon the ability for rapid reusability.",
-     "alias": "",
-     "min_stage": 2,
-     "max_stage": 2,
-     "length": 70.0,
-     "diameter": 3.65,
-     "maiden_flight": "2018-05-11",
-     "launch_cost": 52000000,
-     "launch_mass": 549.0,
-     "leo_capacity": 22800.0,
-     "gto_capacity": 8300.0,
-     "geo_capacity": null,
-     "sso_capacity": null,
-     "to_thrust": 7607.0,
-     "apogee": 200.0,
-     "total_launch_count": 639,
-     "consecutive_successful_launches": 341,
-     "successful_launches": 638,
-     "failed_launches": 1,
-     "pending_launches": 115,
-     "attempted_landings": 629,
-     "successful_landings": 624,
-     "failed_landings": 5,
-     "consecutive_successful_landings": 324,
-     "fastest_turnaround": "PT38M31S"
-    },
-    "launcher_stage": [
-     {
-      "id": 641,
-      "type": "Core",
-      "reused": true,
-      "launcher_flight_number": 29,
-      "launcher": {
-       "response_mode": "normal",
-       "id": 123,
-       "url": "https://ll.thespacedevs.com/2.3.0/launchers/123/",
-       "flight_proven": true,
-       "serial_number": "B1080",
-       "is_placeholder": false,
-       "status": {
-        "id": 3,
-        "name": "active"
-       },
-       "image": {
-        "id": 1640,
-        "name": "B1080 landing on LZ-1 during CRS SpX-30 launch",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/b1080_image_20240322071018.jpeg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/b1080_image_thumbnail_20240322071019.jpeg",
-        "credit": "SpaceX",
-        "license": {
-         "id": 5,
-         "name": "CC BY-NC 2.0",
-         "priority": 1,
-         "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-        },
-        "single_use": false,
-        "variants": []
-       },
-       "details": "Falcon 9 Block 5 booster first used for the Axiom Space Mission 2 Crew Dragon mission.",
-       "successful_landings": 29,
-       "attempted_landings": 29,
-       "flights": 29,
-       "last_launch_date": "2026-09-13T18:49:00Z",
-       "first_launch_date": "2023-05-21T21:37:09Z",
-       "fastest_turnaround": "P13DT12H34M20S"
-      },
-      "previous_flight_date": "2026-07-14T09:10:12Z",
-      "turn_around_time": "P61DT9H38M48S",
-      "landing": {
-       "id": 1918,
-       "url": "https://ll.thespacedevs.com/2.3.0/landings/1918/",
-       "attempt": true,
-       "success": true,
-       "description": "The Falcon 9 first stage B1080 has landed on ASDS ASOG after its 29th flight.",
-       "downrange_distance": 660.0,
-       "landing_location": {
-        "id": 17,
-        "name": "A Shortfall of Gravitas",
-        "active": true,
-        "abbrev": "ASOG",
-        "description": "The fourth ASDS barge, A Shortfall of Gravitas (ASOG) is currently used to recover Falcon 9 and Heavy boosters in the Altantic Ocean.",
-        "location": null,
-        "longitude": null,
-        "latitude": null,
-        "image": {
-         "id": 1971,
-         "name": "ASOG with booster",
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/asog_with_boost_image_20240310164859.jpeg",
-         "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/asog_with_boost_image_thumbnail_20240310164859.jpeg",
-         "credit": "SpaceX",
-         "license": {
-          "id": 5,
-          "name": "CC BY-NC 2.0",
-          "priority": 1,
-          "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-         },
-         "single_use": true,
-         "variants": []
-        },
-        "successful_landings": 167,
-        "attempted_landings": 168,
-        "failed_landings": 1,
-        "celestial_body": {
-         "response_mode": "normal",
-         "id": 1,
-         "name": "Earth",
-         "type": {
-          "id": 1,
-          "name": "Planet"
-         },
-         "diameter": 12742000.0,
-         "mass": 5.972168e+24,
-         "gravity": 9.80655,
-         "length_of_day": "1 00:00:00",
-         "atmosphere": true,
-         "image": {
-          "id": 2040,
-          "name": "Earth (Apollo 17)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-          "credit": "NASA",
-          "license": {
-           "id": 4,
-           "name": "NASA Image and Media Guidelines",
-           "priority": 0,
-           "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-         "wiki_url": "https://en.wikipedia.org/wiki/Earth"
-        }
-       },
-       "type": {
-        "id": 1,
-        "name": "Autonomous Spaceport Drone Ship",
-        "abbrev": "ASDS",
-        "description": "An autonomous spaceport drone ship (ASDS) is an ocean-going vessel derived from a deck barge, outfitted with station-keeping engines and a large landing platform. Construction of such ships was commissioned by aerospace company SpaceX to allow for recovery of rocket first-stages at sea for high-velocity missions which do not carry enough fuel to return to the launch site after lofting spacecraft onto an orbital trajectory."
-       }
-      },
-      "previous_flight": {
-       "id": "9999a3a3-b15d-4ee3-b70f-acf00d10d912",
-       "url": "https://ll.thespacedevs.com/2.3.0/launches/9999a3a3-b15d-4ee3-b70f-acf00d10d912/",
-       "name": "Falcon 9 Block 5 | Starlink Group 10-45"
-      }
-     }
-    ],
-    "spacecraft_stage": [],
-    "payloads": []
-   },
-   "mission": {
-    "id": 7037,
-    "name": "O3b mPower 11-13",
-    "type": "Communications",
-    "description": "3 high-throughput communications satellites in Medium Earth Orbit (MEO) built by Boeing and operated by SES.",
-    "image": null,
-    "orbit": {
-     "id": 12,
-     "name": "Medium Earth Orbit",
-     "abbrev": "MEO",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 203,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/203/",
-      "name": "SES",
-      "abbrev": "SES",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 85,
-        "name": "Luxembourg",
-        "alpha_2_code": "LU",
-        "alpha_3_code": "LUX",
-        "nationality_name": "Luxembourger",
-        "nationality_name_composed": "Luxembourgish"
-       }
-      ],
-      "description": null,
-      "administrator": null,
-      "founding_year": null,
-      "launchers": "",
-      "spacecraft": "",
-      "parent": null,
-      "image": null,
-      "logo": null,
-      "social_logo": null,
-      "total_launch_count": 0,
-      "consecutive_successful_launches": 0,
-      "successful_launches": 0,
-      "failed_launches": 0,
-      "pending_launches": 0,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": null,
-      "wiki_url": "https://en.wikipedia.org/wiki/SES_S.A.",
-      "social_media_links": []
-     }
-    ],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 80,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/80/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 121,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/121/",
-      "name": "SpaceX",
-      "abbrev": "SpX",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 2,
-        "name": "United States of America",
-        "alpha_2_code": "US",
-        "alpha_3_code": "USA",
-        "nationality_name": "American",
-        "nationality_name_composed": "Americano"
-       }
-      ],
-      "description": "Space Exploration Technologies Corp., known as SpaceX, is an American aerospace manufacturer and space transport services company headquartered in Hawthorne, California. It was founded in 2002 by entrepreneur Elon Musk with the goal of reducing space transportation costs and enabling the colonization of Mars. SpaceX operates from many pads, on the East Coast of the US they operate from SLC-40 at Cape Canaveral Space Force Station and historic LC-39A at Kennedy Space Center. They also operate from SLC-4E at Vandenberg Space Force Base, California, usually for polar launches. Another launch site is being developed at Boca Chica, Texas.",
-      "administrator": "CEO: Elon Musk",
-      "founding_year": 2002,
-      "launchers": "Falcon | Starship",
-      "spacecraft": "Dragon",
-      "parent": null,
-      "image": {
-       "id": 1736,
-       "name": "Falcon 9 liftoff from LC-39A",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193628.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 186,
-       "name": "SpaceX logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_logo_20220826094919.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185138.png",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 94,
-       "name": "SpaceX social logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_20260407054626.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/spacex_social_l_image_thumbnail_20260407054626.jpeg",
-       "credit": "SpaceX",
-       "license": {
-        "id": 5,
-        "name": "CC BY-NC 2.0",
-        "priority": 1,
-        "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-       },
-       "single_use": true,
-       "variants": []
-      }
-     }
-    ],
-    "name": "Space Launch Complex 40",
-    "image": {
-     "id": 2113,
-     "name": "F9 liftoff from SLC-40 (SES-24)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/f9_liftoff_from_image_20240621050513.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/f9_liftoff_from_image_thumbnail_20240621050514.jpeg",
-     "credit": "SpaceX",
-     "license": {
-      "id": 5,
-      "name": "CC BY-NC 2.0",
-      "priority": 1,
-      "link": "https://creativecommons.org/licenses/by-nc/2.0/"
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "description": "",
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/Cape_Canaveral_Air_Force_Station_Space_Launch_Complex_40",
-    "map_url": "https://www.google.com/maps?q=28.56194122,-80.57735736",
-    "latitude": 28.56194122,
-    "longitude": -80.57735736,
-    "country": {
-     "id": 2,
-     "name": "United States of America",
-     "alpha_2_code": "US",
-     "alpha_3_code": "USA",
-     "nationality_name": "American",
-     "nationality_name_composed": "Americano"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_80_20200803143323.jpg",
-    "total_launch_count": 403,
-    "orbital_launch_attempt_count": 403,
-    "fastest_turnaround": "P1DT21H",
-    "location": {
-     "response_mode": "normal",
-     "id": 12,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/12/",
-     "name": "Cape Canaveral SFS, FL, USA",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
-      "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
-      "failed_landings": 49
-     },
-     "active": true,
-     "country": {
-      "id": 2,
-      "name": "United States of America",
-      "alpha_2_code": "US",
-      "alpha_3_code": "USA",
-      "nationality_name": "American",
-      "nationality_name_composed": "Americano"
-     },
-     "description": "Cape Canaveral Space Force Station (CCSFS) is an installation of the United States Space Force's Space Launch Delta 45, located on Cape Canaveral in Brevard County, Florida.",
-     "image": {
-      "id": 2200,
-      "name": "Cape Canaveral & KSC seen from orbit (STS-43)",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_20240918151615.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cape_canaveral__image_thumbnail_20240918151616.jpeg",
-      "credit": "NASA",
-      "license": {
-       "id": 4,
-       "name": "NASA Image and Media Guidelines",
-       "priority": 0,
-       "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_12_20200803142519.jpg",
-     "longitude": -80.577778,
-     "latitude": 28.488889,
-     "timezone_name": "America/New_York",
-     "total_launch_count": 1131,
-     "total_landing_count": 83
-    }
-   },
-   "webcast_live": false,
-   "program": [],
-   "orbital_launch_attempt_count": 7389,
-   "location_launch_attempt_count": 1129,
-   "pad_launch_attempt_count": 401,
-   "agency_launch_attempt_count": 728,
-   "orbital_launch_attempt_count_year": 216,
-   "location_launch_attempt_count_year": 53,
-   "pad_launch_attempt_count_year": 47,
-   "agency_launch_attempt_count_year": 109,
-   "flightclub_url": "https://flightclub.io/result?llId=ad358a4d-c541-409b-9366-9c2f2da4aeb9",
-   "updates": [
-    {
-     "id": 16111,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Launch success.",
-     "info_url": "https://www.ses.com/news/press-release/sess-final-three-o3b-mpower-satellites-successfully-launched",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-13T23:09:00Z"
-    },
-    {
-     "id": 16110,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "All spacecraft have separated.",
-     "info_url": "https://x.com/spacex/status/2099220930589327483",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-13T19:39:00Z"
-    },
-    {
-     "id": 16109,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Liftoff.",
-     "info_url": "https://x.com/i/broadcasts/1RKjpbVdykQJw",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-13T18:50:00Z"
-    },
-    {
-     "id": 16108,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/ll2_profile_20230311134739.png",
-     "comment": "Unofficial Re-stream by SPACE AFFAIRS has started",
-     "info_url": "https://www.youtube.com/watch?v=2n8k4DZUln8",
-     "created_by": "LL2",
-     "created_on": "2026-09-13T18:33:00Z"
-    },
-    {
-     "id": 16104,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Updated launch weather, 60% GO at start of window (40% at end).",
-     "info_url": "https://45thweathersquadron.nebula.spaceforce.mil/assets/LaunchForecasts/Falcon%209%20MPOWER-F%20L-1%20Forecast%20-%2013%20Sep%20Launch.pdf",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-12T20:28:00Z"
-    },
-    {
-     "id": 16084,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "GO for launch.",
-     "info_url": "https://www.spacex.com/launches/mpower-f",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-09T15:20:00Z"
-    },
-    {
-     "id": 16028,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September 13, TBC.",
-     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=64509.msg2820724#msg2820724",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-04T19:21:00Z"
-    },
-    {
-     "id": 14163,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September.",
-     "info_url": "https://spacenews.com/blue-origins-surprise-terawave-constellation-jolts-leo-broadband-race/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-03-04T16:00:00Z"
-    },
-    {
-     "id": 12779,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET 2H 2026.",
-     "info_url": "https://www.ses.com/sites/default/files/2025-11/SES%20Delivers%20Solid%209%20Months%20and%20Q3%202025%20Results.pdf",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2025-11-06T07:48:00Z"
-    },
-    {
-     "id": 11472,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET 2026, with 3 satellites on board.",
-     "info_url": "https://spacenews.com/boeing-ships-more-o3b-mpower-satellites-with-fixes-ses-might-not-need/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2025-07-03T01:22:00Z"
-    },
-    {
-     "id": 10192,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET late 2026.",
-     "info_url": "https://www.ses.com/sites/default/files/2025-02/2502_FY-2024-Results_Analyst-Presentation_FINAL.pdf",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2025-02-26T07:54:00Z"
-    },
-    {
-     "id": 9577,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Added launch for around Q2 2026.",
-     "info_url": "https://spacenews.com/spacex-launches-redesigned-o3b-mpower-satellites/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2024-12-18T19:18:00Z"
-    }
-   ],
-   "info_urls": [
-    {
-     "priority": 10,
-     "source": "spacex.com",
-     "title": "SpaceX",
-     "description": "SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded in 2002 to revolutionize space technology, with the ultimate goal of enabling people to live on other planets.",
-     "feature_image": null,
-     "url": "https://www.spacex.com/launches/mpower-f",
-     "type": {
-      "id": 1,
-      "name": "Official Page"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     }
-    }
-   ],
-   "vid_urls": [
-    {
-     "priority": 7,
-     "source": "youtube.com",
-     "publisher": "The Space Devs",
-     "title": "SpaceX O3b mPower 11-13",
-     "description": "On Sunday September 13, 2026 at 18:49 UTC, SpaceX launched the O3b mPower 11-13 mission with a Falcon 9 Block 5 from Space Launch Complex 40 at Cape Canaveral SFS, FL, USA.\n\nDescription generated from the Launch Library 2 API.\n——————————————————————\nObject in the Launch Library 2 API: https://ll.thespacedevs.com/2.3.0/launches/ad358a4d-c541-409b-9366-9c2f2da4aeb9/?format=json\nRelated news in the Spaceflight News API: https://api.spaceflightnewsapi.net/v4/articles/?launch=ad358a4d-c541-409b-9366-9c2f2da4aeb9\n——————————————————————\n\nRehosted on YouTube by The Space Devs.\nSupport our work on https://www.patreon.com/TheSpaceDevs\n——————————————————————\nWebsite: https://thespacedevs.com\nX: https://x.com/thespacedevs\nDiscord: https://discord.com/invite/p7ntkNA\n——————————————————————\n\nOrigina...",
-     "feature_image": "https://i.ytimg.com/vi/zZHnf8QB5ok/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=zZHnf8QB5ok",
-     "type": {
-      "id": 4,
-      "name": "Unofficial Re-stream"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-13T19:47:20Z",
-     "end_time": "2026-09-13T20:49:12Z",
-     "live": false
-    },
-    {
-     "priority": 8,
-     "source": "youtube.com",
-     "publisher": "Spaceflight Now",
-     "title": "Live: SpaceX Falcon 9 rocket launches three O3b mPOWER satellites from Cape Canaveral",
-     "description": "Watch live coverage as SpaceX launches a Falcon 9 rocket carrying three O3b mPOWER communications satellites for Luxembourg-based SES. Liftoff  from Space Launch Complex 40 at Cape Canaveral Space Force Station is scheduled for Sunday, September 13, during a launch window that opens at 2:49 p.m. EDT (1849 UTC).\n\nThe first-stage Falcon 9 booster, serial number B1080, launching for a 29th time, will take an easterly trajectory on departure from Florida's Space Coast. About 8.5 minutes into flight it will land on SpaceX's drone ship 'A Shortfall of Gravitas', stationed in the Atlantic Ocean.\n\nOur live coverage with commentary from Spaceflight Now's Will Robinson-Smith will start about one hour prior to launch.\n\nVideos like this are made possible by the support of our members. Join this c...",
-     "feature_image": "https://i.ytimg.com/vi/r0avdYfJO2Q/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=r0avdYfJO2Q",
-     "type": {
-      "id": 3,
-      "name": "Unofficial Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-13T17:48:49Z",
-     "end_time": "2026-09-13T19:43:05Z",
-     "live": false
-    },
-    {
-     "priority": 9,
-     "source": "youtube.com",
-     "publisher": "NASASpaceflight",
-     "title": "SpaceX Launches Falcon 9 with O3b mPOWER 11, 12 & 13",
-     "description": "Launch Window: September 13th from 14:49 to 16:16 EDT (18:49-20:16 UTC)\nCurrent T0: September 13th at 14:49 EDT (18:49 UTC)\n\nMission: Falcon 9 launch of three O3b mPOWER satellites for SES\nLaunch location: Space Launch Complex 40 (SLC-40), Cape Canaveral Space Force Station, Earth.\nTarget orbit: Medium Transfer Orbit \nBooster: B1080-29; 61d 9h 38min 48s turnaround\nPast customer missions: Axiom-2, Euclid, Axiom-3, CRS-30, SES-24, NG-21.\nPast Starlink missions: 6-11, 6-24, 6-52, 6-62, 10-10, 6-69, 12-1, 12-2, 12-4, 10-12, 6-80, 6-75, 10-32, 10-16, 10-30, 10-15, 6-78, 6-100, 10-40, 10-24, 10-54, 10-45.\nSatellites launched: 579, will be 582 after this mission.\nBooster recovery: A Shortfall Of Gravitas (ASOG)\nFairing recovery: Bob\nRocket trajectory: Straight east\nPayload mass: Approximatel...",
-     "feature_image": "https://i.ytimg.com/vi/FgKKtSsyYD4/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=FgKKtSsyYD4",
-     "type": {
-      "id": 3,
-      "name": "Unofficial Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-13T17:50:08Z",
-     "end_time": "2026-09-13T19:44:43Z",
-     "live": false
-    },
-    {
-     "priority": 10,
-     "source": "x.com",
-     "publisher": "SpaceX",
-     "title": "O3b mPOWER Mission",
-     "description": "Livestream on X",
-     "feature_image": "https://pbs.twimg.com/media/HRyLZuxWEAEyyLa.jpg",
-     "url": "https://x.com/i/broadcasts/1RKjpbVdykQJw",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-13T18:36:07Z",
-     "end_time": "2026-09-13T19:37:59Z",
-     "live": false
-    }
-   ],
-   "timeline": [
-    {
-     "type": {
-      "id": 1,
-      "abbrev": "GO for Prop Load",
-      "description": "Launch director verifies go for propellant load"
-     },
-     "relative_time": "-PT38M"
-    },
-    {
-     "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
-     },
-     "relative_time": "-PT35M"
-    },
-    {
-     "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
-     },
-     "relative_time": "-PT35M"
-    },
-    {
-     "type": {
-      "id": 4,
-      "abbrev": "Stage 2 LOX Load",
-      "description": "Start of liquid oxygen loading in the second stage"
-     },
-     "relative_time": "-PT16M"
-    },
-    {
-     "type": {
-      "id": 5,
-      "abbrev": "Engine Chill",
-      "description": "Start of engine chilling"
-     },
-     "relative_time": "-PT7M"
-    },
-    {
-     "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
-     },
-     "relative_time": "-PT1M"
-    },
-    {
-     "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
-     },
-     "relative_time": "-PT1M"
-    },
-    {
-     "type": {
-      "id": 8,
-      "abbrev": "GO for Launch",
-      "description": "Launch director verifies go for launch"
-     },
-     "relative_time": "-PT45S"
-    },
-    {
-     "type": {
-      "id": 9,
-      "abbrev": "Ignition",
-      "description": "Start of the engine ignition sequence"
-     },
-     "relative_time": "-PT3S"
-    },
-    {
-     "type": {
-      "id": 10,
-      "abbrev": "Liftoff",
-      "description": "First upwards movement of the rocket"
-     },
-     "relative_time": "P0D"
-    },
-    {
-     "type": {
-      "id": 11,
-      "abbrev": "Max-Q",
-      "description": "Maximum dynamic pressure"
-     },
-     "relative_time": "PT1M12S"
-    },
-    {
-     "type": {
-      "id": 12,
-      "abbrev": "MECO",
-      "description": "Cut-off of the main engine"
-     },
-     "relative_time": "PT2M27S"
-    },
-    {
-     "type": {
-      "id": 13,
-      "abbrev": "Stage 2 Separation",
-      "description": "Separation of the second stage from the first"
-     },
-     "relative_time": "PT2M31S"
-    },
-    {
-     "type": {
-      "id": 14,
-      "abbrev": "SES-1",
-      "description": "First start of the second engine"
-     },
-     "relative_time": "PT2M37S"
-    },
-    {
-     "type": {
-      "id": 15,
-      "abbrev": "Fairing Separation",
-      "description": "Separation of the payload fairing"
-     },
-     "relative_time": "PT3M18S"
-    },
-    {
-     "type": {
-      "id": 16,
-      "abbrev": "Entry Burn Startup",
-      "description": "Start of the atmospheric entry burn"
-     },
-     "relative_time": "PT6M20S"
-    },
-    {
-     "type": {
-      "id": 17,
-      "abbrev": "Entry Burn Shutdown",
-      "description": "End of the atmospheric entry burn"
-     },
-     "relative_time": "PT6M44S"
-    },
-    {
-     "type": {
-      "id": 20,
-      "abbrev": "SECO-1",
-      "description": "First cut-off of the second engine"
-     },
-     "relative_time": "PT8M2S"
-    },
-    {
-     "type": {
-      "id": 18,
-      "abbrev": "Stage 1 Landing Burn",
-      "description": "Start of the first stage landing burn"
-     },
-     "relative_time": "PT8M23S"
-    },
-    {
-     "type": {
-      "id": 19,
-      "abbrev": "Stage 1 Landing",
-      "description": "Landing of the first stage"
-     },
-     "relative_time": "PT8M46S"
-    },
-    {
-     "type": {
-      "id": 21,
-      "abbrev": "SES-2",
-      "description": "Second start of the second engine"
-     },
-     "relative_time": "PT29M51S"
-    },
-    {
-     "type": {
-      "id": 22,
-      "abbrev": "SECO-2",
-      "description": "Second cut-off of the second engine"
-     },
-     "relative_time": "PT30M38S"
-    },
-    {
-     "type": {
-      "id": 35,
-      "abbrev": "Payload Separation",
-      "description": "Final deployment of the payload from the rocket"
-     },
-     "relative_time": "PT33M41S"
-    },
-    {
-     "type": {
-      "id": 35,
-      "abbrev": "Payload Separation",
-      "description": "Final deployment of the payload from the rocket"
-     },
-     "relative_time": "PT40M41S"
-    },
-    {
-     "type": {
-      "id": 35,
-      "abbrev": "Payload Separation",
-      "description": "Final deployment of the payload from the rocket"
-     },
-     "relative_time": "PT47M41S"
-    }
-   ],
-   "pad_turnaround": "P19DT9H15M22S",
-   "mission_patches": []
-  },
   {
    "id": "8effc13a-c658-4d2e-9f15-8dba4d7fe2dd",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/8effc13a-c658-4d2e-9f15-8dba4d7fe2dd/",
@@ -3073,11 +1210,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -3765,7 +1902,7 @@
        "consecutive_successful_launches": 5,
        "successful_launches": 9,
        "failed_launches": 3,
-       "pending_launches": 0,
+       "pending_launches": 1,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -4056,11 +2193,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -4543,11 +2680,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -4640,7 +2777,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-13T01:40:41Z",
+   "last_updated": "2026-10-14T01:35:17Z",
    "net": "2026-09-16T13:33:54Z",
    "net_precision": {
     "id": 0,
@@ -5130,8 +3267,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P26DT12H2M34S",
-       "time_docked": "P23DT11H52M8S",
+       "time_in_space": "P27DT11H57M29S",
+       "time_docked": "P24DT11H47M3S",
        "flights_count": 1,
        "mission_ends_count": 0,
        "status": {
@@ -5418,7 +3555,7 @@
         "description": "Spacecraft burned up in the atmosphere"
        }
       },
-      "duration": "P26DT12H6M47.006857S",
+      "duration": "P27DT12H1M23.757003S",
       "turn_around_time": null,
       "response_mode": "detailed",
       "launch_crew": [],
@@ -5682,11 +3819,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -6684,11 +4821,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -6916,7 +5053,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -7103,7 +5240,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -7206,15 +5343,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -7297,7 +5434,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -7480,15 +5617,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -7571,7 +5708,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -7851,7 +5988,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -8155,11 +6292,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -8921,11 +7058,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -9691,11 +7828,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -10331,11 +8468,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -11325,11 +9462,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -11519,7 +9656,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -11706,7 +9843,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -11809,15 +9946,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -11900,7 +10037,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -12083,15 +10220,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -12174,7 +10311,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -12454,7 +10591,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -12679,7 +10816,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -12855,11 +10992,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -13139,17 +11276,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -13656,11 +11793,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -14400,11 +12537,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -15213,11 +13350,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -15837,11 +13974,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -16154,7 +14291,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -16341,7 +14478,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -16444,15 +14581,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -16535,7 +14672,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -16718,15 +14855,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -16809,7 +14946,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -17089,7 +15226,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -17393,11 +15530,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -17605,17 +15742,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -17870,7 +16007,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -18057,7 +16194,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -18251,7 +16388,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -18956,7 +17093,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -19192,11 +17329,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -19924,7 +18061,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-13T01:40:37Z",
+   "last_updated": "2026-10-14T01:35:14Z",
    "net": "2026-10-01T15:10:06Z",
    "net_precision": {
     "id": 0,
@@ -20030,7 +18167,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -20217,7 +18354,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -20320,15 +18457,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -20411,7 +18548,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -20594,15 +18731,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -20685,7 +18822,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -20965,7 +19102,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -21081,8 +19218,8 @@
          "single_use": true,
          "variants": []
         },
-        "successful_landings": 7,
-        "attempted_landings": 7,
+        "successful_landings": 8,
+        "attempted_landings": 8,
         "failed_landings": 0,
         "celestial_body": {
          "response_mode": "normal",
@@ -21159,8 +19296,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P31DT13H24M20S",
-       "time_docked": "P29DT3H15M18S",
+       "time_in_space": "P32DT13H19M16S",
+       "time_docked": "P30DT3H10M14S",
        "flights_count": 2,
        "mission_ends_count": 1,
        "status": {
@@ -21332,8 +19469,8 @@
           "parent": null,
           "maiden_flight": "2010-12-08",
           "spacecraft_flown": 23,
-          "total_launch_count": 59,
-          "successful_launches": 57,
+          "total_launch_count": 60,
+          "successful_launches": 58,
           "failed_launches": 2,
           "attempted_landings": 57,
           "successful_landings": 55,
@@ -21438,8 +19575,8 @@
           },
           "maiden_flight": "2019-03-02",
           "spacecraft_flown": 10,
-          "total_launch_count": 37,
-          "successful_launches": 37,
+          "total_launch_count": 38,
+          "successful_launches": 38,
           "failed_launches": 0,
           "attempted_landings": 36,
           "successful_landings": 34,
@@ -21559,7 +19696,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P11DT10H30M31.77153S",
+      "duration": "P12DT10H25M8.537205S",
       "turn_around_time": "P443DT5H40M6S",
       "response_mode": "detailed",
       "launch_crew": [
@@ -21610,7 +19747,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P181DT23H22M47S",
+         "time_in_space": "P182DT23H17M53S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -21679,7 +19816,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P11DT10H21M9S",
+         "time_in_space": "P12DT10H16M13S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -21797,7 +19934,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P11DT10H21M47S",
+         "time_in_space": "P12DT10H16M51S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -21866,7 +20003,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P11DT10H23M7S",
+         "time_in_space": "P12DT10H18M9S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -21938,7 +20075,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P181DT23H22M47S",
+         "time_in_space": "P182DT23H17M53S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -22007,7 +20144,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P11DT10H21M9S",
+         "time_in_space": "P12DT10H16M13S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -22125,7 +20262,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P11DT10H21M47S",
+         "time_in_space": "P12DT10H16M51S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -22194,7 +20331,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P11DT10H23M7S",
+         "time_in_space": "P12DT10H18M9S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -22717,11 +20854,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -23272,17 +21409,17 @@
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
@@ -23564,7 +21701,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -23751,7 +21888,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -23854,15 +21991,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -23945,7 +22082,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -24128,15 +22265,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -24219,7 +22356,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -24499,7 +22636,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -24760,7 +22897,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -24936,11 +23073,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -25279,7 +23416,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -25466,7 +23603,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -25569,15 +23706,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       }
      ],
      "full_name": "Falcon Heavy",
@@ -25660,7 +23797,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -26468,11 +24605,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -27448,11 +25585,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -28375,11 +26512,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -28620,7 +26757,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -28807,7 +26944,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -28910,15 +27047,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -29001,7 +27138,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -29184,15 +27321,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -29275,7 +27412,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -29555,7 +27692,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -29881,11 +28018,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -30253,17 +28390,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -30285,17 +28422,17 @@
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
@@ -30553,7 +28690,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -30740,7 +28877,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -30843,15 +28980,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -30934,7 +29071,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -31117,15 +29254,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -31208,7 +29345,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -31488,7 +29625,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -31713,7 +29850,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -31889,11 +30026,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
@@ -32429,14 +30566,14 @@
    "name": "Falcon 9 Block 5 | Dragon CRS-2 SpX-35",
    "response_mode": "detailed",
    "slug": "falcon-9-block-5-dragon-crs-2-spx-35",
-   "launch_designator": null,
+   "launch_designator": "2026-233",
    "status": {
     "id": 3,
     "name": "Launch Successful",
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-13T11:31:18Z",
+   "last_updated": "2026-10-14T01:35:07Z",
    "net": "2026-10-13T10:33:44Z",
    "net_precision": {
     "id": 0,
@@ -32542,7 +30679,7 @@
     "consecutive_successful_launches": 223,
     "successful_launches": 723,
     "failed_launches": 15,
-    "pending_launches": 131,
+    "pending_launches": 133,
     "consecutive_successful_landings": 32,
     "successful_landings": 683,
     "failed_landings": 29,
@@ -32729,7 +30866,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -32832,15 +30969,15 @@
        "description": "Family of two-stage partially reusable orbital launch vehicles developed by SpaceX.",
        "active": true,
        "maiden_flight": "2006-03-24",
-       "total_launch_count": 713,
-       "consecutive_successful_launches": 343,
-       "successful_launches": 706,
+       "total_launch_count": 715,
+       "consecutive_successful_launches": 345,
+       "successful_launches": 708,
        "failed_launches": 7,
-       "pending_launches": 130,
-       "attempted_landings": 687,
-       "successful_landings": 669,
+       "pending_launches": 129,
+       "attempted_landings": 689,
+       "successful_landings": 671,
        "failed_landings": 19,
-       "consecutive_successful_landings": 328
+       "consecutive_successful_landings": 330
       },
       {
        "response_mode": "detailed",
@@ -32923,7 +31060,7 @@
          "consecutive_successful_launches": 223,
          "successful_launches": 723,
          "failed_launches": 15,
-         "pending_launches": 131,
+         "pending_launches": 133,
          "consecutive_successful_landings": 32,
          "successful_landings": 683,
          "failed_landings": 29,
@@ -33106,15 +31243,15 @@
        "description": "",
        "active": true,
        "maiden_flight": "2010-06-04",
-       "total_launch_count": 694,
-       "consecutive_successful_launches": 339,
-       "successful_launches": 690,
+       "total_launch_count": 696,
+       "consecutive_successful_launches": 341,
+       "successful_launches": 692,
        "failed_launches": 4,
-       "pending_launches": 118,
-       "attempted_landings": 658,
-       "successful_landings": 644,
+       "pending_launches": 117,
+       "attempted_landings": 660,
+       "successful_landings": 646,
        "failed_landings": 15,
-       "consecutive_successful_landings": 322
+       "consecutive_successful_landings": 324
       }
      ],
      "full_name": "Falcon 9 Block 5",
@@ -33197,7 +31334,7 @@
       "consecutive_successful_launches": 223,
       "successful_launches": 723,
       "failed_launches": 15,
-      "pending_launches": 131,
+      "pending_launches": 133,
       "consecutive_successful_landings": 32,
       "successful_landings": 683,
       "failed_landings": 29,
@@ -33477,7 +31614,7 @@
      "consecutive_successful_launches": 341,
      "successful_launches": 638,
      "failed_launches": 1,
-     "pending_launches": 115,
+     "pending_launches": 117,
      "attempted_landings": 629,
      "successful_landings": 624,
      "failed_landings": 5,
@@ -33593,8 +31730,8 @@
          "single_use": true,
          "variants": []
         },
-        "successful_landings": 7,
-        "attempted_landings": 7,
+        "successful_landings": 8,
+        "attempted_landings": 8,
         "failed_landings": 0,
         "celestial_body": {
          "response_mode": "normal",
@@ -33670,10 +31807,10 @@
         "single_use": false,
         "variants": []
        },
-       "in_space": false,
-       "time_in_space": "P275DT8H1M27S",
+       "in_space": true,
+       "time_in_space": "P275DT22H58M45S",
        "time_docked": "P269DT2H24M",
-       "flights_count": 3,
+       "flights_count": 4,
        "mission_ends_count": 3,
        "status": {
         "id": 1,
@@ -33844,8 +31981,8 @@
           "parent": null,
           "maiden_flight": "2010-12-08",
           "spacecraft_flown": 23,
-          "total_launch_count": 59,
-          "successful_launches": 57,
+          "total_launch_count": 60,
+          "successful_launches": 58,
           "failed_launches": 2,
           "attempted_landings": 57,
           "successful_landings": 55,
@@ -33950,8 +32087,8 @@
           },
           "maiden_flight": "2019-03-02",
           "spacecraft_flown": 10,
-          "total_launch_count": 37,
-          "successful_launches": 37,
+          "total_launch_count": 38,
+          "successful_launches": 38,
           "failed_launches": 0,
           "attempted_landings": 36,
           "successful_landings": 34,
@@ -33988,8 +32125,8 @@
         "wiki_link": "https://en.wikipedia.org/wiki/Dragon_2",
         "info_link": "https://www.spacex.com/dragon",
         "spacecraft_flown": 3,
-        "total_launch_count": 14,
-        "successful_launches": 14,
+        "total_launch_count": 15,
+        "successful_launches": 15,
         "failed_launches": 0,
         "attempted_landings": 14,
         "successful_landings": 14,
@@ -34071,7 +32208,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": null,
+      "duration": "PT15H1M23.455401S",
       "turn_around_time": "P228DT2H49M44S",
       "response_mode": "detailed",
       "launch_crew": [],
@@ -34342,11 +32479,11 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7636,
-      "successful_launches": 7079,
+      "total_attempted_launches": 7638,
+      "successful_launches": 7081,
       "failed_launches": 557,
-      "total_attempted_landings": 1377,
-      "successful_landings": 1328,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
       "failed_landings": 49
      },
      "active": true,
