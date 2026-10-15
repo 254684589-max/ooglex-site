@@ -17,6 +17,7 @@
 
 ### 修改
 
+- 2026-10-15，**投研日看板改从「最新消息」顶栏进入**。正式页改为 `/apps/research-board/`（「投研日看板」），链在 `apps/whats-latest/index.html` 顶栏「雷达专区」正右侧；只加了这一条导航，未改 `apps/whats-latest/app.js`、预览墙或自动抓取。四块内容仍是 dig-001 演示包原文。`/apps/digest-board/` 不再作为正式入口：该页改为与站内其他退役地址相同的即时跳转（`meta refresh` + `location.replace`）到 `/apps/research-board/`，并标 `noindex`；`sitemap.xml` 改为只收录新地址。GitHub Pages 不能由这个静态页发出 HTTP 301。首页「数据」列表未改。雷达专区页面与顶栏原链接未改。**随合并进入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 - 2026-10-15，**首页「数据」列表不再展示「全球新闻扫描简报概览」和「雷达专区」**。两项入口从 `index.html` 去掉；其后编号按站内惯例前移两位（原 12–28 改为 10–26），「最新消息」仍为 09，列表保持连贯。`apps/whats-latest/` 顶栏的「全球新闻扫描简报概览」与「雷达专区」未改，`/apps/news-brief/`、`/apps/news-radar/` 页面与数据未删。`sitemap.xml` 仍收录这两个地址（页面仍公开，站点地图记的是页面而不是首页列表）。README 把雷达专区的入口说明改为只从「最新消息是什么？」顶栏进入。**已上线**（2026-10-15，所有者说「合并上线」；合并到 `main` 后由「Deploy Protected Ooglex Pages」发布。未改生产配置、域名或 Secrets）。
 
 ### 新增
