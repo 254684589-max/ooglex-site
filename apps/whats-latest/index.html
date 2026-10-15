@@ -115,15 +115,7 @@
     }
     .chip-btn.active{background:var(--desk-red);border-color:var(--desk-red);color:#fff;font-family:inherit;font-weight:700}
     .chip-btn.disabled{opacity:.45}
-    .nav{
-      display:flex;gap:27px;align-items:center;min-height:46px;border-bottom:1px solid var(--desk-line);
-      color:var(--desk-muted);font:14px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-      overflow-x:auto;scrollbar-width:none
-    }
-    .nav::-webkit-scrollbar,.category-tabs::-webkit-scrollbar{display:none}
-    .nav a{position:relative;white-space:nowrap;padding:15px 0 13px}
-    .nav a.active{color:var(--ink,#221f1b);font-weight:750}
-    .nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--desk-red)}
+    .category-tabs::-webkit-scrollbar{display:none}
     .category-bar{
       display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--desk-line);
       min-width:0
@@ -319,7 +311,6 @@
     }
     @media(max-width:680px){
       .shell{padding:9px 15px 48px}
-      .nav{padding-right:18px}
       .home-row{margin-bottom:6px}
       .home-back{min-height:28px;padding:0 8px;font-size:11px}
       .dateline{font-size:10px}
@@ -336,7 +327,13 @@
       .rail{grid-template-columns:1fr}
       .category-label{display:none}
     }
+      /* 统一栏目导航沿用本页报纸配色 */
+    .desk-nav{border-bottom-color:var(--desk-line)}
+    .desk-nav a{color:var(--desk-muted)}
+    .desk-nav a[aria-current="page"]{color:var(--ink,#221f1b)}
+    .desk-nav a[aria-current="page"]::after{background:var(--desk-red)}
   </style>
+  <link rel="stylesheet" href="/assets/desk-nav.css?v=1">
 </head>
 <body>
   <div class="top-rule"></div>
@@ -344,6 +341,13 @@
     <div class="home-row">
       <a class="home-back" href="/" aria-label="返回 Ooglex 首页"><span class="arrow">←</span><span>Ooglex</span></a>
     </div>
+    <nav class="desk-nav" aria-label="新闻栏目">
+      <a href="/apps/whats-latest/" aria-current="page">简报</a>
+      <a href="/apps/news-brief/">全球要闻</a>
+      <a href="/apps/news-radar/">投资雷达</a>
+      <a href="/apps/research-board/">每日投研</a>
+      <a href="/apps/research-board/rates/">全球利率</a>
+    </nav>
     <div class="dateline">
       <span id="date-line">—</span>
       <span class="fresh-badge" id="freshness">更新中</span>
@@ -364,14 +368,6 @@
         <span class="chip-btn disabled">下一期 ›</span>
       </div>
     </header>
-
-    <nav class="nav">
-      <a class="active" href="#briefings">简报</a>
-      <a href="../news-brief/">全球要闻</a>
-      <a href="../news-radar/">投资雷达</a>
-      <a href="../research-board/">每日投研</a>
-      <a href="../research-board/rates/">全球利率</a>
-    </nav>
 
     <div class="category-bar">
       <span class="category-label">简报分类</span>

@@ -1,0 +1,26 @@
+/* Ooglex 新闻栏目统一导航（最新消息 / 全球要闻 / 投资雷达 / 每日投研 / 全球利率）
+   五个页面使用同一段 HTML 与同一份样式，放在同一位置（返回链接下方），
+   当前页用 aria-current="page" 标记。颜色只引用 theme.css 已定义的通用变量，
+   深色、FT 纸色和白纸主题下都能读。 */
+.desk-nav{
+  display:flex;gap:0 26px;align-items:stretch;
+  margin:0 0 14px;border-bottom:1px solid var(--line,rgba(127,127,127,.25));
+  overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.desk-nav::-webkit-scrollbar{display:none}
+.desk-nav a{
+  position:relative;display:inline-flex;align-items:center;flex:0 0 auto;
+  min-height:46px;padding:0 1px;white-space:nowrap;text-decoration:none;
+  color:var(--dim,var(--muted,#8a8178));
+  font:15px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+.desk-nav a:hover{color:var(--ink,inherit)}
+.desk-nav a[aria-current="page"]{color:var(--ink,inherit);font-weight:750}
+.desk-nav a[aria-current="page"]::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
+  background:var(--down,#b8323d);
+}
+.desk-nav a:focus-visible{outline:2px solid var(--accent,currentColor);outline-offset:-2px;border-radius:4px}
+@media (max-width:640px){.desk-nav{gap:0 20px}.desk-nav a{font-size:14px}}
+@media (max-width:400px){.desk-nav{gap:0 14px}}

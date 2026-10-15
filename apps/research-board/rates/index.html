@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>宏观利率监视 · Rates · Ooglex</title>
+  <title>全球利率 · 宏观利率监视 · Ooglex</title>
   <meta name="description" content="宏观利率数据表汇总：完整覆盖 TradingView 六张截图对应监视项；异常红标；折叠展开。研究用，非投资建议。">
   <link rel="canonical" href="https://www.ooglex.com/apps/research-board/rates/">
   <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
   <link rel="apple-touch-icon" href="../../../assets/favicon.svg">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="宏观利率监视 · Rates · Ooglex">
+  <meta property="og:title" content="全球利率 · 宏观利率监视 · Ooglex">
   <meta property="og:description" content="宏观利率数据表汇总。2026-10-14 测试快照，非正式实时行情。研究用，非投资建议。">
   <meta property="og:url" content="https://www.ooglex.com/apps/research-board/rates/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
@@ -53,21 +53,31 @@
     footer{color:var(--dim);margin-top:24px;font-size:13px}
     .nav{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font-size:14px}
     .nav a{display:inline-flex;align-items:center;min-height:44px}
+    .nav{justify-content:space-between}
+    .home-back{padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);
+      color:var(--dim);text-decoration:none;font-size:13px}
+    .home-back:hover{color:var(--ink)}
     @media (max-width:760px){.shell{padding:10px 14px 56px}}
     @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
   </style>
+  <link rel="stylesheet" href="/assets/desk-nav.css?v=1">
 </head>
 <body>
 <div class="shell">
   <div class="nav">
-    <a href="/apps/research-board/">← 投研日看板</a>
-    <a href="/apps/news-radar/">雷达专区</a>
-    <a href="/apps/news-brief/">简报概览</a>
+    <a class="home-back" href="/" aria-label="返回 Ooglex 首页">← Ooglex</a>
     <span data-theme-slot></span>
   </div>
+  <nav class="desk-nav" aria-label="新闻栏目">
+    <a href="/apps/whats-latest/">简报</a>
+    <a href="/apps/news-brief/">全球要闻</a>
+    <a href="/apps/news-radar/">投资雷达</a>
+    <a href="/apps/research-board/">每日投研</a>
+    <a href="/apps/research-board/rates/" aria-current="page">全球利率</a>
+  </nav>
   <div class="demo-flag">RATES · 全表 · 研究用／非投资建议</div>
   <div class="banner">首版即时汇总：数值来自 2026-10-14 测试快照（对照六张 TradingView 截图基线），色标沿用 thresholds.json。非正式实时行情；不做交易建议。</div>
-  <h1>宏观利率监视 · 数据表汇总</h1>
+  <h1>全球利率 · 宏观利率监视数据表</h1>
   <p class="meta">生成：2026-10-15 18:05 CST<br/>基准截图目录：<code>macro-rates/screenshots/shot-00…05</code>（共 6 张）<br/>权威清单：watchlist-full.json（106 项）· 规则：thresholds.json</p>
   <p class="shots"><strong>六张截图文件：</strong><br/>
   <code>shot-00-earlier-symbols.png</code> — 较早符号页（对照）<br/>
@@ -247,7 +257,7 @@
 </div></details>
 
   <footer>
-    关联：<a href="/apps/research-board/">投研日看板</a> · <a href="20261015-rates-table.md">数据说明副本</a><br/>
+    关联：<a href="/apps/research-board/">每日投研</a> · <a href="20261015-rates-table.md">数据说明副本</a><br/>
     研究用／非投资建议 · 不构成买卖或仓位建议 · Ooglex
   </footer>
 </div>
