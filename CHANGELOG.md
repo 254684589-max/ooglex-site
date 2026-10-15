@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-10-15：科技领袖安卓应用下载页把 14 KB 的安装包显示成「0.0 MB」；小于 1 MB 时改为按 KB 显示。另：首个正式签名版本 1.0.2（证书 CN=Ooglex Tech Leaders）已发布到 Release 并复制到 `/apps/tech-leaders/app/`。
+
 ### 新增
 
 - 2026-10-15：「科技领袖实时动态流」安卓应用。`android/tech-leaders/` 为原生 WebView 外壳（无第三方依赖，Android 7.0+，仅联网权限），打开 `https://www.ooglex.com/apps/tech-leaders/`，站内链接留在应用内、外部链接交给系统浏览器，显式允许 `pro-api.ooglex.com` 的密码门会话 Cookie。GitHub Actions（`android-tech-leaders.yml`）构建 APK，main 分支发布到 GitHub Release；网站部署时把安装包复制到 `/apps/tech-leaders/app/`，新增中文下载页（版本、大小、SHA-256、安装步骤、iPhone 与应用内提示），科技领袖页新增「安卓 App 下载」入口（应用内自动隐藏）。未配置签名 Secrets 时使用调试签名，正式签名需所有者按 `docs/ANDROID_TECH_LEADERS.md` 配置。公开站构建排除 `android/` 源码目录。

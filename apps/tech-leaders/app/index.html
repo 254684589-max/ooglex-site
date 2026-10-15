@@ -118,7 +118,8 @@
         btn.textContent="下载安装包（"+m.version_name+"）";
         btn.removeAttribute("aria-disabled");
         $("m-version").textContent=m.version_name+(m.signing==="release"?"":"（测试签名）");
-        $("m-size").textContent=m.apk_bytes?(m.apk_bytes/1048576).toFixed(1)+" MB":"—";
+        var b=Number(m.apk_bytes)||0;
+        $("m-size").textContent=!b?"—":b<1048576?Math.max(1,Math.round(b/1024))+" KB":(b/1048576).toFixed(1)+" MB";
         $("m-built").textContent=m.built_at?new Date(m.built_at).toLocaleString("zh-CN",{hour12:false}):"—";
         $("m-sha").textContent=m.apk_sha256||"—";
         $("meta").hidden=false;
