@@ -260,6 +260,8 @@
     .hero h1{margin-top:14px;margin-bottom:8px;font-size:44px}
     .hero .lead{font-size:16px;line-height:1.75}
     .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}
+    .hero-app-link{display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border:1px solid var(--blue);border-radius:999px;color:var(--blue);font:600 11px/1 var(--mono);text-decoration:none}
+    .hero-app-link[hidden]{display:none}
     .hero-meta span{display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);font:11px/1 var(--mono);color:var(--dim)}
     .language-note{margin:0 2px 14px;padding:0;color:var(--faint)}
     .share-panel{border-radius:22px;padding:20px}
@@ -413,6 +415,7 @@
           <span id="hero-account-count">613 公开账号</span>
           <span>全球公司领袖</span>
           <span>AI · 芯片 · 云计算 · 金融科技</span>
+          <a class="hero-app-link" id="hero-app-link" href="/apps/tech-leaders/app/">安卓 App 下载 →</a>
         </div>
       </div>
       <div class="hero-tools">
@@ -600,6 +603,8 @@
   var search=document.getElementById("leader-search");
   var catalogFact=document.getElementById("catalog-fact");
   var heroAccountCount=document.getElementById("hero-account-count");
+  // 已在安卓应用内打开时不再显示下载入口。
+  if(/OoglexApp\//.test(navigator.userAgent||"")){var appLink=document.getElementById("hero-app-link");if(appLink)appLink.hidden=true;}
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
   var leaderRailWrap=document.querySelector(".leader-rail-wrap");

@@ -98,6 +98,21 @@ jobs:
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
 
+      - name: Add latest Tech Leaders Android APK
+        # 安装包由 android-tech-leaders.yml 发布到 GitHub Release；这里复制到站内下载地址。
+        # 取不到（尚未发布或网络失败）时不影响网站部署，下载页会显示「暂未发布」。
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .site/apps/tech-leaders/app
+          if gh release download tech-leaders-android --repo "$GITHUB_REPOSITORY" \
+               --pattern 'ooglex-tech-leaders.apk' --pattern 'ooglex-tech-leaders.json' \
+               --dir .site/apps/tech-leaders/app --clobber; then
+            ls -la .site/apps/tech-leaders/app
+          else
+            echo "::warning::Tech Leaders Android release not available; download page will show 'not yet published'."
+          fi
+
       - name: Verify fundamentals are included in the public artifact
         run: cmp apps/companies/fundamentals.json .site/apps/companies/fundamentals.json
 

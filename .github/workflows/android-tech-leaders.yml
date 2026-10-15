@@ -1,0 +1,132 @@
+name: Android App · Tech Leaders
+
+# 构建「科技领袖」安卓安装包（WebView 打开 https://www.ooglex.com/apps/tech-leaders/）。
+# 任何分支推送都会构建并上传为 Actions 产物供验证；只有 main 才会发布到 GitHub Release，
+# 网站部署时再把安装包复制到 ooglex.com/apps/tech-leaders/app/ 供下载。
+# 正式签名需要所有者在仓库 Secrets 中配置：
+#   ANDROID_KEYSTORE_B64、ANDROID_KEYSTORE_PASSWORD、ANDROID_KEY_ALIAS、ANDROID_KEY_PASSWORD
+# 未配置时用调试签名构建（可以安装，但每次构建签名不同，升级需先卸载旧版）。
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'android/tech-leaders/**'
+      - '.github/workflows/android-tech-leaders.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-tech-leaders-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RELEASE_TAG: tech-leaders-android
+  APK_NAME: ooglex-tech-leaders.apk
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Prepare signing key
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            printf '%s' "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+            echo "SIGNING=release" >> "$GITHUB_ENV"
+          else
+            echo "SIGNING=debug" >> "$GITHUB_ENV"
+            echo "::warning::未配置 ANDROID_KEYSTORE_B64，使用调试签名构建；每次构建签名不同，升级需先卸载旧版。"
+          fi
+
+      - name: Build APK
+        working-directory: android/tech-leaders
+        env:
+          APP_VERSION_CODE: ${{ github.run_number }}
+          APP_VERSION_NAME: 1.0.${{ github.run_number }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -e
+          if [ "$SIGNING" = "release" ]; then
+            gradle --no-daemon assembleRelease
+            src=app/build/outputs/apk/release/app-release.apk
+          else
+            gradle --no-daemon assembleDebug
+            src=app/build/outputs/apk/debug/app-debug.apk
+          fi
+          cp "$src" "$RUNNER_TEMP/$APK_NAME"
+          rm -f "$RUNNER_TEMP/release.jks"
+
+      - name: Verify APK and write metadata
+        run: |
+          set -e
+          apksigner="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
+          "$apksigner" verify --print-certs "$RUNNER_TEMP/$APK_NAME" | tee "$RUNNER_TEMP/certs.txt"
+          aapt="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt"
+          "$aapt" dump badging "$RUNNER_TEMP/$APK_NAME" | head -3
+          python3 - <<'PY'
+          import hashlib, json, os, re
+          from datetime import datetime, timezone
+          tmp = os.environ["RUNNER_TEMP"]; apk = os.path.join(tmp, os.environ["APK_NAME"])
+          data = open(apk, "rb").read()
+          certs = open(os.path.join(tmp, "certs.txt"), encoding="utf-8").read()
+          m = re.search(r"SHA-256 digest:\s*([0-9a-f]+)", certs)
+          meta = {
+              "app": "科技领袖",
+              "package": "com.ooglex.techleaders",
+              "version_name": "1.0." + os.environ["GITHUB_RUN_NUMBER"],
+              "version_code": int(os.environ["GITHUB_RUN_NUMBER"]),
+              "min_android": "7.0",
+              "signing": os.environ["SIGNING"],
+              "signing_cert_sha256": m.group(1) if m else None,
+              "apk_sha256": hashlib.sha256(data).hexdigest(),
+              "apk_bytes": len(data),
+              "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "commit": os.environ["GITHUB_SHA"],
+              "url": "https://www.ooglex.com/apps/tech-leaders/app/" + os.environ["APK_NAME"],
+          }
+          json.dump(meta, open(os.path.join(tmp, "ooglex-tech-leaders.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+          print(json.dumps(meta, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ooglex-tech-leaders-apk-${{ github.run_number }}
+          path: |
+            ${{ runner.temp }}/ooglex-tech-leaders.apk
+            ${{ runner.temp }}/ooglex-tech-leaders.json
+          retention-days: 14
+
+      - name: Publish GitHub Release (main only)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          notes="科技领袖安卓应用 1.0.${GITHUB_RUN_NUMBER}（${SIGNING} 签名）。下载与安装说明：https://www.ooglex.com/apps/tech-leaders/app/"
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --title "科技领袖 · 安卓应用" --notes "$notes" --latest=false
+          else
+            gh release edit "$RELEASE_TAG" --notes "$notes"
+          fi
+          gh release upload "$RELEASE_TAG" "$RUNNER_TEMP/$APK_NAME" "$RUNNER_TEMP/ooglex-tech-leaders.json" --clobber

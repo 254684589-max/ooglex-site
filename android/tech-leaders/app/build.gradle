@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.application'
+}
+
+// 签名材料只来自 CI 环境变量（GitHub Actions Secrets 解码到临时文件），绝不进仓库。
+def keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+
+android {
+    namespace 'com.ooglex.techleaders'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.ooglex.techleaders"
+        minSdk 24
+        targetSdk 34
+        versionCode((System.getenv("APP_VERSION_CODE") ?: "1") as int)
+        versionName(System.getenv("APP_VERSION_NAME") ?: "1.0.0")
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePath) {
+                storeFile file(keystorePath)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (keystorePath) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

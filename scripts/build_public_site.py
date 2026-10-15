@@ -25,7 +25,7 @@ RICH_PREVIEW = PRO_BUILD / "rich-preview"
 
 EXCLUDED_DIR_NAMES = {
     ".git", ".github", ".claude", ".pro-build", ".site", "scripts", "docs",
-    "cloudflare", "node_modules", "__pycache__",
+    "cloudflare", "node_modules", "__pycache__", "android",
 }
 
 EXCLUDED_SUFFIXES = {
