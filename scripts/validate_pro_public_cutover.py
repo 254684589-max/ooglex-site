@@ -204,6 +204,15 @@ def main() -> None:
         if "ooglex:finance-full-ready" not in text:
             fail("Finance Column full-data rerender hook missing from: " + rel)
 
+    whats_page = (SITE / "apps/whats-latest/index.html").read_text(encoding="utf-8")
+    if '<script src="/assets/pro-access.js?v=6"></script>' not in whats_page:
+        fail("What's Latest pro-access client missing")
+    whats_public = json.loads((SITE / "apps/whats-latest/data.json").read_text(encoding="utf-8"))
+    if not (whats_public.get("preview") or {}).get("enabled"):
+        fail("What's Latest public data.json is not the 10% preview")
+    if "whats_latest" not in (SITE / "apps/whats-latest/app.js").read_text(encoding="utf-8"):
+        fail("What's Latest full-data request missing from app.js")
+
     rich_pages = {
         "apps/supply-chain/index.html": "app.js",
         "apps/supply-chain/company.html": "company.js",

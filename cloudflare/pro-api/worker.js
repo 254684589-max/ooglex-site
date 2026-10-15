@@ -14,6 +14,12 @@ const PRODUCTS = Object.freeze({
   finance_column: {
     previewKey: "finance-column/preview.json",
     fullKey: "finance-column/full.json"
+  },
+  whats_latest: {
+    previewKey: "whats-latest/preview.json",
+    fullKey: "whats-latest/full.json",
+    // 「最新消息」只要求登录：任何经 Supabase 验证的会话都可读完整数据，不看订阅方案。
+    signedInFull: true
   }
 });
 
@@ -265,6 +271,10 @@ async function getAccess(product, token, env) {
 
   const user = await getUser(token, env);
   if (!user || !user.id) return { plan: "free", access_level: "preview", authenticated: false };
+
+  if (PRODUCTS[product] && PRODUCTS[product].signedInFull) {
+    return { plan: "signed_in", access_level: "full", authenticated: true, user_id: user.id };
+  }
 
   const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/my_product_access`, {
     method: "POST",

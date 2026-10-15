@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-10-15：「最新消息」（`/apps/whats-latest/`）登录后仍只显示公开10%预览。原因是公开 Pages 只发布约10%新闻，而该页没有任何向 PRO API 请求完整数据的通道。现新增 `whats_latest` 产品：完整数据与预览同步到私有 R2（`whats-latest/full.json`、`whats-latest/preview.json`），由独立的 `whats_latest_pro_sync.yml` 在每次新闻更新成功后同步（数据任务本身仍不读 Secret、不发布），页面在检测到登录会话时经 `pro-api.ooglex.com/v1/data/whats_latest?mode=full` 读取完整数据；无权限（403）、登录失效（401）或接口失败时回退公开预览，并在预览墙上分别说明原因，不再一律提示“登录 / 注册”。只要登录即可查看全部新闻：Worker 对 `whats_latest` 只校验 Supabase 登录会话，不看订阅方案（FREE / PRO / PRO+ / OWNER 都给完整数据）；`account/migrations/20261015_add_whats_latest_product.sql` 同步记录三档均为 `full`，执行与否不影响生效。预览切分逻辑抽成 `build_whats_latest_preview()`，公开页与 R2 预览共用同一份实现。经所有者批准合并到 `main` 并由 Deploy PRO API 工作流发布 Worker 与 R2 数据。
+
 ### 修改
 
 - 2026-10-15，**投研日看板改从「最新消息」顶栏进入**。正式页改为 `/apps/research-board/`（「投研日看板」），链在 `apps/whats-latest/index.html` 顶栏「雷达专区」正右侧；只加了这一条导航，未改 `apps/whats-latest/app.js`、预览墙或自动抓取。四块内容仍是 dig-001 演示包原文。`/apps/digest-board/` 不再作为正式入口：该页改为与站内其他退役地址相同的即时跳转（`meta refresh` + `location.replace`）到 `/apps/research-board/`，并标 `noindex`；`sitemap.xml` 改为只收录新地址。GitHub Pages 不能由这个静态页发出 HTTP 301。首页「数据」列表未改。雷达专区页面与顶栏原链接未改。**随合并进入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
