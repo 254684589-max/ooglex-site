@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-14T23:24:24Z",
-  "asOf": "2026-10-13",
+  "updatedAt": "2026-10-15T21:16:34Z",
+  "asOf": "2026-10-14",
   "frequency": "mixed",
   "status": "partial",
   "source": "FRED (OECD Main Economic Indicators) / ECB Data Portal",
@@ -14,17 +14,17 @@
       "region": "americas",
       "unit": "年化收益率",
       "note": "与站内美债收益率曲线的10年期是同一条资产的两个口径：曲线那条是日频，这条是 OECD 月频",
-      "price": 4.68,
-      "changeBp": 8.0,
-      "previousAsOf": "2026-07-01",
+      "price": 4.99,
+      "changeBp": 31.0,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly",
         "note": "与站内美债收益率曲线的10年期是同一条资产的两个口径：曲线那条是日频，这条是 OECD 月频"
       }
@@ -35,17 +35,17 @@
       "nameEn": "Canada",
       "region": "americas",
       "unit": "年化收益率",
-      "price": 3.675,
-      "changeBp": 12.8,
-      "previousAsOf": "2026-07-01",
+      "price": 3.8825,
+      "changeBp": 20.8,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -55,17 +55,17 @@
       "nameEn": "Mexico",
       "region": "americas",
       "unit": "年化收益率",
-      "price": 9.16,
-      "changeBp": 14.0,
-      "previousAsOf": "2026-07-01",
+      "price": 9.35,
+      "changeBp": 19.0,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -75,17 +75,17 @@
       "nameEn": "Chile",
       "region": "americas",
       "unit": "年化收益率",
-      "price": 5.55,
-      "changeBp": 3.0,
-      "previousAsOf": "2026-06-01",
+      "price": 6.01,
+      "changeBp": 33.0,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-07-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -95,17 +95,17 @@
       "nameEn": "United Kingdom",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 4.9886,
-      "changeBp": 5.7,
-      "previousAsOf": "2026-07-01",
+      "price": 5.2421,
+      "changeBp": 25.3,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -115,17 +115,17 @@
       "nameEn": "Germany",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 3.18,
-      "changeBp": 11.0,
-      "previousAsOf": "2026-07-01",
+      "price": 3.4695,
+      "changeBp": 28.4,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -135,17 +135,17 @@
       "nameEn": "France",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 4.0,
-      "changeBp": 15.0,
-      "previousAsOf": "2026-07-01",
+      "price": 4.4771,
+      "changeBp": 44.6,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -165,7 +165,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -175,17 +175,17 @@
       "nameEn": "Spain",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 3.633,
-      "changeBp": 10.0,
-      "previousAsOf": "2026-07-01",
+      "price": 3.923,
+      "changeBp": 28.5,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -205,7 +205,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -225,7 +225,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -245,7 +245,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -255,17 +255,17 @@
       "nameEn": "Switzerland",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 0.47,
-      "changeBp": -1.0,
-      "previousAsOf": "2026-07-01",
+      "price": 0.59,
+      "changeBp": 12.0,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -275,17 +275,17 @@
       "nameEn": "Sweden",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 3.0231,
-      "changeBp": 11.5,
-      "previousAsOf": "2026-07-01",
+      "price": 3.1924,
+      "changeBp": 16.9,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -295,17 +295,17 @@
       "nameEn": "Norway",
       "region": "europe",
       "unit": "年化收益率",
-      "price": 4.2863,
-      "changeBp": 1.5,
-      "previousAsOf": "2026-07-01",
+      "price": 4.4058,
+      "changeBp": 11.7,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -325,7 +325,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly"
       }
     },
@@ -339,14 +339,15 @@
       "changeBp": 9.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
         "updatedAt": "2026-10-14T23:24:24Z",
-        "frequency": "monthly"
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -359,14 +360,15 @@
       "changeBp": 9.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
         "updatedAt": "2026-10-14T23:24:24Z",
-        "frequency": "monthly"
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -680,7 +682,7 @@
         "status": "ok",
         "source": "ECB Data Portal",
         "asOf": "2026-09-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly",
         "note": "OECD 那一族没有罗马尼亚，改用欧洲央行的趋同用长期利率（本币计价）"
       }
@@ -702,7 +704,7 @@
         "status": "ok",
         "source": "ECB Data Portal",
         "asOf": "2026-09-01",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "monthly",
         "note": "欧元区整体的趋同用长期利率；FRED 上的同名 OECD 序列已滞后半年以上，改用本条"
       }
@@ -714,17 +716,17 @@
       "region": "europe",
       "unit": "年化收益率",
       "note": "欧元区 AAA 评级政府债收益率曲线的十年点，是本类里唯一一条日频的非美主权收益率",
-      "price": 3.4918,
-      "changeBp": -0.7,
-      "previousAsOf": "2026-10-12",
+      "price": 3.5108,
+      "changeBp": 1.9,
+      "previousAsOf": "2026-10-13",
       "frequency": "daily",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "ECB Data Portal",
-        "asOf": "2026-10-13",
-        "updatedAt": "2026-10-14T23:24:24Z",
+        "asOf": "2026-10-14",
+        "updatedAt": "2026-10-15T21:16:34Z",
         "frequency": "daily",
         "note": "欧元区 AAA 评级政府债收益率曲线的十年点，是本类里唯一一条日频的非美主权收益率"
       }
@@ -735,8 +737,8 @@
     "status": "partial",
     "total": 35,
     "counts": {
-      "market": 21,
-      "fallback": 14,
+      "market": 19,
+      "fallback": 16,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
