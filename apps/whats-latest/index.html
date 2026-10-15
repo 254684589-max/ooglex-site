@@ -70,13 +70,14 @@
       --desk-gold:#d1a057;
     }
     .top-rule{height:2px;background:linear-gradient(90deg,var(--desk-red),#e39f26)}
-    .shell{max-width:1180px;margin:0 auto;padding:11px 24px 64px}
-    .home-row{display:flex;align-items:center;justify-content:space-between;margin:1px 0 8px}
+    .shell{width:min(1180px,100%);margin:0 auto;padding:12px 24px 72px}
+    @media(max-width:760px){.shell{padding:10px 15px 56px}}
+    .home-row{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
     .home-back{
-      display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 9px;
-      border:1px solid var(--desk-line);border-radius:7px;background:var(--desk-panel);
+      display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;
+      border:1px solid var(--desk-line);border-radius:8px;background:var(--desk-panel);
       color:var(--desk-muted);
-      font:12px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+      font:13px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
       transition:background .15s,color .15s,border-color .15s
     }
     .home-back:hover{background:var(--desk-panel-strong);color:var(--ink);border-color:var(--line)}
@@ -310,9 +311,7 @@
       .rail-card{margin:0}
     }
     @media(max-width:680px){
-      .shell{padding:9px 15px 48px}
       .home-row{margin-bottom:6px}
-      .home-back{min-height:28px;padding:0 8px;font-size:11px}
       .dateline{font-size:10px}
       .mast{align-items:flex-start;flex-direction:column}
       .edition-controls{justify-content:flex-start}
