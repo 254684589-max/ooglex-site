@@ -1,2273 +1,8 @@
 {
- "count": 25,
+ "count": 24,
  "next": null,
  "previous": null,
  "results": [
-  {
-   "id": "8effc13a-c658-4d2e-9f15-8dba4d7fe2dd",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/8effc13a-c658-4d2e-9f15-8dba4d7fe2dd/",
-   "name": "Vega-C | Sentinel-3C & FLEX",
-   "response_mode": "detailed",
-   "slug": "vega-c-sentinel-3c-flex",
-   "launch_designator": "2026-209",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-09-15T11:48:24Z",
-   "net": "2026-09-15T01:21:07Z",
-   "net_precision": {
-    "id": 0,
-    "name": "Second",
-    "abbrev": "SEC",
-    "description": "The T-0 is accurate to the second."
-   },
-   "window_end": "2026-09-15T01:21:07Z",
-   "window_start": "2026-09-15T01:21:07Z",
-   "image": {
-    "id": 1861,
-    "name": "Vega-C liftoff on its maiden flight (LARES-2)",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega-c_image_20220713154437.jpg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193950.jpeg",
-    "credit": "ESA/CNES/Arianespace/Optique vidéo du CSG–S. Martin",
-    "license": {
-     "id": 2,
-     "name": "ESA Standard Licence",
-     "priority": 2,
-     "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-    },
-    "single_use": false,
-    "variants": []
-   },
-   "infographic": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/infographic_images/vega-c2520257_infographic_20260910124303.png",
-   "probability": null,
-   "weather_concerns": null,
-   "failreason": "",
-   "hashtag": "VV30",
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 159,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/159/",
-    "name": "Avio S.p.A",
-    "abbrev": "Avio",
-    "type": {
-     "id": 3,
-     "name": "Commercial"
-    },
-    "featured": true,
-    "country": [
-     {
-      "id": 3,
-      "name": "Italy",
-      "alpha_2_code": "IT",
-      "alpha_3_code": "ITA",
-      "nationality_name": "Italian",
-      "nationality_name_composed": "Italo"
-     }
-    ],
-    "description": "Avio S.p.A. is an Italian company operating in the aerospace sector with its head office in Colleferro near Rome, Italy. Founded in 1908, it is present in Italy and abroad with different commercial offices and 10 production sites.",
-    "administrator": "CEO: Giulio Ranzo",
-    "founding_year": 1908,
-    "launchers": "Vega",
-    "spacecraft": "",
-    "parent": null,
-    "image": {
-     "id": 1861,
-     "name": "Vega-C liftoff on its maiden flight (LARES-2)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega-c_image_20220713154437.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193950.jpeg",
-     "credit": "ESA/CNES/Arianespace/Optique vidéo du CSG–S. Martin",
-     "license": {
-      "id": 2,
-      "name": "ESA Standard Licence",
-      "priority": 2,
-      "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "logo": {
-     "id": 113,
-     "name": "Avio logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio2520s.p.a_logo_20221130103121.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184917.png",
-     "credit": "Avio",
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 2319,
-     "name": "Avio social logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio_social_log_image_20250211190007.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio_social_log_image_thumbnail_20250211190008.jpeg",
-     "credit": "Avio",
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 2,
-    "consecutive_successful_launches": 2,
-    "successful_launches": 2,
-    "failed_launches": 0,
-    "pending_launches": 23,
-    "consecutive_successful_landings": 0,
-    "successful_landings": 0,
-    "failed_landings": 0,
-    "attempted_landings": 0,
-    "successful_landings_spacecraft": 0,
-    "failed_landings_spacecraft": 0,
-    "attempted_landings_spacecraft": 0,
-    "successful_landings_payload": 0,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 0,
-    "info_url": "https://www.avio.com/",
-    "wiki_url": "https://en.wikipedia.org/wiki/Avio",
-    "social_media_links": [
-     {
-      "id": 238,
-      "social_media": {
-       "id": 3,
-       "name": "Homepage",
-       "url": null,
-       "logo": null
-      },
-      "url": "https://www.avio.com/"
-     },
-     {
-      "id": 239,
-      "social_media": {
-       "id": 4,
-       "name": "LinkedIn",
-       "url": "https://www.linkedin.com/",
-       "logo": {
-        "id": 2321,
-        "name": "LinkedIn logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-        "credit": "LinkedIn",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://www.linkedin.com/company/avio-s-p-a/"
-     },
-     {
-      "id": 240,
-      "social_media": {
-       "id": 2,
-       "name": "Instagram",
-       "url": "https://instagram.com",
-       "logo": {
-        "id": 2322,
-        "name": "Instagram logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_20250211191139.png",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_thumbnail_20250211191139.png",
-        "credit": "Instagram",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://www.instagram.com/avio_spa/"
-     },
-     {
-      "id": 241,
-      "social_media": {
-       "id": 1,
-       "name": "X",
-       "url": "https://x.com",
-       "logo": {
-        "id": 2320,
-        "name": "X logo",
-        "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-        "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-        "credit": "X",
-        "license": {
-         "id": 1,
-         "name": "Unknown",
-         "priority": 9,
-         "link": null
-        },
-        "single_use": true,
-        "variants": []
-       }
-      },
-      "url": "https://x.com/avio_group"
-     }
-    ]
-   },
-   "rocket": {
-    "id": 7714,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 127,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/127/",
-     "name": "Vega-C",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 3,
-       "name": "Vega",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 159,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/159/",
-         "name": "Avio S.p.A",
-         "abbrev": "Avio",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": true,
-         "country": [
-          {
-           "id": 3,
-           "name": "Italy",
-           "alpha_2_code": "IT",
-           "alpha_3_code": "ITA",
-           "nationality_name": "Italian",
-           "nationality_name_composed": "Italo"
-          }
-         ],
-         "description": "Avio S.p.A. is an Italian company operating in the aerospace sector with its head office in Colleferro near Rome, Italy. Founded in 1908, it is present in Italy and abroad with different commercial offices and 10 production sites.",
-         "administrator": "CEO: Giulio Ranzo",
-         "founding_year": 1908,
-         "launchers": "Vega",
-         "spacecraft": "",
-         "parent": null,
-         "image": {
-          "id": 1861,
-          "name": "Vega-C liftoff on its maiden flight (LARES-2)",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega-c_image_20220713154437.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193950.jpeg",
-          "credit": "ESA/CNES/Arianespace/Optique vidéo du CSG–S. Martin",
-          "license": {
-           "id": 2,
-           "name": "ESA Standard Licence",
-           "priority": 2,
-           "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-          },
-          "single_use": false,
-          "variants": []
-         },
-         "logo": {
-          "id": 113,
-          "name": "Avio logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio2520s.p.a_logo_20221130103121.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184917.png",
-          "credit": "Avio",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 2319,
-          "name": "Avio social logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio_social_log_image_20250211190007.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio_social_log_image_thumbnail_20250211190008.jpeg",
-          "credit": "Avio",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 2,
-         "consecutive_successful_launches": 2,
-         "successful_launches": 2,
-         "failed_launches": 0,
-         "pending_launches": 23,
-         "consecutive_successful_landings": 0,
-         "successful_landings": 0,
-         "failed_landings": 0,
-         "attempted_landings": 0,
-         "successful_landings_spacecraft": 0,
-         "failed_landings_spacecraft": 0,
-         "attempted_landings_spacecraft": 0,
-         "successful_landings_payload": 0,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 0,
-         "info_url": "https://www.avio.com/",
-         "wiki_url": "https://en.wikipedia.org/wiki/Avio",
-         "social_media_links": [
-          {
-           "id": 238,
-           "social_media": {
-            "id": 3,
-            "name": "Homepage",
-            "url": null,
-            "logo": null
-           },
-           "url": "https://www.avio.com/"
-          },
-          {
-           "id": 239,
-           "social_media": {
-            "id": 4,
-            "name": "LinkedIn",
-            "url": "https://www.linkedin.com/",
-            "logo": {
-             "id": 2321,
-             "name": "LinkedIn logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-             "credit": "LinkedIn",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.linkedin.com/company/avio-s-p-a/"
-          },
-          {
-           "id": 240,
-           "social_media": {
-            "id": 2,
-            "name": "Instagram",
-            "url": "https://instagram.com",
-            "logo": {
-             "id": 2322,
-             "name": "Instagram logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_20250211191139.png",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_thumbnail_20250211191139.png",
-             "credit": "Instagram",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://www.instagram.com/avio_spa/"
-          },
-          {
-           "id": 241,
-           "social_media": {
-            "id": 1,
-            "name": "X",
-            "url": "https://x.com",
-            "logo": {
-             "id": 2320,
-             "name": "X logo",
-             "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-             "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-             "credit": "X",
-             "license": {
-              "id": 1,
-              "name": "Unknown",
-              "priority": 9,
-              "link": null
-             },
-             "single_use": true,
-             "variants": []
-            }
-           },
-           "url": "https://x.com/avio_group"
-          }
-         ]
-        }
-       ],
-       "parent": null,
-       "description": "Family of expendable launch vehicles developed by the Italian Space Agency and the European Space Agency.\r\n\r\nIt is designed to launch small payloads for scientific and Earth observation missions to polar and low Earth orbits.",
-       "active": true,
-       "maiden_flight": "2012-02-13",
-       "total_launch_count": 30,
-       "consecutive_successful_launches": 8,
-       "successful_launches": 27,
-       "failed_launches": 3,
-       "pending_launches": 23,
-       "attempted_landings": 0,
-       "successful_landings": 0,
-       "failed_landings": 0,
-       "consecutive_successful_landings": 0
-      }
-     ],
-     "full_name": "Vega-C",
-     "variant": "",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 159,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/159/",
-      "name": "Avio S.p.A",
-      "abbrev": "Avio",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 3,
-        "name": "Italy",
-        "alpha_2_code": "IT",
-        "alpha_3_code": "ITA",
-        "nationality_name": "Italian",
-        "nationality_name_composed": "Italo"
-       }
-      ],
-      "description": "Avio S.p.A. is an Italian company operating in the aerospace sector with its head office in Colleferro near Rome, Italy. Founded in 1908, it is present in Italy and abroad with different commercial offices and 10 production sites.",
-      "administrator": "CEO: Giulio Ranzo",
-      "founding_year": 1908,
-      "launchers": "Vega",
-      "spacecraft": "",
-      "parent": null,
-      "image": {
-       "id": 1861,
-       "name": "Vega-C liftoff on its maiden flight (LARES-2)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega-c_image_20220713154437.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193950.jpeg",
-       "credit": "ESA/CNES/Arianespace/Optique vidéo du CSG–S. Martin",
-       "license": {
-        "id": 2,
-        "name": "ESA Standard Licence",
-        "priority": 2,
-        "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 113,
-       "name": "Avio logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio2520s.p.a_logo_20221130103121.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184917.png",
-       "credit": "Avio",
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 2319,
-       "name": "Avio social logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio_social_log_image_20250211190007.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/avio_social_log_image_thumbnail_20250211190008.jpeg",
-       "credit": "Avio",
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 2,
-      "consecutive_successful_launches": 2,
-      "successful_launches": 2,
-      "failed_launches": 0,
-      "pending_launches": 23,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": "https://www.avio.com/",
-      "wiki_url": "https://en.wikipedia.org/wiki/Avio",
-      "social_media_links": [
-       {
-        "id": 238,
-        "social_media": {
-         "id": 3,
-         "name": "Homepage",
-         "url": null,
-         "logo": null
-        },
-        "url": "https://www.avio.com/"
-       },
-       {
-        "id": 239,
-        "social_media": {
-         "id": 4,
-         "name": "LinkedIn",
-         "url": "https://www.linkedin.com/",
-         "logo": {
-          "id": 2321,
-          "name": "LinkedIn logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-          "credit": "LinkedIn",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.linkedin.com/company/avio-s-p-a/"
-       },
-       {
-        "id": 240,
-        "social_media": {
-         "id": 2,
-         "name": "Instagram",
-         "url": "https://instagram.com",
-         "logo": {
-          "id": 2322,
-          "name": "Instagram logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_20250211191139.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_thumbnail_20250211191139.png",
-          "credit": "Instagram",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.instagram.com/avio_spa/"
-       },
-       {
-        "id": 241,
-        "social_media": {
-         "id": 1,
-         "name": "X",
-         "url": "https://x.com",
-         "logo": {
-          "id": 2320,
-          "name": "X logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-          "credit": "X",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://x.com/avio_group"
-       }
-      ]
-     },
-     "program": [],
-     "reusable": false,
-     "image": {
-      "id": 1861,
-      "name": "Vega-C liftoff on its maiden flight (LARES-2)",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega-c_image_20220713154437.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193950.jpeg",
-      "credit": "ESA/CNES/Arianespace/Optique vidéo du CSG–S. Martin",
-      "license": {
-       "id": 2,
-       "name": "ESA Standard Licence",
-       "priority": 2,
-       "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-      },
-      "single_use": false,
-      "variants": []
-     },
-     "info_url": "https://www.arianespace.com/vehicle/vega/",
-     "wiki_url": "https://en.wikipedia.org/wiki/Vega_(rocket)",
-     "description": "Vega-C is a single-body rocket nearly 35 m high with that weighs 210 tonnes on the launch pad. As with Vega, its main elements are three solid-propellant stages, an upper stage powered by a reignitable liquid-propellant engine and a payload fairing. Vega-C's P120C first stage replaces Vega’s smaller P80 to provide a significant increase in thrust at liftoff. It is also used as boosters (2 or 4) for the Ariane 6 rocket.",
-     "alias": "",
-     "min_stage": 4,
-     "max_stage": 4,
-     "length": 34.8,
-     "diameter": 3.0,
-     "maiden_flight": "2022-07-13",
-     "launch_cost": 48000000,
-     "launch_mass": 210.0,
-     "leo_capacity": 3300.0,
-     "gto_capacity": null,
-     "geo_capacity": null,
-     "sso_capacity": 2230.0,
-     "to_thrust": 2974.0,
-     "apogee": null,
-     "total_launch_count": 8,
-     "consecutive_successful_launches": 6,
-     "successful_launches": 7,
-     "failed_launches": 1,
-     "pending_launches": 21,
-     "attempted_landings": 0,
-     "successful_landings": 0,
-     "failed_landings": 0,
-     "consecutive_successful_landings": 0,
-     "fastest_turnaround": "P87DT16H47M56S"
-    },
-    "launcher_stage": [],
-    "spacecraft_stage": [],
-    "payloads": []
-   },
-   "mission": {
-    "id": 6236,
-    "name": "Sentinel-3C & FLEX",
-    "type": "Earth Science",
-    "description": "Sentinel-3C is the third satellite in the Sentinel-3 constellation, which provides high-accuracy optical, radar and altimetry data for marine and land services.\r\n\r\nThe Fluorescence Explorer (FLEX) satellite is a part of ESA's Earth Explorer program. The satellite will map vegetation fluorescence to quantify photosynthetic activity.",
-    "image": null,
-    "orbit": {
-     "id": 17,
-     "name": "Sun-Synchronous Orbit",
-     "abbrev": "SSO",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 27,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/27/",
-      "name": "European Space Agency",
-      "abbrev": "ESA",
-      "type": {
-       "id": 2,
-       "name": "Multinational"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 1,
-        "name": "France",
-        "alpha_2_code": "FR",
-        "alpha_3_code": "FRA",
-        "nationality_name": "French",
-        "nationality_name_composed": "Franco"
-       },
-       {
-        "id": 3,
-        "name": "Italy",
-        "alpha_2_code": "IT",
-        "alpha_3_code": "ITA",
-        "nationality_name": "Italian",
-        "nationality_name_composed": "Italo"
-       },
-       {
-        "id": 4,
-        "name": "Germany",
-        "alpha_2_code": "DE",
-        "alpha_3_code": "DEU",
-        "nationality_name": "German",
-        "nationality_name_composed": "Germano"
-       },
-       {
-        "id": 7,
-        "name": "Spain",
-        "alpha_2_code": "ES",
-        "alpha_3_code": "ESP",
-        "nationality_name": "Spanish",
-        "nationality_name_composed": "Hispano"
-       },
-       {
-        "id": 8,
-        "name": "Switzerland",
-        "alpha_2_code": "CH",
-        "alpha_3_code": "CHE",
-        "nationality_name": "Swiss",
-        "nationality_name_composed": "Swiss"
-       },
-       {
-        "id": 10,
-        "name": "United Kingdom",
-        "alpha_2_code": "GB",
-        "alpha_3_code": "GBR",
-        "nationality_name": "British",
-        "nationality_name_composed": "Brito"
-       },
-       {
-        "id": 11,
-        "name": "Austria",
-        "alpha_2_code": "AT",
-        "alpha_3_code": "AUT",
-        "nationality_name": "Austrian",
-        "nationality_name_composed": "Austro"
-       },
-       {
-        "id": 15,
-        "name": "Sweden",
-        "alpha_2_code": "SE",
-        "alpha_3_code": "SWE",
-        "nationality_name": "Swedish",
-        "nationality_name_composed": "Swedo"
-       },
-       {
-        "id": 20,
-        "name": "Belgium",
-        "alpha_2_code": "BE",
-        "alpha_3_code": "BEL",
-        "nationality_name": "Belgian",
-        "nationality_name_composed": "Belgo"
-       },
-       {
-        "id": 23,
-        "name": "Portugal",
-        "alpha_2_code": "PT",
-        "alpha_3_code": "PRT",
-        "nationality_name": "Portuguese",
-        "nationality_name_composed": "Luso"
-       },
-       {
-        "id": 27,
-        "name": "Netherlands",
-        "alpha_2_code": "NL",
-        "alpha_3_code": "NLD",
-        "nationality_name": "Dutch",
-        "nationality_name_composed": "Dutch"
-       },
-       {
-        "id": 31,
-        "name": "Hungary",
-        "alpha_2_code": "HU",
-        "alpha_3_code": "HUN",
-        "nationality_name": "Hungarian",
-        "nationality_name_composed": "Hungarian"
-       },
-       {
-        "id": 39,
-        "name": "Poland",
-        "alpha_2_code": "PL",
-        "alpha_3_code": "POL",
-        "nationality_name": "Polish",
-        "nationality_name_composed": "Polono"
-       },
-       {
-        "id": 45,
-        "name": "Denmark",
-        "alpha_2_code": "DK",
-        "alpha_3_code": "DNK",
-        "nationality_name": "Danish",
-        "nationality_name_composed": "Dano"
-       },
-       {
-        "id": 46,
-        "name": "Czechia",
-        "alpha_2_code": "CZ",
-        "alpha_3_code": "CZE",
-        "nationality_name": "Czech",
-        "nationality_name_composed": "Czech"
-       },
-       {
-        "id": 47,
-        "name": "Romania",
-        "alpha_2_code": "RO",
-        "alpha_3_code": "ROU",
-        "nationality_name": "Romanian",
-        "nationality_name_composed": "Romanian"
-       },
-       {
-        "id": 49,
-        "name": "Norway",
-        "alpha_2_code": "NO",
-        "alpha_3_code": "NOR",
-        "nationality_name": "Norwegian",
-        "nationality_name_composed": "Norwegian"
-       },
-       {
-        "id": 77,
-        "name": "Finland",
-        "alpha_2_code": "FI",
-        "alpha_3_code": "FIN",
-        "nationality_name": "Finnish",
-        "nationality_name_composed": "Finno"
-       },
-       {
-        "id": 78,
-        "name": "Greece",
-        "alpha_2_code": "GR",
-        "alpha_3_code": "GRC",
-        "nationality_name": "Greek",
-        "nationality_name_composed": "Greco"
-       },
-       {
-        "id": 80,
-        "name": "Estonia",
-        "alpha_2_code": "EE",
-        "alpha_3_code": "EST",
-        "nationality_name": "Estonian",
-        "nationality_name_composed": "Estonian"
-       },
-       {
-        "id": 81,
-        "name": "Ireland",
-        "alpha_2_code": "IE",
-        "alpha_3_code": "IRL",
-        "nationality_name": "Irish",
-        "nationality_name_composed": "Irish"
-       },
-       {
-        "id": 85,
-        "name": "Luxembourg",
-        "alpha_2_code": "LU",
-        "alpha_3_code": "LUX",
-        "nationality_name": "Luxembourger",
-        "nationality_name_composed": "Luxembourgish"
-       },
-       {
-        "id": 86,
-        "name": "Slovenia",
-        "alpha_2_code": "SI",
-        "alpha_3_code": "SVN",
-        "nationality_name": "Slovenian",
-        "nationality_name_composed": "Slovenian"
-       }
-      ],
-      "description": "The European Space Agency is an intergovernmental organisation of 22 member states. Established in 1975 and headquartered in Paris, France, ESA has a worldwide staff of about 2,000 employees.\r\n\r\nESA's space flight programme includes human spaceflight (mainly through participation in the International Space Station program); the launch and operation of unmanned exploration missions to other planets and the Moon; Earth observation, science and telecommunication; designing launch vehicles; and maintaining a major spaceport, the Guiana Space Centre at Kourou, French Guiana.",
-      "administrator": "Director General: Josef Aschbacher",
-      "founding_year": 1975,
-      "launchers": "Ariane | Vega",
-      "spacecraft": "Space Rider",
-      "parent": null,
-      "image": {
-       "id": 2324,
-       "name": "ESA patch floating in the ISS Cupola",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/esa_patch_float_image_20250211192109.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/esa_patch_float_image_thumbnail_20250211192110.png",
-       "credit": "ESA",
-       "license": {
-        "id": 2,
-        "name": "ESA Standard Licence",
-        "priority": 2,
-        "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 130,
-       "name": "European Space Agency logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/european2520space2520agency_logo_20221130101442.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184947.png",
-       "credit": "ESA",
-       "license": {
-        "id": 2,
-        "name": "ESA Standard Licence",
-        "priority": 2,
-        "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 130,
-       "name": "European Space Agency logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/european2520space2520agency_logo_20221130101442.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184947.png",
-       "credit": "ESA",
-       "license": {
-        "id": 2,
-        "name": "ESA Standard Licence",
-        "priority": 2,
-        "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 7,
-      "consecutive_successful_launches": 5,
-      "successful_launches": 6,
-      "failed_launches": 1,
-      "pending_launches": 1,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": "https://www.esa.int/",
-      "wiki_url": "https://en.wikipedia.org/wiki/European_Space_Agency",
-      "social_media_links": [
-       {
-        "id": 242,
-        "social_media": {
-         "id": 3,
-         "name": "Homepage",
-         "url": null,
-         "logo": null
-        },
-        "url": "https://www.esa.int/"
-       },
-       {
-        "id": 243,
-        "social_media": {
-         "id": 4,
-         "name": "LinkedIn",
-         "url": "https://www.linkedin.com/",
-         "logo": {
-          "id": 2321,
-          "name": "LinkedIn logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_20250211191111.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/linkedin_logo_image_thumbnail_20250211191112.png",
-          "credit": "LinkedIn",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.linkedin.com/company/european-space-agency/"
-       },
-       {
-        "id": 244,
-        "social_media": {
-         "id": 2,
-         "name": "Instagram",
-         "url": "https://instagram.com",
-         "logo": {
-          "id": 2322,
-          "name": "Instagram logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_20250211191139.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/instagram_logo_image_thumbnail_20250211191139.png",
-          "credit": "Instagram",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://www.instagram.com/europeanspaceagency/"
-       },
-       {
-        "id": 245,
-        "social_media": {
-         "id": 1,
-         "name": "X",
-         "url": "https://x.com",
-         "logo": {
-          "id": 2320,
-          "name": "X logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_20250211191027.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/x_logo_image_thumbnail_20250211191027.jpeg",
-          "credit": "X",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://x.com/esa"
-       },
-       {
-        "id": 246,
-        "social_media": {
-         "id": 5,
-         "name": "Bluesky",
-         "url": "https://bsky.app/",
-         "logo": {
-          "id": 2323,
-          "name": "Bluesky logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/bluesky_logo_image_20250211191214.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/bluesky_logo_image_thumbnail_20250211191214.png",
-          "credit": "Bluesky",
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         }
-        },
-        "url": "https://bsky.app/profile/esa.int"
-       }
-      ]
-     }
-    ],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 34,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/34/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 115,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/115/",
-      "name": "Arianespace",
-      "abbrev": "ASA",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 1,
-        "name": "France",
-        "alpha_2_code": "FR",
-        "alpha_3_code": "FRA",
-        "nationality_name": "French",
-        "nationality_name_composed": "Franco"
-       }
-      ],
-      "description": "Arianespace SA is a multinational company founded in 1980 as the world's first commercial launch service provider. It undertakes the production, operation, and marketing of the Ariane programme. Their vehicles launch exclusively from French Guiana in South America.",
-      "administrator": "CEO: David Cavaillolès",
-      "founding_year": 1980,
-      "launchers": "Ariane | Vega",
-      "spacecraft": "",
-      "parent": "ArianeGroup",
-      "image": {
-       "id": 2694,
-       "name": "Ariane 64 liftoff (LE-01)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/ariane_64_lifto_image_20260213070745.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/ariane_64_lifto_image_thumbnail_20260213070746.jpeg",
-       "credit": "ESA/CNES/Arianespace/ArianeGroup/Optique video du CSG–P. Piron",
-       "license": {
-        "id": 2,
-        "name": "ESA Standard Licence",
-        "priority": 2,
-        "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-       },
-       "single_use": false,
-       "variants": []
-      },
-      "logo": {
-       "id": 108,
-       "name": "Arianespace blue logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/arianespace_logo_20210603173752.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184909.png",
-       "credit": "Arianespace",
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": [
-        {
-         "id": 11,
-         "type": {
-          "id": 1,
-          "name": "transparent for light background"
-         },
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/image_variants/arianespace_log_image_20250211184850.png"
-        },
-        {
-         "id": 12,
-         "type": {
-          "id": 2,
-          "name": "transparent for dark background"
-         },
-         "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/image_variants/arianespace_log_image_20250211184853.png"
-        }
-       ]
-      },
-      "social_logo": {
-       "id": 39,
-       "name": "Arianespace social logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/arianespace_nation_20230530190314.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184728.jpeg",
-       "credit": "Arianespace",
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      }
-     }
-    ],
-    "name": "Ariane Launch Area 1 (ELV)",
-    "image": {
-     "id": 1981,
-     "name": "Ensemble de lancement Vega",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/ensemble_de_lan_image_20240310185520.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/ensemble_de_lan_image_thumbnail_20240310185520.jpeg",
-     "credit": "Camille Gévaudan",
-     "license": {
-      "id": 20,
-      "name": "CC BY-SA 4.0",
-      "priority": 6,
-      "link": "https://creativecommons.org/licenses/by-sa/4.0/"
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "description": "ELA-1, now named Ensemble de Lancement Vega (short ELV), is a launch pad at the Centre Spatial Guyanais in French Guiana. It has been used to support launches of the Europa rocket, Ariane 1, Ariane 3, and is currently used to launch Vega rockets.",
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/ELA-1",
-    "map_url": "https://www.google.com/maps?q=5.236,-52.775",
-    "latitude": 5.236,
-    "longitude": -52.775,
-    "country": {
-     "id": 50,
-     "name": "French Guiana",
-     "alpha_2_code": "GF",
-     "alpha_3_code": "GUF",
-     "nationality_name": "French Guianan",
-     "nationality_name_composed": "Franco-Guiano"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_34_20200803143527.jpg",
-    "total_launch_count": 56,
-    "orbital_launch_attempt_count": 56,
-    "fastest_turnaround": "P55DT10H7M35S",
-    "location": {
-     "response_mode": "normal",
-     "id": 13,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/13/",
-     "name": "Guiana Space Centre, French Guiana",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
-      "failed_launches": 557,
-      "total_attempted_landings": 1379,
-      "successful_landings": 1330,
-      "failed_landings": 49
-     },
-     "active": true,
-     "country": {
-      "id": 50,
-      "name": "French Guiana",
-      "alpha_2_code": "GF",
-      "alpha_3_code": "GUF",
-      "nationality_name": "French Guianan",
-      "nationality_name_composed": "Franco-Guiano"
-     },
-     "description": "The Guiana Space Centre is a European spaceport to the northwest of Kourou in French Guiana, a region of France in South America. Kourou is located at a latitude of 5°. In operation since 1968, it is a suitable location for a spaceport because of its equatorial location and open sea to the east.",
-     "image": {
-      "id": 2203,
-      "name": "Vega & Ariane 5 pads at the Guiana Space Centre",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega_2526_aria_image_20240918154413.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/vega_2526_aria_image_thumbnail_20240918154414.jpeg",
-      "credit": "ESA/S. Corvaja",
-      "license": {
-       "id": 2,
-       "name": "ESA Standard Licence",
-       "priority": 2,
-       "link": "https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website"
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_13_20200803142412.jpg",
-     "longitude": -52.6903,
-     "latitude": 5.169,
-     "timezone_name": "America/Cayenne",
-     "total_launch_count": 336,
-     "total_landing_count": 0
-    }
-   },
-   "webcast_live": false,
-   "program": [
-    {
-     "response_mode": "normal",
-     "id": 22,
-     "url": "https://ll.thespacedevs.com/2.3.0/programs/22/",
-     "name": "Copernicus",
-     "image": {
-      "id": 1879,
-      "name": "[AUTO] Copernicus - image",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/copernicus_program_20221129162831.png",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305194023.png",
-      "credit": null,
-      "license": {
-       "id": 1,
-       "name": "Unknown",
-       "priority": 9,
-       "link": null
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "info_url": "https://www.copernicus.eu",
-     "wiki_url": "https://en.wikipedia.org/wiki/Copernicus_Programme",
-     "description": "Copernicus is the European Union's Earth observation programme coordinated and managed for the European Commission by the European Union Agency for the Space Programme in partnership with the European Space Agency (ESA), the EU Member States. It aims at achieving a global, continuous, autonomous, high quality, wide range Earth observation capacity. Providing accurate, timely and easily accessible information to, among other things, improve the management of the environment, understand and mitigate the effects of climate change, and ensure civil security.",
-     "agencies": [
-      {
-       "response_mode": "list",
-       "id": 27,
-       "url": "https://ll.thespacedevs.com/2.3.0/agencies/27/",
-       "name": "European Space Agency",
-       "abbrev": "ESA",
-       "type": {
-        "id": 2,
-        "name": "Multinational"
-       }
-      },
-      {
-       "response_mode": "list",
-       "id": 1043,
-       "url": "https://ll.thespacedevs.com/2.3.0/agencies/1043/",
-       "name": "European Union Agency for the Space Programme",
-       "abbrev": "EUSPA",
-       "type": {
-        "id": 2,
-        "name": "Multinational"
-       }
-      }
-     ],
-     "start_date": "2014-04-03T00:00:00Z",
-     "end_date": null,
-     "mission_patches": [],
-     "type": {
-      "id": 8,
-      "name": "Earth Observation"
-     }
-    }
-   ],
-   "orbital_launch_attempt_count": 7390,
-   "location_launch_attempt_count": 336,
-   "pad_launch_attempt_count": 56,
-   "agency_launch_attempt_count": 2,
-   "orbital_launch_attempt_count_year": 217,
-   "location_launch_attempt_count_year": 6,
-   "pad_launch_attempt_count_year": 2,
-   "agency_launch_attempt_count_year": 2,
-   "flightclub_url": null,
-   "updates": [
-    {
-     "id": 16115,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Both satellites successfully deployed and signals acquired from both.",
-     "info_url": "https://www.youtube.com/watch?v=Rb4CN2avz90",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-15T03:23:00Z"
-    },
-    {
-     "id": 16114,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Liftoff.",
-     "info_url": "https://www.youtube.com/watch?v=Rb4CN2avz90",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-15T01:21:00Z"
-    },
-    {
-     "id": 16113,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/ll2_profile_20230311134739.png",
-     "comment": "Official Webcast by Avio SpA has started",
-     "info_url": "https://www.youtube.com/watch?v=Rb4CN2avz90",
-     "created_by": "LL2",
-     "created_on": "2026-09-15T00:47:00Z"
-    },
-    {
-     "id": 15708,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "GO for launch on September 15 UTC.",
-     "info_url": "https://x.com/Avio_Group/status/2082739494067786159",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-07-30T14:09:00Z"
-    },
-    {
-     "id": 15356,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
-     "comment": "NET September 11",
-     "info_url": "https://centrespatialguyanais.cnes.fr/fr/calendrier-lancements",
-     "created_by": "Nosu",
-     "created_on": "2026-06-25T12:08:00Z"
-    },
-    {
-     "id": 15209,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September 9.",
-     "info_url": "https://centrespatialguyanais.cnes.fr/fr/calendrier-lancements",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-06-05T14:22:00Z"
-    },
-    {
-     "id": 13600,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September 1st, together with FLEX.",
-     "info_url": "https://earth.esa.int/eogateway/announcement-of-opportunity/flex-cal-val",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-01-11T21:34:00Z"
-    },
-    {
-     "id": 13157,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
-     "comment": "NET October 2026",
-     "info_url": "https://database.eohandbook.com/database/missionsummary.aspx?missionID=579",
-     "created_by": "Nosu",
-     "created_on": "2025-12-06T07:23:00Z"
-    },
-    {
-     "id": 12796,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September 2026. (see 02:17:55 mark)",
-     "info_url": "https://www.youtube.com/watch?v=6daC_wTrjS0",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2025-11-06T23:58:00Z"
-    },
-    {
-     "id": 12256,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
-     "comment": "NET June 2026",
-     "info_url": "https://database.eohandbook.com/database/missionsummary.aspx?missionID=579",
-     "created_by": "Nosu",
-     "created_on": "2025-09-15T11:37:00Z"
-    },
-    {
-     "id": 7639,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
-     "comment": "NET 2026",
-     "info_url": "https://space.oscar.wmo.int/satellites/view/sentinel_3c",
-     "created_by": "Nosu",
-     "created_on": "2024-05-27T14:32:38Z"
-    },
-    {
-     "id": 6993,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET Q1 2025.",
-     "info_url": "https://www.eumetsat.int/planned-launches",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2024-03-15T13:01:16Z"
-    },
-    {
-     "id": 2872,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/arnaud2520muller_profile_20230607144351.jpg",
-     "comment": "Adding launch NET October 2024",
-     "info_url": "https://database.eohandbook.com/database/agencysummary.aspx?agencyID=9",
-     "created_by": "Nosu",
-     "created_on": "2022-11-21T20:28:56Z"
-    }
-   ],
-   "info_urls": [
-    {
-     "priority": 10,
-     "source": "avio.com",
-     "title": "LAUNCH KIT VV30",
-     "description": "Launch Kit VV30",
-     "feature_image": null,
-     "url": "https://www.avio.com/press-kit/launch-kit-vv-30",
-     "type": {
-      "id": 2,
-      "name": "Official Press Kit"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     }
-    }
-   ],
-   "vid_urls": [
-    {
-     "priority": 10,
-     "source": "youtube.com",
-     "publisher": "Avio SpA",
-     "title": "Vega C | Flight VV30 | Sentinel-3C - FLEX | Avio",
-     "description": "On September 14th at 10.21 PM Kourou time (01.21 UTC; 03.21 AM CEST on September 15th), Avio will launch two Earth observation satellites: the Sentinel-3C of the Copernicus programme for the European Commission and the FLEX Earth Explorer for the European Space Agency (ESA). The mission, designated “VV30”, will be carried out by a Vega C launcher, the second operated by Avio, lifting off from the European Spaceport in French Guiana.\n \nThe satellites will be released into Sun-Synchronous Orbit at an altitude of about 820 km with an inclination of 98.6°. The duration of the launch (from lift-off to separation of the last satellite) is 116 minutes.\n \nCopernicus Sentinel-3C is the third satellite of the Sentinel-3 mission, dedicated to monitoring the health of our planet by observing ocea...",
-     "feature_image": "https://i.ytimg.com/vi/Rb4CN2avz90/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=Rb4CN2avz90",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-15T00:47:26Z",
-     "end_time": "2026-09-15T03:40:32Z",
-     "live": false
-    },
-    {
-     "priority": 11,
-     "source": "youtube.com",
-     "publisher": "European Space Agency, ESA",
-     "title": "FLEX and Sentinel-3C launch (Official broadcast)",
-     "description": "ESA’s FLEX satellite and the Copernicus Sentinel-3C satellite are set to launch on 15 September at 03:21 CEST (14 September at 22:21 local time). Watch the launch programme live from Europe’s Spaceport in French Guiana, with streaming starting at 02:50 CEST and continuing until 05:36 CEST.\n\nFLEX will provide new insights into how plants function by measuring the faint fluorescence they emit as they capture sunlight during photosynthesis. This unique measurement will help scientists better understand plant health and productivity, as well as how vegetation responds to a changing environment.\n\nSentinel-3C is the third satellite in the Sentinel-3 mission, which systematically monitors Earth’s oceans, land, ice and atmosphere. The mission as a whole contributes to a better understanding o...",
-     "feature_image": "https://i.ytimg.com/vi/fmrgyh5s-is/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=fmrgyh5s-is",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-15T00:48:56Z",
-     "end_time": "2026-09-15T03:40:39Z",
-     "live": false
-    },
-    {
-     "priority": 12,
-     "source": "youtube.com",
-     "publisher": "NASASpaceflight",
-     "title": "Vega C launches Sentinel-3C & FLEX",
-     "description": "Launch: 9:21:07 PM Eastern\n\nMission overview:\nhttps://www.nasaspaceflight.com/2026/09/vega-c-launch-sentinel-3c-flex/\n\n⚡ Become a member of NASASpaceflight's channel for exclusive discord access, fast turnaround clips, and other exclusive benefits. Your support helps us continue our 24/7 coverage. ⚡\n\n🔍 If you are interested in using footage captured by this stream, please review our content use policy: https://www.nasaspaceflight.com/content-use-policy/\n\n#Ariane6 #Arianespace #ESA #Space  #SatelliteLaunch #SpaceLaunch #ArianeRocket #LEOConstellation #FrenchGuiana \n\n🎵 Intro song: New Way Out by Denis. Licensed via PremiumBeat. LDAPAABJRG2UMCU3\n🎵 Music used on streams and in videos is licensed via EpidemicSound: https://share.epidemicsound.com/qvh38e\n\nAll content copyright NASASpaceflig...",
-     "feature_image": "https://i.ytimg.com/vi/_7nBPHF-hAE/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=_7nBPHF-hAE",
-     "type": {
-      "id": 3,
-      "name": "Unofficial Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-09-15T00:25:07Z",
-     "end_time": "2026-09-15T01:46:40Z",
-     "live": false
-    }
-   ],
-   "timeline": [
-    {
-     "type": {
-      "id": 10,
-      "abbrev": "Liftoff",
-      "description": "First upwards movement of the rocket"
-     },
-     "relative_time": "P0D"
-    },
-    {
-     "type": {
-      "id": 13,
-      "abbrev": "Stage 2 Separation",
-      "description": "Separation of the second stage from the first"
-     },
-     "relative_time": "PT2M27S"
-    },
-    {
-     "type": {
-      "id": 31,
-      "abbrev": "SES",
-      "description": "Start of the second engine"
-     },
-     "relative_time": "PT2M28S"
-    },
-    {
-     "type": {
-      "id": 74,
-      "abbrev": "Stage 3 Separation",
-      "description": "Separation of the third stage from the second"
-     },
-     "relative_time": "PT4M32S"
-    },
-    {
-     "type": {
-      "id": 75,
-      "abbrev": "Stage 3 Ignition",
-      "description": "Third stage engine ignites."
-     },
-     "relative_time": "PT4M39S"
-    },
-    {
-     "type": {
-      "id": 15,
-      "abbrev": "Fairing Separation",
-      "description": "Separation of the payload fairing"
-     },
-     "relative_time": "PT4M44S"
-    },
-    {
-     "type": {
-      "id": 30,
-      "abbrev": "Kick Stage Separation",
-      "description": "Separation of the kick stage from the previous stage"
-     },
-     "relative_time": "PT7M11S"
-    },
-    {
-     "type": {
-      "id": 32,
-      "abbrev": "Kick Stage Ignition",
-      "description": "Start of the kick stage engine"
-     },
-     "relative_time": "PT8M23S"
-    },
-    {
-     "type": {
-      "id": 33,
-      "abbrev": "Kick Stage Cut-off",
-      "description": "Cut-off of the kick stage engine"
-     },
-     "relative_time": "PT17M6S"
-    },
-    {
-     "type": {
-      "id": 32,
-      "abbrev": "Kick Stage Ignition",
-      "description": "Start of the kick stage engine"
-     },
-     "relative_time": "PT55M29S"
-    },
-    {
-     "type": {
-      "id": 33,
-      "abbrev": "Kick Stage Cut-off",
-      "description": "Cut-off of the kick stage engine"
-     },
-     "relative_time": "PT58M30S"
-    },
-    {
-     "type": {
-      "id": 35,
-      "abbrev": "Payload Separation",
-      "description": "Final deployment of the payload from the rocket"
-     },
-     "relative_time": "PT1H50S"
-    },
-    {
-     "type": {
-      "id": 32,
-      "abbrev": "Kick Stage Ignition",
-      "description": "Start of the kick stage engine"
-     },
-     "relative_time": "PT1H46M19S"
-    },
-    {
-     "type": {
-      "id": 33,
-      "abbrev": "Kick Stage Cut-off",
-      "description": "Cut-off of the kick stage engine"
-     },
-     "relative_time": "PT1H46M49S"
-    },
-    {
-     "type": {
-      "id": 32,
-      "abbrev": "Kick Stage Ignition",
-      "description": "Start of the kick stage engine"
-     },
-     "relative_time": "PT1H54M32S"
-    },
-    {
-     "type": {
-      "id": 33,
-      "abbrev": "Kick Stage Cut-off",
-      "description": "Cut-off of the kick stage engine"
-     },
-     "relative_time": "PT1H54M58S"
-    },
-    {
-     "type": {
-      "id": 35,
-      "abbrev": "Payload Separation",
-      "description": "Final deployment of the payload from the rocket"
-     },
-     "relative_time": "PT1H56M3S"
-    },
-    {
-     "type": {
-      "id": 32,
-      "abbrev": "Kick Stage Ignition",
-      "description": "Start of the kick stage engine"
-     },
-     "relative_time": "PT2H23M32S"
-    },
-    {
-     "type": {
-      "id": 33,
-      "abbrev": "Kick Stage Cut-off",
-      "description": "Cut-off of the kick stage engine"
-     },
-     "relative_time": "PT2H24M58S"
-    }
-   ],
-   "pad_turnaround": "P118DT21H28M57S",
-   "mission_patches": [
-    {
-     "id": 603,
-     "name": "FLEX Mission Patch",
-     "priority": 10,
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/mission_patch_images/flex2520missio_mission_patch_20220108093914.png",
-     "agency": {
-      "response_mode": "list",
-      "id": 27,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/27/",
-      "name": "European Space Agency",
-      "abbrev": "ESA",
-      "type": {
-       "id": 2,
-       "name": "Multinational"
-      }
-     },
-     "response_mode": "normal"
-    }
-   ]
-  },
-  {
-   "id": "de446468-057f-4c9d-a6a1-af99c93b541e",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/de446468-057f-4c9d-a6a1-af99c93b541e/",
-   "name": "Zhuque-2E Block 2 | SpaceSail Polar Group #15",
-   "response_mode": "detailed",
-   "slug": "zhuque-2e-block-2-spacesail-polar-group-15",
-   "launch_designator": "2026-210",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-09-15T11:58:09Z",
-   "net": "2026-09-15T06:26:00Z",
-   "net_precision": {
-    "id": 1,
-    "name": "Minute",
-    "abbrev": "MIN",
-    "description": "The T-0 is accurate to the minute."
-   },
-   "window_end": "2026-09-15T06:40:00Z",
-   "window_start": "2026-09-15T06:18:00Z",
-   "image": {
-    "id": 2770,
-    "name": "Zhuque-2E Y6 launch",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_20260609122825.jpeg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_thumbnail_20260609122826.jpeg",
-    "credit": "LandSpace",
-    "license": {
-     "id": 1,
-     "name": "Unknown",
-     "priority": 9,
-     "link": null
-    },
-    "single_use": true,
-    "variants": []
-   },
-   "infographic": null,
-   "probability": null,
-   "weather_concerns": null,
-   "failreason": "",
-   "hashtag": null,
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 259,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
-    "name": "LandSpace",
-    "abbrev": "LS",
-    "type": {
-     "id": 3,
-     "name": "Commercial"
-    },
-    "featured": false,
-    "country": [
-     {
-      "id": 6,
-      "name": "China",
-      "alpha_2_code": "CN",
-      "alpha_3_code": "CHN",
-      "nationality_name": "Chinese",
-      "nationality_name_composed": "Sino"
-     }
-    ],
-    "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
-    "administrator": "Founder: Zhang Changwu",
-    "founding_year": 2015,
-    "launchers": "",
-    "spacecraft": "",
-    "parent": null,
-    "image": null,
-    "logo": {
-     "id": 155,
-     "name": "[AUTO] LandSpace - logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 73,
-     "name": "[AUTO] LandSpace - social_logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 12,
-    "consecutive_successful_launches": 5,
-    "successful_launches": 9,
-    "failed_launches": 3,
-    "pending_launches": 1,
-    "consecutive_successful_landings": 1,
-    "successful_landings": 1,
-    "failed_landings": 1,
-    "attempted_landings": 2,
-    "successful_landings_spacecraft": 0,
-    "failed_landings_spacecraft": 0,
-    "attempted_landings_spacecraft": 0,
-    "successful_landings_payload": 0,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 0,
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
-    "social_media_links": []
-   },
-   "rocket": {
-    "id": 9135,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 556,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/556/",
-     "name": "Zhuque-2E Block 2",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 203,
-       "name": "Zhuque",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 259,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
-         "name": "LandSpace",
-         "abbrev": "LS",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": false,
-         "country": [
-          {
-           "id": 6,
-           "name": "China",
-           "alpha_2_code": "CN",
-           "alpha_3_code": "CHN",
-           "nationality_name": "Chinese",
-           "nationality_name_composed": "Sino"
-          }
-         ],
-         "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
-         "administrator": "Founder: Zhang Changwu",
-         "founding_year": 2015,
-         "launchers": "",
-         "spacecraft": "",
-         "parent": null,
-         "image": null,
-         "logo": {
-          "id": 155,
-          "name": "[AUTO] LandSpace - logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 73,
-          "name": "[AUTO] LandSpace - social_logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 12,
-         "consecutive_successful_launches": 5,
-         "successful_launches": 9,
-         "failed_launches": 3,
-         "pending_launches": 1,
-         "consecutive_successful_landings": 1,
-         "successful_landings": 1,
-         "failed_landings": 1,
-         "attempted_landings": 2,
-         "successful_landings_spacecraft": 0,
-         "failed_landings_spacecraft": 0,
-         "attempted_landings_spacecraft": 0,
-         "successful_landings_payload": 0,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 0,
-         "info_url": null,
-         "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
-         "social_media_links": []
-        }
-       ],
-       "parent": null,
-       "description": "",
-       "active": true,
-       "maiden_flight": "2018-10-27",
-       "total_launch_count": 12,
-       "consecutive_successful_launches": 5,
-       "successful_launches": 9,
-       "failed_launches": 3,
-       "pending_launches": 1,
-       "attempted_landings": 2,
-       "successful_landings": 1,
-       "failed_landings": 1,
-       "consecutive_successful_landings": 1
-      }
-     ],
-     "full_name": "Zhuque-2E Block 2",
-     "variant": "2E Block 2",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 259,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
-      "name": "LandSpace",
-      "abbrev": "LS",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 6,
-        "name": "China",
-        "alpha_2_code": "CN",
-        "alpha_3_code": "CHN",
-        "nationality_name": "Chinese",
-        "nationality_name_composed": "Sino"
-       }
-      ],
-      "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
-      "administrator": "Founder: Zhang Changwu",
-      "founding_year": 2015,
-      "launchers": "",
-      "spacecraft": "",
-      "parent": null,
-      "image": null,
-      "logo": {
-       "id": 155,
-       "name": "[AUTO] LandSpace - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 73,
-       "name": "[AUTO] LandSpace - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 12,
-      "consecutive_successful_launches": 5,
-      "successful_launches": 9,
-      "failed_launches": 3,
-      "pending_launches": 1,
-      "consecutive_successful_landings": 1,
-      "successful_landings": 1,
-      "failed_landings": 1,
-      "attempted_landings": 2,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": null,
-      "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
-      "social_media_links": []
-     },
-     "program": [],
-     "reusable": false,
-     "image": {
-      "id": 2770,
-      "name": "Zhuque-2E Y6 launch",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_20260609122825.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_thumbnail_20260609122826.jpeg",
-      "credit": "LandSpace",
-      "license": {
-       "id": 1,
-       "name": "Unknown",
-       "priority": 9,
-       "link": null
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "info_url": "https://www.landspace.com/en/product.html",
-     "wiki_url": "https://en.wikipedia.org/wiki/Zhuque-2",
-     "description": "Zhuque-2E (E stands for “enhanced”) is a medium-sized rocket powered by liquid oxygen and methane capable of lifting 6,000 kg of payload into a 200 km low Earth orbit, or 4,000 kg of payload into a 500 km Sun-synchronous orbit. It differs from the baseline Zhuque-2 in using enhanced TQ-12A engines on the 1st stage with higher thrust and specific impulse than the original TQ-12, and a new TQ-15A engine on the 2nd stage that has a moveable nozzle.\r\n\r\nThe Block 2 variant lengthens the 1st stage with more propellant load and a lighter structure, plus engines with still more increased thrust to reach the capabilities listed above.",
-     "alias": "",
-     "min_stage": 2,
-     "max_stage": 2,
-     "length": 55.9,
-     "diameter": 3.35,
-     "maiden_flight": "2026-05-14",
-     "launch_cost": null,
-     "launch_mass": 267.0,
-     "leo_capacity": 6000.0,
-     "gto_capacity": null,
-     "geo_capacity": null,
-     "sso_capacity": 4000.0,
-     "to_thrust": 3312.0,
-     "apogee": null,
-     "total_launch_count": 3,
-     "consecutive_successful_launches": 3,
-     "successful_launches": 3,
-     "failed_launches": 0,
-     "pending_launches": 0,
-     "attempted_landings": 0,
-     "successful_landings": 0,
-     "failed_landings": 0,
-     "consecutive_successful_landings": 0,
-     "fastest_turnaround": "P26DT5H23M"
-    },
-    "launcher_stage": [],
-    "spacecraft_stage": [],
-    "payloads": []
-   },
-   "mission": {
-    "id": 7734,
-    "name": "SpaceSail Polar Group #15",
-    "type": "Communications",
-    "description": "10 Low Earth Orbit communication satellites with Ku, Q and V band payloads for the G60 constellation operated by Shanghai Spacesail Technologies with funding backed by the Shanghai local government.\r\n\r\nInitial constellation will consist of 1296 satellites by 2027 with long term plans to expand it to 12000 satellites.",
-    "image": null,
-    "orbit": {
-     "id": 13,
-     "name": "Polar Orbit",
-     "abbrev": "PO",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 9,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/9/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 259,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
-      "name": "LandSpace",
-      "abbrev": "LS",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 6,
-        "name": "China",
-        "alpha_2_code": "CN",
-        "alpha_3_code": "CHN",
-        "nationality_name": "Chinese",
-        "nationality_name_composed": "Sino"
-       }
-      ],
-      "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
-      "administrator": "Founder: Zhang Changwu",
-      "founding_year": 2015,
-      "launchers": "",
-      "spacecraft": "",
-      "parent": null,
-      "image": null,
-      "logo": {
-       "id": 155,
-       "name": "[AUTO] LandSpace - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 73,
-       "name": "[AUTO] LandSpace - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      }
-     }
-    ],
-    "name": "Launch Area 96A",
-    "image": {
-     "id": 1510,
-     "name": "Zhuque-2 liftoff from LA-96 (Flight 2)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-225202_image_20230802052650.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193008.jpeg",
-     "credit": "LandSpace",
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "description": "",
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
-    "map_url": "https://www.google.com/maps?q=40.91491,100.245488",
-    "latitude": 40.91491,
-    "longitude": 100.245488,
-    "country": {
-     "id": 6,
-     "name": "China",
-     "alpha_2_code": "CN",
-     "alpha_3_code": "CHN",
-     "nationality_name": "Chinese",
-     "nationality_name_composed": "Sino"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_9_20200803143341.jpg",
-    "total_launch_count": 9,
-    "orbital_launch_attempt_count": 9,
-    "fastest_turnaround": "P26DT5H23M",
-    "location": {
-     "response_mode": "normal",
-     "id": 17,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/17/",
-     "name": "Jiuquan Satellite Launch Center, People's Republic of China",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
-      "failed_launches": 557,
-      "total_attempted_landings": 1379,
-      "successful_landings": 1330,
-      "failed_landings": 49
-     },
-     "active": true,
-     "country": {
-      "id": 6,
-      "name": "China",
-      "alpha_2_code": "CN",
-      "alpha_3_code": "CHN",
-      "nationality_name": "Chinese",
-      "nationality_name_composed": "Sino"
-     },
-     "description": "Jiuquan Satellite Launch Center is a Chinese spaceport located between the Ejin, Alxa, Inner Mongolia and Hangtian Town, Jinta County, Jiuquan, Gansu Province. It is part of the Dongfeng Aerospace City (Base 10).",
-     "image": {
-      "id": 1374,
-      "name": "Long March 2F/G liftoff (Shenzhou 16)",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march_image_20240101085213.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192548.jpeg",
-      "credit": "CMS",
-      "license": {
-       "id": 1,
-       "name": "Unknown",
-       "priority": 9,
-       "link": null
-      },
-      "single_use": false,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_17_20200803142429.jpg",
-     "longitude": 100.291111,
-     "latitude": 40.958056,
-     "timezone_name": "Asia/Shanghai",
-     "total_launch_count": 298,
-     "total_landing_count": 3
-    }
-   },
-   "webcast_live": false,
-   "program": [],
-   "orbital_launch_attempt_count": 7391,
-   "location_launch_attempt_count": 296,
-   "pad_launch_attempt_count": 9,
-   "agency_launch_attempt_count": 12,
-   "orbital_launch_attempt_count_year": 218,
-   "location_launch_attempt_count_year": 23,
-   "pad_launch_attempt_count_year": 3,
-   "agency_launch_attempt_count_year": 4,
-   "flightclub_url": null,
-   "updates": [
-    {
-     "id": 16116,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Launch success.",
-     "info_url": "https://m.weibo.cn/detail/5343428043081789",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-15T07:10:00Z"
-    },
-    {
-     "id": 16090,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Added launch per NOTAMs; Payload and launch vehicle identities uncertain.",
-     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2822167#msg2822167",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-10T10:42:00Z"
-    }
-   ],
-   "info_urls": [],
-   "vid_urls": [],
-   "timeline": [],
-   "pad_turnaround": "P97DT22H3M",
-   "mission_patches": []
-  },
   {
    "id": "767f7827-53d8-4621-803b-f456a1e6b512",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/767f7827-53d8-4621-803b-f456a1e6b512/",
@@ -2680,8 +415,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -2777,7 +512,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-14T01:35:17Z",
+   "last_updated": "2026-10-15T01:40:33Z",
    "net": "2026-09-16T13:33:54Z",
    "net_precision": {
     "id": 0,
@@ -3267,8 +1002,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P27DT11H57M29S",
-       "time_docked": "P24DT11H47M3S",
+       "time_in_space": "P28DT12H2M38S",
+       "time_docked": "P25DT11H52M12S",
        "flights_count": 1,
        "mission_ends_count": 0,
        "status": {
@@ -3555,7 +1290,7 @@
         "description": "Spacecraft burned up in the atmosphere"
        }
       },
-      "duration": "P27DT12H1M23.757003S",
+      "duration": "P28DT12H6M39.557401S",
       "turn_around_time": null,
       "response_mode": "detailed",
       "launch_crew": [],
@@ -3819,8 +1554,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -4821,8 +2556,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -6292,8 +4027,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -6504,17 +4239,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -7058,8 +4793,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -7094,7 +4829,7 @@
      "longitude": 100.291111,
      "latitude": 40.958056,
      "timezone_name": "Asia/Shanghai",
-     "total_launch_count": 298,
+     "total_launch_count": 299,
      "total_landing_count": 3
     }
    },
@@ -7828,8 +5563,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -8468,8 +6203,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -9462,8 +7197,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -10992,8 +8727,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -11244,17 +8979,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -11276,17 +9011,17 @@
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
@@ -11793,8 +9528,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -11829,7 +9564,7 @@
      "longitude": 100.291111,
      "latitude": 40.958056,
      "timezone_name": "Asia/Shanghai",
-     "total_launch_count": 298,
+     "total_launch_count": 299,
      "total_landing_count": 3
     }
    },
@@ -12537,8 +10272,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -13350,8 +11085,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -13974,8 +11709,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -15530,8 +13265,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -17329,8 +15064,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -18061,7 +15796,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-14T01:35:14Z",
+   "last_updated": "2026-10-15T01:40:30Z",
    "net": "2026-10-01T15:10:06Z",
    "net_precision": {
     "id": 0,
@@ -19296,8 +17031,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P32DT13H19M16S",
-       "time_docked": "P30DT3H10M14S",
+       "time_in_space": "P33DT13H24M24S",
+       "time_docked": "P31DT3H15M22S",
        "flights_count": 2,
        "mission_ends_count": 1,
        "status": {
@@ -19696,7 +17431,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P12DT10H25M8.537205S",
+      "duration": "P13DT10H30M23.932392S",
       "turn_around_time": "P443DT5H40M6S",
       "response_mode": "detailed",
       "launch_crew": [
@@ -19747,7 +17482,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P182DT23H17M53S",
+         "time_in_space": "P183DT23H22M37S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -19816,7 +17551,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P12DT10H16M13S",
+         "time_in_space": "P13DT10H20M57S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -19934,7 +17669,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P12DT10H16M51S",
+         "time_in_space": "P13DT10H21M39S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -20003,7 +17738,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P12DT10H18M9S",
+         "time_in_space": "P13DT10H23M1S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -20075,7 +17810,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P182DT23H17M53S",
+         "time_in_space": "P183DT23H22M37S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -20144,7 +17879,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P12DT10H16M13S",
+         "time_in_space": "P13DT10H20M57S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -20262,7 +17997,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P12DT10H16M51S",
+         "time_in_space": "P13DT10H21M39S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -20331,7 +18066,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P12DT10H18M9S",
+         "time_in_space": "P13DT10H23M1S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -20854,8 +18589,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -23073,8 +20808,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -24605,8 +22340,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -25585,8 +23320,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -26512,8 +24247,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -28018,8 +25753,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -28390,17 +26125,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -30026,8 +27761,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -30363,17 +28098,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -30395,17 +28130,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -30573,7 +28308,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-14T01:35:07Z",
+   "last_updated": "2026-10-15T01:40:22Z",
    "net": "2026-10-13T10:33:44Z",
    "net_precision": {
     "id": 0,
@@ -31808,7 +29543,7 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P275DT22H58M45S",
+       "time_in_space": "P276DT23H3M52S",
        "time_docked": "P269DT2H24M",
        "flights_count": 4,
        "mission_ends_count": 3,
@@ -32208,7 +29943,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "PT15H1M23.455401S",
+      "duration": "P1DT15H6M38.546792S",
       "turn_around_time": "P228DT2H49M44S",
       "response_mode": "detailed",
       "launch_crew": [],
@@ -32479,8 +30214,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7638,
-      "successful_launches": 7081,
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
       "failed_launches": 557,
       "total_attempted_landings": 1379,
       "successful_landings": 1330,
@@ -32923,17 +30658,17 @@
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
@@ -33115,6 +30850,591 @@
     }
    ],
    "pad_turnaround": "P11DT19H23M38S",
+   "mission_patches": []
+  },
+  {
+   "id": "dfcabb3c-078b-4f5b-a47c-0161f248cee9",
+   "url": "https://ll.thespacedevs.com/2.3.0/launches/dfcabb3c-078b-4f5b-a47c-0161f248cee9/",
+   "name": "Zhuque-2E Block 2 | 10 satellites",
+   "response_mode": "detailed",
+   "slug": "zhuque-2e-block-2-10-satellites",
+   "launch_designator": "2026-234",
+   "status": {
+    "id": 3,
+    "name": "Launch Successful",
+    "abbrev": "Success",
+    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
+   },
+   "last_updated": "2026-10-14T23:01:56Z",
+   "net": "2026-10-14T11:40:00Z",
+   "net_precision": {
+    "id": 1,
+    "name": "Minute",
+    "abbrev": "MIN",
+    "description": "The T-0 is accurate to the minute."
+   },
+   "window_end": "2026-10-14T12:19:00Z",
+   "window_start": "2026-10-14T11:33:00Z",
+   "image": {
+    "id": 2770,
+    "name": "Zhuque-2E Y6 launch",
+    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_20260609122825.jpeg",
+    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_thumbnail_20260609122826.jpeg",
+    "credit": "LandSpace",
+    "license": {
+     "id": 1,
+     "name": "Unknown",
+     "priority": 9,
+     "link": null
+    },
+    "single_use": true,
+    "variants": []
+   },
+   "infographic": null,
+   "probability": null,
+   "weather_concerns": null,
+   "failreason": "",
+   "hashtag": null,
+   "launch_service_provider": {
+    "response_mode": "normal",
+    "id": 259,
+    "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
+    "name": "LandSpace",
+    "abbrev": "LS",
+    "type": {
+     "id": 3,
+     "name": "Commercial"
+    },
+    "featured": false,
+    "country": [
+     {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     }
+    ],
+    "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
+    "administrator": "Founder: Zhang Changwu",
+    "founding_year": 2015,
+    "launchers": "",
+    "spacecraft": "",
+    "parent": null,
+    "image": null,
+    "logo": {
+     "id": 155,
+     "name": "[AUTO] LandSpace - logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "social_logo": {
+     "id": 73,
+     "name": "[AUTO] LandSpace - social_logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "total_launch_count": 13,
+    "consecutive_successful_launches": 6,
+    "successful_launches": 10,
+    "failed_launches": 3,
+    "pending_launches": 0,
+    "consecutive_successful_landings": 1,
+    "successful_landings": 1,
+    "failed_landings": 1,
+    "attempted_landings": 2,
+    "successful_landings_spacecraft": 0,
+    "failed_landings_spacecraft": 0,
+    "attempted_landings_spacecraft": 0,
+    "successful_landings_payload": 0,
+    "failed_landings_payload": 0,
+    "attempted_landings_payload": 0,
+    "info_url": null,
+    "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
+    "social_media_links": []
+   },
+   "rocket": {
+    "id": 9272,
+    "configuration": {
+     "response_mode": "detailed",
+     "id": 556,
+     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/556/",
+     "name": "Zhuque-2E Block 2",
+     "families": [
+      {
+       "response_mode": "detailed",
+       "id": 203,
+       "name": "Zhuque",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 259,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
+         "name": "LandSpace",
+         "abbrev": "LS",
+         "type": {
+          "id": 3,
+          "name": "Commercial"
+         },
+         "featured": false,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
+         "administrator": "Founder: Zhang Changwu",
+         "founding_year": 2015,
+         "launchers": "",
+         "spacecraft": "",
+         "parent": null,
+         "image": null,
+         "logo": {
+          "id": 155,
+          "name": "[AUTO] LandSpace - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 73,
+          "name": "[AUTO] LandSpace - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 13,
+         "consecutive_successful_launches": 6,
+         "successful_launches": 10,
+         "failed_launches": 3,
+         "pending_launches": 0,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 0,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 0,
+         "successful_landings_payload": 0,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 0,
+         "info_url": null,
+         "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
+         "social_media_links": []
+        }
+       ],
+       "parent": null,
+       "description": "",
+       "active": true,
+       "maiden_flight": "2018-10-27",
+       "total_launch_count": 13,
+       "consecutive_successful_launches": 6,
+       "successful_launches": 10,
+       "failed_launches": 3,
+       "pending_launches": 0,
+       "attempted_landings": 2,
+       "successful_landings": 1,
+       "failed_landings": 1,
+       "consecutive_successful_landings": 1
+      }
+     ],
+     "full_name": "Zhuque-2E Block 2",
+     "variant": "2E Block 2",
+     "active": true,
+     "is_placeholder": false,
+     "manufacturer": {
+      "response_mode": "normal",
+      "id": 259,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
+      "name": "LandSpace",
+      "abbrev": "LS",
+      "type": {
+       "id": 3,
+       "name": "Commercial"
+      },
+      "featured": false,
+      "country": [
+       {
+        "id": 6,
+        "name": "China",
+        "alpha_2_code": "CN",
+        "alpha_3_code": "CHN",
+        "nationality_name": "Chinese",
+        "nationality_name_composed": "Sino"
+       }
+      ],
+      "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
+      "administrator": "Founder: Zhang Changwu",
+      "founding_year": 2015,
+      "launchers": "",
+      "spacecraft": "",
+      "parent": null,
+      "image": null,
+      "logo": {
+       "id": 155,
+       "name": "[AUTO] LandSpace - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 73,
+       "name": "[AUTO] LandSpace - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 13,
+      "consecutive_successful_launches": 6,
+      "successful_launches": 10,
+      "failed_launches": 3,
+      "pending_launches": 0,
+      "consecutive_successful_landings": 1,
+      "successful_landings": 1,
+      "failed_landings": 1,
+      "attempted_landings": 2,
+      "successful_landings_spacecraft": 0,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 0,
+      "successful_landings_payload": 0,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 0,
+      "info_url": null,
+      "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
+      "social_media_links": []
+     },
+     "program": [],
+     "reusable": false,
+     "image": {
+      "id": 2770,
+      "name": "Zhuque-2E Y6 launch",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_20260609122825.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-2e_y6_la_image_thumbnail_20260609122826.jpeg",
+      "credit": "LandSpace",
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": true,
+      "variants": []
+     },
+     "info_url": "https://www.landspace.com/en/product.html",
+     "wiki_url": "https://en.wikipedia.org/wiki/Zhuque-2",
+     "description": "Zhuque-2E (E stands for “enhanced”) is a medium-sized rocket powered by liquid oxygen and methane capable of lifting 6,000 kg of payload into a 200 km low Earth orbit, or 4,000 kg of payload into a 500 km Sun-synchronous orbit. It differs from the baseline Zhuque-2 in using enhanced TQ-12A engines on the 1st stage with higher thrust and specific impulse than the original TQ-12, and a new TQ-15A engine on the 2nd stage that has a moveable nozzle.\r\n\r\nThe Block 2 variant lengthens the 1st stage with more propellant load and a lighter structure, plus engines with still more increased thrust to reach the capabilities listed above.",
+     "alias": "",
+     "min_stage": 2,
+     "max_stage": 2,
+     "length": 55.9,
+     "diameter": 3.35,
+     "maiden_flight": "2026-05-14",
+     "launch_cost": null,
+     "launch_mass": 267.0,
+     "leo_capacity": 6000.0,
+     "gto_capacity": null,
+     "geo_capacity": null,
+     "sso_capacity": 4000.0,
+     "to_thrust": 3312.0,
+     "apogee": null,
+     "total_launch_count": 4,
+     "consecutive_successful_launches": 4,
+     "successful_launches": 4,
+     "failed_launches": 0,
+     "pending_launches": 0,
+     "attempted_landings": 0,
+     "successful_landings": 0,
+     "failed_landings": 0,
+     "consecutive_successful_landings": 0,
+     "fastest_turnaround": "P26DT5H23M"
+    },
+    "launcher_stage": [],
+    "spacecraft_stage": [],
+    "payloads": []
+   },
+   "mission": {
+    "id": 7871,
+    "name": "10 satellites",
+    "type": "Technology",
+    "description": "Ride-share of 10 satellites to sun-synchronous orbit, including LandSpace's own Guangchuan-03 & 04 for testing and demonstrating LEO communication satellite constellation technologies. Details TBD.",
+    "image": null,
+    "orbit": {
+     "id": 17,
+     "name": "Sun-Synchronous Orbit",
+     "abbrev": "SSO",
+     "celestial_body": {
+      "response_mode": "list",
+      "id": 1,
+      "name": "Earth"
+     }
+    },
+    "agencies": [],
+    "info_urls": [],
+    "vid_urls": []
+   },
+   "pad": {
+    "id": 9,
+    "url": "https://ll.thespacedevs.com/2.3.0/pads/9/",
+    "active": true,
+    "agencies": [
+     {
+      "response_mode": "normal",
+      "id": 259,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/259/",
+      "name": "LandSpace",
+      "abbrev": "LS",
+      "type": {
+       "id": 3,
+       "name": "Commercial"
+      },
+      "featured": false,
+      "country": [
+       {
+        "id": 6,
+        "name": "China",
+        "alpha_2_code": "CN",
+        "alpha_3_code": "CHN",
+        "nationality_name": "Chinese",
+        "nationality_name_composed": "Sino"
+       }
+      ],
+      "description": "LandSpace is a Chinese private space launch company based in Beijing. It was founded in 2015 by Tsinghua University alumni Zhang Changwu.",
+      "administrator": "Founder: Zhang Changwu",
+      "founding_year": 2015,
+      "launchers": "",
+      "spacecraft": "",
+      "parent": null,
+      "image": null,
+      "logo": {
+       "id": 155,
+       "name": "[AUTO] LandSpace - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_logo_20220822100731.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185030.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 73,
+       "name": "[AUTO] LandSpace - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/landspace_nation_20230702184353.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184819.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      }
+     }
+    ],
+    "name": "Launch Area 96A",
+    "image": {
+     "id": 1510,
+     "name": "Zhuque-2 liftoff from LA-96 (Flight 2)",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/zhuque-225202_image_20230802052650.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193008.jpeg",
+     "credit": "LandSpace",
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": false,
+     "variants": []
+    },
+    "description": "",
+    "info_url": null,
+    "wiki_url": "https://en.wikipedia.org/wiki/LandSpace",
+    "map_url": "https://www.google.com/maps?q=40.91491,100.245488",
+    "latitude": 40.91491,
+    "longitude": 100.245488,
+    "country": {
+     "id": 6,
+     "name": "China",
+     "alpha_2_code": "CN",
+     "alpha_3_code": "CHN",
+     "nationality_name": "Chinese",
+     "nationality_name_composed": "Sino"
+    },
+    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_9_20200803143341.jpg",
+    "total_launch_count": 10,
+    "orbital_launch_attempt_count": 10,
+    "fastest_turnaround": "P26DT5H23M",
+    "location": {
+     "response_mode": "normal",
+     "id": 17,
+     "url": "https://ll.thespacedevs.com/2.3.0/locations/17/",
+     "name": "Jiuquan Satellite Launch Center, People's Republic of China",
+     "celestial_body": {
+      "response_mode": "normal",
+      "id": 1,
+      "name": "Earth",
+      "type": {
+       "id": 1,
+       "name": "Planet"
+      },
+      "diameter": 12742000.0,
+      "mass": 5.972168e+24,
+      "gravity": 9.80655,
+      "length_of_day": "1 00:00:00",
+      "atmosphere": true,
+      "image": {
+       "id": 2040,
+       "name": "Earth (Apollo 17)",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
+       "credit": "NASA",
+       "license": {
+        "id": 4,
+        "name": "NASA Image and Media Guidelines",
+        "priority": 0,
+        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
+      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
+      "total_attempted_launches": 7639,
+      "successful_launches": 7082,
+      "failed_launches": 557,
+      "total_attempted_landings": 1379,
+      "successful_landings": 1330,
+      "failed_landings": 49
+     },
+     "active": true,
+     "country": {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     },
+     "description": "Jiuquan Satellite Launch Center is a Chinese spaceport located between the Ejin, Alxa, Inner Mongolia and Hangtian Town, Jinta County, Jiuquan, Gansu Province. It is part of the Dongfeng Aerospace City (Base 10).",
+     "image": {
+      "id": 1374,
+      "name": "Long March 2F/G liftoff (Shenzhou 16)",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march_image_20240101085213.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192548.jpeg",
+      "credit": "CMS",
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": false,
+      "variants": []
+     },
+     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_17_20200803142429.jpg",
+     "longitude": 100.291111,
+     "latitude": 40.958056,
+     "timezone_name": "Asia/Shanghai",
+     "total_launch_count": 299,
+     "total_landing_count": 3
+    }
+   },
+   "webcast_live": false,
+   "program": [],
+   "orbital_launch_attempt_count": 7415,
+   "location_launch_attempt_count": 299,
+   "pad_launch_attempt_count": 10,
+   "agency_launch_attempt_count": 13,
+   "orbital_launch_attempt_count_year": 242,
+   "location_launch_attempt_count_year": 26,
+   "pad_launch_attempt_count_year": 4,
+   "agency_launch_attempt_count_year": 5,
+   "flightclub_url": null,
+   "updates": [
+    {
+     "id": 16483,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Launch success.",
+     "info_url": "https://m.weibo.cn/detail/5354014484988940",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-10-14T12:34:00Z"
+    },
+    {
+     "id": 16474,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Added launch per NOTAMs; Payload and launch vehicle identities extremely uncertain.",
+     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2831464#msg2831464",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-10-13T01:06:00Z"
+    }
+   ],
+   "info_urls": [],
+   "vid_urls": [],
+   "timeline": [],
+   "pad_turnaround": "P29DT5H14M",
    "mission_patches": []
   }
  ]
