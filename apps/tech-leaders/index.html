@@ -638,10 +638,11 @@
       box.appendChild(tag);box.appendChild(document.createTextNode(zh));
       el.insertAdjacentElement("afterend",box);el.classList.add("has-tr");el.dataset.trState="done";
     }else{
-      var fail=document.createElement("div");fail.className="tr-failed";fail.textContent="暂时无法翻译，显示原文。";
+      var fail=document.createElement("div");fail.className="tr-failed";fail.textContent=trLimited?"今日翻译额度已用完，显示原文；明天（北京时间 8:00）恢复。":"暂时无法翻译，显示原文。";
       el.insertAdjacentElement("afterend",fail);el.dataset.trState="failed";
     }
   }
+  var trLimited=false;
   function queueTranslation(el){
     var text=String(el.textContent||"").trim();
     if(!text||mostlyChineseText(text)){el.dataset.trState="skip";return;}
@@ -657,6 +658,7 @@
     trBusy=true;
     var batch=trQueue.splice(0,8);
     var out=[];
+    trLimited=false;
     try{
       var ctl=typeof AbortController==="function"?new AbortController():null;
       var timer=setTimeout(function(){if(ctl)ctl.abort();},25000);
@@ -665,6 +667,7 @@
         var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/translate",{method:"POST",cache:"no-store",headers:{"content-type":"text/plain;charset=UTF-8"},body:JSON.stringify({texts:batch}),signal:ctl?ctl.signal:undefined});
         var data=await res.json().catch(function(){return {};});
         out=res.ok&&Array.isArray(data.translations)?data.translations:[];
+        trLimited=!!(res.ok&&data.daily_limit_reached);
       }finally{clearTimeout(timer);}
     }catch(e){out=[];}
     batch.forEach(function(text,i){

@@ -331,6 +331,8 @@ const TECH_TRANSLATE_MODEL = "@cf/meta/m2m100-1.2b";
 const TECH_TRANSLATE_MAX_TEXTS = 8;
 const TECH_TRANSLATE_MAX_CHARS = 2400;
 const TECH_TRANSLATE_PART_CHARS = 900;
+// 每天（UTC）最多新翻译多少条推文；命中缓存不计数。可用 wrangler.toml [vars] TECH_TRANSLATE_DAILY_LIMIT 调整。
+const TECH_TRANSLATE_DAILY_LIMIT = 1000;
 
 function mostlyChinese(text) {
   const s = String(text || "").replace(/\s+/g, "");
@@ -364,12 +366,26 @@ function splitForTranslation(text) {
   return paragraphs;
 }
 
-async function translateTechText(text, env) {
+function techTranslateDailyLimit(env) {
+  const n = Number(env && env.TECH_TRANSLATE_DAILY_LIMIT);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : TECH_TRANSLATE_DAILY_LIMIT;
+}
+
+function techTranslateUsageKey(date = new Date()) {
+  return "tech-leaders/translate/usage/" + date.toISOString().slice(0, 10) + ".json";
+}
+
+async function translateTechText(text, env, budget) {
   const source = String(text || "").trim().slice(0, TECH_TRANSLATE_MAX_CHARS);
   if (!source || mostlyChinese(source)) return { text: null, skipped: true };
   const key = "tech-leaders/translate/v1/" + await sha256Hex(TECH_TRANSLATE_MODEL + "\n" + source) + ".json";
   const cached = await readJson(env.PRO_DATA, key);
   if (cached && typeof cached.zh === "string") return { text: cached.zh, cached: true };
+  if (budget) {
+    if (budget.used >= budget.limit) return { text: null, limited: true };
+    budget.used += 1;
+    budget.added += 1;
+  }
   const out = [];
   for (const pieces of splitForTranslation(source)) {
     const translated = [];
@@ -2840,16 +2856,32 @@ export default {
       try { payload = JSON.parse(await request.text()); } catch { payload = null; }
       const texts = payload && Array.isArray(payload.texts) ? payload.texts.slice(0, TECH_TRANSLATE_MAX_TEXTS).map((t) => String(t || "")) : [];
       if (!texts.length) return json({ error: "no_texts" }, 400, cors);
+      const usageKey = techTranslateUsageKey();
+      const usage = await readJson(env.PRO_DATA, usageKey).catch(() => null);
+      const budget = { limit: techTranslateDailyLimit(env), used: Math.max(0, Number(usage && usage.count) || 0), added: 0 };
       const translations = [];
+      let limited = false;
       for (const text of texts) {
         try {
-          const r = await translateTechText(text, env);
+          const r = await translateTechText(text, env, budget);
+          if (r.limited) limited = true;
           translations.push(r.text);
         } catch {
           translations.push(null);
         }
       }
-      return json({ ok: true, target: "zh", model: TECH_TRANSLATE_MODEL, machine_translated: true, translations }, 200, {
+      if (budget.added) {
+        // 计数是「读-加-写」，并发请求可能略微少计，最多多翻译几条，不会无限增长。
+        try {
+          const latest = await readJson(env.PRO_DATA, usageKey).catch(() => null);
+          const count = Math.max(budget.used, (Number(latest && latest.count) || 0) + budget.added);
+          await writeJson(env.PRO_DATA, usageKey, { date: usageKey.slice(-15, -5), count, limit: budget.limit, updated_at: new Date().toISOString() });
+        } catch {}
+      }
+      return json({
+        ok: true, target: "zh", model: TECH_TRANSLATE_MODEL, machine_translated: true, translations,
+        daily_limit: budget.limit, daily_limit_reached: limited || budget.used >= budget.limit
+      }, 200, {
         ...cors,
         "cache-control": "no-store"
       });
