@@ -73,6 +73,19 @@
     .mode.api{color:var(--warn)}
     .language-note{margin:-2px 0 12px;color:var(--faint);font-size:12px;line-height:1.6}
     .language-note b{color:var(--dim);font-weight:700}
+    .lang-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+    .lang-toggle{display:inline-flex;padding:2px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+    .lang-toggle button{min-width:56px;min-height:32px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--dim);font:600 13px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;cursor:pointer}
+    .lang-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+    .lang-toggle button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+    .lang-hint{color:var(--faint);font-size:12px}
+    .post-translation{display:none}
+    .lang-zh .post-text.has-tr{display:none}
+    .lang-zh .post-translation{display:block;white-space:pre-wrap;word-break:break-word;font-size:15px;line-height:1.65}
+    .lang-zh .post-text.tr-loading{opacity:.55}
+    .tr-tag{display:inline-block;margin:0 6px 2px 0;padding:1px 6px;border:1px solid var(--line);border-radius:6px;color:var(--faint);font:600 10px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;vertical-align:middle}
+    .tr-failed{display:none}
+    .lang-zh .tr-failed{display:block;margin-top:4px;color:var(--faint);font-size:12px}
     .catalog-toolbar{display:flex;align-items:flex-start;gap:8px;min-width:0;width:100%}
     .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;overflow-y:hidden;padding:0 0 12px;margin-top:2px;scroll-behavior:auto;scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.52) rgba(128,128,128,.14);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x}
     .category-bar::-webkit-scrollbar{height:10px}
@@ -434,7 +447,13 @@
       <span id="source-badge" hidden></span>
       <span id="catalog-fact" hidden></span>
     </section>
-    <div class="language-note"><b>语言：</b>公开模式展示原文；如需中文，可使用浏览器网页翻译。</div>
+    <div class="language-note lang-bar"><b>语言：</b>
+      <span class="lang-toggle" role="group" aria-label="推文显示语言">
+        <button type="button" data-lang="orig" aria-pressed="true">原文</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </span>
+      <span class="lang-hint" id="lang-hint">中文为机器翻译，仅供参考，以原文为准。</span>
+    </div>
     <div class="catalog-toolbar">
       <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
       <button class="leader-fold" id="leader-fold" type="button" hidden>查看全部 613 →</button>
@@ -598,6 +617,98 @@
   var current=null;
   var leaders=document.getElementById("leaders");
   var timeline=document.getElementById("timeline");
+
+  // ---- 推文中文机器翻译（原文 / 中文 切换）----
+  // 只翻译滚动到附近的推文；同一段原文在本页只请求一次，服务器端另有缓存。
+  var LANG_KEY="ooglex.techLeaders.lang";
+  var feedLang=(function(){try{return localStorage.getItem(LANG_KEY)==="zh"?"zh":"orig";}catch(e){return "orig";}})();
+  var trResults=new Map();      // 原文 -> 译文（null 表示无需或无法翻译）
+  var trWaiting=new Map();      // 原文 -> 等待该译文的元素
+  var trQueue=[];var trTimer=null;var trBusy=false;
+  var trObserver=null;
+  function mostlyChineseText(t){var s=String(t||"").replace(/\s+/g,"");if(!s)return true;var han=(s.match(/[\u3400-\u9fff]/g)||[]).length;return han/s.length>=0.3;}
+  function applyTranslation(el,zh){
+    el.classList.remove("tr-loading");
+    if(!el.isConnected)return;
+    var next=el.nextElementSibling;
+    if(next&&(next.classList.contains("post-translation")||next.classList.contains("tr-failed")))next.remove();
+    if(zh){
+      var box=document.createElement("div");box.className="post-translation";
+      var tag=document.createElement("span");tag.className="tr-tag";tag.textContent="机器翻译";
+      box.appendChild(tag);box.appendChild(document.createTextNode(zh));
+      el.insertAdjacentElement("afterend",box);el.classList.add("has-tr");el.dataset.trState="done";
+    }else{
+      var fail=document.createElement("div");fail.className="tr-failed";fail.textContent=trLimited?"今日翻译额度已用完，显示原文；明天（北京时间 8:00）恢复。":"暂时无法翻译，显示原文。";
+      el.insertAdjacentElement("afterend",fail);el.dataset.trState="failed";
+    }
+  }
+  var trLimited=false;
+  function queueTranslation(el){
+    var text=String(el.textContent||"").trim();
+    if(!text||mostlyChineseText(text)){el.dataset.trState="skip";return;}
+    if(trResults.has(text)){var known=trResults.get(text);if(known)applyTranslation(el,known);else el.dataset.trState="skip";return;}
+    el.dataset.trState="queued";el.classList.add("tr-loading");
+    if(!trWaiting.has(text)){trWaiting.set(text,[]);trQueue.push(text);}
+    trWaiting.get(text).push(el);
+    if(!trTimer)trTimer=setTimeout(flushTranslations,120);
+  }
+  async function flushTranslations(){
+    trTimer=null;
+    if(trBusy||!trQueue.length)return;
+    trBusy=true;
+    var batch=trQueue.splice(0,8);
+    var out=[];
+    trLimited=false;
+    try{
+      var ctl=typeof AbortController==="function"?new AbortController():null;
+      var timer=setTimeout(function(){if(ctl)ctl.abort();},25000);
+      try{
+        // text/plain 不触发跨域预检，服务器按 JSON 解析。
+        var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/translate",{method:"POST",cache:"no-store",headers:{"content-type":"text/plain;charset=UTF-8"},body:JSON.stringify({texts:batch}),signal:ctl?ctl.signal:undefined});
+        var data=await res.json().catch(function(){return {};});
+        out=res.ok&&Array.isArray(data.translations)?data.translations:[];
+        trLimited=!!(res.ok&&data.daily_limit_reached);
+      }finally{clearTimeout(timer);}
+    }catch(e){out=[];}
+    batch.forEach(function(text,i){
+      var zh=typeof out[i]==="string"&&out[i].trim()?out[i].trim():null;
+      if(zh)trResults.set(text,zh);   // 失败的不记入，下次切换时可重试
+      (trWaiting.get(text)||[]).forEach(function(el){applyTranslation(el,zh);});
+      trWaiting.delete(text);
+    });
+    trBusy=false;
+    if(trQueue.length)flushTranslations();
+  }
+  function observeForTranslation(){
+    if(feedLang!=="zh")return;
+    var els=timeline.querySelectorAll(".post-text:not([data-tr-state])");
+    if(!els.length)return;
+    if(typeof IntersectionObserver!=="function"){els.forEach(queueTranslation);return;}
+    if(!trObserver){
+      trObserver=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){if(en.isIntersecting){trObserver.unobserve(en.target);if(feedLang==="zh")queueTranslation(en.target);}});
+      },{rootMargin:"600px 0px"});
+    }
+    els.forEach(function(el){el.dataset.trState="observed";trObserver.observe(el);});
+  }
+  function setFeedLang(next){
+    feedLang=next==="zh"?"zh":"orig";
+    try{localStorage.setItem(LANG_KEY,feedLang);}catch(e){}
+    document.querySelectorAll(".lang-toggle button").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-lang")===feedLang));});
+    timeline.classList.toggle("lang-zh",feedLang==="zh");
+    if(feedLang==="zh"){
+      // 之前失败的推文，切回中文时重试。
+      timeline.querySelectorAll('.post-text[data-tr-state="failed"]').forEach(function(el){var n=el.nextElementSibling;if(n&&n.classList.contains("tr-failed"))n.remove();el.removeAttribute("data-tr-state");});
+      observeForTranslation();
+    }
+  }
+  document.querySelectorAll(".lang-toggle button").forEach(function(b){b.addEventListener("click",function(){setFeedLang(b.getAttribute("data-lang"));});});
+  // 新加载的推文（换人、加载更多）进入页面后自动纳入翻译。
+  if(typeof MutationObserver==="function"){
+    var trScanPending=false;
+    new MutationObserver(function(){if(feedLang!=="zh"||trScanPending)return;trScanPending=true;requestAnimationFrame(function(){trScanPending=false;observeForTranslation();});}).observe(timeline,{childList:true,subtree:true});
+  }
+  setFeedLang(feedLang);
   var xdiag=document.getElementById("xdiag");
   var sourceBadge=document.getElementById("source-badge");
   var search=document.getElementById("leader-search");

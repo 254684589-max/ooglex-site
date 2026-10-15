@@ -324,6 +324,83 @@ function etagMatches(ifNoneMatch, httpEtag) {
   });
 }
 
+// ---- 科技领袖推文中文机器翻译 ----
+// 与「最新消息」使用同一模型（Cloudflare Workers AI m2m100）。结果按原文 SHA-256 缓存到 R2，
+// 同一条推文只翻译一次。仅供阅读参考，页面会标注「机器翻译」。
+const TECH_TRANSLATE_MODEL = "@cf/meta/m2m100-1.2b";
+const TECH_TRANSLATE_MAX_TEXTS = 8;
+const TECH_TRANSLATE_MAX_CHARS = 2400;
+const TECH_TRANSLATE_PART_CHARS = 900;
+// 每天（UTC）最多新翻译多少条推文；命中缓存不计数。可用 wrangler.toml [vars] TECH_TRANSLATE_DAILY_LIMIT 调整。
+const TECH_TRANSLATE_DAILY_LIMIT = 1000;
+
+function mostlyChinese(text) {
+  const s = String(text || "").replace(/\s+/g, "");
+  if (!s) return true;
+  const han = (s.match(/[\u3400-\u9fff]/g) || []).length;
+  return han / s.length >= 0.3;
+}
+
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// 按段落、再按句子切成模型能处理的长度；链接不送去翻译（原文里仍可点开）。
+// 返回 [[段落1的片段...], [段落2的片段...]]，翻译后同段片段直接相连、段落之间空一行。
+function splitForTranslation(text) {
+  const paragraphs = [];
+  for (const para of String(text).split(/\n{2,}/)) {
+    const pieces = [];
+    let rest = para.replace(/https?:\/\/\S+/g, "").trim();
+    while (rest.length > TECH_TRANSLATE_PART_CHARS) {
+      const chunk = rest.slice(0, TECH_TRANSLATE_PART_CHARS);
+      const cut = Math.max(chunk.lastIndexOf(". "), chunk.lastIndexOf("! "), chunk.lastIndexOf("? "), chunk.lastIndexOf("\n"));
+      const at = cut > 200 ? cut + 1 : TECH_TRANSLATE_PART_CHARS;
+      pieces.push(rest.slice(0, at).trim());
+      rest = rest.slice(at).trim();
+    }
+    if (rest) pieces.push(rest);
+    if (pieces.length) paragraphs.push(pieces);
+  }
+  return paragraphs;
+}
+
+function techTranslateDailyLimit(env) {
+  const n = Number(env && env.TECH_TRANSLATE_DAILY_LIMIT);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : TECH_TRANSLATE_DAILY_LIMIT;
+}
+
+function techTranslateUsageKey(date = new Date()) {
+  return "tech-leaders/translate/usage/" + date.toISOString().slice(0, 10) + ".json";
+}
+
+async function translateTechText(text, env, budget) {
+  const source = String(text || "").trim().slice(0, TECH_TRANSLATE_MAX_CHARS);
+  if (!source || mostlyChinese(source)) return { text: null, skipped: true };
+  const key = "tech-leaders/translate/v1/" + await sha256Hex(TECH_TRANSLATE_MODEL + "\n" + source) + ".json";
+  const cached = await readJson(env.PRO_DATA, key);
+  if (cached && typeof cached.zh === "string") return { text: cached.zh, cached: true };
+  if (budget) {
+    if (budget.used >= budget.limit) return { text: null, limited: true };
+    budget.used += 1;
+    budget.added += 1;
+  }
+  const out = [];
+  for (const pieces of splitForTranslation(source)) {
+    const translated = [];
+    for (const piece of pieces) {
+      const res = await env.AI.run(TECH_TRANSLATE_MODEL, { text: piece, source_lang: "english", target_lang: "chinese" });
+      translated.push(String(res && res.translated_text || "").trim());
+    }
+    out.push(translated.join(""));
+  }
+  const zh = out.filter(Boolean).join("\n\n").trim();
+  if (!zh) return { text: null, error: "empty_translation" };
+  await writeJson(env.PRO_DATA, key, { zh, model: TECH_TRANSLATE_MODEL, translated_at: new Date().toISOString() });
+  return { text: zh, cached: false };
+}
+
 async function readJson(binding, key) {
   const obj = await binding.get(key);
   if (!obj) return null;
@@ -2766,6 +2843,47 @@ export default {
         ...cors,
         "cache-control": "no-store",
         "set-cookie": techLeadersSessionCookie(accessToken)
+      });
+    }
+
+    if (url.pathname === "/v1/tech-leaders/translate") {
+      if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
+      if (!env.AI) return json({ error: "translation_unavailable" }, 503, { ...cors, "cache-control": "no-store" });
+      let payload = null;
+      try { payload = JSON.parse(await request.text()); } catch { payload = null; }
+      const texts = payload && Array.isArray(payload.texts) ? payload.texts.slice(0, TECH_TRANSLATE_MAX_TEXTS).map((t) => String(t || "")) : [];
+      if (!texts.length) return json({ error: "no_texts" }, 400, cors);
+      const usageKey = techTranslateUsageKey();
+      const usage = await readJson(env.PRO_DATA, usageKey).catch(() => null);
+      const budget = { limit: techTranslateDailyLimit(env), used: Math.max(0, Number(usage && usage.count) || 0), added: 0 };
+      const translations = [];
+      let limited = false;
+      for (const text of texts) {
+        try {
+          const r = await translateTechText(text, env, budget);
+          if (r.limited) limited = true;
+          translations.push(r.text);
+        } catch {
+          translations.push(null);
+        }
+      }
+      if (budget.added) {
+        // 计数是「读-加-写」，并发请求可能略微少计，最多多翻译几条，不会无限增长。
+        try {
+          const latest = await readJson(env.PRO_DATA, usageKey).catch(() => null);
+          const count = Math.max(budget.used, (Number(latest && latest.count) || 0) + budget.added);
+          await writeJson(env.PRO_DATA, usageKey, { date: usageKey.slice(-15, -5), count, limit: budget.limit, updated_at: new Date().toISOString() });
+        } catch {}
+      }
+      return json({
+        ok: true, target: "zh", model: TECH_TRANSLATE_MODEL, machine_translated: true, translations,
+        daily_limit: budget.limit, daily_limit_reached: limited || budget.used >= budget.limit
+      }, 200, {
+        ...cors,
+        "cache-control": "no-store"
       });
     }
 
