@@ -128,8 +128,12 @@
   addStyle();
   document.documentElement.classList.add("ooglex-tech-locked");
 
+  // 会话校验不依赖页面 DOM，脚本一加载就发出，与页面解析并行；
+  // 只有需要显示密码框时才等待 DOM 就绪。
+  var sessionCheck = validateSession();
+
   async function startGate() {
-    if (await validateSession()) {
+    if (await sessionCheck) {
       document.documentElement.classList.remove("ooglex-tech-locked");
       finish(true);
       return;

@@ -31,7 +31,8 @@
   <script>
   (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
   </script>
-  <script src="/assets/tech-leaders-password-gate.js?v=20260926a"></script>\n  <script src="/assets/theme.js?v=20260926k" defer></script>
+  <script src="/assets/tech-leaders-password-gate.js?v=20261015a"></script>
+  <script src="/assets/theme.js?v=20260926k" defer></script>
   <script src="/assets/i18n.js?v=c83b60c1" defer></script>
   <script src="/assets/i18n-wave6.js?v=a2d529d1" defer></script>
   <style>
@@ -1158,18 +1159,37 @@
     document.body.classList.remove("leader-library-open");
   }
 
+  // 本次浏览器会话内缓存名录：与密码门「本次会话内保持解锁」同一范围，关闭浏览器即清除。
+  // 命中时立即渲染，后台再取最新名录写回缓存，下次打开生效。
+  var CATALOG_CACHE_KEY="ooglex.techLeaders.catalog:"+CATALOG_FILE;
+  function readCatalogCache(){
+    try{var raw=sessionStorage.getItem(CATALOG_CACHE_KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}
+  }
+  function writeCatalogCache(text){
+    try{sessionStorage.setItem(CATALOG_CACHE_KEY,text);}catch(e){try{sessionStorage.removeItem(CATALOG_CACHE_KEY);}catch(_){}}
+  }
+  async function fetchCatalogText(){
+    // no-cache：浏览器保留名录副本，每次带 If-None-Match 向服务器确认；未变化时只收 304。
+    var res=await techProtectedFetch(CATALOG_URL,{cache:"no-cache"});
+    if(!res.ok)throw new Error("catalog_http_"+res.status);
+    return res.text();
+  }
   async function loadCatalog(){
+    // 中文名字典与名录并行请求，不再串行等待。
+    var namesPromise=fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){if(d&&d.names)leaderNameDictionary=d.names;})
+      .catch(function(){});
     try{
-      try{
-        var nameRes=await fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"});
-        if(nameRes.ok){
-          var nameData=await nameRes.json();
-          if(nameData&&nameData.names)leaderNameDictionary=nameData.names;
-        }
-      }catch(nameErr){}
-      var res=await techProtectedFetch(CATALOG_URL,{cache:"no-store"});
-      if(!res.ok)throw new Error("catalog_http_"+res.status);
-      var data=await res.json();
+      var data=readCatalogCache();
+      if(data&&Array.isArray(data.leaders)&&data.leaders.length){
+        fetchCatalogText().then(writeCatalogCache).catch(function(){});
+      }else{
+        var text=await fetchCatalogText();
+        data=JSON.parse(text);
+        writeCatalogCache(text);
+      }
+      await namesPromise;
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
         people=data.leaders.filter(function(p){
           var status=p.active_status||p.admission_status||"active";
