@@ -16,6 +16,8 @@ on:
       - 'apps/macro-radar/**'
       - 'apps/supply-chain/**'
       - 'apps/finance-column/**'
+      - 'apps/whats-latest/data.json'
+      - 'scripts/build_public_site.py'
       - 'apps/tech-leaders/**'
       - 'scripts/tech-leaders/**'
       - '.github/workflows/deploy-pro-api.yml'
@@ -127,13 +129,15 @@ jobs:
             r2 object put ooglex-pro-data/billionaires/full.json --file .pro-build/billionaires/full.json
             r2 object put ooglex-pro-data/finance-column/preview.json --file .pro-build/finance-column/preview.json
             r2 object put ooglex-pro-data/finance-column/full.json --file .pro-build/finance-column/full.json
+            r2 object put ooglex-pro-data/whats-latest/preview.json --file .pro-build/whats-latest/preview.json
+            r2 object put ooglex-pro-data/whats-latest/full.json --file .pro-build/whats-latest/full.json
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Verify public preview endpoints
         run: |
           set -e
-          for product in supply_chain macro_risk billionaires finance_column; do
+          for product in supply_chain macro_risk billionaires finance_column whats_latest; do
             body="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/data/$product?mode=preview")"
             test -n "$body"
             echo "$product preview ready"

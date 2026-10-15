@@ -116,7 +116,7 @@ for each row execute procedure public.set_updated_at();
 
 create table if not exists public.plan_entitlements (
   plan text not null check (plan in ('free','pro','pro_plus')),
-  product_key text not null check (product_key in ('supply_chain','macro_risk','billionaires','finance_column')),
+  product_key text not null check (product_key in ('supply_chain','macro_risk','billionaires','finance_column','whats_latest')),
   access_level text not null check (access_level in ('preview','full')),
   updated_at timestamptz not null default now(),
   primary key (plan, product_key)
@@ -134,7 +134,10 @@ insert into public.plan_entitlements(plan, product_key, access_level) values
   ('pro_plus','billionaires','full'),
   ('free','finance_column','preview'),
   ('pro','finance_column','full'),
-  ('pro_plus','finance_column','full')
+  ('pro_plus','finance_column','full'),
+  ('free','whats_latest','preview'),
+  ('pro','whats_latest','full'),
+  ('pro_plus','whats_latest','full')
 on conflict (plan, product_key) do update
 set access_level = excluded.access_level, updated_at = now();
 

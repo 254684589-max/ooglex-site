@@ -4,6 +4,9 @@
 (function(){
   "use strict";
   var DATA=null, active="all";
+  // 完整数据请求结果："" 未请求；"pro_required" 已登录但当前方案无完整权限；
+  // "sign_in_required" 登录已失效；"error" 网络/接口失败（回退公开10%预览）。
+  var FULL_ACCESS_STATE="";
   var $=function(id){return document.getElementById(id);};
 
   function esc(s){
@@ -209,6 +212,12 @@
     }).join("");
   }
 
+  function previewWallText(){
+    if(FULL_ACCESS_STATE==="pro_required")return "你已登录，但当前账户方案仅含公开10%预览。开通完整访问后可查看全部新闻。";
+    if(FULL_ACCESS_STATE==="error")return "已登录，但完整数据暂时无法获取，当前先显示公开预览。请稍后刷新重试。";
+    return "当前展示原版页面预览。登录 / 注册后可继续查看完整内容。";
+  }
+
   function installPreviewHardStop(){
     if(!(DATA&&DATA.preview&&DATA.preview.enabled))return;
 
@@ -253,8 +262,8 @@
       "<div class='preview-wall-inner'>"+
         "<div class='preview-wall-kicker'>OOGLEX · 10% PREVIEW</div>"+
         "<h2>继续查看完整数据</h2>"+
-        "<p>当前展示原版页面预览。登录 / 注册后可继续查看完整内容。</p>"+
-        "<a class='preview-login' href='/account/'>登录 / 注册</a>"+
+        "<p>"+esc(previewWallText())+"</p>"+
+        "<a class='preview-login' href='/account/'>"+esc(FULL_ACCESS_STATE==="pro_required"?"查看账户与方案":"登录 / 注册")+"</a>"+
         "<div class='preview-wall-meta'>公开预览 "+esc((DATA.preview.visibleItems||0)+" / "+(DATA.preview.totalItems||0)+" 条新闻")+"</div>"+
       "</div>";
     shell.parentNode.insertBefore(wall,shell.nextSibling);
@@ -558,8 +567,32 @@
     });
   }
 
-  fetch("data.json?t="+Date.now())
-    .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+  function loadPublic(){
+    return fetch("data.json?t="+Date.now())
+      .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
+  }
+
+  // 公开 Pages 只发布约10%新闻；已登录会话向受保护的 PRO API 请求完整数据，
+  // 失败或无权限时回退公开预览，并在预览墙上说明原因。
+  function loadFull(){
+    var pro=window.OoglexPro;
+    var hasSession=false;
+    try{hasSession=!!(pro&&pro.getSession&&pro.getSession());}catch(_){}
+    if(!hasSession)return Promise.resolve(null);
+    return pro.getData("whats_latest","full")
+      .then(function(d){
+        if(d&&Array.isArray(d.categories)&&!(d.preview&&d.preview.enabled))return d;
+        FULL_ACCESS_STATE="error";return null;
+      })
+      .catch(function(e){
+        var st=e&&e.status;
+        FULL_ACCESS_STATE=st===403?"pro_required":st===401?"sign_in_required":"error";
+        return null;
+      });
+  }
+
+  loadFull()
+    .then(function(full){return full||loadPublic();})
     .then(boot)
     .catch(function(e){
       $("lead-title").textContent="数据加载失败";

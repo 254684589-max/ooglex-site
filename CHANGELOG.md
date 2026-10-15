@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-10-15：「最新消息」（`/apps/whats-latest/`）登录后仍只显示公开10%预览。原因是公开 Pages 只发布约10%新闻，而该页没有任何向 PRO API 请求完整数据的通道。现新增 `whats_latest` 产品：完整数据与预览同步到私有 R2（`whats-latest/full.json`、`whats-latest/preview.json`），页面在检测到登录会话时经 `pro-api.ooglex.com/v1/data/whats_latest?mode=full` 读取完整数据；无权限（403）、登录失效（401）或接口失败时回退公开预览，并在预览墙上分别说明原因，不再一律提示“登录 / 注册”。OWNER 账户直接获得完整数据；PRO / PRO+ 需执行新增的 `account/migrations/20261015_add_whats_latest_product.sql` 后生效，FREE 仍为10%预览。预览切分逻辑抽成 `build_whats_latest_preview()`，公开页与 R2 预览共用同一份实现。未部署：需合并到 `main` 后由 Deploy PRO API 工作流发布 Worker 与 R2 数据，Supabase 迁移需所有者手动执行。
+
 ### 修改
 
 - 2026-10-15，**首页「数据」列表不再展示「全球新闻扫描简报概览」和「雷达专区」**。两项入口从 `index.html` 去掉；其后编号按站内惯例前移两位（原 12–28 改为 10–26），「最新消息」仍为 09，列表保持连贯。`apps/whats-latest/` 顶栏的「全球新闻扫描简报概览」与「雷达专区」未改，`/apps/news-brief/`、`/apps/news-radar/` 页面与数据未删。`sitemap.xml` 仍收录这两个地址（页面仍公开，站点地图记的是页面而不是首页列表）。README 把雷达专区的入口说明改为只从「最新消息是什么？」顶栏进入。**已上线**（2026-10-15，所有者说「合并上线」；合并到 `main` 后由「Deploy Protected Ooglex Pages」发布。未改生产配置、域名或 Secrets）。

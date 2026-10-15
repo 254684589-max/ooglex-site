@@ -141,14 +141,12 @@ def install_rich_public_previews() -> None:
     copy_tree(RICH_PREVIEW / "finance-column", OUT / "apps" / "finance-column")
 
 
-def install_whats_latest_preview() -> None:
-    """Publish only ~10% of What's Latest content to the public Pages artifact."""
-    src = ROOT / "apps" / "whats-latest" / "data.json"
-    dst = OUT / "apps" / "whats-latest" / "data.json"
-    if not src.exists():
-        raise SystemExit("What's Latest full dataset missing")
+def build_whats_latest_preview(data: dict) -> dict:
+    """Return the ~10% What's Latest preview payload for a full dataset.
 
-    data = json.loads(src.read_text(encoding="utf-8"))
+    Shared by the public Pages build and the protected R2 preview object so both
+    publish exactly the same slice.
+    """
     categories = data.get("categories") or []
     flat = []
     for category in categories:
@@ -296,9 +294,21 @@ def install_whats_latest_preview() -> None:
         + f"公开页面仅发布约10%新闻内容（{len(selected_clean)}/{total} 条）；完整数据不随 Pages 公共产物发布。"
     )
 
+    return preview
+
+
+def install_whats_latest_preview() -> None:
+    """Publish only ~10% of What's Latest content to the public Pages artifact."""
+    src = ROOT / "apps" / "whats-latest" / "data.json"
+    dst = OUT / "apps" / "whats-latest" / "data.json"
+    if not src.exists():
+        raise SystemExit("What's Latest full dataset missing")
+
+    preview = build_whats_latest_preview(json.loads(src.read_text(encoding="utf-8")))
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(json.dumps(preview, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"What's Latest public preview: {len(selected_clean)}/{total} news items")
+    meta = preview["preview"]
+    print(f"What's Latest public preview: {meta['visibleItems']}/{meta['totalItems']} news items")
 
 
 def inject_rich_access_adapter() -> None:
@@ -343,6 +353,22 @@ def inject_rich_access_adapter() -> None:
                 raise SystemExit(f"cannot inject Finance Column access adapter: {relpath}")
             text = text.replace("</head>", finance_snippet + "</head>", 1)
             p.write_text(text, encoding="utf-8")
+
+    # What's Latest loads its own data in app.js; it only needs the shared
+    # entitlement client so signed-in OWNER/PRO sessions can request the full set.
+    whats_snippet = (
+        '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
+        '<script src="/assets/pro-access.js?v=6"></script>\n'
+    )
+    p = OUT / "apps" / "whats-latest" / "index.html"
+    if not p.exists():
+        raise SystemExit("What's Latest page missing: apps/whats-latest/index.html")
+    text = p.read_text(encoding="utf-8")
+    if "/assets/pro-access.js" not in text:
+        if "</head>" not in text:
+            raise SystemExit("cannot inject What's Latest access client")
+        text = text.replace("</head>", whats_snippet + "</head>", 1)
+        p.write_text(text, encoding="utf-8")
 
 
 def write_tech_leaders_share_cover() -> None:
