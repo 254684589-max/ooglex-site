@@ -28,7 +28,7 @@ concurrency:
 jobs:
   page-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 16
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,11 +56,24 @@ jobs:
           import json
           import re
           import time
+          import urllib.error
           import urllib.request
 
+          # 名单 leaders.json 受访问密码保护，不再公开发布到网站（build_public_site.py --pro-cutover 会排除）。
+          # 因此：页面上的账号数与本次提交仓库里的名单核对；线上 leaders.json 必须是 404，确认名单没有被公开。
           sha = __import__("os").environ["GATE_SHA"]
           page_url = f"https://ooglex.com/apps/tech-leaders/?gate={sha}"
           catalog_url = f"https://ooglex.com/apps/tech-leaders/leaders.json?gate={sha}"
+
+          with open("apps/tech-leaders/leaders.json", encoding="utf-8") as fh:
+              data = json.load(fh)
+          leaders = data if isinstance(data, list) else (data.get("leaders") or data.get("people") or [])
+          active = [
+              p for p in leaders
+              if (p.get("active_status") or p.get("admission_status") or "active") == "active"
+          ]
+          if not active:
+              raise SystemExit("no_active_profiles in repository catalog")
 
           def fetch(url):
               req = urllib.request.Request(
@@ -72,20 +85,21 @@ jobs:
                   },
               )
               with urllib.request.urlopen(req, timeout=20) as resp:
-                  return resp.read().decode("utf-8")
+                  return resp.status, resp.read().decode("utf-8")
+
+          def catalog_status():
+              try:
+                  return fetch(catalog_url)[0]
+              except urllib.error.HTTPError as exc:
+                  return exc.code
 
           last = "not_started"
           for attempt in range(1, 61):
               try:
-                  html = fetch(page_url)
-                  data = json.loads(fetch(catalog_url))
-                  leaders = data if isinstance(data, list) else (data.get("leaders") or data.get("people") or [])
-                  active = [
-                      p for p in leaders
-                      if (p.get("active_status") or p.get("admission_status") or "active") == "active"
-                  ]
+                  _, html = fetch(page_url)
 
-                  route_at = html.find('var CATALOG_URL="./leaders.json"')
+                  # 名单经密码门 API（/v1/tech-leaders/catalog）读取，不再是 ./leaders.json。
+                  route_at = html.find('var CATALOG_URL=API_BASE+"/v1/tech-leaders/catalog')
                   if route_at < 0:
                       raise RuntimeError("catalog_router_missing")
                   route = html[route_at:route_at + 1800]
@@ -97,20 +111,27 @@ jobs:
                       raise RuntimeError("hero_count_missing")
                   if int(hero.group(1)) != len(active):
                       raise RuntimeError(f"hero_catalog_count_mismatch:{hero.group(1)}!={len(active)}")
-                  if not active:
-                      raise RuntimeError("no_active_profiles")
+
+                  status = catalog_status()
+                  if status == 200:
+                      raise SystemExit("protected catalog is publicly reachable: HTTP 200")
+                  if status != 404:
+                      raise RuntimeError(f"catalog_status_unexpected:{status}")
 
                   print(json.dumps({
                       "status": "pass",
                       "attempt": attempt,
-                      "live_active_count": len(active),
+                      "repo_active_count": len(active),
                       "hero_count": int(hero.group(1)),
+                      "public_catalog_status": status,
                   }, ensure_ascii=False))
                   break
+              except SystemExit:
+                  raise
               except Exception as exc:
                   last = f"{type(exc).__name__}:{exc}"
                   print(f"attempt {attempt}/60: {last}")
                   if attempt == 60:
                       raise SystemExit(f"Live deployment smoke failed: {last}")
-                  time.sleep(5)
+                  time.sleep(10)
           PY
