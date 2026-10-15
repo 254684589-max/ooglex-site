@@ -129,8 +129,8 @@ jobs:
             r2 object put ooglex-pro-data/billionaires/full.json --file .pro-build/billionaires/full.json
             r2 object put ooglex-pro-data/finance-column/preview.json --file .pro-build/finance-column/preview.json
             r2 object put ooglex-pro-data/finance-column/full.json --file .pro-build/finance-column/full.json
-            r2 object put ooglex-pro-data/whats-latest/preview.json --file .pro-build/whats-latest/preview.json
-            r2 object put ooglex-pro-data/whats-latest/full.json --file .pro-build/whats-latest/full.json
+            r2 object put ooglex-pro-data/whats-latest/preview.json --file .pro-build/whats-latest/preview.json --remote
+            r2 object put ooglex-pro-data/whats-latest/full.json --file .pro-build/whats-latest/full.json --remote
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 

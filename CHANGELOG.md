@@ -13,7 +13,7 @@
 
 ### 修复
 
-- 2026-10-15：「最新消息」（`/apps/whats-latest/`）登录后仍只显示公开10%预览。原因是公开 Pages 只发布约10%新闻，而该页没有任何向 PRO API 请求完整数据的通道。现新增 `whats_latest` 产品：完整数据与预览同步到私有 R2（`whats-latest/full.json`、`whats-latest/preview.json`），由独立的 `whats_latest_pro_sync.yml` 在每次新闻更新成功后同步（数据任务本身仍不读 Secret、不发布），页面在检测到登录会话时经 `pro-api.ooglex.com/v1/data/whats_latest?mode=full` 读取完整数据；无权限（403）、登录失效（401）或接口失败时回退公开预览，并在预览墙上分别说明原因，不再一律提示“登录 / 注册”。只要登录即可查看全部新闻：Worker 对 `whats_latest` 只校验 Supabase 登录会话，不看订阅方案（FREE / PRO / PRO+ / OWNER 都给完整数据）；`account/migrations/20261015_add_whats_latest_product.sql` 同步记录三档均为 `full`，执行与否不影响生效。预览切分逻辑抽成 `build_whats_latest_preview()`，公开页与 R2 预览共用同一份实现。经所有者批准合并到 `main` 并由 Deploy PRO API 工作流发布 Worker 与 R2 数据。
+- 2026-10-15：「最新消息」（`/apps/whats-latest/`）登录后仍只显示公开10%预览。原因是公开 Pages 只发布约10%新闻，而该页没有任何向 PRO API 请求完整数据的通道。现新增 `whats_latest` 产品：完整数据与预览同步到私有 R2（`whats-latest/full.json`、`whats-latest/preview.json`），由独立的 `whats_latest_pro_sync.yml` 在每次新闻更新成功后同步（数据任务本身仍不读 Secret、不发布），页面在检测到登录会话时经 `pro-api.ooglex.com/v1/data/whats_latest?mode=full` 读取完整数据；无权限（403）、登录失效（401）或接口失败时回退公开预览，并在预览墙上分别说明原因，不再一律提示“登录 / 注册”。只要登录即可查看全部新闻：Worker 对 `whats_latest` 只校验 Supabase 登录会话，不看订阅方案（FREE / PRO / PRO+ / OWNER 都给完整数据）；`account/migrations/20261015_add_whats_latest_product.sql` 同步记录三档均为 `full`，执行与否不影响生效。预览切分逻辑抽成 `build_whats_latest_preview()`，公开页与 R2 预览共用同一份实现。经所有者批准合并到 `main` 并由 Deploy PRO API 工作流发布 Worker 与 R2 数据。首次发布时 Worker 已上线，但 R2 上传在 wrangler 4 下默认写入本地模拟存储（日志显示 `Resource location: local`），线上返回 503；whats-latest 的两条上传已补 `--remote`。
 
 ### 修改
 
