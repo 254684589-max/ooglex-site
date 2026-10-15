@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-15T09:43:08Z",
+  "updatedAt": "2026-10-15T09:50:49Z",
   "asOf": "2026-10-15",
   "source": "Google News (curated global publishers) · Yahoo Finance",
   "sourcePool": [
@@ -30,45 +30,45 @@
   ],
   "contentPolicy": "exclude-china-related-news",
   "lead": {
-    "title": "Russia builds major new drone attack base in six weeks, satellite images show",
+    "title": "Hormuz shipping disruption is starting to hit harvests, UN agency says",
     "source": "Reuters",
-    "link": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQUWp1N3V3WmtFN2xwQWlfa285NVRlVlVvS1VUR19EcHpCSE5aaDFzR0I0YTZHeG5XM0FNOEJDaEtFYUhHaFMyekg3LUJZd0lyeVhfeFVLS1pqbzExTDJoYWdfa2N1NFNfZjIzMXhTM1FGcWlnTHIyQWNxZDY3NmdOWnNmZHNPeEhGZjMyRnV5ek0yOHVxZFJBTDdiNmxHQlg0cjJqbUNQZFUwYkFOSk5udXQ4a19WQkVfdnFSV0RidFRJRWZLOWtjazlkMk5nYjA?oc=5",
-    "published": 1792054490,
+    "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPN3pFV3J3TU44dzNxVVVjWUoyeVc3bVFpV3RVWEducVZZUFk0UXNBdzlEcnpxSGUycUw0cTIyLUFvYnNxc1BOU0lOOHJVM21tRFVrWVp5Q0pKRENxc01LcFpJbk1JS0k1ZndiMURRRVBySmJ0MUltS1RoM2JCN3d0V0t6WkhfT2U3UHU4QWhKb1M5eGRoUVpaVVVNT2hzNWlFT2hPSVRuQlQ2cURjdTBPOVd2UzRCc0JGcTVMWQ?oc=5",
+    "published": 1792054903,
     "summary": "",
     "sourceZh": "路透社",
-    "riskStream": "geopolitics",
-    "riskStreamName": "地缘冲突",
-    "topic": "地缘冲突",
-    "brief": "Russia builds major new drone attack base in six weeks, satellite images show。",
-    "briefZh": "卫星图像显示，俄罗斯在六周内建成了新的大型无人机攻击基地。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
+    "riskStream": "energy_shipping",
+    "riskStreamName": "能源运输",
+    "topic": "能源运输",
+    "brief": "Hormuz shipping disruption is starting to hit harvests, UN agency says。",
+    "briefZh": "联合国机构称霍尔木兹航运中断开始影响收成。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
-    "titleZh": "卫星图像显示，俄罗斯在六周内建成了新的大型无人机攻击基地",
+    "titleZh": "联合国机构称霍尔木兹航运中断开始影响收成",
     "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "category": "风险"
   },
   "highlight": {
-    "title": "Russia builds major new drone attack base in six weeks, satellite images show",
+    "title": "Hormuz shipping disruption is starting to hit harvests, UN agency says",
     "source": "Reuters",
-    "link": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQUWp1N3V3WmtFN2xwQWlfa285NVRlVlVvS1VUR19EcHpCSE5aaDFzR0I0YTZHeG5XM0FNOEJDaEtFYUhHaFMyekg3LUJZd0lyeVhfeFVLS1pqbzExTDJoYWdfa2N1NFNfZjIzMXhTM1FGcWlnTHIyQWNxZDY3NmdOWnNmZHNPeEhGZjMyRnV5ek0yOHVxZFJBTDdiNmxHQlg0cjJqbUNQZFUwYkFOSk5udXQ4a19WQkVfdnFSV0RidFRJRWZLOWtjazlkMk5nYjA?oc=5",
-    "published": 1792054490,
+    "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPN3pFV3J3TU44dzNxVVVjWUoyeVc3bVFpV3RVWEducVZZUFk0UXNBdzlEcnpxSGUycUw0cTIyLUFvYnNxc1BOU0lOOHJVM21tRFVrWVp5Q0pKRENxc01LcFpJbk1JS0k1ZndiMURRRVBySmJ0MUltS1RoM2JCN3d0V0t6WkhfT2U3UHU4QWhKb1M5eGRoUVpaVVVNT2hzNWlFT2hPSVRuQlQ2cURjdTBPOVd2UzRCc0JGcTVMWQ?oc=5",
+    "published": 1792054903,
     "summary": "",
     "sourceZh": "路透社",
-    "riskStream": "geopolitics",
-    "riskStreamName": "地缘冲突",
-    "topic": "地缘冲突",
-    "brief": "Russia builds major new drone attack base in six weeks, satellite images show。",
-    "briefZh": "卫星图像显示，俄罗斯在六周内建成了新的大型无人机攻击基地。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
+    "riskStream": "energy_shipping",
+    "riskStreamName": "能源运输",
+    "topic": "能源运输",
+    "brief": "Hormuz shipping disruption is starting to hit harvests, UN agency says。",
+    "briefZh": "联合国机构称霍尔木兹航运中断开始影响收成。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
     "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "categoryKey": "risk",
-    "titleZh": "卫星图像显示，俄罗斯在六周内建成了新的大型无人机攻击基地",
+    "titleZh": "联合国机构称霍尔木兹航运中断开始影响收成",
     "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
     "category": "风险"
   },
   "overview": [
     {
       "topic": "风险",
-      "text": "卫星图像显示，俄罗斯在六周内建成了新的大型无人机攻击基地。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
+      "text": "联合国机构称霍尔木兹航运中断开始影响收成。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
       "source": "Reuters",
       "sourceZh": "路透社"
     },
@@ -92,9 +92,9 @@
     },
     {
       "topic": "人工智能·科技",
-      "text": "台积电考虑德克萨斯州扩张，就马斯克的 Terafab 进行会谈。新闻源：《华尔街日报》。本站保留原文链接，更多事实与细节请查看原报道。",
-      "source": "The Wall Street Journal",
-      "sourceZh": "《华尔街日报》"
+      "text": "Anthropic 在股市首次亮相前向投资者宣布收入激增。新闻源：英国广播公司。本站保留原文链接，更多事实与细节请查看原报道。",
+      "source": "BBC",
+      "sourceZh": "英国广播公司"
     }
   ],
   "signals": [
@@ -125,6 +125,24 @@
   ],
   "wires": [
     {
+      "title": "Hormuz shipping disruption is starting to hit harvests, UN agency says",
+      "source": "Reuters",
+      "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPN3pFV3J3TU44dzNxVVVjWUoyeVc3bVFpV3RVWEducVZZUFk0UXNBdzlEcnpxSGUycUw0cTIyLUFvYnNxc1BOU0lOOHJVM21tRFVrWVp5Q0pKRENxc01LcFpJbk1JS0k1ZndiMURRRVBySmJ0MUltS1RoM2JCN3d0V0t6WkhfT2U3UHU4QWhKb1M5eGRoUVpaVVVNT2hzNWlFT2hPSVRuQlQ2cURjdTBPOVd2UzRCc0JGcTVMWQ?oc=5",
+      "published": 1792054903,
+      "summary": "",
+      "sourceZh": "路透社",
+      "riskStream": "energy_shipping",
+      "riskStreamName": "能源运输",
+      "topic": "能源运输",
+      "brief": "Hormuz shipping disruption is starting to hit harvests, UN agency says。",
+      "briefZh": "联合国机构称霍尔木兹航运中断开始影响收成。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "titleZh": "联合国机构称霍尔木兹航运中断开始影响收成",
+      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "category": "风险"
+    },
+    {
       "title": "Russia builds major new drone attack base in six weeks, satellite images show",
       "source": "Reuters",
       "link": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQUWp1N3V3WmtFN2xwQWlfa285NVRlVlVvS1VUR19EcHpCSE5aaDFzR0I0YTZHeG5XM0FNOEJDaEtFYUhHaFMyekg3LUJZd0lyeVhfeFVLS1pqbzExTDJoYWdfa2N1NFNfZjIzMXhTM1FGcWlnTHIyQWNxZDY3NmdOWnNmZHNPeEhGZjMyRnV5ek0yOHVxZFJBTDdiNmxHQlg0cjJqbUNQZFUwYkFOSk5udXQ4a19WQkVfdnFSV0RidFRJRWZLOWtjazlkMk5nYjA?oc=5",
@@ -139,24 +157,6 @@
       "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "categoryKey": "risk",
       "titleZh": "卫星图像显示，俄罗斯在六周内建成了新的大型无人机攻击基地",
-      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "category": "风险"
-    },
-    {
-      "title": "Romania says eight people missing after fire on tanker in Black Sea",
-      "source": "Euronews",
-      "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOU2RFeFVhZkYxc3NNcXBOcDNOT284VVlXT3d5d2lTRThOTzJHXzVCdWhONzlBNE9ZSjhybEdUdjlNSmdEalJIZDRIN3pSVFBQY2M4U1hKenhNRGpqS3M0OTBpVjdlTnFvanRCTUdWZEZjalpJeXVaYTJ4YW1TLXV1QkRRRlVwRTc1cldsWC00ejRiWTJkd29uNlJORGJUWnlhYVlDNnlELXJpTllzWE9YdWpMTGtLbWhRanc?oc=5",
-      "published": 1792054343,
-      "summary": "",
-      "sourceZh": "欧洲新闻台",
-      "riskStream": "energy_shipping",
-      "riskStreamName": "能源运输",
-      "topic": "能源运输",
-      "brief": "Romania says eight people missing after fire on tanker in Black Sea。",
-      "briefZh": "罗马尼亚称黑海油轮起火8人失踪。新闻源：欧洲新闻台。本站保留原文链接，更多事实与细节请查看原报道。",
-      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
-      "categoryKey": "risk",
-      "titleZh": "罗马尼亚称黑海油轮起火8人失踪",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "category": "风险"
     },
@@ -193,22 +193,6 @@
       "category": "市场·经济"
     },
     {
-      "title": "TSMC Weighs Texas Expansion, Holds Talks on Musk’s Terafab",
-      "source": "The Wall Street Journal",
-      "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNdEdMeDJhNG03UExRNVQ2MEJQWndsZDFteUhQSC1WekZrdnFWVHdBb2s0V2I4SVJCakw5Z0d0dVpkRUdVSXlSQUxJaFMxdERQX010a1ZVeHZYV3AtWVh2YVVkN1pDcU4xLUNQUHpRWVRLY2ZRc0poWU9leUt6LU5BOEZtOFctbjA?oc=5",
-      "published": 1792055880,
-      "summary": "",
-      "sourceZh": "《华尔街日报》",
-      "topic": "人工智能·科技",
-      "brief": "TSMC Weighs Texas Expansion, Holds Talks on Musk’s Terafab。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "tech",
-      "titleZh": "台积电考虑德克萨斯州扩张，就马斯克的 Terafab 进行会谈",
-      "briefZh": "台积电考虑德克萨斯州扩张，就马斯克的 Terafab 进行会谈。新闻源：《华尔街日报》。本站保留原文链接，更多事实与细节请查看原报道。",
-      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "人工智能·科技"
-    },
-    {
       "title": "White House defends new press secretary amid questions about her legal credentials",
       "source": "BBC",
       "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBOLVZYOG9mRkJoeWJxQ3RZeEVRTEM3SS1DSUFtdWtid2RkdGFjNWsydlFJckVIem5GZkVUZzlEMnpqLUMyM2l5R2tYWXZTNmVKVll4OUdIV0lweE0?oc=5",
@@ -223,9 +207,43 @@
       "briefZh": "白宫在新任新闻秘书的法律资格受到质疑时为她辩护。新闻源：英国广播公司。本站保留原文链接，更多事实与细节请查看原报道。",
       "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
       "category": "政策·政治"
+    },
+    {
+      "title": "Ukraine's Starlink restrictions raise suspicions of Musk, Trump retaliation",
+      "source": "Axios",
+      "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNWHdxWXlmN2ZYWklDT2FlREFOVjhVN3VqWTNJX084YW0tVktrMVY4UTUxa3hMa2Y5M1BvZkRHdUhmSjE5LUNsbTJUSGQxZDJEdF9kaVB2T0l3T0RUSFZhTW9iODktOVZpMmpTMFN3ZXVRV2dfWXY5Vy1iM2FxSm0ySXN3?oc=5",
+      "published": 1792043370,
+      "summary": "",
+      "sourceZh": "阿克西奥斯新闻",
+      "topic": "国际·地缘",
+      "brief": "Ukraine's Starlink restrictions raise suspicions of Musk, Trump retaliation。",
+      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "categoryKey": "world",
+      "titleZh": "乌克兰星链限制引发马斯克、特朗普报复怀疑",
+      "briefZh": "乌克兰星链限制引发马斯克、特朗普报复怀疑。新闻源：阿克西奥斯新闻。本站保留原文链接，更多事实与细节请查看原报道。",
+      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
+      "category": "国际·地缘"
     }
   ],
   "alsoNoted": [
+    {
+      "title": "Romania says eight people missing after fire on tanker in Black Sea",
+      "source": "Euronews",
+      "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOU2RFeFVhZkYxc3NNcXBOcDNOT284VVlXT3d5d2lTRThOTzJHXzVCdWhONzlBNE9ZSjhybEdUdjlNSmdEalJIZDRIN3pSVFBQY2M4U1hKenhNRGpqS3M0OTBpVjdlTnFvanRCTUdWZEZjalpJeXVaYTJ4YW1TLXV1QkRRRlVwRTc1cldsWC00ejRiWTJkd29uNlJORGJUWnlhYVlDNnlELXJpTllzWE9YdWpMTGtLbWhRanc?oc=5",
+      "published": 1792054343,
+      "summary": "",
+      "sourceZh": "欧洲新闻台",
+      "riskStream": "energy_shipping",
+      "riskStreamName": "能源运输",
+      "topic": "能源运输",
+      "brief": "Romania says eight people missing after fire on tanker in Black Sea。",
+      "briefZh": "罗马尼亚称黑海油轮起火8人失踪。新闻源：欧洲新闻台。本站保留原文链接，更多事实与细节请查看原报道。",
+      "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "categoryKey": "risk",
+      "titleZh": "罗马尼亚称黑海油轮起火8人失踪",
+      "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
+      "category": "风险"
+    },
     {
       "title": "Ukraine to resume strikes on Russian refineries, shattering hopes of an 'energy ceasefire'",
       "source": "CNBC",
@@ -261,22 +279,6 @@
       "titleZh": "SpaceX 的军用级星链系统 Starshield 是什么？它的限制将如何影响乌克兰？",
       "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
       "category": "风险"
-    },
-    {
-      "title": "Anthropic flags revenue surge to investors ahead of stock market debut",
-      "source": "BBC",
-      "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBTUHRCTEVSeENpRVNzbEZTb1IyNEw4aHpsTFFWTnFBY3RxNngzVFRJZEhNelQ1NnZJcG9QanVId2FPX3Znem55WEJ6N0hJNVJlZFpEVFBkYW0xYmM?oc=5",
-      "published": 1792048845,
-      "summary": "",
-      "sourceZh": "英国广播公司",
-      "topic": "人工智能·科技",
-      "brief": "Anthropic flags revenue surge to investors ahead of stock market debut。",
-      "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "categoryKey": "tech",
-      "titleZh": "Anthropic 在股市首次亮相前向投资者宣布收入激增",
-      "briefZh": "Anthropic 在股市首次亮相前向投资者宣布收入激增。新闻源：英国广播公司。本站保留原文链接，更多事实与细节请查看原报道。",
-      "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。",
-      "category": "人工智能·科技"
     }
   ],
   "watch": [],
@@ -336,10 +338,6 @@
       }
     ],
     "followUp": [
-      {
-        "text": "官员表示，美国考虑放松对影子舰队的制裁以降低运费。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
-        "source": "Reuters"
-      },
       {
         "text": "SpaceX 的军用级星链系统 Starshield 是什么？它的限制将如何影响乌克兰？。新闻源：英国《卫报》。本站保留原文链接，更多事实与细节请查看原报道。",
         "source": "The Guardian"
@@ -523,6 +521,21 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
+          "title": "Ukraine's Starlink restrictions raise suspicions of Musk, Trump retaliation",
+          "source": "Axios",
+          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNWHdxWXlmN2ZYWklDT2FlREFOVjhVN3VqWTNJX084YW0tVktrMVY4UTUxa3hMa2Y5M1BvZkRHdUhmSjE5LUNsbTJUSGQxZDJEdF9kaVB2T0l3T0RUSFZhTW9iODktOVZpMmpTMFN3ZXVRV2dfWXY5Vy1iM2FxSm0ySXN3?oc=5",
+          "published": 1792043370,
+          "summary": "",
+          "sourceZh": "阿克西奥斯新闻",
+          "topic": "国际·地缘",
+          "brief": "Ukraine's Starlink restrictions raise suspicions of Musk, Trump retaliation。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "world",
+          "titleZh": "乌克兰星链限制引发马斯克、特朗普报复怀疑",
+          "briefZh": "乌克兰星链限制引发马斯克、特朗普报复怀疑。新闻源：阿克西奥斯新闻。本站保留原文链接，更多事实与细节请查看原报道。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
           "title": "Trump says Iran war will end “soon as I want it to end",
           "source": "CNN",
           "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9ObkZ6WEdlRFhLOWE1Mi12SU1nNXkwSlo5azlkcGFQSUVZVUhfNlV4TllNbEY0VlBhN2RBVnd4NHljWm1TN21oWEtrRzk4eXQ5M3h5dmplYzI0VTQ0RFdnWUE0NGhwQklab3E4U0dVM0c?oc=5",
@@ -550,21 +563,6 @@
           "categoryKey": "world",
           "titleZh": "由于特朗普和泽伦斯基之间的紧张关系，乌克兰面临失去美国附属卫星的重要支持 - ABC News",
           "briefZh": "由于特朗普和泽伦斯基之间的紧张关系，乌克兰面临失去美国附属卫星的重要支持 - ABC News。新闻源：美国广播公司新闻。本站保留原文链接，更多事实与细节请查看原报道。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Trump on Iran talks: ‘I don’t know who the hell we’re negotiating with’",
-          "source": "The Hill",
-          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQQnZLclE5emN0cDg5LXZ0SnNNR1Q3SVRKZzJrbG9mZEVMOXZDVmdkWE5PN0IzUkdleEItaWp2SWd3bVZsSUk0QXppanUwc25RcHlORW00eDI3RC1pRzFJODZVY2xJUklPakVnZXlocTZlREJ1c2loeXBKNHRHbFhGNjUzd3l4WmFT0gGOAUFVX3lxTE81YXNsQUtaT0N4MnIwc21ta0tlVUNEV3d0eTR3RGpjR1Rqa1A5TVoyMml5aktSbDJYbklscm01S1NsWVpxaGpvNUtEUTNwLVg3MG5oWnRSMXNfN2lkX0FObGJzeWRVa25Cb2o4cmRFbG4tY0pKZkYyR081UDFiZWE5ODhGQWJaX19sZWhMVkE?oc=5",
-          "published": 1792034340,
-          "summary": "",
-          "sourceZh": "《国会山报》",
-          "topic": "国际·地缘",
-          "brief": "Trump on Iran talks: ‘I don’t know who the hell we’re negotiating with’。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "world",
-          "titleZh": "特朗普谈伊朗问题：“我不知道我们到底在跟谁谈判”",
-          "briefZh": "特朗普谈伊朗问题：“我不知道我们到底在跟谁谈判”。新闻源：《国会山报》。本站保留原文链接，更多事实与细节请查看原报道。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -715,33 +713,18 @@
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
-          "title": "TSMC Weighs Texas Expansion, Holds Talks on Musk’s Terafab",
-          "source": "The Wall Street Journal",
-          "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNdEdMeDJhNG03UExRNVQ2MEJQWndsZDFteUhQSC1WekZrdnFWVHdBb2s0V2I4SVJCakw5Z0d0dVpkRUdVSXlSQUxJaFMxdERQX010a1ZVeHZYV3AtWVh2YVVkN1pDcU4xLUNQUHpRWVRLY2ZRc0poWU9leUt6LU5BOEZtOFctbjA?oc=5",
-          "published": 1792055880,
-          "summary": "",
-          "sourceZh": "《华尔街日报》",
-          "topic": "人工智能·科技",
-          "brief": "TSMC Weighs Texas Expansion, Holds Talks on Musk’s Terafab。",
-          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
-          "categoryKey": "tech",
-          "titleZh": "台积电考虑德克萨斯州扩张，就马斯克的 Terafab 进行会谈",
-          "briefZh": "台积电考虑德克萨斯州扩张，就马斯克的 Terafab 进行会谈。新闻源：《华尔街日报》。本站保留原文链接，更多事实与细节请查看原报道。",
-          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
-        },
-        {
-          "title": "Korea Stocks Tumble 8% as Investors Rush to Unwind AI Exposure",
+          "title": "Nvidia CEO Says He Would Cut Off Buyers Who Build Unsafe AI",
           "source": "Bloomberg",
-          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNS1ZmX19fclBFd1I3bEdCWVk5NEpfRmJGWE1VbjhDRThlVUFFeFBqYzYzTXpTR2wzeHNUcWtNN1VFV2ltaC1WNnc1S1ZsOFMxalVER01yS0otb2VjbTQ1cHJjZERsa05rMHNabDVyenp5MUlLNmpZQzdERzVzbElnTlgtQ0ljV1hsOGJNTEMwNEFPUmMtSXdjUzE3b0REWmR0ZDNfQzh0RU5UalY1dWg3b1pwVQ?oc=5",
-          "published": 1792048365,
+          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOSnhxakNaMklvT25NQjFreTNHYVhMME45SHh4QkhBSGhVNFlPUFFCTmNyaGhYWFJobXZSMFZSUGtlUE5JNkxicGNhOVIzUkowVFo1UjlfZmliN2lFVmlJVDN6UGNUMFhDN0twbnJ6ejdpU19xQ01jSUR5Y3lnWnkxM0pUdGVDQnNiNFdkenE2dG9Zcm1DakdFUUdnbFZqTXc4TVR1c2hHX0hWV2I3aGFFcmhTcw?oc=5",
+          "published": 1792013366,
           "summary": "",
           "sourceZh": "彭博社",
-          "topic": "人工智能·科技",
-          "brief": "Korea Stocks Tumble 8% as Investors Rush to Unwind AI Exposure。",
+          "topic": "芯片 / 半导体",
+          "brief": "Nvidia CEO Says He Would Cut Off Buyers Who Build Unsafe AI。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "tech",
-          "titleZh": "投资者纷纷抛售人工智能，韩国股市暴跌 8%",
-          "briefZh": "投资者纷纷抛售人工智能，韩国股市暴跌 8%。新闻源：彭博社。本站保留原文链接，更多事实与细节请查看原报道。",
+          "titleZh": "英伟达首席执行官表示，他将切断构建不安全人工智能的买家",
+          "briefZh": "英伟达首席执行官表示，他将切断构建不安全人工智能的买家。新闻源：彭博社。本站保留原文链接，更多事实与细节请查看原报道。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -757,6 +740,21 @@
           "categoryKey": "tech",
           "titleZh": "Anthropic 在股市首次亮相前向投资者宣布收入激增",
           "briefZh": "Anthropic 在股市首次亮相前向投资者宣布收入激增。新闻源：英国广播公司。本站保留原文链接，更多事实与细节请查看原报道。",
+          "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
+        },
+        {
+          "title": "22 People Got Together For a Dinner Party. So Did Their A.I. Agents.",
+          "source": "The New York Times",
+          "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPUjdWaktiYTFVLTlGZFZRelhDLVZTVm5RRGxIWVlfaHNqZXJIeUpMTW1IYzVQMEozcS1UU0VJVktDSzc4cUJIR1haVVJJYWc4SERibnNKS1ZEX2p4NDNYbUxtbDNCYUM3VjU5dW1HMzZiLVFaazJsSEh6Q09XMTJwOVNmUkxkeEwzU2xjOUZ4czBpNGk4U3hr?oc=5",
+          "published": 1791999324,
+          "summary": "",
+          "sourceZh": "《纽约时报》",
+          "topic": "人工智能·科技",
+          "brief": "22 People Got Together For a Dinner Party. So Did Their A.I. Agents.。",
+          "why": "这条信息可能影响该领域后续预期与市场关注重点。",
+          "categoryKey": "tech",
+          "titleZh": "22 个人聚在一起参加晚宴。他们的人工智能也是如此代理商。",
+          "briefZh": "22 个人聚在一起参加晚宴。他们的人工智能也是如此代理商。。新闻源：《纽约时报》。本站保留原文链接，更多事实与细节请查看原报道。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         }
       ]
@@ -776,8 +774,8 @@
           "brief": "Supreme Court weighs scope of 1980s video privacy law in internet newsletter age。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "最高法院权衡互联网时事通讯时代 20 世纪 80 年代视频隐私法的范围",
-          "briefZh": "最高法院权衡互联网时事通讯时代 20 世纪 80 年代视频隐私法的范围。新闻源：《国会山报》。本站保留原文链接，更多事实与细节请查看原报道。",
+          "titleZh": "最高法院权衡 20 世纪 80 年代视频隐私法在互联网时事通讯时代的适用范围",
+          "briefZh": "最高法院权衡 20 世纪 80 年代视频隐私法在互联网时事通讯时代的适用范围。新闻源：《国会山报》。本站保留原文链接，更多事实与细节请查看原报道。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -821,8 +819,8 @@
           "brief": "Ilhan Omar Investigation Aims to Build Case for Stripping Her Citizenship。",
           "why": "这条信息可能影响该领域后续预期与市场关注重点。",
           "categoryKey": "law",
-          "titleZh": "伊尔汗·奥马尔 (Ilhan Omar) 调查旨在为剥夺其公民身份提供证据",
-          "briefZh": "伊尔汗·奥马尔 (Ilhan Omar) 调查旨在为剥夺其公民身份提供证据。新闻源：《华尔街日报》。本站保留原文链接，更多事实与细节请查看原报道。",
+          "titleZh": "伊尔汗·奥马尔 (Ilhan Omar) 调查旨在为剥夺其公民身份提供依据",
+          "briefZh": "伊尔汗·奥马尔 (Ilhan Omar) 调查旨在为剥夺其公民身份提供依据。新闻源：《华尔街日报》。本站保留原文链接，更多事实与细节请查看原报道。",
           "whyZh": "这条信息可能影响该领域后续预期与市场关注重点。"
         },
         {
@@ -964,20 +962,20 @@
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
-          "title": "US considers easing sanctions on shadow fleet vessels to cut freight rates, official says",
+          "title": "Hormuz shipping disruption is starting to hit harvests, UN agency says",
           "source": "Reuters",
-          "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOdC1hR0pwcGJWU2NSX0szSlhYNlBMYUc2Y1ktS0NseE5MeEVKdE9jUVVqUHlva3dxeDg4NXRTQXM0UlpyMWJlTHNSN1ZiOWFqcWdIX1NNcGRhYzBsak5iVnZrYnJaX2xGbkRLcjNrQmFkUUd2ejVHWm0ydVJ2RVJhS1VFbkRhTHg5MVJXbnJDQ3YtRmVLWWpKU2xwUXNZSzMtUWI4cjJfaXp4djM0V2lQQmc4X2VsaVkxMHFpVUZ2bWNLaldpQnBNZmNn?oc=5",
-          "published": 1792022760,
+          "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPN3pFV3J3TU44dzNxVVVjWUoyeVc3bVFpV3RVWEducVZZUFk0UXNBdzlEcnpxSGUycUw0cTIyLUFvYnNxc1BOU0lOOHJVM21tRFVrWVp5Q0pKRENxc01LcFpJbk1JS0k1ZndiMURRRVBySmJ0MUltS1RoM2JCN3d0V0t6WkhfT2U3UHU4QWhKb1M5eGRoUVpaVVVNT2hzNWlFT2hPSVRuQlQ2cURjdTBPOVd2UzRCc0JGcTVMWQ?oc=5",
+          "published": 1792054903,
           "summary": "",
           "sourceZh": "路透社",
           "riskStream": "energy_shipping",
           "riskStreamName": "能源运输",
           "topic": "能源运输",
-          "brief": "US considers easing sanctions on shadow fleet vessels to cut freight rates, official says。",
-          "briefZh": "官员表示，美国考虑放松对影子舰队的制裁以降低运费。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
+          "brief": "Hormuz shipping disruption is starting to hit harvests, UN agency says。",
+          "briefZh": "联合国机构称霍尔木兹航运中断开始影响收成。新闻源：路透社。本站保留原文链接，更多事实与细节请查看原报道。",
           "why": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。",
           "categoryKey": "risk",
-          "titleZh": "官员表示，美国考虑放松对影子舰队的制裁以降低运费",
+          "titleZh": "联合国机构称霍尔木兹航运中断开始影响收成",
           "whyZh": "这类事件可能放大波动、信用、能源、供应链或运营风险，需要关注后续传导。"
         },
         {
@@ -1151,15 +1149,15 @@
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4180.5,
-      "changePct": 1.77,
+      "price": 4179.8,
+      "changePct": 1.75,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 101.96,
-      "changePct": -0.57,
+      "price": 101.95,
+      "changePct": -0.58,
       "fmt": "idx"
     }
   ],
