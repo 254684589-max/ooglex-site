@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-14T23:27:26Z",
-  "asOf": "2026-10-14",
+  "updatedAt": "2026-10-15T04:48:10Z",
+  "asOf": "2026-10-15",
   "seed": false,
   "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
   "sources": {
@@ -45,9 +45,9 @@
   "sourceMeta": {
     "livebench": {
       "ok": true,
-      "count": 42,
+      "count": 44,
       "release": "2026-09-02",
-      "fetchedAt": "2026-10-14T23:26:47Z",
+      "fetchedAt": "2026-10-15T04:48:01Z",
       "source": "livebench.ai/table_2026_09_02.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -55,7 +55,7 @@
       "ok": true,
       "count": 18,
       "refreshed": 18,
-      "fetchedAt": "2026-10-14T23:27:26Z",
+      "fetchedAt": "2026-10-15T04:48:10Z",
       "snapshotDate": "2026-09-20",
       "source": "artificialanalysis.ai/models/*",
       "mode": "official_public_pages",
@@ -103,11 +103,11 @@
       "aa": 53.0,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 95.0,
+      "livebenchPercentile": 95.2,
       "aaPercentile": 97.1,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 87.0
+      "combo": 87.1
     },
     {
       "id": "claude-opus-5",
@@ -121,11 +121,11 @@
       "aa": 51.0,
       "ctx": "1M",
       "price": 10.0,
-      "livebenchPercentile": 82.5,
+      "livebenchPercentile": 83.3,
       "aaPercentile": 88.2,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 78.9
+      "combo": 79.1
     },
     {
       "id": "claude-fable-5",
@@ -139,11 +139,11 @@
       "aa": 50.0,
       "ctx": "1M",
       "price": 20.0,
-      "livebenchPercentile": 87.5,
+      "livebenchPercentile": 88.1,
       "aaPercentile": 82.4,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 77.4
+      "combo": 77.6
     },
     {
       "id": "muse-spark-1-3",
@@ -157,11 +157,11 @@
       "aa": 48.0,
       "ctx": "1M",
       "price": 2.0,
-      "livebenchPercentile": 65.0,
+      "livebenchPercentile": 65.5,
       "aaPercentile": 76.5,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 67.7
+      "combo": 67.9
     },
     {
       "id": "gpt-5-6-sol",
@@ -175,11 +175,11 @@
       "aa": 47.0,
       "ctx": "400K",
       "price": 8.0,
-      "livebenchPercentile": 70.0,
+      "livebenchPercentile": 71.4,
       "aaPercentile": 70.6,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 66.3
+      "combo": 66.7
     },
     {
       "id": "grok-4-6",
@@ -193,11 +193,11 @@
       "aa": 44.0,
       "ctx": "500K",
       "price": 3.0,
-      "livebenchPercentile": 61.3,
+      "livebenchPercentile": 60.7,
       "aaPercentile": 55.9,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 56.3
+      "combo": 56.2
     },
     {
       "id": "gpt-5-6-terra",
@@ -211,11 +211,11 @@
       "aa": 42.0,
       "ctx": null,
       "price": 4.5,
-      "livebenchPercentile": 67.5,
+      "livebenchPercentile": 69.0,
       "aaPercentile": 44.1,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 52.3
+      "combo": 52.8
     },
     {
       "id": "glm-5-3",
@@ -229,11 +229,11 @@
       "aa": 45.0,
       "ctx": "1M",
       "price": 2.15,
-      "livebenchPercentile": 20.0,
+      "livebenchPercentile": 21.4,
       "aaPercentile": 64.7,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 48.4
+      "combo": 48.8
     },
     {
       "id": "glm-5-3-flash",
@@ -247,7 +247,7 @@
       "aa": 42.0,
       "ctx": "1M",
       "price": 0.1,
-      "livebenchPercentile": 52.5,
+      "livebenchPercentile": 52.4,
       "aaPercentile": 44.1,
       "comboAxes": 2,
       "confidence": 80,
@@ -265,11 +265,11 @@
       "aa": 44.0,
       "ctx": "1M",
       "price": 6.0,
-      "livebenchPercentile": 27.5,
+      "livebenchPercentile": 28.6,
       "aaPercentile": 55.9,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 46.2
+      "combo": 46.5
     },
     {
       "id": "gemini-3-8-flash",
@@ -283,11 +283,11 @@
       "aa": 41.0,
       "ctx": "1M",
       "price": 1.5,
-      "livebenchPercentile": 42.5,
+      "livebenchPercentile": 42.9,
       "aaPercentile": 35.3,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 40.4
+      "combo": 40.5
     },
     {
       "id": "grok-4-5",
@@ -319,11 +319,11 @@
       "aa": 39.0,
       "ctx": "1M",
       "price": 1.5,
-      "livebenchPercentile": 40.0,
+      "livebenchPercentile": 40.5,
       "aaPercentile": 20.6,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 32.3
+      "combo": 32.4
     },
     {
       "id": "muse-spark-1-2",
@@ -337,11 +337,11 @@
       "aa": 40.0,
       "ctx": null,
       "price": 2.0,
-      "livebenchPercentile": 22.5,
+      "livebenchPercentile": 23.8,
       "aaPercentile": 29.4,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 31.5
+      "combo": 31.8
     },
     {
       "id": "gpt-5-5",
@@ -355,11 +355,11 @@
       "aa": 38.0,
       "ctx": "1.1M",
       "price": 11.25,
-      "livebenchPercentile": 45.0,
+      "livebenchPercentile": 45.2,
       "aaPercentile": 11.8,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 29.4
+      "combo": 29.5
     },
     {
       "id": "qwen3-8-27b",
@@ -373,11 +373,11 @@
       "aa": 34.0,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 17.5,
+      "livebenchPercentile": 19.0,
       "aaPercentile": 0.0,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 15.2
+      "combo": 15.7
     },
     {
       "id": "deepseek-v4-pro",
@@ -408,7 +408,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 8.0,
-      "livebenchPercentile": 97.5,
+      "livebenchPercentile": 97.6,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -425,7 +425,7 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 4.0,
-      "livebenchPercentile": 92.5,
+      "livebenchPercentile": 92.9,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -442,7 +442,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 90.0,
+      "livebenchPercentile": 90.5,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -459,7 +459,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 4.0,
-      "livebenchPercentile": 85.0,
+      "livebenchPercentile": 85.7,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -476,7 +476,7 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 4.0,
-      "livebenchPercentile": 80.0,
+      "livebenchPercentile": 81.0,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -493,7 +493,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 77.5,
+      "livebenchPercentile": 78.6,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -510,7 +510,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 0.52,
-      "livebenchPercentile": 75.0,
+      "livebenchPercentile": 76.2,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -527,7 +527,24 @@
       "aa": null,
       "ctx": "1M",
       "price": 10.0,
-      "livebenchPercentile": 72.5,
+      "livebenchPercentile": 73.8,
+      "comboAxes": 1,
+      "confidence": 30,
+      "combo": null
+    },
+    {
+      "id": "mimo-v2-6-pro",
+      "name": "Mimo V2.6 Pro",
+      "org": "Xiaomi",
+      "orgCn": "Xiaomi",
+      "flag": "🌐",
+      "open": false,
+      "arena": null,
+      "livebench": 74.9,
+      "aa": null,
+      "ctx": null,
+      "price": null,
+      "livebenchPercentile": 65.5,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -544,7 +561,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 4.0,
-      "livebenchPercentile": 61.3,
+      "livebenchPercentile": 60.7,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -561,7 +578,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 57.5,
+      "livebenchPercentile": 57.1,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -578,7 +595,7 @@
       "aa": null,
       "ctx": "500K",
       "price": 3.0,
-      "livebenchPercentile": 55.0,
+      "livebenchPercentile": 54.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -595,7 +612,7 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 0.2,
-      "livebenchPercentile": 47.5,
+      "livebenchPercentile": 47.6,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -612,7 +629,7 @@
       "aa": null,
       "ctx": null,
       "price": 0.45,
-      "livebenchPercentile": 37.5,
+      "livebenchPercentile": 38.1,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -629,7 +646,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 3.0,
-      "livebenchPercentile": 35.0,
+      "livebenchPercentile": 35.7,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -646,7 +663,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 3.0,
-      "livebenchPercentile": 32.5,
+      "livebenchPercentile": 33.3,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -663,7 +680,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 30.0,
+      "livebenchPercentile": 31.0,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -680,7 +697,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 25.0,
+      "livebenchPercentile": 26.2,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -697,7 +714,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 2.25,
-      "livebenchPercentile": 15.0,
+      "livebenchPercentile": 16.7,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -714,7 +731,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 12.5,
+      "livebenchPercentile": 14.3,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -731,7 +748,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 10.0,
+      "livebenchPercentile": 11.9,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -748,24 +765,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 7.5,
-      "comboAxes": 1,
-      "confidence": 30,
-      "combo": null
-    },
-    {
-      "id": "claude-haiku-4-5",
-      "name": "Claude Haiku 4.5",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": null,
-      "livebench": 46.0,
-      "aa": null,
-      "ctx": null,
-      "price": null,
-      "livebenchPercentile": 5.0,
+      "livebenchPercentile": 9.5,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
