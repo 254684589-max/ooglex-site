@@ -1659,8 +1659,10 @@
 
       if((type==="video"||type==="animated_gif"||type==="gif")&&videoRaw){
         var v=document.createElement("video");
-        v.playsInline=true;v.muted=true;v.preload="metadata";
-        if(type==="animated_gif"||type==="gif"){v.autoplay=true;v.loop=true;v.controls=false;}else{v.controls=true;}
+        v.playsInline=true;v.muted=true;
+        // 有封面图时不预加载视频数据；一次加载 10 条时不会同时拉多段视频。
+        v.preload=imageRaw?"none":"metadata";
+        if(type==="animated_gif"||type==="gif"){v.loop=true;v.controls=false;v.preload="metadata";watchGifPlayback(v);}else{v.controls=true;}
         if(imageRaw)v.poster=mediaProxyUrl(imageRaw);
         var directVideo=videoRaw,proxiedVideo=mediaProxyUrl(videoRaw),triedDirectVideo=false;
         v.onerror=function(){
@@ -1675,6 +1677,22 @@
       item.appendChild(fallback);media.appendChild(item);
     });
     if(media.childNodes.length)card.appendChild(media);
+  }
+
+  // GIF 只在进入屏幕时播放、离开时暂停，避免一批多个 GIF 同时解码造成卡顿。
+  var gifObserver=null;
+  function watchGifPlayback(v){
+    if(typeof IntersectionObserver!=="function"){v.autoplay=true;return;}
+    if(!gifObserver){
+      gifObserver=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          var el=en.target;
+          if(en.isIntersecting){var pr=el.play();if(pr&&pr.catch)pr.catch(function(){});}
+          else if(!el.paused)el.pause();
+        });
+      },{rootMargin:"120px 0px"});
+    }
+    gifObserver.observe(v);
   }
 
   function embeddedAvatarUrl(author){
@@ -1753,7 +1771,7 @@
     }
 
     var wrap=document.createElement("div");wrap.className="api-feed free-native-feed";
-    function appendPost(post){
+    function appendPost(post,target){
       var card=document.createElement("article");card.className="post-card";
       card.setAttribute("data-post-id",String(post.id||""));
       var head=document.createElement("div");head.className="post-head";
@@ -1778,7 +1796,7 @@
       }
       appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
-      card.appendChild(foot);wrap.appendChild(card);
+      card.appendChild(foot);(target||wrap).appendChild(card);
     }
 
     var shown=0;
@@ -1791,31 +1809,52 @@
     var more=document.createElement("div");more.className="feed-more";
     var btn=document.createElement("button");btn.type="button";
 
+    // 已渲染的帖子按 id 记录：后台补充的帖子合并排序后，不会重复或跳过。
+    var renderedIds=new Set();
+    var waitingForMore=false;   // 本地已显示完、用户点了「加载更多」在等后台结果
+    var fetchFailed=false;
+    var fetchFailures=0;
+    function postKey(p,i){return String(p&&p.id||("idx-"+i));}
+    function localRemaining(){
+      var n=0;for(var i=0;i<posts.length;i++)if(!renderedIds.has(postKey(posts[i],i)))n++;
+      return n;
+    }
     function appendNextBatch(){
-      var end=Math.min(shown+batchSize,posts.length);
-      posts.slice(shown,end).forEach(appendPost);
-      shown=end;
+      var frag=document.createDocumentFragment();var count=0;
+      for(var i=0;i<posts.length&&count<batchSize;i++){
+        var key=postKey(posts[i],i);if(renderedIds.has(key))continue;
+        renderedIds.add(key);appendPost(posts[i],frag);count++;
+      }
+      shown+=count;
+      if(count)wrap.appendChild(frag);   // 一次性插入，减少重排
+      return count;
     }
 
     function refreshMore(){
-      var localRemaining=posts.length-shown;
-      if(localRemaining<=0&&remoteExhausted){
-        more.remove();
+      var remaining=localRemaining();
+      if(remaining>0){
+        // 本地已有内容就始终可以继续看，不被后台请求锁住。
+        btn.disabled=false;
+        btn.textContent="加载更多 "+Math.min(batchSize,remaining)+" 条";
         return;
       }
       if(fetchingMore){
         btn.disabled=true;
-        btn.textContent="正在准备更多…";
+        btn.textContent="正在加载更多…";
+        return;
+      }
+      if(remoteExhausted){
+        more.remove();
         return;
       }
       btn.disabled=false;
-      btn.textContent="加载更多 "+(localRemaining>0?Math.min(batchSize,localRemaining):batchSize)+" 条";
+      btn.textContent=fetchFailed?"加载失败，点此重试":"加载更多 "+batchSize+" 条";
     }
 
     async function fetchMoreInBackground(){
       if(!current||current.id!==feedOwnerId)return;
       if(fetchingMore||remoteExhausted||posts.length>=maxPosts)return;
-      fetchingMore=true;refreshMore();
+      fetchingMore=true;fetchFailed=false;refreshMore();
       var target=maxPosts;
       try{
         var ctl=new AbortController();
@@ -1825,7 +1864,7 @@
           var data=await res.json().catch(function(){return {};});
           if(!res.ok||!data||!Array.isArray(data.posts))throw new Error(data.error||("free_feed_http_"+res.status));
           var seen=new Set(posts.map(function(p){return String(p&&p.id||"");}));
-          var added=(data.posts||[]).filter(function(p){var id=String(p&&p.id||"");return id&&!seen.has(id);}).sort(sortPostsNewest);
+          var added=(data.posts||[]).filter(freeFeedPostBelongsToCurrent).filter(function(p){var id=String(p&&p.id||"");return id&&!seen.has(id);}).sort(sortPostsNewest);
           if(added.length){
             posts=posts.concat(added).slice(0,maxPosts).sort(sortPostsNewest);
             noGrowthFetches=0;
@@ -1837,11 +1876,19 @@
           // 20 items. Only 100 loaded posts prove completion. Two no-growth
           // attempts stop automatic retries for this page session.
           remoteExhausted=posts.length>=maxPosts||noGrowthFetches>=2;
+          fetchFailures=0;
         }finally{clearTimeout(timer);}
       }catch(e){
-        remoteExhausted=true;
+        // 一次失败（超时、网络抖动）不再永久隐藏按钮：允许手动重试，连续两次失败才停止。
+        fetchFailures+=1;fetchFailed=true;
+        if(fetchFailures>=2)remoteExhausted=true;
       }finally{
-        fetchingMore=false;refreshMore();
+        fetchingMore=false;
+        if(!current||current.id!==feedOwnerId)return;
+        // 用户刚才点过「加载更多」在等：数据到了直接接着显示，不用再点一次。
+        if(waitingForMore&&localRemaining()>0){waitingForMore=false;appendNextBatch();}
+        else if(waitingForMore&&remoteExhausted)waitingForMore=false;
+        refreshMore();
       }
     }
 
@@ -1851,13 +1898,17 @@
     refreshMore();
 
     btn.addEventListener("click",function(){
-      if(fetchingMore)return;
-      if(shown<posts.length){
+      if(localRemaining()>0){
         appendNextBatch();
+        // 本地刚好看完：记下「还想看更多」，后台数据一到就直接接上，不用再点。
+        if(localRemaining()===0&&!remoteExhausted)waitingForMore=true;
         refreshMore();
-        if(shown>=posts.length&&!remoteExhausted)fetchMoreInBackground();
+        // 本地只剩不到一批时提前去取下一页，读到底时通常已经准备好。
+        if(localRemaining()<batchSize&&!remoteExhausted)fetchMoreInBackground();
         return;
       }
+      if(fetchingMore)return;
+      waitingForMore=true;
       fetchMoreInBackground();
     });
 
