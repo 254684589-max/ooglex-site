@@ -127,6 +127,9 @@
     .profile-avatar-shell{width:58px;height:58px}
     .leader-avatar,.profile-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:var(--panel)}
     .avatar-fallback{font:700 11px/1 var(--mono);letter-spacing:.03em;color:var(--dim)}
+    /* X 官方组件把这个链接替换成 iframe 之前，不显示裸链接文字 */
+    #timeline a.twitter-timeline{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .embed-wait{padding:14px 16px 4px;color:var(--dim);font-size:13px}
     .profile-avatar-shell .avatar-fallback{font-size:15px}
     .leader-identity{min-width:0;flex:1}
     .leader b{display:block;font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -443,11 +446,11 @@
     <section class="panel">
       <aside class="profile">
         <div class="profile-id">
-          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
+          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback"></span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
           <div class="profile-copy">
-            <div class="profile-name-line"><h2 id="profile-name">马斯克</h2><span id="profile-verified"></span></div>
-            <div class="profile-en" id="profile-name-en">Elon Musk</div>
-            <div class="handle" id="profile-handle">@elonmusk</div>
+            <div class="profile-name-line"><h2 id="profile-name">加载中…</h2><span id="profile-verified"></span></div>
+            <div class="profile-en" id="profile-name-en"></div>
+            <div class="handle" id="profile-handle"></div>
           </div>
         </div>
         <div class="profile-public" id="profile-public">
@@ -458,7 +461,7 @@
             <div class="profile-stat"><strong id="profile-followers">—</strong><span>关注者</span></div>
           </div>
         </div>
-        <div class="role"><div class="company-line" id="profile-company">特斯拉 / SpaceX / xAI / X</div><div class="position-line" id="profile-position">创始人 / CEO</div><div class="position-en" id="profile-position-en">Founder / CEO</div></div>
+        <div class="role"><div class="company-line" id="profile-company"></div><div class="position-line" id="profile-position"></div><div class="position-en" id="profile-position-en"></div></div>
         <div class="chips" id="profile-chips"></div>
         <div class="profile-extra">
           <div class="profile-extra-title">Profile Overview</div>
@@ -1248,6 +1251,7 @@
     setDiag("FRAME LOAD","✓");setDiag("RENDER","✓");
     timeline.setAttribute("data-state","ready");
     timeline.setAttribute("data-render-signal",signal);
+    timeline.querySelectorAll(".embed-wait,.feed-skeleton").forEach(function(el){el.remove();});
     clearWatchers();
   }
   function bindEvents(){
@@ -1276,11 +1280,11 @@
     timeline.innerHTML="";
     renderLocalPosts(current,timeline);
     timeline.insertAdjacentHTML("beforeend",
-      '<div class="fallback"><b>当前网络无法完成 X 官方时间线渲染</b>'+
-      '<div>上方 Ooglex 站内动态仍可正常查看。可以重试，或直接打开该账号的 X 原主页。</div>'+
+      '<div class="fallback"><b>暂时无法获取 @'+escapeHtml(current.handle)+' 的公开动态</b>'+
+      '<div>Ooglex 的公开数据源和 X 官方组件这次都没有返回内容（可能是该账号近期没有公开帖子，或当前网络无法连接 X）。可以稍后重试，或直接打开该账号的 X 主页。</div>'+
       '<div class="fallback-actions"><button type="button" data-retry-x="1">重新加载</button>'+
       '<a href="https://x.com/'+escapeHtml(current.handle)+'" target="_blank" rel="noopener noreferrer">打开 @'+escapeHtml(current.handle)+' ↗</a></div>'+
-      '<div class="fallback-diag">'+diagHtml()+'</div>'+
+      (DEBUG?'<div class="fallback-diag">'+diagHtml()+'</div>':'')+
       '<small>诊断码：'+escapeHtml(reason)+' · 免费 Embed 依赖访问者网络连接 X。</small></div>');
     timeline.setAttribute("data-state","fallback");
   }
@@ -1296,6 +1300,8 @@
     a.setAttribute("data-dnt","true");
     a.textContent="Posts by @"+current.handle;
     timeline.appendChild(a);
+    timeline.insertAdjacentHTML("beforeend",'<div class="embed-wait" role="status">正在通过 X 官方组件加载 @'+escapeHtml(current.handle)+' 的时间线…</div>');
+    renderFeedSkeleton();
   }
   function renderNoXTimeline(){
     clearWatchers();
@@ -1308,6 +1314,7 @@
   }
   function bootEmbed(){
     if(!current||!current.handle){renderNoXTimeline();return;}
+    clearWatchers();
     rendered=false;
     activeIframe=null;
     sourceBadge.textContent="X Embed 回退 · $0 API";
@@ -1727,6 +1734,7 @@
   function renderFreeFeed(feed,options){
     options=options||{};
     clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
+    var feedOwnerId=current&&current.id;
     sourceBadge.textContent="公开模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
@@ -1800,6 +1808,7 @@
     }
 
     async function fetchMoreInBackground(){
+      if(!current||current.id!==feedOwnerId)return;
       if(fetchingMore||remoteExhausted||posts.length>=maxPosts)return;
       fetchingMore=true;refreshMore();
       var target=maxPosts;
@@ -1881,7 +1890,7 @@
     }
 
     try{
-      var data=await fetchFreeFeedOnce(selected,initialLimit,4000);
+      var data=await fetchFreeFeedOnce(selected,initialLimit,12000);
       writeFreeFeedBrowserCache(selected,data);
       if(!current||current.id!==selected.id)return;
       if(!shownCache||freeFeedIds(data)!==freeFeedIds(cached&&cached.data)){
@@ -1972,9 +1981,37 @@
     if(mode==="api")next.searchParams.set("mode","api");else next.searchParams.delete("mode");
     location.href=next.toString();
   }
-  function navigateLeader(id){
-    var next=new URL(location.href);next.searchParams.set("leader",id);location.href=next.toString();
+  function bootCurrentFeed(){
+    if(MODE==="api")bootApi();
+    else if(usesNativeFreeFeed(current))bootFreeNativeFeed();
+    else bootEmbed();
   }
+  // 切换人物只在页面内更新资料与动态，并用 history 记录地址；
+  // 找不到该人物（名录尚未加载等）时才回退为整页跳转。
+  function navigateLeader(id,fromHistory){
+    var next=people.find(function(p){return p.id===id;});
+    if(!next){
+      var u=new URL(location.href);u.searchParams.set("leader",id);location.href=u.toString();
+      return;
+    }
+    if(!fromHistory){
+      var url=new URL(location.href);url.searchParams.set("leader",id);
+      try{history.pushState({leader:id},"",url.toString());}catch(e){}
+    }
+    requested=id;current=next;
+    if(!librarySheet.hidden)closeLeaderLibrary();
+    updateProfile(current);
+    document.querySelectorAll("#leaders [data-id], #leader-library [data-id]").forEach(function(el){
+      el.classList.toggle("on",el.getAttribute("data-id")===id);
+    });
+    requestAnimationFrame(function(){scrollActiveLeaderIntoView();});
+    bootCurrentFeed();
+  }
+  window.addEventListener("popstate",function(){
+    var id=new URLSearchParams(location.search).get("leader");
+    var target=people.find(function(p){return p.id===id;})||people[0];
+    if(target&&(!current||target.id!==current.id))navigateLeader(target.id,true);
+  });
 
   var suppressLeaderClick=false;
   leaders.addEventListener("click",function(e){
@@ -2480,7 +2517,7 @@
   });
 
   timeline.addEventListener("click",function(e){
-    if(e.target.closest("[data-retry-x]"))location.reload();
+    if(e.target.closest("[data-retry-x]"))bootCurrentFeed();
     if(e.target.closest("[data-free-mode]"))navigateMode("free");
   });
 
@@ -2491,9 +2528,7 @@
     }
     setModeUi();
     await loadCatalog();
-    if(MODE==="api")bootApi();
-    else if(usesNativeFreeFeed(current))bootFreeNativeFeed();
-    else bootEmbed();
+    bootCurrentFeed();
   })();
 })();
 </script>
