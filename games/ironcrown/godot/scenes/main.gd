@@ -91,6 +91,7 @@ var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说�
 var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
 var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
 var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
+var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
 
@@ -154,6 +155,8 @@ func _ready() -> void:
 			t = Birch.build(world, Settings.reduced_motion)
 		"ferry":
 			t = Ferry.build(world, Settings.reduced_motion)
+		"marsh":
+			t = Marsh.build(world, Settings.reduced_motion)
 		"battle":
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
@@ -196,6 +199,7 @@ func _ready() -> void:
 		var st: Variant = Areas.spawn(area, "manor")
 		if st != null:
 			player.global_transform = st
+	_prime_chunks()
 	spawn = player.global_position
 	if _query("preview") == "1":
 		playable_chapter = maxi(playable_chapter, 1)
@@ -250,6 +254,8 @@ func _ready() -> void:
 			start_brawl.call_deferred(dagu, {"brawl": "drunk"})
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
+		if streamer and not streamer.is_done():
+			await streamer.all_built                  # 连片地图（4.4）：分帧搭完再测（不然测的是半张图）
 		if battle:
 			if view == "":
 				Settings.set_value("show_perf", true)
@@ -362,6 +368,38 @@ func set_view(i: int) -> void:
 	player.rotation.y = deg_to_rad(v[1])
 	player.pitch = v[2]
 	player.head.rotation.x = deg_to_rad(v[2])
+	if streamer:
+		streamer.prime(player.global_position)    # 连片地图：换到的地方附近马上搭好（基准测试、截图不等分帧）
+
+
+## 连片地图（4.4 鹭沼）：主角放好以后，先把附近的块同步搭完（还在黑屏里），其余的进场以后分帧搭；
+## 每搭好一块补上时段和画质（_dress_late）。载入、读档、走门、?view、?cam 都走到这里，脚下的块总是先有画面
+func _prime_chunks() -> void:
+	streamer = world.get_node_or_null("Streamer") as ChunkStreamer
+	if streamer == null:
+		return
+	streamer.target = player
+	streamer.budget = ChunkStreamer.BUDGET_TOUCH_USEC if touch_mode else ChunkStreamer.BUDGET_USEC
+	streamer.view_dist = _fog_end()
+	streamer.chunk_built.connect(_dress_late)
+	var t0 := Time.get_ticks_usec()
+	streamer.prime(player.global_position)
+	print("IC_MARSH prime ms=%.0f built=%d of=%d" % [float(Time.get_ticks_usec() - t0) / 1000.0, streamer.stats.built, streamer.chunks.size()])
+
+
+## 后搭好的一块：套上现在的时段（窗、夜灯、雾带）、画质（低画质雾带减半、芦苇只画一半）
+func _dress_late(root: Node3D) -> void:
+	Daypart.apply_nodes(root, daypart)
+	if quality != "":
+		for f in root.find_children("*", "MeshInstance3D", true, false):
+			if f.is_in_group("fog_band"):
+				f.visible = quality != "low" or int(f.get_meta("fog_index", 0)) % 2 == 0
+		Marsh.refresh_in(root, quality == "low")
+
+
+## 当前时段的雾在几米外吞没（室内、测试场 0）
+func _fog_end() -> float:
+	return float(Daypart.PRESETS[daypart].fog_end) if Daypart.affects(area) else 0.0
 
 
 ## 画质分档（TECH.md 第五节）：低 = 0.75 倍分辨率、无阴影、无泛光、无各向异性过滤、雾带减半；
@@ -385,8 +423,12 @@ func apply_quality(tier: String) -> void:
 
 ## 区域边上的树画多少（3.10）：看画质和当前时段的雾有多远
 func _refresh_edges() -> void:
-	var fog_end := float(Daypart.PRESETS[daypart].fog_end) if Daypart.affects(area) else 0.0
+	var fog_end := _fog_end()
 	Edges.refresh(get_tree(), quality == "low", fog_end)
+	Marsh.refresh(get_tree(), quality == "low")       # 鹭沼的芦苇（4.4）：低画质画一半
+	if streamer:
+		streamer.view_dist = fog_end                  # 块按雾的远近显示 / 隐藏
+		streamer.update_visibility()
 
 
 ## 性能统计（TECH.md 第五节）：在当前机位连续采样 seconds 秒：平均帧率、最慢一帧、绘制调用、图元、可见物体
@@ -537,6 +579,8 @@ func _build_ui() -> void:
 	player.melee.guarded.connect(_on_guarded)
 	player.melee.damaged.connect(_on_damaged)
 	player.melee.defeated.connect(_on_defeated)
+	player.surface_changed.connect(_on_surface_changed)
+	player.rescued.connect(_on_rescued)
 	for e in get_tree().get_nodes_in_group("enemy"):
 		e.state_changed.connect(_on_enemy_state)
 	if touch_mode:
@@ -818,10 +862,10 @@ func _arrive() -> void:
 	var intro := "ch%d_intro" % GameState.chapter
 	if GameState.chapter > 0 and not GameState.get_flag(intro):
 		GameState.set_flag(intro, true)                  # 刚进这一章：先报章节名（只报一次）
-		hud.toast("%s\n%s" % [Chapters.name_of(GameState.chapter), Areas.display_name(area)], 3.0)
+		hud.toast("%s\n%s" % [Chapters.name_of(GameState.chapter), area_title()], 3.0)
 	else:
-		hud.toast(Areas.display_name(area), 2.0)
-	print("IC_ARRIVE area=%s spawn=%s chapter=%d" % [area, arrived_by, GameState.chapter])
+		hud.toast(area_title(), 2.0)
+	print("IC_ARRIVE area=%s spawn=%s chapter=%d zone=%s" % [area, arrived_by, GameState.chapter, AreaMap.zone_at(area, player_xz())])
 	if GameState.chapter >= 1 and area == "frostford" and not GameState.has_flag("ch1_victor_done"):
 		show_tip("ch1_victor", true)     # 第一章开场（4.3）：维克托就在眼前
 	show_tip("save")                     # 进入新区域会自动存档：第一次走进别处时讲存档
@@ -833,6 +877,30 @@ func _arrive() -> void:
 		# 暂停时也要淡完（4.2 实测：刚到就打开地图 / 暂停菜单，淡入停在半路，黑幕一直盖在面板上）
 		create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, FADE_TIME * 1.5)
 	save_game.call_deferred("auto", true)
+
+
+## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
+func area_title() -> String:
+	var z := AreaMap.zone_at(area, player_xz())
+	return Areas.display_name(area) + (" · " + z if z != "" else "")
+
+
+func player_xz() -> Vector2:
+	return Vector2(player.global_position.x, player.global_position.z)
+
+
+## 脚下的地面变了（4.4 泥潭）：HUD 写一行字（不只靠画面），第一次踩进泥里讲一句
+func _on_surface_changed(id: String) -> void:
+	hud.set_surface(Surface.label(id))
+	print("IC_SURFACE id=%s run=%s" % [id if id != "" else "none", Surface.can_run(id)])
+	if id == "mud":
+		show_tip("mud")
+
+
+## 掉出地图（深水下面没有地面，墙漏了的话）：放回最近站稳的地方
+func _on_rescued(at: Vector3) -> void:
+	hud.toast("水太深，你爬回了刚才站稳的地方。", 3.0)
+	print("IC_FALL_RESCUE area=%s x=%.1f y=%.1f z=%.1f" % [area, at.x, at.y, at.z])
 
 
 ## 存档内容：版本、时间、场景、玩家（位置、朝向、生命、体力、蹲着）、游戏状态
@@ -1371,7 +1439,7 @@ func _show_area_map(v: String, switched: bool) -> void:
 
 func _show_travel_map(departure: bool) -> void:
 	travel_map.tabs.setup(AreaMap.views(area, GameState.chapter), "travel")
-	var here := Travel.place_of_area(area)
+	var here := Travel.place_of_area(area, player_xz())
 	travel_map.open(GameState.chapter, here, departure, Settings.reduced_motion)
 	print("IC_MAP open here=%s departure=%s places=%d selected=%s" % [here, departure, travel_map.place_btns.size(), travel_map.selected])
 	await get_tree().process_frame
@@ -1412,7 +1480,7 @@ func _on_area_map_closed() -> void:
 ## 和走门一样（审查发现：不然这样的浏览器永远出不了门）；然后和走门一样换区域，路线写的时段（例如走大半天到了是白天）到了再改。
 ## 返回不能走的原因（"" = 走了）；地图上的状态行写这个原因
 func depart(id: String) -> String:
-	var here := Travel.place_of_area(area)
+	var here := Travel.place_of_area(area, player_xz())
 	var c := Travel.check(GameState.chapter, here, id, travel_map.at_departure)
 	var why := str(c.why)
 	if why == "":
@@ -1603,6 +1671,8 @@ func _on_dialogue_node(has_check: bool) -> void:
 ## 贴地雾带在主角脚边淡出（fog_plane.gdshader 的 clear_at）：第三人称时小腿不会被雾片盖成灰白一截（2026-10-04 手机实测）
 func _clear_fog_at(pos: Vector3) -> void:
 	for f in get_tree().get_nodes_in_group("fog_band"):
+		if not (f as Node3D).is_visible_in_tree():
+			continue                                 # 藏起来的（低画质减半、鹭沼远处的块）不用更新，下次显示时下一帧就补上
 		var m := (f as MeshInstance3D).material_override as ShaderMaterial
 		if m:
 			m.set_shader_parameter("clear_at", pos)

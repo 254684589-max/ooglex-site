@@ -25,6 +25,10 @@ const TP_DIST := 2.6
 const TP_SIDE := 0.55
 const TP_UP := 0.25
 const TP_MARGIN := 0.25
+const LAYER_BOUNDARY := 16        # 物理层 5「边界」（4.4）：看不见的墙只挡人走，不挡视线、镜头、箭和交互
+const SURFACE_STEP := 0.1         # 每隔几秒看一次脚下（Surface.under）
+const SAFE_STEP := 0.5            # 每隔几秒记一次站稳的位置（掉出地图时放回去）
+const FALL_Y := -6.0              # 掉到这么低 = 掉出地图了（鹭沼的深水下面没有地面）
 
 var head: Node3D
 var interactor: Interactor
@@ -42,6 +46,13 @@ var jump_requested := false
 var pitch := 0.0                    # 度，正 = 抬头
 var running := false                # 这一帧在跑（消耗体力，2.4）
 var bob_time := 0.0
+var surface := ""                   # 脚下的地面（Surface.KINDS；"" = 普通地面，4.4）
+var surface_left := 0.0
+var last_safe := Vector3.INF        # 最近一次站稳的位置（INF = 还没站稳过）
+var safe_left := 0.0
+
+signal surface_changed(id: String)  # 踩进 / 走出泥潭（main 写 HUD、弹教学提示）
+signal rescued(at: Vector3)         # 掉出地图，放回了最近站稳的地方
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 
 
@@ -49,7 +60,7 @@ func _init() -> void:
 	floor_max_angle = deg_to_rad(46.0)
 	floor_snap_length = STEP_HEIGHT + 0.05
 	collision_layer = 2
-	collision_mask = 1
+	collision_mask = 1 | LAYER_BOUNDARY
 	capsule = CapsuleShape3D.new()
 	capsule.radius = RADIUS
 	capsule.height = HEIGHT_STAND
@@ -157,16 +168,16 @@ func move_input() -> Vector2:
 
 func current_speed(input: Vector2) -> float:
 	if crouching:
-		return CROUCH_SPEED
+		return CROUCH_SPEED * Surface.mult(surface)
 	if melee and (melee.blocking() or melee.staggered()):
-		return GUARD_SPEED
-	return RUN_SPEED if wants_run() else WALK_SPEED
+		return GUARD_SPEED * Surface.mult(surface)
+	return (RUN_SPEED if wants_run() else WALK_SPEED) * Surface.mult(surface)
 
 
 ## 想跑并且体力够（体力耗尽后要缓过气才能再跑，2.4）
 func wants_run() -> bool:
 	var run := Input.is_action_pressed("sprint") or touch_move.length() >= TOUCH_RUN_THRESHOLD
-	return run and not GameState.over_encumbered() and (melee == null or (melee.can_sprint() and not melee.blocking() and not melee.staggered()))
+	return run and not GameState.over_encumbered() and Surface.can_run(surface) and (melee == null or (melee.can_sprint() and not melee.blocking() and not melee.staggered()))
 
 
 func _physics_process(delta: float) -> void:
@@ -191,7 +202,27 @@ func _physics_process(delta: float) -> void:
 	jump_requested = false
 	_try_step(delta)
 	move_and_slide()
+	_update_ground(delta)
 	_update_head(delta)
+
+
+## 脚下（4.4）：每 0.1 秒看一次是不是泥；每 0.5 秒记一次站稳的位置；掉出地图（深水下面没有地面）放回去
+func _update_ground(delta: float) -> void:
+	surface_left -= delta
+	if surface_left <= 0.0:
+		surface_left = SURFACE_STEP
+		var s: Variant = Surface.under(self)
+		if s != null and str(s) != surface:
+			surface = str(s)
+			surface_changed.emit(surface)
+	safe_left -= delta
+	if safe_left <= 0.0 and is_on_floor():
+		safe_left = SAFE_STEP
+		last_safe = global_position
+	if global_position.y < FALL_Y and last_safe != Vector3.INF:
+		global_position = last_safe + Vector3(0, 0.2, 0)
+		velocity = Vector3.ZERO
+		rescued.emit(last_safe)
 
 
 ## 台阶：水平方向被挡住时，试着抬高 STEP_HEIGHT 再往前；前方落脚点是平地就把身体抬上去。

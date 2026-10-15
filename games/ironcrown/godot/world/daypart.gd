@@ -112,18 +112,32 @@ static func apply(main: Node, id: String) -> void:
 	sun.light_energy = p.sun_energy
 	sun.rotation_degrees = p.sun_rot
 	var tree: SceneTree = main.get_tree()
-	for f in tree.get_nodes_in_group("fog_band"):
-		var m := (f as MeshInstance3D).material_override as ShaderMaterial
+	for g in ["fog_band", "house", "night_light"]:
+		for n in tree.get_nodes_in_group(g):
+			_apply_node(n, p)
+
+
+## 后搭的一块（4.4 鹭沼分帧搭建）：只给 root 底下的雾带、房子、夜灯套上这个时段（环境、月光已经在 apply 里套过）。幂等
+static func apply_nodes(root: Node, id: String) -> void:
+	var p: Dictionary = PRESETS[id if valid(id) else "night"]
+	for n in root.find_children("*", "", true, false):
+		_apply_node(n, p)
+
+
+## 一个节点：雾带换颜色和浓度、房子的窗亮 / 灭、夜灯亮 / 灭；别的节点不管
+static func _apply_node(n: Node, p: Dictionary) -> void:
+	if n.is_in_group("fog_band"):
+		var m := (n as MeshInstance3D).material_override as ShaderMaterial
 		if m == null:
-			continue
-		if not f.has_meta("base_density"):
-			f.set_meta("base_density", float(m.get_shader_parameter("density")))
+			return
+		if not n.has_meta("base_density"):
+			n.set_meta("base_density", float(m.get_shader_parameter("density")))
 		m.set_shader_parameter("color", p.band)
-		m.set_shader_parameter("density", float(f.get_meta("base_density")) * float(p.band_density))
-	for h in tree.get_nodes_in_group("house"):
-		set_windows(h, house_lit(h, float(p.windows)))
-	for l in tree.get_nodes_in_group("night_light"):
-		set_night_light(l, bool(p.lamps))
+		m.set_shader_parameter("density", float(n.get_meta("base_density")) * float(p.band_density))
+	elif n.is_in_group("house"):
+		set_windows(n, house_lit(n, float(p.windows)))
+	elif n.is_in_group("night_light"):
+		set_night_light(n, bool(p.lamps))
 
 
 ## 这栋房子在这个时段亮不亮灯：比例 1 = 都按建的时候的样子，0 = 都不亮；中间按房子的种子挑（同一栋房子每次结果一样）

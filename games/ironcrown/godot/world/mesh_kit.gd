@@ -34,15 +34,22 @@ static func _axes(n: Vector3) -> Array:
 	return [u, v]
 
 
-## 四边形：p0..p3 沿边依次给出，n 是朝外的法线；绕向按法线自动调成 Godot 的正面（从外面看顺时针）
-func quad(key: String, pts: Array, n: Vector3, shades := [1.0, 1.0, 1.0, 1.0]) -> void:
+## 四边形：p0..p3 沿边依次给出，n 是朝外的法线；绕向按法线自动调成 Godot 的正面（从外面看顺时针）。
+## uvs：给了四个就用它们（光晕这种一张图铺满整个面片的），不给就按米投影
+func quad(key: String, pts: Array, n: Vector3, shades := [1.0, 1.0, 1.0, 1.0], uvs: Array = []) -> void:
 	var st := _st(key)
 	var order := [0, 1, 2, 0, 2, 3]
 	if (pts[1] - pts[0]).cross(pts[2] - pts[0]).dot(n) > 0.0:
 		order = [0, 2, 1, 0, 3, 2]
 	var ax := _axes(n)
 	for i in order:
-		_v(st, pts[i], n, shades[i], ax[0], ax[1])
+		if uvs.size() == 4:
+			st.set_normal(n)
+			st.set_color(Color(shades[i], shades[i], shades[i]))
+			st.set_uv(uvs[i])
+			st.add_vertex(pts[i])
+		else:
+			_v(st, pts[i], n, shades[i], ax[0], ax[1])
 	counts[key] += 2
 
 

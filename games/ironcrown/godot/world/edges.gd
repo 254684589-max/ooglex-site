@@ -36,15 +36,16 @@ const LOW_SHARE := 0.6           # 低画质近圈画几成
 ## exits：出口 [{"at": 出口的门所在的点 Vector3, "out": 往外的方向 Vector3（水平单位向量）, "half": 路宽的一半,
 ##         "fence": 两边要不要栅栏, "lantern": 门柱上要不要灯笼, "frame": 地名（不空 = 新做门柱、横梁、小檐和地名牌）}]
 ## skip：不种树、不铺地的矩形（Rect2，XZ），例如渡口的河面
+## ground：地面和路用哪种材质（Look.surface；默认雪地，鹭沼东头的干岸用 "bank"，4.4）
 ## 返回地面、路、栅栏、门框合并成的网格（已挂在 parent 下，元数据 exits 记着出口）；树是另外几个多实例节点（组 edge_trees），
 ## 栅栏和门柱的碰撞是另外一个 StaticBody3D（EdgeSolids）
-static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_value: int) -> MeshInstance3D:
+static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_value: int, ground := "snow") -> MeshInstance3D:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var kit := MeshKit.new()
-	_ground(kit, area, skip)
+	_ground(kit, area, skip, ground)
 	for e in exits:
-		_road(kit, e)
+		_road(kit, e, ground)
 	var trees := 0
 	var meshes := []
 	for k in NEAR_KINDS:
@@ -78,7 +79,7 @@ static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_v
 			_fence(kit, solids, e)
 		if bool(e.get("lantern", false)):
 			_lantern(parent, kit, e)
-	var mi := kit.build({"snow": Look.mat("snow"), "birch": Look.birch(), "bark": Look.mat("bark"), "timber": Look.mat("timber"), "roof": Look.mat("roof")})
+	var mi := kit.build({"snow": Look.mat("snow"), ground: Look.surface(ground), "birch": Look.birch(), "bark": Look.mat("bark"), "timber": Look.mat("timber"), "roof": Look.mat("roof")})
 	mi.name = "Edges"
 	mi.set_meta("trees", trees)
 	mi.set_meta("exits", exits)
@@ -119,7 +120,7 @@ static func _frame(parent: Node3D, kit: MeshKit, solids: StaticBody3D, e: Dictio
 	l.rotation.y = atan2(out.x, out.z) + PI                  # 字朝里（从区域里面读）
 
 
-static func _ground(kit: MeshKit, area: Rect2, skip: Array) -> void:
+static func _ground(kit: MeshKit, area: Rect2, skip: Array, ground := "snow") -> void:
 	var g := area.grow(GROUND_MARGIN)
 	# 四条：北、南、西、东（中间是区域自己的地面，不重铺）；比区域地面低 2 厘米，接缝看不出来
 	var strips := [
@@ -131,7 +132,7 @@ static func _ground(kit: MeshKit, area: Rect2, skip: Array) -> void:
 	for r in strips:
 		for part in _minus(r, skip):
 			var c: Vector2 = part.get_center()
-			kit.box("snow", Vector3(c.x, -0.03, c.y), Vector3(part.size.x, 0.02, part.size.y), Basis.IDENTITY, 1.0, 1.0)
+			kit.box(ground, Vector3(c.x, -0.03, c.y), Vector3(part.size.x, 0.02, part.size.y), Basis.IDENTITY, 1.0, 1.0)
 
 
 ## 矩形减去不铺的地方（只处理整条切掉的情况：跳过区域和它重叠的部分按 skip 的边裁掉）
@@ -152,13 +153,13 @@ static func _minus(r: Rect2, skip: Array) -> Array:
 	return parts.filter(func(p: Rect2): return p.size.x > 0.1 and p.size.y > 0.1)
 
 
-static func _road(kit: MeshKit, e: Dictionary) -> void:
+static func _road(kit: MeshKit, e: Dictionary, ground := "snow") -> void:
 	var at: Vector3 = e.at
 	var out: Vector3 = e.out
 	var half := float(e.get("half", 1.6))
 	var c: Vector3 = at + out * (ROAD_LEN * 0.5)
 	var basis := Basis(Vector3(-out.z, 0, out.x), Vector3.UP, out)
-	kit.box("snow", Vector3(c.x, -0.005, c.z), Vector3(half * 2.0, 0.02, ROAD_LEN), basis, 0.62, 0.62)
+	kit.box(ground, Vector3(c.x, -0.005, c.z), Vector3(half * 2.0, 0.02, ROAD_LEN), basis, 0.62, 0.62)
 
 
 ## 一种树的模型（k = 0、1：近圈的两种；-1：远圈的简化树）。每次现做（三棵树约 1 毫秒）；不放静态缓存——
