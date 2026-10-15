@@ -1169,7 +1169,8 @@
     try{sessionStorage.setItem(CATALOG_CACHE_KEY,text);}catch(e){try{sessionStorage.removeItem(CATALOG_CACHE_KEY);}catch(_){}}
   }
   async function fetchCatalogText(){
-    var res=await techProtectedFetch(CATALOG_URL,{cache:"no-store"});
+    // no-cache：浏览器保留名录副本，每次带 If-None-Match 向服务器确认；未变化时只收 304。
+    var res=await techProtectedFetch(CATALOG_URL,{cache:"no-cache"});
     if(!res.ok)throw new Error("catalog_http_"+res.status);
     return res.text();
   }

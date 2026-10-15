@@ -310,7 +310,18 @@ async function readDataset(binding, key) {
     headers.set("content-type", "application/json; charset=utf-8");
   }
   if (obj.etag) headers.set("etag", obj.etag);
-  return { body: obj.body, headers };
+  return { body: obj.body, headers, httpEtag: obj.httpEtag || "" };
+}
+
+// If-None-Match 比较：忽略弱校验前缀 W/，支持逗号分隔多个值与 "*"。
+function etagMatches(ifNoneMatch, httpEtag) {
+  if (!ifNoneMatch || !httpEtag) return false;
+  const strip = (v) => String(v).trim().replace(/^W\//, "");
+  const target = strip(httpEtag);
+  return String(ifNoneMatch).split(",").some((v) => {
+    const s = strip(v);
+    return s === "*" || s === target;
+  });
 }
 
 async function readJson(binding, key) {
@@ -2771,11 +2782,25 @@ export default {
       }
       const catalog = techLeadersCatalogName(url.searchParams.get("catalog"));
       if (!catalog) return json({ error: "invalid_catalog" }, 400, cors);
-      const dataset = await readDataset(env.PRO_DATA, "tech-leaders/catalogs/" + catalog);
+      const catalogKey = "tech-leaders/catalogs/" + catalog;
+      // 名录约 1.8 MB 且只在部署时变化：浏览器带 If-None-Match 来时，
+      // 内容未变就只回 304，不再重传整份名录。鉴权仍在上面先做。
+      const ifNoneMatch = request.headers.get("if-none-match");
+      if (ifNoneMatch) {
+        const head = await env.PRO_DATA.head(catalogKey);
+        if (head && etagMatches(ifNoneMatch, head.httpEtag)) {
+          return new Response(null, {
+            status: 304,
+            headers: { ...cors, etag: head.httpEtag, "cache-control": "private, no-cache" }
+          });
+        }
+      }
+      const dataset = await readDataset(env.PRO_DATA, catalogKey);
       if (!dataset) return json({ error: "catalog_not_ready" }, 503, cors);
       const headers = new Headers(cors);
       dataset.headers.forEach((value, name) => headers.set(name, value));
-      headers.set("cache-control", "private, no-store");
+      if (dataset.httpEtag) headers.set("etag", dataset.httpEtag);
+      headers.set("cache-control", "private, no-cache");
       return new Response(dataset.body, { status: 200, headers });
     }
 
