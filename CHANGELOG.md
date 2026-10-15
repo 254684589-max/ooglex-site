@@ -14,6 +14,7 @@
 ### 新增
 
 - 2026-10-15：科技领袖公开动态日检（`.github/workflows/tech-leaders-free-feed-audit.yml` + `scripts/tech-leaders/audit_free_feed.mjs`）。每天 01:43 UTC 对名录中全部本人公开 X 账号逐个检查能否取到公开动态，结果写入 `data/tech-leaders/free_feed_health.json`（总数、成功/失败数、失败原因统计、逐账号明细、最新一条距今天数），并在运行摘要里列出取不到动态的账号。检查直接在 Actions 中运行线上同一份 `worker.js` 的 free-feed 逻辑（内存存储、一次性本地密钥），不调用线上 Worker、不需要新增任何 Secret、不改动线上缓存或用户会话。GitHub 机房与 Cloudflare 边缘的网络可能略有差异，结果作为排查依据。经所有者批准上线。
+- 2026-10-15：日检改进：请求走 Worker 完整取数路径（`limit=21`），失败时记录 X 官方源与 fxtwitter 各自的状态；首轮失败的账号间隔后单路重试一次，报告新增 `recovered_on_retry`，摘要表格显示两个源各自的失败原因。首份报告为 601 个账号中 447 个可取到、154 个取不到（快速路径未给出原因）。
 
 ### 修复
 

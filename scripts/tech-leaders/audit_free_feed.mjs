@@ -66,7 +66,9 @@ if (MAX) eligible = eligible.slice(0, MAX);
 async function check(p) {
   const handle = String(p.handle);
   const started = Date.now();
-  const url = `https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=${encodeURIComponent(handle)}&limit=5`;
+  // limit>20 走 Worker 的完整取数路径：两个公开源都会尝试，失败时返回各自的状态（diagnostic），
+  // 便于判断是哪一个源、为什么取不到；limit<=20 的快速路径只给笼统错误。
+  const url = `https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=${encodeURIComponent(handle)}&limit=21`;
   const req = new Request(url, { headers: { Origin: "https://ooglex.com", "x-ooglex-tech-secret": SECRET } });
   let status = 0, body = {};
   try {
@@ -111,6 +113,19 @@ async function lane() {
 }
 await Promise.all(Array.from({ length: Math.min(CONCURRENCY, eligible.length || 1) }, lane));
 
+// 失败的账号歇一会儿后单路再试一次，把偶发失败和持续失败分开。
+const firstFailed = rows.map((r, i) => (r.ok ? -1 : i)).filter((i) => i >= 0);
+if (firstFailed.length) {
+  await new Promise((r) => setTimeout(r, Number(opt("retry-wait-ms", "60000")) || 0));
+  for (const i of firstFailed) {
+    const again = await check(eligible[i]);
+    again.retried = true;
+    again.first_error = rows[i].error;
+    rows[i] = again;
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+}
+
 const ok = rows.filter((r) => r.ok);
 const failed = rows.filter((r) => !r.ok);
 const stale = ok.filter((r) => r.latest_age_days !== null && r.latest_age_days > 180);
@@ -127,6 +142,7 @@ const report = {
   failed_count: failed.length,
   ok_but_older_than_180d: stale.length,
   error_counts: errorCounts,
+  recovered_on_retry: rows.filter((r) => r.ok && r.retried).length,
   failed: failed.map(({ id, name, handle, category, http_status, error, diagnostic }) => ({ id, name, handle, category, http_status, error, diagnostic })),
   rows
 };
@@ -139,13 +155,14 @@ const lines = [
   ``,
   `- 检查账号：${rows.length}`,
   `- 可取到动态：${ok.length}`,
-  `- 取不到：${failed.length}`,
+  `- 取不到：${failed.length}（首轮失败后重试成功 ${rows.filter((r) => r.ok && r.retried).length} 个）`,
   `- 能取到但最新一条超过 180 天：${stale.length}`,
   ``
 ];
 if (failed.length) {
-  lines.push(`### 取不到动态的账号`, ``, `| 人物 | 账号 | 分类 | 原因 |`, `|---|---|---|---|`);
-  for (const r of failed) lines.push(`| ${r.name} | @${r.handle} | ${r.category} | ${r.error}${r.http_status ? ` (HTTP ${r.http_status})` : ""} |`);
+  const why = (d) => d ? `X 官方源 ${d.official_source || "-"}${d.official_status ? " " + d.official_status : ""}；fxtwitter ${d.fallback_source || "-"}${d.fallback_status ? " " + d.fallback_status : ""}` : "";
+  lines.push(`### 取不到动态的账号（已重试一次）`, ``, `| 人物 | 账号 | 分类 | 原因 |`, `|---|---|---|---|`);
+  for (const r of failed) lines.push(`| ${r.name} | @${r.handle} | ${r.category} | ${why(r.diagnostic) || r.error} |`);
 }
 const summary = lines.join("\n") + "\n";
 if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
