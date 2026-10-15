@@ -213,7 +213,7 @@
   }
 
   function previewWallText(){
-    if(FULL_ACCESS_STATE==="pro_required")return "你已登录，但当前账户方案仅含公开10%预览。开通完整访问后可查看全部新闻。";
+    if(FULL_ACCESS_STATE==="pro_required")return "你已登录，但账户状态暂时无法确认，当前先显示公开预览。请重新登录后再试。";
     if(FULL_ACCESS_STATE==="error")return "已登录，但完整数据暂时无法获取，当前先显示公开预览。请稍后刷新重试。";
     return "当前展示原版页面预览。登录 / 注册后可继续查看完整内容。";
   }
@@ -263,7 +263,7 @@
         "<div class='preview-wall-kicker'>OOGLEX · 10% PREVIEW</div>"+
         "<h2>继续查看完整数据</h2>"+
         "<p>"+esc(previewWallText())+"</p>"+
-        "<a class='preview-login' href='/account/'>"+esc(FULL_ACCESS_STATE==="pro_required"?"查看账户与方案":"登录 / 注册")+"</a>"+
+        "<a class='preview-login' href='/account/'>"+esc(FULL_ACCESS_STATE==="pro_required"?"前往账户":"登录 / 注册")+"</a>"+
         "<div class='preview-wall-meta'>公开预览 "+esc((DATA.preview.visibleItems||0)+" / "+(DATA.preview.totalItems||0)+" 条新闻")+"</div>"+
       "</div>";
     shell.parentNode.insertBefore(wall,shell.nextSibling);

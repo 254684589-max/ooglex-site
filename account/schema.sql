@@ -135,7 +135,7 @@ insert into public.plan_entitlements(plan, product_key, access_level) values
   ('free','finance_column','preview'),
   ('pro','finance_column','full'),
   ('pro_plus','finance_column','full'),
-  ('free','whats_latest','preview'),
+  ('free','whats_latest','full'),
   ('pro','whats_latest','full'),
   ('pro_plus','whats_latest','full')
 on conflict (plan, product_key) do update
