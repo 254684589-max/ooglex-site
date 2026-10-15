@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-10T11:15:19Z",
+  "updatedAt": "2026-10-15T10:05:54Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -20,11 +20,11 @@
   "items": {
     "celestrak/stations": {
       "ok": true,
-      "detail": "19 颗"
+      "detail": "17 颗"
     },
     "celestrak/visual": {
       "ok": true,
-      "detail": "156 颗"
+      "detail": "155 颗"
     },
     "celestrak/gps-ops": {
       "ok": true,
@@ -36,15 +36,15 @@
     },
     "celestrak/galileo": {
       "ok": true,
-      "detail": "32 颗"
+      "detail": "31 颗"
     },
     "celestrak/geo": {
       "ok": true,
-      "detail": "567 颗"
+      "detail": "565 颗"
     },
     "launches": {
       "ok": true,
-      "detail": "26 条发射记录"
+      "detail": "24 条发射记录"
     }
   }
 }

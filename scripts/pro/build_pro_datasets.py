@@ -7,11 +7,16 @@ committed to the public repository or deployed as static Pages assets.
 """
 from __future__ import annotations
 
+import argparse
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / ".pro-build"
+
+sys.path.insert(0, str(ROOT / "scripts"))
+from build_public_site import build_whats_latest_preview  # noqa: E402
 
 SUPPLY_CHAIN_PREVIEW_COMPANIES = 10
 SUPPLY_CHAIN_PREVIEW_COVERAGE_KEYS = (
@@ -160,10 +165,27 @@ def build_macro_risk() -> None:
     write("macro-risk/full.json", full)
 
 
+def build_whats_latest() -> None:
+    full = load("apps/whats-latest/data.json")
+    preview = build_whats_latest_preview(full)
+    write("whats-latest/preview.json", preview)
+    write("whats-latest/full.json", full)
+
+
+BUILDERS = {
+    "supply-chain": build_supply_chain,
+    "macro-risk": build_macro_risk,
+    "whats-latest": build_whats_latest,
+}
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--only", choices=sorted(BUILDERS), action="append")
+    args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    build_supply_chain()
-    build_macro_risk()
+    for name in args.only or BUILDERS:
+        BUILDERS[name]()
 
 
 if __name__ == "__main__":

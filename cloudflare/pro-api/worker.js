@@ -14,6 +14,12 @@ const PRODUCTS = Object.freeze({
   finance_column: {
     previewKey: "finance-column/preview.json",
     fullKey: "finance-column/full.json"
+  },
+  whats_latest: {
+    previewKey: "whats-latest/preview.json",
+    fullKey: "whats-latest/full.json",
+    // 「最新消息」只要求登录：任何经 Supabase 验证的会话都可读完整数据，不看订阅方案。
+    signedInFull: true
   }
 });
 
@@ -266,6 +272,10 @@ async function getAccess(product, token, env) {
   const user = await getUser(token, env);
   if (!user || !user.id) return { plan: "free", access_level: "preview", authenticated: false };
 
+  if (PRODUCTS[product] && PRODUCTS[product].signedInFull) {
+    return { plan: "signed_in", access_level: "full", authenticated: true, user_id: user.id };
+  }
+
   const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/my_product_access`, {
     method: "POST",
     headers: {
@@ -300,7 +310,94 @@ async function readDataset(binding, key) {
     headers.set("content-type", "application/json; charset=utf-8");
   }
   if (obj.etag) headers.set("etag", obj.etag);
-  return { body: obj.body, headers };
+  return { body: obj.body, headers, httpEtag: obj.httpEtag || "" };
+}
+
+// If-None-Match 比较：忽略弱校验前缀 W/，支持逗号分隔多个值与 "*"。
+function etagMatches(ifNoneMatch, httpEtag) {
+  if (!ifNoneMatch || !httpEtag) return false;
+  const strip = (v) => String(v).trim().replace(/^W\//, "");
+  const target = strip(httpEtag);
+  return String(ifNoneMatch).split(",").some((v) => {
+    const s = strip(v);
+    return s === "*" || s === target;
+  });
+}
+
+// ---- 科技领袖推文中文机器翻译 ----
+// 与「最新消息」使用同一模型（Cloudflare Workers AI m2m100）。结果按原文 SHA-256 缓存到 R2，
+// 同一条推文只翻译一次。仅供阅读参考，页面会标注「机器翻译」。
+const TECH_TRANSLATE_MODEL = "@cf/meta/m2m100-1.2b";
+const TECH_TRANSLATE_MAX_TEXTS = 8;
+const TECH_TRANSLATE_MAX_CHARS = 2400;
+const TECH_TRANSLATE_PART_CHARS = 900;
+// 每天（UTC）最多新翻译多少条推文；命中缓存不计数。可用 wrangler.toml [vars] TECH_TRANSLATE_DAILY_LIMIT 调整。
+const TECH_TRANSLATE_DAILY_LIMIT = 1000;
+
+function mostlyChinese(text) {
+  const s = String(text || "").replace(/\s+/g, "");
+  if (!s) return true;
+  const han = (s.match(/[\u3400-\u9fff]/g) || []).length;
+  return han / s.length >= 0.3;
+}
+
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// 按段落、再按句子切成模型能处理的长度；链接不送去翻译（原文里仍可点开）。
+// 返回 [[段落1的片段...], [段落2的片段...]]，翻译后同段片段直接相连、段落之间空一行。
+function splitForTranslation(text) {
+  const paragraphs = [];
+  for (const para of String(text).split(/\n{2,}/)) {
+    const pieces = [];
+    let rest = para.replace(/https?:\/\/\S+/g, "").trim();
+    while (rest.length > TECH_TRANSLATE_PART_CHARS) {
+      const chunk = rest.slice(0, TECH_TRANSLATE_PART_CHARS);
+      const cut = Math.max(chunk.lastIndexOf(". "), chunk.lastIndexOf("! "), chunk.lastIndexOf("? "), chunk.lastIndexOf("\n"));
+      const at = cut > 200 ? cut + 1 : TECH_TRANSLATE_PART_CHARS;
+      pieces.push(rest.slice(0, at).trim());
+      rest = rest.slice(at).trim();
+    }
+    if (rest) pieces.push(rest);
+    if (pieces.length) paragraphs.push(pieces);
+  }
+  return paragraphs;
+}
+
+function techTranslateDailyLimit(env) {
+  const n = Number(env && env.TECH_TRANSLATE_DAILY_LIMIT);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : TECH_TRANSLATE_DAILY_LIMIT;
+}
+
+function techTranslateUsageKey(date = new Date()) {
+  return "tech-leaders/translate/usage/" + date.toISOString().slice(0, 10) + ".json";
+}
+
+async function translateTechText(text, env, budget) {
+  const source = String(text || "").trim().slice(0, TECH_TRANSLATE_MAX_CHARS);
+  if (!source || mostlyChinese(source)) return { text: null, skipped: true };
+  const key = "tech-leaders/translate/v1/" + await sha256Hex(TECH_TRANSLATE_MODEL + "\n" + source) + ".json";
+  const cached = await readJson(env.PRO_DATA, key);
+  if (cached && typeof cached.zh === "string") return { text: cached.zh, cached: true };
+  if (budget) {
+    if (budget.used >= budget.limit) return { text: null, limited: true };
+    budget.used += 1;
+    budget.added += 1;
+  }
+  // 各段并行翻译，长推文不再逐段排队。
+  const out = await Promise.all(splitForTranslation(source).map(async (pieces) => {
+    const translated = await Promise.all(pieces.map(async (piece) => {
+      const res = await env.AI.run(TECH_TRANSLATE_MODEL, { text: piece, source_lang: "english", target_lang: "chinese" });
+      return String(res && res.translated_text || "").trim();
+    }));
+    return translated.join("");
+  }));
+  const zh = out.filter(Boolean).join("\n\n").trim();
+  if (!zh) return { text: null, error: "empty_translation" };
+  await writeJson(env.PRO_DATA, key, { zh, model: TECH_TRANSLATE_MODEL, translated_at: new Date().toISOString() });
+  return { text: zh, cached: false };
 }
 
 async function readJson(binding, key) {
@@ -2748,6 +2845,48 @@ export default {
       });
     }
 
+    if (url.pathname === "/v1/tech-leaders/translate") {
+      if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
+      if (!(await techLeadersRequestAuthorized(request, env))) {
+        return json({ error: "tech_leaders_password_required" }, 401, { ...cors, "cache-control": "no-store" });
+      }
+      if (!env.AI) return json({ error: "translation_unavailable" }, 503, { ...cors, "cache-control": "no-store" });
+      let payload = null;
+      try { payload = JSON.parse(await request.text()); } catch { payload = null; }
+      const texts = payload && Array.isArray(payload.texts) ? payload.texts.slice(0, TECH_TRANSLATE_MAX_TEXTS).map((t) => String(t || "")) : [];
+      if (!texts.length) return json({ error: "no_texts" }, 400, cors);
+      const usageKey = techTranslateUsageKey();
+      const usage = await readJson(env.PRO_DATA, usageKey).catch(() => null);
+      const budget = { limit: techTranslateDailyLimit(env), used: Math.max(0, Number(usage && usage.count) || 0), added: 0 };
+      let limited = false;
+      // 一批内并行翻译：整批耗时约等于最慢的一条，而不是逐条相加。
+      // 额度检查与计数在同一同步段内完成，并行也不会超出当日上限。
+      const translations = await Promise.all(texts.map(async (text) => {
+        try {
+          const r = await translateTechText(text, env, budget);
+          if (r.limited) limited = true;
+          return r.text;
+        } catch {
+          return null;
+        }
+      }));
+      if (budget.added) {
+        // 计数是「读-加-写」，并发请求可能略微少计，最多多翻译几条，不会无限增长。
+        try {
+          const latest = await readJson(env.PRO_DATA, usageKey).catch(() => null);
+          const count = Math.max(budget.used, (Number(latest && latest.count) || 0) + budget.added);
+          await writeJson(env.PRO_DATA, usageKey, { date: usageKey.slice(-15, -5), count, limit: budget.limit, updated_at: new Date().toISOString() });
+        } catch {}
+      }
+      return json({
+        ok: true, target: "zh", model: TECH_TRANSLATE_MODEL, machine_translated: true, translations,
+        daily_limit: budget.limit, daily_limit_reached: limited || budget.used >= budget.limit
+      }, 200, {
+        ...cors,
+        "cache-control": "no-store"
+      });
+    }
+
     if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405, cors);
 
     if (url.pathname === "/v1/tech-leaders/session") {
@@ -2761,11 +2900,25 @@ export default {
       }
       const catalog = techLeadersCatalogName(url.searchParams.get("catalog"));
       if (!catalog) return json({ error: "invalid_catalog" }, 400, cors);
-      const dataset = await readDataset(env.PRO_DATA, "tech-leaders/catalogs/" + catalog);
+      const catalogKey = "tech-leaders/catalogs/" + catalog;
+      // 名录约 1.8 MB 且只在部署时变化：浏览器带 If-None-Match 来时，
+      // 内容未变就只回 304，不再重传整份名录。鉴权仍在上面先做。
+      const ifNoneMatch = request.headers.get("if-none-match");
+      if (ifNoneMatch) {
+        const head = await env.PRO_DATA.head(catalogKey);
+        if (head && etagMatches(ifNoneMatch, head.httpEtag)) {
+          return new Response(null, {
+            status: 304,
+            headers: { ...cors, etag: head.httpEtag, "cache-control": "private, no-cache" }
+          });
+        }
+      }
+      const dataset = await readDataset(env.PRO_DATA, catalogKey);
       if (!dataset) return json({ error: "catalog_not_ready" }, 503, cors);
       const headers = new Headers(cors);
       dataset.headers.forEach((value, name) => headers.set(name, value));
-      headers.set("cache-control", "private, no-store");
+      if (dataset.httpEtag) headers.set("etag", dataset.httpEtag);
+      headers.set("cache-control", "private, no-cache");
       return new Response(dataset.body, { status: 200, headers });
     }
 

@@ -34,18 +34,28 @@
     style.textContent =
       "html.ooglex-tech-locked,html.ooglex-tech-locked body{overflow:hidden!important}" +
       "html.ooglex-tech-locked body>:not(#ooglex-tech-gate){visibility:hidden!important}" +
-      "#ooglex-tech-gate{visibility:visible!important;position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;padding:24px;background:var(--bg,#f7f1e9);color:var(--ink,#171717);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif}" +
-      "#ooglex-tech-gate .gate-card{width:min(430px,100%);padding:30px;border:1px solid var(--line,#ded5cb);border-radius:18px;background:var(--panel,#fffaf4);box-shadow:0 24px 70px rgba(0,0,0,.12)}" +
-      "#ooglex-tech-gate .gate-kicker{font:11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;color:var(--faint,#8b837b);text-transform:uppercase}" +
-      "#ooglex-tech-gate h1{margin:10px 0 7px;font-size:25px;line-height:1.2;letter-spacing:-.02em}" +
-      "#ooglex-tech-gate p{margin:0 0 20px;color:var(--dim,#655f59);font-size:13px;line-height:1.65}" +
-      "#ooglex-tech-gate .gate-row{display:flex;gap:9px}" +
-      "#ooglex-tech-gate input{min-width:0;flex:1;height:44px;border:1px solid var(--line,#ded5cb);border-radius:10px;background:transparent;color:inherit;padding:0 13px;outline:none;font:14px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}" +
-      "#ooglex-tech-gate input:focus{border-color:#2a6fa4;box-shadow:0 0 0 3px rgba(42,111,164,.10)}" +
-      "#ooglex-tech-gate button{height:44px;min-width:82px;border:0;border-radius:10px;background:#171717;color:#fff;padding:0 18px;font-weight:700;cursor:pointer}" +
-      "#ooglex-tech-gate button[disabled]{opacity:.55;cursor:wait}" +
-      "#ooglex-tech-gate .gate-error{min-height:18px;margin-top:10px;color:#b42318;font-size:12px}" +
-      "#ooglex-tech-gate .gate-back{display:inline-block;margin-top:10px;color:#2a6fa4;font-size:12px;text-decoration:none}";
+      // 用 flex 居中并给卡片固定上限宽度：之前用 grid + 百分比宽度，窄屏上卡片会撑出右边界。
+      "#ooglex-tech-gate{visibility:visible!important;position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));overflow-y:auto;background:var(--bg,#f7f1e9);color:var(--ink,#171717);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}" +
+      "#ooglex-tech-gate *,#ooglex-tech-gate *::before,#ooglex-tech-gate *::after{box-sizing:border-box}" +
+      "#ooglex-tech-gate .gate-card{width:100%;max-width:400px;margin:auto;padding:32px 28px 26px;border:1px solid var(--line,#ded5cb);border-radius:20px;background:var(--panel,#fffaf4);box-shadow:0 1px 2px rgba(0,0,0,.04),0 18px 48px rgba(0,0,0,.10);text-align:center}" +
+      "#ooglex-tech-gate .gate-mark{position:relative;display:block;width:52px;height:52px;margin:0 auto 18px;border-radius:14px;background:#0b0e13;border:1px solid rgba(255,255,255,.10);box-shadow:0 6px 16px rgba(0,0,0,.16)}" +
+      "#ooglex-tech-gate .gate-mark i{position:absolute;width:7px;height:7px;border-radius:50%}" +
+      "#ooglex-tech-gate .gate-kicker{font:600 11px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.18em;color:var(--faint,var(--dim,#8b837b));text-transform:uppercase}" +
+      "#ooglex-tech-gate h1{margin:10px 0 8px;font-size:24px;line-height:1.25;font-weight:750;letter-spacing:-.01em}" +
+      "#ooglex-tech-gate p{margin:0 auto 22px;max-width:300px;color:var(--dim,#655f59);font-size:14px;line-height:1.65}" +
+      "#ooglex-tech-gate form{display:flex;flex-direction:column;gap:10px;margin:0}" +
+      // 输入框字号 16px：小于 16px 时手机浏览器会在聚焦时自动放大页面。
+      "#ooglex-tech-gate input{display:block;width:100%;height:48px;margin:0;padding:0 14px;border:1px solid var(--line,#ded5cb);border-radius:12px;background:var(--bg,#fff);color:inherit;font:16px/1 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;text-align:center;letter-spacing:.04em;outline:none;-webkit-appearance:none;appearance:none}" +
+      "#ooglex-tech-gate input::placeholder{color:var(--faint,var(--dim,#9a928a));letter-spacing:0}" +
+      "#ooglex-tech-gate input:focus{border-color:#2a6fa4;box-shadow:0 0 0 3px rgba(42,111,164,.16)}" +
+      "#ooglex-tech-gate button{display:block;width:100%;height:48px;margin:0;border:0;border-radius:12px;background:var(--ink,#171717);color:var(--bg,#fff);font:700 16px/1 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;letter-spacing:.08em;cursor:pointer;-webkit-appearance:none;appearance:none}" +
+      "#ooglex-tech-gate button:focus-visible{outline:2px solid #2a6fa4;outline-offset:2px}" +
+      "#ooglex-tech-gate button[disabled]{opacity:.6;cursor:wait}" +
+      "#ooglex-tech-gate .gate-error{min-height:18px;margin-top:8px;color:#b42318;font-size:13px;line-height:1.5}" +
+      "#ooglex-tech-gate .gate-back{display:inline-flex;align-items:center;min-height:44px;margin-top:4px;padding:0 8px;color:var(--dim,#655f59);font-size:13px;text-decoration:none}" +
+      "#ooglex-tech-gate .gate-back:hover,#ooglex-tech-gate .gate-back:focus-visible{color:var(--ink,#171717);text-decoration:underline}" +
+      "@media (max-width:360px){#ooglex-tech-gate .gate-card{padding:26px 20px 20px;border-radius:18px}#ooglex-tech-gate h1{font-size:22px}}" +
+      "@media (prefers-reduced-motion:reduce){#ooglex-tech-gate *{transition:none!important;animation:none!important}}";
     document.head.appendChild(style);
   }
 
@@ -61,15 +71,19 @@
     root.id = "ooglex-tech-gate";
     root.innerHTML =
       '<section class="gate-card" role="dialog" aria-modal="true" aria-labelledby="ooglex-tech-gate-title">' +
-        '<div class="gate-kicker">OOGLEX · PRIVATE COLUMN</div>' +
+        '<span class="gate-mark" aria-hidden="true">' +
+          '<i style="left:14px;top:14px;background:#7d5cff"></i><i style="left:30px;top:15px;background:#f04d38"></i>' +
+          '<i style="left:31px;top:30px;background:#e4a11b"></i><i style="left:16px;top:31px;background:#4f9fd8"></i>' +
+        '</span>' +
+        '<div class="gate-kicker">Ooglex · Private Column</div>' +
         '<h1 id="ooglex-tech-gate-title">科技领袖实时动态流</h1>' +
-        '<p>该专栏由服务器验证访问密码。密码通过后，本次浏览器会话内保持解锁。</p>' +
-        '<form class="gate-row" id="ooglex-tech-gate-form">' +
+        '<p>该专栏需要访问密码。验证通过后，本次浏览器会话内保持解锁。</p>' +
+        '<form id="ooglex-tech-gate-form">' +
           '<input id="ooglex-tech-gate-input" type="password" inputmode="numeric" autocomplete="current-password" maxlength="64" placeholder="请输入访问密码" aria-label="访问密码">' +
           '<button id="ooglex-tech-gate-submit" type="submit">进入</button>' +
         '</form>' +
         '<div class="gate-error" id="ooglex-tech-gate-error" aria-live="polite"></div>' +
-        '<a class="gate-back" href="/">返回首页</a>' +
+        '<a class="gate-back" href="/">← 返回首页</a>' +
       '</section>';
     document.body.appendChild(root);
 
@@ -128,8 +142,12 @@
   addStyle();
   document.documentElement.classList.add("ooglex-tech-locked");
 
+  // 会话校验不依赖页面 DOM，脚本一加载就发出，与页面解析并行；
+  // 只有需要显示密码框时才等待 DOM 就绪。
+  var sessionCheck = validateSession();
+
   async function startGate() {
-    if (await validateSession()) {
+    if (await sessionCheck) {
       document.documentElement.classList.remove("ooglex-tech-locked");
       finish(true);
       return;

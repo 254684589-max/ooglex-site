@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-09T23:26:53Z",
-  "asOf": "2026-10-08",
+  "updatedAt": "2026-10-14T23:24:24Z",
+  "asOf": "2026-10-13",
   "frequency": "mixed",
   "status": "partial",
   "source": "FRED (OECD Main Economic Indicators) / ECB Data Portal",
@@ -24,7 +24,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
+        "updatedAt": "2026-10-14T23:24:24Z",
         "frequency": "monthly",
         "note": "与站内美债收益率曲线的10年期是同一条资产的两个口径：曲线那条是日频，这条是 OECD 月频"
       }
@@ -45,7 +45,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
+        "updatedAt": "2026-10-14T23:24:24Z",
         "frequency": "monthly"
       }
     },
@@ -65,7 +65,7 @@
         "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
+        "updatedAt": "2026-10-14T23:24:24Z",
         "frequency": "monthly"
       }
     },
@@ -79,15 +79,14 @@
       "changeBp": 3.0,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -100,15 +99,14 @@
       "changeBp": 5.7,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -121,15 +119,14 @@
       "changeBp": 11.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -142,15 +139,14 @@
       "changeBp": 15.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -163,15 +159,14 @@
       "changeBp": 10.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -184,15 +179,14 @@
       "changeBp": 10.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -205,15 +199,14 @@
       "changeBp": 9.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -226,15 +219,14 @@
       "changeBp": 12.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -247,15 +239,14 @@
       "changeBp": 8.9,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -268,15 +259,14 @@
       "changeBp": -1.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -289,15 +279,14 @@
       "changeBp": 11.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -310,15 +299,14 @@
       "changeBp": 1.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -331,15 +319,14 @@
       "changeBp": 8.2,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -352,15 +339,14 @@
       "changeBp": 9.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -373,15 +359,14 @@
       "changeBp": 9.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-10-14T23:24:24Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -400,7 +385,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-13T21:48:43Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -421,7 +406,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-13T21:48:43Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -442,7 +427,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-13T21:48:43Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -463,7 +448,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-13T01:58:39Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -484,7 +469,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -505,7 +490,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -526,7 +511,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -547,7 +532,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -568,7 +553,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -589,7 +574,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -610,7 +595,7 @@
         "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T00:15:29Z",
+        "updatedAt": "2026-10-11T23:35:12Z",
         "frequency": "monthly",
         "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
@@ -625,14 +610,15 @@
       "changeBp": 9.6,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
-        "frequency": "monthly"
+        "updatedAt": "2026-10-11T23:35:12Z",
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -645,14 +631,15 @@
       "changeBp": 10.0,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
-        "frequency": "monthly"
+        "updatedAt": "2026-10-11T23:35:12Z",
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -665,14 +652,15 @@
       "changeBp": 3.5,
       "previousAsOf": "2026-07-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / OECD Main Economic Indicators",
         "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
-        "frequency": "monthly"
+        "updatedAt": "2026-10-11T23:35:12Z",
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -682,17 +670,17 @@
       "region": "europe",
       "unit": "年化收益率",
       "note": "OECD 那一族没有罗马尼亚，改用欧洲央行的趋同用长期利率（本币计价）",
-      "price": 6.43,
-      "changeBp": 34.0,
-      "previousAsOf": "2026-07-01",
+      "price": 6.71,
+      "changeBp": 28.0,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "ECB Data Portal",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-14T23:24:24Z",
         "frequency": "monthly",
         "note": "OECD 那一族没有罗马尼亚，改用欧洲央行的趋同用长期利率（本币计价）"
       }
@@ -704,17 +692,17 @@
       "region": "europe",
       "unit": "年化收益率",
       "note": "欧元区整体的趋同用长期利率；FRED 上的同名 OECD 序列已滞后半年以上，改用本条",
-      "price": 3.6026,
-      "changeBp": 10.9,
-      "previousAsOf": "2026-07-01",
+      "price": 3.9284,
+      "changeBp": 32.5,
+      "previousAsOf": "2026-08-01",
       "frequency": "monthly",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "ECB Data Portal",
-        "asOf": "2026-08-01",
-        "updatedAt": "2026-10-09T23:26:53Z",
+        "asOf": "2026-09-01",
+        "updatedAt": "2026-10-14T23:24:24Z",
         "frequency": "monthly",
         "note": "欧元区整体的趋同用长期利率；FRED 上的同名 OECD 序列已滞后半年以上，改用本条"
       }
@@ -726,17 +714,17 @@
       "region": "europe",
       "unit": "年化收益率",
       "note": "欧元区 AAA 评级政府债收益率曲线的十年点，是本类里唯一一条日频的非美主权收益率",
-      "price": 3.5192,
-      "changeBp": -1.9,
-      "previousAsOf": "2026-10-07",
+      "price": 3.4918,
+      "changeBp": -0.7,
+      "previousAsOf": "2026-10-12",
       "frequency": "daily",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "ECB Data Portal",
-        "asOf": "2026-10-08",
-        "updatedAt": "2026-10-09T23:26:53Z",
+        "asOf": "2026-10-13",
+        "updatedAt": "2026-10-14T23:24:24Z",
         "frequency": "daily",
         "note": "欧元区 AAA 评级政府债收益率曲线的十年点，是本类里唯一一条日频的非美主权收益率"
       }
@@ -747,8 +735,8 @@
     "status": "partial",
     "total": 35,
     "counts": {
-      "market": 9,
-      "fallback": 26,
+      "market": 21,
+      "fallback": 14,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0

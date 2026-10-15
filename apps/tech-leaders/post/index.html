@@ -115,7 +115,7 @@
     }
     var m=post.metrics||{};var metrics=document.createElement("div");metrics.className="metrics";["回复 "+metric(m.reply_count),"转发 "+metric(m.repost_count||m.retweet_count),"喜欢 "+metric(m.like_count)].forEach(function(v){var s=document.createElement("span");s.textContent=v;metrics.appendChild(s);});el.appendChild(metrics);
     var actions=document.createElement("div");actions.className="actions";
-    var wx=document.createElement("button");wx.type="button";wx.textContent="微信卡片分享";wx.onclick=openSharePage;actions.appendChild(wx);
+    var wx=document.createElement("button");wx.type="button";wx.textContent="网页卡片分享";wx.onclick=openSharePage;actions.appendChild(wx);
     var copy=document.createElement("button");copy.type="button";copy.textContent="复制链接";copy.onclick=copyLink;actions.appendChild(copy);
     var gen=document.createElement("button");gen.type="button";gen.textContent="生成分享卡片";gen.onclick=generateCard;actions.appendChild(gen);
     var x=document.createElement("a");x.className="wide";x.target="_blank";x.rel="noopener noreferrer";x.href=post.url||("https://x.com/"+encodeURIComponent(handle)+"/status/"+postId);x.textContent="在 X 查看原文 ↗";actions.appendChild(x);

@@ -6,6 +6,10 @@ workers_dev = false
 [images]
 binding = "IMAGES"
 
+# Workers AI：科技领袖推文中文机器翻译（/v1/tech-leaders/translate）
+[ai]
+binding = "AI"
+
 [[routes]]
 pattern = "pro-api.ooglex.com"
 custom_domain = true

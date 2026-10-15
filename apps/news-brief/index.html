@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ooglex-native-preview="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全球要闻 · 全球新闻扫描简报概览 · Ooglex</title>
+  <meta name="description" content="Ooglex 全球新闻扫描简报概览：环球新闻情报中心人工编辑。与自动抓取的「最新消息」并存，逐条标注来源与时间，非交易或投资建议。">
+  <link rel="canonical" href="https://www.ooglex.com/apps/news-brief/">
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="apple-touch-icon" href="../../assets/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="全球要闻 · 全球新闻扫描简报概览 · Ooglex">
+  <meta property="og:description" content="人工编辑｜环球新闻情报中心。逐条可核来源，非投资建议。">
+  <meta property="og:url" content="https://www.ooglex.com/apps/news-brief/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/theme.css?v=0d16e197">
+  <script>
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"paper");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
+  </script>
+  <script src="../../assets/theme.js?v=20260926k" defer></script>
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    :root{
+      --bg:#0b0e13;--paper:#0b0e13;--panel:#111720;--ink:#edf1f6;--text:#edf1f6;
+      --dim:#9aa4af;--muted:#9aa4af;--line:rgba(255,255,255,.12);
+      --down:#bf2036;--green:#1e8a63;--gold:#d1a057;--accent:#79b8ff;--on-accent:#fff;
+    }
+    a{color:inherit}
+    button,a{font:inherit}
+    button{cursor:pointer}
+    a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .top-rule{height:2px;background:linear-gradient(90deg,var(--down),var(--gold))}
+    .shell{width:min(1180px,100%);margin:0 auto;padding:12px 24px 72px}
+    .home-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
+    .home-back{
+      display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;
+      border:1px solid var(--line);border-radius:8px;background:var(--panel);
+      color:var(--dim);text-decoration:none;font-size:13px;
+    }
+    .home-back:hover{color:var(--ink)}
+    .dateline{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;
+      color:var(--dim);font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+      letter-spacing:.02em;padding:0 0 12px;border-bottom:1px solid var(--line)
+    }
+    .mast{padding:18px 0 8px}
+    .kicker{
+      margin:0 0 8px;color:var(--gold);
+      font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em
+    }
+    .brand-title{
+      margin:0;font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
+      font-size:clamp(32px,5vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.03em
+    }
+    .brand-sub{margin:8px 0 0;color:var(--dim);font-size:14px;letter-spacing:.04em}
+    .edition{
+      display:flex;flex-wrap:wrap;gap:8px;margin-top:14px
+    }
+    .chip{
+      display:inline-flex;align-items:center;min-height:32px;padding:4px 10px;
+      border:1px solid var(--line);border-radius:999px;background:var(--panel);
+      color:var(--dim);font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace
+    }
+    .chip strong{color:var(--ink);font-weight:700}
+    .lead{
+      margin:8px 0 0;padding:14px 16px;border-left:3px solid var(--down);
+      background:var(--panel);border-radius:0 10px 10px 0;
+      font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
+      font-size:17px;line-height:1.75
+    }
+    .note{margin:12px 0 0;color:var(--dim);font-size:13px;line-height:1.65}
+    .banner{
+      margin:14px 0 0;padding:12px 14px;border-radius:8px;border:1px solid var(--line);
+      background:var(--panel);font-size:14px;line-height:1.6
+    }
+    .banner.loading{color:var(--dim)}
+    .banner.error,.banner.stale{border-color:var(--down);color:var(--ink)}
+    .banner.partial{border-color:var(--gold)}
+    .banner.demo{border-color:var(--gold);font-weight:700}
+    .banner[hidden]{display:none}
+    .category-bar{
+      display:flex;gap:10px;align-items:center;margin-top:22px;padding:8px 0;
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line)
+    }
+    .category-label{
+      flex:0 0 auto;color:var(--dim);font:11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em
+    }
+    .category-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:2px 0;max-width:100%}
+    .category-tabs button{
+      flex:0 0 auto;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--line);
+      background:var(--panel);color:var(--dim)
+    }
+    .category-tabs button[aria-pressed="true"]{background:var(--down);border-color:var(--down);color:var(--on-accent);font-weight:700}
+    .toc{margin-top:18px}
+    .toc-group{margin:0 0 14px}
+    .toc-group h2{
+      margin:0 0 6px;font-size:13px;letter-spacing:.06em;color:var(--dim);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:600
+    }
+    .toc-list{list-style:none;margin:0;padding:0}
+    .toc-list button{
+      width:100%;text-align:left;min-height:44px;padding:8px 2px;border:0;border-bottom:1px solid var(--line);
+      background:transparent;color:var(--ink)
+    }
+    .toc-list button:hover{color:var(--accent)}
+    .toc-no{display:inline-block;width:2em;color:var(--dim);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .items{margin-top:8px}
+    .item{border-bottom:1px solid var(--line);padding:4px 0 8px}
+    .item-toggle{
+      width:100%;display:block;text-align:left;border:0;background:transparent;color:inherit;
+      padding:12px 0;min-height:44px
+    }
+    .item-kicker{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--dim);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .item-title{
+      display:block;margin-top:6px;
+      font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
+      font-size:clamp(20px,3vw,26px);line-height:1.35;font-weight:700
+    }
+    .badge{padding:2px 7px;border:1px solid var(--line);border-radius:999px}
+    .badge.pass{color:var(--green);border-color:var(--green)}
+    .badge.cond{color:var(--gold);border-color:var(--gold)}
+    .item-panel{padding:0 0 16px}
+    .item-panel[hidden]{display:none}
+    .section{margin:0 0 16px}
+    .section h3{
+      margin:0 0 8px;font-size:14px;letter-spacing:.04em;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim);font-weight:700
+    }
+    .section p{margin:0 0 10px;font-size:15.5px;line-height:1.75}
+    .section p:last-child{margin-bottom:0}
+    .table-wrap{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:8px}
+    table{width:100%;border-collapse:collapse;min-width:640px;font-size:13.5px;line-height:1.5}
+    caption{caption-side:bottom;text-align:left;padding:8px 10px;color:var(--dim);font-size:12px}
+    th,td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+    th{background:var(--panel);font-weight:700;white-space:nowrap}
+    td:first-child,th:first-child{font-weight:650}
+    .table-note{margin:8px 0 0;color:var(--dim);font-size:12.5px;line-height:1.55}
+    .impact{padding:12px 14px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
+    .impact ul{margin:0;padding-left:1.2em}
+    .impact li{margin:0 0 8px;line-height:1.65}
+    .impact li:last-child{margin-bottom:0}
+    .impact-none{margin:0;line-height:1.65}
+    .sources{margin:0;padding-left:1.15em}
+    .sources li{margin:0 0 6px;line-height:1.55}
+    .sources a,.note,.lead,.item-title,.section p{overflow-wrap:anywhere}
+    .sources a{color:var(--accent)}
+    .missing{color:var(--dim)}
+    .source-foot{
+      margin-top:28px;padding-top:16px;border-top:1px solid var(--line);
+      color:var(--dim);font-size:12.5px;line-height:1.7
+    }
+    .source-foot p{margin:0 0 8px}
+    @media (max-width:760px){
+      .shell{padding:10px 15px 56px}
+      .category-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+      .category-bar{display:block}
+      .lead{font-size:16px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{transition:none !important;animation:none !important}
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/desk-nav.css?v=1">
+</head>
+<body>
+  <div class="top-rule"></div>
+  <main class="shell">
+    <div class="home-row">
+      <a class="home-back" href="/" aria-label="返回 Ooglex 首页">← Ooglex</a>
+    </div>
+    <nav class="desk-nav" aria-label="新闻栏目">
+      <a href="/apps/whats-latest/">简报</a>
+      <a href="/apps/news-brief/" aria-current="page">全球要闻</a>
+      <a href="/apps/news-radar/">投资雷达</a>
+      <a href="/apps/research-board/">每日投研</a>
+      <a href="/apps/research-board/rates/">全球利率</a>
+    </nav>
+    <div class="dateline" id="dateline">正在读取简报时间与来源…</div>
+    <header class="mast">
+      <p class="kicker">人工编辑 · 非实时 · 非投资建议</p>
+      <h1 class="brand-title">全球要闻</h1>
+      <p class="brand-sub">全球新闻扫描简报概览｜人工编辑｜环球新闻情报中心</p>
+      <div class="edition" id="edition"></div>
+    </header>
+    <p class="lead" id="lead">简报导语加载中。</p>
+    <p class="note" id="note"></p>
+    <p class="banner loading" id="banner" role="status">正在加载简报…</p>
+    <nav class="category-bar" aria-label="简报分类">
+      <span class="category-label">目录</span>
+      <div class="category-tabs" id="category-tabs"></div>
+    </nav>
+    <div class="toc" id="toc"></div>
+    <div class="items" id="items"></div>
+    <footer class="source-foot">
+      <p>本栏目为人工编辑，来源「环球新闻情报中心」。与「最新消息」（自动抓取，/apps/whats-latest/）相互独立，互不覆盖。</p>
+      <p>内容仅供研究与信息阅读，不构成交易建议或投资建议。文中的市场影响是稿件已披露的事实、各方主张或推断，不是买卖指令。</p>
+      <p id="foot-meta"></p>
+    </footer>
+  </main>
+  <noscript><p style="padding:16px">需要启用 JavaScript 才能展开本期简报。数据文件为同目录 data.json。</p></noscript>
+  <script src="app.js"></script>
+</body>
+</html>

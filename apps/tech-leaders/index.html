@@ -31,7 +31,8 @@
   <script>
   (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
   </script>
-  <script src="/assets/tech-leaders-password-gate.js?v=20260926a"></script>\n  <script src="/assets/theme.js?v=20260926k" defer></script>
+  <script src="/assets/tech-leaders-password-gate.js?v=20261016a"></script>
+  <script src="/assets/theme.js?v=20260926k" defer></script>
   <script src="/assets/i18n.js?v=c83b60c1" defer></script>
   <script src="/assets/i18n-wave6.js?v=a2d529d1" defer></script>
   <style>
@@ -72,6 +73,19 @@
     .mode.api{color:var(--warn)}
     .language-note{margin:-2px 0 12px;color:var(--faint);font-size:12px;line-height:1.6}
     .language-note b{color:var(--dim);font-weight:700}
+    .lang-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+    .lang-toggle{display:inline-flex;padding:2px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+    .lang-toggle button{min-width:56px;min-height:32px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--dim);font:600 13px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;cursor:pointer}
+    .lang-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+    .lang-toggle button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+    .lang-hint{color:var(--faint);font-size:12px}
+    .post-translation{display:none}
+    .lang-zh .post-text.has-tr{display:none}
+    .lang-zh .post-translation{display:block;white-space:pre-wrap;word-break:break-word;font-size:15px;line-height:1.65}
+    .lang-zh .post-text.tr-loading{opacity:.55}
+    .tr-tag{display:inline-block;margin:0 6px 2px 0;padding:1px 6px;border:1px solid var(--line);border-radius:6px;color:var(--faint);font:600 10px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;vertical-align:middle}
+    .tr-failed{display:none}
+    .lang-zh .tr-failed{display:block;margin-top:4px;color:var(--faint);font-size:12px}
     .catalog-toolbar{display:flex;align-items:flex-start;gap:8px;min-width:0;width:100%}
     .category-bar{display:flex;flex:1;min-width:0;gap:7px;overflow-x:auto;overflow-y:hidden;padding:0 0 12px;margin-top:2px;scroll-behavior:auto;scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.52) rgba(128,128,128,.14);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x}
     .category-bar::-webkit-scrollbar{height:10px}
@@ -126,6 +140,9 @@
     .profile-avatar-shell{width:58px;height:58px}
     .leader-avatar,.profile-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:var(--panel)}
     .avatar-fallback{font:700 11px/1 var(--mono);letter-spacing:.03em;color:var(--dim)}
+    /* X 官方组件把这个链接替换成 iframe 之前，不显示裸链接文字 */
+    #timeline a.twitter-timeline{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .embed-wait{padding:14px 16px 4px;color:var(--dim);font-size:13px}
     .profile-avatar-shell .avatar-fallback{font-size:15px}
     .leader-identity{min-width:0;flex:1}
     .leader b{display:block;font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -256,6 +273,8 @@
     .hero h1{margin-top:14px;margin-bottom:8px;font-size:44px}
     .hero .lead{font-size:16px;line-height:1.75}
     .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}
+    .hero-app-link{display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border:1px solid var(--blue);border-radius:999px;color:var(--blue);font:600 11px/1 var(--mono);text-decoration:none}
+    .hero-app-link[hidden]{display:none}
     .hero-meta span{display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);font:11px/1 var(--mono);color:var(--dim)}
     .language-note{margin:0 2px 14px;padding:0;color:var(--faint)}
     .share-panel{border-radius:22px;padding:20px}
@@ -409,6 +428,7 @@
           <span id="hero-account-count">613 公开账号</span>
           <span>全球公司领袖</span>
           <span>AI · 芯片 · 云计算 · 金融科技</span>
+          <a class="hero-app-link" id="hero-app-link" href="/apps/tech-leaders/app/">安卓 App 下载 →</a>
         </div>
       </div>
       <div class="hero-tools">
@@ -427,7 +447,13 @@
       <span id="source-badge" hidden></span>
       <span id="catalog-fact" hidden></span>
     </section>
-    <div class="language-note"><b>语言：</b>公开模式展示原文；如需中文，可使用浏览器网页翻译。</div>
+    <div class="language-note lang-bar"><b>语言：</b>
+      <span class="lang-toggle" role="group" aria-label="推文显示语言">
+        <button type="button" data-lang="orig" aria-pressed="true">原文</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </span>
+      <span class="lang-hint" id="lang-hint">中文为机器翻译，仅供参考，以原文为准。</span>
+    </div>
     <div class="catalog-toolbar">
       <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
       <button class="leader-fold" id="leader-fold" type="button" hidden>查看全部 613 →</button>
@@ -442,11 +468,11 @@
     <section class="panel">
       <aside class="profile">
         <div class="profile-id">
-          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
+          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback"></span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
           <div class="profile-copy">
-            <div class="profile-name-line"><h2 id="profile-name">马斯克</h2><span id="profile-verified"></span></div>
-            <div class="profile-en" id="profile-name-en">Elon Musk</div>
-            <div class="handle" id="profile-handle">@elonmusk</div>
+            <div class="profile-name-line"><h2 id="profile-name">加载中…</h2><span id="profile-verified"></span></div>
+            <div class="profile-en" id="profile-name-en"></div>
+            <div class="handle" id="profile-handle"></div>
           </div>
         </div>
         <div class="profile-public" id="profile-public">
@@ -457,7 +483,7 @@
             <div class="profile-stat"><strong id="profile-followers">—</strong><span>关注者</span></div>
           </div>
         </div>
-        <div class="role"><div class="company-line" id="profile-company">特斯拉 / SpaceX / xAI / X</div><div class="position-line" id="profile-position">创始人 / CEO</div><div class="position-en" id="profile-position-en">Founder / CEO</div></div>
+        <div class="role"><div class="company-line" id="profile-company"></div><div class="position-line" id="profile-position"></div><div class="position-en" id="profile-position-en"></div></div>
         <div class="chips" id="profile-chips"></div>
         <div class="profile-extra">
           <div class="profile-extra-title">Profile Overview</div>
@@ -522,9 +548,9 @@
   <div class="share-sheet" id="share-sheet" hidden>
     <div class="share-backdrop" data-share-close="1"></div>
     <section class="share-panel" role="dialog" aria-modal="true" aria-labelledby="share-title">
-      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">微信卡片 · 原帖链接 · 图片卡片</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
+      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">网页卡片 · 原帖链接 · 图片卡片</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
-        <button type="button" id="share-wechat">微信卡片分享</button>
+        <button type="button" id="share-wechat">网页卡片分享</button>
         <button type="button" id="share-video" hidden>分享视频</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
@@ -591,11 +617,152 @@
   var current=null;
   var leaders=document.getElementById("leaders");
   var timeline=document.getElementById("timeline");
+
+  // ---- 推文中文机器翻译（原文 / 中文 切换）----
+  // 屏幕附近的推文优先翻译；下一批「加载更多」的推文提前在后台翻好；
+  // 译文在本机保存一段时间，刷新或再次打开时直接显示。服务器端另有缓存。
+  var LANG_KEY="ooglex.techLeaders.lang";
+  var TR_STORE_KEY="ooglex.techLeaders.tr.v1";
+  var TR_STORE_MAX=400;
+  var TR_BATCH=6;          // 每次请求的条数：小批次让第一批更快出来
+  var TR_PARALLEL=3;       // 同时进行的请求数
+  var feedLang=(function(){try{return localStorage.getItem(LANG_KEY)==="zh"?"zh":"orig";}catch(e){return "orig";}})();
+  var trResults=new Map();      // 原文 -> 译文
+  var trWaiting=new Map();      // 原文 -> 等待该译文的元素（预取时为空数组）
+  var trQueue=[];var trPrefetchQueue=[];var trTimer=null;var trInFlight=0;
+  var trLimited=false;var trLastOk=true;var trSaveTimer=null;
+  var trUpcomingProvider=null;  // 由动态流提供：下一批将显示的推文原文
+  (function(){
+    try{
+      var saved=JSON.parse(localStorage.getItem(TR_STORE_KEY)||"[]");
+      if(Array.isArray(saved))saved.forEach(function(p){if(Array.isArray(p)&&typeof p[0]==="string"&&typeof p[1]==="string")trResults.set(p[0],p[1]);});
+    }catch(e){}
+  })();
+  function saveTranslationsSoon(){
+    if(trSaveTimer)return;
+    trSaveTimer=setTimeout(function(){
+      trSaveTimer=null;
+      try{var all=Array.from(trResults.entries());localStorage.setItem(TR_STORE_KEY,JSON.stringify(all.slice(-TR_STORE_MAX)));}catch(e){}
+    },800);
+  }
+  function mostlyChineseText(t){var s=String(t||"").replace(/\s+/g,"");if(!s)return true;var han=(s.match(/[㐀-鿿]/g)||[]).length;return han/s.length>=0.3;}
+  function applyTranslation(el,zh){
+    el.classList.remove("tr-loading");
+    if(!el.isConnected)return;
+    var next=el.nextElementSibling;
+    if(next&&(next.classList.contains("post-translation")||next.classList.contains("tr-failed")))next.remove();
+    if(zh){
+      var box=document.createElement("div");box.className="post-translation";
+      var tag=document.createElement("span");tag.className="tr-tag";tag.textContent="机器翻译";
+      box.appendChild(tag);box.appendChild(document.createTextNode(zh));
+      el.insertAdjacentElement("afterend",box);el.classList.add("has-tr");el.dataset.trState="done";
+    }else{
+      var fail=document.createElement("div");fail.className="tr-failed";fail.textContent=trLimited?"今日翻译额度已用完，显示原文；明天（北京时间 8:00）恢复。":"暂时无法翻译，显示原文。";
+      el.insertAdjacentElement("afterend",fail);el.dataset.trState="failed";
+    }
+  }
+  function scheduleFlush(){
+    if(!trTimer)trTimer=setTimeout(function(){trTimer=null;pumpTranslations();},60);
+  }
+  function queueTranslation(el){
+    var text=String(el.textContent||"").trim();
+    if(!text||mostlyChineseText(text)){el.dataset.trState="skip";return;}
+    if(trResults.has(text)){applyTranslation(el,trResults.get(text));return;}
+    el.dataset.trState="queued";el.classList.add("tr-loading");
+    if(!trWaiting.has(text)){trWaiting.set(text,[]);trQueue.push(text);}
+    else{
+      // 已在预取队列里：提到前面，优先翻译屏幕上的这条。
+      var pi=trPrefetchQueue.indexOf(text);
+      if(pi>=0){trPrefetchQueue.splice(pi,1);trQueue.push(text);}
+    }
+    trWaiting.get(text).push(el);
+    scheduleFlush();
+  }
+  function prefetchTranslations(texts){
+    // 翻译失败或今日额度用完时不做后台预取，避免白白发请求。
+    if(feedLang!=="zh"||trLimited||!trLastOk)return;
+    (texts||[]).forEach(function(t){
+      var text=String(t||"").trim();
+      if(!text||mostlyChineseText(text)||trResults.has(text)||trWaiting.has(text))return;
+      trWaiting.set(text,[]);trPrefetchQueue.push(text);
+    });
+    scheduleFlush();
+  }
+  function prefetchUpcomingTranslations(){
+    if(feedLang!=="zh"||typeof trUpcomingProvider!=="function")return;
+    try{prefetchTranslations(trUpcomingProvider());}catch(e){}
+  }
+  function pumpTranslations(){
+    while(trInFlight<TR_PARALLEL&&(trQueue.length||trPrefetchQueue.length)){
+      var batch=trQueue.splice(0,TR_BATCH);
+      if(batch.length<TR_BATCH)batch=batch.concat(trPrefetchQueue.splice(0,TR_BATCH-batch.length));
+      runTranslationBatch(batch);
+    }
+  }
+  async function runTranslationBatch(batch){
+    trInFlight+=1;
+    var out=[];var limited=false;
+    try{
+      var ctl=typeof AbortController==="function"?new AbortController():null;
+      var timer=setTimeout(function(){if(ctl)ctl.abort();},25000);
+      try{
+        // text/plain 不触发跨域预检，服务器按 JSON 解析。
+        var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/translate",{method:"POST",cache:"no-store",headers:{"content-type":"text/plain;charset=UTF-8"},body:JSON.stringify({texts:batch}),signal:ctl?ctl.signal:undefined});
+        var data=await res.json().catch(function(){return {};});
+        out=res.ok&&Array.isArray(data.translations)?data.translations:[];
+        limited=!!(res.ok&&data.daily_limit_reached);
+      }finally{clearTimeout(timer);}
+    }catch(e){out=[];}
+    trLimited=limited;
+    trLastOk=out.length>0;
+    var stored=false;
+    batch.forEach(function(text,i){
+      var zh=typeof out[i]==="string"&&out[i].trim()?out[i].trim():null;
+      if(zh){trResults.set(text,zh);stored=true;}   // 失败的不记入，下次切换时可重试
+      (trWaiting.get(text)||[]).forEach(function(el){applyTranslation(el,zh);});
+      trWaiting.delete(text);
+    });
+    if(stored)saveTranslationsSoon();
+    trInFlight-=1;
+    pumpTranslations();
+  }
+  function observeForTranslation(){
+    if(feedLang!=="zh")return;
+    var els=timeline.querySelectorAll(".post-text:not([data-tr-state])");
+    if(!els.length)return;
+    // 已有译文的直接显示；已在后台翻译中的直接挂上等结果，不等滚动。
+    var rest=[];
+    els.forEach(function(el){var t=String(el.textContent||"").trim();if(t&&trResults.has(t))applyTranslation(el,trResults.get(t));else if(t&&trWaiting.has(t))queueTranslation(el);else rest.push(el);});
+    // 页面上已显示的推文按从上到下的顺序全部排队（最多同时 3 个请求），
+    // 快速滑到底部或点「加载更多」时不会再一条条等。
+    rest.forEach(queueTranslation);
+  }
+  function setFeedLang(next){
+    feedLang=next==="zh"?"zh":"orig";
+    try{localStorage.setItem(LANG_KEY,feedLang);}catch(e){}
+    document.querySelectorAll(".lang-toggle button").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-lang")===feedLang));});
+    timeline.classList.toggle("lang-zh",feedLang==="zh");
+    if(feedLang==="zh"){
+      // 之前失败的推文，切回中文时重试。
+      timeline.querySelectorAll('.post-text[data-tr-state="failed"]').forEach(function(el){var n=el.nextElementSibling;if(n&&n.classList.contains("tr-failed"))n.remove();el.removeAttribute("data-tr-state");});
+      observeForTranslation();
+      prefetchUpcomingTranslations();
+    }
+  }
+  document.querySelectorAll(".lang-toggle button").forEach(function(b){b.addEventListener("click",function(){setFeedLang(b.getAttribute("data-lang"));});});
+  // 新加载的推文（换人、加载更多）进入页面后自动纳入翻译。
+  if(typeof MutationObserver==="function"){
+    var trScanPending=false;
+    new MutationObserver(function(){if(feedLang!=="zh"||trScanPending)return;trScanPending=true;requestAnimationFrame(function(){trScanPending=false;observeForTranslation();});}).observe(timeline,{childList:true,subtree:true});
+  }
+  setFeedLang(feedLang);
   var xdiag=document.getElementById("xdiag");
   var sourceBadge=document.getElementById("source-badge");
   var search=document.getElementById("leader-search");
   var catalogFact=document.getElementById("catalog-fact");
   var heroAccountCount=document.getElementById("hero-account-count");
+  // 已在安卓应用内打开时不再显示下载入口。
+  if(/OoglexApp\//.test(navigator.userAgent||"")){var appLink=document.getElementById("hero-app-link");if(appLink)appLink.hidden=true;}
   var categoryBar=document.getElementById("category-bar");
   var foldBtn=document.getElementById("leader-fold");
   var leaderRailWrap=document.querySelector(".leader-rail-wrap");
@@ -1158,18 +1325,37 @@
     document.body.classList.remove("leader-library-open");
   }
 
+  // 本次浏览器会话内缓存名录：与密码门「本次会话内保持解锁」同一范围，关闭浏览器即清除。
+  // 命中时立即渲染，后台再取最新名录写回缓存，下次打开生效。
+  var CATALOG_CACHE_KEY="ooglex.techLeaders.catalog:"+CATALOG_FILE;
+  function readCatalogCache(){
+    try{var raw=sessionStorage.getItem(CATALOG_CACHE_KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}
+  }
+  function writeCatalogCache(text){
+    try{sessionStorage.setItem(CATALOG_CACHE_KEY,text);}catch(e){try{sessionStorage.removeItem(CATALOG_CACHE_KEY);}catch(_){}}
+  }
+  async function fetchCatalogText(){
+    // no-cache：浏览器保留名录副本，每次带 If-None-Match 向服务器确认；未变化时只收 304。
+    var res=await techProtectedFetch(CATALOG_URL,{cache:"no-cache"});
+    if(!res.ok)throw new Error("catalog_http_"+res.status);
+    return res.text();
+  }
   async function loadCatalog(){
+    // 中文名字典与名录并行请求，不再串行等待。
+    var namesPromise=fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){if(d&&d.names)leaderNameDictionary=d.names;})
+      .catch(function(){});
     try{
-      try{
-        var nameRes=await fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"});
-        if(nameRes.ok){
-          var nameData=await nameRes.json();
-          if(nameData&&nameData.names)leaderNameDictionary=nameData.names;
-        }
-      }catch(nameErr){}
-      var res=await techProtectedFetch(CATALOG_URL,{cache:"no-store"});
-      if(!res.ok)throw new Error("catalog_http_"+res.status);
-      var data=await res.json();
+      var data=readCatalogCache();
+      if(data&&Array.isArray(data.leaders)&&data.leaders.length){
+        fetchCatalogText().then(writeCatalogCache).catch(function(){});
+      }else{
+        var text=await fetchCatalogText();
+        data=JSON.parse(text);
+        writeCatalogCache(text);
+      }
+      await namesPromise;
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
         people=data.leaders.filter(function(p){
           var status=p.active_status||p.admission_status||"active";
@@ -1228,6 +1414,7 @@
     setDiag("FRAME LOAD","✓");setDiag("RENDER","✓");
     timeline.setAttribute("data-state","ready");
     timeline.setAttribute("data-render-signal",signal);
+    timeline.querySelectorAll(".embed-wait,.feed-skeleton").forEach(function(el){el.remove();});
     clearWatchers();
   }
   function bindEvents(){
@@ -1256,11 +1443,11 @@
     timeline.innerHTML="";
     renderLocalPosts(current,timeline);
     timeline.insertAdjacentHTML("beforeend",
-      '<div class="fallback"><b>当前网络无法完成 X 官方时间线渲染</b>'+
-      '<div>上方 Ooglex 站内动态仍可正常查看。可以重试，或直接打开该账号的 X 原主页。</div>'+
+      '<div class="fallback"><b>暂时无法获取 @'+escapeHtml(current.handle)+' 的公开动态</b>'+
+      '<div>Ooglex 的公开数据源和 X 官方组件这次都没有返回内容（可能是该账号近期没有公开帖子，或当前网络无法连接 X）。可以稍后重试，或直接打开该账号的 X 主页。</div>'+
       '<div class="fallback-actions"><button type="button" data-retry-x="1">重新加载</button>'+
       '<a href="https://x.com/'+escapeHtml(current.handle)+'" target="_blank" rel="noopener noreferrer">打开 @'+escapeHtml(current.handle)+' ↗</a></div>'+
-      '<div class="fallback-diag">'+diagHtml()+'</div>'+
+      (DEBUG?'<div class="fallback-diag">'+diagHtml()+'</div>':'')+
       '<small>诊断码：'+escapeHtml(reason)+' · 免费 Embed 依赖访问者网络连接 X。</small></div>');
     timeline.setAttribute("data-state","fallback");
   }
@@ -1276,6 +1463,8 @@
     a.setAttribute("data-dnt","true");
     a.textContent="Posts by @"+current.handle;
     timeline.appendChild(a);
+    timeline.insertAdjacentHTML("beforeend",'<div class="embed-wait" role="status">正在通过 X 官方组件加载 @'+escapeHtml(current.handle)+' 的时间线…</div>');
+    renderFeedSkeleton();
   }
   function renderNoXTimeline(){
     clearWatchers();
@@ -1288,6 +1477,7 @@
   }
   function bootEmbed(){
     if(!current||!current.handle){renderNoXTimeline();return;}
+    clearWatchers();
     rendered=false;
     activeIframe=null;
     sourceBadge.textContent="X Embed 回退 · $0 API";
@@ -1627,8 +1817,10 @@
 
       if((type==="video"||type==="animated_gif"||type==="gif")&&videoRaw){
         var v=document.createElement("video");
-        v.playsInline=true;v.muted=true;v.preload="metadata";
-        if(type==="animated_gif"||type==="gif"){v.autoplay=true;v.loop=true;v.controls=false;}else{v.controls=true;}
+        v.playsInline=true;v.muted=true;
+        // 有封面图时不预加载视频数据；一次加载 10 条时不会同时拉多段视频。
+        v.preload=imageRaw?"none":"metadata";
+        if(type==="animated_gif"||type==="gif"){v.loop=true;v.controls=false;v.preload="metadata";watchGifPlayback(v);}else{v.controls=true;}
         if(imageRaw)v.poster=mediaProxyUrl(imageRaw);
         var directVideo=videoRaw,proxiedVideo=mediaProxyUrl(videoRaw),triedDirectVideo=false;
         v.onerror=function(){
@@ -1643,6 +1835,22 @@
       item.appendChild(fallback);media.appendChild(item);
     });
     if(media.childNodes.length)card.appendChild(media);
+  }
+
+  // GIF 只在进入屏幕时播放、离开时暂停，避免一批多个 GIF 同时解码造成卡顿。
+  var gifObserver=null;
+  function watchGifPlayback(v){
+    if(typeof IntersectionObserver!=="function"){v.autoplay=true;return;}
+    if(!gifObserver){
+      gifObserver=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          var el=en.target;
+          if(en.isIntersecting){var pr=el.play();if(pr&&pr.catch)pr.catch(function(){});}
+          else if(!el.paused)el.pause();
+        });
+      },{rootMargin:"120px 0px"});
+    }
+    gifObserver.observe(v);
   }
 
   function embeddedAvatarUrl(author){
@@ -1707,6 +1915,7 @@
   function renderFreeFeed(feed,options){
     options=options||{};
     clearWatchers();rendered=true;xdiag.hidden=true;activeIframe=null;
+    var feedOwnerId=current&&current.id;
     sourceBadge.textContent="公开模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
@@ -1720,7 +1929,7 @@
     }
 
     var wrap=document.createElement("div");wrap.className="api-feed free-native-feed";
-    function appendPost(post){
+    function appendPost(post,target){
       var card=document.createElement("article");card.className="post-card";
       card.setAttribute("data-post-id",String(post.id||""));
       var head=document.createElement("div");head.className="post-head";
@@ -1745,7 +1954,7 @@
       }
       appendShareControl(foot,post);
       var link=document.createElement("a");link.href=post.url||("https://x.com/"+encodeURIComponent(current.handle));link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
-      card.appendChild(foot);wrap.appendChild(card);
+      card.appendChild(foot);(target||wrap).appendChild(card);
     }
 
     var shown=0;
@@ -1758,30 +1967,67 @@
     var more=document.createElement("div");more.className="feed-more";
     var btn=document.createElement("button");btn.type="button";
 
-    function appendNextBatch(){
-      var end=Math.min(shown+batchSize,posts.length);
-      posts.slice(shown,end).forEach(appendPost);
-      shown=end;
+    // 已渲染的帖子按 id 记录：后台补充的帖子合并排序后，不会重复或跳过。
+    var renderedIds=new Set();
+    var waitingForMore=false;   // 本地已显示完、用户点了「加载更多」在等后台结果
+    var fetchFailed=false;
+    var fetchFailures=0;
+    function postKey(p,i){return String(p&&p.id||("idx-"+i));}
+    function localRemaining(){
+      var n=0;for(var i=0;i<posts.length;i++)if(!renderedIds.has(postKey(posts[i],i)))n++;
+      return n;
     }
+    function appendNextBatch(){
+      var frag=document.createDocumentFragment();var count=0;
+      for(var i=0;i<posts.length&&count<batchSize;i++){
+        var key=postKey(posts[i],i);if(renderedIds.has(key))continue;
+        renderedIds.add(key);appendPost(posts[i],frag);count++;
+      }
+      shown+=count;
+      if(count)wrap.appendChild(frag);   // 一次性插入，减少重排
+      prefetchUpcomingTranslations();
+      return count;
+    }
+    // 中文模式下，提前翻译下一批「加载更多」会显示的推文，点开时直接是中文。
+    // 原文按页面实际渲染的文字计算，与显示后的推文对得上。
+    function renderedText(post){var d=document.createElement("div");appendTextWithUrls(d,post);return String(d.textContent||"").trim();}
+    trUpcomingProvider=function(){
+      if(!current||current.id!==feedOwnerId)return [];
+      var out=[],count=0;
+      for(var i=0;i<posts.length&&count<batchSize;i++){
+        var p=posts[i];if(renderedIds.has(postKey(p,i)))continue;count++;
+        var hidePrimary=String(p.post_type||"").toLowerCase()==="retweet"&&p.embedded_post;
+        if(!hidePrimary&&String(p.text||"").trim())out.push(renderedText(p));
+        if(p.embedded_post&&String(p.embedded_post.text||"").trim())out.push(renderedText(p.embedded_post));
+      }
+      return out;
+    };
 
     function refreshMore(){
-      var localRemaining=posts.length-shown;
-      if(localRemaining<=0&&remoteExhausted){
-        more.remove();
+      var remaining=localRemaining();
+      if(remaining>0){
+        // 本地已有内容就始终可以继续看，不被后台请求锁住。
+        btn.disabled=false;
+        btn.textContent="加载更多 "+Math.min(batchSize,remaining)+" 条";
         return;
       }
       if(fetchingMore){
         btn.disabled=true;
-        btn.textContent="正在准备更多…";
+        btn.textContent="正在加载更多…";
+        return;
+      }
+      if(remoteExhausted){
+        more.remove();
         return;
       }
       btn.disabled=false;
-      btn.textContent="加载更多 "+(localRemaining>0?Math.min(batchSize,localRemaining):batchSize)+" 条";
+      btn.textContent=fetchFailed?"加载失败，点此重试":"加载更多 "+batchSize+" 条";
     }
 
     async function fetchMoreInBackground(){
+      if(!current||current.id!==feedOwnerId)return;
       if(fetchingMore||remoteExhausted||posts.length>=maxPosts)return;
-      fetchingMore=true;refreshMore();
+      fetchingMore=true;fetchFailed=false;refreshMore();
       var target=maxPosts;
       try{
         var ctl=new AbortController();
@@ -1791,7 +2037,7 @@
           var data=await res.json().catch(function(){return {};});
           if(!res.ok||!data||!Array.isArray(data.posts))throw new Error(data.error||("free_feed_http_"+res.status));
           var seen=new Set(posts.map(function(p){return String(p&&p.id||"");}));
-          var added=(data.posts||[]).filter(function(p){var id=String(p&&p.id||"");return id&&!seen.has(id);}).sort(sortPostsNewest);
+          var added=(data.posts||[]).filter(freeFeedPostBelongsToCurrent).filter(function(p){var id=String(p&&p.id||"");return id&&!seen.has(id);}).sort(sortPostsNewest);
           if(added.length){
             posts=posts.concat(added).slice(0,maxPosts).sort(sortPostsNewest);
             noGrowthFetches=0;
@@ -1803,11 +2049,20 @@
           // 20 items. Only 100 loaded posts prove completion. Two no-growth
           // attempts stop automatic retries for this page session.
           remoteExhausted=posts.length>=maxPosts||noGrowthFetches>=2;
+          fetchFailures=0;
+          prefetchUpcomingTranslations();
         }finally{clearTimeout(timer);}
       }catch(e){
-        remoteExhausted=true;
+        // 一次失败（超时、网络抖动）不再永久隐藏按钮：允许手动重试，连续两次失败才停止。
+        fetchFailures+=1;fetchFailed=true;
+        if(fetchFailures>=2)remoteExhausted=true;
       }finally{
-        fetchingMore=false;refreshMore();
+        fetchingMore=false;
+        if(!current||current.id!==feedOwnerId)return;
+        // 用户刚才点过「加载更多」在等：数据到了直接接着显示，不用再点一次。
+        if(waitingForMore&&localRemaining()>0){waitingForMore=false;appendNextBatch();}
+        else if(waitingForMore&&remoteExhausted)waitingForMore=false;
+        refreshMore();
       }
     }
 
@@ -1817,13 +2072,17 @@
     refreshMore();
 
     btn.addEventListener("click",function(){
-      if(fetchingMore)return;
-      if(shown<posts.length){
+      if(localRemaining()>0){
         appendNextBatch();
+        // 本地刚好看完：记下「还想看更多」，后台数据一到就直接接上，不用再点。
+        if(localRemaining()===0&&!remoteExhausted)waitingForMore=true;
         refreshMore();
-        if(shown>=posts.length&&!remoteExhausted)fetchMoreInBackground();
+        // 本地只剩不到一批时提前去取下一页，读到底时通常已经准备好。
+        if(localRemaining()<batchSize&&!remoteExhausted)fetchMoreInBackground();
         return;
       }
+      if(fetchingMore)return;
+      waitingForMore=true;
       fetchMoreInBackground();
     });
 
@@ -1861,7 +2120,7 @@
     }
 
     try{
-      var data=await fetchFreeFeedOnce(selected,initialLimit,4000);
+      var data=await fetchFreeFeedOnce(selected,initialLimit,12000);
       writeFreeFeedBrowserCache(selected,data);
       if(!current||current.id!==selected.id)return;
       if(!shownCache||freeFeedIds(data)!==freeFeedIds(cached&&cached.data)){
@@ -1952,9 +2211,37 @@
     if(mode==="api")next.searchParams.set("mode","api");else next.searchParams.delete("mode");
     location.href=next.toString();
   }
-  function navigateLeader(id){
-    var next=new URL(location.href);next.searchParams.set("leader",id);location.href=next.toString();
+  function bootCurrentFeed(){
+    if(MODE==="api")bootApi();
+    else if(usesNativeFreeFeed(current))bootFreeNativeFeed();
+    else bootEmbed();
   }
+  // 切换人物只在页面内更新资料与动态，并用 history 记录地址；
+  // 找不到该人物（名录尚未加载等）时才回退为整页跳转。
+  function navigateLeader(id,fromHistory){
+    var next=people.find(function(p){return p.id===id;});
+    if(!next){
+      var u=new URL(location.href);u.searchParams.set("leader",id);location.href=u.toString();
+      return;
+    }
+    if(!fromHistory){
+      var url=new URL(location.href);url.searchParams.set("leader",id);
+      try{history.pushState({leader:id},"",url.toString());}catch(e){}
+    }
+    requested=id;current=next;
+    if(!librarySheet.hidden)closeLeaderLibrary();
+    updateProfile(current);
+    document.querySelectorAll("#leaders [data-id], #leader-library [data-id]").forEach(function(el){
+      el.classList.toggle("on",el.getAttribute("data-id")===id);
+    });
+    requestAnimationFrame(function(){scrollActiveLeaderIntoView();});
+    bootCurrentFeed();
+  }
+  window.addEventListener("popstate",function(){
+    var id=new URLSearchParams(location.search).get("leader");
+    var target=people.find(function(p){return p.id===id;})||people[0];
+    if(target&&(!current||target.id!==current.id))navigateLeader(target.id,true);
+  });
 
   var suppressLeaderClick=false;
   leaders.addEventListener("click",function(e){
@@ -2398,7 +2685,7 @@
   });
   document.getElementById("share-wechat").addEventListener("click",function(){
     if(!activeSharePost)return;
-    shareStatus.textContent="正在打开微信卡片分享页…";
+    shareStatus.textContent="正在打开网页卡片分享页…";
     window.location.href=singlePostUrl(activeSharePost);
   });
 
@@ -2460,7 +2747,7 @@
   });
 
   timeline.addEventListener("click",function(e){
-    if(e.target.closest("[data-retry-x]"))location.reload();
+    if(e.target.closest("[data-retry-x]"))bootCurrentFeed();
     if(e.target.closest("[data-free-mode]"))navigateMode("free");
   });
 
@@ -2471,9 +2758,7 @@
     }
     setModeUi();
     await loadCatalog();
-    if(MODE==="api")bootApi();
-    else if(usesNativeFreeFeed(current))bootFreeNativeFeed();
-    else bootEmbed();
+    bootCurrentFeed();
   })();
 })();
 </script>

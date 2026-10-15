@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ooglex-native-preview="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全球利率 · 宏观利率监视 · Ooglex</title>
+  <meta name="description" content="宏观利率数据表汇总：完整覆盖 TradingView 六张截图对应监视项；异常红标；折叠展开。研究用，非投资建议。">
+  <link rel="canonical" href="https://www.ooglex.com/apps/research-board/rates/">
+  <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
+  <link rel="apple-touch-icon" href="../../../assets/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="全球利率 · 宏观利率监视 · Ooglex">
+  <meta property="og:description" content="宏观利率数据表汇总。2026-10-14 测试快照，非正式实时行情。研究用，非投资建议。">
+  <meta property="og:url" content="https://www.ooglex.com/apps/research-board/rates/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../../assets/theme.css?v=0d16e197">
+  <script>
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"paper");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
+  </script>
+  <script src="../../../assets/theme.js?v=20260926k" defer></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg,#0b0e13);color:var(--ink,#edf1f6);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    :root{--bg:#0b0e13;--panel:#111720;--ink:#edf1f6;--dim:#9aa4af;--line:rgba(255,255,255,.12);
+      --red:#dc2626;--green:#16a34a;--gray:#9aa4af;--gold:#d1a057;--accent:#79b8ff}
+    a{color:var(--accent)}
+    a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .shell{width:min(1180px,100%);margin:0 auto;padding:12px 24px 72px}
+    .banner{margin:0 0 12px;padding:12px 14px;border-radius:8px;border:1px solid var(--gold);
+      background:var(--panel);font-size:14px;line-height:1.5}
+    .demo-flag{display:inline-flex;margin:0 0 12px;padding:4px 10px;border:1px solid var(--gold);
+      border-radius:999px;color:var(--gold);font:12px/1.3 ui-monospace,monospace;font-weight:700}
+    h1{font-size:1.45rem;margin:8px 0 6px}
+    .meta{color:var(--dim);font-size:14px;line-height:1.55;margin:0 0 14px}
+    .legend{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:0 0 16px}
+    .legend h2{margin:0 0 8px;font-size:1rem;border:0}
+    .legend ul{margin:0;padding-left:1.2em}
+    .g{color:var(--green);font-weight:600}.r{color:var(--red);font-weight:600}.z{color:var(--gray);font-weight:600}
+    details.block{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin:0 0 10px;overflow:hidden}
+    details.block>summary{cursor:pointer;min-height:44px;padding:12px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:center}
+    details.block>summary::-webkit-details-marker{display:none}
+    details.block>summary::after{content:"展开";color:var(--dim);font-weight:500;font-size:13px}
+    details.block[open]>summary::after{content:"收起"}
+    details.block .inner{padding:0 12px 14px;overflow-x:auto}
+    table{border-collapse:collapse;width:100%;font-size:0.88rem;margin:0.4em 0}
+    th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+    th{background:rgba(255,255,255,.04)}
+    .stats{font-weight:700;margin:10px 0}
+    .shots{font-size:13px;color:var(--dim);margin:0 0 14px}
+    .shots code{color:var(--ink)}
+    footer{color:var(--dim);margin-top:24px;font-size:13px}
+    .nav{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font-size:14px}
+    .nav a{display:inline-flex;align-items:center;min-height:44px}
+    .nav{justify-content:space-between}
+    .home-back{padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);
+      color:var(--dim);text-decoration:none;font-size:13px}
+    .home-back:hover{color:var(--ink)}
+    @media (max-width:760px){.shell{padding:10px 15px 56px}}
+    @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+  </style>
+  <link rel="stylesheet" href="/assets/desk-nav.css?v=1">
+</head>
+<body>
+<div class="shell">
+  <div class="nav">
+    <a class="home-back" href="/" aria-label="返回 Ooglex 首页">← Ooglex</a>
+    <span data-theme-slot></span>
+  </div>
+  <nav class="desk-nav" aria-label="新闻栏目">
+    <a href="/apps/whats-latest/">简报</a>
+    <a href="/apps/news-brief/">全球要闻</a>
+    <a href="/apps/news-radar/">投资雷达</a>
+    <a href="/apps/research-board/">每日投研</a>
+    <a href="/apps/research-board/rates/" aria-current="page">全球利率</a>
+  </nav>
+  <div class="demo-flag">RATES · 全表 · 研究用／非投资建议</div>
+  <div class="banner">首版即时汇总：数值来自 2026-10-14 测试快照（对照六张 TradingView 截图基线），色标沿用 thresholds.json。非正式实时行情；不做交易建议。</div>
+  <h1>全球利率 · 宏观利率监视数据表</h1>
+  <p class="meta">生成：2026-10-15 18:05 CST<br/>基准截图目录：<code>macro-rates/screenshots/shot-00…05</code>（共 6 张）<br/>权威清单：watchlist-full.json（106 项）· 规则：thresholds.json</p>
+  <p class="shots"><strong>六张截图文件：</strong><br/>
+  <code>shot-00-earlier-symbols.png</code> — 较早符号页（对照）<br/>
+  <code>shot-01-corridor-liquidity.png</code> — 走廊 + 流动性<br/>
+  <code>shot-02-realrates-credit.png</code> — 实际利率 / 信用等<br/>
+  <code>shot-03-credit-vol.png</code> — 信用 / 波动<br/>
+  <code>shot-04-term-sofr-breadth.png</code> — 期限 / SOFR / 宽度<br/>
+  <code>shot-05-breadth-china.png</code> — 宽度 / 中国等<br/>
+  </p>
+  <div class="legend">
+    <h2>色标</h2>
+    <ul>
+      <li><span class="g">绿色 · 正常</span>：处于常见合理区间，或相对截图基准变动不显著</li>
+      <li><span class="r">红色 · 异常/需关注</span>：水平偏离常态、变动过大，或结构性紧张</li>
+      <li><span class="z">灰色 · 未取到/待核验</span>：没有最新读数，不标绿红</li>
+    </ul>
+  </div>
+<details class="block" open><summary>今日标红关注（12 项）</summary><div class="inner">
+<ul><li><strong>隔夜逆回购余额（国债，RRPONTSYD）</strong>: 最新 275 M，变动 ≈0 — ON RRP余额极低（275M，远低于既往数千亿–数万亿常态）</li><li><strong>5年TIPS实际利率 (DFII5)</strong>: 最新 2.68，变动 ≈0 — 实际利率过高=紧</li><li><strong>10年TIPS实际利率 (DFII10)</strong>: 最新 2.91，变动 ≈0 — 水平高于关注阈值2.5</li><li><strong>30年TIPS实际利率 (DFII30)</strong>: 最新 3.32，变动 ≈0 — 水平高于关注阈值2.8</li><li><strong>名义10年期国债−10年盈亏平衡通胀</strong>: 最新 2.910，变动 +0.034 (+1.18%) — 水平高于关注阈值2.5</li><li><strong>全球供应链压力指数 (GSCPI)</strong>: 最新 1.28，变动 ≈0 — 显著为正=供应链压力</li><li><strong>美高收益CCC及以下期权调整利差 (OAS)</strong>: 最新 12.53，变动 ≈0 — CCC偏宽尾部</li><li><strong>美国30年期按揭利率</strong>: 最新 7.4，变动 ≈0 — ＞7%偏高压制购房</li><li><strong>10年期国债常久期收益率 (DGS10)</strong>: 最新 5.24，变动 ≈0 — ＞5%相对长期偏高</li><li><strong>CBOE偏度指数 (SKEW)</strong>: 最新 154.74，变动 ≈0 — 偏高=尾部对冲需求</li><li><strong>铜/金比（期货连续）</strong>: 最新 0.0016，变动 +0.0001171 (+7.81%) — 相对截图基准变动过大（+7.81%）</li><li><strong>铜/金比（现货金类）</strong>: 最新 0.0016，变动 +0.0001171 (+7.81%) — 相对截图基准变动过大（+7.81%）</li></ul>
+<p class="stats">本页统计：绿 75 · 红 12 · 灰（未取到）18</p>
+</div></details>
+<details class="block"><summary>一、美联储利率走廊（基石）（10 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="与目标上沿一致（走廊上沿工具）"><td>贴现窗口一级信贷利率 (DPCREDIT)</td><td>4</td><td><span class="g">4</span></td><td><span class="g">≈0</span></td><td>美联储FRED · DPCREDIT</td></tr>
+<tr title="与目标上沿一致（走廊上沿工具）"><td>常备回购便利最低投标利率 (SRF)</td><td>4</td><td><span class="g">4</span></td><td><span class="g">≈0</span></td><td>美联储FRED · SRFTSYD</td></tr>
+<tr title="目标上沿"><td>联邦基金目标区间上沿 (DFEDTARU)</td><td>4</td><td><span class="g">4</span></td><td><span class="g">≈0</span></td><td>美联储FRED · DFEDTARU</td></tr>
+<tr title="政策利率代理落在目标区间"><td>美国政策利率 (USINTR)</td><td>4</td><td><span class="g">4</span></td><td><span class="g">≈0</span></td><td>美联储FRED · DFEDTARU（政策上沿代理）</td></tr>
+<tr title="落在目标区间[3.75,4.0]内"><td>联邦基金有效利率 (EFFR/DFF)</td><td>3.88</td><td><span class="g">3.88</span></td><td><span class="g">≈0</span></td><td>美联储FRED · DFF</td></tr>
+<tr title="目标下沿"><td>联邦基金目标区间下沿 (DFEDTARL)</td><td>3.75</td><td><span class="g">3.75</span></td><td><span class="g">≈0</span></td><td>美联储FRED · DFEDTARL</td></tr>
+<tr title="贴近利率走廊"><td>有担保隔夜融资利率 (SOFR)</td><td>3.87</td><td><span class="g">3.87</span></td><td><span class="g">≈0</span></td><td>美联储FRED · SOFR</td></tr>
+<tr title="IORB 位于目标区间附近"><td>准备金余额利率 (IORB)</td><td>3.9</td><td><span class="g">3.9</span></td><td><span class="g">≈0</span></td><td>美联储FRED · IORB</td></tr>
+<tr title="ON RRP 中标利率贴齐目标下沿"><td>隔夜逆回购中标利率 (ON RRP)</td><td>3.75</td><td><span class="g">3.75</span></td><td><span class="g">≈0</span></td><td>美联储FRED · RRPONTSYAWARD</td></tr>
+<tr title="贴近利率走廊"><td>三方通用抵押品利率 (TGCR)</td><td>3.85</td><td><span class="g">3.85</span></td><td><span class="g">≈0</span></td><td>美联储FRED · TGCRRATE</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>二、美联储流动性（核心驱动层）（11 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="水平处于常见合理区间"><td>净值流动性 WALCL−(TGA+ON RRP)</td><td>5.87 T</td><td><span class="g">5.87 T</span></td><td><span class="g">-0.002968 (-0.05%)</span></td><td>美联储FRED · WALCL−(TGA+ON RRP)</td></tr>
+<tr title="水平处于常见合理区间"><td>准备金余额（周均，WRESBAL）</td><td>3.03 T</td><td><span class="g">3.03 T</span></td><td><span class="g">-0.000341 (-0.01%)</span></td><td>美联储FRED · WRESBAL</td></tr>
+<tr title="水平处于常见合理区间"><td>财政部一般账户余额 / TGA (WDTGAL)</td><td>885.78 B</td><td><span class="g">885.78 B</span></td><td><span class="g">+0.003 (+0.00%)</span></td><td>美联储FRED · WDTGAL</td></tr>
+<tr title="ON RRP余额极低（275M，远低于既往数千亿–数万亿常态）"><td>隔夜逆回购余额（国债，RRPONTSYD）</td><td>275 M</td><td><span class="r">275 M</span></td><td><span class="r">≈0</span></td><td>美联储FRED · RRPONTSYD</td></tr>
+<tr title="平静期接近零属常态"><td>美联储资产端回购余额 (WORAL)</td><td>2 M</td><td><span class="g">2 M</span></td><td><span class="g">≈0</span></td><td>美联储FRED · WORAL</td></tr>
+<tr title="取用量接近零（无压力取用）"><td>隔夜正回购总购买量 (RPONTTLD)</td><td>0</td><td><span class="g">0</span></td><td><span class="g">0</span></td><td>美联储FRED · RPONTTLD</td></tr>
+<tr title="利差处于常态带"><td>SOFR−联邦基金有效利率利差</td><td>-0.01</td><td><span class="g">-0.01</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="利差处于常态带"><td>SOFR−准备金余额利率利差</td><td>-0.03</td><td><span class="g">-0.03</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="利差处于常态带"><td>联邦基金有效利率−IORB 利差</td><td>-0.02</td><td><span class="g">-0.02</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="利差处于常态带"><td>IORB−联邦基金有效利率利差</td><td>0.02</td><td><span class="g">0.02</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="未取到/待核验"><td>SOFR期货自定义曲线斜率（近端−远端）</td><td>-33.41</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>CME</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>三、实际利率与通胀预期（9 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="水平处于常见合理区间"><td>5年盈亏平衡通胀率 (T5YIE)</td><td>2.33</td><td><span class="g">2.33</span></td><td><span class="g">≈0</span></td><td>美联储FRED · T5YIE</td></tr>
+<tr title="水平处于常见合理区间"><td>10年盈亏平衡通胀率 (T10YIE)</td><td>2.33</td><td><span class="g">2.33</span></td><td><span class="g">≈0</span></td><td>美联储FRED · T10YIE</td></tr>
+<tr title="水平处于常见合理区间"><td>5年期5年远期通胀预期 (T5YIFR)</td><td>2.33</td><td><span class="g">2.33</span></td><td><span class="g">≈0</span></td><td>美联储FRED · T5YIFR</td></tr>
+<tr title="实际利率过高=紧"><td>5年TIPS实际利率 (DFII5)</td><td>2.68</td><td><span class="r">2.68</span></td><td><span class="r">≈0</span></td><td>美联储FRED · DFII5</td></tr>
+<tr title="水平高于关注阈值2.5"><td>10年TIPS实际利率 (DFII10)</td><td>2.91</td><td><span class="r">2.91</span></td><td><span class="r">≈0</span></td><td>美联储FRED · DFII10</td></tr>
+<tr title="水平高于关注阈值2.8"><td>30年TIPS实际利率 (DFII30)</td><td>3.32</td><td><span class="r">3.32</span></td><td><span class="r">≈0</span></td><td>美联储FRED · DFII30</td></tr>
+<tr title="水平高于关注阈值2.5"><td>名义10年期国债−10年盈亏平衡通胀</td><td>2.876</td><td><span class="r">2.910</span></td><td><span class="r">+0.034 (+1.18%)</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="水平处于常见合理区间"><td>货币市场基金总金融资产</td><td>8.44 T</td><td><span class="g">8.44 T</span></td><td><span class="g">+0.001374 (+0.02%)</span></td><td>美联储FRED · MMMFFAQ027S</td></tr>
+<tr title="显著为正=供应链压力"><td>全球供应链压力指数 (GSCPI)</td><td>1.28</td><td><span class="r">1.28</span></td><td><span class="r">≈0</span></td><td>纽约联储 · GSCPI</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>四、金融压力/状况（4 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="负值偏宽松/低压力"><td>芝加哥联储全国金融状况指数 (NFCI)</td><td>-0.49</td><td><span class="g">-0.49</span></td><td><span class="g">-0.004 (-0.82%)</span></td><td>美联储FRED · NFCI</td></tr>
+<tr title="负值偏宽松/低压力"><td>圣路易斯联储金融压力指数 (STLFSI4)</td><td>-0.47</td><td><span class="g">-0.47</span></td><td><span class="g">+0.0019 (+0.40%)</span></td><td>美联储FRED · STLFSI4</td></tr>
+<tr title="水平处于常见合理区间"><td>TED利差</td><td>0.09</td><td><span class="g">0.09</span></td><td><span class="g">≈0</span></td><td>美联储FRED · TEDRATE</td></tr>
+<tr title="水平处于常见合理区间"><td>波罗的海干散货指数 (BDI)</td><td>2,801</td><td><span class="g">2,852</span></td><td><span class="g">+51 (+1.82%)</span></td><td>Investing · 波罗的海干散货</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>五、信用利差（风险偏好核心）（19 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="水平处于常见合理区间"><td>穆迪Baa公司债相对国债利差 (BAA10Y)</td><td>1.45</td><td><span class="g">1.45</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAA10Y</td></tr>
+<tr title="CCC偏宽尾部"><td>美高收益CCC及以下期权调整利差 (OAS)</td><td>12.53</td><td><span class="r">12.53</span></td><td><span class="r">≈0</span></td><td>美联储FRED · BAMLH0A3HYC</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>美高收益债期权调整利差 (HY OAS)</td><td>3.11</td><td><span class="g">3.11</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLH0A0HYM2</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>美投资级公司债期权调整利差 (IG OAS)</td><td>0.83</td><td><span class="g">0.83</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLC0A0CM</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>美高收益BB期权调整利差</td><td>1.88</td><td><span class="g">1.88</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLH0A1HYBB</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>美高收益单B期权调整利差</td><td>3.1</td><td><span class="g">3.1</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLH0A2HYB</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>新兴市场公司债期权调整利差</td><td>1.55</td><td><span class="g">1.55</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLEMCBPIOAS</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>新兴市场高收益公司债期权调整利差</td><td>3.3</td><td><span class="g">3.3</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLEMHBHYCRPIOAS</td></tr>
+<tr title="信用利差未处偏宽尾部"><td>美AA公司债期权调整利差</td><td>0.58</td><td><span class="g">0.58</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLC0A2CAA</td></tr>
+<tr title="水平处于常见合理区间"><td>BBB−AA 公司债利差（OAS差）</td><td>0.44</td><td><span class="g">0.44</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="水平处于常见合理区间"><td>AA有效收益率−10年期国债</td><td>0.53</td><td><span class="g">0.53</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="水平处于常见合理区间"><td>美投资级公司债有效收益率</td><td>5.96</td><td><span class="g">5.96</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLC0A0CMEY</td></tr>
+<tr title="＞7%偏高压制购房"><td>美国30年期按揭利率</td><td>7.4</td><td><span class="r">7.4</span></td><td><span class="r">≈0</span></td><td>美联储FRED · MORTGAGE30US</td></tr>
+<tr title="水平处于常见合理区间"><td>美AA公司债有效收益率</td><td>5.77</td><td><span class="g">5.77</span></td><td><span class="g">≈0</span></td><td>美联储FRED · BAMLC0A2CAAEY</td></tr>
+<tr title="观察项/量纲慎读"><td>高收益OAS−3年期国债（量纲慎读）</td><td>-1.78</td><td><span class="g">-1.78</span></td><td><span class="g">≈0</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="＞5%相对长期偏高"><td>10年期国债常久期收益率 (DGS10)</td><td>5.24</td><td><span class="r">5.24</span></td><td><span class="r">≈0</span></td><td>美联储FRED · DGS10</td></tr>
+<tr title="水平处于常见合理区间"><td>高收益债ETF/中期国债ETF (HYG/IEF)</td><td>0.861</td><td><span class="g">0.861</span></td><td><span class="g">-0.00004 (-0.01%)</span></td><td>Yahoo · HYG/IEF</td></tr>
+<tr title="价格相对基准变动不显著"><td>高收益公司债ETF (HYG)</td><td>77.09</td><td><span class="g">77.09</span></td><td><span class="g">≈0</span></td><td>Yahoo · HYG</td></tr>
+<tr title="价格相对基准变动不显著"><td>投资级公司债ETF (LQD)</td><td>102.55</td><td><span class="g">102.55</span></td><td><span class="g">≈0</span></td><td>Yahoo · LQD</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>六、波动率全景（14 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="波动率处于常见平静/中性区间"><td>恐慌指数 (VIX)</td><td>15.28</td><td><span class="g">15.27</span></td><td><span class="g">-0.01 (-0.07%)</span></td><td>Yahoo · VIX</td></tr>
+<tr title="水平处于常见合理区间"><td>VIX波动率指数 (VVIX)</td><td>85.38</td><td><span class="g">85.38</span></td><td><span class="g">≈0</span></td><td>Yahoo · VVIX</td></tr>
+<tr title="偏高=尾部对冲需求"><td>CBOE偏度指数 (SKEW)</td><td>154.74</td><td><span class="r">154.74</span></td><td><span class="r">≈0</span></td><td>Yahoo · SKEW</td></tr>
+<tr title="水平处于常见合理区间"><td>美国债券波动率指数 (MOVE)</td><td>101.10</td><td><span class="g">101.09</span></td><td><span class="g">-0.0098 (-0.01%)</span></td><td>Yahoo · MOVE</td></tr>
+<tr title="价格相对基准变动不显著"><td>超长期国债ETF (TLT)</td><td>78.37</td><td><span class="g">78.37</span></td><td><span class="g">≈0</span></td><td>Yahoo · TLT</td></tr>
+<tr title="未取到/待核验"><td>VIX期货近月合约 (VX1)</td><td>17.52</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>CBOE</td></tr>
+<tr title="未取到/待核验"><td>VIX期货次近月合约 (VX2)</td><td>18.05</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>CBOE</td></tr>
+<tr title="未取到/待核验"><td>VIX近月/次近月期货比 (VX1/VX2)</td><td>0.97</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>CBOE</td></tr>
+<tr title="波动率处于常见平静/中性区间"><td>标普500九日波动率指数 (VIX9D)</td><td>11.99</td><td><span class="g">11.99</span></td><td><span class="g">≈0</span></td><td>Yahoo · VIX9D</td></tr>
+<tr title="波动率处于常见平静/中性区间"><td>标普500三月波动率指数 (VIX3M)</td><td>17.96</td><td><span class="g">17.96</span></td><td><span class="g">≈0</span></td><td>Yahoo · VIX3M</td></tr>
+<tr title="波动率处于常见平静/中性区间"><td>标普500六月波动率指数 (VIX6M)</td><td>19.92</td><td><span class="g">19.92</span></td><td><span class="g">≈0</span></td><td>Yahoo · VIX6M</td></tr>
+<tr title="波动率处于常见平静/中性区间"><td>标普500一年波动率指数 (VIX1Y)</td><td>21.66</td><td><span class="g">21.66</span></td><td><span class="g">≈0</span></td><td>Yahoo · VIX1Y</td></tr>
+<tr title="期限结构未倒挂"><td>VIX/三月VIX（期限结构）</td><td>0.85</td><td><span class="g">0.85</span></td><td><span class="g">+0.0002227 (+0.03%)</span></td><td>Yahoo · VIX/VIX3M</td></tr>
+<tr title="水平处于常见合理区间"><td>九日VIX/VIX（超短期相对）</td><td>0.79</td><td><span class="g">0.79</span></td><td><span class="g">-0.0048 (-0.61%)</span></td><td>Yahoo · VIX9D/VIX</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>七、期限结构与利差（6 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="期限利差处于常见区间"><td>美债10年−2年期限利差</td><td>0.424</td><td><span class="g">0.420</span></td><td><span class="g">-0.004 (-0.94%)</span></td><td>美联储FRED · T10Y2Y</td></tr>
+<tr title="水平处于常见合理区间"><td>10年零息国债期限溢价</td><td>1.07</td><td><span class="g">1.07</span></td><td><span class="g">+0.0029 (+0.27%)</span></td><td>美联储FRED · THREEFYTP10</td></tr>
+<tr title="水平处于常见合理区间"><td>2年零息国债期限溢价</td><td>0.52</td><td><span class="g">0.52</span></td><td><span class="g">+0.0024 (+0.46%)</span></td><td>美联储FRED · THREEFYTP2</td></tr>
+<tr title="水平处于常见合理区间"><td>10年−2年期限溢价差</td><td>0.55</td><td><span class="g">0.55</span></td><td><span class="g">+0.0005 (+0.09%)</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="水平处于常见合理区间"><td>名义10年国债−10年期限溢价</td><td>4.136</td><td><span class="g">4.167</span></td><td><span class="g">+0.0311 (+0.75%)</span></td><td>美联储FRED · 合成</td></tr>
+<tr title="水平处于常见合理区间"><td>曲线斜率（剔除期限溢价）</td><td>-0.127</td><td><span class="g">-0.131</span></td><td><span class="g">-0.0035 (-2.76%)</span></td><td>美联储FRED · 合成</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>八、跨国利差（5 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="水平处于常见合理区间"><td>美−德10年期国债利差</td><td>1.746</td><td><span class="g">1.756</span></td><td><span class="g">+0.0102 (+0.58%)</span></td><td>Yahoo^TNX − Investing 德债10年</td></tr>
+<tr title="水平处于常见合理区间"><td>美−日10年期国债利差</td><td>2.201</td><td><span class="g">2.216</span></td><td><span class="g">+0.015 (+0.68%)</span></td><td>Yahoo^TNX − Investing 日债10年</td></tr>
+<tr title="水平处于常见合理区间"><td>美−英10年期国债利差</td><td>-0.245</td><td><span class="g">-0.236</span></td><td><span class="g">+0.0094 (+3.84%)</span></td><td>Yahoo^TNX − Investing 英债10年</td></tr>
+<tr title="水平处于常见合理区间"><td>美−德2年期国债利差</td><td>1.676</td><td><span class="g">1.665</span></td><td><span class="g">-0.011 (-0.66%)</span></td><td>Investing · 美2年−德2年</td></tr>
+<tr title="观察项/量纲慎读"><td>欧元兑美元+美元指数（自定义）</td><td>103.21</td><td><span class="g">103.22710</span></td><td><span class="g">+0.02005 (+0.02%)</span></td><td>Yahoo · EURUSD+DXY</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>九、SOFR 期货（短端利率）（4 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="未取到/待核验"><td>三月期SOFR期货（2026年6月）</td><td>96.35</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>CME</td></tr>
+<tr title="水平处于常见合理区间"><td>三月期SOFR期货（2026年9月）</td><td>96.05</td><td><span class="g">96.0525</span></td><td><span class="g">≈0</span></td><td>Yahoo · SOFR期货 Sep-2026</td></tr>
+<tr title="水平处于常见合理区间"><td>三月期SOFR期货（2026年12月）</td><td>95.75</td><td><span class="g">95.7450</span></td><td><span class="g">≈0</span></td><td>Yahoo · SOFR期货 Dec-2026</td></tr>
+<tr title="水平处于常见合理区间"><td>SOFR期货2026年12月−2027年12月价差</td><td>0.49</td><td><span class="g">0.490</span></td><td><span class="g">≈0</span></td><td>Yahoo · SOFR期货 Dec-2026−Dec-2027</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>十一、市场宽度（7 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="未取到/待核验"><td>标普500站上200日均线比例</td><td>49.7</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>标普500站上50日均线比例</td><td>38.17</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>全市场站上200日均线比例</td><td>42.98</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>全市场站上50日均线比例</td><td>29.17</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纳斯达克100站上200日均线比例</td><td>64.35</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纽交所52周新高家数</td><td>50</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纽交所52周新低家数</td><td>88</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>十二、市场内部结构（情绪/资金流）（5 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="未取到/待核验"><td>美股涨跌家数差</td><td>-526</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纽交所上涨成交量</td><td>572,903,905</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纽交所下跌成交量</td><td>594,785,018</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纽交所累计Tick</td><td>-179</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="未取到/待核验"><td>纽交所Arms指数 (TRIN)</td><td>1.34</td><td><span class="z">未取到</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>十三、商品比率（经济周期/避险）（7 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="相对截图基准变动过大（+7.81%）"><td>铜/金比（期货连续）</td><td>0.0015</td><td><span class="r">0.0016</span></td><td><span class="r">+0.0001171 (+7.81%)</span></td><td>Yahoo · 铜/金期货</td></tr>
+<tr title="水平处于常见合理区间"><td>金/银比（期货连续）</td><td>70.5</td><td><span class="g">70.409</span></td><td><span class="g">-0.09132 (-0.13%)</span></td><td>Yahoo · 金/银期货</td></tr>
+<tr title="水平处于常见合理区间"><td>原油/铜比（期货连续）</td><td>14.01</td><td><span class="g">13.99</span></td><td><span class="g">-0.01739 (-0.12%)</span></td><td>Yahoo · 原油/铜期货</td></tr>
+<tr title="水平处于常见合理区间"><td>铜×100/金比</td><td>0.1615</td><td><span class="g">0.1617</span></td><td><span class="g">+0.0002103 (+0.13%)</span></td><td>Yahoo · 铜×100/金</td></tr>
+<tr title="相对截图基准变动过大（+7.81%）"><td>铜/金比（现货金类）</td><td>0.0015</td><td><span class="r">0.0016</span></td><td><span class="r">+0.0001171 (+7.81%)</span></td><td>Yahoo · 铜/金期货</td></tr>
+<tr title="水平处于常见合理区间"><td>WTI原油/金比</td><td>0.02</td><td><span class="g">0.0226</span></td><td><span class="g">+0.002627 (+13.14%)</span></td><td>Yahoo · 原油/金期货</td></tr>
+<tr title="水平处于常见合理区间"><td>金/银比</td><td>70.32</td><td><span class="g">70.409</span></td><td><span class="g">+0.08468 (+0.12%)</span></td><td>Yahoo · 金/银期货</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>十四、中国相关（4 项）</summary><div class="inner">
+<table><thead><tr><th>指标</th><th>基准(截图)</th><th>最新</th><th>变动</th><th>数据源</th></tr></thead><tbody>
+<tr title="水平处于常见合理区间"><td>中国人民银行资产负债表总资产</td><td>49.86 T</td><td><span class="g">49.86 T</span></td><td><span class="g">-0.003 (-0.01%)</span></td><td>fxmacrodata · 央行资产</td></tr>
+<tr title="离在岸点差处于窄幅常态"><td>离岸−在岸人民币点差 (USDCNH−USDCNY)</td><td>0.0009⁴</td><td><span class="g">0.00090</span></td><td><span class="g">-0.00004 (-4.26%)</span></td><td>Yahoo · 离岸−在岸人民币</td></tr>
+<tr title="未取到/待核验"><td>中国政策/基准利率</td><td>3</td><td><span class="z">未取到/待核验</span></td><td><span class="z">—</span></td><td>TradingView</td></tr>
+<tr title="水平处于常见合理区间"><td>中国10年期国债收益率</td><td>1.65</td><td><span class="g">1.650</span></td><td><span class="g">≈0</span></td><td>Investing · 中国10年国债</td></tr>
+</tbody></table></div></details>
+<details class="block"><summary>十、（截图中缺号）（0 项）</summary><div class="inner">
+<p><em>截图中缺号分类，无条目。</em></p>
+</div></details>
+<details class="block"><summary>抓取统计（0 项）</summary><div class="inner">
+<ul>
+  <li>成功：87</li>
+  <li>失败/未取到：18</li>
+  <li>合计（去重后）：105</li>
+  <li>色标：绿 75 / 红 12 / 灰 18</li>
+</ul>
+<footer>测试汇总 · 色标为监测启发式 · 仅供版面验收 · 非投资建议</footer>
+</div></details>
+
+  <footer>
+    关联：<a href="/apps/research-board/">每日投研</a> · <a href="20261015-rates-table.md">数据说明副本</a><br/>
+    研究用／非投资建议 · 不构成买卖或仓位建议 · Ooglex
+  </footer>
+</div>
+</body>
+</html>

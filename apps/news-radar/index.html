@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ooglex-native-preview="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投资雷达 · 全球投资情报雷达 · Ooglex</title>
+  <meta name="description" content="Ooglex 雷达专区：全球投资情报雷达人工编辑。有正式入选才列出；没有则显示 0。与自动抓取的「最新消息」分立，非交易或投资建议。">
+  <link rel="canonical" href="https://www.ooglex.com/apps/news-radar/">
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="apple-touch-icon" href="../../assets/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="投资雷达 · 全球投资情报雷达 · Ooglex">
+  <meta property="og:description" content="人工编辑｜全球投资情报雷达。正式入选按实际条数展示，空报显示 0。非投资建议。">
+  <meta property="og:url" content="https://www.ooglex.com/apps/news-radar/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/theme.css?v=0d16e197">
+  <script>
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"paper");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
+  </script>
+  <script src="../../assets/theme.js?v=20260926k" defer></script>
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    :root{
+      --bg:#0b0e13;--paper:#0b0e13;--panel:#111720;--ink:#edf1f6;--text:#edf1f6;
+      --dim:#9aa4af;--muted:#9aa4af;--line:rgba(255,255,255,.12);
+      --down:#bf2036;--green:#1e8a63;--gold:#d1a057;--accent:#79b8ff;--on-accent:#fff;
+    }
+    a{color:inherit}
+    button,a,summary{font:inherit}
+    button{cursor:pointer}
+    a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .top-rule{height:2px;background:linear-gradient(90deg,var(--down),var(--gold))}
+    .shell{width:min(1180px,100%);margin:0 auto;padding:12px 24px 72px}
+    .home-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
+    .home-back{
+      display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;
+      border:1px solid var(--line);border-radius:8px;background:var(--panel);
+      color:var(--dim);text-decoration:none;font-size:13px;
+    }
+    .home-back:hover{color:var(--ink)}
+    .dateline{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;
+      color:var(--dim);font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+      letter-spacing:.02em;padding:0 0 12px;border-bottom:1px solid var(--line);
+      overflow-wrap:anywhere
+    }
+    .mast{padding:18px 0 8px}
+    .kicker{
+      margin:0 0 8px;color:var(--gold);
+      font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em
+    }
+    .brand-title{
+      margin:0;font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
+      font-size:clamp(32px,5vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.03em
+    }
+    .brand-sub{margin:8px 0 0;color:var(--dim);font-size:14px;letter-spacing:.04em}
+    .brand-en{margin:4px 0 0;color:var(--dim);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+    .edition{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .chip{
+      display:inline-flex;align-items:center;min-height:32px;padding:4px 10px;
+      border:1px solid var(--line);border-radius:999px;background:var(--panel);
+      color:var(--dim);font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace
+    }
+    .chip strong{color:var(--ink);font-weight:700}
+    .lead{
+      margin:8px 0 0;padding:14px 16px;border-left:3px solid var(--down);
+      background:var(--panel);border-radius:0 10px 10px 0;
+      font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
+      font-size:17px;line-height:1.75;overflow-wrap:anywhere
+    }
+    .note{margin:12px 0 0;color:var(--dim);font-size:13px;line-height:1.65;overflow-wrap:anywhere}
+    .banner{
+      margin:14px 0 0;padding:12px 14px;border-radius:8px;border:1px solid var(--line);
+      background:var(--panel);font-size:14px;line-height:1.6;overflow-wrap:anywhere
+    }
+    .banner.loading{color:var(--dim)}
+    .banner.error,.banner.stale{border-color:var(--down);color:var(--ink)}
+    .banner.partial{border-color:var(--gold)}
+    .banner.empty{border-color:var(--gold);color:var(--ink)}
+    .banner.demo{border-color:var(--gold);font-weight:700}
+    .banner[hidden]{display:none}
+    .count-hero{
+      margin-top:22px;padding:22px 18px;border:1px solid var(--line);border-radius:12px;
+      background:var(--panel);text-align:center
+    }
+    .count-kicker{
+      margin:0;color:var(--dim);
+      font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em
+    }
+    .count-num{
+      margin:6px 0 0;
+      font-family:Georgia,"Times New Roman","Noto Serif SC",serif;
+      font-size:clamp(72px,18vw,112px);line-height:.9;font-weight:700;letter-spacing:-.04em;
+      font-variant-numeric:tabular-nums
+    }
+    .count-caption{margin:8px 0 0;font-size:16px;font-weight:700}
+    .empty-panel{
+      margin-top:14px;padding:16px;border:1px dashed var(--line);border-radius:10px
+    }
+    .empty-panel[hidden]{display:none}
+    .empty-title{margin:0;font-size:18px;font-weight:700}
+    .empty-reason{margin:8px 0 0;color:var(--dim);line-height:1.65}
+    .items{margin:8px 0 0;padding:0;list-style:none}
+    .items[hidden]{display:none}
+    .item{padding:16px 0;border-bottom:1px solid var(--line)}
+    .item-kicker{margin:0;color:var(--dim);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .item-title{
+      margin:6px 0 0;
+      font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif;
+      font-size:clamp(20px,3vw,26px);line-height:1.35;font-weight:700;overflow-wrap:anywhere
+    }
+    .item-summary{margin:8px 0 0;font-size:15.5px;line-height:1.7;overflow-wrap:anywhere}
+    .badge{padding:2px 7px;border:1px solid var(--line);border-radius:999px}
+    .badge.formal{color:var(--ink);border-color:var(--gold)}
+    .sources{margin-top:10px}
+    .source-label{margin:0 0 6px;color:var(--dim);font-size:12px}
+    .sources ul{margin:0;padding-left:1.15em}
+    .sources li{margin:0 0 6px;line-height:1.55;overflow-wrap:anywhere}
+    .sources a{color:var(--accent)}
+    .archive{
+      margin-top:22px;border:1px solid var(--line);border-radius:10px;background:var(--panel)
+    }
+    .archive[hidden]{display:none}
+    .archive summary{
+      min-height:44px;padding:12px 14px;cursor:pointer;font-weight:700;line-height:1.45
+    }
+    .archive-body{padding:0 14px 14px}
+    .archive-note{margin:0 0 10px;color:var(--dim);font-size:13px;line-height:1.6}
+    .archive-list{list-style:none;margin:0;padding:0}
+    .archive-list li{
+      display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:space-between;align-items:baseline;
+      padding:10px 0;border-top:1px solid var(--line)
+    }
+    .archive-title{font-weight:700;overflow-wrap:anywhere}
+    .archive-meta{color:var(--gold);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .source-foot{
+      margin-top:28px;padding-top:16px;border-top:1px solid var(--line);
+      color:var(--dim);font-size:12.5px;line-height:1.7
+    }
+    .source-foot p{margin:0 0 8px;overflow-wrap:anywhere}
+    @media (max-width:760px){
+      .shell{padding:10px 15px 56px}
+      .lead{font-size:16px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{transition:none !important;animation:none !important}
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/desk-nav.css?v=1">
+</head>
+<body>
+  <div class="top-rule"></div>
+  <main class="shell">
+    <div class="home-row">
+      <a class="home-back" href="/" aria-label="返回 Ooglex 首页">← Ooglex</a>
+    </div>
+    <nav class="desk-nav" aria-label="新闻栏目">
+      <a href="/apps/whats-latest/">简报</a>
+      <a href="/apps/news-brief/">全球要闻</a>
+      <a href="/apps/news-radar/" aria-current="page">投资雷达</a>
+      <a href="/apps/research-board/">每日投研</a>
+      <a href="/apps/research-board/rates/">全球利率</a>
+    </nav>
+    <div class="dateline" id="dateline">正在读取雷达时间与来源…</div>
+    <header class="mast">
+      <p class="kicker">人工编辑 · 非实时 · 非投资建议</p>
+      <h1 class="brand-title">投资雷达</h1>
+      <p class="brand-sub">人工编辑｜全球投资情报雷达</p>
+      <p class="brand-en">Investment Radar Desk · Global Investment Radar</p>
+      <div class="edition" id="edition"></div>
+    </header>
+    <section class="count-hero" aria-labelledby="count-caption">
+      <p class="count-kicker">正式入选</p>
+      <p class="count-num" id="count-num">—</p>
+      <p class="count-caption" id="count-caption">条数加载中</p>
+    </section>
+    <p class="banner loading" id="banner" role="status">正在加载雷达专区…</p>
+    <p class="lead" id="lead">本轮雷达导语加载中。</p>
+    <p class="note" id="note"></p>
+    <div class="empty-panel" id="empty-panel" hidden></div>
+    <div class="items" id="items" aria-label="正式入选列表"></div>
+    <details class="archive" id="archive" hidden>
+      <summary id="archive-summary">二级存档索引（非正式入选）</summary>
+      <div class="archive-body">
+        <p class="archive-note" id="archive-note"></p>
+        <ul class="archive-list" id="archive-list"></ul>
+      </div>
+    </details>
+    <footer class="source-foot">
+      <p>本栏目为人工编辑，来源「环球新闻情报中心／全球投资情报雷达」。内部研究用、非正式自动外发。与「最新消息」（自动抓取，/apps/whats-latest/）相互独立，互不覆盖。</p>
+      <p>内容仅供研究与信息阅读，不构成交易建议或投资建议。正式入选只列出本轮三级或四级条目；没有入选就显示 0，不补写条目。</p>
+      <p id="foot-meta"></p>
+    </footer>
+  </main>
+  <noscript><p style="padding:16px">需要启用 JavaScript 才能读取本期雷达。数据文件为同目录 data.json：正式入选看 items，二级存档只在 archive，不计入正式条数。</p></noscript>
+  <script src="app.js"></script>
+</body>
+</html>

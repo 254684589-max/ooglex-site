@@ -70,13 +70,14 @@
       --desk-gold:#d1a057;
     }
     .top-rule{height:2px;background:linear-gradient(90deg,var(--desk-red),#e39f26)}
-    .shell{max-width:1180px;margin:0 auto;padding:11px 24px 64px}
-    .home-row{display:flex;align-items:center;justify-content:space-between;margin:1px 0 8px}
+    .shell{width:min(1180px,100%);margin:0 auto;padding:12px 24px 72px}
+    @media(max-width:760px){.shell{padding:10px 15px 56px}}
+    .home-row{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
     .home-back{
-      display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 9px;
-      border:1px solid var(--desk-line);border-radius:7px;background:var(--desk-panel);
+      display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;
+      border:1px solid var(--desk-line);border-radius:8px;background:var(--desk-panel);
       color:var(--desk-muted);
-      font:12px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+      font:13px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
       transition:background .15s,color .15s,border-color .15s
     }
     .home-back:hover{background:var(--desk-panel-strong);color:var(--ink);border-color:var(--line)}
@@ -115,15 +116,7 @@
     }
     .chip-btn.active{background:var(--desk-red);border-color:var(--desk-red);color:#fff;font-family:inherit;font-weight:700}
     .chip-btn.disabled{opacity:.45}
-    .nav{
-      display:flex;gap:27px;align-items:center;min-height:46px;border-bottom:1px solid var(--desk-line);
-      color:var(--desk-muted);font:14px/1 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-      overflow-x:auto;scrollbar-width:none
-    }
-    .nav::-webkit-scrollbar,.category-tabs::-webkit-scrollbar{display:none}
-    .nav a{position:relative;white-space:nowrap;padding:15px 0 13px}
-    .nav a.active{color:var(--ink,#221f1b);font-weight:750}
-    .nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--desk-red)}
+    .category-tabs::-webkit-scrollbar{display:none}
     .category-bar{
       display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--desk-line);
       min-width:0
@@ -318,9 +311,7 @@
       .rail-card{margin:0}
     }
     @media(max-width:680px){
-      .shell{padding:9px 15px 48px}
       .home-row{margin-bottom:6px}
-      .home-back{min-height:28px;padding:0 8px;font-size:11px}
       .dateline{font-size:10px}
       .mast{align-items:flex-start;flex-direction:column}
       .edition-controls{justify-content:flex-start}
@@ -335,7 +326,13 @@
       .rail{grid-template-columns:1fr}
       .category-label{display:none}
     }
+      /* 统一栏目导航沿用本页报纸配色 */
+    .desk-nav{border-bottom-color:var(--desk-line)}
+    .desk-nav a{color:var(--desk-muted)}
+    .desk-nav a[aria-current="page"]{color:var(--ink,#221f1b)}
+    .desk-nav a[aria-current="page"]::after{background:var(--desk-red)}
   </style>
+  <link rel="stylesheet" href="/assets/desk-nav.css?v=1">
 </head>
 <body>
   <div class="top-rule"></div>
@@ -343,6 +340,13 @@
     <div class="home-row">
       <a class="home-back" href="/" aria-label="返回 Ooglex 首页"><span class="arrow">←</span><span>Ooglex</span></a>
     </div>
+    <nav class="desk-nav" aria-label="新闻栏目">
+      <a href="/apps/whats-latest/" aria-current="page">简报</a>
+      <a href="/apps/news-brief/">全球要闻</a>
+      <a href="/apps/news-radar/">投资雷达</a>
+      <a href="/apps/research-board/">每日投研</a>
+      <a href="/apps/research-board/rates/">全球利率</a>
+    </nav>
     <div class="dateline">
       <span id="date-line">—</span>
       <span class="fresh-badge" id="freshness">更新中</span>
@@ -363,14 +367,6 @@
         <span class="chip-btn disabled">下一期 ›</span>
       </div>
     </header>
-
-    <nav class="nav">
-      <a class="active" href="#briefings">简报</a>
-      <a href="#live-data">实时数据</a>
-      <a href="#rundown">新闻简报</a>
-      <a href="#sources">来源</a>
-      <a href="#cover">封面</a>
-    </nav>
 
     <div class="category-bar">
       <span class="category-label">简报分类</span>
@@ -466,6 +462,6 @@
     <footer class="source-foot" id="sources"></footer>
   </main>
 
-  <script src="app.js?v=20260926-preview10-standard-v1"></script>
+  <script src="app.js?v=20261015-full-access-v1"></script>
 </body>
 </html>

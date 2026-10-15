@@ -29,6 +29,13 @@ if (heroCount !== active.length) {
   throw new Error(`Hero count ${heroCount} does not match active catalog count ${active.length}.`);
 }
 
+const markupOnly = html
+  .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+  .replace(/<style\b[\s\S]*?<\/style>/gi, "");
+if (markupOnly.includes("\\n")) {
+  throw new Error("Page markup contains a literal \\n token outside <script>/<style>; browsers render it as visible text.");
+}
+
 const routeStart = html.indexOf('var CATALOG_FILE="leaders.json"');
 if (routeStart < 0) {
   throw new Error("Protected catalog router is missing.");
