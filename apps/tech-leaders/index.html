@@ -526,9 +526,9 @@
   <div class="share-sheet" id="share-sheet" hidden>
     <div class="share-backdrop" data-share-close="1"></div>
     <section class="share-panel" role="dialog" aria-modal="true" aria-labelledby="share-title">
-      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">微信卡片 · 原帖链接 · 图片卡片</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
+      <div class="share-head"><div><b id="share-title">分享这条动态</b><span class="share-subtitle">网页卡片 · 原帖链接 · 图片卡片</span></div><button class="share-close" type="button" data-share-close="1" aria-label="关闭">×</button></div>
       <div class="share-actions">
-        <button type="button" id="share-wechat">微信卡片分享</button>
+        <button type="button" id="share-wechat">网页卡片分享</button>
         <button type="button" id="share-video" hidden>分享视频</button>
         <button type="button" id="share-copy">复制帖子链接</button>
         <button type="button" id="share-card">生成分享卡片</button>
@@ -2455,7 +2455,7 @@
   });
   document.getElementById("share-wechat").addEventListener("click",function(){
     if(!activeSharePost)return;
-    shareStatus.textContent="正在打开微信卡片分享页…";
+    shareStatus.textContent="正在打开网页卡片分享页…";
     window.location.href=singlePostUrl(activeSharePost);
   });
 
