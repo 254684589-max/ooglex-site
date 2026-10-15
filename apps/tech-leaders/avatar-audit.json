@@ -1,16 +1,16 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-10-15T12:23:57Z",
+  "checked_at": "2026-10-15T16:36:24Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 604,
   "usable": 604,
-  "x_original": 25,
-  "x_original_proxy": 561,
+  "x_original": 28,
+  "x_original_proxy": 562,
   "official_fallback": 4,
-  "public_fallback": 13,
-  "generated_fallback": 1,
-  "fallback": 18,
+  "public_fallback": 10,
+  "generated_fallback": 0,
+  "fallback": 14,
   "pending_review": 0,
   "missing_handle": 0,
   "invalid_handle": 0,
@@ -170,6 +170,20 @@
       "origin_url": "https://x.com/ilyasut"
     },
     {
+      "id": "dorsey",
+      "name": "Jack Dorsey",
+      "company": "Block",
+      "handle": "jack",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "jack",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack&name=Jack+Dorsey&company=Block",
+      "origin_url": "https://x.com/jack"
+    },
+    {
       "id": "bezos",
       "name": "Jeff Bezos",
       "company": "Amazon / Blue Origin",
@@ -210,6 +224,20 @@
       "response_handle": "LisaSu",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=LisaSu&name=Lisa+Su&company=AMD",
       "origin_url": "https://x.com/LisaSu"
+    },
+    {
+      "id": "dell",
+      "name": "Michael Dell",
+      "company": "Dell Technologies",
+      "handle": "MichaelDell",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "MichaelDell",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelDell&name=Michael+Dell&company=Dell+Technologies",
+      "origin_url": "https://x.com/MichaelDell"
     },
     {
       "id": "murati",
@@ -336,6 +364,20 @@
       "response_handle": "tim_cook",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=tim_cook&name=Tim+Cook&company=Apple",
       "origin_url": "https://x.com/tim_cook"
+    },
+    {
+      "id": "khosla",
+      "name": "Vinod Khosla",
+      "company": "Khosla Ventures",
+      "handle": "vkhosla",
+      "ok": true,
+      "status": "x_original",
+      "source_type": "x_original",
+      "source_transport": "x_syndication-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "vkhosla",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vkhosla&name=Vinod+Khosla&company=Khosla+Ventures",
+      "origin_url": "https://x.com/vkhosla"
     },
     {
       "id": "lecun",
@@ -966,6 +1008,20 @@
       "response_handle": "APompliano",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=APompliano&name=Anthony+Pompliano&company=Professional+Capital+Management",
       "origin_url": "https://x.com/APompliano"
+    },
+    {
+      "id": "alex-rampell-private",
+      "name": "Alex Rampell",
+      "company": "Andreessen Horowitz",
+      "handle": "arampell",
+      "ok": true,
+      "status": "x_original_proxy",
+      "source_type": "x_original_proxy",
+      "source_transport": "fxtwitter_profile-r2-cache",
+      "content_type": "image/jpeg",
+      "response_handle": "arampell",
+      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=arampell&name=Alex+Rampell&company=Andreessen+Horowitz",
+      "origin_url": "https://x.com/arampell"
     },
     {
       "id": "arash-ferdowsi-dbx",
@@ -8262,20 +8318,6 @@
       "origin_url": "https://x.com/aneelbhusri"
     },
     {
-      "id": "alex-rampell-private",
-      "name": "Alex Rampell",
-      "company": "Andreessen Horowitz",
-      "handle": "arampell",
-      "ok": true,
-      "status": "fallback",
-      "source_type": "generated_fallback",
-      "source_transport": "generated_initials-r2-cache",
-      "content_type": "image/svg+xml",
-      "response_handle": "arampell",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=arampell&name=Alex+Rampell&company=Andreessen+Horowitz",
-      "origin_url": "https://x.com/arampell"
-    },
-    {
       "id": "assaf-rappaport-googl",
       "name": "Assaf Rappaport",
       "company": "Wiz / Google Cloud",
@@ -8360,20 +8402,6 @@
       "origin_url": "https://x.com/isamlambert"
     },
     {
-      "id": "dorsey",
-      "name": "Jack Dorsey",
-      "company": "Block",
-      "handle": "jack",
-      "ok": true,
-      "status": "fallback",
-      "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "jack",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=jack&name=Jack+Dorsey&company=Block",
-      "origin_url": "https://x.com/jack"
-    },
-    {
       "id": "jay-chaudhry-zs",
       "name": "Jay Chaudhry",
       "company": "Zscaler",
@@ -8402,20 +8430,6 @@
       "origin_url": "https://x.com/matistanis"
     },
     {
-      "id": "dell",
-      "name": "Michael Dell",
-      "company": "Dell Technologies",
-      "handle": "MichaelDell",
-      "ok": true,
-      "status": "fallback",
-      "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2-cache",
-      "content_type": "image/webp",
-      "response_handle": "MichaelDell",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=MichaelDell&name=Michael+Dell&company=Dell+Technologies",
-      "origin_url": "https://x.com/MichaelDell"
-    },
-    {
       "id": "nic-carter-private",
       "name": "Nic Carter",
       "company": "Castle Island Ventures",
@@ -8442,20 +8456,6 @@
       "response_handle": "TusharJain_",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=TusharJain_&name=Tushar+Jain&company=Multicoin+Capital",
       "origin_url": "https://x.com/TusharJain_"
-    },
-    {
-      "id": "khosla",
-      "name": "Vinod Khosla",
-      "company": "Khosla Ventures",
-      "handle": "vkhosla",
-      "ok": true,
-      "status": "fallback",
-      "source_type": "public_fallback",
-      "source_transport": "wikipedia-r2-cache",
-      "content_type": "image/jpeg",
-      "response_handle": "vkhosla",
-      "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=vkhosla&name=Vinod+Khosla&company=Khosla+Ventures",
-      "origin_url": "https://x.com/vkhosla"
     },
     {
       "id": "evan-you",
