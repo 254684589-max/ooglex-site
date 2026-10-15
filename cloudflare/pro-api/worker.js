@@ -386,15 +386,14 @@ async function translateTechText(text, env, budget) {
     budget.used += 1;
     budget.added += 1;
   }
-  const out = [];
-  for (const pieces of splitForTranslation(source)) {
-    const translated = [];
-    for (const piece of pieces) {
+  // 各段并行翻译，长推文不再逐段排队。
+  const out = await Promise.all(splitForTranslation(source).map(async (pieces) => {
+    const translated = await Promise.all(pieces.map(async (piece) => {
       const res = await env.AI.run(TECH_TRANSLATE_MODEL, { text: piece, source_lang: "english", target_lang: "chinese" });
-      translated.push(String(res && res.translated_text || "").trim());
-    }
-    out.push(translated.join(""));
-  }
+      return String(res && res.translated_text || "").trim();
+    }));
+    return translated.join("");
+  }));
   const zh = out.filter(Boolean).join("\n\n").trim();
   if (!zh) return { text: null, error: "empty_translation" };
   await writeJson(env.PRO_DATA, key, { zh, model: TECH_TRANSLATE_MODEL, translated_at: new Date().toISOString() });
@@ -2859,17 +2858,18 @@ export default {
       const usageKey = techTranslateUsageKey();
       const usage = await readJson(env.PRO_DATA, usageKey).catch(() => null);
       const budget = { limit: techTranslateDailyLimit(env), used: Math.max(0, Number(usage && usage.count) || 0), added: 0 };
-      const translations = [];
       let limited = false;
-      for (const text of texts) {
+      // 一批内并行翻译：整批耗时约等于最慢的一条，而不是逐条相加。
+      // 额度检查与计数在同一同步段内完成，并行也不会超出当日上限。
+      const translations = await Promise.all(texts.map(async (text) => {
         try {
           const r = await translateTechText(text, env, budget);
           if (r.limited) limited = true;
-          translations.push(r.text);
+          return r.text;
         } catch {
-          translations.push(null);
+          return null;
         }
-      }
+      }));
       if (budget.added) {
         // 计数是「读-加-写」，并发请求可能略微少计，最多多翻译几条，不会无限增长。
         try {

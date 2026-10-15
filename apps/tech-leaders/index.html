@@ -619,14 +619,33 @@
   var timeline=document.getElementById("timeline");
 
   // ---- 推文中文机器翻译（原文 / 中文 切换）----
-  // 只翻译滚动到附近的推文；同一段原文在本页只请求一次，服务器端另有缓存。
+  // 屏幕附近的推文优先翻译；下一批「加载更多」的推文提前在后台翻好；
+  // 译文在本机保存一段时间，刷新或再次打开时直接显示。服务器端另有缓存。
   var LANG_KEY="ooglex.techLeaders.lang";
+  var TR_STORE_KEY="ooglex.techLeaders.tr.v1";
+  var TR_STORE_MAX=400;
+  var TR_BATCH=6;          // 每次请求的条数：小批次让第一批更快出来
+  var TR_PARALLEL=3;       // 同时进行的请求数
   var feedLang=(function(){try{return localStorage.getItem(LANG_KEY)==="zh"?"zh":"orig";}catch(e){return "orig";}})();
-  var trResults=new Map();      // 原文 -> 译文（null 表示无需或无法翻译）
-  var trWaiting=new Map();      // 原文 -> 等待该译文的元素
-  var trQueue=[];var trTimer=null;var trBusy=false;
-  var trObserver=null;
-  function mostlyChineseText(t){var s=String(t||"").replace(/\s+/g,"");if(!s)return true;var han=(s.match(/[\u3400-\u9fff]/g)||[]).length;return han/s.length>=0.3;}
+  var trResults=new Map();      // 原文 -> 译文
+  var trWaiting=new Map();      // 原文 -> 等待该译文的元素（预取时为空数组）
+  var trQueue=[];var trPrefetchQueue=[];var trTimer=null;var trInFlight=0;
+  var trLimited=false;var trLastOk=true;var trSaveTimer=null;
+  var trUpcomingProvider=null;  // 由动态流提供：下一批将显示的推文原文
+  (function(){
+    try{
+      var saved=JSON.parse(localStorage.getItem(TR_STORE_KEY)||"[]");
+      if(Array.isArray(saved))saved.forEach(function(p){if(Array.isArray(p)&&typeof p[0]==="string"&&typeof p[1]==="string")trResults.set(p[0],p[1]);});
+    }catch(e){}
+  })();
+  function saveTranslationsSoon(){
+    if(trSaveTimer)return;
+    trSaveTimer=setTimeout(function(){
+      trSaveTimer=null;
+      try{var all=Array.from(trResults.entries());localStorage.setItem(TR_STORE_KEY,JSON.stringify(all.slice(-TR_STORE_MAX)));}catch(e){}
+    },800);
+  }
+  function mostlyChineseText(t){var s=String(t||"").replace(/\s+/g,"");if(!s)return true;var han=(s.match(/[㐀-鿿]/g)||[]).length;return han/s.length>=0.3;}
   function applyTranslation(el,zh){
     el.classList.remove("tr-loading");
     if(!el.isConnected)return;
@@ -642,23 +661,47 @@
       el.insertAdjacentElement("afterend",fail);el.dataset.trState="failed";
     }
   }
-  var trLimited=false;
+  function scheduleFlush(){
+    if(!trTimer)trTimer=setTimeout(function(){trTimer=null;pumpTranslations();},60);
+  }
   function queueTranslation(el){
     var text=String(el.textContent||"").trim();
     if(!text||mostlyChineseText(text)){el.dataset.trState="skip";return;}
-    if(trResults.has(text)){var known=trResults.get(text);if(known)applyTranslation(el,known);else el.dataset.trState="skip";return;}
+    if(trResults.has(text)){applyTranslation(el,trResults.get(text));return;}
     el.dataset.trState="queued";el.classList.add("tr-loading");
     if(!trWaiting.has(text)){trWaiting.set(text,[]);trQueue.push(text);}
+    else{
+      // 已在预取队列里：提到前面，优先翻译屏幕上的这条。
+      var pi=trPrefetchQueue.indexOf(text);
+      if(pi>=0){trPrefetchQueue.splice(pi,1);trQueue.push(text);}
+    }
     trWaiting.get(text).push(el);
-    if(!trTimer)trTimer=setTimeout(flushTranslations,120);
+    scheduleFlush();
   }
-  async function flushTranslations(){
-    trTimer=null;
-    if(trBusy||!trQueue.length)return;
-    trBusy=true;
-    var batch=trQueue.splice(0,8);
-    var out=[];
-    trLimited=false;
+  function prefetchTranslations(texts){
+    // 翻译失败或今日额度用完时不做后台预取，避免白白发请求。
+    if(feedLang!=="zh"||trLimited||!trLastOk)return;
+    (texts||[]).forEach(function(t){
+      var text=String(t||"").trim();
+      if(!text||mostlyChineseText(text)||trResults.has(text)||trWaiting.has(text))return;
+      trWaiting.set(text,[]);trPrefetchQueue.push(text);
+    });
+    scheduleFlush();
+  }
+  function prefetchUpcomingTranslations(){
+    if(feedLang!=="zh"||typeof trUpcomingProvider!=="function")return;
+    try{prefetchTranslations(trUpcomingProvider());}catch(e){}
+  }
+  function pumpTranslations(){
+    while(trInFlight<TR_PARALLEL&&(trQueue.length||trPrefetchQueue.length)){
+      var batch=trQueue.splice(0,TR_BATCH);
+      if(batch.length<TR_BATCH)batch=batch.concat(trPrefetchQueue.splice(0,TR_BATCH-batch.length));
+      runTranslationBatch(batch);
+    }
+  }
+  async function runTranslationBatch(batch){
+    trInFlight+=1;
+    var out=[];var limited=false;
     try{
       var ctl=typeof AbortController==="function"?new AbortController():null;
       var timer=setTimeout(function(){if(ctl)ctl.abort();},25000);
@@ -667,29 +710,32 @@
         var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/translate",{method:"POST",cache:"no-store",headers:{"content-type":"text/plain;charset=UTF-8"},body:JSON.stringify({texts:batch}),signal:ctl?ctl.signal:undefined});
         var data=await res.json().catch(function(){return {};});
         out=res.ok&&Array.isArray(data.translations)?data.translations:[];
-        trLimited=!!(res.ok&&data.daily_limit_reached);
+        limited=!!(res.ok&&data.daily_limit_reached);
       }finally{clearTimeout(timer);}
     }catch(e){out=[];}
+    trLimited=limited;
+    trLastOk=out.length>0;
+    var stored=false;
     batch.forEach(function(text,i){
       var zh=typeof out[i]==="string"&&out[i].trim()?out[i].trim():null;
-      if(zh)trResults.set(text,zh);   // 失败的不记入，下次切换时可重试
+      if(zh){trResults.set(text,zh);stored=true;}   // 失败的不记入，下次切换时可重试
       (trWaiting.get(text)||[]).forEach(function(el){applyTranslation(el,zh);});
       trWaiting.delete(text);
     });
-    trBusy=false;
-    if(trQueue.length)flushTranslations();
+    if(stored)saveTranslationsSoon();
+    trInFlight-=1;
+    pumpTranslations();
   }
   function observeForTranslation(){
     if(feedLang!=="zh")return;
     var els=timeline.querySelectorAll(".post-text:not([data-tr-state])");
     if(!els.length)return;
-    if(typeof IntersectionObserver!=="function"){els.forEach(queueTranslation);return;}
-    if(!trObserver){
-      trObserver=new IntersectionObserver(function(entries){
-        entries.forEach(function(en){if(en.isIntersecting){trObserver.unobserve(en.target);if(feedLang==="zh")queueTranslation(en.target);}});
-      },{rootMargin:"600px 0px"});
-    }
-    els.forEach(function(el){el.dataset.trState="observed";trObserver.observe(el);});
+    // 已有译文的直接显示；已在后台翻译中的直接挂上等结果，不等滚动。
+    var rest=[];
+    els.forEach(function(el){var t=String(el.textContent||"").trim();if(t&&trResults.has(t))applyTranslation(el,trResults.get(t));else if(t&&trWaiting.has(t))queueTranslation(el);else rest.push(el);});
+    // 页面上已显示的推文按从上到下的顺序全部排队（最多同时 3 个请求），
+    // 快速滑到底部或点「加载更多」时不会再一条条等。
+    rest.forEach(queueTranslation);
   }
   function setFeedLang(next){
     feedLang=next==="zh"?"zh":"orig";
@@ -700,6 +746,7 @@
       // 之前失败的推文，切回中文时重试。
       timeline.querySelectorAll('.post-text[data-tr-state="failed"]').forEach(function(el){var n=el.nextElementSibling;if(n&&n.classList.contains("tr-failed"))n.remove();el.removeAttribute("data-tr-state");});
       observeForTranslation();
+      prefetchUpcomingTranslations();
     }
   }
   document.querySelectorAll(".lang-toggle button").forEach(function(b){b.addEventListener("click",function(){setFeedLang(b.getAttribute("data-lang"));});});
@@ -1938,8 +1985,23 @@
       }
       shown+=count;
       if(count)wrap.appendChild(frag);   // 一次性插入，减少重排
+      prefetchUpcomingTranslations();
       return count;
     }
+    // 中文模式下，提前翻译下一批「加载更多」会显示的推文，点开时直接是中文。
+    // 原文按页面实际渲染的文字计算，与显示后的推文对得上。
+    function renderedText(post){var d=document.createElement("div");appendTextWithUrls(d,post);return String(d.textContent||"").trim();}
+    trUpcomingProvider=function(){
+      if(!current||current.id!==feedOwnerId)return [];
+      var out=[],count=0;
+      for(var i=0;i<posts.length&&count<batchSize;i++){
+        var p=posts[i];if(renderedIds.has(postKey(p,i)))continue;count++;
+        var hidePrimary=String(p.post_type||"").toLowerCase()==="retweet"&&p.embedded_post;
+        if(!hidePrimary&&String(p.text||"").trim())out.push(renderedText(p));
+        if(p.embedded_post&&String(p.embedded_post.text||"").trim())out.push(renderedText(p.embedded_post));
+      }
+      return out;
+    };
 
     function refreshMore(){
       var remaining=localRemaining();
@@ -1988,6 +2050,7 @@
           // attempts stop automatic retries for this page session.
           remoteExhausted=posts.length>=maxPosts||noGrowthFetches>=2;
           fetchFailures=0;
+          prefetchUpcomingTranslations();
         }finally{clearTimeout(timer);}
       }catch(e){
         // 一次失败（超时、网络抖动）不再永久隐藏按钮：允许手动重试，连续两次失败才停止。
