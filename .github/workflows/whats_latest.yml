@@ -88,24 +88,6 @@ jobs:
         if: steps.stage.outputs.changed == 'false'
         run: echo "生成结果与仓库一致，跳过提交和推送"
 
-      # 公开 Pages 只发布约10%新闻；完整数据同步到私有 R2，供已登录且有权限的会话经 PRO API 读取。
-      # 抓取失败时 data.json 保留上一份有效数据，这里上传的仍是该有效版本。
-      - name: Build protected What's Latest payloads
-        if: github.ref == 'refs/heads/main'
-        run: python scripts/pro/build_pro_datasets.py --only whats-latest
-
-      - name: Upload protected What's Latest payloads to R2
-        if: github.ref == 'refs/heads/main'
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          wranglerVersion: "4"
-          command: |
-            r2 object put ooglex-pro-data/whats-latest/preview.json --file .pro-build/whats-latest/preview.json
-            r2 object put ooglex-pro-data/whats-latest/full.json --file .pro-build/whats-latest/full.json
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
       - name: Fail unsuccessful source attempt after preserving diagnostics
         run: python scripts/validate_supporting_source_health.py --dataset whats-latest --require-published
 

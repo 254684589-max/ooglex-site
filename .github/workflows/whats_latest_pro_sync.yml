@@ -1,0 +1,48 @@
+name: Sync What's Latest PRO Data
+
+# 公开 Pages 只发布约10%新闻；完整数据放在私有 R2，供已登录会话经 PRO API 读取。
+# 数据任务本身不读 Secret、不发布，这里在它成功更新 main 之后单独同步 R2。
+# 抓取失败时 data.json 保留上一份有效数据，这里上传的仍是该有效版本。
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["What's Latest"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: whats-latest-pro-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build protected What's Latest payloads
+        run: python scripts/pro/build_pro_datasets.py --only whats-latest
+
+      - name: Upload protected What's Latest payloads to R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4"
+          command: |
+            r2 object put ooglex-pro-data/whats-latest/preview.json --file .pro-build/whats-latest/preview.json
+            r2 object put ooglex-pro-data/whats-latest/full.json --file .pro-build/whats-latest/full.json
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
