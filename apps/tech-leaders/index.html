@@ -230,7 +230,7 @@
     .post-share-btn{appearance:none;border:0;background:transparent;padding:0;color:var(--blue);font:inherit;cursor:pointer}.post-share-btn:hover{text-decoration:underline}.post-share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px}
     .share-sheet[hidden]{display:none}.share-sheet{position:fixed;inset:0;z-index:1000;display:grid;align-items:end;justify-items:center;padding:18px}.share-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.38);backdrop-filter:blur(4px)}.share-panel{position:relative;width:min(520px,100%);max-height:min(82vh,760px);overflow:auto;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 24px 80px rgba(0,0,0,.28)}.share-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.share-head b{font-size:16px}.share-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:22px;cursor:pointer}.share-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-top:16px}.share-actions button,.share-card-actions button{min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--ink);font-weight:700;cursor:pointer}.share-actions button:hover,.share-card-actions button:hover{background:rgba(57,135,229,.12)}.share-status{min-height:20px;margin-top:10px;font-size:12px;color:var(--faint)}.share-card-wrap{margin-top:12px}.share-card-wrap img{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#f7f2ea}.share-card-actions{display:flex;gap:9px;margin-top:10px}.share-card-actions button{flex:1}.share-note{margin-top:10px;font-size:11px;line-height:1.5;color:var(--faint)}
     .embedded-post{margin-top:13px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018);overflow:hidden}.embedded-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.embedded-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:rgba(255,255,255,.05)}.embedded-who{min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.embedded-name{font-size:15px;line-height:20px;font-weight:700;color:var(--ink)}.embedded-handle{font:400 15px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--faint)}.embedded-post .post-text{font-size:15px;line-height:20px}.embedded-post .post-media{margin-top:9px}.embedded-post .post-media img,.embedded-post .post-media video{max-height:330px;border-radius:10px}.embedded-link{display:inline-block;margin-top:9px;color:var(--blue);font:10.5px/1.2 var(--mono)}
-    .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+    .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.feed-more button:disabled{cursor:default;opacity:.75}.feed-more.feed-end button{color:var(--dim);background:transparent;border-style:dashed}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
@@ -2052,11 +2052,17 @@
         return;
       }
       if(remoteExhausted){
-        more.remove();
+        // 不再让按钮直接消失（看起来像「下面的推文没了」）：明确告诉读者已经到底。
+        btn.disabled=true;
+        btn.textContent=posts.length>=maxPosts
+          ?"已显示最近 "+posts.length+" 条公开动态"
+          :(fetchFailed?"暂时无法加载更早的动态，请稍后再试":"已显示全部 "+posts.length+" 条公开动态");
+        more.classList.add("feed-end");
         return;
       }
       btn.disabled=false;
-      btn.textContent=fetchFailed?"加载失败，点此重试":"加载更多 "+batchSize+" 条";
+      btn.textContent=fetchFailed?"加载失败，点此重试"
+        :(noGrowthFetches>0?"暂时没有更早的动态，点此再试一次":"加载更多 "+batchSize+" 条");
     }
 
     async function fetchMoreInBackground(){
