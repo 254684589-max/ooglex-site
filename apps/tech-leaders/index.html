@@ -1954,7 +1954,8 @@
     sourceBadge.textContent="公开模式 · 0 X API Credits";
     timeline.setAttribute("data-state","ready");timeline.innerHTML="";
     renderLocalPosts(current,timeline);
-    var profileMaxPosts=Math.max(1,Math.min(100,Number(current&&current.timeline_display_limit)||100));
+    // 高频账号（如马斯克）服务器最多保留 300 条，其他 100 条；以服务器返回的 history_cap 为准。
+    var profileMaxPosts=Math.max(1,Math.min(300,Number(current&&current.timeline_display_limit)||300));
     var posts=(Array.isArray(feed&&feed.posts)?feed.posts:[]).filter(freeFeedPostBelongsToCurrent).slice(0,profileMaxPosts).sort(sortPostsNewest);
     if(!posts.length){
       var empty=document.createElement("div");empty.className="api-state";
@@ -2090,7 +2091,13 @@
           // A short public-source response must not permanently lock the UI at
           // 20 items. Only 100 loaded posts prove completion. Two no-growth
           // attempts stop automatic retries for this page session.
-          remoteExhausted=posts.length>=maxPosts||noGrowthFetches>=2;
+          var cap=Number(data.history_cap)||0;
+          if(cap>0)maxPosts=Math.min(profileMaxPosts,Math.max(cap,posts.length));
+          // 服务器已把它保存的全部历史给出（缓存或刚从上游取到，而不是取数失败后的旧缓存），
+          // 且不足所请求的条数：说明这个账号目前就只有这么多，直接显示「已显示全部」，不再重试。
+          var cacheStatus=String(data.cache&&data.cache.status||"");
+          var serverComplete=cap>0&&data.posts.length<target&&/^(fresh|stale_revalidating|refreshed)$/.test(cacheStatus);
+          remoteExhausted=posts.length>=maxPosts||noGrowthFetches>=2||serverComplete;
           fetchFailures=0;
           prefetchUpcomingTranslations();
         }finally{clearTimeout(timer);}

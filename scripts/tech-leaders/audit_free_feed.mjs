@@ -153,15 +153,26 @@ function liveCacheKey(handle) {
   if (!keyMatch) throw new Error("cache_key_version_not_found_in_worker");
   return `tech-leaders/free-feed/${normalized === "elonmusk" ? keyMatch[1] : keyMatch[2]}/${normalized}.json`;
 }
-function mergePosts(fresh, history) {
+// 与 worker.js 的 freeFeedHistoryCap / mergeWithCachedHistory 同一规则：
+// 高频账号（马斯克，或最新 100 条覆盖不到 7 天）最多 300 条，其他 100 条；超出从最旧一端删除。
+function historyCap(handle, sorted) {
+  if (String(handle || "").replace(/^@/, "").toLowerCase() === "elonmusk") return 300;
+  if (sorted.length > 100) {
+    const newest = Date.parse(sorted[0].created_at || "") || 0, hundredth = Date.parse(sorted[99].created_at || "") || 0;
+    if (newest && hundredth && newest - hundredth < 7 * 24 * 60 * 60 * 1000) return 300;
+  }
+  return 100;
+}
+function mergePosts(fresh, history, handle) {
   const byId = new Map();
   for (const p of history || []) if (p && p.id) byId.set(String(p.id), p);
   for (const p of fresh || []) if (p && p.id) byId.set(String(p.id), p);
-  return Array.from(byId.values()).sort((a, b) => {
+  const sorted = Array.from(byId.values()).sort((a, b) => {
     const ta = Date.parse(a.created_at || "") || 0, tb = Date.parse(b.created_at || "") || 0;
     if (ta !== tb) return tb - ta;
     return String(b.id || "").localeCompare(String(a.id || ""));
-  }).slice(0, 100);
+  });
+  return sorted.slice(0, historyCap(handle, sorted));
 }
 const backfill = { attempted: 0, written: 0, failed: 0, grew: 0, unchanged: 0, errors: [] };
 if (BACKFILL && fetchedPosts.size) {
@@ -188,7 +199,7 @@ if (BACKFILL && fetchedPosts.size) {
         if (got.ok && fs.existsSync(file)) { try { current = JSON.parse(fs.readFileSync(file, "utf8")); } catch {} }
         else if (!/does not exist|NoSuchKey|not found|404/i.test(got.stderr + got.stdout)) throw new Error("r2_get_failed");
         const history = current && Array.isArray(current.posts) ? current.posts : [];
-        const merged = mergePosts(posts, history);
+        const merged = mergePosts(posts, history, handle);
         if (merged.length > history.length) backfill.grew += 1; else backfill.unchanged += 1;
         // 线上 Worker 10 分钟内刚刷新过就沿用它的时间，否则记为现在（回填的数据本身就是刚取的）。
         const fetchedAt = current && current.fetched_at && Date.parse(current.fetched_at) > Date.now() - 10 * 60 * 1000
