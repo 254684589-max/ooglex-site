@@ -5,7 +5,8 @@
 // 不调用线上 Worker，因此不需要任何 Secret，也不会改动线上缓存或会话。
 //
 // 用法：node scripts/tech-leaders/audit_free_feed.mjs [--out data/tech-leaders/free_feed_health.json]
-//        [--concurrency 3] [--limit 0] [--handles a,b,c]
+//        [--concurrency 3] [--limit 0] [--handles a,b,c] [--posts 21]
+//   --posts：每个账号请求的帖子数（默认 21；设 100 可检查「加载更多」能取到的历史深度）
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -20,6 +21,7 @@ const opt = (name, fallback) => {
 const OUT = opt("out", "data/tech-leaders/free_feed_health.json");
 const CONCURRENCY = Math.max(1, Number(opt("concurrency", "3")) || 3);
 const MAX = Math.max(0, Number(opt("limit", "0")) || 0);
+const POSTS = Math.max(1, Math.min(100, Number(opt("posts", "21")) || 21));
 const ONLY = String(opt("handles", "")).split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 const REQUEST_TIMEOUT_MS = 30000;
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
@@ -68,7 +70,7 @@ async function check(p) {
   const started = Date.now();
   // limit>20 走 Worker 的完整取数路径：两个公开源都会尝试，失败时返回各自的状态（diagnostic），
   // 便于判断是哪一个源、为什么取不到；limit<=20 的快速路径只给笼统错误。
-  const url = `https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=${encodeURIComponent(handle)}&limit=21`;
+  const url = `https://pro-api.ooglex.com/v1/tech-leaders/free-feed?handle=${encodeURIComponent(handle)}&limit=${POSTS}`;
   const req = new Request(url, { headers: { Origin: "https://ooglex.com", "x-ooglex-tech-secret": SECRET } });
   let status = 0, body = {};
   try {
@@ -84,6 +86,7 @@ async function check(p) {
   const posts = Array.isArray(body.posts) ? body.posts : [];
   const times = posts.map((x) => Date.parse(x && x.created_at || "")).filter(Number.isFinite);
   const latest = times.length ? new Date(Math.max(...times)).toISOString() : null;
+  const oldest = times.length ? new Date(Math.min(...times)).toISOString() : null;
   return {
     id: p.id,
     name: p.name_zh || p.zh || p.name || p.id,
@@ -94,6 +97,8 @@ async function check(p) {
     post_count: posts.length,
     latest_post_at: latest,
     latest_age_days: latest ? Math.floor((Date.now() - Date.parse(latest)) / 86400000) : null,
+    oldest_post_at: oldest,
+    requested_posts: POSTS,
     source: body.source || null,
     error: status === 200 && posts.length ? null : (body.error || (status === 200 ? "empty" : `http_${status}`)),
     diagnostic: body.diagnostic || null,

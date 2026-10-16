@@ -6,6 +6,11 @@ name: Tech Leaders Free Feed Audit
 # 结果写入 data/tech-leaders/free_feed_health.json，并在运行摘要里列出取不到动态的账号。
 on:
   workflow_dispatch:
+    inputs:
+      posts:
+        description: '每个账号请求的帖子数（默认 21；100 = 检查历史深度，此时只上传报告产物、不提交）'
+        required: false
+        default: '21'
   schedule:
     - cron: '43 1 * * *'   # 每天 01:43 UTC（北京时间 09:43）
 
@@ -30,13 +35,19 @@ jobs:
           node-version: '24'
 
       - name: Audit free feed availability for every personal X account
-        run: node scripts/tech-leaders/audit_free_feed.mjs --out data/tech-leaders/free_feed_health.json --concurrency 3
+        run: node scripts/tech-leaders/audit_free_feed.mjs --out data/tech-leaders/free_feed_health.json --concurrency 3 --posts "${{ github.event.inputs.posts || '21' }}"
 
       - name: Validate report JSON
         run: python3 -m json.tool data/tech-leaders/free_feed_health.json >/dev/null
 
+      - name: Upload audit report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: free-feed-audit-${{ github.event.inputs.posts || '21' }}
+          path: data/tech-leaders/free_feed_health.json
+
       - name: Commit audit report
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && (github.event.inputs.posts || '21') == '21'
         run: |
           set -e
           git config user.name "github-actions[bot]"
