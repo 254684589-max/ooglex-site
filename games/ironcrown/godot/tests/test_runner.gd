@@ -6443,6 +6443,12 @@ func test_hall() -> void:
 	check(Areas.known("hall") and Areas.is_indoor("hall") and Saves.SCENE_NAMES.has("hall") and Areas.spawn("hall", "front") is Transform3D and Areas.spawn("castle", "hall_door") is Transform3D,
 		"区域登记：大厅是室内区域，门口和庭院的大厅门口都是出生点")
 	check(AreaMap.region_of("hall") == "marsh" and AreaMap.exits("hall").size() == 1, "地图：大厅在「鹭沼一带」，一个出口")
+	ch1_state("extort", 10)
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	var main := await make_main(false)
+	await physics(2)
+	check(main._npc_by_dialogue("edric_hall") == null, "序章「勒索」：埃德里克不在大厅（只有「交出」时在）")
+	await free_main(main)
 	# —— 序章「交出」、堡门进来：先阿尔里克后伊薇特
 	ch1_state("deliver", 11)
 	for f in ["ch1_victor_done", "castle_admitted", "herman_met"]:
@@ -6451,11 +6457,14 @@ func test_hall() -> void:
 	GameState.start_quest("ch1_main", "to_hall")
 	GameState.daypart = "day"
 	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
-	var main := await make_main(false)
+	main = await make_main(false)
 	await physics(3)
 	main = await fl_go(main, "hall")
 	await physics(3)
 	check(main.area == "hall" and main.arrived_by == "front" and GameState.quest_stage("ch1_main") == "hear_heirs", "从庭院进了大厅：主线推进到「听两位继承人」（%s）" % GameState.quest_stage("ch1_main"))
+	var exit: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "castle")[0]
+	var emid: Vector3 = exit.global_transform * Vector3(exit.width * 0.5, 0, 0)
+	check(exit.to_spawn == "hall_door" and Vector2(emid.x, emid.z).distance_to(AreaMap.exits("hall")[0].at) < 0.3 and AreaMap.exits("hall")[0].name == exit.display_name, "出口的门和地图出口对得上")
 	var people := main.find_children("Npc_*", "Npc", true, false)
 	var bad: Array = people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)
 	check(people.size() == 4 + Hall.GUARDS.size() and bad.is_empty(), "大厅里：阿尔里克、信使、伊薇特、埃德里克和卫兵，都站得稳（%s）" % str(bad))
@@ -6503,7 +6512,9 @@ func test_hall() -> void:
 	await frames(2)
 	check(await fl_say(main, "hall", "ivette", ["您打算怎么守北境？", "那您要我做什么？", "我会考虑。"]) and GameState.quest_stage("ch1_outlaws") == "talk_offer"
 		and GameState.quest_stage("ch1_main") == "hear_heirs", "先听伊薇特：支线开始，阿尔里克还没听，主线不动")
-	check(await fl_say(main, "hall", "alric", ["您打算怎么守北境？", "那您要我做什么？", "那是揭您妹妹的短。", "我会考虑。"]) and GameState.quest_stage("ch1_ledger") == "get_ledger"
-		and GameState.quest_stage("ch1_main") == "see_osric", "再听阿尔里克（问他揭妹妹的短）：主线一样推进到「去看家主」")
+	check(await fl_say(main, "hall", "alric", ["您打算怎么守北境？", "那您要我做什么？", "那是揭您妹妹的短。"]) and GameState.quest_stage("ch1_ledger") == "get_ledger"
+		and GameState.quest_stage("ch1_main") == "see_osric", "再听阿尔里克（问他揭妹妹的短，没选「我会考虑」就关掉）：主线一样推进到「去看家主」")
+	GameState.quests.ch1_main.stage = "meet_herman"                 # 借一个不是「听两位继承人」的阶段，代替以后（4.5c 起）的阶段
+	check(await fl_say(main, "hall", "alric", ["账房那本账……", "我会考虑。"]) and GameState.quest_stage("ch1_main") == "meet_herman", "主线不在「听两位继承人」时再找他们说话，主线不会被改（以后不倒退）")
 	await free_main(main)
 	GameState.new_game()

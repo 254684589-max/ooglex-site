@@ -899,6 +899,12 @@ func _story_progress() -> void:
 		GameState.set_stage("ch1_main", "hear_heirs")           # 进了大厅（4.5b）：没见赫尔曼直接闯进来的也算
 
 
+## 两位继承人都开口要过了（4.5b，顺序任意）：主线推进到「去看家主」。对话关上时查，只从 hear_heirs 往前推（以后再找他们说话不会让主线倒退，审查）
+func _heirs_heard() -> void:
+	if GameState.quest_stage("ch1_main") == "hear_heirs" and GameState.has_flag("ledger_asked") and GameState.has_flag("outlaws_asked"):
+		GameState.set_stage("ch1_main", "see_osric")
+
+
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
 func area_title() -> String:
 	var z := AreaMap.zone_at(area, player_xz())
@@ -1205,6 +1211,7 @@ func _on_dialogue_closed() -> void:
 	get_tree().paused = false
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
+	_heirs_heard()
 	var b := GameState.pending_brawl
 	GameState.pending_brawl = {}
 	if not b.is_empty() and dialogue_npc is Npc:

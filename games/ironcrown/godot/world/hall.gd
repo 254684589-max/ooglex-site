@@ -24,7 +24,7 @@ const IVETTE := ["ivette", "伊薇特", Vector3(-6.8, 0, 0.6), -1.9, "4a3e2c"]  
 const EDRIC := ["edric_hall", "埃德里克", Vector3(6.6, 0, 2.7), PI / 2, "2a3a4e"]      # 东南窗边，只在序章「交出」时
 const GUARDS := [["hall_guard", "大厅门口的卫兵", Vector3(-1.6, 0, 3.3), PI, "3e4652"]]
 const ENVOY_LINES := ["（他整了整红斗篷的领口，看都没看你）", "摄政大人的耐心，不像北境的冬天这么长。", "粮车就停在南岸，等一句话。"]
-const GUARD_LINES := ["两位大人说话的时候，别插嘴。", "家主的椅子空了三天了。谁也不敢坐。", "吵了一上午，壁炉都快烧没了。"]
+const GUARD_LINES := ["两位大人说话的时候，别插嘴。", "家主的椅子空了三天了。谁也不敢坐。", "从早吵到现在，壁炉都快烧没了。"]
 const SPAWNS := {"front": [Vector3(0, 0, 3.0), 0.0]}
 const VIEW_NAMES := ["进门看大厅", "台子东边（阿尔里克）", "壁炉前（伊薇特）", "门内对着出口"]
 const VIEWS := [
@@ -180,7 +180,7 @@ static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 	parent.add_child(fire)
 	for cx: float in [-4.0, 4.0]:
 		var l := OmniLight3D.new()
-		l.name = "Chandelier"
+		l.name = "Chandelier_W" if cx < 0.0 else "Chandelier_E"
 		l.light_color = Color("ffb060")
 		l.light_energy = 1.6
 		l.omni_range = 8.0
