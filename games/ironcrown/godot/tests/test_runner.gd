@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 420.0
+	dog.wait_time = 600.0
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -5966,9 +5966,18 @@ func test_reedwharf() -> void:
 	check(GameState.quest_stage("ch1_main") == "to_blackheron", "两条消息：主线推进到「去黑鹭堡」（%s）" % GameState.quest_stage("ch1_main"))
 	await frames(3)
 	check(str(Saves.read_slot("auto").data.state.quests.ch1_main.stage) == "to_blackheron", "任务更新时自动存档")
+	# —— 冒烟测试用的机位：6 号对着客栈门，7 号对着托宾
+	await seconds(0.4)
+	main.set_view(6)
+	await physics(3)
+	p.interactor.refresh()
+	var t6 := p.interactor.target
+	main.set_view(7)
+	await physics(3)
+	p.interactor.refresh()
+	check(t6 == door and p.interactor.target == main.world.get_node("Npc_tobin"), "鹭沼 6 号机位对着客栈门、7 号对着托宾（冒烟测试用）")
 	# —— 走进客栈：在门前的平台上对准门，按交互
 	var v6: Array = MarshLayout.VIEWS[6]
-	await seconds(0.4)                            # 说话时镜头转向说话人的那 0.35 秒转完（不然会盖掉下面的瞄准）
 	await aim(p, v6[0], dmid + Vector3(0, 1.1, 0))
 	check(p.interactor.target == door and door.prompt() == "进入 · 歪桩客栈", "站在客栈门前对准门：提示「进入 · 歪桩客栈」（%s）" % (p.interactor.target.prompt() if p.interactor.target else "没对准"))
 	var rr := [0]
@@ -6093,7 +6102,11 @@ func test_reedwharf() -> void:
 	GameState.add_silver(keep)
 	check(say_runner("boatman", ["南边最近有人过来吗？", "（把 3 枚银币放在船帮上）这够不够买一句规矩以外的话？"]) == "envoy" and GameState.silver == keep - 3
 		and GameState.quest_stage("ch1_main") == "to_blackheron", "给 3 枚银币问出来了：客栈 + 渡工两条，也推进到「去黑鹭堡」")
-	check(say_runner("ivette_veteran", ["那就说说实话。"]) == "truth" and say_runner("innkeeper", ["再说说招兵的那两拨人。"]) == "news_recap", "伊薇特的老兵、客栈老板（再问）都接得上")
+	r.start("reedwharf", "innkeeper")
+	check(r.node_id == "greet" and say_runner("innkeeper", ["打听一下黑鹭堡的事。"]) == "news" and say_runner("innkeeper", ["再说说招兵的那两拨人。"]) == "news_recap",
+		"先听了军士的再找客栈老板：他是头一回见你（不说「又来了」），照样讲、再问也接得上")
+	check(say_runner("ivette_veteran", ["那就说说实话。"]) == "truth" and say_runner("alric_sergeant", ["我是誓剑，不替谁签名。"]) == "hired_free",
+		"伊薇特的老兵接得上；没有引荐信（被维克托赶出来）时不说「已经有雇主了」")
 	# —— 4.4a 时在鹭沼存的档（主线还在「去芦栈村」）：读进来就推进；第一章以前（网页 ?area=marsh）不碰任务
 	ch1_state("release")
 	GameState.start_quest("ch1_main")
@@ -6101,6 +6114,11 @@ func test_reedwharf() -> void:
 	main = await make_main(false)
 	await physics(2)
 	check(main.arrived_by == "" and GameState.quest_stage("ch1_main") == "ask_reedwharf", "读 4.4a 在鹭沼存的档：主线也推进到「在芦栈村打听」")
+	await free_main(main)
+	ch1_state("release")
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	check(GameState.quest_stage("ch1_main") == "ask_reedwharf", "没和维克托说话就出发了：到了村子主线也从「在芦栈村打听」接上")
 	await free_main(main)
 	GameState.new_game()
 	main = await make_area("marsh")

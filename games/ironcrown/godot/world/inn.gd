@@ -39,7 +39,7 @@ const GILBERT := ["gilbert", "吉尔伯特", Vector3(3.3, 0, 2.9), PI / 2, "2e3a
 const DRINKER := ["drinker", "喝酒的泥炭工", Vector3(-4.85, 0, 0.9), -PI / 2, "4a4232"]
 const OLD_BOATMAN := ["old_boatman", "烤火的老船夫", Vector3(4.55, 0, -2.25), 2.39, "3e4a4a"]          # 火塘东北边的长凳头上，面朝火
 const DRINKER_LINES := ["两边的人都请我喝过酒。酒我喝了，名我可没签。", "我兄弟昨天跟着阿尔里克的人走了。说是去吃王都的粮——王都的粮长什么样，谁见过？",
-	"泥炭工一天挣三个铜子，当兵一天挣三枚银币。你说，换了你，你去不去？"]
+	"泥炭工干一个月也攒不下三枚银币，签个名就先给三枚。你说，换了你，你去不去？"]
 const OLD_BOATMAN_LINES := ["黑鹭堡建在石岛上，三百年没被人打下来过。可三百年也没见过这么冷的冬天。", "我年轻时撑船给老家主送过信。那时候他的腰板比堤道还直。",
 	"堤道断的那天夜里，水是从芦苇荡里漫过来的，一点声音都没有。"]
 ## 命名出生点（world/areas.gd）：front = 刚从栈道进门，背对门站在门内、面朝大堂（-Z）
@@ -331,7 +331,7 @@ static func _colliders(parent: Node3D) -> void:
 		_solid(parent, Vector3(c.x, 0.45, c.y), Vector3(0.66, 0.9, 0.66))
 	_solid(parent, TABLE_POS + Vector3(0, 0.4, 0), Vector3(2.4, 0.8, 1.74))              # 长桌连长凳
 	_solid(parent, SMALL_TABLE_POS + Vector3(-0.17, 0.4, -0.17), Vector3(1.24, 0.8, 1.24))   # 小方桌连凳子
-	_solid(parent, Vector3(HEARTH.get_center().x, 0.55, HEARTH.get_center().y), Vector3(HEARTH.size.x + 0.2, 1.1, HEARTH.size.y + 0.2))   # 火塘：人走不进火里
+	_solid(parent, Vector3(HEARTH.get_center().x, 1.0, HEARTH.get_center().y), Vector3(HEARTH.size.x + 0.2, 2.0, HEARTH.size.y + 0.2))   # 火塘：人走不进火里（2 米高：从旁边长凳上也跳不上去，审查）
 	_solid(parent, Vector3(4.75, 0.25, -0.9), Vector3(0.4, 0.5, 1.8))                     # 火塘边的长凳
 	# 楼梯：栅门锁着，上不去；整段楼梯连同梯下的空间当一块实心挡住
 	_solid(parent, Vector3(STAIRS.get_center().x, H * 0.5, STAIRS.get_center().y), Vector3(STAIRS.size.x, H, STAIRS.size.y))

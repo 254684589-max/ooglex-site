@@ -3,13 +3,13 @@
   "innkeeper": {
     "speaker": "客栈老板",
     "start": "greet",
-    "start_if": [{"if": [{"flag": "heard_recruiters"}], "node": "greet_again"}],
+    "start_if": [{"if": [{"flag": "innkeeper_told"}], "node": "greet_again"}],
     "nodes": {
       "greet": {
         "text": "（他在吧台后面切一条熏鱼，抬头看了看你的靴子）从霜渡镇过来的？靴子上全是泥。坐吧，火塘边上暖和。",
         "options": [
-          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "heard_recruiters"}], "next": "news"},
-          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "heard_recruiters"}], "next": "news_recap"},
+          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "innkeeper_told"}], "next": "news"},
+          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "innkeeper_told"}], "next": "news_recap"},
           {"text": "窗边那位客人是谁？", "if": [{"flag": "prologue_edric", "eq": "extort"}, {"not_flag": "gilbert_met"}], "next": "gilbert_hint"},
           {"text": "这客栈为什么叫「歪桩」？", "next": "name"},
           {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
@@ -20,8 +20,8 @@
       "greet_again": {
         "text": "又来了？火塘边上还有地方。",
         "options": [
-          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "heard_recruiters"}], "next": "news"},
-          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "heard_recruiters"}], "next": "news_recap"},
+          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "innkeeper_told"}], "next": "news"},
+          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "innkeeper_told"}], "next": "news_recap"},
           {"text": "窗边那位客人是谁？", "if": [{"flag": "prologue_edric", "eq": "extort"}, {"not_flag": "gilbert_met"}], "next": "gilbert_hint"},
           {"text": "这客栈为什么叫「歪桩」？", "next": "name"},
           {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
@@ -32,8 +32,8 @@
       "menu": {
         "text": "还要点什么？",
         "options": [
-          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "heard_recruiters"}], "next": "news"},
-          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "heard_recruiters"}], "next": "news_recap"},
+          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "innkeeper_told"}], "next": "news"},
+          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "innkeeper_told"}], "next": "news_recap"},
           {"text": "窗边那位客人是谁？", "if": [{"flag": "prologue_edric", "eq": "extort"}, {"not_flag": "gilbert_met"}], "next": "gilbert_hint"},
           {"text": "这客栈为什么叫「歪桩」？", "next": "name"},
           {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
@@ -43,7 +43,7 @@
       },
       "news": {
         "text": "（他把刀放下，朝屋里努了努嘴）你自己看。西边长桌上摊着名册的，是阿尔里克大人的人；火塘边上烤手的那个，是伊薇特小姐的人。两拨人都在村里招兵，从早喝到晚，说的话正好拧着——一个说跟着长子有王都的粮吃，一个说王都的粮是拴狗的链子。村里的年轻人，一半已经跟着走了。",
-        "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
+        "do": [{"set": "innkeeper_told"}, {"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
         "options": [
           {"text": "家主怎么样了？", "next": "osric"},
           {"text": "明白了。", "next": "menu"}
@@ -56,13 +56,13 @@
         ]
       },
       "news_recap": {
-        "text": "（他压低了声音）阿尔里克的人说，长子继承天经地义，王都答应开春送粮；伊薇特的人说，扣下南运的皮毛税自己养兵，用不着看王都的脸色。想听得更细，就去跟他们喝一杯。",
+        "text": "（他压低了声音）阿尔里克的人说，长子继承天经地义，王都答应开春送粮；伊薇特的人说，小姐自有法子养兵，用不着看王都的脸色。想听得更细，就去跟他们喝一杯。",
         "options": [
           {"text": "明白了。", "next": "menu"}
         ]
       },
       "gilbert_hint": {
-        "text": "那位？南边来的，住了两天了，账结得比谁都痛快。他问过好几回，有没有一个从霜渡镇来的誓剑。……我看，他等的就是你。",
+        "text": "那位？天没亮就到了，马都跑得直喘，账倒结得比谁都痛快。一进门就问，有没有一个从霜渡镇来的誓剑，问了好几回。……我看，他等的就是你。",
         "options": [
           {"text": "明白了。", "next": "menu"}
         ]
@@ -98,7 +98,8 @@
         "options": [
           {"text": "阿尔里克大人凭什么继承？", "next": "why"},
           {"text": "火塘边那个人说的可不一样。", "next": "rival"},
-          {"text": "我是誓剑，已经有雇主了。", "next": "hired"},
+          {"text": "我是誓剑，已经有雇主了。", "if": [{"flag": "ch1_letter"}], "next": "hired"},
+          {"text": "我是誓剑，不替谁签名。", "if": [{"not_flag": "ch1_letter"}], "next": "hired_free"},
           {"text": "（走开）", "end": true}
         ]
       },
@@ -117,7 +118,7 @@
         ]
       },
       "rival": {
-        "text": "（他朝火塘那边看了一眼，声音一点没压低）伊薇特小姐想扣下南运的皮毛税自己养兵，跟王都翻脸。翻了脸，粮从哪来？靠鹭沼的芦苇根吗？",
+        "text": "（他朝火塘那边看了一眼，压低了声音）听说伊薇特小姐想自己养兵，跟王都翻脸——钱从哪来，你自己猜。翻了脸，粮从哪来？靠鹭沼的芦苇根吗？",
         "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
         "options": [
           {"text": "明白了。", "next": "menu"}
@@ -125,6 +126,12 @@
       },
       "hired": {
         "text": "誓剑？（他上下打量你）那就替你的雇主好好看看——谁能让北境活过这个冬天。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "hired_free": {
+        "text": "不替谁签名？（他上下打量你）没主子的誓剑，在北境可不好过冬。哪天想通了，名册就在这儿。",
         "options": [
           {"text": "……", "next": "menu"}
         ]
@@ -153,7 +160,7 @@
         ]
       },
       "truth": {
-        "text": "伊薇特小姐在兵营里和我们吃一样的饭。她说，王都的粮是拴狗的链子——今天给你一车麦子，明天就要你的兵、你的烽燧、你的姓。她要扣下南运的皮毛税自己养兵，跟厄尔德家一起把烽燧重新点起来。",
+        "text": "伊薇特小姐在兵营里和我们吃一样的饭。她说，王都的粮是拴狗的链子——今天给你一车麦子，明天就要你的兵、你的烽燧、你的姓。她有法子自己养兵——怎么养，别问我——再跟厄尔德家一起把烽燧重新点起来。",
         "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
         "options": [
           {"text": "明白了。", "next": "menu"}
@@ -270,7 +277,7 @@
         ]
       },
       "refuse": {
-        "text": "（他一点也不意外）无妨。我在这儿再住几天，您改了主意，随时来。……只提醒一句：这张纸在北境，谁拿着，谁就是靶子。",
+        "text": "（他一点也不意外）无妨。我在这儿再等一天，您改了主意，随时来。……只提醒一句：这张纸在北境，谁拿着，谁就是靶子。",
         "options": [
           {"text": "（告辞）", "end": true}
         ]
