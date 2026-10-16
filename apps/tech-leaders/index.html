@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
+  // 在 OOGLE X 安卓应用内打开时标记页面（首屏前生效，避免闪现），用于隐藏只适合网页的入口。
+  try{if(/OoglexApp\//.test(navigator.userAgent||""))document.documentElement.classList.add("in-app");}catch(e){}
   (function(){
     try{
       var u=new URL(location.href);
@@ -49,6 +51,9 @@
     .page{max-width:1180px;margin:0 auto;padding:0 24px 56px}
     .top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .back{color:var(--dim);font-size:14px}.back:hover{color:var(--ink)}
+    /* 应用内没有「返回 Ooglex 首页」的需要：隐藏返回链接，标签移到左侧，避开右上角的主题按钮 */
+    .in-app .top .back{display:none}
+    .in-app .top{justify-content:flex-start}
     .tag{font:11px/1 var(--mono);letter-spacing:.16em;color:var(--faint)}
     .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,330px);gap:38px;align-items:center;padding:50px 0 26px}
     .hero-copy{min-width:0}
