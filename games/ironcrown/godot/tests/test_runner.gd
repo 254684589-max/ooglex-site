@@ -6368,6 +6368,10 @@ func test_castle() -> void:
 	GameState.start_quest("ch1_main", "to_blackheron")
 	GameState.set_flag("heard_causeway")
 	check(say_runner("gate_guard", ["我是霜渡镇的誓剑，有事要见家主。"], "blackheron") == "no" and not GameState.has_flag("castle_admitted"), "没有引荐信：卫兵不放")
+	GameState.add_item("intro_letter")
+	check(say_runner("gate_guard", ["我有维克托大人写给堡守赫尔曼的引荐信。"], "blackheron") == "letter" and not GameState.has_flag("castle_admitted"),
+		"卫兵看了信、还没进门就关掉对话：不算放进过（堡门和地图不会对不上，审查）")
+	GameState.take_item("intro_letter")
 	var r := DialogueRunner.new()
 	r.start("blackheron", "gate_guard")
 	check(not r.options().any(func(o): return str(o.text).begins_with("我有维克托")), "没有引荐信就没有那一项（不灰着提示）")

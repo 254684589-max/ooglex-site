@@ -15,7 +15,8 @@ var locked_text := "门锁着。"
 var is_open := false
 var to_area := ""                 # 通往的区域（world/areas.gd）；空 = 普通的门
 var to_spawn := ""                # 到了那边站在哪个出生点
-var key_item := ""                # 能开这把锁的钥匙（data/items.json）；空 = 打不开
+var key_item := ""
+var panel := true                 # false = 不画门板（黑鹭堡的水门：看得见后面的铁栅，4.5a）；碰撞照样有                # 能开这把锁的钥匙（data/items.json）；空 = 打不开
 var target_deg := 0.0
 var closed_rot := 0.0
 
@@ -39,6 +40,8 @@ func _ready() -> void:
 	cs.shape = bs
 	cs.position = Vector3(width * 0.5, height * 0.5, 0)
 	add_child(cs)
+	if not panel:
+		return
 	# 门板与把手用 MeshKit 搭（贴图按米计算 UV，比例和墙上的木梁一致）
 	var kit := MeshKit.new()
 	kit.box("timber", cs.position, bs.size, Basis.IDENTITY, 0.85, 0.6, true)

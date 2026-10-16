@@ -16,7 +16,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -26,7 +26,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -59,7 +59,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -69,7 +69,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -79,7 +79,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -88,7 +88,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -133,7 +133,7 @@
         "do": [{"set": "camp_boss_paid"}],
         "options": [
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -141,7 +141,7 @@
         "text": "（他往火里扔了根柴）还有事？",
         "options": [
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
-          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },

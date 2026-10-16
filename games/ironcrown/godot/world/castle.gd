@@ -31,13 +31,15 @@ const SIDE_GATE_Z := 14.0         # 西墙上兵营侧门的中心
 const BANNER := Vector3(3.6, 0, -9.0)
 const BRAZIERS := [Vector3(-3.0, 0, -9.4), Vector3(3.0, 0, -9.4)]     # 大厅门两边的火盆（夜灯）
 ## 人：[编号, 名字, 位置, 朝向（弧度）, 衣服颜色]；有对话的编号是 data/dialogue/blackheron.json 里的对话
-const HERMAN := ["herman", "赫尔曼", Vector3(-1.5, 0, 8.0), PI, "3a3a34"]
+const HERMAN := ["herman", "赫尔曼", Vector3(3.4, 0, 7.4), PI, "3a3a34"]          # 井边，面朝堡门
 const GUARDS := [
 	["gate_guard_in", "守门的卫兵", Vector3(2.6, 0, 17.5), 0.0, "3e4652"],
 	["barracks_soldier", "兵营门口的兵", Vector3(-8.4, 0, 3.6), -PI / 2, "4e4a36"],
+	["water_keeper", "守水门的老头", Vector3(-11.4, 0, -18.4), 2.0, "4a4a42"],      # 托宾、奥弗说的那个「一盏灯、一把锈剑」的老头
 ]
 const GUARD_LINES := {
 	"gate_guard_in": ["赫尔曼大人在井边。有事找他，别在院子里乱走。", "两位继承人的人都住在堡里，各住各的。夜里别往兵营那边去。", "家主的病房谁也不让进——玛尔塔说的，赫尔曼大人点了头。"],
+	"water_keeper": ["（他眯着眼看你，又看看水门）……我什么也没看见。", "这道铁栅好些年没升过了，泥炭船贴着栅底下那道缝钻进来。", "夜里水门这儿就我一盏灯。灯灭了，谁也找不着这道门。"],
 	"barracks_soldier": ["伊薇特小姐在兵营里跟我们一块儿吃饭。阿尔里克大人？他在大厅里。", "这几天兵营不让外人进，你也别想。", "听说南边来的信使还在堡里，住的是最好的客房。"],
 }
 ## 命名出生点：gate = 从堡门进来（门里面，面朝庭院）；water_gate = 从水门进来（水门里面，面朝南）；barracks_gate = 从兵营侧门进来（面朝东）
@@ -49,7 +51,7 @@ const SPAWNS := {
 const VIEW_NAMES := ["进门看庭院", "井边（赫尔曼）", "水门里面", "门内对着堡门"]
 const VIEWS := [
 	[Vector3(0, 0, 17.5), 0.0, 4.0],
-	[Vector3(-1.5, 0, 10.2), 0.0, -6.0],
+	[Vector3(3.4, 0, 9.6), 0.0, -6.0],
 	[Vector3(WATER_GATE_X, 0, -17.0), 180.0, 0.0],
 	[Vector3(0, 0, 17.6), 180.0, -2.0],     # 3：门内对着堡门（冒烟测试出门用）
 ]
@@ -118,9 +120,14 @@ static func _walls(kit: MeshKit) -> void:
 	var gw := GATE_W * 0.5 + 0.4
 	for sx: float in [-1.0, 1.0]:      # 南墙两段
 		var a := gw
-		kit.box("stone", Vector3(sx * (a + HW) * 0.5, WALL_H * 0.5, HD + t * 0.5), Vector3(HW - a + t * 2.0, WALL_H, t), Basis.IDENTITY, 0.85, 0.45)
-	kit.box("stone", Vector3(0, (GATE_H + 0.4 + WALL_H) * 0.5, HD + t * 0.5), Vector3(gw * 2.0, WALL_H - GATE_H - 0.4, t), Basis.IDENTITY, 0.85, 0.6)
-	kit.box("stone", Vector3(0, WALL_H * 0.5, -HD - t * 0.5), Vector3(HW * 2.0 + t * 2.0, WALL_H, t), Basis.IDENTITY, 0.85, 0.45)
+		kit.box("stone", Vector3(sx * (a + HW + t) * 0.5, WALL_H * 0.5, HD + t * 0.5), Vector3(HW + t - a, WALL_H, t), Basis.IDENTITY, 0.85, 0.45)    # 门洞两边（审查：原来两段在门洞上重叠）
+	kit.box("stone", Vector3(0, (GATE_H + 0.5 + WALL_H) * 0.5, HD + t * 0.5), Vector3(gw * 2.0, WALL_H - GATE_H - 0.5, t), Basis.IDENTITY, 0.85, 0.6)
+	# 北墙：水门那里留一个 3.2 米宽、3.2 米高的拱洞（隔着铁栅看得见外面的水和泥炭船；碰撞还是整面墙）
+	var w0 := WATER_GATE_X - 1.6
+	var w1 := WATER_GATE_X + 1.6
+	kit.box("stone", Vector3((-HW - t + w0) * 0.5, WALL_H * 0.5, -HD - t * 0.5), Vector3(w0 + HW + t, WALL_H, t), Basis.IDENTITY, 0.85, 0.45)
+	kit.box("stone", Vector3((w1 + HW + t) * 0.5, WALL_H * 0.5, -HD - t * 0.5), Vector3(HW + t - w1, WALL_H, t), Basis.IDENTITY, 0.85, 0.45)
+	kit.box("stone", Vector3(WATER_GATE_X, (3.2 + WALL_H) * 0.5, -HD - t * 0.5), Vector3(3.2, WALL_H - 3.2, t), Basis.IDENTITY, 0.85, 0.6)
 	for sx: float in [-1.0, 1.0]:
 		kit.box("stone", Vector3(sx * (HW + t * 0.5), WALL_H * 0.5, 0), Vector3(t, WALL_H, HD * 2.0), Basis.IDENTITY, 0.85, 0.45)
 	# 雉堞：墙头内沿每 1.6 米一个垛口
@@ -141,9 +148,9 @@ static func _walls(kit: MeshKit) -> void:
 
 ## 堡门的拱、北墙的水门（黑洞洞的拱 + 放下的铁栅 + 外面停着的泥炭船船头）、西墙的侧门拱
 static func _gates(kit: MeshKit) -> void:
-	kit.box("stone", Vector3(0, GATE_H + 0.2, HD - 0.05), Vector3(GATE_W + 0.8, 0.4, 0.3), Basis.IDENTITY, 0.9, 0.7)      # 门楣
+	kit.box("stone", Vector3(0, GATE_H + 0.3, HD - 0.05), Vector3(GATE_W + 0.8, 0.4, 0.3), Basis.IDENTITY, 0.9, 0.7)      # 门楣（在门板上面，不压着门）
 	var wx := WATER_GATE_X
-	kit.box("soot", Vector3(wx, 1.6, -HD + 0.02), Vector3(3.2, 3.2, 0.04))
+	kit.box("stone", Vector3(wx, -0.25, -HD - WALL_T * 0.5), Vector3(3.2, 0.5, WALL_T), Basis.IDENTITY, 0.6, 0.4)          # 拱洞底下的石阶（往下就是水）
 	kit.box("stone", Vector3(wx, 3.35, -HD + 0.1), Vector3(3.8, 0.4, 0.3), Basis.IDENTITY, 0.9, 0.7)
 	for sx: float in [-1.0, 1.0]:
 		kit.box("stone", Vector3(wx + sx * 1.75, 1.6, -HD + 0.1), Vector3(0.3, 3.2, 0.3), Basis.IDENTITY, 0.85, 0.6)
@@ -151,9 +158,9 @@ static func _gates(kit: MeshKit) -> void:
 		kit.box("iron", Vector3(wx - 1.35 + i * 0.45, 1.5, -HD + 0.18), Vector3(0.06, 3.0, 0.06))
 	for y: float in [0.4, 1.2, 2.0, 2.8]:
 		kit.box("iron", Vector3(wx, y, -HD + 0.18), Vector3(3.0, 0.06, 0.06))
-	kit.box("water", Vector3(wx, -0.3, -HD - 0.8), Vector3(3.0, 0.02, 1.5))                    # 栅外的水
-	kit.box("timber", Vector3(wx + 0.4, -0.15, -HD - 1.1), Vector3(1.3, 0.3, 1.6), Basis(Vector3.UP, 0.2), 0.8, 0.5)    # 泥炭船的船头
-	kit.box("peat", Vector3(wx + 0.4, 0.12, -HD - 1.1), Vector3(1.0, 0.25, 1.2), Basis(Vector3.UP, 0.2), 0.8, 0.5)
+	kit.box("water", Vector3(wx, -0.45, -HD - WALL_T - 3.0), Vector3(8.0, 0.02, 6.0))           # 栅外的水
+	kit.box("timber", Vector3(wx + 0.5, -0.3, -HD - WALL_T - 1.4), Vector3(1.3, 0.3, 2.4), Basis(Vector3.UP, 0.2), 0.8, 0.5)    # 拴在栅外的泥炭船
+	kit.box("peat", Vector3(wx + 0.5, -0.05, -HD - WALL_T - 1.4), Vector3(1.0, 0.25, 1.8), Basis(Vector3.UP, 0.2), 0.8, 0.5)
 	var sz := SIDE_GATE_Z
 	kit.box("soot", Vector3(-HW + 0.02, 1.2, sz), Vector3(0.04, 2.4, 1.6))
 	kit.box("stone", Vector3(-HW + 0.1, 2.55, sz), Vector3(0.3, 0.3, 2.0), Basis.IDENTITY, 0.9, 0.7)
@@ -198,6 +205,9 @@ static func _colliders(parent: Node3D) -> void:
 		_solid(parent, Vector3(sx * (HW + t * 0.5), WALL_H * 0.5, 0), Vector3(t, WALL_H, HD * 2.0 + t * 2.0))
 	_solid(parent, Vector3(0, WALL_H * 0.5, -HD - t * 0.5), Vector3(HW * 2.0 + t * 2.0, WALL_H, t))
 	_solid(parent, Vector3(0, WALL_H * 0.5, HD + t * 0.5), Vector3(gw * 2.0, WALL_H, t * 0.6))     # 门洞后面：出不去（出门靠交互）
+	for sx: float in [-1.0, 1.0]:                  # 四角的方塔伸进院子 1.25 米（审查：原来没有碰撞，走得进石头里）
+		for sz: float in [-1.0, 1.0]:
+			_solid(parent, Vector3(sx * (HW + t * 0.5), WALL_H * 0.75, sz * (HD + t * 0.5)), Vector3(5.0, WALL_H * 1.5, 5.0))
 	_solid(parent, WELL + Vector3(0, 0.6, 0), Vector3(2.0, 1.2, 2.0))
 	_solid(parent, CART + Vector3(0, 0.7, -0.3), Vector3(2.0, 1.4, 3.6))
 	for p: Vector2 in PEAT:
@@ -216,8 +226,9 @@ static func _doors(parent: Node3D) -> void:
 	exit.position = Vector3(-GATE_W * 0.5, 0, HD - 0.02)
 	parent.add_child(exit)
 	var wg := Door.make("水门", 3.0, 3.0, true)
+	wg.panel = false                              # 看得见铁栅（审查：原来是一块木门板挡在铁栅前面）
 	wg.locked_text = "水门的铁栅放下着，外面就是水。泥炭船从这里进出。"
-	wg.position = Vector3(WATER_GATE_X - 1.5, 0, -HD + 0.3)
+	wg.position = Vector3(WATER_GATE_X - 1.5, 0, -HD + 0.1)
 	parent.add_child(wg)
 	var sg := Door.make("兵营侧门", 1.4, 2.3, true)
 	sg.locked_text = "侧门从里面闩上了。"

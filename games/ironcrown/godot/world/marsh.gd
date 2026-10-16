@@ -287,7 +287,7 @@ func _people() -> void:
 	g.dialogue_area = "blackheron"
 	g.dialogue_id = str(GATE_GUARD[0])
 	g.position = gate_guard_pos()
-	g.rotation.y = deg_to_rad(MarshLayout.CW_YAW)              # 和堡门一个朝向：面朝堤道
+	g.rotation.y = deg_to_rad(MarshLayout.CW_YAW + 180.0)      # 面朝堤道（人的脸朝本地 -Z；审查：原来面朝堡门）
 	parent.add_child(g)
 	var mood := camp_mood()
 	var leader: Array = MarshLayout.CAMP_BOSS if mood == "boss" else MarshLayout.CAMP_OFFER

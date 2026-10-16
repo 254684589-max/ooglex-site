@@ -16,10 +16,9 @@
         ]
       },
       "letter": {
-        "text": "（他接过信，看了看封口的印，回头朝门洞里喊了一声）开门！……进去吧，赫尔曼大人在井边。",
-        "do": [{"set": "castle_admitted"}, {"set": "castle_entry", "value": "gate"}],
+        "text": "（他借着门洞里的灯看了看信上的印，回头朝门洞里喊了一声）开门！……进去吧，赫尔曼大人在井边。",
         "options": [
-          {"text": "（进堡）", "do": [{"goto": "castle", "spawn": "gate"}], "end": true}
+          {"text": "（进堡）", "do": [{"set": "castle_admitted"}, {"set": "castle_entry", "value": "gate"}, {"goto": "castle", "spawn": "gate"}], "end": true}
         ]
       },
       "no": {
@@ -29,7 +28,7 @@
         ]
       },
       "admitted": {
-        "text": "（门洞里的小门开着）赫尔曼大人吩咐过了，进去吧。",
+        "text": "（门洞里的小门开着）进去吧。",
         "options": [
           {"text": "（进堡）", "do": [{"goto": "castle", "spawn": "gate"}], "end": true},
           {"text": "（离开）", "end": true}
@@ -91,7 +90,7 @@
         ]
       },
       "heirs": {
-        "text": "大厅里。从早上吵到现在，长子一句，小姐一句，谁也不让谁。你要见他们，就规矩点：先见长子，再见小姐，哪边都别得罪。……在这堡里，我只听家主的。",
+        "text": "大厅里。从早上吵到现在，长子一句，小姐一句，谁也不让谁。你要见他们，就规矩点：话留三分，哪边都别得罪。……在这堡里，我只听家主的。",
         "options": [
           {"text": "明白了。", "next": "again"}
         ]

@@ -106,6 +106,7 @@ func _ready() -> void:
 	GameState.pending_ending = ""
 	tip_queue = GameState.pending_tips.duplicate() if pending.has("spawn") else []    # 从门走进来：没轮到的教学提示接着排
 	GameState.pending_tips = []
+	GameState.pending_goto = {}                     # 上一个场景没走成的「带你去别处」不带过来（审查）
 	if OS.has_feature("web"):
 		if _query("test") == "1":
 			use_test_range = true
