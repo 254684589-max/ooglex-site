@@ -2133,7 +2133,7 @@ function freeTechLeaderCacheKey(handle) {
 // 同一 Worker 实例内正在后台刷新的账号，避免同一时间重复请求上游。
 const freeFeedRefreshing = new Set();
 
-// 把新取到的帖子与 12 小时内的旧缓存按 id 合并（新数据优先，按时间倒序，最多 100 条）。
+// 把新取到的帖子与已缓存的历史帖子按 id 合并（新数据优先，按时间倒序，最多 100 条）。
 // 否则首屏只取 10–20 条的例行刷新会把已经取到的更早历史覆盖掉，
 // 「加载更多」只能再去上游逐页翻，常常翻不出新内容。
 function mergeWithCachedHistory(freshPosts, cachedPosts) {
@@ -2150,7 +2150,7 @@ function mergeWithCachedHistory(freshPosts, cachedPosts) {
     .slice(0, TECH_FREE_FEED_MAX_ITEMS);
 }
 
-async function refreshFreeTechLeaderFeed(normalized, limit, env, key, history) {
+async function refreshFreeTechLeaderFeed(normalized, limit, env, key, history, prevTarget) {
   const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
   const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
   const freshPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
@@ -2160,11 +2160,54 @@ async function refreshFreeTechLeaderFeed(normalized, limit, env, key, history) {
     ...fresh,
     posts: returnedPosts,
     requested_limit: Math.max(fulfilledLimit, returnedPosts.length),
-    requested_target: requestedLimit,
+    // 记住曾经深取过的最大条数：首屏的浅刷新不会把它降回 10，「加载更多」仍可直接用缓存。
+    requested_target: Math.max(requestedLimit, history && history.length ? (Number(prevTarget) || 0) : 0),
     returned_items: freshPosts.length
   };
   await writeJson(env.PRO_DATA, key, persisted);
   return persisted;
+}
+
+// ---- 定时轮换刷新全部账号（Cron Trigger）----
+// 每次运行按顺序深取几个账号（最多 100 条）并与历史合并写回 R2，约一天轮完名录里的全部本人账号：
+// 打开任何人物时服务器都有较新的缓存可立即返回，「加载更多」的历史也已备好。
+// 账号列表由部署流程从名录生成并上传到 R2（只含 handle，几 KB），定时任务不解析 1.8MB 名录。
+const FREE_FEED_REFRESH_HANDLES_KEY = "tech-leaders/free-feed/refresh-handles.json";
+const FREE_FEED_REFRESH_CURSOR_KEY = "tech-leaders/free-feed/refresh-cursor.json";
+const FREE_FEED_REFRESH_PER_RUN = 4;
+
+async function refreshFreeFeedArchive(handle, env) {
+  const normalized = normalizeXHandle(handle);
+  if (!normalized) return { handle, ok: false, error: "invalid_handle" };
+  const key = freeTechLeaderCacheKey(normalized);
+  const cached = await readJson(env.PRO_DATA, key);
+  const history = cached && Array.isArray(cached.posts) ? cached.posts : [];
+  try {
+    const persisted = await refreshFreeTechLeaderFeed(normalized, TECH_FREE_FEED_MAX_ITEMS, env, key, history, cached && cached.requested_target);
+    return { handle: normalized, ok: true, posts: Array.isArray(persisted.posts) ? persisted.posts.length : 0, before: history.length };
+  } catch (err) {
+    return { handle: normalized, ok: false, error: err && err.code ? err.code : "refresh_failed", before: history.length };
+  }
+}
+
+async function runScheduledFreeFeedRefresh(env) {
+  const list = await readJson(env.PRO_DATA, FREE_FEED_REFRESH_HANDLES_KEY);
+  const handles = list && Array.isArray(list.handles) ? list.handles.filter(Boolean) : [];
+  if (!handles.length) return { ok: false, error: "no_handles" };
+  const cursor = await readJson(env.PRO_DATA, FREE_FEED_REFRESH_CURSOR_KEY);
+  let index = Math.max(0, Number(cursor && cursor.next_index) || 0) % handles.length;
+  const results = [];
+  for (let i = 0; i < Math.min(FREE_FEED_REFRESH_PER_RUN, handles.length); i += 1) {
+    results.push(await refreshFreeFeedArchive(handles[index], env));
+    index = (index + 1) % handles.length;
+  }
+  await writeJson(env.PRO_DATA, FREE_FEED_REFRESH_CURSOR_KEY, {
+    next_index: index,
+    total: handles.length,
+    last_run_at: new Date().toISOString(),
+    last_results: results
+  });
+  return { ok: true, results };
 }
 
 async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
@@ -2184,11 +2227,14 @@ async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   // that many posts. Only the number of posts physically cached counts as
   // fulfilled history depth.
   const cachedCapacity = cachedPosts.length;
+  // 缓存已经按至少这么多条深取过（上游就只有这么多）：同样视为满足本次请求，
+  // 不必每次「加载更多」都再去上游翻一遍。
+  const coversLimit = cachedCapacity >= limit || (Number(cached && cached.requested_target) || 0) >= limit;
   const normalizedLower = normalized.toLowerCase();
   const strictLatestProfile = normalizedLower === "elonmusk";
 
   const activeTtl = strictLatestProfile ? TECH_FREE_FEED_STRICT_TTL_MS : TECH_FREE_FEED_TTL_MS;
-  if (cachedPosts.length && age <= activeTtl && cachedCapacity >= limit) {
+  if (cachedPosts.length && age <= activeTtl && coversLimit) {
     return {
       ...cached,
       requested_limit: cachedCapacity,
@@ -2201,13 +2247,14 @@ async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   // 缓存已过期但不太旧：先把缓存立即返回给访客，再在后台向上游刷新（stale-while-revalidate）。
   // 这样访客不用等上游公开源（常需 1–4 秒，偶尔失败重试），下一次打开就是新数据。
   // 马斯克要求更新更快：只在 10 分钟内的缓存上这样做，更旧的仍当场刷新。
-  const history = cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS ? cachedPosts : [];
+  // 历史帖子长期保留（不再只保留 12 小时内的缓存）：新帖子与历史按 id 合并，最多 100 条。
+  const history = cachedPosts;
   const revalidateWindow = strictLatestProfile ? TECH_FREE_FEED_TTL_MS : TECH_FREE_FEED_MAX_STALE_MS;
-  if (ctx && typeof ctx.waitUntil === "function" && cachedPosts.length && age <= revalidateWindow && cachedCapacity >= limit) {
+  if (ctx && typeof ctx.waitUntil === "function" && cachedPosts.length && age <= revalidateWindow && coversLimit) {
     if (!freeFeedRefreshing.has(key)) {
       freeFeedRefreshing.add(key);
       ctx.waitUntil(
-        refreshFreeTechLeaderFeed(normalized, limit, env, key, history)
+        refreshFreeTechLeaderFeed(normalized, limit, env, key, history, cached && cached.requested_target)
           .catch(() => null)
           .finally(() => freeFeedRefreshing.delete(key))
       );
@@ -2222,7 +2269,7 @@ async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   }
 
   try {
-    const persisted = await refreshFreeTechLeaderFeed(normalized, limit, env, key, history);
+    const persisted = await refreshFreeTechLeaderFeed(normalized, limit, env, key, history, cached && cached.requested_target);
     const returnedPosts = Array.isArray(persisted.posts) ? persisted.posts : [];
     return { ...persisted, posts: returnedPosts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
@@ -2868,6 +2915,10 @@ async function getTechLeaderFeed(profile, limit, env) {
 }
 
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(runScheduledFreeFeedRefresh(env).catch(() => null));
+  },
+
   async fetch(request, env, ctx) {
     const cors = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });

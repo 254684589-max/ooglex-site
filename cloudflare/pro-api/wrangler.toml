@@ -10,6 +10,11 @@ binding = "IMAGES"
 [ai]
 binding = "AI"
 
+# 定时轮换刷新科技领袖公开动态缓存（每 10 分钟 4 个账号，约一天轮完全部本人账号）。
+# 删除方法：去掉本段并重新部署；页面照常工作，只是缓存不再被提前刷新。
+[triggers]
+crons = ["*/10 * * * *"]
+
 [[routes]]
 pattern = "pro-api.ooglex.com"
 custom_domain = true
