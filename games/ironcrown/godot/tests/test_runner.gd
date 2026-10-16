@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -266,10 +266,13 @@ func test_ui() -> void:
 	var inn_room := await make_area("inn")         # 「歪桩」客栈（4.4b）
 	var keep_yard := await make_area("castle")     # 黑鹭堡庭院（4.5a）
 	var hall := await make_area("hall")            # 黑鹭堡大厅（4.5b）
+	var sick := await make_area("sickroom")        # 病房、兵营（4.5c）
+	var bunks := await make_area("barracks")
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
 		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false) \
 		+ field.find_children("*", "", true, false) + marsh.find_children("*", "", true, false) + inn_room.find_children("*", "", true, false) \
-		+ keep_yard.find_children("*", "", true, false) + hall.find_children("*", "", true, false)
+		+ keep_yard.find_children("*", "", true, false) + hall.find_children("*", "", true, false) \
+		+ sick.find_children("*", "", true, false) + bunks.find_children("*", "", true, false)
 	texts.append_array(Marsh.VIEW_NAMES + [Surface.label("mud"), "水太深，你爬回了刚才站稳的地方。", " · "])     # 鹭沼（4.4a）
 	texts.append_array(Inn.VIEW_NAMES + Inn.DRINKER_LINES + Inn.OLD_BOATMAN_LINES + [Inn.GATE_TEXT])            # 芦栈村的人说的话（4.4b，写在代码里）
 	for k in MarshLayout.PEOPLE_LINES:
@@ -277,6 +280,9 @@ func test_ui() -> void:
 	for k in MarshLayout.CAMP_LINES:                                                                            # 营地的人（4.4c）
 		texts.append_array(MarshLayout.CAMP_LINES[k])
 	texts.append_array(Castle.VIEW_NAMES + Hall.VIEW_NAMES + Hall.ENVOY_LINES + Hall.GUARD_LINES)               # 黑鹭堡（4.5a / 4.5b）
+	texts.append_array(Sickroom.VIEW_NAMES + Sickroom.OSRIC_LINES + Barracks.VIEW_NAMES)                         # 病房、兵营（4.5c）
+	for k in Barracks.SOLDIER_LINES:
+		texts.append_array(Barracks.SOLDIER_LINES[k])
 	for k in Castle.GUARD_LINES:
 		texts.append_array(Castle.GUARD_LINES[k])
 	for n in nodes:
@@ -298,6 +304,8 @@ func test_ui() -> void:
 	inn_room.queue_free()
 	keep_yard.queue_free()
 	hall.queue_free()
+	sick.queue_free()
+	bunks.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -6517,4 +6525,120 @@ func test_hall() -> void:
 	GameState.quests.ch1_main.stage = "meet_herman"                 # 借一个不是「听两位继承人」的阶段，代替以后（4.5c 起）的阶段
 	check(await fl_say(main, "hall", "alric", ["账房那本账……", "我会考虑。"]) and GameState.quest_stage("ch1_main") == "meet_herman", "主线不在「听两位继承人」时再找他们说话，主线不会被改（以后不倒退）")
 	await free_main(main)
+	GameState.new_game()
+
+
+## 黑鹭堡的病房、兵营、水门、账房（路线图 4.5c；STORY.md 4.5 第 3 步「见医师玛尔塔；家主昏睡」）：两位继承人都托过你以后病房推得开、伊薇特见过你（或从侧门进来）以后兵营推得开，
+## 地图出口跟着门走；玛尔塔让你看一眼昏睡的家主（主线推进到「等黄昏」）、托你采白芦根；家主躺在床上；兵营的军士；守水门的老头（夜里只有他、泥炭船回芦栈村）；账房还锁着、赫尔曼不给钥匙
+func test_keep() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	check(["sickroom", "barracks"].all(func(a): return Areas.known(a) and Areas.is_indoor(a) and Saves.SCENE_NAMES.has(a) and Areas.spawn(a, "front") is Transform3D)
+		and Areas.spawn("castle", "sickroom_door") is Transform3D and Areas.spawn("castle", "barracks_door") is Transform3D and AreaMap.region_of("sickroom") == "marsh" and AreaMap.region_of("barracks") == "marsh",
+		"区域登记：病房、兵营是室内区域，在「鹭沼一带」；庭院里两个门口是出生点")
+	# —— 还没听完两位继承人、伊薇特没见过：病房、兵营都关着
+	ch1_state("deliver", 13)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ledger_asked"]:
+		GameState.set_flag(f)
+	GameState.set_flag("castle_entry", "gate")
+	GameState.start_quest("ch1_main", "hear_heirs")
+	GameState.start_quest("ch1_ledger")
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	var doors: Array = main.find_children("*", "Door", true, false)
+	var locked_names: Array = doors.filter(func(d): return d.locked).map(func(d): return d.display_name)
+	check(["病房", "兵营", "账房"].all(func(n): return n in locked_names) and AreaMap.exits("castle").size() == 2, "听完两位继承人之前：病房、兵营、账房都关着，地图上只有堡门和大厅（%s）" % str(locked_names))
+	var ct: Door = doors.filter(func(d): return d.display_name == "账房")[0]
+	check(ct.locked_text.contains("赫尔曼"), "账房的门：两道锁，钥匙在赫尔曼那儿")
+	check(await fl_say(main, "blackheron", "herman", ["账房的钥匙……"], true) and main.dialogue.runner.node_id == "ledger_key", "阿尔里克托过你以后问赫尔曼要账房的钥匙：他不给（怎么拿到在 4.7）")
+	main.dialogue.close()
+	await frames(2)
+	# 守水门的老头：夜里只有他一个人守；能坐泥炭船回芦栈村
+	var keeper: Npc = main._npc_by_dialogue("water_keeper")
+	check(keeper != null and stands_clear(keeper), "守水门的老头有对话了，站得稳")
+	check(await fl_say(main, "blackheron", "water_keeper", ["这道水门夜里谁守？", "……"]) and GameState.has_flag("heard_water_gate") and GameState.has_flag("water_keeper_met"),
+		"守水门的老头：夜里水门只有他一个人守（给入夜备战埋线）")
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	check(await fl_say(main, "blackheron", "water_keeper", ["能坐泥炭船出去吗？", "（上船回芦栈村）"]), "坐泥炭船回芦栈村")
+	await seconds(0.6)
+	check(rr[0] == 1 and GameState.pending_load.get("scene") == "marsh" and GameState.pending_load.get("spawn") == "reedwharf", "泥炭船：对话一关就回到芦栈村（%s）" % str(GameState.pending_load))
+	await free_main(main)
+	# —— 两位继承人都托过你：病房、兵营都推得开，地图出口对得上，出生点在门前
+	GameState.set_flag("ivette_met")
+	GameState.set_flag("outlaws_asked")
+	GameState.start_quest("ch1_outlaws")
+	GameState.set_stage("ch1_main", "see_osric")
+	GameState.set_flag("heirs_heard")
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	doors = main.find_children("*", "Door", true, false)
+	var open: Array = doors.filter(func(d): return d.to_area != "" and not d.locked)
+	var ex: Array = AreaMap.exits("castle")
+	var ok := open.size() == 4 and ex.size() == 4
+	for d in open:
+		var mid: Vector3 = d.global_transform * Vector3(d.width * 0.5, 0, 0)
+		ok = ok and ex.filter(func(e): return e.name == d.display_name and e.to == d.to_area and Vector2(mid.x, mid.z).distance_to(e.at) < 0.3).size() == 1
+		if d.to_area in ["sickroom", "barracks"]:
+			var sp: Transform3D = Areas.spawn("castle", d.to_area + "_door")
+			var away := Vector2(sp.origin.x - mid.x, sp.origin.z - mid.z)
+			var look := -sp.basis.z
+			ok = ok and away.length() > 1.0 and away.length() < 1.8 and away.normalized().dot(Vector2(look.x, look.z)) > 0.9
+	check(ok, "病房、兵营的门推得开了，和地图出口对得上；出来时站在门前、背对门（%s）" % str(open.map(func(d): return d.display_name)))
+	# 病房：玛尔塔、床上昏睡的家主
+	main = await fl_go(main, "sickroom")
+	await physics(3)
+	var marta: Npc = main._npc_by_dialogue("marta")
+	var osric := main.world.get_node_or_null("Npc_osric") as Npc
+	check(main.area == "sickroom" and main.arrived_by == "front" and marta != null and stands_clear(marta), "进了病房：玛尔塔站在床边（站得稳）")
+	check(osric != null and osric.lying and absf(osric.global_position.y - Sickroom.BED_TOP) < 0.01 and Sickroom.BED.has_point(flat(osric.global_position)) and osric.verb == "看看",
+		"家主奥斯瑞克躺在床上（只能看看）")
+	var room := Rect2(-Sickroom.W * 0.5, -Sickroom.D * 0.5, Sickroom.W, Sickroom.D)
+	check(walk_reach(main, Sickroom.SPAWNS.front[0], marta.position, 1.4, room) and walk_reach(main, Sickroom.SPAWNS.front[0], osric.position, 1.6, room), "从门口走得到玛尔塔和床边")
+	for v in [[1, marta], [2, osric]]:
+		main.set_view(v[0])
+		await physics(3)
+		main.player.interactor.refresh()
+		check(main.player.interactor.target == v[1], "%d 号机位正对着%s（冒烟测试用）" % [v[0], v[1].display_name])
+	var yaw := osric.rotation.y
+	var said: Dictionary = osric.interact(main.player)
+	check(said.get("kind") == "npc" and str(said.get("speech", "")).contains("睡着") and is_equal_approx(osric.rotation.y, yaw), "看看家主：他睡着（不转身）")
+	check(await fl_say(main, "sickroom", "marta", ["（走到床边看看家主）", "好，黄昏再来。"]) and GameState.has_flag("osric_seen") and GameState.quest_stage("ch1_main") == "wait_dusk",
+		"玛尔塔让你看一眼家主：主线推进到「等黄昏」（%s）" % GameState.quest_stage("ch1_main"))
+	check(await fl_say(main, "sickroom", "marta", ["家主怎么样了？", "有什么能帮上他？", "我去试试。"]) and GameState.quest_stage("ch1_whitereed") == "gather", "玛尔塔托你去鹭沼深处采白芦根（支线开始）")
+	var r := DialogueRunner.new()
+	r.start("sickroom", "marta")
+	var ot: Array = r.options().map(func(o): return o.text)
+	check(not ot.has("（走到床边看看家主）") and ot.has("（再看看家主）") and ot.has("白芦根……"), "看过以后：不会再推一次主线；能再看看、问白芦根（%s）" % str(ot))
+	main = await fl_go(main, "castle")
+	await physics(3)
+	check(main.area == "castle" and main.arrived_by == "sickroom_door" and GameState.quest_stage("ch1_main") == "wait_dusk", "出病房回到塔楼门前，主线不倒退")
+	# 兵营：军士和三个兵
+	main = await fl_go(main, "barracks")
+	await physics(3)
+	var people := main.find_children("Npc_*", "Npc", true, false)
+	var bad: Array = people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)
+	check(main.area == "barracks" and people.size() == 1 + Barracks.SOLDIERS.size() and bad.is_empty(), "进了兵营：军士和 %d 个兵，都站得稳（%s）" % [Barracks.SOLDIERS.size(), str(bad)])
+	var sgt: Npc = main._npc_by_dialogue("sergeant")
+	var hall_rect := Rect2(-Barracks.W * 0.5, -Barracks.D * 0.5, Barracks.W, Barracks.D)
+	check(people.all(func(n): return walk_reach(main, Barracks.SPAWNS.front[0], n.position, 1.4, hall_rect)), "从门口走得到兵营里每个人")
+	main.set_view(1)
+	await physics(3)
+	main.player.interactor.refresh()
+	check(main.player.interactor.target == sgt, "1 号机位正对着军士（冒烟测试用）")
+	check(await fl_say(main, "barracks", "sergeant", ["小姐让我去收编沼地里那伙人。", "记住了。"]) and GameState.has_flag("sergeant_met"), "军士：伊薇特托过你收编无旗者，他说灰手要的不只是钱")
+	main = await fl_go(main, "castle")
+	await physics(3)
+	check(main.area == "castle" and main.arrived_by == "barracks_door", "出兵营回到兵营门前")
+	await free_main(main)
+	# —— 从兵营侧门进来的：还没见伊薇特，兵营也推得开；玛尔塔在主线没到「去看家主」时不让看
+	ch1_state("release", 14)
+	GameState.set_flag("castle_entry", "barracks")
+	check(Castle.barracks_open() and not Castle.sickroom_open(), "从兵营侧门进来的：兵营推得开，病房还关着")
+	GameState.start_quest("ch1_main", "hear_heirs")
+	r.start("sickroom", "marta")
+	check(not r.options().any(func(o): return o.text == "（走到床边看看家主）"), "主线没到「去看家主」：玛尔塔不让走到床边")
 	GameState.new_game()

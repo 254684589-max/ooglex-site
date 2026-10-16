@@ -1,0 +1,160 @@
+{
+  "_说明": "黑鹭堡东边塔楼的病房（路线图 4.5c；STORY.md 4.5 第 3 步「见医师玛尔塔；家主昏睡」、第 6 步「黄昏，家主短暂醒来」、支线「白芦根」）。两位继承人都找你谈过以后（heirs_heard）病房的门才推得开；玛尔塔让你看一眼昏睡的家主，主线推进到「等黄昏」（家主醒来、交出印戒在 4.8）。她托你去鹭沼深处采白芦根（支线 ch1_whitereed 开始，采回来、给家主喝在 4.7）。家主本人躺在床上，只能看看（world/sickroom.gd 里的几句）。",
+  "marta": {
+    "speaker": "玛尔塔",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "marta_met"
+          }
+        ],
+        "node": "again"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（一个四十来岁的女人从床边站起来，挡在你和床之间，手里还攥着湿布）你就是赫尔曼说的那个誓剑。……大厅里那两位都见过了？那就看一眼吧。别出声，别碰他。我是玛尔塔，这堡里的医师。",
+        "do": [
+          {
+            "set": "marta_met"
+          }
+        ],
+        "options": [
+          {
+            "text": "（走到床边看看家主）",
+            "if": [
+              {
+                "quest_stage": "ch1_main",
+                "eq": "see_osric"
+              }
+            ],
+            "next": "look"
+          },
+          {
+            "text": "家主怎么样了？",
+            "next": "state"
+          },
+          {
+            "text": "（告辞）",
+            "end": true
+          }
+        ]
+      },
+      "again": {
+        "text": "（她把湿布在盆里拧了拧）还有事？小声点。",
+        "options": [
+          {
+            "text": "（走到床边看看家主）",
+            "if": [
+              {
+                "quest_stage": "ch1_main",
+                "eq": "see_osric"
+              }
+            ],
+            "next": "look"
+          },
+          {
+            "text": "（再看看家主）",
+            "if": [
+              {
+                "flag": "osric_seen"
+              }
+            ],
+            "next": "look_again"
+          },
+          {
+            "text": "家主怎么样了？",
+            "next": "state"
+          },
+          {
+            "text": "白芦根……",
+            "if": [
+              {
+                "quest_active": "ch1_whitereed"
+              }
+            ],
+            "next": "reed_again"
+          },
+          {
+            "text": "（告辞）",
+            "end": true
+          }
+        ]
+      },
+      "look": {
+        "text": "（床上的老人瘦得只剩一副骨架，花白的胡子盖着胸口，呼吸又浅又慢。床头墙上挂着一把没出鞘的长剑。玛尔塔压低了声音）北境守了四十年的人。……他睡的时候多，黄昏前后常醒一会儿，能认人，能说几句话。你要见他，黄昏再来。",
+        "do": [
+          {
+            "set": "osric_seen"
+          },
+          {
+            "quest": "ch1_main",
+            "stage": "wait_dusk"
+          }
+        ],
+        "options": [
+          {
+            "text": "好，黄昏再来。",
+            "next": "again"
+          }
+        ]
+      },
+      "look_again": {
+        "text": "（他翻了个身，嘴里含糊地说着什么，像是谁的名字。玛尔塔替他把被子掖好。）",
+        "options": [
+          {
+            "text": "……",
+            "next": "again"
+          }
+        ]
+      },
+      "state": {
+        "text": "老了，累了，心里装的事太多。醒的时候先问烽燧，再问儿女，最后问霜渡镇来人了没有。……我能做的，就是让他少受点罪。",
+        "options": [
+          {
+            "text": "有什么能帮上他？",
+            "if": [
+              {
+                "not_quest": "ch1_whitereed"
+              }
+            ],
+            "next": "reed"
+          },
+          {
+            "text": "……",
+            "next": "again"
+          }
+        ]
+      },
+      "reed": {
+        "text": "鹭沼深处的泥滩上长一种白芦根，熬成汤，能让人清醒些。我走不动那么远的泥了。你要是肯去，采三株回来——天黑前。泥潭里别跑，陷进去就出不来。",
+        "do": [
+          {
+            "quest": "ch1_whitereed"
+          }
+        ],
+        "options": [
+          {
+            "text": "我去试试。",
+            "next": "again"
+          },
+          {
+            "text": "……",
+            "next": "again"
+          }
+        ]
+      },
+      "reed_again": {
+        "text": "三株，天黑前。往西走过木板路，泥滩上那些发白的就是。别空着手回来——也别为了它把命丢在泥里。",
+        "options": [
+          {
+            "text": "明白了。",
+            "next": "again"
+          }
+        ]
+      }
+    }
+  }
+}

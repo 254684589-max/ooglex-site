@@ -26,7 +26,8 @@
         "meet_herman": {"objective": "进了黑鹭堡：去井边见堡守赫尔曼"},
         "to_hall": {"objective": "家主在病房里昏睡，两位继承人都在大厅——去大厅（主楼的门）"},
         "hear_heirs": {"objective": "在大厅听两位继承人怎么说：长子阿尔里克、次女伊薇特（顺序任意）"},
-        "see_osric": {"objective": "两位继承人都找你谈过了。去东边塔楼的病房看看家主（医师玛尔塔守着）"}
+        "see_osric": {"objective": "两位继承人都找你谈过了。去东边塔楼的病房看看家主（医师玛尔塔守着）"},
+        "wait_dusk": {"objective": "家主在昏睡。玛尔塔说他黄昏前后常醒一会儿——到时候再去病房"}
       }
     },
     "ch1_ledger": {
@@ -45,6 +46,15 @@
       "first": "talk_offer",
       "stages": {
         "talk_offer": {"objective": "去鹭沼深处的营地找奥弗谈，也去芦栈村找泥炭工头托宾"}
+      }
+    },
+    "ch1_whitereed": {
+      "title": "白芦根",
+      "kind": "side",
+      "summary": "医师玛尔塔说，鹭沼深处的泥滩上长一种白芦根，熬成汤能让家主清醒些。她走不动那么远的泥。",
+      "first": "gather",
+      "stages": {
+        "gather": {"objective": "去鹭沼深处的泥滩采三株白芦根，天黑前交给病房里的玛尔塔"}
       }
     },
     "hob_debt": {

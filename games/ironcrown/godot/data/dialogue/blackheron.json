@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡（路线图 4.5a；STORY.md 4.5 第 3 步「进堡：有引荐信走堡门；没有就走别的办法。见堡守赫尔曼」）。堡门前的卫兵（鹭沼地图上）看引荐信放人；没有引荐信的三种办法在别处：托宾的泥炭船走水门（reedwharf.json tobin）、伊薇特的老兵带你走兵营侧门（reedwharf.json ivette_veteran）、奥弗的船从芦苇里摸到水门（deepmarsh.json offer_camp）。进了庭院，赫尔曼按你从哪进来的说不同的开场白；见过他以后堡门就推得开（castle_admitted），主线推进到「去大厅」。",
+  "_说明": "黑鹭堡（路线图 4.5a；STORY.md 4.5 第 3 步「进堡：有引荐信走堡门；没有就走别的办法。见堡守赫尔曼」）。堡门前的卫兵（鹭沼地图上）看引荐信放人；没有引荐信的三种办法在别处：托宾的泥炭船走水门（reedwharf.json tobin）、伊薇特的老兵带你走兵营侧门（reedwharf.json ivette_veteran）、奥弗的船从芦苇里摸到水门（deepmarsh.json offer_camp）。进了庭院，赫尔曼按你从哪进来的说不同的开场白；见过他以后堡门就推得开（castle_admitted），主线推进到「去大厅」。4.5c：守水门的老头有了对话（夜里只有他一个人守、栅底下那道缝人也钻得进来——给 4.8 / 4.9 的水门埋线；能坐泥炭船回芦栈村）；赫尔曼不给账房的钥匙（怎么拿到在 4.7）。",
   "gate_guard": {
     "speaker": "守门的卫兵",
     "start": "greet",
@@ -80,6 +80,7 @@
           {"text": "家主怎么样了？", "next": "osric"},
           {"text": "两位继承人在哪？", "next": "heirs"},
           {"text": "维克托大人让我把借据亲手交给家主。", "if": [{"flag": "prologue_edric", "eq": "deliver"}, {"has_item": "debt_note"}], "locked": "hide", "next": "debt"},
+          {"text": "账房的钥匙……", "if": [{"flag": "ledger_asked"}], "next": "ledger_key"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -101,10 +102,56 @@
           {"text": "明白了。", "next": "again"}
         ]
       },
+      "ledger_key": {
+        "text": "（他的手按在腰上的钥匙串上）账房？没有家主的话，谁也别想进。……谁让你来要的，我心里有数。",
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
       "why_not": {
         "text": "拦你？人都进来了，我拦给谁看。（他把长枪往地上一顿）进了这道墙，就守这道墙的规矩：大厅、兵营、病房，没人领着别乱走。",
         "options": [
           {"text": "……", "next": "again"}
+        ]
+      }
+    }
+  },
+  "water_keeper": {
+    "speaker": "守水门的老头",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "water_keeper_met"}], "node": "again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（老头眯着眼看你，手里的灯晃了晃）……我什么也没看见。泥炭船进来，泥炭船出去，我一个老头子，什么也没看见。",
+        "do": [{"set": "water_keeper_met"}],
+        "options": [
+          {"text": "这道水门夜里谁守？", "next": "night"},
+          {"text": "能坐泥炭船出去吗？", "next": "boat"},
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他往灯里添了点油）又是你。",
+        "options": [
+          {"text": "这道水门夜里谁守？", "next": "night"},
+          {"text": "能坐泥炭船出去吗？", "next": "boat"},
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "night": {
+        "text": "就我。一盏灯、一把锈剑。铁栅好些年没升过了，栅底下那道缝，泥炭船贴着水面就钻进来——人也钻得进来。真要有人夜里摸进来，我这把老骨头可拦不住。",
+        "do": [{"set": "heard_water_gate"}],
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "boat": {
+        "text": "泥炭船卸完货就回芦栈村。上去蹲着，别出声，撑船的不会问。",
+        "options": [
+          {"text": "（上船回芦栈村）", "do": [{"goto": "marsh", "spawn": "reedwharf"}], "end": true},
+          {"text": "算了。", "next": "again"}
         ]
       }
     }

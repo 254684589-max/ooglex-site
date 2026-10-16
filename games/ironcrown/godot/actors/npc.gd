@@ -9,6 +9,7 @@ var line_index := 0
 var coat := Color("4a5a6a")
 var dialogue_area := ""
 var dialogue_id := ""
+var lying := false          # 躺着（4.5c 病床上昏睡的家主）：身子放平、脸朝上，说话时不转身；头朝本地 +Z
 
 
 static func make(name_text: String, speech: Array, c := Color("4a5a6a")) -> Npc:
@@ -20,7 +21,7 @@ static func make(name_text: String, speech: Array, c := Color("4a5a6a")) -> Npc:
 
 
 func _ready() -> void:
-	verb = "交谈"
+	verb = "看看" if lying else "交谈"
 	var cs := CollisionShape3D.new()
 	var cap := CapsuleShape3D.new()
 	cap.radius = 0.32
@@ -28,8 +29,15 @@ func _ready() -> void:
 	cs.shape = cap
 	cs.position.y = 0.875
 	add_child(cs)
-	Npc.build_body(self, coat)
-	Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+	var body := Npc.build_body(self, coat)
+	if lying:
+		cs.rotation.x = PI / 2
+		cs.position = Vector3(0, 0.3, 0.875)
+		body.rotation.x = PI / 2           # 头（本地 +Y 1.6）转到 +Z，鼻子朝上
+		body.position.y = 0.3
+		Blocks.label(self, display_name, Vector3(0, 0.95, 0.9), 32, 0.0035)
+	else:
+		Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
 
 
 ## 占位人形（胶囊身子 + 头 + 看得出朝向的小鼻子）；敌人（2.5）也用它。脸朝本地 -Z。
@@ -72,7 +80,7 @@ static func build_body(parent: Node3D, coat_color: Color) -> Node3D:
 
 func interact(who: FpController) -> Dictionary:
 	var to := who.global_position - global_position
-	if Vector2(to.x, to.z).length() > 0.01:
+	if not lying and Vector2(to.x, to.z).length() > 0.01:
 		rotation.y = atan2(-to.x, -to.z)     # 本地 -Z 是脸的朝向
 	if dialogue_id != "":
 		return {"kind": "dialogue", "name": display_name, "area": dialogue_area, "id": dialogue_id, "npc": self}
