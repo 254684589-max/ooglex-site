@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -271,6 +271,8 @@ func test_ui() -> void:
 	texts.append_array(Inn.VIEW_NAMES + Inn.DRINKER_LINES + Inn.OLD_BOATMAN_LINES + [Inn.GATE_TEXT])            # 芦栈村的人说的话（4.4b，写在代码里）
 	for k in MarshLayout.PEOPLE_LINES:
 		texts.append_array(MarshLayout.PEOPLE_LINES[k])
+	for k in MarshLayout.CAMP_LINES:                                                                            # 营地的人（4.4c）
+		texts.append_array(MarshLayout.CAMP_LINES[k])
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -5696,6 +5698,8 @@ func test_marsh() -> void:
 	check(leaks.is_empty() and seen.size() > 3000, "走得到的地方（%d 个 1 米格子）的 %d 条边上都有墙，掉不进深水（漏的：%s）" % [seen.size(), edges, str(leaks.slice(0, 6))])
 	var gate := Vector2i(roundi(MarshLayout.SPAWNS.castle_gate[0].x), roundi(MarshLayout.SPAWNS.castle_gate[0].z))
 	check(seen.has(gate) or seen.has(gate + Vector2i(1, 0)), "从村口沿栈道、堤道走得到堡门前")
+	var campc := Vector2i(roundi(MarshLayout.CAMP_FIRE.x) + 3, roundi(MarshLayout.CAMP_FIRE.z) + 4)
+	check(seen.has(campc), "从村口沿沼地的小路、泥滩、土墩走得到西边土墩上的营地（4.4c）")
 	# 墙在物理层 5：挡人走，不挡视线和镜头（层 1 的射线穿过去）
 	var walls := main.world.get_node_or_null("MarshWalls") as StaticBody3D
 	check(walls != null and walls.collision_layer == FpController.LAYER_BOUNDARY and p.collision_mask & FpController.LAYER_BOUNDARY != 0 and walls.get_child_count() > 20,
@@ -5865,9 +5869,9 @@ func inn_now() -> Node3D:
 
 
 ## 不开场景、只跑对话（DialogueRunner）：按顺序选文字是 picks 的选项（检定选项的文字前面有「[口才检定 · 约 70%]」，按结尾比）；返回最后停在哪个节点（"" = 对话结束了）
-func say_runner(id: String, picks: Array) -> String:
+func say_runner(id: String, picks: Array, file := "reedwharf") -> String:
 	var r := DialogueRunner.new()
-	if not r.start("reedwharf", id):
+	if not r.start(file, id):
 		return "（没打开）"
 	for t in picks:
 		var idx := -1
@@ -6125,3 +6129,130 @@ func test_reedwharf() -> void:
 	check(GameState.quest_stage("ch1_main") == "" and main.world.get_node_or_null("Npc_tobin") != null, "第一章以前直接开鹭沼（截图用）：人在，任务不动")
 	await free_main(main)
 	GameState.new_game()
+
+
+## 鹭沼深处与营地（路线图 4.4c；STORY.md 4.2「鹭沼深处」、4.4「序章其他旗标」）：小路、泥滩、土墩、枯树都在，分块；营地对你的态度看序章怎么了结的奥弗
+## （友善 / 记恨 / 奥弗死了是头目 / 没打过交道），营地的人一进场就在、站得稳；奥弗的对话（说动、吓住、给钱、没说动就让你滚、只剩给钱）、头目的对话；
+## 托宾指路；固定机位；营火白天也烧着；泥滩走得慢
+func test_deepmarsh() -> void:
+	Settings.set_value("third_person", false)
+	var fire2 := Vector2(MarshLayout.CAMP_FIRE.x, MarshLayout.CAMP_FIRE.z)
+	check(AreaMap.zone_at("marsh", fire2) == "鹭沼深处" and AreaMap.zone_at("marsh", Vector2(25, 30)) == "芦栈村" and Travel.place_of_area("marsh", fire2) == "",
+		"营地在「鹭沼深处」（不是能出发的地方），小路靠村子那头还算芦栈村")
+	var ids := MarshLayout.floors().map(func(f): return str(f.id))
+	check(MarshLayout.DEEP.all(func(d): return str(d[0]) in ids), "鹭沼深处的 %d 块地面都在地面表里（碰撞、画面、地图、墙一起生成）" % MarshLayout.DEEP.size())
+	var touch := true
+	for i in MarshLayout.DEEP.size() - 1:
+		var a: Rect2 = MarshLayout.DEEP[i][2]
+		var b: Rect2 = MarshLayout.DEEP[i + 1][2]
+		if not a.grow(0.01).intersects(b):
+			touch = false
+	check(touch, "小路、泥滩、土墩、泥滩、营地一块接一块，中间没有缝")
+	# 序章的四种了结 → 营地的态度
+	GameState.new_game(1)
+	check(Marsh.camp_mood() == "neutral", "没和奥弗打过交道：营地是 neutral")
+	GameState.set_flag("offer_left")
+	check(Marsh.camp_mood() == "friendly", "谈妥 / 吓走 / 花钱打发了（offer_left）：friendly")
+	GameState.new_game(1)
+	GameState.set_flag("offer_defeated")
+	GameState.yielded["ferry_offer"] = [0.0, 0.0, 0.0]
+	check(Marsh.camp_mood() == "grudge", "打过一仗、奥弗跪地认输还活着：grudge")
+	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
+	check(Marsh.camp_mood() == "boss", "奥弗死在渡口：boss（火边站的是手下的头目）")
+	# —— 友善：第一章到了村子，营地的人一进场就在
+	wipe_test_saves()
+	var main := await marsh_after("deliver", 3)                     # ch1_state 里序章和奥弗谈妥了（offer_left）
+	var p: FpController = main.player
+	var camp_people: Array = [MarshLayout.CAMP_OFFER] + MarshLayout.CAMP_MEN
+	var here := camp_people.all(func(cp): return main.world.get_node_or_null("Npc_" + str(cp[0])) != null)
+	check(here and main.world.get_node_or_null("Npc_camp_boss") == null, "营地的 %d 个人一进场就在（不等分帧）：奥弗和三个手下" % camp_people.size())
+	var bad := camp_people.filter(func(cp): return not stands_clear(main.world.get_node("Npc_" + str(cp[0])))).map(func(cp): return str(cp[0]))
+	check(bad.is_empty(), "营地的人都站在地上，没卡在窝棚、火堆、圆木、箱子里（%s）" % str(bad))
+	var thug := main.world.get_node("Npc_camp_thug_a") as Npc
+	check(thug.lines == MarshLayout.CAMP_LINES.friendly and (main.world.get_node("Npc_offer_camp") as Npc).dialogue_id == "offer_camp", "友善：手下说的是友善的话，奥弗用对话树")
+	main.streamer.build_all()
+	await frames(2)
+	var camp_root: Node = main.streamer.root_of(MarshLayout.cell_id(MarshLayout.cell_of(fire2)))
+	var campfire := camp_root.find_child("Campfire", true, false) as OmniLight3D
+	check(camp_root.find_child("Camp", true, false) != null and campfire != null and campfire.visible and campfire.light_energy > 1.0,
+		"营地搭出来了：窝棚、营火（白天也烧着，不归夜灯管）")
+	var trees := 0
+	for t in MarshLayout.DEEP_TREES:
+		var r: Node = main.streamer.root_of(MarshLayout.cell_id(MarshLayout.cell_of(t[0])))
+		for c in r.get_children():
+			if c is Node3D and not (c is MeshInstance3D) and (c as Node3D).position.distance_to(Vector3(t[0].x, MarshLayout.BANK_Y, t[0].y)) < 0.01:
+				trees += 1
+	var trunk := 0
+	var space := p.get_world_3d().direct_space_state
+	for t in MarshLayout.DEEP_TREES:
+		var q := PhysicsRayQueryParameters3D.create(Vector3(t[0].x + 1.5, 1.0, t[0].y), Vector3(t[0].x, 1.0, t[0].y), 1)
+		if not space.intersect_ray(q).is_empty():
+			trunk += 1
+	check(trees == MarshLayout.DEEP_TREES.size() and trunk == trees, "%d 棵枯树搭出来了、树干撞得上（碰撞同步建、不在块里）" % trees)
+	# 机位：9 号在小路上，10 号对着火边的人
+	main.set_view(10)
+	await physics(3)
+	p.interactor.refresh()
+	check(p.interactor.target == main.world.get_node("Npc_offer_camp"), "10 号机位正对着火边的奥弗（冒烟测试用）")
+	main.set_view(9)
+	await physics(4)
+	check(absf(p.global_position.y - MarshLayout.DECK_Y) < 0.05, "9 号机位站在沼地的小路上")
+	# 泥滩：走得慢
+	place(p, 6.0, 30.0)
+	await physics(8)
+	check(p.surface == "mud", "小路西头下去是泥滩（走得慢、不能跑）")
+	# 托宾指路
+	check(await fl_say(main, "reedwharf", "tobin", ["沼地深处有什么？"]) and GameState.has_flag("heard_camp"), "托宾说沼地的小路和西边扎营的外乡人")
+	# 奥弗（友善）：说上话，说出「谁出价高就跟谁」
+	check(await fl_say(main, "deepmarsh", "offer_camp", ["黑鹭堡要出事了，你们听说了吗？"]) and GameState.has_flag("offer_camp_met") and GameState.has_flag("offer_camp_terms"),
+		"友善的奥弗直接说话：两边都来问过价，谁出价高就跟谁")
+	await free_main(main)
+	# —— 记恨：口才说动 / 威吓吓住 / 没说动就滚、只剩给钱
+	ch1_state("deliver", seed_for("offer_camp_speech", "speech", 15, true))
+	GameState.flags.erase("offer_left")
+	GameState.set_flag("offer_defeated")
+	GameState.yielded["ferry_offer"] = [0.0, 0.0, 0.0]
+	check(say_runner("offer_camp", ["那晚各为其主。今天我不是来打架的。"], "deepmarsh") == "calm" and GameState.has_flag("offer_camp_met"), "记恨：口才说动了，肯说话")
+	ch1_state("deliver", seed_for("offer_camp_intimidate", "intimidate", 14, true))
+	GameState.flags.erase("offer_left")
+	GameState.set_flag("offer_defeated")
+	check(say_runner("offer_camp", ["上回你们几个一起上，也没赢。要再试试？"], "deepmarsh") == "calm_scared", "记恨：威吓吓住了")
+	ch1_state("deliver", seed_for("offer_camp_speech", "speech", 15, false))
+	GameState.flags.erase("offer_left")
+	GameState.set_flag("offer_defeated")
+	GameState.yielded["ferry_offer"] = [0.0, 0.0, 0.0]
+	check(say_runner("offer_camp", ["那晚各为其主。今天我不是来打架的。"], "deepmarsh") == "refused" and GameState.has_flag("offer_camp_refused") and not GameState.has_flag("offer_camp_met"), "记恨：没说动，让你滚")
+	var r := DialogueRunner.new()
+	r.start("deepmarsh", "offer_camp")
+	var ot := r.options().map(func(o): return o.text)
+	check(r.node_id == "refused_again" and not ot.any(func(t): return str(t).begins_with("那晚各为其主")), "再去：只剩给钱或者走（%s）" % str(ot))
+	GameState.silver = 50
+	check(say_runner("offer_camp", ["（扔过去一袋银币）40 枚，给你的人买药。"], "deepmarsh") == "calm_paid" and GameState.silver == 10 and GameState.has_flag("offer_camp_met"), "给 40 枚银币：肯说话了")
+	main = await make_main_marsh()
+	var ld := main.world.get_node("Npc_offer_camp") as Npc
+	check(ld != null and (main.world.get_node("Npc_camp_thug_b") as Npc).lines == MarshLayout.CAMP_LINES.grudge, "记恨：奥弗还在火边，手下说的是记恨的话")
+	await free_main(main)
+	# —— 奥弗死在渡口：头目
+	ch1_state("deliver")
+	GameState.flags.erase("offer_left")
+	GameState.set_flag("offer_defeated")
+	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
+	main = await make_main_marsh()
+	var boss := main.world.get_node_or_null("Npc_camp_boss") as Npc
+	check(boss != null and main.world.get_node_or_null("Npc_offer_camp") == null and boss.dialogue_id == "camp_boss" and stands_clear(boss), "奥弗死在渡口：火边站的是手下的头目")
+	await free_main(main)
+	GameState.silver = 45
+	check(say_runner("camp_boss", ["（放下 40 枚银币）给他的人买口吃的。", "黑鹭堡要出事了，你们听说了吗？"], "deepmarsh") == "war" and GameState.silver == 5 and GameState.has_flag("offer_camp_terms"),
+		"头目：放下 40 枚银币才肯说话，也说「谁出价高就跟谁」")
+	GameState.silver = 0
+	r.start("deepmarsh", "camp_boss")
+	check(r.node_id == "again", "给过钱的再去：直接说话")
+	GameState.new_game()
+
+
+## 第一章的状态已经摆好，直接在鹭沼村口载入（不走路牌）
+func make_main_marsh() -> Node3D:
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	return main

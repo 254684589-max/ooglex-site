@@ -2,7 +2,11 @@ class_name BareTree
 extends RefCounted
 ## 枯树（ART.md 第六节）：树干 + 三级分叉的枝条，代码搭的多棱柱 + 树皮贴图，整棵一个网格。占位水平，正式的树在阶段 A。
 
-static func build(parent: Node3D, pos: Vector3, seed_value: int, height := 5.5) -> Node3D:
+const TRUNK_R := 0.32
+
+
+## solid = false：不带碰撞（鹭沼的碰撞在搭场景时同步建好，树跟着画面分帧搭，4.4c；树干碰撞由区域按 TRUNK_R 自己建）
+static func build(parent: Node3D, pos: Vector3, seed_value: int, height := 5.5, solid := true) -> Node3D:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var kit := MeshKit.new()
@@ -17,11 +21,13 @@ static func build(parent: Node3D, pos: Vector3, seed_value: int, height := 5.5) 
 	var mi := kit.build({"bark": Look.mat("bark")})
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	root.add_child(mi)
+	if not solid:
+		return root
 	var body := StaticBody3D.new()
 	body.collision_mask = 0
 	var cs := CollisionShape3D.new()
 	var cyl := CylinderShape3D.new()
-	cyl.radius = 0.32
+	cyl.radius = TRUNK_R
 	cyl.height = height * 0.55
 	cs.shape = cyl
 	cs.position.y = height * 0.275

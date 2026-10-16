@@ -301,6 +301,7 @@
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
           {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
           {"text": "（不打扰他）", "end": true}
         ]
@@ -311,6 +312,7 @@
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
           {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
           {"text": "（不打扰他）", "end": true}
         ]
@@ -321,6 +323,7 @@
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
           {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
           {"text": "（不打扰他）", "end": true}
         ]
@@ -349,6 +352,13 @@
         "text": "没有信？（他看了看你）赫尔曼那老头谁的面子都不给。真进不去，回来找我——泥炭船走哪儿，我比谁都清楚。",
         "options": [
           {"text": "记住了。", "next": "menu"}
+        ]
+      },
+      "deep": {
+        "text": "（他朝西边的芦苇荡扬了扬下巴）栈道西头接着一溜木板，再往里就是泥了，踩着土墩走。最近有伙外乡人在最西边那个大土墩上扎了营，打渔的都绕着走。你要去——别空着手，也别带着火气。",
+        "do": [{"set": "heard_camp"}],
+        "options": [
+          {"text": "……", "next": "menu"}
         ]
       },
       "peat": {

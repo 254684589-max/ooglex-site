@@ -4,7 +4,8 @@ extends RefCounted
 ## 原创布局。北 = -Z，东 = +X。整张图 256 × 192 米，分成 4 × 3 块 64 米的方格（块：显示 / 隐藏、分帧搭建的单位）：
 ##   东边是芦栈村：东头一片干岸（路从霜渡镇来），往西是一大片泥滩，高脚屋立在泥滩上，木栈道把它们连起来；北边泥炭场，南边小码头；
 ##   村子西北角是堤道头，石砌堤道朝西北伸 82 米，中段断口搭着木板，靠堡门一座石拱，尽头是黑鹭堡门前的石台；
-##   堤道两边各一溜泥滩、芦苇，再往外是深水（走不进去：边上有看不见的墙，物理层 5「边界」）；西南的鹭沼深处 4.4c 才做（现在是芦苇荡和水）。
+##   堤道两边各一溜泥滩、芦苇，再往外是深水（走不进去：边上有看不见的墙，物理层 5「边界」）；
+##   西南是鹭沼深处（4.4c）：栈道西头接一条窄木板小路伸进芦苇荡，接着泥滩、长着枯树的土墩、又一片泥滩，尽头西边的大土墩上是无旗者的营地。
 ## 「地面」（floors）都是有朝向的矩形：{id, k（种类）, c（中心 XZ）, size（本地 x 宽、本地 z 长）, yaw（度，本地 +Z 朝 (sin yaw, cos yaw)）,
 ##   top（顶面高度，斜的是中心那点的高度）, pitch / tilt（绕本地 x / z 转的角度，斜坡用）}。
 ## 种类：mud 泥滩（走得慢、不能跑）、land 干地、deck 木栈道、stone 石砌（堤道、石台）、slope 堤道两边的石坡、bridge 断口上的木板。
@@ -71,6 +72,39 @@ const HOUSES := [
 	["ferryman", Vector2(46.26, 44), 90.0, {"w": 4.5, "d": 4.0, "floors": 0, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 448, "lit": 0.7,
 		"door": {"name": "渡工的小屋", "text": "门锁着。渡工这会儿不在屋里。"}}],
 ]
+## 鹭沼深处（4.4c）：[编号, 种类, 范围]，从村子往西一块接一块（相邻的边贴着，中间没有缝）。泥滩走得慢；木板小路比泥滩高 0.24 米
+const DEEP := [
+	["deep_walk", "deck", Rect2(16, 29.3, 18, 1.4)],      # 栈道西头接出去的窄木板小路（托宾说的「沼地的小路」）
+	["deep_mud_a", "mud", Rect2(-4, 23, 20, 14)],
+	["deep_tussock", "land", Rect2(-16, 26, 12, 8)],      # 长着两棵枯树的小土墩
+	["deep_mud_b", "mud", Rect2(-40, 21, 24, 18)],
+	["camp", "land", Rect2(-76, 14, 36, 32)],             # 西边的大土墩：无旗者的营地
+]
+## 枯树：[位置, 种子, 高]（BareTree，画面分帧搭、树干碰撞同步建）。都在路边上，不挡着走
+const DEEP_TREES := [[Vector2(-7.0, 26.9), 4431, 5.0], [Vector2(-13.0, 33.1), 4432, 4.2], [Vector2(-30.0, 37.6), 4433, 4.6],
+	[Vector2(1.5, 24.2), 4434, 3.8], [Vector2(-72.0, 17.5), 4435, 6.0], [Vector2(-72.5, 42.0), 4436, 5.4]]
+## 营地：营火、三顶窝棚（[中心, 朝向]，人字形的兽皮棚子，3 × 2.4 米、1.8 米高）、两只箱子、火边两根当凳子坐的圆木
+const CAMP_FIRE := Vector3(-56.0, BANK_Y, 30.0)
+const TENTS := [[Vector2(-64.0, 22.0), 30.0], [Vector2(-67.5, 31.0), 90.0], [Vector2(-63.0, 39.5), 150.0]]
+const TENT_SIZE := Vector3(3.0, 1.8, 2.4)
+const CRATES := [Vector2(-50.0, 22.5), Vector2(-48.9, 23.4)]
+const LOGS := [[Vector2(-56.0, 27.7), 0.0], [Vector2(-58.4, 30.6), 90.0]]
+const CAMP_RACK := [Vector2(-69.0, 25.5), 70.0]          # 晾鱼的木架
+## 营地里的人：[编号, 名字, 位置, 朝向（弧度）, 衣服颜色]；奥弗死在渡口的（序章 GameState.dead 里有 ferry_offer），火边站的是手下的头目
+const CAMP_OFFER := ["offer_camp", "「灰手」奥弗", Vector3(-54.5, BANK_Y, 31.6), -PI / 2, "4a4a50"]
+const CAMP_BOSS := ["camp_boss", "无旗者的头目", Vector3(-54.5, BANK_Y, 31.6), -PI / 2, "3e3a32"]
+const CAMP_MEN := [
+	["camp_thug_a", "无旗者", Vector3(-57.6, BANK_Y, 26.2), 0.3, "5a3a2e"],
+	["camp_thug_b", "无旗者", Vector3(-60.8, BANK_Y, 33.4), -2.2, "3a3e4a"],
+	["camp_lookout", "放哨的无旗者", Vector3(-43.5, BANK_Y, 30.8), -PI / 2, "4a3e30"],     # 营地东头，面朝来路
+]
+## 营地里的人说的话：按序章和奥弗怎么了结的（友善 / 记恨 / 没打过交道）
+const CAMP_LINES := {
+	"friendly": ["灰手说了，你是自己人——至少今天是。", "鹭沼的鱼腥，可比桦林的雪暖和。", "火边有地方，坐。别碰那几个箱子。"],
+	"grudge": ["（他的手一直没离开刀柄）渡口那晚，我记得你。", "老大没发话，你就站那儿别动。", "（他朝泥里吐了口唾沫）誓剑。"],
+	"neutral": ["外乡人，这儿不是渔民来的地方。", "要找灰手？他在火边。", "别乱走，泥里陷进去可没人拉你。"],
+}
+
 ## 托宾的小屋：泥炭场东头的干地上（不用高脚），正面朝西
 const TOBIN_HUT := [Vector2(87, 1), -90.0, {"w": 4.5, "d": 4.0, "floors": 0, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 450, "lit": 0.7,
 	"door": {"name": "泥炭工头的小屋", "text": "门锁着。泥炭工头大概在场子里。"}}]
@@ -123,7 +157,8 @@ const SIGN_VILLAGE := Vector3(114, BANK_Y, 32.4)      # 村口的路牌（出发
 const SIGN_GATE := Vector3(-32.0, CAUSE_Y, -62.2)     # 堡门前的路牌
 const SIGN_CAUSEWAY := Vector3(38.6, BANK_Y, -3.5)    # 堤道头的指路牌（只是牌子）
 const EXIT_AT := Vector3(128, BANK_Y, 30)             # 路从这里出图（往霜渡镇；不是门，出发走村口的路牌）
-const VIEW_NAMES := ["村口", "客栈前", "小码头", "堤道上看黑鹭堡", "堡门前", "泥滩里", "客栈门口", "泥炭场（托宾）", "小码头（渡工）"]
+const VIEW_NAMES := ["村口", "客栈前", "小码头", "堤道上看黑鹭堡", "堡门前", "泥滩里", "客栈门口", "泥炭场（托宾）", "小码头（渡工）",
+	"沼地的小路", "西边的土墩（营火边）"]
 ## 网页 ?area=marsh&view=N 的固定机位：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
 const VIEWS := [
 	[Vector3(118, BANK_Y, 30), 90.0, -3.0],
@@ -135,6 +170,8 @@ const VIEWS := [
 	[Vector3(74.0, DECK_Y + STILTS, 27.1), 0.0, 0.0],      # 6：客栈门口（4.4b，冒烟测试进门用；0–5 号别动，test_marsh、基准测试在用）
 	[Vector3(67.2, BANK_Y, 6.3), -35.8, -6.0],             # 7：泥炭场里对着托宾
 	[Vector3(51.8, DECK_Y, 60.4), -90.0, -6.0],            # 8：小码头上对着渡工
+	[Vector3(22.0, DECK_Y, 30.0), 90.0, -2.0],             # 9：沼地的小路上往西看（4.4c）
+	[Vector3(-52.5, BANK_Y, 31.3), 95.7, -4.0],            # 10：营火边对着火边站的人（奥弗或者头目）
 ]
 
 
@@ -181,6 +218,8 @@ static func floors() -> Array:
 			out.append(strip("slope_" + tag, "slope", seg[1], seg[2], side * (CW_W * 0.5 + sw * 0.5), sw, (CAUSE_Y + MUD_Y) * 0.5, 0.0, -side * CW_SLOPE))
 			out.append(strip("cwmud_" + tag, "mud", seg[1], seg[2], side * (CW_W * 0.5 + sw + CW_MUD * 0.5), CW_MUD, MUD_Y))
 	out.append(strip("apron", "stone", APRON_T.x, APRON_T.y, 0.0, APRON_W, CAUSE_Y))
+	for d in DEEP:                                     # 鹭沼深处（4.4c）
+		out.append(rect_floor(str(d[0]), str(d[1]), d[2], {"mud": MUD_Y, "land": BANK_Y, "deck": DECK_Y}[str(d[1])]))
 	return out
 
 
@@ -296,8 +335,10 @@ static func zones() -> Array:
 	var gate := PackedVector2Array([cw(APRON_T.x - 6.0, -12), cw(APRON_T.x - 6.0, 12), cw(CASTLE_T + 26.0, 30), cw(CASTLE_T + 26.0, -30)])
 	var causeway := PackedVector2Array([cw(4.0, -14), cw(4.0, 14), cw(APRON_T.x - 6.0, 14), cw(APRON_T.x - 6.0, -14)])
 	var village := PackedVector2Array([Vector2(20, -14), Vector2(128, -14), Vector2(128, 64), Vector2(20, 64)])
+	var deep := PackedVector2Array([Vector2(-128, 0), Vector2(20, 0), Vector2(20, 64), Vector2(-128, 64)])
 	return [
 		{"id": "gate", "name": "黑鹭堡外", "place": "blackheron", "pts": gate},
 		{"id": "causeway", "name": "堤道", "place": "", "pts": causeway},
 		{"id": "village", "name": "芦栈村", "place": "reedwharf", "pts": village},
+		{"id": "deep", "name": "鹭沼深处", "place": "", "pts": deep},          # 4.4c：放在最后（堤道那块的西南角伸进来一点，算堤道）
 	]
