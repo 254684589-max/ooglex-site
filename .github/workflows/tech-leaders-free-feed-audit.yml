@@ -40,6 +40,23 @@ jobs:
       - name: Validate report JSON
         run: python3 -m json.tool data/tech-leaders/free_feed_health.json >/dev/null
 
+      - name: Print history depth summary
+        run: |
+          python3 - <<'PY'
+          import json, collections
+          d = json.load(open("data/tech-leaders/free_feed_health.json", encoding="utf-8"))
+          rows = d.get("rows") or []
+          req = rows[0].get("requested_posts") if rows else None
+          ok = [r for r in rows if r.get("ok")]
+          buckets = collections.Counter()
+          for r in ok:
+              n = r.get("post_count") or 0
+              buckets["100" if n >= 100 else "50-99" if n >= 50 else "20-49" if n >= 20 else "10-19" if n >= 10 else "1-9"] += 1
+          print("DEPTH requested=%s ok=%d failed=%d buckets=%s" % (req, len(ok), len(rows) - len(ok), dict(buckets)))
+          for r in rows:
+              print("DEPTHROW %s|%s|%s|%s|%s" % (r.get("handle"), r.get("post_count"), (r.get("oldest_post_at") or "")[:10], (r.get("latest_post_at") or "")[:10], r.get("error") or ""))
+          PY
+
       - name: Upload audit report artifact
         uses: actions/upload-artifact@v4
         with:
