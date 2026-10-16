@@ -1793,26 +1793,40 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
     }
     const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?${params.toString()}`;
 
-    const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), 3500);
-    let res = null;
-    try {
-      res = await fetch(url, {
-        signal: ctl.signal,
-        redirect: "follow",
-        headers: {
-          accept: "application/json",
-          "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
-        }
-      });
-    } finally {
-      clearTimeout(timer);
+    // 翻页时某一页超时或被限流：重试一次；仍失败就保留已取到的页，不再把整次结果丢掉
+    // （以前第 2 页以后超时会让整个请求失败，「加载更多」只能拿到旧的小缓存）。
+    const fetchPage = async () => {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), page === 0 ? 3500 : 5000);
+      try {
+        const r = await fetch(url, {
+          signal: ctl.signal,
+          redirect: "follow",
+          headers: {
+            accept: "application/json",
+            "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
+          }
+        });
+        let body = null;
+        try { body = await r.json(); } catch {}
+        return { res: r, payload: body };
+      } catch (err) {
+        return { res: null, payload: null, error: err };
+      } finally {
+        clearTimeout(timer);
+      }
+    };
+    const pageOk = (got) => got.res && got.res.ok && got.payload && Number(got.payload.code || got.res.status) < 400;
+    let got = await fetchPage();
+    if (!pageOk(got) && page > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      got = await fetchPage();
     }
-
-    let payload = null;
-    try { payload = await res.json(); } catch {}
-    if (!res.ok || !payload || Number(payload.code || res.status) >= 400) {
+    const res = got.res;
+    const payload = got.payload;
+    if (!pageOk(got)) {
       if (byId.size) break;
+      if (!res) throw got.error || new Error("fxtwitter_public_feed_error");
       const err = new Error("fxtwitter_public_feed_error");
       err.code = "fxtwitter_public_feed_error";
       err.status = res.status || Number(payload && payload.code) || 502;
@@ -3118,6 +3132,24 @@ async function proxyTechLeaderMedia(request, target, cors) {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FREE_FEED_MAX_ITEMS, 10);
       if (!handle) return json({ error: "invalid_free_feed_handle" }, 400, cors);
+      // 页面后台预取用：只读服务器缓存，不访问上游公开源，避免一次打开页面就对上游发出一串请求、
+      // 触发限流而影响「加载更多」的逐页翻取。没有缓存时返回 404，页面跳过即可。
+      if (url.searchParams.get("cached_only") === "1") {
+        const key = freeTechLeaderCacheKey(handle);
+        const cached = await readJson(env.PRO_DATA, key);
+        const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
+        const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
+        const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+        if (!cachedPosts.length || age > TECH_FREE_FEED_MAX_STALE_MS) {
+          return json({ error: "not_cached", handle }, 404, { ...cors, "cache-control": "no-store" });
+        }
+        return json({
+          ...cached,
+          requested_limit: cachedPosts.length,
+          posts: cachedPosts.slice(0, limit),
+          cache: { status: "cached_only", age_ms: age }
+        }, 200, { ...cors, "cache-control": "no-store", "x-ooglex-x-api": "unused" });
+      }
       try {
         const feed = await getFreeTechLeaderFeed(handle, limit, env, ctx);
         return json(feed, 200, {
