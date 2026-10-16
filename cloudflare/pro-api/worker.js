@@ -1793,26 +1793,40 @@ async function fetchFxTwitterFreeFeed(handle, limit) {
     }
     const url = `https://api.fxtwitter.com/2/profile/${encodeURIComponent(handle)}/statuses?${params.toString()}`;
 
-    const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), 3500);
-    let res = null;
-    try {
-      res = await fetch(url, {
-        signal: ctl.signal,
-        redirect: "follow",
-        headers: {
-          accept: "application/json",
-          "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
-        }
-      });
-    } finally {
-      clearTimeout(timer);
+    // 翻页时某一页超时或被限流：重试一次；仍失败就保留已取到的页，不再把整次结果丢掉
+    // （以前第 2 页以后超时会让整个请求失败，「加载更多」只能拿到旧的小缓存）。
+    const fetchPage = async () => {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), page === 0 ? 3500 : 5000);
+      try {
+        const r = await fetch(url, {
+          signal: ctl.signal,
+          redirect: "follow",
+          headers: {
+            accept: "application/json",
+            "user-agent": "Ooglex-Tech-Leaders-Free-Feed/3.0"
+          }
+        });
+        let body = null;
+        try { body = await r.json(); } catch {}
+        return { res: r, payload: body };
+      } catch (err) {
+        return { res: null, payload: null, error: err };
+      } finally {
+        clearTimeout(timer);
+      }
+    };
+    const pageOk = (got) => got.res && got.res.ok && got.payload && Number(got.payload.code || got.res.status) < 400;
+    let got = await fetchPage();
+    if (!pageOk(got) && page > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      got = await fetchPage();
     }
-
-    let payload = null;
-    try { payload = await res.json(); } catch {}
-    if (!res.ok || !payload || Number(payload.code || res.status) >= 400) {
+    const res = got.res;
+    const payload = got.payload;
+    if (!pageOk(got)) {
       if (byId.size) break;
+      if (!res) throw got.error || new Error("fxtwitter_public_feed_error");
       const err = new Error("fxtwitter_public_feed_error");
       err.code = "fxtwitter_public_feed_error";
       err.status = res.status || Number(payload && payload.code) || 502;
@@ -2022,23 +2036,31 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
   // Elon Musk retains a temporary exact-post patch below; all other profiles
   // use the generic public-source path with no catalog-specific exceptions.
   if (requested <= 20) {
+    // 上游公开源时好时坏：第一次两路都失败时隔 400ms 再试一次（每日巡检中约 7% 的账号要靠重试才取到）。
+    const fastAttempt = () => Promise.any([
+      fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
+        ...fast,
+        schema_version: 6,
+        source: "fxtwitter_public_api_fast",
+        sources: ["fxtwitter_public_api"],
+        fast_first_paint: true
+      })),
+      fetchOfficialSyndicationFreeFeed(handle, requested).then((official) => ({
+        ...official,
+        schema_version: 6,
+        source: "x_public_syndication_fast",
+        sources: ["x_public_syndication"],
+        fast_first_paint: true
+      }))
+    ]);
     try {
-      const fastFeed = await Promise.any([
-        fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
-          ...fast,
-          schema_version: 6,
-          source: "fxtwitter_public_api_fast",
-          sources: ["fxtwitter_public_api"],
-          fast_first_paint: true
-        })),
-        fetchOfficialSyndicationFreeFeed(handle, requested).then((official) => ({
-          ...official,
-          schema_version: 6,
-          source: "x_public_syndication_fast",
-          sources: ["x_public_syndication"],
-          fast_first_paint: true
-        }))
-      ]);
+      let fastFeed;
+      try {
+        fastFeed = await fastAttempt();
+      } catch {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        fastFeed = await fastAttempt();
+      }
       if (String(handle || "").toLowerCase() === "elonmusk") {
         fastFeed.posts = await applyTemporaryPublicFeedPatch(handle, fastFeed.posts, requested);
         fastFeed.source = "fxtwitter_public_api_exact_patch";
@@ -2108,7 +2130,44 @@ function freeTechLeaderCacheKey(handle) {
   return `tech-leaders/free-feed/${version}/${normalized}.json`;
 }
 
-async function getFreeTechLeaderFeed(handle, limit, env) {
+// 同一 Worker 实例内正在后台刷新的账号，避免同一时间重复请求上游。
+const freeFeedRefreshing = new Set();
+
+// 把新取到的帖子与 12 小时内的旧缓存按 id 合并（新数据优先，按时间倒序，最多 100 条）。
+// 否则首屏只取 10–20 条的例行刷新会把已经取到的更早历史覆盖掉，
+// 「加载更多」只能再去上游逐页翻，常常翻不出新内容。
+function mergeWithCachedHistory(freshPosts, cachedPosts) {
+  const byId = new Map();
+  for (const post of cachedPosts || []) if (post && post.id) byId.set(String(post.id), post);
+  for (const post of freshPosts || []) if (post && post.id) byId.set(String(post.id), post);
+  return Array.from(byId.values())
+    .sort((a, b) => {
+      const ta = Date.parse(a.created_at || "") || 0;
+      const tb = Date.parse(b.created_at || "") || 0;
+      if (ta !== tb) return tb - ta;
+      return String(b.id || "").localeCompare(String(a.id || ""));
+    })
+    .slice(0, TECH_FREE_FEED_MAX_ITEMS);
+}
+
+async function refreshFreeTechLeaderFeed(normalized, limit, env, key, history) {
+  const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
+  const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
+  const freshPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
+  const returnedPosts = history && history.length ? mergeWithCachedHistory(freshPosts, history) : freshPosts;
+  const fulfilledLimit = Math.min(requestedLimit, freshPosts.length);
+  const persisted = {
+    ...fresh,
+    posts: returnedPosts,
+    requested_limit: Math.max(fulfilledLimit, returnedPosts.length),
+    requested_target: requestedLimit,
+    returned_items: freshPosts.length
+  };
+  await writeJson(env.PRO_DATA, key, persisted);
+  return persisted;
+}
+
+async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
     const err = new Error("invalid_free_feed_handle");
@@ -2139,18 +2198,32 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     };
   }
 
-  try {
-    const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
-    const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
-    const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
-    const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
-    const persisted = {
-      ...fresh,
-      requested_limit: fulfilledLimit,
-      requested_target: requestedLimit,
-      returned_items: returnedPosts.length
+  // 缓存已过期但不太旧：先把缓存立即返回给访客，再在后台向上游刷新（stale-while-revalidate）。
+  // 这样访客不用等上游公开源（常需 1–4 秒，偶尔失败重试），下一次打开就是新数据。
+  // 马斯克要求更新更快：只在 10 分钟内的缓存上这样做，更旧的仍当场刷新。
+  const history = cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS ? cachedPosts : [];
+  const revalidateWindow = strictLatestProfile ? TECH_FREE_FEED_TTL_MS : TECH_FREE_FEED_MAX_STALE_MS;
+  if (ctx && typeof ctx.waitUntil === "function" && cachedPosts.length && age <= revalidateWindow && cachedCapacity >= limit) {
+    if (!freeFeedRefreshing.has(key)) {
+      freeFeedRefreshing.add(key);
+      ctx.waitUntil(
+        refreshFreeTechLeaderFeed(normalized, limit, env, key, history)
+          .catch(() => null)
+          .finally(() => freeFeedRefreshing.delete(key))
+      );
+    }
+    return {
+      ...cached,
+      requested_limit: cachedCapacity,
+      requested_target: Number(cached && cached.requested_target) || cachedCapacity,
+      posts: cachedPosts.slice(0, limit),
+      cache: { status: "stale_revalidating", age_ms: age }
     };
-    await writeJson(env.PRO_DATA, key, persisted);
+  }
+
+  try {
+    const persisted = await refreshFreeTechLeaderFeed(normalized, limit, env, key, history);
+    const returnedPosts = Array.isArray(persisted.posts) ? persisted.posts : [];
     return { ...persisted, posts: returnedPosts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
     if (cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS) {
@@ -2795,7 +2868,7 @@ async function getTechLeaderFeed(profile, limit, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const cors = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
@@ -3059,8 +3132,26 @@ async function proxyTechLeaderMedia(request, target, cors) {
       const handle = normalizeXHandle(url.searchParams.get("handle"));
       const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FREE_FEED_MAX_ITEMS, 10);
       if (!handle) return json({ error: "invalid_free_feed_handle" }, 400, cors);
+      // 页面后台预取用：只读服务器缓存，不访问上游公开源，避免一次打开页面就对上游发出一串请求、
+      // 触发限流而影响「加载更多」的逐页翻取。没有缓存时返回 404，页面跳过即可。
+      if (url.searchParams.get("cached_only") === "1") {
+        const key = freeTechLeaderCacheKey(handle);
+        const cached = await readJson(env.PRO_DATA, key);
+        const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
+        const age = Number.isFinite(cachedAt) ? Math.max(0, Date.now() - cachedAt) : Infinity;
+        const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+        if (!cachedPosts.length || age > TECH_FREE_FEED_MAX_STALE_MS) {
+          return json({ error: "not_cached", handle }, 404, { ...cors, "cache-control": "no-store" });
+        }
+        return json({
+          ...cached,
+          requested_limit: cachedPosts.length,
+          posts: cachedPosts.slice(0, limit),
+          cache: { status: "cached_only", age_ms: age }
+        }, 200, { ...cors, "cache-control": "no-store", "x-ooglex-x-api": "unused" });
+      }
       try {
-        const feed = await getFreeTechLeaderFeed(handle, limit, env);
+        const feed = await getFreeTechLeaderFeed(handle, limit, env, ctx);
         return json(feed, 200, {
           ...cors,
           "cache-control": "public, max-age=120, stale-while-revalidate=600",

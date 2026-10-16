@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
+  // 在 OOGLE X 安卓应用内打开时标记页面（首屏前生效，避免闪现），用于隐藏只适合网页的入口。
+  try{if(/OoglexApp\//.test(navigator.userAgent||""))document.documentElement.classList.add("in-app");}catch(e){}
   (function(){
     try{
       var u=new URL(location.href);
@@ -49,6 +51,9 @@
     .page{max-width:1180px;margin:0 auto;padding:0 24px 56px}
     .top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .back{color:var(--dim);font-size:14px}.back:hover{color:var(--ink)}
+    /* 应用内没有「返回 Ooglex 首页」的需要：隐藏返回链接，标签移到左侧，避开右上角的主题按钮 */
+    .in-app .top .back{display:none}
+    .in-app .top{justify-content:flex-start}
     .tag{font:11px/1 var(--mono);letter-spacing:.16em;color:var(--faint)}
     .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,330px);gap:38px;align-items:center;padding:50px 0 26px}
     .hero-copy{min-width:0}
@@ -225,7 +230,7 @@
     .post-share-btn{appearance:none;border:0;background:transparent;padding:0;color:var(--blue);font:inherit;cursor:pointer}.post-share-btn:hover{text-decoration:underline}.post-share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px}
     .share-sheet[hidden]{display:none}.share-sheet{position:fixed;inset:0;z-index:1000;display:grid;align-items:end;justify-items:center;padding:18px}.share-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.38);backdrop-filter:blur(4px)}.share-panel{position:relative;width:min(520px,100%);max-height:min(82vh,760px);overflow:auto;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 24px 80px rgba(0,0,0,.28)}.share-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.share-head b{font-size:16px}.share-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:22px;cursor:pointer}.share-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-top:16px}.share-actions button,.share-card-actions button{min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--ink);font-weight:700;cursor:pointer}.share-actions button:hover,.share-card-actions button:hover{background:rgba(57,135,229,.12)}.share-status{min-height:20px;margin-top:10px;font-size:12px;color:var(--faint)}.share-card-wrap{margin-top:12px}.share-card-wrap img{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#f7f2ea}.share-card-actions{display:flex;gap:9px;margin-top:10px}.share-card-actions button{flex:1}.share-note{margin-top:10px;font-size:11px;line-height:1.5;color:var(--faint)}
     .embedded-post{margin-top:13px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018);overflow:hidden}.embedded-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.embedded-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:rgba(255,255,255,.05)}.embedded-who{min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.embedded-name{font-size:15px;line-height:20px;font-weight:700;color:var(--ink)}.embedded-handle{font:400 15px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--faint)}.embedded-post .post-text{font-size:15px;line-height:20px}.embedded-post .post-media{margin-top:9px}.embedded-post .post-media img,.embedded-post .post-media video{max-height:330px;border-radius:10px}.embedded-link{display:inline-block;margin-top:9px;color:var(--blue);font:10.5px/1.2 var(--mono)}
-    .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+    .feed-more{display:flex;justify-content:center;padding:16px 18px 20px;border-top:1px solid var(--line)}.feed-more button{min-width:180px;min-height:42px;padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:rgba(57,135,229,.06);color:var(--blue);font:700 12px/1.2 inherit;cursor:pointer}.feed-more button:hover{background:rgba(57,135,229,.11)}.feed-more button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.feed-more button:disabled{cursor:default;opacity:.75}.feed-more.feed-end button{color:var(--dim);background:transparent;border-style:dashed}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
@@ -827,7 +832,8 @@
 
 
   var DEBUG=params.get("debug")==="1";
-  var EMBED_TIMEOUT_MS=25000;
+  // X 官方组件只是公开源失败时的备用；在无法连接 X 的网络里会一直加载，10 秒后就给出明确提示。
+  var EMBED_TIMEOUT_MS=10000;
   var activeTimeout=null;
   var activeObserver=null;
   var activeIframe=null;
@@ -1328,8 +1334,11 @@
   // 本次浏览器会话内缓存名录：与密码门「本次会话内保持解锁」同一范围，关闭浏览器即清除。
   // 命中时立即渲染，后台再取最新名录写回缓存，下次打开生效。
   var CATALOG_CACHE_KEY="ooglex.techLeaders.catalog:"+CATALOG_FILE;
+  var catalogCacheMemo;   // 名录约 1.8MB，本页只解析一次
   function readCatalogCache(){
-    try{var raw=sessionStorage.getItem(CATALOG_CACHE_KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}
+    if(catalogCacheMemo!==undefined)return catalogCacheMemo;
+    try{var raw=sessionStorage.getItem(CATALOG_CACHE_KEY);catalogCacheMemo=raw?JSON.parse(raw):null;}catch(e){catalogCacheMemo=null;}
+    return catalogCacheMemo;
   }
   function writeCatalogCache(text){
     try{sessionStorage.setItem(CATALOG_CACHE_KEY,text);}catch(e){try{sessionStorage.removeItem(CATALOG_CACHE_KEY);}catch(_){}}
@@ -1340,7 +1349,7 @@
     if(!res.ok)throw new Error("catalog_http_"+res.status);
     return res.text();
   }
-  async function loadCatalog(){
+  async function loadCatalog(earlyCatalog){
     // 中文名字典与名录并行请求，不再串行等待。
     var namesPromise=fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"})
       .then(function(r){return r.ok?r.json():null;})
@@ -1351,7 +1360,8 @@
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
         fetchCatalogText().then(writeCatalogCache).catch(function(){});
       }else{
-        var text=await fetchCatalogText();
+        // 名录请求已在核对密码会话的同时提前发出；提前请求失败（如会话未解锁）才重新请求。
+        var text=(earlyCatalog?await earlyCatalog:null)||await fetchCatalogText();
         data=JSON.parse(text);
         writeCatalogCache(text);
       }
@@ -1475,12 +1485,14 @@
     timeline.setAttribute("data-state","fallback");
     timeline.innerHTML='<div class="api-state"><b>临时人物资料</b><div>该条目未绑定 X 账号，因此暂不加载 X 时间线。</div></div>';
   }
+  var embedSeq=0;
   function bootEmbed(){
     if(!current||!current.handle){renderNoXTimeline();return;}
     clearWatchers();
     rendered=false;
     activeIframe=null;
     sourceBadge.textContent="X Embed 回退 · $0 API";
+    diagState["SCRIPT"]="…";diagState["WIDGET"]="…";
     drawDiag();probeSyndication();buildOfficialAnchor();
     timeline.setAttribute("data-state","loading");
     activeObserver=new MutationObserver(function(){var frame=timeline.querySelector("iframe");if(frame)attachIframe(frame);});
@@ -1504,6 +1516,11 @@
     script.onerror=function(){setDiag("SCRIPT","✕");setDiag("WIDGET","✕");embedFallback("widgets_script_unavailable");};
     timeline.parentNode.insertBefore(script,timeline.nextSibling);
     activeTimeout=setTimeout(function(){if(!rendered)embedFallback("official_embed_timeout");},EMBED_TIMEOUT_MS);
+    // 无法连接 X 的网络里 widgets.js 不会报错、只会一直挂起：5 秒还没加载完就直接提示，不必等满 10 秒。
+    var mySeq=++embedSeq;
+    setTimeout(function(){
+      if(mySeq===embedSeq&&!rendered&&diagState["SCRIPT"]!=="✓"&&timeline.getAttribute("data-state")==="loading")embedFallback("widgets_script_timeout");
+    },5000);
   }
 
   function metric(n){
@@ -1560,10 +1577,28 @@
       return box;
     }catch(e){return null;}
   }
-  function writeFreeFeedBrowserCache(p,data){
+  function writeFreeFeedBrowserCache(p,data,savedAt){
     try{
       if(!p||!p.handle||!data||!Array.isArray(data.posts)||!data.posts.length)return;
-      localStorage.setItem(freeFeedBrowserCacheKey(p),JSON.stringify({saved_at:Date.now(),data:data}));
+      localStorage.setItem(freeFeedBrowserCacheKey(p),JSON.stringify({saved_at:savedAt||Date.now(),data:data}));
+      pruneFreeFeedBrowserCache();
+    }catch(e){}
+  }
+  // 本机最多保留 40 位人物的动态缓存（按保存时间），避免预取后占满浏览器存储。
+  var FREE_FEED_CACHE_MAX=40;
+  function pruneFreeFeedBrowserCache(){
+    try{
+      var items=[];
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k&&k.indexOf("ooglex-tech-feed-")===0){
+          var at=0;try{at=Number(JSON.parse(localStorage.getItem(k)).saved_at)||0;}catch(e){}
+          items.push({k:k,at:at});
+        }
+      }
+      if(items.length<=FREE_FEED_CACHE_MAX)return;
+      items.sort(function(a,b){return b.at-a.at;});
+      items.slice(FREE_FEED_CACHE_MAX).forEach(function(it){try{localStorage.removeItem(it.k);}catch(e){}});
     }catch(e){}
   }
   function freeFeedIds(data){
@@ -1578,11 +1613,11 @@
     html+='</div>';
     timeline.insertAdjacentHTML("beforeend",html);
   }
-  async function fetchFreeFeedOnce(p,limit,timeoutMs){
+  async function fetchFreeFeedOnce(p,limit,timeoutMs,extraQuery){
     var ctl=new AbortController();
     var timer=setTimeout(function(){ctl.abort();},timeoutMs||4000);
     try{
-      var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit,{signal:ctl.signal,cache:"no-store"});
+      var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit+(extraQuery||""),{signal:ctl.signal,cache:"no-store"});
       var data=await res.json().catch(function(){return {};});
       if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
       return data;
@@ -1972,6 +2007,7 @@
     var waitingForMore=false;   // 本地已显示完、用户点了「加载更多」在等后台结果
     var fetchFailed=false;
     var fetchFailures=0;
+    var autoRetried=false,autoRetryPending=false;
     function postKey(p,i){return String(p&&p.id||("idx-"+i));}
     function localRemaining(){
       var n=0;for(var i=0;i<posts.length;i++)if(!renderedIds.has(postKey(posts[i],i)))n++;
@@ -2011,17 +2047,23 @@
         btn.textContent="加载更多 "+Math.min(batchSize,remaining)+" 条";
         return;
       }
-      if(fetchingMore){
+      if(fetchingMore||autoRetryPending){
         btn.disabled=true;
-        btn.textContent="正在加载更多…";
+        btn.textContent="正在加载更早的动态…";
         return;
       }
       if(remoteExhausted){
-        more.remove();
+        // 不再让按钮直接消失（看起来像「下面的推文没了」）：明确告诉读者已经到底。
+        btn.disabled=true;
+        btn.textContent=posts.length>=maxPosts
+          ?"已显示最近 "+posts.length+" 条公开动态"
+          :(fetchFailed?"暂时无法加载更早的动态，请稍后再试":"已显示全部 "+posts.length+" 条公开动态");
+        more.classList.add("feed-end");
         return;
       }
       btn.disabled=false;
-      btn.textContent=fetchFailed?"加载失败，点此重试":"加载更多 "+batchSize+" 条";
+      btn.textContent=fetchFailed?"加载失败，点此重试"
+        :(noGrowthFetches>0?"暂时没有更早的动态，点此再试一次":"加载更多 "+batchSize+" 条");
     }
 
     async function fetchMoreInBackground(){
@@ -2062,6 +2104,12 @@
         // 用户刚才点过「加载更多」在等：数据到了直接接着显示，不用再点一次。
         if(waitingForMore&&localRemaining()>0){waitingForMore=false;appendNextBatch();}
         else if(waitingForMore&&remoteExhausted)waitingForMore=false;
+        // 第一次没取到更早的内容（上游偶发限流常见）：2.5 秒后自动再取一次，期间显示「正在加载」，
+        // 不让读者先看到「没有更早的动态」再自己去点。
+        if(!remoteExhausted&&!fetchFailed&&noGrowthFetches===1&&localRemaining()===0&&!autoRetried){
+          autoRetried=true;autoRetryPending=true;
+          setTimeout(function(){autoRetryPending=false;fetchMoreInBackground();},2500);
+        }
         refreshMore();
       }
     }
@@ -2095,6 +2143,95 @@
     return true;
   }
 
+  // ---- 打开页面时提前请求动态 ----
+  // 记住最近看过的人物 id→handle，下次打开时不必等名录下载、解析完，就能与密码核对、名录请求同时取动态。
+  var LEADER_HANDLES_KEY="ooglex.techLeaders.handles.v1";
+  var earlyFreeFeed=null;
+  function readLeaderHandles(){try{var m=JSON.parse(localStorage.getItem(LEADER_HANDLES_KEY)||"{}");return m&&typeof m==="object"?m:{};}catch(e){return {};}}
+  function rememberLeaderHandle(p,limit){
+    if(!p||!p.id||!p.handle)return;
+    try{
+      var m=readLeaderHandles();var entry={handle:p.handle,limit:limit,at:Date.now()};
+      m[p.id]=entry;if(!requested)m.__default__=Object.assign({id:p.id},entry);
+      var keys=Object.keys(m).filter(function(k){return k!=="__default__";}).sort(function(a,b){return (m[b].at||0)-(m[a].at||0);});
+      keys.slice(40).forEach(function(k){delete m[k];});
+      localStorage.setItem(LEADER_HANDLES_KEY,JSON.stringify(m));
+    }catch(e){}
+  }
+  function startEarlyFreeFeed(){
+    if(MODE!=="free")return;
+    var entry=readLeaderHandles()[requested||"__default__"];
+    if(!entry||!entry.handle)return;
+    var p={id:entry.id||requested,handle:entry.handle};
+    var cached=readFreeFeedBrowserCache(p);
+    if(cached&&cached.age_ms<=freeFeedBrowserFreshMs(p))return;   // 本机缓存够新，打开时不会请求
+    var limit=Math.max(1,Math.min(100,Number(entry.limit)||10));
+    earlyFreeFeed={handle:String(entry.handle).toLowerCase(),limit:limit,
+      promise:fetchFreeFeedOnce(p,limit,12000).catch(function(){return null;})};
+  }
+  function takeEarlyFreeFeed(p,limit){
+    var e=earlyFreeFeed;earlyFreeFeed=null;
+    if(!e||!p||String(p.handle||"").toLowerCase()!==e.handle||e.limit!==limit)return null;
+    return e.promise;
+  }
+
+  // ---- 预取人物栏中可见人物的动态 ----
+  // 人物栏里看得到的头像，在后台提前取好动态并存到本机；点开时直接显示，不用等。
+  // 同时也让服务器缓存保持新鲜。每页最多预取 24 位、同时 2 个请求，本机缓存够新的跳过。
+  var PREFETCH_MAX=24,PREFETCH_PARALLEL=2;
+  var prefetchQueue=[],prefetchInFlight=new Map(),prefetchCount=0,prefetchObserver=null,prefetchStarted=false;
+  function prefetchTarget(id){
+    var p=people.find(function(x){return x.id===id;});
+    if(!p||!usesNativeFreeFeed(p)||usesLocalOnlyTimeline(p)||(current&&current.id===p.id))return null;
+    var c=readFreeFeedBrowserCache(p);
+    if(c&&c.age_ms<=freeFeedBrowserFreshMs(p))return null;
+    return p;
+  }
+  function pumpPrefetch(){
+    while(prefetchInFlight.size<PREFETCH_PARALLEL&&prefetchQueue.length&&prefetchCount<PREFETCH_MAX){
+      var p=prefetchTarget(prefetchQueue.shift());
+      if(!p||prefetchInFlight.has(p.id))continue;
+      prefetchCount++;
+      (function(p){
+        var limit=Math.max(1,Math.min(100,Number(p.timeline_fetch_limit)||10));
+        // 只读服务器缓存（不触发上游请求）；按数据实际抓取时间记入本机缓存，
+        // 这样点开时若数据已不够新，页面会先显示它、再照常向服务器要最新的。
+        var promise=fetchFreeFeedOnce(p,limit,12000,"&cached_only=1")
+          .then(function(data){
+            var at=Date.parse(data&&data.fetched_at||"")||Date.now();
+            writeFreeFeedBrowserCache(p,data,Math.min(Date.now(),at));
+            return null;   // 只用于预热本机缓存，不直接当作「最新」结果
+          })
+          .catch(function(){return null;});
+        prefetchInFlight.set(p.id,{limit:limit,promise:promise});
+        promise.then(function(){setTimeout(function(){prefetchInFlight.delete(p.id);pumpPrefetch();},250);});
+      })(p);
+    }
+  }
+  function observeLeaderCardsForPrefetch(){
+    if(MODE!=="free"||typeof IntersectionObserver!=="function")return;
+    if(!prefetchObserver){
+      prefetchObserver=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(!en.isIntersecting)return;
+          prefetchObserver.unobserve(en.target);
+          var id=en.target.getAttribute("data-id");
+          if(id&&prefetchQueue.indexOf(id)<0)prefetchQueue.push(id);
+        });
+        pumpPrefetch();
+      },{threshold:0.5});
+    }
+    leaders.querySelectorAll("[data-id]").forEach(function(el){prefetchObserver.observe(el);});
+  }
+  function startLeaderPrefetch(){
+    if(prefetchStarted)return;prefetchStarted=true;
+    // 等当前人物的动态先显示，再开始后台预取，不和首屏抢网络。
+    setTimeout(function(){
+      observeLeaderCardsForPrefetch();
+      if(typeof MutationObserver==="function")new MutationObserver(function(){observeLeaderCardsForPrefetch();}).observe(leaders,{childList:true});
+    },1500);
+  }
+
   async function bootFreeNativeFeed(){
     if(!current||!current.handle){renderNoXTimeline();return;}
     clearWatchers();rendered=false;activeIframe=null;xdiag.hidden=true;
@@ -2109,6 +2246,8 @@
 
     var selected=current;
     var initialLimit=Math.max(1,Math.min(100,Number(selected&&selected.timeline_fetch_limit)||10));
+    rememberLeaderHandle(selected,initialLimit);
+    var earlyPromise=takeEarlyFreeFeed(selected,initialLimit);
     var cached=readFreeFeedBrowserCache(selected);
     var shownCache=false;
     if(cached&&cached.age_ms<=freeFeedBrowserStaleMs(selected)){
@@ -2120,7 +2259,18 @@
     }
 
     try{
-      var data=await fetchFreeFeedOnce(selected,initialLimit,12000);
+      // 提前请求（打开页面时或预取）成功就直接用；失败再正常请求。
+      var data=(earlyPromise?await earlyPromise:null);
+      if(!data){
+        try{data=await fetchFreeFeedOnce(selected,initialLimit,12000);}
+        catch(firstErr){
+          // 网络抖动或上游偶发失败：已切到别人就不再重试；否则隔 0.6 秒再试一次，仍失败才退回 X 官方组件。
+          if(!current||current.id!==selected.id)return;
+          await new Promise(function(r){setTimeout(r,600);});
+          if(!current||current.id!==selected.id)return;
+          data=await fetchFreeFeedOnce(selected,initialLimit,10000);
+        }
+      }
       writeFreeFeedBrowserCache(selected,data);
       if(!current||current.id!==selected.id)return;
       if(!shownCache||freeFeedIds(data)!==freeFeedIds(cached&&cached.data)){
@@ -2131,6 +2281,8 @@
       }
       return;
     }catch(e){
+      // 用户已经切到别的人物：这个旧请求的失败不能再改动当前页面（否则会把别人的动态换成 X 组件加载中）。
+      if(!current||current.id!==selected.id)return;
       if(shownCache){
         sourceBadge.textContent="公开缓存 · 后台源暂慢";
         timeline.setAttribute("data-state","ready");
@@ -2752,13 +2904,18 @@
   });
 
   (async function start(){
+    // 名录与动态请求和密码会话核对同时发出，不再一个等一个。
+    // 会话未解锁时这两个提前请求会失败并被忽略，解锁后照常请求。
+    var earlyCatalog=readCatalogCache()?null:fetchCatalogText().catch(function(){return null;});
+    startEarlyFreeFeed();
     if(window.OoglexTechLeadersGate&&typeof window.OoglexTechLeadersGate.wait==="function"){
       var unlocked=await window.OoglexTechLeadersGate.wait();
       if(!unlocked)return;
     }
     setModeUi();
-    await loadCatalog();
+    await loadCatalog(earlyCatalog);
     bootCurrentFeed();
+    startLeaderPrefetch();
   })();
 })();
 </script>

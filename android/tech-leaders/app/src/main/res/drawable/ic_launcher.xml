@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Android 7.x（API 24/25）没有自适应图标时使用的圆形图标 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="48dp" android:height="48dp"
     android:viewportWidth="108" android:viewportHeight="108">
     <path android:fillColor="@color/icon_bg" android:pathData="M54,54 m-52,0 a52,52 0 1,0 104,0 a52,52 0 1,0 -104,0" />
-    <path android:fillColor="#00000000" android:strokeColor="#33FFFFFF" android:strokeWidth="2.2"
-        android:pathData="M36,62 Q54,52 74,44" />
-    <path android:fillColor="#7D5CFF" android:pathData="M42,43 m-4.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
-    <path android:fillColor="#F04D38" android:pathData="M64,46 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
-    <path android:fillColor="#E4A11B" android:pathData="M68,66 m-4.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
-    <path android:fillColor="#4F9FD8" android:pathData="M45,67 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <!-- 外圈白色光晕（日食效果） -->
+    <path android:pathData="M54,54 m-36,0 a36,36 0 1,0 72,0 a36,36 0 1,0 -72,0">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="radial" android:centerX="54" android:centerY="54" android:gradientRadius="36">
+                <item android:offset="0.0" android:color="#FFFFFFFF" />
+                <item android:offset="0.78" android:color="#D9FFFFFF" />
+                <item android:offset="0.86" android:color="#40FFFFFF" />
+                <item android:offset="1.0" android:color="#00FFFFFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- 黑色圆盘 + 亮边 -->
+    <path android:fillColor="#050505" android:strokeColor="#F2FFFFFF" android:strokeWidth="1.2"
+        android:pathData="M54,54 m-28,0 a28,28 0 1,0 56,0 a28,28 0 1,0 -56,0" />
+    <!-- Ooglex「OX」字母组合（原创，非 X 公司商标图形） -->
+    <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="2.6"
+        android:pathData="M44.5,54 m-7.5,0 a7.5,7.5 0 1,0 15,0 a7.5,7.5 0 1,0 -15,0" />
+    <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="2.6"
+        android:strokeLineCap="round" android:pathData="M58,46.5 L71,61.5 M71,46.5 L58,61.5" />
 </vector>

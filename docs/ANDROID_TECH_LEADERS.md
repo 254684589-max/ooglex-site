@@ -1,7 +1,7 @@
-# 科技领袖安卓应用
+# 科技领袖安卓应用（OOGLE X）
 
 ## 用途
-把「科技领袖实时动态流」（`/apps/tech-leaders/`）做成可下载安装的安卓应用。应用是一个原生 WebView 外壳，打开 `https://www.ooglex.com/apps/tech-leaders/`：页面、数据、密码门都来自线上网站，网站更新后应用内容自动同步，无需重新安装。
+把「科技领袖实时动态流」（`/apps/tech-leaders/`）做成可下载安装的安卓应用，桌面名称为「OOGLE X」。应用是一个原生 WebView 外壳，打开 `https://www.ooglex.com/apps/tech-leaders/`：页面、数据、密码门都来自线上网站，网站更新后应用内容自动同步，无需重新安装。
 
 - 源码：`android/tech-leaders/`（纯 Java + 系统 WebView，无第三方依赖，minSdk 24 / targetSdk 34）。
 - 构建：`.github/workflows/android-tech-leaders.yml`。任何分支推送都会构建并上传为 Actions 产物；只有 `main` 会发布到 GitHub Release `tech-leaders-android`。
@@ -31,3 +31,7 @@ base64 -i ooglex-tech-leaders.jks   # Windows 可用 certutil -encode
 
 ## 删除方法 / 故障回退
 删除 `android/tech-leaders/`、`.github/workflows/android-tech-leaders.yml`、`apps/tech-leaders/app/`、科技领袖页中的 `hero-app-link`，以及 `deploy_protected_pages.yml` 中的 APK 复制步骤；在 GitHub 删除 Release `tech-leaders-android`。Release 不存在或下载失败时，网站部署照常完成，下载页显示「安装包暂未发布」。
+
+## 图标
+
+桌面图标为原创设计：黑色背景、白色光晕圆环，中间是白色「OX」字母组合（`app/src/main/res/drawable/ic_launcher_foreground.xml`、`ic_launcher.xml`）。不使用 X（原推特）的商标标志，以免被误认为 X 官方应用；上架应用商店时也不会因商标被拒。

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-15T17:18:51Z",
+  "generated_at": "2026-10-16T14:46:36Z",
   "preview_catalog_version": "v528-wall-street-preview-2026-09-22",
   "preview_count": 528,
   "base_count": 500,
@@ -87,7 +87,7 @@
       "preview_record_ok": true,
       "avatar_ok": true,
       "avatar_content_type": "image/jpeg",
-      "avatar_bytes": 27723,
+      "avatar_bytes": 289653,
       "feed_ok": false,
       "feed_http_status": 401,
       "feed_error_body": "{\"error\":\"tech_leaders_password_required\"}",

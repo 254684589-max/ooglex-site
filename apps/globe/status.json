@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-10-15T10:05:54Z",
+  "updatedAt": "2026-10-16T10:02:28Z",
   "frequency": "daily",
-  "status": "ok",
+  "status": "partial",
   "demo": false,
   "sources": {
     "celestrak": {
@@ -19,28 +19,28 @@
   },
   "items": {
     "celestrak/stations": {
-      "ok": true,
-      "detail": "17 颗"
+      "ok": false,
+      "detail": "抓取失败: <urlopen error timed out>；保留上一份"
     },
     "celestrak/visual": {
-      "ok": true,
-      "detail": "155 颗"
+      "ok": false,
+      "detail": "抓取失败: <urlopen error timed out>；保留上一份"
     },
     "celestrak/gps-ops": {
-      "ok": true,
-      "detail": "32 颗"
+      "ok": false,
+      "detail": "抓取失败: <urlopen error timed out>；保留上一份"
     },
     "celestrak/glo-ops": {
-      "ok": true,
-      "detail": "27 颗"
+      "ok": false,
+      "detail": "抓取失败: <urlopen error timed out>；保留上一份"
     },
     "celestrak/galileo": {
-      "ok": true,
-      "detail": "31 颗"
+      "ok": false,
+      "detail": "抓取失败: <urlopen error timed out>；保留上一份"
     },
     "celestrak/geo": {
-      "ok": true,
-      "detail": "565 颗"
+      "ok": false,
+      "detail": "抓取失败: <urlopen error timed out>；保留上一份"
     },
     "launches": {
       "ok": true,

@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-15T17:07:02Z",
-  "asOf": "2026-10-15",
+  "updatedAt": "2026-10-16T11:31:35Z",
+  "asOf": "2026-10-16",
   "seed": false,
   "note": "Ooglex 多源共识榜：先把各来源转换为榜内排名百分位，再按 AA 50% / LiveBench 30% / LMArena 20% 合成；缺失来源不重分配权重，而向中性分收缩。至少两源才进入综合排名。",
   "sources": {
@@ -45,9 +45,9 @@
   "sourceMeta": {
     "livebench": {
       "ok": true,
-      "count": 44,
+      "count": 47,
       "release": "2026-09-02",
-      "fetchedAt": "2026-10-15T17:06:42Z",
+      "fetchedAt": "2026-10-16T11:31:21Z",
       "source": "livebench.ai/table_2026_09_02.csv",
       "aggregation": "mean_of_category_averages"
     },
@@ -55,7 +55,7 @@
       "ok": true,
       "count": 18,
       "refreshed": 18,
-      "fetchedAt": "2026-10-15T17:07:02Z",
+      "fetchedAt": "2026-10-16T11:31:35Z",
       "snapshotDate": "2026-09-20",
       "source": "artificialanalysis.ai/models/*",
       "mode": "official_public_pages",
@@ -103,11 +103,11 @@
       "aa": 53.0,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 95.2,
+      "livebenchPercentile": 95.6,
       "aaPercentile": 97.1,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 87.1
+      "combo": 87.2
     },
     {
       "id": "claude-opus-5",
@@ -121,11 +121,11 @@
       "aa": 51.0,
       "ctx": "1M",
       "price": 10.0,
-      "livebenchPercentile": 83.3,
+      "livebenchPercentile": 84.4,
       "aaPercentile": 88.2,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 79.1
+      "combo": 79.5
     },
     {
       "id": "claude-fable-5",
@@ -139,11 +139,11 @@
       "aa": 50.0,
       "ctx": "1M",
       "price": 20.0,
-      "livebenchPercentile": 88.1,
+      "livebenchPercentile": 88.9,
       "aaPercentile": 82.4,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 77.6
+      "combo": 77.8
     },
     {
       "id": "muse-spark-1-3",
@@ -157,11 +157,11 @@
       "aa": 48.0,
       "ctx": "1M",
       "price": 2.0,
-      "livebenchPercentile": 65.5,
+      "livebenchPercentile": 67.8,
       "aaPercentile": 76.5,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 67.9
+      "combo": 68.6
     },
     {
       "id": "gpt-5-6-sol",
@@ -175,11 +175,11 @@
       "aa": 47.0,
       "ctx": "400K",
       "price": 8.0,
-      "livebenchPercentile": 71.4,
+      "livebenchPercentile": 73.3,
       "aaPercentile": 70.6,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 66.7
+      "combo": 67.3
     },
     {
       "id": "grok-4-6",
@@ -193,11 +193,11 @@
       "aa": 44.0,
       "ctx": "500K",
       "price": 3.0,
-      "livebenchPercentile": 60.7,
+      "livebenchPercentile": 63.3,
       "aaPercentile": 55.9,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 56.2
+      "combo": 56.9
     },
     {
       "id": "gpt-5-6-terra",
@@ -211,11 +211,11 @@
       "aa": 42.0,
       "ctx": null,
       "price": 4.5,
-      "livebenchPercentile": 69.0,
+      "livebenchPercentile": 71.1,
       "aaPercentile": 44.1,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 52.8
+      "combo": 53.4
     },
     {
       "id": "glm-5-3",
@@ -229,11 +229,11 @@
       "aa": 45.0,
       "ctx": "1M",
       "price": 2.15,
-      "livebenchPercentile": 21.4,
+      "livebenchPercentile": 22.2,
       "aaPercentile": 64.7,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 48.8
+      "combo": 49.0
     },
     {
       "id": "glm-5-3-flash",
@@ -247,11 +247,11 @@
       "aa": 42.0,
       "ctx": "1M",
       "price": 0.1,
-      "livebenchPercentile": 52.4,
+      "livebenchPercentile": 55.6,
       "aaPercentile": 44.1,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 47.8
+      "combo": 48.7
     },
     {
       "id": "kimi-k3",
@@ -265,11 +265,11 @@
       "aa": 44.0,
       "ctx": "1M",
       "price": 6.0,
-      "livebenchPercentile": 28.6,
+      "livebenchPercentile": 31.1,
       "aaPercentile": 55.9,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 46.5
+      "combo": 47.3
     },
     {
       "id": "gemini-3-8-flash",
@@ -283,11 +283,11 @@
       "aa": 41.0,
       "ctx": "1M",
       "price": 1.5,
-      "livebenchPercentile": 42.9,
+      "livebenchPercentile": 44.4,
       "aaPercentile": 35.3,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 40.5
+      "combo": 41.0
     },
     {
       "id": "grok-4-5",
@@ -301,11 +301,11 @@
       "aa": 39.0,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 50.0,
+      "livebenchPercentile": 53.3,
       "aaPercentile": 20.6,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 35.3
+      "combo": 36.3
     },
     {
       "id": "gemini-3-7-flash",
@@ -319,11 +319,11 @@
       "aa": 39.0,
       "ctx": "1M",
       "price": 1.5,
-      "livebenchPercentile": 40.5,
+      "livebenchPercentile": 42.2,
       "aaPercentile": 20.6,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 32.4
+      "combo": 33.0
     },
     {
       "id": "muse-spark-1-2",
@@ -337,11 +337,11 @@
       "aa": 40.0,
       "ctx": null,
       "price": 2.0,
-      "livebenchPercentile": 23.8,
+      "livebenchPercentile": 24.4,
       "aaPercentile": 29.4,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 31.8
+      "combo": 32.0
     },
     {
       "id": "gpt-5-5",
@@ -355,11 +355,11 @@
       "aa": 38.0,
       "ctx": "1.1M",
       "price": 11.25,
-      "livebenchPercentile": 45.2,
+      "livebenchPercentile": 46.7,
       "aaPercentile": 11.8,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 29.5
+      "combo": 29.9
     },
     {
       "id": "qwen3-8-27b",
@@ -369,15 +369,15 @@
       "flag": "🇨🇳",
       "open": true,
       "arena": null,
-      "livebench": 58.1,
+      "livebench": 62.7,
       "aa": 34.0,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 19.0,
+      "livebenchPercentile": 28.9,
       "aaPercentile": 0.0,
       "comboAxes": 2,
       "confidence": 80,
-      "combo": 15.7
+      "combo": 18.7
     },
     {
       "id": "deepseek-v4-pro",
@@ -408,7 +408,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 8.0,
-      "livebenchPercentile": 97.6,
+      "livebenchPercentile": 97.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -425,7 +425,7 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 4.0,
-      "livebenchPercentile": 92.9,
+      "livebenchPercentile": 93.3,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -442,7 +442,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 90.5,
+      "livebenchPercentile": 91.1,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -459,7 +459,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 4.0,
-      "livebenchPercentile": 85.7,
+      "livebenchPercentile": 86.7,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -476,7 +476,7 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 4.0,
-      "livebenchPercentile": 81.0,
+      "livebenchPercentile": 82.2,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -493,7 +493,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 78.6,
+      "livebenchPercentile": 80.0,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -510,7 +510,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 0.52,
-      "livebenchPercentile": 76.2,
+      "livebenchPercentile": 77.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -527,7 +527,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 10.0,
-      "livebenchPercentile": 73.8,
+      "livebenchPercentile": 75.6,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -544,7 +544,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 65.5,
+      "livebenchPercentile": 67.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -561,7 +561,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 4.0,
-      "livebenchPercentile": 60.7,
+      "livebenchPercentile": 63.3,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -578,7 +578,7 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 57.1,
+      "livebenchPercentile": 60.0,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -595,7 +595,7 @@
       "aa": null,
       "ctx": "500K",
       "price": 3.0,
-      "livebenchPercentile": 54.8,
+      "livebenchPercentile": 57.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -612,7 +612,24 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 0.2,
-      "livebenchPercentile": 47.6,
+      "livebenchPercentile": 51.1,
+      "comboAxes": 1,
+      "confidence": 30,
+      "combo": null
+    },
+    {
+      "id": "qwen3-8-flash",
+      "name": "Qwen3.8 Flash",
+      "org": "Alibaba",
+      "orgCn": "阿里巴巴",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": null,
+      "livebench": 68.8,
+      "aa": null,
+      "ctx": null,
+      "price": null,
+      "livebenchPercentile": 48.9,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -629,7 +646,7 @@
       "aa": null,
       "ctx": null,
       "price": 0.45,
-      "livebenchPercentile": 38.1,
+      "livebenchPercentile": 40.0,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -646,7 +663,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 3.0,
-      "livebenchPercentile": 35.7,
+      "livebenchPercentile": 37.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -663,7 +680,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 3.0,
-      "livebenchPercentile": 33.3,
+      "livebenchPercentile": 35.6,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -680,24 +697,41 @@
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 31.0,
+      "livebenchPercentile": 33.3,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
     },
     {
-      "id": "qwen3-8-flash",
-      "name": "Qwen3.8 Flash",
-      "org": "Alibaba",
-      "orgCn": "阿里巴巴",
-      "flag": "🇨🇳",
+      "id": "step-5",
+      "name": "Step 5",
+      "org": "StepFun",
+      "orgCn": "StepFun",
+      "flag": "🌐",
       "open": true,
       "arena": null,
-      "livebench": 61.9,
+      "livebench": 62.0,
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 26.2,
+      "livebenchPercentile": 26.7,
+      "comboAxes": 1,
+      "confidence": 30,
+      "combo": null
+    },
+    {
+      "id": "muse-spark-open",
+      "name": "Muse Spark Open",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": true,
+      "arena": null,
+      "livebench": 57.6,
+      "aa": null,
+      "ctx": null,
+      "price": null,
+      "livebenchPercentile": 20.0,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -714,7 +748,7 @@
       "aa": null,
       "ctx": "1M",
       "price": 2.25,
-      "livebenchPercentile": 16.7,
+      "livebenchPercentile": 17.8,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
@@ -727,45 +761,11 @@
       "flag": "🇨🇳",
       "open": false,
       "arena": null,
-      "livebench": 52.6,
+      "livebench": 53.7,
       "aa": null,
       "ctx": null,
       "price": null,
-      "livebenchPercentile": 14.3,
-      "comboAxes": 1,
-      "confidence": 30,
-      "combo": null
-    },
-    {
-      "id": "inkling",
-      "name": "Inkling",
-      "org": "Thinking Machines",
-      "orgCn": "Thinking Machines",
-      "flag": "🌐",
-      "open": true,
-      "arena": null,
-      "livebench": 51.9,
-      "aa": null,
-      "ctx": null,
-      "price": null,
-      "livebenchPercentile": 11.9,
-      "comboAxes": 1,
-      "confidence": 30,
-      "combo": null
-    },
-    {
-      "id": "mistral-large-4",
-      "name": "Mistral Large 4",
-      "org": "Mistral AI",
-      "orgCn": "Mistral",
-      "flag": "🇫🇷",
-      "open": false,
-      "arena": null,
-      "livebench": 47.7,
-      "aa": null,
-      "ctx": null,
-      "price": null,
-      "livebenchPercentile": 9.5,
+      "livebenchPercentile": 15.6,
       "comboAxes": 1,
       "confidence": 30,
       "combo": null
