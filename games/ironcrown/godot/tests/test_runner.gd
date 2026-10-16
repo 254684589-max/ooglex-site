@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -264,15 +264,21 @@ func test_ui() -> void:
 	var marsh := await make_area("marsh")
 	marsh.streamer.build_all()                     # 鹭沼（4.4）：分帧搭的块（客栈招牌、堤道头的指路牌）也搭出来再查
 	var inn_room := await make_area("inn")         # 「歪桩」客栈（4.4b）
+	var keep_yard := await make_area("castle")     # 黑鹭堡庭院（4.5a）
+	var hall := await make_area("hall")            # 黑鹭堡大厅（4.5b）
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
 		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false) \
-		+ field.find_children("*", "", true, false) + marsh.find_children("*", "", true, false) + inn_room.find_children("*", "", true, false)
+		+ field.find_children("*", "", true, false) + marsh.find_children("*", "", true, false) + inn_room.find_children("*", "", true, false) \
+		+ keep_yard.find_children("*", "", true, false) + hall.find_children("*", "", true, false)
 	texts.append_array(Marsh.VIEW_NAMES + [Surface.label("mud"), "水太深，你爬回了刚才站稳的地方。", " · "])     # 鹭沼（4.4a）
 	texts.append_array(Inn.VIEW_NAMES + Inn.DRINKER_LINES + Inn.OLD_BOATMAN_LINES + [Inn.GATE_TEXT])            # 芦栈村的人说的话（4.4b，写在代码里）
 	for k in MarshLayout.PEOPLE_LINES:
 		texts.append_array(MarshLayout.PEOPLE_LINES[k])
 	for k in MarshLayout.CAMP_LINES:                                                                            # 营地的人（4.4c）
 		texts.append_array(MarshLayout.CAMP_LINES[k])
+	texts.append_array(Castle.VIEW_NAMES + Hall.VIEW_NAMES + Hall.ENVOY_LINES + Hall.GUARD_LINES)               # 黑鹭堡（4.5a / 4.5b）
+	for k in Castle.GUARD_LINES:
+		texts.append_array(Castle.GUARD_LINES[k])
 	for n in nodes:
 		if n is Interactable:
 			texts.append(n.prompt())
@@ -290,6 +296,8 @@ func test_ui() -> void:
 	field.queue_free()
 	marsh.queue_free()
 	inn_room.queue_free()
+	keep_yard.queue_free()
+	hall.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -6342,11 +6350,17 @@ func test_castle() -> void:
 	var doors: Array = main.find_children("*", "Door", true, false)
 	var open: Array = doors.filter(func(d): return d.to_area != "" and not d.locked)
 	var ex: Array = AreaMap.exits("castle")
-	var mid: Vector3 = Vector3.ZERO if open.is_empty() else open[0].global_transform * Vector3(open[0].width * 0.5, 0, 0)
-	check(open.size() == 1 and ex.size() == 1 and open[0].to_area == "marsh" and open[0].to_spawn == "castle_gate" and Vector2(mid.x, mid.z).distance_to(ex[0].at) < 0.3 and ex[0].name == open[0].display_name,
-		"只有堡门通往外面，和地图出口对得上")
+	var doors_match := open.size() == 2 and ex.size() == 2
+	for d in open:
+		var mid: Vector3 = d.global_transform * Vector3(d.width * 0.5, 0, 0)
+		var hit: Array = ex.filter(func(e): return e.name == d.display_name and Vector2(mid.x, mid.z).distance_to(e.at) < 0.3)
+		doors_match = doors_match and hit.size() == 1
+	var targets: Array = open.map(func(d): return "%s/%s" % [d.to_area, d.to_spawn])
+	targets.sort()
+	check(doors_match and targets == ["hall/front", "marsh/castle_gate"],
+		"堡门通往鹭沼、大厅门通往大厅，都和地图出口对得上（%s）" % str(targets))
 	var locked_names: Array = doors.filter(func(d): return d.locked).map(func(d): return d.display_name)
-	check(["大厅", "兵营", "病房", "账房", "水门", "兵营侧门"].all(func(n): return n in locked_names), "大厅、兵营、病房、账房、水门、侧门都还关着（%s）" % str(locked_names))
+	check(["兵营", "病房", "账房", "水门", "兵营侧门"].all(func(n): return n in locked_names) and not "大厅" in locked_names, "兵营、病房、账房、水门、侧门都还关着，大厅开着（%s）" % str(locked_names))
 	check(AreaMap.region_of("castle") == "marsh" and AreaMap.links("marsh").has(["castle", "marsh"]), "地图「鹭沼一带」里有黑鹭堡")
 	# 赫尔曼（堡门进来）：主线推进到「去大厅」，借据只能等家主醒
 	main.set_view(1)
@@ -6418,4 +6432,78 @@ func test_castle() -> void:
 	r.start("reedwharf", "ivette_veteran")
 	ot += r.options().map(func(o): return o.text)
 	check(not ot.has("你说的泥炭船——能捎我进堡吗？") and not ot.has("堡门不让我进。"), "有引荐信的人：托宾和老兵不提偷偷进堡的事")
+	GameState.new_game()
+
+
+## 黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈」）：从庭院的大厅门进来、主线推进到「听两位继承人」；人都站得稳、走得到；
+## 阿尔里克托你偷账、伊薇特托你收编无旗者（两条支线开始）；两边都听完，不管先后，主线推进到「去看家主」；埃德里克只在序章「交出」时在；出门回庭院
+func test_hall() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	check(Areas.known("hall") and Areas.is_indoor("hall") and Saves.SCENE_NAMES.has("hall") and Areas.spawn("hall", "front") is Transform3D and Areas.spawn("castle", "hall_door") is Transform3D,
+		"区域登记：大厅是室内区域，门口和庭院的大厅门口都是出生点")
+	check(AreaMap.region_of("hall") == "marsh" and AreaMap.exits("hall").size() == 1, "地图：大厅在「鹭沼一带」，一个出口")
+	# —— 序章「交出」、堡门进来：先阿尔里克后伊薇特
+	ch1_state("deliver", 11)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met"]:
+		GameState.set_flag(f)
+	GameState.set_flag("castle_entry", "gate")
+	GameState.start_quest("ch1_main", "to_hall")
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	main = await fl_go(main, "hall")
+	await physics(3)
+	check(main.area == "hall" and main.arrived_by == "front" and GameState.quest_stage("ch1_main") == "hear_heirs", "从庭院进了大厅：主线推进到「听两位继承人」（%s）" % GameState.quest_stage("ch1_main"))
+	var people := main.find_children("Npc_*", "Npc", true, false)
+	var bad: Array = people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)
+	check(people.size() == 4 + Hall.GUARDS.size() and bad.is_empty(), "大厅里：阿尔里克、信使、伊薇特、埃德里克和卫兵，都站得稳（%s）" % str(bad))
+	var alric: Npc = main._npc_by_dialogue("alric")
+	var ivette: Npc = main._npc_by_dialogue("ivette")
+	var room := Rect2(-Hall.W * 0.5, -Hall.D * 0.5, Hall.W, Hall.D)
+	check(walk_reach(main, Hall.SPAWNS.front[0], alric.position, 1.4, room) and walk_reach(main, Hall.SPAWNS.front[0], ivette.position, 1.4, room)
+		and walk_reach(main, Hall.SPAWNS.front[0], main._npc_by_dialogue("edric_hall").position, 1.4, room), "从门口走得到阿尔里克、伊薇特和埃德里克")
+	for v in [[1, alric], [2, ivette]]:
+		main.set_view(v[0])
+		await physics(3)
+		main.player.interactor.refresh()
+		check(main.player.interactor.target == v[1], "%d 号机位正对着%s（冒烟测试用）" % [v[0], v[1].display_name])
+	check(await fl_say(main, "hall", "alric", ["您打算怎么守北境？", "一半的兵权，等于把烽燧交出去。", "那您要我做什么？", "我会考虑。"])
+		and GameState.has_flag("ledger_asked") and GameState.quest_stage("ch1_ledger") == "get_ledger" and GameState.quest_stage("ch1_main") == "hear_heirs",
+		"阿尔里克：托你去账房偷账（支线开始）；伊薇特还没听，主线不动")
+	check(await fl_say(main, "hall", "ivette", ["您打算怎么守北境？", "您这是在拿全家冒险。", "那您要我做什么？", "我会考虑。"])
+		and GameState.has_flag("outlaws_asked") and GameState.quest_stage("ch1_outlaws") == "talk_offer" and GameState.quest_stage("ch1_main") == "see_osric",
+		"伊薇特：托你收编无旗者（支线开始）；两边都听完，主线推进到「去看家主」（%s）" % GameState.quest_stage("ch1_main"))
+	main.open_dialogue("hall", "alric", alric)
+	await frames(1)
+	check(main.dialogue.runner.node_id == "again" and main.dialogue.runner.options().any(func(o): return o.text == "账房那本账……"), "再找阿尔里克：问账的事")
+	main.dialogue.close()
+	check(await fl_say(main, "hall", "edric_hall", ["这不是我定的。", "……"]), "埃德里克（交出）：坐在窗边，不想多说")
+	main.set_view(3)
+	await physics(3)
+	main = await fl_go(main, "castle")
+	await physics(3)
+	check(main.area == "castle" and main.arrived_by == "hall_door" and GameState.quest_stage("ch1_main") == "see_osric", "出门回到庭院的大厅门口，主线不倒退")
+	await free_main(main)
+	# —— 序章「放走」、兵营侧门进来：伊薇特认得你；先伊薇特后阿尔里克也一样推进；埃德里克不在
+	ch1_state("release", 12)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met"]:
+		GameState.set_flag(f)
+	GameState.set_flag("castle_entry", "barracks")
+	GameState.start_quest("ch1_main", "to_hall")
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main._npc_by_dialogue("edric_hall") == null and main.find_children("Npc_*", "Npc", true, false).size() == 3 + Hall.GUARDS.size(), "序章没交出埃德里克：大厅里没有他")
+	main.open_dialogue("hall", "ivette", main._npc_by_dialogue("ivette"))
+	await frames(1)
+	check(main.dialogue.runner.node_id == "greet_barracks", "伊薇特：认出你是从她兵营侧门进来的")
+	main.dialogue.close()
+	await frames(2)
+	check(await fl_say(main, "hall", "ivette", ["您打算怎么守北境？", "那您要我做什么？", "我会考虑。"]) and GameState.quest_stage("ch1_outlaws") == "talk_offer"
+		and GameState.quest_stage("ch1_main") == "hear_heirs", "先听伊薇特：支线开始，阿尔里克还没听，主线不动")
+	check(await fl_say(main, "hall", "alric", ["您打算怎么守北境？", "那您要我做什么？", "那是揭您妹妹的短。", "我会考虑。"]) and GameState.quest_stage("ch1_ledger") == "get_ledger"
+		and GameState.quest_stage("ch1_main") == "see_osric", "再听阿尔里克（问他揭妹妹的短）：主线一样推进到「去看家主」")
+	await free_main(main)
 	GameState.new_game()

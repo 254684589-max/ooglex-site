@@ -24,7 +24,27 @@
         "ask_reedwharf": {"objective": "在芦栈村打听黑鹭堡的消息：「歪桩客栈」里的人、泥炭场的工头托宾、小码头的渡工……（至少两条）", "advance_when": {"clues_at_least": 2, "to": "to_blackheron"}},
         "to_blackheron": {"objective": "消息都指向黑鹭堡：从村子西北角上堤道，走到堡门前。没有引荐信的，守门的不放——去村里想想别的办法"},
         "meet_herman": {"objective": "进了黑鹭堡：去井边见堡守赫尔曼"},
-        "to_hall": {"objective": "家主在病房里昏睡，两位继承人都在大厅——去大厅（主楼的门）"}
+        "to_hall": {"objective": "家主在病房里昏睡，两位继承人都在大厅——去大厅（主楼的门）"},
+        "hear_heirs": {"objective": "在大厅听两位继承人怎么说：长子阿尔里克、次女伊薇特（顺序任意）"},
+        "see_osric": {"objective": "两位继承人都找你谈过了。去东边塔楼的病房看看家主（医师玛尔塔守着）"}
+      }
+    },
+    "ch1_ledger": {
+      "title": "皮毛税账册",
+      "kind": "side",
+      "summary": "阿尔里克要你从账房拿出那本皮毛税账册，交给塞弗林家的信使以示诚意——这等于把伊薇特扣下南运皮毛税的事抖出去。",
+      "first": "get_ledger",
+      "stages": {
+        "get_ledger": {"objective": "账房上了两道锁：找堡守赫尔曼要钥匙，或者另想办法"}
+      }
+    },
+    "ch1_outlaws": {
+      "title": "沼地里的无旗者",
+      "kind": "side",
+      "summary": "伊薇特缺人手：要你把鹭沼深处「灰手」奥弗那伙人收编过来（或者赶走），再让芦栈村托宾的泥炭工站到她这边。",
+      "first": "talk_offer",
+      "stages": {
+        "talk_offer": {"objective": "去鹭沼深处的营地找奥弗谈，也去芦栈村找泥炭工头托宾"}
       }
     },
     "hob_debt": {

@@ -4,7 +4,7 @@ extends RefCounted
 ## 外景在鹭沼那张图上（world/marsh.gd 的粗模）；进了堡门是这个单独的室外区域 castle（时段照常）。四面 8 米高的石墙围着一个 36 × 40 米的庭院：
 ##   南墙正中是堡门（出去回到鹭沼的堡门前）；北边是主楼（大厅在一楼），西边是兵营（南头的西墙上开一道侧门），东边北头是家主病房所在的塔楼、南头是账房；
 ##   西北角的北墙上是水门（铁栅放下着，外面就是水，泥炭船从这里进出）；院子中间一口井，堡守赫尔曼守在井边。
-## 4.5a 只做到庭院：大厅、兵营、病房、账房的门还关着（4.5b、4.5c）。没有引荐信的人从水门（托宾的泥炭船、奥弗的船）或兵营侧门（伊薇特的老兵）进来，
+## 4.5a 做了庭院；4.5b 大厅的门推得开（world/hall.gd）；兵营、病房、账房的门还关着（4.5c）。没有引荐信的人从水门（托宾的泥炭船、奥弗的船）或兵营侧门（伊薇特的老兵）进来，
 ## 站在门里面那头；对话里的 goto 效果把人送到对应的出生点（main._on_dialogue_closed）。
 ## 坐标：原点在庭院地面中心，北 = -Z；堡门在南墙（z = +20）。
 
@@ -16,7 +16,7 @@ const GATE_W := 3.2
 const GATE_H := 4.2
 const EXIT_NAME := "堡门"
 const KEEP := [Vector3(0, 0, -10.5), 0.0, {"w": 20.0, "d": 8.5, "floors": 2, "stone_upper": true, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 4501, "lit": 0.4,
-	"door": {"name": "大厅", "text": "大厅的门关着，里面有人在吵。（大厅里面在开发中）"}}]
+	"door": {"name": "大厅", "to_area": "hall", "to_spawn": "front", "verb": "进入"}}]       # 4.5b 起推得开
 const BARRACKS := [Vector3(-10, 0, 2), 90.0, {"w": 16.0, "d": 7.0, "floors": 1, "roof": "eaves", "door_x": 0.0, "seed": 4502, "lit": 0.3,
 	"door": {"name": "兵营", "text": "兵营的门从里面闩着，门口的兵摇了摇头。（兵营里面在开发中）"}}]
 const TOWER := [Vector3(12, 0, -6), -90.0, {"w": 6.0, "d": 5.5, "floors": 2, "stone_upper": true, "roof": "gable", "door_x": 0.0, "seed": 4503, "lit": 0.5,
@@ -47,6 +47,7 @@ const SPAWNS := {
 	"gate": [Vector3(0, 0, 17.5), 0.0],
 	"water_gate": [Vector3(WATER_GATE_X, 0, -17.0), 180.0],
 	"barracks_gate": [Vector3(-16.2, 0, SIDE_GATE_Z), -90.0],
+	"hall_door": [Vector3(0, 0, -9.2), 180.0],                   # 从大厅出来（4.5b）：站在主楼门前、背对门
 }
 const VIEW_NAMES := ["进门看庭院", "井边（赫尔曼）", "水门里面", "门内对着堡门"]
 const VIEWS := [
@@ -101,7 +102,8 @@ static func map_spec() -> Dictionary:
 	return {
 		"bounds": Rect2(-HW - 1.0, -HD - 1.0, HW * 2.0 + 2.0, HD * 2.0 + 2.0),
 		"shapes": shapes,
-		"exits": [{"at": Vector2(0, HD), "dir": Vector2(0, 1), "to": "marsh", "spawn": "castle_gate", "name": EXIT_NAME}],
+		"exits": [{"at": Vector2(0, HD), "dir": Vector2(0, 1), "to": "marsh", "spawn": "castle_gate", "name": EXIT_NAME},
+			{"at": House.door_xz(KEEP[0], float(KEEP[1]), 0.0), "dir": -House.facing(float(KEEP[1])), "to": "hall", "spawn": "front", "name": "大厅"}],
 	}
 
 

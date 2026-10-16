@@ -162,6 +162,8 @@ func _ready() -> void:
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
 			t = Castle.build(world, Settings.reduced_motion)
+		"hall":
+			t = Hall.build(world, Settings.reduced_motion)
 		"battle":
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
@@ -893,6 +895,8 @@ func _story_progress() -> void:
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "meet_herman")          # 进了黑鹭堡（4.5a：堡门、水门、侧门进来都算）
+	if GameState.chapter == 1 and area == "hall" and GameState.quest_stage("ch1_main") in ["meet_herman", "to_hall"]:
+		GameState.set_stage("ch1_main", "hear_heirs")           # 进了大厅（4.5b）：没见赫尔曼直接闯进来的也算
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）

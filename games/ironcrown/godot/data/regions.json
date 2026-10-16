@@ -18,7 +18,8 @@
       "areas": {
         "marsh": {"pos": [0.5, 0.62]},
         "inn": {"pos": [0.62, 0.3], "host": "marsh"},
-        "castle": {"pos": [0.22, 0.24]}
+        "castle": {"pos": [0.22, 0.42]},
+        "hall": {"pos": [0.22, 0.12], "host": "castle"}
       }
     }
   }
