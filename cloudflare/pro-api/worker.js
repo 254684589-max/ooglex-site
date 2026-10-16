@@ -2169,12 +2169,14 @@ async function refreshFreeTechLeaderFeed(normalized, limit, env, key, history, p
 }
 
 // ---- 定时轮换刷新全部账号（Cron Trigger）----
-// 每次运行按顺序深取几个账号（最多 100 条）并与历史合并写回 R2，约一天轮完名录里的全部本人账号：
-// 打开任何人物时服务器都有较新的缓存可立即返回，「加载更多」的历史也已备好。
+// 每次运行按顺序刷新几个账号的最新帖子（首页，最多 20 条）并与历史合并写回 R2，约半天轮完全部本人账号：
+// 打开任何人物时服务器都有较新的缓存可立即返回。更早的历史由每天的 GitHub Actions 巡检深取回填
+// （Cloudflare 机房向上游翻页常被限流），这里只负责保持最新。
 // 账号列表由部署流程从名录生成并上传到 R2（只含 handle，几 KB），定时任务不解析 1.8MB 名录。
 const FREE_FEED_REFRESH_HANDLES_KEY = "tech-leaders/free-feed/refresh-handles.json";
 const FREE_FEED_REFRESH_CURSOR_KEY = "tech-leaders/free-feed/refresh-cursor.json";
-const FREE_FEED_REFRESH_PER_RUN = 4;
+const FREE_FEED_REFRESH_PER_RUN = 8;
+const FREE_FEED_REFRESH_POSTS = 20;
 
 async function refreshFreeFeedArchive(handle, env) {
   const normalized = normalizeXHandle(handle);
@@ -2183,7 +2185,7 @@ async function refreshFreeFeedArchive(handle, env) {
   const cached = await readJson(env.PRO_DATA, key);
   const history = cached && Array.isArray(cached.posts) ? cached.posts : [];
   try {
-    const persisted = await refreshFreeTechLeaderFeed(normalized, TECH_FREE_FEED_MAX_ITEMS, env, key, history, cached && cached.requested_target);
+    const persisted = await refreshFreeTechLeaderFeed(normalized, FREE_FEED_REFRESH_POSTS, env, key, history, cached && cached.requested_target);
     return { handle: normalized, ok: true, posts: Array.isArray(persisted.posts) ? persisted.posts.length : 0, before: history.length };
   } catch (err) {
     return { handle: normalized, ok: false, error: err && err.code ? err.code : "refresh_failed", before: history.length };

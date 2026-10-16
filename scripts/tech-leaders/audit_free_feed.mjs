@@ -7,6 +7,9 @@
 // 用法：node scripts/tech-leaders/audit_free_feed.mjs [--out data/tech-leaders/free_feed_health.json]
 //        [--concurrency 3] [--limit 0] [--handles a,b,c] [--posts 21]
 //   --posts：每个账号请求的帖子数（默认 21；设 100 可检查「加载更多」能取到的历史深度）
+//   --backfill-r2：把取到的帖子按 id 与线上 R2 缓存里的历史合并后写回（需要环境变量
+//     CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID）。线上 Worker 从 Cloudflare 机房向上游翻页
+//     常被限流、只拿到十几条；GitHub 机房能稳定取到更深的历史，用它给线上补齐「加载更多」的历史。
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -22,6 +25,9 @@ const OUT = opt("out", "data/tech-leaders/free_feed_health.json");
 const CONCURRENCY = Math.max(1, Number(opt("concurrency", "3")) || 3);
 const MAX = Math.max(0, Number(opt("limit", "0")) || 0);
 const POSTS = Math.max(1, Math.min(100, Number(opt("posts", "21")) || 21));
+const BACKFILL = args.includes("--backfill-r2");
+const R2_BUCKET = "ooglex-pro-data";
+const fetchedPosts = new Map();   // handle -> posts（仅回填时保留）
 const ONLY = String(opt("handles", "")).split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 const REQUEST_TIMEOUT_MS = 30000;
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
@@ -84,6 +90,7 @@ async function check(p) {
     body = { error: e && e.message ? e.message : "audit_exception" };
   }
   const posts = Array.isArray(body.posts) ? body.posts : [];
+  if (BACKFILL && status === 200 && posts.length) fetchedPosts.set(handle, posts);
   const times = posts.map((x) => Date.parse(x && x.created_at || "")).filter(Number.isFinite);
   const latest = times.length ? new Date(Math.max(...times)).toISOString() : null;
   const oldest = times.length ? new Date(Math.min(...times)).toISOString() : null;
@@ -128,6 +135,88 @@ if (firstFailed.length) {
     again.first_error = rows[i].error;
     rows[i] = again;
     await new Promise((r) => setTimeout(r, 1500));
+  }
+}
+
+// ---- 回填线上 R2 历史 ----
+// 缓存键与 worker.js 的 freeTechLeaderCacheKey 一致：从源码读取版本号，避免两处各写一份。
+const workerSource = fs.readFileSync(path.join(ROOT, "cloudflare/pro-api/worker.js"), "utf8");
+const keyMatch = workerSource.match(/const version = normalized === "elonmusk" \? "([^"]+)" : "([^"]+)";/);
+function liveCacheKey(handle) {
+  const normalized = String(handle || "").replace(/^@/, "").toLowerCase();
+  if (!keyMatch) throw new Error("cache_key_version_not_found_in_worker");
+  return `tech-leaders/free-feed/${normalized === "elonmusk" ? keyMatch[1] : keyMatch[2]}/${normalized}.json`;
+}
+function mergePosts(fresh, history) {
+  const byId = new Map();
+  for (const p of history || []) if (p && p.id) byId.set(String(p.id), p);
+  for (const p of fresh || []) if (p && p.id) byId.set(String(p.id), p);
+  return Array.from(byId.values()).sort((a, b) => {
+    const ta = Date.parse(a.created_at || "") || 0, tb = Date.parse(b.created_at || "") || 0;
+    if (ta !== tb) return tb - ta;
+    return String(b.id || "").localeCompare(String(a.id || ""));
+  }).slice(0, 100);
+}
+const backfill = { attempted: 0, written: 0, failed: 0, grew: 0, unchanged: 0, errors: [] };
+if (BACKFILL && fetchedPosts.size) {
+  // 用与部署流程相同的 wrangler r2 object get/put 读写线上 R2（凭据来自环境变量，不写入日志）。
+  if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID) {
+    throw new Error("backfill_requires_CLOUDFLARE_API_TOKEN_and_CLOUDFLARE_ACCOUNT_ID");
+  }
+  const { execFile } = await import("node:child_process");
+  const run = (argv) => new Promise((resolve) => {
+    execFile("npx", ["--yes", "wrangler@4", ...argv], { maxBuffer: 1 << 26, timeout: 120000 }, (err, stdout, stderr) => {
+      resolve({ ok: !err, stdout: String(stdout || ""), stderr: String(stderr || "") });
+    });
+  });
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), "ogx-backfill-"));
+  const entries = Array.from(fetchedPosts.entries());
+  let cursor = 0;
+  async function backfillLane(lane) {
+    while (cursor < entries.length) {
+      const [handle, posts] = entries[cursor++];
+      const key = liveCacheKey(handle);
+      const file = path.join(work, `${lane}.json`);
+      backfill.attempted += 1;
+      try {
+        try { fs.rmSync(file, { force: true }); } catch {}
+        const got = await run(["r2", "object", "get", `${R2_BUCKET}/${key}`, "--file", file, "--remote"]);
+        let current = null;
+        if (got.ok && fs.existsSync(file)) { try { current = JSON.parse(fs.readFileSync(file, "utf8")); } catch {} }
+        else if (!/does not exist|NoSuchKey|not found|404/i.test(got.stderr + got.stdout)) throw new Error("r2_get_failed");
+        const history = current && Array.isArray(current.posts) ? current.posts : [];
+        const merged = mergePosts(posts, history);
+        if (merged.length > history.length) backfill.grew += 1; else backfill.unchanged += 1;
+        // 线上 Worker 10 分钟内刚刷新过就沿用它的时间，否则记为现在（回填的数据本身就是刚取的）。
+        const fetchedAt = current && current.fetched_at && Date.parse(current.fetched_at) > Date.now() - 10 * 60 * 1000
+          ? current.fetched_at : new Date().toISOString();
+        const next = {
+          ...(current || {}),
+          schema_version: (current && current.schema_version) || 6,
+          uses_x_api: false,
+          handle: (current && current.handle) || handle,
+          fetched_at: fetchedAt,
+          posts: merged,
+          requested_limit: merged.length,
+          requested_target: Math.max(100, Number(current && current.requested_target) || 0),
+          history_backfill: { source: "github_actions_public_sources", at: new Date().toISOString(), fetched: posts.length }
+        };
+        fs.writeFileSync(file, JSON.stringify(next));
+        const put = await run(["r2", "object", "put", `${R2_BUCKET}/${key}`, "--file", file, "--content-type", "application/json; charset=utf-8", "--remote"]);
+        if (!put.ok) throw new Error("r2_put_failed");
+        backfill.written += 1;
+      } catch (e) {
+        backfill.failed += 1;
+        if (backfill.errors.length < 10) backfill.errors.push(`${handle}: ${e && e.message ? e.message : e}`);
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: 6 }, (_, i) => backfillLane(i)));
+  fs.rmSync(work, { recursive: true, force: true });
+  console.log(`BACKFILL ${JSON.stringify(backfill)}`);
+  if (backfill.attempted && backfill.failed / backfill.attempted > 0.2) {
+    console.error(`::error::回填线上历史失败过多（${backfill.failed}/${backfill.attempted}）：${backfill.errors.join("；")}`);
+    process.exitCode = 1;
   }
 }
 

@@ -1,16 +1,20 @@
 name: Tech Leaders Free Feed Audit
 
-# 每天检查科技领袖名录里所有本人公开 X 账号能否取到公开动态。
+# 每天检查科技领袖名录里所有本人公开 X 账号能否取到公开动态，并深取历史回填线上缓存。
 # 在 Actions 里直接运行 cloudflare/pro-api/worker.js 的 free-feed 逻辑（内存存储、一次性本地密钥），
-# 不调用线上 Worker，不需要任何 Secret，也不会改动线上缓存或用户会话。
+# 不调用线上 Worker；在 main 上运行时用现有的 Cloudflare 部署凭据把历史帖子合并写回 R2（只增不删）。
 # 结果写入 data/tech-leaders/free_feed_health.json，并在运行摘要里列出取不到动态的账号。
 on:
   workflow_dispatch:
     inputs:
       posts:
-        description: '每个账号请求的帖子数（默认 21；100 = 检查历史深度，此时只上传报告产物、不提交）'
+        description: '每个账号请求的帖子数（100 = 同时检查历史深度）'
         required: false
-        default: '21'
+        default: '100'
+      backfill:
+        description: '把取到的历史合并写回线上 R2 缓存（true/false）'
+        required: false
+        default: 'true'
   schedule:
     - cron: '43 1 * * *'   # 每天 01:43 UTC（北京时间 09:43）
 
@@ -35,7 +39,14 @@ jobs:
           node-version: '24'
 
       - name: Audit free feed availability for every personal X account
-        run: node scripts/tech-leaders/audit_free_feed.mjs --out data/tech-leaders/free_feed_health.json --concurrency 3 --posts "${{ github.event.inputs.posts || '21' }}"
+        # 每天深取每个账号最多 100 条，并把历史合并写回线上 R2：线上 Worker 从 Cloudflare 机房翻页常被限流，
+        # 由这里补齐「加载更多」需要的历史。只在 main 上写线上数据；其他分支只检查不写。
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          POSTS: ${{ github.event.inputs.posts || '100' }}
+          BACKFILL: ${{ github.ref == 'refs/heads/main' && (github.event.inputs.backfill || 'true') == 'true' && '--backfill-r2' || '' }}
+        run: node scripts/tech-leaders/audit_free_feed.mjs --out data/tech-leaders/free_feed_health.json --concurrency 3 --posts "$POSTS" $BACKFILL
 
       - name: Validate report JSON
         run: python3 -m json.tool data/tech-leaders/free_feed_health.json >/dev/null
@@ -60,11 +71,11 @@ jobs:
       - name: Upload audit report artifact
         uses: actions/upload-artifact@v4
         with:
-          name: free-feed-audit-${{ github.event.inputs.posts || '21' }}
+          name: free-feed-audit-${{ github.event.inputs.posts || '100' }}
           path: data/tech-leaders/free_feed_health.json
 
       - name: Commit audit report
-        if: github.ref == 'refs/heads/main' && (github.event.inputs.posts || '21') == '21'
+        if: github.ref == 'refs/heads/main'
         run: |
           set -e
           git config user.name "github-actions[bot]"
