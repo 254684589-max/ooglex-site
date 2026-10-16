@@ -1,6 +1,6 @@
 name: Android App · Tech Leaders
 
-# 构建「科技领袖」安卓安装包（WebView 打开 https://www.ooglex.com/apps/tech-leaders/）。
+# 构建 OOGLE X（科技领袖实时动态流）安卓安装包（WebView 打开 https://www.ooglex.com/apps/tech-leaders/）。
 # 任何分支推送都会构建并上传为 Actions 产物供验证；只有 main 才会发布到 GitHub Release，
 # 网站部署时再把安装包复制到 ooglex.com/apps/tech-leaders/app/ 供下载。
 # 正式签名需要所有者在仓库 Secrets 中配置：
@@ -91,7 +91,7 @@ jobs:
           certs = open(os.path.join(tmp, "certs.txt"), encoding="utf-8").read()
           m = re.search(r"SHA-256 digest:\s*([0-9a-f]+)", certs)
           meta = {
-              "app": "科技领袖",
+              "app": "OOGLE X",
               "package": "com.ooglex.techleaders",
               "version_name": "1.0." + os.environ["GITHUB_RUN_NUMBER"],
               "version_code": int(os.environ["GITHUB_RUN_NUMBER"]),
@@ -123,10 +123,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -e
-          notes="科技领袖安卓应用 1.0.${GITHUB_RUN_NUMBER}（${SIGNING} 签名）。下载与安装说明：https://www.ooglex.com/apps/tech-leaders/app/"
+          notes="OOGLE X（科技领袖实时动态流）安卓应用 1.0.${GITHUB_RUN_NUMBER}（${SIGNING} 签名）。下载与安装说明：https://www.ooglex.com/apps/tech-leaders/app/"
           if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release create "$RELEASE_TAG" --title "科技领袖 · 安卓应用" --notes "$notes" --latest=false
+            gh release create "$RELEASE_TAG" --title "OOGLE X · 科技领袖安卓应用" --notes "$notes" --latest=false
           else
-            gh release edit "$RELEASE_TAG" --notes "$notes"
+            gh release edit "$RELEASE_TAG" --title "OOGLE X · 科技领袖安卓应用" --notes "$notes"
           fi
           gh release upload "$RELEASE_TAG" "$RUNNER_TEMP/$APK_NAME" "$RUNNER_TEMP/ooglex-tech-leaders.json" --clobber
