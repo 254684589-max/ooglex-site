@@ -1,5 +1,5 @@
 {
-  "_说明": "鹭沼深处西边土墩上的无旗者营地（路线图 4.4c；STORY.md 4.2「鹭沼深处：「灰手」奥弗与手下」、4.4「序章其他旗标」）。营地对你的态度看序章怎么了结的奥弗（world/marsh.gd camp_mood）：谈妥、吓走或花钱打发了的（offer_left）友善；打过一仗、他还活着的（offer_defeated）记恨你——口才、威吓或给 40 枚银币才肯好好说话，没说动就让你滚（这一步不动手，真打在 4.7）；奥弗死在渡口的，火边站的是手下的头目（camp_boss）。伊薇特托你收编（或赶走）他们是 4.5 / 4.7 的事，这里只埋下「谁出价高就跟谁」。",
+  "_说明": "鹭沼深处西边土墩上的无旗者营地（路线图 4.4c；STORY.md 4.2「鹭沼深处：「灰手」奥弗与手下」、4.4「序章其他旗标」）。营地对你的态度看序章怎么了结的奥弗（world/marsh.gd camp_mood）：谈妥、吓走或花钱打发了的（offer_left）友善；打过一仗、他还活着的（offer_defeated）记恨你——口才、威吓（都比序章在渡口时难一档）或给 40 枚银币才肯好好说话，没说动就让你滚（这一步不动手，真打在 4.7）；奥弗死在渡口的，火边站的是手下的头目（camp_boss）。伊薇特托你收编（或赶走）他们是 4.5 / 4.7 的事，这里只埋下「谁出价高就跟谁」。",
   "offer_camp": {
     "speaker": "「灰手」奥弗",
     "start": "neutral_greet",
@@ -31,8 +31,8 @@
       "grudge": {
         "text": "（营火边的人一下子都站了起来。他慢慢转过身，脸上那道新疤还没长好）你还敢来。渡口那一仗，我的人现在还瘸着。",
         "options": [
-          {"text": "那晚各为其主。今天我不是来打架的。", "check": {"id": "offer_camp_speech", "skill": "speech", "dc": 15, "pass": "calm", "fail": "refused"}},
-          {"text": "上回你们几个一起上，也没赢。要再试试？", "check": {"id": "offer_camp_intimidate", "skill": "intimidate", "dc": 14, "pass": "calm_scared", "fail": "refused"}},
+          {"text": "那晚各为其主。今天我不是来打架的。", "check": {"id": "offer_camp_speech", "skill": "speech", "dc": 17, "pass": "calm", "fail": "refused"}},
+          {"text": "上回你们几个一起上，也没赢。要再试试？", "check": {"id": "offer_camp_intimidate", "skill": "intimidate", "dc": 16, "pass": "calm_scared", "fail": "refused"}},
           {"text": "（扔过去一袋银币）40 枚，给你的人买药。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "calm_paid"},
           {"text": "（退出营地）", "end": true}
         ]

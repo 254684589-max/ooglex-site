@@ -6208,16 +6208,16 @@ func test_deepmarsh() -> void:
 		"友善的奥弗直接说话：两边都来问过价，谁出价高就跟谁")
 	await free_main(main)
 	# —— 记恨：口才说动 / 威吓吓住 / 没说动就滚、只剩给钱
-	ch1_state("deliver", seed_for("offer_camp_speech", "speech", 15, true))
+	ch1_state("deliver", seed_for("offer_camp_speech", "speech", 17, true))
 	GameState.flags.erase("offer_left")
 	GameState.set_flag("offer_defeated")
 	GameState.yielded["ferry_offer"] = [0.0, 0.0, 0.0]
 	check(say_runner("offer_camp", ["那晚各为其主。今天我不是来打架的。"], "deepmarsh") == "calm" and GameState.has_flag("offer_camp_met"), "记恨：口才说动了，肯说话")
-	ch1_state("deliver", seed_for("offer_camp_intimidate", "intimidate", 14, true))
+	ch1_state("deliver", seed_for("offer_camp_intimidate", "intimidate", 16, true))
 	GameState.flags.erase("offer_left")
 	GameState.set_flag("offer_defeated")
 	check(say_runner("offer_camp", ["上回你们几个一起上，也没赢。要再试试？"], "deepmarsh") == "calm_scared", "记恨：威吓吓住了")
-	ch1_state("deliver", seed_for("offer_camp_speech", "speech", 15, false))
+	ch1_state("deliver", seed_for("offer_camp_speech", "speech", 17, false))
 	GameState.flags.erase("offer_left")
 	GameState.set_flag("offer_defeated")
 	GameState.yielded["ferry_offer"] = [0.0, 0.0, 0.0]
@@ -6230,7 +6230,7 @@ func test_deepmarsh() -> void:
 	check(say_runner("offer_camp", ["（扔过去一袋银币）40 枚，给你的人买药。"], "deepmarsh") == "calm_paid" and GameState.silver == 10 and GameState.has_flag("offer_camp_met"), "给 40 枚银币：肯说话了")
 	main = await make_main_marsh()
 	var ld := main.world.get_node("Npc_offer_camp") as Npc
-	check(ld != null and (main.world.get_node("Npc_camp_thug_b") as Npc).lines == MarshLayout.CAMP_LINES.grudge, "记恨：奥弗还在火边，手下说的是记恨的话")
+	check(ld != null and stands_clear(ld) and (main.world.get_node("Npc_camp_thug_b") as Npc).lines == MarshLayout.CAMP_LINES.grudge, "记恨：奥弗还在火边，手下说的是记恨的话")
 	await free_main(main)
 	# —— 奥弗死在渡口：头目
 	ch1_state("deliver")
@@ -6247,6 +6247,23 @@ func test_deepmarsh() -> void:
 	GameState.silver = 0
 	r.start("deepmarsh", "camp_boss")
 	check(r.node_id == "again", "给过钱的再去：直接说话")
+	GameState.new_game(1)
+	GameState.silver = 10
+	r.start("deepmarsh", "camp_boss")
+	var bo: Array = r.entries().map(func(e): return [str(e.option.text), e.locked])
+	check(r.node_id == "greet" and bo.has(["（放下 40 枚银币）给他的人买口吃的。", true]) and bo.has(["我只是路过。", false]), "头目：钱不够时给钱那一项灰着，只能走（%s）" % str(bo))
+	check(say_runner("offer_camp", ["你们怎么到鹭沼来了？"], "deepmarsh") == "why_here" and GameState.has_flag("offer_camp_met"), "没和奥弗打过交道（网页直接开鹭沼）：他也肯说话")
+	# 第一章起渡口不再跪着认输的奥弗（他带人去了鹭沼深处）；死在渡口的照旧
+	ch1_state("deliver")
+	GameState.flags.erase("offer_left")
+	GameState.set_flag("offer_defeated")
+	GameState.yielded["ferry_offer"] = [2.1, 0.0, 2.4]
+	GameState.dead["ferry_thug_a"] = [0.0, 0.0, 0.0]
+	GameState.pending_load = {"scene": "ferry", "player": {}}
+	main = await make_main(false)
+	var fe: Array = main.find_children("*", "Enemy", true, false).map(func(e): return str(e.enemy_id))
+	check(not fe.has("ferry_offer") and fe.has("ferry_thug_a"), "第一章的渡口：认输的奥弗不在了（在鹭沼的营地），死在那儿的还在（%s）" % str(fe))
+	await free_main(main)
 	GameState.new_game()
 
 

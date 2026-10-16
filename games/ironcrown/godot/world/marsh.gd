@@ -9,7 +9,7 @@ extends RefCounted
 ## 看不见的墙在物理层 5「边界」（只挡人走，不挡视线、镜头、箭、交互）：从地面的边自动生成——边外面 0.3 米不是任何地面的地方就立一段墙；
 ## 墙外面的水里总有芦苇（_reed_chance：岸边 SHORE 米之内长满），不会有「空地上一堵看不见的墙」。
 ## 泥滩的碰撞体带元数据 surface = "mud"（core/surface.gd：走得慢、不能跑）；栈道铺在泥滩上面，踩着栈道不算泥。
-## 4.4c 加了鹭沼深处（DEEP：木板小路、泥滩、土墩、枯树）和西边土墩上的无旗者营地（只谈、吓、给钱；真打在 4.7）。
+## 4.4c 加了鹭沼深处（DEEP：木板路、泥滩、土墩、枯树）和西边土墩上的无旗者营地（只谈、吓、给钱；真打在 4.7）。
 ## 4.4a 是地形和房子；4.4b 加了村里的人（托宾、渡工、泥炭工、补网的女人；客栈里的人在 world/inn.gd）和进「歪桩客栈」的门：
 ## 人和门都在同步那一步放进 world（不放进分帧的块：块没搭好时也得找得到、说得上话，TECH.md 4.15）。堡里是 4.5。
 
@@ -609,7 +609,7 @@ static func deep_solids() -> Array:
 	for t in MarshLayout.DEEP_TREES:
 		var c: Vector2 = t[0]
 		var h: float = float(t[2]) * 0.55
-		out.append([Transform3D(Basis.IDENTITY, Vector3(c.x, MarshLayout.BANK_Y + h * 0.5 - 0.2, c.y)), Vector3(BareTree.TRUNK_R * 1.6, h, BareTree.TRUNK_R * 1.6)])
+		out.append([Transform3D(Basis.IDENTITY, Vector3(c.x, MarshLayout.BANK_Y + h * 0.5 - 0.2, c.y)), Vector3(BareTree.TRUNK_R * 2.0, h, BareTree.TRUNK_R * 2.0)])
 	for tn in MarshLayout.TENTS:
 		var c: Vector2 = tn[0]
 		var sz := MarshLayout.TENT_SIZE
@@ -1081,7 +1081,7 @@ static func map_spec() -> Dictionary:
 		if i == 0:
 			sh["label"] = "芦苇荡"
 		shapes.append(sh)
-	var labels := {"village_mud": "泥潭", "peat_yard": "泥炭场", "bank": "村口", "cw_b": "堤道", "dock": "小码头", "camp": "西边的土墩", "deep_walk": "小路"}
+	var labels := {"village_mud": "泥潭", "peat_yard": "泥炭场", "bank": "村口", "cw_b": "堤道", "dock": "小码头", "camp": "西边的土墩", "deep_walk": "木板路"}
 	for f in MarshLayout.floors():
 		var k := str(f.k)
 		var kind := str({"mud": "mud", "land": "land", "deck": "pier", "bridge": "pier", "stone": "road", "slope": "road"}.get(k, ""))
