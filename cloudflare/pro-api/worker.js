@@ -2119,16 +2119,35 @@ function freeTechLeaderCacheKey(handle) {
 // 同一 Worker 实例内正在后台刷新的账号，避免同一时间重复请求上游。
 const freeFeedRefreshing = new Set();
 
-async function refreshFreeTechLeaderFeed(normalized, limit, env, key) {
+// 把新取到的帖子与 12 小时内的旧缓存按 id 合并（新数据优先，按时间倒序，最多 100 条）。
+// 否则首屏只取 10–20 条的例行刷新会把已经取到的更早历史覆盖掉，
+// 「加载更多」只能再去上游逐页翻，常常翻不出新内容。
+function mergeWithCachedHistory(freshPosts, cachedPosts) {
+  const byId = new Map();
+  for (const post of cachedPosts || []) if (post && post.id) byId.set(String(post.id), post);
+  for (const post of freshPosts || []) if (post && post.id) byId.set(String(post.id), post);
+  return Array.from(byId.values())
+    .sort((a, b) => {
+      const ta = Date.parse(a.created_at || "") || 0;
+      const tb = Date.parse(b.created_at || "") || 0;
+      if (ta !== tb) return tb - ta;
+      return String(b.id || "").localeCompare(String(a.id || ""));
+    })
+    .slice(0, TECH_FREE_FEED_MAX_ITEMS);
+}
+
+async function refreshFreeTechLeaderFeed(normalized, limit, env, key, history) {
   const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
   const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
-  const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
-  const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
+  const freshPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
+  const returnedPosts = history && history.length ? mergeWithCachedHistory(freshPosts, history) : freshPosts;
+  const fulfilledLimit = Math.min(requestedLimit, freshPosts.length);
   const persisted = {
     ...fresh,
-    requested_limit: fulfilledLimit,
+    posts: returnedPosts,
+    requested_limit: Math.max(fulfilledLimit, returnedPosts.length),
     requested_target: requestedLimit,
-    returned_items: returnedPosts.length
+    returned_items: freshPosts.length
   };
   await writeJson(env.PRO_DATA, key, persisted);
   return persisted;
@@ -2168,12 +2187,13 @@ async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   // 缓存已过期但不太旧：先把缓存立即返回给访客，再在后台向上游刷新（stale-while-revalidate）。
   // 这样访客不用等上游公开源（常需 1–4 秒，偶尔失败重试），下一次打开就是新数据。
   // 马斯克要求更新更快：只在 10 分钟内的缓存上这样做，更旧的仍当场刷新。
+  const history = cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS ? cachedPosts : [];
   const revalidateWindow = strictLatestProfile ? TECH_FREE_FEED_TTL_MS : TECH_FREE_FEED_MAX_STALE_MS;
   if (ctx && typeof ctx.waitUntil === "function" && cachedPosts.length && age <= revalidateWindow && cachedCapacity >= limit) {
     if (!freeFeedRefreshing.has(key)) {
       freeFeedRefreshing.add(key);
       ctx.waitUntil(
-        refreshFreeTechLeaderFeed(normalized, limit, env, key)
+        refreshFreeTechLeaderFeed(normalized, limit, env, key, history)
           .catch(() => null)
           .finally(() => freeFeedRefreshing.delete(key))
       );
@@ -2188,7 +2208,7 @@ async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   }
 
   try {
-    const persisted = await refreshFreeTechLeaderFeed(normalized, limit, env, key);
+    const persisted = await refreshFreeTechLeaderFeed(normalized, limit, env, key, history);
     const returnedPosts = Array.isArray(persisted.posts) ? persisted.posts : [];
     return { ...persisted, posts: returnedPosts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
