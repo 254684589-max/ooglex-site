@@ -2022,23 +2022,31 @@ async function fetchFreeTechLeaderFeed(handle, limit) {
   // Elon Musk retains a temporary exact-post patch below; all other profiles
   // use the generic public-source path with no catalog-specific exceptions.
   if (requested <= 20) {
+    // 上游公开源时好时坏：第一次两路都失败时隔 400ms 再试一次（每日巡检中约 7% 的账号要靠重试才取到）。
+    const fastAttempt = () => Promise.any([
+      fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
+        ...fast,
+        schema_version: 6,
+        source: "fxtwitter_public_api_fast",
+        sources: ["fxtwitter_public_api"],
+        fast_first_paint: true
+      })),
+      fetchOfficialSyndicationFreeFeed(handle, requested).then((official) => ({
+        ...official,
+        schema_version: 6,
+        source: "x_public_syndication_fast",
+        sources: ["x_public_syndication"],
+        fast_first_paint: true
+      }))
+    ]);
     try {
-      const fastFeed = await Promise.any([
-        fetchFxTwitterFreeFeed(handle, requested).then((fast) => ({
-          ...fast,
-          schema_version: 6,
-          source: "fxtwitter_public_api_fast",
-          sources: ["fxtwitter_public_api"],
-          fast_first_paint: true
-        })),
-        fetchOfficialSyndicationFreeFeed(handle, requested).then((official) => ({
-          ...official,
-          schema_version: 6,
-          source: "x_public_syndication_fast",
-          sources: ["x_public_syndication"],
-          fast_first_paint: true
-        }))
-      ]);
+      let fastFeed;
+      try {
+        fastFeed = await fastAttempt();
+      } catch {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        fastFeed = await fastAttempt();
+      }
       if (String(handle || "").toLowerCase() === "elonmusk") {
         fastFeed.posts = await applyTemporaryPublicFeedPatch(handle, fastFeed.posts, requested);
         fastFeed.source = "fxtwitter_public_api_exact_patch";
@@ -2108,7 +2116,25 @@ function freeTechLeaderCacheKey(handle) {
   return `tech-leaders/free-feed/${version}/${normalized}.json`;
 }
 
-async function getFreeTechLeaderFeed(handle, limit, env) {
+// 同一 Worker 实例内正在后台刷新的账号，避免同一时间重复请求上游。
+const freeFeedRefreshing = new Set();
+
+async function refreshFreeTechLeaderFeed(normalized, limit, env, key) {
+  const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
+  const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
+  const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
+  const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
+  const persisted = {
+    ...fresh,
+    requested_limit: fulfilledLimit,
+    requested_target: requestedLimit,
+    returned_items: returnedPosts.length
+  };
+  await writeJson(env.PRO_DATA, key, persisted);
+  return persisted;
+}
+
+async function getFreeTechLeaderFeed(handle, limit, env, ctx) {
   const normalized = normalizeXHandle(handle);
   if (!normalized) {
     const err = new Error("invalid_free_feed_handle");
@@ -2139,18 +2165,31 @@ async function getFreeTechLeaderFeed(handle, limit, env) {
     };
   }
 
-  try {
-    const requestedLimit = Math.max(limit, TECH_FEED_FETCH_SIZE);
-    const fresh = await fetchFreeTechLeaderFeed(normalized, requestedLimit);
-    const returnedPosts = Array.isArray(fresh && fresh.posts) ? fresh.posts : [];
-    const fulfilledLimit = Math.min(requestedLimit, returnedPosts.length);
-    const persisted = {
-      ...fresh,
-      requested_limit: fulfilledLimit,
-      requested_target: requestedLimit,
-      returned_items: returnedPosts.length
+  // 缓存已过期但不太旧：先把缓存立即返回给访客，再在后台向上游刷新（stale-while-revalidate）。
+  // 这样访客不用等上游公开源（常需 1–4 秒，偶尔失败重试），下一次打开就是新数据。
+  // 马斯克要求更新更快：只在 10 分钟内的缓存上这样做，更旧的仍当场刷新。
+  const revalidateWindow = strictLatestProfile ? TECH_FREE_FEED_TTL_MS : TECH_FREE_FEED_MAX_STALE_MS;
+  if (ctx && typeof ctx.waitUntil === "function" && cachedPosts.length && age <= revalidateWindow && cachedCapacity >= limit) {
+    if (!freeFeedRefreshing.has(key)) {
+      freeFeedRefreshing.add(key);
+      ctx.waitUntil(
+        refreshFreeTechLeaderFeed(normalized, limit, env, key)
+          .catch(() => null)
+          .finally(() => freeFeedRefreshing.delete(key))
+      );
+    }
+    return {
+      ...cached,
+      requested_limit: cachedCapacity,
+      requested_target: Number(cached && cached.requested_target) || cachedCapacity,
+      posts: cachedPosts.slice(0, limit),
+      cache: { status: "stale_revalidating", age_ms: age }
     };
-    await writeJson(env.PRO_DATA, key, persisted);
+  }
+
+  try {
+    const persisted = await refreshFreeTechLeaderFeed(normalized, limit, env, key);
+    const returnedPosts = Array.isArray(persisted.posts) ? persisted.posts : [];
     return { ...persisted, posts: returnedPosts.slice(0, limit), cache: { status: "refreshed", age_ms: 0 } };
   } catch (err) {
     if (cachedPosts.length && age <= TECH_FREE_FEED_MAX_STALE_MS) {
@@ -2795,7 +2834,7 @@ async function getTechLeaderFeed(profile, limit, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const cors = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
@@ -3060,7 +3099,7 @@ async function proxyTechLeaderMedia(request, target, cors) {
       const limit = boundedInt(url.searchParams.get("limit"), 1, TECH_FREE_FEED_MAX_ITEMS, 10);
       if (!handle) return json({ error: "invalid_free_feed_handle" }, 400, cors);
       try {
-        const feed = await getFreeTechLeaderFeed(handle, limit, env);
+        const feed = await getFreeTechLeaderFeed(handle, limit, env, ctx);
         return json(feed, 200, {
           ...cors,
           "cache-control": "public, max-age=120, stale-while-revalidate=600",

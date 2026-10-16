@@ -827,7 +827,8 @@
 
 
   var DEBUG=params.get("debug")==="1";
-  var EMBED_TIMEOUT_MS=25000;
+  // X 官方组件只是公开源失败时的备用；在无法连接 X 的网络里会一直加载，10 秒后就给出明确提示。
+  var EMBED_TIMEOUT_MS=10000;
   var activeTimeout=null;
   var activeObserver=null;
   var activeIframe=null;
@@ -1328,8 +1329,11 @@
   // 本次浏览器会话内缓存名录：与密码门「本次会话内保持解锁」同一范围，关闭浏览器即清除。
   // 命中时立即渲染，后台再取最新名录写回缓存，下次打开生效。
   var CATALOG_CACHE_KEY="ooglex.techLeaders.catalog:"+CATALOG_FILE;
+  var catalogCacheMemo;   // 名录约 1.8MB，本页只解析一次
   function readCatalogCache(){
-    try{var raw=sessionStorage.getItem(CATALOG_CACHE_KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}
+    if(catalogCacheMemo!==undefined)return catalogCacheMemo;
+    try{var raw=sessionStorage.getItem(CATALOG_CACHE_KEY);catalogCacheMemo=raw?JSON.parse(raw):null;}catch(e){catalogCacheMemo=null;}
+    return catalogCacheMemo;
   }
   function writeCatalogCache(text){
     try{sessionStorage.setItem(CATALOG_CACHE_KEY,text);}catch(e){try{sessionStorage.removeItem(CATALOG_CACHE_KEY);}catch(_){}}
@@ -1340,7 +1344,7 @@
     if(!res.ok)throw new Error("catalog_http_"+res.status);
     return res.text();
   }
-  async function loadCatalog(){
+  async function loadCatalog(earlyCatalog){
     // 中文名字典与名录并行请求，不再串行等待。
     var namesPromise=fetch("/scripts/billionaires/names_zh.json?v=20260923",{cache:"force-cache"})
       .then(function(r){return r.ok?r.json():null;})
@@ -1351,7 +1355,8 @@
       if(data&&Array.isArray(data.leaders)&&data.leaders.length){
         fetchCatalogText().then(writeCatalogCache).catch(function(){});
       }else{
-        var text=await fetchCatalogText();
+        // 名录请求已在核对密码会话的同时提前发出；提前请求失败（如会话未解锁）才重新请求。
+        var text=(earlyCatalog?await earlyCatalog:null)||await fetchCatalogText();
         data=JSON.parse(text);
         writeCatalogCache(text);
       }
@@ -2095,6 +2100,38 @@
     return true;
   }
 
+  // ---- 打开页面时提前请求动态 ----
+  // 记住最近看过的人物 id→handle，下次打开时不必等名录下载、解析完，就能与密码核对、名录请求同时取动态。
+  var LEADER_HANDLES_KEY="ooglex.techLeaders.handles.v1";
+  var earlyFreeFeed=null;
+  function readLeaderHandles(){try{var m=JSON.parse(localStorage.getItem(LEADER_HANDLES_KEY)||"{}");return m&&typeof m==="object"?m:{};}catch(e){return {};}}
+  function rememberLeaderHandle(p,limit){
+    if(!p||!p.id||!p.handle)return;
+    try{
+      var m=readLeaderHandles();var entry={handle:p.handle,limit:limit,at:Date.now()};
+      m[p.id]=entry;if(!requested)m.__default__=Object.assign({id:p.id},entry);
+      var keys=Object.keys(m).filter(function(k){return k!=="__default__";}).sort(function(a,b){return (m[b].at||0)-(m[a].at||0);});
+      keys.slice(40).forEach(function(k){delete m[k];});
+      localStorage.setItem(LEADER_HANDLES_KEY,JSON.stringify(m));
+    }catch(e){}
+  }
+  function startEarlyFreeFeed(){
+    if(MODE!=="free")return;
+    var entry=readLeaderHandles()[requested||"__default__"];
+    if(!entry||!entry.handle)return;
+    var p={id:entry.id||requested,handle:entry.handle};
+    var cached=readFreeFeedBrowserCache(p);
+    if(cached&&cached.age_ms<=freeFeedBrowserFreshMs(p))return;   // 本机缓存够新，打开时不会请求
+    var limit=Math.max(1,Math.min(100,Number(entry.limit)||10));
+    earlyFreeFeed={handle:String(entry.handle).toLowerCase(),limit:limit,
+      promise:fetchFreeFeedOnce(p,limit,12000).catch(function(){return null;})};
+  }
+  function takeEarlyFreeFeed(p,limit){
+    var e=earlyFreeFeed;earlyFreeFeed=null;
+    if(!e||!p||String(p.handle||"").toLowerCase()!==e.handle||e.limit!==limit)return null;
+    return e.promise;
+  }
+
   async function bootFreeNativeFeed(){
     if(!current||!current.handle){renderNoXTimeline();return;}
     clearWatchers();rendered=false;activeIframe=null;xdiag.hidden=true;
@@ -2109,6 +2146,8 @@
 
     var selected=current;
     var initialLimit=Math.max(1,Math.min(100,Number(selected&&selected.timeline_fetch_limit)||10));
+    rememberLeaderHandle(selected,initialLimit);
+    var earlyPromise=takeEarlyFreeFeed(selected,initialLimit);
     var cached=readFreeFeedBrowserCache(selected);
     var shownCache=false;
     if(cached&&cached.age_ms<=freeFeedBrowserStaleMs(selected)){
@@ -2120,7 +2159,8 @@
     }
 
     try{
-      var data=await fetchFreeFeedOnce(selected,initialLimit,12000);
+      // 提前请求成功就直接用；失败（如会话当时未解锁）再正常请求一次。
+      var data=(earlyPromise?await earlyPromise:null)||await fetchFreeFeedOnce(selected,initialLimit,12000);
       writeFreeFeedBrowserCache(selected,data);
       if(!current||current.id!==selected.id)return;
       if(!shownCache||freeFeedIds(data)!==freeFeedIds(cached&&cached.data)){
@@ -2752,12 +2792,16 @@
   });
 
   (async function start(){
+    // 名录与动态请求和密码会话核对同时发出，不再一个等一个。
+    // 会话未解锁时这两个提前请求会失败并被忽略，解锁后照常请求。
+    var earlyCatalog=readCatalogCache()?null:fetchCatalogText().catch(function(){return null;});
+    startEarlyFreeFeed();
     if(window.OoglexTechLeadersGate&&typeof window.OoglexTechLeadersGate.wait==="function"){
       var unlocked=await window.OoglexTechLeadersGate.wait();
       if(!unlocked)return;
     }
     setModeUi();
-    await loadCatalog();
+    await loadCatalog(earlyCatalog);
     bootCurrentFeed();
   })();
 })();
