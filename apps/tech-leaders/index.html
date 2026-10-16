@@ -1577,10 +1577,10 @@
       return box;
     }catch(e){return null;}
   }
-  function writeFreeFeedBrowserCache(p,data){
+  function writeFreeFeedBrowserCache(p,data,savedAt){
     try{
       if(!p||!p.handle||!data||!Array.isArray(data.posts)||!data.posts.length)return;
-      localStorage.setItem(freeFeedBrowserCacheKey(p),JSON.stringify({saved_at:Date.now(),data:data}));
+      localStorage.setItem(freeFeedBrowserCacheKey(p),JSON.stringify({saved_at:savedAt||Date.now(),data:data}));
       pruneFreeFeedBrowserCache();
     }catch(e){}
   }
@@ -1613,11 +1613,11 @@
     html+='</div>';
     timeline.insertAdjacentHTML("beforeend",html);
   }
-  async function fetchFreeFeedOnce(p,limit,timeoutMs){
+  async function fetchFreeFeedOnce(p,limit,timeoutMs,extraQuery){
     var ctl=new AbortController();
     var timer=setTimeout(function(){ctl.abort();},timeoutMs||4000);
     try{
-      var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit,{signal:ctl.signal,cache:"no-store"});
+      var res=await techProtectedFetch(API_BASE+"/v1/tech-leaders/free-feed?handle="+encodeURIComponent(p.handle)+"&limit="+limit+(extraQuery||""),{signal:ctl.signal,cache:"no-store"});
       var data=await res.json().catch(function(){return {};});
       if(!res.ok||!data||!Array.isArray(data.posts)||!data.posts.length)throw new Error(data.error||("free_feed_http_"+res.status));
       return data;
@@ -2007,6 +2007,7 @@
     var waitingForMore=false;   // 本地已显示完、用户点了「加载更多」在等后台结果
     var fetchFailed=false;
     var fetchFailures=0;
+    var autoRetried=false,autoRetryPending=false;
     function postKey(p,i){return String(p&&p.id||("idx-"+i));}
     function localRemaining(){
       var n=0;for(var i=0;i<posts.length;i++)if(!renderedIds.has(postKey(posts[i],i)))n++;
@@ -2046,9 +2047,9 @@
         btn.textContent="加载更多 "+Math.min(batchSize,remaining)+" 条";
         return;
       }
-      if(fetchingMore){
+      if(fetchingMore||autoRetryPending){
         btn.disabled=true;
-        btn.textContent="正在加载更多…";
+        btn.textContent="正在加载更早的动态…";
         return;
       }
       if(remoteExhausted){
@@ -2103,6 +2104,12 @@
         // 用户刚才点过「加载更多」在等：数据到了直接接着显示，不用再点一次。
         if(waitingForMore&&localRemaining()>0){waitingForMore=false;appendNextBatch();}
         else if(waitingForMore&&remoteExhausted)waitingForMore=false;
+        // 第一次没取到更早的内容（上游偶发限流常见）：2.5 秒后自动再取一次，期间显示「正在加载」，
+        // 不让读者先看到「没有更早的动态」再自己去点。
+        if(!remoteExhausted&&!fetchFailed&&noGrowthFetches===1&&localRemaining()===0&&!autoRetried){
+          autoRetried=true;autoRetryPending=true;
+          setTimeout(function(){autoRetryPending=false;fetchMoreInBackground();},2500);
+        }
         refreshMore();
       }
     }
@@ -2187,18 +2194,19 @@
       prefetchCount++;
       (function(p){
         var limit=Math.max(1,Math.min(100,Number(p.timeline_fetch_limit)||10));
-        var promise=fetchFreeFeedOnce(p,limit,12000)
-          .then(function(data){writeFreeFeedBrowserCache(p,data);return data;})
+        // 只读服务器缓存（不触发上游请求）；按数据实际抓取时间记入本机缓存，
+        // 这样点开时若数据已不够新，页面会先显示它、再照常向服务器要最新的。
+        var promise=fetchFreeFeedOnce(p,limit,12000,"&cached_only=1")
+          .then(function(data){
+            var at=Date.parse(data&&data.fetched_at||"")||Date.now();
+            writeFreeFeedBrowserCache(p,data,Math.min(Date.now(),at));
+            return null;   // 只用于预热本机缓存，不直接当作「最新」结果
+          })
           .catch(function(){return null;});
         prefetchInFlight.set(p.id,{limit:limit,promise:promise});
         promise.then(function(){setTimeout(function(){prefetchInFlight.delete(p.id);pumpPrefetch();},250);});
       })(p);
     }
-  }
-  // 点开的正好是正在预取的人物：直接等这个请求，不再重复发。
-  function takePrefetchedFreeFeed(p,limit){
-    var e=p&&prefetchInFlight.get(p.id);
-    return e&&e.limit===limit?e.promise:null;
   }
   function observeLeaderCardsForPrefetch(){
     if(MODE!=="free"||typeof IntersectionObserver!=="function")return;
@@ -2239,7 +2247,7 @@
     var selected=current;
     var initialLimit=Math.max(1,Math.min(100,Number(selected&&selected.timeline_fetch_limit)||10));
     rememberLeaderHandle(selected,initialLimit);
-    var earlyPromise=takeEarlyFreeFeed(selected,initialLimit)||takePrefetchedFreeFeed(selected,initialLimit);
+    var earlyPromise=takeEarlyFreeFeed(selected,initialLimit);
     var cached=readFreeFeedBrowserCache(selected);
     var shownCache=false;
     if(cached&&cached.age_ms<=freeFeedBrowserStaleMs(selected)){
