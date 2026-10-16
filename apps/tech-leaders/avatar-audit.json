@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "policy": "x_original_then_verified_fallback",
-  "checked_at": "2026-10-16T14:46:23Z",
+  "checked_at": "2026-10-16T16:56:49Z",
   "catalog": "apps/tech-leaders/leaders.json",
   "total_checked": 604,
   "usable": 604,
@@ -821,7 +821,7 @@
       "ok": true,
       "status": "x_original_proxy",
       "source_type": "x_original_proxy",
-      "source_transport": "fxtwitter_profile-r2-cache",
+      "source_transport": "fxtwitter_profile-r2",
       "content_type": "image/jpeg",
       "response_handle": "arampell",
       "avatar_url": "https://pro-api.ooglex.com/v1/tech-leaders/avatar?handle=arampell&name=Alex+Rampell&company=Andreessen+Horowitz",
