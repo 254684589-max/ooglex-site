@@ -156,6 +156,7 @@
           {"text": "那就说说实话。", "next": "truth"},
           {"text": "长桌那边说，跟着长子有王都的粮吃。", "next": "grain"},
           {"text": "你在烽燧上守过？", "next": "beacon"},
+          {"text": "堡门不让我进。", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "side_gate"},
           {"text": "（走开）", "end": true}
         ]
       },
@@ -173,6 +174,13 @@
           {"text": "明白了。", "next": "menu"}
         ]
       },
+      "side_gate": {
+        "text": "（他打量了你一会儿）兵营的侧门归我们的人管。跟守门的说，你是来投伊薇特小姐的——进去以后你见谁、站哪边，那是你的事。",
+        "options": [
+          {"text": "就这么说。", "do": [{"set": "castle_entry", "value": "barracks"}, {"goto": "castle", "spawn": "barracks_gate"}], "end": true},
+          {"text": "算了。", "next": "menu"}
+        ]
+      },
       "beacon": {
         "text": "守了十一年。第三座烽燧，去年冬天熄的：没有柴，没有人，没有援兵，我们自己从山上撤下来的。……所以别跟我提王都。",
         "options": [
@@ -185,6 +193,7 @@
           {"text": "那就说说实话。", "next": "truth"},
           {"text": "长桌那边说，跟着长子有王都的粮吃。", "next": "grain"},
           {"text": "你在烽燧上守过？", "next": "beacon"},
+          {"text": "堡门不让我进。", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "side_gate"},
           {"text": "（走开）", "end": true}
         ]
       }
@@ -301,6 +310,7 @@
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
           {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
           {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
           {"text": "（不打扰他）", "end": true}
@@ -312,6 +322,7 @@
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
           {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
           {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
           {"text": "（不打扰他）", "end": true}
@@ -323,6 +334,7 @@
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
           {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
           {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
           {"text": "（不打扰他）", "end": true}
@@ -352,6 +364,13 @@
         "text": "没有信？（他看了看你）赫尔曼那老头谁的面子都不给。真进不去，回来找我——泥炭船走哪儿，我比谁都清楚。",
         "options": [
           {"text": "记住了。", "next": "menu"}
+        ]
+      },
+      "smuggle": {
+        "text": "（他四下看了看，压低了声音）正有一船泥炭要往堡里送。你蹲在泥炭底下，到了水门别出声，等船靠稳了再出来。……出了事，别说是我。",
+        "options": [
+          {"text": "上船。", "do": [{"set": "castle_entry", "value": "tobin"}, {"goto": "castle", "spawn": "water_gate"}], "end": true},
+          {"text": "再想想。", "next": "menu"}
         ]
       },
       "deep": {

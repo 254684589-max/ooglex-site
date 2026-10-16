@@ -74,6 +74,7 @@ var pending_fight := {}   # 对话说崩了要动手：{fight, win}，对话关�
 var pending_leave := ""   # 对话里说好了，这组人走了：编号，对话关上后由 main 撤掉（3.6；不存档）
 var pending_ending := ""  # 对话里到了结局：编号（prologue），对话关上后由 main 显示结束画面（3.7；不存档）
 var pending_tips: Array = [] # 换区域时还没轮到显示的教学提示，带到下一个区域接着排（3.8；不存档）
+var pending_goto := {}      # 对话里说好了带你去别处：{area, spawn}，对话关上后由 main 走过去（4.5a；不存档）
 var pending_daypart := ""   # 对话里剧情推进到别的时段：编号，对话关上后由 main 换光（4.2；不存档，GameState.daypart 已经改了）
 
 signal inventory_changed

@@ -24,7 +24,8 @@ const REED_LOW_SHARE := 0.5         # 低画质只画一半
 const WALL_H := 4.5
 const THICK := {"mud": 0.4, "land": 0.6, "deck": 0.2, "stone": 1.2, "slope": 0.4, "bridge": 0.15}
 const GATE_NAME := "黑鹭堡的堡门"
-const GATE_TEXT := "堡门紧闭，叫了也没人应。（黑鹭堡还在开发中）"
+const GATE_TEXT := "堡门紧闭。门边的卫兵说，没有堡守赫尔曼点头，谁也别想进。"
+const GATE_GUARD := ["gate_guard", "守门的卫兵", Vector3(1.4, 0, 2.2), 0.0, "3e4652"]     # 堡门前（本地坐标：堡门外 2.2 米、门洞右边），面朝堤道
 const SIGN_TEXT_VILLAGE := "往霜渡镇 · 黑鹭堡"
 const SIGN_TEXT_GATE := "往芦栈村 · 霜渡镇"
 const EXIT_NAME := "回霜渡镇的路"
@@ -247,8 +248,13 @@ func _interactables() -> void:
 	sg.position = MarshLayout.SIGN_GATE
 	sg.rotation_degrees.y = -45.0                 # 立在石台西南边，字朝东北（对着石台中间：从堤道走上来、在出生点转个身都看得到，审查）
 	parent.add_child(sg)
-	var gate := Door.make(GATE_NAME, 3.2, 4.2, true)
+	var admitted := GameState.has_flag("castle_admitted")       # 4.5a：赫尔曼见过你（或者卫兵看了引荐信），堡门就推得开
+	var gate := Door.make(GATE_NAME, 3.2, 4.2, not admitted)
 	gate.locked_text = GATE_TEXT
+	if admitted:
+		gate.to_area = "castle"
+		gate.to_spawn = "gate"
+		gate.verb = "进入"
 	var xf := MarshLayout.castle_xform()
 	gate.transform = xf * Transform3D(Basis.IDENTITY, Vector3(-1.6, 0.3, MarshLayout.CASTLE_SIZE.y * 0.5 + 0.1))
 	parent.add_child(gate)
@@ -276,6 +282,13 @@ static func inn_door() -> Door:
 ## 村里的人（4.4b）：有对话的（托宾、渡工）和只说一句的（泥炭工、补网的女人）；营地里的人（4.4c，camp_mood）。
 ## 人是占位胶囊（A.2 换装），同步放进 world
 func _people() -> void:
+	var g := Npc.make(str(GATE_GUARD[1]), [], Color(str(GATE_GUARD[4])))
+	g.name = "Npc_" + str(GATE_GUARD[0])
+	g.dialogue_area = "blackheron"
+	g.dialogue_id = str(GATE_GUARD[0])
+	g.position = gate_guard_pos()
+	g.rotation.y = deg_to_rad(MarshLayout.CW_YAW)              # 和堡门一个朝向：面朝堤道
+	parent.add_child(g)
 	var mood := camp_mood()
 	var leader: Array = MarshLayout.CAMP_BOSS if mood == "boss" else MarshLayout.CAMP_OFFER
 	var camp := [leader] + MarshLayout.CAMP_MEN
@@ -589,6 +602,13 @@ func _job_house(root: Node3D, i: int) -> void:
 	var h: Array = MarshLayout.HOUSES[i]
 	var house := House.build(root, MarshLayout.house_pos(h), float(h[2]), MarshLayout.house_spec(h))
 	house.name = "House_" + str(h[0])
+
+
+## 堡门前的卫兵（4.5a）：看引荐信放人；本地坐标在堡门前的石台上
+static func gate_guard_pos() -> Vector3:
+	var hd := MarshLayout.CASTLE_SIZE.y * 0.5
+	var p: Vector3 = GATE_GUARD[2]
+	return MarshLayout.castle_xform() * Vector3(p.x, 0, hd + p.z) + Vector3(0, MarshLayout.CAUSE_Y, 0)
 
 
 ## 营地对你的态度（4.4c；STORY.md 4.4「序章其他旗标」）：friendly 序章里谈妥、吓走或花钱打发了奥弗（offer_left）；
@@ -1071,6 +1091,11 @@ static func _rope_mat() -> StandardMaterial3D:
 
 # ---------------- 地图（3.11 的格式，由布局表生成） ----------------
 
+## 堡门的中心（世界坐标，地图出口用）
+static func castle_xform_gate() -> Vector3:
+	return MarshLayout.castle_xform() * Vector3(0, 0, MarshLayout.CASTLE_SIZE.y * 0.5 + 0.1)
+
+
 ## 整张图：水面、芦苇荡、泥滩、干地、栈道、堤道、房子、黑鹭堡、路牌；分块（芦栈村 / 堤道 / 黑鹭堡外）。
 ## 出口只有「歪桩客栈」的门（4.4b）；出发走路牌、旅行地图，不算出口
 static func map_spec() -> Dictionary:
@@ -1113,4 +1138,7 @@ static func map_spec() -> Dictionary:
 	var inn: Array = MarshLayout.HOUSES[0]
 	var exits := [{"at": House.door_xz(MarshLayout.house_pos(inn), float(inn[2]), float(inn[3].door_x)), "dir": -House.facing(float(inn[2])),
 		"to": "inn", "spawn": "front", "name": str(inn[3].door.name)}]          # 「歪桩客栈」的门（4.4b）；出发的路牌不是门，不算出口
+	var gxf := castle_xform_gate()
+	exits.append({"at": Vector2(gxf.x, gxf.z), "dir": -Vector2(sin(deg_to_rad(MarshLayout.CW_YAW)), cos(deg_to_rad(MarshLayout.CW_YAW))),
+		"to": "castle", "spawn": "gate", "name": GATE_NAME, "if": {"flag": "castle_admitted"}})       # 黑鹭堡的堡门：放你进过才算出口（4.5a）
 	return {"bounds": MarshLayout.BOUNDS, "shapes": shapes, "exits": exits, "zones": MarshLayout.zones()}

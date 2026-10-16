@@ -10,6 +10,7 @@ extends RefCounted
 ##         2.3 起：{"quest": 任务}（接任务）、{"quest": 任务, "stage": 阶段}（推进）、{"quest_done": 任务}、{"clue": 线索}、{"take_item": 物品}；
 ##         2.6 起：{"pay": 数量}（付银币）；2.7 起：{"rep": 势力, "delta": 变化}（改声望）；3.1 起：{"give_item": 物品}（给玩家一件物品，例如买面包）；
 ##         3.3 起：{"brawl": 敌人种类, "win": 旗标, "lose": 旗标}（和说话的人徒手打一架，只能放在结束对话的选项上；种类必须是 enemies.json 里打不死的）；
+##         4.5a 起：{"goto": 区域, "spawn": 出生点}（对话关上后走过去：泥炭船、侧门、堡门；只能放在结束对话的选项上）；
 ##         3.6 起：{"fight": 对峙编号, "win": 旗标}（区域里那组 NPC 换成敌人开打，只能放在结束对话的选项上，combat/encounter.gd）、{"leave": 对峙编号}（那组人走了）；
 ##         3.7 起：{"earn": 数量}（得到银币，例如塞拉斯的封口费）、{"ending": 结局编号}（对话关上后显示结束画面，ui/ending_panel.gd）
 ##         4.2 起：{"daypart": 时段}（剧情推进到清晨 / 白天 / 黄昏 / 夜：dawn | day | dusk | night，对话关上后换光，world/daypart.gd）
@@ -31,7 +32,7 @@ const OPTION_KEYS := ["text", "next", "end", "if", "check", "do", "locked"]
 const NODE_KEYS := ["text", "options", "do"]
 const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least", "daypart"]
 const RESOURCE_KEYS := ["silver", "has_item"]     # 「差东西」的条件（3.9）：只差这些时灰色显示「需要……」，不隐藏
-const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta", "brawl", "win", "lose", "fight", "leave", "earn", "ending", "daypart"]
+const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta", "brawl", "win", "lose", "fight", "leave", "earn", "ending", "daypart", "goto", "spawn"]
 
 
 ## 读过的对话文件缓存在 Engine 的元数据里：这个脚本用 static var 做缓存时，退出时脚本释放不掉（2.1 实测，引擎报「resources still in use」）
@@ -83,8 +84,8 @@ static func validate(d: Dictionary) -> Array:
 				errors.append("%s：不认识的键 %s" % [nid, key])
 		_validate_effects(n.get("do", []), nid, registry, errors)
 		for e in n.get("do", []):
-			if e.has("brawl") or e.has("fight"):
-				errors.append("%s：打架 / 动手只能放在选项上（选了就结束对话开打）" % nid)
+			if e.has("brawl") or e.has("fight") or e.has("goto"):
+				errors.append("%s：打架 / 动手 / 带你去别处只能放在选项上（选了就结束对话）" % nid)
 		for o in n.get("options", []):
 			for key in o:
 				if not key in OPTION_KEYS:
@@ -92,8 +93,8 @@ static func validate(d: Dictionary) -> Array:
 			_validate_conds(o.get("if", []), nid, registry, errors)
 			_validate_effects(o.get("do", []), nid, registry, errors)
 			for e in o.get("do", []):
-				if (e.has("brawl") or e.has("fight")) and not o.get("end", false):
-					errors.append("%s：选项「%s」开打要同时结束对话（end）" % [nid, o.get("text", "")])
+				if (e.has("brawl") or e.has("fight") or e.has("goto")) and not o.get("end", false):
+					errors.append("%s：选项「%s」开打 / 带你去别处要同时结束对话（end）" % [nid, o.get("text", "")])
 			if o.has("locked"):
 				var has_res := false
 				for c in o.get("if", []):
@@ -210,9 +211,11 @@ static func _validate_effects(effects: Array, where: String, registry: Dictionar
 			errors.append("%s：得到的银币要大于 0" % where)
 		if e.has("ending") and not str(e.ending) in EndingPanel.ENDINGS:
 			errors.append("%s：结局 %s 不认识（ui/ending_panel.gd 的 ENDINGS）" % [where, e.ending])
+		if e.has("goto") and (not Areas.known(str(e.goto)) or Areas.spawn(str(e.goto), str(e.get("spawn", ""))) == null):
+			errors.append("%s：去 %s 的 %s 不认识（world/areas.gd 的区域和出生点）" % [where, e.goto, e.get("spawn", "")])
 		if e.has("daypart") and not Daypart.valid(str(e.daypart)):
 			errors.append("%s：时段 %s 不认识（dawn / day / dusk / night）" % [where, e.daypart])
-		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("give_item") or e.has("pay") or e.has("rep") or e.has("brawl") or e.has("fight") or e.has("leave") or e.has("earn") or e.has("ending") or e.has("daypart")):
+		if not (e.has("set") or e.has("quest") or e.has("quest_done") or e.has("clue") or e.has("take_item") or e.has("give_item") or e.has("pay") or e.has("rep") or e.has("brawl") or e.has("fight") or e.has("leave") or e.has("earn") or e.has("ending") or e.has("daypart") or e.has("goto")):
 			errors.append("%s：效果缺内容" % where)
 
 
@@ -289,6 +292,8 @@ static func apply(effects: Array) -> void:
 			GameState.add_silver(int(e.earn))
 		if e.has("ending"):
 			GameState.pending_ending = str(e.ending)
+		if e.has("goto"):
+			GameState.pending_goto = {"area": str(e.goto), "spawn": str(e.get("spawn", ""))}
 		if e.has("daypart") and Daypart.valid(str(e.daypart)):
 			GameState.daypart = str(e.daypart)                 # 存档里马上是新时段；画面等对话关上再换（main.set_daypart）
 			GameState.pending_daypart = str(e.daypart)

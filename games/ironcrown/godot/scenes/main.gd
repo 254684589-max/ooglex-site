@@ -159,6 +159,8 @@ func _ready() -> void:
 			t = Marsh.build(world, Settings.reduced_motion)
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
+		"castle":
+			t = Castle.build(world, Settings.reduced_motion)
 		"battle":
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
@@ -883,11 +885,13 @@ func _arrive() -> void:
 
 
 ## 主线跟着走到的地方推进（4.4b）：第一章到了鹭沼（走进来、从客栈出来，或者读的是 4.4a 时在鹭沼存的档），
-## 「去芦栈村」推进到「在芦栈村打听」。没和维克托说话就出发了的（主线还没接），也从「在芦栈村打听」接上：不然打听到的消息记进了日志却看不到（审查）。
+## 「去芦栈村」推进到「在芦栈村打听」；进了黑鹭堡的庭院推进到「见赫尔曼」（4.5a）。没和维克托说话就出发了的（主线还没接），也从「在芦栈村打听」接上：不然打听到的消息记进了日志却看不到（审查）。
 ## 任务更新照常提示、自动存档（_autosave_on_quest）
 func _story_progress() -> void:
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
+	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
+		GameState.set_stage("ch1_main", "meet_herman")          # 进了黑鹭堡（4.5a：堡门、水门、侧门进来都算）
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
@@ -1216,6 +1220,10 @@ func _on_dialogue_closed() -> void:
 				print("IC_FERRY alban_arrived")
 	if area == "frostford" and GameState.chapter >= 1 and GameState.has_flag("ch1_victor_done"):
 		show_tip("travel_map")                              # 和维克托说完了：讲旅行地图（4.3；STORY 4.5 第 1 步的教学）
+	var go := GameState.pending_goto
+	GameState.pending_goto = {}
+	if not go.is_empty():
+		travel.call_deferred(str(go.area), str(go.spawn))      # 对话里说好了带你去别处（4.5a：泥炭船、兵营侧门、奥弗的船、堡门）
 	var pd := GameState.pending_daypart
 	GameState.pending_daypart = ""
 	if pd != "":

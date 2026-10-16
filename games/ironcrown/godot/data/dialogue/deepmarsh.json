@@ -16,6 +16,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -25,6 +26,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -57,6 +59,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -66,6 +69,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -75,6 +79,7 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -83,7 +88,15 @@
         "options": [
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
+        ]
+      },
+      "boat": {
+        "text": "进得了。水门那老头一盏灯、一把锈剑，泥炭船进进出出他从来不看。二十枚银币，我让人撑船送你过去。",
+        "options": [
+          {"text": "（递过 20 枚银币）走吧。", "if": [{"silver": 20}], "do": [{"pay": 20}, {"set": "castle_entry", "value": "offer"}, {"goto": "castle", "spawn": "water_gate"}], "end": true},
+          {"text": "太贵了。", "next": "again"}
         ]
       },
       "why_here": {
@@ -120,6 +133,7 @@
         "do": [{"set": "camp_boss_paid"}],
         "options": [
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -127,7 +141,15 @@
         "text": "（他往火里扔了根柴）还有事？",
         "options": [
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "castle_admitted"}], "next": "boat"},
           {"text": "（告辞）", "end": true}
+        ]
+      },
+      "boat": {
+        "text": "进得了。泥炭船进进出出，水门那老头从来不看。二十枚银币，我让人撑船送你。",
+        "options": [
+          {"text": "（递过 20 枚银币）走吧。", "if": [{"silver": 20}], "do": [{"pay": 20}, {"set": "castle_entry", "value": "offer"}, {"goto": "castle", "spawn": "water_gate"}], "end": true},
+          {"text": "太贵了。", "next": "again"}
         ]
       },
       "war": {

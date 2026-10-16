@@ -22,7 +22,9 @@
       "stages": {
         "to_reedwharf": {"objective": "从宅邸门口的路牌出发，去鹭沼边上的芦栈村（对准路牌打开旅行地图）"},
         "ask_reedwharf": {"objective": "在芦栈村打听黑鹭堡的消息：「歪桩客栈」里的人、泥炭场的工头托宾、小码头的渡工……（至少两条）", "advance_when": {"clues_at_least": 2, "to": "to_blackheron"}},
-        "to_blackheron": {"objective": "消息都指向黑鹭堡：从村子西北角上堤道，走到堡门前"}
+        "to_blackheron": {"objective": "消息都指向黑鹭堡：从村子西北角上堤道，走到堡门前。没有引荐信的，守门的不放——去村里想想别的办法"},
+        "meet_herman": {"objective": "进了黑鹭堡：去井边见堡守赫尔曼"},
+        "to_hall": {"objective": "家主在病房里昏睡，两位继承人都在大厅——去大厅（主楼的门）"}
       }
     },
     "hob_debt": {

@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -5797,7 +5797,7 @@ func test_marsh() -> void:
 	var tps: Array = main.find_children("*", "TravelPoint", true, false)
 	check(tps.size() == 3 and tps.any(func(t): return (t as TravelPoint).display_name == Marsh.EXIT_NAME), "三处能出发：村口的路牌、东头路口「%s」、堡门前的路牌" % Marsh.EXIT_NAME)
 	var gate_door: Array = main.world.find_children("*", "Door", true, false).filter(func(d): return (d as Door).display_name == Marsh.GATE_NAME)
-	check(gate_door.size() == 1 and gate_door[0].locked and gate_door[0].locked_text.contains("开发中"), "黑鹭堡的堡门锁着，写明还在开发中")
+	check(gate_door.size() == 1 and gate_door[0].locked and gate_door[0].locked_text.contains("赫尔曼"), "黑鹭堡的堡门锁着：没有堡守点头谁也进不去（4.5a）")
 	# 高脚屋：每栋不超过 8 次绘制；地图上的房子和场景对得上
 	var houses: Array = main.world.find_children("House_*", "Node3D", true, false)
 	var surf_ok: bool = houses.all(func(h): return (h.get_node("Mesh") as MeshInstance3D).mesh.get_surface_count() <= 8)
@@ -5951,7 +5951,7 @@ func test_reedwharf() -> void:
 	var dmid := Vector3.ZERO if door == null else door.global_transform * Vector3(door.width * 0.5, 0, 0)
 	check(door != null and door.to_area == "inn" and door.to_spawn == "front" and not door.locked and ex.size() == 1 and ex[0].to == "inn"
 		and Vector2(dmid.x, dmid.z).distance_to(ex[0].at) < 0.2 and ex[0].name == door.display_name, "客栈的门一进场就在、推得开（不等分帧），和鹭沼地图上的出口对得上")
-	check(AreaMap.region_of("marsh") == "marsh" and AreaMap.region_of("inn") == "marsh" and AreaMap.links("marsh") == [["inn", "marsh"]]
+	check(AreaMap.region_of("marsh") == "marsh" and AreaMap.region_of("inn") == "marsh" and AreaMap.links("marsh").has(["inn", "marsh"])
 		and AreaMap.default_view("inn") == "region", "地图「鹭沼一带」：鹭沼和客栈连着；在客栈里按 M 先看一带")
 	# —— 托宾：堤道和水门（第一条消息）
 	check(await fl_say(main, "reedwharf", "tobin", ["去黑鹭堡怎么走？", "水门有人守吗？"]), "和托宾说话：去黑鹭堡怎么走")
@@ -6273,3 +6273,145 @@ func make_main_marsh() -> Node3D:
 	var main := await make_main(false)
 	await physics(3)
 	return main
+
+
+## 0.5 米的格子上，身子那么大的胶囊放得下的地方（不碰墙、房子、井、车、垛子、别的人）；从 from 走得到 to 附近（radius 米内）吗
+func walk_reach(main: Node3D, from: Vector3, to: Vector3, radius: float, area: Rect2) -> bool:
+	var space: PhysicsDirectSpaceState3D = main.player.get_world_3d().direct_space_state
+	var sq := PhysicsShapeQueryParameters3D.new()
+	var cap := CapsuleShape3D.new()
+	cap.radius = 0.35
+	cap.height = 1.4
+	sq.shape = cap
+	sq.collision_mask = 1
+	sq.exclude = [main.player.get_rid()]
+	var free := func(c: Vector2i) -> bool:
+		sq.transform = Transform3D(Basis.IDENTITY, Vector3(c.x * 0.5, 0.95, c.y * 0.5))
+		return space.intersect_shape(sq, 1).is_empty()
+	var start := Vector2i(roundi(from.x * 2.0), roundi(from.z * 2.0))
+	var seen := {start: true}
+	var todo := [start]
+	while not todo.is_empty():
+		var c: Vector2i = todo.pop_back()
+		if Vector2(c.x * 0.5, c.y * 0.5).distance_to(Vector2(to.x, to.z)) <= radius:
+			return true
+		for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var n: Vector2i = c + d
+			if seen.has(n) or not area.has_point(Vector2(n.x * 0.5, n.y * 0.5)):
+				continue
+			seen[n] = true
+			if free.call(n):
+				todo.append(n)
+	return false
+
+
+## 黑鹭堡（路线图 4.5a；STORY.md 4.5 第 3 步）：庭院区域、堡门前的卫兵看引荐信放人（对话里的 goto 把人送进去）、进了庭院主线推进、赫尔曼按进来的路说话、
+## 见过以后堡门推得开；没有引荐信的三种办法（托宾的泥炭船、伊薇特的老兵带路走侧门、奥弗的船）；庭院里从三个进来的地方都走得到赫尔曼；地图出口
+func test_castle() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	check(Areas.known("castle") and not Areas.is_indoor("castle") and Saves.SCENE_NAMES.has("castle") and Castle.SPAWNS.keys().all(func(k): return Areas.spawn("castle", k) is Transform3D),
+		"区域登记：黑鹭堡庭院是室外区域，三个进来的地方都是出生点")
+	# —— 有引荐信：堡门前的卫兵看了信就放人
+	var main := await marsh_after("deliver", 5, true, "castle_gate")
+	var guard := main.world.get_node_or_null("Npc_gate_guard") as Npc
+	check(guard != null and stands_clear(guard) and Travel.place_of_area("marsh", flat(guard.global_position)) == "blackheron", "堡门前站着守门的卫兵（站在石台上，没卡在门洞里）")
+	var gd: Door = main.world.find_children("*", "Door", true, false).filter(func(d): return d.display_name == Marsh.GATE_NAME)[0]
+	check(gd.locked and AreaMap.exits("marsh").size() == 1, "没放进过：堡门锁着，地图上不算出口")
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	check(await fl_say(main, "blackheron", "gate_guard", ["我有维克托大人写给堡守赫尔曼的引荐信。", "（进堡）"]), "和卫兵说话：拿出引荐信")
+	await seconds(0.6)
+	check(rr[0] == 1 and GameState.pending_load.get("scene") == "castle" and GameState.pending_load.get("spawn") == "gate" and GameState.has_flag("castle_admitted"),
+		"卫兵放人：对话一关就走进堡门（%s）" % str(GameState.pending_load))
+	main = await reload_main(main)
+	await physics(3)
+	check(main.area == "castle" and main.arrived_by == "gate" and GameState.quest_stage("ch1_main") == "meet_herman" and main.hud.toast_label.text.begins_with("黑鹭堡"),
+		"进了黑鹭堡的庭院：提示「黑鹭堡」，主线推进到「见赫尔曼」（%s）" % GameState.quest_stage("ch1_main"))
+	check(Saves.read_slot("auto").data.scene == "castle", "进了庭院自动存档")
+	var people := main.find_children("Npc_*", "Npc", true, false)
+	var bad: Array = people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)
+	check(people.size() == 1 + Castle.GUARDS.size() and bad.is_empty(), "庭院里：赫尔曼和 %d 个兵，都站得稳（%s）" % [Castle.GUARDS.size(), str(bad)])
+	var herman: Npc = main._npc_by_dialogue("herman")
+	var area := Rect2(-Castle.HW, -Castle.HD, Castle.HW * 2.0, Castle.HD * 2.0)
+	var reach_ok := true
+	for k in Castle.SPAWNS:
+		if not walk_reach(main, Castle.SPAWNS[k][0], herman.position, 1.4, area):
+			reach_ok = false
+	check(reach_ok, "从堡门、水门、兵营侧门进来，都走得到井边的赫尔曼")
+	var doors: Array = main.find_children("*", "Door", true, false)
+	var open: Array = doors.filter(func(d): return d.to_area != "" and not d.locked)
+	var ex: Array = AreaMap.exits("castle")
+	var mid: Vector3 = Vector3.ZERO if open.is_empty() else open[0].global_transform * Vector3(open[0].width * 0.5, 0, 0)
+	check(open.size() == 1 and ex.size() == 1 and open[0].to_area == "marsh" and open[0].to_spawn == "castle_gate" and Vector2(mid.x, mid.z).distance_to(ex[0].at) < 0.3 and ex[0].name == open[0].display_name,
+		"只有堡门通往外面，和地图出口对得上")
+	var locked_names: Array = doors.filter(func(d): return d.locked).map(func(d): return d.display_name)
+	check(["大厅", "兵营", "病房", "账房", "水门", "兵营侧门"].all(func(n): return n in locked_names), "大厅、兵营、病房、账房、水门、侧门都还关着（%s）" % str(locked_names))
+	check(AreaMap.region_of("castle") == "marsh" and AreaMap.links("marsh").has(["castle", "marsh"]), "地图「鹭沼一带」里有黑鹭堡")
+	# 赫尔曼（堡门进来）：主线推进到「去大厅」，借据只能等家主醒
+	main.set_view(1)
+	await physics(3)
+	main.player.interactor.refresh()
+	check(main.player.interactor.target == herman, "1 号机位正对着赫尔曼（冒烟测试用）")
+	check(await fl_say(main, "blackheron", "herman", ["维克托大人让我把借据亲手交给家主。"]) and GameState.has_flag("herman_met") and GameState.quest_stage("ch1_main") == "to_hall",
+		"赫尔曼：堡门进来的规规矩矩；交出时说借据的事（等家主醒）；主线推进到「去大厅」")
+	# 出堡门：回到堡门前，堡门这回推得开，地图上也算出口
+	main = await fl_go(main, "marsh")
+	await physics(3)
+	gd = main.world.find_children("*", "Door", true, false).filter(func(d): return d.display_name == Marsh.GATE_NAME)[0]
+	check(main.area == "marsh" and main.arrived_by == "castle_gate" and not gd.locked and gd.to_area == "castle" and AreaMap.exits("marsh").size() == 2,
+		"出了堡门站在石台上；堡门推得开了，地图上算出口")
+	await free_main(main)
+	# —— 没有引荐信：卫兵不放；托宾的泥炭船走水门
+	ch1_state("release", 6)
+	GameState.set_flag("ch1_victor_done")
+	GameState.start_quest("ch1_main", "to_blackheron")
+	GameState.set_flag("heard_causeway")
+	check(say_runner("gate_guard", ["我是霜渡镇的誓剑，有事要见家主。"], "blackheron") == "no" and not GameState.has_flag("castle_admitted"), "没有引荐信：卫兵不放")
+	var r := DialogueRunner.new()
+	r.start("blackheron", "gate_guard")
+	check(not r.options().any(func(o): return str(o.text).begins_with("我有维克托")), "没有引荐信就没有那一项（不灰着提示）")
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	rr = [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	check(await fl_say(main, "reedwharf", "tobin", ["你说的泥炭船——能捎我进堡吗？", "上船。"]), "托宾：蹲在泥炭船里走水门")
+	await seconds(0.6)
+	check(rr[0] == 1 and GameState.pending_load.get("spawn") == "water_gate" and str(GameState.get_flag("castle_entry")) == "tobin", "托宾的船：送到水门里面")
+	main = await reload_main(main)
+	await physics(3)
+	check(main.area == "castle" and main.arrived_by == "water_gate" and GameState.quest_stage("ch1_main") == "meet_herman", "从水门进了庭院")
+	main.open_dialogue("blackheron", "herman", main._npc_by_dialogue("herman"))
+	await frames(1)
+	check(main.dialogue.runner.node_id == "greet_water", "赫尔曼：「水门进来的？」")
+	main.dialogue.close()
+	await free_main(main)
+	# —— 伊薇特的老兵：兵营侧门；奥弗的船：水门（20 枚银币）；有引荐信的人没有这些选项
+	ch1_state("extort", 7)
+	GameState.start_quest("ch1_main", "to_blackheron")
+	check(say_runner("ivette_veteran", ["堡门不让我进。"]) == "side_gate", "伊薇特的老兵：兵营的侧门归他们的人管")
+	r.start("reedwharf", "ivette_veteran")
+	r.choose(r.options().map(func(o): return o.text).find("堡门不让我进。"))
+	r.choose(0)
+	check(GameState.pending_goto == {"area": "castle", "spawn": "barracks_gate"} and str(GameState.get_flag("castle_entry")) == "barracks", "说是来投伊薇特小姐的：走兵营侧门")
+	GameState.pending_goto = {}
+	r.start("blackheron", "herman")
+	check(r.node_id == "greet_barracks", "赫尔曼：「伊薇特小姐的人从侧门放进来一个誓剑」")
+	ch1_state("deliver", 8)
+	GameState.set_flag("offer_camp_met")
+	GameState.silver = 25
+	r.start("deepmarsh", "offer_camp")
+	r.choose(r.options().map(func(o): return o.text).find("你们的船进得了水门吗？"))
+	r.choose(0)
+	check(GameState.pending_goto.get("spawn") == "water_gate" and GameState.silver == 5 and str(GameState.get_flag("castle_entry")) == "offer", "奥弗的船：20 枚银币送到水门")
+	GameState.pending_goto = {}
+	ch1_state("deliver", 9)
+	GameState.set_flag("ch1_letter")
+	GameState.set_flag("heard_causeway")
+	r.start("reedwharf", "tobin")
+	var ot := r.options().map(func(o): return o.text)
+	r.start("reedwharf", "ivette_veteran")
+	ot += r.options().map(func(o): return o.text)
+	check(not ot.has("你说的泥炭船——能捎我进堡吗？") and not ot.has("堡门不让我进。"), "有引荐信的人：托宾和老兵不提偷偷进堡的事")
+	GameState.new_game()
