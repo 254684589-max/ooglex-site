@@ -9,7 +9,9 @@ extends RefCounted
 ## 看不见的墙在物理层 5「边界」（只挡人走，不挡视线、镜头、箭、交互）：从地面的边自动生成——边外面 0.3 米不是任何地面的地方就立一段墙；
 ## 墙外面的水里总有芦苇（_reed_chance：岸边 SHORE 米之内长满），不会有「空地上一堵看不见的墙」。
 ## 泥滩的碰撞体带元数据 surface = "mud"（core/surface.gd：走得慢、不能跑）；栈道铺在泥滩上面，踩着栈道不算泥。
-## 4.4a 只有地形和房子：人（客栈老板、托宾、渡工、吉尔伯特）和客栈里面是 4.4b，鹭沼深处和营地是 4.4c，堡里是 4.5。
+## 4.4c 加了鹭沼深处（DEEP：木板路、泥滩、土墩、枯树）和西边土墩上的无旗者营地（只谈、吓、给钱；真打在 4.7）。
+## 4.4a 是地形和房子；4.4b 加了村里的人（托宾、渡工、泥炭工、补网的女人；客栈里的人在 world/inn.gd）和进「歪桩客栈」的门：
+## 人和门都在同步那一步放进 world（不放进分帧的块：块没搭好时也得找得到、说得上话，TECH.md 4.15）。堡里是 4.5。
 
 const SPAWNS := MarshLayout.SPAWNS
 const VIEWS := MarshLayout.VIEWS
@@ -22,7 +24,8 @@ const REED_LOW_SHARE := 0.5         # 低画质只画一半
 const WALL_H := 4.5
 const THICK := {"mud": 0.4, "land": 0.6, "deck": 0.2, "stone": 1.2, "slope": 0.4, "bridge": 0.15}
 const GATE_NAME := "黑鹭堡的堡门"
-const GATE_TEXT := "堡门紧闭，叫了也没人应。（黑鹭堡还在开发中）"
+const GATE_TEXT := "堡门紧闭。门边的卫兵说，没有堡守赫尔曼点头，谁也别想进。"
+const GATE_GUARD := ["gate_guard", "守门的卫兵", Vector3(1.4, 0, 2.2), 0.0, "3e4652"]     # 堡门前（本地坐标：堡门外 2.2 米、门洞右边），面朝堤道
 const SIGN_TEXT_VILLAGE := "往霜渡镇 · 黑鹭堡"
 const SIGN_TEXT_GATE := "往芦栈村 · 霜渡镇"
 const EXIT_NAME := "回霜渡镇的路"
@@ -47,6 +50,7 @@ static func build(p_parent: Node3D, p_reduced_motion := false) -> Transform3D:
 	m._water()
 	m._collision()
 	m._interactables()
+	m._people()
 	Edges.dress(p_parent, MarshLayout.BANK, [{"at": MarshLayout.EXIT_AT, "out": Vector3(1, 0, 0), "half": 1.8, "fence": true, "lantern": true, "frame": "霜渡镇"}],
 		[Rect2(-400, -400, 528, 800), Rect2(128, -400, 400, 412), Rect2(128, 50, 400, 400)], 4401, "bank")   # 只在东头路口外面：干岸接着往东铺，两边白桦
 	var st := ChunkStreamer.new()
@@ -224,6 +228,8 @@ func _collision() -> void:
 		if str(p[2]) == "mud":
 			var c: Vector2 = p[0]
 			_shape(solids, Transform3D(Basis(Vector3.UP, deg_to_rad(float(p[1]))), Vector3(c.x, MarshLayout.MUD_Y + 0.25, c.y)), Vector3(1.5, 0.5, 4.6))
+	for s in deep_solids():
+		_shape(solids, s[0], s[1])
 	for s in _arch_solids():
 		_shape(solids, s[0], s[1])
 	for s in _castle_solids():
@@ -242,8 +248,13 @@ func _interactables() -> void:
 	sg.position = MarshLayout.SIGN_GATE
 	sg.rotation_degrees.y = -45.0                 # 立在石台西南边，字朝东北（对着石台中间：从堤道走上来、在出生点转个身都看得到，审查）
 	parent.add_child(sg)
-	var gate := Door.make(GATE_NAME, 3.2, 4.2, true)
+	var admitted := GameState.has_flag("castle_admitted")       # 4.5a：赫尔曼见过你（或者卫兵看了引荐信），堡门就推得开
+	var gate := Door.make(GATE_NAME, 3.2, 4.2, not admitted)
 	gate.locked_text = GATE_TEXT
+	if admitted:
+		gate.to_area = "castle"
+		gate.to_spawn = "gate"
+		gate.verb = "进入"
 	var xf := MarshLayout.castle_xform()
 	gate.transform = xf * Transform3D(Basis.IDENTITY, Vector3(-1.6, 0.3, MarshLayout.CASTLE_SIZE.y * 0.5 + 0.1))
 	parent.add_child(gate)
@@ -253,6 +264,54 @@ func _interactables() -> void:
 	gw.position = MarshLayout.EXIT_AT + Vector3(-0.35, 0, 0)
 	gw.rotation_degrees.y = 90.0
 	parent.add_child(gw)
+	# 「歪桩客栈」的门（4.4b）：通往客栈里面。房子是分帧搭的（门洞留着），门在这里同步放：一进场就推得开
+	parent.add_child(inn_door())
+
+
+## 客栈的门：照 HOUSES[0] 的 door（House.door_node），摆到门洞上
+static func inn_door() -> Door:
+	var inn: Array = MarshLayout.HOUSES[0]
+	var spec: Dictionary = inn[3]
+	var d := House.door_node(spec.door)
+	var place := Transform3D(Basis(Vector3.UP, deg_to_rad(float(inn[2]))), MarshLayout.house_pos(inn))
+	d.transform = place * Transform3D(Basis.IDENTITY, Vector3(float(spec.door_x) - 0.55, 0, 0.05))
+	d.name = "InnDoor"
+	return d
+
+
+## 村里的人（4.4b）：有对话的（托宾、渡工）和只说一句的（泥炭工、补网的女人）；营地里的人（4.4c，camp_mood）。
+## 人是占位胶囊（A.2 换装），同步放进 world
+func _people() -> void:
+	var g := Npc.make(str(GATE_GUARD[1]), [], Color(str(GATE_GUARD[4])))
+	g.name = "Npc_" + str(GATE_GUARD[0])
+	g.dialogue_area = "blackheron"
+	g.dialogue_id = str(GATE_GUARD[0])
+	g.position = gate_guard_pos()
+	g.rotation.y = deg_to_rad(MarshLayout.CW_YAW + 180.0)      # 面朝堤道（人的脸朝本地 -Z；审查：原来面朝堡门）
+	parent.add_child(g)
+	var mood := camp_mood()
+	var leader: Array = MarshLayout.CAMP_BOSS if mood == "boss" else MarshLayout.CAMP_OFFER
+	var camp := [leader] + MarshLayout.CAMP_MEN
+	for p: Array in camp:
+		var n := Npc.make(str(p[1]), [] if p == leader else MarshLayout.CAMP_LINES["grudge" if mood == "boss" else mood], Color(str(p[4])))
+		n.name = "Npc_" + str(p[0])
+		if p == leader:
+			n.dialogue_area = "deepmarsh"
+			n.dialogue_id = str(p[0])
+		n.position = p[2]
+		n.rotation.y = float(p[3])
+		parent.add_child(n)
+	for p: Array in MarshLayout.PEOPLE:
+		var id := str(p[0])
+		var lines: Array = MarshLayout.PEOPLE_LINES.get(id, [])
+		var n := Npc.make(str(p[1]), lines, Color(str(p[4])))
+		n.name = "Npc_" + id
+		if lines.is_empty():
+			n.dialogue_area = "reedwharf"
+			n.dialogue_id = id
+		n.position = p[2]
+		n.rotation.y = float(p[3])
+		parent.add_child(n)
 
 
 # ---------------- 分帧的活 ----------------
@@ -276,6 +335,9 @@ func _jobs(st: ChunkStreamer) -> void:
 		var h: Array = MarshLayout.HOUSES[i]
 		per[MarshLayout.cell_id(MarshLayout.cell_of(h[1]))].append(_job_house.bind(i))
 	per[MarshLayout.cell_id(MarshLayout.cell_of(MarshLayout.TOBIN_HUT[0]))].append(_job_tobin)
+	for t in MarshLayout.DEEP_TREES:                         # 鹭沼深处的枯树、营地（4.4c）
+		per[MarshLayout.cell_id(MarshLayout.cell_of(t[0]))].append(_job_tree.bind(t))
+	per[MarshLayout.cell_id(MarshLayout.cell_of(Vector2(MarshLayout.CAMP_FIRE.x, MarshLayout.CAMP_FIRE.z)))].append(_job_camp)
 	per[MarshLayout.cell_id(MarshLayout.cell_of(MarshLayout.cw(MarshLayout.ARCH_T)))].append(_job_arch)
 	per[MarshLayout.cell_id(MarshLayout.cell_of(MarshLayout.cw(MarshLayout.CASTLE_T)))].append(_job_castle)
 	for k in REED_KINDS:
@@ -540,6 +602,123 @@ func _job_house(root: Node3D, i: int) -> void:
 	var h: Array = MarshLayout.HOUSES[i]
 	var house := House.build(root, MarshLayout.house_pos(h), float(h[2]), MarshLayout.house_spec(h))
 	house.name = "House_" + str(h[0])
+
+
+## 堡门前的卫兵（4.5a）：看引荐信放人；本地坐标在堡门前的石台上
+static func gate_guard_pos() -> Vector3:
+	var hd := MarshLayout.CASTLE_SIZE.y * 0.5
+	var p: Vector3 = GATE_GUARD[2]
+	return MarshLayout.castle_xform() * Vector3(p.x, 0, hd + p.z) + Vector3(0, MarshLayout.CAUSE_Y, 0)
+
+
+## 营地对你的态度（4.4c；STORY.md 4.4「序章其他旗标」）：friendly 序章里谈妥、吓走或花钱打发了奥弗（offer_left）；
+## grudge 和他们打过一仗、奥弗还活着（offer_defeated）；boss 奥弗死在渡口了（GameState.dead 里有他），火边站的是手下的头目；neutral 没打过交道
+static func camp_mood() -> String:
+	if GameState.dead.has(Ferry.OFFER_GROUP[0][2]):
+		return "boss"
+	if GameState.has_flag("offer_defeated"):
+		return "grudge"
+	if GameState.has_flag("offer_left"):
+		return "friendly"
+	return "neutral"
+
+
+## 鹭沼深处的碰撞盒（同步建）：枯树的树干、窝棚、箱子、火边的圆木、火堆（人走不进火里）、晾鱼的木架
+static func deep_solids() -> Array:
+	var out := []
+	for t in MarshLayout.DEEP_TREES:
+		var c: Vector2 = t[0]
+		var h: float = float(t[2]) * 0.55
+		out.append([Transform3D(Basis.IDENTITY, Vector3(c.x, MarshLayout.BANK_Y + h * 0.5 - 0.2, c.y)), Vector3(BareTree.TRUNK_R * 2.0, h, BareTree.TRUNK_R * 2.0)])
+	for tn in MarshLayout.TENTS:
+		var c: Vector2 = tn[0]
+		var sz := MarshLayout.TENT_SIZE
+		out.append([Transform3D(Basis(Vector3.UP, deg_to_rad(float(tn[1]))), Vector3(c.x, MarshLayout.BANK_Y + sz.y * 0.5, c.y)), sz])
+	for c: Vector2 in MarshLayout.CRATES:
+		out.append([Transform3D(Basis(Vector3.UP, c.x * 0.3), Vector3(c.x, MarshLayout.BANK_Y + 0.4, c.y)), Vector3(0.8, 0.8, 0.8)])
+	for l in MarshLayout.LOGS:
+		var c: Vector2 = l[0]
+		out.append([Transform3D(Basis(Vector3.UP, deg_to_rad(float(l[1]))), Vector3(c.x, MarshLayout.BANK_Y + 0.22, c.y)), Vector3(2.2, 0.44, 0.5)])
+	var f := MarshLayout.CAMP_FIRE
+	out.append([Transform3D(Basis.IDENTITY, f + Vector3(0, 0.5, 0)), Vector3(1.4, 1.0, 1.4)])
+	var rc: Vector2 = MarshLayout.CAMP_RACK[0]
+	out.append([Transform3D(Basis(Vector3.UP, deg_to_rad(float(MarshLayout.CAMP_RACK[1]))), Vector3(rc.x, 0.9, rc.y)), Vector3(3.2, 1.8, 0.4)])
+	return out
+
+
+## 一棵枯树（画面；碰撞在 deep_solids）
+func _job_tree(root: Node3D, t: Array) -> void:
+	var c: Vector2 = t[0]
+	BareTree.build(root, Vector3(c.x, MarshLayout.BANK_Y, c.y), int(t[1]), float(t[2]), false)
+
+
+## 营地：营火（石头围一圈、木柴、炭火、火光）、三顶人字形的兽皮窝棚、箱子、火边的圆木、晾鱼的木架
+func _job_camp(root: Node3D) -> void:
+	var kit := MeshKit.new()
+	var f := MarshLayout.CAMP_FIRE
+	for k in 9:
+		var a := TAU * k / 9.0
+		kit.box("stone", f + Vector3(cos(a) * 0.62, 0.1, sin(a) * 0.62), Vector3(0.3, 0.2, 0.24), Basis(Vector3.UP, -a), 0.8, 0.5)
+	for k in 4:
+		var a := TAU * k / 4.0 + 0.4
+		kit.cylinder("timber", f + Vector3(cos(a) * 0.45, 0.05, sin(a) * 0.45), f + Vector3(cos(a) * 0.05, 0.45, sin(a) * 0.05), 0.06, 0.05, 5, 0.5)
+	kit.box("ember", f + Vector3(0, 0.08, 0), Vector3(0.6, 0.08, 0.6))
+	kit.cylinder("timber", f + Vector3(-0.9, 0, 0), f + Vector3(-0.9, 1.3, 0), 0.04, 0.04, 4, 0.7)          # 烤鱼的架子
+	kit.cylinder("timber", f + Vector3(0.9, 0, 0), f + Vector3(0.9, 1.3, 0), 0.04, 0.04, 4, 0.7)
+	kit.cylinder("timber", f + Vector3(-0.95, 1.25, 0), f + Vector3(0.95, 1.25, 0), 0.03, 0.03, 4, 0.8)
+	for tn in MarshLayout.TENTS:
+		var c: Vector2 = tn[0]
+		var b := Basis(Vector3.UP, deg_to_rad(float(tn[1])))
+		var o := Vector3(c.x, MarshLayout.BANK_Y, c.y)
+		var sz := MarshLayout.TENT_SIZE
+		var half := sz.z * 0.5
+		var slope := sqrt(half * half + sz.y * sz.y)
+		var ang := atan2(sz.y, half)
+		for sgn: float in [-1.0, 1.0]:                # 两面兽皮斜着搭在横杆上
+			var mid := o + b * Vector3(0, sz.y * 0.5, sgn * half * 0.5)
+			kit.box("hide", mid, Vector3(sz.x, 0.05, slope), b * Basis(Vector3.RIGHT, sgn * ang), 0.95, 0.55)
+		kit.cylinder("timber", o + b * Vector3(-sz.x * 0.55, sz.y + 0.05, 0), o + b * Vector3(sz.x * 0.55, sz.y + 0.05, 0), 0.05, 0.05, 5, 0.7)
+		for sx: float in [-1.0, 1.0]:
+			kit.cylinder("timber", o + b * Vector3(sx * sz.x * 0.5, 0, 0), o + b * Vector3(sx * sz.x * 0.5, sz.y + 0.1, 0), 0.05, 0.05, 5, 0.6)
+	for c: Vector2 in MarshLayout.CRATES:
+		kit.box("timber", Vector3(c.x, MarshLayout.BANK_Y + 0.4, c.y), Vector3(0.8, 0.8, 0.8), Basis(Vector3.UP, c.x * 0.3), 0.85, 0.55)
+	for l in MarshLayout.LOGS:
+		var c: Vector2 = l[0]
+		var b := Basis(Vector3.UP, deg_to_rad(float(l[1])))
+		var o := Vector3(c.x, MarshLayout.BANK_Y + 0.22, c.y)
+		kit.cylinder("bark", o - b.x * 1.1, o + b.x * 1.1, 0.24, 0.22, 7, 0.8)
+	_rack(kit, MarshLayout.CAMP_RACK[0], float(MarshLayout.CAMP_RACK[1]))
+	var mi := kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber"), "bark": Look.mat("bark"), "ember": _ember_mat(), "thatch": Look.thatch(), "hide": _hide_mat()})
+	mi.name = "Camp"
+	root.add_child(mi)
+	var fire := Tavern.FireLight.new()               # 白天也烧着：不归时段管（不是夜灯）
+	fire.name = "Campfire"
+	fire.light_color = Color("ff8a3a")
+	fire.base = 2.2
+	fire.omni_range = 9.0
+	fire.omni_attenuation = 1.1
+	fire.position = f + Vector3(0, 0.7, 0)
+	fire.flicker = not reduced_motion
+	fire.add_to_group("light_source")
+	fire.set_meta("radius", 5.0)
+	root.add_child(fire)
+	var halo := MeshInstance3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(1.6, 1.2)
+	var hm := Look.halo(Color("ff8a3a"), 0.5).duplicate() as StandardMaterial3D
+	hm.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	q.material = hm
+	halo.mesh = q
+	halo.position = f + Vector3(0, 0.45, 0)
+	root.add_child(halo)
+
+
+static func _hide_mat() -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_color = Color("6e5a44")
+	m.roughness = 0.95
+	m.vertex_color_use_as_albedo = true
+	return m
 
 
 func _job_tobin(root: Node3D) -> void:
@@ -912,8 +1091,13 @@ static func _rope_mat() -> StandardMaterial3D:
 
 # ---------------- 地图（3.11 的格式，由布局表生成） ----------------
 
+## 堡门的中心（世界坐标，地图出口用）
+static func castle_xform_gate() -> Vector3:
+	return MarshLayout.castle_xform() * Vector3(0, 0, MarshLayout.CASTLE_SIZE.y * 0.5 + 0.1)
+
+
 ## 整张图：水面、芦苇荡、泥滩、干地、栈道、堤道、房子、黑鹭堡、路牌；分块（芦栈村 / 堤道 / 黑鹭堡外）。
-## 4.4a 还没有通往别的区域的门（出发走路牌、旅行地图），出口是空的
+## 出口只有「歪桩客栈」的门（4.4b）；出发走路牌、旅行地图，不算出口
 static func map_spec() -> Dictionary:
 	var shapes := []
 	shapes.append({"k": "water", "rect": MarshLayout.BOUNDS})      # 不写字：图中心正好在断口上，字会盖住它（审查）
@@ -922,7 +1106,7 @@ static func map_spec() -> Dictionary:
 		if i == 0:
 			sh["label"] = "芦苇荡"
 		shapes.append(sh)
-	var labels := {"village_mud": "泥潭", "peat_yard": "泥炭场", "bank": "村口", "cw_b": "堤道", "dock": "小码头"}
+	var labels := {"village_mud": "泥潭", "peat_yard": "泥炭场", "bank": "村口", "cw_b": "堤道", "dock": "小码头", "camp": "西边的土墩", "deep_walk": "木板路"}
 	for f in MarshLayout.floors():
 		var k := str(f.k)
 		var kind := str({"mud": "mud", "land": "land", "deck": "pier", "bridge": "pier", "stone": "road", "slope": "road"}.get(k, ""))
@@ -951,4 +1135,10 @@ static func map_spec() -> Dictionary:
 	shapes.append({"k": "house", "pts": castle, "label": "黑鹭堡"})
 	shapes.append({"k": "mark", "at": Vector2(MarshLayout.SIGN_VILLAGE.x, MarshLayout.SIGN_VILLAGE.z), "icon": "sign", "label": "路牌"})
 	shapes.append({"k": "mark", "at": Vector2(MarshLayout.SIGN_GATE.x, MarshLayout.SIGN_GATE.z), "icon": "sign", "label": "路牌"})
-	return {"bounds": MarshLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": MarshLayout.zones()}
+	var inn: Array = MarshLayout.HOUSES[0]
+	var exits := [{"at": House.door_xz(MarshLayout.house_pos(inn), float(inn[2]), float(inn[3].door_x)), "dir": -House.facing(float(inn[2])),
+		"to": "inn", "spawn": "front", "name": str(inn[3].door.name)}]          # 「歪桩客栈」的门（4.4b）；出发的路牌不是门，不算出口
+	var gxf := castle_xform_gate()
+	exits.append({"at": Vector2(gxf.x, gxf.z), "dir": -Vector2(sin(deg_to_rad(MarshLayout.CW_YAW)), cos(deg_to_rad(MarshLayout.CW_YAW))),
+		"to": "castle", "spawn": "gate", "name": GATE_NAME, "if": {"flag": "castle_admitted"}})       # 黑鹭堡的堡门：放你进过才算出口（4.5a）
+	return {"bounds": MarshLayout.BOUNDS, "shapes": shapes, "exits": exits, "zones": MarshLayout.zones()}

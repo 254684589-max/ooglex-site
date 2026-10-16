@@ -272,6 +272,8 @@ static func _fog(parent: Node3D, reduced_motion: bool) -> void:
 static func _people(parent: Node3D) -> void:
 	for m in OFFER_GROUP:
 		var id := str(m[2])
+		if GameState.yielded.has(id) and GameState.chapter >= 1:
+			continue                                    # 第一章起：认输的人早就走了（奥弗带着手下去了鹭沼深处，4.4c），渡口不再跪着一个
 		if GameState.dead.has(id) or GameState.yielded.has(id):
 			var e := Enemy.make(str(m[1]), id)
 			e.display_override = str(m[0])

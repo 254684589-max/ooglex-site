@@ -1,0 +1,164 @@
+{
+  "_说明": "鹭沼深处西边土墩上的无旗者营地（路线图 4.4c；STORY.md 4.2「鹭沼深处：「灰手」奥弗与手下」、4.4「序章其他旗标」）。营地对你的态度看序章怎么了结的奥弗（world/marsh.gd camp_mood）：谈妥、吓走或花钱打发了的（offer_left）友善；打过一仗、他还活着的（offer_defeated）记恨你——口才、威吓（都比序章在渡口时难一档）或给 40 枚银币才肯好好说话，没说动就让你滚（这一步不动手，真打在 4.7）；奥弗死在渡口的，火边站的是手下的头目（camp_boss）。伊薇特托你收编（或赶走）他们是 4.5 / 4.7 的事，这里只埋下「谁出价高就跟谁」。",
+  "offer_camp": {
+    "speaker": "「灰手」奥弗",
+    "start": "neutral_greet",
+    "start_if": [
+      {"if": [{"flag": "offer_camp_met"}], "node": "again"},
+      {"if": [{"flag": "offer_camp_refused"}], "node": "refused_again"},
+      {"if": [{"flag": "offer_defeated"}], "node": "grudge"},
+      {"if": [{"flag": "offer_left"}], "node": "friendly_greet"}
+    ],
+    "nodes": {
+      "friendly_greet": {
+        "text": "（他把刀在火上烤了烤，抬头看见你，露出一口黄牙笑了）誓剑。渡口一别，你倒追到鹭沼来了。坐吧——这回没人雇我砍你。",
+        "do": [{"set": "offer_camp_met"}],
+        "options": [
+          {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "neutral_greet": {
+        "text": "（他眯起眼睛打量你，一只手搭在刀柄上）誓剑？渡口那晚你忙你的，我们走我们的。来鹭沼做什么？",
+        "do": [{"set": "offer_camp_met"}],
+        "options": [
+          {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "grudge": {
+        "text": "（营火边的人一下子都站了起来。他慢慢转过身，脸上那道新疤还没长好）你还敢来。渡口那一仗，我的人现在还瘸着。",
+        "options": [
+          {"text": "那晚各为其主。今天我不是来打架的。", "check": {"id": "offer_camp_speech", "skill": "speech", "dc": 17, "pass": "calm", "fail": "refused"}},
+          {"text": "上回你们几个一起上，也没赢。要再试试？", "check": {"id": "offer_camp_intimidate", "skill": "intimidate", "dc": 16, "pass": "calm_scared", "fail": "refused"}},
+          {"text": "（扔过去一袋银币）40 枚，给你的人买药。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "calm_paid"},
+          {"text": "（退出营地）", "end": true}
+        ]
+      },
+      "refused": {
+        "text": "（他朝地上吐了口唾沫）滚出我的营地。下回再来，就不是说话了。",
+        "do": [{"set": "offer_camp_refused"}],
+        "options": [
+          {"text": "（退出营地）", "end": true}
+        ]
+      },
+      "refused_again": {
+        "text": "（几个人的手都按在了刀上）还来？我说过了，滚。",
+        "options": [
+          {"text": "（扔过去一袋银币）40 枚，给你的人买药。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "calm_paid"},
+          {"text": "（退出营地）", "end": true}
+        ]
+      },
+      "calm": {
+        "text": "（他盯着你看了一会儿，把刀插回鞘里）……各为其主。行，这话我认。说吧，什么事。",
+        "do": [{"set": "offer_camp_met"}],
+        "options": [
+          {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "calm_scared": {
+        "text": "（营火边没人出声。他咬着牙，过了好一会儿才摆摆手，让手下坐回去）……说吧，什么事。说完就走。",
+        "do": [{"set": "offer_camp_met"}],
+        "options": [
+          {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "calm_paid": {
+        "text": "（他接住钱袋，在手里掂了掂，扔给身后的人）……药钱我收下。账还没完，不过今天可以说话。",
+        "do": [{"set": "offer_camp_met"}],
+        "options": [
+          {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他往火里添了块泥炭）还有什么事？",
+        "options": [
+          {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "boat": {
+        "text": "进得了。水门那老头一盏灯、一把锈剑，泥炭船进进出出他从来不看。二十枚银币，我让人撑船送你过去。",
+        "options": [
+          {"text": "（递过 20 枚银币）走吧。", "if": [{"silver": 20}], "do": [{"pay": 20}, {"set": "castle_entry", "value": "offer"}, {"goto": "castle", "spawn": "water_gate"}], "end": true},
+          {"text": "太贵了。", "next": "again"}
+        ]
+      },
+      "why_here": {
+        "text": "渡口那桩买卖黄了，双钥港的钱再没来过。鹭沼芦苇深，堡里的兵不进来，打渔的不敢多嘴——要过冬，这儿最安稳。",
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "war": {
+        "text": "听说了。两边都派人来问过价。（他笑了一声）谁给的钱多、谁给的粮实在，我们的剑就归谁。你要是替哪位大人来的——带着诚意再来。",
+        "do": [{"set": "offer_camp_terms"}],
+        "options": [
+          {"text": "记住了。", "next": "again"}
+        ]
+      }
+    }
+  },
+  "camp_boss": {
+    "speaker": "无旗者的头目",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "camp_boss_paid"}], "node": "again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（营火边站起来一个瘦高个，手按在刀上）灰手死在渡口了——死在你手里。（他盯着你看了很久）你最好在我改主意之前走。",
+        "options": [
+          {"text": "（放下 40 枚银币）给他的人买口吃的。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "paid"},
+          {"text": "我只是路过。", "end": true}
+        ]
+      },
+      "paid": {
+        "text": "（他没去捡地上的钱，也没再赶你）……灰手要是还活着，会收下的。说吧，来干什么。",
+        "do": [{"set": "camp_boss_paid"}],
+        "options": [
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他往火里扔了根柴）还有事？",
+        "options": [
+          {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "boat": {
+        "text": "进得了。泥炭船进进出出，水门那老头从来不看。二十枚银币，我让人撑船送你。",
+        "options": [
+          {"text": "（递过 20 枚银币）走吧。", "if": [{"silver": 20}], "do": [{"pay": 20}, {"set": "castle_entry", "value": "offer"}, {"goto": "castle", "spawn": "water_gate"}], "end": true},
+          {"text": "太贵了。", "next": "again"}
+        ]
+      },
+      "war": {
+        "text": "两边都派人来问过价。没了灰手，我们还是这几把剑——谁给的钱多、谁给的粮实在，就跟谁。",
+        "do": [{"set": "offer_camp_terms"}],
+        "options": [
+          {"text": "记住了。", "next": "again"}
+        ]
+      }
+    }
+  }
+}

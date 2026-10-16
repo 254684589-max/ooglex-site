@@ -6,7 +6,7 @@
     "reedwharf": {"name": "芦栈村", "area": "marsh", "spawn": "reedwharf", "chapter": 1, "pos": [0.46, 0.6], "icon": "village",
       "blurb": "鹭沼边上的高脚屋村子，木栈道连着一栋栋高脚屋；客栈是村里最大的一栋。", "depart_at": "村口的路牌"},
     "blackheron": {"name": "黑鹭堡", "area": "marsh", "spawn": "castle_gate", "chapter": 1, "pos": [0.29, 0.4], "icon": "castle",
-      "blurb": "沼中石岛上的城堡，瓦伦家本家。只有芦栈村那头一条石砌堤道通进去。（现在只到得了堡门前，堡里还在开发中）", "depart_at": "堡门前的路牌"}
+      "blurb": "沼中石岛上的城堡，瓦伦家本家。只有芦栈村那头一条石砌堤道通进去。没有引荐信，守门的不放。", "depart_at": "堡门前的路牌"}
   },
   "routes": [
     {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},

@@ -1,0 +1,112 @@
+{
+  "_说明": "黑鹭堡（路线图 4.5a；STORY.md 4.5 第 3 步「进堡：有引荐信走堡门；没有就走别的办法。见堡守赫尔曼」）。堡门前的卫兵（鹭沼地图上）看引荐信放人；没有引荐信的三种办法在别处：托宾的泥炭船走水门（reedwharf.json tobin）、伊薇特的老兵带你走兵营侧门（reedwharf.json ivette_veteran）、奥弗的船从芦苇里摸到水门（deepmarsh.json offer_camp）。进了庭院，赫尔曼按你从哪进来的说不同的开场白；见过他以后堡门就推得开（castle_admitted），主线推进到「去大厅」。",
+  "gate_guard": {
+    "speaker": "守门的卫兵",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "castle_admitted"}], "node": "admitted"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（他把长枪往你面前一横）站住。堡里在办大事，生人不进。",
+        "options": [
+          {"text": "我有维克托大人写给堡守赫尔曼的引荐信。", "if": [{"has_item": "intro_letter"}], "locked": "hide", "next": "letter"},
+          {"text": "我是霜渡镇的誓剑，有事要见家主。", "next": "no"},
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "letter": {
+        "text": "（他借着门洞里的灯看了看信上的印，回头朝门洞里喊了一声）开门！……进去吧，赫尔曼大人在井边。",
+        "options": [
+          {"text": "（进堡）", "do": [{"set": "castle_admitted"}, {"set": "castle_entry", "value": "gate"}, {"goto": "castle", "spawn": "gate"}], "end": true}
+        ]
+      },
+      "no": {
+        "text": "家主谁也不见。没有赫尔曼大人点头，谁也别想从这道门进去。（他压低了声音）……真有要紧事，就去村里想想办法。",
+        "options": [
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "admitted": {
+        "text": "（门洞里的小门开着）进去吧。",
+        "options": [
+          {"text": "（进堡）", "do": [{"goto": "castle", "spawn": "gate"}], "end": true},
+          {"text": "（离开）", "end": true}
+        ]
+      }
+    }
+  },
+  "herman": {
+    "speaker": "赫尔曼",
+    "start": "greet_water",
+    "start_if": [
+      {"if": [{"flag": "herman_met"}], "node": "again"},
+      {"if": [{"flag": "castle_entry", "eq": "gate"}], "node": "greet_gate"},
+      {"if": [{"flag": "castle_entry", "eq": "barracks"}], "node": "greet_barracks"}
+    ],
+    "nodes": {
+      "greet_gate": {
+        "text": "（一个白胡子的老兵拄着长枪，把你的引荐信又看了一遍，才还给你）霜渡镇的誓剑。维克托大人有心了。我是赫尔曼，这座堡的堡守。",
+        "do": [{"set": "herman_met"}, {"set": "castle_admitted"}, {"quest": "ch1_main", "stage": "to_hall"}],
+        "options": [
+          {"text": "家主怎么样了？", "next": "osric"},
+          {"text": "两位继承人在哪？", "next": "heirs"},
+          {"text": "维克托大人让我把借据亲手交给家主。", "if": [{"flag": "prologue_edric", "eq": "deliver"}, {"has_item": "debt_note"}], "locked": "hide", "next": "debt"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "greet_barracks": {
+        "text": "（他拦在你面前，长枪横过来）伊薇特小姐的人从侧门放进来一个誓剑。……我是赫尔曼，这座堡的堡守。在这堡里，只有家主的话算数——你最好记住。",
+        "do": [{"set": "herman_met"}, {"set": "castle_admitted"}, {"quest": "ch1_main", "stage": "to_hall"}],
+        "options": [
+          {"text": "家主怎么样了？", "next": "osric"},
+          {"text": "两位继承人在哪？", "next": "heirs"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "greet_water": {
+        "text": "（他从井边转过身，看了看你湿透的靴子）水门进来的？泥炭船，还是芦苇里那伙人的船？（他哼了一声）我是赫尔曼，这座堡的堡守。这堡里的门，没有我不知道的。",
+        "do": [{"set": "herman_met"}, {"set": "castle_admitted"}, {"quest": "ch1_main", "stage": "to_hall"}],
+        "options": [
+          {"text": "家主怎么样了？", "next": "osric"},
+          {"text": "两位继承人在哪？", "next": "heirs"},
+          {"text": "那你怎么不拦我？", "next": "why_not"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他拄着长枪，眼睛一直盯着大厅的门）还有事？",
+        "options": [
+          {"text": "家主怎么样了？", "next": "osric"},
+          {"text": "两位继承人在哪？", "next": "heirs"},
+          {"text": "维克托大人让我把借据亲手交给家主。", "if": [{"flag": "prologue_edric", "eq": "deliver"}, {"has_item": "debt_note"}], "locked": "hide", "next": "debt"},
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "osric": {
+        "text": "昏睡。玛尔塔守在病房里，谁也不让进。醒的时候少，醒了也认不清人。……他守了北境四十年，临了连自己的儿女都认不全。",
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "heirs": {
+        "text": "大厅里。从早上吵到现在，长子一句，小姐一句，谁也不让谁。你要见他们，就规矩点：话留三分，哪边都别得罪。……在这堡里，我只听家主的。",
+        "options": [
+          {"text": "明白了。", "next": "again"}
+        ]
+      },
+      "debt": {
+        "text": "（他看了一眼你怀里，脸色沉下来）等家主醒了再说。这东西别给任何人看——包括大厅里那两位。",
+        "options": [
+          {"text": "明白了。", "next": "again"}
+        ]
+      },
+      "why_not": {
+        "text": "拦你？人都进来了，我拦给谁看。（他把长枪往地上一顿）进了这道墙，就守这道墙的规矩：大厅、兵营、病房，没人领着别乱走。",
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      }
+    }
+  }
+}

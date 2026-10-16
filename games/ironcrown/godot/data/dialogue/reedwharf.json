@@ -1,0 +1,460 @@
+{
+  "_说明": "芦栈村的对话（路线图 4.4b；STORY.md 第四节 4.4、4.5 第 2 步「芦栈村打探：三条消息，顺序任意，至少两条推进」）。三条消息各是主线「黑鹭之争」的一条线索：客栈（老板，或者两拨招兵的人：阿尔里克的军士、伊薇特的老兵）→ msg_recruiters；泥炭工头托宾 → msg_causeway；小码头的渡工（口才检定或者给 3 枚银币）→ msg_envoy。拿到两条，任务自动推进到「去黑鹭堡」（data/quests.json 的 advance_when）。吉尔伯特只在序章选「勒索」时坐在客栈窗边（world/inn.gd），想把借据买回去：卖（150，口才说动了 200），卡斯韦尔家声望上升，ch1_debt = sold；不卖就留着（4.8 交给继承人当筹码）。客栈里的人在 world/inn.gd，外面的人在 world/marsh_layout.gd 的 PEOPLE。",
+  "innkeeper": {
+    "speaker": "客栈老板",
+    "start": "greet",
+    "start_if": [{"if": [{"flag": "innkeeper_told"}], "node": "greet_again"}],
+    "nodes": {
+      "greet": {
+        "text": "（他在吧台后面切一条熏鱼，抬头看了看你的靴子）从霜渡镇过来的？靴子上全是泥。坐吧，火塘边上暖和。",
+        "options": [
+          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "innkeeper_told"}], "next": "news"},
+          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "innkeeper_told"}], "next": "news_recap"},
+          {"text": "窗边那位客人是谁？", "if": [{"flag": "prologue_edric", "eq": "extort"}, {"not_flag": "gilbert_met"}], "next": "gilbert_hint"},
+          {"text": "这客栈为什么叫「歪桩」？", "next": "name"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "来一小瓶烈酒。（4 银币）", "if": [{"silver": 4}], "next": "spirit"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "greet_again": {
+        "text": "又来了？火塘边上还有地方。",
+        "options": [
+          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "innkeeper_told"}], "next": "news"},
+          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "innkeeper_told"}], "next": "news_recap"},
+          {"text": "窗边那位客人是谁？", "if": [{"flag": "prologue_edric", "eq": "extort"}, {"not_flag": "gilbert_met"}], "next": "gilbert_hint"},
+          {"text": "这客栈为什么叫「歪桩」？", "next": "name"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "来一小瓶烈酒。（4 银币）", "if": [{"silver": 4}], "next": "spirit"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还要点什么？",
+        "options": [
+          {"text": "打听一下黑鹭堡的事。", "if": [{"not_flag": "innkeeper_told"}], "next": "news"},
+          {"text": "再说说招兵的那两拨人。", "if": [{"flag": "innkeeper_told"}], "next": "news_recap"},
+          {"text": "窗边那位客人是谁？", "if": [{"flag": "prologue_edric", "eq": "extort"}, {"not_flag": "gilbert_met"}], "next": "gilbert_hint"},
+          {"text": "这客栈为什么叫「歪桩」？", "next": "name"},
+          {"text": "来块面包。（2 银币）", "if": [{"silver": 2}], "next": "bread"},
+          {"text": "来一小瓶烈酒。（4 银币）", "if": [{"silver": 4}], "next": "spirit"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "news": {
+        "text": "（他把刀放下，朝屋里努了努嘴）你自己看。西边长桌上摊着名册的，是阿尔里克大人的人；火塘边上烤手的那个，是伊薇特小姐的人。两拨人都在村里招兵，从早喝到晚，说的话正好拧着——一个说跟着长子有王都的粮吃，一个说王都的粮是拴狗的链子。村里的年轻人，一半已经跟着走了。",
+        "do": [{"set": "innkeeper_told"}, {"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
+        "options": [
+          {"text": "家主怎么样了？", "next": "osric"},
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "osric": {
+        "text": "谁知道。堡门三天没开了，只有送药的和送信的进得去。……我只管卖酒，誓剑大人。堡里的事，还是去堡里问。",
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "news_recap": {
+        "text": "（他压低了声音）阿尔里克的人说，长子继承天经地义，王都答应开春送粮；伊薇特的人说，小姐自有法子养兵，用不着看王都的脸色。想听得更细，就去跟他们喝一杯。",
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "gilbert_hint": {
+        "text": "那位？天没亮就到了，马都跑得直喘，账倒结得比谁都痛快。一进门就问，有没有一个从霜渡镇来的誓剑，问了好几回。……我看，他等的就是你。",
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "name": {
+        "text": "（他用刀背敲了敲吧台边上那根斜着的木桩）这房子原来是渡口的货栈。那年发大水，门前的桩子被冲歪了，屋里这根也跟着歪了。扶了几回扶不正，大家就叫它「歪桩」。房子没倒，生意也没倒——在鹭沼，这就算好兆头。",
+        "options": [
+          {"text": "有意思。", "next": "menu"}
+        ]
+      },
+      "bread": {
+        "text": "（他从吧台底下摸出一块黑面包）两枚银币。鹭沼的麦子金贵，凑合着吃。",
+        "do": [{"pay": 2}, {"give_item": "bread"}],
+        "options": [
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "spirit": {
+        "text": "泥炭熏过的烧酒，喝一口能顶半天冷风。四枚银币。",
+        "do": [{"pay": 4}, {"give_item": "strong_spirit"}],
+        "options": [
+          {"text": "多谢。", "next": "menu"}
+        ]
+      }
+    }
+  },
+  "alric_sergeant": {
+    "speaker": "阿尔里克的军士",
+    "start": "greet",
+    "nodes": {
+      "greet": {
+        "text": "（他面前摊着一本名册，羽毛笔插在墨水壶里）来得正好，会用剑的人阿尔里克大人都要。签个名，先领三枚银币，到了堡里管饭。",
+        "options": [
+          {"text": "阿尔里克大人凭什么继承？", "next": "why"},
+          {"text": "火塘边那个人说的可不一样。", "next": "rival"},
+          {"text": "我是誓剑，已经有雇主了。", "if": [{"flag": "ch1_letter"}], "next": "hired"},
+          {"text": "我是誓剑，不替谁签名。", "if": [{"not_flag": "ch1_letter"}], "next": "hired_free"},
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "why": {
+        "text": "他是长子。长子继承，北境向来如此。再说，大人正在和王都谈：只要北境肯让一步，王都的粮车开春就到。这个冬天没有粮，烽燧上的人一个也活不下来。",
+        "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
+        "options": [
+          {"text": "让一步，让多少？", "next": "concede"},
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "concede": {
+        "text": "（他合上名册）那是大人们的事。我只知道，饿着肚子的兵守不住烽燧。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "rival": {
+        "text": "（他朝火塘那边看了一眼，压低了声音）听说伊薇特小姐想自己养兵，跟王都翻脸——钱从哪来，你自己猜。翻了脸，粮从哪来？靠鹭沼的芦苇根吗？",
+        "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "hired": {
+        "text": "誓剑？（他上下打量你）那就替你的雇主好好看看——谁能让北境活过这个冬天。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "hired_free": {
+        "text": "不替谁签名？（他上下打量你）没主子的誓剑，在北境可不好过冬。哪天想通了，名册就在这儿。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "menu": {
+        "text": "还有事？",
+        "options": [
+          {"text": "阿尔里克大人凭什么继承？", "next": "why"},
+          {"text": "火塘边那个人说的可不一样。", "next": "rival"},
+          {"text": "（走开）", "end": true}
+        ]
+      }
+    }
+  },
+  "ivette_veteran": {
+    "speaker": "伊薇特的老兵",
+    "start": "greet",
+    "nodes": {
+      "greet": {
+        "text": "（他站在火塘边烤手，手背上全是旧刀疤）要银币，找长桌那边签名去。我这儿没有银币，只有黑面包和实话。",
+        "options": [
+          {"text": "那就说说实话。", "next": "truth"},
+          {"text": "长桌那边说，跟着长子有王都的粮吃。", "next": "grain"},
+          {"text": "你在烽燧上守过？", "next": "beacon"},
+          {"text": "堡门不让我进。", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "side_gate"},
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "truth": {
+        "text": "伊薇特小姐在兵营里和我们吃一样的饭。她说，王都的粮是拴狗的链子——今天给你一车麦子，明天就要你的兵、你的烽燧、你的姓。她有法子自己养兵——怎么养，别问我——再跟厄尔德家一起把烽燧重新点起来。",
+        "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "grain": {
+        "text": "（他笑了一声）王都三年没往北境派过一个兵。阿尔里克大人想拿北境的兵权换几车麦子——麦子吃完了，兵权可换不回来。",
+        "do": [{"set": "heard_recruiters"}, {"clue": "msg_recruiters"}],
+        "options": [
+          {"text": "明白了。", "next": "menu"}
+        ]
+      },
+      "side_gate": {
+        "text": "（他打量了你一会儿）兵营的侧门归我们的人管。跟守门的说，你是来投伊薇特小姐的——进去以后你见谁、站哪边，那是你的事。",
+        "options": [
+          {"text": "就这么说。", "do": [{"set": "castle_entry", "value": "barracks"}, {"goto": "castle", "spawn": "barracks_gate"}], "end": true},
+          {"text": "算了。", "next": "menu"}
+        ]
+      },
+      "beacon": {
+        "text": "守了十一年。第三座烽燧，去年冬天熄的：没有柴，没有人，没有援兵，我们自己从山上撤下来的。……所以别跟我提王都。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "menu": {
+        "text": "还想听什么？",
+        "options": [
+          {"text": "那就说说实话。", "next": "truth"},
+          {"text": "长桌那边说，跟着长子有王都的粮吃。", "next": "grain"},
+          {"text": "你在烽燧上守过？", "next": "beacon"},
+          {"text": "堡门不让我进。", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "side_gate"},
+          {"text": "（走开）", "end": true}
+        ]
+      }
+    }
+  },
+  "gilbert": {
+    "speaker": "吉尔伯特",
+    "start": "greet",
+    "start_if": [{"if": [{"flag": "ch1_debt", "eq": "sold"}], "node": "done"}, {"if": [{"flag": "gilbert_met"}], "node": "again"}],
+    "nodes": {
+      "greet": {
+        "text": "（他起身，摘下手套，微微欠了欠身）誓剑大人。卡斯韦尔家的吉尔伯特，替双钥港收账的。渡口那晚的事，塞拉斯先生都跟我说了——不必解释，生意上的事，有赚有赔。",
+        "do": [{"set": "gilbert_met"}],
+        "options": [
+          {"text": "你在这儿等我做什么？", "next": "offer"},
+          {"text": "我没什么跟卡斯韦尔家好谈的。", "next": "refuse"}
+        ]
+      },
+      "again": {
+        "text": "（他抬了抬酒杯）想好了？",
+        "options": [
+          {"text": "说说你的价钱。", "if": [{"not_flag": "gilbert_price_up"}], "next": "offer"},
+          {"text": "说说你的价钱。", "if": [{"flag": "gilbert_price_up"}], "next": "offer_up"},
+          {"text": "还没有。", "end": true}
+        ]
+      },
+      "offer": {
+        "text": "您怀里那张借据，在北境只是一张纸；在双钥港，它是一笔账。卡斯韦尔家想把它买回去——一百五十枚银币，现钱，今天就付。",
+        "options": [
+          {"text": "成交。（交出借据，拿 150 枚银币）", "if": [{"has_item": "debt_note"}, {"not_flag": "gilbert_price_up"}], "locked": "hide", "next": "sold"},
+          {"text": "成交。（交出借据，拿 200 枚银币）", "if": [{"has_item": "debt_note"}, {"flag": "gilbert_price_up"}], "locked": "hide", "next": "sold_up"},
+          {"text": "一百五？背面压着王室的印，它可不止这个价。", "if": [{"not_flag": "gilbert_price_up"}, {"not_flag": "gilbert_firm"}], "check": {"id": "gilbert_price_speech", "skill": "speech", "dc": 14, "pass": "price_up", "fail": "price_firm"}},
+          {"text": "卡斯韦尔家要它做什么？", "if": [{"not_flag": "gilbert_asked"}], "check": {"id": "gilbert_why_insight", "skill": "insight", "dc": 13, "pass": "why_seen", "fail": "why_hidden"}},
+          {"text": "不卖。", "next": "refuse"},
+          {"text": "我再想想。", "end": true}
+        ]
+      },
+      "offer_up": {
+        "text": "两百枚，现钱。说好的价钱，卡斯韦尔家不会改口。",
+        "options": [
+          {"text": "成交。（交出借据，拿 200 枚银币）", "if": [{"has_item": "debt_note"}, {"flag": "gilbert_price_up"}], "locked": "hide", "next": "sold_up"},
+          {"text": "卡斯韦尔家要它做什么？", "if": [{"not_flag": "gilbert_asked"}], "check": {"id": "gilbert_why_insight", "skill": "insight", "dc": 13, "pass": "why_seen", "fail": "why_hidden"}},
+          {"text": "不卖。", "next": "refuse"},
+          {"text": "我再想想。", "end": true}
+        ]
+      },
+      "price_up": {
+        "text": "（他看了你一会儿，笑了）好眼力。两百枚。我说过，卡斯韦尔家付钱很痛快。",
+        "do": [{"set": "gilbert_price_up"}],
+        "options": [
+          {"text": "成交。（交出借据，拿 200 枚银币）", "if": [{"has_item": "debt_note"}, {"flag": "gilbert_price_up"}], "locked": "hide", "next": "sold_up"},
+          {"text": "我再想想。", "end": true}
+        ]
+      },
+      "price_firm": {
+        "text": "（他摇了摇头，笑容一点没变）一百五十枚，誓剑大人。这个价钱，在北境能买下半个芦栈村。",
+        "do": [{"set": "gilbert_firm"}],
+        "options": [
+          {"text": "……", "next": "offer"}
+        ]
+      },
+      "why_seen": {
+        "text": "（他说话时，眼睛往你怀里瞟了一下——不是看钱袋，是看借据的背面）……一笔旧账而已。（你看得出来：他要的不是那笔债，是借据背面那枚王室的印。）",
+        "do": [{"set": "gilbert_asked"}],
+        "options": [
+          {"text": "……", "if": [{"not_flag": "gilbert_price_up"}], "next": "offer"},
+          {"text": "……", "if": [{"flag": "gilbert_price_up"}], "next": "offer_up"}
+        ]
+      },
+      "why_hidden": {
+        "text": "（他把手套叠好，放在桌上）账就是账，誓剑大人。卡斯韦尔家只在乎账本上的数目。",
+        "do": [{"set": "gilbert_asked"}],
+        "options": [
+          {"text": "……", "if": [{"not_flag": "gilbert_price_up"}], "next": "offer"},
+          {"text": "……", "if": [{"flag": "gilbert_price_up"}], "next": "offer_up"}
+        ]
+      },
+      "sold": {
+        "text": "（他接过借据，对着窗光看了看两面的印，仔细折好收进怀里，把一只钱袋推过来）一百五十枚，您点点。卡斯韦尔家会记得您——这一回，是好的那种记得。",
+        "do": [{"take_item": "debt_note"}, {"earn": 150}, {"rep": "caswell", "delta": 20}, {"set": "ch1_debt", "value": "sold"}],
+        "options": [
+          {"text": "（收起钱袋）", "end": true}
+        ]
+      },
+      "sold_up": {
+        "text": "（他接过借据，对着窗光看了看两面的印，仔细折好收进怀里，数出两百枚银币推过来）卡斯韦尔家付钱从不讨价还价——今天为您破了一回例。",
+        "do": [{"take_item": "debt_note"}, {"earn": 200}, {"rep": "caswell", "delta": 15}, {"set": "ch1_debt", "value": "sold"}],
+        "options": [
+          {"text": "（收起钱袋）", "end": true}
+        ]
+      },
+      "refuse": {
+        "text": "（他一点也不意外）无妨。我在这儿再等一天，您改了主意，随时来。……只提醒一句：这张纸在北境，谁拿着，谁就是靶子。",
+        "options": [
+          {"text": "（告辞）", "end": true}
+        ]
+      },
+      "done": {
+        "text": "买卖做完了，誓剑大人。我明天一早就走——这地方太潮，账本都要发霉了。",
+        "options": [
+          {"text": "一路顺风。", "end": true}
+        ]
+      }
+    }
+  },
+  "tobin": {
+    "speaker": "托宾",
+    "start": "greet",
+    "start_if": [{"if": [{"flag": "heard_causeway"}], "node": "greet_again"}],
+    "nodes": {
+      "greet": {
+        "text": "（他正对着一垛泥炭点数，头也不抬）三十七、三十八……别挡着光。泥炭不等人，有事快说。",
+        "options": [
+          {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
+          {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
+          {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
+          {"text": "沼地深处有什么？", "next": "deep"},
+          {"text": "这些泥炭都送去堡里？", "next": "peat"},
+          {"text": "（不打扰他）", "end": true}
+        ]
+      },
+      "greet_again": {
+        "text": "又是你。这回又要打听什么？",
+        "options": [
+          {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
+          {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
+          {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
+          {"text": "沼地深处有什么？", "next": "deep"},
+          {"text": "这些泥炭都送去堡里？", "next": "peat"},
+          {"text": "（不打扰他）", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还有事？我这儿忙着呢。",
+        "options": [
+          {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
+          {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
+          {"text": "要是堡门不让我进呢？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}], "next": "no_letter"},
+          {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
+          {"text": "沼地深处有什么？", "next": "deep"},
+          {"text": "这些泥炭都送去堡里？", "next": "peat"},
+          {"text": "（不打扰他）", "end": true}
+        ]
+      },
+      "road": {
+        "text": "（他终于抬起头，用下巴指了指西北边）只有一条大路：村子西北角那条石堤道。中段去年开春被大水冲断过，到现在只搭着几块木板，两个人并排都走不开。……还有条路，你别跟别人说：堡背面临水有一道水门，我们的泥炭船就是从那儿进出的。",
+        "do": [{"set": "heard_causeway"}, {"clue": "msg_causeway"}],
+        "options": [
+          {"text": "水门有人守吗？", "next": "gate"},
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "gate": {
+        "text": "一个老头，一盏灯，一把锈得拔不出来的剑。（他耸了耸肩）真要有人从那儿摸进去，他连喊都来不及喊。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "road_recap": {
+        "text": "西北角的堤道，中段断口搭着木板；堡背面的水门，泥炭船走的。就这些，我可不想说第三遍。",
+        "options": [
+          {"text": "好。", "next": "menu"}
+        ]
+      },
+      "no_letter": {
+        "text": "没有信？（他看了看你）赫尔曼那老头谁的面子都不给。真进不去，回来找我——泥炭船走哪儿，我比谁都清楚。",
+        "options": [
+          {"text": "记住了。", "next": "menu"}
+        ]
+      },
+      "smuggle": {
+        "text": "（他四下看了看，压低了声音）正有一船泥炭要往堡里送。你蹲在泥炭底下，到了水门别出声，等船靠稳了再出来。……出了事，别说是我。",
+        "options": [
+          {"text": "上船。", "do": [{"set": "castle_entry", "value": "tobin"}, {"goto": "castle", "spawn": "water_gate"}], "end": true},
+          {"text": "再想想。", "next": "menu"}
+        ]
+      },
+      "deep": {
+        "text": "（他朝西边的芦苇荡扬了扬下巴）栈道西头接着一溜木板路，再往里就是泥了，踩着土墩走。最近有伙外乡人在最西边那个大土墩上扎了营，打渔的都绕着走。你要去——别空着手，也别带着火气。",
+        "do": [{"set": "heard_camp"}],
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "peat": {
+        "text": "一半送去堡里，一半留给村里过冬。今年堡里要得多，兵营夜里也烧着——要打仗的人才这么烧火。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      }
+    }
+  },
+  "boatman": {
+    "speaker": "渡工",
+    "start": "greet",
+    "start_if": [{"if": [{"flag": "heard_envoy"}], "node": "greet_again"}],
+    "nodes": {
+      "greet": {
+        "text": "（他坐在码头边上补船，手里的麻绳一圈一圈缠着）要过河？今天不渡。南岸的路被雪封了。",
+        "options": [
+          {"text": "南边最近有人过来吗？", "if": [{"not_flag": "heard_envoy"}], "next": "envoy_ask"},
+          {"text": "再说说那个信使。", "if": [{"flag": "heard_envoy"}], "next": "envoy_recap"},
+          {"text": "南岸的路什么时候通？", "next": "south"},
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "greet_again": {
+        "text": "（他点了点头，手上的活没停）还有事？",
+        "options": [
+          {"text": "南边最近有人过来吗？", "if": [{"not_flag": "heard_envoy"}], "next": "envoy_ask"},
+          {"text": "再说说那个信使。", "if": [{"flag": "heard_envoy"}], "next": "envoy_recap"},
+          {"text": "南岸的路什么时候通？", "next": "south"},
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "menu": {
+        "text": "还有事？",
+        "options": [
+          {"text": "南边最近有人过来吗？", "if": [{"not_flag": "heard_envoy"}], "next": "envoy_ask"},
+          {"text": "再说说那个信使。", "if": [{"flag": "heard_envoy"}], "next": "envoy_recap"},
+          {"text": "南岸的路什么时候通？", "next": "south"},
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "envoy_ask": {
+        "text": "（他手上的活慢了一下）渡工行会的规矩：渡过谁，不往外说。",
+        "options": [
+          {"text": "我不是来找麻烦的，只想知道堡里在谈什么。", "if": [{"not_flag": "boatman_refused"}], "check": {"id": "boatman_envoy_speech", "skill": "speech", "dc": 12, "pass": "envoy", "fail": "refuse"}},
+          {"text": "（把 3 枚银币放在船帮上）这够不够买一句规矩以外的话？", "if": [{"silver": 3}], "do": [{"pay": 3}], "next": "envoy"},
+          {"text": "那算了。", "next": "menu"}
+        ]
+      },
+      "refuse": {
+        "text": "（他摇了摇头）问也白问，誓剑大人。",
+        "do": [{"set": "boatman_refused"}],
+        "options": [
+          {"text": "（把 3 枚银币放在船帮上）那这样呢？", "if": [{"silver": 3}], "do": [{"pay": 3}], "next": "envoy"},
+          {"text": "好吧。", "next": "menu"}
+        ]
+      },
+      "envoy": {
+        "text": "（他朝南边的水面看了一眼，声音压得很低）三天前，我从南岸渡过来一个人：灰斗篷，好马，马鞍上搭着一块红布，布上绣着一只铁砧托着一顶冠。他一上岸就往堤道去了，进了堡，到今天也没出来。……塞弗林家的信使，还能是谁。阿尔里克大人在和王都谈什么，你自己琢磨吧。",
+        "do": [{"set": "heard_envoy"}, {"clue": "msg_envoy"}],
+        "options": [
+          {"text": "多谢。", "next": "menu"}
+        ]
+      },
+      "envoy_recap": {
+        "text": "灰斗篷，红布，铁砧托冠。三天了，没出来。我就说这么多。",
+        "options": [
+          {"text": "好。", "next": "menu"}
+        ]
+      },
+      "south": {
+        "text": "开了春吧——要是今年还有春天的话。",
+        "options": [
+          {"text": "……", "next": "menu"}
+        ]
+      }
+    }
+  }
+}

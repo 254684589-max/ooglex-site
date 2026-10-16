@@ -53,6 +53,12 @@ static func spec(area: String) -> Dictionary:
 			return Ferry.map_spec()
 		"marsh":
 			return Marsh.map_spec()
+		"inn":
+			return Inn.map_spec()
+		"castle":
+			return Castle.map_spec()
+		"hall":
+			return Hall.map_spec()
 	return {}
 
 
