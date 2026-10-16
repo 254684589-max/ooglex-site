@@ -5984,7 +5984,7 @@ func test_reedwharf() -> void:
 	check(main.hud.toast_label.text.begins_with("「歪桩」客栈") and Saves.read_slot("auto").data.scene == "inn", "进门提示「「歪桩」客栈」，自动存档")
 	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and GameState.quest_stage("ch1_main") == "to_blackheron", "室内：没有月光、暖暗的环境光；主线不倒退")
 	var omni := main.find_children("*", "OmniLight3D", true, false)
-	check(omni.size() == 3 and omni.filter(func(l): return l is Tavern.FireLight).size() == 1, "三盏光：泥炭火塘、吧台油灯、长桌上的蜡烛（%d）" % omni.size())
+	check(omni.size() == 3 and omni.filter(func(l): return l is Tavern.FireLight).size() == 1, "三盏光：泥炭火塘、吧台油灯、过道上方的吊灯（%d）" % omni.size())
 	var inn_people := main.find_children("Npc_*", "Npc", true, false)
 	var names := inn_people.map(func(n): return n.display_name)
 	var inn_bad: Array = inn_people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)

@@ -2,8 +2,8 @@ class_name Inn
 extends RefCounted
 ## 「歪桩客栈」里面（路线图 4.4b；STORY.md 第四节「客栈是村里最大的一栋」「客栈：两位继承人各有一帮人在村里招兵，说法截然相反」）：原创布局。
 ## 芦栈村最大的高脚屋（外面 12 × 9 米，world/marsh_layout.gd 的 HOUSES[0]）的底层大堂：11 × 8 米、3 米高，木板墙、木板顶、露着横梁，梁上挂着晒干的芦苇捆。
-##   西北是吧台和酒架（客栈老板）；吧台东头立着一根歪了的老木桩——客栈名字的来历；东边是泥炭火塘，上面一口泥糊的烟罩一直通到楼上的烟囱；
-##   西边长桌是阿尔里克的人在招兵（桌上摊着名册），火塘边站着伊薇特的老兵；东南窗边一张小方桌（序章选「勒索」时，卡斯韦尔家的收账人吉尔伯特坐在那儿）；
+##   西北是吧台和酒架（客栈老板）；吧台东头立着一根歪了的老木桩——客栈名字的来历；东边是泥炭火塘，正上方的天花板熏得乌黑、开着烟口（楼上就是外面看到的烟囱）；
+##   西边长桌是阿尔里克的人在招兵（桌上摊着名册），火塘边站着伊薇特的老兵，过道上方的横梁吊着一盏油灯；东南窗边一张小方桌（序章选「勒索」时，卡斯韦尔家的收账人吉尔伯特坐在那儿）；
 ##   北墙一道上楼的木梯（梯脚的栅门锁着，楼上客房不做）；南墙四扇窗（和外面的窗对得上）、正中出去的门。人物仍是占位胶囊（A.2 换装）。
 ## 室内的光不跟时段走（Daypart：室内永远按原来的样子）；只有窗玻璃按时段换颜色：白天、清晨是窗外发白的雾，黄昏偏橙，夜里是黑的。
 ## 坐标：原点在大堂地面中心，北 = -Z；出口门在南墙（z = +4）。屋子朝南，所以屋里的北就是外面的北。
@@ -30,13 +30,14 @@ const TABLE_POS := Vector3(-3.2, 0, 0.9)          # 长桌（沿东西方向，�
 const SMALL_TABLE_POS := Vector3(4.5, 0, 2.9)     # 东南窗边的小方桌
 const POST_POS := Vector3(-0.75, 0, -2.6)         # 吧台东头那根歪桩（往东南歪 7°）
 const POST_TILT := 7.0
+const HANG_LAMP := Vector3(1.2, 2.3, 0.6)          # 过道上方横梁吊着的油灯
 ## 人：[编号, 名字, 位置, 朝向（弧度：0 = 面朝北，PI = 面朝南）, 衣服颜色, 对话（"" = 轮流说 lines）]
 const KEEPER := ["innkeeper", "客栈老板", Vector3(-2.9, 0, -3.3), PI, "5a4632"]
 const ALRIC_MAN := ["alric_sergeant", "阿尔里克的军士", Vector3(-1.55, 0, 0.9), -PI / 2, "3a4652"]     # 长桌东头，面朝过道
-const IVETTE_MAN := ["ivette_veteran", "伊薇特的老兵", Vector3(2.2, 0, 0.5), 2.356, "4e4a36"]          # 背对着火塘烤手，面朝门口
+const IVETTE_MAN := ["ivette_veteran", "伊薇特的老兵", Vector3(3.3, 0, 0.55), PI / 2, "4e4a36"]          # 站在火塘南边烤手，面朝西边的过道（火光从侧面照着他）
 const GILBERT := ["gilbert", "吉尔伯特", Vector3(3.3, 0, 2.9), PI / 2, "2e3a5a"]                     # 站在窗边小方桌旁，面朝大堂（卡斯韦尔家的蓝）
 const DRINKER := ["drinker", "喝酒的泥炭工", Vector3(-4.85, 0, 0.9), -PI / 2, "4a4232"]
-const OLD_BOATMAN := ["old_boatman", "烤火的老船夫", Vector3(4.5, 0, 0.6), 0.52, "3e4a4a"]
+const OLD_BOATMAN := ["old_boatman", "烤火的老船夫", Vector3(4.55, 0, -2.25), 2.39, "3e4a4a"]          # 火塘东北边的长凳头上，面朝火
 const DRINKER_LINES := ["两边的人都请我喝过酒。酒我喝了，名我可没签。", "我兄弟昨天跟着阿尔里克的人走了。说是去吃王都的粮——王都的粮长什么样，谁见过？",
 	"泥炭工一天挣三个铜子，当兵一天挣三枚银币。你说，换了你，你去不去？"]
 const OLD_BOATMAN_LINES := ["黑鹭堡建在石岛上，三百年没被人打下来过。可三百年也没见过这么冷的冬天。", "我年轻时撑船给老家主送过信。那时候他的腰板比堤道还直。",
@@ -50,7 +51,7 @@ const VIEW_NAMES := ["进门看大堂", "吧台前（客栈老板）", "火塘�
 const VIEWS := [
 	[Vector3(DOOR_X, 0, 3.1), 8.0, -4.0],
 	[Vector3(-2.9, 0, -1.55), 0.0, -10.0],
-	[Vector3(1.3, 0, 1.6), -39.0, -6.0],
+	[Vector3(1.6, 0, 1.6), -58.0, -6.0],
 	[Vector3(DOOR_X, 0, 2.4), 180.0, -8.0],      # 3：门内对着出口（冒烟测试出门用）
 	[Vector3(-0.2, 0, 1.6), 62.0, -8.0],
 	[Vector3(2.0, 0, 2.9), -90.0, -6.0],
@@ -191,7 +192,8 @@ static func _room(kit: MeshKit) -> void:
 		kit.box("timber", Vector3(dx, 1.05, zs - 0.06), Vector3(0.14, 2.1, 0.12))
 
 
-## 东边的泥炭火塘：石砌的方台，台上烧着泥炭块，上面吊一口铁壶；火塘上方一口泥糊的圆烟罩一直通进天花板（楼上就是外面看到的烟囱）
+## 东边的泥炭火塘：石砌的方台，台上烧着泥炭块，从天花板吊下一口铁壶；正上方的天花板熏得乌黑、开着烟口（楼上就是外面看到的烟囱）。
+## 原来做过一口泥糊的圆烟罩：火光从下面照不到它朝上斜的外面，网页截图里是一团黑影，像顶黑帽子，去掉了
 static func _hearth(kit: MeshKit) -> void:
 	var c := Vector3(HEARTH.get_center().x, 0, HEARTH.get_center().y)
 	kit.box("stone", c + Vector3(0, 0.18, 0), Vector3(HEARTH.size.x, 0.36, HEARTH.size.y), Basis.IDENTITY, 0.85, 0.6)
@@ -200,9 +202,10 @@ static func _hearth(kit: MeshKit) -> void:
 	for i in 6:                                   # 堆着的泥炭块
 		var a := TAU * i / 6.0
 		kit.box("peat", c + Vector3(cos(a) * 0.38, 0.44, sin(a) * 0.38), Vector3(0.26, 0.12, 0.16), Basis(Vector3.UP, a), 0.6, 0.4)
-	kit.cylinder("plaster", c + Vector3(0, 2.0, 0), c + Vector3(0, H, 0), 0.95, 0.42, 10, 0.6)     # 烟罩
-	kit.cylinder("timber", c + Vector3(0, 1.98, 0), c + Vector3(0, 2.06, 0), 0.98, 0.98, 10, 0.7)  # 烟罩下沿的木箍
-	kit.cylinder("iron", c + Vector3(0, 2.0, 0), c + Vector3(0, 1.18, 0), 0.015, 0.015, 4, 1.0)    # 吊壶的铁链
+	kit.box("soot", c + Vector3(0, H - 0.008, 0), Vector3(2.2, 0.02, 2.2))                         # 熏黑的天花板
+	kit.box("soot", c + Vector3(0, H - 0.02, 0), Vector3(0.6, 0.02, 0.6))                           # 烟口
+	kit.box("timber", c + Vector3(0, H - 0.12, 0), Vector3(0.12, 0.12, 2.0))                        # 吊壶的横木
+	kit.cylinder("iron", c + Vector3(0, H - 0.18, 0), c + Vector3(0, 1.18, 0), 0.015, 0.015, 4, 1.0)   # 吊壶的铁链
 	kit.cylinder("iron", c + Vector3(0, 0.82, 0), c + Vector3(0, 1.18, 0), 0.2, 0.16, 8, 0.8)       # 铁壶
 	# 火塘边一条长凳（老船夫坐的那边）
 	kit.box("timber", Vector3(4.75, 0.42, -0.9), Vector3(0.36, 0.06, 1.8), Basis.IDENTITY, 0.9, 0.7)
@@ -243,8 +246,8 @@ static func _tables(kit: MeshKit) -> void:
 	kit.box("cloth", c + Vector3(0.75, 0.81, 0.05), Vector3(0.5, 0.02, 0.36))                   # 名册（摊开的两页）
 	kit.box("timber", c + Vector3(0.75, 0.805, 0.05), Vector3(0.04, 0.03, 0.36))
 	kit.cylinder("timber", c + Vector3(1.05, 0.8, -0.2), c + Vector3(1.05, 0.88, -0.2), 0.04, 0.035, 6, 0.6)   # 墨水壶
-	kit.cylinder("timber", c + Vector3(-1.1, 0.8, -0.3), c + Vector3(-1.1, 1.75, -0.3), 0.02, 0.02, 4, 0.8)   # 小旗的杆
-	kit.box("cloth", c + Vector3(-1.1, 1.55, -0.07), Vector3(0.02, 0.32, 0.44))
+	kit.cylinder("timber", c + Vector3(1.1, 0.8, -0.36), c + Vector3(1.1, 1.75, -0.36), 0.02, 0.02, 4, 0.8)   # 小旗的杆（东头，军士身边）
+	kit.box("cloth", c + Vector3(1.1, 1.55, -0.14), Vector3(0.02, 0.32, 0.44))
 	for i in 3:
 		var mx := -0.6 + i * 0.55
 		kit.cylinder("timber", c + Vector3(mx, 0.8, -0.18 + 0.2 * (i % 2)), c + Vector3(mx, 0.92, -0.18 + 0.2 * (i % 2)), 0.045, 0.045, 6, 0.9)
@@ -291,8 +294,15 @@ static func _post(kit: MeshKit) -> void:
 		kit.cylinder("iron", p, p + tilt * Vector3(0, 0.05, 0), 0.18, 0.18, 8, 0.8)
 
 
-## 横梁上挂着晒干的芦苇捆（鹭沼人家家都这么挂，生火、补屋顶用）
+## 横梁上挂着晒干的芦苇捆（鹭沼人家家都这么挂，生火、补屋顶用）；过道上方那根横梁上吊着一盏油灯
 static func _reeds(kit: MeshKit) -> void:
+	var l := HANG_LAMP
+	kit.cylinder("iron", Vector3(l.x, H - 0.26, l.z), l + Vector3(0, 0.12, 0), 0.012, 0.012, 4, 1.0)
+	kit.box("iron", l + Vector3(0, 0.1, 0), Vector3(0.24, 0.04, 0.24))
+	kit.box("ember", l + Vector3(0, -0.06, 0), Vector3(0.14, 0.24, 0.14))
+	kit.box("iron", l + Vector3(0, -0.2, 0), Vector3(0.22, 0.04, 0.22))
+	for d in [Vector2(-0.1, -0.1), Vector2(0.1, -0.1), Vector2(-0.1, 0.1), Vector2(0.1, 0.1)]:
+		kit.box("iron", l + Vector3(d.x, -0.05, d.y), Vector3(0.02, 0.28, 0.02))
 	var spots := [Vector3(-3.6, 0, -1.4), Vector3(-3.6, 0, 2.6), Vector3(-1.2, 0, 2.2), Vector3(1.2, 0, 1.8), Vector3(3.6, 0, 2.4), Vector3(-1.2, 0, -0.6)]
 	for i in spots.size():
 		var p: Vector3 = spots[i]
@@ -339,13 +349,14 @@ static func _colliders(parent: Node3D) -> void:
 	parent.add_child(body)
 
 
-## 光：泥炭火塘（暖橙、闪烁）、吧台上方的油灯、长桌上的蜡烛。室内一共 3 盏点光源（和酒馆一样，手机上不超）
+## 光：泥炭火塘（暖橙、闪烁）、吧台上方的油灯、过道上方吊着的油灯（照着两拨招兵的人的脸：只有火塘一盏时，背着火站的人是一团黑影）。
+## 室内一共 3 盏点光源（和酒馆一样，手机上不超）；长桌上的蜡烛只发光、不照亮
 static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 	var fire := Tavern.FireLight.new()
 	fire.name = "Fire"
 	fire.light_color = Color("ff8a3a")
-	fire.base = 2.6
-	fire.omni_range = 7.5
+	fire.base = 3.2
+	fire.omni_range = 9.0
 	fire.omni_attenuation = 1.1
 	fire.position = Vector3(HEARTH.get_center().x, 0.9, HEARTH.get_center().y)
 	fire.flicker = not reduced_motion
@@ -364,17 +375,17 @@ static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 	var lamp := OmniLight3D.new()
 	lamp.name = "BarLamp"
 	lamp.light_color = Look.LAMP_COLOR
-	lamp.light_energy = 1.6
-	lamp.omni_range = 6.0
+	lamp.light_energy = 2.0
+	lamp.omni_range = 7.0
 	lamp.position = Vector3(-2.9, 2.4, -2.0)
 	parent.add_child(lamp)
-	var candle := OmniLight3D.new()
-	candle.name = "Candle"
-	candle.light_color = Color("ffb060")
-	candle.light_energy = 0.9
-	candle.omni_range = 3.8
-	candle.position = TABLE_POS + Vector3(-0.35, 1.15, 0.15)
-	parent.add_child(candle)
+	var hang := OmniLight3D.new()
+	hang.name = "HangingLamp"
+	hang.light_color = Look.LAMP_COLOR
+	hang.light_energy = 1.5
+	hang.omni_range = 6.5
+	hang.position = HANG_LAMP + Vector3(0, -0.15, 0)
+	parent.add_child(hang)
 
 
 static func _unshaded(c: Color) -> StandardMaterial3D:
