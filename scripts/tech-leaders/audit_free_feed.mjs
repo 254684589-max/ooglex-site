@@ -8,7 +8,7 @@
 //        [--concurrency 3] [--limit 0] [--handles a,b,c] [--posts 21]
 //   --posts：每个账号请求的帖子数（默认 21；设 100 可检查「加载更多」能取到的历史深度）
 //   --backfill-r2：把取到的帖子按 id 与线上 R2 缓存里的历史合并后写回（需要环境变量
-//     CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID）。线上 Worker 从 Cloudflare 机房向上游翻页
+//     CLOUDFLARE_API_TOKEN；CLOUDFLARE_ACCOUNT_ID 可选）。线上 Worker 从 Cloudflare 机房向上游翻页
 //     常被限流、只拿到十几条；GitHub 机房能稳定取到更深的历史，用它给线上补齐「加载更多」的历史。
 import fs from "node:fs";
 import os from "node:os";
@@ -26,6 +26,12 @@ const CONCURRENCY = Math.max(1, Number(opt("concurrency", "3")) || 3);
 const MAX = Math.max(0, Number(opt("limit", "0")) || 0);
 const POSTS = Math.max(1, Math.min(100, Number(opt("posts", "21")) || 21));
 const BACKFILL = args.includes("--backfill-r2");
+// 回填只需要 CLOUDFLARE_API_TOKEN：账号 ID 可省略，wrangler 会按令牌自动识别（与部署流程一致）。
+// 启动时就检查，避免巡检跑完十几分钟后才因缺凭据失败。
+if (BACKFILL && !process.env.CLOUDFLARE_API_TOKEN) {
+  console.error("::error::--backfill-r2 需要环境变量 CLOUDFLARE_API_TOKEN");
+  process.exit(1);
+}
 const R2_BUCKET = "ooglex-pro-data";
 const fetchedPosts = new Map();   // handle -> posts（仅回填时保留）
 const ONLY = String(opt("handles", "")).split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
@@ -160,9 +166,6 @@ function mergePosts(fresh, history) {
 const backfill = { attempted: 0, written: 0, failed: 0, grew: 0, unchanged: 0, errors: [] };
 if (BACKFILL && fetchedPosts.size) {
   // 用与部署流程相同的 wrangler r2 object get/put 读写线上 R2（凭据来自环境变量，不写入日志）。
-  if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID) {
-    throw new Error("backfill_requires_CLOUDFLARE_API_TOKEN_and_CLOUDFLARE_ACCOUNT_ID");
-  }
   const { execFile } = await import("node:child_process");
   const run = (argv) => new Promise((resolve) => {
     execFile("npx", ["--yes", "wrangler@4", ...argv], { maxBuffer: 1 << 26, timeout: 120000 }, (err, stdout, stderr) => {
