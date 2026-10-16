@@ -6492,6 +6492,7 @@ func test_hall() -> void:
 	check(await fl_say(main, "hall", "ivette", ["您打算怎么守北境？", "您这是在拿全家冒险。", "那您要我做什么？", "我会考虑。"])
 		and GameState.has_flag("outlaws_asked") and GameState.quest_stage("ch1_outlaws") == "talk_offer" and GameState.quest_stage("ch1_main") == "see_osric",
 		"伊薇特：托你收编无旗者（支线开始）；两边都听完，主线推进到「去看家主」（%s）" % GameState.quest_stage("ch1_main"))
+	check(GameState.has_flag("heirs_heard") and Castle.sickroom_open(), "两边都听完：病房的门推得开了（4.5c）")
 	main.open_dialogue("hall", "alric", alric)
 	await frames(1)
 	check(main.dialogue.runner.node_id == "again" and main.dialogue.runner.options().any(func(o): return o.text == "账房那本账……"), "再找阿尔里克：问账的事")
@@ -6558,8 +6559,8 @@ func test_keep() -> void:
 	# 守水门的老头：夜里只有他一个人守；能坐泥炭船回芦栈村
 	var keeper: Npc = main._npc_by_dialogue("water_keeper")
 	check(keeper != null and stands_clear(keeper), "守水门的老头有对话了，站得稳")
-	check(await fl_say(main, "blackheron", "water_keeper", ["这道水门夜里谁守？", "……"]) and GameState.has_flag("heard_water_gate") and GameState.has_flag("water_keeper_met"),
-		"守水门的老头：夜里水门只有他一个人守（给入夜备战埋线）")
+	check(await fl_say(main, "blackheron", "water_keeper", ["这道水门夜里谁守？", "……"]) and GameState.has_flag("water_keeper_met"),
+		"守水门的老头：夜里水门只有他一个人守")
 	var rr := [0]
 	main.reload_requested.connect(func(): rr[0] += 1)
 	check(await fl_say(main, "blackheron", "water_keeper", ["能坐泥炭船出去吗？", "（上船回芦栈村）"]), "坐泥炭船回芦栈村")
@@ -6608,7 +6609,8 @@ func test_keep() -> void:
 	check(said.get("kind") == "npc" and str(said.get("speech", "")).contains("睡着") and is_equal_approx(osric.rotation.y, yaw), "看看家主：他睡着（不转身）")
 	check(await fl_say(main, "sickroom", "marta", ["（走到床边看看家主）", "好，黄昏再来。"]) and GameState.has_flag("osric_seen") and GameState.quest_stage("ch1_main") == "wait_dusk",
 		"玛尔塔让你看一眼家主：主线推进到「等黄昏」（%s）" % GameState.quest_stage("ch1_main"))
-	check(await fl_say(main, "sickroom", "marta", ["家主怎么样了？", "有什么能帮上他？", "我去试试。"]) and GameState.quest_stage("ch1_whitereed") == "gather", "玛尔塔托你去鹭沼深处采白芦根（支线开始）")
+	check(await fl_say(main, "sickroom", "marta", ["家主怎么样了？", "有什么能帮上他？", "……"]) and not GameState.quest_active("ch1_whitereed"), "玛尔塔说起白芦根，没答应就不接支线")
+	check(await fl_say(main, "sickroom", "marta", ["家主怎么样了？", "有什么能帮上他？", "我去试试。"]) and GameState.quest_stage("ch1_whitereed") == "gather", "答应了：支线「白芦根」开始")
 	var r := DialogueRunner.new()
 	r.start("sickroom", "marta")
 	var ot: Array = r.options().map(func(o): return o.text)
@@ -6638,6 +6640,12 @@ func test_keep() -> void:
 	ch1_state("release", 14)
 	GameState.set_flag("castle_entry", "barracks")
 	check(Castle.barracks_open() and not Castle.sickroom_open(), "从兵营侧门进来的：兵营推得开，病房还关着")
+	GameState.set_flag("side_gate_used")
+	GameState.set_flag("castle_entry", "offer")
+	check(Castle.barracks_open(), "后来又坐奥弗的船进来（castle_entry 改了）：兵营照样推得开（审查）")
+	GameState.set_flag("ledger_asked")
+	GameState.set_flag("outlaws_asked")
+	check(Castle.sickroom_open(), "4.5b 时的旧存档（两位继承人都托过、没有 heirs_heard 旗标）：病房也推得开（审查）")
 	GameState.start_quest("ch1_main", "hear_heirs")
 	r.start("sickroom", "marta")
 	check(not r.options().any(func(o): return o.text == "（走到床边看看家主）"), "主线没到「去看家主」：玛尔塔不让走到床边")

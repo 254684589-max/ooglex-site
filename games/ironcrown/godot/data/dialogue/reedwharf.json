@@ -177,7 +177,7 @@
       "side_gate": {
         "text": "（他打量了你一会儿）兵营的侧门归我们的人管。跟守门的说，你是来投伊薇特小姐的——进去以后你见谁、站哪边，那是你的事。",
         "options": [
-          {"text": "就这么说。", "do": [{"set": "castle_entry", "value": "barracks"}, {"goto": "castle", "spawn": "barracks_gate"}], "end": true},
+          {"text": "就这么说。", "do": [{"set": "castle_entry", "value": "barracks"}, {"set": "side_gate_used"}, {"goto": "castle", "spawn": "barracks_gate"}], "end": true},
           {"text": "算了。", "next": "menu"}
         ]
       },

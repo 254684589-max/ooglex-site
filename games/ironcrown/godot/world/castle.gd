@@ -95,14 +95,14 @@ static func _person(parent: Node3D, p: Array, lines: Array) -> void:
 	parent.add_child(n)
 
 
-## 病房的门推不推得开（4.5c）：两位继承人都托过你以后（main._heirs_heard）
+## 病房的门推不推得开（4.5c）：两位继承人都托过你以后（main._heirs_heard 设 heirs_heard；4.5b 时的存档没有这个旗标，看两个托付的旗标，审查）
 static func sickroom_open() -> bool:
-	return GameState.has_flag("heirs_heard")
+	return GameState.has_flag("heirs_heard") or (GameState.has_flag("ledger_asked") and GameState.has_flag("outlaws_asked"))
 
 
-## 兵营的门推不推得开（4.5c）：伊薇特见过你，或者你是从兵营侧门进来的
+## 兵营的门推不推得开（4.5c）：伊薇特见过你，或者你是从兵营侧门进来的（side_gate_used；castle_entry 以后坐别人的船进来会被改掉，审查）
 static func barracks_open() -> bool:
-	return GameState.has_flag("ivette_met") or str(GameState.get_flag("castle_entry")) == "barracks"
+	return GameState.has_flag("ivette_met") or GameState.has_flag("side_gate_used") or str(GameState.get_flag("castle_entry")) == "barracks"
 
 
 ## 四栋房子（门按现在的进度换成推得开的）
