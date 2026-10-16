@@ -36,6 +36,14 @@
   "victor_lie": {"desc": "放走：维克托问少爷去哪了——lied_ok 撒谎成功 / lied_caught 被识破 / told_truth 说了实话（4.3）", "set_in": "frostford.json victor/lie_ok、lie_caught、truth", "read_in": "第一章以后（维克托的态度）"},
   "edric_quiet": {"desc": "勒索：埃德里克说没说出去——kept 闭嘴了（口才说服或给钱）/ told 当着维克托说了（4.3）", "set_in": "frostford.json edric_ch1/quiet_ok、paid，victor/extort_told", "read_in": "frostford.json victor / edric_ch1 start_if"},
   "edric_quiet_refused": {"desc": "勒索：口才没说动埃德里克（不能再试，只剩给钱）（4.3）", "set_in": "frostford.json edric_ch1/quiet_fail", "read_in": "frostford.json edric_ch1 start_if"},
-  "ch1_debt": {"desc": "借据的下落：with_edric 跟埃德里克走了（放走）；之后的 given_osric / sold / given_heir / kept 在 4.4–4.10 定（交出、勒索时借据还在你身上，先不设）", "set_in": "frostford.json victor/lie_ok、lie_caught、truth", "read_in": "4.4 吉尔伯特、4.10 家主临终"},
-  "ch1_intro": {"desc": "刚进第一章时报过章节名（只报一次，4.1）", "set_in": "scenes/main.gd _arrive()（代码）", "read_in": "scenes/main.gd _arrive()"}
+  "ch1_debt": {"desc": "借据的下落：with_edric 跟埃德里克走了（放走）；sold 卖给了卡斯韦尔家的收账人吉尔伯特（勒索，4.4b）；之后的 given_osric / given_heir / kept 在 4.5–4.10 定（交出、勒索时借据还在你身上，先不设）", "set_in": "frostford.json victor/lie_ok、lie_caught、truth；reedwharf.json gilbert/sold、sold_up", "read_in": "reedwharf.json gilbert start_if；4.8 交给继承人、4.10 家主临终"},
+  "ch1_intro": {"desc": "刚进第一章时报过章节名（只报一次，4.1）", "set_in": "scenes/main.gd _arrive()（代码）", "read_in": "scenes/main.gd _arrive()"},
+  "heard_recruiters": {"desc": "芦栈村三条消息之一：歪桩客栈里两位继承人的人都在招兵、说法相反（客栈老板、阿尔里克的军士、伊薇特的老兵谁说都算，4.4b）", "set_in": "reedwharf.json innkeeper/news、alric_sergeant/why、rival、ivette_veteran/truth、grain", "read_in": "reedwharf.json innkeeper start_if 与选项"},
+  "heard_causeway": {"desc": "芦栈村三条消息之一：托宾讲了去黑鹭堡的堤道（中段断口搭着木板）和堡背面的水门（4.4b）", "set_in": "reedwharf.json tobin/road", "read_in": "reedwharf.json tobin start_if 与选项；4.5 没有引荐信时托宾带路、4.9 水门"},
+  "heard_envoy": {"desc": "芦栈村三条消息之一：渡工说三天前渡过来一个塞弗林家的信使，进了堡没出来（4.4b）", "set_in": "reedwharf.json boatman/envoy", "read_in": "reedwharf.json boatman start_if 与选项；4.5 阿尔里克和王都的谈判"},
+  "boatman_refused": {"desc": "口才没问出渡工的话（不能再试，只剩给钱，4.4b）", "set_in": "reedwharf.json boatman/refuse", "read_in": "reedwharf.json boatman/envoy_ask 选项"},
+  "gilbert_met": {"desc": "见过卡斯韦尔家的收账人吉尔伯特（只在序章选「勒索」时，他在歪桩客栈等你，4.4b）", "set_in": "reedwharf.json gilbert/greet", "read_in": "reedwharf.json gilbert start_if、innkeeper 选项"},
+  "gilbert_price_up": {"desc": "口才说动吉尔伯特：借据的价钱从 150 枚抬到 200 枚（4.4b）", "set_in": "reedwharf.json gilbert/price_up", "read_in": "reedwharf.json gilbert 选项"},
+  "gilbert_firm": {"desc": "口才没说动吉尔伯特抬价（不能再试，4.4b）", "set_in": "reedwharf.json gilbert/price_firm", "read_in": "reedwharf.json gilbert/offer 选项"},
+  "gilbert_asked": {"desc": "问过吉尔伯特卡斯韦尔家要借据做什么（洞察检定只问一次，4.4b）", "set_in": "reedwharf.json gilbert/why_seen、why_hidden", "read_in": "reedwharf.json gilbert 选项"}
 }

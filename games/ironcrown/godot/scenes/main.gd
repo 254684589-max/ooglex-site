@@ -157,6 +157,8 @@ func _ready() -> void:
 			t = Ferry.build(world, Settings.reduced_motion)
 		"marsh":
 			t = Marsh.build(world, Settings.reduced_motion)
+		"inn":
+			t = Inn.build(world, Settings.reduced_motion)
 		"battle":
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
@@ -215,6 +217,7 @@ func _ready() -> void:
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
 	if arrived_by != "":
 		_arrive()
+	_story_progress()
 	if want_opening:
 		opening = Opening.new()
 		opening.name = "Opening"
@@ -877,6 +880,13 @@ func _arrive() -> void:
 		# 暂停时也要淡完（4.2 实测：刚到就打开地图 / 暂停菜单，淡入停在半路，黑幕一直盖在面板上）
 		create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, FADE_TIME * 1.5)
 	save_game.call_deferred("auto", true)
+
+
+## 主线跟着走到的地方推进（4.4b）：第一章到了鹭沼（走进来、从客栈出来，或者读的是 4.4a 时在鹭沼存的档），
+## 「去芦栈村」推进到「在芦栈村打听」。任务更新照常提示、自动存档（_autosave_on_quest）
+func _story_progress() -> void:
+	if GameState.chapter >= 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") == "to_reedwharf":
+		GameState.set_stage("ch1_main", "ask_reedwharf")
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）

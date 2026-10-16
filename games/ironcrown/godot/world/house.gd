@@ -12,7 +12,8 @@ extends RefCounted
 ##   lit           亮窗比例 0..1
 ##   door_x        门在正面的位置（本地 x）
 ##   door          {} = 普通木门（不能交互）；{"name": "...", "text": "..."} = 锁着的门（可交互，提示 text）；
-##                 {"name": "...", "to_area": "tavern", "to_spawn": "front", "verb": "进入"} = 通往另一个区域的门（3.1）
+##                 {"name": "...", "to_area": "tavern", "to_spawn": "front", "verb": "进入"} = 通往另一个区域的门（3.1）；
+##                 再加 "node": false = 门洞照样留着（不放木板），门由区域自己用 door_node() 放（4.4b 鹭沼的客栈）
 ##   sign          酒馆招牌上的字（"" = 没有招牌）
 ##   chimney       是否有烟囱
 ##   stone_upper   上层也用石砌（领主宅邸）
@@ -129,20 +130,26 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 			body.add_child(cs)
 		root.add_child(body)
 	# 不放遮挡体：网页导出模板编译时去掉了遮挡剔除，场景里有 OccluderInstance3D 就会报错（1.4 实测，TECH.md 4.6）
-	# 门：锁着的门可以交互；普通门只是一块木板
+	# 门：锁着的门可以交互；普通门只是一块木板；spec.door.node = false 时门由区域自己放（鹭沼的客栈门：碰撞同步建好、房子分帧搭，4.4b）
 	var dspec: Dictionary = spec.get("door", {})
-	if not dspec.is_empty():
-		var door := Door.make(dspec.get("name", "门"), 1.1, 2.1, not dspec.has("to_area"))
-		door.locked_text = dspec.get("text", "门锁着。")
-		door.to_area = str(dspec.get("to_area", ""))
-		door.to_spawn = str(dspec.get("to_spawn", ""))
-		door.verb = str(dspec.get("verb", "进入"))
+	if not dspec.is_empty() and bool(dspec.get("node", true)):
+		var door := door_node(dspec)
 		door.position = Vector3(door_x - 0.55, 0, 0.05)
 		root.add_child(door)
 	var sign_text: String = spec.get("sign", "")
 	if sign_text != "":
 		_sign(root, door_x + 1.3, sign_text)
 	return root
+
+
+## 照 spec.door 做一扇门（还没摆位置：门轴在本地 (door_x - 0.55, 0, 0.05)）。有 to_area 的通往另一个区域，没有的锁着
+static func door_node(dspec: Dictionary) -> Door:
+	var door := Door.make(dspec.get("name", "门"), 1.1, 2.1, not dspec.has("to_area"))
+	door.locked_text = dspec.get("text", "门锁着。")
+	door.to_area = str(dspec.get("to_area", ""))
+	door.to_spawn = str(dspec.get("to_spawn", ""))
+	door.verb = str(dspec.get("verb", "进入"))
+	return door
 
 
 ## 房子的碰撞盒：[[变换, 尺寸], ...]，变换是相对 pos、yaw 摆好的（pos = 正面墙脚中点，同 build）。

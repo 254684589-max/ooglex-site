@@ -60,7 +60,7 @@ const DOCK := Rect2(44, 58, 12, 4)            # 码头头上的平台（伸进�
 ## 北边一排的正面墙脚 z = 30 - 1.3 - House.stair_reach(STILTS) ≈ 25.96，南边 ≈ 34.04：台阶正好落在栈道边上
 const HOUSES := [
 	["inn", Vector2(74, 25.96), 0.0, {"w": 12.0, "d": 9.0, "floors": 1, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 441, "lit": 0.85,
-		"sign": "歪桩客栈", "door": {"name": "歪桩客栈", "text": "客栈的门闩着，里面在收拾。（客栈里面还在开发中）"}}],
+		"sign": "歪桩客栈", "door": {"name": "歪桩客栈", "to_area": "inn", "to_spawn": "front", "verb": "进入", "node": false}}],     # 门由 Marsh 同步放（4.4b）
 	["east_n", Vector2(88, 25.96), 0.0, {"w": 7.0, "d": 6.0, "floors": 0, "roof": "eaves", "door_x": -1.5, "seed": 442, "lit": 0.5}],
 	["mid_n", Vector2(57, 25.96), 0.0, {"w": 6.0, "d": 5.5, "floors": 0, "roof": "eaves", "door_x": 0.6, "seed": 444, "lit": 0.5}],
 	["west_n", Vector2(46, 25.96), 0.0, {"w": 6.5, "d": 6.0, "floors": 0, "roof": "gable", "door_x": 0.8, "seed": 443, "lit": 0.6, "chimney": true}],
@@ -95,16 +95,35 @@ const FOG := [
 	[Vector3(-30, 0.1, -50), 0.6], [Vector3(-46, 0.1, -60), 0.7], [Vector3(-12, 0.0, -66), 0.6], [Vector3(-60, 0.0, 20), 0.7],
 	[Vector3(-20, 0.0, 30), 0.65], [Vector3(-96, 0.0, -30), 0.7],
 ]
-## 出生点（world/areas.gd）：reedwharf = 从霜渡镇来，站在村口、面朝西；castle_gate = 黑鹭堡门前的石台上、面朝堡门
+## 出生点（world/areas.gd）：reedwharf = 从霜渡镇来，站在村口、面朝西；castle_gate = 黑鹭堡门前的石台上、面朝堡门；
+## inn_door = 从「歪桩客栈」出来，站在门前的平台上、背对门（面朝南，台阶在前面）
 const SPAWNS := {
 	"reedwharf": [Vector3(118, BANK_Y, 30), 90.0],
 	"castle_gate": [Vector3(-28.81, CAUSE_Y, -66.81), 45.0],
+	"inn_door": [Vector3(74.0, DECK_Y + STILTS, 26.9), 180.0],
+}
+## 村里的人（4.4b；STORY.md 第四节「芦栈村：客栈老板、泥炭工头托宾、渡工、收账人吉尔伯特」，客栈里的人在 world/inn.gd）：
+## [编号, 名字, 脚底位置, 朝向（弧度：0 = 面朝北，PI = 面朝南，PI/2 = 面朝西）, 衣服颜色]。有对话的编号就是 data/dialogue/reedwharf.json 里的对话；
+## 只说一句的人编号在 PEOPLE_LINES 里。都站在地面上、不挡栈道（主栈道 2.6 米宽），离 test_marsh 放主角的几个点、码头和断口两头的检查点都远
+const PEOPLE := [
+	["tobin", "托宾", Vector3(68.5, BANK_Y, 4.5), 2.52, "4a3e2e"],              # 泥炭场里，面朝栈道走过来的方向（西南）
+	["boatman", "渡工", Vector3(53.5, DECK_Y, 60.6), 1.5708, "42524e"],         # 小码头上补船，面朝栈道（西）
+	["peat_stacker", "泥炭工", Vector3(60.4, BANK_Y, -0.6), 0.0, "4a4232"],     # 码泥炭垛
+	["peat_cutter", "泥炭工", Vector3(77.0, BANK_Y, 4.2), PI, "50463a"],        # 挖泥炭的湿地里
+	["netter", "补网的女人", Vector3(104.5, BANK_Y, 20.6), 0.0, "5a4a4a"],      # 村口干岸上，对着晾网的木架
+]
+const PEOPLE_LINES := {
+	"peat_stacker": ["今年的泥炭湿，得多晾半个月。可这天，哪还有晴的时候。", "堡里要的泥炭一车比一车多，听说兵营里夜里也不熄火。", "工头在那边。有事找他，别耽误我们干活。"],
+	"peat_cutter": ["（他把铲子插进黑泥里，撬出一块方方正正的泥炭）一铲一块，一天三百块，手上的泡就没消过。", "别往湿的地方踩，陷进去一只靴子就别想要了。",
+		"伊薇特小姐去年冬天给我们送过一车麦子。阿尔里克大人？没见过。"],
+	"netter": ["外乡人？客栈在栈道那头，门口挂着「歪桩」的牌子，进去暖暖身子吧。", "我男人一早就跟着堡里的军士走了，说是去吃王都的粮。哪来的王都的粮。",
+		"芦苇里的鱼都往深处躲了，网一天比一天空。"],
 }
 const SIGN_VILLAGE := Vector3(114, BANK_Y, 32.4)      # 村口的路牌（出发的地方，TravelPoint）
 const SIGN_GATE := Vector3(-32.0, CAUSE_Y, -62.2)     # 堡门前的路牌
 const SIGN_CAUSEWAY := Vector3(38.6, BANK_Y, -3.5)    # 堤道头的指路牌（只是牌子）
 const EXIT_AT := Vector3(128, BANK_Y, 30)             # 路从这里出图（往霜渡镇；不是门，出发走村口的路牌）
-const VIEW_NAMES := ["村口", "客栈前", "小码头", "堤道上看黑鹭堡", "堡门前", "泥滩里"]
+const VIEW_NAMES := ["村口", "客栈前", "小码头", "堤道上看黑鹭堡", "堡门前", "泥滩里", "客栈门口", "泥炭场（托宾）", "小码头（渡工）"]
 ## 网页 ?area=marsh&view=N 的固定机位：位置、水平朝向（度，0 = 面朝 -Z，正 = 向左转）、俯仰（度）
 const VIEWS := [
 	[Vector3(118, BANK_Y, 30), 90.0, -3.0],
@@ -113,6 +132,9 @@ const VIEWS := [
 	[Vector3(18.6, CAUSE_Y, -19.4), 45.0, 1.0],
 	[Vector3(-26.0, CAUSE_Y, -64.0), 45.0, 6.0],
 	[Vector3(58.0, MUD_Y, 44.0), 30.0, -4.0],
+	[Vector3(74.0, DECK_Y + STILTS, 27.1), 0.0, 0.0],      # 6：客栈门口（4.4b，冒烟测试进门用；0–5 号别动，test_marsh、基准测试在用）
+	[Vector3(67.2, BANK_Y, 6.3), -35.8, -6.0],             # 7：泥炭场里对着托宾
+	[Vector3(51.8, DECK_Y, 60.4), -90.0, -6.0],            # 8：小码头上对着渡工
 ]
 
 

@@ -8,7 +8,7 @@ try { pw = require('playwright'); } catch (e) { pw = require('/opt/node22/lib/no
 const q = (process.argv[2] || 'auto') === 'auto' ? '' : process.argv[2];
 const [w, h] = (process.argv[3] || '1280x720').split('x').map(Number);
 const mobile = process.argv[4] === 'mobile';
-const AREAS = [['frostford', 3], ['tavern', 3], ['churchyard', 3], ['chapel', 3], ['birch', 3], ['ferry', 3], ['marsh', 6]];   // 鹭沼（4.4a）：六个机位，分帧搭完才测（main 等 all_built）
+const AREAS = [['frostford', 3], ['tavern', 3], ['churchyard', 3], ['chapel', 3], ['birch', 3], ['ferry', 3], ['marsh', 6], ['inn', 3]];   // 鹭沼（4.4a）：前六个机位，分帧搭完才测（main 等 all_built）；「歪桩」客栈（4.4b）：前三个机位
 const ONLY = process.argv[5] ? process.argv[5].split(',') : null;   // 第五个参数：只测这几个区域（逗号分隔）
 (async () => {
   const b = await pw.chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });

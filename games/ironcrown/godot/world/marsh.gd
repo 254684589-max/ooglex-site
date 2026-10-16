@@ -9,7 +9,8 @@ extends RefCounted
 ## 看不见的墙在物理层 5「边界」（只挡人走，不挡视线、镜头、箭、交互）：从地面的边自动生成——边外面 0.3 米不是任何地面的地方就立一段墙；
 ## 墙外面的水里总有芦苇（_reed_chance：岸边 SHORE 米之内长满），不会有「空地上一堵看不见的墙」。
 ## 泥滩的碰撞体带元数据 surface = "mud"（core/surface.gd：走得慢、不能跑）；栈道铺在泥滩上面，踩着栈道不算泥。
-## 4.4a 只有地形和房子：人（客栈老板、托宾、渡工、吉尔伯特）和客栈里面是 4.4b，鹭沼深处和营地是 4.4c，堡里是 4.5。
+## 4.4a 是地形和房子；4.4b 加了村里的人（托宾、渡工、泥炭工、补网的女人；客栈里的人在 world/inn.gd）和进「歪桩客栈」的门：
+## 人和门都在同步那一步放进 world（不放进分帧的块：块没搭好时也得找得到、说得上话，TECH.md 4.15）。鹭沼深处和营地是 4.4c，堡里是 4.5。
 
 const SPAWNS := MarshLayout.SPAWNS
 const VIEWS := MarshLayout.VIEWS
@@ -47,6 +48,7 @@ static func build(p_parent: Node3D, p_reduced_motion := false) -> Transform3D:
 	m._water()
 	m._collision()
 	m._interactables()
+	m._people()
 	Edges.dress(p_parent, MarshLayout.BANK, [{"at": MarshLayout.EXIT_AT, "out": Vector3(1, 0, 0), "half": 1.8, "fence": true, "lantern": true, "frame": "霜渡镇"}],
 		[Rect2(-400, -400, 528, 800), Rect2(128, -400, 400, 412), Rect2(128, 50, 400, 400)], 4401, "bank")   # 只在东头路口外面：干岸接着往东铺，两边白桦
 	var st := ChunkStreamer.new()
@@ -253,6 +255,34 @@ func _interactables() -> void:
 	gw.position = MarshLayout.EXIT_AT + Vector3(-0.35, 0, 0)
 	gw.rotation_degrees.y = 90.0
 	parent.add_child(gw)
+	# 「歪桩客栈」的门（4.4b）：通往客栈里面。房子是分帧搭的（门洞留着），门在这里同步放：一进场就推得开
+	parent.add_child(inn_door())
+
+
+## 客栈的门：照 HOUSES[0] 的 door（House.door_node），摆到门洞上
+static func inn_door() -> Door:
+	var inn: Array = MarshLayout.HOUSES[0]
+	var spec: Dictionary = inn[3]
+	var d := House.door_node(spec.door)
+	var place := Transform3D(Basis(Vector3.UP, deg_to_rad(float(inn[2]))), MarshLayout.house_pos(inn))
+	d.transform = place * Transform3D(Basis.IDENTITY, Vector3(float(spec.door_x) - 0.55, 0, 0.05))
+	d.name = "InnDoor"
+	return d
+
+
+## 村里的人（4.4b）：有对话的（托宾、渡工）和只说一句的（泥炭工、补网的女人）。人是占位胶囊（A.2 换装），同步放进 world
+func _people() -> void:
+	for p: Array in MarshLayout.PEOPLE:
+		var id := str(p[0])
+		var lines: Array = MarshLayout.PEOPLE_LINES.get(id, [])
+		var n := Npc.make(str(p[1]), lines, Color(str(p[4])))
+		n.name = "Npc_" + id
+		if lines.is_empty():
+			n.dialogue_area = "reedwharf"
+			n.dialogue_id = id
+		n.position = p[2]
+		n.rotation.y = float(p[3])
+		parent.add_child(n)
 
 
 # ---------------- 分帧的活 ----------------
@@ -913,7 +943,7 @@ static func _rope_mat() -> StandardMaterial3D:
 # ---------------- 地图（3.11 的格式，由布局表生成） ----------------
 
 ## 整张图：水面、芦苇荡、泥滩、干地、栈道、堤道、房子、黑鹭堡、路牌；分块（芦栈村 / 堤道 / 黑鹭堡外）。
-## 4.4a 还没有通往别的区域的门（出发走路牌、旅行地图），出口是空的
+## 出口只有「歪桩客栈」的门（4.4b）；出发走路牌、旅行地图，不算出口
 static func map_spec() -> Dictionary:
 	var shapes := []
 	shapes.append({"k": "water", "rect": MarshLayout.BOUNDS})      # 不写字：图中心正好在断口上，字会盖住它（审查）
@@ -951,4 +981,7 @@ static func map_spec() -> Dictionary:
 	shapes.append({"k": "house", "pts": castle, "label": "黑鹭堡"})
 	shapes.append({"k": "mark", "at": Vector2(MarshLayout.SIGN_VILLAGE.x, MarshLayout.SIGN_VILLAGE.z), "icon": "sign", "label": "路牌"})
 	shapes.append({"k": "mark", "at": Vector2(MarshLayout.SIGN_GATE.x, MarshLayout.SIGN_GATE.z), "icon": "sign", "label": "路牌"})
-	return {"bounds": MarshLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": MarshLayout.zones()}
+	var inn: Array = MarshLayout.HOUSES[0]
+	var exits := [{"at": House.door_xz(MarshLayout.house_pos(inn), float(inn[2]), float(inn[3].door_x)), "dir": -House.facing(float(inn[2])),
+		"to": "inn", "spawn": "front", "name": str(inn[3].door.name)}]          # 「歪桩客栈」的门（4.4b）；出发的路牌不是门，不算出口
+	return {"bounds": MarshLayout.BOUNDS, "shapes": shapes, "exits": exits, "zones": MarshLayout.zones()}
