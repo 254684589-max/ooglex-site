@@ -262,7 +262,7 @@
         "options": [{"text": "……", "next": "again"}]
       },
       "wedding": {
-        "text": "（她冷笑了一声）那门亲事是我哥跟王都谈的买卖，拿瓦伦家的小儿子换几车麦子。我要是当了家，第一件事就是退了它。告诉那孩子，别乱跑。",
+        "text": "（她冷笑了一声）那门亲事是我哥跟王都谈的买卖，拿霜渡镇的小儿子换几车麦子。我要是当了家，第一件事就是退了它。告诉那孩子，别乱跑。",
         "do": [{"set": "edric_ivette_promise"}, {"quest": "ch1_wedding", "stage": "tell_edric"}],
         "options": [{"text": "……", "next": "again"}]
       },
@@ -361,7 +361,7 @@
         ]
       },
       "plan_ivette": {
-        "text": "……她？（他想了想）她要是肯开口，也许有用。我哥——阿尔里克可不会。",
+        "text": "……她？（他想了想）她要是肯开口，也许有用。阿尔里克可不会。",
         "do": [{"quest": "ch1_wedding", "stage": "ask_ivette"}],
         "options": [
           {"text": "等我消息。", "end": true}

@@ -151,8 +151,8 @@
         ]
       },
       "reed_done": {
-      "text": "（她接过那三株白芦根，凑到蜡烛底下看了看根上的白，长长出了口气）……是这个。今晚熬上，黄昏前让他喝下去。他醒过来的时候，会清楚些。（她看了你一眼）谢谢你，誓剑。",
-      "do": [{"take_item": "white_reed"}, {"take_item": "white_reed"}, {"take_item": "white_reed"}, {"set": "ch1_herb"}, {"rep": "valen", "delta": 5}, {"quest_done": "ch1_whitereed"}],
+      "text": "（她接过那三株白芦根，凑到蜡烛底下看了看根上的白，长长出了口气）……是这个。这就熬上，黄昏前让他喝下去。他醒过来的时候，会清楚些。（她看了你一眼）谢谢你，誓剑。",
+      "do": [{"take_item": "white_reed"}, {"take_item": "white_reed"}, {"take_item": "white_reed"}, {"take_item": "white_reed"}, {"take_item": "white_reed"}, {"set": "ch1_herb"}, {"rep": "valen", "delta": 5}, {"quest_done": "ch1_whitereed"}],
       "options": [{"text": "……", "next": "again"}]
     },
     "reed_again": {

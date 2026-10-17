@@ -6950,10 +6950,24 @@ func test_errands() -> void:
 	check(main.player.interactor.target == first, "站在泥里低头：对得准白芦根（「拾取 · 白芦根」）")
 	main.player.interactor.use()
 	await frames(2)
-	for k in [1, 2]:
-		reeds[k].interact(main.player)
-		GameState.add_item("white_reed")
-	check(GameState.quest_stage("ch1_whitereed") == "return" and GameState.inventory.count("white_reed") == 3, "采齐三株：支线推进到「交给玛尔塔」")
+	check(GameState.inventory.count("white_reed") == 1 and GameState.quest_stage("ch1_whitereed") == "gather", "采了一株：还差两株")
+	await free_main(main)
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	reeds = main.find_children("WhiteReed_*", "Pickup", true, false)
+	check(reeds.size() == MarshLayout.WHITE_REEDS.size() - 1, "再进鹭沼：采过的那株不再长，还剩 %d 株" % reeds.size())
+	for k in [0, 1, 2]:
+		var rd: Pickup = reeds[k]
+		main.player.global_position = rd.global_position + Vector3(0, 0.1, 1.2)
+		main.player.rotation.y = 0.0
+		main.player.pitch = -50.0
+		main.player.head.rotation.x = deg_to_rad(-50.0)
+		await physics(3)
+		main.player.interactor.refresh()
+		main.player.interactor.use()
+		await frames(2)
+	check(GameState.quest_stage("ch1_whitereed") == "return" and GameState.inventory.count("white_reed") == 4, "又采了三株（多采了一株）：支线推进到「交给玛尔塔」")
 	await free_main(main)
 	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
 	main = await make_main(false)
@@ -6963,7 +6977,7 @@ func test_errands() -> void:
 	GameState.set_flag("marta_met")
 	var valen := GameState.get_rep("valen")
 	check(say_runner("marta", ["白芦根采来了，三株。"], "sickroom") == "reed_done" and GameState.has_flag("ch1_herb") and GameState.quest_done("ch1_whitereed")
-		and not GameState.has_item("white_reed") and GameState.get_rep("valen") == valen + 5, "交给玛尔塔：支线做完（ch1_herb），瓦伦家 +5")
+		and not GameState.has_item("white_reed") and GameState.get_rep("valen") == valen + 5, "交给玛尔塔：多采的也一起收下，支线做完（ch1_herb），瓦伦家 +5")
 	# —— 埃德里克的婚事：找伊薇特
 	ch1_state("deliver", 32)
 	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ivette_met"]:
@@ -6976,6 +6990,9 @@ func test_errands() -> void:
 		"埃德里克：他不想娶，今晚之后自己走；你说去找伊薇特")
 	check(await fl_say(main, "hall", "ivette", ["埃德里克不想娶塞弗林家的人。", "……"]) and GameState.has_flag("edric_ivette_promise") and GameState.quest_stage("ch1_wedding") == "tell_edric",
 		"伊薇特：她当了家就退了这门亲事")
+	var ar := DialogueRunner.new()
+	ar.start("hall", "alric")
+	check(not ar.options().any(func(o): return str(o.text).begins_with("埃德里克不想娶")), "伊薇特答应了以后：不能再去跟阿尔里克告状")
 	check(await fl_say(main, "hall", "edric_hall", ["伊薇特答应了：她当了家，就退了这门亲事。", "记住了。"]) and str(GameState.get_flag("ch1_edric")) == "helped"
 		and GameState.has_flag("edric_warned_water") and GameState.quest_done("ch1_wedding"), "告诉埃德里克：他提醒你水门（支线做完）")
 	main.open_dialogue("hall", "edric_hall", main._npc_by_dialogue("edric_hall"))
@@ -7004,4 +7021,14 @@ func test_errands() -> void:
 		and GameState.get_rep("severin") == sev + 5 and GameState.quest_done("ch1_wedding"), "告诉阿尔里克：他让人看着埃德里克（塞弗林家 +5）")
 	r.start("hall", "edric_hall")
 	check(r.node_id == "after_reported", "埃德里克：「你去告诉了阿尔里克……你满意了？」")
+	# 黄昏伊薇特在兵营：照样能找她说埃德里克的事
+	ch1_state("deliver", 36)
+	GameState.set_flag("ivette_met")
+	say_runner("edric_hall", ["你不想娶她。", "我去找伊薇特说说。她不会让王都的人拴住瓦伦家。"], "hall")
+	GameState.daypart = "dusk"
+	GameState.pending_load = {"scene": "barracks", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	check(await fl_say(main, "hall", "ivette", ["埃德里克不想娶塞弗林家的人。", "……"]) and GameState.has_flag("edric_ivette_promise"), "黄昏在兵营：照样能找伊薇特说埃德里克的事")
+	await free_main(main)
 	GameState.new_game()
