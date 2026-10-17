@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -7449,4 +7449,60 @@ func test_heir() -> void:
 	GameState.add_item("grain_writ")
 	GameState.set_flag("valen_heir", "alric")
 	check(not GameState.has_item("grain_writ"), "伊薇特走了：她的粮单收回")
+	GameState.new_game()
+
+
+## A.2a：NPC 换上真人模型（data/looks.json）
+func test_looks() -> void:
+	Settings.set_value("third_person", false)
+	check(Looks.validate().is_empty(), "looks.json：预设、部件、贴图、颜色都对得上（%s）" % str(Looks.validate()))
+	var v := Looks.spec("维克托")
+	check(v.parts.size() == 4 and str(v.parts[0]).ends_with("Outfit_Male_Peasant.gltf") and str(v.parts[1]).ends_with("Head_Male.gltf") and v.look.tint.get("MI_Hair_1") == "#4a3a2a" and v.look.tint.get("MI_Peasant") == "#7a4a44",
+		"维克托：平民那套换成深红、男头、分头加胡子、深棕发色")
+	check(Looks.spec("灰盒路人").is_empty() and Looks.spec("奥斯瑞克").is_empty(), "没配的人（测试场的路人、躺着的家主）照旧是胶囊")
+	# 搭出来：头、头发挂在服装的骨架上，兜帽摘了
+	var m := Looks.make("赫尔曼")
+	add_child(m)
+	Looks.finish(m)
+	await frames(2)
+	var meshes: Array = m.scene_root.find_children("*", "MeshInstance3D", true, false)
+	var on_skel := meshes.all(func(mi): return mi.get_node_or_null(mi.skeleton) == m.skeleton)
+	var names := meshes.map(func(mi): return str(mi.name))
+	check(m.loaded and on_skel and names.has("Hair_Beard") and not names.has("Male_Ranger_Head_Hood") and meshes.all(func(mi): return mi.visibility_range_end == Looks.LOD_FAR),
+		"赫尔曼：游侠那套、兜帽摘了、胡子挂在同一副骨架上、远处不画（%d 个网格）" % meshes.size())
+	m.play_loop("idle")
+	check(m.playing() != "", "能放站着的动作")
+	m.queue_free()
+	# 场景里：配了的人穿上、近处画模型远处画胶囊；对峙那一组、躺着的、没配的还是胶囊
+	ch1_state("deliver")
+	GameState.set_flag("ch1_victor_done")
+	GameState.pending_load = {"scene": "frostford", "spawn": "", "player": {}}
+	var main := await make_main(false)
+	await physics(2)
+	var victor := main.world.find_child("Npc_victor", true, false) as Npc
+	if victor == null:
+		for n in main.world.find_children("*", "Npc", true, false):
+			if (n as Npc).display_name == "维克托":
+				victor = n
+	check(victor != null and victor.look_model != null and victor.look_model.loaded and victor.find_child("Coat", true, false).visibility_range_begin == Looks.LOD_FAR,
+		"霜渡镇：维克托穿上了（近处画模型，%d 米外换回胶囊）" % int(Looks.LOD_FAR))
+	await free_main(main)
+	GameState.pending_load = {"scene": "tavern", "spawn": "", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	var dressed := []
+	var plain := []
+	for n in main.world.find_children("*", "Npc", true, false):
+		(dressed if (n as Npc).look_model != null else plain).append((n as Npc).display_name)
+	check(dressed.has("玛蒂尔达") and plain.has("大桶"), "酒馆：玛蒂尔达穿上了，要打一架的大桶照旧是胶囊（穿上：%s；胶囊：%s）" % [str(dressed), str(plain)])
+	await free_main(main)
+	ch1_state("deliver")
+	GameState.flags.erase("offer_left")
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	var offer := main.world.get_node_or_null("Npc_offer_camp") as Npc
+	var tobin := main.world.get_node_or_null("Npc_tobin") as Npc
+	check(offer != null and offer.look_model == null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人照旧是胶囊（敌人换装在 A.2b）")
+	await free_main(main)
 	GameState.new_game()

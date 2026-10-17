@@ -4,6 +4,7 @@ extends SceneTree
 ##   xvfb-run -a -s "-screen 0 1280x720x24" godot --path games/ironcrown/godot --rendering-driver opengl3 \
 ##     -s ../tools/character_sheet.gd -- out=/tmp/sheet.png [grip=px,py,pz,rx,ry,rz] [jobs="动作@秒@相机偏角;动作@秒@相机偏角"]
 ## 例：jobs="Sword_Idle@0@20;Sword_Attack@0.33@30;Sword_Block@0.17@30"（动作名见 data/character_anims.json；none = 不播动作，看 T 姿势）
+## A.2：parts=Outfit_Male_Peasant,Head_Male,Hair_Beard 换装预览；look='{"tint":{"MI_Peasant":"#8a9cb0"}}' 换颜色。
 ## grip= 临时覆盖 data/character_anims.json 里的拿剑位置与朝向（米 / 度），满意了再写回 JSON。
 
 var character: CharacterModel
@@ -42,6 +43,13 @@ func _init() -> void:
 	cam.fov = 40
 	root.add_child(cam)
 	character = CharacterModel.new()
+	var parts := str(args.get("parts", ""))         # A.2：parts=服装,头,头发（assets/characters/outfits/ 下的文件名，不带 .gltf）
+	if parts != "":
+		for p in parts.split(","):
+			character.parts.append("res://assets/characters/outfits/%s.gltf" % p)
+	var lk := str(args.get("look", ""))             # A.2：look={"tex": {...}, "tint": {...}}（JSON）
+	if lk != "":
+		character.look = JSON.parse_string(lk)
 	root.add_child(character)
 	await process_frame
 	await process_frame

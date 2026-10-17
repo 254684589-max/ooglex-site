@@ -55,7 +55,18 @@
 
 | 包 | 内容 | 许可（页面标注） | 原始链接 | 状态 |
 |---|---|---|---|---|
-| Modular Character Outfits – Fantasy（2025-11，v2.1） | 12 套奇幻服装、62 个模块部件，每套 3 种颜色贴图；与 Universal Base Characters 兼容；免费「Standard」版 280 MB（另有付费源文件版 724 MB） | CC0 | https://quaternius.itch.io/modular-character-outfits-fantasy | A.2 用，**阶段 B 的士兵也用这一份**（D8，`design/ART.md` 7.1：挑 3–4 套兵装，阵营靠代码改颜色和画徽记，不用每个兵单独准备）；280 MB 太大，下载后只挑用得到的几套再入库 |
+| Modular Character Outfits – Fantasy（2025-11，v2.1） | **2026-10-17 已导入免费版（见上面 A.2a 一节）**。12 套奇幻服装、62 个模块部件，每套 3 种颜色贴图；与 Universal Base Characters 兼容；免费「Standard」版 280 MB（另有付费源文件版 724 MB） | CC0 | https://quaternius.itch.io/modular-character-outfits-fantasy | A.2 用，**阶段 B 的士兵也用这一份**（D8，`design/ART.md` 7.1：挑 3–4 套兵装，阵营靠代码改颜色和画徽记，不用每个兵单独准备）；280 MB 太大，下载后只挑用得到的几套再入库 |
+
+### 人物（二）的服装、头、头发（阶段 A.2a，2026-10-17）
+
+所有者 2026-10-17 在自己电脑上从 itch.io 下载两个包的免费「Standard」版，推送到私有仓库 `254684589-max/ironcrown-assets`（原包 410 MB，不进本仓库）；我从那里取用。两个包的 `License_Standard.txt` 都写 **CC0 1.0 Universal**（https://creativecommons.org/publicdomain/zero/1.0/），原文副本在 `godot/assets/characters/outfits/LICENSE_Quaternius_CC0.txt`。
+
+| 名称 | 位置 | 作者 | 原始链接 | 用途 · 处理 |
+|---|---|---|---|---|
+| Modular Character Outfits – Fantasy [Standard]（v2.1，2026-01） | `godot/assets/characters/outfits/Outfit_{Male,Female}_{Peasant,Ranger}.*`、`T_Peasant_*`、`T_Ranger_*`、`T_Regular_*` | Quaternius | https://quaternius.itch.io/modular-character-outfits-fantasy | **免费版只有平民（Peasant）、游侠（Ranger）两套，男女各一**（页面上的 12 套在付费源文件版里）。NPC 的衣服：平民那套给镇民、渔民、泥炭工，换颜色当贵族、修士的衣服；游侠那套（摘掉兜帽）给卫兵、兵营里的兵和伊薇特。 |
+| Universal Base Characters [Standard]（2025-08） | `godot/assets/characters/outfits/Head_{Male,Female}.*`、`Hair_*.*`、`T_Superhero_Female_*`、`T_Hair_*` | Quaternius | https://quaternius.itch.io/universal-base-characters | 头（包里说明「用服装时只要底模的头」）：从 `Superhero_{Male,Female}_FullBody` 里只留脖子以上的三角形和眼睛、眉毛；六种发型（`Hairstyles/Rigged to Head Bone` 的 glTF：分头、寸头、胡子、长发、发髻、女式短发）。 |
+
+处理：`tools/import_outfits.py`——五个包用同一副 65 根骨头的骨架、顺序一样（导入前核对过），所以游戏里把头和头发挂到服装的骨架上就能一起动、用 A.1 的动作；每个 glTF 重写：只留位置、法线、第一套贴图坐标、骨头、权重，去掉用不到的顶点；**只留底色贴图、缩到 512**（网页首次加载的预算，见 `TECH.md` 4.27），法线、ORM 不用；Godot 导入用 Basis 压缩（同 A.1）。哪个 NPC 穿什么写在 `godot/data/looks.json`。
 
 ## 看过但不用
 
