@@ -1095,6 +1095,8 @@ func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
 	if not dialogue.open(area, id):
 		return
 	dialogue_npc = npc
+	if npc is Npc:
+		(npc as Npc).begin_talk()       # 说话的人比划着说（A.2b）
 	player.set_dialogue_view(true)   # 第三人称时先把镜头收回眼睛，主角不挡说话人（再按眼睛的位置算转向）
 	hud.show_prompt("")
 	hud.set_hint("")              # 底部的操作提示不再压在对话上
@@ -1224,6 +1226,8 @@ func _on_quest_event(kind: String, id: String) -> void:
 
 
 func _on_dialogue_closed() -> void:
+	if is_instance_valid(dialogue_npc) and dialogue_npc is Npc:
+		(dialogue_npc as Npc).end_talk()
 	player.set_dialogue_view(false)
 	if touch_hidden_by_dialogue:
 		touch_hidden_by_dialogue = false

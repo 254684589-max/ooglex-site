@@ -17,13 +17,31 @@ static func data() -> Dictionary:
 	return Engine.get_meta(META)
 
 
-static func has(npc_name: String) -> bool:
-	return (data().get("people", {}) as Dictionary).has(npc_name)
+static func has(npc_name: String, node_name := "") -> bool:
+	return not _person(npc_name, node_name).is_empty()
+
+
+## 这个人的那一条：先按节点名（"@编号"，同名的人要分开配时用，例如两个泥炭工一个挖一个跪着码垛），再按名字
+static func _person(npc_name: String, node_name := "") -> Dictionary:
+	var people: Dictionary = data().get("people", {})
+	var id := node_name.trim_prefix("Npc_")
+	if id != "" and people.has("@" + id):
+		return people["@" + id]
+	return people.get(npc_name, {})
+
+
+## A.2b 人物动作：站姿（data/character_anims.json 的角色名，默认 idle）、手里的东西（actors/props.gd）
+static func pose(npc_name: String, node_name := "") -> String:
+	return str(_person(npc_name, node_name).get("pose", "idle"))
+
+
+static func prop(npc_name: String, node_name := "") -> String:
+	return str(_person(npc_name, node_name).get("prop", ""))
 
 
 ## 这个人的部件路径和颜色：{"parts": [...], "look": {"tex": {材质: 贴图路径}, "tint": {材质: 颜色}}, "hide": [...]}；没配返回 {}
-static func spec(npc_name: String) -> Dictionary:
-	var p: Dictionary = data().get("people", {}).get(npc_name, {})
+static func spec(npc_name: String, node_name := "") -> Dictionary:
+	var p := _person(npc_name, node_name)
 	if p.is_empty():
 		return {}
 	var pre: Dictionary = data().get("presets", {}).get(str(p.get("preset", "")), {})
@@ -42,8 +60,8 @@ static func spec(npc_name: String) -> Dictionary:
 
 
 ## 搭一个人：CharacterModel（还没放进场景树；放进去以后 _ready 才加载模型）
-static func make(npc_name: String) -> CharacterModel:
-	var s := spec(npc_name)
+static func make(npc_name: String, node_name := "") -> CharacterModel:
+	var s := spec(npc_name, node_name)
 	if s.is_empty():
 		return null
 	var m := CharacterModel.new()
@@ -78,8 +96,13 @@ static func validate() -> Array:
 		for m in pres[k].get("tex", {}):
 			if not ResourceLoader.exists(DIR + str(pres[k].tex[m]) + ".png"):
 				errors.append("预设 %s：没有贴图 %s" % [k, pres[k].tex[m]])
+	var roles: Dictionary = CharacterModel.load_map().get("roles", {})
 	for who in data().get("people", {}):
 		var p: Dictionary = data().people[who]
+		if not roles.has(str(p.get("pose", "idle"))):
+			errors.append("%s：动作 %s 不在 character_anims.json 的 roles 里" % [who, p.get("pose", "")])
+		if str(p.get("prop", "")) != "" and not str(p.prop) in Props.KINDS:
+			errors.append("%s：道具 %s 不认识" % [who, p.prop])
 		if not pres.has(str(p.get("preset", ""))):
 			errors.append("%s：预设 %s 不认识" % [who, p.get("preset", "")])
 		for n in p.get("hair", []):

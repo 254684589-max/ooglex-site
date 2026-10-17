@@ -486,6 +486,16 @@ godot/
 - **测试**：`looks` 组——数据校验、维克托的拼法、没配的人、赫尔曼（兜帽藏起、胡子在同一副骨架上、远处不画、能放动作）、霜渡镇的维克托、酒馆（玛蒂尔达穿上、大桶还是胶囊）、鹭沼（托宾穿上、营地那伙人还是胶囊）。
 - **预览工具**：`tools/character_sheet.gd` 加 `parts=`、`look=`（xvfb 软件渲染出拼图，不用网页构建）。
 
+### 4.28 人物动作：按身份、按剧情的站姿与动作（路线图 A.2a+，2026-10-17）
+
+- **动作**：`data/character_anims.json` 加 13 个角色动作（talk、fold_arms、lantern、torch、sit、sit_talk、rail、kneel_fix、chop、drink、nod、shake、lying），都来自 A.1 已登记的 UAL1 / UAL2 免费动画库（CC0），重建 `ual_core.res`（31 个片段，2.5 MB）。
+- **配法**：`data/looks.json` 每个人加 `pose`（缺省 idle）、`prop`（lantern / torch / axe / cup / sword）；`@节点名` 可以给同名的某一个人单独配（码草皮的泥炭工跪着干活）。`Looks.validate()` 检查动作和道具都存在。
+- **道具**：`actors/props.gd`（`Props.make`）用 MeshKit 搭；`CharacterModel.hold_prop(prop, left)` 挂到右手握点，或者镜像出来的左手握点（UAL 的火把、喝水动作用左手：`Props.LEFT_HAND`）。提灯、火把、杯子包一层 `Upright`（`actors/upright.gd`，每帧只留朝向，保持竖直）。
+- **错开**：`play_loop(pose, 0.88–1.12 倍速)` + 随机起点，不会一屋子人同时晃。
+- **说话**：`main.open_dialogue` 调 `Npc.begin_talk()`：模型改 `PROCESS_MODE_ALWAYS`（对话时游戏暂停），放 talk（坐着放 sit_talk）；提灯、举火把的不换。`_on_dialogue_closed` 调 `end_talk()` 换回去。
+- **躺着**：奥斯瑞克换上模型，`hold("lying", 0)`（LayToIdle 第一帧，平躺）；醒来 `hold("lying", 0.5)`（撑着胳膊肘）。模型挪 `Npc.LYING_OFFSET`（脚在本地 z -0.62、头在 +0.9 → 往床头挪 0.75、抬高 0.08），截图核对头在枕头上。
+- **测试**：`looks` 组加动作与道具检查（泥炭工劈砍 / 跪着、玛蒂尔达靠柜台、伐木工端杯、说话换动作再换回、奥斯瑞克躺着与醒来）。预览工具加 `prop=`。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

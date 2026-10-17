@@ -7459,7 +7459,9 @@ func test_looks() -> void:
 	var v := Looks.spec("维克托")
 	check(v.parts.size() == 4 and str(v.parts[0]).ends_with("Outfit_Male_Peasant.gltf") and str(v.parts[1]).ends_with("Head_Male.gltf") and v.look.tint.get("MI_Hair_1") == "#4a3a2a" and v.look.tint.get("MI_Peasant") == "#7a4a44",
 		"维克托：平民那套换成深红、男头、分头加胡子、深棕发色")
-	check(Looks.spec("灰盒路人").is_empty() and Looks.spec("奥斯瑞克").is_empty(), "没配的人（测试场的路人、躺着的家主）照旧是胶囊")
+	check(Looks.spec("灰盒路人").is_empty() and Looks.pose("奥斯瑞克") == "lying", "没配的人（测试场的路人）照旧是胶囊；躺着的家主也穿上了（A.2b）")
+	check(Looks.pose("更夫") == "lantern" and Looks.prop("更夫") == "lantern" and Looks.pose("泥炭工", "Npc_peat_cutter") == "chop" and Looks.pose("泥炭工", "Npc_peat_stacker") == "kneel_fix",
+		"A.2b 站姿：更夫提灯；两个泥炭工一个挖、一个跪着码垛（按节点编号分开配）")
 	# 搭出来：头、头发挂在服装的骨架上，兜帽摘了
 	var m := Looks.make("赫尔曼")
 	add_child(m)
@@ -7495,6 +7497,23 @@ func test_looks() -> void:
 	for n in main.world.find_children("*", "Npc", true, false):
 		(dressed if (n as Npc).look_model != null else plain).append((n as Npc).display_name)
 	check(dressed.has("玛蒂尔达") and plain.has("大桶"), "酒馆：玛蒂尔达穿上了，要打一架的大桶照旧是胶囊（穿上：%s；胶囊：%s）" % [str(dressed), str(plain)])
+	var matilda: Npc = null
+	var woodcutter: Npc = null
+	for n in main.world.find_children("*", "Npc", true, false):
+		if (n as Npc).display_name == "玛蒂尔达":
+			matilda = n
+		if (n as Npc).display_name == "伐木工":
+			woodcutter = n
+	check(matilda.look_model.role == "rail" and woodcutter.look_model.role == "drink" and woodcutter.look_model.skeleton.find_child("Prop_cup", true, false) != null,
+		"A.2b：玛蒂尔达靠着吧台，伐木工左手端着杯子喝")
+	var ph := [matilda.look_model.anim.current_animation_position, woodcutter.look_model.anim.speed_scale]
+	check(absf(woodcutter.look_model.anim.speed_scale - 1.0) <= 0.121, "每个人动作快慢、起点不一样（%s）" % str(ph))
+	main.open_dialogue("tavern", "matilda", matilda)
+	await frames(2)
+	check(matilda.look_model.role == "talk" and matilda.look_model.process_mode == Node.PROCESS_MODE_ALWAYS, "对话开始：玛蒂尔达比划着说（游戏暂停时她照样动）")
+	main.dialogue.close()
+	await frames(2)
+	check(matilda.look_model.role == "rail" and not matilda.talking and matilda.look_model.process_mode == Node.PROCESS_MODE_INHERIT, "对话结束：回到靠着吧台")
 	await free_main(main)
 	ch1_state("deliver")
 	GameState.flags.erase("offer_left")
@@ -7503,6 +7522,21 @@ func test_looks() -> void:
 	await physics(2)
 	var offer := main.world.get_node_or_null("Npc_offer_camp") as Npc
 	var tobin := main.world.get_node_or_null("Npc_tobin") as Npc
-	check(offer != null and offer.look_model == null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人照旧是胶囊（敌人换装在 A.2b）")
+	check(offer != null and offer.look_model == null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人照旧是胶囊（敌人换装另做）")
+	var stacker := main.world.get_node_or_null("Npc_peat_stacker") as Npc
+	var cutter := main.world.get_node_or_null("Npc_peat_cutter") as Npc
+	check(stacker.look_model.role == "kneel_fix" and cutter.look_model.role == "chop" and cutter.look_model.grip.find_child("Prop_axe", true, false) != null, "泥炭场：一个跪着码垛、一个抡斧头挖")
+	await free_main(main)
+	# 家主：躺在床上（LayToIdle 第一帧），黄昏醒了撑着半坐起来
+	heir_state()
+	GameState.pending_load = {"scene": "sickroom", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	var osric := main.world.get_node("Npc_osric") as Npc
+	check(osric.look_model != null and osric.look_model.role == "lying" and osric.look_model.anim.current_animation_position < 0.05, "病房：家主穿上了，平躺在床上")
+	GameState.set_flag("osric_awake")
+	Sickroom.wake(main.world)
+	await frames(2)
+	check(absf(osric.look_model.anim.current_animation_position - 0.5) < 0.05, "家主醒了：撑着胳膊半坐起来")
 	await free_main(main)
 	GameState.new_game()
