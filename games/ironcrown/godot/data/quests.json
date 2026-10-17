@@ -38,7 +38,7 @@
       "stages": {
         "get_ledger": {"objective": "账房上了两道锁：找堡守赫尔曼要钥匙（说服他，或者瓦伦家信得过你），或者从账房侧墙那扇小窗撬进去（被看见就闹大）", "advance_when": {"has_item": "fur_ledger", "to": "deliver"}},
         "deliver": {"objective": "账册到手了：交给阿尔里克（他会交给塞弗林家的信使）、交给伊薇特，或者自己留着"},
-        "caught": {"objective": "撬窗被赫尔曼抓了个正着，账房再也进不去了"}
+        "caught": {"objective": "撬窗被赫尔曼抓了个正着，窗钉死了，账房再也进不去了（这条支线到这里为止）"}
       }
     },
     "ch1_outlaws": {

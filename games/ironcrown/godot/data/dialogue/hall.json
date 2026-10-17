@@ -38,7 +38,7 @@
       },
       "again": {
         "text": "（他抬起眼）还有事？",
-        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他和信使低声说着话，桌上的蜡烛快烧完了。见你过来，他抬起眼）还有事？"}],
+        "text_if": [{"if": [{"flag": "ch1_ledger", "eq": "ivette"}], "text": "（他看你的眼神冷了下来）账烧了——我听说了。……还有事？"}, {"if": [{"flag": "ch1_ledger", "eq": "caught"}], "text": "（他压低了声音）撬窗？还让赫尔曼抓了个正着。……还有事？"}, {"if": [{"daypart": ["dusk", "night"]}], "text": "（他和信使低声说着话，桌上的蜡烛快烧完了。见你过来，他抬起眼）还有事？"}],
         "options": [
           {
             "text": "家主怎么样了？",
@@ -53,6 +53,9 @@
             "if": [
               {
                 "flag": "ledger_asked"
+              },
+              {
+                "not_flag": "ch1_ledger"
               }
             ],
             "next": "ask_again"

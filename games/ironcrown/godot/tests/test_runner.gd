@@ -6814,7 +6814,7 @@ func test_ledger() -> void:
 	main.player.interactor.refresh()
 	check(main.player.interactor.target == win, "站在窄巷里面朝小窗：对得准（「看看 · 账房的小窗」）")
 	GameState.checks["herman_key"] = false
-	check(await fl_say(main, "blackheron", "herman", ["账房的钥匙……", "家主醒了总要看账。钥匙放在我这儿，比挂在你腰上更不惹眼。"], true) and main.dialogue.runner.node_id == "key_no"
+	check(await fl_say(main, "blackheron", "herman", ["账房的钥匙……", "家主醒的时候不多。他要问账，总不能等人去翻你的钥匙串——让我先替他把账拿出来。"], true) and main.dialogue.runner.node_id == "key_no"
 		and GameState.has_flag("herman_key_refused") and not GameState.has_item("counting_key"), "口才没说动赫尔曼：不给钥匙")
 	main.dialogue.close()
 	await frames(2)
@@ -6871,11 +6871,18 @@ func test_ledger() -> void:
 	await physics(3)
 	ledger = main.find_children("*", "Pickup", true, false).filter(func(p): return p.item_id == "fur_ledger")
 	check(main.area == "counting" and main.arrived_by == "front" and ledger.size() == 1, "从门进了账房")
-	ledger[0].interact(main.player)
-	GameState.add_item("fur_ledger")
+	check(say_runner("counting_window", [], "blackheron") == "keyed", "有钥匙的人：用不着撬窗（审查：不然撬窗被抓会把支线弄坏）")
+	main.set_view(1)
+	await physics(3)
+	main.player.interactor.refresh()
+	main.player.interactor.use()
+	await frames(2)
+	check(GameState.has_item("fur_ledger") and GameState.quest_stage("ch1_ledger") == "deliver", "从门进来也拿得到账册")
 	var sev := GameState.get_rep("severin")
 	check(say_runner("alric", ["账册拿来了。"], "hall") == "ledger_alric" and str(GameState.get_flag("ch1_ledger")) == "alric" and GameState.get_rep("severin") == sev + 10 and GameState.quest_done("ch1_ledger"),
 		"交给阿尔里克：他交给塞弗林家的信使，支线做完，塞弗林家 +10")
+	r.start("hall", "alric")
+	check(not r.options().any(func(o): return o.text == "账房那本账……"), "账册交出去以后：阿尔里克不再说「钥匙在赫尔曼那儿」")
 	await free_main(main)
 	GameState.pending_load = {"scene": "counting", "spawn": "front", "player": {}}
 	main = await make_main(false)
@@ -6888,8 +6895,9 @@ func test_ledger() -> void:
 	GameState.start_quest("ch1_ledger")
 	var valen := GameState.get_rep("valen")
 	GameState.checks["ledger_window_day"] = false
-	check(say_runner("counting_window", ["（趁院子里没人注意，撬开百叶）"], "blackheron") == "caught" and GameState.has_flag("ledger_caught") and GameState.quest_done("ch1_ledger")
-		and GameState.get_rep("valen") == valen - 10 and str(GameState.get_flag("ch1_ledger")) == "caught", "撬窗被赫尔曼抓了个正着：支线失败、瓦伦家 -10")
+	check(say_runner("counting_window", ["（趁院子里没人注意，撬开百叶）"], "blackheron") == "caught" and GameState.has_flag("ledger_caught") and not GameState.quest_done("ch1_ledger")
+		and GameState.quest_stage("ch1_ledger") == "caught"
+		and GameState.get_rep("valen") == valen - 10 and str(GameState.get_flag("ch1_ledger")) == "caught", "撬窗被赫尔曼抓了个正着：支线停在「进不去了」（不算完成，审查）、瓦伦家 -10")
 	check(say_runner("counting_window", [], "blackheron") == "nailed", "窗户钉死了")
 	GameState.set_flag("herman_met")
 	r.start("blackheron", "herman")

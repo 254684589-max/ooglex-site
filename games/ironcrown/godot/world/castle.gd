@@ -116,7 +116,7 @@ static func barracks_open() -> bool:
 
 ## 账房的门推不推得开（4.7a）：拿到了赫尔曼的钥匙（撬窗的人从窗户爬进去，门还锁着）
 static func counting_open() -> bool:
-	return GameState.has_item("counting_key")
+	return GameState.has_item("counting_key") and not GameState.has_flag("ledger_caught")
 
 
 ## 四栋房子（门按现在的进度换成推得开的）

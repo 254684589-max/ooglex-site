@@ -110,7 +110,7 @@
         "text": "（他的手按在腰上的钥匙串上）账房？没有家主的话，谁也别想进。……谁让你来要的，我心里有数。",
         "text_if": [{"if": [{"flag": "ledger_caught"}], "text": "（他看都不看你）撬窗的人，还有脸来要钥匙？"}, {"if": [{"flag": "counting_key_given"}], "text": "钥匙已经给你了。家主醒了，你自己跟他交代。"}],
         "options": [
-          {"text": "家主醒了总要看账。钥匙放在我这儿，比挂在你腰上更不惹眼。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}], "check": {"id": "herman_key", "skill": "speech", "dc": 15, "pass": "key_given", "fail": "key_no"}},
+          {"text": "家主醒的时候不多。他要问账，总不能等人去翻你的钥匙串——让我先替他把账拿出来。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}], "check": {"id": "herman_key", "skill": "speech", "dc": 15, "pass": "key_given", "fail": "key_no"}},
           {"text": "维克托大人让我替他照看家主。瓦伦家的人信得过我。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}, {"rep": "valen", "at_least": 25}], "next": "key_trust"},
           {"text": "……", "next": "again"}
         ]
@@ -191,6 +191,7 @@
     "start_if": [
       {"if": [{"flag": "ledger_caught"}], "node": "nailed"},
       {"if": [{"flag": "ch1_ledger"}], "node": "done"},
+      {"if": [{"flag": "counting_key_given"}], "node": "keyed"},
       {"if": [{"has_item": "fur_ledger"}], "node": "done"},
       {"if": [{"not_flag": "ledger_asked"}], "node": "plain"},
       {"if": [{"flag": "ledger_window"}], "node": "ajar"}
@@ -222,9 +223,15 @@
       },
       "caught": {
         "text": "（闩刚挑开一半，身后有人咳了一声。赫尔曼拄着长枪站在巷口，脸色铁青）撬家主的账房？……看在家主还活着的份上，我不叫人把你扔进沼泽。这扇窗，我会让人钉死。",
-        "do": [{"set": "ledger_caught"}, {"set": "ch1_ledger", "value": "caught"}, {"rep": "valen", "delta": -10}, {"quest": "ch1_ledger", "stage": "caught"}, {"quest_done": "ch1_ledger"}],
+        "do": [{"set": "ledger_caught"}, {"set": "ch1_ledger", "value": "caught"}, {"rep": "valen", "delta": -10}, {"quest": "ch1_ledger", "stage": "caught"}],
         "options": [
           {"text": "……", "end": true}
+        ]
+      },
+      "keyed": {
+        "text": "（你腰上挂着赫尔曼的钥匙，用不着撬窗。账房的门在塔楼南头。）",
+        "options": [
+          {"text": "（离开）", "end": true}
         ]
       },
       "nailed": {
