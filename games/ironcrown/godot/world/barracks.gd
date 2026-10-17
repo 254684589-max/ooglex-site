@@ -63,6 +63,8 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 
 
 static func _person(parent: Node3D, p: Array, lines: Array) -> void:
+	if Chapter1.gone(str(p[0])):
+		return                               # 阿尔里克拿了印戒：伊薇特带着兵营里她的人离堡了（4.8a）
 	var n := Npc.make(str(p[1]), lines, Color(str(p[4])))
 	n.name = "Npc_" + str(p[0])
 	if lines.is_empty():

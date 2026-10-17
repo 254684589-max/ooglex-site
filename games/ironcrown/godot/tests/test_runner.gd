@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -7305,4 +7305,129 @@ func test_outlaws() -> void:
 	check(not main.encounter_active() and not main.in_combat(), "营地空了还开打：马上结束，能走能存档")
 	await free_main(main)
 	Music.stop_now()
+	GameState.new_game()
+
+
+## 4.8a：在病房等黄昏，家主醒来交出印戒，交给继承人；另一位离堡
+func heir_state(choice := "deliver", sd := 1) -> void:
+	ch1_state(choice, sd)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ivette_met", "ledger_asked", "outlaws_asked", "heirs_heard", "marta_met", "osric_seen"]:
+		GameState.set_flag(f)
+	GameState.start_quest("ch1_main")
+	GameState.set_stage("ch1_main", "wait_dusk")
+	GameState.start_quest("ch1_ledger")
+	GameState.start_quest("ch1_outlaws")
+	GameState.daypart = "day"
+
+
+func test_heir() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 水门的表（STORY 4.7b）
+	var table := [["helped", "ivette", "deliver", "warned"], ["persuaded", "ivette", "deliver", "unknown"], ["reported", "ivette", "deliver", "opened"], ["", "ivette", "deliver", "unknown"],
+		["helped", "alric", "deliver", "opened"], ["persuaded", "alric", "deliver", "unknown"], ["reported", "alric", "deliver", "unknown"], ["", "alric", "deliver", "opened"], ["", "alric", "release", "unknown"]]
+	var wrong := []
+	for row: Array in table:
+		GameState.new_game(1)
+		GameState.set_flag("prologue_edric", row[2])
+		if str(row[0]) != "":
+			GameState.set_flag("ch1_edric", row[0])
+		if Chapter1.water_gate(str(row[1])) != str(row[3]):
+			wrong.append(row)
+	check(wrong.is_empty(), "水门按 STORY 4.7b 的表算（%s）" % str(wrong))
+	# —— 玛尔塔：等黄昏；白芦根还没交的来不及了
+	heir_state()
+	GameState.start_quest("ch1_whitereed")
+	var r := DialogueRunner.new()
+	r.start("sickroom", "marta")
+	r.choose(r.options().map(func(o): return str(o.text)).find("家主什么时候醒？"))
+	check(r.node_id == "wait_ask" and r.text().contains("白芦根还没熬上"), "问玛尔塔家主什么时候醒：她提醒白芦根还没熬上")
+	r.choose(r.options().map(func(o): return str(o.text)).find("我就在这儿等他醒。"))
+	check(r.node_id == "dusk" and GameState.has_flag("osric_awake") and GameState.quest_stage("ch1_main") == "osric_awake" and GameState.quest_stage("ch1_whitereed") == "late",
+		"在床边等：家主醒了，主线推进；白芦根来不及了（late）")
+	heir_state()
+	check(say_runner("marta", ["家主什么时候醒？", "我先去办点事。"], "sickroom") == "again" and not GameState.has_flag("osric_awake"), "先去办事：还是白天，家主没醒")
+	# —— 在病房里真的等：时段推到黄昏，家主能说话了
+	GameState.pending_load = {"scene": "sickroom", "spawn": "front", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	var osric := main.world.get_node("Npc_osric") as Npc
+	check(osric.dialogue_id == "" and osric.verb == "看看", "白天：家主睡着，只能看看")
+	check(await fl_say(main, "sickroom", "marta", ["家主什么时候醒？", "我就在这儿等他醒。", "（走到床前）"]), "陪玛尔塔等")
+	await frames(3)
+	check(GameState.daypart == "dusk" and main.daypart == Daypart.effective("sickroom", "dusk") and osric.dialogue_id == "osric" and osric.verb == "交谈", "对话一关：黄昏了，家主醒着、能说话（%s / %s）" % [GameState.daypart, osric.verb])
+	check(await fl_say(main, "sickroom", "osric", ["（把奥尔本修士的旧书给他看）", "……", "（拿出借据）霜渡镇那张借据，在我这儿。", "……", "两位继承人都在等您一句话。", "为什么是我？", "（收下印戒）"]),
+		"给他看旧书、交出借据、问继承人")
+	check(GameState.has_flag("osric_book") and GameState.get_flag("ch1_debt") == "given_osric" and not GameState.has_item("debt_note") and GameState.has_item("valen_signet") and GameState.quest_stage("ch1_main") == "choose_heir",
+		"家主认出了旧书、收下借据（given_osric），把印戒交给你；主线：交给该拿的人")
+	r.start("sickroom", "osric")
+	check(r.node_id == "after", "再找家主：他又睡过去了")
+	await free_main(main)
+	# —— 旧书没看之前不说继承人；没有借据不显示借据（会剧透）
+	heir_state("release")
+	GameState.set_flag("osric_awake")
+	r.start("sickroom", "osric")
+	var ot: Array = r.options().map(func(o): return str(o.text))
+	check(not ot.has("两位继承人都在等您一句话。") and not ot.any(func(t): return str(t).begins_with("（拿出借据")) and ot.has("（把奥尔本修士的旧书给他看）"), "先看旧书才说到继承人；借据跟埃德里克走了的不显示（%s）" % str(ot))
+	GameState.set_flag("ch1_herb")
+	check(r.start("sickroom", "osric") and r.text().contains("目光比你想的清楚"), "喝过白芦根汤：他清醒得多")
+	# —— 交给阿尔里克（黄昏在大厅）：伊薇特带着兵营的人离堡；她托你的支线收尾；借据一起交出
+	heir_state("extort")
+	GameState.start_quest("ch1_wedding")
+	GameState.set_flag("ch1_edric", "helped")
+	GameState.set_flag("osric_awake")
+	GameState.set_flag("osric_ring_given")
+	GameState.set_stage("ch1_main", "choose_heir")
+	GameState.add_item("valen_signet")
+	GameState.daypart = "dusk"
+	var sev := GameState.get_rep("severin")
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_ivette") == null and main.world.get_node_or_null("Npc_alric") != null, "黄昏：伊薇特回兵营了，阿尔里克在大厅")
+	check(await fl_say(main, "hall", "alric", ["（拿出家主印戒）", "（把印戒交给他）", "还有这个——霜渡镇那张借据。", "……"]), "把印戒交给阿尔里克，借据也给他")
+	await frames(2)
+	check(GameState.get_flag("valen_heir") == "alric" and not GameState.has_item("valen_signet") and GameState.get_flag("ch1_debt") == "given_heir" and GameState.get_rep("severin") == sev + 10
+		and GameState.quest_stage("ch1_main") == "prepare", "valen_heir = alric，借据 given_heir，塞弗林家 +10，主线推进到备战")
+	check(GameState.get_flag("ch1_water_gate") == "opened" and GameState.quest_stage("ch1_outlaws") == "left" and GameState.quest_stage("ch1_ledger") == "get_ledger" and GameState.quest_stage("ch1_wedding") == "left",
+		"水门：伊薇特答应过退亲、却选了阿尔里克——埃德里克会开门（opened）；伊薇特的支线、婚事收尾，阿尔里克的账册还在")
+	check(Chapter1.gone("ivette") and Chapter1.gone("sergeant") and not Chapter1.gone("alric") and Schedule.area_of("ivette") == "", "伊薇特和兵营里她的人走了")
+	main = await fl_go(main, "castle")
+	main = await fl_go(main, "barracks")
+	await physics(2)
+	var left := main.find_children("Npc_*", "Npc", true, false).map(func(n): return str(n.name))
+	check(main.area == "barracks" and left.is_empty(), "兵营空了（%s）" % str(left))
+	await free_main(main)
+	r.start("hall", "alric")
+	check(r.node_id == "heir", "再找阿尔里克：他让你去找赫尔曼")
+	# —— 交给伊薇特（黄昏在兵营）：阿尔里克带着信使离堡，当场从大厅拿掉
+	heir_state()
+	GameState.set_flag("osric_ring_given")
+	GameState.set_stage("ch1_main", "choose_heir")
+	GameState.add_item("valen_signet")
+	GameState.daypart = "dusk"
+	var eld := GameState.get_rep("eld")
+	GameState.pending_load = {"scene": "barracks", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_ivette") != null, "黄昏：伊薇特在兵营")
+	check(await fl_say(main, "hall", "ivette", ["（拿出家主印戒）", "（把印戒交给她）", "……"]), "把印戒交给伊薇特")
+	await frames(2)
+	check(GameState.get_flag("valen_heir") == "ivette" and GameState.get_rep("eld") == eld + 10 and GameState.has_item("debt_note") and GameState.get_flag("ch1_water_gate") == "unknown"
+		and GameState.quest_stage("ch1_ledger") == "left" and GameState.quest_stage("ch1_outlaws") == "talk_offer" and main.world.get_node_or_null("Npc_ivette") != null,
+		"valen_heir = ivette，厄尔德家 +10；借据没给还在身上；埃德里克没做婚事支线、选了伊薇特：水门 unknown；阿尔里克的账册收尾，伊薇特的还在")
+	main = await fl_go(main, "castle")
+	main = await fl_go(main, "hall")
+	await physics(2)
+	check(main.world.get_node_or_null("Npc_alric") == null and main.world.get_node_or_null("Npc_envoy") == null and main.world.get_node_or_null("Npc_edric_hall") != null, "大厅：阿尔里克和信使走了，埃德里克还在")
+	await free_main(main)
+	# —— 没有印戒：继承人那里不显示（会剧透）；读档不再提示「离堡」
+	heir_state()
+	r.start("hall", "alric")
+	check(not r.options().any(func(o): return str(o.text).begins_with("（拿出家主印戒")), "没有印戒：不显示交印戒")
+	GameState.set_flag("valen_heir", "alric")
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	check(main.heir_seen == "alric", "读档进来：已经交过的不再提示")
+	await free_main(main)
 	GameState.new_game()

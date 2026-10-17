@@ -1,9 +1,10 @@
 {
-  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。 4.7a：账册交给阿尔里克（他交给塞弗林家的信使：塞弗林家 +10、厄尔德家 -5）或伊薇特（她扔进火里：厄尔德家 +10、塞弗林家 -5），支线做完；自己留着到 4.8 再算。 4.7b：埃德里克的婚事（只在序章「交出」时）——找伊薇特，她答应当了家就退亲，回去告诉埃德里克，他提醒你水门（edric_warned_water）；口才难度 14 劝他留下；或者告诉阿尔里克（塞弗林家 +5，他让人看着埃德里克）。结果记在 ch1_edric，4.8 读。 4.7c：营地的人说了「谁给的粮实在就跟谁」（offer_camp_terms）以后，伊薇特给一张粮单（grain_writ，拿去营地收编奥弗）；营地的事了结了（ch1_outlaws，不管谈的还是打的），任务推进到 report，回来告诉她：按结果说一句，瓦伦家 +5，支线做完；泥炭工说定了（ch1_peat）她再说一句。奥弗死在渡口的，她说的是「灰手剩下的那伙人」（dead 条件）。",
+  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。 4.7a：账册交给阿尔里克（他交给塞弗林家的信使：塞弗林家 +10、厄尔德家 -5）或伊薇特（她扔进火里：厄尔德家 +10、塞弗林家 -5），支线做完；自己留着到 4.8 再算。 4.7b：埃德里克的婚事（只在序章「交出」时）——找伊薇特，她答应当了家就退亲，回去告诉埃德里克，他提醒你水门（edric_warned_water）；口才难度 14 劝他留下；或者告诉阿尔里克（塞弗林家 +5，他让人看着埃德里克）。结果记在 ch1_edric，4.8 读。 4.7c：营地的人说了「谁给的粮实在就跟谁」（offer_camp_terms）以后，伊薇特给一张粮单（grain_writ，拿去营地收编奥弗）；营地的事了结了（ch1_outlaws，不管谈的还是打的），任务推进到 report，回来告诉她：按结果说一句，瓦伦家 +5，支线做完；泥炭工说定了（ch1_peat）她再说一句。 4.8a：家主把印戒交给你以后（valen_signet），两位继承人那里多一项「拿出家主印戒」：交给阿尔里克（塞弗林家 +10、烽誓团 -5）或伊薇特（厄尔德家 +10、烽誓团 +5、塞弗林家 -10），valen_heir；借据还在身上的可以一起交出去（ch1_debt = given_heir）；另一位当场离堡（quest/chapter1.gd）。奥弗死在渡口的，她说的是「灰手剩下的那伙人」（dead 条件）。",
   "alric": {
     "speaker": "阿尔里克",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "valen_heir", "eq": "alric"}], "node": "heir"},
       {
         "if": [
           {
@@ -14,6 +15,34 @@
       }
     ],
     "nodes": {
+      "ring": {
+        "text": "（他盯着那枚戒指，没有伸手）父亲让你挑。（他抬起眼睛看你）那你挑吧。给我，北境能活过这个冬天——用一半兵权跟摄政换的，我不瞒你。烽燧会熄，可人不会饿死。",
+        "options": [
+          {"text": "（把印戒交给他）", "do": [{"take_item": "valen_signet"}, {"set": "valen_heir", "value": "alric"}, {"rep": "severin", "delta": 10}, {"rep": "beacon_oath", "delta": -5}, {"quest": "ch1_main", "stage": "prepare"}], "next": "ring_given"},
+          {"text": "我再想想。", "next": "again"}
+        ]
+      },
+      "ring_given": {
+        "text": "（他把戒指套上手指，转了一圈，像是在试它有多重）……谢谢。（他转身冲门口喊）赫尔曼！关堡门。我妹妹今晚会带人从堤道回来。（他看着你）你也留下，誓剑。堤道上用得着会用剑的人。",
+        "options": [
+          {"text": "还有这个——霜渡镇那张借据。", "if": [{"has_item": "debt_note"}], "locked": "hide", "next": "ring_debt"},
+          {"text": "……", "end": true}
+        ]
+      },
+      "ring_debt": {
+        "text": "（他看了一眼借据背面的印，很快地把它折起来）……这东西能换的，比一半兵权还多。我会用在该用的地方。",
+        "do": [{"take_item": "debt_note"}, {"set": "ch1_debt", "value": "given_heir"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "heir": {
+        "text": "（他在台子上摊开一张堤道的图，头也没抬）去找赫尔曼，看看今晚怎么守。",
+        "options": [
+          {"text": "还有别的事。", "next": "again"},
+          {"text": "……", "end": true}
+        ]
+      },
       "greet": {
         "text": "（他站在台子边上，背后是空着的高背椅，手指一下一下敲着剑柄）霜渡镇的誓剑。维克托派你来的也好，自己来的也好，进了这间大厅，就得听明白了再走。我是阿尔里克，瓦伦家的长子。",
         "do": [
@@ -30,6 +59,7 @@
             "text": "您打算怎么守北境？",
             "next": "plan"
           },
+          {"text": "（拿出家主印戒）", "if": [{"has_item": "valen_signet"}], "locked": "hide", "next": "ring"},
           {
             "text": "（告辞）",
             "end": true
@@ -62,6 +92,7 @@
           },
           {"text": "账册拿来了。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_alric"},
           {"text": "埃德里克不想娶塞弗林家的人，打算今晚之后自己走。", "if": [{"quest_active": "ch1_wedding"}, {"not_flag": "edric_ivette_promise"}], "next": "edric_report"},
+          {"text": "（拿出家主印戒）", "if": [{"has_item": "valen_signet"}], "locked": "hide", "next": "ring"},
           {
             "text": "（告辞）",
             "end": true
@@ -154,6 +185,7 @@
     "speaker": "伊薇特",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "valen_heir", "eq": "ivette"}], "node": "heir"},
       {
         "if": [
           {
@@ -173,6 +205,34 @@
       }
     ],
     "nodes": {
+      "ring": {
+        "text": "（她看了戒指一眼，又看着你）父亲把这个交给一个外人……像他会做的事。给我，扣下的皮毛税一枚也不还，烽燧今晚就重新点起来——摄政会恨死瓦伦家。你想清楚。",
+        "options": [
+          {"text": "（把印戒交给她）", "do": [{"take_item": "valen_signet"}, {"set": "valen_heir", "value": "ivette"}, {"rep": "eld", "delta": 10}, {"rep": "beacon_oath", "delta": 5}, {"rep": "severin", "delta": -10}, {"quest": "ch1_main", "stage": "prepare"}], "next": "ring_given"},
+          {"text": "我再想想。", "next": "again"}
+        ]
+      },
+      "ring_given": {
+        "text": "（她把戒指攥在手心里，没有戴上）……我会对得起它。（她转过身，提高了嗓门）都起来！我哥今晚会带人从堤道回来。（她看着你）你也留下，誓剑。石拱那儿缺一个会用剑的人。",
+        "options": [
+          {"text": "还有这个——霜渡镇那张借据。", "if": [{"has_item": "debt_note"}], "locked": "hide", "next": "ring_debt"},
+          {"text": "……", "end": true}
+        ]
+      },
+      "ring_debt": {
+        "text": "（她把借据凑到火边，看了很久，没有烧）……双钥港的人会来要它的。到时候，让他们来找我。",
+        "do": [{"take_item": "debt_note"}, {"set": "ch1_debt", "value": "given_heir"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "heir": {
+        "text": "（她在擦一把剑，头也没抬）去找赫尔曼，看看今晚怎么守。",
+        "options": [
+          {"text": "还有别的事。", "next": "again"},
+          {"text": "……", "end": true}
+        ]
+      },
       "greet": {
         "text": "（她背对着壁炉，手里转着一只空酒杯，靴子上还沾着泥）你就是那个从霜渡镇来的誓剑。我是伊薇特。（她打量了你一眼）坐不坐随你，这大厅里的椅子都是我父亲的。",
         "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她站在兵营的长桌边，跟兵们一块儿喝着汤，抬头看了你一眼）你就是那个从霜渡镇来的誓剑。我是伊薇特。坐吧，兵营里的长凳不分高低。"}],
@@ -190,6 +250,7 @@
             "text": "您打算怎么守北境？",
             "next": "plan"
           },
+          {"text": "（拿出家主印戒）", "if": [{"has_item": "valen_signet"}], "locked": "hide", "next": "ring"},
           {
             "text": "（告辞）",
             "end": true
@@ -213,6 +274,7 @@
             "text": "您打算怎么守北境？",
             "next": "plan"
           },
+          {"text": "（拿出家主印戒）", "if": [{"has_item": "valen_signet"}], "locked": "hide", "next": "ring"},
           {
             "text": "（告辞）",
             "end": true
@@ -248,6 +310,7 @@
           {"text": "阿尔里克让我去账房拿皮毛税的账。", "if": [{"flag": "ledger_asked"}, {"not_flag": "ivette_knows_ledger"}, {"not_flag": "ch1_ledger"}], "next": "ledger_tell"},
           {"text": "账册在我手里。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_ivette"},
           {"text": "埃德里克不想娶塞弗林家的人。", "if": [{"quest_stage": "ch1_wedding", "eq": "ask_ivette"}], "next": "wedding"},
+          {"text": "（拿出家主印戒）", "if": [{"has_item": "valen_signet"}], "locked": "hide", "next": "ring"},
           {
             "text": "（告辞）",
             "end": true

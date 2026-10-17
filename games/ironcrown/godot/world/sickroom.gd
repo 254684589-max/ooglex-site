@@ -59,8 +59,20 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	osric.position = OSRIC[2]
 	osric.rotation.y = float(OSRIC[3])
 	parent.add_child(osric)
+	wake(parent)
 	var s: Array = SPAWNS.front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+## 黄昏家主醒了（4.8a：玛尔塔那里选「我就在这儿等他醒」，osric_awake）：能和他说话（data/dialogue/sickroom.json 的 osric）；
+## 没醒的时候只能看看（OSRIC_LINES）。区域搭好时、对话关上时（main）各调一次
+static func wake(world: Node) -> void:
+	var osric := world.find_child("Npc_osric", true, false) as Npc
+	if osric == null or not GameState.has_flag("osric_awake") or osric.dialogue_id != "":
+		return
+	osric.dialogue_area = "sickroom"
+	osric.dialogue_id = "osric"
+	osric.verb = "交谈"
 
 
 static func map_spec() -> Dictionary:

@@ -123,6 +123,8 @@ func new_game(seed_override := -1) -> void:
 func set_flag(name: String, value = true) -> void:
 	flags[name] = value
 	flag_changed.emit(name, value)
+	if name == "valen_heir":
+		Chapter1.heir_chosen(str(value))      # 印戒交出去了：算水门、走了的那位托你的支线收尾（4.8a）
 	for q in quests.keys():
 		_auto_advance(str(q))                 # 阶段写了 {"flag": 旗标, "to": …} 的：旗标一设就推进（4.7c：营地的事了结了，不管是谈的还是打的）
 

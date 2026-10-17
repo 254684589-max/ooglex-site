@@ -65,6 +65,7 @@ var playable_chapter := Chapters.PLAYABLE   # 做到第几章能玩了（4.1；�
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
 var touch_hidden_by_dialogue := false   # 对话打开时藏起了触屏按钮（对话结束时还原）
 var opening: Opening             # 开场（3.8）：只在新游戏时有
+var heir_seen := ""               # 印戒交给谁了（4.8a）：对话关上时变了就提示另一位离堡
 var combat_music_check := 0.0    # 战斗配乐（M.1）：下次看在不在打还剩几秒
 var title_card: TitleCard        # 开场的标题卡（3.8）
 var tip_queue: Array = []        # 等着显示的教学提示编号（3.8；有界面开着、上一条还没消失时排队）
@@ -175,6 +176,7 @@ func _ready() -> void:
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
+	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
 	var moved := Schedule.apply(world, area)        # NPC 作息（4.6）：这个时段不在这儿的人拿掉、换了站位的挪过去、从别处来的放进来
 	if not moved.is_empty():
 		print("IC_SCHEDULE area=%s daypart=%s moved=%s" % [area, GameState.daypart, ",".join(moved)])
@@ -1230,6 +1232,14 @@ func _on_dialogue_closed() -> void:
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
 	_heirs_heard()
+	if area == "sickroom":
+		Sickroom.wake(world)                                # 黄昏家主醒了（4.8a）
+	var heir := str(GameState.get_flag("valen_heir", ""))
+	if heir != "" and heir != heir_seen:
+		heir_seen = heir
+		var left := Chapter1.remove_departed(world)        # 印戒交出去了：另一位当场离堡（4.8a）
+		hud.toast("伊薇特带着兵营里她的人出了水门。入夜前，她会回来。" if heir == "alric" else "阿尔里克带着塞弗林家的信使出了堡门。入夜前，他会回来。", 5.0)
+		print("IC_HEIR chosen=%s removed=%d water_gate=%s" % [heir, left, GameState.get_flag("ch1_water_gate", "")])
 	var b := GameState.pending_brawl
 	GameState.pending_brawl = {}
 	if not b.is_empty() and dialogue_npc is Npc:
