@@ -24,13 +24,15 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
 		current_group = g
 		await call("test_" + g)
 	wipe_test_saves()
+	Music.stop_now()                 # 背景音乐（M.1）：先停下、等一会儿让音频服务器放掉播放对象，不然退出时算泄漏
+	await seconds(0.5)
 	print("")
 	if failures.is_empty():
 		print("ALL %d CHECKS PASSED" % checks)
@@ -7031,4 +7033,79 @@ func test_errands() -> void:
 	await physics(2)
 	check(await fl_say(main, "hall", "ivette", ["埃德里克不想娶塞弗林家的人。", "……"]) and GameState.has_flag("edric_ivette_promise"), "黄昏在兵营：照样能找伊薇特说埃德里克的事")
 	await free_main(main)
+	GameState.new_game()
+
+
+## 背景音乐（路线图 M.1；core/music.gd、data/music.json、tools/compose_music.py）：曲目表对得上、每首能读、能循环、长度合理；区域和时段选曲；
+## 换曲子交叉淡入淡出、同一首不重放；暂停菜单里的开关和音量管「Music」总线（「声音」关了也静音）；进区域、时段变了自动换曲；开场先听钟声
+func test_music() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	var tracks: Dictionary = Music.data.get("tracks", {})
+	var bad := []
+	for id in tracks:
+		var s := load(str(tracks[id])) as AudioStreamOggVorbis
+		if s == null or s.get_length() < 30.0 or s.get_length() > 120.0:
+			bad.append(id)
+	check(tracks.size() == 5 and bad.is_empty(), "五首曲子都能读、长度 30–120 秒（%s）" % str(bad))
+	var unknown := []
+	for a in Music.data.get("areas", {}):
+		var v: Variant = Music.data.areas[a]
+		var ids: Array = (v as Dictionary).values() if v is Dictionary else [v]
+		if not Areas.known(str(a)) or ids.any(func(i): return not tracks.has(str(i))):
+			unknown.append(a)
+	check(unknown.is_empty() and Music.data.areas.size() >= 14, "区域表：区域都认识，曲目都存在（%s）" % str(unknown))
+	check(Music.track_for("frostford", "night") == "night" and Music.track_for("frostford", "dawn") == "town" and Music.track_for("castle", "night") == "keep"
+		and Music.track_for("marsh", "day") == "marsh" and Music.track_for("test_range", "day") == "", "选曲：霜渡镇夜里和白天不一样、黑鹭堡、鹭沼；测试场不放")
+	Music.play("keep")
+	var p: AudioStreamPlayer = Music.players[Music.active]
+	check(Music.track == "keep" and p.playing and p.stream is AudioStreamOggVorbis and (p.stream as AudioStreamOggVorbis).loop and p.bus == "Music", "放「黑鹭堡」：走 Music 总线、循环")
+	Music.play("keep")
+	check(Music.players[Music.active] == p, "同一首不重放（换区域时接着放）")
+	Music.play("marsh")
+	await seconds(Music.FADE + 0.4)
+	check(Music.track == "marsh" and Music.players[Music.active].playing and not p.playing, "换曲子：旧的淡出后停下，新的接上（%s / %s / %.1f dB）" % [Music.players[Music.active].playing, p.playing, p.volume_db])
+	Music.play("keep")
+	Music.play("marsh")
+	Music.play("keep")
+	await seconds(Music.FADE + 0.4)
+	check(Music.track == "keep" and Music.players[Music.active].playing and Music.players[Music.active].volume_db > -1.0, "很快地换来换去：最后那首照样在放（没被没跑完的淡出停掉）")
+	var bus := AudioServer.get_bus_index("Music")
+	Settings.set_value("music_volume", 0.5)
+	check(bus >= 0 and not AudioServer.is_bus_mute(bus) and absf(AudioServer.get_bus_volume_db(bus) - linear_to_db(0.5)) < 0.01, "音乐音量 50%：Music 总线 -6 dB")
+	Settings.set_value("music", false)
+	check(AudioServer.is_bus_mute(bus), "关掉背景音乐：静音")
+	Settings.set_value("music", true)
+	Settings.set_value("sound", false)
+	check(AudioServer.is_bus_mute(bus), "关掉「声音」：背景音乐也静音")
+	Settings.set_value("sound", true)
+	check(not AudioServer.is_bus_mute(bus), "都打开：有声音")
+	Settings.set_value("music_volume", 0.6)
+	# 进区域自动选曲；剧情改时段换曲
+	ch1_state("deliver", 41)
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "frostford", "spawn": "", "player": {}}
+	var main := await make_main(false)
+	await physics(2)
+	check(Music.track == "town", "白天的霜渡镇：「town」（%s）" % Music.track)
+	await main.set_daypart("night", false)
+	await frames(2)
+	check(Music.track == "night", "剧情推到夜里：换成「night」")
+	main = await fl_go(main, "tavern")
+	check(Music.track == "town", "进酒馆：「town」")
+	await free_main(main)
+	# 新游戏的开场：先听钟声（上一首淡出），管家喊人以后起「night」
+	Music.play("keep")
+	var skip: bool = Engine.get_meta("ic_skip_opening", false)
+	Engine.set_meta("ic_skip_opening", false)
+	GameState.new_game()
+	main = await make_main(false)
+	await physics(2)
+	check(main.opening != null and Music.track == "", "新游戏的开场：上一首淡出，先听钟声（%s）" % Music.track)
+	if main.opening != null:
+		main.opening.called.emit()
+		await frames(1)
+	check(Music.track == "night", "管家喊人以后：「night」")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", skip)
 	GameState.new_game()

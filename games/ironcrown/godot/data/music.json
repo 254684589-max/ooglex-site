@@ -1,0 +1,26 @@
+{
+  "_说明": "背景音乐（路线图 M.1）：tracks = 曲目编号 → 文件（都是 tools/compose_music.py 代码作曲合成的原创曲，见 assets/SOURCES.md）；areas = 区域 → 曲目，写成字符串就是不分时段，写成对象就是按时段（dawn / day / dusk / night，\"*\" 是其余时段）。没写的区域（测试场、训练场）不放音乐。换成别的授权曲目时，只改 tracks 里的文件，或者加新曲目再改 areas。",
+  "tracks": {
+    "town": "res://assets/music/town.ogg",
+    "night": "res://assets/music/night.ogg",
+    "marsh": "res://assets/music/marsh.ogg",
+    "keep": "res://assets/music/keep.ogg",
+    "battle": "res://assets/music/battle.ogg"
+  },
+  "areas": {
+    "frostford": {"night": "night", "*": "town"},
+    "tavern": "town",
+    "churchyard": "night",
+    "chapel": "night",
+    "birch": "night",
+    "ferry": "night",
+    "marsh": "marsh",
+    "inn": "town",
+    "castle": "keep",
+    "hall": "keep",
+    "sickroom": "keep",
+    "barracks": "keep",
+    "counting": "keep",
+    "battle": "battle"
+  }
+}

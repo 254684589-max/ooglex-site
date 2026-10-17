@@ -21,6 +21,7 @@ InputSetup="*res://core/input_setup.gd"
 Saves="*res://core/saves.gd"
 Settings="*res://core/settings.gd"
 GameState="*res://core/game_state.gd"
+Music="*res://core/music.gd"
 
 [display]
 
