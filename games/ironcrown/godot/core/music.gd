@@ -17,6 +17,10 @@ var fades: Array[float] = [0.0, 0.0]     # 每个播放器的淡入淡出系数 
 var tweens: Array = [null, null]          # 每个播放器正在跑的淡入 / 淡出（换回来时先停掉，不然没跑完的淡出会把新曲子停掉）
 var active := 0
 var track := ""                           # 现在放的曲目编号（"" = 没放）
+var fighting := false                     # 正在打（main 按 in_combat() 设）：放「battle」，打完回到区域的曲子
+const CALM_DELAY := 4.0                   # 打完以后安静多少秒才换回去（免得敌人一会儿警觉一会儿不警觉，曲子来回切）
+var _calm_left := 0.0
+var _area := ""
 
 
 func _ready() -> void:
@@ -43,7 +47,26 @@ func track_for(area: String, daypart: String) -> String:
 
 
 func play_area(area: String) -> void:
+	_area = area
+	if fighting:
+		return                            # 打着的时候不换（打完回来时再按区域和时段选）
 	play(track_for(area, GameState.daypart))
+
+
+## 战斗配乐（审查配乐与剧本：酒馆打架、桦林伏击、渡口对峙、营地都在打，原来放的还是安静的曲子）：
+## main 每帧告诉这里在不在打。开打马上换「battle」；不打了等 CALM_DELAY 秒再换回区域的曲子。军阵试验场本来就是「battle」
+func set_fighting(on: bool, delta: float) -> void:
+	if on:
+		_calm_left = CALM_DELAY
+		if not fighting:
+			fighting = true
+			play("battle")
+	elif fighting:
+		_calm_left -= delta
+		if _calm_left <= 0.0:
+			fighting = false
+			if _area != "":
+				play(track_for(_area, GameState.daypart))
 
 
 ## 换曲子：新的从无声淡进来，旧的淡出去再停；同一首不重放（换区域时接着放）
@@ -109,6 +132,7 @@ func _kill(i: int) -> void:
 ## 马上停（不淡出）、放掉曲子（测试退出前用；音频服务器要过一两帧才放掉播放对象）
 func stop_now() -> void:
 	track = ""
+	fighting = false
 	for i in players.size():
 		_kill(i)
 		fades[i] = 0.0
