@@ -46,6 +46,11 @@ const GUARD_LINES := {
 	"gate_guard_in": ["有事找赫尔曼大人，别在院子里乱走。", "两位继承人的人都住在堡里，各住各的。夜里别往兵营那边去。", "家主的病房谁也不让进——玛尔塔说的，赫尔曼大人点了头。"],
 	"barracks_soldier": ["伊薇特小姐在兵营里跟我们一块儿吃饭。阿尔里克大人？他在大厅里。", "这几天兵营不让外人进——小姐点过头的除外。", "听说南边来的信使还在堡里，住的是最好的客房。"],
 }
+## 印戒交出去以后（4.8a）：另一位继承人离堡了，说的话跟着变
+const GUARD_LINES_HEIR := {
+	"gate_guard_in": ["堡门关了。今晚谁也不许出去——赫尔曼大人的话。", "另一边的人入夜前就会回来。到时候，堤道上见真章。", "家主醒过一回，戒指给出去了。……这堡，今晚得守住。"],
+	"barracks_soldier": ["小姐拿了戒指。今晚，兵营里的人都听她的。", "大厅里那位带着信使走了。入夜前，他会带着人回来。", "长枪都发下去了。堤道那么窄，三个人一排就能把路堵死。"],
+}
 ## 命名出生点：gate = 从堡门进来（门里面，面朝庭院）；water_gate = 从水门进来（水门里面，面朝南）；barracks_gate = 从兵营侧门进来（面朝东）
 const SPAWNS := {
 	"gate": [Vector3(0, 0, 17.5), 0.0],
@@ -85,8 +90,10 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	win.name = "LedgerWindow"
 	win.position = LEDGER_WINDOW + Vector3(0, 0, -0.1)
 	parent.add_child(win)
+	var lines: Dictionary = GUARD_LINES_HEIR if GameState.has_flag("valen_heir") else GUARD_LINES
 	for g in GUARDS:
-		_person(parent, g, GUARD_LINES.get(str(g[0]), []))
+		if not Chapter1.gone(str(g[0])):         # 伊薇特拿不到印戒，兵营门口的兵跟她走了（4.8a）
+			_person(parent, g, lines.get(str(g[0]), []))
 	var s: Array = SPAWNS.gate
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 

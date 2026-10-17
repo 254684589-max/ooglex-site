@@ -429,11 +429,18 @@
     "speaker": "埃德里克",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "valen_heir"}], "node": "after_heir"},
       {"if": [{"flag": "ch1_edric", "eq": "reported"}], "node": "after_reported"},
       {"if": [{"flag": "ch1_edric"}], "node": "after"},
       {"if": [{"quest_active": "ch1_wedding"}], "node": "again"}
     ],
     "nodes": {
+      "after_heir": {
+        "text": "（他看着窗外的堤道，没回头）戒指给出去了。……我的事，已经由不得我了。",
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
       "greet": {
         "text": "（他坐在窗边，没回头）……又是你。父亲把我送来，跟塞弗林家的女儿定亲。下个月。（他终于看了你一眼）你满意了？",
         "options": [

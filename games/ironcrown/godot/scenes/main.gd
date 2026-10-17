@@ -128,7 +128,7 @@ func _ready() -> void:
 				Settings.head_bob = false
 			print("IC_REDUCED_MOTION")
 	if Daypart.valid(str(pending.get("daypart", ""))):
-		GameState.daypart = str(pending.daypart)   # 走旅行地图到了：路上过了大半天（4.2；出发时不改，免得半路存档存成「人还在原地、时辰已经到了」）
+		GameState.daypart = Chapter1.later_daypart(GameState.daypart, str(pending.daypart))   # 走旅行地图到了：路上过了大半天（4.2；出发时不改，免得半路存档存成「人还在原地、时辰已经到了」）
 	if not pending.is_empty():           # 读档 / 换区域：场景以它为准（2.8、3.1）
 		area = str(pending.scene) if Areas.known(str(pending.scene)) else "frostford"
 		use_arena = area == "arena"

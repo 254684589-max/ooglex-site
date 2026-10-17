@@ -475,6 +475,7 @@ godot/
 - **家主**：平时是只能看看的躺着的人；`Sickroom.wake` 在 `osric_awake` 时给他对话（`sickroom.json` 的 `osric`）、动词换成「交谈」——区域搭好时、对话关上时（`main`）各调一次。旧书（`osric_book`）→ 继承人 → 印戒（`valen_signet`，主线 → `choose_heir`）；借据（`ch1_debt = given_osric`）。
 - **交印戒**：`hall.json` 的 `alric`、`ivette` 多一项「拿出家主印戒」（没有印戒时隐藏）→ `valen_heir`、声望、主线 → `prepare`；借据可以一起给（`given_heir`）。`start_if` 加 `heir`（「去找赫尔曼」）。
 - **规则**（`quest/chapter1.gd`，`GameState.set_flag` 设 `valen_heir` 时调）：`water_gate()` 按 STORY 4.7b 的表；`QUESTS_OF` 走了的那位托你的支线（阿尔里克的账册、伊薇特的无旗者）和婚事还没做完的推到 `left`；`LEAVES_WITH` / `gone()`：伊薇特带走兵营里的军士和三个兵，阿尔里克带走信使——`hall.gd`、`barracks.gd` 不放，`Schedule.area_of` 返回空，`main` 在对话关上时 `remove_departed` 当场拿掉并提示（`IC_HEIR`；`heir_seen` 让读档、换区域时不再提示）。
+- **审查后**：收尾的支线（`left`）算做完；埃德里克在印戒交出后换成 `after_heir`；先拿了印戒、后想起借据的，睡着的家主照样收下（`debt_late`）；伊薇特走了粮单收回；兵营门口的兵跟伊薇特走；赫尔曼、庭院和大厅的卫兵按 `valen_heir` 换说法（`GUARD_LINES_HEIR`）；第一章的时段只往前走（`Chapter1.later_daypart`：旅行地图的「到了是白天」不会把黄昏改回白天）。
 - **测试**：`heir` 组——水门表 9 种；问玛尔塔、白芦根来不及、先去办事；在病房真的等（换到黄昏、家主能说话）；旧书、借据、印戒；没看旧书不说继承人、借据跟埃德里克走了不显示；喝过汤更清醒；交给阿尔里克（借据一起、塞弗林家、水门、支线收尾、兵营空了）；交给伊薇特（大厅里阿尔里克和信使走了、埃德里克还在）；没有印戒不显示；读档不再提示。
 
 ## 五、画质分档

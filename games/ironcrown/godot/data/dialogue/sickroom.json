@@ -171,7 +171,7 @@
         "options": [
           {"text": "我就在这儿等他醒。", "if": [{"not_quest": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}], "next": "dusk"},
           {"text": "我就在这儿等他醒。", "if": [{"quest_done": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}], "next": "dusk"},
-          {"text": "我就在这儿等他醒。", "if": [{"quest_active": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}, {"quest": "ch1_whitereed", "stage": "late"}], "next": "dusk"},
+          {"text": "我就在这儿等他醒。", "if": [{"quest_active": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}, {"quest": "ch1_whitereed", "stage": "late"}, {"quest_done": "ch1_whitereed"}], "next": "dusk"},
           {"text": "我先去办点事。", "next": "again"}
         ]
       },
@@ -240,6 +240,14 @@
       "after": {
         "text": "（他又睡过去了，手还攥着被角。玛尔塔冲你摇摇头）",
         "text_if": [{"if": [{"flag": "valen_heir"}], "text": "（他睡着。玛尔塔低声说）他醒过一回，问戒指给了谁。我说了。他什么也没说，又睡了。"}],
+        "options": [
+          {"text": "（拿出借据）霜渡镇那张借据……", "if": [{"has_item": "debt_note"}, {"not_flag": "ch1_debt"}], "locked": "hide", "next": "debt_late"},
+          {"text": "（让他睡吧）", "end": true}
+        ]
+      },
+      "debt_late": {
+        "text": "（他半睁开眼，看清了你手里的东西，伸手接过去，翻到背面看了一眼那枚印，塞到枕头底下，又闭上了眼睛）……留在我这儿。",
+        "do": [{"take_item": "debt_note"}, {"set": "ch1_debt", "value": "given_osric"}],
         "options": [
           {"text": "（让他睡吧）", "end": true}
         ]

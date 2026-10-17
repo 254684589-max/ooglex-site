@@ -7,7 +7,7 @@ extends RefCounted
 
 ## 选了这位继承人，另一位带走的人（NPC 编号）
 const LEAVES_WITH := {
-	"alric": ["ivette", "sergeant", "dice_soldier", "rack_soldier", "stove_soldier"],      # 伊薇特带着兵营里她的人走
+	"alric": ["ivette", "sergeant", "dice_soldier", "rack_soldier", "stove_soldier", "barracks_soldier"],      # 伊薇特带着兵营里她的人走（连兵营门口那个）
 	"ivette": ["alric", "envoy"],                                                          # 阿尔里克带着塞弗林家的信使走
 }
 ## 走了的那位托你的支线（还没做完的就此收尾）
@@ -28,9 +28,12 @@ static func heir_chosen(h: String) -> void:
 	if not h in ["alric", "ivette"]:
 		return
 	GameState.set_flag("ch1_water_gate", water_gate(h))
-	for q in QUESTS_OF[other_heir(h)] + ["ch1_wedding"]:       # 婚事：水门已经按它的结果算了，之后不再变
+	for q in QUESTS_OF[other_heir(h)] + ["ch1_wedding"]:       # 婚事：水门已经按它的结果算了，之后不再变（做完，埃德里克、阿尔里克那里不再能了结它，4.8a 审查）
 		if GameState.quest_active(q):
 			GameState.set_stage(q, "left")
+			GameState.complete_quest(q)
+	if h == "alric":
+		GameState.take_item("grain_writ")                      # 伊薇特走了，她的粮单用不上了
 
 
 ## 水门（STORY.md 4.7b 的表）：warned 埃德里克提醒过你（4.8b 能派两名卫兵先守）/ opened 他会给另一边开门（入夜后口才说得动就不开）/ unknown
@@ -43,6 +46,14 @@ static func water_gate(h: String) -> String:
 	if edric == "" and str(GameState.get_flag("prologue_edric", "")) == "deliver":
 		return "opened"
 	return "unknown"
+
+
+## 第一章的时段只往前走（4.8a 审查）：旅行地图的路线写着「到了是白天」，黄昏以后回霜渡镇再回来，不该又回到白天
+const ORDER := ["dawn", "day", "dusk", "night"]
+
+
+static func later_daypart(now: String, arrive: String) -> String:
+	return arrive if ORDER.find(arrive) > ORDER.find(now) else now
 
 
 ## 对话关上时：走了的人当场拿掉；返回拿掉了几个
