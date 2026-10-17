@@ -22,6 +22,8 @@ var grip: Node3D
 var role := ""                    # 现在在演哪个「角色」（站 / 走 / 跑 / 出招……），测试与调试用
 var loaded := false
 var _reverse := false
+var parts: Array = []            # A.2 换装：[服装, 头, 头发……] 的 glTF 路径（同一副骨架）；空的 = 主角 A.1 的整身模型 MODEL
+var look: Dictionary = {}         # A.2：{"tex": {材质名: 换用的底色贴图}, "tint": {材质名: 乘上的颜色}}（同一套衣服按人物换颜色）
 var anim_every := 1               # 每几帧推进一次动作（B.5：军阵里离镜头远的兵 2；1 = 每帧，引擎自己推进）
 var _anim_frames := 0
 var _anim_dt := 0.0
@@ -29,10 +31,11 @@ var _anim_dt := 0.0
 
 func _ready() -> void:
 	map = load_map()
-	var packed := ResourceLoader.load(MODEL) as PackedScene
+	var first := str(parts[0]) if not parts.is_empty() else MODEL
+	var packed := ResourceLoader.load(first) as PackedScene
 	var lib := ResourceLoader.load(ANIMS) as AnimationLibrary
 	if packed == null or lib == null or map.is_empty():
-		push_warning("人物模型或动作库没有加载成功（%s）" % MODEL)
+		push_warning("人物模型或动作库没有加载成功（%s）" % first)
 		return
 	scene_root = packed.instantiate() as Node3D
 	scene_root.name = "Model"
@@ -42,6 +45,8 @@ func _ready() -> void:
 		push_warning("人物模型里没有骨架")
 		return
 	skeleton = skels[0]
+	for i in range(1, parts.size()):
+		_attach(str(parts[i]))
 	_glow_materials()
 	anim = AnimationPlayer.new()
 	anim.name = "Anim"
@@ -166,7 +171,22 @@ func clip_length(r: String) -> float:
 	return anim.get_animation(clip(r)).length if loaded else 0.0
 
 
-## 导入的材质是共享资源：复制一份再改（背面剔除、背光时的自发光）
+## A.2：头、头发挂到服装的骨架上（导入前核对过：几个包的骨头一样、顺序一样，蒙皮按骨头名对上）
+func _attach(path: String) -> void:
+	var packed := ResourceLoader.load(path) as PackedScene
+	if packed == null:
+		push_warning("人物部件没有加载成功（%s）" % path)
+		return
+	var tmp := packed.instantiate() as Node3D
+	for mi: MeshInstance3D in tmp.find_children("*", "MeshInstance3D", true, false):
+		mi.get_parent().remove_child(mi)
+		mi.owner = null
+		skeleton.add_child(mi)
+		mi.skeleton = mi.get_path_to(skeleton)
+	tmp.free()
+
+
+## 导入的材质是共享资源：复制一份再改（背面剔除、背光时的自发光；A.2 按人物换底色贴图、乘颜色）
 func _glow_materials() -> void:
 	for mi: MeshInstance3D in scene_root.find_children("*", "MeshInstance3D", true, false):
 		if mi.mesh == null:
@@ -176,10 +196,17 @@ func _glow_materials() -> void:
 			if src == null:
 				continue
 			var mat := src.duplicate() as StandardMaterial3D
+			var key := src.resource_name
+			if look.get("tex", {}).has(key):
+				var t := ResourceLoader.load(str(look.tex[key])) as Texture2D
+				if t != null:
+					mat.albedo_texture = t
+			if look.get("tint", {}).has(key):
+				mat.albedo_color = Color(str(look.tint[key]))
 			mat.cull_mode = BaseMaterial3D.CULL_BACK if mat.albedo_texture != null else BaseMaterial3D.CULL_DISABLED
 			mat.emission_enabled = true
 			if mat.albedo_texture != null:
-				mat.emission = Color.WHITE
+				mat.emission = mat.albedo_color     # 底色乘过颜色的（A.2 的头发、换色的衣服），背光的自发光也跟着乘，不然暗处露出贴图本来的灰白
 				mat.emission_texture = mat.albedo_texture
 			else:
 				mat.emission = mat.albedo_color

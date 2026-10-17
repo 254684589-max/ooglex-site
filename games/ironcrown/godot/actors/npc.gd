@@ -9,6 +9,8 @@ var line_index := 0
 var coat := Color("4a5a6a")
 var dialogue_area := ""
 var dialogue_id := ""
+var look_model: CharacterModel   # A.2：配了打扮的人（data/looks.json）是真人模型，没配的是占位胶囊
+var _lod_left := 0.0
 var lying := false          # 躺着（4.5c 病床上昏睡的家主）：身子放平、脸朝上，说话时不转身；头朝本地 +Z
 
 
@@ -30,6 +32,8 @@ func _ready() -> void:
 	cs.position.y = 0.875
 	add_child(cs)
 	var body := Npc.build_body(self, coat)
+	if not lying and Looks.has(display_name) and not get_groups().any(func(g): return str(g).begins_with("encounter:")):
+		_dress(body)                       # 要和你打起来的人（对峙那一组）照旧是胶囊：开打时换成敌人，敌人换装在 A.2b
 	if lying:
 		cs.rotation.x = PI / 2
 		cs.position = Vector3(0, 0.3, 0.875)
@@ -38,6 +42,35 @@ func _ready() -> void:
 		Blocks.label(self, display_name, Vector3(0, 0.95, 0.9), 32, 0.0035)
 	else:
 		Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+
+
+## 换上真人模型（A.2）：近处画模型、远处画胶囊（visibility range），远了动作也停下
+func _dress(body: Node3D) -> void:
+	var m := Looks.make(display_name)
+	m.rotation.y = PI                       # 模型面朝 +Z，人的脸朝本地 -Z
+	add_child(m)
+	if not m.loaded:
+		m.queue_free()
+		return
+	Looks.finish(m)
+	m.play_loop("idle")
+	m.set_anim_every(2)
+	look_model = m
+	for mi: MeshInstance3D in body.find_children("*", "MeshInstance3D", true, false):
+		mi.visibility_range_begin = Looks.LOD_FAR
+
+
+func _process(delta: float) -> void:
+	if look_model == null:
+		return
+	_lod_left -= delta
+	if _lod_left > 0.0:
+		return
+	_lod_left = 0.5
+	var cam := get_viewport().get_camera_3d()
+	var near := cam == null or cam.global_position.distance_to(global_position) < Looks.LOD_FAR
+	if look_model.is_processing() != near:
+		look_model.set_process(near)            # 远处（画的是胶囊）不推进动作（动作每两帧手动推进一次，CharacterModel.set_anim_every）
 
 
 ## 占位人形（胶囊身子 + 头 + 看得出朝向的小鼻子）；敌人（2.5）也用它。脸朝本地 -Z。
