@@ -73,6 +73,8 @@ static func wake(world: Node) -> void:
 	osric.dialogue_area = "sickroom"
 	osric.dialogue_id = "osric"
 	osric.verb = "交谈"
+	if osric.look_model != null:
+		osric.look_model.hold("lying", 0.5)    # A.2b：醒着的家主撑着胳膊半坐起来（LayToIdle 起身的那一刻）
 
 
 static func map_spec() -> Dictionary:

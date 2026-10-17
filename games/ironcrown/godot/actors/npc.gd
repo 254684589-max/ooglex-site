@@ -11,6 +11,9 @@ var dialogue_area := ""
 var dialogue_id := ""
 var look_model: CharacterModel   # A.2：配了打扮的人（data/looks.json）是真人模型，没配的是占位胶囊
 var _lod_left := 0.0
+var pose := "idle"                 # A.2b：平时的动作（data/looks.json 的 pose）
+var talking := false
+const LYING_OFFSET := Vector3(0, 0.08, 0.75)   # LayToIdle 第一帧：脚在本地 z -0.62、头在 +0.9；往床头挪、背贴在褥子上
 var lying := false          # 躺着（4.5c 病床上昏睡的家主）：身子放平、脸朝上，说话时不转身；头朝本地 +Z
 
 
@@ -32,7 +35,7 @@ func _ready() -> void:
 	cs.position.y = 0.875
 	add_child(cs)
 	var body := Npc.build_body(self, coat)
-	if not lying and Looks.has(display_name) and not get_groups().any(func(g): return str(g).begins_with("encounter:")):
+	if Looks.has(display_name, name) and not get_groups().any(func(g): return str(g).begins_with("encounter:")):
 		_dress(body)                       # 要和你打起来的人（对峙那一组）照旧是胶囊：开打时换成敌人，敌人换装在 A.2b
 	if lying:
 		cs.rotation.x = PI / 2
@@ -46,22 +49,51 @@ func _ready() -> void:
 
 ## 换上真人模型（A.2）：近处画模型、远处画胶囊（visibility range），远了动作也停下
 func _dress(body: Node3D) -> void:
-	var m := Looks.make(display_name)
+	var m := Looks.make(display_name, name)
 	m.rotation.y = PI                       # 模型面朝 +Z，人的脸朝本地 -Z
+	if lying:
+		m.position = LYING_OFFSET          # 躺着的动作（LayToIdle 第一帧）：人平躺、脚朝前，挪到床褥上
 	add_child(m)
 	if not m.loaded:
 		m.queue_free()
 		return
 	Looks.finish(m)
-	m.play_loop("idle")
-	m.set_anim_every(2)
+	pose = Looks.pose(display_name, name)
+	m.hold_prop(Props.make(Looks.prop(display_name, name)), Looks.prop(display_name, name) in Props.LEFT_HAND)
+	if lying:
+		m.hold("lying", 0.0)
+	else:
+		m.play_loop(pose, randf_range(0.88, 1.12))          # 每个人快慢不一样
+		m.anim.seek(randf() * m.clip_length(pose), true)  # 起点错开：不要一屋子人同时晃
+		m.set_anim_every(2)
 	look_model = m
 	for mi: MeshInstance3D in body.find_children("*", "MeshInstance3D", true, false):
 		mi.visibility_range_begin = Looks.LOD_FAR
 
 
+## 对话开始 / 结束（main.open_dialogue / _on_dialogue_closed）：说话的人比划着说（坐着的坐着说）；提灯、举火把的不换（手里有东西）。
+## 对话时游戏暂停，只让说话的人的模型照样动
+func begin_talk() -> void:
+	if look_model == null or talking or lying:
+		return
+	talking = true
+	look_model.process_mode = Node.PROCESS_MODE_ALWAYS
+	look_model.set_process(true)
+	if Looks.prop(display_name, name) in ["lantern", "torch"]:
+		return
+	look_model.play_loop("sit_talk" if pose in ["sit", "sit_talk"] else "talk", 1.0, 0.35)
+
+
+func end_talk() -> void:
+	if look_model == null or not talking:
+		return
+	talking = false
+	look_model.process_mode = Node.PROCESS_MODE_INHERIT
+	look_model.play_loop(pose, 1.0, 0.45)
+
+
 func _process(delta: float) -> void:
-	if look_model == null:
+	if look_model == null or talking:
 		return
 	_lod_left -= delta
 	if _lod_left > 0.0:

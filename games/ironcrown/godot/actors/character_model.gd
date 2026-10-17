@@ -171,6 +171,27 @@ func clip_length(r: String) -> float:
 	return anim.get_animation(clip(r)).length if loaded else 0.0
 
 
+## A.2b：拿东西。右手挂在 grip 下（同主角的剑）；火把、杯子在动作里是左手拿的，挂到左手（对着右手的握法做镜像）
+func hold_prop(prop: Node3D, left := false) -> void:
+	if not loaded or prop == null:
+		return
+	if not left:
+		grip.add_child(prop)
+		return
+	var lh := skeleton.get_node_or_null("HandL") as BoneAttachment3D
+	if lh == null:
+		lh = BoneAttachment3D.new()
+		lh.name = "HandL"
+		lh.bone_name = "hand_l"
+		skeleton.add_child(lh)
+		var g := Node3D.new()
+		g.name = "Grip"
+		g.position = Vector3(-grip.position.x, grip.position.y, grip.position.z)
+		g.rotation = Vector3(grip.rotation.x, -grip.rotation.y, -grip.rotation.z)
+		lh.add_child(g)
+	lh.get_node("Grip").add_child(prop)
+
+
 ## A.2：头、头发挂到服装的骨架上（导入前核对过：几个包的骨头一样、顺序一样，蒙皮按骨头名对上）
 func _attach(path: String) -> void:
 	var packed := ResourceLoader.load(path) as PackedScene

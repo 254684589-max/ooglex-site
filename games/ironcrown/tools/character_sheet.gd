@@ -4,11 +4,11 @@ extends SceneTree
 ##   xvfb-run -a -s "-screen 0 1280x720x24" godot --path games/ironcrown/godot --rendering-driver opengl3 \
 ##     -s ../tools/character_sheet.gd -- out=/tmp/sheet.png [grip=px,py,pz,rx,ry,rz] [jobs="动作@秒@相机偏角;动作@秒@相机偏角"]
 ## 例：jobs="Sword_Idle@0@20;Sword_Attack@0.33@30;Sword_Block@0.17@30"（动作名见 data/character_anims.json；none = 不播动作，看 T 姿势）
-## A.2：parts=Outfit_Male_Peasant,Head_Male,Hair_Beard 换装预览；look='{"tint":{"MI_Peasant":"#8a9cb0"}}' 换颜色。
+## A.2b：prop=lantern|torch|axe|cup|none 换手里的东西（默认剑）。A.2：parts=Outfit_Male_Peasant,Head_Male,Hair_Beard 换装预览；look='{"tint":{"MI_Peasant":"#8a9cb0"}}' 换颜色。
 ## grip= 临时覆盖 data/character_anims.json 里的拿剑位置与朝向（米 / 度），满意了再写回 JSON。
 
 var character: CharacterModel
-var sword: MeshInstance3D
+var sword: Node3D
 var cam: Camera3D
 var jobs: Array = []
 var tiles: Array = []
@@ -75,7 +75,11 @@ func _init() -> void:
 	kit.box("wood", Vector3(0, 0.08, 0), Vector3(0.18, 0.025, 0.03))
 	kit.box("wood", Vector3(0, -0.01, 0), Vector3(0.032, 0.16, 0.032))
 	sword = kit.build({"steel": steel, "wood": wood})
-	character.grip.add_child(sword)
+	var prop := str(args.get("prop", ""))           # A.2b：prop=lantern / torch / axe / cup / none 换手里的东西
+	if prop != "":
+		sword = Props.make(prop)
+	if sword != null:
+		character.hold_prop(sword, prop in Props.LEFT_HAND)
 	_next()
 
 
