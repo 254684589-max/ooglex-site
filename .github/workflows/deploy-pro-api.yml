@@ -95,6 +95,25 @@ jobs:
           done
           test "$count" -gt 0
           echo "Uploaded $count protected Tech Leaders catalogs to private R2."
+          # 定时刷新任务用的账号列表（只含本人公开 X 账号的 handle，与页面/巡检的判定一致）。
+          mkdir -p .pro-build
+          python3 - <<'PY'
+          import json
+          d = json.load(open("apps/tech-leaders/leaders.json", encoding="utf-8"))
+          people = d if isinstance(d, list) else (d.get("leaders") or d.get("people") or [])
+          def ok(p):
+              return bool(p and p.get("handle") and p.get("admission_status") == "active" and (
+                  p.get("x_identity_verified") is True or p.get("verified_personal_x") is True or
+                  "个人公开 X 账号" in str(p.get("note") or "")) and p.get("timeline_mode") != "local_only")
+          handles = []
+          for p in people:
+              h = str(p.get("handle")).lstrip("@") if p else ""
+              if ok(p) and h.lower() not in {x.lower() for x in handles}:
+                  handles.append(h)
+          json.dump({"handles": handles, "count": len(handles)}, open(".pro-build/tech-leaders-refresh-handles.json", "w"))
+          print("refresh handles:", len(handles))
+          PY
+          npx --yes wrangler@4 r2 object put "ooglex-pro-data/tech-leaders/free-feed/refresh-handles.json" --file .pro-build/tech-leaders-refresh-handles.json --remote
 
       - name: Verify PRO API custom domain
         run: |
