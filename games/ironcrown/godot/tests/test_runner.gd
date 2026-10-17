@@ -6721,6 +6721,12 @@ func test_schedule() -> void:
 	herman = main._npc_by_dialogue("herman")
 	at = Schedule.slot("herman").pos
 	check(herman.position.distance_to(Vector3(at[0], at[1], at[2])) < 0.01 and stands_clear(herman), "夜里：赫尔曼守在堡门里（站得稳）")
+	await main.set_daypart("day", false)
+	await frames(3)
+	check(herman.position.distance_to(Castle.HERMAN[2]) < 0.01 and absf(herman.rotation.y - float(Castle.HERMAN[3])) < 0.01, "天亮了（同一次进场里时段回到白天）：赫尔曼回到井边（审查）")
+	await main.set_daypart("night", false)
+	await frames(3)
+	check(main.world.find_children("Npc_herman", "Npc", true, false).size() == 1, "时段换来换去：赫尔曼只有一个")
 	var wk := _runner_text("blackheron", "water_keeper")
 	check(wk.contains("提着灯"), "守水门的老头夜里的开场白（%s / %s）" % [GameState.daypart, wk.left(16)])
 	await free_main(main)
@@ -6753,6 +6759,16 @@ func test_schedule() -> void:
 	await main.set_daypart("dusk", false)
 	await frames(3)
 	check(GameState.daypart == "dusk" and main._npc_by_dialogue("ivette") == null and main._npc_by_dialogue("alric") != null, "剧情推到黄昏：伊薇特当场离开大厅")
+	await free_main(main)
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "barracks", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main._npc_by_dialogue("ivette") == null, "白天的兵营：伊薇特不在")
+	await main.set_daypart("dusk", false)
+	await frames(3)
+	var iv: Array = main.world.find_children("Npc_ivette", "Npc", true, false)
+	check(iv.size() == 1 and stands_clear(iv[0]), "在兵营里等到黄昏：伊薇特走进来，只有一个、站得稳")
 	await free_main(main)
 	GameState.new_game()
 

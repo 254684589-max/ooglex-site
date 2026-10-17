@@ -44,10 +44,18 @@ static func apply(world: Node3D, area: String) -> Array:
 			node.get_parent().remove_child(node)
 			node.queue_free()
 			moved.append(id)
+		elif here and s.is_empty() and node != null and node.has_meta("home_pos"):
+			node.position = node.get_meta("home_pos")         # 时段回到老样子（例如夜里守堡门的赫尔曼天亮了回井边，审查）
+			node.rotation.y = float(node.get_meta("home_yaw"))
+			node.remove_meta("home_pos")
+			moved.append(id)
 		elif here and not s.is_empty():
 			if node == null:
 				node = _make(id, p)
 				world.add_child(node)
+			elif not node.has_meta("home_pos") and not node.has_meta("visitor"):
+				node.set_meta("home_pos", node.position)         # 区域脚本放的老位置：记下来，换回来时用
+				node.set_meta("home_yaw", node.rotation.y)
 			var at: Array = s.pos
 			node.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 			node.rotation.y = float(s.yaw)
@@ -59,6 +67,7 @@ static func apply(world: Node3D, area: String) -> Array:
 static func _make(id: String, p: Dictionary) -> Npc:
 	var n := Npc.make(str(p.name), [], Color(str(p.coat)))
 	n.name = "Npc_" + id
+	n.set_meta("visitor", true)
 	n.dialogue_area = str(p.dialogue)
 	n.dialogue_id = id
 	return n

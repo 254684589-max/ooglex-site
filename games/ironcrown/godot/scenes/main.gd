@@ -1550,7 +1550,6 @@ func set_daypart(id: String, announce := true) -> void:
 	if not Daypart.valid(id):
 		return
 	GameState.daypart = id
-	Schedule.apply(world, area)                     # 剧情推进到别的时段：人当场换地方（4.6）
 	var eff := Daypart.effective(area, id)
 	if eff != daypart:
 		var dim := not Settings.reduced_motion and fade != null
@@ -1561,8 +1560,11 @@ func set_daypart(id: String, announce := true) -> void:
 		daypart = eff
 		Daypart.apply(self, daypart)
 		_refresh_edges()
+		Schedule.apply(world, area)                 # 剧情推进到别的时段：人在画面暗下去的时候换地方（4.6）
 		if dim:
 			create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, FADE_TIME * 3.0)
+	else:
+		Schedule.apply(world, area)                 # 室内的光不跟时段走（Daypart.effective），人照样换地方
 	print("IC_DAYPART id=%s area=%s changed=true" % [daypart, area])
 	if announce:
 		hud.toast(str(Daypart.CHANGE_TEXT.get(id, "")), 2.5)
