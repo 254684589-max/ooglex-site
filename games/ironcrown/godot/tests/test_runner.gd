@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -1097,6 +1097,9 @@ func test_quests() -> void:
 			var want := str(q.stages[st].get("advance_when", {}).get("has_item", ""))
 			if want != "" and GameState.item(want).is_empty():
 				bad.append("%s/%s 等的物品 %s 不存在" % [qid, st, want])
+			var fl := str(q.stages[st].get("advance_when", {}).get("flag", ""))
+			if fl != "" and not GameState.flag_registry().has(fl):
+				bad.append("%s/%s 等的旗标 %s 没有登记" % [qid, st, fl])
 	for cid in qd.clues:
 		if not qd.quests.has(str(qd.clues[cid].quest)):
 			bad.append("线索 %s 属于不存在的任务" % cid)
@@ -7124,4 +7127,326 @@ func test_music() -> void:
 	check(Music.track == "night", "管家喊人以后：「night」")
 	await free_main(main)
 	Engine.set_meta("ic_skip_opening", skip)
+	GameState.new_game()
+
+
+## 4.7c 沼地里的无旗者：伊薇特托你收编或赶走奥弗那伙人（ch1_outlaws），拉托宾的泥炭工（ch1_peat）
+func outlaws_state(sd := 1) -> void:
+	ch1_state("deliver", sd)                       # 序章和奥弗谈妥了（offer_left）：营地友善
+	GameState.set_flag("outlaws_asked")
+	GameState.start_quest("ch1_outlaws")
+
+
+func test_outlaws() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 伊薇特：营地的人说过「谁给的粮实在就跟谁」才给粮单，只给一次
+	outlaws_state()
+	GameState.set_flag("ivette_met")
+	var r := DialogueRunner.new()
+	r.start("hall", "ivette")
+	r.choose(r.options().map(func(o): return str(o.text)).find("沼地那伙人……"))
+	check(r.node_id == "ask_again" and not r.options().any(func(o): return str(o.text).begins_with("他们说")), "伊薇特：营地的人还没开价，不给粮单")
+	GameState.set_flag("offer_camp_terms")
+	check(say_runner("ivette", ["沼地那伙人……", "他们说，谁给的粮实在就跟谁。"], "hall") == "writ" and GameState.has_item("grain_writ"), "营地的人说了谁给粮就跟谁：伊薇特写了粮单")
+	r.start("hall", "ivette")
+	r.choose(r.options().map(func(o): return str(o.text)).find("沼地那伙人……"))
+	check(not r.options().any(func(o): return str(o.text).begins_with("他们说")), "粮单只给一次")
+	# —— 营地：粮单收编
+	r.start("deepmarsh", "offer_camp")
+	var ot: Array = r.options().map(func(o): return str(o.text))
+	check(r.node_id == "friendly_greet" and ot.has("伊薇特小姐托我来找你。"), "接了支线：奥弗那里多一项「伊薇特小姐托我来找你」")
+	var rep0 := GameState.get_rep("outlaws")
+	check(say_runner("offer_camp", ["伊薇特小姐托我来找你。", "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。"], "deepmarsh") == "ally_grain"
+		and GameState.get_flag("ch1_outlaws") == "ally" and not GameState.has_item("grain_writ") and GameState.get_rep("outlaws") == rep0 + 10,
+		"把粮单给奥弗：收编了（ch1_outlaws = ally，无旗者 +10，粮单交出去了）")
+	check(GameState.quest_stage("ch1_outlaws") == "report", "营地的事了结了：任务推进到「回去告诉伊薇特」")
+	r.start("deepmarsh", "offer_camp")
+	check(r.node_id == "ally_again" and not r.options().any(func(o): return str(o.text).begins_with("伊薇特小姐")), "收编以后再去：等她的号角，不再问价")
+	# 回去报告：支线做完、瓦伦家 +5；泥炭工没说定
+	var v0 := GameState.get_rep("valen")
+	check(say_runner("ivette", ["沼地那伙人的事办完了。"], "hall") == "outlaws_report" and GameState.quest_done("ch1_outlaws") and GameState.get_rep("valen") == v0 + 5, "回去告诉伊薇特：支线做完，瓦伦家 +5")
+	r.start("hall", "ivette")
+	check(not r.options().any(func(o): return str(o.text).begins_with("沼地那伙人")), "做完以后不再问沼地那伙人")
+	# —— 没有粮单：粮单那一项不显示（会剧透），钱不够灰着；给 50 枚银币收编
+	outlaws_state()
+	GameState.silver = 20
+	r.start("deepmarsh", "offer_camp")
+	r.choose(r.options().map(func(o): return str(o.text)).find("伊薇特小姐托我来找你。"))
+	var pe: Array = r.entries().map(func(e): return [str(e.option.text), e.locked])
+	check(r.node_id == "pitch" and not pe.any(func(e): return str(e[0]).begins_with("（把粮单")) and pe.has(["（放下 50 枚银币）这是定钱。", true]), "没有粮单：不显示粮单；钱不够，给钱那一项灰着（%s）" % str(pe))
+	GameState.silver = 60
+	check(say_runner("offer_camp", ["伊薇特小姐托我来找你。", "（放下 50 枚银币）这是定钱。"], "deepmarsh") == "ally_paid" and GameState.silver == 10 and GameState.get_flag("ch1_outlaws") == "ally", "给 50 枚银币：收编了")
+	# —— 口才：说动了收编；没说动只剩给东西、打或走
+	outlaws_state(seed_for("offer_recruit_speech", "speech", 15, true))
+	check(say_runner("offer_camp", ["伊薇特小姐托我来找你。", "她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账。"], "deepmarsh") == "ally_word" and GameState.get_flag("ch1_outlaws") == "ally", "口才说动：「不追旧账」，收编了")
+	var sd := seed_for("offer_recruit_speech", "speech", 15, false)
+	outlaws_state(sd)
+	check(say_runner("offer_camp", ["伊薇特小姐托我来找你。", "她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账。"], "deepmarsh") == "pitch_fail" and not GameState.has_flag("ch1_outlaws"), "口才没说动：空话不顶饿")
+	# —— 威吓：吓走了（人当场走掉）；没吓住只剩打或走
+	outlaws_state(seed_for("offer_drive_intimidate", "intimidate", 15, true))
+	rep0 = GameState.get_rep("outlaws")
+	check(say_runner("offer_camp", ["伊薇特小姐托我来找你。", "她什么也不出。你们收拾东西离开鹭沼，别替任何人卖命。"], "deepmarsh") == "driven"
+		and GameState.get_flag("ch1_outlaws") == "driven" and GameState.get_rep("outlaws") == rep0 - 5 and GameState.quest_stage("ch1_outlaws") == "report", "威吓吓住了：赶走（driven，无旗者 -5），任务推进")
+	outlaws_state(seed_for("offer_drive_intimidate", "intimidate", 15, false))
+	check(say_runner("offer_camp", ["伊薇特小姐托我来找你。", "她什么也不出。你们收拾东西离开鹭沼，别替任何人卖命。"], "deepmarsh") == "drive_fail", "没吓住：他们笑你，只剩拔剑或者走")
+	# —— 记恨你、让你滚的奥弗：有支线时也能拔剑
+	outlaws_state(seed_for("offer_camp_speech", "speech", 17, false))
+	GameState.flags.erase("offer_left")
+	GameState.set_flag("offer_defeated")
+	GameState.yielded["ferry_offer"] = [0.0, 0.0, 0.0]
+	say_runner("offer_camp", ["那晚各为其主。今天我不是来打架的。"], "deepmarsh")
+	r.start("deepmarsh", "offer_camp")
+	check(r.node_id == "refused_again" and r.options().any(func(o): return str(o.text).begins_with("（拔剑）")), "让你滚的奥弗：有支线时能拔剑")
+	say_runner("offer_camp", ["（拔剑）你说过，下回就不是说话了。"], "deepmarsh")
+	check(str(GameState.pending_fight.get("fight", "")) == "camp" and GameState.pending_fight.get("value") == "beaten" and str(GameState.pending_fight.get("win", "")) == "ch1_outlaws", "拔剑：营地那一仗，打赢记 ch1_outlaws = beaten")
+	GameState.pending_fight = {}
+	check(Marsh.camp_loot("offer_camp").has("grey_glove") == false and Marsh.camp_loot("camp_thug_a") == Enemy.types().clubber.loot, "奥弗在渡口被搜过身：营地里没有第二只灰皮手套")
+	# —— 奥弗死在渡口：伊薇特、军士说的是「灰手剩下的那伙人」，头目一样能收编
+	outlaws_state()
+	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
+	GameState.set_flag("ivette_met")
+	r.start("hall", "ivette")
+	r.choose(r.options().map(func(o): return str(o.text)).find("沼地那伙人……"))
+	check(r.text().begins_with("灰手剩下的那伙人"), "奥弗死在渡口：伊薇特不再说「奥弗那伙人」（%s）" % r.text().left(12))
+	r.start("hall", "ivette")
+	r.node_id = "ask"
+	check(r.text().contains("死在渡口"), "伊薇特托你的时候也说灰手死在渡口了")
+	r.start("barracks", "sergeant")
+	r.node_id = "offer"
+	check(r.text().begins_with("灰手死在渡口了"), "军士也不把灰手当活人说")
+	GameState.dead.erase("ferry_offer")
+	r.node_id = "offer"
+	check(r.text().begins_with("灰手？"), "奥弗活着：军士照旧")
+	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
+	GameState.silver = 100
+	check(say_runner("camp_boss", ["（放下 40 枚银币）给他的人买口吃的。", "伊薇特小姐托我来找你。", "（放下 50 枚银币）这是定钱。"], "deepmarsh") == "ally_paid" and GameState.get_flag("ch1_outlaws") == "ally", "头目：一样能收编")
+	outlaws_state(seed_for("boss_recruit_speech", "speech", 15, true))
+	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
+	GameState.silver = 0
+	check(say_runner("camp_boss", ["伊薇特小姐托我来找你。", "她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账。"], "deepmarsh") == "ally_word", "头目：有支线时不用先给 40 枚银币，也能直接谈（审查）")
+	outlaws_state()
+	say_runner("offer_camp", ["伊薇特小姐托我来找你。"], "deepmarsh")
+	check(GameState.has_flag("offer_camp_terms"), "一开口问价就记下「谁给粮就跟谁」：回去伊薇特就给粮单（审查：不用先问「黑鹭堡要出事了」）")
+	# —— 托宾的泥炭工
+	outlaws_state()
+	GameState.silver = 40
+	check(say_runner("tobin", ["伊薇特小姐想让泥炭工站到她那边。", "（数出 30 枚银币）这笔账我先替她结了。"]) == "peat_yes" and GameState.get_flag("ch1_peat") == "ivette" and GameState.silver == 10, "托宾：替堡里结清 30 枚泥炭钱，泥炭工站到伊薇特这边（ch1_peat）")
+	r.start("reedwharf", "tobin")
+	ot = r.options().map(func(o): return str(o.text))
+	check(not ot.has("伊薇特小姐想让泥炭工站到她那边。") and ot.has("到那天，泥炭工……"), "说定以后：不再问，改成「到那天」")
+	outlaws_state(seed_for("tobin_peat_speech", "speech", 14, true))
+	check(say_runner("tobin", ["伊薇特小姐想让泥炭工站到她那边。", "小姐守住了堡，欠的钱她加倍还——我替她担保。"]) == "peat_yes", "口才担保：也行")
+	outlaws_state(seed_for("tobin_peat_speech", "speech", 14, false))
+	GameState.silver = 0
+	check(say_runner("tobin", ["伊薇特小姐想让泥炭工站到她那边。", "小姐守住了堡，欠的钱她加倍还——我替她担保。"]) == "peat_no" and not GameState.has_flag("ch1_peat"), "担保没说动：拿钱来再说")
+	GameState.new_game(1)
+	r.start("reedwharf", "tobin")
+	check(not r.options().any(func(o): return str(o.text).begins_with("伊薇特小姐")), "没接支线：托宾那里没有这一项")
+	# —— 营地的人按结果摆：没了结是一组对峙；赶走了空；收编了说自己人的话
+	outlaws_state()
+	var main := await make_main_marsh()
+	var grp := main.get_tree().get_nodes_in_group(Encounter.group_name(MarshLayout.CAMP_ENCOUNTER))
+	check(grp.size() == 4 and grp.all(func(n): return n.has_meta("enemy_kind") and n.has_meta("enemy_id")), "还没了结：营地的 4 个人是一组对峙（能开打）")
+	await free_main(main)
+	outlaws_state()
+	GameState.set_flag("ch1_outlaws", "driven")
+	main = await make_main_marsh()
+	check(main.world.get_node_or_null("Npc_offer_camp") == null and main.world.get_node_or_null("Npc_camp_thug_a") == null, "赶走了：营地空了")
+	await free_main(main)
+	outlaws_state()
+	GameState.set_flag("ch1_outlaws", "ally")
+	main = await make_main_marsh()
+	var th := main.world.get_node_or_null("Npc_camp_thug_a") as Npc
+	check(th != null and th.lines == MarshLayout.CAMP_LINES.ally and main.get_tree().get_nodes_in_group(Encounter.group_name(MarshLayout.CAMP_ENCOUNTER)).is_empty(), "收编了：手下说自己人的话，不再是对峙")
+	await free_main(main)
+	# —— 真打：拔剑，营地的人换成敌人；只烘焙营地那块的导航；打完 ch1_outlaws = beaten，任务推进
+	outlaws_state()
+	main = await make_main_marsh()
+	check(main.nav.is_empty(), "鹭沼平时不烘焙导航网格")
+	place(main.player, -50.0, 30.0)
+	await physics(4)
+	var music_before := Music.track
+	check(await fl_say(main, "deepmarsh", "offer_camp", ["伊薇特小姐托我来找你。", "（拔剑）那就没什么好谈的了。"]), "拔剑")
+	await frames(2)
+	check(main.encounter_active() and main.encounter.enemies.size() == 4 and main.in_combat(), "营地的 4 个人换成敌人开打（%d）" % (main.encounter.enemies.size() if main.encounter else 0))
+	check(not main.nav.is_empty() and int(main.nav.polygons) > 0 and float(main.nav.ms) < 1500.0, "开打时只烘焙营地那块的导航（%s 个多边形，%.0f 毫秒）" % [main.nav.get("polygons", 0), main.nav.get("ms", 0.0)])
+	await physics(30)
+	var en: Array = main.encounter.enemies
+	var reached := en.filter(func(e): return e.nav_ready())
+	check(reached.size() == en.size(), "敌人用得上导航网格（%d / %d）" % [reached.size(), en.size()])
+	var nmap: RID = main.player.get_world_3d().navigation_map
+	var holes := []
+	for cp: Array in [MarshLayout.CAMP_OFFER] + MarshLayout.CAMP_MEN:
+		var at: Vector3 = cp[2]
+		var q := NavigationServer3D.map_get_closest_point(nmap, at)
+		if Vector2(q.x - at.x, q.z - at.z).length() > 0.3:
+			holes.append(str(cp[0]))
+	check(holes.is_empty(), "营地的人原来站的地方都在导航网格上（NPC 开打前就拿掉了，不在脚下挖洞；%s）" % str(holes))
+	var boss: Enemy = en.filter(func(e): return e.enemy_id == "offer_camp")[0]
+	check(boss.display_name == "「灰手」奥弗" and boss.kind == "outlaw_boss", "奥弗是 outlaw_boss，名字照旧")
+	for e in en:
+		e.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0})
+	await frames(3)
+	check(str(GameState.get_flag("ch1_outlaws")) == "beaten" and GameState.quest_stage("ch1_outlaws") == "report" and not main.in_combat(), "打完：ch1_outlaws = beaten，任务推进到「回去告诉伊薇特」")
+	check(GameState.dead.has("offer_camp") and GameState.dead.has("camp_lookout"), "死的人记进存档")
+	await free_main(main)
+	main = await make_main_marsh()
+	var ens: Array = main.find_children("*", "Enemy", true, false).map(func(e): return str(e.enemy_id))
+	check(ens.size() == 4 and main.world.get_node_or_null("Npc_offer_camp") == null, "再来：营地里躺着倒下的人，没人站着（%s）" % str(ens))
+	await free_main(main)
+	GameState.set_flag("ivette_met")
+	GameState.add_item("grain_writ")
+	check(say_runner("ivette", ["沼地那伙人的事办完了。"], "hall") == "outlaws_report" and GameState.quest_done("ch1_outlaws") and not GameState.has_item("grain_writ"), "打散了也能回去报告；没用上的粮单她收回去")
+	# 网址 ?fight=camp 在营地已经了结时：没有人可打，不留一个打不完的对峙
+	GameState.set_flag("ch1_outlaws", "driven")
+	main = await make_main_marsh()
+	main.start_encounter(MarshLayout.CAMP_ENCOUNTER, "")
+	check(not main.encounter_active() and not main.in_combat(), "营地空了还开打：马上结束，能走能存档")
+	await free_main(main)
+	Music.stop_now()
+	GameState.new_game()
+
+
+## 4.8a：在病房等黄昏，家主醒来交出印戒，交给继承人；另一位离堡
+func heir_state(choice := "deliver", sd := 1) -> void:
+	ch1_state(choice, sd)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ivette_met", "ledger_asked", "outlaws_asked", "heirs_heard", "marta_met", "osric_seen"]:
+		GameState.set_flag(f)
+	GameState.start_quest("ch1_main")
+	GameState.set_stage("ch1_main", "wait_dusk")
+	GameState.start_quest("ch1_ledger")
+	GameState.start_quest("ch1_outlaws")
+	GameState.daypart = "day"
+
+
+func test_heir() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 水门的表（STORY 4.7b）
+	var table := [["helped", "ivette", "deliver", "warned"], ["persuaded", "ivette", "deliver", "unknown"], ["reported", "ivette", "deliver", "opened"], ["", "ivette", "deliver", "unknown"],
+		["helped", "alric", "deliver", "opened"], ["persuaded", "alric", "deliver", "unknown"], ["reported", "alric", "deliver", "unknown"], ["", "alric", "deliver", "opened"], ["", "alric", "release", "unknown"]]
+	var wrong := []
+	for row: Array in table:
+		GameState.new_game(1)
+		GameState.set_flag("prologue_edric", row[2])
+		if str(row[0]) != "":
+			GameState.set_flag("ch1_edric", row[0])
+		if Chapter1.water_gate(str(row[1])) != str(row[3]):
+			wrong.append(row)
+	check(wrong.is_empty(), "水门按 STORY 4.7b 的表算（%s）" % str(wrong))
+	# —— 玛尔塔：等黄昏；白芦根还没交的来不及了
+	heir_state()
+	GameState.start_quest("ch1_whitereed")
+	var r := DialogueRunner.new()
+	r.start("sickroom", "marta")
+	r.choose(r.options().map(func(o): return str(o.text)).find("家主什么时候醒？"))
+	check(r.node_id == "wait_ask" and r.text().contains("白芦根还没熬上"), "问玛尔塔家主什么时候醒：她提醒白芦根还没熬上")
+	r.choose(r.options().map(func(o): return str(o.text)).find("我就在这儿等他醒。"))
+	check(r.node_id == "dusk" and GameState.has_flag("osric_awake") and GameState.quest_stage("ch1_main") == "osric_awake" and GameState.quest_stage("ch1_whitereed") == "late",
+		"在床边等：家主醒了，主线推进；白芦根来不及了（late）")
+	heir_state()
+	check(say_runner("marta", ["家主什么时候醒？", "我先去办点事。"], "sickroom") == "again" and not GameState.has_flag("osric_awake"), "先去办事：还是白天，家主没醒")
+	# —— 在病房里真的等：时段推到黄昏，家主能说话了
+	GameState.pending_load = {"scene": "sickroom", "spawn": "front", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	var osric := main.world.get_node("Npc_osric") as Npc
+	check(osric.dialogue_id == "" and osric.verb == "看看", "白天：家主睡着，只能看看")
+	check(await fl_say(main, "sickroom", "marta", ["家主什么时候醒？", "我就在这儿等他醒。", "（走到床前）"]), "陪玛尔塔等")
+	await frames(3)
+	check(GameState.daypart == "dusk" and main.daypart == Daypart.effective("sickroom", "dusk") and osric.dialogue_id == "osric" and osric.verb == "交谈", "对话一关：黄昏了，家主醒着、能说话（%s / %s）" % [GameState.daypart, osric.verb])
+	check(await fl_say(main, "sickroom", "osric", ["（把奥尔本修士的旧书给他看）", "……", "（拿出借据）霜渡镇那张借据，在我这儿。", "……", "两位继承人都在等您一句话。", "为什么是我？", "（收下印戒）"]),
+		"给他看旧书、交出借据、问继承人")
+	check(GameState.has_flag("osric_book") and GameState.get_flag("ch1_debt") == "given_osric" and not GameState.has_item("debt_note") and GameState.has_item("valen_signet") and GameState.quest_stage("ch1_main") == "choose_heir",
+		"家主认出了旧书、收下借据（given_osric），把印戒交给你；主线：交给该拿的人")
+	r.start("sickroom", "osric")
+	check(r.node_id == "after", "再找家主：他又睡过去了")
+	GameState.add_item("debt_note")
+	GameState.flags.erase("ch1_debt")
+	check(say_runner("osric", ["（拿出借据）霜渡镇那张借据……"], "sickroom") == "debt_late" and GameState.get_flag("ch1_debt") == "given_osric", "先拿了印戒、后想起借据：睡着的家主照样收下（审查）")
+	await free_main(main)
+	# —— 旧书没看之前不说继承人；没有借据不显示借据（会剧透）
+	heir_state("release")
+	GameState.set_flag("osric_awake")
+	r.start("sickroom", "osric")
+	var ot: Array = r.options().map(func(o): return str(o.text))
+	check(not ot.has("两位继承人都在等您一句话。") and not ot.any(func(t): return str(t).begins_with("（拿出借据")) and ot.has("（把奥尔本修士的旧书给他看）"), "先看旧书才说到继承人；借据跟埃德里克走了的不显示（%s）" % str(ot))
+	GameState.set_flag("ch1_herb")
+	check(r.start("sickroom", "osric") and r.text().contains("目光比你想的清楚"), "喝过白芦根汤：他清醒得多")
+	# —— 交给阿尔里克（黄昏在大厅）：伊薇特带着兵营的人离堡；她托你的支线收尾；借据一起交出
+	heir_state("extort")
+	GameState.start_quest("ch1_wedding")
+	GameState.set_flag("ch1_edric", "helped")
+	GameState.set_flag("osric_awake")
+	GameState.set_flag("osric_ring_given")
+	GameState.set_stage("ch1_main", "choose_heir")
+	GameState.add_item("valen_signet")
+	GameState.daypart = "dusk"
+	var sev := GameState.get_rep("severin")
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_ivette") == null and main.world.get_node_or_null("Npc_alric") != null, "黄昏：伊薇特回兵营了，阿尔里克在大厅")
+	check(await fl_say(main, "hall", "alric", ["（拿出家主印戒）", "（把印戒交给他）", "还有这个——霜渡镇那张借据。", "……"]), "把印戒交给阿尔里克，借据也给他")
+	await frames(2)
+	check(GameState.get_flag("valen_heir") == "alric" and not GameState.has_item("valen_signet") and GameState.get_flag("ch1_debt") == "given_heir" and GameState.get_rep("severin") == sev + 10
+		and GameState.quest_stage("ch1_main") == "prepare", "valen_heir = alric，借据 given_heir，塞弗林家 +10，主线推进到备战")
+	check(GameState.get_flag("ch1_water_gate") == "opened" and GameState.quest_stage("ch1_outlaws") == "left" and GameState.quest_stage("ch1_ledger") == "get_ledger" and GameState.quest_stage("ch1_wedding") == "left",
+		"水门：伊薇特答应过退亲、却选了阿尔里克——埃德里克会开门（opened）；伊薇特的支线、婚事收尾，阿尔里克的账册还在")
+	check(Chapter1.gone("ivette") and Chapter1.gone("sergeant") and not Chapter1.gone("alric") and Schedule.area_of("ivette") == "", "伊薇特和兵营里她的人走了")
+	check(GameState.quest_done("ch1_wedding") and GameState.quest_done("ch1_outlaws") and not GameState.quest_done("ch1_ledger"), "收尾的支线算做完（日志里不再挂着；埃德里克、阿尔里克那里不能再了结婚事）")
+	r.start("hall", "edric_hall")
+	check(r.node_id == "after_heir", "埃德里克：戒指给出去了，他的事由不得他了")
+	r.start("hall", "alric")
+	r.choose(r.options().map(func(o): return str(o.text)).find("还有别的事。"))
+	check(not r.options().any(func(o): return str(o.text).begins_with("埃德里克不想娶")), "阿尔里克那里不再能告发婚事")
+	r.start("blackheron", "herman")
+	r.node_id = "heirs"
+	check(r.text().begins_with("阿尔里克大人在大厅，戒指在他手上了"), "赫尔曼说继承人在哪：按交给了谁")
+	main = await fl_go(main, "castle")
+	main = await fl_go(main, "barracks")
+	await physics(2)
+	var left := main.find_children("Npc_*", "Npc", true, false).map(func(n): return str(n.name))
+	check(main.area == "barracks" and left.is_empty(), "兵营空了（%s）" % str(left))
+	main = await fl_go(main, "castle")
+	check(main.world.get_node_or_null("Npc_barracks_soldier") == null and (main.world.get_node("Npc_gate_guard_in") as Npc).lines == Castle.GUARD_LINES_HEIR.gate_guard_in, "庭院：兵营门口的兵也走了，守门的说的是今晚的事")
+	await free_main(main)
+	r.start("hall", "alric")
+	check(r.node_id == "heir", "再找阿尔里克：他让你去找赫尔曼")
+	# —— 交给伊薇特（黄昏在兵营）：阿尔里克带着信使离堡，当场从大厅拿掉
+	heir_state()
+	GameState.set_flag("osric_ring_given")
+	GameState.set_stage("ch1_main", "choose_heir")
+	GameState.add_item("valen_signet")
+	GameState.daypart = "dusk"
+	var eld := GameState.get_rep("eld")
+	GameState.pending_load = {"scene": "barracks", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_ivette") != null, "黄昏：伊薇特在兵营")
+	check(await fl_say(main, "hall", "ivette", ["（拿出家主印戒）", "（把印戒交给她）", "……"]), "把印戒交给伊薇特")
+	await frames(2)
+	check(GameState.get_flag("valen_heir") == "ivette" and GameState.get_rep("eld") == eld + 10 and GameState.has_item("debt_note") and GameState.get_flag("ch1_water_gate") == "unknown"
+		and GameState.quest_stage("ch1_ledger") == "left" and GameState.quest_stage("ch1_outlaws") == "talk_offer" and main.world.get_node_or_null("Npc_ivette") != null,
+		"valen_heir = ivette，厄尔德家 +10；借据没给还在身上；埃德里克没做婚事支线、选了伊薇特：水门 unknown；阿尔里克的账册收尾，伊薇特的还在")
+	main = await fl_go(main, "castle")
+	main = await fl_go(main, "hall")
+	await physics(2)
+	check(main.world.get_node_or_null("Npc_alric") == null and main.world.get_node_or_null("Npc_envoy") == null and main.world.get_node_or_null("Npc_edric_hall") != null, "大厅：阿尔里克和信使走了，埃德里克还在")
+	await free_main(main)
+	# —— 没有印戒：继承人那里不显示（会剧透）；读档不再提示「离堡」
+	heir_state()
+	r.start("hall", "alric")
+	check(not r.options().any(func(o): return str(o.text).begins_with("（拿出家主印戒")), "没有印戒：不显示交印戒")
+	GameState.set_flag("valen_heir", "alric")
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	check(main.heir_seen == "alric", "读档进来：已经交过的不再提示")
+	await free_main(main)
+	check(Chapter1.later_daypart("dusk", "day") == "dusk" and Chapter1.later_daypart("dawn", "day") == "day", "时段只往前走：黄昏以后走旅行地图不会回到白天（审查）")
+	heir_state()
+	GameState.add_item("grain_writ")
+	GameState.set_flag("valen_heir", "alric")
+	check(not GameState.has_item("grain_writ"), "伊薇特走了：她的粮单收回")
 	GameState.new_game()

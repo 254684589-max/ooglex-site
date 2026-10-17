@@ -290,18 +290,7 @@ func _people() -> void:
 	g.position = gate_guard_pos()
 	g.rotation.y = deg_to_rad(MarshLayout.CW_YAW + 180.0)      # 面朝堤道（人的脸朝本地 -Z；审查：原来面朝堡门）
 	parent.add_child(g)
-	var mood := camp_mood()
-	var leader: Array = MarshLayout.CAMP_BOSS if mood == "boss" else MarshLayout.CAMP_OFFER
-	var camp := [leader] + MarshLayout.CAMP_MEN
-	for p: Array in camp:
-		var n := Npc.make(str(p[1]), [] if p == leader else MarshLayout.CAMP_LINES["grudge" if mood == "boss" else mood], Color(str(p[4])))
-		n.name = "Npc_" + str(p[0])
-		if p == leader:
-			n.dialogue_area = "deepmarsh"
-			n.dialogue_id = str(p[0])
-		n.position = p[2]
-		n.rotation.y = float(p[3])
-		parent.add_child(n)
+	_camp_people()
 	for p: Array in MarshLayout.PEOPLE:
 		var id := str(p[0])
 		var lines: Array = MarshLayout.PEOPLE_LINES.get(id, [])
@@ -313,6 +302,57 @@ func _people() -> void:
 		n.position = p[2]
 		n.rotation.y = float(p[3])
 		parent.add_child(n)
+
+
+## 营地里的人（4.4c；4.7c 伊薇特的支线）：看 ch1_outlaws——赶走了（driven）营地空了；打散了（beaten）死的躺在原地、认输和逃了的都散了；
+## 收编了（ally）说的是自己人的话；还没了结的是一组对峙（Encounter「camp」），对话说崩了原地换成敌人开打（打赢 ch1_outlaws = beaten）
+func _camp_people() -> void:
+	var outcome := str(GameState.get_flag("ch1_outlaws", ""))
+	if outcome == "driven":
+		return
+	var mood := camp_mood()
+	var leader: Array = MarshLayout.CAMP_BOSS if mood == "boss" else MarshLayout.CAMP_OFFER
+	var lines: Array = MarshLayout.CAMP_LINES["ally" if outcome == "ally" else ("grudge" if mood == "boss" else mood)]
+	for p: Array in [leader] + MarshLayout.CAMP_MEN:
+		var id := str(p[0])
+		if GameState.dead.has(id):
+			var e := Enemy.make(str(MarshLayout.CAMP_KINDS[id]), id)
+			e.display_override = str(p[1])
+			e.loot_override = camp_loot(id)
+			e.position = p[2]                           # 倒下的地方按存档（Enemy 自己摆）
+			parent.add_child(e)                         # 自己按存档摆成倒下的样子，留搜刮点
+			continue
+		if GameState.yielded.has(id) or outcome == "beaten":
+			continue                                    # 认输的、逃了的：散了
+		var n := Npc.make(str(p[1]), [] if p == leader else lines, Color(str(p[4])))
+		n.name = "Npc_" + id
+		if p == leader:
+			n.dialogue_area = "deepmarsh"
+			n.dialogue_id = id
+		n.position = p[2]
+		n.rotation.y = float(p[3])
+		if outcome == "":
+			n.set_meta("enemy_kind", str(MarshLayout.CAMP_KINDS[id]))
+			n.set_meta("enemy_id", id)
+			n.set_meta("enemy_loot", camp_loot(id))
+			n.add_to_group(Encounter.group_name(MarshLayout.CAMP_ENCOUNTER))
+		parent.add_child(n)
+
+
+## 营地的人倒下后身上能搜到的东西：照 enemies.json，只是奥弗在渡口被搜过身的（认输时那只灰皮手套已经被拿走了），营地里就没有第二只
+static func camp_loot(id: String) -> Array:
+	var loot: Array = Enemy.types().get(str(MarshLayout.CAMP_KINDS[id]), {}).get("loot", []).duplicate()
+	if id == "offer_camp" and GameState.yielded.has(Ferry.OFFER_GROUP[0][2]):
+		loot.erase("grey_glove")
+	return loot
+
+
+## 营地开打时烘焙导航的范围（4.7c）：西边的大土墩加东边那片泥滩（追你跑到泥里也绕得开枯树），不烘焙整张鹭沼
+static func camp_nav_bounds() -> AABB:
+	var a: Rect2 = MarshLayout.DEEP[4][2]
+	var b: Rect2 = MarshLayout.DEEP[3][2]
+	var r := a.merge(b)
+	return AABB(Vector3(r.position.x, -1.0, r.position.y), Vector3(r.size.x, 4.0, r.size.y))
 
 
 ## 白芦根（4.7b）：玛尔塔托你采的时候（支线 ch1_whitereed 在「采」），泥滩上长着五株；采过的不再长（pickup_id）。同步放进 world

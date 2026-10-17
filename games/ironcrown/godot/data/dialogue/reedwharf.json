@@ -1,5 +1,5 @@
 {
-  "_说明": "芦栈村的对话（路线图 4.4b；STORY.md 第四节 4.4、4.5 第 2 步「芦栈村打探：三条消息，顺序任意，至少两条推进」）。三条消息各是主线「黑鹭之争」的一条线索：客栈（老板，或者两拨招兵的人：阿尔里克的军士、伊薇特的老兵）→ msg_recruiters；泥炭工头托宾 → msg_causeway；小码头的渡工（口才检定或者给 3 枚银币）→ msg_envoy。拿到两条，任务自动推进到「去黑鹭堡」（data/quests.json 的 advance_when）。吉尔伯特只在序章选「勒索」时坐在客栈窗边（world/inn.gd），想把借据买回去：卖（150，口才说动了 200），卡斯韦尔家声望上升，ch1_debt = sold；不卖就留着（4.8 交给继承人当筹码）。客栈里的人在 world/inn.gd，外面的人在 world/marsh_layout.gd 的 PEOPLE。",
+  "_说明": "芦栈村的对话（路线图 4.4b；STORY.md 第四节 4.4、4.5 第 2 步「芦栈村打探：三条消息，顺序任意，至少两条推进」）。三条消息各是主线「黑鹭之争」的一条线索：客栈（老板，或者两拨招兵的人：阿尔里克的军士、伊薇特的老兵）→ msg_recruiters；泥炭工头托宾 → msg_causeway；小码头的渡工（口才检定或者给 3 枚银币）→ msg_envoy。拿到两条，任务自动推进到「去黑鹭堡」（data/quests.json 的 advance_when）。吉尔伯特只在序章选「勒索」时坐在客栈窗边（world/inn.gd），想把借据买回去：卖（150，口才说动了 200），卡斯韦尔家声望上升，ch1_debt = sold；不卖就留着（4.8 交给继承人当筹码）。客栈里的人在 world/inn.gd，外面的人在 world/marsh_layout.gd 的 PEOPLE。 4.7c：伊薇特托你拉泥炭工（outlaws_asked）时，托宾要先结清堡里欠的三十枚泥炭钱（替她付，或者口才担保），说定了 ch1_peat = ivette（4.9 堤道夜战点泥炭垛拦人）。",
   "innkeeper": {
     "speaker": "客栈老板",
     "start": "greet",
@@ -314,6 +314,8 @@
           {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
           {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
+          {"text": "伊薇特小姐想让泥炭工站到她那边。", "if": [{"flag": "outlaws_asked"}, {"not_flag": "ch1_peat"}], "next": "peat_ask"},
+          {"text": "到那天，泥炭工……", "if": [{"flag": "ch1_peat"}], "next": "peat_again"},
           {"text": "（不打扰他）", "end": true}
         ]
       },
@@ -327,6 +329,8 @@
           {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
           {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
+          {"text": "伊薇特小姐想让泥炭工站到她那边。", "if": [{"flag": "outlaws_asked"}, {"not_flag": "ch1_peat"}], "next": "peat_ask"},
+          {"text": "到那天，泥炭工……", "if": [{"flag": "ch1_peat"}], "next": "peat_again"},
           {"text": "（不打扰他）", "end": true}
         ]
       },
@@ -340,6 +344,8 @@
           {"text": "你说的泥炭船——能捎我进堡吗？", "if": [{"flag": "heard_causeway"}, {"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "smuggle"},
           {"text": "沼地深处有什么？", "next": "deep"},
           {"text": "这些泥炭都送去堡里？", "next": "peat"},
+          {"text": "伊薇特小姐想让泥炭工站到她那边。", "if": [{"flag": "outlaws_asked"}, {"not_flag": "ch1_peat"}], "next": "peat_ask"},
+          {"text": "到那天，泥炭工……", "if": [{"flag": "ch1_peat"}], "next": "peat_again"},
           {"text": "（不打扰他）", "end": true}
         ]
       },
@@ -388,6 +394,35 @@
         "text": "一半送去堡里，一半留给村里过冬。今年堡里要得多，兵营夜里也烧着——要打仗的人才这么烧火。",
         "options": [
           {"text": "……", "next": "menu"}
+        ]
+      },
+      "peat_ask": {
+        "text": "（他把铲子往泥里一插）站到她那边？堡里去年冬天的泥炭钱，到现在还欠着我们三十枚银币。小姐要人，先把账结了。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他把酒碗往火塘边一放）站到她那边？堡里去年冬天的泥炭钱，到现在还欠着我们三十枚银币。小姐要人，先把账结了。"}],
+        "options": [
+          {"text": "（数出 30 枚银币）这笔账我先替她结了。", "if": [{"silver": 30}], "do": [{"pay": 30}], "next": "peat_yes"},
+          {"text": "小姐守住了堡，欠的钱她加倍还——我替她担保。", "check": {"id": "tobin_peat_speech", "skill": "speech", "dc": 14, "pass": "peat_yes", "fail": "peat_no"}},
+          {"text": "我再想想。", "next": "menu"}
+        ]
+      },
+      "peat_no": {
+        "text": "空口担保，我这辈子听得多了。拿钱来再说。",
+        "options": [
+          {"text": "（数出 30 枚银币）这笔账我先替她结了。", "if": [{"silver": 30}], "do": [{"pay": 30}], "next": "peat_yes"},
+          {"text": "……", "next": "menu"}
+        ]
+      },
+      "peat_yes": {
+        "text": "（他盯着你看了一会儿，点点头）行。到那天，泥炭工听小姐的。（他朝西北边的堤道努了努嘴）断口边上那几垛泥炭是我们的——要点火，说一声。",
+        "do": [{"set": "ch1_peat", "value": "ivette"}],
+        "options": [
+          {"text": "说定了。", "next": "menu"}
+        ]
+      },
+      "peat_again": {
+        "text": "断口边上那几垛泥炭，我们看着。要点火的时候，说一声。",
+        "options": [
+          {"text": "好。", "next": "menu"}
         ]
       }
     }

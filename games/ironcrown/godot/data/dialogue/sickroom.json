@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡东边塔楼的病房（路线图 4.5c；STORY.md 4.5 第 3 步「见医师玛尔塔；家主昏睡」、第 6 步「黄昏，家主短暂醒来」、支线「白芦根」）。两位继承人都找你谈过以后（heirs_heard）病房的门才推得开；玛尔塔让你看一眼昏睡的家主，主线推进到「等黄昏」（家主醒来、交出印戒在 4.8）。她托你去鹭沼深处采白芦根（支线 ch1_whitereed 开始，采回来、给家主喝在 4.7）。家主本人躺在床上，只能看看（world/sickroom.gd 里的几句）。 4.7b：三株白芦根交给玛尔塔（ch1_herb，瓦伦家 +5），支线做完；家主在结尾清醒得多（4.10）。",
+  "_说明": "黑鹭堡东边塔楼的病房（路线图 4.5c；STORY.md 4.5 第 3 步「见医师玛尔塔；家主昏睡」、第 6 步「黄昏，家主短暂醒来」、支线「白芦根」）。两位继承人都找你谈过以后（heirs_heard）病房的门才推得开；玛尔塔让你看一眼昏睡的家主，主线推进到「等黄昏」（家主醒来、交出印戒在 4.8）。她托你去鹭沼深处采白芦根（支线 ch1_whitereed 开始，采回来、给家主喝在 4.7）。家主本人躺在床上，只能看看（world/sickroom.gd 里的几句）。 4.7b：三株白芦根交给玛尔塔（ch1_herb，瓦伦家 +5），支线做完；家主在结尾清醒得多（4.10）。 4.8a：主线在「等黄昏」时问玛尔塔「家主什么时候醒」，选「我就在这儿等他醒」时段推到黄昏（白芦根还没交的，来不及了：支线到 late 为止），家主醒了（osric_awake，world/sickroom.gd wake）：看了修士的旧书，他认出星铁教会、修士的笔迹；交出借据他压在枕头底下（ch1_debt = given_osric）；问到继承人，他把印戒交给你。",
   "marta": {
     "speaker": "玛尔塔",
     "start": "greet",
@@ -81,6 +81,7 @@
             "next": "reed_again"
           },
           {"text": "白芦根采来了，三株。", "if": [{"quest_stage": "ch1_whitereed", "eq": "return"}], "next": "reed_done"},
+          {"text": "家主什么时候醒？", "if": [{"quest_stage": "ch1_main", "eq": "wait_dusk"}], "next": "wait_ask"},
           {
             "text": "（告辞）",
             "end": true
@@ -162,6 +163,93 @@
             "text": "明白了。",
             "next": "again"
           }
+        ]
+      },
+      "wait_ask": {
+        "text": "（她看了看窗外的天色）黄昏前后。他醒了，事情就快了——两位继承人都在等他开口。你要办的事，先去办完。",
+        "text_if": [{"if": [{"quest_active": "ch1_whitereed"}], "text": "（她看了看窗外的天色）黄昏前后。……白芦根还没熬上。他要是醒在药前头，那汤就白熬了。你要办的事，先去办完。"}],
+        "options": [
+          {"text": "我就在这儿等他醒。", "if": [{"not_quest": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}], "next": "dusk"},
+          {"text": "我就在这儿等他醒。", "if": [{"quest_done": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}], "next": "dusk"},
+          {"text": "我就在这儿等他醒。", "if": [{"quest_active": "ch1_whitereed"}], "do": [{"daypart": "dusk"}, {"set": "osric_awake"}, {"quest": "ch1_main", "stage": "osric_awake"}, {"quest": "ch1_whitereed", "stage": "late"}, {"quest_done": "ch1_whitereed"}], "next": "dusk"},
+          {"text": "我先去办点事。", "next": "again"}
+        ]
+      },
+      "dusk": {
+        "text": "（你在床边的矮凳上坐下。窗外的光一点一点暗下去，玛尔塔点上了蜡烛。不知过了多久，床上的人咳了一声）……他醒了。去吧，小声点。",
+        "options": [
+          {"text": "（走到床前）", "end": true}
+        ]
+      }
+    }
+  },
+  "osric": {
+    "speaker": "奥斯瑞克",
+    "start": "awake",
+    "start_if": [
+      {"if": [{"flag": "osric_ring_given"}], "node": "after"}
+    ],
+    "nodes": {
+      "awake": {
+        "text": "（他睁着眼睛，眼珠转了好一会儿才停在你脸上，声音哑得像砂纸）……誓剑。玛尔塔说，有个誓剑从霜渡镇来。",
+        "text_if": [{"if": [{"flag": "ch1_herb"}], "text": "（他睁着眼睛，目光比你想的清楚，一下子就停在你脸上）誓剑。玛尔塔说，有个誓剑从霜渡镇来——还替我去泥里采了药。"}],
+        "options": [
+          {"text": "（把奥尔本修士的旧书给他看）", "if": [{"has_item": "old_book"}, {"not_flag": "osric_book"}], "next": "book"},
+          {"text": "（拿出借据）霜渡镇那张借据，在我这儿。", "if": [{"has_item": "debt_note"}, {"not_flag": "ch1_debt"}], "locked": "hide", "next": "debt"},
+          {"text": "两位继承人都在等您一句话。", "if": [{"flag": "osric_book"}, {"not_flag": "osric_ring_given"}], "next": "heirs"},
+          {"text": "您歇着吧。", "end": true}
+        ]
+      },
+      "more": {
+        "text": "（他喘了口气）……说吧，还有什么。",
+        "options": [
+          {"text": "（把奥尔本修士的旧书给他看）", "if": [{"has_item": "old_book"}, {"not_flag": "osric_book"}], "next": "book"},
+          {"text": "（拿出借据）霜渡镇那张借据，在我这儿。", "if": [{"has_item": "debt_note"}, {"not_flag": "ch1_debt"}], "locked": "hide", "next": "debt"},
+          {"text": "两位继承人都在等您一句话。", "if": [{"flag": "osric_book"}, {"not_flag": "osric_ring_given"}], "next": "heirs"},
+          {"text": "您歇着吧。", "end": true}
+        ]
+      },
+      "book": {
+        "text": "（他用指头摸着烧焦的封皮，手一下子抖起来）星铁……这是星铁教会的书。（他把书凑到蜡烛底下）这字——是奥尔本的字。他还活着？……他让你带给我的。他知道我会认出来。（他把书压在胸口，闭了一会儿眼睛）有些事，我该早点说。可今晚，先说眼前的。",
+        "do": [{"set": "osric_book"}],
+        "options": [
+          {"text": "……", "next": "more"}
+        ]
+      },
+      "debt": {
+        "text": "（他接过借据，翻到背面，盯着那枚星铁冠印很久没说话）渡口的税权……还有这个印。这东西不能落到双钥港手里，也不能落到我那两个孩子手里——他们会拿它去换东西。（他把借据塞到枕头底下）留在我这儿。",
+        "do": [{"take_item": "debt_note"}, {"set": "ch1_debt", "value": "given_osric"}],
+        "options": [
+          {"text": "……", "next": "more"}
+        ]
+      },
+      "heirs": {
+        "text": "（他闭上眼睛）阿尔里克守规矩，伊薇特敢做事。北境要哪一个，我想了三天，想不出来。（他从手指上褪下一枚沉甸甸的戒指，塞进你手心）家主印戒。我说不出口——你替我看。交给该拿的人。",
+        "do": [{"give_item": "valen_signet"}, {"set": "osric_ring_given"}, {"quest": "ch1_main", "stage": "choose_heir"}],
+        "options": [
+          {"text": "为什么是我？", "next": "why"},
+          {"text": "（收下印戒）", "end": true}
+        ]
+      },
+      "why": {
+        "text": "因为你是外人。我定了，另一个会恨我到死；你定了，他们恨的是你。（他扯了扯嘴角，像是在笑）誓剑，这就是你们的活儿。",
+        "options": [
+          {"text": "（收下印戒）", "end": true}
+        ]
+      },
+      "after": {
+        "text": "（他又睡过去了，手还攥着被角。玛尔塔冲你摇摇头）",
+        "text_if": [{"if": [{"flag": "valen_heir"}], "text": "（他睡着。玛尔塔低声说）他醒过一回，问戒指给了谁。我说了。他什么也没说，又睡了。"}],
+        "options": [
+          {"text": "（拿出借据）霜渡镇那张借据……", "if": [{"has_item": "debt_note"}, {"not_flag": "ch1_debt"}], "locked": "hide", "next": "debt_late"},
+          {"text": "（让他睡吧）", "end": true}
+        ]
+      },
+      "debt_late": {
+        "text": "（他半睁开眼，看清了你手里的东西，伸手接过去，翻到背面看了一眼那枚印，塞到枕头底下，又闭上了眼睛）……留在我这儿。",
+        "do": [{"take_item": "debt_note"}, {"set": "ch1_debt", "value": "given_osric"}],
+        "options": [
+          {"text": "（让他睡吧）", "end": true}
         ]
       }
     }

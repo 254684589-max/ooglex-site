@@ -25,6 +25,7 @@ const EDRIC := ["edric_hall", "埃德里克", Vector3(6.6, 0, 2.7), PI / 2, "2a3
 const GUARDS := [["hall_guard", "大厅门口的卫兵", Vector3(-1.6, 0, 3.3), PI, "3e4652"]]
 const ENVOY_LINES := ["（他整了整红斗篷的领口，看都没看你）", "摄政大人的耐心，不像北境的冬天这么长。", "粮车就停在南岸，等一句话。"]
 const GUARD_LINES := ["两位大人说话的时候，别插嘴。", "家主的椅子空了三天了。谁也不敢坐。", "从早吵到现在，壁炉都快烧没了。"]
+const GUARD_LINES_HEIR := ["家主的椅子……今晚过后，总算有人坐了。", "大门关了。另一边的人入夜前会回来。", "别在这儿站着了，去找赫尔曼大人。"]      # 印戒交出去以后（4.8a）
 const SPAWNS := {"front": [Vector3(0, 0, 3.0), 0.0]}
 const VIEW_NAMES := ["进门看大厅", "台子东边（阿尔里克）", "壁炉前（伊薇特）", "门内对着出口"]
 const VIEWS := [
@@ -56,12 +57,14 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	if str(GameState.get_flag("prologue_edric")) == "deliver":
 		_person(parent, EDRIC, [])
 	for g in GUARDS:
-		_person(parent, g, GUARD_LINES)
+		_person(parent, g, GUARD_LINES_HEIR if GameState.has_flag("valen_heir") else GUARD_LINES)
 	var s: Array = SPAWNS.front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 
 
 static func _person(parent: Node3D, p: Array, lines: Array) -> void:
+	if Chapter1.gone(str(p[0])):
+		return                               # 伊薇特拿了印戒：阿尔里克带着信使离堡了（4.8a）
 	var n := Npc.make(str(p[1]), lines, Color(str(p[4])))
 	n.name = "Npc_" + str(p[0])
 	if lines.is_empty():

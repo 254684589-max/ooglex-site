@@ -28,6 +28,8 @@ static func slot(id: String, daypart := "") -> Dictionary:
 
 ## 这个人现在在哪个区域
 static func area_of(id: String, daypart := "") -> String:
+	if Chapter1.gone(id):
+		return ""                            # 印戒交出去以后，另一位继承人离堡了（4.8a）
 	var s := slot(id, daypart)
 	return str(s.area) if not s.is_empty() else str(data().get(id, {}).get("home", ""))
 

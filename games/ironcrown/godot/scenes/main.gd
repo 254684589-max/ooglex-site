@@ -7,7 +7,7 @@ extends Node3D
 ## 放到命名出生点、淡入、自动存档（GDD 第十节：进入新区域时）。网页 ?area=tavern 直接从酒馆开始（截图与冒烟测试用）。
 ## 网页参数：?q=low|medium|high 强制画质档；?view=0|1|2 从固定机位开始（截图用）；
 ## ?area=ferry&ending=deliver|release|extort 直接显示结束画面（3.7，截图与冒烟测试用；不改存档与旗标）。
-## ?area=tavern&brawl=1 一进酒馆就和醉汉「大桶」打起来（3.3，截图与冒烟测试用；不设旗标）。
+## ?area=tavern&brawl=1 一进酒馆就和醉汉「大桶」打起来（3.3，截图与冒烟测试用；不设旗标）。?area=marsh&fight=camp 一进鹭沼就和营地那伙人打起来（4.7c，同上）。
 ## ?perf=1 打开性能浮层并自动跑基准测试（依次在 3 个机位各测 3 秒，结果表显示在画面上，1.5）；?perf=1&view=N 只在该机位测一次（截图工具用）。
 ## 军阵试验场 ?test=3&n=30&perf=1：60 人开打后在观战台、两军之间各测一次，结果表显示在画面上（B.5，真机用；你不参战、不自动存档）。
 ## NPC 与敌人仍是占位胶囊，界面上明确标注（主角的第三人称人物在 A.1 换成了模型）。
@@ -65,6 +65,7 @@ var playable_chapter := Chapters.PLAYABLE   # 做到第几章能玩了（4.1；�
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
 var touch_hidden_by_dialogue := false   # 对话打开时藏起了触屏按钮（对话结束时还原）
 var opening: Opening             # 开场（3.8）：只在新游戏时有
+var heir_seen := ""               # 印戒交给谁了（4.8a）：对话关上时变了就提示另一位离堡
 var combat_music_check := 0.0    # 战斗配乐（M.1）：下次看在不在打还剩几秒
 var title_card: TitleCard        # 开场的标题卡（3.8）
 var tip_queue: Array = []        # 等着显示的教学提示编号（3.8；有界面开着、上一条还没消失时排队）
@@ -127,7 +128,7 @@ func _ready() -> void:
 				Settings.head_bob = false
 			print("IC_REDUCED_MOTION")
 	if Daypart.valid(str(pending.get("daypart", ""))):
-		GameState.daypart = str(pending.daypart)   # 走旅行地图到了：路上过了大半天（4.2；出发时不改，免得半路存档存成「人还在原地、时辰已经到了」）
+		GameState.daypart = Chapter1.later_daypart(GameState.daypart, str(pending.daypart))   # 走旅行地图到了：路上过了大半天（4.2；出发时不改，免得半路存档存成「人还在原地、时辰已经到了」）
 	if not pending.is_empty():           # 读档 / 换区域：场景以它为准（2.8、3.1）
 		area = str(pending.scene) if Areas.known(str(pending.scene)) else "frostford"
 		use_arena = area == "arena"
@@ -175,11 +176,13 @@ func _ready() -> void:
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
+	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
 	var moved := Schedule.apply(world, area)        # NPC 作息（4.6）：这个时段不在这儿的人拿掉、换了站位的挪过去、从别处来的放进来
 	if not moved.is_empty():
 		print("IC_SCHEDULE area=%s daypart=%s moved=%s" % [area, GameState.daypart, ",".join(moved)])
 	# 导航网格（3.4）：区域搭好、玩家还没放进去之前烘焙（玩家不是静态碰撞体，本来也不会被算进去）
 	var nb := Areas.nav_bounds(area)
+	nav = {}
 	if nb.has_volume():
 		nav = NavBuilder.bake(world, nb)
 		print("IC_NAV area=%s ms=%.0f polygons=%d" % [area, nav.ms, nav.polygons])
@@ -274,6 +277,8 @@ func _ready() -> void:
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:
 			start_brawl.call_deferred(dagu, {"brawl": "drunk"})
+	if area == "marsh" and _query("fight") == "camp":      # 4.7c：一进鹭沼就和营地那伙人打起来（截图与冒烟测试用；不设旗标）
+		start_encounter.call_deferred(MarshLayout.CAMP_ENCOUNTER, "")
 	if _query("perf") == "1":
 		await get_tree().create_timer(2.0).timeout
 		if streamer and not streamer.is_done():
@@ -1227,6 +1232,14 @@ func _on_dialogue_closed() -> void:
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
 	_heirs_heard()
+	if area == "sickroom":
+		Sickroom.wake(world)                                # 黄昏家主醒了（4.8a）
+	var heir := str(GameState.get_flag("valen_heir", ""))
+	if heir != "" and heir != heir_seen:
+		heir_seen = heir
+		var left := Chapter1.remove_departed(world)        # 印戒交出去了：另一位当场离堡（4.8a）
+		hud.toast("伊薇特带着兵营里她的人出了水门。入夜前，她会回来。" if heir == "alric" else "阿尔里克带着塞弗林家的信使出了堡门。入夜前，他会回来。", 5.0)
+		print("IC_HEIR chosen=%s removed=%d water_gate=%s" % [heir, left, GameState.get_flag("ch1_water_gate", "")])
 	var b := GameState.pending_brawl
 	GameState.pending_brawl = {}
 	if not b.is_empty() and dialogue_npc is Npc:
@@ -1234,7 +1247,7 @@ func _on_dialogue_closed() -> void:
 	var f := GameState.pending_fight
 	GameState.pending_fight = {}
 	if not f.is_empty():
-		start_encounter(str(f.fight), str(f.get("win", "")))      # 对峙说崩了，动手（3.6）
+		start_encounter(str(f.fight), str(f.get("win", "")), f.get("value", true))      # 对峙说崩了，动手（3.6；4.7c 带打赢时旗标的值）
 	var lv := GameState.pending_leave
 	GameState.pending_leave = ""
 	if lv != "":
@@ -1585,14 +1598,17 @@ func encounter_active() -> bool:
 
 
 ## 区域里那组 NPC 换成敌人，开打（渡口的「灰手」奥弗和他的两个手下）
-func start_encounter(id: String, win: String) -> void:
+func start_encounter(id: String, win: String, value: Variant = true) -> void:
 	if encounter_active():
 		return
 	encounter = Encounter.new()
 	encounter.name = "Encounter"
 	add_child(encounter)
 	encounter.ended.connect(_on_encounter_ended)
-	encounter.begin(world, id, win)
+	encounter.begin(world, id, win, value)
+	if area == "marsh" and nav.is_empty():          # 鹭沼平时不烘焙导航（整张图太大）：营地开打时只烘焙营地那块土墩（4.7c），人已经换成敌人、不算障碍
+		nav = NavBuilder.bake(world, Marsh.camp_nav_bounds())
+		print("IC_NAV area=marsh camp ms=%.0f polygons=%d" % [nav.ms, nav.polygons])
 	for e in encounter.enemies:
 		e.state_changed.connect(_on_enemy_state)
 	hud.show_prompt("")
@@ -1632,8 +1648,9 @@ func _on_battle_ended(winner: String) -> void:
 
 
 func _on_encounter_ended(_won: bool) -> void:
-	hud.toast("✓ 渡口的无旗者都解决了。", 3.0)
-	save_game.call_deferred("auto", true)
+	hud.toast("✓ 营地的无旗者都解决了。" if area == "marsh" else "✓ 渡口的无旗者都解决了。", 3.0)
+	if encounter.win_flag != "":                    # 网址 ?fight=camp 开的那一仗（不设旗标）不自动存档：读回来是一个打完了、支线却没了结的营地（4.7c 审查）
+		save_game.call_deferred("auto", true)
 
 
 func _npc_by_dialogue(id: String) -> Npc:

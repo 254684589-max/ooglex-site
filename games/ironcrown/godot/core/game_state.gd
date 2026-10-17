@@ -123,6 +123,10 @@ func new_game(seed_override := -1) -> void:
 func set_flag(name: String, value = true) -> void:
 	flags[name] = value
 	flag_changed.emit(name, value)
+	if name == "valen_heir":
+		Chapter1.heir_chosen(str(value))      # 印戒交出去了：算水门、走了的那位托你的支线收尾（4.8a）
+	for q in quests.keys():
+		_auto_advance(str(q))                 # 阶段写了 {"flag": 旗标, "to": …} 的：旗标一设就推进（4.7c：营地的事了结了，不管是谈的还是打的）
 
 
 func get_flag(name: String, default = null):
@@ -416,18 +420,21 @@ func clues_for(quest: String) -> Array:
 
 
 ## 阶段的 advance_when：{"clues_at_least": n, "to": 下一阶段}——线索够了自动推进；{"clue": 线索, "to": 下一阶段}——拿到这条线索就推进（3.5）；
-## {"has_item": 物品, "to": 下一阶段}——东西到手就推进（4.7a：账房里的皮毛税账册）；可以加 "count": 件数（4.7b：三株白芦根）。
+## {"has_item": 物品, "to": 下一阶段}——东西到手就推进（4.7a：账房里的皮毛税账册）；可以加 "count": 件数（4.7b：三株白芦根）；
+## {"flag": 旗标, "to": 下一阶段}——旗标一设就推进（4.7c：营地的事了结了，ch1_outlaws；打赢那一仗是 Encounter 设的旗标，不经过对话）。
 ## set_stage 推进以后会再查一次新阶段（先拿到雇佣信、后凑够线索时，一口气推到底）
 func _auto_advance(id: String) -> void:
 	if not quest_active(id):
 		return
-	var st: Dictionary = quest_data().quests[id].stages.get(quest_stage(id), {})
+	var st: Dictionary = quest_data().quests.get(id, {}).get("stages", {}).get(quest_stage(id), {})
 	var rule: Dictionary = st.get("advance_when", {})
 	if rule.has("clues_at_least") and clues_for(id).size() >= int(rule.clues_at_least):
 		set_stage(id, str(rule.to))
 	elif rule.has("clue") and clues.has(str(rule.clue)):
 		set_stage(id, str(rule.to))
 	elif rule.has("has_item") and inventory.count(str(rule.has_item)) >= int(rule.get("count", 1)):
+		set_stage(id, str(rule.to))
+	elif rule.has("flag") and has_flag(str(rule.flag)):
 		set_stage(id, str(rule.to))
 
 

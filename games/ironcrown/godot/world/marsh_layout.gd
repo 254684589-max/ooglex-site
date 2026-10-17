@@ -101,11 +101,15 @@ const CAMP_MEN := [
 	["camp_thug_b", "无旗者", Vector3(-60.8, BANK_Y, 33.4), -2.2, "34403a"],
 	["camp_lookout", "放哨的无旗者", Vector3(-43.5, BANK_Y, 30.8), -PI / 2, "4a3e30"],     # 营地东头，面朝来路
 ]
+## 营地那一仗（4.7c）：对峙编号、每个人换成哪种敌人（奥弗死后的头目用剑手的数值，不用 outlaw_leader：那是桦林哨卡的头目，身上带着雇佣信）
+const CAMP_ENCOUNTER := "camp"
+const CAMP_KINDS := {"offer_camp": "outlaw_boss", "camp_boss": "swordsman", "camp_thug_a": "clubber", "camp_thug_b": "swordsman", "camp_lookout": "clubber"}
 ## 营地里的人说的话：按序章和奥弗怎么了结的（友善 / 记恨 / 没打过交道）
 const CAMP_LINES := {
 	"friendly": ["灰手说了，你是自己人——至少今天是。", "鹭沼的鱼腥，可比桦林的雪暖和。", "火边有地方，坐。别碰那几个箱子。"],
 	"grudge": ["（他的手一直没离开刀柄）渡口那晚，我记得你。", "老大没发话，你就站那儿别动。", "（他朝泥里吐了口唾沫）誓剑。"],
 	"neutral": ["外乡人，这儿不是渔民来的地方。", "要找灰手？他在火边。", "别乱走，泥里陷进去可没人拉你。"],
+	"ally": ["到那天，我们听小姐的号角。", "火边有地方，坐——现在是自己人了。", "堤道那头，我们会从芦苇里出来。"],     # 收编了（4.7c）
 }
 
 ## 托宾的小屋：泥炭场东头的干地上（不用高脚），正面朝西
