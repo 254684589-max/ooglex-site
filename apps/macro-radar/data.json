@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-10-16T21:36:49Z",
-  "asOf": "2026-10-16",
-  "asOfSh": "2026-10-17 05:36",
+  "updatedAt": "2026-10-17T21:22:37Z",
+  "asOf": "2026-10-17",
+  "asOfSh": "2026-10-18 05:22",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
-    "score": 34,
+    "score": 33,
     "labelZh": "收紧 · 风险",
     "labelEn": "RISK-OFF",
     "desc": "实际利率、信用利差走弱压制风险偏好；增长动能、期限溢价相对稳健，已进入压力区。"
@@ -270,7 +270,7 @@
       "key": "growth",
       "en": "GROWTH",
       "zh": "增长动能",
-      "score": 57,
+      "score": 56,
       "status": "neutral",
       "statusZh": "中性",
       "desc": "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)",
@@ -437,7 +437,7 @@
       "text": "高收益/投资级比价周环比 -1.4%，信用走弱"
     }
   ],
-  "mutSummary": "今日 3 条市场异动，避险情绪升温、结构偏承压；与机制读数 34（收紧 · 风险）方向一致。",
+  "mutSummary": "今日 3 条市场异动，避险情绪升温、结构偏承压；与机制读数 33（收紧 · 风险）方向一致。",
   "macro": [
     {
       "zh": "利率走廊",
@@ -472,7 +472,7 @@
           "val": "4.00%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-16",
+          "asOf": "2026-10-17",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -480,7 +480,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-16",
+          "asOf": "2026-10-17",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -551,8 +551,8 @@
           "changeBps": -9,
           "asOf": "2026-10-15",
           "previousAsOf": "2026-10-14",
-          "updatedAt": "2026-10-16T21:36:49Z",
-          "lastAttemptAt": "2026-10-16T21:36:49Z",
+          "updatedAt": "2026-10-17T21:22:37Z",
+          "lastAttemptAt": "2026-10-17T21:22:37Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -761,32 +761,32 @@
         {
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
-          "val": "1.57",
-          "chg": "+0.4%",
+          "val": "1.56",
+          "chg": "+0.0%",
           "asOf": "2026-10-16",
           "tone": "up"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "73.3",
-          "chg": "-0.1%",
+          "val": "73.4",
+          "chg": "-0.0%",
           "asOf": "2026-10-16",
           "tone": "down"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "15.09",
-          "chg": "+0.3%",
+          "val": "15.53",
+          "chg": "+3.2%",
           "asOf": "2026-10-16",
           "tone": "up"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "2.37",
-          "chg": "+0.7%",
+          "val": "2.43",
+          "chg": "+3.2%",
           "asOf": "2026-10-16",
           "tone": "up"
         }
@@ -900,8 +900,8 @@
       "changePct": 0.12795715658449058,
       "asOf": "2026-10-09",
       "previousAsOf": "2026-10-08",
-      "updatedAt": "2026-10-16T21:36:49Z",
-      "lastAttemptAt": "2026-10-16T21:36:49Z",
+      "updatedAt": "2026-10-17T21:22:37Z",
+      "lastAttemptAt": "2026-10-17T21:22:37Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -955,8 +955,8 @@
       "changePct": 1.0410469958358037,
       "asOf": "2026-10-14",
       "previousAsOf": "2026-10-13",
-      "updatedAt": "2026-10-16T21:36:49Z",
-      "lastAttemptAt": "2026-10-16T21:36:49Z",
+      "updatedAt": "2026-10-17T21:22:37Z",
+      "lastAttemptAt": "2026-10-17T21:22:37Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
