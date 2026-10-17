@@ -162,6 +162,9 @@
 **4.6 已实现**（2026-10-17，`data/schedules.json`、各对话的 `text_if`）：白天伊薇特在大厅壁炉前，黄昏、夜里回兵营跟她的兵一块儿喝汤；赫尔曼白天在井边，黄昏站在大厅门口的火盆边，夜里守在堡门里；托宾白天在泥炭场点数，黄昏收工去客栈火塘边端着热酒；阿尔里克一直在大厅（黄昏和信使低声说话）；玛尔塔夜里守着蜡烛；守水门的老头夜里提着灯。剧情推到黄昏、夜里在 4.8。
 **按建议推进、请所有者确认**（不阻塞）：作息怎么排（谁什么时候在哪）是按人物性格定的，STORY 只写了「白天在大厅、黄昏在兵营」一个例子。
 
+**4.7a 已实现**（2026-10-17，`world/counting.gd`、`blackheron.json`、`hall.json`）：皮毛税账册——账房在东边塔楼南头，两道锁。找赫尔曼要钥匙：说动他（为家主着想：「他要问账，总不能等人去翻你的钥匙串」），或者瓦伦家信得过你（交出埃德里克、带着维克托的信来的）；没说动就别再问。或者撬塔楼和账房之间窄巷里那扇小窗（白天院子里人来人往难一些，夜里容易些）；被赫尔曼抓了个正着：窗钉死、瓦伦家声望下降、这条支线到此为止。账册上每一笔扣下的税旁边写着「留北境」、压着伊薇特的私印。交给阿尔里克，他转手给塞弗林家的信使（塞弗林家 +10、厄尔德家 -5）；告诉伊薇特，她让你先给她，给了她就扔进火里（厄尔德家 +10、塞弗林家 -5）；自己留着到 4.8 再算。
+`ch1_ledger` 多一个值 `caught`（撬窗被抓、没拿到），4.8 读它时要算上。
+
 序章其他旗标：和奥弗**谈妥或花钱打发**（`offer_left` / `offer_paid`）的，他的营地对你友善；**打过一仗**（`offer_defeated`）的，营地的人记恨你，要么再打，要么口才或花钱化解（更难）。
 修士的旧书三种结果都带着；借据的下落决定结尾家主说话的方式（4.5 第 9 步）。
 
@@ -212,7 +215,7 @@
 ### 4.8 新旗标（开发时登记进 `data/flags.json`）
 
 `ch1_started`、`victor_lie`（放走：`lied_ok` / `lied_caught` / `told_truth`）、`edric_quiet`（勒索：`kept` / `told`）、`ch1_letter`（有没有引荐信）、
-`ch1_debt`（借据的下落：`given_osric` / `sold` / `given_heir` / `kept` / `with_edric`）、`ch1_ledger`（`alric` / `ivette` / `kept`）、`ch1_outlaws`（`ally` / `driven` / `beaten`）、
+`ch1_debt`（借据的下落：`given_osric` / `sold` / `given_heir` / `kept` / `with_edric`）、`ch1_ledger`（`alric` / `ivette` / `kept` / `caught`——撬窗被抓，4.7a 加）、`ch1_outlaws`（`ally` / `driven` / `beaten`）、
 `ch1_herb`、`ch1_water_gate`（`warned` / `opened` / `unknown`）、`ch1_peat`、`valen_heir`（`alric` / `ivette`）、`ch1_causeway`（`held` / `lost`）、`ch1_done`。
 
 声望：选阿尔里克，塞弗林家上升、烽誓团略降；选伊薇特，厄尔德家和烽誓团上升、塞弗林家下降；失守，瓦伦家下降（新家主不信任你）；
