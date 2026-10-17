@@ -7094,4 +7094,18 @@ func test_music() -> void:
 	main = await fl_go(main, "tavern")
 	check(Music.track == "town", "进酒馆：「town」")
 	await free_main(main)
+	# 新游戏的开场：先听钟声（上一首淡出），管家喊人以后起「night」
+	Music.play("keep")
+	var skip: bool = Engine.get_meta("ic_skip_opening", false)
+	Engine.set_meta("ic_skip_opening", false)
+	GameState.new_game()
+	main = await make_main(false)
+	await physics(2)
+	check(main.opening != null and Music.track == "", "新游戏的开场：上一首淡出，先听钟声（%s）" % Music.track)
+	if main.opening != null:
+		main.opening.called.emit()
+		await frames(1)
+	check(Music.track == "night", "管家喊人以后：「night」")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", skip)
 	GameState.new_game()

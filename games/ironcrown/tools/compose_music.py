@@ -299,7 +299,7 @@ def encode(st: np.ndarray, path: str) -> None:
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes(pcm.tobytes())
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", name, "-c:a", "libvorbis", "-q:a", "1", path], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", name, "-c:a", "libvorbis", "-q:a", "1", "-fflags", "+bitexact", "-flags:a", "+bitexact", path], check=True)
     os.unlink(name)
 
 

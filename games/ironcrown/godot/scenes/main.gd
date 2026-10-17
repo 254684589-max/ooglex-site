@@ -240,7 +240,8 @@ func _ready() -> void:
 		hud.set_hint("")                 # 操作说明改由开场开始后的教学提示给
 		hint_left = 0.0
 		opening.start(title_card, touch_mode)
-		opening.called.connect(func(): Music.play_area(area))     # 背景音乐（M.1）：开场先听钟声，管家喊人以后再起
+		Music.play("")                                             # 背景音乐（M.1）：开场先听钟声（从头再来时把上一首淡出，审查）
+		opening.called.connect(func(): Music.play_area(area))     # 管家喊人以后再起
 	else:
 		Music.play_area(area)                                       # 背景音乐（M.1）：按区域和时段；同一首不重放
 	if area == "birch" and GameState.chapter == 0:     # 桦林（3.5）：拿武器战斗的教学提示（STORY 第三节「教学：拿武器战斗、格挡、体力」）；第一章哨卡的事已经过去了

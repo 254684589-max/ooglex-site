@@ -13,6 +13,8 @@ var saves_btn: Button
 var help_label: Label
 var sound_check: CheckButton
 var tips_check: CheckButton
+var scroll: ScrollContainer
+var box: VBoxContainer
 var music_check: CheckButton
 var music_slider: HSlider
 var music_value: Label
@@ -49,9 +51,14 @@ func _ready() -> void:
 	sb.set_content_margin_all(18)
 	panel.add_theme_stylebox_override("panel", sb)
 	center.add_child(panel)
-	var box := VBoxContainer.new()
+	scroll = ScrollContainer.new()                  # 矮屏手机放不下时能上下滑（M.1 加了音乐两行，审查）
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	panel.add_child(scroll)
+	box = VBoxContainer.new()
 	box.add_theme_constant_override("separation", 10)
-	panel.add_child(box)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(box)
 	var title := Label.new()
 	title.text = "已暂停"
 	title.add_theme_font_size_override("font_size", 24)
@@ -91,11 +98,13 @@ func _ready() -> void:
 	box.add_child(qrow)
 	sound_check = _check(box, "声音", Settings.sound, "sound")
 	music_check = _check(box, "背景音乐", Settings.music, "music")            # M.1
+	music_check.disabled = not Settings.sound                               # 「声音」关了，音乐跟着关（灰着，审查）
 	music_value = Label.new()
 	music_slider = _slider(box, "音乐音量", music_value, 0.0, 1.0, 0.05, Settings.music_volume, "music_volume")
 	tips_check = _check(box, "教学提示", Settings.tips, "tips")
 	perf_check = _check(box, "显示性能数据（F3）", Settings.show_perf, "show_perf")
 	Settings.changed.connect(func():
+		music_check.disabled = not Settings.sound
 		perf_check.set_pressed_no_signal(Settings.show_perf)
 		tp_check.set_pressed_no_signal(Settings.third_person))
 	var help := Label.new()
@@ -172,3 +181,4 @@ func _fit() -> void:
 	var w := get_tree().root
 	var logical := Vector2(w.size) / maxf(w.content_scale_factor, 0.01)
 	panel.custom_minimum_size.x = clampf(logical.x - 32.0, 240.0, 440.0)
+	scroll.custom_minimum_size.y = minf(box.get_combined_minimum_size().y, logical.y - 32.0 - 36.0)     # 面板上下的边距和描边
