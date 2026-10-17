@@ -61,9 +61,10 @@ static func finish(m: CharacterModel) -> void:
 	for n in m.get_meta("hide", []):
 		var node := m.scene_root.find_child(str(n), true, false)
 		if node != null:
-			node.queue_free()
+			(node as Node3D).visible = false       # 藏起来，不删：网页版删掉已经交给渲染器的蒙皮网格会报「material is null」（A.2a 实测）
 	for mi: MeshInstance3D in m.scene_root.find_children("*", "MeshInstance3D", true, false):
 		mi.visibility_range_end = LOD_FAR
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF      # NPC 不投影（低画质本来就没有阴影；中高画质省一半绘制）
 
 
 ## 校验（测试用）：预设、部件文件、贴图、颜色都对得上

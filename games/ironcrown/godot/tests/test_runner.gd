@@ -7468,7 +7468,7 @@ func test_looks() -> void:
 	var meshes: Array = m.scene_root.find_children("*", "MeshInstance3D", true, false)
 	var on_skel := meshes.all(func(mi): return mi.get_node_or_null(mi.skeleton) == m.skeleton)
 	var names := meshes.map(func(mi): return str(mi.name))
-	check(m.loaded and on_skel and names.has("Hair_Beard") and not names.has("Male_Ranger_Head_Hood") and meshes.all(func(mi): return mi.visibility_range_end == Looks.LOD_FAR),
+	check(m.loaded and on_skel and names.has("Hair_Beard") and not (m.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D).visible and meshes.all(func(mi): return mi.visibility_range_end == Looks.LOD_FAR),
 		"赫尔曼：游侠那套、兜帽摘了、胡子挂在同一副骨架上、远处不画（%d 个网格）" % meshes.size())
 	m.play_loop("idle")
 	check(m.playing() != "", "能放站着的动作")
