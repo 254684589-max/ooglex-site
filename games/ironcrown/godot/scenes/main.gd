@@ -1639,7 +1639,8 @@ func _on_battle_ended(winner: String) -> void:
 
 func _on_encounter_ended(_won: bool) -> void:
 	hud.toast("✓ 营地的无旗者都解决了。" if area == "marsh" else "✓ 渡口的无旗者都解决了。", 3.0)
-	save_game.call_deferred("auto", true)
+	if encounter.win_flag != "":                    # 网址 ?fight=camp 开的那一仗（不设旗标）不自动存档：读回来是一个打完了、支线却没了结的营地（4.7c 审查）
+		save_game.call_deferred("auto", true)
 
 
 func _npc_by_dialogue(id: String) -> Npc:

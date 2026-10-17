@@ -48,7 +48,7 @@
       "first": "talk_offer",
       "stages": {
         "talk_offer": {"objective": "去鹭沼深处的营地：谈（给粮、给钱，或者一句他们信得过的话）、赶走，或者打。也去芦栈村找泥炭工头托宾", "advance_when": {"flag": "ch1_outlaws", "to": "report"}},
-        "report": {"objective": "营地的事了结了：回黑鹭堡告诉伊薇特"}
+        "report": {"objective": "营地的事了结了：回黑鹭堡告诉伊薇特（托宾的泥炭工还没说定的，回去之前可以先去芦栈村找他）"}
       }
     },
     "ch1_whitereed": {

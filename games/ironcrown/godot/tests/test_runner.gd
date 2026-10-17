@@ -7198,6 +7198,9 @@ func test_outlaws() -> void:
 	say_runner("offer_camp", ["那晚各为其主。今天我不是来打架的。"], "deepmarsh")
 	r.start("deepmarsh", "offer_camp")
 	check(r.node_id == "refused_again" and r.options().any(func(o): return str(o.text).begins_with("（拔剑）")), "让你滚的奥弗：有支线时能拔剑")
+	say_runner("offer_camp", ["（拔剑）你说过，下回就不是说话了。"], "deepmarsh")
+	check(str(GameState.pending_fight.get("fight", "")) == "camp" and GameState.pending_fight.get("value") == "beaten" and str(GameState.pending_fight.get("win", "")) == "ch1_outlaws", "拔剑：营地那一仗，打赢记 ch1_outlaws = beaten")
+	GameState.pending_fight = {}
 	check(Marsh.camp_loot("offer_camp").has("grey_glove") == false and Marsh.camp_loot("camp_thug_a") == Enemy.types().clubber.loot, "奥弗在渡口被搜过身：营地里没有第二只灰皮手套")
 	# —— 奥弗死在渡口：伊薇特、军士说的是「灰手剩下的那伙人」，头目一样能收编
 	outlaws_state()
@@ -7218,6 +7221,13 @@ func test_outlaws() -> void:
 	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
 	GameState.silver = 100
 	check(say_runner("camp_boss", ["（放下 40 枚银币）给他的人买口吃的。", "伊薇特小姐托我来找你。", "（放下 50 枚银币）这是定钱。"], "deepmarsh") == "ally_paid" and GameState.get_flag("ch1_outlaws") == "ally", "头目：一样能收编")
+	outlaws_state(seed_for("boss_recruit_speech", "speech", 15, true))
+	GameState.dead["ferry_offer"] = [0.0, 0.0, 0.0]
+	GameState.silver = 0
+	check(say_runner("camp_boss", ["伊薇特小姐托我来找你。", "她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账。"], "deepmarsh") == "ally_word", "头目：有支线时不用先给 40 枚银币，也能直接谈（审查）")
+	outlaws_state()
+	say_runner("offer_camp", ["伊薇特小姐托我来找你。"], "deepmarsh")
+	check(GameState.has_flag("offer_camp_terms"), "一开口问价就记下「谁给粮就跟谁」：回去伊薇特就给粮单（审查：不用先问「黑鹭堡要出事了」）")
 	# —— 托宾的泥炭工
 	outlaws_state()
 	GameState.silver = 40
@@ -7265,6 +7275,14 @@ func test_outlaws() -> void:
 	var en: Array = main.encounter.enemies
 	var reached := en.filter(func(e): return e.nav_ready())
 	check(reached.size() == en.size(), "敌人用得上导航网格（%d / %d）" % [reached.size(), en.size()])
+	var nmap: RID = main.player.get_world_3d().navigation_map
+	var holes := []
+	for cp: Array in [MarshLayout.CAMP_OFFER] + MarshLayout.CAMP_MEN:
+		var at: Vector3 = cp[2]
+		var q := NavigationServer3D.map_get_closest_point(nmap, at)
+		if Vector2(q.x - at.x, q.z - at.z).length() > 0.3:
+			holes.append(str(cp[0]))
+	check(holes.is_empty(), "营地的人原来站的地方都在导航网格上（NPC 开打前就拿掉了，不在脚下挖洞；%s）" % str(holes))
 	var boss: Enemy = en.filter(func(e): return e.enemy_id == "offer_camp")[0]
 	check(boss.display_name == "「灰手」奥弗" and boss.kind == "outlaw_boss", "奥弗是 outlaw_boss，名字照旧")
 	for e in en:
@@ -7278,6 +7296,13 @@ func test_outlaws() -> void:
 	check(ens.size() == 4 and main.world.get_node_or_null("Npc_offer_camp") == null, "再来：营地里躺着倒下的人，没人站着（%s）" % str(ens))
 	await free_main(main)
 	GameState.set_flag("ivette_met")
-	check(say_runner("ivette", ["沼地那伙人的事办完了。"], "hall") == "outlaws_report" and GameState.quest_done("ch1_outlaws"), "打散了也能回去报告")
+	GameState.add_item("grain_writ")
+	check(say_runner("ivette", ["沼地那伙人的事办完了。"], "hall") == "outlaws_report" and GameState.quest_done("ch1_outlaws") and not GameState.has_item("grain_writ"), "打散了也能回去报告；没用上的粮单她收回去")
+	# 网址 ?fight=camp 在营地已经了结时：没有人可打，不留一个打不完的对峙
+	GameState.set_flag("ch1_outlaws", "driven")
+	main = await make_main_marsh()
+	main.start_encounter(MarshLayout.CAMP_ENCOUNTER, "")
+	check(not main.encounter_active() and not main.in_combat(), "营地空了还开打：马上结束，能走能存档")
+	await free_main(main)
 	Music.stop_now()
 	GameState.new_game()

@@ -424,7 +424,7 @@ func clues_for(quest: String) -> Array:
 func _auto_advance(id: String) -> void:
 	if not quest_active(id):
 		return
-	var st: Dictionary = quest_data().quests[id].stages.get(quest_stage(id), {})
+	var st: Dictionary = quest_data().quests.get(id, {}).get("stages", {}).get(quest_stage(id), {})
 	var rule: Dictionary = st.get("advance_when", {})
 	if rule.has("clues_at_least") and clues_for(id).size() >= int(rule.clues_at_least):
 		set_stage(id, str(rule.to))

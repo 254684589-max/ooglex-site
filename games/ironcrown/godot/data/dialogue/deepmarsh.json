@@ -123,6 +123,7 @@
       },
       "pitch": {
         "text": "（他往火里添了块泥炭，没抬头）伊薇特·瓦伦。（他笑了一声）她哥哥的人上个月也来过，带着一袋钱。她出什么价？",
+        "do": [{"set": "offer_camp_terms"}],
         "options": [
           {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
           {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
@@ -134,6 +135,7 @@
       },
       "pitch_fail": {
         "text": "（他摇摇头）空话我听得多了。冬天可不吃空话——带点实在的来：粮，或者钱。",
+        "do": [{"set": "offer_camp_terms"}],
         "options": [
           {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
           {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
@@ -197,7 +199,8 @@
         "text": "（营火边站起来一个瘦高个，手按在刀上）灰手死在渡口了——死在你手里。（他盯着你看了很久）你最好在我改主意之前走。",
         "options": [
           {"text": "（放下 40 枚银币）给他的人买口吃的。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "paid"},
-          {"text": "（拔剑）伊薇特小姐要你们离开鹭沼——要么走，要么打。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
+          {"text": "（拔剑）那就没什么好谈的了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
           {"text": "我只是路过。", "end": true}
         ]
       },
@@ -236,6 +239,7 @@
       },
       "pitch": {
         "text": "（他往火里扔了根柴）瓦伦家的小姐。灰手活着的时候说过，瓦伦家的人说话还算数——她出什么价？",
+        "do": [{"set": "offer_camp_terms"}],
         "options": [
           {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
           {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
@@ -247,6 +251,7 @@
       },
       "pitch_fail": {
         "text": "空话填不饱肚子。带点实在的来：粮，或者钱。",
+        "do": [{"set": "offer_camp_terms"}],
         "options": [
           {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
           {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},

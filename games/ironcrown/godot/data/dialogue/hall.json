@@ -342,7 +342,7 @@
       "outlaws_report": {
         "text": "（她听你说完）……",
         "text_if": [{"if": [{"flag": "ch1_outlaws", "eq": "ally"}], "text": "（她第一次笑了）灰手的人……好。堤道那头多一伙认得芦苇的人，比多二十个新兵还管用。"}, {"if": [{"flag": "ch1_outlaws", "eq": "driven"}], "text": "赶走了也好。至少我哥买不到他们，夜里也不会有人从芦苇里冒出来。"}, {"if": [{"flag": "ch1_outlaws", "eq": "beaten"}], "text": "（她看了看你剑鞘上的泥）……打散了。也好，省得到时候有人从芦苇里冒出来——不管是替谁。"}],
-        "do": [{"quest_done": "ch1_outlaws"}, {"rep": "valen", "delta": 5}],
+        "do": [{"quest_done": "ch1_outlaws"}, {"rep": "valen", "delta": 5}, {"take_item": "grain_writ"}],
         "options": [
           {"text": "托宾的泥炭工也站到您这边了。", "if": [{"flag": "ch1_peat"}], "next": "peat_yes"},
           {"text": "泥炭工那边还没说定。", "if": [{"not_flag": "ch1_peat"}], "next": "peat_no"}

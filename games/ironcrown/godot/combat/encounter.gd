@@ -37,11 +37,14 @@ func begin(world: Node3D, encounter_id: String, win: String, value: Variant = tr
 		e.transform = npc.global_transform              # 区域的节点都挂在 world 下，world 本身不动
 		world.add_child(e)
 		npc.remove_from_group(group_name(id))
+		npc.get_parent().remove_child(npc)              # 当场拿掉（不等帧末）：营地开打紧接着烘焙导航，NPC 是静态碰撞体，留着会在每个敌人脚下挖一个洞（4.7c 审查）
 		npc.queue_free()
 		e.state_changed.connect(_on_enemy_state)
 		enemies.append(e)
 	for e in enemies:
 		e.engage()
+	if enemies.is_empty():
+		done = true                                     # 这组人已经不在了（例如网址 ?fight=camp 时营地已经了结）：不留一个永远打不完的对峙
 
 
 func active() -> bool:
