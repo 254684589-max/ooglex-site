@@ -172,6 +172,9 @@ func _ready() -> void:
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
+	var moved := Schedule.apply(world, area)        # NPC 作息（4.6）：这个时段不在这儿的人拿掉、换了站位的挪过去、从别处来的放进来
+	if not moved.is_empty():
+		print("IC_SCHEDULE area=%s daypart=%s moved=%s" % [area, GameState.daypart, ",".join(moved)])
 	# 导航网格（3.4）：区域搭好、玩家还没放进去之前烘焙（玩家不是静态碰撞体，本来也不会被算进去）
 	var nb := Areas.nav_bounds(area)
 	if nb.has_volume():
@@ -1547,6 +1550,7 @@ func set_daypart(id: String, announce := true) -> void:
 	if not Daypart.valid(id):
 		return
 	GameState.daypart = id
+	Schedule.apply(world, area)                     # 剧情推进到别的时段：人当场换地方（4.6）
 	var eff := Daypart.effective(area, id)
 	if eff != daypart:
 		var dim := not Settings.reduced_motion and fade != null

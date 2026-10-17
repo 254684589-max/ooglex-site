@@ -15,6 +15,7 @@ extends RefCounted
 ##         3.7 起：{"earn": 数量}（得到银币，例如塞拉斯的封口费）、{"ending": 结局编号}（对话关上后显示结束画面，ui/ending_panel.gd）
 ##         4.2 起：{"daypart": 时段}（剧情推进到清晨 / 白天 / 黄昏 / 夜：dawn | day | dusk | night，对话关上后换光，world/daypart.gd）
 ## 4.2 起的条件：{"daypart": 时段} 或 {"daypart": [时段, ...]}（现在是这个 / 这几个时段之一）——NPC 按时段换开场白（4.6）用
+## 4.6 起：节点可以有 text_if：[{"if": [...], "text": 台词}]，第一个满足的换掉 text（同一个节点按时段换开场白，选项和效果不变；NPC 作息，core/schedule.gd）。
 ## 对话可以有 start_if：[{"if": [...], "node": 节点}]，第一个满足的决定从哪个节点开始（旗标改变 NPC 的态度）。
 ## 3.9 起：剧情条件（旗标、任务、声望）都满足、只差银币或物品（silver、has_item）的选项不再隐藏，灰色显示「需要……」（entries()）；
 ##         选项写 "locked": "hide" 时照旧隐藏——用于会剧透的选项（例如「把墓室里找到的信递给他」，没找到信之前不该知道有这封信）。
@@ -29,7 +30,7 @@ var node_id := ""
 var last_check := {}          # 刚做过的检定：{skill, ok}（界面显示「洞察检定成功」）
 
 const OPTION_KEYS := ["text", "next", "end", "if", "check", "do", "locked"]
-const NODE_KEYS := ["text", "options", "do"]
+const NODE_KEYS := ["text", "options", "do", "text_if"]
 const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least", "daypart"]
 const RESOURCE_KEYS := ["silver", "has_item"]     # 「差东西」的条件（3.9）：只差这些时灰色显示「需要……」，不隐藏
 const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta", "brawl", "win", "lose", "fight", "leave", "earn", "ending", "daypart", "goto", "spawn"]
@@ -83,6 +84,11 @@ static func validate(d: Dictionary) -> Array:
 			if not key in NODE_KEYS:
 				errors.append("%s：不认识的键 %s" % [nid, key])
 		_validate_effects(n.get("do", []), nid, registry, errors)
+		for t in n.get("text_if", []):
+			if not (t is Dictionary) or str(t.get("text", "")) == "" or not (t.get("if", []) as Array).size() > 0:
+				errors.append("%s：text_if 每一项要有条件 if 和台词 text" % nid)
+			else:
+				_validate_conds(t.get("if", []), nid, registry, errors)
 		for e in n.get("do", []):
 			if e.has("brawl") or e.has("fight") or e.has("goto"):
 				errors.append("%s：打架 / 动手 / 带你去别处只能放在选项上（选了就结束对话）" % nid)
@@ -330,6 +336,9 @@ func node() -> Dictionary:
 
 
 func text() -> String:
+	for t in node().get("text_if", []):
+		if conds_ok(t.get("if", [])):
+			return str(t.text)
 	return str(node().get("text", ""))
 
 

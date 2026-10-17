@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -251,6 +251,8 @@ func test_ui() -> void:
 			texts.append(str(dlg[did].speaker))
 			for nid in dlg[did].nodes:
 				texts.append(str(dlg[did].nodes[nid].text))
+				for t in dlg[did].nodes[nid].get("text_if", []):              # 按时段换的开场白（4.6）
+					texts.append(str(t.text))
 				for o in dlg[did].nodes[nid].options:
 					texts.append(str(o.text))
 	# 测试场、霜渡镇、酒馆都要查（1.5 发现：只查测试场，漏掉了霜渡镇领主宅邸大门上「宅邸」的「邸」）
@@ -6650,3 +6652,112 @@ func test_keep() -> void:
 	r.start("sickroom", "marta")
 	check(not r.options().any(func(o): return o.text == "（走到床边看看家主）"), "主线没到「去看家主」：玛尔塔不让走到床边")
 	GameState.new_game()
+
+
+## NPC 作息（路线图 4.6；core/schedule.gd、data/schedules.json、对话节点的 text_if）：同一个人按时段换地方、换开场白。
+## 伊薇特黄昏、夜里在兵营（没见过她的人兵营也推得开）；赫尔曼黄昏在大厅门口、夜里守堡门；托宾黄昏、夜里在客栈的火塘边；剧情推到别的时段时人当场换地方
+func test_schedule() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	check(Schedule.validate().is_empty(), "作息表：区域、站位、时段、名字都对（%s）" % str(Schedule.validate()))
+	check(DialogueRunner.validate({"start": "a", "nodes": {"a": {"text": "x", "text_if": [{"text": "y"}], "options": [{"text": "走", "end": true}]}}}).size() > 0,
+		"text_if 没写条件：校验报错")
+	var r := DialogueRunner.new()
+	GameState.new_game()
+	GameState.chapter = 1
+	GameState.daypart = "day"
+	r.start("hall", "ivette")
+	var day_text := r.text()
+	GameState.new_game()                           # 开场白节点会设 ivette_met：重来一遍才又从 greet 开始
+	GameState.chapter = 1
+	GameState.daypart = "dusk"
+	r.start("hall", "ivette")
+	check(day_text.contains("壁炉") and r.text().contains("长凳不分高低") and r.node_id == "greet", "同一个节点按时段换开场白：白天在壁炉前，黄昏在兵营的长桌边（选项不变；%s / %s / %s）" % [r.node_id, day_text.left(12), r.text().left(30)])
+	check(Schedule.area_of("ivette", "day") == "hall" and Schedule.area_of("ivette", "dusk") == "barracks" and Schedule.area_of("tobin", "night") == "inn" and Schedule.area_of("herman", "dawn") == "castle",
+		"作息：没写的时段在老地方")
+	GameState.chapter = 0
+	check(Schedule.area_of("tobin", "night") == "marsh", "序章（夜里）：还没到第一章，托宾在老地方")
+	GameState.chapter = 1
+	# —— 黄昏的黑鹭堡：赫尔曼站到大厅门口；没见过伊薇特、从堡门进来的也推得开兵营
+	ch1_state("deliver", 15)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ledger_asked"]:
+		GameState.set_flag(f)
+	GameState.set_flag("castle_entry", "gate")
+	GameState.start_quest("ch1_main", "hear_heirs")
+	GameState.daypart = "dusk"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	var herman: Npc = main._npc_by_dialogue("herman")
+	var at: Array = Schedule.slot("herman").pos
+	check(herman != null and herman.position.distance_to(Vector3(at[0], at[1], at[2])) < 0.01 and stands_clear(herman), "黄昏：赫尔曼站在大厅门口的火盆边（站得稳）")
+	check(Castle.barracks_open() and AreaMap.exits("castle").any(func(e): return e.to == "barracks") and main.find_children("*", "Door", true, false).any(func(d): return d.to_area == "barracks" and not d.locked),
+		"黄昏：伊薇特在兵营，没见过她的人兵营也推得开（不然找不到她，主线卡住）")
+	main.open_dialogue("blackheron", "herman", herman)
+	await frames(1)
+	check(main.dialogue.runner.node_id == "again" and main.dialogue.runner.text().contains("火盆"), "赫尔曼黄昏的开场白：「站在大厅门口的火盆边」")
+	main.dialogue.close()
+	await frames(2)
+	# 大厅：伊薇特不在；兵营：伊薇特在长桌边
+	main = await fl_go(main, "hall")
+	await physics(3)
+	check(main._npc_by_dialogue("ivette") == null and main._npc_by_dialogue("alric") != null and main.world.get_node_or_null("Npc_ivette") == null, "黄昏的大厅：伊薇特不在（去兵营了），阿尔里克还在")
+	main = await fl_go(main, "castle")
+	await physics(3)
+	main = await fl_go(main, "barracks")
+	await physics(3)
+	var ivette: Npc = main._npc_by_dialogue("ivette")
+	var room := Rect2(-Barracks.W * 0.5, -Barracks.D * 0.5, Barracks.W, Barracks.D)
+	check(main.area == "barracks" and ivette != null and ivette.dialogue_area == "hall" and stands_clear(ivette) and walk_reach(main, Barracks.SPAWNS.front[0], ivette.position, 1.4, room),
+		"黄昏的兵营：伊薇特在长桌边（站得稳、走得到，对话还是她那套）")
+	check(await fl_say(main, "hall", "ivette", ["您打算怎么守北境？", "那您要我做什么？", "我会考虑。"]) and GameState.quest_stage("ch1_main") == "see_osric" and GameState.has_flag("heirs_heard"),
+		"在兵营听完伊薇特：主线照样推进到「去看家主」")
+	await free_main(main)
+	# —— 夜里：赫尔曼守堡门；托宾在客栈火塘边、村里泥炭场没有他
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	herman = main._npc_by_dialogue("herman")
+	at = Schedule.slot("herman").pos
+	check(herman.position.distance_to(Vector3(at[0], at[1], at[2])) < 0.01 and stands_clear(herman), "夜里：赫尔曼守在堡门里（站得稳）")
+	var wk := _runner_text("blackheron", "water_keeper")
+	check(wk.contains("提着灯"), "守水门的老头夜里的开场白（%s / %s）" % [GameState.daypart, wk.left(16)])
+	await free_main(main)
+	GameState.daypart = "dusk"
+	GameState.pending_load = {"scene": "inn", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	var tobin: Npc = main._npc_by_dialogue("tobin")
+	var inn_room := Rect2(-Inn.W * 0.5, -Inn.D * 0.5, Inn.W, Inn.D)
+	check(tobin != null and tobin.dialogue_area == "reedwharf" and stands_clear(tobin) and walk_reach(main, Inn.SPAWNS.front[0], tobin.position, 1.4, inn_room),
+		"黄昏的客栈：托宾收工了，坐在火塘边（站得稳、走得到）")
+	main.open_dialogue("reedwharf", "tobin", tobin)
+	await frames(1)
+	check(main.dialogue.runner.text().contains("收工了"), "托宾黄昏的开场白：「收工了」")
+	main.dialogue.close()
+	await free_main(main)
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main._npc_by_dialogue("tobin") == null and main._npc_by_dialogue("boatman") != null, "黄昏的村里：泥炭场没有托宾（在客栈），渡工还在码头")
+	await free_main(main)
+	# —— 剧情把时段推到黄昏：人当场换地方
+	ch1_state("deliver", 17)
+	GameState.set_flag("castle_admitted")
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main._npc_by_dialogue("ivette") != null, "白天的大厅：伊薇特在壁炉前")
+	await main.set_daypart("dusk", false)
+	await frames(3)
+	check(GameState.daypart == "dusk" and main._npc_by_dialogue("ivette") == null and main._npc_by_dialogue("alric") != null, "剧情推到黄昏：伊薇特当场离开大厅")
+	await free_main(main)
+	GameState.new_game()
+
+
+func _runner_text(file: String, id: String) -> String:
+	var r := DialogueRunner.new()
+	r.start(file, id)
+	return r.text()

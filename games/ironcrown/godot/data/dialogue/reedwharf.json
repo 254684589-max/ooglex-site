@@ -306,6 +306,7 @@
     "nodes": {
       "greet": {
         "text": "（他正对着一垛泥炭点数，头也不抬）三十七、三十八……别挡着光。泥炭不等人，有事快说。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他坐在客栈的火塘边，手上的泥炭灰还没洗干净，捧着一碗热酒）收工了。有事坐下说，别挡着火。"}],
         "options": [
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
@@ -318,6 +319,7 @@
       },
       "greet_again": {
         "text": "又是你。这回又要打听什么？",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他把酒碗往火塘边一放）又是你。这回又要打听什么？"}],
         "options": [
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},

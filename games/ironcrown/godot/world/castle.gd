@@ -41,7 +41,7 @@ const GUARDS := [
 	["water_keeper", "守水门的老头", Vector3(-11.4, 0, -18.4), 2.0, "4a4a42"],      # 托宾、奥弗说的那个「一盏灯、一把锈剑」的老头；4.5c 起有对话（blackheron.json）
 ]
 const GUARD_LINES := {
-	"gate_guard_in": ["赫尔曼大人在井边。有事找他，别在院子里乱走。", "两位继承人的人都住在堡里，各住各的。夜里别往兵营那边去。", "家主的病房谁也不让进——玛尔塔说的，赫尔曼大人点了头。"],
+	"gate_guard_in": ["有事找赫尔曼大人，别在院子里乱走。", "两位继承人的人都住在堡里，各住各的。夜里别往兵营那边去。", "家主的病房谁也不让进——玛尔塔说的，赫尔曼大人点了头。"],
 	"barracks_soldier": ["伊薇特小姐在兵营里跟我们一块儿吃饭。阿尔里克大人？他在大厅里。", "这几天兵营不让外人进——小姐点过头的除外。", "听说南边来的信使还在堡里，住的是最好的客房。"],
 }
 ## 命名出生点：gate = 从堡门进来（门里面，面朝庭院）；water_gate = 从水门进来（水门里面，面朝南）；barracks_gate = 从兵营侧门进来（面朝东）
@@ -100,9 +100,11 @@ static func sickroom_open() -> bool:
 	return GameState.has_flag("heirs_heard") or (GameState.has_flag("ledger_asked") and GameState.has_flag("outlaws_asked"))
 
 
-## 兵营的门推不推得开（4.5c）：伊薇特见过你，或者你是从兵营侧门进来的（side_gate_used；castle_entry 以后坐别人的船进来会被改掉，审查）
+## 兵营的门推不推得开（4.5c）：伊薇特见过你，或者你是从兵营侧门进来的（side_gate_used；castle_entry 以后坐别人的船进来会被改掉，审查）；
+## 4.6：黄昏、夜里伊薇特在兵营（作息），兵营也推得开——不然没见过她的人在大厅找不到她、也进不了兵营，主线卡住
 static func barracks_open() -> bool:
-	return GameState.has_flag("ivette_met") or GameState.has_flag("side_gate_used") or str(GameState.get_flag("castle_entry")) == "barracks"
+	return GameState.has_flag("ivette_met") or GameState.has_flag("side_gate_used") or str(GameState.get_flag("castle_entry")) == "barracks" \
+		or Schedule.area_of("ivette") == "barracks"
 
 
 ## 四栋房子（门按现在的进度换成推得开的）
