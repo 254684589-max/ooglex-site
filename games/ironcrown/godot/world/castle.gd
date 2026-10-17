@@ -27,7 +27,7 @@ const TOWER_OPEN := {"name": "病房", "to_area": "sickroom", "to_spawn": "front
 const COUNTING := [Vector3(12, 0, 6), -90.0, {"w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
 	"door": {"name": "账房", "text": "账房的门上了两道锁。钥匙在堡守赫尔曼那儿。"}}]
 const COUNTING_OPEN := {"name": "账房", "to_area": "counting", "to_spawn": "front", "verb": "进入"}       # 4.7a：拿到赫尔曼的钥匙以后
-const LEDGER_WINDOW := Vector3(15.3, 1.45, 3.0)   # 账房北侧墙上那扇能撬的小窗（塔楼和账房之间的窄巷里，4.7a）
+const LEDGER_WINDOW := Vector3(15.3, 1.45, 2.86)  # 账房北侧墙上那扇能撬的小窗（塔楼和账房之间的窄巷里，4.7a；百叶贴在墙外皮上，截图发现原来埋在墙里）
 const WELL := Vector3(5.0, 0, 5.0)
 const CART := Vector3(-5.5, 0, 12.5)
 const PEAT := [Vector2(-16.0, -11.2), Vector2(-16.0, -8.6)]          # 泥炭垛：靠西墙码着（从水门进来往南走，不挡路）
@@ -219,7 +219,9 @@ static func _gates(kit: MeshKit) -> void:
 
 ## 井（石圈 + 两根柱子撑着的小顶、辘轳）、拉麦子的板车、泥炭垛、大厅门前的旗杆（白底黑鹭）、火盆
 static func _props(kit: MeshKit) -> void:
-	kit.box("timber", LEDGER_WINDOW + Vector3(0, 0, -0.04), Vector3(0.62, 0.82, 0.06), Basis.IDENTITY, 0.8, 0.6)    # 账房北墙小窗的百叶（4.7a）
+	kit.box("timber", LEDGER_WINDOW + Vector3(0, 0, -0.03), Vector3(0.62, 0.82, 0.06), Basis.IDENTITY, 0.8, 0.6)    # 账房北墙小窗的百叶（4.7a）
+	for k in 3:
+		kit.box("soot", LEDGER_WINDOW + Vector3(0, -0.25 + k * 0.25, -0.065), Vector3(0.56, 0.03, 0.01))          # 百叶的横缝
 	kit.box("stone", LEDGER_WINDOW + Vector3(0, -0.46, -0.08), Vector3(0.8, 0.08, 0.16), Basis.IDENTITY, 0.8, 0.6)
 	kit.cylinder("stone", WELL, WELL + Vector3(0, 0.8, 0), 0.9, 0.9, 10, 0.75)
 	kit.cylinder("soot", WELL + Vector3(0, 0.78, 0), WELL + Vector3(0, 0.8, 0), 0.7, 0.7, 10, 1.0)

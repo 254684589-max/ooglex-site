@@ -88,7 +88,7 @@ static func _room(kit: MeshKit) -> void:
 	kit.box("timber", Vector3(0, 2.28, zs - 0.1), Vector3(DOOR_W + 0.3, 0.14, 0.2))
 
 
-## 写字台（墨水瓶、一摞账、蜡烛）、高背凳、账架（一格格的账簿）、铁皮箱
+## 写字台（墨水瓶、一摞账、蜡烛）、方凳、账架（一格格的账簿）、铁皮箱
 static func _furniture(kit: MeshKit) -> void:
 	var d := DESK
 	kit.box("timber", Vector3(d.get_center().x, 0.74, d.get_center().y), Vector3(d.size.x, 0.06, d.size.y), Basis.IDENTITY, 0.9, 0.7)
@@ -98,9 +98,8 @@ static func _furniture(kit: MeshKit) -> void:
 	kit.box("paper", Vector3(0.55, 0.78, -1.85), Vector3(0.3, 0.01, 0.22), Basis(Vector3.UP, 0.3))
 	kit.cylinder("iron", Vector3(0.75, 0.77, -2.1), Vector3(0.75, 0.84, -2.1), 0.04, 0.03, 6, 0.8)        # 墨水瓶
 	kit.cylinder("wax", Vector3(-0.4, 0.77, -2.15), Vector3(-0.4, 0.95, -2.15), 0.025, 0.025, 6, 1.0)     # 蜡烛
-	kit.box("timber", Vector3(0, 0.5, -1.15), Vector3(0.45, 0.05, 0.4))                 # 高背凳
-	kit.box("timber", Vector3(0, 0.95, -0.97), Vector3(0.45, 0.9, 0.05))
-	for c in [Vector2(-0.19, -1.32), Vector2(0.19, -1.32), Vector2(-0.19, -0.98), Vector2(0.19, -0.98)]:
+	kit.box("timber", Vector3(0.75, 0.5, -1.2), Vector3(0.4, 0.05, 0.36))               # 方凳（推到写字台东头，不挡写字台上的账册，截图发现）
+	for c in [Vector2(0.58, -1.35), Vector2(0.92, -1.35), Vector2(0.58, -1.05), Vector2(0.92, -1.05)]:
 		kit.box("timber", Vector3(c.x, 0.25, c.y), Vector3(0.05, 0.5, 0.05))
 	var s := SHELF
 	for y: float in [0.05, 0.6, 1.15, 1.7, 2.25]:
