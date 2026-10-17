@@ -177,7 +177,7 @@
       "side_gate": {
         "text": "（他打量了你一会儿）兵营的侧门归我们的人管。跟守门的说，你是来投伊薇特小姐的——进去以后你见谁、站哪边，那是你的事。",
         "options": [
-          {"text": "就这么说。", "do": [{"set": "castle_entry", "value": "barracks"}, {"goto": "castle", "spawn": "barracks_gate"}], "end": true},
+          {"text": "就这么说。", "do": [{"set": "castle_entry", "value": "barracks"}, {"set": "side_gate_used"}, {"goto": "castle", "spawn": "barracks_gate"}], "end": true},
           {"text": "算了。", "next": "menu"}
         ]
       },
@@ -306,6 +306,7 @@
     "nodes": {
       "greet": {
         "text": "（他正对着一垛泥炭点数，头也不抬）三十七、三十八……别挡着光。泥炭不等人，有事快说。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他站在客栈的火塘边，手上还沾着泥炭灰，端着一碗热酒）收工了。有事坐下说，别挡着火。"}],
         "options": [
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
@@ -318,6 +319,7 @@
       },
       "greet_again": {
         "text": "又是你。这回又要打听什么？",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他把酒碗往火塘边一放）又是你。这回又要打听什么？"}],
         "options": [
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
@@ -330,6 +332,7 @@
       },
       "menu": {
         "text": "还有事？我这儿忙着呢。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "还有事？我这碗酒还没喝完呢。"}],
         "options": [
           {"text": "去黑鹭堡怎么走？", "if": [{"not_flag": "heard_causeway"}], "next": "road"},
           {"text": "再说说堤道和水门。", "if": [{"flag": "heard_causeway"}], "next": "road_recap"},
@@ -342,6 +345,7 @@
       },
       "road": {
         "text": "（他终于抬起头，用下巴指了指西北边）只有一条大路：村子西北角那条石堤道。中段去年开春被大水冲断过，到现在只搭着几块木板，两个人并排都走不开。……还有条路，你别跟别人说：堡背面临水有一道水门，我们的泥炭船就是从那儿进出的。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（他放下酒碗，朝西北边努了努嘴）只有一条大路：村子西北角那条石堤道。中段去年开春被大水冲断过，到现在只搭着几块木板，两个人并排都走不开。……还有条路，你别跟别人说：堡背面临水有一道水门，我们的泥炭船就是从那儿进出的。"}],
         "do": [{"set": "heard_causeway"}, {"clue": "msg_causeway"}],
         "options": [
           {"text": "水门有人守吗？", "next": "gate"},

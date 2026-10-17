@@ -26,7 +26,8 @@
         "meet_herman": {"objective": "进了黑鹭堡：去井边见堡守赫尔曼"},
         "to_hall": {"objective": "家主在病房里昏睡，两位继承人都在大厅——去大厅（主楼的门）"},
         "hear_heirs": {"objective": "在大厅听两位继承人怎么说：长子阿尔里克、次女伊薇特（顺序任意）"},
-        "see_osric": {"objective": "两位继承人都找你谈过了。去东边塔楼的病房看看家主（医师玛尔塔守着）"}
+        "see_osric": {"objective": "两位继承人都找你谈过了。去东边塔楼的病房看看家主（医师玛尔塔守着）"},
+        "wait_dusk": {"objective": "家主在昏睡。玛尔塔说他黄昏前后常醒一会儿——到时候再去病房（黄昏家主醒来在开发中）"}
       }
     },
     "ch1_ledger": {
@@ -35,7 +36,9 @@
       "summary": "阿尔里克要你从账房拿出那本皮毛税账册，交给塞弗林家的信使以示诚意——这等于把伊薇特扣下南运皮毛税的事抖出去。",
       "first": "get_ledger",
       "stages": {
-        "get_ledger": {"objective": "账房上了两道锁：找堡守赫尔曼要钥匙，或者另想办法"}
+        "get_ledger": {"objective": "账房上了两道锁：找堡守赫尔曼要钥匙（说服他，或者瓦伦家信得过你），或者从账房侧墙那扇小窗撬进去（被看见就闹大）", "advance_when": {"has_item": "fur_ledger", "to": "deliver"}},
+        "deliver": {"objective": "账册到手了：交给阿尔里克（他会交给塞弗林家的信使）、交给伊薇特，或者自己留着"},
+        "caught": {"objective": "撬窗被赫尔曼抓了个正着，窗钉死了，账房再也进不去了（这条支线到这里为止）"}
       }
     },
     "ch1_outlaws": {
@@ -45,6 +48,27 @@
       "first": "talk_offer",
       "stages": {
         "talk_offer": {"objective": "去鹭沼深处的营地找奥弗谈，也去芦栈村找泥炭工头托宾"}
+      }
+    },
+    "ch1_whitereed": {
+      "title": "白芦根",
+      "kind": "side",
+      "summary": "医师玛尔塔说，鹭沼深处的泥滩上长一种白芦根，熬成汤能让家主清醒些。她走不动那么远的泥。",
+      "first": "gather",
+      "stages": {
+        "gather": {"objective": "去鹭沼深处的泥滩采三株白芦根（栈道西头的木板路往西，泥滩上发白的就是），天黑前交给病房里的玛尔塔", "advance_when": {"has_item": "white_reed", "count": 3, "to": "return"}},
+        "return": {"objective": "三株白芦根采齐了：天黑前交给病房里的玛尔塔"}
+      }
+    },
+    "ch1_wedding": {
+      "title": "埃德里克的婚事",
+      "kind": "side",
+      "summary": "埃德里克被他父亲送到黑鹭堡，要跟塞弗林家的女儿定亲。他不想娶，打算今晚之后自己想办法走。",
+      "first": "decide",
+      "stages": {
+        "decide": {"objective": "埃德里克想逃婚：帮他退婚（去找伊薇特说说）、劝他留下，或者告诉阿尔里克"},
+        "ask_ivette": {"objective": "去问伊薇特：她肯不肯帮埃德里克退掉这门亲事"},
+        "tell_edric": {"objective": "伊薇特答应了：回大厅告诉埃德里克"}
       }
     },
     "hob_debt": {

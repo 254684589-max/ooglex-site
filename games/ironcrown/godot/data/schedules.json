@@ -1,0 +1,26 @@
+{
+  "_说明": "NPC 作息（路线图 4.6；STORY.md 4.2「同一个人按时段换地方、换开场白」）。时段跟着剧情走（GameState.daypart：dawn / day / dusk / night，不做自由昼夜时钟）。每个人写：home = 平时在哪个区域（区域脚本照常放），away = 不在老地方的那几个时段去哪（area 区域、pos 脚底位置、yaw 朝向弧度：0 面朝北、PI 面朝南、-PI/2 面朝东），没写的时段在老地方；chapter = 从第几章起按作息走（之前一直在老地方）。name、coat、dialogue（对话文件）是从别处过来时放人用的，和老地方放的一样。换开场白写在对话节点的 text_if 里（按 daypart 条件）。core/schedule.gd 读它。",
+  "people": {
+    "ivette": {
+      "home": "hall", "chapter": 1, "name": "伊薇特", "coat": "4a3e2c", "dialogue": "hall",
+      "away": {
+        "dusk": {"area": "barracks", "pos": [-1.0, 0, 1.45], "yaw": 0.0},
+        "night": {"area": "barracks", "pos": [-1.0, 0, 1.45], "yaw": 0.0}
+      }
+    },
+    "herman": {
+      "home": "castle", "chapter": 1, "name": "赫尔曼", "coat": "3a3a34", "dialogue": "blackheron",
+      "away": {
+        "dusk": {"area": "castle", "pos": [-4.4, 0, -8.4], "yaw": 3.1416},
+        "night": {"area": "castle", "pos": [-2.6, 0, 16.4], "yaw": 3.1416}
+      }
+    },
+    "tobin": {
+      "home": "marsh", "chapter": 1, "name": "托宾", "coat": "4a3e2e", "dialogue": "reedwharf",
+      "away": {
+        "dusk": {"area": "inn", "pos": [1.85, 0, -1.0], "yaw": -1.5708},
+        "night": {"area": "inn", "pos": [1.85, 0, -1.0], "yaw": -1.5708}
+      }
+    }
+  }
+}

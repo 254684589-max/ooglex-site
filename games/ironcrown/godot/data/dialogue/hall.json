@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。",
+  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。 4.7a：账册交给阿尔里克（他交给塞弗林家的信使：塞弗林家 +10、厄尔德家 -5）或伊薇特（她扔进火里：厄尔德家 +10、塞弗林家 -5），支线做完；自己留着到 4.8 再算。 4.7b：埃德里克的婚事（只在序章「交出」时）——找伊薇特，她答应当了家就退亲，回去告诉埃德里克，他提醒你水门（edric_warned_water）；口才难度 14 劝他留下；或者告诉阿尔里克（塞弗林家 +5，他让人看着埃德里克）。结果记在 ch1_edric，4.8 读。",
   "alric": {
     "speaker": "阿尔里克",
     "start": "greet",
@@ -38,6 +38,7 @@
       },
       "again": {
         "text": "（他抬起眼）还有事？",
+        "text_if": [{"if": [{"flag": "ch1_ledger", "eq": "ivette"}], "text": "（他看你的眼神冷了下来）账烧了——我听说了。……还有事？"}, {"if": [{"flag": "ch1_ledger", "eq": "caught"}], "text": "（他压低了声音）撬窗？还让赫尔曼抓了个正着。……还有事？"}, {"if": [{"daypart": ["dusk", "night"]}], "text": "（他和信使低声说着话，桌上的蜡烛快烧完了。见你过来，他抬起眼）还有事？"}],
         "options": [
           {
             "text": "家主怎么样了？",
@@ -52,15 +53,30 @@
             "if": [
               {
                 "flag": "ledger_asked"
+              },
+              {
+                "not_flag": "ch1_ledger"
               }
             ],
             "next": "ask_again"
           },
+          {"text": "账册拿来了。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_alric"},
+          {"text": "埃德里克不想娶塞弗林家的人，打算今晚之后自己走。", "if": [{"quest_active": "ch1_wedding"}, {"not_flag": "edric_ivette_promise"}], "next": "edric_report"},
           {
             "text": "（告辞）",
             "end": true
           }
         ]
+      },
+      "ledger_alric": {
+        "text": "（他翻到最后几页，手指停在那几个「留北境」上，过了好一会儿才合上）……果然是她。（他把账册递给身边的红斗篷）带回王都。告诉摄政：瓦伦家说话算话。",
+        "do": [{"take_item": "fur_ledger"}, {"set": "ch1_ledger", "value": "alric"}, {"rep": "severin", "delta": 10}, {"rep": "eld", "delta": -5}, {"quest_done": "ch1_ledger"}],
+        "options": [{"text": "……", "next": "again"}]
+      },
+      "edric_report": {
+        "text": "（他皱起眉）……那孩子。这门亲事要是黄了，塞弗林家的粮也就黄了。（他朝门口的卫兵抬了抬下巴）我会让人看着他。",
+        "do": [{"set": "ch1_edric", "value": "reported"}, {"rep": "severin", "delta": 5}, {"quest_done": "ch1_wedding"}],
+        "options": [{"text": "……", "next": "again"}]
       },
       "osric": {
         "text": "父亲睡着的时候比醒着多。玛尔塔说，熬不过这个冬天。（他停了一下）他醒着的时候，一句也没提过继承。",
@@ -159,6 +175,7 @@
     "nodes": {
       "greet": {
         "text": "（她背对着壁炉，手里转着一只空酒杯，靴子上还沾着泥）你就是那个从霜渡镇来的誓剑。我是伊薇特。（她打量了你一眼）坐不坐随你，这大厅里的椅子都是我父亲的。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她站在兵营的长桌边，跟兵们一块儿喝着汤，抬头看了你一眼）你就是那个从霜渡镇来的誓剑。我是伊薇特。坐吧，兵营里的长凳不分高低。"}],
         "do": [
           {
             "set": "ivette_met"
@@ -181,6 +198,7 @@
       },
       "greet_barracks": {
         "text": "（她一眼就认出了你）从我兵营侧门进来的那个誓剑——说是来投我的？（她笑了一下）话说出口，可就收不回去了。我是伊薇特。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她从长桌边站起来，手里的汤碗还冒着热气）从我兵营侧门进来的那个誓剑——说是来投我的？（她笑了一下）话说出口，可就收不回去了。我是伊薇特。"}],
         "do": [
           {
             "set": "ivette_met"
@@ -203,6 +221,7 @@
       },
       "again": {
         "text": "（她放下酒杯）说吧。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她把汤碗推到一边）说吧。"}],
         "options": [
           {
             "text": "家主怎么样了？",
@@ -221,11 +240,31 @@
             ],
             "next": "ask_again"
           },
+          {"text": "阿尔里克让我去账房拿皮毛税的账。", "if": [{"flag": "ledger_asked"}, {"not_flag": "ivette_knows_ledger"}, {"not_flag": "ch1_ledger"}], "next": "ledger_tell"},
+          {"text": "账册在我手里。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_ivette"},
+          {"text": "埃德里克不想娶塞弗林家的人。", "if": [{"quest_stage": "ch1_wedding", "eq": "ask_ivette"}], "next": "wedding"},
           {
             "text": "（告辞）",
             "end": true
           }
         ]
+      },
+      "ledger_tell": {
+        "text": "（她转酒杯的手停住了）……那本账。（她看着你）拿到了，先给我。我不会亏待你。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她端汤碗的手停住了）……那本账。（她看着你）拿到了，先给我。我不会亏待你。"}],
+        "do": [{"set": "ivette_knows_ledger"}],
+        "options": [{"text": "……", "next": "again"}]
+      },
+      "ledger_ivette": {
+        "text": "（她接过账册，翻都没翻，直接扔进了壁炉。火苗一下子窜起来）……这本账要是到了南边，北境的兵就得饿着肚子守烽燧。我欠你一回。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她接过账册，翻都没翻，拉开炉门扔了进去。火苗一下子窜起来）……这本账要是到了南边，北境的兵就得饿着肚子守烽燧。我欠你一回。"}],
+        "do": [{"take_item": "fur_ledger"}, {"set": "ch1_ledger", "value": "ivette"}, {"rep": "eld", "delta": 10}, {"rep": "severin", "delta": -5}, {"quest_done": "ch1_ledger"}],
+        "options": [{"text": "……", "next": "again"}]
+      },
+      "wedding": {
+        "text": "（她冷笑了一声）那门亲事是我哥跟王都谈的买卖，拿霜渡镇的小儿子换几车麦子。我要是当了家，第一件事就是退了它。告诉那孩子，别乱跑。",
+        "do": [{"set": "edric_ivette_promise"}, {"quest": "ch1_wedding", "stage": "tell_edric"}],
+        "options": [{"text": "……", "next": "again"}]
       },
       "osric": {
         "text": "父亲会醒的。他醒着的时候看着我，然后叹气。……他知道我想干什么。",
@@ -251,6 +290,7 @@
       },
       "risk": {
         "text": "全家早就在冒险了，只是我哥不肯承认。（她把酒杯往壁炉台上一放）等摄政的兵进了北境，再后悔就晚了。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "全家早就在冒险了，只是我哥不肯承认。（她把汤碗往桌上一放）等摄政的兵进了北境，再后悔就晚了。"}],
         "options": [
           {
             "text": "那您要我做什么？",
@@ -277,6 +317,7 @@
       },
       "ask_again": {
         "text": "奥弗那伙人，还有托宾的泥炭工。人越多越好——今晚之前。",
+        "text_if": [{"if": [{"daypart": "night"}], "text": "奥弗那伙人，还有托宾的泥炭工。人越多越好——天亮之前。"}],
         "options": [
           {
             "text": "我会考虑。",
@@ -289,27 +330,84 @@
   "edric_hall": {
     "speaker": "埃德里克",
     "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "ch1_edric", "eq": "reported"}], "node": "after_reported"},
+      {"if": [{"flag": "ch1_edric"}], "node": "after"},
+      {"if": [{"quest_active": "ch1_wedding"}], "node": "again"}
+    ],
     "nodes": {
       "greet": {
         "text": "（他坐在窗边，没回头）……又是你。父亲把我送来，跟塞弗林家的女儿定亲。下个月。（他终于看了你一眼）你满意了？",
         "options": [
-          {
-            "text": "这不是我定的。",
-            "next": "not_me"
-          },
-          {
-            "text": "（走开）",
-            "end": true
-          }
+          {"text": "这不是我定的。", "next": "not_me"},
+          {"text": "你不想娶她。", "next": "flee"},
+          {"text": "（走开）", "end": true}
         ]
       },
       "not_me": {
         "text": "可你把我送回来了。（他又转过头去看窗外）……走吧。我这儿没什么好说的。",
         "options": [
-          {
-            "text": "……",
-            "end": true
-          }
+          {"text": "你不想娶她。", "next": "flee"},
+          {"text": "……", "end": true}
+        ]
+      },
+      "flee": {
+        "text": "（他压低了声音）塞弗林家的女儿我见都没见过。定了亲，我就是南边拴在北境脖子上的一根绳子。……我不会娶她。等过了今晚，我自己想办法走。",
+        "do": [{"quest": "ch1_wedding"}],
+        "options": [
+          {"text": "我去找伊薇特说说。她不会让王都的人拴住瓦伦家。", "next": "plan_ivette"},
+          {"text": "你走了，你父亲怎么跟塞弗林家交代？这门亲事能让霜渡镇过冬。", "if": [{"not_flag": "edric_stubborn"}], "check": {"id": "edric_persuade", "skill": "speech", "dc": 14, "pass": "persuaded", "fail": "stubborn"}},
+          {"text": "（不说话）", "end": true}
+        ]
+      },
+      "plan_ivette": {
+        "text": "……她？（他想了想）她要是肯开口，也许有用。阿尔里克可不会。",
+        "do": [{"quest": "ch1_wedding", "stage": "ask_ivette"}],
+        "options": [
+          {"text": "等我消息。", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他抬起头）怎么样？",
+        "options": [
+          {"text": "伊薇特答应了：她当了家，就退了这门亲事。", "if": [{"flag": "edric_ivette_promise"}], "next": "helped"},
+          {"text": "我去找伊薇特说说。", "if": [{"quest_stage": "ch1_wedding", "eq": "decide"}], "next": "plan_ivette"},
+          {"text": "你走了，你父亲怎么跟塞弗林家交代？这门亲事能让霜渡镇过冬。", "if": [{"not_flag": "edric_stubborn"}], "check": {"id": "edric_persuade", "skill": "speech", "dc": 14, "pass": "persuaded", "fail": "stubborn"}},
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "persuaded": {
+        "text": "（他沉默了很久，手指在窗台上划了一道）……我留下。不是为了你，是为了霜渡镇。",
+        "do": [{"set": "ch1_edric", "value": "persuaded"}, {"quest_done": "ch1_wedding"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "stubborn": {
+        "text": "说得好听。（他转过头去）霜渡镇过不过得了冬，用不着拿我去换。",
+        "do": [{"set": "edric_stubborn"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "helped": {
+        "text": "（他一下子转过身来，像是第一次正眼看你）……谢谢。（他往门口看了一眼，压低声音）我来的那天，看见堡背面有道水门，夜里只有一个老头守着。要是今晚真打起来——那是最薄的地方。",
+        "do": [{"set": "ch1_edric", "value": "helped"}, {"set": "edric_warned_water"}, {"quest_done": "ch1_wedding"}],
+        "options": [
+          {"text": "记住了。", "end": true}
+        ]
+      },
+      "after": {
+        "text": "（他看着窗外）……还有事？",
+        "text_if": [{"if": [{"flag": "ch1_edric", "eq": "helped"}], "text": "（他冲你点了点头，没说话。窗外的雾散了一些。）"}],
+        "options": [
+          {"text": "（走开）", "end": true}
+        ]
+      },
+      "after_reported": {
+        "text": "（他盯着你，眼睛发红）你去告诉了阿尔里克。现在门口多了两个人看着我。……你满意了？",
+        "options": [
+          {"text": "（走开）", "end": true}
         ]
       }
     }

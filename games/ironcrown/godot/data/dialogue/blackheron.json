@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡（路线图 4.5a；STORY.md 4.5 第 3 步「进堡：有引荐信走堡门；没有就走别的办法。见堡守赫尔曼」）。堡门前的卫兵（鹭沼地图上）看引荐信放人；没有引荐信的三种办法在别处：托宾的泥炭船走水门（reedwharf.json tobin）、伊薇特的老兵带你走兵营侧门（reedwharf.json ivette_veteran）、奥弗的船从芦苇里摸到水门（deepmarsh.json offer_camp）。进了庭院，赫尔曼按你从哪进来的说不同的开场白；见过他以后堡门就推得开（castle_admitted），主线推进到「去大厅」。",
+  "_说明": "黑鹭堡（路线图 4.5a；STORY.md 4.5 第 3 步「进堡：有引荐信走堡门；没有就走别的办法。见堡守赫尔曼」）。堡门前的卫兵（鹭沼地图上）看引荐信放人；没有引荐信的三种办法在别处：托宾的泥炭船走水门（reedwharf.json tobin）、伊薇特的老兵带你走兵营侧门（reedwharf.json ivette_veteran）、奥弗的船从芦苇里摸到水门（deepmarsh.json offer_camp）。进了庭院，赫尔曼按你从哪进来的说不同的开场白；见过他以后堡门就推得开（castle_admitted），主线推进到「去大厅」。4.5c：守水门的老头有了对话（夜里只有他一个人守、栅底下那道缝人也钻得进来——只是氛围：STORY 里提醒你水门的是埃德里克（4.8）；能坐泥炭船回芦栈村东头）；赫尔曼不给账房的钥匙（怎么拿到在 4.7）。4.7a：账册支线——赫尔曼的钥匙（口才难度 15，或瓦伦家声望 25 以上直接给；没说动就不能再问），或撬账房北墙那扇小窗（counting_window：潜行，白天难度 15、夜里 10；被看见就闹大：瓦伦家声望 -10，支线失败）。",
   "gate_guard": {
     "speaker": "守门的卫兵",
     "start": "greet",
@@ -17,6 +17,7 @@
       },
       "letter": {
         "text": "（他借着门洞里的灯看了看信上的印，回头朝门洞里喊了一声）开门！……进去吧，赫尔曼大人在井边。",
+        "text_if": [{"if": [{"daypart": "dusk"}], "text": "（他借着门洞里的灯看了看信上的印，回头朝门洞里喊了一声）开门！……进去吧，赫尔曼大人在大厅门口。"}, {"if": [{"daypart": "night"}], "text": "（他借着门洞里的灯看了看信上的印，回头朝门洞里喊了一声）开门！……进去吧，赫尔曼大人就在门里头。"}],
         "options": [
           {"text": "（进堡）", "do": [{"set": "castle_admitted"}, {"set": "castle_entry", "value": "gate"}, {"goto": "castle", "spawn": "gate"}], "end": true}
         ]
@@ -66,6 +67,7 @@
       },
       "greet_water": {
         "text": "（他从井边转过身，看了看你湿透的靴子）水门进来的？泥炭船，还是芦苇里那伙人的船？（他哼了一声）我是赫尔曼，这座堡的堡守。这堡里的门，没有我不知道的。",
+        "text_if": [{"if": [{"daypart": "dusk"}], "text": "（他从大厅门口的火盆边走过来，看了看你湿透的靴子）水门进来的？泥炭船，还是芦苇里那伙人的船？（他哼了一声）我是赫尔曼，这座堡的堡守。这堡里的门，没有我不知道的。"}, {"if": [{"daypart": "night"}], "text": "（他从堡门那边走过来，看了看你湿透的靴子）水门进来的？泥炭船，还是芦苇里那伙人的船？（他哼了一声）我是赫尔曼，这座堡的堡守。这堡里的门，没有我不知道的。"}],
         "do": [{"set": "herman_met"}, {"set": "castle_admitted"}, {"quest": "ch1_main", "stage": "to_hall"}],
         "options": [
           {"text": "家主怎么样了？", "next": "osric"},
@@ -76,21 +78,24 @@
       },
       "again": {
         "text": "（他拄着长枪，眼睛一直盯着大厅的门）还有事？",
+        "text_if": [{"if": [{"daypart": "dusk"}], "text": "（他站在大厅门口的火盆边，火光照着他的白胡子）还有事？"}, {"if": [{"daypart": "night"}], "text": "（他守在堡门里头，长枪靠在肩上）夜里别在院子里乱走。还有事？"}],
         "options": [
           {"text": "家主怎么样了？", "next": "osric"},
           {"text": "两位继承人在哪？", "next": "heirs"},
           {"text": "维克托大人让我把借据亲手交给家主。", "if": [{"flag": "prologue_edric", "eq": "deliver"}, {"has_item": "debt_note"}], "locked": "hide", "next": "debt"},
+          {"text": "账房的钥匙……", "if": [{"flag": "ledger_asked"}], "next": "ledger_key"},
           {"text": "（告辞）", "end": true}
         ]
       },
       "osric": {
-        "text": "昏睡。玛尔塔守在病房里，谁也不让进。醒的时候少，醒了也认不清人。……他守了北境四十年，临了连自己的儿女都认不全。",
+        "text": "昏睡。玛尔塔守在病房里，谁也不让进。醒的时候少，认人时好时坏。……他守了北境四十年，临了有时连自己的儿女都认不全。",
         "options": [
           {"text": "……", "next": "again"}
         ]
       },
       "heirs": {
         "text": "大厅里。从早上吵到现在，长子一句，小姐一句，谁也不让谁。你要见他们，就规矩点：话留三分，哪边都别得罪。……在这堡里，我只听家主的。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "阿尔里克大人在大厅里，和南边来的信使说话；小姐回兵营了，跟她的兵一块儿吃饭。你要见他们，就规矩点：话留三分，哪边都别得罪。……在这堡里，我只听家主的。"}],
         "options": [
           {"text": "明白了。", "next": "again"}
         ]
@@ -101,10 +106,150 @@
           {"text": "明白了。", "next": "again"}
         ]
       },
+      "ledger_key": {
+        "text": "（他的手按在腰上的钥匙串上）账房？没有家主的话，谁也别想进。……谁让你来要的，我心里有数。",
+        "text_if": [{"if": [{"flag": "ledger_caught"}], "text": "（他看都不看你）撬窗的人，还有脸来要钥匙？"}, {"if": [{"flag": "counting_key_given"}], "text": "钥匙已经给你了。家主醒了，你自己跟他交代。"}],
+        "options": [
+          {"text": "家主醒的时候不多。他要问账，总不能等人去翻你的钥匙串——让我先替他把账拿出来。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}], "check": {"id": "herman_key", "skill": "speech", "dc": 15, "pass": "key_given", "fail": "key_no"}},
+          {"text": "维克托大人让我替他照看家主。瓦伦家的人信得过我。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}, {"rep": "valen", "at_least": 25}], "next": "key_trust"},
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "key_given": {
+        "text": "（他盯着你看了很久，从钥匙串上取下两把铜钥匙）……拿去。账房在东边，塔楼南头。家主醒了，你自己跟他交代。",
+        "do": [{"give_item": "counting_key"}, {"set": "counting_key_given"}],
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "key_trust": {
+        "text": "（他想了想，从钥匙串上取下两把铜钥匙）维克托大人的人……拿去。账房在东边，塔楼南头。别让我后悔。",
+        "do": [{"give_item": "counting_key"}, {"set": "counting_key_given"}],
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "key_no": {
+        "text": "不行。（他把钥匙串塞进腰带里）别再来问了。",
+        "do": [{"set": "herman_key_refused"}],
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
       "why_not": {
         "text": "拦你？人都进来了，我拦给谁看。（他把长枪往地上一顿）进了这道墙，就守这道墙的规矩：大厅、兵营、病房，没人领着别乱走。",
         "options": [
           {"text": "……", "next": "again"}
+        ]
+      }
+    }
+  },
+  "water_keeper": {
+    "speaker": "守水门的老头",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "water_keeper_met"}], "node": "again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（老头眯着眼看你，手里的灯晃了晃）……我什么也没看见。泥炭船进来，泥炭船出去，我一个老头子，什么也没看见。",
+        "text_if": [{"if": [{"daypart": "night"}], "text": "（老头提着灯从栅门边站起来，灯光晃得你睁不开眼）谁？……我什么也没看见。泥炭船夜里也进进出出，我一个老头子，什么也没看见。"}],
+        "do": [{"set": "water_keeper_met"}],
+        "options": [
+          {"text": "这道水门夜里谁守？", "next": "night"},
+          {"text": "能坐泥炭船出去吗？", "next": "boat"},
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他往灯里添了点油）又是你。",
+        "text_if": [{"if": [{"daypart": "night"}], "text": "（他把灯举高了一点）又是你。夜里别往水边走，掉下去可没人管。"}],
+        "options": [
+          {"text": "这道水门夜里谁守？", "next": "night"},
+          {"text": "能坐泥炭船出去吗？", "next": "boat"},
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "night": {
+        "text": "就我。一盏灯、一把锈剑。铁栅好些年没升过了，栅底下那道缝，泥炭船贴着水面就钻进来——人也钻得进来。真要有人夜里摸进来，我这把老骨头可拦不住。",
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "boat": {
+        "text": "泥炭船卸完货就回芦栈村，在村东头靠岸。上去蹲着，别出声，撑船的不会问。",
+        "options": [
+          {"text": "（上船回芦栈村）", "do": [{"goto": "marsh", "spawn": "reedwharf"}], "end": true},
+          {"text": "算了。", "next": "again"}
+        ]
+      }
+    }
+  },
+  "counting_window": {
+    "speaker": "账房的小窗",
+    "start": "look",
+    "start_if": [
+      {"if": [{"flag": "ledger_caught"}], "node": "nailed"},
+      {"if": [{"flag": "ch1_ledger"}], "node": "done"},
+      {"if": [{"flag": "counting_key_given"}], "node": "keyed"},
+      {"if": [{"has_item": "fur_ledger"}], "node": "done"},
+      {"if": [{"not_flag": "ledger_asked"}], "node": "plain"},
+      {"if": [{"flag": "ledger_window"}], "node": "ajar"}
+    ],
+    "nodes": {
+      "look": {
+        "text": "（塔楼和账房之间的窄巷里，账房侧墙上有一扇小窗，木百叶从里面闩着，缝隙里塞得进一把刀。巷口外面，院子里人来人往。）",
+        "text_if": [{"if": [{"daypart": "night"}], "text": "（窄巷里黑着。账房侧墙上那扇小窗的百叶从里面闩着，缝隙里塞得进一把刀。院子里只剩堡门那边一盏灯。）"}],
+        "options": [
+          {"text": "（趁院子里没人注意，撬开百叶）", "if": [{"daypart": ["dawn", "day", "dusk"]}], "check": {"id": "ledger_window_day", "skill": "stealth", "dc": 15, "pass": "pried", "fail": "caught"}},
+          {"text": "（摸黑撬开百叶）", "if": [{"daypart": "night"}], "check": {"id": "ledger_window_night", "skill": "stealth", "dc": 10, "pass": "pried", "fail": "caught"}},
+          {"text": "（算了）", "end": true}
+        ]
+      },
+      "pried": {
+        "text": "（刀尖挑开了闩，百叶无声地转开。屋里一股旧纸和蜡油的味道。）",
+        "do": [{"set": "ledger_window"}],
+        "options": [
+          {"text": "（爬进账房）", "do": [{"goto": "counting", "spawn": "window"}], "end": true},
+          {"text": "（先不进去）", "end": true}
+        ]
+      },
+      "ajar": {
+        "text": "（百叶还虚掩着，没人发现。）",
+        "options": [
+          {"text": "（爬进账房）", "do": [{"goto": "counting", "spawn": "window"}], "end": true},
+          {"text": "（算了）", "end": true}
+        ]
+      },
+      "caught": {
+        "text": "（闩刚挑开一半，身后有人咳了一声。赫尔曼拄着长枪站在巷口，脸色铁青）撬家主的账房？……看在家主还活着的份上，我不叫人把你扔进沼泽。这扇窗，我会让人钉死。",
+        "do": [{"set": "ledger_caught"}, {"set": "ch1_ledger", "value": "caught"}, {"rep": "valen", "delta": -10}, {"quest": "ch1_ledger", "stage": "caught"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "keyed": {
+        "text": "（你腰上挂着赫尔曼的钥匙，用不着撬窗。账房的门在塔楼南头。）",
+        "options": [
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "nailed": {
+        "text": "（百叶从外面钉上了两块木板。）",
+        "options": [
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "done": {
+        "text": "（这扇窗你用不着了。）",
+        "options": [
+          {"text": "（离开）", "end": true}
+        ]
+      },
+      "plain": {
+        "text": "（一扇闩着的小窗。没理由去撬它。）",
+        "options": [
+          {"text": "（离开）", "end": true}
         ]
       }
     }

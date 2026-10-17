@@ -4,7 +4,8 @@ extends RefCounted
 ## 外景在鹭沼那张图上（world/marsh.gd 的粗模）；进了堡门是这个单独的室外区域 castle（时段照常）。四面 8 米高的石墙围着一个 36 × 40 米的庭院：
 ##   南墙正中是堡门（出去回到鹭沼的堡门前）；北边是主楼（大厅在一楼），西边是兵营（南头的西墙上开一道侧门），东边北头是家主病房所在的塔楼、南头是账房；
 ##   西北角的北墙上是水门（铁栅放下着，外面就是水，泥炭船从这里进出）；院子中间一口井，堡守赫尔曼守在井边。
-## 4.5a 做了庭院；4.5b 大厅的门推得开（world/hall.gd）；兵营、病房、账房的门还关着（4.5c）。没有引荐信的人从水门（托宾的泥炭船、奥弗的船）或兵营侧门（伊薇特的老兵）进来，
+## 4.5a 做了庭院；4.5b 大厅的门推得开（world/hall.gd）；4.5c 病房（world/sickroom.gd，两位继承人都托过你以后）、兵营（world/barracks.gd，伊薇特见过你或你从侧门进来以后）推得开；
+## 守水门的老头有了对话（能坐泥炭船回芦栈村）；账房（world/counting.gd）拿到赫尔曼的钥匙才推得开，或者从塔楼和账房之间窄巷里那扇小窗撬进去（4.7a，blackheron.json counting_window）。没有引荐信的人从水门（托宾的泥炭船、奥弗的船）或兵营侧门（伊薇特的老兵）进来，
 ## 站在门里面那头；对话里的 goto 效果把人送到对应的出生点（main._on_dialogue_closed）。
 ## 坐标：原点在庭院地面中心，北 = -Z；堡门在南墙（z = +20）。
 
@@ -18,11 +19,15 @@ const EXIT_NAME := "堡门"
 const KEEP := [Vector3(0, 0, -10.5), 0.0, {"w": 20.0, "d": 8.5, "floors": 2, "stone_upper": true, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 4501, "lit": 0.4,
 	"door": {"name": "大厅", "to_area": "hall", "to_spawn": "front", "verb": "进入"}}]       # 4.5b 起推得开
 const BARRACKS := [Vector3(-10, 0, 2), 90.0, {"w": 16.0, "d": 7.0, "floors": 1, "roof": "eaves", "door_x": 0.0, "seed": 4502, "lit": 0.3,
-	"door": {"name": "兵营", "text": "兵营的门从里面闩着，门口的兵摇了摇头。（兵营里面在开发中）"}}]
+	"door": {"name": "兵营", "text": "兵营的门从里面闩着，门口的兵摇了摇头：「小姐没发话，外人不进。」"}}]
+const BARRACKS_OPEN := {"name": "兵营", "to_area": "barracks", "to_spawn": "front", "verb": "进入"}      # 4.5c：伊薇特见过你、或者你从侧门进来以后
 const TOWER := [Vector3(12, 0, -6), -90.0, {"w": 6.0, "d": 5.5, "floors": 2, "stone_upper": true, "roof": "gable", "door_x": 0.0, "seed": 4503, "lit": 0.5,
-	"door": {"name": "病房", "text": "门里传来一个女人的声音：「家主睡着了，谁也别进来。」（病房里面在开发中）"}}]
+	"door": {"name": "病房", "text": "门里传来一个女人的声音：「家主睡着了，谁也别进来。」"}}]
+const TOWER_OPEN := {"name": "病房", "to_area": "sickroom", "to_spawn": "front", "verb": "进入"}           # 4.5c：两位继承人都托过你以后
 const COUNTING := [Vector3(12, 0, 6), -90.0, {"w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
-	"door": {"name": "账房", "text": "账房的门上了两道锁。"}}]
+	"door": {"name": "账房", "text": "账房的门上了两道锁。钥匙在堡守赫尔曼那儿。"}}]
+const COUNTING_OPEN := {"name": "账房", "to_area": "counting", "to_spawn": "front", "verb": "进入"}       # 4.7a：拿到赫尔曼的钥匙以后
+const LEDGER_WINDOW := Vector3(15.3, 1.45, 2.86)  # 账房北侧墙上那扇能撬的小窗（塔楼和账房之间的窄巷里，4.7a；百叶贴在墙外皮上，截图发现原来埋在墙里）
 const WELL := Vector3(5.0, 0, 5.0)
 const CART := Vector3(-5.5, 0, 12.5)
 const PEAT := [Vector2(-16.0, -11.2), Vector2(-16.0, -8.6)]          # 泥炭垛：靠西墙码着（从水门进来往南走，不挡路）
@@ -35,12 +40,11 @@ const HERMAN := ["herman", "赫尔曼", Vector3(3.4, 0, 7.4), PI, "3a3a34"]     
 const GUARDS := [
 	["gate_guard_in", "守门的卫兵", Vector3(2.6, 0, 17.5), 0.0, "3e4652"],
 	["barracks_soldier", "兵营门口的兵", Vector3(-8.4, 0, 3.6), -PI / 2, "4e4a36"],
-	["water_keeper", "守水门的老头", Vector3(-11.4, 0, -18.4), 2.0, "4a4a42"],      # 托宾、奥弗说的那个「一盏灯、一把锈剑」的老头
+	["water_keeper", "守水门的老头", Vector3(-11.4, 0, -18.4), 2.0, "4a4a42"],      # 托宾、奥弗说的那个「一盏灯、一把锈剑」的老头；4.5c 起有对话（blackheron.json）
 ]
 const GUARD_LINES := {
-	"gate_guard_in": ["赫尔曼大人在井边。有事找他，别在院子里乱走。", "两位继承人的人都住在堡里，各住各的。夜里别往兵营那边去。", "家主的病房谁也不让进——玛尔塔说的，赫尔曼大人点了头。"],
-	"water_keeper": ["（他眯着眼看你，又看看水门）……我什么也没看见。", "这道铁栅好些年没升过了，泥炭船贴着栅底下那道缝钻进来。", "夜里水门这儿就我一盏灯。灯灭了，谁也找不着这道门。"],
-	"barracks_soldier": ["伊薇特小姐在兵营里跟我们一块儿吃饭。阿尔里克大人？他在大厅里。", "这几天兵营不让外人进，你也别想。", "听说南边来的信使还在堡里，住的是最好的客房。"],
+	"gate_guard_in": ["有事找赫尔曼大人，别在院子里乱走。", "两位继承人的人都住在堡里，各住各的。夜里别往兵营那边去。", "家主的病房谁也不让进——玛尔塔说的，赫尔曼大人点了头。"],
+	"barracks_soldier": ["伊薇特小姐在兵营里跟我们一块儿吃饭。阿尔里克大人？他在大厅里。", "这几天兵营不让外人进——小姐点过头的除外。", "听说南边来的信使还在堡里，住的是最好的客房。"],
 }
 ## 命名出生点：gate = 从堡门进来（门里面，面朝庭院）；water_gate = 从水门进来（水门里面，面朝南）；barracks_gate = 从兵营侧门进来（面朝东）
 const SPAWNS := {
@@ -48,6 +52,9 @@ const SPAWNS := {
 	"water_gate": [Vector3(WATER_GATE_X, 0, -17.0), 180.0],
 	"barracks_gate": [Vector3(-16.2, 0, SIDE_GATE_Z), -90.0],
 	"hall_door": [Vector3(0, 0, -9.2), 180.0],                   # 从大厅出来（4.5b）：站在主楼门前、背对门
+	"barracks_door": [Vector3(-8.7, 0, 2.0), -90.0],             # 从兵营出来（4.5c）：兵营门前、面朝东
+	"sickroom_door": [Vector3(10.7, 0, -6.0), 90.0],             # 从病房出来（4.5c）：塔楼门前、面朝西
+	"counting_door": [Vector3(10.7, 0, 6.0), 90.0],              # 从账房出来（4.7a）：账房门前、面朝西
 }
 const VIEW_NAMES := ["进门看庭院", "井边（赫尔曼）", "水门里面", "门内对着堡门"]
 const VIEWS := [
@@ -67,15 +74,19 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	parent.add_child(kit.build({"street": Look.mat("street"), "stone": Look.mat("stone"), "timber": Look.mat("timber"), "peat": Look.mat("peat"),
 		"soot": _flat(Color("0e0b09")), "iron": _flat(Color("2a2a2e")), "water": Look.water(true), "cloth": _cloth(Color("d8d2c2")), "heron": _cloth(Color("1a1a1c")),
 		"ember": _flat(Color("ff7a28"), true)}))
-	for b in [KEEP, BARRACKS, TOWER, COUNTING]:
+	for b in houses():
 		var h := House.build(parent, b[0], float(b[1]), b[2])
 		h.name = "House_" + str((b[2] as Dictionary).door.name)
 	_colliders(parent)
 	_doors(parent)
 	_lights(parent, reduced_motion)
 	_person(parent, HERMAN, [])
+	var win := Fixture.make("账房的小窗", "看看", "blackheron", "counting_window", Vector3(0.9, 1.0, 0.5))      # 账册支线（4.7a）：撬窗
+	win.name = "LedgerWindow"
+	win.position = LEDGER_WINDOW + Vector3(0, 0, -0.1)
+	parent.add_child(win)
 	for g in GUARDS:
-		_person(parent, g, GUARD_LINES[str(g[0])])
+		_person(parent, g, GUARD_LINES.get(str(g[0]), []))
 	var s: Array = SPAWNS.gate
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 
@@ -91,7 +102,38 @@ static func _person(parent: Node3D, p: Array, lines: Array) -> void:
 	parent.add_child(n)
 
 
-## 地图（core/area_map.gd 的格式）：庭院、四栋房子、井、水门、出口
+## 病房的门推不推得开（4.5c）：两位继承人都托过你以后（main._heirs_heard 设 heirs_heard；4.5b 时的存档没有这个旗标，看两个托付的旗标，审查）
+static func sickroom_open() -> bool:
+	return GameState.has_flag("heirs_heard") or (GameState.has_flag("ledger_asked") and GameState.has_flag("outlaws_asked"))
+
+
+## 兵营的门推不推得开（4.5c）：伊薇特见过你，或者你是从兵营侧门进来的（side_gate_used；castle_entry 以后坐别人的船进来会被改掉，审查）；
+## 4.6：黄昏、夜里伊薇特在兵营（作息），兵营也推得开——不然没见过她的人在大厅找不到她、也进不了兵营，主线卡住
+static func barracks_open() -> bool:
+	return GameState.has_flag("ivette_met") or GameState.has_flag("side_gate_used") or str(GameState.get_flag("castle_entry")) == "barracks" \
+		or Schedule.area_of("ivette") == "barracks"
+
+
+## 账房的门推不推得开（4.7a）：拿到了赫尔曼的钥匙（撬窗的人从窗户爬进去，门还锁着）
+static func counting_open() -> bool:
+	return GameState.has_item("counting_key") and not GameState.has_flag("ledger_caught")
+
+
+## 四栋房子（门按现在的进度换成推得开的）
+static func houses() -> Array:
+	var out := [KEEP]
+	for pair in [[BARRACKS, BARRACKS_OPEN, barracks_open()], [TOWER, TOWER_OPEN, sickroom_open()], [COUNTING, COUNTING_OPEN, counting_open()]]:
+		var b: Array = pair[0]
+		if pair[2]:
+			var spec: Dictionary = (b[2] as Dictionary).duplicate()
+			spec.door = pair[1]
+			out.append([b[0], b[1], spec])
+		else:
+			out.append(b)
+	return out
+
+
+## 地图（core/area_map.gd 的格式）：庭院、四栋房子、井、水门、出口（病房、兵营推得开以后也算出口）
 static func map_spec() -> Dictionary:
 	var shapes := [{"k": "road", "rect": Rect2(-HW, -HD, HW * 2.0, HD * 2.0)}]
 	for b in [KEEP, BARRACKS, TOWER, COUNTING]:
@@ -99,11 +141,18 @@ static func map_spec() -> Dictionary:
 		shapes.append({"k": "house", "pts": House.footprint(b[0], float(b[1]), float(s.w), float(s.d)), "label": str(s.door.name)})
 	shapes.append({"k": "mark", "at": Vector2(WELL.x, WELL.z), "icon": "well", "label": "井"})
 	shapes.append({"k": "furniture", "rect": Rect2(WATER_GATE_X - 1.6, -HD - 0.6, 3.2, 0.6), "label": "水门"})
+	var exits := [{"at": Vector2(0, HD), "dir": Vector2(0, 1), "to": "marsh", "spawn": "castle_gate", "name": EXIT_NAME},
+		{"at": House.door_xz(KEEP[0], float(KEEP[1]), 0.0), "dir": -House.facing(float(KEEP[1])), "to": "hall", "spawn": "front", "name": "大厅"}]
+	if barracks_open():
+		exits.append({"at": House.door_xz(BARRACKS[0], float(BARRACKS[1]), 0.0), "dir": -House.facing(float(BARRACKS[1])), "to": "barracks", "spawn": "front", "name": "兵营"})
+	if counting_open():
+		exits.append({"at": House.door_xz(COUNTING[0], float(COUNTING[1]), 0.0), "dir": -House.facing(float(COUNTING[1])), "to": "counting", "spawn": "front", "name": "账房"})
+	if sickroom_open():
+		exits.append({"at": House.door_xz(TOWER[0], float(TOWER[1]), 0.0), "dir": -House.facing(float(TOWER[1])), "to": "sickroom", "spawn": "front", "name": "病房"})
 	return {
 		"bounds": Rect2(-HW - 1.0, -HD - 1.0, HW * 2.0 + 2.0, HD * 2.0 + 2.0),
 		"shapes": shapes,
-		"exits": [{"at": Vector2(0, HD), "dir": Vector2(0, 1), "to": "marsh", "spawn": "castle_gate", "name": EXIT_NAME},
-			{"at": House.door_xz(KEEP[0], float(KEEP[1]), 0.0), "dir": -House.facing(float(KEEP[1])), "to": "hall", "spawn": "front", "name": "大厅"}],
+		"exits": exits,
 	}
 
 
@@ -170,6 +219,10 @@ static func _gates(kit: MeshKit) -> void:
 
 ## 井（石圈 + 两根柱子撑着的小顶、辘轳）、拉麦子的板车、泥炭垛、大厅门前的旗杆（白底黑鹭）、火盆
 static func _props(kit: MeshKit) -> void:
+	kit.box("timber", LEDGER_WINDOW + Vector3(0, 0, -0.03), Vector3(0.62, 0.82, 0.06), Basis.IDENTITY, 0.8, 0.6)    # 账房北墙小窗的百叶（4.7a）
+	for k in 3:
+		kit.box("soot", LEDGER_WINDOW + Vector3(0, -0.25 + k * 0.25, -0.065), Vector3(0.56, 0.03, 0.01))          # 百叶的横缝
+	kit.box("stone", LEDGER_WINDOW + Vector3(0, -0.46, -0.08), Vector3(0.8, 0.08, 0.16), Basis.IDENTITY, 0.8, 0.6)
 	kit.cylinder("stone", WELL, WELL + Vector3(0, 0.8, 0), 0.9, 0.9, 10, 0.75)
 	kit.cylinder("soot", WELL + Vector3(0, 0.78, 0), WELL + Vector3(0, 0.8, 0), 0.7, 0.7, 10, 1.0)
 	for sx: float in [-1.0, 1.0]:
