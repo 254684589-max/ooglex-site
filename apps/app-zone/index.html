@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ooglex-native-preview="true">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>App 专区 · Ooglex</title>
+<meta name="description" content="Ooglex App 专区：站内所有可安装到手机的 App，点图标进入各自的下载或安装页。">
+<link rel="canonical" href="https://www.ooglex.com/apps/app-zone/">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" href="/assets/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="App 专区 · Ooglex">
+<meta property="og:description" content="站内所有可安装到手机的 App，点图标进入各自的下载或安装页。">
+<meta property="og:url" content="https://www.ooglex.com/apps/app-zone/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=20260926k" defer></script>
+<script src="/apps/app-zone/registry.js?v=20261017" defer></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --bg:#0b0e13; --ink:#eceef3; --dim:#969db0; --line:rgba(255,255,255,.09); }
+  body {
+    min-height:100vh; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(900px 520px at 15% -10%, rgba(74,168,255,.14), transparent 65%),
+      radial-gradient(800px 520px at 100% 110%, rgba(200,108,255,.12), transparent 65%),
+      var(--bg);
+  }
+  a { color:inherit; text-decoration:none; }
+  .rule { height:2px; background:linear-gradient(90deg,#22d3ee,#4aa8ff 30%,#9d6cff 62%,#f472b6); }
+  .shell { max-width:1080px; margin:0 auto; padding:18px 28px 80px; }
+  .back {
+    display:inline-flex; align-items:center; min-height:40px; padding:0 14px; border-radius:10px;
+    border:1px solid var(--line); color:var(--dim); font-size:14px;
+  }
+  .back:hover { color:var(--ink); }
+  .back:focus-visible { outline:2px solid #4aa8ff; outline-offset:2px; }
+  header { margin:40px 0 34px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  h1 {
+    font-size:34px; font-weight:800; letter-spacing:.01em;
+    background:linear-gradient(100deg,#22d3ee 0%,#4aa8ff 30%,#9d6cff 62%,#f472b6 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+  }
+  .en { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; letter-spacing:.22em; color:var(--dim); }
+  .az-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr));
+    gap:40px 22px; justify-items:center;
+    padding:44px 36px; border-radius:30px; border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+  }
+  .az-app {
+    display:block; width:104px; height:104px; border-radius:22.5%;
+    box-shadow:0 14px 32px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.07);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .az-app img { display:block; width:100%; height:100%; border-radius:inherit; }
+  .az-app:hover { transform:translateY(-5px) scale(1.04); box-shadow:0 20px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.14); }
+  .az-app:focus-visible { outline:2px solid #4aa8ff; outline-offset:5px; }
+  .empty { grid-column:1/-1; color:var(--dim); font-size:14px; }
+  @media (prefers-reduced-motion: reduce) { .az-app { transition:none; } .az-app:hover { transform:none; } }
+  @media (max-width:640px) {
+    .shell { padding:14px 16px 60px; }
+    header { margin:28px 0 22px; }
+    h1 { font-size:28px; }
+    .az-grid { grid-template-columns:repeat(4,1fr); gap:24px 10px; padding:24px 12px; border-radius:22px; }
+    .az-app { width:66px; height:66px; }
+  }
+  html[data-theme="ft"] body, html[data-theme="paper"] body { background:var(--bg); }
+  html[data-theme="ft"] h1, html[data-theme="paper"] h1 { background:none; -webkit-text-fill-color:currentColor; color:var(--ink); }
+  html[data-theme="ft"] .az-grid, html[data-theme="paper"] .az-grid { background:var(--panel); border-color:var(--line-strong); }
+  html[data-theme="ft"] .az-app, html[data-theme="paper"] .az-app { box-shadow:0 12px 26px rgba(120,92,64,.24), 0 0 0 1px rgba(26,22,19,.06); }
+</style>
+</head>
+<body>
+  <div class="rule"></div>
+  <main class="shell">
+    <a class="back" href="/#app-zone">← Ooglex 首页</a>
+    <header><h1>App 专区</h1><span class="en">APP ZONE</span></header>
+    <div class="az-grid" id="az-grid" aria-label="App 列表">
+      <noscript><p class="empty">需要开启 JavaScript 才能显示 App 列表。</p></noscript>
+    </div>
+  </main>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var box = document.getElementById("az-grid");
+    if (window.ooglexRenderApps) window.ooglexRenderApps(box);
+    else box.innerHTML = '<p class="empty">App 列表加载失败，请刷新重试。</p>';
+  });
+  </script>
+</body>
+</html>

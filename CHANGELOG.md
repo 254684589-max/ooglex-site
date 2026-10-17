@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修改
+
+- 2026-10-17：「App 专区」改版为图标墙。首页 `#app-zone` 去掉文字说明行，只显示 App 图标（圆角方形，渐变细边的面板，标题样式与上方「工具与游戏」一致以便衔接），右上角「全部 App →」进入新增的专区页 `/apps/app-zone/`（同样只显示图标，网格自适应，手机每行 4 个，为将来上百个 App 预留）；点图标进入各 App 的单独下载/安装页。检查全站后收录现有全部 4 个可安装 App：OOGLE X · 科技领袖（安卓，`/apps/tech-leaders/app/`）、环球电波（安卓，`/apps/radio/download/`）、环球TV 与万象智聊（网页 App，新增安装说明页 `/apps/app-zone/tv/`、`/apps/app-zone/ai-chat/`）。图标列表统一由 `apps/app-zone/registry.js` 登记渲染；App 名称作为无障碍名称与悬停提示。新增 OOGLE X 方形图标 `apps/app-zone/icons/oogle-x.svg`；sitemap 增加 3 个新页面；`docs/APP_ZONE.md` 更新新增 App 的步骤。经所有者要求上线。
+
 ### 新增
 
 - 2026-10-17：首页新增「App 专区」（`#app-zone`，导航新增「App」），作为以后新创意点子做成 App 的固定位置；首个条目为「OOGLE X · 科技领袖」安卓应用（链接到现有下载页 `/apps/tech-leaders/app/`），带中英文文案。新增 `docs/APP_ZONE.md` 说明如何往专区里加新 App 与回退方法。经所有者要求上线。
