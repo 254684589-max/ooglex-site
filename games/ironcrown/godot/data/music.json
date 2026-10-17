@@ -1,5 +1,5 @@
 {
-  "_说明": "背景音乐（路线图 M.1）：tracks = 曲目编号 → 文件（都是 tools/compose_music.py 代码作曲合成的原创曲，见 assets/SOURCES.md）；areas = 区域 → 曲目，写成字符串就是不分时段，写成对象就是按时段（dawn / day / dusk / night，\"*\" 是其余时段）。没写的区域（测试场、训练场）不放音乐。换成别的授权曲目时，只改 tracks 里的文件，或者加新曲目再改 areas。",
+  "_说明": "背景音乐（路线图 M.1）：tracks = 曲目编号 → 文件（都是 tools/compose_music.py 代码作曲合成的原创曲，见 assets/SOURCES.md）；areas = 区域 → 曲目，写成字符串就是不分时段，写成对象就是按时段（dawn / day / dusk / night，\"*\" 是其余时段）。没写的区域（测试场、训练场）不放音乐。打起来（酒馆打架、桦林伏击、渡口对峙、营地……）一律换「battle」，打完 4 秒换回来（core/music.gd set_fighting）。病房（家主昏睡）用安静的「night」，不用带鼓点的「keep」（核对配乐与剧本，2026-10-17）。换成别的授权曲目时，只改 tracks 里的文件，或者加新曲目再改 areas。",
   "tracks": {
     "town": "res://assets/music/town.ogg",
     "night": "res://assets/music/night.ogg",
@@ -18,7 +18,7 @@
     "inn": "town",
     "castle": "keep",
     "hall": "keep",
-    "sickroom": "keep",
+    "sickroom": "night",
     "barracks": "keep",
     "counting": "keep",
     "battle": "battle"

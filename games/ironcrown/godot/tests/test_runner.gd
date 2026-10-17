@@ -7085,6 +7085,18 @@ func test_music() -> void:
 	cur.finished.emit()
 	check(cur.playing, "放完了（网页上的样本不循环时）：从头再放")
 	Settings.set_value("music_volume", 0.6)
+	# 战斗配乐（核对配乐与剧本）：开打换「battle」，打完 4 秒换回来；病房用安静的「night」
+	check(Music.track_for("sickroom", "day") == "night", "病房（家主昏睡）：安静的「night」，不用带鼓点的「keep」")
+	Music.stop_now()
+	Music.play_area("tavern")
+	Music.set_fighting(true, 0.25)
+	check(Music.track == "battle" and Music.fighting, "开打：换「battle」")
+	Music.set_fighting(false, 1.0)
+	check(Music.track == "battle", "刚打完：先别换回去（敌人一会儿警觉一会儿不警觉时不来回切）")
+	Music.play_area("tavern")
+	check(Music.track == "battle", "打着的时候换区域 / 时段：不换曲子")
+	Music.set_fighting(false, Music.CALM_DELAY)
+	check(Music.track == "town" and not Music.fighting, "安静 4 秒以后：换回区域的曲子（酒馆：「town」）")
 	# 进区域自动选曲；剧情改时段换曲
 	ch1_state("deliver", 41)
 	GameState.daypart = "day"

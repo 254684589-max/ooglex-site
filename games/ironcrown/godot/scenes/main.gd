@@ -65,6 +65,7 @@ var playable_chapter := Chapters.PLAYABLE   # 做到第几章能玩了（4.1；�
 var touch_was_visible := false   # 结束画面打开前触屏按钮是否显示（关掉后还原）
 var touch_hidden_by_dialogue := false   # 对话打开时藏起了触屏按钮（对话结束时还原）
 var opening: Opening             # 开场（3.8）：只在新游戏时有
+var combat_music_check := 0.0    # 战斗配乐（M.1）：下次看在不在打还剩几秒
 var title_card: TitleCard        # 开场的标题卡（3.8）
 var tip_queue: Array = []        # 等着显示的教学提示编号（3.8；有界面开着、上一条还没消失时排队）
 var tip_now := ""                # 底部正在显示的教学提示（空 = 显示的是别的提示或什么都没有）
@@ -1728,6 +1729,10 @@ func _clear_fog_at(pos: Vector3) -> void:
 
 
 func _process(delta: float) -> void:
+	combat_music_check -= delta
+	if combat_music_check <= 0.0:                     # 战斗配乐（M.1）：每 0.25 秒看一次在不在打
+		combat_music_check = 0.25
+		Music.set_fighting(in_combat(), 0.25)
 	# 浏览器用 Esc 释放指针锁定时，游戏收不到 Esc：发现锁定没了就打开暂停菜单
 	var locked := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	if locked:

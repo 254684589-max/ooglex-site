@@ -3,7 +3,7 @@
 
 用法：python3 games/ironcrown/tools/compose_music.py [输出目录]
 默认输出到 games/ironcrown/godot/assets/music/，每首一个 .ogg（Ogg Vorbis，单声道转立体声、22050 Hz），
-首尾无缝循环（混响用循环卷积，曲尾的余音绕回曲头），五首响度一样（均方根 -18 dBFS）。只依赖 numpy 和 ffmpeg（libvorbis）。
+首尾无缝循环（混响用循环卷积，曲尾的余音绕回曲头），五首听起来一样响（按 A 计权算：手机、笔记本的小喇叭上也一样）。只依赖 numpy 和 ffmpeg（libvorbis）。
 
 五首，都是这里写的旋律与和声（调式音乐，没有引用任何现成曲子）：
   town   霜渡镇的清晨与白天、客栈：D 多利亚调式，拨弦琶音 + 木笛
@@ -93,12 +93,14 @@ def pad(freqs: list, dur: float, cutoff: float = 900.0) -> np.ndarray:
 
 
 def drone(f: float, dur: float) -> np.ndarray:
-    """持续音：基音 + 五度 + 八度，慢慢起伏"""
+    """持续音：基音 + 五度 + 八度，再加上面几个泛音（手机、笔记本的小喇叭放不出 150 Hz 以下，只有基音的话在小喇叭上几乎听不见；核对配乐时量出来的），慢慢起伏"""
     n = int(dur * SR)
     t = np.arange(n) / SR
     wob = 1.0 + 0.15 * np.sin(2 * np.pi * t / 7.0)
-    x = np.sin(2 * np.pi * f * t) + 0.5 * np.sin(2 * np.pi * f * 1.5 * t) + 0.3 * np.sin(2 * np.pi * f * 2 * t)
-    return lowpass(x, 600) * wob
+    x = 0.6 * np.sin(2 * np.pi * f * t) + 0.5 * np.sin(2 * np.pi * f * 1.5 * t) + 0.45 * np.sin(2 * np.pi * f * 2 * t)
+    for k, g in ((3, 0.3), (4, 0.22), (6, 0.12), (8, 0.06)):
+        x += g * np.sin(2 * np.pi * f * k * t + k)
+    return lowpass(x, 1100) * wob
 
 
 def drum(dur: float = 0.9, f: float = 70.0, noise: float = 0.35) -> np.ndarray:
@@ -106,9 +108,10 @@ def drum(dur: float = 0.9, f: float = 70.0, noise: float = 0.35) -> np.ndarray:
     n = int(dur * SR)
     t = np.arange(n) / SR
     fs = f * (1 + 1.2 * np.exp(-t * 18))
-    body = np.sin(2 * np.pi * np.cumsum(fs) / SR) * np.exp(-t * 5.5)
-    skin = lowpass(RNG.normal(0, 1, n), 1800) * np.exp(-t * 30) * noise
-    return body + skin
+    body = 0.65 * np.sin(2 * np.pi * np.cumsum(fs) / SR) * np.exp(-t * 5.5)
+    skin = lowpass(RNG.normal(0, 1, n), 3200) * np.exp(-t * 30) * noise * 1.6      # 皮面的响声多一些：小喇叭上听得出鼓点
+    knock = np.sin(2 * np.pi * f * 3.1 * t) * np.exp(-t * 22) * 0.35                # 鼓槌敲下去那一下的中频
+    return body + skin + knock
 
 
 def brass(f: float, dur: float) -> np.ndarray:
@@ -161,9 +164,25 @@ class Track:
             out.append(self.buf * (1 - reverb) + wet * reverb * 1.6)
         st = np.stack(out, axis=1)
         st -= st.mean(axis=0)
-        st *= 10 ** (-18 / 20) / (np.sqrt(np.mean(st ** 2)) + 1e-9)        # 五首一样响（均方根 -18 dBFS），
-        peak = np.max(np.abs(st))
-        return st * (0.9 / peak if peak > 0.9 else 1.0)                    # 峰值不超过 0.9
+        sp = np.fft.rfft(st, axis=0)                                        # 切掉 50 Hz 以下的闷响（哪个喇叭都放不出来，只占峰值）
+        sp[np.fft.rfftfreq(len(st), 1 / SR) < 50] = 0
+        st = np.fft.irfft(sp, len(st), axis=0)
+        st *= 10 ** (-24 / 20) / (_audible_rms(st) + 1e-9)                # 五首听起来一样响：按 A 计权算（小喇叭上也一样；
+        return 0.9 * np.tanh(st / 0.9)                                      # 原来按全频算，低音多的曲子在手机上轻了 7～11 dB）；峰值软压在 0.9 以内
+
+
+def a_weight(freqs: np.ndarray) -> np.ndarray:
+    """A 计权（IEC 61672）：人耳和小喇叭都对低音不敏感，按它算出来的响度更接近「听起来多响」"""
+    f2 = np.maximum(freqs, 1e-3) ** 2
+    ra = (12194.0 ** 2 * f2 ** 2) / ((f2 + 20.6 ** 2) * np.sqrt((f2 + 107.7 ** 2) * (f2 + 737.9 ** 2)) * (f2 + 12194.0 ** 2))
+    return ra / 0.7943          # 1 kHz 处为 1
+
+
+def _audible_rms(st: np.ndarray) -> float:
+    """A 计权后的均方根（听起来多响；原来按全频算，低音多的曲子在手机上轻了 7～11 dB）"""
+    w = a_weight(np.fft.rfftfreq(len(st), 1 / SR))[:, None]       # 左右声道各算各的（两边不相关，混成单声道会互相抵掉）
+    aw = np.fft.irfft(np.fft.rfft(st, axis=0) * w, len(st), axis=0)
+    return float(np.sqrt(np.mean(aw ** 2)))
 
 
 # ---------------- 曲子 ----------------
@@ -202,7 +221,7 @@ def night() -> np.ndarray:
     beat = 1.0
     bar = beat * 4
     tr = Track(bar * 16)
-    tr.add(drone(hz("A1"), bar * 16), 0, 0.35)
+    tr.add(drone(hz("A1"), bar * 16), 0, 0.16)
     chords = [["A2", "C3", "E3"], ["F2", "A2", "C3"], ["G2", "B2", "D3"], ["E2", "G2", "B2"]]
     for b in range(16):
         ch = chords[b % 4]
@@ -225,7 +244,7 @@ def marsh() -> np.ndarray:
     beat = 60 / 56
     bar = beat * 4
     tr = Track(bar * 16)
-    tr.add(drone(hz("E2"), bar * 16), 0, 0.4)
+    tr.add(drone(hz("E2"), bar * 16), 0, 0.22)
     tr.add(rustle(bar * 16), 0, 0.08)
     pads = [["E3", "B3"], ["F3", "C4"], ["E3", "B3"], ["D3", "A3"]]
     for b in range(0, 16, 2):
