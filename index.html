@@ -212,6 +212,41 @@
     .row .demodot { color: var(--amber); }
     .row .extdot { color: var(--faint); }
     .row .desc { margin-left: auto; font-size: 13px; color: var(--dim); text-align: right; max-width: 46%; line-height: 1.6; }
+    /* ── App 专区：只放图标，接在「工具与游戏」列表之后 ── */
+    #app-zone { padding-top: 56px; padding-bottom: 30px; }
+    #app-zone .idx-hd { margin-bottom: 14px; }
+    #app-zone .az-all { color: var(--dim); text-transform: none; }
+    #app-zone .az-all:hover, #app-zone .az-all:focus-visible { color: var(--ink); }
+    .az-dock {
+      position: relative; border-radius: 26px; padding: 30px 30px;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(600px 220px at 12% 0%, rgba(74,168,255,.10), transparent 70%),
+        radial-gradient(520px 240px at 92% 100%, rgba(200,108,255,.09), transparent 70%),
+        var(--tint-1);
+    }
+    .az-dock::before {
+      content: ""; position: absolute; left: 30px; right: 30px; top: -1px; height: 1px;
+      background: linear-gradient(90deg, transparent, #22d3ee 20%, #9d6cff 60%, #f472b6 85%, transparent);
+      opacity: .55;
+    }
+    .az-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 26px 18px; justify-items: center; }
+    .az-app {
+      display: block; width: 84px; height: 84px; border-radius: 22.5%;
+      box-shadow: 0 10px 26px rgba(0,0,0,.38), 0 0 0 1px rgba(255,255,255,.06);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .az-app img { display: block; width: 100%; height: 100%; border-radius: inherit; }
+    .az-app:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 16px 34px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.12); }
+    .az-app:focus-visible { outline: 2px solid #4aa8ff; outline-offset: 4px; }
+    .az-fallback { grid-column: 1 / -1; color: var(--dim); font-size: 14px; }
+    @media (prefers-reduced-motion: reduce) { .az-app { transition: none; } .az-app:hover { transform: none; } }
+    @media (max-width: 640px) {
+      .az-dock { padding: 20px 12px; border-radius: 20px; }
+      .az-dock::before { left: 18px; right: 18px; }
+      .az-grid { grid-template-columns: repeat(4, 1fr); gap: 18px 8px; }
+      .az-app { width: 58px; height: 58px; }
+    }
     .row .arr { font-size: 17px; color: var(--faint); flex: 0 0 auto; transition: transform .15s, color .15s; }
     .row:hover .arr { transform: translateX(4px); color: var(--ink); }
     .row.plain:hover { background: none; }
@@ -281,6 +316,8 @@ html[data-theme="ft"] .radar-card, html[data-theme="paper"] .radar-card { box-sh
 html[data-theme="ft"] .sig, html[data-theme="paper"] .sig { background: var(--tint-1); }
 html[data-theme="ft"] .bil-mv .mv, html[data-theme="paper"] .bil-mv .mv { background: var(--tint-1); }
 html[data-theme="ft"] .bil-list li:hover, html[data-theme="paper"] .bil-list li:hover { background: var(--tint-1); }
+html[data-theme="ft"] .az-app, html[data-theme="paper"] .az-app { box-shadow: 0 10px 24px rgba(120,92,64,.22), 0 0 0 1px rgba(26,22,19,.06); }
+html[data-theme="ft"] .az-dock, html[data-theme="paper"] .az-dock { border-color: var(--line-strong); }
 html[data-theme="ft"] .idx, html[data-theme="paper"] .idx { border-top: 1px solid var(--line-strong); }
 html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { background: var(--tint-1); }
 /* ==== 浅色主题兜底 结束 ==== */
@@ -503,12 +540,9 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
 
   <section id="app-zone">
     <div class="container">
-      <div class="idx-hd"><h2 data-i18n="section.appZone">App 专区</h2><span class="en">APP ZONE</span><span class="cnt" data-i18n="section.appZoneNote">新的创意点子会做成 App 放在这里</span></div>
-      <div class="idx">
-        <a class="row" href="apps/tech-leaders/app/">
-          <span class="no">27</span><span class="name" data-i18n-html="item.oogleX.name"><span class="emoji" aria-hidden="true">◉</span>OOGLE X · 科技领袖</span><span class="en">Tech Leaders App</span><span class="demodot" data-i18n="badge.android">● 安卓</span>
-          <span class="desc" data-i18n="item.oogleX.desc">「科技领袖实时动态流」安卓应用：马斯克 · 黄仁勋 · Altman 等全球科技领袖与 CEO 的公开动态，装到手机随时看；下载页列出版本、大小与 SHA-256 校验值</span><span class="arr">→</span>
-        </a>
+      <div class="idx-hd"><h2 data-i18n="section.appZone">App 专区</h2><span class="en">APP ZONE</span><a class="cnt az-all" href="apps/app-zone/" data-i18n="section.appZoneAll">全部 App →</a></div>
+      <div class="az-dock">
+        <div class="az-grid" id="az-home"><a class="az-fallback" href="apps/app-zone/" data-i18n="section.appZoneOpen">进入 App 专区 →</a></div>
       </div>
     </div>
   </section>
@@ -594,11 +628,9 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.worldMonitor.desc": "An open-source global situational-awareness dashboard: armed conflicts · earthquakes · weather · shipping chokepoints—built and hosted by the third-party project koala73/worldmonitor (AGPL-3.0); not Ooglex in-house data",
       "badge.external": "● EXTERNAL",
       "badge.new": "● NEW",
-      "badge.android": "● ANDROID",
       "section.appZone": "App Zone",
-      "section.appZoneNote": "New ideas become apps here",
-      "item.oogleX.name": "<span class=\"emoji\" aria-hidden=\"true\">◉</span>OOGLE X · Tech Leaders",
-      "item.oogleX.desc": "The Android app for the Tech Leaders Live Feed: public posts from Musk · Jensen Huang · Altman and other global tech leaders and CEOs on your phone; the download page lists version, size and SHA-256 checksum",
+      "section.appZoneAll": "All apps →",
+      "section.appZoneOpen": "Open the App Zone →",
       "item.idea.name": "<span class=\"emoji\">💡</span>Your Thoughts",
       "item.idea.desc": "The site's public thought feed: post any time once signed in, readable by anyone; everything posted is public and can be reported",
       "section.billionaires": "Forbes Real-Time Billionaires",
@@ -917,5 +949,16 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     }).catch(function () {});
   })();
   </script>
+<script src="apps/app-zone/registry.js?v=20261017" defer></script>
+<script>
+/* App 专区：按登记表渲染图标；切换中英文后刷新无障碍名称 */
+document.addEventListener("DOMContentLoaded", function () {
+  var box = document.getElementById("az-home");
+  if (!box || !window.ooglexRenderApps) return;
+  window.ooglexRenderApps(box);
+  new MutationObserver(function () { window.ooglexRenderApps(box); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ["data-lang"] });
+});
+</script>
 </body>
 </html>
