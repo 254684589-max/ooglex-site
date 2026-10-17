@@ -5,7 +5,7 @@ extends RefCounted
 ##   南墙正中是堡门（出去回到鹭沼的堡门前）；北边是主楼（大厅在一楼），西边是兵营（南头的西墙上开一道侧门），东边北头是家主病房所在的塔楼、南头是账房；
 ##   西北角的北墙上是水门（铁栅放下着，外面就是水，泥炭船从这里进出）；院子中间一口井，堡守赫尔曼守在井边。
 ## 4.5a 做了庭院；4.5b 大厅的门推得开（world/hall.gd）；4.5c 病房（world/sickroom.gd，两位继承人都托过你以后）、兵营（world/barracks.gd，伊薇特见过你或你从侧门进来以后）推得开；
-## 守水门的老头有了对话（能坐泥炭船回芦栈村）；账房还锁着（钥匙和撬窗在 4.7 的账册支线）。没有引荐信的人从水门（托宾的泥炭船、奥弗的船）或兵营侧门（伊薇特的老兵）进来，
+## 守水门的老头有了对话（能坐泥炭船回芦栈村）；账房（world/counting.gd）拿到赫尔曼的钥匙才推得开，或者从塔楼和账房之间窄巷里那扇小窗撬进去（4.7a，blackheron.json counting_window）。没有引荐信的人从水门（托宾的泥炭船、奥弗的船）或兵营侧门（伊薇特的老兵）进来，
 ## 站在门里面那头；对话里的 goto 效果把人送到对应的出生点（main._on_dialogue_closed）。
 ## 坐标：原点在庭院地面中心，北 = -Z；堡门在南墙（z = +20）。
 
@@ -26,6 +26,8 @@ const TOWER := [Vector3(12, 0, -6), -90.0, {"w": 6.0, "d": 5.5, "floors": 2, "st
 const TOWER_OPEN := {"name": "病房", "to_area": "sickroom", "to_spawn": "front", "verb": "进入"}           # 4.5c：两位继承人都托过你以后
 const COUNTING := [Vector3(12, 0, 6), -90.0, {"w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
 	"door": {"name": "账房", "text": "账房的门上了两道锁。钥匙在堡守赫尔曼那儿。"}}]
+const COUNTING_OPEN := {"name": "账房", "to_area": "counting", "to_spawn": "front", "verb": "进入"}       # 4.7a：拿到赫尔曼的钥匙以后
+const LEDGER_WINDOW := Vector3(15.3, 1.45, 3.0)   # 账房北侧墙上那扇能撬的小窗（塔楼和账房之间的窄巷里，4.7a）
 const WELL := Vector3(5.0, 0, 5.0)
 const CART := Vector3(-5.5, 0, 12.5)
 const PEAT := [Vector2(-16.0, -11.2), Vector2(-16.0, -8.6)]          # 泥炭垛：靠西墙码着（从水门进来往南走，不挡路）
@@ -52,6 +54,7 @@ const SPAWNS := {
 	"hall_door": [Vector3(0, 0, -9.2), 180.0],                   # 从大厅出来（4.5b）：站在主楼门前、背对门
 	"barracks_door": [Vector3(-8.7, 0, 2.0), -90.0],             # 从兵营出来（4.5c）：兵营门前、面朝东
 	"sickroom_door": [Vector3(10.7, 0, -6.0), 90.0],             # 从病房出来（4.5c）：塔楼门前、面朝西
+	"counting_door": [Vector3(10.7, 0, 6.0), 90.0],              # 从账房出来（4.7a）：账房门前、面朝西
 }
 const VIEW_NAMES := ["进门看庭院", "井边（赫尔曼）", "水门里面", "门内对着堡门"]
 const VIEWS := [
@@ -78,6 +81,10 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_doors(parent)
 	_lights(parent, reduced_motion)
 	_person(parent, HERMAN, [])
+	var win := Fixture.make("账房的小窗", "看看", "blackheron", "counting_window", Vector3(0.9, 1.0, 0.5))      # 账册支线（4.7a）：撬窗
+	win.name = "LedgerWindow"
+	win.position = LEDGER_WINDOW + Vector3(0, 0, -0.1)
+	parent.add_child(win)
 	for g in GUARDS:
 		_person(parent, g, GUARD_LINES.get(str(g[0]), []))
 	var s: Array = SPAWNS.gate
@@ -107,10 +114,15 @@ static func barracks_open() -> bool:
 		or Schedule.area_of("ivette") == "barracks"
 
 
+## 账房的门推不推得开（4.7a）：拿到了赫尔曼的钥匙（撬窗的人从窗户爬进去，门还锁着）
+static func counting_open() -> bool:
+	return GameState.has_item("counting_key")
+
+
 ## 四栋房子（门按现在的进度换成推得开的）
 static func houses() -> Array:
 	var out := [KEEP]
-	for pair in [[BARRACKS, BARRACKS_OPEN, barracks_open()], [TOWER, TOWER_OPEN, sickroom_open()], [COUNTING, {}, false]]:
+	for pair in [[BARRACKS, BARRACKS_OPEN, barracks_open()], [TOWER, TOWER_OPEN, sickroom_open()], [COUNTING, COUNTING_OPEN, counting_open()]]:
 		var b: Array = pair[0]
 		if pair[2]:
 			var spec: Dictionary = (b[2] as Dictionary).duplicate()
@@ -133,6 +145,8 @@ static func map_spec() -> Dictionary:
 		{"at": House.door_xz(KEEP[0], float(KEEP[1]), 0.0), "dir": -House.facing(float(KEEP[1])), "to": "hall", "spawn": "front", "name": "大厅"}]
 	if barracks_open():
 		exits.append({"at": House.door_xz(BARRACKS[0], float(BARRACKS[1]), 0.0), "dir": -House.facing(float(BARRACKS[1])), "to": "barracks", "spawn": "front", "name": "兵营"})
+	if counting_open():
+		exits.append({"at": House.door_xz(COUNTING[0], float(COUNTING[1]), 0.0), "dir": -House.facing(float(COUNTING[1])), "to": "counting", "spawn": "front", "name": "账房"})
 	if sickroom_open():
 		exits.append({"at": House.door_xz(TOWER[0], float(TOWER[1]), 0.0), "dir": -House.facing(float(TOWER[1])), "to": "sickroom", "spawn": "front", "name": "病房"})
 	return {
@@ -205,6 +219,8 @@ static func _gates(kit: MeshKit) -> void:
 
 ## 井（石圈 + 两根柱子撑着的小顶、辘轳）、拉麦子的板车、泥炭垛、大厅门前的旗杆（白底黑鹭）、火盆
 static func _props(kit: MeshKit) -> void:
+	kit.box("timber", LEDGER_WINDOW + Vector3(0, 0, -0.04), Vector3(0.62, 0.82, 0.06), Basis.IDENTITY, 0.8, 0.6)    # 账房北墙小窗的百叶（4.7a）
+	kit.box("stone", LEDGER_WINDOW + Vector3(0, -0.46, -0.08), Vector3(0.8, 0.08, 0.16), Basis.IDENTITY, 0.8, 0.6)
 	kit.cylinder("stone", WELL, WELL + Vector3(0, 0.8, 0), 0.9, 0.9, 10, 0.75)
 	kit.cylinder("soot", WELL + Vector3(0, 0.78, 0), WELL + Vector3(0, 0.8, 0), 0.7, 0.7, 10, 1.0)
 	for sx: float in [-1.0, 1.0]:

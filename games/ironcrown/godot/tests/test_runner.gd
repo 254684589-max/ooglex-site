@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -270,11 +270,12 @@ func test_ui() -> void:
 	var hall := await make_area("hall")            # 黑鹭堡大厅（4.5b）
 	var sick := await make_area("sickroom")        # 病房、兵营（4.5c）
 	var bunks := await make_area("barracks")
+	var ledger_room := await make_area("counting")  # 账房（4.7a）
 	var nodes: Array = main.find_children("*", "", true, false) + town.find_children("*", "", true, false) + inn.find_children("*", "", true, false) \
 		+ yard.find_children("*", "", true, false) + nave.find_children("*", "", true, false) + woods.find_children("*", "", true, false) + dock.find_children("*", "", true, false) \
 		+ field.find_children("*", "", true, false) + marsh.find_children("*", "", true, false) + inn_room.find_children("*", "", true, false) \
 		+ keep_yard.find_children("*", "", true, false) + hall.find_children("*", "", true, false) \
-		+ sick.find_children("*", "", true, false) + bunks.find_children("*", "", true, false)
+		+ sick.find_children("*", "", true, false) + bunks.find_children("*", "", true, false) + ledger_room.find_children("*", "", true, false)
 	texts.append_array(Marsh.VIEW_NAMES + [Surface.label("mud"), "水太深，你爬回了刚才站稳的地方。", " · "])     # 鹭沼（4.4a）
 	texts.append_array(Inn.VIEW_NAMES + Inn.DRINKER_LINES + Inn.OLD_BOATMAN_LINES + [Inn.GATE_TEXT])            # 芦栈村的人说的话（4.4b，写在代码里）
 	for k in MarshLayout.PEOPLE_LINES:
@@ -282,7 +283,7 @@ func test_ui() -> void:
 	for k in MarshLayout.CAMP_LINES:                                                                            # 营地的人（4.4c）
 		texts.append_array(MarshLayout.CAMP_LINES[k])
 	texts.append_array(Castle.VIEW_NAMES + Hall.VIEW_NAMES + Hall.ENVOY_LINES + Hall.GUARD_LINES)               # 黑鹭堡（4.5a / 4.5b）
-	texts.append_array(Sickroom.VIEW_NAMES + Sickroom.OSRIC_LINES + Barracks.VIEW_NAMES)                         # 病房、兵营（4.5c）
+	texts.append_array(Sickroom.VIEW_NAMES + Sickroom.OSRIC_LINES + Barracks.VIEW_NAMES + Counting.VIEW_NAMES)                         # 病房、兵营（4.5c）
 	for k in Barracks.SOLDIER_LINES:
 		texts.append_array(Barracks.SOLDIER_LINES[k])
 	for k in Castle.GUARD_LINES:
@@ -308,6 +309,7 @@ func test_ui() -> void:
 	hall.queue_free()
 	sick.queue_free()
 	bunks.queue_free()
+	ledger_room.queue_free()
 	await frames(2)
 	var missing := ""
 	for text: String in texts:
@@ -1090,6 +1092,9 @@ func test_quests() -> void:
 			var need := str(q.stages[st].get("advance_when", {}).get("clue", ""))
 			if need != "" and not qd.clues.has(need):
 				bad.append("%s/%s 等的线索 %s 不存在" % [qid, st, need])
+			var want := str(q.stages[st].get("advance_when", {}).get("has_item", ""))
+			if want != "" and GameState.item(want).is_empty():
+				bad.append("%s/%s 等的物品 %s 不存在" % [qid, st, want])
 	for cid in qd.clues:
 		if not qd.quests.has(str(qd.clues[cid].quest)):
 			bad.append("线索 %s 属于不存在的任务" % cid)
@@ -6777,3 +6782,124 @@ func _runner_text(file: String, id: String) -> String:
 	var r := DialogueRunner.new()
 	r.start(file, id)
 	return r.text()
+
+
+## 皮毛税账册（路线图 4.7a；STORY.md 4.7「账房上锁：找赫尔曼要钥匙（声望或口才）、或趁夜里撬窗（被看见就闹大）；交给阿尔里克 / 交给伊薇特 / 自己留着」）：
+## 窄巷里的小窗走得到、对得准；赫尔曼没说动就不能再问；撬窗进去（白天难度 15、夜里 10）、拿到账册主线支线推进；交给伊薇特（她扔进火里）；
+## 瓦伦家信得过你时赫尔曼直接给钥匙、账房的门推得开、交给阿尔里克（他交给信使）；撬窗被抓：窗钉死、支线失败、声望下降、钥匙也要不到了
+func test_ledger() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	check(Areas.known("counting") and Areas.is_indoor("counting") and Areas.spawn("counting", "window") is Transform3D and Areas.spawn("castle", "counting_door") is Transform3D
+		and not GameState.item("fur_ledger").is_empty() and not GameState.item("counting_key").is_empty() and AreaMap.region_of("counting") == "marsh",
+		"区域、物品登记：账房（室内，门口和窗下两个出生点）、皮毛税账册、账房钥匙")
+	check(say_runner("counting_window", [], "blackheron") == "plain", "阿尔里克没托过你：那只是一扇闩着的小窗")
+	# —— 撬窗进去，交给伊薇特
+	ch1_state("deliver", 21)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ivette_met", "ledger_asked"]:
+		GameState.set_flag(f)
+	GameState.set_flag("castle_entry", "gate")
+	GameState.start_quest("ch1_main", "hear_heirs")
+	GameState.start_quest("ch1_ledger")
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	var win := main.world.get_node_or_null("LedgerWindow") as Fixture
+	var yard := Rect2(-Castle.HW, -Castle.HD, Castle.HW * 2.0, Castle.HD * 2.0)
+	check(win != null and walk_reach(main, Castle.SPAWNS.gate[0], Vector3(Castle.LEDGER_WINDOW.x, 0, Castle.LEDGER_WINDOW.z), 1.0, yard), "从堡门走得到塔楼和账房之间窄巷里那扇小窗")
+	main.player.global_position = Vector3(Castle.LEDGER_WINDOW.x, 0.05, Castle.LEDGER_WINDOW.z - 0.8)
+	main.player.rotation.y = PI
+	await physics(3)
+	main.player.interactor.refresh()
+	check(main.player.interactor.target == win, "站在窄巷里面朝小窗：对得准（「看看 · 账房的小窗」）")
+	GameState.checks["herman_key"] = false
+	check(await fl_say(main, "blackheron", "herman", ["账房的钥匙……", "家主醒了总要看账。钥匙放在我这儿，比挂在你腰上更不惹眼。"], true) and main.dialogue.runner.node_id == "key_no"
+		and GameState.has_flag("herman_key_refused") and not GameState.has_item("counting_key"), "口才没说动赫尔曼：不给钥匙")
+	main.dialogue.close()
+	await frames(2)
+	var r := DialogueRunner.new()
+	r.start("blackheron", "herman")
+	r.choose(r.options().map(func(o): return o.text).find("账房的钥匙……"))
+	check(r.options().size() == 1, "没说动就不能再问（只剩「……」）")
+	GameState.checks["ledger_window_day"] = true
+	var rr := [0]
+	main.reload_requested.connect(func(): rr[0] += 1)
+	check(await fl_say(main, "blackheron", "counting_window", ["（趁院子里没人注意，撬开百叶）", "（爬进账房）"]) and GameState.has_flag("ledger_window"), "撬开百叶（潜行检定）")
+	await seconds(0.6)
+	check(rr[0] == 1 and GameState.pending_load.get("scene") == "counting" and GameState.pending_load.get("spawn") == "window", "爬进账房：落在窗下")
+	main = await reload_main(main)
+	await physics(3)
+	var ledger: Array = main.find_children("*", "Pickup", true, false).filter(func(p): return p.item_id == "fur_ledger")
+	var room := Rect2(-Counting.W * 0.5, -Counting.D * 0.5, Counting.W, Counting.D)
+	check(main.area == "counting" and main.arrived_by == "window" and ledger.size() == 1 and walk_reach(main, Counting.SPAWNS.window[0], ledger[0].global_position, 1.6, room), "进了账房：写字台上摊着账册，从窗下走得到")
+	main.set_view(1)
+	await physics(3)
+	main.player.interactor.refresh()
+	check(main.player.interactor.target == ledger[0], "1 号机位正对着写字台上的账册（冒烟测试用）")
+	main.player.interactor.use()
+	await frames(2)
+	check(GameState.has_item("fur_ledger") and GameState.quest_stage("ch1_ledger") == "deliver", "拿到账册：支线推进到「交给谁」（%s）" % GameState.quest_stage("ch1_ledger"))
+	main = await fl_go(main, "castle")
+	await physics(3)
+	var cdoor: Door = main.find_children("*", "Door", true, false).filter(func(d): return d.display_name == "账房")[0]
+	check(main.arrived_by == "counting_door" and cdoor.locked and not AreaMap.exits("castle").any(func(e): return e.to == "counting"), "从里面推门出来，站在账房门前；没有钥匙，外面的门还锁着")
+	check(say_runner("counting_window", [], "blackheron") == "done", "账册到手以后：窗户用不着了")
+	main = await fl_go(main, "hall")
+	await physics(3)
+	check(await fl_say(main, "hall", "ivette", ["阿尔里克让我去账房拿皮毛税的账。", "……"]) and GameState.has_flag("ivette_knows_ledger"), "告诉伊薇特：她要你先给她")
+	var eld := GameState.get_rep("eld")
+	check(await fl_say(main, "hall", "ivette", ["账册在我手里。", "……"]) and str(GameState.get_flag("ch1_ledger")) == "ivette" and not GameState.has_item("fur_ledger")
+		and GameState.quest_done("ch1_ledger") and GameState.get_rep("eld") == eld + 10, "交给伊薇特：她扔进壁炉，支线做完，厄尔德家 +10")
+	await free_main(main)
+	# —— 瓦伦家信得过你：赫尔曼直接给钥匙，门推得开，交给阿尔里克
+	ch1_state("deliver", 22)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ledger_asked"]:
+		GameState.set_flag(f)
+	GameState.change_rep("valen", 25 - GameState.get_rep("valen"))
+	GameState.start_quest("ch1_main", "hear_heirs")
+	GameState.start_quest("ch1_ledger")
+	check(say_runner("herman", ["账房的钥匙……", "维克托大人让我替他照看家主。瓦伦家的人信得过我。"], "blackheron") == "key_trust" and GameState.has_item("counting_key"), "瓦伦家声望 25：赫尔曼直接给钥匙")
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	var ex: Array = AreaMap.exits("castle").filter(func(e): return e.to == "counting")
+	cdoor = main.find_children("*", "Door", true, false).filter(func(d): return d.display_name == "账房")[0]
+	var mid: Vector3 = cdoor.global_transform * Vector3(cdoor.width * 0.5, 0, 0)
+	check(not cdoor.locked and ex.size() == 1 and Vector2(mid.x, mid.z).distance_to(ex[0].at) < 0.3, "有钥匙：账房的门推得开，和地图出口对得上")
+	main = await fl_go(main, "counting")
+	await physics(3)
+	ledger = main.find_children("*", "Pickup", true, false).filter(func(p): return p.item_id == "fur_ledger")
+	check(main.area == "counting" and main.arrived_by == "front" and ledger.size() == 1, "从门进了账房")
+	ledger[0].interact(main.player)
+	GameState.add_item("fur_ledger")
+	var sev := GameState.get_rep("severin")
+	check(say_runner("alric", ["账册拿来了。"], "hall") == "ledger_alric" and str(GameState.get_flag("ch1_ledger")) == "alric" and GameState.get_rep("severin") == sev + 10 and GameState.quest_done("ch1_ledger"),
+		"交给阿尔里克：他交给塞弗林家的信使，支线做完，塞弗林家 +10")
+	await free_main(main)
+	GameState.pending_load = {"scene": "counting", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	check(main.find_children("*", "Pickup", true, false).filter(func(p): return p.item_id == "fur_ledger").is_empty(), "账册交出去以后，账房里不会再有一本")
+	await free_main(main)
+	# —— 撬窗被抓
+	ch1_state("release", 23)
+	GameState.set_flag("ledger_asked")
+	GameState.start_quest("ch1_ledger")
+	var valen := GameState.get_rep("valen")
+	GameState.checks["ledger_window_day"] = false
+	check(say_runner("counting_window", ["（趁院子里没人注意，撬开百叶）"], "blackheron") == "caught" and GameState.has_flag("ledger_caught") and GameState.quest_done("ch1_ledger")
+		and GameState.get_rep("valen") == valen - 10 and str(GameState.get_flag("ch1_ledger")) == "caught", "撬窗被赫尔曼抓了个正着：支线失败、瓦伦家 -10")
+	check(say_runner("counting_window", [], "blackheron") == "nailed", "窗户钉死了")
+	GameState.set_flag("herman_met")
+	r.start("blackheron", "herman")
+	r.choose(r.options().map(func(o): return o.text).find("账房的钥匙……"))
+	check(r.text().contains("撬窗") and r.options().size() == 1, "再找赫尔曼要钥匙：「撬窗的人，还有脸来要钥匙？」")
+	# 夜里：难度低一档的选项
+	ch1_state("deliver", 24)
+	GameState.set_flag("ledger_asked")
+	GameState.daypart = "night"
+	r.start("blackheron", "counting_window")
+	var ot: Array = r.options().map(func(o): return o.text)
+	check(ot.has("（摸黑撬开百叶）") and not ot.has("（趁院子里没人注意，撬开百叶）") and r.text().contains("黑着"), "夜里：摸黑撬窗（难度低一档）")
+	GameState.new_game()

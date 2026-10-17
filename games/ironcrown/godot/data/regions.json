@@ -21,7 +21,8 @@
         "castle": {"pos": [0.22, 0.42]},
         "hall": {"pos": [0.22, 0.12], "host": "castle"},
         "sickroom": {"pos": [0.4, 0.2], "host": "castle"},
-        "barracks": {"pos": [0.06, 0.24], "host": "castle"}
+        "barracks": {"pos": [0.06, 0.24], "host": "castle"},
+        "counting": {"pos": [0.4, 0.5], "host": "castle"}
       }
     }
   }

@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。",
+  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。 4.7a：账册交给阿尔里克（他交给塞弗林家的信使：塞弗林家 +10、厄尔德家 -5）或伊薇特（她扔进火里：厄尔德家 +10、塞弗林家 -5），支线做完；自己留着到 4.8 再算。",
   "alric": {
     "speaker": "阿尔里克",
     "start": "greet",
@@ -57,11 +57,17 @@
             ],
             "next": "ask_again"
           },
+          {"text": "账册拿来了。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_alric"},
           {
             "text": "（告辞）",
             "end": true
           }
         ]
+      },
+      "ledger_alric": {
+        "text": "（他翻到最后几页，手指停在那几个「留北境」上，过了好一会儿才合上）……果然是她。（他把账册递给身边的红斗篷）带回王都。告诉摄政：瓦伦家说话算话。",
+        "do": [{"take_item": "fur_ledger"}, {"set": "ch1_ledger", "value": "alric"}, {"rep": "severin", "delta": 10}, {"rep": "eld", "delta": -5}, {"quest_done": "ch1_ledger"}],
+        "options": [{"text": "……", "next": "again"}]
       },
       "osric": {
         "text": "父亲睡着的时候比醒着多。玛尔塔说，熬不过这个冬天。（他停了一下）他醒着的时候，一句也没提过继承。",
@@ -225,11 +231,25 @@
             ],
             "next": "ask_again"
           },
+          {"text": "阿尔里克让我去账房拿皮毛税的账。", "if": [{"flag": "ledger_asked"}, {"not_flag": "ivette_knows_ledger"}, {"not_flag": "ch1_ledger"}], "next": "ledger_tell"},
+          {"text": "账册在我手里。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_ivette"},
           {
             "text": "（告辞）",
             "end": true
           }
         ]
+      },
+      "ledger_tell": {
+        "text": "（她转酒杯的手停住了）……那本账。（她看着你）拿到了，先给我。我不会亏待你。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她端汤碗的手停住了）……那本账。（她看着你）拿到了，先给我。我不会亏待你。"}],
+        "do": [{"set": "ivette_knows_ledger"}],
+        "options": [{"text": "……", "next": "again"}]
+      },
+      "ledger_ivette": {
+        "text": "（她接过账册，翻都没翻，直接扔进了壁炉。火苗一下子窜起来）……这本账要是到了南边，北境的兵就得饿着肚子守烽燧。我欠你一回。",
+        "text_if": [{"if": [{"daypart": ["dusk", "night"]}], "text": "（她接过账册，翻都没翻，拉开炉门扔了进去。火苗一下子窜起来）……这本账要是到了南边，北境的兵就得饿着肚子守烽燧。我欠你一回。"}],
+        "do": [{"take_item": "fur_ledger"}, {"set": "ch1_ledger", "value": "ivette"}, {"rep": "eld", "delta": 10}, {"rep": "severin", "delta": -5}, {"quest_done": "ch1_ledger"}],
+        "options": [{"text": "……", "next": "again"}]
       },
       "osric": {
         "text": "父亲会醒的。他醒着的时候看着我，然后叹气。……他知道我想干什么。",

@@ -63,6 +63,8 @@ static func spec(area: String) -> Dictionary:
 			return Sickroom.map_spec()
 		"barracks":
 			return Barracks.map_spec()
+		"counting":
+			return Counting.map_spec()
 	return {}
 
 

@@ -168,6 +168,8 @@ func _ready() -> void:
 			t = Sickroom.build(world, Settings.reduced_motion)
 		"barracks":
 			t = Barracks.build(world, Settings.reduced_motion)
+		"counting":
+			t = Counting.build(world, Settings.reduced_motion)
 		"battle":
 			t = BattleArena.build(world, int(_query("n")) if _query("n").is_valid_int() else BattleArena.PER_SIDE)
 		_:
