@@ -44,10 +44,11 @@
     "ch1_outlaws": {
       "title": "沼地里的无旗者",
       "kind": "side",
-      "summary": "伊薇特缺人手：要你把鹭沼深处「灰手」奥弗那伙人收编过来（或者赶走），再让芦栈村托宾的泥炭工站到她这边。",
+      "summary": "伊薇特缺人手：要你把鹭沼深处那伙无旗者（「灰手」奥弗的人）收编过来，或者赶走、打散，别让阿尔里克买了去；再让芦栈村托宾的泥炭工站到她这边。",
       "first": "talk_offer",
       "stages": {
-        "talk_offer": {"objective": "去鹭沼深处的营地找奥弗谈，也去芦栈村找泥炭工头托宾"}
+        "talk_offer": {"objective": "去鹭沼深处的营地：谈（给粮、给钱，或者一句他们信得过的话）、赶走，或者打。也去芦栈村找泥炭工头托宾", "advance_when": {"flag": "ch1_outlaws", "to": "report"}},
+        "report": {"objective": "营地的事了结了：回黑鹭堡告诉伊薇特"}
       }
     },
     "ch1_whitereed": {

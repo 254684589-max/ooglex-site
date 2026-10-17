@@ -1,9 +1,10 @@
 {
-  "_说明": "鹭沼深处西边土墩上的无旗者营地（路线图 4.4c；STORY.md 4.2「鹭沼深处：「灰手」奥弗与手下」、4.4「序章其他旗标」）。营地对你的态度看序章怎么了结的奥弗（world/marsh.gd camp_mood）：谈妥、吓走或花钱打发了的（offer_left）友善；打过一仗、他还活着的（offer_defeated）记恨你——口才、威吓（都比序章在渡口时难一档）或给 40 枚银币才肯好好说话，没说动就让你滚（这一步不动手，真打在 4.7）；奥弗死在渡口的，火边站的是手下的头目（camp_boss）。伊薇特托你收编（或赶走）他们是 4.5 / 4.7 的事，这里只埋下「谁出价高就跟谁」。",
+  "_说明": "鹭沼深处西边土墩上的无旗者营地（路线图 4.4c；STORY.md 4.2「鹭沼深处：「灰手」奥弗与手下」、4.4「序章其他旗标」）。营地对你的态度看序章怎么了结的奥弗（world/marsh.gd camp_mood）：谈妥、吓走或花钱打发了的（offer_left）友善；打过一仗、他还活着的（offer_defeated）记恨你——口才、威吓（都比序章在渡口时难一档）或给 40 枚银币才肯好好说话，没说动就让你滚（这一步不动手，真打在 4.7）；奥弗死在渡口的，火边站的是手下的头目（camp_boss）。伊薇特托你收编（或赶走）他们是 4.5 / 4.7 的事，这里只埋下「谁出价高就跟谁」。 4.7c：伊薇特托你收编或赶走他们（支线 ch1_outlaws 在 talk_offer）时多一项「伊薇特小姐托我来找你」：给伊薇特的粮单、给 50 枚银币、口才说动 → 收编（ch1_outlaws = ally，无旗者声望 +10）；威吓 → 赶走（driven，−5，人当场走掉）；拔剑 → 真打（−5，营地的人原地换成敌人，打赢 ch1_outlaws = beaten）。威吓失败只剩打或走。记恨你、让你滚的奥弗，有支线时也能拔剑。",
   "offer_camp": {
     "speaker": "「灰手」奥弗",
     "start": "neutral_greet",
     "start_if": [
+      {"if": [{"flag": "ch1_outlaws", "eq": "ally"}], "node": "ally_again"},
       {"if": [{"flag": "offer_camp_met"}], "node": "again"},
       {"if": [{"flag": "offer_camp_refused"}], "node": "refused_again"},
       {"if": [{"flag": "offer_defeated"}], "node": "grudge"},
@@ -17,6 +18,7 @@
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -27,6 +29,7 @@
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -43,6 +46,7 @@
         "text": "（他朝地上吐了口唾沫）滚出我的营地。下回再来，就不是说话了。",
         "do": [{"set": "offer_camp_refused"}],
         "options": [
+          {"text": "（拔剑）你说过，下回就不是说话了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
           {"text": "（退出营地）", "end": true}
         ]
       },
@@ -50,6 +54,7 @@
         "text": "（几个人的手都按在了刀上）还来？我说过了，滚。",
         "options": [
           {"text": "（扔过去一袋银币）40 枚，给你的人买药。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "calm_paid"},
+          {"text": "（拔剑）你说过，下回就不是说话了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
           {"text": "（退出营地）", "end": true}
         ]
       },
@@ -60,6 +65,7 @@
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -70,6 +76,7 @@
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -80,6 +87,7 @@
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -89,6 +97,7 @@
           {"text": "你们怎么到鹭沼来了？", "next": "why_here"},
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -111,6 +120,68 @@
         "options": [
           {"text": "记住了。", "next": "again"}
         ]
+      },
+      "pitch": {
+        "text": "（他往火里添了块泥炭，没抬头）伊薇特·瓦伦。（他笑了一声）她哥哥的人上个月也来过，带着一袋钱。她出什么价？",
+        "options": [
+          {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
+          {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
+          {"text": "她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账。", "check": {"id": "offer_recruit_speech", "skill": "speech", "dc": 15, "pass": "ally_word", "fail": "pitch_fail"}},
+          {"text": "她什么也不出。你们收拾东西离开鹭沼，别替任何人卖命。", "check": {"id": "offer_drive_intimidate", "skill": "intimidate", "dc": 15, "pass": "driven", "fail": "drive_fail"}},
+          {"text": "（拔剑）那就没什么好谈的了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "我再想想。", "next": "again"}
+        ]
+      },
+      "pitch_fail": {
+        "text": "（他摇摇头）空话我听得多了。冬天可不吃空话——带点实在的来：粮，或者钱。",
+        "options": [
+          {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
+          {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
+          {"text": "（拔剑）那就没什么好谈的了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "我再想想。", "next": "again"}
+        ]
+      },
+      "ally_grain": {
+        "text": "（他把粮单凑到火边看了很久，手指在那枚印上摸了摸）……燕麦。（他回头冲手下喊）听见没有，今年冬天有粮了！（转回来）告诉小姐：到那天，灰手的人听她的号角。",
+        "do": [{"set": "ch1_outlaws", "value": "ally"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "堤道上见。", "end": true}
+        ]
+      },
+      "ally_paid": {
+        "text": "（他掂了掂钱袋，扔给身后的人）钱我收了。到那天，我们从芦苇里出来——要是那天之前有人出得更多……（他笑了笑）开玩笑的。灰手说话算数。",
+        "do": [{"set": "ch1_outlaws", "value": "ally"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "堤道上见。", "end": true}
+        ]
+      },
+      "ally_word": {
+        "text": "（他盯着火看了很久）……不追旧账。这话要是从别人嘴里说出来，我一个字都不信。（他把刀插回鞘里）行。告诉小姐，到那天，灰手的人听她的号角。",
+        "do": [{"set": "ch1_outlaws", "value": "ally"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "堤道上见。", "end": true}
+        ]
+      },
+      "driven": {
+        "text": "（营火边没人出声。他看了你很久，终于站起来，把刀插回鞘里）……行。鹭沼不止这一块土墩。（他冲手下摆摆手）收拾东西。",
+        "do": [{"set": "ch1_outlaws", "value": "driven"}, {"rep": "outlaws", "delta": -5}],
+        "options": [
+          {"text": "（看着他们走进芦苇）", "do": [{"leave": "camp"}], "end": true}
+        ]
+      },
+      "drive_fail": {
+        "text": "（他笑出了声，手下也跟着笑）一个人，要赶走我们一伙？誓剑，你喝多了。",
+        "options": [
+          {"text": "（拔剑）", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "（退出营地）", "end": true}
+        ]
+      },
+      "ally_again": {
+        "text": "（他冲你点点头）告诉小姐，灰手的人等她的号角。",
+        "options": [
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
+        ]
       }
     }
   },
@@ -118,6 +189,7 @@
     "speaker": "无旗者的头目",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "ch1_outlaws", "eq": "ally"}], "node": "ally_again"},
       {"if": [{"flag": "camp_boss_paid"}], "node": "again"}
     ],
     "nodes": {
@@ -125,6 +197,7 @@
         "text": "（营火边站起来一个瘦高个，手按在刀上）灰手死在渡口了——死在你手里。（他盯着你看了很久）你最好在我改主意之前走。",
         "options": [
           {"text": "（放下 40 枚银币）给他的人买口吃的。", "if": [{"silver": 40}], "do": [{"pay": 40}], "next": "paid"},
+          {"text": "（拔剑）伊薇特小姐要你们离开鹭沼——要么走，要么打。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
           {"text": "我只是路过。", "end": true}
         ]
       },
@@ -134,6 +207,7 @@
         "options": [
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -142,6 +216,7 @@
         "options": [
           {"text": "黑鹭堡要出事了，你们听说了吗？", "next": "war"},
           {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "伊薇特小姐托我来找你。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}, {"not_flag": "ch1_outlaws"}], "next": "pitch"},
           {"text": "（告辞）", "end": true}
         ]
       },
@@ -157,6 +232,68 @@
         "do": [{"set": "offer_camp_terms"}],
         "options": [
           {"text": "记住了。", "next": "again"}
+        ]
+      },
+      "pitch": {
+        "text": "（他往火里扔了根柴）瓦伦家的小姐。灰手活着的时候说过，瓦伦家的人说话还算数——她出什么价？",
+        "options": [
+          {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
+          {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
+          {"text": "她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账。", "check": {"id": "boss_recruit_speech", "skill": "speech", "dc": 15, "pass": "ally_word", "fail": "pitch_fail"}},
+          {"text": "她什么也不出。你们收拾东西离开鹭沼，别替任何人卖命。", "check": {"id": "boss_drive_intimidate", "skill": "intimidate", "dc": 15, "pass": "driven", "fail": "drive_fail"}},
+          {"text": "（拔剑）那就没什么好谈的了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "我再想想。", "next": "again"}
+        ]
+      },
+      "pitch_fail": {
+        "text": "空话填不饱肚子。带点实在的来：粮，或者钱。",
+        "options": [
+          {"text": "（把粮单递过去）黑鹭堡的粮仓，三车燕麦——够你们过冬。", "if": [{"has_item": "grain_writ"}], "locked": "hide", "do": [{"take_item": "grain_writ"}], "next": "ally_grain"},
+          {"text": "（放下 50 枚银币）这是定钱。", "if": [{"silver": 50}], "do": [{"pay": 50}], "next": "ally_paid"},
+          {"text": "（拔剑）那就没什么好谈的了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "我再想想。", "next": "again"}
+        ]
+      },
+      "ally_grain": {
+        "text": "（他把粮单折好揣进怀里）燕麦。灰手要是还活着，就为这个也会答应。——告诉小姐，到那天，我们听她的号角。",
+        "do": [{"set": "ch1_outlaws", "value": "ally"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "堤道上见。", "end": true}
+        ]
+      },
+      "ally_paid": {
+        "text": "（他把钱袋扔给身后的人）钱我收了。到那天，我们从芦苇里出来。",
+        "do": [{"set": "ch1_outlaws", "value": "ally"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "堤道上见。", "end": true}
+        ]
+      },
+      "ally_word": {
+        "text": "（他沉默了一会儿）不追旧账……灰手等这句话等了好几年。行，告诉小姐，到那天我们听她的号角。",
+        "do": [{"set": "ch1_outlaws", "value": "ally"}, {"rep": "outlaws", "delta": 10}],
+        "options": [
+          {"text": "堤道上见。", "end": true}
+        ]
+      },
+      "driven": {
+        "text": "（他看了看你的剑，又看了看自己的人）……没了灰手，我们拼不过你。（他冲手下摆摆手）收拾东西，换个地方。",
+        "do": [{"set": "ch1_outlaws", "value": "driven"}, {"rep": "outlaws", "delta": -5}],
+        "options": [
+          {"text": "（看着他们走进芦苇）", "do": [{"leave": "camp"}], "end": true}
+        ]
+      },
+      "drive_fail": {
+        "text": "（他冷笑）灰手死在你手里，你以为我们怕你？",
+        "options": [
+          {"text": "（拔剑）", "if": [{"quest_stage": "ch1_outlaws", "eq": "talk_offer"}], "do": [{"rep": "outlaws", "delta": -5}, {"fight": "camp", "win": "ch1_outlaws", "value": "beaten"}], "end": true},
+          {"text": "（退出营地）", "end": true}
+        ]
+      },
+      "ally_again": {
+        "text": "到那天，我们听小姐的号角。",
+        "options": [
+          {"text": "你们的船进得了水门吗？", "if": [{"not_flag": "ch1_letter"}, {"not_flag": "castle_admitted"}], "next": "boat"},
+          {"text": "（告辞）", "end": true}
         ]
       }
     }

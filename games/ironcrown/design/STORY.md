@@ -178,6 +178,13 @@
 
 守水门的老头说的「栅底下那道缝人也钻得进来」只是氛围，不算提醒。
 
+**4.7c 已实现**（2026-10-17，`deepmarsh.json`、`hall.json`、`reedwharf.json`、`world/marsh.gd`）：沼地里的无旗者——伊薇特托你以后，营地里多一句「伊薇特小姐托我来找你」，奥弗（或者奥弗死在渡口以后的头目）问「她出什么价」：
+**收编**（`ch1_outlaws = ally`，无旗者 +10）——给伊薇特的粮单（营地的人说过「谁给的粮实在就跟谁」以后，她写一张：粮仓三车燕麦）、给 50 枚银币，或者口才（难度 15）「她守住了黑鹭堡，就许你们在鹭沼过冬，不追旧账」；
+**赶走**（`driven`，−5）——威吓（难度 15）「你们收拾东西离开鹭沼，别替任何人卖命」，他们当场走进芦苇，营地空了；没吓住，他们笑你，只剩拔剑或者走；
+**打散**（`beaten`）——拔剑（−5，再加每杀一个 −5），营地的四个人原地换成敌人；打完死的躺在原地，认输和逃走的都散了。记恨你、让你滚的奥弗，有这条支线时也能拔剑。
+了结以后回去告诉伊薇特（瓦伦家 +5，支线做完），她按结果说一句。**泥炭工**：托宾要先结清堡里去年冬天欠的三十枚泥炭钱——替她付，或者口才担保（难度 14）——说定了 `ch1_peat = ivette`，「断口边上那几垛泥炭是我们的，要点火说一声」（4.9）。
+奥弗死在渡口的：伊薇特、军士说的是「灰手剩下的那伙人」。
+
 序章其他旗标：和奥弗**谈妥或花钱打发**（`offer_left` / `offer_paid`）的，他的营地对你友善；**打过一仗**（`offer_defeated`）的，营地的人记恨你，要么再打，要么口才或花钱化解（更难）。
 修士的旧书三种结果都带着；借据的下落决定结尾家主说话的方式（4.5 第 9 步）。
 
@@ -229,7 +236,7 @@
 
 `ch1_started`、`victor_lie`（放走：`lied_ok` / `lied_caught` / `told_truth`）、`edric_quiet`（勒索：`kept` / `told`）、`ch1_letter`（有没有引荐信）、
 `ch1_debt`（借据的下落：`given_osric` / `sold` / `given_heir` / `kept` / `with_edric`）、`ch1_ledger`（`alric` / `ivette` / `kept` / `caught`——撬窗被抓，4.7a 加）、`ch1_outlaws`（`ally` / `driven` / `beaten`）、
-`ch1_herb`、`ch1_edric`（`helped` / `persuaded` / `reported`，4.7b 加）、`ch1_water_gate`（`warned` / `opened` / `unknown`，按 4.7b 的表算）、`ch1_peat`、`valen_heir`（`alric` / `ivette`）、`ch1_causeway`（`held` / `lost`）、`ch1_done`。
+`ch1_herb`、`ch1_edric`（`helped` / `persuaded` / `reported`，4.7b 加）、`ch1_water_gate`（`warned` / `opened` / `unknown`，按 4.7b 的表算）、`ch1_peat`（`ivette`，4.7c）、`valen_heir`（`alric` / `ivette`）、`ch1_causeway`（`held` / `lost`）、`ch1_done`。
 
 声望：选阿尔里克，塞弗林家上升、烽誓团略降；选伊薇特，厄尔德家和烽誓团上升、塞弗林家下降；失守，瓦伦家下降（新家主不信任你）；
 卖借据，卡斯韦尔家上升；收编奥弗，无旗者上升，赶走或打散则下降。具体数值在 4.7 / 4.8 里定。

@@ -10,6 +10,7 @@ signal ended(won: bool)
 
 var id := ""
 var win_flag := ""
+var win_value: Variant = true      # 打赢时 win 旗标设成的值（4.7c：营地那一仗 ch1_outlaws = "beaten"）
 var enemies: Array = []
 var done := false
 
@@ -19,9 +20,10 @@ static func group_name(encounter_id: String) -> String:
 
 
 ## 开打：组里的 NPC 换成敌人
-func begin(world: Node3D, encounter_id: String, win: String) -> void:
+func begin(world: Node3D, encounter_id: String, win: String, value: Variant = true) -> void:
 	id = encounter_id
 	win_flag = win
+	win_value = value
 	if world.get_tree().get_first_node_in_group("combat_director") == null:
 		var director := CombatDirector.new()
 		director.name = "CombatDirector"
@@ -30,6 +32,8 @@ func begin(world: Node3D, encounter_id: String, win: String) -> void:
 		var npc := n as Node3D
 		var e := Enemy.make(str(npc.get_meta("enemy_kind")), str(npc.get_meta("enemy_id")))
 		e.display_override = str(npc.get("display_name"))
+		if npc.has_meta("enemy_loot"):
+			e.loot_override = npc.get_meta("enemy_loot")
 		e.transform = npc.global_transform              # 区域的节点都挂在 world 下，world 本身不动
 		world.add_child(e)
 		npc.remove_from_group(group_name(id))
@@ -62,6 +66,6 @@ func _on_enemy_state(_e: Enemy, _state: String) -> void:
 			return
 	done = true
 	if win_flag != "":
-		GameState.set_flag(win_flag)
+		GameState.set_flag(win_flag, win_value)
 	print("IC_ENCOUNTER end id=%s" % id)
 	ended.emit(true)

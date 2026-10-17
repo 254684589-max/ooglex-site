@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。 4.7a：账册交给阿尔里克（他交给塞弗林家的信使：塞弗林家 +10、厄尔德家 -5）或伊薇特（她扔进火里：厄尔德家 +10、塞弗林家 -5），支线做完；自己留着到 4.8 再算。 4.7b：埃德里克的婚事（只在序章「交出」时）——找伊薇特，她答应当了家就退亲，回去告诉埃德里克，他提醒你水门（edric_warned_water）；口才难度 14 劝他留下；或者告诉阿尔里克（塞弗林家 +5，他让人看着埃德里克）。结果记在 ch1_edric，4.8 读。",
+  "_说明": "黑鹭堡大厅（路线图 4.5b；STORY.md 4.5 第 4 步「两位继承人各找你谈，顺序任意」）。阿尔里克要皮毛税账册（支线 ch1_ledger）、伊薇特要你收编或赶走奥弗那伙人、拉托宾的泥炭工（支线 ch1_outlaws）；两边都开口要过（ledger_asked、outlaws_asked）以后，对话一关主线推进到「去病房看家主」（scenes/main.gd _heirs_heard，只从 hear_heirs 往前推，以后再找他们不会让主线倒退，审查）。支线怎么做完在 4.7。埃德里克只在序章「交出」时坐在窗边（婚事支线在 4.7）。塞弗林家的信使只说一句（world/hall.gd）。 4.7a：账册交给阿尔里克（他交给塞弗林家的信使：塞弗林家 +10、厄尔德家 -5）或伊薇特（她扔进火里：厄尔德家 +10、塞弗林家 -5），支线做完；自己留着到 4.8 再算。 4.7b：埃德里克的婚事（只在序章「交出」时）——找伊薇特，她答应当了家就退亲，回去告诉埃德里克，他提醒你水门（edric_warned_water）；口才难度 14 劝他留下；或者告诉阿尔里克（塞弗林家 +5，他让人看着埃德里克）。结果记在 ch1_edric，4.8 读。 4.7c：营地的人说了「谁给的粮实在就跟谁」（offer_camp_terms）以后，伊薇特给一张粮单（grain_writ，拿去营地收编奥弗）；营地的事了结了（ch1_outlaws，不管谈的还是打的），任务推进到 report，回来告诉她：按结果说一句，瓦伦家 +5，支线做完；泥炭工说定了（ch1_peat）她再说一句。奥弗死在渡口的，她说的是「灰手剩下的那伙人」（dead 条件）。",
   "alric": {
     "speaker": "阿尔里克",
     "start": "greet",
@@ -236,10 +236,15 @@
             "if": [
               {
                 "flag": "outlaws_asked"
+              },
+              {
+                "quest_stage": "ch1_outlaws",
+                "eq": "talk_offer"
               }
             ],
             "next": "ask_again"
           },
+          {"text": "沼地那伙人的事办完了。", "if": [{"quest_stage": "ch1_outlaws", "eq": "report"}], "next": "outlaws_report"},
           {"text": "阿尔里克让我去账房拿皮毛税的账。", "if": [{"flag": "ledger_asked"}, {"not_flag": "ivette_knows_ledger"}, {"not_flag": "ch1_ledger"}], "next": "ledger_tell"},
           {"text": "账册在我手里。", "if": [{"has_item": "fur_ledger"}], "locked": "hide", "next": "ledger_ivette"},
           {"text": "埃德里克不想娶塞弗林家的人。", "if": [{"quest_stage": "ch1_wedding", "eq": "ask_ivette"}], "next": "wedding"},
@@ -300,6 +305,7 @@
       },
       "ask": {
         "text": "我缺人手。沼地里有伙无旗者，领头的叫「灰手」——你认得他。把他们收编过来，或者赶走，别让我哥买了去。还有芦栈村的泥炭工，托宾那帮人，让他们站到我这边。",
+        "text_if": [{"if": [{"dead": "ferry_offer"}], "text": "我缺人手。沼地里有伙无旗者——领头的「灰手」死在渡口了，这你比谁都清楚，可剩下那伙人还在鹭沼里，推了个新头目。把他们收编过来，或者赶走，别让我哥买了去。还有芦栈村的泥炭工，托宾那帮人，让他们站到我这边。"}],
         "do": [
           {
             "set": "outlaws_asked"
@@ -317,12 +323,41 @@
       },
       "ask_again": {
         "text": "奥弗那伙人，还有托宾的泥炭工。人越多越好——今晚之前。",
-        "text_if": [{"if": [{"daypart": "night"}], "text": "奥弗那伙人，还有托宾的泥炭工。人越多越好——天亮之前。"}],
+        "text_if": [{"if": [{"dead": "ferry_offer"}, {"daypart": "night"}], "text": "灰手剩下的那伙人，还有托宾的泥炭工。人越多越好——天亮之前。"}, {"if": [{"dead": "ferry_offer"}], "text": "灰手剩下的那伙人，还有托宾的泥炭工。人越多越好——今晚之前。"}, {"if": [{"daypart": "night"}], "text": "奥弗那伙人，还有托宾的泥炭工。人越多越好——天亮之前。"}],
         "options": [
+          {"text": "他们说，谁给的粮实在就跟谁。", "if": [{"flag": "offer_camp_terms"}, {"not_flag": "ch1_outlaws"}, {"not_flag": "grain_writ_given"}], "next": "writ"},
           {
             "text": "我会考虑。",
             "end": true
           }
+        ]
+      },
+      "writ": {
+        "text": "粮食我有。（她从案上抽出一张纸，写了几行，盖上印）凭这张单子，粮仓给他们三车燕麦，够一伙人过冬。钱我给不了——别让我哥知道粮仓少了三车。",
+        "do": [{"give_item": "grain_writ"}, {"set": "grain_writ_given"}],
+        "options": [
+          {"text": "（收好粮单）", "end": true}
+        ]
+      },
+      "outlaws_report": {
+        "text": "（她听你说完）……",
+        "text_if": [{"if": [{"flag": "ch1_outlaws", "eq": "ally"}], "text": "（她第一次笑了）灰手的人……好。堤道那头多一伙认得芦苇的人，比多二十个新兵还管用。"}, {"if": [{"flag": "ch1_outlaws", "eq": "driven"}], "text": "赶走了也好。至少我哥买不到他们，夜里也不会有人从芦苇里冒出来。"}, {"if": [{"flag": "ch1_outlaws", "eq": "beaten"}], "text": "（她看了看你剑鞘上的泥）……打散了。也好，省得到时候有人从芦苇里冒出来——不管是替谁。"}],
+        "do": [{"quest_done": "ch1_outlaws"}, {"rep": "valen", "delta": 5}],
+        "options": [
+          {"text": "托宾的泥炭工也站到您这边了。", "if": [{"flag": "ch1_peat"}], "next": "peat_yes"},
+          {"text": "泥炭工那边还没说定。", "if": [{"not_flag": "ch1_peat"}], "next": "peat_no"}
+        ]
+      },
+      "peat_yes": {
+        "text": "泥炭工……好。堤道断口边上那几垛泥炭，到时候比一队弓手还有用。",
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "peat_no": {
+        "text": "那就抓紧。托宾那人认钱，也认人情。",
+        "options": [
+          {"text": "……", "end": true}
         ]
       }
     }

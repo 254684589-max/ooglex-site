@@ -13,8 +13,10 @@ extends RefCounted
 ##         4.5a 起：{"goto": 区域, "spawn": 出生点}（对话关上后走过去：泥炭船、侧门、堡门；只能放在结束对话的选项上）；
 ##         3.6 起：{"fight": 对峙编号, "win": 旗标}（区域里那组 NPC 换成敌人开打，只能放在结束对话的选项上，combat/encounter.gd）、{"leave": 对峙编号}（那组人走了）；
 ##         3.7 起：{"earn": 数量}（得到银币，例如塞拉斯的封口费）、{"ending": 结局编号}（对话关上后显示结束画面，ui/ending_panel.gd）
+##         4.7c 起：fight 可以带 "value"（打赢时 win 旗标设成这个值，默认 true：营地那一仗 ch1_outlaws = "beaten"）
 ##         4.2 起：{"daypart": 时段}（剧情推进到清晨 / 白天 / 黄昏 / 夜：dawn | day | dusk | night，对话关上后换光，world/daypart.gd）
 ## 4.2 起的条件：{"daypart": 时段} 或 {"daypart": [时段, ...]}（现在是这个 / 这几个时段之一）——NPC 按时段换开场白（4.6）用
+## 4.7c 起的条件：{"dead": 敌人编号}（这个人死了，GameState.dead；加 "eq": false 是还活着）——奥弗死在渡口时伊薇特、军士不再把「灰手」当活人说
 ## 4.6 起：节点可以有 text_if：[{"if": [...], "text": 台词}]，第一个满足的换掉 text（同一个节点按时段换开场白，选项和效果不变；NPC 作息，core/schedule.gd）。
 ## 对话可以有 start_if：[{"if": [...], "node": 节点}]，第一个满足的决定从哪个节点开始（旗标改变 NPC 的态度）。
 ## 3.9 起：剧情条件（旗标、任务、声望）都满足、只差银币或物品（silver、has_item）的选项不再隐藏，灰色显示「需要……」（entries()）；
@@ -31,7 +33,7 @@ var last_check := {}          # 刚做过的检定：{skill, ok}（界面显示�
 
 const OPTION_KEYS := ["text", "next", "end", "if", "check", "do", "locked"]
 const NODE_KEYS := ["text", "options", "do", "text_if"]
-const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least", "daypart"]
+const COND_KEYS := ["flag", "not_flag", "eq", "quest_active", "quest_done", "not_quest", "quest_stage", "has_item", "silver", "rep", "at_least", "daypart", "dead"]
 const RESOURCE_KEYS := ["silver", "has_item"]     # 「差东西」的条件（3.9）：只差这些时灰色显示「需要……」，不隐藏
 const EFFECT_KEYS := ["set", "value", "quest", "stage", "quest_done", "clue", "take_item", "give_item", "pay", "rep", "delta", "brawl", "win", "lose", "fight", "leave", "earn", "ending", "daypart", "goto", "spawn"]
 
@@ -171,6 +173,8 @@ static func _validate_conds(conds: Array, where: String, registry: Dictionary, e
 			errors.append("%s：势力 %s 不在 data/progression.json 里" % [where, c.rep])
 		elif c.has("silver") and int(c.silver) <= 0:
 			errors.append("%s：银币条件要大于 0" % where)
+		elif c.has("dead") and str(c.dead) == "":
+			errors.append("%s：死者条件要写敌人编号" % where)
 		elif c.has("daypart"):
 			var parts: Array = c.daypart if c.daypart is Array else [c.daypart]
 			var bad := parts.is_empty()
@@ -178,7 +182,7 @@ static func _validate_conds(conds: Array, where: String, registry: Dictionary, e
 				bad = bad or not Daypart.valid(str(x))
 			if bad:
 				errors.append("%s：时段 %s 不认识（dawn / day / dusk / night）" % [where, c.daypart])
-		elif not (c.has("quest_active") or c.has("quest_done") or c.has("not_quest") or c.has("quest_stage") or c.has("has_item") or c.has("silver") or c.has("rep")):
+		elif not (c.has("quest_active") or c.has("quest_done") or c.has("not_quest") or c.has("quest_stage") or c.has("has_item") or c.has("silver") or c.has("rep") or c.has("dead")):
 			errors.append("%s：条件缺内容" % where)
 
 
@@ -249,6 +253,9 @@ static func conds_ok(conds: Array) -> bool:
 		elif c.has("rep"):
 			if GameState.get_rep(str(c.rep)) < int(c.get("at_least", 0)):
 				return false
+		elif c.has("dead"):
+			if GameState.dead.has(str(c.dead)) != bool(c.get("eq", true)):
+				return false
 		elif c.has("daypart"):
 			var parts: Array = c.daypart if c.daypart is Array else [c.daypart]
 			var now := false
@@ -291,7 +298,7 @@ static func apply(effects: Array) -> void:
 		if e.has("brawl"):
 			GameState.pending_brawl = {"brawl": str(e.brawl), "win": str(e.get("win", "")), "lose": str(e.get("lose", ""))}
 		if e.has("fight"):
-			GameState.pending_fight = {"fight": str(e.fight), "win": str(e.get("win", ""))}
+			GameState.pending_fight = {"fight": str(e.fight), "win": str(e.get("win", "")), "value": e.get("value", true)}
 		if e.has("leave"):
 			GameState.pending_leave = str(e.leave)
 		if e.has("earn"):

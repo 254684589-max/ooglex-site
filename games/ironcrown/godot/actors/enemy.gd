@@ -58,6 +58,7 @@ const DIRECT_NEAR := 2.5          # 看得见你、又在这个距离以内：�
 var kind := "clubber"
 var enemy_id := ""
 var display_override := ""       # 打架时用说话那个 NPC 的名字（3.3）
+var loot_override: Variant = null  # 身上的东西不照 enemies.json（4.7c：营地的奥弗在渡口被搜过身的，没有第二只灰皮手套）
 var data: Dictionary = {}
 var display_name := ""
 var hp := 1
@@ -340,7 +341,8 @@ func _kneel(restoring: bool) -> void:
 func _drop_loot() -> void:
 	if not drops_loot or (loot_node != null and is_instance_valid(loot_node)):
 		return
-	loot_node = LootContainer.make("loot:" + enemy_id, display_name, Array(data.get("loot", [])), int(data.get("silver", 0)), true)
+	var loot: Array = loot_override if loot_override is Array else Array(data.get("loot", []))
+	loot_node = LootContainer.make("loot:" + enemy_id, display_name, loot, int(data.get("silver", 0)), true)
 	loot_node.position = global_position
 	get_parent().add_child(loot_node)
 
