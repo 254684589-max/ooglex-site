@@ -306,6 +306,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
         <a href="#apps" data-i18n="nav.apps">应用</a>
         <a href="apps/finance-terminal/" data-i18n="nav.terminal">终端</a>
         <a href="#tools" data-i18n="nav.tools">工具</a>
+        <a href="#app-zone" data-i18n="nav.appZone">App</a>
         <a href="games/hub/" data-i18n="nav.games">游戏</a>
 <button id="language-toggle" type="button" aria-label="Switch to English" title="Switch to English"><span lang="en">English</span> / <span lang="zh-CN">中文</span></button>
       </div>
@@ -500,6 +501,18 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     </div>
   </section>
 
+  <section id="app-zone">
+    <div class="container">
+      <div class="idx-hd"><h2 data-i18n="section.appZone">App 专区</h2><span class="en">APP ZONE</span><span class="cnt" data-i18n="section.appZoneNote">新的创意点子会做成 App 放在这里</span></div>
+      <div class="idx">
+        <a class="row" href="apps/tech-leaders/app/">
+          <span class="no">27</span><span class="name" data-i18n-html="item.oogleX.name"><span class="emoji" aria-hidden="true">◉</span>OOGLE X · 科技领袖</span><span class="en">Tech Leaders App</span><span class="demodot" data-i18n="badge.android">● 安卓</span>
+          <span class="desc" data-i18n="item.oogleX.desc">「科技领袖实时动态流」安卓应用：马斯克 · 黄仁勋 · Altman 等全球科技领袖与 CEO 的公开动态，装到手机随时看；下载页列出版本、大小与 SHA-256 校验值</span><span class="arr">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <div class="container">
       <span>© 2026 Ooglex</span>
@@ -515,7 +528,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     var EN = {
       "tape.fallback": "Global financial data · Updated daily at 06:20",
       "nav.billionaires": "Billionaires",
-      "nav.apps": "Apps", "nav.terminal": "Finance Terminal", "nav.tools": "Tools", "nav.games": "Games", "nav.contact": "Contact",
+      "nav.apps": "Apps", "nav.terminal": "Finance Terminal", "nav.tools": "Tools", "nav.appZone": "App", "nav.games": "Games", "nav.contact": "Contact",
       "hero.over": "MARKET INTELLIGENCE — UPDATED DAILY AT 06:20",
       "hero.title": "Real-time global market data,<br>simpler, faster, smarter.",
       "hero.tagline": "Real-time global market data—simpler, faster, and smarter.",
@@ -581,6 +594,11 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.worldMonitor.desc": "An open-source global situational-awareness dashboard: armed conflicts · earthquakes · weather · shipping chokepoints—built and hosted by the third-party project koala73/worldmonitor (AGPL-3.0); not Ooglex in-house data",
       "badge.external": "● EXTERNAL",
       "badge.new": "● NEW",
+      "badge.android": "● ANDROID",
+      "section.appZone": "App Zone",
+      "section.appZoneNote": "New ideas become apps here",
+      "item.oogleX.name": "<span class=\"emoji\" aria-hidden=\"true\">◉</span>OOGLE X · Tech Leaders",
+      "item.oogleX.desc": "The Android app for the Tech Leaders Live Feed: public posts from Musk · Jensen Huang · Altman and other global tech leaders and CEOs on your phone; the download page lists version, size and SHA-256 checksum",
       "item.idea.name": "<span class=\"emoji\">💡</span>Your Thoughts",
       "item.idea.desc": "The site's public thought feed: post any time once signed in, readable by anyone; everything posted is public and can be reported",
       "section.billionaires": "Forbes Real-Time Billionaires",
