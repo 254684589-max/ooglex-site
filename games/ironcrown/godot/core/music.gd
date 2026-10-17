@@ -1,18 +1,22 @@
 extends Node
 ## 背景音乐（路线图 M.1；TECH.md 4.24）。按区域和时段放曲子（data/music.json），换曲子时交叉淡入淡出 2 秒；
-## 走「Music」总线，音量和开关在暂停菜单里（Settings.music、music_volume；「声音」关了音乐也关）。暂停时照样放。
+## 音量和开关在暂停菜单里（Settings.music、music_volume；「声音」关了音乐也关）。暂停时照样放。
 ## 曲子都是 tools/compose_music.py 代码作曲合成的原创曲（assets/SOURCES.md）。
+## 不在运行时新建音频总线：网页版（不开线程，声音按「样本」交给浏览器放）在运行时加总线会把主总线的输出改接到新总线上，
+## 主总线不再接到扬声器，整个游戏都没声音（2026-10-17 上线后所有者反馈「听不到音乐」，查出来连开场的钟声也没了）。
+## 所以两个播放器都走主总线，音量和淡入淡出在播放器上算：volume_db = 淡入淡出系数 × 设置里的音乐音量。
+## 网页上的样本不一定按曲子的循环标记循环，放完（finished）就从头再放。
 
 const PATH := "res://data/music.json"
-const BUS := "Music"
 const FADE := 2.0
-const SILENT_DB := -60.0
+const SILENT_DB := -80.0
 
 var data := {}
 var players: Array[AudioStreamPlayer] = []
-var tweens: Array = [null, null]       # 每个播放器正在跑的淡入 / 淡出（换回来时先停掉，不然没跑完的淡出会把新曲子停掉）
+var fades: Array[float] = [0.0, 0.0]     # 每个播放器的淡入淡出系数 0..1（tween 改它，_process 换算成 volume_db）
+var tweens: Array = [null, null]          # 每个播放器正在跑的淡入 / 淡出（换回来时先停掉，不然没跑完的淡出会把新曲子停掉）
 var active := 0
-var track := ""                      # 现在放的曲目编号（"" = 没放）
+var track := ""                           # 现在放的曲目编号（"" = 没放）
 
 
 func _ready() -> void:
@@ -20,19 +24,14 @@ func _ready() -> void:
 	var f := FileAccess.open(PATH, FileAccess.READ)
 	var d: Variant = JSON.parse_string(f.get_as_text()) if f else null
 	data = d if d is Dictionary else {}
-	if AudioServer.get_bus_index(BUS) < 0:
-		AudioServer.add_bus()
-		var i := AudioServer.bus_count - 1
-		AudioServer.set_bus_name(i, BUS)
-		AudioServer.set_bus_send(i, "Master")
 	for k in 2:
 		var p := AudioStreamPlayer.new()
-		p.bus = BUS
+		p.bus = "Master"
 		p.volume_db = SILENT_DB
+		p.finished.connect(_on_finished.bind(k))
 		add_child(p)
 		players.append(p)
 	Settings.changed.connect(apply_volume)
-	apply_volume()
 
 
 ## 这个区域、这个时段放哪首（没有就 ""）
@@ -54,11 +53,12 @@ func play(id: String) -> void:
 	track = id
 	var old := players[active]
 	if old.playing:
-		_kill(active)
+		var oi := active
+		_kill(oi)
 		var tw := create_tween()
-		tw.tween_property(old, "volume_db", SILENT_DB, FADE)
+		tw.tween_method(func(v: float): fades[oi] = v, fades[oi], 0.0, FADE)
 		tw.tween_callback(old.stop)
-		tweens[active] = tw
+		tweens[oi] = tw
 	if id == "":
 		print("IC_MUSIC track=none")
 		return
@@ -73,11 +73,31 @@ func play(id: String) -> void:
 	_kill(active)
 	var p := players[active]
 	p.stream = stream
-	p.volume_db = SILENT_DB
+	fades[active] = 0.0
+	apply_volume()
 	p.play()
-	tweens[active] = create_tween()
-	tweens[active].tween_property(p, "volume_db", 0.0, FADE)
+	var ni := active
+	tweens[ni] = create_tween()
+	(tweens[ni] as Tween).tween_method(func(v: float): fades[ni] = v, 0.0, 1.0, FADE)
 	print("IC_MUSIC track=%s" % id)
+
+
+func _process(_delta: float) -> void:
+	apply_volume()
+
+
+## 音量：播放器的 volume_db = 淡入淡出系数 × 设置里的音乐音量；「声音」或「背景音乐」关了就静音
+func apply_volume() -> void:
+	var level := Settings.music_volume if Settings.sound and Settings.music else 0.0
+	for i in players.size():
+		var v := fades[i] * level
+		players[i].volume_db = linear_to_db(v) if v > 0.0001 else SILENT_DB
+
+
+## 放完了（网页上的样本不按循环标记循环时）：还是现在这首就从头再放
+func _on_finished(i: int) -> void:
+	if i == active and track != "" and players[i].stream != null:
+		players[i].play()
 
 
 func _kill(i: int) -> void:
@@ -91,19 +111,10 @@ func stop_now() -> void:
 	track = ""
 	for i in players.size():
 		_kill(i)
+		fades[i] = 0.0
 		players[i].stop()
 		players[i].stream = null
 
 
 func _exit_tree() -> void:
 	stop_now()
-
-
-## 音量：总线音量 = 设置里的音乐音量；「声音」或「背景音乐」关了就静音
-func apply_volume() -> void:
-	var i := AudioServer.get_bus_index(BUS)
-	if i < 0:
-		return
-	var on := Settings.sound and Settings.music and Settings.music_volume > 0.001
-	AudioServer.set_bus_mute(i, not on)
-	AudioServer.set_bus_volume_db(i, linear_to_db(maxf(Settings.music_volume, 0.001)))
