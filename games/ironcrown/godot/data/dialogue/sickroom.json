@@ -1,5 +1,5 @@
 {
-  "_说明": "黑鹭堡东边塔楼的病房（路线图 4.5c；STORY.md 4.5 第 3 步「见医师玛尔塔；家主昏睡」、第 6 步「黄昏，家主短暂醒来」、支线「白芦根」）。两位继承人都找你谈过以后（heirs_heard）病房的门才推得开；玛尔塔让你看一眼昏睡的家主，主线推进到「等黄昏」（家主醒来、交出印戒在 4.8）。她托你去鹭沼深处采白芦根（支线 ch1_whitereed 开始，采回来、给家主喝在 4.7）。家主本人躺在床上，只能看看（world/sickroom.gd 里的几句）。",
+  "_说明": "黑鹭堡东边塔楼的病房（路线图 4.5c；STORY.md 4.5 第 3 步「见医师玛尔塔；家主昏睡」、第 6 步「黄昏，家主短暂醒来」、支线「白芦根」）。两位继承人都找你谈过以后（heirs_heard）病房的门才推得开；玛尔塔让你看一眼昏睡的家主，主线推进到「等黄昏」（家主醒来、交出印戒在 4.8）。她托你去鹭沼深处采白芦根（支线 ch1_whitereed 开始，采回来、给家主喝在 4.7）。家主本人躺在床上，只能看看（world/sickroom.gd 里的几句）。 4.7b：三株白芦根交给玛尔塔（ch1_herb，瓦伦家 +5），支线做完；家主在结尾清醒得多（4.10）。",
   "marta": {
     "speaker": "玛尔塔",
     "start": "greet",
@@ -74,11 +74,13 @@
             "text": "白芦根……",
             "if": [
               {
-                "quest_active": "ch1_whitereed"
+                "quest_stage": "ch1_whitereed",
+                "eq": "gather"
               }
             ],
             "next": "reed_again"
           },
+          {"text": "白芦根采来了，三株。", "if": [{"quest_stage": "ch1_whitereed", "eq": "return"}], "next": "reed_done"},
           {
             "text": "（告辞）",
             "end": true
@@ -148,7 +150,12 @@
           }
         ]
       },
-      "reed_again": {
+      "reed_done": {
+      "text": "（她接过那三株白芦根，凑到蜡烛底下看了看根上的白，长长出了口气）……是这个。今晚熬上，黄昏前让他喝下去。他醒过来的时候，会清楚些。（她看了你一眼）谢谢你，誓剑。",
+      "do": [{"take_item": "white_reed"}, {"take_item": "white_reed"}, {"take_item": "white_reed"}, {"set": "ch1_herb"}, {"rep": "valen", "delta": 5}, {"quest_done": "ch1_whitereed"}],
+      "options": [{"text": "……", "next": "again"}]
+    },
+    "reed_again": {
         "text": "三株，天黑前。往西走过木板路，泥滩上那些发白的就是。别空着手回来——也别为了它把命丢在泥里。",
         "options": [
           {

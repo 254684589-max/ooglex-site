@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -6910,4 +6910,98 @@ func test_ledger() -> void:
 	r.start("blackheron", "counting_window")
 	var ot: Array = r.options().map(func(o): return o.text)
 	check(ot.has("（摸黑撬开百叶）") and not ot.has("（趁院子里没人注意，撬开百叶）") and r.text().contains("黑着"), "夜里：摸黑撬窗（难度低一档）")
+	GameState.new_game()
+
+
+## 白芦根与埃德里克的婚事（路线图 4.7b；STORY.md 4.7）：白芦根只在玛尔塔托过你、还在「采」的时候长在鹭沼深处的泥滩上，采三株推进、交给玛尔塔做完；
+## 埃德里克（只在序章「交出」时）想逃婚：找伊薇特（她答应退亲）→ 他提醒你水门；口才劝他留下（没劝动不能再试）；或者告诉阿尔里克
+func test_errands() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	check(not GameState.item("white_reed").is_empty() and GameState.quest_data().quests.has("ch1_wedding"), "登记：白芦根、支线「埃德里克的婚事」")
+	# —— 白芦根
+	ch1_state("deliver", 31)
+	GameState.set_flag("ch1_victor_done")
+	GameState.start_quest("ch1_main", "wait_dusk")
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	var main := await make_main(false)
+	await physics(2)
+	check(main.find_children("WhiteReed_*", "Pickup", true, false).is_empty(), "玛尔塔还没托你：泥滩上没有白芦根")
+	await free_main(main)
+	GameState.start_quest("ch1_whitereed")
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	var reeds: Array = main.find_children("WhiteReed_*", "Pickup", true, false)
+	var on_mud := reeds.size() == MarshLayout.WHITE_REEDS.size()
+	for rd in reeds:
+		var xz := Vector2(rd.position.x, rd.position.z)
+		on_mud = on_mud and MarshLayout.DEEP.any(func(f): return f[1] == "mud" and (f[2] as Rect2).grow(-1.0).has_point(xz))
+		on_mud = on_mud and MarshLayout.DEEP_TREES.all(func(t): return xz.distance_to(t[0]) > 2.0) and absf(rd.position.y - MarshLayout.MUD_Y) < 0.01
+	check(on_mud, "托过你以后：%d 株白芦根长在鹭沼深处的泥滩上（离枯树远）" % reeds.size())
+	var first: Pickup = reeds[0]
+	main.player.global_position = first.global_position + Vector3(0, 0.1, 1.2)
+	main.player.rotation.y = 0.0
+	main.player.pitch = -50.0
+	main.player.head.rotation.x = deg_to_rad(-50.0)
+	await physics(3)
+	main.player.interactor.refresh()
+	check(main.player.interactor.target == first, "站在泥里低头：对得准白芦根（「拾取 · 白芦根」）")
+	main.player.interactor.use()
+	await frames(2)
+	for k in [1, 2]:
+		reeds[k].interact(main.player)
+		GameState.add_item("white_reed")
+	check(GameState.quest_stage("ch1_whitereed") == "return" and GameState.inventory.count("white_reed") == 3, "采齐三株：支线推进到「交给玛尔塔」")
+	await free_main(main)
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	check(main.find_children("WhiteReed_*", "Pickup", true, false).is_empty(), "采齐以后再来：泥滩上不再长（不会多采）")
+	await free_main(main)
+	GameState.set_flag("marta_met")
+	var valen := GameState.get_rep("valen")
+	check(say_runner("marta", ["白芦根采来了，三株。"], "sickroom") == "reed_done" and GameState.has_flag("ch1_herb") and GameState.quest_done("ch1_whitereed")
+		and not GameState.has_item("white_reed") and GameState.get_rep("valen") == valen + 5, "交给玛尔塔：支线做完（ch1_herb），瓦伦家 +5")
+	# —— 埃德里克的婚事：找伊薇特
+	ch1_state("deliver", 32)
+	for f in ["ch1_victor_done", "castle_admitted", "herman_met", "alric_met", "ivette_met"]:
+		GameState.set_flag(f)
+	GameState.start_quest("ch1_main", "hear_heirs")
+	GameState.pending_load = {"scene": "hall", "spawn": "front", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	check(await fl_say(main, "hall", "edric_hall", ["你不想娶她。", "我去找伊薇特说说。她不会让王都的人拴住瓦伦家。", "等我消息。"]) and GameState.quest_stage("ch1_wedding") == "ask_ivette",
+		"埃德里克：他不想娶，今晚之后自己走；你说去找伊薇特")
+	check(await fl_say(main, "hall", "ivette", ["埃德里克不想娶塞弗林家的人。", "……"]) and GameState.has_flag("edric_ivette_promise") and GameState.quest_stage("ch1_wedding") == "tell_edric",
+		"伊薇特：她当了家就退了这门亲事")
+	check(await fl_say(main, "hall", "edric_hall", ["伊薇特答应了：她当了家，就退了这门亲事。", "记住了。"]) and str(GameState.get_flag("ch1_edric")) == "helped"
+		and GameState.has_flag("edric_warned_water") and GameState.quest_done("ch1_wedding"), "告诉埃德里克：他提醒你水门（支线做完）")
+	main.open_dialogue("hall", "edric_hall", main._npc_by_dialogue("edric_hall"))
+	await frames(1)
+	check(main.dialogue.runner.node_id == "after" and main.dialogue.runner.text().contains("点了点头"), "以后再找他：冲你点点头")
+	main.dialogue.close()
+	await free_main(main)
+	# —— 劝他留下：没劝动不能再试；劝动了
+	ch1_state("deliver", 33)
+	GameState.checks["edric_persuade"] = false
+	var persuade := "你走了，你父亲怎么跟塞弗林家交代？这门亲事能让霜渡镇过冬。"
+	check(say_runner("edric_hall", ["你不想娶她。", persuade], "hall") == "stubborn" and GameState.has_flag("edric_stubborn"), "口才没劝动：他不听")
+	var r := DialogueRunner.new()
+	r.start("hall", "edric_hall")
+	check(r.node_id == "again" and not r.options().any(func(o): return o.text == persuade), "没劝动就不能再劝（找伊薇特、告诉阿尔里克还行）")
+	ch1_state("deliver", 34)
+	GameState.checks["edric_persuade"] = true
+	check(say_runner("edric_hall", ["你不想娶她。", persuade], "hall") == "persuaded" and str(GameState.get_flag("ch1_edric")) == "persuaded" and GameState.quest_done("ch1_wedding"),
+		"劝动了：他留下（为了霜渡镇）")
+	# —— 告诉阿尔里克
+	ch1_state("deliver", 35)
+	GameState.set_flag("alric_met")
+	say_runner("edric_hall", ["你不想娶她。", "（不说话）"], "hall")
+	var sev := GameState.get_rep("severin")
+	check(say_runner("alric", ["埃德里克不想娶塞弗林家的人，打算今晚之后自己走。"], "hall") == "edric_report" and str(GameState.get_flag("ch1_edric")) == "reported"
+		and GameState.get_rep("severin") == sev + 5 and GameState.quest_done("ch1_wedding"), "告诉阿尔里克：他让人看着埃德里克（塞弗林家 +5）")
+	r.start("hall", "edric_hall")
+	check(r.node_id == "after_reported", "埃德里克：「你去告诉了阿尔里克……你满意了？」")
 	GameState.new_game()

@@ -51,6 +51,7 @@ static func build(p_parent: Node3D, p_reduced_motion := false) -> Transform3D:
 	m._collision()
 	m._interactables()
 	m._people()
+	m._herbs()
 	Edges.dress(p_parent, MarshLayout.BANK, [{"at": MarshLayout.EXIT_AT, "out": Vector3(1, 0, 0), "half": 1.8, "fence": true, "lantern": true, "frame": "霜渡镇"}],
 		[Rect2(-400, -400, 528, 800), Rect2(128, -400, 400, 412), Rect2(128, 50, 400, 400)], 4401, "bank")   # 只在东头路口外面：干岸接着往东铺，两边白桦
 	var st := ChunkStreamer.new()
@@ -312,6 +313,18 @@ func _people() -> void:
 		n.position = p[2]
 		n.rotation.y = float(p[3])
 		parent.add_child(n)
+
+
+## 白芦根（4.7b）：玛尔塔托你采的时候（支线 ch1_whitereed 在「采」），泥滩上长着五株；采过的不再长（pickup_id）。同步放进 world
+func _herbs() -> void:
+	if GameState.quest_stage("ch1_whitereed") != "gather":
+		return
+	for i in MarshLayout.WHITE_REEDS.size():
+		var p := Pickup.make("white_reed", "白芦根", Color("e8e2c8"), Vector3(0.14, 0.55, 0.14))
+		p.name = "WhiteReed_%d" % i
+		p.pickup_id = "marsh_white_reed_%d" % i
+		p.position = MarshLayout.WHITE_REEDS[i]
+		parent.add_child(p)
 
 
 # ---------------- 分帧的活 ----------------

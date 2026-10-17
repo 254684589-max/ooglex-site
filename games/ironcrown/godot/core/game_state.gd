@@ -416,7 +416,7 @@ func clues_for(quest: String) -> Array:
 
 
 ## 阶段的 advance_when：{"clues_at_least": n, "to": 下一阶段}——线索够了自动推进；{"clue": 线索, "to": 下一阶段}——拿到这条线索就推进（3.5）；
-## {"has_item": 物品, "to": 下一阶段}——东西到手就推进（4.7a：账房里的皮毛税账册）。
+## {"has_item": 物品, "to": 下一阶段}——东西到手就推进（4.7a：账房里的皮毛税账册）；可以加 "count": 件数（4.7b：三株白芦根）。
 ## set_stage 推进以后会再查一次新阶段（先拿到雇佣信、后凑够线索时，一口气推到底）
 func _auto_advance(id: String) -> void:
 	if not quest_active(id):
@@ -427,7 +427,7 @@ func _auto_advance(id: String) -> void:
 		set_stage(id, str(rule.to))
 	elif rule.has("clue") and clues.has(str(rule.clue)):
 		set_stage(id, str(rule.to))
-	elif rule.has("has_item") and has_item(str(rule.has_item)):
+	elif rule.has("has_item") and inventory.count(str(rule.has_item)) >= int(rule.get("count", 1)):
 		set_stage(id, str(rule.to))
 
 
