@@ -1,794 +1,8 @@
 {
- "count": 20,
+ "count": 19,
  "next": null,
  "previous": null,
  "results": [
-  {
-   "id": "ab3c1e6c-03fe-48a7-b6ce-30c79569bdfb",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/ab3c1e6c-03fe-48a7-b6ce-30c79569bdfb/",
-   "name": "Soyuz 2.1b/Fregat | Glonass-K1 No. 20 (?)",
-   "response_mode": "detailed",
-   "slug": "soyuz-21bfregat-glonass-k1-no-20",
-   "launch_designator": "2026-216",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-09-18T13:37:26Z",
-   "net": "2026-09-17T16:50:00Z",
-   "net_precision": {
-    "id": 2,
-    "name": "Hour",
-    "abbrev": "HR",
-    "description": "The T-0 is accurate to the hour."
-   },
-   "window_end": "2026-09-17T16:50:00Z",
-   "window_start": "2026-09-17T16:50:00Z",
-   "image": {
-    "id": 1830,
-    "name": "Soyuz 2.1b on the pad",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/soyuz_2.1b_image_20230802085331.jpg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193901.jpeg",
-    "credit": "Roscosmos",
-    "license": {
-     "id": 14,
-     "name": "Roscosmos Image Use Policy",
-     "priority": 3,
-     "link": "https://www.roscosmos.ru/22650/"
-    },
-    "single_use": false,
-    "variants": []
-   },
-   "infographic": null,
-   "probability": null,
-   "weather_concerns": null,
-   "failreason": "",
-   "hashtag": null,
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 193,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/193/",
-    "name": "Russian Space Forces",
-    "abbrev": "VKS",
-    "type": {
-     "id": 1,
-     "name": "Government"
-    },
-    "featured": false,
-    "country": [
-     {
-      "id": 5,
-      "name": "Russia",
-      "alpha_2_code": "RU",
-      "alpha_3_code": "RUS",
-      "nationality_name": "Russian",
-      "nationality_name_composed": "Russo"
-     }
-    ],
-    "description": "The Russian Space Forces are a branch of the Russian Aerospace Forces, that provides aerospace warning, air sovereignty, and protection for Russia. Having been reestablished following August 1, 2015 merger between the Russian Air Force and the Russian Aerospace Defence Forces after a 2011 dissolving of the branch. The Russian Space Forces were originally formed on August 10, 1992 and the creation of the Russian Armed Forces.",
-    "administrator": "Commander: Aleksandr Golovko",
-    "founding_year": 1992,
-    "launchers": "",
-    "spacecraft": "",
-    "parent": "Russian Federal Space Agency (ROSCOSMOS)",
-    "image": {
-     "id": 26,
-     "name": "[AUTO] Russian Space Forces - image",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_image_20191210085547.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184656.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "logo": {
-     "id": 178,
-     "name": "[AUTO] Russian Space Forces - logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_logo_20200805185824.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185120.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 90,
-     "name": "[AUTO] Russian Space Forces - social_logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_nation_20230805154528.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184843.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 158,
-    "consecutive_successful_launches": 70,
-    "successful_launches": 150,
-    "failed_launches": 8,
-    "pending_launches": 0,
-    "consecutive_successful_landings": 0,
-    "successful_landings": 0,
-    "failed_landings": 0,
-    "attempted_landings": 0,
-    "successful_landings_spacecraft": 0,
-    "failed_landings_spacecraft": 0,
-    "attempted_landings_spacecraft": 0,
-    "successful_landings_payload": 0,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 0,
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/Russian_Aerospace_Forces",
-    "social_media_links": []
-   },
-   "rocket": {
-    "id": 9110,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 134,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/134/",
-     "name": "Soyuz 2.1b/Fregat-M",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 147,
-       "name": "Soyuz",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 111,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/111/",
-         "name": "Progress Rocket Space Center",
-         "abbrev": "PRSC",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": false,
-         "country": [
-          {
-           "id": 5,
-           "name": "Russia",
-           "alpha_2_code": "RU",
-           "alpha_3_code": "RUS",
-           "nationality_name": "Russian",
-           "nationality_name_composed": "Russo"
-          }
-         ],
-         "description": "Progress Rocket Space Centre, formerly known as TsSKB-Progress, is a space science and aerospace research company which is known for manufacturing launch vehicles and satellites. Most notably, Progress Rocket Space Centre is the manufacturer of Soyuz launch vehicles.",
-         "administrator": "CEO: Dmitry Baranov",
-         "founding_year": 1996,
-         "launchers": "",
-         "spacecraft": "",
-         "parent": null,
-         "image": null,
-         "logo": {
-          "id": 171,
-          "name": "[AUTO] Progress Rocket Space Center - logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/progress2520rocket2520space2520center_logo_20210313175054.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185104.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": null,
-         "total_launch_count": 45,
-         "consecutive_successful_launches": 3,
-         "successful_launches": 44,
-         "failed_launches": 1,
-         "pending_launches": 0,
-         "consecutive_successful_landings": 0,
-         "successful_landings": 0,
-         "failed_landings": 0,
-         "attempted_landings": 0,
-         "successful_landings_spacecraft": 0,
-         "failed_landings_spacecraft": 0,
-         "attempted_landings_spacecraft": 0,
-         "successful_landings_payload": 0,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 0,
-         "info_url": "https://en.samspace.ru/",
-         "wiki_url": "https://en.wikipedia.org/wiki/Progress_Rocket_Space_Centre",
-         "social_media_links": []
-        }
-       ],
-       "parent": null,
-       "description": "",
-       "active": true,
-       "maiden_flight": "1965-12-27",
-       "total_launch_count": 1043,
-       "consecutive_successful_launches": 139,
-       "successful_launches": 1012,
-       "failed_launches": 31,
-       "pending_launches": 4,
-       "attempted_landings": 0,
-       "successful_landings": 0,
-       "failed_landings": 0,
-       "consecutive_successful_landings": 0
-      },
-      {
-       "response_mode": "detailed",
-       "id": 190,
-       "name": "Soyuz 2",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 111,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/111/",
-         "name": "Progress Rocket Space Center",
-         "abbrev": "PRSC",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": false,
-         "country": [
-          {
-           "id": 5,
-           "name": "Russia",
-           "alpha_2_code": "RU",
-           "alpha_3_code": "RUS",
-           "nationality_name": "Russian",
-           "nationality_name_composed": "Russo"
-          }
-         ],
-         "description": "Progress Rocket Space Centre, formerly known as TsSKB-Progress, is a space science and aerospace research company which is known for manufacturing launch vehicles and satellites. Most notably, Progress Rocket Space Centre is the manufacturer of Soyuz launch vehicles.",
-         "administrator": "CEO: Dmitry Baranov",
-         "founding_year": 1996,
-         "launchers": "",
-         "spacecraft": "",
-         "parent": null,
-         "image": null,
-         "logo": {
-          "id": 171,
-          "name": "[AUTO] Progress Rocket Space Center - logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/progress2520rocket2520space2520center_logo_20210313175054.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185104.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": null,
-         "total_launch_count": 45,
-         "consecutive_successful_launches": 3,
-         "successful_launches": 44,
-         "failed_launches": 1,
-         "pending_launches": 0,
-         "consecutive_successful_landings": 0,
-         "successful_landings": 0,
-         "failed_landings": 0,
-         "attempted_landings": 0,
-         "successful_landings_spacecraft": 0,
-         "failed_landings_spacecraft": 0,
-         "attempted_landings_spacecraft": 0,
-         "successful_landings_payload": 0,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 0,
-         "info_url": "https://en.samspace.ru/",
-         "wiki_url": "https://en.wikipedia.org/wiki/Progress_Rocket_Space_Centre",
-         "social_media_links": []
-        }
-       ],
-       "parent": {
-        "response_mode": "normal",
-        "id": 147,
-        "name": "Soyuz",
-        "manufacturer": [
-         {
-          "response_mode": "normal",
-          "id": 111,
-          "url": "https://ll.thespacedevs.com/2.3.0/agencies/111/",
-          "name": "Progress Rocket Space Center",
-          "abbrev": "PRSC",
-          "type": {
-           "id": 3,
-           "name": "Commercial"
-          },
-          "featured": false,
-          "country": [
-           {
-            "id": 5,
-            "name": "Russia",
-            "alpha_2_code": "RU",
-            "alpha_3_code": "RUS",
-            "nationality_name": "Russian",
-            "nationality_name_composed": "Russo"
-           }
-          ],
-          "description": "Progress Rocket Space Centre, formerly known as TsSKB-Progress, is a space science and aerospace research company which is known for manufacturing launch vehicles and satellites. Most notably, Progress Rocket Space Centre is the manufacturer of Soyuz launch vehicles.",
-          "administrator": "CEO: Dmitry Baranov",
-          "founding_year": 1996,
-          "launchers": "",
-          "spacecraft": "",
-          "parent": null,
-          "image": null,
-          "logo": {
-           "id": 171,
-           "name": "[AUTO] Progress Rocket Space Center - logo",
-           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/progress2520rocket2520space2520center_logo_20210313175054.png",
-           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185104.png",
-           "credit": null,
-           "license": {
-            "id": 1,
-            "name": "Unknown",
-            "priority": 9,
-            "link": null
-           },
-           "single_use": true,
-           "variants": []
-          },
-          "social_logo": null
-         }
-        ],
-        "parent": null
-       },
-       "description": "",
-       "active": true,
-       "maiden_flight": "2004-11-08",
-       "total_launch_count": 210,
-       "consecutive_successful_launches": 139,
-       "successful_launches": 203,
-       "failed_launches": 7,
-       "pending_launches": 4,
-       "attempted_landings": 0,
-       "successful_landings": 0,
-       "failed_landings": 0,
-       "consecutive_successful_landings": 0
-      }
-     ],
-     "full_name": "Soyuz 2.1b Fregat-M",
-     "variant": "Fregat-M",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 111,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/111/",
-      "name": "Progress Rocket Space Center",
-      "abbrev": "PRSC",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 5,
-        "name": "Russia",
-        "alpha_2_code": "RU",
-        "alpha_3_code": "RUS",
-        "nationality_name": "Russian",
-        "nationality_name_composed": "Russo"
-       }
-      ],
-      "description": "Progress Rocket Space Centre, formerly known as TsSKB-Progress, is a space science and aerospace research company which is known for manufacturing launch vehicles and satellites. Most notably, Progress Rocket Space Centre is the manufacturer of Soyuz launch vehicles.",
-      "administrator": "CEO: Dmitry Baranov",
-      "founding_year": 1996,
-      "launchers": "",
-      "spacecraft": "",
-      "parent": null,
-      "image": null,
-      "logo": {
-       "id": 171,
-       "name": "[AUTO] Progress Rocket Space Center - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/progress2520rocket2520space2520center_logo_20210313175054.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185104.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": null,
-      "total_launch_count": 45,
-      "consecutive_successful_launches": 3,
-      "successful_launches": 44,
-      "failed_launches": 1,
-      "pending_launches": 0,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": "https://en.samspace.ru/",
-      "wiki_url": "https://en.wikipedia.org/wiki/Progress_Rocket_Space_Centre",
-      "social_media_links": []
-     },
-     "program": [],
-     "reusable": false,
-     "image": {
-      "id": 1830,
-      "name": "Soyuz 2.1b on the pad",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/soyuz_2.1b_image_20230802085331.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193901.jpeg",
-      "credit": "Roscosmos",
-      "license": {
-       "id": 14,
-       "name": "Roscosmos Image Use Policy",
-       "priority": 3,
-       "link": "https://www.roscosmos.ru/22650/"
-      },
-      "single_use": false,
-      "variants": []
-     },
-     "info_url": null,
-     "wiki_url": "https://en.wikipedia.org/wiki/Soyuz-2",
-     "description": "Soyuz-2, GRAU index 14A14, is the collective designation for the 21st-century version of the Russian Soyuz rocket. In its basic form, it is a three-stage carrier rocket for placing payloads into low Earth orbit. The first-stage boosters and two core stages feature uprated engines with improved injection systems, compared to the previous versions of the Soyuz. Digital flight control and telemetry systems allow the rocket to be launched from a fixed launch platform, whereas the launch platforms for earlier Soyuz rockets had to be rotated as the rocket could not perform a roll to change its heading in flight.",
-     "alias": "",
-     "min_stage": 4,
-     "max_stage": 4,
-     "length": 46.3,
-     "diameter": 10.3,
-     "maiden_flight": "2008-07-26",
-     "launch_cost": 48500000,
-     "launch_mass": 313.0,
-     "leo_capacity": 8200.0,
-     "gto_capacity": 3250.0,
-     "geo_capacity": null,
-     "sso_capacity": null,
-     "to_thrust": 4150.0,
-     "apogee": null,
-     "total_launch_count": 36,
-     "consecutive_successful_launches": 36,
-     "successful_launches": 36,
-     "failed_launches": 0,
-     "pending_launches": 2,
-     "attempted_landings": 0,
-     "successful_landings": 0,
-     "failed_landings": 0,
-     "consecutive_successful_landings": 0,
-     "fastest_turnaround": "P3DT9H51M32S"
-    },
-    "launcher_stage": [],
-    "spacecraft_stage": [],
-    "payloads": []
-   },
-   "mission": {
-    "id": 7705,
-    "name": "Glonass-K1 No. 20 (?)",
-    "type": "Navigation",
-    "description": "Note: Satellite serial number and Cosmos designation not confirmed.\r\n\r\nGlonass-K are the third generation of satellite design for GLONASS satellite navigation system. GLONASS is a Russian space-based navigation system comparable to the similar GPS and Galileo systems. This generation improves on accuracy, power consumption and design life. Each satellite is unpressurized and weighs 935 kg,  and has an operational lifetime of 10 years.",
-    "image": null,
-    "orbit": {
-     "id": 12,
-     "name": "Medium Earth Orbit",
-     "abbrev": "MEO",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 193,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/193/",
-      "name": "Russian Space Forces",
-      "abbrev": "VKS",
-      "type": {
-       "id": 1,
-       "name": "Government"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 5,
-        "name": "Russia",
-        "alpha_2_code": "RU",
-        "alpha_3_code": "RUS",
-        "nationality_name": "Russian",
-        "nationality_name_composed": "Russo"
-       }
-      ],
-      "description": "The Russian Space Forces are a branch of the Russian Aerospace Forces, that provides aerospace warning, air sovereignty, and protection for Russia. Having been reestablished following August 1, 2015 merger between the Russian Air Force and the Russian Aerospace Defence Forces after a 2011 dissolving of the branch. The Russian Space Forces were originally formed on August 10, 1992 and the creation of the Russian Armed Forces.",
-      "administrator": "Commander: Aleksandr Golovko",
-      "founding_year": 1992,
-      "launchers": "",
-      "spacecraft": "",
-      "parent": "Russian Federal Space Agency (ROSCOSMOS)",
-      "image": {
-       "id": 26,
-       "name": "[AUTO] Russian Space Forces - image",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_image_20191210085547.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184656.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "logo": {
-       "id": 178,
-       "name": "[AUTO] Russian Space Forces - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_logo_20200805185824.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185120.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 90,
-       "name": "[AUTO] Russian Space Forces - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/russian2520space2520forces_nation_20230805154528.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184843.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 158,
-      "consecutive_successful_launches": 70,
-      "successful_launches": 150,
-      "failed_launches": 8,
-      "pending_launches": 0,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": null,
-      "wiki_url": "https://en.wikipedia.org/wiki/Russian_Aerospace_Forces",
-      "social_media_links": []
-     }
-    ],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 36,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/36/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 163,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/163/",
-      "name": "Russian Aerospace Defence Forces",
-      "abbrev": "VKO",
-      "type": {
-       "id": 1,
-       "name": "Government"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 5,
-        "name": "Russia",
-        "alpha_2_code": "RU",
-        "alpha_3_code": "RUS",
-        "nationality_name": "Russian",
-        "nationality_name_composed": "Russo"
-       }
-      ],
-      "description": null,
-      "administrator": null,
-      "founding_year": null,
-      "launchers": "",
-      "spacecraft": "",
-      "parent": "Russian Federal Space Agency (ROSCOSMOS)",
-      "image": null,
-      "logo": null,
-      "social_logo": null
-     }
-    ],
-    "name": "43/3 (43L)",
-    "image": {
-     "id": 1461,
-     "name": "Soyuz 2.1b/Fregat-M liftoff from pad 43/3 (Glonass-K2 No. 13, Kosmos 2569)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/soyuz25202.1b_image_20230807181912.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192834.jpeg",
-     "credit": "Mil.ru",
-     "license": {
-      "id": 30,
-      "name": "CC BY 4.0",
-      "priority": 4,
-      "link": "https://creativecommons.org/licenses/by/4.0/"
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "description": "",
-    "info_url": null,
-    "wiki_url": null,
-    "map_url": "https://www.google.com/maps?q=62.9273,40.45",
-    "latitude": 62.9273,
-    "longitude": 40.45,
-    "country": {
-     "id": 5,
-     "name": "Russia",
-     "alpha_2_code": "RU",
-     "alpha_3_code": "RUS",
-     "nationality_name": "Russian",
-     "nationality_name_composed": "Russo"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_36_20200803143534.jpg",
-    "total_launch_count": 234,
-    "orbital_launch_attempt_count": 234,
-    "fastest_turnaround": "P2DT17H44M",
-    "location": {
-     "response_mode": "normal",
-     "id": 6,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/6/",
-     "name": "Plesetsk Cosmodrome, Russian Federation",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7640,
-      "successful_launches": 7083,
-      "failed_launches": 557,
-      "total_attempted_landings": 1380,
-      "successful_landings": 1331,
-      "failed_landings": 49
-     },
-     "active": true,
-     "country": {
-      "id": 5,
-      "name": "Russia",
-      "alpha_2_code": "RU",
-      "alpha_3_code": "RUS",
-      "nationality_name": "Russian",
-      "nationality_name_composed": "Russo"
-     },
-     "description": "Plesetsk Cosmodrome is a Russian spaceport located in Mirny, Arkhangelsk Oblast, about 800 km north of Moscow and approximately 200 km south of Arkhangelsk. Originally developed as an ICBM site for the R-7 missile, it also served for numerous satellite launches using the R-7 and other rockets. Its high latitude makes it useful only for certain types of launches, especially the Molniya orbits, so for much of the site's history it functioned as a secondary location, with most orbital launches taking place from Baikonur, in the Kazakh SSR. With the end of the Soviet Union, Baikonur became a foreign territory, and Kazakhstan charged $115 million usage fees annually. Consequently, Plesetsk has seen considerably more activity since the 2000s.",
-     "image": {
-      "id": 1461,
-      "name": "Soyuz 2.1b/Fregat-M liftoff from pad 43/3 (Glonass-K2 No. 13, Kosmos 2569)",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/soyuz25202.1b_image_20230807181912.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192834.jpeg",
-      "credit": "Mil.ru",
-      "license": {
-       "id": 30,
-       "name": "CC BY 4.0",
-       "priority": 4,
-       "link": "https://creativecommons.org/licenses/by/4.0/"
-      },
-      "single_use": false,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_6_20200803142434.jpg",
-     "longitude": 40.577778,
-     "latitude": 62.925556,
-     "timezone_name": "Europe/Moscow",
-     "total_launch_count": 1688,
-     "total_landing_count": 0
-    }
-   },
-   "webcast_live": false,
-   "program": [],
-   "orbital_launch_attempt_count": 7397,
-   "location_launch_attempt_count": 1688,
-   "pad_launch_attempt_count": 234,
-   "agency_launch_attempt_count": 158,
-   "orbital_launch_attempt_count_year": 224,
-   "location_launch_attempt_count_year": 8,
-   "pad_launch_attempt_count_year": 3,
-   "agency_launch_attempt_count_year": 6,
-   "flightclub_url": null,
-   "updates": [
-    {
-     "id": 16150,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Launch success.",
-     "info_url": "https://t.me/roscosmos_gk/20731",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-18T07:25:00Z"
-    },
-    {
-     "id": 16135,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Updated entry for new launch per NOTAMs scheduled some time between 08:00-20:59 UTC daily, September 17-21; note launch vehicle and payload identities highly uncertain.",
-     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=65978.msg2824181#msg2824181",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-09-16T23:47:00Z"
-    },
-    {
-     "id": 15969,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Removed from current schedule with cancellation of closure notices.",
-     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=65622.msg2818521#msg2818521",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-28T17:40:00Z"
-    },
-    {
-     "id": 15782,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Added launch per NOTAMs; Launch vehicle and payload identities uncertain; exact launch window TBD.",
-     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=65622.msg2812668#msg2812668",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-10T00:11:00Z"
-    }
-   ],
-   "info_urls": [],
-   "vid_urls": [],
-   "timeline": [],
-   "pad_turnaround": "P24DT14H10M",
-   "mission_patches": []
-  },
   {
    "id": "f4c720ce-0cfd-43e6-b8dd-00273073bc01",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/f4c720ce-0cfd-43e6-b8dd-00273073bc01/",
@@ -1768,7 +982,7 @@
     "consecutive_successful_launches": 9,
     "successful_launches": 602,
     "failed_launches": 16,
-    "pending_launches": 8,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -1872,7 +1086,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -1896,7 +1110,7 @@
        "consecutive_successful_launches": 9,
        "successful_launches": 651,
        "failed_launches": 20,
-       "pending_launches": 8,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -1983,7 +1197,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -2174,7 +1388,7 @@
       "consecutive_successful_launches": 9,
       "successful_launches": 602,
       "failed_launches": 16,
-      "pending_launches": 8,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -4857,7 +4071,7 @@
     "consecutive_successful_launches": 9,
     "successful_launches": 602,
     "failed_launches": 16,
-    "pending_launches": 8,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -4961,7 +4175,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -4985,7 +4199,7 @@
        "consecutive_successful_launches": 9,
        "successful_launches": 651,
        "failed_launches": 20,
-       "pending_launches": 8,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -5072,7 +4286,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -5263,7 +4477,7 @@
       "consecutive_successful_launches": 9,
       "successful_launches": 602,
       "failed_launches": 16,
-      "pending_launches": 8,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -5656,7 +4870,7 @@
     "consecutive_successful_launches": 9,
     "successful_launches": 602,
     "failed_launches": 16,
-    "pending_launches": 8,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -5760,7 +4974,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -5784,7 +4998,7 @@
        "consecutive_successful_launches": 9,
        "successful_launches": 651,
        "failed_launches": 20,
-       "pending_launches": 8,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -5871,7 +5085,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -5975,7 +5189,7 @@
        "consecutive_successful_launches": 44,
        "successful_launches": 44,
        "failed_launches": 0,
-       "pending_launches": 0,
+       "pending_launches": 1,
        "attempted_landings": 0,
        "successful_landings": 0,
        "failed_landings": 0,
@@ -6062,7 +5276,7 @@
       "consecutive_successful_launches": 9,
       "successful_launches": 602,
       "failed_launches": 16,
-      "pending_launches": 8,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -6115,7 +5329,7 @@
      "consecutive_successful_launches": 27,
      "successful_launches": 27,
      "failed_launches": 0,
-     "pending_launches": 0,
+     "pending_launches": 1,
      "attempted_landings": 0,
      "successful_landings": 0,
      "failed_landings": 0,
@@ -10931,7 +10145,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-17T01:40:05Z",
+   "last_updated": "2026-10-18T02:03:46Z",
    "net": "2026-10-01T15:10:06Z",
    "net_precision": {
     "id": 0,
@@ -12166,8 +11380,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P35DT13H24M5S",
-       "time_docked": "P33DT3H15M3S",
+       "time_in_space": "P36DT13H45M43S",
+       "time_docked": "P34DT3H36M41S",
        "flights_count": 2,
        "mission_ends_count": 1,
        "status": {
@@ -12566,7 +11780,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P15DT10H29M59.42753S",
+      "duration": "P16DT10H53M40.139563S",
       "turn_around_time": "P443DT5H40M6S",
       "response_mode": "detailed",
       "launch_crew": [
@@ -12617,7 +11831,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P185DT23H22M6S",
+         "time_in_space": "P186DT23H43M15S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -12686,7 +11900,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P15DT10H20M33S",
+         "time_in_space": "P16DT10H41M38S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -12804,7 +12018,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P15DT10H21M21S",
+         "time_in_space": "P16DT10H42M27S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -12873,7 +12087,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P15DT10H22M47S",
+         "time_in_space": "P16DT10H44M6S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -12945,7 +12159,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P185DT23H22M6S",
+         "time_in_space": "P186DT23H43M15S",
          "eva_time": "P0D",
          "age": 38,
          "date_of_birth": "1988-05-14",
@@ -13014,7 +12228,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P15DT10H20M33S",
+         "time_in_space": "P16DT10H41M38S",
          "eva_time": "P0D",
          "age": 44,
          "date_of_birth": "1982-03-21",
@@ -13132,7 +12346,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P15DT10H21M21S",
+         "time_in_space": "P16DT10H42M27S",
          "eva_time": "P0D",
          "age": 47,
          "date_of_birth": "1979-01-01",
@@ -13201,7 +12415,7 @@
           "name": "Government"
          },
          "in_space": true,
-         "time_in_space": "P15DT10H22M47S",
+         "time_in_space": "P16DT10H44M6S",
          "eva_time": "P0D",
          "age": 37,
          "date_of_birth": "1988-12-19",
@@ -19041,7 +18255,7 @@
     "consecutive_successful_launches": 9,
     "successful_launches": 602,
     "failed_launches": 16,
-    "pending_launches": 8,
+    "pending_launches": 10,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -19145,7 +18359,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -19169,7 +18383,7 @@
        "consecutive_successful_launches": 9,
        "successful_launches": 651,
        "failed_launches": 20,
-       "pending_launches": 8,
+       "pending_launches": 10,
        "attempted_landings": 2,
        "successful_landings": 1,
        "failed_landings": 1,
@@ -19256,7 +18470,7 @@
          "consecutive_successful_launches": 9,
          "successful_launches": 602,
          "failed_launches": 16,
-         "pending_launches": 8,
+         "pending_launches": 10,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -19447,7 +18661,7 @@
       "consecutive_successful_launches": 9,
       "successful_launches": 602,
       "failed_launches": 16,
-      "pending_launches": 8,
+      "pending_launches": 10,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -23652,7 +22866,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-17T01:39:56Z",
+   "last_updated": "2026-10-18T02:03:37Z",
    "net": "2026-10-13T10:33:44Z",
    "net_precision": {
     "id": 0,
@@ -24887,8 +24101,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P278DT23H3M33S",
-       "time_docked": "P270DT13H32M50S",
+       "time_in_space": "P279DT23H25M10S",
+       "time_docked": "P271DT13H54M27S",
        "flights_count": 4,
        "mission_ends_count": 3,
        "status": {
@@ -25287,7 +24501,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P3DT15H6M12.42968S",
+      "duration": "P4DT15H29M53.284287S",
       "turn_around_time": "P228DT2H49M44S",
       "response_mode": "detailed",
       "launch_crew": [],
