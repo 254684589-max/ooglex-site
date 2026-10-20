@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-19T22:18:07Z",
-  "asOf": "2026-10-19",
+  "updatedAt": "2026-10-20T17:25:53Z",
+  "asOf": "2026-10-20",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-18 ~ 2026-10-24",
   "count": 86,
@@ -355,19 +355,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-20T09:10:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-5.3%",
-      "actual": null
-    },
-    {
-      "ts": "2026-10-20T09:33:00Z",
+      "ts": "2026-10-20T09:03:00Z",
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
@@ -422,12 +410,12 @@
       "title": "成屋签约销售 环比",
       "titleEn": "Pending Home Sales m/m",
       "impact": "low",
-      "forecast": "-0.7%",
+      "forecast": "-0.6%",
       "previous": "0.3%",
       "actual": null
     },
     {
-      "ts": "2026-10-20T14:50:00Z",
+      "ts": "2026-10-20T15:19:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -554,7 +542,7 @@
       "title": "Public Sector Net Borrowing",
       "titleEn": "Public Sector Net Borrowing",
       "impact": "low",
-      "forecast": "23.9B",
+      "forecast": "23.8B",
       "previous": "18.3B",
       "actual": null
     },
@@ -590,8 +578,20 @@
       "title": "房价指数 同比",
       "titleEn": "HPI y/y",
       "impact": "low",
-      "forecast": "1.7%",
+      "forecast": "1.2%",
       "previous": "1.4%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-21T09:10:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-5.3%",
       "actual": null
     },
     {
@@ -626,7 +626,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-0.1M",
       "previous": "-8.6M",
       "actual": null
     },
@@ -674,7 +674,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "IPPI m/m",
       "impact": "low",
-      "forecast": "0.7%",
+      "forecast": "0.9%",
       "previous": "1.3%",
       "actual": null
     },
@@ -698,7 +698,7 @@
       "title": "RMPI m/m",
       "titleEn": "RMPI m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "3.1%",
       "previous": "3.1%",
       "actual": null
     },
@@ -734,7 +734,7 @@
       "title": "CB Leading Index m/m",
       "titleEn": "CB Leading Index m/m",
       "impact": "low",
-      "forecast": "-0.2%",
+      "forecast": "-0.1%",
       "previous": "-0.1%",
       "actual": null
     },
@@ -746,7 +746,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "83B",
       "previous": "67B",
       "actual": null
     },
@@ -818,7 +818,7 @@
       "title": "零售销售 环比",
       "titleEn": "Retail Sales m/m",
       "impact": "medium",
-      "forecast": "-0.2%",
+      "forecast": "-0.1%",
       "previous": "0.5%",
       "actual": null
     },
@@ -830,7 +830,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "French Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "50.6",
+      "forecast": "50.5",
       "previous": "50.3",
       "actual": null
     },
@@ -842,7 +842,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "French Flash Services PMI",
       "impact": "medium",
-      "forecast": "50.8",
+      "forecast": "50.7",
       "previous": "51.4",
       "actual": null
     },
@@ -866,7 +866,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "German Flash Services PMI",
       "impact": "medium",
-      "forecast": "52.6",
+      "forecast": "52.5",
       "previous": "52.9",
       "actual": null
     },
@@ -950,7 +950,7 @@
       "title": "Belgian NBB Business Climate",
       "titleEn": "Belgian NBB Business Climate",
       "impact": "low",
-      "forecast": "-11.5",
+      "forecast": "-11.8",
       "previous": "-12.1",
       "actual": null
     },
@@ -962,7 +962,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "55.5",
+      "forecast": "55.4",
       "previous": "57.0",
       "actual": null
     },
@@ -974,7 +974,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "Flash Services PMI",
       "impact": "medium",
-      "forecast": "58.0",
+      "forecast": "57.8",
       "previous": "58.7",
       "actual": null
     },
