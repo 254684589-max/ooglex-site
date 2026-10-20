@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-19T10:57:19Z",
+  "updatedAt": "2026-10-20T10:11:34Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -40,11 +40,11 @@
     },
     "celestrak/geo": {
       "ok": true,
-      "detail": "567 颗"
+      "detail": "568 颗"
     },
     "launches": {
       "ok": true,
-      "detail": "17 条发射记录"
+      "detail": "16 条发射记录"
     }
   }
 }
