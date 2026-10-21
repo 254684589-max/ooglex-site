@@ -7,6 +7,16 @@ import { handle } from "./worker.js";
 
 const root = join(import.meta.dirname, "..", "..");
 const port = Number(process.env.PORT || 8765);
+const cacheStore = new Map();
+const cache = {
+  async match(request) {
+    const hit = cacheStore.get(request.url);
+    return hit ? hit.clone() : undefined;
+  },
+  async put(request, response) {
+    cacheStore.set(request.url, response.clone());
+  },
+};
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -43,7 +53,7 @@ const server = createServer(async (req, res) => {
         "CF-Connecting-IP": req.socket.remoteAddress || "127.0.0.1",
         Accept: req.headers.accept || "application/json",
       },
-    }), { SEC_CONTACT: process.env.SEC_CONTACT || "" });
+    }), { SEC_CONTACT: process.env.SEC_CONTACT || "", CACHE: cache });
     const headers = {};
     upstream.headers.forEach((value, key) => {
       headers[key] = value;
