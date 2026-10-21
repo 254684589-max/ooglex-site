@@ -6,7 +6,7 @@
   var model = window.OoglexSankeyModel;
   var sankey = window.OoglexSankey;
   var SNAPSHOTS = { NVDA: "snapshots/nvda.json", MSFT: "snapshots/msft.json" };
-  var TABS = ["income", "balance", "cashflow"];
+  var SECTIONS = ["income", "balance", "cashflow"];
 
   var state = {
     tickers: null,
@@ -14,27 +14,23 @@
     reports: null,
     mode: "",
     period: "annual",
-    tab: "income",
-    selected: ""
+    selected: {}
   };
-
+  var busy = false;
   var els = {};
 
   document.addEventListener("DOMContentLoaded", function () {
     els.form = document.getElementById("lookup-form");
     els.ticker = document.getElementById("ticker");
     els.generate = document.getElementById("generate");
+    els.retry = document.getElementById("retry");
     els.banner = document.getElementById("banner");
+    els.results = document.getElementById("results");
     els.company = document.getElementById("company-line");
+    els.source = document.getElementById("source-line");
     els.meta = document.getElementById("meta-line");
     els.periodBar = document.getElementById("period-bar");
     els.tabs = document.getElementById("statement-tabs");
-    els.panel = document.getElementById("statement-panel");
-    els.chartScroll = document.getElementById("chart-scroll");
-    els.svg = document.getElementById("chart");
-    els.detail = document.getElementById("detail");
-    els.notes = document.getElementById("statement-notes");
-    els.table = document.getElementById("statement-table");
     els.file = document.getElementById("facts-file");
     els.secLink = document.getElementById("sec-link");
     els.factsLink = document.getElementById("facts-link");
@@ -43,60 +39,51 @@
       event.preventDefault();
       loadTicker(els.ticker.value);
     });
+    els.retry.addEventListener("click", function () {
+      loadTicker(els.ticker.value);
+    });
     els.file.addEventListener("change", function () {
       var file = els.file.files && els.file.files[0];
       if (file) readLocalFile(file);
     });
     els.periodBar.addEventListener("click", function (event) {
       var button = event.target.closest("button[data-period]");
-      if (!button || button.disabled) return;
+      if (!button || button.disabled || busy) return;
       state.period = button.getAttribute("data-period");
-      state.selected = "";
+      state.selected = {};
       syncPeriodButtons();
       render();
       writeQuery();
     });
-    els.tabs.addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-tab]");
-      if (!button) return;
-      state.tab = button.getAttribute("data-tab");
-      state.selected = "";
-      syncTabs();
-      render();
-      writeQuery();
+    els.tabs.addEventListener("click", function () {
+      window.setTimeout(syncNav, 0);
     });
-    els.tabs.addEventListener("keydown", function (event) {
-      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-      var buttons = Array.prototype.slice.call(els.tabs.querySelectorAll("button[data-tab]"));
-      var index = buttons.indexOf(document.activeElement);
-      if (index < 0) return;
-      event.preventDefault();
-      var next = index + (event.key === "ArrowRight" ? 1 : -1);
-      if (next < 0) next = buttons.length - 1;
-      if (next >= buttons.length) next = 0;
-      buttons[next].focus();
-      buttons[next].click();
-    });
+    window.addEventListener("hashchange", syncNav);
     document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape") {
-        state.selected = "";
-        sankey.clearHighlight(els.svg);
-        renderDetail(null);
-        highlightRows("");
-      }
+      if (event.key !== "Escape") return;
+      state.selected = {};
+      SECTIONS.forEach(function (id) {
+        var section = sectionEl(id);
+        sankey.clearHighlight(section.querySelector("svg"));
+        renderDetail(section, null);
+        highlightRows(section, "");
+      });
     });
     window.addEventListener("resize", debounce(function () {
-      if (currentStatement() && currentStatement().nodes.length) drawCurrent();
+      if (!state.reports || els.results.hidden) return;
+      SECTIONS.forEach(function (id) {
+        drawSection(sectionEl(id), statementOf(id));
+      });
     }, 150));
 
     var params = new URLSearchParams(window.location.search);
-    var initial = params.get("ticker") || "NVDA";
+    var initial = params.get("ticker");
     var period = params.get("period");
-    var tab = params.get("tab");
     if (period === "quarterly" || period === "annual") state.period = period;
-    if (TABS.indexOf(tab) >= 0) state.tab = tab;
-    els.ticker.value = initial;
-    loadTicker(initial);
+    if (initial && normalizeTicker(initial)) {
+      els.ticker.value = normalizeTicker(initial);
+      loadTicker(initial);
+    }
   });
 
   function debounce(fn, wait) {
@@ -107,9 +94,34 @@
     };
   }
 
+  function sectionEl(id) {
+    return document.getElementById("panel-" + id);
+  }
+
   function setBanner(kind, text) {
     els.banner.className = "banner " + kind;
     els.banner.textContent = text;
+  }
+
+  function setBusy(on) {
+    els.banner.setAttribute("aria-busy", on ? "true" : "false");
+    els.generate.disabled = !!on;
+    els.retry.disabled = !!on;
+  }
+
+  function showRetry(on) {
+    els.retry.hidden = !on;
+  }
+
+  function hideResults() {
+    state.reports = null;
+    state.company = null;
+    state.mode = "";
+    state.selected = {};
+    els.results.hidden = true;
+    els.company.textContent = "";
+    els.source.textContent = "";
+    els.meta.textContent = "";
   }
 
   function padCik(value) {
@@ -146,27 +158,36 @@
     return status || "—";
   }
 
+  function frequencyText(frequency) {
+    return frequency === "annual" ? "年度" : "季度";
+  }
+
   async function loadTicker(raw) {
-    els.generate.disabled = true;
-    setBanner("loading", "正在查找 SEC 公司代码…");
+    if (busy) return;
+    var ticker = normalizeTicker(raw);
+    if (!ticker) {
+      hideResults();
+      setBanner("error", "请输入美股代码，例如 NVDA 或 MSFT。");
+      showRetry(false);
+      return;
+    }
+    busy = true;
+    setBusy(true);
+    showRetry(false);
+    els.results.hidden = true;
+    setBanner("loading", "正在查找代码…");
     try {
       if (!state.tickers) state.tickers = await fetchJson("tickers.json");
-      var resolved = resolveTicker(state.tickers, raw);
-      if (resolved.error === "empty") {
-        setBanner("error", "请输入美股代码，例如 NVDA 或 MSFT。");
-        return;
-      }
+      var resolved = resolveTicker(state.tickers, ticker);
       if (resolved.error === "unknown") {
-        setBanner("error", "未找到代码 " + resolved.ticker + "。请使用 SEC 公司代码表里的股票代码，例如 BRK-A。");
-        els.company.textContent = "";
-        els.meta.textContent = "";
+        hideResults();
+        setBanner("error", "未找到代码 " + resolved.ticker + "。请核对美股代码，例如 NVDA 或 MSFT。");
+        showRetry(false);
         return;
       }
       els.ticker.value = resolved.ticker;
-      state.company = resolved;
-      showIdentity();
       setSecLinks(resolved.cik);
-      setBanner("loading", "正在尝试从 SEC companyfacts 读取 " + resolved.ticker + "…");
+      setBanner("loading", "正在从 SEC 读取报表…");
       var live = await fetchLive(resolved.cik);
       if (live.ok) {
         applyFacts(live.data, "live", resolved);
@@ -174,21 +195,24 @@
       }
       var snapName = SNAPSHOTS[resolved.ticker];
       if (snapName) {
-        setBanner("loading", "浏览器读不到 SEC，改用已核验的公开摘录…");
+        setBanner("loading", "正在加载内置摘录…");
         var snap = await fetchJson(snapName);
         applyFacts(snap, "snapshot", resolved);
         return;
       }
+      hideResults();
       setBanner(
         "error",
-        "已识别 " + resolved.name + "（CIK " + padCik(resolved.cik) + "），但浏览器不能读取 SEC companyfacts：接口没有开放跨域，网页也不能附上 SEC 要求的 User-Agent。本页只内置了 NVDA 和 MSFT 的摘录。可点「SEC companyfacts」在新页面打开 JSON，再选「打开本地 JSON」。文件只在你的浏览器里解析，不会上传。"
+        "已识别 " + resolved.name + "（CIK " + padCik(resolved.cik) + "），但没有从 SEC 读到报表。请稍后再点「重试」，或用「打开本地 JSON」打开从 SEC companyfacts 下载的文件。文件只在本机解析，不会上传。"
       );
-      state.reports = null;
-      render();
+      showRetry(true);
     } catch (error) {
-      setBanner("error", "没有读到数据。" + (error && error.message ? " " + error.message : ""));
+      hideResults();
+      setBanner("error", "网络或 SEC 暂时没有响应。请稍后再点「重试」。");
+      showRetry(true);
     } finally {
-      els.generate.disabled = false;
+      busy = false;
+      setBusy(false);
     }
   }
 
@@ -232,7 +256,7 @@
       if (!response.ok) return { ok: false, status: response.status };
       return { ok: true, data: await response.json() };
     } catch (error) {
-      return { ok: false, error: error };
+      return { ok: false };
     } finally {
       window.clearTimeout(timer);
     }
@@ -241,11 +265,14 @@
   function readLocalFile(file) {
     if (file.size > 30 * 1024 * 1024) {
       setBanner("error", "这个 JSON 超过 30MB，本页不解析。");
+      showRetry(false);
       return;
     }
     setBanner("loading", "正在读取本地 companyfacts…");
+    setBusy(true);
     var reader = new FileReader();
     reader.onload = function () {
+      setBusy(false);
       try {
         var data = JSON.parse(String(reader.result || ""));
         if (!data || typeof data !== "object" || !data.facts) {
@@ -253,7 +280,7 @@
           return;
         }
         var name = data.entityName ? String(data.entityName) : "本地 JSON";
-        var cik = data.cik || (state.company && state.company.cik) || "";
+        var cik = data.cik || "";
         applyFacts(data, "file", {
           ticker: els.ticker.value ? normalizeTicker(els.ticker.value) : "LOCAL",
           name: name,
@@ -264,16 +291,17 @@
       }
     };
     reader.onerror = function () {
-      setBanner("error", "没有读到本地文件。");
+      setBusy(false);
+      setBanner("error", "没有读到本地文件。请再选一次。");
     };
     reader.readAsText(file);
   }
 
   function applyFacts(data, mode, company) {
     if (!data.facts || !data.facts["us-gaap"]) {
-      setBanner("error", "这份 XBRL 里没有 us-gaap 科目，画不出三张报表。");
-      state.reports = null;
-      render();
+      hideResults();
+      setBanner("error", "这份 XBRL 里没有 us-gaap 科目，画不出三张报表。可点「重试」。");
+      showRetry(mode !== "file");
       return;
     }
     state.mode = mode;
@@ -286,31 +314,32 @@
     };
     state.reports = model.buildReports(data);
     if (!state.reports.annual && !state.reports.quarterly) {
-      setBanner("error", state.company.name + " 的 XBRL 里没有可用的 10-K / 20-F 年报或 10-Q 季报营业收入，无法定期间。");
-      showIdentity();
-      render();
+      hideResults();
+      setBanner("error", (data.entityName ? String(data.entityName) : company.name) + " 的 XBRL 里没有可用的年报或季报营业收入，无法确定报告期。");
+      showRetry(mode !== "file");
       return;
     }
     if (state.period === "quarterly" && !state.reports.quarterly) state.period = "annual";
     if (state.period === "annual" && !state.reports.annual && state.reports.quarterly) state.period = "quarterly";
-    state.selected = "";
-    showIdentity();
+    state.selected = {};
     setSecLinks(state.company.cik);
     if (mode === "live") {
       setBanner("ok", "已直接读到 SEC companyfacts。数字是披露口径，不是行情。");
+      showRetry(false);
     } else if (mode === "file") {
       setBanner("ok", "已用你打开的本地 SEC JSON 绘图。文件没有上传。数字是披露口径，不是行情。");
+      showRetry(false);
     } else {
       var when = state.company.extract && state.company.extract.extractedAt ? state.company.extract.extractedAt : "";
       setBanner(
         "snapshot",
-        "SEC 静态摘录，不是模拟数据。浏览器不能直接调用 data.sec.gov（没有 CORS，也不能设置 SEC 要求的 User-Agent）。" +
-        state.company.ticker + " 的数字摘自公开 companyfacts" + (when ? "，摘录时间 " + when + " UTC" : "") +
-        "。其他公司请打开 SEC JSON 后用「打开本地 JSON」。实时同源代理还没接。"
+        "没有从 SEC 直接读到最新文件（浏览器跨域限制）。已改用本站保存的公开摘录，数值来自 SEC companyfacts。" +
+        (when ? "摘录时间 " + when + " UTC。" : "") +
+        "可点「重试」再试一次。"
       );
+      showRetry(true);
     }
     writeQuery();
-    syncPeriodButtons();
     render();
   }
 
@@ -328,7 +357,8 @@
 
   function writeQuery() {
     if (!state.company || !state.company.ticker || state.mode === "file") return;
-    var url = "?ticker=" + encodeURIComponent(state.company.ticker) + "&period=" + state.period + "&tab=" + state.tab;
+    var url = "?ticker=" + encodeURIComponent(state.company.ticker) + "&period=" + state.period;
+    if (window.location.hash) url += window.location.hash;
     window.history.replaceState(null, "", url);
   }
 
@@ -337,10 +367,10 @@
     return state.reports[state.period] || null;
   }
 
-  function currentStatement() {
+  function statementOf(id) {
     var report = currentReport();
-    if (!report) return null;
-    return report.statements[state.tab] || null;
+    if (!report || !report.statements) return null;
+    return report.statements[id] || null;
   }
 
   function syncPeriodButtons() {
@@ -352,129 +382,139 @@
     });
   }
 
-  function syncTabs() {
-    els.tabs.querySelectorAll("button[data-tab]").forEach(function (button) {
-      var on = button.getAttribute("data-tab") === state.tab;
-      button.setAttribute("aria-selected", on ? "true" : "false");
-      button.tabIndex = on ? 0 : -1;
-      if (on) els.panel.setAttribute("aria-labelledby", button.id);
+  function syncNav() {
+    var hash = window.location.hash;
+    els.tabs.querySelectorAll("a").forEach(function (link) {
+      if (link.getAttribute("href") === hash) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     });
   }
 
   function render() {
     syncPeriodButtons();
-    syncTabs();
+    syncNav();
     var report = currentReport();
     if (!report) {
-      els.meta.textContent = state.company ? "这个期间没有可用报表。" : "";
-      els.notes.textContent = "";
-      els.detail.textContent = "选择图上的色带或下方表格中的一行，查看金额和 SEC 科目。";
-      clearTable();
-      clearChart("还没有可绘制的报表。");
+      els.results.hidden = true;
       return;
     }
-    var statement = currentStatement();
+    els.results.hidden = false;
+    showIdentity();
+    els.source.textContent = "来源：SEC EDGAR companyfacts（公开 XBRL，US-GAAP） · 报告期：" +
+      report.start + " 至 " + report.end + " · " + (report.form || "") + " · " + frequencyText(report.frequency);
     var freq = report.frequency === "annual" ? "年报" : "季报";
     var fyLabel = report.fy ? ("FY" + report.fy + (report.fp && report.fp !== "FY" ? " " + report.fp : "")) : (report.fp || "");
-    var bits = [
+    els.meta.textContent = [
       freq,
       report.form,
       fyLabel,
       report.start + " 至 " + report.end,
       "申报 " + report.filed,
-      "频率 " + (report.frequency === "annual" ? "annual" : "quarterly"),
+      "频率 " + frequencyText(report.frequency),
       "状态 " + statusText(report.status)
-    ];
-    els.meta.textContent = bits.filter(Boolean).join(" · ");
-    if (!statement) return;
-    els.notes.textContent = "";
-    els.notes.hidden = false;
+    ].filter(Boolean).join(" · ");
+    SECTIONS.forEach(function (id) {
+      renderSection(sectionEl(id), statementOf(id), report);
+    });
+  }
+
+  function renderSection(section, statement, report) {
+    var notes = section.querySelector(".notes");
+    notes.textContent = "";
+    if (!statement) {
+      clearChart(section, "这张报表缺少关键科目，没有画出桑基图。");
+      renderDetail(section, null);
+      clearTable(section, "尚未加载报表");
+      return;
+    }
     statement.notes.forEach(function (note) {
       var line = document.createElement("p");
       line.textContent = note;
-      els.notes.appendChild(line);
+      notes.appendChild(line);
     });
     if (statement.period && statement.period.start && statement.period.start !== report.start) {
       var extra = document.createElement("p");
-      extra.textContent = "本图期间：" + statement.period.start + " 至 " + statement.period.end + " · " + (statement.period.form || "");
-      els.notes.appendChild(extra);
+      extra.textContent = "本图期间：" + statement.period.start + " 至 " + statement.period.end + " · " + (statement.period.form || "") + "。季报现金流量经常是年初至今，不能和单季利润直接比较。";
+      notes.appendChild(extra);
     }
-    els.notes.hidden = els.notes.childElementCount === 0;
-    renderTable(statement);
+    notes.hidden = notes.childElementCount === 0;
+    renderTable(section, statement);
+    renderDetail(section, null);
     if (!statement.nodes.length) {
-      clearChart(statement.notes[0] || "这张报表缺少关键科目，没有画出桑基图。");
-      renderDetail(null);
+      clearChart(section, statement.notes[0] || "这张报表缺少关键科目，没有画出桑基图。");
       return;
     }
-    drawCurrent();
-    renderDetail(null);
+    drawSection(section, statement);
   }
 
-  function drawCurrent() {
-    var statement = currentStatement();
-    if (!statement || !statement.nodes.length) return;
-    var width = Math.max(760, els.chartScroll.clientWidth || 760);
+  function drawSection(section, statement) {
+    if (!section || !statement || !statement.nodes.length) return;
+    var scroll = section.querySelector(".chart-scroll");
+    var svg = section.querySelector("svg");
+    var empty = section.querySelector(".chart-empty");
+    var width = Math.max(760, scroll.clientWidth || 760);
     var layout = sankey.layoutSankey(statement, width);
-    sankey.drawSankey(els.svg, layout, {
+    sankey.drawSankey(svg, layout, {
       onSelect: function (id) {
-        state.selected = id;
-        sankey.highlight(els.svg, id);
+        state.selected[section.getAttribute("data-statement")] = id;
+        sankey.highlight(svg, id);
         var node = statement.nodes.filter(function (item) { return item.id === id; })[0];
-        renderDetail(node || null);
-        highlightRows(node ? node.label : "");
+        renderDetail(section, node || null);
+        highlightRows(section, node ? node.label : "");
       }
     });
-    els.svg.setAttribute("aria-label", statement.title + "桑基图");
-    if (state.selected) sankey.highlight(els.svg, state.selected);
-    var empty = els.chartScroll.querySelector(".chart-empty");
-    if (empty) empty.remove();
+    svg.hidden = false;
+    if (empty) empty.hidden = true;
+    var picked = state.selected[section.getAttribute("data-statement")];
+    if (picked) sankey.highlight(svg, picked);
   }
 
-  function clearChart(message) {
-    while (els.svg.firstChild) els.svg.removeChild(els.svg.firstChild);
-    els.svg.setAttribute("viewBox", "0 0 10 10");
-    els.svg.setAttribute("width", "0");
-    els.svg.setAttribute("height", "0");
-    var note = els.chartScroll.querySelector(".chart-empty");
-    if (!note) {
-      note = document.createElement("p");
-      note.className = "chart-empty";
-      els.chartScroll.appendChild(note);
-    }
-    note.textContent = message;
+  function clearChart(section, message) {
+    var svg = section.querySelector("svg");
+    var empty = section.querySelector(".chart-empty");
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute("viewBox", "0 0 10 10");
+    svg.setAttribute("width", "0");
+    svg.setAttribute("height", "0");
+    svg.hidden = true;
+    empty.hidden = false;
+    empty.textContent = message;
   }
 
-  function renderDetail(node) {
-    els.detail.textContent = "";
+  function renderDetail(section, node) {
+    var detail = section.querySelector(".detail");
+    detail.textContent = "";
     if (!node) {
-      els.detail.textContent = "选择图上的色带或下方表格中的一行，查看金额和 SEC 科目。";
+      detail.textContent = "选择图上的色带或下方表格中的一行，查看金额和 SEC 科目。";
       return;
     }
     var title = document.createElement("strong");
     title.textContent = node.label;
-    els.detail.appendChild(title);
+    detail.appendChild(title);
     var amount = document.createElement("p");
-    amount.textContent = formatUSD(node.signed == null ? node.value : node.signed) + "（" + formatExact(node.signed == null ? node.value : node.signed) + "）";
-    els.detail.appendChild(amount);
+    var signed = node.signed == null ? node.value : node.signed;
+    amount.textContent = formatUSD(signed) + "（" + formatExact(signed) + "）";
+    detail.appendChild(amount);
     if (node.concept) {
       var concept = document.createElement("p");
       concept.textContent = "SEC 科目 " + node.concept + (node.en ? " · " + node.en : "");
-      els.detail.appendChild(concept);
+      detail.appendChild(concept);
     }
     if (node.formula) {
       var formula = document.createElement("p");
       formula.textContent = "计算：" + node.formula;
-      els.detail.appendChild(formula);
+      detail.appendChild(formula);
     }
     if (node.plug) {
       var plug = document.createElement("p");
       plug.textContent = "这是轧差，不是公司在报表上单列的科目。";
-      els.detail.appendChild(plug);
+      detail.appendChild(plug);
     }
   }
 
-  function renderTable(statement) {
-    var body = els.table.querySelector("tbody");
+  function renderTable(section, statement) {
+    var table = section.querySelector("table");
+    var body = table.querySelector("tbody");
     body.textContent = "";
     statement.rows.forEach(function (item) {
       var tr = document.createElement("tr");
@@ -486,17 +526,16 @@
       appendCell(tr, item.concept || (item.role === "plug" ? "轧差" : "—"));
       appendCell(tr, formatExact(item.value));
       appendCell(tr, item.formula || roleText(item.role));
-      tr.addEventListener("click", function () { selectByLabel(item.label); });
+      tr.addEventListener("click", function () { selectByLabel(section, item.label); });
       tr.addEventListener("keydown", function (event) {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          selectByLabel(item.label);
+          selectByLabel(section, item.label);
         }
       });
       body.appendChild(tr);
     });
-    var caption = els.table.querySelector("caption");
-    caption.textContent = statement.title + " · 单位：美元 · 状态 " + statusText(statement.status);
+    table.querySelector("caption").textContent = statement.title + " · 单位：美元 · 状态 " + statusText(statement.status);
   }
 
   function appendCell(tr, text) {
@@ -511,28 +550,31 @@
     return "SEC 原值";
   }
 
-  function clearTable() {
-    els.table.querySelector("tbody").textContent = "";
-    els.table.querySelector("caption").textContent = "尚未加载报表";
+  function clearTable(section, caption) {
+    var table = section.querySelector("table");
+    table.querySelector("tbody").textContent = "";
+    table.querySelector("caption").textContent = caption;
   }
 
-  function selectByLabel(label) {
-    var statement = currentStatement();
+  function selectByLabel(section, label) {
+    var statement = statementOf(section.getAttribute("data-statement"));
     if (!statement) return;
     var node = statement.nodes.filter(function (item) { return item.label === label; })[0];
+    var svg = section.querySelector("svg");
     if (!node) {
-      highlightRows(label);
-      renderDetail({ label: label, signed: statement.rows.filter(function (item) { return item.label === label; })[0].value });
+      highlightRows(section, label);
+      var row = statement.rows.filter(function (item) { return item.label === label; })[0];
+      renderDetail(section, row ? { label: label, signed: row.value, concept: row.concept, en: row.en, formula: row.formula, plug: row.role === "plug" } : null);
       return;
     }
-    state.selected = node.id;
-    sankey.highlight(els.svg, node.id);
-    renderDetail(node);
-    highlightRows(label);
+    state.selected[section.getAttribute("data-statement")] = node.id;
+    sankey.highlight(svg, node.id);
+    renderDetail(section, node);
+    highlightRows(section, label);
   }
 
-  function highlightRows(label) {
-    els.table.querySelectorAll("tbody tr").forEach(function (row) {
+  function highlightRows(section, label) {
+    section.querySelectorAll("tbody tr").forEach(function (row) {
       row.classList.toggle("is-on", !!label && row.dataset.label === label);
     });
   }
