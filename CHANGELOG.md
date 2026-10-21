@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 新增
+
+- 2026-10-21：新增「财务桑基」试点，公开路径 `/apps/financial-sankey/`。输入美股代码后画最新年报的利润表、资产负债表、现金流量表，并可切换最近一季。科目来自 SEC EDGAR 公开 companyfacts（US-GAAP），不使用付费终端，也不需要密钥。浏览器不能给 `data.sec.gov` 发带 User-Agent 的跨域请求（响应没有 CORS），因此页面会先尝试直连，失败后对 NVDA、MSFT 使用 2026-10-21 从 companyfacts 截取的真实摘录，并标明摘录时间；其他代码可在本地打开 SEC JSON，仍走同一套绘图。轧差、缺失科目和季报现金流量的年初至今口径会写在图下。未放入「最新消息」顶栏：那一排是五个新闻栏目，按 360px 不横向溢出排过，财务桑基不是新闻栏目。未部署。
+
 ### 修改
 
 - 2026-10-17：「App 专区」改版为图标墙。首页 `#app-zone` 去掉文字说明行，只显示 App 图标（圆角方形，渐变细边的面板，标题样式与上方「工具与游戏」一致以便衔接），右上角「全部 App →」进入新增的专区页 `/apps/app-zone/`（同样只显示图标，网格自适应，手机每行 4 个，为将来上百个 App 预留）；点图标进入各 App 的单独下载/安装页。检查全站后收录现有全部 4 个可安装 App：OOGLE X · 科技领袖（安卓，`/apps/tech-leaders/app/`）、环球电波（安卓，`/apps/radio/download/`）、环球TV 与万象智聊（网页 App，新增安装说明页 `/apps/app-zone/tv/`、`/apps/app-zone/ai-chat/`）。图标列表统一由 `apps/app-zone/registry.js` 登记渲染；App 名称作为无障碍名称与悬停提示。新增 OOGLE X 方形图标 `apps/app-zone/icons/oogle-x.svg`；sitemap 增加 3 个新页面；`docs/APP_ZONE.md` 更新新增 App 的步骤。经所有者要求上线。
