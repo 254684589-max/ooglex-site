@@ -369,6 +369,7 @@
     "全球市场行情": "Global Markets",
     "全球公司榜": "Global Companies",
     "金融终端": "Finance Terminal",
+    "财务桑基": "Financial Sankey",
     "标普500热力图": "S&P 500 Heatmap",
     "按行业分块，每块的面积正比于该公司的市值，颜色是它当日的涨跌。方格以中文公司名标注，放得下的大格再补上交易代码与股价。每块瓦片上同时写出带 ▲▼ 的涨跌数字，另有图例与完整数据表——颜色不是唯一的编码方式。点开任一块即是该公司的完整行情页。": "Grouped by sector; tile area is proportional to market capitalization and color shows the day's move. Larger tiles also show ticker and price. Every tile includes an explicit ▲▼ percentage, plus a legend and a full data table, so color is not the only encoding. Click any tile to open that company's full quote page.",
     "滚轮可以缩放": "Use the wheel to zoom",
