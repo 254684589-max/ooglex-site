@@ -26,7 +26,7 @@ assert(app.indexOf("https://data.sec.gov/api/xbrl/companyfacts/") !== -1, "direc
 assert(app.indexOf("snapshots/nvda.json") !== -1 && app.indexOf("snapshots/msft.json") !== -1, "snapshot fallback");
 assert(app.indexOf('getElementById("facts-file")') !== -1, "local JSON picker is wired");
 assert(html.indexOf('id="facts-file"') !== -1, "local JSON picker");
-assert(html.indexOf("app.js?v=20261021sec") !== -1, "cache buster");
+assert(html.indexOf("app.js?v=20261021bank") !== -1, "cache buster");
 assert(html.indexOf("/apps/financial-sankey/companyfacts/CIK##########.json") !== -1, "footer documents same-origin path");
 assert(content.indexOf("sec-facts.ooglex.com/companyfacts/CIK##########.json") !== -1, "CONTENT documents edge path");
 assert(content.indexOf("User-Agent") !== -1, "CONTENT documents user agent");

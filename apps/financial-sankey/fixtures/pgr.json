@@ -1,0 +1,204 @@
+{
+  "cik": 80661,
+  "entityName": "PROGRESSIVE CORP/OH/",
+  "extract": {
+    "demo": false,
+    "source": "SEC EDGAR companyfacts",
+    "sourceUrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000080661.json",
+    "extractedAt": "2026-10-21T16:00:00Z",
+    "frequency": "annual",
+    "status": "ok",
+    "note": "Test fixture cut from public SEC companyfacts. Not loaded by the page."
+  },
+  "facts": {
+    "us-gaap": {
+      "Revenues": {
+        "label": "Revenues",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 87671000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestAndDividendIncomeOperating": {
+        "label": "Interest and Dividend Income, Operating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 3583000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
+        "label": "Income (Loss) from Continuing Operations before Income Taxes, Noncontrolling Interest",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 14223000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeTaxExpenseBenefit": {
+        "label": "Income Tax Expense (Benefit)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 2915000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "label": "Net Income (Loss) Attributable to Parent",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 11308000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "PremiumsEarnedNet": {
+        "label": "Premiums Earned, Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 81661000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetInvestmentIncome": {
+        "label": "Net Investment Income",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 3549000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "PolicyholderBenefitsAndClaimsIncurredNet": {
+        "label": "Policyholder Benefits and Claims Incurred, Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 53959000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "BenefitsLossesAndExpenses": {
+        "label": "Benefits, Losses and Expenses",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 73448000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OtherUnderwritingExpense": {
+        "label": "Other Underwriting Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 11329000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "DeferredPolicyAcquisitionCostAmortizationExpense": {
+        "label": "Deferred Policy Acquisition Costs, Amortization Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 6096000000,
+              "form": "10-K",
+              "filed": "2026-03-02",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -521,24 +521,24 @@
       clearTable(section, "尚未加载报表");
       return;
     }
-    statement.notes.forEach(function (note) {
+    var noteLines = statement.notes.slice();
+    renderTable(section, statement);
+    renderDetail(section, null);
+    if (!statement.nodes.length) {
+      clearChart(section, noteLines[0] || "已取到报表数据，但这张表还画不成桑基图。");
+      if (noteLines.length) noteLines = noteLines.slice(1);
+    } else {
+      drawSection(section, statement);
+    }
+    if (statement.period && statement.period.start && statement.period.start !== report.start) {
+      noteLines.push("本图期间：" + statement.period.start + " 至 " + statement.period.end + " · " + (statement.period.form || "") + "。季报现金流量经常是年初至今，不能和单季利润直接比较。");
+    }
+    noteLines.forEach(function (note) {
       var line = document.createElement("p");
       line.textContent = note;
       notes.appendChild(line);
     });
-    if (statement.period && statement.period.start && statement.period.start !== report.start) {
-      var extra = document.createElement("p");
-      extra.textContent = "本图期间：" + statement.period.start + " 至 " + statement.period.end + " · " + (statement.period.form || "") + "。季报现金流量经常是年初至今，不能和单季利润直接比较。";
-      notes.appendChild(extra);
-    }
     notes.hidden = notes.childElementCount === 0;
-    renderTable(section, statement);
-    renderDetail(section, null);
-    if (!statement.nodes.length) {
-      clearChart(section, statement.notes[0] || "这张报表缺少关键科目，没有画出桑基图。");
-      return;
-    }
-    drawSection(section, statement);
   }
 
   function drawSection(section, statement) {

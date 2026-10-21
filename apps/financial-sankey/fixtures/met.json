@@ -1,0 +1,288 @@
+{
+  "cik": 1099219,
+  "entityName": "MetLife, Inc.",
+  "extract": {
+    "demo": false,
+    "source": "SEC EDGAR companyfacts",
+    "sourceUrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001099219.json",
+    "extractedAt": "2026-10-21T16:00:00Z",
+    "frequency": "annual",
+    "status": "ok",
+    "note": "Test fixture cut from public SEC companyfacts. Not loaded by the page."
+  },
+  "facts": {
+    "us-gaap": {
+      "Revenues": {
+        "label": "Revenues",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 77084000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "label": "Revenue from Contract with Customer, Excluding Assessed Tax",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 2436000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "SellingAndMarketingExpense": {
+        "label": "Selling and Marketing Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 6791000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "GeneralAndAdministrativeExpense": {
+        "label": "General and Administrative Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 560000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OperatingExpenses": {
+        "label": "Operating Expenses",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 13860000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OperatingIncomeLoss": {
+        "label": "Operating Income (Loss)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 6137000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "ProvisionForOtherCreditLosses": {
+        "label": "Provision for Other Credit Losses",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 94000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
+        "label": "Income (Loss) from Continuing Operations before Income Taxes, Noncontrolling Interest",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 4661000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeTaxExpenseBenefit": {
+        "label": "Income Tax Expense (Benefit)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 1258000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "label": "Net Income (Loss) Attributable to Parent",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 3379000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY"
+            }
+          ]
+        }
+      },
+      "PremiumsEarnedNet": {
+        "label": "Premiums Earned, Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 49779000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetInvestmentIncome": {
+        "label": "Net Investment Income",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 22559000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OtherIncome": {
+        "label": "Other Income",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 2827000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "PolicyholderBenefitsAndClaimsIncurredNet": {
+        "label": "Policyholder Benefits and Claims Incurred, Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 49718000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "BenefitsLossesAndExpenses": {
+        "label": "Benefits, Losses and Expenses",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 72423000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "DeferredPolicyAcquisitionCostAmortizationExpense": {
+        "label": "Deferred Policy Acquisition Costs, Amortization Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 2018000000,
+              "form": "10-K",
+              "filed": "2026-02-19",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
