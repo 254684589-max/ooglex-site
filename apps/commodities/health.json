@@ -1,15 +1,15 @@
 {
   "contractVersion": 1,
   "dataset": "commodities",
-  "generatedAt": "2026-10-20T23:20:25Z",
-  "status": "degraded",
+  "generatedAt": "2026-10-21T21:56:40Z",
+  "status": "failed",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-10-20T23:20:25Z",
+  "lastAttemptAt": "2026-10-21T21:56:40Z",
   "lastSuccessfulAt": "2026-10-20T23:20:25Z",
-  "consecutiveFailures": 0,
+  "consecutiveFailures": 1,
   "publishedSnapshotAt": "2026-10-20T23:20:25Z",
-  "snapshotPreserved": false,
-  "failureReason": null,
+  "snapshotPreserved": true,
+  "failureReason": "36条FRED序列本轮均未返回可发布观测，本轮未发布新快照。",
   "coverage": {
     "expectedRecords": 36,
     "publishedRecords": 36,
@@ -27,12 +27,12 @@
     "availableCoveragePct": 100.0
   },
   "attempt": {
-    "status": "success",
-    "published": true,
+    "status": "failed",
+    "published": false,
     "producedRecords": 36,
     "counts": {
-      "market": 19,
-      "fallback": 17,
+      "market": 0,
+      "fallback": 36,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
@@ -43,16 +43,16 @@
       "id": "fred-eia",
       "name": "FRED / U.S. EIA",
       "role": "primary",
-      "status": "healthy",
+      "status": "degraded",
       "records": 5,
       "counts": {
-        "market": 5,
-        "fallback": 0,
+        "market": 0,
+        "fallback": 5,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-20T23:20:25Z"
+      "lastSuccessAt": null
     },
     {
       "id": "fred-imf",
@@ -61,13 +61,13 @@
       "status": "degraded",
       "records": 31,
       "counts": {
-        "market": 14,
-        "fallback": 17,
+        "market": 0,
+        "fallback": 31,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-20T23:20:25Z"
+      "lastSuccessAt": null
     }
   ],
   "recovery": {
