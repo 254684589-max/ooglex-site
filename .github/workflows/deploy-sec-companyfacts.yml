@@ -1,0 +1,60 @@
+name: Deploy SEC companyfacts proxy
+
+# 财务桑基的 SEC companyfacts 代理。合并到 main 且本目录有改动时部署。
+# 需要仓库里已经在用的 CLOUDFLARE_API_TOKEN，不新增付费服务。
+# 不修改 www 的灰云记录。自定义域名 sec-facts.ooglex.com 由 wrangler 在现有 Cloudflare 区创建。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/sec-companyfacts/**'
+      - '.github/workflows/deploy-sec-companyfacts.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-sec-companyfacts
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check Cloudflare token
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::未配置 CLOUDFLARE_API_TOKEN。与环球 TV、PRO API 共用这枚令牌。配好后重跑本工作流。"
+            exit 1
+          fi
+
+      - name: Deploy SEC companyfacts Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4"
+          workingDirectory: workers/sec-companyfacts
+          command: deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Store SEC contact in the Worker secret
+        working-directory: workers/sec-companyfacts
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SEC_CONTACT}" ]; then
+            echo "::warning::仓库变量 SEC_CONTACT 未设置。Worker 使用站点 URL 作为 User-Agent 联系方式。建议与基本面、产业链工作流使用同一个仓库变量，然后重跑本工作流。"
+            exit 0
+          fi
+          printf '%s' "$SEC_CONTACT" | npx --yes wrangler@4 secret put SEC_CONTACT --name ooglex-sec-companyfacts

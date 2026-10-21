@@ -15,11 +15,15 @@
 
 - 2026-10-21：新增「财务桑基」试点，公开路径 `/apps/financial-sankey/`。输入美股代码后画最新年报的利润表、资产负债表、现金流量表，并可切换最近一季。科目来自 SEC EDGAR 公开 companyfacts（US-GAAP），不使用付费终端，也不需要密钥。浏览器不能给 `data.sec.gov` 发带 User-Agent 的跨域请求（响应没有 CORS），因此页面会先尝试直连，失败后对 NVDA、MSFT 使用 2026-10-21 从 companyfacts 截取的真实摘录，并标明摘录时间；其他代码可在本地打开 SEC JSON，仍走同一套绘图。轧差、缺失科目和季报现金流量的年初至今口径会写在图下。未放入「最新消息」顶栏：那一排是五个新闻栏目，按 360px 不横向溢出排过，财务桑基不是新闻栏目。未部署。
 
+- 2026-10-21：新增财务桑基 SEC companyfacts 代理 Worker（`workers/sec-companyfacts/`）及部署工作流。只转发 10 位 CIK 的 companyfacts，带 User-Agent、频率限制和 6 小时缓存。未部署。
+
 ### 修改
 
 - 2026-10-21：标普500热力图（`/apps/heatmap/`）顶栏在现有「全球市场行情」「全球公司榜」「金融终端」之后增加「财务桑基」，链到已上线的 `/apps/financial-sankey/`。英文界面沿用同一套顶栏词条，译为 Financial Sankey。只加这一处入口，不改热力图数据、财务桑基取数，也不改「最新消息」自动列表。未部署。
 
 - 2026-10-21：财务桑基一次「生成」同时展示利润表、资产负债表、现金流量表三张图，并在页上写明 SEC companyfacts 来源和报告期。空代码、查无此代码（如 ZZZZZ）、以及 SEC 或网络失败都给出中文提示；后一种可以点「重试」，不会把英文异常原文显示出来。打开页面不再自动拉取 NVDA，除非地址里带了 `ticker`。未部署。
+
+- 2026-10-21：财务桑基改为经本站代理读取 SEC companyfacts。页面先请求同源路径 `/apps/financial-sankey/companyfacts/CIK##########.json`，再请求 `https://sec-facts.ooglex.com/companyfacts/CIK##########.json`，最后才尝试浏览器直连。代理只转发 `data.sec.gov` 上 10 位 CIK 的 companyfacts，User-Agent 声明本站身份（联系方式来自仓库变量 `SEC_CONTACT`，没有则用站点 URL，不把邮箱写入 Git），并按 IP / 上游频率限制；成功响应缓存 6 小时，不标成实时行情。NVDA、MSFT 摘录只在代理和直连都失败时使用，本地 JSON 仍可打开。主站 `www` 仍是 GitHub Pages 灰云，这次没有改 DNS，也没有改「最新消息」管道。Worker 要等合并到 `main` 后由工作流部署。未部署。
 
 ### 修改
 

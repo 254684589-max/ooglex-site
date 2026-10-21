@@ -167,9 +167,9 @@
     <header>
       <p class="kicker">SEC EDGAR · US-GAAP · 非行情 · 非投资建议</p>
       <h1 class="brand-title">财务桑基</h1>
-      <p class="brand-sub">输入美股代码，查看最新报告期的利润表、资产负债表和现金流量表。条带宽度按美元金额。数据来自 SEC 公开 companyfacts，不是付费终端，也不是实时报价。</p>
+      <p class="brand-sub">输入美股代码，查看最新报告期的利润表、资产负债表和现金流量表。条带宽度按美元金额。数据来自 SEC 公开 companyfacts，经本站代理读取，不是付费终端，也不是实时报价。</p>
     </header>
-    <p class="banner" id="banner" role="status" aria-busy="false">输入美股代码，例如 NVDA 或 MSFT，然后点「生成」。</p>
+    <p class="banner" id="banner" role="status" aria-busy="false">输入美股代码，例如 NVDA 或 AAPL，然后点「生成」。</p>
     <form class="lookup" id="lookup-form">
       <label class="field">
         <span>美股代码</span>
@@ -252,12 +252,12 @@
     <footer class="source-foot">
       <p><strong>来源</strong> SEC EDGAR companyfacts（US-GAAP）。官方接口：<a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json">data.sec.gov/api/xbrl/companyfacts</a>。代码表：<a href="https://www.sec.gov/files/company_tickers.json">company_tickers.json</a>。</p>
       <p><strong>频率</strong> 年报（10-K 或 20-F，年度），可切换最近一季（10-Q，季度）。这是披露数据，不是实时行情，页面也不会按秒刷新。</p>
-      <p><strong>状态</strong> 浏览器若被跨域拦住，NVDA 与 MSFT 使用仓库里的公开摘录，页面会写明摘录时间。其他代码可以打开从 SEC 下载的 JSON，在本地绘制。</p>
+      <p><strong>状态</strong> 页面先请求同源地址 <code>/apps/financial-sankey/companyfacts/CIK##########.json</code>，再请求 sec-facts.ooglex.com 上的 SEC 代理。代理不可用或被限速时，NVDA 与 MSFT 使用仓库里的公开摘录，并写明摘录时间。其他代码可以打开从 SEC 下载的 JSON，在本地绘制。</p>
       <p><strong>限制</strong> 只映射常见工商企业科目。银行、保险和缺少营业收入的公司可能画不出来。季报现金流量经常是年初至今。轧差、抵销项和重叠科目会在图下说明。研究用，非投资建议。</p>
     </footer>
   </main>
   <script src="model.js"></script>
   <script src="sankey.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261021sec"></script>
 </body>
 </html>
