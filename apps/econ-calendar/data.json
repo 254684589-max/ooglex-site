@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T17:31:25Z",
+  "updatedAt": "2026-10-21T21:58:43Z",
   "asOf": "2026-10-21",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-18 ~ 2026-10-24",
@@ -746,7 +746,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": "83B",
+      "forecast": "80B",
       "previous": "67B",
       "actual": null
     },
@@ -974,7 +974,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "Flash Services PMI",
       "impact": "medium",
-      "forecast": "57.8",
+      "forecast": "57.9",
       "previous": "58.7",
       "actual": null
     },
