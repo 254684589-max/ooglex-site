@@ -1,0 +1,14 @@
+name = "ooglex-sec-companyfacts"
+main = "worker.js"
+compatibility_date = "2026-10-21"
+workers_dev = true
+
+# 自定义域名。部署时由 wrangler 在已有 Cloudflare 区内创建这条主机记录。
+# 不改 www.ooglex.com：主站目前是灰云，解析到 GitHub Pages，Worker Routes 不会触发。
+[[routes]]
+pattern = "sec-facts.ooglex.com"
+custom_domain = true
+
+[vars]
+# 浏览器页面来源。本地 127.0.0.1 / localhost 在代码里另外放行，方便验收。
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"

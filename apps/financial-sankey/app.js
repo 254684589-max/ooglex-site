@@ -1,5 +1,7 @@
-/* Financial Sankey page. Live SEC fetch is attempted; browsers are expected to
-   fall back to the committed NVDA/MSFT extracts or a local companyfacts file. */
+/* Financial Sankey page.
+   Order: same-origin companyfacts proxy, then the sec-facts edge host, then a
+   direct SEC fetch, then the committed NVDA/MSFT extracts. A local JSON file
+   still bypasses the network. */
 (function () {
   "use strict";
 
@@ -7,6 +9,8 @@
   var sankey = window.OoglexSankey;
   var SNAPSHOTS = { NVDA: "snapshots/nvda.json", MSFT: "snapshots/msft.json" };
   var SECTIONS = ["income", "balance", "cashflow"];
+  var SAME_ORIGIN_PREFIX = "companyfacts/";
+  var DEFAULT_EDGE = "https://sec-facts.ooglex.com/companyfacts/";
 
   var state = {
     tickers: null,
@@ -14,7 +18,10 @@
     reports: null,
     mode: "",
     period: "annual",
-    selected: {}
+    selected: {},
+    proxyBase: DEFAULT_EDGE,
+    proxyLoaded: false,
+    cacheHeader: ""
   };
   var busy = false;
   var els = {};
@@ -117,6 +124,7 @@
     state.reports = null;
     state.company = null;
     state.mode = "";
+    state.cacheHeader = "";
     state.selected = {};
     els.results.hidden = true;
     els.company.textContent = "";
@@ -187,24 +195,34 @@
       }
       els.ticker.value = resolved.ticker;
       setSecLinks(resolved.cik);
-      setBanner("loading", "正在从 SEC 读取报表…");
-      var live = await fetchLive(resolved.cik);
+      await loadProxyConfig();
+      setBanner("loading", "正在通过本站代理读取 SEC companyfacts…");
+      var live = await fetchCompanyfacts(resolved.cik);
       if (live.ok) {
-        applyFacts(live.data, "live", resolved);
+        state.cacheHeader = live.cache || "";
+        applyFacts(live.data, live.via, resolved);
         return;
       }
       var snapName = SNAPSHOTS[resolved.ticker];
       if (snapName) {
         setBanner("loading", "正在加载内置摘录…");
         var snap = await fetchJson(snapName);
+        state.cacheHeader = "";
         applyFacts(snap, "snapshot", resolved);
+        if (live.limited) {
+          setBanner("snapshot", "请求过于频繁，请稍后再试。下面先显示本站保存的公开摘录，数值来自 SEC companyfacts。");
+        }
         return;
       }
       hideResults();
-      setBanner(
-        "error",
-        "已识别 " + resolved.name + "（CIK " + padCik(resolved.cik) + "），但没有从 SEC 读到报表。请稍后再点「重试」，或用「打开本地 JSON」打开从 SEC companyfacts 下载的文件。文件只在本机解析，不会上传。"
-      );
+      if (live.limited) {
+        setBanner("error", "请求过于频繁，请稍后再点「重试」。");
+      } else {
+        setBanner(
+          "error",
+          "已识别 " + resolved.name + "（CIK " + padCik(resolved.cik) + "），但没有从 SEC 读到报表。请稍后再点「重试」，或用「打开本地 JSON」打开从 SEC companyfacts 下载的文件。文件只在本机解析，不会上传。"
+        );
+      }
       showRetry(true);
     } catch (error) {
       hideResults();
@@ -238,28 +256,97 @@
   }
 
   async function fetchJson(url) {
-    var response = await fetch(url, { headers: { Accept: "application/json" } });
+    var response = await fetch(url, { headers: { Accept: "application/json" }, credentials: "omit" });
     if (!response.ok) throw new Error("HTTP " + response.status);
     return response.json();
   }
 
-  async function fetchLive(cik) {
-    var url = "https://data.sec.gov/api/xbrl/companyfacts/CIK" + padCik(cik) + ".json";
-    var controller = new AbortController();
-    var timer = window.setTimeout(function () { controller.abort(); }, 8000);
+  async function loadProxyConfig() {
+    if (state.proxyLoaded) return;
+    state.proxyLoaded = true;
     try {
-      var response = await fetch(url, {
+      var cfg = await fetchJson("proxy.json");
+      if (cfg && Object.prototype.hasOwnProperty.call(cfg, "companyfacts") && typeof cfg.companyfacts === "string") {
+        state.proxyBase = edgeBase(cfg.companyfacts);
+      }
+    } catch (error) {
+      state.proxyBase = DEFAULT_EDGE;
+    }
+  }
+
+  function edgeBase(value) {
+    var raw = String(value || "").trim();
+    if (!raw) return "";
+    var url;
+    try {
+      url = new URL(raw);
+    } catch (error) {
+      return "";
+    }
+    var local = url.hostname === "127.0.0.1" || url.hostname === "localhost";
+    if (url.protocol !== "https:" && !(url.protocol === "http:" && local)) return "";
+    var path = url.pathname.endsWith("/") ? url.pathname : url.pathname + "/";
+    if (!/\/companyfacts\/$/.test(path)) return "";
+    return url.origin + path;
+  }
+
+  function factsFile(cik) {
+    return "CIK" + padCik(cik) + ".json";
+  }
+
+  function proxyAttempts(cik) {
+    var file = factsFile(cik);
+    var attempts = [
+      { url: SAME_ORIGIN_PREFIX + file, via: "proxy", timeout: 25000 }
+    ];
+    if (state.proxyBase) {
+      attempts.push({ url: state.proxyBase + file, via: "proxy", timeout: 25000 });
+    }
+    attempts.push({
+      url: "https://data.sec.gov/api/xbrl/companyfacts/" + file,
+      via: "direct",
+      timeout: 8000
+    });
+    return attempts;
+  }
+
+  async function fetchFactsOnce(attempt) {
+    var controller = new AbortController();
+    var timer = window.setTimeout(function () { controller.abort(); }, attempt.timeout);
+    try {
+      var response = await fetch(attempt.url, {
         signal: controller.signal,
         headers: { Accept: "application/json" },
+        credentials: "omit",
         referrerPolicy: "origin"
       });
+      if (response.status === 429) return { ok: false, status: 429, limited: true };
       if (!response.ok) return { ok: false, status: response.status };
-      return { ok: true, data: await response.json() };
+      var data = await response.json();
+      if (!data || !data.facts) return { ok: false, status: response.status || 502 };
+      return {
+        ok: true,
+        data: data,
+        via: attempt.via,
+        cache: response.headers.get("X-Ooglex-Sec-Cache") || ""
+      };
     } catch (error) {
       return { ok: false };
     } finally {
       window.clearTimeout(timer);
     }
+  }
+
+  async function fetchCompanyfacts(cik) {
+    var attempts = proxyAttempts(cik);
+    var lastStatus = 0;
+    for (var i = 0; i < attempts.length; i++) {
+      var hit = await fetchFactsOnce(attempts[i]);
+      if (hit.ok) return hit;
+      if (hit.limited) return { ok: false, status: 429, limited: true };
+      if (hit.status) lastStatus = hit.status;
+    }
+    return { ok: false, status: lastStatus };
   }
 
   function readLocalFile(file) {
@@ -305,6 +392,7 @@
       return;
     }
     state.mode = mode;
+    if (mode === "file") state.cacheHeader = "";
     state.company = {
       ticker: company.ticker,
       name: data.entityName ? String(data.entityName) : company.name,
@@ -323,7 +411,10 @@
     if (state.period === "annual" && !state.reports.annual && state.reports.quarterly) state.period = "quarterly";
     state.selected = {};
     setSecLinks(state.company.cik);
-    if (mode === "live") {
+    if (mode === "proxy") {
+      setBanner("ok", "已通过本站代理读到 SEC companyfacts。数字是披露口径，不是实时行情。同一份文件在边缘最多缓存约 6 小时。");
+      showRetry(false);
+    } else if (mode === "direct") {
       setBanner("ok", "已直接读到 SEC companyfacts。数字是披露口径，不是行情。");
       showRetry(false);
     } else if (mode === "file") {
@@ -333,7 +424,7 @@
       var when = state.company.extract && state.company.extract.extractedAt ? state.company.extract.extractedAt : "";
       setBanner(
         "snapshot",
-        "没有从 SEC 直接读到最新文件（浏览器跨域限制）。已改用本站保存的公开摘录，数值来自 SEC companyfacts。" +
+        "没有通过代理或直连读到最新 SEC 文件。已改用本站保存的公开摘录，数值来自 SEC companyfacts。" +
         (when ? "摘录时间 " + when + " UTC。" : "") +
         "可点「重试」再试一次。"
       );
@@ -400,7 +491,10 @@
     }
     els.results.hidden = false;
     showIdentity();
-    els.source.textContent = "来源：SEC EDGAR companyfacts（公开 XBRL，US-GAAP） · 报告期：" +
+    var channel = state.mode === "proxy" ? "本站代理" : state.mode === "direct" ? "浏览器直连" : state.mode === "file" ? "本地 JSON" : "内置摘录";
+    if (state.mode === "proxy" && state.cacheHeader === "hit") channel += "（边缘缓存）";
+    if (state.mode === "proxy" && state.cacheHeader === "miss") channel += "（刚向 SEC 拉取）";
+    els.source.textContent = "来源：SEC EDGAR companyfacts（公开 XBRL，US-GAAP） · 取数：" + channel + " · 报告期：" +
       report.start + " 至 " + report.end + " · " + (report.form || "") + " · " + frequencyText(report.frequency);
     var freq = report.frequency === "annual" ? "年报" : "季报";
     var fyLabel = report.fy ? ("FY" + report.fy + (report.fp && report.fp !== "FY" ? " " + report.fp : "")) : (report.fp || "");
