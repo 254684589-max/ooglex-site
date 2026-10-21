@@ -253,11 +253,11 @@
       <p><strong>来源</strong> SEC EDGAR companyfacts（US-GAAP）。官方接口：<a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json">data.sec.gov/api/xbrl/companyfacts</a>。代码表：<a href="https://www.sec.gov/files/company_tickers.json">company_tickers.json</a>。</p>
       <p><strong>频率</strong> 年报（10-K 或 20-F，年度），可切换最近一季（10-Q，季度）。这是披露数据，不是实时行情，页面也不会按秒刷新。</p>
       <p><strong>状态</strong> 页面先请求同源地址 <code>/apps/financial-sankey/companyfacts/CIK##########.json</code>，再请求 sec-facts.ooglex.com 上的 SEC 代理。代理不可用或被限速时，NVDA 与 MSFT 使用仓库里的公开摘录，并写明摘录时间。其他代码可以打开从 SEC 下载的 JSON，在本地绘制。</p>
-      <p><strong>限制</strong> 只映射常见工商企业科目。银行、保险和缺少营业收入的公司可能画不出来。季报现金流量经常是年初至今。轧差、抵销项和重叠科目会在图下说明。研究用，非投资建议。</p>
+      <p><strong>限制</strong> 利润表会按三种结构来画：工商企业的毛利，银行的净利息、非利息收支和信贷拨备，保险的已赚保费和给付费用。对不上这些结构时，页面会说明数据已经取到、只是还不能完整作图，并尽量列出已识别科目。季报现金流量经常是年初至今。轧差、抵销项和重叠科目写在图下。研究用，非投资建议。</p>
     </footer>
   </main>
-  <script src="model.js"></script>
+  <script src="model.js?v=20261021bank"></script>
   <script src="sankey.js"></script>
-  <script src="app.js?v=20261021sec"></script>
+  <script src="app.js?v=20261021bank"></script>
 </body>
 </html>

@@ -1,0 +1,220 @@
+{
+  "cik": 19617,
+  "entityName": "JPMORGAN CHASE & CO",
+  "extract": {
+    "demo": false,
+    "source": "SEC EDGAR companyfacts",
+    "sourceUrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000019617.json",
+    "extractedAt": "2026-10-21T16:00:00Z",
+    "frequency": "annual",
+    "status": "ok",
+    "note": "Test fixture cut from public SEC companyfacts. Not loaded by the page."
+  },
+  "facts": {
+    "us-gaap": {
+      "Revenues": {
+        "label": "Revenues",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 182447000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestIncomeOperating": {
+        "label": "Interest Income, Operating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 193341000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestExpenseOperating": {
+        "label": "InterestExpenseOperating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 97898000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestIncomeExpenseNet": {
+        "label": "Interest Income (Expense), Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 95443000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NoninterestIncome": {
+        "label": "Noninterest Income",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 87004000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NoninterestExpense": {
+        "label": "Noninterest Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 95640000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "ProvisionForLoanLeaseAndOtherLosses": {
+        "label": "Provision for Loan, Lease, and Other Losses",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 14212000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "FinancingReceivableExcludingAccruedInterestCreditLossExpenseReversal": {
+        "label": "FinancingReceivableExcludingAccruedInterestCreditLossExpenseReversal",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 11264000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OffBalanceSheetCreditLossLiabilityCreditLossExpenseReversal": {
+        "label": "Off-Balance Sheet, Credit Loss, Liability, Credit Loss Expense (Reversal)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 2969000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
+        "label": "Income (Loss) from Continuing Operations before Income Taxes, Noncontrolling Interest",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 72595000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeTaxExpenseBenefit": {
+        "label": "Income Tax Expense (Benefit)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 15547000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "label": "Net Income (Loss) Attributable to Parent",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 57048000000,
+              "form": "10-K",
+              "filed": "2026-02-13",
+              "fy": 2025,
+              "fp": "FY"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

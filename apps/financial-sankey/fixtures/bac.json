@@ -1,0 +1,204 @@
+{
+  "cik": 70858,
+  "entityName": "BANK OF AMERICA CORP /DE/",
+  "extract": {
+    "demo": false,
+    "source": "SEC EDGAR companyfacts",
+    "sourceUrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000070858.json",
+    "extractedAt": "2026-10-21T16:00:00Z",
+    "frequency": "annual",
+    "status": "ok",
+    "note": "Test fixture cut from public SEC companyfacts. Not loaded by the page."
+  },
+  "facts": {
+    "us-gaap": {
+      "Revenues": {
+        "label": "Revenues",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 113097000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestAndDividendIncomeOperating": {
+        "label": "Interest and Dividend Income, Operating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 138566000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestExpenseOperating": {
+        "label": "InterestExpenseOperating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 78470000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestIncomeExpenseNet": {
+        "label": "Interest Income (Expense), Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 60096000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NoninterestIncome": {
+        "label": "Noninterest Income",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 53001000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NoninterestExpense": {
+        "label": "Noninterest Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 69727000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "FinancingReceivableExcludingAccruedInterestCreditLossExpenseReversal": {
+        "label": "FinancingReceivableExcludingAccruedInterestCreditLossExpenseReversal",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 5595000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OffBalanceSheetCreditLossLiabilityCreditLossExpenseReversal": {
+        "label": "Off-Balance Sheet, Credit Loss, Liability, Credit Loss Expense (Reversal)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 80000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
+        "label": "Income (Loss) from Continuing Operations before Income Taxes, Noncontrolling Interest",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 37695000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeTaxExpenseBenefit": {
+        "label": "Income Tax Expense (Benefit)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 7186000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "label": "Net Income (Loss) Attributable to Parent",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 30509000000,
+              "form": "10-K",
+              "filed": "2026-02-25",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

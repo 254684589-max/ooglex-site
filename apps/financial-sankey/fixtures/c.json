@@ -1,0 +1,358 @@
+{
+  "cik": 831001,
+  "entityName": "Citigroup Inc",
+  "extract": {
+    "demo": false,
+    "source": "SEC EDGAR companyfacts",
+    "sourceUrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000831001.json",
+    "extractedAt": "2026-10-21T16:00:00Z",
+    "frequency": "annual",
+    "status": "ok",
+    "note": "Test fixture cut from public SEC companyfacts. Not loaded by the page."
+  },
+  "facts": {
+    "us-gaap": {
+      "Revenues": {
+        "label": "Revenues",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 22090000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 85225000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestAndDividendIncomeOperating": {
+        "label": "Interest and Dividend Income, Operating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 36690000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 142864000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestExpenseOperating": {
+        "label": "InterestExpenseOperating",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 21750000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 83072000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "InterestIncomeExpenseNet": {
+        "label": "Interest Income (Expense), Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 14940000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 59792000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NoninterestIncome": {
+        "label": "Noninterest Income",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 7150000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 25433000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NoninterestExpense": {
+        "label": "Noninterest Expense",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 14290000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 55132000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "ProvisionForLoanLossesExpensed": {
+        "label": "Financing Receivable, Credit Loss, Expense (Reversal)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 9497000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "FinancingReceivableExcludingAccruedInterestCreditLossExpenseReversal": {
+        "label": "FinancingReceivableExcludingAccruedInterestCreditLossExpenseReversal",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 2259000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 9497000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "OffBalanceSheetCreditLossLiabilityCreditLossExpenseReversal": {
+        "label": "Off-Balance Sheet, Credit Loss, Liability, Credit Loss Expense (Reversal)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 100000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 202000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
+        "label": "Income (Loss) from Continuing Operations before Income Taxes, Noncontrolling Interest",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 5350000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 19828000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "IncomeTaxExpenseBenefit": {
+        "label": "Income Tax Expense (Benefit)",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 1559000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 5373000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "label": "Net Income (Loss) Attributable to Parent",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 3752000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 14306000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      },
+      "PolicyholderBenefitsAndClaimsIncurredNet": {
+        "label": "Policyholder Benefits and Claims Incurred, Net",
+        "units": {
+          "USD": [
+            {
+              "start": "2025-07-01",
+              "end": "2025-09-30",
+              "val": 17000000,
+              "form": "10-Q",
+              "filed": "2025-11-06",
+              "fy": 2025,
+              "fp": "Q3",
+              "frame": "CY2025Q3"
+            },
+            {
+              "start": "2025-01-01",
+              "end": "2025-12-31",
+              "val": 87000000,
+              "form": "10-K",
+              "filed": "2026-02-20",
+              "fy": 2025,
+              "fp": "FY",
+              "frame": "CY2025"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
