@@ -20,6 +20,7 @@ const PITCH_LIMIT := 85.0
 const TOUCH_RUN_THRESHOLD := 0.95   # 摇杆推到边缘 = 跑
 const BOB_AMPLITUDE := 0.035
 const GUARD_SPEED := 1.7          # 举剑格挡、失衡时只能慢慢挪（2.5）
+const DODGE_DIP := 0.28           # 闪避时第一人称镜头往下沉多少（米，A.1b）
 ## 第三人称越肩镜头（2.9，D6）：相机在头部后方 TP_DIST 米、偏右 TP_SIDE 米、高 TP_UP 米；身后有墙就往前收
 const TP_DIST := 2.6
 const TP_SIDE := 0.55
@@ -194,9 +195,18 @@ func _physics_process(delta: float) -> void:
 	var h := Vector2(velocity.x, velocity.z).move_toward(Vector2(target.x, target.z), accel * delta)
 	velocity.x = h.x
 	velocity.z = h.y
+	var forced := melee.forced_velocity() if melee else Vector3.ZERO      # 闪避、冲刺突刺带着身体走（A.1b）
+	if forced != Vector3.ZERO:
+		velocity.x = forced.x
+		velocity.z = forced.z
+		running = false
 	if is_on_floor():
 		if (jump_requested or Input.is_action_just_pressed("jump")) and not crouching:
-			velocity.y = JUMP_VELOCITY
+			# 拿着武器往侧面或身后跳 = 闪避（A.1b）；往前、不推方向照旧是跳
+			if melee and Melee.wants_dodge(melee.drawn(), input):
+				melee.dodge(input)
+			else:
+				velocity.y = JUMP_VELOCITY
 	else:
 		velocity.y -= gravity * delta
 	jump_requested = false
@@ -286,6 +296,10 @@ func _update_head(delta: float) -> void:
 		_update_third_person(delta)
 		return
 	var speed := Vector2(velocity.x, velocity.z).length()
+	if melee and melee.dodging() and not Settings.reduced_motion:
+		var k := clampf(melee.t / melee.dur, 0.0, 1.0)
+		camera.position = Vector3(0.0, -sin(k * PI) * DODGE_DIP, 0.0)     # 闪避：镜头先沉下去再起来（A.1b）
+		return
 	if Settings.head_bob and is_on_floor() and speed > 0.5:
 		bob_time += delta * speed * 2.2
 		camera.position = Vector3(cos(bob_time) * BOB_AMPLITUDE * 0.6, absf(sin(bob_time)) * BOB_AMPLITUDE, 0.0)

@@ -19,8 +19,8 @@ var music_check: CheckButton
 var music_slider: HSlider
 var music_value: Label
 
-const HELP_DESKTOP := "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · M 地图 · F8 快速存档 · F9 快速读档 · F3 性能数据 · 军阵里 1 / 2 / 3 指挥小队（跟随 / 坚守 / 冲锋）· Esc 暂停"
-const HELP_TOUCH := "手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」「视角」· 右上角「角色」「背包」「任务」「地图」「菜单」· 第一章起站在路牌旁打开地图（或对着路牌点交互按钮）才能出发 · 军阵里点「令」指挥小队"
+const HELP_DESKTOP := "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · 拔剑时按着 A / D / S 再按空格是闪避 · 跑着出剑是突刺 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · M 地图 · F8 快速存档 · F9 快速读档 · F3 性能数据 · 军阵里 1 / 2 / 3 指挥小队（跟随 / 坚守 / 冲锋）· Esc 暂停"
+const HELP_TOUCH := "手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」「视角」· 拔剑时摇杆往侧面或后面推着点「跳」是闪避，跑着点「攻」是突刺 · 右上角「角色」「背包」「任务」「地图」「菜单」· 第一章起站在路牌旁打开地图（或对着路牌点交互按钮）才能出发 · 军阵里点「令」指挥小队"
 var fov_slider: HSlider
 var sens_slider: HSlider
 var invert_check: CheckButton
