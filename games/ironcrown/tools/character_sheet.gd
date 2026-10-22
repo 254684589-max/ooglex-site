@@ -5,7 +5,7 @@ extends SceneTree
 ##     -s ../tools/character_sheet.gd -- out=/tmp/sheet.png [grip=px,py,pz,rx,ry,rz] [jobs="动作@秒@相机偏角;动作@秒@相机偏角"]
 ## 例：jobs="Sword_Idle@0@20;Sword_Attack@0.33@30;Sword_Block@0.17@30"（动作名见 data/character_anims.json；none = 不播动作，看 T 姿势）
 ## A.2b：prop=lantern|torch|axe|cup|none 换手里的东西（默认剑）。A.2：parts=Outfit_Male_Peasant,Head_Male,Hair_Beard 换装预览；look='{"tint":{"MI_Peasant":"#8a9cb0"}}' 换颜色。
-## A.2b：hide=Male_Ranger_Head_Hood 藏部件；cape=#5e2420 背上披风（actors/cape.gd，每个镜头前先让布垂一会儿）。player=1 直接用 looks.json 里主角的打扮和披风。
+## A.2b：hide=Male_Ranger_Head_Hood 藏部件；cape=#5e2420 背上披风（actors/cape.gd，每个镜头前先让布垂一会儿）；gear=1 背上剑鞘、胸前皮带（actors/gear.gd）。player=1 直接用 looks.json 里主角的打扮和披风。
 ## grip= 临时覆盖 data/character_anims.json 里的拿剑位置与朝向（米 / 度），满意了再写回 JSON。
 
 var character: CharacterModel
@@ -59,6 +59,7 @@ func _init() -> void:
 		character.look = s.look
 		hide = PackedStringArray(s.hide)
 		cape_col = str(Looks.player().get("cape", ""))
+		args["gear"] = "1" if bool(Looks.player().get("gear", false)) else ""
 	character.set_meta("hide", Array(hide))
 	root.add_child(character)
 	await process_frame
@@ -70,6 +71,8 @@ func _init() -> void:
 	Looks.hide_parts(character)
 	if cape_col != "":
 		root.add_child(Cape.make(character, Color(cape_col)))
+	if args.get("gear", "") == "1":
+		Gear.attach(character)
 	var g := str(args.get("grip", ""))
 	if g != "":
 		var v := g.split(",")
