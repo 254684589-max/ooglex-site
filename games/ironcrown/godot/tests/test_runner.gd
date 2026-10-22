@@ -2461,8 +2461,15 @@ func test_character() -> void:
 	check(parts_names.has("Outfit_Male_Ranger") and parts_names.has("Head_Male") and parts_names.has("Hair_Beard"), "主角穿上游侠那套衣服，有头、发型和胡子（%s）" % [parts_names])
 	var hood := c.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D
 	check(hood != null and not hood.visible, "兜帽摘下来了（藏起来，不删）")
-	var cp: Cape = av.cape
-	check(cp != null and cp.is_inside_tree() and cp.top_level and cp.mesh.get_surface_count() == 1, "背上有披风（代码搭的布）")
+	check(av.cape == null and av.gear != null and av.gear.is_inside_tree(), "主角背上是剑鞘和皮带，没有披风（所有者说去掉）")
+	check(av.gear.hilt.visible and (av.gear.get_parent() as BoneAttachment3D).bone_name == "spine_03", "剑在鞘里：肩后露出剑柄；剑鞘挂在上身的骨头上")
+	var hilt_y := (av.gear.hilt.global_transform * (av.gear.hilt as MeshInstance3D).get_aabb().get_center()).y - p.global_position.y
+	check(hilt_y > 1.4 and hilt_y < 1.9, "剑柄在肩膀高度（离地 %.2f 米）" % hilt_y)
+	# 披风（Cape）现在没人背，代码留着：测试时临时挂一件
+	var cp := Cape.make(c, Color("5e2420"))
+	av.add_child(cp)
+	await seconds(0.6)
+	check(cp.is_inside_tree() and cp.top_level and cp.mesh.get_surface_count() == 1, "披风（代码搭的布）挂得上")
 	var cf := cp._frame()
 	var mid_bottom: Vector3 = cp.pos[(Cape.ROWS - 1) * Cape.COLS + Cape.COLS / 2]
 	var behind := (mid_bottom - (cf.spine as Vector3)).dot(cf.back)
@@ -2478,22 +2485,22 @@ func test_character() -> void:
 	p.touch_move = Vector2(0, -1.0)
 	await seconds(0.5)
 	check(c.role == "run" and c.playing() == "Jog_Fwd_Loop" and absf(c.anim.get_playing_speed() - 1.0) < 0.25, "推到底：跑步动作（×%.2f）" % c.anim.get_playing_speed())
-	var rf := av.cape._frame()
-	var run_bottom: Vector3 = av.cape.pos[(Cape.ROWS - 1) * Cape.COLS + Cape.COLS / 2]
+	var rf := cp._frame()
+	var run_bottom: Vector3 = cp.pos[(Cape.ROWS - 1) * Cape.COLS + Cape.COLS / 2]
 	var run_behind := (run_bottom - (rf.spine as Vector3)).dot(rf.back)
 	check(run_behind > behind + 0.1 and run_behind < 0.6, "跑起来：披风往后飘一些，不飘成水平（下摆离脊椎 %.2f 米，站着时 %.2f）" % [run_behind, behind])
 	p.touch_move = Vector2.ZERO
 	await seconds(0.3)
-	var sf := av.cape._frame()
+	var sf := cp._frame()
 	var swing := 0.0
 	for k in Cape.COLS:
-		swing = maxf(swing, absf((av.cape.pos[(Cape.ROWS - 1) * Cape.COLS + k] - (sf.spine as Vector3)).dot(sf.right)))
+		swing = maxf(swing, absf((cp.pos[(Cape.ROWS - 1) * Cape.COLS + k] - (sf.spine as Vector3)).dot(sf.right)))
 	check(swing < Cape.WIDTH_BOTTOM * 0.5 + Cape.SIDE_SLACK + 0.05, "猛地停下：披风不甩到身体侧面去（下摆离中线最远 %.2f 米）" % swing)
 	await place(p, 40.0, -30.0)
 	await seconds(0.2)
-	var tf := av.cape._frame()
+	var tf := cp._frame()
 	var far := 0.0
-	for q in av.cape.pos:
+	for q in cp.pos:
 		far = maxf(far, q.distance_to(tf.neck))
 	check(far < Cape.LENGTH + 0.5, "传送以后披风重新垂下来，不会拉成长条（最远的点离脖子 %.2f 米）" % far)
 	await place(p, 0.0, 10.0)
@@ -2530,6 +2537,7 @@ func test_character() -> void:
 	m.release()
 	await seconds(0.6)
 	check(m.drawn() and c.role == "idle_armed" and c.playing() == "Sword_Idle", "拔剑后：持剑待机（%s）" % c.playing())
+	check(not av.gear.hilt.visible and av.weapon_mesh.visible, "拔剑后：剑在手里，背上只剩空鞘")
 	var rec: Array = []
 	m.hit.connect(func(_t, _info): rec.append([c.playing(), c.anim.current_animation_position]))
 	m.press()
