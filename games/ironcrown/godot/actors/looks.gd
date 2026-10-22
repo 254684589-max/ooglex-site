@@ -41,7 +41,15 @@ static func prop(npc_name: String, node_name := "") -> String:
 
 ## 这个人的部件路径和颜色：{"parts": [...], "look": {"tex": {材质: 贴图路径}, "tint": {材质: 颜色}}, "hide": [...]}；没配返回 {}
 static func spec(npc_name: String, node_name := "") -> Dictionary:
-	var p := _person(npc_name, node_name)
+	return spec_of(_person(npc_name, node_name))
+
+
+## 主角的打扮（A.2b）：looks.json 的 player 一条，格式和 people 里的一样，另加 cape（披风的颜色，actors/cape.gd）
+static func player() -> Dictionary:
+	return data().get("player", {})
+
+
+static func spec_of(p: Dictionary) -> Dictionary:
 	if p.is_empty():
 		return {}
 	var pre: Dictionary = data().get("presets", {}).get(str(p.get("preset", "")), {})
@@ -76,13 +84,18 @@ static func make(npc_name: String, node_name := "") -> CharacterModel:
 static func finish(m: CharacterModel) -> void:
 	if not m.loaded:
 		return
+	hide_parts(m)
+	for mi: MeshInstance3D in m.scene_root.find_children("*", "MeshInstance3D", true, false):
+		mi.visibility_range_end = LOD_FAR
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF      # NPC 不投影（低画质本来就没有阴影；中高画质省一半绘制）
+
+
+## 藏掉不要的部件（hide，例如兜帽）；主角也用（主角不做远处换胶囊）
+static func hide_parts(m: CharacterModel) -> void:
 	for n in m.get_meta("hide", []):
 		var node := m.scene_root.find_child(str(n), true, false)
 		if node != null:
 			(node as Node3D).visible = false       # 藏起来，不删：网页版删掉已经交给渲染器的蒙皮网格会报「material is null」（A.2a 实测）
-	for mi: MeshInstance3D in m.scene_root.find_children("*", "MeshInstance3D", true, false):
-		mi.visibility_range_end = LOD_FAR
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF      # NPC 不投影（低画质本来就没有阴影；中高画质省一半绘制）
 
 
 ## 校验（测试用）：预设、部件文件、贴图、颜色都对得上
@@ -97,8 +110,12 @@ static func validate() -> Array:
 			if not ResourceLoader.exists(DIR + str(pres[k].tex[m]) + ".png"):
 				errors.append("预设 %s：没有贴图 %s" % [k, pres[k].tex[m]])
 	var roles: Dictionary = CharacterModel.load_map().get("roles", {})
-	for who in data().get("people", {}):
-		var p: Dictionary = data().people[who]
+	var everyone: Dictionary = (data().get("people", {}) as Dictionary).duplicate()
+	everyone["主角"] = player()
+	if not Color.html_is_valid(str(player().get("cape", "#000"))):
+		errors.append("主角：披风颜色 %s 不对" % player().get("cape", ""))
+	for who in everyone:
+		var p: Dictionary = everyone[who]
 		if not roles.has(str(p.get("pose", "idle"))):
 			errors.append("%s：动作 %s 不在 character_anims.json 的 roles 里" % [who, p.get("pose", "")])
 		if str(p.get("prop", "")) != "" and not str(p.prop) in Props.KINDS:

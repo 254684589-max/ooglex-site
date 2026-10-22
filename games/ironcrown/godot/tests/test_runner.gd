@@ -2456,12 +2456,46 @@ func test_character() -> void:
 	check(c != null and c.loaded, "设置里是第三人称：开局就加载人物")
 	check(c.role == "idle" and c.playing() == "Idle_Loop", "站着不动：待机动作（%s）" % c.playing())
 	check(absf(c.rotation.y - PI) < 0.05, "人物模型面朝 -Z（和玩家的「向前」一致）")
+	# —— A.2b：主角的衣服与披风
+	var parts_names: Array = c.parts.map(func(x): return str(x).get_file().get_basename())
+	check(parts_names.has("Outfit_Male_Ranger") and parts_names.has("Head_Male") and parts_names.has("Hair_Beard"), "主角穿上游侠那套衣服，有头、发型和胡子（%s）" % [parts_names])
+	var hood := c.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D
+	check(hood != null and not hood.visible, "兜帽摘下来了（藏起来，不删）")
+	var cp: Cape = av.cape
+	check(cp != null and cp.is_inside_tree() and cp.top_level and cp.mesh.get_surface_count() == 1, "背上有披风（代码搭的布）")
+	var cf := cp._frame()
+	var mid_bottom: Vector3 = cp.pos[(Cape.ROWS - 1) * Cape.COLS + Cape.COLS / 2]
+	var behind := (mid_bottom - (cf.spine as Vector3)).dot(cf.back)
+	var drop: float = (cf.neck as Vector3).y - mid_bottom.y
+	check(behind > 0.05 and drop > 0.8 and drop < 1.5, "站着：披风垂在背后（下摆在脊椎后 %.2f 米、脖子下 %.2f 米）" % [behind, drop])
+	var nan_free := true
+	for q in cp.pos:
+		nan_free = nan_free and is_finite(q.x) and is_finite(q.y) and is_finite(q.z)
+	check(nan_free, "披风的点都是正常的数")
 	p.touch_move = Vector2(0, -0.5)
 	await seconds(0.5)
 	check(c.role == "walk" and c.playing() == "Walk_Loop" and c.anim.get_playing_speed() > 1.0, "半推摇杆：走路动作（加速 ×%.2f）" % c.anim.get_playing_speed())
 	p.touch_move = Vector2(0, -1.0)
 	await seconds(0.5)
 	check(c.role == "run" and c.playing() == "Jog_Fwd_Loop" and absf(c.anim.get_playing_speed() - 1.0) < 0.25, "推到底：跑步动作（×%.2f）" % c.anim.get_playing_speed())
+	var rf := av.cape._frame()
+	var run_bottom: Vector3 = av.cape.pos[(Cape.ROWS - 1) * Cape.COLS + Cape.COLS / 2]
+	var run_behind := (run_bottom - (rf.spine as Vector3)).dot(rf.back)
+	check(run_behind > behind + 0.1 and run_behind < 0.6, "跑起来：披风往后飘一些，不飘成水平（下摆离脊椎 %.2f 米，站着时 %.2f）" % [run_behind, behind])
+	p.touch_move = Vector2.ZERO
+	await seconds(0.3)
+	var sf := av.cape._frame()
+	var swing := 0.0
+	for k in Cape.COLS:
+		swing = maxf(swing, absf((av.cape.pos[(Cape.ROWS - 1) * Cape.COLS + k] - (sf.spine as Vector3)).dot(sf.right)))
+	check(swing < Cape.WIDTH_BOTTOM * 0.5 + Cape.SIDE_SLACK + 0.05, "猛地停下：披风不甩到身体侧面去（下摆离中线最远 %.2f 米）" % swing)
+	await place(p, 40.0, -30.0)
+	await seconds(0.2)
+	var tf := av.cape._frame()
+	var far := 0.0
+	for q in av.cape.pos:
+		far = maxf(far, q.distance_to(tf.neck))
+	check(far < Cape.LENGTH + 0.5, "传送以后披风重新垂下来，不会拉成长条（最远的点离脖子 %.2f 米）" % far)
 	await place(p, 0.0, 10.0)
 	p.touch_move = Vector2(0, 0.5)
 	await seconds(0.6)
