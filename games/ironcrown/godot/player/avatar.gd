@@ -6,6 +6,7 @@ extends Node3D
 ## 动作与近战判定的时间对齐见 data/character_anims.json 的 attacks（命中帧 = 动作里剑最靠前的那一刻）。
 ## 动作库里只有朝前走、跑、蹲走：侧着走、倒着走时把身体转向移动方向（超过 REVERSE_FROM 度就倒着播放前进动作）。
 ## 模型在第一次显示时才加载（不开第三人称的人不付这笔加载和显存的钱）。
+## A.2b：主角穿上衣服（looks.json 的 player：游侠那套压暗、摘下兜帽、发型和胡子），背上一件代码搭的披风（Cape）。
 ## 3.3 空手（Melee.unarmed()）：手里不挂剑；举拳待机是护脸的架势，出拳 / 重拳 / 格挡换成 character_anims.json 的 fists 一组动作。
 ## A.1b：轻击第三段（从头顶劈下）、冲刺突刺、轻击收招接 _Rec 动作、破防踉跄（和别的失衡分开）、受击胸口 / 头部轮换、
 ## 闪避（往侧面闪身体转过去滚，往后闪倒着滚）、从高处落地屈膝。
@@ -19,6 +20,7 @@ const HOLD_BLEND := 0.12
 
 var player: FpController
 var character: CharacterModel
+var cape: Cape
 var weapon_mesh: MeshInstance3D
 var model := ""
 var face_deg := 0.0               # 身体相对镜头方向的偏转（度，右为正）：斜走、侧着走时腿朝移动方向
@@ -47,7 +49,17 @@ func _ensure_character() -> void:
 	character = CharacterModel.new()
 	character.name = "Character"
 	character.rotation.y = PI          # 模型面朝 +Z，游戏里向前是 -Z
+	var s := Looks.spec_of(Looks.player())
+	if not s.is_empty():
+		character.parts = s.parts
+		character.look = s.look
+		character.set_meta("hide", s.hide)
 	add_child(character)
+	if character.loaded:
+		Looks.hide_parts(character)
+		if Looks.player().has("cape"):
+			cape = Cape.make(character, Color(str(Looks.player().cape)))
+			add_child(cape)
 	_state = -1
 	print("IC_AVATAR loaded=%s" % character.loaded)     # 网页冒烟测试读它
 
