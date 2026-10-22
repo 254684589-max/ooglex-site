@@ -11,6 +11,8 @@ extends Node
 ## 3.3 徒手格斗：没装备武器、或者打架时不许动刀（fists_only），手里就是拳头（FISTS）：出招时机和剑一样，够得着的距离短一些、体力省一些，
 ## 用格斗技能算伤害、涨格斗；格斗专长：连拳（轻拳三连）、重拳（重拳打中让对方失衡）、硬骨头（空手格挡体力减半）。
 ## 不致命的打斗（对方攻击带 nonlethal）：生命被打到 KO_FLOOR 就算被打倒（knocked_out），不会倒下死去。
+## A.1b 战斗动作扩充：轻击第三段（剑术 25「连环」后）是从头顶劈下；跑动中出剑是冲刺突刺（dash：不用蓄力、往前冲一步，伤害介于轻重之间）；
+## 拿着武器时往侧面或身后跳 = 闪避（dodge：往那边滚 / 闪开一段，前一段时间打不着你，耗体力）；被破防时记下原因（stagger_kind），人物换踉跄动作。
 
 signal swung(kind: String)
 signal hit(target: Node, info: Dictionary)
@@ -20,7 +22,7 @@ signal damaged(amount: int, info: Dictionary)
 signal defeated
 signal knocked_out(info: Dictionary)   # 不致命的打斗里被打倒（3.3）：生命停在 KO_FLOOR，不算倒下
 
-enum State { SHEATHED, DRAWING, IDLE, CHARGE, WINDUP, STRIKE, RECOVER, SHEATHING, BLOCK }
+enum State { SHEATHED, DRAWING, IDLE, CHARGE, WINDUP, STRIKE, RECOVER, SHEATHING, BLOCK, DODGE }
 
 const WEAPON_SKILL := {"sword": "blade", "club": "blunt", "fists": "brawl"}     # 武器外观 → 用的技能（2.7；拳头 3.3）
 const FISTS := {"name": "拳头", "model": "fists", "base": 5}       # 空手（3.3）：当成一件基础伤害 5 的「武器」
@@ -34,7 +36,15 @@ const SHEATHE_TIME := 0.3
 const TIMING := {
 	"light": {"wind": 0.10, "strike": 0.12, "recover": 0.30, "hit_at": 0.5, "cost": 12.0, "stop": 0.05, "kick": 0.6},
 	"heavy": {"wind": 0.0, "strike": 0.15, "recover": 0.45, "hit_at": 0.55, "cost": 25.0, "stop": 0.09, "kick": 1.4},
+	"dash": {"wind": 0.12, "strike": 0.14, "recover": 0.40, "hit_at": 0.6, "cost": 20.0, "stop": 0.07, "kick": 1.0},
 }
+## 冲刺突刺（A.1b）：起手到挥出这段时间里身体往前冲（米 / 秒）
+const DASH_LUNGE := 5.0
+## 闪避（A.1b）：时长、速度、开头多久打不着、体力
+const DODGE_TIME := 0.55
+const DODGE_SPEED := 6.5
+const DODGE_SAFE := 0.32
+const DODGE_COST := 18.0
 const COMBO_MAX := 2              # 轻击连击段数（剑术 25 专长「连环」后 3 段，见 combo_max()）
 const STAMINA_MAX := 100.0        # 体魄 5 时的体力上限；实际上限看 GameState.stamina_max()
 const SPRINT_COST := 12.0         # 每秒
@@ -86,6 +96,11 @@ var stagger_left := 0.0
 var down := false                 # 生命归零
 var counter_ready := false        # 剑术 50「反击」：完美格挡后下一击必定是重击
 var fists_only := false           # 打架时不许动刀，只用拳头（3.3，Brawl 设）
+var stagger_kind := ""            # 为什么失衡（A.1b）：guard_break = 格挡被打破 / hit = 别的（不致命的打斗被打倒）
+var dodge_dir := Vector3.ZERO     # 闪避的方向（世界空间，水平）
+var dodge_local := Vector2.ZERO   # 闪避的方向（相对身体：x 右、y 后），人物选动作用
+
+signal dodged(local: Vector2)
 
 
 func _ready() -> void:
@@ -141,7 +156,47 @@ func drawn() -> bool:
 
 
 func busy() -> bool:
-	return state in [State.CHARGE, State.WINDUP, State.STRIKE, State.RECOVER, State.BLOCK]
+	return state in [State.CHARGE, State.WINDUP, State.STRIKE, State.RECOVER, State.BLOCK, State.DODGE]
+
+
+func dodging() -> bool:
+	return state == State.DODGE
+
+
+## 跳键要不要换成闪避（A.1b）：拿着武器（拔出来了）、往侧面或身后推着方向；往前或不推方向照旧是跳（翻栅栏、跳上台子）
+static func wants_dodge(is_drawn: bool, input: Vector2) -> bool:
+	return is_drawn and input.length() > 0.3 and (input.y > 0.3 or (absf(input.x) > 0.5 and input.y > -0.5))
+
+
+## 闪避（A.1b）：input 是移动输入（x 右、y 后）。能闪：没倒下、没失衡、拔着武器、不在出招中途（收招、格挡时可以闪），体力够
+func dodge(input: Vector2) -> bool:
+	if down or staggered() or exhausted or stamina < DODGE_COST * 0.5:
+		return false
+	if not (state in [State.IDLE, State.RECOVER, State.BLOCK]):
+		return false
+	pressed = false
+	queued = false
+	dodge_local = input.normalized() if input.length() > 0.01 else Vector2(0, 1)
+	var d := player.global_transform.basis * Vector3(dodge_local.x, 0.0, dodge_local.y)
+	d.y = 0.0
+	dodge_dir = d.normalized()
+	_spend(DODGE_COST)
+	from_pose = view.current()
+	_enter(State.DODGE, DODGE_TIME)
+	if not Settings.reduced_motion:
+		cam_kick = 1.2
+	dodged.emit(dodge_local)
+	return true
+
+
+## 这一帧身体要被带着走的速度（闪避、冲刺突刺往前冲；FpController 每帧来问）；Vector3.ZERO = 照常走
+func forced_velocity() -> Vector3:
+	if state == State.DODGE:
+		var k := clampf(t / dur, 0.0, 1.0)
+		return dodge_dir * DODGE_SPEED * (1.0 - k * k)          # 前快后慢，收住
+	if kind == "dash" and state in [State.WINDUP, State.STRIKE]:
+		return -player.global_transform.basis.z * DASH_LUNGE
+	return Vector3.ZERO
 
 
 func blocking() -> bool:
@@ -184,6 +239,8 @@ func _enter_block() -> void:
 func receive_hit(info: Dictionary) -> String:
 	if down:
 		return "none"
+	if state == State.DODGE and t < DODGE_SAFE and info.get("kind") != "arrow":
+		return "dodge"                # 闪开了（箭照样射得中：闪避躲的是近身的刀）
 	var dmg := int(info.get("damage", 0))
 	var attacker: Node3D = info.get("attacker")
 	var front := true
@@ -196,7 +253,7 @@ func receive_hit(info: Dictionary) -> String:
 	if state == State.BLOCK and front and info.get("kind") == "kick":
 		# 踢（3.6，头目「灰手」奥弗）：格挡挡不住，直接破防；看到「踢！」就该往后退
 		_spend(minf(stamina, dmg * GUARD_COST))
-		_stagger_self()
+		_guard_broken()
 		guarded.emit("guard_break", info)
 		_take(dmg, info)
 		return "guard_break"
@@ -217,7 +274,7 @@ func receive_hit(info: Dictionary) -> String:
 			return "block"
 		# 体力不够挡：格挡被打破
 		_spend(stamina)
-		_stagger_self()
+		_guard_broken()
 		guarded.emit("guard_break", info)
 		_take(int(ceil(dmg * 0.5)), info)
 		return "guard_break"
@@ -256,11 +313,20 @@ func _take(dmg: int, info: Dictionary) -> void:
 		defeated.emit()
 
 
+## 格挡被打破（A.1b）：剑被磕开（第一人称从「磕开」的姿势慢慢收回来），人物换踉跄动作
+func _guard_broken() -> void:
+	if state == State.BLOCK:
+		view.set_pose(view.pose("broken"))
+	_stagger_self()
+	stagger_kind = "guard_break"
+
+
 func _stagger_self() -> void:
+	stagger_kind = "hit"
 	stagger_left = STAGGER_TIME
 	pressed = false
 	queued = false
-	if state in [State.BLOCK, State.CHARGE, State.WINDUP, State.STRIKE]:
+	if state in [State.BLOCK, State.CHARGE, State.WINDUP, State.STRIKE, State.DODGE]:
 		from_pose = view.current()
 		_enter(State.RECOVER, STAGGER_TIME)
 		kind = "light"
@@ -303,6 +369,9 @@ func press() -> void:
 		State.SHEATHED:
 			_draw_weapon()
 		State.IDLE:
+			if player.running and player.wants_run() and not unarmed():
+				_start_attack("dash")          # 跑着出剑：冲刺突刺（A.1b），不蓄力
+				return
 			held = 0.0
 			from_pose = view.current()
 			_enter(State.CHARGE, HEAVY_HOLD)
@@ -371,7 +440,7 @@ func _start_attack(k: String) -> void:
 		k = "heavy"               # 反击
 		counter_ready = false
 	kind = k
-	if k == "heavy":
+	if k != "light":
 		combo = 0
 	var tm: Dictionary = TIMING[k]
 	var cost: float = tm.cost * (FIST_COST if unarmed() else 1.0)
@@ -399,6 +468,10 @@ func _spend(amount: float) -> void:
 func _poses() -> Array:
 	if kind == "heavy":
 		return [view.pose("h_wind"), view.pose("h_end")]
+	if kind == "dash":
+		return [view.pose("d_wind"), view.pose("d_end")]
+	if combo == 2:
+		return [view.pose("l3_wind"), view.pose("l3_end")]     # 第三段（「连环」）：从头顶劈下
 	if combo % 2 == 0:
 		return [view.pose("l1_wind"), view.pose("l1_end")]
 	return [view.pose("l2_wind"), view.pose("l2_end")]
@@ -443,6 +516,15 @@ func _process(delta: float) -> void:
 				_enter_block()
 		State.BLOCK:
 			view.blend(from_pose, view.pose("block"), e)
+		State.DODGE:
+			view.blend(from_pose, view.pose("rest"), e)
+			if k >= 1.0:
+				from_pose = view.current()
+				_enter(State.IDLE, 1.0)
+				if block_held and not staggered():
+					_enter_block()
+				elif pressed:
+					press()
 		State.CHARGE:
 			held += delta
 			view.blend(from_pose, view.pose("h_wind"), clampf(held / HEAVY_HOLD, 0.0, 1.0))
@@ -453,7 +535,7 @@ func _process(delta: float) -> void:
 				_enter(State.STRIKE, TIMING[kind].strike / speed)
 		State.STRIKE:
 			var p := _poses()
-			view.blend(p[0] if kind == "light" else from_pose, p[1], k)
+			view.blend(p[0] if kind != "heavy" else from_pose, p[1], k)
 			if not hit_done and k >= float(TIMING[kind].hit_at):
 				hit_done = true
 				_resolve_hit()

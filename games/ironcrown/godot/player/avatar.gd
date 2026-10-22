@@ -7,6 +7,8 @@ extends Node3D
 ## 动作库里只有朝前走、跑、蹲走：侧着走、倒着走时把身体转向移动方向（超过 REVERSE_FROM 度就倒着播放前进动作）。
 ## 模型在第一次显示时才加载（不开第三人称的人不付这笔加载和显存的钱）。
 ## 3.3 空手（Melee.unarmed()）：手里不挂剑；举拳待机是护脸的架势，出拳 / 重拳 / 格挡换成 character_anims.json 的 fists 一组动作。
+## A.1b：轻击第三段（从头顶劈下）、冲刺突刺、轻击收招接 _Rec 动作、破防踉跄（和别的失衡分开）、受击胸口 / 头部轮换、
+## 闪避（往侧面闪身体转过去滚，往后闪倒着滚）、从高处落地屈膝。
 
 const TURN_SPEED := 10.0          # 身体朝向跟上移动方向的快慢（每秒）
 const REVERSE_FROM := 100.0       # 移动方向与镜头方向夹角超过这么多度：倒着走
@@ -25,6 +27,8 @@ var _state := -1
 var _last_role := ""
 var _hit_left := 0.0
 var _air_time := 0.0
+var _land_left := 0.0
+var _hits := 0                    # 挨打几次了：胸口、头部轮换着播
 
 
 func _ready() -> void:
@@ -33,6 +37,7 @@ func _ready() -> void:
 	player.melee.swung.connect(_on_swung)
 	player.melee.damaged.connect(_on_damaged)
 	player.melee.defeated.connect(_on_defeated)
+	player.melee.dodged.connect(_on_dodged)
 
 
 ## 第一次显示时建人物（模型 + 动作库），挂上手里的武器
@@ -99,7 +104,9 @@ func _update_facing(delta: float) -> void:
 	var local := player.global_transform.basis.inverse() * Vector3(v.x, 0.0, v.z)
 	var want := 0.0
 	reversed = false
-	if Vector2(local.x, local.z).length() > 0.3 and not player.melee.busy():
+	if player.melee.dodging():
+		local = Vector3(player.melee.dodge_local.x, 0.0, player.melee.dodge_local.y)     # 闪避：身体转向闪的方向（往后闪倒着滚）
+	if Vector2(local.x, local.z).length() > 0.3 and (player.melee.dodging() or not player.melee.busy()):
 		var ang := rad_to_deg(atan2(local.x, -local.z))     # 相对「向前」的夹角，右为正
 		if absf(ang) > REVERSE_FROM:
 			ang -= signf(ang) * 180.0                        # 倒着走：身体朝相反方向，前进动作倒放
@@ -120,9 +127,12 @@ func _update_anim(delta: float) -> void:
 			character.play_once("death", 1.0, 0.15)
 		return
 	if m.staggered():
-		if character.role != "stagger":
-			character.play_once("stagger", 1.0, 0.06)
+		var r := "guard_break" if m.stagger_kind == "guard_break" else "stagger"     # 格挡被打破：踉跄着把剑收回来（A.1b）
+		if character.role != r:
+			character.play_once(r, 1.0, 0.06)
 		return
+	if m.dodging():
+		return                                                # 闪避的动作是 _on_dodged 里开始的
 	if _hit_left > 0.0 and not m.busy():
 		return                                                # 挨打的动作还没播完
 	var fists := m.unarmed()
@@ -148,16 +158,27 @@ func _update_anim(delta: float) -> void:
 			return                                              # 出招动作是 _on_swung 里开始的，播它的
 		Melee.State.RECOVER:
 			if changed:
+				var rec: Dictionary = character.map.attacks.get("recover", {})
 				if fists:
 					character.hold("idle_fists", float(fm.idle_at), 0.25)     # 收拳：回到护脸的架势
+				elif rec.has(character.playing()):
+					character.play_once(str(rec[character.playing()]), float(rec.speed), 0.08)    # 轻击收招：接这一下的收势动作（A.1b）
 				else:
 					character.play_loop("idle_armed", 1.0, 0.25)   # 收招：缓缓回到持剑待机
 			return
 	var armed := st != Melee.State.SHEATHED
 	var hspeed := Vector2(player.velocity.x, player.velocity.z).length()
+	var landing := player.is_on_floor() and _air_time > 0.0
+	var land: Dictionary = character.map.get("land", {})
+	if landing and _air_time >= float(land.get("min_air", 99.0)) and hspeed < 1.0:
+		_land_left = float(land.time)
+		character.play_once("land", float(land.speed), 0.06)        # 从高处落下：屈膝缓一下（A.1b）
 	_air_time = 0.0 if player.is_on_floor() else _air_time + delta
 	if _air_time > AIR_DELAY:
 		character.play_loop("air", 1.0, 0.12)
+		return
+	_land_left = maxf(_land_left - delta, 0.0)
+	if _land_left > 0.0 and hspeed < 1.0 and character.role == "land":
 		return
 	var pick := CharacterModel.pick_locomotion(character.map, hspeed, player.crouching, armed)
 	if pick.role == "idle_armed" and fists:
@@ -175,7 +196,11 @@ func _on_swung(kind: String) -> void:
 	var tm: Dictionary = Melee.TIMING[kind]
 	var moves: Dictionary = character.map.fists if m.unarmed() else character.map.attacks     # 空手出拳（3.3）
 	var to_hit: float
-	if kind == "heavy":
+	if kind == "dash":
+		var d: Dictionary = moves.dash                         # 冲刺突刺（A.1b）
+		to_hit = (float(tm.wind) + float(tm.strike) * float(tm.hit_at)) / m.speed
+		character.play_once(str(d.clip), float(d.impact) / to_hit, 0.06)
+	elif kind == "heavy":
 		var a: Dictionary = moves.heavy
 		to_hit = float(tm.strike) * float(tm.hit_at) / m.speed
 		var from_t := float(a.wind_peak)                      # 蓄力已经把剑推到最高处，从那里劈下
@@ -183,14 +208,30 @@ func _on_swung(kind: String) -> void:
 	else:
 		var a := CharacterModel.light_attack(moves, m.combo)
 		to_hit = (float(tm.wind) + float(tm.strike) * float(tm.hit_at)) / m.speed
-		character.play_once(str(a.clip), float(a.impact) / to_hit, 0.06)
+		var from_t := float(a.get("from", 0.0))               # 第三段从举剑到最高处开始（A.1b）
+		character.play_once(str(a.clip), (float(a.impact) - from_t) / to_hit, 0.06, from_t)
 
 
 func _on_damaged(_amount: int, _info: Dictionary) -> void:
 	if not visible or character == null or not character.loaded or player.melee.down or player.melee.busy():
 		return
 	_hit_left = HIT_TIME
-	character.play_once("hit", 1.0, 0.05)
+	_hits += 1
+	character.play_once("hit_head" if _hits % 2 == 0 else "hit", 1.0, 0.05)     # 胸口、头部轮换（A.1b）
+
+
+## 闪避（A.1b）：Roll 只播中间翻滚那段（character_anims.json 的 dodge），按闪避时长调速；往后闪倒着播
+func _on_dodged(local: Vector2) -> void:
+	if not visible or character == null or not character.loaded:
+		return
+	var d: Dictionary = character.map.dodge
+	var span := float(d.to) - float(d.from)
+	var back := local.y > 0.0 and absf(rad_to_deg(atan2(local.x, -local.y))) > REVERSE_FROM
+	var s := span / Melee.DODGE_TIME
+	character.anim.speed_scale = 1.0
+	character.anim.play(character.clip("dodge"), 0.06, -s if back else s, back)
+	character.anim.seek(float(d.to) if back else float(d.from), true)
+	character.role = "dodge"
 
 
 ## 倒下：游戏马上暂停（倒下界面），人物自己要继续播完倒地的动作

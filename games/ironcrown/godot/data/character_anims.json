@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "人物动作映射（路线图 A.1，D4 = B；3.3 加了徒手的四个动作；A.2a+ 加了 NPC 的站姿、坐姿、干活、说话、点头摇头的动作）。动作全部来自 Quaternius Universal Animation Library 1 / 2 [Standard]（CC0，见 assets/SOURCES.md）；换动作只改这个文件，再运行 tools/build_character_anims.gd 重新打包动画库。时间单位都是秒（动作文件里的时间，不是游戏时间）。",
+  "note": "人物动作映射（路线图 A.1，D4 = B；3.3 加了徒手的四个动作；A.1b 加了主角的第三段劈砍、冲刺突刺、收招、破防踉跄、头部受击、翻滚闪避、落地，勾拳换掉 OverhandThrow；A.2a+ 加了 NPC 的站姿、坐姿、干活、说话、点头摇头的动作）。动作全部来自 Quaternius Universal Animation Library 1 / 2 [Standard]（CC0，见 assets/SOURCES.md）；换动作只改这个文件，再运行 tools/build_character_anims.gd 重新打包动画库。时间单位都是秒（动作文件里的时间，不是游戏时间）。",
   "sources": {
     "ual1": {
       "zip": "assets/source/quaternius/Universal Animation Library[Standard].zip",
@@ -28,7 +28,7 @@
     "Hit_Knockback": {"src": "ual2", "loop": false},
     "Punch_Jab": {"src": "ual1", "loop": false},
     "Punch_Cross": {"src": "ual1", "loop": false},
-    "OverhandThrow": {"src": "ual2", "loop": false},
+    "Melee_Hook": {"src": "ual2", "loop": false},
     "Idle_Shield_Loop": {"src": "ual2", "loop": true},
     "Idle_Talking_Loop": {"src": "ual1", "loop": true},
     "Idle_Torch_Loop": {"src": "ual1", "loop": true},
@@ -42,7 +42,15 @@
     "Consume": {"src": "ual2", "loop": true},
     "Yes": {"src": "ual2", "loop": false},
     "Idle_No_Loop": {"src": "ual2", "loop": false},
-    "LayToIdle": {"src": "ual2", "loop": false}
+    "LayToIdle": {"src": "ual2", "loop": false},
+    "Sword_Regular_C": {"src": "ual2", "loop": false},
+    "Sword_Regular_A_Rec": {"src": "ual2", "loop": false},
+    "Sword_Regular_B_Rec": {"src": "ual2", "loop": false},
+    "Sword_Dash": {"src": "ual2", "loop": false},
+    "Idle_Shield_Break": {"src": "ual2", "loop": false},
+    "Hit_Head": {"src": "ual1", "loop": false},
+    "Roll": {"src": "ual1", "loop": false},
+    "Jump_Land": {"src": "ual1", "loop": false}
   },
   "roles": {
     "idle": "Idle_Loop",
@@ -54,6 +62,10 @@
     "air": "Jump_Loop",
     "hit": "Hit_Chest",
     "stagger": "Hit_Knockback",
+    "guard_break": "Idle_Shield_Break",
+    "hit_head": "Hit_Head",
+    "dodge": "Roll",
+    "land": "Jump_Land",
     "death": "Death01",
     "block": "Sword_Block",
     "idle_fists": "Punch_Jab",
@@ -84,20 +96,26 @@
     "note": "出招动作与近战判定对齐：impact = 动作里剑最靠前、速度最快的时刻（从每帧右手位置量出）。播放速度 = (impact − 起点) ÷ 近战从起点到命中帧的时间（combat/melee.gd TIMING）。heavy 先蓄力：按住时把动作从 0 推到 wind_peak（抬到最高）停住，松手后从 wind_peak 打到 impact。",
     "light": [
       {"clip": "Sword_Regular_A", "impact": 0.23},
-      {"clip": "Sword_Regular_B", "impact": 0.23}
+      {"clip": "Sword_Regular_B", "impact": 0.23},
+      {"clip": "Sword_Regular_C", "impact": 0.66, "from": 0.45}
     ],
-    "heavy": {"clip": "Sword_Attack", "wind_peak": 0.33, "impact": 0.40}
+    "heavy": {"clip": "Sword_Attack", "wind_peak": 0.33, "impact": 0.40},
+    "dash": {"clip": "Sword_Dash", "impact": 0.32},
+    "recover": {"Sword_Regular_A": "Sword_Regular_A_Rec", "Sword_Regular_B": "Sword_Regular_B_Rec", "speed": 2.0},
+    "a1b_note": "A.1b（tools/measure_clips.gd 量的）：第三段 Sword_Regular_C 从头顶劈下，前面 0.45 秒是举剑的准备、跳过（from）；冲刺突刺 Sword_Dash 第 0.32 秒刺到最前；轻击收招播对应的 _Rec 动作（2 倍速，接回持剑待机）。"
   },
+  "dodge": {"note": "闪避（A.1b）：Roll 前 0.35 秒是下蹲起跳、1.25 秒以后是站直，只播中间这段，按 Melee.DODGE_TIME 调速；往身后闪倒着播。", "from": 0.35, "to": 1.25},
+  "land": {"note": "落地（A.1b）：从高处落下（腾空超过 min_air 秒）、落地时没在走动，播 Jump_Land 前 0.72 秒（膝盖弯下去再站起来）。", "min_air": 0.45, "speed": 1.6, "time": 0.45},
   "block": {"hold": 0.17},
   "fists": {
-    "note": "徒手（3.3）。举拳待机停在 Punch_Jab 第 0 帧（双拳护脸的架势，idle_at）；轻拳一刺拳（左手）、二直拳（右手）；重拳借用 OverhandThrow（抡圆了从上往下砸，手是张开的，占位）；空手格挡停在 Idle_Shield_Loop 第 0 帧（小臂横在胸前，block_at）。impact = 出拳那只手最靠前、最快的时刻（逐帧量手骨的位置）；播放速度的算法和持剑一样（见 attacks）。",
+    "note": "徒手（3.3）。举拳待机停在 Punch_Jab 第 0 帧（双拳护脸的架势，idle_at）；轻拳一刺拳（左手）、二直拳（右手）；重拳是 Melee_Hook（右手勾拳，A.1b 换掉了借用的 OverhandThrow）；空手格挡停在 Idle_Shield_Loop 第 0 帧（小臂横在胸前，block_at）。impact = 出拳那只手最靠前、最快的时刻（逐帧量手骨的位置）；播放速度的算法和持剑一样（见 attacks）。",
     "idle_at": 0.0,
     "block_at": 0.0,
     "light": [
       {"clip": "Punch_Jab", "impact": 0.19},
       {"clip": "Punch_Cross", "impact": 0.27}
     ],
-    "heavy": {"clip": "OverhandThrow", "wind_peak": 0.25, "impact": 0.36}
+    "heavy": {"clip": "Melee_Hook", "wind_peak": 0.22, "impact": 0.27}
   },
   "grip": {
     "note": "剑挂在 hand_r 骨骼上的位置与朝向（米 / 度），用截图校准：剑身沿手骨的 +Z（拇指一侧）再向手指方向（+Y）偏 45°（偏小时待机像把剑举向一侧，偏大时格挡像横着指向旁边，45° 折中），剑面法线朝手心（-X）；位置在手掌中心。",

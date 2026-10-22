@@ -1214,6 +1214,13 @@ func test_melee() -> void:
 	check(main.hud.stamina_visible() and main.hud.stamina_label.text.begins_with("体力 100"), "拔剑后左下角显示体力条和数值")
 	var tip: Vector3 = m.view.to_global(Vector3(0, 0.7, 0))
 	check(p.camera.is_position_in_frustum(m.view.global_position) and p.camera.is_position_in_frustum(tip), "持剑姿势：剑柄和剑尖都在画面里")
+	var off: Array = []
+	for key in ["l3_wind", "l3_end", "d_wind", "d_end", "broken"]:
+		m.view.set_pose(m.view.pose(key))
+		if not p.camera.is_position_in_frustum(m.view.global_position):
+			off.append(key)
+	m.view.set_pose(m.view.pose("rest"))
+	check(off.is_empty(), "A.1b 新姿势（第三段劈砍、冲刺突刺、被破防）：剑柄都在画面里（出画的：%s）" % [off])
 	var kinds: Array = []
 	m.swung.connect(func(k: String): kinds.append(k))
 	var hits: Array = []
@@ -1352,6 +1359,62 @@ func test_melee() -> void:
 	await physics(4)
 	var fd: Node3D = main.player.melee.find_target()
 	check(fd is TrainingDummy and fd.global_position.distance_to(Frostford.DUMMY_POS) < 0.01, "霜渡镇机位 5：剑程内正对木桩假人")
+	await free_main(main)
+	# —— A.1b：闪避与冲刺突刺（第一人称）
+	check(DamageCalc.compute(10.0, 5, 15, "dash") == 17, "冲刺突刺 × 1.4 = 17（介于轻击 12 和重击 22 之间）")
+	check(Melee.wants_dodge(true, Vector2(1, 0)) and Melee.wants_dodge(true, Vector2(0, 1)) and Melee.wants_dodge(true, Vector2(-0.7, 0.7)),
+		"拿着武器往右、往后、往左后跳 = 闪避")
+	check(not Melee.wants_dodge(true, Vector2(0, -1)) and not Melee.wants_dodge(true, Vector2.ZERO) and not Melee.wants_dodge(false, Vector2(1, 0)),
+		"往前跳、原地跳、收着剑往侧面跳：照旧是跳")
+	GameState.new_game(1)
+	main = await make_main(true)
+	p = main.player
+	m = p.melee
+	await place(p, 0.0, 10.0)
+	p.touch_move = Vector2(1.0, 0.0)
+	p.request_jump()
+	await physics(3)
+	check(not m.dodging() and p.velocity.y > 0.0, "收着剑往侧面跳：真的跳起来")
+	p.touch_move = Vector2.ZERO
+	await seconds(1.0)
+	m.toggle_draw()
+	await melee_tick(0.5)
+	var st0 := m.stamina
+	var hp0 := m.health
+	p.touch_move = Vector2(-1.0, 0.0)
+	p.request_jump()
+	await physics(3)
+	check(m.dodging() and p.velocity.y <= 0.01 and p.velocity.x < -3.0, "拔着剑往左跳：闪避，身体往左冲（%.1f 米 / 秒）" % p.velocity.x)
+	check(absf(m.stamina - (st0 - Melee.DODGE_COST)) < 0.5, "闪避花 %d 点体力（%.1f → %.1f）" % [int(Melee.DODGE_COST), st0, m.stamina])
+	check(m.receive_hit({"damage": 10, "kind": "light", "attacker": null}) == "dodge" and m.health == hp0, "闪避前段：刀砍不着你")
+	check(m.receive_hit({"damage": 3, "kind": "arrow", "attacker": null}) == "hit", "箭照样射得中")
+	check(p.camera.position.y < -0.02, "第一人称闪避：镜头往下沉（%.2f 米）" % p.camera.position.y)
+	p.touch_move = Vector2.ZERO
+	await seconds(0.6)
+	check(m.state == Melee.State.IDLE and m.view.visible, "闪避结束：回到持剑")
+	m.stamina = 5.0
+	p.touch_move = Vector2(1.0, 0.0)
+	p.request_jump()
+	await physics(3)
+	check(not m.dodging() and p.is_on_floor(), "体力不够：闪不了（也不会变成跳）")
+	p.touch_move = Vector2.ZERO
+	m.stamina = m.stamina_max()
+	await seconds(0.5)
+	var z0 := p.global_position.z
+	var kd: Array = []
+	m.swung.connect(func(k: String): kd.append(k))
+	p.touch_move = Vector2(0, -1.0)
+	await seconds(0.4)
+	check(p.running, "推到底在跑")
+	m.press()
+	await frames(2)
+	m.release()
+	check(kd == ["dash"] and m.state == Melee.State.WINDUP, "跑着按攻击：冲刺突刺，不蓄力")
+	p.touch_move = Vector2.ZERO
+	await seconds(0.15)
+	check(p.velocity.length() > 4.0, "突刺时身体往前冲（%.1f 米 / 秒）" % p.velocity.length())
+	await seconds(0.8)
+	check(m.state == Melee.State.IDLE and z0 - p.global_position.z > 2.0, "突刺收招，回到持剑")
 	await free_main(main)
 
 
@@ -2291,7 +2354,25 @@ func test_character() -> void:
 	var light_ok := true
 	for a in map.attacks.light:
 		light_ok = light_ok and float(a.impact) > 0.0 and float(a.impact) < lib.get_animation(a.clip).length
-	check(light_ok and (map.attacks.light as Array).size() == 2, "轻击两段，命中时刻都在动作长度之内")
+	for a in map.attacks.light:
+		light_ok = light_ok and float(a.get("from", 0.0)) < float(a.impact)
+	check(light_ok and (map.attacks.light as Array).size() == 3, "轻击三个动作（第三段给剑术「连环」），起点 < 命中时刻 < 动作长度")
+	# A.1b：冲刺突刺、收招、闪避、落地
+	var dm: Dictionary = map.attacks.dash
+	var dt: Dictionary = Melee.TIMING.dash
+	var dash_scale := float(dm.impact) / (float(dt.wind) + float(dt.strike) * float(dt.hit_at))
+	check(float(dm.impact) < lib.get_animation(dm.clip).length and dash_scale > 0.8 and dash_scale < 2.2, "冲刺突刺：命中时刻在动作之内，播放速度 ×%.2f" % dash_scale)
+	var c3: Dictionary = map.attacks.light[2]
+	var l3t: Dictionary = Melee.TIMING.light
+	var c3_scale := (float(c3.impact) - float(c3.from)) / (float(l3t.wind) + float(l3t.strike) * float(l3t.hit_at))
+	check(c3.clip == "Sword_Regular_C" and c3_scale > 0.8 and c3_scale < 2.2, "第三段从头顶劈下：跳过举剑的准备，播放速度 ×%.2f" % c3_scale)
+	var rc: Dictionary = map.attacks.recover
+	check(lib.has_animation(str(rc.Sword_Regular_A)) and lib.has_animation(str(rc.Sword_Regular_B)), "轻击两段各有收招动作")
+	var dg: Dictionary = map.dodge
+	var dodge_scale := (float(dg.to) - float(dg.from)) / Melee.DODGE_TIME
+	check(float(dg.from) < float(dg.to) and float(dg.to) < lib.get_animation(map.roles.dodge).length and dodge_scale > 1.0 and dodge_scale < 2.2,
+		"闪避：只播翻滚的中段，播放速度 ×%.2f" % dodge_scale)
+	check(float(map.land.speed) * float(map.land.time) < lib.get_animation(map.roles.land).length, "落地屈膝的那段在动作之内")
 	# 动作播放速度对齐近战判定的命中帧（改了 Melee.TIMING 之后动作不会变得离谱）
 	var lt: Dictionary = Melee.TIMING.light
 	var light_scale := float(CharacterModel.light_attack(map, 0).impact) / (float(lt.wind) + float(lt.strike) * float(lt.hit_at))
@@ -2299,7 +2380,7 @@ func test_character() -> void:
 	var heavy_scale := (float(h.impact) - float(h.wind_peak)) / (float(ht.strike) * float(ht.hit_at))
 	check(light_scale > 0.8 and light_scale < 2.2, "轻击动作播放速度 ×%.2f（0.8–2.2 内）" % light_scale)
 	check(heavy_scale > 0.5 and heavy_scale < 1.8, "重击劈下的播放速度 ×%.2f（0.5–1.8 内）" % heavy_scale)
-	check(CharacterModel.light_attack(map, 0).clip == "Sword_Regular_A" and CharacterModel.light_attack(map, 1).clip == "Sword_Regular_B" and CharacterModel.light_attack(map, 2).clip == "Sword_Regular_A", "轻击连击：第一段 A、第二段 B、第三段（剑术专长）回到 A")
+	check(CharacterModel.light_attack(map, 0).clip == "Sword_Regular_A" and CharacterModel.light_attack(map, 1).clip == "Sword_Regular_B" and CharacterModel.light_attack(map, 2).clip == "Sword_Regular_C", "轻击连击：第一段 A、第二段 B、第三段（剑术专长）C 从头顶劈下")
 	# 站 / 走 / 跑 / 蹲走的选择
 	var pk := CharacterModel.pick_locomotion(map, 0.0, false, false)
 	check(pk.role == "idle", "不动：待机")
@@ -2421,6 +2502,7 @@ func test_character() -> void:
 	m.release()
 	await seconds(0.3)
 	check(rec.size() == 1 and rec[0][0] == "Sword_Regular_A" and absf(rec[0][1] - float(map.attacks.light[0].impact)) < 0.08, "轻击第一段：命中帧时动作正好在挥到最前（%s，第 %.2f 秒，目标 %.2f）" % [rec[0][0] if rec.size() > 0 else "-", rec[0][1] if rec.size() > 0 else -1.0, float(map.attacks.light[0].impact)])
+	check(m.state == Melee.State.RECOVER and c.playing() == "Sword_Regular_A_Rec", "收招：接上第一段的收势动作（%s）" % c.playing())
 	m.press()
 	m.release()
 	await seconds(0.4)
@@ -2445,12 +2527,79 @@ func test_character() -> void:
 	await frames(3)
 	check(c.role == "hit" and c.playing() == "Hit_Chest", "挨打（没在出招）：受击动作（%s）" % c.playing())
 	await seconds(0.7)
+	m.receive_hit({"damage": 4, "kind": "light", "attacker": null})
+	await frames(3)
+	check(c.role == "hit_head" and c.playing() == "Hit_Head", "再挨一下：换成头部受击，不是每次一样（%s）" % c.playing())
+	await seconds(0.7)
 	check(c.role == "idle_armed", "受击动作播完回到待机（%s）" % c.role)
 	m.stagger_left = 0.6
 	await frames(3)
 	check(c.role == "stagger" and c.playing() == "Hit_Knockback", "失衡：被击退的动作（%s）" % c.playing())
 	m.stagger_left = 0.0
 	await seconds(0.5)
+	# —— A.1b：破防踉跄、第三段劈砍、冲刺突刺、闪避、落地
+	m.block_press()
+	await seconds(0.3)
+	m.stamina = 2.0
+	m.receive_hit({"damage": 10, "kind": "light", "attacker": null})
+	await frames(3)
+	check(m.stagger_kind == "guard_break" and c.role == "guard_break" and c.playing() == "Idle_Shield_Break", "体力不够挡、格挡被打破：踉跄动作（%s）" % c.playing())
+	m.block_release()
+	m.health = m.health_max()
+	await seconds(1.2)
+	m.stamina = m.stamina_max()
+	GameState.skills.blade = 25
+	rec.clear()
+	for i in 3:
+		m.press()
+		m.release()
+		await seconds(0.3)
+	await seconds(0.4)
+	check(rec.size() == 3 and rec[2][0] == "Sword_Regular_C" and absf(rec[2][1] - float(map.attacks.light[2].impact)) < 0.08,
+		"剑术 25「连环」：第三段从头顶劈下，命中帧对齐（%s，第 %.2f 秒；%s）" % [rec[2][0] if rec.size() > 2 else "-", rec[2][1] if rec.size() > 2 else -1.0, rec])
+	GameState.skills.blade = 0
+	await seconds(1.0)
+	await place(p, 0.0, 10.0)
+	m.stamina = m.stamina_max()
+	var kinds: Array = []
+	m.swung.connect(func(k: String): kinds.append(k))
+	p.touch_move = Vector2(0, -1.0)
+	await seconds(0.5)
+	m.press()
+	await frames(3)
+	m.release()
+	await frames(2)
+	check(kinds.back() == "dash" and c.playing() == "Sword_Dash", "跑着出剑：冲刺突刺（%s）" % c.playing())
+	p.touch_move = Vector2.ZERO
+	await seconds(1.0)
+	check(m.state == Melee.State.IDLE, "突刺收招，回到持剑")
+	await place(p, 0.0, 10.0)
+	m.stamina = m.stamina_max()
+	var start := p.global_position
+	p.touch_move = Vector2(1.0, 0.0)
+	p.request_jump()
+	await frames(3)
+	check(m.dodging() and c.role == "dodge" and c.playing() == "Roll" and c.anim.get_playing_speed() > 0.0, "拿着剑往右跳：闪避，翻滚动作（%s）" % c.playing())
+	await seconds(0.25)
+	check(absf(av.face_deg - 90.0) < 20.0, "往右闪：身体转向右边滚（偏转 %.0f°）" % av.face_deg)
+	p.touch_move = Vector2.ZERO
+	await seconds(0.5)
+	var moved := p.global_position - start
+	check(not m.dodging() and moved.x > 1.2 and absf(moved.z) < 0.5 and p.is_on_floor(), "闪避结束：往右闪开 %.1f 米，没有跳起来" % moved.x)
+	m.stamina = m.stamina_max()
+	p.touch_move = Vector2(0.0, 1.0)
+	p.request_jump()
+	await frames(3)
+	check(m.dodging() and c.anim.get_playing_speed() < 0.0, "往后跳：往后闪，翻滚倒着播（×%.2f）" % c.anim.get_playing_speed())
+	p.touch_move = Vector2.ZERO
+	await seconds(0.8)
+	# 从高处落下：屈膝
+	await place(p, 0.0, 10.0)
+	p.global_position.y += 2.0
+	await seconds(0.85)
+	check(c.role == "land" and c.playing() == "Jump_Land", "从 2 米高处落下：落地屈膝（%s）" % c.playing())
+	await seconds(0.8)
+	check(c.role == "idle_armed", "屈膝之后回到持剑待机（%s）" % c.role)
 	m.health = 3
 	m.receive_hit({"damage": 9, "kind": "light", "attacker": null})
 	await seconds(0.5)
@@ -3046,10 +3195,10 @@ func test_brawl() -> void:
 	rec.clear()
 	m.press()
 	await seconds(0.5)
-	check(c.playing() == "OverhandThrow" and c.anim.get_playing_speed() == 0.0 and absf(c.anim.current_animation_position - float(fh.wind_peak)) < 0.02, "按住蓄重拳：拳头抡到身后停住（第 %.2f 秒）" % c.anim.current_animation_position)
+	check(c.playing() == "Melee_Hook" and c.anim.get_playing_speed() == 0.0 and absf(c.anim.current_animation_position - float(fh.wind_peak)) < 0.02, "按住蓄重拳：勾拳拉到最开停住（第 %.2f 秒）" % c.anim.current_animation_position)
 	m.release()
 	await seconds(0.5)
-	check(rec.size() == 1 and rec[0][0] == "OverhandThrow" and absf(rec[0][1] - float(fh.impact)) < 0.08, "重拳：松手砸下，命中帧对齐（第 %.2f 秒，目标 %.2f）" % [rec[0][1] if rec.size() > 0 else -1.0, float(fh.impact)])
+	check(rec.size() == 1 and rec[0][0] == "Melee_Hook" and absf(rec[0][1] - float(fh.impact)) < 0.08, "重拳：松手勾出去，命中帧对齐（第 %.2f 秒，目标 %.2f）" % [rec[0][1] if rec.size() > 0 else -1.0, float(fh.impact)])
 	await seconds(0.8)
 	m.block_press()
 	await seconds(0.4)
