@@ -331,6 +331,20 @@ func _ready() -> void:
 			print("IC_ORDER_SCREEN x=%d y=%d fx=%d fy=%d" % [oc.x, oc.y, fc.x, fc.y])
 
 
+## 调色曲线（每个颜色通道按这条渐变查表）：0 和 1 不动；暗部（约 0.2）蓝一点、红少一点，亮部（约 0.75）红黄多一点、蓝少一点
+static func grade_curve() -> GradientTexture1D:
+	var g := Gradient.new()
+	g.set_color(0, Color(0, 0, 0))
+	g.set_color(1, Color(1.0, 0.985, 0.95))
+	g.add_point(0.2, Color(0.185, 0.2, 0.225))
+	g.add_point(0.5, Color(0.5, 0.5, 0.495))
+	g.add_point(0.75, Color(0.765, 0.75, 0.715))
+	var t := GradientTexture1D.new()
+	t.gradient = g
+	t.width = 256
+	return t
+
+
 func _build_environment() -> void:
 	env = Environment.new()
 	env.background_mode = Environment.BG_COLOR
@@ -368,6 +382,7 @@ func _build_environment() -> void:
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.08
 	env.adjustment_saturation = 0.85
+	env.adjustment_color_correction = grade_curve()      # 2026-10-23 场景美化三：暗部偏冷、亮部偏暖（电影里常见的分离色调），很轻
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
