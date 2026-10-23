@@ -31,6 +31,19 @@
 | 鹭沼的湿泥（泥滩、泥潭） | brown_mud_02 | https://polyhaven.com/a/brown_mud_02 | Rob Tuytel |
 | 鹭沼的干岸（草皮泥炭地，压暗偏灰） | grass_path_2 | https://polyhaven.com/a/grass_path_2 | Rob Tuytel |
 
+2026-10-23 第二章「余火高地」（路线图 5.1a，D12）新增四套地面贴图和一张天空照片，同样来自 Poly Haven（CC0 1.0），**放在第二章章节包里**（`godot/chapters/ch2/`，进第二章才下载，主包不变大）。
+贴图只取颜色（diff）和 OpenGL 法线（nor_gl）两张 1K JPG，法线导入时缩到 512；地形着色器按世界坐标贴（`shaders/highland_ground.gdshader`）：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 | 下载日期 |
+|---|---|---|---|---|
+| 高地平处的积雪 | snow_02 | https://polyhaven.com/a/snow_02 | Rob Tuytel | 2026-10-23 |
+| 盘山路和村里踩出来的雪（有脚印） | snow_01 | https://polyhaven.com/a/snow_01 | Rob Tuytel | 2026-10-23 |
+| 雪薄处的碎石 | gray_rocks | https://polyhaven.com/a/gray_rocks | Rob Tuytel | 2026-10-23 |
+| 陡坡、岩坎露出的岩石（长地衣的灰岩） | mossy_rock | https://polyhaven.com/a/mossy_rock | Rob Tuytel | 2026-10-23 |
+| 天空：阴天的云（HDRI「Kloofendal Overcast (Pure Sky)」2K，只取上半球、色调映射成普通照片 `chapters/ch2/sky/overcast_sky.jpg`，2048 × 512） | kloofendal_overcast_puresky | https://polyhaven.com/a/kloofendal_overcast_puresky | Greg Zaal | 2026-10-23 |
+
+看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
+
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）
 
 三个包的许可文件（包内 `License_Standard.txt` / `License.txt`）都写 **CC0 1.0 Universal**（https://creativecommons.org/publicdomain/zero/1.0/）；Quaternius 页面标注个人、教育、商业项目均可使用。

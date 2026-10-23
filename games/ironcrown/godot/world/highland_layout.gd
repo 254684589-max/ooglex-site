@@ -1,0 +1,243 @@
+class_name HighlandLayout
+extends RefCounted
+## 余火高地连片地图的布局（路线图 5.1a，D10-B、D12；STORY.md 5.2）：只放数据和「这一点有多高」，搭场景在 world/highland.gd。
+## 第一张有起伏的地图（鹭沼是平的）：南边山谷底是羊脊村（5.2 盖房子），一条盘山路之字形爬上北边的山脊，
+## 山脊上是第十九烽（5.3），往西一座是熄了的第十八烽（5.5a）；山脊背后往下是白寂边缘的冰原（5.8）。
+## 坐标：x 往东、-z 往北（和别的区域一样），y 是高度（米）。整张图 320 × 260 米，地形每 1 米一个采样点（高度场）。
+##
+## 高度 = 大轮廓（往北一路抬升到山脊、东西两边是山肩）+ 噪声（起伏）→ 村子那片压平 → 盘山路切进山坡（路面平、两边过渡），
+## 路的上坡一侧在「伏击段」多一道岩坎（STORY.md 5.6「一侧峭壁、一侧缓坡」）。
+## 地面贴图的分布另外记在每个采样点上（mask）：路 / 村里踩出来的地（脚印雪）、碎石（噪声斑块）、遮蔽（凹处暗一点）；陡坡露岩由着色器按坡度算。
+
+const BOUNDS := Rect2(-160, -130, 320, 260)
+const STEP := 1.0                       # 高度场的采样间距（米）
+const NX := 321                         # x 方向采样点数（-160..160）
+const NZ := 261                         # z 方向（-130..130）
+const CHUNK := 64.0                     # 画面分块（米）
+const WALL_INSET := 5.0                 # 看不见的墙离地图边多远（物理层 5「边界」）
+const WALL_H := 60.0
+
+const VILLAGE := Vector2(8.0, 88.0)     # 羊脊村中心（5.2 盖房子）：压平的一片
+const VILLAGE_R := 34.0
+const VILLAGE_Y := 0.6
+const BEACON19 := Vector2(22.0, -64.0)  # 第十九烽「断角烽」（5.3）
+const BEACON18 := Vector2(-118.0, -74.0) # 第十八烽（5.5a）
+const WELL := Vector2(-20.0, -112.0)    # 白寂边缘的石井（5.8）
+const PAD_R := 14.0                     # 烽燧脚下压平的一片
+
+## 盘山路（STORY.md 5.2）：从南边进村的路口 → 村子 → 之字形五段爬上山脊 → 第十九烽门前。路面宽 HALF × 2
+const ROAD := [Vector2(4.0, 128.0), Vector2(6.0, 104.0), Vector2(10.0, 62.0), Vector2(58.0, 36.0), Vector2(-38.0, 8.0),
+	Vector2(48.0, -22.0), Vector2(-6.0, -44.0), Vector2(18.0, -56.0)]
+const ROAD_HALF := 2.4
+const ROAD_BLEND := 7.0                 # 路边多宽从路面高度过渡回山坡
+const AMBUSH_LEG := 4                   # 第几段是伏击段（ROAD[4] → ROAD[5]：上坡一侧是岩坎）
+const CLIFF_H := 7.5
+
+## 命名出生点：[位置（y 由地形算）, 水平朝向（度）]
+const SPAWN_XZ := {
+	"village": [Vector2(6.0, 112.0), 0.0],          # 进村的路口，面朝北（村子、身后是来路）
+	"road": [Vector2(-30.0, 10.0), -60.0],          # 盘山路第三个弯
+	"beacon": [Vector2(14.0, -52.0), -20.0],        # 第十九烽门前
+	"plain": [Vector2(-10.0, -96.0), 180.0],        # 山脊背后，面朝北的冰原
+}
+## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
+const VIEW_SPEC := [
+	[Vector3(6.0, 1.7, 116.0), 8.0, 2.0],           # 0 进村的路口往北看：山谷、村子那片平地、远处山坡上的路
+	[Vector3(60.0, 1.7, 40.0), 140.0, -6.0],        # 1 盘山路第一个弯往下看：山谷、村子
+	[Vector3(-25.0, 1.7, 3.5), -70.0, 0.0],         # 2 伏击段（沿着路往东北走）：左手边是岩坎、右手边是缓坡
+	[Vector3(50.0, 1.7, -19.0), 192.0, -10.0],      # 3 半山腰的弯道上往南回看整条山谷
+	[Vector3(-6.0, 1.7, -88.0), 0.0, -3.0],         # 4 山脊背后往北看冰原（白寂边缘）
+]
+const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘"]
+
+
+## 大轮廓（不含噪声）：南边谷底 0 米 → 往北抬升 → 山脊（z 约 -68，最高约 46 米，西高东低）→ 山脊背后落到冰原（约 30 米）；东西两边是山肩
+static func base(x: float, z: float) -> float:
+	var crest := -68.0 + 7.0 * sin(x / 37.0) + 3.0 * sin(x / 13.0 + 1.3)
+	var top := 40.0 - x * 0.04 + 3.0 * sin(x / 23.0)           # 山脊高度：西边高一点
+	var y: float
+	if z > crest:
+		var t := clampf((z - crest) / (66.0 - crest), 0.0, 1.0)  # 0 = 山脊，1 = 谷底（z = 66）
+		y = top * (1.0 - _smooth(t)) - 1.5 * t
+	else:
+		var t := clampf((crest - z) / 26.0, 0.0, 1.0)            # 山脊往北 26 米落到冰原
+		y = lerpf(top, 29.0, _smooth(t))
+	var ax := absf(x)
+	y += 34.0 * _smooth(clampf((ax - 95.0) / 75.0, 0.0, 1.0)) * (0.6 + 0.4 * clampf((z + 30.0) / 120.0, 0.0, 1.0))  # 东西山肩（南边谷里更明显）
+	return y
+
+
+static func _smooth(t: float) -> float:
+	return t * t * (3.0 - 2.0 * t)
+
+
+static var _noise_big: FastNoiseLite
+static var _noise_small: FastNoiseLite
+static var _noise_paint: FastNoiseLite
+
+
+static func _noises() -> void:
+	if _noise_big != null:
+		return
+	_noise_big = FastNoiseLite.new()                  # 大起伏：几十米一个包
+	_noise_big.seed = 2046
+	_noise_big.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	_noise_big.frequency = 0.012
+	_noise_big.fractal_octaves = 3
+	_noise_small = FastNoiseLite.new()                # 小起伏：几米的坑洼、雪堆
+	_noise_small.seed = 646
+	_noise_small.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	_noise_small.frequency = 0.07
+	_noise_small.fractal_octaves = 2
+	_noise_paint = FastNoiseLite.new()                # 贴图分布的斑块（碎石、村里踩出来的地）
+	_noise_paint.seed = 11
+	_noise_paint.frequency = 0.035
+	_noise_paint.fractal_octaves = 3
+
+
+## 起伏（米）：噪声（固定种子，每次载入都一样）；冰原上换成风吹出来的长条雪浪（顺着西北风）
+static func bumps(x: float, z: float) -> float:
+	_noises()
+	var n := 4.2 * _noise_big.get_noise_2d(x, z) + 0.55 * _noise_small.get_noise_2d(x, z)
+	if z < -80.0:
+		var k := clampf((-80.0 - z) / 14.0, 0.0, 1.0)
+		var along := x * 0.6 + z * 0.8
+		var dune := 0.5 * sin(along * 0.19 + 2.0 * _noise_big.get_noise_2d(x * 0.5, z * 0.5)) + 0.25 * _noise_small.get_noise_2d(x * 0.4, z * 1.6)
+		n = lerpf(n, n * 0.3 + dune, k)
+	return n
+
+
+## 自然地面（还没压村子、切路）
+static func natural(x: float, z: float) -> float:
+	return base(x, z) + bumps(x, z)
+
+
+## 路面中线在这一段 t（0..1）处的高度：两头的路口高度之间线性——路是顺着坡一路往上的，不跟着小起伏
+static func road_y_at(i: int, t: float) -> float:
+	return lerpf(_road_node_y(i), _road_node_y(i + 1), t)
+
+
+## 路口的高度：出了村以后，「山坡在这儿多高」和「从村口到烽燧一路匀速爬上去」各取一半——
+## 只按山坡，S 形的坡把爬升挤在中间几段（最陡 19%，粮车上不去）；只按匀速，西边的弯要垫高 6 米。现在每段 10%–16%，弯道处垫起两三米（像垒出来的路基）
+static func _road_node_y(i: int) -> float:
+	var p: Vector2 = ROAD[i]
+	if p.distance_to(VILLAGE) < VILLAGE_R:
+		return VILLAGE_Y
+	var first := 0
+	while (ROAD[first] as Vector2).distance_to(VILLAGE) >= VILLAGE_R or (ROAD[first + 1] as Vector2).distance_to(VILLAGE) < VILLAGE_R:
+		first += 1                                           # 村里最后一个路口
+	var last := ROAD.size() - 1
+	var top_y := base((ROAD[last] as Vector2).x, (ROAD[last] as Vector2).y) + 0.3
+	if i == last:
+		return top_y
+	var total := 0.0
+	var upto := 0.0
+	for k in range(first, last):
+		var seg := (ROAD[k] as Vector2).distance_to(ROAD[k + 1])
+		total += seg
+		if k < i:
+			upto += seg
+	var even := lerpf(VILLAGE_Y, top_y, upto / total)
+	return (even + base(p.x, p.y) + 0.3) * 0.5
+
+
+## 一点离盘山路有多远、最近的是哪一段、在那一段的哪儿、在路的哪一边（+1 = 走路方向的左手边）
+static func road_hit(p: Vector2) -> Dictionary:
+	var best := {"d": INF, "i": -1, "t": 0.0, "side": 0.0}
+	for i in ROAD.size() - 1:
+		var a: Vector2 = ROAD[i]
+		var b: Vector2 = ROAD[i + 1]
+		var ab := b - a
+		var t := clampf((p - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+		var q := a + ab * t
+		var d := p.distance_to(q)
+		if d < best.d:
+			best = {"d": d, "i": i, "t": t, "side": signf(ab.cross(p - a))}
+	return best
+
+
+## 最终高度（地形网格、碰撞、出生点都用它；Highland 一次算好整张高度场）
+static func height(x: float, z: float) -> float:
+	var y := natural(x, z)
+	var p := Vector2(x, z)
+	var dv := p.distance_to(VILLAGE)                               # 村子：压平，边上 12 米过渡
+	if dv < VILLAGE_R + 12.0:
+		var k := _smooth(clampf((VILLAGE_R + 12.0 - dv) / 12.0, 0.0, 1.0))
+		y = lerpf(y, VILLAGE_Y + 0.25 * bumps(x * 0.5, z * 0.5), k)
+	for c in [BEACON19, BEACON18]:                                 # 烽燧脚下：压平一小片
+		var dc := p.distance_to(c)
+		if dc < PAD_R + 6.0:
+			var cy := base(c.x, c.y) + 1.0
+			y = lerpf(y, cy, _smooth(clampf((PAD_R + 6.0 - dc) / 6.0, 0.0, 1.0)))
+	var r := road_hit(p)
+	if r.d < ROAD_HALF + ROAD_BLEND:
+		var ry := road_y_at(r.i, r.t) + 0.08 * bumps(x * 3.0, z * 3.0)
+		var k := 1.0 if r.d <= ROAD_HALF else _smooth(1.0 - (r.d - ROAD_HALF) / ROAD_BLEND)
+		y = lerpf(y, ry, k)
+	y += _cliff(p)
+	return y
+
+
+## 伏击段（ROAD[AMBUSH_LEG] → 下一点）上坡一侧的岩坎：贴着路边 3 米内陡起来，再往外 30 米慢慢落回山坡（不是一堵墙、也不是一块平台）；两头收掉
+static func _cliff(p: Vector2) -> float:
+	var a: Vector2 = ROAD[AMBUSH_LEG]
+	var b: Vector2 = ROAD[AMBUSH_LEG + 1]
+	var ab := b - a
+	var t := clampf((p - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+	if t <= 0.06 or t >= 0.94:
+		return 0.0
+	if signf(ab.cross(p - a)) != _uphill_side(AMBUSH_LEG):
+		return 0.0
+	var d := p.distance_to(a + ab * t) - ROAD_HALF - 0.5
+	if d <= 0.0 or d > 32.0:
+		return 0.0
+	_noises()
+	var along := _smooth(clampf(minf(t - 0.06, 0.94 - t) / 0.16, 0.0, 1.0))
+	var rise := _smooth(clampf((d + 1.3 * _noise_small.get_noise_2d(p.x * 1.3, p.y * 1.3)) / 4.5, 0.0, 1.0))   # 岩坎的脚不是一条直线
+	var fall := 1.0 - _smooth(clampf((d - 4.0) / 28.0, 0.0, 1.0))
+	return CLIFF_H * rise * fall * along * (0.8 + 0.35 * _noise_small.get_noise_2d(p.x * 2.0, p.y * 2.0))
+
+
+## 这一段路哪一边是上坡（北边高）：路往前走时北边在左手 = +1
+static func _uphill_side(i: int) -> float:
+	var ab: Vector2 = ROAD[i + 1] - ROAD[i]
+	return signf(ab.cross(Vector2(0, -1)))
+
+
+## 地面贴图的分布（0..1）：track = 路和村里踩出来的地（脚印雪）；scree = 碎石斑块（山坡上、雪薄的地方）
+static func masks(x: float, z: float) -> Vector2:
+	var p := Vector2(x, z)
+	var track := 0.0
+	var r := road_hit(p)
+	if r.d < ROAD_HALF + 1.6:
+		track = _smooth(clampf((ROAD_HALF + 1.6 - r.d) / 1.8, 0.0, 1.0))
+	var dv := p.distance_to(VILLAGE)
+	if dv < VILLAGE_R:                                             # 村里：踩出来的地一块一块的（5.2 盖房子以后按房子改）
+		_noises()
+		var spots := 0.5 + 0.5 * _noise_paint.get_noise_2d(x * 1.7, z * 1.7)
+		track = maxf(track, _smooth(clampf((VILLAGE_R - dv) / 10.0, 0.0, 1.0)) * clampf(spots * 1.6 - 0.35, 0.0, 1.0))
+	for c in [BEACON19, BEACON18]:
+		var dc := p.distance_to(c)
+		if dc < PAD_R:
+			track = maxf(track, _smooth(clampf((PAD_R - dc) / 6.0, 0.0, 1.0)) * 0.8)
+	_noises()
+	var s := 0.5 + 0.5 * _noise_paint.get_noise_2d(x, z)
+	var scree := clampf((s - 0.6) * 4.0, 0.0, 1.0) * clampf((z - (-80.0)) / 20.0, 0.0, 1.0)   # 冰原上没有碎石
+	return Vector2(track, scree)
+
+
+static func spawn_points() -> Dictionary:
+	var out := {}
+	for id in SPAWN_XZ:
+		var s: Array = SPAWN_XZ[id]
+		var p: Vector2 = s[0]
+		out[id] = [Vector3(p.x, height(p.x, p.y) + 0.05, p.y), s[1]]
+	return out
+
+
+static func views() -> Array:
+	var out := []
+	for v: Array in VIEW_SPEC:
+		var p: Vector3 = v[0]
+		out.append([Vector3(p.x, height(p.x, p.z) + p.y, p.z), v[1], v[2]])
+	return out

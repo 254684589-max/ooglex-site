@@ -199,6 +199,8 @@ func _ready() -> void:
 			t = Ferry.build(world, Settings.reduced_motion)
 		"marsh":
 			t = Marsh.build(world, Settings.reduced_motion)
+		"highland":
+			t = Highland.build(world, Settings.reduced_motion)
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
@@ -237,7 +239,9 @@ func _ready() -> void:
 	add_child(player)
 	player.global_transform = t
 	if not Areas.is_indoor(area) and not use_test_range and not use_arena and area != "battle":
-		Atmos.snow(player)                # 户外落雪（2026-10-23 场景美化二）
+		Atmos.snow(player, Atmos.HIGHLAND_WIND if area == "highland" else Vector3.ZERO)   # 户外落雪（2026-10-23 场景美化二）；高地有风（5.1a）
+		if area == "highland" and not Settings.reduced_motion:
+			Atmos.drift(player)           # 高地：贴地的吹雪
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
@@ -265,8 +269,8 @@ func _ready() -> void:
 			player.global_transform = st
 	_prime_chunks()
 	spawn = player.global_position
-	if _query("preview") == "1":
-		playable_chapter = maxi(playable_chapter, 1)
+	if _query("preview").is_valid_int() and int(_query("preview")) >= 1:
+		playable_chapter = maxi(playable_chapter, mini(int(_query("preview")), Chapters.LIST.size() - 1))   # ?preview=2：第二章还没开放也能从第一章章末进（5.1a）
 	elif _query("preview") == "0":
 		playable_chapter = 0                     # 截图、冒烟用：看第一章开放以前的结束画面（只有两个按钮，4.3）
 	_place_chapter_content()
@@ -303,6 +307,8 @@ func _ready() -> void:
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done"):
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
 		open_travel_map.call_deferred(near_travel_point())
+	if Areas.pack_chapter(area) > 0 and not Chapters.content_ready(Areas.pack_chapter(area)):
+		_fetch_area_pack.call_deferred()             # 网页上直接 ?area=highland 而章节包没到（5.1a）：先用纯色搭好了，下载完重新载入
 	if area == "castle":
 		for e in Castle.occupy(world):                  # 失守以后的天亮（4.10a）：另一位继承人的人巡着庭院
 			e.state_changed.connect(_on_occupier_state)
@@ -492,7 +498,7 @@ func _dress_late(root: Node3D) -> void:
 
 ## 当前时段的雾在几米外吞没（室内、测试场 0）
 func _fog_end() -> float:
-	return float(Daypart.PRESETS[daypart].fog_end) if Daypart.affects(area) else 0.0
+	return float(Daypart.preset(area, daypart).fog_end) if Daypart.affects(area) else 0.0
 
 
 ## 画质分档（TECH.md 第五节）：低 = 0.75 倍分辨率、无阴影、无泛光、无各向异性过滤、雾带减半；
@@ -1408,7 +1414,7 @@ func show_ending(id: String, choice := "") -> void:
 	touch_was_visible = touch.visible
 	touch.visible = false
 	if id == "ch1":
-		ending_panel.open_chapter1(Settings.reduced_motion)       # 第一章完（4.10b）
+		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
 	else:
 		ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
 	print("IC_ENDING id=%s choice=%s next=%d" % [id, choice, ending_panel.next_chapter])
@@ -1451,6 +1457,20 @@ func start_chapter(n: int) -> void:
 		"player": {"health": player.melee.health_max(), "stamina": player.melee.stamina_max()}}
 	print("IC_CHAPTER start=%d area=%s" % [n, c.area])
 	ending_panel.hide()
+	_reload()
+
+
+## 这个区域的章节包没到（5.1a）：下载（失败可重试），到了就在原地重新载入；放弃就回霜渡镇
+func _fetch_area_pack() -> void:
+	var n := Areas.pack_chapter(area)
+	print("IC_AREA_PACK area=%s chapter=%d" % [area, n])
+	for i in 3:
+		await get_tree().process_frame             # 界面搭好后等几帧再换场景（按钮位置那几行在下一帧才打，换得太快它们找不到场景树）
+	var ok := await ensure_chapter(n)
+	Highland.clear_cache()
+	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
+	if ok:
+		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}
 	_reload()
 
 

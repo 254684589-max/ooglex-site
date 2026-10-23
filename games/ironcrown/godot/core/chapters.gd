@@ -12,6 +12,8 @@ const PLAYABLE := 1
 const LIST := {
 	0: {"name": "序章 · 霜渡镇之夜", "pack": "", "probe": "", "area": "frostford", "spawn": "manor", "daypart": "night"},
 	1: {"name": "第一章 · 黑鹭堡", "pack": "ch1", "probe": "res://chapters/ch1/road_sign.tscn", "area": "frostford", "spawn": "ch1_dawn", "daypart": "dawn"},
+	## 第二章（5.1a 起）：高地的贴图、天空照片在章节包 ch2 里；还没对玩家打开（PLAYABLE 仍是 1），?preview=2 能从第一章章末进
+	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day"},
 }
 
 
