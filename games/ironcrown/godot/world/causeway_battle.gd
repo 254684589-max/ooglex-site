@@ -394,7 +394,14 @@ static func at_post(p: Vector3) -> bool:
 static func finish(held: bool) -> String:
 	GameState.set_flag("ch1_causeway", "held" if held else "lost")
 	if GameState.quest_active("ch1_main"):
-		GameState.set_stage("ch1_main", "after_causeway")
+		GameState.set_stage("ch1_main", "dawn_held" if held else "dawn_lost")
 	if held:
 		return "✓ 守住了！%s退回了沼地。天快亮了……" % foe_name()
 	return "× 堤道失守了。你被挤下堤道，跌进泥里……"
+
+
+## 打完以后天亮（4.10a）：守住了从堡门回庭院，失守了在芦苇里醒过来、从水门摸进去。返回 [出生点, 到了以后说的话]
+static func dawn_arrival(held: bool) -> Array:
+	if held:
+		return ["gate", "天亮了。雾从沼地上散开，堤道上横七竖八躺着人。赫尔曼派人来叫你：家主醒着，要见你。"]
+	return ["water_gate", "……你在芦苇里醒过来，浑身是泥，天已经亮了。黑鹭堡的城头换了旗。你顺着水边摸到水门，从栅底下那道缝钻了进去。"]

@@ -93,15 +93,18 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_doors(parent)
 	_lights(parent, reduced_motion)
 	_dress(parent, reduced_motion)
-	_person(parent, HERMAN, [])
+	var lost := str(GameState.get_flag("ch1_causeway", "")) == "lost"      # 堤道失守了（4.10a）：赫尔曼和守门的都不在了，另一位继承人的人巡着庭院
+	if not lost:
+		_person(parent, HERMAN, [])
 	var win := Fixture.make("账房的小窗", "看看", "blackheron", "counting_window", Vector3(0.9, 1.0, 0.5))      # 账册支线（4.7a）：撬窗
 	win.name = "LedgerWindow"
 	win.position = LEDGER_WINDOW + Vector3(0, 0, -0.1)
 	parent.add_child(win)
 	var lines: Dictionary = GUARD_LINES_HEIR if GameState.has_flag("valen_heir") else GUARD_LINES
 	for g in GUARDS:
-		if not Chapter1.gone(str(g[0])):         # 伊薇特拿不到印戒，兵营门口的兵跟她走了（4.8a）
-			_person(parent, g, lines.get(str(g[0]), []))
+		if Chapter1.gone(str(g[0])) or (lost and str(g[0]) != "water_keeper"):         # 伊薇特拿不到印戒，兵营门口的兵跟她走了（4.8a）；失守了只剩守水门的老头
+			continue
+		_person(parent, g, lines.get(str(g[0]), []))
 	squad(parent)
 	var s: Array = SPAWNS.gate
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
@@ -118,9 +121,39 @@ static func _person(parent: Node3D, p: Array, lines: Array) -> void:
 	parent.add_child(n)
 
 
+## 失守以后的天亮（4.10a）：另一位继承人的人在庭院里来回巡（Enemy 的巡逻和视线：看见你就喊人，main 把你押进病房）。
+## 你从水门（西北角）进来，要绕过主楼前面去东边塔楼的病房：三个人分别巡主楼前、井边、兵营前
+const OCCUPIERS := [
+	["occ_hall", [Vector3(-7.0, 0, -6.5), Vector3(6.0, 0, -6.5)]],
+	["occ_well", [Vector3(2.0, 0, 2.0), Vector3(8.0, 0, 11.0)]],
+	["occ_barracks", [Vector3(-5.5, 0, -3.0), Vector3(-5.5, 0, 9.0)]],
+]
+
+
+## 现在庭院被占着吗：失守了、天亮了、还没摸进病房（摸进去或被抓住以后就不再巡了）
+static func occupied() -> bool:
+	return GameState.quest_stage("ch1_main") == "dawn_lost" and not GameState.has_flag("ch1_sneak")
+
+
+static func occupy(parent: Node3D) -> Array:
+	var out := []
+	if not occupied():
+		return out
+	var who := "伊薇特的人" if str(GameState.get_flag("valen_heir", "")) == "alric" else "阿尔里克的人"
+	for o in OCCUPIERS:
+		var route: Array = o[1]
+		var e := Enemy.make("soldier", str(o[0]), route)
+		e.display_override = who
+		e.position = route[0]
+		e.transient = true
+		parent.add_child(e)
+		out.append(e)
+	return out
+
+
 ## 小队（4.8b）：入夜备战说定了就摆出来；已经在了的不重摆。返回新摆了几个（main 在对话关上时调：说定的当场列队）
 static func squad(parent: Node3D) -> int:
-	if not GameState.has_flag("ch1_ready"):
+	if not GameState.has_flag("ch1_ready") or GameState.quest_stage("ch1_main") != "to_causeway":
 		return 0
 	var lines: Array = SQUAD_LINES.duplicate()
 	if str(GameState.get_flag("ch1_water_gate", "")) == "opened":

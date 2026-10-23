@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -7816,10 +7816,10 @@ func test_causeway() -> void:
 		x.global_position = MarshLayout.cw3(CausewayBattle.BREACH_T + 4.0)
 	await seconds(0.6)
 	check(b.finished and b.winner == CausewayBattle.ATK and b.breached.size() == 6, "6 个人冲过石拱：失守（%s）" % b.winner)
-	check(GameState.get_flag("ch1_causeway") == "lost" and GameState.quest_stage("ch1_main") == "after_causeway" and main.hud.toast_label.text.contains("失守"), "写 ch1_causeway = lost，主线推进")
+	check(GameState.get_flag("ch1_causeway") == "lost" and GameState.quest_stage("ch1_main") == "dawn_lost" and main.hud.toast_label.text.contains("失守"), "写 ch1_causeway = lost，主线推进到天亮（失守）")
 	await frames(3)
 	auto = Saves.read_slot("auto")
-	check(str(auto.data.state.quests.ch1_main.stage) == "after_causeway", "打完自动存档")
+	check(str(auto.data.state.quests.ch1_main.stage) == "dawn_lost", "打完自动存档")
 	await free_main(main)
 	main = await make_causeway()
 	check(main.battle == null, "打过了：再来堤道上没有仗")
@@ -7927,6 +7927,101 @@ func test_causeway() -> void:
 	main = await make_causeway()
 	ow = main.battle.waves.filter(func(w): return w.side == CausewayBattle.DEF)
 	check(ow.size() == 1 and ow[0].soldiers[0].display_override == "无旗者的头目", "奥弗死在渡口的：是无旗者的头目带人来")
+	await free_main(main)
+	GameState.new_game()
+
+
+## 4.10a：天亮 · 家主临终——打完过一会儿天亮：守住从堡门回庭院、失守在芦苇里醒来从水门摸进去（庭院有人巡，被看见就押进病房）；
+## 家主说出「铁冠是老王自己交出去的」，喝过白芦根汤的多说「双钥港」，按借据的下落说一句，让你去烽燧线，然后走了
+func test_dawn() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	causeway_state("gap")
+	var main := await make_causeway()
+	var b: Battle = main.battle
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	for x in soldiers_of(main, CausewayBattle.ATK).slice(0, 6):
+		x.global_position = MarshLayout.cw3(CausewayBattle.BREACH_T + 4.0)
+	await seconds(0.6)
+	check(b.finished and GameState.quest_stage("ch1_main") == "dawn_lost", "堤道失守：主线到「天亮（失守）」")
+	await seconds(7.0)
+	var pl: Dictionary = GameState.pending_load
+	check(main.leaving and str(pl.get("scene", "")) == "castle" and str(pl.get("spawn", "")) == "water_gate" and str(pl.get("daypart", "")) == "dawn", "过一会儿天亮：从水门进黑鹭堡（%s）" % str(pl))
+	main = await reload_main(main)
+	await physics(3)
+	var occ: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return not e is Soldier)
+	check(main.area == "castle" and GameState.daypart == "dawn" and main.world.get_node_or_null("Npc_herman") == null and main.world.get_node_or_null("Npc_gate_guard_in") == null
+		and main.world.get_node_or_null("Npc_water_keeper") != null and occ.size() == 3 and occ.all(func(e): return e.display_name == "伊薇特的人"), "庭院：赫尔曼和守门的不在了，守水门的老头还在；伊薇特的人巡着（%d 个）" % occ.size())
+	check(main.hud.toast_label.text.contains("芦苇里醒过来") and main.world.get_node_or_null("Npc_squad_0") == null, "到了说一句：在芦苇里醒过来、从水门钻进来；昨晚的小队不再列队")
+	var valen := GameState.get_rep("valen")
+	(occ[0] as Enemy)._enter(Enemy.State.ALERT)
+	await frames(2)
+	check(GameState.get_flag("ch1_sneak") == "caught" and GameState.get_rep("valen") == valen - 10 and main.hud.toast_label.text.contains("站住"), "被看见：两个卫兵扭住你（瓦伦家 −10）")
+	await seconds(3.0)
+	check(main.leaving and str(GameState.pending_load.get("scene", "")) == "sickroom", "押进病房")
+	main = await reload_main(main)
+	await physics(2)
+	check(main.area == "sickroom" and main.hud.toast_label.text.contains("让他进来"), "家主坚持要见你")
+	var r := DialogueRunner.new()
+	r.start("sickroom", "osric")
+	check(r.node_id == "dawn_caught" and r.text().contains("伊薇特跟在后面"), "家主：让他留下——新家主（伊薇特）从此不信你")
+	check(await fl_say(main, "sickroom", "osric", ["我在。您说。", "交出去？交给了谁？", "……", "您要我做什么？", "（替他把被子掖好）"]), "听家主说完")
+	await frames(2)
+	check(GameState.has_flag("ch1_osric_farewell") and GameState.quest_stage("ch1_main") == "farewell", "家主走了：主线到「去烽燧线」")
+	r.start("sickroom", "osric")
+	check(r.node_id == "gone", "再看他：不再动了")
+	await free_main(main)
+	# —— 结尾的钩子、白芦根、借据
+	causeway_state("arch")
+	GameState.set_stage("ch1_main", "dawn_held")
+	GameState.set_flag("ch1_causeway", "held")
+	r.start("sickroom", "osric")
+	check(r.node_id == "dawn_held" and r.text().contains("阿尔里克站在床尾"), "守住了：阿尔里克（拿戒指的）站在床尾")
+	r.choose(0)
+	check(r.text().contains("铁冠没有被偷。是老王自己交出去的"), "结尾的钩子：铁冠没有被偷，是老王自己交出去的")
+	r.choose(0)
+	check(r.node_id == "who_none" and not r.text().contains("双钥港"), "没喝白芦根汤：想不起来交给了谁")
+	GameState.set_flag("ch1_herb")
+	GameState.set_flag("ch1_debt", "kept")
+	r.start("sickroom", "osric")
+	r.choose(0)
+	r.choose(0)
+	check(r.node_id == "who_herb" and r.text().contains("双钥港"), "喝过白芦根汤：交给了一户靠海的人家——双钥港")
+	r.choose(0)
+	check(r.text().contains("留着") and r.text().contains("证据"), "借据还在身上：留着，将来是证据")
+	r.choose(0)
+	check(r.text().contains("烽燧线") and GameState.quest_stage("ch1_main") == "farewell", "去北边的烽燧线找当年另一个侍从")
+	# —— 守住了：天亮从堡门回来，赫尔曼在，没人巡；病房里阿尔里克守在床尾
+	causeway_state("arch")
+	GameState.set_flag("ch1_causeway", "held")
+	GameState.set_stage("ch1_main", "dawn_held")
+	GameState.daypart = "dawn"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_herman") != null and get_tree().get_nodes_in_group("enemy").is_empty(), "守住了：庭院里赫尔曼在，没人巡")
+	main = await fl_go(main, "sickroom")
+	await physics(2)
+	var heir := main.world.get_node_or_null("Npc_heir") as Npc
+	check(main.area == "sickroom" and heir != null and heir.display_name == "阿尔里克", "病房：阿尔里克守在床尾")
+	await free_main(main)
+	# —— 失守、没被看见：摸进病房
+	causeway_state("gap")
+	GameState.set_flag("ch1_causeway", "lost")
+	GameState.set_stage("ch1_main", "dawn_lost")
+	GameState.daypart = "dawn"
+	GameState.pending_load = {"scene": "castle", "spawn": "water_gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	main = await fl_go(main, "sickroom")
+	await physics(2)
+	check(GameState.get_flag("ch1_sneak") == "unseen" and main.hud.toast_label.text.contains("没人看见"), "没被看见就摸进了病房")
+	r.start("sickroom", "osric")
+	check(r.node_id == "dawn_lost" and r.text().contains("只有玛尔塔"), "病房里只有玛尔塔，家主在等你")
+	main = await fl_go(main, "castle")
+	await physics(2)
+	check(get_tree().get_nodes_in_group("enemy").is_empty(), "摸进去以后再出来：不再巡了")
 	await free_main(main)
 	GameState.new_game()
 
