@@ -1661,15 +1661,15 @@
   {
    "bufferView": 12,
    "componentType": 5126,
-   "count": 1983,
+   "count": 1677,
    "type": "VEC3",
    "min": [
-    -0.8157937526702881,
-    1.4700896739959717,
+    -0.1191173568367958,
+    1.4833221435546875,
     -0.1519087255001068
    ],
    "max": [
-    0.8157936930656433,
+    0.11911747604608536,
     1.8100767135620117,
     0.11516911536455154
    ]
@@ -1677,31 +1677,31 @@
   {
    "bufferView": 13,
    "componentType": 5126,
-   "count": 1983,
+   "count": 1677,
    "type": "VEC3"
   },
   {
    "bufferView": 14,
    "componentType": 5126,
-   "count": 1983,
+   "count": 1677,
    "type": "VEC2"
   },
   {
    "bufferView": 15,
    "componentType": 5121,
-   "count": 1983,
+   "count": 1677,
    "type": "VEC4"
   },
   {
    "bufferView": 16,
    "componentType": 5126,
-   "count": 1983,
+   "count": 1677,
    "type": "VEC4"
   },
   {
    "bufferView": 17,
    "componentType": 5123,
-   "count": 10440,
+   "count": 9108,
    "type": "SCALAR"
   },
   {
@@ -1787,48 +1787,48 @@
   {
    "buffer": 0,
    "byteOffset": 73016,
-   "byteLength": 23796,
+   "byteLength": 20124,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 96812,
-   "byteLength": 23796,
+   "byteOffset": 93140,
+   "byteLength": 20124,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 120608,
-   "byteLength": 15864,
+   "byteOffset": 113264,
+   "byteLength": 13416,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 136472,
-   "byteLength": 7932,
+   "byteOffset": 126680,
+   "byteLength": 6708,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 144404,
-   "byteLength": 31728,
+   "byteOffset": 133388,
+   "byteLength": 26832,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 176132,
-   "byteLength": 20880,
+   "byteOffset": 160220,
+   "byteLength": 18216,
    "target": 34963
   },
   {
    "buffer": 0,
-   "byteOffset": 197012,
+   "byteOffset": 178436,
    "byteLength": 4160
   }
  ],
  "buffers": [
   {
-   "byteLength": 201172,
+   "byteLength": 182596,
    "uri": "Head_Male.bin"
   }
  ]

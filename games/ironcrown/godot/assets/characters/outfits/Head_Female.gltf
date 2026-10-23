@@ -1646,15 +1646,15 @@
   {
    "bufferView": 12,
    "componentType": 5126,
-   "count": 2192,
+   "count": 1830,
    "type": "VEC3",
    "min": [
-    -0.7262951731681824,
-    1.4300017356872559,
+    -0.11694709211587906,
+    1.4357962608337402,
     -0.12398204952478409
    ],
    "max": [
-    0.7262952327728271,
+    0.11694697290658951,
     1.7666438817977905,
     0.11192332208156586
    ]
@@ -1662,31 +1662,31 @@
   {
    "bufferView": 13,
    "componentType": 5126,
-   "count": 2192,
+   "count": 1830,
    "type": "VEC3"
   },
   {
    "bufferView": 14,
    "componentType": 5126,
-   "count": 2192,
+   "count": 1830,
    "type": "VEC2"
   },
   {
    "bufferView": 15,
    "componentType": 5121,
-   "count": 2192,
+   "count": 1830,
    "type": "VEC4"
   },
   {
    "bufferView": 16,
    "componentType": 5126,
-   "count": 2192,
+   "count": 1830,
    "type": "VEC4"
   },
   {
    "bufferView": 17,
    "componentType": 5123,
-   "count": 11586,
+   "count": 9978,
    "type": "SCALAR"
   },
   {
@@ -1772,48 +1772,48 @@
   {
    "buffer": 0,
    "byteOffset": 89824,
-   "byteLength": 26304,
+   "byteLength": 21960,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 116128,
-   "byteLength": 26304,
+   "byteOffset": 111784,
+   "byteLength": 21960,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 142432,
-   "byteLength": 17536,
+   "byteOffset": 133744,
+   "byteLength": 14640,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 159968,
-   "byteLength": 8768,
+   "byteOffset": 148384,
+   "byteLength": 7320,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 168736,
-   "byteLength": 35072,
+   "byteOffset": 155704,
+   "byteLength": 29280,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteOffset": 203808,
-   "byteLength": 23172,
+   "byteOffset": 184984,
+   "byteLength": 19956,
    "target": 34963
   },
   {
    "buffer": 0,
-   "byteOffset": 226980,
+   "byteOffset": 204940,
    "byteLength": 4160
   }
  ],
  "buffers": [
   {
-   "byteLength": 231140,
+   "byteLength": 209100,
    "uri": "Head_Female.bin"
   }
  ]

@@ -40,6 +40,9 @@ EXTRA_TEX = {   # 包里另外几张配色贴图（同一套服装换个颜色�
 }
 ## 头：脖子以上（骨架绑定姿势下的高度，米）。服装的领口盖住这条线以下
 HEAD_CUT = {"Male": 1.47, "Female": 1.43}
+## 头只留脖子这么宽（米，左右）：底模是 T 姿势，只按高度切会把两肩和伸平的整条胳膊（x 到 ±0.8）也留下，
+## 藏在衣服下面、动起来从肩膀和袖子里戳出来（2026-10-23 所有者截图「衣服没包好、有破洞」）
+NECK_HALF = 0.12
 
 
 def read(src, g, bin_, acc_i):
@@ -204,7 +207,7 @@ def main():
         body = "MI_Superhero_" + sex
         n = "Superhero_%s_FullBody" % sex
         tris = rewrite(os.path.join(src, BASE, n + ".gltf"), "Head_" + sex, tex_map,
-                       keep_tri={body: lambda p, c=cut: float(p[:, 1].min()) >= c})
+                       keep_tri={body: lambda p, c=cut: float(p[:, 1].min()) >= c and float(np.abs(p[:, 0]).max()) <= NECK_HALF})
         report.append(("Head_" + sex, tris))
     for h in ["Hair_SimpleParted", "Hair_Buzzed", "Hair_Beard", "Hair_Long", "Hair_Buns", "Hair_BuzzedFemale"]:
         report.append((h, rewrite(os.path.join(src, HAIR, h + ".gltf"), h, tex_map)))

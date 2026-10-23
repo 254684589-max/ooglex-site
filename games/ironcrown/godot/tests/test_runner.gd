@@ -7645,6 +7645,28 @@ func test_heir() -> void:
 
 ## A.2a：NPC 换上真人模型（data/looks.json）
 func test_looks() -> void:
+	# —— 头只留脖子以上（2026-10-23：只按高度切时 T 姿势的两肩和整条胳膊也留着，从衣服里戳出来）
+	for hf in ["Head_Male", "Head_Female"]:
+		var hs := (load(Looks.DIR + hf + ".gltf") as PackedScene).instantiate() as Node3D
+		var wide := 0.0
+		for mi: MeshInstance3D in hs.find_children("*", "MeshInstance3D", true, false):
+			var bb := mi.get_aabb()
+			wide = maxf(wide, maxf(absf(bb.position.x), absf(bb.end.x)))
+		hs.free()
+		check(wide <= 0.13, "%s 只有脖子这么宽（左右最远 %.2f 米），不带肩膀和胳膊" % [hf, wide])
+	var gm := CharacterModel.new()
+	gm.parts = Looks.spec("老霍布").parts
+	add_child(gm)
+	await frames(2)
+	var grow_ok := true
+	for mi: MeshInstance3D in gm.scene_root.find_children("*", "MeshInstance3D", true, false):
+		for si in mi.mesh.get_surface_count():
+			var mm := mi.get_surface_override_material(si) as StandardMaterial3D
+			if mm and CharacterModel.GROW.has(mm.resource_name):
+				grow_ok = grow_ok and mm.grow and is_equal_approx(mm.grow_amount, float(CharacterModel.GROW[mm.resource_name]))
+	check(grow_ok, "衣服往外撑一点、胳膊皮肤往里收一点（不从袖子里戳出来）")
+	gm.queue_free()
+	await frames(2)
 	Settings.set_value("third_person", false)
 	check(Looks.validate().is_empty(), "looks.json：预设、部件、贴图、颜色都对得上（%s）" % str(Looks.validate()))
 	var v := Looks.spec("维克托")

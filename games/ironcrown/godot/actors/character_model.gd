@@ -12,6 +12,10 @@ const MAP := "res://data/character_anims.json"
 const HAND_BONE := "hand_r"
 ## 皮肤在背光处不要变成黑影：加一点点自发光（和 2.9 起占位人形、武器同一个办法）
 const GLOW := 0.16
+## 衣服盖住皮肤（2026-10-23 所有者截图：胳膊、脖子后面「衣服没包好、有破洞」）：服装包里胳膊那块网格下面带着整条胳膊的皮肤，
+## 头的网格带着脖子，和袖子、领口几乎贴在一起，动起来就从布里戳出来一块块。沿法线把布往外撑一点、皮肤往里收一点（米）。
+const GROW := {"MI_Ranger": 0.012, "MI_Peasant": 0.012, "MI_Regular_Male": -0.009, "MI_Regular_Female": -0.009,
+	"MI_Superhero_Male": -0.002, "MI_Superhero_Female": -0.002}
 
 var map: Dictionary = {}
 var scene_root: Node3D
@@ -232,4 +236,7 @@ func _glow_materials() -> void:
 			else:
 				mat.emission = mat.albedo_color
 			mat.emission_energy_multiplier = GLOW
+			if GROW.has(key) and not parts.is_empty():
+				mat.grow = true
+				mat.grow_amount = float(GROW[key])
 			mi.set_surface_override_material(s, mat)
