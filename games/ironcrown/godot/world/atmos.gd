@@ -6,7 +6,7 @@ extends RefCounted
 const SMOKE_GROUP := "chimney_smoke"
 const SNOW_GROUP := "falling_snow"
 const SMOKE_AMOUNT := 10
-const SNOW_AMOUNT := 420
+const SNOW_AMOUNT := 700
 const SNOW_BOX := Vector3(13.0, 0.5, 13.0)       # 落雪的发射盒（半边长）：跟着玩家，头顶 9 米
 const SNOW_HEIGHT := 9.0
 
@@ -26,11 +26,12 @@ static func _soft_dot() -> Texture2D:
 	return t
 
 
-static func _particle_mat(emission := 0.0) -> StandardMaterial3D:
+## lit = 受场景光照（烟：夜里是暗的，不会发亮）；不受光的（雪）靠一点自发光在夜里也看得见
+static func _particle_mat(emission := 0.0, lit := false) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX if lit else BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.vertex_color_use_as_albedo = true
 	m.albedo_texture = _soft_dot()
 	m.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
@@ -51,8 +52,8 @@ static func smoke(parent: Node3D, at: Vector3) -> CPUParticles3D:
 	p.preprocess = 6.0                    # 一进区域就已经在冒，不是刚点着
 	p.randomness = 0.4
 	var q := QuadMesh.new()
-	q.size = Vector2(0.9, 0.9)
-	q.material = _particle_mat()
+	q.size = Vector2(1.3, 1.3)
+	q.material = _particle_mat(0.0, true)
 	p.mesh = q
 	p.direction = Vector3(0.15, 1, 0)
 	p.spread = 12.0
@@ -69,7 +70,7 @@ static func smoke(parent: Node3D, at: Vector3) -> CPUParticles3D:
 	p.scale_amount_curve = sc
 	var ramp := Gradient.new()
 	ramp.set_color(0, Color(0.62, 0.62, 0.64, 0.0))
-	ramp.add_point(0.12, Color(0.6, 0.6, 0.62, 0.42))
+	ramp.add_point(0.12, Color(0.6, 0.6, 0.62, 0.62))
 	ramp.set_color(ramp.get_point_count() - 1, Color(0.66, 0.67, 0.7, 0.0))
 	p.color_ramp = ramp
 	p.local_coords = false
@@ -87,7 +88,7 @@ static func snow(player: Node3D) -> CPUParticles3D:
 	p.lifetime = 8.0
 	p.preprocess = 8.0
 	var q := QuadMesh.new()
-	q.size = Vector2(0.045, 0.045)
+	q.size = Vector2(0.085, 0.085)
 	q.material = _particle_mat(0.6)
 	p.mesh = q
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX

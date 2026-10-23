@@ -710,6 +710,15 @@ func test_frostford() -> void:
 	await physics(5)
 	var houses := get_tree().get_nodes_in_group("house")
 	check(houses.size() == 12, "霜渡镇主街有 12 栋房子（两侧 11 栋 + 领主宅邸，实际 %d）" % houses.size())
+	# —— 2026-10-23 场景美化二：烟囱冒烟、落雪
+	var smokes := get_tree().get_nodes_in_group(Atmos.SMOKE_GROUP)
+	var smoke_ok := smokes.size() == 6
+	for sm: CPUParticles3D in smokes:
+		smoke_ok = smoke_ok and sm.emitting and sm.global_position.y > 8.0
+	print("IC_DBG smoke n=%d y=%s" % [smokes.size(), str(smokes.map(func(x): return snappedf((x as Node3D).global_position.y, 0.1)))])
+	check(smoke_ok, "6 个烟囱都在冒烟（烟在烟囱顶上，%d 个）" % smokes.size())
+	var snow := get_tree().get_nodes_in_group(Atmos.SNOW_GROUP)
+	check(snow.size() == 1 and (snow[0] as Node).get_parent() == p and (snow[0] as CPUParticles3D).emitting, "户外在落雪（跟着玩家）")
 	var photo_ok := true
 	for k in Look.PHOTO:
 		photo_ok = photo_ok and bool(Look.mat(k).get_meta("photo", false)) and Look.mat(k).albedo_texture != null
