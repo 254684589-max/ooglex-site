@@ -2692,7 +2692,7 @@ func test_areas() -> void:
 	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and main.env.background_color.r < 0.1, "室内：没有月光，换成暖暗的环境光和薄烟")
 	var omni := main.find_children("*", "OmniLight3D", true, false)
 	var fire := omni.filter(func(l): return l is Tavern.FireLight)
-	check(omni.size() == 3 and fire.size() == 1, "三盏光：炉火、吧台油灯、桌上蜡烛（%d）" % omni.size())
+	check(omni.size() == 4 and fire.size() == 2, "四盏光：炉火、吧台油灯、桌上蜡烛，加门边墙上的火把（2026-10-23 美化）（%d）" % omni.size())
 	var e0: float = fire[0].light_energy
 	await seconds(0.2)
 	check(fire[0].flicker and absf(fire[0].light_energy - e0) > 0.001, "炉火在闪")
@@ -6216,7 +6216,7 @@ func test_reedwharf() -> void:
 	check(main.hud.toast_label.text.begins_with("「歪桩」客栈") and Saves.read_slot("auto").data.scene == "inn", "进门提示「「歪桩」客栈」，自动存档")
 	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and GameState.quest_stage("ch1_main") == "to_blackheron", "室内：没有月光、暖暗的环境光；主线不倒退")
 	var omni := main.find_children("*", "OmniLight3D", true, false)
-	check(omni.size() == 3 and omni.filter(func(l): return l is Tavern.FireLight).size() == 1, "三盏光：泥炭火塘、吧台油灯、过道上方的吊灯（%d）" % omni.size())
+	check(omni.size() == 4 and omni.filter(func(l): return l is Tavern.FireLight).size() == 2, "四盏光：泥炭火塘、吧台油灯、过道上方的吊灯，加西墙的火把（2026-10-23 美化）（%d）" % omni.size())
 	var inn_people := main.find_children("Npc_*", "Npc", true, false)
 	var names := inn_people.map(func(n): return n.display_name)
 	var inn_bad: Array = inn_people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)

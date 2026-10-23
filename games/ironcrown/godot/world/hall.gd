@@ -43,6 +43,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	parent.add_child(kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber"), "street": Look.mat("street"), "glass": Inn.glass(GameState.daypart),
 		"cloth": Castle._cloth(Color("d8d2c2")), "heron": Castle._cloth(Color("1a1a1c")), "ember": Castle._flat(Color("ff7a28"), true), "soot": Castle._flat(Color("0e0b09")),
 		"iron": Castle._flat(Color("2a2a2e")), "red": Castle._cloth(Color("6a2a26"))}))
+	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.6, false)
@@ -128,9 +129,6 @@ static func _furniture(kit: MeshKit) -> void:
 	kit.box("timber", s + Vector3(0, 0.25, 0), Vector3(1.0, 0.5, 0.8), Basis.IDENTITY, 0.9, 0.6)
 	kit.box("timber", s + Vector3(0, 1.3, -0.35), Vector3(1.0, 2.1, 0.12), Basis.IDENTITY, 0.9, 0.7)
 	kit.box("red", s + Vector3(0, 0.52, 0), Vector3(0.9, 0.06, 0.7))
-	kit.box("cloth", Vector3(0, 3.0, -D * 0.5 + 0.05), Vector3(2.4, 3.2, 0.04))         # 大旗：白底
-	kit.box("heron", Vector3(0, 3.1, -D * 0.5 + 0.08), Vector3(0.5, 1.6, 0.02), Basis(Vector3.BACK, 0.3))
-	kit.box("heron", Vector3(-0.25, 3.95, -D * 0.5 + 0.08), Vector3(0.8, 0.18, 0.02), Basis(Vector3.BACK, -0.4))
 	var t := TABLE
 	kit.box("timber", Vector3(t.get_center().x, 0.78, t.get_center().y), Vector3(t.size.x, 0.08, t.size.y), Basis.IDENTITY, 1.0, 0.8)
 	for lx: float in [-3.0, 0.0, 3.0]:
@@ -150,6 +148,31 @@ static func _furniture(kit: MeshKit) -> void:
 		for k in 6:
 			var a := TAU * k / 6.0
 			kit.box("ember", c + Vector3(cos(a) * 0.55, 0.14, sin(a) * 0.55), Vector3(0.04, 0.12, 0.04))
+
+
+## 陈设（2026-10-23 美化，Decor）：台子后面白底黑鹭的大旗、两边墙上各一面小旗和挂毯、北墙两面盾、
+## 门口到长桌的红地毯、东墙兵器架、墙上的火把、长桌上的烛台和酒杯
+static func _decor(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	var hd := D * 0.5
+	var hw := W * 0.5
+	var white := Color("d8d2c2")
+	var black := Color("1a1a1c")
+	d.banner(Vector3(0, 4.6, -hd), Vector3.BACK, 2.4, 3.4, white, black, "heron")
+	for s: float in [-1.0, 1.0]:
+		d.shield(Vector3(s * 3.0, 3.1, -hd), Vector3.BACK, 0.42, white, black)
+		d.sconce(Vector3(s * 6.2, 2.4, -hd), Vector3.BACK, true)
+		d.sconce(Vector3(s * 3.0, 2.4, hd), Vector3.FORWARD)
+	d.banner(Vector3(hw, 4.4, 2.2), Vector3.LEFT, 1.2, 2.4, black, white, "heron")
+	d.tapestry(Vector3(hw, 2.7, -1.8), Vector3.LEFT, 2.2, 2.4, Color("4a2e24"), [Color("8a6a3a"), Color("2e3a4a"), Color("6a2a26")])
+	d.banner(Vector3(-hw, 4.4, 2.6), Vector3.RIGHT, 1.2, 2.4, black, white, "heron")
+	d.shield(Vector3(-hw, 3.0, -2.9), Vector3.RIGHT, 0.4, Color("6a2a26"), white)
+	d.rack(Vector3(hw - 0.15, 0, 0.6), Vector3.LEFT, 1.4)
+	d.rug(Rect2(-0.9, -0.3, 1.8, 4.1), 0.02, Color("6a2a26"), Color("b89a4a"))
+	for x: float in [-2.1, 0.7, 2.6]:
+		d.candles(Vector3(x, 0.82, TABLE.get_center().y), 3)
+	d.chest(Vector3(-7.6, 0, 3.2), PI * 0.5)
+	d.build(parent, "Decor", not reduced_motion)
 
 
 static func _colliders(parent: Node3D) -> void:
@@ -185,7 +208,7 @@ static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 		var l := OmniLight3D.new()
 		l.name = "Chandelier_W" if cx < 0.0 else "Chandelier_E"
 		l.light_color = Color("ffb060")
-		l.light_energy = 1.6
+		l.light_energy = 2.2
 		l.omni_range = 8.0
 		l.position = Vector3(cx, 3.0, 0.4)
 		parent.add_child(l)

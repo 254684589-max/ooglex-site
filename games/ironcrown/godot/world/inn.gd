@@ -72,6 +72,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		"reeds": Look.thatch(), "cloth": _cloth_mat(), "iron": _iron_mat()})
 	mi.name = "Inn"
 	parent.add_child(mi)
+	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	# 出口：回到栈道（站在客栈门前的平台上）
@@ -309,6 +310,19 @@ static func _reeds(kit: MeshKit) -> void:
 		var len := 0.75 + 0.15 * (i % 3)
 		kit.cylinder("reeds", Vector3(p.x, H - 0.26, p.z), Vector3(p.x, H - 0.26 - len, p.z), 0.07, 0.11, 6, 0.8)
 		kit.cylinder("timber", Vector3(p.x, H - 0.26 - 0.12, p.z), Vector3(p.x, H - 0.26 - 0.17, p.z), 0.085, 0.085, 6, 0.5)   # 捆绳
+
+
+## 陈设（2026-10-23 美化，Decor）：西南角板条箱和麻袋、两张桌上的蜡烛、西墙一支火把（带光）、东墙一张渔网似的挂毯
+static func _decor(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	d.crate(Vector3(-5.0, 0, 3.4), 0.3, 0.55)
+	d.sack(Vector3(-4.4, 0, 3.5), 0.2)
+	d.sack(Vector3(-5.05, 0, 2.75), -0.4)
+	d.candles(TABLE_POS + Vector3(-0.5, 0.8, 0), 2)
+	d.candles(SMALL_TABLE_POS + Vector3(0, 0.77, 0), 1, false)
+	d.sconce(Vector3(-W * 0.5, 1.9, 1.6), Vector3.RIGHT, true)
+	d.tapestry(Vector3(W * 0.5, 1.8, 1.4), Vector3.LEFT, 1.4, 1.2, Color("5a5040"), [Color("3a3a32"), Color("7a6a4a")])
+	d.build(parent, "Decor", not reduced_motion)
 
 
 static func _colliders(parent: Node3D) -> void:

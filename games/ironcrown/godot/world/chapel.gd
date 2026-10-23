@@ -39,6 +39,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		"moon": _moon_glass(), "iron": _iron_mat(), "ember": _flame_mat(), "cloth": _cloth_mat(), "book": _book_mat()})
 	mi.name = "Chapel"
 	parent.add_child(mi)
+	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.4, false)
@@ -174,6 +175,16 @@ static func _books(kit: MeshKit) -> void:
 			var bh := rng.randf_range(0.26, 0.38)
 			kit.box("book", Vector3(x + 0.05, y + bh * 0.5, bz + bw * 0.5), Vector3(0.28, bh, bw), Basis(Vector3.RIGHT, rng.randf_range(-0.08, 0.08)), 0.9, 0.7)
 			bz += bw + 0.01
+
+
+## 陈设（2026-10-23 美化，Decor）：两边墙上深蓝底金星的教会旗、祭坛台前两座落地烛台、门口到祭坛的旧红毯
+static func _decor(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	for s: float in [-1.0, 1.0]:
+		d.banner(Vector3(s * W * 0.5, 4.2, -1.2), Vector3(-s, 0, 0), 0.9, 2.2, Color("1e2a44"), Color("c8a850"), "star", Color("c8a850"))
+		d.candle_stand(Vector3(s * 1.7, 0, ALTAR_Z + 0.95))
+	d.rug(Rect2(-0.55, ALTAR_Z + 0.75, 1.1, D * 0.5 - ALTAR_Z - 1.2), 0.02, Color("5a2420"), Color("8a6a3a"))
+	d.build(parent, "Decor", not reduced_motion)
 
 
 static func _colliders(parent: Node3D) -> void:

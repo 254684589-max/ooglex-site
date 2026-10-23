@@ -346,7 +346,7 @@ func _build_environment() -> void:
 		# 室内（3.1 酒馆）：没有月光与夜雾，暖色的暗环境光 + 一点炉烟似的薄雾；亮度主要来自炉火与油灯
 		env.background_color = Color("0c0a08")
 		env.ambient_light_color = Color("8a6a4c")
-		env.ambient_light_energy = 0.5
+		env.ambient_light_energy = 0.62          # 2026-10-23 美化：大厅、兵营太暗（截图里墙一片黑），提一点
 		env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
 		env.fog_light_color = Color("2a2119")
 		env.fog_density = 0.035
