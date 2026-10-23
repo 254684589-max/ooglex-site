@@ -7789,8 +7789,8 @@ func test_causeway() -> void:
 	var atk := soldiers_of(main, CausewayBattle.ATK)
 	var herman := def.filter(func(x): return x.display_name == "赫尔曼")
 	check(b.squad.size() == 6 and def.size() == 13 and herman.size() == 1 and herman[0].is_captain and herman[0].guard_post != Vector3.INF, "守方：你的小队 6 人、赫尔曼（队长）和他的 6 个人守石拱")
-	check(atk.size() == 8 and b.waves.size() == 2 and b.side_total(CausewayBattle.ATK) == 29 and b.waves[1].soldiers.any(func(x): return x.display_override == "「芦刀」加斯帕" and x.kind == "captain"),
-		"攻方：先头 8 人在村子那头，主力 14 人、加斯帕和 6 名精兵是后两波（一共 29 人）")
+	check(atk.size() == 8 and b.waves.size() == 3 and b.side_total(CausewayBattle.ATK) == 33 and b.waves[1].soldiers.any(func(x): return x.display_override == "「芦刀」加斯帕" and x.kind == "captain"),
+		"攻方：先头 8 人在村子那头，主力 14 人、加斯帕和 6 名精兵是后两波；没人提醒过水门，主力到时 4 个人从水门摸进来（一共 33 人）")
 	check((def + atk).all(func(x): return x.collision_mask & FpController.LAYER_BOUNDARY != 0), "堤道上的兵都撞鹭沼的边墙（不走进深水）")
 	check(b.squad.all(func(x): return x.order == "follow") and atk.all(func(x): return CausewayBattle.t_of(x.global_position) < 15.0), "小队跟着你；先头在堤道村子那头")
 	await physics(30)
@@ -7837,7 +7837,9 @@ func test_causeway() -> void:
 		x.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": main.player})
 	b.elapsed = CausewayBattle.WAVE2_AT
 	await seconds(0.5)
-	check(b.waves.size() == 1 and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting()).size() == 14, "开打 35 秒：主力 14 人上来")
+	var flank := soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting() and x.has_meta("flank"))
+	check(b.waves.size() == 1 and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting()).size() == 18 and flank.size() == 4, "开打 35 秒：主力 14 人上来，水门摸进来 4 个（分了人守水门，可没人提醒过——守的人不知道该守）")
+	check(flank.all(func(x): return CausewayBattle.t_of(x.global_position) > CausewayBattle.BREACH_T) and b.breached.is_empty() and main.hud.toast_label.text.contains("水门那边摸进来"), "水门摸进来的人在堡门前（堡门背后有敌人），不算「冲过石拱」")
 	var killed := 0
 	while b.routed == "" and killed < 14:
 		var left := soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting())
@@ -7848,6 +7850,83 @@ func test_causeway() -> void:
 	await seconds(0.6)
 	check(b.routed == CausewayBattle.ATK and b.waves.is_empty() and b.finished and b.winner == CausewayBattle.DEF, "攻方倒下过半（%d + %d）：剩下的溃逃，加斯帕那波不来了，守住" % [8, killed])
 	check(GameState.get_flag("ch1_causeway") == "held" and main.hud.toast_label.text.contains("守住了"), "写 ch1_causeway = held")
+	await free_main(main)
+	# —— 4.9b 水门：交出了钥匙不开；提醒过又分了人守，挡回去；提醒了没分人、没人提醒，都摸进来
+	var gates := []
+	for row: Array in [["kept", false], ["warned", true], ["warned", false], ["unknown", true], ["opened", false]]:
+		GameState.set_flag("ch1_water_gate", row[0])
+		if row[1]:
+			GameState.set_flag("ch1_gate_guard")
+		else:
+			GameState.flags.erase("ch1_gate_guard")
+		gates.append(CausewayBattle.gate_state())
+	check(gates == ["shut", "guarded", "breach", "breach", "breach"], "水门：kept 不开、warned + 分人守挡回去，其余都摸进来（%s）" % str(gates))
+	# —— 4.9b 选伊薇特、收编了奥弗、泥炭工站过来、守断口、提醒过水门也分了人：奥弗杀出来、泥炭垛点火、水门挡回去
+	prepare_state("ivette", "helped")
+	GameState.set_flag("ch1_outlaws", "ally")
+	GameState.set_flag("ch1_peat", "ivette")
+	GameState.set_flag("ch1_hold", "gap")
+	GameState.set_flag("ch1_gate_guard")
+	GameState.set_flag("ch1_ready")
+	GameState.set_stage("ch1_main", "to_causeway")
+	GameState.daypart = "night"
+	main = await make_causeway()
+	b = main.battle
+	var cw: CausewayBattle = main.world.get_node("Causeway")
+	check(b.sides[CausewayBattle.ATK] == "阿尔里克的人" and cw.peat_fire and CausewayBattle.gate_state() == "guarded" and cw.get_node_or_null("PeatStacks") != null, "选了伊薇特：攻方是阿尔里克的人；断口边上码着泥炭垛，这一仗会点火；水门有人守")
+	var ow: Array = b.waves.filter(func(w): return w.side == CausewayBattle.DEF)
+	check(ow.size() == 1 and ow[0].soldiers.size() == 5 and ow[0].soldiers[0].display_override == "「灰手」奥弗" and ow[0].soldiers.all(func(x): return CausewayBattle.off_of(x.position) > CausewayBattle.REED_OFF),
+		"收编了奥弗：主力到时他带 4 个人从芦苇里杀出来（藏在堤道外面）")
+	check(cw.torches.size() == CausewayBattle.TORCHES and cw.torches.all(func(e): return (e[0] as Node3D).visible and CausewayBattle.t_of((e[0] as Node3D).position) < -20.0), "远处的火把线在村子那头的沼地上")
+	# 芦苇挡视线：堤道外面的人远了看不见
+	var a0: Soldier = soldiers_of(main, CausewayBattle.ATK)[0]
+	var probe := Node3D.new()
+	main.world.add_child(probe)
+	probe.global_position = a0.global_position + Vector3(MarshLayout.CW_SIDE.x, 0, MarshLayout.CW_SIDE.y) * 5.0 + Vector3(MarshLayout.CW_DIR.x, 0, MarshLayout.CW_DIR.y) * 8.0
+	var far_hidden: bool = not b.see_test.call(a0, probe)
+	probe.global_position = a0.global_position + Vector3(MarshLayout.CW_SIDE.x, 0, MarshLayout.CW_SIDE.y) * 4.0
+	var near_seen: bool = b.see_test.call(a0, probe)
+	probe.global_position = a0.global_position + Vector3(MarshLayout.CW_DIR.x, 0, MarshLayout.CW_DIR.y) * 20.0
+	check(far_hidden and near_seen and b.see_test.call(a0, probe), "芦苇挡视线：堤道外面 5 米、往前 8 米的人看不见；4 米内看得见；路上 20 米外的照样看得见")
+	probe.queue_free()
+	# 泥里走得慢
+	var mud_v: Vector3 = a0._lane(Vector3(2, 0, 0))
+	a0.global_position = MarshLayout.cw3(14.0, 4.5, MarshLayout.MUD_Y)
+	await physics(2)
+	check(a0._lane(Vector3(2, 0, 0)).x < mud_v.x * 0.7, "泥里走得慢（%.2f → %.2f）" % [mud_v.x, a0._lane(Vector3(2, 0, 0)).x])
+	# 开打：小队坚守两人一排，顺着堤道朝村子排
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	main.give_order("hold")
+	var anchors: Array = b.squad.map(func(x): return x.anchor)
+	check(b.squad.size() == 4 and anchors.all(func(p): return CausewayBattle.off_of(p) <= 1.2) and CausewayBattle.t_of(anchors[0]) < CausewayBattle.t_of(main.player.global_position) and CausewayBattle.t_of(anchors[3]) < CausewayBattle.t_of(anchors[0]) - 1.0,
+		"坚守：两人一排，顺着堤道朝村子排（都在路面上）")
+	# 先头冲到断口前：泥炭工点火，火墙拦住堤道
+	var v0: Soldier = soldiers_of(main, CausewayBattle.ATK)[1]
+	var m0: float = v0.morale
+	v0.global_position = MarshLayout.cw3(CausewayBattle.PEAT_TRIGGER_T + 1.0)
+	await frames(3)
+	check(cw.peat_lit and is_instance_valid(cw.barrier) and v0.morale <= m0 - 10.0 and main.hud.toast_label.text.contains("泥炭垛"), "先头冲到断口前：泥炭垛点着了，火边的人慌（士气 %.0f → %.0f）" % [m0, v0.morale])
+	var sp := main.get_world_3d().direct_space_state
+	var q := PhysicsRayQueryParameters3D.create(MarshLayout.cw3(CausewayBattle.PEAT_T - 2.0, 0.0, 1.2), MarshLayout.cw3(CausewayBattle.PEAT_T + 2.0, 0.0, 1.2), FpController.LAYER_BOUNDARY)
+	check(not sp.intersect_ray(q).is_empty(), "火墙挡住堤道（边墙那一层：兵和你都过不去）")
+	cw.burn_left = 0.01
+	await frames(3)
+	check(not is_instance_valid(cw.barrier) or cw.barrier.is_queued_for_deletion(), "火小了：火墙撤掉")
+	# 主力到：奥弗杀出来、水门挡回去；火把线熄了
+	b.elapsed = CausewayBattle.WAVE2_AT + 4.0
+	await seconds(0.5)
+	var outl := soldiers_of(main, CausewayBattle.DEF).filter(func(x): return x.display_override == "「灰手」奥弗")
+	check(outl.size() == 1 and outl[0].is_inside_tree() and outl[0].fighting() and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.has_meta("flank")).is_empty(), "主力到了：奥弗带人杀出来；水门那边没人摸进来")
+	check(cw.torches.all(func(e): return not (e[0] as Node3D).visible), "主力上了堤道：远处的火把线熄了（就是他们）")
+	await free_main(main)
+	GameState.set_flag("ch1_outlaws", "ally")
+	GameState.dead["ferry_offer"] = [0, 0, 0]
+	GameState.flags.erase("ch1_causeway")
+	GameState.set_stage("ch1_main", "to_causeway")
+	main = await make_causeway()
+	ow = main.battle.waves.filter(func(w): return w.side == CausewayBattle.DEF)
+	check(ow.size() == 1 and ow[0].soldiers[0].display_override == "无旗者的头目", "奥弗死在渡口的：是无旗者的头目带人来")
 	await free_main(main)
 	GameState.new_game()
 

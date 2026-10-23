@@ -55,6 +55,8 @@ var extra_mask := 0               # 另加的碰撞层（4.9a：堤道上的兵�
 var lane_dir := Vector3.ZERO
 var lane_a := Vector3.ZERO
 var lane_half := 1.6
+var slow_below := -INF            # 脚底低于这个高度（堤道两边的泥里，4.9b）就走得慢
+const MUD_SLOW := 0.55            # 泥里的速度（玩家在泥里也是走不快、不能跑）
 const LANE_CIRCLE := 0.12         # 窄路上绕圈的幅度（乘在原来的 circle_side 上）
 const LANE_PULL := 1.2            # 离中线太远时往回走多快（米 / 秒）
 var marker: Label3D               # 头顶的 ◆
@@ -320,6 +322,8 @@ func post() -> Variant:
 
 ## 窄路上：离中线太远就往回拉（v 是这一帧想走的速度）
 func _lane(v: Vector3) -> Vector3:
+	if global_position.y < slow_below:
+		v *= MUD_SLOW
 	if lane_dir == Vector3.ZERO:
 		return v
 	var rel := _flat(global_position - lane_a)

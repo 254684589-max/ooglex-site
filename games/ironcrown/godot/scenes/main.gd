@@ -128,6 +128,10 @@ func _ready() -> void:
 			GameState.set_stage("ch1_main", "to_causeway")
 			GameState.set_flag("ch1_hold", _query("causeway"))
 			GameState.daypart = "night"
+			if _query("cwset") == "ivette":                # 4.9b：选了伊薇特、泥炭工站过来、收编了奥弗（看泥炭垛点火和奥弗杀出来）
+				GameState.flags["valen_heir"] = "ivette"
+				GameState.set_flag("ch1_peat", "ivette")
+				GameState.set_flag("ch1_outlaws", "ally")
 		if area == "castle" and _query("squad") in ["1", "gate"] and not Engine.has_meta("ic_squad_param_done"):
 			Engine.set_meta("ic_squad_param_done", true)     # 截图用（4.8b）：?area=castle&squad=1|gate 直接摆出入夜备战的小队（gate：两个人守水门），只设小队的旗标
 			GameState.set_flag("ch1_ready")
@@ -285,6 +289,7 @@ func _ready() -> void:
 			if not battle_bench: hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
 		battle.wave_arrived.connect(func(side: String, count: int):
 			if not battle_bench: hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
+		battle.wave_note.connect(func(text: String): hud.toast(text, 4.0))
 		if area == "battle" and battle_autostart and _query("perf") != "1":       # 试验场开局 3 秒自己开打；基准测试自己开打（不存档）；堤道夜战走到守点才开打（4.9a）
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:

@@ -22,6 +22,7 @@ signal ended(winner: String)
 signal captain_down(side: String)     # 某一方的队长倒下了（B.3）
 signal routed_side(side: String)      # 某一方全体溃逃（B.3）
 signal wave_arrived(side: String, count: int)
+signal wave_note(text: String)          # 带说明的援军到了（4.9b：奥弗从芦苇里杀出、水门摸进来人），HUD 用这句话代替「来了 N 个援军」
 
 const MAX_ACTIVE := 60            # 同时活着、在打的兵（双方合计，不含玩家）
 const CHECK_STEP := 0.25          # 多久检查一次名额与胜负（秒）
@@ -66,6 +67,10 @@ var breach_side := ""             # 据点规则（4.9a）：这一方冲过去 
 var breach_limit := 0
 var breach_test: Callable         # (Soldier) -> bool：这个兵冲过去了吗
 var breached := {}                # 冲过去过的兵（instance id）
+var line_cols := LINE             # 坚守队形每排几个人（4.9b：堤道窄，两人一排）
+var rank_cols := RANK             # 跟随队形每排几个人
+var hold_facing := Vector3.ZERO   # 坚守队形朝哪边排（4.9b：堤道上顺着路朝村子排，不看玩家朝哪边）；ZERO = 按玩家的朝向
+var see_test: Callable            # (兵, 目标) -> bool：看得见吗（4.9b：芦苇挡视线）；不设 = 都看得见
 
 
 func _ready() -> void:
@@ -203,13 +208,15 @@ func pick_target(s: Soldier) -> Node3D:
 			continue
 		if not lc.is_empty() and _flat_dist(o.global_position, lc[0]) > lc[1]:
 			continue
+		if see_test.is_valid() and not see_test.call(s, o):
+			continue
 		var sc := _score(s, o, pos)
 		if o == s.target:
 			cur_score = sc
 		if sc < best_score:
 			best = o
 			best_score = sc
-	if _player_fights() and s.side != player_side and (lc.is_empty() or _flat_dist(player.global_position, lc[0]) <= lc[1]):
+	if _player_fights() and s.side != player_side and (lc.is_empty() or _flat_dist(player.global_position, lc[0]) <= lc[1]) and (not see_test.is_valid() or see_test.call(s, player)):
 		var sc := _score(s, player, pos)
 		if player == s.target:
 			cur_score = sc
@@ -261,6 +268,8 @@ func order(o: String) -> bool:
 		hold_dir = -p.global_transform.basis.z
 		hold_dir.y = 0.0
 		hold_dir = hold_dir.normalized() if hold_dir.length() > 0.01 else Vector3.FORWARD
+	if hold_facing != Vector3.ZERO:
+		hold_dir = hold_facing
 	for s in squad:
 		if not is_instance_valid(s) or not s.fighting():
 			continue
@@ -308,18 +317,19 @@ func post_facing(s: Soldier) -> Vector3:
 
 ## 跟随队形：玩家身后，每排 RANK 人，排距 1.6 米
 func _follow_slot(i: int, p: Node3D) -> Vector3:
-	var col := i % RANK
-	var row := i / RANK
-	var local := Vector3((col - (RANK - 1) * 0.5) * 1.6, 0.0, 2.2 + row * 1.6)      # 本地 +Z 是身后
+	var col := i % rank_cols
+	var row := i / rank_cols
+	var local := Vector3((col - (rank_cols - 1) * 0.5) * 1.6, 0.0, 2.2 + row * 1.6)      # 本地 +Z 是身后
 	return p.global_position + Basis(Vector3.UP, p.global_rotation.y) * local
 
 
-## 坚守队形：玩家下令时站的地方前面 2 米，横着排成一线，每排 LINE 人
+## 坚守队形：玩家下令时站的地方前面 2 米，横着排，每排 line_cols 人（试验场一字横排 6 人；堤道两人一排，顺着路往后排）
 func _hold_slot(i: int, p: Node3D) -> Vector3:
-	var col := i % LINE
-	var row := i / LINE
-	var local := Vector3((col - (LINE - 1) * 0.5) * 1.5, 0.0, -2.0 - row * 1.5)     # 本地 -Z 是前面
-	return p.global_position + Basis(Vector3.UP, p.global_rotation.y) * local
+	var col := i % line_cols
+	var row := i / line_cols
+	var local := Vector3((col - (line_cols - 1) * 0.5) * 1.5, 0.0, -2.0 - row * 1.5)     # 本地 -Z 是前面
+	var yaw := p.global_rotation.y if hold_facing == Vector3.ZERO else atan2(-hold_facing.x, -hold_facing.z)
+	return p.global_position + Basis(Vector3.UP, yaw) * local
 
 
 ## 记下兵 s 现在盯着谁（t = null：不盯了）；可以重复调用
@@ -464,10 +474,10 @@ func morale_tick(s: Soldier, dt: float) -> void:
 # ---- 援军（B.3） ----
 
 ## 开打后过 delay 秒，这一批兵从各自摆好的位置进场（进场时也受同屏名额管）
-func add_wave(side: String, soldiers: Array, parent: Node3D, delay: float) -> void:
+func add_wave(side: String, soldiers: Array, parent: Node3D, delay: float, note := "") -> void:
 	for s in soldiers:
 		s.battle = self
-	waves.append({"side": side, "soldiers": soldiers, "parent": parent, "at": delay})
+	waves.append({"side": side, "soldiers": soldiers, "parent": parent, "at": delay, "note": note})
 
 
 func _arrive_waves() -> void:
@@ -478,8 +488,11 @@ func _arrive_waves() -> void:
 		waves.remove_at(i)
 		for s in w.soldiers:
 			enlist(s, w.parent)
-		print("IC_BATTLE wave side=%s count=%d" % [w.side, w.soldiers.size()])
-		wave_arrived.emit(w.side, w.soldiers.size())
+		print("IC_BATTLE wave side=%s count=%d%s" % [w.side, w.soldiers.size(), (" note=" + str(w.note)) if str(w.note) != "" else ""])
+		if str(w.note) != "":
+			wave_note.emit(str(w.note))
+		elif not w.soldiers.is_empty():
+			wave_arrived.emit(w.side, w.soldiers.size())
 
 
 func _tally() -> String:
