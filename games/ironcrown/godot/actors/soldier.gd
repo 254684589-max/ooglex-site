@@ -111,10 +111,7 @@ func _ready() -> void:
 	if models_on:
 		dressed = SoldierLook.dress(self)
 		if dressed:
-			model = dressed.model
-			for mi: MeshInstance3D in body.find_children("*", "MeshInstance3D", true, false):
-				mi.visibility_range_begin = SoldierLook.MODEL_FAR          # 近处画真人，远处画合并好的胶囊（B.5）
-				mi.visibility_range_begin_margin = SoldierLook.FADE
+			model = dressed.model                      # 画真人还是画胶囊由军阵排（SoldierLook.budget）
 	rest_still = true
 	lod_t = randf() * LOD_STEP
 	if battle and battle.is_friendly(side):

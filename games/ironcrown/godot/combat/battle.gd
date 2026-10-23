@@ -52,6 +52,7 @@ var winner := ""
 var aim_of := {}                  # 兵的 instance id → 它盯着的目标的 instance id
 var aimed := {}                   # 目标的 instance id → 被几个兵盯着
 var check_t := 0.0
+var look_t := 0.0
 var t_start := 0
 var player: FpController
 var squad: Array = []             # 归玩家指挥的兵（B.2）
@@ -355,6 +356,10 @@ func aimed_at(t: Node) -> int:
 
 
 func _physics_process(delta: float) -> void:
+	look_t -= delta
+	if look_t <= 0.0:
+		look_t = CHECK_STEP
+		SoldierLook.budget(roster, get_viewport().get_camera_3d())       # B.6：离镜头最近的十来个兵画真人，其余画胶囊（开打前也排）
 	if not started or finished:
 		return
 	elapsed += delta

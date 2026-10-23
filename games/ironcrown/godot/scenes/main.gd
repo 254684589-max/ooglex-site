@@ -112,6 +112,7 @@ func _ready() -> void:
 	GameState.pending_tips = []
 	GameState.pending_goto = {}                     # 上一个场景没走成的「带你去别处」不带过来（审查）
 	if OS.has_feature("web"):
+		Soldier.models_on = _query("models") != "0"      # 基准测试比较用（B.6）：?models=0 兵还是占位胶囊
 		if _query("test") == "1":
 			use_test_range = true
 		elif _query("test") == "2":

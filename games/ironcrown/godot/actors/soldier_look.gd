@@ -4,17 +4,20 @@ extends Node3D
 ## 民兵穿平民的衣服，剑兵、盾兵、长枪兵穿游侠那套（兜帽摘了），弓手戴着兜帽，队长是佣兵那套；外衣按阵营的罩袍色染一遍，
 ## 胸前斜挎一条阵营布带（白 / 黑），一部分人戴一顶铁盔（代码搭的），头发、胡子、发色按兵的编号随机；手里拿剑、棍、长枪或弓，盾兵左手一面圆盾（布带颜色），
 ## 队长背上插一面小旗。数据在 data/looks.json 的 soldiers 一节。
-## 只在近处画模型（MODEL_FAR 米以内）；远处还是 B.5 合并好的占位胶囊（visibility range 交接）。模型远了动作停下（和 NPC 一样）。
+## 只给离镜头最近的 MAX_NEAR 个兵（MODEL_FAR 米以内）画模型，其余还是 B.5 合并好的占位胶囊（Battle 每 0.25 秒排一次：budget()）；
+## 不画模型的兵模型藏起来、动作停下。第一版按距离各自交接（visibility range），60 人时观战台上看绘制调用 1033 / 1246、逻辑 64–79 毫秒，超了预算 400。
 ## 动作跟着兵的状态走（_process）：站着持剑、走、跑、出招（按起手 + 半个出招的时间对准命中）、格挡、挨打、踉跄、倒下、跪地求饶、逃跑；
 ## 长枪兵出招用冲刺突刺（Sword_Dash），弓手拉弓时举着弓站定（没有拉弓的动作素材，B.6b 再看）。
 
 const MODEL_FAR := 22.0
-const FADE := 3.0                 # 模型和胶囊交接的过渡（米）
+const FADE := 3.0                 # （留给以后按距离渐变用）
+const MAX_NEAR := 8               # 同时画真人模型的兵最多几个（每个约 15 次绘制调用；60 人基准：12 个时低画质 325–386、中画质 399–451，10 个时 330–352 / 379–429，压到 8 个）
 const BONE := "spine_03"
 
 var soldier: Soldier
 var model: CharacterModel
 var seed_i := 0
+var rng := RandomNumberGenerator.new()     # 按兵的编号定种子：每次进来同一个兵长得一样（编号的字符串哈希是挨着的，直接取模几乎都一样，B.6 实测）
 var _last_hp := -1
 var _hit_left := 0.0
 var _act := ""
@@ -30,19 +33,20 @@ static func dress(s: Soldier) -> SoldierLook:
 	sl.name = "SoldierLook"
 	sl.soldier = s
 	sl.seed_i = absi(hash(s.enemy_id))
+	sl.rng.seed = hash("soldier_look:" + s.enemy_id)
 	s.add_child(sl)
 	sl._build(cfg)
 	return sl if sl.model != null else null
 
 
-func _pick(arr: Array, salt: int) -> Variant:
-	return arr[(seed_i / maxi(salt, 1)) % arr.size()] if not arr.is_empty() else null
+func _pick(arr: Array) -> Variant:
+	return arr[rng.randi_range(0, arr.size() - 1)] if not arr.is_empty() else null
 
 
 func _build(cfg: Dictionary) -> void:
 	var presets: Array = cfg.kinds[soldier.kind]
-	var p := {"preset": str(_pick(presets, 1)), "hair": _pick(cfg.get("hair", [["Hair_Buzzed"]]), 3), "hair_color": str(_pick(cfg.get("hair_colors", ["#3a2a1a"]), 7))}
-	var c := soldier.coat_color.lightened(0.35)
+	var p := {"preset": str(_pick(presets)), "hair": _pick(cfg.get("hair", [["Hair_Buzzed"]])), "hair_color": str(_pick(cfg.get("hair_colors", ["#3a2a1a"])))}
+	var c := soldier.coat_color.lightened(0.45)                   # 罩袍色偏暗：提亮了再乘，衣服才看得出是哪一边（第一版 0.35 / 0.6 两边分不清）
 	var tint := Color.WHITE.lerp(c, float(cfg.get("tint_mix", 0.6)))
 	p["tint"] = {"MI_Ranger": "#" + tint.to_html(false), "MI_Peasant": "#" + tint.to_html(false)}
 	var spec := Looks.spec_of(p)
@@ -52,7 +56,7 @@ func _build(cfg: Dictionary) -> void:
 	m.look = spec.look
 	m.set_meta("hide", spec.hide)
 	m.rotation.y = PI                          # 模型面朝 +Z，兵的脸朝本地 -Z
-	var h := 0.95 + float((seed_i / 11) % 11) * 0.01           # 高矮差一点（0.95–1.05）
+	var h := rng.randf_range(0.95, 1.05)                         # 高矮差一点
 	m.scale = Vector3(h, h, h)
 	add_child(m)
 	if not m.loaded:
@@ -61,8 +65,6 @@ func _build(cfg: Dictionary) -> void:
 	model = m
 	Looks.hide_parts(m)
 	for mi: MeshInstance3D in m.scene_root.find_children("*", "MeshInstance3D", true, false):
-		mi.visibility_range_end = MODEL_FAR
-		mi.visibility_range_end_margin = FADE
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var weapon := str(soldier.data.get("weapon", "sword"))
 	var prop := Props.make({"club": "club", "spear": "spear", "bow": "bow"}.get(weapon, "sword"))
@@ -70,14 +72,50 @@ func _build(cfg: Dictionary) -> void:
 	if soldier.kind == "shield":
 		m.hold_prop(Props.make_shield(soldier.band_color), true)
 	var helm_share: float = float(cfg.get("helmet", {}).get(soldier.kind, 0.0))
-	_body_gear(soldier.band_color, float((seed_i / 13) % 100) / 100.0 < helm_share, soldier.is_captain)
+	_body_gear(soldier.band_color, rng.randf() < helm_share, soldier.is_captain)
 	for mi: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
-		if mi.visibility_range_end == 0.0:
-			mi.visibility_range_end = MODEL_FAR
-			mi.visibility_range_end_margin = FADE
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	m.play_loop("idle_armed", 1.0, 0.0)
-	m.anim.seek(float(seed_i % 100) / 100.0, true)      # 起点错开
+	m.anim.seek(rng.randf(), true)                      # 起点错开
 	m.set_anim_every(2)
+	set_near(false)                                   # 先画胶囊，Battle 排过以后近的才换成真人
+
+
+## 画真人还是画胶囊
+func set_near(on: bool) -> void:
+	if model == null:
+		return
+	model.visible = on
+	model.set_process(on)
+	if soldier.look:
+		soldier.look.visible = not on
+	if soldier.arm and soldier.arm.get_child_count() > 0:
+		(soldier.arm.get_child(0) as Node3D).visible = not on
+
+
+func is_near() -> bool:
+	return model != null and model.visible
+
+
+## 军阵每 0.25 秒排一次：离镜头最近、MODEL_FAR 以内的 MAX_NEAR 个兵画真人（倒下、跪下的也算：近处看得见），其余画胶囊
+static func budget(soldiers: Array, cam: Camera3D) -> int:
+	if cam == null:
+		return 0
+	var cp := cam.global_position
+	var cand := []
+	for s in soldiers:
+		if is_instance_valid(s) and s.dressed != null and s.is_inside_tree():
+			cand.append([s.global_position.distance_squared_to(cp), s])
+	cand.sort_custom(func(a, b): return a[0] < b[0])
+	var n := 0
+	for i in cand.size():
+		var on: bool = n < MAX_NEAR and float(cand[i][0]) <= MODEL_FAR * MODEL_FAR
+		if on:
+			n += 1
+		var sl: SoldierLook = cand[i][1].dressed
+		if sl.is_near() != on:
+			sl.set_near(on)
+	return n
 
 
 ## 身上的东西（挂在 spine_03 / 头上，按 T 姿势的骨架空间摆，同 actors/gear.gd）：阵营布带、铁盔、队长的小旗
@@ -134,13 +172,7 @@ func _mat(c: Color, rough: float, metal := 0.0) -> StandardMaterial3D:
 
 ## 动作跟着兵的状态走；远处（画的是胶囊）不推进
 func _process(delta: float) -> void:
-	if model == null or soldier == null:
-		return
-	var cam := get_viewport().get_camera_3d()
-	var near := cam == null or cam.global_position.distance_to(global_position) < MODEL_FAR + FADE
-	if model.is_processing() != near:
-		model.set_process(near)
-	if not near:
+	if model == null or soldier == null or not model.visible:
 		return
 	var s := soldier
 	if _last_hp >= 0 and s.hp < _last_hp and s.state not in [Enemy.State.DEAD, Enemy.State.STAGGER]:

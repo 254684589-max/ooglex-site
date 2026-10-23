@@ -4682,6 +4682,7 @@ func test_troops() -> void:
 
 ## 60 人性能（路线图 B.5，TECH.md 4.10）：占位外观合并成两份网格、站着不动不做碰撞移动、跪定了停算、远处动作降频、军阵基准测试
 func test_armyperf() -> void:
+	Soldier.models_on = false              # 这一组量的是 B.5 合并好的占位胶囊（B.6 的真人外观另在 uniforms 组）
 	GameState.new_game(7)
 	var main := await make_battle()
 	var b: Battle = main.battle
@@ -4748,6 +4749,7 @@ func test_armyperf() -> void:
 	else:
 		check(false, "人物模型没加载成功，测不了动作降频")
 	await free_main(main)
+	Soldier.models_on = true
 	# 军阵基准测试（真机用）：你不参战，直接开打（不存档），两个机位各测一次，结果表显示在画面上
 	GameState.new_game(7)
 	var main2 := await make_battle()
@@ -8114,10 +8116,24 @@ func test_uniforms() -> void:
 	var helmets := all_s.filter(func(x): return x.model.skeleton.find_children("*", "BoneAttachment3D", false, false).any(func(a): return a.bone_name == "Head"))
 	var cap: Soldier = captain_of(white)
 	check(cap.model.skeleton.find_children("*", "BoneAttachment3D", false, false).any(func(a): return a.bone_name == "Head") and helmets.size() > 2 and helmets.size() < all_s.size(), "队长戴铁盔；一部分兵戴（%d / %d）" % [helmets.size(), all_s.size()])
-	var near_ok: bool = all_s.all(func(x): return x.model.scene_root.find_children("*", "MeshInstance3D", true, false).all(func(mi): return mi.visibility_range_end == SoldierLook.MODEL_FAR) and x.look.visibility_range_begin == SoldierLook.MODEL_FAR)
-	check(near_ok, "近处（%.0f 米内）画真人、远处画合并好的胶囊" % SoldierLook.MODEL_FAR)
+	await physics(20)
+	var cam := main.get_viewport().get_camera_3d()
+	var near: Array = all_s.filter(func(x): return x.dressed.is_near())
+	var nearest: Array = all_s.duplicate()
+	nearest.sort_custom(func(a, c): return a.global_position.distance_to(cam.global_position) < c.global_position.distance_to(cam.global_position))
+	var swap_ok: bool = all_s.all(func(x): return x.dressed.is_near() != x.look.visible and x.model.visible == x.dressed.is_near())
+	check(near.size() >= 1 and near.size() <= SoldierLook.MAX_NEAR and nearest[0].dressed.is_near() and swap_ok,
+		"离镜头最近的兵画真人（%d 个，最多 %d 个、%.0f 米内），其余画合并好的胶囊；画真人的时候胶囊藏起来" % [near.size(), SoldierLook.MAX_NEAR, SoldierLook.MODEL_FAR])
+	var crowd := all_s.duplicate()
+	for x in crowd:
+		x.global_position = cam.global_position + Vector3(randf_range(-4, 4), -1.6, -6.0)
+	await physics(20)
+	check(all_s.filter(func(x): return x.dressed.is_near()).size() == SoldierLook.MAX_NEAR, "%d 个兵全挤在镜头前：也只画 %d 个真人（绘制调用有上限）" % [all_s.size(), SoldierLook.MAX_NEAR])
 	check(all_s.all(func(x): return x.body.find_children("*", "MeshInstance3D", true, false).size() == 2), "占位胶囊照旧是两份网格（B.5 的绘制调用不变）")
-	# 动作：站着持剑；出招；倒下；跪地求饶
+	# 动作：站着持剑；出招；倒下；跪地求饶（要看动作的几个先换成真人，军阵先不排）
+	b.look_t = 1e9
+	for x in [sw, sp, lv]:
+		x.dressed.set_near(true)
 	await frames(3)
 	check(sw.model.role in ["idle_armed", "walk", "run"], "开打前：持剑站着（%s）" % sw.model.role)
 	b.start()
