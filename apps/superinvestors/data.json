@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-10-16T05:04:28Z",
- "asOf": "2026-10-16",
+ "updatedAt": "2026-10-23T05:25:12Z",
+ "asOf": "2026-10-23",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -12900,8 +12900,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-10-15",
+  "asOf": "2026-10-22",
   "weeks": [
+   {
+    "date": "2026-10-22",
+    "bull": 36.9,
+    "neutral": 17.3,
+    "bear": 45.8
+   },
    {
     "date": "2026-10-15",
     "bull": 38.7,
@@ -12967,12 +12973,6 @@
     "bull": 37.0,
     "neutral": 25.0,
     "bear": 38.0
-   },
-   {
-    "date": "2026-07-30",
-    "bull": 31.0,
-    "neutral": 26.9,
-    "bear": 42.1
    }
   ],
   "avg": {
@@ -12980,7 +12980,7 @@
    "neutral": 31.0,
    "bear": 31.4
   },
-  "spread": -2.9,
+  "spread": -8.9,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
