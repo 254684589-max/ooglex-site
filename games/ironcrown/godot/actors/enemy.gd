@@ -92,6 +92,7 @@ var arm: Node3D
 var name_label: Label3D
 var status_label: Label3D
 var coat_mat: StandardMaterial3D
+var outfit: SoldierLook           # B.6b：军阵以外的敌人的真人外观（没配的还是胶囊）
 var shield: MeshInstance3D        # 左手的盾（B.4，数据 "shield": true）；Soldier 合并网格以后为空（B.5），看 has_shield
 var has_shield := false
 var rest_still := false           # 站着不动、脚踩在地上时这一帧不做 move_and_slide（B.5：军阵的兵打开；60 人里这一步占逻辑耗时一半）
@@ -202,6 +203,10 @@ func _ready() -> void:
 	if waypoints.is_empty():
 		waypoints = [global_position]
 	last_known = global_position
+	if not self is Soldier and Soldier.models_on:      # B.6b：军阵以外的敌人也穿上真人外观（人少，一直画真人）；兵在 Soldier._ready 里穿
+		outfit = SoldierLook.dress(self)
+		if outfit:
+			outfit.set_near(true)
 	if GameState.dead.has(enemy_id):              # 读档：已经倒下的，直接摆成倒下的样子（2.8）
 		var p: Array = GameState.dead[enemy_id]
 		global_position = Vector3(p[0], p[1], p[2])

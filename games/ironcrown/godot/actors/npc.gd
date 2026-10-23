@@ -35,8 +35,8 @@ func _ready() -> void:
 	cs.position.y = 0.875
 	add_child(cs)
 	var body := Npc.build_body(self, coat)
-	if Looks.has(display_name, name) and not get_groups().any(func(g): return str(g).begins_with("encounter:")):
-		_dress(body)                       # 要和你打起来的人（对峙那一组）照旧是胶囊：开打时换成敌人，敌人换装在 A.2b
+	if Looks.has(display_name, name):
+		_dress(body)                       # 要和你打起来的人（对峙那一组）也穿上：开打时换成的敌人按同一个名字穿同一身（B.6b）
 	if lying:
 		cs.rotation.x = PI / 2
 		cs.position = Vector3(0, 0.3, 0.875)

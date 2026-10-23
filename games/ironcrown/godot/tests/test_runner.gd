@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8160,6 +8160,70 @@ func test_uniforms() -> void:
 	Soldier.models_on = true
 
 
+## B.6b：少画几次（布带 / 铁盔 / 兵器 / 盾各压成一份，衣服、头、头发合成一块蒙皮网格）；弓手拉弓的姿势；军阵以外的敌人也穿上
+func test_uniforms2() -> void:
+	SoldierLook.merge_on = false
+	GameState.new_game(7)
+	var main := await make_battle()
+	var raw := soldiers_of(main, "white").map(func(x): x.dressed.set_near(true); return x.dressed.draw_surfaces())
+	await free_main(main)
+	SoldierLook.merge_on = true
+	GameState.new_game(7)
+	main = await make_battle()
+	var b: Battle = main.battle
+	b.look_t = 1e9
+	var white := soldiers_of(main, "white")
+	var merged := white.map(func(x): x.dressed.set_near(true); return x.dressed.draw_surfaces())
+	var avg := func(a: Array) -> float: return float(a.reduce(func(s, v): return s + v, 0)) / a.size()
+	check(white.all(func(x): return x.dressed.merged != null and x.dressed.merged.skin.get_bind_count() > 10) and avg.call(merged) < avg.call(raw) * 0.7,
+		"每个兵少画几次：合并前平均 %.1f 次、合并后 %.1f 次（%s）" % [avg.call(raw), avg.call(merged), str(merged)])
+	var sw: Soldier = white.filter(func(x): return x.kind == "soldier")[0]
+	await frames(4)
+	var head := sw.model.skeleton.get_bone_global_pose(sw.model.skeleton.find_bone("Head")).origin
+	check(head.y > 1.4 and head.y < 1.9 and sw.dressed.merged.visible, "合并以后骨架照样带着网格动（头在 %.2f 米高）" % head.y)
+	# 弓手：弓在左手；拉弓时左臂伸向前
+	var ar: Soldier = white.filter(func(x): return x.kind == "archer")[0]
+	var lh := ar.model.skeleton.get_node_or_null("HandL")
+	check(ar.dressed.bow != null and lh != null and lh.find_child("Prop_bow", true, false) != null, "弓手左手拿弓，骨架上有拉弓的修改器")
+	var sk := ar.model.skeleton
+	var fwd := func() -> float:
+		var hand := sk.global_transform * sk.get_bone_global_pose(sk.find_bone("hand_l")).origin
+		var chest := sk.global_transform * sk.get_bone_global_pose(sk.find_bone("spine_03")).origin
+		return (hand - chest).dot(-ar.global_transform.basis.z)
+	await frames(4)
+	var before: float = fwd.call()
+	b.start()
+	ar._enter(Enemy.State.COMBAT)
+	ar.action = "draw"
+	await seconds(0.6)
+	ar.action = "draw"
+	await frames(3)
+	var after: float = fwd.call()
+	check(ar.dressed.bow.influence > 0.8 and after > before + 0.15, "拉弓：左手伸到身前（%.2f → %.2f 米）" % [before, after])
+	await free_main(main)
+	# 军阵以外的敌人：哨卡的无旗者穿上了；营地对峙说崩了，换成的敌人和原来那个人穿同一身
+	GameState.new_game(1)
+	GameState.pending_load = {"scene": "birch", "spawn": "north", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	var outlaws: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return not e is Soldier)
+	check(not outlaws.is_empty() and outlaws.all(func(e): return e.outfit != null and e.outfit.is_near() and not e.body.visible), "桦林哨卡的无旗者穿上了真人外观（%d 个），占位身子藏起来" % outlaws.size())
+	await free_main(main)
+	ch1_state("deliver")
+	GameState.flags.erase("offer_left")
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	var offer := main.world.get_node_or_null("Npc_offer_camp") as Npc
+	var npc_parts: Array = offer.look_model.parts.duplicate() if offer and offer.look_model else []
+	main.start_encounter(MarshLayout.CAMP_ENCOUNTER, "")
+	await frames(3)
+	var boss: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return e.display_name == "「灰手」奥弗")
+	check(not npc_parts.is_empty() and boss.size() == 1 and boss[0].outfit != null and boss[0].outfit.model.parts == npc_parts, "营地对峙说崩了：奥弗换成敌人，还是原来那一身")
+	await free_main(main)
+	GameState.new_game()
+
+
 ## A.2a：NPC 换上真人模型（data/looks.json）
 func test_looks() -> void:
 	# —— 头只留脖子以上（2026-10-23：只按高度切时 T 姿势的两肩和整条胳膊也留着，从衣服里戳出来）
@@ -8252,7 +8316,7 @@ func test_looks() -> void:
 	await physics(2)
 	var offer := main.world.get_node_or_null("Npc_offer_camp") as Npc
 	var tobin := main.world.get_node_or_null("Npc_tobin") as Npc
-	check(offer != null and offer.look_model == null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人照旧是胶囊（敌人换装另做）")
+	check(offer != null and offer.look_model != null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人也穿上了（B.6b：开打时换成的敌人穿同一身）")
 	var stacker := main.world.get_node_or_null("Npc_peat_stacker") as Npc
 	var cutter := main.world.get_node_or_null("Npc_peat_cutter") as Npc
 	check(stacker.look_model.role == "kneel_fix" and cutter.look_model.role == "chop" and cutter.look_model.grip.find_child("Prop_axe", true, false) != null, "泥炭场：一个跪着码垛、一个抡斧头挖")

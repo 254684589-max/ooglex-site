@@ -7,27 +7,31 @@ extends Node3D
 ## 只给离镜头最近的 MAX_NEAR 个兵（MODEL_FAR 米以内）画模型，其余还是 B.5 合并好的占位胶囊（Battle 每 0.25 秒排一次：budget()）；
 ## 不画模型的兵模型藏起来、动作停下。第一版按距离各自交接（visibility range），60 人时观战台上看绘制调用 1033 / 1246、逻辑 64–79 毫秒，超了预算 400。
 ## 动作跟着兵的状态走（_process）：站着持剑、走、跑、出招（按起手 + 半个出招的时间对准命中）、格挡、挨打、踉跄、倒下、跪地求饶、逃跑；
-## 长枪兵出招用冲刺突刺（Sword_Dash），弓手拉弓时举着弓站定（没有拉弓的动作素材，B.6b 再看）。
+## 长枪兵出招用冲刺突刺（Sword_Dash）；弓手左手拿弓、平时普通站姿，拉弓时用骨骼修改器把两条胳膊摆成拉弓的样子（BowAim，B.6b）。
+## B.6b：军阵以外的敌人（营地、渡口、哨卡的无旗者，失守后庭院里巡的人）也用它，人少一直画真人；对峙说崩了变成敌人的，按那个人的名字穿同一身。
 
 const MODEL_FAR := 22.0
 const FADE := 3.0                 # （留给以后按距离渐变用）
 const MAX_NEAR := 8               # 同时画真人模型的兵最多几个（每个约 15 次绘制调用；60 人基准：12 个时低画质 325–386、中画质 399–451，10 个时 330–352 / 379–429，压到 8 个）
 const BONE := "spine_03"
 
-var soldier: Soldier
+var soldier: Enemy               # 兵（Soldier）或者军阵以外的敌人（B.6b：营地、渡口、哨卡的无旗者，失守后庭院里巡的人）
 var model: CharacterModel
 var seed_i := 0
 var rng := RandomNumberGenerator.new()     # 按兵的编号定种子：每次进来同一个兵长得一样（编号的字符串哈希是挨着的，直接取模几乎都一样，B.6 实测）
 var _last_hp := -1
 var _hit_left := 0.0
 var _act := ""
+var bow: BowAim                   # 弓手拉弓的姿势（B.6b）
+var merged: MeshInstance3D        # 合成一块的蒙皮网格（B.6b；合不了为空）
+static var merge_on := true       # 测试比较用：关掉就不合（代码搭的东西照样压成一份）
 
 
 ## 给兵 s 搭外观；data/looks.json 没有 soldiers 这一节、或者这个兵种没配时返回 null（还是胶囊）
-static func dress(s: Soldier) -> SoldierLook:
+static func dress(s: Enemy) -> SoldierLook:
 	var cfg: Dictionary = Looks.data().get("soldiers", {})
 	var kinds: Dictionary = cfg.get("kinds", {})
-	if not kinds.has(s.kind):
+	if not kinds.has(s.kind) and not Looks.has(s.display_override):
 		return null
 	var sl := SoldierLook.new()
 	sl.name = "SoldierLook"
@@ -44,12 +48,17 @@ func _pick(arr: Array) -> Variant:
 
 
 func _build(cfg: Dictionary) -> void:
-	var presets: Array = cfg.kinds[soldier.kind]
-	var p := {"preset": str(_pick(presets)), "hair": _pick(cfg.get("hair", [["Hair_Buzzed"]])), "hair_color": str(_pick(cfg.get("hair_colors", ["#3a2a1a"])))}
-	var c := soldier.coat_color.lightened(0.45)                   # 罩袍色偏暗：提亮了再乘，衣服才看得出是哪一边（第一版 0.35 / 0.6 两边分不清）
-	var tint := Color.WHITE.lerp(c, float(cfg.get("tint_mix", 0.6)))
-	p["tint"] = {"MI_Ranger": "#" + tint.to_html(false), "MI_Peasant": "#" + tint.to_html(false)}
-	var spec := Looks.spec_of(p)
+	var spec: Dictionary
+	if Looks.has(soldier.display_override):
+		spec = Looks.spec(soldier.display_override)              # 从说过话的人变成的敌人（对峙说崩了）：还是那个人的样子（B.6b）
+	else:
+		var presets: Array = cfg.kinds[soldier.kind]
+		var p := {"preset": str(_pick(presets)), "hair": _pick(cfg.get("hair", [["Hair_Buzzed"]])), "hair_color": str(_pick(cfg.get("hair_colors", ["#3a2a1a"])))}
+		if soldier is Soldier:
+			var c := (soldier as Soldier).coat_color.lightened(0.45)      # 罩袍色偏暗：提亮了再乘，衣服才看得出是哪一边（第一版 0.35 / 0.6 两边分不清）
+			var tint := Color.WHITE.lerp(c, float(cfg.get("tint_mix", 0.6)))
+			p["tint"] = {"MI_Ranger": "#" + tint.to_html(false), "MI_Peasant": "#" + tint.to_html(false)}
+		spec = Looks.spec_of(p)
 	var m := CharacterModel.new()
 	m.name = "Look"
 	m.parts = spec.parts
@@ -68,11 +77,19 @@ func _build(cfg: Dictionary) -> void:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var weapon := str(soldier.data.get("weapon", "sword"))
 	var prop := Props.make({"club": "club", "spear": "spear", "bow": "bow"}.get(weapon, "sword"))
-	m.hold_prop(prop)
-	if soldier.kind == "shield":
-		m.hold_prop(Props.make_shield(soldier.band_color), true)
+	m.hold_prop(prop, weapon == "bow")                 # 弓拿在左手
+	if weapon == "bow":
+		bow = BowAim.new()
+		bow.name = "BowAim"
+		bow.influence = 0.0
+		m.skeleton.add_child(bow)
+	var sol := soldier as Soldier
+	if sol and sol.kind == "shield":
+		m.hold_prop(Props.make_shield(sol.band_color), true)
 	var helm_share: float = float(cfg.get("helmet", {}).get(soldier.kind, 0.0))
-	_body_gear(soldier.band_color, rng.randf() < helm_share, soldier.is_captain)
+	if sol:
+		_body_gear(sol.band_color, rng.randf() < helm_share, sol.is_captain)       # 布带、铁盔、队长的小旗只有军阵的兵有
+	_merge()
 	for mi: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	m.play_loop("idle_armed", 1.0, 0.0)
@@ -81,14 +98,36 @@ func _build(cfg: Dictionary) -> void:
 	set_near(false)                                   # 先画胶囊，Battle 排过以后近的才换成真人
 
 
+## 少画几次（B.6b）：代码搭的东西（布带、铁盔、兵器、盾）各自压成一份顶点色网格；衣服、头、头发、胡子合成一块蒙皮网格（SkinMerge）
+func _merge() -> void:
+	for mi: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+		if mi.skin == null and mi.mesh != null and mi.mesh.get_surface_count() > 1:
+			mi.mesh = MeshKit.flatten([mi], mi)
+			mi.material_override = MeshKit.flat_mat(0.7)
+	if merge_on:
+		merged = SkinMerge.merge(model.skeleton)
+
+
+## 这个人一共画几次（网格 × 表面；藏起来的不算）：测试、调预算用
+func draw_surfaces() -> int:
+	var n := 0
+	for mi: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+		if mi.mesh != null and mi.is_visible_in_tree():
+			n += mi.mesh.get_surface_count()
+	return n
+
+
 ## 画真人还是画胶囊
 func set_near(on: bool) -> void:
 	if model == null:
 		return
 	model.visible = on
 	model.set_process(on)
-	if soldier.look:
-		soldier.look.visible = not on
+	var sol := soldier as Soldier
+	if sol and sol.look:
+		sol.look.visible = not on
+	elif not sol and soldier.body:
+		soldier.body.visible = not on                   # 军阵以外的敌人：占位身子（没合并）整个藏起来
 	if soldier.arm and soldier.arm.get_child_count() > 0:
 		(soldier.arm.get_child(0) as Node3D).visible = not on
 
@@ -202,6 +241,9 @@ func _process(delta: float) -> void:
 				_swing()
 			"block":
 				model.play_once("block", 1.3, 0.08)
+	if bow:
+		var drawing := s.action in ["draw", "loose"]
+		bow.influence = move_toward(bow.influence, 1.0 if drawing else 0.0, delta * (5.0 if drawing else 3.0))      # 拉弓时两条胳膊抬起来（B.6b）
 	if s.action in ["windup", "strike", "recover"]:
 		return
 	if s.action == "block":
@@ -210,7 +252,8 @@ func _process(delta: float) -> void:
 			model.hold("block", hold_at, 0.0)
 		return
 	var speed := Vector2(s.velocity.x, s.velocity.z).length()
-	var pick := CharacterModel.pick_locomotion(model.map, speed, false, s.state != Enemy.State.PATROL or s.battle != null)
+	var in_battle: bool = s is Soldier and (s as Soldier).battle != null
+	var pick := CharacterModel.pick_locomotion(model.map, speed, false, bow == null and (s.state != Enemy.State.PATROL or in_battle))     # 弓手站着不拿剑的架势
 	model.play_loop(str(pick.role), float(pick.scale), 0.2)
 
 
