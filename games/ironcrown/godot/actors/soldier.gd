@@ -40,7 +40,9 @@ var retarget_t := 0.0
 var approach_t := 0.0             # 拿着令牌往前凑了多久还没出招
 var look: MeshInstance3D          # 合并后的占位外观（B.5）
 var look_parts := PackedStringArray()   # 合并进去的部件名（测试用：Coat、Head、Nose、Band、Shield、Pole、Flag）
-var model: CharacterModel         # 人物模型（B.6；现在只有 army_bench 挂）
+var model: CharacterModel         # 人物模型（B.6：SoldierLook 搭的；army_bench 的 model=1 也挂）
+var dressed: SoldierLook          # B.6：近处画的真人外观（没配的兵种为空，还是胶囊）
+static var models_on := true      # B.6：给兵穿上真人外观（基准测试比较时可以关）
 var lod_t := 0.0
 var in_squad := false             # 归玩家指挥（B.2）
 var order := ""                   # 小队命令：follow / hold / charge（不在小队为空）
@@ -106,6 +108,13 @@ func _ready() -> void:
 	if is_captain:
 		_build_pennant()
 	_bake_look()
+	if models_on:
+		dressed = SoldierLook.dress(self)
+		if dressed:
+			model = dressed.model
+			for mi: MeshInstance3D in body.find_children("*", "MeshInstance3D", true, false):
+				mi.visibility_range_begin = SoldierLook.MODEL_FAR          # 近处画真人，远处画合并好的胶囊（B.5）
+				mi.visibility_range_begin_margin = SoldierLook.FADE
 	rest_still = true
 	lod_t = randf() * LOD_STEP
 	if battle and battle.is_friendly(side):

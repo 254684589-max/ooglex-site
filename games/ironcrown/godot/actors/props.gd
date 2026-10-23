@@ -4,9 +4,32 @@ extends RefCounted
 ## 灯、火把只有自发光，不带真的光源（网页上每多一盏灯都要算一遍；夜里远处看得见那点亮就够了）。
 ## 坐标按剑的握法：握把在原点，剑身朝 +Y。
 
-const KINDS := ["lantern", "torch", "axe", "cup", "sword"]
+const KINDS := ["lantern", "torch", "axe", "cup", "sword", "club", "spear", "bow"]
 const UPRIGHT := ["lantern", "torch", "cup"]
 const LEFT_HAND := ["torch", "cup"]      # UAL 的举火把、喝东西动作是左手
+
+
+## 圆盾（B.6 盾兵左手拿）：木面涂成阵营布带的颜色，铁边一圈、中间铁包；盾面朝握把的 +Z（剑身是 +Y）
+static func make_shield(face: Color) -> Node3D:
+	var kit := MeshKit.new()
+	var r := 0.3
+	for i in 9:
+		var y := -r + (i + 0.5) * 2.0 * r / 9.0
+		var half := sqrt(maxf(r * r - y * y, 0.0))
+		kit.box("face", Vector3(0, 0.12 + y, 0.06), Vector3(half * 2.0, 2.0 * r / 9.0 + 0.004, 0.03))
+	kit.cylinder("iron", Vector3(0, 0.12, 0.045), Vector3(0, 0.12, 0.075), r, r, 14)
+	kit.cylinder("iron", Vector3(0, 0.12, 0.075), Vector3(0, 0.12, 0.13), 0.07, 0.045, 8)
+	var face_mat := StandardMaterial3D.new()
+	face_mat.albedo_color = face.lerp(Color("6a5a48"), 0.25)
+	face_mat.vertex_color_use_as_albedo = true
+	var iron := StandardMaterial3D.new()
+	iron.albedo_color = Color("5a5a60")
+	iron.metallic = 0.4
+	iron.roughness = 0.5
+	iron.vertex_color_use_as_albedo = true
+	var node := kit.build({"face": face_mat, "iron": iron})
+	node.name = "Prop_shield"
+	return node
 
 
 static func make(kind: String) -> Node3D:
@@ -29,6 +52,19 @@ static func make(kind: String) -> Node3D:
 			kit.box("iron", Vector3(0, 0.42, 0), Vector3(0.045, 0.62, 0.01))
 			kit.box("wood", Vector3(0, 0.08, 0), Vector3(0.18, 0.025, 0.03))
 			kit.box("wood", Vector3(0, -0.01, 0), Vector3(0.032, 0.16, 0.032))
+		"club":          # 民兵的棍子（B.6）：一头粗
+			kit.cylinder("wood", Vector3(0, -0.1, 0), Vector3(0, 0.62, 0), 0.022, 0.045, 6, 0.8)
+		"spear":         # 长枪（B.6）：两米多的杆，头上一个铁枪头
+			kit.cylinder("wood", Vector3(0, -0.9, 0), Vector3(0, 1.35, 0), 0.02, 0.018, 6, 0.8)
+			kit.cylinder("iron", Vector3(0, 1.35, 0), Vector3(0, 1.6, 0), 0.03, 0.002, 4, 0.6)
+		"bow":           # 弓（B.6）：几段弯过来的木条和一根弦
+			var pts := []
+			for k in 7:
+				var a := deg_to_rad(-60.0 + k * 20.0)
+				pts.append(Vector3(0, sin(a) * 0.62, -cos(a) * 0.22 + 0.22 * 0.5))
+			for k in 6:
+				kit.cylinder("wood", pts[k], pts[k + 1], 0.016, 0.016, 5, 0.8)
+			kit.cylinder("iron", pts[0], pts[6], 0.003, 0.003, 3, 0.9)
 		_:
 			return null
 	var iron := StandardMaterial3D.new()

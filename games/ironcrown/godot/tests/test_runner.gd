@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8080,6 +8080,68 @@ func test_sleeper() -> void:
 	GameState.set_flag("ch1_sneak", "caught")
 	check(Chapter1.recap().contains("新家主从此不信你") and Chapter1.recap().contains("伊薇特入主黑鹭堡"), "失守、被押进去的回顾：伊薇特入主黑鹭堡，新家主不信你")
 	GameState.new_game()
+
+
+## B.6a：军阵的兵换上真人外观——按兵种挑打扮、阵营色、胸前布带、铁盔、手里的兵器和盾；近处模型远处胶囊；动作跟着状态走
+func test_uniforms() -> void:
+	check(Looks.validate().is_empty(), "looks.json 的 soldiers 一节通过校验（兵种、预设、发型都认得）")
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var black := soldiers_of(main, "black")
+	var all_s: Array = white + black
+	check(all_s.all(func(x): return x.dressed != null and x.model != null and x.model.loaded), "两边 %d 个兵都穿上了真人外观" % all_s.size())
+	var by := func(list: Array, k: String) -> Soldier:
+		for x in list:
+			if x.kind == k:
+				return x
+		return null
+	var lv: Soldier = by.call(white, "levy")
+	var sw: Soldier = by.call(white, "soldier")
+	var ar: Soldier = by.call(white, "archer")
+	check(str(lv.model.parts[0]).ends_with("Outfit_Male_Peasant.gltf") and str(sw.model.parts[0]).ends_with("Outfit_Male_Ranger.gltf"), "民兵穿平民的衣服，剑兵穿游侠那套")
+	var hood := func(x: Soldier) -> bool: return (x.model.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D).visible
+	check(hood.call(ar) and not hood.call(sw), "弓手戴着兜帽，剑兵摘了")
+	var tw := str(sw.model.look.tint.get("MI_Ranger", ""))
+	var tb := str((by.call(black, "soldier") as Soldier).model.look.tint.get("MI_Ranger", ""))
+	check(tw != "" and tb != "" and tw != tb, "外衣按阵营染色（白带 %s、黑带 %s）" % [tw, tb])
+	var props := func(x: Soldier) -> Array: return x.model.find_children("Prop_*", "", true, false).map(func(n): return str(n.name))
+	var sh: Soldier = by.call(white, "shield")
+	var sp: Soldier = by.call(white, "spear")
+	check(props.call(sw).has("Prop_sword") and props.call(lv).has("Prop_club") and props.call(sp).has("Prop_spear") and props.call(ar).has("Prop_bow") and props.call(sh).has("Prop_shield") and not props.call(sw).has("Prop_shield"),
+		"手里的东西：剑、棍、长枪、弓；盾兵左手一面圆盾（%s）" % str(props.call(sh)))
+	var helmets := all_s.filter(func(x): return x.model.skeleton.find_children("*", "BoneAttachment3D", false, false).any(func(a): return a.bone_name == "Head"))
+	var cap: Soldier = captain_of(white)
+	check(cap.model.skeleton.find_children("*", "BoneAttachment3D", false, false).any(func(a): return a.bone_name == "Head") and helmets.size() > 2 and helmets.size() < all_s.size(), "队长戴铁盔；一部分兵戴（%d / %d）" % [helmets.size(), all_s.size()])
+	var near_ok: bool = all_s.all(func(x): return x.model.scene_root.find_children("*", "MeshInstance3D", true, false).all(func(mi): return mi.visibility_range_end == SoldierLook.MODEL_FAR) and x.look.visibility_range_begin == SoldierLook.MODEL_FAR)
+	check(near_ok, "近处（%.0f 米内）画真人、远处画合并好的胶囊" % SoldierLook.MODEL_FAR)
+	check(all_s.all(func(x): return x.body.find_children("*", "MeshInstance3D", true, false).size() == 2), "占位胶囊照旧是两份网格（B.5 的绘制调用不变）")
+	# 动作：站着持剑；出招；倒下；跪地求饶
+	await frames(3)
+	check(sw.model.role in ["idle_armed", "walk", "run"], "开打前：持剑站着（%s）" % sw.model.role)
+	b.start()
+	sw._enter(Enemy.State.COMBAT)
+	sw.attack_kind = "light"
+	sw.action = "windup"
+	sw.action_t = 0.0
+	await frames(3)
+	check(sw.model.playing() in ["Sword_Regular_A", "Sword_Regular_B"], "剑兵起手：播轻击（%s）" % sw.model.playing())
+	sp._enter(Enemy.State.COMBAT)
+	sp.action = "windup"
+	sp.action_t = 0.0
+	await frames(3)
+	check(sp.model.playing() == "Sword_Dash", "长枪兵出招：往前突刺（%s）" % sp.model.playing())
+	lv.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+	await frames(3)
+	check(lv.model.role in ["death", "kneel_fix"], "民兵倒下或跪地求饶：%s（%s）" % [lv.model.role, lv.state_name()])
+	await free_main(main)
+	Soldier.models_on = false
+	GameState.new_game(7)
+	main = await make_battle()
+	check(soldiers_of(main, "white").all(func(x): return x.dressed == null), "关掉（基准测试比较用）：还是胶囊")
+	await free_main(main)
+	Soldier.models_on = true
 
 
 ## A.2a：NPC 换上真人模型（data/looks.json）

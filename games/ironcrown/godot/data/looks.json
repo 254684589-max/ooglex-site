@@ -9,7 +9,16 @@
     "veteran": {"parts": ["Outfit_Male_Ranger", "Head_Male"], "hide": ["Male_Ranger_Head_Hood"]},
     "woman": {"parts": ["Outfit_Female_Peasant", "Head_Female"]},
     "sellsword": {"parts": ["Outfit_Male_Ranger", "Head_Male"], "tex": {"MI_Ranger": "T_Ranger_3_BaseColor"}, "tint": {"MI_Ranger": "#6a6a70", "MI_Regular_Male": "#3a302a"}, "hide": ["Male_Ranger_Head_Hood"]},
+    "ranger_hood": {"parts": ["Outfit_Male_Ranger", "Head_Male"], "tex": {"MI_Ranger": "T_Ranger_3_BaseColor"}},
     "woman_warrior": {"parts": ["Outfit_Female_Ranger", "Head_Female"], "tex": {"MI_Ranger": "T_Ranger_3_BaseColor"}, "hide": ["Female_Ranger_Head_Hood"]}
+  },
+  "soldiers": {
+    "_说明": "军阵的兵（B.6，actors/soldier_look.gd）：kinds 每个兵种可选的打扮（按兵的编号挑一个）；外衣乘一层阵营罩袍色（tint_mix 0..1）；hair、hair_colors 按编号挑；helmet 戴铁盔的比例",
+    "kinds": {"levy": ["commoner_dark", "commoner"], "soldier": ["guard", "veteran"], "shield": ["guard", "veteran"], "spear": ["veteran", "guard"], "archer": ["ranger_hood"], "captain": ["sellsword"]},
+    "hair": [["Hair_Buzzed"], ["Hair_Buzzed", "Hair_Beard"], ["Hair_SimpleParted"], ["Hair_SimpleParted", "Hair_Beard"], ["Hair_Long", "Hair_Beard"]],
+    "hair_colors": ["#2a1e14", "#3a2a1a", "#5a4632", "#6a6660", "#1e1610", "#7a5a3a"],
+    "tint_mix": 0.6,
+    "helmet": {"levy": 0.0, "soldier": 0.5, "shield": 0.6, "spear": 0.5, "archer": 0.0, "captain": 1.0}
   },
   "player": {"preset": "sellsword", "hair": ["Hair_Long", "Hair_Beard"], "hair_color": "#c8c4bc", "gear": true},
   "people": {
