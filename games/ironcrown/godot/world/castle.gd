@@ -85,6 +85,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_colliders(parent)
 	_doors(parent)
 	_lights(parent, reduced_motion)
+	_dress(parent, reduced_motion)
 	_person(parent, HERMAN, [])
 	var win := Fixture.make("账房的小窗", "看看", "blackheron", "counting_window", Vector3(0.9, 1.0, 0.5))      # 账册支线（4.7a）：撬窗
 	win.name = "LedgerWindow"
@@ -300,6 +301,27 @@ static func _doors(parent: Node3D) -> void:
 
 
 ## 夜灯：大厅门两边的火盆（白天不点）
+## 院子里的杂物和旗（2026-10-23 场景美化二，Decor）：堡门两边墙上的黑鹭大旗和火把（带光）、东墙一面旗；
+## 兵营门南边的兵器架和草垛、推车旁的木桶板条箱、账房门外的木桶、东南角的柴堆。避开赫尔曼、井、卫兵、各个出生点和门前
+static func _dress(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	for s: float in [-1.0, 1.0]:
+		d.banner(Vector3(s * 5.0, 7.4, HD), Vector3.FORWARD, 1.6, 3.2, Color("d8d2c2"), Color("1a1a1c"), "heron")
+		d.sconce(Vector3(s * 2.5, 3.0, HD), Vector3.FORWARD, true)
+	d.banner(Vector3(HW, 7.0, 15.0), Vector3.LEFT, 1.4, 2.8, Color("1a1a1c"), Color("d8d2c2"), "heron")
+	d.rack(Vector3(-7.6, 0, 8.6), Vector3.RIGHT, 1.6)
+	d.hay(Vector3(-7.4, 0, 10.6), 0.0)
+	d.hay(Vector3(-7.3, 0.5, 10.6), 0.15)
+	d.barrel(Vector3(-3.6, 0, 14.2))
+	d.barrel(Vector3(-3.0, 0, 14.7), 0.75, 0.27)
+	d.crate(Vector3(-4.2, 0, 15.0), 0.4, 0.6)
+	d.barrel(Vector3(10.2, 0, 10.4))
+	d.crate(Vector3(10.4, 0, 11.3), -0.3, 0.55)
+	d.woodpile(Vector3(HW - 0.35, 0, 17.0), Vector3.BACK, 2.4, 1.0)
+	d.hay(Vector3(15.6, 0, 18.8), 0.3)
+	d.build(parent, "CourtyardDecor", not reduced_motion)
+
+
 static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 	for f: Vector3 in BRAZIERS:
 		var l := Tavern.FireLight.new()

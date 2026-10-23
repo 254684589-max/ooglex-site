@@ -252,6 +252,66 @@ func sack(pos: Vector3, yaw: float) -> void:
 	kit.box(k, pos + Vector3(0, 0.45, 0), Vector3(0.18, 0.12, 0.14), b * Basis(Vector3.BACK, 0.3))
 
 
+## 柴堆：靠墙码一垛劈好的木柴（一层层交错），上面一层雪
+func woodpile(pos: Vector3, along: Vector3, length := 1.4, h := 0.9, snow := true) -> void:
+	var d := Vector3(along.x, 0, along.z).normalized()
+	var side := d.cross(Vector3.UP)
+	var wood := _wood()
+	var end_grain := _solid(Color("8a6a46"), 0.9)
+	var rows := int(h / 0.12)
+	for r in rows:
+		var n := int(length / 0.13)
+		for i in n:
+			var p := pos + d * (-length * 0.5 + (i + 0.5 + 0.5 * (r % 2)) * length / (n + 0.5)) + Vector3(0, 0.06 + r * 0.115, 0)
+			kit.cylinder(wood, p - side * 0.22, p + side * 0.22, 0.06, 0.06, 5)
+			kit.box(end_grain, p + side * 0.225, Vector3(0.1, 0.1, 0.004), Basis(d, Vector3.UP, side))
+	if snow:
+		kit.box(_snow(), pos + Vector3(0, rows * 0.115 + 0.04, 0), Vector3(0.5, 0.05, length) if absf(d.z) > absf(d.x) else Vector3(length, 0.05, 0.5))
+	solids.append([pos + Vector3(0, h * 0.5, 0), (Vector3(0.5, h, length) if absf(d.z) > absf(d.x) else Vector3(length, h, 0.5))])
+
+
+## 手推车：车斗、两只轮子、两根车把，斗里装点东西
+func cart(pos: Vector3, yaw: float, load := "sacks") -> void:
+	var b := Basis(Vector3.UP, yaw)
+	var wood := _wood()
+	var dark := _solid(Color("3a2a1c"), 0.9)
+	kit.box(wood, pos + b * Vector3(0, 0.62, 0), Vector3(0.95, 0.05, 1.4), b)
+	for s: float in [-1.0, 1.0]:
+		kit.box(wood, pos + b * Vector3(s * 0.47, 0.78, 0), Vector3(0.04, 0.3, 1.4), b)
+		kit.box(wood, pos + b * Vector3(0, 0.78, s * 0.7), Vector3(0.95, 0.3, 0.04), b)
+		var hub := pos + b * Vector3(s * 0.56, 0.42, 0.1)
+		kit.cylinder(dark, hub - b.x * 0.04 * s, hub + b.x * 0.04 * s, 0.42, 0.42, 12)
+		kit.cylinder(wood, hub - b.x * 0.06 * s, hub + b.x * 0.06 * s, 0.07, 0.07, 6)
+		kit.box(wood, pos + b * Vector3(s * 0.3, 0.6, -1.15), Vector3(0.05, 0.05, 1.0), b * Basis(Vector3.RIGHT, -0.35))
+	kit.box(wood, pos + b * Vector3(0, 0.3, 0.55), Vector3(0.05, 0.6, 0.05), b)        # 歇着时撑地的腿
+	if load == "sacks":
+		for i in 3:
+			sack(pos + b * Vector3(-0.25 + i * 0.25, 0.64, -0.2 + 0.25 * (i % 2)), yaw + i)
+	else:
+		for i in 4:
+			kit.cylinder(wood, pos + b * Vector3(-0.3 + i * 0.2, 0.72, -0.6), pos + b * Vector3(-0.3 + i * 0.2, 0.72, 0.6), 0.06, 0.06, 5)
+	solids.append([pos + Vector3(0, 0.55, 0), (b * Vector3(1.2, 1.1, 1.6)).abs()])
+
+
+## 草垛：一捆方草，上面一层雪
+func hay(pos: Vector3, yaw: float, snow := true) -> void:
+	var b := Basis(Vector3.UP, yaw)
+	var straw := _solid(Color("b89a5a"), 0.95)
+	kit.box(straw, pos + Vector3(0, 0.25, 0), Vector3(1.0, 0.5, 0.6), b, 1.0, 0.75)
+	var twine := _solid(Color("6a5232"), 0.9)
+	for s: float in [-0.25, 0.25]:
+		kit.box(twine, pos + b * Vector3(s, 0.25, 0), Vector3(0.03, 0.52, 0.62), b)
+	if snow:
+		kit.box(_snow(), pos + Vector3(0, 0.52, 0), Vector3(0.9, 0.04, 0.55), b)
+	solids.append([pos + Vector3(0, 0.25, 0), (b * Vector3(1.0, 0.5, 0.6)).abs()])
+
+
+func _snow() -> String:
+	if not mats.has("snow"):
+		mats["snow"] = Look.mat("snow")
+	return "snow"
+
+
 ## 架子上的书和卷轴：沿着一层隔板排一溜，颜色、高矮不一
 func books(start: Vector3, along: Vector3, length: float, seed := 1) -> void:
 	var cols := [Color("5a2a22"), Color("2a3a4a"), Color("4a4028"), Color("3a2a1e"), Color("6a5a3a")]

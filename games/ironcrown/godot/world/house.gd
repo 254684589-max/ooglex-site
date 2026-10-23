@@ -105,6 +105,8 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 		var ch := 4.2 if roof == "eaves" else 3.6
 		kit.box("stone", Vector3(cx, top + ch * 0.5, cz), Vector3(0.7, ch, 0.7), Basis.IDENTITY, 1.0, 0.7)
 		kit.box("stone", Vector3(cx, top + ch + 0.06, cz), Vector3(0.86, 0.12, 0.86))
+		if spec.get("smoke", true):
+			Atmos.smoke(root, Vector3(cx, top + ch + 0.25, cz))      # 烟囱冒烟（2026-10-23 场景美化二）
 	var mats := {"stone": Look.mat("stone"), "plaster": Look.mat("plaster"), "timber": Look.mat("timber"),
 		"roof": Look.mat("roof"), "snow": Look.mat("snow"), "glass_lit": Look.glass_lit(), "glass_dark": Look.glass_dark(),
 		"halo": Look.halo(Look.WINDOW_COLOR, 0.32)}

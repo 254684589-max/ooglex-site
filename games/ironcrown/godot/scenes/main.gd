@@ -194,6 +194,8 @@ func _ready() -> void:
 	player.name = "Player"
 	add_child(player)
 	player.global_transform = t
+	if not Areas.is_indoor(area) and not use_test_range and not use_arena and area != "battle":
+		Atmos.snow(player)                # 户外落雪（2026-10-23 场景美化二）
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
@@ -443,6 +445,7 @@ func apply_quality(tier: String) -> void:
 	moon.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if tier == "high" else DirectionalLight3D.SHADOW_ORTHOGONAL
 	env.glow_enabled = tier != "low"
 	Look.set_anisotropic(tier != "low")
+	Atmos.apply_quality(get_tree(), tier == "low")
 	for f in get_tree().get_nodes_in_group("fog_band"):
 		f.visible = tier != "low" or int(f.get_meta("fog_index", 0)) % 2 == 0
 	_refresh_edges()
