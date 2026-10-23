@@ -35,7 +35,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var kit := MeshKit.new()
 	_room(kit)
 	_furniture(kit)
-	parent.add_child(kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
+	parent.add_child(kit.build({"stone": Look.mat("castle"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
 		"linen": Castle._cloth(Color("cfc6b2")), "wool": Castle._cloth(Color("5a4636")), "ember": Castle._flat(Color("ff7a28"), true),
 		"iron": Castle._flat(Color("2a2a2e")), "clay": Castle._flat(Color("8a5a3a")), "wax": Castle._flat(Color("efe4c8"), true)}))
 	_decor(parent)

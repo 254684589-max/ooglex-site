@@ -17,6 +17,7 @@ extends RefCounted
 ##   sign          酒馆招牌上的字（"" = 没有招牌）
 ##   chimney       是否有烟囱
 ##   stone_upper   上层也用石砌（领主宅邸）
+##   stone_mat     石墙用哪种贴图（Look.PHOTO 的键，默认 "stone"；黑鹭堡的房子用 "castle"，2026-10-23）
 ## 鹭沼的高脚屋（4.4 芦栈村）另有几个选项，不写时和原来一样：
 ##   base          "stone"（默认，石砌底层）或 "timber"（木板墙底层，没有石基；窗台、门楣也是木头）
 ##   upper         上层的墙："plaster"（默认，灰泥）或 "timber"（木板）
@@ -107,7 +108,7 @@ static func build(parent: Node3D, pos: Vector3, yaw: float, spec: Dictionary) ->
 		kit.box("stone", Vector3(cx, top + ch + 0.06, cz), Vector3(0.86, 0.12, 0.86))
 		if spec.get("smoke", true):
 			Atmos.smoke(root, Vector3(cx, top + ch + 0.25, cz))      # 烟囱冒烟（2026-10-23 场景美化二）
-	var mats := {"stone": Look.mat("stone"), "plaster": Look.mat("plaster"), "timber": Look.mat("timber"),
+	var mats := {"stone": Look.mat(str(spec.get("stone_mat", "stone"))), "plaster": Look.mat("plaster"), "timber": Look.mat("timber"),
 		"roof": Look.mat("roof"), "snow": Look.mat("snow"), "glass_lit": Look.glass_lit(), "glass_dark": Look.glass_dark(),
 		"halo": Look.halo(Look.WINDOW_COLOR, 0.32)}
 	if roof_key == "thatch":

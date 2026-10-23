@@ -6,7 +6,7 @@ extends RefCounted
 
 ## 贴图：编号（Poly Haven，见 assets/SOURCES.md）、每隔多少米平铺一次、染色、粗糙度（乘在贴图的粗糙度上，默认 1）
 ## 鹭沼（4.4）的泥炭不另下载贴图：用包里已有的树皮贴图换个颜色（同一张贴图只载入一次，包不变大、显存不多占）；
-## 泥滩、干岸是代码画的（Look.ground()：雪地贴图换成褐色斑点太多，看着像碎石子，2026-10-10 截图）
+## 泥滩、干岸原来是代码画的（Look.ground()：雪地贴图换成褐色斑点太多，看着像碎石子，2026-10-10 截图），2026-10-23 换成写实贴图
 const PHOTO := {
 	"street": {"id": "cobblestone_floor_03", "meters": 2.4, "tint": Color(0.82, 0.86, 0.92), "fallback": Color("5e6670"), "rough": 0.7},
 	"stone": {"id": "stone_wall", "meters": 2.2, "tint": Color(0.6, 0.62, 0.68), "fallback": Color("5a5c62")},
@@ -16,6 +16,11 @@ const PHOTO := {
 	"snow": {"id": "snow_03", "meters": 3.0, "tint": Color(0.86, 0.9, 0.96), "fallback": Color("c9d3dc")},
 	"bark": {"id": "bark_brown_02", "meters": 1.2, "tint": Color(0.55, 0.52, 0.5), "fallback": Color("3a3430")},
 	"peat": {"id": "bark_brown_02", "meters": 0.7, "tint": Color(0.36, 0.27, 0.2), "fallback": Color("2e241c")},            # 切好码起来的泥炭块
+	# 2026-10-23 场景美化四（所有者同意网页包涨到约 70 MB）：黑鹭堡的石墙（灰色的不规则方石，和镇上房子的石墙区分开）、鹭沼的湿泥和干岸
+	# 为了包体（每张 1K 贴图压缩后约 1.2 MB）：这三套不带 ARM（粗糙度用常数 rough、不做贴图遮蔽），地面两套的法线缩到 512
+	"castle": {"id": "castle_wall_varriation", "meters": 2.6, "tint": Color(0.6, 0.62, 0.66), "fallback": Color("5a5c62"), "arm": false, "rough": 0.9},
+	"mud": {"id": "brown_mud_02", "meters": 3.0, "tint": Color(0.6, 0.54, 0.48), "fallback": Color("2e241c"), "arm": false, "rough": 0.45},
+	"bank": {"id": "grass_path_2", "meters": 4.0, "tint": Color(0.46, 0.47, 0.41), "fallback": Color("4a4a38"), "arm": false, "rough": 0.95},
 }
 const TIERS := ["low", "medium", "high"]
 const WINDOW_COLOR := Color("ffc873")
@@ -42,7 +47,8 @@ static func mat(kind: String) -> StandardMaterial3D:
 	m.metallic = 0.0
 	m.vertex_color_use_as_albedo = true      # 顶点色当作遮蔽（墙脚、屋檐下更暗）
 	var tex := {}
-	for pair in [["albedo", "diff"], ["normal", "nor_gl"], ["arm", "arm"]]:
+	var maps := [["albedo", "diff"], ["normal", "nor_gl"], ["arm", "arm"]] if cfg.get("arm", true) else [["albedo", "diff"], ["normal", "nor_gl"]]
+	for pair in maps:
 		var path := photo_dir % [cfg.id, cfg.id, pair[1]]
 		var t: Texture2D = load(path) if ResourceLoader.exists(path) else null
 		if t == null:
@@ -58,12 +64,13 @@ static func mat(kind: String) -> StandardMaterial3D:
 		m.albedo_color = cfg.tint
 		m.normal_enabled = true
 		m.normal_texture = tex.normal
-		m.roughness_texture = tex.arm
-		m.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_GREEN
-		m.ao_enabled = true
-		m.ao_texture = tex.arm
-		m.ao_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_RED
-		m.ao_light_affect = 0.25
+		if tex.has("arm"):
+			m.roughness_texture = tex.arm
+			m.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_GREEN
+			m.ao_enabled = true
+			m.ao_texture = tex.arm
+			m.ao_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_RED
+			m.ao_light_affect = 0.25
 		var s := 1.0 / float(cfg.meters)
 		m.uv1_scale = Vector3(s, s, 1.0)
 		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
@@ -181,52 +188,14 @@ static func birch() -> StandardMaterial3D:
 	return _mats["birch"]
 
 
-## 地面材质：鹭沼的泥滩、干岸是代码画的（ground），其余是写实贴图（mat）
+## 地面材质（鹭沼的泥滩、干岸 2026-10-23 起也是写实贴图）
 static func surface(kind: String) -> StandardMaterial3D:
-	return ground(kind) if kind in ["mud", "bank"] else mat(kind)
+	return mat(kind)
 
 
-## 鹭沼的地面（4.4）：mud 湿泥（深褐、光滑，反一点天光，几块更深的积水印子）、bank 干岸（灰绿褐的草皮泥炭地，带一点枯草的亮点）。
-## 无缝噪声上色画一张 128 × 128 的图（主线程同步、固定种子），法线借雪地贴图的（有起伏，又不带雪地的白斑）
+## 鹭沼的地面：mud 湿泥、bank 干岸。4.4 起是代码画的 128 × 128 噪声图；2026-10-23 场景美化四换成写实贴图（PHOTO 的 mud / bank），这里留着名字给调用的地方用
 static func ground(kind: String) -> StandardMaterial3D:
-	if _mats.has(kind):
-		return _mats[kind]
-	var mud := kind == "mud"
-	var n := FastNoiseLite.new()
-	n.seed = 51 if mud else 52
-	n.frequency = 0.035 if mud else 0.03
-	n.fractal_octaves = 4 if mud else 3
-	var img := n.get_seamless_image(128, 128)
-	img.convert(Image.FORMAT_RGB8)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 53 if mud else 54
-	var lo := Color(0.11, 0.09, 0.07) if mud else Color(0.23, 0.22, 0.15)
-	var hi := Color(0.27, 0.22, 0.16) if mud else Color(0.33, 0.31, 0.21)
-	var gain := 1.8 if mud else 1.0
-	for y in 128:
-		for x in 128:
-			var v := img.get_pixel(x, y).r
-			var c := lo.lerp(hi, clampf((v - 0.25) * gain, 0.0, 1.0))
-			if not mud and rng.randf() < 0.025:
-				c = c.lightened(0.25)                         # 枯草茎的亮点
-			img.set_pixel(x, y, c)
-	img.generate_mipmaps()
-	var m := StandardMaterial3D.new()
-	m.albedo_texture = ImageTexture.create_from_image(img)
-	m.vertex_color_use_as_albedo = true
-	m.roughness = 0.32 if mud else 0.95
-	if mud:
-		m.metallic_specular = 0.6
-	var nor := photo_dir % ["snow_03", "snow_03", "nor_gl"]
-	if ResourceLoader.exists(nor):
-		m.normal_enabled = true
-		m.normal_texture = load(nor)
-		m.normal_scale = 0.6 if mud else 0.9
-	var s := 1.0 / (3.0 if mud else 4.0)
-	m.uv1_scale = Vector3(s, s, 1.0)
-	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	_mats[kind] = m
-	return m
+	return mat(kind)
 
 
 ## 茅草屋顶（4.4 芦栈村）：没有现成的茅草贴图，用代码画一张——一层层压着的草束（竖着的细草茎、每层下沿一道阴影），主线程同步生成，固定种子。

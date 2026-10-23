@@ -23,6 +23,14 @@
 | Snow 03 | `godot/assets/textures/snow_03/` | Rob Tuytel | https://polyhaven.com/a/snow_03 | 2026-09-27 | 1.4 路边雪泥、屋脊积雪；2 米见方，平铺 3 米；导入缩到 512 |
 | Bark Brown 02 | `godot/assets/textures/bark_brown_02/` | Rob Tuytel | https://polyhaven.com/a/bark_brown_02 | 2026-09-27 | 1.4 小广场上的枯树；1 米见方，平铺 1.2 米；导入缩到 512 |
 
+2026-10-23 场景美化四（所有者同意网页包涨到约 70 MB）新增三套，同样来自 Poly Haven（CC0 1.0），只取颜色（diff）和 OpenGL 法线（nor_gl）两张 1K JPG（不取 ARM，省包体；鹭沼地面两套的法线导入时缩到 512）：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 |
+|---|---|---|---|
+| 黑鹭堡的石墙（庭院四面墙、主楼和塔楼、兵营、账房、大厅等四个室内、鹭沼上看到的城堡和堤道拱门） | castle_wall_varriation | https://polyhaven.com/a/castle_wall_varriation | Rob Tuytel |
+| 鹭沼的湿泥（泥滩、泥潭） | brown_mud_02 | https://polyhaven.com/a/brown_mud_02 | Rob Tuytel |
+| 鹭沼的干岸（草皮泥炭地，压暗偏灰） | grass_path_2 | https://polyhaven.com/a/grass_path_2 | Rob Tuytel |
+
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）
 
 三个包的许可文件（包内 `License_Standard.txt` / `License.txt`）都写 **CC0 1.0 Universal**（https://creativecommons.org/publicdomain/zero/1.0/）；Quaternius 页面标注个人、教育、商业项目均可使用。

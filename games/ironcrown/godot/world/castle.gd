@@ -16,15 +16,15 @@ const WALL_T := 2.5
 const GATE_W := 3.2
 const GATE_H := 4.2
 const EXIT_NAME := "堡门"
-const KEEP := [Vector3(0, 0, -10.5), 0.0, {"w": 20.0, "d": 8.5, "floors": 2, "stone_upper": true, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 4501, "lit": 0.4,
+const KEEP := [Vector3(0, 0, -10.5), 0.0, {"stone_mat": "castle", "w": 20.0, "d": 8.5, "floors": 2, "stone_upper": true, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 4501, "lit": 0.4,
 	"door": {"name": "大厅", "to_area": "hall", "to_spawn": "front", "verb": "进入"}}]       # 4.5b 起推得开
-const BARRACKS := [Vector3(-10, 0, 2), 90.0, {"w": 16.0, "d": 7.0, "floors": 1, "roof": "eaves", "door_x": 0.0, "seed": 4502, "lit": 0.3,
+const BARRACKS := [Vector3(-10, 0, 2), 90.0, {"stone_mat": "castle", "w": 16.0, "d": 7.0, "floors": 1, "roof": "eaves", "door_x": 0.0, "seed": 4502, "lit": 0.3,
 	"door": {"name": "兵营", "text": "兵营的门从里面闩着，门口的兵摇了摇头：「小姐没发话，外人不进。」"}}]
 const BARRACKS_OPEN := {"name": "兵营", "to_area": "barracks", "to_spawn": "front", "verb": "进入"}      # 4.5c：伊薇特见过你、或者你从侧门进来以后
-const TOWER := [Vector3(12, 0, -6), -90.0, {"w": 6.0, "d": 5.5, "floors": 2, "stone_upper": true, "roof": "gable", "door_x": 0.0, "seed": 4503, "lit": 0.5,
+const TOWER := [Vector3(12, 0, -6), -90.0, {"stone_mat": "castle", "w": 6.0, "d": 5.5, "floors": 2, "stone_upper": true, "roof": "gable", "door_x": 0.0, "seed": 4503, "lit": 0.5,
 	"door": {"name": "病房", "text": "门里传来一个女人的声音：「家主睡着了，谁也别进来。」"}}]
 const TOWER_OPEN := {"name": "病房", "to_area": "sickroom", "to_spawn": "front", "verb": "进入"}           # 4.5c：两位继承人都托过你以后
-const COUNTING := [Vector3(12, 0, 6), -90.0, {"w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
+const COUNTING := [Vector3(12, 0, 6), -90.0, {"stone_mat": "castle", "w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
 	"door": {"name": "账房", "text": "账房的门上了两道锁。钥匙在堡守赫尔曼那儿。"}}]
 const COUNTING_OPEN := {"name": "账房", "to_area": "counting", "to_spawn": "front", "verb": "进入"}       # 4.7a：拿到赫尔曼的钥匙以后
 const LEDGER_WINDOW := Vector3(15.3, 1.45, 2.86)  # 账房北侧墙上那扇能撬的小窗（塔楼和账房之间的窄巷里，4.7a；百叶贴在墙外皮上，截图发现原来埋在墙里）
@@ -76,7 +76,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_walls(kit)
 	_gates(kit)
 	_props(kit)
-	parent.add_child(kit.build({"street": Look.mat("street"), "stone": Look.mat("stone"), "timber": Look.mat("timber"), "peat": Look.mat("peat"),
+	parent.add_child(kit.build({"street": Look.mat("street"), "stone": Look.mat("castle"), "timber": Look.mat("timber"), "peat": Look.mat("peat"),
 		"soot": _flat(Color("0e0b09")), "iron": _flat(Color("2a2a2e")), "water": Look.water(true), "cloth": _cloth(Color("d8d2c2")), "heron": _cloth(Color("1a1a1c")),
 		"ember": _flat(Color("ff7a28"), true)}))
 	for b in houses():

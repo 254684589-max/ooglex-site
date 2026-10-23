@@ -810,7 +810,7 @@ func _job_arch(root: Node3D) -> void:
 		var p := o + b * Vector3(cos(a) * r, 3.2 + sin(a) * (r * 0.75), 0)
 		kit.box("stone", p, Vector3(0.62, 0.42, 2.2), b * Basis(Vector3.BACK, a - PI * 0.5), 0.9, 0.6)
 	kit.box("stone", o + b * Vector3(0, 4.25, 0), Vector3(MarshLayout.ARCH_GAP + 0.4, 1.0, 2.2), b, 0.9, 0.6)
-	var mi := kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber")})
+	var mi := kit.build({"stone": Look.mat("castle"), "timber": Look.mat("timber")})      # 黑鹭堡的石头（2026-10-23）
 	mi.name = "Arch"
 	root.add_child(mi)
 
@@ -886,7 +886,7 @@ func _job_castle(root: Node3D) -> void:
 	for k in 3:
 		kit.quad("glass_dark", [Vector3(-3.0 + k * 3.0 - 0.3, y0 + 14.0, 1.01), Vector3(-3.0 + k * 3.0 + 0.3, y0 + 14.0, 1.01),
 			Vector3(-3.0 + k * 3.0 + 0.3, y0 + 12.4, 1.01), Vector3(-3.0 + k * 3.0 - 0.3, y0 + 12.4, 1.01)], Vector3.BACK)
-	var mi := kit.build({"stone": Look.mat("stone"), "roof": Look.mat("roof"), "timber": Look.mat("timber"), "glass_dark": Look.glass_dark()})
+	var mi := kit.build({"stone": Look.mat("castle"), "roof": Look.mat("roof"), "timber": Look.mat("timber"), "glass_dark": Look.glass_dark()})
 	mi.name = "Castle"
 	mi.transform = MarshLayout.castle_xform()
 	root.add_child(mi)

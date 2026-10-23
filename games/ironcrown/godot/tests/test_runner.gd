@@ -722,7 +722,9 @@ func test_frostford() -> void:
 	var photo_ok := true
 	for k in Look.PHOTO:
 		photo_ok = photo_ok and bool(Look.mat(k).get_meta("photo", false)) and Look.mat(k).albedo_texture != null
-	check(photo_ok, "7 套 Poly Haven 写实贴图全部加载（石板路、石墙、灰泥、木板、石板瓦、雪、树皮）")
+	check(photo_ok, "%d 种写实贴图材质全部加载（Poly Haven：石板路、石墙、灰泥、木板、石板瓦、雪、树皮、泥炭，2026-10-23 加黑鹭堡石墙、鹭沼湿泥和干岸）" % Look.PHOTO.size())
+	check(Look.mat("castle").roughness_texture == null and Look.mat("castle").normal_texture != null and Look.mat("stone").roughness_texture != null,
+		"新加的三套只带颜色和法线（不带 ARM，省包体）")
 	var hm: ArrayMesh = (houses[0].get_node("Mesh") as MeshInstance3D).mesh
 	var arr := hm.surface_get_arrays(0)
 	check(not Look.mat("stone").uv1_triplanar and Look.mat("stone").normal_texture != null and arr[Mesh.ARRAY_TEX_UV] != null and arr[Mesh.ARRAY_TANGENT] != null, "贴图用网格自带的按米 UV 与切线（不用三向投影，省采样），带法线贴图")
