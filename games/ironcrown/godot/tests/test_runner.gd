@@ -5918,7 +5918,7 @@ func test_marsh() -> void:
 		await frames(1)
 		waited += 1
 	check(st.is_done() and st.primed < st.chunks.size() and st.primed >= 1, "载入时同步搭了附近 %d 块，其余的进场以后分帧搭完（%d 件活，最慢一件 %.1f 毫秒、合计 %.0f 毫秒）" % [st.primed, st.stats.jobs, st.stats.max_job_ms, st.stats.total_ms])
-	var prop_nodes := main.world.find_children("Props", "MeshInstance3D", true, false)
+	var prop_nodes: Array = main.world.find_children("Props", "MeshInstance3D", true, false)
 	var barrel_hit: Dictionary = ground_at.call(106.2, 35.9, 2.0)
 	check(prop_nodes.size() >= 4 and not barrel_hit.is_empty() and absf(float(barrel_hit.position.y) - 0.85) < 0.05,
 		"零碎分 %d 块搭出来；村口的木桶挡人（从上往下打到桶盖 y = %.2f）" % [prop_nodes.size(), float(barrel_hit.get("position", Vector3.ZERO).y)])
