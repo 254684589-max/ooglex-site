@@ -293,8 +293,11 @@ func _people() -> void:
 	g.rotation.y = deg_to_rad(MarshLayout.CW_YAW + 180.0)      # 面朝堤道（人的脸朝本地 -Z；审查：原来面朝堡门）
 	parent.add_child(g)
 	_camp_people()
+	var sleeper := Sleeper.gone_id()
 	for p: Array in MarshLayout.PEOPLE:
 		var id := str(p[0])
+		if id == sleeper:
+			continue                                     # 夜里没醒的那个（4.10b）：不在老地方
 		var lines: Array = MarshLayout.PEOPLE_LINES.get(id, [])
 		var n := Npc.make(str(p[1]), lines, Color(str(p[4])))
 		n.name = "Npc_" + id

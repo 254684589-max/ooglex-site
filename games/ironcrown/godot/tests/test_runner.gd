@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8024,6 +8024,61 @@ func test_dawn() -> void:
 	await physics(2)
 	check(get_tree().get_nodes_in_group("enemy").is_empty(), "摸进去以后再出来：不再巡了")
 	await free_main(main)
+	GameState.new_game()
+
+
+## 4.10b：长眠者第一次露面、第一章完——家主走了以后回芦栈村，一个说过话的村民闭着眼往北走；章末画面「第二章 · 熄灭的烽燧」，按旗标写回顾
+func test_sleeper() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# 是谁：说过信使的渡工 > 说过堤道的托宾 > 补网的女人
+	GameState.new_game(1)
+	var picks := [Sleeper.who()[0]]
+	GameState.set_flag("heard_causeway")
+	picks.append(Sleeper.who()[0])
+	GameState.set_flag("heard_envoy")
+	picks.append(Sleeper.who()[0])
+	check(picks == ["netter", "tobin", "boatman"], "是谁：谁都没说过话是补网的女人，说过堤道是托宾，说过信使是渡工（%s）" % str(picks))
+	# 家主走了：回到芦栈村
+	causeway_state("arch")
+	GameState.set_flag("ch1_causeway", "held")
+	GameState.set_flag("ch1_herb")
+	GameState.set_flag("ch1_outlaws", "ally")
+	GameState.set_flag("heard_envoy")
+	GameState.set_flag("ch1_osric_farewell")
+	GameState.set_stage("ch1_main", "farewell")
+	GameState.daypart = "dawn"
+	var main := await make_main_marsh()
+	var sl: Sleeper = main.sleeper
+	check(sl != null and main.world.get_node_or_null("Npc_boatman") == null and sl.npc.display_name == "渡工" and not sl.walking, "回到芦栈村：渡工不在码头上了，站在客栈东边的栈道上")
+	await physics(20)
+	check(not sl.walking and sl.npc.position == Sleeper.START, "你没走近：他不动")
+	main.player.global_position = Sleeper.START + Vector3(10, 0.3, 0)
+	await frames(3)
+	check(sl.walking and GameState.get_flag("ch1_sleeper") == "boatman" and main.hud.toast_label.text.contains("叫不醒"), "走近了：他闭着眼睛从你身边走过去，叫不醒")
+	await seconds(3.0)
+	check(sl.npc.position.x < Sleeper.START.x - 1.5, "他顺着栈道往西走（走了 %.1f 米）" % (Sleeper.START.x - sl.npc.position.x))
+	await seconds(Sleeper.CHAPTER_END_AFTER - 2.5)
+	check(GameState.has_flag("ch1_done") and GameState.quest_stage("ch1_main") == "ch1_end" and main.ending_panel.visible and main.ending_panel.title.text == "第二章 · 熄灭的烽燧" and main.ending_panel.header.text == "第一章「黑鹭堡」完",
+		"过一会儿：章末画面「第一章「黑鹭堡」完 · 第二章 · 熄灭的烽燧 · 开发中」")
+	var rc: String = main.ending_panel.recap.text
+	var hk: String = main.ending_panel.seal.text
+	check(rc.contains("印戒交给了阿尔里克") and rc.contains("堤道守住了") and rc.contains("奥弗") and hk.contains("老王自己交出去的") and hk.contains("双钥港") and hk.contains("没有醒来"),
+		"回顾按旗标写（印戒、堤道、奥弗），钩子带上双钥港和长眠者（%s / %s）" % [rc, hk])
+	check(not main.ending_panel.continue_btn.visible and main.ending_panel.back_btn.text == "在晨雾里再走走", "第二章还不能玩：只有「在晨雾里再走走」「从头再来」")
+	main.ending_panel.close()
+	await frames(2)
+	check(not get_tree().paused, "关掉画面接着走")
+	var auto := Saves.read_slot("auto")
+	check(str(auto.data.state.quests.ch1_main.stage) == "ch1_end", "章末自动存档")
+	await free_main(main)
+	main = await make_main_marsh()
+	check(main.sleeper == null and main.world.get_node_or_null("Npc_boatman") == null, "以后再来：他走了，码头上没人")
+	await free_main(main)
+	# 失守、被押进病房的回顾
+	GameState.set_flag("ch1_causeway", "lost")
+	GameState.set_flag("ch1_sneak", "caught")
+	check(Chapter1.recap().contains("新家主从此不信你") and Chapter1.recap().contains("伊薇特入主黑鹭堡"), "失守、被押进去的回顾：伊薇特入主黑鹭堡，新家主不信你")
 	GameState.new_game()
 
 

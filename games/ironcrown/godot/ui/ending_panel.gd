@@ -4,6 +4,7 @@ extends Control
 ## 半透明的夜色压在渡口的画面上（不全黑：雾还看得见），慢慢浮出章节名、这一夜的回顾（按抉择 prologue_edric 写）和两个按钮：
 ## 「在雾里再走走」关掉画面接着玩；「从头再来」开一局新游戏（存档不动）。打开时游戏暂停，减少动态效果时不做渐显。
 ## 4.1：下一章能玩了（Chapters.PLAYABLE，main.playable_chapter）时，上面多一行「继续：第一章 · 黑鹭堡」，默认焦点在它上面。
+## 4.10b：第一章完也用它（open_chapter1）：「第一章「黑鹭堡」完 / 第二章 · 熄灭的烽燧 / 开发中」，回顾按第一章的旗标写。
 
 signal closed
 signal restart_requested
@@ -18,6 +19,7 @@ const RECAP := {
 }
 const SEAL := "借据背面压着一枚星铁冠印——老王生前亲手担保过这笔债。奥尔本修士把一本烧焦的旧书交给你：去黑鹭堡，别让任何人看见。"
 
+var header: Label
 var title: Label
 var sub: Label
 var recap: Label
@@ -45,11 +47,11 @@ func _ready() -> void:
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.custom_minimum_size = Vector2(300, 0)
 	center.add_child(box)
-	var prologue := Label.new()
-	prologue.text = "序章「霜渡镇之夜」完"
-	prologue.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	prologue.add_theme_color_override("font_color", Color("9fb2c6"))
-	box.add_child(prologue)
+	header = Label.new()
+	header.text = "序章「霜渡镇之夜」完"
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.add_theme_color_override("font_color", Color("9fb2c6"))
+	box.add_child(header)
 	title = Label.new()
 	title.text = "第一章 · 黑鹭堡"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -99,12 +101,25 @@ func _ready() -> void:
 ## 打开：按抉择写回顾；宽度跟着窗口收（手机竖屏不溢出）
 func open(c: String, reduced_motion := false, next := 0) -> void:
 	choice = c
+	_show("序章「霜渡镇之夜」完", "第一章 · 黑鹭堡", "在雾里再走走", str(RECAP.get(c, "")), SEAL, reduced_motion, next)
+
+
+## 第一章完（4.10b）：章末画面换成「第二章 · 熄灭的烽燧　开发中」，回顾和钩子由 Chapter1 按旗标写
+func open_chapter1(reduced_motion := false) -> void:
+	choice = "ch1"
+	_show("第一章「黑鹭堡」完", "第二章 · 熄灭的烽燧", "在晨雾里再走走", Chapter1.recap(), Chapter1.hook(), reduced_motion, 0)
+
+
+func _show(head: String, title_text: String, back_text: String, recap_text: String, seal_text: String, reduced_motion: bool, next: int) -> void:
+	header.text = head
+	title.text = title_text
+	back_btn.text = back_text
 	next_chapter = next if Chapters.known(next) else 0
 	continue_btn.visible = next_chapter > 0
 	continue_btn.text = "继续：%s" % Chapters.name_of(next_chapter)
-	recap.text = str(RECAP.get(c, ""))
+	recap.text = recap_text
 	recap.visible = recap.text != ""
-	seal.text = SEAL
+	seal.text = seal_text
 	var w := clampf(get_viewport_rect().size.x - 48.0, 260.0, 560.0)
 	for l in [recap, seal]:
 		l.custom_minimum_size = Vector2(w, 0)

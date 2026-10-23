@@ -93,6 +93,7 @@ var encounter: Encounter        # 正在打的对峙（3.6，渡口的「灰手�
 var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
 var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
 var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
+var sleeper: Sleeper            # 芦栈村那个夜里没醒的人（4.10b）；没有为空
 var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
@@ -133,6 +134,16 @@ func _ready() -> void:
 				GameState.flags["valen_heir"] = "ivette"
 				GameState.set_flag("ch1_peat", "ivette")
 				GameState.set_flag("ch1_outlaws", "ally")
+		if area == "marsh" and _query("farewell") == "1" and not Engine.has_meta("ic_farewell_param_done"):
+			Engine.set_meta("ic_farewell_param_done", true)  # 截图用（4.10b）：?area=marsh&farewell=1 家主走了以后的清晨（守住了、选了阿尔里克、喝过白芦根汤、渡工说过信使）
+			if not GameState.quest_active("ch1_main"):
+				GameState.start_quest("ch1_main")
+			GameState.flags["valen_heir"] = "alric"
+			for f in ["ch1_herb", "heard_envoy", "ch1_osric_farewell"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch1_causeway", "held")
+			GameState.set_stage("ch1_main", "farewell")
+			GameState.daypart = "dawn"
 		if area in ["castle", "sickroom"] and _query("dawn") in ["held", "lost"] and not Engine.has_meta("ic_dawn_param_done"):
 			Engine.set_meta("ic_dawn_param_done", true)      # 截图用（4.10a）：?area=castle|sickroom&dawn=held|lost 直接到打完仗的清晨（选了阿尔里克）
 			if not GameState.quest_active("ch1_main"):
@@ -206,6 +217,7 @@ func _ready() -> void:
 	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
+		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
 	var moved := Schedule.apply(world, area)        # NPC 作息（4.6）：这个时段不在这儿的人拿掉、换了站位的挪过去、从别处来的放进来
 	if not moved.is_empty():
 		print("IC_SCHEDULE area=%s daypart=%s moved=%s" % [area, GameState.daypart, ",".join(moved)])
@@ -1394,7 +1406,10 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
+	if id == "ch1":
+		ending_panel.open_chapter1(Settings.reduced_motion)       # 第一章完（4.10b）
+	else:
+		ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
 	print("IC_ENDING id=%s choice=%s next=%d" % [id, choice, ending_panel.next_chapter])
 	if ending_panel.next_chapter > 0:
 		await get_tree().process_frame
@@ -1724,6 +1739,23 @@ func _on_battle_ended(winner: String) -> void:
 		hud.toast("× %s赢了……%s" % [battle.sides.get(winner, winner), refresh], 6.0)
 
 
+## 长眠者第一次露面（4.10b）：他从你身边走过去；有人说「又一个」；过一会儿第一章完
+func _sleeper_seen() -> void:
+	sleeper.wake_walk()
+	var nm := str(Sleeper.who()[1])
+	hud.toast("「%s？」……眼睛闭着，从你身边走了过去。叫不醒。" % nm, 5.0)
+	get_tree().create_timer(5.0).timeout.connect(func():
+		if is_inside_tree() and area == "marsh":
+			hud.toast("客栈门口有人看着他的背影，低声说了一句：「又一个。」", 5.0))
+	get_tree().create_timer(Sleeper.CHAPTER_END_AFTER).timeout.connect(func():
+		if is_inside_tree() and area == "marsh" and not GameState.has_flag("ch1_done"):
+			GameState.set_flag("ch1_done")
+			if GameState.quest_active("ch1_main"):
+				GameState.set_stage("ch1_main", "ch1_end")
+			save_game("auto", true)
+			show_ending("ch1"))
+
+
 ## 失守以后的天亮（4.10a）：庭院里巡逻的人看见你（警觉起来）就喊人，把你押进病房（家主坚持要见你）
 func _on_occupier_state(_e: Enemy, st: String) -> void:
 	if GameState.has_flag("ch1_sneak") or not st in ["alert", "combat"]:
@@ -1859,6 +1891,8 @@ func _process(delta: float) -> void:
 	if hint_left <= 0.0 and not tip_queue.is_empty():
 		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
+	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
+		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):
 		start_battle()                                  # 堤道夜战（4.9a）：走到和赫尔曼定下的守点，开打（先自动存档）
 		hud.toast("◆ 他们上来了！守住%s——按 2 让小队原地坚守（触屏「令」）。" % ("断口" if CausewayBattle.hold() == "gap" else "石拱"), 5.0)
