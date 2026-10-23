@@ -60,6 +60,7 @@ static func merge(skel: Skeleton3D) -> MeshInstance3D:
 	mi.skeleton = mi.get_path_to(skel)
 	for p: MeshInstance3D in parts:
 		p.visible = false
+	mi.set_meta("parts", PackedStringArray(parts.map(func(p): return str(p.name))))      # 合进去了哪些部件（测试用：弓手的兜帽在里面，剑兵的不在）
 	return mi
 
 

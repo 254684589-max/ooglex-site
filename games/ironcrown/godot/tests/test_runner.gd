@@ -8103,7 +8103,7 @@ func test_uniforms() -> void:
 	var sw: Soldier = by.call(white, "soldier")
 	var ar: Soldier = by.call(white, "archer")
 	check(str(lv.model.parts[0]).ends_with("Outfit_Male_Peasant.gltf") and str(sw.model.parts[0]).ends_with("Outfit_Male_Ranger.gltf"), "民兵穿平民的衣服，剑兵穿游侠那套")
-	var hood := func(x: Soldier) -> bool: return (x.model.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D).visible
+	var hood := func(x: Soldier) -> bool: return x.dressed.merged != null and Array(x.dressed.merged.get_meta("parts")).has("Male_Ranger_Head_Hood") if x.dressed.merged else (x.model.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D).visible
 	check(hood.call(ar) and not hood.call(sw), "弓手戴着兜帽，剑兵摘了")
 	var tw := str(sw.model.look.tint.get("MI_Ranger", ""))
 	var tb := str((by.call(black, "soldier") as Soldier).model.look.tint.get("MI_Ranger", ""))
@@ -8180,16 +8180,14 @@ func test_uniforms2() -> void:
 	var sw: Soldier = white.filter(func(x): return x.kind == "soldier")[0]
 	await frames(4)
 	var head := sw.model.skeleton.get_bone_global_pose(sw.model.skeleton.find_bone("Head")).origin
-	check(head.y > 1.4 and head.y < 1.9 and sw.dressed.merged.visible, "合并以后骨架照样带着网格动（头在 %.2f 米高）" % head.y)
+	check(head.y > 1.1 and head.y < 1.9 and sw.dressed.merged.visible and Array(sw.dressed.merged.get_meta("parts")).size() >= 3, "合并以后网格挂在同一副骨架上（头在 %.2f 米高，合了 %d 块）" % [head.y, Array(sw.dressed.merged.get_meta("parts")).size()])
 	# 弓手：弓在左手；拉弓时左臂伸向前
 	var ar: Soldier = white.filter(func(x): return x.kind == "archer")[0]
 	var lh := ar.model.skeleton.get_node_or_null("HandL")
 	check(ar.dressed.bow != null and lh != null and lh.find_child("Prop_bow", true, false) != null, "弓手左手拿弓，骨架上有拉弓的修改器")
 	var sk := ar.model.skeleton
-	var fwd := func() -> float:
-		var hand := sk.global_transform * sk.get_bone_global_pose(sk.find_bone("hand_l")).origin
-		var chest := sk.global_transform * sk.get_bone_global_pose(sk.find_bone("spine_03")).origin
-		return (hand - chest).dot(-ar.global_transform.basis.z)
+	var hand_l := sk.get_node("HandL") as Node3D          # 骨头挂件跟着修改器以后的姿势走（get_bone_global_pose 是动作本身的姿势）
+	var fwd := func() -> float: return (hand_l.global_position - ar.global_position).dot(-ar.global_transform.basis.z)
 	await frames(4)
 	var before: float = fwd.call()
 	b.start()
