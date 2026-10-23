@@ -16,15 +16,15 @@ const WALL_T := 2.5
 const GATE_W := 3.2
 const GATE_H := 4.2
 const EXIT_NAME := "堡门"
-const KEEP := [Vector3(0, 0, -10.5), 0.0, {"w": 20.0, "d": 8.5, "floors": 2, "stone_upper": true, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 4501, "lit": 0.4,
+const KEEP := [Vector3(0, 0, -10.5), 0.0, {"stone_mat": "castle", "w": 20.0, "d": 8.5, "floors": 2, "stone_upper": true, "roof": "eaves", "chimney": true, "door_x": 0.0, "seed": 4501, "lit": 0.4,
 	"door": {"name": "大厅", "to_area": "hall", "to_spawn": "front", "verb": "进入"}}]       # 4.5b 起推得开
-const BARRACKS := [Vector3(-10, 0, 2), 90.0, {"w": 16.0, "d": 7.0, "floors": 1, "roof": "eaves", "door_x": 0.0, "seed": 4502, "lit": 0.3,
+const BARRACKS := [Vector3(-10, 0, 2), 90.0, {"stone_mat": "castle", "w": 16.0, "d": 7.0, "floors": 1, "roof": "eaves", "door_x": 0.0, "seed": 4502, "lit": 0.3,
 	"door": {"name": "兵营", "text": "兵营的门从里面闩着，门口的兵摇了摇头：「小姐没发话，外人不进。」"}}]
 const BARRACKS_OPEN := {"name": "兵营", "to_area": "barracks", "to_spawn": "front", "verb": "进入"}      # 4.5c：伊薇特见过你、或者你从侧门进来以后
-const TOWER := [Vector3(12, 0, -6), -90.0, {"w": 6.0, "d": 5.5, "floors": 2, "stone_upper": true, "roof": "gable", "door_x": 0.0, "seed": 4503, "lit": 0.5,
+const TOWER := [Vector3(12, 0, -6), -90.0, {"stone_mat": "castle", "w": 6.0, "d": 5.5, "floors": 2, "stone_upper": true, "roof": "gable", "door_x": 0.0, "seed": 4503, "lit": 0.5,
 	"door": {"name": "病房", "text": "门里传来一个女人的声音：「家主睡着了，谁也别进来。」"}}]
 const TOWER_OPEN := {"name": "病房", "to_area": "sickroom", "to_spawn": "front", "verb": "进入"}           # 4.5c：两位继承人都托过你以后
-const COUNTING := [Vector3(12, 0, 6), -90.0, {"w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
+const COUNTING := [Vector3(12, 0, 6), -90.0, {"stone_mat": "castle", "w": 6.0, "d": 5.5, "floors": 1, "roof": "gable", "door_x": 0.0, "seed": 4504, "lit": 0.2,
 	"door": {"name": "账房", "text": "账房的门上了两道锁。钥匙在堡守赫尔曼那儿。"}}]
 const COUNTING_OPEN := {"name": "账房", "to_area": "counting", "to_spawn": "front", "verb": "进入"}       # 4.7a：拿到赫尔曼的钥匙以后
 const LEDGER_WINDOW := Vector3(15.3, 1.45, 2.86)  # 账房北侧墙上那扇能撬的小窗（塔楼和账房之间的窄巷里，4.7a；百叶贴在墙外皮上，截图发现原来埋在墙里）
@@ -76,7 +76,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_walls(kit)
 	_gates(kit)
 	_props(kit)
-	parent.add_child(kit.build({"street": Look.mat("street"), "stone": Look.mat("stone"), "timber": Look.mat("timber"), "peat": Look.mat("peat"),
+	parent.add_child(kit.build({"street": Look.mat("street"), "stone": Look.mat("castle"), "timber": Look.mat("timber"), "peat": Look.mat("peat"),
 		"soot": _flat(Color("0e0b09")), "iron": _flat(Color("2a2a2e")), "water": Look.water(true), "cloth": _cloth(Color("d8d2c2")), "heron": _cloth(Color("1a1a1c")),
 		"ember": _flat(Color("ff7a28"), true)}))
 	for b in houses():
@@ -85,6 +85,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_colliders(parent)
 	_doors(parent)
 	_lights(parent, reduced_motion)
+	_dress(parent, reduced_motion)
 	_person(parent, HERMAN, [])
 	var win := Fixture.make("账房的小窗", "看看", "blackheron", "counting_window", Vector3(0.9, 1.0, 0.5))      # 账册支线（4.7a）：撬窗
 	win.name = "LedgerWindow"
@@ -300,6 +301,27 @@ static func _doors(parent: Node3D) -> void:
 
 
 ## 夜灯：大厅门两边的火盆（白天不点）
+## 院子里的杂物和旗（2026-10-23 场景美化二，Decor）：堡门两边墙上的黑鹭大旗和火把（带光）、东墙一面旗；
+## 兵营门南边的兵器架和草垛、推车旁的木桶板条箱、账房门外的木桶、东南角的柴堆。避开赫尔曼、井、卫兵、各个出生点和门前
+static func _dress(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	for s: float in [-1.0, 1.0]:
+		d.banner(Vector3(s * 5.0, 7.4, HD), Vector3.FORWARD, 1.6, 3.2, Color("d8d2c2"), Color("1a1a1c"), "heron")
+		d.sconce(Vector3(s * 2.5, 3.0, HD), Vector3.FORWARD, true)
+	d.banner(Vector3(HW, 7.0, 15.0), Vector3.LEFT, 1.4, 2.8, Color("1a1a1c"), Color("d8d2c2"), "heron")
+	d.rack(Vector3(-7.6, 0, 8.6), Vector3.RIGHT, 1.6)
+	d.hay(Vector3(-7.4, 0, 10.6), 0.0)
+	d.hay(Vector3(-7.3, 0.5, 10.6), 0.15)
+	d.barrel(Vector3(-3.6, 0, 14.2))
+	d.barrel(Vector3(-3.0, 0, 14.7), 0.75, 0.27)
+	d.crate(Vector3(-4.2, 0, 15.0), 0.4, 0.6)
+	d.barrel(Vector3(10.2, 0, 10.4))
+	d.crate(Vector3(10.4, 0, 11.3), -0.3, 0.55)
+	d.woodpile(Vector3(HW - 0.35, 0, 17.0), Vector3.BACK, 2.4, 1.0)
+	d.hay(Vector3(15.6, 0, 18.8), 0.3)
+	d.build(parent, "CourtyardDecor", not reduced_motion)
+
+
 static func _lights(parent: Node3D, reduced_motion: bool) -> void:
 	for f: Vector3 in BRAZIERS:
 		var l := Tavern.FireLight.new()

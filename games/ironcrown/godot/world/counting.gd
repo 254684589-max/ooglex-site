@@ -33,9 +33,10 @@ static func build(parent: Node3D, _reduced_motion := false) -> Transform3D:
 	var kit := MeshKit.new()
 	_room(kit)
 	_furniture(kit)
-	parent.add_child(kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
+	parent.add_child(kit.build({"stone": Look.mat("castle"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
 		"paper": Castle._cloth(Color("d8ccae")), "leather": Castle._cloth(Color("5a3a26")), "iron": Castle._flat(Color("3a3a3e")),
 		"wax": Castle._flat(Color("efe4c8"), true)}))
+	_decor(parent)
 	_colliders(parent)
 	_lights(parent)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.2, false)
@@ -114,6 +115,17 @@ static func _furniture(kit: MeshKit) -> void:
 	kit.box("timber", Vector3(c.get_center().x, 0.28, c.get_center().y), Vector3(c.size.x, 0.56, c.size.y), Basis.IDENTITY, 0.9, 0.6)
 	for x: float in [c.position.x + 0.12, c.end.x - 0.12]:
 		kit.box("iron", Vector3(x, 0.28, c.get_center().y), Vector3(0.05, 0.58, c.size.y + 0.02))
+
+
+## 陈设（2026-10-23 美化，Decor）：写字台上方一面黑鹭小旗、桌上几摞钱币和一簇蜡烛、门边的木桶和麻袋、地上一块旧地毯
+static func _decor(parent: Node3D) -> void:
+	var d := Decor.new()
+	d.banner(Vector3(0, 2.75, -D * 0.5), Vector3.BACK, 0.8, 1.3, Color("d8d2c2"), Color("1a1a1c"), "heron")
+	d.candles(Vector3(0.55, 0.77, -2.05), 2, true)
+	d.rug(Rect2(-1.0, -1.2, 2.0, 1.6), 0.0, Color("3a2e2a"), Color("6a5a3a"))
+	d.barrel(Vector3(-2.2, 0, 1.9), 0.7, 0.26)
+	d.sack(Vector3(-1.6, 0, 2.0), 0.6)
+	d.build(parent)
 
 
 static func _colliders(parent: Node3D) -> void:

@@ -102,6 +102,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		walls.box("stone", Vector3(sx * 11.0, 1.1, NORTH_END - 0.5), Vector3(8.0, 2.2, 0.6), Basis.IDENTITY, 0.9, 0.5)
 		walls.box("snow", Vector3(sx * 11.0, 2.24, NORTH_END - 0.5), Vector3(8.1, 0.08, 0.7))
 	_props(parent, walls)
+	_dress(parent)
 	parent.add_child(walls.build({"stone": Look.mat("stone"), "snow": Look.mat("snow"), "timber": Look.mat("timber")}))
 	for sx in [-1.0, 1.0]:
 		_solid(parent, Vector3(sx * 11.0, 1.1, NORTH_END - 0.5), Vector3(8.0, 2.2, 0.6))
@@ -282,6 +283,29 @@ static func _props(parent: Node3D, kit: MeshKit) -> void:
 		kit.cylinder("timber", c, c + Vector3(0, 0.85, 0), 0.3, 0.3, 8, 0.9)
 		kit.cylinder("timber", c + Vector3(0, 0.85, 0), c + Vector3(0, 0.86, 0), 0.3, 0.01, 8, 0.8)
 		_solid(parent, c + Vector3(0, 0.43, 0), Vector3(0.6, 0.86, 0.6))
+
+
+## 街边杂物（2026-10-23 场景美化二，Decor）：房子正面和石板路之间那一溜（x ±4.05），避开门、路灯、NPC、去墓园的小路门。
+## 每处的门：左边 z 1.85 / -7.1 / -17.55 / -32.1 / -38.5，右边 z 2 / -4.7 / -15 / -24.4 / -31.25 / -37.8
+static func _dress(parent: Node3D) -> void:
+	var d := Decor.new()
+	var lx := -4.05
+	var rx := 4.05
+	d.woodpile(Vector3(lx, 0, -1.6), Vector3.BACK, 1.4)
+	d.barrel(Vector3(lx, 0, -19.1), 0.8, 0.28)
+	d.hay(Vector3(lx - 0.1, 0, -28.6), PI * 0.5)
+	d.cart(Vector3(lx + 0.2, 0, -34.75), 0.0, "wood")
+	d.sack(Vector3(lx, 0, -40.6), 0.3)
+	d.sack(Vector3(lx + 0.05, 0, -41.2), -0.5)
+	d.barrel(Vector3(rx, 0, 3.9), 0.85, 0.3)
+	d.barrel(Vector3(rx + 0.05, 0, 3.25), 0.75, 0.27)
+	d.crate(Vector3(rx, 0, -8.6), 0.3, 0.55)
+	d.crate(Vector3(rx + 0.05, 0.55, -8.6), -0.2, 0.42)
+	d.sack(Vector3(rx, 0, -12.6), 0.8)
+	d.woodpile(Vector3(rx, 0, -21.4), Vector3.BACK, 1.6)
+	d.hay(Vector3(rx + 0.1, 0, -33.6), PI * 0.5)
+	d.cart(Vector3(rx - 0.25, 0, -40.6), PI, "sacks")
+	d.build(parent, "StreetDecor")
 
 
 ## 贴地雾带：沿街两层，低画质时由 main 隐藏一半

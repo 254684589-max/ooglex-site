@@ -710,10 +710,21 @@ func test_frostford() -> void:
 	await physics(5)
 	var houses := get_tree().get_nodes_in_group("house")
 	check(houses.size() == 12, "霜渡镇主街有 12 栋房子（两侧 11 栋 + 领主宅邸，实际 %d）" % houses.size())
+	# —— 2026-10-23 场景美化二：烟囱冒烟、落雪
+	var smokes := get_tree().get_nodes_in_group(Atmos.SMOKE_GROUP)
+	var smoke_ok := smokes.size() == 6
+	for sm: CPUParticles3D in smokes:
+		smoke_ok = smoke_ok and sm.emitting and sm.global_position.y > 8.0
+	print("IC_DBG smoke n=%d y=%s" % [smokes.size(), str(smokes.map(func(x): return snappedf((x as Node3D).global_position.y, 0.1)))])
+	check(smoke_ok, "6 个烟囱都在冒烟（烟在烟囱顶上，%d 个）" % smokes.size())
+	var snow := get_tree().get_nodes_in_group(Atmos.SNOW_GROUP)
+	check(snow.size() == 1 and (snow[0] as Node).get_parent() == p and (snow[0] as CPUParticles3D).emitting, "户外在落雪（跟着玩家）")
 	var photo_ok := true
 	for k in Look.PHOTO:
 		photo_ok = photo_ok and bool(Look.mat(k).get_meta("photo", false)) and Look.mat(k).albedo_texture != null
-	check(photo_ok, "7 套 Poly Haven 写实贴图全部加载（石板路、石墙、灰泥、木板、石板瓦、雪、树皮）")
+	check(photo_ok, "%d 种写实贴图材质全部加载（Poly Haven：石板路、石墙、灰泥、木板、石板瓦、雪、树皮、泥炭，2026-10-23 加黑鹭堡石墙、鹭沼湿泥和干岸）" % Look.PHOTO.size())
+	check(Look.mat("castle").roughness_texture == null and Look.mat("castle").normal_texture != null and Look.mat("stone").roughness_texture != null,
+		"新加的三套只带颜色和法线（不带 ARM，省包体）")
 	var hm: ArrayMesh = (houses[0].get_node("Mesh") as MeshInstance3D).mesh
 	var arr := hm.surface_get_arrays(0)
 	check(not Look.mat("stone").uv1_triplanar and Look.mat("stone").normal_texture != null and arr[Mesh.ARRAY_TEX_UV] != null and arr[Mesh.ARRAY_TANGENT] != null, "贴图用网格自带的按米 UV 与切线（不用三向投影，省采样），带法线贴图")
@@ -2692,7 +2703,7 @@ func test_areas() -> void:
 	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and main.env.background_color.r < 0.1, "室内：没有月光，换成暖暗的环境光和薄烟")
 	var omni := main.find_children("*", "OmniLight3D", true, false)
 	var fire := omni.filter(func(l): return l is Tavern.FireLight)
-	check(omni.size() == 3 and fire.size() == 1, "三盏光：炉火、吧台油灯、桌上蜡烛（%d）" % omni.size())
+	check(omni.size() == 4 and fire.size() == 2, "四盏光：炉火、吧台油灯、桌上蜡烛，加门边墙上的火把（2026-10-23 美化）（%d）" % omni.size())
 	var e0: float = fire[0].light_energy
 	await seconds(0.2)
 	check(fire[0].flicker and absf(fire[0].light_energy - e0) > 0.001, "炉火在闪")
@@ -5862,6 +5873,26 @@ func test_marsh() -> void:
 		if not fl.any(func(f): return f.k == "deck" and MarshLayout.contains(f, foot)):
 			stairs_ok = false
 	check(stairs_ok, "%d 栋高脚屋的台阶都落在栈道上" % MarshLayout.HOUSES.size())
+	# 村里的零碎（场景美化五）：都站在地上，不压栈道、不压房子和台阶，离村里的人 1 米以上
+	var pd := Marsh.props_decor()
+	var walk_rects := MarshLayout.WALKS.map(func(w): return Rect2(w[1], Vector2.ZERO).expand(w[2]).grow(float(w[3]) * 0.5))
+	var house_rects := []
+	for h in MarshLayout.HOUSES:
+		for hs in House.solids(MarshLayout.house_pos(h), float(h[2]), MarshLayout.house_spec(h)):
+			var ab: AABB = hs[0] * AABB(-(hs[1] as Vector3) * 0.5, hs[1])
+			house_rects.append(Rect2(ab.position.x, ab.position.z, ab.size.x, ab.size.z))
+	var pgrid := Marsh.make_index(fl, 0.0)
+	var bad_props := []
+	for so in pd.solids:
+		var c3: Vector3 = so[0]
+		var sz: Vector3 = so[1]
+		var r := Rect2(c3.x - sz.x * 0.5, c3.z - sz.z * 0.5, sz.x, sz.z)
+		var on_ground := Marsh.on_floor(fl, pgrid, Vector2(c3.x, c3.z))
+		if not on_ground or walk_rects.any(func(w): return w.intersects(r)) or house_rects.any(func(hr): return hr.intersects(r)) \
+				or MarshLayout.PEOPLE.any(func(pp): return Vector2(pp[2].x, pp[2].z).distance_to(r.get_center()) < 1.0 + sz.length() * 0.5):
+			bad_props.append(Vector2(c3.x, c3.z))
+	check(MarshLayout.PROPS.size() >= 20 and pd.solids.size() >= 15 and bad_props.is_empty(),
+		"村里 %d 件零碎（%d 个碰撞盒）都在地上，不压栈道、房子和台阶，离村里的人 1 米以上（不合适的：%s）" % [MarshLayout.PROPS.size(), pd.solids.size(), str(bad_props)])
 	# 载入：碰撞一次建完，出生点脚下马上有地（还没分帧搭画面的时候）
 	GameState.new_game(440)
 	var main := await make_area("marsh")
@@ -5887,6 +5918,10 @@ func test_marsh() -> void:
 		await frames(1)
 		waited += 1
 	check(st.is_done() and st.primed < st.chunks.size() and st.primed >= 1, "载入时同步搭了附近 %d 块，其余的进场以后分帧搭完（%d 件活，最慢一件 %.1f 毫秒、合计 %.0f 毫秒）" % [st.primed, st.stats.jobs, st.stats.max_job_ms, st.stats.total_ms])
+	var prop_nodes: Array = main.world.find_children("Props", "MeshInstance3D", true, false)
+	var barrel_hit: Dictionary = ground_at.call(106.2, 35.9, 2.0)
+	check(prop_nodes.size() >= 4 and not barrel_hit.is_empty() and absf(float(barrel_hit.position.y) - 0.85) < 0.05,
+		"零碎分 %d 块搭出来；村口的木桶挡人（从上往下打到桶盖 y = %.2f）" % [prop_nodes.size(), float(barrel_hit.get("position", Vector3.ZERO).y)])
 	check(float(st.stats.max_job_ms) < 40.0, "每件活都不长（最慢 %.1f 毫秒；网页上每帧最多做 %d 毫秒）" % [st.stats.max_job_ms, ChunkStreamer.BUDGET_USEC / 1000])
 	# 深水边都有墙：从村口出发，按 1 米的格子把走得到的地方都走一遍；每一步走到没有地的格子，中间都要撞上墙（层 5）或别的东西
 	var grid := Marsh.make_index(fl, MarshLayout.SHORE + 1.0)
@@ -6216,7 +6251,7 @@ func test_reedwharf() -> void:
 	check(main.hud.toast_label.text.begins_with("「歪桩」客栈") and Saves.read_slot("auto").data.scene == "inn", "进门提示「「歪桩」客栈」，自动存档")
 	check(not main.moon.visible and main.env.fog_mode == Environment.FOG_MODE_EXPONENTIAL and GameState.quest_stage("ch1_main") == "to_blackheron", "室内：没有月光、暖暗的环境光；主线不倒退")
 	var omni := main.find_children("*", "OmniLight3D", true, false)
-	check(omni.size() == 3 and omni.filter(func(l): return l is Tavern.FireLight).size() == 1, "三盏光：泥炭火塘、吧台油灯、过道上方的吊灯（%d）" % omni.size())
+	check(omni.size() == 4 and omni.filter(func(l): return l is Tavern.FireLight).size() == 2, "四盏光：泥炭火塘、吧台油灯、过道上方的吊灯，加西墙的火把（2026-10-23 美化）（%d）" % omni.size())
 	var inn_people := main.find_children("Npc_*", "Npc", true, false)
 	var names := inn_people.map(func(n): return n.display_name)
 	var inn_bad: Array = inn_people.filter(func(n): return not stands_clear(n)).map(func(n): return n.display_name)

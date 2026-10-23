@@ -35,9 +35,10 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var kit := MeshKit.new()
 	_room(kit)
 	_furniture(kit)
-	parent.add_child(kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
+	parent.add_child(kit.build({"stone": Look.mat("castle"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
 		"linen": Castle._cloth(Color("cfc6b2")), "wool": Castle._cloth(Color("5a4636")), "ember": Castle._flat(Color("ff7a28"), true),
 		"iron": Castle._flat(Color("2a2a2e")), "clay": Castle._flat(Color("8a5a3a")), "wax": Castle._flat(Color("efe4c8"), true)}))
+	_decor(parent)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.2, false)
@@ -137,6 +138,18 @@ static func _furniture(kit: MeshKit) -> void:
 	kit.cylinder("iron", br, br + Vector3(0, 0.5, 0), 0.08, 0.08, 6, 0.6)
 	kit.cylinder("iron", br + Vector3(0, 0.5, 0), br + Vector3(0, 0.62, 0), 0.24, 0.3, 10, 0.8)
 	kit.cylinder("ember", br + Vector3(0, 0.6, 0), br + Vector3(0, 0.64, 0), 0.24, 0.24, 10, 1.0)
+
+
+## 陈设（2026-10-23 美化，Decor）：西墙一幅挂毯、床边一块小地毯、床尾的箱子、窗下桌上一簇蜡烛、门边墙上的火把
+static func _decor(parent: Node3D) -> void:
+	var d := Decor.new()
+	var hw := W * 0.5
+	d.tapestry(Vector3(-hw, 1.9, -0.6), Vector3.RIGHT, 1.6, 1.8, Color("2e3a4a"), [Color("b89a4a"), Color("6a2a26"), Color("d8d2c2")])
+	d.rug(Rect2(0.15, -2.2, 1.1, 1.6), 0.0, Color("4a2e24"), Color("8a6a3a"))
+	d.chest(Vector3(-0.5, 0, -0.1), 0.0, Vector3(0.8, 0.42, 0.45))
+	d.candles(Vector3(2.25, 0.77, -2.0), 2, false)
+	d.sconce(Vector3(1.4, 1.8, D * 0.5), Vector3.FORWARD)
+	d.build(parent)
 
 
 static func _colliders(parent: Node3D) -> void:

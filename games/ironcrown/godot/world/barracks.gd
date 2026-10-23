@@ -44,9 +44,10 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var kit := MeshKit.new()
 	_room(kit)
 	_furniture(kit)
-	parent.add_child(kit.build({"stone": Look.mat("stone"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
+	parent.add_child(kit.build({"stone": Look.mat("castle"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
 		"straw": Castle._cloth(Color("9a8a5a")), "wool": Castle._cloth(Color("4e4436")), "ember": Castle._flat(Color("ff7a28"), true),
 		"iron": Castle._flat(Color("5a5a60")), "soot": Castle._flat(Color("0e0b09")), "bone": Castle._flat(Color("e8e0cc"))}))
+	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.3, false)
@@ -155,6 +156,26 @@ static func _furniture(kit: MeshKit) -> void:
 	kit.box("soot", Vector3(s.position.x - 0.01, 0.5, s.get_center().y), Vector3(0.02, 0.5, 0.8))
 	kit.box("ember", Vector3(s.position.x + 0.15, 0.32, s.get_center().y), Vector3(0.3, 0.06, 0.7))
 	kit.box("stone", Vector3(s.get_center().x + 0.1, (1.2 + H) * 0.5, s.get_center().y), Vector3(0.4, H - 1.2, 0.5), Basis.IDENTITY, 0.8, 0.6)
+
+
+## 陈设（2026-10-23 美化，Decor）：上下铺中间墙上一面黑鹭旗、两边各一面盾，铺脚的箱子，墙上的火把，
+## 东南角的木桶、麻袋、板条箱，长桌上的蜡烛
+static func _decor(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	var hd := D * 0.5
+	var hw := W * 0.5
+	d.banner(Vector3(0, 3.2, -hd), Vector3.BACK, 1.1, 2.0, Color("d8d2c2"), Color("1a1a1c"), "heron")
+	for s: float in [-1.0, 1.0]:
+		d.shield(Vector3(s * 1.3, 1.9, -hd), Vector3.BACK, 0.36, Color("d8d2c2"), Color("1a1a1c"))
+		d.sconce(Vector3(s * 1.6, 1.9, hd), Vector3.FORWARD, s > 0.0)
+	for x: float in BUNKS:
+		d.chest(Vector3(x + (0.6 if x > 0 else -0.6), 0, BUNK_Z + 0.85), 0.0, Vector3(0.7, 0.4, 0.42))
+	d.barrel(Vector3(hw - 0.45, 0, hd - 0.5))
+	d.barrel(Vector3(hw - 1.05, 0, hd - 0.45), 0.75, 0.27)
+	d.sack(Vector3(hw - 0.5, 0, hd - 1.15), 0.4)
+	d.crate(Vector3(-hw + 0.5, 0, hd - 0.55), 0.2, 0.55)
+	d.candles(Vector3(-0.8, 0.82, TABLE.get_center().y), 2)
+	d.build(parent, "Decor", not reduced_motion)
 
 
 static func _colliders(parent: Node3D) -> void:

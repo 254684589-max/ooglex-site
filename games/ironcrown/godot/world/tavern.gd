@@ -54,6 +54,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 		"glass_dark": Look.glass_dark(), "ember": _ember_mat(), "bottle": _bottle_mat(), "soot": _soot_mat()})
 	mi.name = "Tavern"
 	parent.add_child(mi)
+	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
 	# 出口：回到主街（站在酒馆门外）
@@ -232,6 +233,19 @@ static func _stairs(kit: MeshKit) -> void:
 		var step_top := 0.2 * (floorf((2.4 - z) / 0.36 + 0.5) + 1.0)
 		var rail := 1.55 + (0.2 - z) * 0.556
 		kit.box("timber", Vector3(x - 0.48, (step_top + rail) * 0.5, z), Vector3(0.05, rail - step_top, 0.05))
+
+
+## 陈设（2026-10-23 美化，Decor）：西北角一摞板条箱和麻袋、两张桌上的蜡烛、壁炉上方一面旧盾、门边墙上一支火把（带光）
+static func _decor(parent: Node3D, reduced_motion := false) -> void:
+	var d := Decor.new()
+	d.crate(Vector3(-3.45, 0, -3.0), 0.15, 0.55)
+	d.crate(Vector3(-3.4, 0.55, -3.0), -0.2, 0.42)
+	d.sack(Vector3(-3.55, 0, -2.35), 0.5)
+	d.candles(TABLE_POS + Vector3(0.4, 0.8, 0), 2)
+	d.candles(SMALL_TABLE_POS + Vector3(0, 0.77, 0), 1, false)
+	d.shield(Vector3(-W * 0.5, 2.1, FIRE_POS.z), Vector3.RIGHT, 0.36, Color("5a3a24"), Color("8a2a22"))
+	d.sconce(Vector3(-0.2, 1.9, D * 0.5), Vector3.FORWARD, true)
+	d.build(parent, "Decor", not reduced_motion)
 
 
 static func _colliders(parent: Node3D) -> void:

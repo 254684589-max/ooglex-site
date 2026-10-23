@@ -194,6 +194,8 @@ func _ready() -> void:
 	player.name = "Player"
 	add_child(player)
 	player.global_transform = t
+	if not Areas.is_indoor(area) and not use_test_range and not use_arena and area != "battle":
+		Atmos.snow(player)                # 户外落雪（2026-10-23 场景美化二）
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
@@ -329,6 +331,20 @@ func _ready() -> void:
 			print("IC_ORDER_SCREEN x=%d y=%d fx=%d fy=%d" % [oc.x, oc.y, fc.x, fc.y])
 
 
+## 调色曲线（每个颜色通道按这条渐变查表）：0 和 1 不动；暗部（约 0.2）蓝一点、红少一点，亮部（约 0.75）红黄多一点、蓝少一点
+static func grade_curve() -> GradientTexture1D:
+	var g := Gradient.new()
+	g.set_color(0, Color(0, 0, 0))
+	g.set_color(1, Color(1.0, 0.985, 0.95))
+	g.add_point(0.2, Color(0.185, 0.2, 0.225))
+	g.add_point(0.5, Color(0.5, 0.5, 0.495))
+	g.add_point(0.75, Color(0.765, 0.75, 0.715))
+	var t := GradientTexture1D.new()
+	t.gradient = g
+	t.width = 256
+	return t
+
+
 func _build_environment() -> void:
 	env = Environment.new()
 	env.background_mode = Environment.BG_COLOR
@@ -346,7 +362,7 @@ func _build_environment() -> void:
 		# 室内（3.1 酒馆）：没有月光与夜雾，暖色的暗环境光 + 一点炉烟似的薄雾；亮度主要来自炉火与油灯
 		env.background_color = Color("0c0a08")
 		env.ambient_light_color = Color("8a6a4c")
-		env.ambient_light_energy = 0.5
+		env.ambient_light_energy = 0.62          # 2026-10-23 美化：大厅、兵营太暗（截图里墙一片黑），提一点
 		env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
 		env.fog_light_color = Color("2a2119")
 		env.fog_density = 0.035
@@ -366,6 +382,7 @@ func _build_environment() -> void:
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.08
 	env.adjustment_saturation = 0.85
+	env.adjustment_color_correction = grade_curve()      # 2026-10-23 场景美化三：暗部偏冷、亮部偏暖（电影里常见的分离色调），很轻
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -443,6 +460,7 @@ func apply_quality(tier: String) -> void:
 	moon.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if tier == "high" else DirectionalLight3D.SHADOW_ORTHOGONAL
 	env.glow_enabled = tier != "low"
 	Look.set_anisotropic(tier != "low")
+	Atmos.apply_quality(get_tree(), tier == "low")
 	for f in get_tree().get_nodes_in_group("fog_band"):
 		f.visible = tier != "low" or int(f.get_meta("fog_index", 0)) % 2 == 0
 	_refresh_edges()
