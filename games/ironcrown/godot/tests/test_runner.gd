@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -7751,6 +7751,104 @@ func test_prepare() -> void:
 	add_child(holder)
 	check(Castle.squad(holder) == 6 and ((holder.get_node("Npc_squad_0") as Npc).lines as Array).has(Castle.SQUAD_LINE_EDRIC), "会开水门的：小队里有人说埃德里克一晚上坐在窗边")
 	holder.free()
+	GameState.new_game()
+
+
+## 4.9a：堤道夜战——入夜备战说定了才摆；你的小队、赫尔曼守石拱、三波攻方；走到守点开打（先存档）；据点规则（6 个人冲过石拱就失守）；过半溃逃就守住；打完写 ch1_causeway
+func causeway_state(hold: String, gate_guard := false) -> void:
+	prepare_state("alric", "persuaded")
+	GameState.set_flag("ch1_hold", hold)
+	GameState.set_flag("ch1_ready")
+	if gate_guard:
+		GameState.set_flag("ch1_gate_guard")
+	GameState.set_stage("ch1_main", "to_causeway")
+	GameState.daypart = "night"
+
+
+func make_causeway() -> Node3D:
+	GameState.pending_load = {"scene": "marsh", "spawn": "castle_gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	return main
+
+
+func test_causeway() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	causeway_state("gap")
+	GameState.set_stage("ch1_main", "prepare")
+	var main := await make_causeway()
+	check(main.battle == null and not CausewayBattle.due(), "还没和赫尔曼说定：堤道上没有仗")
+	await free_main(main)
+	# —— 守断口：摆好了，还没开打
+	causeway_state("gap")
+	main = await make_causeway()
+	var b: Battle = main.battle
+	check(b != null and not b.started and b.player_side == CausewayBattle.DEF and b.sides[CausewayBattle.ATK] == "伊薇特的人", "入夜、上堤道：鹭沼地图上摆好一场仗，攻方是伊薇特的人（选了阿尔里克）")
+	var def := soldiers_of(main, CausewayBattle.DEF)
+	var atk := soldiers_of(main, CausewayBattle.ATK)
+	var herman := def.filter(func(x): return x.display_name == "赫尔曼")
+	check(b.squad.size() == 6 and def.size() == 13 and herman.size() == 1 and herman[0].is_captain and herman[0].guard_post != Vector3.INF, "守方：你的小队 6 人、赫尔曼（队长）和他的 6 个人守石拱")
+	check(atk.size() == 8 and b.waves.size() == 2 and b.side_total(CausewayBattle.ATK) == 29 and b.waves[1].soldiers.any(func(x): return x.display_override == "「芦刀」加斯帕" and x.kind == "captain"),
+		"攻方：先头 8 人在村子那头，主力 14 人、加斯帕和 6 名精兵是后两波（一共 29 人）")
+	check((def + atk).all(func(x): return x.collision_mask & FpController.LAYER_BOUNDARY != 0), "堤道上的兵都撞鹭沼的边墙（不走进深水）")
+	check(b.squad.all(func(x): return x.order == "follow") and atk.all(func(x): return CausewayBattle.t_of(x.global_position) < 15.0), "小队跟着你；先头在堤道村子那头")
+	await physics(30)
+	check(not b.started and not main.in_combat(), "站在堡门前：还没开打（能存档、能走）")
+	check(main.save_game("quick", true), "开打前能存档")
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	check(b.started and main.in_combat() and main.hud.toast_label.text.contains("守住断口"), "走到断口：开打，提示守住断口、按 2 坚守")
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and str(auto.data.scene) == "marsh" and str(auto.data.state.quests.ch1_main.stage) == "to_causeway", "开打前自动存档（倒下读档从这里来）")
+	# —— 窄路：先头沿堤道往前压，不卡在断口两头的墙角；掉进路边泥里的爬回路上
+	var mud_guy: Soldier = atk[7]
+	mud_guy.global_position = MarshLayout.cw3(20.0, 4.2, MarshLayout.MUD_Y + 0.3)
+	var off_of := func(x: Node3D) -> float: return absf((Vector2(x.global_position.x, x.global_position.z) - MarshLayout.CW_START).dot(MarshLayout.CW_SIDE))
+	var t0s: Array = atk.slice(0, 6).map(func(x): return CausewayBattle.t_of(x.global_position))
+	await seconds(4.0)
+	var gained: Array = range(6).map(func(i): return CausewayBattle.t_of(atk[i].global_position) - float(t0s[i]))
+	check(gained.all(func(g): return g > 4.0) and atk.all(func(x): return x.global_position.y > MarshLayout.MUD_Y - 0.3), "先头沿堤道往堡这边压（4 秒走了 %s 米），没人掉进深水" % str(gained.map(func(g): return snappedf(g, 0.1))))
+	check(off_of.call(mud_guy) < 2.0, "掉进路边泥里的兵爬回堤道上（离中线 %.1f 米）" % off_of.call(mud_guy))
+	# —— 据点规则：攻方 6 个人冲过石拱就失守
+	var runners := atk.slice(0, 6)
+	for x in runners:
+		x.global_position = MarshLayout.cw3(CausewayBattle.BREACH_T + 4.0)
+	await seconds(0.6)
+	check(b.finished and b.winner == CausewayBattle.ATK and b.breached.size() == 6, "6 个人冲过石拱：失守（%s）" % b.winner)
+	check(GameState.get_flag("ch1_causeway") == "lost" and GameState.quest_stage("ch1_main") == "after_causeway" and main.hud.toast_label.text.contains("失守"), "写 ch1_causeway = lost，主线推进")
+	await frames(3)
+	auto = Saves.read_slot("auto")
+	check(str(auto.data.state.quests.ch1_main.stage) == "after_causeway", "打完自动存档")
+	await free_main(main)
+	main = await make_causeway()
+	check(main.battle == null, "打过了：再来堤道上没有仗")
+	await free_main(main)
+	# —— 守石拱、分了两个人守水门：小队 4 人；攻方过半倒下就溃逃，守住
+	causeway_state("arch", true)
+	main = await make_causeway()
+	b = main.battle
+	check(b.squad.size() == 4 and CausewayBattle.at_post(MarshLayout.cw3(80.0)) and not CausewayBattle.at_post(MarshLayout.SPAWNS.castle_gate[0]), "分了两个人守水门：小队 4 人；守石拱时走到石拱后面就开打")
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	check(b.started and main.hud.toast_label.text.contains("守住石拱"), "守石拱：开打")
+	atk = soldiers_of(main, CausewayBattle.ATK)
+	for x in atk:
+		x.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": main.player})
+	b.elapsed = CausewayBattle.WAVE2_AT
+	await seconds(0.5)
+	check(b.waves.size() == 1 and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting()).size() == 14, "开打 35 秒：主力 14 人上来")
+	var killed := 0
+	while b.routed == "" and killed < 14:
+		var left := soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting())
+		if left.is_empty():
+			break
+		left[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": main.player})
+		killed += 1
+	await seconds(0.6)
+	check(b.routed == CausewayBattle.ATK and b.waves.is_empty() and b.finished and b.winner == CausewayBattle.DEF, "攻方倒下过半（%d + %d）：剩下的溃逃，加斯帕那波不来了，守住" % [8, killed])
+	check(GameState.get_flag("ch1_causeway") == "held" and main.hud.toast_label.text.contains("守住了"), "写 ch1_causeway = held")
+	await free_main(main)
 	GameState.new_game()
 
 

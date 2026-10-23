@@ -15,6 +15,8 @@ extends Node
 ##   每秒看一次身边 8 米：敌多我少（我方不到对方的三分之二）−3，我方占优（1.5 倍以上）或身边没敌人 +2，同时被两个人打 −3，玩家在身边 6 米 +2（你在稳住他们）；
 ##   士气掉到 15 以下就逃跑或跪地求饶（数值是初版，B.3 试验场里调过一次：队长 −30、崩溃线 20 时，倒一个兵再倒队长就连锁全军溃逃，太快）。一方倒下、求饶、逃跑的人超过这一方总数（含排队的、还没到的援军）的一半：剩下的人全体溃逃，援军不来了，这一方输。
 ##   援军（add_wave）：开打后过 N 秒从指定的地方进场。结束时写旗标 result_flag（玩家这边赢 "won"、输 "lost"）。
+## 4.9a 据点规则（堤道夜战）：breach_side 那一方有 breach_limit 个人「冲过去了」（breach_test 对这个兵返回 true，冲过去一次就算，退回来也不减）就赢。
+## 不在小队的兵也能守一个点（Soldier.guard_post，例如赫尔曼的人守石拱）：只打离守点 guard_r 米以内的敌人，没有对手时回到守点。
 
 signal ended(winner: String)
 signal captain_down(side: String)     # 某一方的队长倒下了（B.3）
@@ -60,6 +62,10 @@ var routed := ""                  # 全体溃逃的那一方
 var waves: Array = []             # 还没到的援军：{side, soldiers, parent, at}
 var elapsed := 0.0                # 开打后过了多久（游戏时间，秒）
 var result_flag := ""             # 结束时写进存档的旗标（第一章起由战斗的剧情设定；试验场不写）
+var breach_side := ""             # 据点规则（4.9a）：这一方冲过去 breach_limit 个人就赢
+var breach_limit := 0
+var breach_test: Callable         # (Soldier) -> bool：这个兵冲过去了吗
+var breached := {}                # 冲过去过的兵（instance id）
 
 
 func _ready() -> void:
@@ -267,10 +273,10 @@ func order(o: String) -> bool:
 	return true
 
 
-## 拴绳：小队的兵只打这个圈里的敌人，[中心, 半径]；空 = 不限（冲锋、不在小队）
+## 拴绳：小队的兵只打这个圈里的敌人，[中心, 半径]；空 = 不限（冲锋、不在小队）；守点的兵（4.9a）只打守点附近的
 func leash(s: Soldier) -> Array:
 	if not s.in_squad:
-		return []
+		return [s.guard_post, s.guard_r] if s.guard_post != Vector3.INF else []
 	if s.order == "follow" and _player() != null:
 		return [player.global_position, FOLLOW_LEASH]
 	if s.order == "hold" and s.anchor != Vector3.INF:
@@ -281,7 +287,7 @@ func leash(s: Soldier) -> Array:
 ## 小队的兵没有对手时该站在哪：跟随 → 玩家身后的队形；坚守 → 坚守点；冲锋 → 没有（null）
 func post_of(s: Soldier) -> Variant:
 	if not s.in_squad:
-		return null
+		return s.guard_post if s.guard_post != Vector3.INF else null
 	if s.order == "follow" and _player() != null:
 		return _follow_slot(s.slot, player)
 	if s.order == "hold" and s.anchor != Vector3.INF:
@@ -291,6 +297,8 @@ func post_of(s: Soldier) -> Variant:
 
 ## 站到位以后面朝哪边：跟随 → 和玩家同一个方向；坚守 → 下令时玩家的朝向
 func post_facing(s: Soldier) -> Vector3:
+	if not s.in_squad and s.guard_post != Vector3.INF:
+		return s.guard_face
 	if s.order == "follow" and _player() != null:
 		var f := -player.global_transform.basis.z
 		f.y = 0.0
@@ -348,20 +356,33 @@ func _physics_process(delta: float) -> void:
 		var r: Array = reserve.pop_front()
 		_deploy(r[0], r[1])
 	_arrive_waves()
+	if breach_limit > 0 and breach_test.is_valid():
+		for s in roster:
+			if is_instance_valid(s) and s.side == breach_side and s.fighting() and not breached.has(s.get_instance_id()) and breach_test.call(s):
+				breached[s.get_instance_id()] = true
+				print("IC_BATTLE breach side=%s n=%d" % [breach_side, breached.size()])
+		if breached.size() >= breach_limit:
+			_finish(breach_side)
+			return
 	var standing := []
 	for side in sides:
 		if side_count(side) > 0 or (side == player_side and _player_fights() and routed != side):
 			standing.append(side)
 	if standing.size() <= 1:
-		finished = true
-		winner = str(standing[0]) if standing.size() == 1 else ""
-		for s in roster:
-			if is_instance_valid(s):
-				s.stand_down()                 # 赢的一方收手、原地站着
-		if result_flag != "":
-			GameState.set_flag(result_flag, ("won" if winner == player_side else "lost") if player_side != "" else winner)
-		print("IC_BATTLE end winner=%s %s secs=%.1f" % [winner if winner != "" else "-", _tally(), (Time.get_ticks_msec() - t_start) / 1000.0])
-		ended.emit(winner)
+		_finish(str(standing[0]) if standing.size() == 1 else "")
+
+
+## 打完了：赢的一方 w（"" = 两边都打光了）
+func _finish(w: String) -> void:
+	finished = true
+	winner = w
+	for s in roster:
+		if is_instance_valid(s):
+			s.stand_down()                 # 赢的一方收手、原地站着
+	if result_flag != "":
+		GameState.set_flag(result_flag, ("won" if winner == player_side else "lost") if player_side != "" else winner)
+	print("IC_BATTLE end winner=%s %s secs=%.1f" % [winner if winner != "" else "-", _tally(), (Time.get_ticks_msec() - t_start) / 1000.0])
+	ended.emit(winner)
 
 
 # ---- 士气（B.3） ----

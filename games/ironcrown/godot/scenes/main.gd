@@ -121,6 +121,13 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
+		if area == "marsh" and _query("causeway") in ["gap", "arch"] and not Engine.has_meta("ic_causeway_param_done"):
+			Engine.set_meta("ic_causeway_param_done", true)  # 截图、冒烟用（4.9a）：?area=marsh&causeway=gap|arch 直接摆好堤道夜战（夜里、主线到「上堤道」、守断口 / 石拱），配 ?cam= 放到守点就开打
+			if not GameState.quest_active("ch1_main"):
+				GameState.start_quest("ch1_main")
+			GameState.set_stage("ch1_main", "to_causeway")
+			GameState.set_flag("ch1_hold", _query("causeway"))
+			GameState.daypart = "night"
 		if area == "castle" and _query("squad") in ["1", "gate"] and not Engine.has_meta("ic_squad_param_done"):
 			Engine.set_meta("ic_squad_param_done", true)     # 截图用（4.8b）：?area=castle&squad=1|gate 直接摆出入夜备战的小队（gate：两个人守水门），只设小队的旗标
 			GameState.set_flag("ch1_ready")
@@ -182,6 +189,8 @@ func _ready() -> void:
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
+	if area == "marsh":
+		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 	var moved := Schedule.apply(world, area)        # NPC 作息（4.6）：这个时段不在这儿的人拿掉、换了站位的挪过去、从别处来的放进来
 	if not moved.is_empty():
 		print("IC_SCHEDULE area=%s daypart=%s moved=%s" % [area, GameState.daypart, ",".join(moved)])
@@ -276,7 +285,7 @@ func _ready() -> void:
 			if not battle_bench: hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
 		battle.wave_arrived.connect(func(side: String, count: int):
 			if not battle_bench: hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
-		if battle_autostart and _query("perf") != "1":       # 基准测试自己开打（不存档）
+		if area == "battle" and battle_autostart and _query("perf") != "1":       # 试验场开局 3 秒自己开打；基准测试自己开打（不存档）；堤道夜战走到守点才开打（4.9a）
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
 					start_battle())
@@ -1669,6 +1678,11 @@ func give_order(o: String) -> bool:
 func _on_battle_ended(winner: String) -> void:
 	if battle_bench:
 		return
+	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档
+		hud.toast(CausewayBattle.finish(winner == battle.player_side), 8.0)
+		print("IC_CAUSEWAY end winner=%s result=%s" % [winner, GameState.get_flag("ch1_causeway", "")])
+		save_game.call_deferred("auto", true)
+		return
 	var refresh := "（刷新页面再来一次）"
 	if winner == "":
 		hud.toast("两边都打光了。" + refresh, 6.0)
@@ -1796,6 +1810,16 @@ func _process(delta: float) -> void:
 	if hint_left <= 0.0 and not tip_queue.is_empty():
 		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
+	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):
+		start_battle()                                  # 堤道夜战（4.9a）：走到和赫尔曼定下的守点，开打（先自动存档）
+		hud.toast("◆ 他们上来了！守住%s——按 2 让小队原地坚守（触屏「令」）。" % ("断口" if CausewayBattle.hold() == "gap" else "石拱"), 5.0)
+		if _query("cwskip").is_valid_float():         # 截图用（4.9a）：快进到开打后第 N 秒（软件渲染的浏览器一秒只有一两帧）
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+	if Engine.time_scale > 1.0 and battle != null and is_instance_valid(battle) and (battle.finished or battle.elapsed >= float(_query("cwskip"))):
+		Engine.time_scale = 1.0
+		Engine.max_physics_steps_per_frame = 8
+		print("IC_CAUSEWAY skipped_to=%.0f" % battle.elapsed)
 	GameState.playtime += delta
 	var pos := player.global_position
 	_clear_fog_at(pos)

@@ -46,6 +46,17 @@ var in_squad := false             # 归玩家指挥（B.2）
 var order := ""                   # 小队命令：follow / hold / charge（不在小队为空）
 var slot := 0                     # 小队里的序号（排队形用）
 var anchor := Vector3.INF         # 坚守点
+var guard_post := Vector3.INF     # 不在小队的兵守的点（4.9a：赫尔曼的人守石拱）；INF = 不守点
+var guard_r := 6.0                # 只打离守点这么近的敌人
+var guard_face := Vector3.FORWARD # 守着时面朝哪边
+var extra_mask := 0               # 另加的碰撞层（4.9a：堤道上的兵也撞鹭沼的边墙，不走进深水）
+## 窄路（4.9a 堤道）：一条直路的中线（lane_a 起点、lane_dir 方向）和半宽。设了就几乎不往侧面绕圈（在 4 米宽的路上绕圈会被挤到路边、
+## 卡在断口两头的墙角里），离中线超过 lane_half 就往回走（掉进路边泥里的也爬回来）
+var lane_dir := Vector3.ZERO
+var lane_a := Vector3.ZERO
+var lane_half := 1.6
+const LANE_CIRCLE := 0.12         # 窄路上绕圈的幅度（乘在原来的 circle_side 上）
+const LANE_PULL := 1.2            # 离中线太远时往回走多快（米 / 秒）
 var marker: Label3D               # 头顶的 ◆
 var want_speed := 0.0             # 这一帧想走多快（走向位置时）
 var blocked_t := 0.0
@@ -102,6 +113,10 @@ func _ready() -> void:
 		collision_layer = 1                   # 不在第 4 层「可受击」：玩家的剑扫不到
 	if in_squad:
 		_build_marker()
+	collision_mask |= extra_mask
+	if lane_dir != Vector3.ZERO:
+		data = data.duplicate()
+		data.circle_side = float(data.circle_side) * LANE_CIRCLE
 
 
 ## 编进玩家的小队（Battle.add_to_squad 调用；进场景之前之后都行）
@@ -300,7 +315,18 @@ func _retarget(force: bool) -> void:
 
 ## 小队的兵该站的位置（B.2）；没有就是 null（冲锋、不在小队）
 func post() -> Variant:
-	return battle.post_of(self) if battle and in_squad else null
+	return battle.post_of(self) if battle else null
+
+
+## 窄路上：离中线太远就往回拉（v 是这一帧想走的速度）
+func _lane(v: Vector3) -> Vector3:
+	if lane_dir == Vector3.ZERO:
+		return v
+	var rel := _flat(global_position - lane_a)
+	var off := rel - lane_dir * rel.dot(lane_dir)
+	if off.length() <= lane_half:
+		return v
+	return v - off.normalized() * LANE_PULL
 
 
 ## 走到自己的位置；到了就面朝队形的方向站好
@@ -352,8 +378,8 @@ func _combat(delta: float) -> Vector3:
 		if p != null:
 			return _go_post(delta, p)
 	if is_archer and foe() != null:
-		return _archer(delta)
-	return super._combat(delta)
+		return _lane(_archer(delta))
+	return _lane(super._combat(delta))
 
 
 ## 弓手（B.4）：太近往后退、太远往前走、距离合适就站定拉弓放箭
