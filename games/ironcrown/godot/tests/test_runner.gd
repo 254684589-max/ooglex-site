@@ -7747,6 +7747,7 @@ func test_prepare() -> void:
 	# —— 小队的话：埃德里克会开门时，有一个兵提一句他
 	prepare_state("alric", "helped")
 	GameState.set_flag("ch1_ready")
+	GameState.set_stage("ch1_main", "to_causeway")         # 小队只在「上堤道」时列队（4.10a：打完仗、天亮以后不再列队）
 	var holder := Node3D.new()
 	add_child(holder)
 	check(Castle.squad(holder) == 6 and ((holder.get_node("Npc_squad_0") as Npc).lines as Array).has(Castle.SQUAD_LINE_EDRIC), "会开水门的：小队里有人说埃德里克一晚上坐在窗边")
