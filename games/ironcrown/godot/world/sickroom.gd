@@ -21,6 +21,12 @@ const BRAZIER := Vector3(-2.1, 0, 1.6)            # 西南角的炭盆
 const MARTA := ["marta", "玛尔塔", Vector3(1.0, 0, -1.2), 2.84, "5a5248"]               # 床边，面朝门口
 const OSRIC := ["osric", "奥斯瑞克", Vector3(-0.5, BED_TOP, -0.6), PI, "d0c8b8"]        # 躺在床上，头朝北墙
 const OSRIC_LINES := ["（他睡着，呼吸又浅又慢）", "（他的手指在被子上动了一下，又不动了）", "（他嘴里含糊地说了句什么，听不清）"]
+const OSRIC_GONE := ["（他闭着眼睛，不再动了）"]
+## 守住了的天亮（4.10a）：拿戒指的继承人站在床尾（西边），面朝床
+const HEIR_AT := {"alric": "3a3a48", "ivette": "5a3a2e"}
+const HEIR_POS := Vector3(-1.9, 0, 0.3)
+const HEIR_YAW := -0.6
+const HEIR_LINES := ["（守了一夜，眼睛熬得通红，没出声）", "他要跟你说话。我在外面等。……不，我就在这儿。"]
 const SPAWNS := {"front": [Vector3(0, 0, 1.8), 0.0]}
 const VIEW_NAMES := ["进门看病房", "床边（玛尔塔）", "床前（家主）", "门内对着出口"]
 const VIEWS := [
@@ -61,6 +67,16 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	osric.rotation.y = float(OSRIC[3])
 	parent.add_child(osric)
 	wake(parent)
+	if GameState.quest_stage("ch1_main") == "dawn_held" or (GameState.has_flag("ch1_osric_farewell") and str(GameState.get_flag("ch1_causeway", "")) == "held"):
+		var heir := str(GameState.get_flag("valen_heir", ""))       # 守住了（4.10a）：拿戒指的继承人守在床尾
+		if heir in HEIR_AT:
+			var h := Npc.make("阿尔里克" if heir == "alric" else "伊薇特", HEIR_LINES, Color(str(HEIR_AT[heir])))
+			h.name = "Npc_heir"
+			h.position = HEIR_POS
+			h.rotation.y = HEIR_YAW
+			parent.add_child(h)
+	if GameState.has_flag("ch1_osric_farewell"):
+		osric.lines = OSRIC_GONE                          # 走了（4.10a）
 	var s: Array = SPAWNS.front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 

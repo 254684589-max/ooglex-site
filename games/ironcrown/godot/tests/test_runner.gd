@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -4682,6 +4682,7 @@ func test_troops() -> void:
 
 ## 60 人性能（路线图 B.5，TECH.md 4.10）：占位外观合并成两份网格、站着不动不做碰撞移动、跪定了停算、远处动作降频、军阵基准测试
 func test_armyperf() -> void:
+	Soldier.models_on = false              # 这一组量的是 B.5 合并好的占位胶囊（B.6 的真人外观另在 uniforms 组）
 	GameState.new_game(7)
 	var main := await make_battle()
 	var b: Battle = main.battle
@@ -4748,6 +4749,7 @@ func test_armyperf() -> void:
 	else:
 		check(false, "人物模型没加载成功，测不了动作降频")
 	await free_main(main)
+	Soldier.models_on = true
 	# 军阵基准测试（真机用）：你不参战，直接开打（不存档），两个机位各测一次，结果表显示在画面上
 	GameState.new_game(7)
 	var main2 := await make_battle()
@@ -7678,6 +7680,548 @@ func test_heir() -> void:
 	GameState.new_game()
 
 
+## 4.8b：入夜备战——找赫尔曼定守断口还是石拱，他给你六个人；埃德里克提醒过水门的能分两个人去守；会开水门的，入夜后再找他一次；天黑透、小队列队、自动存档
+func prepare_state(heir: String, edric: String) -> void:
+	heir_state("deliver")
+	GameState.set_flag("ch1_edric", edric)
+	GameState.set_flag("osric_awake")
+	GameState.set_flag("osric_ring_given")
+	GameState.set_flag("valen_heir", heir)
+	Chapter1.heir_chosen(heir)
+	GameState.set_stage("ch1_main", "prepare")
+	GameState.daypart = "dusk"
+
+
+func test_prepare() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 选伊薇特、埃德里克提醒过水门（warned）、泥炭工站在她这边：守断口，分两个人守水门
+	prepare_state("ivette", "helped")
+	GameState.set_flag("ch1_peat", "ivette")
+	check(GameState.get_flag("ch1_water_gate") == "warned", "前提：水门 warned")
+	var r := DialogueRunner.new()
+	r.start("blackheron", "herman")
+	check(r.node_id == "plan" and r.text().contains("断口") and r.text().contains("石拱") and r.text().contains("泥炭"), "备战时找赫尔曼：讲断口和石拱；托宾的人捎了话（泥炭垛）")
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_squad_0") == null and main.world.get_node_or_null("Npc_herman") != null, "说定以前：堡门里头还没有小队；赫尔曼在（黄昏在大厅门口）")
+	check(await fl_say(main, "blackheron", "herman", ["守断口。", "埃德里克说，水门那道栅年久失修，夜里只有一个老头守着。", "分两个人去守水门。", "堤道上见。"]), "和赫尔曼说定：守断口、分两个人守水门")
+	await frames(3)
+	check(GameState.get_flag("ch1_hold") == "gap" and GameState.has_flag("ch1_gate_guard") and GameState.daypart == "night" and GameState.quest_stage("ch1_main") == "to_causeway",
+		"ch1_hold = gap、ch1_gate_guard、天黑透了、主线推进到「上堤道」（%s / %s）" % [GameState.daypart, GameState.quest_stage("ch1_main")])
+	var squad: Array = range(6).map(func(i): return main.world.get_node_or_null("Npc_squad_%d" % i))
+	check(squad.all(func(n): return n != null), "六个卫兵当场摆出来")
+	var at_gate := squad.filter(func(n): return n != null and (n as Node3D).position.z < 0.0)
+	check(at_gate.size() == 2 and (squad[0] as Node3D).position.distance_to(Castle.SPAWNS.gate[0]) < 6.0, "两个站到水门里面，四个在堡门里头列队")
+	await physics(2)
+	var stuck := squad.filter(func(n): return n != null and not stands_clear(n)).map(func(n): return str(n.name))
+	check(stuck.is_empty(), "小队都站在地上，没卡在桶、车、墙里（%s）" % str(stuck))
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and str(auto.data.state.quests.ch1_main.stage) == "to_causeway" and str(auto.data.state.get("daypart", "")) == "night", "入夜自动存档（存的是「上堤道」、夜里）")
+	r.start("blackheron", "herman")
+	check(r.node_id == "ready", "再找赫尔曼：堤道上见")
+	main = await fl_go(main, "hall")
+	main = await fl_go(main, "castle")
+	check(main.world.get_node_or_null("Npc_squad_5") != null and Castle.squad(main.world) == 0, "进出大厅回来：小队还在，不重摆")
+	await free_main(main)
+	# —— 选阿尔里克、伊薇特答应过退亲（埃德里克会开水门 opened）：守石拱；没有分人守水门的选项；入夜再找埃德里克
+	prepare_state("alric", "helped")
+	check(GameState.get_flag("ch1_water_gate") == "opened", "前提：水门 opened")
+	r.start("blackheron", "herman")
+	check(not r.text().contains("泥炭"), "泥炭工没站过来的：不提泥炭垛")
+	r.choose(r.options().map(func(o): return str(o.text)).find("守石拱。"))
+	check(r.text().contains("石拱") and not r.options().any(func(o): return str(o.text).begins_with("埃德里克说")), "守石拱；没人提醒过水门，不能分人去守（%s）" % str(r.options().map(func(o): return o.text)))
+	r.start("hall", "edric_hall")
+	check(r.node_id == "after_heir", "天还没黑：埃德里克还是那句「由不得我」")
+	check(say_runner("herman", ["守石拱。", "天快黑了。走吧。", "堤道上见。"], "blackheron") == "" and GameState.daypart == "night" and GameState.get_flag("ch1_hold") == "arch" and not GameState.has_flag("ch1_gate_guard"), "说定：守石拱，人都跟着你")
+	GameState.checks["edric_gate"] = false
+	check(say_runner("edric_hall", ["今晚这道墙要是丢了，霜渡镇也保不住。你袖子里是什么？"], "hall") == "gate_hid" and GameState.get_flag("ch1_water_gate") == "opened" and GameState.has_flag("edric_gate_tried"), "入夜找埃德里克：没说动，他把东西藏起来（还是 opened）")
+	r.start("hall", "edric_hall")
+	check(r.node_id == "after_heir", "只能试一次")
+	prepare_state("alric", "helped")
+	say_runner("herman", ["守石拱。", "天快黑了。走吧。", "堤道上见。"], "blackheron")
+	GameState.checks["edric_gate"] = true
+	check(say_runner("edric_hall", ["今晚这道墙要是丢了，霜渡镇也保不住。你袖子里是什么？"], "hall") == "gate_talked" and GameState.get_flag("ch1_water_gate") == "kept" and GameState.has_item("water_gate_key"),
+		"说动了：他交出水门的钥匙（kept）")
+	r.start("hall", "edric_hall")
+	check(r.node_id == "gate_after", "再找他：别让他们过来")
+	# —— 小队的话：埃德里克会开门时，有一个兵提一句他
+	prepare_state("alric", "helped")
+	GameState.set_flag("ch1_ready")
+	GameState.set_stage("ch1_main", "to_causeway")         # 小队只在「上堤道」时列队（4.10a：打完仗、天亮以后不再列队）
+	var holder := Node3D.new()
+	add_child(holder)
+	check(Castle.squad(holder) == 6 and ((holder.get_node("Npc_squad_0") as Npc).lines as Array).has(Castle.SQUAD_LINE_EDRIC), "会开水门的：小队里有人说埃德里克一晚上坐在窗边")
+	holder.free()
+	GameState.new_game()
+
+
+## 4.9a：堤道夜战——入夜备战说定了才摆；你的小队、赫尔曼守石拱、三波攻方；走到守点开打（先存档）；据点规则（6 个人冲过石拱就失守）；过半溃逃就守住；打完写 ch1_causeway
+func causeway_state(hold: String, gate_guard := false) -> void:
+	prepare_state("alric", "persuaded")
+	GameState.set_flag("ch1_hold", hold)
+	GameState.set_flag("ch1_ready")
+	if gate_guard:
+		GameState.set_flag("ch1_gate_guard")
+	GameState.set_stage("ch1_main", "to_causeway")
+	GameState.daypart = "night"
+
+
+func make_causeway() -> Node3D:
+	GameState.pending_load = {"scene": "marsh", "spawn": "castle_gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	return main
+
+
+func test_causeway() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	causeway_state("gap")
+	GameState.set_stage("ch1_main", "prepare")
+	var main := await make_causeway()
+	check(main.battle == null and not CausewayBattle.due(), "还没和赫尔曼说定：堤道上没有仗")
+	await free_main(main)
+	# —— 守断口：摆好了，还没开打
+	causeway_state("gap")
+	main = await make_causeway()
+	var b: Battle = main.battle
+	check(b != null and not b.started and b.player_side == CausewayBattle.DEF and b.sides[CausewayBattle.ATK] == "伊薇特的人", "入夜、上堤道：鹭沼地图上摆好一场仗，攻方是伊薇特的人（选了阿尔里克）")
+	var def := soldiers_of(main, CausewayBattle.DEF)
+	var atk := soldiers_of(main, CausewayBattle.ATK)
+	var herman := def.filter(func(x): return x.display_name == "赫尔曼")
+	check(b.squad.size() == 6 and def.size() == 13 and herman.size() == 1 and herman[0].is_captain and herman[0].guard_post != Vector3.INF, "守方：你的小队 6 人、赫尔曼（队长）和他的 6 个人守石拱")
+	check(atk.size() == 8 and b.waves.size() == 3 and b.side_total(CausewayBattle.ATK) == 33 and b.waves[1].soldiers.any(func(x): return x.display_override == "「芦刀」加斯帕" and x.kind == "captain"),
+		"攻方：先头 8 人在村子那头，主力 14 人、加斯帕和 6 名精兵是后两波；没人提醒过水门，主力到时 4 个人从水门摸进来（一共 33 人）")
+	check((def + atk).all(func(x): return x.collision_mask & FpController.LAYER_BOUNDARY != 0), "堤道上的兵都撞鹭沼的边墙（不走进深水）")
+	check(b.squad.all(func(x): return x.order == "follow") and atk.all(func(x): return CausewayBattle.t_of(x.global_position) < 15.0), "小队跟着你；先头在堤道村子那头")
+	await physics(30)
+	check(not b.started and not main.in_combat(), "站在堡门前：还没开打（能存档、能走）")
+	check(main.save_game("quick", true), "开打前能存档")
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	check(b.started and main.in_combat() and main.hud.toast_label.text.contains("守住断口"), "走到断口：开打，提示守住断口、按 2 坚守")
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and str(auto.data.scene) == "marsh" and str(auto.data.state.quests.ch1_main.stage) == "to_causeway", "开打前自动存档（倒下读档从这里来）")
+	# —— 窄路：先头沿堤道往前压，不卡在断口两头的墙角；掉进路边泥里的爬回路上
+	var mud_guy: Soldier = atk[7]
+	mud_guy.global_position = MarshLayout.cw3(20.0, 4.2, MarshLayout.MUD_Y + 0.3)
+	var off_of := func(x: Node3D) -> float: return absf((Vector2(x.global_position.x, x.global_position.z) - MarshLayout.CW_START).dot(MarshLayout.CW_SIDE))
+	var t0s: Array = atk.slice(0, 6).map(func(x): return CausewayBattle.t_of(x.global_position))
+	await seconds(4.0)
+	var gained: Array = range(6).map(func(i): return CausewayBattle.t_of(atk[i].global_position) - float(t0s[i]))
+	check(gained.all(func(g): return g > 4.0) and atk.all(func(x): return x.global_position.y > MarshLayout.MUD_Y - 0.3), "先头沿堤道往堡这边压（4 秒走了 %s 米），没人掉进深水" % str(gained.map(func(g): return snappedf(g, 0.1))))
+	check(off_of.call(mud_guy) < 2.0, "掉进路边泥里的兵爬回堤道上（离中线 %.1f 米）" % off_of.call(mud_guy))
+	# —— 据点规则：攻方 6 个人冲过石拱就失守
+	var runners := atk.slice(0, 6)
+	for x in runners:
+		x.global_position = MarshLayout.cw3(CausewayBattle.BREACH_T + 4.0)
+	await seconds(0.6)
+	check(b.finished and b.winner == CausewayBattle.ATK and b.breached.size() == 6, "6 个人冲过石拱：失守（%s）" % b.winner)
+	check(GameState.get_flag("ch1_causeway") == "lost" and GameState.quest_stage("ch1_main") == "dawn_lost" and main.hud.toast_label.text.contains("失守"), "写 ch1_causeway = lost，主线推进到天亮（失守）")
+	await frames(3)
+	auto = Saves.read_slot("auto")
+	check(str(auto.data.state.quests.ch1_main.stage) == "dawn_lost", "打完自动存档")
+	await free_main(main)
+	main = await make_causeway()
+	check(main.battle == null, "打过了：再来堤道上没有仗")
+	await free_main(main)
+	# —— 守石拱、分了两个人守水门：小队 4 人；攻方过半倒下就溃逃，守住
+	causeway_state("arch", true)
+	main = await make_causeway()
+	b = main.battle
+	check(b.squad.size() == 4 and CausewayBattle.at_post(MarshLayout.cw3(80.0)) and not CausewayBattle.at_post(MarshLayout.SPAWNS.castle_gate[0]), "分了两个人守水门：小队 4 人；守石拱时走到石拱后面就开打")
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	check(b.started and main.hud.toast_label.text.contains("守住石拱"), "守石拱：开打")
+	atk = soldiers_of(main, CausewayBattle.ATK)
+	for x in atk:
+		x.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": main.player})
+	b.elapsed = CausewayBattle.WAVE2_AT
+	await seconds(0.5)
+	var flank := soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting() and x.has_meta("flank"))
+	check(b.waves.size() == 1 and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting()).size() == 18 and flank.size() == 4, "开打 35 秒：主力 14 人上来，水门摸进来 4 个（分了人守水门，可没人提醒过——守的人不知道该守）")
+	check(flank.all(func(x): return CausewayBattle.t_of(x.global_position) > CausewayBattle.BREACH_T) and b.breached.is_empty() and main.hud.toast_label.text.contains("水门那边摸进来"), "水门摸进来的人在堡门前（堡门背后有敌人），不算「冲过石拱」")
+	var killed := 0
+	while b.routed == "" and killed < 14:
+		var left := soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting())
+		if left.is_empty():
+			break
+		left[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": main.player})
+		killed += 1
+	await seconds(0.6)
+	check(b.routed == CausewayBattle.ATK and b.waves.is_empty() and b.finished and b.winner == CausewayBattle.DEF, "攻方倒下过半（%d + %d）：剩下的溃逃，加斯帕那波不来了，守住" % [8, killed])
+	check(GameState.get_flag("ch1_causeway") == "held" and main.hud.toast_label.text.contains("守住了"), "写 ch1_causeway = held")
+	await free_main(main)
+	# —— 4.9b 水门：交出了钥匙不开；提醒过又分了人守，挡回去；提醒了没分人、没人提醒，都摸进来
+	var gates := []
+	for row: Array in [["kept", false], ["warned", true], ["warned", false], ["unknown", true], ["opened", false]]:
+		GameState.set_flag("ch1_water_gate", row[0])
+		if row[1]:
+			GameState.set_flag("ch1_gate_guard")
+		else:
+			GameState.flags.erase("ch1_gate_guard")
+		gates.append(CausewayBattle.gate_state())
+	check(gates == ["shut", "guarded", "breach", "breach", "breach"], "水门：kept 不开、warned + 分人守挡回去，其余都摸进来（%s）" % str(gates))
+	# —— 4.9b 选伊薇特、收编了奥弗、泥炭工站过来、守断口、提醒过水门也分了人：奥弗杀出来、泥炭垛点火、水门挡回去
+	prepare_state("ivette", "helped")
+	GameState.set_flag("ch1_outlaws", "ally")
+	GameState.set_flag("ch1_peat", "ivette")
+	GameState.set_flag("ch1_hold", "gap")
+	GameState.set_flag("ch1_gate_guard")
+	GameState.set_flag("ch1_ready")
+	GameState.set_stage("ch1_main", "to_causeway")
+	GameState.daypart = "night"
+	main = await make_causeway()
+	b = main.battle
+	var cw: CausewayBattle = main.world.get_node("Causeway")
+	check(b.sides[CausewayBattle.ATK] == "阿尔里克的人" and cw.peat_fire and CausewayBattle.gate_state() == "guarded" and cw.get_node_or_null("PeatStacks") != null, "选了伊薇特：攻方是阿尔里克的人；断口边上码着泥炭垛，这一仗会点火；水门有人守")
+	var ow: Array = b.waves.filter(func(w): return w.side == CausewayBattle.DEF)
+	check(ow.size() == 1 and ow[0].soldiers.size() == 5 and ow[0].soldiers[0].display_override == "「灰手」奥弗" and ow[0].soldiers.all(func(x): return CausewayBattle.off_of(x.position) > CausewayBattle.REED_OFF),
+		"收编了奥弗：主力到时他带 4 个人从芦苇里杀出来（藏在堤道外面）")
+	check(cw.torches.size() == CausewayBattle.TORCHES and cw.torches.all(func(e): return (e[0] as Node3D).visible and CausewayBattle.t_of((e[0] as Node3D).position) < -20.0), "远处的火把线在村子那头的沼地上")
+	# 芦苇挡视线：堤道外面的人远了看不见
+	var a0: Soldier = soldiers_of(main, CausewayBattle.ATK)[0]
+	var probe := Node3D.new()
+	main.world.add_child(probe)
+	probe.global_position = a0.global_position + Vector3(MarshLayout.CW_SIDE.x, 0, MarshLayout.CW_SIDE.y) * 5.0 + Vector3(MarshLayout.CW_DIR.x, 0, MarshLayout.CW_DIR.y) * 8.0
+	var far_hidden: bool = not b.see_test.call(a0, probe)
+	probe.global_position = a0.global_position + Vector3(MarshLayout.CW_SIDE.x, 0, MarshLayout.CW_SIDE.y) * 4.0
+	var near_seen: bool = b.see_test.call(a0, probe)
+	probe.global_position = a0.global_position + Vector3(MarshLayout.CW_DIR.x, 0, MarshLayout.CW_DIR.y) * 20.0
+	check(far_hidden and near_seen and b.see_test.call(a0, probe), "芦苇挡视线：堤道外面 5 米、往前 8 米的人看不见；4 米内看得见；路上 20 米外的照样看得见")
+	probe.queue_free()
+	# 泥里走得慢
+	var mud_v: Vector3 = a0._lane(Vector3(2, 0, 0))
+	a0.global_position = MarshLayout.cw3(14.0, 4.5, MarshLayout.MUD_Y)
+	await physics(2)
+	check(a0._lane(Vector3(2, 0, 0)).x < mud_v.x * 0.7, "泥里走得慢（%.2f → %.2f）" % [mud_v.x, a0._lane(Vector3(2, 0, 0)).x])
+	# 开打：小队坚守两人一排，顺着堤道朝村子排
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	main.give_order("hold")
+	var anchors: Array = b.squad.map(func(x): return x.anchor)
+	check(b.squad.size() == 4 and anchors.all(func(p): return CausewayBattle.off_of(p) <= 1.2) and CausewayBattle.t_of(anchors[0]) < CausewayBattle.t_of(main.player.global_position) and CausewayBattle.t_of(anchors[3]) < CausewayBattle.t_of(anchors[0]) - 1.0,
+		"坚守：两人一排，顺着堤道朝村子排（都在路面上）")
+	# 先头冲到断口前：泥炭工点火，火墙拦住堤道
+	var v0: Soldier = soldiers_of(main, CausewayBattle.ATK)[1]
+	var m0: float = v0.morale
+	v0.global_position = MarshLayout.cw3(CausewayBattle.PEAT_TRIGGER_T + 1.0)
+	await frames(3)
+	check(cw.peat_lit and is_instance_valid(cw.barrier) and v0.morale <= m0 - 10.0 and main.hud.toast_label.text.contains("泥炭垛"), "先头冲到断口前：泥炭垛点着了，火边的人慌（士气 %.0f → %.0f）" % [m0, v0.morale])
+	var sp := main.get_world_3d().direct_space_state
+	var q := PhysicsRayQueryParameters3D.create(MarshLayout.cw3(CausewayBattle.PEAT_T - 2.0, 0.0, 1.2), MarshLayout.cw3(CausewayBattle.PEAT_T + 2.0, 0.0, 1.2), FpController.LAYER_BOUNDARY)
+	check(not sp.intersect_ray(q).is_empty(), "火墙挡住堤道（边墙那一层：兵和你都过不去）")
+	cw.burn_left = 0.01
+	await frames(3)
+	check(not is_instance_valid(cw.barrier) or cw.barrier.is_queued_for_deletion(), "火小了：火墙撤掉")
+	# 主力到：奥弗杀出来、水门挡回去；火把线熄了
+	b.elapsed = CausewayBattle.WAVE2_AT + 4.0
+	await seconds(0.5)
+	var outl := soldiers_of(main, CausewayBattle.DEF).filter(func(x): return x.display_override == "「灰手」奥弗")
+	check(outl.size() == 1 and outl[0].is_inside_tree() and outl[0].fighting() and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.has_meta("flank")).is_empty(), "主力到了：奥弗带人杀出来；水门那边没人摸进来")
+	check(cw.torches.all(func(e): return not (e[0] as Node3D).visible), "主力上了堤道：远处的火把线熄了（就是他们）")
+	await free_main(main)
+	GameState.set_flag("ch1_outlaws", "ally")
+	GameState.dead["ferry_offer"] = [0, 0, 0]
+	GameState.flags.erase("ch1_causeway")
+	GameState.set_stage("ch1_main", "to_causeway")
+	main = await make_causeway()
+	ow = main.battle.waves.filter(func(w): return w.side == CausewayBattle.DEF)
+	check(ow.size() == 1 and ow[0].soldiers[0].display_override == "无旗者的头目", "奥弗死在渡口的：是无旗者的头目带人来")
+	await free_main(main)
+	GameState.new_game()
+
+
+## 4.10a：天亮 · 家主临终——打完过一会儿天亮：守住从堡门回庭院、失守在芦苇里醒来从水门摸进去（庭院有人巡，被看见就押进病房）；
+## 家主说出「铁冠是老王自己交出去的」，喝过白芦根汤的多说「双钥港」，按借据的下落说一句，让你去烽燧线，然后走了
+func test_dawn() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	causeway_state("gap")
+	var main := await make_causeway()
+	var b: Battle = main.battle
+	main.player.global_position = CausewayBattle.hold_point() + Vector3(0, 0.3, 0)
+	await frames(3)
+	for x in soldiers_of(main, CausewayBattle.ATK).slice(0, 6):
+		x.global_position = MarshLayout.cw3(CausewayBattle.BREACH_T + 4.0)
+	await seconds(0.6)
+	check(b.finished and GameState.quest_stage("ch1_main") == "dawn_lost", "堤道失守：主线到「天亮（失守）」")
+	await seconds(7.0)
+	var pl: Dictionary = GameState.pending_load
+	check(main.leaving and str(pl.get("scene", "")) == "castle" and str(pl.get("spawn", "")) == "water_gate" and GameState.daypart == "dawn", "过一会儿天亮（第二天清晨）：从水门进黑鹭堡（%s）" % str(pl))
+	main = await reload_main(main)
+	await physics(3)
+	var occ: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return not e is Soldier)
+	check(main.area == "castle" and GameState.daypart == "dawn" and main.world.get_node_or_null("Npc_herman") == null and main.world.get_node_or_null("Npc_gate_guard_in") == null
+		and main.world.get_node_or_null("Npc_water_keeper") != null and occ.size() == 3 and occ.all(func(e): return e.display_name == "伊薇特的人"), "庭院：赫尔曼和守门的不在了，守水门的老头还在；伊薇特的人巡着（%d 个）" % occ.size())
+	check(main.hud.toast_label.text.contains("芦苇里醒过来") and main.world.get_node_or_null("Npc_squad_0") == null, "到了说一句：在芦苇里醒过来、从水门钻进来；昨晚的小队不再列队")
+	var valen := GameState.get_rep("valen")
+	(occ[0] as Enemy)._enter(Enemy.State.ALERT)
+	await frames(2)
+	check(GameState.get_flag("ch1_sneak") == "caught" and GameState.get_rep("valen") == valen - 10 and main.hud.toast_label.text.contains("站住"), "被看见：两个卫兵扭住你（瓦伦家 −10）")
+	await seconds(3.0)
+	check(main.leaving and str(GameState.pending_load.get("scene", "")) == "sickroom", "押进病房")
+	main = await reload_main(main)
+	await physics(2)
+	check(main.area == "sickroom" and main.hud.toast_label.text.contains("让他进来"), "家主坚持要见你")
+	var r := DialogueRunner.new()
+	r.start("sickroom", "osric")
+	check(r.node_id == "dawn_caught" and r.text().contains("伊薇特跟在后面"), "家主：让他留下——新家主（伊薇特）从此不信你")
+	check(await fl_say(main, "sickroom", "osric", ["我在。您说。", "交出去？交给了谁？", "……", "您要我做什么？", "（替他把被子掖好）"]), "听家主说完")
+	await frames(2)
+	check(GameState.has_flag("ch1_osric_farewell") and GameState.quest_stage("ch1_main") == "farewell", "家主走了：主线到「去烽燧线」")
+	r.start("sickroom", "osric")
+	check(r.node_id == "gone", "再看他：不再动了")
+	await free_main(main)
+	# —— 结尾的钩子、白芦根、借据
+	causeway_state("arch")
+	GameState.set_stage("ch1_main", "dawn_held")
+	GameState.set_flag("ch1_causeway", "held")
+	r.start("sickroom", "osric")
+	check(r.node_id == "dawn_held" and r.text().contains("阿尔里克站在床尾"), "守住了：阿尔里克（拿戒指的）站在床尾")
+	r.choose(0)
+	check(r.text().contains("铁冠没有被偷。是老王自己交出去的"), "结尾的钩子：铁冠没有被偷，是老王自己交出去的")
+	r.choose(0)
+	check(r.node_id == "who_none" and not r.text().contains("双钥港"), "没喝白芦根汤：想不起来交给了谁")
+	GameState.set_flag("ch1_herb")
+	GameState.set_flag("ch1_debt", "kept")
+	r.start("sickroom", "osric")
+	r.choose(0)
+	r.choose(0)
+	check(r.node_id == "who_herb" and r.text().contains("双钥港"), "喝过白芦根汤：交给了一户靠海的人家——双钥港")
+	r.choose(0)
+	check(r.text().contains("留着") and r.text().contains("证据"), "借据还在身上：留着，将来是证据")
+	r.choose(0)
+	check(r.text().contains("烽燧线") and GameState.quest_stage("ch1_main") == "farewell", "去北边的烽燧线找当年另一个侍从")
+	# —— 守住了：天亮从堡门回来，赫尔曼在，没人巡；病房里阿尔里克守在床尾
+	causeway_state("arch")
+	GameState.set_flag("ch1_causeway", "held")
+	GameState.set_stage("ch1_main", "dawn_held")
+	GameState.daypart = "dawn"
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_herman") != null and get_tree().get_nodes_in_group("enemy").is_empty(), "守住了：庭院里赫尔曼在，没人巡")
+	main = await fl_go(main, "sickroom")
+	await physics(2)
+	var heir := main.world.get_node_or_null("Npc_heir") as Npc
+	check(main.area == "sickroom" and heir != null and heir.display_name == "阿尔里克", "病房：阿尔里克守在床尾")
+	await free_main(main)
+	# —— 失守、没被看见：摸进病房
+	causeway_state("gap")
+	GameState.set_flag("ch1_causeway", "lost")
+	GameState.set_stage("ch1_main", "dawn_lost")
+	GameState.daypart = "dawn"
+	GameState.pending_load = {"scene": "castle", "spawn": "water_gate", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	main = await fl_go(main, "sickroom")
+	await physics(2)
+	check(GameState.get_flag("ch1_sneak") == "unseen" and main.hud.toast_label.text.contains("没人看见"), "没被看见就摸进了病房")
+	r.start("sickroom", "osric")
+	check(r.node_id == "dawn_lost" and r.text().contains("只有玛尔塔"), "病房里只有玛尔塔，家主在等你")
+	main = await fl_go(main, "castle")
+	await physics(2)
+	check(get_tree().get_nodes_in_group("enemy").is_empty(), "摸进去以后再出来：不再巡了")
+	await free_main(main)
+	GameState.new_game()
+
+
+## 4.10b：长眠者第一次露面、第一章完——家主走了以后回芦栈村，一个说过话的村民闭着眼往北走；章末画面「第二章 · 熄灭的烽燧」，按旗标写回顾
+func test_sleeper() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# 是谁：说过信使的渡工 > 说过堤道的托宾 > 补网的女人
+	GameState.new_game(1)
+	var picks := [Sleeper.who()[0]]
+	GameState.set_flag("heard_causeway")
+	picks.append(Sleeper.who()[0])
+	GameState.set_flag("heard_envoy")
+	picks.append(Sleeper.who()[0])
+	check(picks == ["netter", "tobin", "boatman"], "是谁：谁都没说过话是补网的女人，说过堤道是托宾，说过信使是渡工（%s）" % str(picks))
+	# 家主走了：回到芦栈村
+	causeway_state("arch")
+	GameState.set_flag("ch1_causeway", "held")
+	GameState.set_flag("ch1_herb")
+	GameState.set_flag("ch1_outlaws", "ally")
+	GameState.set_flag("heard_envoy")
+	GameState.set_flag("ch1_osric_farewell")
+	GameState.set_stage("ch1_main", "farewell")
+	GameState.daypart = "dawn"
+	var main := await make_main_marsh()
+	var sl: Sleeper = main.sleeper
+	check(sl != null and main.world.get_node_or_null("Npc_boatman") == null and sl.npc.display_name == "渡工" and not sl.walking, "回到芦栈村：渡工不在码头上了，站在客栈东边的栈道上")
+	await physics(20)
+	check(not sl.walking and sl.npc.position == Sleeper.START, "你没走近：他不动")
+	main.player.global_position = Sleeper.START + Vector3(10, 0.3, 0)
+	await frames(3)
+	check(sl.walking and GameState.get_flag("ch1_sleeper") == "boatman" and main.hud.toast_label.text.contains("叫不醒"), "走近了：他闭着眼睛从你身边走过去，叫不醒")
+	await seconds(3.0)
+	check(sl.npc.position.x < Sleeper.START.x - 1.5, "他顺着栈道往西走（走了 %.1f 米）" % (Sleeper.START.x - sl.npc.position.x))
+	await seconds(Sleeper.CHAPTER_END_AFTER - 2.5)
+	check(GameState.has_flag("ch1_done") and GameState.quest_stage("ch1_main") == "ch1_end" and main.ending_panel.visible and main.ending_panel.title.text == "第二章 · 熄灭的烽燧" and main.ending_panel.header.text == "第一章「黑鹭堡」完",
+		"过一会儿：章末画面「第一章「黑鹭堡」完 · 第二章 · 熄灭的烽燧 · 开发中」")
+	var rc: String = main.ending_panel.recap.text
+	var hk: String = main.ending_panel.seal.text
+	check(rc.contains("印戒交给了阿尔里克") and rc.contains("堤道守住了") and rc.contains("奥弗") and hk.contains("老王自己交出去的") and hk.contains("双钥港") and hk.contains("没有醒来"),
+		"回顾按旗标写（印戒、堤道、奥弗），钩子带上双钥港和长眠者（%s / %s）" % [rc, hk])
+	check(not main.ending_panel.continue_btn.visible and main.ending_panel.back_btn.text == "在晨雾里再走走", "第二章还不能玩：只有「在晨雾里再走走」「从头再来」")
+	main.ending_panel.close()
+	await frames(2)
+	check(not get_tree().paused, "关掉画面接着走")
+	var auto := Saves.read_slot("auto")
+	check(str(auto.data.state.quests.ch1_main.stage) == "ch1_end", "章末自动存档")
+	await free_main(main)
+	main = await make_main_marsh()
+	check(main.sleeper == null and main.world.get_node_or_null("Npc_boatman") == null, "以后再来：他走了，码头上没人")
+	await free_main(main)
+	# 失守、被押进病房的回顾
+	GameState.set_flag("ch1_causeway", "lost")
+	GameState.set_flag("ch1_sneak", "caught")
+	check(Chapter1.recap().contains("新家主从此不信你") and Chapter1.recap().contains("伊薇特入主黑鹭堡"), "失守、被押进去的回顾：伊薇特入主黑鹭堡，新家主不信你")
+	GameState.new_game()
+
+
+## B.6a：军阵的兵换上真人外观——按兵种挑打扮、阵营色、胸前布带、铁盔、手里的兵器和盾；近处模型远处胶囊；动作跟着状态走
+func test_uniforms() -> void:
+	check(Looks.validate().is_empty(), "looks.json 的 soldiers 一节通过校验（兵种、预设、发型都认得）")
+	GameState.new_game(7)
+	var main := await make_battle()
+	var b: Battle = main.battle
+	var white := soldiers_of(main, "white")
+	var black := soldiers_of(main, "black")
+	var all_s: Array = white + black
+	check(all_s.all(func(x): return x.dressed != null and x.model != null and x.model.loaded), "两边 %d 个兵都穿上了真人外观" % all_s.size())
+	var by := func(list: Array, k: String) -> Soldier:
+		for x in list:
+			if x.kind == k:
+				return x
+		return null
+	var lv: Soldier = by.call(white, "levy")
+	var sw: Soldier = by.call(white, "soldier")
+	var ar: Soldier = by.call(white, "archer")
+	check(str(lv.model.parts[0]).ends_with("Outfit_Male_Peasant.gltf") and str(sw.model.parts[0]).ends_with("Outfit_Male_Ranger.gltf"), "民兵穿平民的衣服，剑兵穿游侠那套")
+	var hood := func(x: Soldier) -> bool: return x.dressed.merged != null and Array(x.dressed.merged.get_meta("parts")).has("Male_Ranger_Head_Hood") if x.dressed.merged else (x.model.scene_root.find_child("Male_Ranger_Head_Hood", true, false) as Node3D).visible
+	check(hood.call(ar) and not hood.call(sw), "弓手戴着兜帽，剑兵摘了")
+	var tw := str(sw.model.look.tint.get("MI_Ranger", ""))
+	var tb := str((by.call(black, "soldier") as Soldier).model.look.tint.get("MI_Ranger", ""))
+	check(tw != "" and tb != "" and tw != tb, "外衣按阵营染色（白带 %s、黑带 %s）" % [tw, tb])
+	var props := func(x: Soldier) -> Array: return x.model.find_children("Prop_*", "", true, false).map(func(n): return str(n.name))
+	var sh: Soldier = by.call(white, "shield")
+	var sp: Soldier = by.call(white, "spear")
+	check(props.call(sw).has("Prop_sword") and props.call(lv).has("Prop_club") and props.call(sp).has("Prop_spear") and props.call(ar).has("Prop_bow") and props.call(sh).has("Prop_shield") and not props.call(sw).has("Prop_shield"),
+		"手里的东西：剑、棍、长枪、弓；盾兵左手一面圆盾（%s）" % str(props.call(sh)))
+	var helmets := all_s.filter(func(x): return x.model.skeleton.find_children("*", "BoneAttachment3D", false, false).any(func(a): return a.bone_name == "Head"))
+	var cap: Soldier = captain_of(white)
+	check(cap.model.skeleton.find_children("*", "BoneAttachment3D", false, false).any(func(a): return a.bone_name == "Head") and helmets.size() > 2 and helmets.size() < all_s.size(), "队长戴铁盔；一部分兵戴（%d / %d）" % [helmets.size(), all_s.size()])
+	await physics(20)
+	var cam := main.get_viewport().get_camera_3d()
+	var near: Array = all_s.filter(func(x): return x.dressed.is_near())
+	var nearest: Array = all_s.duplicate()
+	nearest.sort_custom(func(a, c): return a.global_position.distance_to(cam.global_position) < c.global_position.distance_to(cam.global_position))
+	var swap_ok: bool = all_s.all(func(x): return x.dressed.is_near() != x.look.visible and x.model.visible == x.dressed.is_near())
+	check(near.size() >= 1 and near.size() <= SoldierLook.MAX_NEAR and nearest[0].dressed.is_near() and swap_ok,
+		"离镜头最近的兵画真人（%d 个，最多 %d 个、%.0f 米内），其余画合并好的胶囊；画真人的时候胶囊藏起来" % [near.size(), SoldierLook.MAX_NEAR, SoldierLook.MODEL_FAR])
+	var crowd := all_s.duplicate()
+	for x in crowd:
+		x.global_position = cam.global_position + Vector3(randf_range(-4, 4), -1.6, -6.0)
+	await physics(20)
+	check(all_s.filter(func(x): return x.dressed.is_near()).size() == SoldierLook.MAX_NEAR, "%d 个兵全挤在镜头前：也只画 %d 个真人（绘制调用有上限）" % [all_s.size(), SoldierLook.MAX_NEAR])
+	check(all_s.all(func(x): return x.body.find_children("*", "MeshInstance3D", true, false).size() == 2), "占位胶囊照旧是两份网格（B.5 的绘制调用不变）")
+	# 动作：站着持剑；出招；倒下；跪地求饶（要看动作的几个先换成真人，军阵先不排）
+	b.look_t = 1e9
+	for x in [sw, sp, lv]:
+		x.dressed.set_near(true)
+	await frames(3)
+	check(sw.model.role in ["idle_armed", "walk", "run"], "开打前：持剑站着（%s）" % sw.model.role)
+	b.start()
+	sw._enter(Enemy.State.COMBAT)
+	sw.attack_kind = "light"
+	sw.action = "windup"
+	sw.action_t = 0.0
+	await frames(3)
+	check(sw.model.playing() in ["Sword_Regular_A", "Sword_Regular_B"], "剑兵起手：播轻击（%s）" % sw.model.playing())
+	sp._enter(Enemy.State.COMBAT)
+	sp.action = "windup"
+	sp.action_t = 0.0
+	await frames(3)
+	check(sp.model.playing() == "Sword_Dash", "长枪兵出招：往前突刺（%s）" % sp.model.playing())
+	lv.take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": black[0]})
+	await frames(3)
+	check(lv.model.role in ["death", "kneel_fix"], "民兵倒下或跪地求饶：%s（%s）" % [lv.model.role, lv.state_name()])
+	await free_main(main)
+	Soldier.models_on = false
+	GameState.new_game(7)
+	main = await make_battle()
+	check(soldiers_of(main, "white").all(func(x): return x.dressed == null), "关掉（基准测试比较用）：还是胶囊")
+	await free_main(main)
+	Soldier.models_on = true
+
+
+## B.6b：少画几次（布带 / 铁盔 / 兵器 / 盾各压成一份，衣服、头、头发合成一块蒙皮网格）；弓手拉弓的姿势；军阵以外的敌人也穿上
+func test_uniforms2() -> void:
+	SoldierLook.merge_on = false
+	GameState.new_game(7)
+	var main := await make_battle()
+	var raw := soldiers_of(main, "white").map(func(x): x.dressed.set_near(true); return x.dressed.draw_surfaces())
+	await free_main(main)
+	SoldierLook.merge_on = true
+	GameState.new_game(7)
+	main = await make_battle()
+	var b: Battle = main.battle
+	b.look_t = 1e9
+	var white := soldiers_of(main, "white")
+	var merged := white.map(func(x): x.dressed.set_near(true); return x.dressed.draw_surfaces())
+	var avg := func(a: Array) -> float: return float(a.reduce(func(s, v): return s + v, 0)) / a.size()
+	check(white.all(func(x): return x.dressed.merged != null and x.dressed.merged.skin.get_bind_count() > 10) and avg.call(merged) < avg.call(raw) * 0.7,
+		"每个兵少画几次：合并前平均 %.1f 次、合并后 %.1f 次（%s）" % [avg.call(raw), avg.call(merged), str(merged)])
+	var sw: Soldier = white.filter(func(x): return x.kind == "soldier")[0]
+	await frames(4)
+	var head := sw.model.skeleton.get_bone_global_pose(sw.model.skeleton.find_bone("Head")).origin
+	check(head.y > 1.1 and head.y < 1.9 and sw.dressed.merged.visible and Array(sw.dressed.merged.get_meta("parts")).size() >= 3, "合并以后网格挂在同一副骨架上（头在 %.2f 米高，合了 %d 块）" % [head.y, Array(sw.dressed.merged.get_meta("parts")).size()])
+	# 弓手：弓在左手；拉弓时左臂伸向前
+	var ar: Soldier = white.filter(func(x): return x.kind == "archer")[0]
+	var lh := ar.model.skeleton.get_node_or_null("HandL")
+	check(ar.dressed.bow != null and lh != null and lh.find_child("Prop_bow", true, false) != null, "弓手左手拿弓，骨架上有拉弓的修改器")
+	var sk := ar.model.skeleton
+	var hand_l := sk.get_node("HandL") as Node3D          # 骨头挂件跟着修改器以后的姿势走（get_bone_global_pose 是动作本身的姿势）
+	var fwd := func() -> float: return (hand_l.global_position - ar.global_position).dot(-ar.global_transform.basis.z)
+	await frames(4)
+	var before: float = fwd.call()
+	b.start()
+	ar._enter(Enemy.State.COMBAT)
+	ar.action = "draw"
+	await seconds(0.6)
+	ar.action = "draw"
+	await frames(3)
+	var after: float = fwd.call()
+	check(ar.dressed.bow.influence > 0.8 and after > before + 0.15, "拉弓：左手伸到身前（%.2f → %.2f 米）" % [before, after])
+	await free_main(main)
+	# 军阵以外的敌人：哨卡的无旗者穿上了；营地对峙说崩了，换成的敌人和原来那个人穿同一身
+	GameState.new_game(1)
+	GameState.pending_load = {"scene": "birch", "spawn": "north", "player": {}}
+	main = await make_main(false)
+	await physics(3)
+	var outlaws: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return not e is Soldier)
+	check(not outlaws.is_empty() and outlaws.all(func(e): return e.outfit != null and e.outfit.is_near() and not e.body.visible), "桦林哨卡的无旗者穿上了真人外观（%d 个），占位身子藏起来" % outlaws.size())
+	await free_main(main)
+	ch1_state("deliver")
+	GameState.flags.erase("offer_left")
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_main(false)
+	await physics(2)
+	var offer := main.world.get_node_or_null("Npc_offer_camp") as Npc
+	var npc_parts: Array = offer.look_model.parts.duplicate() if offer and offer.look_model else []
+	main.start_encounter(MarshLayout.CAMP_ENCOUNTER, "")
+	await frames(3)
+	var boss: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return e.display_name == "「灰手」奥弗")
+	check(not npc_parts.is_empty() and boss.size() == 1 and boss[0].outfit != null and boss[0].outfit.model.parts == npc_parts, "营地对峙说崩了：奥弗换成敌人，还是原来那一身")
+	await free_main(main)
+	GameState.new_game()
+
+
 ## A.2a：NPC 换上真人模型（data/looks.json）
 func test_looks() -> void:
 	# —— 头只留脖子以上（2026-10-23：只按高度切时 T 姿势的两肩和整条胳膊也留着，从衣服里戳出来）
@@ -7770,7 +8314,7 @@ func test_looks() -> void:
 	await physics(2)
 	var offer := main.world.get_node_or_null("Npc_offer_camp") as Npc
 	var tobin := main.world.get_node_or_null("Npc_tobin") as Npc
-	check(offer != null and offer.look_model == null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人照旧是胶囊（敌人换装另做）")
+	check(offer != null and offer.look_model != null and tobin != null and tobin.look_model != null, "鹭沼：托宾穿上了；营地里能打起来的那伙人也穿上了（B.6b：开打时换成的敌人穿同一身）")
 	var stacker := main.world.get_node_or_null("Npc_peat_stacker") as Npc
 	var cutter := main.world.get_node_or_null("Npc_peat_cutter") as Npc
 	check(stacker.look_model.role == "kneel_fix" and cutter.look_model.role == "chop" and cutter.look_model.grip.find_child("Prop_axe", true, false) != null, "泥炭场：一个跪着码垛、一个抡斧头挖")

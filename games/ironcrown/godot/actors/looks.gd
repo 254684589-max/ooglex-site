@@ -109,6 +109,17 @@ static func validate() -> Array:
 		for m in pres[k].get("tex", {}):
 			if not ResourceLoader.exists(DIR + str(pres[k].tex[m]) + ".png"):
 				errors.append("预设 %s：没有贴图 %s" % [k, pres[k].tex[m]])
+	var sol: Dictionary = data().get("soldiers", {})                  # B.6：军阵的兵
+	for k in sol.get("kinds", {}):
+		if not Enemy.types().has(k):
+			errors.append("兵种 %s 不在 enemies.json 里" % k)
+		for pre in sol.kinds[k]:
+			if not pres.has(str(pre)):
+				errors.append("兵种 %s：预设 %s 不认识" % [k, pre])
+	for hs in sol.get("hair", []):
+		for n in hs:
+			if not ResourceLoader.exists(DIR + str(n) + ".gltf"):
+				errors.append("兵：没有发型 %s" % n)
 	var roles: Dictionary = CharacterModel.load_map().get("roles", {})
 	var everyone: Dictionary = (data().get("people", {}) as Dictionary).duplicate()
 	everyone["主角"] = player()

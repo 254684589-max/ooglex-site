@@ -15,11 +15,14 @@ extends Node
 ##   每秒看一次身边 8 米：敌多我少（我方不到对方的三分之二）−3，我方占优（1.5 倍以上）或身边没敌人 +2，同时被两个人打 −3，玩家在身边 6 米 +2（你在稳住他们）；
 ##   士气掉到 15 以下就逃跑或跪地求饶（数值是初版，B.3 试验场里调过一次：队长 −30、崩溃线 20 时，倒一个兵再倒队长就连锁全军溃逃，太快）。一方倒下、求饶、逃跑的人超过这一方总数（含排队的、还没到的援军）的一半：剩下的人全体溃逃，援军不来了，这一方输。
 ##   援军（add_wave）：开打后过 N 秒从指定的地方进场。结束时写旗标 result_flag（玩家这边赢 "won"、输 "lost"）。
+## 4.9a 据点规则（堤道夜战）：breach_side 那一方有 breach_limit 个人「冲过去了」（breach_test 对这个兵返回 true，冲过去一次就算，退回来也不减）就赢。
+## 不在小队的兵也能守一个点（Soldier.guard_post，例如赫尔曼的人守石拱）：只打离守点 guard_r 米以内的敌人，没有对手时回到守点。
 
 signal ended(winner: String)
 signal captain_down(side: String)     # 某一方的队长倒下了（B.3）
 signal routed_side(side: String)      # 某一方全体溃逃（B.3）
 signal wave_arrived(side: String, count: int)
+signal wave_note(text: String)          # 带说明的援军到了（4.9b：奥弗从芦苇里杀出、水门摸进来人），HUD 用这句话代替「来了 N 个援军」
 
 const MAX_ACTIVE := 60            # 同时活着、在打的兵（双方合计，不含玩家）
 const CHECK_STEP := 0.25          # 多久检查一次名额与胜负（秒）
@@ -49,6 +52,7 @@ var winner := ""
 var aim_of := {}                  # 兵的 instance id → 它盯着的目标的 instance id
 var aimed := {}                   # 目标的 instance id → 被几个兵盯着
 var check_t := 0.0
+var look_t := 0.0
 var t_start := 0
 var player: FpController
 var squad: Array = []             # 归玩家指挥的兵（B.2）
@@ -60,6 +64,14 @@ var routed := ""                  # 全体溃逃的那一方
 var waves: Array = []             # 还没到的援军：{side, soldiers, parent, at}
 var elapsed := 0.0                # 开打后过了多久（游戏时间，秒）
 var result_flag := ""             # 结束时写进存档的旗标（第一章起由战斗的剧情设定；试验场不写）
+var breach_side := ""             # 据点规则（4.9a）：这一方冲过去 breach_limit 个人就赢
+var breach_limit := 0
+var breach_test: Callable         # (Soldier) -> bool：这个兵冲过去了吗
+var breached := {}                # 冲过去过的兵（instance id）
+var line_cols := LINE             # 坚守队形每排几个人（4.9b：堤道窄，两人一排）
+var rank_cols := RANK             # 跟随队形每排几个人
+var hold_facing := Vector3.ZERO   # 坚守队形朝哪边排（4.9b：堤道上顺着路朝村子排，不看玩家朝哪边）；ZERO = 按玩家的朝向
+var see_test: Callable            # (兵, 目标) -> bool：看得见吗（4.9b：芦苇挡视线）；不设 = 都看得见
 
 
 func _ready() -> void:
@@ -197,13 +209,15 @@ func pick_target(s: Soldier) -> Node3D:
 			continue
 		if not lc.is_empty() and _flat_dist(o.global_position, lc[0]) > lc[1]:
 			continue
+		if see_test.is_valid() and not see_test.call(s, o):
+			continue
 		var sc := _score(s, o, pos)
 		if o == s.target:
 			cur_score = sc
 		if sc < best_score:
 			best = o
 			best_score = sc
-	if _player_fights() and s.side != player_side and (lc.is_empty() or _flat_dist(player.global_position, lc[0]) <= lc[1]):
+	if _player_fights() and s.side != player_side and (lc.is_empty() or _flat_dist(player.global_position, lc[0]) <= lc[1]) and (not see_test.is_valid() or see_test.call(s, player)):
 		var sc := _score(s, player, pos)
 		if player == s.target:
 			cur_score = sc
@@ -255,6 +269,8 @@ func order(o: String) -> bool:
 		hold_dir = -p.global_transform.basis.z
 		hold_dir.y = 0.0
 		hold_dir = hold_dir.normalized() if hold_dir.length() > 0.01 else Vector3.FORWARD
+	if hold_facing != Vector3.ZERO:
+		hold_dir = hold_facing
 	for s in squad:
 		if not is_instance_valid(s) or not s.fighting():
 			continue
@@ -267,10 +283,10 @@ func order(o: String) -> bool:
 	return true
 
 
-## 拴绳：小队的兵只打这个圈里的敌人，[中心, 半径]；空 = 不限（冲锋、不在小队）
+## 拴绳：小队的兵只打这个圈里的敌人，[中心, 半径]；空 = 不限（冲锋、不在小队）；守点的兵（4.9a）只打守点附近的
 func leash(s: Soldier) -> Array:
 	if not s.in_squad:
-		return []
+		return [s.guard_post, s.guard_r] if s.guard_post != Vector3.INF else []
 	if s.order == "follow" and _player() != null:
 		return [player.global_position, FOLLOW_LEASH]
 	if s.order == "hold" and s.anchor != Vector3.INF:
@@ -281,7 +297,7 @@ func leash(s: Soldier) -> Array:
 ## 小队的兵没有对手时该站在哪：跟随 → 玩家身后的队形；坚守 → 坚守点；冲锋 → 没有（null）
 func post_of(s: Soldier) -> Variant:
 	if not s.in_squad:
-		return null
+		return s.guard_post if s.guard_post != Vector3.INF else null
 	if s.order == "follow" and _player() != null:
 		return _follow_slot(s.slot, player)
 	if s.order == "hold" and s.anchor != Vector3.INF:
@@ -291,6 +307,8 @@ func post_of(s: Soldier) -> Variant:
 
 ## 站到位以后面朝哪边：跟随 → 和玩家同一个方向；坚守 → 下令时玩家的朝向
 func post_facing(s: Soldier) -> Vector3:
+	if not s.in_squad and s.guard_post != Vector3.INF:
+		return s.guard_face
 	if s.order == "follow" and _player() != null:
 		var f := -player.global_transform.basis.z
 		f.y = 0.0
@@ -300,18 +318,19 @@ func post_facing(s: Soldier) -> Vector3:
 
 ## 跟随队形：玩家身后，每排 RANK 人，排距 1.6 米
 func _follow_slot(i: int, p: Node3D) -> Vector3:
-	var col := i % RANK
-	var row := i / RANK
-	var local := Vector3((col - (RANK - 1) * 0.5) * 1.6, 0.0, 2.2 + row * 1.6)      # 本地 +Z 是身后
+	var col := i % rank_cols
+	var row := i / rank_cols
+	var local := Vector3((col - (rank_cols - 1) * 0.5) * 1.6, 0.0, 2.2 + row * 1.6)      # 本地 +Z 是身后
 	return p.global_position + Basis(Vector3.UP, p.global_rotation.y) * local
 
 
-## 坚守队形：玩家下令时站的地方前面 2 米，横着排成一线，每排 LINE 人
+## 坚守队形：玩家下令时站的地方前面 2 米，横着排，每排 line_cols 人（试验场一字横排 6 人；堤道两人一排，顺着路往后排）
 func _hold_slot(i: int, p: Node3D) -> Vector3:
-	var col := i % LINE
-	var row := i / LINE
-	var local := Vector3((col - (LINE - 1) * 0.5) * 1.5, 0.0, -2.0 - row * 1.5)     # 本地 -Z 是前面
-	return p.global_position + Basis(Vector3.UP, p.global_rotation.y) * local
+	var col := i % line_cols
+	var row := i / line_cols
+	var local := Vector3((col - (line_cols - 1) * 0.5) * 1.5, 0.0, -2.0 - row * 1.5)     # 本地 -Z 是前面
+	var yaw := p.global_rotation.y if hold_facing == Vector3.ZERO else atan2(-hold_facing.x, -hold_facing.z)
+	return p.global_position + Basis(Vector3.UP, yaw) * local
 
 
 ## 记下兵 s 现在盯着谁（t = null：不盯了）；可以重复调用
@@ -337,6 +356,10 @@ func aimed_at(t: Node) -> int:
 
 
 func _physics_process(delta: float) -> void:
+	look_t -= delta
+	if look_t <= 0.0:
+		look_t = CHECK_STEP
+		SoldierLook.budget(roster, get_viewport().get_camera_3d())       # B.6：离镜头最近的十来个兵画真人，其余画胶囊（开打前也排）
 	if not started or finished:
 		return
 	elapsed += delta
@@ -348,20 +371,33 @@ func _physics_process(delta: float) -> void:
 		var r: Array = reserve.pop_front()
 		_deploy(r[0], r[1])
 	_arrive_waves()
+	if breach_limit > 0 and breach_test.is_valid():
+		for s in roster:
+			if is_instance_valid(s) and s.side == breach_side and s.fighting() and not breached.has(s.get_instance_id()) and breach_test.call(s):
+				breached[s.get_instance_id()] = true
+				print("IC_BATTLE breach side=%s n=%d" % [breach_side, breached.size()])
+		if breached.size() >= breach_limit:
+			_finish(breach_side)
+			return
 	var standing := []
 	for side in sides:
 		if side_count(side) > 0 or (side == player_side and _player_fights() and routed != side):
 			standing.append(side)
 	if standing.size() <= 1:
-		finished = true
-		winner = str(standing[0]) if standing.size() == 1 else ""
-		for s in roster:
-			if is_instance_valid(s):
-				s.stand_down()                 # 赢的一方收手、原地站着
-		if result_flag != "":
-			GameState.set_flag(result_flag, ("won" if winner == player_side else "lost") if player_side != "" else winner)
-		print("IC_BATTLE end winner=%s %s secs=%.1f" % [winner if winner != "" else "-", _tally(), (Time.get_ticks_msec() - t_start) / 1000.0])
-		ended.emit(winner)
+		_finish(str(standing[0]) if standing.size() == 1 else "")
+
+
+## 打完了：赢的一方 w（"" = 两边都打光了）
+func _finish(w: String) -> void:
+	finished = true
+	winner = w
+	for s in roster:
+		if is_instance_valid(s):
+			s.stand_down()                 # 赢的一方收手、原地站着
+	if result_flag != "":
+		GameState.set_flag(result_flag, ("won" if winner == player_side else "lost") if player_side != "" else winner)
+	print("IC_BATTLE end winner=%s %s secs=%.1f" % [winner if winner != "" else "-", _tally(), (Time.get_ticks_msec() - t_start) / 1000.0])
+	ended.emit(winner)
 
 
 # ---- 士气（B.3） ----
@@ -443,10 +479,10 @@ func morale_tick(s: Soldier, dt: float) -> void:
 # ---- 援军（B.3） ----
 
 ## 开打后过 delay 秒，这一批兵从各自摆好的位置进场（进场时也受同屏名额管）
-func add_wave(side: String, soldiers: Array, parent: Node3D, delay: float) -> void:
+func add_wave(side: String, soldiers: Array, parent: Node3D, delay: float, note := "") -> void:
 	for s in soldiers:
 		s.battle = self
-	waves.append({"side": side, "soldiers": soldiers, "parent": parent, "at": delay})
+	waves.append({"side": side, "soldiers": soldiers, "parent": parent, "at": delay, "note": note})
 
 
 func _arrive_waves() -> void:
@@ -457,8 +493,11 @@ func _arrive_waves() -> void:
 		waves.remove_at(i)
 		for s in w.soldiers:
 			enlist(s, w.parent)
-		print("IC_BATTLE wave side=%s count=%d" % [w.side, w.soldiers.size()])
-		wave_arrived.emit(w.side, w.soldiers.size())
+		print("IC_BATTLE wave side=%s count=%d%s" % [w.side, w.soldiers.size(), (" note=" + str(w.note)) if str(w.note) != "" else ""])
+		if str(w.note) != "":
+			wave_note.emit(str(w.note))
+		elif not w.soldiers.is_empty():
+			wave_arrived.emit(w.side, w.soldiers.size())
 
 
 func _tally() -> String:

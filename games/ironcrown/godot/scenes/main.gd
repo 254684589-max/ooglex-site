@@ -43,7 +43,8 @@ var perf_overlay: PerfOverlay
 var dialogue: DialoguePanel
 var quest_panel: QuestPanel
 var bench_results: Array = []
-var battle_bench := false         # 军阵基准测试在跑（B.5）：军阵的提示不弹出来，免得盖住结果表
+var battle_bench := false
+const DAWN_DELAY := 6.0          # 堤道夜战打完多久天亮、换到黑鹭堡（4.10a）         # 军阵基准测试在跑（B.5）：军阵的提示不弹出来，免得盖住结果表
 
 var env: Environment
 var world: Node3D
@@ -92,6 +93,7 @@ var encounter: Encounter        # 正在打的对峙（3.6，渡口的「灰手�
 var dialogue_npc: Node3D        # 最近一次对话的说话人（对话里说好打一架时，和他打）
 var nav := {}                   # 这个区域的导航网格（3.4）：{region, ms, polygons}；不烘焙的区域为空
 var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
+var sleeper: Sleeper            # 芦栈村那个夜里没醒的人（4.10b）；没有为空
 var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
@@ -110,6 +112,7 @@ func _ready() -> void:
 	GameState.pending_tips = []
 	GameState.pending_goto = {}                     # 上一个场景没走成的「带你去别处」不带过来（审查）
 	if OS.has_feature("web"):
+		Soldier.models_on = _query("models") != "0"      # 基准测试比较用（B.6）：?models=0 兵还是占位胶囊
 		if _query("test") == "1":
 			use_test_range = true
 		elif _query("test") == "2":
@@ -121,6 +124,42 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
+		if area == "marsh" and _query("causeway") in ["gap", "arch"] and not Engine.has_meta("ic_causeway_param_done"):
+			Engine.set_meta("ic_causeway_param_done", true)  # 截图、冒烟用（4.9a）：?area=marsh&causeway=gap|arch 直接摆好堤道夜战（夜里、主线到「上堤道」、守断口 / 石拱），配 ?cam= 放到守点就开打
+			if not GameState.quest_active("ch1_main"):
+				GameState.start_quest("ch1_main")
+			GameState.set_stage("ch1_main", "to_causeway")
+			GameState.set_flag("ch1_hold", _query("causeway"))
+			GameState.daypart = "night"
+			if _query("cwset") == "ivette":                # 4.9b：选了伊薇特、泥炭工站过来、收编了奥弗（看泥炭垛点火和奥弗杀出来）
+				GameState.flags["valen_heir"] = "ivette"
+				GameState.set_flag("ch1_peat", "ivette")
+				GameState.set_flag("ch1_outlaws", "ally")
+		if area == "marsh" and _query("farewell") == "1" and not Engine.has_meta("ic_farewell_param_done"):
+			Engine.set_meta("ic_farewell_param_done", true)  # 截图用（4.10b）：?area=marsh&farewell=1 家主走了以后的清晨（守住了、选了阿尔里克、喝过白芦根汤、渡工说过信使）
+			if not GameState.quest_active("ch1_main"):
+				GameState.start_quest("ch1_main")
+			GameState.flags["valen_heir"] = "alric"
+			for f in ["ch1_herb", "heard_envoy", "ch1_osric_farewell"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch1_causeway", "held")
+			GameState.set_stage("ch1_main", "farewell")
+			GameState.daypart = "dawn"
+		if area in ["castle", "sickroom"] and _query("dawn") in ["held", "lost"] and not Engine.has_meta("ic_dawn_param_done"):
+			Engine.set_meta("ic_dawn_param_done", true)      # 截图用（4.10a）：?area=castle|sickroom&dawn=held|lost 直接到打完仗的清晨（选了阿尔里克）
+			if not GameState.quest_active("ch1_main"):
+				GameState.start_quest("ch1_main")
+			GameState.flags["valen_heir"] = "alric"
+			GameState.set_flag("ch1_causeway", _query("dawn"))
+			GameState.set_flag("osric_awake")
+			GameState.set_flag("heirs_heard")
+			GameState.set_stage("ch1_main", "dawn_held" if _query("dawn") == "held" else "dawn_lost")
+			GameState.daypart = "dawn"
+		if area == "castle" and _query("squad") in ["1", "gate"] and not Engine.has_meta("ic_squad_param_done"):
+			Engine.set_meta("ic_squad_param_done", true)     # 截图用（4.8b）：?area=castle&squad=1|gate 直接摆出入夜备战的小队（gate：两个人守水门），只设小队的旗标
+			GameState.set_flag("ch1_ready")
+			if _query("squad") == "gate":
+				GameState.set_flag("ch1_gate_guard")
 		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）；玩家自己存过设置就听玩家的
 		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 			Settings.reduced_motion = true
@@ -177,6 +216,9 @@ func _ready() -> void:
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
+	if area == "marsh":
+		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
+		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
 	var moved := Schedule.apply(world, area)        # NPC 作息（4.6）：这个时段不在这儿的人拿掉、换了站位的挪过去、从别处来的放进来
 	if not moved.is_empty():
 		print("IC_SCHEDULE area=%s daypart=%s moved=%s" % [area, GameState.daypart, ",".join(moved)])
@@ -235,6 +277,9 @@ func _ready() -> void:
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
+	if area == "sickroom" and GameState.quest_stage("ch1_main") == "dawn_lost" and not GameState.has_flag("ch1_sneak"):
+		GameState.set_flag("ch1_sneak", "unseen")       # 失守以后（4.10a）：没被看见就摸进了病房
+		Engine.set_meta("ic_arrive_note", "你闪进病房，反手掩上门——没人看见。")
 	if arrived_by != "":
 		_arrive()
 	_story_progress()
@@ -258,6 +303,9 @@ func _ready() -> void:
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done"):
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
 		open_travel_map.call_deferred(near_travel_point())
+	if area == "castle":
+		for e in Castle.occupy(world):                  # 失守以后的天亮（4.10a）：另一位继承人的人巡着庭院
+			e.state_changed.connect(_on_occupier_state)
 	battle = world.get_node_or_null("Battle") as Battle
 	if battle:
 		battle.ended.connect(_on_battle_ended)
@@ -271,7 +319,8 @@ func _ready() -> void:
 			if not battle_bench: hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
 		battle.wave_arrived.connect(func(side: String, count: int):
 			if not battle_bench: hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
-		if battle_autostart and _query("perf") != "1":       # 基准测试自己开打（不存档）
+		battle.wave_note.connect(func(text: String): hud.toast(text, 4.0))
+		if area == "battle" and battle_autostart and _query("perf") != "1":       # 试验场开局 3 秒自己开打；基准测试自己开打（不存档）；堤道夜战走到守点才开打（4.9a）
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
 					start_battle())
@@ -910,6 +959,9 @@ func _arrive() -> void:
 		hud.toast("%s\n%s" % [Chapters.name_of(GameState.chapter), area_title()], 3.0)
 	else:
 		hud.toast(area_title(), 2.0)
+	if Engine.has_meta("ic_arrive_note"):                # 剧情跟着换区域说的一句话（4.10a：天亮、被押进病房）
+		hud.toast(str(Engine.get_meta("ic_arrive_note")), 6.0)
+		Engine.remove_meta("ic_arrive_note")
 	print("IC_ARRIVE area=%s spawn=%s chapter=%d zone=%s" % [area, arrived_by, GameState.chapter, AreaMap.zone_at(area, player_xz())])
 	if GameState.chapter >= 1 and area == "frostford" and not GameState.has_flag("ch1_victor_done"):
 		show_tip("ch1_victor", true)     # 第一章开场（4.3）：维克托就在眼前
@@ -1290,6 +1342,10 @@ func _on_dialogue_closed() -> void:
 	GameState.pending_daypart = ""
 	if pd != "":
 		set_daypart(pd)                                     # 剧情推进到别的时段（4.2）
+	if area == "castle" and Castle.squad(world) > 0:          # 入夜备战说定了（4.8b）：小队当场在堡门里头列队，自动存档
+		hud.toast("入夜了。你的人在堡门里头等你。", 4.0)
+		save_game.call_deferred("auto", true)
+		print("IC_SQUAD hold=%s gate_guard=%s water_gate=%s" % [GameState.get_flag("ch1_hold", ""), GameState.has_flag("ch1_gate_guard"), GameState.get_flag("ch1_water_gate", "")])
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
 	if ending != "":
@@ -1351,7 +1407,10 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
+	if id == "ch1":
+		ending_panel.open_chapter1(Settings.reduced_motion)       # 第一章完（4.10b）
+	else:
+		ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
 	print("IC_ENDING id=%s choice=%s next=%d" % [id, choice, ending_panel.next_chapter])
 	if ending_panel.next_chapter > 0:
 		await get_tree().process_frame
@@ -1660,6 +1719,18 @@ func give_order(o: String) -> bool:
 func _on_battle_ended(winner: String) -> void:
 	if battle_bench:
 		return
+	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
+		var held := winner == battle.player_side
+		hud.toast(CausewayBattle.finish(held), 6.0)
+		print("IC_CAUSEWAY end winner=%s result=%s" % [winner, GameState.get_flag("ch1_causeway", "")])
+		save_game.call_deferred("auto", true)
+		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+			if is_inside_tree() and not leaving and area == "marsh":
+				var to := CausewayBattle.dawn_arrival(held)
+				Engine.set_meta("ic_arrive_note", to[1])
+				GameState.daypart = "dawn"              # 过了一夜：第二天的清晨（旅行地图的「时段只往前走」管不到这里）
+				travel("castle", str(to[0])))
+		return
 	var refresh := "（刷新页面再来一次）"
 	if winner == "":
 		hud.toast("两边都打光了。" + refresh, 6.0)
@@ -1667,6 +1738,40 @@ func _on_battle_ended(winner: String) -> void:
 		hud.toast("✓ %s赢了！%s" % [battle.sides.get(winner, winner), refresh], 6.0)
 	else:
 		hud.toast("× %s赢了……%s" % [battle.sides.get(winner, winner), refresh], 6.0)
+
+
+## 长眠者第一次露面（4.10b）：他从你身边走过去；有人说「又一个」；过一会儿第一章完
+func _sleeper_seen() -> void:
+	sleeper.wake_walk()
+	var nm := str(Sleeper.who()[1])
+	hud.toast("「%s？」……眼睛闭着，从你身边走了过去。叫不醒。" % nm, 5.0)
+	get_tree().create_timer(5.0).timeout.connect(func():
+		if is_inside_tree() and area == "marsh":
+			hud.toast("客栈门口有人看着他的背影，低声说了一句：「又一个。」", 5.0))
+	get_tree().create_timer(Sleeper.CHAPTER_END_AFTER).timeout.connect(func():
+		if is_inside_tree() and area == "marsh" and not GameState.has_flag("ch1_done"):
+			GameState.set_flag("ch1_done")
+			if GameState.quest_active("ch1_main"):
+				GameState.set_stage("ch1_main", "ch1_end")
+			save_game("auto", true)
+			show_ending("ch1"))
+
+
+## 失守以后的天亮（4.10a）：庭院里巡逻的人看见你（警觉起来）就喊人，把你押进病房（家主坚持要见你）
+func _on_occupier_state(_e: Enemy, st: String) -> void:
+	if GameState.has_flag("ch1_sneak") or not st in ["alert", "combat"]:
+		return
+	GameState.set_flag("ch1_sneak", "caught")
+	GameState.change_rep("valen", -10)
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e is Enemy and not e is Soldier:
+			e.queue_free()                              # 押走你的人不再算「在和你打」
+	hud.toast("「站住！」两个卫兵扭住你的胳膊，把你往东边的塔楼押……", 3.0)
+	print("IC_SNEAK caught")
+	Engine.set_meta("ic_arrive_note", "门里传出家主沙哑的声音：「让他进来。」")
+	get_tree().create_timer(2.5).timeout.connect(func():
+		if is_inside_tree() and not leaving:
+			travel("sickroom", "front"))
 
 
 func _on_encounter_ended(_won: bool) -> void:
@@ -1787,6 +1892,18 @@ func _process(delta: float) -> void:
 	if hint_left <= 0.0 and not tip_queue.is_empty():
 		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
+	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
+		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
+	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):
+		start_battle()                                  # 堤道夜战（4.9a）：走到和赫尔曼定下的守点，开打（先自动存档）
+		hud.toast("◆ 他们上来了！守住%s——按 2 让小队原地坚守（触屏「令」）。" % ("断口" if CausewayBattle.hold() == "gap" else "石拱"), 5.0)
+		if _query("cwskip").is_valid_float():         # 截图用（4.9a）：快进到开打后第 N 秒（软件渲染的浏览器一秒只有一两帧）
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+	if Engine.time_scale > 1.0 and battle != null and is_instance_valid(battle) and (battle.finished or battle.elapsed >= float(_query("cwskip"))):
+		Engine.time_scale = 1.0
+		Engine.max_physics_steps_per_frame = 8
+		print("IC_CAUSEWAY skipped_to=%.0f" % battle.elapsed)
 	GameState.playtime += delta
 	var pos := player.global_position
 	_clear_fog_at(pos)
