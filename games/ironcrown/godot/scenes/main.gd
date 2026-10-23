@@ -133,6 +133,16 @@ func _ready() -> void:
 				GameState.flags["valen_heir"] = "ivette"
 				GameState.set_flag("ch1_peat", "ivette")
 				GameState.set_flag("ch1_outlaws", "ally")
+		if area in ["castle", "sickroom"] and _query("dawn") in ["held", "lost"] and not Engine.has_meta("ic_dawn_param_done"):
+			Engine.set_meta("ic_dawn_param_done", true)      # 截图用（4.10a）：?area=castle|sickroom&dawn=held|lost 直接到打完仗的清晨（选了阿尔里克）
+			if not GameState.quest_active("ch1_main"):
+				GameState.start_quest("ch1_main")
+			GameState.flags["valen_heir"] = "alric"
+			GameState.set_flag("ch1_causeway", _query("dawn"))
+			GameState.set_flag("osric_awake")
+			GameState.set_flag("heirs_heard")
+			GameState.set_stage("ch1_main", "dawn_held" if _query("dawn") == "held" else "dawn_lost")
+			GameState.daypart = "dawn"
 		if area == "castle" and _query("squad") in ["1", "gate"] and not Engine.has_meta("ic_squad_param_done"):
 			Engine.set_meta("ic_squad_param_done", true)     # 截图用（4.8b）：?area=castle&squad=1|gate 直接摆出入夜备战的小队（gate：两个人守水门），只设小队的旗标
 			GameState.set_flag("ch1_ready")
@@ -254,6 +264,9 @@ func _ready() -> void:
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
+	if area == "sickroom" and GameState.quest_stage("ch1_main") == "dawn_lost" and not GameState.has_flag("ch1_sneak"):
+		GameState.set_flag("ch1_sneak", "unseen")       # 失守以后（4.10a）：没被看见就摸进了病房
+		Engine.set_meta("ic_arrive_note", "你闪进病房，反手掩上门——没人看见。")
 	if arrived_by != "":
 		_arrive()
 	_story_progress()
@@ -280,9 +293,6 @@ func _ready() -> void:
 	if area == "castle":
 		for e in Castle.occupy(world):                  # 失守以后的天亮（4.10a）：另一位继承人的人巡着庭院
 			e.state_changed.connect(_on_occupier_state)
-	if area == "sickroom" and GameState.quest_stage("ch1_main") == "dawn_lost" and not GameState.has_flag("ch1_sneak"):
-		GameState.set_flag("ch1_sneak", "unseen")       # 没被看见就摸进了病房
-		Engine.set_meta("ic_arrive_note", "你闪进病房，反手掩上门——没人看见。")
 	battle = world.get_node_or_null("Battle") as Battle
 	if battle:
 		battle.ended.connect(_on_battle_ended)
@@ -1702,7 +1712,8 @@ func _on_battle_ended(winner: String) -> void:
 			if is_inside_tree() and not leaving and area == "marsh":
 				var to := CausewayBattle.dawn_arrival(held)
 				Engine.set_meta("ic_arrive_note", to[1])
-				travel("castle", str(to[0]), "dawn"))
+				GameState.daypart = "dawn"              # 过了一夜：第二天的清晨（旅行地图的「时段只往前走」管不到这里）
+				travel("castle", str(to[0])))
 		return
 	var refresh := "（刷新页面再来一次）"
 	if winner == "":

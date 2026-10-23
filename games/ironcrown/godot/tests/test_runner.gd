@@ -7947,7 +7947,7 @@ func test_dawn() -> void:
 	check(b.finished and GameState.quest_stage("ch1_main") == "dawn_lost", "堤道失守：主线到「天亮（失守）」")
 	await seconds(7.0)
 	var pl: Dictionary = GameState.pending_load
-	check(main.leaving and str(pl.get("scene", "")) == "castle" and str(pl.get("spawn", "")) == "water_gate" and str(pl.get("daypart", "")) == "dawn", "过一会儿天亮：从水门进黑鹭堡（%s）" % str(pl))
+	check(main.leaving and str(pl.get("scene", "")) == "castle" and str(pl.get("spawn", "")) == "water_gate" and GameState.daypart == "dawn", "过一会儿天亮（第二天清晨）：从水门进黑鹭堡（%s）" % str(pl))
 	main = await reload_main(main)
 	await physics(3)
 	var occ: Array = get_tree().get_nodes_in_group("enemy").filter(func(e): return not e is Soldier)
