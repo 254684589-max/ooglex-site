@@ -386,6 +386,8 @@ func _jobs(st: ChunkStreamer) -> void:
 	for id in per:
 		if pieces.has(id) or _has_props(id):
 			per[id].append(_job_ground.bind(id, pieces.get(id, [])))
+		if _has_decor(id):
+			per[id].append(_job_props.bind(id))         # 村里的零碎单独一件活（和地面放在一起时，村子中间那块最慢到 40 多毫秒）
 	for i in MarshLayout.HOUSES.size():
 		var h: Array = MarshLayout.HOUSES[i]
 		per[MarshLayout.cell_id(MarshLayout.cell_of(h[1]))].append(_job_house.bind(i))
@@ -450,10 +452,21 @@ func _has_props(id: String) -> bool:
 	for p in MarshLayout.PEAT:
 		if MarshLayout.cell_id(MarshLayout.cell_of(p[0])) == id:
 			return true
+	return false
+
+
+func _has_decor(id: String) -> bool:
 	for p in MarshLayout.PROPS:
 		if MarshLayout.cell_id(MarshLayout.cell_of(Vector2(p[1].x, p[1].z))) == id:
 			return true
 	return false
+
+
+## 一块里的村里零碎（画面；碰撞在 _collision 里同步建好了）
+func _job_props(root: Node3D, id: String) -> void:
+	var props := props_decor(_cell_rect(id))
+	props.solids.clear()
+	props.build(root, "Props")
 
 
 ## 村里的零碎（MarshLayout.PROPS）摆进一个 Decor：只摆 rect 里的（分帧搭画面时一块一块来）；rect 是空的就全摆（同步建碰撞时用它的 solids）
@@ -527,10 +540,6 @@ func _job_ground(root: Node3D, id: String, pieces: Array) -> void:
 		_causeway_sign(root, kit)
 	if rect.has_point(MarshLayout.cw((MarshLayout.GAP.x + MarshLayout.GAP.y) * 0.5)):
 		_gap_rubble(kit)
-	var props := props_decor(rect)
-	if not props.kit.tools.is_empty():
-		props.solids.clear()                       # 碰撞已经在 _collision 里同步建好了
-		props.build(root, "Props")
 	var mi := kit.build({"mud": Look.ground("mud"), "bank": Look.ground("bank"), "water": Look.water(true), "street": Look.mat("street"), "stone": Look.mat("stone"),
 		"timber": Look.mat("timber"), "peat": Look.mat("peat"), "thatch": Look.thatch(), "rope": _rope_mat()})
 	mi.name = "Ground"
