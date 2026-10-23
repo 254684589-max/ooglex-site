@@ -16,6 +16,8 @@ var tiles: Array = []
 var idx := 0
 var wait := 0
 var out := "/tmp/viewer.png"
+var cam_dist := 3.4               # zoom=距离,看的高度：近看（例如 zoom=1.3,1.4 看肩膀和脖子）
+var cam_look := 0.95
 const TILE := Vector2i(360, 480)
 
 
@@ -26,6 +28,10 @@ func _init() -> void:
 		if kv.size() == 2:
 			args[kv[0]] = kv[1]
 	out = args.get("out", out)
+	if args.has("zoom"):
+		var z := str(args.zoom).split(",")
+		cam_dist = float(z[0])
+		cam_look = float(z[1]) if z.size() > 1 else cam_look
 	for j in str(args.get("jobs", "Sword_Idle@0@0;Sword_Idle@0@90;Sword_Attack@0.33@30;Sword_Attack@0.4@30;Sword_Attack@0.45@60;Sword_Block@0.17@30")).split(";"):
 		jobs.append(j.split("@"))
 	root.size = TILE
@@ -108,8 +114,8 @@ func _next() -> void:
 		character.hold(str(j[0]), float(j[1]), 0.0)
 	var yaw := deg_to_rad(float(j[2]))
 	# 人物面朝 +Z；相机绕着转
-	cam.position = Vector3(sin(yaw) * 3.4, 1.15, cos(yaw) * 3.4)
-	cam.look_at_from_position(cam.position, Vector3(0, 0.95, 0))
+	cam.position = Vector3(sin(yaw) * cam_dist, cam_look + 0.2, cos(yaw) * cam_dist)
+	cam.look_at_from_position(cam.position, Vector3(0, cam_look, 0))
 	wait = 40 if idx == 0 else 25             # 披风垂下来、晃停要一会儿
 
 
