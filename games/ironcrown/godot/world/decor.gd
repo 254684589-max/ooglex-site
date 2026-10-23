@@ -2,6 +2,7 @@ class_name Decor
 extends RefCounted
 ## 场景陈设（2026-10-23 所有者「在所有关卡建筑等场景的基础上美化，更漂亮美观逼真」）：一组用 MeshKit 搭的小物件，
 ## 各个区域按需摆：纹章旗、挂毯、墙上的盾、兵器架、地毯、烛台、墙上的火把、箱子、木桶、板条箱、麻袋、书架上的书和卷轴。
+## 鹭沼村子里的：捕鳗的柳条笼、拴船桩、装泥炭的车（场景美化五）。
 ## 不用外部素材（网页包不变大）；一个房间的陈设合成一个网格（绘制调用少）。火苗、烛光是自发光（配合泛光），不另加点光源（点光源有画质档的上限）。
 ## 用法：var d := Decor.new()；d.banner(...)；d.shield(...)……；d.build(parent)。
 ## 朝向参数 n 是物件「正面朝着的方向」（挂在墙上的就是墙面往屋里的法线，水平单位向量）。
@@ -287,6 +288,15 @@ func cart(pos: Vector3, yaw: float, load := "sacks") -> void:
 	if load == "sacks":
 		for i in 3:
 			sack(pos + b * Vector3(-0.25 + i * 0.25, 0.64, -0.2 + 0.25 * (i % 2)), yaw + i)
+	elif load == "peat":                              # 切好的泥炭块，码两层
+		if not mats.has("peat"):
+			mats["peat"] = Look.mat("peat")
+		for i in 6:
+			var top := i >= 4
+			var x := -0.22 + 0.44 * (i % 2)
+			var z := 0.0 if top else -0.22 + 0.44 * (i / 2)
+			var tw := Basis(Vector3.UP, 0.08 * (i % 3 - 1))
+			kit.box("peat", pos + b * Vector3(x, 0.73 + (0.17 if top else 0.0), z), Vector3(0.4, 0.16, 0.38), b * tw, 0.95, 0.65)
 	else:
 		for i in 4:
 			kit.cylinder(wood, pos + b * Vector3(-0.3 + i * 0.2, 0.72, -0.6), pos + b * Vector3(-0.3 + i * 0.2, 0.72, 0.6), 0.06, 0.06, 5)
@@ -304,6 +314,31 @@ func hay(pos: Vector3, yaw: float, snow := true) -> void:
 	if snow:
 		kit.box(_snow(), pos + Vector3(0, 0.52, 0), Vector3(0.9, 0.04, 0.55), b)
 	solids.append([pos + Vector3(0, 0.25, 0), (b * Vector3(1.0, 0.5, 0.6)).abs()])
+
+
+## 捕鳗的柳条笼：横躺着的一只长笼（口大尾小），三道箍
+func creel(pos: Vector3, yaw: float) -> void:
+	var b := Basis(Vector3.UP, yaw)
+	var willow := _solid(Color("7a6440"), 0.95)
+	var band := _solid(Color("4a3a24"), 0.9)
+	var a := pos + b * Vector3(0, 0.22, -0.45)
+	var e := pos + b * Vector3(0, 0.12, 0.45)
+	kit.cylinder(willow, a, e, 0.21, 0.09, 9)
+	_disk(willow, a, b, 0.2, 0.02, 7)          # 笼口（里面的倒须看不见，封上）
+	for t: float in [0.15, 0.5, 0.85]:
+		var c := a.lerp(e, t)
+		var r := lerpf(0.215, 0.095, t)
+		kit.cylinder(band, c - b.z * 0.015, c + b.z * 0.015, r, r, 9)
+
+
+## 拴船桩：插在水里的一根粗木桩，比码头面高出一截，顶上绕几圈绳子
+func post(pos: Vector3, h := 0.9) -> void:
+	var rope := _solid(Color("8a7a5a"), 0.95)
+	kit.cylinder(_wood(), Vector3(pos.x, MarshLayout.WATER_Y - 0.8, pos.z), pos + Vector3(0, h, 0), 0.14, 0.12, 7, 0.7)
+	for k in 3:
+		var y := h - 0.25 + k * 0.06
+		kit.cylinder(rope, pos + Vector3(0, y, 0), pos + Vector3(0, y + 0.04, 0), 0.135, 0.135, 8)
+	solids.append([pos + Vector3(0, h * 0.5, 0), Vector3(0.3, h, 0.3)])
 
 
 func _snow() -> String:

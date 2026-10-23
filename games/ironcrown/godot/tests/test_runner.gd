@@ -5873,6 +5873,26 @@ func test_marsh() -> void:
 		if not fl.any(func(f): return f.k == "deck" and MarshLayout.contains(f, foot)):
 			stairs_ok = false
 	check(stairs_ok, "%d 栋高脚屋的台阶都落在栈道上" % MarshLayout.HOUSES.size())
+	# 村里的零碎（场景美化五）：都站在地上，不压栈道、不压房子和台阶，离村里的人 1 米以上
+	var pd := Marsh.props_decor()
+	var walk_rects := MarshLayout.WALKS.map(func(w): return Rect2(w[1], Vector2.ZERO).expand(w[2]).grow(float(w[3]) * 0.5))
+	var house_rects := []
+	for h in MarshLayout.HOUSES:
+		for hs in House.solids(MarshLayout.house_pos(h), float(h[2]), MarshLayout.house_spec(h)):
+			var ab: AABB = hs[0] * AABB(-(hs[1] as Vector3) * 0.5, hs[1])
+			house_rects.append(Rect2(ab.position.x, ab.position.z, ab.size.x, ab.size.z))
+	var pgrid := Marsh.make_index(fl, 0.0)
+	var bad_props := []
+	for so in pd.solids:
+		var c3: Vector3 = so[0]
+		var sz: Vector3 = so[1]
+		var r := Rect2(c3.x - sz.x * 0.5, c3.z - sz.z * 0.5, sz.x, sz.z)
+		var on_ground := Marsh.on_floor(fl, pgrid, Vector2(c3.x, c3.z))
+		if not on_ground or walk_rects.any(func(w): return w.intersects(r)) or house_rects.any(func(hr): return hr.intersects(r)) \
+				or MarshLayout.PEOPLE.any(func(pp): return Vector2(pp[2].x, pp[2].z).distance_to(r.get_center()) < 1.0 + sz.length() * 0.5):
+			bad_props.append(Vector2(c3.x, c3.z))
+	check(MarshLayout.PROPS.size() >= 20 and pd.solids.size() >= 15 and bad_props.is_empty(),
+		"村里 %d 件零碎（%d 个碰撞盒）都在地上，不压栈道、房子和台阶，离村里的人 1 米以上（不合适的：%s）" % [MarshLayout.PROPS.size(), pd.solids.size(), str(bad_props)])
 	# 载入：碰撞一次建完，出生点脚下马上有地（还没分帧搭画面的时候）
 	GameState.new_game(440)
 	var main := await make_area("marsh")
@@ -5898,6 +5918,10 @@ func test_marsh() -> void:
 		await frames(1)
 		waited += 1
 	check(st.is_done() and st.primed < st.chunks.size() and st.primed >= 1, "载入时同步搭了附近 %d 块，其余的进场以后分帧搭完（%d 件活，最慢一件 %.1f 毫秒、合计 %.0f 毫秒）" % [st.primed, st.stats.jobs, st.stats.max_job_ms, st.stats.total_ms])
+	var prop_nodes := main.world.find_children("Props", "MeshInstance3D", true, false)
+	var barrel_hit: Dictionary = ground_at.call(106.2, 35.9, 2.0)
+	check(prop_nodes.size() >= 4 and not barrel_hit.is_empty() and absf(float(barrel_hit.position.y) - 0.85) < 0.05,
+		"零碎分 %d 块搭出来；村口的木桶挡人（从上往下打到桶盖 y = %.2f）" % [prop_nodes.size(), float(barrel_hit.get("position", Vector3.ZERO).y)])
 	check(float(st.stats.max_job_ms) < 40.0, "每件活都不长（最慢 %.1f 毫秒；网页上每帧最多做 %d 毫秒）" % [st.stats.max_job_ms, ChunkStreamer.BUDGET_USEC / 1000])
 	# 深水边都有墙：从村口出发，按 1 米的格子把走得到的地方都走一遍；每一步走到没有地的格子，中间都要撞上墙（层 5）或别的东西
 	var grid := Marsh.make_index(fl, MarshLayout.SHORE + 1.0)

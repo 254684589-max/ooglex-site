@@ -229,6 +229,8 @@ func _collision() -> void:
 		if str(p[2]) == "mud":
 			var c: Vector2 = p[0]
 			_shape(solids, Transform3D(Basis(Vector3.UP, deg_to_rad(float(p[1]))), Vector3(c.x, MarshLayout.MUD_Y + 0.25, c.y)), Vector3(1.5, 0.5, 4.6))
+	for s in props_decor().solids:
+		_shape(solids, Transform3D(Basis.IDENTITY, s[0]), s[1])
 	for s in deep_solids():
 		_shape(solids, s[0], s[1])
 	for s in _arch_solids():
@@ -448,7 +450,38 @@ func _has_props(id: String) -> bool:
 	for p in MarshLayout.PEAT:
 		if MarshLayout.cell_id(MarshLayout.cell_of(p[0])) == id:
 			return true
+	for p in MarshLayout.PROPS:
+		if MarshLayout.cell_id(MarshLayout.cell_of(Vector2(p[1].x, p[1].z))) == id:
+			return true
 	return false
+
+
+## 村里的零碎（MarshLayout.PROPS）摆进一个 Decor：只摆 rect 里的（分帧搭画面时一块一块来）；rect 是空的就全摆（同步建碰撞时用它的 solids）
+static func props_decor(rect := Rect2()) -> Decor:
+	var d := Decor.new()
+	for p in MarshLayout.PROPS:
+		var at: Vector3 = p[1]
+		if rect.has_area() and not rect.has_point(Vector2(at.x, at.z)):
+			continue
+		var yaw := deg_to_rad(float(p[2]))
+		match str(p[0]):
+			"barrel":
+				d.barrel(at)
+			"crate":
+				d.crate(at, yaw)
+			"sack":
+				d.sack(at, yaw)
+			"creel":
+				d.creel(at, yaw)
+			"post":
+				d.post(at)
+			"cart":
+				d.cart(at, yaw, "sacks")
+			"cart_peat":
+				d.cart(at, yaw, "peat")
+			"woodpile":
+				d.woodpile(at, Vector3(sin(yaw), 0, cos(yaw)), 2.2, 0.9, false)
+	return d
 
 
 ## 一块的地面网格：泥滩、干地、栈道（木板、板缝、桩子）、堤道（石砌、路面、石坡）、断口的木板桥；泥炭垛、木架、平底船、指路牌
@@ -494,6 +527,10 @@ func _job_ground(root: Node3D, id: String, pieces: Array) -> void:
 		_causeway_sign(root, kit)
 	if rect.has_point(MarshLayout.cw((MarshLayout.GAP.x + MarshLayout.GAP.y) * 0.5)):
 		_gap_rubble(kit)
+	var props := props_decor(rect)
+	if not props.kit.tools.is_empty():
+		props.solids.clear()                       # 碰撞已经在 _collision 里同步建好了
+		props.build(root, "Props")
 	var mi := kit.build({"mud": Look.ground("mud"), "bank": Look.ground("bank"), "water": Look.water(true), "street": Look.mat("street"), "stone": Look.mat("stone"),
 		"timber": Look.mat("timber"), "peat": Look.mat("peat"), "thatch": Look.thatch(), "rope": _rope_mat()})
 	mi.name = "Ground"

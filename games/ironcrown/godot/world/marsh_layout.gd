@@ -124,6 +124,23 @@ const PEAT_CUT := Rect2(70, 2, 14, 5)         # 泥炭场里挖开的一片湿�
 const PUNTS := [[Vector2(41.3, 60.5), 90.0, "water"], [Vector2(58.7, 60.0), 88.0, "water"], [Vector2(33.5, 41.0), 20.0, "mud"]]
 ## 晾鱼、晾芦苇的木架：[中心, 朝向]
 const RACKS := [[Vector2(96.5, 37.5), 0.0], [Vector2(70.0, 38.5), 90.0], [Vector2(104.5, 19.5), 0.0]]
+## 村里的零碎（2026-10-23 场景美化五）：[种类, 脚底位置, 朝向（度）]，种类是 Decor 的物件（woodpile 的朝向是柴垛的走向）。
+## 都不压栈道、不挡房子的台阶、离村里的人 1 米以上（test_marsh 查）；画面跟着各块的地面分帧搭，碰撞和别的挡人的东西一起同步建
+const PROPS := [
+	# 村口干岸：路北边停一辆装麻袋的手推车，路南边一堆桶、箱子，晾网架后面一垛柴
+	["cart", Vector3(108.5, BANK_Y, 25.6), 75.0], ["barrel", Vector3(106.2, BANK_Y, 35.9), 0.0], ["barrel", Vector3(106.9, BANK_Y, 36.5), 0.0],
+	["crate", Vector3(105.5, BANK_Y, 36.7), 15.0], ["sack", Vector3(107.5, BANK_Y, 35.3), 40.0], ["woodpile", Vector3(104.5, BANK_Y, 16.6), 90.0],
+	# 客栈门前两角（泥里，屋檐底下）：酒桶、板条箱；客栈和东边那栋之间晾着捕鳗的柳条笼
+	["barrel", Vector3(68.9, MUD_Y, 27.3), 0.0], ["barrel", Vector3(69.6, MUD_Y, 27.7), 0.0], ["crate", Vector3(79.3, MUD_Y, 27.4), 10.0],
+	["creel", Vector3(82.2, MUD_Y, 27.5), 80.0], ["creel", Vector3(83.0, MUD_Y, 27.1), 100.0],
+	# 南边一排门前
+	["barrel", Vector3(67.1, MUD_Y, 32.5), 0.0], ["sack", Vector3(60.9, MUD_Y, 32.6), -20.0], ["creel", Vector3(91.8, MUD_Y, 32.4), 10.0],
+	# 码头：西头两只桶、柳条笼，东头一只箱子；两角各一根拴船桩
+	["barrel", Vector3(44.8, DECK_Y, 61.2), 0.0], ["barrel", Vector3(45.5, DECK_Y, 61.4), 0.0], ["creel", Vector3(45.2, DECK_Y, 58.8), 90.0],
+	["crate", Vector3(55.3, DECK_Y, 61.3), 20.0], ["post", Vector3(44.25, DECK_Y, 61.75), 0.0], ["post", Vector3(55.75, DECK_Y, 58.25), 0.0],
+	# 泥炭场：托宾小屋北墙一垛柴，场子东头一辆装泥炭的车
+	["woodpile", Vector3(89.0, BANK_Y, -1.65), 90.0], ["cart_peat", Vector3(85.0, BANK_Y, -3.6), 20.0], ["sack", Vector3(63.4, BANK_Y, -3.6), 0.0],
+]
 ## 芦苇荡（水里成片的芦苇，地图上也画）：鹭沼深处（4.4c 才走得进去）、堤道两边远处、村子北边
 const REED_BEDS := [Rect2(-128, 0, 150, 64), Rect2(-60, -40, 44, 26), Rect2(10, -60, 30, 24), Rect2(60, -50, 40, 30),
 	Rect2(104, -20, 24, 28), Rect2(-128, -64, 40, 40), Rect2(4, 4, 22, 46)]
