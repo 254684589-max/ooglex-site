@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "looks"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -7675,6 +7675,82 @@ func test_heir() -> void:
 	GameState.add_item("grain_writ")
 	GameState.set_flag("valen_heir", "alric")
 	check(not GameState.has_item("grain_writ"), "伊薇特走了：她的粮单收回")
+	GameState.new_game()
+
+
+## 4.8b：入夜备战——找赫尔曼定守断口还是石拱，他给你六个人；埃德里克提醒过水门的能分两个人去守；会开水门的，入夜后再找他一次；天黑透、小队列队、自动存档
+func prepare_state(heir: String, edric: String) -> void:
+	heir_state("deliver")
+	GameState.set_flag("ch1_edric", edric)
+	GameState.set_flag("osric_awake")
+	GameState.set_flag("osric_ring_given")
+	GameState.set_flag("valen_heir", heir)
+	Chapter1.heir_chosen(heir)
+	GameState.set_stage("ch1_main", "prepare")
+	GameState.daypart = "dusk"
+
+
+func test_prepare() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 选伊薇特、埃德里克提醒过水门（warned）、泥炭工站在她这边：守断口，分两个人守水门
+	prepare_state("ivette", "helped")
+	GameState.set_flag("ch1_peat", "ivette")
+	check(GameState.get_flag("ch1_water_gate") == "warned", "前提：水门 warned")
+	var r := DialogueRunner.new()
+	r.start("blackheron", "herman")
+	check(r.node_id == "plan" and r.text().contains("断口") and r.text().contains("石拱") and r.text().contains("泥炭"), "备战时找赫尔曼：讲断口和石拱；托宾的人捎了话（泥炭垛）")
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	check(main.world.get_node_or_null("Npc_squad_0") == null and main.world.get_node_or_null("Npc_herman") != null, "说定以前：堡门里头还没有小队；赫尔曼在（黄昏在大厅门口）")
+	check(await fl_say(main, "blackheron", "herman", ["守断口。", "埃德里克说，水门那道栅年久失修，夜里只有一个老头守着。", "分两个人去守水门。", "堤道上见。"]), "和赫尔曼说定：守断口、分两个人守水门")
+	await frames(3)
+	check(GameState.get_flag("ch1_hold") == "gap" and GameState.has_flag("ch1_gate_guard") and GameState.daypart == "night" and GameState.quest_stage("ch1_main") == "to_causeway",
+		"ch1_hold = gap、ch1_gate_guard、天黑透了、主线推进到「上堤道」（%s / %s）" % [GameState.daypart, GameState.quest_stage("ch1_main")])
+	var squad: Array = range(6).map(func(i): return main.world.get_node_or_null("Npc_squad_%d" % i))
+	check(squad.all(func(n): return n != null), "六个卫兵当场摆出来")
+	var at_gate := squad.filter(func(n): return n != null and (n as Node3D).position.z < 0.0)
+	check(at_gate.size() == 2 and (squad[0] as Node3D).position.distance_to(Castle.SPAWNS.gate[0]) < 6.0, "两个站到水门里面，四个在堡门里头列队")
+	await physics(2)
+	var stuck := squad.filter(func(n): return n != null and not stands_clear(n)).map(func(n): return str(n.name))
+	check(stuck.is_empty(), "小队都站在地上，没卡在桶、车、墙里（%s）" % str(stuck))
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and str(auto.data.state.quests.ch1_main.stage) == "to_causeway" and str(auto.data.state.get("daypart", "")) == "night", "入夜自动存档（存的是「上堤道」、夜里）")
+	r.start("blackheron", "herman")
+	check(r.node_id == "ready", "再找赫尔曼：堤道上见")
+	main = await fl_go(main, "hall")
+	main = await fl_go(main, "castle")
+	check(main.world.get_node_or_null("Npc_squad_5") != null and Castle.squad(main.world) == 0, "进出大厅回来：小队还在，不重摆")
+	await free_main(main)
+	# —— 选阿尔里克、伊薇特答应过退亲（埃德里克会开水门 opened）：守石拱；没有分人守水门的选项；入夜再找埃德里克
+	prepare_state("alric", "helped")
+	check(GameState.get_flag("ch1_water_gate") == "opened", "前提：水门 opened")
+	r.start("blackheron", "herman")
+	check(not r.text().contains("泥炭"), "泥炭工没站过来的：不提泥炭垛")
+	r.choose(r.options().map(func(o): return str(o.text)).find("守石拱。"))
+	check(r.text().contains("石拱") and not r.options().any(func(o): return str(o.text).begins_with("埃德里克说")), "守石拱；没人提醒过水门，不能分人去守（%s）" % str(r.options().map(func(o): return o.text)))
+	r.start("hall", "edric_hall")
+	check(r.node_id == "after_heir", "天还没黑：埃德里克还是那句「由不得我」")
+	check(say_runner("herman", ["守石拱。", "天快黑了。走吧。", "堤道上见。"], "blackheron") == "" and GameState.daypart == "night" and GameState.get_flag("ch1_hold") == "arch" and not GameState.has_flag("ch1_gate_guard"), "说定：守石拱，人都跟着你")
+	GameState.checks["edric_gate"] = false
+	check(say_runner("edric_hall", ["今晚这道墙要是丢了，霜渡镇也保不住。你袖子里是什么？"], "hall") == "gate_hid" and GameState.get_flag("ch1_water_gate") == "opened" and GameState.has_flag("edric_gate_tried"), "入夜找埃德里克：没说动，他把东西藏起来（还是 opened）")
+	r.start("hall", "edric_hall")
+	check(r.node_id == "after_heir", "只能试一次")
+	prepare_state("alric", "helped")
+	say_runner("herman", ["守石拱。", "天快黑了。走吧。", "堤道上见。"], "blackheron")
+	GameState.checks["edric_gate"] = true
+	check(say_runner("edric_hall", ["今晚这道墙要是丢了，霜渡镇也保不住。你袖子里是什么？"], "hall") == "gate_talked" and GameState.get_flag("ch1_water_gate") == "kept" and GameState.has_item("water_gate_key"),
+		"说动了：他交出水门的钥匙（kept）")
+	r.start("hall", "edric_hall")
+	check(r.node_id == "gate_after", "再找他：别让他们过来")
+	# —— 小队的话：埃德里克会开门时，有一个兵提一句他
+	prepare_state("alric", "helped")
+	GameState.set_flag("ch1_ready")
+	var holder := Node3D.new()
+	add_child(holder)
+	check(Castle.squad(holder) == 6 and ((holder.get_node("Npc_squad_0") as Npc).lines as Array).has(Castle.SQUAD_LINE_EDRIC), "会开水门的：小队里有人说埃德里克一晚上坐在窗边")
+	holder.free()
 	GameState.new_game()
 
 

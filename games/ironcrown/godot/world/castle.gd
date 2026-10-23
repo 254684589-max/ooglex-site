@@ -51,6 +51,13 @@ const GUARD_LINES_HEIR := {
 	"gate_guard_in": ["堡门关了。今晚谁也不许出去——赫尔曼大人的话。", "另一边的人入夜前就会回来。到时候，堤道上见真章。", "家主醒过一回，戒指给出去了。……这堡，今晚得守住。"],
 	"barracks_soldier": ["小姐拿了戒指。今晚，兵营里的人都听她的。", "大厅里那位带着信使走了。入夜前，他会带着人回来。", "长枪都发下去了。堤道那么窄，三个人一排就能把路堵死。"],
 }
+## 入夜备战（4.8b）：赫尔曼给你的六个卫兵，说定以后（ch1_ready）在堡门里头东边站成两排、面朝堡门（西边是桶、箱子和夜里的赫尔曼；不挡从门口到井边的路）；
+## 分了两个人守水门的（ch1_gate_guard），最后两个站到水门里面。编号 squad_0..5（4.9 堤道夜战从这里接走）
+const SQUAD_SPOTS := [Vector3(3.2, 0, 13.4), Vector3(4.3, 0, 13.4), Vector3(5.4, 0, 13.4), Vector3(3.2, 0, 14.6), Vector3(4.3, 0, 14.6), Vector3(5.4, 0, 14.6)]
+const WATER_GUARD_SPOTS := [[Vector3(-15.4, 0, -16.6), 0.4], [Vector3(-12.6, 0, -16.6), -0.4]]
+const SQUAD_LINES := ["都准备好了。你说走，我们就走。", "堤道窄，两人一排，盾在前头……听你的。", "家主的戒指给出去了。今晚这道墙不能丢。"]
+const SQUAD_LINE_EDRIC := "埃德里克少爷一晚上都坐在大厅窗边，灯也不点。……怪得很。"     # 他会开水门（ch1_water_gate = opened）时的一点暗示
+const WATER_GUARD_LINES := ["赫尔曼大人让我们守着这道栅。有人从水里摸过来，先过我们这关。"]
 ## 命名出生点：gate = 从堡门进来（门里面，面朝庭院）；water_gate = 从水门进来（水门里面，面朝南）；barracks_gate = 从兵营侧门进来（面朝东）
 const SPAWNS := {
 	"gate": [Vector3(0, 0, 17.5), 0.0],
@@ -95,6 +102,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	for g in GUARDS:
 		if not Chapter1.gone(str(g[0])):         # 伊薇特拿不到印戒，兵营门口的兵跟她走了（4.8a）
 			_person(parent, g, lines.get(str(g[0]), []))
+	squad(parent)
 	var s: Array = SPAWNS.gate
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 
@@ -108,6 +116,27 @@ static func _person(parent: Node3D, p: Array, lines: Array) -> void:
 	n.position = p[2]
 	n.rotation.y = float(p[3])
 	parent.add_child(n)
+
+
+## 小队（4.8b）：入夜备战说定了就摆出来；已经在了的不重摆。返回新摆了几个（main 在对话关上时调：说定的当场列队）
+static func squad(parent: Node3D) -> int:
+	if not GameState.has_flag("ch1_ready"):
+		return 0
+	var lines: Array = SQUAD_LINES.duplicate()
+	if str(GameState.get_flag("ch1_water_gate", "")) == "opened":
+		lines.append(SQUAD_LINE_EDRIC)
+	var at_gate := GameState.has_flag("ch1_gate_guard")
+	var n := 0
+	for i in SQUAD_SPOTS.size():
+		if parent.get_node_or_null("Npc_squad_%d" % i) != null:
+			continue
+		var p := ["squad_%d" % i, "卫兵", SQUAD_SPOTS[i], PI, "3e4652"]
+		if at_gate and i >= 4:
+			var w: Array = WATER_GUARD_SPOTS[i - 4]
+			p = ["squad_%d" % i, "守水门的卫兵", w[0], float(w[1]), "3e4652"]
+		_person(parent, p, WATER_GUARD_LINES if at_gate and i >= 4 else lines)
+		n += 1
+	return n
 
 
 ## 病房的门推不推得开（4.5c）：两位继承人都托过你以后（main._heirs_heard 设 heirs_heard；4.5b 时的存档没有这个旗标，看两个托付的旗标，审查）

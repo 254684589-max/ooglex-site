@@ -121,6 +121,11 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
+		if area == "castle" and _query("squad") in ["1", "gate"] and not Engine.has_meta("ic_squad_param_done"):
+			Engine.set_meta("ic_squad_param_done", true)     # 截图用（4.8b）：?area=castle&squad=1|gate 直接摆出入夜备战的小队（gate：两个人守水门），只设小队的旗标
+			GameState.set_flag("ch1_ready")
+			if _query("squad") == "gate":
+				GameState.set_flag("ch1_gate_guard")
 		# 系统设置了「减少动态效果」：默认关掉镜头摆动（GDD.md 第四节）；玩家自己存过设置就听玩家的
 		if str(JavaScriptBridge.eval("!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)", true)) == "true":
 			Settings.reduced_motion = true
@@ -1290,6 +1295,10 @@ func _on_dialogue_closed() -> void:
 	GameState.pending_daypart = ""
 	if pd != "":
 		set_daypart(pd)                                     # 剧情推进到别的时段（4.2）
+	if area == "castle" and Castle.squad(world) > 0:          # 入夜备战说定了（4.8b）：小队当场在堡门里头列队，自动存档
+		hud.toast("入夜了。你的人在堡门里头等你。", 4.0)
+		save_game.call_deferred("auto", true)
+		print("IC_SQUAD hold=%s gate_guard=%s water_gate=%s" % [GameState.get_flag("ch1_hold", ""), GameState.has_flag("ch1_gate_guard"), GameState.get_flag("ch1_water_gate", "")])
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
 	if ending != "":
