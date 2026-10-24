@@ -414,7 +414,7 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 	gm.distance_fade_max_distance = 22.0
 	g.material = gm
 	glow.mesh = g
-	glow.name = "BeaconGlow19"
+	glow.name = "BeaconFireGlow"
 	glow.position = at
 	root.add_child(glow)
 	if not reduced_motion:

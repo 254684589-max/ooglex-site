@@ -8542,7 +8542,7 @@ func test_yangji() -> void:
 	var st: ChunkStreamer = main.streamer
 	st.build_all()
 	var w: Node3D = main.world
-	var crofts: Array = w.find_children("Croft_*", "Node3D", true, false)
+	var crofts: Array = w.find_children("Croft_*", "Node3D", true, false).filter(func(n): return n.name != "Croft_barracks")   # 第十九烽的营房也是矮石屋（5.3b）
 	check(crofts.size() == 6 and crofts.all(func(c): return c.is_in_group("house")) and w.find_children("Smithy", "MeshInstance3D", true, false).size() == 1
 		and w.find_children("Sheep", "MeshInstance3D", true, false).reduce(func(acc, m): return acc + int(m.get_meta("count", 0)), 0) == HighlandLayout.SHEEP.size()
 		and w.find_children("RingStones", "MultiMeshInstance3D", true, false).size() == 1 and (w.find_children("RingStones", "MultiMeshInstance3D", true, false)[0] as MultiMeshInstance3D).multimesh.instance_count == HighlandLayout.STONES
