@@ -40,6 +40,7 @@ var touch_ref: Control        # 触屏按钮（TouchControls）：显示时底�
 var battle: Battle            # 军阵（B.2）：有小队时，右上角按钮下面写小队还剩几个人、现在是什么命令
 var squad_label: Label
 var battle_label: Label       # 战况一行（B.3）：两边还剩几个人、士气怎样；打完写谁赢了
+var cold_label: Label         # 寒冷（5.2c）：冷的时候一行字（「寒冷：有点冷」「冻伤：……」），不冷藏起来；颜色从羊皮纸色渐到冷蓝
 var surface_label: Label      # 脚下（4.4）：在泥潭里写「泥潭：走得慢，不能跑」（不只靠画面）；普通地面藏起来
 
 const BAR_W := 180.0
@@ -132,6 +133,9 @@ func _ready() -> void:
 	surface_label = squad_label.duplicate()
 	surface_label.name = "Surface"
 	add_child(surface_label)
+	cold_label = squad_label.duplicate()
+	cold_label.name = "Cold"
+	add_child(cold_label)
 	resized.connect(_layout)
 	_layout()
 
@@ -285,11 +289,21 @@ func set_surface(text: String) -> void:
 	_place_surface()
 
 
+## 寒冷那一行（5.2c）：frost = 冻伤了（字发冷蓝）
+func set_cold(text: String, frost := false) -> void:
+	cold_label.text = text
+	cold_label.visible = text != ""
+	cold_label.add_theme_color_override("font_color", Color("9cc4e8") if frost else Color("cfdbe6"))
+	_place_surface()
+
+
 func _place_surface() -> void:
 	if bars_top:
 		surface_label.position = bar_rect().position + Vector2(BAR_W + 14.0, -22.0)   # 体力条右边（下面是屏幕上方的短提示、性能浮层，审查）
 	else:
 		surface_label.position = health_rect().position - Vector2(0, 46)
+	if cold_label:
+		cold_label.position = surface_label.position + Vector2(0, -22.0 if surface_label.visible else 0.0)   # 寒冷那行在泥潭那行上面
 
 
 func set_hint(text: String) -> void:

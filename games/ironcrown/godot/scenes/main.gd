@@ -95,6 +95,8 @@ var nav := {}                   # 这个区域的导航网格（3.4）：{region
 var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
 var sleeper: Sleeper            # 芦栈村那个夜里没醒的人（4.10b）；没有为空
 var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
+var cold_state := {}            # 寒冷（5.2c）：在火边歇了多久（冻伤好要连着歇够）
+var cold_shown := ""            # HUD 上现在写的那行寒冷
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -1821,6 +1823,27 @@ func _npc_by_dialogue(id: String) -> Npc:
 	return null
 
 
+## 寒冷（5.2c，core/cold.gd）：每帧涨 / 降；满了冻伤（体力上限少三成），火边歇够了才好；冷的时候体力条边上一行字
+func _cold_tick(delta: float) -> void:
+	if player == null or get_tree().paused:
+		return
+	var ev := Cold.tick(get_tree(), area, Areas.is_indoor(area), daypart, player.global_position, delta, cold_state)
+	match ev:
+		"frostbite":
+			player.melee.stamina = minf(player.melee.stamina, player.melee.stamina_max())
+			hud.toast("你冻伤了：手脚不听使唤，体力上限降低。到火边歇一会儿。", 4.0)
+			print("IC_COLD frostbite")
+		"cured":
+			hud.toast("火把手脚烤暖了，冻伤好了。", 3.0)
+			print("IC_COLD cured")
+	if GameState.cold >= 30.0 and Cold.applies(area):
+		show_tip("cold")
+	var t := Cold.text()
+	if t != cold_shown:
+		cold_shown = t
+		hud.set_cold(t, GameState.frostbite)
+
+
 ## 潜行（2.7）：蹲着走、附近 10 米内有还没察觉你的敌人，每秒涨 0.5 进度
 func _train_stealth(delta: float) -> void:
 	if not player.crouching or Vector2(player.velocity.x, player.velocity.z).length() < 0.3:
@@ -1926,6 +1949,7 @@ func _process(delta: float) -> void:
 	if hint_left <= 0.0 and not tip_queue.is_empty():
 		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
+	_cold_tick(delta)
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

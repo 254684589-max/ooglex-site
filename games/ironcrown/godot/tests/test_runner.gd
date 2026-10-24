@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8653,6 +8653,69 @@ func test_villagers() -> void:
 	check(alric_line.contains("阿尔里克") and r.text().contains("易主") and not GameState.has_item("ivette_letter"), "选了阿尔里克：罗薇娜疑心你来谈价钱；堤道失守了：她说黑鹭堡易主了")
 	GameState.pending_load = {}
 
+
+
+## 5.2c 寒冷与冻伤
+func test_cold() -> void:
+	var day := Cold.rate("highland", "day", 5.0, 5, false, false)
+	var night := Cold.rate("highland", "night", 5.0, 5, false, false)
+	var high := Cold.rate("highland", "day", 40.0, 5, false, false)
+	var skilled := Cold.rate("highland", "day", 5.0, 60, false, false)
+	check(day > 0.0 and is_equal_approx(night, day * 2.0) and high > day and skilled < day and 100.0 / day > 360.0 and 100.0 / day < 600.0,
+		"高地户外变冷：白天约 %.0f 秒满格，夜里快一倍，山脊上更快，「生存」高的慢" % (100.0 / day))
+	check(Cold.rate("frostford", "night", 0.0, 5, false, false) == 0.0 and Cold.rate("highland", "night", 5.0, 5, true, false) < 0.0 and Cold.rate("waystation", "day", 0.0, 5, false, true) < 0.0,
+		"别的区域不冷（第一章照旧）；火边、屋里暖回来")
+	GameState.new_game(540)
+	var full := GameState.stamina_max()
+	GameState.cold = 99.95
+	var st := {}
+	var root := get_tree().root
+	var ev := Cold.tick(get_tree(), "highland", false, "night", Vector3(0, 5, 0), 1.0, st)
+	check(ev == "frostbite" and GameState.frostbite and is_equal_approx(GameState.stamina_max(), full * Cold.FROSTBITE_STAMINA) and Cold.text().begins_with("冻伤"),
+		"涨满了冻伤：体力上限 %.0f → %.0f，那一行写「冻伤」" % [full, GameState.stamina_max()])
+	var fire := OmniLight3D.new()
+	fire.add_to_group("light_source")
+	fire.set_meta("radius", 4.0)
+	root.add_child(fire)
+	fire.global_position = Vector3(0, 5, 0)
+	var cured := ""
+	for k in 10:
+		var e := Cold.tick(get_tree(), "highland", false, "night", Vector3(1, 5, 0), 1.0, st)
+		if e != "":
+			cured = e
+	check(cured == "cured" and not GameState.frostbite and GameState.cold == 0.0 and is_equal_approx(GameState.stamina_max(), full), "在火边歇够 %.0f 秒：冻伤好了，体力上限回来" % Cold.FIRE_CURE)
+	fire.queue_free()
+	GameState.cold = 70.0
+	GameState.add_item("strong_spirit")
+	GameState.use_item("strong_spirit")
+	check(is_equal_approx(GameState.cold, 30.0) and Cold.text() == "寒冷：有点冷", "喝一瓶烈酒：寒冷值 -40（70 → 30，「有点冷」）")
+	GameState.frostbite = true
+	GameState.cold = 100.0
+	var back := GameState.to_dict()
+	GameState.new_game(541)
+	GameState.from_dict(back)
+	check(GameState.frostbite and GameState.cold == 100.0, "冻伤和寒冷值跟着存档走")
+	GameState.from_dict({"seed": 1})
+	check(not GameState.frostbite and GameState.cold == 0.0, "旧存档（没有这两项）读进来不冷")
+	# 游戏里：高地户外冷到 35，体力条边上写「寒冷：有点冷」、弹一次教学提示；站到铁匠炉边慢慢暖回来
+	GameState.new_game(542)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	GameState.cold = 35.0
+	var main := await make_area("highland")
+	await frames(3)
+	check(main.hud.cold_label.visible and main.hud.cold_label.text == "寒冷：有点冷" and ("cold" in GameState.tips_seen or main.tip_now == "cold" or "cold" in main.tip_queue),
+		"高地户外：体力条边上写「%s」，弹教学提示「寒冷」" % main.hud.cold_label.text)
+	var forge: Array = main.world.find_children("Forge", "OmniLight3D", true, false)
+	if forge.is_empty():
+		main.streamer.build_all()
+		forge = main.world.find_children("Forge", "OmniLight3D", true, false)
+	var p: FpController = main.player
+	p.global_position = (forge[0] as Node3D).global_position + Vector3(-2.5, -1.0, 0)
+	var before := GameState.cold
+	await seconds(1.0)
+	check(GameState.cold < before - 5.0, "站到铁匠炉边：一秒暖回来 %.1f" % (before - GameState.cold))
+	await free_main(main)
 
 
 ## 测试用：选对话里文字是 label 的那个选项（没有就什么都不做，后面的检查会失败）
