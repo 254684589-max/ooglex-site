@@ -197,7 +197,7 @@ def main() -> None:
         "apps/finance-column/diagrams.html",
     ):
         text = (SITE / rel).read_text(encoding="utf-8")
-        if '<script src="/assets/pro-access.js?v=6"></script>' not in text:
+        if '<script src="/assets/pro-access.js?v=7"></script>' not in text:
             fail("Finance Column pro-access missing from: " + rel)
         if '<script src="/assets/pro-finance-column.js?v=2"></script>' not in text:
             fail("Finance Column adapter missing from: " + rel)
@@ -205,7 +205,7 @@ def main() -> None:
             fail("Finance Column full-data rerender hook missing from: " + rel)
 
     whats_page = (SITE / "apps/whats-latest/index.html").read_text(encoding="utf-8")
-    if '<script src="/assets/pro-access.js?v=6"></script>' not in whats_page:
+    if '<script src="/assets/pro-access.js?v=7"></script>' not in whats_page:
         fail("What's Latest pro-access client missing")
     whats_public = json.loads((SITE / "apps/whats-latest/data.json").read_text(encoding="utf-8"))
     if not (whats_public.get("preview") or {}).get("enabled"):
@@ -218,7 +218,8 @@ def main() -> None:
         "apps/supply-chain/company.html": "company.js",
         "apps/macro-radar/index.html": "app.js",
     }
-    sync_access = '<script src="/assets/pro-access.js?v=6"></script>'
+    sync_access = '<script src="/assets/pro-access.js?v=7"></script>'
+    auth_session = '<script src="/assets/auth-session.js?v=1"></script>'
     sync_adapter = '<script src="/assets/pro-rich-data.js?v=4"></script>'
     hard_stop = '<script src="/assets/pro-preview-gate.js?v=1"></script>'
     for rel, legacy_app in rich_pages.items():
@@ -230,6 +231,8 @@ def main() -> None:
             fail("rich access or hard-stop adapter missing from: " + rel)
         if text.index(sync_access) > text.index(sync_adapter):
             fail("pro-access must load before pro-rich-data: " + rel)
+        if auth_session not in text or text.index(auth_session) > text.index(sync_access):
+            fail("auth-session must load before pro-access: " + rel)
         if text.index(sync_adapter) > text.index(hard_stop):
             fail("pro-rich-data must load before preview hard-stop: " + rel)
         legacy_pos = text.rfind(legacy_app)

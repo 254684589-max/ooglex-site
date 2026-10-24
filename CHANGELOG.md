@@ -29,6 +29,10 @@
 
 - 2026-10-21：财务桑基改为经本站代理读取 SEC companyfacts。页面先请求同源路径 `/apps/financial-sankey/companyfacts/CIK##########.json`，再请求 `https://sec-facts.ooglex.com/companyfacts/CIK##########.json`，最后才尝试浏览器直连。代理只转发 `data.sec.gov` 上 10 位 CIK 的 companyfacts，User-Agent 声明本站身份（联系方式来自仓库变量 `SEC_CONTACT`，没有则用站点 URL，不把邮箱写入 Git），并按 IP / 上游频率限制；成功响应缓存 6 小时，不标成实时行情。NVDA、MSFT 摘录只在代理和直连都失败时使用，本地 JSON 仍可打开。主站 `www` 仍是 GitHub Pages 灰云，这次没有改 DNS，也没有改「最新消息」管道。Worker 要等合并到 `main` 后由工作流部署。未部署。
 
+### 修复
+
+- 2026-10-24：已登录用户有时仍只看到 10% 预览（数据中心等应用页）。原因有两个：① Supabase 登录 token 约 1 小时过期，只有账户页加载的 supabase-js 会自动续期；登录一小时后只浏览应用页时，权限校验拿着过期 token 被拒，已登录用户被当成访客。② 产业链、宏观风险、富豪榜、金融专栏四个板块的 Worker 只给 PRO 方案完整数据，FREE 账户登录后仍是预览，与「未登录 10%、登录 100%」的规则不符。修复：新增 `assets/auth-session.js`，token 临近过期时用 refresh_token 向 Supabase 换新 token 并写回同一存储键（只用公开 publishable key）；`access-gate.js`（通用应用页，V14）与 `pro-access.js`（会员 API，v=7）都先续期再校验；通用页在 Supabase 暂时连不上、但本地 token 仍在有效期内时按已登录处理，token 已过期则仍按预览；在另一标签页登录后本页自动解除预览。Worker 五个产品全部改为只校验登录会话（`signedInFull`），不看订阅方案；角标显示「已登录 · FULL」；付费墙文案去掉「升级 PRO」。`account/schema.sql` 与新迁移 `20261024_signed_in_full_all_products.sql` 同步把 free 档记为 `full`（执行与否不影响 Worker 生效）。构建与校验脚本加入 `auth-session.js` 并要求它先于 `pro-access.js` 加载。**未部署**：页面改动需合并 `main` 由 Pages 部署，Worker 规则需 Deploy PRO API 工作流发布，均待所有者批准。
+
 ### 修改
 
 - 2026-10-17：「App 专区」改版为图标墙。首页 `#app-zone` 去掉文字说明行，只显示 App 图标（圆角方形，渐变细边的面板，标题样式与上方「工具与游戏」一致以便衔接），右上角「全部 App →」进入新增的专区页 `/apps/app-zone/`（同样只显示图标，网格自适应，手机每行 4 个，为将来上百个 App 预留）；点图标进入各 App 的单独下载/安装页。检查全站后收录现有全部 4 个可安装 App：OOGLE X · 科技领袖（安卓，`/apps/tech-leaders/app/`）、环球电波（安卓，`/apps/radio/download/`）、环球TV 与万象智聊（网页 App，新增安装说明页 `/apps/app-zone/tv/`、`/apps/app-zone/ai-chat/`）。图标列表统一由 `apps/app-zone/registry.js` 登记渲染；App 名称作为无障碍名称与悬停提示。新增 OOGLE X 方形图标 `apps/app-zone/icons/oogle-x.svg`；sitemap 增加 3 个新页面；`docs/APP_ZONE.md` 更新新增 App 的步骤。经所有者要求上线。

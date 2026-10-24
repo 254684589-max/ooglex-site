@@ -25,9 +25,17 @@
     }
   }
 
-  function authHeaders() {
-    var s = session();
-    return s && s.access_token ? { Authorization: "Bearer " + s.access_token } : {};
+  // token 临近过期时先经 auth-session.js 续期，避免已登录用户被 Worker 当成访客。
+  async function authHeaders() {
+    var token = "";
+    if (window.OoglexAuthSession) {
+      try { token = await window.OoglexAuthSession.getAccessToken(); } catch (_) { token = ""; }
+    }
+    if (!token) {
+      var s = session();
+      token = s && s.access_token ? String(s.access_token) : "";
+    }
+    return token ? { Authorization: "Bearer " + token } : {};
   }
 
   function abortGuard(ms) {
@@ -39,8 +47,8 @@
 
   async function request(path, options) {
     var opts = Object.assign({ method: "GET", cache: "no-store" }, options || {});
-    opts.headers = Object.assign({ Accept: "application/json" }, authHeaders(), opts.headers || {});
     var guard = opts.signal ? null : abortGuard(REQUEST_TIMEOUT_MS);
+    opts.headers = Object.assign({ Accept: "application/json" }, await authHeaders(), opts.headers || {});
     if (guard) opts.signal = guard.signal;
 
     var res;

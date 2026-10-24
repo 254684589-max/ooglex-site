@@ -87,7 +87,7 @@
     var chip = document.createElement("div");
     chip.id = "ooglex-rich-access";
     chip.textContent = access && access.access_level === "full"
-      ? String(access.plan || "PRO").toUpperCase() + " · FULL"
+      ? (access.plan === "signed_in" ? "已登录" : String(access.plan || "PRO").toUpperCase()) + " · FULL"
       : "FREE · 10% PREVIEW";
     chip.style.cssText = [
       "position:fixed","right:14px","bottom:14px","z-index:10001",
@@ -139,13 +139,13 @@
     sub.textContent = access && access.degraded
       ? "当前网络连不上会员服务，已按预览显示本页原版数据。恢复连接后可查看完整数据。"
       : access && access.authenticated
-        ? "当前为 FREE 预览。升级 PRO 后可继续查看完整数据。"
-        : "当前展示原版页面预览。登录 PRO 后可继续查看完整数据。";
+        ? "你已登录，但账户权限暂时无法确认，当前先显示预览。请刷新或重新登录后再试。"
+        : "当前展示原版页面预览。登录 / 注册后可查看完整数据。";
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:760px";
 
     var button = document.createElement("a");
     button.href = "/account/";
-    button.textContent = access && access.authenticated ? "查看会员权限" : "登录 / 注册";
+    button.textContent = access && access.authenticated ? "前往账户" : "登录 / 注册";
     button.style.cssText = [
       "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:44px",
       "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",

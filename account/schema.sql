@@ -123,16 +123,16 @@ create table if not exists public.plan_entitlements (
 );
 
 insert into public.plan_entitlements(plan, product_key, access_level) values
-  ('free','supply_chain','preview'),
+  ('free','supply_chain','full'),
   ('pro','supply_chain','full'),
   ('pro_plus','supply_chain','full'),
-  ('free','macro_risk','preview'),
+  ('free','macro_risk','full'),
   ('pro','macro_risk','full'),
   ('pro_plus','macro_risk','full'),
-  ('free','billionaires','preview'),
+  ('free','billionaires','full'),
   ('pro','billionaires','full'),
   ('pro_plus','billionaires','full'),
-  ('free','finance_column','preview'),
+  ('free','finance_column','full'),
   ('pro','finance_column','full'),
   ('pro_plus','finance_column','full'),
   ('free','whats_latest','full'),
