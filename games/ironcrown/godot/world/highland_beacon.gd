@@ -18,6 +18,8 @@ const POST_STEP := 0.42                  # 木桩的间距（米）
 const BROKEN := Vector3(1.0, 0.0, -1.0)  # 塌了的那个角（塔的本地坐标：+X、-Z = 东北，朝向转过以后大致还是东北）
 const FIRE_Y := 12.2                     # 火在塔脚往上多高
 const PARAPET_H := 1.1
+const DETAIL_FAR := 110.0                # 营地里的零碎（木栅、门、营房、棚、塌下来的石头）多远以外不画：从村口看整条山谷时绘制调用超了 400（5.3b 实测 425），先砍远处（ART.md 第八节）
+const FIRE_FAR := 150.0                  # 火盆、火苗多远以外不画（远处只剩那片光晕）
 ## 箭窗：[第几面（0 = 门那面，往 +Y 转 90° 一面）, 横着, 高]——外面（这里）和塔里（BeaconTower）同一份；西墙贴着石梯，只在楼上开一道
 const SLITS := [[0, -1.2, 2.8], [0, 0.0, 6.2], [1, 0.4, 3.3], [3, 0.0, 6.3], [2, -0.9, 5.6]]
 
@@ -208,7 +210,7 @@ static func jobs_for(rect: Rect2, reduced_motion: bool) -> Array:
 		out.append(func(root: Node3D): _tower(root))
 		out.append(func(root: Node3D): _fire(root, reduced_motion))
 	if rect.has_point(HighlandLayout.BARRACKS[0]):
-		out.append(func(root: Node3D): Croft.build(root, barracks_front(), float(HighlandLayout.BARRACKS[1]), barracks_spec()))
+		out.append(func(root: Node3D): far_cut(Croft.build(root, barracks_front(), float(HighlandLayout.BARRACKS[1]), barracks_spec()), DETAIL_FAR))
 	if rect.has_point(HighlandLayout.WOODSHED[0]) or rect.has_point(HighlandLayout.GRANARY[0]):
 		out.append(func(root: Node3D): _sheds(root, rect))
 	var ps := posts().filter(func(p): return rect.has_point(Vector2(p[0].x, p[0].z)))
@@ -218,6 +220,15 @@ static func jobs_for(rect: Rect2, reduced_motion: bool) -> Array:
 	if rect.has_point(g):
 		out.append(func(root: Node3D): _gate(root))
 	return out
+
+
+## 把一个节点下面所有画出来的东西设成多远以外不画
+static func far_cut(node: Node, dist: float) -> Node:
+	if node is GeometryInstance3D and (node as GeometryInstance3D).visibility_range_end == 0.0:
+		(node as GeometryInstance3D).visibility_range_end = dist
+	for ch in node.get_children():
+		far_cut(ch, dist)
+	return node
 
 
 ## 塔身：基石、墙、角石、腰线、托石、雉堞（塌了一角）、门洞、箭窗、塔顶的石板地和天窗、积雪；塔脚下塌下来的石头
@@ -308,6 +319,7 @@ static func _tower(root: Node3D) -> void:
 	rubble.name = "TowerRubble"
 	rubble.multimesh = mm
 	rubble.material_override = slab
+	rubble.visibility_range_end = DETAIL_FAR
 	root.add_child(rubble)
 
 
@@ -352,6 +364,7 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 	char_m.roughness = 0.9
 	var mi := kit.build({"stone": Look.mat("stone"), "iron": Inn._iron_mat(), "ember": ember, "char": char_m})
 	mi.name = "BeaconBrazier"
+	mi.visibility_range_end = FIRE_FAR
 	mi.transform = tp
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(mi)
@@ -372,6 +385,7 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 		fl.name = "Flame%d" % k
 		fl.mesh = q0
 		fl.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		fl.visibility_range_end = FIRE_FAR
 		var off: Vector3 = [Vector3.ZERO, Vector3(0.25, 0, 0.1), Vector3(-0.22, 0, -0.12), Vector3(0.05, 0, 0.28)][k]
 		fl.position = tp * (c + off + Vector3(0, 0.6 + fh * 0.5, 0))
 		root.add_child(fl)
@@ -401,6 +415,7 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 	q.material = hm
 	halo.mesh = q
 	halo.position = at + Vector3(0, 0.3, 0)
+	halo.visibility_range_end = FIRE_FAR
 	root.add_child(halo)
 	var glow := MeshInstance3D.new()                                                                       # 远处：隔着雾也看得见的一点暖光（不受雾影响，同远处那串烽燧）
 	var g := QuadMesh.new()
@@ -426,6 +441,7 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 static func _sparks(at: Vector3) -> CPUParticles3D:
 	var p := CPUParticles3D.new()
 	p.name = "BeaconSparks"
+	p.visibility_range_end = 80.0
 	p.position = at
 	p.amount = 24
 	p.lifetime = 1.6
@@ -467,7 +483,7 @@ static func _palisade(root: Node3D, list: Array) -> void:
 	var mi := MultiMeshInstance3D.new()
 	mi.name = "Palisade"
 	mi.multimesh = mm
-	mi.visibility_range_end = 220.0
+	mi.visibility_range_end = DETAIL_FAR
 	root.add_child(mi)
 
 
@@ -501,6 +517,7 @@ static func _gate(root: Node3D) -> void:
 	horn.roughness = 0.6
 	var mi := kit.build({"bark": Look.mat("bark"), "timber": Look.mat("timber"), "snow": Look.mat("snow"), "horn": horn, "iron": Inn._iron_mat()})
 	mi.name = "PalisadeGate"
+	mi.visibility_range_end = DETAIL_FAR
 	mi.transform = place
 	root.add_child(mi)
 
@@ -536,6 +553,7 @@ static func _sheds(root: Node3D, rect: Rect2) -> void:
 				kit.box("timber", Vector3(0, y, -sd * 0.5 + 0.35), Vector3(sw - 0.3, 0.05, 0.6), Basis.IDENTITY, 0.9, 0.7)
 		var mi := kit.build({"bark": Look.mat("bark"), "timber": Look.mat("timber"), "snow": Look.mat("snow")})
 		mi.name = "Granary" if granary else "Woodshed"
+		mi.visibility_range_end = DETAIL_FAR
 		mi.transform = pl
 		root.add_child(mi)
 		if granary:
@@ -549,7 +567,7 @@ static func _sheds(root: Node3D, rect: Rect2) -> void:
 			d.kit.cylinder(d._wood(), blk, blk + Vector3(0, 0.5, 0), 0.3, 0.28, 8, 0.8)
 			d.kit.cylinder(d._wood(), blk + Vector3(0.05, 0.5, 0), blk + Vector3(0.25, 1.15, 0.05), 0.025, 0.025, 5, 0.7)
 			d.kit.box(d._solid(Color("4a4a50"), 0.4, 0.6), blk + Vector3(0.05, 0.53, 0), Vector3(0.18, 0.1, 0.03), Basis(Vector3.FORWARD, 0.3))
-	d.build(root, "ShedProps", false)
+	d.build(root, "ShedProps", false).visibility_range_end = DETAIL_FAR
 
 
 ## 树、石头不长在营地里（HighlandFlora.near_village_works 调）
