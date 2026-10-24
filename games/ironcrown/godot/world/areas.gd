@@ -6,12 +6,12 @@ extends RefCounted
 ## 存档里的 "scene" 字段就是区域名（core/saves.gd 用 NAMES 校验）。
 
 const NAMES := {"frostford": "霜渡镇", "tavern": "「倒钩鱼」酒馆", "churchyard": "星铁小教堂墓园", "chapel": "星铁小教堂",
-	"birch": "镇外桦林", "ferry": "渡口", "marsh": "鹭沼", "inn": "「歪桩」客栈", "castle": "黑鹭堡", "hall": "黑鹭堡 · 大厅", "sickroom": "黑鹭堡 · 病房", "barracks": "黑鹭堡 · 兵营", "counting": "黑鹭堡 · 账房", "highland": "余火高地", "waystation": "羊脊村 · 驿站", "test_range": "灰盒测试场", "arena": "训练场", "battle": "军阵试验场"}
-const INDOOR := ["tavern", "chapel", "inn", "hall", "sickroom", "barracks", "counting", "waystation"]
+	"birch": "镇外桦林", "ferry": "渡口", "marsh": "鹭沼", "inn": "「歪桩」客栈", "castle": "黑鹭堡", "hall": "黑鹭堡 · 大厅", "sickroom": "黑鹭堡 · 病房", "barracks": "黑鹭堡 · 兵营", "counting": "黑鹭堡 · 账房", "highland": "余火高地", "waystation": "羊脊村 · 驿站", "beacon_tower": "第十九烽 · 塔里", "test_range": "灰盒测试场", "arena": "训练场", "battle": "军阵试验场"}
+const INDOOR := ["tavern", "chapel", "inn", "hall", "sickroom", "barracks", "counting", "waystation", "beacon_tower"]
 ## 内容在章节包里的区域（5.1a）：区域 → 第几章。网页上直接 ?area= 进去而包还没到时，main 先用纯色搭、再下载章节包重新载入
 const PACK_AREAS := {"highland": 2}
 ## 哪一章的区域（5.2a）：网页上直接 ?area= 进去时章节跟着对上（旅行地图翻到那一章的那一页）
-const CHAPTER_AREAS := {"highland": 2, "waystation": 2}
+const CHAPTER_AREAS := {"highland": 2, "waystation": 2, "beacon_tower": 2}
 ## 鹭沼（4.4，连片地图）不在这里：整张图 256 × 192 米一次烘焙太慢（网页上要一秒左右），有敌人的那几块按块烘焙（4.4c）。
 ## 要烘焙导航网格的区域（3.4）：敌人会出现的地方。范围 = 能走的那片地（地面碰撞盒比它大）；墓园、小教堂、测试场没有敌人，不烘焙（敌人在那里直线走）
 const NAV_BOUNDS := {
@@ -69,6 +69,8 @@ static func spawns(area: String) -> Dictionary:
 			return Highland.spawn_points()
 		"waystation":
 			return Waystation.SPAWNS
+		"beacon_tower":
+			return BeaconTower.SPAWNS
 	return {}
 
 
@@ -121,6 +123,8 @@ static func views(area: String) -> Array:
 			return Highland.views()
 		"waystation":
 			return Waystation.VIEWS
+		"beacon_tower":
+			return BeaconTower.VIEWS
 	return []
 
 

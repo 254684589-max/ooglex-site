@@ -33,6 +33,21 @@ const ROAD_BLEND := 7.0                 # 路边多宽从路面高度过渡回�
 const AMBUSH_LEG := 4                   # 第几段是伏击段（ROAD[4] → ROAD[5]：上坡一侧是岩坎）
 const CLIFF_H := 7.5
 
+## ---------------- 第十九烽「断角烽」（5.3b；STORY.md 5.2「山脊上的石砌烽燧塔：塔顶的火盆、塔下的木栅营地（营房、柴棚、粮棚，粮棚快空了）」）----------------
+## 塔：[中心 (x, z), 朝向（度，门朝 +Z 再转这么多）]；方塔，外面 TOWER_W 见方、TOWER_H 高，顶上一圈雉堞，东北角塌了一块（「断角」）
+const TOWER := [Vector2(22.0, -68.0), -25.0]
+const TOWER_W := 6.4
+const TOWER_H := 11.0
+const TOWER_WALL := 0.8
+## 木栅：以 BEACON19 为圆心的一圈削尖的木桩，门（GATE_W 宽）开在盘山路进来的那一边
+const PALISADE_R := 13.0
+const PALISADE_H := 3.0
+const GATE_W := 4.2
+## 营地里：[中心 (x, z), 朝向（度，开口 / 门朝 +Z 再转这么多）, 宽, 纵深]
+const BARRACKS := [Vector2(14.0, -64.5), 90.0, 7.0, 4.6]       # 营房：矮石屋，门朝东对着院子（门在南头，北头离塔角近）
+const WOODSHED := [Vector2(31.0, -66.0), -90.0, 4.4, 2.4]      # 柴棚：敞着的披棚，开口朝西，柴只剩一小垛
+const GRANARY := [Vector2(30.0, -57.5), -125.0, 4.0, 2.8]      # 粮棚：开口朝院子，架子上只剩两只麻袋
+
 ## ---------------- 盘山路上（5.3a；STORY.md 5.2「积雪齐膝（走进去变慢），几处倒伏的松树；半山有一处废弃的羊棚」）----------------
 ## 废羊棚：半山西边那个弯下面一块压平的地。[中心 (x, z), 朝向（度，0 = 门朝 +Z（南）），宽, 纵深]
 const SHED := [Vector2(-52.0, 4.0), 90.0, 6.4, 4.6]          # 门朝东，对着路
@@ -158,6 +173,8 @@ const SPAWN_XZ := {
 	"plain": [Vector2(-10.0, -96.0), 180.0],        # 山脊背后，面朝北的冰原
 	"waystation_door": [Vector2(15.4, 84.6), 90.0], # 驿站门外（从大堂出来），面朝西（村路）
 	"shed": [Vector2(-42.0, 9.0), 70.0],            # 废羊棚下面的路上（5.3a），面朝羊棚
+	"beacon_door": [Vector2(20.0, -63.7), 155.0],   # 第十九烽塔门外（从塔里出来，5.3b），背对塔门、面朝院子
+	"beacon_top": [Vector2(21.15, -66.2), -25.0],   # 塔顶（从天窗爬上来，5.3b）：y 按塔顶算（spawn_points 里改），面朝北边山脊上那串烽燧
 }
 ## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
 const VIEW_SPEC := [
@@ -175,9 +192,13 @@ const VIEW_SPEC := [
 	[Vector3(-39.0, 1.7, 7.5), 75.0, -8.0],         # 11 西边那个弯上往下看废羊棚（5.3a）：门朝着路，西南角塌了
 	[Vector3(-29.0, 1.7, 9.5), -72.0, -6.0],        # 12 伏击段起头：右手路肩上躺着的那棵倒树、路边的雪檐、左手的岩坎
 	[Vector3(24.4, 1.7, 54.2), -52.0, -5.0],        # 13 第一段路：树冠倒到路边的那棵、下坡一侧的雪杆
+	[Vector3(12.0, 1.7, -50.0), -28.0, 12.0],       # 14 第十九烽：从路牌那儿看木栅门、塔和塔顶的火（5.3b）
+	[Vector3(20.0, 1.7, -58.5), -10.0, 18.0],       # 15 营地院子里抬头看塔（断了的那个角、火盆）
+	[Vector3(25.5, 1.7, -60.5), -78.0, -4.0],      # 16 院子东边：柴棚、粮棚
+	[Vector3(21.15, 1.7, -66.2), -25.0, 2.0],       # 17 塔顶（y 按塔顶算）：火盆、往北看那串烽燧
 ]
 const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘", "山脊往东", "驿站", "羊圈和溪", "石圈", "铁匠棚", "村北回看",
-	"废羊棚", "路肩上的倒树", "第一段路"]
+	"废羊棚", "路肩上的倒树", "第一段路", "第十九烽", "营地院子", "柴棚和粮棚", "塔顶"]
 
 
 ## 大轮廓（不含噪声）：南边谷底 0 米 → 往北抬升 → 山脊（z 约 -68，最高约 46 米，西高东低）→ 山脊背后落到冰原（约 30 米）；东西两边是山肩
@@ -303,16 +324,16 @@ static func height(x: float, z: float) -> float:
 	if dv < VILLAGE_R + 12.0:
 		var k := _smooth(clampf((VILLAGE_R + 12.0 - dv) / 12.0, 0.0, 1.0))
 		y = lerpf(y, VILLAGE_Y + 0.25 * bumps(x * 0.5, z * 0.5), k)
-	for c in [BEACON19, BEACON18]:                                 # 烽燧脚下：压平一小片
-		var dc := p.distance_to(c)
-		if dc < PAD_R + 6.0:
-			var cy := base(c.x, c.y) + 1.0
-			y = lerpf(y, cy, _smooth(clampf((PAD_R + 6.0 - dc) / 6.0, 0.0, 1.0)))
 	var r := road_hit(p)
 	if r.d < ROAD_HALF + ROAD_BLEND:
 		var ry := road_y_at(r.i, r.t) + 0.08 * bumps(x * 3.0, z * 3.0)
 		var k := 1.0 if r.d <= ROAD_HALF else _smooth(1.0 - (r.d - ROAD_HALF) / ROAD_BLEND)
 		y = lerpf(y, ry, k)
+	for c in [BEACON19, BEACON18]:                                 # 烽燧脚下：压平一小片（压在路上面：路的尽头在这片里，营地靠门那角原来跟着路低 0.7 米，5.3b）
+		var dc := p.distance_to(c)
+		if dc < PAD_R + 6.0:
+			var cy := base(c.x, c.y) + 1.0
+			y = lerpf(y, cy, _smooth(clampf((PAD_R + 6.0 - dc) / 6.0, 0.0, 1.0)))
 	var dsh := p.distance_to(SHED[0])                             # 废羊棚：压平一小片（5.3a）
 	if dsh < SHED_R + 10.0:                                         # 过渡 10 米：坡上切出来的坎不陡（5 米时背后露出一大片岩石）
 		var sy := natural((SHED[0] as Vector2).x, (SHED[0] as Vector2).y)
@@ -439,12 +460,22 @@ static func spawn_points() -> Dictionary:
 		var s: Array = SPAWN_XZ[id]
 		var p: Vector2 = s[0]
 		out[id] = [Vector3(p.x, height(p.x, p.y) + 0.05, p.y), s[1]]
+	var top: Array = out.beacon_top
+	top[0] = Vector3((top[0] as Vector3).x, tower_base_y() + TOWER_H + 0.1, (top[0] as Vector3).z)
 	return out
+
+
+## 塔脚的高度（压平的那片）
+static func tower_base_y() -> float:
+	return base(BEACON19.x, BEACON19.y) + 1.0
 
 
 static func views() -> Array:
 	var out := []
 	for v: Array in VIEW_SPEC:
 		var p: Vector3 = v[0]
-		out.append([Vector3(p.x, height(p.x, p.z) + p.y, p.z), v[1], v[2]])
+		var y := height(p.x, p.z) + p.y
+		if Vector2(p.x, p.z).distance_to(TOWER[0]) < TOWER_W * 0.5:   # 机位在塔里（塔顶那个）：按塔顶算
+			y = tower_base_y() + TOWER_H + p.y
+		out.append([Vector3(p.x, y, p.z), v[1], v[2]])
 	return out

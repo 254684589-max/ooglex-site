@@ -207,6 +207,8 @@ func _ready() -> void:
 			t = Highland.build(world, Settings.reduced_motion)
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
+		"beacon_tower":
+			t = BeaconTower.build(world, Settings.reduced_motion)
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
@@ -1006,7 +1008,7 @@ func _arrive() -> void:
 ## 「去芦栈村」推进到「在芦栈村打听」；进了黑鹭堡的庭院推进到「见赫尔曼」（4.5a）。没和维克托说话就出发了的（主线还没接），也从「在芦栈村打听」接上：不然打听到的消息记进了日志却看不到（审查）。
 ## 任务更新照常提示、自动存档（_autosave_on_quest）
 func _story_progress() -> void:
-	if GameState.chapter == 2 and area in ["highland", "waystation"] and not GameState.quest_active("ch2_main") and not GameState.quest_done("ch2_main"):
+	if GameState.chapter == 2 and area in ["highland", "waystation", "beacon_tower"] and not GameState.quest_active("ch2_main") and not GameState.quest_done("ch2_main"):
 		GameState.start_quest("ch2_main")                    # 第二章开场（5.2b）：到了羊脊村
 		if str(GameState.get_flag("valen_heir", "")) == "ivette" and not GameState.has_item("ivette_letter") and not GameState.has_flag("ch2_letter_given"):
 			GameState.add_item("ivette_letter")             # 选了伊薇特：她联合了厄尔德家，写了一封信让你带上山（STORY.md 5.4）

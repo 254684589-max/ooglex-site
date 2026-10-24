@@ -21,6 +21,6 @@
     "sickroom": "night",
     "barracks": "keep",
     "counting": "keep",
-    "battle": "battle", "highland": "night", "waystation": "town"
+    "battle": "battle", "highland": "night", "waystation": "town", "beacon_tower": "night"
   }
 }

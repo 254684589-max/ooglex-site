@@ -112,7 +112,7 @@ static func near_village_works(p: Vector2, margin: float) -> bool:
 		for i in line.size() - 1:
 			if HighlandLayout._seg_d(p, line[i], line[i + 1]) < HighlandLayout.WALL_W + margin:
 				return true
-	return HighlandRoad.blocks(p, margin)                         # 盘山路上的废羊棚、倒树（5.3a）
+	return HighlandRoad.blocks(p, margin) or HighlandBeacon.blocks(p, margin)    # 盘山路上的废羊棚、倒树（5.3a）；第十九烽的营地（5.3b）
 
 
 ## 坡度（1 - 法线的 y）

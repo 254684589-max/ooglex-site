@@ -59,12 +59,14 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	Look.glass_dark()
 	Look.halo(Look.WINDOW_COLOR, 0.32)
 	HighlandRoad.warm()                               # 盘山路上的倒树、废羊棚、雪杆（5.3a）
+	HighlandBeacon.warm()                             # 第十九烽：木栅的木桩（5.3b）
 	h._far()
 	HighlandFlora.far_forest(p_parent)               # 地图外面山坡上的针叶林、山脊上远处那串烽燧塔（5.1b）
 	HighlandFlora.far_beacons(p_parent)
 	HighlandVillage.stream_ice(p_parent)              # 羊脊村（5.2a）：结冰的溪、门、路牌（同步：一进场就推得开）
 	HighlandVillage.interactables(p_parent)
 	HighlandVillage.people(p_parent)
+	HighlandBeacon.interactables(p_parent)            # 第十九烽的塔门、塔顶的天窗、营房的门（5.3b）
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -249,7 +251,7 @@ func _collision() -> void:
 	road.collision_layer = 1
 	road.collision_mask = 0
 	parent.add_child(road)
-	for so in HighlandRoad.solids():
+	for so in HighlandRoad.solids() + HighlandBeacon.solids():          # 第十九烽的塔、雉堞、火盆、木栅、营房、两个棚（5.3b）
 		var rc := CollisionShape3D.new()
 		var rb := BoxShape3D.new()
 		rb.size = so[1]
@@ -300,6 +302,7 @@ static func ground_material() -> ShaderMaterial:
 static func clear_cache() -> void:
 	HighlandFlora.clear_cache()
 	HighlandRoad.clear_cache()
+	HighlandBeacon.clear_cache()
 	_mat = null
 	_sky_mat = null
 
@@ -356,6 +359,7 @@ func _jobs(st: ChunkStreamer) -> void:
 			var jobs: Array = [_job_terrain.bind(r), _job_flora.bind(r)]
 			jobs.append_array(HighlandVillage.jobs_for(r, reduced_motion))      # 村里的房子、石墙、羊、石圈、零碎（5.2a）
 			jobs.append_array(HighlandRoad.jobs_for(r))                         # 盘山路上的倒树、废羊棚、雪杆（5.3a）
+			jobs.append_array(HighlandBeacon.jobs_for(r, reduced_motion))       # 第十九烽：塔、火盆、木栅、营房、棚（5.3b）
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
@@ -597,12 +601,27 @@ static func map_spec() -> Dictionary:
 	shapes.append({"k": "mark", "at": HighlandLayout.PEN_ROUND[0], "label": "羊圈"})
 	shapes.append({"k": "mark", "at": HighlandLayout.STONE_RING, "label": "石圈"})
 	shapes.append({"k": "mark", "at": HighlandLayout.SHED[0], "label": "废羊棚"})
+	var tp := HighlandBeacon.tower_place()                         # 第十九烽（5.3b）：塔、营房、两个棚、木栅
+	shapes.append({"k": "house", "pts": _square(Vector2(tp.origin.x, tp.origin.z), float(HighlandLayout.TOWER[1]), HighlandLayout.TOWER_W, HighlandLayout.TOWER_W), "label": "塔"})
+	for b in [[HighlandLayout.BARRACKS, "营房"], [HighlandLayout.WOODSHED, "柴棚"], [HighlandLayout.GRANARY, "粮棚"]]:
+		var sp: Array = b[0]
+		shapes.append({"k": "house", "pts": _square(sp[0], float(sp[1]), float(sp[2]), float(sp[3])), "label": b[1]})
+	var ring := _circle(HighlandLayout.BEACON19, HighlandLayout.PALISADE_R)
+	var gate := HighlandLayout.BEACON19 + HighlandBeacon.gate_dir() * HighlandLayout.PALISADE_R
+	for k in ring.size():
+		var a: Vector2 = ring[k]
+		var b2: Vector2 = ring[(k + 1) % ring.size()]
+		if ((a + b2) * 0.5).distance_to(gate) > HighlandLayout.GATE_W * 0.8:
+			shapes.append({"k": "wall", "pts": _strip(a, b2, 0.25)})
 	shapes.append({"k": "mark", "at": HighlandLayout.BEACON19, "icon": "fire", "label": "第十九烽"})
 	shapes.append({"k": "mark", "at": HighlandLayout.BEACON18, "label": "第十八烽"})
 	for sp in [HighlandLayout.SIGN_VILLAGE, HighlandLayout.SIGN_BEACON]:
 		shapes.append({"k": "mark", "at": Vector2(sp.x, sp.z), "icon": "sign", "label": "路牌"})
 	var door := House.door_xz(HighlandVillage.waystation_pos(), wy, float(HighlandLayout.WAYSTATION[4]))
 	var exits := [{"at": door, "dir": -House.facing(wy), "to": "waystation", "spawn": "front", "name": HighlandVillage.WAYSTATION_DOOR}]
+	var td := tp * Vector3(0, 0, HighlandLayout.TOWER_W * 0.5)
+	var tdir := tp.basis * Vector3.BACK
+	exits.append({"at": Vector2(td.x, td.z), "dir": Vector2(tdir.x, tdir.z), "to": "beacon_tower", "spawn": "front", "name": HighlandBeacon.TOWER_DOOR})
 	return {"bounds": HighlandLayout.BOUNDS, "shapes": shapes, "exits": exits, "zones": zones()}
 
 
@@ -620,6 +639,16 @@ static func zones() -> Array:
 static func _strip(a: Vector2, b: Vector2, half: float) -> PackedVector2Array:
 	var side := (b - a).normalized().orthogonal() * half
 	return PackedVector2Array([a + side, b + side, b - side, a - side])
+
+
+## 一块长方形（中心、朝向（度，同 Basis(UP, yaw)）、宽、纵深）
+static func _square(c: Vector2, yaw: float, w: float, d: float) -> PackedVector2Array:
+	var b := Basis(Vector3.UP, deg_to_rad(yaw))
+	var out := PackedVector2Array()
+	for p in [Vector3(-w, 0, -d), Vector3(w, 0, -d), Vector3(w, 0, d), Vector3(-w, 0, d)]:
+		var q: Vector3 = b * (p * 0.5)
+		out.append(c + Vector2(q.x, q.z))
+	return out
 
 
 static func _circle(c: Vector2, r: float) -> PackedVector2Array:
