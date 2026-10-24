@@ -335,6 +335,11 @@ func _ready() -> void:
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
 					start_battle())
+	if _query("talk") != "" and not Engine.has_meta("ic_talk_param_done") and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):
+		Engine.set_meta("ic_talk_param_done", true)     # 截图用（5.2b）：?talk=对话编号 一进区域就和那个人说话（每次打开页面一次）
+		var who := _npc_by_dialogue(_query("talk"))
+		if who:
+			open_dialogue.call_deferred(who.dialogue_area, who.dialogue_id, who)
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:

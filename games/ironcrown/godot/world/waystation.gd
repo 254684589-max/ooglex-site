@@ -27,16 +27,16 @@ const BANNER_TOP := Vector3(0.0, 3.0, -2.88)          # 挂在炉罩正面（炉
 const MAP_POS := Vector3(-4.97, 1.75, 0.0)          # 西墙上钉着的烽燧线图
 ## 大堂里的人（5.2b）：[编号, 名字, 位置, 朝向（弧度，0 = 面朝北，-PI / 2 = 面朝东）, 衣服颜色]
 const ROWENA := ["rowena", "罗薇娜", Vector3(-3.05, 0, 0.2), -PI * 0.5, "5e6062"]        # 西边桌子前，面朝大堂
-const REQUISITIONER := ["requisitioner", "烽誓团的征粮人", Vector3(1.3, 0, 0.8), 0.0, "3e3a34"]     # 长桌南边的长凳东头，面朝桌子
+const REQUISITIONER := ["requisitioner", "烽誓团的征粮人", Vector3(1.3, 0, 1.2), 0.0, "3e3a34"]     # 长桌南边、长凳后面，面朝桌子
 ## 命名出生点：front = 刚进门，背对门、面朝大堂（-Z）
 const SPAWNS := {
 	"front": [Vector3(DOOR_X, 0, 2.7), 0.0],
 }
-const VIEW_NAMES := ["进门看大堂", "壁炉和旗", "罗薇娜的桌子", "门内对着出口", "粮架"]
+const VIEW_NAMES := ["进门看大堂", "壁炉和旗", "罗薇娜和她的桌子", "门内对着出口", "粮架"]
 const VIEWS := [
 	[Vector3(DOOR_X, 0, 2.7), 6.0, -6.0],
 	[Vector3(0.6, 0, 0.9), 0.0, 6.0],
-	[Vector3(-2.6, 0, 0.6), 72.0, -12.0],
+	[Vector3(-0.9, 0, 0.5), 84.0, -6.0],
 	[Vector3(DOOR_X, 0, 2.2), 180.0, -8.0],
 	[Vector3(2.4, 0, 0.6), -78.0, -6.0],
 ]

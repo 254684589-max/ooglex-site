@@ -130,6 +130,7 @@ static func apply(main: Node, id: String) -> void:
 	sun.rotation_degrees = p.sun_rot
 	if area == "highland":
 		Highland.apply_sky(env, current, p.get("horizon", p.sky))
+		sun.shadow_opacity = 0.5                      # 阴天：影子淡（阴影距离边上那道直边也就不扎眼了，5.2b 截图）
 	var tree: SceneTree = main.get_tree()
 	for g in ["fog_band", "house", "night_light"]:
 		for n in tree.get_nodes_in_group(g):
