@@ -12,7 +12,7 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/global-cams/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<!-- PWA：可安装到手机主屏、独立窗口运行（安装说明见 /apps/app-zone/global-cams/） -->
+<!-- PWA：可安装到手机主屏、独立窗口运行（安卓 APK 与安装说明见 /apps/global-cams/download/） -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#05070f">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
@@ -157,7 +157,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <script>
 /* PWA：注册 Service Worker + 「安装 App」按钮。
    支持一键安装的浏览器（安卓 Chrome / Edge、电脑 Chrome）直接弹安装框；
-   其余（如 iPhone Safari）跳到 App 专区的安装说明页。已安装后以独立窗口打开时不显示按钮。 */
+   其余（如 iPhone Safari）跳到 APK 下载页（含未知来源步骤，以及 Safari 添加到主屏幕；没有 IPA）。
+   已安装后以独立窗口打开时不显示按钮。 */
 (function(){
   'use strict';
   var standalone = window.matchMedia('(display-mode: standalone)').matches ||
@@ -165,7 +166,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                    window.navigator.standalone === true;
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js?v=1', { scope: './', updateViaCache: 'none' }).catch(function(){});
+      navigator.serviceWorker.register('sw.js?v=2', { scope: './', updateViaCache: 'none' }).catch(function(){});
     });
   }
   var btn = document.getElementById('installApp');
@@ -182,7 +183,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   });
   btn.addEventListener('click', function(){
     if (!deferred) {
-      location.href = '/apps/app-zone/global-cams/';
+      location.href = '/apps/global-cams/download/';
       return;
     }
     var prompt = deferred;

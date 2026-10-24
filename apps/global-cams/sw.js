@@ -5,7 +5,7 @@
      · 地球纹理与 globe.gl（与环球电波共用 /apps/radio/vendor/）首次用到时再缓存；
      · 备用清单 windows.json 网络优先：始终取最新，离线才回退缓存；
      · 跨域请求（WINDOW 视频库、R2/CDN 视频、Wikimedia 素材）一律直连、绝不拦截/缓存。 */
-const VERSION = 'gc-v1';
+const VERSION = 'gc-v2';
 const SHELL_CACHE = 'gc-shell-' + VERSION;
 const RUNTIME_CACHE = 'gc-runtime-' + VERSION;
 
@@ -53,6 +53,12 @@ self.addEventListener('fetch', (event) => {
   const own = url.pathname.startsWith('/apps/global-cams/');
   const vendor = url.pathname.startsWith('/apps/radio/vendor/');
   if (!own && !vendor) return;
+
+  // 下载页和 APK 不进缓存。导航若被写进外壳 index.html，离线会打开下载页而不是地球；
+  // APK 也不走 stale-while-revalidate，避免整包占缓存。
+  if (own && (/\/global-cams\/download(\/|$)/.test(url.pathname) || url.pathname.endsWith('.apk'))) {
+    return;
+  }
 
   // 备用清单：网络优先，离线才回退
   if (own && /\/windows\.json$/.test(url.pathname)) {

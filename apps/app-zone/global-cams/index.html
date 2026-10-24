@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>环球实景 · 安装到手机 · Ooglex App 专区</title>
-<meta name="description" content="把「环球实景」安装到手机主屏幕：转动 3D 地球，播放全球城市、海岸、山景、雨雪与夜景沉浸视频。">
+<title>环球实景 · 下载 Android APK · Ooglex App 专区</title>
+<meta name="description" content="下载环球实景 Android 调试版 APK（包名 com.ooglex.cams001）：转动 3D 地球，播放沉浸窗口视频，需要联网。也可打开网页版；iPhone 用 Safari 添加到主屏幕，没有 IPA。">
 <link rel="canonical" href="https://www.ooglex.com/apps/app-zone/global-cams/">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta property="og:type" content="website">
-<meta property="og:title" content="环球实景 · 安装到手机 · Ooglex">
-<meta property="og:description" content="转动 3D 地球，播放全球城市、海岸、山景、雨雪与夜景沉浸视频。">
+<meta property="og:title" content="环球实景 · 下载 Android APK · Ooglex">
+<meta property="og:description" content="转动 3D 地球，播放沉浸窗口视频，需要联网。安卓可下载调试版 APK。">
 <meta property="og:url" content="https://www.ooglex.com/apps/app-zone/global-cams/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
@@ -34,13 +34,25 @@
   .card h2,.sec h2{font-size:18px;margin-bottom:12px}
   .btn{display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:10px;background:#1f6feb;color:#fff;text-decoration:none;font-size:17px;font-weight:700}
   .btn:hover{filter:brightness(1.08)}
+  .btn.secondary{margin-top:10px;background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600}
+  .hint{margin-top:12px;color:var(--dim);font-size:14px}
+  .hint a{color:var(--accent)}
   dl{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin-top:16px;font-size:14px}
   dt{color:var(--dim)}
+  dd{overflow-wrap:anywhere}
   .sec{margin-top:28px}
   ol,ul{padding-left:22px;font-size:15px}
   li{margin:4px 0}
   .foot{margin-top:26px;color:var(--dim);font-size:13px}
+  @media (max-width:380px){
+    h1{font-size:26px}
+    dl{grid-template-columns:88px 1fr}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .btn:hover{filter:none}
+  }
   html[data-theme="ft"] .btn,html[data-theme="paper"] .btn{background:var(--accent);color:var(--on-accent)}
+  html[data-theme="ft"] .btn.secondary,html[data-theme="paper"] .btn.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
   html[data-theme="ft"] .icon,html[data-theme="paper"] .icon{box-shadow:0 8px 22px rgba(120,92,64,.22)}
 </style>
 </head>
@@ -52,32 +64,37 @@
       <img class="icon" src="/apps/global-cams/icons/icon.svg" alt="" width="76" height="76">
       <div>
         <h1>环球实景</h1>
-        <p class="sub">转动 3D 地球，点亮世界各地的沉浸窗口，播放城市、海岸、山景、雨雪与夜景视频。</p>
+        <p class="sub">转动 3D 地球，点开沉浸窗口视频。安装包和网页版都需要联网。</p>
       </div>
     </section>
     <section class="card">
-      <h2>安装到手机</h2>
-      <a class="btn" href="/apps/global-cams/">打开环球实景</a>
+      <h2>下载到安卓手机</h2>
+      <a class="btn" href="/apps/global-cams/download/ooglex-cams.apk" download="环球实景.apk">下载 Android APK</a>
+      <a class="btn secondary" href="/apps/global-cams/">打开网页版</a>
+      <p class="hint">调试版，版本 1.0，包名 com.ooglex.cams001，约 3.6 MB。未上架应用商店。未知来源的安装步骤见下方，扫码和说明也可看 <a href="/apps/global-cams/download/">下载页</a>。</p>
       <dl>
-        <dt>类型</dt><dd>网页 App（PWA），没有安装包，无需应用商店</dd>
-        <dt>支持</dt><dd>安卓 Chrome / Edge / 三星浏览器；iPhone、iPad 用 Safari</dd>
-        <dt>权限</dt><dd>不需要任何权限，只需联网</dd>
+        <dt>类型</dt><dd>安卓可下载（调试版 APK）</dd>
+        <dt>支持</dt><dd>Android 5.1 及以上安装 APK。网页版可用手机或电脑浏览器打开。</dd>
+        <dt>权限</dt><dd>安装包只申请联网，用来转动 3D 地球并播放沉浸窗口视频。</dd>
       </dl>
     </section>
     <section class="sec">
-      <h2>安卓手机</h2>
+      <h2>安卓安装（未知来源）</h2>
       <ol>
-        <li>用 Chrome 打开上面的「打开环球实景」。</li>
-        <li>点页面左上角的「📲 安装 App」一键安装；也可以点右上角 ⋮ 菜单 →「安装应用」或「添加到主屏幕」。</li>
-        <li>确认后桌面会出现「环球实景」图标，打开即是独立窗口。</li>
+        <li>用手机浏览器打开本页，点「下载 Android APK」。</li>
+        <li>下载完成后打开 ooglex-cams.apk。</li>
+        <li>若提示「未知来源」或「禁止安装未知应用」，点允许本次安装；或到系统设置里，允许当前浏览器安装未知应用。</li>
+        <li>点安装。完成后桌面出现「环球实景」图标。</li>
+        <li>若 Play 保护机制提示「未知开发者」，点「仍然安装」或「详细信息 → 继续安装」。这是调试签名、未上架商店时的正常提示。</li>
       </ol>
     </section>
     <section class="sec">
       <h2>iPhone / iPad</h2>
       <ol>
-        <li>用 Safari 打开上面的「打开环球实景」。</li>
-        <li>点底部分享按钮 ⬆️ →「添加到主屏幕」。</li>
-        <li>桌面出现「环球实景」图标，用法与 App 相同。</li>
+        <li>APK 只能装在安卓上。这里没有 IPA，也不能装到 iPhone。</li>
+        <li>用 Safari 打开 <a href="/apps/global-cams/">环球实景网页版</a>。</li>
+        <li>点底部分享按钮，选择「添加到主屏幕」。</li>
+        <li>桌面出现「环球实景」图标，用法与 App 相同。播放视频需要联网。</li>
       </ol>
     </section>
     <section class="sec">
@@ -85,10 +102,10 @@
       <ul>
         <li>视频不是实时直播，是预先录制、带公开许可（CC BY / CC BY-SA / 公有领域）的风景视频，来自 Wikimedia Commons，经 Ooglex 自有 CDN 播放；每条都可查看原始素材来源、作者和许可证。</li>
         <li>视频库每天自动更新一次（北京时间清晨），保持约 150 个窗口，新素材通过质量与版权检查后才会轮换进来。</li>
-        <li>内容与网页版同步更新，无需重新安装。播放视频需要联网。</li>
+        <li>安卓 APK 打开的是同一套网页。内容更新不用重装安装包，但转动地球和播放沉浸窗口视频都需要联网。</li>
       </ul>
     </section>
-    <p class="foot">删除方法：像普通 App 一样长按桌面图标删除即可，不会留下其他文件。</p>
+    <p class="foot">删除方法：安卓像普通应用一样长按桌面图标卸载。网页版从主屏幕移除图标即可。</p>
   </main>
 </body>
 </html>

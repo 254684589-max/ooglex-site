@@ -13,6 +13,8 @@
 
 ### 新增
 
+- 2026-10-24：环球实景增加可下载的 Android 调试版 APK（任务 cams-001）。安装包为 `apps/global-cams/download/ooglex-cams.apk`（约 3.6 MB；包名 `com.ooglex.cams001`；`versionName` 1.0，`versionCode` 1；`minSdk` 22；Android 调试证书签名，`debuggable=true`）。未上架应用商店，没有付费签名，也没有 IPA。新增下载页 `/apps/global-cams/download/`：主按钮「下载 Android APK」，写明未知来源安装步骤，保留打开网页版 `/apps/global-cams/`，并保留 iPhone / iPad 用 Safari 添加到主屏幕的说明。`apps/app-zone/registry.js` 中 `global-cams` 改为 `platform: "android"`、`href` 指向下载页；首页与专区页缓存指纹改为 `registry.js?v=20261024b`。`/apps/app-zone/global-cams/` 主按钮改为下载同一 APK，类型改为安卓可下载，仍保留打开网页版和 iOS 说明。sitemap 增加下载页。Service Worker 升到 `gc-v2`，下载页和 APK 不进缓存，避免把下载页写进应用外壳。网页版「安装 App」在浏览器不能一键安装时改去下载页。未部署。
+
 - 2026-10-24：环球实景做成可安装的网页 App（PWA，与环球TV同一做法），并放进 App 专区。`/apps/global-cams/` 新增 `manifest.webmanifest`、`sw.js`（只缓存本应用外壳与共用的地球纹理 / globe.gl；视频库清单和视频等跨域请求一律直连不缓存；备用清单网络优先）、新图标（地球 + 视频窗口 + 金色选中圈，含 192 / 512 / maskable / apple-touch 四种 PNG）；页面左上角加「📲 安装 App」：支持一键安装的浏览器直接弹安装框，其他浏览器（如 iPhone Safari）跳到安装说明页，已安装后以独立窗口打开时不显示。新增安装说明页 `/apps/app-zone/global-cams/`（写明视频为预录的公开许可素材、不是实时直播，每天自动轮换约 150 个窗口）；`apps/app-zone/registry.js` 登记 `global-cams`，首页与专区页的 `registry.js?v=20261024`；sitemap 加一条；`docs/APP_ZONE.md` 表格同步。删除方法：删掉上述新文件、registry 中这一项和 sitemap 中这一行即可，原页面功能不受影响。**已上线**（所有者说「上线」；合并提交 `4ab2dc1`，Deploy Protected Ooglex Pages 运行 40104236042 成功，含上线后环球实景核验）。
 
 - 2026-10-21：新增「财务桑基」试点，公开路径 `/apps/financial-sankey/`。输入美股代码后画最新年报的利润表、资产负债表、现金流量表，并可切换最近一季。科目来自 SEC EDGAR 公开 companyfacts（US-GAAP），不使用付费终端，也不需要密钥。浏览器不能给 `data.sec.gov` 发带 User-Agent 的跨域请求（响应没有 CORS），因此页面会先尝试直连，失败后对 NVDA、MSFT 使用 2026-10-21 从 companyfacts 截取的真实摘录，并标明摘录时间；其他代码可在本地打开 SEC JSON，仍走同一套绘图。轧差、缺失科目和季报现金流量的年初至今口径会写在图下。未放入「最新消息」顶栏：那一排是五个新闻栏目，按 360px 不横向溢出排过，财务桑基不是新闻栏目。未部署。

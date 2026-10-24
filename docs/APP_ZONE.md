@@ -17,7 +17,7 @@ Ooglex 新创意点子做成的 App 都放在这里。
 | `radio` | 环球电波 | 安卓 APK + 网页 App | `/apps/radio/download/` |
 | `tv` | 环球TV | 网页 App（PWA） | `/apps/app-zone/tv/` |
 | `ai-chat` | 万象智聊 | 网页 App（PWA） | `/apps/app-zone/ai-chat/` |
-| `global-cams` | 环球实景 | 网页 App（PWA） | `/apps/app-zone/global-cams/` |
+| `global-cams` | 环球实景 | 安卓 APK（调试版）+ 网页版 | `/apps/global-cams/download/`（旧说明页 `/apps/app-zone/global-cams/` 仍可打开，主按钮下载同一 APK） |
 
 ## 新增一个 App
 
