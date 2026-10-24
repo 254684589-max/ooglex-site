@@ -1,24 +1,29 @@
+// 站点规则：未登录只看 10% 预览，登录即可查看 100%。
+// 所有产品都只校验 Supabase 登录会话，不看订阅方案（FREE / PRO / PRO+ / OWNER 都给完整数据）。
 const PRODUCTS = Object.freeze({
   supply_chain: {
     previewKey: "supply-chain/preview.json",
-    fullKey: "supply-chain/full.json"
+    fullKey: "supply-chain/full.json",
+    signedInFull: true
   },
   macro_risk: {
     previewKey: "macro-risk/preview.json",
-    fullKey: "macro-risk/full.json"
+    fullKey: "macro-risk/full.json",
+    signedInFull: true
   },
   billionaires: {
     previewKey: "billionaires/preview.json",
-    fullKey: "billionaires/full.json"
+    fullKey: "billionaires/full.json",
+    signedInFull: true
   },
   finance_column: {
     previewKey: "finance-column/preview.json",
-    fullKey: "finance-column/full.json"
+    fullKey: "finance-column/full.json",
+    signedInFull: true
   },
   whats_latest: {
     previewKey: "whats-latest/preview.json",
     fullKey: "whats-latest/full.json",
-    // 「最新消息」只要求登录：任何经 Supabase 验证的会话都可读完整数据，不看订阅方案。
     signedInFull: true
   }
 });

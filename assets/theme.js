@@ -473,17 +473,23 @@
   });
 })();
 
-/* OOGLEX_ACCESS_GATE_LOADER_V2
+/* OOGLEX_ACCESS_GATE_LOADER_V3
    Keep registration preview isolated from theme/account controls so an access-gate
-   failure cannot disable the theme selector or login/register navigation. */
+   failure cannot disable the theme selector or login/register navigation.
+   auth-session.js (token refresh) must run before access-gate.js. */
 (function () {
   "use strict";
   var p = window.location.pathname || "/";
   // Registration preview applies to data apps only. Games stay fully public.
   var protectedPage = p.indexOf("/apps/") === 0 || p === "/apps";
   if (!protectedPage || window.OoglexSiteAccess) return;
-  var s = document.createElement("script");
-  s.src = "/assets/access-gate.js?v=20260927-games-public";
-  s.defer = true;
-  (document.head || document.documentElement).appendChild(s);
+  var parent = document.head || document.documentElement;
+  function load(src) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.async = false; // dynamic scripts with async=false execute in insertion order
+    parent.appendChild(s);
+  }
+  if (!window.OoglexAuthSession) load("/assets/auth-session.js?v=20261024-refresh");
+  load("/assets/access-gate.js?v=20261024-refresh");
 })();

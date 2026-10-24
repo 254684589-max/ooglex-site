@@ -1,4 +1,4 @@
-/* OOGLEX_ACCESS_GATE_V13
+/* OOGLEX_ACCESS_GATE_V14
    Generic 10% preview hard-stop for non-password /apps/ pages.
    /games/ is intentionally fully public.
    Mobile-safe rule: clip the document to the visual viewport, keep the preview above,
@@ -50,8 +50,10 @@
     } catch (_) { return ""; }
   }
 
+  // 返回 "ok" / "denied" / "unreachable"。只有服务端明确拒绝才算未登录；
+  // 网络失败与超时单独区分，交给调用方决定。
   async function verifyToken(token) {
-    if (!token) return false;
+    if (!token) return "denied";
     var ctrl = typeof AbortController === "function" ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (_) {} }, VERIFY_TIMEOUT_MS) : null;
     try {
@@ -61,12 +63,37 @@
         headers: { apikey: SUPABASE_PUBLISHABLE_KEY, Authorization: "Bearer " + token },
         signal: ctrl ? ctrl.signal : undefined
       });
-      return response.ok;
+      if (response.ok) return "ok";
+      return response.status === 401 || response.status === 403 ? "denied" : "unreachable";
     } catch (_) {
-      return false;
+      return "unreachable";
     } finally {
       if (timer) clearTimeout(timer);
     }
+  }
+
+  // 先续期再校验：access_token 约 1 小时过期，账户页之外没有别的地方会续期，
+  // 不续期的话登录一小时后打开任意应用页都会被当成访客。
+  async function freshToken() {
+    var auth = window.OoglexAuthSession;
+    if (auth) {
+      try { return await auth.getAccessToken(); } catch (_) {}
+    }
+    return storedToken();
+  }
+
+  async function checkAccess() {
+    var token = await freshToken();
+    if (!token) return false;
+    var result = await verifyToken(token);
+    if (result === "ok") return true;
+    if (result === "denied") return false;
+    // Supabase 暂时连不上：本地会话 token 仍在有效期内就按已登录处理，
+    // 不因网络抖动把已登录用户退回 10% 预览；token 已过期则仍按预览。
+    var auth = window.OoglexAuthSession;
+    var session = auth ? auth.getSession() : null;
+    return !!(session && session.access_token === token &&
+              auth.expiresAt(session) > Date.now() / 1000);
   }
 
   function addStyles() {
@@ -198,15 +225,30 @@
   addStyles();
   document.documentElement.classList.add("ooglex-access-checking");
 
-  (async function () {
-    var ok = await verifyToken(storedToken());
-    if (ok) unlock();
-    else applyPreview();
-    resolveReady(ok);
+  function announce(ok) {
     try {
       document.dispatchEvent(new CustomEvent("ooglex:accessready", {
         detail: { authenticated: ok, previewRatio: PREVIEW_RATIO, style: "bottom-hard-stop-v12" }
       }));
     } catch (_) {}
+  }
+
+  (async function () {
+    var ok = await checkAccess();
+    if (ok) unlock();
+    else applyPreview();
+    resolveReady(ok);
+    announce(ok);
   })();
+
+  // 在另一个标签页登录后，本页不用刷新也能解除预览。
+  window.addEventListener("storage", function (ev) {
+    if (ev.key !== AUTH_KEY || !ev.newValue) return;
+    if (!document.documentElement.classList.contains("ooglex-access-preview")) return;
+    checkAccess().then(function (ok) {
+      if (!ok) return;
+      unlock();
+      announce(true);
+    });
+  });
 })();
