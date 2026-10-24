@@ -1010,6 +1010,8 @@ func _arrive() -> void:
 func _story_progress() -> void:
 	if GameState.chapter == 2 and area in ["highland", "waystation", "beacon_tower"] and not GameState.quest_active("ch2_main") and not GameState.quest_done("ch2_main"):
 		GameState.start_quest("ch2_main")                    # 第二章开场（5.2b）：到了羊脊村
+		if Chapters.wip_note_of(2) != "" and hud:
+			hud.toast(Chapters.wip_note_of(2), 7.0)         # 第二章还在做（2026-10-24 先放出来能逛）：进来时说一句
 		if str(GameState.get_flag("valen_heir", "")) == "ivette" and not GameState.has_item("ivette_letter") and not GameState.has_flag("ch2_letter_given"):
 			GameState.add_item("ivette_letter")             # 选了伊薇特：她联合了厄尔德家，写了一封信让你带上山（STORY.md 5.4）
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
