@@ -17,6 +17,7 @@ Ooglex 新创意点子做成的 App 都放在这里。
 | `radio` | 环球电波 | 安卓 APK + 网页 App | `/apps/radio/download/` |
 | `tv` | 环球TV | 网页 App（PWA） | `/apps/app-zone/tv/` |
 | `ai-chat` | 万象智聊 | 网页 App（PWA） | `/apps/app-zone/ai-chat/` |
+| `global-cams` | 环球实景 | 网页 App（PWA） | `/apps/app-zone/global-cams/` |
 
 ## 新增一个 App
 
@@ -29,4 +30,4 @@ Ooglex 新创意点子做成的 App 都放在这里。
 
 ## 回退
 
-删除 `index.html` 中 `#app-zone` 整段、相应 CSS（「App 专区」注释块）、导航里的 `#app-zone` 链接、页尾加载 `registry.js` 的两段脚本、英文词典中的 `nav.appZone` 与 `section.appZone*`，再删除 `apps/app-zone/` 目录与 sitemap 中的三条。各 App 自身页面不受影响。
+删除 `index.html` 中 `#app-zone` 整段、相应 CSS（「App 专区」注释块）、导航里的 `#app-zone` 链接、页尾加载 `registry.js` 的两段脚本、英文词典中的 `nav.appZone` 与 `section.appZone*`，再删除 `apps/app-zone/` 目录与 sitemap 中的四条。各 App 自身页面不受影响。

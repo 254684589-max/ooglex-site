@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="0.36" cy="0.30" r="1.05">
+      <stop offset="0" stop-color="#132341"/>
+      <stop offset="0.55" stop-color="#0a1226"/>
+      <stop offset="1" stop-color="#04060e"/>
+    </radialGradient>
+    <radialGradient id="planet" cx="0.34" cy="0.28" r="0.95">
+      <stop offset="0" stop-color="#c9f1ff"/>
+      <stop offset="0.32" stop-color="#68a8ff"/>
+      <stop offset="0.72" stop-color="#2d6ec7"/>
+      <stop offset="1" stop-color="#15234f"/>
+    </radialGradient>
+    <linearGradient id="land" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4ee7b7"/>
+      <stop offset="1" stop-color="#1f9c7a"/>
+    </linearGradient>
+    <clipPath id="globe"><circle cx="256" cy="268" r="168"/></clipPath>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- faint stars -->
+  <g fill="#ffffff">
+    <circle cx="92"  cy="104" r="2.4" opacity=".6"/>
+    <circle cx="428" cy="92"  r="2.0" opacity=".5"/>
+    <circle cx="438" cy="430" r="2.4" opacity=".55"/>
+    <circle cx="78"  cy="420" r="1.8" opacity=".45"/>
+  </g>
+
+  <!-- globe -->
+  <circle cx="256" cy="268" r="168" fill="url(#planet)"/>
+  <g clip-path="url(#globe)" fill="url(#land)" opacity=".9">
+    <path d="M150 170 C190 150 230 160 246 190 C258 214 232 236 204 236 C178 236 168 262 150 280 C128 300 104 262 110 228 C114 202 128 182 150 170 Z"/>
+    <path d="M286 150 C330 140 382 166 398 204 C410 232 386 246 360 238 C338 232 318 252 312 278 C306 304 278 300 268 276 C258 250 276 236 270 212 C264 188 266 158 286 150 Z"/>
+    <path d="M232 318 C258 308 290 322 296 350 C302 378 280 410 254 418 C232 424 220 396 224 372 C226 352 214 326 232 318 Z"/>
+  </g>
+  <g clip-path="url(#globe)" fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="3">
+    <ellipse cx="256" cy="268" rx="168" ry="60"/>
+    <ellipse cx="256" cy="268" rx="70" ry="168"/>
+  </g>
+  <circle cx="256" cy="268" r="168" fill="none" stroke="#9ec9ff" stroke-opacity=".35" stroke-width="4"/>
+
+  <!-- WINDOW: a framed video window floating over the globe -->
+  <rect x="300" y="84" width="156" height="104" rx="18" fill="#0b1020" stroke="#eef3ff" stroke-width="8"/>
+  <path d="M362 112 L362 160 L402 136 Z" fill="#ffd36b"/>
+
+  <!-- golden selection ring on a point (same as the in-app reticle) -->
+  <circle cx="214" cy="292" r="34" fill="none" stroke="#ffd36b" stroke-width="8"/>
+  <circle cx="214" cy="292" r="10" fill="#ffd36b"/>
+</svg>

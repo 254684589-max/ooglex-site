@@ -11,13 +11,13 @@ function markerSummary(html, app) {
     oldRandomTop: html.includes('id="randomTop"'),
     oldRandomWindow: html.includes('id="randomWindow"'),
     viewerControls: html.includes('viewer-controls'),
-    appMarkerSync: app.includes('getScreenCoords'),
+    appMarkerSync: app.includes('.htmlElement(createSelectionRing)'),
     appViewerControls: app.includes('buildViewerControls'),
     appIconControls: app.includes("['prev', '⏮'") && app.includes("['next', '⏭'") && app.includes("['random', '随机窗口'") && app.includes("['expand', '⛶'"),
     appKeyboardNav: app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"),
     appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchmove'") && app.includes("viewer.addEventListener('touchend'") && app.includes('stepWindow(dy < 0 ? 1 : -1)'),
     appAudioUnlock: app.includes('let audioUnlocked = false') && app.includes('video.muted = !audioUnlocked') && app.includes('activateAudio') && app.includes('video.muted = false'),
-    floatingControls: html.includes('background:transparent;backdrop-filter:none;box-shadow:none') && html.includes('.viewer-control.icon{width:36px;min-width:36px') && html.includes('app.js?v=14'),
+    floatingControls: html.includes('background:transparent;backdrop-filter:none;box-shadow:none') && html.includes('.viewer-control.icon{width:36px;min-width:36px') && html.includes('app.js?v=15'),
     oldTopListener: app.includes("$('#randomTop')")
   };
 }

@@ -12,6 +12,15 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/global-cams/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<!-- PWA：可安装到手机主屏、独立窗口运行（安装说明见 /apps/app-zone/global-cams/） -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#05070f">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="环球实景">
 <style>
 :root{color-scheme:dark;--bg:#05070f;--panel:#0b1020;--panel2:#10172a;--line:#24304a;--line2:#344463;--text:#eef3ff;--muted:#9aa8c3;--faint:#6f7d98;--accent:#68a8ff;--accent2:#2d6ec7;--warn:#ffd36b;--danger:#ff9b9b}
 *{box-sizing:border-box}
@@ -22,6 +31,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .sidebar{min-width:0;display:flex;flex-direction:column;background:linear-gradient(180deg,#0a0f1d,#080c16);border-right:1px solid var(--line);overflow:hidden;z-index:10}
 .side-head{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--line)}
 .brand{font-weight:800;font-size:19px;white-space:nowrap}.brand span{color:#4ee7b7;font-size:13px;margin-left:4px}
+.install-app{margin-left:auto;min-height:30px;padding:0 10px;border:1px solid rgba(104,168,255,.5);border-radius:999px;background:#101d35;color:#dbeaff;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;touch-action:manipulation}.install-app:hover{border-color:var(--accent)}.install-app[hidden]{display:none}.install-app:not([hidden])+.window-only{margin-left:0}
 .window-only{margin-left:auto;font-size:10px;letter-spacing:.1em;color:#cfe1ff;border:1px solid rgba(104,168,255,.38);padding:5px 8px;border-radius:999px;background:rgba(16,29,53,.7)}
 .selected{padding:12px 14px 10px;border-bottom:1px solid var(--line)}
 .selected-title{margin:0 0 4px;font-size:17px;line-height:1.35;max-height:46px;overflow:hidden}
@@ -62,7 +72,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .status{position:absolute;z-index:6;top:66px;left:14px;max-width:min(660px,calc(100% - 28px));padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(5,7,15,.82);color:#9fc6ff;font-size:11.5px;line-height:1.45;backdrop-filter:blur(12px)}
 .status[data-kind="warn"]{color:var(--warn)}.status[data-kind="error"]{color:var(--danger)}
 .center-readout{position:absolute;z-index:5;left:50%;bottom:17px;transform:translateX(-50%);padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(5,7,15,.72);color:var(--muted);font-size:10.5px;pointer-events:none;white-space:nowrap}
-.crosshair{position:absolute;z-index:6;left:0;top:0;width:44px;height:44px;transform:translate(-50%,-50%);border:1px solid rgba(255,211,107,.92);border-radius:50%;pointer-events:none;opacity:0;box-shadow:0 0 0 4px rgba(255,211,107,.12),0 0 24px rgba(255,211,107,.34);transition:opacity .16s ease}
+.crosshair{position:absolute;width:44px;height:44px;border:1px solid rgba(255,211,107,.92);border-radius:50%;pointer-events:none;opacity:0;box-shadow:0 0 0 4px rgba(255,211,107,.12),0 0 24px rgba(255,211,107,.34);transition:opacity .16s ease;will-change:transform}
 .crosshair.active{opacity:1}.crosshair:before,.crosshair:after{content:"";position:absolute;background:rgba(255,211,107,.92)}.crosshair:before{width:14px;height:1px;left:14px;top:21px}.crosshair:after{width:1px;height:14px;left:21px;top:14px}
 .globe-tools{position:absolute;z-index:7;right:14px;bottom:14px;display:grid;gap:8px}
 .tool-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(5,7,15,.84);backdrop-filter:blur(12px);color:var(--text);font-size:18px;cursor:pointer}.tool-btn:hover{border-color:var(--accent)}
@@ -96,6 +106,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   <aside class="sidebar" id="sidebar" aria-label="WINDOW 播放列表">
     <div class="side-head">
       <div class="brand">🌐 环球实景 <span>V1.1</span></div>
+      <button class="install-app" id="installApp" type="button" hidden title="安装到手机或电脑，像 App 一样打开" aria-label="安装环球实景 App">📲 安装 App</button>
       <span class="window-only">WINDOW ONLY</span>
     </div>
     <section class="selected" aria-live="polite">
@@ -130,7 +141,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
       <div class="count" id="count">0 个 WINDOW</div>
     </div>
     <div class="status" id="status">正在连接 WINDOW 视频库…</div>
-    <div class="crosshair" aria-hidden="true"></div>
     <div class="center-readout" id="centerCoords">视图中心 · —</div>
     <div class="globe-tools" aria-label="地球视图控制">
       <button class="tool-btn" id="zoomIn" type="button" title="放大地球" aria-label="放大地球">＋</button>
@@ -143,6 +153,46 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 </div>
 <script src="../radio/vendor/globe.gl.min.js"></script>
 <script src="./config.js"></script>
-<script src="./app.js?v=14"></script>
+<script src="./app.js?v=15"></script>
+<script>
+/* PWA：注册 Service Worker + 「安装 App」按钮。
+   支持一键安装的浏览器（安卓 Chrome / Edge、电脑 Chrome）直接弹安装框；
+   其余（如 iPhone Safari）跳到 App 专区的安装说明页。已安装后以独立窗口打开时不显示按钮。 */
+(function(){
+  'use strict';
+  var standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.matchMedia('(display-mode: minimal-ui)').matches ||
+                   window.navigator.standalone === true;
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js?v=1', { scope: './', updateViaCache: 'none' }).catch(function(){});
+    });
+  }
+  var btn = document.getElementById('installApp');
+  if (!btn || standalone) return;
+  var deferred = null;
+  btn.hidden = false;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+  });
+  window.addEventListener('appinstalled', function(){
+    deferred = null;
+    btn.hidden = true;
+  });
+  btn.addEventListener('click', function(){
+    if (!deferred) {
+      location.href = '/apps/app-zone/global-cams/';
+      return;
+    }
+    var prompt = deferred;
+    deferred = null;
+    prompt.prompt();
+    prompt.userChoice.then(function(choice){
+      if (choice && choice.outcome === 'accepted') btn.hidden = true;
+    }).catch(function(){});
+  });
+})();
+</script>
 </body>
 </html>
