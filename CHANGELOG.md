@@ -31,7 +31,7 @@
 
 ### 修复
 
-- 2026-10-24：已登录用户有时仍只看到 10% 预览（数据中心等应用页）。原因有两个：① Supabase 登录 token 约 1 小时过期，只有账户页加载的 supabase-js 会自动续期；登录一小时后只浏览应用页时，权限校验拿着过期 token 被拒，已登录用户被当成访客。② 产业链、宏观风险、富豪榜、金融专栏四个板块的 Worker 只给 PRO 方案完整数据，FREE 账户登录后仍是预览，与「未登录 10%、登录 100%」的规则不符。修复：新增 `assets/auth-session.js`，token 临近过期时用 refresh_token 向 Supabase 换新 token 并写回同一存储键（只用公开 publishable key）；`access-gate.js`（通用应用页，V14）与 `pro-access.js`（会员 API，v=7）都先续期再校验；通用页在 Supabase 暂时连不上、但本地 token 仍在有效期内时按已登录处理，token 已过期则仍按预览；在另一标签页登录后本页自动解除预览。Worker 五个产品全部改为只校验登录会话（`signedInFull`），不看订阅方案；角标显示「已登录 · FULL」；付费墙文案去掉「升级 PRO」。`account/schema.sql` 与新迁移 `20261024_signed_in_full_all_products.sql` 同步把 free 档记为 `full`（执行与否不影响 Worker 生效）。构建与校验脚本加入 `auth-session.js` 并要求它先于 `pro-access.js` 加载。**未部署**：页面改动需合并 `main` 由 Pages 部署，Worker 规则需 Deploy PRO API 工作流发布，均待所有者批准。
+- 2026-10-24：已登录用户有时仍只看到 10% 预览（数据中心等应用页）。原因有两个：① Supabase 登录 token 约 1 小时过期，只有账户页加载的 supabase-js 会自动续期；登录一小时后只浏览应用页时，权限校验拿着过期 token 被拒，已登录用户被当成访客。② 产业链、宏观风险、富豪榜、金融专栏四个板块的 Worker 只给 PRO 方案完整数据，FREE 账户登录后仍是预览，与「未登录 10%、登录 100%」的规则不符。修复：新增 `assets/auth-session.js`，token 临近过期时用 refresh_token 向 Supabase 换新 token 并写回同一存储键（只用公开 publishable key）；`access-gate.js`（通用应用页，V14）与 `pro-access.js`（会员 API，v=7）都先续期再校验；通用页在 Supabase 暂时连不上、但本地 token 仍在有效期内时按已登录处理，token 已过期则仍按预览；在另一标签页登录后本页自动解除预览。Worker 五个产品全部改为只校验登录会话（`signedInFull`），不看订阅方案；角标显示「已登录 · FULL」；付费墙文案去掉「升级 PRO」。`account/schema.sql` 与新迁移 `20261024_signed_in_full_all_products.sql` 同步把 free 档记为 `full`（执行与否不影响 Worker 生效）。构建与校验脚本加入 `auth-session.js` 并要求它先于 `pro-access.js` 加载。**已上线**（所有者说「上线」；合并提交 `494c0eb`，Deploy Protected Ooglex Pages #1791 与 Deploy PRO API #402 均成功）。科技领袖、环球TV 等密码板块未改动；PRO / PRO+ 等级保留，暂与 FREE 相同，以后启用收费时再恢复门槛。
 
 ### 修改
 
