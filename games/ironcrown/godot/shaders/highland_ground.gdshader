@@ -1,7 +1,7 @@
 // 余火高地的地面（路线图 5.1a，D12；ART.md 第十节「地面按坡度和位置混贴图」）：一块地形混四种写实贴图（Poly Haven CC0）——
 // 平处积雪（snow_02）、路和村里踩出来的雪（snow_01，有脚印）、雪薄处的碎石（gray_rocks）、陡坡露出的岩石（mossy_rock，长地衣的灰岩）。
 // 顶点色：r = 路 / 踩出来的地，g = 碎石斑块，b = 遮蔽（凹处暗一点）；岩石由坡度算（地形法线），边界用大尺度噪声打散，不是一条直线。
-// 平铺的重复感：雪按两种尺度采样再混（近处细、远处粗），再乘一层很大的明暗噪声。岩石只在两个竖直方向投影（陡坡不会拉丝），省一次采样。
+// 平铺的重复感：雪按两种尺度采样再混（近处细、远处粗），再乘一层很大的明暗噪声。岩石在两个竖直方向投影（陡坡不会拉丝），坡缓的岩面再混一次从上往下的投影（5.3a）。
 shader_type spatial;
 render_mode cull_back;
 
@@ -53,6 +53,9 @@ void fragment() {
 	vec3 an = abs(wnrm);
 	float wx = an.x / max(an.x + an.z, 0.001);
 	vec3 rk = mix(texture(rock_alb, wpos.xy / rock_m).rgb, texture(rock_alb, wpos.zy / rock_m).rgb, wx) * rock_tint;
+	// 坡不太陡的岩面（岩坎脚、坡上露岩的边）两个竖直投影都斜着拉成一道道（5.3a 截图：岩坎脚下一排琴键），再从上往下投一次，按坡度混
+	float steep = smoothstep(0.22, 0.38, 1.0 - wnrm.y);
+	rk = mix(texture(rock_alb, wpos.xz / rock_m).rgb * rock_tint, rk, steep);
 	vec3 rn_xy = texture(rock_nrm, wpos.xy / rock_m).rgb * 2.0 - 1.0;
 	vec3 rn_zy = texture(rock_nrm, wpos.zy / rock_m).rgb * 2.0 - 1.0;
 

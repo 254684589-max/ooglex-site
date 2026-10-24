@@ -248,6 +248,8 @@ func _ready() -> void:
 		Atmos.snow(player, Atmos.HIGHLAND_WIND if area == "highland" else Vector3.ZERO)   # 户外落雪（2026-10-23 场景美化二）；高地有风（5.1a）
 		if area == "highland" and not Settings.reduced_motion:
 			Atmos.drift(player)           # 高地：贴地的吹雪
+		if area == "highland":
+			add_child(SnowTracks.make(player))   # 雪地上的脚印（5.3a）
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
@@ -1037,8 +1039,8 @@ func player_xz() -> Vector2:
 func _on_surface_changed(id: String) -> void:
 	hud.set_surface(Surface.label(id))
 	print("IC_SURFACE id=%s run=%s" % [id if id != "" else "none", Surface.can_run(id)])
-	if id == "mud":
-		show_tip("mud")
+	if id in ["mud", "deep_snow"]:
+		show_tip(id)
 
 
 ## 掉出地图（深水下面没有地面，墙漏了的话）：放回最近站稳的地方

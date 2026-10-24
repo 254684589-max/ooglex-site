@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8715,6 +8715,107 @@ func test_cold() -> void:
 	var before := GameState.cold
 	await seconds(1.0)
 	check(GameState.cold < before - 5.0, "站到铁匠炉边：一秒暖回来 %.1f" % (before - GameState.cold))
+	await free_main(main)
+
+
+## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
+func test_mountainroad() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	HighlandRoad.clear_cache()
+	# 深雪：路面、村里、烽燧脚下、岩坎上不深；路边一条雪檐；整张图上不少地方深
+	var on_road := 0
+	var bank_ok := 0
+	var legs := HighlandLayout.ROAD.size() - 1
+	for i in legs:
+		for k in 9:
+			var a: Vector2 = HighlandLayout.ROAD[i]
+			var b: Vector2 = HighlandLayout.ROAD[i + 1]
+			var c := a.lerp(b, (k + 0.5) / 9.0)
+			if HighlandLayout.deep(c.x, c.y) > 0.01:
+				on_road += 1
+	var bank := Vector2.INF
+	for i in range(2, legs):
+		if i == HighlandLayout.AMBUSH_LEG:
+			continue
+		var a: Vector2 = HighlandLayout.ROAD[i]
+		var b: Vector2 = HighlandLayout.ROAD[i + 1]
+		var dir := (b - a).normalized()
+		var out_n := Vector2(-dir.y, dir.x) * -HighlandLayout._uphill_side(i)
+		var q := a.lerp(b, 0.5) + out_n * (HighlandLayout.ROAD_HALF + 3.0)
+		if HighlandLayout.deep(q.x, q.y) > 0.5 and HighlandLayout.road_hit(q).d > HighlandLayout.ROAD_HALF + 2.0:
+			bank_ok += 1
+			if bank == Vector2.INF:
+				bank = q
+	var deep_n := 0
+	var all_n := 0
+	for z in range(-125, 126, 5):
+		for x in range(-155, 156, 5):
+			all_n += 1
+			if HighlandLayout.deep(x, z) > 0.5:
+				deep_n += 1
+	var v := HighlandLayout.VILLAGE
+	check(on_road == 0 and HighlandLayout.deep(v.x, v.y) == 0.0 and HighlandLayout.deep(HighlandLayout.BEACON19.x, HighlandLayout.BEACON19.y) == 0.0,
+		"踩出来的路面、村里、烽燧脚下不是深雪")
+	check(bank_ok >= 3 and float(deep_n) / all_n > 0.2 and float(deep_n) / all_n < 0.55,
+		"路边一条雪檐（%d 段路查到）、整张图约 %.0f%% 是深雪" % [bank_ok, 100.0 * deep_n / all_n])
+	check(Surface.mult("deep_snow") < 0.7 and not Surface.can_run("deep_snow") and Surface.label("deep_snow").begins_with("深雪") and Surface.label("snow") == "",
+		"深雪：走得慢、不能跑、HUD 写一行；普通的雪照常")
+	# 倒树、废羊棚、雪杆：不压路、不长树
+	var fallen := HighlandLayout.fallen()
+	var min_d := INF
+	for f in fallen:
+		for k in 11:
+			min_d = minf(min_d, HighlandLayout.road_hit((f.root as Vector2).lerp(f.tip, k / 10.0)).d)
+	check(fallen.size() == 4 and min_d > HighlandLayout.ROAD_HALF + 0.5, "4 棵倒树都躺在路边、不压路面（最近离路中线 %.1f 米）" % min_d)
+	var sc: Vector2 = HighlandLayout.SHED[0]
+	var trees_in := HighlandFlora.trees().filter(func(t): return HighlandRoad.blocks(Vector2(t[0].x, t[0].z), 0.5)).size() + HighlandFlora.rocks().filter(func(r): return HighlandRoad.blocks(Vector2(r[0].x, r[0].z), 0.3)).size()
+	check(HighlandFlora.slope_at(sc) < 0.05 and trees_in == 0 and HighlandLayout.road_hit(sc).d > HighlandLayout.ROAD_HALF + 8.0,
+		"废羊棚在压平的一块地上、离路不远不近；树和石头不长在羊棚、倒树上")
+	var poles := HighlandRoad.poles()
+	check(poles.size() >= 8 and poles.all(func(pl): return HighlandLayout.road_hit(Vector2(pl[0].x, pl[0].z)).d > HighlandLayout.ROAD_HALF + 0.3),
+		"路边 %d 根雪杆，都在路面外" % poles.size())
+	check(HighlandLayout.VIEW_SPEC.size() == HighlandLayout.VIEW_NAMES.size() and HighlandLayout.SPAWN_XZ.has("shed"), "机位和名字对得上；有废羊棚的出生点")
+	# 游戏里：搭出来、挡人、踩进深雪变慢、雪上留脚印
+	GameState.new_game(530)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	var w: Node3D = main.world
+	var trees_n: int = w.find_children("FallenTrees*", "MultiMeshInstance3D", true, false).reduce(func(acc, m): return acc + (m as MultiMeshInstance3D).multimesh.instance_count, 0)
+	check(trees_n == 4 and w.find_children("Shed", "MeshInstance3D", true, false).size() == 1 and w.find_children("SnowPoles", "MultiMeshInstance3D", true, false).size() >= 2,
+		"倒树 %d 棵、废羊棚、雪杆都搭出来了" % trees_n)
+	check(float(st.stats.max_job_ms) < 40.0, "加上盘山路的东西每件活还是不长（最慢 %.1f 毫秒）" % st.stats.max_job_ms)
+	var space := main.get_world_3d().direct_space_state
+	var sp := HighlandRoad.shed_place()
+	var q := PhysicsRayQueryParameters3D.create(sp * Vector3(-0.8, 1.0, -4.0), sp * Vector3(-0.8, 1.0, 0.0), 1)
+	var f0: Dictionary = HighlandRoad.fallen_specs()[0]
+	var mid: Vector3 = (f0.root as Vector3) + (f0.axis as Vector3) * float(f0.len) * 0.3
+	var q2 := PhysicsRayQueryParameters3D.create(mid + (f0.side as Vector3) * 2.0 + Vector3(0, 0.2, 0), mid - (f0.side as Vector3) * 2.0 + Vector3(0, 0.2, 0), 1)
+	check(not space.intersect_ray(q).is_empty() and not space.intersect_ray(q2).is_empty(), "羊棚的后墙、倒树的树干挡人")
+	var p: FpController = main.player
+	p.global_position = Vector3(bank.x, Highland.height_at(bank.x, bank.y) + 0.1, bank.y)
+	await physics(10)
+	var deep_surface := p.surface
+	var slow := p.current_speed(Vector2(0, -1))
+	var r3: Vector2 = HighlandLayout.ROAD[3]
+	var r4: Vector2 = HighlandLayout.ROAD[4]
+	var rc := r3.lerp(r4, 0.5)
+	p.global_position = Vector3(rc.x, Highland.height_at(rc.x, rc.y) + 0.1, rc.y)
+	await physics(10)
+	check(deep_surface == "deep_snow" and p.surface == "snow" and slow < p.current_speed(Vector2(0, -1)) and main.hud.surface_label.visible == false,
+		"踩进路边的雪檐：脚下是深雪、变慢（%.1f → %.1f）；回到路面：照常" % [p.current_speed(Vector2(0, -1)), slow])
+	var tracks := main.get_node_or_null("SnowTracks") as SnowTracks
+	var dir := (r4 - r3).normalized()
+	for k in 6:
+		var at := rc + dir * (k + 1) * 0.9
+		p.global_position = Vector3(at.x, Highland.height_at(at.x, at.y) + 0.05, at.y)
+		await physics(3)
+	check(tracks != null and tracks.multimesh.visible_instance_count >= 4, "在雪地上走：身后留下脚印（%d 个）" % (tracks.multimesh.visible_instance_count if tracks else 0))
+	var spec := Highland.map_spec()
+	check(spec.shapes.any(func(sh): return str(sh.get("label", "")) == "废羊棚"), "本地地图上标了废羊棚")
 	await free_main(main)
 
 

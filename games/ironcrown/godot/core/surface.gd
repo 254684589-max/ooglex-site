@@ -4,9 +4,11 @@ extends RefCounted
 ## 地面种类写在碰撞体的元数据 "surface" 上（鹭沼的泥滩：world/marsh.gd），不按坐标查表：栈道铺在泥滩上面，
 ## 站在栈道上踩的是栈道的碰撞体，自然不算泥。主角每 0.1 秒看一次脚下（FpController），以后敌人、士兵也用它（4.9）。
 ## 不只靠颜色：在泥里时 HUD 写一行字（label），第一次踩进去弹教学提示 mud。
+## 一整块的地面（余火高地的高度图，5.3a）分不出碰撞体：碰撞体带元数据 surface_at（Callable(Vector3) -> String），按打到的位置查。
 
 const KINDS := {
 	"mud": {"mult": 0.55, "run": false, "label": "泥潭：走得慢，不能跑"},
+	"deep_snow": {"mult": 0.6, "run": false, "label": "深雪：走得慢，不能跑"},   # 5.3a 余火高地：路边的雪檐、背风的雪窝（HighlandLayout.deep）
 }
 
 
@@ -48,4 +50,8 @@ static func _ray(body: Node3D, off: Vector3) -> Variant:
 	if hit.is_empty():
 		return null
 	var o: Object = hit.collider
-	return str(o.get_meta("surface", "")) if o != null else ""
+	if o == null:
+		return ""
+	if o.has_meta("surface_at"):
+		return str((o.get_meta("surface_at") as Callable).call(hit.position))
+	return str(o.get_meta("surface", ""))

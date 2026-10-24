@@ -58,6 +58,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	Look.glass_lit()
 	Look.glass_dark()
 	Look.halo(Look.WINDOW_COLOR, 0.32)
+	HighlandRoad.warm()                               # 盘山路上的倒树、废羊棚、雪杆（5.3a）
 	h._far()
 	HighlandFlora.far_forest(p_parent)               # 地图外面山坡上的针叶林、山脊上远处那串烽燧塔（5.1b）
 	HighlandFlora.far_beacons(p_parent)
@@ -198,6 +199,7 @@ func _collision() -> void:
 	ground.collision_layer = 1
 	ground.collision_mask = 0
 	ground.set_meta("surface", "snow")
+	ground.set_meta("surface_at", HighlandLayout.surface_at)     # 深雪按位置查（5.3a）
 	parent.add_child(ground)
 	var cs := CollisionShape3D.new()
 	var hm := HeightMapShape3D.new()
@@ -242,6 +244,18 @@ func _collision() -> void:
 		vc.shape = vb
 		vc.transform = so[0]
 		village.add_child(vc)
+	var road := StaticBody3D.new()                   # 盘山路上：倒树的树干和根盘、废羊棚的墙（5.3a）
+	road.name = "RoadSolids"
+	road.collision_layer = 1
+	road.collision_mask = 0
+	parent.add_child(road)
+	for so in HighlandRoad.solids():
+		var rc := CollisionShape3D.new()
+		var rb := BoxShape3D.new()
+		rb.size = so[1]
+		rc.shape = rb
+		rc.transform = so[0]
+		road.add_child(rc)
 	var wb := StaticBody3D.new()
 	wb.name = "HighlandWalls"
 	wb.collision_layer = FpController.LAYER_BOUNDARY
@@ -285,6 +299,7 @@ static func ground_material() -> ShaderMaterial:
 ## 章节包换了（下载完重新载入）：材质重新取贴图
 static func clear_cache() -> void:
 	HighlandFlora.clear_cache()
+	HighlandRoad.clear_cache()
 	_mat = null
 	_sky_mat = null
 
@@ -340,6 +355,7 @@ func _jobs(st: ChunkStreamer) -> void:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
 			var jobs: Array = [_job_terrain.bind(r), _job_flora.bind(r)]
 			jobs.append_array(HighlandVillage.jobs_for(r, reduced_motion))      # 村里的房子、石墙、羊、石圈、零碎（5.2a）
+			jobs.append_array(HighlandRoad.jobs_for(r))                         # 盘山路上的倒树、废羊棚、雪杆（5.3a）
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
@@ -580,6 +596,7 @@ static func map_spec() -> Dictionary:
 		shapes.append({"k": "wall", "pts": _strip(a - dir, a + dir, HighlandLayout.WALL_W * 0.5)})
 	shapes.append({"k": "mark", "at": HighlandLayout.PEN_ROUND[0], "label": "羊圈"})
 	shapes.append({"k": "mark", "at": HighlandLayout.STONE_RING, "label": "石圈"})
+	shapes.append({"k": "mark", "at": HighlandLayout.SHED[0], "label": "废羊棚"})
 	shapes.append({"k": "mark", "at": HighlandLayout.BEACON19, "icon": "fire", "label": "第十九烽"})
 	shapes.append({"k": "mark", "at": HighlandLayout.BEACON18, "label": "第十八烽"})
 	for sp in [HighlandLayout.SIGN_VILLAGE, HighlandLayout.SIGN_BEACON]:

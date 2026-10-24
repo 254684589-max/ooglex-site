@@ -33,6 +33,23 @@ const ROAD_BLEND := 7.0                 # 路边多宽从路面高度过渡回�
 const AMBUSH_LEG := 4                   # 第几段是伏击段（ROAD[4] → ROAD[5]：上坡一侧是岩坎）
 const CLIFF_H := 7.5
 
+## ---------------- 盘山路上（5.3a；STORY.md 5.2「积雪齐膝（走进去变慢），几处倒伏的松树；半山有一处废弃的羊棚」）----------------
+## 废羊棚：半山西边那个弯下面一块压平的地。[中心 (x, z), 朝向（度，0 = 门朝 +Z（南）），宽, 纵深]
+const SHED := [Vector2(-52.0, 4.0), 90.0, 6.4, 4.6]          # 门朝东，对着路
+const SHED_R := 6.0
+## 倒伏的松树：按路来摆——[第几段路, 在那段的哪儿 t, 哪一边（"up" 上坡 / "down" 下坡）, 离路边多远（米）, 偏角（度，0 = 垂直离开路、±90 = 顺着路）,
+##   长（米）, 树种, 根在哪头（"far" 根在远处、树冠倒到路边 / "near" 根在路边、往外倒）]
+## 伏击段下坡那一棵顺着路躺在路肩上：5.6「先断车头」就是把它横过来拦路
+const FALLEN := [
+	[4, 0.34, "down", 0.9, 82.0, 13.0, 0, "near"],
+	[2, 0.55, "up", 0.8, -18.0, 12.0, 0, "far"],
+	[5, 0.50, "down", 2.6, 34.0, 10.0, 1, "near"],
+	[3, 0.70, "up", 4.5, 64.0, 9.0, 1, "far"],
+]
+## 深雪（Surface "deep_snow"）：踩出来的路和村里不深；路两边的雪檐、背风的雪窝深；冰原上风把雪刮硬了，浅
+const DEEP_BANK := 4.5                  # 路边多宽一条雪檐（米，从路边 + 0.8 起）
+const DRIFT_H := 0.4                    # 深雪的地方高出去多少（雪堆）
+
 ## ---------------- 羊脊村（5.2a；STORY.md 5.2「干砌石墙的矮石屋、草皮屋顶压着石头、羊圈、结冰的溪、一圈半埋在雪里的古老立石」）----------------
 ## 矮石屋（world/croft.gd）：[编号, 正面墙脚中点 (x, z), 朝向（度，0 = 正面朝 +Z（南），90 = 朝东，-90 = 朝西）, 宽, 纵深, 门在正面的位置, 亮窗比例, 种子]
 ## 村里的路南北穿过村子（ROAD[1] → ROAD[2]），房子正面都朝着路
@@ -140,6 +157,7 @@ const SPAWN_XZ := {
 	"beacon": [Vector2(14.0, -52.0), -20.0],        # 第十九烽门前
 	"plain": [Vector2(-10.0, -96.0), 180.0],        # 山脊背后，面朝北的冰原
 	"waystation_door": [Vector2(15.4, 84.6), 90.0], # 驿站门外（从大堂出来），面朝西（村路）
+	"shed": [Vector2(-42.0, 9.0), 70.0],            # 废羊棚下面的路上（5.3a），面朝羊棚
 }
 ## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
 const VIEW_SPEC := [
@@ -154,8 +172,12 @@ const VIEW_SPEC := [
 	[Vector3(-19.0, 1.7, 62.0), 12.0, 0.0],         # 8 石圈
 	[Vector3(9.5, 1.7, 70.5), -62.0, -4.0],         # 9 铁匠棚
 	[Vector3(12.0, 1.7, 52.0), 172.0, -6.0],        # 10 村北路牌往回看整个村子
+	[Vector3(-39.0, 1.7, 7.5), 75.0, -8.0],         # 11 西边那个弯上往下看废羊棚（5.3a）：门朝着路，西南角塌了
+	[Vector3(-29.0, 1.7, 9.5), -72.0, -6.0],        # 12 伏击段起头：右手路肩上躺着的那棵倒树、路边的雪檐、左手的岩坎
+	[Vector3(24.4, 1.7, 54.2), -52.0, -5.0],        # 13 第一段路：树冠倒到路边的那棵、下坡一侧的雪杆
 ]
-const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘", "山脊往东", "驿站", "羊圈和溪", "石圈", "铁匠棚", "村北回看"]
+const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘", "山脊往东", "驿站", "羊圈和溪", "石圈", "铁匠棚", "村北回看",
+	"废羊棚", "路肩上的倒树", "第一段路"]
 
 
 ## 大轮廓（不含噪声）：南边谷底 0 米 → 往北抬升 → 山脊（z 约 -68，最高约 46 米，西高东低）→ 山脊背后落到冰原（约 30 米）；东西两边是山肩
@@ -186,6 +208,7 @@ static func _smooth(t: float) -> float:
 static var _noise_big: FastNoiseLite
 static var _noise_small: FastNoiseLite
 static var _noise_paint: FastNoiseLite
+static var _noise_drift: FastNoiseLite
 
 
 static func _noises() -> void:
@@ -205,6 +228,10 @@ static func _noises() -> void:
 	_noise_paint.seed = 11
 	_noise_paint.frequency = 0.035
 	_noise_paint.fractal_octaves = 3
+	_noise_drift = FastNoiseLite.new()                # 背风的雪窝（5.3a 深雪）
+	_noise_drift.seed = 5303
+	_noise_drift.frequency = 0.028
+	_noise_drift.fractal_octaves = 2
 
 
 ## 起伏（米）：噪声（固定种子，每次载入都一样）；冰原上换成风吹出来的长条雪浪（顺着西北风）
@@ -286,7 +313,12 @@ static func height(x: float, z: float) -> float:
 		var ry := road_y_at(r.i, r.t) + 0.08 * bumps(x * 3.0, z * 3.0)
 		var k := 1.0 if r.d <= ROAD_HALF else _smooth(1.0 - (r.d - ROAD_HALF) / ROAD_BLEND)
 		y = lerpf(y, ry, k)
+	var dsh := p.distance_to(SHED[0])                             # 废羊棚：压平一小片（5.3a）
+	if dsh < SHED_R + 10.0:                                         # 过渡 10 米：坡上切出来的坎不陡（5 米时背后露出一大片岩石）
+		var sy := natural((SHED[0] as Vector2).x, (SHED[0] as Vector2).y)
+		y = lerpf(y, sy, _smooth(clampf((SHED_R + 10.0 - dsh) / 10.0, 0.0, 1.0)))
 	y += _cliff(p)
+	y += DRIFT_H * deep(x, z) * (0.75 + 0.5 * _noise_small.get_noise_2d(x * 0.7, z * 0.7))   # 深雪的地方鼓起来一点（雪堆、路边的雪檐）
 	var ds := stream_d(p)                                           # 溪：往下刻一道沟（溪床平、两岸斜）
 	if ds < STREAM_HALF + STREAM_BANK:
 		var k := 1.0 if ds <= STREAM_HALF else 1.0 - _smooth((ds - STREAM_HALF) / STREAM_BANK)
@@ -344,7 +376,61 @@ static func masks(x: float, z: float) -> Vector2:
 	_noises()
 	var s := 0.5 + 0.5 * _noise_paint.get_noise_2d(x, z)
 	var scree := clampf((s - 0.6) * 4.0, 0.0, 1.0) * clampf((z - (-80.0)) / 20.0, 0.0, 1.0)   # 冰原上没有碎石
+	scree *= 1.0 - deep(x, z)                                    # 深雪盖住了碎石
+	var dsh := p.distance_to(SHED[0])                             # 废羊棚门前踩出来的一片（以前赶羊进出）
+	if dsh < SHED_R:
+		track = maxf(track, _smooth(clampf((SHED_R - dsh) / 3.0, 0.0, 1.0)) * 0.6)
 	return Vector2(track, scree)
+
+
+## 深雪（0..1；> 0.5 算 Surface「deep_snow」）：路面、村里、烽燧脚下、废羊棚、岩坎上不深；路两边各一条雪檐；别处按噪声一片一片（背风的雪窝）；冰原上浅
+static func deep(x: float, z: float) -> float:
+	var p := Vector2(x, z)
+	if p.distance_to(VILLAGE) < VILLAGE_R + 4.0 or p.distance_to(SHED[0]) < SHED_R:
+		return 0.0
+	for c in [BEACON19, BEACON18]:
+		if p.distance_to(c) < PAD_R + 2.0:
+			return 0.0
+	var r := road_hit(p)
+	var off: float = r.d - ROAD_HALF - 0.8                             # 踩出来的路面再往外 0.8 米还是硬的
+	if off <= 0.0:
+		return 0.0
+	_noises()
+	var k := _smooth(clampf((_noise_drift.get_noise_2d(x, z) + 0.12) / 0.3, 0.0, 1.0))
+	if off < DEEP_BANK + 2.0:                                    # 路边的雪檐（扫路、车过、风都往路边堆）
+		k = maxf(k, 1.0 - _smooth(clampf((off - DEEP_BANK) / 2.0, 0.0, 1.0)))
+	k *= _smooth(clampf(off / 1.2, 0.0, 1.0))
+	if z < -80.0:
+		k *= lerpf(1.0, 0.3, clampf((-80.0 - z) / 10.0, 0.0, 1.0))
+	if int(r.i) == AMBUSH_LEG and float(r.side) == _uphill_side(AMBUSH_LEG) and off < 10.0:
+		k = 0.0                                                  # 岩坎脚下、坎上没有深雪（按岩坎高度一点点收：1 米的网格上是一排锯齿）
+	return clampf(k, 0.0, 1.0)
+
+
+## 脚下是哪种地面（Surface；高地的地面是一整块高度图，按位置查：Highland._collision 把它挂在碰撞体的元数据 surface_at 上）
+static func surface_at(pos: Vector3) -> String:
+	return "deep_snow" if deep(pos.x, pos.z) > 0.5 else "snow"
+
+
+## 倒伏的松树：[{root 根部（世界坐标，贴地）, tip 树梢, kind, len}]
+static func fallen() -> Array:
+	var out := []
+	for f in FALLEN:
+		var i := int(f[0])
+		var a: Vector2 = ROAD[i]
+		var b: Vector2 = ROAD[i + 1]
+		var dir := (b - a).normalized()
+		var left := Vector2(-dir.y, dir.x)                       # road_hit 的 side = +1 那一边（dir.cross(left) > 0）
+		var up := _uphill_side(i)
+		var side := up if str(f[2]) == "up" else -up
+		var out_n := left * side
+		var edge := a.lerp(b, float(f[1])) + out_n * (ROAD_HALF + float(f[3]))
+		var d := out_n.rotated(deg_to_rad(float(f[4])))
+		var far := edge + d * float(f[5])
+		var root := far if str(f[7]) == "far" else edge
+		var tip := edge if str(f[7]) == "far" else far
+		out.append({"root": root, "tip": tip, "kind": int(f[6]), "len": float(f[5])})
+	return out
 
 
 static func spawn_points() -> Dictionary:
