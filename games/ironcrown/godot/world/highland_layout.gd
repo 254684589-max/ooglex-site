@@ -33,12 +33,106 @@ const ROAD_BLEND := 7.0                 # 路边多宽从路面高度过渡回�
 const AMBUSH_LEG := 4                   # 第几段是伏击段（ROAD[4] → ROAD[5]：上坡一侧是岩坎）
 const CLIFF_H := 7.5
 
+## ---------------- 羊脊村（5.2a；STORY.md 5.2「干砌石墙的矮石屋、草皮屋顶压着石头、羊圈、结冰的溪、一圈半埋在雪里的古老立石」）----------------
+## 矮石屋（world/croft.gd）：[编号, 正面墙脚中点 (x, z), 朝向（度，0 = 正面朝 +Z（南），90 = 朝东，-90 = 朝西）, 宽, 纵深, 门在正面的位置, 亮窗比例, 种子]
+## 村里的路南北穿过村子（ROAD[1] → ROAD[2]），房子正面都朝着路
+const CROFTS := [
+	["croft_n", Vector2(-0.5, 96.0), 90.0, 7.0, 5.0, 0.8, 0.7, 11],
+	["croft_w", Vector2(1.0, 78.0), 95.0, 8.0, 5.5, -1.0, 0.6, 12],
+	["croft_sw", Vector2(-12.0, 69.0), 60.0, 7.0, 5.0, 0.0, 0.5, 13],
+	["croft_ne", Vector2(16.5, 100.0), -90.0, 7.0, 5.0, 0.6, 0.6, 14],
+	["croft_se", Vector2(23.0, 66.5), -112.0, 7.5, 5.0, 0.0, 0.4, 15],
+	["croft_nw", Vector2(-16.0, 94.0), 80.0, 6.5, 4.5, 0.0, 0.5, 16],
+]
+## 厄尔德家的驿站：村里唯一的两层石楼（House，石砌上层、石板瓦），门通往大堂（world/waystation.gd）
+const WAYSTATION := [Vector2(17.5, 84.0), -90.0, 11.0, 8.0, 0.0]          # 正面墙脚中点、朝向、宽、纵深、门的位置
+const SMITHY := [Vector2(19.5, 74.5), -90.0]                               # 铁匠的披棚（三面矮墙、一面敞着朝路，炉火是暖光）
+## 羊圈：干砌石墙。圆的 [中心, 半径, 门的方向（度）]、方的 [中心, 半宽, 半深, 门在哪边]
+const PEN_ROUND := [Vector2(-21.0, 82.0), 6.5, 80.0]
+const PEN_RECT := [Vector2(32.0, 92.0), 5.0, 3.5]
+const SHEEP := [Vector3(-22.5, 0, 80.0), Vector3(-19.8, 0, 83.5), Vector3(-23.6, 0, 84.2), Vector3(-18.5, 0, 79.6), Vector3(-21.4, 0, 86.2),
+	Vector3(30.6, 0, 91.2), Vector3(33.4, 0, 93.0), Vector3(31.9, 0, 89.9)]
+## 田间的干砌石墙（一段段折线）
+const FIELD_WALLS := [
+	[Vector2(-6.0, 113.0), Vector2(-18.0, 116.0), Vector2(-31.0, 115.0)],
+	[Vector2(13.0, 111.0), Vector2(26.0, 116.0), Vector2(41.0, 121.0)],
+	[Vector2(40.0, 60.0), Vector2(52.0, 56.0), Vector2(66.0, 50.0)],
+	[Vector2(38.0, 98.0), Vector2(46.0, 84.0), Vector2(47.0, 70.0)],
+]
+const FIELD_WALL_H := 1.0
+const WALL_W := 0.7
+## 结冰的溪：从西北的山坡下来，绕过村子西边，往南出山谷。溪床往下刻 0.9 米，冰面在溪床上 0.25 米
+const STREAM := [Vector2(-74.0, 6.0), Vector2(-46.0, 36.0), Vector2(-34.0, 64.0), Vector2(-35.0, 92.0), Vector2(-27.0, 116.0), Vector2(-23.0, 140.0)]
+const STREAM_HALF := 2.0
+const STREAM_BANK := 3.0
+const STREAM_DEPTH := 0.9
+## 石圈：村子西北的坡上，九块半埋的立石（5.5a 石上的字）
+const STONE_RING := Vector2(-20.0, 48.0)
+const STONE_RING_R := 6.0
+const STONES := 9
+## 路牌（出发的地方）：村北路边（往第十九烽）、第十九烽门前（往羊脊村）
+const SIGN_VILLAGE := Vector3(13.2, 0, 60.0)
+const SIGN_BEACON := Vector3(10.5, 0, -50.5)
+
+
+## 一点离溪中线多远
+static func stream_d(p: Vector2) -> float:
+	var best := INF
+	for i in STREAM.size() - 1:
+		var a: Vector2 = STREAM[i]
+		var b: Vector2 = STREAM[i + 1]
+		var ab := b - a
+		var t := clampf((p - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+		best = minf(best, p.distance_to(a + ab * t))
+	return best
+
+
+## 村里踩出来的小路：每栋房子、驿站、铁匠棚、羊圈门口到村路（线段：[a, b]）
+static func village_paths() -> Array:
+	var out := []
+	for c in CROFTS:
+		var door := croft_door(c)
+		out.append([door, _road_foot(door)])
+	var w: Vector2 = WAYSTATION[0]
+	out.append([w + Vector2(-1.0, 0), _road_foot(w)])
+	var sm: Vector2 = SMITHY[0]
+	out.append([sm + Vector2(-1.5, 0), _road_foot(sm)])
+	var pr: Vector2 = PEN_ROUND[0]
+	out.append([pr + Vector2.from_angle(deg_to_rad(-float(PEN_ROUND[2]) + 90.0)) * 0.0 + Vector2(float(PEN_ROUND[1]), 0), _road_foot(pr)])
+	var pq: Vector2 = PEN_RECT[0]
+	out.append([pq + Vector2(-float(PEN_RECT[1]), 0), _road_foot(pq)])
+	return out
+
+
+## 矮石屋的门口（门外 0.6 米）
+static func croft_door(c: Array) -> Vector2:
+	var pos: Vector2 = c[1]
+	var yaw := deg_to_rad(float(c[2]))
+	var fwd := Vector2(sin(yaw), cos(yaw))
+	var right := Vector2(cos(yaw), -sin(yaw))
+	return pos + right * float(c[5]) + fwd * 0.6
+
+
+static func _road_foot(p: Vector2) -> Vector2:
+	var r := road_hit(p)
+	var a: Vector2 = ROAD[r.i]
+	var b: Vector2 = ROAD[r.i + 1]
+	return a + (b - a) * float(r.t)
+
+
+static func _seg_d(p: Vector2, a: Vector2, b: Vector2) -> float:
+	var ab := b - a
+	var t := clampf((p - a).dot(ab) / maxf(ab.length_squared(), 0.0001), 0.0, 1.0)
+	return p.distance_to(a + ab * t)
+
+
 ## 命名出生点：[位置（y 由地形算）, 水平朝向（度）]
 const SPAWN_XZ := {
 	"village": [Vector2(6.0, 112.0), 0.0],          # 进村的路口，面朝北（村子、身后是来路）
 	"road": [Vector2(-30.0, 10.0), -60.0],          # 盘山路第三个弯
 	"beacon": [Vector2(14.0, -52.0), -20.0],        # 第十九烽门前
 	"plain": [Vector2(-10.0, -96.0), 180.0],        # 山脊背后，面朝北的冰原
+	"waystation_door": [Vector2(15.4, 84.6), 90.0], # 驿站门外（从大堂出来），面朝西（村路）
 }
 ## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
 const VIEW_SPEC := [
@@ -48,8 +142,13 @@ const VIEW_SPEC := [
 	[Vector3(50.0, 1.7, -19.0), 192.0, -10.0],      # 3 半山腰的弯道上往南回看整条山谷
 	[Vector3(-6.0, 1.7, -88.0), 0.0, -3.0],         # 4 山脊背后往北看冰原（白寂边缘）
 	[Vector3(34.0, 1.7, -66.0), -100.0, 1.0],       # 5 第十九烽边上顺着山脊往东看：远处那串烽燧塔（5.1b）
+	[Vector3(5.0, 1.7, 88.5), -82.0, 2.0],          # 6 村路上看驿站（5.2a）
+	[Vector3(-6.0, 1.7, 90.0), 112.0, -6.0],        # 7 村西：圆羊圈、远处结冰的溪
+	[Vector3(-19.0, 1.7, 62.0), 12.0, 0.0],         # 8 石圈
+	[Vector3(9.5, 1.7, 70.5), -62.0, -4.0],         # 9 铁匠棚
+	[Vector3(12.0, 1.7, 52.0), 172.0, -6.0],        # 10 村北路牌往回看整个村子
 ]
-const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘", "山脊往东"]
+const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘", "山脊往东", "驿站", "羊圈和溪", "石圈", "铁匠棚", "村北回看"]
 
 
 ## 大轮廓（不含噪声）：南边谷底 0 米 → 往北抬升 → 山脊（z 约 -68，最高约 46 米，西高东低）→ 山脊背后落到冰原（约 30 米）；东西两边是山肩
@@ -181,6 +280,10 @@ static func height(x: float, z: float) -> float:
 		var k := 1.0 if r.d <= ROAD_HALF else _smooth(1.0 - (r.d - ROAD_HALF) / ROAD_BLEND)
 		y = lerpf(y, ry, k)
 	y += _cliff(p)
+	var ds := stream_d(p)                                           # 溪：往下刻一道沟（溪床平、两岸斜）
+	if ds < STREAM_HALF + STREAM_BANK:
+		var k := 1.0 if ds <= STREAM_HALF else 1.0 - _smooth((ds - STREAM_HALF) / STREAM_BANK)
+		y -= STREAM_DEPTH * k
 	return y
 
 
@@ -218,10 +321,15 @@ static func masks(x: float, z: float) -> Vector2:
 	if r.d < ROAD_HALF + 1.6:
 		track = _smooth(clampf((ROAD_HALF + 1.6 - r.d) / 1.8, 0.0, 1.0))
 	var dv := p.distance_to(VILLAGE)
-	if dv < VILLAGE_R:                                             # 村里：踩出来的地一块一块的（5.2 盖房子以后按房子改）
-		_noises()
-		var spots := 0.5 + 0.5 * _noise_paint.get_noise_2d(x * 1.7, z * 1.7)
-		track = maxf(track, _smooth(clampf((VILLAGE_R - dv) / 10.0, 0.0, 1.0)) * clampf(spots * 1.6 - 0.35, 0.0, 1.0))
+	if dv < VILLAGE_R + 8.0:                                       # 村里（5.2a）：每栋房子、驿站、羊圈门口到村路踩出来的小路，驿站门前一片
+		for seg in village_paths():
+			var d := _seg_d(p, seg[0], seg[1])
+			if d < 1.6:
+				track = maxf(track, _smooth(clampf((1.6 - d) / 1.0, 0.0, 1.0)))
+		var w: Vector2 = WAYSTATION[0]
+		var dw := p.distance_to(w + Vector2(-4.5, 0))
+		if dw < 6.0:
+			track = maxf(track, _smooth(clampf((6.0 - dw) / 3.0, 0.0, 1.0)))
 	for c in [BEACON19, BEACON18]:
 		var dc := p.distance_to(c)
 		if dc < PAD_R:

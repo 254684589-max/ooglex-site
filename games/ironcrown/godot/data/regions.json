@@ -24,6 +24,13 @@
         "barracks": {"pos": [0.06, 0.24], "host": "castle"},
         "counting": {"pos": [0.4, 0.5], "host": "castle"}
       }
+    },
+    "highland": {
+      "title": "余火高地一带",
+      "areas": {
+        "highland": {"pos": [0.5, 0.6]},
+        "waystation": {"pos": [0.72, 0.3], "host": "highland"}
+      }
     }
   }
 }

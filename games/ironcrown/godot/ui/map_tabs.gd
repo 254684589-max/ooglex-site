@@ -38,8 +38,15 @@ func setup(views: Array, active: String) -> void:
 		var b: Button = btns[v]
 		b.visible = v in views
 		b.set_pressed_no_signal(v == active)
-		b.text = (MARK if v == active else "") + str(LABELS[v])
+		b.text = (MARK if v == active else "") + label_of(v)
 	visible = views.size() > 1
+
+
+## 页签上的字：旅行地图那页按这一章用的是哪一页（第二章起「北境北部」，5.2a）
+static func label_of(v: String) -> String:
+	if v == "travel":
+		return Travel.region_title(GameState.chapter)
+	return str(LABELS[v])
 
 
 func active_button() -> Button:

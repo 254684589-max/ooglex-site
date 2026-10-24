@@ -121,6 +121,8 @@ func _ready() -> void:
 			area = "battle"
 		elif Areas.known(_query("area")):
 			area = _query("area")
+			if pending.is_empty() and GameState.chapter < Areas.chapter_of(area):
+				GameState.chapter = Areas.chapter_of(area)      # 直接进第二章的区域（截图、预览，5.2a）：章节跟着对上
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
@@ -201,6 +203,8 @@ func _ready() -> void:
 			t = Marsh.build(world, Settings.reduced_motion)
 		"highland":
 			t = Highland.build(world, Settings.reduced_motion)
+		"waystation":
+			t = Waystation.build(world, Settings.reduced_motion)
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
@@ -304,7 +308,8 @@ func _ready() -> void:
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
 		show_ending.call_deferred("prologue", _query("ending"))
-	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done"):
+	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
+			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
 		open_travel_map.call_deferred(near_travel_point())
 	if Areas.pack_chapter(area) > 0 and not Chapters.content_ready(Areas.pack_chapter(area)):

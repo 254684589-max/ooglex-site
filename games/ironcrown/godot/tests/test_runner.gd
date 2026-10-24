@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8507,3 +8507,77 @@ func test_flora() -> void:
 	var hit := space.intersect_ray(q)
 	check(not hit.is_empty() and Vector2(hit.position.x, hit.position.z).distance_to(Vector2(t0.x, t0.z)) < 0.5, "树干挡人（横着打一条线打到树干）")
 	await free_main(main)
+
+
+## 5.2a 羊脊村：矮石屋、驿站（进得去、出得来）、铁匠棚、羊圈、石墙、冰溪、石圈、路牌；旅行地图「北境北部」
+func test_yangji() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	# 布局：房子都在村子压平的那片里、不压路；树和石头不长在房子、石墙、溪、石圈上
+	var bad := []
+	for c in HighlandLayout.CROFTS:
+		var p: Vector2 = c[1]
+		if p.distance_to(HighlandLayout.VILLAGE) > HighlandLayout.VILLAGE_R - 3.0 or HighlandLayout.road_hit(p).d < HighlandLayout.ROAD_HALF + 2.0:
+			bad.append(str(c[0]))
+	var fl := Highland.height_at(HighlandLayout.VILLAGE.x, HighlandLayout.VILLAGE.y)
+	check(bad.is_empty() and HighlandLayout.CROFTS.size() == 6, "6 栋矮石屋都在村子那片平地上、不压路（不合适的：%s）" % str(bad))
+	var houses := []
+	for c in HighlandLayout.CROFTS:
+		houses.append(House.footprint(HighlandVillage.croft_pos(c), float(c[2]), float(c[3]) + 1.0, float(c[4]) + 1.0))
+	houses.append(House.footprint(HighlandVillage.waystation_pos(), float(HighlandLayout.WAYSTATION[1]), float(HighlandLayout.WAYSTATION[2]) + 1.0, float(HighlandLayout.WAYSTATION[3]) + 1.0))
+	var hit_house := HighlandFlora.trees().filter(func(t): return houses.any(func(h): return Geometry2D.is_point_in_polygon(Vector2(t[0].x, t[0].z), h)))
+	var on_works := HighlandFlora.trees().filter(func(t): return HighlandFlora.near_village_works(Vector2(t[0].x, t[0].z), 1.0)).size() + HighlandFlora.rocks().filter(func(r): return HighlandFlora.near_village_works(Vector2(r[0].x, r[0].z), 0.5)).size()
+	check(hit_house.is_empty() and on_works == 0, "树和石头不长在房子、田间石墙、溪和石圈上")
+	var bed := Highland.height_at(-34.5, 80.0)
+	var bank := Highland.height_at(-34.5 + HighlandLayout.STREAM_HALF + HighlandLayout.STREAM_BANK + 2.0, 80.0)
+	check(bank - bed > 0.5, "溪床比岸低 %.2f 米（刻出来的沟）" % (bank - bed))
+	# 载入：房子、驿站、铁匠棚、羊、石墙、石圈、冰溪都搭出来；门、路牌一进场就在
+	GameState.new_game(520)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	var w: Node3D = main.world
+	var crofts: Array = w.find_children("Croft_*", "Node3D", true, false)
+	check(crofts.size() == 6 and crofts.all(func(c): return c.is_in_group("house")) and w.find_children("Smithy", "MeshInstance3D", true, false).size() == 1
+		and w.find_children("Sheep*", "Node3D", true, false).size() == HighlandLayout.SHEEP.size() and w.find_children("RingStone*", "MeshInstance3D", true, false).size() == HighlandLayout.STONES
+		and w.find_children("DryWalls", "MeshInstance3D", true, false).size() >= 2 and w.get_node_or_null("StreamIce") != null,
+		"村子搭出来了：6 栋矮石屋、铁匠棚、%d 只羊、%d 块立石、石墙、冰溪" % [HighlandLayout.SHEEP.size(), HighlandLayout.STONES])
+	check(float(st.stats.max_job_ms) < 40.0, "加上村子以后每件活还是不长（最慢 %.1f 毫秒）" % st.stats.max_job_ms)
+	var lit_houses := crofts.filter(func(c): return bool(c.get_meta("lit_now", true))).size()
+	check(lit_houses >= 3, "黄昏：矮石屋的窗大多亮着（%d / 6）" % lit_houses)
+	var doors: Array = w.find_children("CroftDoor_*", "Door", true, false)
+	check(doors.size() == 6 and doors.all(func(d): return d.locked), "6 栋矮石屋的门都闩着（这一步还没有人，5.2b）")
+	var wd := w.get_node_or_null("WaystationDoor") as Door
+	check(wd != null and not wd.locked and wd.to_area == "waystation" and wd.to_spawn == "front", "驿站的门推得开，通往大堂")
+	var space := main.get_world_3d().direct_space_state
+	var wp := HighlandVillage.waystation_pos()
+	var q := PhysicsRayQueryParameters3D.create(wp + Vector3(-6.0, 1.2, -3.0), wp + Vector3(2.0, 1.2, -3.0), 1)
+	check(not space.intersect_ray(q).is_empty(), "驿站的墙挡人（房子是分帧搭的，碰撞一进场就在）")
+	# 旅行地图：村北路牌旁边打开是「北境北部」，能去第十九烽
+	var sv := HighlandLayout.SIGN_VILLAGE
+	var p: FpController = main.player
+	p.global_position = Vector3(sv.x - 1.5, Highland.height_at(sv.x - 1.5, sv.z + 1.0) + 0.1, sv.z + 1.0)
+	await physics(4)
+	check(main.near_travel_point() and Travel.place_of_area("highland", main.player_xz()) == "yangji", "村北路牌旁边：在羊脊村、站在出发的地方")
+	main.open_travel_map(true)
+	await frames(2)
+	check(main.travel_map.visible and main.travel_map.title.text.contains("北境北部") and main.travel_map.place_btns.keys() == ["yangji", "beacon19"],
+		"旅行地图是「北境北部」：羊脊村、第十九烽（%s）" % str(main.travel_map.place_btns.keys()))
+	check(Travel.check(2, "yangji", "beacon19", true).ok and MapTabs.label_of("travel") == "北境北部" and Travel.places(1).all(func(id): return str(Travel.place(id).get("region", "west")) == "west"),
+		"从羊脊村能去第十九烽；页签写「北境北部」；第一章的地图还是北境西部那几处")
+	main.travel_map.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 驿站大堂：进得去、出得来（出来站在驿站门外）
+	GameState.pending_load = {"scene": "waystation", "spawn": "front", "player": {}}
+	main = await make_area("waystation")
+	check(main.area == "waystation" and Areas.is_indoor("waystation") and main.world.get_node_or_null("Waystation") != null and main.world.find_children("Fire", "OmniLight3D", true, false).size() == 1,
+		"驿站大堂：壁炉、长桌、罗薇娜的桌子、粮架（室内，壁炉是一盏会闪的火光）")
+	var exit: Door = main.world.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "highland")[0]
+	check(exit.to_spawn == "waystation_door" and Areas.spawn("highland", "waystation_door") is Transform3D, "大堂的门通往驿站门外")
+	var out_spawn: Transform3D = Areas.spawn("highland", "waystation_door")
+	check(out_spawn.origin.distance_to(HighlandVillage.waystation_pos()) < 3.5 and absf(out_spawn.origin.y - Highland.height_at(out_spawn.origin.x, out_spawn.origin.z)) < 0.2, "从大堂出来站在驿站门外的地上")
+	await free_main(main)
+	GameState.pending_load = {}

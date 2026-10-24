@@ -91,7 +91,7 @@ static func tree_density(p: Vector2, forest: FastNoiseLite) -> float:
 	for c in [HighlandLayout.BEACON19, HighlandLayout.BEACON18]:
 		if p.distance_to(c) < HighlandLayout.PAD_R + 4.0:
 			return 0.0
-	if slope_at(p) > 0.3:
+	if slope_at(p) > 0.3 or near_village_works(p, 2.5):
 		return 0.0
 	var r := HighlandLayout.road_hit(p)
 	if r.d < HighlandLayout.ROAD_HALF + 3.5:
@@ -100,6 +100,19 @@ static func tree_density(p: Vector2, forest: FastNoiseLite) -> float:
 	var line := 1.0 - HighlandLayout._smooth(clampf((y - (TREELINE - 12.0)) / 12.0, 0.0, 1.0))
 	var edge := clampf((r.d - HighlandLayout.ROAD_HALF - 3.5) / 6.0, 0.3, 1.0)       # 路边稀一点
 	return 0.62 * f * line * edge
+
+
+## 离溪、田间石墙、石圈太近（树、石头都不摆：5.2a）
+static func near_village_works(p: Vector2, margin: float) -> bool:
+	if HighlandLayout.stream_d(p) < HighlandLayout.STREAM_HALF + HighlandLayout.STREAM_BANK * 0.5 + margin:
+		return true
+	if p.distance_to(HighlandLayout.STONE_RING) < HighlandLayout.STONE_RING_R + 2.0 + margin:
+		return true
+	for line in HighlandLayout.FIELD_WALLS:
+		for i in line.size() - 1:
+			if HighlandLayout._seg_d(p, line[i], line[i + 1]) < HighlandLayout.WALL_W + margin:
+				return true
+	return false
 
 
 ## 坡度（1 - 法线的 y）
@@ -130,6 +143,8 @@ static func rocks() -> Array:
 			for c in [HighlandLayout.BEACON19, HighlandLayout.BEACON18]:
 				if p.distance_to(c) < HighlandLayout.PAD_R:
 					ok = false
+			if near_village_works(p, 1.6):
+				ok = false
 			var chance := 0.07 + 0.5 * clampf((s - 0.12) / 0.25, 0.0, 1.0)
 			if p.y < HighlandLayout.crest_z(p.x) - 10.0:
 				chance = 0.04                            # 冰原上零星几块
@@ -396,8 +411,8 @@ static func far_forest(parent: Node3D) -> void:
 		tries += 1
 		var x := rng.randf_range(-900.0, 900.0)
 		var z := rng.randf_range(-200.0, 900.0)
-		if HighlandLayout.BOUNDS.grow(6.0).has_point(Vector2(x, z)):
-			continue
+		if HighlandLayout.BOUNDS.grow(70.0).has_point(Vector2(x, z)):
+			continue                                   # 离地图边 70 米以内不放（近了一眼看出是圆锥，截图）
 		if z < HighlandLayout.crest_z(x) + 10.0:
 			continue                                   # 山脊北边是冰原
 		var y := Highland.far_height(x, z)
@@ -411,7 +426,7 @@ static func far_forest(parent: Node3D) -> void:
 	cone.radial_segments = 6
 	cone.rings = 1
 	var m := StandardMaterial3D.new()
-	m.albedo_color = Color("2a332f")
+	m.albedo_color = Color("1c2420")
 	m.roughness = 1.0
 	cone.material = m
 	var mm := MultiMesh.new()

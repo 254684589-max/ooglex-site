@@ -52,9 +52,17 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	h._collision()
 	ground_material()                                 # 分帧的活要用的材质、网格先在载入时（黑屏里）备好：头一次取贴图、编着色器要几十到上百毫秒
 	HighlandFlora.warm(reduced_motion)
+	for k in ["stone", "timber", "snow", "roof", "plaster", "peat", "bark"]:    # 村里的房子（5.2a）要用的材质：头一次载入贴图、画茅草几十毫秒
+		Look.mat(k)
+	Look.thatch()
+	Look.glass_lit()
+	Look.glass_dark()
+	Look.halo(Look.WINDOW_COLOR, 0.32)
 	h._far()
 	HighlandFlora.far_forest(p_parent)               # 地图外面山坡上的针叶林、山脊上远处那串烽燧塔（5.1b）
 	HighlandFlora.far_beacons(p_parent)
+	HighlandVillage.stream_ice(p_parent)              # 羊脊村（5.2a）：结冰的溪、门、路牌（同步：一进场就推得开）
+	HighlandVillage.interactables(p_parent)
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -221,6 +229,18 @@ func _collision() -> void:
 		rc.shape = sp
 		rc.position = (rk[0] as Vector3) + Vector3(0, size * 0.12, 0)
 		flora.add_child(rc)
+	var village := StaticBody3D.new()                # 羊脊村：房子、驿站、铁匠棚、石墙、羊圈、立石、零碎（5.2a）
+	village.name = "VillageSolids"
+	village.collision_layer = 1
+	village.collision_mask = 0
+	parent.add_child(village)
+	for so in HighlandVillage.solids():
+		var vc := CollisionShape3D.new()
+		var vb := BoxShape3D.new()
+		vb.size = so[1]
+		vc.shape = vb
+		vc.transform = so[0]
+		village.add_child(vc)
 	var wb := StaticBody3D.new()
 	wb.name = "HighlandWalls"
 	wb.collision_layer = FpController.LAYER_BOUNDARY
@@ -317,7 +337,9 @@ func _jobs(st: ChunkStreamer) -> void:
 		var z := b.position.y
 		while z < b.end.y - 0.01:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
-			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r), _job_flora.bind(r)])
+			var jobs: Array = [_job_terrain.bind(r), _job_flora.bind(r)]
+			jobs.append_array(HighlandVillage.jobs_for(r, reduced_motion))      # 村里的房子、石墙、羊、石圈、零碎（5.2a）
+			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
 		x += cs
@@ -534,6 +556,56 @@ static func far_height(x: float, z: float) -> float:
 	return y + mountains * k2
 
 
-## 地图册（3.11）：先只有轮廓和三处地名（5.2 盖了房子再加）
+## 地图册（3.11）「本地」页：路、溪、村里的房子、羊圈、田间石墙、石圈、两座烽燧、路牌；驿站的门是出口。
+## 分块（zones）：羊脊村、第十九烽是旅行地图上的两个地点（Travel.place_of_area 按你站在哪块分），盘山路、白寂边缘只是地名
 static func map_spec() -> Dictionary:
-	return {}
+	var shapes := []
+	for i in HighlandLayout.ROAD.size() - 1:
+		shapes.append({"k": "road", "pts": _strip(HighlandLayout.ROAD[i], HighlandLayout.ROAD[i + 1], HighlandLayout.ROAD_HALF)})
+	for i in HighlandLayout.STREAM.size() - 1:
+		var sh := {"k": "water", "pts": _strip(HighlandLayout.STREAM[i], HighlandLayout.STREAM[i + 1], HighlandLayout.STREAM_HALF)}
+		if i == 3:
+			sh["label"] = "冻住的溪"
+		shapes.append(sh)
+	for c in HighlandLayout.CROFTS:
+		shapes.append({"k": "house", "pts": House.footprint(HighlandVillage.croft_pos(c), float(c[2]), float(c[3]), float(c[4]))})
+	var wy := float(HighlandLayout.WAYSTATION[1])
+	shapes.append({"k": "house", "pts": House.footprint(HighlandVillage.waystation_pos(), wy, float(HighlandLayout.WAYSTATION[2]), float(HighlandLayout.WAYSTATION[3])), "label": "驿站"})
+	var sm: Vector2 = HighlandLayout.SMITHY[0]
+	shapes.append({"k": "house", "pts": House.footprint(Vector3(sm.x, 0, sm.y), float(HighlandLayout.SMITHY[1]), 4.2, 3.2), "label": "铁匠"})
+	for seg in HighlandVillage.wall_pieces():
+		var a := Vector2(seg.c.x, seg.c.z)
+		var dir := Vector2(cos(float(seg.yaw)), -sin(float(seg.yaw))) * float(seg.len) * 0.5
+		shapes.append({"k": "wall", "pts": _strip(a - dir, a + dir, HighlandLayout.WALL_W * 0.5)})
+	shapes.append({"k": "mark", "at": HighlandLayout.PEN_ROUND[0], "label": "羊圈"})
+	shapes.append({"k": "mark", "at": HighlandLayout.STONE_RING, "label": "石圈"})
+	shapes.append({"k": "mark", "at": HighlandLayout.BEACON19, "icon": "fire", "label": "第十九烽"})
+	shapes.append({"k": "mark", "at": HighlandLayout.BEACON18, "label": "第十八烽"})
+	for sp in [HighlandLayout.SIGN_VILLAGE, HighlandLayout.SIGN_BEACON]:
+		shapes.append({"k": "mark", "at": Vector2(sp.x, sp.z), "icon": "sign", "label": "路牌"})
+	var door := House.door_xz(HighlandVillage.waystation_pos(), wy, float(HighlandLayout.WAYSTATION[4]))
+	var exits := [{"at": door, "dir": -House.facing(wy), "to": "waystation", "spawn": "front", "name": HighlandVillage.WAYSTATION_DOOR}]
+	return {"bounds": HighlandLayout.BOUNDS, "shapes": shapes, "exits": exits, "zones": zones()}
+
+
+## 地图上的分块：先具体的（两座烽燧、村子），再大片的
+static func zones() -> Array:
+	return [
+		{"name": "第十九烽", "place": "beacon19", "pts": _circle(HighlandLayout.BEACON19, 26.0)},
+		{"name": "第十八烽", "pts": _circle(HighlandLayout.BEACON18, 20.0)},
+		{"name": "羊脊村", "place": "yangji", "pts": _circle(HighlandLayout.VILLAGE, HighlandLayout.VILLAGE_R + 12.0)},
+		{"name": "白寂边缘", "pts": PackedVector2Array([Vector2(-160, -130), Vector2(160, -130), Vector2(160, -92), Vector2(-160, -92)])},
+		{"name": "盘山路", "pts": PackedVector2Array([Vector2(-160, -92), Vector2(160, -92), Vector2(160, 130), Vector2(-160, 130)])},
+	]
+
+
+static func _strip(a: Vector2, b: Vector2, half: float) -> PackedVector2Array:
+	var side := (b - a).normalized().orthogonal() * half
+	return PackedVector2Array([a + side, b + side, b - side, a - side])
+
+
+static func _circle(c: Vector2, r: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for k in 16:
+		out.append(c + Vector2.from_angle(TAU * k / 16.0) * r)
+	return out

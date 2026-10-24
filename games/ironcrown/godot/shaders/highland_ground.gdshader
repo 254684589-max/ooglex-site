@@ -32,7 +32,7 @@ varying vec3 wnrm;
 
 void vertex() {
 	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	wnrm = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
+	wnrm = normalize(MODEL_NORMAL_MATRIX * NORMAL);       // 用法线矩阵：石圈的立石是拉高了的石头，直接乘模型矩阵法线会往上歪，侧面也被当成积雪（截图）
 }
 
 void fragment() {
