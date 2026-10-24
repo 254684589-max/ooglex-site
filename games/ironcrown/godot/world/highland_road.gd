@@ -265,7 +265,9 @@ static func pole_mesh() -> ArrayMesh:
 	var tar := StandardMaterial3D.new()
 	tar.albedo_color = Color("16120f")
 	tar.roughness = 0.45
-	var m := kit.build({"timber": Look.mat("timber"), "tar": tar}).mesh as ArrayMesh
+	var mi := kit.build({"timber": Look.mat("timber"), "tar": tar})
+	var m := mi.mesh as ArrayMesh
+	mi.free()                                                   # 只要网格（多实例用）：节点不放进场景，自己释放
 	_cache.pole_mesh = m
 	return m
 

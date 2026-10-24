@@ -8817,6 +8817,8 @@ func test_mountainroad() -> void:
 	var spec := Highland.map_spec()
 	check(spec.shapes.any(func(sh): return str(sh.get("label", "")) == "废羊棚"), "本地地图上标了废羊棚")
 	await free_main(main)
+	HighlandRoad.clear_cache()
+	HighlandFlora.clear_cache()
 
 
 ## 测试用：选对话里文字是 label 的那个选项（没有就什么都不做，后面的检查会失败）
