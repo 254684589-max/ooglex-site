@@ -2,6 +2,10 @@
 
 每一步的实际命令与结果，最新的在上面。
 
+## 2026-10-24 · 高地的夜调亮
+
+`daypart highland yangji chapters` 94 项通过；`tools/build_web.sh games/ironcrown/play`（带全量测试）**1869 项通过** → `ic-e7f6b875`。夜里村口、村北回看、伏击段、第十九烽院子改前 / 改后对照截图；仓库根目录起本地服务打开 `?area=highland&view=0&daypart=night`：0 报错。
+
 ## 2026-10-24 · 第二章对玩家打开（制作中）
 
 `tools/build_web.sh games/ironcrown/play`（带全量测试）：**1869 项通过**（第一次 1 项：长眠者组还在查「第一章章末没有继续」，改成第二章已开放；章节、高地组各一处同样改了）→ `ic-c699ef97`，78.7 MB。仓库根目录起本地服务，不带 `?preview` 打开 `?area=highland&view=0`：载入完、主线「熄灭的烽燧」开始、0 报错。
