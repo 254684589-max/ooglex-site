@@ -14,11 +14,11 @@ const sourceLink = $('#openSource');
 const attribution = $('#attribution');
 const centerCoords = $('#centerCoords');
 const playlistTabs = $('#playlistTabs');
-const crosshair = $('.crosshair');
 const cfg = window.OOGLEX_GLOBAL_CAMS || {};
 const WINDOW_CDN_BASE = String(cfg.windowCdnBase || '').replace(/\/$/, '');
 
 const TOKYO = Object.freeze({ lat: 35.6762, lng: 139.6503, altitude: 1.45 });
+const POINT_ALTITUDE = 0.015;
 let windows = [];
 let filtered = [];
 let selectedId = '';
@@ -36,7 +36,8 @@ const globe = Globe()(globeEl)
   .height(stage.clientHeight)
   .globeImageUrl('../radio/vendor/earth-blue-marble.jpg')
   .backgroundColor('#05070f')
-  .pointAltitude(0.015)
+  .pointAltitude(POINT_ALTITUDE)
+  .pointResolution(6)
   .pointRadius(d => itemKey(d) === selectedId ? 0.34 : 0.26)
   .pointColor(d => itemKey(d) === selectedId ? '#ffd36b' : '#68a8ff')
   .pointLabel(d => '<b>' + escapeHtml(d.name || '沉浸窗口') + '</b><br>' + escapeHtml(itemSubLabel(d)))
@@ -44,14 +45,29 @@ const globe = Globe()(globeEl)
   .onPointClick(d => {
     activateAudio();
     showWindow(d, { focus: true, reveal: true });
-  });
+  })
+  // 选中圈作为地球的 HTML 图层元素，由 globe.gl 在每一帧渲染时与点位同步定位，
+  // 拖动、飞行动画和缩放中都不会“框不住”点；转到背面时自动隐藏。
+  .htmlElementsData([])
+  .htmlLat(d => Number(d.lat))
+  .htmlLng(d => Number(d.lng))
+  .htmlAltitude(POINT_ALTITUDE)
+  .htmlTransitionDuration(0)
+  .htmlElement(createSelectionRing)
+  .htmlElementVisibilityModifier((el, visible) => el.classList.toggle('active', visible));
 
 const controls = globe.controls();
 controls.autoRotate = false;
-controls.enableDamping = true;
+// 与环球TV一致：关掉松手后的惯性滑行，拖到哪停到哪。
+controls.enableDamping = false;
+let readoutQueued = false;
 controls.addEventListener('change', () => {
-  updateCenterReadout();
-  syncSelectionRing();
+  if (readoutQueued) return;
+  readoutQueued = true;
+  requestAnimationFrame(() => {
+    readoutQueued = false;
+    updateCenterReadout();
+  });
 });
 globe.pointOfView(TOKYO, 0);
 updateCenterReadout();
@@ -192,7 +208,7 @@ function listSubLabel(d) {
 
 function render() {
   globe.pointsData(filtered);
-  requestAnimationFrame(syncSelectionRing);
+  syncSelectionRing();
   count.textContent = filtered.length + ' 个 WINDOW';
   listCount.textContent = filtered.length + ' 个窗口';
 
@@ -303,8 +319,6 @@ function showWindow(d, options = {}) {
   }
 
   render();
-  requestAnimationFrame(syncSelectionRing);
-  if (options.focus && !prefersReducedMotion()) setTimeout(syncSelectionRing, 700);
   if (options.reveal) {
     const row = playlist.querySelector('[data-key="' + cssEscape(selectedId) + '"]');
     if (row) row.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
@@ -466,38 +480,19 @@ function updateExpandButton() {
   btn.setAttribute('aria-label', btn.title);
 }
 
-function syncSelectionRing() {
-  if (!crosshair || !selectedWindow || typeof globe.getScreenCoords !== 'function') {
-    if (crosshair) crosshair.classList.remove('active');
-    return;
-  }
-  const lat = Number(selectedWindow.lat);
-  const lng = Number(selectedWindow.lng);
-  const pov = globe.pointOfView();
-  if (!Number.isFinite(lat) || !Number.isFinite(lng) ||
-      angularDistanceDeg(lat, lng, Number(pov.lat) || 0, Number(pov.lng) || 0) > 92) {
-    crosshair.classList.remove('active');
-    return;
-  }
-  const pt = globe.getScreenCoords(lat, lng, 0.015);
-  if (!pt || !Number.isFinite(pt.x) || !Number.isFinite(pt.y) ||
-      pt.x < -30 || pt.y < -30 || pt.x > stage.clientWidth + 30 || pt.y > stage.clientHeight + 30) {
-    crosshair.classList.remove('active');
-    return;
-  }
-  crosshair.style.left = pt.x + 'px';
-  crosshair.style.top = pt.y + 'px';
-  crosshair.classList.add('active');
+function createSelectionRing() {
+  const ring = document.createElement('div');
+  ring.className = 'crosshair';
+  ring.setAttribute('aria-hidden', 'true');
+  return ring;
 }
 
-function angularDistanceDeg(lat1, lng1, lat2, lng2) {
-  const toRad = v => v * Math.PI / 180;
-  const a1 = toRad(lat1);
-  const a2 = toRad(lat2);
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a1) * Math.cos(a2) * Math.sin(dLng / 2) ** 2;
-  return 2 * Math.atan2(Math.sqrt(h), Math.sqrt(Math.max(0, 1 - h))) * 180 / Math.PI;
+// 选中的窗口仍在当前筛选结果里才显示选中圈；位置与背面隐藏由 globe.gl 负责。
+function syncSelectionRing() {
+  const shown = selectedWindow && filtered.includes(selectedWindow) ? [selectedWindow] : [];
+  const current = globe.htmlElementsData();
+  if (current.length === shown.length && current[0] === shown[0]) return;
+  globe.htmlElementsData(shown);
 }
 
 function resolveWindowVideoUrl(d) {
@@ -599,7 +594,6 @@ async function toggleFullscreen(target) {
 function sizeGlobe() {
   globe.width(stage.clientWidth).height(stage.clientHeight);
   updateCenterReadout();
-  requestAnimationFrame(syncSelectionRing);
 }
 
 function setStatus(message, kind) {
