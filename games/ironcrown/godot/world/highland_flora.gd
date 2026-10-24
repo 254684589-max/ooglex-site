@@ -464,18 +464,21 @@ static func far_beacons(parent: Node3D) -> void:
 	iron.albedo_color = Color("2a2624")
 	iron.roughness = 0.8
 	pan.material = iron
-	for bc in beacons():
+	var list := beacons()
+	for part in [[body, 5.0, "Towers"], [pan, 10.9, "Pans"]]:      # 塔身、火盆各一个多实例（一座一个网格时 11 座多画 22 次）
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = part[0]
+		mm.instance_count = list.size()
+		for i in list.size():
+			mm.set_instance_transform(i, Transform3D(Basis.IDENTITY, (list[i][0] as Vector3) + Vector3(0, float(part[1]), 0)))
+		var mi := MultiMeshInstance3D.new()
+		mi.name = str(part[2])
+		mi.multimesh = mm
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root.add_child(mi)
+	for bc in list:
 		var at: Vector3 = bc[0]
-		var tower := MeshInstance3D.new()
-		tower.mesh = body
-		tower.position = at + Vector3(0, 5.0, 0)
-		tower.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(tower)
-		var top := MeshInstance3D.new()
-		top.mesh = pan
-		top.position = at + Vector3(0, 10.9, 0)
-		top.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(top)
 		if bool(bc[1]):
 			var fire := MeshInstance3D.new()
 			var q := QuadMesh.new()

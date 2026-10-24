@@ -8541,7 +8541,8 @@ func test_yangji() -> void:
 	var w: Node3D = main.world
 	var crofts: Array = w.find_children("Croft_*", "Node3D", true, false)
 	check(crofts.size() == 6 and crofts.all(func(c): return c.is_in_group("house")) and w.find_children("Smithy", "MeshInstance3D", true, false).size() == 1
-		and w.find_children("Sheep*", "Node3D", true, false).size() == HighlandLayout.SHEEP.size() and w.find_children("RingStone*", "MeshInstance3D", true, false).size() == HighlandLayout.STONES
+		and w.find_children("Sheep", "MeshInstance3D", true, false).reduce(func(acc, m): return acc + int(m.get_meta("count", 0)), 0) == HighlandLayout.SHEEP.size()
+		and w.find_children("RingStones", "MultiMeshInstance3D", true, false).size() == 1 and (w.find_children("RingStones", "MultiMeshInstance3D", true, false)[0] as MultiMeshInstance3D).multimesh.instance_count == HighlandLayout.STONES
 		and w.find_children("DryWalls", "MeshInstance3D", true, false).size() >= 2 and w.get_node_or_null("StreamIce") != null,
 		"村子搭出来了：6 栋矮石屋、铁匠棚、%d 只羊、%d 块立石、石墙、冰溪" % [HighlandLayout.SHEEP.size(), HighlandLayout.STONES])
 	check(float(st.stats.max_job_ms) < 40.0, "加上村子以后每件活还是不长（最慢 %.1f 毫秒）" % st.stats.max_job_ms)

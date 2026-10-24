@@ -307,73 +307,79 @@ static func _walls(root: Node3D, pieces: Array) -> void:
 	root.add_child(mi)
 
 
-## 羊：几只挤在羊圈里（代码搭：一团羊毛、黑脸、四条细腿；有的卧着）
+## 羊：几只挤在羊圈里（代码搭：一团羊毛、黑脸、四条细腿；三只里一只卧着）。这一块里的羊合成一个网格（羊毛、黑脸各一面）：
+## 原来每只羊六个网格，村口绘制调用多出四十多次（5.2a 实测，预算 400）
 static func _sheep(root: Node3D, rect: Rect2) -> void:
-	var wool := StandardMaterial3D.new()
-	wool.albedo_color = Color("bcb4a4")
-	wool.roughness = 1.0
-	var dark := StandardMaterial3D.new()
-	dark.albedo_color = Color("2a2624")
-	dark.roughness = 0.9
+	var wool := SurfaceTool.new()
+	wool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var dark := SurfaceTool.new()
+	dark.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var body := SphereMesh.new()
+	body.radius = 0.36
+	body.height = 0.62
+	body.radial_segments = 10
+	body.rings = 6
+	var head := BoxMesh.new()
+	head.size = Vector3(0.17, 0.2, 0.3)
+	var leg := CylinderMesh.new()
+	leg.top_radius = 0.035
+	leg.bottom_radius = 0.03
+	leg.height = 0.5
+	leg.radial_segments = 5
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5203
+	var count := 0
 	for i in HighlandLayout.SHEEP.size():
 		var sp: Vector3 = HighlandLayout.SHEEP[i]
-		var lying := i % 3 == 2
+		var yaw := rng.randf() * TAU
 		if not rect.has_point(Vector2(sp.x, sp.z)):
 			continue
-		var s := Node3D.new()
-		s.name = "Sheep%d" % i
-		s.position = Vector3(sp.x, ground(Vector2(sp.x, sp.z)), sp.z)
-		s.rotation.y = rng.randf() * TAU
-		root.add_child(s)
+		count += 1
+		var lying := i % 3 == 2
 		var lift := 0.15 if lying else 0.55
-		var body := MeshInstance3D.new()
-		var bm := SphereMesh.new()
-		bm.radius = 0.36
-		bm.height = 0.62
-		bm.radial_segments = 10
-		bm.rings = 6
-		bm.material = wool
-		body.mesh = bm
-		body.scale = Vector3(0.9, 0.85, 1.45)
-		body.position = Vector3(0, lift + 0.2, 0)
-		s.add_child(body)
-		var head := MeshInstance3D.new()
-		var hm := BoxMesh.new()
-		hm.size = Vector3(0.17, 0.2, 0.3)
-		hm.material = dark
-		head.mesh = hm
-		head.position = Vector3(0, lift + 0.36, 0.56)
-		head.rotation.x = 0.5
-		s.add_child(head)
+		var place := Transform3D(Basis(Vector3.UP, yaw), Vector3(sp.x, ground(Vector2(sp.x, sp.z)), sp.z))
+		wool.append_from(body, 0, place * Transform3D(Basis().scaled(Vector3(0.9, 0.85, 1.45)), Vector3(0, lift + 0.2, 0)))
+		dark.append_from(head, 0, place * Transform3D(Basis(Vector3.RIGHT, 0.5), Vector3(0, lift + 0.36, 0.56)))
 		if not lying:
 			for lx in [-0.15, 0.15]:
 				for lz in [-0.3, 0.3]:
-					var leg := MeshInstance3D.new()
-					var lm := CylinderMesh.new()
-					lm.top_radius = 0.035
-					lm.bottom_radius = 0.03
-					lm.height = 0.5
-					lm.radial_segments = 5
-					lm.material = dark
-					leg.mesh = lm
-					leg.position = Vector3(lx, 0.25, lz)
-					s.add_child(leg)
+					dark.append_from(leg, 0, place * Transform3D(Basis.IDENTITY, Vector3(lx, 0.25, lz)))
+	if count == 0:
+		return
+	var mesh := ArrayMesh.new()
+	wool.commit(mesh)
+	dark.commit(mesh)
+	var wm := StandardMaterial3D.new()
+	wm.albedo_color = Color("bcb4a4")
+	wm.roughness = 1.0
+	var dm := StandardMaterial3D.new()
+	dm.albedo_color = Color("2a2624")
+	dm.roughness = 0.9
+	mesh.surface_set_material(0, wm)
+	mesh.surface_set_material(1, dm)
+	var mi := MeshInstance3D.new()
+	mi.name = "Sheep"
+	mi.mesh = mesh
+	mi.set_meta("count", count)
+	root.add_child(mi)
 
 
 ## 石圈：九块立石（地形着色器：侧面灰岩、顶上积雪），有一块倒在雪里
 static func _ring(root: Node3D) -> void:
-	var mesh := HighlandFlora.rock_mesh(2)
-	for i in ring_stones().size():
-		var st: Dictionary = ring_stones()[i]
-		var mi := MeshInstance3D.new()
-		mi.name = "RingStone%d" % i
-		mi.mesh = mesh
-		mi.material_override = Highland.ground_material()
+	var stones := ring_stones()
+	var mm := MultiMesh.new()                         # 九块一次画完
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = HighlandFlora.rock_mesh(2)
+	mm.instance_count = stones.size()
+	for i in stones.size():
+		var st: Dictionary = stones[i]
 		var b := Basis(Vector3.UP, float(st.yaw)) * Basis(Vector3.BACK, float(st.lean))
-		mi.transform = Transform3D(b.scaled(Vector3(float(st.w), float(st.h), float(st.t))), (st.pos as Vector3) + Vector3(0, float(st.h) * 0.45, 0))
-		root.add_child(mi)
+		mm.set_instance_transform(i, Transform3D(b.scaled(Vector3(float(st.w), float(st.h), float(st.t))), (st.pos as Vector3) + Vector3(0, float(st.h) * 0.45, 0)))
+	var mi := MultiMeshInstance3D.new()
+	mi.name = "RingStones"
+	mi.multimesh = mm
+	mi.material_override = Highland.ground_material()
+	root.add_child(mi)
 
 
 ## 光脚的脚印：前夜长眠走了的那个人，从村子西北一直往北（ART.md 第十节「痕迹」）。一串小凹印（深一点的雪色小椭圆），左右交替
