@@ -8067,7 +8067,8 @@ func test_sleeper() -> void:
 	var hk: String = main.ending_panel.seal.text
 	check(rc.contains("印戒交给了阿尔里克") and rc.contains("堤道守住了") and rc.contains("奥弗") and hk.contains("老王自己交出去的") and hk.contains("双钥港") and hk.contains("没有醒来"),
 		"回顾按旗标写（印戒、堤道、奥弗），钩子带上双钥港和长眠者（%s / %s）" % [rc, hk])
-	check(not main.ending_panel.continue_btn.visible and main.ending_panel.back_btn.text == "在晨雾里再走走", "第二章还不能玩：只有「在晨雾里再走走」「从头再来」")
+	check(main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("制作中") and main.ending_panel.back_btn.text == "在晨雾里再走走",
+		"第二章先放出来能逛（2026-10-24）：「%s」「在晨雾里再走走」「从头再来」" % main.ending_panel.continue_btn.text)
 	main.ending_panel.close()
 	await frames(2)
 	check(not get_tree().paused, "关掉画面接着走")
