@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8459,3 +8459,51 @@ func test_highland() -> void:
 	get_tree().paused = false
 	await free_main(main)
 	GameState.pending_load = {}
+
+
+## 5.1b 高地的树、石头、远处的森林和烽燧塔
+func test_flora() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	var tr := HighlandFlora.trees()
+	var rk := HighlandFlora.rocks()
+	var bc := HighlandFlora.beacons()
+	check(tr.size() >= 300 and tr.size() <= 900 and rk.size() >= 80 and rk.size() <= 400, "树 %d 棵、石头 %d 块" % [tr.size(), rk.size()])
+	var bad := []
+	for t in tr:
+		var p: Vector3 = t[0]
+		var q := Vector2(p.x, p.z)
+		if HighlandLayout.road_hit(q).d < HighlandLayout.ROAD_HALF + 3.0 or q.distance_to(HighlandLayout.VILLAGE) < HighlandLayout.VILLAGE_R \
+				or p.y > HighlandFlora.TREELINE + 0.5 or q.y < HighlandLayout.crest_z(q.x) or HighlandFlora.slope_at(q) > 0.31:
+			bad.append(q)
+	check(bad.is_empty(), "树不长在路上、村里、林线以上、山脊北边和悬崖上（不合适的：%s）" % str(bad.slice(0, 5)))
+	var rock_bad := rk.filter(func(r): return HighlandLayout.road_hit(Vector2(r[0].x, r[0].z)).d < HighlandLayout.ROAD_HALF + 1.0)
+	check(rock_bad.is_empty(), "石头不压路")
+	var lit := bc.filter(func(b): return bool(b[1])).size()
+	check(bc.size() >= 8 and lit >= 2 and lit <= 4 and bc.all(func(b): return not HighlandLayout.BOUNDS.has_point(Vector2(b[0].x, b[0].z))),
+		"远处山脊上 %d 座烽燧塔，亮着的 %d 座（大半是黑的），都在地图外面" % [bc.size(), lit])
+	check(HighlandFlora.tree_mesh(0, 0).get_faces().size() / 3 <= 300 and HighlandFlora.tree_mesh(0, 1).get_faces().size() / 3 <= 80 and HighlandFlora.rock_mesh(0).get_faces().size() / 3 <= 300,
+		"一棵树近处 %d 面、远处 %d 面；一块石头 %d 面" % [HighlandFlora.tree_mesh(0, 0).get_faces().size() / 3, HighlandFlora.tree_mesh(0, 1).get_faces().size() / 3, HighlandFlora.rock_mesh(0).get_faces().size() / 3])
+	GameState.new_game(512)
+	GameState.daypart = "day"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	check(float(st.stats.max_job_ms) < 40.0, "地形和树石分帧搭完，最慢一件 %.1f 毫秒" % st.stats.max_job_ms)
+	var mms: Array = main.world.find_children("Trees*", "MultiMeshInstance3D", true, false)
+	var count := 0
+	for mi: MultiMeshInstance3D in mms:
+		if mi.name.ends_with("near"):
+			count += mi.multimesh.instance_count
+	check(count == tr.size() and mms.all(func(mi): return mi.visibility_range_end > 0.0), "树按块用多实例画（近处那份共 %d 棵 = 全部）；按距离换远处那份" % count)
+	check(main.world.get_node_or_null("FarForest") != null and (main.world.get_node("FarForest") as MultiMeshInstance3D).multimesh.instance_count > 1000 and main.world.get_node_or_null("FarBeacons") != null,
+		"地图外面山坡上有针叶林，山脊上有那串烽燧塔")
+	var glows: Array = main.world.find_children("BeaconGlow*", "MeshInstance3D", true, false)
+	check(glows.size() == lit and glows.all(func(g): return ((g as MeshInstance3D).mesh.surface_get_material(0) as StandardMaterial3D).disable_fog),
+		"亮着的烽燧塔光晕不受雾影响（%d 团）" % glows.size())
+	var space := main.get_world_3d().direct_space_state
+	var t0: Vector3 = tr[0][0]
+	var q := PhysicsRayQueryParameters3D.create(t0 + Vector3(-3.0, 1.2, 0), t0 + Vector3(3.0, 1.2, 0), 1)
+	var hit := space.intersect_ray(q)
+	check(not hit.is_empty() and Vector2(hit.position.x, hit.position.z).distance_to(Vector2(t0.x, t0.z)) < 0.5, "树干挡人（横着打一条线打到树干）")
+	await free_main(main)

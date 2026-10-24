@@ -42,6 +42,14 @@
 | 陡坡、岩坎露出的岩石（长地衣的灰岩） | mossy_rock | https://polyhaven.com/a/mossy_rock | Rob Tuytel | 2026-10-23 |
 | 天空：阴天的云（HDRI「Kloofendal Overcast (Pure Sky)」2K，只取上半球、色调映射成普通照片 `chapters/ch2/sky/overcast_sky.jpg`，2048 × 512） | kloofendal_overcast_puresky | https://polyhaven.com/a/kloofendal_overcast_puresky | Greg Zaal | 2026-10-23 |
 
+5.1b 新增（同样放在第二章章节包、CC0 1.0）：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 | 下载日期 |
+|---|---|---|---|---|
+| 高地冷杉、云杉的枝叶：取「twig」小枝照片（颜色 + 透明遮罩两张 1K PNG），用 `tools/make_branches.py` 挑出四根小枝、去掉周围的碎屑，拼成两种整根枝条（密的冷杉、稀一点的云杉），存成 `chapters/ch2/trees/conifer_branches.png`（1024 × 512，带透明） | fir_tree_01 | https://polyhaven.com/a/fir_tree_01 | Rob Tuytel（拍摄）、Rico Cilliers（建模） | 2026-10-24 |
+
+整棵树和石头的模型没有用：Poly Haven 的 fir_tree_01 / pine_tree_01 是照片扫描的整棵树（约 785 万面、模型文件 478 / 949 MB），boulder_01 等石头 2 万–18 万面，网页撑不住；树和石头都用代码搭（`world/highland_flora.gd`），树干用主包里已有的 bark_brown_02、石头用地形的灰岩贴图。
+
 看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
 
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）

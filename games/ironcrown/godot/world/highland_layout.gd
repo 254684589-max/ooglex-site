@@ -47,13 +47,14 @@ const VIEW_SPEC := [
 	[Vector3(-25.0, 1.7, 3.5), -70.0, 0.0],         # 2 伏击段（沿着路往东北走）：左手边是岩坎、右手边是缓坡
 	[Vector3(50.0, 1.7, -19.0), 192.0, -10.0],      # 3 半山腰的弯道上往南回看整条山谷
 	[Vector3(-6.0, 1.7, -88.0), 0.0, -3.0],         # 4 山脊背后往北看冰原（白寂边缘）
+	[Vector3(34.0, 1.7, -66.0), -100.0, 1.0],       # 5 第十九烽边上顺着山脊往东看：远处那串烽燧塔（5.1b）
 ]
-const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘"]
+const VIEW_NAMES := ["进村的路口", "盘山路的弯", "伏击段", "半山回看", "白寂边缘", "山脊往东"]
 
 
 ## 大轮廓（不含噪声）：南边谷底 0 米 → 往北抬升 → 山脊（z 约 -68，最高约 46 米，西高东低）→ 山脊背后落到冰原（约 30 米）；东西两边是山肩
 static func base(x: float, z: float) -> float:
-	var crest := -68.0 + 7.0 * sin(x / 37.0) + 3.0 * sin(x / 13.0 + 1.3)
+	var crest := crest_z(x)
 	var top := 40.0 - x * 0.04 + 3.0 * sin(x / 23.0)           # 山脊高度：西边高一点
 	var y: float
 	if z > crest:
@@ -65,6 +66,11 @@ static func base(x: float, z: float) -> float:
 	var ax := absf(x)
 	y += 34.0 * _smooth(clampf((ax - 95.0) / 75.0, 0.0, 1.0)) * (0.6 + 0.4 * clampf((z + 30.0) / 120.0, 0.0, 1.0))  # 东西山肩（南边谷里更明显）
 	return y
+
+
+## 山脊线在 x 处的 z（往东西两边一直延下去：远处那串烽燧塔也站在这条线上，5.1b）
+static func crest_z(x: float) -> float:
+	return -68.0 + 7.0 * sin(x / 37.0) + 3.0 * sin(x / 13.0 + 1.3)
 
 
 static func _smooth(t: float) -> float:

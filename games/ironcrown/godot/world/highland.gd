@@ -25,7 +25,7 @@ const SKY := {
 	"dawn": {"tint": Color(1.0, 0.9, 0.86), "energy": 0.85, "spin": 0.15},
 	"day": {"tint": Color(0.95, 0.97, 1.0), "energy": 1.0, "spin": 0.0},
 	"dusk": {"tint": Color(0.82, 0.72, 0.78), "energy": 0.55, "spin": 0.6},
-	"night": {"tint": Color(0.32, 0.4, 0.55), "energy": 0.16, "spin": 0.3},
+	"night": {"tint": Color(0.32, 0.4, 0.55), "energy": 0.24, "spin": 0.3},
 }
 
 static var _field := PackedFloat32Array()     # 高度：z 一行一行、每行 x 从西到东（HeightMapShape3D 的顺序）
@@ -35,12 +35,14 @@ static var _sky_mat: ShaderMaterial
 static var field_ms := 0.0
 
 var parent: Node3D
+var reduced_motion := false
 
 
-static func build(p_parent: Node3D, _reduced_motion := false) -> Transform3D:
+static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	var t0 := Time.get_ticks_usec()
 	var h := Highland.new()
 	h.parent = p_parent
+	h.reduced_motion = reduced_motion
 	if not textures_ready():                         # 章节包没到（网页上直接进来）：不算地形，铺一块平地接住人；main 随后下载章节包、重新载入
 		h._placeholder()
 		print("IC_HIGHLAND placeholder (章节包没到)")
@@ -48,7 +50,11 @@ static func build(p_parent: Node3D, _reduced_motion := false) -> Transform3D:
 		return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s0[1]))), s0[0])
 	ensure_field()
 	h._collision()
+	ground_material()                                 # 分帧的活要用的材质、网格先在载入时（黑屏里）备好：头一次取贴图、编着色器要几十到上百毫秒
+	HighlandFlora.warm(reduced_motion)
 	h._far()
+	HighlandFlora.far_forest(p_parent)               # 地图外面山坡上的针叶林、山脊上远处那串烽燧塔（5.1b）
+	HighlandFlora.far_beacons(p_parent)
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -192,6 +198,29 @@ func _collision() -> void:
 	cs.shape = hm
 	cs.position = Vector3(HighlandLayout.BOUNDS.get_center().x, 0.0, HighlandLayout.BOUNDS.get_center().y)   # 高度图以自己的中心为原点、每格 1 米
 	ground.add_child(cs)
+	var flora := StaticBody3D.new()                  # 树干（圆柱）和大石头（球）挡人（5.1b）
+	flora.name = "HighlandFlora"
+	flora.collision_layer = 1
+	flora.collision_mask = 0
+	parent.add_child(flora)
+	var trunk := CylinderShape3D.new()
+	trunk.radius = 0.28
+	trunk.height = 3.0
+	for t in HighlandFlora.trees():
+		var tc := CollisionShape3D.new()
+		tc.shape = trunk
+		tc.position = (t[0] as Vector3) + Vector3(0, 1.5, 0)
+		flora.add_child(tc)
+	for rk in HighlandFlora.rocks():
+		var size := float(rk[2])
+		if size < 0.9:
+			continue                                     # 小石头跨得过去（台阶 0.3 米以内能直接迈上去）
+		var rc := CollisionShape3D.new()
+		var sp := SphereShape3D.new()
+		sp.radius = size * 0.42
+		rc.shape = sp
+		rc.position = (rk[0] as Vector3) + Vector3(0, size * 0.12, 0)
+		flora.add_child(rc)
 	var wb := StaticBody3D.new()
 	wb.name = "HighlandWalls"
 	wb.collision_layer = FpController.LAYER_BOUNDARY
@@ -234,6 +263,7 @@ static func ground_material() -> ShaderMaterial:
 
 ## 章节包换了（下载完重新载入）：材质重新取贴图
 static func clear_cache() -> void:
+	HighlandFlora.clear_cache()
 	_mat = null
 	_sky_mat = null
 
@@ -287,11 +317,16 @@ func _jobs(st: ChunkStreamer) -> void:
 		var z := b.position.y
 		while z < b.end.y - 0.01:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
-			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r)])
+			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r), _job_flora.bind(r)])
 			z += cs
 			cz += 1
 		x += cs
 		cx += 1
+
+
+## 一块里的树和石头（5.1b，HighlandFlora）
+func _job_flora(root: Node3D, r: Rect2) -> void:
+	HighlandFlora.build_chunk(root, r, reduced_motion)
 
 
 ## 一块地形：近处 1 米的网格 + 远处 4 米的网格（按距离切换）
