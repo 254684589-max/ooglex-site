@@ -5,7 +5,7 @@
      · 地球纹理与 globe.gl（与环球电波共用 /apps/radio/vendor/）首次用到时再缓存；
      · 备用清单 windows.json 网络优先：始终取最新，离线才回退缓存；
      · 跨域请求（WINDOW 视频库、R2/CDN 视频、Wikimedia 素材）一律直连、绝不拦截/缓存。 */
-const VERSION = 'gc-v2';
+const VERSION = 'gc-v3';
 const SHELL_CACHE = 'gc-shell-' + VERSION;
 const RUNTIME_CACHE = 'gc-runtime-' + VERSION;
 
