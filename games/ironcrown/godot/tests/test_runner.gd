@@ -4804,7 +4804,7 @@ func fake_packs(main: Node3D, fails: int) -> FakePacks:
 
 ## 章节衔接与章节包（路线图 4.1；TECH.md 第六节）：章节登记、导出预设、存档里的章节、下载器、下载画面、结束画面的「继续」、读第一章的存档
 func test_chapters() -> void:
-	check(Chapters.PLAYABLE == 1 and Chapters.name_of(1) == "第一章 · 黑鹭堡" and Chapters.pack_of(0) == "" and Chapters.pack_of(1) == "ch1", "章节登记：序章在主包里，第一章在章节包 ch1；第一章开场（4.3）做好了，能继续（PLAYABLE = 1）")
+	check(Chapters.PLAYABLE >= 1 and Chapters.name_of(1) == "第一章 · 黑鹭堡" and Chapters.pack_of(0) == "" and Chapters.pack_of(1) == "ch1" and Chapters.wip_of(1) == "", "章节登记：序章在主包里，第一章在章节包 ch1；第一章开场（4.3）做好了，能继续（PLAYABLE = %d）" % Chapters.PLAYABLE)
 	check(Chapters.probe_for_pack("ch1") == Chapters.probe_of(1) and Chapters.content_ready(0) and Chapters.content_ready(1), "编辑器 / 无头测试里第一章的内容本来就在 res://（网页上挂了章节包才在）")
 	# 章节包只放场景与资源，脚本留在主包；主包排除 chapters/*；第一章的预设正好列出 chapters/ch1 底下的全部文件
 	var files := files_under("res://chapters/ch1")
@@ -8336,8 +8336,8 @@ func test_looks() -> void:
 
 ## 5.1a 余火高地地图底座：高度场、碰撞、分块、天空、风雪、章节包与第二章的入口
 func test_highland() -> void:
-	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 1,
-		"余火高地登记了：内容在第二章章节包（ch2）里；第二章还没对玩家开放（PLAYABLE = %d）" % Chapters.PLAYABLE)
+	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) != "",
+		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、标着「%s」（PLAYABLE = %d）" % [Chapters.wip_of(2), Chapters.PLAYABLE])
 	check(Highland.textures_ready() and ResourceLoader.exists(Highland.FIELD_PATH) and ResourceLoader.exists(Highland.PAINT_PATH), "第二章的贴图、天空照片、预先算好的高度场都在 chapters/ch2/")
 	# 预先算好的高度场和布局对得上（布局改了忘了重新生成会在这里报）
 	Highland._field = PackedFloat32Array()
@@ -8440,10 +8440,11 @@ func test_highland() -> void:
 	check(Daypart.preset("highland", "day").fog_end > Daypart.PRESETS.day.fog_end and dark.fog_end < Daypart.preset("highland", "day").fog_end and Daypart.preset("frostford", "day") == Daypart.PRESETS.day,
 		"时段：高地白天雾比镇上远（%.0f / %.0f 米）、夜里近；别的区域不受影响" % [Daypart.preset("highland", "day").fog_end, Daypart.PRESETS.day.fog_end])
 	await free_main(main)
-	# 第一章章末：第二章开放以前没有「继续」；?preview=2 时有，点了进高地村口、白天、存档记第二章
+	# 第一章章末：第二章开放以前（playable_chapter = 1）没有「继续」；开放以后（2026-10-24 起）有，点了进高地村口、白天、存档记第二章
 	GameState.new_game(511)
 	GameState.chapter = 1
 	main = await make_area("marsh")
+	main.playable_chapter = 1
 	main.show_ending("ch1")
 	await frames(2)
 	check(main.ending_panel.next_chapter == 0 and not main.ending_panel.continue_btn.visible, "第二章开放以前：第一章章末没有「继续」")
@@ -8452,7 +8453,8 @@ func test_highland() -> void:
 	main.playable_chapter = 2
 	main.show_ending("ch1")
 	await frames(2)
-	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧"), "?preview=2：第一章章末多一行「继续：第二章 · 熄灭的烽燧」")
+	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧") and main.ending_panel.continue_btn.text.contains("制作中"),
+		"第一章章末多一行「%s」" % main.ending_panel.continue_btn.text)
 	var reloaded := [false]
 	main.reload_requested.connect(func(): reloaded[0] = true)
 	main.start_chapter(2)

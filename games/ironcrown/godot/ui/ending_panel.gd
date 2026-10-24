@@ -117,7 +117,7 @@ func _show(head: String, title_text: String, back_text: String, recap_text: Stri
 	back_btn.text = back_text
 	next_chapter = next if Chapters.known(next) else 0
 	continue_btn.visible = next_chapter > 0
-	continue_btn.text = "继续：%s" % Chapters.name_of(next_chapter)
+	continue_btn.text = "继续：%s" % Chapters.name_of(next_chapter) + ("（%s）" % Chapters.wip_of(next_chapter) if Chapters.wip_of(next_chapter) != "" else "")
 	recap.text = recap_text
 	recap.visible = recap.text != ""
 	seal.text = seal_text

@@ -7,14 +7,26 @@ extends RefCounted
 
 ## 做到第几章能玩了：第一章的开场（4.3）做好以后是 1，序章结束画面出「继续：第一章」（main.playable_chapter 可在测试和 ?preview=1 里改）。
 ## 芦栈村（4.4a 起）走得到了，村里有人、能进客栈、能打听三条消息（4.4b）；黑鹭堡里面（4.5）还在开发中：堡门锁着、写明还在开发中
-const PLAYABLE := 1
+## 2026-10-24 所有者说「『继续：第二章』放出来」：第二章还在做（5.3c 起的人和故事没做），先放出来能逛——LIST 里 wip 不为空的章节，章末按钮和进场时都说一句「制作中」
+const PLAYABLE := 2
 ## daypart：这一章开头的时段（4.2，Daypart）——序章一直是夜；第一章从霜渡镇的清晨开始（STORY.md 4.5 第 1 步）
 const LIST := {
 	0: {"name": "序章 · 霜渡镇之夜", "pack": "", "probe": "", "area": "frostford", "spawn": "manor", "daypart": "night"},
 	1: {"name": "第一章 · 黑鹭堡", "pack": "ch1", "probe": "res://chapters/ch1/road_sign.tscn", "area": "frostford", "spawn": "ch1_dawn", "daypart": "dawn"},
-	## 第二章（5.1a 起）：高地的贴图、天空照片在章节包 ch2 里；还没对玩家打开（PLAYABLE 仍是 1），?preview=2 能从第一章章末进
-	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day"},
+	## 第二章（5.1a 起）：高地的贴图、天空照片在章节包 ch2 里；2026-10-24 起对玩家打开（制作中，能逛：wip）
+	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day",
+		"wip": "制作中，可以先逛", "wip_note": "第二章还在制作中：现在能逛羊脊村、盘山路和第十九烽，和村里的人说话；烽燧上的人和后面的故事还没做好。"},
 }
+
+
+## 这一章还在做：章末按钮上的一句（"" = 做完了）
+static func wip_of(n: int) -> String:
+	return str(LIST.get(n, {}).get("wip", ""))
+
+
+## 进这一章时提示一次的话（"" = 不提示）
+static func wip_note_of(n: int) -> String:
+	return str(LIST.get(n, {}).get("wip_note", ""))
 
 
 static func known(n: int) -> bool:
