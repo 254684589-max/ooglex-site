@@ -7,7 +7,7 @@ window.OOGLEX_APPS = [
   { id: "radio",   name: "环球电波",           en: "Global Radio",           icon: "/apps/radio/icons/icon.svg",      href: "/apps/radio/download/",   platform: "android" },
   { id: "tv",      name: "环球TV",             en: "Global TV",              icon: "/apps/tv/icons/icon.svg",         href: "/apps/app-zone/tv/",      platform: "web" },
   { id: "ai-chat", name: "万象智聊",           en: "AI Chat",                icon: "/apps/ai-chat/icons/icon.svg",    href: "/apps/app-zone/ai-chat/", platform: "web" },
-  { id: "global-cams", name: "环球实景",       en: "Global Window",          icon: "/apps/global-cams/icons/icon.svg", href: "/apps/app-zone/global-cams/", platform: "web" }
+  { id: "global-cams", name: "环球实景",       en: "Global Window",          icon: "/apps/global-cams/icons/icon.svg", href: "/apps/global-cams/download/", platform: "android" }
 ];
 
 /* 把图标渲染进容器：只放图标，名字进 aria-label 与 title。 */
