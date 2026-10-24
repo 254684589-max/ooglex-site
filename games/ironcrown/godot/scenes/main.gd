@@ -342,6 +342,12 @@ func _ready() -> void:
 		var who := _npc_by_dialogue(_query("talk"))
 		if who:
 			open_dialogue.call_deferred(who.dialogue_area, who.dialogue_id, who)
+	if _query("cold").is_valid_float() and not Engine.has_meta("ic_cold_param_done"):
+		Engine.set_meta("ic_cold_param_done", true)     # 截图用（5.2c）：?cold=数值 一进区域寒冷值就是这么多（100 = 冻伤；每次打开页面一次）
+		GameState.cold = clampf(float(_query("cold")), 0.0, 99.99)
+		if float(_query("cold")) >= 100.0:
+			GameState.cold = 100.0
+			GameState.frostbite = true
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:
@@ -1834,7 +1840,7 @@ func _cold_tick(delta: float) -> void:
 			hud.toast("你冻伤了：手脚不听使唤，体力上限降低。到火边歇一会儿。", 4.0)
 			print("IC_COLD frostbite")
 		"cured":
-			hud.toast("火把手脚烤暖了，冻伤好了。", 3.0)
+			hud.toast("在火边烤暖了手脚，冻伤好了。", 3.0)
 			print("IC_COLD cured")
 	if GameState.cold >= 30.0 and Cold.applies(area):
 		show_tip("cold")
