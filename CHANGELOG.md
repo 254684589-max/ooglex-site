@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修改
+
+- 2026-10-25：环球实景换上正式圆形日落棕榈剪影 logo（任务 cams-001）。原样替换 `apps/global-cams/icons/` 下的 `icon.svg`、`icon-192.png`、`icon-512.png`、`icon-512-maskable.png`，以及 `apps/global-cams/apple-touch-icon.png`。登记表图标路径仍是 `/apps/global-cams/icons/icon.svg`（只换文件）。首页与 App 专区的缓存指纹改为 `registry.js?v=20261025a`。调试版 APK 已用同一套 Android 启动图标重打，原样替换 `apps/global-cams/download/ooglex-cams.apk`（4057429 字节；sha256 `efdb5dc25b95401661513c110c8c06c5f574a90dfdfbfb3137e35b5d4ef686a6`；包名仍为 `com.ooglex.cams001`；`versionName` 1.0，`versionCode` 1；`minSdk` 22；仍是 Android 调试证书签名，`debuggable=true`）。下载页与专区说明页的大小说明改为约 3.9 MB。下载页大图仍指向 `../icons/icon-512.png`，专区说明页大图仍指向 `/apps/global-cams/icons/icon.svg`。未上架应用商店，没有付费签名，也没有 IPA。Service Worker 升到 `gc-v3`，已安装的网页版不再继续用外壳缓存里的旧图标。A3/A4 真机仍待 Luqin。未部署。
+
 ### 新增
 
 - 2026-10-24：环球实景增加可下载的 Android 调试版 APK（任务 cams-001）。安装包为 `apps/global-cams/download/ooglex-cams.apk`（约 3.6 MB；包名 `com.ooglex.cams001`；`versionName` 1.0，`versionCode` 1；`minSdk` 22；Android 调试证书签名，`debuggable=true`）。未上架应用商店，没有付费签名，也没有 IPA。新增下载页 `/apps/global-cams/download/`：主按钮「下载 Android APK」，写明未知来源安装步骤，保留打开网页版 `/apps/global-cams/`，并保留 iPhone / iPad 用 Safari 添加到主屏幕的说明。`apps/app-zone/registry.js` 中 `global-cams` 改为 `platform: "android"`、`href` 指向下载页；首页与专区页缓存指纹改为 `registry.js?v=20261024b`。`/apps/app-zone/global-cams/` 主按钮改为下载同一 APK，类型改为安卓可下载，仍保留打开网页版和 iOS 说明。sitemap 增加下载页。下载页标了 `data-ooglex-native-preview`，安装步骤和 iPhone 说明不会被未登录的 10% 预览挡住（与 App 专区说明页相同）。Service Worker 升到 `gc-v2`，下载页和 APK 不进缓存，避免把下载页写进应用外壳。网页版「安装 App」在浏览器不能一键安装时改去下载页。未部署。
