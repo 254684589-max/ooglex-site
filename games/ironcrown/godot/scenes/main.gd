@@ -125,6 +125,7 @@ func _ready() -> void:
 			area = _query("area")
 			if pending.is_empty() and GameState.chapter < Areas.chapter_of(area):
 				GameState.chapter = Areas.chapter_of(area)      # 直接进第二章的区域（截图、预览，5.2a）：章节跟着对上
+				GameState.daypart = Chapters.daypart_of(GameState.chapter)   # 时段也跟着对上（第二章从白天开始；原来留着序章的夜，自动存档带过去，2026-10-24 所有者截图「为什么那么黑」）
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
