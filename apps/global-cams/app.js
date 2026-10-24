@@ -14,11 +14,15 @@ const sourceLink = $('#openSource');
 const attribution = $('#attribution');
 const centerCoords = $('#centerCoords');
 const playlistTabs = $('#playlistTabs');
+const reticle = $('#reticle');
+const reticleTip = $('#rtip');
 const cfg = window.OOGLEX_GLOBAL_CAMS || {};
 const WINDOW_CDN_BASE = String(cfg.windowCdnBase || '').replace(/\/$/, '');
 
 const TOKYO = Object.freeze({ lat: 35.6762, lng: 139.6503, altitude: 1.45 });
-const POINT_ALTITUDE = 0.015;
+// 与环球TV相同的中央照准圈：圆圈固定在地球中央，拖动地球把窗口转进圈内，
+// 松手后吸附到圈中心最近的窗口并播放。吸附半径与环球TV一致。
+const SNAP_KM = 900;
 let windows = [];
 let filtered = [];
 let selectedId = '';
@@ -36,30 +40,22 @@ const globe = Globe()(globeEl)
   .height(stage.clientHeight)
   .globeImageUrl('../radio/vendor/earth-blue-marble.jpg')
   .backgroundColor('#05070f')
-  .pointAltitude(POINT_ALTITUDE)
+  .pointAltitude(d => itemKey(d) === selectedId ? 0.025 : 0.015)
   .pointResolution(6)
-  .pointRadius(d => itemKey(d) === selectedId ? 0.34 : 0.26)
+  .pointRadius(d => itemKey(d) === selectedId ? 0.45 : 0.26)
   .pointColor(d => itemKey(d) === selectedId ? '#ffd36b' : '#68a8ff')
   .pointLabel(d => '<b>' + escapeHtml(d.name || '沉浸窗口') + '</b><br>' + escapeHtml(itemSubLabel(d)))
   .onPointHover(d => { globeEl.style.cursor = d ? 'pointer' : 'grab'; })
   .onPointClick(d => {
     activateAudio();
     showWindow(d, { focus: true, reveal: true });
-  })
-  // 选中圈作为地球的 HTML 图层元素，由 globe.gl 在每一帧渲染时与点位同步定位，
-  // 拖动、飞行动画和缩放中都不会“框不住”点；转到背面时自动隐藏。
-  .htmlElementsData([])
-  .htmlLat(d => Number(d.lat))
-  .htmlLng(d => Number(d.lng))
-  .htmlAltitude(POINT_ALTITUDE)
-  .htmlTransitionDuration(0)
-  .htmlElement(createSelectionRing)
-  .htmlElementVisibilityModifier((el, visible) => el.classList.toggle('active', visible));
+  });
 
 const controls = globe.controls();
 controls.autoRotate = false;
 // 与环球TV一致：关掉松手后的惯性滑行，拖到哪停到哪。
 controls.enableDamping = false;
+// 拖动中：每帧最多刷新一次中心坐标，并实时提示圈内是否已有窗口（只提示，不播放）。
 let readoutQueued = false;
 controls.addEventListener('change', () => {
   if (readoutQueued) return;
@@ -67,7 +63,21 @@ controls.addEventListener('change', () => {
   requestAnimationFrame(() => {
     readoutQueued = false;
     updateCenterReadout();
+    updateReticle();
   });
+});
+// 松手：圈内有窗口就吸附到圈中心并播放。只看经纬度是否真的转动过，
+// 单击点位或滚轮缩放不会触发吸附。
+let dragStart = null;
+controls.addEventListener('start', () => {
+  const pov = globe.pointOfView();
+  dragStart = { lat: Number(pov.lat) || 0, lng: Number(pov.lng) || 0 };
+});
+controls.addEventListener('end', () => {
+  const pov = globe.pointOfView();
+  const moved = dragStart && distanceKm(dragStart.lat, dragStart.lng, Number(pov.lat) || 0, Number(pov.lng) || 0) > 25;
+  dragStart = null;
+  if (moved) tuneCenter();
 });
 globe.pointOfView(TOKYO, 0);
 updateCenterReadout();
@@ -208,7 +218,7 @@ function listSubLabel(d) {
 
 function render() {
   globe.pointsData(filtered);
-  syncSelectionRing();
+  updateReticle();
   count.textContent = filtered.length + ' 个 WINDOW';
   listCount.textContent = filtered.length + ' 个窗口';
 
@@ -310,15 +320,13 @@ function showWindow(d, options = {}) {
   bits.push(catalogSource === 'cdn' ? '播放：Ooglex R2/CDN' : '播放：备用源');
   attribution.textContent = bits.join(' · ');
 
-  if (options.focus) {
-    globe.pointOfView({
-      lat: Number(d.lat),
-      lng: Number(d.lng),
-      altitude: Math.min(Number(globe.pointOfView().altitude) || 1.45, 1.15)
-    }, prefersReducedMotion() ? 0 : 650);
-  }
+  if (options.focus) focusWindow(d);
 
   render();
+  if (options.focus) {
+    reticle.classList.add('live');
+    reticleTip.textContent = '正在播放：' + (d.name || '沉浸窗口');
+  }
   if (options.reveal) {
     const row = playlist.querySelector('[data-key="' + cssEscape(selectedId) + '"]');
     if (row) row.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
@@ -480,19 +488,53 @@ function updateExpandButton() {
   btn.setAttribute('aria-label', btn.title);
 }
 
-function createSelectionRing() {
-  const ring = document.createElement('div');
-  ring.className = 'crosshair';
-  ring.setAttribute('aria-hidden', 'true');
-  return ring;
+function distanceKm(lat1, lng1, lat2, lng2) {
+  const toRad = v => v * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
-// 选中的窗口仍在当前筛选结果里才显示选中圈；位置与背面隐藏由 globe.gl 负责。
-function syncSelectionRing() {
-  const shown = selectedWindow && filtered.includes(selectedWindow) ? [selectedWindow] : [];
-  const current = globe.htmlElementsData();
-  if (current.length === shown.length && current[0] === shown[0]) return;
-  globe.htmlElementsData(shown);
+function nearestWindow(lat, lng) {
+  let best = null;
+  let bestKm = Infinity;
+  for (const d of filtered) {
+    const km = distanceKm(lat, lng, Number(d.lat), Number(d.lng));
+    if (km < bestKm) { bestKm = km; best = d; }
+  }
+  return { d: best, km: bestKm };
+}
+
+function updateReticle() {
+  const pov = globe.pointOfView();
+  const { d, km } = nearestWindow(Number(pov.lat) || 0, Number(pov.lng) || 0);
+  const live = !!d && km <= SNAP_KM;
+  reticle.classList.toggle('live', live);
+  if (!live) reticleTip.textContent = filtered.length ? '拖动地球，把窗口转进圈内即可观看' : '没有可显示的 WINDOW';
+  else if (itemKey(d) === selectedId) reticleTip.textContent = '正在播放：' + (d.name || '沉浸窗口');
+  else reticleTip.textContent = '松手观看：' + (d.name || '沉浸窗口');
+}
+
+// 把圈中心最近的窗口吸附到正中并播放（拖动松手是用户手势，可以带声音播放）。
+function tuneCenter() {
+  const pov = globe.pointOfView();
+  const { d, km } = nearestWindow(Number(pov.lat) || 0, Number(pov.lng) || 0);
+  if (!d || km > SNAP_KM) {
+    updateReticle();
+    return;
+  }
+  activateAudio();
+  if (itemKey(d) === selectedId) focusWindow(d);
+  else showWindow(d, { focus: true, reveal: true });
+}
+
+function focusWindow(d) {
+  globe.pointOfView({
+    lat: Number(d.lat),
+    lng: Number(d.lng),
+    altitude: Math.min(Number(globe.pointOfView().altitude) || 1.45, 1.15)
+  }, prefersReducedMotion() ? 0 : 650);
 }
 
 function resolveWindowVideoUrl(d) {

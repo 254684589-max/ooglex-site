@@ -40,7 +40,7 @@ ok(html.includes('@media(max-width:820px)'), '820px responsive rule missing');
 ok(html.includes('.viewer-controls{position:absolute') && html.includes('display:flex;align-items:center;justify-content:center;gap:6px'), 'compact viewer controls must be visible');
 ok(html.includes('left:50%;right:auto;transform:translateX(-50%);display:flex'), 'mobile floating viewer controls missing');
 ok(html.includes('touch-action:pan-x'), 'mobile vertical swipe touch-action guard missing');
-ok(html.includes('app.js?v=15'), 'Global Cams app cache-bust version missing');
+ok(html.includes('app.js?v=16'), 'Global Cams app cache-bust version missing');
 ok(html.includes('background:transparent;backdrop-filter:none;box-shadow:none'), 'viewer control strip background must be removed');
 ok(html.includes('.viewer-control.icon{width:36px;min-width:36px'), 'compact icon button sizing missing');
 
@@ -80,9 +80,11 @@ ok(app.includes("event.key === 'r'") || app.includes("event.key === 'R'"), 'full
 ok(app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchmove'") && app.includes("viewer.addEventListener('touchend'"), 'mobile swipe navigation missing');
 ok(app.includes('stepWindow(dy < 0 ? 1 : -1)'), 'mobile vertical swipe direction mapping missing');
 ok(app.includes('buildViewerControls'), 'viewer control builder missing');
-ok(app.includes('.htmlElementsData(') && app.includes('.htmlElement(createSelectionRing)'), 'selected marker must render in the globe HTML layer (frame-synced)');
-ok(app.includes('.htmlElementVisibilityModifier('), 'selected marker back-side visibility guard missing');
-ok(app.includes('.htmlTransitionDuration(0)'), 'selected marker must not lag behind with a position transition');
+ok(html.includes('id="reticle"') && html.includes('id="rtip"'), 'fixed center reticle (Global TV style) missing');
+ok(html.includes('#reticle{position:absolute;z-index:4;left:50%;top:50%'), 'reticle must stay fixed at the globe centre');
+ok(app.includes('const SNAP_KM = 900'), 'reticle snap radius must match Global TV');
+ok(app.includes("controls.addEventListener('end'") && app.includes('tuneCenter()'), 'release-to-snap behaviour missing');
+ok(app.includes('nearestWindow') && app.includes('updateReticle'), 'live reticle hint missing');
 ok(app.includes('controls.enableDamping = false'), 'globe inertia must match Global TV (damping off)');
 ok(app.includes('showWindow'), 'WINDOW selection renderer missing');
 ok(app.includes("'/stats/popular?days=7&limit=500'") || app.includes("'/stats/popular?days=7&limit=500"), 'popular stats fetch missing');
