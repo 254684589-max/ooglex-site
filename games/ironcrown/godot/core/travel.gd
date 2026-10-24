@@ -8,7 +8,9 @@ extends RefCounted
 
 const PATH := "res://data/travel.json"
 const META := "ic_travel"
-const ICONS := ["town", "village", "castle"]
+const ICONS := ["town", "village", "castle", "beacon"]
+## 地图的哪一页（5.2a）：第一章是北境西部（霜渡镇、鹭沼），第二章起是北境北部（余火高地、烽燧线）
+const REGIONS := {"west": "北境西部", "north": "北境北部"}
 const DEPART_RADIUS := 6.0        # 离出发点（路牌）多近按 M 打开地图也能出发（第一章开场站在宅邸门口，离路牌 4.7 米）
 
 
@@ -43,14 +45,24 @@ static func name_of(id: String) -> String:
 	return str(place(id).get("name", id))
 
 
-## 这一章地图上有哪些地点（按数据里的顺序）
+## 这一章地图上有哪些地点（按数据里的顺序）：这一章那一页上的
 static func places(chapter: int) -> Array:
 	var out := []
 	var ps: Dictionary = data().get("places", {})
+	var page := region_of_chapter(chapter)
 	for id in ps:
-		if int(ps[id].get("chapter", 1)) <= chapter:
+		if int(ps[id].get("chapter", 1)) <= chapter and str(ps[id].get("region", "west")) == page:
 			out.append(str(id))
 	return out
+
+
+## 这一章用地图的哪一页
+static func region_of_chapter(chapter: int) -> String:
+	return "north" if chapter >= 2 else "west"
+
+
+static func region_title(chapter: int) -> String:
+	return str(REGIONS[region_of_chapter(chapter)])
 
 
 ## 这个区域是地图上的哪个地点（"" = 不是地图上的地点，例如酒馆里）。

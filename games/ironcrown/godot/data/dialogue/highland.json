@@ -1,0 +1,228 @@
+{
+  "_说明": "羊脊村外头的人（路线图 5.2b；STORY.md 5.3、5.8）。牧羊女妮尔蹲在石圈边，守着雪地上那串往北去的光脚脚印——她父亲前夜长眠走了；答应路上留意他，支线「妮尔的父亲」开始（ch2_nell = asked，5.5b 接着做）。铁匠在披棚里：卖火把（3 银币，5.4 起能点）、讲火让长眠者拐弯。羊圈边的老牧羊人、闩着门的那家女人只说一句（world/highland_village.gd 的 lines）。人在 world/highland_layout.gd 的 PEOPLE。",
+  "nell": {
+    "speaker": "妮尔",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "nell_met"
+          }
+        ],
+        "node": "again"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（她蹲在一块立石旁边，盯着雪地上那串往北去的脚印）……别踩。那是我爹的。",
+        "do": [
+          {
+            "set": "nell_met"
+          }
+        ],
+        "options": [
+          {
+            "text": "你爹去哪了？",
+            "next": "father"
+          },
+          {
+            "text": "这些石头是谁立的？",
+            "next": "stones"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "again": {
+        "text": "（她还守着那串脚印，雪已经快把它们填平了）",
+        "options": [
+          {
+            "text": "你爹的事，再说说。",
+            "next": "father"
+          },
+          {
+            "text": "这些石头是谁立的？",
+            "next": "stones"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "father": {
+        "text": "前天夜里睡下的。早上床是空的，门开着，门闩是从里面拔开的。脚印一直往北，光着脚。（她的声音很平）村里人说：又一个。",
+        "options": [
+          {
+            "text": "我要上烽燧线，路上替你留意他。",
+            "if": [
+              {
+                "not_flag": "ch2_nell"
+              }
+            ],
+            "next": "promise"
+          },
+          {
+            "text": "长眠的人，还能叫醒吗？",
+            "next": "wake"
+          },
+          {
+            "text": "……节哀。",
+            "end": true
+          }
+        ]
+      },
+      "promise": {
+        "text": "你认得出他？（她抬头看你）他左手少两根指头，前年冬天冻掉的。……我也要去。等我把羊交给老汉，我自己去找。",
+        "do": [
+          {
+            "set": "ch2_nell",
+            "value": "asked"
+          },
+          {
+            "quest": "ch2_nell"
+          }
+        ],
+        "options": [
+          {
+            "text": "山上不太平，别一个人去。",
+            "next": "alone"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "alone": {
+        "text": "（她站起来，拍掉膝盖上的雪）那你就走快点。",
+        "options": [
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "wake": {
+        "text": "能叫醒，就不叫长眠了。（她望着北边山脊上那座石塔）可我想再看他一眼。哪怕他不认得我。",
+        "options": [
+          {
+            "text": "我要上烽燧线，路上替你留意他。",
+            "if": [
+              {
+                "not_flag": "ch2_nell"
+              }
+            ],
+            "next": "promise"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "stones": {
+        "text": "比村子还老。我爹说石头上刻着字，没人认得；冬天最冷的晚上，石圈里的雪化得比外头快。……小时候他不许我进去玩。",
+        "do": [
+          {
+            "set": "heard_stones"
+          }
+        ],
+        "options": [
+          {
+            "text": "你爹去哪了？",
+            "next": "father"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      }
+    }
+  },
+  "smith": {
+    "speaker": "铁匠",
+    "start": "greet",
+    "nodes": {
+      "greet": {
+        "text": "（他把一块铁埋回炭火里）铁不够，炭不够，人也不够。要修剑往后排；要火把，现在就有。",
+        "options": [
+          {
+            "text": "来一支火把。（3 银币）",
+            "if": [
+              {
+                "silver": 3
+              }
+            ],
+            "next": "sold"
+          },
+          {
+            "text": "为什么上山的人都要火把？",
+            "next": "why"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "sold": {
+        "text": "拿好。（他递过来一支浸了松脂的火把）上山的人都买——不是为了照路。",
+        "do": [
+          {
+            "pay": 3
+          },
+          {
+            "give_item": "torch"
+          }
+        ],
+        "options": [
+          {
+            "text": "再来一支。（3 银币）",
+            "if": [
+              {
+                "silver": 3
+              }
+            ],
+            "next": "sold"
+          },
+          {
+            "text": "不照路，照什么？",
+            "next": "why"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "why": {
+        "text": "照长眠的人。你举着火站在路中间，它们就从你两边绕过去，像水绕着石头。（他用钳子拨了拨炭）没火的，就被踩进雪里。去年冬天，山路上捡回来三个。",
+        "do": [
+          {
+            "set": "heard_tide_fire"
+          }
+        ],
+        "options": [
+          {
+            "text": "来一支火把。（3 银币）",
+            "if": [
+              {
+                "silver": 3
+              }
+            ],
+            "next": "sold"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      }
+    }
+  }
+}

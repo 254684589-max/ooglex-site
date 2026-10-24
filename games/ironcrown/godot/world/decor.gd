@@ -90,6 +90,12 @@ func banner(top: Vector3, n: Vector3, w: float, h: float, field: Color, charge: 
 		"cross":
 			kit.box(ch, m, Vector3(0.16 * u, 1.4 * u, 0.008), b)
 			kit.box(ch, m + Vector3(0, 0.2 * u, 0), Vector3(1.0 * u, 0.16 * u, 0.008), b)
+		"beacon":                                     # 厄尔德家：燃烧的烽燧（5.2a）——塔身、塔顶的火盆、三条往上蹿的火舌
+			kit.box(ch, m + Vector3(0, -0.25 * u, 0), Vector3(0.32 * u, 0.85 * u, 0.008), b)
+			kit.box(ch, m + Vector3(0, 0.2 * u, 0), Vector3(0.6 * u, 0.1 * u, 0.008), b)
+			for k in 3:
+				var fx := (k - 1) * 0.17 * u
+				kit.box(ch, m + b.x * fx + Vector3(0, (0.45 + (0.12 if k == 1 else 0.0)) * u, 0), Vector3(0.1 * u, (0.4 + (0.18 if k == 1 else 0.0)) * u, 0.008), b * Basis(Vector3.BACK, -fx * 1.2 / u))
 		"star":                                       # 星铁教会的八角星（坠星）
 			for k in 4:
 				kit.box(ch, m + n * 0.001 * k, Vector3(0.16 * u, 1.2 * u, 0.008), b * Basis(Vector3.BACK, PI * 0.25 * k))

@@ -37,6 +37,8 @@ const CARRY_BASE := 30.0          # 负重上限 = 30 + 力量 × 2（斤）
 const CARRY_PER_STR := 2.0
 
 var flags := {}
+var cold := 0.0                  # 寒冷值 0..100（5.2c，core/cold.gd）
+var frostbite := false           # 冻伤了（寒冷值涨满；在火边歇够了才好）
 var skills := DEFAULT_SKILLS.duplicate()
 var wits := DEFAULT_WITS
 var strength := DEFAULT_STRENGTH
@@ -86,6 +88,8 @@ func _ready() -> void:
 
 func new_game(seed_override := -1) -> void:
 	flags.clear()
+	cold = 0.0
+	frostbite = false
 	checks.clear()
 	quests.clear()
 	clues.clear()
@@ -343,6 +347,8 @@ func use_item(id: String) -> Dictionary:
 	if it.get("kind") != "consumable" or not has_item(id):
 		return {}
 	take_item(id)
+	if it.has("warm"):
+		cold = maxf(cold - float(it.warm), 0.0)       # 烈酒暖身子（5.2c）
 	return {"health": int(it.get("health", 0)), "stamina": float(it.get("stamina", 0))}
 
 
@@ -533,7 +539,7 @@ func health_max() -> int:
 
 
 func stamina_max() -> float:
-	return 80.0 + constitution * 4.0
+	return (80.0 + constitution * 4.0) * (Cold.FROSTBITE_STAMINA if frostbite else 1.0)     # 冻伤（5.2c）：体力上限少三成
 
 
 ## 体力恢复倍率：敏捷每点 ±5%（以 5 为准）
@@ -621,7 +627,7 @@ func to_dict() -> Dictionary:
 		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime, "tips": tips_seen.duplicate(),
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
 		"skills": skills.duplicate(), "skill_xp": skill_xp.duplicate(), "skill_ups": skill_ups, "level": level, "attr_points": attr_points,
-		"rep": rep.duplicate(), "chapter": chapter, "daypart": daypart,
+		"rep": rep.duplicate(), "chapter": chapter, "daypart": daypart, "cold": cold, "frostbite": frostbite,
 	}
 
 
@@ -633,6 +639,8 @@ func from_dict(d: Dictionary) -> void:
 	daypart = str(d.get("daypart", Chapters.daypart_of(chapter)))   # 4.2 以前的存档没有这一项：按这一章开头的时段（序章是夜）
 	if not Daypart.valid(daypart):
 		daypart = Chapters.daypart_of(chapter)
+	cold = clampf(float(d.get("cold", 0.0)), 0.0, 100.0)    # 5.2c 以前的存档没有：不冷
+	frostbite = bool(d.get("frostbite", false))
 	checks = (d.get("checks", {}) as Dictionary).duplicate()
 	quests = {}
 	for q in d.get("quests", {}):

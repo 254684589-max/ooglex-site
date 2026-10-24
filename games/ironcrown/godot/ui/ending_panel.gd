@@ -105,9 +105,10 @@ func open(c: String, reduced_motion := false, next := 0) -> void:
 
 
 ## 第一章完（4.10b）：章末画面换成「第二章 · 熄灭的烽燧　开发中」，回顾和钩子由 Chapter1 按旗标写
-func open_chapter1(reduced_motion := false) -> void:
+## next = 2：第二章能玩了（5.1a 起 ?preview=2 预览）时多一行「继续：第二章 · 熄灭的烽燧」
+func open_chapter1(reduced_motion := false, next := 0) -> void:
 	choice = "ch1"
-	_show("第一章「黑鹭堡」完", "第二章 · 熄灭的烽燧", "在晨雾里再走走", Chapter1.recap(), Chapter1.hook(), reduced_motion, 0)
+	_show("第一章「黑鹭堡」完", "第二章 · 熄灭的烽燧", "在晨雾里再走走", Chapter1.recap(), Chapter1.hook(), reduced_motion, next)
 
 
 func _show(head: String, title_text: String, back_text: String, recap_text: String, seal_text: String, reduced_motion: bool, next: int) -> void:

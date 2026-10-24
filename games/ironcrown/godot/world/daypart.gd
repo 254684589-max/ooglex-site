@@ -57,6 +57,22 @@ const PRESETS := {
 	},
 }
 
+## 个别区域在通用预设上改几项（5.1a，D12）：高地是开阔的山谷和山脊，雾要远得多才看得见山（「远山一层层叠进雾里」）；
+## 天空换成阴云照片（Highland.apply_sky），sky 是地平线 / 雾的颜色
+const AREA_PRESETS := {
+	"highland": {
+		## 雪地反光强：环境光压低、日光（阴天里透出来的那一点）偏一侧，坡的明暗才出得来
+		## sky = 雾（远山被雾吞掉的颜色）：比天边（horizon，天空照片在地平线渐变到的颜色）暗一档——远山的剪影压在亮的天上，才看得出一层层
+		"dawn": {"sky": Color("858491"), "horizon": Color("a7a3ab"), "ambient": Color("9aa3b4"), "ambient_energy": 0.42, "fog_begin": 12.0, "fog_end": 210.0, "fog_curve": 1.4,
+			"fog_height": 26.0, "fog_height_density": 0.05, "sun": Color("f3d9cb"), "sun_energy": 0.95, "contrast": 1.1},
+		"day": {"sky": Color("8b95a3"), "horizon": Color("b0b8c2"), "ambient": Color("a8b4c4"), "ambient_energy": 0.48, "fog_begin": 20.0, "fog_end": 300.0, "fog_curve": 1.5,
+			"fog_height": 26.0, "fog_height_density": 0.04, "sun_energy": 1.2, "sun_rot": Vector3(-24, 40, 0), "contrast": 1.12},
+		"dusk": {"sky": Color("574e5c"), "horizon": Color("7d6c78"), "ambient": Color("7a6f88"), "ambient_energy": 0.36, "fog_begin": 10.0, "fog_end": 170.0, "fog_curve": 1.3,
+			"fog_height": 26.0, "fog_height_density": 0.06, "sun": Color("e2b4a0"), "sun_energy": 0.6, "contrast": 1.1},
+		"night": {"sky": Color("1a2431"), "horizon": Color("26354a"), "fog_begin": 4.0, "fog_end": 75.0, "fog_curve": 1.0, "fog_height": 26.0, "fog_height_density": 0.08, "ambient_energy": 0.26},
+	},
+}
+
 ## 这个场景实际在用的时段（main 每次搭场景都会设；室内、测试场为 "night"）。敌人感知按它算暗处的视距
 static var current := "night"
 
@@ -93,7 +109,8 @@ static func apply(main: Node, id: String) -> void:
 		current = "night"
 		return
 	current = id if valid(id) else "night"
-	var p: Dictionary = PRESETS[current]
+	var area := str(main.get("area"))
+	var p: Dictionary = preset(area, current)
 	var env: Environment = main.env
 	env.background_color = p.sky
 	env.fog_light_color = p.sky
@@ -111,10 +128,24 @@ static func apply(main: Node, id: String) -> void:
 	sun.light_color = p.sun
 	sun.light_energy = p.sun_energy
 	sun.rotation_degrees = p.sun_rot
+	if area == "highland":
+		Highland.apply_sky(env, current, p.get("horizon", p.sky))
+		sun.shadow_opacity = 0.5                      # 阴天：影子淡（阴影距离边上那道直边也就不扎眼了，5.2b 截图）
 	var tree: SceneTree = main.get_tree()
 	for g in ["fog_band", "house", "night_light"]:
 		for n in tree.get_nodes_in_group(g):
 			_apply_node(n, p)
+
+
+## 这个区域、这个时段的预设：通用的加上区域自己改的那几项（AREA_PRESETS）
+static func preset(area: String, id: String) -> Dictionary:
+	var p: Dictionary = PRESETS[id if valid(id) else "night"]
+	var over: Dictionary = AREA_PRESETS.get(area, {}).get(id if valid(id) else "night", {})
+	if over.is_empty():
+		return p
+	var out := p.duplicate()
+	out.merge(over, true)
+	return out
 
 
 ## 后搭的一块（4.4 鹭沼分帧搭建）：只给 root 底下的雾带、房子、夜灯套上这个时段（环境、月光已经在 apply 里套过）。幂等

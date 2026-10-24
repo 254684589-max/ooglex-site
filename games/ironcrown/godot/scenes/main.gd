@@ -95,6 +95,8 @@ var nav := {}                   # 这个区域的导航网格（3.4）：{region
 var battle: Battle              # 这个区域里的军阵战斗（B.1：军阵试验场）；没有为空
 var sleeper: Sleeper            # 芦栈村那个夜里没醒的人（4.10b）；没有为空
 var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
+var cold_state := {}            # 寒冷（5.2c）：在火边歇了多久（冻伤好要连着歇够）
+var cold_shown := ""            # HUD 上现在写的那行寒冷
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -121,6 +123,8 @@ func _ready() -> void:
 			area = "battle"
 		elif Areas.known(_query("area")):
 			area = _query("area")
+			if pending.is_empty() and GameState.chapter < Areas.chapter_of(area):
+				GameState.chapter = Areas.chapter_of(area)      # 直接进第二章的区域（截图、预览，5.2a）：章节跟着对上
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
@@ -199,6 +203,12 @@ func _ready() -> void:
 			t = Ferry.build(world, Settings.reduced_motion)
 		"marsh":
 			t = Marsh.build(world, Settings.reduced_motion)
+		"highland":
+			t = Highland.build(world, Settings.reduced_motion)
+		"waystation":
+			t = Waystation.build(world, Settings.reduced_motion)
+		"beacon_tower":
+			t = BeaconTower.build(world, Settings.reduced_motion)
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
@@ -237,7 +247,11 @@ func _ready() -> void:
 	add_child(player)
 	player.global_transform = t
 	if not Areas.is_indoor(area) and not use_test_range and not use_arena and area != "battle":
-		Atmos.snow(player)                # 户外落雪（2026-10-23 场景美化二）
+		Atmos.snow(player, Atmos.HIGHLAND_WIND if area == "highland" else Vector3.ZERO)   # 户外落雪（2026-10-23 场景美化二）；高地有风（5.1a）
+		if area == "highland" and not Settings.reduced_motion:
+			Atmos.drift(player)           # 高地：贴地的吹雪
+		if area == "highland":
+			add_child(SnowTracks.make(player))   # 雪地上的脚印（5.3a）
 	camera = player.camera
 	camera.make_current()
 	var view := _query("view")
@@ -265,8 +279,8 @@ func _ready() -> void:
 			player.global_transform = st
 	_prime_chunks()
 	spawn = player.global_position
-	if _query("preview") == "1":
-		playable_chapter = maxi(playable_chapter, 1)
+	if _query("preview").is_valid_int() and int(_query("preview")) >= 1:
+		playable_chapter = maxi(playable_chapter, mini(int(_query("preview")), Chapters.LIST.size() - 1))   # ?preview=2：第二章还没开放也能从第一章章末进（5.1a）
 	elif _query("preview") == "0":
 		playable_chapter = 0                     # 截图、冒烟用：看第一章开放以前的结束画面（只有两个按钮，4.3）
 	_place_chapter_content()
@@ -300,9 +314,12 @@ func _ready() -> void:
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
 		show_ending.call_deferred("prologue", _query("ending"))
-	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done"):
+	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
+			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
 		open_travel_map.call_deferred(near_travel_point())
+	if Areas.pack_chapter(area) > 0 and not Chapters.content_ready(Areas.pack_chapter(area)):
+		_fetch_area_pack.call_deferred()             # 网页上直接 ?area=highland 而章节包没到（5.1a）：先用纯色搭好了，下载完重新载入
 	if area == "castle":
 		for e in Castle.occupy(world):                  # 失守以后的天亮（4.10a）：另一位继承人的人巡着庭院
 			e.state_changed.connect(_on_occupier_state)
@@ -324,6 +341,17 @@ func _ready() -> void:
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
 				if is_instance_valid(battle) and not battle.started:
 					start_battle())
+	if _query("talk") != "" and not Engine.has_meta("ic_talk_param_done") and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):
+		Engine.set_meta("ic_talk_param_done", true)     # 截图用（5.2b）：?talk=对话编号 一进区域就和那个人说话（每次打开页面一次）
+		var who := _npc_by_dialogue(_query("talk"))
+		if who:
+			open_dialogue.call_deferred(who.dialogue_area, who.dialogue_id, who)
+	if _query("cold").is_valid_float() and not Engine.has_meta("ic_cold_param_done"):
+		Engine.set_meta("ic_cold_param_done", true)     # 截图用（5.2c）：?cold=数值 一进区域寒冷值就是这么多（100 = 冻伤；每次打开页面一次）
+		GameState.cold = clampf(float(_query("cold")), 0.0, 99.99)
+		if float(_query("cold")) >= 100.0:
+			GameState.cold = 100.0
+			GameState.frostbite = true
 	if area == "tavern" and _query("brawl") == "1":
 		var dagu := _npc_by_dialogue("dagu")
 		if dagu:
@@ -492,7 +520,7 @@ func _dress_late(root: Node3D) -> void:
 
 ## 当前时段的雾在几米外吞没（室内、测试场 0）
 func _fog_end() -> float:
-	return float(Daypart.PRESETS[daypart].fog_end) if Daypart.affects(area) else 0.0
+	return float(Daypart.preset(area, daypart).fog_end) if Daypart.affects(area) else 0.0
 
 
 ## 画质分档（TECH.md 第五节）：低 = 0.75 倍分辨率、无阴影、无泛光、无各向异性过滤、雾带减半；
@@ -980,6 +1008,10 @@ func _arrive() -> void:
 ## 「去芦栈村」推进到「在芦栈村打听」；进了黑鹭堡的庭院推进到「见赫尔曼」（4.5a）。没和维克托说话就出发了的（主线还没接），也从「在芦栈村打听」接上：不然打听到的消息记进了日志却看不到（审查）。
 ## 任务更新照常提示、自动存档（_autosave_on_quest）
 func _story_progress() -> void:
+	if GameState.chapter == 2 and area in ["highland", "waystation", "beacon_tower"] and not GameState.quest_active("ch2_main") and not GameState.quest_done("ch2_main"):
+		GameState.start_quest("ch2_main")                    # 第二章开场（5.2b）：到了羊脊村
+		if str(GameState.get_flag("valen_heir", "")) == "ivette" and not GameState.has_item("ivette_letter") and not GameState.has_flag("ch2_letter_given"):
+			GameState.add_item("ivette_letter")             # 选了伊薇特：她联合了厄尔德家，写了一封信让你带上山（STORY.md 5.4）
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
@@ -1009,8 +1041,8 @@ func player_xz() -> Vector2:
 func _on_surface_changed(id: String) -> void:
 	hud.set_surface(Surface.label(id))
 	print("IC_SURFACE id=%s run=%s" % [id if id != "" else "none", Surface.can_run(id)])
-	if id == "mud":
-		show_tip("mud")
+	if id in ["mud", "deep_snow"]:
+		show_tip(id)
 
 
 ## 掉出地图（深水下面没有地面，墙漏了的话）：放回最近站稳的地方
@@ -1408,7 +1440,7 @@ func show_ending(id: String, choice := "") -> void:
 	touch_was_visible = touch.visible
 	touch.visible = false
 	if id == "ch1":
-		ending_panel.open_chapter1(Settings.reduced_motion)       # 第一章完（4.10b）
+		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
 	else:
 		ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
 	print("IC_ENDING id=%s choice=%s next=%d" % [id, choice, ending_panel.next_chapter])
@@ -1451,6 +1483,20 @@ func start_chapter(n: int) -> void:
 		"player": {"health": player.melee.health_max(), "stamina": player.melee.stamina_max()}}
 	print("IC_CHAPTER start=%d area=%s" % [n, c.area])
 	ending_panel.hide()
+	_reload()
+
+
+## 这个区域的章节包没到（5.1a）：下载（失败可重试），到了就在原地重新载入；放弃就回霜渡镇
+func _fetch_area_pack() -> void:
+	var n := Areas.pack_chapter(area)
+	print("IC_AREA_PACK area=%s chapter=%d" % [area, n])
+	for i in 3:
+		await get_tree().process_frame             # 界面搭好后等几帧再换场景（按钮位置那几行在下一帧才打，换得太快它们找不到场景树）
+	var ok := await ensure_chapter(n)
+	Highland.clear_cache()
+	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
+	if ok:
+		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}
 	_reload()
 
 
@@ -1787,6 +1833,27 @@ func _npc_by_dialogue(id: String) -> Npc:
 	return null
 
 
+## 寒冷（5.2c，core/cold.gd）：每帧涨 / 降；满了冻伤（体力上限少三成），火边歇够了才好；冷的时候体力条边上一行字
+func _cold_tick(delta: float) -> void:
+	if player == null or get_tree().paused:
+		return
+	var ev := Cold.tick(get_tree(), area, Areas.is_indoor(area), daypart, player.global_position, delta, cold_state)
+	match ev:
+		"frostbite":
+			player.melee.stamina = minf(player.melee.stamina, player.melee.stamina_max())
+			hud.toast("你冻伤了：手脚不听使唤，体力上限降低。到火边歇一会儿。", 4.0)
+			print("IC_COLD frostbite")
+		"cured":
+			hud.toast("在火边烤暖了手脚，冻伤好了。", 3.0)
+			print("IC_COLD cured")
+	if GameState.cold >= 30.0 and Cold.applies(area):
+		show_tip("cold")
+	var t := Cold.text()
+	if t != cold_shown:
+		cold_shown = t
+		hud.set_cold(t, GameState.frostbite)
+
+
 ## 潜行（2.7）：蹲着走、附近 10 米内有还没察觉你的敌人，每秒涨 0.5 进度
 func _train_stealth(delta: float) -> void:
 	if not player.crouching or Vector2(player.velocity.x, player.velocity.z).length() < 0.3:
@@ -1892,6 +1959,7 @@ func _process(delta: float) -> void:
 	if hint_left <= 0.0 and not tip_queue.is_empty():
 		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
+	_cold_tick(delta)
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

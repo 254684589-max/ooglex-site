@@ -65,6 +65,12 @@ static func spec(area: String) -> Dictionary:
 			return Barracks.map_spec()
 		"counting":
 			return Counting.map_spec()
+		"highland":
+			return Highland.map_spec()
+		"waystation":
+			return Waystation.map_spec()
+		"beacon_tower":
+			return BeaconTower.map_spec()
 	return {}
 
 
@@ -254,6 +260,7 @@ static func texts() -> Array:
 	out.append_array(HEADINGS)
 	out.append_array(MapPanel.TEXTS)
 	out.append_array(MapTabs.LABELS.values())
+	out.append_array(Travel.REGIONS.values())
 	out.append(MapTabs.MARK)
 	return out
 

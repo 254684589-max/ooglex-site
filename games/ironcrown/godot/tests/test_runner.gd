@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8332,3 +8332,610 @@ func test_looks() -> void:
 	check(absf(osric.look_model.anim.current_animation_position - 0.5) < 0.05, "家主醒了：撑着胳膊半坐起来")
 	await free_main(main)
 	GameState.new_game()
+
+
+## 5.1a 余火高地地图底座：高度场、碰撞、分块、天空、风雪、章节包与第二章的入口
+func test_highland() -> void:
+	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 1,
+		"余火高地登记了：内容在第二章章节包（ch2）里；第二章还没对玩家开放（PLAYABLE = %d）" % Chapters.PLAYABLE)
+	check(Highland.textures_ready() and ResourceLoader.exists(Highland.FIELD_PATH) and ResourceLoader.exists(Highland.PAINT_PATH), "第二章的贴图、天空照片、预先算好的高度场都在 chapters/ch2/")
+	# 预先算好的高度场和布局对得上（布局改了忘了重新生成会在这里报）
+	Highland._field = PackedFloat32Array()
+	Highland.ensure_field()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 51
+	var worst := 0.0
+	for k in 300:
+		var i := rng.randi_range(0, HighlandLayout.NX - 1)
+		var j := rng.randi_range(0, HighlandLayout.NZ - 1)
+		var x := HighlandLayout.BOUNDS.position.x + i * HighlandLayout.STEP
+		var z := HighlandLayout.BOUNDS.position.y + j * HighlandLayout.STEP
+		worst = maxf(worst, absf(Highland._field[j * HighlandLayout.NX + i] - HighlandLayout.height(x, z)))
+	check(worst < 0.01 and Highland.field_ms < 200.0, "高度场文件和布局一致（300 个点最大差 %.4f 米；不一致就跑 tests/gen_highland_field.gd）；读文件 %.0f 毫秒" % [worst, Highland.field_ms])
+	# 地形：有起伏（谷底到山脊 40 米上下）、盘山路每段坡度不超过 16%、村子是平的
+	var lo := INF
+	var hi := -INF
+	for v in Highland._field:
+		lo = minf(lo, v)
+		hi = maxf(hi, v)
+	var steep := 0.0
+	for i in HighlandLayout.ROAD.size() - 1:
+		var len := (HighlandLayout.ROAD[i] as Vector2).distance_to(HighlandLayout.ROAD[i + 1])
+		steep = maxf(steep, absf(HighlandLayout.road_y_at(i, 1.0) - HighlandLayout.road_y_at(i, 0.0)) / len)
+	var v0 := HighlandLayout.height(HighlandLayout.VILLAGE.x - 20.0, HighlandLayout.VILLAGE.y)
+	var v1 := HighlandLayout.height(HighlandLayout.VILLAGE.x + 20.0, HighlandLayout.VILLAGE.y)
+	var b19 := HighlandLayout.height(HighlandLayout.BEACON19.x, HighlandLayout.BEACON19.y)
+	check(hi - lo > 40.0 and steep <= 0.16 and absf(v0 - v1) < 0.6 and b19 - HighlandLayout.VILLAGE_Y > 35.0,
+		"地形高差 %.0f 米；盘山路最陡一段 %.0f%%；村子两头差 %.2f 米；第十九烽比村子高 %.0f 米" % [hi - lo, steep * 100.0, absf(v0 - v1), b19 - HighlandLayout.VILLAGE_Y])
+	# 伏击段：上坡一侧是岩坎（路边几米内高出好几米），下坡一侧是缓坡
+	var a: Vector2 = HighlandLayout.ROAD[HighlandLayout.AMBUSH_LEG]
+	var b: Vector2 = HighlandLayout.ROAD[HighlandLayout.AMBUSH_LEG + 1]
+	var mid := (a + b) * 0.5
+	var nrm := Vector2(-(b - a).y, (b - a).x).normalized()
+	var up := nrm if HighlandLayout.height(mid.x + nrm.x * 8.0, mid.y + nrm.y * 8.0) > HighlandLayout.height(mid.x - nrm.x * 8.0, mid.y - nrm.y * 8.0) else -nrm
+	var road_y := HighlandLayout.height(mid.x, mid.y)
+	var wall := HighlandLayout.height(mid.x + up.x * 7.0, mid.y + up.y * 7.0) - road_y
+	var dip := road_y - HighlandLayout.height(mid.x - up.x * 7.0, mid.y - up.y * 7.0)
+	check(wall > 6.0 and dip < 4.0, "伏击段：上坡一侧离路 7 米高出 %.1f 米（岩坎），下坡一侧低 %.1f 米（缓坡）" % [wall, dip])
+	# 载入：出生点、固定机位脚下都是地；碰撞和高度场一致；分块都搭得完、每件活不长
+	GameState.new_game(510)
+	GameState.daypart = "day"                         # 第二章从白天开始（Chapters.LIST[2]）
+	var main := await make_area("highland")
+	var space := main.get_world_3d().direct_space_state
+	var hit_y := func(x: float, z: float) -> float:
+		var q := PhysicsRayQueryParameters3D.create(Vector3(x, 200.0, z), Vector3(x, -50.0, z), 1)
+		var h: Dictionary = space.intersect_ray(q)
+		return float(h.position.y) if not h.is_empty() else -999.0
+	var col_worst := 0.0
+	for k in 60:
+		var x := rng.randf_range(-150.0, 150.0)
+		var z := rng.randf_range(-120.0, 120.0)
+		col_worst = maxf(col_worst, absf(hit_y.call(x, z) - Highland.height_at(x, z)))
+	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
+	await physics(10)
+	var p: FpController = main.player
+	var sp: Vector3 = Highland.spawn_points().village[0]
+	check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4, "新开进高地：站在进村的路口（%s）" % p.global_position)
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	check(st.chunks.size() == 25 and st.is_done() and float(st.stats.max_job_ms) < 40.0, "地形 %d 块全搭完，最慢一块 %.1f 毫秒" % [st.chunks.size(), st.stats.max_job_ms])
+	var t0: MeshInstance3D = main.world.find_children("Terrain", "MeshInstance3D", true, false)[0]
+	var tf: MeshInstance3D = main.world.find_children("TerrainFar", "MeshInstance3D", true, false)[0]
+	check(t0.visibility_range_end > 0.0 and tf.visibility_range_begin > 0.0 and t0.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF and main.world.get_node_or_null("FarTerrain") != null,
+		"每块近处一份 1 米网格、远处一份 4 米网格按距离切换；地形不投影子；地图外面有远景地形")
+	var views_ok := Areas.views("highland").size() == HighlandLayout.VIEW_NAMES.size()
+	for v: Array in Areas.views("highland"):
+		var vp: Vector3 = v[0]
+		var floor_y := Highland.height_at(vp.x, vp.z)
+		if Vector2(vp.x, vp.z).distance_to(HighlandLayout.TOWER[0]) < HighlandLayout.TOWER_W * 0.5:
+			floor_y = HighlandLayout.tower_base_y() + HighlandLayout.TOWER_H            # 第十九烽塔顶那个机位（5.3b）
+		if absf(vp.y - 1.7 - floor_y) > 0.05:
+			views_ok = false
+	check(views_ok, "%d 个固定机位都在地面（塔顶那个在塔顶）上方 1.7 米" % HighlandLayout.VIEW_NAMES.size())
+	# 走路：顺着盘山路往上走得动（坡不超过能走的角度）
+	var r0: Vector2 = HighlandLayout.ROAD[3]
+	var r1: Vector2 = HighlandLayout.ROAD[4]
+	p.global_position = Vector3(r0.x, HighlandLayout.height(r0.x, r0.y) + 0.3, r0.y) + Vector3((r1 - r0).normalized().x, 0, (r1 - r0).normalized().y) * 3.0
+	p.rotation.y = atan2(-(r1 - r0).x, -(r1 - r0).y)
+	p.velocity = Vector3.ZERO
+	await physics(10)
+	var from := p.global_position
+	Input.action_press("move_forward")
+	await seconds(3.0)
+	Input.action_release("move_forward")
+	check(p.global_position.distance_to(from) > 6.0 and p.is_on_floor(), "顺着盘山路往前走得动（3 秒走了 %.1f 米）" % p.global_position.distance_to(from))
+	# 四边的墙挡人；天空、雾、风雪
+	p.global_position = Vector3(0.0, Highland.height_at(0.0, 120.0) + 0.3, HighlandLayout.BOUNDS.end.y - HighlandLayout.WALL_INSET - 2.0)
+	p.rotation.y = PI                                 # 面朝 +Z（往南、往地图外）
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(2.0)
+	Input.action_release("move_forward")
+	check(p.global_position.z < HighlandLayout.BOUNDS.end.y - HighlandLayout.WALL_INSET, "南边地图边上有看不见的墙（走到 z = %.1f 停住）" % p.global_position.z)
+	var env: Environment = main.env
+	check(env.background_mode == Environment.BG_SKY and env.sky != null and is_zero_approx(env.fog_sky_affect) and env.fog_depth_end > 150.0,
+		"天空是阴云照片（雾不盖天空）、雾远到 %.0f 米（远山一层层退进雾里）" % env.fog_depth_end)
+	check(p.get_node_or_null("Snow") != null and (p.get_node("Snow") as CPUParticles3D).gravity.x > 1.0 and p.get_node_or_null("Drift") != null, "高地有风：雪斜着落、贴地有吹雪")
+	var dark := Daypart.preset("highland", "night")
+	check(Daypart.preset("highland", "day").fog_end > Daypart.PRESETS.day.fog_end and dark.fog_end < Daypart.preset("highland", "day").fog_end and Daypart.preset("frostford", "day") == Daypart.PRESETS.day,
+		"时段：高地白天雾比镇上远（%.0f / %.0f 米）、夜里近；别的区域不受影响" % [Daypart.preset("highland", "day").fog_end, Daypart.PRESETS.day.fog_end])
+	await free_main(main)
+	# 第一章章末：第二章开放以前没有「继续」；?preview=2 时有，点了进高地村口、白天、存档记第二章
+	GameState.new_game(511)
+	GameState.chapter = 1
+	main = await make_area("marsh")
+	main.show_ending("ch1")
+	await frames(2)
+	check(main.ending_panel.next_chapter == 0 and not main.ending_panel.continue_btn.visible, "第二章开放以前：第一章章末没有「继续」")
+	main.ending_panel.hide()
+	get_tree().paused = false
+	main.playable_chapter = 2
+	main.show_ending("ch1")
+	await frames(2)
+	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧"), "?preview=2：第一章章末多一行「继续：第二章 · 熄灭的烽燧」")
+	var reloaded := [false]
+	main.reload_requested.connect(func(): reloaded[0] = true)
+	main.start_chapter(2)
+	await frames(3)
+	check(reloaded[0] and GameState.chapter == 2 and GameState.daypart == "day" and str(GameState.pending_load.get("scene", "")) == "highland" and str(GameState.pending_load.get("spawn", "")) == "village",
+		"点了：第二章、白天、去余火高地的村口（%s）" % str(GameState.pending_load))
+	get_tree().paused = false
+	await free_main(main)
+	GameState.pending_load = {}
+
+
+## 5.1b 高地的树、石头、远处的森林和烽燧塔
+func test_flora() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	var tr := HighlandFlora.trees()
+	var rk := HighlandFlora.rocks()
+	var bc := HighlandFlora.beacons()
+	check(tr.size() >= 300 and tr.size() <= 900 and rk.size() >= 80 and rk.size() <= 400, "树 %d 棵、石头 %d 块" % [tr.size(), rk.size()])
+	var bad := []
+	for t in tr:
+		var p: Vector3 = t[0]
+		var q := Vector2(p.x, p.z)
+		if HighlandLayout.road_hit(q).d < HighlandLayout.ROAD_HALF + 3.0 or q.distance_to(HighlandLayout.VILLAGE) < HighlandLayout.VILLAGE_R \
+				or p.y > HighlandFlora.TREELINE + 0.5 or q.y < HighlandLayout.crest_z(q.x) or HighlandFlora.slope_at(q) > 0.31:
+			bad.append(q)
+	check(bad.is_empty(), "树不长在路上、村里、林线以上、山脊北边和悬崖上（不合适的：%s）" % str(bad.slice(0, 5)))
+	var rock_bad := rk.filter(func(r): return HighlandLayout.road_hit(Vector2(r[0].x, r[0].z)).d < HighlandLayout.ROAD_HALF + 1.0)
+	check(rock_bad.is_empty(), "石头不压路")
+	var lit := bc.filter(func(b): return bool(b[1])).size()
+	check(bc.size() >= 8 and lit >= 2 and lit <= 4 and bc.all(func(b): return not HighlandLayout.BOUNDS.has_point(Vector2(b[0].x, b[0].z))),
+		"远处山脊上 %d 座烽燧塔，亮着的 %d 座（大半是黑的），都在地图外面" % [bc.size(), lit])
+	check(HighlandFlora.tree_mesh(0, 0).get_faces().size() / 3 <= 300 and HighlandFlora.tree_mesh(0, 1).get_faces().size() / 3 <= 80 and HighlandFlora.rock_mesh(0).get_faces().size() / 3 <= 300,
+		"一棵树近处 %d 面、远处 %d 面；一块石头 %d 面" % [HighlandFlora.tree_mesh(0, 0).get_faces().size() / 3, HighlandFlora.tree_mesh(0, 1).get_faces().size() / 3, HighlandFlora.rock_mesh(0).get_faces().size() / 3])
+	GameState.new_game(512)
+	GameState.daypart = "day"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	check(float(st.stats.max_job_ms) < 40.0, "地形和树石分帧搭完，最慢一件 %.1f 毫秒" % st.stats.max_job_ms)
+	var mms: Array = main.world.find_children("Trees*", "MultiMeshInstance3D", true, false)
+	var count := 0
+	for mi: MultiMeshInstance3D in mms:
+		if mi.name.ends_with("near"):
+			count += mi.multimesh.instance_count
+	check(count == tr.size() and mms.all(func(mi): return mi.visibility_range_end > 0.0), "树按块用多实例画（近处那份共 %d 棵 = 全部）；按距离换远处那份" % count)
+	check(main.world.get_node_or_null("FarForest") != null and (main.world.get_node("FarForest") as MultiMeshInstance3D).multimesh.instance_count > 1000 and main.world.get_node_or_null("FarBeacons") != null,
+		"地图外面山坡上有针叶林，山脊上有那串烽燧塔")
+	var glows: Array = main.world.find_children("BeaconGlow*", "MeshInstance3D", true, false)
+	check(glows.size() == lit and glows.all(func(g): return ((g as MeshInstance3D).mesh.surface_get_material(0) as StandardMaterial3D).disable_fog),
+		"亮着的烽燧塔光晕不受雾影响（%d 团）" % glows.size())
+	var space := main.get_world_3d().direct_space_state
+	var t0: Vector3 = tr[0][0]
+	var q := PhysicsRayQueryParameters3D.create(t0 + Vector3(-3.0, 1.2, 0), t0 + Vector3(3.0, 1.2, 0), 1)
+	var hit := space.intersect_ray(q)
+	check(not hit.is_empty() and Vector2(hit.position.x, hit.position.z).distance_to(Vector2(t0.x, t0.z)) < 0.5, "树干挡人（横着打一条线打到树干）")
+	await free_main(main)
+
+
+## 5.2a 羊脊村：矮石屋、驿站（进得去、出得来）、铁匠棚、羊圈、石墙、冰溪、石圈、路牌；旅行地图「北境北部」
+func test_yangji() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	# 布局：房子都在村子压平的那片里、不压路；树和石头不长在房子、石墙、溪、石圈上
+	var bad := []
+	for c in HighlandLayout.CROFTS:
+		var p: Vector2 = c[1]
+		if p.distance_to(HighlandLayout.VILLAGE) > HighlandLayout.VILLAGE_R - 3.0 or HighlandLayout.road_hit(p).d < HighlandLayout.ROAD_HALF + 2.0:
+			bad.append(str(c[0]))
+	var fl := Highland.height_at(HighlandLayout.VILLAGE.x, HighlandLayout.VILLAGE.y)
+	check(bad.is_empty() and HighlandLayout.CROFTS.size() == 6, "6 栋矮石屋都在村子那片平地上、不压路（不合适的：%s）" % str(bad))
+	var houses := []
+	for c in HighlandLayout.CROFTS:
+		houses.append(House.footprint(HighlandVillage.croft_pos(c), float(c[2]), float(c[3]) + 1.0, float(c[4]) + 1.0))
+	houses.append(House.footprint(HighlandVillage.waystation_pos(), float(HighlandLayout.WAYSTATION[1]), float(HighlandLayout.WAYSTATION[2]) + 1.0, float(HighlandLayout.WAYSTATION[3]) + 1.0))
+	var hit_house := HighlandFlora.trees().filter(func(t): return houses.any(func(h): return Geometry2D.is_point_in_polygon(Vector2(t[0].x, t[0].z), h)))
+	var on_works := HighlandFlora.trees().filter(func(t): return HighlandFlora.near_village_works(Vector2(t[0].x, t[0].z), 1.0)).size() + HighlandFlora.rocks().filter(func(r): return HighlandFlora.near_village_works(Vector2(r[0].x, r[0].z), 0.5)).size()
+	check(hit_house.is_empty() and on_works == 0, "树和石头不长在房子、田间石墙、溪和石圈上")
+	var bed := Highland.height_at(-34.5, 80.0)
+	var bank := Highland.height_at(-34.5 + HighlandLayout.STREAM_HALF + HighlandLayout.STREAM_BANK + 2.0, 80.0)
+	check(bank - bed > 0.5, "溪床比岸低 %.2f 米（刻出来的沟）" % (bank - bed))
+	# 载入：房子、驿站、铁匠棚、羊、石墙、石圈、冰溪都搭出来；门、路牌一进场就在
+	GameState.new_game(520)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	var w: Node3D = main.world
+	var crofts: Array = w.find_children("Croft_*", "Node3D", true, false).filter(func(n): return n.name != "Croft_barracks")   # 第十九烽的营房也是矮石屋（5.3b）
+	check(crofts.size() == 6 and crofts.all(func(c): return c.is_in_group("house")) and w.find_children("Smithy", "MeshInstance3D", true, false).size() == 1
+		and w.find_children("Sheep", "MeshInstance3D", true, false).reduce(func(acc, m): return acc + int(m.get_meta("count", 0)), 0) == HighlandLayout.SHEEP.size()
+		and w.find_children("RingStones", "MultiMeshInstance3D", true, false).size() == 1 and (w.find_children("RingStones", "MultiMeshInstance3D", true, false)[0] as MultiMeshInstance3D).multimesh.instance_count == HighlandLayout.STONES
+		and w.find_children("DryWalls", "MeshInstance3D", true, false).size() >= 2 and w.get_node_or_null("StreamIce") != null,
+		"村子搭出来了：6 栋矮石屋、铁匠棚、%d 只羊、%d 块立石、石墙、冰溪" % [HighlandLayout.SHEEP.size(), HighlandLayout.STONES])
+	check(float(st.stats.max_job_ms) < 40.0, "加上村子以后每件活还是不长（最慢 %.1f 毫秒）" % st.stats.max_job_ms)
+	var lit_houses := crofts.filter(func(c): return bool(c.get_meta("lit_now", true))).size()
+	check(lit_houses >= 3, "黄昏：矮石屋的窗大多亮着（%d / 6）" % lit_houses)
+	var doors: Array = w.find_children("CroftDoor_*", "Door", true, false)
+	check(doors.size() == 6 and doors.all(func(d): return d.locked), "6 栋矮石屋的门都闩着（这一步还没有人，5.2b）")
+	var wd := w.get_node_or_null("WaystationDoor") as Door
+	check(wd != null and not wd.locked and wd.to_area == "waystation" and wd.to_spawn == "front", "驿站的门推得开，通往大堂")
+	var space := main.get_world_3d().direct_space_state
+	var wp := HighlandVillage.waystation_pos()
+	var q := PhysicsRayQueryParameters3D.create(wp + Vector3(-6.0, 1.2, -3.0), wp + Vector3(2.0, 1.2, -3.0), 1)
+	check(not space.intersect_ray(q).is_empty(), "驿站的墙挡人（房子是分帧搭的，碰撞一进场就在）")
+	# 旅行地图：村北路牌旁边打开是「北境北部」，能去第十九烽
+	var sv := HighlandLayout.SIGN_VILLAGE
+	var p: FpController = main.player
+	p.global_position = Vector3(sv.x - 1.5, Highland.height_at(sv.x - 1.5, sv.z + 1.0) + 0.1, sv.z + 1.0)
+	await physics(4)
+	check(main.near_travel_point() and Travel.place_of_area("highland", main.player_xz()) == "yangji", "村北路牌旁边：在羊脊村、站在出发的地方")
+	main.open_travel_map(true)
+	await frames(2)
+	check(main.travel_map.visible and main.travel_map.title.text.contains("北境北部") and main.travel_map.place_btns.keys() == ["yangji", "beacon19"],
+		"旅行地图是「北境北部」：羊脊村、第十九烽（%s）" % str(main.travel_map.place_btns.keys()))
+	check(Travel.check(2, "yangji", "beacon19", true).ok and MapTabs.label_of("travel") == "北境北部" and Travel.places(1).all(func(id): return str(Travel.place(id).get("region", "west")) == "west"),
+		"从羊脊村能去第十九烽；页签写「北境北部」；第一章的地图还是北境西部那几处")
+	main.travel_map.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 驿站大堂：进得去、出得来（出来站在驿站门外）
+	GameState.pending_load = {"scene": "waystation", "spawn": "front", "player": {}}
+	main = await make_area("waystation")
+	check(main.area == "waystation" and Areas.is_indoor("waystation") and main.world.get_node_or_null("Waystation") != null and main.world.find_children("Fire", "OmniLight3D", true, false).size() == 1,
+		"驿站大堂：壁炉、长桌、罗薇娜的桌子、粮架（室内，壁炉是一盏会闪的火光）")
+	var exit: Door = main.world.find_children("*", "Door", true, false).filter(func(d): return d.to_area == "highland")[0]
+	check(exit.to_spawn == "waystation_door" and Areas.spawn("highland", "waystation_door") is Transform3D, "大堂的门通往驿站门外")
+	var out_spawn: Transform3D = Areas.spawn("highland", "waystation_door")
+	check(out_spawn.origin.distance_to(HighlandVillage.waystation_pos()) < 3.5 and absf(out_spawn.origin.y - Highland.height_at(out_spawn.origin.x, out_spawn.origin.z)) < 0.2, "从大堂出来站在驿站门外的地上")
+	await free_main(main)
+	GameState.pending_load = {}
+
+
+## 5.2b 羊脊村的人：罗薇娜按第一章换开场白、指路推进主线；伊薇特的信；征粮人；妮尔和支线；铁匠卖火把；只说一句的人
+func test_villagers() -> void:
+	var errs := []
+	for f in ["highland", "waystation"]:
+		var d := DialogueRunner.load_file(f)
+		for id in d:
+			if not str(id).begins_with("_"):
+				errs.append_array(DialogueRunner.validate(d[id]))
+	check(errs.is_empty(), "高地和驿站的对话都走得通、旗标都登记了（%s）" % str(errs.slice(0, 3)))
+	# 第二章开场：到了羊脊村，主线开始；选了伊薇特的身上有她的信
+	GameState.new_game(530)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	GameState.set_flag("valen_heir", "ivette")
+	var main := await make_area("highland")
+	check(GameState.quest_stage("ch2_main") == "ask_yangji" and GameState.has_item("ivette_letter"), "到了羊脊村：主线「熄灭的烽燧」开始（去驿站问路）；选了伊薇特的，身上有她给罗薇娜的信")
+	var w: Node3D = main.world
+	var names := []
+	for p in HighlandLayout.PEOPLE:
+		var n := w.get_node_or_null("Npc_" + str(p[0])) as Npc
+		if n != null:
+			names.append(n.display_name)
+	check(names.size() == HighlandLayout.PEOPLE.size() and Looks.has("妮尔", "Npc_nell") and Looks.has("罗薇娜", "Npc_rowena"),
+		"村里的人都在（%s），都有真人外观" % "、".join(names))
+	var space := main.get_world_3d().direct_space_state
+	var floating := []
+	for p in HighlandLayout.PEOPLE:
+		var n := w.get_node("Npc_" + str(p[0])) as Node3D
+		var q := PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1.0, 0), n.global_position + Vector3(0, -1.0, 0), 1)
+		var hit := space.intersect_ray(q)
+		if hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.25:
+			floating.append(str(p[0]))
+	check(floating.is_empty(), "村里的人都站在地上（不悬空、不埋进地里：%s）" % str(floating))
+	# 妮尔：答应路上留意她父亲 → 支线开始
+	var r := DialogueRunner.new()
+	r.start("highland", "nell")
+	pick(r, "你爹去哪了？")
+	pick(r, "我要上烽燧线，路上替你留意他。")
+	check(GameState.quest_active("ch2_nell") and str(GameState.get_flag("ch2_nell")) == "asked", "答应妮尔路上留意她父亲：支线「妮尔的父亲」开始")
+	# 铁匠：3 银币一支火把
+	var silver := GameState.silver
+	r.start("highland", "smith")
+	pick(r, "来一支火把。（3 银币）")
+	check(GameState.has_item("torch") and GameState.silver == silver - 3, "铁匠卖火把：3 银币一支")
+	await free_main(main)
+	# 驿站：罗薇娜认得伊薇特的信；交信；指路以后主线推进到「上第十九烽」
+	GameState.pending_load = {"scene": "waystation", "spawn": "front", "player": {}}
+	main = await make_area("waystation")
+	check(main.world.get_node_or_null("Npc_rowena") != null and main.world.get_node_or_null("Npc_requisitioner") != null, "驿站大堂里：罗薇娜、烽誓团的征粮人")
+	r.start("waystation", "rowena")
+	check(r.text().contains("伊薇特小姐"), "选了伊薇特、带着信：罗薇娜一开口就提伊薇特的信")
+	pick(r, "（把伊薇特小姐的信递给她）")
+	check(not GameState.has_item("ivette_letter") and GameState.has_flag("ch2_letter_given") and GameState.get_rep("eld") >= 5, "交了信：厄尔德家声望 +5")
+	pick(r, "明白了。" if has_opt(r, "明白了。") else "我会的。")
+	pick(r, "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。")
+	pick(r, "当年老王加冕礼上的另一个侍从。")
+	check(GameState.quest_stage("ch2_main") == "to_beacon19" and r.text().contains("诺伯特"), "罗薇娜说出诺伯特、指了上山的路：主线推进到「上第十九烽」")
+	await free_main(main)
+	# 选了阿尔里克 / 堤道失守：开场白不一样
+	GameState.new_game(531)
+	GameState.chapter = 2
+	GameState.set_flag("valen_heir", "alric")
+	GameState.set_flag("ch1_causeway", "lost")
+	r.start("waystation", "rowena")
+	var alric_line := r.text()
+	pick(r, "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。")
+	check(alric_line.contains("阿尔里克") and r.text().contains("易主") and not GameState.has_item("ivette_letter"), "选了阿尔里克：罗薇娜疑心你来谈价钱；堤道失守了：她说黑鹭堡易主了")
+	GameState.pending_load = {}
+
+
+
+## 5.2c 寒冷与冻伤
+func test_cold() -> void:
+	var day := Cold.rate("highland", "day", 5.0, 5, false, false)
+	var night := Cold.rate("highland", "night", 5.0, 5, false, false)
+	var high := Cold.rate("highland", "day", 40.0, 5, false, false)
+	var skilled := Cold.rate("highland", "day", 5.0, 60, false, false)
+	check(day > 0.0 and is_equal_approx(night, day * 2.0) and high > day and skilled < day and 100.0 / day > 360.0 and 100.0 / day < 600.0,
+		"高地户外变冷：白天约 %.0f 秒满格，夜里快一倍，山脊上更快，「生存」高的慢" % (100.0 / day))
+	check(Cold.rate("frostford", "night", 0.0, 5, false, false) == 0.0 and Cold.rate("highland", "night", 5.0, 5, true, false) < 0.0 and Cold.rate("waystation", "day", 0.0, 5, false, true) < 0.0,
+		"别的区域不冷（第一章照旧）；火边、屋里暖回来")
+	GameState.new_game(540)
+	var full := GameState.stamina_max()
+	GameState.cold = 99.95
+	var st := {}
+	var root := get_tree().root
+	var ev := Cold.tick(get_tree(), "highland", false, "night", Vector3(0, 5, 0), 1.0, st)
+	check(ev == "frostbite" and GameState.frostbite and is_equal_approx(GameState.stamina_max(), full * Cold.FROSTBITE_STAMINA) and Cold.text().begins_with("冻伤"),
+		"涨满了冻伤：体力上限 %.0f → %.0f，那一行写「冻伤」" % [full, GameState.stamina_max()])
+	var fire := OmniLight3D.new()
+	fire.add_to_group("light_source")
+	fire.set_meta("radius", 4.0)
+	root.add_child(fire)
+	fire.global_position = Vector3(0, 5, 0)
+	var cured := ""
+	for k in 10:
+		var e := Cold.tick(get_tree(), "highland", false, "night", Vector3(1, 5, 0), 1.0, st)
+		if e != "":
+			cured = e
+	check(cured == "cured" and not GameState.frostbite and GameState.cold == 0.0 and is_equal_approx(GameState.stamina_max(), full), "在火边歇够 %.0f 秒：冻伤好了，体力上限回来" % Cold.FIRE_CURE)
+	fire.queue_free()
+	GameState.cold = 70.0
+	GameState.add_item("strong_spirit")
+	GameState.use_item("strong_spirit")
+	check(is_equal_approx(GameState.cold, 30.0) and Cold.text() == "寒冷：有点冷", "喝一瓶烈酒：寒冷值 -40（70 → 30，「有点冷」）")
+	GameState.frostbite = true
+	GameState.cold = 100.0
+	var back := GameState.to_dict()
+	GameState.new_game(541)
+	GameState.from_dict(back)
+	check(GameState.frostbite and GameState.cold == 100.0, "冻伤和寒冷值跟着存档走")
+	GameState.from_dict({"seed": 1})
+	check(not GameState.frostbite and GameState.cold == 0.0, "旧存档（没有这两项）读进来不冷")
+	# 游戏里：高地户外冷到 35，体力条边上写「寒冷：有点冷」、弹一次教学提示；站到铁匠炉边慢慢暖回来
+	GameState.new_game(542)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	GameState.cold = 35.0
+	var main := await make_area("highland")
+	await frames(3)
+	check(main.hud.cold_label.visible and main.hud.cold_label.text == "寒冷：有点冷" and ("cold" in GameState.tips_seen or main.tip_now == "cold" or "cold" in main.tip_queue),
+		"高地户外：体力条边上写「%s」，弹教学提示「寒冷」" % main.hud.cold_label.text)
+	var forge: Array = main.world.find_children("Forge", "OmniLight3D", true, false)
+	if forge.is_empty():
+		main.streamer.build_all()
+		forge = main.world.find_children("Forge", "OmniLight3D", true, false)
+	var p: FpController = main.player
+	p.global_position = (forge[0] as Node3D).global_position + Vector3(-2.5, -1.0, 0)
+	var before := GameState.cold
+	await seconds(1.0)
+	check(GameState.cold < before - 5.0, "站到铁匠炉边：一秒暖回来 %.1f" % (before - GameState.cold))
+	await free_main(main)
+
+
+## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
+func test_mountainroad() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	HighlandRoad.clear_cache()
+	# 深雪：路面、村里、烽燧脚下、岩坎上不深；路边一条雪檐；整张图上不少地方深
+	var on_road := 0
+	var bank_ok := 0
+	var legs := HighlandLayout.ROAD.size() - 1
+	for i in legs:
+		for k in 9:
+			var a: Vector2 = HighlandLayout.ROAD[i]
+			var b: Vector2 = HighlandLayout.ROAD[i + 1]
+			var c := a.lerp(b, (k + 0.5) / 9.0)
+			if HighlandLayout.deep(c.x, c.y) > 0.01:
+				on_road += 1
+	var bank := Vector2.INF
+	for i in range(2, legs):
+		if i == HighlandLayout.AMBUSH_LEG:
+			continue
+		var a: Vector2 = HighlandLayout.ROAD[i]
+		var b: Vector2 = HighlandLayout.ROAD[i + 1]
+		var dir := (b - a).normalized()
+		var out_n := Vector2(-dir.y, dir.x) * -HighlandLayout._uphill_side(i)
+		var q := a.lerp(b, 0.5) + out_n * (HighlandLayout.ROAD_HALF + 3.0)
+		if HighlandLayout.deep(q.x, q.y) > 0.5 and HighlandLayout.road_hit(q).d > HighlandLayout.ROAD_HALF + 2.0:
+			bank_ok += 1
+			if bank == Vector2.INF:
+				bank = q
+	var deep_n := 0
+	var all_n := 0
+	for z in range(-125, 126, 5):
+		for x in range(-155, 156, 5):
+			all_n += 1
+			if HighlandLayout.deep(x, z) > 0.5:
+				deep_n += 1
+	var v := HighlandLayout.VILLAGE
+	check(on_road == 0 and HighlandLayout.deep(v.x, v.y) == 0.0 and HighlandLayout.deep(HighlandLayout.BEACON19.x, HighlandLayout.BEACON19.y) == 0.0,
+		"踩出来的路面、村里、烽燧脚下不是深雪")
+	check(bank_ok >= 3 and float(deep_n) / all_n > 0.2 and float(deep_n) / all_n < 0.55,
+		"路边一条雪檐（%d 段路查到）、整张图约 %.0f%% 是深雪" % [bank_ok, 100.0 * deep_n / all_n])
+	check(Surface.mult("deep_snow") < 0.7 and not Surface.can_run("deep_snow") and Surface.label("deep_snow").begins_with("深雪") and Surface.label("snow") == "",
+		"深雪：走得慢、不能跑、HUD 写一行；普通的雪照常")
+	# 倒树、废羊棚、雪杆：不压路、不长树
+	var fallen := HighlandLayout.fallen()
+	var min_d := INF
+	for f in fallen:
+		for k in 11:
+			min_d = minf(min_d, HighlandLayout.road_hit((f.root as Vector2).lerp(f.tip, k / 10.0)).d)
+	check(fallen.size() == 4 and min_d > HighlandLayout.ROAD_HALF + 0.5, "4 棵倒树都躺在路边、不压路面（最近离路中线 %.1f 米）" % min_d)
+	var sc: Vector2 = HighlandLayout.SHED[0]
+	var trees_in := HighlandFlora.trees().filter(func(t): return HighlandRoad.blocks(Vector2(t[0].x, t[0].z), 0.5)).size() + HighlandFlora.rocks().filter(func(r): return HighlandRoad.blocks(Vector2(r[0].x, r[0].z), 0.3)).size()
+	check(HighlandFlora.slope_at(sc) < 0.05 and trees_in == 0 and HighlandLayout.road_hit(sc).d > HighlandLayout.ROAD_HALF + 8.0,
+		"废羊棚在压平的一块地上、离路不远不近；树和石头不长在羊棚、倒树上")
+	var poles := HighlandRoad.poles()
+	check(poles.size() >= 8 and poles.all(func(pl): return HighlandLayout.road_hit(Vector2(pl[0].x, pl[0].z)).d > HighlandLayout.ROAD_HALF + 0.3),
+		"路边 %d 根雪杆，都在路面外" % poles.size())
+	check(HighlandLayout.VIEW_SPEC.size() == HighlandLayout.VIEW_NAMES.size() and HighlandLayout.SPAWN_XZ.has("shed"), "机位和名字对得上；有废羊棚的出生点")
+	# 游戏里：搭出来、挡人、踩进深雪变慢、雪上留脚印
+	GameState.new_game(530)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	var w: Node3D = main.world
+	var trees_n: int = w.find_children("FallenTrees*", "MultiMeshInstance3D", true, false).reduce(func(acc, m): return acc + (m as MultiMeshInstance3D).multimesh.instance_count, 0)
+	check(trees_n == 4 and w.find_children("Shed", "MeshInstance3D", true, false).size() == 1 and w.find_children("SnowPoles", "MultiMeshInstance3D", true, false).size() >= 2,
+		"倒树 %d 棵、废羊棚、雪杆都搭出来了" % trees_n)
+	check(float(st.stats.max_job_ms) < 40.0, "加上盘山路的东西每件活还是不长（最慢 %.1f 毫秒）" % st.stats.max_job_ms)
+	var space := main.get_world_3d().direct_space_state
+	var sp := HighlandRoad.shed_place()
+	var q := PhysicsRayQueryParameters3D.create(sp * Vector3(-0.8, 1.0, -4.0), sp * Vector3(-0.8, 1.0, 0.0), 1)
+	var f0: Dictionary = HighlandRoad.fallen_specs()[0]
+	var mid: Vector3 = (f0.root as Vector3) + (f0.axis as Vector3) * float(f0.len) * 0.3
+	var q2 := PhysicsRayQueryParameters3D.create(mid + (f0.side as Vector3) * 2.0 + Vector3(0, 0.2, 0), mid - (f0.side as Vector3) * 2.0 + Vector3(0, 0.2, 0), 1)
+	check(not space.intersect_ray(q).is_empty() and not space.intersect_ray(q2).is_empty(), "羊棚的后墙、倒树的树干挡人")
+	var p: FpController = main.player
+	p.global_position = Vector3(bank.x, Highland.height_at(bank.x, bank.y) + 0.1, bank.y)
+	await physics(10)
+	var deep_surface := p.surface
+	var slow := p.current_speed(Vector2(0, -1))
+	var r3: Vector2 = HighlandLayout.ROAD[3]
+	var r4: Vector2 = HighlandLayout.ROAD[4]
+	var rc := r3.lerp(r4, 0.5)
+	p.global_position = Vector3(rc.x, Highland.height_at(rc.x, rc.y) + 0.1, rc.y)
+	await physics(10)
+	check(deep_surface == "deep_snow" and p.surface == "snow" and slow < p.current_speed(Vector2(0, -1)) and main.hud.surface_label.visible == false,
+		"踩进路边的雪檐：脚下是深雪、变慢（%.1f → %.1f）；回到路面：照常" % [p.current_speed(Vector2(0, -1)), slow])
+	var tracks := main.get_node_or_null("SnowTracks") as SnowTracks
+	var dir := (r4 - r3).normalized()
+	for k in 6:
+		var at := rc + dir * (k + 1) * 0.9
+		p.global_position = Vector3(at.x, Highland.height_at(at.x, at.y) + 0.05, at.y)
+		await physics(3)
+	check(tracks != null and tracks.multimesh.visible_instance_count >= 4, "在雪地上走：身后留下脚印（%d 个）" % (tracks.multimesh.visible_instance_count if tracks else 0))
+	var spec := Highland.map_spec()
+	check(spec.shapes.any(func(sh): return str(sh.get("label", "")) == "废羊棚"), "本地地图上标了废羊棚")
+	await free_main(main)
+	HighlandRoad.clear_cache()
+	HighlandFlora.clear_cache()
+
+
+## 5.3b 第十九烽：塔、塔顶的火盆、木栅营地、塔里面
+func test_beacon19() -> void:
+	Highland.ensure_field()
+	HighlandFlora.clear_cache()
+	HighlandBeacon.clear_cache()
+	# 布局：塔、营房、两个棚都在木栅里、在压平的那片上；门对着盘山路进来的那边；营地里不长树和石头
+	var c := HighlandLayout.BEACON19
+	var inside := true
+	for sp in [[HighlandLayout.TOWER[0], HighlandLayout.TOWER[1], HighlandLayout.TOWER_W, HighlandLayout.TOWER_W], HighlandLayout.BARRACKS, HighlandLayout.WOODSHED, HighlandLayout.GRANARY]:
+		var at: Vector2 = sp[0]
+		var b := Basis(Vector3.UP, deg_to_rad(float(sp[1])))
+		for corner in [Vector3(-1, 0, -1), Vector3(1, 0, -1), Vector3(1, 0, 1), Vector3(-1, 0, 1)]:
+			var off: Vector3 = b * (corner * Vector3(float(sp[2]), 0, float(sp[3])) * 0.5)
+			var q := at + Vector2(off.x, off.z)
+			if q.distance_to(c) > HighlandLayout.PALISADE_R - 0.4 or absf(Highland.height_at(q.x, q.y) - HighlandLayout.tower_base_y()) > 0.3:
+				inside = false
+	check(inside, "塔、营房、柴棚、粮棚都在木栅里、在烽燧脚下压平的那片上")
+	var road_end: Vector2 = HighlandLayout.ROAD[HighlandLayout.ROAD.size() - 1]
+	var gate := c + HighlandBeacon.gate_dir() * HighlandLayout.PALISADE_R
+	check(road_end.distance_to(c) < HighlandLayout.PALISADE_R and HighlandLayout.road_hit(gate).d < HighlandLayout.ROAD_HALF + 0.5 and HighlandBeacon.posts().size() > 150,
+		"木栅门开在盘山路进来的地方（门离路中线 %.1f 米）、一圈 %d 根木桩" % [HighlandLayout.road_hit(gate).d, HighlandBeacon.posts().size()])
+	var in_camp := HighlandFlora.trees().filter(func(t): return Vector2(t[0].x, t[0].z).distance_to(c) < HighlandLayout.PALISADE_R + 1.0).size() + HighlandFlora.rocks().filter(func(r): return Vector2(r[0].x, r[0].z).distance_to(c) < HighlandLayout.PALISADE_R + 1.0).size()
+	check(in_camp == 0, "营地里不长树、不摆石头")
+	var top: Array = HighlandLayout.spawn_points().beacon_top
+	check(absf((top[0] as Vector3).y - (HighlandLayout.tower_base_y() + HighlandLayout.TOWER_H)) < 0.2 and Vector2(top[0].x, top[0].z).distance_to(HighlandLayout.TOWER[0]) < HighlandLayout.TOWER_W * 0.5 - 0.5,
+		"塔顶的出生点在塔顶的石板上")
+	# 游戏里：搭出来、塔顶的火是暖的、木栅挡人、门通往塔里
+	GameState.new_game(531)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	var main := await make_area("highland")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	var w: Node3D = main.world
+	var pal: Array = w.find_children("Palisade", "MultiMeshInstance3D", true, false)
+	var posts_n: int = pal.reduce(func(acc, m): return acc + (m as MultiMeshInstance3D).multimesh.instance_count, 0)
+	check(w.find_children("BeaconTower", "MeshInstance3D", true, false).size() == 1 and w.find_children("BeaconBrazier", "MeshInstance3D", true, false).size() == 1
+		and w.find_children("Flame*", "MeshInstance3D", true, false).size() == 4 and posts_n == HighlandBeacon.posts().size()
+		and w.find_children("PalisadeGate", "MeshInstance3D", true, false).size() == 1 and w.find_children("Croft_barracks", "Node3D", true, false).size() == 1
+		and w.find_children("Woodshed", "MeshInstance3D", true, false).size() == 1 and w.find_children("Granary", "MeshInstance3D", true, false).size() == 1,
+		"塔、火盆和火苗、%d 根木桩、木栅门、营房、柴棚、粮棚都搭出来了" % posts_n)
+	check(float(st.stats.max_job_ms) < 40.0, "加上第十九烽每件活还是不长（最慢 %.1f 毫秒）" % st.stats.max_job_ms)
+	var fires: Array = w.find_children("BeaconFire", "OmniLight3D", true, false)
+	var brightest := 0.0
+	for l in w.find_children("*", "OmniLight3D", true, false):
+		if not fires.has(l):
+			brightest = maxf(brightest, (l as OmniLight3D).light_energy * (l as OmniLight3D).omni_range)
+	var bf: OmniLight3D = fires[0] if not fires.is_empty() else null
+	check(bf != null and bf.is_in_group("light_source") and bf.light_energy * bf.omni_range > brightest, "塔顶的火是全图最亮的光（ART.md 第十节），也算火边")
+	var td := w.get_node_or_null("TowerDoor") as Door
+	var hatch := w.get_node_or_null("TowerHatch") as Door
+	var bd := w.get_node_or_null("BarracksDoor") as Door
+	check(td != null and td.to_area == "beacon_tower" and td.to_spawn == "front" and hatch != null and hatch.to_area == "beacon_tower" and hatch.to_spawn == "top"
+		and bd != null and bd.locked, "塔门通往塔里，塔顶的天窗下到诺伯特的小屋，营房的门从里面顶着")
+	var space := main.get_world_3d().direct_space_state
+	var y0 := HighlandLayout.tower_base_y() + 1.2
+	var side := Vector2(HighlandBeacon.gate_dir().y, -HighlandBeacon.gate_dir().x)
+	var wall_pt := c + side * HighlandLayout.PALISADE_R
+	var q1 := PhysicsRayQueryParameters3D.create(Vector3(c.x, y0, c.y) + Vector3(side.x, 0, side.y) * (HighlandLayout.PALISADE_R - 2.0), Vector3(wall_pt.x, y0, wall_pt.y) + Vector3(side.x, 0, side.y) * 2.0, 1)
+	var gd := HighlandBeacon.gate_dir()
+	var q2 := PhysicsRayQueryParameters3D.create(Vector3(c.x, y0, c.y) + Vector3(gd.x, 0, gd.y) * (HighlandLayout.PALISADE_R - 2.0), Vector3(c.x, y0, c.y) + Vector3(gd.x, 0, gd.y) * (HighlandLayout.PALISADE_R + 2.0), 1)
+	check(not space.intersect_ray(q1).is_empty() and space.intersect_ray(q2).is_empty(), "木栅挡人，门那儿走得过去")
+	var p: FpController = main.player
+	p.global_position = top[0]
+	await physics(30)
+	check(p.is_on_floor() and absf(p.global_position.y - (top[0] as Vector3).y) < 0.3 and Cold.near_fire(get_tree(), p.global_position),
+		"站在塔顶：脚下是塔顶的石板（不掉下去），在火边（暖和）")
+	check(Areas.is_indoor("beacon_tower") and Areas.chapter_of("beacon_tower") == 2 and Highland.map_spec().exits.any(func(e): return e.to == "beacon_tower"),
+		"塔里算室内、是第二章的地方；本地地图上有塔门")
+	await free_main(main)
+	# 塔里：门、木梯、出生点；顺着石梯走得上楼
+	GameState.new_game(532)
+	GameState.chapter = 2
+	var inn := await make_area("beacon_tower")
+	var exit: Array = inn.world.find_children("*", "Door", true, false)
+	var to_out := exit.filter(func(d): return d.to_area == "highland" and d.to_spawn == "beacon_door").size()
+	var to_top := exit.filter(func(d): return d.to_area == "highland" and d.to_spawn == "beacon_top").size()
+	check(to_out == 1 and to_top == 1 and BeaconTower.SPAWNS.has("top") and BeaconTower.VIEWS.size() == BeaconTower.VIEW_NAMES.size(),
+		"塔里：门回到营地、东南角的木梯爬上塔顶；机位和名字对得上")
+	var steps := BeaconTower.steps()
+	var ok_rise := true
+	var prev := 0.0
+	for stp in steps:
+		var top_y: float = (stp[0] as Vector3).y
+		if top_y - prev > FpController.STEP_HEIGHT:
+			ok_rise = false
+		prev = top_y
+	check(ok_rise and BeaconTower.UPPER - prev <= FpController.STEP_HEIGHT, "每一级石阶都不高过能跨上去的高度（%.2f 米）" % BeaconTower.RISE)
+	var ip: FpController = inn.player
+	var h := BeaconTower.IN * 0.5
+	ip.global_position = Vector3(-h + BeaconTower.STAIR_W * 0.5, 0.55, 1.4)
+	ip.rotation.y = 0.0
+	await physics(10)
+	await hold("move_forward", 2.6)
+	var landing_y := ip.global_position.y
+	ip.rotation.y = -PI * 0.5
+	await hold("move_forward", 1.6)
+	check(landing_y > 2.7 and ip.global_position.y > BeaconTower.UPPER - 0.2,
+		"顺着石梯往北爬到拐角（%.1f 米），往东再走几步上到诺伯特的小屋（%.1f 米）" % [landing_y, ip.global_position.y])
+	await free_main(inn)
+	HighlandBeacon.clear_cache()
+	HighlandFlora.clear_cache()
+
+
+## 测试用：选对话里文字是 label 的那个选项（没有就什么都不做，后面的检查会失败）
+func pick(r: DialogueRunner, label: String) -> void:
+	var opts := r.options()
+	for k in opts.size():
+		if str(opts[k].text) == label:
+			r.choose(k)
+			return
+
+
+func has_opt(r: DialogueRunner, label: String) -> bool:
+	return r.options().any(func(o): return str(o.text) == label)

@@ -112,6 +112,7 @@ func _ready() -> void:
 ## 打开：c 第几章，h 现在在哪个地点，departure 是否站在出发的地方
 func open(c: int, h: String, departure: bool, reduced_motion := false) -> void:
 	chapter = c
+	title.text = "旅行地图 · " + Travel.region_title(c)
 	here = h
 	at_departure = departure
 	for b in place_btns.values():
@@ -253,6 +254,9 @@ class MapCanvas extends Control:
 		var font := get_theme_default_font()
 		draw_rect(Rect2(Vector2.ZERO, s), PARCHMENT)
 		draw_rect(Rect2(Vector2(4, 4), s - Vector2(8, 8)), INK_SOFT, false, 2.0)
+		if Travel.region_of_chapter(map.chapter) == "north":
+			_draw_north(s, font)
+			return
 		# 鹭沼：一片淡绿，里面一行行短横线是芦苇
 		var poly := PackedVector2Array()
 		for p in MARSH_SHAPE:
@@ -324,6 +328,74 @@ class MapCanvas extends Control:
 						draw_rect(Rect2(c + Vector2(-9 + k * 7, -11), Vector2(4, 3)), col)
 		# 指北
 		var n := Vector2(s.x * 0.68, 30.0)       # 鹭沼和灰鲸河之间的空白处（右上角是河名）
+		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
+		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+
+	## 北境北部（5.2a，第二章）：上面是白寂（空白、只写两个字），一道东西向的山脊上二十四座烽燧（大半打了叉），山脊南边是余火高地的山谷和羊脊村
+	func _draw_north(s: Vector2, font: Font) -> void:
+		var fs := maxi(int(s.x / 28.0), 13)
+		draw_string(font, _to(Vector2(0.44, 0.1)), "白 寂", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		var ridge := PackedVector2Array()
+		for k in 25:
+			var t := float(k) / 24.0
+			ridge.append(_to(Vector2(0.03 + t * 0.94, 0.27 + 0.04 * sin(t * 9.0) + 0.02 * sin(t * 23.0))))
+		for k in ridge.size() - 1:                       # 山脊：一串小山尖
+			var a := ridge[k]
+			var b := ridge[k + 1]
+			var peak := (a + b) * 0.5 + Vector2(0, -s.y * 0.035)
+			draw_polyline(PackedVector2Array([a, peak, b]), INK_SOFT, 1.5, true)
+		for k in 24:                                     # 二十四座烽燧：亮着的画一团火，熄了的打叉
+			var t := (float(k) + 0.5) / 24.0
+			var c := _to(Vector2(0.03 + t * 0.94, 0.25 + 0.04 * sin(t * 9.0) + 0.02 * sin(t * 23.0)))
+			var lit := k in [4, 11, 12, 17, 21]
+			draw_rect(Rect2(c + Vector2(-2.5, -6), Vector2(5, 7)), INK)
+			if lit:
+				draw_circle(c + Vector2(0, -9), 3.2, Color("c8642a"))
+			else:
+				draw_line(c + Vector2(-4, -12), c + Vector2(4, -4), INK, 1.2)
+				draw_line(c + Vector2(4, -12), c + Vector2(-4, -4), INK, 1.2)
+		draw_string(font, _to(Vector2(0.06, 0.38)), "烽燧线", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+		var valley := PackedVector2Array([_to(Vector2(0.3, 0.98)), _to(Vector2(0.42, 0.62)), _to(Vector2(0.5, 0.4)), _to(Vector2(0.6, 0.4)), _to(Vector2(0.66, 0.62)), _to(Vector2(0.74, 0.98))])
+		draw_colored_polygon(valley, Color(0.42, 0.44, 0.4, 0.16))
+		for side in [0.24, 0.8]:                          # 两边的山：几道斜线
+			for k in 6:
+				var y := 0.5 + k * 0.08
+				var x: float = side + (0.03 if k % 2 == 0 else 0.0)
+				draw_line(_to(Vector2(x - 0.05, y + 0.05)), _to(Vector2(x, y)), INK_SOFT, 1.5)
+				draw_line(_to(Vector2(x, y)), _to(Vector2(x + 0.05, y + 0.05)), INK_SOFT, 1.5)
+		draw_string(font, _to(Vector2(0.07, 0.9)), "余火高地", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 2, INK_SOFT)
+		for r in Travel.data().get("routes", []):        # 盘山路：之字形的虚线
+			var a := str(r.get("from", ""))
+			var b := str(r.get("to", ""))
+			if a > b or not a in map.place_btns or not b in map.place_btns:
+				continue
+			var pa := _pos(a)
+			var pb := _pos(b)
+			var pts := PackedVector2Array([pa])
+			for k in range(1, 6):
+				var t := float(k) / 6.0
+				pts.append(pa.lerp(pb, t) + Vector2((s.x * 0.04) * (1 if k % 2 == 0 else -1), 0))
+			pts.append(pb)
+			for k in pts.size() - 1:
+				draw_dashed_line(pts[k], pts[k + 1], ROAD, 2.5, 9.0)
+		for id in map.place_btns:
+			var c := _pos(id)
+			var col := INK if Travel.built(id) else Color(0.29, 0.23, 0.16, 0.45)
+			if id == map.selected:
+				draw_circle(c, 17.0, Color(0.72, 0.59, 0.31, 0.35))
+			if id == map.here:
+				draw_arc(c, 15.0, 0.0, TAU, 32, HERE, 3.0, true)
+			match str(Travel.place(id).get("icon", "")):
+				"village":
+					for dx in [-8.0, 3.0]:
+						draw_rect(Rect2(c + Vector2(dx - 3.5, -5), Vector2(8, 5)), col)
+						draw_colored_polygon(PackedVector2Array([c + Vector2(dx - 5, -5), c + Vector2(dx + 6, -5), c + Vector2(dx + 0.5, -9)]), col)
+				"beacon":
+					draw_rect(Rect2(c + Vector2(-4, -10), Vector2(8, 14)), col)
+					draw_rect(Rect2(c + Vector2(-6, -12), Vector2(12, 3)), col)
+					draw_circle(c + Vector2(0, -16), 4.0, Color("c8642a"))
+		var n := Vector2(s.x * 0.86, 30.0)
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
 		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)

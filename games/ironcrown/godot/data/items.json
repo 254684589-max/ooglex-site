@@ -1,5 +1,5 @@
 {
-  "_note": "物品（路线图 2.6；GDD.md 第八节）。kind：weapon / armor / consumable / quest / misc。weight 单位斤（负重上限 = 30 + 力量 × 2），value 单位银币。武器 base = 基础伤害、model = 第一人称外观（sword / club）；护甲 slot = head / body / hands / legs，armor = 护甲值，noise = 走动时多传出的米数（越重越吵）；消耗品 health / stamina = 恢复量。耐久与修理在后续步骤（铁匠）。",
+  "_note": "物品（路线图 2.6；GDD.md 第八节）。kind：weapon / armor / consumable / quest / misc。weight 单位斤（负重上限 = 30 + 力量 × 2），value 单位银币。武器 base = 基础伤害、model = 第一人称外观（sword / club）；护甲 slot = head / body / hands / legs，armor = 护甲值，noise = 走动时多传出的米数（越重越吵）；消耗品 health / stamina = 恢复量，warm = 寒冷值降多少（5.2c）。耐久与修理在后续步骤（铁匠）。",
   "short_sword": {"name": "短剑", "kind": "weapon", "weight": 2.5, "value": 30, "base": 10, "model": "sword", "desc": "一把磨得发亮的旧短剑，剑柄缠着新换的皮绳。"},
   "outlaw_sword": {"name": "无旗者的长剑", "kind": "weapon", "weight": 3.5, "value": 45, "base": 12, "model": "sword", "desc": "剑身有几处缺口，护手上的家徽被人用锉刀磨掉了。"},
   "club": {"name": "木棍", "kind": "weapon", "weight": 2.0, "value": 3, "base": 8, "model": "club", "desc": "一头裹着铁皮的硬木棍，打人很疼，卖不了几个钱。"},
@@ -11,7 +11,7 @@
   "wool_trousers": {"name": "厚呢裤", "kind": "armor", "slot": "legs", "weight": 1.5, "value": 7, "armor": 1, "noise": 0.0, "desc": "粗呢子缝的长裤，膝盖处补过两回。"},
   "bread": {"name": "面包", "kind": "consumable", "weight": 0.3, "value": 1, "health": 10, "stamina": 0, "desc": "黑麦面包，硬得能当锤子使。吃下去恢复 10 点生命。"},
   "bandage": {"name": "绷带", "kind": "consumable", "weight": 0.1, "value": 3, "health": 25, "stamina": 0, "desc": "煮过的干净麻布条。包扎伤口，恢复 25 点生命。"},
-  "strong_spirit": {"name": "烈酒", "kind": "consumable", "weight": 0.5, "value": 4, "health": 0, "stamina": 60, "desc": "一小瓶烧喉咙的谷物酒。喝下去恢复 60 点体力。"},
+  "strong_spirit": {"name": "烈酒", "kind": "consumable", "weight": 0.5, "value": 4, "health": 0, "stamina": 60, "warm": 40, "desc": "一小瓶烧喉咙的谷物酒。喝下去恢复 60 点体力，身子也暖过来一截（寒冷值 -40）。"},
   "iron_key": {"name": "铁钥匙", "kind": "quest", "weight": 0.1, "value": 0, "desc": "一把生锈的铁钥匙，不知道开哪扇门。"},
   "silver_spoon": {"name": "银勺", "kind": "misc", "weight": 0.2, "value": 8, "desc": "勺柄上刻着一朵小花，大概是谁家的陪嫁。"},
   "dice": {"name": "骨骰子", "kind": "misc", "weight": 0.1, "value": 1, "desc": "一对磨圆了角的骨骰子，其中一颗灌过铅。"},
@@ -26,5 +26,7 @@
   "valen_signet": {"name": "瓦伦家主印戒", "kind": "quest", "weight": 0.05, "value": 0, "desc": "一枚沉甸甸的旧金戒指，戒面刻着一只收起翅膀的黑鹭。奥斯瑞克从手指上褪下来塞给你：「交给该拿的人。」"},
   "counting_key": {"name": "账房钥匙", "kind": "quest", "weight": 0.1, "value": 0, "desc": "赫尔曼钥匙串上取下来的两把铜钥匙，开黑鹭堡账房门上的两道锁。"},
   "intro_letter": {"name": "引荐信", "kind": "quest", "weight": 0.05, "value": 0, "desc": "维克托·瓦伦写给黑鹭堡堡守赫尔曼的信，封口压着霜渡镇的印：「持信人是我的誓剑，替我来看望家主。请让他进堡。」"},
-  "old_book": {"name": "烧焦的旧书", "kind": "quest", "weight": 0.5, "value": 0, "desc": "奥尔本修士交给你的旧书，封皮烧焦了一角。里面夹着半页残卷，字迹模糊，只认得出「冬井」「封誓」几个字。修士只说：去黑鹭堡，别让任何人看见。"}
+  "old_book": {"name": "烧焦的旧书", "kind": "quest", "weight": 0.5, "value": 0, "desc": "奥尔本修士交给你的旧书，封皮烧焦了一角。里面夹着半页残卷，字迹模糊，只认得出「冬井」「封誓」几个字。修士只说：去黑鹭堡，别让任何人看见。"},
+  "ivette_letter": {"name": "伊薇特的信", "kind": "quest", "weight": 0.05, "value": 0, "desc": "伊薇特·瓦伦写给厄尔德家驿站罗薇娜的信，封蜡上压着黑鹭：皮毛税换成粮，开春送上山；带信的誓剑可以信。"},
+  "torch": {"name": "火把", "kind": "misc", "weight": 0.8, "value": 3, "desc": "浸了松脂的火把。羊脊村的铁匠说，上山的人都买——不是为了照路，是为了让长眠的人拐弯（第二章 5.4 起能点）。"}
 }

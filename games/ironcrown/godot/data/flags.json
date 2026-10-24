@@ -92,5 +92,15 @@
   "gilbert_met": {"desc": "见过卡斯韦尔家的收账人吉尔伯特（只在序章选「勒索」时，他在歪桩客栈等你，4.4b）", "set_in": "reedwharf.json gilbert/greet", "read_in": "reedwharf.json gilbert start_if、innkeeper 选项"},
   "gilbert_price_up": {"desc": "口才说动吉尔伯特：借据的价钱从 150 枚抬到 200 枚（4.4b）", "set_in": "reedwharf.json gilbert/price_up", "read_in": "reedwharf.json gilbert 选项"},
   "gilbert_firm": {"desc": "口才没说动吉尔伯特抬价（不能再试，4.4b）", "set_in": "reedwharf.json gilbert/price_firm", "read_in": "reedwharf.json gilbert/offer 选项"},
-  "gilbert_asked": {"desc": "问过吉尔伯特卡斯韦尔家要借据做什么（洞察检定只问一次，4.4b）", "set_in": "reedwharf.json gilbert/why_seen、why_hidden", "read_in": "reedwharf.json gilbert 选项"}
+  "gilbert_asked": {"desc": "问过吉尔伯特卡斯韦尔家要借据做什么（洞察检定只问一次，4.4b）", "set_in": "reedwharf.json gilbert/why_seen、why_hidden", "read_in": "reedwharf.json gilbert 选项"},
+  "ch2_started": {"desc": "进了第二章「熄灭的烽燧」（第一章章末点「继续：第二章」，5.1a 起 ?preview=2）", "set_in": "scenes/main.gd start_chapter()（代码）", "read_in": "第二章开场（5.2b：主线「熄灭的烽燧」、伊薇特的信）"},
+  "rowena_met": {"desc": "和驿站的罗薇娜说过话（5.2b）", "set_in": "waystation.json rowena/greet", "read_in": "waystation.json rowena 的 start_if"},
+  "ch2_road_asked": {"desc": "罗薇娜告诉你加冕礼上的侍从是第十九烽的诺伯特，指了上山的路（主线推进到「上第十九烽」，5.2b）", "set_in": "waystation.json rowena/norbert", "read_in": "waystation.json rowena 的选项"},
+  "ch2_letter_given": {"desc": "把伊薇特的信交给了罗薇娜（厄尔德家声望 +5，5.2b）", "set_in": "waystation.json rowena/letter", "read_in": "第二章：罗薇娜信你（5.6 求援那条路）"},
+  "heard_convoy": {"desc": "罗薇娜说明天有一列洛蒙德家的粮车要在村里歇脚（5.2b）", "set_in": "waystation.json rowena/grain", "read_in": "5.6 抉择（劫粮 / 求援）"},
+  "saw_requisition": {"desc": "问过罗薇娜桌上那几张盖了厄尔德家印的文书（5.2b；5.6 的征粮令）", "set_in": "waystation.json rowena/papers", "read_in": "5.6 抉择（求援：征粮令）"},
+  "heard_tide_fire": {"desc": "听征粮人或铁匠说过：火让长眠者拐弯（5.2b）", "set_in": "waystation.json requisitioner/tide、highland.json smith/why", "read_in": "5.4 第一夜潮水（教学提示）"},
+  "nell_met": {"desc": "和石圈边的妮尔说过话（5.2b）", "set_in": "highland.json nell/greet", "read_in": "highland.json nell 的 start_if"},
+  "ch2_nell": {"desc": "支线「妮尔的父亲」：asked = 答应路上留意她父亲（5.2b）；5.5b 加 stopped / seen / left", "set_in": "highland.json nell/promise", "read_in": "highland.json nell 的选项；5.5b"},
+  "heard_stones": {"desc": "妮尔说过石圈的事：石头上刻着没人认得的字（5.2b）", "set_in": "highland.json nell/stones", "read_in": "5.5a 支线「石圈」"}
 }

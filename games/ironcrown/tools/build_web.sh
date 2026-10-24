@@ -29,6 +29,7 @@ echo "== 导出章节包"
 # 主包排除了 chapters/*（export_presets.cfg 的 Web 预设）；每章一个预设，只导出那一章的场景与资源（脚本留在主包）
 mkdir -p "$OUT/packs"
 "$GODOT" --headless --path "$PROJECT" --export-pack "Chapter1" "$OUT/packs/ch1.pck"
+"$GODOT" --headless --path "$PROJECT" --export-pack "Chapter2" "$OUT/packs/ch2.pck"   # 第二章（5.1a）：高地的贴图、天空照片
 
 echo "== 整理到 $DEST"
 python3 "$HERE/tools/stamp_web_build.py" "$OUT" "$DEST"
