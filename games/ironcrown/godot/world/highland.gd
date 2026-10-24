@@ -63,6 +63,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	HighlandFlora.far_beacons(p_parent)
 	HighlandVillage.stream_ice(p_parent)              # 羊脊村（5.2a）：结冰的溪、门、路牌（同步：一进场就推得开）
 	HighlandVillage.interactables(p_parent)
+	HighlandVillage.people(p_parent)
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent

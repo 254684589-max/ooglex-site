@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8582,3 +8582,87 @@ func test_yangji() -> void:
 	check(out_spawn.origin.distance_to(HighlandVillage.waystation_pos()) < 3.5 and absf(out_spawn.origin.y - Highland.height_at(out_spawn.origin.x, out_spawn.origin.z)) < 0.2, "从大堂出来站在驿站门外的地上")
 	await free_main(main)
 	GameState.pending_load = {}
+
+
+## 5.2b 羊脊村的人：罗薇娜按第一章换开场白、指路推进主线；伊薇特的信；征粮人；妮尔和支线；铁匠卖火把；只说一句的人
+func test_villagers() -> void:
+	var errs := []
+	for f in ["highland", "waystation"]:
+		var d := DialogueRunner.load_file(f)
+		for id in d:
+			if not str(id).begins_with("_"):
+				errs.append_array(DialogueRunner.validate(d[id]))
+	check(errs.is_empty(), "高地和驿站的对话都走得通、旗标都登记了（%s）" % str(errs.slice(0, 3)))
+	# 第二章开场：到了羊脊村，主线开始；选了伊薇特的身上有她的信
+	GameState.new_game(530)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	GameState.set_flag("valen_heir", "ivette")
+	var main := await make_area("highland")
+	check(GameState.quest_stage("ch2_main") == "ask_yangji" and GameState.has_item("ivette_letter"), "到了羊脊村：主线「熄灭的烽燧」开始（去驿站问路）；选了伊薇特的，身上有她给罗薇娜的信")
+	var w: Node3D = main.world
+	var names := []
+	for p in HighlandLayout.PEOPLE:
+		var n := w.get_node_or_null("Npc_" + str(p[0])) as Npc
+		if n != null:
+			names.append(n.display_name)
+	check(names.size() == HighlandLayout.PEOPLE.size() and Looks.has("妮尔", "Npc_nell") and Looks.has("罗薇娜", "Npc_rowena"),
+		"村里的人都在（%s），都有真人外观" % "、".join(names))
+	var space := main.get_world_3d().direct_space_state
+	var floating := []
+	for p in HighlandLayout.PEOPLE:
+		var n := w.get_node("Npc_" + str(p[0])) as Node3D
+		var q := PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1.0, 0), n.global_position + Vector3(0, -1.0, 0), 1)
+		var hit := space.intersect_ray(q)
+		if hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.25:
+			floating.append(str(p[0]))
+	check(floating.is_empty(), "村里的人都站在地上（不悬空、不埋进地里：%s）" % str(floating))
+	# 妮尔：答应路上留意她父亲 → 支线开始
+	var r := DialogueRunner.new()
+	r.start("highland", "nell")
+	pick(r, "你爹去哪了？")
+	pick(r, "我要上烽燧线，路上替你留意他。")
+	check(GameState.quest_active("ch2_nell") and str(GameState.get_flag("ch2_nell")) == "asked", "答应妮尔路上留意她父亲：支线「妮尔的父亲」开始")
+	# 铁匠：3 银币一支火把
+	var silver := GameState.silver
+	r.start("highland", "smith")
+	pick(r, "来一支火把。（3 银币）")
+	check(GameState.has_item("torch") and GameState.silver == silver - 3, "铁匠卖火把：3 银币一支")
+	await free_main(main)
+	# 驿站：罗薇娜认得伊薇特的信；交信；指路以后主线推进到「上第十九烽」
+	GameState.pending_load = {"scene": "waystation", "spawn": "front", "player": {}}
+	main = await make_area("waystation")
+	check(main.world.get_node_or_null("Npc_rowena") != null and main.world.get_node_or_null("Npc_requisitioner") != null, "驿站大堂里：罗薇娜、烽誓团的征粮人")
+	r.start("waystation", "rowena")
+	check(r.text().contains("伊薇特小姐"), "选了伊薇特、带着信：罗薇娜一开口就提伊薇特的信")
+	pick(r, "（把伊薇特小姐的信递给她）")
+	check(not GameState.has_item("ivette_letter") and GameState.has_flag("ch2_letter_given") and GameState.get_rep("eld") >= 5, "交了信：厄尔德家声望 +5")
+	pick(r, "明白了。" if has_opt(r, "明白了。") else "我会的。")
+	pick(r, "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。")
+	pick(r, "当年老王加冕礼上的另一个侍从。")
+	check(GameState.quest_stage("ch2_main") == "to_beacon19" and r.text().contains("诺伯特"), "罗薇娜说出诺伯特、指了上山的路：主线推进到「上第十九烽」")
+	await free_main(main)
+	# 选了阿尔里克 / 堤道失守：开场白不一样
+	GameState.new_game(531)
+	GameState.chapter = 2
+	GameState.set_flag("valen_heir", "alric")
+	GameState.set_flag("ch1_causeway", "lost")
+	r.start("waystation", "rowena")
+	var alric_line := r.text()
+	pick(r, "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。")
+	check(alric_line.contains("阿尔里克") and r.text().contains("易主") and not GameState.has_item("ivette_letter"), "选了阿尔里克：罗薇娜疑心你来谈价钱；堤道失守了：她说黑鹭堡易主了")
+	GameState.pending_load = {}
+
+
+
+## 测试用：选对话里文字是 label 的那个选项（没有就什么都不做，后面的检查会失败）
+func pick(r: DialogueRunner, label: String) -> void:
+	var opts := r.options()
+	for k in opts.size():
+		if str(opts[k].text) == label:
+			r.choose(k)
+			return
+
+
+func has_opt(r: DialogueRunner, label: String) -> bool:
+	return r.options().any(func(o): return str(o.text) == label)

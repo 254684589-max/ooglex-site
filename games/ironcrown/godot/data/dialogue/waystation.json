@@ -1,0 +1,377 @@
+{
+  "_说明": "羊脊村驿站大堂里的人（路线图 5.2b；STORY.md 5.3、5.4、5.5 第 2 步）。罗薇娜·厄尔德（厄尔德家驿站的女主事）按第一章的结果换开场白（valen_heir：阿尔里克 / 伊薇特；伊薇特的信；ch1_causeway = lost 时说黑鹭堡易主了），告诉你第十九烽的烽长诺伯特就是当年加冕礼上的侍从，主线推进到「上第十九烽」；顺口说明天有一列洛蒙德家的粮车（heard_convoy，5.6）、桌上压着盖了厄尔德家印的文书（saw_requisition，5.6 的征粮令）。烽誓团的征粮人在长桌边喝汤：第十九烽缺粮、火让长眠者拐弯（heard_tide_fire，5.4）。出身「烽誓团逃兵」被认出来要等出身三选一做出来（阶段 3 留下的，GameState 还没有出身）。人在 world/waystation.gd 的 PEOPLE。",
+  "rowena": {
+    "speaker": "罗薇娜",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "rowena_met"
+          }
+        ],
+        "node": "again"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（她坐在西墙边的桌子后面写字，抬眼看了看你斗篷上的雪）上山的？先说你是谁的人。",
+        "text_if": [
+          {
+            "if": [
+              {
+                "flag": "valen_heir",
+                "eq": "ivette"
+              },
+              {
+                "has_item": "ivette_letter"
+              }
+            ],
+            "text": "（她放下笔）黑鹭堡来的誓剑——伊薇特小姐前天的信里提过你。坐。外头冷，壁炉边上暖和。"
+          },
+          {
+            "if": [
+              {
+                "flag": "valen_heir",
+                "eq": "alric"
+              }
+            ],
+            "text": "（她没起身，笔也没停）瓦伦家的誓剑。阿尔里克大人又派人来谈价钱了？烽燧线的粮，他打算拿去换王都几车？"
+          }
+        ],
+        "do": [
+          {
+            "set": "rowena_met"
+          }
+        ],
+        "options": [
+          {
+            "text": "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。",
+            "if": [
+              {
+                "not_flag": "ch2_road_asked"
+              }
+            ],
+            "next": "osric"
+          },
+          {
+            "text": "再说说上第十九烽的路。",
+            "if": [
+              {
+                "flag": "ch2_road_asked"
+              }
+            ],
+            "next": "road"
+          },
+          {
+            "text": "（把伊薇特小姐的信递给她）",
+            "if": [
+              {
+                "has_item": "ivette_letter"
+              }
+            ],
+            "locked": "hide",
+            "next": "letter"
+          },
+          {
+            "text": "烽燧线现在怎么样？",
+            "next": "line"
+          },
+          {
+            "text": "桌上那几张盖了印的文书是什么？",
+            "if": [
+              {
+                "not_flag": "saw_requisition"
+              }
+            ],
+            "next": "papers"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "again": {
+        "text": "（她把账本合上一半）还有事？",
+        "options": [
+          {
+            "text": "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。",
+            "if": [
+              {
+                "not_flag": "ch2_road_asked"
+              }
+            ],
+            "next": "osric"
+          },
+          {
+            "text": "再说说上第十九烽的路。",
+            "if": [
+              {
+                "flag": "ch2_road_asked"
+              }
+            ],
+            "next": "road"
+          },
+          {
+            "text": "（把伊薇特小姐的信递给她）",
+            "if": [
+              {
+                "has_item": "ivette_letter"
+              }
+            ],
+            "locked": "hide",
+            "next": "letter"
+          },
+          {
+            "text": "烽燧线现在怎么样？",
+            "next": "line"
+          },
+          {
+            "text": "桌上那几张盖了印的文书是什么？",
+            "if": [
+              {
+                "not_flag": "saw_requisition"
+              }
+            ],
+            "next": "papers"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "menu": {
+        "text": "还有什么要问的？",
+        "options": [
+          {
+            "text": "我从黑鹭堡来。老家主临终让我去烽燧线找一个人。",
+            "if": [
+              {
+                "not_flag": "ch2_road_asked"
+              }
+            ],
+            "next": "osric"
+          },
+          {
+            "text": "再说说上第十九烽的路。",
+            "if": [
+              {
+                "flag": "ch2_road_asked"
+              }
+            ],
+            "next": "road"
+          },
+          {
+            "text": "（把伊薇特小姐的信递给她）",
+            "if": [
+              {
+                "has_item": "ivette_letter"
+              }
+            ],
+            "locked": "hide",
+            "next": "letter"
+          },
+          {
+            "text": "烽燧线现在怎么样？",
+            "next": "line"
+          },
+          {
+            "text": "桌上那几张盖了印的文书是什么？",
+            "if": [
+              {
+                "not_flag": "saw_requisition"
+              }
+            ],
+            "next": "papers"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "osric": {
+        "text": "（她的笔停了）奥斯瑞克大人……走了？（她沉默了一会儿）他是这些年唯一肯往烽燧线送粮的家主。你要找谁？",
+        "text_if": [
+          {
+            "if": [
+              {
+                "flag": "ch1_causeway",
+                "eq": "lost"
+              }
+            ],
+            "text": "（她的笔停了）黑鹭堡易主了，这事半天就传上山了；老家主也走了？……新家主不会往烽燧线送一粒粮。你要找谁？"
+          }
+        ],
+        "options": [
+          {
+            "text": "当年老王加冕礼上的另一个侍从。",
+            "next": "norbert"
+          },
+          {
+            "text": "还不能说。",
+            "next": "menu"
+          }
+        ]
+      },
+      "norbert": {
+        "text": "加冕礼上的侍从……那只能是诺伯特烽长。第十九烽，「断角烽」。他在那儿守了快三十年，守满十年就能走，他没走。（她指了指北边）出村往北，村北有块路牌，顺着盘山路一弯一弯爬上山脊。天黑以前到——夜里的山路上，什么都有可能走过来。",
+        "do": [
+          {
+            "set": "ch2_road_asked"
+          },
+          {
+            "quest": "ch2_main",
+            "stage": "to_beacon19"
+          }
+        ],
+        "options": [
+          {
+            "text": "夜里会走过来什么？",
+            "next": "night"
+          },
+          {
+            "text": "明白了。",
+            "next": "menu"
+          }
+        ]
+      },
+      "night": {
+        "text": "长眠的人。一群一群地往北走，不吃人，不打人——可你挡在它们路上，就会被推倒、踩进雪里。山上的人举着火把站在路边，它们见了火就拐弯。（她顿了顿）铁匠那儿有火把卖。",
+        "options": [
+          {
+            "text": "明白了。",
+            "next": "menu"
+          }
+        ]
+      },
+      "road": {
+        "text": "出村往北，村北的路牌那儿上盘山路。路窄，有一段一边是岩坎；粮车过不去的时候都在那儿卸。到了山脊上，石塔就是断角烽。找诺伯特烽长——找不到就找马蒂亚斯团长，他嗓门大，好找。",
+        "options": [
+          {
+            "text": "明白了。",
+            "next": "menu"
+          }
+        ]
+      },
+      "letter": {
+        "text": "（她拆开信，看得很慢）……皮毛税换成粮，开春送上山。开春？这儿已经三年没开春了。（她把信折好收进怀里）不过我信她。替我谢谢她——等你下次见得着她的话。",
+        "do": [
+          {
+            "take_item": "ivette_letter"
+          },
+          {
+            "set": "ch2_letter_given"
+          },
+          {
+            "rep": "eld",
+            "delta": 5
+          }
+        ],
+        "options": [
+          {
+            "text": "我会的。",
+            "next": "menu"
+          }
+        ]
+      },
+      "line": {
+        "text": "二十四座烽燧，还亮着的不到一半。（她朝西墙上那张图抬了抬下巴，一串点，大半画了叉）第十九烽的粮只够三个晚上，柴也快烧完了。征粮的人每天下山，每天空着手上去。",
+        "options": [
+          {
+            "text": "村里没有粮吗？",
+            "next": "grain"
+          },
+          {
+            "text": "明白了。",
+            "next": "menu"
+          }
+        ]
+      },
+      "grain": {
+        "text": "村里的粮，秋天就让洛蒙德家的人「收」走了，一袋换两枚铜子。（她冷笑了一下）明天还有一列他们的粮车往南走，要在村里歇脚。五辆车，从这扇窗看得见。",
+        "do": [
+          {
+            "set": "heard_convoy"
+          }
+        ],
+        "options": [
+          {
+            "text": "明白了。",
+            "next": "menu"
+          }
+        ]
+      },
+      "papers": {
+        "text": "厄尔德家的印。（她把最上面那张翻扣过去）用得着的时候，你会知道它们是什么的。",
+        "do": [
+          {
+            "set": "saw_requisition"
+          }
+        ],
+        "options": [
+          {
+            "text": "明白了。",
+            "next": "menu"
+          }
+        ]
+      }
+    }
+  },
+  "requisitioner": {
+    "speaker": "烽誓团的征粮人",
+    "start": "greet",
+    "nodes": {
+      "greet": {
+        "text": "（他抱着一碗稀汤，汤里几乎看不见麦粒）又一个上山的？上去就别指望吃饱。",
+        "options": [
+          {
+            "text": "你从哪座烽燧下来的？",
+            "next": "where"
+          },
+          {
+            "text": "长眠的人……真的越来越多？",
+            "next": "tide"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "where": {
+        "text": "第十九烽。马蒂亚斯团长让我下山要粮——要了三天了。（他朝西墙那边的桌子努了努嘴）她要是给得出来，早给了。",
+        "options": [
+          {
+            "text": "长眠的人……真的越来越多？",
+            "next": "tide"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "tide": {
+        "text": "前天夜里，从我们营栅外头走过去的，我数到四十就不敢再数了。它们不碰你，可你要是挡在路上……（他把碗推开）火。只有火让它们拐弯。",
+        "do": [
+          {
+            "set": "heard_tide_fire"
+          }
+        ],
+        "options": [
+          {
+            "text": "你从哪座烽燧下来的？",
+            "next": "where"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      }
+    }
+  }
+}

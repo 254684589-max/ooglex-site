@@ -13,6 +13,13 @@ const SIGN_TEXT_BEACON := "往羊脊村"
 const WAYSTATION_DOOR := "驿站的门"
 const BANNER_FIELD := Color("5e6062")       # 厄尔德家：灰底燃烧的烽燧（WORLD.md 第五节）
 const BANNER_CHARGE := Color("c8642a")
+## 只说一句的人（5.2b）
+const LINES := {
+	"shepherd": ["羊比人知道得早。长眠的人从村边走过去那晚，羊挤成一团，一夜没叫。", "妮尔她爹？好人。冻掉了两根指头，照样编得出全村最紧的草绳。屋檐下吊石头的绳子，一半是他编的。",
+		"明天洛蒙德家的粮车要从村里过。咱们只配站在路边看着它过去。"],
+	"bolted": ["门闩着，是怕自己睡着了往外走。……傻吧？长眠的人，门闩是自己拔开的。", "驿站的罗薇娜小姐是个好人。厄尔德家的人里头，就她肯下山跟我们说话。",
+		"昨天夜里又听见有人从门口走过去，光着脚，踩得雪咯吱咯吱的。我没敢开门。"],
+}
 const FOOTPRINTS := [Vector2(-8.0, 70.0), Vector2(-12.0, 58.0), Vector2(-15.0, 46.0), Vector2(-14.0, 34.0), Vector2(-11.0, 20.0)]   # 光脚的脚印：从村子西北往北去
 
 
@@ -49,6 +56,20 @@ static func interactables(parent: Node3D) -> void:
 		rs.position = Vector3(p.x, Highland.height_at(p.x, p.z), p.z)
 		rs.rotation_degrees.y = float(sgn[2])
 		parent.add_child(rs)
+
+
+## 村里的人（5.2b）：同步放（块没搭好时也得找得到、说得上话，同鹭沼）
+static func people(parent: Node3D) -> void:
+	for p in HighlandLayout.PEOPLE:
+		var pos: Vector2 = p[2]
+		var n := Npc.make(str(p[1]), LINES.get(str(p[0]), []), Color(str(p[4])))
+		n.name = "Npc_" + str(p[0])
+		if str(p[5]) != "":
+			n.dialogue_area = "highland"
+			n.dialogue_id = str(p[5])
+		n.position = Vector3(pos.x, ground(pos), pos.y)
+		n.rotation.y = float(p[3])
+		parent.add_child(n)
 
 
 static func waystation_door() -> Door:

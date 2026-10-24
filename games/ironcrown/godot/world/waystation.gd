@@ -3,8 +3,8 @@ extends RefCounted
 ## 厄尔德家驿站的大堂（路线图 5.2a；STORY.md 5.2「驿站大堂：火塘、长桌、挂着的烽燧旗」）：原创布局。
 ## 驿站是羊脊村唯一的两层石楼（外面 11 × 8 米，HighlandLayout.WAYSTATION），底层大堂 10 × 7 米、3.2 米高：粗石墙、石板地、木梁顶。
 ##   北墙一座大石壁炉（全屋最亮的光），壁炉上方挂着厄尔德家的旗（灰底燃烧的烽燧）；中间一张长桌两条长凳——给上山下山的烽誓团的人吃饭；
-##   西边罗薇娜的桌子：摊着账、压着几张盖了印的文书（5.2b 的「征粮令」），墙上钉着一张烽燧线的图（一串点，大半画了叉）；
-##   东墙一排粮架，架上只剩几只瘪了的麻袋（缺粮）；门边一排挂斗篷的木钉。人在 5.2b 放。
+##   西边罗薇娜的桌子：摊着账、压着几张盖了印的文书（5.6 的「征粮令」），墙上钉着一张烽燧线的图（一串点，大半画了叉）；
+##   东墙一排粮架，架上只剩几只瘪了的麻袋（缺粮）；门边一排挂斗篷的木钉。人（5.2b）：罗薇娜站在桌子前，烽誓团的征粮人坐在长桌边喝汤。
 ## 室内的光不跟时段走；窗玻璃按时段换颜色（同「歪桩客栈」，Inn.glass）。
 ## 坐标：原点在大堂地面中心，北 = -Z；出口门在南墙（z = +3.5）。外面的房子朝西（门对着村路），屋里按「门在南墙」摆，map_spec 照屋里的方向画。
 
@@ -25,6 +25,9 @@ const DESK := Rect2(-4.7, -1.4, 1.2, 2.2)           # 西边罗薇娜的桌子�
 const SHELF := Rect2(4.5, -3.0, 0.5, 4.2)           # 东墙的粮架
 const BANNER_TOP := Vector3(0.0, 3.0, -2.88)          # 挂在炉罩正面（炉罩前沿在 z = -2.9）
 const MAP_POS := Vector3(-4.97, 1.75, 0.0)          # 西墙上钉着的烽燧线图
+## 大堂里的人（5.2b）：[编号, 名字, 位置, 朝向（弧度，0 = 面朝北，-PI / 2 = 面朝东）, 衣服颜色]
+const ROWENA := ["rowena", "罗薇娜", Vector3(-3.05, 0, 0.2), -PI * 0.5, "5e6062"]        # 西边桌子前，面朝大堂
+const REQUISITIONER := ["requisitioner", "烽誓团的征粮人", Vector3(1.3, 0, 0.8), 0.0, "3e3a34"]     # 长桌南边的长凳东头，面朝桌子
 ## 命名出生点：front = 刚进门，背对门、面朝大堂（-Z）
 const SPAWNS := {
 	"front": [Vector3(DOOR_X, 0, 2.7), 0.0],
@@ -52,6 +55,14 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
+	for p in [ROWENA, REQUISITIONER]:
+		var n := Npc.make(str(p[1]), [], Color(str(p[4])))
+		n.name = "Npc_" + str(p[0])
+		n.dialogue_area = "waystation"
+		n.dialogue_id = str(p[0])
+		n.position = p[2]
+		n.rotation.y = float(p[3])
+		parent.add_child(n)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.1, false)
 	exit.verb = "离开"
 	exit.to_area = "highland"

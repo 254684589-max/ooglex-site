@@ -140,6 +140,8 @@ func _run_one(id: String) -> void:
 		stats.jobs += 1
 		stats.total_ms += ms
 		stats.max_job_ms = maxf(stats.max_job_ms, ms)
+		if ms > 40.0:
+			print("IC_CHUNK_SLOW id=%s job=%d ms=%.1f" % [id, c.next, ms])     # 超过 40 毫秒的活写一行（找是哪一件）
 		c.next += 1
 	if c.next >= jobs.size():
 		c.done = true

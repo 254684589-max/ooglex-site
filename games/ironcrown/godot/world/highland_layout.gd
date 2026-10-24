@@ -70,6 +70,13 @@ const STREAM_DEPTH := 0.9
 const STONE_RING := Vector2(-20.0, 48.0)
 const STONE_RING_R := 6.0
 const STONES := 9
+## 村里的人（5.2b）：[编号, 名字, 位置 (x, z), 朝向（弧度，0 = 面朝北，PI / 2 = 面朝西）, 衣服颜色, 对话编号（"" = 只说一句，台词在 HighlandVillage.LINES）]
+const PEOPLE := [
+	["nell", "妮尔", Vector2(-14.5, 54.0), 0.3, "6a6458", "nell"],                     # 石圈边，守着那串往北去的脚印
+	["smith", "铁匠", Vector2(19.7, 75.4), PI * 0.5, "3a2e24", "smith"],                # 披棚里铁砧边，面朝村路
+	["shepherd", "老牧羊人", Vector2(-13.2, 82.6), PI * 0.5, "5a5246", ""],             # 圆羊圈的门口
+	["bolted", "闩着门的女人", Vector2(15.0, 100.6), PI * 0.5, "6a6256", ""],           # 东北那栋矮石屋门口
+]
 ## 路牌（出发的地方）：村北路边（往第十九烽）、第十九烽门前（往羊脊村）
 const SIGN_VILLAGE := Vector3(13.2, 0, 60.0)
 const SIGN_BEACON := Vector3(10.5, 0, -50.5)

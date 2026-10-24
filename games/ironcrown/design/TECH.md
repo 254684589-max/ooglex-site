@@ -686,6 +686,15 @@ godot/
 - **字体**：子集重做（新字「驿」），`tools/build_font.py`。
 - **测试**：`yangji` 组（房子在平地上不压路、树石不长在房子石墙溪石圈上、溪床比岸低、村子都搭出来、每件活不长、黄昏窗亮、门闩着、驿站门推得开、墙挡人、村北路牌旁边打开的是北境北部、驿站大堂进得去出得来）。
 
+### 4.47 羊脊村的人：对话、第二章开场、支线开头（路线图 5.2b，2026-10-24）
+
+- **对话**：`data/dialogue/waystation.json`（罗薇娜、烽誓团的征粮人）、`data/dialogue/highland.json`（妮尔、铁匠）；只说一句的老牧羊人、闩着门的女人在 `HighlandVillage.LINES`。人：村外的在 `HighlandLayout.PEOPLE`（`HighlandVillage.people()` 同步放），大堂里的在 `Waystation.ROWENA` / `REQUISITIONER`；外观加进 `data/looks.json`（罗薇娜用女战士那套、妮尔是平民装跪姿、铁匠深色平民装、征粮人老兵装）。
+- **第一章带过来的**（`STORY.md` 5.4）：罗薇娜开场白按 `valen_heir`（伊薇特 + 身上有信 / 阿尔里克 / 都不是）用 `text_if` 换，问老家主那一句按 `ch1_causeway = lost` 换；`ivette_letter` 在第二章开场时给（`main._story_progress`：选了伊薇特、还没交过）。其余几条（奥弗跟上山、白芦根、长眠的那个村民）在 5.4–5.6 用；出身「烽誓团逃兵」被认出来等出身三选一。
+- **任务**：主线 `ch2_main`（`ask_yangji` → `to_beacon19`，5.3 接着加），到了高地或驿站就开始；支线 `ch2_nell`（`asked`，5.5b 接着做）。新物品 `ivette_letter`、`torch`（5.4 起能点）；新旗标十个（`data/flags.json`）。
+- **铁匠披棚里的人**：第一版站在铁砧的碰撞盒上（测试「村里的人都站在地上」查出来），挪到铁砧前。
+- **分帧**：`ChunkStreamer` 超过 40 毫秒的活写一行 `IC_CHUNK_SLOW`（找是哪一件）。
+- **测试**：`villagers` 组（对话都走得通、开场主线和信、村里的人都在都有外观都站在地上、妮尔的支线、火把 3 银币、交信声望、指路推进主线、阿尔里克 / 失守的开场白）；测试里加了 `pick()`、`has_opt()` 按文字选对话选项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
