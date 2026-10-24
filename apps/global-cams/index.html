@@ -12,6 +12,15 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/global-cams/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<!-- PWA：可安装到手机主屏、独立窗口运行（安装说明见 /apps/app-zone/global-cams/） -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#05070f">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="环球实景">
 <style>
 :root{color-scheme:dark;--bg:#05070f;--panel:#0b1020;--panel2:#10172a;--line:#24304a;--line2:#344463;--text:#eef3ff;--muted:#9aa8c3;--faint:#6f7d98;--accent:#68a8ff;--accent2:#2d6ec7;--warn:#ffd36b;--danger:#ff9b9b}
 *{box-sizing:border-box}
@@ -22,6 +31,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .sidebar{min-width:0;display:flex;flex-direction:column;background:linear-gradient(180deg,#0a0f1d,#080c16);border-right:1px solid var(--line);overflow:hidden;z-index:10}
 .side-head{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--line)}
 .brand{font-weight:800;font-size:19px;white-space:nowrap}.brand span{color:#4ee7b7;font-size:13px;margin-left:4px}
+.install-app{margin-left:auto;min-height:30px;padding:0 10px;border:1px solid rgba(104,168,255,.5);border-radius:999px;background:#101d35;color:#dbeaff;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;touch-action:manipulation}.install-app:hover{border-color:var(--accent)}.install-app[hidden]{display:none}.install-app:not([hidden])+.window-only{margin-left:0}
 .window-only{margin-left:auto;font-size:10px;letter-spacing:.1em;color:#cfe1ff;border:1px solid rgba(104,168,255,.38);padding:5px 8px;border-radius:999px;background:rgba(16,29,53,.7)}
 .selected{padding:12px 14px 10px;border-bottom:1px solid var(--line)}
 .selected-title{margin:0 0 4px;font-size:17px;line-height:1.35;max-height:46px;overflow:hidden}
@@ -96,6 +106,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   <aside class="sidebar" id="sidebar" aria-label="WINDOW 播放列表">
     <div class="side-head">
       <div class="brand">🌐 环球实景 <span>V1.1</span></div>
+      <button class="install-app" id="installApp" type="button" hidden title="安装到手机或电脑，像 App 一样打开" aria-label="安装环球实景 App">📲 安装 App</button>
       <span class="window-only">WINDOW ONLY</span>
     </div>
     <section class="selected" aria-live="polite">
@@ -143,5 +154,45 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <script src="../radio/vendor/globe.gl.min.js"></script>
 <script src="./config.js"></script>
 <script src="./app.js?v=15"></script>
+<script>
+/* PWA：注册 Service Worker + 「安装 App」按钮。
+   支持一键安装的浏览器（安卓 Chrome / Edge、电脑 Chrome）直接弹安装框；
+   其余（如 iPhone Safari）跳到 App 专区的安装说明页。已安装后以独立窗口打开时不显示按钮。 */
+(function(){
+  'use strict';
+  var standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.matchMedia('(display-mode: minimal-ui)').matches ||
+                   window.navigator.standalone === true;
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js?v=1', { scope: './', updateViaCache: 'none' }).catch(function(){});
+    });
+  }
+  var btn = document.getElementById('installApp');
+  if (!btn || standalone) return;
+  var deferred = null;
+  btn.hidden = false;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+  });
+  window.addEventListener('appinstalled', function(){
+    deferred = null;
+    btn.hidden = true;
+  });
+  btn.addEventListener('click', function(){
+    if (!deferred) {
+      location.href = '/apps/app-zone/global-cams/';
+      return;
+    }
+    var prompt = deferred;
+    deferred = null;
+    prompt.prompt();
+    prompt.userChoice.then(function(choice){
+      if (choice && choice.outcome === 'accepted') btn.hidden = true;
+    }).catch(function(){});
+  });
+})();
+</script>
 </body>
 </html>

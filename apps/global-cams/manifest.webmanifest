@@ -1,0 +1,42 @@
+{
+  "name": "环球实景 WINDOW · 转动地球看世界风景",
+  "short_name": "环球实景",
+  "description": "在 3D 地球上浏览全球沉浸窗口，播放精选城市、海岸、山景、雨雪与夜景视频。素材均为公开许可视频，每天自动轮换更新。",
+  "id": "/apps/global-cams/",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["entertainment", "travel", "video"],
+  "background_color": "#05070f",
+  "theme_color": "#05070f",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}
