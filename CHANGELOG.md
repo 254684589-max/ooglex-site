@@ -13,6 +13,8 @@
 
 ### 新增
 
+- 2026-10-25：流光播放器增加五张已发行原创专辑（艺人：流光）：《哦，桂林》《家乡东平》《徐庄》《大宋不夜城》《泰安，泰安 (Power Rap版)》。音频与封面在 `apps/music-player/media/<专辑编号>/`（`<编号>.mp3` 与 `cover.jpg`），时长分别为 267、273、218、250、175 秒。`data/catalog.json` 把这五张列在《黑金夜》之后、两张演示专辑之前，`released: true`、`demo: false`，不附 Kevin MacLeod 许可字段。《黑金夜》《流光速写》《晨间小品》保留。App 专区登记表与 APK 未改。未部署。
+
 - 2026-10-25：流光播放器增加已发行原创专辑《黑金夜》（艺人：流光）。音频与封面在 `apps/music-player/media/heijinye/`（`heijinye.mp3` 约 152 秒，`cover.jpg`），`data/catalog.json` 将该专辑列在最前，`released: true`、`demo: false`，不附 Kevin MacLeod 许可字段。《流光速写》《晨间小品》演示样例保留。整份清单的 `demo` 改为 `false`（不再是全部演示）。App 专区登记表与缓存指纹未改。未部署。
 
 ### 修改

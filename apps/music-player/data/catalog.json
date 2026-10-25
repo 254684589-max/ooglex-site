@@ -3,7 +3,7 @@
   "status": "ok",
   "demo": false,
   "frequency": "static",
-  "updatedAt": "2026-10-25T13:55:07Z",
+  "updatedAt": "2026-10-25T15:25:00Z",
   "asOf": "2026-10-25",
   "source": "Kevin MacLeod (incompetech.com)",
   "sourceUrl": "https://incompetech.com/music/royalty-free/music.html",
@@ -27,6 +27,101 @@
           "artist": "流光",
           "src": "/apps/music-player/media/heijinye/heijinye.mp3",
           "durationSec": 152
+        }
+      ]
+    },
+    {
+      "id": "o-guilin",
+      "title": "哦，桂林",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/o-guilin/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": false,
+      "note": "Cinematic ballad 原创完整曲，女声",
+      "tracks": [
+        {
+          "id": "o-guilin",
+          "title": "哦，桂林",
+          "artist": "流光",
+          "src": "/apps/music-player/media/o-guilin/o-guilin.mp3",
+          "durationSec": 267
+        }
+      ]
+    },
+    {
+      "id": "hometown-dongping",
+      "title": "家乡东平",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/hometown-dongping/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": false,
+      "note": "Cinematic folk-ballad 原创完整曲，女声",
+      "tracks": [
+        {
+          "id": "hometown-dongping",
+          "title": "家乡东平",
+          "artist": "流光",
+          "src": "/apps/music-player/media/hometown-dongping/hometown-dongping.mp3",
+          "durationSec": 273
+        }
+      ]
+    },
+    {
+      "id": "xuzhuang",
+      "title": "徐庄",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/xuzhuang/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": false,
+      "note": "Acoustic-rap 原创完整曲，男声",
+      "tracks": [
+        {
+          "id": "xuzhuang",
+          "title": "徐庄",
+          "artist": "流光",
+          "src": "/apps/music-player/media/xuzhuang/xuzhuang.mp3",
+          "durationSec": 218
+        }
+      ]
+    },
+    {
+      "id": "dasong-buyecheng",
+      "title": "大宋不夜城",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/dasong-buyecheng/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": false,
+      "note": "Chinese trap-rock 原创完整曲，女声",
+      "tracks": [
+        {
+          "id": "dasong-buyecheng",
+          "title": "大宋不夜城",
+          "artist": "流光",
+          "src": "/apps/music-player/media/dasong-buyecheng/dasong-buyecheng.mp3",
+          "durationSec": 250
+        }
+      ]
+    },
+    {
+      "id": "taian-power-rap",
+      "title": "泰安，泰安 (Power Rap版)",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/taian-power-rap/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": false,
+      "note": "Boom-bap Power Rap 原创完整曲，本版女声",
+      "tracks": [
+        {
+          "id": "taian-power-rap",
+          "title": "泰安，泰安 (Power Rap版)",
+          "artist": "流光",
+          "src": "/apps/music-player/media/taian-power-rap/taian-power-rap.mp3",
+          "durationSec": 175
         }
       ]
     },
