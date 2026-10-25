@@ -31,6 +31,7 @@ const TRAMPLE_DAMAGE := 5
 const TRAMPLE_COLD := 12.0
 const LINEN := Color("b9b3a6")         # 睡衣：浅色的粗麻
 const SKIN := Color("c9a58c")
+const LINEN_TINT := Color(2.6, 3.1, 4.2)   # 真人模型：农夫衣服的贴图是深褐色，乘上去变成浅色的粗麻（各通道按贴图平均色算）
 
 var route: Array = []                  # [Vector2, ...]
 var width := 6.0                       # 一股多宽（米）
@@ -86,7 +87,7 @@ func _ready() -> void:
 	if near_enabled:
 		for k in NEAR_MAX:
 			var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"]][k % 3],
-				"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018"][k % 4], "tint": {"MI_Peasant": "#" + LINEN.to_html(false)}})
+				"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018"][k % 4], "tint": {"MI_Peasant": LINEN_TINT}})
 			if spec.is_empty():
 				break
 			var cm := CharacterModel.new()
