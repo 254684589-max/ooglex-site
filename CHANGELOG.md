@@ -13,6 +13,8 @@
 
 ### 修改
 
+- 2026-10-25：流光播放器（`/apps/music-player/`）改成播放页。去掉页顶「首页」「App 专区」「安装说明」。主画面是圆形唱片封面、曲名、艺人、进度（已播放 / 剩余）和播控（播放、上一首、下一首、循环、随机、音量、歌单）；专辑仍在下方点选。演示与 CC BY 4.0 署名收成一行可展开说明。不自动播放，曲目、清单和站长发行流程不变。未部署。
+
 - 2026-10-25：环球实景换上正式圆形日落棕榈剪影 logo（任务 cams-001）。原样替换 `apps/global-cams/icons/` 下的 `icon.svg`、`icon-192.png`、`icon-512.png`、`icon-512-maskable.png`，以及 `apps/global-cams/apple-touch-icon.png`。登记表图标路径仍是 `/apps/global-cams/icons/icon.svg`（只换文件）。首页与 App 专区的缓存指纹改为 `registry.js?v=20261025a`。调试版 APK 已用同一套 Android 启动图标重打，原样替换 `apps/global-cams/download/ooglex-cams.apk`（4057429 字节；sha256 `efdb5dc25b95401661513c110c8c06c5f574a90dfdfbfb3137e35b5d4ef686a6`；包名仍为 `com.ooglex.cams001`；`versionName` 1.0，`versionCode` 1；`minSdk` 22；仍是 Android 调试证书签名，`debuggable=true`）。下载页与专区说明页的大小说明改为约 3.9 MB。下载页大图仍指向 `../icons/icon-512.png`，专区说明页大图仍指向 `/apps/global-cams/icons/icon.svg`。未上架应用商店，没有付费签名，也没有 IPA。Service Worker 升到 `gc-v3`，已安装的网页版不再继续用外壳缓存里的旧图标。A3/A4 真机仍待 Luqin。未部署。
 
 ### 新增

@@ -1,4 +1,4 @@
-/* 流光播放器：专辑列表、专辑曲目、底部播控。不自动播放。 */
+/* 流光播放器：唱片主画面、专辑列表、播控。不自动播放。 */
 (function () {
   "use strict";
 
@@ -21,6 +21,9 @@
     volume: 0.9,
     muted: false,
     lastVolume: 0.9,
+    repeat: "off",
+    shuffle: false,
+    history: [],
     notice: ""
   };
 
@@ -45,12 +48,48 @@
       p.setAttribute("d", d);
       svg.appendChild(p);
     }
+    function stroke(d) {
+      var p = document.createElementNS(ns, "path");
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", "currentColor");
+      p.setAttribute("stroke-width", "1.8");
+      p.setAttribute("stroke-linecap", "round");
+      p.setAttribute("stroke-linejoin", "round");
+      p.setAttribute("d", d);
+      svg.appendChild(p);
+    }
     if (name === "play") path("M8 5v14l11-7z");
     else if (name === "pause") { path("M6 5h4v14H6z"); path("M14 5h4v14h-4z"); }
     else if (name === "prev") path("M6 6h2v12H6zm3.5 6 8.5 6V6z");
     else if (name === "next") path("M6 6v12l8.5-6zM16 6h2v12h-2z");
     else if (name === "vol") path("M4 9v6h4l5 4V5L8 9H4zm11.5 3a3.5 3.5 0 0 0-2-3.16v6.32A3.5 3.5 0 0 0 15.5 12z");
-    else path("M4 9v6h4l5 4V5L8 9H4zm13.2.8-1.4-1.4L13.6 10.6 11.4 8.4 10 9.8l2.2 2.2-2.2 2.2 1.4 1.4 2.2-2.2 2.2 2.2 1.4-1.4-2.2-2.2z");
+    else if (name === "mute") path("M4 9v6h4l5 4V5L8 9H4zm13.2.8-1.4-1.4L13.6 10.6 11.4 8.4 10 9.8l2.2 2.2-2.2 2.2 1.4 1.4 2.2-2.2 2.2 2.2 1.4-1.4-2.2-2.2z");
+    else if (name === "queue") path("M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z");
+    else if (name === "repeat" || name === "repeat-one") {
+      stroke("M17 2l4 4-4 4");
+      stroke("M3 11V9a4 4 0 0 1 4-4h14");
+      stroke("M7 22l-4-4 4-4");
+      stroke("M21 13v2a4 4 0 0 1-4 4H3");
+      if (name === "repeat-one") {
+        var t = document.createElementNS(ns, "text");
+        t.setAttribute("x", "12");
+        t.setAttribute("y", "16");
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("font-size", "8");
+        t.setAttribute("font-weight", "700");
+        t.setAttribute("fill", "currentColor");
+        t.textContent = "1";
+        svg.appendChild(t);
+      }
+    }
+    else if (name === "shuffle") {
+      stroke("M16 3h5v5");
+      stroke("M4 20 21 3");
+      stroke("M21 16v5h-5");
+      stroke("M15 15l6 6");
+      stroke("M4 4l5 5");
+    }
+    else path("M4 9v6h4l5 4V5L8 9H4z");
     return svg;
   }
 
@@ -182,19 +221,26 @@
     side.appendChild(h("p", "kicker", album.demo ? "演示样例" : "专辑"));
     side.appendChild(h("h2", "album-title", album.title || "未命名专辑"));
     side.appendChild(h("p", "by", artistOf(null, album) + (album.releasedAt ? " · " + album.releasedAt : "")));
-    if (album.released === false) side.appendChild(h("p", "badge", "未发行 · 只有本机预览看得到"));
-    if (album.note) side.appendChild(h("p", "note", album.note));
-    if (album.license) {
-      var lic = h("p", "note");
-      lic.appendChild(document.createTextNode("许可：" + album.license + " "));
-      if (album.licenseUrl) {
-        var a = h("a", null, "许可文本");
-        a.href = album.licenseUrl;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        lic.appendChild(a);
+    layout.appendChild(side);
+    if (album.released === false) layout.appendChild(h("p", "badge", "未发行 · 只有本机预览看得到"));
+    if (album.note || album.license) {
+      var det = h("details", "fine");
+      det.appendChild(h("summary", null, "署名与许可"));
+      if (album.note) det.appendChild(h("p", null, album.note));
+      if (album.license) {
+        var lic = h("p");
+        lic.appendChild(document.createTextNode(album.license));
+        if (album.licenseUrl) {
+          lic.appendChild(document.createTextNode(" · "));
+          var a = h("a", null, "许可文本");
+          a.href = album.licenseUrl;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          lic.appendChild(a);
+        }
+        det.appendChild(lic);
       }
-      side.appendChild(lic);
+      layout.appendChild(det);
     }
     var list = h("ol", "tracks");
     (album.tracks || []).forEach(function (track, index) {
@@ -218,10 +264,16 @@
       li.appendChild(btn);
       list.appendChild(li);
     });
-    if (!(album.tracks || []).length) side.appendChild(h("p", "empty", "这张专辑还没有曲目。"));
-    side.appendChild(list);
-    layout.appendChild(side);
+    if (!(album.tracks || []).length) layout.appendChild(h("p", "empty", "这张专辑还没有曲目。"));
+    layout.appendChild(list);
     view.appendChild(layout);
+  }
+
+  var skipAlbumScroll = true;
+
+  function reduceMotion() {
+    try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+    catch (err) { return false; }
   }
 
   function renderView() {
@@ -250,6 +302,12 @@
     if (route.name === "album") renderAlbum(route.id);
     else renderList();
     paintCurrent();
+    if (!skipAlbumScroll && route.name === "album") {
+      requestAnimationFrame(function () {
+        view.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
+      });
+    }
+    skipAlbumScroll = false;
   }
 
   function paintSeek() {
@@ -261,16 +319,18 @@
       seek.value = String(duration ? time : 0);
       seek.disabled = !duration;
     }
-    var pct = duration ? Math.max(0, Math.min(100, (time / duration) * 100)) : 0;
+    var shown = duration || currentDurationHint();
+    var pct = shown ? Math.max(0, Math.min(100, (time / shown) * 100)) : 0;
     seek.style.setProperty("--p", pct + "%");
     seek.setAttribute("aria-valuemin", "0");
-    seek.setAttribute("aria-valuemax", String(Math.round(duration || 0)));
+    seek.setAttribute("aria-valuemax", String(Math.round(shown || 0)));
     seek.setAttribute("aria-valuenow", String(Math.round(time || 0)));
-    seek.setAttribute("aria-valuetext", fmt(time) + " / " + fmt(duration));
+    seek.setAttribute("aria-valuetext", fmt(time) + " / " + fmt(shown));
     var now = $("time-now");
     var end = $("time-end");
+    var remain = Math.max(0, shown - time);
     if (now) now.textContent = fmt(time);
-    if (end) end.textContent = fmt(duration || currentDurationHint());
+    if (end) end.textContent = shown ? ("-" + fmt(remain)) : "0:00";
   }
 
   function currentDurationHint() {
@@ -287,16 +347,37 @@
     if (title) title.textContent = track ? track.title : "尚未选择曲目";
     if (by) by.textContent = track ? artistOf(track, album) : "从专辑里点一首";
     var art = $("now-art");
-    if (art) {
+    var artKey = (album && album.cover) || (album && album.id) || "";
+    if (art && art.dataset.art !== artKey) {
+      art.dataset.art = artKey;
+      var spinning = art.classList.contains("is-spinning");
       art.textContent = "";
       art.appendChild(coverNode(album || { title: "流" }, "cover sm"));
+      if (spinning) art.classList.add("is-spinning");
     }
+    var playing = !!(audio && !audio.paused && audio.src);
+    if (art) art.classList.toggle("is-spinning", playing);
     if (play) {
       play.textContent = "";
-      play.appendChild(icon(audio && !audio.paused ? "pause" : "play"));
-      var playing = !!(audio && !audio.paused);
+      play.appendChild(icon(playing ? "pause" : "play"));
       play.setAttribute("aria-label", playing ? "暂停" : "播放");
       play.setAttribute("aria-pressed", playing ? "true" : "false");
+    }
+    var repeatBtn = $("repeat");
+    if (repeatBtn) {
+      repeatBtn.textContent = "";
+      repeatBtn.appendChild(icon(state.repeat === "one" ? "repeat-one" : "repeat"));
+      repeatBtn.classList.toggle("is-on", state.repeat !== "off");
+      repeatBtn.setAttribute("aria-pressed", state.repeat === "off" ? "false" : "true");
+      repeatBtn.setAttribute("aria-label", state.repeat === "one" ? "单曲循环" : state.repeat === "all" ? "列表循环" : "循环：关");
+    }
+    var shuffleBtn = $("shuffle");
+    if (shuffleBtn) {
+      shuffleBtn.textContent = "";
+      shuffleBtn.appendChild(icon("shuffle"));
+      shuffleBtn.classList.toggle("is-on", state.shuffle);
+      shuffleBtn.setAttribute("aria-pressed", state.shuffle ? "true" : "false");
+      shuffleBtn.setAttribute("aria-label", state.shuffle ? "随机播放：开" : "随机播放：关");
     }
     var mute = $("mute");
     if (mute) {
@@ -357,8 +438,20 @@
     return src;
   }
 
+  function randomIndex(n, avoid) {
+    if (n <= 1) return 0;
+    if (avoid < 0 || avoid >= n) return Math.floor(Math.random() * n);
+    var j = Math.floor(Math.random() * (n - 1));
+    return j >= avoid ? j + 1 : j;
+  }
+
+  function remember(key, value) {
+    try { localStorage.setItem(key, value); } catch (err) { /* 忽略 */ }
+  }
+
   async function playIndex(album, index) {
     if (!album || !album.tracks || !album.tracks.length) return;
+    if (state.playingAlbumId !== album.id) state.history = [];
     var n = album.tracks.length;
     var i = ((index % n) + n) % n;
     var track = album.tracks[i];
@@ -437,8 +530,21 @@
   function step(delta) {
     var album = currentAlbum() || firstPlayable();
     if (!album || !album.tracks || !album.tracks.length) return;
-    var start = state.playingAlbumId === album.id ? state.index : -1;
-    if (start < 0) start = delta > 0 ? -1 : 0;
+    var n = album.tracks.length;
+    var onThis = state.playingAlbumId === album.id && state.index >= 0;
+    if (state.shuffle && delta > 0) {
+      if (onThis && n > 1) {
+        state.history.push(state.index);
+        if (state.history.length > 40) state.history.splice(0, state.history.length - 40);
+      }
+      playIndex(album, randomIndex(n, onThis ? state.index : -1));
+      return;
+    }
+    if (state.shuffle && delta < 0 && onThis && state.history.length) {
+      playIndex(album, state.history.pop());
+      return;
+    }
+    var start = onThis ? state.index : (delta > 0 ? -1 : 0);
     playIndex(album, start + delta);
   }
 
@@ -452,9 +558,25 @@
   function bindTransport() {
     $("prev").appendChild(icon("prev"));
     $("next").appendChild(icon("next"));
+    var queueBtn = $("queue-btn");
+    queueBtn.textContent = "";
+    queueBtn.appendChild(icon("queue"));
     $("play").addEventListener("click", toggle);
     $("prev").addEventListener("click", function () { step(-1); });
     $("next").addEventListener("click", function () { step(1); });
+    $("repeat").addEventListener("click", function () {
+      state.repeat = state.repeat === "off" ? "all" : state.repeat === "all" ? "one" : "off";
+      remember("ooglex.music-player.repeat", state.repeat);
+      paintTransport();
+      announce(state.repeat === "one" ? "单曲循环" : state.repeat === "all" ? "列表循环" : "循环已关闭");
+    });
+    $("shuffle").addEventListener("click", function () {
+      state.shuffle = !state.shuffle;
+      if (!state.shuffle) state.history = [];
+      remember("ooglex.music-player.shuffle", state.shuffle ? "1" : "0");
+      paintTransport();
+      announce(state.shuffle ? "随机播放" : "顺序播放");
+    });
     $("queue-btn").addEventListener("click", function () {
       var open = queuePop.hidden;
       queuePop.hidden = !open;
@@ -483,7 +605,7 @@
       state.muted = state.volume === 0;
       if (state.volume > 0) state.lastVolume = state.volume;
       if (audio) audio.volume = state.volume;
-      try { localStorage.setItem("ooglex.music-player.volume", String(state.volume)); } catch (err) { /* 忽略 */ }
+      remember("ooglex.music-player.volume", String(state.volume));
       paintVolume();
       paintTransport();
     });
@@ -507,7 +629,21 @@
     audio.addEventListener("pause", paintCurrent);
     audio.addEventListener("ended", function () {
       var album = currentAlbum();
-      if (album && state.index < album.tracks.length - 1) playIndex(album, state.index + 1);
+      if (!album || !album.tracks || !album.tracks.length) { paintCurrent(); return; }
+      if (state.repeat === "one") {
+        audio.currentTime = 0;
+        audio.play().catch(function () { setNotice("浏览器还没允许播放。请再点一次播放。"); });
+        return;
+      }
+      var n = album.tracks.length;
+      if (state.shuffle && n > 1) {
+        state.history.push(state.index);
+        if (state.history.length > 40) state.history.splice(0, state.history.length - 40);
+        playIndex(album, randomIndex(n, state.index));
+        return;
+      }
+      if (state.index < n - 1) playIndex(album, state.index + 1);
+      else if (state.repeat === "all") playIndex(album, 0);
       else paintCurrent();
     });
     audio.addEventListener("error", function () {
@@ -581,6 +717,9 @@
         var saved = Number(rawVolume);
         if (isFinite(saved) && saved >= 0 && saved <= 1) state.volume = saved;
       }
+      var rawRepeat = localStorage.getItem("ooglex.music-player.repeat");
+      if (rawRepeat === "all" || rawRepeat === "one" || rawRepeat === "off") state.repeat = rawRepeat;
+      state.shuffle = localStorage.getItem("ooglex.music-player.shuffle") === "1";
     } catch (err) { /* 使用默认音量 */ }
     state.lastVolume = state.volume || 0.9;
     audio.volume = state.volume;
