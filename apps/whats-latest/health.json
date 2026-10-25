@@ -1,29 +1,30 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-10-25T16:12:20Z",
-  "status": "healthy",
+  "generatedAt": "2026-10-25T20:48:01Z",
+  "status": "failed",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-10-25T16:12:20Z",
+  "lastAttemptAt": "2026-10-25T20:48:01Z",
   "lastSuccessfulAt": "2026-10-25T16:12:20Z",
-  "consecutiveFailures": 0,
+  "consecutiveFailures": 1,
   "publishedSnapshotAt": "2026-10-25T16:12:20Z",
-  "snapshotPreserved": false,
-  "failureReason": null,
+  "snapshotPreserved": true,
+  "failureReason": "Google News六个板块均未刷新",
   "coverage": {
     "expectedComponents": 7,
     "publishedComponents": 7,
-    "refreshedComponents": 7,
-    "fallbackComponents": 0,
+    "refreshedComponents": 0,
+    "fallbackComponents": 7,
     "unavailableComponents": 0,
     "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0
+    "freshCoveragePct": 0.0
   },
   "attempt": {
-    "status": "success",
-    "published": true,
-    "refreshedComponents": [
+    "status": "failed",
+    "published": false,
+    "refreshedComponents": [],
+    "fallbackComponents": [
       "politics-news",
       "world-news",
       "markets-news",
@@ -32,7 +33,6 @@
       "risk-news",
       "market-quotes"
     ],
-    "fallbackComponents": [],
     "unavailableComponents": [],
     "unknownComponents": []
   },
@@ -43,10 +43,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     },
     {
@@ -55,10 +55,10 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     },
     {
@@ -67,10 +67,10 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     },
     {
@@ -79,10 +79,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     },
     {
@@ -91,10 +91,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     },
     {
@@ -103,10 +103,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     },
     {
@@ -115,10 +115,10 @@
       "role": "auxiliary",
       "frequency": "daily",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-10-25T16:12:20Z",
+      "lastAttemptAt": "2026-10-25T20:48:01Z",
       "lastSuccessAt": "2026-10-25T16:12:20Z"
     }
   ],
