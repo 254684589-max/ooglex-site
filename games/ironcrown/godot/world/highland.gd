@@ -67,6 +67,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	HighlandVillage.interactables(p_parent)
 	HighlandVillage.people(p_parent)
 	HighlandBeacon.interactables(p_parent)            # 第十九烽的塔门、塔顶的天窗、营房的门（5.3b）
+	HighlandBeacon.people(p_parent)                   # 第十九烽的人：马蒂亚斯、诺伯特、营里的兵（5.3c）
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent

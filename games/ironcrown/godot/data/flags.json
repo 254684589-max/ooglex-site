@@ -102,5 +102,9 @@
   "heard_tide_fire": {"desc": "听征粮人或铁匠说过：火让长眠者拐弯（5.2b）", "set_in": "waystation.json requisitioner/tide、highland.json smith/why", "read_in": "5.4 第一夜潮水（教学提示）"},
   "nell_met": {"desc": "和石圈边的妮尔说过话（5.2b）", "set_in": "highland.json nell/greet", "read_in": "highland.json nell 的 start_if"},
   "ch2_nell": {"desc": "支线「妮尔的父亲」：asked = 答应路上留意她父亲（5.2b）；5.5b 加 stopped / seen / left", "set_in": "highland.json nell/promise", "read_in": "highland.json nell 的选项；5.5b"},
-  "heard_stones": {"desc": "妮尔说过石圈的事：石头上刻着没人认得的字（5.2b）", "set_in": "highland.json nell/stones", "read_in": "5.5a 支线「石圈」"}
+  "heard_stones": {"desc": "妮尔说过石圈的事：石头上刻着没人认得的字（5.2b）", "set_in": "highland.json nell/stones", "read_in": "5.5a 支线「石圈」"},
+  "matthias_met": {"desc": "在第十九烽见过团长马蒂亚斯（5.3c）", "set_in": "beacon19.json matthias/greet", "read_in": "beacon19.json matthias 的 start_if"},
+  "heard_three_nights": {"desc": "马蒂亚斯说营里的粮和柴只够三夜（5.3c）", "set_in": "beacon19.json matthias/nights", "read_in": "5.4 第一夜（营里的人怎么说）"},
+  "norbert_met": {"desc": "在塔顶见过诺伯特烽长，他说「先过了今夜」（5.3c）", "set_in": "beacon19.json norbert/refuse", "read_in": "beacon19.json norbert 的 start_if；5.5 第二天"},
+  "ch2_wood_carried": {"desc": "堤道失守的那条线：替营里扛了一捆柴上塔顶，诺伯特才肯说话（STORY.md 5.4，5.3c）", "set_in": "beacon19.json norbert/wood", "read_in": "beacon19.json norbert 的选项"}
 }

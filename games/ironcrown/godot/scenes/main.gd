@@ -1857,6 +1857,18 @@ func _cold_tick(delta: float) -> void:
 		hud.set_cold(t, GameState.frostbite)
 
 
+## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」
+func _beacon_arrival() -> void:
+	if area != "highland" or player == null or GameState.chapter != 2 or GameState.quest_stage("ch2_main") != "to_beacon19":
+		return
+	if player_xz().distance_to(HighlandLayout.BEACON19) > HighlandLayout.PALISADE_R + 3.0:
+		return
+	GameState.set_stage("ch2_main", "meet_matthias")
+	if GameState.daypart in ["dawn", "day"]:
+		hud.toast("爬上山脊的时候，天已经擦黑了。", 4.0)
+		set_daypart("dusk", false)
+
+
 ## 潜行（2.7）：蹲着走、附近 10 米内有还没察觉你的敌人，每秒涨 0.5 进度
 func _train_stealth(delta: float) -> void:
 	if not player.crouching or Vector2(player.velocity.x, player.velocity.z).length() < 0.3:
@@ -1963,6 +1975,7 @@ func _process(delta: float) -> void:
 		_show_tip(tip_queue.pop_front())
 	_train_stealth(delta)
 	_cold_tick(delta)
+	_beacon_arrival()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

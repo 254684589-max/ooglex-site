@@ -176,6 +176,51 @@ static func barracks_front() -> Vector3:
 	return Vector3(f.x, Highland.height_at(f.x, f.y) - 0.05, f.y)
 
 
+## 营里的人（5.3c）：团长马蒂亚斯在柴棚前数柴，烽长诺伯特在塔顶火盆边（对话 data/dialogue/beacon19.json）；只说一句的兵（LINES）
+const LINES := {
+	"gate": ["进来吧。天一黑门就合上——合上也没用，它们不走门。", "从羊脊村上来的？路上看见光脚的人没有？……没有就好。", "南边的粮？我站这个门三个月了，只看见上来的人，没看见上来的粮。"],
+	"chopper": ["今年是我第十年。守满十年，罪和债一笔勾销，开春就能下山——团长说，开春是哪天，他说了算。", "劈柴得省着劈。斧子砍一下，碎屑也是柴。", "我家在南边，金穗平原那头。有个姑娘等我。等了十年，不知道还等不等。"],
+	"sacks": ["两袋。昨天是三袋。你算算还剩几天。", "老鼠都饿跑了。粮棚架那么高，防的是老鼠，防不住人饿。"],
+	"door": ["营房里只点一盏灯。油也得省——塔顶的火比我们的眼睛要紧。", "下了岗的都在里面睡。睡得着的就睡，睡不着的……睡不着反倒好。"],
+}
+
+
+static func people(parent: Node3D) -> void:
+	var tp := tower_place()
+	var wood := place_of(HighlandLayout.WOODSHED)
+	var gran := place_of(HighlandLayout.GRANARY)
+	var g := gate_dir()
+	var tangent := Vector2(-g.y, g.x)
+	var c := HighlandLayout.BEACON19
+	var gate_in := c + g * (HighlandLayout.PALISADE_R - 1.8) + tangent * 2.6
+	var bf := barracks_front()
+	var list := [
+		["matthias", "马蒂亚斯", wood * Vector3(0.2, 0, 3.0), deg_to_rad(float(HighlandLayout.WOODSHED[1])) + PI, "4a4038", "matthias"],     # 柴棚前，背对着柴棚、面朝院子
+		["norbert", "诺伯特", tp * Vector3(-1.25, HighlandLayout.TOWER_H, -0.5), deg_to_rad(float(HighlandLayout.TOWER[1])) - PI * 0.5, "5a5650", "norbert"],   # 塔顶火盆边，面朝火
+		["gate", "守门的兵", Vector3(gate_in.x, 0, gate_in.y), atan2(-g.x, -g.y), "3e3a34", ""],      # 门里，面朝门外（rotation.y = θ 时面朝 (-sin θ, -cos θ)）
+		["chopper", "劈柴的老兵", wood * Vector3(1.0, 0, 1.15), deg_to_rad(float(HighlandLayout.WOODSHED[1])), "3e3a34", ""],        # 柴棚里的木墩前
+		["sacks", "数麻袋的兵", gran * Vector3(0, 0, 2.1), deg_to_rad(float(HighlandLayout.GRANARY[1])), "3e3a34", ""],              # 粮棚前，面朝架子
+		["door", "营房门口的兵", Vector3(bf.x + 0.9, 0, bf.z + 1.6), -PI * 0.5, "3e3a34", ""],                                       # 营房门口，面朝院子
+	]
+	for p in list:
+		var at: Vector3 = p[2]
+		var n := Npc.make(str(p[1]), LINES.get(str(p[0]), []), Color(str(p[4])))
+		n.name = "Npc_" + str(p[0])
+		if str(p[5]) != "":
+			n.dialogue_area = "beacon19"
+			n.dialogue_id = str(p[5])
+		n.position = Vector3(at.x, at.y if str(p[0]) == "norbert" else Highland.height_at(at.x, at.z), at.z)
+		n.rotation.y = float(p[3])
+		n.far_end = DETAIL_FAR                                       # 从村口看整条山谷时不画（绘制调用，5.3c 实测 417）
+		parent.add_child(n)
+	if str(GameState.get_flag("ch1_causeway", "")) == "lost" and not GameState.has_flag("ch2_wood_carried"):
+		var fw := Pickup.make("firewood", "一捆柴", Color("8a6a44"), Vector3(0.7, 0.28, 0.32))     # 堤道失守的那条线：诺伯特要你扛一捆柴上塔顶（STORY.md 5.4）
+		fw.pickup_id = "beacon19_firewood"
+		var at := wood * Vector3(-1.0, 0, -float(HighlandLayout.WOODSHED[3]) * 0.5 + 1.0)
+		fw.position = Vector3(at.x, Highland.height_at(at.x, at.z) + 0.2, at.z)
+		parent.add_child(fw)
+
+
 ## 塔门、塔顶的天窗、营房的门
 static func interactables(parent: Node3D) -> void:
 	var tp := tower_place()

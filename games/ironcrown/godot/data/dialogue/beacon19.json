@@ -1,0 +1,143 @@
+{
+  "_说明": "第十九烽「断角烽」的人（路线图 5.3c；STORY.md 5.3、5.4、5.5 第 3 步）。黄昏到烽燧：烽誓团的团长马蒂亚斯在柴棚前数柴——粮和柴只够三夜，长眠的人只有火能让它们拐弯，顺口提一句明天南边的粮车（5.6 的伏笔，他「什么都没说」）；烽长诺伯特在塔顶火盆边看着北边那串黑了的塔，听到奥斯瑞克的名字手停了一下，不肯谈加冕礼：「先过了今夜。」堤道失守的那条线，诺伯特先要你从柴棚扛一捆柴上塔顶（STORY.md 5.4）。营里的兵只说一句（world/highland_beacon.gd 的 LINES）。人在 world/highland_beacon.gd 的 people()。",
+  "matthias": {
+    "speaker": "马蒂亚斯",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "matthias_met"}], "node": "again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（一个四十来岁的男人站在柴棚前，数着那一小垛柴，没回头）……够三夜。粮也是。三夜以后，这座塔就跟北边那些一样，黑了。你是谁？",
+        "text_if": [
+          {"if": [{"flag": "valen_heir", "eq": "alric"}], "text": "（他看了一眼你斗篷上的黑鹭）瓦伦家的人。又一个拿烽燧换价钱的？……柴够三夜，粮也是。你们阿尔里克大人的粮，先到黑鹭堡，再到王都，最后才轮得到这儿——要是还剩的话。"},
+          {"if": [{"flag": "ch1_causeway", "eq": "lost"}], "text": "（他数着那一小垛柴，没回头）黑鹭堡丢了，我听说了。南边连口信都送不上来了。……柴够三夜，粮也是。你是谁？"}
+        ],
+        "do": [{"set": "matthias_met"}],
+        "options": [
+          {"text": "我从黑鹭堡来，找诺伯特烽长。", "if": [{"quest_stage": "ch2_main", "eq": "meet_matthias"}], "next": "norbert"},
+          {"text": "只够三夜？", "next": "nights"},
+          {"text": "长眠的人到底是什么？", "next": "sleepers"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他还在柴棚前，那垛柴好像又矮了一截）还有事？",
+        "options": [
+          {"text": "我找诺伯特烽长。", "if": [{"quest_stage": "ch2_main", "eq": "meet_matthias"}], "next": "norbert"},
+          {"text": "诺伯特烽长在哪？", "if": [{"not_flag": "norbert_met"}], "next": "where"},
+          {"text": "只够三夜？", "next": "nights"},
+          {"text": "长眠的人到底是什么？", "next": "sleepers"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "norbert": {
+        "text": "找老头？（他朝塔顶抬了抬下巴）在上面看火，一夜一夜地看。他不跟外人说话——尤其不说王都的事。去试试吧：塔门进去，石梯上楼，他屋里有架梯子通到顶上。",
+        "do": [{"quest": "ch2_main", "stage": "see_norbert"}],
+        "options": [
+          {"text": "只够三夜？", "next": "nights"},
+          {"text": "明白了。", "end": true}
+        ]
+      },
+      "where": {
+        "text": "塔顶，火盆边上。塔门进去，石梯上楼，他屋里有架梯子。",
+        "options": [
+          {"text": "明白了。", "next": "again"}
+        ]
+      },
+      "nights": {
+        "text": "南边答应的粮，三个月没见一粒。高地的羊快宰完了。柴得从山下背上来，一个人一天背两趟——背柴的人，夜里就站不住岗。（他终于转过身）火一灭，它们就从营地中间走过去，把睡着的人一起带走。",
+        "do": [{"set": "heard_three_nights"}],
+        "options": [
+          {"text": "那怎么办？", "next": "convoy"},
+          {"text": "……", "next": "again"}
+        ]
+      },
+      "convoy": {
+        "text": "（他压低了声音）明天，洛蒙德家的粮车要从羊脊村过。五车，往南边去，车上的粮是从高地低价收走的。……（他又转回去数柴）我什么都没说。",
+        "do": [{"set": "heard_convoy"}],
+        "options": [
+          {"text": "……我听见了。", "next": "again"}
+        ]
+      },
+      "sleepers": {
+        "text": "睡着了就不醒、光着脚往北走的人。叫不醒，拦不住，砍不死——砍过，没用。只有火让它们拐弯。所以这儿叫烽燧线，不叫城墙。",
+        "do": [{"set": "heard_tide_fire"}],
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      }
+    }
+  },
+  "norbert": {
+    "speaker": "诺伯特",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "norbert_met"}], "node": "again"},
+      {"if": [{"flag": "ch1_causeway", "eq": "lost"}, {"not_flag": "ch2_wood_carried"}], "node": "greet_lost"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（一个六十多岁的老人站在火盆边，往火里添了一根柴，看着北边那串黑了的塔）……第十八烽昨夜也灭了。你看，那边。原来亮着的。",
+        "options": [
+          {"text": "奥斯瑞克·瓦伦临终让我来找你。", "next": "osric"},
+          {"text": "北边那串塔，怎么都黑了？", "next": "line"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "greet_lost": {
+        "text": "（他没看你，往火里添了一根柴）黑鹭堡丢了。奥斯瑞克……也走了吧。（火噼啪响了一声）营里的柴快烧完了。你要是有话说，先从柴棚扛一捆上来。",
+        "options": [
+          {"text": "（把那捆柴放到火盆边）", "if": [{"has_item": "firewood"}], "locked": "hide", "next": "wood"},
+          {"text": "我这就去柴棚扛。", "if": [{"quest_stage": "ch2_main", "eq": "see_norbert"}], "next": "fetch"},
+          {"text": "我这就去柴棚扛。", "if": [{"quest_stage": "ch2_main", "eq": "meet_matthias"}], "next": "fetch"},
+          {"text": "北边那串塔，怎么都黑了？", "next": "line"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "fetch": {
+        "text": "（他摆摆手，眼睛还在北边）去吧。天黑得快。",
+        "do": [{"quest": "ch2_main", "stage": "carry_wood"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "wood": {
+        "text": "（他看着你把柴码好，伸手摸了摸那捆柴，挑了一根扔进火里）……松木。干的。还算有点用。坐吧，说你要说的。",
+        "do": [{"take_item": "firewood"}, {"set": "ch2_wood_carried"}],
+        "options": [
+          {"text": "奥斯瑞克·瓦伦临终让我来找你。", "next": "osric"}
+        ]
+      },
+      "osric": {
+        "text": "（他添柴的手停了一下）奥斯瑞克……他还是走了。我们两个，当年站在老王两边，一人捧着一样东西。现在只剩我了。（他看着火）他让你来问加冕礼的事。",
+        "text_if": [
+          {"if": [{"flag": "ch1_causeway", "eq": "lost"}], "text": "（他添柴的手停了一下）他是在堡里走的，还是堡丢了以后？……算了，都一样。我们两个，当年站在老王两边，一人捧着一样东西。现在只剩我了。他让你来问加冕礼的事。"}
+        ],
+        "options": [
+          {"text": "加冕礼上发生了什么？", "next": "refuse"}
+        ]
+      },
+      "refuse": {
+        "text": "（他摇头）先过了今夜。今夜火要是灭了，我说什么都没用。（他指了指南边黑下去的山谷）入了夜，它们会从下面走上来。你要是还站得住，天亮以后——要是天还会亮的话——再来问。",
+        "do": [{"set": "norbert_met"}, {"quest": "ch2_main", "stage": "first_night"}],
+        "options": [
+          {"text": "……好。先过了今夜。", "end": true}
+        ]
+      },
+      "line": {
+        "text": "二十四座。现在亮着的，你一只手数得过来。没柴、没粮、没人。守塔的人夜里睡着了——就再也不醒，跟着它们往北走。第十八烽那三个人，前天还隔着山跟我喊话。",
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他看着北边，往火里添了一根柴）先过了今夜。",
+        "options": [
+          {"text": "北边那串塔，怎么都黑了？", "next": "line"},
+          {"text": "告辞。", "end": true}
+        ]
+      }
+    }
+  }
+}

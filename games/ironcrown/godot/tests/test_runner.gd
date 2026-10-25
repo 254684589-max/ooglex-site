@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8929,6 +8929,97 @@ func test_beacon19() -> void:
 	await free_main(inn)
 	HighlandBeacon.clear_cache()
 	HighlandFlora.clear_cache()
+
+
+## 5.3c 第十九烽的人：黄昏到烽燧、马蒂亚斯、诺伯特、营里的兵、堤道失守那条线的一捆柴
+func test_beaconpeople() -> void:
+	var d := DialogueRunner.load_file("beacon19")
+	var errs := []
+	for id in d:
+		if not str(id).begins_with("_"):
+			errs.append_array(DialogueRunner.validate(d[id]))
+	check(errs.is_empty() and d.has("matthias") and d.has("norbert"), "第十九烽的对话都走得通、旗标都登记了（%s）" % str(errs.slice(0, 3)))
+	# 白天顺着盘山路走到烽燧：天擦黑了，主线推进到「找马蒂亚斯」
+	GameState.new_game(533)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	GameState.start_quest("ch2_main")
+	GameState.set_stage("ch2_main", "to_beacon19")
+	var main := await make_area("highland")
+	var p: FpController = main.player
+	var sp: Array = HighlandLayout.spawn_points().beacon
+	p.global_position = sp[0]
+	await physics(10)
+	await seconds(1.5)                                       # 换时段先淡出、换光、再淡入
+	check(GameState.quest_stage("ch2_main") == "meet_matthias" and GameState.daypart == "dusk" and main.daypart == "dusk",
+		"走到烽燧门前：天擦黑了（黄昏），主线推进到「找马蒂亚斯」（%s / %s / %s）" % [GameState.quest_stage("ch2_main"), GameState.daypart, main.daypart])
+	var w: Node3D = main.world
+	var ids := ["matthias", "norbert", "gate", "chopper", "sacks", "door"]
+	var names := []
+	for id in ids:
+		var n := w.get_node_or_null("Npc_" + id) as Npc
+		if n != null and Looks.has(n.display_name, n.name):
+			names.append(n.display_name)
+	check(names.size() == ids.size(), "营里的人都在、都有真人外观（%s）" % "、".join(names))
+	var nb := w.get_node("Npc_norbert") as Node3D
+	var mt := w.get_node("Npc_matthias") as Npc
+	check(absf(nb.global_position.y - (HighlandLayout.tower_base_y() + HighlandLayout.TOWER_H)) < 0.1 and Vector2(nb.global_position.x, nb.global_position.z).distance_to(HighlandLayout.TOWER[0]) < 2.0
+		and mt.dialogue_area == "beacon19" and mt.dialogue_id == "matthias", "诺伯特站在塔顶火盆边；马蒂亚斯在柴棚前，有对话")
+	var space := main.get_world_3d().direct_space_state
+	var floating := []
+	for id in ["matthias", "gate", "chopper", "sacks", "door"]:
+		var n := w.get_node("Npc_" + id) as Node3D
+		var q := PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1.0, 0), n.global_position + Vector3(0, -1.0, 0), 1)
+		var hit := space.intersect_ray(q)
+		if hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.25:
+			floating.append(id)
+	check(floating.is_empty(), "营里的人都站在地上（%s）" % str(floating))
+	check(w.find_children("*", "Pickup", true, false).filter(func(x): return x.item_id == "firewood").is_empty(), "堤道守住了：柴棚里没有要扛的那捆柴")
+	# 马蒂亚斯 → 诺伯特 → 「先过了今夜」
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	var greet := r.text()
+	pick(r, "只够三夜？")
+	pick(r, "那怎么办？")
+	check(greet.contains("三夜") and GameState.has_flag("heard_three_nights") and GameState.has_flag("heard_convoy") and r.text().contains("什么都没说"),
+		"马蒂亚斯：粮和柴只够三夜；压低声音提了一句明天的粮车，「我什么都没说」")
+	pick(r, "……我听见了。")
+	pick(r, "我找诺伯特烽长。")
+	check(GameState.quest_stage("ch2_main") == "see_norbert", "马蒂亚斯指路：诺伯特在塔顶看火（主线推进到「上塔顶找诺伯特」）")
+	r.start("beacon19", "norbert")
+	pick(r, "奥斯瑞克·瓦伦临终让我来找你。")
+	pick(r, "加冕礼上发生了什么？")
+	check(r.text().contains("先过了今夜") and GameState.quest_stage("ch2_main") == "first_night" and GameState.has_flag("norbert_met"),
+		"诺伯特不肯谈加冕礼：「先过了今夜。」（主线推进到「第一夜」）")
+	await free_main(main)
+	# 堤道失守：诺伯特先要一捆柴；柴棚里有那捆柴，扛上去才肯说话
+	GameState.new_game(534)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	GameState.set_flag("ch1_causeway", "lost")
+	GameState.set_flag("valen_heir", "alric")
+	GameState.start_quest("ch2_main")
+	GameState.set_stage("ch2_main", "see_norbert")
+	main = await make_area("highland")
+	var fw: Array = main.world.find_children("*", "Pickup", true, false).filter(func(x): return x.item_id == "firewood")
+	check(fw.size() == 1, "堤道失守：柴棚里放着一捆要扛的柴")
+	r.start("beacon19", "matthias")
+	check(r.text().contains("瓦伦家") or r.text().contains("黑鹭堡丢了"), "选了阿尔里克：马蒂亚斯冷淡（%s）" % r.text().left(24))
+	r.start("beacon19", "norbert")
+	check(r.text().contains("先从柴棚扛一捆") and not has_opt(r, "奥斯瑞克·瓦伦临终让我来找你。") and not has_opt(r, "（把那捆柴放到火盆边）"), "诺伯特先要一捆柴：没扛来之前不说话")
+	pick(r, "我这就去柴棚扛。")
+	check(GameState.quest_stage("ch2_main") == "carry_wood", "主线推进到「扛一捆柴上塔顶」")
+	var res: Dictionary = (fw[0] as Pickup).interact(main.player)
+	GameState.add_item(str(res.item))                       # 捡起来进背包（main 处理交互结果时做的事）
+	await frames(2)
+	r.start("beacon19", "norbert")
+	pick(r, "（把那捆柴放到火盆边）")
+	check(GameState.has_flag("ch2_wood_carried") and not GameState.has_item("firewood") and has_opt(r, "奥斯瑞克·瓦伦临终让我来找你。"), "扛来了：柴放到火盆边，他肯说话了（%s）" % str(res.get("kind", "")))
+	pick(r, "奥斯瑞克·瓦伦临终让我来找你。")
+	check(r.text().contains("堡丢了"), "堤道失守：他问奥斯瑞克是在堡里走的，还是堡丢了以后")
+	pick(r, "加冕礼上发生了什么？")
+	check(GameState.quest_stage("ch2_main") == "first_night", "照样「先过了今夜」")
+	await free_main(main)
 
 
 ## 测试用：选对话里文字是 label 的那个选项（没有就什么都不做，后面的检查会失败）
