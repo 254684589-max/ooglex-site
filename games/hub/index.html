@@ -46,10 +46,10 @@
     transition:transform .18s, border-color .18s; }
   .game:hover { transform:translateY(-4px); border-color:var(--ac); }
   .cover { height:150px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-  .cover .ico { font-size:4.6rem; filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)); z-index:2; }
   .cover::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
-  /* 整张竖版海报的卡（都会人生、工地搬砖、余烬陷落、铁冠之争；海报由所有者提供）：占满一行，手机上海报在上、完整显示，
-     宽屏上海报在左、文字在右。海报按自身比例显示（img 的 width / height 先占好位置），没载入时是深色底 */
+  /* 竖版海报按图片自身比例显示（img 的 width / height 先占好位置），没载入时是深色底。
+     .game.feature（都会人生、工地搬砖、余烬陷落、铁冠之争）占满一行：手机上海报在上，宽屏上海报在左、文字在右。
+     下面三张（GTA Vice City、红色警戒 2、暗黑破坏神）用同一套 .cv-poster，仍排在网格里。 */
   .game.feature { grid-column:1 / -1; }
   .cover.cv-poster { height:auto; display:block; background:#1b1c22; }
   .cover .cv-img { display:block; width:100%; height:auto; }
@@ -58,24 +58,6 @@
     .game.feature .cv-poster { flex:0 0 min(46%, 340px); align-self:flex-start; }
     .game.feature .body { align-self:center; padding:22px 26px; }
   }
-  /* GTA Vice City：迈阿密霓虹夕阳 */
-  .cv-gta { background:linear-gradient(180deg,#2a0a4a 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
-  .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
-    background-image:linear-gradient(90deg, rgba(0,0,0,.28) 8px, transparent 8px); background-size:26px 100%;
-    -webkit-mask-image:linear-gradient(180deg, transparent, #000 55%); mask-image:linear-gradient(180deg, transparent, #000 55%); }
-  /* 暗黑破坏神 IV：地狱火与圣休亚瑞 */
-  .cv-diablo { background:radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,#140708 68%,#070506 100%); }
-  .cv-diablo::before { content:""; position:absolute; inset:0; z-index:1;
-    background:
-      radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(229,92,42,.16) 29% 31%, transparent 32% 100%),
-      repeating-conic-gradient(from 0deg, rgba(255,120,52,.08) 0 7deg, transparent 7deg 30deg);
-    -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 0 48%, transparent 70%);
-    mask-image:radial-gradient(circle at 50% 50%, #000 0 48%, transparent 70%); }
-  /* 红色警戒 2：战火铁幕 */
-  .cv-ra { background:linear-gradient(180deg,#1a0505 0%,#5a1210 45%,#b2321e 80%,#e8a13a 100%); }
-  .cv-ra::before { content:""; position:absolute; left:0; right:0; bottom:0; height:40%; z-index:1;
-    background-image:linear-gradient(135deg, rgba(0,0,0,.3) 12px, transparent 12px); background-size:34px 100%;
-    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%); mask-image:linear-gradient(180deg, transparent, #000 60%); }
   .body { padding:15px 16px 17px; }
   .body h3 { font-size:1.12rem; font-weight:800; }
   .body p { color:var(--dim); font-size:0.84rem; margin-top:6px; line-height:1.55; }
@@ -88,9 +70,7 @@
 html[data-theme="ft"] .hero h1, html[data-theme="paper"] .hero h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
 html[data-theme="ft"] .game, html[data-theme="paper"] .game { box-shadow: 0 22px 54px -34px rgba(120,92,64,0.20); }
 html[data-theme="ft"] .cover::after, html[data-theme="paper"] .cover::after { background: linear-gradient(180deg, transparent 55%, var(--tint-2)); }
-html[data-theme="ft"] .cv-gta, html[data-theme="paper"] .cv-gta { background: linear-gradient(180deg,var(--panel2) 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
-html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: linear-gradient(180deg,var(--panel2) 0%,var(--panel2) 45%,#b2321e 80%,#e8a13a 100%); }
-html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { background: radial-gradient(circle at 50% 38%,#8b1d13 0%,#3a0b09 34%,var(--panel2) 72%); }
+html[data-theme="ft"] .cover.cv-poster, html[data-theme="paper"] .cover.cv-poster { background: var(--panel2); }
 /* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
@@ -136,7 +116,7 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
         </div>
       </a>
       <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
-        <div class="cover cv-gta"><span class="ico">🌆</span></div>
+        <div class="cover cv-poster"><img class="cv-img" src="img/gta-vice-city-poster.webp?v=d56509f2" alt="《GTA Vice City》海报：紫色夕阳下，蒙面的男女站在加油站前" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>GTA Vice City · 网页版</h3>
           <p>浏览器直接畅玩罪恶都市：无需下载安装，支持全屏与强制横屏模式，内置作弊菜单（游戏内按 F3 开启）。首次加载需耐心等待。</p>
@@ -144,7 +124,7 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
         </div>
       </a>
       <a class="game" href="../red-alert/" style="--ac:#e03a2a;--ac2:#ffb03a">
-        <div class="cover cv-ra"><span class="ico">🚩</span></div>
+        <div class="cover cv-poster"><img class="cv-img" src="img/red-alert-poster.webp?v=1e722f63" alt="《红色警戒 2》海报：红装女军官持枪，身后是金色飞艇" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>红色警戒 2 · 网页版</h3>
           <p>经典 RTS 浏览器在线玩：单人战役、遭遇战、多人联机、天梯排位，内置共和国之辉 MOD。无需下载安装，电脑体验最佳，手机建议横屏。</p>
@@ -152,7 +132,7 @@ html[data-theme="ft"] .cv-diablo, html[data-theme="paper"] .cv-diablo { backgrou
         </div>
       </a>
       <a class="game" href="../diablo/" style="--ac:#b33423;--ac2:#e66d32">
-        <div class="cover cv-diablo"><span class="ico">🔥</span></div>
+        <div class="cover cv-poster"><img class="cv-img" src="img/diablo-poster.webp?v=062e5227" alt="暗黑破坏神封面：黑底上发光的恶魔面孔与金色标题" width="748" height="1068" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>暗黑破坏神 IV · 官方入口</h3>
           <p>黑暗奇幻动作角色扮演游戏。Ooglex 提供游戏介绍与暴雪官方入口；正版游戏需通过 Battle.net 或支持的平台安装运行。</p>

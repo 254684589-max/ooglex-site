@@ -19,6 +19,8 @@
 
 ### 修改
 
+- 2026-10-25：游戏中心（`/games/hub/`）底部三张卡片换成竖版海报，版式与上方海报卡相同（`.cover.cv-poster` 加真实图片，不再用渐变和表情图标）。GTA Vice City 为 `games/hub/img/gta-vice-city-poster.webp`（800×1200）。原图是 1200×630 横图，取中间两名角色，并向上延续夕阳天空，收成与《都会人生》相同的 2:3。红色警戒 2 为 `games/hub/img/red-alert-poster.webp`（800×1200，由 600×900 放大）。暗黑破坏神卡片用所有者提供的《暗黑破坏神 III》封面 `games/hub/img/diablo-poster.webp`（748×1068）；卡片标题和链接仍是暗黑破坏神 IV 官方入口。三张卡片的标题、介绍、按钮和链接未改。未部署。
+
 - 2026-10-25：流光播放器八张专辑的名称改为英文。单曲专辑的曲名与专辑名相同：Black Gold Night、Guilin Drift、Dongping Homecoming、Xuzhuang Lane、Song City After Dark、Taian Power。演示专辑改为 Liuguang Sketches、Morning Pieces，里面的曲名仍是 Kevin MacLeod 原题。艺人「流光」和 Kevin MacLeod、音频路径、时长、演示标记都没改。《Taian Power》封面由泰安站照片换成深色青紫霓虹曲线，文件仍是 `apps/music-player/media/taian-power-rap/cover.jpg`。`catalog.json` 的 `updatedAt` 改为 `2026-10-25T16:24:34Z`。登记表和 APK 未改。未部署。
 
 - 2026-10-25：流光播放器（`/apps/music-player/`）改成播放页。去掉页顶「首页」「App 专区」「安装说明」。主画面是圆形唱片封面、曲名、艺人、进度（已播放 / 剩余）和播控（播放、上一首、下一首、循环、随机、音量、歌单）；专辑仍在下方点选。演示与 CC BY 4.0 署名收成一行可展开说明。不自动播放，曲目、清单和站长发行流程不变。未部署。
