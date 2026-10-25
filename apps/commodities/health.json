@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "commodities",
-  "generatedAt": "2026-10-24T21:29:17Z",
+  "generatedAt": "2026-10-25T22:00:28Z",
   "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-10-24T21:29:17Z",
-  "lastSuccessfulAt": "2026-10-24T21:29:17Z",
+  "lastAttemptAt": "2026-10-25T22:00:28Z",
+  "lastSuccessfulAt": "2026-10-25T22:00:28Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-10-24T21:29:17Z",
+  "publishedSnapshotAt": "2026-10-25T22:00:28Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -43,31 +43,31 @@
       "id": "fred-eia",
       "name": "FRED / U.S. EIA",
       "role": "primary",
-      "status": "healthy",
+      "status": "degraded",
       "records": 5,
       "counts": {
-        "market": 5,
-        "fallback": 0,
-        "estimate": 0,
-        "unknown": 0,
-        "unavailable": 0
-      },
-      "lastSuccessAt": "2026-10-24T21:29:17Z"
-    },
-    {
-      "id": "fred-imf",
-      "name": "FRED / IMF Primary Commodity Prices",
-      "role": "primary",
-      "status": "degraded",
-      "records": 31,
-      "counts": {
-        "market": 29,
+        "market": 3,
         "fallback": 2,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-10-24T21:29:17Z"
+      "lastSuccessAt": "2026-10-25T22:00:28Z"
+    },
+    {
+      "id": "fred-imf",
+      "name": "FRED / IMF Primary Commodity Prices",
+      "role": "primary",
+      "status": "healthy",
+      "records": 31,
+      "counts": {
+        "market": 31,
+        "fallback": 0,
+        "estimate": 0,
+        "unknown": 0,
+        "unavailable": 0
+      },
+      "lastSuccessAt": "2026-10-25T22:00:28Z"
     }
   ],
   "recovery": {
