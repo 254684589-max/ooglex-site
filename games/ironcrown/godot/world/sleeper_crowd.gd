@@ -31,7 +31,7 @@ const TRAMPLE_DAMAGE := 5
 const TRAMPLE_COLD := 12.0
 const LINEN := Color("b9b3a6")         # 睡衣：浅色的粗麻
 const SKIN := Color("c9a58c")
-const LINEN_TINT := Color(2.6, 3.1, 4.2)   # 真人模型：农夫衣服的贴图是深褐色，乘上去变成浅色的粗麻（各通道按贴图平均色算）
+const LINEN_TINT := Color(1.85, 2.2, 2.8)   # 真人模型：农夫衣服的贴图是深褐色，乘上去变成浅色的粗麻（各通道按贴图平均色算）
 
 var route: Array = []                  # [Vector2, ...]
 var width := 6.0                       # 一股多宽（米）
@@ -123,10 +123,16 @@ static func figure_mesh() -> ArrayMesh:
 	cloth.albedo_color = LINEN
 	cloth.vertex_color_use_as_albedo = true
 	cloth.roughness = 0.95
+	cloth.emission_enabled = true          # 跟近处的真人模型一样背光处有一点自发光（CharacterModel.GLOW），远近换的时候亮度对得上
+	cloth.emission = LINEN
+	cloth.emission_energy_multiplier = CharacterModel.GLOW
 	var skin := StandardMaterial3D.new()
 	skin.albedo_color = SKIN
 	skin.vertex_color_use_as_albedo = true
 	skin.roughness = 0.8
+	skin.emission_enabled = true
+	skin.emission = SKIN
+	skin.emission_energy_multiplier = CharacterModel.GLOW
 	var mi := kit.build({"cloth": cloth, "skin": skin})
 	var mesh := mi.mesh as ArrayMesh
 	mi.free()
