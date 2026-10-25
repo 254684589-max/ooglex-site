@@ -201,9 +201,12 @@ func _step(dt: float) -> void:
 				var out := off / d
 				var k := clampf((r + FIRE_MARGIN - d) / FIRE_MARGIN, 0.0, 1.0)
 				var side := Vector2(-out.y, out.x)
-				if side.dot(want) < 0.0:
+				var along := side.dot(want)
+				if absf(along) < 0.15:
+					along = float(a.lat) * signf(side.dot(Vector2(-want.y, want.x))) + 0.01   # 正对着火：按自己在队伍里偏左还是偏右分两边绕（不然往后退、堵在火前面）
+				if along < 0.0:
 					side = -side
-				steer += (out * 2.2 + side * 1.2) * k
+				steer += side * 2.0 * k + out * 1.4 * k * k              # 主要是顺着火边绕；贴得很近才往外推
 		var dir := want + push * 1.4 + steer
 		if dir.length() > 0.001:
 			dir = dir.normalized()

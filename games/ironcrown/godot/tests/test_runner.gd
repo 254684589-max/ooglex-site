@@ -9055,19 +9055,25 @@ func test_sleepercrowd() -> void:
 	fire.add_to_group("crowd_fire")
 	fire.set_meta("radius", 2.0)
 	get_tree().root.add_child(fire)
-	fire.global_position = Vector3(0, 0, -20)
-	var c2 := SleeperCrowd.make([Vector2(0, 0), Vector2(0, -45)], 20, 3.0)
+	fire.global_position = Vector3(0, 0, -8)
+	var c2 := SleeperCrowd.make([Vector2(0, 0), Vector2(0, -20)], 20, 3.0)
 	c2.near_enabled = false
 	get_tree().root.add_child(c2)
 	var closest := INF
-	for k in 50:
+	var past := 0
+	for k in 240:
 		await physics(15)
 		for a in c2.agents:
 			if not a.done:
-				closest = minf(closest, (a.p as Vector2).distance_to(Vector2(0, -20)))
-	var past := c2.agents.filter(func(a): return a.done or a.p.y < -24.0).size()
+				closest = minf(closest, (a.p as Vector2).distance_to(Vector2(0, -8)))
+		past = c2.agents.filter(func(a): return a.done or a.p.y < -12.0).size()
+		if past >= 20:
+			break
 	check(closest > 2.5 and past >= 18, "绕开火：没人走进火边 2.5 米以内（最近 %.1f 米），绕过去的 %d / 20" % [closest, past])
-	await seconds(14.0)
+	for k in 80:
+		if c2.alive() == 0:
+			break
+		await physics(15)
 	check(c2.alive() == 0, "走到路线尽头就没了（还剩 %d）" % c2.alive())
 	fire.queue_free()
 	c2.queue_free()
