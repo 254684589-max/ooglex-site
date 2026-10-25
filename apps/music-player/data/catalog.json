@@ -3,7 +3,7 @@
   "status": "ok",
   "demo": false,
   "frequency": "static",
-  "updatedAt": "2026-10-25T15:25:00Z",
+  "updatedAt": "2026-10-25T16:24:34Z",
   "asOf": "2026-10-25",
   "source": "Kevin MacLeod (incompetech.com)",
   "sourceUrl": "https://incompetech.com/music/royalty-free/music.html",
@@ -13,7 +13,7 @@
   "albums": [
     {
       "id": "heijinye",
-      "title": "黑金夜",
+      "title": "Black Gold Night",
       "artist": "流光",
       "cover": "/apps/music-player/media/heijinye/cover.jpg",
       "released": true,
@@ -23,7 +23,7 @@
       "tracks": [
         {
           "id": "heijinye",
-          "title": "黑金夜",
+          "title": "Black Gold Night",
           "artist": "流光",
           "src": "/apps/music-player/media/heijinye/heijinye.mp3",
           "durationSec": 152
@@ -32,7 +32,7 @@
     },
     {
       "id": "o-guilin",
-      "title": "哦，桂林",
+      "title": "Guilin Drift",
       "artist": "流光",
       "cover": "/apps/music-player/media/o-guilin/cover.jpg",
       "released": true,
@@ -42,7 +42,7 @@
       "tracks": [
         {
           "id": "o-guilin",
-          "title": "哦，桂林",
+          "title": "Guilin Drift",
           "artist": "流光",
           "src": "/apps/music-player/media/o-guilin/o-guilin.mp3",
           "durationSec": 267
@@ -51,7 +51,7 @@
     },
     {
       "id": "hometown-dongping",
-      "title": "家乡东平",
+      "title": "Dongping Homecoming",
       "artist": "流光",
       "cover": "/apps/music-player/media/hometown-dongping/cover.jpg",
       "released": true,
@@ -61,7 +61,7 @@
       "tracks": [
         {
           "id": "hometown-dongping",
-          "title": "家乡东平",
+          "title": "Dongping Homecoming",
           "artist": "流光",
           "src": "/apps/music-player/media/hometown-dongping/hometown-dongping.mp3",
           "durationSec": 273
@@ -70,7 +70,7 @@
     },
     {
       "id": "xuzhuang",
-      "title": "徐庄",
+      "title": "Xuzhuang Lane",
       "artist": "流光",
       "cover": "/apps/music-player/media/xuzhuang/cover.jpg",
       "released": true,
@@ -80,7 +80,7 @@
       "tracks": [
         {
           "id": "xuzhuang",
-          "title": "徐庄",
+          "title": "Xuzhuang Lane",
           "artist": "流光",
           "src": "/apps/music-player/media/xuzhuang/xuzhuang.mp3",
           "durationSec": 218
@@ -89,7 +89,7 @@
     },
     {
       "id": "dasong-buyecheng",
-      "title": "大宋不夜城",
+      "title": "Song City After Dark",
       "artist": "流光",
       "cover": "/apps/music-player/media/dasong-buyecheng/cover.jpg",
       "released": true,
@@ -99,7 +99,7 @@
       "tracks": [
         {
           "id": "dasong-buyecheng",
-          "title": "大宋不夜城",
+          "title": "Song City After Dark",
           "artist": "流光",
           "src": "/apps/music-player/media/dasong-buyecheng/dasong-buyecheng.mp3",
           "durationSec": 250
@@ -108,7 +108,7 @@
     },
     {
       "id": "taian-power-rap",
-      "title": "泰安，泰安 (Power Rap版)",
+      "title": "Taian Power",
       "artist": "流光",
       "cover": "/apps/music-player/media/taian-power-rap/cover.jpg",
       "released": true,
@@ -118,7 +118,7 @@
       "tracks": [
         {
           "id": "taian-power-rap",
-          "title": "泰安，泰安 (Power Rap版)",
+          "title": "Taian Power",
           "artist": "流光",
           "src": "/apps/music-player/media/taian-power-rap/taian-power-rap.mp3",
           "durationSec": 175
@@ -127,7 +127,7 @@
     },
     {
       "id": "aurora-sketches",
-      "title": "流光速写",
+      "title": "Liuguang Sketches",
       "artist": "Kevin MacLeod",
       "cover": "/apps/music-player/media/aurora-sketches/cover.svg",
       "released": true,
@@ -165,7 +165,7 @@
     },
     {
       "id": "morning-pieces",
-      "title": "晨间小品",
+      "title": "Morning Pieces",
       "artist": "Kevin MacLeod",
       "cover": "/apps/music-player/media/morning-pieces/cover.svg",
       "released": true,
