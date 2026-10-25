@@ -18,7 +18,7 @@ Ooglex 新创意点子做成的 App 都放在这里。
 | `tv` | 环球TV | 网页 App（PWA） | `/apps/app-zone/tv/` |
 | `ai-chat` | 万象智聊 | 网页 App（PWA） | `/apps/app-zone/ai-chat/` |
 | `global-cams` | 环球实景 | 安卓 APK（调试版）+ 网页版 | `/apps/global-cams/download/`（旧说明页 `/apps/app-zone/global-cams/` 仍可打开，主按钮下载同一 APK） |
-| `music-player` | 流光播放器 | 网页 | `/apps/music-player/`（说明页 `/apps/app-zone/music-player/`） |
+| `music-player` | 流光播放器 | 安卓 APK（调试版）+ 网页版 | `/apps/music-player/download/`（说明页 `/apps/app-zone/music-player/` 仍可打开，主按钮下载同一 APK） |
 
 ## 新增一个 App
 
