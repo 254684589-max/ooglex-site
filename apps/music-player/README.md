@@ -36,7 +36,7 @@
 }
 ```
 
-封面和音频放在 `media/<专辑编号>/`。`released: false` 的专辑不会出现在访客页。
+封面和音频放在 `media/<专辑编号>/`，并写进 `data/catalog.json`。原创完整曲同样走这条路径（例如《黑金夜》，`demo: false`）。`released: false` 的专辑不会出现在访客页。
 
 ## 管理口令
 

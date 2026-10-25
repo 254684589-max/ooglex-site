@@ -1,9 +1,9 @@
 {
   "version": 1,
   "status": "ok",
-  "demo": true,
+  "demo": false,
   "frequency": "static",
-  "updatedAt": "2026-10-25T00:55:00Z",
+  "updatedAt": "2026-10-25T13:55:07Z",
   "asOf": "2026-10-25",
   "source": "Kevin MacLeod (incompetech.com)",
   "sourceUrl": "https://incompetech.com/music/royalty-free/music.html",
@@ -11,6 +11,25 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
   "note": "演示 / 免版税样例。预置专辑是 Kevin MacLeod（incompetech.com）的原曲短样，许可 CC BY 4.0（免版税，使用须署名），已各截取约 28 秒，不是完整原曲，也不是付费曲库。站长另行发行的专辑只应放入自创或已获授权的内容。",
   "albums": [
+    {
+      "id": "heijinye",
+      "title": "黑金夜",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/heijinye/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": false,
+      "note": "Black soul + rap 融合原创完整曲，中文人声",
+      "tracks": [
+        {
+          "id": "heijinye",
+          "title": "黑金夜",
+          "artist": "流光",
+          "src": "/apps/music-player/media/heijinye/heijinye.mp3",
+          "durationSec": 152
+        }
+      ]
+    },
     {
       "id": "aurora-sketches",
       "title": "流光速写",
