@@ -254,7 +254,7 @@ func _ready() -> void:
 		if area == "highland":
 			add_child(SnowTracks.make(player))   # 雪地上的脚印（5.3a）
 		if area == "highland" and _query("tide").is_valid_int():
-			var crowd := SleeperCrowd.make(HighlandLayout.TIDE_ROUTE.slice(2), clampi(int(_query("tide")), 1, 120))   # 截图、试长眠者群用（5.4a）：?tide=人数，从山坡那段开始走
+			var crowd := SleeperCrowd.make(HighlandLayout.TIDE_ROUTE.slice(3), clampi(int(_query("tide")), 1, 120))   # 截图、试长眠者群用（5.4a）：?tide=人数，从山脊那段开始走
 			crowd.height_fn = Highland.height_at
 			crowd.player = player
 			crowd.obstacles = [[HighlandLayout.BEACON19, HighlandLayout.PALISADE_R + 0.6], [HighlandLayout.TOWER[0], HighlandLayout.TOWER_W]]

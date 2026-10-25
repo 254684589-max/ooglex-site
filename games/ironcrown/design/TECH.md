@@ -750,7 +750,7 @@ godot/
   - 走过路线最后一点就 `done`（不画、不算人数），全走完发 `finished`。
 - **画法**：所有人一个 `MultiMesh`（`CrowdFar`，简化人形，麻衣颜色略有不同）；离主角 `NEAR_DIST` 米以内最近的最多 `NEAR_MAX` = 8 个换成真人模型（`CharacterModel`，平民男女预设、麻衣、走路动作慢放 0.62），对应的多实例那份藏起来。
 - **主角被推倒**（`player/fp_controller.gd`）：`knock_down(sec, dir)` / `knocked()`；倒着的时候不能动、视线压低 `EYE_DOWN` 0.35 米，推的速度慢慢衰减。
-- **潮水路线**：`HighlandLayout.TIDE_ROUTE`（南边山谷 → 山脊 → 第十九烽东边 → 往北），视角 18「潮水上山脊」。调试 `?tide=N`：从第三个点起放 N 个人，高度用 `Highland.height_at`。5.4c 第一夜接进剧情。
+- **潮水路线**：`HighlandLayout.TIDE_ROUTE`（南边山谷 → 山脊 → 第十九烽东边 → 往北），视角 18「潮水上山脊」（站在山脊上往南看）。调试 `?tide=N`：从第四个点（山脊那段）起放 N 个人，高度用 `Highland.height_at`。5.4c 第一夜接进剧情。
 - **测试**：`sleepercrowd` 组 7 项（跟路线走、互相让开、人越多越快、绕开火且照样走到头、走到尽头就没了、挡路被推倒踩过、近处最多 8 个真人模型、30 个人一步的逻辑时间）。
 
 ## 五、画质分档
