@@ -71,8 +71,9 @@ const AREA_PRESETS := {
 			"fog_height": 26.0, "fog_height_density": 0.06, "sun": Color("e2b4a0"), "sun_energy": 0.6, "contrast": 1.1},
 		## 夜：雪地在月光下是亮的（2026-10-24 所有者截图「为什么那么黑」：原来环境光 0.26、月光 0.32、雾近黑，村里只看得见几扇窗）——
 		## 月光、环境光调亮、偏冷蓝，雾和天边亮一档；人造光仍然是暖的、更亮（窗、火盆），夜里照样比白天暗得多
-		"night": {"sky": Color("2b3b52"), "horizon": Color("3c4f6b"), "ambient": Color("7f9cc4"), "ambient_energy": 0.62, "fog_begin": 6.0, "fog_end": 115.0, "fog_curve": 1.1,
-			"fog_height": 26.0, "fog_height_density": 0.07, "sun": Color("a9c2e6"), "sun_energy": 0.6, "sun_rot": Vector3(-34, 150, 0)},
+		## 谷底的高度雾夜里减淡、雾色亮一档（所有者截图：村子在谷底、雾高 26 米以下，暗蓝的雾一盖整片发灰发糊，山脊上的第十九烽在雾上面反倒清楚）
+		"night": {"sky": Color("3a4c66"), "horizon": Color("4a5e7c"), "ambient": Color("7f9cc4"), "ambient_energy": 0.62, "fog_begin": 8.0, "fog_end": 130.0, "fog_curve": 1.1,
+			"fog_height": 26.0, "fog_height_density": 0.02, "sun": Color("a9c2e6"), "sun_energy": 0.6, "sun_rot": Vector3(-34, 150, 0)},
 	},
 }
 
