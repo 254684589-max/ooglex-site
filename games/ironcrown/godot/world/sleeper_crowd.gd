@@ -125,7 +125,7 @@ static func figure_mesh() -> ArrayMesh:
 	cloth.roughness = 0.95
 	cloth.emission_enabled = true          # 跟近处的真人模型一样背光处有一点自发光（CharacterModel.GLOW），远近换的时候亮度对得上
 	cloth.emission = LINEN
-	cloth.emission_energy_multiplier = CharacterModel.GLOW
+	cloth.emission_energy_multiplier = CharacterModel.GLOW * 2.0   # 近处那份是贴图 × 两倍多的 tint 再发光，这边没贴图，乘 2 才对得上
 	var skin := StandardMaterial3D.new()
 	skin.albedo_color = SKIN
 	skin.vertex_color_use_as_albedo = true
