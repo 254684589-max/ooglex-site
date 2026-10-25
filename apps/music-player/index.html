@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ooglex-native-preview="true">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>流光播放器 · Ooglex</title>
+<meta name="description" content="Ooglex 流光播放器：按专辑收听。预置曲目是 Kevin MacLeod 的 CC BY 4.0 免版税短样，不是付费曲库。">
+<link rel="canonical" href="https://www.ooglex.com/apps/music-player/">
+<link rel="icon" type="image/svg+xml" href="/apps/music-player/icons/icon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="流光播放器 · Ooglex">
+<meta property="og:description" content="网页音乐播放器。预置专辑为免版税样例（CC BY 4.0），需署名。">
+<meta property="og:url" content="https://www.ooglex.com/apps/music-player/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#07090f">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261025b">
+<script>
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
+</script>
+<script src="/assets/theme.js?v=20260926k" defer></script>
+<script src="/apps/music-player/js/store.js?v=20261025b" defer></script>
+<script src="/apps/music-player/js/player.js?v=20261025b" defer></script>
+</head>
+<body>
+  <div class="rule"></div>
+  <main class="shell">
+    <div class="top-actions" data-theme-slot>
+      <a class="chip" href="/">← 首页</a>
+      <a class="chip" href="/apps/app-zone/">App 专区</a>
+      <a class="chip" href="/apps/app-zone/music-player/">安装说明</a>
+    </div>
+    <header class="hero">
+      <p class="kicker">OOGLEX MUSIC</p>
+      <h1>流光播放器</h1>
+      <p class="lede">按专辑听。先选一张专辑，再点曲目。播放、暂停、上下一首、拖动进度和音量都在底部。</p>
+    </header>
+    <aside class="demo-banner" role="note">
+      <strong>演示 / 免版税样例</strong>
+      <span>预置的《流光速写》《晨间小品》是 Kevin MacLeod（<a href="https://incompetech.com/music/royalty-free/music.html" target="_blank" rel="noopener noreferrer">incompetech.com</a>）的原曲短样，许可 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>（免版税，使用须署名），每首约 28 秒，不是完整原曲，也不是付费曲库。站长另行发行的专辑只应放入自创或已获授权的内容。</span>
+    </aside>
+    <div id="view" aria-live="polite">
+      <p class="empty">正在读取专辑…</p>
+    </div>
+    <footer class="foot">
+      <p>Music: “Mesmerizing Galaxy”, “Lord of the Rangs”, “Sergio's Magic Dustbin”, “Morning”, “Pleasant Porridge” by Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0. 本页样例已裁短。</p>
+      <p><a href="/apps/music-player/admin/">站长发行</a> · 不自动播放，等你点了再出声。</p>
+    </footer>
+  </main>
+  <p id="live" class="sr" aria-live="polite"></p>
+  <footer class="dock" aria-label="播放控制">
+    <p id="notice" hidden></p>
+    <div id="queue-pop" class="queue-pop" hidden></div>
+    <div class="dock-main">
+      <div class="now">
+        <div id="now-art"></div>
+        <div class="now-copy">
+          <p id="now-title">尚未选择曲目</p>
+          <p id="now-artist">从专辑里点一首</p>
+        </div>
+      </div>
+      <div class="transport">
+        <button type="button" id="prev" aria-label="上一首"></button>
+        <button type="button" id="play" aria-label="播放" aria-pressed="false"></button>
+        <button type="button" id="next" aria-label="下一首"></button>
+        <button type="button" id="queue-btn" aria-label="歌单" aria-expanded="false" aria-controls="queue-pop">歌单</button>
+      </div>
+      <div class="volume-wrap">
+        <button type="button" id="mute" aria-label="静音" aria-pressed="false"></button>
+        <input id="volume" type="range" min="0" max="100" value="90" step="1" aria-label="音量">
+      </div>
+      <div class="seek-row">
+        <span id="time-now" class="time">0:00</span>
+        <input id="seek" type="range" min="0" max="0" value="0" step="0.1" aria-label="播放进度" disabled>
+        <span id="time-end" class="time">0:00</span>
+      </div>
+    </div>
+    <p class="hint">空格播放或暂停，左右方向键进退 5 秒。进度条可以按住拖动。</p>
+  </footer>
+  <audio id="audio" preload="metadata"></audio>
+  <noscript><p class="empty">需要开启 JavaScript 才能播放。</p></noscript>
+</body>
+</html>

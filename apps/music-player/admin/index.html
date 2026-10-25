@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ooglex-password-gate="music-player">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>流光播放器 · 站长发行</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/apps/music-player/icons/icon.svg">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<link rel="stylesheet" href="/apps/music-player/css/admin.css?v=20261025b">
+<script>
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
+</script>
+<script src="/assets/theme.js?v=20260926k" defer></script>
+<script src="/apps/music-player/js/gate.js?v=20261025b" defer></script>
+<script src="/apps/music-player/js/store.js?v=20261025b" defer></script>
+<script src="/apps/music-player/js/publish.js?v=20261025b" defer></script>
+<script src="/apps/music-player/js/admin.js?v=20261025b" defer></script>
+</head>
+<body>
+  <div class="rule"></div>
+  <div id="gate">
+    <div class="gbox">
+      <h2>站长发行</h2>
+      <p class="help">上传自创或已获授权的曲目，整理成专辑后发行。请输入管理口令。口令只是这扇轻量门，不是账号系统。</p>
+      <input id="gpass" type="password" placeholder="管理口令" autocomplete="off" maxlength="40" aria-label="管理口令">
+      <button type="button" class="btn primary" id="gbtn">进入</button>
+      <p id="gerr" role="status"></p>
+    </div>
+  </div>
+  <main class="shell" id="app" hidden>
+    <div class="top-actions" data-theme-slot>
+      <a class="chip" href="/apps/music-player/">← 播放器</a>
+      <a class="chip" href="/apps/app-zone/">App 专区</a>
+      <button type="button" class="btn ghost" id="lock">退出管理</button>
+    </div>
+    <h1>专辑发行</h1>
+    <p class="lede">访客播放已发布的专辑。这里的修改先留在这台浏览器：清单进 localStorage，音频和封面进 IndexedDB。发行时再用你自己的 GitHub 细粒度令牌，把新媒体和 catalog.json 提交到指定分支。令牌只放本次会话，不写入仓库。</p>
+    <p id="status" class="status" role="status">正在读取清单…</p>
+
+    <section class="panel" aria-labelledby="pub-title">
+      <h2 id="pub-title">发布</h2>
+      <label>整站说明（会写进 catalog.json，预置样例的署名请留着）
+        <textarea id="catalog-note"></textarea>
+      </label>
+      <div class="grid">
+        <label>GitHub 用户或组织
+          <input id="owner" type="text" value="254684589-max" autocomplete="off">
+        </label>
+        <label>仓库
+          <input id="repo" type="text" value="ooglex-site" autocomplete="off">
+        </label>
+        <label>分支（不要填 main，除非你确认）
+          <input id="branch" type="text" placeholder="cursor/music-player-1a37" autocomplete="off">
+        </label>
+        <label>细粒度令牌（Contents 读写，只留在本次会话）
+          <input id="pat" type="password" autocomplete="off" spellcheck="false" aria-label="GitHub 令牌">
+        </label>
+      </div>
+      <label class="check"><input id="allow-main" type="checkbox"> 我确认写入 main 或 master。这可能触发生产部署，默认不要勾。</label>
+      <div class="actions">
+        <button type="button" class="btn" id="remember">记住令牌到本次会话</button>
+        <button type="button" class="btn" id="forget">清除令牌</button>
+        <button type="button" class="btn" id="preview">本机预览</button>
+        <button type="button" class="btn" id="export">导出待发布包</button>
+        <button type="button" class="btn primary" id="publish">发行到 GitHub</button>
+        <button type="button" class="btn warn" id="discard">放弃本机草稿</button>
+      </div>
+      <p class="help">没有令牌时用「导出待发布包」：zip 里是更新后的 catalog.json、要放进仓库的新媒体，以及 PUBLISH.txt。解压到仓库根目录再提交。未勾选「对访客发行」的专辑不会进包，也不会进 GitHub。</p>
+    </section>
+
+    <div class="split">
+      <aside id="list" aria-label="专辑列表"></aside>
+      <section id="editor" aria-live="polite"></section>
+    </div>
+  </main>
+</body>
+</html>
