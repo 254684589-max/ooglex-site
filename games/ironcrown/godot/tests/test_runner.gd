@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9019,6 +9019,89 @@ func test_beaconpeople() -> void:
 	check(r.text().contains("堡丢了"), "堤道失守：他问奥斯瑞克是在堡里走的，还是堡丢了以后")
 	pick(r, "加冕礼上发生了什么？")
 	check(GameState.quest_stage("ch2_main") == "first_night", "照样「先过了今夜」")
+	await free_main(main)
+
+
+## 5.4a 长眠者群：跟着路线走、互相让开、人越多越快、绕开火、推倒踩过挡路的人、走完就没了
+func test_sleepercrowd() -> void:
+	var route := [Vector2(0, 0), Vector2(0, -40), Vector2(10, -70)]
+	var c := SleeperCrowd.make(route, 24, 5.0)
+	c.near_enabled = false
+	get_tree().root.add_child(c)
+	await physics(2)
+	var z0 := 0.0
+	for a in c.agents:
+		z0 += a.p.y
+	await seconds(4.0)
+	var z1 := 0.0
+	var min_d := INF
+	for a in c.agents:
+		z1 += a.p.y
+	for i in c.agents.size():
+		for j in range(i + 1, c.agents.size()):
+			min_d = minf(min_d, (c.agents[i].p as Vector2).distance_to(c.agents[j].p))
+	var moved := (z0 - z1) / c.agents.size()
+	check(moved > 2.0 and moved < 6.0 and min_d > 0.45, "跟着路线往前走（4 秒平均走了 %.1f 米）、互相让开（最近的两个人隔 %.2f 米）" % [moved, min_d])
+	var small := SleeperCrowd.make(route, 8)
+	var big := SleeperCrowd.make(route, 60)
+	small.agents = range(8).map(func(_i): return {"done": false})
+	big.agents = range(60).map(func(_i): return {"done": false})
+	check(big.current_speed() > small.current_speed() * 1.25 and big.current_speed() <= small.speed_base * 1.46, "人越多走得越快（8 人 %.2f、60 人 %.2f 米每秒）" % [small.current_speed(), big.current_speed()])
+	small.free()
+	big.free()
+	c.queue_free()
+	# 火：路线正中间一团火（半径 2 米，算火边 4 米），它们顺着火边绕过去、照样往前走
+	var fire := Node3D.new()
+	fire.add_to_group("crowd_fire")
+	fire.set_meta("radius", 2.0)
+	get_tree().root.add_child(fire)
+	fire.global_position = Vector3(0, 0, -20)
+	var c2 := SleeperCrowd.make([Vector2(0, 0), Vector2(0, -45)], 20, 3.0)
+	c2.near_enabled = false
+	get_tree().root.add_child(c2)
+	var closest := INF
+	for k in 50:
+		await physics(15)
+		for a in c2.agents:
+			if not a.done:
+				closest = minf(closest, (a.p as Vector2).distance_to(Vector2(0, -20)))
+	var past := c2.agents.filter(func(a): return a.done or a.p.y < -24.0).size()
+	check(closest > 2.5 and past >= 18, "绕开火：没人走进火边 2.5 米以内（最近 %.1f 米），绕过去的 %d / 20" % [closest, past])
+	await seconds(14.0)
+	check(c2.alive() == 0, "走到路线尽头就没了（还剩 %d）" % c2.alive())
+	fire.queue_free()
+	c2.queue_free()
+	# 挡在前面的主角：推倒、踩过（掉血、变冷）；它们杀不死、照样往前走
+	GameState.new_game(541)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	var main := await make_area("highland")
+	var p: FpController = main.player
+	var y := Highland.height_at(-6.0, -28.0)
+	p.global_position = Vector3(-6.0, y + 0.1, -28.0)
+	await physics(10)
+	var hp: int = p.melee.health
+	var cold0 := GameState.cold
+	var c3 := SleeperCrowd.make([Vector2(-14.0, -12.0), Vector2(-6.0, -28.0), Vector2(5.0, -54.0)], 30, 3.0)
+	c3.height_fn = Highland.height_at
+	c3.player = p
+	c3.spawn_gap = 0.4
+	main.world.add_child(c3)
+	var was_down := false
+	for k in 200:
+		await physics(10)
+		was_down = was_down or p.knocked()
+		if c3.tramples() >= 2:
+			break
+	check(was_down and c3.tramples() >= 1 and p.melee.health < hp and GameState.cold > cold0, "挡在路上：被推倒、踩过（踩了 %d 下，生命 %d → %d，寒冷 %.0f → %.0f）" % [c3.tramples(), hp, p.melee.health, cold0, GameState.cold])
+	var near := c3.get_children().filter(func(n): return n is CharacterModel and n.visible).size()
+	check(c3.models.size() <= SleeperCrowd.NEAR_MAX and near <= SleeperCrowd.NEAR_MAX and c3.mm.multimesh.instance_count == 30,
+		"近处 %d 个画真人模型（最多 %d 个），其余一个多实例画完" % [near, SleeperCrowd.NEAR_MAX])
+	var t0 := Time.get_ticks_usec()
+	for k in 20:
+		c3._step(SleeperCrowd.TICK)
+	var ms := float(Time.get_ticks_usec() - t0) / 1000.0 / 20.0
+	check(ms < 3.0, "30 个人一步的逻辑 %.2f 毫秒（每 0.05 秒一步）" % ms)
 	await free_main(main)
 
 

@@ -50,6 +50,9 @@ var bob_time := 0.0
 var surface := ""                   # 脚下的地面（Surface.KINDS；"" = 普通地面，4.4）
 var surface_left := 0.0
 var last_safe := Vector3.INF        # 最近一次站稳的位置（INF = 还没站稳过）
+var knocked_left := 0.0             # 被推倒在地上还要躺多久（5.4a 长眠者群：挡在前面的人被推倒）；躺着不能走、镜头贴着地
+var shove := Vector3.ZERO           # 被推倒那一下往哪边滑（很快减掉）
+const EYE_DOWN := 0.35
 var safe_left := 0.0
 
 signal surface_changed(id: String)  # 踩进 / 走出泥潭（main 写 HUD、弹教学提示）
@@ -154,6 +157,16 @@ func yaw_deg() -> float:
 	return rad_to_deg(rotation.y)
 
 
+## 被推倒（5.4a）：躺 sec 秒，身子往 dir 滑一下；镜头贴到地上再慢慢起来
+func knock_down(sec: float, dir := Vector3.ZERO) -> void:
+	knocked_left = maxf(knocked_left, sec)
+	shove = Vector3(dir.x, 0.0, dir.z).normalized() * 2.2 if dir != Vector3.ZERO else Vector3.ZERO
+
+
+func knocked() -> bool:
+	return knocked_left > 0.0
+
+
 func toggle_crouch() -> void:
 	crouch_wanted = not crouch_wanted
 
@@ -186,6 +199,9 @@ func _physics_process(delta: float) -> void:
 		toggle_crouch()
 	_update_crouch()
 	var input := move_input()
+	if knocked_left > 0.0:
+		knocked_left = maxf(knocked_left - delta, 0.0)
+		input = Vector2.ZERO                                    # 倒在地上：走不了，等爬起来
 	var dir := global_transform.basis * Vector3(input.x, 0.0, input.y)
 	dir.y = 0.0
 	dir = dir.normalized() * minf(input.length(), 1.0)
@@ -195,6 +211,10 @@ func _physics_process(delta: float) -> void:
 	var h := Vector2(velocity.x, velocity.z).move_toward(Vector2(target.x, target.z), accel * delta)
 	velocity.x = h.x
 	velocity.z = h.y
+	if shove != Vector3.ZERO:
+		velocity.x = shove.x
+		velocity.z = shove.z
+		shove = shove.move_toward(Vector3.ZERO, 6.0 * delta)
 	var forced := melee.forced_velocity() if melee else Vector3.ZERO      # 闪避、冲刺突刺带着身体走（A.1b）
 	if forced != Vector3.ZERO:
 		velocity.x = forced.x
@@ -291,7 +311,9 @@ func can_stand() -> bool:
 
 func _update_head(delta: float) -> void:
 	var eye := EYE_CROUCH if crouching else EYE_STAND
-	head.position.y = move_toward(head.position.y, eye, 4.0 * delta)
+	if knocked_left > 0.0:
+		eye = EYE_DOWN
+	head.position.y = move_toward(head.position.y, eye, (9.0 if knocked_left > 0.0 else 4.0) * delta)
 	if third_person and not dialogue_view:
 		_update_third_person(delta)
 		return
