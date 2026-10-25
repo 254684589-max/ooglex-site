@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "status": "ok",
+  "demo": true,
+  "frequency": "static",
+  "updatedAt": "2026-10-25T00:55:00Z",
+  "asOf": "2026-10-25",
+  "source": "Kevin MacLeod (incompetech.com)",
+  "sourceUrl": "https://incompetech.com/music/royalty-free/music.html",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "note": "演示 / 免版税样例。预置专辑是 Kevin MacLeod（incompetech.com）的原曲短样，许可 CC BY 4.0（免版税，使用须署名），已各截取约 28 秒，不是完整原曲，也不是付费曲库。站长另行发行的专辑只应放入自创或已获授权的内容。",
+  "albums": [
+    {
+      "id": "aurora-sketches",
+      "title": "流光速写",
+      "artist": "Kevin MacLeod",
+      "cover": "/apps/music-player/media/aurora-sketches/cover.svg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": true,
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "note": "演示 / 免版税样例。曲名保留原题。为站内演示各截取约 28 秒。",
+      "tracks": [
+        {
+          "id": "mesmerizing-galaxy",
+          "title": "Mesmerizing Galaxy",
+          "artist": "Kevin MacLeod",
+          "src": "/apps/music-player/media/aurora-sketches/track-01.mp3",
+          "durationSec": 28,
+          "isrc": "USUAN2300011"
+        },
+        {
+          "id": "lord-of-the-rangs",
+          "title": "Lord of the Rangs",
+          "artist": "Kevin MacLeod",
+          "src": "/apps/music-player/media/aurora-sketches/track-02.mp3",
+          "durationSec": 28,
+          "isrc": "USUAN2300010"
+        },
+        {
+          "id": "sergios-magic-dustbin",
+          "title": "Sergio's Magic Dustbin",
+          "artist": "Kevin MacLeod",
+          "src": "/apps/music-player/media/aurora-sketches/track-03.mp3",
+          "durationSec": 28,
+          "isrc": "USUAN2300012"
+        }
+      ]
+    },
+    {
+      "id": "morning-pieces",
+      "title": "晨间小品",
+      "artist": "Kevin MacLeod",
+      "cover": "/apps/music-player/media/morning-pieces/cover.svg",
+      "released": true,
+      "releasedAt": "2026-10-25",
+      "demo": true,
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "note": "演示 / 免版税样例。曲名保留原题。为站内演示各截取约 28 秒。",
+      "tracks": [
+        {
+          "id": "morning",
+          "title": "Morning",
+          "artist": "Kevin MacLeod",
+          "src": "/apps/music-player/media/morning-pieces/track-01.mp3",
+          "durationSec": 28,
+          "isrc": "USUAN2300003"
+        },
+        {
+          "id": "pleasant-porridge",
+          "title": "Pleasant Porridge",
+          "artist": "Kevin MacLeod",
+          "src": "/apps/music-player/media/morning-pieces/track-02.mp3",
+          "durationSec": 28,
+          "isrc": "USUAN2100004"
+        }
+      ]
+    }
+  ]
+}
