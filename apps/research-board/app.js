@@ -206,7 +206,7 @@
       });
       sec.appendChild(ol);
     }
-    sec.appendChild(el("h3", "", text(wsj.flagsHeading) || "监测红旗（演示）"));
+    sec.appendChild(el("h3", "", text(wsj.flagsHeading) || "监测红旗"));
     var flags = Array.isArray(wsj.flags) ? wsj.flags : [];
     if (!flags.length) {
       sec.appendChild(el("p", "empty-reason", "监测红旗未提供。"));
@@ -267,10 +267,12 @@
 
   function render(data) {
     if (!data || typeof data !== "object" || !data.brief || !data.radar || !data.wsj || !data.s2) {
-      showFailure("演示包格式不完整，已停止展示，避免用空表冒充本期内容。");
+      showFailure("数据格式不完整，已停止展示，避免用空表冒充本期内容。");
       return;
     }
 
+    var isDemo = data.demo === true;
+    var fullySynced = data.demo === false;
     var zone = text(data.asOfZone);
     var zoneSuffix = zone ? " " + zone : "";
     dateline.textContent = "来源：" + (text(data.source) || "未标注")
@@ -278,12 +280,16 @@
       + " · 更新时间：" + (text(data.updatedAt) || "未标注") + zoneSuffix + "（未提供钟点）"
       + " · 频率：" + (FREQUENCY[data.frequency] || text(data.frequency) || "未标注")
       + " · 状态：" + (STATUS[text(data.status)] || text(data.status) || "未标注")
-      + " · 演示数据";
+      + (isDemo ? " · 演示数据" : "");
+
+    var demoFlag = document.getElementById("demo-flag");
+    if (demoFlag) demoFlag.hidden = !isDemo;
 
     clear(edition);
     var synced = briefRadarSynced(data);
     addChip("编号", "投研汇总");
-    addChip(synced ? "同步" : "演示", synced ? "Brief/雷达已同步" : "是");
+    if (fullySynced) addChip("同步", "Brief／雷达／WSJ／S2 已同步");
+    else addChip(synced ? "同步" : "演示", synced ? "Brief/雷达已同步" : "是");
     var token = briefToken(data.brief && data.brief.header);
     if (token) addChip("Brief", token);
     var selected = data.radar && data.radar.selected;
@@ -301,18 +307,20 @@
     if (text(data.note)) board.appendChild(el("p", "note pack-note", text(data.note)));
 
     var messages = [];
-    if (data.demo !== true) messages.push("数据文件未标记为演示数据。");
+    if (data.demo !== true && data.demo !== false) messages.push("数据文件未标记为演示数据。");
     if (text(data.status) === "error") messages.push("来源状态为失败。");
-    else if (text(data.status) === "stale") messages.push("这份演示包已过期。");
+    else if (text(data.status) === "stale") messages.push(isDemo ? "这份演示包已过期。" : "这份数据已过期。");
     else if (text(data.status) === "partial") messages.push("数据状态为部分缺失。");
     if (messages.length) {
       var warn = el("p", "banner partial", messages.join(" "));
       board.insertBefore(warn, board.firstChild);
     }
 
-    banner.textContent = synced
-      ? "投研汇总 · Brief/雷达已同步当日 · WSJ/S2 仍为演示 · 非正式产品"
-      : "临时演示 · 非正式产品";
+    banner.textContent = fullySynced
+      ? "投研汇总 · Brief／雷达／WSJ／S2 已同步"
+      : (synced
+        ? "投研汇总 · Brief/雷达已同步当日 · WSJ/S2 仍为演示 · 非正式产品"
+        : "临时演示 · 非正式产品");
 
     clear(foot);
     var lines = Array.isArray(data.footer) && data.footer.length

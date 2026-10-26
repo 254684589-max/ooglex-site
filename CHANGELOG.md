@@ -13,9 +13,13 @@
 
 ### 修改
 
+- 2026-10-26：每日投研（`/apps/research-board/`）页顶改为「投研汇总 · Brief／雷达／WSJ／S2 已同步」。整包 `demo` 为 false 时不再显示「演示数据」，状态芯片改为「Brief／雷达／WSJ／S2 已同步」，也不再提示「数据文件未标记为演示数据」。`demo: true` 且仅 Brief／雷达对齐时，仍保留「WSJ/S2 仍为演示」。未改 `apps/research-board/rates/`，也未改 news-brief、news-radar、whats-latest 的 `data.json`。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 - 2026-10-26：每日投研（`/apps/research-board/`）与当日早更对齐。页顶改为「投研汇总 · Brief/雷达已同步当日 · WSJ/S2 仍为演示 · 非正式产品」。Brief 芯片从 `brief.header` 开头读取期号（本期 Brief-05），不再写死 Brief-03。雷达芯片在 `radar.selected` 为数字时用该值（本期 0），二级存档仍不计入 N。编号芯片改为「投研汇总」；Brief 与雷达已和数据日期对齐时，状态芯片显示「Brief/雷达已同步」，不再把整页说成停在 10-15 的 dig-001 静态包。WSJ／S2 仍是演示样例。首屏仍标「演示数据」（整包 `demo: true`）。未改 `apps/research-board/rates/`，也未改 news-brief、news-radar、whats-latest 的 `data.json`。**随本次合并进入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 
 ### 数据
+
+- 2026-10-26：`apps/research-board/data.json` 整份替换为 WSJ／S2 已同步包。`demo` 为 false，`asOf` 与 `updatedAt` 均为 `2026-10-26`。WSJ 为 CIO 收盘会话 2026-10-23（周五；DJIA −1.23% 等），不再使用 10-14 演示模板。S2 表为 Day-02 至 Day-07，状态均为「待用户确认」。Brief-05 与雷达 Day-07（正式入选 N=0）保留。研究用，非投资建议。
 
 - 2026-10-26：`apps/research-board/data.json` 换为与当日 Brief-05／Day-07 同源的看板包。`asOf` 与 `updatedAt` 均为 `2026-10-26`（CST）。Brief 8 条，雷达正式入选 `selected` 为 0，二级存档 4 条。WSJ／S2 仍为 dig-001 演示样例，文件内已注明。研究用，非投资建议。
 
