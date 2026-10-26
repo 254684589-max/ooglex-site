@@ -13,6 +13,8 @@
 
 ### 修改
 
+- 2026-10-26：新闻栏目五栏顶栏三个标签改名，链接不变。「全球要闻」改为「市场要闻」，「每日投研」改为「投研汇总」，「全球利率」改为「数据监测」。「简报」「投资雷达」未改。改动在仍使用这段顶栏的四个页面：`/apps/whats-latest/`、`/apps/news-brief/`、`/apps/news-radar/`、`/apps/research-board/`。各页标题、正文和 `data.json` 未改。`/apps/research-board/rates/` 自 2026-10-21 晨报整页替换后不再包含这五栏顶栏，本次没有改该页。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 - 2026-10-26：每日投研（`/apps/research-board/`）页顶改为「投研汇总 · Brief／雷达／WSJ／S2 已同步」。整包 `demo` 为 false 时不再显示「演示数据」，状态芯片改为「Brief／雷达／WSJ／S2 已同步」，也不再提示「数据文件未标记为演示数据」。`demo: true` 且仅 Brief／雷达对齐时，仍保留「WSJ/S2 仍为演示」。未改 `apps/research-board/rates/`，也未改 news-brief、news-radar、whats-latest 的 `data.json`。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 
 - 2026-10-26：每日投研（`/apps/research-board/`）与当日早更对齐。页顶改为「投研汇总 · Brief/雷达已同步当日 · WSJ/S2 仍为演示 · 非正式产品」。Brief 芯片从 `brief.header` 开头读取期号（本期 Brief-05），不再写死 Brief-03。雷达芯片在 `radar.selected` 为数字时用该值（本期 0），二级存档仍不计入 N。编号芯片改为「投研汇总」；Brief 与雷达已和数据日期对齐时，状态芯片显示「Brief/雷达已同步」，不再把整页说成停在 10-15 的 dig-001 静态包。WSJ／S2 仍是演示样例。首屏仍标「演示数据」（整包 `demo: true`）。未改 `apps/research-board/rates/`，也未改 news-brief、news-radar、whats-latest 的 `data.json`。**随本次合并进入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
