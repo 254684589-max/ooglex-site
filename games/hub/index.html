@@ -42,21 +42,24 @@
   .hero p { color:var(--dim); margin-top:7px; font-size:0.92rem; }
 
   /* 七张卡同一网格。1100px 起一行四张，末行剩下的靠左、不拉成通栏。
-     海报按图片自身比例铺满卡片顶部，整张都在；同一行卡片等高，按钮沉底对齐。 */
-  .grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; width:100%; margin:0; }
-  .game { display:flex; flex-direction:column; min-width:0; text-decoration:none; color:inherit; border-radius:16px; overflow:hidden;
+     封面是统一的 2:3 槽位，同一行顶边和底边对齐。
+     卡片自身是三行网格：海报、介绍、按钮。介绍再长也只占中间那一格，按钮落在底边。 */
+  .grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; width:100%; margin:0; align-items:stretch; }
+  .game { display:grid; grid-template-rows:auto minmax(0,1fr) auto; height:100%; min-width:0; text-decoration:none; color:inherit; border-radius:16px; overflow:hidden;
     background:var(--card); border:1px solid var(--line); box-shadow:0 16px 40px -30px rgba(0,0,0,.85);
     transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
   .game:hover { transform:translateY(-3px); border-color:var(--ac); box-shadow:0 18px 36px -22px rgba(0,0,0,.75); }
   .game:focus-visible { outline:2px solid var(--ogx-focus, var(--accent)); outline-offset:3px; }
   .cover { position:relative; overflow:hidden; background:#1b1c22; }
-  .cover::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, transparent 72%, rgba(0,0,0,.2)); }
-  .cover.cv-poster { height:auto; display:block; background:#1b1c22; }
-  .cover .cv-img { display:block; width:100%; height:auto; }
-  .body { display:flex; flex-direction:column; flex:1; min-width:0; padding:12px 14px 14px; }
-  .body h3 { font-size:1rem; font-weight:800; line-height:1.35; overflow-wrap:break-word; }
-  .body p { color:var(--dim); font-size:0.8rem; margin-top:6px; margin-bottom:12px; line-height:1.5; overflow-wrap:break-word; }
-  .play { display:inline-block; margin-top:auto; align-self:flex-start; padding:7px 14px; border-radius:999px; font-weight:700; font-size:0.84rem;
+  .cover::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, transparent 78%, rgba(0,0,0,.18)); }
+  .cover.cv-poster { aspect-ratio:2 / 3; width:100%; height:auto; display:block; background:#1b1c22; }
+  .cover .cv-img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; object-position:center center; }
+  .body { min-width:0; min-height:0; padding:12px 14px 0; }
+  .body h3 { font-size:0.95rem; font-weight:800; line-height:1.35; min-height:calc(1.35em * 2); overflow-wrap:break-word; }
+  .body p { color:var(--dim); font-size:0.78rem; line-height:1.45; margin-top:6px; overflow-wrap:break-word;
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; overflow:hidden;
+    min-height:calc(1.45em * 4); max-height:calc(1.45em * 4); }
+  .play { justify-self:start; margin:12px 14px 14px; padding:7px 14px; border-radius:999px; font-weight:700; font-size:0.84rem;
     color:#fff; background:linear-gradient(135deg, var(--ac), var(--ac2)); }
 
   footer { margin-top:22px; text-align:center; color:var(--dim); font-size:0.8rem; }
@@ -93,56 +96,56 @@ html[data-theme="ft"] .cover.cv-poster, html[data-theme="paper"] .cover.cv-poste
         <div class="body">
           <h3>都会人生 · 原创 3D 游戏</h3>
           <p>赛博朋克都市人生模拟：带着 ¥2000 走出火车站，找工作、上班、升职、租房、交朋友、投资、创业，7 章主线、5 种人生结局。电脑手机浏览器直接玩，首次加载约 42 MB。</p>
-          <span class="play">🎮 开始游戏 →</span>
         </div>
+        <span class="play">🎮 开始游戏 →</span>
       </a>
       <a class="game" href="../construction-worker/" style="--ac:#f5be28;--ac2:#ff8a2b">
         <div class="cover cv-poster"><img class="cv-img" src="img/brick-poster.webp?v=6141ecd9" alt="BRICK BY BRICK 海报：戴安全帽的年轻工人抱着一摞砖，身后是塔吊和在建的高楼" width="800" height="1000" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>BRICK BY BRICK · 原创 3D 游戏</h3>
           <p>第三人称工地模拟：揣着 300 元来到大城市，找工头老王接活，搬砖、搬水泥、扛钢筋，领工资、吃饭、睡觉，一天天成长。电脑手机浏览器直接玩，首次加载约 40 MB。</p>
-          <span class="play">🎮 开始游戏 →</span>
         </div>
+        <span class="play">🎮 开始游戏 →</span>
       </a>
       <a class="game" href="../emberfall3d/" style="--ac:#b3241a;--ac2:#e8843a">
         <div class="cover cv-poster"><img class="cv-img" src="img/emberfall-poster.webp?v=cc606d1a" alt="《余烬陷落》EMBERFALL 大作版海报：持火焰长剑的骑士迎战熔岩巨魔与骷髅兵" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>EMBERFALL · 原创暗黑风 3D ARPG</h3>
           <p>3D 暗黑风动作角色扮演（开发中预览）：深入修道院地下，斩杀亡灵、刷随机词缀装备、击败堕落院长，之后挑战无尽深渊。电脑手机浏览器直接玩，需要 WebGL 2，首次加载约 40 MB。</p>
-          <span class="play">🎮 开始游戏 →</span>
         </div>
+        <span class="play">🎮 开始游戏 →</span>
       </a>
       <a class="game" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
         <div class="cover cv-poster"><img class="cv-img" src="img/ironcrown-poster.webp?v=c6d671e8" alt="《铁冠之争》海报：戴冠持剑的骑士站在燃烧的城堡前，脚下是碎裂的铁冠" width="900" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>铁冠之争 · 原创第一人称 RPG</h3>
           <p>中世纪权谋角色扮演（开发中预览）：雾夜里的霜渡镇，寻找失踪的少爷。序章已可完整游玩，电脑、手机浏览器直接玩（需 WebGL 2，约 57 MB）。</p>
-          <span class="play">🎮 进入预览 →</span>
         </div>
+        <span class="play">🎮 进入预览 →</span>
       </a>
       <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
         <div class="cover cv-poster"><img class="cv-img" src="img/gta-vice-city-poster.webp?v=d56509f2" alt="《GTA Vice City》海报：紫色夕阳下，蒙面的男女站在加油站前" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>GTA Vice City · 网页版</h3>
           <p>浏览器直接畅玩罪恶都市：无需下载安装，支持全屏与强制横屏模式，内置作弊菜单（游戏内按 F3 开启）。首次加载需耐心等待。</p>
-          <span class="play">🎮 开始游戏 →</span>
         </div>
+        <span class="play">🎮 开始游戏 →</span>
       </a>
       <a class="game" href="../red-alert/" style="--ac:#e03a2a;--ac2:#ffb03a">
         <div class="cover cv-poster"><img class="cv-img" src="img/red-alert-poster.webp?v=1e722f63" alt="《红色警戒 2》海报：红装女军官持枪，身后是金色飞艇" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>红色警戒 2 · 网页版</h3>
           <p>经典 RTS 浏览器在线玩：单人战役、遭遇战、多人联机、天梯排位，内置共和国之辉 MOD。无需下载安装，电脑体验最佳，手机建议横屏。</p>
-          <span class="play">🎮 开始游戏 →</span>
         </div>
+        <span class="play">🎮 开始游戏 →</span>
       </a>
       <a class="game" href="../diablo/" style="--ac:#b33423;--ac2:#e66d32">
         <div class="cover cv-poster"><img class="cv-img" src="img/diablo-poster.webp?v=062e5227" alt="暗黑破坏神封面：黑底上发光的恶魔面孔与金色标题" width="748" height="1068" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>暗黑破坏神 IV · 官方入口</h3>
           <p>黑暗奇幻动作角色扮演游戏。Ooglex 提供游戏介绍与暴雪官方入口；正版游戏需通过 Battle.net 或支持的平台安装运行。</p>
-          <span class="play">进入游戏专页 →</span>
         </div>
+        <span class="play">进入游戏专页 →</span>
       </a>
     </div>
     <footer>Ooglex Games · 网页游戏与正版游戏官方入口</footer>
