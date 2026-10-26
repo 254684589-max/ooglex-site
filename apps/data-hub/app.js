@@ -1,4 +1,4 @@
-/* 数据中心 · 四张大数字卡片。数字只来自各应用已有的 data.json，不另造读数。纯原生 JS。 */
+/* 数据中心 · 四大分类卡片。每张卡片里列出该类的全部应用，并给出可读预览。纯原生 JS。 */
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
@@ -8,41 +8,171 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
-  /* 十亿美元。≥1000 显示为万亿，与富豪榜、资产榜页面同一套写法。 */
+  function pct(v) { return !isNum(v) ? "—" : (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1) + "%"; }
+  function cls(v) { return !isNum(v) ? "dim" : (v > 0 ? "up" : (v < 0 ? "down" : "dim")); }
   function worth(b) { return !isNum(b) ? "—" : (b >= 1000 ? "$" + (b / 1000).toFixed(2) + "T" : "$" + b.toFixed(1) + "B"); }
+  function radarTone(s) { return !isNum(s) ? "" : s < 40 ? "tone-stress" : s <= 58 ? "tone-warn" : "tone-calm"; }
+  function row(l, v, c) { return "<div class='row'><span class='l'>" + l + "</span><span class='v " + (c || "") + "'>" + v + "</span></div>"; }
+  function relTime(iso) {
+    if (!iso) return "—";
+    var t = Date.parse(iso); if (isNaN(t)) return "—";
+    var d = (Date.now() - t) / 1000;
+    if (d < 3600) return "更新于 " + Math.max(1, Math.floor(d / 60)) + " 分钟前";
+    if (d < 86400) return "更新于 " + Math.floor(d / 3600) + " 小时前";
+    return "更新于 " + Math.floor(d / 86400) + " 天前";
+  }
 
   var APPS = [
-    { folder: "fear-greed", name: "恐慌与贪婪指数" },
-    { folder: "macro-radar", name: "宏观风险监测" },
-    { folder: "ofr-monitor", name: "美国金融风险监测" },
-    { folder: "econ-calendar", name: "全球经济日历" },
-    // 标普500热力图读公司管道另出的成分股快照（sp500.json），不是公司榜本身。
-    { folder: "heatmap", dataFolder: "companies", dataFile: "sp500.json", name: "标普500热力图" },
-    // 全球市场行情自己不产数据文件：预览读它体量最大的跨资产管道，并在数字旁写明这是全球市场行情。
-    { folder: "markets", dataFolder: "asset-tracker", name: "全球市场行情" },
-    { folder: "world-economy", name: "全球经济图谱" },
-    { folder: "asset-ranking", name: "全球资产市值榜" },
-    { folder: "asset-tracker", name: "全球大类资产收益率" },
-    { folder: "house-prices", name: "全球房价走势" },
-    { folder: "billionaires", name: "福布斯亿万富翁实时排行榜" },
-    { folder: "companies", name: "全球公司市值榜" },
-    { folder: "superinvestors", name: "超级投资者持仓" },
-    { folder: "ai-rankings", name: "全球大模型评测榜" },
-    { folder: "university-rankings", name: "全球大学排名 300 强" },
-    { folder: "major-rankings", name: "全球专业与就业前景榜" }
-  ];
-
-  /* 附图上的四个主读数，以及仍需留在卡片里的其余入口。
-     资产总市值放在「人物与公司」是附图的位置，数字仍是资产市值榜的合计，点进去也是那一页。 */
-  var GROUPS = [
-    { id: "risk", name: "情绪与风险", hero: "risk",
-      extras: ["ofr-monitor", "econ-calendar"] },
-    { id: "index", name: "指数与热力图", hero: "index",
-      extras: ["world-economy"] },
-    { id: "assets", name: "资产与回报", hero: "assets",
-      extras: ["house-prices"] },
-    { id: "people", name: "人物与公司", hero: "people",
-      extras: ["companies", "superinvestors", "ai-rankings", "university-rankings", "major-rankings"] }
+    { folder: "fear-greed", en: "Fear & Greed", name: "恐慌与贪婪指数", tag: "CNN Fear & Greed · 近一年走势",
+      render: function (d) {
+        if (!isNum(d.score)) return "<div class='loading'>暂无数据</div>";
+        return "<div class='big'>" + d.score + "</div>" +
+          "<div class='note'>市场处于 <b>" + esc(d.ratingZh || "—") + "</b></div>";
+      } },
+    { folder: "macro-radar", en: "MACRO RISK MONITOR", name: "宏观风险监测", tag: "市场机制 · 7 大制度信号 · 跨资产",
+      render: function (d) {
+        var r = d.regime || {}; if (!isNum(r.score)) return "<div class='loading'>暂无数据</div>";
+        var tone = radarTone(r.score);
+        var weak = (d.signals || []).filter(function (s) { return isNum(s.score); })
+          .sort(function (a, b) { return a.score - b.score; }).slice(0, 2)
+          .map(function (s) { return esc(s.zh) + " " + s.score; }).join(" · ");
+        return "<div class='big " + tone + "'>" + r.score +
+          "<small>" + esc(r.labelZh || "") + "</small></div>" +
+          row("偏弱信号", weak || "—", "dim");
+      } },
+    { folder: "ofr-monitor", en: "OFR Risk", name: "美国金融风险监测", tag: "OFR · 金融压力 · SOFR · 货币基金 · 系统性风险",
+      render: function (d) {
+        var f = d.fsi || {}; if (!isNum(f.value)) return "<div class='loading'>暂无数据</div>";
+        var tone = f.value > 0.5 ? "tone-stress" : f.value < -0.5 ? "tone-calm" : "tone-warn";
+        var lab = f.value > 0.5 ? "高于平均压力" : f.value < -0.5 ? "低于平均压力" : "接近平均水平";
+        var h = "<div class='big " + tone + "'>" + f.value.toFixed(2) +
+          "<small>金融压力 · " + lab + "</small></div>";
+        var fu = d.funding || {};
+        if (fu.sofr && isNum(fu.sofr.value)) h += row("SOFR 隔夜利率", fu.sofr.value.toFixed(2) + "%");
+        if (d.mmf && isNum(d.mmf.total)) h += row("货币基金规模", "$" + d.mmf.total.toFixed(2) + "T");
+        return h;
+      } },
+    { folder: "econ-calendar", en: "Calendar", name: "全球经济日历", tag: "央行决议 · CPI · 非农",
+      render: function (d) {
+        var evs = d.events || [], now = Date.now();
+        var ev = evs.filter(function (e) { return e.impact === "high" && Date.parse(e.ts) >= now; })[0] ||
+          evs.filter(function (e) { return e.impact === "high"; })[0] || evs[0];
+        if (!ev) return "<div class='loading'>暂无数据</div>";
+        return "<div class='news'>" + (ev.flag || "🌐") + " " + esc(ev.title) + "</div>" +
+          "<div class='sub'>预测 " + esc(ev.forecast || "—") + " · 前值 " + esc(ev.previous || "—") +
+          (isNum(d.count) ? " · 本周 " + d.count + " 项" : "") + "</div>";
+      } },
+    // 标普500热力图读公司管道另出的那份成分股快照（sp500.json），不是公司榜本身。
+    { folder: "heatmap", dataFolder: "companies", dataFile: "sp500.json",
+      en: "S&P 500 Heatmap", name: "标普500热力图",
+      tag: "按行业分块 · 按市值定面积 · 按当日涨跌上色",
+      render: function (d) {
+        var m = (d.members || []).filter(function (x) { return isNum(x.changePct); });
+        if (!m.length) return "<div class='loading'>暂无数据</div>";
+        var up = m.filter(function (x) { return x.changePct > 0; }).length;
+        var top = m.slice().sort(function (x, y) { return y.changePct - x.changePct; })[0];
+        return "<div class='big'>" + (d.count || m.length) + "<small>家成分股（共 " +
+            (d.constituents || "—") + " 个成分代码）</small></div>" +
+          row("今日上涨", up + " / " + m.length, "up") +
+          row("领涨", esc(top.name || top.symbol) + " " + pct(top.changePct), "up");
+      } },
+    // 全球市场行情自己不产数据文件：它把跨资产、公司榜、资产榜与美债曲线四条管道
+    // 重新编排成六大品类，这里的预览读它体量最大的那一条（跨资产），并写明只是其中一部分。
+    { folder: "markets", dataFolder: "asset-tracker", en: "Global Markets", name: "全球市场行情",
+      tag: "商品 · 指数 · 公司 · 外汇 · 加密 · 债券 · 逐项完整走势",
+      render: function (d) {
+        var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.d1); });
+        if (!a.length) return "<div class='loading'>暂无数据</div>";
+        var up = a.filter(function (x) { return x.returns.d1 > 0; }).length;
+        var top = a.slice().sort(function (x, y) { return y.returns.d1 - x.returns.d1; })[0];
+        return "<div class='big'>" + a.length + "<small>项跨资产标的（另有公司榜、加密与美债曲线）</small></div>" +
+          row("今日上涨", up + " / " + a.length, "up") +
+          row("领涨", esc(top.name) + " " + pct(top.returns.d1), "up");
+      } },
+    { folder: "world-economy", en: "World Economy", name: "全球经济图谱", tag: "各国经济指标地图",
+      render: function (d) {
+        var inds = d.indicators || [];
+        var pol = inds.filter(function (i) { return i.key === "policy"; })[0];
+        var v = (pol && pol.values) || {};
+        var rate = function (c) { return isNum(v[c]) ? v[c] + "%" : "—"; };
+        return row("覆盖", inds.length + " 项指标 · 约 180 国/地区", "dim") +
+          row("央行基准利率", "🇺🇸 " + rate("US") + "　🇨🇳 " + rate("CN") + "　🇪🇺 " + rate("DE"));
+      } },
+    { folder: "asset-ranking", en: "Market Cap", name: "全球资产市值榜", tag: "不限品类 · 前 250 · 房产/国债/黄金/公司/加密",
+      render: function (d) {
+        var a = (d.assets || [])[0]; if (!a) return "<div class='loading'>暂无数据</div>";
+        return "<div class='big'>" + worth(a.marketCap) + "<small>#1 " + esc(a.name) + "</small></div>" +
+          row("前 " + (d.count || 250) + " 总市值", worth(d.totalMarketCap));
+      } },
+    { folder: "asset-tracker", en: "Assets · YTD", name: "全球大类资产收益率", tag: "股市 · 商品 · 外汇 · 债券",
+      render: function (d) {
+        var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.ytd); })
+          .sort(function (x, y) { return y.returns.ytd - x.returns.ytd; });
+        if (!a.length) return "<div class='loading'>暂无数据</div>";
+        var t = a[0], b = a[a.length - 1];
+        return row("年初至今领涨", esc(t.name) + " " + pct(t.returns.ytd), "up") +
+          row("领跌", esc(b.name) + " " + pct(b.returns.ytd), "down");
+      } },
+    { folder: "house-prices", en: "Housing", name: "全球房价走势", tag: "主要国家 · 名义/实际同比 · 季度走势",
+      render: function (d) {
+        var cs = (d.countries || []).filter(function (c) { return isNum(c.yoyNominal); });
+        if (!cs.length) return "<div class='loading'>暂无数据</div>";
+        var t = cs.slice().sort(function (a, b) { return b.yoyNominal - a.yoyNominal; })[0];
+        var b = cs.slice().sort(function (a, b) { return a.yoyNominal - b.yoyNominal; })[0];
+        return row("涨幅居首", esc(t.name) + " " + pct(t.yoyNominal), "up") +
+          row("跌幅居首", esc(b.name) + " " + pct(b.yoyNominal), "down");
+      } },
+    { folder: "billionaires", en: "Billionaires", name: "福布斯亿万富翁实时排行榜", tag: "亿万富豪全榜 · 身价",
+      render: function (d) {
+        var p = (d.people || [])[0]; if (!p) return "<div class='loading'>暂无数据</div>";
+        var n = d.count || (d.people || []).length;
+        return "<div class='big'>" + worth(p.worth) + "<small>#1 " + esc(p.name) + "</small></div>" +
+          row(n + " 位富豪总财富", worth(d.totalWorth));
+      } },
+    { folder: "companies", en: "Companies", name: "全球公司市值榜", tag: "全球 500 强 · 市值 · 股价",
+      render: function (d) {
+        var c = (d.companies || [])[0]; if (!c) return "<div class='loading'>暂无数据</div>";
+        return "<div class='big'>" + worth(c.marketCap) + "<small>#1 " + esc(c.name) + "</small></div>" +
+          row("前 " + (d.count || 0) + " 总市值", worth(d.totalMarketCap));
+      } },
+    { folder: "superinvestors", en: "13F · AAII", name: "超级投资者持仓", tag: "13F · 60 位大佬 · 政治人物交易 · AAII",
+      render: function (d) {
+        var inv = (d.investors || [])[0], a = d.aaii;
+        var h = "";
+        if (inv) {
+          var w = inv.value >= 1e12 ? "$" + (inv.value / 1e12).toFixed(2) + "T" : "$" + (inv.value / 1e9).toFixed(0) + "B";
+          h += row("#1 " + esc(inv.zh), w + " · " + inv.stocks + " 只持仓");
+        }
+        if (a && (a.weeks || [])[0]) {
+          var w0 = a.weeks[0];
+          h += row("AAII 情绪", "<span class='up'>看涨 " + w0.bull + "%</span> · <span class='down'>看跌 " + w0.bear + "%</span>");
+        }
+        return h || "<div class='loading'>等待首次数据更新</div>";
+      } },
+    { folder: "ai-rankings", en: "AI Models", name: "全球大模型评测榜", tag: "LMArena Elo · LiveBench · 智能指数",
+      render: function (d) {
+        var ms = d.models || [];
+        if (!ms.length) return "<div class='loading'>暂无数据</div>";
+        var top = ms[0];
+        var open = ms.filter(function (m) { return m.open; })[0];
+        return row("综合第一", esc(top.name) + (top.flag ? " " + top.flag : "")) +
+          row("开源第一", open ? esc(open.name) + (open.flag ? " " + open.flag : "") : "—", "dim");
+      } },
+    { folder: "university-rankings", en: "Universities", name: "全球大学排名 300 强", tag: "QS · THE · ARWU · U.S. News 四榜合一",
+      render: function (d) {
+        var us = d.universities || []; if (!us.length) return "<div class='loading'>暂无数据</div>";
+        var top = us[0];
+        return row("综合第一", (top.flag ? top.flag + " " : "") + esc(top.cn || top.name)) +
+          row("综合前 " + (d.count || us.length), "QS/THE/ARWU/USN 平均位次", "dim");
+      } },
+    { folder: "major-rankings", en: "Majors", name: "全球专业与就业前景榜", tag: "薪资 · 就业率 · 起薪 · AI 时代前景",
+      render: function (d) {
+        var ms = d.majors || []; if (!ms.length) return "<div class='loading'>暂无数据</div>";
+        var byMid = ms.slice().sort(function (a, b) { return b.mid - a.mid; })[0];
+        var byFut = ms.slice().sort(function (a, b) { return b.future - a.future; })[0];
+        return row("薪资第一", esc(byMid.cn) + " $" + Math.round(byMid.mid / 1000) + "K") +
+          row("AI 前景第一", esc(byFut.cn), "dim");
+      } }
   ];
 
   var _cache = {};
@@ -53,128 +183,38 @@
     }
     return _cache[url];
   }
+  /* 多数应用的预览读同目录下的 data.json；个别应用（标普500热力图）读同一条管道
+     另出的第二个文件，因此允许逐卡指定文件名，默认仍是 data.json。 */
   function getData(folder, file) { return getJSON("../" + folder + "/" + (file || "data.json")); }
-  function settle(p) {
-    return p.then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+
+  function card(app) {
+    var a = document.createElement("a");
+    a.className = "art"; a.href = "../" + app.folder + "/";
+    a.innerHTML =
+      "<div class='hn'><span class='t'>" + app.name + "</span><span class='tag'>" + (app.en || "") + "</span></div>" +
+      "<div class='body'><div class='loading'>加载中…</div></div>" +
+      "<div class='upd'>—</div>";
+    var body = a.querySelector(".body"), upd = a.querySelector(".upd");
+    getData(app.dataFolder || app.folder, app.dataFile)
+      .then(function (d) {
+        try { body.innerHTML = app.render(d); } catch (e) { body.innerHTML = "<div class='loading'>预览不可用</div>"; }
+        upd.textContent = relTime(d.updatedAt);
+      })
+      .catch(function () { body.innerHTML = "<div class='loading'>数据暂不可用</div>"; });
+    return a;
   }
 
-  function linkOpen(folder, cls, label) {
-    var html = "<a class=\"" + cls + "\" href=\"../" + folder + "/\"";
-    if (label) html += " aria-label=\"" + esc(label) + "\"";
-    return html + ">";
-  }
-  function numLink(folder, cls, text, label) {
-    return linkOpen(folder, cls, label) + esc(text) + "</a>";
-  }
-  function capLink(folder, inner, title) {
-    var html = "<a class=\"cap\" href=\"../" + folder + "/\"";
-    if (title) html += " title=\"" + esc(title) + "\"";
-    return html + ">" + inner + "</a>";
-  }
-
-  function sideHero(n1, n2, caps) {
-    return "<div class=\"hero side\"><div class=\"nums\">" + n1 + n2 + "</div><div class=\"caps\">" + caps + "</div></div>";
-  }
-  function missingCap() { return "<span class=\"k\">暂无数据</span>"; }
-
-  function paintRisk(slot) {
-    slot.innerHTML = "<div class=\"hero side\"><span class=\"loading\">加载中…</span></div>";
-    Promise.all([settle(getData("fear-greed")), settle(getData("macro-radar"))]).then(function (rs) {
-      var fg = rs[0].ok ? rs[0].v : {};
-      var regime = rs[1].ok && rs[1].v.regime ? rs[1].v.regime : {};
-      var s1 = isNum(fg.score) ? String(fg.score) : "—";
-      var s2 = isNum(regime.score) ? String(regime.score) : "—";
-      var rating = fg.ratingZh || "—";
-      var label = regime.labelZh || "—";
-      var cap1 = isNum(fg.score)
-        ? "<span class=\"k\">市场处于</span><b>" + esc(rating) + "</b>"
-        : missingCap();
-      var cap2 = isNum(regime.score)
-        ? "<b class=\"accent\">" + esc(s2) + "</b> <span class=\"k\">" + esc(label) + "</span>"
-        : missingCap();
-      slot.innerHTML = sideHero(
-        numLink("fear-greed", "n1", s1, "恐慌与贪婪指数"),
-        numLink("macro-radar", "n2", s2, "宏观风险监测"),
-        capLink("fear-greed", cap1) + capLink("macro-radar", cap2, "宏观风险监测")
-      );
-    });
-  }
-
-  function paintIndex(slot) {
-    slot.innerHTML = "<div class=\"hero side\"><span class=\"loading\">加载中…</span></div>";
-    Promise.all([
-      settle(getData("companies", "sp500.json")),
-      settle(getData("asset-tracker"))
-    ]).then(function (rs) {
-      var heat = rs[0].ok ? rs[0].v : {};
-      var book = rs[1].ok ? rs[1].v : {};
-      var members = (heat.members || []).filter(function (x) { return isNum(x.changePct); });
-      var listed = isNum(heat.count) ? heat.count : (members.length || null);
-      var cross = (book.assets || []).filter(function (x) { return x.returns && isNum(x.returns.d1); });
-      var s1 = listed != null ? String(listed) : "—";
-      var s2 = cross.length ? String(cross.length) : "—";
-      slot.innerHTML = sideHero(
-        numLink("heatmap", "n1", s1, "标普500热力图"),
-        numLink("markets", "n2", s2, "全球市场行情"),
-        capLink("heatmap", "<span class=\"k\">标普500</span>", "标普500热力图") +
-          capLink("markets", "<span class=\"k\">全球市场行情</span>")
-      );
-    });
-  }
-
-  function paintAssets(slot) {
-    slot.innerHTML = "<div class=\"hero stack\"><span class=\"loading\">加载中…</span></div>";
-    settle(getData("asset-ranking")).then(function (r) {
-      var top = r.ok && r.v.assets ? r.v.assets[0] : null;
-      var big = top ? worth(top.marketCap) : "—";
-      slot.innerHTML =
-        "<div class=\"hero stack\">" +
-          numLink("asset-ranking", "n1 money", big, "全球资产市值榜") +
-          "<div class=\"caps under\">" +
-            capLink("asset-tracker", "<span class=\"k\">全球大类资产</span>", "全球大类资产收益率") +
-            capLink("asset-ranking", "<span class=\"k\">全球资产市值</span>", "全球资产市值榜") +
-          "</div>" +
-        "</div>";
-    });
-  }
-
-  function paintPeople(slot) {
-    slot.innerHTML = "<div class=\"hero people\"><span class=\"loading\">加载中…</span></div>";
-    Promise.all([settle(getData("billionaires")), settle(getData("asset-ranking"))]).then(function (rs) {
-      var person = rs[0].ok && rs[0].v.people ? rs[0].v.people[0] : null;
-      var book = rs[1].ok ? rs[1].v : {};
-      var fortune = person ? worth(person.worth) : "—";
-      var total = worth(book.totalMarketCap);
-      slot.innerHTML =
-        "<div class=\"hero people\">" +
-          "<div class=\"rowline lead\">" +
-            numLink("billionaires", "n1 money", fortune, "福布斯亿万富翁实时排行榜") +
-            capLink("billionaires", "<span class=\"k\">全球首富</span>", "福布斯亿万富翁实时排行榜") +
-          "</div>" +
-          "<div class=\"rowline minor\">" +
-            numLink("asset-ranking", "n3", total, "资产总市值") +
-            capLink("asset-ranking", "<span class=\"k\">资产总市值</span>", "全球资产市值榜") +
-          "</div>" +
-        "</div>";
-    });
-  }
-
-  var PAINT = { risk: paintRisk, index: paintIndex, assets: paintAssets, people: paintPeople };
-
-  function moreNav(folders, byFolder) {
-    var links = [];
-    folders.forEach(function (folder) {
-      var app = byFolder[folder];
-      if (!app) return;
-      links.push("<a href=\"../" + folder + "/\">" + esc(app.name) + "</a>");
-    });
-    if (!links.length) return null;
-    var nav = document.createElement("nav");
-    nav.className = "more";
-    nav.setAttribute("aria-label", "更多应用");
-    nav.innerHTML = links.join("");
-    return nav;
-  }
+  /* 四大分类。名单必须覆盖 APPS；漏掉的模块会补进最后一张卡片，避免丢掉入口。 */
+  var GROUPS = [
+    { id: "risk", name: "情绪与风险",
+      folders: ["fear-greed", "macro-radar", "ofr-monitor", "econ-calendar"] },
+    { id: "index", name: "指数与热力图",
+      folders: ["heatmap", "markets", "world-economy"] },
+    { id: "assets", name: "资产与回报",
+      folders: ["asset-ranking", "asset-tracker", "house-prices"] },
+    { id: "people", name: "人物与公司",
+      folders: ["billionaires", "companies", "superinvestors", "ai-rankings", "university-rankings", "major-rankings"] }
+  ];
 
   function stampDate() {
     getData("fear-greed").then(function (d) {
@@ -188,14 +228,7 @@
     if (!board) return;
     var byFolder = {};
     APPS.forEach(function (app) { byFolder[app.folder] = app; });
-    var placed = {
-      "fear-greed": true, "macro-radar": true, "heatmap": true, "markets": true,
-      "asset-ranking": true, "asset-tracker": true, "billionaires": true
-    };
-    GROUPS.forEach(function (g) { g.extras.forEach(function (folder) { placed[folder] = true; }); });
-    var loose = APPS.filter(function (app) { return !placed[app.folder]; }).map(function (app) { return app.folder; });
-    if (loose.length) GROUPS[GROUPS.length - 1].extras = GROUPS[GROUPS.length - 1].extras.concat(loose);
-
+    var placed = {};
     GROUPS.forEach(function (g) {
       var sec = document.createElement("section");
       sec.className = "hub-card";
@@ -204,15 +237,23 @@
       h.className = "pill";
       h.id = "hub-" + g.id;
       h.textContent = g.name;
-      var slot = document.createElement("div");
-      slot.className = "hero-slot";
+      var mods = document.createElement("div");
+      mods.className = "hub-mods";
+      g.folders.forEach(function (folder) {
+        var app = byFolder[folder];
+        if (!app) return;
+        placed[folder] = true;
+        mods.appendChild(card(app));
+      });
       sec.appendChild(h);
-      sec.appendChild(slot);
-      var nav = moreNav(g.extras, byFolder);
-      if (nav) sec.appendChild(nav);
+      sec.appendChild(mods);
       board.appendChild(sec);
-      if (PAINT[g.hero]) PAINT[g.hero](slot);
     });
+    var loose = APPS.filter(function (app) { return !placed[app.folder]; });
+    if (loose.length) {
+      var last = board.lastElementChild && board.lastElementChild.querySelector(".hub-mods");
+      loose.forEach(function (app) { if (last) last.appendChild(card(app)); });
+    }
     $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。";
   }
   boot();
