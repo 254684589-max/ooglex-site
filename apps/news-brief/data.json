@@ -1,100 +1,89 @@
 {
-  "updatedAt": "2026-10-21T00:45:00Z",
-  "asOf": "2026-10-21T08:45:00+08:00",
+  "updatedAt": "2026-10-26T00:35:00Z",
+  "asOf": "2026-10-26T08:35:00+08:00",
   "source": "环球新闻情报中心",
   "status": "ok",
   "demo": false,
   "frequency": "daily",
-  "edition": "Brief-04",
-  "version": "brief-04.0-final",
-  "window": "优先约 2026-10-19～21 早晨（CST）；含 10-15～18 重要未刊增量",
-  "lead": "本简报汇总观察窗内八条可核全球要闻：中国国家统计局发布 2026 年三季度 GDP 与 9 月工业／消费／投资数据；美国 BLS 发布 9 月 PPI；美国 Census 发布 9 月零售销售预估；台积电与 Netflix 分别公布 2026 年三季报；美联储 H.4.1／FRED WALCL 更新至 week ended 10-14；Reuters 经济学家民调显示近乎一致预期 10 月 FOMC 按兵、12 月加息（民调≠决议）；欧委会重申不计划恢复进口俄罗斯天然气。",
-  "note": "人工编辑期次，页面不自动刷新，不得视为实时行情。版本 brief-04.0-final；内部展示／待上站另启；不自动外发。与 /apps/whats-latest/ 自动抓取并存、互不覆盖。成稿／终审约 2026-10-21 08:40 CST。brief-item-format-v1 强制。绿通 A 候选：可贴路径给 CIO。",
+  "edition": "Brief-05",
+  "version": "brief-05.0-final",
+  "window": "2026-10-22～26 早晨 CST（可含 10-21 晚至 10-22 未刊增量）",
+  "lead": "本简报汇总观察窗内八条可核全球要闻：Meta 发布 2026 年第三季度业绩；Tesla 发布 2026 年第三季度业绩；IBM 发布 2026 年第三季度业绩；美国劳工部；美联储 H.4.1；欧元区 10 月闪现 PMI；美国 10 月闪现 PMI；中国 10 月 LPR。",
+  "note": "人工编辑期次，页面不自动刷新，不得视为实时行情。版本 brief-05.0-final；内部展示／待上站另启；不自动外发。与 /apps/whats-latest/ 自动抓取并存、互不覆盖。成稿／终审约 2026-10-26 08:30 CST。brief-item-format-v1 强制。绿通 A 候选：可贴路径给 CIO。",
   "categories": [
-    "中国与亚太",
+    "AI／科技",
     "美国经济",
-    "科技与人工智能｜中国与亚太｜全球产业链",
-    "科技企业｜金融市场",
-    "美国经济｜金融市场",
-    "欧洲｜国际政治｜能源"
+    "金融市场",
+    "欧洲",
+    "中国与亚太"
   ],
   "items": [
     {
       "id": "01",
       "candidate": "C01",
-      "title": "中国国家统计局：2026Q3 GDP 同比 +4.5%；前三季度 +4.6%",
-      "category": "中国与亚太",
-      "rubric": "中国与亚太｜全球产业链",
+      "title": "Meta 发布 2026 年第三季度业绩：营收约 646 亿美元，资本开支约 349 亿美元，并宣布 Class C 股票分红",
+      "category": "AI／科技",
+      "rubric": "AI／科技｜金融市场",
       "verification": "通过",
       "verificationDetail": "通过（05／07）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "国家统计局于 2026-10-19／20 发布前三季度国民经济运行与三季度 GDP 初步核算：Q3 GDP 同比 +4.5%；前三季度 +4.6%；Q3 季调环比 +1.2%。同步发布 9 月工业／消费／投资等。以上为 NBS 官方数字。",
+        "whatHappened": "Meta 于 2026-10-21（美东盘后）发布 2026Q3：总营收 $64.601B（同比约 +26%），摊薄 EPS $3.83；Capex $34.91B；FTC 相关诉讼费用约 $9.89B（一次性）；Q4 营收指引约 $73–76B；宣布拟派发 Class C 股票分红。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期",
-            "对比",
-            "变化／备注"
+            "本期（2026Q3）",
+            "备注"
           ],
           "rows": [
             [
-              "GDP 同比（Q3）",
-              "+4.5%",
-              "Q2：+4.3%",
-              "不变价；官方"
+              "总营收",
+              "$64.601B",
+              "同比约 +26%"
             ],
             [
-              "GDP 同比（前三季度）",
-              "+4.6%",
-              "—",
-              "绝对额 107,107.1 亿元（现价）"
+              "摊薄 EPS",
+              "$3.83",
+              "GAAP"
             ],
             [
-              "GDP 环比（Q3，季调）",
-              "+1.2%",
-              "—",
-              "NBS 季节调整"
+              "资本开支（Capex）",
+              "$34.91B",
+              "单季"
             ],
             [
-              "规模以上工业增加值同比（9 月）",
-              "+5.5%",
-              "较上月加快 0.3 pct",
-              "环比 +0.61%"
+              "FTC 相关诉讼费用（约）",
+              "$9.89B",
+              "一次性"
             ],
             [
-              "社会消费品零售总额同比（9 月）",
-              "+1.1%",
-              "较上月加快 0.7 pct",
-              "当月额 42,433 亿元"
+              "2026Q4 营收指引",
+              "$73–76B",
+              "展望"
             ],
             [
-              "固定资产投资同比（1–9 月）",
-              "−7.2%",
-              "与 1–8 月持平",
-              "房地产开发投资 −20.6%"
+              "Class C 分红",
+              "已宣布拟派发",
+              "以 IR／SEC 为准"
             ]
           ],
-          "note": "发布：国家统计局｜2026-10-19／20"
+          "note": "发布：Meta IR｜2026-10-21 盘后"
         },
-        "background": "例行季度核算与月度活动数据；地产投资仍大幅同比下滑，高技术制造与部分出口链条相对更强——官方分项描述，勿升格为情景终局。",
-        "progress": "NBS 中英文稿可开；GDP 为初步核算。",
-        "importance": "中国增长与内外需结构的可核官方读数，Brief-01～03 未收 Q3 GDP。不做交易建议。",
+        "background": "AI 基建与广告并行；诉讼费用须与经营趋势分列。",
+        "progress": "IR 可开；关注 Q4 实绩与 Capex 节奏。",
+        "importance": "头部科技平台收入／AI Capex 可核读数；相关 H5 监测，不升雷达三级。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "增长同比与分项（工业／出口偏强 vs 固投／地产偏弱）可能影响对中国需求与亚太风险偏好的讨论（推断）。",
+            "高 Capex＋强营收指引可能强化 AI 基建支出持续性讨论（推断）。",
+            "一次性诉讼费用可能扰动 GAAP 利润读数。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "NBS 英文稿（主源）",
-            "url": "https://www.stats.gov.cn/english/PressRelease/202610/t20261019_1965619.html"
-          },
-          {
-            "label": "NBS GDP 初步核算（中）",
-            "url": "https://www.stats.gov.cn/sj/zxfbhjd/202610/t20261020_1965658.html"
+            "label": "Meta Investor Relations",
+            "url": "https://investor.atmeta.com/"
           }
         ]
       }
@@ -102,82 +91,64 @@
     {
       "id": "02",
       "candidate": "C02",
-      "title": "美国 BLS：2026 年 9 月 PPI 终需环比 +1.3%、同比 +6.3%",
-      "category": "美国经济",
-      "rubric": "美国经济｜能源｜金融市场",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
+      "title": "Tesla 发布 2026 年第三季度业绩：总营收约 280 亿美元，GAAP EPS 0.22 美元",
+      "category": "AI／科技",
+      "rubric": "AI／科技｜产业链｜金融市场",
+      "verification": "有条件通过",
+      "verificationDetail": "有条件通过（05／07｜须并列 GAAP／non-GAAP）",
+      "audience": "内部展示｜有条件通过",
       "sections": {
-        "whatHappened": "BLS 于 2026-10-15 08:30 ET（＝CST 20:30）发布 9 月 PPI：终需环比 +1.3%，同比 +6.3%；终需能源环比 +10.8%；汽油环比 +20.3%。官方数字。",
+        "whatHappened": "Tesla 于 2026-10-21（美东盘后）发布 2026Q3：总营收 $28.046B；GAAP 摊薄 EPS $0.22；non-GAAP EPS $0.48（须并列）；汽车业务收入同比约 −3%；FCF 约 $1.531B。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期（2026-09）",
-            "上期（2026-08）",
-            "变化",
+            "本期（2026Q3）",
             "备注"
           ],
           "rows": [
             [
-              "终需 PPI 环比（季调）",
-              "+1.3%",
-              "+0.5%",
-              "↑ 0.8 pct",
-              "BLS"
+              "总营收",
+              "$28.046B",
+              "IR PDF"
             ],
             [
-              "终需 PPI 同比（未季调）",
-              "+6.3%",
-              "+5.6%",
-              "↑",
-              "12 个月"
+              "GAAP 摊薄 EPS",
+              "$0.22",
+              "主报口径"
             ],
             [
-              "终需能源环比",
-              "+10.8%",
-              "—",
-              "—",
-              "—"
+              "non-GAAP EPS",
+              "$0.48",
+              "并列；非替代 GAAP"
             ],
             [
-              "汽油环比",
-              "+20.3%",
-              "—",
-              "—",
-              "—"
+              "汽车业务收入同比",
+              "约 −3%",
+              "分部"
             ],
             [
-              "终需 ex 食品能源贸易环比",
-              "+0.5%",
-              "+0.3%",
-              "↑",
-              "—"
-            ],
-            [
-              "终需 ex 食品能源贸易同比",
-              "+5.0%",
-              "—",
-              "—",
-              "—"
+              "自由现金流（FCF）",
+              "约 $1.531B",
+              "公司口径"
             ]
           ],
-          "note": "发布：BLS｜2026-10-15 08:30 ET"
+          "note": "发布：Tesla IR｜2026-10-21 盘后"
         },
-        "background": "例行月度生产者价格；能源分项贡献突出。勿与 Brief-03 CPI 混读。",
-        "progress": "ppi.nr0.htm 可开；下次约 2026-11-13。",
-        "importance": "上游／终需通胀脉冲可核读数。不做交易建议。",
+        "background": "电动车量价与能源／服务结构变化并存。",
+        "progress": "IR PDF 可开。",
+        "importance": "头部电动车／能源季度可核读数；不自动升雷达三级。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "终需环比大幅走高＋能源驱动，可能强化通胀粘性与利率路径讨论（推断，非政策已定）。",
+            "汽车收入同比走弱与 FCF 仍为正并存（推断）。",
+            "GAAP／non-GAAP 须并列阅读。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "BLS PPI（主源）",
-            "url": "https://www.bls.gov/news.release/ppi.nr0.htm"
+            "label": "Tesla IR",
+            "url": "https://ir.tesla.com/"
           }
         ]
       }
@@ -185,109 +156,163 @@
     {
       "id": "03",
       "candidate": "C03",
-      "title": "美国 Census：2026 年 9 月零售与餐饮销售额预估环比 +0.8%",
-      "category": "美国经济",
-      "rubric": "美国经济｜金融市场",
+      "title": "IBM 发布 2026 年第三季度业绩：营收约 171 亿美元，并上调全年自由现金流展望",
+      "category": "AI／科技",
+      "rubric": "AI／科技｜金融市场",
       "verification": "通过",
       "verificationDetail": "通过（05／07）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Census 于 2026-10-15 发布 9 月 Advance MARTS：季调销售额 7450 亿美元，环比 +0.8%（±0.4%），同比 +6.3%；未针对通胀调整。",
+        "whatHappened": "IBM 于 2026-10-21 发布 2026Q3：总营收约 $17.1B（同比约 +5%）；operating EPS $2.95；全年 FCF 展望上调为同比增加 >$1B。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期（2026-09）",
-            "上期（2026-08，修订）",
-            "变化",
+            "本期（2026Q3）",
             "备注"
           ],
           "rows": [
             [
-              "零售＋餐饮销售额（季调）",
-              "$745.0B",
-              "$739.3B",
-              "环比 +0.8%",
-              "未针对通胀调整"
+              "总营收",
+              "约 $17.1B",
+              "同比约 +5%"
             ],
             [
-              "同比",
-              "+6.3%",
-              "—",
-              "—",
-              "vs 2025-09"
+              "Operating EPS",
+              "$2.95",
+              "经营口径"
             ],
             [
-              "8 月环比（修订）",
-              "—",
-              "+1.3%",
-              "由约 +1.1% 上修",
-              "官方修订"
+              "全年 FCF 展望",
+              "同比增加 >$1B",
+              "展望，非已实现"
             ]
           ],
-          "note": "发布：U.S. Census｜CB26-165｜2026-10-15"
+          "note": "发布：IBM Newsroom｜2026-10-21"
         },
-        "background": "例行消费需求预估；名义口径。",
-        "progress": "官方 PDF 可开；下期约 2026-11-17。",
-        "importance": "美国名义消费韧性可核读数。不做交易建议。",
+        "background": "软件／咨询与混合云／AI 相关业务推动。",
+        "progress": "newsroom／IR 可开。",
+        "importance": "大型企业 IT 服务商季度可核读数。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "名义零售环比续正增长，可能支持需求韧性讨论（推断）；须并列未剔通胀口径。",
+            "FCF 展望上调可能支持企业 IT 支出未失速讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "Census MARTS PDF",
-            "url": "https://www.census.gov/retail/marts/www/marts_current.pdf"
+            "label": "IBM Newsroom",
+            "url": "https://newsroom.ibm.com/"
           }
         ]
       }
     },
     {
       "id": "04",
-      "candidate": "C06",
-      "title": "Fed H.4.1／FRED：week ended 2026-10-14 总资产约 6.756 万亿美元",
+      "candidate": "C04",
+      "title": "美国劳工部：截至 2026-10-17 当周初请失业金人数季调 19.4 万",
       "category": "美国经济",
       "rubric": "美国经济｜金融市场",
       "verification": "通过",
       "verificationDetail": "通过（05／07）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "FRED WALCL（week ended 2026-10-14）报 6,755,639 百万美元；前值 10-07 为 6,747,560（冻结≈6.75T）。WRESBAL 3,022,140（前值 3,029,659）。",
+        "whatHappened": "DOL 于 2026-10-22 发布：截至 2026-10-17 当周季调初请 194,000（−6,000）；四周均约 197,750；续请约 1.728M。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期（2026-10-14）",
-            "上期（2026-10-07）",
+            "本期",
+            "上期",
             "变化",
             "备注"
           ],
           "rows": [
             [
-              "WALCL 总资产",
-              "6,755,639",
-              "6,747,560",
-              "+7,079",
-              "百万美元；FRED"
+              "初请（季调）",
+              "194,000",
+              "200,000",
+              "−6,000",
+              "week ended 10-17"
             ],
             [
-              "WRESBAL 准备金",
-              "3,022,140",
-              "3,029,659",
-              "−7,519",
-              "百万美元；FRED"
+              "四周移动平均",
+              "197,750",
+              "—",
+              "—",
+              "DOL"
+            ],
+            [
+              "续请（insured）",
+              "约 1.728M",
+              "—",
+              "—",
+              "week ended 10-10"
             ]
           ],
-          "note": "禁止与 TradingView 5.87T 混口径"
+          "note": "发布：U.S. DOL｜2026-10-22"
         },
-        "background": "例行周频资产负债表；H3 监测。",
-        "progress": "序列已更新。",
-        "importance": "流动性官方读数更新；相对冻结点变化有限。",
+        "background": "例行周度劳动力市场指标。",
+        "progress": "官方 PDF 可开。",
+        "importance": "就业松紧高频可核读数；单周不构成雷达三级。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "总资产相对冻结点仅小幅变动，直接影响有限（推断）；禁止解释为股市涨跌因果。",
+            "初请低位可能支持就业尚未明显恶化讨论（推断）。",
+            "不做交易或投资建议。"
+          ]
+        },
+        "sources": [
+          {
+            "label": "DOL UI Weekly Claims PDF",
+            "url": "https://www.dol.gov/ui/data.pdf"
+          }
+        ]
+      }
+    },
+    {
+      "id": "05",
+      "candidate": "C05",
+      "title": "美联储 H.4.1：截至 2026-10-21 当周 WALCL 约 6.754 万亿美元",
+      "category": "金融市场",
+      "rubric": "金融市场｜美国经济",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07）",
+      "audience": "内部展示｜通过",
+      "sections": {
+        "whatHappened": "FRED／H.4.1：截至 2026-10-21 当周 WALCL＝6,753,604（百万美元，≈6.754T），前值 week ended 10-14 为 6,755,639。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "本期（week ended 2026-10-21）",
+            "前值（10-14）",
+            "变化",
+            "备注"
+          ],
+          "rows": [
+            [
+              "WALCL（百万美元）",
+              "6,753,604",
+              "6,755,639",
+              "约 −2.0B",
+              "FRED"
+            ],
+            [
+              "约合万亿",
+              "≈6.754T",
+              "≈6.756T",
+              "小幅回落",
+              "四舍五入"
+            ]
+          ],
+          "note": "基准 v1.1-FROZEN H3：2026-10-07≈6.75T（只读）"
+        },
+        "background": "例行周度资产负债表；禁直连股市危机叙事。",
+        "progress": "FRED／H.4.1 可开。",
+        "importance": "H3 流动性例行更新；非重大突变。",
+        "marketImpact": {
+          "hasImpact": true,
+          "bullets": [
+            "周度小幅变动通常不改流动性总判断（推断）；须并列准备金／TGA。",
             "不做交易或投资建议。"
           ]
         },
@@ -297,148 +322,70 @@
             "url": "https://fred.stlouisfed.org/series/WALCL"
           },
           {
-            "label": "H.4.1",
+            "label": "Fed H.4.1",
             "url": "https://www.federalreserve.gov/releases/h41/"
           }
         ]
       }
     },
     {
-      "id": "05",
-      "candidate": "C04",
-      "title": "台积电公布 2026Q3：营收约 462 亿美元，稀释 EPS 29.43 新台币",
-      "category": "科技与人工智能｜中国与亚太｜全球产业链",
-      "rubric": "科技企业｜人工智能｜中国与亚太｜全球产业链",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "TSMC 于 2026-10-15 公布 Q3：营收 NT$1,494.24B（约 US$46.72B），稀释 EPS NT$29.43；毛利率 66.4%；Q4 营收指引 US$52.3–54.3B。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "本期（2026Q3）",
-            "同比／环比",
-            "备注"
-          ],
-          "rows": [
-            [
-              "合并营收（美元）",
-              "$46.72B",
-              "YoY +41.2%；QoQ +16.2%",
-              "—"
-            ],
-            [
-              "稀释 EPS",
-              "NT$29.43",
-              "YoY +68.7%",
-              "ADR US$4.60"
-            ],
-            [
-              "毛利率",
-              "66.4%",
-              "—",
-              "—"
-            ],
-            [
-              "先进制程（≤7nm）占比",
-              "79%",
-              "2nm 8%",
-              "公司定义"
-            ],
-            [
-              "Q4 营收指引",
-              "US$52.3–54.3B",
-              "—",
-              "公司预测"
-            ]
-          ],
-          "note": "发布：TSMC PR｜2026-10-15"
-        },
-        "background": "先进制程与 AI 相关需求支撑（公司表述）；单家季报勿升格全行业终局。",
-        "progress": "公司新闻稿可开。",
-        "importance": "先进制程与 AI 资本开支链条可核龙头读数。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "营收／利润扩张与 Q4 指引可能影响半导体／AI Capex 叙事（推断）。",
-            "单家财报不能单独等同全行业重大拐点。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "TSMC PR",
-            "url": "https://pr.tsmc.com/english/news/3346"
-          }
-        ]
-      }
-    },
-    {
       "id": "06",
-      "candidate": "C05",
-      "title": "Netflix 公布 2026Q3：营收 128.7 亿美元，稀释 EPS 0.87",
-      "category": "科技企业｜金融市场",
-      "rubric": "科技企业｜金融市场",
+      "candidate": "C06",
+      "title": "欧元区 10 月闪现 PMI：综合 51.9，扩张放缓但仍高于 50",
+      "category": "欧洲",
+      "rubric": "欧洲｜金融市场",
       "verification": "通过",
       "verificationDetail": "通过（05／07）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Netflix 于 2026-10-20 发布 Q3：营收 $12.874B（+11.8%），稀释 EPS $0.87，营业利益率 34.6%；全年营收指引 $51.1B；广告预期约 $2.7B（此前约 $3B）。",
+        "whatHappened": "S&P Global 于 2026-10-23 发布欧元区 10 月闪现 PMI：综合 51.9（9 月 53.1）；服务业 51.7；制造业 PMI 52.4。仍 >50。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期（2026Q3）",
-            "上年同期",
-            "同比",
+            "2026-10 闪现",
+            "2026-09",
+            "变化",
             "备注"
           ],
           "rows": [
             [
-              "营收",
-              "$12.874B",
-              "$11.510B",
-              "+11.8%",
-              "GAAP"
+              "综合产出",
+              "51.9",
+              "53.1",
+              "↓",
+              ">50＝扩张"
             ],
             [
-              "营业利益率",
-              "34.6%",
-              "28.2%",
-              "↑",
-              "—"
-            ],
-            [
-              "稀释 EPS",
-              "$0.87",
-              "$0.59",
-              "+49%",
-              "—"
-            ],
-            [
-              "全年营收指引",
-              "$51.1B",
+              "服务业活动",
+              "51.7",
               "—",
               "—",
-              "公司预测"
+              "flash"
+            ],
+            [
+              "制造业 PMI",
+              "52.4",
+              "—",
+              "—",
+              "flash"
             ]
           ],
-          "note": "发布：Netflix IR｜2026-10-20"
+          "note": "发布：S&P Global｜2026-10-23；闪现≠终值"
         },
-        "background": "订阅＋广告；广告产品推进慢于原预期（公司自述）。",
-        "progress": "股东信可开。",
-        "importance": "大型流媒体季报与指引修正可核披露。",
+        "background": "欧区景气月度先行。",
+        "progress": "终值日程以 S&P Global 为准。",
+        "importance": "欧元区增长动能高频读数；不升三级。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "利润率与广告指引微调可能影响成长股／广告科技叙事（推断）。",
+            "扩张放缓可能弱化强复苏叙事强度（推断）；仍 >50 不宜写成收缩。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "Exhibit 99.1",
-            "url": "http://archive.fast-edgar.com/20261020/AML2B22CZ222S2B2222L2MZ2AOMGAV222282/ex991_q326.htm"
+            "label": "S&P Global Eurozone Flash PMI",
+            "url": "https://www.pmi.spglobal.com/"
           }
         ]
       }
@@ -446,54 +393,69 @@
     {
       "id": "07",
       "candidate": "C07",
-      "title": "Reuters 民调：近乎一致预期 10 月 FOMC 按兵、12 月加息",
-      "category": "美国经济｜金融市场",
+      "title": "美国 10 月闪现 PMI：综合 57.6，售价涨幅为 2022 年 8 月以来最陡",
+      "category": "美国经济",
       "rubric": "美国经济｜金融市场",
-      "verification": "有条件通过",
-      "verificationDetail": "有条件通过（民调≠FOMC 决议）",
-      "audience": "内部展示｜有条件",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07）",
+      "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Reuters 2026-10-20 报道 10 月 16–20 日经济学家民调：94／100 预期 10 月维持 3.75%–4.00%；100／100 预期 12 月加息。民调≠正式决议。",
+        "whatHappened": "S&P Global 于 2026-10-23 发布美国 10 月闪现 PMI：综合 57.6（9 月 58.4）；服务业 57.9；制造业 PMI 56.0；售价涨幅称 2022-08 以来最陡。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期读数",
+            "2026-10 闪现",
+            "2026-09",
             "备注"
           ],
           "rows": [
             [
-              "预期 10 月按兵（民调）",
-              "94／100",
-              "≠政策"
+              "综合产出",
+              "57.6",
+              "58.4",
+              "仍处强扩张"
             ],
             [
-              "预期 12 月加息（民调）",
-              "100／100",
-              "≠政策"
+              "服务业活动",
+              "57.9",
+              "58.8",
+              "flash"
             ],
             [
-              "现行目标区间（正式）",
-              "3.75%–4.00%",
-              "FOMC｜冻结 H1"
+              "制造业 PMI",
+              "56.0",
+              "55.9",
+              "约 53 个月高"
+            ],
+            [
+              "制造业产出",
+              "55.8",
+              "56.2",
+              "flash"
+            ],
+            [
+              "售价／成本",
+              "售价涨幅称 2022-08 以来最陡",
+              "—",
+              "新闻稿表述"
             ]
           ],
-          "note": "禁止写成「美联储将……」"
+          "note": "发布：S&P Global｜2026-10-23；闪现≠终值"
         },
-        "background": "中期选举前沟通窗口；预期层。",
-        "progress": "下次正式窗口：2026-10-27～28 FOMC（尚未召开）。",
-        "importance": "利率预期分布二手信息；须与正式政策四分法隔离。",
+        "background": "需求仍强与成本／售价压力并行。",
+        "progress": "终值约 11 月初；对照 GDP／PCE／CPI。",
+        "importance": "美国景气与价格压力高频组合；相关 H4，不升三级。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "民调一致预期可能与期货定价相互印证或偏离（推断）；本窗未独立复核 FedWatch。",
-            "禁止写成美联储将于 10 月按兵／12 月加息。",
+            "强扩张＋售价陡升可能同时强化增长韧性与通胀粘性讨论（推断，非 FOMC 已定）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "MarketScreener／Reuters 转载",
-            "url": "https://in.marketscreener.com/news/fed-to-skip-october-but-raise-rates-again-in-december-nearly-all-economists-say-ce785cd8db88f22d"
+            "label": "S&P Global Flash US PMI",
+            "url": "https://www.pmi.spglobal.com/"
           }
         ]
       }
@@ -501,29 +463,53 @@
     {
       "id": "08",
       "candidate": "C08",
-      "title": "欧委会：不计划恢复进口俄罗斯天然气；重申制裁立场",
-      "category": "欧洲｜国际政治｜能源",
-      "rubric": "欧洲｜国际政治｜能源｜全球产业链",
+      "title": "中国 10 月 LPR：1 年期 3.0%、5 年期以上 3.5%，均未调整",
+      "category": "中国与亚太",
+      "rubric": "中国与亚太｜金融市场",
       "verification": "通过",
-      "verificationDetail": "通过（发言可核；美方方案细节＝媒体消息源）",
+      "verificationDetail": "通过（05／07）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Interfax-Ukraine 2026-10-19：欧委会发言人 Paula Pinho 称不计划恢复进口俄气，并重申停战前不解除制裁。媒体引述美方和平方案含恢复欧购俄气——本窗未开白宫原件。",
-        "dataNote": "本条无关键量化指标（外交／制裁立场表述）。",
-        "background": "欧乌能源安全与跨大西洋制裁协调争议。",
-        "progress": "发言已发生；未见本窗新的立法／执委会成文决定全文。",
-        "importance": "欧洲能源与制裁立场公开信号；按发言／立场阅读。",
+        "whatHappened": "新华社 2026-10-20：PBOC 授权公布 LPR，1 年期 3.0%、5 年期以上 3.5%，均未调整。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "本期（2026-10-20）",
+            "上期",
+            "变化",
+            "备注"
+          ],
+          "rows": [
+            [
+              "1 年期 LPR",
+              "3.0%",
+              "3.0%",
+              "持平",
+              "PBOC 授权"
+            ],
+            [
+              "5 年期以上 LPR",
+              "3.5%",
+              "3.5%",
+              "持平",
+              "同上"
+            ]
+          ],
+          "note": "发布：新华社转述｜2026-10-20"
+        },
+        "background": "LPR 为贷款定价主要参考。",
+        "progress": "下期按月度公布节奏。",
+        "importance": "中国信贷定价锚例行观察；持平非政策转向证据。",
         "marketImpact": {
-          "hasImpact": true,
+          "hasImpact": false,
           "bullets": [
-            "若市场此前定价「欧方可能恢复俄气」，该表态可能削弱该叙事（推断）。",
-            "不做交易或投资建议。"
+            "无"
           ]
         },
         "sources": [
           {
-            "label": "Interfax-Ukraine",
-            "url": "https://en.interfax.com.ua/news/economic/1222604.html"
+            "label": "新华社",
+            "url": "https://www.news.cn/20261020/b68d5e1b300e4a5bbfe5c1149cba5314/c.html"
           }
         ]
       }

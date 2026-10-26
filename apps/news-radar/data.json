@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-10-21",
-  "asOf": "2026-10-21",
+  "updatedAt": "2026-10-26",
+  "asOf": "2026-10-26",
   "asOfZone": "CST",
   "source": "环球新闻情报中心／全球投资情报雷达",
   "sourceEn": "Global Investment Radar",
   "status": "ok",
   "demo": false,
   "frequency": "daily",
-  "edition": "Day-06",
+  "edition": "Day-07",
   "version": "screening-v2.1",
   "runKind": "跨日试运行",
-  "lead": "Day-06（2026-10-21 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（PPI／中国 Q3 GDP／TSMC Q3／零售）；本轮不升三级。",
+  "lead": "Day-07（2026-10-26 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（Meta Q3 Capex／美国闪现 PMI／初请失业金／欧元区闪现 PMI）；本轮不升三级。",
   "emptyReason": "本轮无三级/四级入选（路径 A／B／C 均未达标；禁止凑条；本轮明示不升三级）。",
   "note": "人工编辑，页面不自动刷新，不得视为实时行情。内部研究用、非正式自动外发。与 /apps/whats-latest/ 自动管道分立。S2 待用户确认。二级存档只作索引。站立授权：雷达 N=0→空报 C。",
   "counts": {
@@ -21,11 +21,11 @@
     "tier2": 4
   },
   "funnel": {
-    "scans": 51,
-    "independent": 28,
+    "scans": 48,
+    "independent": 12,
     "duplicates": 16,
-    "notPublished": 9,
-    "tier1": 24,
+    "notPublished": 8,
+    "tier1": 8,
     "tier2": 4,
     "tier3": 0,
     "tier4": 0
@@ -33,26 +33,26 @@
   "items": [],
   "archive": [
     {
-      "id": "L2-01",
-      "title": "BLS 2026-09 PPI",
+      "id": "D07-T2-01",
+      "title": "Meta 2026Q3 Capex／营收／指引",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "L2-02",
-      "title": "中国 NBS 2026Q3 GDP",
+      "id": "D07-T2-02",
+      "title": "美国 10 月闪现 PMI 综合 57.6",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "L2-03",
-      "title": "TSMC 2026Q3",
+      "id": "D07-T2-03",
+      "title": "DOL 初请 week ended 10-17：194k",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "L2-04",
-      "title": "Census 2026-09 零售",
+      "id": "D07-T2-04",
+      "title": "欧元区 10 月闪现 PMI 综合 51.9",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     }
