@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8722,6 +8722,104 @@ func test_cold() -> void:
 	await seconds(1.0)
 	check(GameState.cold < before - 5.0, "站到铁匠炉边：一秒暖回来 %.1f" % (before - GameState.cold))
 	await free_main(main)
+
+
+## 5.4b 火把：点着、举着（不能格挡）、插在地上、被风吹灭 / 摔灭、拿点着的去点、拔起来、烧完；长眠者绕开；塔里那捆火把
+func test_torch() -> void:
+	GameState.new_game(550)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	var main := await make_area("highland")
+	await frames(3)
+	var p: FpController = main.player
+	var hand: TorchHand = p.torch
+	check(hand.windy and hand.state == TorchHand.NONE, "高地户外有风，手里空着")
+	var said := []
+	hand.said.connect(func(t): said.append(t))
+	hand.windy = false                   # 下面不让风随机吹灭（风的概率单独查）；点火的时间按有风的算
+	hand.use_key()
+	check(hand.state == TorchHand.NONE and said.size() == 1 and said[0].contains("没有火把"), "背包里没火把：按 T 说「%s」" % (said[0] if said.size() > 0 else ""))
+	GameState.add_item("torch", 3)
+	hand.use_key()
+	check(hand.state == TorchHand.LIGHTING and GameState.count_item("torch") == 2, "有火把：拿出一支打火石点（背包剩 %d）" % GameState.count_item("torch"))
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	check(hand.lit() and hand.light.visible and hand.fp_visual.visible and hand.fire.is_in_group("light_source"), "打了 %.1f 秒火石（风里 %.1f）：点着了，左下角举着、带一盏光" % [TorchHand.LIGHT_TIME, TorchHand.LIGHT_TIME_WIND])
+	check("torch" in GameState.tips_seen or main.tip_now == "torch" or "torch" in main.tip_queue, "第一次点着弹教学提示「火把」")
+	check(not Cold.near_fire(get_tree(), hand.fire.global_position), "举着的火把暖不了身子")
+	p.melee.block_press()
+	await frames(2)
+	check(not p.melee.blocking() and said.back().contains("挡不了"), "举着火把格挡：挡不了（「%s」）" % said.back())
+	p.melee.block_release()
+	var fires := SleeperCrowd.fires(get_tree())
+	check(fires.any(func(f): return (f[0] as Vector2).distance_to(Vector2(hand.fire.global_position.x, hand.fire.global_position.z)) < 0.1),
+		"长眠者把举着的火把也算一团火（会绕开）")
+	# 插在地上
+	var planted := hand.plant()
+	await frames(2)
+	check(planted != null and planted.lit and hand.state == TorchHand.NONE and planted.global_position.distance_to(p.global_position) < 1.5
+		and absf(planted.global_position.y - Highland.height_at(planted.global_position.x, planted.global_position.z)) < 0.3 and PlantedTorch.lit_count(get_tree()) == 1,
+		"T 插在面前的地上：亮着，手里空了")
+	check(planted.verb_now() == "拔起" and SleeperCrowd.fires(get_tree()).size() >= 1, "对着插着的：「拔起」；长眠者绕开它")
+	planted.blow_out()
+	check(not planted.lit and planted.verb_now() == "点着" and not planted.is_in_group("light_source"), "被风吹灭：不亮了，对着它是「点着」")
+	var r := planted.interact(p)
+	check(not planted.lit and str(r.get("toast", "")).contains("点着的火把"), "手里没有点着的火把点不着")
+	hand.use_key()
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	r = planted.interact(p)
+	check(planted.lit and hand.lit() and r.get("toast") == "点着了", "拿着点着的火把对着它按 E：点着了")
+	# 被推倒：举着的摔灭；T 重新点
+	p.knock_down(0.3, Vector3.FORWARD)
+	check(hand.state == TorchHand.OUT and said.back().contains("灭"), "被推倒：火把摔进雪里灭了")
+	await seconds(0.5)
+	var fuel_before := hand.fuel
+	hand.use_key()
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	check(hand.lit() and GameState.count_item("torch") == 1 and hand.fuel <= fuel_before, "T 重新点着灭了的那支（不用新的，背包还是 %d）" % GameState.count_item("torch"))
+	# 插四支：只有最新的三支带实时光源
+	PlantedTorch.max_lights = 3
+	var row := [planted]
+	for k in 3:
+		p.global_position += Vector3(2.0, 0, 0)
+		row.append(hand.plant())
+		if k < 2:
+			GameState.add_item("torch")
+			hand.use_key()
+			await seconds(TorchHand.LIGHT_TIME + 0.3)
+	await frames(2)
+	var lights := row.filter(func(t): return t.light.visible).size()
+	check(PlantedTorch.lit_count(get_tree()) == 4 and lights == 3 and not (row[0] as PlantedTorch).light.visible, "插了四支：都亮着，最新的三支带实时光源（%d）" % lights)
+	# 拔起：手里空着才行
+	r = (row[3] as PlantedTorch).interact(p)
+	await frames(2)
+	check(hand.lit() and PlantedTorch.lit_count(get_tree()) == 3 and r.get("toast") == "拔起火把", "手里空着：拔起来接着举")
+	r = (row[2] as PlantedTorch).interact(p)
+	check((row[2] as PlantedTorch).lit and str(r.get("toast")).contains("已经拿着"), "手里有了就拔不了")
+	# 烧完
+	(row[2] as PlantedTorch).fuel = 0.2
+	hand.fuel = 0.2
+	await seconds(0.5)
+	check(hand.state == TorchHand.NONE and said.back().contains("烧完") and not (row[2] as PlantedTorch).lit and not (row[2] as PlantedTorch).can_interact(), "烧完：手里的没了，插着的剩一根黑棍")
+	# 风：插着的被吹灭的机会比举着的大；室内没风
+	check(PlantedTorch.BLOW > TorchHand.BLOW_HELD and 1.0 / TorchHand.BLOW_HELD > 120.0, "风里举着平均 %.0f 秒吹灭一次，插着的更容易" % (1.0 / TorchHand.BLOW_HELD))
+	# 换区域跟着走
+	GameState.add_item("torch")
+	hand.use_key()
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	check(not GameState.held_torch.is_empty() and GameState.held_torch.lit, "手里的火把记在 GameState（换区域跟着走）")
+	await free_main(main)
+	var tower := await make_area("beacon_tower")
+	await frames(3)
+	check(tower.player.torch.lit() and not tower.player.torch.windy, "进了塔：还举着，屋里没风")
+	tower.player.torch.plant()
+	var bundle: Array = tower.world.find_children("*", "Pickup", true, false).filter(func(n): return n.pickup_id == BeaconTower.TORCH_PICKUP)
+	var before := GameState.count_item("torch")
+	if bundle.size() == 1:
+		tower._on_interacted((bundle[0] as Pickup).interact(tower.player))
+	check(bundle.size() == 1 and GameState.count_item("torch") == before + 3 and GameState.picked.has(BeaconTower.TORCH_PICKUP), "塔里东南角那捆备用火把：拾取得 3 支")
+	await free_main(tower)
+	GameState.new_game(551)
+	check(GameState.held_torch.is_empty(), "新游戏手里没火把")
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

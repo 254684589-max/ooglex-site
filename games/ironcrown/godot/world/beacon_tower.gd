@@ -9,6 +9,7 @@ extends RefCounted
 ## 坐标：原点在底层地面中心，北 = -Z；出口门在南墙（z = +2.4），和外面塔门同一面（HighlandBeacon：门朝塔的本地 +Z）。
 ## 室内的光不跟时段走；箭窗按时段换颜色（Inn.glass）。
 
+const TORCH_PICKUP := "beacon19_torches"
 const IN := 4.8
 const UPPER := 4.2                   # 顶层楼板的高度
 const UPPER_H := 3.2                 # 顶层小屋的高
@@ -175,11 +176,6 @@ static func _furniture(kit: MeshKit) -> void:
 		kit.cylinder("timber", p, p + Vector3(0, 0.45, 0), 0.27, 0.3, 10, 0.75)
 		kit.cylinder("timber", p + Vector3(0, 0.45, 0), p + Vector3(0, 0.9, 0), 0.3, 0.27, 10, 0.85)
 		kit.cylinder("oil", p + Vector3(0, 0.9, 0), p + Vector3(0, 0.92, 0), 0.25, 0.25, 10)
-	for k in 5:                                                          # 东南角：一捆备用的火把（5.4 起能点）
-		var a := k * 0.5
-		var base := Vector3(1.85 + cos(a) * 0.08, 0, 1.6 + sin(a) * 0.08)
-		kit.cylinder("timber", base, base + Vector3(0.18, 1.0, -0.05 + k * 0.02), 0.03, 0.025, 5, 0.8)
-		kit.cylinder("cloth", base + Vector3(0.15, 0.85, -0.04 + k * 0.02), base + Vector3(0.19, 1.08, -0.05 + k * 0.02), 0.05, 0.045, 6, 0.6)
 	var u := UPPER
 	var bed := Vector3(1.85, u, -0.5)                                     # 床：木框、毛皮褥子、卷起来的枕头
 	kit.box("timber", bed + Vector3(0, 0.25, 0), Vector3(0.85, 0.12, 2.0), Basis.IDENTITY, 0.85, 0.6)
@@ -224,6 +220,28 @@ static func _decor(parent: Node3D, reduced_motion := false) -> void:
 	d.chest(Vector3(1.85, UPPER, 0.95), 0.0, Vector3(0.75, 0.45, 0.5))                        # 床头的箱子
 	d.candles(Vector3(-0.75, UPPER + 0.75, 1.5), 1)
 	d.build(parent, "Decor", not reduced_motion)
+	_torch_bundle(parent)
+
+
+## 东南角：一捆备用的火把（5.4b 起能拿：拾取得 3 支；拿走以后这捆就没了）
+static func _torch_bundle(parent: Node3D) -> void:
+	if GameState.picked.has(TORCH_PICKUP):
+		return
+	var p := Pickup.make("torch", "一捆备用的火把", Color.WHITE, Vector3(0.45, 1.1, 0.45))
+	p.pickup_id = TORCH_PICKUP
+	p.count = 3
+	p.show_box = false
+	p.position = Vector3(1.9, 0, 1.6)
+	parent.add_child(p)
+	var kit := MeshKit.new()
+	for k in 5:
+		var a := k * 0.5
+		var base := Vector3(-0.05 + cos(a) * 0.08, 0, sin(a) * 0.08)
+		kit.cylinder("timber", base, base + Vector3(0.18, 1.0, -0.05 + k * 0.02), 0.03, 0.025, 5, 0.8)
+		kit.cylinder("cloth", base + Vector3(0.15, 0.85, -0.04 + k * 0.02), base + Vector3(0.19, 1.08, -0.05 + k * 0.02), 0.05, 0.045, 6, 0.6)
+	var mi := kit.build({"timber": Look.mat("timber"), "cloth": Inn._cloth_mat()})
+	mi.name = "TorchBundle"
+	p.add_child(mi)
 
 
 static func _colliders(parent: Node3D) -> void:

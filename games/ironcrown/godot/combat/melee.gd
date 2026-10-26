@@ -209,6 +209,10 @@ func staggered() -> bool:
 
 ## 格挡键按下 / 松开（右键、Q、触屏「挡」）。收着剑时先拔剑，拔出来还按着就举剑格挡。
 func block_press() -> void:
+	if player and player.torch and player.torch.held():
+		block_held = false
+		player.torch.said.emit("左手举着火把，挡不了。")      # 5.4b：左手占着
+		return
 	block_held = true
 	if down or staggered():
 		return

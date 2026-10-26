@@ -535,6 +535,7 @@ func _fog_end() -> float:
 ## 中 = 原分辨率、月光阴影（1 段）、泛光；高 = 再加 2 倍抗锯齿、阴影 2 段
 func apply_quality(tier: String) -> void:
 	quality = tier
+	PlantedTorch.max_lights = 2 if tier == "low" else 3       # 插在地上的火把，最新几支带实时光源（5.4b）
 	if pause_menu:
 		pause_menu.show_quality(tier)
 	var vp := get_viewport()
@@ -711,6 +712,9 @@ func _build_ui() -> void:
 	player.melee.defeated.connect(_on_defeated)
 	player.surface_changed.connect(_on_surface_changed)
 	player.rescued.connect(_on_rescued)
+	player.torch.windy = area == "highland" and not Areas.is_indoor(area)     # 高地的户外有风（5.4b）
+	player.torch.said.connect(func(t: String): hud.toast(t, 2.5))
+	player.torch.changed.connect(_on_torch_changed)
 	for e in get_tree().get_nodes_in_group("enemy"):
 		e.state_changed.connect(_on_enemy_state)
 	if touch_mode:
@@ -860,6 +864,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_released("block_key"):
 		player.melee.block_release()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("torch"):
+		player.torch.use_key()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("sheathe"):
@@ -1183,7 +1191,7 @@ func _on_interacted(r: Dictionary) -> void:
 	if r.has("speech"):
 		hud.say(r.speech)
 	if r.get("kind") == "pickup":
-		GameState.add_item(r.item)
+		GameState.add_item(r.item, int(r.get("count", 1)))
 	if r.get("kind") == "dialogue":
 		if brawl_active() or encounter_active():
 			hud.toast("先把这一架打完。", 1.5)
@@ -1862,6 +1870,13 @@ func _cold_tick(delta: float) -> void:
 	if t != cold_shown:
 		cold_shown = t
 		hud.set_cold(t, GameState.frostbite)
+
+
+## 火把（5.4b，player/torch_hand.gd）：第一次点着弹教学提示；冒烟、测试看日志
+func _on_torch_changed(s: int) -> void:
+	if s == TorchHand.LIT:
+		show_tip("torch")
+	print("IC_TORCH state=%s fuel=%.0f planted=%d" % [["none", "lighting", "lit", "out"][s], player.torch.fuel, PlantedTorch.lit_count(get_tree())])
 
 
 ## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」

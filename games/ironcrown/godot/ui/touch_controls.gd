@@ -3,6 +3,7 @@ extends Control
 ## 手机 / 平板的双摇杆（GDD.md 第三节）：
 ## - 左半屏：按下处出现浮动摇杆，拖动走路，推到边缘 = 跑；
 ## - 右半屏：拖动转视角；右下角按钮「跳」「蹲」「攻」（2.4：点按轻击、按住 0.35 秒重击）「挡」（2.5：按住格挡）；对准可交互物体时，「跳」上方多出交互按钮（文字是动作：交谈 / 打开 / 拾取）。
+## 5.4b：背包里有火把或手里拿着时，「挡」上方多一个「火」（点着）/「插」（插在地上）。
 ## 顶部一条留给「菜单」按钮。只在有触屏的设备上显示；force_visible 用于测试。
 ## B.2：军阵里有小队时，「视角」上方多一个「令」，点一下往左展开「跟随」「坚守」「冲锋」三个按钮，点哪个就下哪个命令（order_pressed）。
 
@@ -46,6 +47,8 @@ func button_centers() -> Dictionary:
 		"camera": Vector2(r.x - 24.0 - BTN_R, r.y - 88.0 - BTN_R * 5.0)}
 	if has_target():
 		c["interact"] = Vector2(r.x - 24.0 - BTN_R, r.y - 64.0 - BTN_R * 3.0)
+	if has_torch():
+		c["torch"] = Vector2(r.x - 48.0 - BTN_R * 3.0, r.y - 96.0 - BTN_R * 7.0)     # 「挡」上面（5.4b）
 	if order_enabled:
 		c["order"] = Vector2(r.x - 24.0 - BTN_R, r.y - 112.0 - BTN_R * 7.0)
 		if order_open:
@@ -65,6 +68,11 @@ func buttons_rect() -> Rect2:
 	for id in c:
 		r = r.merge(Rect2(c[id] - pad, pad * 2.0))
 	return r
+
+
+## 背包里有火把、或者手里拿着（5.4b）：多一个「火」
+func has_torch() -> bool:
+	return player != null and player.torch != null and (player.torch.held() or GameState.has_item("torch"))
 
 
 func has_target() -> bool:
@@ -110,6 +118,8 @@ func _input(event: InputEvent) -> void:
 				player.toggle_crouch()
 			elif b == "interact":
 				player.interactor.use()
+			elif b == "torch":
+				player.torch.use_key()
 			elif b == "attack" and attack_index == -1:
 				attack_index = event.index       # 按下 = 开始蓄力，松开时按住的时间决定轻 / 重
 				player.melee.press()
@@ -172,6 +182,8 @@ func _draw() -> void:
 	labels.merge(ORDER_LABELS)
 	if has_target():
 		labels["interact"] = player.interactor.target.verb_now()
+	if has_torch():
+		labels["torch"] = "插" if player.torch.lit() else "火"
 	var centers := button_centers()
 	for id in centers:
 		var p: Vector2 = centers[id]

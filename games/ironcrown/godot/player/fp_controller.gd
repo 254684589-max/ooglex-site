@@ -34,6 +34,7 @@ const FALL_Y := -6.0              # 掉到这么低 = 掉出地图了（鹭沼�
 var head: Node3D
 var interactor: Interactor
 var melee: Melee
+var torch: TorchHand               # 左手的火把（5.4b）
 var avatar: PlayerAvatar
 var third_person := false
 var dialogue_view := false    # 对话时临时用第一人称的镜头（不改设置）
@@ -88,6 +89,10 @@ func _init() -> void:
 	melee.name = "Melee"
 	melee.player = self
 	add_child(melee)
+	torch = TorchHand.new()
+	torch.name = "Torch"
+	torch.player = self
+	add_child(torch)
 	avatar = PlayerAvatar.new()
 	avatar.name = "Avatar"
 	avatar.player = self
@@ -160,6 +165,8 @@ func yaw_deg() -> float:
 ## 被推倒（5.4a）：躺 sec 秒，身子往 dir 滑一下；镜头贴到地上再慢慢起来
 func knock_down(sec: float, dir := Vector3.ZERO) -> void:
 	knocked_left = maxf(knocked_left, sec)
+	if torch:
+		torch.on_knocked()           # 举着的火把摔灭（5.4b）
 	shove = Vector3(dir.x, 0.0, dir.z).normalized() * 2.2 if dir != Vector3.ZERO else Vector3.ZERO
 
 
