@@ -1,30 +1,29 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-10-25T20:48:01Z",
-  "status": "failed",
+  "generatedAt": "2026-10-26T04:41:48Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-10-25T20:48:01Z",
-  "lastSuccessfulAt": "2026-10-25T16:12:20Z",
-  "consecutiveFailures": 1,
-  "publishedSnapshotAt": "2026-10-25T16:12:20Z",
-  "snapshotPreserved": true,
-  "failureReason": "Google News六个板块均未刷新",
+  "lastAttemptAt": "2026-10-26T04:41:48Z",
+  "lastSuccessfulAt": "2026-10-26T04:41:48Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-10-26T04:41:48Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
   "coverage": {
     "expectedComponents": 7,
     "publishedComponents": 7,
-    "refreshedComponents": 0,
-    "fallbackComponents": 7,
+    "refreshedComponents": 7,
+    "fallbackComponents": 0,
     "unavailableComponents": 0,
     "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "failed",
-    "published": false,
-    "refreshedComponents": [],
-    "fallbackComponents": [
+    "status": "success",
+    "published": true,
+    "refreshedComponents": [
       "politics-news",
       "world-news",
       "markets-news",
@@ -33,6 +32,7 @@
       "risk-news",
       "market-quotes"
     ],
+    "fallbackComponents": [],
     "unavailableComponents": [],
     "unknownComponents": []
   },
@@ -43,11 +43,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     },
     {
       "id": "world-news",
@@ -55,11 +55,11 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     },
     {
       "id": "markets-news",
@@ -67,11 +67,11 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     },
     {
       "id": "tech-news",
@@ -79,11 +79,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     },
     {
       "id": "law-news",
@@ -91,11 +91,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     },
     {
       "id": "risk-news",
@@ -103,11 +103,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     },
     {
       "id": "market-quotes",
@@ -115,11 +115,11 @@
       "role": "auxiliary",
       "frequency": "daily",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-10-25T20:48:01Z",
-      "lastSuccessAt": "2026-10-25T16:12:20Z"
+      "lastAttemptAt": "2026-10-26T04:41:48Z",
+      "lastSuccessAt": "2026-10-26T04:41:48Z"
     }
   ],
   "policy": {
