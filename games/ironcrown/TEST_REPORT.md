@@ -2,6 +2,10 @@
 
 每一步的实际命令与结果，最新的在上面。
 
+## 2026-10-26 · 上线 5.3c–5.5a
+
+`tools/build_web.sh games/ironcrown/play`（带全量测试）：第一次 1 项不过（`marsh` 组「每件活都不长」52.5 毫秒，上限 40；这几步没碰鹭沼，机器慢），按规矩重跑一次：**1952 项通过** → `ic-c7e86e43`，78.8 MB。仓库根目录起本地服务，不带 `?preview` 打开 `?area=highland&view=19&firsttide=go`（插满火把、潮水上来）、`?view=20&day2=lit`（第十八烽点着）：载入完、0 报错。
+
 ## 2026-10-26 · 5.5a 第二天：诺伯特、第十八烽、石圈
 
 构建：`tools/build_web.sh <临时目录>`（Godot 4.7.2）。全量测试 **1952 项通过**（新 `day2` 组 23 项）。`ui dialogue looks quests highland beacon19 beaconpeople areas` 172 项（新台词的字都在字体子集里）。
