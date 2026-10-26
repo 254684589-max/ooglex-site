@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 600.0
+	dog.wait_time = 1200.0                      # 整个测试跑多久算卡死（2026-10-26：加了火把、第一夜潮水以后全量超过 600 秒）
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -8868,7 +8868,7 @@ func test_firsttide() -> void:
 	check(ft.crowd != null and ft.crowd.count == FirstTide.COUNT and ft.crowd.hidden.has(FirstTide.SEEN_INDEX) and ft.seen_model != null,
 		"%d 个长眠者；中间混着一张认得的脸（芦栈村的托宾，换成他的样子）" % FirstTide.COUNT)
 	p.global_position = Vector3(44, Highland.height_at(44, -40) + 0.5, -40)
-	Engine.time_scale = 4.0
+	Engine.time_scale = 6.0
 	var t0 := Time.get_ticks_msec()
 	while ft.state != FirstTide.DONE and Time.get_ticks_msec() - t0 < 150000:
 		await seconds(1.0)
@@ -8891,7 +8891,7 @@ func test_firsttide() -> void:
 		(t as PlantedTorch).windy = false
 	main2.player.global_position = Vector3(44, Highland.height_at(44, -40) + 0.5, -40)
 	ft2.start_tide()
-	Engine.time_scale = 4.0
+	Engine.time_scale = 6.0
 	t0 = Time.get_ticks_msec()
 	while ft2.state != FirstTide.DONE and Time.get_ticks_msec() - t0 < 150000:
 		await seconds(1.0)
