@@ -199,7 +199,7 @@ def main() -> None:
         text = (SITE / rel).read_text(encoding="utf-8")
         if '<script src="/assets/pro-access.js?v=7"></script>' not in text:
             fail("Finance Column pro-access missing from: " + rel)
-        if '<script src="/assets/pro-finance-column.js?v=2"></script>' not in text:
+        if '<script src="/assets/pro-finance-column.js?v=3"></script>' not in text:
             fail("Finance Column adapter missing from: " + rel)
         if "ooglex:finance-full-ready" not in text:
             fail("Finance Column full-data rerender hook missing from: " + rel)
@@ -219,8 +219,8 @@ def main() -> None:
         "apps/macro-radar/index.html": "app.js",
     }
     sync_access = '<script src="/assets/pro-access.js?v=7"></script>'
-    auth_session = '<script src="/assets/auth-session.js?v=1"></script>'
-    sync_adapter = '<script src="/assets/pro-rich-data.js?v=4"></script>'
+    auth_session = '<script src="/assets/auth-session.js?v=2"></script>'
+    sync_adapter = '<script src="/assets/pro-rich-data.js?v=5"></script>'
     hard_stop = '<script src="/assets/pro-preview-gate.js?v=1"></script>'
     for rel, legacy_app in rich_pages.items():
         p = SITE / rel

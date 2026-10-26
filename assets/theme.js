@@ -490,6 +490,6 @@
     s.async = false; // dynamic scripts with async=false execute in insertion order
     parent.appendChild(s);
   }
-  if (!window.OoglexAuthSession) load("/assets/auth-session.js?v=20261024-refresh");
-  load("/assets/access-gate.js?v=20261024-refresh");
+  if (!window.OoglexAuthSession) load("/assets/auth-session.js?v=20261026-proapi");
+  load("/assets/access-gate.js?v=20261026-proapi");
 })();

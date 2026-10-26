@@ -315,9 +315,9 @@ def inject_rich_access_adapter() -> None:
     """Keep original HTML/UI and install entitlement interception before app.js."""
     snippet = (
         '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
-        '<script src="/assets/auth-session.js?v=1"></script>\n'
+        '<script src="/assets/auth-session.js?v=2"></script>\n'
         '<script src="/assets/pro-access.js?v=7"></script>\n'
-        '<script src="/assets/pro-rich-data.js?v=4"></script>\n'
+        '<script src="/assets/pro-rich-data.js?v=5"></script>\n'
         '<script src="/assets/pro-preview-gate.js?v=1"></script>\n'
     )
     for relpath in (
@@ -337,9 +337,9 @@ def inject_rich_access_adapter() -> None:
 
     finance_snippet = (
         '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
-        '<script src="/assets/auth-session.js?v=1"></script>\n'
+        '<script src="/assets/auth-session.js?v=2"></script>\n'
         '<script src="/assets/pro-access.js?v=7"></script>\n'
-        '<script src="/assets/pro-finance-column.js?v=2"></script>\n'
+        '<script src="/assets/pro-finance-column.js?v=3"></script>\n'
     )
     for relpath in (
         "apps/finance-column/index.html",
@@ -360,7 +360,7 @@ def inject_rich_access_adapter() -> None:
     # entitlement client so signed-in OWNER/PRO sessions can request the full set.
     whats_snippet = (
         '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
-        '<script src="/assets/auth-session.js?v=1"></script>\n'
+        '<script src="/assets/auth-session.js?v=2"></script>\n'
         '<script src="/assets/pro-access.js?v=7"></script>\n'
     )
     p = OUT / "apps" / "whats-latest" / "index.html"

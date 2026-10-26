@@ -310,6 +310,53 @@ async function getAccess(product, token, env) {
   };
 }
 
+const AUTH_REFRESH_TIMEOUT_MS = 8000;
+
+async function refreshSession(request, env, cors) {
+  const headers = { ...cors, "cache-control": "no-store" };
+  let body;
+  try {
+    const raw = await request.text();
+    if (raw.length > 4096) return json({ error: "payload_too_large" }, 413, headers);
+    body = JSON.parse(raw);
+  } catch {
+    return json({ error: "invalid_json" }, 400, headers);
+  }
+  const refreshToken = body && typeof body.refresh_token === "string" ? body.refresh_token.trim() : "";
+  if (!refreshToken || refreshToken.length > 512 || /\s/.test(refreshToken)) {
+    return json({ error: "invalid_refresh_token" }, 400, headers);
+  }
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), AUTH_REFRESH_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: "POST",
+      headers: { apikey: env.SUPABASE_PUBLISHABLE_KEY, "content-type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+      signal: ctrl.signal
+    });
+    if (res.status === 429) return json({ error: "rate_limited" }, 429, headers);
+    if (!res.ok) return json({ error: "refresh_failed" }, 401, headers);
+    const session = await res.json();
+    if (!session || !session.access_token || !session.refresh_token) {
+      return json({ error: "refresh_failed" }, 502, headers);
+    }
+    return json({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+      token_type: session.token_type || "bearer",
+      expires_in: session.expires_in,
+      expires_at: session.expires_at,
+      user: session.user
+    }, 200, headers);
+  } catch {
+    return json({ error: "auth_upstream_unavailable" }, 503, headers);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function readDataset(binding, key) {
   const obj = await binding.get(key);
   if (!obj) return null;
@@ -3037,6 +3084,14 @@ export default {
         ...cors,
         "cache-control": "no-store"
       });
+    }
+
+    // 登录续期代理：浏览器在大陆网络下直连 supabase.co 常常很慢，会把已登录用户
+    // 拖到会员校验超时、退回 10% 预览。这里由 Worker 在服务端转发 Supabase 的
+    // refresh_token 续期，浏览器只需要连得上本域名。只转发、不存储、不记日志。
+    if (url.pathname === "/v1/auth/refresh") {
+      if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
+      return refreshSession(request, env, cors);
     }
 
     if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405, cors);
