@@ -7,6 +7,8 @@ var item_id := ""
 var pickup_id := ""               # 场景里唯一的编号：捡走后记进 GameState.picked，读档后不再出现（2.8）
 var color := Color("c8a060")
 var size := Vector3(0.25, 0.12, 0.18)
+var show_box := true              # false：外观由调用方挂在下面（塔里那捆火把）
+var count := 1                    # 一次拿几个（5.4b：塔里那捆备用火把）
 
 
 static func make(id: String, name_text: String, c: Color, s := Vector3(0.25, 0.12, 0.18)) -> Pickup:
@@ -30,6 +32,8 @@ func _ready() -> void:
 	cs.shape = bs
 	cs.position.y = size.y * 0.5
 	add_child(cs)
+	if not show_box:
+		return
 	var mi := MeshInstance3D.new()
 	var bm := BoxMesh.new()
 	bm.size = size
@@ -44,4 +48,4 @@ func interact(_who: FpController) -> Dictionary:
 		GameState.picked.append(pickup_id)
 	collision_layer = 0
 	queue_free()
-	return {"kind": "pickup", "item": item_id, "name": display_name, "toast": "拾取：%s" % display_name}
+	return {"kind": "pickup", "item": item_id, "count": count, "name": display_name, "toast": "拾取：%s" % display_name + ("（%d）" % count if count > 1 else "")}

@@ -39,6 +39,7 @@ const CARRY_PER_STR := 2.0
 var flags := {}
 var cold := 0.0                  # 寒冷值 0..100（5.2c，core/cold.gd）
 var frostbite := false           # 冻伤了（寒冷值涨满；在火边歇够了才好）
+var held_torch := {}             # 手里的火把 {fuel, lit}（5.4b TorchHand；换区域跟着走，不进存档）
 var skills := DEFAULT_SKILLS.duplicate()
 var wits := DEFAULT_WITS
 var strength := DEFAULT_STRENGTH
@@ -90,6 +91,7 @@ func new_game(seed_override := -1) -> void:
 	flags.clear()
 	cold = 0.0
 	frostbite = false
+	held_torch = {}
 	checks.clear()
 	quests.clear()
 	clues.clear()

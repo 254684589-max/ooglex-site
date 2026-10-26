@@ -21,8 +21,8 @@ fi
 echo "PARSE OK"
 echo "== 自动化测试"
 LOG="$TMP/test.log"
-# 整套测试的时限：2026-10-24（5.3b）整套跑到 480 秒的老上限、最后一项被掐断，放宽到 900 秒（单项卡死仍有 WATCHDOG）
-timeout 900 "$GODOT" --headless --path "$PROJECT" res://tests/test_runner.tscn -- "$@" >"$LOG" 2>&1
+# 整套测试的时限：2026-10-24（5.3b）整套跑到 480 秒的老上限、最后一项被掐断，放宽到 900 秒；2026-10-26（5.4c）测试里的 WATCHDOG 也是整套的（600 秒）掐断了第一夜潮水，两个都放到 1200 秒
+timeout 1200 "$GODOT" --headless --path "$PROJECT" res://tests/test_runner.tscn -- "$@" >"$LOG" 2>&1
 CODE=$?
 grep -vE "^\s*$" "$LOG" | grep -vE "^\s+at: " | grep -E "^== |ok |info |FAIL|SCRIPT ERROR|^ERROR|PASSED|FAILED|WATCHDOG"
 # 退出时资源 / 对象泄漏也算失败（2.1 起：脚本里的 static var 曾导致脚本释放不掉）

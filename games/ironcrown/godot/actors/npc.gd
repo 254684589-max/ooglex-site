@@ -15,6 +15,7 @@ var pose := "idle"                 # A.2b：平时的动作（data/looks.json �
 var talking := false
 const LYING_OFFSET := Vector3(0, 0.08, 0.75)   # LayToIdle 第一帧：脚在本地 z -0.62、头在 +0.9；往床头挪、背贴在褥子上
 var lying := false          # 躺着（4.5c 病床上昏睡的家主）：身子放平、脸朝上，说话时不转身；头朝本地 +Z
+var far_end := 0.0          # 多远以外整个人（远处那份胶囊、名字）都不画（0 = 一直画）。第十九烽的人从村口看整条山谷时会把绘制调用顶过 400（5.3c）
 
 
 static func make(name_text: String, speech: Array, c := Color("4a5a6a")) -> Npc:
@@ -45,6 +46,15 @@ func _ready() -> void:
 		Blocks.label(self, display_name, Vector3(0, 0.95, 0.9), 32, 0.0035)
 	else:
 		Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+	if far_end > 0.0:
+		_cut_far(self)
+
+
+func _cut_far(node: Node) -> void:
+	if node is GeometryInstance3D and (node as GeometryInstance3D).visibility_range_end == 0.0:
+		(node as GeometryInstance3D).visibility_range_end = far_end
+	for ch in node.get_children():
+		_cut_far(ch)
 
 
 ## 换上真人模型（A.2）：近处画模型、远处画胶囊（visibility range），远了动作也停下

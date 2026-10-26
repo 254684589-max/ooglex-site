@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 600.0
+	dog.wait_time = 1200.0                      # 整个测试跑多久算卡死（2026-10-26：加了火把、第一夜潮水以后全量超过 600 秒）
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8724,6 +8724,289 @@ func test_cold() -> void:
 	await free_main(main)
 
 
+## 5.4b 火把：点着、举着（不能格挡）、插在地上、被风吹灭 / 摔灭、拿点着的去点、拔起来、烧完；长眠者绕开；塔里那捆火把
+func test_torch() -> void:
+	GameState.new_game(550)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	var main := await make_area("highland")
+	await frames(3)
+	var p: FpController = main.player
+	var hand: TorchHand = p.torch
+	check(hand.windy and hand.state == TorchHand.NONE, "高地户外有风，手里空着")
+	var said := []
+	hand.said.connect(func(t): said.append(t))
+	hand.windy = false                   # 下面不让风随机吹灭（风的概率单独查）；点火的时间按有风的算
+	hand.use_key()
+	check(hand.state == TorchHand.NONE and said.size() == 1 and said[0].contains("没有火把"), "背包里没火把：按 T 说「%s」" % (said[0] if said.size() > 0 else ""))
+	GameState.add_item("torch", 3)
+	hand.use_key()
+	check(hand.state == TorchHand.LIGHTING and GameState.count_item("torch") == 2, "有火把：拿出一支打火石点（背包剩 %d）" % GameState.count_item("torch"))
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	check(hand.lit() and hand.light != null and hand.fp_visual.visible and hand.fire.is_in_group("light_source"), "打了 %.1f 秒火石（风里 %.1f）：点着了，左下角举着、带一盏光" % [TorchHand.LIGHT_TIME, TorchHand.LIGHT_TIME_WIND])
+	check("torch" in GameState.tips_seen or main.tip_now == "torch" or "torch" in main.tip_queue, "第一次点着弹教学提示「火把」")
+	check(not Cold.near_fire(get_tree(), hand.fire.global_position), "举着的火把暖不了身子")
+	p.melee.block_press()
+	await frames(2)
+	check(not p.melee.blocking() and said.back().contains("挡不了"), "举着火把格挡：挡不了（「%s」）" % said.back())
+	p.melee.block_release()
+	var fires := SleeperCrowd.fires(get_tree())
+	check(fires.any(func(f): return (f[0] as Vector2).distance_to(Vector2(hand.fire.global_position.x, hand.fire.global_position.z)) < 0.1),
+		"长眠者把举着的火把也算一团火（会绕开）")
+	# 插在地上
+	var planted := hand.plant()
+	await frames(2)
+	check(planted != null and planted.lit and hand.state == TorchHand.NONE and planted.global_position.distance_to(p.global_position) < 1.5
+		and absf(planted.global_position.y - Highland.height_at(planted.global_position.x, planted.global_position.z)) < 0.3 and PlantedTorch.lit_count(get_tree()) == 1,
+		"T 插在面前的地上：亮着，手里空了")
+	check(planted.verb_now() == "拔起" and SleeperCrowd.fires(get_tree()).size() >= 1, "对着插着的：「拔起」；长眠者绕开它")
+	planted.blow_out()
+	check(not planted.lit and planted.verb_now() == "点着" and not planted.is_in_group("light_source"), "被风吹灭：不亮了，对着它是「点着」")
+	var r := planted.interact(p)
+	check(not planted.lit and str(r.get("toast", "")).contains("点着的火把"), "手里没有点着的火把点不着")
+	hand.use_key()
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	r = planted.interact(p)
+	check(planted.lit and hand.lit() and r.get("toast") == "点着了", "拿着点着的火把对着它按 E：点着了")
+	# 被推倒：举着的摔灭；T 重新点
+	p.knock_down(0.3, Vector3.FORWARD)
+	check(hand.state == TorchHand.OUT and said.back().contains("灭"), "被推倒：火把摔进雪里灭了")
+	await seconds(0.5)
+	var fuel_before := hand.fuel
+	hand.use_key()
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	check(hand.lit() and GameState.count_item("torch") == 1 and hand.fuel <= fuel_before, "T 重新点着灭了的那支（不用新的，背包还是 %d）" % GameState.count_item("torch"))
+	# 插四支：只有最新的三支带实时光源
+	PlantedTorch.max_lights = 3
+	var row := [planted]
+	for k in 3:
+		p.global_position += Vector3(2.0, 0, 0)
+		row.append(hand.plant())
+		if k < 2:
+			GameState.add_item("torch")
+			hand.use_key()
+			await seconds(TorchHand.LIGHT_TIME + 0.3)
+	await frames(2)
+	var lights := row.filter(func(t): return t.light.visible).size()
+	check(PlantedTorch.lit_count(get_tree()) == 4 and lights == 3 and not (row[0] as PlantedTorch).light.visible, "插了四支：都亮着，最新的三支带实时光源（%d）" % lights)
+	# 拔起：手里空着才行
+	r = (row[3] as PlantedTorch).interact(p)
+	await frames(2)
+	check(hand.lit() and PlantedTorch.lit_count(get_tree()) == 3 and r.get("toast") == "拔起火把", "手里空着：拔起来接着举")
+	r = (row[2] as PlantedTorch).interact(p)
+	check((row[2] as PlantedTorch).lit and str(r.get("toast")).contains("已经拿着"), "手里有了就拔不了")
+	# 烧完
+	(row[2] as PlantedTorch).fuel = 0.2
+	hand.fuel = 0.2
+	await seconds(0.5)
+	check(hand.state == TorchHand.NONE and said.back().contains("烧完") and not (row[2] as PlantedTorch).lit and not (row[2] as PlantedTorch).can_interact(), "烧完：手里的没了，插着的剩一根黑棍")
+	# 风：插着的被吹灭的机会比举着的大；室内没风
+	check(PlantedTorch.BLOW > TorchHand.BLOW_HELD and 1.0 / TorchHand.BLOW_HELD > 120.0, "风里举着平均 %.0f 秒吹灭一次，插着的更容易" % (1.0 / TorchHand.BLOW_HELD))
+	# 换区域跟着走
+	GameState.add_item("torch")
+	hand.use_key()
+	await seconds(TorchHand.LIGHT_TIME + 0.3)
+	check(not GameState.held_torch.is_empty() and GameState.held_torch.lit, "手里的火把记在 GameState（换区域跟着走）")
+	await free_main(main)
+	var tower := await make_area("beacon_tower")
+	await frames(3)
+	check(tower.player.torch.lit() and not tower.player.torch.windy, "进了塔：还举着，屋里没风")
+	tower.player.torch.plant()
+	var bundle: Array = tower.world.find_children("*", "Pickup", true, false).filter(func(n): return n.pickup_id == BeaconTower.TORCH_PICKUP)
+	var before := GameState.count_item("torch")
+	if bundle.size() == 1:
+		tower._on_interacted((bundle[0] as Pickup).interact(tower.player))
+	check(bundle.size() == 1 and GameState.count_item("torch") == before + 3 and GameState.picked.has(BeaconTower.TORCH_PICKUP), "塔里东南角那捆备用火把：拾取得 3 支")
+	await free_main(tower)
+	GameState.new_game(551)
+	check(GameState.held_torch.is_empty(), "新游戏手里没火把")
+
+
+## 5.4c 第一夜潮水：马蒂亚斯给火把 → 栅外那排木桩插满 → 潮水上来、碰到火的从营地西边绕过去 → 守住了 / 漫进营地少一个人 → 天亮
+func test_firsttide() -> void:
+	GameState.new_game(560)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	GameState.set_stage("ch2_main", "first_night")
+	GameState.set_flag("matthias_met")
+	GameState.set_flag("norbert_met")
+	GameState.set_flag("ch1_sleeper", "tobin")
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	var ask := "诺伯特说「先过了今夜」。入夜以后怎么守？"
+	check(has_opt(r, ask), "主线「第一夜」：马蒂亚斯多一个选项「入夜以后怎么守？」")
+	pick(r, ask)
+	check(GameState.count_item("torch") == 4 and GameState.quest_stage("ch2_main") == "light_line" and r.text().contains("木桩") and GameState.daypart == "night",
+		"马蒂亚斯塞给你四支火把，说栅外那排木桩一根插一支（主线「插火把」，天黑透了）")
+	r.start("beacon19", "matthias")
+	pick(r, "火把用完了。")
+	check(GameState.count_item("torch") == 6 and not has_opt(r, "火把用完了。"), "火把用完了再要：又给两支（只给一次）")
+	var main := await make_area("highland")
+	await frames(3)
+	var ft: FirstTide = main.first_tide
+	check(ft != null and ft.state == FirstTide.PREP and ft.lit_spots() == 2 and GameState.daypart == "night", "高地：栅外西南坡上一排木桩，营里的兵插亮了两头")
+	var sp := FirstTide.spots()
+	var bad := sp.filter(func(q): return (q as Vector2).distance_to(HighlandLayout.BEACON19) < HighlandLayout.PALISADE_R + 4.0 or (q as Vector2).distance_to(HighlandLayout.BEACON19) > 30.0)
+	check(bad.is_empty(), "木桩在木栅外 4–30 米（%s）" % str(bad))
+	var p: FpController = main.player
+	var hand: TorchHand = p.torch
+	hand.windy = false
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		(t as PlantedTorch).windy = false
+	for k in range(1, 5):
+		var q: Vector2 = sp[k]
+		p.global_position = Vector3(q.x, Highland.height_at(q.x, q.y + TorchHand.PLANT_DIST) + 0.2, q.y + TorchHand.PLANT_DIST)
+		p.rotation.y = 0.0
+		p.velocity = Vector3.ZERO
+		await physics(2)
+		hand.use_key()
+		await seconds(TorchHand.LIGHT_TIME + 0.3)
+		hand.plant()
+		await physics(2)
+	await physics(5)
+	check(ft.lit_spots() == 6 and ft.state == FirstTide.TIDE and GameState.quest_stage("ch2_main") == "tide", "中间插上四支（六根桩亮着）：潮水上来了（主线「潮水」，%d 根）" % ft.lit_spots())
+	check(ft.crowd != null and ft.crowd.count == FirstTide.COUNT and ft.crowd.hidden.has(FirstTide.SEEN_INDEX) and ft.seen_model != null,
+		"%d 个长眠者；中间混着一张认得的脸（芦栈村的托宾，换成他的样子）" % FirstTide.COUNT)
+	p.global_position = Vector3(44, Highland.height_at(44, -40) + 0.5, -40)
+	Engine.time_scale = 6.0
+	var t0 := Time.get_ticks_msec()
+	while ft.state != FirstTide.DONE and Time.get_ticks_msec() - t0 < 150000:
+		await seconds(1.0)
+	Engine.time_scale = 1.0
+	check(ft.state == FirstTide.DONE and ft.result == "held" and ft.intruded.size() < FirstTide.LOSE_AT and ft.crowd.rerouted >= FirstTide.COUNT * 0.6,
+		"火没断：%d 个碰到火从营地西边绕过去，漫进营地的 %d 个 → 守住了（%s）" % [ft.crowd.rerouted if ft.crowd else 0, ft.intruded.size(), ft.result])
+	await frames(3)
+	check(str(GameState.get_flag("ch2_first_tide", "")) == "held" and GameState.quest_stage("ch2_main") == "after_tide" and GameState.daypart == "dawn",
+		"天亮了：主线「天亮以后」，记下 held")
+	await free_main(main)
+	# 不插：两头那两支挡不住，潮水照直穿过营地 → 卷走一个人；天亮以后粮棚前数麻袋的兵不见了
+	GameState.new_game(561)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	GameState.set_stage("ch2_main", "light_line")
+	var main2 := await make_area("highland")
+	await frames(3)
+	var ft2: FirstTide = main2.first_tide
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		(t as PlantedTorch).windy = false
+	main2.player.global_position = Vector3(44, Highland.height_at(44, -40) + 0.5, -40)
+	ft2.start_tide()
+	Engine.time_scale = 6.0
+	t0 = Time.get_ticks_msec()
+	while ft2.state != FirstTide.DONE and Time.get_ticks_msec() - t0 < 150000:
+		await seconds(1.0)
+	Engine.time_scale = 1.0
+	check(ft2.result == "lost_one" and ft2.intruded.size() >= FirstTide.LOSE_AT and str(GameState.get_flag("ch2_first_tide", "")) == "lost_one",
+		"没插中间：%d 个漫进营地 → 卷走一个人（%s）" % [ft2.intruded.size(), ft2.result])
+	await free_main(main2)
+	var main3 := await make_area("highland")
+	await frames(3)
+	check(main3.world.find_children("Npc_sacks", "", true, false).is_empty() and not main3.world.find_children("Npc_chopper", "", true, false).is_empty() and main3.first_tide == null,
+		"天亮以后：粮棚前数麻袋的兵不见了（劈柴的老兵还在），木桩那排不再搭")
+	await free_main(main3)
+	# 潮水进行中读档：从「插火把」重来
+	GameState.set_stage("ch2_main", "tide")
+	GameState.set_flag("ch2_first_tide", "")
+	var main4 := await make_area("highland")
+	await frames(3)
+	check(main4.first_tide != null and main4.first_tide.state == FirstTide.PREP and GameState.quest_stage("ch2_main") == "light_line", "潮水进行到一半读档：从「插火把」重来")
+	await free_main(main4)
+
+
+## 5.5a 第二天：诺伯特下到小屋讲加冕礼、断角、第三章入口；第十八烽（柴、火油、梯子、点火）；石圈的刻字
+func test_day2() -> void:
+	GameState.new_game(570)
+	GameState.chapter = 2
+	GameState.daypart = "dawn"
+	GameState.set_stage("ch2_main", "after_tide")
+	for f in ["matthias_met", "norbert_met"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "lost_one")
+	var main := await make_area("highland")
+	await frames(3)
+	var w: Node = main.world
+	check(w.find_children("Npc_norbert", "", true, false).is_empty() and w.find_children("Npc_sacks", "", true, false).is_empty(), "第二天：塔顶上没有诺伯特了（数麻袋的兵也不在：潮水卷走了）")
+	var b18 := w.find_children("Beacon18", "", true, false)
+	var sleepers := w.find_children("Npc_beacon18_*", "", true, false)
+	check(b18.size() == 1 and sleepers.size() == 3 and (sleepers[0] as Npc).display_name == "长眠的守塔人" and b18[0].get_node_or_null("Fire18") == null,
+		"第十八烽：一座冷着的圆石塔，塔脚雪里站着三个长眠的守塔人")
+	var space: PhysicsDirectSpaceState3D = main.player.get_world_3d().direct_space_state
+	var floating := sleepers.filter(func(n):
+		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1, 0), n.global_position - Vector3(0, 1, 0), 1))
+		return hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.3)
+	check(floating.is_empty(), "三个守塔人都站在地上")
+	# 马蒂亚斯给柴和火油
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	var ask := "西边那座第十八烽，就这么灭着？"
+	check(has_opt(r, ask), "第一夜过后：马蒂亚斯多一个选项「第十八烽」")
+	pick(r, ask)
+	pick(r, "我去。")
+	check(GameState.has_item("firewood") and GameState.has_item("lamp_oil") and GameState.quest_active("ch2_beacon18"), "马蒂亚斯给了一捆柴、一罐火油，支线「熄掉的第十八烽」开始")
+	r.start("beacon19", "matthias")
+	check(not has_opt(r, ask), "只给一次")
+	# 爬梯子、点火
+	var root: Node3D = b18[0]
+	var p: FpController = main.player
+	var up: Examine = root.get_node("Ladder18Up")
+	var res := up.interact(p)
+	await physics(10)
+	check(res.get("kind") == "climb" and p.global_position.y > root.global_position.y + Beacon18.H - 0.3 and p.global_position.y < root.global_position.y + Beacon18.H + 1.5,
+		"塔外的木梯「爬上去」：站到塔顶（高 %.1f 米），没掉下去" % (p.global_position.y - root.global_position.y))
+	var brazier: Examine = root.get_node("Brazier18")
+	GameState.take_item("lamp_oil")
+	res = brazier.interact(p)
+	check(str(res.get("toast", "")).contains("火油") and not Beacon18.lit(), "少了火油：点不着，说缺什么")
+	GameState.add_item("lamp_oil")
+	res = brazier.interact(p)
+	await frames(2)
+	var fire := root.get_node_or_null("Fire18")
+	check(Beacon18.lit() and fire != null and not fire.find_children("*", "OmniLight3D", true, false).is_empty() and not GameState.has_item("firewood") and not GameState.has_item("lamp_oil")
+		and GameState.quest_done("ch2_beacon18") and brazier.verb_now() == "看火", "添柴、浇油、点火：第十八烽着了（柴和油用掉，支线完成）")
+	res = (root.get_node("Ladder18Down") as Examine).interact(p)
+	await physics(10)
+	check(p.global_position.y < root.global_position.y + 1.0, "「爬下去」回到塔脚")
+	await free_main(main)
+	var again := await make_area("highland")
+	await frames(3)
+	check(not again.world.find_children("Fire18", "", true, false).is_empty(), "重进高地：第十八烽的火还亮着")
+	# 石圈
+	GameState.set_flag("ch2_stones", "")
+	var stones: Array = again.world.find_children("StoneWords", "", true, false)
+	check(stones.size() == 1, "石圈：倒下的那块立石能「看刻字」")
+	var t: Dictionary = HighlandVillage.read_stones()
+	check(str(GameState.get_flag("ch2_stones", "")) == "copied" and GameState.clues.has("stones_seal") and str(t.toast).contains("冬井"), "没有旧书：认出「……于冬井……誓……断……」，记下线索")
+	GameState.add_item("old_book")
+	t = HighlandVillage.read_stones()
+	check(str(GameState.get_flag("ch2_stones", "")) == "matched" and str(t.toast).contains("封于冬井，誓不可断"), "带着奥尔本修士的旧书：残卷上一模一样的一行「封于冬井，誓不可断」")
+	await free_main(again)
+	# 诺伯特在小屋
+	var tower := await make_area("beacon_tower")
+	await frames(3)
+	var nb: Array = tower.world.find_children("Npc_norbert_room", "", true, false)
+	check(nb.size() == 1 and (nb[0] as Npc).dialogue_id == "norbert" and (nb[0] as Npc).global_position.y > BeaconTower.UPPER - 0.1, "诺伯特蹲在顶层小屋的小铁炉边")
+	await free_main(tower)
+	r.start("beacon19", "norbert")
+	var first := r.text()
+	check(first.contains("少了一个人") and has_opt(r, "石圈上刻着一行字……"), "诺伯特：天亮了，火还亮着，少了一个人；刻过字的多一个选项")
+	pick(r, "加冕礼那一夜，发生了什么？")
+	check(r.text().contains("封誓") and GameState.has_flag("heard_coronation") and GameState.clues.has("beacon_seal"), "加冕礼：七步，最后一步「封誓」，那一夜少做了（记下线索）")
+	pick(r, "为什么少做了？")
+	check(r.text().contains("早就不用做了") and r.text().contains("我不知道"), "主祭说那一步早就不用做了；诺伯特：我不知道")
+	pick(r, "还有谁知道那一夜？")
+	check(r.text().contains("金穗平原") and GameState.clues.has("vigil_page"), "守灵夜的侍从去了金穗平原的修道院（第三章入口，记下线索）")
+	pick(r, "我该做什么？")
+	check(r.text().contains("先保住烽燧") and GameState.quest_stage("ch2_main") == "convoy_day" and GameState.has_flag("norbert_day2"), "先保住烽燧；粮车今天在羊脊村歇脚（主线「粮车到村」）")
+	r.start("beacon19", "norbert")
+	check(r.text().contains("先保住烽燧") and has_opt(r, "门楣上那只断了的号角……"), "再找他：还是那句；能问号角")
+	pick(r, "门楣上那只断了的号角……")
+	check(r.text().contains("断角烽"), "断角：三十年前吹断的那只号角——它们头一回走过山脊")
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("norbert_day2", false)
+	r.start("beacon19", "norbert")
+	check(not r.text().contains("少了一个人"), "守住了营地：不提少了人")
+
+
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
 func test_mountainroad() -> void:
 	Highland.ensure_field()
@@ -8929,6 +9212,215 @@ func test_beacon19() -> void:
 	await free_main(inn)
 	HighlandBeacon.clear_cache()
 	HighlandFlora.clear_cache()
+
+
+## 5.3c 第十九烽的人：黄昏到烽燧、马蒂亚斯、诺伯特、营里的兵、堤道失守那条线的一捆柴
+func test_beaconpeople() -> void:
+	var d := DialogueRunner.load_file("beacon19")
+	var errs := []
+	for id in d:
+		if not str(id).begins_with("_"):
+			errs.append_array(DialogueRunner.validate(d[id]))
+	check(errs.is_empty() and d.has("matthias") and d.has("norbert"), "第十九烽的对话都走得通、旗标都登记了（%s）" % str(errs.slice(0, 3)))
+	# 白天顺着盘山路走到烽燧：天擦黑了，主线推进到「找马蒂亚斯」
+	GameState.new_game(533)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	GameState.start_quest("ch2_main")
+	GameState.set_stage("ch2_main", "to_beacon19")
+	var main := await make_area("highland")
+	var p: FpController = main.player
+	var sp: Array = HighlandLayout.spawn_points().beacon
+	p.global_position = sp[0]
+	await physics(10)
+	await seconds(1.5)                                       # 换时段先淡出、换光、再淡入
+	check(GameState.quest_stage("ch2_main") == "meet_matthias" and GameState.daypart == "dusk" and main.daypart == "dusk",
+		"走到烽燧门前：天擦黑了（黄昏），主线推进到「找马蒂亚斯」（%s / %s / %s）" % [GameState.quest_stage("ch2_main"), GameState.daypart, main.daypart])
+	var w: Node3D = main.world
+	var ids := ["matthias", "norbert", "gate", "chopper", "sacks", "door"]
+	var names := []
+	for id in ids:
+		var n := w.get_node_or_null("Npc_" + id) as Npc
+		if n != null and Looks.has(n.display_name, n.name):
+			names.append(n.display_name)
+	check(names.size() == ids.size(), "营里的人都在、都有真人外观（%s）" % "、".join(names))
+	var nb := w.get_node("Npc_norbert") as Node3D
+	var mt := w.get_node("Npc_matthias") as Npc
+	check(absf(nb.global_position.y - (HighlandLayout.tower_base_y() + HighlandLayout.TOWER_H)) < 0.1 and Vector2(nb.global_position.x, nb.global_position.z).distance_to(HighlandLayout.TOWER[0]) < 2.0
+		and mt.dialogue_area == "beacon19" and mt.dialogue_id == "matthias", "诺伯特站在塔顶火盆边；马蒂亚斯在柴棚前，有对话")
+	var space := main.get_world_3d().direct_space_state
+	var floating := []
+	for id in ["matthias", "gate", "chopper", "sacks", "door"]:
+		var n := w.get_node("Npc_" + id) as Node3D
+		var q := PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1.0, 0), n.global_position + Vector3(0, -1.0, 0), 1)
+		var hit := space.intersect_ray(q)
+		if hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.25:
+			floating.append(id)
+	check(floating.is_empty(), "营里的人都站在地上（%s）" % str(floating))
+	check(w.find_children("*", "Pickup", true, false).filter(func(x): return x.item_id == "firewood").is_empty(), "堤道守住了：柴棚里没有要扛的那捆柴")
+	# 马蒂亚斯 → 诺伯特 → 「先过了今夜」
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	var greet := r.text()
+	pick(r, "只够三夜？")
+	pick(r, "那怎么办？")
+	check(greet.contains("三夜") and GameState.has_flag("heard_three_nights") and GameState.has_flag("heard_convoy") and r.text().contains("什么都没说"),
+		"马蒂亚斯：粮和柴只够三夜；压低声音提了一句明天的粮车，「我什么都没说」")
+	pick(r, "……我听见了。")
+	pick(r, "我找诺伯特烽长。")
+	check(GameState.quest_stage("ch2_main") == "see_norbert", "马蒂亚斯指路：诺伯特在塔顶看火（主线推进到「上塔顶找诺伯特」）")
+	r.start("beacon19", "norbert")
+	pick(r, "奥斯瑞克·瓦伦临终让我来找你。")
+	pick(r, "加冕礼上发生了什么？")
+	check(r.text().contains("先过了今夜") and GameState.quest_stage("ch2_main") == "first_night" and GameState.has_flag("norbert_met"),
+		"诺伯特不肯谈加冕礼：「先过了今夜。」（主线推进到「第一夜」）")
+	await free_main(main)
+	# 堤道失守：诺伯特先要一捆柴；柴棚里有那捆柴，扛上去才肯说话
+	GameState.new_game(534)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	GameState.set_flag("ch1_causeway", "lost")
+	GameState.set_flag("valen_heir", "alric")
+	GameState.start_quest("ch2_main")
+	GameState.set_stage("ch2_main", "see_norbert")
+	main = await make_area("highland")
+	var fw: Array = main.world.find_children("*", "Pickup", true, false).filter(func(x): return x.item_id == "firewood")
+	check(fw.size() == 1, "堤道失守：柴棚里放着一捆要扛的柴")
+	r.start("beacon19", "matthias")
+	check(r.text().contains("瓦伦家") or r.text().contains("黑鹭堡丢了"), "选了阿尔里克：马蒂亚斯冷淡（%s）" % r.text().left(24))
+	r.start("beacon19", "norbert")
+	check(r.text().contains("先从柴棚扛一捆") and not has_opt(r, "奥斯瑞克·瓦伦临终让我来找你。") and not has_opt(r, "（把那捆柴放到火盆边）"), "诺伯特先要一捆柴：没扛来之前不说话")
+	pick(r, "我这就去柴棚扛。")
+	check(GameState.quest_stage("ch2_main") == "carry_wood", "主线推进到「扛一捆柴上塔顶」")
+	var res: Dictionary = (fw[0] as Pickup).interact(main.player)
+	GameState.add_item(str(res.item))                       # 捡起来进背包（main 处理交互结果时做的事）
+	await frames(2)
+	r.start("beacon19", "norbert")
+	pick(r, "（把那捆柴放到火盆边）")
+	check(GameState.has_flag("ch2_wood_carried") and not GameState.has_item("firewood") and has_opt(r, "奥斯瑞克·瓦伦临终让我来找你。"), "扛来了：柴放到火盆边，他肯说话了（%s）" % str(res.get("kind", "")))
+	pick(r, "奥斯瑞克·瓦伦临终让我来找你。")
+	check(r.text().contains("堡丢了"), "堤道失守：他问奥斯瑞克是在堡里走的，还是堡丢了以后")
+	pick(r, "加冕礼上发生了什么？")
+	check(GameState.quest_stage("ch2_main") == "first_night", "照样「先过了今夜」")
+	await free_main(main)
+
+
+## 5.4a 长眠者群：跟着路线走、互相让开、人越多越快、绕开火、推倒踩过挡路的人、走完就没了
+func test_sleepercrowd() -> void:
+	var route := [Vector2(0, 0), Vector2(0, -40), Vector2(10, -70)]
+	var c := SleeperCrowd.make(route, 24, 5.0)
+	c.near_enabled = false
+	get_tree().root.add_child(c)
+	await physics(2)
+	var z0 := 0.0
+	for a in c.agents:
+		z0 += a.p.y
+	await seconds(4.0)
+	var z1 := 0.0
+	var min_d := INF
+	for a in c.agents:
+		z1 += a.p.y
+	for i in c.agents.size():
+		for j in range(i + 1, c.agents.size()):
+			min_d = minf(min_d, (c.agents[i].p as Vector2).distance_to(c.agents[j].p))
+	var moved := (z0 - z1) / c.agents.size()
+	check(moved > 2.0 and moved < 6.0 and min_d > 0.45, "跟着路线往前走（4 秒平均走了 %.1f 米）、互相让开（最近的两个人隔 %.2f 米）" % [moved, min_d])
+	var small := SleeperCrowd.make(route, 8)
+	var big := SleeperCrowd.make(route, 60)
+	small.agents = range(8).map(func(_i): return {"done": false})
+	big.agents = range(60).map(func(_i): return {"done": false})
+	check(big.current_speed() > small.current_speed() * 1.25 and big.current_speed() <= small.speed_base * 1.46, "人越多走得越快（8 人 %.2f、60 人 %.2f 米每秒）" % [small.current_speed(), big.current_speed()])
+	small.free()
+	big.free()
+	c.queue_free()
+	# 火：路线正中间一团火（半径 2 米，算火边 4 米），它们顺着火边绕过去、照样往前走
+	var fire := Node3D.new()
+	fire.add_to_group("crowd_fire")
+	fire.set_meta("radius", 2.0)
+	get_tree().root.add_child(fire)
+	fire.global_position = Vector3(0, 0, -8)
+	var c2 := SleeperCrowd.make([Vector2(0, 0), Vector2(0, -20)], 20, 3.0)
+	c2.near_enabled = false
+	get_tree().root.add_child(c2)
+	var closest := INF
+	var past := 0
+	for k in 240:
+		await physics(15)
+		for a in c2.agents:
+			if not a.done:
+				closest = minf(closest, (a.p as Vector2).distance_to(Vector2(0, -8)))
+		past = c2.agents.filter(func(a): return a.done or a.p.y < -12.0).size()
+		if past >= 20:
+			break
+	check(closest > 2.5 and past >= 18, "绕开火：没人走进火边 2.5 米以内（最近 %.1f 米），绕过去的 %d / 20" % [closest, past])
+	for k in 80:
+		if c2.alive() == 0:
+			break
+		await physics(15)
+	check(c2.alive() == 0, "走到路线尽头就没了（还剩 %d）" % c2.alive())
+	fire.queue_free()
+	# 5.4b：一排插得密的火把（2.2 米一支，横在路上）是一堵墙：没人从两支中间钻过去，都绕到两头
+	var row := []
+	for k in 5:
+		var t := Node3D.new()
+		t.add_to_group("crowd_fire")
+		t.set_meta("radius", 1.8)
+		get_tree().root.add_child(t)
+		t.global_position = Vector3((k - 2) * 2.2, 0, -10)
+		row.append(t)
+	var cw := SleeperCrowd.make([Vector2(0, 0), Vector2(0, -30)], 16, 3.0)
+	cw.near_enabled = false
+	get_tree().root.add_child(cw)
+	var crossed := []
+	var last := {}
+	for k in 240:
+		await physics(15)
+		for i in cw.agents.size():
+			var a: Dictionary = cw.agents[i]
+			var py: float = last.get(i, 0.0)
+			if not a.done and py >= -10.0 and a.p.y < -10.0:
+				crossed.append(absf(a.p.x))
+			last[i] = a.p.y
+		if crossed.size() >= 16:
+			break
+	var through := crossed.filter(func(x): return x < 4.4).size()
+	check(crossed.size() >= 14 and through == 0, "一排火把（5 支、2.2 米一支）：%d 个人走过去，从中间钻过去的 %d 个（都绕到两头，最近的离中线 %.1f 米）" % [crossed.size(), through, crossed.min() if crossed.size() > 0 else 0.0])
+	cw.queue_free()
+	for t in row:
+		t.queue_free()
+	c2.queue_free()
+	# 挡在前面的主角：推倒、踩过（掉血、变冷）；它们杀不死、照样往前走
+	GameState.new_game(541)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	var main := await make_area("highland")
+	var p: FpController = main.player
+	var y := Highland.height_at(-6.0, -28.0)
+	p.global_position = Vector3(-6.0, y + 0.1, -28.0)
+	await physics(10)
+	var hp: int = p.melee.health
+	var cold0 := GameState.cold
+	var c3 := SleeperCrowd.make([Vector2(-14.0, -12.0), Vector2(-6.0, -28.0), Vector2(5.0, -54.0)], 30, 3.0)
+	c3.height_fn = Highland.height_at
+	c3.player = p
+	c3.spawn_gap = 0.4
+	main.world.add_child(c3)
+	var was_down := false
+	for k in 200:
+		await physics(10)
+		was_down = was_down or p.knocked()
+		if c3.tramples() >= 2:
+			break
+	check(was_down and c3.tramples() >= 1 and p.melee.health < hp and GameState.cold > cold0, "挡在路上：被推倒、踩过（踩了 %d 下，生命 %d → %d，寒冷 %.0f → %.0f）" % [c3.tramples(), hp, p.melee.health, cold0, GameState.cold])
+	var near := c3.get_children().filter(func(n): return n is CharacterModel and n.visible).size()
+	check(c3.models.size() <= SleeperCrowd.NEAR_MAX and near <= SleeperCrowd.NEAR_MAX and c3.mm.multimesh.instance_count == 30,
+		"近处 %d 个画真人模型（最多 %d 个），其余一个多实例画完" % [near, SleeperCrowd.NEAR_MAX])
+	var t0 := Time.get_ticks_usec()
+	for k in 20:
+		c3._step(SleeperCrowd.TICK)
+	var ms := float(Time.get_ticks_usec() - t0) / 1000.0 / 20.0
+	check(ms < 3.0, "30 个人一步的逻辑 %.2f 毫秒（每 0.05 秒一步）" % ms)
+	await free_main(main)
 
 
 ## 测试用：选对话里文字是 label 的那个选项（没有就什么都不做，后面的检查会失败）

@@ -473,3 +473,28 @@ static func stream_ice(parent: Node3D) -> void:
 	mi.material_override = m
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(mi)
+
+
+## 石圈上的刻字（5.5a；STORY.md 5.8 支线「石圈」）：倒下的那块立石朝天的一面刻着一圈字，被风磨得快平了。
+## 看一眼记下线索 `stones_seal`（`ch2_stones` = copied）；身上有奥尔本修士的旧书（序章），残卷上有一模一样的字（= matched）。诺伯特第二天多说一句。
+static func stone_words(parent: Node3D) -> void:
+	var fallen: Dictionary = ring_stones()[6]                  # 倒下的那块（ring_stones 里的第 7 块）
+	var at := Vector2(fallen.pos.x, fallen.pos.z)
+	var e := Examine.make("倒下的立石", "看刻字", func(_who: FpController) -> Dictionary: return read_stones(), Vector3(2.6, 1.0, 1.6))
+	e.name = "StoneWords"
+	e.position = Vector3(at.x, Highland.height_at(at.x, at.y), at.y)
+	parent.add_child(e)
+
+
+static func read_stones() -> Dictionary:
+	var had := str(GameState.get_flag("ch2_stones", ""))
+	var book := GameState.has_item("old_book")
+	var text := "立石上刻着一圈字，被风雪磨得快平了，不是现在的写法——像是星铁教会还没立起来以前的字。你用手指一个一个摸过去，只认出几个：「……于冬井……誓……断……」"
+	if book:
+		text = "立石上刻着一圈字，被风雪磨得快平了。你想起奥尔本修士那本烧焦的旧书，翻开夹着的半页残卷——上面有一模一样的一行：「封于冬井，誓不可断。」"
+	var val := "matched" if book else "copied"
+	if had != "matched":
+		GameState.set_flag("ch2_stones", val)
+		GameState.add_clue("stones_seal")
+	return {"kind": "examine", "name": "石圈", "toast": text}
+

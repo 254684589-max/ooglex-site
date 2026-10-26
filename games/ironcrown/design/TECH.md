@@ -730,6 +730,72 @@ godot/
 - **测试时限**：`tools/run_tests.sh` 整套 480 → 900 秒（整套跑到老上限、最后一项被掐断）。
 - **测试**：`beacon19` 组 14 项（都在木栅里和平地上、门对着路、营地里不长树、塔顶出生点、搭出来、每件活不长、塔顶的火全图最亮也算火边、三扇门、木栅挡人门能过、站在塔顶不掉下去、塔里算室内、塔里的门和木梯、每级石阶跨得上、真的顺着石梯走上楼）。`highland` 组的机位检查认塔顶那个机位。
 
+### 4.51 第十九烽的人：黄昏到烽燧、马蒂亚斯、诺伯特（路线图 5.3c，2026-10-25）
+
+- **到烽燧**（`main._beacon_arrival`，每帧）：第二章、主线在 `to_beacon19`、主角离 `BEACON19` 不到木栅半径 + 3 米（旅行地图的 `beacon` 出生点也在里面）→ 主线 `meet_matthias`；清晨 / 白天的换成黄昏（`set_daypart("dusk")`，提示「爬上山脊的时候，天已经擦黑了」）。
+- **主线新阶段**（`data/quests.json` `ch2_main`）：`meet_matthias` → `see_norbert` →（堤道失守：`carry_wood`）→ `first_night`（5.4 接）。
+- **对话**（`data/dialogue/beacon19.json`，区域名 `beacon19`）：`matthias`（选项「找诺伯特烽长」只在 `meet_matthias` 阶段出现，免得把后面的阶段推回去）、`norbert`（`start_if`：见过 → again；堤道失守、还没扛柴 → `greet_lost`；「把那捆柴放到火盆边」`has_item` + `locked: hide`）。新旗标 4 个，新物品 `firewood`（一捆柴，4 斤，堤道失守时柴棚里放一捆：`Pickup`，`pickup_id = beacon19_firewood`）。
+- **人**（`HighlandBeacon.people()`，`Highland.build` 同步放）：马蒂亚斯（柴棚前、面朝院子）、诺伯特（塔顶火盆边、面朝火，y = 塔顶）、守门的兵、劈柴的老兵（`chop`）、数麻袋的兵、营房门口的兵；只说一句的在 `HighlandBeacon.LINES`；外观加进 `data/looks.json`。`Npc.far_end`（新）：多远以外远处那份胶囊和名字也不画——这几个人 110 米（从村口看整条山谷时绘制调用 382 → 417 → 回到 382）。
+- **字体**：子集加「噼」。
+- **测试**：`beaconpeople` 组 16 项（对话走得通、走到门前天擦黑主线推进、人都在都有外观、诺伯特在塔顶、都站在地上、马蒂亚斯三夜和粮车、指路推进、诺伯特「先过了今夜」、堤道失守的柴棚里有柴、阿尔里克的冷淡、没扛柴不说话、扛柴推进、扛来了才说、问奥斯瑞克是不是堡丢了以后走的、照样先过今夜）。
+
+### 4.52 长眠者群（路线图 5.4a，2026-10-25）
+
+- **`world/sleeper_crowd.gd`（`SleeperCrowd`）**：`make(route, count, width)`。每人一份字典（位置、上一步位置、速度、走到第几段、在路上偏左偏右 `lat`、自己的步速、走路相位）。逻辑每 0.05 秒一步（`TICK`），画的时候在两步之间插值。每步：
+  - 朝路线的下一段走（离路线中线超过半宽就往回拉）；
+  - 互相让开：空间网格（格子 = `SPACING`）找邻居，靠太近就推开；
+  - 绕开火：`fires()` 读 `light_source` 和 `crowd_fire` 两个组里带 `radius` 元数据的节点（算火边 = radius × `FIRE_GAIN` 2），离火边 `FIRE_MARGIN` 米以内沿火边的切线方向走（正对着火时按自己偏左还是偏右挑一边），越近越往外推；障碍（`obstacles`：`[圆心, 半径]`，第十九烽传塔和木栅）一样处理；
+  - 人越多越快：`current_speed() = speed_base × (1 + min(活着的人数 × 0.006, 0.45))`；
+  - 挡路：离主角不到 `KNOCK_DIST` 米 → `knock_down(1.6 秒, 推的方向)`；倒着时每 `TRAMPLE_GAP` 秒被踩一下：`melee.receive_hit({"damage": 5, "kind": "trample", "nonlethal": true})`，寒冷 +12（5.2c 留下的「被长眠者踩过加一截」）；
+  - 走过路线最后一点就 `done`（不画、不算人数），全走完发 `finished`。
+- **画法**：所有人一个 `MultiMesh`（`CrowdFar`，简化人形，麻衣颜色略有不同）；离主角 `NEAR_DIST` 米以内最近的最多 `NEAR_MAX` = 8 个换成真人模型（`CharacterModel`，平民男女预设、麻衣、走路动作慢放 0.62），对应的多实例那份藏起来。近处的麻衣：`CharacterModel` 的 tint 现在也收 `Color`（可以大于 1），农夫衣服深褐色的贴图乘 `LINEN_TINT` (1.85, 2.2, 2.8) 变成浅色粗麻；远处人形的材质加自发光 `GLOW × 2`，跟近处背光的亮度对上。绘制调用（视角 18、40 人）：低 343、中 366–380。
+- **主角被推倒**（`player/fp_controller.gd`）：`knock_down(sec, dir)` / `knocked()`；倒着的时候不能动、视线压低 `EYE_DOWN` 0.35 米，推的速度慢慢衰减。
+- **潮水路线**：`HighlandLayout.TIDE_ROUTE`（南边山谷 → 山脊 → 第十九烽东边 → 往北），视角 18「潮水上山脊」（站在山脊上往南看）。调试 `?tide=N`：从第四个点（山脊那段）起放 N 个人，高度用 `Highland.height_at`。5.4c 第一夜接进剧情。
+- **测试**：`sleepercrowd` 组 7 项（跟路线走、互相让开、人越多越快、绕开火且照样走到头、走到尽头就没了、挡路被推倒踩过、近处最多 8 个真人模型、30 个人一步的逻辑时间）。
+
+### 4.53 火把（路线图 5.4b，2026-10-26）
+
+- **`player/torch_hand.gd`（`TorchHand`，挂在主角身上，`FpController.torch`）**：状态 `NONE / LIGHTING / LIT / OUT`。一个键（`torch` 动作 = T；触屏「火」，点着以后字变成「插」）：
+  - `NONE` → 背包里拿一支（`take_item("torch")`），`fuel = FUEL`（300 秒），打火石 `LIGHT_TIME` 1.2 秒（`windy` 时 `LIGHT_TIME_WIND` 2.4 秒）后 `LIT`；背包里没有就说「没有火把。羊脊村的铁匠那儿有卖。」
+  - `LIT` → `plant()`：面前 `PLANT_DIST` 米往下打射线找地面，放一支 `PlantedTorch`（带上剩下的燃料），手里空了；
+  - `OUT` → 重新点（同样的时间，不用新的一支）。
+  - 火的中心 `fire`（`top_level`，每帧放到身体空间 `HAND_BODY`）：`LIT` 时在组 `light_source`，元数据 `radius` = `RADIUS` 1.8、`no_warm`。长眠者群（`SleeperCrowd.fires`）、敌人「站在亮处」（`enemy.gd`）都读这个组；`Cold.near_fire` 跳过带 `no_warm` 的（火把暖不了身子）。带一盏 `OmniLight3D`（7.5 米，闪）。
+  - `windy`（main 设：高地且不在屋里）：`LIT` 时每秒 `BLOW_HELD` = 1/240 的机会被吹灭；`FpController.knock_down` 调 `on_knocked()` 摔灭。烧完 `NONE`、说「火把烧完了」。
+  - 举着（`held()`）时 `Melee.block_press` 直接拒绝，说「左手举着火把，挡不了」；举起来时正在格挡的放下。
+  - 样子 `make_visual()`：木棍 + 缠布的头 + 两片 `flame.gdshader` 火苗 + 一团光晕（加色、不受雾）；第一人称挂在相机下 `HAND_FP`（画面左下），第三人称挂到人物左手（`CharacterModel.hold_prop(…, true)`，人物搭好以后再挂）。
+  - 换区域：每次换状态写 `GameState.held_torch = {fuel, lit}`，新场景的 `TorchHand._ready` 读回来；不进存档，`new_game` 清空。
+- **`world/planted_torch.gd`（`PlantedTorch extends Interactable`）**：插在地上的。亮着时在组 `light_source`（`radius`、`no_warm` 同上）、组 `planted_torch`；接着烧剩下的燃料，烧完剩一根黑棍，60 秒后收走；`windy` 时每秒 `BLOW` = 1/180。E：亮着 → 「拔起」（手里空着才行，`TorchHand.take_from_ground`）；灭了 → 「点着」（手里要有点着的）。**实时光源预算**：亮着的里面最新插下的 `max_lights` 支（main 按画质：低 0、中高 1）带 `OmniLight3D`（6 米，40 米外淡出），其余只有一片火苗和光晕。火把的光 `light_cull_mask = TorchHand.LIGHT_MASK`：跳过渲染层 2（`SleeperCrowd.LAYER`，长眠者群和第一人称手里那支火把——贴得太近会把木棍照成一块亮橙色的板）。
+- **第十九烽塔里那捆备用火把**（`BeaconTower._torch_bundle`）：`Pickup`（`pickup_id = beacon19_torches`，`count = 3`，`show_box = false`，外观是挂在它下面的那捆火把，拿走就一起没了）。`Pickup` 新加 `count`、`show_box`；main 的拾取按 `count` 加。
+- **长眠者群跟着改（`world/sleeper_crowd.gd`）**：
+  - 火边里面（`d < r`）只往外推（2.5–5.5），不再顺着火边绕：一排插得密的火把（2.2 米一支，火边重叠）是一堵墙，两支中间的空当钻不过去；
+  - 每人第一次碰到火时定下往哪边绕（`detour`：人在火的哪一边就往哪边，正对着按 `lat`），顺着火边的切线按「往前 + 往定下的那一边」选方向——大家顺着这堵墙滑到头再绕过去；绕的时候只朝路线的方向走、不往路线中间拉（不然在墙前横向拉扯、停住）；离开火边 2 秒后忘掉；
+  - 近处真人模型个数按画质 `near_max`（低 3、中 5、高 8）：一个约 8 次绘制调用；`?tide` 的人群延后一帧搭（等画质定下来）；
+  - 远处人形重做得更像人：腿、光脚、两段胳膊和手、两段身子（肩宽一点）、脖子、两段圆台拼的头、深色头发（多一种材质），麻衣自发光 `GLOW × 3`；多实例和真人模型都在渲染层 2。
+- **教学提示** `torch`：第一次点着时弹。**调试**：`?torch=1` 手里举着一支点着的；`?torchrow=N` 高地上面前 7 米横着插一排 N 支。
+- **测试**：`torch` 组 24 项。
+
+### 4.54 第一夜潮水（路线图 5.4c，2026-10-26）
+
+- **主线**（`data/quests.json` `ch2_main`）：`first_night` →（马蒂亚斯「入夜以后怎么守？」：四支火把、`daypart: night`）`light_line` →（插满 / 等够）`tide` →（人群走完）`after_tide`（5.5 接）。马蒂亚斯「火把用完了」再给两支（旗标 `ch2_spare_torches`，只一次）。
+- **`world/first_tide.gd`（`FirstTide`）**：main 的 `_first_tide_tick` 在高地、第二章、主线在 `light_line` / `tide` 时搭（`tide` 的读档、换区域回来退回 `light_line` 重来；夜里）。
+  - 木桩 `spots()`：`SPOT_CENTER` (9, −48) 沿 `SPOT_DIR` 每 `SPOT_GAP` 2.2 米一根，七根（木栅外 4–30 米），草绳连着；两头先插两支（`windy`）。
+  - `lit_spots()`：离木桩 `SPOT_REACH` 1.6 米以内有亮着的插地火把的桩数；≥ `READY_AT` 6 或 `PREP_MAX` 120 秒 → `start_tide()`。
+  - 潮水：`SleeperCrowd.make(ROUTE_CAMP, 36, 5.0)`，`speed_base` 0.85；`ROUTE_CAMP` 从南坡 (−6, −28) 径直穿过营地中间 (22, −62) 往北；`alt_route = ROUTE_AROUND`（营地西边 x ≈ 0 那条）；障碍只有塔、营房、柴棚、粮棚（木栅挡不住它们）。
+  - **改道**（`SleeperCrowd.alt_route`，新）：一个人走进任何一团火（不算障碍）的火边 + `FIRE_MARGIN` 以内，就改走 `alt_route`，从离自己最近的那一段接上（`_switch_alt`，`rerouted` 计数）。
+  - 漫进营地：离 `BEACON19` 不到 `PALISADE_R − 1` 的人（每人只算一次）；人群走完（`finished`）或 `TIDE_MAX` 320 秒 → `ended(result)`：≥ `LOSE_AT` 5 个 → `lost_one`，否则 `held`。main：写 `ch2_first_tide`、提示一句、主线 `after_tide`、`set_daypart("dawn")`、自动存档。`lost_one` 时 `HighlandBeacon.people()` 不放数麻袋的兵。
+  - **认得的那张脸**：`ch1_sleeper`（boatman / tobin / netter）有值时，第 `SEEN_INDEX` 个人不画（`SleeperCrowd.hidden`，新），换成一个 `CharacterModel`（`Looks.spec` 那个人的样子，衣服乘 `LINEN_TINT`），跟着那个人走；主角走到 9 米以内提示一次（「潮水里有一张认得的脸……」）。
+- **视角 19** 营门外往西南看那排木桩；**调试** `?firsttide=1 / go / bare`。
+- **测试**：`firsttide` 组 12 项（`Engine.time_scale = 4` 跑完整场潮水：插满时 36 人全改道、漫进 0 个 → held；只有两头两支时漫进 10 个 → lost_one）。
+
+### 4.55 第二天：诺伯特、第十八烽、石圈（路线图 5.5a，2026-10-26）
+
+- **诺伯特挪地方**：`ch2_first_tide` 有值（第一夜过了）以后，`HighlandBeacon.people()` 不放塔顶那个，`BeaconTower.build` 在顶层小屋炉边放一个（节点名 `Npc_norbert_room`，looks.json 的 `@norbert_room` 蹲着）。对话 `beacon19.json` norbert 的 `start_if` 先看 `norbert_day2` → `day2_again`、`ch2_first_tide` → `day2`（`lost_one` 换开场白）；节点 `coronation`（线索 `beacon_seal`、旗标 `heard_coronation`）→ `skipped` → `vigil`（线索 `vigil_page`）→ `keep_fire`（`norbert_day2`、主线 `convoy_day`）；`horn`；`stones`（`ch2_stones` 有值才出现）。
+- **`world/examine.gd`（`Examine extends Interactable`）**：能看 / 能用的一处东西，`on_use(who) -> Dictionary`、可选 `verb_fn` 换动作字；只在可交互层。
+- **`world/beacon18.gd`（`Beacon18`）**：`HighlandLayout.BEACON18`（地形早就压平了一片）。圆石塔（14 边、塔顶石沿、十个垛口、窄窗缝）、南边斜靠一架木梯、塔顶铁火盆（黑炭、没点着时半盆雪）；碰撞：塔身圆柱 + 垛口一圈。`Examine`：「爬上去 / 爬下去」直接改主角位置；火盆「添柴点火 / 看火」：身上有 `firewood`、`lamp_oil`（新物品）→ 用掉、`ch2_beacon18` = lit、支线 `ch2_beacon18` 完成、`_fire()`（三片火苗、`FireLight` 5 / 22 米、组 `light_source`、不受雾的光晕）。塔脚三个 `Npc`「长眠的守塔人」（只说一句）。
+- **马蒂亚斯**：第一夜过后多一个选项（`ch2_beacon18_given` 只一次）：柴 + 火油、支线开始。
+- **石圈**（`HighlandVillage.stone_words / read_stones`）：倒下的那块（`ring_stones()[6]`）上一个 `Examine`「看刻字」：`ch2_stones` = copied（线索 `stones_seal`）；有 `old_book` → matched。
+- 视角 20；调试 `?day2=1 / lit`。**测试**：`day2` 组 23 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

@@ -46,7 +46,7 @@ static func rate(area: String, daypart: String, y: float, survival: int, near_fi
 ## 站在哪盏亮着的火边（组 light_source，带 radius 元数据的）
 static func near_fire(tree: SceneTree, p: Vector3) -> bool:
 	for l in tree.get_nodes_in_group("light_source"):
-		if not (l is Node3D) or not l.has_meta("radius") or not (l as Node3D).is_visible_in_tree():
+		if not (l is Node3D) or not l.has_meta("radius") or l.has_meta("no_warm") or not (l as Node3D).is_visible_in_tree():   # 火把（5.4b）暖不了身子
 			continue
 		if (l as Node3D).global_position.distance_to(p) <= float(l.get_meta("radius")) * FIRE_REACH:
 			return true

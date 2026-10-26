@@ -227,7 +227,8 @@ func _glow_materials() -> void:
 				if t != null:
 					mat.albedo_texture = t
 			if look.get("tint", {}).has(key):
-				mat.albedo_color = Color(str(look.tint[key]))
+				var tint: Variant = look.tint[key]
+				mat.albedo_color = tint if tint is Color else Color(str(tint))   # 也可以直接给 Color（大于 1：深色贴图提亮，5.4a 长眠者的浅色麻衣）
 			mat.cull_mode = BaseMaterial3D.CULL_BACK if mat.albedo_texture != null else BaseMaterial3D.CULL_DISABLED
 			mat.emission_enabled = true
 			if mat.albedo_texture != null:
