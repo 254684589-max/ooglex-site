@@ -1,5 +1,7 @@
-/* dig-001 投研日看板：只渲染同目录 data.json。外部文字一律 textContent。
-   雷达正式入选只看 items；archive 是二级存档，不计入 N。 */
+/* 投研日看板：只渲染同目录 data.json。外部文字一律 textContent。
+   Brief 芯片取 brief.header 开头的 Brief-NN，不写死期号。
+   雷达正式入选只看 items；archive 是二级存档，不计入 N。
+   芯片「雷达 N」在 radar.selected 为数字时用该值。 */
 (function () {
   "use strict";
 
@@ -63,6 +65,7 @@
     clear(board);
     clear(edition);
     dateline.textContent = "来源与更新时间暂时不可用";
+    if (banner) banner.textContent = "投研汇总暂时无法加载 · 非正式产品";
     board.appendChild(el("p", "banner error", message));
     foot.textContent = "研究用／非投资建议";
   }
@@ -74,9 +77,26 @@
     return sec;
   }
 
+  function briefToken(header) {
+    var match = text(header).match(/^Brief-\d+/);
+    return match ? match[0] : "";
+  }
+
+  function briefRadarSynced(data) {
+    var asOf = text(data.asOf);
+    var header = text(data.brief && data.brief.header);
+    if (!asOf || !briefToken(header) || header.indexOf(asOf) === -1) return false;
+    var marker = text(data.note) + "\n" + text(data.source);
+    if (marker.indexOf("已同步") === -1 && marker.indexOf("早更同步") === -1) return false;
+    var radar = data.radar;
+    return !!radar && (typeof radar.selected === "number" || Array.isArray(radar.items));
+  }
+
   function renderBrief(data) {
     var brief = data.brief || {};
-    var sec = section("brief", text(brief.heading) || "区块 A · Brief 最新（Brief-03）");
+    var token = briefToken(brief.header);
+    var fallback = token ? ("区块 A · Brief 最新（" + token + "）") : "区块 A · Brief 最新";
+    var sec = section("brief", text(brief.heading) || fallback);
     sec.appendChild(el("p", "block-kicker", text(brief.header) || "（表头未提供）"));
     var items = Array.isArray(brief.items) ? brief.items : [];
     if (!items.length) {
@@ -261,10 +281,16 @@
       + " · 演示数据";
 
     clear(edition);
-    addChip("编号", "dig-001");
-    addChip("演示", "是");
-    if (data.brief && data.brief.header) addChip("Brief", "Brief-03");
-    addChip("雷达 N", String(Array.isArray(data.radar.items) ? data.radar.items.length : "—"));
+    var synced = briefRadarSynced(data);
+    addChip("编号", "投研汇总");
+    addChip(synced ? "同步" : "演示", synced ? "Brief/雷达已同步" : "是");
+    var token = briefToken(data.brief && data.brief.header);
+    if (token) addChip("Brief", token);
+    var selected = data.radar && data.radar.selected;
+    var radarCount = typeof selected === "number"
+      ? selected
+      : (Array.isArray(data.radar.items) ? data.radar.items.length : "—");
+    addChip("雷达 N", String(radarCount));
 
     clear(board);
     board.appendChild(renderBrief(data));
@@ -284,7 +310,9 @@
       board.insertBefore(warn, board.firstChild);
     }
 
-    banner.textContent = "临时演示 · dig-001 · 非正式产品";
+    banner.textContent = synced
+      ? "投研汇总 · Brief/雷达已同步当日 · WSJ/S2 仍为演示 · 非正式产品"
+      : "临时演示 · 非正式产品";
 
     clear(foot);
     var lines = Array.isArray(data.footer) && data.footer.length

@@ -11,6 +11,14 @@
 
 ## [未发布]
 
+### 修改
+
+- 2026-10-26：每日投研（`/apps/research-board/`）与当日早更对齐。页顶改为「投研汇总 · Brief/雷达已同步当日 · WSJ/S2 仍为演示 · 非正式产品」。Brief 芯片从 `brief.header` 开头读取期号（本期 Brief-05），不再写死 Brief-03。雷达芯片在 `radar.selected` 为数字时用该值（本期 0），二级存档仍不计入 N。编号芯片改为「投研汇总」；Brief 与雷达已和数据日期对齐时，状态芯片显示「Brief/雷达已同步」，不再把整页说成停在 10-15 的 dig-001 静态包。WSJ／S2 仍是演示样例。首屏仍标「演示数据」（整包 `demo: true`）。未改 `apps/research-board/rates/`，也未改 news-brief、news-radar、whats-latest 的 `data.json`。**随本次合并进入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
+### 数据
+
+- 2026-10-26：`apps/research-board/data.json` 换为与当日 Brief-05／Day-07 同源的看板包。`asOf` 与 `updatedAt` 均为 `2026-10-26`（CST）。Brief 8 条，雷达正式入选 `selected` 为 0，二级存档 4 条。WSJ／S2 仍为 dig-001 演示样例，文件内已注明。研究用，非投资建议。
+
 ### 新增
 
 - 2026-10-25：流光播放器增加五张已发行原创专辑（艺人：流光）：《哦，桂林》《家乡东平》《徐庄》《大宋不夜城》《泰安，泰安 (Power Rap版)》。音频与封面在 `apps/music-player/media/<专辑编号>/`（`<编号>.mp3` 与 `cover.jpg`），时长分别为 267、273、218、250、175 秒。`data/catalog.json` 把这五张列在《黑金夜》之后、两张演示专辑之前，`released: true`、`demo: false`，不附 Kevin MacLeod 许可字段。《黑金夜》《流光速写》《晨间小品》保留。App 专区登记表与 APK 未改。未部署。
