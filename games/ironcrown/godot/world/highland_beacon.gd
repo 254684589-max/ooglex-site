@@ -203,6 +203,8 @@ static func people(parent: Node3D) -> void:
 		["door", "营房门口的兵", Vector3(bf.x + 0.9, 0, bf.z + 1.6), -PI * 0.5, "3e3a34", ""],                                       # 营房门口，面朝院子
 	]
 	for p in list:
+		if str(p[0]) == "sacks" and str(GameState.get_flag("ch2_first_tide", "")) == "lost_one":
+			continue                                                  # 第一夜潮水漫进了营地（5.4c）：天亮以后数麻袋的兵不见了
 		var at: Vector3 = p[2]
 		var n := Npc.make(str(p[1]), LINES.get(str(p[0]), []), Color(str(p[4])))
 		n.name = "Npc_" + str(p[0])

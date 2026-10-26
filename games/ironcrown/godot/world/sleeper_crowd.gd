@@ -41,6 +41,9 @@ var speed_base := 0.75
 var count := 30
 var spawn_gap := 0.7                   # 前后隔多远出来一个（米，沿路线往后排）
 var obstacles: Array = []              # [[Vector2 圆心, 半径], ...]
+var alt_route: Array = []              # 5.4c：碰到火的人改走这条（「火让它们拐弯」：第一夜那排火把把潮水从营地引到西边绕过去）；空 = 不改道
+var hidden := {}                       # 5.4c：这几个人不画（编号 → true），由外面换成别的模型（潮水里认得的那张脸）
+var rerouted := 0                      # 改了道的人数
 var player: FpController
 var height_fn: Callable                # (x, z) -> y；空 = 都在 y = 0
 var near_enabled := true               # 测试里可以关掉真人模型（无头测试不加载模型也行）
@@ -201,8 +204,9 @@ func _step(dt: float) -> void:
 		var want := _route_dir(a)
 		if a.done:
 			continue
-		if int(a.detour) != 0 and int(a.seg) < route.size() - 1:
-			want = ((route[int(a.seg) + 1] as Vector2) - (route[int(a.seg)] as Vector2)).normalized()   # 正在绕火：只朝路线的方向，不往路线中间拉（不然在一排火把前面横向拉扯、停住）
+		var rt: Array = alt_route if bool(a.get("alt", false)) else route
+		if int(a.detour) != 0 and int(a.seg) < rt.size() - 1:
+			want = ((rt[int(a.seg) + 1] as Vector2) - (rt[int(a.seg)] as Vector2)).normalized()   # 正在绕火：只朝路线的方向，不往路线中间拉（不然在一排火把前面横向拉扯、停住）
 		var push := Vector2.ZERO
 		var key := Vector2i(floori(a.p.x / CELL), floori(a.p.y / CELL))
 		for dx in range(-1, 2):
@@ -215,11 +219,16 @@ func _step(dt: float) -> void:
 					if d < SPACING and d > 0.001:
 						push += off / d * (SPACING - d) / SPACING
 		var steer := Vector2.ZERO
-		for f in _fires + obstacles:
+		var fire_n := _fires.size()
+		var all_f: Array = _fires + obstacles
+		for fi in all_f.size():
+			var f: Array = all_f[fi]
 			var c: Vector2 = f[0]
 			var r := float(f[1])
 			var off: Vector2 = a.p - c
 			var d := off.length()
+			if fi < fire_n and d < r + FIRE_MARGIN and not alt_route.is_empty() and not bool(a.get("alt", false)):
+				_switch_alt(a)                                           # 碰到火：改走绕开营地的那条
 			if d < r and d > 0.001:
 				steer += off / d * (2.5 + 3.0 * (r - d) / r)                # 已经在火边里面：只往外推（5.4b：一排插得密的火把，两支中间的空当不能钻——顺着火边绕会把人往空当里送）
 			elif d < r + FIRE_MARGIN and d > 0.001:
@@ -249,15 +258,34 @@ func _step(dt: float) -> void:
 		finished.emit()
 
 
-## 往路线前方哪个方向走：投到当前这一段上，往前看 3 米，再加上自己在路线左右的偏移；最后一段走完 = done
-func _route_dir(a: Dictionary) -> Vector2:
-	var seg := int(a.seg)
-	while seg < route.size() - 1:
-		var p0: Vector2 = route[seg]
-		var p1: Vector2 = route[seg + 1]
+## 改走 alt_route：从离自己最近的那一段接上
+func _switch_alt(a: Dictionary) -> void:
+	a.alt = true
+	rerouted += 1
+	var best := 0
+	var bd := INF
+	for k in alt_route.size() - 1:
+		var p0: Vector2 = alt_route[k]
+		var p1: Vector2 = alt_route[k + 1]
 		var ab := p1 - p0
 		var t := clampf((a.p - p0).dot(ab) / ab.length_squared(), 0.0, 1.0)
-		if t >= 0.98 or (a.p.distance_to(p1) < 2.5 and seg < route.size() - 2):
+		var d: float = (a.p as Vector2).distance_to(p0 + ab * t)
+		if d < bd:
+			bd = d
+			best = k
+	a.seg = best
+
+
+## 往路线前方哪个方向走：投到当前这一段上，往前看 3 米，再加上自己在路线左右的偏移；最后一段走完 = done
+func _route_dir(a: Dictionary) -> Vector2:
+	var rt: Array = alt_route if bool(a.get("alt", false)) else route
+	var seg := int(a.seg)
+	while seg < rt.size() - 1:
+		var p0: Vector2 = rt[seg]
+		var p1: Vector2 = rt[seg + 1]
+		var ab := p1 - p0
+		var t := clampf((a.p - p0).dot(ab) / ab.length_squared(), 0.0, 1.0)
+		if t >= 0.98 or (a.p.distance_to(p1) < 2.5 and seg < rt.size() - 2):
 			seg += 1
 			continue
 		a.seg = seg
@@ -307,7 +335,7 @@ func _draw(f: float) -> void:
 	if not models.is_empty() and cam:
 		for i in agents.size():
 			var a: Dictionary = agents[i]
-			if not a.done:
+			if not a.done and not hidden.has(i):
 				var d := Vector2(cp.x, cp.z).distance_squared_to(a.p)
 				if d < NEAR_DIST * NEAR_DIST:
 					order.append([d, i])
@@ -319,7 +347,7 @@ func _draw(f: float) -> void:
 	for i in agents.size():
 		var a: Dictionary = agents[i]
 		var m: MultiMesh = mm.multimesh
-		if a.done:
+		if a.done or hidden.has(i):
 			m.set_instance_transform(i, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.001), Vector3(0, -100, 0)))
 			continue
 		var p: Vector2 = (a.prev as Vector2).lerp(a.p, f)

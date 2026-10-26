@@ -97,6 +97,7 @@ var sleeper: Sleeper            # 芦栈村那个夜里没醒的人（4.10b）�
 var daypart := "night"          # 这个场景实际在用的时段（4.2，Daypart.effective：室内、测试场永远是夜）
 var cold_state := {}            # 寒冷（5.2c）：在火边歇了多久（冻伤好要连着歇够）
 var cold_shown := ""            # HUD 上现在写的那行寒冷
+var first_tide: FirstTide       # 第一夜潮水（5.4c）：主线到「插火把」「潮水」时在高地搭起来
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -272,6 +273,19 @@ func _ready() -> void:
 		player.pitch = float(cam[4])
 		player.head.rotation.x = deg_to_rad(float(cam[4]))
 		player.set_physics_process(false)        # 镜头定住：区域外面的地面没有碰撞，不定住会掉下去（只截图用，走不了）
+	if area == "highland" and _query("firsttide") != "":   # 截图、试第一夜用（5.4c）：?firsttide=1 主线跳到「插火把」、给四支火把；=go 两头以外的桩也插上、潮水马上上来；=bare 不插、马上上来
+		GameState.set_stage("ch2_main", "light_line")
+		for k in 4:
+			GameState.add_item("torch")
+		_first_tide_tick()
+		if _query("firsttide") == "go":
+			var sp := FirstTide.spots()
+			for k in range(1, FirstTide.SPOT_N - 1):
+				var pt := PlantedTorch.make(TorchHand.FUEL, true)
+				first_tide.add_child(pt)
+				pt.global_position = Vector3(sp[k].x, Highland.height_at(sp[k].x, sp[k].y), sp[k].y)
+		if _query("firsttide") in ["go", "bare"]:
+			first_tide.start_tide.call_deferred()
 	if _query("torch") == "1":                   # 截图用（5.4b）：?torch=1 手里举着一支点着的火把
 		player.torch.take_from_ground(TorchHand.FUEL)
 	if area == "highland" and _query("torchrow").is_valid_int():    # ?torchrow=N 面前 7 米横着插一排 N 支（看长眠者绕开火把）
@@ -1892,6 +1906,43 @@ func _on_torch_changed(s: int) -> void:
 	print("IC_TORCH state=%s fuel=%.0f planted=%d" % [["none", "lighting", "lit", "out"][s], player.torch.fuel, PlantedTorch.lit_count(get_tree())])
 
 
+## 第一夜潮水（5.4c，world/first_tide.gd）：主线到「插火把」时搭起来（读档、换区域回来时在「潮水」阶段的，从「插火把」重来）
+func _first_tide_tick() -> void:
+	if area != "highland" or player == null or GameState.chapter != 2:
+		return
+	var st := GameState.quest_stage("ch2_main")
+	if first_tide == null and st in ["light_line", "tide"]:
+		if st == "tide":
+			GameState.set_stage("ch2_main", "light_line")
+		if GameState.daypart != "night":
+			set_daypart("night", false)
+		first_tide = FirstTide.new()
+		first_tide.player = player
+		world.add_child(first_tide)
+		first_tide.tide_started.connect(_on_tide_started)
+		first_tide.ended.connect(_on_tide_ended)
+		first_tide.recognized.connect(func(t: String): hud.toast(t, 5.0))
+		print("IC_TIDE prep spots=%d" % FirstTide.SPOT_N)
+
+
+func _on_tide_started() -> void:
+	GameState.set_stage("ch2_main", "tide")
+	hud.toast("南边坡下，一串白影子在往上走。光着脚，不出一点声音。", 4.5)
+	print("IC_TIDE start count=%d lit=%d" % [FirstTide.COUNT, first_tide.lit_spots()])
+
+
+func _on_tide_ended(result: String) -> void:
+	GameState.set_flag("ch2_first_tide", result)
+	if result == "lost_one":
+		hud.toast("潮水从营地中间漫过去了。天亮的时候点人，粮棚前那个数麻袋的兵不见了。", 5.5)
+	else:
+		hud.toast("最后一个白影子翻过了北边的山脊。营地里的火都还亮着，人一个没少。天快亮了。", 5.0)
+	print("IC_TIDE end result=%s intruded=%d rerouted=%d" % [result, first_tide.intruded.size(), first_tide.crowd.rerouted if first_tide.crowd else 0])
+	GameState.set_stage("ch2_main", "after_tide")
+	set_daypart("dawn", false)
+	save_game("auto", true)
+
+
 ## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」
 func _beacon_arrival() -> void:
 	if area != "highland" or player == null or GameState.chapter != 2 or GameState.quest_stage("ch2_main") != "to_beacon19":
@@ -2011,6 +2062,7 @@ func _process(delta: float) -> void:
 	_train_stealth(delta)
 	_cold_tick(delta)
 	_beacon_arrival()
+	_first_tide_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

@@ -106,5 +106,7 @@
   "matthias_met": {"desc": "在第十九烽见过团长马蒂亚斯（5.3c）", "set_in": "beacon19.json matthias/greet", "read_in": "beacon19.json matthias 的 start_if"},
   "heard_three_nights": {"desc": "马蒂亚斯说营里的粮和柴只够三夜（5.3c）", "set_in": "beacon19.json matthias/nights", "read_in": "5.4 第一夜（营里的人怎么说）"},
   "norbert_met": {"desc": "在塔顶见过诺伯特烽长，他说「先过了今夜」（5.3c）", "set_in": "beacon19.json norbert/refuse", "read_in": "beacon19.json norbert 的 start_if；5.5 第二天"},
-  "ch2_wood_carried": {"desc": "堤道失守的那条线：替营里扛了一捆柴上塔顶，诺伯特才肯说话（STORY.md 5.4，5.3c）", "set_in": "beacon19.json norbert/wood", "read_in": "beacon19.json norbert 的选项"}
+  "ch2_wood_carried": {"desc": "堤道失守的那条线：替营里扛了一捆柴上塔顶，诺伯特才肯说话（STORY.md 5.4，5.3c）", "set_in": "beacon19.json norbert/wood", "read_in": "beacon19.json norbert 的选项"},
+  "ch2_first_tide": {"desc": "第一夜的潮水（5.4c）：held = 守住了营地（漫进营地的不到 5 个）；lost_one = 营里被卷走一个人（天亮以后数麻袋的兵不见了）", "set_in": "scenes/main.gd _on_tide_ended（world/first_tide.gd）", "read_in": "world/highland_beacon.gd people；5.5 诺伯特"},
+  "ch2_spare_torches": {"desc": "第一夜插火把时火把用完了，马蒂亚斯又给了两支（5.4c；只给一次）", "set_in": "beacon19.json matthias/more_torches", "read_in": "beacon19.json matthias 的选项"}
 }

@@ -26,6 +26,9 @@
         "options": [
           {"text": "我找诺伯特烽长。", "if": [{"quest_stage": "ch2_main", "eq": "meet_matthias"}], "next": "norbert"},
           {"text": "诺伯特烽长在哪？", "if": [{"not_flag": "norbert_met"}], "next": "where"},
+          {"text": "诺伯特说「先过了今夜」。入夜以后怎么守？", "if": [{"quest_stage": "ch2_main", "eq": "first_night"}], "next": "tide_prep"},
+          {"text": "那排木桩在哪？", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}], "next": "stakes"},
+          {"text": "火把用完了。", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}, {"not_flag": "ch2_spare_torches"}], "next": "more_torches"},
           {"text": "只够三夜？", "next": "nights"},
           {"text": "长眠的人到底是什么？", "next": "sleepers"},
           {"text": "告辞。", "end": true}
@@ -58,6 +61,33 @@
         "do": [{"set": "heard_convoy"}],
         "options": [
           {"text": "……我听见了。", "next": "again"}
+        ]
+      },
+      "tide_prep": {
+        "text": "（他从柴棚里抽出一捆火把，数了四支塞给你）天一黑透它们就上来，从西南那道坡。出营门往坡上走，雪里有一排木桩，拿草绳连着——一根桩插一支。两头我让人插上了，中间归你。（他看了一眼你）火把会被风吹灭。灭了就拿点着的去点，别让那排火断了口子。断一个口子，它们就从营地中间走过去。",
+        "do": [{"give_item": "torch"}, {"give_item": "torch"}, {"give_item": "torch"}, {"give_item": "torch"}, {"quest": "ch2_main", "stage": "light_line"}, {"daypart": "night"}],
+        "options": [
+          {"text": "砍不死，拦不住……那挡在路上的人呢？", "next": "in_the_way"},
+          {"text": "我这就去。", "end": true}
+        ]
+      },
+      "in_the_way": {
+        "text": "推倒，踩过去，接着走。它们不看路上有什么。站在那排火后面，别站在它们前头。",
+        "options": [
+          {"text": "明白了。", "end": true}
+        ]
+      },
+      "more_torches": {
+        "text": "（他皱着眉又抽了两支）就这些了。塔里底层还有一捆，诺伯特攒的。再用完，就拿手去挡吧。",
+        "do": [{"give_item": "torch"}, {"give_item": "torch"}, {"set": "ch2_spare_torches"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "stakes": {
+        "text": "出营门，往西南坡上走，雪里那排连着草绳的木桩。两头已经亮了，中间插满。",
+        "options": [
+          {"text": "……", "end": true}
         ]
       },
       "sleepers": {

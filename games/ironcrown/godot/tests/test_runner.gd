@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8820,6 +8820,97 @@ func test_torch() -> void:
 	await free_main(tower)
 	GameState.new_game(551)
 	check(GameState.held_torch.is_empty(), "新游戏手里没火把")
+
+
+## 5.4c 第一夜潮水：马蒂亚斯给火把 → 栅外那排木桩插满 → 潮水上来、碰到火的从营地西边绕过去 → 守住了 / 漫进营地少一个人 → 天亮
+func test_firsttide() -> void:
+	GameState.new_game(560)
+	GameState.chapter = 2
+	GameState.daypart = "dusk"
+	GameState.set_stage("ch2_main", "first_night")
+	GameState.set_flag("matthias_met")
+	GameState.set_flag("norbert_met")
+	GameState.set_flag("ch1_sleeper", "tobin")
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	var ask := "诺伯特说「先过了今夜」。入夜以后怎么守？"
+	check(has_opt(r, ask), "主线「第一夜」：马蒂亚斯多一个选项「入夜以后怎么守？」")
+	pick(r, ask)
+	check(GameState.count_item("torch") == 4 and GameState.quest_stage("ch2_main") == "light_line" and r.text().contains("木桩") and GameState.daypart == "night",
+		"马蒂亚斯塞给你四支火把，说栅外那排木桩一根插一支（主线「插火把」，天黑透了）")
+	r.start("beacon19", "matthias")
+	pick(r, "火把用完了。")
+	check(GameState.count_item("torch") == 6 and not has_opt(r, "火把用完了。"), "火把用完了再要：又给两支（只给一次）")
+	var main := await make_area("highland")
+	await frames(3)
+	var ft: FirstTide = main.first_tide
+	check(ft != null and ft.state == FirstTide.PREP and ft.lit_spots() == 2 and GameState.daypart == "night", "高地：栅外西南坡上一排木桩，营里的兵插亮了两头")
+	var sp := FirstTide.spots()
+	var bad := sp.filter(func(q): return (q as Vector2).distance_to(HighlandLayout.BEACON19) < HighlandLayout.PALISADE_R + 4.0 or (q as Vector2).distance_to(HighlandLayout.BEACON19) > 30.0)
+	check(bad.is_empty(), "木桩在木栅外 4–30 米（%s）" % str(bad))
+	var p: FpController = main.player
+	var hand: TorchHand = p.torch
+	hand.windy = false
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		(t as PlantedTorch).windy = false
+	for k in range(1, 5):
+		var q: Vector2 = sp[k]
+		p.global_position = Vector3(q.x, Highland.height_at(q.x, q.y + TorchHand.PLANT_DIST) + 0.2, q.y + TorchHand.PLANT_DIST)
+		p.rotation.y = 0.0
+		p.velocity = Vector3.ZERO
+		await physics(2)
+		hand.use_key()
+		await seconds(TorchHand.LIGHT_TIME + 0.3)
+		hand.plant()
+		await physics(2)
+	await physics(5)
+	check(ft.lit_spots() == 6 and ft.state == FirstTide.TIDE and GameState.quest_stage("ch2_main") == "tide", "中间插上四支（六根桩亮着）：潮水上来了（主线「潮水」，%d 根）" % ft.lit_spots())
+	check(ft.crowd != null and ft.crowd.count == FirstTide.COUNT and ft.crowd.hidden.has(FirstTide.SEEN_INDEX) and ft.seen_model != null,
+		"%d 个长眠者；中间混着一张认得的脸（芦栈村的托宾，换成他的样子）" % FirstTide.COUNT)
+	p.global_position = Vector3(44, Highland.height_at(44, -40) + 0.5, -40)
+	Engine.time_scale = 4.0
+	var t0 := Time.get_ticks_msec()
+	while ft.state != FirstTide.DONE and Time.get_ticks_msec() - t0 < 150000:
+		await seconds(1.0)
+	Engine.time_scale = 1.0
+	check(ft.state == FirstTide.DONE and ft.result == "held" and ft.intruded.size() < FirstTide.LOSE_AT and ft.crowd.rerouted >= FirstTide.COUNT * 0.6,
+		"火没断：%d 个碰到火从营地西边绕过去，漫进营地的 %d 个 → 守住了（%s）" % [ft.crowd.rerouted if ft.crowd else 0, ft.intruded.size(), ft.result])
+	await frames(3)
+	check(str(GameState.get_flag("ch2_first_tide", "")) == "held" and GameState.quest_stage("ch2_main") == "after_tide" and GameState.daypart == "dawn",
+		"天亮了：主线「天亮以后」，记下 held")
+	await free_main(main)
+	# 不插：两头那两支挡不住，潮水照直穿过营地 → 卷走一个人；天亮以后粮棚前数麻袋的兵不见了
+	GameState.new_game(561)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	GameState.set_stage("ch2_main", "light_line")
+	var main2 := await make_area("highland")
+	await frames(3)
+	var ft2: FirstTide = main2.first_tide
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		(t as PlantedTorch).windy = false
+	main2.player.global_position = Vector3(44, Highland.height_at(44, -40) + 0.5, -40)
+	ft2.start_tide()
+	Engine.time_scale = 4.0
+	t0 = Time.get_ticks_msec()
+	while ft2.state != FirstTide.DONE and Time.get_ticks_msec() - t0 < 150000:
+		await seconds(1.0)
+	Engine.time_scale = 1.0
+	check(ft2.result == "lost_one" and ft2.intruded.size() >= FirstTide.LOSE_AT and str(GameState.get_flag("ch2_first_tide", "")) == "lost_one",
+		"没插中间：%d 个漫进营地 → 卷走一个人（%s）" % [ft2.intruded.size(), ft2.result])
+	await free_main(main2)
+	var main3 := await make_area("highland")
+	await frames(3)
+	check(main3.world.find_children("Npc_sacks", "", true, false).is_empty() and not main3.world.find_children("Npc_chopper", "", true, false).is_empty() and main3.first_tide == null,
+		"天亮以后：粮棚前数麻袋的兵不见了（劈柴的老兵还在），木桩那排不再搭")
+	await free_main(main3)
+	# 潮水进行中读档：从「插火把」重来
+	GameState.set_stage("ch2_main", "tide")
+	GameState.set_flag("ch2_first_tide", "")
+	var main4 := await make_area("highland")
+	await frames(3)
+	check(main4.first_tide != null and main4.first_tide.state == FirstTide.PREP and GameState.quest_stage("ch2_main") == "light_line", "潮水进行到一半读档：从「插火把」重来")
+	await free_main(main4)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
