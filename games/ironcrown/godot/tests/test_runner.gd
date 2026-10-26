@@ -8743,7 +8743,7 @@ func test_torch() -> void:
 	hand.use_key()
 	check(hand.state == TorchHand.LIGHTING and GameState.count_item("torch") == 2, "有火把：拿出一支打火石点（背包剩 %d）" % GameState.count_item("torch"))
 	await seconds(TorchHand.LIGHT_TIME + 0.3)
-	check(hand.lit() and hand.light.visible and hand.fp_visual.visible and hand.fire.is_in_group("light_source"), "打了 %.1f 秒火石（风里 %.1f）：点着了，左下角举着、带一盏光" % [TorchHand.LIGHT_TIME, TorchHand.LIGHT_TIME_WIND])
+	check(hand.lit() and hand.light != null and hand.fp_visual.visible and hand.fire.is_in_group("light_source"), "打了 %.1f 秒火石（风里 %.1f）：点着了，左下角举着、带一盏光" % [TorchHand.LIGHT_TIME, TorchHand.LIGHT_TIME_WIND])
 	check("torch" in GameState.tips_seen or main.tip_now == "torch" or "torch" in main.tip_queue, "第一次点着弹教学提示「火把」")
 	check(not Cold.near_fire(get_tree(), hand.fire.global_position), "举着的火把暖不了身子")
 	p.melee.block_press()

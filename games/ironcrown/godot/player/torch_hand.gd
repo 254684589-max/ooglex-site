@@ -42,16 +42,6 @@ func _ready() -> void:
 	fire.set_meta("no_warm", true)
 	add_child(fire)
 	fire.top_level = true
-	light = OmniLight3D.new()
-	light.name = "TorchLight"
-	light.light_color = Color("ff9a4a")
-	light.light_energy = 1.4
-	light.omni_range = 7.5
-	light.omni_attenuation = 1.4
-	light.shadow_enabled = false
-	light.light_cull_mask = LIGHT_MASK
-	light.visible = false
-	fire.add_child(light)
 	if player and player.camera:
 		fp_visual = make_visual()
 		fp_visual.name = "TorchFP"
@@ -160,7 +150,7 @@ func _physics_process(delta: float) -> void:
 				said.emit("火把烧完了。")
 			elif windy and rng.randf() < BLOW_HELD * delta:
 				blow_out()
-			elif not Settings.reduced_motion:
+			elif light and not Settings.reduced_motion:
 				var t := Time.get_ticks_msec() * 0.001
 				light.light_energy = 1.4 * (1.0 + sin(t * 9.3) * 0.07 + sin(t * 21.1 + 0.7) * 0.05)
 	_sync_tp()
@@ -181,7 +171,19 @@ func _set_state(s: int) -> void:
 		fire.add_to_group("light_source")
 	elif fire.is_in_group("light_source"):
 		fire.remove_from_group("light_source")
-	light.visible = s == LIT
+	if s == LIT and light == null:            # 光源只在点着时才有（各区域的灯光预算按场景里有几盏点光源算，不能藏一盏在身上）
+		light = OmniLight3D.new()
+		light.name = "TorchLight"
+		light.light_color = Color("ff9a4a")
+		light.light_energy = 1.4
+		light.omni_range = 7.5
+		light.omni_attenuation = 1.4
+		light.shadow_enabled = false
+		light.light_cull_mask = LIGHT_MASK
+		fire.add_child(light)
+	elif s != LIT and light != null:
+		light.queue_free()
+		light = null
 	_apply_visuals()
 	GameState.held_torch = {"fuel": fuel, "lit": s == LIT or s == LIGHTING} if s != NONE else {}
 	if player and player.melee and s != NONE and player.melee.block_held:
