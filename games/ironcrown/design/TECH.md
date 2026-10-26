@@ -753,6 +753,22 @@ godot/
 - **潮水路线**：`HighlandLayout.TIDE_ROUTE`（南边山谷 → 山脊 → 第十九烽东边 → 往北），视角 18「潮水上山脊」（站在山脊上往南看）。调试 `?tide=N`：从第四个点（山脊那段）起放 N 个人，高度用 `Highland.height_at`。5.4c 第一夜接进剧情。
 - **测试**：`sleepercrowd` 组 7 项（跟路线走、互相让开、人越多越快、绕开火且照样走到头、走到尽头就没了、挡路被推倒踩过、近处最多 8 个真人模型、30 个人一步的逻辑时间）。
 
+### 4.53 火把（路线图 5.4b，2026-10-26）
+
+- **`player/torch_hand.gd`（`TorchHand`，挂在主角身上，`FpController.torch`）**：状态 `NONE / LIGHTING / LIT / OUT`。一个键（`torch` 动作 = T；触屏「火」，点着以后字变成「插」）：
+  - `NONE` → 背包里拿一支（`take_item("torch")`），`fuel = FUEL`（300 秒），打火石 `LIGHT_TIME` 1.2 秒（`windy` 时 `LIGHT_TIME_WIND` 2.4 秒）后 `LIT`；背包里没有就说「没有火把。羊脊村的铁匠那儿有卖。」
+  - `LIT` → `plant()`：面前 `PLANT_DIST` 米往下打射线找地面，放一支 `PlantedTorch`（带上剩下的燃料），手里空了；
+  - `OUT` → 重新点（同样的时间，不用新的一支）。
+  - 火的中心 `fire`（`top_level`，每帧放到身体空间 `HAND_BODY`）：`LIT` 时在组 `light_source`，元数据 `radius` = `RADIUS` 1.8、`no_warm`。长眠者群（`SleeperCrowd.fires`）、敌人「站在亮处」（`enemy.gd`）都读这个组；`Cold.near_fire` 跳过带 `no_warm` 的（火把暖不了身子）。带一盏 `OmniLight3D`（7.5 米，闪）。
+  - `windy`（main 设：高地且不在屋里）：`LIT` 时每秒 `BLOW_HELD` = 1/240 的机会被吹灭；`FpController.knock_down` 调 `on_knocked()` 摔灭。烧完 `NONE`、说「火把烧完了」。
+  - 举着（`held()`）时 `Melee.block_press` 直接拒绝，说「左手举着火把，挡不了」；举起来时正在格挡的放下。
+  - 样子 `make_visual()`：木棍 + 缠布的头 + 两片 `flame.gdshader` 火苗 + 一团光晕（加色、不受雾）；第一人称挂在相机下 `HAND_FP`（画面左下），第三人称挂到人物左手（`CharacterModel.hold_prop(…, true)`，人物搭好以后再挂）。
+  - 换区域：每次换状态写 `GameState.held_torch = {fuel, lit}`，新场景的 `TorchHand._ready` 读回来；不进存档，`new_game` 清空。
+- **`world/planted_torch.gd`（`PlantedTorch extends Interactable`）**：插在地上的。亮着时在组 `light_source`（`radius`、`no_warm` 同上）、组 `planted_torch`；接着烧剩下的燃料，烧完剩一根黑棍，60 秒后收走；`windy` 时每秒 `BLOW` = 1/180。E：亮着 → 「拔起」（手里空着才行，`TorchHand.take_from_ground`）；灭了 → 「点着」（手里要有点着的）。**实时光源预算**：亮着的里面最新插下的 `max_lights` 支（main 按画质：低 2、中高 3）带 `OmniLight3D`（40 米外淡出），其余只有火苗和光晕。
+- **第十九烽塔里那捆备用火把**（`BeaconTower._torch_bundle`）：`Pickup`（`pickup_id = beacon19_torches`，`count = 3`，`show_box = false`，外观是挂在它下面的那捆火把，拿走就一起没了）。`Pickup` 新加 `count`、`show_box`；main 的拾取按 `count` 加。
+- **教学提示** `torch`：第一次点着时弹。**调试**：`?torch=1` 手里举着一支点着的；`?torchrow=N` 高地上面前 7 米横着插一排 N 支。
+- **测试**：`torch` 组 24 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

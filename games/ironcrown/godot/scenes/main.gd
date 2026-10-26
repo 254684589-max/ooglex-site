@@ -272,6 +272,18 @@ func _ready() -> void:
 		player.pitch = float(cam[4])
 		player.head.rotation.x = deg_to_rad(float(cam[4]))
 		player.set_physics_process(false)        # 镜头定住：区域外面的地面没有碰撞，不定住会掉下去（只截图用，走不了）
+	if _query("torch") == "1":                   # 截图用（5.4b）：?torch=1 手里举着一支点着的火把
+		player.torch.take_from_ground(TorchHand.FUEL)
+	if area == "highland" and _query("torchrow").is_valid_int():    # ?torchrow=N 面前 7 米横着插一排 N 支（看长眠者绕开火把）
+		var fwd := -player.global_transform.basis.z
+		var c := Vector2(player.global_position.x + fwd.x * 7.0, player.global_position.z + fwd.z * 7.0)
+		var side := Vector2(-fwd.z, fwd.x).normalized()
+		var n := clampi(int(_query("torchrow")), 1, 12)
+		for k in n:
+			var q := c + side * (k - (n - 1) * 0.5) * 2.2
+			var pt := PlantedTorch.make(TorchHand.FUEL, false)
+			world.add_child(pt)
+			pt.global_position = Vector3(q.x, Highland.height_at(q.x, q.y), q.y)
 	if not pending.is_empty():
 		if pending.has("spawn"):              # 从门走进来：站到那扇门对应的出生点
 			arrived_by = str(pending.spawn)
