@@ -787,6 +787,15 @@ godot/
 - **视角 19** 营门外往西南看那排木桩；**调试** `?firsttide=1 / go / bare`。
 - **测试**：`firsttide` 组 12 项（`Engine.time_scale = 4` 跑完整场潮水：插满时 36 人全改道、漫进 0 个 → held；只有两头两支时漫进 10 个 → lost_one）。
 
+### 4.55 第二天：诺伯特、第十八烽、石圈（路线图 5.5a，2026-10-26）
+
+- **诺伯特挪地方**：`ch2_first_tide` 有值（第一夜过了）以后，`HighlandBeacon.people()` 不放塔顶那个，`BeaconTower.build` 在顶层小屋炉边放一个（节点名 `Npc_norbert_room`，looks.json 的 `@norbert_room` 蹲着）。对话 `beacon19.json` norbert 的 `start_if` 先看 `norbert_day2` → `day2_again`、`ch2_first_tide` → `day2`（`lost_one` 换开场白）；节点 `coronation`（线索 `beacon_seal`、旗标 `heard_coronation`）→ `skipped` → `vigil`（线索 `vigil_page`）→ `keep_fire`（`norbert_day2`、主线 `convoy_day`）；`horn`；`stones`（`ch2_stones` 有值才出现）。
+- **`world/examine.gd`（`Examine extends Interactable`）**：能看 / 能用的一处东西，`on_use(who) -> Dictionary`、可选 `verb_fn` 换动作字；只在可交互层。
+- **`world/beacon18.gd`（`Beacon18`）**：`HighlandLayout.BEACON18`（地形早就压平了一片）。圆石塔（14 边、塔顶石沿、十个垛口、窄窗缝）、南边斜靠一架木梯、塔顶铁火盆（黑炭、没点着时半盆雪）；碰撞：塔身圆柱 + 垛口一圈。`Examine`：「爬上去 / 爬下去」直接改主角位置；火盆「添柴点火 / 看火」：身上有 `firewood`、`lamp_oil`（新物品）→ 用掉、`ch2_beacon18` = lit、支线 `ch2_beacon18` 完成、`_fire()`（三片火苗、`FireLight` 5 / 22 米、组 `light_source`、不受雾的光晕）。塔脚三个 `Npc`「长眠的守塔人」（只说一句）。
+- **马蒂亚斯**：第一夜过后多一个选项（`ch2_beacon18_given` 只一次）：柴 + 火油、支线开始。
+- **石圈**（`HighlandVillage.stone_words / read_stones`）：倒下的那块（`ring_stones()[6]`）上一个 `Examine`「看刻字」：`ch2_stones` = copied（线索 `stones_seal`）；有 `old_book` → matched。
+- 视角 20；调试 `?day2=1 / lit`。**测试**：`day2` 组 23 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

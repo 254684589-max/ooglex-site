@@ -130,6 +130,14 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
+		if _query("day2") in ["1", "lit"] and not Engine.has_meta("ic_day2_param_done"):
+			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了
+			GameState.set_stage("ch2_main", "after_tide")
+			for f in ["matthias_met", "norbert_met"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			if _query("day2") == "lit":
+				GameState.set_flag("ch2_beacon18", "lit")
 		if area == "marsh" and _query("causeway") in ["gap", "arch"] and not Engine.has_meta("ic_causeway_param_done"):
 			Engine.set_meta("ic_causeway_param_done", true)  # 截图、冒烟用（4.9a）：?area=marsh&causeway=gap|arch 直接摆好堤道夜战（夜里、主线到「上堤道」、守断口 / 石拱），配 ?cam= 放到守点就开打
 			if not GameState.quest_active("ch1_main"):
