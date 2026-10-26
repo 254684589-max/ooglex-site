@@ -13,7 +13,7 @@
 | 村北回看 | 25.8 → 49.1 | 37.1 → 62.5 |
 | 第十九烽（山脊上，在雾上面） | — | 80.0 → 80.0（不变） |
 
-黄昏截图看过：暗、清楚，不发灰。`daypart highland yangji flora` 79 项通过。
+黄昏截图看过：暗、清楚，不发灰。`daypart highland yangji flora` 79 项通过。上线：`tools/build_web.sh games/ironcrown/play`（带全量测试）**1952 项通过** → `ic-97703641`；本地打开 `play/` 清晨的驿站前 0 报错。
 
 ## 2026-10-26 · 上线 5.3c–5.5a
 
