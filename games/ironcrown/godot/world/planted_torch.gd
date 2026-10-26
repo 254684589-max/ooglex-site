@@ -42,7 +42,7 @@ func _ready() -> void:
 	cs.shape = bs
 	cs.position.y = 0.7
 	add_child(cs)
-	visual = TorchHand.make_visual()
+	visual = TorchHand.make_visual(1)                    # 插着的只要一片火苗（一排十几支，绘制调用省一半）
 	visual.position = Vector3(0, 0.62, 0)                # 握把那截插进雪里
 	visual.rotation.x = deg_to_rad(-6.0)
 	visual.scale = Vector3.ONE * 1.25
@@ -50,7 +50,7 @@ func _ready() -> void:
 	light = OmniLight3D.new()
 	light.light_color = Color("ff9a4a")
 	light.light_energy = 1.3
-	light.omni_range = 7.0
+	light.omni_range = 6.0
 	light.omni_attenuation = 1.4
 	light.position = Vector3(0, 1.5, 0)
 	light.distance_fade_enabled = true

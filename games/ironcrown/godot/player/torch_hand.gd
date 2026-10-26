@@ -17,7 +17,7 @@ const LIGHT_TIME := 1.2           # 打火石点着要多久
 const LIGHT_TIME_WIND := 2.4      # 风里多打几下
 const RADIUS := 1.8               # 长眠者绕开的火边（SleeperCrowd 再乘 FIRE_GAIN）
 const BLOW_HELD := 1.0 / 240.0    # 风里举着，每秒被吹灭的机会（平均四分钟一次；你用身子挡着风）
-const HAND_FP := Vector3(-0.30, -0.30, -0.55)     # 第一人称：火把在画面左下（相机空间）
+const HAND_FP := Vector3(-0.40, -0.44, -0.62)     # 第一人称：火把在画面左下（相机空间）
 const HAND_BODY := Vector3(-0.38, 1.45, -0.42)    # 火在身上的位置（身体空间，算火的中心、插地的位置用）
 const PLANT_DIST := 0.9
 
@@ -54,8 +54,8 @@ func _ready() -> void:
 		fp_visual = make_visual()
 		fp_visual.name = "TorchFP"
 		fp_visual.position = HAND_FP
-		fp_visual.rotation = Vector3(deg_to_rad(-12.0), 0.0, deg_to_rad(-14.0))
-		fp_visual.scale = Vector3.ONE * 0.8
+		fp_visual.rotation = Vector3(deg_to_rad(-8.0), 0.0, deg_to_rad(10.0))      # 火头稍微往外偏，不挡画面中间
+		fp_visual.scale = Vector3.ONE * 0.62
 		player.camera.add_child(fp_visual)
 	var h: Dictionary = GameState.held_torch
 	if not h.is_empty() and float(h.get("fuel", 0.0)) > 0.0:
@@ -194,7 +194,7 @@ func _apply_visuals() -> void:
 
 
 ## 火把的样子：木棍、缠着浸了松脂的布的头、两片卷动的火苗（shaders/flame.gdshader）、一团光晕。握把在原点、火头朝 +Y（同 Props 的握法）
-static func make_visual() -> Node3D:
+static func make_visual(flame_count := 2) -> Node3D:
 	var root := Node3D.new()
 	var kit := MeshKit.new()
 	kit.cylinder("wood", Vector3(0, -0.18, 0), Vector3(0, 0.46, 0), 0.022, 0.019, 6, 0.8)
@@ -215,7 +215,7 @@ static func make_visual() -> Node3D:
 	flames.name = "Flames"
 	root.add_child(flames)
 	var sh := load("res://shaders/flame.gdshader") as Shader
-	for k in 2:
+	for k in flame_count:
 		var q := QuadMesh.new()
 		q.size = [Vector2(0.2, 0.38), Vector2(0.14, 0.28)][k]
 		var fm := ShaderMaterial.new()

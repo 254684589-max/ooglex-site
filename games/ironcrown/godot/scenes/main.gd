@@ -547,7 +547,7 @@ func _fog_end() -> float:
 ## 中 = 原分辨率、月光阴影（1 段）、泛光；高 = 再加 2 倍抗锯齿、阴影 2 段
 func apply_quality(tier: String) -> void:
 	quality = tier
-	PlantedTorch.max_lights = 2 if tier == "low" else 3       # 插在地上的火把，最新几支带实时光源（5.4b）
+	PlantedTorch.max_lights = 1 if tier == "low" else 2       # 插在地上的火把，最新几支带实时光源（5.4b；每多一盏，照到的东西都要多画一遍）
 	if pause_menu:
 		pause_menu.show_quality(tier)
 	var vp := get_viewport()
