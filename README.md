@@ -37,7 +37,7 @@ ZLQ6600E/
 │   ├── whats-latest/       # 📰 最新消息是什么？（权威要闻聚合 + 市场快照）
 │   ├── news-brief/         # 🗞 全球新闻扫描简报概览（人工编辑｜环球新闻情报中心；与 whats-latest 自动抓取并存）
 │   ├── news-radar/         # 📡 雷达专区（人工编辑｜全球投资情报雷达；正式入选按条数展示，空报显示 0）
-│   ├── research-board/     # 📋 每日投研（Brief/雷达随当日早更；WSJ/S2 仍为演示；非正式产品；含全球利率）
+│   ├── research-board/     # 📋 每日投研（Brief／雷达／WSJ／S2 已同步；含全球利率）
 │   ├── digest-board/       # 旧地址跳转：/apps/digest-board/ → /apps/research-board/
 │   ├── world-economy/      # 🌐 全球经济图谱（世界地图·各国经济指标，每日更新）
 │   ├── movies/             # 🎬 全球电影榜（高分 Top 250 + 最新上映，每日更新）
@@ -273,7 +273,7 @@ GPT、Claude、Gemini、Grok、DeepSeek、Qwen、Kimi、GLM 等中外模型同�
 
 ## 每日投研
 
-`apps/research-board/`（公开路径 `/apps/research-board/`）是每日投研汇总，非正式产品。从「最新消息是什么？」顶栏进入。Brief 与雷达随当日早更写入同目录 `data.json`；WSJ／S2 仍可能是演示样例，页顶会分开写明，并标明演示数据。不读、不写「最新消息」的自动抓取。首页「数据」列表不放入口。研究用，非投资建议。页头「全球利率」进入 `/apps/research-board/rates/`。旧地址 `/apps/digest-board/` 只做跳转，不再收录进站点地图。
+`apps/research-board/`（公开路径 `/apps/research-board/`）是每日投研汇总。从「最新消息是什么？」顶栏进入。Brief、雷达、WSJ、S2 写入同目录 `data.json`；当前包 `demo` 为 false，页顶写「投研汇总 · Brief／雷达／WSJ／S2 已同步」。不读、不写「最新消息」的自动抓取。首页「数据」列表不放入口。研究用，非投资建议。页头「全球利率」进入 `/apps/research-board/rates/`。旧地址 `/apps/digest-board/` 只做跳转，不再收录进站点地图。
 
 ## 全球经济图谱
 
