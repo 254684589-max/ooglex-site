@@ -1,7 +1,7 @@
 /* 全球投资情报雷达专区：只渲染同目录 data.json。外部文字一律 textContent。
    硬规则：archive ≠ 正式入选。
    正式入选条数只数 items 里的非二级条目。
-   archive、funnel.tier2、scanOverview 不得并入 items，也不得加进「正式入选」数字。 */
+   archive、funnel、scanOverview、scanItems 不得并入 items，也不得加进「正式入选」数字。 */
 (function () {
   "use strict";
 
@@ -25,6 +25,11 @@
   var coverageList = document.getElementById("coverage-list");
   var coverageNote = document.getElementById("coverage-note");
   var scanPaths = document.getElementById("scan-paths");
+  var scanScansNote = document.getElementById("scan-scans-note");
+  var scanListSection = document.getElementById("scan-list");
+  var scanListTitle = document.getElementById("scan-list-title");
+  var scanListNote = document.getElementById("scan-list-note");
+  var scanListGroups = document.getElementById("scan-list-groups");
   var archiveSection = document.getElementById("archive");
   var archiveHeading = document.getElementById("archive-heading");
   var archiveNote = document.getElementById("archive-note");
@@ -32,6 +37,11 @@
   var footMeta = document.getElementById("foot-meta");
 
   var NOT_COUNTED = "非正式入选 · 不计入正式入选 · 不计入终极结果";
+  var SCAN_GROUPS = [
+    { key: "tier2", heading: "二级存档" },
+    { key: "tier1", heading: "一级（例行／无增量）" },
+    { key: "held", heading: "否决／未发布／去重／禁源" }
+  ];
   var FUNNEL_FIELDS = [
     { key: "scans", label: "L0 扫描触及", approx: true },
     { key: "independent", label: "L1 去重后候选" },
@@ -136,8 +146,10 @@
     clear(itemsRoot);
     clear(funnelList);
     clear(coverageList);
+    clear(scanListGroups);
     clear(archiveList);
     scanSection.hidden = true;
+    scanListSection.hidden = true;
     archiveSection.hidden = true;
     dateline.textContent = "来源与更新时间暂时不可用";
     setBanner("error", message);
@@ -235,6 +247,7 @@
     scanTitle.textContent = textOrMissing(overview.title) || "本轮扫描／漏斗概览";
     var windowText = setOptionalText(scanWindow, overview.window);
     var kindText = setOptionalText(scanKind, overview.kind);
+    var scansNoteText = setOptionalText(scanScansNote, overview.scansNote);
     var pathsText = setOptionalText(scanPaths, overview.pathsNote);
 
     var asideBits = [];
@@ -246,7 +259,7 @@
       asideBits.push("未发布 " + funnel.notPublished);
     }
     scanAside.textContent = asideBits.length
-      ? ("记录中的剔除：" + asideBits.join("，") + "。这两项不是入选，也不计入正式入选。")
+      ? ("记录中的剔除：" + asideBits.join("，") + "。这是筛选计数，不计入正式入选。已点名主题见下方清单。")
       : "";
     scanAside.hidden = !asideBits.length;
 
@@ -266,8 +279,77 @@
     coverageNote.hidden = !coverageNoteText;
     coverageWrap.hidden = names.length === 0;
 
-    var visible = funnelCount > 0 || !!windowText || !!kindText || !!pathsText || names.length > 0;
+    var visible = funnelCount > 0 || !!windowText || !!kindText || !!scansNoteText || !!pathsText || names.length > 0;
     scanSection.hidden = !visible;
+  }
+
+  function renderScanRow(item, index) {
+    var li = document.createElement("li");
+    var id = textOrMissing(item && item.id);
+    li.id = "scan-item-" + (id || String(index + 1));
+    var head = el("div", "scan-row-head");
+    var titleWrap = el("div", "scan-row-title-wrap");
+    if (id) titleWrap.appendChild(el("p", "scan-row-kicker", id));
+    titleWrap.appendChild(el("p", "scan-row-title", textOrMissing(item && item.title) || "（无标题）"));
+    head.appendChild(titleWrap);
+    head.appendChild(el("span", "scan-badge", textOrMissing(item && item.disposition) || "非正式入选"));
+    li.appendChild(head);
+    li.appendChild(el("p", "scan-flag", NOT_COUNTED));
+    var reason = textOrMissing(item && item.reason) || textOrMissing(item && item.whyNot);
+    if (reason) {
+      var reasonNode = el("p", "scan-reason");
+      reasonNode.appendChild(el("span", "scan-reason-label", "说明："));
+      reasonNode.appendChild(document.createTextNode(reason));
+      li.appendChild(reasonNode);
+    }
+    return li;
+  }
+
+  function renderScanList(data) {
+    clear(scanListGroups);
+    var rows = Array.isArray(data.scanItems) ? data.scanItems.filter(function (item) {
+      return item && typeof item === "object";
+    }) : [];
+    if (!rows.length) {
+      scanListSection.hidden = true;
+      return false;
+    }
+    scanListTitle.textContent = "本轮扫描条目（全量可核对）";
+    var noteText = textOrMissing(data.scanItemsNote)
+      || "下面是本轮能核对到名称的主题。全部非正式入选，不计入正式入选，也不计入终极结果。";
+    scanListNote.textContent = noteText;
+    scanListNote.hidden = false;
+    var placed = {};
+    SCAN_GROUPS.forEach(function (group) {
+      var members = rows.filter(function (item) {
+        return textOrMissing(item.group) === group.key;
+      });
+      if (!members.length) return;
+      placed[group.key] = true;
+      var block = el("section", "scan-group");
+      block.appendChild(el("h3", "scan-group-title", group.heading));
+      var list = el("ul", "scan-rows");
+      members.forEach(function (item, index) {
+        list.appendChild(renderScanRow(item, index));
+      });
+      block.appendChild(list);
+      scanListGroups.appendChild(block);
+    });
+    var rest = rows.filter(function (item) {
+      return !placed[textOrMissing(item.group)];
+    });
+    if (rest.length) {
+      var extra = el("section", "scan-group");
+      extra.appendChild(el("h3", "scan-group-title", "其他可核对主题"));
+      var extraList = el("ul", "scan-rows");
+      rest.forEach(function (item, index) {
+        extraList.appendChild(renderScanRow(item, index));
+      });
+      extra.appendChild(extraList);
+      scanListGroups.appendChild(extra);
+    }
+    scanListSection.hidden = false;
+    return true;
   }
 
   function renderArchiveItem(item, index) {
@@ -359,8 +441,9 @@
     }
 
     renderScan(data);
+    var listedScan = renderScanList(data);
     clear(archiveList);
-    if (!archive.length) {
+    if (!archive.length || listedScan) {
       archiveSection.hidden = true;
     } else {
       archiveSection.hidden = false;
@@ -388,9 +471,11 @@
     else if (!listed) setBanner("empty", "正式入选 0 条。" + (textOrMissing(data.emptyReason) || ""));
     else setBanner("", "");
 
+    var scanCount = Array.isArray(data.scanItems) ? data.scanItems.length : 0;
     footMeta.textContent = (data.edition || "雷达")
       + (data.version ? " · " + data.version : "")
       + " · 正式入选 " + listed + " 条"
+      + (scanCount ? " · 可核对扫描主题 " + scanCount + " 条（不计入正式入选）" : "")
       + (archive.length ? " · 二级存档 " + archive.length + " 条（不计入正式入选）" : "")
       + " · 来源 " + (textOrMissing(data.source) || "环球新闻情报中心／全球投资情报雷达")
       + " · 更新 " + formatStamp(data.updatedAt, textOrMissing(data.asOfZone));
