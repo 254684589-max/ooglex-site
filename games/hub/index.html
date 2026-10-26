@@ -32,40 +32,45 @@
       var(--bg);
     background-attachment:fixed;
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; line-height:1.5; }
-  .page { max-width:1000px; margin:0 auto; padding:16px 16px 64px; }
-  header.top a.back { color:var(--accent); text-decoration:none; font-size:0.9rem; }
+  .page { max-width:1320px; margin:0 auto; padding:18px 18px 56px; }
+  header.top a.back { color:var(--accent); text-decoration:none; font-size:0.9rem; border-radius:4px; }
   header.top a.back:hover { opacity:.8; }
-  .hero { text-align:center; margin:18px 0 24px; }
+  header.top a.back:focus-visible { outline:2px solid var(--ogx-focus, var(--accent)); outline-offset:3px; }
+  .hero { text-align:center; margin:14px 0 20px; }
   .hero h1 { font-size:2.1rem; font-weight:800; letter-spacing:1px;
     background:linear-gradient(92deg,#a98bff,#ff6ec7 50%,#7ed957); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .hero p { color:var(--dim); margin-top:7px; font-size:0.92rem; }
 
-  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); grid-auto-flow:row dense; gap:18px; max-width:900px; margin:0 auto; }
-  .game { display:flex; flex-direction:column; text-decoration:none; color:inherit; border-radius:18px; overflow:hidden;
-    background:var(--card); border:1px solid var(--line); box-shadow:0 22px 54px -34px rgba(0,0,0,.85);
-    transition:transform .18s, border-color .18s; }
-  .game:hover { transform:translateY(-4px); border-color:var(--ac); }
-  .cover { height:150px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-  .cover::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
-  /* 竖版海报按图片自身比例显示（img 的 width / height 先占好位置），没载入时是深色底。
-     .game.feature（都会人生、工地搬砖、余烬陷落、铁冠之争）占满一行：手机上海报在上，宽屏上海报在左、文字在右。
-     下面三张（GTA Vice City、红色警戒 2、暗黑破坏神）用同一套 .cv-poster，仍排在网格里。 */
-  .game.feature { grid-column:1 / -1; }
+  /* 七张卡同一网格。1100px 起一行四张，末行剩下的靠左、不拉成通栏。
+     海报按图片自身比例铺满卡片顶部，整张都在；同一行卡片等高，按钮沉底对齐。 */
+  .grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; width:100%; margin:0; }
+  .game { display:flex; flex-direction:column; min-width:0; text-decoration:none; color:inherit; border-radius:16px; overflow:hidden;
+    background:var(--card); border:1px solid var(--line); box-shadow:0 16px 40px -30px rgba(0,0,0,.85);
+    transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+  .game:hover { transform:translateY(-3px); border-color:var(--ac); box-shadow:0 18px 36px -22px rgba(0,0,0,.75); }
+  .game:focus-visible { outline:2px solid var(--ogx-focus, var(--accent)); outline-offset:3px; }
+  .cover { position:relative; overflow:hidden; background:#1b1c22; }
+  .cover::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, transparent 72%, rgba(0,0,0,.2)); }
   .cover.cv-poster { height:auto; display:block; background:#1b1c22; }
   .cover .cv-img { display:block; width:100%; height:auto; }
-  @media (min-width:600px){
-    .game.feature { flex-direction:row; }
-    .game.feature .cv-poster { flex:0 0 min(46%, 340px); align-self:flex-start; }
-    .game.feature .body { align-self:center; padding:22px 26px; }
-  }
-  .body { padding:15px 16px 17px; }
-  .body h3 { font-size:1.12rem; font-weight:800; }
-  .body p { color:var(--dim); font-size:0.84rem; margin-top:6px; line-height:1.55; }
-  .play { display:inline-block; margin-top:13px; padding:8px 18px; border-radius:999px; font-weight:700; font-size:0.88rem;
+  .body { display:flex; flex-direction:column; flex:1; min-width:0; padding:12px 14px 14px; }
+  .body h3 { font-size:1rem; font-weight:800; line-height:1.35; overflow-wrap:break-word; }
+  .body p { color:var(--dim); font-size:0.8rem; margin-top:6px; margin-bottom:12px; line-height:1.5; overflow-wrap:break-word; }
+  .play { display:inline-block; margin-top:auto; align-self:flex-start; padding:7px 14px; border-radius:999px; font-weight:700; font-size:0.84rem;
     color:#fff; background:linear-gradient(135deg, var(--ac), var(--ac2)); }
 
-  footer { margin-top:24px; text-align:center; color:var(--dim); font-size:0.8rem; }
-  @media (max-width:480px){ .hero h1 { font-size:1.6rem; } }
+  footer { margin-top:22px; text-align:center; color:var(--dim); font-size:0.8rem; }
+  @media (min-width:640px){
+    .grid { grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; }
+  }
+  @media (min-width:1100px){
+    .grid { grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
+  }
+  @media (max-width:480px){ .hero h1 { font-size:1.6rem; } .page { padding:14px 14px 48px; } }
+  @media (prefers-reduced-motion: reduce){
+    .game { transition:none; }
+    .game:hover { transform:none; }
+  }
 /* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
 html[data-theme="ft"] .hero h1, html[data-theme="paper"] .hero h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
 html[data-theme="ft"] .game, html[data-theme="paper"] .game { box-shadow: 0 22px 54px -34px rgba(120,92,64,0.20); }
@@ -83,7 +88,7 @@ html[data-theme="ft"] .cover.cv-poster, html[data-theme="paper"] .cover.cv-poste
       <p>网页小游戏 · 正版游戏官方入口 · 点击进入</p>
     </div>
     <div class="grid">
-      <a class="game feature" href="../working-life/" style="--ac:#22e4ff;--ac2:#ff2e88">
+      <a class="game" href="../working-life/" style="--ac:#22e4ff;--ac2:#ff2e88">
         <div class="cover cv-poster"><img class="cv-img" src="img/hustle-poster.webp?v=34863809" alt="《都会人生》海报：雨夜的霓虹街头，拖着行李箱的年轻人望向城市" width="800" height="1200" decoding="async"></div>
         <div class="body">
           <h3>都会人生 · 原创 3D 游戏</h3>
@@ -91,7 +96,7 @@ html[data-theme="ft"] .cover.cv-poster, html[data-theme="paper"] .cover.cv-poste
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game feature" href="../construction-worker/" style="--ac:#f5be28;--ac2:#ff8a2b">
+      <a class="game" href="../construction-worker/" style="--ac:#f5be28;--ac2:#ff8a2b">
         <div class="cover cv-poster"><img class="cv-img" src="img/brick-poster.webp?v=6141ecd9" alt="BRICK BY BRICK 海报：戴安全帽的年轻工人抱着一摞砖，身后是塔吊和在建的高楼" width="800" height="1000" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>BRICK BY BRICK · 原创 3D 游戏</h3>
@@ -99,7 +104,7 @@ html[data-theme="ft"] .cover.cv-poster, html[data-theme="paper"] .cover.cv-poste
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game feature" href="../emberfall3d/" style="--ac:#b3241a;--ac2:#e8843a">
+      <a class="game" href="../emberfall3d/" style="--ac:#b3241a;--ac2:#e8843a">
         <div class="cover cv-poster"><img class="cv-img" src="img/emberfall-poster.webp?v=cc606d1a" alt="《余烬陷落》EMBERFALL 大作版海报：持火焰长剑的骑士迎战熔岩巨魔与骷髅兵" width="800" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>EMBERFALL · 原创暗黑风 3D ARPG</h3>
@@ -107,7 +112,7 @@ html[data-theme="ft"] .cover.cv-poster, html[data-theme="paper"] .cover.cv-poste
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>
-      <a class="game feature" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
+      <a class="game" href="../ironcrown/play/" style="--ac:#6f8faf;--ac2:#b8964e">
         <div class="cover cv-poster"><img class="cv-img" src="img/ironcrown-poster.webp?v=c6d671e8" alt="《铁冠之争》海报：戴冠持剑的骑士站在燃烧的城堡前，脚下是碎裂的铁冠" width="900" height="1200" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3>铁冠之争 · 原创第一人称 RPG</h3>
