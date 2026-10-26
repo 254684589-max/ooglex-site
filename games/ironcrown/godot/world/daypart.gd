@@ -63,12 +63,13 @@ const AREA_PRESETS := {
 	"highland": {
 		## 雪地反光强：环境光压低、日光（阴天里透出来的那一点）偏一侧，坡的明暗才出得来
 		## sky = 雾（远山被雾吞掉的颜色）：比天边（horizon，天空照片在地平线渐变到的颜色）暗一档——远山的剪影压在亮的天上，才看得出一层层
-		"dawn": {"sky": Color("858491"), "horizon": Color("a7a3ab"), "ambient": Color("9aa3b4"), "ambient_energy": 0.42, "fog_begin": 12.0, "fog_end": 210.0, "fog_curve": 1.4,
-			"fog_height": 26.0, "fog_height_density": 0.05, "sun": Color("f3d9cb"), "sun_energy": 0.95, "contrast": 1.1},
-		"day": {"sky": Color("8b95a3"), "horizon": Color("b0b8c2"), "ambient": Color("a8b4c4"), "ambient_energy": 0.48, "fog_begin": 20.0, "fog_end": 300.0, "fog_curve": 1.5,
-			"fog_height": 26.0, "fog_height_density": 0.04, "sun_energy": 1.2, "sun_rot": Vector3(-24, 40, 0), "contrast": 1.12},
-		"dusk": {"sky": Color("574e5c"), "horizon": Color("7d6c78"), "ambient": Color("7a6f88"), "ambient_energy": 0.36, "fog_begin": 10.0, "fog_end": 170.0, "fog_curve": 1.3,
-			"fog_height": 26.0, "fog_height_density": 0.06, "sun": Color("e2b4a0"), "sun_energy": 0.6, "contrast": 1.1},
+		"dawn": {"sky": Color("858491"), "horizon": Color("a7a3ab"), "ambient": Color("9aa3b4"), "ambient_energy": 0.46, "fog_begin": 35.0, "fog_end": 320.0, "fog_curve": 1.6,
+			"fog_height": 26.0, "fog_height_density": 0.012, "sun": Color("f3d9cb"), "sun_energy": 0.95, "contrast": 1.1},
+		"day": {"sky": Color("8b95a3"), "horizon": Color("b0b8c2"), "ambient": Color("a8b4c4"), "ambient_energy": 0.5, "fog_begin": 45.0, "fog_end": 420.0, "fog_curve": 1.7,
+			"fog_height": 26.0, "fog_height_density": 0.01, "sun_energy": 1.2, "sun_rot": Vector3(-24, 40, 0), "contrast": 1.12},
+		"dusk": {"sky": Color("574e5c"), "horizon": Color("7d6c78"), "ambient": Color("7a6f88"), "ambient_energy": 0.38, "fog_begin": 25.0, "fog_end": 240.0, "fog_curve": 1.5,
+			"fog_height": 26.0, "fog_height_density": 0.02, "sun": Color("e2b4a0"), "sun_energy": 0.6, "contrast": 1.1},
+		## 清晨 / 白天 / 黄昏的雾也往远推、谷底的高度雾减淡（2026-10-26 所有者截图「白天为什么灰蒙蒙的」：雾从 12–20 米就开始、谷底高度雾 0.04–0.06，二十几米外的驿站就褪成一片灰）——远山照样一层层被雾吞掉
 		## 夜：雪地在月光下是亮的（2026-10-24 所有者截图「为什么那么黑」：原来环境光 0.26、月光 0.32、雾近黑，村里只看得见几扇窗）——
 		## 月光、环境光调亮、偏冷蓝，雾和天边亮一档；人造光仍然是暖的、更亮（窗、火盆），夜里照样比白天暗得多
 		## 谷底的高度雾夜里减淡、雾色亮一档（所有者截图：村子在谷底、雾高 26 米以下，暗蓝的雾一盖整片发灰发糊，山脊上的第十九烽在雾上面反倒清楚）
