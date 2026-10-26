@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8911,6 +8911,100 @@ func test_firsttide() -> void:
 	await frames(3)
 	check(main4.first_tide != null and main4.first_tide.state == FirstTide.PREP and GameState.quest_stage("ch2_main") == "light_line", "潮水进行到一半读档：从「插火把」重来")
 	await free_main(main4)
+
+
+## 5.5a 第二天：诺伯特下到小屋讲加冕礼、断角、第三章入口；第十八烽（柴、火油、梯子、点火）；石圈的刻字
+func test_day2() -> void:
+	GameState.new_game(570)
+	GameState.chapter = 2
+	GameState.daypart = "dawn"
+	GameState.set_stage("ch2_main", "after_tide")
+	for f in ["matthias_met", "norbert_met"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "lost_one")
+	var main := await make_area("highland")
+	await frames(3)
+	var w: Node = main.world
+	check(w.find_children("Npc_norbert", "", true, false).is_empty() and w.find_children("Npc_sacks", "", true, false).is_empty(), "第二天：塔顶上没有诺伯特了（数麻袋的兵也不在：潮水卷走了）")
+	var b18 := w.find_children("Beacon18", "", true, false)
+	var sleepers := w.find_children("Npc_beacon18_*", "", true, false)
+	check(b18.size() == 1 and sleepers.size() == 3 and (sleepers[0] as Npc).display_name == "长眠的守塔人" and b18[0].get_node_or_null("Fire18") == null,
+		"第十八烽：一座冷着的圆石塔，塔脚雪里站着三个长眠的守塔人")
+	var space: PhysicsDirectSpaceState3D = main.player.get_world_3d().direct_space_state
+	var floating := sleepers.filter(func(n):
+		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1, 0), n.global_position - Vector3(0, 1, 0), 1))
+		return hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.3)
+	check(floating.is_empty(), "三个守塔人都站在地上")
+	# 马蒂亚斯给柴和火油
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	var ask := "西边那座第十八烽，就这么灭着？"
+	check(has_opt(r, ask), "第一夜过后：马蒂亚斯多一个选项「第十八烽」")
+	pick(r, ask)
+	pick(r, "我去。")
+	check(GameState.has_item("firewood") and GameState.has_item("lamp_oil") and GameState.quest_active("ch2_beacon18"), "马蒂亚斯给了一捆柴、一罐火油，支线「熄掉的第十八烽」开始")
+	r.start("beacon19", "matthias")
+	check(not has_opt(r, ask), "只给一次")
+	# 爬梯子、点火
+	var root: Node3D = b18[0]
+	var p: FpController = main.player
+	var up: Examine = root.get_node("Ladder18Up")
+	var res := up.interact(p)
+	await physics(10)
+	check(res.get("kind") == "climb" and p.global_position.y > root.global_position.y + Beacon18.H - 0.3 and p.global_position.y < root.global_position.y + Beacon18.H + 1.5,
+		"塔外的木梯「爬上去」：站到塔顶（高 %.1f 米），没掉下去" % (p.global_position.y - root.global_position.y))
+	var brazier: Examine = root.get_node("Brazier18")
+	GameState.take_item("lamp_oil")
+	res = brazier.interact(p)
+	check(str(res.get("toast", "")).contains("火油") and not Beacon18.lit(), "少了火油：点不着，说缺什么")
+	GameState.add_item("lamp_oil")
+	res = brazier.interact(p)
+	await frames(2)
+	var fire := root.get_node_or_null("Fire18")
+	check(Beacon18.lit() and fire != null and not fire.find_children("*", "OmniLight3D", true, false).is_empty() and not GameState.has_item("firewood") and not GameState.has_item("lamp_oil")
+		and GameState.quest_done("ch2_beacon18") and brazier.verb_now() == "看火", "添柴、浇油、点火：第十八烽着了（柴和油用掉，支线完成）")
+	res = (root.get_node("Ladder18Down") as Examine).interact(p)
+	await physics(10)
+	check(p.global_position.y < root.global_position.y + 1.0, "「爬下去」回到塔脚")
+	await free_main(main)
+	var again := await make_area("highland")
+	await frames(3)
+	check(not again.world.find_children("Fire18", "", true, false).is_empty(), "重进高地：第十八烽的火还亮着")
+	# 石圈
+	GameState.set_flag("ch2_stones", "")
+	var stones: Array = again.world.find_children("StoneWords", "", true, false)
+	check(stones.size() == 1, "石圈：倒下的那块立石能「看刻字」")
+	var t: Dictionary = HighlandVillage.read_stones()
+	check(str(GameState.get_flag("ch2_stones", "")) == "copied" and GameState.clues.has("stones_seal") and str(t.toast).contains("冬井"), "没有旧书：认出「……于冬井……誓……断……」，记下线索")
+	GameState.add_item("old_book")
+	t = HighlandVillage.read_stones()
+	check(str(GameState.get_flag("ch2_stones", "")) == "matched" and str(t.toast).contains("封于冬井，誓不可断"), "带着奥尔本修士的旧书：残卷上一模一样的一行「封于冬井，誓不可断」")
+	await free_main(again)
+	# 诺伯特在小屋
+	var tower := await make_area("beacon_tower")
+	await frames(3)
+	var nb: Array = tower.world.find_children("Npc_norbert_room", "", true, false)
+	check(nb.size() == 1 and (nb[0] as Npc).dialogue_id == "norbert" and (nb[0] as Npc).global_position.y > BeaconTower.UPPER - 0.1, "诺伯特蹲在顶层小屋的小铁炉边")
+	await free_main(tower)
+	r.start("beacon19", "norbert")
+	var first := r.text()
+	check(first.contains("少了一个人") and has_opt(r, "石圈上刻着一行字……"), "诺伯特：天亮了，火还亮着，少了一个人；刻过字的多一个选项")
+	pick(r, "加冕礼那一夜，发生了什么？")
+	check(r.text().contains("封誓") and GameState.has_flag("heard_coronation") and GameState.clues.has("beacon_seal"), "加冕礼：七步，最后一步「封誓」，那一夜少做了（记下线索）")
+	pick(r, "为什么少做了？")
+	check(r.text().contains("早就不用做了") and r.text().contains("我不知道"), "主祭说那一步早就不用做了；诺伯特：我不知道")
+	pick(r, "还有谁知道那一夜？")
+	check(r.text().contains("金穗平原") and GameState.clues.has("vigil_page"), "守灵夜的侍从去了金穗平原的修道院（第三章入口，记下线索）")
+	pick(r, "我该做什么？")
+	check(r.text().contains("先保住烽燧") and GameState.quest_stage("ch2_main") == "convoy_day" and GameState.has_flag("norbert_day2"), "先保住烽燧；粮车今天在羊脊村歇脚（主线「粮车到村」）")
+	r.start("beacon19", "norbert")
+	check(r.text().contains("先保住烽燧") and has_opt(r, "门楣上那只断了的号角……"), "再找他：还是那句；能问号角")
+	pick(r, "门楣上那只断了的号角……")
+	check(r.text().contains("断角烽"), "断角：三十年前吹断的那只号角——它们头一回走过山脊")
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("norbert_day2", false)
+	r.start("beacon19", "norbert")
+	check(not r.text().contains("少了一个人"), "守住了营地：不提少了人")
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

@@ -108,5 +108,10 @@
   "norbert_met": {"desc": "在塔顶见过诺伯特烽长，他说「先过了今夜」（5.3c）", "set_in": "beacon19.json norbert/refuse", "read_in": "beacon19.json norbert 的 start_if；5.5 第二天"},
   "ch2_wood_carried": {"desc": "堤道失守的那条线：替营里扛了一捆柴上塔顶，诺伯特才肯说话（STORY.md 5.4，5.3c）", "set_in": "beacon19.json norbert/wood", "read_in": "beacon19.json norbert 的选项"},
   "ch2_first_tide": {"desc": "第一夜的潮水（5.4c）：held = 守住了营地（漫进营地的不到 5 个）；lost_one = 营里被卷走一个人（天亮以后数麻袋的兵不见了）", "set_in": "scenes/main.gd _on_tide_ended（world/first_tide.gd）", "read_in": "world/highland_beacon.gd people；5.5 诺伯特"},
-  "ch2_spare_torches": {"desc": "第一夜插火把时火把用完了，马蒂亚斯又给了两支（5.4c；只给一次）", "set_in": "beacon19.json matthias/more_torches", "read_in": "beacon19.json matthias 的选项"}
+  "ch2_spare_torches": {"desc": "第一夜插火把时火把用完了，马蒂亚斯又给了两支（5.4c；只给一次）", "set_in": "beacon19.json matthias/more_torches", "read_in": "beacon19.json matthias 的选项"},
+  "ch2_beacon18": {"desc": "支线「熄掉的第十八烽」（5.5a）：lit = 背着柴和火油上了塔顶、重新点着了（5.7 第二夜的潮水小一些）", "set_in": "world/beacon18.gd _light", "read_in": "world/beacon18.gd；5.7"},
+  "ch2_stones": {"desc": "石圈上的刻字（5.5a）：copied = 记下了几个认得出的字；matched = 身上有奥尔本修士的旧书，残卷上一模一样（「封于冬井，誓不可断」）", "set_in": "world/highland_village.gd read_stones", "read_in": "beacon19.json norbert（第二天多说一句）"},
+  "ch2_beacon18_given": {"desc": "马蒂亚斯给了点第十八烽的柴和火油（5.5a；只给一次）", "set_in": "beacon19.json matthias/beacon18_go", "read_in": "beacon19.json matthias 的选项"},
+  "heard_coronation": {"desc": "诺伯特第二天讲了加冕礼那夜「封誓少做了一步」（5.5a）", "set_in": "beacon19.json norbert/coronation", "read_in": "beacon19.json norbert；5.6"},
+  "norbert_day2": {"desc": "诺伯特第二天交代完：先保住烽燧（5.5a，主线推进到「粮车到村」）", "set_in": "beacon19.json norbert/keep_fire", "read_in": "beacon19.json norbert"}
 }

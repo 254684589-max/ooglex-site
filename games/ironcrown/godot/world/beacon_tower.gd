@@ -55,6 +55,14 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
+	if GameState.has_flag("ch2_first_tide"):          # 第二天（5.5a）：诺伯特下了塔顶，蹲在自己小屋的小铁炉边
+		var n := Npc.make("诺伯特", [], Color("5a5650"))
+		n.name = "Npc_norbert_room"
+		n.dialogue_area = "beacon19"
+		n.dialogue_id = "norbert"
+		n.position = Vector3(0.25, UPPER, -0.3)
+		n.rotation.y = PI * 0.5                       # 面朝西边的炉子
+		parent.add_child(n)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.1, false)
 	exit.verb = "离开"
 	exit.to_area = "highland"

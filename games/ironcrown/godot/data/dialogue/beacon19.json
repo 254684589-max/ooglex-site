@@ -28,6 +28,7 @@
           {"text": "诺伯特烽长在哪？", "if": [{"not_flag": "norbert_met"}], "next": "where"},
           {"text": "诺伯特说「先过了今夜」。入夜以后怎么守？", "if": [{"quest_stage": "ch2_main", "eq": "first_night"}], "next": "tide_prep"},
           {"text": "那排木桩在哪？", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}], "next": "stakes"},
+          {"text": "西边那座第十八烽，就这么灭着？", "if": [{"flag": "ch2_first_tide"}, {"not_flag": "ch2_beacon18_given"}], "next": "beacon18"},
           {"text": "火把用完了。", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}, {"not_flag": "ch2_spare_torches"}], "next": "more_torches"},
           {"text": "只够三夜？", "next": "nights"},
           {"text": "长眠的人到底是什么？", "next": "sleepers"},
@@ -77,6 +78,20 @@
           {"text": "明白了。", "end": true}
         ]
       },
+      "beacon18": {
+        "text": "（他往西边山脊上看了一眼）前天夜里灭的。守塔的三个人……站在塔脚的雪里，你走过去就看见了。我抽不出人。（他沉默了一会儿）你要是腿脚还行——柴我给你一捆，火油从塔里那桶灌一罐。背上塔顶，把它点起来。两座烽亮着，第二夜它们上来的时候会散一些。",
+        "options": [
+          {"text": "我去。", "next": "beacon18_go"},
+          {"text": "再说吧。", "next": "again"}
+        ]
+      },
+      "beacon18_go": {
+        "text": "（他把一捆柴和一小罐火油塞给你）塔外有架梯子。上去的时候别往下看。",
+        "do": [{"give_item": "firewood"}, {"give_item": "lamp_oil"}, {"set": "ch2_beacon18_given"}, {"quest": "ch2_beacon18"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
       "more_torches": {
         "text": "（他皱着眉又抽了两支）就这些了。塔里底层还有一捆，诺伯特攒的。再用完，就拿手去挡吧。",
         "do": [{"give_item": "torch"}, {"give_item": "torch"}, {"set": "ch2_spare_torches"}],
@@ -103,6 +118,8 @@
     "speaker": "诺伯特",
     "start": "greet",
     "start_if": [
+      {"if": [{"flag": "norbert_day2"}], "node": "day2_again"},
+      {"if": [{"flag": "ch2_first_tide"}], "node": "day2"},
       {"if": [{"flag": "norbert_met"}], "node": "again"},
       {"if": [{"flag": "ch1_causeway", "eq": "lost"}, {"not_flag": "ch2_wood_carried"}], "node": "greet_lost"}
     ],
@@ -159,6 +176,67 @@
         "text": "二十四座。现在亮着的，你一只手数得过来。没柴、没粮、没人。守塔的人夜里睡着了——就再也不醒，跟着它们往北走。第十八烽那三个人，前天还隔着山跟我喊话。",
         "options": [
           {"text": "……", "end": true}
+        ]
+      },
+      "day2": {
+        "text": "（他蹲在小屋那只小铁炉边，两只手伸在炉口上，没回头）……天亮了。火还亮着。（他朝床边那只木凳抬了抬下巴）坐。昨天你问的那件事，我欠你一句话。",
+        "text_if": [
+          {"if": [{"flag": "ch2_first_tide", "eq": "lost_one"}], "text": "（他蹲在小屋那只小铁炉边，两只手伸在炉口上，没回头）……天亮了。火还亮着。少了一个人——你也看见了。（他朝床边那只木凳抬了抬下巴）坐。昨天你问的那件事，我欠你一句话。"}
+        ],
+        "options": [
+          {"text": "加冕礼那一夜，发生了什么？", "next": "coronation"},
+          {"text": "门楣上那只断了的号角，是怎么回事？", "next": "horn"},
+          {"text": "石圈上刻着一行字……", "if": [{"flag": "ch2_stones"}], "next": "stones"}
+        ]
+      },
+      "coronation": {
+        "text": "老王临终前给他儿子加冕。我和奥斯瑞克一左一右，一人捧一样东西——他捧着放铁冠的垫子，我捧着誓瓶。（他翻过手看了看掌心）老规矩，加冕要走完七步。最后一步叫「封誓」：新王的一滴血滴进誓瓶，瓶口拿蜡封死，交给守塔的人，带回北边的烽燧线。……那一夜，少做了这一步。",
+        "do": [{"set": "heard_coronation"}, {"clue": "beacon_seal"}],
+        "options": [
+          {"text": "为什么少做了？", "next": "skipped"}
+        ]
+      },
+      "skipped": {
+        "text": "主祭说，那一步早就不用做了——几百年的老规矩，没人记得是做什么用的。我捧着空瓶站在那儿，没出声。奥斯瑞克也没出声。（他看着炉火）……从那年冬天起，北边的人开始睡着了就不醒。我不说是因为这个。我只说，我不知道。",
+        "options": [
+          {"text": "还有谁知道那一夜？", "next": "vigil"}
+        ]
+      },
+      "vigil": {
+        "text": "守灵夜跪在老王脚边的，还有一个年轻侍从。那一夜他一直在，比我们都近。后来他去了南边，金穗平原的修道院，穿了灰袍——（他摇摇头）名字我记不起来了。你要问那一夜，去问他。",
+        "do": [{"clue": "vigil_page"}],
+        "options": [
+          {"text": "我该做什么？", "next": "keep_fire"},
+          {"text": "门楣上那只断了的号角……", "next": "horn"}
+        ]
+      },
+      "horn": {
+        "text": "（他伸手摸了摸挂在床头的那半截号角）这座塔吹过一次号。吹号就是说：北边来人了。三十年前的冬天，守塔的人看见山脊上走过来一串白影子，吹到号角裂了还在吹。（他把号角放下）那是它们头一回走过山脊。没人信他。后来这座塔就叫断角烽了。",
+        "options": [
+          {"text": "加冕礼那一夜……", "if": [{"not_flag": "heard_coronation"}], "next": "coronation"},
+          {"text": "我该做什么？", "if": [{"flag": "heard_coronation"}], "next": "keep_fire"}
+        ]
+      },
+      "stones": {
+        "text": "（你把记下的那几个字念给他听。他手停在炉口上，很久没动）……「封于冬井，誓不可断」。这一句我见过，在主祭那本书的最后一页。他翻过去得很快。（他看着你）别念给别人听。",
+        "options": [
+          {"text": "加冕礼那一夜……", "if": [{"not_flag": "heard_coronation"}], "next": "coronation"},
+          {"text": "我该做什么？", "if": [{"flag": "heard_coronation"}], "next": "keep_fire"}
+        ]
+      },
+      "keep_fire": {
+        "text": "先保住烽燧。火灭了，我说的一切都没用——没人会记得这里曾经有人守过。（他终于转过头）洛蒙德家的粮车今天在羊脊村歇脚。五车。马蒂亚斯会去找你。他要说什么，你自己掂量。",
+        "do": [{"set": "norbert_day2"}, {"quest": "ch2_main", "stage": "convoy_day"}],
+        "options": [
+          {"text": "……我下山去看看。", "end": true}
+        ]
+      },
+      "day2_again": {
+        "text": "（他还蹲在炉边）先保住烽燧。别的，等火还亮着的时候再说。",
+        "options": [
+          {"text": "加冕礼那一夜，再说一遍。", "next": "coronation"},
+          {"text": "门楣上那只断了的号角……", "next": "horn"},
+          {"text": "告辞。", "end": true}
         ]
       },
       "again": {
