@@ -20,7 +20,7 @@
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
 <script src="/assets/theme.js?v=20260926k" defer></script>
 <script src="/assets/i18n.js?v=c83b60c1" defer></script>
-<script src="/assets/i18n-pages.js?v=20261026b" defer></script>
+<script src="/assets/i18n-pages.js?v=20261026c" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -38,103 +38,96 @@
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
     line-height:1.55; overflow-x:hidden;
   }
-  .page { max-width:1080px; margin:0 auto; padding:18px 24px 64px; }
+  .page { max-width:980px; margin:0 auto; padding:18px 24px 64px; }
 
   header.top { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
   header.top a.back { color:var(--gold); text-decoration:none; font-size:0.9rem; }
   header.top a.back:hover { opacity:.8; }
 
-  /* ── masthead ── */
-  .masthead { padding:12px 0 4px; margin:0 0 26px; }
-  .kick { font-family:var(--mono); font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); }
-  .masthead h1 { margin:12px 0 0; font-size:clamp(2rem,5.2vw,3.15rem); font-weight:500; letter-spacing:0.5px;
-    line-height:1.08; text-wrap:balance; }
-  .masthead h1 b { font-weight:700; }
-  .masthead .date { font-family:var(--mono); font-size:0.8rem; color:var(--dim); margin-top:12px; letter-spacing:0.02em; }
+  /* ── masthead：与附图一致，标题 + 一行副文 ── */
+  .masthead { padding:22px 0 0; margin:0 0 28px; }
+  .masthead h1 { margin:0; font-size:clamp(2.05rem, 5vw, 3.15rem); font-weight:560; letter-spacing:-0.02em;
+    line-height:1.12; text-wrap:balance; }
+  .masthead h1 b { font-weight:inherit; }
+  .masthead .date { font-size:0.98rem; color:var(--dim); margin-top:10px; letter-spacing:0; font-weight:400; }
 
-  /* ── 方案 B：四大分类轻盈浮起卡片 ── */
+  /* ── 方案 B：四张疏朗大数字卡片 ── */
   .board {
-    display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start;
+    display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:stretch;
   }
   .hub-card {
-    min-width:0;
+    min-width:0; min-height:248px;
+    display:flex; flex-direction:column;
     background:var(--sheet, var(--tint-2));
     border:1px solid var(--line, var(--tint-line));
     box-shadow:var(--shadow-1);
     border-radius:22px;
-    padding:22px 22px 12px;
+    padding:22px 28px 20px;
+  }
+  html[data-theme="ft"] .hub-card,
+  html[data-theme="paper"] .hub-card {
+    border-color:transparent;
+    box-shadow:var(--shadow-2);
   }
   html[data-theme="ft"] .hub-card {
-    background:var(--sheet);
-    border-color:transparent;
-    box-shadow:var(--shadow-2);
-  }
-  html[data-theme="paper"] .hub-card {
-    background:var(--panel);
-    border-color:transparent;
-    box-shadow:var(--shadow-2);
+    box-shadow:0 12px 32px rgba(150, 110, 80, 0.12);
   }
   .pill {
-    display:inline-flex; align-items:center; max-width:100%;
-    margin:0 0 2px; padding:5px 12px 6px; border-radius:999px;
+    display:inline-flex; align-items:center; align-self:flex-start; max-width:100%;
+    margin:0; padding:5px 12px 6px; border-radius:999px;
     background:var(--down-soft, var(--tint-3));
     color:var(--fear2, var(--gold));
-    font-size:0.78rem; font-weight:600; letter-spacing:0.04em; line-height:1.25; font-family:inherit;
+    font-size:0.78rem; font-weight:600; letter-spacing:0.02em; line-height:1.25; font-family:inherit;
   }
-  .hub-mods { min-width:0; margin-top:4px; }
-
-  .art { display:block; text-decoration:none; color:inherit; min-width:0;
-    padding:14px 4px 16px; border-radius:12px; }
-  .art + .art { border-top:1px solid var(--line, var(--tint-line)); }
-  .art:hover { background:var(--tint-1); }
-  .art:hover .hn .t { color:var(--accent, var(--gold)); }
-  .art:focus-visible { outline:2px solid var(--accent, var(--gold)); outline-offset:2px; }
-  .art .hn { display:flex; align-items:baseline; gap:6px 10px; flex-wrap:wrap; }
-  .art .hn .t { font-size:1.02rem; font-weight:600; letter-spacing:0.01em; }
-  .art .hn .tag { margin-left:auto; font-family:var(--mono); font-size:0.64rem; letter-spacing:0.06em;
-    color:var(--faint); text-transform:uppercase; }
-  .art .body { margin-top:2px; min-width:0; }
-  .art .big { font-weight:500; font-size:clamp(2.35rem, 8vw, 3.5rem); line-height:0.95; letter-spacing:-.03em;
-    margin:10px 0 2px; font-variant-numeric:tabular-nums; }
-  .art .big small { display:block; font-size:0.78rem; font-weight:500; color:var(--dim); margin:8px 0 0;
-    letter-spacing:0; line-height:1.45; white-space:normal; }
-  .art .note { color:var(--dim); font-size:0.95rem; line-height:1.55; margin-top:8px; }
-  .art .note b { color:var(--ink); font-weight:600; }
-  .art .row { display:flex; align-items:baseline; justify-content:space-between; gap:8px 12px; flex-wrap:wrap;
-    padding:7px 0; font-size:0.9rem; }
-  .art .body .row:first-child { margin-top:10px; }
-  .art .row .l { color:var(--dim); min-width:0; }
-  .art .row .v { font-family:var(--mono); font-weight:500; font-variant-numeric:tabular-nums; text-align:right;
-    margin-left:auto; min-width:0; }
-  .art .news { font-size:1.02rem; font-weight:500; line-height:1.5; margin:12px 0 6px;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .art .sub { color:var(--dim); font-size:0.82rem; font-family:var(--mono); letter-spacing:0.02em; overflow-wrap:anywhere; }
-  .art .upd { color:var(--faint); font-size:0.72rem; font-family:var(--mono); margin-top:12px; letter-spacing:0.04em; }
-  .art .loading { color:var(--dim); font-size:0.86rem; margin-top:12px; }
-  .up { color:var(--up); } .down { color:var(--down); } .dim { color:var(--dim); }
+  html[data-theme="ft"] .pill {
+    background:#f6e3dc;
+    color:#d15a4e;
+  }
+  .hero-slot { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .hero { flex:1; display:flex; min-width:0; padding:26px 0 8px; }
+  .hero.side { align-items:center; justify-content:space-between; gap:14px 28px; flex-wrap:wrap; }
+  .hero.stack { flex-direction:column; align-items:flex-start; justify-content:center; }
+  .hero.people { flex-direction:column; align-items:flex-start; justify-content:center; gap:16px; }
+  .nums { display:flex; align-items:baseline; gap:0.22em 0.32em; min-width:0; }
+  .n1, .n2, .n3, .cap { text-decoration:none; color:var(--ink); }
+  .n1, .n2, .n3 { font-variant-numeric:tabular-nums; line-height:0.92; letter-spacing:-0.045em; font-weight:520; }
+  .n1 { font-size:clamp(3.15rem, 5.5vw, 4.85rem); }
+  .n1.money { font-size:clamp(2.45rem, 4.4vw, 4.15rem); letter-spacing:-0.04em; }
+  .n2 { font-size:clamp(1.65rem, 2.5vw, 2.2rem); font-weight:540; color:var(--fear2, var(--gold)); }
+  .n3 { font-size:clamp(1.28rem, 2.15vw, 1.72rem); font-weight:560; }
+  html[data-theme="ft"] .n2,
+  html[data-theme="ft"] .accent { color:#e06a45; }
+  .caps { display:flex; flex-direction:column; align-items:flex-start; gap:8px; min-width:0; }
+  .caps.under { margin-top:16px; gap:5px; }
+  .cap { font-size:0.98rem; line-height:1.35; font-weight:450; }
+  .cap b { font-weight:650; }
+  .accent { color:var(--fear2, var(--gold)); font-weight:600; }
+  .rowline { display:flex; align-items:center; flex-wrap:wrap; gap:6px 16px; min-width:0; max-width:100%; }
+  .rowline.minor { align-items:baseline; }
+  .loading { color:var(--dim); font-size:0.95rem; align-self:center; }
+  .more {
+    margin-top:auto; padding-top:14px;
+    font-size:0.74rem; line-height:1.7; color:var(--faint);
+  }
+  .more a { color:var(--faint); text-decoration:none; }
+  .more a + a::before { content:" · "; color:var(--faint); }
+  .hub-card a:hover { opacity:0.72; }
+  .more a:hover { opacity:1; color:var(--ink); }
+  .hub-card a:focus-visible { outline:2px solid var(--accent, var(--gold)); outline-offset:3px; border-radius:6px; }
 
   footer { margin-top:36px; padding-top:20px; border-top:1px solid var(--line, var(--tint-line));
     text-align:center; color:var(--faint); font-size:0.78rem; line-height:1.9;
     font-family:var(--mono); letter-spacing:0.02em; }
 
-  @media (min-width:1040px) {
-    .hub-mods.pair {
-      display:grid; grid-template-columns:1fr 1fr; column-gap:18px; align-items:start;
-    }
-    .hub-mods.pair > .art:nth-child(-n+2) { border-top:0; padding-top:10px; }
-    .hub-mods.pair > .art:nth-child(1) .big { font-size:clamp(3.1rem, 4.6vw, 4.6rem); }
-    .hub-mods.pair > .art:nth-child(2) .big {
-      font-size:clamp(2.15rem, 3vw, 2.85rem);
-      color:var(--fear2, var(--gold));
-    }
-    .hub-mods.pair > .art:nth-child(n+3) { grid-column:1 / -1; }
-    .hub-mods:not(.pair) > .art:first-child .big { font-size:clamp(2.8rem, 4.2vw, 4.35rem); }
-  }
   @media (max-width:759px) {
-    .page { padding:14px 14px 56px; }
-    .board { grid-template-columns:1fr; gap:14px; }
-    .hub-card { padding:16px 14px 8px; border-radius:18px; }
-    .masthead h1 { letter-spacing:0; }
+    .page { padding:14px 16px 56px; }
+    .board { grid-template-columns:1fr; gap:16px; }
+    .hub-card { padding:20px 20px 16px; border-radius:20px; min-height:0; }
+    .masthead { padding-top:12px; margin-bottom:20px; }
+    .masthead h1 { letter-spacing:-0.015em; }
+    .hero { padding-top:20px; }
+    .n1 { font-size:clamp(3rem, 16vw, 4.4rem); }
+    .n1.money { font-size:clamp(2.35rem, 11vw, 3.5rem); }
   }
   @media (prefers-reduced-motion:reduce) { * { transition:none !important; } }
 </style>
@@ -144,17 +137,16 @@
   <div class="page">
     <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
     <div class="masthead">
-      <div class="kick">数据中心 · The Data Center</div>
       <h1>今日<b>市场</b>，一页读尽</h1>
       <div class="date">15 个自动更新的实时数据应用 · <span id="mDate">—</span></div>
     </div>
     <div class="board" id="board"></div>
     <footer id="foot"></footer>
   </div>
-  <script src="app.js?v=20261026b"></script>
+  <script src="app.js?v=20261026c"></script>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
 
-<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页，每张卡片带实时小预览，数据每日自动更新，点击任意卡片进入完整页面。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。</p></section>
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页。每张卡片以大数字预览当前读数，卡片里的各应用都可以点进完整页面，数据每日自动更新。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。</p></section>
 </body>
 </html>

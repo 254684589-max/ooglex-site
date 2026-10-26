@@ -394,7 +394,7 @@
 
   var HUB = {
     "数据中心 · The Data Center": "THE DATA CENTER",
-    "今日": "Today's",
+    "今日": "Today's ",
     "市场": "Markets",
     "，一页读尽": ", at a glance",
     "15 个自动更新的实时数据应用 ·": "15 auto-updating data apps ·",
@@ -402,6 +402,15 @@
     "指数与热力图": "Indices & Heatmap",
     "资产与回报": "Assets & Returns",
     "人物与公司": "People & Companies",
+    "标普500": "S&P 500",
+    "全球大类资产": "Major asset classes",
+    "全球资产市值": "Global asset market cap",
+    "收紧 · 风险": "Tight · Risk",
+    "中性偏紧": "Neutral-tight",
+    "中性偏松": "Neutral-easy",
+    "宽松 · 支持": "Supportive",
+    "数据缺失": "No data",
+    "更多应用": "More apps",
     "宏观风险监测": "Macro Risk Monitor",
     "市场机制 · 7 大制度信号 · 跨资产": "Market regime · 7 signals · Cross-asset",
     "标普500热力图": "S&P 500 Heatmap",
@@ -472,8 +481,8 @@
     "货币基金规模": "Money market fund assets",
     "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。":
       "Every app refreshes daily (sources: Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF). For reference only; not advice.",
-    "数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页，每张卡片带实时小预览，数据每日自动更新，点击任意卡片进入完整页面。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。":
-      "The Data Center is the single entry point to every live-data app on Ooglex, gathering global markets, asset-class returns, the Forbes real-time billionaire ranking, the Fear & Greed Index, the world economy map and the economic calendar onto one page. Each card carries a live mini preview, the data refreshes daily, and clicking a card opens the full page. All data comes from public third-party sources and is for reference only; it is not investment advice.",
+    "数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页。每张卡片以大数字预览当前读数，卡片里的各应用都可以点进完整页面，数据每日自动更新。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。":
+      "The Data Center is the single entry point to every live-data app on Ooglex, gathering global markets, asset-class returns, the Forbes real-time billionaire ranking, the Fear & Greed Index, the world economy map and the economic calendar onto one page. Each card previews the current reading in large figures, every app inside the card still opens its full page, and the data refreshes daily. All data comes from public third-party sources and is for reference only; it is not investment advice.",
     "今日上涨": "Advancing today",
     "领涨": "Top gainer",
     "年初至今领涨": "YTD leader",
