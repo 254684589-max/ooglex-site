@@ -9174,6 +9174,35 @@ func test_sleepercrowd() -> void:
 		await physics(15)
 	check(c2.alive() == 0, "走到路线尽头就没了（还剩 %d）" % c2.alive())
 	fire.queue_free()
+	# 5.4b：一排插得密的火把（2.2 米一支，横在路上）是一堵墙：没人从两支中间钻过去，都绕到两头
+	var row := []
+	for k in 5:
+		var t := Node3D.new()
+		t.add_to_group("crowd_fire")
+		t.set_meta("radius", 1.8)
+		get_tree().root.add_child(t)
+		t.global_position = Vector3((k - 2) * 2.2, 0, -10)
+		row.append(t)
+	var cw := SleeperCrowd.make([Vector2(0, 0), Vector2(0, -30)], 16, 3.0)
+	cw.near_enabled = false
+	get_tree().root.add_child(cw)
+	var crossed := []
+	var last := {}
+	for k in 240:
+		await physics(15)
+		for i in cw.agents.size():
+			var a: Dictionary = cw.agents[i]
+			var py: float = last.get(i, 0.0)
+			if not a.done and py >= -10.0 and a.p.y < -10.0:
+				crossed.append(absf(a.p.x))
+			last[i] = a.p.y
+		if crossed.size() >= 16:
+			break
+	var through := crossed.filter(func(x): return x < 4.4).size()
+	check(crossed.size() >= 14 and through == 0, "一排火把（5 支、2.2 米一支）：%d 个人走过去，从中间钻过去的 %d 个（都绕到两头，最近的离中线 %.1f 米）" % [crossed.size(), through, crossed.min() if crossed.size() > 0 else 0.0])
+	cw.queue_free()
+	for t in row:
+		t.queue_free()
 	c2.queue_free()
 	# 挡在前面的主角：推倒、踩过（掉血、变冷）；它们杀不死、照样往前走
 	GameState.new_game(541)

@@ -31,6 +31,7 @@ const TRAMPLE_DAMAGE := 5
 const TRAMPLE_COLD := 12.0
 const LINEN := Color("b9b3a6")         # 睡衣：浅色的粗麻
 const SKIN := Color("c9a58c")
+const LAYER := 2                         # 渲染层 2（火把的光跳过这一层）
 const LINEN_TINT := Color(1.85, 2.2, 2.8)   # 真人模型：农夫衣服的贴图是深褐色，乘上去变成浅色的粗麻（各通道按贴图平均色算）
 
 var route: Array = []                  # [Vector2, ...]
@@ -73,7 +74,7 @@ func _ready() -> void:
 		var back := i * spawn_gap / maxf(1.0, width / 2.2) + rng.randf_range(0.0, 0.6)
 		var p := start - dir0 * back + Vector2(-dir0.y, dir0.x) * lat
 		agents.append({"p": p, "prev": p, "v": Vector2.ZERO, "seg": 0, "lat": lat, "sp": rng.randf_range(0.88, 1.12), "phase": rng.randf() * TAU,
-			"done": false, "last_trample": -99.0, "near": -1, "tint": rng.randf_range(0.85, 1.05)})
+			"done": false, "last_trample": -99.0, "detour": 0, "detour_t": 0.0, "near": -1, "tint": rng.randf_range(0.85, 1.05)})
 	mm = MultiMeshInstance3D.new()
 	mm.name = "CrowdFar"
 	var m := MultiMesh.new()
@@ -83,6 +84,7 @@ func _ready() -> void:
 	m.instance_count = count
 	mm.multimesh = m
 	mm.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mm.layers = LAYER                       # 火把的光不照它们（TorchHand.LIGHT_MASK）：几十个人每多一盏灯都要多画一遍；它们自己有一点自发光
 	add_child(mm)
 	if near_enabled:
 		for k in NEAR_MAX:
@@ -103,6 +105,7 @@ func _ready() -> void:
 				cm.anim.seek(randf() * cm.clip_length("walk"), true)
 				for mi: MeshInstance3D in cm.scene_root.find_children("*", "MeshInstance3D", true, false):
 					mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+					mi.layers = LAYER                # 火把的光不照（同多实例那份）
 				models.append(cm)
 			else:
 				cm.queue_free()
@@ -187,6 +190,8 @@ func _step(dt: float) -> void:
 		var want := _route_dir(a)
 		if a.done:
 			continue
+		if int(a.detour) != 0 and int(a.seg) < route.size() - 1:
+			want = ((route[int(a.seg) + 1] as Vector2) - (route[int(a.seg)] as Vector2)).normalized()   # 正在绕火：只朝路线的方向，不往路线中间拉（不然在一排火把前面横向拉扯、停住）
 		var push := Vector2.ZERO
 		var key := Vector2i(floori(a.p.x / CELL), floori(a.p.y / CELL))
 		for dx in range(-1, 2):
@@ -204,16 +209,22 @@ func _step(dt: float) -> void:
 			var r := float(f[1])
 			var off: Vector2 = a.p - c
 			var d := off.length()
-			if d < r + FIRE_MARGIN and d > 0.001:
+			if d < r and d > 0.001:
+				steer += off / d * (2.5 + 3.0 * (r - d) / r)                # 已经在火边里面：只往外推（5.4b：一排插得密的火把，两支中间的空当不能钻——顺着火边绕会把人往空当里送）
+			elif d < r + FIRE_MARGIN and d > 0.001:
 				var out := off / d
 				var k := clampf((r + FIRE_MARGIN - d) / FIRE_MARGIN, 0.0, 1.0)
+				var left := Vector2(-want.y, want.x)
+				if int(a.detour) == 0:                                   # 第一次碰到火：定下往哪边绕（人在火的哪一边就往哪边；正对着按自己在队伍里偏左偏右）
+					var cr := left.dot(off)
+					a.detour = 1 if (cr > 0.05 or (absf(cr) <= 0.05 and float(a.lat) >= 0.0)) else -1
+				a.detour_t = _clock
 				var side := Vector2(-out.y, out.x)
-				var along := side.dot(want)
-				if absf(along) < 0.15:
-					along = float(a.lat) * signf(side.dot(Vector2(-want.y, want.x))) + 0.01   # 正对着火：按自己在队伍里偏左还是偏右分两边绕（不然往后退、堵在火前面）
-				if along < 0.0:
+				if side.dot(want + left * float(a.detour)) < 0.0:        # 顺着火边往前、往定下的那一边走：一排火把挨着插，大家顺着这堵墙滑到头再绕过去，不会在两支中间来回打转
 					side = -side
 				steer += side * 2.0 * k + out * 1.4 * k * k              # 主要是顺着火边绕；贴得很近才往外推
+		if int(a.detour) != 0 and _clock - float(a.detour_t) > 2.0:
+			a.detour = 0                                                  # 离开火边两秒：下次再碰到重新定
 		var dir := want + push * 1.4 + steer
 		if dir.length() > 0.001:
 			dir = dir.normalized()

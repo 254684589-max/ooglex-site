@@ -20,6 +20,7 @@ const BLOW_HELD := 1.0 / 240.0    # 风里举着，每秒被吹灭的机会（�
 const HAND_FP := Vector3(-0.40, -0.44, -0.62)     # 第一人称：火把在画面左下（相机空间）
 const HAND_BODY := Vector3(-0.38, 1.45, -0.42)    # 火在身上的位置（身体空间，算火的中心、插地的位置用）
 const PLANT_DIST := 0.9
+const LIGHT_MASK := 0xFFFFF & ~SleeperCrowd.LAYER    # 火把的光不照长眠者群（绘制调用；它们有自发光）
 
 var player: FpController
 var state := NONE
@@ -48,6 +49,7 @@ func _ready() -> void:
 	light.omni_range = 7.5
 	light.omni_attenuation = 1.4
 	light.shadow_enabled = false
+	light.light_cull_mask = LIGHT_MASK
 	light.visible = false
 	fire.add_child(light)
 	if player and player.camera:

@@ -51,6 +51,7 @@ func _ready() -> void:
 	light.light_color = Color("ff9a4a")
 	light.light_energy = 1.3
 	light.omni_range = 6.0
+	light.light_cull_mask = TorchHand.LIGHT_MASK
 	light.omni_attenuation = 1.4
 	light.position = Vector3(0, 1.5, 0)
 	light.distance_fade_enabled = true
