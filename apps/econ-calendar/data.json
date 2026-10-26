@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-25T22:02:26Z",
-  "asOf": "2026-10-25",
+  "updatedAt": "2026-10-26T18:47:52Z",
+  "asOf": "2026-10-26",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-25 ~ 2026-10-31",
-  "count": 96,
+  "count": 97,
   "highCount": 23,
   "events": [
     {
@@ -98,7 +98,7 @@
       "title": "失业率",
       "titleEn": "Spanish Unemployment Rate",
       "impact": "low",
-      "forecast": null,
+      "forecast": "9.8%",
       "previous": "9.9%",
       "actual": null
     },
@@ -194,7 +194,7 @@
       "title": "消费者信心指数",
       "titleEn": "CB Consumer Confidence",
       "impact": "medium",
-      "forecast": "80.5",
+      "forecast": "80.7",
       "previous": "81.9",
       "actual": null
     },
@@ -679,6 +679,18 @@
       "actual": null
     },
     {
+      "ts": "2026-10-29T12:50:00Z",
+      "ccy": "CAD",
+      "country": "加拿大",
+      "flag": "🇨🇦",
+      "title": "央行官员讲话",
+      "titleEn": "Gov Council Member Gravelle Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-10-29T13:15:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -727,7 +739,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-29T14:50:00Z",
+      "ts": "2026-10-29T15:30:00Z",
       "ccy": "CAD",
       "country": "加拿大",
       "flag": "🇨🇦",
