@@ -1,4 +1,4 @@
-/* 数据中心 · 聚合各实时数据应用的 data.json，以「编排 / Editorial」排版渲染入口卡片。纯原生 JS。 */
+/* 数据中心 · 聚合各实时数据应用的 data.json，按四大分类装进轻盈卡片。纯原生 JS。 */
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
@@ -11,7 +11,6 @@
   function pct(v) { return !isNum(v) ? "—" : (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1) + "%"; }
   function cls(v) { return !isNum(v) ? "dim" : (v > 0 ? "up" : (v < 0 ? "down" : "dim")); }
   function worth(b) { return !isNum(b) ? "—" : (b >= 1000 ? "$" + (b / 1000).toFixed(2) + "T" : "$" + b.toFixed(1) + "B"); }
-  function fgColor(s) { return !isNum(s) ? "#9099ad" : s < 25 ? "#d3403b" : s < 45 ? "#e8833a" : s < 55 ? "#e4b53d" : s < 75 ? "#7cb851" : "#3a9d5d"; }
   function radarColor(s) { return !isNum(s) ? "#9099ad" : s < 40 ? "#e0554f" : s <= 58 ? "#e0a750" : "#3fae7d"; }
   function row(l, v, c) { return "<div class='row'><span class='l'>" + l + "</span><span class='v " + (c || "") + "'>" + v + "</span></div>"; }
   function relTime(iso) {
@@ -102,8 +101,8 @@
     { folder: "fear-greed", en: "Fear & Greed", name: "恐慌与贪婪指数", tag: "CNN Fear & Greed · 近一年走势",
       render: function (d) {
         if (!isNum(d.score)) return "<div class='loading'>暂无数据</div>";
-        return "<div class='big' style='color:" + fgColor(d.score) + "'>" + d.score +
-          "<small style='color:" + fgColor(d.score) + "'>" + esc(d.ratingZh || "") + "</small></div>";
+        return "<div class='big'>" + d.score + "</div>" +
+          "<div class='note'>市场处于 <b>" + esc(d.ratingZh || "—") + "</b></div>";
       } },
     { folder: "world-economy", en: "World Economy", name: "全球经济图谱", tag: "各国经济指标地图",
       render: function (d) {
@@ -206,64 +205,57 @@
     return a;
   }
 
-  // 「今日市场」头版：情绪读数领衔 + 首富/市值/资产总市值侧栏，数据到齐即渐进渲染
-  function buildLead() {
-    var lead = $("lead"); if (!lead) return;
-    var st = { fg: null, mv: null, rich: null, cap: null, ass: null };
-    function sr(k, sub, v) {
-      return "<div class='sr'><div class='sk'>" + esc(k) + "<em>" + esc(sub) + "</em></div><div class='sv'>" + v + "</div></div>";
-    }
-    function render() {
-      var feat = "";
-      if (st.fg) {
-        feat += "<div class='hn'>市场情绪 · Fear &amp; Greed</div>";
-        feat += "<div class='num'>" + st.fg.score + "</div>";
-        var cap = "市场处于 <b>" + esc(st.fg.rating || "—") + "</b> 区间。";
-        if (st.mv) {
-          cap += "年初至今 <b class='up'>" + esc(st.mv.topName) + " " + pct(st.mv.top) + "</b> 领涨全球，" +
-            "<b class='down'>" + esc(st.mv.botName) + " " + pct(st.mv.bot) + "</b> 领跌。";
-        }
-        feat += "<div class='cap'>" + cap + "</div>";
-      }
-      var side = "";
-      if (st.rich) side += sr("全球首富", st.rich.name, worth(st.rich.worth));
-      if (st.cap) side += sr("市值 #1", st.cap.name, worth(st.cap.worth));
-      if (st.ass) side += sr("资产总市值", "前 250 · 含房产/国债/黄金", worth(st.ass.total));
-      if (!feat && !side) return;
-      lead.innerHTML = "<div>" + feat + "</div><div class='side'>" + side + "</div>";
-      lead.className = "lead show";
-    }
+  /* 四大分类。pair 为真时，宽屏把前两张模块并排放（情绪读数 / 热力图这种短数字）。
+     名单必须覆盖 APPS；漏掉的模块会补进最后一张卡片，避免改版时丢掉入口。 */
+  var GROUPS = [
+    { id: "risk", name: "情绪与风险", pair: true,
+      folders: ["fear-greed", "macro-radar", "ofr-monitor", "econ-calendar"] },
+    { id: "index", name: "指数与热力图", pair: true,
+      folders: ["heatmap", "markets", "world-economy"] },
+    { id: "assets", name: "资产与回报", pair: false,
+      folders: ["asset-ranking", "asset-tracker", "house-prices"] },
+    { id: "people", name: "人物与公司", pair: false,
+      folders: ["billionaires", "companies", "superinvestors", "ai-rankings", "university-rankings", "major-rankings"] }
+  ];
+
+  function stampDate() {
     getData("fear-greed").then(function (d) {
-      if (isNum(d.score)) st.fg = { score: d.score, rating: d.ratingZh || "" };
-      if (d.asOf) $("mDate").textContent = d.asOf;
-      render();
-    }).catch(function () {});
-    getData("asset-tracker").then(function (d) {
-      var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.ytd); })
-        .sort(function (x, y) { return y.returns.ytd - x.returns.ytd; });
-      if (a.length) {
-        var t = a[0], b = a[a.length - 1];
-        st.mv = { topName: t.name, top: t.returns.ytd, botName: b.name, bot: b.returns.ytd };
-        render();
-      }
-    }).catch(function () {});
-    getData("billionaires").then(function (d) {
-      var p = (d.people || [])[0];
-      if (p) { st.rich = { name: p.name, worth: p.worth }; render(); }
-    }).catch(function () {});
-    getData("companies").then(function (d) {
-      var c = (d.companies || [])[0];
-      if (c) { st.cap = { name: c.name, worth: c.marketCap }; render(); }
-    }).catch(function () {});
-    getData("asset-ranking").then(function (d) {
-      if (isNum(d.totalMarketCap)) { st.ass = { total: d.totalMarketCap }; render(); }
+      if (d.asOf && $("mDate")) $("mDate").textContent = d.asOf;
     }).catch(function () {});
   }
 
   function boot() {
-    buildLead();
-    var grid = $("grid");
-    APPS.forEach(function (app) { grid.appendChild(card(app)); });
+    stampDate();
+    var board = $("board");
+    if (!board) return;
+    var byFolder = {};
+    APPS.forEach(function (app) { byFolder[app.folder] = app; });
+    var placed = {};
+    GROUPS.forEach(function (g) {
+      var sec = document.createElement("section");
+      sec.className = "hub-card";
+      sec.setAttribute("aria-labelledby", "hub-" + g.id);
+      var h = document.createElement("h2");
+      h.className = "pill";
+      h.id = "hub-" + g.id;
+      h.textContent = g.name;
+      var mods = document.createElement("div");
+      mods.className = "hub-mods" + (g.pair ? " pair" : "");
+      g.folders.forEach(function (folder) {
+        var app = byFolder[folder];
+        if (!app) return;
+        placed[folder] = true;
+        mods.appendChild(card(app));
+      });
+      sec.appendChild(h);
+      sec.appendChild(mods);
+      board.appendChild(sec);
+    });
+    var loose = APPS.filter(function (app) { return !placed[app.folder]; });
+    if (loose.length) {
+      var last = board.lastElementChild && board.lastElementChild.querySelector(".hub-mods");
+      loose.forEach(function (app) { if (last) last.appendChild(card(app)); });
+    }
     $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。";
   }
   boot();
