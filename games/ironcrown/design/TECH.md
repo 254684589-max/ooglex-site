@@ -774,6 +774,19 @@ godot/
 - **教学提示** `torch`：第一次点着时弹。**调试**：`?torch=1` 手里举着一支点着的；`?torchrow=N` 高地上面前 7 米横着插一排 N 支。
 - **测试**：`torch` 组 24 项。
 
+### 4.54 第一夜潮水（路线图 5.4c，2026-10-26）
+
+- **主线**（`data/quests.json` `ch2_main`）：`first_night` →（马蒂亚斯「入夜以后怎么守？」：四支火把、`daypart: night`）`light_line` →（插满 / 等够）`tide` →（人群走完）`after_tide`（5.5 接）。马蒂亚斯「火把用完了」再给两支（旗标 `ch2_spare_torches`，只一次）。
+- **`world/first_tide.gd`（`FirstTide`）**：main 的 `_first_tide_tick` 在高地、第二章、主线在 `light_line` / `tide` 时搭（`tide` 的读档、换区域回来退回 `light_line` 重来；夜里）。
+  - 木桩 `spots()`：`SPOT_CENTER` (9, −48) 沿 `SPOT_DIR` 每 `SPOT_GAP` 2.2 米一根，七根（木栅外 4–30 米），草绳连着；两头先插两支（`windy`）。
+  - `lit_spots()`：离木桩 `SPOT_REACH` 1.6 米以内有亮着的插地火把的桩数；≥ `READY_AT` 6 或 `PREP_MAX` 120 秒 → `start_tide()`。
+  - 潮水：`SleeperCrowd.make(ROUTE_CAMP, 36, 5.0)`，`speed_base` 0.85；`ROUTE_CAMP` 从南坡 (−6, −28) 径直穿过营地中间 (22, −62) 往北；`alt_route = ROUTE_AROUND`（营地西边 x ≈ 0 那条）；障碍只有塔、营房、柴棚、粮棚（木栅挡不住它们）。
+  - **改道**（`SleeperCrowd.alt_route`，新）：一个人走进任何一团火（不算障碍）的火边 + `FIRE_MARGIN` 以内，就改走 `alt_route`，从离自己最近的那一段接上（`_switch_alt`，`rerouted` 计数）。
+  - 漫进营地：离 `BEACON19` 不到 `PALISADE_R − 1` 的人（每人只算一次）；人群走完（`finished`）或 `TIDE_MAX` 320 秒 → `ended(result)`：≥ `LOSE_AT` 5 个 → `lost_one`，否则 `held`。main：写 `ch2_first_tide`、提示一句、主线 `after_tide`、`set_daypart("dawn")`、自动存档。`lost_one` 时 `HighlandBeacon.people()` 不放数麻袋的兵。
+  - **认得的那张脸**：`ch1_sleeper`（boatman / tobin / netter）有值时，第 `SEEN_INDEX` 个人不画（`SleeperCrowd.hidden`，新），换成一个 `CharacterModel`（`Looks.spec` 那个人的样子，衣服乘 `LINEN_TINT`），跟着那个人走；主角走到 9 米以内提示一次（「潮水里有一张认得的脸……」）。
+- **视角 19** 营门外往西南看那排木桩；**调试** `?firsttide=1 / go / bare`。
+- **测试**：`firsttide` 组 12 项（`Engine.time_scale = 4` 跑完整场潮水：插满时 36 人全改道、漫进 0 个 → held；只有两头两支时漫进 10 个 → lost_one）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
