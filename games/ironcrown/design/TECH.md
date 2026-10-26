@@ -764,8 +764,13 @@ godot/
   - 举着（`held()`）时 `Melee.block_press` 直接拒绝，说「左手举着火把，挡不了」；举起来时正在格挡的放下。
   - 样子 `make_visual()`：木棍 + 缠布的头 + 两片 `flame.gdshader` 火苗 + 一团光晕（加色、不受雾）；第一人称挂在相机下 `HAND_FP`（画面左下），第三人称挂到人物左手（`CharacterModel.hold_prop(…, true)`，人物搭好以后再挂）。
   - 换区域：每次换状态写 `GameState.held_torch = {fuel, lit}`，新场景的 `TorchHand._ready` 读回来；不进存档，`new_game` 清空。
-- **`world/planted_torch.gd`（`PlantedTorch extends Interactable`）**：插在地上的。亮着时在组 `light_source`（`radius`、`no_warm` 同上）、组 `planted_torch`；接着烧剩下的燃料，烧完剩一根黑棍，60 秒后收走；`windy` 时每秒 `BLOW` = 1/180。E：亮着 → 「拔起」（手里空着才行，`TorchHand.take_from_ground`）；灭了 → 「点着」（手里要有点着的）。**实时光源预算**：亮着的里面最新插下的 `max_lights` 支（main 按画质：低 2、中高 3）带 `OmniLight3D`（40 米外淡出），其余只有火苗和光晕。
+- **`world/planted_torch.gd`（`PlantedTorch extends Interactable`）**：插在地上的。亮着时在组 `light_source`（`radius`、`no_warm` 同上）、组 `planted_torch`；接着烧剩下的燃料，烧完剩一根黑棍，60 秒后收走；`windy` 时每秒 `BLOW` = 1/180。E：亮着 → 「拔起」（手里空着才行，`TorchHand.take_from_ground`）；灭了 → 「点着」（手里要有点着的）。**实时光源预算**：亮着的里面最新插下的 `max_lights` 支（main 按画质：低 0、中高 1）带 `OmniLight3D`（6 米，40 米外淡出），其余只有一片火苗和光晕。火把的光 `light_cull_mask = TorchHand.LIGHT_MASK`：跳过渲染层 2（`SleeperCrowd.LAYER`，长眠者群和第一人称手里那支火把——贴得太近会把木棍照成一块亮橙色的板）。
 - **第十九烽塔里那捆备用火把**（`BeaconTower._torch_bundle`）：`Pickup`（`pickup_id = beacon19_torches`，`count = 3`，`show_box = false`，外观是挂在它下面的那捆火把，拿走就一起没了）。`Pickup` 新加 `count`、`show_box`；main 的拾取按 `count` 加。
+- **长眠者群跟着改（`world/sleeper_crowd.gd`）**：
+  - 火边里面（`d < r`）只往外推（2.5–5.5），不再顺着火边绕：一排插得密的火把（2.2 米一支，火边重叠）是一堵墙，两支中间的空当钻不过去；
+  - 每人第一次碰到火时定下往哪边绕（`detour`：人在火的哪一边就往哪边，正对着按 `lat`），顺着火边的切线按「往前 + 往定下的那一边」选方向——大家顺着这堵墙滑到头再绕过去；绕的时候只朝路线的方向走、不往路线中间拉（不然在墙前横向拉扯、停住）；离开火边 2 秒后忘掉；
+  - 近处真人模型个数按画质 `near_max`（低 3、中 5、高 8）：一个约 8 次绘制调用；`?tide` 的人群延后一帧搭（等画质定下来）；
+  - 远处人形重做得更像人：腿、光脚、两段胳膊和手、两段身子（肩宽一点）、脖子、两段圆台拼的头、深色头发（多一种材质），麻衣自发光 `GLOW × 3`；多实例和真人模型都在渲染层 2。
 - **教学提示** `torch`：第一次点着时弹。**调试**：`?torch=1` 手里举着一支点着的；`?torchrow=N` 高地上面前 7 米横着插一排 N 支。
 - **测试**：`torch` 组 24 项。
 
