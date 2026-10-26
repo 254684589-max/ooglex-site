@@ -37,7 +37,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".
 const SITE = path.join(ROOT, ".site");
 const PRO_API_HOST = "pro-api.ooglex.com";
 // 与 assets/pro-rich-data.js 的 ACCESS_GATE_MS 对齐，再留出渲染余量。
-const ACCESS_GATE_MS = 4000;
+const ACCESS_GATE_MS = 8000;
 const GUEST_BUDGET_MS = 3000;
 const SUPPLY_BUDGET_MS = 6000;
 const MEMBER_BUDGET_MS = ACCESS_GATE_MS + 2500;
@@ -366,7 +366,7 @@ async function main() {
     if (member.readyAt === null || member.readyAt > MEMBER_BUDGET_MS) {
       failures.push(`场景2：降级耗时 ${member.readyAt === null ? "超时" : member.readyAt + "ms"}，超过 ${MEMBER_BUDGET_MS}ms 闸门预算`);
     }
-    if (!member.state.wallText.includes("连不上会员服务")) failures.push("场景2：付费墙没有如实说明会员服务不可达");
+    if (!member.state.wallText.includes("暂时连不上")) failures.push("场景2：付费墙没有如实说明会员服务不可达");
 
     const pro = await runScenario(browserPath, base, {
       expectWall: false,

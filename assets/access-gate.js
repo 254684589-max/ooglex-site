@@ -1,4 +1,4 @@
-/* OOGLEX_ACCESS_GATE_V14
+/* OOGLEX_ACCESS_GATE_V15
    Generic 10% preview hard-stop for non-password /apps/ pages.
    /games/ is intentionally fully public.
    Mobile-safe rule: clip the document to the visual viewport, keep the preview above,
@@ -14,6 +14,7 @@
   var SUPABASE_URL = "https://nwthqkpkvbtilafqpjlf.supabase.co";
   var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Vf8spXXXksPHKvfxp2XPcw_1dfaIR6r";
   var VERIFY_TIMEOUT_MS = 4500;
+  var PRO_API = "https://pro-api.ooglex.com";
   var resolveReady;
   var ready = new Promise(function (resolve) { resolveReady = resolve; });
   var original = null;
@@ -50,26 +51,56 @@
     } catch (_) { return ""; }
   }
 
-  // 返回 "ok" / "denied" / "unreachable"。只有服务端明确拒绝才算未登录；
-  // 网络失败与超时单独区分，交给调用方决定。
-  async function verifyToken(token) {
-    if (!token) return "denied";
+  async function timedFetch(url, init) {
     var ctrl = typeof AbortController === "function" ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (_) {} }, VERIFY_TIMEOUT_MS) : null;
     try {
-      var response = await fetch(SUPABASE_URL + "/auth/v1/user", {
-        method: "GET",
-        cache: "no-store",
-        headers: { apikey: SUPABASE_PUBLISHABLE_KEY, Authorization: "Bearer " + token },
-        signal: ctrl ? ctrl.signal : undefined
-      });
-      if (response.ok) return "ok";
-      return response.status === 401 || response.status === 403 ? "denied" : "unreachable";
-    } catch (_) {
-      return "unreachable";
+      return await fetch(url, Object.assign({ cache: "no-store", signal: ctrl ? ctrl.signal : undefined }, init));
     } finally {
       if (timer) clearTimeout(timer);
     }
+  }
+
+  // 经本站会员接口校验（大陆网络可达）。「最新消息」只看是否登录，正好用来判断会话。
+  async function verifyViaProApi(token) {
+    try {
+      var res = await timedFetch(PRO_API + "/v1/access?product=whats_latest", {
+        headers: { Accept: "application/json", Authorization: "Bearer " + token }
+      });
+      if (!res.ok) return "unreachable";
+      var body = await res.json();
+      return body && body.authenticated === true ? "ok" : "denied";
+    } catch (_) {
+      return "unreachable";
+    }
+  }
+
+  async function verifyViaSupabase(token) {
+    try {
+      var res = await timedFetch(SUPABASE_URL + "/auth/v1/user", {
+        headers: { apikey: SUPABASE_PUBLISHABLE_KEY, Authorization: "Bearer " + token }
+      });
+      if (res.ok) return "ok";
+      return res.status === 401 || res.status === 403 ? "denied" : "unreachable";
+    } catch (_) {
+      return "unreachable";
+    }
+  }
+
+  // 返回 "ok" / "denied" / "unreachable"。两条路同时问，谁先给出明确答案就用谁；
+  // 只有两条都连不上才算 unreachable。
+  function verifyToken(token) {
+    if (!token) return Promise.resolve("denied");
+    return new Promise(function (resolve) {
+      var pending = 2;
+      function settle(result) {
+        if (result !== "unreachable") { resolve(result); return; }
+        pending -= 1;
+        if (!pending) resolve("unreachable");
+      }
+      verifyViaProApi(token).then(settle);
+      verifyViaSupabase(token).then(settle);
+    });
   }
 
   // 先续期再校验：access_token 约 1 小时过期，账户页之外没有别的地方会续期，

@@ -9,7 +9,9 @@
   // 与 pro-rich-data.js 同一条规矩：本页的 Top 10 预览是同源静态文件，
   // 会员校验却要访问跨域的 Worker。该域名在某些网络下挂住而不是快速失败，
   // 所以权限结果绝不能成为静态数据的前置条件 —— 否则整页只剩空壳。
-  var ACCESS_GATE_MS = 4000;
+  // 只有已登录用户会等这一步（访客不发请求）。登录续期 + 会员校验在大陆移动网络下
+  // 4 秒常常不够，放宽到 8 秒；超时仍先按预览显示，权限晚到时再自动重新加载一次。
+  var ACCESS_GATE_MS = 8000;
 
   function previewAccess(degraded) {
     var access = { authenticated: false, plan: "free", access_level: "preview" };
@@ -25,18 +27,51 @@
   function withGate(promise) {
     return new Promise(function (resolve) {
       var done = false;
+      var timedOut = false;
       var timer = setTimeout(function () {
         if (done) return;
         done = true;
+        timedOut = true;
         resolve(previewAccess("timeout"));
       }, ACCESS_GATE_MS);
       promise.then(function (access) {
-        if (done) return;
+        if (done) {
+          // 已按预览显示后，完整权限才姗姗来迟：重新加载一次，换成完整数据。
+          if (timedOut && access && access.access_level === "full") reloadForLateAccess();
+          return;
+        }
         done = true;
         clearTimeout(timer);
         resolve(access && access.access_level ? access : previewAccess("empty"));
       });
     });
+  }
+
+  // 同一页面 10 分钟内最多自动重新加载一次，网络持续很慢时不会反复刷新。
+  function reloadForLateAccess() {
+    var key = "ooglex-late-full:" + location.pathname;
+    try {
+      var last = Number(sessionStorage.getItem(key) || 0);
+      if (Date.now() - last < 10 * 60 * 1000) return;
+      sessionStorage.setItem(key, String(Date.now()));
+    } catch (_) {
+      return;
+    }
+    location.reload();
+  }
+
+  // 预览是因为会员服务超时或连不上（不是没有权限）时，后台再试两次；
+  // 拿到完整权限就重新加载一次，换成完整数据。
+  function retryInBackground() {
+    var delays = [2000, 8000];
+    (function next(i) {
+      if (i >= delays.length) return;
+      setTimeout(function () {
+        window.OoglexPro.getAccess(product).then(function (access) {
+          if (access && access.access_level === "full") reloadForLateAccess();
+        }, function () { next(i + 1); });
+      }, delays[i]);
+    })(0);
   }
 
   // 没有登录态就不可能拿到 full（Worker 对无 token 的请求同样只返回 preview），
@@ -46,6 +81,9 @@
         return previewAccess("unreachable");
       }))
     : Promise.resolve(previewAccess());
+  accessPromise.then(function (access) {
+    if (access && access.degraded) retryInBackground();
+  });
 
   var fullPromise = accessPromise.then(function (access) {
     if (!access || access.access_level !== "full") return null;
@@ -149,15 +187,17 @@
 
     var sub = document.createElement("div");
     sub.textContent = access && access.degraded
-      ? "当前网络连不上会员服务，已按预览显示本页原版数据。恢复连接后可查看完整数据。"
+      ? "会员服务响应较慢或暂时连不上，已先按预览显示。连上后会自动换成完整数据，也可以点「重新加载」。"
       : access && access.authenticated
         ? "你已登录，但账户权限暂时无法确认，当前先显示预览。请刷新或重新登录后再试。"
-        : "当前展示原版页面预览。登录 / 注册后可查看完整数据。";
+        : (hasSession() ? "登录状态已失效，请重新登录后查看完整数据。" : "当前展示原版页面预览。登录 / 注册后可查看完整数据。");
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:720px";
 
     var button = document.createElement("a");
-    button.href = "/account/";
-    button.textContent = access && access.authenticated ? "前往账户" : "登录 / 注册";
+    button.href = access && access.degraded ? location.href : "/account/";
+    button.textContent = access && access.degraded ? "重新加载"
+      : access && access.authenticated ? "前往账户"
+      : hasSession() ? "重新登录" : "登录 / 注册";
     button.style.cssText = [
       "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:44px",
       "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",
@@ -165,7 +205,7 @@
     ].join(";");
 
     var note = document.createElement("div");
-    note.textContent = "完整数据不会发送给 FREE 浏览器；页面下方仅保留受限预览。";
+    note.textContent = "完整数据不会发送给未登录浏览器；页面下方仅保留受限预览。";
     note.style.cssText = "font-size:11px;color:#8f8f8f;margin-top:14px";
 
     wall.appendChild(title);
