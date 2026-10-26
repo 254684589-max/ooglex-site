@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-26T18:47:52Z",
+  "updatedAt": "2026-10-26T21:35:15Z",
   "asOf": "2026-10-26",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-25 ~ 2026-10-31",
@@ -98,7 +98,7 @@
       "title": "失业率",
       "titleEn": "Spanish Unemployment Rate",
       "impact": "low",
-      "forecast": "9.8%",
+      "forecast": "9.9%",
       "previous": "9.9%",
       "actual": null
     },
@@ -110,7 +110,7 @@
       "title": "M3 货币供应 同比",
       "titleEn": "M3 Money Supply y/y",
       "impact": "low",
-      "forecast": "3.6%",
+      "forecast": "3.5%",
       "previous": "3.5%",
       "actual": null
     },
@@ -158,7 +158,7 @@
       "title": "耐用品订单 环比",
       "titleEn": "Durable Goods Orders m/m",
       "impact": "low",
-      "forecast": "1.8%",
+      "forecast": "2.0%",
       "previous": "0.0%",
       "actual": null
     },
@@ -170,7 +170,7 @@
       "title": "房价指数 环比",
       "titleEn": "HPI m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "0.2%",
       "previous": "0.3%",
       "actual": null
     },
@@ -182,7 +182,7 @@
       "title": "标普/CS 20 城房价指数 同比",
       "titleEn": "S&P/CS Composite-20 HPI y/y",
       "impact": "low",
-      "forecast": "2.7%",
+      "forecast": "2.6%",
       "previous": "2.5%",
       "actual": null
     },
@@ -194,7 +194,7 @@
       "title": "消费者信心指数",
       "titleEn": "CB Consumer Confidence",
       "impact": "medium",
-      "forecast": "80.7",
+      "forecast": "81.2",
       "previous": "81.9",
       "actual": null
     },
@@ -206,7 +206,7 @@
       "title": "新屋销售",
       "titleEn": "New Home Sales",
       "impact": "low",
-      "forecast": "649K",
+      "forecast": "651K",
       "previous": "684K",
       "actual": null
     },
@@ -218,7 +218,7 @@
       "title": "Richmond Manufacturing Index",
       "titleEn": "Richmond Manufacturing Index",
       "impact": "low",
-      "forecast": "1",
+      "forecast": "0",
       "previous": "-2",
       "actual": null
     },
@@ -326,7 +326,7 @@
       "title": "German GfK Consumer Climate",
       "titleEn": "German GfK Consumer Climate",
       "impact": "low",
-      "forecast": "-30.0",
+      "forecast": "-30.1",
       "previous": "-30.6",
       "actual": null
     },
@@ -386,7 +386,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "-130.8B",
+      "forecast": "-130.4B",
       "previous": "-132.6B",
       "actual": null
     },
@@ -398,7 +398,7 @@
       "title": "Prelim Wholesale Inventories m/m",
       "titleEn": "Prelim Wholesale Inventories m/m",
       "impact": "low",
-      "forecast": "0.4%",
+      "forecast": "0.5%",
       "previous": "0.7%",
       "actual": null
     },
@@ -530,7 +530,7 @@
       "title": "进口物价 季环比",
       "titleEn": "Import Prices q/q",
       "impact": "low",
-      "forecast": "1.8%",
+      "forecast": "1.3%",
       "previous": "5.7%",
       "actual": null
     },
@@ -603,7 +603,7 @@
       "titleEn": "Italian 10-y Bond Auction",
       "impact": "low",
       "forecast": null,
-      "previous": null,
+      "previous": "4.58|1.6",
       "actual": null
     },
     {
@@ -638,7 +638,7 @@
       "title": "GDP 初值 季环比",
       "titleEn": "Advance GDP Price Index q/q",
       "impact": "medium",
-      "forecast": "3.5%",
+      "forecast": "3.3%",
       "previous": "6.2%",
       "actual": null
     },
@@ -794,7 +794,7 @@
       "title": "工业产出 环比",
       "titleEn": "Prelim Industrial Production m/m",
       "impact": "low",
-      "forecast": "1.3%",
+      "forecast": "1.2%",
       "previous": "-1.7%",
       "actual": null
     },
@@ -806,7 +806,7 @@
       "title": "零售销售 同比",
       "titleEn": "Retail Sales y/y",
       "impact": "low",
-      "forecast": "3.4%",
+      "forecast": "3.3%",
       "previous": "2.7%",
       "actual": null
     },
@@ -878,7 +878,7 @@
       "title": "新屋开工 同比",
       "titleEn": "Housing Starts y/y",
       "impact": "low",
-      "forecast": "2.5%",
+      "forecast": "2.7%",
       "previous": "6.1%",
       "actual": null
     },
@@ -895,18 +895,6 @@
       "actual": null
     },
     {
-      "ts": "2026-10-30T06:29:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "CPI（消费者物价指数） 环比",
-      "titleEn": "German Prelim CPI m/m",
-      "impact": "medium",
-      "forecast": "0.1%",
-      "previous": "0.6%",
-      "actual": null
-    },
-    {
       "ts": "2026-10-30T06:30:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -914,7 +902,7 @@
       "title": "法国消费支出 环比",
       "titleEn": "French Consumer Spending m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.1%",
       "previous": "-0.5%",
       "actual": null
     },
@@ -950,8 +938,20 @@
       "title": "全国房价指数（Nationwide） 环比",
       "titleEn": "Nationwide HPI m/m",
       "impact": "low",
-      "forecast": "-0.2%",
+      "forecast": "-0.1%",
       "previous": "-0.2%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-30T07:29:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "CPI（消费者物价指数） 环比",
+      "titleEn": "German Prelim CPI m/m",
+      "impact": "medium",
+      "forecast": "0.1%",
+      "previous": "0.6%",
       "actual": null
     },
     {
@@ -986,7 +986,7 @@
       "title": "KOF 经济晴雨表",
       "titleEn": "KOF Economic Barometer",
       "impact": "low",
-      "forecast": "108.0",
+      "forecast": "108.1",
       "previous": "109.1",
       "actual": null
     },
@@ -1058,7 +1058,7 @@
       "title": "CPI（消费者物价指数） 环比",
       "titleEn": "Italian Prelim CPI m/m",
       "impact": "low",
-      "forecast": "0.0%",
+      "forecast": "0.1%",
       "previous": "0.7%",
       "actual": null
     },
@@ -1118,7 +1118,7 @@
       "title": "芝加哥 PMI",
       "titleEn": "Chicago PMI",
       "impact": "low",
-      "forecast": "54.8",
+      "forecast": "55.8",
       "previous": "58.8",
       "actual": null
     },
@@ -1154,7 +1154,7 @@
       "title": "制造业 PMI",
       "titleEn": "Manufacturing PMI",
       "impact": "low",
-      "forecast": "50.1",
+      "forecast": "49.9",
       "previous": "50.1",
       "actual": null
     },
@@ -1166,7 +1166,7 @@
       "title": "制造业 PMI",
       "titleEn": "Non-Manufacturing PMI",
       "impact": "low",
-      "forecast": "50.5",
+      "forecast": "50.0",
       "previous": "50.2",
       "actual": null
     }
