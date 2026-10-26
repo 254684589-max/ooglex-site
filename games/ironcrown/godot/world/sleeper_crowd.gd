@@ -19,6 +19,7 @@ signal finished                        # 全走完了
 
 const TICK := 0.05
 const NEAR_MAX := 8
+static var near_max := NEAR_MAX          # 按画质（main：低 3、中 5、高 8）。一个真人模型约 8 次绘制调用：中档 40 人加五支火把时 426 → 5 个 400 以内
 const NEAR_DIST := 18.0
 const SPACING := 0.95                  # 互相让开：比这近就推
 const CELL := 1.6
@@ -87,7 +88,7 @@ func _ready() -> void:
 	mm.layers = LAYER                       # 火把的光不照它们（TorchHand.LIGHT_MASK）：几十个人每多一盏灯都要多画一遍；它们自己有一点自发光
 	add_child(mm)
 	if near_enabled:
-		for k in NEAR_MAX:
+		for k in mini(near_max, NEAR_MAX):
 			var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"]][k % 3],
 				"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018"][k % 4], "tint": {"MI_Peasant": LINEN_TINT}})
 			if spec.is_empty():
@@ -116,19 +117,25 @@ func _ready() -> void:
 static func figure_mesh() -> ArrayMesh:
 	var kit := MeshKit.new()
 	for s in [-1.0, 1.0]:
-		kit.cylinder("cloth", Vector3(s * 0.09, 0.0, 0.0), Vector3(s * 0.1, 0.82, 0.0), 0.06, 0.075, 5, 0.75)
-		kit.cylinder("cloth", Vector3(s * 0.22, 1.42, 0.0), Vector3(s * 0.25, 0.9, 0.04), 0.05, 0.045, 5, 0.8)
-		kit.box("skin", Vector3(s * 0.25, 0.86, 0.04), Vector3(0.07, 0.1, 0.06))
-	kit.cylinder("cloth", Vector3(0, 0.78, 0), Vector3(0, 1.45, 0), 0.19, 0.16, 7, 0.9)
-	kit.cylinder("skin", Vector3(0, 1.45, 0), Vector3(0, 1.52, 0), 0.05, 0.05, 5)
-	kit.cylinder("skin", Vector3(0, 1.52, 0.01), Vector3(0, 1.74, 0.0), 0.095, 0.085, 7)
+		kit.cylinder("cloth", Vector3(s * 0.09, 0.06, 0.0), Vector3(s * 0.1, 0.84, 0.0), 0.058, 0.08, 8, 0.85)          # 腿（麻布裤）
+		kit.cylinder("skin", Vector3(s * 0.09, 0.0, 0.03), Vector3(s * 0.09, 0.07, 0.03), 0.05, 0.055, 6, 0.8)          # 光脚
+		kit.cylinder("cloth", Vector3(s * 0.2, 1.4, 0.0), Vector3(s * 0.24, 1.12, 0.03), 0.055, 0.05, 7, 0.9)           # 上臂、小臂（垂着，稍微往前）
+		kit.cylinder("cloth", Vector3(s * 0.24, 1.12, 0.03), Vector3(s * 0.25, 0.9, 0.07), 0.048, 0.042, 7, 0.9)
+		kit.cylinder("skin", Vector3(s * 0.25, 0.9, 0.07), Vector3(s * 0.25, 0.8, 0.08), 0.04, 0.03, 6, 0.85)           # 手
+	kit.cylinder("cloth", Vector3(0, 0.78, 0), Vector3(0, 1.12, 0), 0.17, 0.16, 10, 0.92)                              # 腰到胸：麻衣
+	kit.cylinder("cloth", Vector3(0, 1.12, 0), Vector3(0, 1.42, 0), 0.165, 0.2, 10, 1.0)                              # 胸到肩，肩宽一点
+	kit.cylinder("cloth", Vector3(0, 1.42, 0), Vector3(0, 1.46, 0), 0.2, 0.08, 10, 1.0)
+	kit.cylinder("skin", Vector3(0, 1.44, 0), Vector3(0, 1.53, 0), 0.05, 0.05, 6)                                     # 脖子
+	kit.cylinder("skin", Vector3(0, 1.52, 0.01), Vector3(0, 1.6, 0.01), 0.075, 0.095, 9)                              # 头：下巴 → 颧骨 → 头顶，几段圆台拼圆
+	kit.cylinder("skin", Vector3(0, 1.6, 0.01), Vector3(0, 1.69, 0.0), 0.095, 0.09, 9)
+	kit.cylinder("hair", Vector3(0, 1.66, -0.01), Vector3(0, 1.76, -0.01), 0.1, 0.05, 9)                              # 头发（深色，盖住头顶后脑）
 	var cloth := StandardMaterial3D.new()
 	cloth.albedo_color = LINEN
 	cloth.vertex_color_use_as_albedo = true
 	cloth.roughness = 0.95
 	cloth.emission_enabled = true          # 跟近处的真人模型一样背光处有一点自发光（CharacterModel.GLOW），远近换的时候亮度对得上
 	cloth.emission = LINEN
-	cloth.emission_energy_multiplier = CharacterModel.GLOW * 2.0   # 近处那份是贴图 × 两倍多的 tint 再发光，这边没贴图，乘 2 才对得上
+	cloth.emission_energy_multiplier = CharacterModel.GLOW * 3.0   # 近处那份是贴图 × 两倍多的 tint 再发光，这边没贴图，乘 3 才对得上（5.4b 截图对过）
 	var skin := StandardMaterial3D.new()
 	skin.albedo_color = SKIN
 	skin.vertex_color_use_as_albedo = true
@@ -136,7 +143,11 @@ static func figure_mesh() -> ArrayMesh:
 	skin.emission_enabled = true
 	skin.emission = SKIN
 	skin.emission_energy_multiplier = CharacterModel.GLOW
-	var mi := kit.build({"cloth": cloth, "skin": skin})
+	var hair := StandardMaterial3D.new()
+	hair.albedo_color = Color("3a2e24")
+	hair.vertex_color_use_as_albedo = true
+	hair.roughness = 0.9
+	var mi := kit.build({"cloth": cloth, "skin": skin, "hair": hair})
 	var mesh := mi.mesh as ArrayMesh
 	mi.free()
 	return mesh

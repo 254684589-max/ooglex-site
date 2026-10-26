@@ -258,7 +258,7 @@ func _ready() -> void:
 			crowd.height_fn = Highland.height_at
 			crowd.player = player
 			crowd.obstacles = [[HighlandLayout.BEACON19, HighlandLayout.PALISADE_R + 0.6], [HighlandLayout.TOWER[0], HighlandLayout.TOWER_W]]
-			world.add_child(crowd)
+			world.add_child.call_deferred(crowd)          # 等画质定下来再搭（近处真人模型的个数按画质）
 			print("IC_TIDE count=%d" % crowd.count)
 	camera = player.camera
 	camera.make_current()
@@ -547,7 +547,8 @@ func _fog_end() -> float:
 ## 中 = 原分辨率、月光阴影（1 段）、泛光；高 = 再加 2 倍抗锯齿、阴影 2 段
 func apply_quality(tier: String) -> void:
 	quality = tier
-	PlantedTorch.max_lights = 1 if tier == "low" else 2       # 插在地上的火把，最新几支带实时光源（5.4b；每多一盏，照到的东西都要多画一遍）
+	SleeperCrowd.near_max = {"low": 3, "medium": 5}.get(tier, SleeperCrowd.NEAR_MAX)   # 长眠者群近处的真人模型（5.4b 实测：一个约 8 次绘制调用）
+	PlantedTorch.max_lights = 0 if tier == "low" else 1       # 插在地上的火把，最新几支带实时光源（5.4b；每多一盏，照到的地块都要多画一遍：中档插五支、四十个长眠者时 418 → 见 TEST_REPORT）
 	if pause_menu:
 		pause_menu.show_quality(tier)
 	var vp := get_viewport()

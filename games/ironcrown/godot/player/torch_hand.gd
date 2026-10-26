@@ -59,6 +59,8 @@ func _ready() -> void:
 		fp_visual.rotation = Vector3(deg_to_rad(-8.0), 0.0, deg_to_rad(10.0))      # 火头稍微往外偏，不挡画面中间
 		fp_visual.scale = Vector3.ONE * 0.62
 		player.camera.add_child(fp_visual)
+		for g in fp_visual.find_children("*", "VisualInstance3D", true, false):
+			(g as VisualInstance3D).layers = SleeperCrowd.LAYER     # 自己的火光不照自己手里这根棍（贴得太近，照成一块亮橙色的板）
 	var h: Dictionary = GameState.held_torch
 	if not h.is_empty() and float(h.get("fuel", 0.0)) > 0.0:
 		fuel = float(h.fuel)
@@ -199,8 +201,9 @@ func _apply_visuals() -> void:
 static func make_visual(flame_count := 2) -> Node3D:
 	var root := Node3D.new()
 	var kit := MeshKit.new()
-	kit.cylinder("wood", Vector3(0, -0.18, 0), Vector3(0, 0.46, 0), 0.022, 0.019, 6, 0.8)
-	kit.cylinder("rag", Vector3(0, 0.40, 0), Vector3(0, 0.58, 0), 0.04, 0.034, 7, 0.7)
+	kit.cylinder("wood", Vector3(0, -0.18, 0), Vector3(0, 0.46, 0), 0.022, 0.019, 9, 0.8)
+	kit.cylinder("rag", Vector3(0, 0.40, 0), Vector3(0, 0.47, 0), 0.034, 0.042, 10, 0.7)
+	kit.cylinder("rag", Vector3(0, 0.47, 0), Vector3(0, 0.58, 0), 0.042, 0.03, 10, 0.6)
 	var wood := StandardMaterial3D.new()
 	wood.albedo_color = Color("5a4030")
 	wood.roughness = 0.9
