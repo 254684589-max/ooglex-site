@@ -13,6 +13,8 @@
 
 ### 修改
 
+- 2026-10-26：投资雷达（`/apps/news-radar/`）把本轮扫描列在页上。正式入选仍只数 `items`（Day-07 为 0），二级存档不并入、不计入该数字。新增始终展开的「本轮扫描／漏斗概览」（观察窗、L0 至四级漏斗数字、五个已扫描领域、路径 A／B／C 未达标与禁止凑条）。四条二级存档改为默认列出，并标明非正式入选、不计入正式入选、不计入终极结果；每条附一行未升级原因。`data.json` 增加 `scanOverview` 与存档 `whyNot`。顶栏标签未改。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 - 2026-10-26：新闻栏目五栏顶栏三个标签改名，链接不变。「全球要闻」改为「市场要闻」，「每日投研」改为「投研汇总」，「全球利率」改为「数据监测」。「简报」「投资雷达」未改。改动在仍使用这段顶栏的四个页面：`/apps/whats-latest/`、`/apps/news-brief/`、`/apps/news-radar/`、`/apps/research-board/`。各页标题、正文和 `data.json` 未改。`/apps/research-board/rates/` 自 2026-10-21 晨报整页替换后不再包含这五栏顶栏，本次没有改该页。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 
 - 2026-10-26：每日投研（`/apps/research-board/`）页顶改为「投研汇总 · Brief／雷达／WSJ／S2 已同步」。整包 `demo` 为 false 时不再显示「演示数据」，状态芯片改为「Brief／雷达／WSJ／S2 已同步」，也不再提示「数据文件未标记为演示数据」。`demo: true` 且仅 Brief／雷达对齐时，仍保留「WSJ/S2 仍为演示」。未改 `apps/research-board/rates/`，也未改 news-brief、news-radar、whats-latest 的 `data.json`。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。

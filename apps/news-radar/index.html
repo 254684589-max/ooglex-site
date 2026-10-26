@@ -107,6 +107,34 @@
     .empty-panel[hidden]{display:none}
     .empty-title{margin:0;font-size:18px;font-weight:700}
     .empty-reason{margin:8px 0 0;color:var(--dim);line-height:1.65}
+    .scan,.archive{
+      margin-top:22px;padding:16px 16px 14px;border:1px solid var(--line);border-radius:12px;
+      background:var(--panel)
+    }
+    .scan[hidden],.archive[hidden],.coverage[hidden],.funnel[hidden],.coverage-note[hidden],
+    .scan-window[hidden],.scan-kind[hidden],.scan-paths[hidden],.scan-aside[hidden]{display:none}
+    .scan-title,.archive-heading,.coverage-title{margin:0;font-size:18px;line-height:1.4;font-weight:700}
+    .scan-window,.scan-kind,.scan-paths,.scan-aside,.coverage-note,.archive-note{
+      margin:8px 0 0;color:var(--dim);font-size:13.5px;line-height:1.65;overflow-wrap:anywhere
+    }
+    .funnel{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px;
+      margin:14px 0 0;padding:0;list-style:none
+    }
+    .funnel li{
+      margin:0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;min-width:0
+    }
+    .funnel-num{
+      display:block;font-family:Georgia,"Times New Roman","Noto Serif SC",serif;
+      font-size:28px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums
+    }
+    .funnel-label{display:block;margin-top:6px;color:var(--dim);font-size:12px;line-height:1.4}
+    .coverage{margin-top:14px}
+    .coverage-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;padding:0;list-style:none}
+    .coverage-list li{
+      margin:0;padding:6px 10px;border:1px solid var(--line);border-radius:999px;
+      font-size:13px;line-height:1.4;overflow-wrap:anywhere
+    }
     .items{margin:8px 0 0;padding:0;list-style:none}
     .items[hidden]{display:none}
     .item{padding:16px 0;border-bottom:1px solid var(--line)}
@@ -124,22 +152,13 @@
     .sources ul{margin:0;padding-left:1.15em}
     .sources li{margin:0 0 6px;line-height:1.55;overflow-wrap:anywhere}
     .sources a{color:var(--accent)}
-    .archive{
-      margin-top:22px;border:1px solid var(--line);border-radius:10px;background:var(--panel)
-    }
-    .archive[hidden]{display:none}
-    .archive summary{
-      min-height:44px;padding:12px 14px;cursor:pointer;font-weight:700;line-height:1.45
-    }
-    .archive-body{padding:0 14px 14px}
-    .archive-note{margin:0 0 10px;color:var(--dim);font-size:13px;line-height:1.6}
-    .archive-list{list-style:none;margin:0;padding:0}
-    .archive-list li{
-      display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:space-between;align-items:baseline;
-      padding:10px 0;border-top:1px solid var(--line)
-    }
-    .archive-title{font-weight:700;overflow-wrap:anywhere}
-    .archive-meta{color:var(--gold);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .archive-list{list-style:none;margin:12px 0 0;padding:0}
+    .archive-list li{padding:12px 0;border-top:1px solid var(--line)}
+    .archive-kicker{margin:0;color:var(--dim);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .archive-title{margin:6px 0 0;font-size:16.5px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+    .archive-flag{margin:6px 0 0;font-size:13px;font-weight:700;line-height:1.45}
+    .archive-why{margin:6px 0 0;color:var(--dim);font-size:13.5px;line-height:1.6;overflow-wrap:anywhere}
+    .archive-why-label{font-weight:700;color:var(--ink)}
     .source-foot{
       margin-top:28px;padding-top:16px;border-top:1px solid var(--line);
       color:var(--dim);font-size:12.5px;line-height:1.7
@@ -187,20 +206,31 @@
     <p class="note" id="note"></p>
     <div class="empty-panel" id="empty-panel" hidden></div>
     <div class="items" id="items" aria-label="正式入选列表"></div>
-    <details class="archive" id="archive" hidden>
-      <summary id="archive-summary">二级存档索引（非正式入选）</summary>
-      <div class="archive-body">
-        <p class="archive-note" id="archive-note"></p>
-        <ul class="archive-list" id="archive-list"></ul>
+    <section class="scan" id="scan" hidden aria-labelledby="scan-title">
+      <h2 class="scan-title" id="scan-title">本轮扫描／漏斗概览</h2>
+      <p class="scan-window" id="scan-window" hidden></p>
+      <p class="scan-kind" id="scan-kind" hidden></p>
+      <ul class="funnel" id="funnel" hidden></ul>
+      <p class="scan-aside" id="scan-aside" hidden></p>
+      <div class="coverage" id="coverage" hidden>
+        <h3 class="coverage-title" id="coverage-title">本轮已扫描领域</h3>
+        <ul class="coverage-list" id="coverage-list"></ul>
+        <p class="coverage-note" id="coverage-note"></p>
       </div>
-    </details>
+      <p class="scan-paths" id="scan-paths" hidden></p>
+    </section>
+    <section class="archive" id="archive" hidden aria-labelledby="archive-heading">
+      <h2 class="archive-heading" id="archive-heading">二级存档</h2>
+      <p class="archive-note" id="archive-note"></p>
+      <ul class="archive-list" id="archive-list"></ul>
+    </section>
     <footer class="source-foot">
       <p>本栏目为人工编辑，来源「环球新闻情报中心／全球投资情报雷达」。内部研究用、非正式自动外发。与「最新消息」（自动抓取，/apps/whats-latest/）相互独立，互不覆盖。</p>
-      <p>内容仅供研究与信息阅读，不构成交易建议或投资建议。正式入选只列出本轮三级或四级条目；没有入选就显示 0，不补写条目。</p>
+      <p>内容仅供研究与信息阅读，不构成交易建议或投资建议。正式入选只列出本轮三级或四级条目；没有入选就显示 0，不补写条目。下方的本轮扫描和二级存档只说明筛过什么，不计入正式入选。</p>
       <p id="foot-meta"></p>
     </footer>
   </main>
-  <noscript><p style="padding:16px">需要启用 JavaScript 才能读取本期雷达。数据文件为同目录 data.json：正式入选看 items，二级存档只在 archive，不计入正式条数。</p></noscript>
-  <script src="app.js"></script>
+  <noscript><p style="padding:16px">需要启用 JavaScript 才能读取本期雷达。数据文件为同目录 data.json：正式入选只看 items。本轮扫描在 scanOverview 与 funnel，二级存档在 archive；后两者都不计入正式条数。</p></noscript>
+  <script src="app.js?v=20261026scan"></script>
 </body>
 </html>
