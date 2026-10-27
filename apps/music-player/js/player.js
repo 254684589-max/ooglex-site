@@ -197,13 +197,32 @@
   }
 
   function renderList() {
-    var entry = h("a", "global-entry");
+    var hero = h("section", "hero");
+    hero.setAttribute("aria-label", "全球曲库");
+    var entry = h("a", "hero-main");
     entry.href = "#/global";
-    entry.appendChild(h("span", "ge-title", "全球曲库"));
-    entry.appendChild(h("span", "ge-sub", globalEntryText()));
-    entry.appendChild(h("span", "ge-go", "进入 →"));
-    view.appendChild(entry);
-    view.appendChild(h("h2", "section-title", "专辑"));
+    entry.appendChild(h("span", "hero-kicker", "GLOBAL LIBRARY"));
+    entry.appendChild(h("span", "hero-title", "全球曲库"));
+    entry.appendChild(h("span", "hero-sub", globalEntryText()));
+    entry.appendChild(h("span", "hero-go", "进入 →"));
+    hero.appendChild(entry);
+    var cfg = state.global.config;
+    if (cfg && cfg.api) {
+      var quick = h("div", "hero-genres");
+      cfg.genres.filter(function (g) { return g.tag; }).slice(0, 8).forEach(function (g) {
+        var a = h("a", "hero-genre", g.label);
+        a.href = "#/global";
+        // 点之前先记下曲风，路由切过去时 onRoute 按它查询。
+        a.addEventListener("click", function () { state.global.tag = g.tag; state.global.q = ""; });
+        quick.appendChild(a);
+      });
+      hero.appendChild(quick);
+    }
+    view.appendChild(hero);
+    var head = h("div", "section-head");
+    head.appendChild(h("h2", "section-title", "本站专辑"));
+    head.appendChild(h("span", "section-count", visibleAlbums().length + " 张"));
+    view.appendChild(head);
     if (!visibleAlbums().length) {
       view.appendChild(h("p", "empty", "还没有可播放的专辑。"));
       return;
@@ -212,7 +231,12 @@
     visibleAlbums().forEach(function (album) {
       var card = h("a", "album-card");
       card.href = "#/album/" + album.id;
-      card.appendChild(coverNode(album, "cover"));
+      var art = coverNode(album, "cover");
+      var badge = h("span", "play-badge");
+      badge.setAttribute("aria-hidden", "true");
+      badge.appendChild(icon("play"));
+      art.appendChild(badge);
+      card.appendChild(art);
       var meta = h("div", "meta");
       meta.appendChild(h("h3", "name", album.title || "未命名专辑"));
       meta.appendChild(h("p", "by", artistOf(null, album)));
@@ -241,7 +265,16 @@
     var side = h("div", "detail-main");
     side.appendChild(h("p", "kicker", album.demo ? "演示样例" : "专辑"));
     side.appendChild(h("h2", "album-title", album.title || "未命名专辑"));
-    side.appendChild(h("p", "by", artistOf(null, album) + (album.releasedAt ? " · " + album.releasedAt : "")));
+    var count = (album.tracks || []).length;
+    side.appendChild(h("p", "by", artistOf(null, album) + (album.releasedAt ? " · " + album.releasedAt : "") + (count ? " · " + count + " 首" : "")));
+    if (count) {
+      var all = h("button", "play-all");
+      all.type = "button";
+      all.appendChild(icon("play"));
+      all.appendChild(document.createTextNode(count > 1 ? "播放全部" : "播放"));
+      all.addEventListener("click", function () { playIndex(album, 0); });
+      side.appendChild(all);
+    }
     layout.appendChild(side);
     if (album.released === false) layout.appendChild(h("p", "badge", "未发行 · 只有本机预览看得到"));
     if (album.note || album.license) {
@@ -271,7 +304,7 @@
       btn.dataset.album = album.id;
       btn.dataset.id = track.id;
       btn.dataset.index = String(index);
-      var idx = h("span", "idx", String(index + 1));
+      var idx = leadNode(index);
       var titles = h("span", "titles");
       titles.appendChild(h("span", "t-title", track.title || "未命名"));
       titles.appendChild(h("span", "t-artist", artistOf(track, album)));
@@ -290,6 +323,44 @@
     view.appendChild(layout);
   }
 
+
+  // 序号格；当前曲目改显示跳动的电平条（纯装饰，状态另由「正在播放」文字和 aria-current 表达）。
+  function leadNode(index) {
+    var idx = h("span", "idx");
+    idx.appendChild(h("span", "num", String(index + 1)));
+    var eq = h("span", "eq");
+    eq.setAttribute("aria-hidden", "true");
+    eq.appendChild(h("i"));
+    eq.appendChild(h("i"));
+    eq.appendChild(h("i"));
+    idx.appendChild(eq);
+    return idx;
+  }
+
+  function thumbNode(src, title) {
+    var wrap = h("span", "thumb");
+    wrap.setAttribute("aria-hidden", "true");
+    if (src) {
+      var img = h("img");
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.src = src;
+      img.addEventListener("error", function () { img.remove(); wrap.textContent = (title || "♪").slice(0, 1); });
+      wrap.appendChild(img);
+    } else {
+      wrap.textContent = (title || "♪").slice(0, 1);
+    }
+    return wrap;
+  }
+
+  function pill(text, href, cls) {
+    var a = h("a", "pill" + (cls ? " " + cls : ""), text);
+    a.href = href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    return a;
+  }
 
   /* ---------------- 全球曲库：Jamendo 独立音乐目录，经 workers/jamendo-proxy 查询 ---------------- */
 
@@ -368,7 +439,7 @@
   function onRoute() {
     renderView();
     var g = state.global;
-    if (parseRoute().name === "global" && g.config && g.config.api && g.status !== "loading" && !state.globalAlbums[globalKey()]) {
+    if (parseRoute().name === "global" && g.config && g.config.api && g.status !== "loading" && g.albumId !== globalKey()) {
       fetchGlobal(false);
     }
   }
@@ -507,8 +578,8 @@
     back.href = "#/";
     view.appendChild(back);
     var head = h("div", "global-head");
-    head.appendChild(h("p", "kicker", "GLOBAL LIBRARY"));
-    head.appendChild(h("h2", "album-title", "全球曲库"));
+    head.appendChild(h("p", "hero-kicker", "GLOBAL LIBRARY"));
+    head.appendChild(h("h2", "global-title", "全球曲库"));
     var about = h("p", "global-about");
     about.appendChild(document.createTextNode("来自 "));
     var src = h("a", null, "Jamendo");
@@ -516,7 +587,7 @@
     src.target = "_blank";
     src.rel = "noopener noreferrer";
     about.appendChild(src);
-    about.appendChild(document.createTextNode(" 的全球独立音乐人作品，每首按其 Creative Commons 许可署名。音频直接从 Jamendo 播放，本站不存储。这里没有主流唱片公司的热门歌。"));
+    about.appendChild(document.createTextNode(" 的全球独立音乐人作品，每首按其 Creative Commons 许可署名。音频直接从 Jamendo 播放，本站不存储；这里没有主流唱片公司的热门歌。"));
     head.appendChild(about);
     view.appendChild(head);
 
@@ -609,13 +680,14 @@
     if (album && album.tracks.length) {
       var list = h("ol", "tracks global-tracks");
       album.tracks.forEach(function (track, index) {
-        var li = h("li");
-        var btn = h("button", "track");
+        var li = h("li", "row");
+        var btn = h("button", "track has-thumb");
         btn.type = "button";
         btn.dataset.album = album.id;
         btn.dataset.id = track.id;
         btn.dataset.index = String(index);
-        btn.appendChild(h("span", "idx", String(index + 1)));
+        btn.appendChild(leadNode(index));
+        btn.appendChild(thumbNode(track.image, track.title));
         var titles = h("span", "titles");
         titles.appendChild(h("span", "t-title", track.title));
         titles.appendChild(h("span", "t-artist", track.artist + (track.album && track.album !== track.title ? " · " + track.album : "")));
@@ -625,19 +697,8 @@
         btn.addEventListener("click", function () { onTrackClick(album, index); });
         li.appendChild(btn);
         var links = h("p", "t-links");
-        var lic = h("a", null, licenseName(track.license));
-        lic.href = track.license;
-        lic.target = "_blank";
-        lic.rel = "noopener noreferrer";
-        links.appendChild(lic);
-        if (track.page) {
-          links.appendChild(document.createTextNode(" · "));
-          var pg = h("a", null, "在 Jamendo 查看");
-          pg.href = track.page;
-          pg.target = "_blank";
-          pg.rel = "noopener noreferrer";
-          links.appendChild(pg);
-        }
+        links.appendChild(pill(licenseName(track.license), track.license));
+        if (track.page) links.appendChild(pill("Jamendo ↗", track.page, "is-src"));
         li.appendChild(links);
         list.appendChild(li);
       });
@@ -753,6 +814,8 @@
     }
     var playing = !!(audio && !audio.paused && audio.src);
     if (art) art.classList.toggle("is-spinning", playing);
+    paintAmbient(artFrom && artFrom.cover);
+    paintMini(track, album, artFrom, playing);
     if (play) {
       play.textContent = "";
       play.appendChild(icon(playing ? "pause" : "play"));
@@ -788,11 +851,53 @@
     else document.title = "流光播放器 · Ooglex";
   }
 
+  // 页面背景的流光：当前封面放大模糊。只用已经校验过的封面地址；本机草稿（idb:）不用。
+  var ambientSrc = null;
+  function paintAmbient(src) {
+    var node = $("ambient");
+    if (!node) return;
+    var url = src && String(src).indexOf("idb:") !== 0 ? String(src) : "";
+    if (url === ambientSrc) return;
+    ambientSrc = url;
+    node.style.backgroundImage = url ? "url(" + JSON.stringify(new URL(url, location.href).href) + ")" : "";
+    node.classList.toggle("is-on", !!url);
+  }
+
+  function paintMini(track, album, artFrom, playing) {
+    var mini = $("mini");
+    if (!mini) return;
+    $("mini-title").textContent = track ? track.title : "";
+    $("mini-artist").textContent = track ? artistOf(track, album) : "";
+    var thumb = $("mini-thumb");
+    var key = (artFrom && artFrom.cover) || "";
+    if (thumb.dataset.src !== key) {
+      thumb.dataset.src = key;
+      thumb.textContent = "";
+      thumb.appendChild(thumbNode(key && key.indexOf("idb:") !== 0 ? key : "", track ? track.title : ""));
+    }
+    var btn = $("mini-play");
+    btn.textContent = "";
+    btn.appendChild(icon(playing ? "pause" : "play"));
+    btn.setAttribute("aria-label", playing ? "暂停" : "播放");
+    state.miniHasTrack = !!track;
+    updateMini();
+  }
+
+  // 只在窄屏、有曲目、主播放区滚出视野时出现。
+  function updateMini() {
+    var mini = $("mini");
+    if (!mini) return;
+    var show = !!state.miniHasTrack && !state.stageVisible;
+    mini.hidden = !show;
+    document.body.classList.toggle("has-mini", show);
+  }
+
   function paintCurrent() {
     var track = currentTrack();
     document.querySelectorAll(".track").forEach(function (node) {
       var on = !!(track && node.dataset.album === state.playingAlbumId && node.dataset.id === track.id);
       node.classList.toggle("is-current", on);
+      node.classList.toggle("is-playing", on && !!audio && !audio.paused);
       var flag = node.querySelector(".flag");
       if (flag) flag.textContent = on ? (audio && !audio.paused ? "正在播放" : "已暂停") : "";
       if (on) node.setAttribute("aria-current", "true");
@@ -1066,6 +1171,27 @@
     } catch (err) { /* 个别浏览器不允许重复注册 */ }
   }
 
+  function bindMini() {
+    var mini = $("mini");
+    if (!mini) return;
+    state.stageVisible = true;
+    $("mini-play").addEventListener("click", toggle);
+    var next = $("mini-next");
+    next.appendChild(icon("next"));
+    next.addEventListener("click", function () { step(1); });
+    $("mini-open").addEventListener("click", function () {
+      document.querySelector(".stage").scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
+    });
+    var stage = document.querySelector(".stage");
+    if (stage && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        // 主播放区还露出一小截时就算看得见，避免两套播控同时出现。
+        state.stageVisible = entries[0].isIntersecting;
+        updateMini();
+      }, { threshold: 0.15 }).observe(stage);
+    }
+  }
+
   function paintVolume() {
     var shown = state.muted ? 0 : Math.round(state.volume * 100);
     volume.value = String(shown);
@@ -1122,6 +1248,7 @@
     audio.volume = state.volume;
     paintVolume();
     bindTransport();
+    bindMini();
     paintTransport();
     window.addEventListener("hashchange", onRoute);
     load();
