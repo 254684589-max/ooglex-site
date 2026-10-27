@@ -217,7 +217,18 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
 }
 .time { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--mp-dim); min-width: 3.1em; }
 #time-end { text-align: right; }
-.now-copy { text-align: center; margin: 12px 0 2px; min-height: 3.4em; }
+/* 歌名居中；右侧是收藏心形，左侧留同宽空位保持对称 */
+.now-copy {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  margin: 12px 0 2px;
+  min-height: 3.4em;
+}
+.now-text { grid-column: 2; min-width: 0; }
+#now-fav { grid-column: 3; }
 #now-title {
   margin: 0;
   font-size: 22px;
@@ -557,8 +568,11 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
 }
 @keyframes eq { from { height: 25%; } to { height: 100%; } }
 
-/* 全球曲库行：许可与来源做成同一行的小标签 */
-.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 8px; }
+/* 曲目行：歌曲按钮 | 许可与来源小标签（全球曲库、收藏）| 收藏心形 */
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 8px; }
+.row > .track { grid-column: 1; grid-row: 1; }
+.row > .t-links { grid-column: 2; grid-row: 1; }
+.row > .fav-btn { grid-column: 3; grid-row: 1; }
 .row { border-radius: 14px; border: 1px solid transparent; padding-right: 10px; transition: background-color .15s; }
 .row:hover { background: var(--mp-hover); }
 .row .track:hover { background: transparent; }
@@ -583,11 +597,79 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
 }
 .pill:hover { color: var(--mp-accent-text); border-color: currentColor; }
 @media (max-width: 719px) {
-  .row { grid-template-columns: minmax(0, 1fr); }
+  .row { grid-template-columns: minmax(0, 1fr) auto; }
+  .row > .fav-btn { grid-column: 2; }
+  .row > .t-links { grid-column: 1 / -1; grid-row: 2; }
   .row { padding-right: 0; }
   .t-links { justify-content: flex-start; padding: 0 0 10px 96px; margin-top: -6px; }
   .track.has-thumb .flag { display: none; }
 }
+
+/* ---------- 收藏 ---------- */
+.fav-btn {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--mp-faint);
+  touch-action: manipulation;
+  transition: color .15s, background-color .15s, transform .15s;
+}
+.fav-btn .ico { width: 21px; height: 21px; }
+.fav-btn:hover { color: var(--mp-ink); background: var(--mp-hover); }
+.fav-btn.is-on { color: #f0607a; }
+.fav-btn.is-on:hover { color: #f0607a; }
+@media (prefers-reduced-motion: no-preference) {
+  .fav-btn:active { transform: scale(.88); }
+}
+#now-fav[hidden] { display: none; }
+.fav-entry {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 12px 16px 12px 12px;
+  min-height: 68px;
+  border-radius: 18px;
+  text-decoration: none;
+  background: var(--mp-surface);
+  border: 1px solid var(--mp-line);
+  transition: background-color .15s, border-color .15s;
+}
+.fav-entry:hover { background: var(--mp-surface-2); border-color: rgba(240, 96, 122, .45); }
+.fav-entry-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(135deg, #f0607a, #a855f7);
+}
+.fav-entry-ico .ico { width: 22px; height: 22px; }
+.fav-entry-text { display: flex; flex-direction: column; min-width: 0; }
+.fav-entry-title { font-weight: 750; font-size: 16px; }
+.fav-entry-sub { color: var(--mp-dim); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fav-entry-go { color: var(--mp-dim); font-size: 18px; }
+.fav-head {
+  margin: 4px 0 16px;
+  padding: 22px;
+  border-radius: 24px;
+  color: #fff;
+  background:
+    radial-gradient(110% 140% at 0% 0%, rgba(240, 96, 122, .55), transparent 55%),
+    radial-gradient(80% 110% at 100% 0%, rgba(168, 85, 247, .5), transparent 60%),
+    linear-gradient(135deg, #2a1230, #1b1d45 65%, #0f2a33);
+  box-shadow: var(--mp-shadow-sm);
+}
+.fav-head .hero-kicker { color: rgba(255, 220, 230, .9); }
+.fav-note { margin: 8px 0 0; color: rgba(255, 255, 255, .82); font-size: 13px; line-height: 1.65; max-width: 62ch; }
+@media (max-width: 599px) { .fav-head { padding: 18px; } }
 
 /* ---------- 全球曲库页 ---------- */
 .global-head {
