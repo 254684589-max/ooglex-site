@@ -5,6 +5,11 @@ name: Deploy Jamendo proxy
 # 不绑定自定义域名，不改 www 的解析，不新增付费服务。
 on:
   workflow_dispatch:
+    inputs:
+      probe_only:
+        description: "只探测 Jamendo 原始返回，不部署"
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths:
@@ -44,7 +49,43 @@ jobs:
         working-directory: workers/jamendo-proxy
         run: node --test worker.test.mjs
 
+      # 直接问 Jamendo 一次，只打印结构（条数、域名、字段类型），不打印 client_id 或完整地址。
+      - name: Probe Jamendo upstream
+        env:
+          JAMENDO_CLIENT_ID: ${{ secrets.JAMENDO_CLIENT_ID }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.parse, urllib.request
+          cid = os.environ["JAMENDO_CLIENT_ID"].strip()
+          base = "https://api.jamendo.com/v3.0/tracks/"
+          # 2026-10-27 实测：tags 与 fuzzytags 会各自间歇性返回 0 条，Worker 因此落空时换参数重试。
+          variants = [("all", {})]
+          for g in ["pop", "jazz", "world"]:
+              variants += [("tags=" + g, {"tags": g}), ("fuzzytags=" + g, {"fuzzytags": g})]
+          for label, extra in variants:
+              q = {"client_id": cid, "format": "json", "limit": "3", "order": "popularity_month",
+                   "audioformat": "mp32", "imagesize": "200", "include": "licenses"}
+              q.update(extra)
+              try:
+                  with urllib.request.urlopen(base + "?" + urllib.parse.urlencode(q), timeout=15) as r:
+                      code, d = r.status, json.load(r)
+              except Exception as e:
+                  print(label, "request failed:", type(e).__name__); continue
+              h = d.get("headers", {})
+              res = d.get("results") or []
+              print(label, "HTTP", code, "status", h.get("status"), "code", h.get("code"), "results", len(res),
+                    "warnings", str(h.get("warnings", ""))[:120])
+              for t in res[:2]:
+                  def host(u):
+                      try: return urllib.parse.urlsplit(str(u)).scheme + "://" + urllib.parse.urlsplit(str(u)).hostname
+                      except Exception: return repr(u)[:40]
+                  print("  id", type(t.get("id")).__name__, repr(t.get("id"))[:12],
+                        "| audio", host(t.get("audio")), "| license", str(t.get("license_ccurl"))[:60],
+                        "| image", host(t.get("image")), "| share", host(t.get("shareurl")))
+          PY
+
       - name: Deploy Jamendo proxy Worker
+        if: ${{ !inputs.probe_only }}
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
@@ -56,6 +97,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Store Jamendo client_id in the Worker secret
+        if: ${{ !inputs.probe_only }}
         working-directory: workers/jamendo-proxy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -67,6 +109,7 @@ jobs:
           echo "client_id 已写入 Worker Secret（不打印）。"
 
       - name: Health check
+        if: ${{ !inputs.probe_only }}
         env:
           URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
@@ -79,9 +122,13 @@ jobs:
           echo "接口地址：$URL"
           echo "### Jamendo 代理已部署" >> "$GITHUB_STEP_SUMMARY"
           echo "把这个地址填进 \`apps/music-player/data/global.json\` 的 \`api\`：\`$URL\`" >> "$GITHUB_STEP_SUMMARY"
-          sleep 5
-          curl -sS -m 15 -H 'Origin: https://www.ooglex.com' "$URL/health" || true
-          echo
+          # 新建的 workers.dev 地址要几十秒才生效（期间 Cloudflare 回 error code 1042），最多等约 90 秒。
+          for i in $(seq 1 18); do
+            if curl -sS -m 10 -H 'Origin: https://www.ooglex.com' "$URL/health" | grep -q '"configured":true'; then
+              echo "/health 正常（第 $i 次）"; break
+            fi
+            sleep 5
+          done
           code=$(curl -sS -m 15 -o /tmp/tracks.json -w '%{http_code}' -H 'Origin: https://www.ooglex.com' "$URL/tracks?tag=pop" || echo 000)
           echo "/tracks?tag=pop → HTTP $code"
           if [ "$code" = "200" ]; then

@@ -70,7 +70,9 @@ export function parseQuery(searchParams) {
   return { tag: tag, order: order, offset: offset, q: q };
 }
 
-export function upstreamUrl(query, clientId) {
+// tagParam：Jamendo 的 tags 与 fuzzytags 都按曲风过滤。实测两者会各自间歇性地返回 0 条，
+// 所以一种落空时换另一种再问一次（见 handle）。
+export function upstreamUrl(query, clientId, tagParam) {
   const url = new URL(UPSTREAM);
   url.searchParams.set("client_id", clientId);
   url.searchParams.set("format", "json");
@@ -80,7 +82,7 @@ export function upstreamUrl(query, clientId) {
   url.searchParams.set("audioformat", "mp32");
   url.searchParams.set("imagesize", "200");
   url.searchParams.set("include", "licenses");
-  if (query.tag) url.searchParams.set("tags", query.tag);
+  if (query.tag) url.searchParams.set(tagParam || "tags", query.tag);
   if (query.q) url.searchParams.set("search", query.q);
   return url.toString();
 }
@@ -204,6 +206,37 @@ function cacheKey(query) {
   return new Request(url.toString(), { method: "GET" });
 }
 
+async function fetchPage(doFetch, url) {
+  let upstream;
+  try {
+    upstream = await doFetch(url, {
+      method: "GET",
+      redirect: "manual",
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(LIMITS.timeoutMs),
+    });
+  } catch (error) {
+    const timeout = error && (error.name === "TimeoutError" || error.name === "AbortError");
+    return { ok: false, error: timeout ? "timeout" : "upstream", message: "Jamendo 暂时没有响应。", status: 502 };
+  }
+  if (upstream.status === 429) {
+    return { ok: false, error: "rate_limited", message: "Jamendo 暂时限制了访问，请稍后再试。", status: 429, extra: { "Retry-After": "60" } };
+  }
+  if (!upstream.ok) return { ok: false, error: "upstream", message: "Jamendo 暂时没有响应。", status: 502 };
+  let data;
+  try {
+    data = await upstream.json();
+  } catch (error) {
+    return { ok: false, error: "upstream", message: "Jamendo 返回的内容读不了。", status: 502 };
+  }
+  const head = (data && data.headers) || {};
+  if (head.status !== "success" || !Array.isArray(data.results)) {
+    // Jamendo 把 client_id 无效等错误放在 200 正文里（code 非 0）。原文不外传，只留代码。
+    return { ok: false, error: "upstream", message: "Jamendo 拒绝了这次查询（代码 " + text(head.code, 8) + "）。", status: 502 };
+  }
+  return { ok: true, results: data.results };
+}
+
 export async function handle(request, env, ctx) {
   const config = env || {};
   const url = new URL(request.url);
@@ -245,36 +278,14 @@ export async function handle(request, env, ctx) {
   }
 
   const doFetch = config.fetchImpl || fetch;
-  let upstream;
-  try {
-    upstream = await doFetch(upstreamUrl(query, clientId), {
-      method: "GET",
-      redirect: "manual",
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(LIMITS.timeoutMs),
-    });
-  } catch (error) {
-    const timeout = error && (error.name === "TimeoutError" || error.name === "AbortError");
-    return failure(timeout ? "timeout" : "upstream", "Jamendo 暂时没有响应。", 502, origin, config);
+  let page = await fetchPage(doFetch, upstreamUrl(query, clientId, "tags"));
+  if (page.ok && !page.results.length && query.tag) {
+    const retry = await fetchPage(doFetch, upstreamUrl(query, clientId, "fuzzytags"));
+    if (retry.ok) page = retry;
   }
-  if (upstream.status === 429) {
-    return failure("rate_limited", "Jamendo 暂时限制了访问，请稍后再试。", 429, origin, config, { "Retry-After": "60" });
-  }
-  if (!upstream.ok) return failure("upstream", "Jamendo 暂时没有响应。", 502, origin, config);
+  if (!page.ok) return failure(page.error, page.message, page.status, origin, config, page.extra);
 
-  let data;
-  try {
-    data = await upstream.json();
-  } catch (error) {
-    return failure("upstream", "Jamendo 返回的内容读不了。", 502, origin, config);
-  }
-  const head = (data && data.headers) || {};
-  if (head.status !== "success" || !Array.isArray(data.results)) {
-    // Jamendo 把 client_id 无效等错误放在 200 正文里（code 非 0）。原文不外传，只留代码。
-    return failure("upstream", "Jamendo 拒绝了这次查询（代码 " + text(head.code, 8) + "）。", 502, origin, config);
-  }
-
-  const raw = data.results;
+  const raw = page.results;
   const tracks = raw.map(trimTrack).filter(Boolean);
   const body = {
     source: "Jamendo",
@@ -282,6 +293,7 @@ export async function handle(request, env, ctx) {
     updatedAt: new Date(nowMs(config)).toISOString(),
     frequency: "on-demand",
     status: tracks.length ? (tracks.length < raw.length ? "partial" : "ok") : "empty",
+    received: raw.length,
     tag: query.tag,
     order: query.order,
     q: query.q,
@@ -290,15 +302,17 @@ export async function handle(request, env, ctx) {
     hasMore: raw.length === LIMITS.pageSize && query.offset + LIMITS.pageSize <= LIMITS.maxOffset,
     tracks: tracks,
   };
+  // 空结果多半是 Jamendo 间歇落空，不进缓存，下一次请求重新问。
+  const cacheable = tracks.length > 0;
   const fresh = new Response(JSON.stringify(body), {
     status: 200,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=" + LIMITS.cacheSeconds,
+      "Cache-Control": cacheable ? "public, max-age=" + LIMITS.cacheSeconds : "no-store",
       "X-Ooglex-Jamendo-Cache": "miss",
     },
   });
-  if (cache) {
+  if (cache && cacheable) {
     const put = cache.put(key, fresh.clone()).catch(() => {});
     if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(put);
     else await put;
