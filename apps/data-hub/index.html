@@ -63,38 +63,40 @@ footer.foot { margin-top:40px; padding:20px 0 0; border-top:1px solid var(--line
   .mast .meta { color:var(--dim); font-size:.92rem; margin-top:8px; }
 
   /* ── 头条：整块随情绪着色 ── */
-  .hero { --hc:var(--fg-n); position:relative; display:block; text-decoration:none; border-radius:28px; overflow:hidden;
-    padding:30px 34px 26px; color:var(--ink);
+  .hero { --hc:var(--fg-n); position:relative; display:block; text-decoration:none; border-radius:24px; overflow:hidden;
+    padding:20px 26px 16px; color:var(--ink);
     background:linear-gradient(135deg, color-mix(in srgb, var(--hc) 22%, var(--sheet)) 0%, color-mix(in srgb, var(--hc) 8%, var(--sheet)) 60%, var(--sheet) 100%);
     box-shadow:var(--shadow-2); border:1px solid color-mix(in srgb, var(--hc) 30%, transparent); }
   .hero-top { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline; }
-  .hero-top b { font-size:1.05rem; font-weight:700; }
+  .hero-top b { font-size:1rem; font-weight:700; }
   .hero-top span { font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
-  .hero-main { display:grid; grid-template-columns:auto minmax(0,1fr); gap:20px 44px; align-items:end; margin-top:10px; }
-  .big { font-size:clamp(6rem,15vw,11rem); font-weight:750; line-height:.82; letter-spacing:-.06em; color:var(--hc); font-variant-numeric:tabular-nums; }
-  .zone { font-size:clamp(1.5rem,3vw,2.1rem); font-weight:750; color:var(--hc); margin-top:14px; }
-  .delta { font-size:.92rem; color:var(--dim); margin-top:4px; }
+  /* 一行三栏：读数与色带 | 近一年走势 | 七项分项 */
+  .hero-body { display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) minmax(0,1fr); gap:0 28px; margin-top:12px; }
+  .hero-body > * { min-width:0; }
+  .hero-body > * + * { padding-left:28px; border-left:1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+  .num { display:flex; align-items:flex-end; gap:14px; }
+  .big { font-size:4.6rem; font-weight:750; line-height:.8; letter-spacing:-.05em; color:var(--hc); font-variant-numeric:tabular-nums; }
+  .zone { font-size:1.45rem; font-weight:750; color:var(--hc); line-height:1.1; }
+  .delta { font-size:.8rem; color:var(--dim); margin-top:3px; line-height:1.4; }
   /* 色带：五档 + 现值与历史参照的刻度 */
-  .scale { position:relative; padding:52px 0 10px; }
-  .bands { display:flex; height:16px; border-radius:99px; overflow:hidden; gap:3px; }
+  .scale { position:relative; padding:20px 0 0; }
+  .bands { display:flex; height:10px; border-radius:99px; overflow:hidden; gap:3px; }
   .bands i { display:block; height:100%; }
   .bands i:first-child { border-radius:99px 0 0 99px; } .bands i:last-child { border-radius:0 99px 99px 0; }
-  .blab { display:flex; margin-top:8px; font-size:.74rem; color:var(--dim); }
+  .blab { display:flex; margin-top:6px; font-size:.66rem; color:var(--dim); white-space:nowrap; }
   .blab span { text-align:center; }
-  .pin { position:absolute; top:0; transform:translateX(-50%); text-align:center; }
-  .pin .tx { font-size:.82rem; font-weight:700; white-space:nowrap; background:var(--ink); color:var(--sheet); padding:3px 10px; border-radius:99px; }
-  .pin .st { width:2px; height:26px; background:var(--ink); margin:0 auto; }
-  .pin .dt { width:16px; height:16px; border-radius:50%; background:var(--hc); border:3px solid var(--ink); margin:-4px auto 0; }
-  .hero-foot { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:28px; margin-top:6px; padding-top:18px;
-    border-top:1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
-  .trend .hd { display:flex; justify-content:space-between; font-size:.78rem; color:var(--dim); margin-bottom:6px; }
-  .trend .box { height:86px; }
+  .pin { position:absolute; top:13px; transform:translateX(-50%); text-align:center; }
+  .pin .tx, .pin .st { display:none; }
+  .pin .dt { width:16px; height:16px; border-radius:50%; background:var(--hc); border:3px solid var(--ink); }
+  .trend .hd, .chips h3 { display:flex; justify-content:space-between; gap:8px; font-size:.76rem; color:var(--dim); font-weight:600; margin-bottom:6px; }
+  .trend .box { height:118px; }
+  .tnote { font-size:.66rem; color:var(--faint); margin-top:5px; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; }
   .chip { font-size:.8rem; padding:4px 10px; border-radius:99px; background:color-mix(in srgb, var(--sheet) 70%, transparent);
     border:1px solid var(--line); white-space:nowrap; }
   .chip b { font-variant-numeric:tabular-nums; margin-left:4px; }
   .chips h3 { width:100%; font-size:.78rem; color:var(--dim); font-weight:600; margin-bottom:2px; }
-  .hero .srcline { margin-top:14px; }
+  .hero .srcline { margin-top:12px; font-size:.68rem; }
 
   /* ── 风险三联：紧贴头条 ── */
   .trio { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:14px; }
@@ -127,15 +129,20 @@ footer.foot { margin-top:40px; padding:20px 0 0; border-top:1px solid var(--line
 
   @media (max-width:900px) {
     .trio { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .hero-main { grid-template-columns:1fr; gap:4px; }
-    .hero-foot { grid-template-columns:1fr; }
+    .hero-body { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px 24px; }
+    .hero-body > .read { grid-column:1 / -1; }
+    .hero-body > .trend { padding-left:0; border-left:0; }
     .grp { grid-template-columns:1fr; }
     .grp > h2 { margin-bottom:12px; }
     .grp > h2 small { display:inline; margin-left:8px; }
   }
   @media (max-width:640px) {
     .page { padding:12px 16px 56px; }
-    .hero { padding:22px 18px 20px; border-radius:22px; }
+    .hero { padding:16px 16px 14px; border-radius:20px; }
+    .hero-body { grid-template-columns:minmax(0,1fr); gap:16px; }
+    .hero-body > * + * { padding-left:0; border-left:0; padding-top:14px; border-top:1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+    .big { font-size:3.8rem; }
+    .trend .box { height:84px; }
     .trio { grid-template-columns:1fr; gap:10px; }
     .tri { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:2px 12px; padding:13px 16px; }
     .tri .v { margin-top:0; grid-row:1 / span 2; grid-column:2; justify-content:flex-end; }
@@ -156,13 +163,11 @@ footer.foot { margin-top:40px; padding:20px 0 0; border-top:1px solid var(--line
   .grp { border-top-width:3px; }
   /* 七项分项指标：条形图 */
   .chips { display:block; }
-  .chips h3 { margin-bottom:4px; }
-  .ind { display:grid; grid-template-columns:6.6em minmax(0,1fr) 2em; align-items:center; gap:12px; padding:4px 0; font-size:.88rem; }
-  .ind .bar { height:8px; border-radius:99px; background:color-mix(in srgb, var(--ink) 9%, transparent); position:relative; overflow:hidden; }
+  .ind { display:grid; grid-template-columns:6.4em minmax(0,1fr) 1.8em; align-items:center; gap:10px; padding:2px 0; font-size:.8rem; }
+  .ind .bar { height:6px; border-radius:99px; background:color-mix(in srgb, var(--ink) 9%, transparent); position:relative; overflow:hidden; }
   .ind .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:99px; }
   .ind .sc { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
   .ind .nm { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .trend .box { height:150px; }
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>
@@ -176,12 +181,13 @@ footer.foot { margin-top:40px; padding:20px 0 0; border-top:1px solid var(--line
 
   <a class="hero" id="hero" href="../fear-greed/" aria-label="打开恐慌与贪婪指数">
     <div class="hero-top"><b>恐慌与贪婪指数</b><span>CNN Fear &amp; Greed Index</span></div>
-    <div class="hero-main">
-      <div><div class="big" id="big">—</div><div class="zone" id="zone">加载中…</div><div class="delta" id="delta"></div></div>
-      <div class="scale" id="scale"></div>
-    </div>
-    <div class="hero-foot">
-      <div class="trend"><div class="hd"><span>近一年走势（阴影：极度恐惧 &lt;25 / 极度贪婪 ≥76）</span><span id="trRange"></span></div><div class="box" id="trend"></div></div>
+    <div class="hero-body">
+      <div class="read">
+        <div class="num"><div class="big" id="big">—</div><div><div class="zone" id="zone">加载中…</div><div class="delta" id="delta"></div></div></div>
+        <div class="scale" id="scale"></div>
+      </div>
+      <div class="trend"><div class="hd"><span>近一年走势</span><span id="trRange"></span></div><div class="box" id="trend"></div>
+        <div class="tnote">阴影：极度恐惧 &lt;25 / 极度贪婪 ≥76</div></div>
       <div class="chips" id="chips"></div>
     </div>
     <div class="srcline" id="fgSrc"></div>
@@ -191,7 +197,7 @@ footer.foot { margin-top:40px; padding:20px 0 0; border-top:1px solid var(--line
   <div class="wall" id="wall"></div>
   <footer class="foot" id="foot"></footer>
 </div>
-  <script src="app.js?v=20261027a"></script>
+  <script src="app.js?v=20261027b"></script>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
 

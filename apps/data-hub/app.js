@@ -238,9 +238,9 @@
     // 现值圆点画在色带上
     $("scale").querySelector(".pin").insertAdjacentHTML("beforeend", "<div class='dt'></div>");
     var h = d.history || [];
-    $("trend").innerHTML = K.spark(h, { w: 600, h: 150 });
+    $("trend").innerHTML = K.spark(h, { w: 600, h: 118 });
     if (h.length) $("trRange").textContent = h[0].t + " → " + h[h.length - 1].t;
-    $("chips").innerHTML = "<h3>七项分项指标（0 极度恐惧 · 100 极度贪婪）</h3>" + (d.indicators || []).map(function (i) {
+    $("chips").innerHTML = "<h3><span>七项分项指标</span><span>0 恐惧 · 100 贪婪</span></h3>" + (d.indicators || []).map(function (i) {
       return "<div class='ind' title='" + esc(i.desc) + "'><span class='nm'>" + esc(i.name) + "</span><span class='bar'><i style='width:" + i.score +
         "%;background:var(--fg-" + bk(i.score) + ")'></i></span><span class='sc t-" + bk(i.score) + "'>" + i.score + "</span></div>";
     }).join("");
