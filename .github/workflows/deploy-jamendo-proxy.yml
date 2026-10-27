@@ -1,0 +1,92 @@
+name: Deploy Jamendo proxy
+
+# 流光播放器「全球曲库」的 Jamendo 目录代理。合并到 main 且本目录有改动时部署，也可手动运行。
+# 需要：仓库里已在用的 CLOUDFLARE_API_TOKEN，以及新增的仓库 Secret JAMENDO_CLIENT_ID。
+# 不绑定自定义域名，不改 www 的解析，不新增付费服务。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/jamendo-proxy/**'
+      - '.github/workflows/deploy-jamendo-proxy.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-jamendo-proxy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check secrets
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLIENT_ID: ${{ secrets.JAMENDO_CLIENT_ID }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::未配置 CLOUDFLARE_API_TOKEN。与环球 TV、SEC 代理共用这枚令牌。"
+            exit 1
+          fi
+          if [ -z "$CLIENT_ID" ]; then
+            echo "::error::未配置 JAMENDO_CLIENT_ID。到仓库 Settings → Secrets and variables → Actions 添加（值取自 devportal.jamendo.com 的应用程序页），再重跑本工作流。"
+            exit 1
+          fi
+
+      - name: Test
+        working-directory: workers/jamendo-proxy
+        run: node --test worker.test.mjs
+
+      - name: Deploy Jamendo proxy Worker
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4"
+          workingDirectory: workers/jamendo-proxy
+          command: deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Store Jamendo client_id in the Worker secret
+        working-directory: workers/jamendo-proxy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          JAMENDO_CLIENT_ID: ${{ secrets.JAMENDO_CLIENT_ID }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$JAMENDO_CLIENT_ID" | npx --yes wrangler@4 secret put JAMENDO_CLIENT_ID --name ooglex-jamendo-proxy > /dev/null
+          echo "client_id 已写入 Worker Secret（不打印）。"
+
+      - name: Health check
+        env:
+          URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -u
+          if [ -z "$URL" ]; then
+            echo "::warning::wrangler 没有返回地址。请到 Cloudflare 控制台 Workers → ooglex-jamendo-proxy 查看 workers.dev 地址。"
+            exit 0
+          fi
+          URL="${URL%/}"
+          echo "接口地址：$URL"
+          echo "### Jamendo 代理已部署" >> "$GITHUB_STEP_SUMMARY"
+          echo "把这个地址填进 \`apps/music-player/data/global.json\` 的 \`api\`：\`$URL\`" >> "$GITHUB_STEP_SUMMARY"
+          sleep 5
+          curl -sS -m 15 -H 'Origin: https://www.ooglex.com' "$URL/health" || true
+          echo
+          code=$(curl -sS -m 15 -o /tmp/tracks.json -w '%{http_code}' -H 'Origin: https://www.ooglex.com' "$URL/tracks?tag=pop" || echo 000)
+          echo "/tracks?tag=pop → HTTP $code"
+          if [ "$code" = "200" ]; then
+            python3 -c "import json;d=json.load(open('/tmp/tracks.json'));print('status', d['status'], '曲目', len(d['tracks']))"
+          else
+            head -c 300 /tmp/tracks.json || true
+            echo "::warning::试查询没有成功。常见原因：Jamendo 账号还没激活，或 client_id 填错。"
+          fi
