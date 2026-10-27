@@ -62,17 +62,22 @@ function get(path, origin) {
 
 test("query params are validated and normalised", () => {
   const ok = (s) => parseQuery(new URLSearchParams(s));
-  assert.deepEqual(ok(""), { tag: "", order: "popular", offset: 0, q: "" });
-  assert.deepEqual(ok("tag=jazz&order=new&offset=40&q=%20moon%20"), { tag: "jazz", order: "new", offset: 40, q: "moon" });
+  assert.deepEqual(ok(""), { tag: "", order: "popular", offset: 0, q: "", id: "" });
+  assert.deepEqual(ok("tag=jazz&order=new&offset=40&q=%20moon%20"), { tag: "jazz", order: "new", offset: 40, q: "moon", id: "" });
+  assert.deepEqual(ok("id=1932670&tag=pop&q=x"), { tag: "", order: "popular", offset: 0, q: "", id: "1932670" });
   [
     "tag=Jazz", "tag=hip-hop", "tag=a", "tag=" + "x".repeat(17),
     "order=random", "order=popularity_week",
     "offset=-20", "offset=7", "offset=1000", "offset=1e2",
     "q=" + "x".repeat(41),
+    "id=0", "id=12a", "id=-5", "id=" + "9".repeat(13), "id=1%202",
   ].forEach((s) => assert.equal(ok(s), null, s));
 });
 
 test("upstream url carries the secret only server side and fixes page size", () => {
+  const single = new URL(upstreamUrl({ tag: "", order: "popular", offset: 0, q: "", id: "77" }, "abc"));
+  assert.equal(single.searchParams.get("id"), "77");
+  assert.equal(single.searchParams.has("tags"), false);
   const url = new URL(upstreamUrl({ tag: "world", order: "week", offset: 20, q: "" }, "abc"));
   assert.equal(url.origin + url.pathname, "https://api.jamendo.com/v3.0/tracks/");
   assert.equal(url.searchParams.get("client_id"), "abc");
@@ -228,4 +233,17 @@ test("received counts what Jamendo sent even when every track is filtered out", 
   const body = await res.json();
   assert.equal(body.status, "empty");
   assert.equal(body.received, 1);
+});
+
+test("single-track lookup by id is cached separately and does not retry", async () => {
+  const seen = [];
+  const e = env({ fetchImpl: async (url) => { seen.push(new URL(url).searchParams.get("id")); return upstreamOk([rawTrack(77)]); } });
+  const r = await (await handle(get("/tracks?id=77"), e)).json();
+  assert.equal(r.tracks.length, 1);
+  assert.equal(r.tracks[0].id, "77");
+  const r2 = await handle(get("/tracks?id=77"), e);
+  assert.equal(r2.headers.get("X-Ooglex-Jamendo-Cache"), "hit");
+  const other = await (await handle(get("/tracks"), e)).json();
+  assert.equal(other.tracks.length, 1);
+  assert.deepEqual(seen, ["77", null]);
 });

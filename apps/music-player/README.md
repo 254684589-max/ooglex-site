@@ -31,6 +31,14 @@
 - 读回时逐条校验，只认 `/apps/music-player/media/` 下的路径和 Jamendo、Creative Commons 的 https 地址
 - 本机草稿（`idb:`）里的曲目不能收藏
 
+## 分享
+
+正在播放歌名左侧的按钮打开分享面板：系统分享（`navigator.share`，不支持时隐藏）、复制链接、生成海报（canvas 1080×1440，可保存或分享图片）。聊天、社交类应用的内置浏览器里提示用右上角 ··· 菜单分享（页面文字不点名具体应用），并用 `history.replaceState` 把地址换成这首歌的链接。
+
+- 链接：本站专辑 `#/album/<专辑编号>/<曲目编号>`，全球曲库 `#/track/<Jamendo 编号>`（经 `jamendo-proxy` 的 `id` 参数查询）。打开时只摆好曲目，不自动播放
+- 海报二维码 `icons/qr-player.svg` 指向播放器首页。换地址时用 segno 重新生成：`segno.make(url, error="m").save(..., kind="svg", border=2)`，再补上 `viewBox` 与 `shape-rendering="crispEdges"`
+- 外站封面画不进 canvas（跨域）时退回默认图案
+
 ## 数据
 
 `data/catalog.json`：

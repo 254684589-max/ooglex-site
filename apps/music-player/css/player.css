@@ -228,6 +228,8 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
   min-height: 3.4em;
 }
 .now-text { grid-column: 2; min-width: 0; }
+#now-share { grid-column: 1; grid-row: 1; }
+#now-share[hidden] { display: none; }
 #now-fav { grid-column: 3; }
 #now-title {
   margin: 0;
@@ -670,6 +672,79 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
 .fav-head .hero-kicker { color: rgba(255, 220, 230, .9); }
 .fav-note { margin: 8px 0 0; color: rgba(255, 255, 255, .82); font-size: 13px; line-height: 1.65; max-width: 62ch; }
 @media (max-width: 599px) { .fav-head { padding: 18px; } }
+
+/* ---------- 分享 ---------- */
+.share-btn .ico { width: 20px; height: 20px; }
+.share-dlg {
+  width: min(460px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid var(--mp-line);
+  border-radius: 24px;
+  background: var(--mp-bg);
+  color: var(--mp-ink);
+  box-shadow: var(--mp-shadow);
+  overflow: auto;
+}
+.share-dlg::backdrop { background: rgba(4, 10, 14, .62); }
+.share-dlg[open]:not(:modal) { position: fixed; inset: 12px; margin: auto; z-index: 60; }
+.share-card { padding: 18px 18px 16px; }
+.share-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.share-top h2 { margin: 0; font-size: 19px; font-weight: 750; }
+.share-x {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--mp-surface);
+  font-size: 16px;
+}
+.share-song { margin: 6px 0 12px; color: var(--mp-dim); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-inapp {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(7, 193, 96, .14);
+  border: 1px solid rgba(7, 193, 96, .45);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.share-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.share-act {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--mp-line);
+  background: var(--mp-surface);
+  font-weight: 700;
+  font-size: 15px;
+  text-align: left;
+}
+.share-act:hover { background: var(--mp-surface-2); }
+.share-act small { font-weight: 400; font-size: 12px; color: var(--mp-dim); }
+.share-act[hidden] { display: none; }
+.share-url-label { display: block; margin: 14px 0 6px; color: var(--mp-dim); font-size: 12px; }
+.share-url {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--mp-line);
+  background: var(--mp-surface);
+  color: var(--mp-ink);
+  font-size: 13px;
+}
+.share-poster-box { margin-top: 14px; }
+.share-poster-box[hidden] { display: none; }
+.share-poster-box img { display: block; width: 100%; max-width: 300px; margin: 0 auto; border-radius: 14px; box-shadow: var(--mp-shadow-sm); }
+.share-poster-actions { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+.share-poster-actions [hidden] { display: none; }
+.share-status { min-height: 1.4em; margin: 12px 0 0; color: var(--mp-dim); font-size: 13px; line-height: 1.55; }
+.share-more { margin-top: 14px; text-decoration: none; }
 
 /* ---------- 全球曲库页 ---------- */
 .global-head {
