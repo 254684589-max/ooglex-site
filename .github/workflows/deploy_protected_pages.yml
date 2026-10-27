@@ -113,6 +113,21 @@ jobs:
             echo "::warning::Tech Leaders Android release not available; download page will show 'not yet published'."
           fi
 
+      - name: Add latest Music Player Android APK
+        # 安装包由 android-music-player.yml 发布到 GitHub Release；这里覆盖站内下载地址的同名文件。
+        # 取不到（尚未发布或网络失败）时保留仓库里提交的旧安装包，不影响网站部署。
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .site/apps/music-player/download
+          if gh release download music-player-android --repo "$GITHUB_REPOSITORY" \
+               --pattern 'ooglex-music.apk' --pattern 'ooglex-music.json' \
+               --dir .site/apps/music-player/download --clobber; then
+            ls -la .site/apps/music-player/download
+          else
+            echo "::warning::Music Player Android release not available; keeping the committed APK."
+          fi
+
       - name: Verify fundamentals are included in the public artifact
         run: cmp apps/companies/fundamentals.json .site/apps/companies/fundamentals.json
 

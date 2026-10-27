@@ -11,6 +11,14 @@
 
 ## [未发布]
 
+### 修改
+
+- 2026-10-27：流光播放器去掉页内音量条。它和播放进度条长得太像，而手机和电脑都能用系统音量键调节。按所有者要求，播控下方的静音与歌单两个按钮也一并去掉（歌单弹层随之移除），播放键下面只剩演示样例的署名说明；循环、上一首、播放、下一首、随机五键不变。以前存在本机的页内音量设置作废，避免调低过的人调不回来。
+
+### 新增
+
+- 2026-10-27：流光播放器安卓 App 有了源码工程 `android/music-player`，构建流程 `.github/workflows/android-music-player.yml` 与 `android/tech-leaders` 同一套。原安装包是 Capacitor 打包，桌面图标是 Capacitor 默认的蓝色「✕」占位图标；仓库里没有它的源码。新工程用系统 WebView 打开 `https://www.ooglex.com/apps/music-player/`，包名沿用 `com.ooglex.music001`，支持 Android 5.1+。桌面图标换成下载页上的音符图标：由 `android/music-player/tools/make_icons.mjs` 从 `apps/music-player/icons/icon.svg` 生成传统、圆形、自适应三种 PNG。切到后台不暂停 WebView，息屏后音乐继续播放。main 上构建后发布到 GitHub Release `music-player-android`，网站部署时覆盖 `apps/music-player/download/ooglex-music.apk`（下载地址不变）；Release 取不到时保留仓库里的旧安装包。下载页的版本、大小、签名改为读取随包发布的 `ooglex-music.json`，并提示装过旧版的要先卸载（签名不同）。签名沿用仓库的 `ANDROID_KEYSTORE_*` Secrets；未配置时为调试签名。
+
 ### 修复
 
 - 2026-10-27：全球曲库在中国大陆不开 VPN 时显示「Jamendo 响应超时」，原因是查询接口的 `workers.dev` 域名在大陆打不开。所有者在大陆实测 Jamendo 的音频（`prod-1.storage.jamendo.com`）和封面（`usercontent.jamendo.com`）都能直接访问，所以只需更换查询接口的地址，不做音频中转。经所有者同意，`workers/jamendo-proxy` 绑定自定义域名 `music-api.ooglex.com`（`[[routes]] custom_domain`，与 `sec-facts.ooglex.com` 同一做法，部署时由 wrangler 在现有 Cloudflare 区内创建）。`global.json` 的 `api` 改为该域名，新增 `apiFallback`（原 workers.dev 地址）。播放器先试主地址，连不上或 8 秒超时再试备用地址，之后本页优先用成功过的那个；接口给出的 HTTP 错误照常显示，不换地址。部署工作流同时检查自定义域名，最多等约 3 分钟证书生效。未改 www 解析或其他生产配置。

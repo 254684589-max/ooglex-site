@@ -20,7 +20,6 @@
   --mp-chip-on: #e0c36a;
   --mp-chip-on-ink: #1c1608;
   --mp-track: rgba(255, 255, 255, .16);
-  --mp-vol: rgba(255, 255, 255, .72);
   --mp-shadow: 0 24px 60px rgba(0, 0, 0, .38);
   --mp-shadow-sm: 0 10px 26px rgba(0, 0, 0, .32);
   --mp-ambient: .34;
@@ -42,7 +41,6 @@ html[data-theme="paper"] {
   --mp-chip-on: #18140f;
   --mp-chip-on-ink: #ffffff;
   --mp-track: rgba(26, 22, 19, .14);
-  --mp-vol: rgba(26, 22, 19, .6);
   --mp-shadow: 0 24px 60px rgba(60, 40, 20, .12);
   --mp-shadow-sm: 0 10px 24px rgba(60, 40, 20, .12);
   --mp-ambient: .22;
@@ -241,7 +239,7 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
   width: min(100%, 320px);
   margin: 8px auto 0;
 }
-.transport button, #mute, #queue-btn {
+.transport button {
   width: 44px;
   height: 44px;
   flex: 0 0 44px;
@@ -256,8 +254,7 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
   touch-action: manipulation;
   transition: background-color .15s, opacity .15s;
 }
-.transport button:hover, #mute:hover, #queue-btn:hover { opacity: 1; background: var(--mp-hover); }
-#queue-btn[aria-expanded="true"] { color: var(--mp-accent-text); opacity: 1; }
+.transport button:hover { opacity: 1; background: var(--mp-hover); }
 .transport button.is-on { color: var(--mp-accent-text); opacity: 1; }
 #play {
   width: 68px;
@@ -272,18 +269,6 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
 #play[aria-label="播放"] .ico { transform: translateX(2px); }
 .ico { width: 22px; height: 22px; display: block; }
 #play .ico { width: 28px; height: 28px; }
-/* 音量行：细、中性色、两端是静音与歌单，和金色的播放进度一眼区分。 */
-.volume-wrap { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
-.volume-wrap input[type="range"] { flex: 1; width: auto; }
-#mute .ico, #queue-btn .ico { width: 20px; height: 20px; }
-#volume::-webkit-slider-runnable-track {
-  height: 3px;
-  background: linear-gradient(90deg, var(--mp-vol) var(--p, 0%), var(--mp-track) var(--p, 0%));
-}
-#volume::-webkit-slider-thumb { width: 12px; height: 12px; margin-top: -4.5px; background: var(--mp-vol); box-shadow: none; }
-#volume::-moz-range-track { height: 3px; }
-#volume::-moz-range-progress { height: 3px; background: var(--mp-vol); }
-#volume::-moz-range-thumb { width: 12px; height: 12px; background: var(--mp-vol); }
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -316,7 +301,7 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-moz-range-track { height: 4px; border-radius: 999px; background: var(--mp-track); }
 input[type="range"]::-moz-range-progress { height: 4px; border-radius: 999px; background: var(--mp-accent); }
 input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--mp-accent); }
-#notice[hidden], #queue-pop[hidden] { display: none; }
+#notice[hidden] { display: none; }
 #notice {
   margin: 8px 0 0;
   padding: 8px 12px;
@@ -326,18 +311,6 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
   font-size: 13px;
   line-height: 1.5;
 }
-.queue-pop {
-  margin: 8px 0 0;
-  max-height: min(42vh, 320px);
-  overflow: auto;
-  border-radius: 18px;
-  background: var(--mp-glass);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--mp-line);
-  padding: 10px 12px 12px;
-}
-.queue-title { margin: 0 0 8px; font-weight: 700; }
 .fineprint, .fine { color: var(--mp-dim); font-size: 12px; line-height: 1.6; }
 .fineprint { margin: 8px 0 0; }
 .fineprint summary, .fine summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
@@ -530,8 +503,8 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
 }
 
 /* ---------- 曲目行 ---------- */
-.tracks, .queue-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.track, .queue-item {
+.tracks { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.track {
   width: 100%;
   text-align: left;
   display: grid;
@@ -546,11 +519,10 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
   touch-action: manipulation;
   transition: background-color .15s;
 }
-.track:hover, .queue-item:hover { background: var(--mp-hover); }
+.track:hover { background: var(--mp-hover); }
 .track.has-thumb { grid-template-columns: 30px 46px minmax(0, 1fr) auto auto; }
-.queue-item { grid-template-columns: 1fr; min-height: 44px; padding: 6px 10px; }
 .track .titles { display: flex; flex-direction: column; min-width: 0; }
-.t-title, .queue-item { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .t-title { font-weight: 650; font-size: 15px; }
 .t-artist { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .idx, .t-time, .flag { color: var(--mp-faint); font-variant-numeric: tabular-nums; font-size: 13px; }
@@ -570,7 +542,7 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
   box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
 }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.track.is-current, .queue-item.is-current { background: var(--mp-accent-soft); border-color: rgba(224, 195, 106, .28); }
+.track.is-current { background: var(--mp-accent-soft); border-color: rgba(224, 195, 106, .28); }
 .track.is-current .t-title { color: var(--mp-accent-text); }
 .track.is-current .flag { color: var(--mp-accent-text); }
 .track.is-current .idx .num { display: none; }
@@ -774,7 +746,7 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
   #now-title { font-size: 20px; }
   #play { width: 60px; height: 60px; flex-basis: 60px; }
   .transport { grid-template-columns: repeat(2, 40px) 60px repeat(2, 40px); }
-  .transport button, #mute, #queue-btn { width: 40px; flex-basis: 40px; }
+  .transport button { width: 40px; flex-basis: 40px; }
   .track { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; }
   .track.has-thumb { grid-template-columns: 24px 42px minmax(0, 1fr) auto; }
   .track .flag { display: none; }
