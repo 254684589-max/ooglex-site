@@ -35,7 +35,8 @@
       hasMore: false,
       seq: 0
     },
-    globalAlbums: {}
+    globalAlbums: {},
+    favs: []
   };
 
   function $(id) { return document.getElementById(id); }
@@ -89,6 +90,12 @@
         t.textContent = "1";
         svg.appendChild(t);
       }
+    }
+    else if (name === "heart") {
+      stroke("M12 20.2s-7.4-4.5-9.4-9C1.2 8 2.9 4.6 6.4 4.6c2 0 3.3 1.1 4.2 2.3.7.9 2 .9 2.7 0 .9-1.2 2.2-2.3 4.2-2.3 3.5 0 5.2 3.4 3.8 6.6-2 4.5-9.3 9-9.3 9z");
+    }
+    else if (name === "heart-fill") {
+      path("M12 20.2s-7.4-4.5-9.4-9C1.2 8 2.9 4.6 6.4 4.6c2 0 3.3 1.1 4.2 2.3.7.9 2 .9 2.7 0 .9-1.2 2.2-2.3 4.2-2.3 3.5 0 5.2 3.4 3.8 6.6-2 4.5-9.3 9-9.3 9z");
     }
     else if (name === "shuffle") {
       stroke("M16 3h5v5");
@@ -157,6 +164,7 @@
     var match = /^#\/album\/([a-z0-9][a-z0-9-]{0,48})$/.exec(hash);
     if (match) return { name: "album", id: match[1] };
     if (hash === "#/global") return { name: "global" };
+    if (hash === "#/favorites") return { name: "favorites" };
     return { name: "list" };
   }
 
@@ -213,6 +221,20 @@
       hero.appendChild(quick);
     }
     view.appendChild(hero);
+    var favEntry = h("a", "fav-entry");
+    favEntry.href = "#/favorites";
+    var favIco = h("span", "fav-entry-ico");
+    favIco.setAttribute("aria-hidden", "true");
+    favIco.appendChild(icon("heart-fill"));
+    favEntry.appendChild(favIco);
+    var favText = h("span", "fav-entry-text");
+    favText.appendChild(h("span", "fav-entry-title", "我的收藏"));
+    favText.appendChild(h("span", "fav-entry-sub", state.favs.length
+      ? state.favs.length + " 首 · 保存在这台设备的浏览器里"
+      : "还没有收藏。点歌曲右侧的 ♡ 即可收藏"));
+    favEntry.appendChild(favText);
+    favEntry.appendChild(h("span", "fav-entry-go", "→"));
+    view.appendChild(favEntry);
     var head = h("div", "section-head");
     head.appendChild(h("h2", "section-title", "本站专辑"));
     head.appendChild(h("span", "section-count", visibleAlbums().length + " 张"));
@@ -292,7 +314,7 @@
     }
     var list = h("ol", "tracks");
     (album.tracks || []).forEach(function (track, index) {
-      var li = h("li");
+      var li = h("li", "row");
       var btn = h("button", "track");
       btn.type = "button";
       btn.dataset.album = album.id;
@@ -310,6 +332,8 @@
       btn.appendChild(time);
       btn.addEventListener("click", function () { onTrackClick(album, index); });
       li.appendChild(btn);
+      var heart = favButton(album, track);
+      if (heart) li.appendChild(heart);
       list.appendChild(li);
     });
     if (!(album.tracks || []).length) layout.appendChild(h("p", "empty", "这张专辑还没有曲目。"));
@@ -708,6 +732,8 @@
         links.appendChild(pill(licenseName(track.license), track.license));
         if (track.page) links.appendChild(pill("Jamendo ↗", track.page, "is-src"));
         li.appendChild(links);
+        var heart = favButton(album, track);
+        if (heart) li.appendChild(heart);
         list.appendChild(li);
       });
       view.appendChild(list);
@@ -722,6 +748,213 @@
     }
   }
 
+
+  /* ---------------- 收藏：存在这台设备的浏览器（localStorage），不需要登录，也不跨设备同步 ---------------- */
+
+  var FAV_STORE = "ooglex.music-player.favorites";
+  var FAV_MAX = 500;
+  var FAV_KEY_RE = /^(?:j:\d{1,20}|l:[a-z0-9][a-z0-9-]{0,48}:[A-Za-z0-9_.-]{1,80})$/;
+
+  // 本站媒体用站内路径，全球曲库只认 Jamendo 的 https 地址；本机草稿（idb:）不能收藏。
+  function favMediaUrl(value) {
+    var u = String(value || "");
+    if (/^\/apps\/music-player\/media\/[A-Za-z0-9._\/-]+$/.test(u) && u.indexOf("..") < 0) return u;
+    return safeUrl(u, ["jamendo.com"]);
+  }
+
+  function favKey(album, track) {
+    if (!track) return "";
+    if (track.favKey) return track.favKey;
+    if (track.source === "Jamendo") return "j:" + String(track.id).replace(/^j/, "");
+    return album && album.id ? "l:" + album.id + ":" + track.id : "";
+  }
+
+  // 收藏时把歌名、封面、播放地址和署名一起记下，之后在收藏页直接能播，不用重新查询。
+  function favRecord(album, track) {
+    var key = favKey(album, track);
+    var src = favMediaUrl(track && track.src);
+    if (!FAV_KEY_RE.test(key) || !src) return null;
+    var local = !album || !album.global;
+    var dur = Number(track.durationSec);
+    return {
+      key: key,
+      title: String(track.title || "未命名").slice(0, 120),
+      artist: String(track.favKey ? track.artist : artistOf(track, album)).slice(0, 80),
+      album: String(track.favKey ? (track.album || "") : (track.album || (local && album ? album.title : "") || "")).slice(0, 120),
+      src: src,
+      image: favMediaUrl(track.image || (local && album && !track.favKey ? album.cover : "")),
+      durationSec: isFinite(dur) && dur > 0 ? Math.round(dur) : 0,
+      source: track.source === "Jamendo" ? "Jamendo" : "",
+      license: safeUrl(track.license || (local && album ? album.licenseUrl : ""), ["creativecommons.org"]),
+      licenseName: String(track.licenseName || (local && album && !track.license ? album.license || "" : "")).slice(0, 40),
+      page: safeUrl(track.page, ["jamendo.com"]),
+      addedAt: String(track.addedAt || new Date().toISOString()).slice(0, 30)
+    };
+  }
+
+  function loadFavs() {
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(FAV_STORE) || "[]"); } catch (err) { raw = null; }
+    if (!Array.isArray(raw)) return [];
+    var seen = {};
+    var out = [];
+    raw.forEach(function (r) {
+      if (!r || typeof r !== "object" || seen[r.key]) return;
+      var clean = favRecord(null, Object.assign({}, r, { favKey: String(r.key || "") }));
+      if (!clean) return;
+      seen[clean.key] = true;
+      out.push(clean);
+    });
+    return out.slice(0, FAV_MAX);
+  }
+
+  function saveFavs() {
+    try {
+      localStorage.setItem(FAV_STORE, JSON.stringify(state.favs));
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function isFav(key) {
+    for (var i = 0; i < state.favs.length; i++) if (state.favs[i].key === key) return true;
+    return false;
+  }
+
+  function toggleFav(album, track) {
+    var rec = favRecord(album, track);
+    if (!rec) return;
+    var was = isFav(rec.key);
+    if (was) state.favs = state.favs.filter(function (r) { return r.key !== rec.key; });
+    else state.favs = [rec].concat(state.favs).slice(0, FAV_MAX);
+    if (!saveFavs()) setNotice("这台浏览器不允许保存收藏（可能是无痕模式），刷新后会丢失。");
+    announce(was ? "已取消收藏 " + rec.title : "已收藏 " + rec.title);
+    var route = parseRoute().name;
+    if (route === "favorites" || route === "list") {
+      // 重绘后把焦点还给同一首歌的心形按钮
+      var active = document.activeElement;
+      var keep = active && active.dataset ? active.dataset.favKey : "";
+      skipAlbumScroll = true;
+      renderView();
+      var again = keep && view.querySelector('.fav-btn[data-fav-key="' + keep.replace(/"/g, "") + '"]');
+      if (again) try { again.focus({ preventScroll: true }); } catch (err) { again.focus(); }
+    }
+    paintFavButtons();
+  }
+
+  function paintHeart(btn, on, title) {
+    btn.textContent = "";
+    btn.appendChild(icon(on ? "heart-fill" : "heart"));
+    btn.classList.toggle("is-on", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", (on ? "取消收藏 " : "收藏 ") + (title || ""));
+  }
+
+  function favButton(album, track) {
+    var rec = favRecord(album, track);
+    if (!rec) return null;
+    var btn = h("button", "fav-btn");
+    btn.type = "button";
+    btn.dataset.favKey = rec.key;
+    paintHeart(btn, isFav(rec.key), rec.title);
+    btn.addEventListener("click", function () { toggleFav(album, track); });
+    return btn;
+  }
+
+  function paintFavButtons() {
+    document.querySelectorAll(".fav-btn[data-fav-key]").forEach(function (btn) {
+      var on = isFav(btn.dataset.favKey);
+      if (btn.classList.contains("is-on") !== on) paintHeart(btn, on, (btn.getAttribute("aria-label") || "").replace(/^(取消收藏|收藏) /, ""));
+    });
+    var track = currentTrack();
+    paintNowFav(track, currentAlbum());
+  }
+
+  function paintNowFav(track, album) {
+    var btn = $("now-fav");
+    if (!btn) return;
+    var rec = track ? favRecord(album, track) : null;
+    btn.hidden = !rec;
+    if (rec) paintHeart(btn, isFav(rec.key), rec.title);
+  }
+
+  // 播放收藏时用当时的一份快照；播放中取消收藏不会打断正在放的这首。
+  function favoritesAlbum() {
+    var album = {
+      id: "favorites",
+      title: "我的收藏",
+      artist: "多位艺人",
+      global: true,
+      tracks: state.favs.map(function (r) { return Object.assign({}, r, { id: r.key, favKey: r.key }); })
+    };
+    state.globalAlbums.favorites = album;
+    return album;
+  }
+
+  function playFavorite(index) {
+    var rec = state.favs[index];
+    var cur = currentTrack();
+    if (rec && cur && state.playingAlbumId === "favorites" && cur.id === rec.key && audio.src) {
+      toggle();
+      return;
+    }
+    playIndex(favoritesAlbum(), index);
+  }
+
+  function renderFavorites() {
+    var back = h("a", "text-link", "← 全部专辑");
+    back.href = "#/";
+    view.appendChild(back);
+    var head = h("div", "fav-head");
+    head.appendChild(h("p", "hero-kicker", "FAVORITES"));
+    head.appendChild(h("h2", "global-title", "我的收藏"));
+    head.appendChild(h("p", "fav-note", state.favs.length
+      ? state.favs.length + " 首。收藏保存在这台设备的浏览器里，换手机或换浏览器不会同步，清除浏览器数据会一并清除。"
+      : "还没有收藏。在专辑或全球曲库里点歌曲右侧的 ♡，或点正在播放歌名旁的 ♡。收藏只保存在这台设备的浏览器里。"));
+    if (state.favs.length) {
+      var all = h("button", "play-all");
+      all.type = "button";
+      all.appendChild(icon("play"));
+      all.appendChild(document.createTextNode(state.favs.length > 1 ? "播放全部" : "播放"));
+      all.addEventListener("click", function () { playIndex(favoritesAlbum(), 0); });
+      head.appendChild(all);
+    }
+    view.appendChild(head);
+    if (!state.favs.length) return;
+    var list = h("ol", "tracks global-tracks");
+    state.favs.forEach(function (rec, index) {
+      var li = h("li", "row");
+      var btn = h("button", "track has-thumb");
+      btn.type = "button";
+      btn.dataset.album = "favorites";
+      btn.dataset.id = rec.key;
+      btn.dataset.index = String(index);
+      btn.appendChild(leadNode(index));
+      btn.appendChild(thumbNode(rec.image, rec.title));
+      var titles = h("span", "titles");
+      titles.appendChild(h("span", "t-title", rec.title));
+      titles.appendChild(h("span", "t-artist", rec.artist + (rec.album && rec.album !== rec.title ? " · " + rec.album : "")));
+      btn.appendChild(titles);
+      btn.appendChild(h("span", "flag", ""));
+      btn.appendChild(h("span", "t-time", rec.durationSec ? fmt(rec.durationSec) : ""));
+      btn.addEventListener("click", function () { playFavorite(index); });
+      li.appendChild(btn);
+      var links = h("p", "t-links");
+      if (rec.license) links.appendChild(pill(rec.licenseName || licenseName(rec.license), rec.license));
+      if (rec.page) links.appendChild(pill("Jamendo ↗", rec.page, "is-src"));
+      li.appendChild(links);
+      var heart = h("button", "fav-btn");
+      heart.type = "button";
+      heart.dataset.favKey = rec.key;
+      paintHeart(heart, true, rec.title);
+      heart.addEventListener("click", function () { toggleFav(null, Object.assign({}, rec, { favKey: rec.key })); });
+      li.appendChild(heart);
+      list.appendChild(li);
+    });
+    view.appendChild(list);
+  }
+
   var skipAlbumScroll = true;
 
   function reduceMotion() {
@@ -734,8 +967,9 @@
     var route = parseRoute();
     state.viewAlbumId = route.name === "album" ? route.id : "";
     view.textContent = "";
-    if (route.name === "global") {
-      renderGlobal();
+    if (route.name === "global" || route.name === "favorites") {
+      if (route.name === "global") renderGlobal();
+      else renderFavorites();
       paintCurrent();
       scrollToView(route);
       return;
@@ -765,7 +999,7 @@
   }
 
   function scrollToView(route) {
-    if (!skipAlbumScroll && (route.name === "album" || route.name === "global")) {
+    if (!skipAlbumScroll && route.name !== "list") {
       requestAnimationFrame(function () {
         view.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
       });
@@ -823,6 +1057,7 @@
     var playing = !!(audio && !audio.paused && audio.src);
     if (art) art.classList.toggle("is-spinning", playing);
     paintAmbient(artFrom && artFrom.cover);
+    paintNowFav(track, album);
     paintMini(track, album, artFrom, playing);
     if (play) {
       play.textContent = "";
@@ -1180,8 +1415,14 @@
       state.shuffle = localStorage.getItem("ooglex.music-player.shuffle") === "1";
     } catch (err) { /* 本机存储不可用时用默认设置 */ }
     audio.volume = state.volume;
+    state.favs = loadFavs();
     bindTransport();
     bindMini();
+    var nowFav = $("now-fav");
+    if (nowFav) nowFav.addEventListener("click", function () {
+      var track = currentTrack();
+      if (track) toggleFav(currentAlbum(), track);
+    });
     paintTransport();
     window.addEventListener("hashchange", onRoute);
     load();

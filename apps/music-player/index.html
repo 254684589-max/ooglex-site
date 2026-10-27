@@ -15,13 +15,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07141c">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
-<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027f">
+<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027g">
 <script>
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
 </script>
 <script src="/assets/theme.js?v=20260926k" defer></script>
 <script src="/apps/music-player/js/store.js?v=20261025b" defer></script>
-<script src="/apps/music-player/js/player.js?v=20261027f" defer></script>
+<script src="/apps/music-player/js/player.js?v=20261027g" defer></script>
 </head>
 <body>
   <div id="ambient" class="ambient" aria-hidden="true"></div>
@@ -43,8 +43,11 @@
         <span id="time-end" class="time">0:00</span>
       </div>
       <div class="now-copy">
-        <p id="now-title">尚未选择曲目</p>
-        <p id="now-artist">从专辑里点一首</p>
+        <div class="now-text">
+          <p id="now-title">尚未选择曲目</p>
+          <p id="now-artist">从专辑里点一首</p>
+        </div>
+        <button type="button" id="now-fav" class="fav-btn" aria-pressed="false" aria-label="收藏" hidden></button>
       </div>
       <div class="transport">
         <button type="button" id="repeat" aria-label="循环：关" aria-pressed="false"></button>
