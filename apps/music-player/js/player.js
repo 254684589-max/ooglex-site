@@ -481,6 +481,8 @@
     g.hasMore = album.hasMore;
     g.updatedAt = album.updatedAt;
     g.status = album.tracks.length ? "ok" : "empty";
+    // Jamendo 偶尔对有曲目的曲风也回 0 条；空结果不留在本页缓存，再点一次会重新查询。
+    if (!album.tracks.length) delete state.globalAlbums[key];
     rerenderGlobal();
   }
 
@@ -584,7 +586,7 @@
     status.setAttribute("role", "status");
     if (g.status === "loading" || g.status === "idle") status.textContent = "正在从 Jamendo 读取曲目…";
     else if (g.status === "error") { status.className += " is-error"; status.textContent = "⚠ " + g.message; }
-    else if (g.status === "empty") status.textContent = g.q ? "没有找到「" + g.q + "」相关的曲目。" : "这个曲风暂时没有曲目。";
+    else if (g.status === "empty") status.textContent = g.q ? "没有找到「" + g.q + "」相关的曲目。" : "这次没有取到曲目。Jamendo 偶尔会返回空结果，可以再试一次或换个曲风。";
     else {
       var bits = ["来源 Jamendo"];
       if (album) bits.push(album.tracks.length + " 首");
@@ -597,8 +599,8 @@
       }
     }
     view.appendChild(status);
-    if (g.status === "error") {
-      var retry = h("button", "text-btn", "重试");
+    if (g.status === "error" || g.status === "empty") {
+      var retry = h("button", "text-btn", g.status === "empty" ? "再试一次" : "重试");
       retry.type = "button";
       retry.addEventListener("click", function () { fetchGlobal(false); });
       view.appendChild(retry);

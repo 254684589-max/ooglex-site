@@ -180,3 +180,52 @@ test("routing, methods and origins are enforced", async () => {
   const health = await (await handle(get("/health"), env())).json();
   assert.deepEqual(health, { ok: true, proxy: "jamendo", configured: true });
 });
+
+test("an empty tag query retries once with fuzzytags", async () => {
+  const seen = [];
+  const res = await handle(get("/tracks?tag=hiphop"), env({
+    fetchImpl: async (url) => {
+      const u = new URL(url);
+      seen.push(u.searchParams.has("tags") ? "tags" : u.searchParams.has("fuzzytags") ? "fuzzytags" : "none");
+      return upstreamOk(u.searchParams.has("fuzzytags") ? [rawTrack(1), rawTrack(2)] : []);
+    },
+  }));
+  const body = await res.json();
+  assert.deepEqual(seen, ["tags", "fuzzytags"]);
+  assert.equal(body.status, "ok");
+  assert.equal(body.tracks.length, 2);
+  assert.equal(body.received, 2);
+});
+
+test("a query without a tag does not retry", async () => {
+  let calls = 0;
+  await handle(get("/tracks?q=zzzz"), env({ fetchImpl: async () => { calls++; return upstreamOk([]); } }));
+  assert.equal(calls, 1);
+});
+
+test("a failed retry keeps the first (empty) answer instead of erroring", async () => {
+  let n = 0;
+  const res = await handle(get("/tracks?tag=jazz"), env({
+    fetchImpl: async () => (++n === 1 ? upstreamOk([]) : new Response("", { status: 500 })),
+  }));
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).status, "empty");
+});
+
+test("empty results are never cached, so a flaky empty answer does not stick", async () => {
+  let n = 0;
+  const e = env({ fetchImpl: async () => (++n <= 2 ? upstreamOk([]) : upstreamOk([rawTrack(5)])) });
+  const r1 = await handle(get("/tracks?tag=world"), e);
+  assert.equal(r1.headers.get("Cache-Control"), "no-store");
+  assert.equal((await r1.json()).status, "empty");
+  const r2 = await handle(get("/tracks?tag=world"), e);
+  assert.equal(r2.headers.get("X-Ooglex-Jamendo-Cache"), "miss");
+  assert.equal((await r2.json()).tracks.length, 1);
+});
+
+test("received counts what Jamendo sent even when every track is filtered out", async () => {
+  const res = await handle(get("/tracks"), env({ fetchImpl: async () => upstreamOk([rawTrack(1, { audio: "" })]) }));
+  const body = await res.json();
+  assert.equal(body.status, "empty");
+  assert.equal(body.received, 1);
+});

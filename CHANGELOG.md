@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-10-27：全球曲库首次部署后，试查「流行」得到 0 首。在 GitHub Actions 上直接探测 Jamendo 发现，`tags` 与 `fuzzytags` 两种曲风参数会各自间歇性返回 0 条，同一查询隔一分钟结果就不同；而且 Worker 原先会把空结果缓存 30 分钟。`workers/jamendo-proxy` 改为：曲风查询返回空时换另一种参数重问一次；空结果不进边缘缓存；返回 `received`（Jamendo 实际给出的条数）以便区分上游空和被过滤。播放器空结果不再留在本页缓存，并提供「再试一次」按钮。部署工作流增加「只探测、不部署」模式和探测步骤（只打印条数与域名，不打印 client_id），健康检查最多等约 90 秒，等新的 workers.dev 地址生效。
+
 ### 新增
 
 - 2026-10-27：流光播放器（`/apps/music-player/`）增加「全球曲库」（`#/global`）。按 20 种曲风（流行、摇滚、电子、嘻哈、爵士、古典、拉丁、世界音乐等）、排序（近一月热门／本周热门／最新发布）或关键词，点播 Jamendo 上独立音乐人以 Creative Commons 许可发布的作品，每页 20 首，可加载更多。本站不存音频，浏览器直接从 Jamendo 播放；逐首显示许可（如 CC BY-NC-SA 3.0）并链接到许可文本与 Jamendo 曲目页；页面写明这里没有主流唱片公司的热门歌。新增 `workers/jamendo-proxy/`（只读查询 `/tracks`，client_id 走 Cloudflare Secret，来源白名单、每 IP 限频、8 秒超时、30 分钟边缘缓存、只放行 jamendo.com 与 creativecommons.org 的 https 地址），附 `node --test` 测试。新增 `.github/workflows/deploy-jamendo-proxy.yml`：合并到 main 或手动运行时先测试再部署，从仓库 Secret `JAMENDO_CLIENT_ID` 写入 Worker Secret，并试查一次。配置 `apps/music-player/data/global.json` 的 `api` 暂为空，页面显示「尚未开通」且不发请求；站长部署 Worker 后填入地址即开通。本站原创专辑、站长发行流程、APK 未改。**经所有者同意 squash 合入 main：页面由既有「Deploy Protected Ooglex Pages」发布；Worker 由新增「Deploy Jamendo proxy」部署（client_id 来自所有者添加的仓库 Secret `JAMENDO_CLIENT_ID`）。合并时 `global.json` 的 `api` 仍为空，全球曲库要等填入接口地址后才开通。** 未改域名、Worker 路由或其他生产配置。

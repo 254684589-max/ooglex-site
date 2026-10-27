@@ -58,12 +58,10 @@ jobs:
           import json, os, urllib.parse, urllib.request
           cid = os.environ["JAMENDO_CLIENT_ID"].strip()
           base = "https://api.jamendo.com/v3.0/tracks/"
+          # 2026-10-27 实测：tags 与 fuzzytags 会各自间歇性返回 0 条，Worker 因此落空时换参数重试。
           variants = [("all", {})]
-          for g in ["pop", "jazz", "hiphop", "world", "rnb", "lounge"]:
+          for g in ["pop", "jazz", "world"]:
               variants += [("tags=" + g, {"tags": g}), ("fuzzytags=" + g, {"fuzzytags": g})]
-          variants += [("tags=pop+musicinfo", {"tags": "pop", "include": "licenses musicinfo"}),
-                       ("fuzzytags=pop+week", {"fuzzytags": "pop", "order": "popularity_week"}),
-                       ("fuzzytags=pop+new", {"fuzzytags": "pop", "order": "releasedate_desc"})]
           for label, extra in variants:
               q = {"client_id": cid, "format": "json", "limit": "3", "order": "popularity_month",
                    "audioformat": "mp32", "imagesize": "200", "include": "licenses"}
@@ -124,9 +122,13 @@ jobs:
           echo "接口地址：$URL"
           echo "### Jamendo 代理已部署" >> "$GITHUB_STEP_SUMMARY"
           echo "把这个地址填进 \`apps/music-player/data/global.json\` 的 \`api\`：\`$URL\`" >> "$GITHUB_STEP_SUMMARY"
-          sleep 5
-          curl -sS -m 15 -H 'Origin: https://www.ooglex.com' "$URL/health" || true
-          echo
+          # 新建的 workers.dev 地址要几十秒才生效（期间 Cloudflare 回 error code 1042），最多等约 90 秒。
+          for i in $(seq 1 18); do
+            if curl -sS -m 10 -H 'Origin: https://www.ooglex.com' "$URL/health" | grep -q '"configured":true'; then
+              echo "/health 正常（第 $i 次）"; break
+            fi
+            sleep 5
+          done
           code=$(curl -sS -m 15 -o /tmp/tracks.json -w '%{http_code}' -H 'Origin: https://www.ooglex.com' "$URL/tracks?tag=pop" || echo 000)
           echo "/tracks?tag=pop → HTTP $code"
           if [ "$code" = "200" ]; then
