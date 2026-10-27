@@ -15,7 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07141c">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
-<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027c">
+<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027d">
 <script>
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
 </script>
@@ -47,7 +47,6 @@
         <p id="now-artist">从专辑里点一首</p>
       </div>
       <div class="transport">
-        <button type="button" id="queue-btn" aria-label="歌单" aria-expanded="false" aria-controls="queue-pop"></button>
         <button type="button" id="repeat" aria-label="循环：关" aria-pressed="false"></button>
         <button type="button" id="prev" aria-label="上一首"></button>
         <button type="button" id="play" aria-label="播放" aria-pressed="false"></button>
@@ -57,6 +56,7 @@
       <div class="volume-wrap">
         <button type="button" id="mute" aria-label="静音" aria-pressed="false"></button>
         <input id="volume" type="range" min="0" max="100" value="90" step="1" aria-label="音量">
+        <button type="button" id="queue-btn" aria-label="歌单" aria-expanded="false" aria-controls="queue-pop"></button>
       </div>
       <p id="notice" hidden></p>
       <div id="queue-pop" class="queue-pop" hidden></div>

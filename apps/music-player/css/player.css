@@ -20,6 +20,7 @@
   --mp-chip-on: #e0c36a;
   --mp-chip-on-ink: #1c1608;
   --mp-track: rgba(255, 255, 255, .16);
+  --mp-vol: rgba(255, 255, 255, .72);
   --mp-shadow: 0 24px 60px rgba(0, 0, 0, .38);
   --mp-shadow-sm: 0 10px 26px rgba(0, 0, 0, .32);
   --mp-ambient: .34;
@@ -41,6 +42,7 @@ html[data-theme="paper"] {
   --mp-chip-on: #18140f;
   --mp-chip-on-ink: #ffffff;
   --mp-track: rgba(26, 22, 19, .14);
+  --mp-vol: rgba(26, 22, 19, .6);
   --mp-shadow: 0 24px 60px rgba(60, 40, 20, .12);
   --mp-shadow-sm: 0 10px 24px rgba(60, 40, 20, .12);
   --mp-ambient: .22;
@@ -230,14 +232,16 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
   overflow: hidden;
 }
 #now-artist { margin: 4px 0 0; color: var(--mp-dim); font-size: 14px; }
+/* 播控五键左右对称（循环、上一首 | 播放 | 下一首、随机），播放键落在正中。 */
 .transport {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 44px) 68px repeat(2, 44px);
   justify-content: space-between;
-  gap: 2px;
-  margin-top: 8px;
+  align-items: center;
+  width: min(100%, 320px);
+  margin: 8px auto 0;
 }
-.transport button, #mute {
+.transport button, #mute, #queue-btn {
   width: 44px;
   height: 44px;
   flex: 0 0 44px;
@@ -252,7 +256,8 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
   touch-action: manipulation;
   transition: background-color .15s, opacity .15s;
 }
-.transport button:hover, #mute:hover { opacity: 1; background: var(--mp-hover); }
+.transport button:hover, #mute:hover, #queue-btn:hover { opacity: 1; background: var(--mp-hover); }
+#queue-btn[aria-expanded="true"] { color: var(--mp-accent-text); opacity: 1; }
 .transport button.is-on { color: var(--mp-accent-text); opacity: 1; }
 #play {
   width: 68px;
@@ -267,8 +272,18 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
 #play[aria-label="播放"] .ico { transform: translateX(2px); }
 .ico { width: 22px; height: 22px; display: block; }
 #play .ico { width: 28px; height: 28px; }
-.volume-wrap { display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+/* 音量行：细、中性色、两端是静音与歌单，和金色的播放进度一眼区分。 */
+.volume-wrap { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
 .volume-wrap input[type="range"] { flex: 1; width: auto; }
+#mute .ico, #queue-btn .ico { width: 20px; height: 20px; }
+#volume::-webkit-slider-runnable-track {
+  height: 3px;
+  background: linear-gradient(90deg, var(--mp-vol) var(--p, 0%), var(--mp-track) var(--p, 0%));
+}
+#volume::-webkit-slider-thumb { width: 12px; height: 12px; margin-top: -4.5px; background: var(--mp-vol); box-shadow: none; }
+#volume::-moz-range-track { height: 3px; }
+#volume::-moz-range-progress { height: 3px; background: var(--mp-vol); }
+#volume::-moz-range-thumb { width: 12px; height: 12px; background: var(--mp-vol); }
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -279,7 +294,9 @@ input[type="range"] {
   touch-action: none;
   margin: 0;
 }
-input[type="range"]:disabled { opacity: .4; }
+input[type="range"]:disabled { opacity: .5; }
+input[type="range"]:disabled::-webkit-slider-thumb { opacity: 0; }
+input[type="range"]:disabled::-moz-range-thumb { opacity: 0; }
 input[type="range"]::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 999px;
@@ -756,7 +773,8 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; bo
   #now-art { padding: 12px; }
   #now-title { font-size: 20px; }
   #play { width: 60px; height: 60px; flex-basis: 60px; }
-  .transport button, #mute { width: 40px; flex-basis: 40px; }
+  .transport { grid-template-columns: repeat(2, 40px) 60px repeat(2, 40px); }
+  .transport button, #mute, #queue-btn { width: 40px; flex-basis: 40px; }
   .track { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; }
   .track.has-thumb { grid-template-columns: 24px 42px minmax(0, 1fr) auto; }
   .track .flag { display: none; }
