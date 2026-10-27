@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-26T21:35:15Z",
-  "asOf": "2026-10-26",
+  "updatedAt": "2026-10-27T18:09:36Z",
+  "asOf": "2026-10-27",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-25 ~ 2026-10-31",
   "count": 97,
@@ -470,7 +470,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "-0.3M",
+      "forecast": "-0.1M",
       "previous": "-3.1M",
       "actual": null
     },
