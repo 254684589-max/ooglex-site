@@ -6,7 +6,6 @@
   var seek;
   var view;
   var live;
-  var queuePop;
   var state = {
     catalog: null,
     loadError: "",
@@ -17,9 +16,8 @@
     index: -1,
     seeking: false,
     objectUrl: "",
-    // 音量交给手机或电脑的系统音量键；页内只保留静音开关。
+    // 音量交给手机或电脑的系统音量键，页内不再调节。
     volume: 1,
-    muted: false,
     repeat: "off",
     shuffle: false,
     history: [],
@@ -75,9 +73,6 @@
     else if (name === "pause") { path("M6 5h4v14H6z"); path("M14 5h4v14h-4z"); }
     else if (name === "prev") path("M6 6h2v12H6zm3.5 6 8.5 6V6z");
     else if (name === "next") path("M6 6v12l8.5-6zM16 6h2v12h-2z");
-    else if (name === "vol") path("M4 9v6h4l5 4V5L8 9H4zm11.5 3a3.5 3.5 0 0 0-2-3.16v6.32A3.5 3.5 0 0 0 15.5 12z");
-    else if (name === "mute") path("M4 9v6h4l5 4V5L8 9H4zm13.2.8-1.4-1.4L13.6 10.6 11.4 8.4 10 9.8l2.2 2.2-2.2 2.2 1.4 1.4 2.2-2.2 2.2 2.2 1.4-1.4-2.2-2.2z");
-    else if (name === "queue") path("M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z");
     else if (name === "repeat" || name === "repeat-one") {
       stroke("M17 2l4 4-4 4");
       stroke("M3 11V9a4 4 0 0 1 4-4h14");
@@ -851,15 +846,7 @@
       shuffleBtn.setAttribute("aria-pressed", state.shuffle ? "true" : "false");
       shuffleBtn.setAttribute("aria-label", state.shuffle ? "随机播放：开" : "随机播放：关");
     }
-    var mute = $("mute");
-    if (mute) {
-      mute.textContent = "";
-      mute.appendChild(icon(state.muted ? "mute" : "vol"));
-      mute.setAttribute("aria-label", state.muted ? "取消静音" : "静音");
-      mute.setAttribute("aria-pressed", state.muted ? "true" : "false");
-    }
     paintSeek();
-    renderQueue();
     if (track) document.title = track.title + " · 流光播放器";
     else document.title = "流光播放器 · Ooglex";
   }
@@ -919,28 +906,6 @@
     paintTransport();
   }
 
-  function renderQueue() {
-    if (!queuePop) return;
-    queuePop.textContent = "";
-    var album = findAlbum(state.playingAlbumId) || findAlbum(state.viewAlbumId) || visibleAlbums()[0];
-    if (!album || !(album.tracks || []).length) {
-      queuePop.appendChild(h("p", "empty", "还没有歌单。先打开一张专辑。"));
-      return;
-    }
-    queuePop.appendChild(h("p", "queue-title", album.title || "歌单"));
-    var list = h("ol", "queue-list");
-    album.tracks.forEach(function (track, index) {
-      var btn = h("button", "queue-item", (index + 1) + ". " + (track.title || "未命名"));
-      btn.type = "button";
-      if (album.id === state.playingAlbumId && index === state.index) btn.classList.add("is-current");
-      btn.addEventListener("click", function () { onTrackClick(album, index); });
-      var li = h("li");
-      li.appendChild(btn);
-      list.appendChild(li);
-    });
-    queuePop.appendChild(list);
-  }
-
   async function resolveSrc(src) {
     if (String(src || "").indexOf("idb:") === 0) {
       if (!window.OoglexMusicStore) throw new Error("store");
@@ -983,7 +948,7 @@
     if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
     state.objectUrl = url.indexOf("blob:") === 0 ? url : "";
     audio.src = url;
-    audio.volume = state.muted ? 0 : state.volume;
+    audio.volume = state.volume;
     try {
       await audio.play();
       announce("正在播放 " + track.title + "，" + artistOf(track, album));
@@ -1073,9 +1038,6 @@
   function bindTransport() {
     $("prev").appendChild(icon("prev"));
     $("next").appendChild(icon("next"));
-    var queueBtn = $("queue-btn");
-    queueBtn.textContent = "";
-    queueBtn.appendChild(icon("queue"));
     $("play").addEventListener("click", toggle);
     $("prev").addEventListener("click", function () { step(-1); });
     $("next").addEventListener("click", function () { step(1); });
@@ -1091,12 +1053,6 @@
       remember("ooglex.music-player.shuffle", state.shuffle ? "1" : "0");
       paintTransport();
       announce(state.shuffle ? "随机播放" : "顺序播放");
-    });
-    $("queue-btn").addEventListener("click", function () {
-      var open = queuePop.hidden;
-      queuePop.hidden = !open;
-      $("queue-btn").setAttribute("aria-expanded", open ? "true" : "false");
-      if (open) renderQueue();
     });
     seek.addEventListener("pointerdown", function () { state.seeking = true; });
     seek.addEventListener("input", function () {
@@ -1115,12 +1071,6 @@
     seek.addEventListener("pointercancel", endSeek);
     window.addEventListener("pointerup", endSeek);
 
-    $("mute").addEventListener("click", function () {
-      state.muted = !state.muted;
-      if (audio) audio.volume = state.muted ? 0 : state.volume;
-      announce(state.muted ? "已静音" : "已取消静音");
-      paintTransport();
-    });
 
     audio.addEventListener("timeupdate", function () { if (!state.seeking) paintSeek(); });
     audio.addEventListener("loadedmetadata", paintSeek);
@@ -1222,7 +1172,6 @@
     seek = $("seek");
     view = $("view");
     live = $("live");
-    queuePop = $("queue-pop");
     try {
       // 以前存过的页内音量不再使用，免得有人调低后再也调不回来。
       localStorage.removeItem("ooglex.music-player.volume");
