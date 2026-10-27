@@ -20,6 +20,7 @@
 | `order` | `popular`（近一月热门，默认）、`week`（本周热门）、`new`（最新发布） |
 | `offset` | 0–980，20 的倍数 |
 | `q` | 搜索歌名或艺人，最多 40 字 |
+| `id` | Jamendo 曲目编号（1–12 位数字）；给了就只查这一首，其余参数不用。流光播放器的分享链接 `#/track/<id>` 靠它打开单曲 |
 
 返回：`source`、`sourceUrl`、`updatedAt`（查询时间，UTC）、`frequency: "on-demand"`、`status`（`ok` / `partial` / `empty`）、`hasMore`、`tracks[]`（`id`、`title`、`artist`、`album`、`durationSec`、`image`、`src`、`license`、`page`）。
 

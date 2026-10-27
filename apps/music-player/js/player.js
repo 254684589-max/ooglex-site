@@ -91,6 +91,11 @@
         svg.appendChild(t);
       }
     }
+    else if (name === "share") {
+      stroke("M12 3.5v11");
+      stroke("M7.5 8 12 3.5 16.5 8");
+      stroke("M5.5 12.5v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6");
+    }
     else if (name === "heart") {
       stroke("M12 20.2s-7.4-4.5-9.4-9C1.2 8 2.9 4.6 6.4 4.6c2 0 3.3 1.1 4.2 2.3.7.9 2 .9 2.7 0 .9-1.2 2.2-2.3 4.2-2.3 3.5 0 5.2 3.4 3.8 6.6-2 4.5-9.3 9-9.3 9z");
     }
@@ -161,8 +166,10 @@
     var hash = "";
     try { hash = decodeURIComponent(location.hash || ""); }
     catch (err) { hash = location.hash || ""; }
-    var match = /^#\/album\/([a-z0-9][a-z0-9-]{0,48})$/.exec(hash);
-    if (match) return { name: "album", id: match[1] };
+    var match = /^#\/album\/([a-z0-9][a-z0-9-]{0,48})(?:\/([A-Za-z0-9_.-]{1,80}))?$/.exec(hash);
+    if (match) return { name: "album", id: match[1], track: match[2] || "" };
+    var shared = /^#\/track\/([1-9]\d{0,11})$/.exec(hash);
+    if (shared) return { name: "track", id: shared[1] };
     if (hash === "#/global") return { name: "global" };
     if (hash === "#/favorites") return { name: "favorites" };
     return { name: "list" };
@@ -275,6 +282,11 @@
     if (!album || (!state.draftMode && album.released === false)) {
       view.appendChild(h("p", "empty", "没有这张专辑。"));
       return;
+    }
+    var route = parseRoute();
+    if (route.track) {
+      var at = (album.tracks || []).map(function (t) { return t.id; }).indexOf(route.track);
+      if (at >= 0) cueTrack(album, at);
     }
     var layout = h("div", "detail");
     layout.appendChild(coverNode(album, "cover lg"));
@@ -489,6 +501,7 @@
       g.configError = "全球曲库的配置没有读到。";
     }
     if (parseRoute().name === "list") { skipAlbumScroll = true; renderView(); }
+    else if (parseRoute().name === "track") { skipAlbumScroll = true; renderView(); }
     else if (parseRoute().name === "global") {
       rerenderGlobal();
       if (g.config && g.config.api && !state.globalAlbums[globalKey()]) fetchGlobal(false);
@@ -502,6 +515,34 @@
       if (url.protocol !== "https:" && !(local && url.protocol === "http:")) return "";
       return url.href.replace(/\/+$/, "");
     } catch (err) { return ""; }
+  }
+
+  // 依次试主地址和备用地址；只有连不上才换下一个，接口给出的 HTTP 错误照常显示。
+  // 哪个地址成功过，本页之后先用它。
+  async function apiTracks(params) {
+    var g = state.global;
+    var apis = g.config.apis && g.config.apis.length ? g.config.apis : [g.config.api];
+    var order = apis.slice(g.apiIndex || 0).concat(apis.slice(0, g.apiIndex || 0));
+    var data = null;
+    var code = "";
+    for (var t = 0; t < order.length; t++) {
+      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+      data = null;
+      code = "";
+      var reached = false;
+      try {
+        var res = await fetch(order[t] + "/tracks?" + params.toString(), ctrl ? { signal: ctrl.signal } : {});
+        reached = true;
+        try { data = await res.json(); } catch (err) { data = null; }
+        if (!res.ok || !data || data.status === "error") code = (data && data.error) || "upstream";
+      } catch (err) {
+        code = err && err.name === "AbortError" ? "timeout" : "upstream";
+      }
+      clearTimeout(timer);
+      if (reached) { g.apiIndex = apis.indexOf(order[t]); break; }
+    }
+    return { data: data, code: code };
   }
 
   async function fetchGlobal(append) {
@@ -529,30 +570,9 @@
     params.set("order", g.order);
     params.set("offset", String(offset));
     if (g.q) params.set("q", g.q);
-    var data = null;
-    var code = "";
-    // 依次试主地址和备用地址；只有连不上才换下一个，接口给出的 HTTP 错误照常显示。
-    // 哪个地址成功过，本页之后先用它。
-    var apis = g.config.apis && g.config.apis.length ? g.config.apis : [g.config.api];
-    var order = apis.slice(g.apiIndex || 0).concat(apis.slice(0, g.apiIndex || 0));
-    for (var t = 0; t < order.length; t++) {
-      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
-      data = null;
-      code = "";
-      var reached = false;
-      try {
-        var res = await fetch(order[t] + "/tracks?" + params.toString(), ctrl ? { signal: ctrl.signal } : {});
-        reached = true;
-        try { data = await res.json(); } catch (err) { data = null; }
-        if (!res.ok || !data || data.status === "error") code = (data && data.error) || "upstream";
-      } catch (err) {
-        code = err && err.name === "AbortError" ? "timeout" : "upstream";
-      }
-      clearTimeout(timer);
-      if (seq !== g.seq) return;
-      if (reached) { g.apiIndex = apis.indexOf(order[t]); break; }
-    }
+    var got = await apiTracks(params);
+    var data = got.data;
+    var code = got.code;
     if (seq !== g.seq) return;
     if (code || !data || !Array.isArray(data.tracks)) {
       g.status = append ? "ok" : "error";
@@ -955,6 +975,390 @@
     view.appendChild(list);
   }
 
+
+  /* ---------------- 分享：系统分享面板、复制链接、分享海报；微信里引导用右上角菜单 ---------------- */
+
+  var SITE = "https://www.ooglex.com/apps/music-player/";
+  var share = { album: null, track: null, url: "", blob: null, objectUrl: "", busy: false };
+
+  // 每首歌一条固定链接：本站专辑 #/album/<专辑>/<曲目>，全球曲库 #/track/<Jamendo 编号>。本机草稿不能分享。
+  function shareUrl(album, track) {
+    if (!track) return "";
+    var key = favKey(album, track);
+    var m = /^j:(\d{1,12})$/.exec(key);
+    if (m) return SITE + "#/track/" + m[1];
+    m = /^l:([a-z0-9][a-z0-9-]{0,48}):([A-Za-z0-9_.-]{1,80})$/.exec(key);
+    if (m && favMediaUrl(track.src)) return SITE + "#/album/" + m[1] + "/" + m[2];
+    return "";
+  }
+
+  function inAppBrowser() {
+    var ua = navigator.userAgent || "";
+    if (/MicroMessenger/i.test(ua)) return "微信";
+    if (/\bQQ\//i.test(ua)) return "QQ";
+    if (/Weibo/i.test(ua)) return "微博";
+    if (/DingTalk/i.test(ua)) return "钉钉";
+    return "";
+  }
+
+  // 分享链接打开时，把那首歌摆到播放器上，但不自动出声（浏览器也不允许）。
+  function cueTrack(album, index) {
+    if (audio && audio.src) return;
+    if (state.playingAlbumId === album.id && state.index === index) return;
+    state.playingAlbumId = album.id;
+    state.index = index;
+    state.history = [];
+    setNotice("分享的歌曲已就绪，点播放即可收听。");
+  }
+
+  var sharedFetch = { id: "", status: "idle", message: "" };
+
+  async function renderSharedTrackData(id) {
+    sharedFetch = { id: id, status: "loading", message: "" };
+    var params = new URLSearchParams();
+    params.set("id", id);
+    var got = await apiTracks(params);
+    if (sharedFetch.id !== id) return;
+    var track = got.data && Array.isArray(got.data.tracks) ? cleanGlobalTrack(got.data.tracks[0]) : null;
+    if (got.code || !got.data) {
+      sharedFetch.status = "error";
+      sharedFetch.message = globalError(got.code || "upstream");
+    } else if (!track) {
+      sharedFetch.status = "empty";
+    } else {
+      state.globalAlbums.shared = { id: "shared", title: "分享的歌曲", artist: track.artist, global: true, tracks: [track], forId: id };
+      sharedFetch.status = "ok";
+    }
+    if (parseRoute().name === "track" && parseRoute().id === id) {
+      skipAlbumScroll = true;
+      renderView();
+    }
+  }
+
+  function renderSharedTrack(id) {
+    var back = h("a", "text-link", "← 全部专辑");
+    back.href = "#/";
+    view.appendChild(back);
+    var head = h("div", "fav-head share-head");
+    head.appendChild(h("p", "hero-kicker", "SHARED WITH YOU"));
+    head.appendChild(h("h2", "global-title", "分享给你的歌曲"));
+    head.appendChild(h("p", "fav-note", "来自流光播放器的全球曲库：Jamendo 上独立音乐人以 Creative Commons 许可发布的作品。点播放即可收听。"));
+    view.appendChild(head);
+    var g = state.global;
+    if (g.configError) { view.appendChild(h("p", "global-status is-error", "⚠ " + g.configError)); return; }
+    if (!g.config) { view.appendChild(h("p", "global-status", "正在读取…")); return; }
+    if (!g.config.api) { view.appendChild(h("p", "global-status is-off", "○ 全球曲库尚未开通，暂时打不开这首歌。")); return; }
+    var album = state.globalAlbums.shared;
+    if (!album || album.forId !== id) {
+      if (sharedFetch.id !== id || sharedFetch.status === "idle") { renderSharedTrackData(id); }
+      if (sharedFetch.status === "error" && sharedFetch.id === id) {
+        view.appendChild(h("p", "global-status is-error", "⚠ " + sharedFetch.message));
+        var retry = h("button", "text-btn", "重试");
+        retry.type = "button";
+        retry.addEventListener("click", function () { sharedFetch.status = "idle"; renderSharedTrackData(id); });
+        view.appendChild(retry);
+      } else if (sharedFetch.status === "empty" && sharedFetch.id === id) {
+        view.appendChild(h("p", "global-status", "这首歌找不到了，可能已从 Jamendo 下架。"));
+      } else {
+        view.appendChild(h("p", "global-status", "正在从 Jamendo 读取这首歌…"));
+      }
+    } else {
+      cueTrack(album, 0);
+      var track = album.tracks[0];
+      var list = h("ol", "tracks global-tracks");
+      var li = h("li", "row");
+      var btn = h("button", "track has-thumb");
+      btn.type = "button";
+      btn.dataset.album = album.id;
+      btn.dataset.id = track.id;
+      btn.dataset.index = "0";
+      btn.appendChild(leadNode(0));
+      btn.appendChild(thumbNode(track.image, track.title));
+      var titles = h("span", "titles");
+      titles.appendChild(h("span", "t-title", track.title));
+      titles.appendChild(h("span", "t-artist", track.artist + (track.album && track.album !== track.title ? " · " + track.album : "")));
+      btn.appendChild(titles);
+      btn.appendChild(h("span", "flag", ""));
+      btn.appendChild(h("span", "t-time", track.durationSec ? fmt(track.durationSec) : ""));
+      btn.addEventListener("click", function () { onTrackClick(album, 0); });
+      li.appendChild(btn);
+      var links = h("p", "t-links");
+      links.appendChild(pill(licenseName(track.license), track.license));
+      if (track.page) links.appendChild(pill("Jamendo ↗", track.page, "is-src"));
+      li.appendChild(links);
+      var heart = favButton(album, track);
+      if (heart) li.appendChild(heart);
+      list.appendChild(li);
+      view.appendChild(list);
+    }
+    var more = h("a", "text-btn share-more", "去全球曲库听更多 →");
+    more.href = "#/global";
+    view.appendChild(more);
+  }
+
+  function shareText(album, track) {
+    return "我在 Ooglex 流光播放器听《" + track.title + "》— " + artistOf(track, album);
+  }
+
+  function setShareStatus(text) {
+    var node = $("share-status");
+    if (node) node.textContent = text || "";
+  }
+
+  function openShare(album, track) {
+    var url = shareUrl(album, track);
+    var dlg = $("share-dlg");
+    if (!url || !dlg) return;
+    share.album = album;
+    share.track = track;
+    share.url = url;
+    share.blob = null;
+    if (share.objectUrl) { URL.revokeObjectURL(share.objectUrl); share.objectUrl = ""; }
+    $("share-song").textContent = "《" + track.title + "》 · " + artistOf(track, album);
+    $("share-url").value = url;
+    $("share-native").hidden = !navigator.share;
+    $("share-poster-box").hidden = true;
+    $("share-poster-share").hidden = true;
+    setShareStatus("");
+    var app = inAppBrowser();
+    var hint = $("share-inapp");
+    hint.hidden = !app;
+    if (app) {
+      hint.textContent = "在" + app + "里：点右上角 ··· →「分享到朋友圈」或「发送给朋友」。页面地址已换成这首歌的链接，对方打开就是这首。";
+      // 微信等的右上角菜单分享的是当前地址，先换成这首歌的链接（不触发页面跳转）
+      try { history.replaceState(null, "", url.replace(SITE, location.pathname)); } catch (err) { /* 忽略 */ }
+    }
+    if (typeof dlg.showModal === "function") { if (!dlg.open) dlg.showModal(); }
+    else dlg.setAttribute("open", "");
+    var first = navigator.share ? $("share-native") : $("share-copy");
+    try { first.focus(); } catch (err) { /* 忽略 */ }
+  }
+
+  function closeShare() {
+    var dlg = $("share-dlg");
+    if (!dlg) return;
+    if (typeof dlg.close === "function" && dlg.open) dlg.close();
+    else dlg.removeAttribute("open");
+    var back = $("now-share");
+    if (back && !back.hidden) try { back.focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
+  }
+
+  async function copyShareLink() {
+    var input = $("share-url");
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(share.url);
+        setShareStatus("链接已复制，可以粘贴到微信、QQ、微博等。");
+        return;
+      }
+    } catch (err) { /* 换下面的办法 */ }
+    try {
+      input.focus();
+      input.select();
+      if (document.execCommand && document.execCommand("copy")) { setShareStatus("链接已复制。"); return; }
+    } catch (err) { /* 忽略 */ }
+    setShareStatus("这个浏览器不让自动复制，请长按上面的链接手动复制。");
+  }
+
+  async function nativeShare() {
+    try {
+      await navigator.share({ title: share.track.title + " · 流光播放器", text: shareText(share.album, share.track), url: share.url });
+    } catch (err) {
+      if (err && err.name === "AbortError") return;
+      setShareStatus("系统分享没有打开，可以改用「复制链接」或「生成海报」。");
+    }
+  }
+
+  function loadImage(src, cors) {
+    return new Promise(function (resolve) {
+      if (!src) { resolve(null); return; }
+      var img = new Image();
+      if (cors) img.crossOrigin = "anonymous";
+      img.onload = function () { resolve(img); };
+      img.onerror = function () { resolve(null); };
+      img.src = src;
+    });
+  }
+
+  function roundRect(ctx, x, y, w, hgt, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + hgt, r);
+    ctx.arcTo(x + w, y + hgt, x, y + hgt, r);
+    ctx.arcTo(x, y + hgt, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function wrapText(ctx, text, x, y, maxW, lineH, maxLines) {
+    var chars = Array.from(String(text || ""));
+    var line = "";
+    var lines = [];
+    for (var i = 0; i < chars.length; i++) {
+      var next = line + chars[i];
+      if (ctx.measureText(next).width > maxW && line) {
+        lines.push(line);
+        line = chars[i];
+        if (lines.length === maxLines) { line = ""; lines[maxLines - 1] = lines[maxLines - 1].slice(0, -1) + "…"; break; }
+      } else {
+        line = next;
+      }
+    }
+    if (line && lines.length < maxLines) lines.push(line);
+    lines.forEach(function (l, k) { ctx.fillText(l, x, y + k * lineH); });
+    return y + lines.length * lineH;
+  }
+
+  // 1080×1440 竖版海报：封面、歌名、艺人、扫码打开播放器的二维码与署名。
+  async function drawPoster(withCover) {
+    var track = share.track;
+    var album = share.album;
+    var canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1440;
+    var ctx = canvas.getContext("2d");
+    var font = '"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif';
+    var bg = ctx.createLinearGradient(0, 0, 1080, 1440);
+    bg.addColorStop(0, "#0d2a33");
+    bg.addColorStop(0.55, "#1b1d45");
+    bg.addColorStop(1, "#2a1230");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 1080, 1440);
+    ctx.fillStyle = "#e0c36a";
+    ctx.font = "600 30px " + font;
+    ctx.fillText("OOGLEX MUSIC · 流光播放器", 90, 110);
+
+    var cover = null;
+    var src = track.image || (album && !album.global ? album.cover : "");
+    if (withCover && src && String(src).indexOf("idb:") !== 0) {
+      var abs = new URL(src, location.href);
+      cover = await loadImage(abs.href, abs.origin !== location.origin);
+    }
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,.45)";
+    ctx.shadowBlur = 60;
+    ctx.shadowOffsetY = 24;
+    roundRect(ctx, 180, 170, 720, 720, 44);
+    ctx.fillStyle = "#16303a";
+    ctx.fill();
+    ctx.restore();
+    ctx.save();
+    roundRect(ctx, 180, 170, 720, 720, 44);
+    ctx.clip();
+    if (cover) {
+      ctx.drawImage(cover, 180, 170, 720, 720);
+    } else {
+      var g = ctx.createRadialGradient(540, 530, 30, 540, 530, 420);
+      g.addColorStop(0, "#2f7c86");
+      g.addColorStop(1, "#141a3a");
+      ctx.fillStyle = g;
+      ctx.fillRect(180, 170, 720, 720);
+      ctx.fillStyle = "rgba(255,255,255,.9)";
+      ctx.font = "300 260px " + font;
+      ctx.textAlign = "center";
+      ctx.fillText("♪", 540, 620);
+      ctx.textAlign = "left";
+    }
+    ctx.restore();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "800 64px " + font;
+    var y = wrapText(ctx, track.title, 90, 1000, 900, 78, 2);
+    ctx.fillStyle = "rgba(255,255,255,.75)";
+    ctx.font = "400 36px " + font;
+    wrapText(ctx, artistOf(track, album), 90, y + 6, 900, 46, 1);
+
+    var qr = await loadImage("/apps/music-player/icons/qr-player.svg", false);
+    roundRect(ctx, 90, 1180, 200, 200, 22);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    if (qr) {
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(qr, 100, 1190, 180, 180);
+      ctx.imageSmoothingEnabled = true;
+    }
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 36px " + font;
+    ctx.fillText("扫码打开流光播放器", 320, 1240);
+    ctx.fillStyle = "rgba(255,255,255,.7)";
+    ctx.font = "400 28px " + font;
+    ctx.fillText("ooglex.com/apps/music-player", 320, 1290);
+    ctx.font = "400 24px " + font;
+    var credit = track.source === "Jamendo"
+      ? "歌曲来自 Jamendo · " + (track.licenseName || licenseName(track.license)) + " · 艺人保留权利"
+      : (album && album.license ? "演示样例 · " + album.license : "本站原创 · 流光");
+    wrapText(ctx, credit, 320, 1340, 680, 32, 2);
+
+    return new Promise(function (resolve, reject) {
+      try {
+        canvas.toBlob(function (b) { b ? resolve(b) : reject(new Error("blob")); }, "image/png");
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  async function makePoster() {
+    if (share.busy) return;
+    share.busy = true;
+    setShareStatus("正在生成海报…");
+    var blob = null;
+    try {
+      blob = await drawPoster(true);
+    } catch (err) {
+      // 外站封面不允许画进图片时，换成默认图案再画一次
+      try { blob = await drawPoster(false); } catch (err2) { blob = null; }
+    }
+    share.busy = false;
+    if (!blob) { setShareStatus("这个浏览器生成不了图片，请改用「复制链接」。"); return; }
+    share.blob = blob;
+    if (share.objectUrl) URL.revokeObjectURL(share.objectUrl);
+    share.objectUrl = URL.createObjectURL(blob);
+    $("share-poster").src = share.objectUrl;
+    $("share-poster-box").hidden = false;
+    var file = new File([blob], "liuguang-share.png", { type: "image/png" });
+    $("share-poster-share").hidden = !(navigator.canShare && navigator.share && navigator.canShare({ files: [file] }));
+    setShareStatus(inAppBrowser()
+      ? "长按图片可保存到相册，再发朋友圈。"
+      : "海报已生成。发朋友圈：保存图片后在微信里选这张图。");
+  }
+
+  function savePoster() {
+    if (!share.objectUrl) return;
+    var a = document.createElement("a");
+    a.href = share.objectUrl;
+    // 文件名只用英文和数字：部分浏览器遇到中文文件名会退回成 "download"
+    a.download = "liuguang-" + (favKey(share.album, share.track) || "song").replace(/[^A-Za-z0-9-]+/g, "-").slice(0, 60) + ".png";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  async function sharePoster() {
+    if (!share.blob) return;
+    var file = new File([share.blob], "liuguang-share.png", { type: "image/png" });
+    try {
+      await navigator.share({ files: [file], title: share.track.title + " · 流光播放器", text: shareText(share.album, share.track) + " " + share.url });
+    } catch (err) {
+      if (err && err.name === "AbortError") return;
+      setShareStatus("系统没能分享图片，请用「保存图片」。");
+    }
+  }
+
+  function bindShareDialog() {
+    var dlg = $("share-dlg");
+    if (!dlg) return;
+    $("share-close").addEventListener("click", closeShare);
+    $("share-native").addEventListener("click", nativeShare);
+    $("share-copy").addEventListener("click", copyShareLink);
+    $("share-make").addEventListener("click", makePoster);
+    $("share-poster-save").addEventListener("click", savePoster);
+    $("share-poster-share").addEventListener("click", sharePoster);
+    $("share-url").addEventListener("focus", function () { this.select(); });
+    dlg.addEventListener("click", function (event) { if (event.target === dlg) closeShare(); });
+    dlg.addEventListener("cancel", function (event) { event.preventDefault(); closeShare(); });
+  }
+
   var skipAlbumScroll = true;
 
   function reduceMotion() {
@@ -967,8 +1371,9 @@
     var route = parseRoute();
     state.viewAlbumId = route.name === "album" ? route.id : "";
     view.textContent = "";
-    if (route.name === "global" || route.name === "favorites") {
+    if (route.name === "global" || route.name === "favorites" || route.name === "track") {
       if (route.name === "global") renderGlobal();
+      else if (route.name === "track") renderSharedTrack(route.id);
       else renderFavorites();
       paintCurrent();
       scrollToView(route);
@@ -1058,6 +1463,8 @@
     if (art) art.classList.toggle("is-spinning", playing);
     paintAmbient(artFrom && artFrom.cover);
     paintNowFav(track, album);
+    var shareBtn = $("now-share");
+    if (shareBtn) shareBtn.hidden = !(track && shareUrl(album, track));
     paintMini(track, album, artFrom, playing);
     if (play) {
       play.textContent = "";
@@ -1231,6 +1638,9 @@
 
   function toggle() {
     if (!audio.src) {
+      // 分享链接打开时已经把那首歌摆好（cue），按播放就放它
+      var cued = currentAlbum();
+      if (cued && state.index >= 0) { playIndex(cued, state.index); return; }
       var album = firstPlayable();
       if (album) playIndex(album, 0);
       return;
@@ -1418,6 +1828,15 @@
     state.favs = loadFavs();
     bindTransport();
     bindMini();
+    var nowShare = $("now-share");
+    if (nowShare) {
+      nowShare.appendChild(icon("share"));
+      nowShare.addEventListener("click", function () {
+        var track = currentTrack();
+        if (track) openShare(currentAlbum(), track);
+      });
+    }
+    bindShareDialog();
     var nowFav = $("now-fav");
     if (nowFav) nowFav.addEventListener("click", function () {
       var track = currentTrack();

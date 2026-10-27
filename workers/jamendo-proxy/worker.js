@@ -12,7 +12,8 @@
      tag     曲风标签，小写字母，可空（全部曲风）
      order   popular（近一月热门，默认）| week（本周热门）| new（最新发布）
      offset  0–980，步长由本 Worker 固定为 20
-     q       搜索歌名或艺人，最多 40 字，可空 */
+     q       搜索歌名或艺人，最多 40 字，可空
+     id      Jamendo 曲目编号（1–12 位数字），可空；给了就只查这一首，其余参数不用。分享链接靠它打开单曲。 */
 
 export const LIMITS = {
   perIpPerMinute: 30,
@@ -67,7 +68,10 @@ export function parseQuery(searchParams) {
   if (offset > LIMITS.maxOffset || offset % LIMITS.pageSize !== 0) return null;
   const q = String(searchParams.get("q") || "").replace(/[\u0000-\u001f]+/g, " ").trim();
   if (q.length > 40) return null;
-  return { tag: tag, order: order, offset: offset, q: q };
+  const id = String(searchParams.get("id") || "");
+  if (id && !/^[1-9]\d{0,11}$/.test(id)) return null;
+  if (id) return { tag: "", order: "popular", offset: 0, q: "", id: id };
+  return { tag: tag, order: order, offset: offset, q: q, id: "" };
 }
 
 // tagParam：Jamendo 的 tags 与 fuzzytags 都按曲风过滤。实测两者会各自间歇性地返回 0 条，
@@ -84,6 +88,7 @@ export function upstreamUrl(query, clientId, tagParam) {
   url.searchParams.set("include", "licenses");
   if (query.tag) url.searchParams.set(tagParam || "tags", query.tag);
   if (query.q) url.searchParams.set("search", query.q);
+  if (query.id) url.searchParams.set("id", query.id);
   return url.toString();
 }
 
@@ -203,6 +208,7 @@ function cacheKey(query) {
   url.searchParams.set("order", query.order);
   url.searchParams.set("offset", String(query.offset));
   url.searchParams.set("q", query.q.toLowerCase());
+  url.searchParams.set("id", query.id || "");
   return new Request(url.toString(), { method: "GET" });
 }
 

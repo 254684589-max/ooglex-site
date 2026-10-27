@@ -15,13 +15,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07141c">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
-<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027g">
+<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027h">
 <script>
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
 </script>
 <script src="/assets/theme.js?v=20260926k" defer></script>
 <script src="/apps/music-player/js/store.js?v=20261025b" defer></script>
-<script src="/apps/music-player/js/player.js?v=20261027g" defer></script>
+<script src="/apps/music-player/js/player.js?v=20261027h" defer></script>
 </head>
 <body>
   <div id="ambient" class="ambient" aria-hidden="true"></div>
@@ -43,6 +43,7 @@
         <span id="time-end" class="time">0:00</span>
       </div>
       <div class="now-copy">
+        <button type="button" id="now-share" class="fav-btn share-btn" aria-label="分享这首歌" aria-haspopup="dialog" hidden></button>
         <div class="now-text">
           <p id="now-title">尚未选择曲目</p>
           <p id="now-artist">从专辑里点一首</p>
@@ -77,6 +78,31 @@
     <button type="button" id="mini-play" class="mini-btn" aria-label="播放"></button>
     <button type="button" id="mini-next" class="mini-btn" aria-label="下一首"></button>
   </div>
+  <dialog id="share-dlg" class="share-dlg" aria-labelledby="share-title">
+    <div class="share-card">
+      <div class="share-top">
+        <h2 id="share-title">分享这首歌</h2>
+        <button type="button" id="share-close" class="share-x" aria-label="关闭">✕</button>
+      </div>
+      <p id="share-song" class="share-song"></p>
+      <p id="share-inapp" class="share-inapp" hidden></p>
+      <div class="share-actions">
+        <button type="button" id="share-native" class="share-act">分享到…<small>微信、QQ、微博等</small></button>
+        <button type="button" id="share-copy" class="share-act">复制链接<small>粘贴到聊天或动态</small></button>
+        <button type="button" id="share-make" class="share-act">生成海报<small>发朋友圈用</small></button>
+      </div>
+      <label class="share-url-label" for="share-url">歌曲链接</label>
+      <input id="share-url" class="share-url" type="text" readonly>
+      <div id="share-poster-box" class="share-poster-box" hidden>
+        <img id="share-poster" alt="分享海报预览">
+        <div class="share-poster-actions">
+          <button type="button" id="share-poster-save" class="text-btn">保存图片</button>
+          <button type="button" id="share-poster-share" class="text-btn" hidden>分享图片</button>
+        </div>
+      </div>
+      <p id="share-status" class="share-status" role="status" aria-live="polite"></p>
+    </div>
+  </dialog>
   <p id="live" class="sr" aria-live="polite"></p>
   <audio id="audio" preload="metadata"></audio>
   <noscript><p class="empty">需要开启 JavaScript 才能播放。</p></noscript>
