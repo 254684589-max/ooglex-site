@@ -58,7 +58,13 @@ jobs:
           import json, os, urllib.parse, urllib.request
           cid = os.environ["JAMENDO_CLIENT_ID"].strip()
           base = "https://api.jamendo.com/v3.0/tracks/"
-          for label, extra in [("pop", {"tags": "pop"}), ("all", {})]:
+          variants = [("all", {})]
+          for g in ["pop", "jazz", "hiphop", "world", "rnb", "lounge"]:
+              variants += [("tags=" + g, {"tags": g}), ("fuzzytags=" + g, {"fuzzytags": g})]
+          variants += [("tags=pop+musicinfo", {"tags": "pop", "include": "licenses musicinfo"}),
+                       ("fuzzytags=pop+week", {"fuzzytags": "pop", "order": "popularity_week"}),
+                       ("fuzzytags=pop+new", {"fuzzytags": "pop", "order": "releasedate_desc"})]
+          for label, extra in variants:
               q = {"client_id": cid, "format": "json", "limit": "3", "order": "popularity_month",
                    "audioformat": "mp32", "imagesize": "200", "include": "licenses"}
               q.update(extra)
