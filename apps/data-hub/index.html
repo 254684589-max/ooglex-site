@@ -22,127 +22,179 @@
 <script src="/assets/i18n.js?v=c83b60c1" defer></script>
 <script src="/assets/i18n-pages.js?v=20261026d" defer></script>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root {
-    --bg:#0b0a10; --ink:#f3f0ea; --dim:#9a94a6; --faint:#645f70;
-    --gold:#d9b779; --up:#e2606a; --down:#4bbf9a;
-    --fear:#e0554f; --greed:#3fae7d;
-    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
-  }
-  body {
-    min-height:100vh; color:var(--ink);
-    background:
-      radial-gradient(820px 460px at 88% -6%, rgba(217,183,121,.12), transparent 60%),
-      radial-gradient(700px 500px at 6% 108%, rgba(120,110,150,.10), transparent 60%),
-      var(--bg);
-    background-attachment:fixed;
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
-    line-height:1.55; overflow-x:hidden;
-  }
-  .page { max-width:1080px; margin:0 auto; padding:18px 24px 64px; }
+/* 基础与恐慌贪婪部件 */
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0b0a10; --ink:#f3f0ea; --dim:#9a94a6; --faint:#6f6a7b; --line:rgba(255,255,255,.1);
+  --sheet:#15141c; --gold:#d9b779; --up:#4bbf9a; --down:#e2606a; --accent:#d9b779;
+  --fg-xf:#e0554f; --fg-f:#ec8a59; --fg-n:#c9b27a; --fg-g:#7cc59a; --fg-xg:#3fae7d;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+html[data-theme="ft"] { --fg-xf:#b3242b; --fg-f:#d0623a; --fg-n:#a07a1c; --fg-g:#3a9467; --fg-xg:#0b6b47; }
+html[data-theme="paper"] { --fg-xf:#b3201f; --fg-f:#cf5f33; --fg-n:#9a7414; --fg-g:#2f8a5c; --fg-xg:#0d6b45; }
+body { min-height:100vh; background:var(--bg); color:var(--ink); line-height:1.5; overflow-x:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; }
+a { color:inherit; }
+a:focus-visible { outline:2px solid var(--accent, var(--gold)); outline-offset:3px; border-radius:inherit; }
+.up { color:var(--up); } .down { color:var(--down); } .dim { color:var(--dim); }
+.num { font-variant-numeric:tabular-nums; }
+.back { color:var(--accent, var(--gold)); text-decoration:none; font-size:.9rem; }
+.kick { font-family:var(--mono); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent, var(--gold)); }
 
-  header.top { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-  header.top a.back { color:var(--gold); text-decoration:none; font-size:0.9rem; }
-  header.top a.back:hover { opacity:.8; }
+/* 恐慌贪婪通用部件 */
+.spark { width:100%; height:100%; display:block; }
+.spark .grid { stroke:var(--line); stroke-width:1; stroke-dasharray:3 4; }
+.spark .zone-f { fill:var(--fg-xf); opacity:.07; }
+.spark .zone-g { fill:var(--fg-xg); opacity:.07; }
+.spark .area { fill:var(--ink); opacity:.06; }
+.spark .ln { fill:none; stroke:var(--ink); stroke-width:1.6; }
+.t-xf { color:var(--fg-xf); } .t-f { color:var(--fg-f); } .t-n { color:var(--fg-n); } .t-g { color:var(--fg-g); } .t-xg { color:var(--fg-xg); }
+.tone-stress { color:var(--fg-xf); } .tone-warn { color:var(--fg-n); } .tone-calm { color:var(--fg-xg); }
+.loading { color:var(--dim); font-size:.88rem; }
+.srcline { font-size:.74rem; color:var(--faint); font-family:var(--mono); letter-spacing:.02em; }
+footer.foot { margin-top:40px; padding:20px 0 0; border-top:1px solid var(--line); text-align:center;
+  color:var(--faint); font-size:.76rem; line-height:1.8; }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important; animation:none !important; } }
 
-  /* ── masthead ── */
-  .masthead { padding:18px 0 0; margin:0 0 26px; }
-  .kick { font-family:var(--mono); font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); }
-  .masthead h1 { margin:12px 0 0; font-size:clamp(2.05rem, 5vw, 3.15rem); font-weight:560; letter-spacing:-0.02em;
-    line-height:1.12; text-wrap:balance; }
-  .masthead h1 b { font-weight:inherit; }
-  .masthead .date { font-size:0.98rem; color:var(--dim); margin-top:10px; letter-spacing:0; font-weight:400; }
+/* 版面：情绪色带头条 + 风险四联 + 数字墙 */
+  .page { max-width:1180px; margin:0 auto; padding:18px 28px 64px; }
+  .mast { margin:18px 0 20px; }
+  .mast h1 { font-size:clamp(1.9rem,4.4vw,2.8rem); font-weight:600; letter-spacing:-.02em; line-height:1.1; margin-top:10px; }
+  .mast .meta { color:var(--dim); font-size:.92rem; margin-top:8px; }
 
-  /* ── 方案 B：四张分类卡，卡内是完整模块预览 ── */
-  .board {
-    display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start;
-  }
-  .hub-card {
-    min-width:0;
-    display:flex; flex-direction:column;
-    background:var(--sheet, var(--tint-2));
-    border:1px solid var(--line, var(--tint-line));
-    box-shadow:var(--shadow-1);
-    border-radius:22px;
-    padding:20px 22px 8px;
-  }
-  html[data-theme="ft"] .hub-card,
-  html[data-theme="paper"] .hub-card {
-    border-color:transparent;
-    box-shadow:var(--shadow-2);
-  }
-  html[data-theme="ft"] .hub-card {
-    box-shadow:0 12px 32px rgba(150, 110, 80, 0.12);
-  }
-  .pill {
-    display:inline-flex; align-items:center; align-self:flex-start; max-width:100%;
-    margin:0 4px 2px; padding:5px 12px 6px; border-radius:999px;
-    background:var(--down-soft, var(--tint-3));
-    color:var(--fear2, var(--gold));
-    font-size:0.78rem; font-weight:600; letter-spacing:0.02em; line-height:1.25; font-family:inherit;
-  }
-  html[data-theme="ft"] .pill {
-    background:#f6e3dc;
-    color:#d15a4e;
-  }
-  .hub-mods { min-width:0; }
-  .art { display:block; text-decoration:none; color:inherit; min-width:0; padding:14px 4px 16px; border-radius:12px; }
-  .art + .art { border-top:1px solid var(--line, var(--tint-line)); }
-  .art:hover { background:var(--tint-1); }
-  .art:focus-visible { outline:2px solid var(--accent, var(--gold)); outline-offset:2px; }
-  .art .hn { display:flex; align-items:baseline; gap:6px 10px; flex-wrap:wrap; }
-  .art .hn .t { font-size:1.02rem; font-weight:650; letter-spacing:0.01em; }
-  .art .hn .tag { margin-left:auto; font-family:var(--mono); font-size:0.64rem; letter-spacing:0.05em;
-    color:var(--faint); text-transform:uppercase; }
-  .art .big { font-weight:520; font-size:clamp(2.15rem, 4.2vw, 3.15rem); line-height:0.95; letter-spacing:-0.03em;
-    margin:10px 0 2px; font-variant-numeric:tabular-nums; }
-  .art .big small { display:block; font-size:0.82rem; font-weight:500; color:var(--dim); margin:7px 0 0;
-    letter-spacing:0; line-height:1.4; }
-  .art .big.tone-stress, .art .big.tone-stress small { color:var(--fear, var(--down)); }
-  .art .big.tone-warn, .art .big.tone-warn small { color:var(--gold); }
-  .art .big.tone-calm, .art .big.tone-calm small { color:var(--greed, var(--up)); }
-  .art .note { color:var(--dim); font-size:0.95rem; line-height:1.5; margin-top:8px; }
-  .art .note b { color:var(--ink); font-weight:650; }
-  .art .row { display:flex; align-items:baseline; justify-content:space-between; gap:8px 12px; flex-wrap:wrap;
-    padding:6px 0; font-size:0.92rem; }
-  .art .row .l { color:var(--dim); min-width:0; }
-  .art .row .v { font-variant-numeric:tabular-nums; text-align:right; margin-left:auto; min-width:0; }
-  .art .news { font-size:1.02rem; font-weight:550; line-height:1.45; margin:10px 0 4px; }
-  .art .sub { color:var(--dim); font-size:0.84rem; line-height:1.45; overflow-wrap:anywhere; }
-  .art .upd { color:var(--faint); font-size:0.72rem; font-family:var(--mono); margin-top:10px; letter-spacing:0.03em; }
-  .art .loading { color:var(--dim); font-size:0.88rem; margin-top:10px; }
-  .up { color:var(--up); } .down { color:var(--down); } .dim { color:var(--dim); }
+  /* ── 头条：整块随情绪着色 ── */
+  .hero { --hc:var(--fg-n); position:relative; display:block; text-decoration:none; border-radius:28px; overflow:hidden;
+    padding:30px 34px 26px; color:var(--ink);
+    background:linear-gradient(135deg, color-mix(in srgb, var(--hc) 22%, var(--sheet)) 0%, color-mix(in srgb, var(--hc) 8%, var(--sheet)) 60%, var(--sheet) 100%);
+    box-shadow:var(--shadow-2); border:1px solid color-mix(in srgb, var(--hc) 30%, transparent); }
+  .hero-top { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline; }
+  .hero-top b { font-size:1.05rem; font-weight:700; }
+  .hero-top span { font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
+  .hero-main { display:grid; grid-template-columns:auto minmax(0,1fr); gap:20px 44px; align-items:end; margin-top:10px; }
+  .big { font-size:clamp(6rem,15vw,11rem); font-weight:750; line-height:.82; letter-spacing:-.06em; color:var(--hc); font-variant-numeric:tabular-nums; }
+  .zone { font-size:clamp(1.5rem,3vw,2.1rem); font-weight:750; color:var(--hc); margin-top:14px; }
+  .delta { font-size:.92rem; color:var(--dim); margin-top:4px; }
+  /* 色带：五档 + 现值与历史参照的刻度 */
+  .scale { position:relative; padding:52px 0 10px; }
+  .bands { display:flex; height:16px; border-radius:99px; overflow:hidden; gap:3px; }
+  .bands i { display:block; height:100%; }
+  .bands i:first-child { border-radius:99px 0 0 99px; } .bands i:last-child { border-radius:0 99px 99px 0; }
+  .blab { display:flex; margin-top:8px; font-size:.74rem; color:var(--dim); }
+  .blab span { text-align:center; }
+  .pin { position:absolute; top:0; transform:translateX(-50%); text-align:center; }
+  .pin .tx { font-size:.82rem; font-weight:700; white-space:nowrap; background:var(--ink); color:var(--sheet); padding:3px 10px; border-radius:99px; }
+  .pin .st { width:2px; height:26px; background:var(--ink); margin:0 auto; }
+  .pin .dt { width:16px; height:16px; border-radius:50%; background:var(--hc); border:3px solid var(--ink); margin:-4px auto 0; }
+  .hero-foot { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:28px; margin-top:6px; padding-top:18px;
+    border-top:1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+  .trend .hd { display:flex; justify-content:space-between; font-size:.78rem; color:var(--dim); margin-bottom:6px; }
+  .trend .box { height:86px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; }
+  .chip { font-size:.8rem; padding:4px 10px; border-radius:99px; background:color-mix(in srgb, var(--sheet) 70%, transparent);
+    border:1px solid var(--line); white-space:nowrap; }
+  .chip b { font-variant-numeric:tabular-nums; margin-left:4px; }
+  .chips h3 { width:100%; font-size:.78rem; color:var(--dim); font-weight:600; margin-bottom:2px; }
+  .hero .srcline { margin-top:14px; }
 
-  footer { margin-top:36px; padding-top:20px; border-top:1px solid var(--line, var(--tint-line));
-    text-align:center; color:var(--faint); font-size:0.78rem; line-height:1.9;
-    font-family:var(--mono); letter-spacing:0.02em; }
+  /* ── 风险三联：紧贴头条 ── */
+  .trio { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:14px; }
+  .tri { display:block; text-decoration:none; padding:16px 20px; background:var(--sheet); border-radius:18px; box-shadow:var(--shadow-1); }
+  .tri .n { font-size:.86rem; font-weight:650; display:flex; justify-content:space-between; gap:8px; }
+  .tri .n i { font-style:normal; font-size:.72rem; color:var(--faint); font-weight:400; }
+  .tri .v { display:flex; align-items:baseline; gap:10px; margin-top:6px; flex-wrap:wrap; }
+  .tri .v b { font-size:2.1rem; font-weight:700; letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1.05; }
+  .tri .v span { font-size:.84rem; font-weight:600; }
+  .tri .s { font-size:.8rem; color:var(--dim); margin-top:4px; }
 
-  @media (max-width:759px) {
-    .page { padding:14px 16px 56px; }
-    .board { grid-template-columns:1fr; gap:16px; }
-    .hub-card { padding:16px 14px 6px; border-radius:20px; }
-    .masthead { padding-top:8px; margin-bottom:18px; }
-    .masthead h1 { letter-spacing:-0.015em; }
+  /* ── 数字墙：无卡片，细线分隔，像报纸行情版 ── */
+  .wall { margin-top:40px; }
+  .grp { display:grid; grid-template-columns:160px minmax(0,1fr); gap:0 24px; padding:22px 0; border-top:2px solid var(--ink); }
+  .grp > h2 { font-size:1.15rem; font-weight:750; line-height:1.2; }
+  .grp > h2 small { display:block; font-family:var(--mono); font-size:.64rem; letter-spacing:.14em; color:var(--faint); font-weight:400; text-transform:uppercase; margin-top:6px; }
+  .cells { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .cell { display:block; text-decoration:none; padding:4px 20px 14px; border-left:1px solid var(--line); min-width:0; }
+  .cell:nth-child(3n+1) { border-left:0; padding-left:0; }
+  .cell:nth-child(n+4) { border-top:1px solid var(--line); padding-top:14px; }
+  .cell:hover .nm { text-decoration:underline; }
+  .cell .nm { font-size:.86rem; font-weight:650; color:var(--dim); }
+  .cell .k { font-size:2.2rem; font-weight:650; letter-spacing:-.03em; line-height:1.08; margin-top:6px; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+  .cell .k.txt { font-size:1.35rem; letter-spacing:-.01em; margin-top:10px; }
+  .cell .sub { font-size:.82rem; margin-top:2px; }
+  .cell .news { font-size:1rem; font-weight:650; margin-top:8px; line-height:1.4; }
+  .cell .rw { font-size:.8rem; color:var(--dim); margin-top:6px; }
+  .cell .rw .v { color:var(--ink); }
+  .cell .ft { font-size:.66rem; color:var(--faint); font-family:var(--mono); margin-top:8px; }
+
+  @media (max-width:900px) {
+    .trio { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .hero-main { grid-template-columns:1fr; gap:4px; }
+    .hero-foot { grid-template-columns:1fr; }
+    .grp { grid-template-columns:1fr; }
+    .grp > h2 { margin-bottom:12px; }
+    .grp > h2 small { display:inline; margin-left:8px; }
   }
-  @media (prefers-reduced-motion:reduce) { * { transition:none !important; } }
+  @media (max-width:640px) {
+    .page { padding:12px 16px 56px; }
+    .hero { padding:22px 18px 20px; border-radius:22px; }
+    .trio { grid-template-columns:1fr; gap:10px; }
+    .tri { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:2px 12px; padding:13px 16px; }
+    .tri .v { margin-top:0; grid-row:1 / span 2; grid-column:2; justify-content:flex-end; }
+    .tri .v b { font-size:1.7rem; }
+    .tri .n i { display:none; }
+    .tri .v { flex-direction:column; align-items:flex-end; gap:0; } .tri .v span { font-size:.72rem; }
+    .cells { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .cell, .cell:nth-child(3n+1) { padding:12px 12px 12px; border-left:1px solid var(--line); border-top:0; }
+    .cell:nth-child(2n+1) { border-left:0; padding-left:0; }
+    .cell:nth-child(n+3) { border-top:1px solid var(--line); }
+    .cell .k { font-size:1.6rem; } .cell .k.txt { font-size:1.08rem; }
+  }
+  /* 头条与四联：加深的描边与阴影 */
+  .hero { border:1px solid color-mix(in srgb, var(--hc) 45%, var(--line)) !important;
+    box-shadow:0 2px 4px rgba(90,60,40,.08), 0 14px 30px rgba(90,60,40,.16), 0 34px 70px rgba(90,60,40,.18) !important; }
+  .tri { border:1px solid var(--line-strong, var(--line)); box-shadow:0 2px 4px rgba(90,60,40,.07), 0 10px 24px rgba(90,60,40,.15) !important; }
+  html[data-theme="dark"] .hero, html[data-theme="dark"] .tri { box-shadow:0 18px 50px rgba(0,0,0,.6) !important; }
+  .grp { border-top-width:3px; }
+  /* 七项分项指标：条形图 */
+  .chips { display:block; }
+  .chips h3 { margin-bottom:4px; }
+  .ind { display:grid; grid-template-columns:6.6em minmax(0,1fr) 2em; align-items:center; gap:12px; padding:4px 0; font-size:.88rem; }
+  .ind .bar { height:8px; border-radius:99px; background:color-mix(in srgb, var(--ink) 9%, transparent); position:relative; overflow:hidden; }
+  .ind .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:99px; }
+  .ind .sc { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+  .ind .nm { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .trend .box { height:150px; }
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="page">
-    <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
-    <div class="masthead">
-      <div class="kick">数据中心 · The Data Center</div>
-      <h1>今日<b>市场</b>，一页读尽</h1>
-      <div class="date">15 个自动更新的实时数据应用 · <span id="mDate">—</span></div>
-    </div>
-    <div class="board" id="board"></div>
-    <footer id="foot"></footer>
+<div class="page">
+  <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+  <div class="mast">
+    <div class="kick">数据中心 · The Data Center</div><h1>今日<b>市场</b>，一页读尽</h1>
+    <div class="meta">15 个自动更新的实时数据应用 · <span id="mDate">—</span></div>
   </div>
-  <script src="app.js?v=20261026d"></script>
+
+  <a class="hero" id="hero" href="../fear-greed/" aria-label="打开恐慌与贪婪指数">
+    <div class="hero-top"><b>恐慌与贪婪指数</b><span>CNN Fear &amp; Greed Index</span></div>
+    <div class="hero-main">
+      <div><div class="big" id="big">—</div><div class="zone" id="zone">加载中…</div><div class="delta" id="delta"></div></div>
+      <div class="scale" id="scale"></div>
+    </div>
+    <div class="hero-foot">
+      <div class="trend"><div class="hd"><span>近一年走势（阴影：极度恐惧 &lt;25 / 极度贪婪 ≥76）</span><span id="trRange"></span></div><div class="box" id="trend"></div></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="srcline" id="fgSrc"></div>
+  </a>
+
+  <div class="trio" id="trio"></div>
+  <div class="wall" id="wall"></div>
+  <footer class="foot" id="foot"></footer>
+</div>
+  <script src="app.js?v=20261027a"></script>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
 
-<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页。应用按四类放进卡片，每张卡片里都能看到该应用的预览数字和说明，点进去打开完整页面。数据每日自动更新。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。</p></section>
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页。恐慌与贪婪指数放在首屏，附五档色带、七项分项和近一年走势；其余应用按类列出预览数字、频率和更新时间，点进去打开完整页面。数据每日自动更新。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。</p></section>
 </body>
 </html>
