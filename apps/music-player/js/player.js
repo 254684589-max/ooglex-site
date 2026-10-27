@@ -4,7 +4,6 @@
 
   var audio;
   var seek;
-  var volume;
   var view;
   var live;
   var queuePop;
@@ -18,9 +17,9 @@
     index: -1,
     seeking: false,
     objectUrl: "",
-    volume: 0.9,
+    // 音量交给手机或电脑的系统音量键；页内只保留静音开关。
+    volume: 1,
     muted: false,
-    lastVolume: 0.9,
     repeat: "off",
     shuffle: false,
     history: [],
@@ -855,8 +854,8 @@
     var mute = $("mute");
     if (mute) {
       mute.textContent = "";
-      mute.appendChild(icon(state.muted || state.volume === 0 ? "mute" : "vol"));
-      mute.setAttribute("aria-label", state.muted || state.volume === 0 ? "取消静音" : "静音");
+      mute.appendChild(icon(state.muted ? "mute" : "vol"));
+      mute.setAttribute("aria-label", state.muted ? "取消静音" : "静音");
       mute.setAttribute("aria-pressed", state.muted ? "true" : "false");
     }
     paintSeek();
@@ -1116,25 +1115,10 @@
     seek.addEventListener("pointercancel", endSeek);
     window.addEventListener("pointerup", endSeek);
 
-    volume.addEventListener("input", function () {
-      state.volume = Math.max(0, Math.min(1, Number(volume.value) / 100));
-      state.muted = state.volume === 0;
-      if (state.volume > 0) state.lastVolume = state.volume;
-      if (audio) audio.volume = state.volume;
-      remember("ooglex.music-player.volume", String(state.volume));
-      paintVolume();
-      paintTransport();
-    });
     $("mute").addEventListener("click", function () {
-      if (state.muted || state.volume === 0) {
-        state.muted = false;
-        state.volume = state.lastVolume || 0.9;
-      } else {
-        state.lastVolume = state.volume || 0.9;
-        state.muted = true;
-      }
+      state.muted = !state.muted;
       if (audio) audio.volume = state.muted ? 0 : state.volume;
-      paintVolume();
+      announce(state.muted ? "已静音" : "已取消静音");
       paintTransport();
     });
 
@@ -1206,14 +1190,6 @@
     }
   }
 
-  function paintVolume() {
-    var shown = state.muted ? 0 : Math.round(state.volume * 100);
-    volume.value = String(shown);
-    volume.style.setProperty("--p", shown + "%");
-    volume.setAttribute("aria-valuenow", String(shown));
-    volume.setAttribute("aria-valuetext", shown + "%");
-  }
-
   async function load() {
     state.loadError = "";
     state.draftMode = /(?:^|[?&])draft=1(?:&|$)/.test(location.search);
@@ -1244,23 +1220,17 @@
   function main() {
     audio = $("audio");
     seek = $("seek");
-    volume = $("volume");
     view = $("view");
     live = $("live");
     queuePop = $("queue-pop");
     try {
-      var rawVolume = localStorage.getItem("ooglex.music-player.volume");
-      if (rawVolume != null) {
-        var saved = Number(rawVolume);
-        if (isFinite(saved) && saved >= 0 && saved <= 1) state.volume = saved;
-      }
+      // 以前存过的页内音量不再使用，免得有人调低后再也调不回来。
+      localStorage.removeItem("ooglex.music-player.volume");
       var rawRepeat = localStorage.getItem("ooglex.music-player.repeat");
       if (rawRepeat === "all" || rawRepeat === "one" || rawRepeat === "off") state.repeat = rawRepeat;
       state.shuffle = localStorage.getItem("ooglex.music-player.shuffle") === "1";
-    } catch (err) { /* 使用默认音量 */ }
-    state.lastVolume = state.volume || 0.9;
+    } catch (err) { /* 本机存储不可用时用默认设置 */ }
     audio.volume = state.volume;
-    paintVolume();
     bindTransport();
     bindMini();
     paintTransport();

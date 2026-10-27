@@ -20,7 +20,6 @@
   --mp-chip-on: #e0c36a;
   --mp-chip-on-ink: #1c1608;
   --mp-track: rgba(255, 255, 255, .16);
-  --mp-vol: rgba(255, 255, 255, .72);
   --mp-shadow: 0 24px 60px rgba(0, 0, 0, .38);
   --mp-shadow-sm: 0 10px 26px rgba(0, 0, 0, .32);
   --mp-ambient: .34;
@@ -42,7 +41,6 @@ html[data-theme="paper"] {
   --mp-chip-on: #18140f;
   --mp-chip-on-ink: #ffffff;
   --mp-track: rgba(26, 22, 19, .14);
-  --mp-vol: rgba(26, 22, 19, .6);
   --mp-shadow: 0 24px 60px rgba(60, 40, 20, .12);
   --mp-shadow-sm: 0 10px 24px rgba(60, 40, 20, .12);
   --mp-ambient: .22;
@@ -272,18 +270,10 @@ h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.2; lette
 #play[aria-label="播放"] .ico { transform: translateX(2px); }
 .ico { width: 22px; height: 22px; display: block; }
 #play .ico { width: 28px; height: 28px; }
-/* 音量行：细、中性色、两端是静音与歌单，和金色的播放进度一眼区分。 */
-.volume-wrap { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
-.volume-wrap input[type="range"] { flex: 1; width: auto; }
+/* 播控下方的小工具行：左静音、右歌单。音量交给系统音量键，页内不再放音量条。 */
+.volume-wrap { display: flex; align-items: center; justify-content: space-between; width: min(100%, 320px); margin: 6px auto 0; }
 #mute .ico, #queue-btn .ico { width: 20px; height: 20px; }
-#volume::-webkit-slider-runnable-track {
-  height: 3px;
-  background: linear-gradient(90deg, var(--mp-vol) var(--p, 0%), var(--mp-track) var(--p, 0%));
-}
-#volume::-webkit-slider-thumb { width: 12px; height: 12px; margin-top: -4.5px; background: var(--mp-vol); box-shadow: none; }
-#volume::-moz-range-track { height: 3px; }
-#volume::-moz-range-progress { height: 3px; background: var(--mp-vol); }
-#volume::-moz-range-thumb { width: 12px; height: 12px; background: var(--mp-vol); }
+#mute[aria-pressed="true"] { color: var(--mp-accent-text); opacity: 1; }
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;

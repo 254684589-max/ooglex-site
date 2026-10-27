@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 与网页深色主题的底色一致，启动时不闪白 -->
+    <color name="night">#07141C</color>
+</resources>

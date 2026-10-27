@@ -89,11 +89,11 @@ html[data-theme="ft"] .qr .q, html[data-theme="paper"] .qr .q { background: var(
   <div class="card">
     <img class="icon" src="/apps/music-player/icons/icon.svg" alt="流光播放器">
     <h1>流光播放器</h1>
-    <div class="meta">Android 调试版 · 版本 1.0 · Android 5.1+<br>包名 com.ooglex.music001</div>
+    <div class="meta" id="appMeta">Android 版 · Android 5.1+<br>包名 com.ooglex.music001</div>
     <p class="lead">按专辑听。预置曲目是免版税样例，点开才会出声。<br>安装包打开的是同一套网页，需要联网。</p>
 
     <a class="dl" id="dlBtn" href="ooglex-music.apk" download="流光播放器.apk">下载 Android APK</a>
-    <div class="dl-sub" id="dlSub">约 3.6 MB · 调试签名，未上架应用商店。点按后开始下载，下完打开即可安装。</div>
+    <div class="dl-sub" id="dlSub">未上架应用商店。点按后开始下载，下完打开即可安装。</div>
 
     <div class="steps">
       <h2>安装步骤（未知来源）</h2>
@@ -103,6 +103,7 @@ html[data-theme="ft"] .qr .q, html[data-theme="paper"] .qr .q { background: var(
         <li>若提示「<b>未知来源</b>」或「禁止安装未知应用」，点<b>允许本次安装</b>；或到系统设置里，允许当前浏览器安装未知应用</li>
         <li>点<b>安装</b>。完成后桌面出现「流光播放器」图标</li>
       </ol>
+      <div class="note"><b>装过旧版的请先卸载。</b>2026-10-27 起安装包改由本站自动构建，桌面图标换成新的音符图标；签名与旧包不同，直接覆盖安装会提示「与已安装的应用冲突」或「签名不一致」。先长按旧图标卸载，再安装新包即可。</div>
       <div class="note">这是<b>调试版</b>安装包，使用 Android 调试证书签名，没有上架应用商店，也没有单独的付费签名。部分手机的 Play 保护机制会提示「未知开发者」——点<b>「仍然安装」</b>或<b>「详细信息 → 继续安装」</b>即可。装好后需要联网，外壳会打开 <a href="/apps/music-player/">流光播放器网页版</a>。更多说明见 <a href="/apps/app-zone/music-player/">专区说明页</a>。</div>
     </div>
 
@@ -120,5 +121,21 @@ html[data-theme="ft"] .qr .q, html[data-theme="paper"] .qr .q { background: var(
       <a href="/apps/app-zone/music-player/">专区说明</a>
     </div>
   </div>
+<script>
+/* 版本、大小、签名取自构建时一起发布的 ooglex-music.json；读不到就保留上面的通用说明。 */
+(function () {
+  fetch("ooglex-music.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (m) {
+    if (!m || !m.version_name) return;
+    var meta = document.getElementById("appMeta");
+    var sub = document.getElementById("dlSub");
+    var signing = m.signing === "release" ? "正式签名" : "调试签名";
+    meta.textContent = "";
+    meta.appendChild(document.createTextNode("Android " + signing + " · 版本 " + m.version_name + " · Android " + (m.min_android || "5.1") + "+"));
+    meta.appendChild(document.createElement("br"));
+    meta.appendChild(document.createTextNode("包名 " + (m.package || "com.ooglex.music001") + (m.built_at ? " · 构建于 " + String(m.built_at).slice(0, 10) : "")));
+    if (m.apk_bytes) sub.textContent = "约 " + (m.apk_bytes / 1048576).toFixed(1) + " MB · " + signing + "，未上架应用商店。点按后开始下载，下完打开即可安装。";
+  }).catch(function () {});
+})();
+</script>
 </body>
 </html>
