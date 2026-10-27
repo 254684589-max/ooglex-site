@@ -1,11 +1,12 @@
 {
-  "api": "https://ooglex-jamendo-proxy.zlq6600e.workers.dev",
+  "api": "https://music-api.ooglex.com",
+  "apiFallback": "https://ooglex-jamendo-proxy.zlq6600e.workers.dev",
   "source": "Jamendo",
   "sourceUrl": "https://www.jamendo.com/",
   "frequency": "on-demand",
   "demo": false,
-  "updatedAt": "2026-10-27T16:00:00Z",
-  "note": "全球曲库只存目录查询的接口地址，不存音频。曲目与音频由 Jamendo 提供，每首按其 Creative Commons 许可署名。api 是 workers/jamendo-proxy 的地址；改回空字符串即关闭全球曲库，页面显示「尚未开通」。",
+  "updatedAt": "2026-10-27T17:00:00Z",
+  "note": "全球曲库只存目录查询的接口地址，不存音频。曲目与音频由 Jamendo 提供，每首按其 Creative Commons 许可署名。api 是 workers/jamendo-proxy 的自定义域名（中国大陆可访问）；apiFallback 是同一个 Worker 的 workers.dev 地址，主地址连不上时再试。api 改回空字符串即关闭全球曲库，页面显示「尚未开通」。",
   "genres": [
     { "tag": "", "label": "全部" },
     { "tag": "pop", "label": "流行" },

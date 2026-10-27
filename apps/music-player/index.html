@@ -15,15 +15,16 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07141c">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
-<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027a">
+<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027d">
 <script>
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
 </script>
 <script src="/assets/theme.js?v=20260926k" defer></script>
 <script src="/apps/music-player/js/store.js?v=20261025b" defer></script>
-<script src="/apps/music-player/js/player.js?v=20261027b" defer></script>
+<script src="/apps/music-player/js/player.js?v=20261027c" defer></script>
 </head>
 <body>
+  <div id="ambient" class="ambient" aria-hidden="true"></div>
   <main>
     <section class="stage" aria-label="正在播放">
       <header class="mast">
@@ -46,7 +47,6 @@
         <p id="now-artist">从专辑里点一首</p>
       </div>
       <div class="transport">
-        <button type="button" id="queue-btn" aria-label="歌单" aria-expanded="false" aria-controls="queue-pop"></button>
         <button type="button" id="repeat" aria-label="循环：关" aria-pressed="false"></button>
         <button type="button" id="prev" aria-label="上一首"></button>
         <button type="button" id="play" aria-label="播放" aria-pressed="false"></button>
@@ -56,6 +56,7 @@
       <div class="volume-wrap">
         <button type="button" id="mute" aria-label="静音" aria-pressed="false"></button>
         <input id="volume" type="range" min="0" max="100" value="90" step="1" aria-label="音量">
+        <button type="button" id="queue-btn" aria-label="歌单" aria-expanded="false" aria-controls="queue-pop"></button>
       </div>
       <p id="notice" hidden></p>
       <div id="queue-pop" class="queue-pop" hidden></div>
@@ -71,6 +72,14 @@
       <p class="empty">正在读取专辑…</p>
     </div>
   </main>
+  <div id="mini" class="mini" role="region" aria-label="迷你播放条" hidden>
+    <button type="button" id="mini-open" class="mini-open" aria-label="回到播放器">
+      <span id="mini-thumb" class="mini-thumb"></span>
+      <span class="mini-copy"><span id="mini-title" class="mini-title"></span><span id="mini-artist" class="mini-artist"></span></span>
+    </button>
+    <button type="button" id="mini-play" class="mini-btn" aria-label="播放"></button>
+    <button type="button" id="mini-next" class="mini-btn" aria-label="下一首"></button>
+  </div>
   <p id="live" class="sr" aria-live="polite"></p>
   <audio id="audio" preload="metadata"></audio>
   <noscript><p class="empty">需要开启 JavaScript 才能播放。</p></noscript>
