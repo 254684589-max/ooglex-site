@@ -1,0 +1,11 @@
+name = "ooglex-jamendo-proxy"
+main = "worker.js"
+compatibility_date = "2026-10-21"
+workers_dev = true
+
+# 没有绑定自定义域名。部署后用 workers.dev 地址即可；要换成自己的子域名，见 README。
+# client_id 不写在这里：wrangler secret put JAMENDO_CLIENT_ID
+
+[vars]
+# 浏览器页面来源。本地 127.0.0.1 / localhost 在代码里另外放行，方便验收。
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"

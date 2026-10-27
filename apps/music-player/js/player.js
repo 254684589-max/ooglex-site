@@ -24,7 +24,21 @@
     repeat: "off",
     shuffle: false,
     history: [],
-    notice: ""
+    notice: "",
+    global: {
+      config: null,
+      configError: "",
+      tag: "",
+      order: "popular",
+      q: "",
+      albumId: "",
+      status: "idle",
+      message: "",
+      updatedAt: "",
+      hasMore: false,
+      seq: 0
+    },
+    globalAlbums: {}
   };
 
   function $(id) { return document.getElementById(id); }
@@ -113,7 +127,7 @@
   function findAlbum(id) {
     var albums = (state.catalog && state.catalog.albums) || [];
     for (var i = 0; i < albums.length; i++) if (albums[i].id === id) return albums[i];
-    return null;
+    return state.globalAlbums[id] || null;
   }
 
   function currentAlbum() {
@@ -148,6 +162,7 @@
     catch (err) { hash = location.hash || ""; }
     var match = /^#\/album\/([a-z0-9][a-z0-9-]{0,48})$/.exec(hash);
     if (match) return { name: "album", id: match[1] };
+    if (hash === "#/global") return { name: "global" };
     return { name: "list" };
   }
 
@@ -182,6 +197,12 @@
   }
 
   function renderList() {
+    var entry = h("a", "global-entry");
+    entry.href = "#/global";
+    entry.appendChild(h("span", "ge-title", "全球曲库"));
+    entry.appendChild(h("span", "ge-sub", globalEntryText()));
+    entry.appendChild(h("span", "ge-go", "进入 →"));
+    view.appendChild(entry);
     view.appendChild(h("h2", "section-title", "专辑"));
     if (!visibleAlbums().length) {
       view.appendChild(h("p", "empty", "还没有可播放的专辑。"));
@@ -269,6 +290,367 @@
     view.appendChild(layout);
   }
 
+
+  /* ---------------- 全球曲库：Jamendo 独立音乐目录，经 workers/jamendo-proxy 查询 ---------------- */
+
+  var GLOBAL_ORDERS = [
+    { key: "popular", label: "近一月热门" },
+    { key: "week", label: "本周热门" },
+    { key: "new", label: "最新发布" }
+  ];
+
+  function globalEntryText() {
+    var g = state.global;
+    if (g.configError) return "配置没有读到，点进去重试";
+    if (!g.config) return "正在读取…";
+    if (!g.config.api) return "尚未开通 · Jamendo 授权独立音乐";
+    return (g.config.genres || []).length + " 种曲风 · Jamendo 授权独立音乐 · 本站不存音频";
+  }
+
+  // 不信任接口返回：只放行 Jamendo / Creative Commons 的 https 地址，文字只走 textContent。
+  function safeUrl(value, hosts) {
+    try {
+      var url = new URL(String(value || ""));
+      if (url.protocol !== "https:") return "";
+      var ok = hosts.some(function (host) { return url.hostname === host || url.hostname.slice(-(host.length + 1)) === "." + host; });
+      return ok ? url.href : "";
+    } catch (err) { return ""; }
+  }
+
+  function cleanGlobalTrack(raw) {
+    if (!raw || typeof raw !== "object" || !/^\d{1,20}$/.test(String(raw.id || ""))) return null;
+    var src = safeUrl(raw.src, ["jamendo.com"]);
+    var license = safeUrl(raw.license, ["creativecommons.org"]);
+    if (!src || !license) return null;
+    var dur = Number(raw.durationSec);
+    return {
+      id: "j" + raw.id,
+      title: String(raw.title || "未命名").slice(0, 120),
+      artist: String(raw.artist || "未知艺人").slice(0, 80),
+      album: String(raw.album || "").slice(0, 120),
+      durationSec: isFinite(dur) && dur > 0 ? Math.round(dur) : 0,
+      image: safeUrl(raw.image, ["jamendo.com"]),
+      src: src,
+      license: license,
+      page: safeUrl(raw.page, ["jamendo.com"]),
+      source: "Jamendo"
+    };
+  }
+
+  function licenseName(url) {
+    var m = /\/licenses\/([a-z-]+)\/([\d.]+)/.exec(url || "");
+    return m ? "CC " + m[1].toUpperCase() + " " + m[2] : "Creative Commons";
+  }
+
+  function genreLabel(tag) {
+    var list = (state.global.config && state.global.config.genres) || [];
+    for (var i = 0; i < list.length; i++) if (list[i].tag === tag) return list[i].label;
+    return tag || "全部";
+  }
+
+  function globalKey() {
+    var g = state.global;
+    return "global:" + g.tag + ":" + g.order + ":" + g.q.toLowerCase();
+  }
+
+  // 重绘会换掉整块节点。焦点原本在这块里（刚点的曲风、搜索框、加载更多），就还给同一个控件。
+  function rerenderGlobal() {
+    if (parseRoute().name !== "global") return;
+    var active = document.activeElement;
+    var key = active && view.contains(active) && active.dataset ? (active.dataset.focus || "") : "";
+    skipAlbumScroll = true;
+    renderView();
+    if (!key) return;
+    var target = view.querySelector('[data-focus="' + key + '"]');
+    if (target) try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+  }
+
+  function onRoute() {
+    renderView();
+    var g = state.global;
+    if (parseRoute().name === "global" && g.config && g.config.api && g.status !== "loading" && !state.globalAlbums[globalKey()]) {
+      fetchGlobal(false);
+    }
+  }
+
+  function globalError(code) {
+    if (code === "not_configured") return "接口已部署，但还没配置 Jamendo client_id。";
+    if (code === "rate_limited") return "请求太频繁了，请一分钟后再试。";
+    if (code === "timeout") return "Jamendo 响应超时，请稍后重试。";
+    if (code === "bad_request") return "查询条件不对，换个曲风或关键词试试。";
+    return "全球曲库暂时连不上，请稍后重试。已加载的曲目仍可播放。";
+  }
+
+  async function loadGlobalConfig() {
+    var g = state.global;
+    g.configError = "";
+    try {
+      var res = await fetch("/apps/music-player/data/global.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      var data = await res.json();
+      if (!data || !Array.isArray(data.genres)) throw new Error("格式不对");
+      var api = safeApi(data.api);
+      g.config = { api: api, genres: data.genres.filter(function (x) {
+        return x && typeof x.label === "string" && /^(?:[a-z]{2,16})?$/.test(String(x.tag || ""));
+      }), source: String(data.source || "Jamendo"), sourceUrl: safeUrl(data.sourceUrl, ["jamendo.com"]) };
+    } catch (err) {
+      g.config = null;
+      g.configError = "全球曲库的配置没有读到。";
+    }
+    if (parseRoute().name === "list") { skipAlbumScroll = true; renderView(); }
+    else if (parseRoute().name === "global") {
+      rerenderGlobal();
+      if (g.config && g.config.api && !state.globalAlbums[globalKey()]) fetchGlobal(false);
+    }
+  }
+
+  function safeApi(value) {
+    try {
+      var url = new URL(String(value || ""));
+      var local = url.hostname === "127.0.0.1" || url.hostname === "localhost";
+      if (url.protocol !== "https:" && !(local && url.protocol === "http:")) return "";
+      return url.href.replace(/\/+$/, "");
+    } catch (err) { return ""; }
+  }
+
+  async function fetchGlobal(append) {
+    var g = state.global;
+    if (!g.config || !g.config.api) return;
+    var key = globalKey();
+    var album = state.globalAlbums[key];
+    if (!append && album) {
+      g.albumId = key;
+      g.status = album.tracks.length ? "ok" : "empty";
+      g.hasMore = album.hasMore;
+      g.updatedAt = album.updatedAt;
+      g.message = "";
+      rerenderGlobal();
+      return;
+    }
+    var seq = ++g.seq;
+    var offset = append && album ? album.nextOffset : 0;
+    g.status = append ? "more" : "loading";
+    g.message = "";
+    if (!append) g.albumId = "";
+    rerenderGlobal();
+    var params = new URLSearchParams();
+    if (g.tag) params.set("tag", g.tag);
+    params.set("order", g.order);
+    params.set("offset", String(offset));
+    if (g.q) params.set("q", g.q);
+    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 10000);
+    var data = null;
+    var code = "";
+    try {
+      var res = await fetch(g.config.api + "/tracks?" + params.toString(), ctrl ? { signal: ctrl.signal } : {});
+      try { data = await res.json(); } catch (err) { data = null; }
+      if (!res.ok || !data || data.status === "error") code = (data && data.error) || "upstream";
+    } catch (err) {
+      code = err && err.name === "AbortError" ? "timeout" : "upstream";
+    }
+    clearTimeout(timer);
+    if (seq !== g.seq) return;
+    if (code || !data || !Array.isArray(data.tracks)) {
+      g.status = append ? "ok" : "error";
+      if (append && album) g.albumId = key;
+      g.message = globalError(code || "upstream");
+      rerenderGlobal();
+      return;
+    }
+    var tracks = data.tracks.map(cleanGlobalTrack).filter(Boolean);
+    if (!album || !append) {
+      var title = g.q ? "搜索：" + g.q : genreLabel(g.tag);
+      album = {
+        id: key,
+        title: "全球曲库 · " + title,
+        artist: "多位艺人",
+        global: true,
+        tracks: []
+      };
+      state.globalAlbums[key] = album;
+    }
+    var seen = {};
+    album.tracks.forEach(function (t) { seen[t.id] = true; });
+    tracks.forEach(function (t) { if (!seen[t.id]) { album.tracks.push(t); seen[t.id] = true; } });
+    album.nextOffset = offset + (Number(data.pageSize) || 20);
+    album.hasMore = !!data.hasMore;
+    album.updatedAt = String(data.updatedAt || "");
+    album.partial = album.partial || data.status === "partial" || tracks.length < data.tracks.length;
+    g.albumId = key;
+    g.hasMore = album.hasMore;
+    g.updatedAt = album.updatedAt;
+    g.status = album.tracks.length ? "ok" : "empty";
+    rerenderGlobal();
+  }
+
+  function pickGlobal(change) {
+    var g = state.global;
+    Object.keys(change).forEach(function (k) { g[k] = change[k]; });
+    fetchGlobal(false);
+  }
+
+  function chip(label, on, onClick, focusKey) {
+    var b = h("button", "chip" + (on ? " is-on" : ""), label);
+    b.type = "button";
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.dataset.focus = focusKey;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function renderGlobal() {
+    var g = state.global;
+    var back = h("a", "text-link", "← 全部专辑");
+    back.href = "#/";
+    view.appendChild(back);
+    var head = h("div", "global-head");
+    head.appendChild(h("p", "kicker", "GLOBAL LIBRARY"));
+    head.appendChild(h("h2", "album-title", "全球曲库"));
+    var about = h("p", "global-about");
+    about.appendChild(document.createTextNode("来自 "));
+    var src = h("a", null, "Jamendo");
+    src.href = "https://www.jamendo.com/";
+    src.target = "_blank";
+    src.rel = "noopener noreferrer";
+    about.appendChild(src);
+    about.appendChild(document.createTextNode(" 的全球独立音乐人作品，每首按其 Creative Commons 许可署名。音频直接从 Jamendo 播放，本站不存储。这里没有主流唱片公司的热门歌。"));
+    head.appendChild(about);
+    view.appendChild(head);
+
+    if (g.configError) {
+      view.appendChild(h("p", "global-status is-error", "⚠ " + g.configError));
+      var retryCfg = h("button", "text-btn", "重试");
+      retryCfg.type = "button";
+      retryCfg.addEventListener("click", loadGlobalConfig);
+      view.appendChild(retryCfg);
+      return;
+    }
+    if (!g.config) {
+      view.appendChild(h("p", "global-status", "正在读取全球曲库配置…"));
+      return;
+    }
+    if (!g.config.api) {
+      view.appendChild(h("p", "global-status is-off", "○ 尚未开通：查询接口还没部署，暂时听不了。本站原创专辑照常可听。"));
+      return;
+    }
+
+    var genres = h("div", "chips genres");
+    genres.setAttribute("role", "group");
+    genres.setAttribute("aria-label", "曲风");
+    g.config.genres.forEach(function (item) {
+      genres.appendChild(chip(item.label, !g.q && g.tag === item.tag, function () {
+        pickGlobal({ tag: item.tag, q: "" });
+      }, "tag:" + item.tag));
+    });
+    view.appendChild(genres);
+    var picked = genres.querySelector(".chip.is-on");
+    if (picked && genres.scrollWidth > genres.clientWidth) {
+      genres.scrollLeft = Math.max(0, picked.offsetLeft - genres.offsetLeft - genres.clientWidth / 2 + picked.offsetWidth / 2);
+    }
+
+    var orders = h("div", "chips seg");
+    orders.setAttribute("role", "group");
+    orders.setAttribute("aria-label", "排序");
+    GLOBAL_ORDERS.forEach(function (item) {
+      orders.appendChild(chip(item.label, g.order === item.key, function () {
+        pickGlobal({ order: item.key });
+      }, "order:" + item.key));
+    });
+    view.appendChild(orders);
+
+    var form = h("form", "global-search");
+    form.setAttribute("role", "search");
+    var input = h("input");
+    input.type = "search";
+    input.maxLength = 40;
+    input.placeholder = "搜索歌名或艺人";
+    input.setAttribute("aria-label", "搜索全球曲库");
+    input.value = g.q;
+    input.dataset.focus = "search";
+    var go = h("button", "text-btn", "搜索");
+    go.type = "submit";
+    form.appendChild(input);
+    form.appendChild(go);
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var q = input.value.replace(/\s+/g, " ").trim().slice(0, 40);
+      pickGlobal({ q: q, tag: q ? "" : g.tag });
+    });
+    view.appendChild(form);
+
+    var album = state.globalAlbums[g.albumId];
+    var status = h("p", "global-status");
+    status.setAttribute("role", "status");
+    if (g.status === "loading" || g.status === "idle") status.textContent = "正在从 Jamendo 读取曲目…";
+    else if (g.status === "error") { status.className += " is-error"; status.textContent = "⚠ " + g.message; }
+    else if (g.status === "empty") status.textContent = g.q ? "没有找到「" + g.q + "」相关的曲目。" : "这个曲风暂时没有曲目。";
+    else {
+      var bits = ["来源 Jamendo"];
+      if (album) bits.push(album.tracks.length + " 首");
+      if (g.updatedAt) bits.push("查询于 " + g.updatedAt.replace("T", " ").slice(0, 16) + " UTC");
+      if (album && album.partial) bits.push("部分曲目缺少可播音频或许可，已略过");
+      status.textContent = bits.join(" · ");
+      if (g.message) {
+        status.className += " is-error";
+        status.textContent = "⚠ " + g.message + " " + status.textContent;
+      }
+    }
+    view.appendChild(status);
+    if (g.status === "error") {
+      var retry = h("button", "text-btn", "重试");
+      retry.type = "button";
+      retry.addEventListener("click", function () { fetchGlobal(false); });
+      view.appendChild(retry);
+    }
+
+    if (album && album.tracks.length) {
+      var list = h("ol", "tracks global-tracks");
+      album.tracks.forEach(function (track, index) {
+        var li = h("li");
+        var btn = h("button", "track");
+        btn.type = "button";
+        btn.dataset.album = album.id;
+        btn.dataset.id = track.id;
+        btn.dataset.index = String(index);
+        btn.appendChild(h("span", "idx", String(index + 1)));
+        var titles = h("span", "titles");
+        titles.appendChild(h("span", "t-title", track.title));
+        titles.appendChild(h("span", "t-artist", track.artist + (track.album && track.album !== track.title ? " · " + track.album : "")));
+        btn.appendChild(titles);
+        btn.appendChild(h("span", "flag", ""));
+        btn.appendChild(h("span", "t-time", track.durationSec ? fmt(track.durationSec) : ""));
+        btn.addEventListener("click", function () { onTrackClick(album, index); });
+        li.appendChild(btn);
+        var links = h("p", "t-links");
+        var lic = h("a", null, licenseName(track.license));
+        lic.href = track.license;
+        lic.target = "_blank";
+        lic.rel = "noopener noreferrer";
+        links.appendChild(lic);
+        if (track.page) {
+          links.appendChild(document.createTextNode(" · "));
+          var pg = h("a", null, "在 Jamendo 查看");
+          pg.href = track.page;
+          pg.target = "_blank";
+          pg.rel = "noopener noreferrer";
+          links.appendChild(pg);
+        }
+        li.appendChild(links);
+        list.appendChild(li);
+      });
+      view.appendChild(list);
+      if (g.hasMore) {
+        var more = h("button", "text-btn global-more", g.status === "more" ? "正在加载…" : "加载更多");
+        more.type = "button";
+        more.disabled = g.status === "more";
+        more.dataset.focus = "more";
+        more.addEventListener("click", function () { fetchGlobal(true); });
+        view.appendChild(more);
+      }
+    }
+  }
+
   var skipAlbumScroll = true;
 
   function reduceMotion() {
@@ -281,6 +663,12 @@
     var route = parseRoute();
     state.viewAlbumId = route.name === "album" ? route.id : "";
     view.textContent = "";
+    if (route.name === "global") {
+      renderGlobal();
+      paintCurrent();
+      scrollToView(route);
+      return;
+    }
     if (state.loadError) {
       view.appendChild(h("p", "empty", state.loadError));
       var retry = h("button", "text-btn", "重试");
@@ -302,7 +690,11 @@
     if (route.name === "album") renderAlbum(route.id);
     else renderList();
     paintCurrent();
-    if (!skipAlbumScroll && route.name === "album") {
+    scrollToView(route);
+  }
+
+  function scrollToView(route) {
+    if (!skipAlbumScroll && (route.name === "album" || route.name === "global")) {
       requestAnimationFrame(function () {
         view.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
       });
@@ -345,14 +737,16 @@
     var by = $("now-artist");
     var play = $("play");
     if (title) title.textContent = track ? track.title : "尚未选择曲目";
-    if (by) by.textContent = track ? artistOf(track, album) : "从专辑里点一首";
+    if (by) by.textContent = track ? artistOf(track, album) + (track.source ? " · " + track.source : "") : "从专辑里点一首";
     var art = $("now-art");
-    var artKey = (album && album.cover) || (album && album.id) || "";
+    // 全球曲库每首自带封面，按曲目换；本站专辑仍用专辑封面。
+    var artFrom = track && track.image ? { title: track.title, cover: track.image } : album;
+    var artKey = (artFrom && artFrom.cover) || (album && album.id) || "";
     if (art && art.dataset.art !== artKey) {
       art.dataset.art = artKey;
       var spinning = art.classList.contains("is-spinning");
       art.textContent = "";
-      art.appendChild(coverNode(album || { title: "流" }, "cover sm"));
+      art.appendChild(coverNode(artFrom || { title: "流" }, "cover sm"));
       if (spinning) art.classList.add("is-spinning");
     }
     var playing = !!(audio && !audio.paused && audio.src);
@@ -484,8 +878,9 @@
     try {
       if (!("mediaSession" in navigator)) return;
       var art = [];
-      if (album.cover && album.cover.indexOf("idb:") !== 0) {
-        art.push({ src: new URL(album.cover, location.href).href });
+      var cover = track.image || album.cover;
+      if (cover && cover.indexOf("idb:") !== 0) {
+        art.push({ src: new URL(cover, location.href).href });
       }
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title || "",
@@ -726,8 +1121,9 @@
     paintVolume();
     bindTransport();
     paintTransport();
-    window.addEventListener("hashchange", renderView);
+    window.addEventListener("hashchange", onRoute);
     load();
+    loadGlobalConfig();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", main);

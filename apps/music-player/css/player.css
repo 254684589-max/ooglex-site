@@ -391,6 +391,91 @@ input[type="range"]::-moz-range-thumb {
   color: var(--ink);
 }
 .draft-banner { padding: 10px 12px; margin: 0 0 12px; line-height: 1.55; font-size: 13px; }
+.global-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  align-items: center;
+  margin: 16px 0 4px;
+  padding: 14px 16px;
+  min-height: 64px;
+  border-radius: 16px;
+  text-decoration: none;
+  border: 1px solid rgba(224, 195, 106, .38);
+  background: linear-gradient(120deg, rgba(224, 195, 106, .1), rgba(16, 92, 104, .22));
+}
+.global-entry:hover { border-color: rgba(224, 195, 106, .75); }
+.ge-title { font-weight: 700; font-size: 16px; }
+.ge-sub { grid-column: 1; color: var(--dim); font-size: 13px; }
+.ge-go { grid-column: 2; grid-row: 1 / span 2; color: var(--gold); font-size: 14px; white-space: nowrap; }
+.global-head { margin: 4px 0 12px; }
+.global-head .kicker { margin: 0 0 2px; }
+.global-about { margin: 8px 0 0; color: var(--dim); font-size: 13px; line-height: 1.6; }
+.global-about a, .t-links a { color: var(--gold); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
+.chip {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 14px;
+  touch-action: manipulation;
+}
+.chip:hover { border-color: rgba(224, 195, 106, .6); }
+.chip.is-on { background: var(--gold); border-color: var(--gold); color: var(--on-gold); font-weight: 700; }
+.chip.is-on::before { content: "✓ "; }
+.seg .chip { font-size: 13px; min-height: 34px; }
+.global-search { display: flex; gap: 8px; margin: 0 0 10px; }
+.global-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .04);
+}
+.global-status { margin: 8px 0; color: var(--dim); font-size: 13px; line-height: 1.55; }
+.global-status.is-error { color: #f2b8a2; }
+.global-status.is-off {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--line);
+  color: var(--ink);
+}
+.global-tracks li { display: flex; flex-direction: column; gap: 2px; }
+@media (max-width: 599px) {
+  .chips.genres {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 2px 16px 6px;
+    scroll-padding: 0 16px;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent);
+  }
+  .chips.genres::-webkit-scrollbar { display: none; }
+  .chips.genres .chip { flex: 0 0 auto; }
+}
+.t-links { margin: 0 0 0 50px; font-size: 12px; color: var(--dim); }
+.t-links a { display: inline-block; padding: 4px 0; }
+.global-more { margin: 12px 0 0; width: 100%; }
+.global-more:disabled { opacity: .6; cursor: progress; }
+html[data-theme="ft"] .chip.is-on,
+html[data-theme="paper"] .chip.is-on { background: #0d7680; border-color: #0d7680; color: #fff; }
+html[data-theme="ft"] .global-about a,
+html[data-theme="paper"] .global-about a,
+html[data-theme="ft"] .t-links a,
+html[data-theme="paper"] .t-links a,
+html[data-theme="ft"] .ge-go,
+html[data-theme="paper"] .ge-go { color: #8a6100; }
+html[data-theme="ft"] .global-status.is-error,
+html[data-theme="paper"] .global-status.is-error { color: #a33a12; }
+html[data-theme="ft"] .global-search input,
+html[data-theme="paper"] .global-search input { background: rgba(255, 255, 255, .7); }
 .sr {
   position: absolute;
   width: 1px;
@@ -458,6 +543,8 @@ html[data-theme="paper"] summary:focus-visible { outline-color: #0d7680; }
   .transport button, #mute { width: 40px; flex-basis: 40px; }
   .track { grid-template-columns: 22px minmax(0, 1fr) auto; }
   .flag { grid-column: 2; grid-row: 2; text-align: left; }
+  .t-links { margin-left: 44px; }
+  .chips.genres { margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px; }
 }
 @media (max-height: 680px) and (max-width: 520px) {
   .disc-wrap { width: min(48vh, 200px); margin-top: 8px; margin-bottom: 2px; }
