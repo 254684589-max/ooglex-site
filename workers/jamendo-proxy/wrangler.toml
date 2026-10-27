@@ -3,7 +3,13 @@ main = "worker.js"
 compatibility_date = "2026-10-21"
 workers_dev = true
 
-# 没有绑定自定义域名。部署后用 workers.dev 地址即可；要换成自己的子域名，见 README。
+# 自定义域名：workers.dev 在中国大陆基本打不开，所以绑定 ooglex.com 下的子域名。
+# 部署时由 wrangler 在现有 Cloudflare 区内创建这条主机记录（与 sec-facts.ooglex.com 同一做法）。
+# workers.dev 地址保留，作为 global.json 的 apiFallback。
+[[routes]]
+pattern = "music-api.ooglex.com"
+custom_domain = true
+
 # client_id 不写在这里：wrangler secret put JAMENDO_CLIENT_ID
 
 [vars]

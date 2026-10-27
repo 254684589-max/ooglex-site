@@ -2,7 +2,7 @@ name: Deploy Jamendo proxy
 
 # 流光播放器「全球曲库」的 Jamendo 目录代理。合并到 main 且本目录有改动时部署，也可手动运行。
 # 需要：仓库里已在用的 CLOUDFLARE_API_TOKEN，以及新增的仓库 Secret JAMENDO_CLIENT_ID。
-# 不绑定自定义域名，不改 www 的解析，不新增付费服务。
+# 绑定自定义域名 music-api.ooglex.com（中国大陆可访问；workers.dev 打不开），不改 www 的解析，不新增付费服务。
 on:
   workflow_dispatch:
     inputs:
@@ -129,6 +129,17 @@ jobs:
             fi
             sleep 5
           done
+          # 自定义域名（中国大陆用这个）。首次绑定时证书签发可能要几分钟，最多等约 3 分钟。
+          CUSTOM=https://music-api.ooglex.com
+          ok=""
+          for i in $(seq 1 36); do
+            if curl -sS -m 10 -H 'Origin: https://www.ooglex.com' "$CUSTOM/health" 2>/dev/null | grep -q '"configured":true'; then
+              ok=1; echo "$CUSTOM/health 正常（第 $i 次）"; break
+            fi
+            sleep 5
+          done
+          [ -n "$ok" ] || echo "::warning::$CUSTOM 还没通。证书或 DNS 可能仍在生效，稍后在 Actions 页手动重跑本工作流确认。页面会先退回 workers.dev。"
+          [ -n "$ok" ] && URL="$CUSTOM"
           code=$(curl -sS -m 15 -o /tmp/tracks.json -w '%{http_code}' -H 'Origin: https://www.ooglex.com' "$URL/tracks?tag=pop" || echo 000)
           echo "/tracks?tag=pop → HTTP $code"
           if [ "$code" = "200" ]; then

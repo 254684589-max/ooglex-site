@@ -461,7 +461,9 @@
       var data = await res.json();
       if (!data || !Array.isArray(data.genres)) throw new Error("格式不对");
       var api = safeApi(data.api);
-      g.config = { api: api, genres: data.genres.filter(function (x) {
+      // apiFallback：主地址连不上（断网、超时、被墙）时再试的备用地址，例如 workers.dev。
+      var apis = [api, safeApi(data.apiFallback)].filter(function (u, i, all) { return u && all.indexOf(u) === i; });
+      g.config = { api: api, apis: apis, genres: data.genres.filter(function (x) {
         return x && typeof x.label === "string" && /^(?:[a-z]{2,16})?$/.test(String(x.tag || ""));
       }), source: String(data.source || "Jamendo"), sourceUrl: safeUrl(data.sourceUrl, ["jamendo.com"]) };
     } catch (err) {
@@ -509,18 +511,30 @@
     params.set("order", g.order);
     params.set("offset", String(offset));
     if (g.q) params.set("q", g.q);
-    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 10000);
     var data = null;
     var code = "";
-    try {
-      var res = await fetch(g.config.api + "/tracks?" + params.toString(), ctrl ? { signal: ctrl.signal } : {});
-      try { data = await res.json(); } catch (err) { data = null; }
-      if (!res.ok || !data || data.status === "error") code = (data && data.error) || "upstream";
-    } catch (err) {
-      code = err && err.name === "AbortError" ? "timeout" : "upstream";
+    // 依次试主地址和备用地址；只有连不上才换下一个，接口给出的 HTTP 错误照常显示。
+    // 哪个地址成功过，本页之后先用它。
+    var apis = g.config.apis && g.config.apis.length ? g.config.apis : [g.config.api];
+    var order = apis.slice(g.apiIndex || 0).concat(apis.slice(0, g.apiIndex || 0));
+    for (var t = 0; t < order.length; t++) {
+      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+      data = null;
+      code = "";
+      var reached = false;
+      try {
+        var res = await fetch(order[t] + "/tracks?" + params.toString(), ctrl ? { signal: ctrl.signal } : {});
+        reached = true;
+        try { data = await res.json(); } catch (err) { data = null; }
+        if (!res.ok || !data || data.status === "error") code = (data && data.error) || "upstream";
+      } catch (err) {
+        code = err && err.name === "AbortError" ? "timeout" : "upstream";
+      }
+      clearTimeout(timer);
+      if (seq !== g.seq) return;
+      if (reached) { g.apiIndex = apis.indexOf(order[t]); break; }
     }
-    clearTimeout(timer);
     if (seq !== g.seq) return;
     if (code || !data || !Array.isArray(data.tracks)) {
       g.status = append ? "ok" : "error";

@@ -25,6 +25,13 @@
 
 `GET /health` 返回 `{ ok, proxy, configured }`，`configured` 表示是否已设置 client_id。
 
+## 地址
+
+- 主地址：`https://music-api.ooglex.com`（自定义域名，中国大陆可访问）
+- 备用：`https://ooglex-jamendo-proxy.zlq6600e.workers.dev`（workers.dev 在大陆基本打不开，只作 `apiFallback`）
+
+音频和封面由浏览器直接访问 Jamendo（2026-10-27 所有者在大陆实测可访问），不经过本 Worker。
+
 ## 许可与费用（部署前必读）
 
 - **Jamendo API 条款：非商业使用免费，商业使用需另购授权**（licensing@jamendo.com）。条款把广告收入也算作商业用途。ooglex 主站部分页面投放了 Google AdSense；流光播放器页面没有广告。**站长已于 2026-10-27 确认本项目按非商业用途使用。** 为保持这一前提：播放器页（含 `#/global`）和 APK 不加广告、不收费；以后若要在这里投放广告或收费，先向 Jamendo 购买商业授权。
