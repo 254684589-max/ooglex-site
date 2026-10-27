@@ -197,21 +197,28 @@
     .idx-hd h2 { font-size: 21px; font-weight: 800; white-space: nowrap; }
     .idx-hd .en { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--faint); }
     .idx-hd .cnt { margin-left: auto; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--faint); }
-    .idx { border-top: 1px solid rgba(255,255,255,.16); }
+    /* 数据与工具共用双栏行：图标 | 名称 + 英文 / 单行简介 | 频率或标签 */
+    .idx { display: grid; grid-template-columns: 1fr 1fr; column-gap: 48px; border-top: 1px solid rgba(255,255,255,.16); }
     .row {
-      display: flex; align-items: baseline; gap: 22px; padding: 19px 6px;
-      border-bottom: 1px solid var(--line); transition: background .15s;
+      position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: "name en side" "desc desc side"; align-items: baseline; column-gap: 8px;
+      padding: 15px 10px 15px 40px; border-bottom: 1px solid var(--line); transition: background .15s;
     }
     .row:hover { background: rgba(255,255,255,.025); }
-    .row .no { font-family: var(--mono); font-size: 12px; color: var(--faint); width: 26px; flex: 0 0 auto; }
-    .row .name { font-size: 19px; font-weight: 700; flex: 0 0 auto; }
-    .row .name .emoji { margin-right: 9px; }
-    .row .en { font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; flex: 0 0 auto; }
-    .row .livedot, .row .demodot, .row .extdot { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; flex: 0 0 auto; }
-    .row .livedot { color: var(--dn); }
-    .row .demodot { color: var(--amber); }
-    .row .extdot { color: var(--faint); }
-    .row .desc { margin-left: auto; font-size: 13px; color: var(--dim); text-align: right; max-width: 46%; line-height: 1.6; }
+    .row .name { grid-area: name; font-size: 15.5px; font-weight: 700; white-space: nowrap; }
+    .row .name .emoji { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); width: 26px; text-align: center; font-size: 20px; font-weight: 400; }
+    .row .en { grid-area: en; font-family: var(--mono); font-size: 9.5px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row .desc { grid-area: desc; margin-top: 2px; font-size: 12.5px; color: var(--dim); line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row .freq, .row .badge, .row .arr { grid-area: side; align-self: center; margin-left: 12px; }
+    .row .freq { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; line-height: 1.5; padding: 1px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--dim); white-space: nowrap; }
+    .row .freq::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--up); }
+    .row .freq.f-intraday::before { background: var(--blue); }
+    .row .freq.f-rolling::before { background: var(--blue); }
+    .row .freq.f-weekly::before { background: var(--amber); }
+    .row .freq.f-annual::before { background: #8b6fd6; }
+    .row .freq.f-static::before { background: var(--faint); }
+    .row .badge { font-size: 10.5px; line-height: 1.6; padding: 1px 8px; border-radius: 99px; background: var(--ink); color: var(--bg); white-space: nowrap; }
+    .row .badge ~ .arr, .row .freq ~ .arr { display: none; }
     /* ── App 专区：只放图标，接在「工具与游戏」列表之后 ── */
     #app-zone { padding-top: 56px; padding-bottom: 30px; }
     #app-zone .idx-hd { margin-bottom: 14px; }
@@ -230,7 +237,7 @@
       background: linear-gradient(90deg, transparent, #22d3ee 20%, #9d6cff 60%, #f472b6 85%, transparent);
       opacity: .55;
     }
-    .az-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 26px 18px; justify-items: center; }
+    .az-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 26px 24px; padding: 4px 18px; }
     .az-app {
       display: block; width: 84px; height: 84px; border-radius: 22.5%;
       box-shadow: 0 10px 26px rgba(0,0,0,.38), 0 0 0 1px rgba(255,255,255,.06);
@@ -244,10 +251,10 @@
     @media (max-width: 640px) {
       .az-dock { padding: 20px 12px; border-radius: 20px; }
       .az-dock::before { left: 18px; right: 18px; }
-      .az-grid { grid-template-columns: repeat(4, 1fr); gap: 18px 8px; }
-      .az-app { width: 58px; height: 58px; }
+      .az-grid { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; gap: 22px 8px; padding: 0; }
+      .az-app { width: 62px; height: 62px; }
     }
-    .row .arr { font-size: 17px; color: var(--faint); flex: 0 0 auto; transition: transform .15s, color .15s; }
+    .row .arr { font-size: 17px; color: var(--faint); transition: transform .15s, color .15s; }
     .row:hover .arr { transform: translateX(4px); color: var(--ink); }
     .row.plain:hover { background: none; }
     .row.plain:hover .arr { transform: none; color: var(--faint); }
@@ -279,10 +286,7 @@
       .hero .container { grid-template-columns: 1fr; gap: 40px; }
       h1 { font-size: 34px; }
       .sigs { grid-template-columns: repeat(4,1fr); }
-      .row { flex-wrap: wrap; gap: 8px 14px; padding: 16px 2px; }
-      .row .desc { flex-basis: 100%; margin-left: 40px; text-align: left; max-width: none; order: 5; }
-      .row .arr { margin-left: auto; }
-      .row .name { font-size: 17px; }
+      .idx { grid-template-columns: 1fr; }
       .tape .tail { display: none; }
     }
     @media (max-width: 640px) {
@@ -302,7 +306,8 @@
       nav .logo { min-height: 36px; }
       nav .links { flex: 0 0 100%; order: 2; justify-content: flex-end; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
       #language-toggle { position: absolute; top: 9px; right: 28px; padding: 0 8px; font-size: 12.5px; }
-      html[data-lang="en"] .row .name { flex: 1 1 calc(100% - 40px); min-width: 0; overflow-wrap: anywhere; }
+      .row .en { display: none; }
+      html[data-lang="en"] .row .name { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
     }
 /* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
 html[data-theme="ft"] .grad-text, html[data-theme="paper"] .grad-text { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
@@ -423,67 +428,67 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       <div class="idx-hd"><h2 data-i18n="section.data">数据</h2><span class="en">DATA — UPDATED DAILY</span><span class="cnt" id="idx-stamp"></span></div>
       <div class="idx">
         <a class="row" href="apps/tech-leaders/">
-          <span class="no">01</span><span class="name" data-i18n-html="item.techLeaders.name"><span class="emoji" aria-hidden="true">◉</span>科技领袖实时动态流</span><span class="en">Tech Leaders Live Feed</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.techLeaders.name"><span class="emoji" aria-hidden="true">◉</span>科技领袖实时动态流</span><span class="en">Tech Leaders Live Feed</span><span class="freq f-rolling" data-i18n="freq.rolling">持续更新</span>
           <span class="desc" data-i18n="item.techLeaders.desc">马斯克 · 黄仁勋相关 NVIDIA 官方账号 · Sam Altman · Lisa Su · Pichai · Nadella，直接查看官方公开原文</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/markets/">
-          <span class="no">02</span><span class="name" data-i18n-html="item.markets.name"><span class="emoji">📈</span>全球市场行情</span><span class="en">Global Markets</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.markets.name"><span class="emoji">📈</span>全球市场行情</span><span class="en">Global Markets</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.markets.desc">商品 · 指数 · 公司 · 外汇 · 加密 · 债券六大品类逐项报价，每项可看 1 个月到全部区间的完整走势，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/heatmap/">
-          <span class="no">03</span><span class="name" data-i18n-html="item.heatmap.name"><span class="emoji">🔥</span>标普500热力图</span><span class="en">S&amp;P 500 Heatmap</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.heatmap.name"><span class="emoji">🔥</span>标普500热力图</span><span class="en">S&amp;P 500 Heatmap</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.heatmap.desc">标普500成分股按行业分块、按市值定面积、按当日涨跌上色，逐块标注涨跌数字，另有完整数据表</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/macro-radar/">
-          <span class="no">04</span><span class="name" data-i18n-html="item.macro.name"><span class="emoji">📡</span>宏观风险监测</span><span class="en">Macro Risk Monitor</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.macro.name"><span class="emoji">📡</span>宏观风险监测</span><span class="en">Macro Risk Monitor</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.macro.desc">市场机制红绿灯 · 七大信号加权打分 · 2006→今危机回放时光机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/data-hub/">
-          <span class="no">05</span><span class="name" data-i18n-html="item.dataHub.name"><span class="emoji">📊</span>数据中心</span><span class="en">Data Hub</span>
+          <span class="name" data-i18n-html="item.dataHub.name"><span class="emoji">📊</span>数据中心</span><span class="en">Data Hub</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.dataHub.desc">全球资产市值榜 · 大类资产收益率 · 富豪榜 · 公司市值 · 恐慌贪婪 · 经济日历，一站聚合</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/asset-ranking/">
-          <span class="no">06</span><span class="name" data-i18n-html="item.assetRanking.name"><span class="emoji">🌐</span>全球资产市值榜</span><span class="en">Asset Ranking</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.assetRanking.name"><span class="emoji">🌐</span>全球资产市值榜</span><span class="en">Asset Ranking</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.assetRanking.desc">不限品类只看市值 · 房产/国债/黄金/货币/公司/加密 同台前 250，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/house-prices/">
-          <span class="no">07</span><span class="name" data-i18n-html="item.housePrices.name"><span class="emoji">🏘️</span>全球房价走势</span><span class="en">House Prices</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.housePrices.name"><span class="emoji">🏘️</span>全球房价走势</span><span class="en">House Prices</span><span class="freq f-weekly" data-i18n="freq.weekly">周更</span>
           <span class="desc" data-i18n="item.housePrices.desc">全球主要国家房价 · 名义/实际同比 · 点击看近 20 年走势，每周更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/superinvestors/">
-          <span class="no">08</span><span class="name" data-i18n-html="item.superinvestors.name"><span class="emoji">💼</span>超级投资者</span><span class="en">Superinvestors</span>
+          <span class="name" data-i18n-html="item.superinvestors.name"><span class="emoji">💼</span>超级投资者</span><span class="en">Superinvestors</span><span class="freq f-weekly" data-i18n="freq.weekly">周更</span>
           <span class="desc" data-i18n="item.superinvestors.desc">巴菲特们的 13F 持仓与国会交易披露 · AAII 情绪，每周更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/whats-latest/">
-          <span class="no">09</span><span class="name" data-i18n-html="item.latest.name"><span class="emoji">📰</span>最新消息</span><span class="en">What's Latest</span>
+          <span class="name" data-i18n-html="item.latest.name"><span class="emoji">📰</span>最新消息</span><span class="en">What's Latest</span><span class="freq f-intraday" data-i18n="freq.intraday">日内多次</span>
           <span class="desc" data-i18n="item.latest.desc">权威媒体要闻与市场快照，每日多次自动更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/finance-column/">
-          <span class="no">10</span><span class="name" data-i18n-html="item.finance.name"><span class="emoji">💹</span>金融知识架构</span><span class="en">Finance Column</span>
+          <span class="name" data-i18n-html="item.finance.name"><span class="emoji">💹</span>金融知识架构</span><span class="en">Finance Column</span><span class="freq f-static" data-i18n="freq.static">静态</span>
           <span class="desc" data-i18n="item.finance.desc">华尔街知识图谱：8 层级 · 48 模块 · 560+ 中英双语术语</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/movies/">
-          <span class="no">11</span><span class="name" data-i18n-html="item.movies.name"><span class="emoji">🎬</span>全球电影榜</span><span class="en">Movies</span>
+          <span class="name" data-i18n-html="item.movies.name"><span class="emoji">🎬</span>全球电影榜</span><span class="en">Movies</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.movies.desc">Top 250 与全球新上映，评分海报俱全，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/ai-rankings/">
-          <span class="no">12</span><span class="name" data-i18n-html="item.ai.name"><span class="emoji">🤖</span>全球大模型评测榜</span><span class="en">AI Rankings</span>
+          <span class="name" data-i18n-html="item.ai.name"><span class="emoji">🤖</span>全球大模型评测榜</span><span class="en">AI Rankings</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.ai.desc">LMArena Elo · LiveBench · 智能指数三榜合一，中外大模型同台，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/university-rankings/">
-          <span class="no">13</span><span class="name" data-i18n-html="item.university.name"><span class="emoji">🎓</span>全球大学排名 300 强</span><span class="en">University Rankings</span>
+          <span class="name" data-i18n-html="item.university.name"><span class="emoji">🎓</span>全球大学排名 300 强</span><span class="en">University Rankings</span><span class="freq f-annual" data-i18n="freq.annual">年度</span>
           <span class="desc" data-i18n="item.university.desc">QS · THE 泰晤士 · ARWU 软科 · U.S. News 四榜合一，按平均位次综合排序（年度权威整理）</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/major-rankings/">
-          <span class="no">14</span><span class="name" data-i18n-html="item.majors.name"><span class="emoji">🚀</span>全球专业与就业前景榜</span><span class="en">Major Rankings</span>
+          <span class="name" data-i18n-html="item.majors.name"><span class="emoji">🚀</span>全球专业与就业前景榜</span><span class="en">Major Rankings</span><span class="freq f-annual" data-i18n="freq.annual">年度</span>
           <span class="desc" data-i18n="item.majors.desc">专业薪资 · 就业率 · 毕业起薪 · AI 时代未来 10 年最有前景专业，四榜合一</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/ofr-monitor/">
-          <span class="no">15</span><span class="name" data-i18n-html="item.ofr.name"><span class="emoji">🏛️</span>美国金融风险监测</span><span class="en">OFR Monitor</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.ofr.name"><span class="emoji">🏛️</span>美国金融风险监测</span><span class="en">OFR Monitor</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n="item.ofr.desc">OFR 五大监测：金融压力指数 · 短期融资 SOFR · 货币基金规模 · 对冲基金 · 银行系统性风险，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/supply-chain/">
-          <span class="no">16</span><span class="name" data-i18n-html="item.supply.name"><span class="emoji">⛓</span>全球产业链</span><span class="en">Global Supply Chain</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.supply.name"><span class="emoji">⛓</span>全球产业链</span><span class="en">Global Supply Chain</span><span class="freq f-daily" data-i18n="freq.daily">日更</span>
           <span class="desc" data-i18n-html="item.supply.desc">按<span data-sc="stages">12</span>个价值链环节×<span data-sc="chains">27</span>条产业链两维定位，链间上下游<span data-sc="chainLinks">77</span>条标出谁供给谁（含回收逆向）；环节与产业链均由SEC官方SIC行业码判定，逐家可查依据，另有带原始申报出处的冶炼厂关系与上游重叠</span><span class="arr">→</span>
         </a>
       </div>
@@ -495,43 +500,43 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       <div class="idx-hd"><h2 data-i18n="section.tools">工具与游戏</h2><span class="en">TOOLS &amp; PLAY</span></div>
       <div class="idx">
         <a class="row" href="games/hub/">
-          <span class="no">17</span><span class="name" data-i18n-html="item.games.name"><span class="emoji">🎮</span>游戏中心</span><span class="en">Games</span>
+          <span class="name" data-i18n-html="item.games.name"><span class="emoji">🎮</span>游戏中心</span><span class="en">Games</span>
           <span class="desc" data-i18n="item.games.desc">GTA 罪恶都市 · 红警 2 网页版，无需下载，浏览器直接畅玩</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/calculators/">
-          <span class="no">18</span><span class="name" data-i18n-html="item.calculators.name"><span class="emoji">🧮</span>万象算集</span><span class="en">Calculators</span>
+          <span class="name" data-i18n-html="item.calculators.name"><span class="emoji">🧮</span>万象算集</span><span class="en">Calculators</span>
           <span class="desc" data-i18n="item.calculators.desc">70+ 计算器：房贷 · 复利 · 个税 · BMI · 方程 · 进制，可搜索</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/radio/">
-          <span class="no">19</span><span class="name" data-i18n-html="item.music.name"><span class="emoji">🌍</span>环球Music</span><span class="en">Global Music</span>
+          <span class="name" data-i18n-html="item.music.name"><span class="emoji">🌍</span>环球Music</span><span class="en">Global Music</span>
           <span class="desc" data-i18n="item.music.desc">转动 3D 地球实时收听全球电台 · 可安装到手机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/tv/">
-          <span class="no">20</span><span class="name" data-i18n-html="item.tv.name"><span class="emoji">📺</span>环球TV</span><span class="en">Global TV</span>
+          <span class="name" data-i18n-html="item.tv.name"><span class="emoji">📺</span>环球TV</span><span class="en">Global TV</span>
           <span class="desc" data-i18n="item.tv.desc">转动 3D 地球实时观看全球电视直播，华语频道直连优先 · 可安装到手机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/global-cams/">
-          <span class="no">21</span><span class="name" data-i18n-html="item.globalCams.name"><span class="emoji">🌐</span>环球实景</span><span class="en">Global Live Cams</span><span class="livedot">● LIVE</span>
+          <span class="name" data-i18n-html="item.globalCams.name"><span class="emoji">🌐</span>环球实景</span><span class="en">Global Live Cams</span><span class="badge" data-i18n="badge.live">直播</span>
           <span class="desc" data-i18n="item.globalCams.desc">LIVE 实时摄像头 + WINDOW 沉浸窗口，转动 3D 地球浏览全球实景</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/ai-chat/">
-          <span class="no">22</span><span class="name" data-i18n-html="item.aiChat.name"><span class="emoji">✨</span>万象智聊</span><span class="en">AI Chat</span>
+          <span class="name" data-i18n-html="item.aiChat.name"><span class="emoji">✨</span>万象智聊</span><span class="en">AI Chat</span>
           <span class="desc" data-i18n="item.aiChat.desc">接入 DeepSeek · GLM · Kimi · 通义，多会话 · Markdown · 可安装到手机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/name-fortune/">
-          <span class="no">23</span><span class="name" data-i18n-html="item.fortune.name"><span class="emoji">🏮</span>知命阁</span><span class="en">Name Fortune</span>
+          <span class="name" data-i18n-html="item.fortune.name"><span class="emoji">🏮</span>知命阁</span><span class="en">Name Fortune</span>
           <span class="desc" data-i18n="item.fortune.desc">姓名生辰八字与五行运势解读，水墨画风（仅供娱乐）</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/globe/">
-          <span class="no">24</span><span class="name" data-i18n-html="item.globe.name"><span class="emoji">🛰</span>全球态势地球</span><span class="en">Situational Globe</span>
+          <span class="name" data-i18n-html="item.globe.name"><span class="emoji">🛰</span>全球态势地球</span><span class="en">Situational Globe</span>
           <span class="desc" data-i18n="item.globe.desc">转动三维卫星影像地球，叠加公开地理数据：全球地震 · 4300 处数据中心 · 704 座大坝 · 海底电缆 · 命名地理区域；每条数据的来源与许可逐项标注</span><span class="arr">→</span>
         </a>
         <a class="row" href="https://www.worldmonitor.app/" target="_blank" rel="noopener">
-          <span class="no">25</span><span class="name" data-i18n-html="item.worldMonitor.name"><span class="emoji">🧭</span>世界监测</span><span class="en">World Monitor</span><span class="extdot" data-i18n="badge.external">● 第三方</span>
+          <span class="name" data-i18n-html="item.worldMonitor.name"><span class="emoji">🧭</span>世界监测</span><span class="en">World Monitor</span><span class="badge" data-i18n="badge.external">第三方</span>
           <span class="desc" data-i18n="item.worldMonitor.desc">开源全球态势看板：武装冲突 · 地震 · 天气 · 航运要道；由第三方开源项目 koala73/worldmonitor 开发并托管（AGPL-3.0），非 Ooglex 站内数据</span><span class="arr">↗</span>
         </a>
         <a class="row" href="apps/ideas/">
-          <span class="no">26</span><span class="name" data-i18n-html="item.idea.name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Thoughts</span><span class="demodot" data-i18n="badge.new">● 新</span>
+          <span class="name" data-i18n-html="item.idea.name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Thoughts</span><span class="badge" data-i18n="badge.new">新</span>
           <span class="desc" data-i18n="item.idea.desc">站内公开想法流：登录后随时发布，未登录也能浏览；发出即公开，可举报</span><span class="arr">→</span>
         </a>
       </div>
@@ -626,8 +631,11 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.globe.desc": "Spin a photorealistic 3D globe layered with open geospatial data: worldwide earthquakes · 4,300 data centres · 704 dams · submarine cables · named geographic regions—every source and licence listed",
       "item.worldMonitor.name": "<span class=\"emoji\">🧭</span>World Monitor",
       "item.worldMonitor.desc": "An open-source global situational-awareness dashboard: armed conflicts · earthquakes · weather · shipping chokepoints—built and hosted by the third-party project koala73/worldmonitor (AGPL-3.0); not Ooglex in-house data",
-      "badge.external": "● EXTERNAL",
-      "badge.new": "● NEW",
+      "badge.external": "External",
+      "badge.new": "New",
+      "badge.live": "Live",
+      "freq.daily": "Daily", "freq.weekly": "Weekly", "freq.intraday": "Intraday", "freq.annual": "Annual",
+      "freq.static": "Static", "freq.rolling": "Rolling",
       "section.appZone": "App Zone",
       "section.appZoneAll": "All apps →",
       "section.appZoneOpen": "Open the App Zone →",
