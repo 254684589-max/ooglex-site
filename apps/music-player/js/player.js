@@ -976,7 +976,7 @@
   }
 
 
-  /* ---------------- 分享：系统分享面板、复制链接、分享海报；微信里引导用右上角菜单 ---------------- */
+  /* ---------------- 分享：系统分享面板、复制链接、分享海报；应用内置浏览器里引导用右上角菜单 ---------------- */
 
   var SITE = "https://www.ooglex.com/apps/music-player/";
   var share = { album: null, track: null, url: "", blob: null, objectUrl: "", busy: false };
@@ -992,13 +992,9 @@
     return "";
   }
 
+  // 聊天、社交类应用的内置浏览器（页面文字里不点名具体应用）
   function inAppBrowser() {
-    var ua = navigator.userAgent || "";
-    if (/MicroMessenger/i.test(ua)) return "微信";
-    if (/\bQQ\//i.test(ua)) return "QQ";
-    if (/Weibo/i.test(ua)) return "微博";
-    if (/DingTalk/i.test(ua)) return "钉钉";
-    return "";
+    return /MicroMessenger|\bQQ\/|Weibo|DingTalk/i.test(navigator.userAgent || "");
   }
 
   // 分享链接打开时，把那首歌摆到播放器上，但不自动出声（浏览器也不允许）。
@@ -1124,8 +1120,8 @@
     var hint = $("share-inapp");
     hint.hidden = !app;
     if (app) {
-      hint.textContent = "在" + app + "里：点右上角 ··· →「分享到朋友圈」或「发送给朋友」。页面地址已换成这首歌的链接，对方打开就是这首。";
-      // 微信等的右上角菜单分享的是当前地址，先换成这首歌的链接（不触发页面跳转）
+      hint.textContent = "点右上角 ··· 菜单即可分享。页面地址已换成这首歌的链接，对方打开就是这首。";
+      // 内置浏览器的右上角菜单分享的是当前地址，先换成这首歌的链接（不触发页面跳转）
       try { history.replaceState(null, "", url.replace(SITE, location.pathname)); } catch (err) { /* 忽略 */ }
     }
     if (typeof dlg.showModal === "function") { if (!dlg.open) dlg.showModal(); }
@@ -1148,7 +1144,7 @@
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(share.url);
-        setShareStatus("链接已复制，可以粘贴到微信、QQ、微博等。");
+        setShareStatus("链接已复制，可以粘贴发给朋友。");
         return;
       }
     } catch (err) { /* 换下面的办法 */ }
@@ -1319,8 +1315,8 @@
     var file = new File([blob], "liuguang-share.png", { type: "image/png" });
     $("share-poster-share").hidden = !(navigator.canShare && navigator.share && navigator.canShare({ files: [file] }));
     setShareStatus(inAppBrowser()
-      ? "长按图片可保存到相册，再发朋友圈。"
-      : "海报已生成。发朋友圈：保存图片后在微信里选这张图。");
+      ? "长按图片可保存到相册，再发布分享。"
+      : "海报已生成，保存图片后即可发布分享。");
   }
 
   function savePoster() {
