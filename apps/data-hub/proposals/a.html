@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>数据中心改版 · 方案 A 仪表头条</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<script>(function(){try{var d=document.documentElement,t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=20260926k" defer></script>
+<link rel="stylesheet" href="kit.css">
+<style>
+  .page { max-width:1180px; margin:0 auto; padding:18px 28px 64px; }
+  .mast { display:flex; align-items:flex-end; justify-content:space-between; gap:12px 24px; flex-wrap:wrap; margin:18px 0 22px; }
+  .mast h1 { font-size:clamp(1.9rem,4.4vw,2.8rem); font-weight:600; letter-spacing:-.02em; line-height:1.1; margin-top:10px; }
+  .mast .meta { color:var(--dim); font-size:.92rem; }
+
+  /* ── 头条：恐慌与贪婪 ── */
+  .hero { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:0;
+    background:var(--sheet); border-radius:26px; box-shadow:var(--shadow-2); overflow:hidden; text-decoration:none; }
+  .hero .l { padding:26px 30px 24px; display:flex; flex-direction:column; }
+  .hero .r { padding:26px 30px 24px; border-left:1px solid var(--line); background:var(--tint-1); }
+  .hero .lab { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .hero .lab b { font-size:1.12rem; font-weight:700; }
+  .hero .lab span { font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; color:var(--faint); text-transform:uppercase; }
+  .g-wrap { position:relative; max-width:420px; width:100%; margin:14px auto 0; }
+  .g-read { position:absolute; left:0; right:0; bottom:2px; text-align:center; pointer-events:none; }
+  .g-read .v { font-size:clamp(3.6rem,8vw,5.4rem); font-weight:700; line-height:.9; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+  .g-read .z { font-size:1.15rem; font-weight:700; margin-top:6px; }
+  .refs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:20px; }
+  .ref { text-align:center; padding:10px 4px; border-radius:14px; background:var(--tint-2); }
+  .ref .k { font-size:.74rem; color:var(--dim); }
+  .ref .n { font-size:1.35rem; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.2; margin-top:2px; }
+  .ref .s { font-size:.72rem; font-weight:600; }
+  .r h3 { font-size:.82rem; color:var(--dim); font-weight:600; letter-spacing:.04em; margin-bottom:10px; }
+  .ind { display:grid; grid-template-columns:5.6em minmax(0,1fr) 2.2em; align-items:center; gap:10px; padding:6px 0; font-size:.9rem; }
+  .ind .bar { height:8px; border-radius:99px; background:var(--tint-3); position:relative; overflow:hidden; }
+  .ind .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:99px; }
+  .ind .sc { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+  .ind .nm { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .trend { margin-top:18px; }
+  .trend .hd { display:flex; justify-content:space-between; font-size:.78rem; color:var(--dim); margin-bottom:6px; }
+  .trend .box { height:92px; }
+  .hero .src { margin-top:14px; }
+
+  /* ── 分类格 ── */
+  .sec { margin-top:34px; }
+  .sec-h { display:flex; align-items:baseline; gap:10px; margin:0 4px 12px; }
+  .sec-h h2 { font-size:1.08rem; font-weight:700; }
+  .sec-h span { font-family:var(--mono); font-size:.68rem; letter-spacing:.14em; color:var(--faint); text-transform:uppercase; }
+  .tiles { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+  @media (max-width:640px) { .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  .tile { display:flex; flex-direction:column; min-width:0; text-decoration:none; padding:16px 18px 14px;
+    background:var(--sheet); border-radius:18px; box-shadow:var(--shadow-1); transition:transform .15s; }
+  .tile:hover { transform:translateY(-2px); }
+  .tile .hn { display:flex; justify-content:space-between; gap:8px; font-size:.9rem; font-weight:650; }
+  .tile .hn i { font-style:normal; font-family:var(--mono); font-size:.62rem; color:var(--faint); letter-spacing:.06em; text-transform:uppercase; padding-top:3px; white-space:nowrap; }
+  .tile .k { font-size:2rem; font-weight:650; letter-spacing:-.025em; line-height:1.05; margin-top:10px; font-variant-numeric:tabular-nums;
+    overflow-wrap:anywhere; }
+  .tile .k.txt { font-size:1.3rem; letter-spacing:-.01em; }
+  .tile .sub { font-size:.8rem; color:var(--dim); margin-top:3px; }
+  .tile .news { font-size:.95rem; font-weight:600; margin-top:10px; line-height:1.4; }
+  .tile .rw { display:flex; justify-content:space-between; gap:10px; font-size:.82rem; padding-top:7px; margin-top:auto; }
+  .tile .rw + .rw { margin-top:0; }
+  .tile .rws { margin-top:10px; padding-top:4px; border-top:1px solid var(--line); }
+  .tile .rw .l { color:var(--dim); white-space:nowrap; }
+  .tile .rw .v { text-align:right; min-width:0; overflow-wrap:anywhere; }
+  .tile .ft { display:flex; justify-content:space-between; font-size:.68rem; color:var(--faint); font-family:var(--mono); margin-top:10px; }
+  .breadth { height:6px; border-radius:99px; background:var(--down); opacity:.9; margin-top:10px; overflow:hidden; }
+  .breadth i { display:block; height:100%; background:var(--up); }
+
+  @media (max-width:900px) {
+    .hero { grid-template-columns:1fr; }
+    .hero .r { border-left:0; border-top:1px solid var(--line); }
+  }
+  @media (max-width:520px) {
+    .page { padding:12px 16px 56px; }
+    .hero { border-radius:20px; }
+    .hero .l, .hero .r { padding:18px 16px; }
+    .refs { grid-template-columns:repeat(2,1fr); }
+    .tiles { grid-template-columns:1fr 1fr; gap:10px; }
+    .tile { padding:13px 13px 12px; border-radius:15px; }
+    .tile .k { font-size:1.5rem; } .tile .k.txt { font-size:1.05rem; }
+    .tile .hn i { display:none; }
+    .tile .rw { flex-direction:column; gap:0; }
+    .tile .rw .v { text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="demo-bar">设计稿 · 方案 A「仪表头条」 · 数据读自各应用现有 data.json · <a href="./">返回方案对比</a></div>
+<div class="page">
+  <a class="back" href="../../../">← Ooglex</a>
+  <div class="mast">
+    <div><div class="kick">数据中心 · The Data Center</div><h1>今日市场，一页读尽</h1></div>
+    <div class="meta">16 个自动更新的数据应用 · <span id="mDate">—</span></div>
+  </div>
+
+  <a class="hero" href="../../fear-greed/" id="hero" aria-label="打开恐慌与贪婪指数">
+    <div class="l">
+      <div class="lab"><b>恐慌与贪婪指数</b><span>CNN Fear &amp; Greed</span></div>
+      <div class="g-wrap" id="gauge"><div class="loading" style="padding:80px 0;text-align:center">加载中…</div></div>
+      <div class="refs" id="refs"></div>
+    </div>
+    <div class="r">
+      <h3>七项分项指标（0 极度恐惧 · 100 极度贪婪）</h3>
+      <div id="inds"></div>
+      <div class="trend"><div class="hd"><span>近一年走势</span><span id="trRange"></span></div><div class="box" id="trend"></div></div>
+      <div class="srcline src" id="fgSrc"></div>
+    </div>
+  </a>
+
+  <div id="secs"></div>
+  <footer class="foot" id="foot"></footer>
+</div>
+<script src="kit.js"></script>
+<script>
+(function () {
+  var K = window.HubKit, esc = K.esc;
+  var BK = ["xf", "f", "n", "g", "xg"];
+  function bk(v) { return BK[K.FG_BANDS.indexOf(K.band(v))]; }
+
+  K.fearGreed().then(function (d) {
+    document.getElementById("mDate").textContent = d.asOf || "—";
+    var b = K.band(d.score);
+    document.getElementById("gauge").innerHTML = K.gauge(d.score) +
+      "<div class='g-read'><div class='v t-" + bk(d.score) + "'>" + d.score + "</div><div class='z t-" + bk(d.score) + "'>" + b.zh + "</div></div>";
+    var r = d.refs || {};
+    document.getElementById("refs").innerHTML = [["close", "前收"], ["week", "一周前"], ["month", "一月前"], ["year", "一年前"]]
+      .filter(function (x) { return r[x[0]]; }).map(function (x) {
+        var s = r[x[0]].score;
+        return "<div class='ref'><div class='k'>" + x[1] + "</div><div class='n t-" + bk(s) + "'>" + s + "</div><div class='s t-" + bk(s) + "'>" + K.band(s).zh + "</div></div>";
+      }).join("");
+    document.getElementById("inds").innerHTML = (d.indicators || []).map(function (i) {
+      return "<div class='ind' title='" + esc(i.desc) + "'><span class='nm'>" + esc(i.name) + "</span><span class='bar'><i style='width:" + i.score +
+        "%;background:var(--fg-" + bk(i.score) + ")'></i></span><span class='sc t-" + bk(i.score) + "'>" + i.score + "</span></div>";
+    }).join("");
+    var h = d.history || [];
+    document.getElementById("trend").innerHTML = K.spark(h, { w: 600, h: 92 });
+    if (h.length) document.getElementById("trRange").textContent = h[0].t + " → " + h[h.length - 1].t;
+    document.getElementById("fgSrc").textContent = "来源 " + (d.source || "CNN") + " · 日频，非实时 · 数据日期 " + (d.asOf || "—") + " · 更新于 " + K.relTime(d.updatedAt);
+  }).catch(function () {
+    document.getElementById("gauge").innerHTML = "<div class='loading' style='padding:60px 0;text-align:center'>恐慌与贪婪指数暂不可用</div>";
+  });
+
+  var secs = document.getElementById("secs");
+  K.GROUPS.forEach(function (g) {
+    var s = document.createElement("section");
+    s.className = "sec";
+    s.innerHTML = "<div class='sec-h'><h2>" + g.name + "</h2><span>" + g.en + "</span></div><div class='tiles'></div>";
+    var box = s.querySelector(".tiles");
+    g.folders.forEach(function (f) {
+      var app = K.byFolder(f), a = document.createElement("a");
+      a.className = "tile"; a.href = "../../" + app.folder + "/";
+      a.innerHTML = "<div class='hn'><span>" + app.name + "</span><i>" + app.en + "</i></div><div class='bd'><div class='loading' style='margin-top:12px'>加载中…</div></div>";
+      box.appendChild(a);
+      K.load(app).then(function (x) {
+        var h = "";
+        if (x.err) h = "<div class='loading' style='margin-top:12px'>" + x.err + "</div>";
+        else {
+          if (x.news) h += "<div class='news'>" + x.news + "</div>";
+          else h += "<div class='k " + (x.keyText ? "txt " : "") + (x.tone ? "tone-" + x.tone : x.keyCls || "") + "'>" + x.key + "</div>";
+          if (x.sub && !x.news) h += "<div class='sub'>" + x.sub + "</div>";
+          if (K.isNum(x.breadth)) h += "<div class='breadth' aria-hidden='true'><i style='width:" + (x.breadth * 100).toFixed(1) + "%'></i></div>";
+          h += "<div class='rws'>" + x.rows.map(function (r) { return "<div class='rw'><span class='l'>" + r.l + "</span><span class='v " + r.c + "'>" + r.v + "</span></div>"; }).join("") + "</div>";
+        }
+        h += "<div class='ft'><span>" + app.freq + "</span><span>更新于 " + x.ago + "</span></div>";
+        a.querySelector(".bd").outerHTML = h;
+      });
+    });
+    secs.appendChild(s);
+  });
+  document.getElementById("foot").textContent = K.SOURCES;
+})();
+</script>
+</body>
+</html>
