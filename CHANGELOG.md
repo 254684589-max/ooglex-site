@@ -13,7 +13,7 @@
 
 ### 修复
 
-- 2026-10-27：全球曲库首次部署后，试查「流行」得到 0 首。在 GitHub Actions 上直接探测 Jamendo 发现，`tags` 与 `fuzzytags` 两种曲风参数会各自间歇性返回 0 条，同一查询隔一分钟结果就不同；而且 Worker 原先会把空结果缓存 30 分钟。`workers/jamendo-proxy` 改为：曲风查询返回空时换另一种参数重问一次；空结果不进边缘缓存；返回 `received`（Jamendo 实际给出的条数）以便区分上游空和被过滤。播放器空结果不再留在本页缓存，并提供「再试一次」按钮。部署工作流增加「只探测、不部署」模式和探测步骤（只打印条数与域名，不打印 client_id），健康检查最多等约 90 秒，等新的 workers.dev 地址生效。
+- 2026-10-27：全球曲库首次部署后，试查「流行」得到 0 首。在 GitHub Actions 上直接探测 Jamendo 发现，`tags` 与 `fuzzytags` 两种曲风参数会各自间歇性返回 0 条，同一查询隔一分钟结果就不同；而且 Worker 原先会把空结果缓存 30 分钟。`workers/jamendo-proxy` 改为：曲风查询返回空时换另一种参数重问一次；空结果不进边缘缓存；返回 `received`（Jamendo 实际给出的条数）以便区分上游空和被过滤。播放器空结果不再留在本页缓存，并提供「再试一次」按钮。部署工作流增加「只探测、不部署」模式和探测步骤（只打印条数与域名，不打印 client_id），健康检查最多等约 90 秒，等新的 workers.dev 地址生效。`apps/music-player/data/global.json` 填入接口地址 `https://ooglex-jamendo-proxy.zlq6600e.workers.dev`，合并后全球曲库开通。
 
 ### 新增
 
