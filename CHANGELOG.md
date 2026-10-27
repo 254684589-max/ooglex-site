@@ -17,7 +17,7 @@
 
 ### 安全
 
-- 2026-10-27：Jamendo API 条款规定非商业免费、商业使用（含广告收入）需另购授权。主站部分页面投放 AdSense，播放器页没有广告。是否属于非商业使用待站长确认，记录在 `workers/jamendo-proxy/README.md`。
+- 2026-10-27：Jamendo API 条款规定非商业免费、商业使用（含广告收入）需另购授权。主站部分页面投放 AdSense，播放器页没有广告。站长已确认按非商业用途使用；播放器页与 APK 不加广告、不收费，日后若改变须先购买 Jamendo 商业授权。记录在 `workers/jamendo-proxy/README.md`。
 
 ### 修改
 

@@ -27,7 +27,7 @@
 
 ## 许可与费用（部署前必读）
 
-- **Jamendo API 条款：非商业使用免费，商业使用需另购授权**（licensing@jamendo.com）。条款把广告收入也算作商业用途。ooglex 主站部分页面投放了 Google AdSense；流光播放器页面目前没有广告。**是否属于非商业使用由站长判断**；如不确定，先联系 Jamendo。
+- **Jamendo API 条款：非商业使用免费，商业使用需另购授权**（licensing@jamendo.com）。条款把广告收入也算作商业用途。ooglex 主站部分页面投放了 Google AdSense；流光播放器页面没有广告。**站长已于 2026-10-27 确认本项目按非商业用途使用。** 为保持这一前提：播放器页（含 `#/global`）和 APK 不加广告、不收费；以后若要在这里投放广告或收费，先向 Jamendo 购买商业授权。
 - 每首曲目有自己的 Creative Commons 许可（可能是 BY、BY-NC、BY-NC-SA、BY-ND 等）。页面逐首显示许可并链接到许可文本与 Jamendo 曲目页。
 - 第三方资料称非商业应用每月约 35,000 次 API 请求，Jamendo 官方页面未能核实。边缘缓存用来压低消耗。
 - Cloudflare Workers 免费版每天 10 万次请求。音频不经过 Worker，不耗 Worker 流量。
