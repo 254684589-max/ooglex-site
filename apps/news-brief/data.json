@@ -1,18 +1,18 @@
 {
   "schemaVersion": "brief-site-v1",
-  "edition": "Brief-06",
+  "edition": "Brief-07",
   "demo": false,
-  "naturalDay": "2026-10-27",
+  "naturalDay": "2026-10-28",
   "timezone": "Asia/Shanghai",
   "mode": "A",
   "modeLabel": "全球新闻简报",
-  "title": "Brief-06｜全球新闻简报",
-  "observationWindow": "2026-10-26 晚～10-27 早晨 CST（可含 Brief-05／Day-07 未覆盖增量）",
-  "relativeTo": "Brief-05／Day-07（2026-10-26）新自然日增量",
+  "title": "Brief-07｜全球新闻简报",
+  "observationWindow": "2026-10-27 晚～10-28 早晨 CST（可含 Brief-06／Day-08 未覆盖增量）",
+  "relativeTo": "Brief-06／Day-08（2026-10-27）新自然日增量",
   "counts": {
     "total": 8,
-    "pass": 7,
-    "conditional": 1,
+    "pass": 5,
+    "conditional": 3,
     "fail": 0,
     "hardError": 0
   },
@@ -26,14 +26,78 @@
     {
       "id": "01",
       "candidate": "C01",
-      "title": "Verizon 发布 2026 年第三季度业绩：营收约 343 亿美元，GAAP EPS 1.25 美元，并上调全年指引",
-      "category": "科技",
-      "rubric": "科技｜金融市场｜产业链",
+      "title": "美国普查局：2026 年 9 月耐用品新订单增长 1.8% 至约 3454 亿美元",
+      "category": "美国经济",
+      "rubric": "美国经济｜产业链",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07）",
+      "audience": "内部展示｜通过",
+      "sections": {
+        "whatHappened": "Census 2026-10-27：2026-09 耐用品新订单 +1.8% 至约 $345.4B；运输 +4.6%；非国防飞机 +28.4%；ex-transport +0.5%。Brief-06 仅日程。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "本期（2026-09）",
+            "变化",
+            "备注"
+          ],
+          "rows": [
+            [
+              "耐用品新订单",
+              "$345.4B",
+              "+1.8%",
+              "Census advance"
+            ],
+            [
+              "运输设备新订单",
+              "$119.8B",
+              "+4.6%",
+              "领涨"
+            ],
+            [
+              "非国防飞机及零件",
+              "—",
+              "+28.4%",
+              "波动大"
+            ],
+            [
+              "剔除运输新订单",
+              "—",
+              "+0.5%",
+              "更平滑"
+            ]
+          ],
+          "note": "发布：U.S. Census Bureau｜2026-10-27"
+        },
+        "background": "例行月度订单；飞机驱动单月跳升常见。",
+        "progress": "完整 M3 约 11-03；下期 advance 约 11-25。",
+        "importance": "H4／H9 弱监测；不自动升雷达三级。",
+        "marketImpact": {
+          "hasImpact": true,
+          "bullets": [
+            "标题强于剔除运输或被读作内核温和（推断）。",
+            "不做交易或投资建议。"
+          ]
+        },
+        "sources": [
+          {
+            "label": "Census 耐用品 advance",
+            "url": "https://www.census.gov/manufacturing/m3/adv/current/index.html"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02",
+      "candidate": "C02",
+      "title": "可口可乐发布 2026 年第三季度业绩：净营收约 134 亿美元，GAAP EPS 0.93 美元，并上调全年指引",
+      "category": "金融市场",
+      "rubric": "金融市场｜产业链",
       "verification": "有条件通过",
-      "verificationDetail": "有条件通过（05／07｜须并列 GAAP／Adjusted EPS）",
+      "verificationDetail": "有条件通过（05／07｜须并列 GAAP／Comparable EPS）",
       "audience": "内部展示｜有条件通过",
       "sections": {
-        "whatHappened": "Verizon 于 2026-10-26 发布 2026Q3：总营收 $34.313B（同比 +1.5%）；GAAP 稀释 EPS $1.25；Adjusted EPS $1.31（须并列）；FCF 约 $7.801B；AWS AI 框架协议 ≥$2.0B；上调全年指引。",
+        "whatHappened": "Coca-Cola 2026-10-27：净营收 $13.4B（+7%）；GAAP EPS $0.93；Comparable EPS $0.91（须并列）；单位箱 +5%；上调全年指引。",
         "dataTable": {
           "columns": [
             "指标",
@@ -42,77 +106,306 @@
           ],
           "rows": [
             [
-              "总经营收入",
-              "$34.313B",
-              "同比 +1.5%"
+              "净营收",
+              "$13.4B",
+              "同比 +7%"
             ],
             [
-              "GAAP 稀释 EPS",
-              "$1.25",
+              "GAAP EPS",
+              "$0.93",
               "主报口径"
             ],
             [
-              "Adjusted EPS",
-              "$1.31",
+              "Comparable EPS",
+              "$0.91",
               "non-GAAP；须并列"
             ],
             [
-              "自由现金流（FCF）",
-              "$7.801B",
-              "同比约 +12.1%"
+              "单位箱销量",
+              "+5%",
+              "全球"
             ],
             [
-              "后付费手机净增",
-              "406,000",
-              "运营指标"
-            ],
-            [
-              "AWS AI 协议",
-              "≥$2.0B",
-              "框架价值"
-            ],
-            [
-              "全年 Adjusted EPS 指引",
-              "$5.04–$5.06",
-              "展望"
+              "有机营收",
+              "+7%",
+              "non-GAAP"
             ]
           ],
-          "note": "发布：Verizon IR／SEC｜2026-10-26"
+          "note": "发布：Coca-Cola IR｜2026-10-27"
         },
-        "background": "转型强调用户质量与补贴纪律；设备收入同比走弱拖累总营收。",
-        "progress": "IR／SEC 可开；关注指引兑现与 Capex。",
-        "importance": "大型电信季度可核读数；弱相关 H5／H9；不升雷达三级。",
+        "background": "北美箱量持平；海外贡献增长。",
+        "progress": "IR 可开；关注指引兑现。",
+        "importance": "H4／H9 弱监测；单公司不升三级。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "上调指引＋FCF 改善可能支持电信现金流讨论（推断）。",
-            "AWS 框架非已确认全部收入。",
+            "上调指引或支持消费韧性讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "Verizon 新闻稿",
-            "url": "https://www.verizon.com/about/news/verizon-delivers-another-record-breaking-quarter"
-          },
-          {
-            "label": "SEC Exhibit 99",
-            "url": "https://www.sec.gov/Archives/edgar/data/732712/000073271226000049/a2026q3exhibit99.htm"
+            "label": "Coca-Cola 新闻稿",
+            "url": "https://www.coca-colacompany.com/media-center/coca-cola-reports-third-quarter-2026-results"
           }
         ]
       }
     },
     {
-      "id": "02",
-      "candidate": "C02",
-      "title": "美联储 FOMC：2026-10-27～28 例会启幕；政策声明预计 10-28 发布",
+      "id": "03",
+      "candidate": "C03",
+      "title": "波音发布 2026 年第三季度业绩：营收约 242 亿美元，GAAP 每股亏损 0.26 美元；737 认证与海军 F/A-XX 选型",
+      "category": "科技",
+      "rubric": "科技｜产业链｜金融市场",
+      "verification": "有条件通过",
+      "verificationDetail": "有条件通过（05／07｜须并列 GAAP／Core 亏损口径）",
+      "audience": "内部展示｜有条件通过",
+      "sections": {
+        "whatHappened": "Boeing 2026-10-27：营收 $24.188B；GAAP LPS ($0.26)；Core LPS ($0.34) 须并列；FCF 约 $0.5B；积压约 $745B；737-7／737-10 ATC；海军 F/A-XX 选型（未入积压）。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "本期（2026Q3）",
+            "备注"
+          ],
+          "rows": [
+            [
+              "总营收",
+              "$24.188B",
+              "同比 +4%"
+            ],
+            [
+              "GAAP 稀释 LPS",
+              "($0.26)",
+              "主报口径"
+            ],
+            [
+              "Core LPS",
+              "($0.34)",
+              "non-GAAP；须并列"
+            ],
+            [
+              "自由现金流",
+              "约 $0.5B",
+              "non-GAAP"
+            ],
+            [
+              "总积压",
+              "约 $745B",
+              "公司称纪录"
+            ],
+            [
+              "F/A-XX",
+              "海军选型",
+              "尚未计入积压"
+            ]
+          ],
+          "note": "发布：Boeing IR｜2026-10-27"
+        },
+        "background": "亏损收窄但仍为负；防务与服务量升。",
+        "progress": "关注 737 月产与 F/A-XX 入账时点。",
+        "importance": "H9／H8 弱监测；不升三级。",
+        "marketImpact": {
+          "hasImpact": true,
+          "bullets": [
+            "认证与 FCF 或缓和执行风险叙事（推断）。",
+            "不做交易或投资建议。"
+          ]
+        },
+        "sources": [
+          {
+            "label": "Boeing 新闻稿",
+            "url": "https://investors.boeing.com/investors/news/press-release-details/2026/Boeing-Reports-Third-Quarter-Results/default.aspx"
+          }
+        ]
+      }
+    },
+    {
+      "id": "04",
+      "candidate": "C04",
+      "title": "UPS 发布 2026 年第三季度业绩：营收约 229 亿美元，GAAP EPS 1.37 美元，并上调全年展望",
+      "category": "金融市场",
+      "rubric": "金融市场｜产业链",
+      "verification": "有条件通过",
+      "verificationDetail": "有条件通过（05／07｜须并列 GAAP／Adjusted EPS）",
+      "audience": "内部展示｜有条件通过",
+      "sections": {
+        "whatHappened": "UPS 2026-10-27：营收 $22.9B（约 +6.7%）；GAAP EPS $1.37；Adj EPS $1.69（须并列）；上调全年营收／Adj EPS／FCF 展望。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "本期",
+            "备注"
+          ],
+          "rows": [
+            [
+              "合并营收",
+              "$22.9B",
+              "约 +6.7%"
+            ],
+            [
+              "GAAP EPS",
+              "$1.37",
+              "主报口径"
+            ],
+            [
+              "Adj EPS",
+              "$1.69",
+              "non-GAAP；须并列"
+            ],
+            [
+              "全年营收展望",
+              "~$92.6B",
+              "上调"
+            ],
+            [
+              "全年 Adj EPS 展望",
+              "~$7.28",
+              "上调"
+            ]
+          ],
+          "note": "发布：UPS IR｜2026-10-27"
+        },
+        "background": "去亚马逊依赖与精简运营并行。",
+        "progress": "关注旺季件量与指引兑现。",
+        "importance": "H4／H9 弱监测；不升三级。",
+        "marketImpact": {
+          "hasImpact": true,
+          "bullets": [
+            "上调指引或支持包裹／消费韧性讨论（推断）。",
+            "不做交易或投资建议。"
+          ]
+        },
+        "sources": [
+          {
+            "label": "UPS 新闻稿",
+            "url": "https://investors.ups.com/news-events/press-releases/detail/2172/ups-releases-3q-2026-earnings"
+          }
+        ]
+      }
+    },
+    {
+      "id": "05",
+      "candidate": "C06",
+      "title": "国际油价 2026-10-27 结算续跌：Brent 约 113.88 美元、WTI 约 99.90 美元",
+      "category": "能源",
+      "rubric": "能源｜金融市场",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07）",
+      "audience": "内部展示｜通过",
+      "sections": {
+        "whatHappened": "2026-10-27 公开结算交叉：Brent 约 $113.88（约 −1.67%）、WTI 约 $99.90（约 −1.83%）；相对 10-26 续跌。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "结算（约）",
+            "变化"
+          ],
+          "rows": [
+            [
+              "Brent",
+              "$113.88／桶",
+              "约 −1.67%"
+            ],
+            [
+              "WTI",
+              "$99.90／桶",
+              "约 −1.83%"
+            ]
+          ],
+          "note": "新华／CNBC 交叉；归因勿写成已证因果"
+        },
+        "background": "地缘风险与外交缓和叙事并存。",
+        "progress": "跟踪下一交易日与 EIA 周报（约 10-28 10:30 ET）。",
+        "importance": "H4／H8 监测；单日波动不升三级。",
+        "marketImpact": {
+          "hasImpact": true,
+          "bullets": [
+            "连续回落或短暂缓和能源通胀紧迫感（推断）。",
+            "不做交易或投资建议。"
+          ]
+        },
+        "sources": [
+          {
+            "label": "新华社英文稿",
+            "url": "https://english.news.cn/20261028/0f1d4e9353ab426d8dc006c1491c7322/c.html"
+          },
+          {
+            "label": "EIA 石油数据",
+            "url": "https://www.eia.gov/petroleum/"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06",
+      "candidate": "C07",
+      "title": "美国财政部：2026-10-27 十年期国债收益率报 4.99%",
+      "category": "金融市场",
+      "rubric": "金融市场｜美国经济",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07）",
+      "audience": "内部展示｜通过",
+      "sections": {
+        "whatHappened": "Treasury 日曲线：2026-10-27 名义 10 年期 4.99%（2 年 4.70%；30 年 5.30%）；相对 10-26 的 5.00% 略降 1 bp。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "2026-10-27",
+            "2026-10-26",
+            "备注"
+          ],
+          "rows": [
+            [
+              "2 年期",
+              "4.70%",
+              "4.68%",
+              "Treasury"
+            ],
+            [
+              "10 年期",
+              "4.99%",
+              "5.00%",
+              "Treasury"
+            ],
+            [
+              "30 年期",
+              "5.30%",
+              "5.31%",
+              "Treasury"
+            ]
+          ],
+          "note": "官方 daily CSV 可核"
+        },
+        "background": "H2 长端收益率综合因子；单日≠政策已定。",
+        "progress": "对照 FOMC 后曲线。",
+        "importance": "H2 例行监测；不单独改写第二层。",
+        "marketImpact": {
+          "hasImpact": true,
+          "bullets": [
+            "贴近 5% 可能继续影响金融条件与估值讨论（推断）。",
+            "不做交易或投资建议。"
+          ]
+        },
+        "sources": [
+          {
+            "label": "U.S. Treasury 利率统计",
+            "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics"
+          }
+        ]
+      }
+    },
+    {
+      "id": "07",
+      "candidate": "C08",
+      "title": "美联储 FOMC：2026-10-27～28 会议进行中；政策声明预计 10-28 发布（本早更时点尚未出）",
       "category": "美国经济",
       "rubric": "美国经济｜金融市场",
       "verification": "通过",
       "verificationDetail": "通过（05／07）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "美联储官方日历确认 2026-10-27～28 FOMC 例会（无 SEP）；本早更时点政策声明尚未发布。",
+        "whatHappened": "官方日历确认 2026-10-27～28 FOMC（无 SEP）；声明预计 10-28 14:00 ET；官方 2026 FOMC 新闻稿索引截至本早更尚无 10-28 条目。不得写成政策已定。",
         "dataTable": {
           "columns": [
             "指标",
@@ -138,13 +431,13 @@
           ],
           "note": "FedWatch 等为市场衍生，非官方"
         },
-        "background": "9 月后官员沟通偏再观察数据。",
-        "progress": "等待 10-28 声明与记者会。",
+        "background": "相对 Brief-06「启幕」的跨日状态更新。",
+        "progress": "等待 10-28 ET 声明与记者会；落地后新轮另条。",
         "importance": "H1 例行关键节点；决议落地前不得写成政策已定。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "会议／决议日前后利率路径讨论通常升温（推断）。",
+            "决议日前后利率路径讨论通常升温（推断）。",
             "不做交易或投资建议。"
           ]
         },
@@ -152,286 +445,25 @@
           {
             "label": "FOMC 日历",
             "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
-          }
-        ]
-      }
-    },
-    {
-      "id": "03",
-      "candidate": "C03",
-      "title": "美军中央司令部：称协助海湾伙伴出口原油逾 15 亿桶，逾 3000 艘商船过境霍尔木兹",
-      "category": "地缘政治",
-      "rubric": "地缘政治｜能源｜国际政治",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "CENTCOM 2026-10-25 稿：协助海湾伙伴自夏季出口原油逾 15 亿桶；约六个月逾 3000 艘商船在支援下过境霍尔木兹；近月逾 95% 安全航行。属军方主张。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "本期（CENTCOM 主张）",
-            "备注"
-          ],
-          "rows": [
-            [
-              "协助出口原油",
-              ">1.5B 桶",
-              "自夏季累计"
-            ],
-            [
-              "过境商船",
-              ">3,000 艘／约六个月",
-              "军方口径"
-            ],
-            [
-              "近月安全过境",
-              ">95%",
-              "军方口径"
-            ]
-          ],
-          "note": "须与独立航运统计交叉"
-        },
-        "background": "航道安全仍是能源溢价核心叙事之一。",
-        "progress": "官方稿可开；并列 EIA／装运数据。",
-        "importance": "H8 监测；流量恢复与油价高位可并存。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "或弱化完全中断极端情景权重（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
+          },
           {
-            "label": "CENTCOM 官方稿",
-            "url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4633061/centcom-commander-visits-strait-of-hormuz-during-milestone-week/"
-          }
-        ]
-      }
-    },
-    {
-      "id": "04",
-      "candidate": "C04",
-      "title": "国际油价 2026-10-26 结算回落：Brent 约 115.81 美元、WTI 约 101.76 美元",
-      "category": "能源",
-      "rubric": "能源｜金融市场",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "2026-10-26 公开结算交叉：Brent 约 $115.81（约 −0.8%）、WTI 约 $101.76（约 −1.5%）；仍远高于冲突前水平。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "结算（约）",
-            "变化"
-          ],
-          "rows": [
-            [
-              "Brent",
-              "$115.81／桶",
-              "约 −0.8%"
-            ],
-            [
-              "WTI",
-              "$101.76／桶",
-              "约 −1.5%"
-            ]
-          ],
-          "note": "公开市场交叉；归因勿写成已证因果"
-        },
-        "background": "地缘风险与流量恢复叙事并存。",
-        "progress": "跟踪下一交易日与 EIA 周报。",
-        "importance": "H4／H8 监测；单日波动不升三级。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "高位回落或短暂缓和能源通胀紧迫感（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "EIA 石油数据",
-            "url": "https://www.eia.gov/petroleum/"
-          }
-        ]
-      }
-    },
-    {
-      "id": "05",
-      "candidate": "C05",
-      "title": "中国国家统计局：2026 年 9 月规模以上工业增加值同比增长 5.5%",
-      "category": "中国与亚太",
-      "rubric": "中国与亚太｜产业链",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "NBS：2026-09 规上工业增加值同比 +5.5%（8 月约 +5.2%）；环比约 +0.61%；1–9 月累计约 +5.3%。Brief-05 未刊。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "本期（2026-09）",
-            "上期（2026-08）",
-            "备注"
-          ],
-          "rows": [
-            [
-              "规上工业增加值同比",
-              "+5.5%",
-              "+5.2%",
-              "NBS"
-            ],
-            [
-              "环比",
-              "约 +0.61%",
-              "—",
-              "NBS"
-            ],
-            [
-              "1–9 月累计同比",
-              "约 +5.3%",
-              "—",
-              "NBS"
-            ]
-          ],
-          "note": "发布约 2026-10-19／20"
-        },
-        "background": "例行月度生产指标。",
-        "progress": "10 月官方 PMI 约 10-31。",
-        "importance": "H10 监测；不自动升三级。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "或支持中国供给端韧性讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "国家统计局英文稿",
-            "url": "https://www.stats.gov.cn/english/PressRelease/202610/t20261020_1965665.html"
-          }
-        ]
-      }
-    },
-    {
-      "id": "06",
-      "candidate": "C06",
-      "title": "美国 EIA：截至 2026-10-16 当周商业原油库存约减少 306 万桶至约 4.125 亿桶",
-      "category": "能源",
-      "rubric": "能源｜美国经济",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "EIA 2026-10-21 周报：week ended 10-16 商业原油库存约 −3.06M 至约 412.5M 桶。Brief-05 未刊。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "本期",
-            "变化",
-            "备注"
-          ],
-          "rows": [
-            [
-              "商业原油库存",
-              "约 412.5M 桶",
-              "约 −3.06M",
-              "week ended 10-16"
-            ]
-          ],
-          "note": "发布：EIA｜2026-10-21；下期约 10-28"
-        },
-        "background": "例行周度供需表。",
-        "progress": "关注下期周报。",
-        "importance": "H8／H4 弱监测；非重大突变。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "降库常被读作近月偏紧信号（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "EIA Weekly Petroleum Status Report",
-            "url": "https://www.eia.gov/petroleum/supply/weekly/"
-          }
-        ]
-      }
-    },
-    {
-      "id": "07",
-      "candidate": "C07",
-      "title": "美国财政部：2026-10-26 十年期国债收益率报 5.00%",
-      "category": "金融市场",
-      "rubric": "金融市场｜美国经济",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "Treasury 日曲线：2026-10-26 名义 10 年期 5.00%（2 年 4.68%；30 年 5.31%）。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "2026-10-26",
-            "2026-10-21",
-            "备注"
-          ],
-          "rows": [
-            [
-              "2 年期",
-              "4.68%",
-              "4.81%",
-              "Treasury"
-            ],
-            [
-              "10 年期",
-              "5.00%",
-              "5.13%",
-              "Treasury"
-            ],
-            [
-              "30 年期",
-              "5.31%",
-              "5.42%",
-              "Treasury"
-            ]
-          ],
-          "note": "官方 daily CSV 可核"
-        },
-        "background": "H2 长端收益率综合因子；单日≠政策已定。",
-        "progress": "对照 FOMC 后曲线。",
-        "importance": "H2 例行监测；不单独改写第二层。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "约 5% 可能继续影响金融条件与估值讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "U.S. Treasury 利率统计",
-            "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics"
+            "label": "2026 FOMC 新闻稿索引",
+            "url": "https://www.federalreserve.gov/newsevents/pressreleases/2026-press-fomc.htm"
           }
         ]
       }
     },
     {
       "id": "08",
-      "candidate": "C08",
-      "title": "本周关键日程前瞻：耐用品、FOMC 决议、大型科技财报与 GDP／PCE（均尚未发布）",
+      "candidate": "C09",
+      "title": "今日关键日程前瞻：FOMC 声明、EIA 周报、Microsoft／Alphabet 财报与 GDP／PCE（均尚未发布）",
       "category": "美国经济",
-      "rubric": "美国经济｜AI／科技｜金融市场",
+      "rubric": "美国经济｜AI／科技｜金融市场｜能源",
       "verification": "通过",
       "verificationDetail": "通过（05／07｜日程核验）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "本早更时点下列日程均尚未发布读数／决议／财报：10-27 耐用品；10-28 FOMC 与 MSFT／GOOGL；10-29 GDP／PCE／AMZN 等。",
+        "whatHappened": "本早更时点下列日程均尚未发布：10-28 EIA 周报与 FOMC；10-28 盘后 MSFT／GOOGL；10-29 GDP／PCE／AMZN 等。",
         "dataTable": {
           "columns": [
             "说明"
@@ -441,9 +473,9 @@
               "本条无关键量化指标（仅为发布日程）"
             ]
           ],
-          "note": "耐用品／FOMC／财报／GDP／PCE 均尚未发布"
+          "note": "FOMC／EIA／财报／GDP／PCE 均尚未发布"
         },
-        "background": "FOMC 周叠加科技财报与宏观初值，信息密度高。",
+        "background": "FOMC 决议日叠加科技财报与宏观初值，信息密度高。",
         "progress": "待官方／IR 原稿核验后再单条成稿。",
         "importance": "信息日程管理；无新事实读数。",
         "marketImpact": {
@@ -454,17 +486,17 @@
         },
         "sources": [
           {
-            "label": "Census M3 日程",
-            "url": "https://www.census.gov/manufacturing/m3/release_schedule.html"
-          },
-          {
             "label": "FOMC 日历",
             "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+          },
+          {
+            "label": "EIA 周报日程",
+            "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php"
           }
         ]
       }
     }
   ],
-  "sha256FinalBrief": "2146435c8fd15a446a5307c6b9c550ddefb147025dace9e488eeba05c0aa7551",
-  "generatedAt": "2026-10-27T08:25:00+08:00"
+  "sha256FinalBrief": "8f8b1211adbc468445f99bd713d42f29be0385b30fdb6e84ed55a00283a3ce68",
+  "generatedAt": "2026-10-28T08:45:00+08:00"
 }
