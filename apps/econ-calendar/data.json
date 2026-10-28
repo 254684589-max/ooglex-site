@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-27T22:35:18Z",
-  "asOf": "2026-10-27",
+  "updatedAt": "2026-10-28T18:26:49Z",
+  "asOf": "2026-10-28",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-25 ~ 2026-10-31",
   "count": 97,
@@ -343,7 +343,7 @@
       "actual": null
     },
     {
-      "ts": "2026-10-28T09:42:00Z",
+      "ts": "2026-10-28T10:32:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -470,7 +470,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "-0.1M",
+      "forecast": "0.1M",
       "previous": "-3.1M",
       "actual": null
     },
@@ -638,7 +638,7 @@
       "title": "GDP 初值 季环比",
       "titleEn": "Advance GDP Price Index q/q",
       "impact": "medium",
-      "forecast": "3.3%",
+      "forecast": "3.2%",
       "previous": "6.2%",
       "actual": null
     },
@@ -734,7 +734,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "75B",
       "previous": "77B",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "全国房价指数（Nationwide） 环比",
       "titleEn": "Nationwide HPI m/m",
       "impact": "low",
-      "forecast": "-0.1%",
+      "forecast": "-0.2%",
       "previous": "-0.2%",
       "actual": null
     },
