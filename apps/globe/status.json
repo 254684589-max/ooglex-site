@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T10:42:17Z",
+  "updatedAt": "2026-10-28T11:26:16Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -24,7 +24,7 @@
     },
     "celestrak/visual": {
       "ok": true,
-      "detail": "155 颗"
+      "detail": "156 颗"
     },
     "celestrak/gps-ops": {
       "ok": true,
