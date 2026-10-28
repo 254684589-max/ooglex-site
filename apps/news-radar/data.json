@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-10-27",
-  "asOf": "2026-10-27",
+  "updatedAt": "2026-10-28",
+  "asOf": "2026-10-28",
   "asOfZone": "CST",
   "source": "环球新闻情报中心／全球投资情报雷达",
   "sourceEn": "Global Investment Radar",
   "status": "ok",
   "demo": false,
   "frequency": "daily",
-  "edition": "Day-08",
+  "edition": "Day-09",
   "version": "screening-v2.1",
   "runKind": "跨日试运行",
-  "lead": "Day-08（2026-10-27 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（Verizon Q3／CENTCOM 霍尔木兹／美债10Y／FOMC启幕）；本轮不升三级。",
+  "lead": "Day-09（2026-10-28 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（耐用品9月／波音Q3／美债10Y／FOMC声明未出）；本轮不升三级。",
   "emptyReason": "本轮无三级/四级入选（路径 A／B／C 均未达标；禁止凑条；本轮明示不升三级）。",
   "note": "人工编辑，页面不自动刷新，不得视为实时行情。内部研究用、非正式自动外发。与 /apps/whats-latest/ 自动管道分立。S2 待用户确认。二级存档只作索引。站立授权：雷达 N=0→空报 C。",
   "counts": {
@@ -21,11 +21,11 @@
     "tier2": 4
   },
   "funnel": {
-    "scans": 52,
-    "independent": 14,
-    "duplicates": 18,
-    "notPublished": 8,
-    "tier1": 6,
+    "scans": 55,
+    "independent": 15,
+    "duplicates": 20,
+    "notPublished": 9,
+    "tier1": 7,
     "tier2": 4,
     "tier3": 0,
     "tier4": 0
@@ -33,29 +33,29 @@
   "items": [],
   "archive": [
     {
-      "id": "D08-T2-01",
-      "title": "Verizon 2026Q3／AWS≥$2B 框架／上调指引",
+      "id": "D09-T2-01",
+      "title": "耐用品 2026-09：+1.8%／运输+4.6%／飞机+28.4%",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D08-T2-02",
-      "title": "CENTCOM 霍尔木兹：>1.5B 桶／>3000 艘",
+      "id": "D09-T2-02",
+      "title": "波音 2026Q3／积压45B／F/A-XX 选型",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D08-T2-03",
-      "title": "美债 10Y 2026-10-26：5.00%",
+      "id": "D09-T2-03",
+      "title": "美债 10Y 2026-10-27：4.99%",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D08-T2-04",
-      "title": "FOMC 10-27～28 启幕（决议未出）",
+      "id": "D09-T2-04",
+      "title": "FOMC 10-27～28 进行中（决议未出）",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     }
   ],
-  "sha256FinalRadar": "9571818025518c0c45419b2d8f3323e15b9104752ee5e234d3a71961c2c7950c"
+  "sha256FinalRadar": "6d73150f551080a73b8ba5343222b1e0b8e2b4d6de7be64853ae017476449d9c"
 }
