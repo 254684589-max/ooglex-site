@@ -15,19 +15,20 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#07141c">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
-<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261027h">
+<link rel="stylesheet" href="/apps/music-player/css/player.css?v=20261028a">
 <script>
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
 </script>
 <script src="/assets/theme.js?v=20260926k" defer></script>
 <script src="/apps/music-player/js/store.js?v=20261025b" defer></script>
-<script src="/apps/music-player/js/player.js?v=20261027i" defer></script>
+<script src="/apps/music-player/js/player.js?v=20261028a" defer></script>
 </head>
 <body>
   <div id="ambient" class="ambient" aria-hidden="true"></div>
   <main>
     <section class="stage" aria-label="正在播放">
       <header class="mast">
+        <button type="button" id="full-close" class="full-close" aria-label="收起播放器" hidden></button>
         <div class="brand">
           <p class="kicker">OOGLEX MUSIC</p>
           <h1>流光播放器</h1>
@@ -58,6 +59,7 @@
         <button type="button" id="shuffle" aria-label="随机播放：关" aria-pressed="false"></button>
       </div>
       <p id="notice" hidden></p>
+      <p class="full-hint" aria-hidden="true">上滑下一首 · 下滑上一首</p>
       <details class="fineprint">
         <summary>演示样例 · Kevin MacLeod · CC BY 4.0</summary>
         <p>预置的《Liuguang Sketches》《Morning Pieces》是 Kevin MacLeod（<a href="https://incompetech.com/music/royalty-free/music.html" target="_blank" rel="noopener noreferrer">incompetech.com</a>）的原曲短样，许可 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>，使用须署名。每首约 28 秒，不是完整原曲，也不是付费曲库。</p>
