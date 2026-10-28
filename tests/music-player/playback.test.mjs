@@ -160,6 +160,9 @@ test('媒体动作播放/暂停/前后，metadata 和 playbackState 保持同步
   assert.equal(h.context.navigator.mediaSession.playbackState, 'playing');
   h.handlers.pause(); h.p.sync(); assert.equal(h.audio.paused, true);
   assert.equal(h.context.navigator.mediaSession.playbackState, 'paused');
+  await h.audio.play(); h.p.sync();
+  assert.equal(h.context.navigator.mediaSession.playbackState, 'playing');
+  h.handlers.pause();
   h.handlers.play(); await flush(); h.handlers.nexttrack(); await flush(); assert.equal(h.p.state.index, 1);
   h.handlers.previoustrack(); await flush(); assert.equal(h.p.state.index, 0);
 });

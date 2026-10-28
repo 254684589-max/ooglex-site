@@ -78,7 +78,10 @@ try {
   assert.equal(await evaluate('navigator.mediaSession.playbackState'), 'playing');
   await evaluate('document.querySelector("#play").click()', true);
   await until('navigator.mediaSession.playbackState === "paused"');
-  record('网页 Media Session metadata/playbackState 与实际暂停同步');
+  await evaluate('document.querySelector("audio").play()', true);
+  await until('navigator.mediaSession.playbackState === "playing"');
+  await evaluate('document.querySelector("#play").click()', true);
+  record('网页 Media Session metadata/playbackState 与实际暂停及恢复同步');
   await evaluate('document.querySelectorAll(".track")[11].click()', true);
   await until('document.querySelector("audio").readyState >= 3');
   await evaluate('document.querySelector("audio").currentTime = 1.85');

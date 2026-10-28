@@ -1909,6 +1909,8 @@
     audio.addEventListener("play", function () { paintCurrent(); syncPlayback(); });
     audio.addEventListener("playing", function () {
       if (!sourceIsCurrent() || audio.paused) return;
+      wantsPlayback = true;
+      waitingOnline = false;
       clearRecovery();
       setNotice("");
       paintCurrent(); syncPlayback();

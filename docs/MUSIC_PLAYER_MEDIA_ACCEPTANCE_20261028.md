@@ -4,7 +4,7 @@
 仓库：`254684589-max/ooglex-site`
 基线：`cb7e3a2b58eb6ab2dee3edd9dc9590056503ec3d`
 修复分支：`fix/music-playback-media-session`
-结论：网页逻辑与真实 Chrome 回归通过；Android 已实现原生适配并通过 Java/API 类型编译检查。最终源码 `068bf7ec769305bf5b80b36b5917e017c87cebfe` 的独立分支 APK 构建、签名校验和产物上传通过；硬件验收仍为 PENDING。草稿 PR：[372](https://github.com/254684589-max/ooglex-site/pull/372)。未部署生产环境。
+结论：网页逻辑与真实 Chrome 回归通过；Android 已实现原生适配并通过 Java/API 类型编译检查。原生源码 `068bf7ec769305bf5b80b36b5917e017c87cebfe` 的独立分支 APK 构建、签名校验和产物上传通过；硬件验收仍为 PENDING。草稿 PR：[372](https://github.com/254684589-max/ooglex-site/pull/372)。未部署生产环境。
 
 ## 1. 回退基线与只读范围
 
@@ -59,7 +59,7 @@
 | 项目 | 状态 | 实际证据/边界 |
 |---|---|---|
 | 网页语法与 git diff --check | PASS | 实际运行并退出 0 |
-| 逻辑回归 17 项 | PASS | `node --test tests/music-player/playback.test.mjs`，17/17；涵盖旧 ended、晚到音源/拒绝、十次倒序异步解析、blob 回收、模式、失效队列、错误类型、离线恢复/暂停取消、媒体动作、收藏队列、路由竞态 |
+| 逻辑回归 17 项 | PASS | `node --test tests/music-player/playback.test.mjs`，17/17；涵盖旧 ended、晚到音源/拒绝、十次倒序异步解析、blob 回收、模式、失效队列、错误类型、离线恢复/暂停取消、媒体动作/浏览器恢复后的 playing 状态、收藏队列、路由竞态 |
 | Chrome 正常结束自动下一首 | PASS | 实际 2 秒 WAV 自然结束，未合成 ended |
 | Chrome 顺序/随机/单曲/列表循环 | PASS | 真实音频播放，末尾自然 ended 与循环重播；跳到末尾加快部分用例 |
 | Chrome 十次快速切歌 | PASS | 最终停在第十次目标，只有一个 audio，无未处理 JS 异常或误报 |
@@ -70,7 +70,7 @@
 | Chrome UI 三档宽度 | PASS | 360/768/1280，无横向溢出；截图人工检查 |
 | Java 原生源码编译/API 类型检查 | PASS | javac --release 17 -encoding UTF-8，Android34 官方 API 桩；临时 R 只提供新增图标编号；6 项弃用警告，无错误。不是 APK 打包或运行测试 |
 | Android XML 解析 | PASS | 全部原生 XML 解析；Manifest 服务声明与权限人工检查 |
-| APK assemble / 签名验证 / 产物上传 | PASS | [最终 CI 40693078801](https://github.com/254684589-max/ooglex-site/actions/runs/40693078801)，最终源码 068bf7e；release 签名 1.0.8 / versionCode 8。生产 Release 步骤 SKIPPED |
+| APK assemble / 签名验证 / 产物上传 | PASS | [最终 CI 40693078801](https://github.com/254684589-max/ooglex-site/actions/runs/40693078801)，原生源码 068bf7e（后续仅 JS/测试/文档更新，原生文件未变）；release 签名 1.0.8 / versionCode 8。生产 Release 步骤 SKIPPED |
 | 现有网站 PR 构建 | PASS | [PR 构建 40693047623](https://github.com/254684589-max/ooglex-site/actions/runs/40693047623)，build 成功，deploy 为 SKIPPED |
 | APK 安装 / Android lint | PENDING | 无连接真机；现有工作流仅 assemble 与签名验证，不包含 lint。没有把源码编译冒充安装运行 |
 | 蓝牙耳机上一曲/下一曲/暂停/恢复 | PENDING | 无连接的 Android 真机与耳机；原生命令映射和 JS 回归通过不能冒充硬件通过 |
