@@ -56,7 +56,9 @@ public class MainActivity extends Activity {
         s.setDatabaseEnabled(true);
         s.setLoadWithOverviewMode(true);
         s.setUseWideViewPort(true);
-        s.setMediaPlaybackRequiresUserGesture(true);
+        // 一首播完自动接下一首、息屏连播都不经过点击；要求手势会让 WebView 拦下这些播放。
+        // 首次出声仍由页面上的播放键触发，页面本身从不自动播放。
+        s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);

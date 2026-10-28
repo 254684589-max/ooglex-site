@@ -1571,6 +1571,21 @@
     try { localStorage.setItem(key, value); } catch (err) { /* 忽略 */ }
   }
 
+  // 每次换歌编个号。连续快速切歌时，前一次 play() 会被新的加载打断并报错，
+  // 那不是浏览器拦截，只认最新一次的结果；真被拦下且确实没在播，才提示。
+  var playSeq = 0;
+  var BLOCKED_NOTICE = "点一下播放键即可开始播放。";
+
+  function tryPlay(seq) {
+    return audio.play().then(function () { return true; }, function (err) {
+      if (seq !== undefined && seq !== playSeq) return false;
+      if (err && err.name === "AbortError") return false;
+      if (!audio.paused) return false;
+      setNotice(BLOCKED_NOTICE);
+      return false;
+    });
+  }
+
   async function playIndex(album, index) {
     if (!album || !album.tracks || !album.tracks.length) return;
     if (state.playingAlbumId !== album.id) state.history = [];
@@ -1580,24 +1595,23 @@
     state.playingAlbumId = album.id;
     state.index = i;
     setNotice("");
+    var seq = ++playSeq;
     var url;
     try {
       url = await resolveSrc(track.src);
     } catch (err) {
+      if (seq !== playSeq) return;
       setNotice("这首还播不了。若是本机上传的曲目，请用「本机预览」打开，或先发行到仓库。");
       paintCurrent();
       return;
     }
+    if (seq !== playSeq) return;
     if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
     state.objectUrl = url.indexOf("blob:") === 0 ? url : "";
     audio.src = url;
     audio.volume = state.volume;
-    try {
-      await audio.play();
-      announce("正在播放 " + track.title + "，" + artistOf(track, album));
-    } catch (err) {
-      setNotice("浏览器还没允许播放。请再点一次播放。");
-    }
+    if (await tryPlay(seq)) announce("正在播放 " + track.title + "，" + artistOf(track, album));
+    if (seq !== playSeq) return;
     paintCurrent();
     setMediaSession(track, album);
   }
@@ -1647,7 +1661,7 @@
       return;
     }
     if (audio.paused) {
-      audio.play().catch(function () { setNotice("浏览器还没允许播放。请再点一次播放。"); });
+      tryPlay();
     } else {
       audio.pause();
     }
@@ -1722,13 +1736,14 @@
     audio.addEventListener("loadedmetadata", paintSeek);
     audio.addEventListener("durationchange", paintSeek);
     audio.addEventListener("play", paintCurrent);
+    audio.addEventListener("playing", function () { if (state.notice === BLOCKED_NOTICE) setNotice(""); });
     audio.addEventListener("pause", paintCurrent);
     audio.addEventListener("ended", function () {
       var album = currentAlbum();
       if (!album || !album.tracks || !album.tracks.length) { paintCurrent(); return; }
       if (state.repeat === "one") {
         audio.currentTime = 0;
-        audio.play().catch(function () { setNotice("浏览器还没允许播放。请再点一次播放。"); });
+        tryPlay();
         return;
       }
       var n = album.tracks.length;
