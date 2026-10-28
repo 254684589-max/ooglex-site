@@ -1,6 +1,8 @@
 /* 流光播放器：唱片主画面、专辑列表、播控。不自动播放。 */
 (function () {
   "use strict";
+  if (window.__ooglexMusicPlayerInitialized) return;
+  window.__ooglexMusicPlayerInitialized = true;
 
   var audio;
   var seek;
@@ -140,7 +142,7 @@
   }
 
   function currentAlbum() {
-    return findAlbum(state.playingAlbumId);
+    return state.queueAlbum || findAlbum(state.playingAlbumId);
   }
 
   function currentTrack() {
@@ -1002,8 +1004,9 @@
 
   // 分享链接打开时，把那首歌摆到播放器上，但不自动出声（浏览器也不允许）。
   function cueTrack(album, index) {
-    if (audio && audio.src) return;
+    if (audio && (audio.src || loadingSource)) return;
     if (state.playingAlbumId === album.id && state.index === index) return;
+    state.queueAlbum = album;
     state.playingAlbumId = album.id;
     state.index = index;
     state.history = [];
@@ -1458,7 +1461,7 @@
       art.appendChild(coverNode(artFrom || { title: "流" }, "cover sm"));
       if (spinning) art.classList.add("is-spinning");
     }
-    var playing = !!(audio && !audio.paused && audio.src);
+    var playing = !!(audio && ((!audio.paused && audio.src) || (wantsPlayback && (loadingSource || waitingOnline))));
     if (art) art.classList.toggle("is-spinning", playing);
     paintAmbient(artFrom && artFrom.cover);
     paintNowFav(track, album);
@@ -1549,12 +1552,13 @@
     paintTransport();
   }
 
-  async function resolveSrc(src) {
+  function resolveSrc(src) {
     if (String(src || "").indexOf("idb:") === 0) {
       if (!window.OoglexMusicStore) throw new Error("store");
-      var blob = await window.OoglexMusicStore.getBlob(src.slice(4));
-      if (!blob) throw new Error("missing");
-      return URL.createObjectURL(blob);
+      return window.OoglexMusicStore.getBlob(src.slice(4)).then(function (blob) {
+        if (!blob) throw new Error("missing");
+        return URL.createObjectURL(blob);
+      });
     }
     if (!src) throw new Error("empty");
     return src;
@@ -1571,54 +1575,221 @@
     try { localStorage.setItem(key, value); } catch (err) { /* 忽略 */ }
   }
 
-  // 每次换歌编个号。连续快速切歌时，前一次 play() 会被新的加载打断并报错，
-  // 那不是浏览器拦截，只认最新一次的结果；真被拦下且确实没在播，才提示。
+  // 只有已装载的当前音源才能推进队列；换歌时立即停止旧音频。
   var playSeq = 0;
+  var sourceSeq = -1;
+  var playAttempt = 0;
+  var loadingSource = false;
+  var wantsPlayback = false;
+  var waitingOnline = false;
+  var failedTracks = {};
+  var recoveryTimer = null;
+  var resumePosition = 0;
+  var lastProgress = -1;
+  var nativeMedia = /\bOoglexMedia\/1\b/.test(navigator.userAgent || "");
   var BLOCKED_NOTICE = "点一下播放键即可开始播放。";
 
+  function clearRecovery() {
+    clearTimeout(recoveryTimer);
+    recoveryTimer = null;
+  }
+
+  function sourceIsCurrent() {
+    return !loadingSource && sourceSeq === playSeq && !!audio.src
+      && (!audio.currentSrc || audio.currentSrc === audio.src);
+  }
+
+  function pausePlayback() {
+    wantsPlayback = false;
+    waitingOnline = false;
+    ++playAttempt;
+    clearRecovery();
+    audio.pause();
+    paintCurrent();
+    syncPlayback();
+  }
+
+  function failTrack(message) {
+    if (!wantsPlayback) return;
+    clearRecovery();
+    if (navigator.onLine === false) {
+      resumePosition = audio.currentTime || 0;
+      waitingOnline = true;
+      // 保留用户的继续播放意图；不在断网期间遍历整份列表。
+      audio.pause();
+      setNotice("网络已中断，连接恢复后重试。也可以点暂停取消恢复。");
+      paintCurrent();
+      syncPlayback();
+      return;
+    }
+    var album = currentAlbum();
+    var n = album && album.tracks.length;
+    failedTracks[state.index] = true;
+    var candidates = [];
+    for (var offset = 1; offset < n; offset++) {
+      var i = (state.index + offset) % n;
+      if (!state.shuffle && state.repeat !== "all" && i <= state.index) break;
+      if (!failedTracks[i]) candidates.push(i);
+    }
+    if (state.repeat !== "one" && candidates.length) {
+      var next = state.shuffle ? candidates[Math.floor(Math.random() * candidates.length)] : candidates[0];
+      playIndex(album, next, { automatic: true, notice: message + " 已跳过这首。" });
+      return;
+    }
+    pausePlayback();
+    setNotice(message + " 当前队列没有可播放的后续曲目，请稍后重试或手动换歌。");
+  }
+
+  function armRecovery() {
+    if (recoveryTimer || !wantsPlayback || waitingOnline) return;
+    var seq = playSeq;
+    recoveryTimer = setTimeout(function () {
+      recoveryTimer = null;
+      if (seq === playSeq && wantsPlayback) failTrack("音频加载超时。");
+    }, 20000);
+  }
+
   function tryPlay(seq) {
-    return audio.play().then(function () { return true; }, function (err) {
-      if (seq !== undefined && seq !== playSeq) return false;
-      if (err && err.name === "AbortError") return false;
-      if (!audio.paused) return false;
-      setNotice(BLOCKED_NOTICE);
+    if (seq === undefined) seq = playSeq;
+    var attempt = ++playAttempt;
+    wantsPlayback = true;
+    waitingOnline = false;
+    syncPlayback();
+    armRecovery();
+    var result;
+    try { result = audio.play(); }
+    catch (err) { result = Promise.reject(err); }
+    return Promise.resolve(result).then(function () {
+      if (seq !== playSeq || attempt !== playAttempt || !wantsPlayback) return false;
+      syncPlayback();
+      return true;
+    }, function (err) {
+      if (seq !== playSeq || attempt !== playAttempt || !wantsPlayback) return false;
+      if (err && err.name === "NotAllowedError") {
+        pausePlayback();
+        setNotice(BLOCKED_NOTICE);
+      } else if (err && err.name === "AbortError") {
+        pausePlayback();
+        setNotice("播放被中断，点播放可重试。");
+      } else {
+        failTrack(err && err.name === "NotSupportedError" ? "音频地址失效或格式不受支持。" : "音频未能播放。");
+      }
       return false;
     });
   }
 
-  async function playIndex(album, index) {
+  async function playIndex(album, index, options) {
     if (!album || !album.tracks || !album.tracks.length) return;
-    if (state.playingAlbumId !== album.id) state.history = [];
+    options = options || {};
+    if (state.playingAlbumId !== album.id || state.queueAlbum !== album) state.history = [];
+    if (!options.automatic) failedTracks = {};
     var n = album.tracks.length;
     var i = ((index % n) + n) % n;
     var track = album.tracks[i];
+    var seq = ++playSeq;
+    ++playAttempt;
+    sourceSeq = -1;
+    loadingSource = true;
+    wantsPlayback = true;
+    waitingOnline = false;
+    clearRecovery();
+    audio.pause();
+    audio.removeAttribute("src");
+    audio.load();
+    if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
+    state.objectUrl = "";
+    state.queueAlbum = album;
     state.playingAlbumId = album.id;
     state.index = i;
-    setNotice("");
-    var seq = ++playSeq;
+    resumePosition = options.position || 0;
+    setNotice(options.notice || "");
+    setMediaSession(track, album);
+    paintCurrent();
+    syncPlayback();
+    armRecovery();
     var url;
     try {
-      url = await resolveSrc(track.src);
+      // 普通 URL 不跨异步边界，保留浏览器手势与 ended 调用链。
+      url = resolveSrc(track.src);
+      if (url && typeof url.then === "function") url = await url;
     } catch (err) {
       if (seq !== playSeq) return;
-      setNotice("这首还播不了。若是本机上传的曲目，请用「本机预览」打开，或先发行到仓库。");
-      paintCurrent();
+      loadingSource = false;
+      failTrack("这首音频无法读取。若是本机上传的曲目，请用「本机预览」打开，或先发行到仓库。");
       return;
     }
-    if (seq !== playSeq) return;
-    if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
+    if (seq !== playSeq) {
+      if (url.indexOf("blob:") === 0) URL.revokeObjectURL(url);
+      return;
+    }
     state.objectUrl = url.indexOf("blob:") === 0 ? url : "";
     audio.src = url;
     audio.volume = state.volume;
-    if (await tryPlay(seq)) announce("正在播放 " + track.title + "，" + artistOf(track, album));
+    loadingSource = false;
+    sourceSeq = seq;
+    if (wantsPlayback && await tryPlay(seq)) announce("正在播放 " + track.title + "，" + artistOf(track, album));
     if (seq !== playSeq) return;
     paintCurrent();
-    setMediaSession(track, album);
+    syncPlayback();
+  }
+
+  function playbackStatus() {
+    if (!currentTrack() || !audio.src && !loadingSource) return "none";
+    if (waitingOnline || !wantsPlayback) return "paused";
+    if (loadingSource || audio.readyState < 3) return "buffering";
+    return !audio.paused && !audio.ended ? "playing" : "paused";
+  }
+
+  // 原生只接收状态；系统操作仍回到本文件的同一播放器和队列。
+  function syncPlayback() {
+    var status = playbackStatus();
+    var track = currentTrack();
+    var album = currentAlbum();
+    var duration = isFinite(audio.duration) ? audio.duration : (track && track.durationSec || 0);
+    var position = audio.currentTime || 0;
+    if (nativeMedia) {
+      try {
+        window.prompt("__ooglex_media_v1__", JSON.stringify({
+          status: status, title: track && track.title || "", artist: artistOf(track, album),
+          album: album && album.title || "", duration: duration, position: position,
+          artwork: track && track.image || album && album.cover || ""
+        }));
+      } catch (err) { /* 旧外壳或页面销毁时不影响网页播放 */ }
+      return;
+    }
+    if (!("mediaSession" in navigator)) return;
+    try { navigator.mediaSession.playbackState = status === "playing" ? "playing" : status === "none" ? "none" : "paused"; } catch (err) { /* 不支持 */ }
+    try {
+      if (navigator.mediaSession.setPositionState) {
+        if (duration > 0) navigator.mediaSession.setPositionState({ duration: duration,
+          position: Math.max(0, Math.min(duration, position)), playbackRate: audio.playbackRate || 1 });
+        else navigator.mediaSession.setPositionState();
+      }
+    } catch (err) { /* 流媒体时长可能未知 */ }
+  }
+
+  function mediaAction(action, value) {
+    if (action === "play") {
+      if (waitingOnline || audio.error || !audio.src && !loadingSource) {
+        var album = currentAlbum() || firstPlayable();
+        if (album) playIndex(album, Math.max(0, state.index));
+      } else if (audio.paused && !loadingSource) tryPlay();
+      else if (loadingSource) { wantsPlayback = true; syncPlayback(); }
+    } else if (action === "pause") pausePlayback();
+    else if (action === "next") step(1);
+    else if (action === "previous") step(-1);
+    else if (action === "seek" && isFinite(value) && isFinite(audio.duration)) {
+      audio.currentTime = Math.max(0, Math.min(audio.duration, Number(value)));
+      paintSeek(); syncPlayback();
+    } else if (action === "nativeerror") {
+      pausePlayback();
+      setNotice("系统暂不允许后台媒体播放，请返回播放器后重试。");
+    }
   }
 
   function setMediaSession(track, album) {
     try {
-      if (!("mediaSession" in navigator)) return;
+      if (nativeMedia || !("mediaSession" in navigator)) return;
       var art = [];
       var cover = track.image || album.cover;
       if (cover && cover.indexOf("idb:") !== 0) {
@@ -1652,19 +1823,8 @@
   }
 
   function toggle() {
-    if (!audio.src) {
-      // 分享链接打开时已经把那首歌摆好（cue），按播放就放它
-      var cued = currentAlbum();
-      if (cued && state.index >= 0) { playIndex(cued, state.index); return; }
-      var album = firstPlayable();
-      if (album) playIndex(album, 0);
-      return;
-    }
-    if (audio.paused) {
-      tryPlay();
-    } else {
-      audio.pause();
-    }
+    if (wantsPlayback && (loadingSource || waitingOnline || !audio.paused)) pausePlayback();
+    else mediaAction("play");
   }
 
   function step(delta) {
@@ -1732,15 +1892,42 @@
     window.addEventListener("pointerup", endSeek);
 
 
-    audio.addEventListener("timeupdate", function () { if (!state.seeking) paintSeek(); });
-    audio.addEventListener("loadedmetadata", paintSeek);
-    audio.addEventListener("durationchange", paintSeek);
-    audio.addEventListener("play", paintCurrent);
-    audio.addEventListener("playing", function () { if (state.notice === BLOCKED_NOTICE) setNotice(""); });
-    audio.addEventListener("pause", paintCurrent);
+    var lastSync = 0;
+    audio.addEventListener("timeupdate", function () {
+      if (!sourceIsCurrent()) return;
+      if (!state.seeking) paintSeek();
+      if (audio.currentTime !== lastProgress) { lastProgress = audio.currentTime; clearRecovery(); }
+      if (Date.now() - lastSync > 1000) { lastSync = Date.now(); syncPlayback(); }
+    });
+    audio.addEventListener("loadedmetadata", function () {
+      if (!sourceIsCurrent()) return;
+      if (resumePosition && isFinite(audio.duration)) audio.currentTime = Math.min(resumePosition, audio.duration);
+      resumePosition = 0;
+      paintSeek(); syncPlayback();
+    });
+    audio.addEventListener("durationchange", function () { paintSeek(); syncPlayback(); });
+    audio.addEventListener("play", function () { paintCurrent(); syncPlayback(); });
+    audio.addEventListener("playing", function () {
+      if (!sourceIsCurrent() || audio.paused) return;
+      clearRecovery();
+      setNotice("");
+      paintCurrent(); syncPlayback();
+    });
+    audio.addEventListener("pause", function () {
+      if (sourceIsCurrent() && audio.paused && !audio.ended && !waitingOnline) {
+        wantsPlayback = false; ++playAttempt; clearRecovery();
+      }
+      paintCurrent(); syncPlayback();
+    });
+    ["waiting", "stalled"].forEach(function (name) {
+      audio.addEventListener(name, function () { if (sourceIsCurrent()) { armRecovery(); syncPlayback(); } });
+    });
     audio.addEventListener("ended", function () {
+      if (!sourceIsCurrent() || !audio.ended || !wantsPlayback) return;
+      clearRecovery();
+      failedTracks = {};
       var album = currentAlbum();
-      if (!album || !album.tracks || !album.tracks.length) { paintCurrent(); return; }
+      if (!album || !album.tracks.length) { pausePlayback(); return; }
       if (state.repeat === "one") {
         audio.currentTime = 0;
         tryPlay();
@@ -1750,16 +1937,23 @@
       if (state.shuffle && n > 1) {
         state.history.push(state.index);
         if (state.history.length > 40) state.history.splice(0, state.history.length - 40);
-        playIndex(album, randomIndex(n, state.index));
-        return;
-      }
-      if (state.index < n - 1) playIndex(album, state.index + 1);
-      else if (state.repeat === "all") playIndex(album, 0);
-      else paintCurrent();
+        playIndex(album, randomIndex(n, state.index), { automatic: true });
+      } else if (state.index < n - 1) playIndex(album, state.index + 1, { automatic: true });
+      else if (state.repeat === "all") playIndex(album, 0, { automatic: true });
+      else pausePlayback();
     });
     audio.addEventListener("error", function () {
-      if (!audio.src) return;
-      setNotice("这首曲目没有播出来。可以换下一首，或稍后再试。");
+      if (!sourceIsCurrent() || !audio.error) return;
+      if (audio.error.code === 1) { pausePlayback(); setNotice("播放被中断，点播放可重试。"); return; }
+      failTrack(audio.error.code === 2 ? "音频网络请求失败。" : audio.error.code === 3 ? "音频解码失败。" : "音频地址失效或格式不受支持。");
+    });
+    window.addEventListener("online", function () {
+      if (waitingOnline && wantsPlayback) playIndex(currentAlbum(), state.index, { automatic: true, position: resumePosition });
+    });
+    document.addEventListener("visibilitychange", syncPlayback);
+    window.addEventListener("pagehide", function () {
+      pausePlayback();
+      if (nativeMedia) window.prompt("__ooglex_media_v1__", '{"status":"none"}');
     });
 
     document.addEventListener("keydown", function (event) {
@@ -1777,14 +1971,22 @@
       else if (event.key === "ArrowLeft") { event.preventDefault(); nudge(-5); }
     });
 
-    try {
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.setActionHandler("play", function () { if (audio.paused) toggle(); });
-        navigator.mediaSession.setActionHandler("pause", function () { if (!audio.paused) toggle(); });
-        navigator.mediaSession.setActionHandler("previoustrack", function () { step(-1); });
-        navigator.mediaSession.setActionHandler("nexttrack", function () { step(1); });
-      }
-    } catch (err) { /* 个别浏览器不允许重复注册 */ }
+    if (nativeMedia) {
+      window.OoglexMediaControl = mediaAction;
+      window.addEventListener("ooglexmediaready", syncPlayback);
+    } else if ("mediaSession" in navigator) {
+      var actions = {
+        play: function () { mediaAction("play"); }, pause: pausePlayback,
+        previoustrack: function () { step(-1); }, nexttrack: function () { step(1); },
+        seekto: function (details) { mediaAction("seek", details.seekTime); },
+        seekbackward: function (details) { nudge(-(details.seekOffset || 5)); syncPlayback(); },
+        seekforward: function (details) { nudge(details.seekOffset || 5); syncPlayback(); },
+        stop: pausePlayback
+      };
+      Object.keys(actions).forEach(function (action) {
+        try { navigator.mediaSession.setActionHandler(action, actions[action]); } catch (err) { /* 逐项降级 */ }
+      });
+    }
   }
 
 
