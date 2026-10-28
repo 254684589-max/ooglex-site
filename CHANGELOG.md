@@ -14,7 +14,7 @@
 
 ### 修复
 
-- 2026-10-28：流光播放器专项修复：换歌立即卸载旧音源，隔离旧 ended 与异步 play/IndexedDB 结果，暂停可取消晚到的播放；失效音源有界跳过，离线等待联网恢复，权限/中断/格式错误分别提示。网页媒体动作逐项降级并同步播放状态；防止重复初始化，保留既有循环/随机/收藏/曲库与 UI。Android 增加系统 MediaSession、MediaStyle 通知和仅随播放运行的 mediaPlayback 服务，按键复用网页队列，不引入第二音频引擎或新三方依赖。17 项逻辑回归与真实 Chrome 14 项检查通过，Java Android34 API 编译通过；APK 打包及耳机、锁屏、后台、车载和 Android/WebView 矩阵见 `docs/MUSIC_PLAYER_MEDIA_ACCEPTANCE_20261028.md`，未完成项为 PENDING。需要协调发布网页和重新打包 APK；未部署。
+- 2026-10-28：流光播放器专项修复：换歌立即卸载旧音源，隔离旧 ended 与异步 play/IndexedDB 结果，暂停可取消晚到的播放；失效音源有界跳过，离线等待联网恢复，权限/中断/格式错误分别提示。网页媒体动作逐项降级并同步播放状态；防止重复初始化，保留既有循环/随机/收藏/曲库与 UI。Android 增加系统 MediaSession、MediaStyle 通知和仅随播放运行的 mediaPlayback 服务，按键复用网页队列，不引入第二音频引擎或新三方依赖。17 项逻辑回归与真实 Chrome 14 项检查通过，Java Android34 API 编译通过；最终修复分支 APK 构建、签名校验与网站 PR 构建通过；安装、耳机、锁屏、后台、车载和 Android/WebView 矩阵见 `docs/MUSIC_PLAYER_MEDIA_ACCEPTANCE_20261028.md`，未完成项为 PENDING。需要协调发布网页和重新打包 APK；未部署。
 
 ### 修复
 
