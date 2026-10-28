@@ -31,6 +31,10 @@
 - 读回时逐条校验，只认 `/apps/music-player/media/` 下的路径和 Jamendo、Creative Commons 的 https 地址
 - 本机草稿（`idb:`）里的曲目不能收藏
 
+## 全屏播放
+
+手机上点底部迷你播放条打开全屏（复用 `.stage`，加 `.is-full`）。上滑下一首、下滑上一首：竖向位移超过 60px、比横向大 1.5 倍、0.9 秒内完成才算；从 `input`、`button`、`a`、`summary` 上开始的触摸不算。打开时 `history.pushState` 一条记录，返回键先收起。键盘 ↓/↑ 切歌、Esc 收起。
+
 ## 分享
 
 正在播放歌名左侧的按钮打开分享面板：系统分享（`navigator.share`，不支持时隐藏）、复制链接、生成海报（canvas 1080×1440，可保存或分享图片）。聊天、社交类应用的内置浏览器里提示用右上角 ··· 菜单分享（页面文字不点名具体应用），并用 `history.replaceState` 把地址换成这首歌的链接。

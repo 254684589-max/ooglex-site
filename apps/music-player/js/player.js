@@ -91,6 +91,9 @@
         svg.appendChild(t);
       }
     }
+    else if (name === "chevron-down") {
+      stroke("M6 9.5 12 15.5 18 9.5");
+    }
     else if (name === "share") {
       stroke("M12 3.5v11");
       stroke("M7.5 8 12 3.5 16.5 8");
@@ -1497,8 +1500,10 @@
     var url = src && String(src).indexOf("idb:") !== 0 ? String(src) : "";
     if (url === ambientSrc) return;
     ambientSrc = url;
-    node.style.backgroundImage = url ? "url(" + JSON.stringify(new URL(url, location.href).href) + ")" : "";
+    var css = url ? "url(" + JSON.stringify(new URL(url, location.href).href) + ")" : "";
+    node.style.backgroundImage = css;
     node.classList.toggle("is-on", !!url);
+    document.documentElement.style.setProperty("--mp-cover", css || "none");
   }
 
   function paintMini(track, album, artFrom, playing) {
@@ -1525,7 +1530,7 @@
   function updateMini() {
     var mini = $("mini");
     if (!mini) return;
-    var show = !!state.miniHasTrack && !state.stageVisible;
+    var show = !!state.miniHasTrack && !state.stageVisible && !state.full;
     mini.hidden = !show;
     document.body.classList.toggle("has-mini", show);
   }
@@ -1743,7 +1748,14 @@
     });
 
     document.addEventListener("keydown", function (event) {
+      var shareOpen = $("share-dlg") && $("share-dlg").open;
+      if (state.full && !shareOpen && event.key === "Escape") { event.preventDefault(); closeFull(); return; }
       var tag = (event.target && event.target.tagName || "").toLowerCase();
+      if (state.full && !shareOpen && tag !== "input" && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+        event.preventDefault();
+        swipeTo(event.key === "ArrowDown" ? 1 : -1);
+        return;
+      }
       if (tag === "input" || tag === "textarea" || tag === "select" || tag === "button" || tag === "a") return;
       if (event.key === " ") { event.preventDefault(); toggle(); }
       else if (event.key === "ArrowRight") { event.preventDefault(); nudge(5); }
@@ -1760,6 +1772,104 @@
     } catch (err) { /* 个别浏览器不允许重复注册 */ }
   }
 
+
+  /* ---------------- 全屏播放：点迷你播放条打开；上滑下一首、下滑上一首；返回键或 ⌄ 收起 ---------------- */
+
+  function openFull() {
+    var stage = document.querySelector(".stage");
+    if (!stage || state.full) return;
+    state.full = true;
+    stage.classList.add("is-full");
+    stage.setAttribute("role", "dialog");
+    stage.setAttribute("aria-modal", "true");
+    stage.setAttribute("aria-label", "全屏播放");
+    document.body.classList.add("mp-full");
+    $("full-close").hidden = false;
+    // 记一条历史，让手机的返回键 / 返回手势先收起全屏，而不是离开页面
+    try { history.pushState({ mpFull: true }, ""); state.fullPushed = true; } catch (err) { state.fullPushed = false; }
+    updateMini();
+    try { $("full-close").focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
+  }
+
+  function closeFull(fromHistory) {
+    var stage = document.querySelector(".stage");
+    if (!stage || !state.full) return;
+    state.full = false;
+    stage.classList.remove("is-full", "is-dragging");
+    stage.style.removeProperty("--swipe-y");
+    stage.removeAttribute("role");
+    stage.removeAttribute("aria-modal");
+    stage.setAttribute("aria-label", "正在播放");
+    document.body.classList.remove("mp-full");
+    $("full-close").hidden = true;
+    if (!fromHistory && state.fullPushed) {
+      state.fullPushed = false;
+      try { history.back(); } catch (err) { /* 忽略 */ }
+    }
+    state.fullPushed = false;
+    updateMini();
+    var back = $("mini-open");
+    if (back && !$("mini").hidden) try { back.focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
+  }
+
+  // 切歌，并让唱片顺着手势方向滑走再回来
+  function swipeTo(dir) {
+    var stage = document.querySelector(".stage");
+    if (!currentAlbum() && !firstPlayable()) return;
+    step(dir);
+    if (!stage || reduceMotion()) return;
+    stage.classList.add("is-dragging");
+    stage.style.setProperty("--swipe-y", (dir > 0 ? 60 : -60) + "px");
+    // 两帧：先瞬移到起点，下一帧再打开过渡滑回原位
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        stage.classList.remove("is-dragging");
+        stage.style.setProperty("--swipe-y", "0px");
+      });
+    });
+  }
+
+  function bindFull() {
+    var stage = document.querySelector(".stage");
+    var close = $("full-close");
+    if (!stage || !close) return;
+    close.appendChild(icon("chevron-down"));
+    close.addEventListener("click", function () { closeFull(); });
+    window.addEventListener("popstate", function () { if (state.full) closeFull(true); });
+
+    // 进度条、按钮、链接上开始的触摸不算切歌，免得拖进度时误切
+    var start = null;
+    function skip(target) { return !!(target && target.closest && target.closest("input, button, a, summary, dialog")); }
+    stage.addEventListener("touchstart", function (event) {
+      if (!state.full || event.touches.length !== 1 || skip(event.target)) { start = null; return; }
+      var t = event.touches[0];
+      start = { x: t.clientX, y: t.clientY, at: Date.now() };
+      stage.classList.add("is-dragging");
+    }, { passive: true });
+    stage.addEventListener("touchmove", function (event) {
+      if (!start || !state.full) return;
+      var dy = event.touches[0].clientY - start.y;
+      if (!reduceMotion()) stage.style.setProperty("--swipe-y", Math.max(-120, Math.min(120, dy * 0.4)) + "px");
+    }, { passive: true });
+    function end(event) {
+      if (!start) return;
+      var t = event.changedTouches && event.changedTouches[0];
+      var dx = t ? t.clientX - start.x : 0;
+      var dy = t ? t.clientY - start.y : 0;
+      var quick = Date.now() - start.at < 900;
+      start = null;
+      stage.classList.remove("is-dragging");
+      stage.style.setProperty("--swipe-y", "0px");
+      if (quick && Math.abs(dy) > 60 && Math.abs(dy) > Math.abs(dx) * 1.5) swipeTo(dy < 0 ? 1 : -1);
+    }
+    stage.addEventListener("touchend", end);
+    stage.addEventListener("touchcancel", function () {
+      start = null;
+      stage.classList.remove("is-dragging");
+      stage.style.setProperty("--swipe-y", "0px");
+    });
+  }
+
   function bindMini() {
     var mini = $("mini");
     if (!mini) return;
@@ -1768,9 +1878,7 @@
     var next = $("mini-next");
     next.appendChild(icon("next"));
     next.addEventListener("click", function () { step(1); });
-    $("mini-open").addEventListener("click", function () {
-      document.querySelector(".stage").scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
-    });
+    $("mini-open").addEventListener("click", openFull);
     var stage = document.querySelector(".stage");
     if (stage && "IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
@@ -1824,6 +1932,7 @@
     state.favs = loadFavs();
     bindTransport();
     bindMini();
+    bindFull();
     var nowShare = $("now-share");
     if (nowShare) {
       nowShare.appendChild(icon("share"));
