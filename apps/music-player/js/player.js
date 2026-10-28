@@ -1751,7 +1751,7 @@
       try {
         window.prompt("__ooglex_media_v1__", JSON.stringify({
           status: status, title: track && track.title || "", artist: artistOf(track, album),
-          album: album && album.title || "", duration: duration, position: position,
+          album: track && track.album || album && album.title || "", duration: duration, position: position,
           artwork: track && track.image || album && album.cover || ""
         }));
       } catch (err) { /* 旧外壳或页面销毁时不影响网页播放 */ }
@@ -1798,7 +1798,7 @@
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title || "",
         artist: artistOf(track, album),
-        album: album.title || "",
+        album: track.album || album.title || "",
         artwork: art
       });
     } catch (err) { /* 媒体会话是增强，失败不影响页内播控 */ }

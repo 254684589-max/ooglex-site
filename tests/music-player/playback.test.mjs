@@ -154,8 +154,9 @@ test('断网错误等待联网，恢复同首；用户暂停取消恢复', async
 });
 
 test('媒体动作播放/暂停/前后，metadata 和 playbackState 保持同步', async () => {
-  const h = harness(), a = h.album(); await h.p.playIndex(a, 0); h.p.sync();
+  const h = harness(), a = h.album(); a.tracks[0].album = 'Original album'; await h.p.playIndex(a, 0); h.p.sync();
   assert.equal(h.context.navigator.mediaSession.metadata.title, 'Song 0');
+  assert.equal(h.context.navigator.mediaSession.metadata.album, 'Original album');
   assert.equal(h.context.navigator.mediaSession.playbackState, 'playing');
   h.handlers.pause(); h.p.sync(); assert.equal(h.audio.paused, true);
   assert.equal(h.context.navigator.mediaSession.playbackState, 'paused');

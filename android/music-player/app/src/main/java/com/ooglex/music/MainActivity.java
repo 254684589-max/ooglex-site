@@ -212,7 +212,7 @@ public class MainActivity extends Activity {
         if (isOoglex(uri)) return false;
         String scheme = uri.getScheme();
         if ("about".equals(scheme) || "data".equals(scheme) || "blob".equals(scheme) || "javascript".equals(scheme)) {
-            return true;
+            return false;
         }
         openInBrowser(uri);
         return true;
