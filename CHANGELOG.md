@@ -13,6 +13,8 @@
 
 ### 修复
 
+- 2026-10-29：流光播放器的系统返回键按页面层级后退，而不是一步退出到手机桌面。进入专辑、全球曲库、收藏、单曲页，以及打开全屏播放和分享面板时，会写入一条浏览器历史（地址上多一个 `mpstep`，原来的 `#/album/…` 等 hash 不变）。安卓 WebView 的 `canGoBack()` 不把「只改 hash」或「URL 完全不变的 pushState」算进后退栈，Capacitor 外壳因此会直接结束 Activity；全屏播放原先的 `pushState` 没有改 URL，专辑页只靠 hash。现在返回键先关分享，再收起全屏，再回到上一页。本次打开的根页面（一般是专辑列表；直接打开某张专辑链接时，那一页就是根）不再压入记录，返回键仍退出应用。未改曲库、媒体会话和安装包。未部署。
+
 - 2026-10-29：流光播放器 Android 调试包更新为 1.0.10（versionCode 10）。桌面图标为品牌音符，与 `apps/music-player/icons/icon.svg` 一致。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（3968272 字节，约 3.8 MB；sha256 `19104a8e43b6e021e538e85220c76d30eec62ff63d5555c5f5ee0e6119addec5`；包名 `com.ooglex.music001`；Android 调试证书，主体 CN=Android Debug，`debuggable=true`）。`/apps/downloads/` 与 `/apps/music-player/download/` 在读不到 `ooglex-music.json` 时显示 1.0.10、3968272 字节和这份校验值；读到 JSON 时版本以该文件为准。下载地址不变。Pages 仍以仓库提交的安装包为准。未改播放器脚本和媒体会话。未部署。
 
 - 2026-10-29：流光播放器下载地址在 Pages 上仍是 1.0.4，不是 main 里的 1.0.9。`deploy_protected_pages.yml` 在拷贝公开站之后，用 GitHub Release `music-player-android` 覆盖 `.site/apps/music-player/download/ooglex-music.apk` 和 `ooglex-music.json`。该 Release 停在 2026-10-28 的 1.0.4（172571 字节，sha256 `d6038744e78de37cb606525113a44b5ee4495677f328de68fd5b99201e42c8ec`）。同一次部署里 `/apps/downloads/app-debug.apk` 不在覆盖名单里，所以它已是 3880780 字节的 1.0.9。现改为公开下载以仓库提交的安装包为准，部署前核对 `.site` 里的 apk 与 json 和仓库字节一致。未部署。
