@@ -1128,9 +1128,34 @@
     return "";
   }
 
-  // 聊天、社交类应用的内置浏览器（页面文字里不点名具体应用）
+  // 聊天、社交类应用的内置浏览器（页面文字里不点名具体应用）。只用于右上角菜单那句提示。
   function inAppBrowser() {
     return /MicroMessenger|\bQQ\/|Weibo|DingTalk/i.test(navigator.userAgent || "");
+  }
+
+  // Capacitor 壳（Android / iOS）或 Android 系统 WebView。它们会忽略 blob: 上的 download。
+  function inNativeApp() {
+    var cap = window.Capacitor;
+    if (cap) {
+      try {
+        if (typeof cap.isNativePlatform === "function" && cap.isNativePlatform()) return true;
+      } catch (err) { /* 这一项失败不代表不是壳 */ }
+      try {
+        if (typeof cap.getPlatform === "function") {
+          var platform = String(cap.getPlatform() || "");
+          if (platform && platform !== "web") return true;
+        }
+      } catch (err) { /* 继续看其它信号 */ }
+      try {
+        if (typeof cap.platform === "string" && cap.platform && cap.platform !== "web") return true;
+      } catch (err) { /* 继续看 UA */ }
+    }
+    // 系统 WebView 的 UA 在平台段里带 "; wv)"，手机 Chrome 和自定义标签页没有。
+    return /; wv\)/i.test(navigator.userAgent || "");
+  }
+
+  function posterNeedsGestureSave() {
+    return inNativeApp() || inAppBrowser();
   }
 
   // 分享链接打开时，把那首歌摆到播放器上，但不自动出声（浏览器也不允许）。
@@ -1488,21 +1513,105 @@
     $("share-poster").src = share.objectUrl;
     $("share-poster-box").hidden = false;
     var file = new File([blob], "liuguang-share.png", { type: "image/png" });
-    $("share-poster-share").hidden = !(navigator.canShare && navigator.share && navigator.canShare({ files: [file] }));
-    setShareStatus(inAppBrowser()
-      ? "长按图片可保存到相册，再发布分享。"
-      : "海报已生成，保存图片后即可发布分享。");
+    var canFiles = canSharePosterFile(file);
+    // 能分享文件时保留「分享图片」。保存按钮在 Capacitor 里也会走同一条系统分享。
+    $("share-poster-share").hidden = !canFiles;
+    if (posterNeedsGestureSave()) {
+      setShareStatus(canFiles
+        ? "长按图片可保存到相册，也可点「保存图片」或「分享图片」打开系统分享。"
+        : "长按图片可保存到相册，再发布分享。");
+    } else {
+      setShareStatus("海报已生成，保存图片后即可发布分享。");
+    }
   }
 
-  function savePoster() {
-    if (!share.objectUrl) return;
+  // 文件名只用英文和数字：部分浏览器遇到中文文件名会退回成 "download"
+  function posterFileName() {
+    return "liuguang-" + (favKey(share.album, share.track) || "song").replace(/[^A-Za-z0-9-]+/g, "-").slice(0, 60) + ".png";
+  }
+
+  function canSharePosterFile(file) {
+    if (!file || !navigator.share || typeof navigator.canShare !== "function") return false;
+    try { return !!navigator.canShare({ files: [file] }); }
+    catch (err) { return false; }
+  }
+
+  function posterSharePayload(file) {
+    var payload = {
+      files: [file],
+      title: (share.track && share.track.title ? share.track.title : "流光") + " · 流光播放器"
+    };
+    if (share.track) payload.text = shareText(share.album, share.track) + (share.url ? " " + share.url : "");
+    return payload;
+  }
+
+  function triggerDownload(href, name) {
     var a = document.createElement("a");
-    a.href = share.objectUrl;
-    // 文件名只用英文和数字：部分浏览器遇到中文文件名会退回成 "download"
-    a.download = "liuguang-" + (favKey(share.album, share.track) || "song").replace(/[^A-Za-z0-9-]+/g, "-").slice(0, 60) + ".png";
+    a.href = href;
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     a.remove();
+  }
+
+  function readAsDataUrl(blob) {
+    return new Promise(function (resolve) {
+      if (!blob || typeof FileReader === "undefined") { resolve(""); return; }
+      var reader = new FileReader();
+      reader.onload = function () { resolve(typeof reader.result === "string" ? reader.result : ""); };
+      reader.onerror = function () { resolve(""); };
+      try { reader.readAsDataURL(blob); }
+      catch (err) { resolve(""); }
+    });
+  }
+
+  function revealPoster() {
+    var img = $("share-poster");
+    var box = $("share-poster-box");
+    var node = box || img;
+    if (!node) return;
+    try {
+      node.scrollIntoView({ block: "nearest", behavior: reduceMotion() ? "auto" : "smooth" });
+    } catch (err) {
+      try { node.scrollIntoView(false); } catch (err2) { /* 忽略 */ }
+    }
+    if (!img) return;
+    if (!img.hasAttribute("tabindex")) img.setAttribute("tabindex", "-1");
+    try { img.focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
+  }
+
+  async function savePoster() {
+    if (!share.blob && !share.objectUrl) return;
+    var name = posterFileName();
+    var file = share.blob ? new File([share.blob], name, { type: share.blob.type || "image/png" }) : null;
+    if (file && canSharePosterFile(file)) {
+      try {
+        await navigator.share(posterSharePayload(file));
+        setShareStatus("已打开系统分享，可选保存到相册或发到聊天。");
+        return;
+      } catch (err) {
+        // 用户关掉分享面板不算失败。其它错误再试 data: 或长按。
+        if (err && err.name === "AbortError") return;
+      }
+    }
+
+    // Android WebView / Capacitor 忽略 blob: 的 download。data: 有时还能触发下载。
+    var trapped = posterNeedsGestureSave();
+    if (trapped) {
+      var href = share.blob ? await readAsDataUrl(share.blob) : "";
+      if (href.indexOf("data:") === 0) {
+        triggerDownload(href, name);
+        setShareStatus("若没有开始下载，请长按海报图片保存到相册。");
+        revealPoster();
+        return;
+      }
+      setShareStatus("请长按上面的海报图片，保存到相册后再分享。");
+      revealPoster();
+      return;
+    }
+
+    if (!share.objectUrl) return;
+    triggerDownload(share.objectUrl, name);
   }
 
   async function sharePoster() {
