@@ -113,20 +113,36 @@ jobs:
             echo "::warning::Tech Leaders Android release not available; download page will show 'not yet published'."
           fi
 
-      - name: Add latest Music Player Android APK
-        # 安装包由 android-music-player.yml 发布到 GitHub Release；这里覆盖站内下载地址的同名文件。
-        # 取不到（尚未发布或网络失败）时保留仓库里提交的旧安装包，不影响网站部署。
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Keep committed Music Player Android APK
+        # 公开下载地址以仓库提交的文件为准，不要用 GitHub Release music-player-android 覆盖。
+        # 2026-10-29 的部署日志里，这一步 --clobber 把 main 上的 1.0.9（3880780 字节）
+        # 换成了 Release 里 2026-10-28 的 1.0.4（172571 字节，sha256 d6038744…）。
+        # /apps/downloads/app-debug.apk 不在覆盖名单里，所以同一次部署它仍是 1.0.9。
+        # android-music-player.yml 仍可把 CI 产物发到该 Release，但不再写入 Pages。
         run: |
-          mkdir -p .site/apps/music-player/download
-          if gh release download music-player-android --repo "$GITHUB_REPOSITORY" \
-               --pattern 'ooglex-music.apk' --pattern 'ooglex-music.json' \
-               --dir .site/apps/music-player/download --clobber; then
-            ls -la .site/apps/music-player/download
-          else
-            echo "::warning::Music Player Android release not available; keeping the committed APK."
-          fi
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          pairs = [
+              ("apps/music-player/download/ooglex-music.apk", ".site/apps/music-player/download/ooglex-music.apk"),
+              ("apps/music-player/download/ooglex-music.json", ".site/apps/music-player/download/ooglex-music.json"),
+          ]
+          for src_name, dst_name in pairs:
+              src, dst = Path(src_name), Path(dst_name)
+              if not dst.is_file():
+                  raise SystemExit(f"missing {dst_name}; public site build did not copy the committed download")
+              if src.read_bytes() != dst.read_bytes():
+                  raise SystemExit(f"{dst_name} does not match committed {src_name}")
+          apk = Path("apps/music-player/download/ooglex-music.apk").read_bytes()
+          meta = json.loads(Path("apps/music-player/download/ooglex-music.json").read_text(encoding="utf-8"))
+          digest = hashlib.sha256(apk).hexdigest()
+          if meta.get("sha256") != digest:
+              raise SystemExit(f"ooglex-music.json sha256 {meta.get('sha256')} != apk {digest}")
+          if int(meta.get("size_bytes") or -1) != len(apk):
+              raise SystemExit(f"ooglex-music.json size_bytes {meta.get('size_bytes')} != {len(apk)}")
+          print(f"music apk kept: {meta.get('version_name')} {len(apk)} {digest}")
+          PY
 
       - name: Verify fundamentals are included in the public artifact
         run: cmp apps/companies/fundamentals.json .site/apps/companies/fundamentals.json

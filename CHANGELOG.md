@@ -13,6 +13,8 @@
 
 ### 修复
 
+- 2026-10-29：流光播放器下载地址在 Pages 上仍是 1.0.4，不是 main 里的 1.0.9。`deploy_protected_pages.yml` 在拷贝公开站之后，用 GitHub Release `music-player-android` 覆盖 `.site/apps/music-player/download/ooglex-music.apk` 和 `ooglex-music.json`。该 Release 停在 2026-10-28 的 1.0.4（172571 字节，sha256 `d6038744e78de37cb606525113a44b5ee4495677f328de68fd5b99201e42c8ec`）。同一次部署里 `/apps/downloads/app-debug.apk` 不在覆盖名单里，所以它已是 3880780 字节的 1.0.9。现改为公开下载以仓库提交的安装包为准，部署前核对 `.site` 里的 apk 与 json 和仓库字节一致。未部署。
+
 - 2026-10-29：流光播放器 Android 调试包 1.0.9（versionCode 9）用原生媒体会话接蓝牙耳机、线控和通知栏的上一曲／下一曲，再点网页上的对应按钮。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（3880780 字节；sha256 `9238ff690edda91a260a270a042c9d77c0bccf5a84234db6bcbbd3eac9c2ebae`；包名 `com.ooglex.music001`；Android 调试证书）。下载页读不到 `ooglex-music.json` 时仍显示 1.0.9 与这份大小、校验值。`/apps/downloads/` 不再写成 1.0.8。未部署。
 
 - 2026-10-29：流光播放器补上系统媒体会话，蓝牙耳机、车机方向盘、锁屏和通知栏的上一曲／下一曲与页面按钮走同一条切歌路径。原先只在页面加载时注册了一次 `previoustrack`／`nexttrack`，没有上报有限时长和播放状态。Chrome 在换歌或 mp3 时长连着变化时会把会话暂时当成直播，车机和耳机因此停用切歌；iOS 若同时声明快进／快退，锁屏侧键会变成 ±15 秒而不是换歌。现在每次换歌和开始播放都重新登记动作（各动作单独登记，一个不支持不影响其余），显式关闭快进／快退，保留拖动进度（`seekto`），并用曲目时长维持进度。换地址时的短暂暂停不再把会话标成已暂停。普通音频在同一次调用里 `play()`，避免耳机按键的播放许可在等待之后失效。单曲专辑仍按页面按钮在专辑内循环。说明文字补了一句：耳机、车机和锁屏的切歌与页面按钮相同。未部署。
