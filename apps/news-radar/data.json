@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-10-28",
-  "asOf": "2026-10-28",
+  "updatedAt": "2026-10-29",
+  "asOf": "2026-10-29",
   "asOfZone": "CST",
   "source": "环球新闻情报中心／全球投资情报雷达",
   "sourceEn": "Global Investment Radar",
   "status": "ok",
   "demo": false,
   "frequency": "daily",
-  "edition": "Day-09",
+  "edition": "Day-10",
   "version": "screening-v2.1",
   "runKind": "跨日试运行",
-  "lead": "Day-09（2026-10-28 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（耐用品9月／波音Q3／美债10Y／FOMC声明未出）；本轮不升三级。",
-  "emptyReason": "本轮无三级/四级入选（路径 A／B／C 均未达标；禁止凑条；本轮明示不升三级）。",
+  "lead": "Day-10（2026-10-29 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（FOMC维持3.75%–4.00%／MSFT Q1／GOOGL Q3／美债10Y=5.05%）；FOMC 声明已核实出炉但区间未变故不升三级；本轮不升三级。",
+  "emptyReason": "本轮无三级/四级入选（路径 A／B／C 均未达标；FOMC 为维持既有联邦基金利率目标区间；禁止凑条；本轮明示不升三级）。",
   "note": "人工编辑，页面不自动刷新，不得视为实时行情。内部研究用、非正式自动外发。与 /apps/whats-latest/ 自动管道分立。S2 待用户确认。二级存档只作索引。站立授权：雷达 N=0→空报 C。",
   "counts": {
     "selected": 0,
@@ -21,11 +21,11 @@
     "tier2": 4
   },
   "funnel": {
-    "scans": 55,
-    "independent": 15,
-    "duplicates": 20,
-    "notPublished": 9,
-    "tier1": 7,
+    "scans": 60,
+    "independent": 16,
+    "duplicates": 22,
+    "notPublished": 6,
+    "tier1": 8,
     "tier2": 4,
     "tier3": 0,
     "tier4": 0
@@ -33,29 +33,29 @@
   "items": [],
   "archive": [
     {
-      "id": "D09-T2-01",
-      "title": "耐用品 2026-09：+1.8%／运输+4.6%／飞机+28.4%",
+      "id": "D10-T2-01",
+      "title": "FOMC 2026-10-28：维持 3.75%–4.00%（10–2；Cook/Hammack 异议）",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D09-T2-02",
-      "title": "波音 2026Q3／积压45B／F/A-XX 选型",
+      "id": "D10-T2-02",
+      "title": "Microsoft FY27 Q1：营收 $92.3B／Azure +48%",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D09-T2-03",
-      "title": "美债 10Y 2026-10-27：4.99%",
+      "id": "D10-T2-03",
+      "title": "Alphabet 2026Q3：营收 $127.6B／Cloud +103%",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D09-T2-04",
-      "title": "FOMC 10-27～28 进行中（决议未出）",
+      "id": "D10-T2-04",
+      "title": "美债 10Y 2026-10-28：5.05%",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     }
   ],
-  "sha256FinalRadar": "6d73150f551080a73b8ba5343222b1e0b8e2b4d6de7be64853ae017476449d9c"
+  "sha256FinalRadar": "4c98b270a1f22b486b806ff2a258bf2ac7cca7f987bd9c49f7e9450c7a9c0cb8"
 }
