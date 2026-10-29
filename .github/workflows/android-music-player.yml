@@ -2,8 +2,10 @@ name: Android App · Music Player
 
 # 构建「流光播放器」安卓安装包（WebView 打开 https://www.ooglex.com/apps/music-player/）。
 # 与 android-tech-leaders.yml 同一套流程：任何分支推送都会构建并上传为 Actions 产物供验证；
-# 只有 main 才会发布到 GitHub Release，网站部署时再把安装包复制到
-# ooglex.com/apps/music-player/download/ooglex-music.apk（下载地址不变）。
+# 只有 main 才会发布到 GitHub Release music-player-android。
+# 网站下载地址不再从该 Release 覆盖。公开页
+# ooglex.com/apps/music-player/download/ooglex-music.apk
+# 以仓库里提交的 apps/music-player/download/ooglex-music.apk 与 ooglex-music.json 为准。
 # 正式签名需要所有者在仓库 Secrets 中配置：
 #   ANDROID_KEYSTORE_B64、ANDROID_KEYSTORE_PASSWORD、ANDROID_KEY_ALIAS、ANDROID_KEY_PASSWORD
 # 未配置时用调试签名构建（可以安装，但每次构建签名不同，升级需先卸载旧版）。
