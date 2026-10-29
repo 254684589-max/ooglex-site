@@ -89,11 +89,11 @@ html[data-theme="ft"] .qr .q, html[data-theme="paper"] .qr .q { background: var(
   <div class="card">
     <img class="icon" src="/apps/music-player/icons/icon.svg" alt="流光播放器">
     <h1>流光播放器</h1>
-    <div class="meta" id="appMeta">Android 调试签名 · 版本 1.0.10 · Android 5.1+<br>包名 com.ooglex.music001<br>SHA256 19104a8e43b6e021e538e85220c76d30eec62ff63d5555c5f5ee0e6119addec5</div>
+    <div class="meta" id="appMeta">Android 调试签名 · 版本 1.0.11 · Android 5.1+<br>包名 com.ooglex.music001<br>SHA256 9b2ee7d7b2a1a59d23f1d106fdd72f9cbd12cacab0a5d576eee84606eb340057</div>
     <p class="lead">按专辑听流光原创。点开才会出声。<br>安装包打开的是同一套网页，需要联网。</p>
 
     <a class="dl" id="dlBtn" href="ooglex-music.apk" download="流光播放器.apk">下载 Android APK</a>
-    <div class="dl-sub" id="dlSub">约 3.8 MB（3968272 字节）· 调试签名，未上架应用商店。点按后开始下载，下完打开即可安装。</div>
+    <div class="dl-sub" id="dlSub">约 4.1 MB（4324316 字节）· 调试签名，未上架应用商店。点按后开始下载，下完打开即可安装。</div>
 
     <div class="steps">
       <h2>安装步骤（未知来源）</h2>
@@ -122,18 +122,26 @@ html[data-theme="ft"] .qr .q, html[data-theme="paper"] .qr .q { background: var(
     </div>
   </div>
 <script>
-/* 版本、大小、签名取自构建时一起发布的 ooglex-music.json；读不到就保留上面的通用说明。 */
+/* 版本、大小、校验取自同目录 ooglex-music.json；读不到就保留上面的说明。 */
 (function () {
   fetch("ooglex-music.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (m) {
-    if (!m || !m.version_name) return;
+    if (!m) return;
+    var version = m.version_name || m.versionName;
+    if (!version) return;
     var meta = document.getElementById("appMeta");
     var sub = document.getElementById("dlSub");
     var signing = m.signing === "release" ? "正式签名" : "调试签名";
+    var bytes = m.apk_bytes || m.size_bytes;
+    var sha = m.sha256 || m.apk_sha256;
     meta.textContent = "";
-    meta.appendChild(document.createTextNode("Android " + signing + " · 版本 " + m.version_name + " · Android " + (m.min_android || "5.1") + "+"));
+    meta.appendChild(document.createTextNode("Android " + signing + " · 版本 " + version + " · Android " + (m.min_android || "5.1") + "+"));
     meta.appendChild(document.createElement("br"));
     meta.appendChild(document.createTextNode("包名 " + (m.package || "com.ooglex.music001") + (m.built_at ? " · 构建于 " + String(m.built_at).slice(0, 10) : "")));
-    if (m.apk_bytes) sub.textContent = "约 " + (m.apk_bytes / 1048576).toFixed(1) + " MB · " + signing + "，未上架应用商店。点按后开始下载，下完打开即可安装。";
+    if (sha) {
+      meta.appendChild(document.createElement("br"));
+      meta.appendChild(document.createTextNode("SHA256 " + sha));
+    }
+    if (bytes) sub.textContent = "约 " + (Number(bytes) / 1048576).toFixed(1) + " MB（" + bytes + " 字节）· " + signing + "，未上架应用商店。点按后开始下载，下完打开即可安装。";
   }).catch(function () {});
 })();
 </script>
