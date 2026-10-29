@@ -3,8 +3,8 @@
   "status": "ok",
   "demo": false,
   "frequency": "static",
-  "updatedAt": "2026-10-25T16:24:34Z",
-  "asOf": "2026-10-25",
+  "updatedAt": "2026-10-29T06:19:00Z",
+  "asOf": "2026-10-29",
   "source": "Kevin MacLeod (incompetech.com)",
   "sourceUrl": "https://incompetech.com/music/royalty-free/music.html",
   "license": "CC BY 4.0",
@@ -122,6 +122,272 @@
           "artist": "流光",
           "src": "/apps/music-player/media/taian-power-rap/taian-power-rap.mp3",
           "durationSec": 175
+        }
+      ]
+    },
+    {
+      "id": "joy-among-mortals",
+      "title": "Joy Among Mortals",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/joy-among-mortals/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (你在人间撒欢)",
+      "tracks": [
+        {
+          "id": "joy-among-mortals",
+          "title": "Joy Among Mortals",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/joy-among-mortals/joy-among-mortals.mp3",
+          "durationSec": 274
+        }
+      ]
+    },
+    {
+      "id": "silence",
+      "title": "Silence",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/silence/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (默)",
+      "tracks": [
+        {
+          "id": "silence",
+          "title": "Silence",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/silence/silence.mp3",
+          "durationSec": 229
+        }
+      ]
+    },
+    {
+      "id": "night-too-beautiful",
+      "title": "Night Too Beautiful",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/night-too-beautiful/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (夜太美)",
+      "tracks": [
+        {
+          "id": "night-too-beautiful",
+          "title": "Night Too Beautiful",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/night-too-beautiful/night-too-beautiful.mp3",
+          "durationSec": 249
+        }
+      ]
+    },
+    {
+      "id": "bassline-love",
+      "title": "Bassline Love",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/bassline-love/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (低频之爱)",
+      "tracks": [
+        {
+          "id": "bassline-love",
+          "title": "Bassline Love",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/bassline-love/bassline-love.mp3",
+          "durationSec": 240
+        }
+      ]
+    },
+    {
+      "id": "midnight-streets",
+      "title": "The Midnight Streets",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/midnight-streets/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (The Midnight Streets)",
+      "tracks": [
+        {
+          "id": "midnight-streets",
+          "title": "The Midnight Streets",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/midnight-streets/midnight-streets.mp3",
+          "durationSec": 339
+        }
+      ]
+    },
+    {
+      "id": "velvet-moonlight",
+      "title": "Velvet Moonlight",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/velvet-moonlight/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (丝绒月光)",
+      "tracks": [
+        {
+          "id": "velvet-moonlight",
+          "title": "Velvet Moonlight",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/velvet-moonlight/velvet-moonlight.mp3",
+          "durationSec": 238
+        }
+      ]
+    },
+    {
+      "id": "tell-me",
+      "title": "Tell Me",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/tell-me/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (告诉我)",
+      "tracks": [
+        {
+          "id": "tell-me",
+          "title": "Tell Me",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/tell-me/tell-me.mp3",
+          "durationSec": 238
+        }
+      ]
+    },
+    {
+      "id": "night-blue",
+      "title": "Night Blue",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/night-blue/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (夜色Blue)",
+      "tracks": [
+        {
+          "id": "night-blue",
+          "title": "Night Blue",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/night-blue/night-blue.mp3",
+          "durationSec": 311
+        }
+      ]
+    },
+    {
+      "id": "xiao-fang",
+      "title": "Xiao Fang",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/xiao-fang/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (小芳)",
+      "tracks": [
+        {
+          "id": "xiao-fang",
+          "title": "Xiao Fang",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/xiao-fang/xiao-fang.mp3",
+          "durationSec": 294
+        }
+      ]
+    },
+    {
+      "id": "old-town-rain",
+      "title": "Old Town Rain",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/old-town-rain/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (旧城的雨)",
+      "tracks": [
+        {
+          "id": "old-town-rain",
+          "title": "Old Town Rain",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/old-town-rain/old-town-rain.mp3",
+          "durationSec": 318
+        }
+      ]
+    },
+    {
+      "id": "its-you",
+      "title": "It's You",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/its-you/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (是你)",
+      "tracks": [
+        {
+          "id": "its-you",
+          "title": "It's You",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/its-you/its-you.mp3",
+          "durationSec": 234
+        }
+      ]
+    },
+    {
+      "id": "full-house-theme",
+      "title": "Full House Theme",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/full-house-theme/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (浪漫满屋主题曲)",
+      "tracks": [
+        {
+          "id": "full-house-theme",
+          "title": "Full House Theme",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/full-house-theme/full-house-theme.mp3",
+          "durationSec": 254
+        }
+      ]
+    },
+    {
+      "id": "full-bars-love",
+      "title": "Full Bars Love",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/full-bars-love/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (满格爱)",
+      "tracks": [
+        {
+          "id": "full-bars-love",
+          "title": "Full Bars Love",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/full-bars-love/full-bars-love.mp3",
+          "durationSec": 229
+        }
+      ]
+    },
+    {
+      "id": "blue",
+      "title": "Blue",
+      "artist": "郑翊",
+      "cover": "/apps/music-player/media/blue/cover.jpg",
+      "released": true,
+      "releasedAt": "2026-10-29",
+      "demo": false,
+      "note": "Original full track (蓝色)",
+      "tracks": [
+        {
+          "id": "blue",
+          "title": "Blue",
+          "artist": "郑翊",
+          "src": "/apps/music-player/media/blue/blue.mp3",
+          "durationSec": 374
         }
       ]
     },

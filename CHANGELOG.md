@@ -13,6 +13,8 @@
 
 ### 新增
 
+- 2026-10-29：流光播放器新增郑翊原创完整曲 14 张专辑，曲名均为英文：Joy Among Mortals、Silence、Night Too Beautiful、Bassline Love、The Midnight Streets、Velvet Moonlight、Tell Me、Night Blue、Xiao Fang、Old Town Rain、It's You、Full House Theme、Full Bars Love、Blue。音频与封面在 `apps/music-player/media/<id>/`，目录插在既有非演示专辑（流光）之后、Kevin MacLeod 演示专辑之前。`catalog.json` 的 `updatedAt` 为 `2026-10-29T06:19:00Z`，`asOf` 为 2026-10-29。时长取自交付清单，与音频实测相差不到 1 秒。未改 news-brief、投资雷达、利率页、研究板。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 - 2026-10-29：新增 Android 测试包公开下载页 `/apps/downloads/`。安装包为 `apps/downloads/app-debug.apk`（180323 字节，约 180 KB；sha256 `5b4d7e51e4a4e35b6475df8a2d1950596f4171f25516a91e727d9780050f4eba`；包名 `com.ooglex.music001`；`versionName` 1.0.8）。证书主体为 O=Ooglex、CN=Ooglex Tech Leaders，不是应用商店上架签名。页面写明这是 debug 构建，安装前需允许未知来源。页面不加载全站脚本，避免未登录时被 10% 预览挡住下载链接。仓库 `.gitignore` 与 Git LFS 没有拦截 `.apk`，公开站构建也不排除该后缀。未改 news-brief、投资雷达、利率页、最新消息。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 
 ### 修复
