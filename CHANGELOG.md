@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-10-29：流光播放器补上系统媒体会话，蓝牙耳机、车机方向盘、锁屏和通知栏的上一曲／下一曲与页面按钮走同一条切歌路径。原先只在页面加载时注册了一次 `previoustrack`／`nexttrack`，没有上报有限时长和播放状态。Chrome 在换歌或 mp3 时长连着变化时会把会话暂时当成直播，车机和耳机因此停用切歌；iOS 若同时声明快进／快退，锁屏侧键会变成 ±15 秒而不是换歌。现在每次换歌和开始播放都重新登记动作（各动作单独登记，一个不支持不影响其余），显式关闭快进／快退，保留拖动进度（`seekto`），并用曲目时长维持进度。换地址时的短暂暂停不再把会话标成已暂停。普通音频在同一次调用里 `play()`，避免耳机按键的播放许可在等待之后失效。单曲专辑仍按页面按钮在专辑内循环。说明文字补了一句：耳机、车机和锁屏的切歌与页面按钮相同。未部署。
+
 ### 新增
 
 - 2026-10-29：流光播放器新增郑翊原创完整曲 14 张专辑，曲名均为英文：Joy Among Mortals、Silence、Night Too Beautiful、Bassline Love、The Midnight Streets、Velvet Moonlight、Tell Me、Night Blue、Xiao Fang、Old Town Rain、It's You、Full House Theme、Full Bars Love、Blue。音频与封面在 `apps/music-player/media/<id>/`，目录插在既有非演示专辑（流光）之后、Kevin MacLeod 演示专辑之前。`catalog.json` 的 `updatedAt` 为 `2026-10-29T06:19:00Z`，`asOf` 为 2026-10-29。时长取自交付清单，与音频实测相差不到 1 秒。未改 news-brief、投资雷达、利率页、研究板。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
