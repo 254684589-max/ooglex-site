@@ -36,7 +36,9 @@
       seq: 0
     },
     globalAlbums: {},
-    favs: []
+    favs: [],
+    // 换 src 的瞬间会暂停。这期间不要把系统会话标成暂停，否则车机/耳机会丢掉切歌。
+    switching: false
   };
 
   function $(id) { return document.getElementById(id); }
@@ -1574,6 +1576,7 @@
   // 每次换歌编个号。连续快速切歌时，前一次 play() 会被新的加载打断并报错，
   // 那不是浏览器拦截，只认最新一次的结果；真被拦下且确实没在播，才提示。
   var playSeq = 0;
+  var positionTick = 0;
   var BLOCKED_NOTICE = "点一下播放键即可开始播放。";
 
   function tryPlay(seq) {
@@ -1586,7 +1589,9 @@
     });
   }
 
-  async function playIndex(album, index) {
+  var UNPLAYABLE_NOTICE = "这首还播不了。若是本机上传的曲目，请用「本机预览」打开，或先发行到仓库。";
+
+  function playIndex(album, index) {
     if (!album || !album.tracks || !album.tracks.length) return;
     if (state.playingAlbumId !== album.id) state.history = [];
     var n = album.tracks.length;
@@ -1596,41 +1601,158 @@
     state.index = i;
     setNotice("");
     var seq = ++playSeq;
-    var url;
-    try {
-      url = await resolveSrc(track.src);
-    } catch (err) {
-      if (seq !== playSeq) return;
-      setNotice("这首还播不了。若是本机上传的曲目，请用「本机预览」打开，或先发行到仓库。");
-      paintCurrent();
+    // 歌名先交给系统。普通地址在同一次调用里就 play()，耳机/车机的用户手势才不会在 await 之后失效。
+    setMediaMetadata(track, album);
+    bindMediaActions();
+    paintCurrent();
+    var src = track.src;
+    if (String(src || "").indexOf("idb:") === 0) {
+      resolveSrc(src).then(function (url) {
+        if (seq !== playSeq) return;
+        commitSrc(url, seq, track, album);
+      }, function () {
+        if (seq !== playSeq) return;
+        state.switching = false;
+        setNotice(UNPLAYABLE_NOTICE);
+        paintCurrent();
+        syncPlaybackState();
+      });
       return;
     }
-    if (seq !== playSeq) return;
-    if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
-    state.objectUrl = url.indexOf("blob:") === 0 ? url : "";
-    audio.src = url;
-    audio.volume = state.volume;
-    if (await tryPlay(seq)) announce("正在播放 " + track.title + "，" + artistOf(track, album));
-    if (seq !== playSeq) return;
-    paintCurrent();
-    setMediaSession(track, album);
+    if (!src) {
+      state.switching = false;
+      setNotice(UNPLAYABLE_NOTICE);
+      paintCurrent();
+      syncPlaybackState();
+      return;
+    }
+    commitSrc(src, seq, track, album);
   }
 
-  function setMediaSession(track, album) {
+  function commitSrc(url, seq, track, album) {
+    if (seq !== playSeq) return;
+    state.switching = true;
+    // 换地址会先暂停。先标成正在播放，车机才不会在这一瞬间把切歌键收起来。
+    setPlaybackState("playing");
+    if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
+    state.objectUrl = String(url).indexOf("blob:") === 0 ? url : "";
+    audio.src = url;
+    audio.volume = state.volume;
+    try { audio.title = track.title || ""; } catch (err) { /* 忽略 */ }
+    setMediaMetadata(track, album);
+    bindMediaActions();
+    updatePositionState(true);
+    tryPlay(seq).then(function (ok) {
+      if (seq !== playSeq) return;
+      state.switching = false;
+      if (ok) announce("正在播放 " + track.title + "，" + artistOf(track, album));
+      paintCurrent();
+      setMediaMetadata(track, album);
+      bindMediaActions();
+      updatePositionState(true);
+      syncPlaybackState();
+    });
+  }
+
+  function hasMediaSession() {
+    return typeof navigator !== "undefined" && "mediaSession" in navigator && !!navigator.mediaSession;
+  }
+
+  function artworkType(src) {
+    if (/\.png($|\?)/i.test(src)) return "image/png";
+    if (/\.webp($|\?)/i.test(src)) return "image/webp";
+    if (/\.gif($|\?)/i.test(src)) return "image/gif";
+    if (/\.jpe?g($|\?)/i.test(src)) return "image/jpeg";
+    return "";
+  }
+
+  function setMediaMetadata(track, album) {
+    if (!track || !hasMediaSession() || typeof MediaMetadata === "undefined") return;
     try {
-      if (!("mediaSession" in navigator)) return;
       var art = [];
-      var cover = track.image || album.cover;
-      if (cover && cover.indexOf("idb:") !== 0) {
-        art.push({ src: new URL(cover, location.href).href });
+      var cover = track.image || (album && album.cover) || "";
+      // svg 封面系统解码经常失败，失败时有的手机会把整条媒体通知丢掉，切歌键一起没了。
+      if (cover && cover.indexOf("idb:") !== 0 && !/\.svg($|\?)/i.test(cover)) {
+        var src = new URL(cover, location.href).href;
+        var type = artworkType(cover);
+        ["96x96", "128x128", "192x192", "256x256", "384x384", "512x512"].forEach(function (size) {
+          var image = { src: src, sizes: size };
+          if (type) image.type = type;
+          art.push(image);
+        });
       }
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title || "",
         artist: artistOf(track, album),
-        album: album.title || "",
+        album: (album && album.title) || "",
         artwork: art
       });
     } catch (err) { /* 媒体会话是增强，失败不影响页内播控 */ }
+  }
+
+  function setPlaybackState(value) {
+    if (!hasMediaSession()) return;
+    try { navigator.mediaSession.playbackState = value; } catch (err) { /* 忽略 */ }
+  }
+
+  function syncPlaybackState() {
+    if (!audio || !audio.src) return;
+    setPlaybackState(audio.paused ? "paused" : "playing");
+  }
+
+  function mediaDuration() {
+    if (audio && audio.readyState >= 1 && isFinite(audio.duration) && audio.duration > 0) return audio.duration;
+    var hint = currentDurationHint();
+    return hint > 0 ? hint : 0;
+  }
+
+  // Chrome 在音频时长连着变（换歌、mp3 边下边估时长）时，会把会话暂时标成直播。
+  // 直播没有上一曲/下一曲，车机和蓝牙就把切歌键停用。页面自己报一个有限时长即可避免。
+  function updatePositionState(force) {
+    if (!hasMediaSession() || typeof navigator.mediaSession.setPositionState !== "function") return;
+    var now = Date.now();
+    if (!force && now - positionTick < 1000) return;
+    var duration = mediaDuration();
+    if (!duration) return;
+    var position = audio && isFinite(audio.currentTime) ? audio.currentTime : 0;
+    if (position < 0) position = 0;
+    if (position > duration) position = duration;
+    var rate = audio && isFinite(audio.playbackRate) && audio.playbackRate > 0 ? audio.playbackRate : 1;
+    positionTick = now;
+    try {
+      navigator.mediaSession.setPositionState({
+        duration: duration,
+        playbackRate: rate,
+        position: position
+      });
+    } catch (err) { /* 时长还没就绪时系统会拒绝，下一拍再报 */ }
+  }
+
+  function bindMediaActions() {
+    if (!hasMediaSession() || typeof navigator.mediaSession.setActionHandler !== "function") return;
+    function set(action, handler) {
+      try { navigator.mediaSession.setActionHandler(action, handler); }
+      catch (err) { /* 这个动作当前浏览器不支持，不影响其余按键 */ }
+    }
+    set("play", function () { if (audio.paused) toggle(); });
+    set("pause", function () { if (!audio.paused) toggle(); });
+    set("stop", function () { if (audio.src && !audio.paused) audio.pause(); });
+    // 与页面「上一首 / 下一首」同一条路径，不在这里做「播放超过几秒就回到开头」。
+    set("previoustrack", function () { step(-1); });
+    set("nexttrack", function () { step(1); });
+    // 锁屏和车机侧键通常只有两个。声明了快进/快退，iOS 会拿它们换成 ±15 秒，
+    // 耳机和方向盘的上一曲/下一曲就切不了歌。这里显式关掉。
+    // Chrome 仍会按具体毫秒数去拨音频本身，锁屏上的拖动走 seekto。
+    set("seekbackward", null);
+    set("seekforward", null);
+    set("seekto", function (details) {
+      if (!audio || !details || !isFinite(details.seekTime)) return;
+      var duration = mediaDuration();
+      if (!duration || audio.readyState < 1) return;
+      var t = Math.max(0, Math.min(duration, details.seekTime));
+      try { audio.currentTime = t; } catch (err) { return; }
+      updatePositionState(true);
+    });
   }
 
   function onTrackClick(album, index) {
@@ -1732,17 +1854,40 @@
     window.addEventListener("pointerup", endSeek);
 
 
-    audio.addEventListener("timeupdate", function () { if (!state.seeking) paintSeek(); });
-    audio.addEventListener("loadedmetadata", paintSeek);
-    audio.addEventListener("durationchange", paintSeek);
-    audio.addEventListener("play", paintCurrent);
-    audio.addEventListener("playing", function () { if (state.notice === BLOCKED_NOTICE) setNotice(""); });
-    audio.addEventListener("pause", paintCurrent);
+    audio.addEventListener("timeupdate", function () {
+      if (!state.seeking) paintSeek();
+      updatePositionState(false);
+    });
+    audio.addEventListener("loadedmetadata", function () { paintSeek(); updatePositionState(true); });
+    audio.addEventListener("durationchange", function () { paintSeek(); updatePositionState(true); });
+    audio.addEventListener("seeked", function () { updatePositionState(true); });
+    audio.addEventListener("play", function () {
+      paintCurrent();
+      syncPlaybackState();
+      bindMediaActions();
+      updatePositionState(true);
+    });
+    audio.addEventListener("playing", function () {
+      if (state.notice === BLOCKED_NOTICE) setNotice("");
+      syncPlaybackState();
+      bindMediaActions();
+      updatePositionState(true);
+    });
+    audio.addEventListener("pause", function () {
+      paintCurrent();
+      // 换歌赋值 src 也会暂停。这时若把会话标成暂停，蓝牙/车机往往不再转发下一曲。
+      if (!state.switching) syncPlaybackState();
+    });
     audio.addEventListener("ended", function () {
       var album = currentAlbum();
-      if (!album || !album.tracks || !album.tracks.length) { paintCurrent(); return; }
+      if (!album || !album.tracks || !album.tracks.length) {
+        paintCurrent();
+        syncPlaybackState();
+        return;
+      }
       if (state.repeat === "one") {
         audio.currentTime = 0;
+        updatePositionState(true);
         tryPlay();
         return;
       }
@@ -1755,7 +1900,11 @@
       }
       if (state.index < n - 1) playIndex(album, state.index + 1);
       else if (state.repeat === "all") playIndex(album, 0);
-      else paintCurrent();
+      else {
+        paintCurrent();
+        syncPlaybackState();
+        updatePositionState(true);
+      }
     });
     audio.addEventListener("error", function () {
       if (!audio.src) return;
@@ -1777,14 +1926,7 @@
       else if (event.key === "ArrowLeft") { event.preventDefault(); nudge(-5); }
     });
 
-    try {
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.setActionHandler("play", function () { if (audio.paused) toggle(); });
-        navigator.mediaSession.setActionHandler("pause", function () { if (!audio.paused) toggle(); });
-        navigator.mediaSession.setActionHandler("previoustrack", function () { step(-1); });
-        navigator.mediaSession.setActionHandler("nexttrack", function () { step(1); });
-      }
-    } catch (err) { /* 个别浏览器不允许重复注册 */ }
+    bindMediaActions();
   }
 
 
