@@ -17,6 +17,10 @@
 
 - 2026-10-29：新增 Android 测试包公开下载页 `/apps/downloads/`。安装包为 `apps/downloads/app-debug.apk`（180323 字节，约 180 KB；sha256 `5b4d7e51e4a4e35b6475df8a2d1950596f4171f25516a91e727d9780050f4eba`；包名 `com.ooglex.music001`；`versionName` 1.0.8）。证书主体为 O=Ooglex、CN=Ooglex Tech Leaders，不是应用商店上架签名。页面写明这是 debug 构建，安装前需允许未知来源。页面不加载全站脚本，避免未登录时被 10% 预览挡住下载链接。仓库 `.gitignore` 与 Git LFS 没有拦截 `.apk`，公开站构建也不排除该后缀。未改 news-brief、投资雷达、利率页、最新消息。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 
+### 修改
+
+- 2026-10-29：流光播放器把 20 张单曲原创专辑收成 6 张多曲目专辑，专辑名用英文：Hometown Roads（5 首，艺人流光）、Black Gold Night（1 首，专辑编号仍是 `heijinye`）、Soul After Midnight（5 首，艺人郑翊）、Soft Heart（4 首）、Streets & Rain（3 首）、Familiar Voices（2 首）。每首的曲目编号、音频路径和时长都沿用原文件，封面和 mp3 没有移动或改名。Kevin MacLeod 的 Liuguang Sketches 与 Morning Pieces 演示专辑仍排在末尾。清单 `demo` 仍为 false，`asOf` 为 2026-10-29。旧的单曲专辑链接（`#/album/<原专辑编号>`）不再对应公开专辑。未改 news-brief、投资雷达、利率页、最新消息。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 ### 修复
 
 - 2026-10-28：流光播放器不再误报「浏览器还没允许播放。请再点一次播放。」。原因是连续快速切歌（尤其全屏上下滑）时，上一首的播放请求被下一首打断，浏览器报 AbortError，页面把它当成被拦截。现在每次换歌编号，只认最新一次的结果；AbortError 不提示；只有真被拦下且确实没在播放时才提示，文字改为「点一下播放键即可开始播放。」，开始播放后自动消失。安卓 App（`android/music-player`）把 `setMediaPlaybackRequiresUserGesture` 改为 `false`：一首播完自动接下一首、息屏连播不再被 WebView 拦下。首次出声仍由页面上的播放键触发，页面从不自动播放。App 需随本次合并重新打包；签名与上一版相同，可直接覆盖安装。
