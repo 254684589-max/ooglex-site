@@ -38,7 +38,9 @@
     globalAlbums: {},
     favs: [],
     // 换 src 的瞬间会暂停。这期间不要把系统会话标成暂停，否则车机/耳机会丢掉切歌。
-    switching: false
+    switching: false,
+    full: false,
+    fullPushed: false
   };
 
   function $(id) { return document.getElementById(id); }
@@ -178,6 +180,105 @@
     if (hash === "#/global") return { name: "global" };
     if (hash === "#/favorites") return { name: "favorites" };
     return { name: "list" };
+  }
+
+  // 已画在页面上的路由。hash 没变时（收起全屏、关掉分享）不要整页重绘。
+  var shownRoute = "";
+  // 这次文档里有没有压过一层。刷新后是 false，避免「← 全部专辑」在根页面上 history.back() 离开站点。
+  var layerPushed = false;
+
+  function routeKey(route) {
+    if (!route) return "";
+    if (route.name === "album") return "album:" + route.id + ":" + (route.track || "");
+    if (route.name === "track") return "track:" + route.id;
+    return route.name;
+  }
+
+  // 列表没有 hash。#/ 和空 hash 是同一页。
+  function normalizeHash(hash) {
+    var h = String(hash || "");
+    if (h && h.charAt(0) !== "#") h = "#" + h;
+    try { h = decodeURIComponent(h); } catch (err) { /* 保持原样 */ }
+    if (h === "#" || h === "#/") return "";
+    return h;
+  }
+
+  // 安卓 WebView（Capacitor 与 android/music-player）只在 canGoBack() 为 true 时才后退，
+  // 否则直接 finish() 回到桌面。只改 hash、或 pushState 到完全相同的 URL，都不算能后退。
+  // 每层加一个 mpstep，让地址栏的查询串变掉；hash 仍是原来的路由，分享链接不带这个参数。
+  function historyUrl(hash) {
+    var url = new URL(location.href);
+    var step = parseInt(url.searchParams.get("mpstep") || "0", 10);
+    if (!isFinite(step) || step < 0 || step > 1000000) step = 0;
+    url.searchParams.set("mpstep", String(step + 1));
+    url.hash = hash ? hash.replace(/^#/, "") : "";
+    return url.pathname + url.search + url.hash;
+  }
+
+  function pushHistory(record) {
+    try {
+      history.pushState(record, "", historyUrl(record.hash || ""));
+      layerPushed = true;
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  // 本次打开的第一页是根：系统返回直接退出。直接打开的专辑链接也是根。
+  function tagRootHistory() {
+    try {
+      var st = history.state || {};
+      if (st.mp === "full") {
+        openFull(true);
+        return;
+      }
+      if (st.mp === "share") {
+        history.replaceState({ mp: "root", hash: normalizeHash(location.hash) }, "", location.href);
+        return;
+      }
+      if (st.mp === "root" || st.mp === "route") return;
+      history.replaceState({ mp: "root", hash: normalizeHash(location.hash) }, "", location.href);
+    } catch (err) { /* 忽略 */ }
+  }
+
+  function navigateTo(hash) {
+    var target = normalizeHash(hash);
+    var current = normalizeHash(location.hash);
+    if (target === current) return;
+    var st = history.state || {};
+    // 「← 全部专辑」上一层就是列表时，弹出这一层，而不是再压一条列表。
+    if (!target && layerPushed && st.mp === "route" && !normalizeHash(st.parentHash)) {
+      try { history.back(); return; } catch (err) { /* 退不回去就改地址 */ }
+    }
+    if (!pushHistory({ mp: "route", hash: target, parentHash: current })) {
+      location.hash = target || "#/";
+      return;
+    }
+    onRoute();
+  }
+
+  function onInAppLink(event) {
+    if (event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var node = event.target;
+    if (!node || !node.closest) return;
+    var a = node.closest("a");
+    if (!a || !view || !view.contains(a)) return;
+    var href = a.getAttribute("href") || "";
+    if (href !== "#/" && href.indexOf("#/") !== 0) return;
+    if (a.getAttribute("target") && a.getAttribute("target") !== "_self") return;
+    event.preventDefault();
+    navigateTo(href);
+  }
+
+  function syncHistory() {
+    var st = history.state || {};
+    var wantFull = st.mp === "full";
+    if (state.full && !wantFull) closeFull(true);
+    else if (!state.full && wantFull) openFull(true);
+    if (shareIsOpen() && st.mp !== "share") closeShare(true);
+    else if (!shareIsOpen() && st.mp === "share" && share.track) reopenShareLayer();
+    onRoute();
   }
 
   function coverNode(album, cls) {
@@ -472,9 +573,12 @@
   }
 
   function onRoute() {
+    var route = parseRoute();
+    // popstate 之后有时还会再来一次 hashchange，路由没变就不用重画。
+    if (routeKey(route) === shownRoute) return;
     renderView();
     var g = state.global;
-    if (parseRoute().name === "global" && g.config && g.config.api && g.status !== "loading" && g.albumId !== globalKey()) {
+    if (route.name === "global" && g.config && g.config.api && g.status !== "loading" && g.albumId !== globalKey()) {
       fetchGlobal(false);
     }
   }
@@ -984,7 +1088,7 @@
   /* ---------------- 分享：系统分享面板、复制链接、分享海报；应用内置浏览器里引导用右上角菜单 ---------------- */
 
   var SITE = "https://www.ooglex.com/apps/music-player/";
-  var share = { album: null, track: null, url: "", blob: null, objectUrl: "", busy: false };
+  var share = { album: null, track: null, url: "", blob: null, objectUrl: "", busy: false, layer: false };
 
   // 每首歌一条固定链接：本站专辑 #/album/<专辑>/<曲目>，全球曲库 #/track/<Jamendo 编号>。本机草稿不能分享。
   function shareUrl(album, track) {
@@ -1121,13 +1225,25 @@
     $("share-poster-box").hidden = true;
     $("share-poster-share").hidden = true;
     setShareStatus("");
+    if (!share.layer) {
+      share.layer = pushHistory({
+        mp: "share",
+        hash: normalizeHash(location.hash),
+        parentHash: normalizeHash(location.hash)
+      });
+    }
     var app = inAppBrowser();
     var hint = $("share-inapp");
     hint.hidden = !app;
     if (app) {
       hint.textContent = "点右上角 ··· 菜单即可分享。页面地址已换成这首歌的链接，对方打开就是这首。";
-      // 内置浏览器的右上角菜单分享的是当前地址，先换成这首歌的链接（不触发页面跳转）
-      try { history.replaceState(null, "", url.replace(SITE, location.pathname)); } catch (err) { /* 忽略 */ }
+      // 内置浏览器的右上角菜单分享的是当前地址。只换 hash，保留 mpstep，否则这一层会和底下那层变成同一个地址。
+      try {
+        var next = new URL(url, location.href);
+        var cur = new URL(location.href);
+        cur.hash = next.hash;
+        history.replaceState(history.state, "", cur.pathname + cur.search + cur.hash);
+      } catch (err) { /* 忽略 */ }
     }
     if (typeof dlg.showModal === "function") { if (!dlg.open) dlg.showModal(); }
     else dlg.setAttribute("open", "");
@@ -1135,11 +1251,31 @@
     try { first.focus(); } catch (err) { /* 忽略 */ }
   }
 
-  function closeShare() {
+  function shareIsOpen() {
+    var dlg = $("share-dlg");
+    return !!(dlg && (dlg.open || dlg.hasAttribute("open")));
+  }
+
+  function reopenShareLayer() {
+    var dlg = $("share-dlg");
+    if (!dlg || !share.track) return;
+    share.layer = true;
+    if (typeof dlg.showModal === "function") { if (!dlg.open) dlg.showModal(); }
+    else dlg.setAttribute("open", "");
+  }
+
+  function closeShare(fromHistory) {
     var dlg = $("share-dlg");
     if (!dlg) return;
+    var wasOpen = shareIsOpen();
+    var layer = share.layer;
+    share.layer = false;
     if (typeof dlg.close === "function" && dlg.open) dlg.close();
     else dlg.removeAttribute("open");
+    if (fromHistory !== true && layer) {
+      try { history.back(); } catch (err) { /* 忽略 */ }
+    }
+    if (!wasOpen) return;
     var back = $("now-share");
     if (back && !back.hidden) try { back.focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
   }
@@ -1349,7 +1485,7 @@
   function bindShareDialog() {
     var dlg = $("share-dlg");
     if (!dlg) return;
-    $("share-close").addEventListener("click", closeShare);
+    $("share-close").addEventListener("click", function () { closeShare(); });
     $("share-native").addEventListener("click", nativeShare);
     $("share-copy").addEventListener("click", copyShareLink);
     $("share-make").addEventListener("click", makePoster);
@@ -1370,6 +1506,7 @@
   function renderView() {
     if (!view) return;
     var route = parseRoute();
+    shownRoute = routeKey(route);
     state.viewAlbumId = route.name === "album" ? route.id : "";
     view.textContent = "";
     if (route.name === "global" || route.name === "favorites" || route.name === "track") {
@@ -1932,7 +2069,7 @@
 
   /* ---------------- 全屏播放：点迷你播放条打开；上滑下一首、下滑上一首；返回键或 ⌄ 收起 ---------------- */
 
-  function openFull() {
+  function openFull(fromHistory) {
     var stage = document.querySelector(".stage");
     if (!stage || state.full) return;
     state.full = true;
@@ -1942,10 +2079,18 @@
     stage.setAttribute("aria-label", "全屏播放");
     document.body.classList.add("mp-full");
     $("full-close").hidden = false;
-    // 记一条历史，让手机的返回键 / 返回手势先收起全屏，而不是离开页面
-    try { history.pushState({ mpFull: true }, ""); state.fullPushed = true; } catch (err) { state.fullPushed = false; }
+    // 必须改查询串。pushState 到同一条 URL 时，安卓 WebView.canGoBack() 仍是 false，返回键会退出应用。
+    // 只认显式的 true。迷你条的点击事件不能被当成「从历史恢复」。
+    if (fromHistory === true) state.fullPushed = true;
+    else {
+      state.fullPushed = pushHistory({
+        mp: "full",
+        hash: normalizeHash(location.hash),
+        parentHash: normalizeHash(location.hash)
+      });
+      try { $("full-close").focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
+    }
     updateMini();
-    try { $("full-close").focus({ preventScroll: true }); } catch (err) { /* 忽略 */ }
   }
 
   function closeFull(fromHistory) {
@@ -1992,7 +2137,6 @@
     if (!stage || !close) return;
     close.appendChild(icon("chevron-down"));
     close.addEventListener("click", function () { closeFull(); });
-    window.addEventListener("popstate", function () { if (state.full) closeFull(true); });
 
     // 进度条、按钮、链接上开始的触摸不算切歌，免得拖进度时误切
     var start = null;
@@ -2035,7 +2179,7 @@
     var next = $("mini-next");
     next.appendChild(icon("next"));
     next.addEventListener("click", function () { step(1); });
-    $("mini-open").addEventListener("click", openFull);
+    $("mini-open").addEventListener("click", function () { openFull(); });
     var stage = document.querySelector(".stage");
     if (stage && "IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
@@ -2090,6 +2234,7 @@
     bindTransport();
     bindMini();
     bindFull();
+    tagRootHistory();
     var nowShare = $("now-share");
     if (nowShare) {
       nowShare.appendChild(icon("share"));
@@ -2106,6 +2251,11 @@
     });
     paintTransport();
     window.addEventListener("hashchange", onRoute);
+    window.addEventListener("popstate", syncHistory);
+    document.addEventListener("click", onInAppLink);
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted) syncHistory();
+    });
     load();
     loadGlobalConfig();
   }
