@@ -4,11 +4,9 @@
 
 ## 听什么
 
-预置两张专辑是 **演示 / 免版税样例**，不是付费曲库：
+公开曲库是六张原创专辑，艺人都是 **流光**：Hometown Roads、Black Gold Night、Soul After Midnight、Soft Heart、Streets & Rain、Familiar Voices。音频是完整曲。
 
-- 曲目：Kevin MacLeod（incompetech.com）的 *Mesmerizing Galaxy*、*Lord of the Rangs*、*Sergio's Magic Dustbin*、*Morning*、*Pleasant Porridge*
-- 许可：[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。免版税，使用须署名，不是 CC0
-- 本仓库里的 mp3 是从原曲截取的约 28 秒短样，文件里的注释也写了这一点
+`media/aurora-sketches/` 与 `media/morning-pieces/` 里仍留着以前的 Kevin MacLeod 短样文件，`catalog.json` 不再收录，播放器不会列出。
 
 站长另外发行的专辑必须是自创或已获授权。管理页会要求填写权利说明。
 
@@ -51,23 +49,22 @@
 {
   "albums": [
     {
-      "id": "aurora-sketches",
-      "title": "Liuguang Sketches",
-      "artist": "Kevin MacLeod",
-      "cover": "/apps/music-player/media/aurora-sketches/cover.svg",
+      "id": "hometown-roads",
+      "title": "Hometown Roads",
+      "artist": "流光",
+      "cover": "/apps/music-player/media/hometown-roads/cover.jpg",
       "released": true,
       "releasedAt": "2026-10-25",
-      "demo": true,
-      "license": "CC BY 4.0",
+      "demo": false,
       "tracks": [
-        { "id": "morning", "title": "Morning", "artist": "Kevin MacLeod", "src": "/apps/music-player/media/...", "durationSec": 28 }
+        { "id": "o-guilin", "title": "Guilin Drift", "artist": "流光", "src": "/apps/music-player/media/o-guilin/o-guilin.mp3", "durationSec": 267 }
       ]
     }
   ]
 }
 ```
 
-封面和音频放在 `media/<专辑编号>/`，并写进 `data/catalog.json`。原创完整曲同样走这条路径（例如《Black Gold Night》，以及其后的《Guilin Drift》《Dongping Homecoming》《Xuzhuang Lane》《Song City After Dark》《Taian Power》，`demo: false`）。2026-10-29 另增郑翊 14 张英文曲名原创完整曲（Joy Among Mortals 至 Blue），同样 `demo: false`。`released: false` 的专辑不会出现在访客页。
+封面放在各专辑自己的目录（`hometown-roads/`、`heijinye/album-cover.jpg`、`soul-after-midnight/` 等），音频仍留在原来的曲目目录，路径写进 `data/catalog.json`。`released: false` 的专辑不会出现在访客页。
 
 ## 管理口令
 
