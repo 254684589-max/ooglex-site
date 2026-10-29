@@ -3,6 +3,12 @@ package com.ooglex.music;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.webkit.JsPromptResult;
+import org.json.JSONObject;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -22,7 +28,7 @@ import android.widget.ProgressBar;
 /**
  * 「流光播放器」安卓应用：用系统 WebView 打开线上播放器页。
  * 页面、曲目与全球曲库都来自线上 ooglex.com，应用本身不存任何账号、密钥或音频。
- * 与 android/tech-leaders 同一套外壳；区别是切到后台不暂停 WebView，息屏后音乐继续播放。
+ * 保留 WebView 音频与网页队列，原生媒体会话负责系统控件；播放中使用 mediaPlayback 前台服务。
  */
 public class MainActivity extends Activity {
 
@@ -30,6 +36,41 @@ public class MainActivity extends Activity {
 
     private WebView webView;
     private ProgressBar progress;
+    private MediaPlaybackService playback;
+    private boolean serviceBound;
+    private JSONObject pendingMediaState;
+    private final ServiceConnection mediaConnection = new ServiceConnection() {
+        @Override public void onServiceConnected(ComponentName name, IBinder binder) {
+            playback = ((MediaPlaybackService.LocalBinder) binder).service();
+            playback.attach((action, value) -> {
+                if (webView != null && isPlayerPage(webView.getUrl())) {
+                    webView.evaluateJavascript("window.OoglexMediaControl&&window.OoglexMediaControl("
+                            + JSONObject.quote(action) + "," + value + ")", null);
+                }
+            });
+            if (pendingMediaState != null) { playback.update(pendingMediaState); pendingMediaState = null; }
+            mediaReady();
+        }
+        @Override public void onServiceDisconnected(ComponentName name) { playback = null; }
+    };
+
+    private void mediaReady() {
+        if (webView != null && isPlayerPage(webView.getUrl())) {
+            webView.evaluateJavascript("window.dispatchEvent(new Event('ooglexmediaready'))", null);
+        }
+    }
+
+    // onJsPrompt supplies the invoking frame URL, so an external frame cannot publish native state.
+    // No Java object is exposed to every WebView frame, and there are no arbitrary native commands.
+    private static boolean isPlayerPage(String url) {
+        if (url == null) return false;
+        Uri uri = Uri.parse(url);
+        String host = uri.getHost(), path = uri.getPath();
+        return "https".equalsIgnoreCase(uri.getScheme())
+                && ("www.ooglex.com".equalsIgnoreCase(host) || "ooglex.com".equalsIgnoreCase(host))
+                && (uri.getPort() == -1 || uri.getPort() == 443)
+                && ("/apps/music-player/".equals(path) || "/apps/music-player/index.html".equals(path));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +104,27 @@ public class MainActivity extends Activity {
         s.setAllowContentAccess(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         // 让网站能识别「在应用内打开」（例如隐藏「下载安卓 App」入口）
-        s.setUserAgentString(s.getUserAgentString() + " OoglexApp/" + appVersion());
+        s.setUserAgentString(s.getUserAgentString() + " OoglexApp/" + appVersion() + " OoglexMedia/1");
 
         CookieManager.getInstance().setAcceptCookie(true);
 
+        serviceBound = bindService(new Intent(this, MediaPlaybackService.class), mediaConnection, Context.BIND_AUTO_CREATE);
+
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+                if (!"__ooglex_media_v1__".equals(message)) return super.onJsPrompt(view, url, message, defaultValue, result);
+                if (isPlayerPage(url) && isPlayerPage(view.getUrl()) && defaultValue != null && defaultValue.length() <= 8192) {
+                    try {
+                        JSONObject data = new JSONObject(defaultValue);
+                        if (playback != null) playback.update(data);
+                        else pendingMediaState = data;
+                    } catch (org.json.JSONException ignored) { /* Ignore malformed state. */ }
+                }
+                result.confirm("ok");
+                return true;
+            }
+
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 progress.setProgress(newProgress);
@@ -91,11 +148,14 @@ public class MainActivity extends Activity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 progress.setVisibility(View.VISIBLE);
+                pendingMediaState = null;
+                if (playback != null) playback.reset();
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 CookieManager.getInstance().flush();
+                mediaReady();
             }
 
             @Override
@@ -119,7 +179,7 @@ public class MainActivity extends Activity {
         });
 
         if (savedInstanceState != null) {
-            webView.restoreState(savedInstanceState);
+            if (webView.restoreState(savedInstanceState) == null) webView.loadUrl(startUrl(getIntent()));
         } else {
             webView.loadUrl(startUrl(getIntent()));
         }
@@ -203,6 +263,10 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        pendingMediaState = null;
+        if (playback != null) { playback.detach(); playback = null; }
+        if (serviceBound) { unbindService(mediaConnection); serviceBound = false; }
+        stopService(new Intent(this, MediaPlaybackService.class));
         if (webView != null) {
             webView.stopLoading();
             webView.destroy();
