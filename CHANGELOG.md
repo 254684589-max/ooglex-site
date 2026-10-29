@@ -13,6 +13,8 @@
 
 ### 修复
 
+- 2026-10-30：误把环球实景的椰子／棕榈日落标用到了流光播放器。已恢复蓝色音符桌面图标、开屏和下载页。Android 调试包更新为 1.0.14（versionCode 14）。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（4324755 字节，约 4.1 MB；sha256 `4633f46a957c90e2c255ba1233a7702b09d8f155a1f9b0337d803a6681b4aca6`；包名 `com.ooglex.music001`；Android 调试证书，`debuggable=true`）。网页图标改回 `apps/music-player/icons/icon.svg`；`icons/icon.png` 换成同一枚蓝色音符，旧地址不再是棕榈图。系统返回键仍保留 1.0.12：WebView 还可以后退时调用 `goBack`，根页再退出。两条下载页读不到 `ooglex-music.json` 时仍显示 1.0.14、4324755 字节和这份校验值。下载地址不变。Pages 仍以仓库提交的安装包为准，不用 GitHub Release 覆盖。未改播放器脚本。未部署。
+
 - 2026-10-29：流光播放器在 Android 应用（Capacitor / 系统 WebView）里点「保存图片」会打开系统分享，可选保存到相册或发到聊天。原先只点一个 `blob:` 下载链接，WebView 会直接忽略。不能分享文件时改试 `data:` 下载，仍不行就提示长按海报。微信等内置浏览器的长按提示保留。电脑和手机 Chrome 仍用原来的文件下载。未改 Jamendo、媒体会话和安装包。未部署。
 
 - 2026-10-29：流光播放器 Android 调试包更新为 1.0.13（versionCode 13）。桌面图标和开屏改为黑底棕榈日落，下载页和网页图标改为同一枚 `apps/music-player/icons/icon.png`。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（5710190 字节，约 5.4 MB；sha256 `adbc7e6ece8901ea0a0de955d810514507647f36b84987c50f2ac8118252b462`；包名 `com.ooglex.music001`；Android 调试证书，主体 CN=Android Debug，`debuggable=true`）。系统返回键仍在 WebView 还可以后退时调用 `goBack`，根页再退出。两条下载页读不到 `ooglex-music.json` 时仍显示 1.0.13、5710190 字节和这份校验值。下载地址不变。Pages 仍以仓库提交的安装包为准，不用 GitHub Release 覆盖。未改播放器脚本、Jamendo、媒体会话和返回键处理。未部署。

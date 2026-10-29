@@ -1,11 +1,11 @@
 {
   "name": "流光播放器",
   "package": "com.ooglex.music001",
-  "versionName": "1.0.13",
-  "versionCode": 13,
-  "size_bytes": 5710190,
-  "sha256": "adbc7e6ece8901ea0a0de955d810514507647f36b84987c50f2ac8118252b462",
+  "versionName": "1.0.14",
+  "versionCode": 14,
+  "size_bytes": 4324755,
+  "sha256": "4633f46a957c90e2c255ba1233a7702b09d8f155a1f9b0337d803a6681b4aca6",
   "signing": "debug",
   "asOf": "2026-10-30",
-  "note": "Launcher/splash logo: palm sunset on black. System back goBack retained from 1.0.12."
+  "note": "Restore blue music-note launcher/splash/download icon (palm/coconut was for 环球实景). Keep 1.0.12 system back goBack."
 }
