@@ -13,6 +13,8 @@
 
 ### 修复
 
+- 2026-10-29：流光播放器 Android 调试包更新为 1.0.12（versionCode 12）。系统返回键在 WebView 还可以后退时调用 `goBack`，根页再退出。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（4324772 字节，约 4.1 MB；sha256 `b836bd392eb44cf63ef2634557ef29ae3723347053651f6ad8a4283c753a383b`；包名 `com.ooglex.music001`；Android 调试证书，`debuggable=true`）。品牌开屏和媒体会话保持不变。两条下载页读不到 `ooglex-music.json` 时仍显示 1.0.12、4324772 字节和这份校验值。下载地址不变。Pages 仍以仓库提交的安装包为准，不用 GitHub Release 覆盖。未改播放器脚本、图标和开屏图。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 - 2026-10-29：流光播放器「全球曲库」少把 Jamendo 慢响应当成超时。播放器对每个查询地址从 8 秒改为最多等 20 秒；`workers/jamendo-proxy` 向上游从 8 秒改为 15 秒，页面不会在 Worker 还在等时先断开。超时后自动再查一次，期间显示「Jamendo 响应较慢，正在再试一次…」，仍失败才出现「Jamendo 响应超时，请稍后重试。」和重试按钮。主地址连不上才换备用地址，接口返回的错误不换地址。没有编造曲目。未改本站专辑、媒体会话、安装包和下载页。未部署（Worker 超时要等「Deploy Jamendo proxy」跑过才在线上生效；播放器脚本随 Pages 发布生效）。
 
 - 2026-10-29：流光播放器 Android 调试包更新为 1.0.11（versionCode 11）。开屏改为品牌音符，底色 `#1A1442`，与桌面图标一致。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（4324316 字节，约 4.1 MB；sha256 `9b2ee7d7b2a1a59d23f1d106fdd72f9cbd12cacab0a5d576eee84606eb340057`；包名 `com.ooglex.music001`；Android 调试证书，`debuggable=true`）。两条下载页读不到 `ooglex-music.json` 时仍显示 1.0.11、4324316 字节和这份校验值；读到 JSON 时版本、大小和校验以该文件为准。下载地址不变。Pages 仍以仓库提交的安装包为准，不用 GitHub Release 覆盖。未改播放器脚本和媒体会话。未部署。

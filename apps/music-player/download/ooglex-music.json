@@ -1,11 +1,11 @@
 {
   "name": "流光播放器",
   "package": "com.ooglex.music001",
-  "versionName": "1.0.11",
-  "versionCode": 11,
-  "size_bytes": 4324316,
-  "sha256": "9b2ee7d7b2a1a59d23f1d106fdd72f9cbd12cacab0a5d576eee84606eb340057",
+  "versionName": "1.0.12",
+  "versionCode": 12,
+  "size_bytes": 4324772,
+  "sha256": "b836bd392eb44cf63ef2634557ef29ae3723347053651f6ad8a4283c753a383b",
   "signing": "debug",
   "asOf": "2026-10-29",
-  "note": "Brand splash (music-note on #1A1442); MediaSession retained; icon unchanged from 1.0.10"
+  "note": "System back: WebView.goBack when canGoBack; root still exits. Brand splash + MediaSession retained."
 }
