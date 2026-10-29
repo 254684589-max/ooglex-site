@@ -33,7 +33,9 @@
       message: "",
       updatedAt: "",
       hasMore: false,
-      seq: 0
+      seq: 0,
+      // 第一次超时后自动再查时为 true，用来把「正在读取」换成「正在再试一次」。
+      slowRetry: false
     },
     globalAlbums: {},
     favs: [],
@@ -626,6 +628,11 @@
     } catch (err) { return ""; }
   }
 
+  // 每个查询地址最多等这么久。Worker 向上游 Jamendo 单次最多等 15 秒
+  // （workers/jamendo-proxy 的 LIMITS.timeoutMs），这里多留 5 秒，
+  // 冷启动和超时 JSON 都能在页面中止之前回来。
+  var API_WAIT_MS = 20000;
+
   // 依次试主地址和备用地址；只有连不上才换下一个，接口给出的 HTTP 错误照常显示。
   // 哪个地址成功过，本页之后先用它。
   async function apiTracks(params) {
@@ -636,7 +643,7 @@
     var code = "";
     for (var t = 0; t < order.length; t++) {
       var ctrl = typeof AbortController === "function" ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, API_WAIT_MS);
       data = null;
       code = "";
       var reached = false;
@@ -654,12 +661,24 @@
     return { data: data, code: code };
   }
 
+  // 只有超时自动再查一次。限频、参数错误、未配置不重试，避免把明确失败拖成双倍等待。
+  // shouldRetry 返回 false 时不再发第二次（已经换了曲风或离开了页面）。
+  async function apiTracksPatient(params, shouldRetry) {
+    var got = await apiTracks(params);
+    if (got.code !== "timeout") return got;
+    if (shouldRetry && shouldRetry() === false) return got;
+    return apiTracks(params);
+  }
+
   async function fetchGlobal(append) {
     var g = state.global;
     if (!g.config || !g.config.api) return;
     var key = globalKey();
     var album = state.globalAlbums[key];
     if (!append && album) {
+      // 本页已经有这一查的结果。作废还在飞的请求，免得超时重试把画面拉回去。
+      g.seq++;
+      g.slowRetry = false;
       g.albumId = key;
       g.status = album.tracks.length ? "ok" : "empty";
       g.hasMore = album.hasMore;
@@ -671,6 +690,7 @@
     var seq = ++g.seq;
     var offset = append && album ? album.nextOffset : 0;
     g.status = append ? "more" : "loading";
+    g.slowRetry = false;
     g.message = "";
     if (!append) g.albumId = "";
     rerenderGlobal();
@@ -679,10 +699,16 @@
     params.set("order", g.order);
     params.set("offset", String(offset));
     if (g.q) params.set("q", g.q);
-    var got = await apiTracks(params);
+    var got = await apiTracksPatient(params, function () {
+      if (seq !== g.seq || parseRoute().name !== "global") return false;
+      g.slowRetry = true;
+      rerenderGlobal();
+      return true;
+    });
     var data = got.data;
     var code = got.code;
     if (seq !== g.seq) return;
+    g.slowRetry = false;
     if (code || !data || !Array.isArray(data.tracks)) {
       g.status = append ? "ok" : "error";
       if (append && album) g.albumId = key;
@@ -816,7 +842,7 @@
     var album = state.globalAlbums[g.albumId];
     var status = h("p", "global-status");
     status.setAttribute("role", "status");
-    if (g.status === "loading" || g.status === "idle") status.textContent = "正在从 Jamendo 读取曲目…";
+    if (g.status === "loading" || g.status === "idle") status.textContent = g.slowRetry ? "Jamendo 响应较慢，正在再试一次…" : "正在从 Jamendo 读取曲目…";
     else if (g.status === "error") { status.className += " is-error"; status.textContent = "⚠ " + g.message; }
     else if (g.status === "empty") status.textContent = g.q ? "没有找到「" + g.q + "」相关的曲目。" : "这次没有取到曲目。Jamendo 偶尔会返回空结果，可以再试一次或换个曲风。";
     else {
@@ -825,7 +851,8 @@
       if (g.updatedAt) bits.push("查询于 " + g.updatedAt.replace("T", " ").slice(0, 16) + " UTC");
       if (album && album.partial) bits.push("部分曲目缺少可播音频或许可，已略过");
       status.textContent = bits.join(" · ");
-      if (g.message) {
+      if (g.status === "more" && g.slowRetry) status.textContent = "Jamendo 响应较慢，正在再试一次…";
+      else if (g.message) {
         status.className += " is-error";
         status.textContent = "⚠ " + g.message + " " + status.textContent;
       }
@@ -867,7 +894,7 @@
       });
       view.appendChild(list);
       if (g.hasMore) {
-        var more = h("button", "text-btn global-more", g.status === "more" ? "正在加载…" : "加载更多");
+        var more = h("button", "text-btn global-more", g.status === "more" ? (g.slowRetry ? "正在再试一次…" : "正在加载…") : "加载更多");
         more.type = "button";
         more.disabled = g.status === "more";
         more.dataset.focus = "more";
@@ -1119,11 +1146,18 @@
   var sharedFetch = { id: "", status: "idle", message: "" };
 
   async function renderSharedTrackData(id) {
-    sharedFetch = { id: id, status: "loading", message: "" };
+    sharedFetch = { id: id, status: "loading", message: "", slowRetry: false };
     var params = new URLSearchParams();
     params.set("id", id);
-    var got = await apiTracks(params);
+    var got = await apiTracksPatient(params, function () {
+      if (sharedFetch.id !== id || parseRoute().name !== "track" || parseRoute().id !== id) return false;
+      sharedFetch.slowRetry = true;
+      skipAlbumScroll = true;
+      renderView();
+      return true;
+    });
     if (sharedFetch.id !== id) return;
+    sharedFetch.slowRetry = false;
     var track = got.data && Array.isArray(got.data.tracks) ? cleanGlobalTrack(got.data.tracks[0]) : null;
     if (got.code || !got.data) {
       sharedFetch.status = "error";
@@ -1165,7 +1199,7 @@
       } else if (sharedFetch.status === "empty" && sharedFetch.id === id) {
         view.appendChild(h("p", "global-status", "这首歌找不到了，可能已从 Jamendo 下架。"));
       } else {
-        view.appendChild(h("p", "global-status", "正在从 Jamendo 读取这首歌…"));
+        view.appendChild(h("p", "global-status", sharedFetch.slowRetry && sharedFetch.id === id ? "Jamendo 响应较慢，正在再试一次…" : "正在从 Jamendo 读取这首歌…"));
       }
     } else {
       cueTrack(album, 0);

@@ -7,7 +7,7 @@
 - Jamendo 的 `client_id` 放在 Cloudflare Secret，不写进前端和仓库
 - 边缘缓存 30 分钟：同一曲风、同一页只消耗一次 Jamendo 配额
 - 只认本站页面来源；每 IP 每分钟 30 次、每天 600 次
-- 上游超时 8 秒；错误统一成 `{status:"error", error, message}`，不外传 Jamendo 原文
+- 上游超时 15 秒；错误统一成 `{status:"error", error, message}`，不外传 Jamendo 原文
 - 只放行 `jamendo.com` 的音频和封面、`creativecommons.org` 的许可链接；没有可播音频或许可链接的曲目整条丢掉
 
 ## 接口

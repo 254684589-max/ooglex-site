@@ -140,7 +140,8 @@ jobs:
           done
           [ -n "$ok" ] || echo "::warning::$CUSTOM 还没通。证书或 DNS 可能仍在生效，稍后在 Actions 页手动重跑本工作流确认。页面会先退回 workers.dev。"
           [ -n "$ok" ] && URL="$CUSTOM"
-          code=$(curl -sS -m 15 -o /tmp/tracks.json -w '%{http_code}' -H 'Origin: https://www.ooglex.com' "$URL/tracks?tag=pop" || echo 000)
+          # Worker 向上游最多等 15 秒，这里多留几秒，避免检查先断开。
+          code=$(curl -sS -m 22 -o /tmp/tracks.json -w '%{http_code}' -H 'Origin: https://www.ooglex.com' "$URL/tracks?tag=pop" || echo 000)
           echo "/tracks?tag=pop → HTTP $code"
           if [ "$code" = "200" ]; then
             python3 -c "import json;d=json.load(open('/tmp/tracks.json'));print('status', d['status'], '曲目', len(d['tracks']))"

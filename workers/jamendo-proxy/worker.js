@@ -21,7 +21,9 @@ export const LIMITS = {
   pageSize: 20,
   maxOffset: 980,
   cacheSeconds: 30 * 60,
-  timeoutMs: 8000,
+  // 单次上游等待。播放器每个地址再等多 5 秒（player.js 的 API_WAIT_MS = 20000），
+  // 页面不会在 Worker 还在等 Jamendo 时先中止。曲风空结果改用 fuzzytags 再问时另计一次。
+  timeoutMs: 15000,
 };
 
 const DEFAULT_ALLOWED = "https://www.ooglex.com,https://ooglex.com";
