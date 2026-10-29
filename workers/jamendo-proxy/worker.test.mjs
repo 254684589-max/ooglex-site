@@ -168,6 +168,9 @@ test("errors map to clear states without leaking upstream text or the secret", a
   assert.equal(down.status, 502);
   const slow = await handle(get("/tracks"), env({ fetchImpl: async () => { const e = new Error("t"); e.name = "TimeoutError"; throw e; } }));
   assert.equal((await slow.json()).error, "timeout");
+  // 播放器每个地址等 20 秒（player.js API_WAIT_MS）。Worker 必须先结束，页面才不会把还在等的查询中止掉。
+  assert.equal(LIMITS.timeoutMs, 15000);
+  assert.ok(LIMITS.timeoutMs < 20000);
   const limited = await handle(get("/tracks"), env({ fetchImpl: async () => new Response("", { status: 429 }) }));
   assert.equal(limited.status, 429);
   const bad = await handle(get("/tracks"), env({ fetchImpl: async () => new Response("<html>", { status: 200 }) }));
