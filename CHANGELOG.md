@@ -13,6 +13,8 @@
 
 ### 修复
 
+- 2026-10-29：流光播放器 Android 调试包更新为 1.0.10（versionCode 10）。桌面图标为品牌音符，与 `apps/music-player/icons/icon.svg` 一致。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（3968272 字节，约 3.8 MB；sha256 `19104a8e43b6e021e538e85220c76d30eec62ff63d5555c5f5ee0e6119addec5`；包名 `com.ooglex.music001`；Android 调试证书，主体 CN=Android Debug，`debuggable=true`）。`/apps/downloads/` 与 `/apps/music-player/download/` 在读不到 `ooglex-music.json` 时显示 1.0.10、3968272 字节和这份校验值；读到 JSON 时版本以该文件为准。下载地址不变。Pages 仍以仓库提交的安装包为准。未改播放器脚本和媒体会话。未部署。
+
 - 2026-10-29：流光播放器下载地址在 Pages 上仍是 1.0.4，不是 main 里的 1.0.9。`deploy_protected_pages.yml` 在拷贝公开站之后，用 GitHub Release `music-player-android` 覆盖 `.site/apps/music-player/download/ooglex-music.apk` 和 `ooglex-music.json`。该 Release 停在 2026-10-28 的 1.0.4（172571 字节，sha256 `d6038744e78de37cb606525113a44b5ee4495677f328de68fd5b99201e42c8ec`）。同一次部署里 `/apps/downloads/app-debug.apk` 不在覆盖名单里，所以它已是 3880780 字节的 1.0.9。现改为公开下载以仓库提交的安装包为准，部署前核对 `.site` 里的 apk 与 json 和仓库字节一致。未部署。
 
 - 2026-10-29：流光播放器 Android 调试包 1.0.9（versionCode 9）用原生媒体会话接蓝牙耳机、线控和通知栏的上一曲／下一曲，再点网页上的对应按钮。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（3880780 字节；sha256 `9238ff690edda91a260a270a042c9d77c0bccf5a84234db6bcbbd3eac9c2ebae`；包名 `com.ooglex.music001`；Android 调试证书）。下载页读不到 `ooglex-music.json` 时仍显示 1.0.9 与这份大小、校验值。`/apps/downloads/` 不再写成 1.0.8。未部署。
