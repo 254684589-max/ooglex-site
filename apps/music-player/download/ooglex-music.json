@@ -1,0 +1,12 @@
+{
+  "package": "com.ooglex.music001",
+  "version_name": "1.0.9",
+  "version_code": 9,
+  "min_android": "5.1",
+  "signing": "debug",
+  "sha256": "9238ff690edda91a260a270a042c9d77c0bccf5a84234db6bcbbd3eac9c2ebae",
+  "size_bytes": 3880780,
+  "file": "ooglex-music.apk",
+  "asOf": "2026-10-29",
+  "note": "Native MediaSession for Bluetooth next/prev"
+}
