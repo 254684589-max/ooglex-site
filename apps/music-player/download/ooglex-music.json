@@ -1,12 +1,11 @@
 {
+  "name": "流光播放器",
   "package": "com.ooglex.music001",
-  "version_name": "1.0.10",
-  "version_code": 10,
-  "min_android": "5.1",
+  "versionName": "1.0.11",
+  "versionCode": 11,
+  "size_bytes": 4324316,
+  "sha256": "9b2ee7d7b2a1a59d23f1d106fdd72f9cbd12cacab0a5d576eee84606eb340057",
   "signing": "debug",
-  "sha256": "19104a8e43b6e021e538e85220c76d30eec62ff63d5555c5f5ee0e6119addec5",
-  "size_bytes": 3968272,
-  "file": "ooglex-music.apk",
   "asOf": "2026-10-29",
-  "note": "Launcher icon restored to music-note brand; native MediaSession retained"
+  "note": "Brand splash (music-note on #1A1442); MediaSession retained; icon unchanged from 1.0.10"
 }
