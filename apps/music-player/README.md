@@ -67,7 +67,7 @@
 }
 ```
 
-封面和音频放在 `media/<专辑编号>/`，并写进 `data/catalog.json`。原创完整曲同样走这条路径（例如《Black Gold Night》，以及其后的《Guilin Drift》《Dongping Homecoming》《Xuzhuang Lane》《Song City After Dark》《Taian Power》，`demo: false`）。`released: false` 的专辑不会出现在访客页。
+封面和音频放在 `media/<专辑编号>/`，并写进 `data/catalog.json`。原创完整曲同样走这条路径（例如《Black Gold Night》，以及其后的《Guilin Drift》《Dongping Homecoming》《Xuzhuang Lane》《Song City After Dark》《Taian Power》，`demo: false`）。2026-10-29 另增郑翊 14 张英文曲名原创完整曲（Joy Among Mortals 至 Blue），同样 `demo: false`。`released: false` 的专辑不会出现在访客页。
 
 ## 管理口令
 
