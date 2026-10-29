@@ -19,7 +19,13 @@
 
 ### 修改
 
+- 2026-10-29：流光播放器公开曲库只保留六张原创专辑：Hometown Roads、Black Gold Night、Soul After Midnight、Soft Heart、Streets & Rain、Familiar Voices。专辑和每一首的艺人都是流光（原先标郑翊的曲目已改）。六张封面各用一张新图，互不重复：`media/hometown-roads/cover.jpg`、`media/heijinye/album-cover.jpg`、`media/soul-after-midnight/cover.jpg`、`media/soft-heart/cover.jpg`、`media/streets-and-rain/cover.jpg`、`media/familiar-voices/cover.jpg`。曲目音频路径和 `durationSec` 未改，mp3 未移动。清单 `demo` 为 false，`asOf` 为 2026-10-29，`updatedAt` 为 `2026-10-29T07:21:09Z`，`source` 改为流光。播放器页、下载页和 App 专区说明不再把预置曲目写成免版税演示样例。未改 news-brief、投资雷达、利率页、最新消息。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 - 2026-10-29：流光播放器把 20 张单曲原创专辑收成 6 张多曲目专辑，专辑名用英文：Hometown Roads（5 首，艺人流光）、Black Gold Night（1 首，专辑编号仍是 `heijinye`）、Soul After Midnight（5 首，艺人郑翊）、Soft Heart（4 首）、Streets & Rain（3 首）、Familiar Voices（2 首）。每首的曲目编号、音频路径和时长都沿用原文件，封面和 mp3 没有移动或改名。Kevin MacLeod 的 Liuguang Sketches 与 Morning Pieces 演示专辑仍排在末尾。清单 `demo` 仍为 false，`asOf` 为 2026-10-29。旧的单曲专辑链接（`#/album/<原专辑编号>`）不再对应公开专辑。未改 news-brief、投资雷达、利率页、最新消息。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
+### 移除
+
+- 2026-10-29：从 `apps/music-player/data/catalog.json` 去掉 Kevin MacLeod 演示专辑 Liuguang Sketches 与 Morning Pieces。`media/aurora-sketches/` 与 `media/morning-pieces/` 的文件仍留在仓库，播放器不再列出。
 
 ### 修复
 
