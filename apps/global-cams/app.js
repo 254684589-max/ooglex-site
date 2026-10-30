@@ -33,6 +33,8 @@ let popularity = new Map();
 let popularityLoaded = false;
 let popularityPromise = null;
 let audioUnlocked = false;
+let chromeTimer = 0;
+let ignoreClickUntil = 0;
 const reportedWindowPlays = new Set();
 
 const globe = Globe()(globeEl)
@@ -286,8 +288,19 @@ function showWindow(d, options = {}) {
   video.volume = 1;
   video.loop = true;
   video.playsInline = true;
-  video.controls = true;
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  video.setAttribute('x5-playsinline', '');
+  video.setAttribute('x5-video-player-type', 'h5-page');
+  video.setAttribute('x5-video-player-fullscreen', 'false');
+  // 竖滑切窗时，controls=true 会让浏览器 / WebView 盖上灰底大三角和白圆暂停。
+  video.controls = false;
+  video.removeAttribute('controls');
+  try { video.disablePictureInPicture = true; } catch {}
   video.preload = 'metadata';
+  const disarm = () => disarmNativeVideoControls(video);
+  video.addEventListener('loadedmetadata', disarm);
+  video.addEventListener('play', disarm);
   video.addEventListener('error', () => {
     setStatus('该 WINDOW 暂时无法播放，可查看原始素材来源。', 'warn');
   });
@@ -295,7 +308,13 @@ function showWindow(d, options = {}) {
   video.addEventListener('play', updatePlayPauseButton);
   video.addEventListener('pause', updatePlayPauseButton);
   viewer.appendChild(video);
+  const shield = document.createElement('div');
+  shield.className = 'viewer-shield';
+  shield.setAttribute('aria-hidden', 'true');
+  viewer.appendChild(shield);
   viewer.appendChild(buildViewerControls());
+  syncImmersiveMode();
+  hideViewerChrome();
   if (audioUnlocked) {
     video.muted = false;
     video.defaultMuted = false;
@@ -304,6 +323,11 @@ function showWindow(d, options = {}) {
   }
   updatePlayPauseButton();
   updateExpandButton();
+  // 自动播放被拦住时才露出轻量播控；已经在播就保持画面干净。
+  window.setTimeout(() => {
+    if (currentVideo() !== video || !video.paused || !viewer.classList.contains('is-immersive')) return;
+    revealViewerChrome(4200);
+  }, 800);
 
   const source = safeHttpUrl(d.source_url);
   if (source) {
@@ -462,16 +486,48 @@ async function closeViewer() {
 async function toggleViewerExpanded() {
   if (isViewerExpanded()) {
     await closeViewer();
+    hideViewerChrome();
     return;
   }
   await toggleFullscreen(viewer);
   updateExpandButton();
+  if (isViewerExpanded()) revealViewerChrome(4200);
+}
+
+function disarmNativeVideoControls(video) {
+  if (!video) return;
+  video.controls = false;
+  video.removeAttribute('controls');
+}
+
+function hideViewerChrome() {
+  if (chromeTimer) {
+    clearTimeout(chromeTimer);
+    chromeTimer = 0;
+  }
+  viewer.classList.remove('is-chrome');
+}
+
+function revealViewerChrome(ms = 2600) {
+  if (!viewer.classList.contains('is-immersive')) return;
+  viewer.classList.add('is-chrome');
+  if (chromeTimer) clearTimeout(chromeTimer);
+  chromeTimer = setTimeout(() => {
+    chromeTimer = 0;
+    viewer.classList.remove('is-chrome');
+  }, ms);
+}
+
+function syncImmersiveMode() {
+  viewer.classList.toggle('is-immersive', isMobileSwipeMode());
+  if (!viewer.classList.contains('is-immersive')) hideViewerChrome();
 }
 
 function updatePlayPauseButton() {
   const btn = viewer.querySelector('[data-viewer-action="toggle"]');
-  if (!btn) return;
   const video = currentVideo();
+  disarmNativeVideoControls(video);
+  if (!btn) return;
   const paused = !video || video.paused;
   btn.textContent = paused ? '▶' : '⏸';
   btn.title = paused ? '播放当前 WINDOW' : '暂停当前 WINDOW';
@@ -697,15 +753,26 @@ playlistTabs.addEventListener('click', event => {
   applySearch();
 });
 viewer.addEventListener('click', event => {
+  if (performance.now() < ignoreClickUntil) return;
   const btn = event.target.closest('[data-viewer-action]');
-  if (!btn) return;
+  if (!btn) {
+    if (!viewer.classList.contains('is-immersive') || !currentVideo()) return;
+    activateAudio();
+    disarmNativeVideoControls(currentVideo());
+    if (viewer.classList.contains('is-chrome')) hideViewerChrome();
+    else revealViewerChrome();
+    return;
+  }
   const action = btn.dataset.viewerAction;
   if (action !== 'expand') activateAudio();
+  disarmNativeVideoControls(currentVideo());
   if (action === 'prev') stepWindow(-1);
   else if (action === 'next') stepWindow(1);
   else if (action === 'random') randomWindow();
-  else if (action === 'toggle') toggleCurrentVideo();
-  else if (action === 'expand') void toggleViewerExpanded();
+  else if (action === 'toggle') {
+    toggleCurrentVideo();
+    revealViewerChrome();
+  } else if (action === 'expand') void toggleViewerExpanded();
 });
 $('#resetGlobe').addEventListener('click', focusTokyo);
 $('#zoomIn').addEventListener('click', () => zoomBy(0.72));
@@ -728,7 +795,10 @@ viewer.addEventListener('touchmove', event => {
   const t = event.touches[0];
   const dx = t.clientX - swipeStart.x;
   const dy = t.clientY - swipeStart.y;
-  if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx) * 1.08) event.preventDefault();
+  if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx) * 1.08) {
+    hideViewerChrome();
+    event.preventDefault();
+  }
 }, { passive: false });
 viewer.addEventListener('touchend', event => {
   if (!swipeStart || event.changedTouches.length !== 1) {
@@ -742,6 +812,8 @@ viewer.addEventListener('touchend', event => {
 
   if (isMobileSwipeMode()) {
     if (Math.abs(dy) < 58 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
+    ignoreClickUntil = performance.now() + 500;
+    hideViewerChrome();
     activateAudio();
     stepWindow(dy < 0 ? 1 : -1);
     return;
@@ -749,6 +821,7 @@ viewer.addEventListener('touchend', event => {
 
   if (!isViewerExpanded()) return;
   if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.35) return;
+  ignoreClickUntil = performance.now() + 500;
   activateAudio();
   stepWindow(dx < 0 ? 1 : -1);
 }, { passive: true });
@@ -776,7 +849,11 @@ document.addEventListener('keydown', event => {
   }
 });
 
-addEventListener('resize', sizeGlobe);
+addEventListener('resize', () => {
+  sizeGlobe();
+  syncImmersiveMode();
+});
+syncImmersiveMode();
 document.addEventListener('fullscreenchange', () => {
   sizeGlobe();
   updatePlayPauseButton();
