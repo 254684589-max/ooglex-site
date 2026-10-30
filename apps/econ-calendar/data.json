@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-29T22:58:05Z",
-  "asOf": "2026-10-29",
+  "updatedAt": "2026-10-30T18:08:07Z",
+  "asOf": "2026-10-30",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-10-25 ~ 2026-10-31",
-  "count": 97,
+  "count": 98,
   "highCount": 23,
   "events": [
     {
@@ -835,7 +835,19 @@
       "actual": null
     },
     {
-      "ts": "2026-10-30T02:30:00Z",
+      "ts": "2026-10-30T03:02:00Z",
+      "ccy": "JPY",
+      "country": "日本",
+      "flag": "🇯🇵",
+      "title": "BOJ Outlook Report",
+      "titleEn": "BOJ Outlook Report",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-30T03:02:00Z",
       "ccy": "JPY",
       "country": "日本",
       "flag": "🇯🇵",
@@ -847,24 +859,12 @@
       "actual": null
     },
     {
-      "ts": "2026-10-30T02:30:00Z",
+      "ts": "2026-10-30T03:02:00Z",
       "ccy": "JPY",
       "country": "日本",
       "flag": "🇯🇵",
       "title": "货币政策声明",
       "titleEn": "Monetary Policy Statement",
-      "impact": "high",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-10-30T02:31:00Z",
-      "ccy": "JPY",
-      "country": "日本",
-      "flag": "🇯🇵",
-      "title": "BOJ Outlook Report",
-      "titleEn": "BOJ Outlook Report",
       "impact": "high",
       "forecast": null,
       "previous": null,
@@ -880,18 +880,6 @@
       "impact": "low",
       "forecast": "2.7%",
       "previous": "6.1%",
-      "actual": null
-    },
-    {
-      "ts": "2026-10-30T05:30:00Z",
-      "ccy": "JPY",
-      "country": "日本",
-      "flag": "🇯🇵",
-      "title": "新闻发布会",
-      "titleEn": "BOJ Press Conference",
-      "impact": "high",
-      "forecast": null,
-      "previous": null,
       "actual": null
     },
     {
@@ -916,6 +904,18 @@
       "impact": "low",
       "forecast": "0.1%",
       "previous": "0.2%",
+      "actual": null
+    },
+    {
+      "ts": "2026-10-30T06:30:00Z",
+      "ccy": "JPY",
+      "country": "日本",
+      "flag": "🇯🇵",
+      "title": "新闻发布会",
+      "titleEn": "BOJ Press Conference",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -1141,6 +1141,18 @@
       "flag": "🇺🇸",
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Musalem Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-10-30T17:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Logan Speaks",
       "impact": "low",
       "forecast": null,
       "previous": null,
