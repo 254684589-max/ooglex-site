@@ -139,6 +139,15 @@ func _ready() -> void:
 			GameState.set_flag("ch2_ambush", _query("rob"))
 			GameState.set_stage("ch2_main", "rob_ready")
 			GameState.daypart = "night"
+		if _query("escort") == "1" and not Engine.has_meta("ic_escort_param_done"):
+			Engine.set_meta("ic_escort_param_done", true)     # 截图用（5.7b）：?escort=1 直接到护粮那一夜（三辆车在伏击段下头；配 &cwskip=秒 动身并快进）
+			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "lawful")
+			GameState.set_flag("ch2_aid", "granted")
+			GameState.set_stage("ch2_main", "escort_ready")
+			GameState.daypart = "night"
 		if _query("day2") in ["1", "lit", "convoy"] and not Engine.has_meta("ic_day2_param_done"):
 			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了；=convoy 粮车到村（5.6）
 			GameState.set_stage("ch2_main", "after_tide")
@@ -253,6 +262,7 @@ func _ready() -> void:
 	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
 	if area == "highland":
 		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
+		ConvoyEscort.setup(world)                       # 第二夜 · 护粮（5.7b）：主线「护车」、还没走过，三辆车在伏击段下头；到了几秒以后动身
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
@@ -427,6 +437,8 @@ func _ready() -> void:
 			var secs := float(_query("probe")) if _query("probe").is_valid_float() else BATTLE_BENCH_SAMPLE
 			await run_battle_benchmark(int(view) if view.is_valid_int() else -1, BATTLE_BENCH_WARM, clampf(secs, 0.5, 10.0))
 		elif view != "" or area != "frostford":
+			if _query("probewait").is_valid_float():       # &probewait=秒：等到那一刻再测（游戏时间；护粮的潮水 5.7b）
+				await get_tree().create_timer(float(_query("probewait"))).timeout
 			var secs := float(_query("probe")) if _query("probe").is_valid_float() else 1.0
 			await perf_probe(clampf(secs, 0.5, 10.0))      # 截图 / 逐区域基准（tools/bench_areas.js）：只测一次，不显示浮层
 		else:
@@ -2008,6 +2020,46 @@ func _ambush_tick() -> void:
 		hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
 
 
+## 第二夜 · 护粮（5.7b，world/convoy_escort.gd）：主线到「护车」时天黑透——把你放到伏击段下头的车队后面（重新载入高地）；到了几秒以后先自动存档、车队动身
+func _escort_tick() -> void:
+	if area != "highland" or player == null or leaving:
+		return
+	var ce := world.get_node_or_null("ConvoyEscort") as ConvoyEscort
+	if ce and ce.player == null:
+		ce.player = player
+		ce.ended.connect(_on_escort_ended)
+		ce.note.connect(func(t: String): hud.toast(t, 4.5))
+		if _query("escort") != "" and _query("cam") == "":
+			var sp := ConvoyEscort.spawn()                # 截图用（?escort=1）：站到车队后头
+			player.global_position = sp[0]
+			player.rotation.y = deg_to_rad(float(sp[1]))
+			var at := _query("at").split(",")             # &at=T[,偏]：站到伏击段第 T 米、朝山脊
+			if at[0].is_valid_float():
+				player.global_position = ConvoyAmbush.leg_point(float(at[0]), float(at[1]) if at.size() > 1 else 0.0) + Vector3(0, 0.05, 0)
+				var to := ConvoyAmbush.leg_point(ConvoyAmbush.TIDE_T) - player.global_position
+				player.rotation.y = atan2(-to.x, -to.z)
+	if ConvoyEscort.due() and ce == null:
+		Engine.set_meta("ic_arrive_note", "天黑透了。三辆粮车点着火把出了村，上了盘山路。马蒂亚斯的六个人举着火把走在车两边，安塞尔姆的押车兵跟在后头。")
+		travel("highland", "escort", "night")
+		return
+	if ce and ce.state == ConvoyEscort.WAIT and ce.wait_left <= 0.0:
+		save_game("auto", true)                        # 动身前自动存档（倒下了从这里重来）
+		ce.begin()
+		if _query("cwskip").is_valid_float():          # 截图用：动身并快进到第 N 秒（同劫粮）
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+
+
+func _on_escort_ended(res: String) -> void:
+	var ce := world.get_node_or_null("ConvoyEscort") as ConvoyEscort
+	hud.toast(ConvoyEscort.finish(res, ce.through() if ce else -1), 6.0)
+	print("IC_ESCORT done result=%s" % res)
+	save_game.call_deferred("auto", true)
+	get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+		if is_inside_tree() and not leaving and area == "highland":
+			set_daypart("dawn"))
+
+
 ## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」
 func _beacon_arrival() -> void:
 	if area != "highland" or player == null or GameState.chapter != 2 or GameState.quest_stage("ch2_main") != "to_beacon19":
@@ -2129,6 +2181,7 @@ func _process(delta: float) -> void:
 	_beacon_arrival()
 	_first_tide_tick()
 	_ambush_tick()
+	_escort_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

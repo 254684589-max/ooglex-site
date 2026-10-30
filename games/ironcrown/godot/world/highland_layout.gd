@@ -468,6 +468,7 @@ static func spawn_points() -> Dictionary:
 		var p: Vector2 = s[0]
 		out[id] = [Vector3(p.x, height(p.x, p.y) + 0.05, p.y), s[1]]
 	out["ambush"] = ConvoyAmbush.spawn()                        # 第二夜 · 劫粮（5.7a）：伏击段上（车头前 / 车尾后，看 ch2_ambush）
+	out["escort"] = ConvoyEscort.spawn()                        # 第二夜 · 护粮（5.7b）：伏击段下头、车队后面
 	var top: Array = out.beacon_top
 	top[0] = Vector3((top[0] as Vector3).x, tower_base_y() + TOWER_H + 0.1, (top[0] as Vector3).z)
 	return out

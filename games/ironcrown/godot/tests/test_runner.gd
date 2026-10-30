@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9274,6 +9274,108 @@ func test_ambush() -> void:
 	ca3._start_tide()
 	check(ca3.crowd.count == ConvoyAmbush.TIDE_COUNT_LIT18, "第十八烽点着了：第二夜的潮水小一些（%d 个）" % ConvoyAmbush.TIDE_COUNT_LIT18)
 	await free_main(m3)
+
+
+## 5.7b 第二夜 · 护粮：伏击段下头三辆车、举火把的兵、押车兵；动身前自动存档；车往上走；潮水；风吹灭火把、车夫慌了稳住 / 弃车；帮兵点火把；挡路就停；结果和声望
+func _escort_game(seed: int) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "lawful")
+	GameState.set_flag("ch2_aid", "granted")
+	GameState.set_stage("ch2_main", "escort_ready")
+
+
+func test_escort() -> void:
+	_escort_game(700)
+	GameState.set_flag("ch2_requisition", "three")
+	var main := await make_area("highland")
+	await frames(3)
+	var ce: ConvoyEscort = main.world.get_node_or_null("ConvoyEscort")
+	check(ce != null and ce.carts.size() == 3 and ce.bearers.size() == 6 and ce.state == ConvoyEscort.WAIT
+		and main.world.find_children("Convoy", "", true, false).is_empty() and main.world.get_node_or_null("ConvoyAmbush") == null,
+		"主线「护车」：伏击段下头三辆粮车、六个举火把的兵（村里没有车了；没有劫粮那场仗）")
+	check(ce.lit_bearers() == 6 and main.get_tree().get_nodes_in_group("light_source").filter(func(n): return ce.is_ancestor_of(n)).size() == 6,
+		"六支火把都亮着（长眠者会绕开）")
+	var sp: Array = HighlandLayout.spawn_points().escort
+	check(absf(ConvoyAmbush.t_of(sp[0]) - ConvoyEscort.SPAWN_T) < 0.5 and ConvoyAmbush.t_of(sp[0]) < float(ce.carts[2].t),
+		"出生点在车队后头的路上")
+	ce.windy = false
+	ce.wait_left = 0.0
+	await frames(3)
+	check(ce.state == ConvoyEscort.GO and not Saves.read_slot("auto").is_empty(), "到了几秒以后车队动身（先自动存档）")
+	var t0 := float(ce.carts[0].t)
+	await physics(30)
+	check(float(ce.carts[0].t) > t0 + 0.2 and ce.carts.all(func(c): return c.state == "go"), "车往山脊上走（%.1f → %.1f 米）" % [t0, float(ce.carts[0].t)])
+	ce.carts[0].t = ConvoyEscort.TIDE_START_T + 0.1
+	await physics(3)
+	check(ce.tide_started and ce.crowd != null and ce.crowd.count == ConvoyAmbush.TIDE_COUNT, "头车走到 %d 米：第二次潮水横穿山路（%d 个）" % [ConvoyEscort.TIDE_START_T, ConvoyAmbush.TIDE_COUNT])
+	# 挡路：车头前有长眠者就停
+	var a: Dictionary = ce.crowd.agents[0]
+	var front := ConvoyAmbush.leg_point(float(ce.carts[1].t) + ConvoyEscort.BLOCK_AHEAD, 0.4)
+	a.p = Vector2(front.x, front.z)
+	check(ce._blocked(1), "车头前有长眠者挡着：车停下等")
+	# 车夫慌：两边的火都灭了、长眠者在跟前
+	for b in ce.bearers:
+		if int(b.cart) == 0:
+			ce._set_lit(b, false)
+	var c0 := ce.cart_xz(0)
+	a.p = c0 + Vector2(1.5, 0.0)
+	main.player.global_position = ConvoyAmbush.leg_point(5.0) + Vector3(0, 0.3, 0)
+	ce._panic(0, ConvoyEscort.PANIC_TIME * 0.6, [])
+	var use0: Examine = ce.carts[0].use
+	check(float(ce.carts[0].panic) > 0.5 and use0.verb_now() == "稳住车夫", "两边的火都灭了、长眠者在跟前：车夫慌了（对着车按 E 是「稳住车夫」）")
+	var r := use0.interact(main.player)
+	check(float(ce.carts[0].panic) == 0.0 and str(r.get("speech", "")) != "", "稳住车夫：他咬着牙点了点头")
+	a.p = c0 + Vector2(1.5, 0.0)
+	ce._panic(0, ConvoyEscort.PANIC_TIME + 1.0, [])
+	check(ce.carts[0].state == "lost" and ce.lost() == 1, "慌满了：车夫扔下车跑了，这车粮丢了")
+	# 火把：车上的油罐续火把；帮兵点上
+	var k := ce.bearers.find(ce.bearers.filter(func(b): return int(b.cart) == 1)[0])
+	ce._set_lit(ce.bearers[k], false)
+	var hand: TorchHand = main.player.torch
+	var bu: Examine = ce.bearers[k].use
+	check(bu.verb_now() == "点着火把" and str(bu.interact(main.player).get("toast", "")).begins_with("得拿着") and not ce.bearers[k].lit, "手里没有点着的火把：帮不了他")
+	(ce.carts[1].use as Examine).interact(main.player)
+	check(hand.lit() and is_equal_approx(hand.fuel, TorchHand.FUEL), "对着车按 E：从油罐续火把（手里没有就拿一支点着的）")
+	bu.interact(main.player)
+	check(ce.bearers[k].lit, "举着点着的火把对着兵按 E：他的火把点着了")
+	ce._set_lit(ce.bearers[k], false)
+	ce.clock += ConvoyEscort.RELIGHT_SELF + 0.1
+	ce._wind(0.0)
+	check(ce.bearers[k].lit, "灭了没人管：过 %d 秒他自己从车上的油罐续上" % ConvoyEscort.RELIGHT_SELF)
+	# 走完：两车上山 = delivered
+	var lom := int(GameState.rep.get("lomond", 0))
+	var oath := int(GameState.rep.get("beacon_oath", 0))
+	var eld := int(GameState.rep.get("eld", 0))
+	ce.carts[1].t = ConvoyEscort.END_T + 0.1
+	ce.carts[2].t = ConvoyEscort.END_T + 0.1
+	await physics(3)
+	check(ce.state == ConvoyEscort.DONE and ce.through() == 2 and str(GameState.get_flag("ch2_convoy", "")) == "delivered" and GameState.quest_stage("ch2_main") == "dawn_after",
+		"两车过了潮水：delivered；主线「天亮以后」")
+	check(int(GameState.rep.get("lomond", 0)) == lom + 5 and int(GameState.rep.get("beacon_oath", 0)) == oath + 10 and int(GameState.rep.get("eld", 0)) == eld + 5,
+		"护粮：洛蒙德家 +5、烽誓团 +10；用了征粮令的厄尔德家 +5")
+	await free_main(main)
+	# 一车也没上来：lost；第十八烽点着：潮水小
+	_escort_game(701)
+	GameState.set_flag("ch2_requisition", "five")
+	GameState.set_flag("ch2_beacon18", "lit")
+	var lom2 := int(GameState.rep.get("lomond", 0))
+	var eld2 := int(GameState.rep.get("eld", 0))
+	check(ConvoyEscort.finish("lost").begins_with("×") and int(GameState.rep.get("lomond", 0)) == lom2 - 5 and int(GameState.rep.get("eld", 0)) == eld2 - 5,
+		"一车也没上来：lost（洛蒙德家 −5，用了征粮令的厄尔德家 −5）")
+	_escort_game(702)
+	GameState.set_flag("ch2_beacon18", "lit")
+	var m2 := await make_area("highland")
+	await frames(3)
+	var ce2: ConvoyEscort = m2.world.get_node("ConvoyEscort")
+	ce2._start_tide()
+	check(ce2.crowd.count == ConvoyAmbush.TIDE_COUNT_LIT18, "第十八烽点着了：护粮那一夜的潮水也小一些（%d 个）" % ConvoyAmbush.TIDE_COUNT_LIT18)
+	check(ConvoyEscort.finish("partial").begins_with("✓ 只有一车"), "一车上山：partial")
+	await free_main(m2)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
