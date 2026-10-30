@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-10-23T05:25:12Z",
- "asOf": "2026-10-23",
+ "updatedAt": "2026-10-30T06:30:32Z",
+ "asOf": "2026-10-30",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -9368,7 +9368,7 @@
    "firm": "Dalal Street",
    "firmZh": "达拉尔街",
    "cik": "0001549575",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAOZUlEQVR4nO1dXWwTVxb+YFd5ybWJKkW2tguETB6WPnhSqe1u7VUSWHCkpVXt5KGqwDZ9WsjDQoiTqruIkIjuDz8FVmpI92VJAkKslpjVtg9xEE3QxlSCqrZ3940JRtmuPOKBkEwqlZfug+dO7oxnPHfGTppW/aRIzngyd84355x7zrl3TjZhgyC8Z3crgAYATeqPGQoACm1t7YvHTwxm1+fOKmPTNzFoeM/uJgAdANoBtKo/bpBVf2YBzKRv3S7U4PYcYd0IVDUs4fF4I8vLS01m5/h8fvj8Pu2z3+8HABSLRchyEQAgF2XtsxEej7ewvLx0s62tfWy9NHRNCfz6668bOvf+IgLgCAxaJggCAmIrBEFAs9ACQRAcXVuSJMxLDyBJEvK5LCRJMp6SBXAxfev25SpEsMWaEBjes7sBwFGUiGugxwVBwN5wJ4KhEHw+f03HlOUiMnNzmE5P6cgkxLOoKMsXAVxI37q9WNNBsQYEHkzEjv7viy8GoRJHCMHecCeiXV01J80KslxEanIS0+kpKIqC0n14Fr1bvEOXxyYu1HKsmhGY7OvtyOdy56GaKiEE0a5uRKJdIIRY/p0sF1VzlHS+bl6SNOEBICCKAABSTyC0tKBZECAIQsWHoigKbqYmkZq8oV3L692SbdrR1Hv23PmZamUGakTg/rfePP/48eOj9PdYPFGRuExmDpm5OeRzOcsJgRc+nx8BUUQwFEIwGDI9hxI5MT6mHWtsbLxw9dr13qoGR5UEquFICqrWBUQRyf4BU60wM6tagxCCV4MhxOJx03uQJAmjlz5APpcDUNLGNyKRaCyeKLgd0zWBqsmmoPq6Q4d7EO3qLjsvn8thYmJMu+n1QkAUEYslNNNncWVinNXGxYAoRt2atCsCw3t2HwTwF6BkQoNDw2VhiCwXMToygkxmzs0QNUMwGMKhnp4yjZQkCQPJY1AUBYQQKIrytpuQxzGBLHmCIOD02ffLfN2ViXGd494IiMUTOBCL644pioKB5DE27HFM4g+cnMyStzfciXd/e1xHniwXMZA8hpmZT/Ds2TMnl15z5HM53M3M4aWXX9buua6uDu0du/DfhQUsLCwAQERo3vFImn/IncVwE2gkL9k/gLq6Ou37TGYOx3/zLmRZ5r3kuuPJkyeYTqexdds2bN26DUCJxI5duyDLMuZLmuiIRC4Ck329HbIsp4BV8lhMp6fw+/dObTitM8OzZ88wO/MJCCHYufMF7XgwFMK8JGFhYQGEkMi+fb+czdz9tGB3PVsfqIYqnwNoMPN5hhltQ4NmRTReNM7QBp+4GIsnXrQLcXgI/BxAq8/nx8johzryUpM3MHppxLEg3wQEQcDg0LBtOqkoCnoO/QqyXITXuyX7t8nUi5XOr2jC+9968/yXX34ZAYAz597XyktAyWz/dLGmaeWagRCCkdE/47nnnrM9t66uDgGxFR9/9A989dVX/p/99JWGf/37P1NW52+2+iLZ19tB07NDh3t0cV4+l8PZM6edSfENItrVXTEfN0IQBBw63AMAePz48dFkX2+H1bmWBKqFAQREUZdhyHIRQydPcN/MRkAk2uX4b6Jd3ZqPLDwsnLc6z5TAg4nYUaj5rXHGPXvm9IYKkO3g8/kdaR8LKvvS0tNWlZMy/NB4ILxnd4Naz0MsntA5XVkuQhRb4fP5IctFCEJL2c3V19dDEFoAAMqKgnMmhAeDIU2rJekBVlZWdN9LDx5AWdH/jXEsdpzRSx+YVaQBAITUmx7ngc/nRyyewMT4GJaeLg2G9+y+bCzKlhGIUiW5gRBSpvo+n78sHbJDShDKCgmseZgl+05xIJ7A0KC5W7EilheRaJeali7TKvtJ9nszEz4COHe8RkiShExmjkb3OqTTU8jnclW7AkVRkM/lcMUmDnVa0GBrlLQwXPrsOWI8VxcH0nSNEIKxiauOCRwaPOG6+nIj9Xeu8abTU44jALPsqRJSkzcgCC2adSiKgkRsP33guoKDUQOr0r5gyLwizIPptGWopcOrFlVnu2s7qXwLQgsmJla1mmYwKnRaqBGortu2AsDecFg7QZaLayocBe8YhBDL0n0lONVa43JDtEubD1pPDQ9pS7SsBiaAklNnZ97UZGlRhgduhQNKPpNXS9xoej6Xc+xeUpOT2mefz68lE3fuzCbocY1Aj8cbAYDwqqoCgLbOupbCmd1wJbjV9NGREUcTl9EqqBlTrgCVwPCe3U10uwV7c5nMnDbgdDrNNWg1ZpyZ49MQt5ouy0XcTPE9JKA0ebBaS5VjeXmpSa1SaRrYAZRyQHbyYAVKT62tjwJKAvIuPrnVdJ6lhnx+9R5YDlgzhsoZJbAdAAKifpMUKwxdAOdBNWacXuMJi64R251DYXygDEftwCqB2rouhSwXy/we72RSjRnfZdxGJVSj6XbWJEkPtM9GHhgNbAUMBLIlKzNtu8s5i1UjnKIo3OPs7ey0P8kEdq7C+B3LRbOaf4MSqMZ/AKALX8xSMKNTrYRqzJh3MgkGQ67TTdbP6Y6bEMtywSrZqeGh1s1QdxYYF8ZzOfNFqWnOyaSq2Tgzxx02uR3HSj4zYotF/b1QRbtzZ7ZhM9T9yPWcTzKzDj4KcKCFLjV9xUKGzNw/y44ZHybdRbt9e1OTRiCp1xNoZsIUvGnXeuTGbs3YzMc7iTQA4NGjQpOWiQgtLbovK2nZeuTGkiRxC1PNOCysMiGjX2TnCss1kUrgTe0MVQxHIIRw75t2o+lmhVxet8GuTroiEODPW92asROtqmY2pnC72dOSQLsbWutQwynxTs1YEPQuizcDAvTuTSNQevBAd1Kzjfk4yVudCsfO4LzVE6eEG91DpeDdaO5sprIZpdenylbBeMD71KrRJt41aKeazpLCG5qZoKARaIyLeF5J4E25nApHCadaXutZ3+fz6+Szc0fGEI/hqrC5ra19ESiPi9iZxgqKotRcONZ8qWC1DqqN59kpgjHEo1y1tbUvbmbfKWNnITsfSFFr4Vii6cPhNTFeTXdqvs0WRZbjJwazdBLJGr/kjcF481Ze4VjzZe+nlprOppg8uT3LxfzqBJIFVmfhLKCPuI1+ohJ4tdBOODPzpahV+siSx1NdMvLAPFQdgbMAkDdUKHi3XdRKODPzpeDNfuw0nb0HnknQyAHD0SywSuAMvUnWH/D6Ld68lVc4q+vVYtVO5/84LIflwOBWZgCVwPSt2wWPx1sA9E/FSfhRrY9izdfqWtVOWOzLiTzmayzJURfn8XgL9O14LRNZXl66aXaTvOFHtcLpllMtriXLRa6KuNWDD4Z+rn3mMV9jIYQmDpQrgCGwra19DCifVWNxvu1s1Qu3ar6VfF01ExZ7jCeLYrZz6FJXyhXAEKjGg1lAv4hOXyflgVvheMyXgnfVzqjp7JouTx5vtsVFRZaNnY3VmIulk/XLl7FYAjxwKxyP+VLwrtoZNd3p5MHKbMi4LrLn6QhM37p9udRjQJ+iBUSRSwvdCsdrvhRuNJ19aHZaHgyGdPLeTE2qb3V6Fo0vI5bVA9UGDRi9pN+Iw7tB0enOAifmS8Gd/TCk0THs1j0IITjU06P9riiKZpGUGxZmBdULVAvZLRB0w7UdeCu7VLhKwXMlcMVwqqYHHbiIaFe3zvdR7QOwCKDszaIyAtO3bi96t3iHgJIvZMk4EItz5ciOhFOJdFqTcxJU85qvIAi6TfSyXNTeA/zR888PmbVNMS3pXx6buOD1bskqilK2s7Ov/x3b4JpXOPbFP16/RsG7BBkOd2r+rNLfEEIwODSsO8bInrVql2K5JtK0o6kXKJkkOysLgoA+G3/IKxx9nQrgL86y4DF5Nhyp9GAHTw4bwpYbWqgTEEXL7h6WBJ49d36msbHxAlB6pZUlJBgM6YQ3gyN/5rKk7mQMwFrLk/0Dulm31N2j9BZqY2PjhUoNKSoua169dr2XmvK5M3/UCRnt6q645lvrCcEMTjY7WYVIyf4BnRyKorAv7WTtesvYrgu/EYlEASxKklS2wGMcnIUT4dyYLwXvZiezB2pG3kDyGCV6MRZPRO2ua0tgLJ4oBEQxSggxfc012T9gac48mlVtIx5e8zfei9nDH700ormqgChyNeTh6pmQuftpYeuPn38EIDIvSZBlWRca7Nz5AoSWFnx2/56ub8K8JCHa1a1rTmHElfFx2jHDNbZt21a2UM5CkiT89fo1AKXZ9r3f/aEsnTx75jSrpW9PXL12Exzg3tqhpjBvA+avWwWDIYyMfuhowdqJmVeC3dZj+n1AFDEy+qFuwqChGkuek94xjvrGSPMPs0LzDk0T8/kcgsGQpmGEEOx77XVs2rRJCwFkuYh9r71uer3ZmU9qQuCTJ08Q7uy0jE9HL40gFo/j10d6dedQn3f//j16aG0b7wCrJBJCIgsLC/js/j38ZOcLun4EAVFEuLMTclFGPp+zFK4W5ktBiMey4BEMhfDSy6/o5ZAkDCT72PHXp/UTBdt8jBCCA7G4ZfOxepOtaoqioDv6htvhy+Dz+TF+5SrXuYZuI1U1H3OsgRSZu58WTp48eb3wsNCxvLzsv3//HvL5HERR1Gmbz+837ZZRK/OlWFlRSm/TV9hRQfs9fPzRR/RQNhZP7OofeMd1w9qaN2Dk7Vw5nZ7CxPh4TRowBkOl+t23rgEji2Rfb0fhYeH80tJTrQXoocM9eNVmZU9RFNAJSVEU3dYxOhEJgqBtgqftkQMBEc2GV9PMrm1sAQogGxDFjdUClMXBROzo0tOlQbXHgKaRe8Ph75vQ8oK2QSbEc4QSCZRixWAoZKuVbkAXimg/BopvXRtkI9Q+DJaNuAOiaNuN1wy0ZJbP5b57jbjNcGp4qPXOndmKreCpr6OtjlnQXjIrimJZa/zOtYK3wvf/jGANoGpoxX+HsX17U+HRo8KG+ncY/wefUuvkMTvLNwAAAABJRU5ErkJggg==",
+   "img": "",
    "imgAlt": "",
    "imgLogo": true,
    "period": "2026-06-30",
@@ -10256,18 +10256,18 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAhFBMVEU8EFP///87DVJML1vz8PVcQm0uAEi8ssKyobo3AE84A1D28/djSXQ6ClFFIVrc1OCMdZj7+ftXQ2I9CVVzWoInAERUMmdVN2jRxtebh6aXgqOGbZPTzNi5q8G3rL5yVYLn4elfQHCfjqpTLWd8ZIuomrFOI2RFHVuPfpucj6Wqn7HFuszYqIOEAAACUklEQVR4nO3b0XaiMBAG4DGy0QFToAqiogbqLra8//sV1nbPWie7JEC5mf8WTvIhcyB4JvA8nzTPMFdiwqg5zAVMGMEABjCAATTAHyeqM+DHONk+TkUC1FPsjZEgg4e5DIDZOAkZwIA+AC9f7vbRRw45cUZ2+Dwc7XfHMB4QEIens0yklPiRZEEAlsnnYWxOTTCq9UAAHaUS786QJEDeD41YlMEAgLiu5NdnaBdAE18WYX/AEfDrCV0BAJj+XS1OgGxNvEI6AwBfvH4AXTxevw0A5CXoBSip+W0AArI+gFCSyxULQFMGXg/Anh7UBgDy6A7Qqd8fgBt3wE+yAiwBqgpdAd5mCABg6QrI14YVsx3AL7QjwHQHLAFinTkCXugStAWALN0AOjGOaAdQv9wApfmS7AAgtQsguJhKwB6wcwHowlQC1gC8vZEsAHEcNy9i42erLUBtw2bIWd4RIODarixNTyEHAIhNO+KFOEB+nIrb0tI8njUATCM6/j9gDzCFAQxgAAMYwAAGMIABDGAAAxjAAAYwgAEMYAADGMAABjCAAQxgAAMYwABHANYE4Ph9gD99OXcJjT0vgwP8NCQAMTr8lm4AvBI9u6bew0EBQiiFmKw8av6ZPieIqt24NTxAtL3CiKJ62q4Oy4Ccv7kJx8Nqm1bg4+8e5AEBotpcX99OizrLtWn2WwIdZvXidHoro3OnK+sGUCnVy/3vxLW5DcgBQJX9f2JsBmSAEyAPbDNoDQAUK+sQm3p6ABRah+hJ7wEYKwxgAAMY0AKm3vw+9fb/dwfFRfR5ULcsAAAAAElFTkSuQmCC",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-06-30",
-   "filed": "2026-08-07",
-   "value": 37253810301,
-   "stocks": 195,
-   "top10pct": 53.3,
+   "period": "2026-09-30",
+   "filed": "2026-10-28",
+   "value": 36700848637,
+   "stocks": 189,
+   "top10pct": 54.5,
    "holdings": [
     {
      "name": "Blackrock Inc",
      "zh": "贝莱德",
      "ticker": "",
-     "value": 4995462857,
-     "pct": 13.41,
+     "value": 5389685769,
+     "pct": 14.69,
      "chg": "hold",
      "chgPct": null
     },
@@ -10275,148 +10275,148 @@
      "name": "Alphabet Inc",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 3235545206,
-     "pct": 8.69,
-     "chg": "add",
-     "chgPct": 93.0
+     "value": 3171012002,
+     "pct": 8.64,
+     "chg": "hold",
+     "chgPct": null
     },
     {
      "name": "Visa Inc",
      "zh": "维萨",
      "ticker": "V",
-     "value": 2263438151,
-     "pct": 6.08,
-     "chg": "hold",
-     "chgPct": null
+     "value": 2194338837,
+     "pct": 5.98,
+     "chg": "trim",
+     "chgPct": -7.4
     },
     {
      "name": "Nvidia Corporation",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 1681701025,
-     "pct": 4.51,
+     "value": 1781329743,
+     "pct": 4.85,
      "chg": "trim",
-     "chgPct": -5.6
-    },
-    {
-     "name": "Space Exploration Techn Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 1679886123,
-     "pct": 4.51,
-     "chg": "new",
-     "chgPct": null
+     "chgPct": -7.2
     },
     {
      "name": "Mastercard Incorporated",
      "zh": "万事达",
      "ticker": "MA",
-     "value": 1671049987,
-     "pct": 4.49,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Broadcom Inc",
-     "zh": "博通",
-     "ticker": "AVGO",
-     "value": 1413077001,
-     "pct": 3.79,
-     "chg": "add",
-     "chgPct": 5.7
-    },
-    {
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 1089257655,
-     "pct": 2.92,
-     "chg": "hold",
-     "chgPct": null
+     "value": 1708626670,
+     "pct": 4.66,
+     "chg": "trim",
+     "chgPct": -4.8
     },
     {
      "name": "Microsoft Corp",
      "zh": "微软",
      "ticker": "MSFT",
-     "value": 985699009,
-     "pct": 2.65,
+     "value": 1341855135,
+     "pct": 3.66,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Icici Bank Limited",
+     "name": "Broadcom Inc",
+     "zh": "博通",
+     "ticker": "AVGO",
+     "value": 1229401702,
+     "pct": 3.35,
+     "chg": "trim",
+     "chgPct": -6.4
+    },
+    {
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 1213288994,
+     "pct": 3.31,
+     "chg": "add",
+     "chgPct": 6.6
+    },
+    {
+     "name": "Space Exploration Techn Corp",
      "zh": "",
      "ticker": "",
-     "value": 847553755,
-     "pct": 2.28,
-     "chg": "hold",
-     "chgPct": null
+     "value": 1159561102,
+     "pct": 3.16,
+     "chg": "trim",
+     "chgPct": -21.8
+    },
+    {
+     "name": "Thermo Fisher Scientific Inc",
+     "zh": "赛默飞世尔",
+     "ticker": "TMO",
+     "value": 814254086,
+     "pct": 2.22,
+     "chg": "add",
+     "chgPct": 3.7
     }
    ],
    "moves": [
     {
-     "type": "add",
-     "name": "Alphabet Inc",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 1880652566,
-     "delta": 93.0
-    },
-    {
-     "type": "new",
+     "type": "trim",
      "name": "Space Exploration Techn Corp",
      "zh": "",
      "ticker": "",
-     "value": 1679886123,
-     "delta": null
-    },
-    {
-     "type": "add",
-     "name": "Broadcom Inc",
-     "zh": "博通",
-     "ticker": "AVGO",
-     "value": 317216610,
-     "delta": 5.7
-    },
-    {
-     "type": "trim",
-     "name": "Pdd Holdings Inc",
-     "zh": "拼多多",
-     "ticker": "PDD",
-     "value": 226984609,
-     "delta": -26.5
+     "value": 520325021,
+     "delta": -21.8
     },
     {
      "type": "new",
+     "name": "Intel Corp",
+     "zh": "英特尔",
+     "ticker": "INTC",
+     "value": 442952568,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Ge Vernova Inc",
+     "zh": "GE维诺瓦(能源)",
+     "ticker": "",
+     "value": 252683584,
+     "delta": -32.1
+    },
+    {
+     "type": "add",
+     "name": "Thermo Fisher Scientific Inc",
+     "zh": "赛默飞世尔",
+     "ticker": "TMO",
+     "value": 230806915,
+     "delta": 3.7
+    },
+    {
+     "type": "trim",
+     "name": "Broadcom Inc",
+     "zh": "博通",
+     "ticker": "AVGO",
+     "value": 183675299,
+     "delta": -6.4
+    },
+    {
+     "type": "trim",
+     "name": "Beone Medicines Ltd",
+     "zh": "",
+     "ticker": "",
+     "value": 165819165,
+     "delta": -75.7
+    },
+    {
+     "type": "trim",
      "name": "Asml Hldg Nv",
      "zh": "阿斯麦",
      "ticker": "ASML",
-     "value": 222974446,
-     "delta": null
-    },
-    {
-     "type": "exit",
-     "name": "Salesforce Inc",
-     "zh": "赛富时",
-     "ticker": "CRM",
-     "value": 151184033,
-     "delta": null
+     "value": 147056415,
+     "delta": -62.6
     },
     {
      "type": "add",
-     "name": "Sterling Infrastructure Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 138595610,
-     "delta": 228.6
-    },
-    {
-     "type": "add",
-     "name": "Micron Technology Inc",
-     "zh": "美光科技",
-     "ticker": "MU",
-     "value": 130936135,
-     "delta": 98.9
+     "name": "Msci Inc",
+     "zh": "MSCI明晟",
+     "ticker": "MSCI",
+     "value": 135988346,
+     "delta": 86.3
     }
    ],
    "countryZh": "新加坡",
@@ -12900,8 +12900,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-10-22",
+  "asOf": "2026-10-29",
   "weeks": [
+   {
+    "date": "2026-10-29",
+    "bull": 37.8,
+    "neutral": 20.7,
+    "bear": 41.4
+   },
    {
     "date": "2026-10-22",
     "bull": 36.9,
@@ -12967,20 +12973,14 @@
     "bull": 34.7,
     "neutral": 27.4,
     "bear": 37.9
-   },
-   {
-    "date": "2026-08-06",
-    "bull": 37.0,
-    "neutral": 25.0,
-    "bear": 38.0
    }
   ],
   "avg": {
    "bull": 37.6,
-   "neutral": 31.0,
-   "bear": 31.4
+   "neutral": 30.9,
+   "bear": 31.5
   },
-  "spread": -8.9,
+  "spread": -3.6,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
