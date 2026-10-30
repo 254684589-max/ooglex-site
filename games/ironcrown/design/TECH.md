@@ -822,6 +822,15 @@ godot/
 - **性能**：`SleeperCrowd.near_cap`（实例上限，默认 `NEAR_MAX`），伏击里 `NEAR_CAP` = 2：中档开打 + 潮水 423 → 304 次绘制调用。
 - **主线**：`HighlandVillage.CONVOY_STAGES` 去掉 `rob_ready`（天黑以后车队已经出村）。调试 `?rob=head|tail`（设好旗标、主线「设伏」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝车队，`&cwskip=秒` 开打并快进。**测试**：`ambush` 组 12 项。
 
+### 4.59 第二夜 · 护粮（路线图 5.7b，2026-10-30）
+
+- **`world/convoy_escort.gd`（ConvoyEscort）**：`due()`（主线 `escort_ready`、还没有 `ch2_convoy`）时 main 在高地搭好以后调 `setup(world)`。三辆车（每辆一个 Node3D：`Decor.cart` 一份、一个 `Examine`、车夫、`GUARDS` 个押车兵都是它的子节点，跟着车走），位置用 `ConvoyAmbush.leg_point(t, off)`，按前后高度差抬车头。举火把的兵各是一个 Node3D（亮着时进 `light_source` 组、`radius` 元数据 = `TorchHand.RADIUS`，长眠者绕开），`TorchHand.make_visual(1)` 举过头顶、在外侧（走路的动作手是垂着的，挂在手上看不见火），能对着按 E。
+- **流程**：`main._escort_tick`：到期且没有 ConvoyEscort → 夜里旅行到 `escort` 出生点（`HighlandLayout.spawn_points`）；到了 `START_DELAY` 秒 → 自动存档、`begin()`。`_tick`：风（`BLOW`、`RELIGHT_SELF`）→ 每辆车：车头前 `BLOCK_AHEAD` 米有长眠者就停、跟前面还在路上的车隔 `GAP_MIN` → 走 `SPEED` → 车夫慌不慌（`_panic`：`PANIC_R` 内有长眠者、`SAFE_R` 内没有亮着的火（`SleeperCrowd.fires`，你手里的也算）→ 涨，`PANIC_TIME` 秒涨满 → `_abandon`：车歪到路肩 `LOST_OFF`、两个兵撤走、车夫往山下跑）→ 过了 `END_T` 算送上山（`_gone`：你离开 `GONE_DIST` 或 `GONE_SEC` 秒以后不画了）。头车到 `TIDE_START_T` 起潮水（路线垂直穿过路面第 `ConvoyAmbush.TIDE_T` 米，从岩坎上头 `TIDE_FROM` 米下来），每步把三辆车写进 `crowd.obstacles`。一盏实时光源跟着离你最近、火还亮着的那辆车（`PlantedTorch.max_lights` 为 0 的低画质不开）。
+- **交互**：对着车：车夫慌了一半以上 → 「稳住车夫」（panic 清零）；否则「续火把」（`TorchHand.take_from_ground(FUEL)`：手里没有就拿一支点着的）。对着兵：你手里的火把亮着 → 点着他的。
+- **结束**：车都过去了或丢了（或 `TIME_MAX`）→ `finish_run` → `ended(result)`；main `_on_escort_ended` → `finish(res, 过去几车)`：`ch2_convoy` delivered / partial / lost，声望（delivered / partial：`lomond` +5、`beacon_oath` +10，delivered 且用了征粮令 `eld` +5；lost：`lomond` −5、用了征粮令 `eld` −5），主线 `dawn_after`；自动存档、`DAWN_DELAY` 后天亮。
+- **性能**：潮水里近处真人模型最多 `NEAR_CAP` = 2。中档实测：潮水横穿时 272–364 次绘制调用；天亮以后（车过去了不画）331；**夜转清晨那一下测到 427–479**（场景本身的时段过渡，同劫粮那一夜的结尾，记为待查）。
+- 调试 `?escort=1`（设好旗标、主线「护车」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝潮水横穿的地方，`&cwskip=秒` 动身并快进；`?perf=1&probewait=秒` 等到那一刻再测（非战斗区域）。**测试**：`escort` 组 19 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
