@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9005,6 +9005,90 @@ func test_day2() -> void:
 	GameState.set_flag("norbert_day2", false)
 	r.start("beacon19", "norbert")
 	check(not r.text().contains("少了一个人"), "守住了营地：不提少了人")
+
+
+## 5.5b 支线：妮尔的父亲（第一夜潮水里认出他；第二天她要往北去：告诉她 / 劝住 / 拉住 / 随她去）、第十年（卡斯滕：替他说、帮他溜、劝他留）
+func test_sidequests2() -> void:
+	GameState.new_game(580)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	GameState.set_stage("ch2_main", "light_line")
+	GameState.start_quest("ch2_nell")
+	GameState.set_flag("ch2_nell", "asked")
+	var main := await make_area("highland")
+	await frames(3)
+	var ft: FirstTide = main.first_tide
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		(t as PlantedTorch).windy = false
+	ft.start_tide()
+	await physics(3)
+	var seen := []
+	ft.recognized.connect(func(t): seen.append(t))
+	check(ft.crowd.hidden.has(FirstTide.FATHER_INDEX) and ft.faces.size() == 1 and ft.faces[0].index == FirstTide.FATHER_INDEX,
+		"答应过妮尔：潮水里混着她父亲（换成他的样子）")
+	var a: Dictionary = ft.crowd.agents[FirstTide.FATHER_INDEX]
+	main.player.global_position = Vector3(a.p.x + 3.0, Highland.height_at(a.p.x + 3.0, a.p.y) + 0.3, a.p.y)
+	await physics(4)
+	check(GameState.has_flag("ch2_nell_father_seen") and seen.size() == 1 and str(seen[0]).contains("少了两根指头"), "走近了：认出来——左手少两根指头，是妮尔的父亲")
+	main._on_tide_ended("held")
+	check(GameState.quest_stage("ch2_nell") == "decide", "天亮：支线推进到「妮尔要往北去」")
+	await free_main(main)
+	# 妮尔：告诉她看见了 → seen
+	var r := DialogueRunner.new()
+	r.start("highland", "nell")
+	check(r.text().contains("包袱") and has_opt(r, "看见了。他在潮水里，往北走，走得很稳。") and has_opt(r, "（拉住她的胳膊）不行。") and has_opt(r, "要去就去吧。路上小心。"),
+		"第二天：妮尔背着包袱要走；能告诉她看见了、劝、拉住、随她去")
+	pick(r, "看见了。他在潮水里，往北走，走得很稳。")
+	check(str(GameState.get_flag("ch2_nell", "")) == "seen" and GameState.quest_done("ch2_nell") and r.text().contains("我不去了"), "告诉她看见了：她不去了（seen，支线完成）")
+	r.start("highland", "nell")
+	check(r.text().contains("羊鞭"), "之后她在石圈边攥着她爹的旧羊鞭")
+	# 没认出来的：选项里没有「看见了」；拉住 → stopped
+	GameState.set_flag("ch2_nell", "asked")
+	GameState.set_flag("ch2_nell_father_seen", false)
+	r.start("highland", "nell")
+	check(not has_opt(r, "看见了。他在潮水里，往北走，走得很稳。"), "潮水里没认出他：不能说看见了")
+	pick(r, "（拉住她的胳膊）不行。")
+	check(str(GameState.get_flag("ch2_nell", "")) == "stopped", "拉住她：她不去了（stopped）")
+	# 随她去 → 村里没有她了
+	GameState.set_flag("ch2_nell", "asked")
+	r.start("highland", "nell")
+	pick(r, "要去就去吧。路上小心。")
+	check(str(GameState.get_flag("ch2_nell", "")) == "left", "随她去：她踩着脚印往北走了（left）")
+	var m2 := await make_area("highland")
+	await frames(3)
+	check(m2.world.find_children("Npc_nell", "", true, false).is_empty(), "她走了以后，石圈边没有她了")
+	# 卡斯滕
+	var ch: Array = m2.world.find_children("Npc_chopper", "", true, false)
+	check(ch.size() == 1 and (ch[0] as Npc).display_name == "卡斯滕" and (ch[0] as Npc).dialogue_id == "carsten", "第二天：劈柴的老兵报了名字，卡斯滕，有话说")
+	await free_main(m2)
+	r.start("beacon19", "carsten")
+	check(r.text().contains("第十年") and GameState.quest_active("ch2_carsten"), "卡斯滕：今年是我第十年（支线「第十年」）")
+	pick(r, "守满十年，就能走？")
+	check(r.text().contains("一笔勾销") and r.text().contains("金穗平原"), "规矩：守十年罪和债一笔勾销；团长不放；南边有个姑娘等了十年")
+	pick(r, "我去替你跟马蒂亚斯说。")
+	GameState.set_flag("matthias_met")
+	r.start("beacon19", "matthias")
+	check(has_opt(r, "卡斯滕守满十年了。按规矩，你该放他走。"), "答应替他说：马蒂亚斯多一个选项（口才检定）")
+	var rep0 := int(GameState.rep.get("beacon_oath", 0))
+	r.start("beacon19", "carsten")
+	pick(r, "守满十年，就能走？")
+	pick(r, "今夜我替你看着门。你走。")
+	check(str(GameState.get_flag("ch2_carsten", "")) == "fled" and int(GameState.rep.get("beacon_oath", 0)) == rep0 - 10 and GameState.quest_done("ch2_carsten"), "帮他夜里溜走：fled，烽誓团 −10")
+	r.start("beacon19", "matthias")
+	check(not has_opt(r, "卡斯滕守满十年了。按规矩，你该放他走。"), "他走了：不用再替他说")
+	var m3 := await make_area("highland")
+	await frames(3)
+	check(m3.world.find_children("Npc_chopper", "", true, false).is_empty(), "柴棚前没有卡斯滕了")
+	await free_main(m3)
+	GameState.set_flag("ch2_carsten", false)
+	GameState.quests.erase("ch2_carsten")
+	var rep1 := int(GameState.rep.get("beacon_oath", 0))
+	r.start("beacon19", "carsten")
+	pick(r, "守满十年，就能走？")
+	pick(r, "再守一年吧。这个冬天，烽燧缺不得人。")
+	check(str(GameState.get_flag("ch2_carsten", "")) == "stayed" and int(GameState.rep.get("beacon_oath", 0)) == rep1 + 5, "劝他再守一年：stayed，烽誓团 +5")
+	r.start("beacon19", "carsten")
+	check(r.text().contains("再守一年"), "之后他说：再守一年，我自己答应的")
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

@@ -26,6 +26,8 @@ const LOSE_AT := 5
 const ROUTE_CAMP := [Vector2(-6.0, -28.0), Vector2(8.0, -46.0), Vector2(22.0, -62.0), Vector2(30.0, -90.0), Vector2(10.0, -126.0)]
 const ROUTE_AROUND := [Vector2(-6.0, -28.0), Vector2(0.0, -46.0), Vector2(-1.0, -66.0), Vector2(6.0, -90.0), Vector2(10.0, -126.0)]
 const SEEN_INDEX := 14                           # 认得的那张脸混在潮水中间
+const FATHER_INDEX := 22                         # 妮尔的父亲（5.5b：答应过妮尔留意他才有）
+const FATHER_TEXT := "潮水里有个白头发的老人，左手垂在身边——少了两根指头。是妮尔的父亲。他从你面前走过去，往北，走得很稳。"
 const SEEN_NAMES := {"boatman": "渡工", "tobin": "托宾", "netter": "补网的女人"}
 const SEEN_TEXT := {
 	"boatman": "潮水里有一张认得的脸——芦栈村的渡工。他光着脚，闭着眼，从你面前走过去，往北。",
@@ -41,8 +43,9 @@ var prep_time := 0.0
 var tide_time := 0.0
 var crowd: SleeperCrowd
 var intruded := {}                               # 漫进营地的人（编号 → true）
-var seen_model: CharacterModel
+var seen_model: CharacterModel                   # 第一章芦栈村长眠的那个人
 var seen_said := false
+var faces: Array = []                            # 潮水里认得的脸：[{index, model, text, flag, said}]（seen_model 是第一个）
 var result := ""
 
 
@@ -128,47 +131,62 @@ func start_tide() -> void:
 		obs.append([b[0], maxf(float(b[2]), float(b[3])) * 0.55])
 	crowd.obstacles = obs
 	var who := str(GameState.get_flag("ch1_sleeper", ""))
+	var father := str(GameState.get_flag("ch2_nell", "")) == "asked"
 	if SEEN_NAMES.has(who):
 		crowd.hidden[SEEN_INDEX] = true
+	if father:
+		crowd.hidden[FATHER_INDEX] = true
 	add_child(crowd)
 	crowd.finished.connect(finish)
 	if SEEN_NAMES.has(who):
-		_make_seen(who)
+		seen_model = _make_face(SEEN_NAMES[who], SEEN_INDEX, SEEN_TEXT.get(who, ""), "")
+	if father:
+		_make_face("妮尔的父亲", FATHER_INDEX, FATHER_TEXT, "ch2_nell_father_seen")
 	tide_started.emit()
 
 
-## 认得的那张脸：用他（她）在第一章的外观（data/looks.json 的名字），换上光脚的麻衣，跟着第 SEEN_INDEX 个人走
-func _make_seen(who: String) -> void:
-	var spec := Looks.spec(SEEN_NAMES[who])
+## 认得的脸：用那个人的外观（data/looks.json 的名字），换上光脚的麻衣，跟着第 index 个人走；主角走到 9 米以内提示一次（flag 不空时记下旗标）
+func _make_face(look_name: String, index: int, text: String, flag: String) -> CharacterModel:
+	var spec := Looks.spec(look_name)
 	if spec.is_empty():
-		return
+		return null
 	var tint: Dictionary = (spec.look.get("tint", {}) as Dictionary).duplicate()
 	tint["MI_Peasant"] = SleeperCrowd.LINEN_TINT
 	spec.look["tint"] = tint
-	seen_model = CharacterModel.new()
-	seen_model.name = "SeenFace"
-	seen_model.parts = spec.parts
-	seen_model.look = spec.look
-	add_child(seen_model)
-	if seen_model.loaded:
-		Looks.hide_parts(seen_model)
-		seen_model.play_loop("walk", 0.62)
+	var m := CharacterModel.new()
+	m.name = "Face%d" % index
+	m.parts = spec.parts
+	m.look = spec.look
+	add_child(m)
+	if m.loaded:
+		Looks.hide_parts(m)
+		m.play_loop("walk", 0.62)
+	faces.append({"index": index, "model": m, "text": text, "flag": flag, "said": false})
+	return m
 
 
 func _seen_tick() -> void:
-	if seen_model == null or crowd == null or crowd.agents.size() <= SEEN_INDEX:
+	if crowd == null:
 		return
-	var a: Dictionary = crowd.agents[SEEN_INDEX]
-	seen_model.visible = not a.done
-	if a.done:
-		return
-	var p: Vector2 = a.p
-	seen_model.global_position = Vector3(p.x, Highland.height_at(p.x, p.y), p.y)
-	if (a.v as Vector2).length() > 0.05:
-		seen_model.rotation.y = atan2(a.v.x, a.v.y)
-	if not seen_said and player and Vector2(player.global_position.x, player.global_position.z).distance_to(p) < 9.0:
-		seen_said = true
-		recognized.emit(SEEN_TEXT.get(str(GameState.get_flag("ch1_sleeper", "")), ""))
+	for f in faces:
+		var m: CharacterModel = f.model
+		if crowd.agents.size() <= int(f.index):
+			continue
+		var a: Dictionary = crowd.agents[int(f.index)]
+		m.visible = not a.done
+		if a.done:
+			continue
+		var p: Vector2 = a.p
+		m.global_position = Vector3(p.x, Highland.height_at(p.x, p.y), p.y)
+		if (a.v as Vector2).length() > 0.05:
+			m.rotation.y = atan2(a.v.x, a.v.y)
+		if not bool(f.said) and player and Vector2(player.global_position.x, player.global_position.z).distance_to(p) < 9.0:
+			f.said = true
+			if int(f.index) == SEEN_INDEX:
+				seen_said = true
+			if str(f.flag) != "":
+				GameState.set_flag(str(f.flag))
+			recognized.emit(str(f.text))
 
 
 func _count_intrusions() -> void:

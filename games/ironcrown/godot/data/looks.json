@@ -52,6 +52,8 @@
     "诺伯特": {"preset": "veteran", "hair": ["Hair_SimpleParted", "Hair_Beard"], "hair_color": "#c8c4bc", "pose": "idle"},
     "长眠的守塔人": {"preset": "guard", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#4a4038", "pose": "idle"},
     "守门的兵": {"preset": "guard", "hair": ["Hair_Buzzed"], "hair_color": "#4a3828", "pose": "idle_armed"},
+    "卡斯滕": {"preset": "veteran", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#7a7068", "pose": "chop"},
+    "妮尔的父亲": {"preset": "commoner", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#9a948a", "pose": "idle"},
     "劈柴的老兵": {"preset": "veteran", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#7a7068", "pose": "chop"},
     "数麻袋的兵": {"preset": "veteran", "hair": ["Hair_SimpleParted"], "hair_color": "#5a4232", "pose": "idle"},
     "营房门口的兵": {"preset": "ranger_hood", "hair": ["Hair_Buzzed"], "hair_color": "#2a2018", "pose": "fold_arms"},

@@ -28,6 +28,7 @@
           {"text": "诺伯特烽长在哪？", "if": [{"not_flag": "norbert_met"}], "next": "where"},
           {"text": "诺伯特说「先过了今夜」。入夜以后怎么守？", "if": [{"quest_stage": "ch2_main", "eq": "first_night"}], "next": "tide_prep"},
           {"text": "那排木桩在哪？", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}], "next": "stakes"},
+          {"text": "卡斯滕守满十年了。按规矩，你该放他走。", "if": [{"flag": "ch2_carsten_ask"}, {"not_flag": "ch2_carsten"}, {"not_flag": "ch2_carsten_refused"}], "check": {"id": "carsten_speech", "skill": "speech", "dc": 14, "pass": "carsten_yes", "fail": "carsten_no"}},
           {"text": "西边那座第十八烽，就这么灭着？", "if": [{"flag": "ch2_first_tide"}, {"not_flag": "ch2_beacon18_given"}], "next": "beacon18"},
           {"text": "火把用完了。", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}, {"not_flag": "ch2_spare_torches"}], "next": "more_torches"},
           {"text": "只够三夜？", "next": "nights"},
@@ -78,6 +79,20 @@
           {"text": "明白了。", "end": true}
         ]
       },
+      "carsten_yes": {
+        "text": "（他手里的柴停在半空，很久才放下）……十年。是十年了。规矩是我定的，我不能让它成了一句空话。（他看着你）让他走。等第二夜过了再走——少他一个，你得顶他那份。",
+        "do": [{"set": "ch2_carsten", "value": "freed"}, {"quest_done": "ch2_carsten"}],
+        "options": [
+          {"text": "我顶。", "next": "again"}
+        ]
+      },
+      "carsten_no": {
+        "text": "（他摇头，接着数柴）粮够三夜，人够两夜。开春再说。……这话我说了十年，我知道。",
+        "do": [{"set": "ch2_carsten_refused"}],
+        "options": [
+          {"text": "……", "next": "again"}
+        ]
+      },
       "beacon18": {
         "text": "（他往西边山脊上看了一眼）前天夜里灭的。守塔的三个人……站在塔脚的雪里，你走过去就看见了。我抽不出人。（他沉默了一会儿）你要是腿脚还行——柴我给你一捆，火油从塔里那桶灌一罐。背上塔顶，把它点起来。两座烽亮着，第二夜它们上来的时候会散一些。",
         "options": [
@@ -110,6 +125,70 @@
         "do": [{"set": "heard_tide_fire"}],
         "options": [
           {"text": "……", "next": "again"}
+        ]
+      }
+    }
+  },
+  "carsten": {
+    "speaker": "卡斯滕",
+    "start": "greet",
+    "start_if": [
+      {"if": [{"flag": "ch2_carsten"}], "node": "after"},
+      {"if": [{"flag": "carsten_met"}], "node": "again"}
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（他把斧子往木墩上一剁，直起腰）昨夜木桩那边，你插火把的手挺稳。……我叫卡斯滕。今年是我第十年。",
+        "do": [{"set": "carsten_met"}, {"quest": "ch2_carsten"}],
+        "options": [
+          {"text": "守满十年，就能走？", "next": "rule"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "again": {
+        "text": "（他还在劈柴，一斧一斧劈得很省）还有事？",
+        "options": [
+          {"text": "守满十年，就能走？", "next": "rule"},
+          {"text": "告辞。", "end": true}
+        ]
+      },
+      "rule": {
+        "text": "烽誓团的规矩：犯了事的、欠了债的，上山守十年，罪和债一笔勾销，想下山就下山。我十年前偷了领主一匹马。（他笑了一下）团长说开春放我，开了春又说秋天。粮不够，人更不够——他不放。南边金穗平原，有个姑娘等了我十年。",
+        "options": [
+          {"text": "我去替你跟马蒂亚斯说。", "if": [{"not_flag": "ch2_carsten_ask"}], "next": "ask"},
+          {"text": "今夜我替你看着门。你走。", "next": "flee"},
+          {"text": "再守一年吧。这个冬天，烽燧缺不得人。", "next": "stay"},
+          {"text": "……我再想想。", "end": true}
+        ]
+      },
+      "ask": {
+        "text": "（他看了你一会儿）他听你的？……试试吧。他在柴棚前数柴，一天数八遍。",
+        "do": [{"set": "ch2_carsten_ask"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "flee": {
+        "text": "（他攥着斧柄的手松开了）……天黑透了，守门的换岗那会儿。南边的路我认得。（他把斧子靠在木墩上）谢谢你。要是团长问起——就说是我自己走的。",
+        "do": [{"set": "ch2_carsten", "value": "fled"}, {"rep": "beacon_oath", "delta": -10}, {"quest_done": "ch2_carsten"}],
+        "options": [
+          {"text": "路上小心。", "end": true}
+        ]
+      },
+      "stay": {
+        "text": "（他笑了一下，比哭还难看）……再守一年。她等了十年，再等一年。（他重新拿起斧子）你说得对。这个冬天，塔上少一个人，就少一个人。",
+        "do": [{"set": "ch2_carsten", "value": "stayed"}, {"rep": "beacon_oath", "delta": 5}, {"quest_done": "ch2_carsten"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "after": {
+        "text": "（他在劈柴，比以前劈得快）团长说了，第二夜过了就让我走。……我还没想好见了她头一句说什么。",
+        "text_if": [
+          {"if": [{"flag": "ch2_carsten", "eq": "stayed"}], "text": "（他在劈柴）再守一年。……你别那么看我，我自己答应的。"}
+        ],
+        "options": [
+          {"text": "告辞。", "end": true}
         ]
       }
     }

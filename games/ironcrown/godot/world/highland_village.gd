@@ -61,6 +61,8 @@ static func interactables(parent: Node3D) -> void:
 ## 村里的人（5.2b）：同步放（块没搭好时也得找得到、说得上话，同鹭沼）
 static func people(parent: Node3D) -> void:
 	for p in HighlandLayout.PEOPLE:
+		if str(p[0]) == "nell" and str(GameState.get_flag("ch2_nell", "")) == "left":
+			continue                                     # 支线「妮尔的父亲」随她去了（5.5b）：她踩着脚印往北走了
 		var pos: Vector2 = p[2]
 		var n := Npc.make(str(p[1]), LINES.get(str(p[0]), []), Color(str(p[4])))
 		n.name = "Npc_" + str(p[0])

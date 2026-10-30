@@ -796,6 +796,14 @@ godot/
 - **石圈**（`HighlandVillage.stone_words / read_stones`）：倒下的那块（`ring_stones()[6]`）上一个 `Examine`「看刻字」：`ch2_stones` = copied（线索 `stones_seal`）；有 `old_book` → matched。
 - 视角 20；调试 `?day2=1 / lit`。**测试**：`day2` 组 23 项。
 
+### 4.56 支线：妮尔的父亲、第十年（路线图 5.5b，2026-10-30）
+
+- **潮水里的脸**（`FirstTide`）：原来只有一张（`ch1_sleeper`）的改成一张表 `faces`（`_make_face(样子, 第几个人, 提示, 旗标)`、`_seen_tick` 每帧跟着那个人走、走近 9 米提示一次并记旗标）。`ch2_nell` = asked 时第 `FATHER_INDEX` 22 个人换成「妮尔的父亲」（looks.json），认出来记 `ch2_nell_father_seen`。`main._on_tide_ended`：支线 `ch2_nell` 还开着 → 推进到 `decide`。
+- **妮尔**（`highland.json` nell，整份是两格缩进的展开格式，按原格式写回）：`start_if` 先看 `ch2_nell` = stopped / seen → `stays`；`ch2_first_tide` + asked → `day2`（`told` 要 `ch2_nell_father_seen`；口才检定 12 → `stopped_talk` / `not_moved`；`stopped_pull`；`left`）。`left` 时 `HighlandVillage.people` 不放她。
+- **卡斯滕**（`beacon19.json` carsten）：第一夜过后 `HighlandBeacon.people` 把劈柴的老兵换成「卡斯滕」、对话 `carsten`（looks.json 同一身打扮）；`fled` 时不放。马蒂亚斯：`ch2_carsten_ask` 时多一个口才检定 14 的选项（`carsten_yes` → freed / `carsten_no` → `ch2_carsten_refused`，只能说一次）。声望：fled −10、stayed +5（`beacon_oath`）。
+- 新支线 `ch2_carsten`；`ch2_nell` 加阶段 `decide`；新旗标 `ch2_nell_father_seen`、`ch2_carsten`、`ch2_carsten_ask`、`ch2_carsten_refused`、`carsten_met`。调试 `?day2=1&nell=1`。
+- **测试**：`sidequests2` 组 21 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

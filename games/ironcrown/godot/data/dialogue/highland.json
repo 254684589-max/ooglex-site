@@ -1,9 +1,39 @@
 {
-  "_说明": "羊脊村外头的人（路线图 5.2b；STORY.md 5.3、5.8）。牧羊女妮尔蹲在石圈边，守着雪地上那串往北去的光脚脚印——她父亲前夜长眠走了；答应路上留意他，支线「妮尔的父亲」开始（ch2_nell = asked，5.5b 接着做）。铁匠在披棚里：卖火把（3 银币，5.4 起能点）、讲火让长眠者拐弯。羊圈边的老牧羊人、闩着门的那家女人只说一句（world/highland_village.gd 的 lines）。人在 world/highland_layout.gd 的 PEOPLE。",
+  "_说明": "羊脊村外头的人（路线图 5.2b；STORY.md 5.3、5.8）。牧羊女妮尔蹲在石圈边，守着雪地上那串往北去的光脚脚印——她父亲前夜长眠走了；答应路上留意他，支线「妮尔的父亲」开始（ch2_nell = asked）；第一夜过后她背着包袱要往北去：劝住（口才）/ 拉住 = stopped、告诉她潮水里看见了他 = seen、随她去 = left（5.5b）。铁匠在披棚里：卖火把（3 银币，5.4 起能点）、讲火让长眠者拐弯。羊圈边的老牧羊人、闩着门的那家女人只说一句（world/highland_village.gd 的 lines）。人在 world/highland_layout.gd 的 PEOPLE。",
   "nell": {
     "speaker": "妮尔",
     "start": "greet",
     "start_if": [
+      {
+        "if": [
+          {
+            "flag": "ch2_nell",
+            "eq": "stopped"
+          }
+        ],
+        "node": "stays"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch2_nell",
+            "eq": "seen"
+          }
+        ],
+        "node": "stays"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch2_first_tide"
+          },
+          {
+            "flag": "ch2_nell",
+            "eq": "asked"
+          }
+        ],
+        "node": "day2"
+      },
       {
         "if": [
           {
@@ -136,6 +166,132 @@
             "text": "你爹去哪了？",
             "next": "father"
           },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "day2": {
+        "text": "（她背着一个小包袱，羊皮袄扎得紧紧的，站在那串脚印尽头）……昨夜北边山脊上亮了一排火，我在这儿都看见了。（她没看你）你看见他了吗？",
+        "options": [
+          {
+            "text": "看见了。他在潮水里，往北走，走得很稳。",
+            "if": [
+              {
+                "flag": "ch2_nell_father_seen"
+              }
+            ],
+            "next": "told"
+          },
+          {
+            "text": "别去。你去了，羊脊村就多一张空床。",
+            "check": {
+              "id": "nell_stay",
+              "skill": "speech",
+              "dc": 12,
+              "pass": "stopped_talk",
+              "fail": "not_moved"
+            }
+          },
+          {
+            "text": "（拉住她的胳膊）不行。",
+            "next": "stopped_pull"
+          },
+          {
+            "text": "要去就去吧。路上小心。",
+            "next": "left"
+          }
+        ]
+      },
+      "told": {
+        "text": "（她咬着嘴唇，很久没出声）……他走得稳？那就好。他腿脚一直不好，冬天走两步就喘。（她把包袱从肩上卸下来）我不去了。他不认得我。我去了，也就是跟在后面走。",
+        "do": [
+          {
+            "set": "ch2_nell",
+            "value": "seen"
+          },
+          {
+            "quest_done": "ch2_nell"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "stopped_talk": {
+        "text": "（她看看你，又看看北边那串脚印）……那谁替他守着羊？羊不认得别人。（她慢慢把包袱放下）好。我不去。",
+        "do": [
+          {
+            "set": "ch2_nell",
+            "value": "stopped"
+          },
+          {
+            "quest_done": "ch2_nell"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "not_moved": {
+        "text": "（她摇头）你不懂。空床已经有一张了。",
+        "options": [
+          {
+            "text": "（拉住她的胳膊）不行。",
+            "next": "stopped_pull"
+          },
+          {
+            "text": "要去就去吧。路上小心。",
+            "next": "left"
+          }
+        ]
+      },
+      "stopped_pull": {
+        "text": "（她挣了两下，没挣开，忽然就不挣了，肩膀在你手里抖）……放手。我不去就是了。（她蹲下去，把脸埋在膝盖上）",
+        "do": [
+          {
+            "set": "ch2_nell",
+            "value": "stopped"
+          },
+          {
+            "quest_done": "ch2_nell"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "left": {
+        "text": "（她点点头，把包袱往上颠了颠，踩着那串快被雪填平的脚印往北走了。没回头。）",
+        "do": [
+          {
+            "set": "ch2_nell",
+            "value": "left"
+          },
+          {
+            "quest_done": "ch2_nell"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "stays": {
+        "text": "（她在石圈边，手里攥着一根旧羊鞭，鞭梢上缠着一圈褪了色的红绳）……那是我爹的。羊听这个。",
+        "options": [
           {
             "text": "告辞。",
             "end": true

@@ -205,6 +205,10 @@ static func people(parent: Node3D) -> void:
 	for p in list:
 		if str(p[0]) == "sacks" and str(GameState.get_flag("ch2_first_tide", "")) == "lost_one":
 			continue                                                  # 第一夜潮水漫进了营地（5.4c）：天亮以后数麻袋的兵不见了
+		if str(p[0]) == "chopper" and str(GameState.get_flag("ch2_carsten", "")) == "fled":
+			continue                                                  # 支线「第十年」（5.5b）：你帮卡斯滕夜里溜走了
+		if str(p[0]) == "chopper" and GameState.has_flag("ch2_first_tide"):
+			p = ["chopper", "卡斯滕", p[2], p[3], p[4], "carsten"]    # 第二天：劈柴的老兵报了名字，有话说（5.5b）
 		if str(p[0]) == "norbert" and GameState.has_flag("ch2_first_tide"):
 			continue                                                  # 第二天（5.5a）：诺伯特下了塔顶，在自己的小屋里（BeaconTower）
 		var at: Vector3 = p[2]

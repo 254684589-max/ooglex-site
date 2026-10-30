@@ -138,6 +138,9 @@ func _ready() -> void:
 			GameState.set_flag("ch2_first_tide", "held")
 			if _query("day2") == "lit":
 				GameState.set_flag("ch2_beacon18", "lit")
+			if _query("nell") == "1":                      # &nell=1：答应过妮尔（5.5b：第二天她背着包袱要走）
+				GameState.start_quest("ch2_nell", "decide")
+				GameState.set_flag("ch2_nell", "asked")
 		if area == "marsh" and _query("causeway") in ["gap", "arch"] and not Engine.has_meta("ic_causeway_param_done"):
 			Engine.set_meta("ic_causeway_param_done", true)  # 截图、冒烟用（4.9a）：?area=marsh&causeway=gap|arch 直接摆好堤道夜战（夜里、主线到「上堤道」、守断口 / 石拱），配 ?cam= 放到守点就开打
 			if not GameState.quest_active("ch1_main"):
@@ -1947,6 +1950,8 @@ func _on_tide_ended(result: String) -> void:
 		hud.toast("最后一个白影子翻过了北边的山脊。营地里的火都还亮着，人一个没少。天快亮了。", 5.0)
 	print("IC_TIDE end result=%s intruded=%d rerouted=%d" % [result, first_tide.intruded.size(), first_tide.crowd.rerouted if first_tide.crowd else 0])
 	GameState.set_stage("ch2_main", "after_tide")
+	if GameState.quest_active("ch2_nell"):
+		GameState.set_stage("ch2_nell", "decide")      # 妮尔背着包袱要往北去（5.5b）
 	set_daypart("dawn", false)
 	save_game("auto", true)
 
