@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9089,6 +9089,104 @@ func test_sidequests2() -> void:
 	check(str(GameState.get_flag("ch2_carsten", "")) == "stayed" and int(GameState.rep.get("beacon_oath", 0)) == rep1 + 5, "劝他再守一年：stayed，烽誓团 +5")
 	r.start("beacon19", "carsten")
 	check(r.text().contains("再守一年"), "之后他说：再守一年，我自己答应的")
+
+
+## 5.6 抉择：粮车到村（驿站门口五辆车、安塞尔姆、押车兵）；马蒂亚斯：劫（先断车头 / 车尾）或去谈；罗薇娜：几时出村、空白征粮令；
+## 安塞尔姆：征粮令三车 / 账册 / 银币 → 分三车要你护车；谈不成回去：劫或者两手空空
+func test_convoy() -> void:
+	GameState.new_game(590)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	for f in ["matthias_met", "norbert_met", "norbert_day2", "rowena_met", "saw_requisition"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_stage("ch2_main", "after_tide")
+	var m0 := await make_area("highland")
+	await frames(3)
+	check(m0.world.find_children("Convoy", "", true, false).is_empty(), "粮车到村以前：驿站门口没有粮车")
+	await free_main(m0)
+	GameState.set_stage("ch2_main", "convoy_day")
+	var main := await make_area("highland")
+	await frames(3)
+	var cv: Array = main.world.find_children("Convoy", "", true, false)
+	check(cv.size() == 1 and cv[0].get_node_or_null("ConvoyCarts") != null and main.world.find_children("Npc_convoy_guard*", "", true, false).size() == 4
+		and main.world.find_children("Npc_carter*", "", true, false).size() == 2, "主线「粮车到村」：驿站门口五辆满载的粮车、四个押车兵、两个车夫")
+	var an: Array = main.world.find_children("Npc_anselm", "", true, false)
+	check(an.size() == 1 and (an[0] as Npc).dialogue_id == "anselm" and (an[0] as Npc).display_name == "安塞尔姆", "车尾站着押粮官安塞尔姆，有对话")
+	var space: PhysicsDirectSpaceState3D = main.player.get_world_3d().direct_space_state
+	var fl: Array = main.world.find_children("Npc_convoy_guard*", "", true, false).filter(func(n):
+		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1, 0), n.global_position - Vector3(0, 1, 0), 1))
+		return hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.3)
+	check(fl.is_empty(), "押车兵都站在地上")
+	await free_main(main)
+	# 马蒂亚斯：劫 → 先断车头
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	check(has_opt(r, "粮车的事，你怎么打算？"), "马蒂亚斯：「粮车的事，你怎么打算？」")
+	pick(r, "粮车的事，你怎么打算？")
+	check(r.text().contains("十个人") and has_opt(r, "劫。") and has_opt(r, "我先去找押粮官谈。"), "他给你十个人，也听别的法子")
+	pick(r, "劫。")
+	check(has_opt(r, "先断车头：砍倒那棵枯松拦路。") and has_opt(r, "先断车尾：截住安塞尔姆。"), "劫：两处能下手——车头（枯松拦路）、车尾（截住安塞尔姆）")
+	pick(r, "先断车头：砍倒那棵枯松拦路。")
+	check(str(GameState.get_flag("beacon_grain", "")) == "rob" and str(GameState.get_flag("ch2_ambush", "")) == "head" and GameState.quest_stage("ch2_main") == "rob_ready",
+		"先断车头：beacon_grain = rob，主线「天黑透以后设伏」")
+	# 去谈：罗薇娜、安塞尔姆
+	GameState.set_flag("beacon_grain", false)
+	GameState.set_flag("ch2_ambush", false)
+	GameState.set_stage("ch2_main", "convoy_day")
+	r.start("beacon19", "matthias")
+	pick(r, "粮车的事，你怎么打算？")
+	pick(r, "我先去找押粮官谈。")
+	check(GameState.quest_stage("ch2_main") == "talk_anselm", "去谈：主线「找押粮官安塞尔姆」")
+	r.start("waystation", "rowena")
+	check(has_opt(r, "粮车几时出村？") and has_opt(r, "桌上那张盖了印的空白文书，现在用得着了。"), "罗薇娜：几时出村、那张空白文书")
+	pick(r, "粮车几时出村？")
+	check(r.text().contains("天黑透以后") and GameState.has_flag("heard_convoy_time"), "天黑透以后出村；安塞尔姆一夜没合眼盯着山脊")
+	pick(r, "……")
+	pick(r, "桌上那张盖了印的空白文书，现在用得着了。")
+	check(GameState.has_item("requisition") and r.text().contains("写多少"), "她把空白的征粮令推给你：写多少车你写")
+	r.start("highland", "anselm")
+	check(r.text().contains("押粮官") and GameState.has_flag("anselm_met"), "安塞尔姆：粮不卖，合同上写着日子")
+	pick(r, "烽燧上的人快断粮了。")
+	check(has_opt(r, "（摊开征粮令，写上「三车」）厄尔德家征三车粮，送上第十九烽。") and not has_opt(r, "（翻开皮毛税账册）这几笔「留北境」的账，洛蒙德家那边也有一份吧。"),
+		"有征粮令才有那两条；没有账册就没有账册那条")
+	pick(r, "（摊开征粮令，写上「三车」）厄尔德家征三车粮，送上第十九烽。")
+	check(not GameState.has_item("requisition") and str(GameState.get_flag("ch2_requisition", "")) == "three", "征粮令写三车：他认了（厄尔德家的印）")
+	pick(r, "……")
+	check(str(GameState.get_flag("beacon_grain", "")) == "lawful" and str(GameState.get_flag("ch2_aid", "")) == "granted" and GameState.quest_stage("ch2_main") == "escort_ready",
+		"分三车粮上山，要你护车过盘山路（ch2_aid = granted）")
+	# 账册
+	GameState.set_flag("ch2_aid", false)
+	GameState.set_stage("ch2_main", "talk_anselm")
+	GameState.add_item("fur_ledger")
+	var lom := int(GameState.rep.get("lomond", 0))
+	r.start("highland", "anselm")
+	pick(r, "烽燧上的人快断粮了。")
+	pick(r, "（翻开皮毛税账册）这几笔「留北境」的账，洛蒙德家那边也有一份吧。")
+	check(r.text().contains("脸白了") and int(GameState.rep.get("lomond", 0)) == lom - 10, "亮出皮毛税账册：他脸白了，三车（洛蒙德家 −10）")
+	pick(r, "……")
+	check(str(GameState.get_flag("ch2_aid", "")) == "granted", "账册：谈成")
+	# 银币
+	GameState.set_flag("ch2_aid", false)
+	GameState.set_stage("ch2_main", "talk_anselm")
+	GameState.silver = 40
+	r.start("highland", "anselm")
+	pick(r, "烽燧上的人快断粮了。")
+	pick(r, "（放下三十枚银币）就当是买三车粮上山的路钱。")
+	pick(r, "……")
+	check(GameState.silver == 10 and str(GameState.get_flag("ch2_aid", "")) == "granted", "三十银币：买三车的路钱（谈成）")
+	# 谈不成：回去跟马蒂亚斯说
+	GameState.set_flag("ch2_aid", "refused")
+	GameState.set_stage("ch2_main", "aid_refused")
+	r.start("beacon19", "matthias")
+	pick(r, "安塞尔姆不肯。")
+	check(has_opt(r, "那就劫。") and has_opt(r, "两手空空回去吧。"), "谈不成：马蒂亚斯——劫，或者两手空空")
+	pick(r, "两手空空回去吧。")
+	check(str(GameState.get_flag("beacon_grain", "")) == "lawful" and GameState.quest_stage("ch2_main") == "empty_handed", "两手空空：三夜变两夜（主线「两手空空」）")
+	var m2 := await make_area("highland")
+	await frames(3)
+	check(m2.world.find_children("Convoy", "", true, false).size() == 1, "第二夜以前粮车还停在驿站门口")
+	await free_main(m2)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

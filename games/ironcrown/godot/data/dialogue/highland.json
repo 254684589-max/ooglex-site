@@ -1,5 +1,5 @@
 {
-  "_说明": "羊脊村外头的人（路线图 5.2b；STORY.md 5.3、5.8）。牧羊女妮尔蹲在石圈边，守着雪地上那串往北去的光脚脚印——她父亲前夜长眠走了；答应路上留意他，支线「妮尔的父亲」开始（ch2_nell = asked）；第一夜过后她背着包袱要往北去：劝住（口才）/ 拉住 = stopped、告诉她潮水里看见了他 = seen、随她去 = left（5.5b）。铁匠在披棚里：卖火把（3 银币，5.4 起能点）、讲火让长眠者拐弯。羊圈边的老牧羊人、闩着门的那家女人只说一句（world/highland_village.gd 的 lines）。人在 world/highland_layout.gd 的 PEOPLE。",
+  "_说明": "羊脊村外头的人（路线图 5.2b；STORY.md 5.3、5.8）。牧羊女妮尔蹲在石圈边，守着雪地上那串往北去的光脚脚印——她父亲前夜长眠走了；答应路上留意他，支线「妮尔的父亲」开始（ch2_nell = asked）；第一夜过后她背着包袱要往北去：劝住（口才）/ 拉住 = stopped、告诉她潮水里看见了他 = seen、随她去 = left（5.5b）。铁匠在披棚里：卖火把（3 银币，5.4 起能点）、讲火让长眠者拐弯。羊圈边的老牧羊人、闩着门的那家女人只说一句（world/highland_village.gd 的 lines）。人在 world/highland_layout.gd 的 PEOPLE。 押粮官安塞尔姆（5.6）：第二天在驿站门口的粮车尾；求援那条路——征粮令（三车 / 五车，罗薇娜给）、皮毛税账册、伊薇特的名头（口才 10）、长眠的人（口才 16）、三十银币；谈成了分三车粮要你护车（ch2_aid = granted），谈不成 refused。",
   "nell": {
     "speaker": "妮尔",
     "start": "greet",
@@ -373,6 +373,327 @@
             ],
             "next": "sold"
           },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      }
+    }
+  },
+  "anselm": {
+    "speaker": "安塞尔姆",
+    "start": "greet",
+    "start_if": [
+      {
+        "if": [
+          {
+            "flag": "ch2_aid",
+            "eq": "granted"
+          }
+        ],
+        "node": "granted_again"
+      },
+      {
+        "if": [
+          {
+            "flag": "ch2_aid",
+            "eq": "refused"
+          }
+        ],
+        "node": "refused_again"
+      },
+      {
+        "if": [
+          {
+            "flag": "anselm_met"
+          }
+        ],
+        "node": "again"
+      }
+    ],
+    "nodes": {
+      "greet": {
+        "text": "（他裹着两层皮袄，眼睛一直往北边山脊上瞟）洛蒙德家押粮官，安塞尔姆。你是烽燧上下来的？……粮不卖。车上的粮是南边买主的，合同上写着日子。",
+        "do": [
+          {
+            "set": "anselm_met"
+          }
+        ],
+        "options": [
+          {
+            "text": "烽燧上的人快断粮了。",
+            "if": [
+              {
+                "quest_stage": "ch2_main",
+                "eq": "talk_anselm"
+              }
+            ],
+            "next": "ask"
+          },
+          {
+            "text": "你一直盯着北边看什么？",
+            "next": "north"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "again": {
+        "text": "（他又往北边瞟了一眼）还有事？",
+        "options": [
+          {
+            "text": "烽燧上的人快断粮了。",
+            "if": [
+              {
+                "quest_stage": "ch2_main",
+                "eq": "talk_anselm"
+              }
+            ],
+            "next": "ask"
+          },
+          {
+            "text": "你一直盯着北边看什么？",
+            "next": "north"
+          },
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "north": {
+        "text": "（他把皮袄领子竖起来）……没什么。路上听人说，山脊上夜里有东西走过去。光着脚的。（他干笑一声）风吧。是风。",
+        "options": [
+          {
+            "text": "……",
+            "next": "again"
+          }
+        ]
+      },
+      "ask": {
+        "text": "断粮？（他皱眉）那是烽誓团的事，不是洛蒙德家的事。粮是高地卖给我们的，价钱当面说定的。你有什么说法，就说。",
+        "options": [
+          {
+            "text": "（摊开征粮令，写上「三车」）厄尔德家征三车粮，送上第十九烽。",
+            "if": [
+              {
+                "has_item": "requisition"
+              }
+            ],
+            "locked": "hide",
+            "next": "req3"
+          },
+          {
+            "text": "（摊开征粮令，写上「五车」）厄尔德家征五车——全部。",
+            "if": [
+              {
+                "has_item": "requisition"
+              }
+            ],
+            "locked": "hide",
+            "check": {
+              "id": "anselm_req5",
+              "skill": "speech",
+              "dc": 15,
+              "pass": "req5",
+              "fail": "req5_no"
+            }
+          },
+          {
+            "text": "（翻开皮毛税账册）这几笔「留北境」的账，洛蒙德家那边也有一份吧。",
+            "if": [
+              {
+                "has_item": "fur_ledger"
+              }
+            ],
+            "locked": "hide",
+            "next": "ledger"
+          },
+          {
+            "text": "伊薇特·瓦伦是洛蒙德家的老主顾。她托我带句话：烽燧倒了，你们的车也过不了这座山。",
+            "if": [
+              {
+                "flag": "valen_heir",
+                "eq": "ivette"
+              }
+            ],
+            "check": {
+              "id": "anselm_ivette",
+              "skill": "speech",
+              "dc": 10,
+              "pass": "escort",
+              "fail": "refused"
+            }
+          },
+          {
+            "text": "长眠的人不认粮车是谁家的。今夜你要走的，就是它们走的路。",
+            "check": {
+              "id": "anselm_fear",
+              "skill": "speech",
+              "dc": 16,
+              "pass": "escort",
+              "fail": "refused"
+            }
+          },
+          {
+            "text": "（放下三十枚银币）就当是买三车粮上山的路钱。",
+            "if": [
+              {
+                "silver": 30
+              }
+            ],
+            "next": "paid"
+          },
+          {
+            "text": "……我再想想。",
+            "end": true
+          }
+        ]
+      },
+      "req3": {
+        "text": "（他盯着那枚红印看了很久，嘴角抽了一下）……厄尔德家的印。三车。（他咬着牙把文书折起来塞进怀里）行。这笔账，洛蒙德家会记在厄尔德家头上。",
+        "do": [
+          {
+            "take_item": "requisition"
+          },
+          {
+            "set": "ch2_requisition",
+            "value": "three"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "escort"
+          }
+        ]
+      },
+      "req5": {
+        "text": "（他的脸一阵红一阵白）五车？厄尔德家是要……（他又往北边山脊瞟了一眼，声音低下去）……三车跟你上山。剩下两车，今夜卸在驿站，算我没押到。这笔账，洛蒙德家会记一辈子。",
+        "do": [
+          {
+            "take_item": "requisition"
+          },
+          {
+            "set": "ch2_requisition",
+            "value": "five"
+          },
+          {
+            "set": "ch2_extra_grain"
+          },
+          {
+            "rep": "lomond",
+            "delta": -5
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "escort"
+          }
+        ]
+      },
+      "req5_no": {
+        "text": "（他一把把文书推回来）五车？厄尔德家想造反吗？拿回去。（他转过身去）跟罗薇娜说，这张纸我没见过。",
+        "do": [
+          {
+            "rep": "lomond",
+            "delta": -5
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "refused"
+          }
+        ]
+      },
+      "ledger": {
+        "text": "（他翻了两页，脸白了）……这本账怎么在你手里？（他把账册合上，推回给你，手在抖）你想要几车？……三车。三车，这本账我没见过。",
+        "do": [
+          {
+            "rep": "lomond",
+            "delta": -10
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "escort"
+          }
+        ]
+      },
+      "paid": {
+        "text": "（他掂了掂钱袋，没看你）……路钱。好。三车。账上就写车轴断了，卸在半道上。",
+        "do": [
+          {
+            "pay": 30
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "escort"
+          }
+        ]
+      },
+      "escort": {
+        "text": "三辆车跟你上山。天黑透就走——可你得护着车过盘山路。（他声音发抖）它们……夜里会走过来，是不是？是不是？",
+        "do": [
+          {
+            "set": "beacon_grain",
+            "value": "lawful"
+          },
+          {
+            "set": "ch2_aid",
+            "value": "granted"
+          },
+          {
+            "quest": "ch2_main",
+            "stage": "escort_ready"
+          }
+        ],
+        "options": [
+          {
+            "text": "是。所以车两边都得有火。",
+            "end": true
+          }
+        ]
+      },
+      "refused": {
+        "text": "（他摇头）不行。合同上写着日子，误了日子，我回不去南边。……你走吧。",
+        "do": [
+          {
+            "set": "ch2_aid",
+            "value": "refused"
+          },
+          {
+            "quest": "ch2_main",
+            "stage": "aid_refused"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "end": true
+          }
+        ]
+      },
+      "granted_again": {
+        "text": "（他在车边来回走）天黑透就走。火把，火把都备好了？",
+        "options": [
+          {
+            "text": "告辞。",
+            "end": true
+          }
+        ]
+      },
+      "refused_again": {
+        "text": "（他背对着你，在数麻袋）……说过了，不行。",
+        "options": [
           {
             "text": "告辞。",
             "end": true

@@ -28,6 +28,8 @@
           {"text": "诺伯特烽长在哪？", "if": [{"not_flag": "norbert_met"}], "next": "where"},
           {"text": "诺伯特说「先过了今夜」。入夜以后怎么守？", "if": [{"quest_stage": "ch2_main", "eq": "first_night"}], "next": "tide_prep"},
           {"text": "那排木桩在哪？", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}], "next": "stakes"},
+          {"text": "粮车的事，你怎么打算？", "if": [{"quest_stage": "ch2_main", "eq": "convoy_day"}], "next": "grain"},
+          {"text": "安塞尔姆不肯。", "if": [{"quest_stage": "ch2_main", "eq": "aid_refused"}], "next": "after_refused"},
           {"text": "卡斯滕守满十年了。按规矩，你该放他走。", "if": [{"flag": "ch2_carsten_ask"}, {"not_flag": "ch2_carsten"}, {"not_flag": "ch2_carsten_refused"}], "check": {"id": "carsten_speech", "skill": "speech", "dc": 14, "pass": "carsten_yes", "fail": "carsten_no"}},
           {"text": "西边那座第十八烽，就这么灭着？", "if": [{"flag": "ch2_first_tide"}, {"not_flag": "ch2_beacon18_given"}], "next": "beacon18"},
           {"text": "火把用完了。", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}, {"not_flag": "ch2_spare_torches"}], "next": "more_torches"},
@@ -77,6 +79,55 @@
         "text": "推倒，踩过去，接着走。它们不看路上有什么。站在那排火后面，别站在它们前头。",
         "options": [
           {"text": "明白了。", "end": true}
+        ]
+      },
+      "grain": {
+        "text": "（他把手里那根柴码好，没抬头）五车。从高地低价收的，运到南边高价卖——收的时候说是「替烽燧换钱」。（他直起腰）我给你十个人。天黑透以后，在盘山路上截下来。……你要是有别的法子，去找押粮官谈，我也听。",
+        "options": [
+          {"text": "劫。", "next": "rob_plan"},
+          {"text": "我先去找押粮官谈。", "next": "go_talk"}
+        ]
+      },
+      "go_talk": {
+        "text": "（他耸耸肩）去吧。安塞尔姆怕长眠的人，怕得要命——这是你手里唯一的筹码。罗薇娜那儿有张盖了印的纸，她要是肯给你，也算一样。",
+        "do": [{"quest": "ch2_main", "stage": "talk_anselm"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "after_refused": {
+        "text": "（他一点也不意外）那就两条路：劫，或者空着手回来，柴和粮省着烧，三夜变两夜。",
+        "options": [
+          {"text": "那就劫。", "next": "rob_plan"},
+          {"text": "两手空空回去吧。", "next": "empty"}
+        ]
+      },
+      "empty": {
+        "text": "（他沉默了一会儿，又数了一遍柴）……三夜变两夜。我去跟老头说。",
+        "do": [{"set": "beacon_grain", "value": "lawful"}, {"quest": "ch2_main", "stage": "empty_handed"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "rob_plan": {
+        "text": "好。（他捡起一根柴，在雪上画了一道弯弯的线）盘山路上有两处能下手。车头那儿有棵枯了的老松，砍倒了正好拦路——可押车兵会从后头压上来。车尾跟着押粮官安塞尔姆，截住他，前头的人就得回头救。你挑。",
+        "options": [
+          {"text": "先断车头：砍倒那棵枯松拦路。", "next": "ambush_head"},
+          {"text": "先断车尾：截住安塞尔姆。", "next": "ambush_tail"}
+        ]
+      },
+      "ambush_head": {
+        "text": "（他用柴在线头上戳了个坑）车头。树我让人先锯开一半。天黑透以后，在那儿等。",
+        "do": [{"set": "beacon_grain", "value": "rob"}, {"set": "ch2_ambush", "value": "head"}, {"quest": "ch2_main", "stage": "rob_ready"}],
+        "options": [
+          {"text": "……", "end": true}
+        ]
+      },
+      "ambush_tail": {
+        "text": "（他用柴在线尾上戳了个坑）车尾。截住安塞尔姆，车就没人敢往前赶了。天黑透以后，在那儿等。",
+        "do": [{"set": "beacon_grain", "value": "rob"}, {"set": "ch2_ambush", "value": "tail"}, {"quest": "ch2_main", "stage": "rob_ready"}],
+        "options": [
+          {"text": "……", "end": true}
         ]
       },
       "carsten_yes": {

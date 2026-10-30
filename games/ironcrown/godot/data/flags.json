@@ -118,5 +118,13 @@
   "ch2_carsten": {"desc": "支线「第十年」（5.5b）：freed = 替他说动了马蒂亚斯（第二夜过后走），fled = 帮他夜里溜走了（烽誓团 −10），stayed = 劝他再守一年（烽誓团 +5，第二夜身边多一个人）", "set_in": "beacon19.json carsten / matthias", "read_in": "world/highland_beacon.gd people；5.7"},
   "ch2_carsten_ask": {"desc": "答应卡斯滕去跟马蒂亚斯说（5.5b）", "set_in": "beacon19.json carsten/ask", "read_in": "beacon19.json matthias 的选项"},
   "ch2_carsten_refused": {"desc": "替卡斯滕跟马蒂亚斯说没说动（5.5b；只能说一次）", "set_in": "beacon19.json matthias/carsten_no", "read_in": "beacon19.json carsten"},
-  "carsten_met": {"desc": "卡斯滕报了名字（5.5b）", "set_in": "beacon19.json carsten/greet", "read_in": "beacon19.json carsten"}
+  "carsten_met": {"desc": "卡斯滕报了名字（5.5b）", "set_in": "beacon19.json carsten/greet", "read_in": "beacon19.json carsten"},
+  "beacon_grain": {"desc": "第二章的抉择（5.6）：rob = 劫粮；lawful = 找安塞尔姆求援（谈成 / 谈不成看 ch2_aid）", "set_in": "beacon19.json matthias/ambush_head、ambush_tail、empty；highland.json anselm/escort", "read_in": "5.7 第二夜；5.8 章末回顾"},
+  "ch2_ambush": {"desc": "劫粮的伏击位置（5.6）：head = 先断车头（倒树拦路），tail = 先断车尾（截住安塞尔姆）", "set_in": "beacon19.json matthias/ambush_head、ambush_tail", "read_in": "5.7a 劫粮"},
+  "ch2_aid": {"desc": "求援的结果（5.6）：granted = 安塞尔姆分三车粮送上山（要你护车），refused = 谈不成", "set_in": "highland.json anselm/escort、refused", "read_in": "beacon19.json matthias；5.7b 护粮；5.8"},
+  "ch2_requisition": {"desc": "罗薇娜的征粮令（5.6）：three = 写了三车，five = 写了五车（谈成了另外两车粮当夜卸在驿站，ch2_extra_grain）；没用就没有这一项", "set_in": "highland.json anselm/req3、req5", "read_in": "5.7 / 5.8：厄尔德家声望看结果；第三章洛蒙德家记厄尔德家的账"},
+  "ch2_requisition_given": {"desc": "罗薇娜把空白的征粮令给了你（5.6，只给一次）", "set_in": "waystation.json rowena/requisition", "read_in": "waystation.json rowena 的选项"},
+  "ch2_extra_grain": {"desc": "征粮令写了五车、安塞尔姆认了：另外两车粮当夜卸在羊脊村驿站（5.6）", "set_in": "highland.json anselm/req5", "read_in": "5.8 章末回顾"},
+  "heard_convoy_time": {"desc": "罗薇娜说粮车天黑透以后出村（5.6）", "set_in": "waystation.json rowena/convoy_time", "read_in": "5.7a 劫粮"},
+  "anselm_met": {"desc": "见过押粮官安塞尔姆（5.6）", "set_in": "highland.json anselm/greet", "read_in": "highland.json anselm"}
 }

@@ -804,6 +804,14 @@ godot/
 - 新支线 `ch2_carsten`；`ch2_nell` 加阶段 `decide`；新旗标 `ch2_nell_father_seen`、`ch2_carsten`、`ch2_carsten_ask`、`ch2_carsten_refused`、`carsten_met`。调试 `?day2=1&nell=1`。
 - **测试**：`sidequests2` 组 21 项。
 
+### 4.57 抉择：粮车到村（路线图 5.6，2026-10-30）
+
+- **主线阶段**：`convoy_day` →（马蒂亚斯）`rob_ready`（劫，`ch2_ambush` head / tail）或 `talk_anselm` →（安塞尔姆）`escort_ready`（`ch2_aid` granted）或 `aid_refused` →（马蒂亚斯）`rob_ready` 或 `empty_handed`。`beacon_grain`：rob / lawful。
+- **粮车**（`HighlandVillage.convoy`，`highland.gd` 进场时同步搭）：主线在 `CONVOY_STAGES` 里时，驿站北边村路东侧五辆 `Decor.cart(…, "sacks")`（一份 Decor、有碰撞），安塞尔姆（`highland.json` anselm）、四个押车兵、两个车夫（`LINES`）。
+- **对话**：马蒂亚斯 `grain / go_talk / rob_plan / ambush_head / ambush_tail / after_refused / empty`（`beacon19.json`）；罗薇娜 `convoy_time / requisition`（`waystation.json`，`norbert_day2` 以后，空白征粮令 `requisition` 只给一次）；安塞尔姆 `ask` 六条路（征粮令三车 / 五车（口才 15）、`fur_ledger`、`valen_heir` = ivette（口才 10）、长眠的人（口才 16）、`silver` 30）→ `escort` / `refused`。`waystation.json`、`highland.json` 是两格缩进的展开格式：读进来、改、按原格式写回（先核对写回跟原文件一字不差）。
+- **对话条件**：`{"flag", "eq"}` 旗标值和要比的值类型不同就算不相等（原来 `false != "granted"` 会报脚本错误）。
+- 调试 `?day2=convoy`。**测试**：`convoy` 组 22 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

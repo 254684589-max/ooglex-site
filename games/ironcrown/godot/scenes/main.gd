@@ -130,14 +130,17 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
-		if _query("day2") in ["1", "lit"] and not Engine.has_meta("ic_day2_param_done"):
-			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了
+		if _query("day2") in ["1", "lit", "convoy"] and not Engine.has_meta("ic_day2_param_done"):
+			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了；=convoy 粮车到村（5.6）
 			GameState.set_stage("ch2_main", "after_tide")
 			for f in ["matthias_met", "norbert_met"]:
 				GameState.set_flag(f)
 			GameState.set_flag("ch2_first_tide", "held")
 			if _query("day2") == "lit":
 				GameState.set_flag("ch2_beacon18", "lit")
+			if _query("day2") == "convoy":                 # =convoy：诺伯特交代完，粮车到村（5.6）
+				GameState.set_flag("norbert_day2")
+				GameState.set_stage("ch2_main", "convoy_day")
 			if _query("nell") == "1":                      # &nell=1：答应过妮尔（5.5b：第二天她背着包袱要走）
 				GameState.start_quest("ch2_nell", "decide")
 				GameState.set_flag("ch2_nell", "asked")

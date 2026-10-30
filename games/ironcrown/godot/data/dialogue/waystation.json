@@ -137,6 +137,33 @@
             "next": "papers"
           },
           {
+            "text": "粮车几时出村？",
+            "if": [
+              {
+                "flag": "norbert_day2"
+              },
+              {
+                "not_flag": "heard_convoy_time"
+              }
+            ],
+            "next": "convoy_time"
+          },
+          {
+            "text": "桌上那张盖了印的空白文书，现在用得着了。",
+            "if": [
+              {
+                "flag": "norbert_day2"
+              },
+              {
+                "not_flag": "ch2_requisition_given"
+              },
+              {
+                "not_flag": "beacon_grain"
+              }
+            ],
+            "next": "requisition"
+          },
+          {
             "text": "告辞。",
             "end": true
           }
@@ -315,6 +342,37 @@
           {
             "text": "明白了。",
             "next": "menu"
+          }
+        ]
+      },
+      "convoy_time": {
+        "text": "天黑透以后。（她压低声音）洛蒙德家的人怕走夜路，可更怕误了日子——合同上写着，开春以前粮要进南边的仓。安塞尔姆在车尾，一夜没合眼，就盯着北边那道山脊。",
+        "do": [
+          {
+            "set": "heard_convoy_time"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "again"
+          }
+        ]
+      },
+      "requisition": {
+        "text": "（她看了你很久，才把最上面那张翻过来，推到你面前）车数那一栏空着。写多少，你写。写了，厄尔德家的印就盖在上面——洛蒙德家会记住是谁盖的。（她松开手指）别写得太贪。",
+        "do": [
+          {
+            "give_item": "requisition"
+          },
+          {
+            "set": "ch2_requisition_given"
+          }
+        ],
+        "options": [
+          {
+            "text": "……",
+            "next": "again"
           }
         ]
       }
