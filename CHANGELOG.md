@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 数据
+
+- 2026-10-30：早更上站。市场要闻（`/apps/news-brief/`）整文件换为 Brief-09（自然日 2026-10-30，7 条：通过 6、有条件通过 1、硬伤 0）。投资雷达（`/apps/news-radar/`）整文件换为 Day-11（`asOf` 2026-10-30，正式入选 N=0 合格空报，二级存档 4 条，不计入 N）。投研汇总（`apps/research-board/data.json`）的期号、日期、简报标题与雷达存档同步到 Brief-09／Day-11，S2 表追加 Day-11（仍待用户确认）。WSJ 仍为 CIO 收盘 2026-10-23，未改。未改利率页、播放器与 App。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 ### 修复
 
 - 2026-10-30：误把环球实景的椰子／棕榈日落标用到了流光播放器。已恢复蓝色音符桌面图标、开屏和下载页。Android 调试包更新为 1.0.14（versionCode 14）。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（4324755 字节，约 4.1 MB；sha256 `4633f46a957c90e2c255ba1233a7702b09d8f155a1f9b0337d803a6681b4aca6`；包名 `com.ooglex.music001`；Android 调试证书，`debuggable=true`）。网页图标改回 `apps/music-player/icons/icon.svg`；`icons/icon.png` 换成同一枚蓝色音符，旧地址不再是棕榈图。系统返回键仍保留 1.0.12：WebView 还可以后退时调用 `goBack`，根页再退出。两条下载页读不到 `ooglex-music.json` 时仍显示 1.0.14、4324755 字节和这份校验值。下载地址不变。Pages 仍以仓库提交的安装包为准，不用 GitHub Release 覆盖。未改播放器脚本。未部署。
