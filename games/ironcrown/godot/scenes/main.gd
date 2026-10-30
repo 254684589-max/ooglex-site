@@ -1991,6 +1991,11 @@ func _ambush_tick() -> void:
 			var sp := ConvoyAmbush.spawn()                # 截图用（?rob=）：站到伏击段上
 			player.global_position = sp[0]
 			player.rotation.y = deg_to_rad(float(sp[1]))
+			var at := _query("at").split(",")             # &at=T[,偏]：站到伏击段第 T 米（偏：正 = 下坡一侧，负 = 岩坎上）、朝车队中间
+			if at[0].is_valid_float():
+				player.global_position = ConvoyAmbush.leg_point(float(at[0]), float(at[1]) if at.size() > 1 else 0.0) + Vector3(0, 0.05, 0)
+				var to := ConvoyAmbush.leg_point(ConvoyAmbush.CART_T[2]) - player.global_position
+				player.rotation.y = atan2(-to.x, -to.z)
 	if ConvoyAmbush.due() and (battle == null or not is_instance_valid(battle)):
 		Engine.set_meta("ic_arrive_note", "天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。" % ("车头前那棵锯倒的枯松后面" if ConvoyAmbush.ambush() == "head" else "车尾后面的弯道上"))
 		travel("highland", "ambush", "night")

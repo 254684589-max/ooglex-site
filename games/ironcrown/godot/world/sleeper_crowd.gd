@@ -20,6 +20,7 @@ signal finished                        # 全走完了
 const TICK := 0.05
 const NEAR_MAX := 8
 static var near_max := NEAR_MAX          # 按画质（main：低 3、中 5、高 8）。一个真人模型约 8 次绘制调用：中档 40 人加五支火把时 426 → 5 个 400 以内
+var near_cap := NEAR_MAX                # 这一群最多几个（劫粮那场仗里兵已经占了绘制调用：2）
 const NEAR_DIST := 18.0
 const SPACING := 0.95                  # 互相让开：比这近就推
 const CELL := 1.6
@@ -96,7 +97,7 @@ func _ready() -> void:
 	mm.layers = LAYER                       # 火把的光不照它们（TorchHand.LIGHT_MASK）：几十个人每多一盏灯都要多画一遍；它们自己有一点自发光
 	add_child(mm)
 	if near_enabled:
-		for k in mini(near_max, NEAR_MAX):
+		for k in mini(near_max, near_cap):
 			var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"]][k % 3],
 				"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018"][k % 4], "tint": {"MI_Peasant": LINEN_TINT}})
 			if spec.is_empty():

@@ -4,7 +4,7 @@ extends Node3D
 ## 主线「设伏」（beacon_grain = rob）以后天黑透：南边的山口被雪封了，洛蒙德家的粮车只能走盘山路翻山脊绕下去——
 ## 在伏击段（HighlandLayout.AMBUSH_LEG：上坡一侧是岩坎）上，五辆车停成一列（车头朝山脊）。
 ## 你这边（烽誓团，灰布带）：马蒂亚斯给的十个人（小队，跟着你；卡斯滕留下来的再多一个）。
-## 对面（洛蒙德家，赭红布带）：押车队长、14 个押车兵（剑盾、长枪、剑兵、两个弓手）；安塞尔姆在车尾（不打，被截住就跪下）；车夫一开打就扔下鞭子跑了。
+## 对面（洛蒙德家，赭红布带）：押车队长、14 个押车兵（剑盾、长枪、剑兵、两个弓手）；安塞尔姆在车尾（按征来的兵算：拿着短矛、打得最弱）；车夫一开打就扔下鞭子跑了。
 ## 伏击位置（ch2_ambush，5.6 定的）：
 ##   head 先断车头——车头前那棵枯松已经锯倒、横在路上；你们在树后，押车兵从车队后头压上来；
 ##   tail 先断车尾——你们从车尾后面摸上去，安塞尔姆就在跟前；车头的押车兵得回头救。
@@ -34,6 +34,7 @@ const TIDE_COUNT := 30
 const TIDE_COUNT_LIT18 := 20                            # 第十八烽点着了：第二夜的潮水小一些
 const TIDE_T := 50.0                                    # 潮水在这里横穿山路
 const CART_BURN_R := 1.7
+const NEAR_CAP := 2                                     # 潮水里近处的真人模型：二十多个兵已经在画（中档实测 5 个时 423 → 2 个 400 以内）
 
 var battle: Battle
 var crowd: SleeperCrowd
@@ -226,6 +227,7 @@ func _start_tide() -> void:
 	crowd.height_fn = Highland.height_at
 	crowd.player = player
 	crowd.speed_base = 0.95
+	crowd.near_cap = NEAR_CAP
 	add_child(crowd)
 	battle.wave_note.emit("◆ 北边山脊上下来一串白影子——潮水横穿山路！拿火把把它们往押车兵那边引。")
 	print("IC_AMBUSH tide count=%d" % n)

@@ -812,6 +812,16 @@ godot/
 - **对话条件**：`{"flag", "eq"}` 旗标值和要比的值类型不同就算不相等（原来 `false != "granted"` 会报脚本错误）。
 - 调试 `?day2=convoy`。**测试**：`convoy` 组 22 项。
 
+### 4.58 第二夜 · 劫粮（路线图 5.7a，2026-10-30）
+
+- **`world/convoy_ambush.gd`（ConvoyAmbush）**：`due()`（主线 `rob_ready`、还没有 `ch2_convoy`）时 main 在高地搭好以后调 `setup(world)`：两方 `beacon_oath`（灰布带）/ `lomond`（赭红布带），烽誓团 `SQUAD_KINDS` 十人（`ch2_carsten` = stayed 多一个「卡斯滕」）进小队、跟着你；押车队长、`GUARD_KINDS` 十四人、安塞尔姆（levy，meta `anselm`）。位置全用 `leg_point(t, off)`（伏击段 `HighlandLayout.AMBUSH_LEG` 上第 t 米、往下坡一侧偏 off 米）；车 `CART_T`、锯倒的枯松 `TREE_T`（有碰撞）、伏击点 `POST_T`、出生点 `SPAWN_T`（`HighlandLayout.spawn_points` 的 `ambush`）。
+- **流程**：`main._ambush_tick`：到期且没有战斗 → 夜里旅行到 `ambush` 出生点（带到达提示）；走到伏击点 `START_R` 以内 → `start_battle()`（先自动存档）。`_physics_process`：开打先发一次车夫逃跑的提示；`TIDE_AT` 秒后 `_start_tide`（`SleeperCrowd`，路线垂直穿过路面第 `TIDE_T` 米，`TIDE_COUNT` / 第十八烽点着了 `TIDE_COUNT_LIT18`），`crowd.victims = battle.roster`。
+- **踩踏**：`SleeperCrowd._hit_soldiers` 对 `victims` 里的兵调 `Soldier.trampled(dmg, fear)`（失衡、掉 `SOLDIER_TRAMPLE_DMG` 血但最少留 1、士气掉 `SOLDIER_FEAR`）。
+- **烧车**：`_check_carts`——亮着的插地火把离车 `CART_BURN_R` 以内，或者主角被推倒时手里的火把（`TorchHand.dropped_lit`）在车边 → `burn_cart(i)`（`CausewayBattle._flame` + 一盏 FireLight）。
+- **结束**：`result(winner)` → `finish(res)`：`ch2_convoy` taken / burned / repelled，`lomond` −20，不是 repelled 时 `beacon_oath` +10，主线 `dawn_after`；main 自动存档、`DAWN_DELAY` 后 `set_daypart("dawn")`。主角倒下：读开打前的自动存档。
+- **性能**：`SleeperCrowd.near_cap`（实例上限，默认 `NEAR_MAX`），伏击里 `NEAR_CAP` = 2：中档开打 + 潮水 423 → 304 次绘制调用。
+- **主线**：`HighlandVillage.CONVOY_STAGES` 去掉 `rob_ready`（天黑以后车队已经出村）。调试 `?rob=head|tail`（设好旗标、主线「设伏」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝车队，`&cwskip=秒` 开打并快进。**测试**：`ambush` 组 12 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
