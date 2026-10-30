@@ -831,6 +831,14 @@ godot/
 - **性能**：潮水里近处真人模型最多 `NEAR_CAP` = 2。中档实测：潮水横穿时 272–364 次绘制调用；天亮以后（车过去了不画）331；**夜转清晨那一下测到 427–479**（场景本身的时段过渡，同劫粮那一夜的结尾，记为待查）。
 - 调试 `?escort=1`（设好旗标、主线「护车」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝潮水横穿的地方，`&cwskip=秒` 动身并快进；`?perf=1&probewait=秒` 等到那一刻再测（非战斗区域）。**测试**：`escort` 组 19 项。
 
+### 4.60 天亮 · 火还在不在（路线图 5.8a，2026-10-30）
+
+- **`quest/chapter2.gd`（Chapter2）**：`dawn()`——`ch2_fire` = lit（`ch2_convoy` 在 `FED`：taken / burned / delivered / partial）或 out，主线 `dawn_after`；`ConvoyAmbush.finish`、`ConvoyEscort.finish`、两手空空那一夜都调它。`at_dawn()`（主线 `dawn_after` / `to_well`）、`fire_out()`。
+- **塔顶的火**（`HighlandBeacon._fire`）：火盆的石台和铁篮一份；炭和烧着的柴（`BeaconEmbers`）、火苗、`BeaconFire` 火光（`light_source` 组）、光晕、远处的暖光、火星、烟都放在 `BeaconFlames` 下；冷灰和几截黑柴头在 `BeaconAsh` 下。`apply_fire(root)` 按 `Chapter2.fire_out()` 切换（搭好时、天亮那一刻 main 调）。灭了的火不在 `SleeperCrowd.fires` 里（节点藏起来了）。
+- **诺伯特**：`HighlandBeacon.dawn_norbert(parent)`——`at_dawn()` 时在塔顶火盆边（火灭了节点名 `Npc_norbert_cold`，`looks.json` 的 `@norbert_cold` 蹲着）；`people()` 搭的时候、天亮那一刻（`main._ch2_dawn_world`）都调，已经在了不再放；`BeaconTower` 的小屋那个在 `at_dawn()` 时不放。
+- **对话**（`beacon19.json`）：诺伯特 `dawn_lit`（`beacon_grain` 劫 / 护两种开场）、`dawn_out`（被打退 / 一车也没上来 / 两手空空）→ `dawn_rest` / `dawn_rest_short` → `dawn_well`（`ch2_stones` 时先接「封于冬井」；设 `norbert_dawn`、主线 `to_well`）→ `well_wait`；马蒂亚斯 `dawn`（按 `ch2_convoy` 七种）。
+- **main**：劫粮 / 护粮打完 `DAWN_DELAY` 后 `_ch2_dawn_world()`：天亮、`apply_fire`、`dawn_norbert`、提示一句、自动存档（打完那一刻的自动存档还是夜里，读档回来要是天亮以后）。`_empty_night_tick`：主线 `empty_handed`、对话关了 → 天黑、`EMPTY_NIGHT_SEC` 秒后 `Chapter2.dawn()` + `_ch2_dawn_world()`。调试 `?dawn=lit|out`。**测试**：`dawn2` 组 26 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

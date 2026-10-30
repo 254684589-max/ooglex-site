@@ -443,7 +443,7 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 			ek.cylinder("char", c + Vector3(cos(a) * 0.45, 0.65, sin(a) * 0.45), c + Vector3(-cos(a) * 0.3, 1.0 if not cold else 0.75, -sin(a) * 0.3), 0.07, 0.06, 5)
 		var ember := StandardMaterial3D.new()
 		if cold:
-			ember.albedo_color = Color("8a8680")                                                           # 灰白的冷灰
+			ember.albedo_color = Color("6e6a66")                                                           # 灰白的冷灰（压暗一点：天光下不发白）
 			ember.roughness = 1.0
 		else:
 			ember.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
