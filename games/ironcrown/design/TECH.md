@@ -839,6 +839,14 @@ godot/
 - **对话**（`beacon19.json`）：诺伯特 `dawn_lit`（`beacon_grain` 劫 / 护两种开场）、`dawn_out`（被打退 / 一车也没上来 / 两手空空）→ `dawn_rest` / `dawn_rest_short` → `dawn_well`（`ch2_stones` 时先接「封于冬井」；设 `norbert_dawn`、主线 `to_well`）→ `well_wait`；马蒂亚斯 `dawn`（按 `ch2_convoy` 七种）。
 - **main**：劫粮 / 护粮打完 `DAWN_DELAY` 后 `_ch2_dawn_world()`：天亮、`apply_fire`、`dawn_norbert`、提示一句、自动存档（打完那一刻的自动存档还是夜里，读档回来要是天亮以后）。`_empty_night_tick`：主线 `empty_handed`、对话关了 → 天黑、`EMPTY_NIGHT_SEC` 秒后 `Chapter2.dawn()` + `_ch2_dawn_world()`。调试 `?dawn=lit|out`。**测试**：`dawn2` 组 26 项。
 
+### 4.61 白寂边缘 · 冬井 · 第二章章末（路线图 5.8b，2026-10-30）
+
+- **`world/winter_well.gd`（WinterWell）**：main 在高地搭好以后 `setup(world)`，井一直在（`_build_well`：两层石块的井栏、黑井口、裂开的石盖、冻住的铁链、一块碰撞）。`due()`（主线 `to_well` / `ch2_end`）时 `_build_ring()`：圈上 `RING_N` 个位置（`slot(k)`，离井 `RING_R` 米）每个都是 `CharacterModel`（生人用 `Looks.spec_of` 几种村民打扮 + `SleeperCrowd.LINEN_TINT`；认得的脸 `_face_specs()`：`ch1_sleeper`、`ch2_nell` 有值时妮尔的父亲、`left` 时妮尔（不换麻衣）、`ch2_beacon18` = lit 时三个守塔人），`hold("idle", …)` 定住、不投影、远处不画。原来用 SleeperCrowd 那种简化的人（一份多实例），白天像一排白石膏 → 全换真人模型，中档 188 → 328 次绘制调用。
+- **诺伯特**：`ensure_norbert()` 在 `RIDGE_WAIT` 放一个 `Npc_norbert_well`（`ch2_end` 时直接在井边）；你走到 `FOLLOW_R` 以内他往 `stop_point()` 走（`WALK_SPEED`，贴地），到了面朝井站住。`Chapter2.norbert_on_roof()`（只在 `dawn_after`）管塔顶那个：`main._well_tick` 在主线 `to_well`、对话关了以后拿掉塔顶的诺伯特（提示一句）、摆圈、放山脊上的诺伯特。
+- **信号**：`revealed`（`REVEAL_R` 以内，提示一次）、`recognized(text)`（认得的脸 `FACE_R` 以内各一次）、`reached`（他到了、你也在 `END_R` 以内）→ main `_on_well_reached`：他说一句，`WELL_END_AFTER` 秒后 `ch2_done`、主线 `ch2_end`、自动存档、`show_ending("ch2")`。
+- **章末画面**：`EndingPanel.open_chapter2`（「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，「在雪原上再站一会儿」，没有「继续」）；回顾 `Chapter2.recap()`、钩子 `Chapter2.hook()`。`Chapters.LIST[2]` 去掉 `wip` / `wip_note`。
+- 调试 `?well=1`（劫下了粮、火亮着、主线「冬井」）/ `=all`（圈里认得的脸都有）、`?ending=ch2`（只在高地）、机位 21。**测试**：`well` 组 16 项；`chapters` / `sleeper` 两处改成第二章不再标「制作中」。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
