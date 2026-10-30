@@ -210,7 +210,7 @@ static func people(parent: Node3D) -> void:
 		if str(p[0]) == "chopper" and GameState.has_flag("ch2_first_tide"):
 			p = ["chopper", "卡斯滕", p[2], p[3], p[4], "carsten"]    # 第二天：劈柴的老兵报了名字，有话说（5.5b）
 		if str(p[0]) == "norbert" and GameState.has_flag("ch2_first_tide"):
-			if Chapter2.at_dawn():
+			if Chapter2.norbert_on_roof():
 				dawn_norbert(parent)                                  # 第二夜过去（5.8）：他又上了塔顶，在火盆边
 			continue                                                  # 第二天（5.5a）：诺伯特下了塔顶，在自己的小屋里（BeaconTower）
 		var at: Vector3 = p[2]
@@ -233,7 +233,7 @@ static func people(parent: Node3D) -> void:
 
 ## 第二夜过去以后（5.8，Chapter2.at_dawn）诺伯特在塔顶火盆边：火亮着站着添柴；火灭了蹲在冷灰边（@norbert_cold）。已经在了就不再放
 static func dawn_norbert(parent: Node3D) -> void:
-	if not parent.find_children("Npc_norbert*", "", true, false).is_empty():
+	if not Chapter2.norbert_on_roof() or not parent.find_children("Npc_norbert*", "", true, false).is_empty():
 		return
 	var tp := tower_place()
 	var at := tp * Vector3(-1.25, HighlandLayout.TOWER_H, -0.5)

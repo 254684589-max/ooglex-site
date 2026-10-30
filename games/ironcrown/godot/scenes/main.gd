@@ -46,6 +46,7 @@ var bench_results: Array = []
 var battle_bench := false
 const DAWN_DELAY := 6.0          # 堤道夜战打完多久天亮、换到黑鹭堡（4.10a）         # 军阵基准测试在跑（B.5）：军阵的提示不弹出来，免得盖住结果表
 const EMPTY_NIGHT_SEC := 12.0    # 两手空空：天黑到天亮几秒（5.8）
+const WELL_END_AFTER := 12.0     # 到了冬井边，诺伯特说完这么久以后章末（5.8b）
 
 var env: Environment
 var world: Node3D
@@ -151,6 +152,21 @@ func _ready() -> void:
 			GameState.set_stage("ch2_main", "rob_ready")
 			Chapter2.dawn()
 			GameState.daypart = "dawn"
+		if _query("well") in ["1", "all"] and not Engine.has_meta("ic_well_param_done"):
+			Engine.set_meta("ic_well_param_done", true)       # 截图用（5.8b）：?well=1 直接到诺伯特说完、要带你去看冬井（劫下了粮、火亮着）；=all 圈里认得的脸都有（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）
+			for f in ["matthias_met", "norbert_met", "norbert_day2", "norbert_dawn"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "rob")
+			GameState.set_flag("ch2_convoy", "taken")
+			GameState.set_stage("ch2_main", "rob_ready")
+			Chapter2.dawn()
+			GameState.set_stage("ch2_main", "to_well")
+			GameState.daypart = "dawn"
+			if _query("well") == "all":
+				GameState.set_flag("ch1_sleeper", "tobin")
+				GameState.set_flag("ch2_nell", "left")
+				GameState.set_flag("ch2_beacon18", "lit")
 		if _query("escort") == "1" and not Engine.has_meta("ic_escort_param_done"):
 			Engine.set_meta("ic_escort_param_done", true)     # 截图用（5.7b）：?escort=1 直接到护粮那一夜（三辆车在伏击段下头；配 &cwskip=秒 动身并快进）
 			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
@@ -275,6 +291,7 @@ func _ready() -> void:
 	if area == "highland":
 		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
 		ConvoyEscort.setup(world)                       # 第二夜 · 护粮（5.7b）：主线「护车」、还没走过，三辆车在伏击段下头；到了几秒以后动身
+		WinterWell.setup(world)                         # 白寂边缘的冬井（5.8b）：井一直在；主线「冬井」起井边站着一圈长眠的人、诺伯特在山脊背后等你
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
@@ -1533,7 +1550,9 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	if id == "ch1":
+	if id == "ch2":
+		ending_panel.open_chapter2(Settings.reduced_motion, 0)       # 第二章完（5.8b）：第三章还没有
+	elif id == "ch1":
 		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
 	else:
 		ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
@@ -2081,6 +2100,45 @@ func _ch2_dawn_world() -> void:
 	save_game("auto", true)                         # 读档回来是天亮以后（打完那一刻的自动存档还是夜里）
 
 
+## 白寂边缘 · 冬井（5.8b，world/winter_well.gd）：主线「冬井」——诺伯特从塔顶下去（对话关了以后），在山脊背后等你；圈、认得的脸、到了井边他说一句，过一会儿章末
+func _well_tick() -> void:
+	if area != "highland" or player == null or leaving:
+		return
+	var ww := world.get_node_or_null("WinterWell") as WinterWell
+	if ww == null:
+		return
+	if ww.player == null:
+		ww.player = player
+		ww.revealed.connect(func(): hud.toast("冰原上那口石井边，站着一圈人。光着脚，闭着眼，一动不动——脸都朝着井。", 6.0))
+		ww.recognized.connect(func(t: String): hud.toast(t, 5.5))
+		ww.reached.connect(_on_well_reached)
+	if not WinterWell.due() or dialogue.visible:
+		return
+	var left := false
+	for nm in ["Npc_norbert", "Npc_norbert_cold"]:
+		var n := world.find_child(nm, true, false)
+		if n:
+			n.get_parent().remove_child(n)
+			n.queue_free()
+			left = true
+	if left:
+		hud.toast("诺伯特从天窗下去了：「翻过山脊，往冰原那边。我在那儿等你。」", 5.0)
+	if ww.mm == null:
+		ww._build_ring()
+	ww.ensure_norbert()
+
+
+func _on_well_reached() -> void:
+	hud.say("（诺伯特在你身边站住了，很久没说话）……三十五年，我头一回走到这口井边。它们没往北走。它们在这儿站着，脸都朝着井——像在等一样东西。")
+	get_tree().create_timer(WELL_END_AFTER).timeout.connect(func():
+		if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
+			GameState.set_flag("ch2_done")
+			if GameState.quest_active("ch2_main"):
+				GameState.set_stage("ch2_main", "ch2_end")
+			save_game("auto", true)
+			show_ending("ch2"))
+
+
 ## 两手空空（5.6 empty_handed，5.8）：主线到这一步，这一夜就这么熬过去——天黑、柴省着烧、天亮时火熄了
 func _empty_night_tick() -> void:
 	if area != "highland" or player == null or leaving or empty_night or dialogue.visible:
@@ -2223,6 +2281,7 @@ func _process(delta: float) -> void:
 	_ambush_tick()
 	_escort_tick()
 	_empty_night_tick()
+	_well_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

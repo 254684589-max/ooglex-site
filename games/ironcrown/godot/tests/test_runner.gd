@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8067,8 +8067,8 @@ func test_sleeper() -> void:
 	var hk: String = main.ending_panel.seal.text
 	check(rc.contains("印戒交给了阿尔里克") and rc.contains("堤道守住了") and rc.contains("奥弗") and hk.contains("老王自己交出去的") and hk.contains("双钥港") and hk.contains("没有醒来"),
 		"回顾按旗标写（印戒、堤道、奥弗），钩子带上双钥港和长眠者（%s / %s）" % [rc, hk])
-	check(main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("制作中") and main.ending_panel.back_btn.text == "在晨雾里再走走",
-		"第二章先放出来能逛（2026-10-24）：「%s」「在晨雾里再走走」「从头再来」" % main.ending_panel.continue_btn.text)
+	check(main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text == "继续：第二章 · 熄灭的烽燧" and main.ending_panel.back_btn.text == "在晨雾里再走走",
+		"第二章做到章末了（5.8b）：「%s」「在晨雾里再走走」「从头再来」" % main.ending_panel.continue_btn.text)
 	main.ending_panel.close()
 	await frames(2)
 	check(not get_tree().paused, "关掉画面接着走")
@@ -8337,8 +8337,8 @@ func test_looks() -> void:
 
 ## 5.1a 余火高地地图底座：高度场、碰撞、分块、天空、风雪、章节包与第二章的入口
 func test_highland() -> void:
-	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) != "",
-		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、标着「%s」（PLAYABLE = %d）" % [Chapters.wip_of(2), Chapters.PLAYABLE])
+	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) == "",
+		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、做到章末不再标「制作中」（PLAYABLE = %d）" % Chapters.PLAYABLE)
 	check(Highland.textures_ready() and ResourceLoader.exists(Highland.FIELD_PATH) and ResourceLoader.exists(Highland.PAINT_PATH), "第二章的贴图、天空照片、预先算好的高度场都在 chapters/ch2/")
 	# 预先算好的高度场和布局对得上（布局改了忘了重新生成会在这里报）
 	Highland._field = PackedFloat32Array()
@@ -8454,7 +8454,7 @@ func test_highland() -> void:
 	main.playable_chapter = 2
 	main.show_ending("ch1")
 	await frames(2)
-	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧") and main.ending_panel.continue_btn.text.contains("制作中"),
+	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧") and not main.ending_panel.continue_btn.text.contains("制作中"),
 		"第一章章末多一行「%s」" % main.ending_panel.continue_btn.text)
 	var reloaded := [false]
 	main.reload_requested.connect(func(): reloaded[0] = true)
@@ -9479,6 +9479,103 @@ func test_dawn2() -> void:
 	await free_main(m3)
 	r.start("beacon19", "matthias")
 	check(r.text().contains("两手空空"), "马蒂亚斯：两手空空，火天亮前就灭了")
+
+
+## 5.8b 白寂边缘 · 冬井：井一直在；主线「冬井」诺伯特从塔顶下去、在山脊背后等你，领你走到井边；一圈长眠的人、认得的脸；到了井边过一会儿章末（回顾、钩子、没有「继续」）
+func _well_game(seed: int, stage: String) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "dawn"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "rob")
+	GameState.set_flag("ch2_convoy", "taken")
+	GameState.set_stage("ch2_main", "rob_ready")
+	Chapter2.dawn()
+	GameState.set_stage("ch2_main", stage)
+
+
+func test_well() -> void:
+	# 天亮以后、还没说完：井在，圈和山脊上的诺伯特还没有；诺伯特在塔顶
+	_well_game(900, "dawn_after")
+	GameState.set_flag("ch1_sleeper", "tobin")
+	GameState.set_flag("ch2_nell", "left")
+	GameState.set_flag("ch2_beacon18", "lit")
+	var main := await make_area("highland")
+	(main.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var ww: WinterWell = main.world.get_node_or_null("WinterWell")
+	check(ww != null and ww.get_node_or_null("WinterWellStones") != null and ww.mm == null and ww.norbert == null
+		and main.world.find_children("Npc_norbert", "", true, false).size() == 1,
+		"冰原上的石井一直在；诺伯特还在塔顶，井边还没有人")
+	# 他说完了（主线「冬井」）：对话关了以后从塔顶下去，在山脊背后等你；圈摆上
+	GameState.set_stage("ch2_main", "to_well")
+	await frames(3)
+	check(main.world.find_children("Npc_norbert", "", true, false).is_empty() and ww.norbert != null and ww.norbert.name == "Npc_norbert_well"
+		and Vector2(ww.norbert.global_position.x, ww.norbert.global_position.z).distance_to(WinterWell.RIDGE_WAIT) < 0.5,
+		"主线「冬井」：诺伯特从天窗下去，在山脊背后等你")
+	check(ww.mm != null and ww.mm.multimesh.instance_count == WinterWell.RING_N - 6 and ww.faces.size() == 6,
+		"井边站着一圈 %d 个人；认得的脸 6 张（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）" % WinterWell.RING_N)
+	var y_ok := true
+	for k in WinterWell.RING_N:
+		var q := WinterWell.slot(k)
+		y_ok = y_ok and absf(WinterWell.ground(q).y - Highland.height_at(q.x, q.y)) < 0.01 and q.distance_to(HighlandLayout.WELL) > 5.0
+	check(y_ok, "一圈人都站在冰原上、离井 %.1f 米" % WinterWell.RING_R)
+	var said: Array = []
+	ww.recognized.connect(func(t: String): said.append(t))
+	var p: FpController = main.player
+	var np := WinterWell.RIDGE_WAIT + Vector2(2.0, 2.0)
+	p.global_position = WinterWell.ground(np) + Vector3(0, 0.3, 0)
+	await physics(2)
+	check(ww.norbert_state == "walk", "走到他跟前：他往冰原下面走")
+	var goal := WinterWell.stop_point()
+	ww.norbert.global_position = WinterWell.ground(goal + (WinterWell.RIDGE_WAIT - goal).normalized() * 0.02)
+	await physics(3)
+	check(ww.norbert_state == "there" and Vector2(ww.norbert.global_position.x, ww.norbert.global_position.z).distance_to(HighlandLayout.WELL) < WinterWell.STOP_R + 0.1,
+		"他停在井边 %.1f 米" % WinterWell.STOP_R)
+	var a := WinterWell.slot(1) + (WinterWell.slot(1) - HighlandLayout.WELL).normalized() * 3.0
+	p.global_position = WinterWell.ground(a) + Vector3(0, 0.3, 0)
+	await physics(3)
+	check(ww.revealed_said and said.any(func(t): return str(t).contains("托宾")), "走近了：一圈人一动不动；认出芦栈村的托宾")
+	var b := WinterWell.slot(9) + (WinterWell.slot(9) - HighlandLayout.WELL).normalized() * 3.0
+	p.global_position = WinterWell.ground(b) + Vector3(0, 0.3, 0)
+	await physics(3)
+	check(said.any(func(t): return str(t).contains("妮尔")), "圈里站着妮尔（随她去了的）")
+	check(ww.reached_sent, "他到了、你也到了井边")
+	await seconds(main.WELL_END_AFTER + 0.6)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch2_done") and GameState.quest_stage("ch2_main") == "ch2_end" and ep.visible and ep.title.text == "第三章 · 粮与铁"
+		and ep.header.text.contains("熄灭的烽燧") and not ep.continue_btn.visible and not Saves.read_slot("auto").is_empty(),
+		"过一会儿章末：「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，没有「继续」（第三章还没有），自动存档")
+	check(ep.recap.text.contains("劫下了洛蒙德家的五车粮") and ep.recap.text.contains("第十八烽") and ep.recap.text.contains("妮尔往北去了") and ep.recap.text.contains("火还亮着"),
+		"回顾按旗标写：第一夜、第十八烽、劫下五车、火、妮尔")
+	check(ep.seal.text.contains("冬井") and ep.seal.text.contains("芦栈村那个人") and ep.seal.text.contains("妮尔也在"), "钩子：封誓少做的一步、冬井边那一圈人、认得的脸")
+	ep.close()
+	await frames(2)
+	check(not main.get_tree().paused, "在雪原上再站一会儿：关掉接着走")
+	await free_main(main)
+	# 章末以后再来：诺伯特在井边，圈还在；小屋、塔顶都没有他
+	_well_game(901, "ch2_end")
+	var m2 := await make_area("highland")
+	(m2.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var w2: WinterWell = m2.world.get_node("WinterWell")
+	check(w2.norbert_state == "there" and w2.mm != null and w2.mm.multimesh.instance_count == WinterWell.RING_N and m2.world.find_children("Npc_norbert", "", true, false).is_empty(),
+		"章末以后再来：诺伯特站在井边，那一圈人还在（没有认得的脸就都是生人）")
+	await free_main(m2)
+	# 回顾的另外几种
+	_well_game(902, "to_well")
+	GameState.set_flag("beacon_grain", "lawful")
+	GameState.set_flag("ch2_convoy", "delivered")
+	GameState.set_flag("ch2_requisition", "three")
+	GameState.set_flag("ch2_carsten", "freed")
+	check(Chapter2.recap().contains("护着粮车穿过了潮水") and Chapter2.recap().contains("征粮令") and Chapter2.recap().contains("卡斯滕守满了十年"), "回顾：护粮、征粮令、卡斯滕")
+	_well_game(903, "to_well")
+	GameState.set_flag("ch2_convoy", false)
+	GameState.set_flag("ch2_aid", "refused")
+	GameState.set_flag("ch2_fire", "out")
+	check(Chapter2.recap().contains("两手空空") and Chapter2.recap().contains("火熄了"), "回顾：两手空空、火熄了")
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
