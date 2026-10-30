@@ -1,18 +1,18 @@
 {
   "schemaVersion": "brief-site-v1",
-  "edition": "Brief-08",
+  "edition": "Brief-09",
   "demo": false,
-  "naturalDay": "2026-10-29",
+  "naturalDay": "2026-10-30",
   "timezone": "Asia/Shanghai",
   "mode": "A",
   "modeLabel": "全球新闻简报",
-  "title": "Brief-08｜全球新闻简报",
-  "observationWindow": "2026-10-28 晚～10-29 早晨 CST（可含 Brief-07／Day-09 未覆盖增量）",
-  "relativeTo": "Brief-07／Day-09（2026-10-28）新自然日增量；FOMC 已核实出炉",
+  "title": "Brief-09｜全球新闻简报",
+  "observationWindow": "2026-10-29 晚～10-30 早晨 CST（覆盖 Brief-08／Day-10 未落地增量）",
+  "relativeTo": "Brief-08／Day-10（2026-10-29）新自然日增量；GDP／PCE／Amazon／ECB 已核实；未重复 FOMC／MSFT／GOOGL 主条",
   "counts": {
-    "total": 9,
-    "pass": 7,
-    "conditional": 2,
+    "total": 7,
+    "pass": 6,
+    "conditional": 1,
     "fail": 0,
     "hardError": 0
   },
@@ -26,63 +26,70 @@
     {
       "id": "01",
       "candidate": "C01",
-      "title": "美联储 FOMC：维持联邦基金目标区间 3.75%–4.00%；10–2 通过；Cook 与 Hammack 异议主张加息 25 个基点",
+      "title": "BEA：2026 年第三季度实际 GDP 初值年化增长 3.4%（第二季度为 2.2%）",
       "category": "美国经济",
-      "rubric": "美国经济｜金融市场",
+      "rubric": "美国经济",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜官方声明＋实施说明）",
+      "verificationDetail": "通过（05／07｜BEA 官方初值稿）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Fed 2026-10-28 14:00 EDT：FOMC 10–2 维持联邦基金目标区间 3.75%–4.00%；通胀仍偏高；Cook／Hammack 异议主张 +25bp；IORB 维持 3.90%。相对 Brief-07「未出」——本窗已出。",
+        "whatHappened": "BEA 于 2026-10-29 08:30 EDT 发布 2026Q3 GDP 初值：实际 GDP 年化 +3.4%（Q2 为 +2.2%）。贡献来自投资、消费与政府开支；出口下降部分抵消。私人国内最终销售 +4.9%。国内购买价格指数 +3.0%；GDP 内嵌 PCE 价格 +2.1%／核心 +2.5%（勿与月度 PCE 混用）。下次约 2026-11-25 二次估计。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期",
+            "本期（2026Q3 初值）",
+            "上期（2026Q2）",
             "备注"
           ],
           "rows": [
             [
-              "联邦基金目标区间",
-              "3.75%–4.00%",
-              "维持｜10–2"
+              "实际 GDP（SAAR）",
+              "+3.4%",
+              "+2.2%",
+              "初值｜BEA"
             ],
             [
-              "异议",
-              "Cook；Hammack",
-              "主张 +25bp"
+              "私人国内最终销售",
+              "+4.9%",
+              "+4.6%",
+              "消费＋私人固定投资"
             ],
             [
-              "IORB",
-              "3.90%",
-              "维持｜10-29 生效"
+              "国内购买价格指数",
+              "+3.0%",
+              "+5.6%",
+              ""
             ],
             [
-              "SEP／点阵图",
-              "无",
-              "本场无"
+              "GDP 内嵌 PCE 价格",
+              "+2.1%",
+              "+5.0%",
+              "季度嵌入；≠月度 PCE"
+            ],
+            [
+              "核心 PCE 价格（GDP 嵌入）",
+              "+2.5%",
+              "+3.3%",
+              "剔除食品能源"
             ]
           ],
-          "note": "发布：Federal Reserve｜2026-10-28 14:00 EDT"
+          "note": "发布：BEA｜2026-10-29 08:30 EDT"
         },
-        "background": "H1 正式政策文件；区间未变；双异议为正式记录分歧。",
-        "progress": "声明／实施说明／记者会可开；下次例会以官方日历为准。",
-        "importance": "H1 核心落地；Brief 不套雷达三／四级。",
+        "background": "Brief-08 日程条曾标注本窗 GDP／PCE 未出；相对 Day-10「日程未发布」——本窗已出。触及 H4，初值可修订。",
+        "progress": "初值可开；二次／三次估计将修订。",
+        "importance": "美国增长主读数落地；Brief 不套雷达门槛。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "维持区间或被读作再观察数据（推断）。",
-            "通胀仍高＋双异议或强化上行风险讨论（推断）。",
+            "强于部分预期的增长读数可能被读作韧性／软着陆叙事强化（推断）。",
+            "与通胀仍高／政策再观察并行时，可能加剧增长与通胀权衡讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "FOMC 声明",
-            "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm"
-          },
-          {
-            "label": "实施说明",
-            "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a1.htm"
+            "label": "BEA GDP 初值",
+            "url": "https://www.bea.gov/news/2026/gdp-advance-estimate-3rd-quarter-2026"
           }
         ]
       }
@@ -90,73 +97,74 @@
     {
       "id": "02",
       "candidate": "C02",
-      "title": "Microsoft 发布 FY2027 第一季度业绩：营收约 923 亿美元，Azure 营收约 332 亿美元（同比 +48%）",
-      "category": "人工智能",
-      "rubric": "人工智能｜科技企业｜金融市场",
-      "verification": "有条件通过",
-      "verificationDetail": "有条件通过（05／07｜须并列 GAAP／non-GAAP）",
-      "audience": "内部展示｜有条件通过",
+      "title": "BEA：2026 年 9 月 PCE 价格指数同比 3.6%、核心 PCE 同比 3.1%",
+      "category": "美国经济／通胀",
+      "rubric": "美国经济｜通胀",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07｜BEA Personal Income and Outlays）",
+      "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Microsoft 2026-10-28：营收 $92.3B（+19%）；GAAP EPS $4.92；non-GAAP EPS $4.89（须并列）；Azure $33.165B（+48%）；Cloud $63.9B（+30%）；RPO $677B（+73%）。",
+        "whatHappened": "BEA 同日发布 2026 年 9 月个人收入与支出。PCE 价格指数环比 +0.5%、同比 3.6%；核心 PCE 环比 +0.3%、同比 3.1%。个人收入名义环比 +0.1%；PCE 支出名义环比 +0.1%；实际个人支出环比 −0.1%。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期",
-            "同比",
+            "本期（2026-09）",
             "备注"
           ],
           "rows": [
             [
-              "总营收",
-              "$92.3B",
-              "+19%",
-              "GAAP"
+              "PCE 价格同比",
+              "3.6%",
+              "BEA"
             ],
             [
-              "GAAP EPS",
-              "$4.92",
-              "+32%",
-              "主报"
+              "PCE 价格环比",
+              "+0.5%",
+              ""
             ],
             [
-              "non-GAAP EPS",
-              "$4.89",
-              "+18%",
-              "须并列"
+              "核心 PCE 同比",
+              "3.1%",
+              "剔除食品能源"
             ],
             [
-              "Azure",
-              "$33.165B",
-              "+48%",
-              "公司披露"
+              "核心 PCE 环比",
+              "+0.3%",
+              ""
             ],
             [
-              "Microsoft Cloud",
-              "$63.9B",
-              "+30%",
+              "个人收入（名义环比）",
+              "+0.1%",
+              ""
+            ],
+            [
+              "PCE 支出（名义环比）",
+              "+0.1%",
+              ""
+            ],
+            [
+              "实际个人支出环比",
+              "−0.1%",
               ""
             ]
           ],
-          "note": "发布：Microsoft IR／SEC｜2026-10-28"
+          "note": "发布：BEA｜2026-10-29 08:30 EDT"
         },
-        "background": "AI／云驱动；OEM −22%；分部口径 FY27 重述。",
-        "progress": "IR／SEC 可开。",
-        "importance": "H5 弱监测；单公司不升雷达三级。",
+        "background": "Fed 更偏好的通胀量尺月度落地；与 Q3 GDP 内嵌 PCE 价格口径不同。触及 H4／H1 监测，本 Brief 不改冻结基准。",
+        "progress": "官方稿已出；后续 CPI／就业另窗。",
+        "importance": "通胀路径关键锚点；Brief 不做政策路径预测。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "Azure／RPO 或支持 AI 变现讨论（推断）。",
+            "核心同比仍高于 2% 目标带，可能强化再观察／数据依赖叙事（推断）。",
+            "与 GDP 韧性并列时，可能加剧软着陆 vs 再通胀权衡讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "Microsoft Source",
-            "url": "https://news.microsoft.com/source/2026/10/28/microsoft-announces-first-quarter-results-2/"
-          },
-          {
-            "label": "SEC EX-99.1",
-            "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436122/msft-ex99_1.htm"
+            "label": "BEA Personal Income and Outlays",
+            "url": "https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026"
           }
         ]
       }
@@ -164,64 +172,84 @@
     {
       "id": "03",
       "candidate": "C03",
-      "title": "Alphabet 发布 2026 年第三季度业绩：营收约 1276 亿美元；Google Cloud 约 307 亿美元（同比约 +103%）",
-      "category": "人工智能",
-      "rubric": "人工智能｜科技企业｜金融市场",
+      "title": "Amazon：2026Q3 净销售额 2,019 亿美元；AWS +39.3%；TTM 自由现金流 −424 亿美元；2026 CapEx 展望约 2,200 亿美元",
+      "category": "科技／AI｜美股财报",
+      "rubric": "AI／科技｜金融市场",
       "verification": "有条件通过",
-      "verificationDetail": "有条件通过（05／07｜媒体预期／FCF 标转述）",
+      "verificationDetail": "有条件通过（05／07｜须并列净利同比受去年 Anthropic 投资收益基数影响；Q4 指引标公司披露）",
       "audience": "内部展示｜有条件通过",
       "sections": {
-        "whatHappened": "Alphabet 2026-10-28：营收 $127.577B（+25%）；经营利润 $40.576B（+30%）；净利 $26.170B、EPS $2.12；Cloud $30.709B（+103%）；Search & other $63.350B（+12%）。",
+        "whatHappened": "Amazon 于 2026-10-29 发布 2026Q3：净销售额 $201.9B（约 +16% YoY）；AWS 约 $40.5B（+39.3%）；经营利润约 $22.4B；GAAP 净利约 $21.6B（约 +2% YoY，上年含 Anthropic 相关投资收益）。TTM 经营现金流约 $130.7B；TTM 自由现金流约 −$42.4B。当季 CapEx（含融资租赁）约 $54.3B；2026 全年 CapEx 展望上调至约 $220B；Q4 指引为公司披露区间。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期",
-            "上年",
+            "本期（2026Q3）",
             "备注"
           ],
           "rows": [
             [
-              "合并营收",
-              "$127.577B",
-              "$102.346B",
-              "+25%"
+              "净销售额",
+              "$201.9B（约 +16% YoY）",
+              "GAAP／IR"
+            ],
+            [
+              "AWS",
+              "≈$40.5B（+39.3% YoY）",
+              ""
             ],
             [
               "经营利润",
-              "$40.576B",
-              "$31.228B",
-              "+30%"
+              "≈$22.4B",
+              ""
             ],
             [
-              "净利／EPS",
-              "$26.170B／$2.12",
-              "$34.979B／$2.87",
-              "含 OI&E 波动"
+              "GAAP 净利",
+              "≈$21.6B（约 +2% YoY）",
+              "受上年投资收益基数影响"
             ],
             [
-              "Google Cloud",
-              "$30.709B",
-              "$15.157B",
-              "+103%"
+              "TTM 经营现金流",
+              "≈$130.7B",
+              ""
+            ],
+            [
+              "TTM 自由现金流",
+              "≈−$42.4B",
+              "公司定义"
+            ],
+            [
+              "当季 CapEx",
+              "≈$54.3B",
+              "含融资租赁"
+            ],
+            [
+              "2026 全年 CapEx 展望",
+              "≈$220B",
+              "公司上调"
+            ],
+            [
+              "Q4 指引",
+              "公司披露区间",
+              "非共识"
             ]
           ],
-          "note": "发布：Alphabet IR／SEC｜2026-10-28"
+          "note": "发布：Amazon IR｜2026-10-29"
         },
-        "background": "AI 查询增速与云／TPU 需求；媒体「不及预期」非官方目标。",
-        "progress": "IR／SEC 可开。",
-        "importance": "H5／H9 弱监测；单公司不升雷达三级。",
+        "background": "相对 Brief-08／Day-10「Amazon 未出」——本窗已出。触及 H5，本 Brief 不改基准、不做升三级。",
+        "progress": "财报与电话会材料已公开；后续兑现节奏另窗监测。",
+        "importance": "云＋AI 资本开支与 FCF 张力的一手读数；Brief 不套雷达门槛。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "Cloud 高增或强化 AI 基础设施叙事（推断）。",
-            "净利同比下降或升温投入回报讨论（推断）。",
+            "AWS 高增可能被读作云／AI 需求韧性（推断）。",
+            "负 FCF＋CapEx 上调可能强化开支兑现／回报时滞讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "SEC EX-99.1",
-            "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000080/googexhibit991q32026.htm"
+            "label": "Amazon IR",
+            "url": "https://ir.aboutamazon.com/"
           }
         ]
       }
@@ -229,63 +257,54 @@
     {
       "id": "04",
       "candidate": "C04",
-      "title": "EIA：截至 2026-10-23 当周美国商业原油库存约减少 190 万桶至约 4.106 亿桶",
-      "category": "能源",
-      "rubric": "能源｜美国经济",
+      "title": "欧洲央行：维持存款便利利率 2.50% 等主要政策利率不变",
+      "category": "全球央行／欧元区",
+      "rubric": "全球央行｜金融市场",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜EIA／Reuters 交叉）",
+      "verificationDetail": "通过（05／07｜ECB 政策决定）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "EIA 2026-10-28：周截至 10-23 商业原油约 −1.9M 至约 410.6M 桶；汽油约 +3.9M；馏分油约 −1.5M；利用率约 92.8%。",
+        "whatHappened": "欧洲央行管委会决定维持主要再融资利率、边际贷款便利与存款便利利率 2.50% 不变。政策声明重申数据依赖与逐次会议决策；未宣布新的非常规工具调整。",
         "dataTable": {
           "columns": [
             "指标",
             "本期",
-            "变化",
             "备注"
           ],
           "rows": [
             [
-              "商业原油库存",
-              "约 410.6M 桶",
-              "约 −1.9M",
-              "EIA／Reuters"
+              "存款便利利率",
+              "2.50%",
+              "维持"
             ],
             [
-              "汽油库存",
-              "约 209.2M 桶",
-              "约 +3.9M",
-              ""
+              "主要再融资／边际贷款便利",
+              "维持不变",
+              "与存款便利一并决定"
             ],
             [
-              "馏分油库存",
-              "约 102.8M 桶",
-              "约 −1.5M",
-              ""
-            ],
-            [
-              "炼厂利用率",
-              "约 92.8%",
-              "约 −0.6 pct",
-              ""
+              "决策框架",
+              "数据依赖｜逐次会议",
+              "政策沟通"
             ]
           ],
-          "note": "发布：U.S. EIA｜2026-10-28；Kpler 出口争议已披露"
+          "note": "发布：ECB｜约 2026-10-29／30"
         },
-        "background": "例行周报；出口分项宜多周对照。",
-        "progress": "下期约 11-04。",
-        "importance": "H4／H8 弱监测；单周不升雷达三级。",
+        "background": "欧元区增长与通胀路径仍分化；本决定为路径延续。",
+        "progress": "政策声明与记者会已出。",
+        "importance": "主要发达经济体利率路径锚点之一；Brief 不做路径预测。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "原油去库存或被读作短期偏紧（推断）。",
+            "维持可能被读作欧元区政策观望延续（推断）。",
+            "与美端数据／定价并读时影响跨区利差叙事（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "EIA Weekly Petroleum Status Report",
-            "url": "https://www.eia.gov/petroleum/supply/weekly/"
+            "label": "ECB monetary policy decisions",
+            "url": "https://www.ecb.europa.eu/press/pr/date/2026/html/index.en.html"
           }
         ]
       }
@@ -293,51 +312,53 @@
     {
       "id": "05",
       "candidate": "C05",
-      "title": "国际油价 2026-10-28 结算回升：Brent 约 115.32 美元、WTI 约 102.78 美元",
-      "category": "能源",
-      "rubric": "能源｜金融市场",
+      "title": "欧洲央行行长 Lagarde 宣布将于 2027-02-07 卸任",
+      "category": "全球央行／人事",
+      "rubric": "全球央行",
       "verification": "通过",
-      "verificationDetail": "通过（05／07）",
+      "verificationDetail": "通过（05／07｜ECB 新闻稿）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "新华社：2026-10-28 WTI 结算约 $102.78（+$2.88）；Brent 约 $115.32（+$1.44）。相对 Brief-07 的 10-27 续跌为回升。",
+        "whatHappened": "欧洲央行行长 Christine Lagarde 宣布将于 2027-02-07 卸任。继任人选与欧盟任命程序尚待后续官方进程。",
         "dataTable": {
           "columns": [
-            "指标",
-            "2026-10-28",
-            "变化",
-            "对比 10-27"
+            "字段",
+            "内容"
           ],
           "rows": [
             [
-              "Brent",
-              "$115.32／桶",
-              "约 +1.26%",
-              "约 $113.88"
+              "现任",
+              "Christine Lagarde"
             ],
             [
-              "WTI",
-              "$102.78／桶",
-              "约 +2.88%",
-              "约 $99.90"
+              "卸任日",
+              "2027-02-07"
+            ],
+            [
+              "继任",
+              "未定（待欧盟程序）"
+            ],
+            [
+              "稿源",
+              "ECB press｜ecb.pr261029"
             ]
           ],
-          "note": "新华社英文｜2026-10-29 稿"
+          "note": "发布：ECB｜2026-10-29"
         },
-        "background": "多因子定价；归因非已证实因果。",
-        "progress": "跟踪下一交易日结算。",
-        "importance": "H4／H8；单日不升雷达三级。",
+        "background": "任期安排进入公开时间表；与当日利率决定同窗但性质不同。",
+        "progress": "卸任日已公告；任命流程另窗跟踪。",
+        "importance": "主要央行领导层交接日程；不自动改变当前政策利率事实。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "回升或再强化能源—通胀讨论（推断）。",
+            "中期可能增加政策连续性／人选预期讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "新华社英文",
-            "url": "https://english.news.cn/20261029/279ec84332204907a8e9ddfe97bc8124/c.html"
+            "label": "ECB press",
+            "url": "https://www.ecb.europa.eu/press/pr/date/2026/html/ecb.pr261029~en.html"
           }
         ]
       }
@@ -345,57 +366,43 @@
     {
       "id": "06",
       "candidate": "C06",
-      "title": "美国财政部：2026-10-28 十年期国债收益率报 5.05%",
-      "category": "金融市场",
-      "rubric": "金融市场｜美国经济",
+      "title": "美国国债：2026-10-29 名义 10 年期日终收益率 4.98%",
+      "category": "利率／美债",
+      "rubric": "金融市场",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜官方 CSV）",
+      "verificationDetail": "通过（05／07｜U.S. Treasury daily）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "Treasury：2026-10-28 10Y=5.05%（2Y=4.67%，30Y=5.37%）；较 10-27 的 4.99% 约 +6bp。",
+        "whatHappened": "据美国财政部每日国债收益率曲线，2026-10-29 名义 10 年期日终收益率为 4.98%。本条仅记录官方日终点位，不做因果归因。",
         "dataTable": {
           "columns": [
             "指标",
-            "10-28",
-            "10-27",
-            "备注"
+            "数值",
+            "日期"
           ],
           "rows": [
             [
-              "2 年期",
-              "4.67%",
-              "4.70%",
-              "Treasury"
-            ],
-            [
-              "10 年期",
-              "5.05%",
-              "4.99%",
-              "Treasury"
-            ],
-            [
-              "30 年期",
-              "5.37%",
-              "5.30%",
-              "Treasury"
+              "名义 10Y 日终",
+              "4.98%",
+              "2026-10-29"
             ]
           ],
-          "note": "U.S. Treasury Daily Treasury Par Yield Curve Rates"
+          "note": "来源：Treasury.gov daily treasury yield curve"
         },
-        "background": "H2 例行；FOMC 日波动常见，禁单因归因。",
-        "progress": "对照 H.15／FRED；CSV 已存证。",
-        "importance": "触发关注；单独不改写第二层。",
+        "background": "相对近期长端波动，本窗给出可核对点位；触及 H2 监测，本 Brief 不改冻结基准。",
+        "progress": "日终已出；次日曲线另更新。",
+        "importance": "长端定价观测点；Brief 不分解期限溢价／实际利率。",
         "marketImpact": {
           "hasImpact": true,
           "bullets": [
-            "10Y 回上 5% 或影响房贷／折现讨论（推断）。",
+            "接近 5% 的长端读数可能强化期限溢价／供需／政策预期讨论（推断）。",
             "不做交易或投资建议。"
           ]
         },
         "sources": [
           {
-            "label": "U.S. Treasury 利率统计",
-            "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics"
+            "label": "Treasury daily",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/"
           }
         ]
       }
@@ -403,106 +410,14 @@
     {
       "id": "07",
       "candidate": "C07",
-      "title": "中国商务部：王文涛部长会见欧洲议会国际贸易委员会主席朗格，就中欧经贸关系交换意见",
-      "category": "中国与亚太",
-      "rubric": "中国与亚太｜国际政治｜全球产业链",
+      "title": "后续关注日程（就业／CPI／GDP 二次估计等｜未发布）",
+      "category": "日程",
+      "rubric": "美国经济｜金融市场",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜商务部官网）",
+      "verificationDetail": "通过（仅为未发布日程索引｜非数据断言）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "商务部 2026-10-28 稿：王文涛 10-27 会见欧洲议会 INTA 主席朗格；谈中欧经贸、限制工具对产供链影响与对话磋商。",
-        "dataTable": {
-          "columns": [
-            "说明"
-          ],
-          "rows": [
-            [
-              "本条无关键量化指标（外交／政策沟通）"
-            ]
-          ],
-          "note": "商务部新闻办公室｜2026-10-28"
-        },
-        "background": "与 INTA 访华日程重叠；不等于措施取消。",
-        "progress": "以后续联合声明／措施为准。",
-        "importance": "H8／H10 弱监测。",
-        "marketImpact": {
-          "hasImpact": false,
-          "bullets": [
-            "无（立场表述；未见直接定价线索）。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "商务部新闻稿",
-            "url": "https://www.mofcom.gov.cn/syxwfb/art/2026/art_c50a6d3655844ed28905540b2682f3eb.html"
-          }
-        ]
-      }
-    },
-    {
-      "id": "08",
-      "candidate": "C08",
-      "title": "欧洲央行：Appia 代币化金融路线图公开咨询获广泛支持，将进入下一阶段市场对接",
-      "category": "欧洲",
-      "rubric": "欧洲｜金融市场",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07｜ECB 官网）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "ECB 2026-10-28：Appia 咨询 127 份反馈；支持央行货币核心代币化生态；尚未最终设计决定；下一步工作流对接 2028 蓝图。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "内容",
-            "备注"
-          ],
-          "rows": [
-            [
-              "反馈数",
-              "127",
-              "ECB"
-            ],
-            [
-              "决定状态",
-              "尚未最终决定",
-              "官方明示"
-            ],
-            [
-              "蓝图年",
-              "2028",
-              "官方"
-            ]
-          ],
-          "note": "ECB｜2026-10-28"
-        },
-        "background": "中长期市场基础设施议程，非利率决议。",
-        "progress": "咨询报告与工作流跟进。",
-        "importance": "欧洲金融结构弱监测。",
-        "marketImpact": {
-          "hasImpact": false,
-          "bullets": [
-            "无（中长期咨询；未见直接定价线索）。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "ECB Appia 公告",
-            "url": "https://www.ecb.europa.eu/press/intro/news/html/ecb.mipnews261028.en.html"
-          }
-        ]
-      }
-    },
-    {
-      "id": "09",
-      "candidate": "C09",
-      "title": "今日关键日程前瞻：BEA Q3 GDP 初值／9 月 PCE、Amazon 财报等（本早更时点尚未发布）",
-      "category": "美国经济",
-      "rubric": "美国经济｜AI／科技｜金融市场",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07｜日程核验）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "本早更时点 BEA GDP／PCE（10-29 08:30 ET）与 Amazon 盘后等尚未发布。FOMC／EIA／MSFT／GOOGL 已见本刊 01–04，不再列未发布。",
+        "whatHappened": "下列为后续常见宏观日程索引（尚未发布，不作读数断言）：美国就业形势、CPI、GDP 二次估计、以及企业后续财报／指引更新。具体钟点以 BLS／BEA／公司 IR 官方日程为准。",
         "dataTable": {
           "columns": [
             "说明"
@@ -512,15 +427,15 @@
               "本条无关键量化指标（仅为发布日程）"
             ]
           ],
-          "note": "GDP／PCE／AMZN 尚未发布"
+          "note": "就业／CPI／GDP 二次估计等尚未发布"
         },
-        "background": "FOMC 次日叠加宏观初值与科技财报。",
-        "progress": "待官方／IR 核验后再单条。",
-        "importance": "日程管理；无新读数。",
+        "background": "便于下一观察窗对照；避免把待发写成已出。",
+        "progress": "等待官方发布。",
+        "importance": "降低误把日程当数据的风险。",
         "marketImpact": {
           "hasImpact": false,
           "bullets": [
-            "无（仅为日程索引）。"
+            "无（日程本身不构成市场影响断言）。"
           ]
         },
         "sources": [
@@ -532,6 +447,6 @@
       }
     }
   ],
-  "sha256FinalBrief": "2f20fdc167ad71460dbf48c00b7e93857b38ac1c504d47848d963ab603947b51",
-  "generatedAt": "2026-10-29T08:25:00+08:00"
+  "sha256FinalBrief": "2bf50570c860fdbf975c83176afb2e181723d765262851e16686f3c77fb04079",
+  "generatedAt": "2026-10-30T08:20:00+08:00"
 }
