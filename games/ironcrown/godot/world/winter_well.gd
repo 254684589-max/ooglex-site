@@ -2,8 +2,8 @@ class_name WinterWell
 extends Node3D
 ## 白寂边缘 · 冬井（路线图 5.8b；STORY.md 5.5 第 9 步「诺伯特带你翻过山脊：冰原上那口石井，长眠者围着它站成一圈，一动不动」）。
 ## 井（HighlandLayout.WELL）一直在：一圈半埋在雪里的古老石砌井栏，井口压着裂成两半的石盖，一块歪倒、露出黑洞洞的井口；一根冻住的铁链挂在井栏上。
-## 主线「冬井」（to_well）起：长眠的人围着井站成一圈（RING_N 个，RING_R 米），脸都朝着井，一动不动（远看是 SleeperCrowd 那种简化的人，一份多实例）；
-## 圈里有几张认得的脸（真人模型，换上麻衣、光脚，定住不动）：第一章芦栈村长眠的那个人（ch1_sleeper）、妮尔的父亲（答应过妮尔才有）、
+## 主线「冬井」（to_well）起：长眠的人围着井站成一圈（RING_N 个，RING_R 米），脸都朝着井，一动不动（都是真人模型，换上麻衣、光脚，定住不动）；
+## 圈里有几张认得的脸（用那个人的外观）：第一章芦栈村长眠的那个人（ch1_sleeper）、妮尔的父亲（答应过妮尔才有）、
 ## 随她去了的妮尔（还穿着自己的衣服、背着包袱）、点着了第十八烽的话那三个守塔人。走到 FACE_R 以内认出来（recognized 信号，各一次）。
 ## 诺伯特：诺伯特在塔顶说完以后从天窗下去，在山脊背后（RIDGE_WAIT）等你；你走到 FOLLOW_R 以内，他往冰原下面走，停在井边 STOP_R 米。
 ## 你走到 REVEAL_R 以内（revealed，提示一次）；他到了、你也走到 END_R 以内 → reached（main：他说一句、过一会儿章末）。
@@ -36,7 +36,7 @@ var player: FpController
 var norbert: Npc
 var norbert_state := "wait"                     # wait（在山脊背后等）/ walk / there
 var faces: Array = []                           # [{model, slot, text, said}]
-var mm: MultiMeshInstance3D
+var ring: Node3D                                # 圈（主线「冬井」起才摆）
 var revealed_said := false
 var reached_sent := false
 
@@ -115,41 +115,49 @@ func _build_well() -> void:
 	Castle._solid(self, c + Vector3(0, 0.5, 0), Vector3(2.9, 1.0, 2.9))
 
 
-## 圈：多实例的简化人（同 SleeperCrowd 的远处画法），认得的脸换成真人模型
+## 圈：每个人都是真人模型（白天看得清：SleeperCrowd 远处那种简化的人在天光下像一排白石膏）——生人换上麻衣、光脚，几种村民的打扮轮着来；认得的脸用那个人的外观
 func _build_ring() -> void:
+	if ring:
+		return
+	ring = Node3D.new()
+	ring.name = "WellRing"
+	add_child(ring)
 	var specs := _face_specs()
 	var taken := {}
 	for f in specs:
 		taken[int(f.slot)] = true
-	mm = MultiMeshInstance3D.new()
-	mm.name = "WellRing"
-	var m := MultiMesh.new()
-	m.transform_format = MultiMesh.TRANSFORM_3D
-	m.use_colors = true
-	m.mesh = SleeperCrowd.figure_mesh()
-	m.instance_count = RING_N - taken.size()
-	mm.multimesh = m
-	mm.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mm.layers = SleeperCrowd.LAYER
-	add_child(mm)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 5822
-	var i := 0
 	for k in RING_N:
 		if taken.has(k):
 			continue
-		var p := slot(k)
-		var g := ground(p)
-		var to := HighlandLayout.WELL - p
-		var b := Basis(Vector3.UP, atan2(to.x, to.y) + rng.randf_range(-0.08, 0.08)).scaled(Vector3.ONE * rng.randf_range(0.93, 1.06))
-		m.set_instance_transform(i, Transform3D(b, g))
-		var t := rng.randf_range(0.85, 1.05)
-		m.set_instance_color(i, Color(t, t, t))
-		i += 1
+		var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"], ["Hair_Buzzed", "Hair_Beard"]][k % 4],
+			"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018", "#c8c4bc"][k % 5], "tint": {"MI_Peasant": SleeperCrowd.LINEN_TINT}})
+		if spec.is_empty():
+			continue
+		_place_model(spec, k)
 	for f in specs:
 		var model := _face(f)
 		if model:
 			faces.append({"model": model, "slot": int(f.slot), "text": str(f.text), "said": false})
+
+
+## 一个人站在圈上第 k 个位置，脸朝井，定住不动
+func _place_model(spec: Dictionary, k: int) -> CharacterModel:
+	var m := CharacterModel.new()
+	m.name = "WellFace%d" % k
+	m.parts = spec.parts
+	m.look = spec.look
+	ring.add_child(m)
+	var p := slot(k)
+	m.global_position = ground(p)
+	var to := HighlandLayout.WELL - p
+	m.rotation.y = atan2(to.x, to.y) + 0.06 * sin(k * 2.3)
+	if m.loaded:
+		Looks.hide_parts(m)
+		m.hold("idle", 0.2 + 0.05 * (k % 5))         # 定住：一动不动（各停在呼吸的不同一刻，不像一排木头）
+		for mi: MeshInstance3D in m.scene_root.find_children("*", "MeshInstance3D", true, false):
+			mi.visibility_range_end = Looks.LOD_FAR
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return m
 
 
 ## 圈里认得的脸：[{look, slot, text, linen}]
@@ -177,22 +185,7 @@ func _face(f: Dictionary) -> CharacterModel:
 		var tint: Dictionary = (spec.look.get("tint", {}) as Dictionary).duplicate()
 		tint["MI_Peasant"] = SleeperCrowd.LINEN_TINT
 		spec.look["tint"] = tint
-	var m := CharacterModel.new()
-	m.name = "WellFace%d" % int(f.slot)
-	m.parts = spec.parts
-	m.look = spec.look
-	add_child(m)
-	var p := slot(int(f.slot))
-	m.global_position = ground(p)
-	var to := HighlandLayout.WELL - p
-	m.rotation.y = atan2(to.x, to.y)
-	if m.loaded:
-		Looks.hide_parts(m)
-		m.hold("idle", 0.4)                       # 定住：一动不动
-		for mi: MeshInstance3D in m.scene_root.find_children("*", "MeshInstance3D", true, false):
-			mi.visibility_range_end = Looks.LOD_FAR
-			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return m
+	return _place_model(spec, int(f.slot))
 
 
 ## 诺伯特：不在（塔顶那个已经下去了）就放到山脊背后等你
@@ -242,7 +235,7 @@ func _physics_process(delta: float) -> void:
 					var np2 := np + d.normalized() * WALK_SPEED * delta
 					norbert.global_position = ground(np2)
 					norbert.rotation.y = atan2(-d.x, -d.y)
-	if not revealed_said and pp.distance_to(w) <= REVEAL_R and mm != null:
+	if not revealed_said and pp.distance_to(w) <= REVEAL_R and ring != null:
 		revealed_said = true
 		revealed.emit()
 	for f in faces:

@@ -412,6 +412,8 @@ func _ready() -> void:
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
 		show_ending.call_deferred("prologue", _query("ending"))
+	elif _query("ending") == "ch2" and area == "highland" and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("ch2")                 # 截图用（5.8b）：?ending=ch2 第二章的章末画面（回顾按当前旗标，配 ?well=all）
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
 			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
@@ -2123,8 +2125,7 @@ func _well_tick() -> void:
 			left = true
 	if left:
 		hud.toast("诺伯特从天窗下去了：「翻过山脊，往冰原那边。我在那儿等你。」", 5.0)
-	if ww.mm == null:
-		ww._build_ring()
+	ww._build_ring()
 	ww.ensure_norbert()
 
 

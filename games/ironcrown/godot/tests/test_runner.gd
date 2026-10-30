@@ -9506,7 +9506,7 @@ func test_well() -> void:
 	(main.streamer as ChunkStreamer).build_all()
 	await frames(3)
 	var ww: WinterWell = main.world.get_node_or_null("WinterWell")
-	check(ww != null and ww.get_node_or_null("WinterWellStones") != null and ww.mm == null and ww.norbert == null
+	check(ww != null and ww.get_node_or_null("WinterWellStones") != null and ww.ring == null and ww.norbert == null
 		and main.world.find_children("Npc_norbert", "", true, false).size() == 1,
 		"冰原上的石井一直在；诺伯特还在塔顶，井边还没有人")
 	# 他说完了（主线「冬井」）：对话关了以后从塔顶下去，在山脊背后等你；圈摆上
@@ -9515,7 +9515,7 @@ func test_well() -> void:
 	check(main.world.find_children("Npc_norbert", "", true, false).is_empty() and ww.norbert != null and ww.norbert.name == "Npc_norbert_well"
 		and Vector2(ww.norbert.global_position.x, ww.norbert.global_position.z).distance_to(WinterWell.RIDGE_WAIT) < 0.5,
 		"主线「冬井」：诺伯特从天窗下去，在山脊背后等你")
-	check(ww.mm != null and ww.mm.multimesh.instance_count == WinterWell.RING_N - 6 and ww.faces.size() == 6,
+	check(ww.ring != null and ww.ring.get_child_count() == WinterWell.RING_N and ww.faces.size() == 6,
 		"井边站着一圈 %d 个人；认得的脸 6 张（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）" % WinterWell.RING_N)
 	var y_ok := true
 	for k in WinterWell.RING_N:
@@ -9561,7 +9561,7 @@ func test_well() -> void:
 	(m2.streamer as ChunkStreamer).build_all()
 	await frames(3)
 	var w2: WinterWell = m2.world.get_node("WinterWell")
-	check(w2.norbert_state == "there" and w2.mm != null and w2.mm.multimesh.instance_count == WinterWell.RING_N and m2.world.find_children("Npc_norbert", "", true, false).is_empty(),
+	check(w2.norbert_state == "there" and w2.ring != null and w2.ring.get_child_count() == WinterWell.RING_N and w2.faces.is_empty() and m2.world.find_children("Npc_norbert", "", true, false).is_empty(),
 		"章末以后再来：诺伯特站在井边，那一圈人还在（没有认得的脸就都是生人）")
 	await free_main(m2)
 	# 回顾的另外几种
