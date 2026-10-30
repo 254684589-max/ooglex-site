@@ -17,8 +17,9 @@ function markerSummary(html, app) {
     appKeyboardNav: app.includes("event.key === 'ArrowLeft'") && app.includes("event.key === 'ArrowRight'"),
     appSwipeNav: app.includes("viewer.addEventListener('touchstart'") && app.includes("viewer.addEventListener('touchmove'") && app.includes("viewer.addEventListener('touchend'") && app.includes('stepWindow(dy < 0 ? 1 : -1)'),
     appAudioUnlock: app.includes('let audioUnlocked = false') && app.includes('video.muted = !audioUnlocked') && app.includes('activateAudio') && app.includes('video.muted = false'),
-    floatingControls: html.includes('background:transparent;backdrop-filter:none;box-shadow:none') && html.includes('.viewer-control.icon{width:36px;min-width:36px') && html.includes('app.js?v=17'),
+    floatingControls: html.includes('background:transparent;backdrop-filter:none;box-shadow:none') && html.includes('.viewer-control.icon{width:36px;min-width:36px') && html.includes('app.js?v=18'),
     nativeControlsOff: app.includes('video.controls = false') && !app.includes('video.controls = true'),
+    noCenterPlayPoster: app.includes('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') && !/setAttribute\(\s*['"]x5-playsinline['"]/.test(app) && html.includes('::-webkit-media-controls-overlay-enclosure'),
     oldTopListener: app.includes("$('#randomTop')")
   };
 }
@@ -37,6 +38,7 @@ function valid(summary) {
     summary.appAudioUnlock &&
     summary.floatingControls &&
     summary.nativeControlsOff &&
+    summary.noCenterPlayPoster &&
     !summary.oldTopListener;
 }
 
