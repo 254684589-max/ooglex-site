@@ -44,6 +44,11 @@ var obstacles: Array = []              # [[Vector2 圆心, 半径], ...]
 var alt_route: Array = []              # 5.4c：碰到火的人改走这条（「火让它们拐弯」：第一夜那排火把把潮水从营地引到西边绕过去）；空 = 不改道
 var hidden := {}                       # 5.4c：这几个人不画（编号 → true），由外面换成别的模型（潮水里认得的那张脸）
 var rerouted := 0                      # 改了道的人数
+var victims: Array = []                # 5.7a：会被推倒踩过的兵（Soldier.trampled）
+var trampled_soldiers := 0
+const SOLDIER_KNOCK := 0.9
+const SOLDIER_TRAMPLE_DMG := 6
+const SOLDIER_FEAR := 12.0
 var player: FpController
 var height_fn: Callable                # (x, z) -> y；空 = 都在 y = 0
 var near_enabled := true               # 测试里可以关掉真人模型（无头测试不加载模型也行）
@@ -253,6 +258,8 @@ func _step(dt: float) -> void:
 		a.phase += dt * 5.2 * spd
 		if pp != Vector2.INF:
 			_hit_player(a, pp)
+		if not victims.is_empty() and (a.v as Vector2).length() > 0.1:
+			_hit_soldiers(a)
 	if not _done_sent and alive() == 0:
 		_done_sent = true
 		finished.emit()
@@ -294,6 +301,23 @@ func _route_dir(a: Dictionary) -> Vector2:
 		return (ahead - a.p).normalized()
 	a.done = true
 	return Vector2.ZERO
+
+
+## 挡在前面的兵（5.7a）：推倒、踩过（每个兵每 TRAMPLE_GAP 秒最多一次）
+func _hit_soldiers(a: Dictionary) -> void:
+	for v in victims:
+		var s := v as Soldier
+		if s == null or not is_instance_valid(s) or not s.fighting():
+			continue
+		var sp := Vector2(s.global_position.x, s.global_position.z)
+		if sp.distance_squared_to(a.p) > SOLDIER_KNOCK * SOLDIER_KNOCK:
+			continue
+		var last := float(s.get_meta("trampled_t", -99.0))
+		if _clock - last < TRAMPLE_GAP:
+			continue
+		s.set_meta("trampled_t", _clock)
+		s.trampled(SOLDIER_TRAMPLE_DMG, SOLDIER_FEAR)
+		trampled_soldiers += 1
 
 
 ## 挡在前面的主角：走到 KNOCK_DIST 以内、朝着他走 → 推倒（躺一会儿）、踩一下（伤害、寒冷）

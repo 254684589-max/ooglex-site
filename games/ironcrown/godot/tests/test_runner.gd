@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9187,6 +9187,93 @@ func test_convoy() -> void:
 	await frames(3)
 	check(m2.world.find_children("Convoy", "", true, false).size() == 1, "第二夜以前粮车还停在驿站门口")
 	await free_main(m2)
+
+
+## 5.7a 第二夜 · 劫粮：伏击段上五辆车、两边的人、车头的枯松；走到伏击点开打（先存档）；第二次潮水横穿山路、踩倒兵；火把点着车；结果旗标和声望
+func _ambush_game(ambush: String, seed: int) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "rob")
+	GameState.set_flag("ch2_ambush", ambush)
+	GameState.set_stage("ch2_main", "rob_ready")
+
+
+func test_ambush() -> void:
+	_ambush_game("head", 600)
+	var main := await make_area("highland")
+	await frames(3)
+	var ca: ConvoyAmbush = main.world.get_node_or_null("ConvoyAmbush")
+	var b: Battle = main.battle
+	check(ca != null and b != null and not b.started and ca.get_node_or_null("AmbushCarts") != null and ca.get_node_or_null("FelledPine") != null
+		and main.world.find_children("Convoy", "", true, false).is_empty(),
+		"主线「设伏」：伏击段上五辆粮车、车头前锯倒的枯松（村里没有车了：出村了）")
+	var ours := b.roster.filter(func(s): return s.side == ConvoyAmbush.OURS).size() + b.reserve.filter(func(e): return e[0].side == ConvoyAmbush.OURS).size()
+	var foe := b.roster.filter(func(s): return s.side == ConvoyAmbush.FOE).size() + b.reserve.filter(func(e): return e[0].side == ConvoyAmbush.FOE).size()
+	check(ours == 10 and foe == 16 and b.squad.size() == 10, "烽誓团 10 个人（小队）对洛蒙德家 16 个（押车队长、14 个押车兵、安塞尔姆）")
+	var sp: Array = HighlandLayout.spawn_points().ambush
+	check(absf(ConvoyAmbush.t_of(sp[0]) - ConvoyAmbush.SPAWN_T.head) < 0.5 and absf((sp[0] as Vector3).y - Highland.height_at(sp[0].x, sp[0].z)) < 0.3 and not ConvoyAmbush.at_post(sp[0]),
+		"出生点在车头前的伏击段路上，离伏击点还有几步")
+	var p: FpController = main.player
+	p.global_position = ConvoyAmbush.leg_point(ConvoyAmbush.POST_T.head) + Vector3(0, 0.3, 0)
+	await frames(3)
+	check(b.started and not Saves.read_slot("auto").is_empty(), "走到伏击点：开打（先自动存档）")
+	await seconds(2.0)
+	b.elapsed = ConvoyAmbush.TIDE_AT + 0.1            # 跳到潮水那一刻（无头测试物理步数有上限，快进不了这么多）
+	await physics(3)
+	check(ca.tide_started and ca.crowd != null and ca.crowd.count == ConvoyAmbush.TIDE_COUNT and ca.crowd.victims.size() > 0,
+		"开打 %d 秒后第二次潮水横穿山路：%d 个长眠者，兵也会被踩" % [ConvoyAmbush.TIDE_AT, ConvoyAmbush.TIDE_COUNT])
+	var guard: Soldier = null
+	for s in b.roster:
+		if is_instance_valid(s) and s.side == ConvoyAmbush.FOE and s.fighting() and not s.is_captain:
+			guard = s
+			break
+	if guard:
+		var a: Dictionary = ca.crowd.agents[0]
+		var m0 := guard.morale
+		guard.global_position = Vector3(a.p.x, Highland.height_at(a.p.x, a.p.y) + 0.1, a.p.y)
+		await physics(4)
+		check(ca.crowd.trampled_soldiers > 0 and (guard.morale < m0 or not guard.fighting()), "挡在潮水前面的押车兵被推倒、踩过：士气 %.0f → %.0f" % [m0, guard.morale])
+	else:
+		check(false, "找得到一个押车兵")
+	var c := ConvoyAmbush.leg_point(ConvoyAmbush.CART_T[1], 1.2)
+	var pt := PlantedTorch.make(TorchHand.FUEL, false)
+	main.world.add_child(pt)
+	pt.global_position = c
+	await physics(3)
+	check(ca.carts_burning.has(1), "火把插在粮车边上：车上的麻袋着了")
+	var lom := int(GameState.rep.get("lomond", 0))
+	var oath := int(GameState.rep.get("beacon_oath", 0))
+	main._on_battle_ended(ConvoyAmbush.OURS)
+	check(str(GameState.get_flag("ch2_convoy", "")) == "burned" and GameState.quest_stage("ch2_main") == "dawn_after"
+		and int(GameState.rep.get("lomond", 0)) == lom - 20 and int(GameState.rep.get("beacon_oath", 0)) == oath + 10,
+		"赢了可烧了车：burned；洛蒙德家 −20、烽誓团 +10；主线「天亮以后」")
+	await free_main(main)
+	# 先断车尾：没有枯松；赢了车没烧 = taken；输了 = repelled
+	_ambush_game("tail", 601)
+	var m2 := await make_area("highland")
+	await frames(3)
+	var ca2: ConvoyAmbush = m2.world.get_node_or_null("ConvoyAmbush")
+	check(ca2 != null and ca2.get_node_or_null("FelledPine") == null and absf(ConvoyAmbush.t_of(HighlandLayout.spawn_points().ambush[0]) - ConvoyAmbush.SPAWN_T.tail) < 0.5,
+		"先断车尾：没有枯松，你在车尾后面")
+	check(ca2.result(ConvoyAmbush.OURS) == "taken" and ca2.result(ConvoyAmbush.FOE) == "repelled", "车没烧赢了 = taken；输了 = repelled")
+	await free_main(m2)
+	# 卡斯滕留下来：多一个人；第十八烽点着：潮水小
+	_ambush_game("head", 602)
+	GameState.set_flag("ch2_carsten", "stayed")
+	GameState.set_flag("ch2_beacon18", "lit")
+	var m3 := await make_area("highland")
+	await frames(3)
+	check(m3.battle.squad.size() == 11 and m3.battle.squad.any(func(s): return s.display_override == "卡斯滕"), "卡斯滕留下来了：身边多一个人")
+	var ca3: ConvoyAmbush = m3.world.get_node("ConvoyAmbush")
+	ca3.player = m3.player
+	m3.start_battle()
+	ca3._start_tide()
+	check(ca3.crowd.count == ConvoyAmbush.TIDE_COUNT_LIT18, "第十八烽点着了：第二夜的潮水小一些（%d 个）" % ConvoyAmbush.TIDE_COUNT_LIT18)
+	await free_main(m3)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

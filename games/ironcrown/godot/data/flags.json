@@ -126,5 +126,6 @@
   "ch2_requisition_given": {"desc": "罗薇娜把空白的征粮令给了你（5.6，只给一次）", "set_in": "waystation.json rowena/requisition", "read_in": "waystation.json rowena 的选项"},
   "ch2_extra_grain": {"desc": "征粮令写了五车、安塞尔姆认了：另外两车粮当夜卸在羊脊村驿站（5.6）", "set_in": "highland.json anselm/req5", "read_in": "5.8 章末回顾"},
   "heard_convoy_time": {"desc": "罗薇娜说粮车天黑透以后出村（5.6）", "set_in": "waystation.json rowena/convoy_time", "read_in": "5.7a 劫粮"},
-  "anselm_met": {"desc": "见过押粮官安塞尔姆（5.6）", "set_in": "highland.json anselm/greet", "read_in": "highland.json anselm"}
+  "anselm_met": {"desc": "见过押粮官安塞尔姆（5.6）", "set_in": "highland.json anselm/greet", "read_in": "highland.json anselm"},
+  "ch2_convoy": {"desc": "第二夜的结果（5.7）：劫粮 taken = 押车兵散了、车没烧，burned = 赢了可车烧了，repelled = 你们被打散了；护粮 delivered / partial（5.7b）", "set_in": "world/convoy_ambush.gd finish（main._on_battle_ended）", "read_in": "5.8 天亮、章末回顾"}
 }

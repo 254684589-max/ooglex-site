@@ -130,6 +130,15 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
+		if _query("rob") in ["head", "tail"] and not Engine.has_meta("ic_rob_param_done"):
+			Engine.set_meta("ic_rob_param_done", true)        # 截图用（5.7a）：?rob=head|tail 直接到劫粮那一夜（伏击段上摆好；配 &cwskip=秒 开打并快进）
+			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "rob")
+			GameState.set_flag("ch2_ambush", _query("rob"))
+			GameState.set_stage("ch2_main", "rob_ready")
+			GameState.daypart = "night"
 		if _query("day2") in ["1", "lit", "convoy"] and not Engine.has_meta("ic_day2_param_done"):
 			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了；=convoy 粮车到村（5.6）
 			GameState.set_stage("ch2_main", "after_tide")
@@ -242,6 +251,8 @@ func _ready() -> void:
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
+	if area == "highland":
+		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
@@ -1824,6 +1835,16 @@ func give_order(o: String) -> bool:
 func _on_battle_ended(winner: String) -> void:
 	if battle_bench:
 		return
+	if area == "highland":                              # 第二夜 · 劫粮（5.7a）：写旗标、声望、推进主线、自动存档；过一会儿天亮
+		var ca := world.get_node_or_null("ConvoyAmbush") as ConvoyAmbush
+		var res := ca.result(winner) if ca else ("taken" if winner == battle.player_side else "repelled")
+		hud.toast(ConvoyAmbush.finish(res), 6.0)
+		print("IC_AMBUSH end winner=%s result=%s" % [winner, res])
+		save_game.call_deferred("auto", true)
+		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+			if is_inside_tree() and not leaving and area == "highland":
+				set_daypart("dawn"))
+		return
 	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
 		var held := winner == battle.player_side
 		hud.toast(CausewayBattle.finish(held), 6.0)
@@ -1959,6 +1980,29 @@ func _on_tide_ended(result: String) -> void:
 	save_game("auto", true)
 
 
+## 第二夜 · 劫粮（5.7a，world/convoy_ambush.gd）：主线到「设伏」时天黑透、粮车出村——把你放到伏击段（重新载入高地，摆好那场仗）；走到伏击点开打
+func _ambush_tick() -> void:
+	if area != "highland" or player == null or leaving:
+		return
+	var ca := world.get_node_or_null("ConvoyAmbush") as ConvoyAmbush
+	if ca and ca.player == null:
+		ca.player = player
+		if _query("rob") != "" and _query("cam") == "":
+			var sp := ConvoyAmbush.spawn()                # 截图用（?rob=）：站到伏击段上
+			player.global_position = sp[0]
+			player.rotation.y = deg_to_rad(float(sp[1]))
+	if ConvoyAmbush.due() and (battle == null or not is_instance_valid(battle)):
+		Engine.set_meta("ic_arrive_note", "天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。" % ("车头前那棵锯倒的枯松后面" if ConvoyAmbush.ambush() == "head" else "车尾后面的弯道上"))
+		travel("highland", "ambush", "night")
+		return
+	if ca and battle and is_instance_valid(battle) and not battle.started and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
+		start_battle()
+		if _query("cwskip").is_valid_float():         # 截图用：开打并快进到第 N 秒（同堤道夜战）
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+		hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
+
+
 ## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」
 func _beacon_arrival() -> void:
 	if area != "highland" or player == null or GameState.chapter != 2 or GameState.quest_stage("ch2_main") != "to_beacon19":
@@ -2079,6 +2123,7 @@ func _process(delta: float) -> void:
 	_cold_tick(delta)
 	_beacon_arrival()
 	_first_tide_tick()
+	_ambush_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

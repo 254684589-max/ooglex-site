@@ -505,7 +505,7 @@ static func read_stones() -> Dictionary:
 
 ## 洛蒙德家的粮车（5.6；STORY.md 5.5 第 6 步「粮车到了羊脊村歇脚」）：第二天主线到「粮车到村」以后、第二夜以前停在驿站门口的村路上。
 ## 五辆车（满载麻袋）沿路排成一列，押粮官安塞尔姆在车尾（对话 highland.json anselm），四个押车兵、两个车夫只说一句（LINES）。
-const CONVOY_STAGES := ["convoy_day", "talk_anselm", "aid_refused", "rob_ready", "escort_ready", "empty_handed"]
+const CONVOY_STAGES := ["convoy_day", "talk_anselm", "aid_refused", "escort_ready", "empty_handed"]      # 「设伏」时天黑透，车已经出村上了盘山路（5.7a）
 const CONVOY_CARTS := 5
 
 
