@@ -113,6 +113,8 @@
   "ch2_stones": {"desc": "石圈上的刻字（5.5a）：copied = 记下了几个认得出的字；matched = 身上有奥尔本修士的旧书，残卷上一模一样（「封于冬井，誓不可断」）", "set_in": "world/highland_village.gd read_stones", "read_in": "beacon19.json norbert（第二天多说一句）"},
   "ch2_beacon18_given": {"desc": "马蒂亚斯给了点第十八烽的柴和火油（5.5a；只给一次）", "set_in": "beacon19.json matthias/beacon18_go", "read_in": "beacon19.json matthias 的选项"},
   "heard_coronation": {"desc": "诺伯特第二天讲了加冕礼那夜「封誓少做了一步」（5.5a）", "set_in": "beacon19.json norbert/coronation", "read_in": "beacon19.json norbert；5.6"},
+  "norbert_dawn": {"desc": "第二夜过去以后诺伯特在塔顶说完剩下的话：守满十年没走，等一个人上山来问那一夜；要带你去看冬井（5.8a，主线推进到「冬井」）", "set_in": "beacon19.json norbert/dawn_well", "read_in": "5.8b"},
+  "ch2_fire": {"desc": "天亮时第十九烽的火（5.8a，quest/chapter2.gd dawn）：lit = 粮上了山（ch2_convoy taken / burned / delivered / partial），out = 没上来（repelled / lost / 两手空空）", "set_in": "Chapter2.dawn（ConvoyAmbush.finish、ConvoyEscort.finish、main._empty_night_tick）", "read_in": "beacon19.json norbert、HighlandBeacon.apply_fire、5.8b 章末回顾"},
   "norbert_day2": {"desc": "诺伯特第二天交代完：先保住烽燧（5.5a，主线推进到「粮车到村」）", "set_in": "beacon19.json norbert/keep_fire", "read_in": "beacon19.json norbert"},
   "ch2_nell_father_seen": {"desc": "第一夜的潮水里认出了妮尔的父亲（左手少两根指头；5.5b，答应过妮尔才有）", "set_in": "world/first_tide.gd", "read_in": "highland.json nell/day2"},
   "ch2_carsten": {"desc": "支线「第十年」（5.5b）：freed = 替他说动了马蒂亚斯（第二夜过后走），fled = 帮他夜里溜走了（烽誓团 −10），stayed = 劝他再守一年（烽誓团 +5，第二夜身边多一个人）", "set_in": "beacon19.json carsten / matthias", "read_in": "world/highland_beacon.gd people；5.7"},

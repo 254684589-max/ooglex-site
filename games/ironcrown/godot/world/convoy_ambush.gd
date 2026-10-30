@@ -280,8 +280,7 @@ static func finish(res: String) -> String:
 	GameState.change_rep("lomond", -20)
 	if res != "repelled":
 		GameState.change_rep("beacon_oath", 10)
-	if GameState.quest_active("ch2_main"):
-		GameState.set_stage("ch2_main", "dawn_after")
+	Chapter2.dawn()                                           # 火亮不亮（ch2_fire）、主线「天亮以后」（5.8）
 	match res:
 		"taken":
 			return "✓ 押车兵散了。五车粮是你们的了——马蒂亚斯的人连夜把车往山上推。天快亮了。"

@@ -45,6 +45,7 @@ var quest_panel: QuestPanel
 var bench_results: Array = []
 var battle_bench := false
 const DAWN_DELAY := 6.0          # 堤道夜战打完多久天亮、换到黑鹭堡（4.10a）         # 军阵基准测试在跑（B.5）：军阵的提示不弹出来，免得盖住结果表
+const EMPTY_NIGHT_SEC := 12.0    # 两手空空：天黑到天亮几秒（5.8）
 
 var env: Environment
 var world: Node3D
@@ -98,6 +99,7 @@ var daypart := "night"          # 这个场景实际在用的时段（4.2，Dayp
 var cold_state := {}            # 寒冷（5.2c）：在火边歇了多久（冻伤好要连着歇够）
 var cold_shown := ""            # HUD 上现在写的那行寒冷
 var first_tide: FirstTide       # 第一夜潮水（5.4c）：主线到「插火把」「潮水」时在高地搭起来
+var empty_night := false         # 两手空空那一夜正在熬（5.8）
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -139,6 +141,16 @@ func _ready() -> void:
 			GameState.set_flag("ch2_ambush", _query("rob"))
 			GameState.set_stage("ch2_main", "rob_ready")
 			GameState.daypart = "night"
+		if _query("dawn") in ["lit", "out"] and not Engine.has_meta("ic_dawn_param_done"):
+			Engine.set_meta("ic_dawn_param_done", true)       # 截图用（5.8）：?dawn=lit|out 直接到第二夜过去的早上（劫下了粮 / 被打退了）
+			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "rob")
+			GameState.set_flag("ch2_convoy", "taken" if _query("dawn") == "lit" else "repelled")
+			GameState.set_stage("ch2_main", "rob_ready")
+			Chapter2.dawn()
+			GameState.daypart = "dawn"
 		if _query("escort") == "1" and not Engine.has_meta("ic_escort_param_done"):
 			Engine.set_meta("ic_escort_param_done", true)     # 截图用（5.7b）：?escort=1 直接到护粮那一夜（三辆车在伏击段下头；配 &cwskip=秒 动身并快进）
 			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
@@ -1855,7 +1867,7 @@ func _on_battle_ended(winner: String) -> void:
 		save_game.call_deferred("auto", true)
 		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
 			if is_inside_tree() and not leaving and area == "highland":
-				set_daypart("dawn"))
+				_ch2_dawn_world())
 		return
 	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
 		var held := winner == battle.player_side
@@ -2057,7 +2069,35 @@ func _on_escort_ended(res: String) -> void:
 	save_game.call_deferred("auto", true)
 	get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
 		if is_inside_tree() and not leaving and area == "highland":
-			set_daypart("dawn"))
+			_ch2_dawn_world())
+
+
+## 第二夜过去、天亮（5.8）：塔顶的火亮不亮（Chapter2.dawn 已经定了 ch2_fire）、诺伯特上塔顶
+func _ch2_dawn_world() -> void:
+	set_daypart("dawn")
+	HighlandBeacon.apply_fire(world)
+	HighlandBeacon.dawn_norbert(world)
+	hud.toast("天亮了。山脊上，第十九烽的火还亮着。" if not Chapter2.fire_out() else "天亮了。山脊上，第十九烽的塔顶没有烟。", 4.5)
+	save_game("auto", true)                         # 读档回来是天亮以后（打完那一刻的自动存档还是夜里）
+
+
+## 两手空空（5.6 empty_handed，5.8）：主线到这一步，这一夜就这么熬过去——天黑、柴省着烧、天亮时火熄了
+func _empty_night_tick() -> void:
+	if area != "highland" or player == null or leaving or empty_night or dialogue.visible:
+		return
+	if GameState.chapter != 2 or GameState.quest_stage("ch2_main") != "empty_handed":
+		return
+	empty_night = true
+	set_daypart("night", false)
+	hud.toast("天黑了。营里把最后几捆柴省着烧，火盆里的火压得很小。没有人说话。", 6.0)
+	print("IC_EMPTY night")
+	get_tree().create_timer(EMPTY_NIGHT_SEC).timeout.connect(func():
+		if not is_inside_tree() or leaving or area != "highland":
+			empty_night = false
+			return
+		Chapter2.dawn()
+		_ch2_dawn_world()
+		print("IC_EMPTY dawn fire=%s" % GameState.get_flag("ch2_fire", "")))
 
 
 ## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」
@@ -2182,6 +2222,7 @@ func _process(delta: float) -> void:
 	_first_tide_tick()
 	_ambush_tick()
 	_escort_tick()
+	_empty_night_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

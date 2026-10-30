@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9376,6 +9376,109 @@ func test_escort() -> void:
 	check(ce2.crowd.count == ConvoyAmbush.TIDE_COUNT_LIT18, "第十八烽点着了：护粮那一夜的潮水也小一些（%d 个）" % ConvoyAmbush.TIDE_COUNT_LIT18)
 	check(ConvoyEscort.finish("partial").begins_with("✓ 只有一车"), "一车上山：partial")
 	await free_main(m2)
+
+
+## 5.8a 天亮 · 火还在不在：粮上了山火亮着、没上来火熄了；诺伯特回到塔顶（亮着站着、灭了蹲在冷灰边），说完剩下的话、要带你去看冬井；马蒂亚斯按结果说一句；两手空空那一夜自己熬过去
+func _dawn2_game(seed: int, grain: String, convoy: String) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "dawn"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", grain)
+	if convoy != "":
+		GameState.set_flag("ch2_convoy", convoy)
+	GameState.set_stage("ch2_main", "rob_ready" if grain == "rob" else "escort_ready")
+	Chapter2.dawn()
+
+
+func test_dawn2() -> void:
+	for pair in [["taken", "lit"], ["burned", "lit"], ["repelled", "out"], ["delivered", "lit"], ["partial", "lit"], ["lost", "out"], ["", "out"]]:
+		_dawn2_game(800, "rob", str(pair[0]))
+		check(str(GameState.get_flag("ch2_fire", "")) == str(pair[1]) and GameState.quest_stage("ch2_main") == "dawn_after",
+			"第二夜 %s：天亮时火 %s，主线「天亮以后」" % [pair[0] if pair[0] != "" else "两手空空", pair[1]])
+	# 火亮着：塔顶的火、诺伯特站在火盆边；小屋里没有他
+	_dawn2_game(801, "rob", "taken")
+	var main := await make_area("highland")
+	(main.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var w: Node = main.world
+	var flames: Array = w.find_children("BeaconFlames", "Node3D", true, false)
+	var ash: Array = w.find_children("BeaconAsh", "Node3D", true, false)
+	var nb: Array = w.find_children("Npc_norbert*", "", true, false)
+	check(flames.size() == 1 and (flames[0] as Node3D).visible and ash.size() == 1 and not (ash[0] as Node3D).visible, "火亮着：塔顶火盆里的火在烧")
+	check(nb.size() == 1 and nb[0].name == "Npc_norbert" and (nb[0] as Node3D).global_position.y > HighlandLayout.tower_base_y() + HighlandLayout.TOWER_H - 0.5,
+		"诺伯特又上了塔顶，站在火盆边")
+	await free_main(main)
+	var tower := await make_area("beacon_tower")
+	await frames(3)
+	check(tower.world.find_children("Npc_norbert_room", "", true, false).is_empty(), "小屋里没有他了")
+	await free_main(tower)
+	var r := DialogueRunner.new()
+	r.start("beacon19", "norbert")
+	check(r.text().contains("劫来的") and r.text().contains("火还亮着"), "诺伯特（劫来的粮）：洛蒙德家会记着这一笔，可火还亮着")
+	pick(r, "你说过，等火还亮着的时候再说。")
+	check(r.text().contains("等了二十五年") and r.text().contains("来的是你"), "守满十年没走：等一个人上山来问那一夜")
+	pick(r, "你在等什么？")
+	check(r.text().contains("冬井") and GameState.quest_stage("ch2_main") == "to_well" and GameState.has_flag("norbert_dawn"),
+		"老规矩：封好的誓瓶送到冬井；那一夜瓶是空的，他没去过——要带你去看（主线「冬井」）")
+	r.start("beacon19", "norbert")
+	check(r.text().contains("趁天亮"), "再找他：走吧，趁天亮")
+	r.start("beacon19", "matthias")
+	check(r.text().contains("五车") and r.text().contains("诺伯特在塔顶"), "马蒂亚斯：劫下了五车")
+	# 刻过字的：他接上「封于冬井」
+	_dawn2_game(802, "lawful", "delivered")
+	GameState.set_flag("ch2_stones", "copied")
+	r.start("beacon19", "norbert")
+	check(r.text().contains("安塞尔姆送上来的"), "诺伯特（护粮）：洛蒙德家欠了北边一个人情")
+	pick(r, "你说过，等火还亮着的时候再说。")
+	pick(r, "你在等什么？")
+	check(r.text().begins_with("石圈上那句话"), "念过石圈上的字：他接上「封于冬井」")
+	# 火灭了：冷灰、诺伯特蹲在冷灰边，话短一些
+	_dawn2_game(803, "rob", "repelled")
+	var m2 := await make_area("highland")
+	(m2.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var f2: Array = m2.world.find_children("BeaconFlames", "Node3D", true, false)
+	var a2: Array = m2.world.find_children("BeaconAsh", "Node3D", true, false)
+	check(not (f2[0] as Node3D).visible and (a2[0] as Node3D).visible and m2.world.find_children("Npc_norbert_cold", "", true, false).size() == 1
+		and not SleeperCrowd.fires(m2.get_tree()).any(func(f): return (f[0] as Vector2).distance_to(HighlandLayout.TOWER[0]) < 3.0),
+		"火灭了：火盆里一层冷灰，诺伯特蹲在边上（火不再让长眠者绕开）")
+	await free_main(m2)
+	r.start("beacon19", "norbert")
+	check(r.text().contains("冷灰") and r.text().contains("抬着伤兵"), "诺伯特（被打退）：灭了，伤兵抬回来的时候只剩一点红")
+	pick(r, "……火灭了。")
+	check(r.text().contains("火却灭了"), "话短一些：来的是你，火却灭了")
+	pick(r, "……")
+	check(GameState.quest_stage("ch2_main") == "to_well", "照样要带你去看冬井")
+	r.start("beacon19", "matthias")
+	check(r.text().contains("没劫下来"), "马蒂亚斯：没劫下来，三个弟兄抬回来的")
+	# 两手空空：那一夜自己熬过去（天黑 → 天亮，火熄了；天亮那一刻诺伯特上塔顶）
+	GameState.new_game(804)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "lawful")
+	GameState.set_flag("ch2_aid", "refused")
+	GameState.set_stage("ch2_main", "empty_handed")
+	var m3 := await make_area("highland")
+	(m3.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	check(m3.empty_night and GameState.daypart == "night", "两手空空：天黑了，柴省着烧")
+	check(m3.world.find_children("Npc_norbert*", "", true, false).is_empty(), "夜里诺伯特不在塔顶")
+	Chapter2.dawn()
+	m3._ch2_dawn_world()
+	await frames(2)
+	var f3: Array = m3.world.find_children("BeaconFlames", "Node3D", true, false)
+	check(GameState.daypart == "dawn" and str(GameState.get_flag("ch2_fire", "")) == "out" and not (f3[0] as Node3D).visible
+		and m3.world.find_children("Npc_norbert_cold", "", true, false).size() == 1 and not Saves.read_slot("auto").is_empty(),
+		"天亮：火熄了（冷灰），诺伯特上了塔顶，自动存档")
+	await free_main(m3)
+	r.start("beacon19", "matthias")
+	check(r.text().contains("两手空空"), "马蒂亚斯：两手空空，火天亮前就灭了")
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

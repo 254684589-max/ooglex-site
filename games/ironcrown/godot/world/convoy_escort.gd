@@ -510,8 +510,7 @@ static func finish(res: String, carts_through := -1) -> String:
 			GameState.change_rep("lomond", -5)
 			if req:
 				GameState.change_rep("eld", -5)
-	if GameState.quest_active("ch2_main"):
-		GameState.set_stage("ch2_main", "dawn_after")
+	Chapter2.dawn()                                           # 火亮不亮（ch2_fire）、主线「天亮以后」（5.8）
 	match res:
 		"delivered":
 			return "✓ %s车粮翻过了山脊。安塞尔姆在后头数车，没说话，冲你点了一下头。天快亮了。" % (NUM[carts_through - 1] if carts_through >= 1 and carts_through <= 3 else "两")
