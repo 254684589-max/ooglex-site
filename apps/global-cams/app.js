@@ -23,6 +23,8 @@ const TOKYO = Object.freeze({ lat: 35.6762, lng: 139.6503, altitude: 1.45 });
 // 与环球TV相同的中央照准圈：圆圈固定在地球中央，拖动地球把窗口转进圈内，
 // 松手后吸附到圈中心最近的窗口并播放。吸附半径与环球TV一致。
 const SNAP_KM = 900;
+// 1×1 透明图。空 poster 会被忽略，安卓 WebView 就会画默认播放海报。
+const TRANSPARENT_POSTER = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 let windows = [];
 let filtered = [];
 let selectedId = '';
@@ -281,7 +283,10 @@ function showWindow(d, options = {}) {
   viewer.appendChild(badge);
 
   const video = document.createElement('video');
-  video.src = d.video_url;
+  // poster 必须写在 src 之前。安卓 WebView 没海报时会用系统默认图：
+  // 椭圆描边加大三角，播起来也不撤，controls=false 和伪元素都压不住。
+  video.setAttribute('poster', TRANSPARENT_POSTER);
+  video.poster = TRANSPARENT_POSTER;
   video.autoplay = true;
   video.defaultMuted = !audioUnlocked;
   video.muted = !audioUnlocked;
@@ -290,17 +295,18 @@ function showWindow(d, options = {}) {
   video.playsInline = true;
   video.setAttribute('playsinline', '');
   video.setAttribute('webkit-playsinline', '');
-  video.setAttribute('x5-playsinline', '');
+  // 只开同层页内播放。x5-playsinline 会改走原生播放器，正中大三角和白圆暂停会盖回来。
   video.setAttribute('x5-video-player-type', 'h5-page');
   video.setAttribute('x5-video-player-fullscreen', 'false');
-  // 竖滑切窗时，controls=true 会让浏览器 / WebView 盖上灰底大三角和白圆暂停。
   video.controls = false;
   video.removeAttribute('controls');
+  video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback noplaybackrate');
+  video.setAttribute('disableremoteplayback', '');
   try { video.disablePictureInPicture = true; } catch {}
-  video.preload = 'metadata';
-  const disarm = () => disarmNativeVideoControls(video);
-  video.addEventListener('loadedmetadata', disarm);
-  video.addEventListener('play', disarm);
+  try { video.disableRemotePlayback = true; } catch {}
+  video.preload = 'auto';
+  video.src = d.video_url;
+  lockNativeVideoOverlay(video);
   video.addEventListener('error', () => {
     setStatus('该 WINDOW 暂时无法播放，可查看原始素材来源。', 'warn');
   });
@@ -312,15 +318,12 @@ function showWindow(d, options = {}) {
   shield.className = 'viewer-shield';
   shield.setAttribute('aria-hidden', 'true');
   viewer.appendChild(shield);
+  viewer.appendChild(buildViewerProgress());
+  bindViewerProgress(video);
   viewer.appendChild(buildViewerControls());
   syncImmersiveMode();
   hideViewerChrome();
-  if (audioUnlocked) {
-    video.muted = false;
-    video.defaultMuted = false;
-    const p = video.play();
-    if (p && typeof p.catch === 'function') p.catch(() => {});
-  }
+  startWindowPlayback(video);
   updatePlayPauseButton();
   updateExpandButton();
   // 自动播放被拦住时才露出轻量播控；已经在播就保持画面干净。
@@ -424,6 +427,9 @@ function activateAudio() {
   audioUnlocked = true;
   const video = currentVideo();
   if (!video) return;
+  const gesture = !!(navigator.userActivation && navigator.userActivation.isActive);
+  // 没有手势就先别开声。正在播的静音视频被无手势取消静音时，浏览器会直接暂停，大播放层又回来。
+  if (!gesture) return;
   video.defaultMuted = false;
   video.muted = false;
   video.volume = 1;
@@ -498,6 +504,66 @@ function disarmNativeVideoControls(video) {
   if (!video) return;
   video.controls = false;
   video.removeAttribute('controls');
+  if (video.hasAttribute('x5-playsinline')) video.removeAttribute('x5-playsinline');
+}
+
+function lockNativeVideoOverlay(video) {
+  const lock = () => disarmNativeVideoControls(video);
+  lock();
+  if (video._nativeOverlayLock) return;
+  const obs = new MutationObserver(lock);
+  video._nativeOverlayLock = obs;
+  // 只盯 controls。播放开始后再改 poster 会让部分浏览器重新加载，画面又停回大播放层。
+  obs.observe(video, { attributes: true, attributeFilter: ['controls'] });
+  video.addEventListener('loadedmetadata', lock);
+  video.addEventListener('loadeddata', lock);
+  video.addEventListener('play', lock);
+  video.addEventListener('playing', lock);
+  video.addEventListener('pause', lock);
+}
+
+function startWindowPlayback(video) {
+  const gesture = !!(navigator.userActivation && navigator.userActivation.isActive);
+  const wantSound = audioUnlocked && gesture;
+  // 没有手势时先静音开播。停在暂停帧上时，安卓 WebView 会一直盖着默认大播放海报。
+  video.muted = !wantSound;
+  video.defaultMuted = video.muted;
+  const task = video.play();
+  if (!task || typeof task.catch !== 'function') return;
+  task.catch(() => {
+    if (currentVideo() !== video || video.muted) return;
+    video.muted = true;
+    video.defaultMuted = true;
+    const retry = video.play();
+    if (retry && typeof retry.catch === 'function') retry.catch(() => {});
+  });
+}
+
+function buildViewerProgress() {
+  const wrap = document.createElement('div');
+  wrap.className = 'viewer-progress';
+  wrap.setAttribute('aria-hidden', 'true');
+  const bar = document.createElement('span');
+  bar.className = 'viewer-progress-bar';
+  wrap.appendChild(bar);
+  return wrap;
+}
+
+function bindViewerProgress(video) {
+  const wrap = viewer.querySelector('.viewer-progress');
+  const bar = wrap && wrap.querySelector('.viewer-progress-bar');
+  if (!wrap || !bar) return;
+  const paint = () => {
+    const dur = Number(video.duration);
+    const now = Number(video.currentTime) || 0;
+    const pct = Number.isFinite(dur) && dur > 0 ? Math.max(0, Math.min(100, (now / dur) * 100)) : 0;
+    bar.style.width = pct + '%';
+  };
+  video.addEventListener('timeupdate', paint);
+  video.addEventListener('loadedmetadata', paint);
+  video.addEventListener('durationchange', paint);
+  video.addEventListener('seeking', paint);
+  video.addEventListener('seeked', paint);
 }
 
 function hideViewerChrome() {

@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import http from 'node:http';
+import os from 'node:os';
 import path from 'node:path';
 import { spawn, execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const ROOT = process.cwd();
 const PORT = 8877;
@@ -10,7 +12,12 @@ const CONFIG_PATH = '/apps/global-cams/config.js';
 const widths = [360, 768, 1280];
 
 function findChrome() {
-  for (const name of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']) {
+  const candidates = [
+    '/opt/google/chrome/chrome',
+    'google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser'
+  ];
+  for (const name of candidates) {
+    if (name.startsWith('/') && fs.existsSync(name)) return name;
     try {
       const p = execFileSync('which', [name], { encoding: 'utf8' }).trim();
       if (p) return p;
@@ -36,42 +43,171 @@ window.addEventListener('unhandledrejection', e => window.__gcSmokeErrors.push(S
 `;
 
 const probe = `
+function __gcRect(sel) {
+  const n = document.querySelector(sel);
+  if (!n) return null;
+  const r = n.getBoundingClientRect();
+  return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};
+}
+function __gcCenterGiants(viewer) {
+  const vr = viewer.getBoundingClientRect();
+  const cx = vr.left + vr.width / 2;
+  const cy = vr.top + vr.height / 2;
+  const bad = [];
+  viewer.querySelectorAll('*').forEach(el => {
+    if (el.tagName === 'VIDEO') return;
+    if (el.classList.contains('viewer-shield')) return;
+    if (el.classList.contains('viewer-progress') || el.classList.contains('viewer-progress-bar')) return;
+    const r = el.getBoundingClientRect();
+    if (r.width < 72 || r.height < 72) return;
+    if (r.left <= cx && r.right >= cx && r.top <= cy && r.bottom >= cy) bad.push(el.className || el.tagName);
+  });
+  return bad;
+}
+function __gcSwipe(viewer) {
+  const r = viewer.getBoundingClientRect();
+  const x = r.left + r.width / 2;
+  const y0 = r.top + r.height * 0.78;
+  const y1 = r.top + r.height * 0.18;
+  const fire = (type, y) => {
+    const t = new Touch({
+      identifier: 1, target: viewer, clientX: x, clientY: y, pageX: x, pageY: y,
+      screenX: x, screenY: y, radiusX: 1, radiusY: 1, rotationAngle: 0, force: 1
+    });
+    viewer.dispatchEvent(new TouchEvent(type, {
+      bubbles: true, cancelable: true,
+      touches: type === 'touchend' ? [] : [t],
+      targetTouches: type === 'touchend' ? [] : [t],
+      changedTouches: [t]
+    }));
+  };
+  fire('touchstart', y0);
+  fire('touchmove', (y0 + y1) / 2);
+  fire('touchend', y1);
+}
+function __gcVideoState(video) {
+  if (!video) return null;
+  const overlay = getComputedStyle(video, '::-webkit-media-controls-overlay-play-button');
+  const toggle = document.querySelector('#viewer [data-viewer-action="toggle"]');
+  const tr = toggle ? toggle.getBoundingClientRect() : null;
+  return {
+    controls: video.controls,
+    controlsAttr: video.hasAttribute('controls'),
+    posterOk: String(video.getAttribute('poster') || '').indexOf('data:image/gif;base64,R0lGODlhAQAB') === 0,
+    x5Playsinline: video.hasAttribute('x5-playsinline'),
+    x5Type: video.getAttribute('x5-video-player-type') || '',
+    pointerEvents: getComputedStyle(video).pointerEvents,
+    paused: video.paused,
+    src: video.currentSrc || video.src || '',
+    overlayDisplay: overlay.display || '',
+    overlayWidth: overlay.width || '',
+    overlayOpacity: overlay.opacity || '',
+    overlayVisibility: overlay.visibility || '',
+    muted: video.muted,
+    readyState: video.readyState,
+    error: video.error ? String(video.error.code) : '',
+    giants: __gcCenterGiants(document.querySelector('#viewer')),
+    progress: !!document.querySelector('#viewer .viewer-progress'),
+    toggleH: tr ? Math.round(tr.height) : 0,
+    toggleW: tr ? Math.round(tr.width) : 0
+  };
+}
 setTimeout(() => {
-  const rect = sel => {
-    const n = document.querySelector(sel);
-    if (!n) return null;
-    const r = n.getBoundingClientRect();
-    return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};
-  };
-  const within = r => !!r && r.left >= -1 && r.top >= -1 && r.right <= innerWidth + 1 && r.bottom <= innerHeight + 1;
-  const controls = innerWidth > 820 ? ['#search','#zoomIn','#zoomOut','#resetGlobe','#fullscreen'] : ['#expandViewer','#openSource'];
-  const result = {
-    width: innerWidth,
-    height: innerHeight,
-    docWidth: document.documentElement.scrollWidth,
-    bodyWidth: document.body.scrollWidth,
-    rows: document.querySelectorAll('.window-row').length,
-    version: (document.querySelector('.brand')?.textContent || '').trim(),
-    windowOnly: (document.querySelector('.window-only')?.textContent || '').trim(),
-    liveControls: document.querySelectorAll('#modeLive,#loadNearby,#mediaFilters').length,
-    sortTabs: document.querySelectorAll('.sort-btn').length,
-    activeSortTabs: document.querySelectorAll('.sort-btn.active').length,
-    errors: window.__gcSmokeErrors || [],
-    sidebar: rect('.sidebar'),
-    stage: rect('.stage'),
-    viewer: rect('#viewer'),
-    playlist: rect('#playlist'),
-    controlsInsideViewport: controls.every(s => within(rect(s)))
-  };
-  const pre = document.createElement('pre');
-  pre.id = 'gc-smoke-result';
-  pre.textContent = btoa(unescape(encodeURIComponent(JSON.stringify(result))));
-  document.body.appendChild(pre);
+  const viewer = document.querySelector('#viewer');
+  const row = document.querySelector('.window-row');
+  if (row) row.click();
+  const first = document.querySelector('#viewer video');
+  const firstSrc = first ? (first.currentSrc || first.src || '') : '';
+  let swipe = 'none';
+  try {
+    if (innerWidth <= 820) {
+      __gcSwipe(viewer);
+      const after = document.querySelector('#viewer video');
+      const afterSrc = after ? (after.currentSrc || after.src || '') : '';
+      if (afterSrc && afterSrc !== firstSrc) swipe = 'touch';
+    }
+  } catch (err) {
+    swipe = 'none';
+  }
+  if (swipe !== 'touch') {
+    const next = document.querySelector('#viewer [data-viewer-action="next"]');
+    if (next) {
+      next.click();
+      swipe = 'button';
+    }
+  }
+  window.scrollTo(0, 0);
+  const playing = __gcVideoState(document.querySelector('#viewer video'));
+  const srcChanged = !!(playing && playing.src && firstSrc && playing.src !== firstSrc);
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    const shield = document.querySelector('#viewer .viewer-shield');
+    if (shield) shield.click();
+    const revealed = __gcVideoState(document.querySelector('#viewer video'));
+    const within = r => !!r && r.left >= -1 && r.top >= -1 && r.right <= innerWidth + 1 && r.bottom <= innerHeight + 1;
+    const controls = innerWidth > 820 ? ['#search','#zoomIn','#zoomOut','#resetGlobe','#fullscreen'] : ['#expandViewer','#openSource'];
+    const result = {
+      width: innerWidth,
+      height: innerHeight,
+      docWidth: document.documentElement.scrollWidth,
+      bodyWidth: document.body.scrollWidth,
+      rows: document.querySelectorAll('.window-row').length,
+      version: (document.querySelector('.brand')?.textContent || '').trim(),
+      windowOnly: (document.querySelector('.window-only')?.textContent || '').trim(),
+      liveControls: document.querySelectorAll('#modeLive,#loadNearby,#mediaFilters').length,
+      sortTabs: document.querySelectorAll('.sort-btn').length,
+      activeSortTabs: document.querySelectorAll('.sort-btn.active').length,
+      errors: window.__gcSmokeErrors || [],
+      sidebar: __gcRect('.sidebar'),
+      stage: __gcRect('.stage'),
+      viewer: __gcRect('#viewer'),
+      playlist: __gcRect('#playlist'),
+      controlsInsideViewport: controls.every(s => within(__gcRect(s))),
+      videoCount: document.querySelectorAll('#viewer video').length,
+      swipe,
+      srcChanged,
+      playing,
+      revealed,
+      chromeOn: viewer.classList.contains('is-chrome'),
+      immersive: viewer.classList.contains('is-immersive')
+    };
+    const pre = document.createElement('pre');
+    pre.id = 'gc-smoke-result';
+    pre.textContent = btoa(unescape(encodeURIComponent(JSON.stringify(result))));
+    document.body.appendChild(pre);
+  }, 700);
 }, 1500);
 `;
 
+const SMOKE_VIDEO = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'gc-smoke-color.mp4');
+
 const server = http.createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
+  if (pathname === '/__gc_smoke_video.mp4') {
+    const buf = fs.readFileSync(SMOKE_VIDEO);
+    const match = /^bytes=(\d+)-(\d*)$/.exec(req.headers.range || '');
+    if (match) {
+      const start = Number(match[1]);
+      const end = match[2] ? Number(match[2]) : buf.length - 1;
+      res.writeHead(206, {
+        'Content-Type': 'video/mp4',
+        'Content-Range': 'bytes ' + start + '-' + end + '/' + buf.length,
+        'Content-Length': String(end - start + 1),
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': 'no-store'
+      });
+      res.end(buf.subarray(start, end + 1));
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'video/mp4',
+      'Content-Length': String(buf.length),
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': 'no-store'
+    });
+    res.end(buf);
+    return;
+  }
   if (pathname === CONFIG_PATH) {
     res.writeHead(200, {'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store'});
     res.end('window.OOGLEX_GLOBAL_CAMS = Object.freeze({windowCdnBase:""});');
@@ -88,6 +224,13 @@ const server = http.createServer((req, res) => {
   }
 
   let body = fs.readFileSync(filePath);
+  if (pathname === '/apps/global-cams/windows.json') {
+    const data = JSON.parse(body.toString('utf8'));
+    data.forEach((item, i) => {
+      item.video_url = 'http://127.0.0.1:' + PORT + '/__gc_smoke_video.mp4?i=' + i;
+    });
+    body = Buffer.from(JSON.stringify(data));
+  }
   if (pathname === APP_PATH) {
     body = Buffer.from(preamble + '\n' + body.toString('utf8') + '\n' + probe);
   }
@@ -100,17 +243,25 @@ function runChrome(chrome, width) {
     const height = width <= 480 ? 800 : width <= 800 ? 900 : 820;
     const args = [
       '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
-      '--hide-scrollbars','--virtual-time-budget=4000',
+      '--hide-scrollbars','--virtual-time-budget=8000',
+      '--user-data-dir=' + path.join(os.tmpdir(), 'gc-smoke-chrome-' + width + '-' + process.pid),
       '--window-size=' + width + ',' + height,
       '--dump-dom',
       'http://127.0.0.1:' + PORT + '/apps/global-cams/?smoke=' + width
     ];
     const p = spawn(chrome, args, { stdio: ['ignore','pipe','pipe'] });
+    const timer = setTimeout(() => {
+      p.kill('SIGKILL');
+      reject(new Error('Chrome ' + width + ' timed out'));
+    }, 30000);
     let out = '', err = '';
     p.stdout.on('data', d => out += d);
     p.stderr.on('data', d => err += d);
     p.on('error', reject);
-    p.on('close', code => code === 0 ? resolve(out) : reject(new Error('Chrome ' + width + ' exited ' + code + ': ' + err.slice(-500))));
+    p.on('close', code => {
+      clearTimeout(timer);
+      code === 0 ? resolve(out) : reject(new Error('Chrome ' + width + ' exited ' + code + ': ' + err.slice(-500)));
+    });
   });
 }
 
@@ -145,6 +296,21 @@ try {
     if (!r.controlsInsideViewport) failures.push(width + ': key controls outside viewport');
     if (!r.sidebar || !r.stage || r.sidebar.width < 1 || r.stage.width < 1) failures.push(width + ': missing sidebar/stage geometry');
     if (!r.viewer || !r.playlist || r.viewer.height < 1 || r.playlist.height < 1) failures.push(width + ': viewer/playlist not visible');
+    if (r.videoCount !== 1) failures.push(width + ': expected one viewer video, got ' + r.videoCount);
+    const play = r.playing || {};
+    const shown = r.revealed || {};
+    if (play.controls !== false || shown.controls !== false) failures.push(width + ': native controls turned on while playing or swiping');
+    if (play.controlsAttr || shown.controlsAttr) failures.push(width + ': controls attribute present during playback');
+    if (!play.posterOk || !shown.posterOk) failures.push(width + ': transparent poster missing, Android default play poster can return');
+    if (play.x5Playsinline || shown.x5Playsinline) failures.push(width + ': x5-playsinline re-enabled the native play overlay');
+    if (play.x5Type !== 'h5-page') failures.push(width + ': same-layer player type missing');
+    if (play.pointerEvents !== 'none') failures.push(width + ': video still receives hits');
+    if ((play.giants || []).length || (shown.giants || []).length) failures.push(width + ': center overlay is visible: ' + (play.giants || []).concat(shown.giants || []).join(','));
+    if (!play.progress) failures.push(width + ': bottom progress missing');
+    if (!r.srcChanged) failures.push(width + ': vertical swipe / next did not change window (' + r.swipe + ')');
+    if (play.toggleH > 48 || shown.toggleH > 48) failures.push(width + ': play control is oversized (' + play.toggleH + '/' + shown.toggleH + 'px)');
+    if (!desktop && r.immersive && !r.chromeOn) failures.push(width + ': tap did not reveal lightweight controls');
+    if (shown.paused) failures.push(width + ': video stayed paused after swipe, so the native play poster can remain');
 
     if (r.sidebar && r.stage) {
       if (desktop && Math.abs(r.sidebar.right - r.stage.left) > 2) failures.push(width + ': desktop sidebar/stage not side-by-side');
@@ -154,6 +320,18 @@ try {
     console.log('Global WINDOW smoke', width, {
       rows: r.rows,
       docWidth: r.docWidth,
+      swipe: r.swipe,
+      srcChanged: r.srcChanged,
+      paused: r.playing && r.playing.paused,
+      pausedAfter: r.revealed && r.revealed.paused,
+      chromeOn: r.chromeOn,
+      playback: r.revealed && {
+        paused: r.revealed.paused,
+        muted: r.revealed.muted,
+        ready: r.revealed.readyState,
+        error: r.revealed.error
+      },
+      giants: r.playing && r.playing.giants,
       sidebar: r.sidebar && [Math.round(r.sidebar.width), Math.round(r.sidebar.height)],
       stage: r.stage && [Math.round(r.stage.width), Math.round(r.stage.height)]
     });
