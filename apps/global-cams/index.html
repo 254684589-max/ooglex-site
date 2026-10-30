@@ -15,8 +15,8 @@
 <!-- PWA：可安装到手机主屏、独立窗口运行（安卓 APK 与安装说明见 /apps/global-cams/download/） -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#05070f">
-<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=20261030b">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261030b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -37,7 +37,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .selected-title{margin:0 0 4px;font-size:17px;line-height:1.35;max-height:46px;overflow:hidden}
 .selected-meta{min-height:18px;color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:9px}
 .viewer{position:relative;aspect-ratio:16/9;background:#02040a;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;place-items:center;color:var(--faint);font-size:13px;text-align:center}
-.viewer video{width:100%;height:100%;border:0;object-fit:cover;background:#000}.viewer-empty{padding:20px;line-height:1.7}
+.viewer video{width:100%;height:100%;border:0;object-fit:cover;background:#000;touch-action:pan-x}.viewer-empty{padding:20px;line-height:1.7}
+.viewer-shield{position:absolute;inset:0;z-index:4;background:transparent;touch-action:pan-x}
+#viewer video::-webkit-media-controls,#viewer video::-webkit-media-controls-enclosure,#viewer video::-webkit-media-controls-panel,#viewer video::-webkit-media-controls-overlay-play-button,#viewer video::-webkit-media-controls-start-playback-button,#viewer video::-webkit-media-controls-play-button{display:none!important;opacity:0!important;pointer-events:none!important;-webkit-appearance:none}
 .viewer-controls{position:absolute;z-index:9;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:6px;padding:0;border:0;border-radius:0;background:transparent;backdrop-filter:none;box-shadow:none}
 .viewer:fullscreen video,.viewer:-webkit-full-screen video,.viewer.is-expanded video{object-fit:contain}
 .viewer.is-expanded{position:fixed;inset:0;z-index:1000;width:100vw;height:100dvh;max-width:none;aspect-ratio:auto;border:0;border-radius:0;background:#000}
@@ -102,6 +104,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   .playlist{max-height:38vh}.stage{flex-basis:44vh;min-height:320px}
   .viewer-controls{left:50%;right:auto;gap:4px;padding:0}.viewer-control{height:32px;min-width:32px;padding:0 5px;font-size:10px}.viewer-control.icon{width:32px;min-width:32px;font-size:14px}.viewer-control.random{min-width:68px;font-size:9.5px}
 }
+/* 沉浸竖滑：WINDOW / 随机窗口默认让出画面，点一下再在底部露出轻量播控 */
+.viewer.is-immersive:not(.is-chrome) .media-badge,
+.viewer.is-immersive:not(.is-chrome) .viewer-controls{opacity:0;visibility:hidden;pointer-events:none}
+.viewer.is-immersive.is-chrome .media-badge{opacity:.7;visibility:visible}
+.viewer.is-immersive.is-chrome .viewer-controls{top:auto;bottom:max(8px,env(safe-area-inset-bottom));opacity:1;visibility:visible;pointer-events:auto;max-width:calc(100% - 12px)}
+.viewer.is-immersive .viewer-control{height:30px;min-width:30px;background:rgba(8,12,20,.46);color:#f4f7ff;border-color:rgba(255,255,255,.28);box-shadow:none}
+.viewer.is-immersive .viewer-control.icon{width:30px;min-width:30px}
+.viewer.is-immersive .viewer-control.random{min-width:0;padding:0 8px;background:rgba(8,12,20,.46);color:#f4f7ff;border-color:rgba(255,255,255,.28);font-size:10px}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
@@ -159,7 +169,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 </div>
 <script src="../radio/vendor/globe.gl.min.js"></script>
 <script src="./config.js"></script>
-<script src="./app.js?v=16"></script>
+<script src="./app.js?v=17"></script>
 <script>
 /* PWA：注册 Service Worker + 「安装 App」按钮。
    支持一键安装的浏览器（安卓 Chrome / Edge、电脑 Chrome）直接弹安装框；
@@ -172,7 +182,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                    window.navigator.standalone === true;
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js?v=2', { scope: './', updateViaCache: 'none' }).catch(function(){});
+      navigator.serviceWorker.register('sw.js?v=3', { scope: './', updateViaCache: 'none' }).catch(function(){});
     });
   }
   var btn = document.getElementById('installApp');

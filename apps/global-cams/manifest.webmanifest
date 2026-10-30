@@ -15,25 +15,25 @@
   "theme_color": "#05070f",
   "icons": [
     {
-      "src": "icons/icon.svg",
+      "src": "icons/icon.svg?v=20261030b",
       "type": "image/svg+xml",
       "sizes": "any",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-192.png",
+      "src": "icons/icon-192.png?v=20261030b",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/icon-512.png?v=20261030b",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512-maskable.png",
+      "src": "icons/icon-512-maskable.png?v=20261030b",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"

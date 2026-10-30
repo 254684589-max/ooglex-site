@@ -17,6 +17,14 @@
 
 ### 修复
 
+- 2026-10-30：环球实景竖滑切换 WINDOW 时不再出现浏览器 / WebView 原生大播放叠加（灰底大三角和白圆暂停）。原因是播放器把 `video.controls` 设成了 true，和已有的自定义播控叠在一起。现改为关闭原生控件，触控落在透明遮罩上，避免 WebView 接管手势；手机竖滑态下 WINDOW 标和「随机窗口」默认让出画面，点一下才在底部短暂露出轻量播控。`app.js?v=17`，Service Worker `gc-v4`（注册 `sw.js?v=3`）。地球点选、列表、音频解锁、全屏和自动播放仍走原来的路径。未改流光播放器、环球电波和其它 App。未部署。
+
+### 修改
+
+- 2026-10-30：环球实景 Android 调试包换为棕榈日落标 1.0.1（versionCode 2）。`apps/global-cams/download/ooglex-cams.apk` 为 4972270 字节，约 4.7 MB；sha256 `8d8eb577cb44c28a11ea494a4bde114939987d5529c4eaedbbb916fc69758b1a`；包名 `com.ooglex.cams001`；`minSdk` 22；Android 调试证书，`debuggable=true`。下载页和专区说明页由版本 1.0、约 3.9 MB 改为 1.0.1、约 4.7 MB。图标替换 `icons/icon.svg`、`icon-192.png`、`icon-512.png`、`icon-512-maskable.png` 和 `apple-touch-icon.png`。登记表只改了环球实景图标地址（加 `?v=20261030b`），首页与专区缓存指纹改为 `registry.js?v=20261030b`。未上架应用商店，没有付费签名，也没有 IPA。未部署。
+
+### 修复
+
 - 2026-10-30：误把环球实景的椰子／棕榈日落标用到了流光播放器。已恢复蓝色音符桌面图标、开屏和下载页。Android 调试包更新为 1.0.14（versionCode 14）。`apps/music-player/download/ooglex-music.apk` 与 `apps/downloads/app-debug.apk` 是同一份安装包（4324755 字节，约 4.1 MB；sha256 `4633f46a957c90e2c255ba1233a7702b09d8f155a1f9b0337d803a6681b4aca6`；包名 `com.ooglex.music001`；Android 调试证书，`debuggable=true`）。网页图标改回 `apps/music-player/icons/icon.svg`；`icons/icon.png` 换成同一枚蓝色音符，旧地址不再是棕榈图。系统返回键仍保留 1.0.12：WebView 还可以后退时调用 `goBack`，根页再退出。两条下载页读不到 `ooglex-music.json` 时仍显示 1.0.14、4324755 字节和这份校验值。下载地址不变。Pages 仍以仓库提交的安装包为准，不用 GitHub Release 覆盖。未改播放器脚本。未部署。
 
 - 2026-10-29：流光播放器在 Android 应用（Capacitor / 系统 WebView）里点「保存图片」会打开系统分享，可选保存到相册或发到聊天。原先只点一个 `blob:` 下载链接，WebView 会直接忽略。不能分享文件时改试 `data:` 下载，仍不行就提示长按海报。微信等内置浏览器的长按提示保留。电脑和手机 Chrome 仍用原来的文件下载。未改 Jamendo、媒体会话和安装包。未部署。
