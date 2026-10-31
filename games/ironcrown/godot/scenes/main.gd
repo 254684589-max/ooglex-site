@@ -101,6 +101,7 @@ var cold_state := {}            # 寒冷（5.2c）：在火边歇了多久（冻
 var cold_shown := ""            # HUD 上现在写的那行寒冷
 var first_tide: FirstTide       # 第一夜潮水（5.4c）：主线到「插火把」「潮水」时在高地搭起来
 var empty_night := false         # 两手空空那一夜正在熬（5.8）
+var well_end_after := WELL_END_AFTER   # 到了冬井边多久章末（全流程测试里调短，5.9）
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -2131,7 +2132,7 @@ func _well_tick() -> void:
 
 func _on_well_reached() -> void:
 	hud.say("（诺伯特在你身边站住了，很久没说话）……三十五年，我头一回走到这口井边。它们没往北走。它们在这儿站着，脸都朝着井——像在等一样东西。")
-	get_tree().create_timer(WELL_END_AFTER).timeout.connect(func():
+	get_tree().create_timer(well_end_after).timeout.connect(func():
 		if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
 			GameState.set_flag("ch2_done")
 			if GameState.quest_active("ch2_main"):
