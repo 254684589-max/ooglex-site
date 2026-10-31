@@ -50,6 +50,7 @@
     "nodes": {
       "greet_gate": {
         "text": "（一个白胡子的老兵拄着长枪，把你的引荐信又看了一遍，才还给你）霜渡镇的誓剑。维克托大人有心了。我是赫尔曼，这座堡的堡守。",
+        "text_if": [{"if": [{"flag": "origin", "eq": "knight"}], "text": "（一个白胡子的老兵拄着长枪，把你的引荐信又看了一遍，目光落在你握剑的手上）……老派的握法。我年轻时在骑士手底下扛过枪，他们就是这么握剑的。霜渡镇的誓剑，维克托大人有心了。我是赫尔曼，这座堡的堡守。"}],
         "do": [{"set": "herman_met"}, {"set": "castle_admitted"}, {"quest": "ch1_main", "stage": "to_hall"}],
         "options": [
           {"text": "家主怎么样了？", "next": "osric"},
@@ -113,6 +114,7 @@
         "text_if": [{"if": [{"flag": "ledger_caught"}], "text": "（他看都不看你）撬窗的人，还有脸来要钥匙？"}, {"if": [{"flag": "counting_key_given"}], "text": "钥匙已经给你了。家主醒了，你自己跟他交代。"}],
         "options": [
           {"text": "家主醒的时候不多。他要问账，总不能等人去翻你的钥匙串——让我先替他把账拿出来。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}], "check": {"id": "herman_key", "skill": "speech", "dc": 15, "pass": "key_given", "fail": "key_no"}},
+          {"text": "我家祖上替领主守过账房。钥匙交出去是什么分量，我知道——账拿出来，只给家主一个人看。", "if": [{"flag": "origin", "eq": "knight"}, {"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}], "check": {"id": "herman_key_knight", "skill": "speech", "dc": 11, "pass": "key_given", "fail": "key_no"}},
           {"text": "维克托大人让我替他照看家主。瓦伦家的人信得过我。", "if": [{"not_flag": "counting_key_given"}, {"not_flag": "ledger_caught"}, {"not_flag": "herman_key_refused"}, {"not_flag": "ch1_ledger"}, {"rep": "valen", "at_least": 25}], "next": "key_trust"},
           {"text": "……", "next": "again"}
         ]

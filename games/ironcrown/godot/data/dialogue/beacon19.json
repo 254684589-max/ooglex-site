@@ -9,6 +9,7 @@
       {"if": [{"flag": "matthias_met"}], "node": "again"}
     ],
     "nodes": {
+      "deserter": {"text": "（他数柴的手停了，抬起头盯着你看了很久）……我知道。你看塔的样子就知道——守过的人，眼睛先找火盆，再找门。（他低下头接着数柴）哪一座，哪一年，我不问。这儿缺人，不缺问话的。", "do": [{"set": "matthias_knows_deserter"}], "options": [{"text": "……", "next": "again"}]},
       "dawn": {"text": "（他看着空荡荡的粮棚，没回头）……两手空空。柴省着烧，还是没撑到天亮——火盆天亮前就灭了。（他朝塔顶抬了抬下巴）诺伯特在上面。你去吧。", "text_if": [{"if": [{"flag": "ch2_convoy", "eq": "taken"}], "text": "（他坐在柴棚前的木墩上，靴子上全是泥和雪，看着粮棚里码起来的麻袋）……五车。洛蒙德家的。（他笑了一下，没什么笑意）够撑到开春了。洛蒙德家会记着这一笔——记在烽誓团头上。诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "burned"}], "text": "（他坐在柴棚前的木墩上，手上缠着烧焦的布）着了火的那车救不回来。剩下的推上来了，省着吃，能撑一阵子。……诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "repelled"}], "text": "（他胳膊上缠着布条，渗着血）没劫下来。三个弟兄是抬回来的。柴烧完了，天亮前火就灭了。（他朝塔顶抬了抬下巴）诺伯特在上面。你去吧。"}, {"if": [{"flag": "ch2_convoy", "eq": "delivered"}], "text": "（他拍了拍粮棚里新码起来的麻袋）安塞尔姆的押车兵卸完粮就下山了，一句话没说。够撑到开春了。……诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "partial"}], "text": "（粮棚里只码了一车的麻袋）一车。省着吃，撑一个月。火还亮着。……诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "lost"}], "text": "（他看着空荡荡的粮棚）一车也没上来。车扔在半路上，雪已经盖了一层。柴烧完了，天亮前火灭了。诺伯特在塔顶，你去吧。"}], "options": [{"text": "……", "end": true}]},
       "greet": {
         "text": "（一个四十来岁的男人站在柴棚前，数着那一小垛柴，没回头）……够三夜。粮也是。三夜以后，这座塔就跟北边那些一样，黑了。你是谁？",
@@ -18,6 +19,7 @@
         ],
         "do": [{"set": "matthias_met"}],
         "options": [
+          {"text": "……我守过烽燧。三年。", "if": [{"flag": "origin", "eq": "deserter"}, {"not_flag": "matthias_knows_deserter"}], "next": "deserter"},
           {"text": "我从黑鹭堡来，找诺伯特烽长。", "if": [{"quest_stage": "ch2_main", "eq": "meet_matthias"}], "next": "norbert"},
           {"text": "只够三夜？", "next": "nights"},
           {"text": "长眠的人到底是什么？", "next": "sleepers"},
@@ -191,6 +193,7 @@
       {"if": [{"flag": "carsten_met"}], "node": "again"}
     ],
     "nodes": {
+      "deserter": {"text": "（他的斧子停在半空，慢慢放下来）……那你知道。下了山以后，夜里还是听得见号角——吹的是哪座塔，你都分得清。（他抹了一把脸）我守满十年再走。走得干干净净，不用夜里醒过来。", "do": [{"set": "carsten_deserter_said"}], "options": [{"text": "……", "next": "rule"}]},
       "greet": {
         "text": "（他把斧子往木墩上一剁，直起腰）昨夜木桩那边，你插火把的手挺稳。……我叫卡斯滕。今年是我第十年。",
         "do": [{"set": "carsten_met"}, {"quest": "ch2_carsten"}],
@@ -210,6 +213,7 @@
         "text": "烽誓团的规矩：犯了事的、欠了债的，上山守十年，罪和债一笔勾销，想下山就下山。我十年前偷了领主一匹马。（他笑了一下）团长说开春放我，开了春又说秋天。粮不够，人更不够——他不放。南边金穗平原，有个姑娘等了我十年。",
         "options": [
           {"text": "我去替你跟马蒂亚斯说。", "if": [{"not_flag": "ch2_carsten_ask"}], "next": "ask"},
+          {"text": "我也下过山。第四年冬天，一个人。", "if": [{"flag": "origin", "eq": "deserter"}, {"not_flag": "carsten_deserter_said"}], "next": "deserter"},
           {"text": "今夜我替你看着门。你走。", "next": "flee"},
           {"text": "再守一年吧。这个冬天，烽燧缺不得人。", "next": "stay"},
           {"text": "……我再想想。", "end": true}

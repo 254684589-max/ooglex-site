@@ -529,6 +529,38 @@
             }
           },
           {
+            "text": "（报上你家的旧姓）你们洛蒙德家的车，当年走的是我家的桥、交的是我家的过路钱。这一回，就当是还给北边的。",
+            "if": [
+              {
+                "flag": "origin",
+                "eq": "knight"
+              }
+            ],
+            "check": {
+              "id": "anselm_knight",
+              "skill": "intimidate",
+              "dc": 12,
+              "pass": "escort",
+              "fail": "refused"
+            }
+          },
+          {
+            "text": "我在烽燧线上守过三年。它们走过粮车的时候，车夫是第一个被踩倒的。今夜你就在车尾。",
+            "if": [
+              {
+                "flag": "origin",
+                "eq": "deserter"
+              }
+            ],
+            "check": {
+              "id": "anselm_deserter",
+              "skill": "speech",
+              "dc": 10,
+              "pass": "escort",
+              "fail": "refused"
+            }
+          },
+          {
             "text": "长眠的人不认粮车是谁家的。今夜你要走的，就是它们走的路。",
             "check": {
               "id": "anselm_fear",
