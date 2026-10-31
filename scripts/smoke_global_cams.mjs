@@ -112,9 +112,29 @@ function __gcVideoState(video) {
     toggleW: tr ? Math.round(tr.width) : 0
   };
 }
-setTimeout(() => {
-  const viewer = document.querySelector('#viewer');
+function __gcReleaseVideo() {
+  const video = document.querySelector('#viewer video');
+  if (!video) return;
+  try { video.pause(); } catch (e) {}
+  video.removeAttribute('src');
+  try { video.load(); } catch (e) {}
+}
+function __gcPublish(result) {
+  const pre = document.createElement('pre');
+  pre.id = 'gc-smoke-result';
+  pre.textContent = btoa(unescape(encodeURIComponent(JSON.stringify(result))));
+  document.body.appendChild(pre);
+  __gcReleaseVideo();
+}
+(function __gcWaitRows(attempt) {
   const row = document.querySelector('.window-row');
+  if (!row) {
+    if (attempt < 80) {
+      setTimeout(() => __gcWaitRows(attempt + 1), 100);
+      return;
+    }
+  }
+  const viewer = document.querySelector('#viewer');
   if (row) row.click();
   const first = document.querySelector('#viewer video');
   const firstSrc = first ? (first.currentSrc || first.src || '') : '';
@@ -171,12 +191,9 @@ setTimeout(() => {
       chromeOn: viewer.classList.contains('is-chrome'),
       immersive: viewer.classList.contains('is-immersive')
     };
-    const pre = document.createElement('pre');
-    pre.id = 'gc-smoke-result';
-    pre.textContent = btoa(unescape(encodeURIComponent(JSON.stringify(result))));
-    document.body.appendChild(pre);
+    __gcPublish(result);
   }, 700);
-}, 1500);
+})(0);
 `;
 
 const SMOKE_VIDEO = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'gc-smoke-color.mp4');
@@ -238,37 +255,117 @@ const server = http.createServer((req, res) => {
   res.end(body);
 });
 
-function runChrome(chrome, width) {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function cdpValue(wsUrl) {
   return new Promise((resolve, reject) => {
-    const height = width <= 480 ? 800 : width <= 800 ? 900 : 820;
-    const args = [
-      '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
-      '--hide-scrollbars','--virtual-time-budget=8000',
-      '--user-data-dir=' + path.join(os.tmpdir(), 'gc-smoke-chrome-' + width + '-' + process.pid),
-      '--window-size=' + width + ',' + height,
-      '--dump-dom',
-      'http://127.0.0.1:' + PORT + '/apps/global-cams/?smoke=' + width
-    ];
-    const p = spawn(chrome, args, { stdio: ['ignore','pipe','pipe'] });
+    const ws = new WebSocket(wsUrl);
     const timer = setTimeout(() => {
-      p.kill('SIGKILL');
-      reject(new Error('Chrome ' + width + ' timed out'));
-    }, 30000);
-    let out = '', err = '';
-    p.stdout.on('data', d => out += d);
-    p.stderr.on('data', d => err += d);
-    p.on('error', reject);
-    p.on('close', code => {
+      try { ws.close(); } catch {}
+      reject(new Error('cdp evaluate stalled'));
+    }, 4000);
+    ws.addEventListener('open', () => {
+      ws.send(JSON.stringify({
+        id: 1,
+        method: 'Runtime.evaluate',
+        params: {
+          expression: "document.getElementById('gc-smoke-result') && document.getElementById('gc-smoke-result').textContent",
+          returnByValue: true
+        }
+      }));
+    });
+    ws.addEventListener('message', event => {
+      let msg;
+      try { msg = JSON.parse(String(event.data)); } catch { return; }
+      if (msg.id !== 1) return;
       clearTimeout(timer);
-      code === 0 ? resolve(out) : reject(new Error('Chrome ' + width + ' exited ' + code + ': ' + err.slice(-500)));
+      try { ws.close(); } catch {}
+      const value = msg.result && msg.result.result ? msg.result.result.value : '';
+      resolve(value || '');
+    });
+    ws.addEventListener('error', () => {
+      clearTimeout(timer);
+      reject(new Error('cdp websocket failed'));
     });
   });
 }
 
-function parseResult(dom) {
-  const m = dom.match(/<pre id="gc-smoke-result">([^<]+)<\/pre>/);
-  if (!m) throw new Error('smoke probe result missing');
-  return JSON.parse(decodeURIComponent(escape(Buffer.from(m[1], 'base64').toString('binary'))));
+async function readSmokeResult(port) {
+  const res = await fetch('http://127.0.0.1:' + port + '/json/list');
+  if (!res.ok) return '';
+  const pages = await res.json();
+  for (const page of pages) {
+    if (!page || page.type !== 'page' || !page.webSocketDebuggerUrl) continue;
+    const value = await cdpValue(page.webSocketDebuggerUrl);
+    if (value) return value;
+  }
+  return '';
+}
+
+// 不用 --virtual-time-budget / --dump-dom。视频一开始循环播放，
+// 部分 CI 上的 Chrome 会把虚拟时间停住，dump-dom 永远不返回，30 秒后被杀掉。
+// 这里用真实时间等页面写下结果，每档最多 45 秒。
+function runChrome(chrome, width) {
+  return new Promise((resolve, reject) => {
+    const height = width <= 480 ? 800 : width <= 800 ? 900 : 820;
+    const port = 36000 + width;
+    const args = [
+      '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+      '--hide-scrollbars', '--no-first-run', '--disable-background-networking',
+      '--autoplay-policy=no-user-gesture-required',
+      '--remote-debugging-address=127.0.0.1',
+      '--remote-debugging-port=' + port,
+      '--remote-allow-origins=*',
+      '--user-data-dir=' + path.join(os.tmpdir(), 'gc-smoke-chrome-' + width + '-' + process.pid),
+      '--window-size=' + width + ',' + height,
+      'http://127.0.0.1:' + PORT + '/apps/global-cams/?smoke=' + width
+    ];
+    const p = spawn(chrome, args, { stdio: ['ignore', 'ignore', 'pipe'], detached: true });
+    let err = '';
+    let done = false;
+    p.stderr.on('data', d => { err = (err + d).slice(-1500); });
+    const stop = () => {
+      try { process.kill(-p.pid, 'SIGKILL'); } catch { try { p.kill('SIGKILL'); } catch {} }
+    };
+    const finish = (error, value) => {
+      if (done) return;
+      done = true;
+      clearTimeout(wall);
+      stop();
+      if (error) reject(error);
+      else resolve(value);
+    };
+    const wall = setTimeout(() => {
+      finish(new Error('Chrome ' + width + ' timed out waiting for smoke result. ' + err.trim().slice(-400)));
+    }, 45000);
+    p.on('error', error => finish(error));
+    p.on('exit', code => {
+      if (done) return;
+      setTimeout(() => {
+        if (!done) finish(new Error('Chrome ' + width + ' exited ' + code + ' before smoke result. ' + err.trim().slice(-400)));
+      }, 400);
+    });
+    (async () => {
+      const started = Date.now();
+      while (!done && Date.now() - started < 44000) {
+        try {
+          const text = await readSmokeResult(port);
+          if (text) {
+            finish(null, text);
+            return;
+          }
+        } catch {}
+        await sleep(200);
+      }
+    })().catch(error => finish(error));
+  });
+}
+
+function parseResult(encoded) {
+  if (!encoded) throw new Error('smoke probe result missing');
+  return JSON.parse(decodeURIComponent(escape(Buffer.from(encoded, 'base64').toString('binary'))));
 }
 
 const chrome = findChrome();
