@@ -862,6 +862,12 @@ godot/
 - **旧存档**：`main` 读档进来（`loaded_from` 不空）且没出身 → `ask_origin()`：暂停、补问、加上、提示一句。网址带截图参数、换区域进来、自动化测试（`ic_skip_opening`）都不问。
 - 角色面板标题前写出身。**测试**：`origin` 组 13 项（含出身画面的字都在字体子集里）；`opening` 组先设好出身（测的是标题卡上第一下操作）。冒烟（`tools/smoke_web.js`）开场前先点 `IC_ORIGIN_SCREEN`。
 
+### 4.64 对话随出身变（路线图 O.2，2026-10-31）
+
+- 都是数据改动：选项的条件 `{"flag": "origin", "eq": 编号}`，开场白用节点的 `text_if`（第一个满足的换掉台词）。节点本来就有 `text_if` 的（马蒂亚斯的开场按继承人换）不加出身那一条，改成多一个选项，免得盖掉原来的变化。
+- **渡工之子**：`ferry.json` offer/why 多一条检定（口才 9 → `convinced_ferry`）；`reedwharf.json` boatman 开场白、`envoy_ask` 多一条直接到 `envoy`。**落魄骑士之后**：`blackheron.json` herman `greet_gate` 开场白、`ledger_key` 多一条检定（口才 11 → `key_given` / `key_no`）；`hall.json` alric 开场白、「我家也有过封地」→ `knight`（`alric_knight_said`，瓦伦家 +3）；`highland.json` anselm/ask 报旧姓（威吓 12）。**烽誓团逃兵**：`beacon19.json` matthias 开场多一条 → `deserter`（`matthias_knows_deserter`）、carsten/rule → `deserter`（`carsten_deserter_said`）；anselm/ask「车夫是第一个被踩倒的」（口才 10）。
+- **测试**：`origin2` 组 20 项；顺带一项「所有对话文件里的字都在字体子集里」（查出新台词里一个「崽」不在子集里 → 改成「儿子」，不重做字体）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
