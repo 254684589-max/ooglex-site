@@ -75,8 +75,12 @@ func open(prompt := false) -> void:
 	show()
 	(buttons[Origins.ids()[0]] as Button).grab_focus.call_deferred()
 	print("IC_ORIGIN open prompt=%s" % prompt)
-	await get_tree().process_frame
-	await get_tree().process_frame
+	for i in 2:
+		if not is_inside_tree():
+			return                                  # 等的这两帧里场景换掉了（读档、换区域）
+		await get_tree().process_frame
+	if not is_inside_tree():
+		return
 	var c := (buttons[Origins.ids()[0]] as Button).get_global_rect().get_center() * get_tree().root.content_scale_factor
 	print("IC_ORIGIN_SCREEN x=%d y=%d" % [c.x, c.y])        # 给网页冒烟测试点（窗口像素，已乘界面缩放）
 

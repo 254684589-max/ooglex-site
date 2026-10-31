@@ -482,8 +482,8 @@ func _ready() -> void:
 		pass                          # 换区域进来的：_arrive() 已经提示过区域名
 	elif loaded_from != "":
 		hud.toast("已读取：%s%s" % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
-		if Origins.current() == "" and not Engine.get_meta("ic_skip_opening", false):
-			ask_origin.call_deferred()            # 出身三选一以前的存档（O.1）：问一次
+		if Origins.current() == "" and not Engine.get_meta("ic_skip_opening", false) and Opening.SKIP_QUERY.all(func(k): return _query(k) == ""):
+			ask_origin.call_deferred()            # 出身三选一以前的存档（O.1）：问一次（网址带截图 / 测试参数时不问：冒烟在训练场里存档读档）
 		if GameState.chapter == 0 and GameState.has_flag("prologue_done") and playable_chapter >= 1:
 			hud.toast(CH1_LATER, 6.0)        # 序章打完以后的存档：告诉玩家怎么进第一章（4.3）
 	elif Saves.has_any():
