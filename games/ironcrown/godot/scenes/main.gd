@@ -269,6 +269,8 @@ func _ready() -> void:
 			t = Marsh.build(world, Settings.reduced_motion)
 		"highland":
 			t = Highland.build(world, Settings.reduced_motion)
+		"plain":
+			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":
@@ -1615,6 +1617,7 @@ func _fetch_area_pack() -> void:
 		await get_tree().process_frame             # 界面搭好后等几帧再换场景（按钮位置那几行在下一帧才打，换得太快它们找不到场景树）
 	var ok := await ensure_chapter(n)
 	Highland.clear_cache()
+	Plain.clear_cache()
 	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
 	if ok:
 		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}
