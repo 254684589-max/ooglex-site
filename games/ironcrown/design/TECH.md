@@ -847,6 +847,12 @@ godot/
 - **章末画面**：`EndingPanel.open_chapter2`（「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，「在雪原上再站一会儿」，没有「继续」）；回顾 `Chapter2.recap()`、钩子 `Chapter2.hook()`。`Chapters.LIST[2]` 去掉 `wip` / `wip_note`。
 - 调试 `?well=1`（劫下了粮、火亮着、主线「冬井」）/ `=all`（圈里认得的脸都有）、`?ending=ch2`（只在高地）、机位 21。**测试**：`well` 组 16 项；`chapters` / `sleeper` 两处改成第二章不再标「制作中」。
 
+### 4.62 第二章全流程测试与性能复测（路线图 5.9，2026-10-31）
+
+- **`ch2flow` 组**（`tests/test_runner.gd` `_ch2_run`）：新游戏、设第一章的结局（`valen_heir`、`ch1_causeway`、`ch1_sleeper`）→ `show_ending("ch1")` → 点「继续」→ `reload_main` 到羊脊村 → 罗薇娜（伊薇特那条先交信）→ 走到第十九烽（天擦黑）→ 马蒂亚斯 → 诺伯特（失守那条先扛柴）→ 火把、插满木桩、潮水（`FirstTide.finish` 收尾）→ 第二天诺伯特 → 抉择：劫（换区域到伏击段、走到伏击点开打、`_on_battle_ended` 判赢）/ 求援（罗薇娜的征粮令、安塞尔姆、换区域、车直接推到头）/ 谈不成两手空空 → `_ch2_dawn_world` → 诺伯特说完 → 冬井（`main.well_end_after` 调短）→ 章末画面、回顾。九条 179 项，约 40 秒。只把最慢的几截快进（潮水收尾、仗判赢、车推到头、天亮的计时），对话、换区域、自动存档都是真的。
+- **`tools/bench_areas.js`**：区域表加上 `highland`（22 个机位）、`waystation`、`beacon_tower`；章节包里的区域（余火高地）包没到时先铺平地、下载完重新载入，只认 `IC_HIGHLAND … tex=true` 以后的那次 `IC_PERF`（原来测的是平地：49 次）。
+- **章节包缓存**：7.3 MB 写进 `user://` 以后浏览器还要十几秒才存进 IndexedDB；这期间刷新页面会再下载一次（本机：下载完 40 秒后刷新 `from=cache` 3 毫秒）。记为已知问题。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
