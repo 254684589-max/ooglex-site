@@ -8,7 +8,7 @@ try { pw = require('playwright'); } catch (e) { pw = require('/opt/node22/lib/no
 const q = (process.argv[2] || 'auto') === 'auto' ? '' : process.argv[2];
 const [w, h] = (process.argv[3] || '1280x720').split('x').map(Number);
 const mobile = process.argv[4] === 'mobile';
-const AREAS = [['frostford', 3], ['tavern', 3], ['churchyard', 3], ['chapel', 3], ['birch', 3], ['ferry', 3], ['marsh', 6], ['inn', 3], ['castle', 3], ['hall', 3], ['sickroom', 3], ['barracks', 3], ['counting', 3]];   // 鹭沼（4.4a）：前六个机位，分帧搭完才测（main 等 all_built）；「歪桩」客栈（4.4b）：前三个机位
+const AREAS = [['frostford', 3], ['tavern', 3], ['churchyard', 3], ['chapel', 3], ['birch', 3], ['ferry', 3], ['marsh', 6], ['inn', 3], ['castle', 3], ['hall', 3], ['sickroom', 3], ['barracks', 3], ['counting', 3], ['highland', 22], ['waystation', 3], ['beacon_tower', 3]];   // 第二章（5.9）：余火高地全部 22 个机位、驿站、烽燧塔里面   // 鹭沼（4.4a）：前六个机位，分帧搭完才测（main 等 all_built）；「歪桩」客栈（4.4b）：前三个机位
 const ONLY = process.argv[5] ? process.argv[5].split(',') : null;   // 第五个参数：只测这几个区域（逗号分隔）
 (async () => {
   const b = await pw.chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -25,7 +25,9 @@ const ONLY = process.argv[5] ? process.argv[5].split(',') : null;   // 第五个
       logs.length = 0;
       await p.goto(`http://localhost:8765/games/ironcrown/play/?perf=1&probe=3&area=${area}&view=${v}${q ? '&q=' + q : ''}`);
       let line;
-      for (let i = 0; i < 480 && !line; i++) { await p.waitForTimeout(250); line = logs.find(l => l.startsWith('IC_PERF')); }
+      // 章节包里的区域（第二章余火高地，5.9）：包没到时先铺一片平地、下载完重新载入——只认重新载入以后测的那次
+      const real = () => { const k = logs.findIndex(l => l.startsWith('IC_HIGHLAND') && l.includes('tex=true')); return area !== 'highland' ? logs : (k < 0 ? [] : logs.slice(k)); };
+      for (let i = 0; i < 960 && !line; i++) { await p.waitForTimeout(250); line = real().find(l => l.startsWith('IC_PERF')); }
       if (!line) { failed++; cells.push('没测到'); continue; }
       const g = k => Number((line.match(new RegExp(k + '=([0-9.]+)')) || [])[1]);
       cells.push(`${g('fps').toFixed(1)} 帧 · 最慢 ${g('worst_ms').toFixed(0)} 毫秒 · ${g('draw_calls').toFixed(0)} 次 · ${(g('primitives') / 1000).toFixed(0)}k 图元`);

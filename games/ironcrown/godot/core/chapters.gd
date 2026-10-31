@@ -13,9 +13,8 @@ const PLAYABLE := 2
 const LIST := {
 	0: {"name": "序章 · 霜渡镇之夜", "pack": "", "probe": "", "area": "frostford", "spawn": "manor", "daypart": "night"},
 	1: {"name": "第一章 · 黑鹭堡", "pack": "ch1", "probe": "res://chapters/ch1/road_sign.tscn", "area": "frostford", "spawn": "ch1_dawn", "daypart": "dawn"},
-	## 第二章（5.1a 起）：高地的贴图、天空照片在章节包 ch2 里；2026-10-24 起对玩家打开（制作中，能逛：wip）
-	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day",
-		"wip": "制作中，可以先逛", "wip_note": "第二章还在制作中：现在能逛羊脊村、盘山路和第十九烽，和村里的人说话；烽燧上的人和后面的故事还没做好。"},
+	## 第二章（5.1a 起）：高地的贴图、天空照片在章节包 ch2 里；2026-10-24 起对玩家打开（制作中，能逛）；5.8b 做到章末，不再标「制作中」
+	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day"},
 }
 
 

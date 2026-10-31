@@ -55,7 +55,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
-	if GameState.has_flag("ch2_first_tide"):          # 第二天（5.5a）：诺伯特下了塔顶，蹲在自己小屋的小铁炉边
+	if GameState.has_flag("ch2_first_tide") and not Chapter2.at_dawn():          # 第二天（5.5a）：诺伯特下了塔顶，蹲在自己小屋的小铁炉边（第二夜过去以后又上了塔顶，5.8）
 		var n := Npc.make("诺伯特", [], Color("5a5650"))
 		n.name = "Npc_norbert_room"
 		n.dialogue_area = "beacon19"

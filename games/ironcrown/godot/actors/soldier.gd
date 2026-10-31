@@ -170,6 +170,16 @@ func shake(d: float) -> void:
 		break_rank()
 
 
+## 被长眠者推倒、踩过（5.7a 第二次潮水）：失衡、掉血（不致死）、士气掉
+func trampled(dmg: int, fear: float) -> void:
+	if not fighting():
+		return
+	stagger()
+	hp = maxi(hp - dmg, 1)
+	flash = 1.0
+	shake(-fear)
+
+
 ## 撑不住了：逃跑，或者（看性子）原地跪地求饶；全军溃逃时也走这里
 func break_rank() -> void:
 	if not fighting():

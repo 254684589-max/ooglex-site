@@ -45,6 +45,8 @@ var quest_panel: QuestPanel
 var bench_results: Array = []
 var battle_bench := false
 const DAWN_DELAY := 6.0          # 堤道夜战打完多久天亮、换到黑鹭堡（4.10a）         # 军阵基准测试在跑（B.5）：军阵的提示不弹出来，免得盖住结果表
+const EMPTY_NIGHT_SEC := 12.0    # 两手空空：天黑到天亮几秒（5.8）
+const WELL_END_AFTER := 12.0     # 到了冬井边，诺伯特说完这么久以后章末（5.8b）
 
 var env: Environment
 var world: Node3D
@@ -98,6 +100,8 @@ var daypart := "night"          # 这个场景实际在用的时段（4.2，Dayp
 var cold_state := {}            # 寒冷（5.2c）：在火边歇了多久（冻伤好要连着歇够）
 var cold_shown := ""            # HUD 上现在写的那行寒冷
 var first_tide: FirstTide       # 第一夜潮水（5.4c）：主线到「插火把」「潮水」时在高地搭起来
+var empty_night := false         # 两手空空那一夜正在熬（5.8）
+var well_end_after := WELL_END_AFTER   # 到了冬井边多久章末（全流程测试里调短，5.9）
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -130,14 +134,63 @@ func _ready() -> void:
 		if Daypart.valid(_query("daypart")) and not Engine.has_meta("ic_daypart_param_done"):
 			Engine.set_meta("ic_daypart_param_done", true)   # 截图、预览用（4.2）：?daypart=dawn|day|dusk|night，每次打开页面只用一次——
 			GameState.daypart = _query("daypart")          # 之后读档、进章、走地图改的时段不再被它盖掉（审查发现）
-		if _query("day2") in ["1", "lit"] and not Engine.has_meta("ic_day2_param_done"):
-			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了
+		if _query("rob") in ["head", "tail"] and not Engine.has_meta("ic_rob_param_done"):
+			Engine.set_meta("ic_rob_param_done", true)        # 截图用（5.7a）：?rob=head|tail 直接到劫粮那一夜（伏击段上摆好；配 &cwskip=秒 开打并快进）
+			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "rob")
+			GameState.set_flag("ch2_ambush", _query("rob"))
+			GameState.set_stage("ch2_main", "rob_ready")
+			GameState.daypart = "night"
+		if _query("dawn") in ["lit", "out"] and not Engine.has_meta("ic_dawn_param_done"):
+			Engine.set_meta("ic_dawn_param_done", true)       # 截图用（5.8）：?dawn=lit|out 直接到第二夜过去的早上（劫下了粮 / 被打退了）
+			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "rob")
+			GameState.set_flag("ch2_convoy", "taken" if _query("dawn") == "lit" else "repelled")
+			GameState.set_stage("ch2_main", "rob_ready")
+			Chapter2.dawn()
+			GameState.daypart = "dawn"
+		if _query("well") in ["1", "all"] and not Engine.has_meta("ic_well_param_done"):
+			Engine.set_meta("ic_well_param_done", true)       # 截图用（5.8b）：?well=1 直接到诺伯特说完、要带你去看冬井（劫下了粮、火亮着）；=all 圈里认得的脸都有（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）
+			for f in ["matthias_met", "norbert_met", "norbert_day2", "norbert_dawn"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "rob")
+			GameState.set_flag("ch2_convoy", "taken")
+			GameState.set_stage("ch2_main", "rob_ready")
+			Chapter2.dawn()
+			GameState.set_stage("ch2_main", "to_well")
+			GameState.daypart = "dawn"
+			if _query("well") == "all":
+				GameState.set_flag("ch1_sleeper", "tobin")
+				GameState.set_flag("ch2_nell", "left")
+				GameState.set_flag("ch2_beacon18", "lit")
+		if _query("escort") == "1" and not Engine.has_meta("ic_escort_param_done"):
+			Engine.set_meta("ic_escort_param_done", true)     # 截图用（5.7b）：?escort=1 直接到护粮那一夜（三辆车在伏击段下头；配 &cwskip=秒 动身并快进）
+			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+				GameState.set_flag(f)
+			GameState.set_flag("ch2_first_tide", "held")
+			GameState.set_flag("beacon_grain", "lawful")
+			GameState.set_flag("ch2_aid", "granted")
+			GameState.set_stage("ch2_main", "escort_ready")
+			GameState.daypart = "night"
+		if _query("day2") in ["1", "lit", "convoy"] and not Engine.has_meta("ic_day2_param_done"):
+			Engine.set_meta("ic_day2_param_done", true)       # 截图用（5.5a）：?day2=1 直接到第二天早上（第一夜守住了、主线「天亮以后」）；=lit 第十八烽也点着了；=convoy 粮车到村（5.6）
 			GameState.set_stage("ch2_main", "after_tide")
 			for f in ["matthias_met", "norbert_met"]:
 				GameState.set_flag(f)
 			GameState.set_flag("ch2_first_tide", "held")
 			if _query("day2") == "lit":
 				GameState.set_flag("ch2_beacon18", "lit")
+			if _query("day2") == "convoy":                 # =convoy：诺伯特交代完，粮车到村（5.6）
+				GameState.set_flag("norbert_day2")
+				GameState.set_stage("ch2_main", "convoy_day")
+			if _query("nell") == "1":                      # &nell=1：答应过妮尔（5.5b：第二天她背着包袱要走）
+				GameState.start_quest("ch2_nell", "decide")
+				GameState.set_flag("ch2_nell", "asked")
 		if area == "marsh" and _query("causeway") in ["gap", "arch"] and not Engine.has_meta("ic_causeway_param_done"):
 			Engine.set_meta("ic_causeway_param_done", true)  # 截图、冒烟用（4.9a）：?area=marsh&causeway=gap|arch 直接摆好堤道夜战（夜里、主线到「上堤道」、守断口 / 石拱），配 ?cam= 放到守点就开打
 			if not GameState.quest_active("ch1_main"):
@@ -236,6 +289,10 @@ func _ready() -> void:
 		_:
 			t = Frostford.build(world, Settings.reduced_motion)
 	heir_seen = str(GameState.get_flag("valen_heir", ""))      # 读档、换区域时不再提示「另一位离堡」（4.8a）
+	if area == "highland":
+		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
+		ConvoyEscort.setup(world)                       # 第二夜 · 护粮（5.7b）：主线「护车」、还没走过，三辆车在伏击段下头；到了几秒以后动身
+		WinterWell.setup(world)                         # 白寂边缘的冬井（5.8b）：井一直在；主线「冬井」起井边站着一圈长眠的人、诺伯特在山脊背后等你
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
@@ -356,6 +413,8 @@ func _ready() -> void:
 		hint_left = HINT_SECONDS * 1.5
 	if _query("ending") in EndingPanel.RECAP and arrived_by == "" and loaded_from == "":     # 只在打开页面时：换区域、读档以后地址还带着它，不再弹（4.1 实测）
 		show_ending.call_deferred("prologue", _query("ending"))
+	elif _query("ending") == "ch2" and area == "highland" and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("ch2")                 # 截图用（5.8b）：?ending=ch2 第二章的章末画面（回顾按当前旗标，配 ?well=all）
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
 			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
@@ -410,6 +469,8 @@ func _ready() -> void:
 			var secs := float(_query("probe")) if _query("probe").is_valid_float() else BATTLE_BENCH_SAMPLE
 			await run_battle_benchmark(int(view) if view.is_valid_int() else -1, BATTLE_BENCH_WARM, clampf(secs, 0.5, 10.0))
 		elif view != "" or area != "frostford":
+			if _query("probewait").is_valid_float():       # &probewait=秒：等到那一刻再测（游戏时间；护粮的潮水 5.7b）
+				await get_tree().create_timer(float(_query("probewait"))).timeout
 			var secs := float(_query("probe")) if _query("probe").is_valid_float() else 1.0
 			await perf_probe(clampf(secs, 0.5, 10.0))      # 截图 / 逐区域基准（tools/bench_areas.js）：只测一次，不显示浮层
 		else:
@@ -1492,7 +1553,9 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	if id == "ch1":
+	if id == "ch2":
+		ending_panel.open_chapter2(Settings.reduced_motion, 0)       # 第二章完（5.8b）：第三章还没有
+	elif id == "ch1":
 		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
 	else:
 		ending_panel.open(choice, Settings.reduced_motion, 1 if playable_chapter >= 1 else 0)
@@ -1818,6 +1881,16 @@ func give_order(o: String) -> bool:
 func _on_battle_ended(winner: String) -> void:
 	if battle_bench:
 		return
+	if area == "highland":                              # 第二夜 · 劫粮（5.7a）：写旗标、声望、推进主线、自动存档；过一会儿天亮
+		var ca := world.get_node_or_null("ConvoyAmbush") as ConvoyAmbush
+		var res := ca.result(winner) if ca else ("taken" if winner == battle.player_side else "repelled")
+		hud.toast(ConvoyAmbush.finish(res), 6.0)
+		print("IC_AMBUSH end winner=%s result=%s" % [winner, res])
+		save_game.call_deferred("auto", true)
+		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+			if is_inside_tree() and not leaving and area == "highland":
+				_ch2_dawn_world())
+		return
 	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
 		var held := winner == battle.player_side
 		hud.toast(CausewayBattle.finish(held), 6.0)
@@ -1947,8 +2020,144 @@ func _on_tide_ended(result: String) -> void:
 		hud.toast("最后一个白影子翻过了北边的山脊。营地里的火都还亮着，人一个没少。天快亮了。", 5.0)
 	print("IC_TIDE end result=%s intruded=%d rerouted=%d" % [result, first_tide.intruded.size(), first_tide.crowd.rerouted if first_tide.crowd else 0])
 	GameState.set_stage("ch2_main", "after_tide")
+	if GameState.quest_active("ch2_nell"):
+		GameState.set_stage("ch2_nell", "decide")      # 妮尔背着包袱要往北去（5.5b）
 	set_daypart("dawn", false)
 	save_game("auto", true)
+
+
+## 第二夜 · 劫粮（5.7a，world/convoy_ambush.gd）：主线到「设伏」时天黑透、粮车出村——把你放到伏击段（重新载入高地，摆好那场仗）；走到伏击点开打
+func _ambush_tick() -> void:
+	if area != "highland" or player == null or leaving:
+		return
+	var ca := world.get_node_or_null("ConvoyAmbush") as ConvoyAmbush
+	if ca and ca.player == null:
+		ca.player = player
+		if _query("rob") != "" and _query("cam") == "":
+			var sp := ConvoyAmbush.spawn()                # 截图用（?rob=）：站到伏击段上
+			player.global_position = sp[0]
+			player.rotation.y = deg_to_rad(float(sp[1]))
+			var at := _query("at").split(",")             # &at=T[,偏]：站到伏击段第 T 米（偏：正 = 下坡一侧，负 = 岩坎上）、朝车队中间
+			if at[0].is_valid_float():
+				player.global_position = ConvoyAmbush.leg_point(float(at[0]), float(at[1]) if at.size() > 1 else 0.0) + Vector3(0, 0.05, 0)
+				var to := ConvoyAmbush.leg_point(ConvoyAmbush.CART_T[2]) - player.global_position
+				player.rotation.y = atan2(-to.x, -to.z)
+	if ConvoyAmbush.due() and (battle == null or not is_instance_valid(battle)):
+		Engine.set_meta("ic_arrive_note", "天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。" % ("车头前那棵锯倒的枯松后面" if ConvoyAmbush.ambush() == "head" else "车尾后面的弯道上"))
+		travel("highland", "ambush", "night")
+		return
+	if ca and battle and is_instance_valid(battle) and not battle.started and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
+		start_battle()
+		if _query("cwskip").is_valid_float():         # 截图用：开打并快进到第 N 秒（同堤道夜战）
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+		hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
+
+
+## 第二夜 · 护粮（5.7b，world/convoy_escort.gd）：主线到「护车」时天黑透——把你放到伏击段下头的车队后面（重新载入高地）；到了几秒以后先自动存档、车队动身
+func _escort_tick() -> void:
+	if area != "highland" or player == null or leaving:
+		return
+	var ce := world.get_node_or_null("ConvoyEscort") as ConvoyEscort
+	if ce and ce.player == null:
+		ce.player = player
+		ce.ended.connect(_on_escort_ended)
+		ce.note.connect(func(t: String): hud.toast(t, 4.5))
+		if _query("escort") != "" and _query("cam") == "":
+			var sp := ConvoyEscort.spawn()                # 截图用（?escort=1）：站到车队后头
+			player.global_position = sp[0]
+			player.rotation.y = deg_to_rad(float(sp[1]))
+			var at := _query("at").split(",")             # &at=T[,偏]：站到伏击段第 T 米、朝山脊
+			if at[0].is_valid_float():
+				player.global_position = ConvoyAmbush.leg_point(float(at[0]), float(at[1]) if at.size() > 1 else 0.0) + Vector3(0, 0.05, 0)
+				var to := ConvoyAmbush.leg_point(ConvoyAmbush.TIDE_T) - player.global_position
+				player.rotation.y = atan2(-to.x, -to.z)
+	if ConvoyEscort.due() and ce == null:
+		Engine.set_meta("ic_arrive_note", "天黑透了。三辆粮车点着火把出了村，上了盘山路。马蒂亚斯的六个人举着火把走在车两边，安塞尔姆的押车兵跟在后头。")
+		travel("highland", "escort", "night")
+		return
+	if ce and ce.state == ConvoyEscort.WAIT and ce.wait_left <= 0.0:
+		save_game("auto", true)                        # 动身前自动存档（倒下了从这里重来）
+		ce.begin()
+		if _query("cwskip").is_valid_float():          # 截图用：动身并快进到第 N 秒（同劫粮）
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+
+
+func _on_escort_ended(res: String) -> void:
+	var ce := world.get_node_or_null("ConvoyEscort") as ConvoyEscort
+	hud.toast(ConvoyEscort.finish(res, ce.through() if ce else -1), 6.0)
+	print("IC_ESCORT done result=%s" % res)
+	save_game.call_deferred("auto", true)
+	get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+		if is_inside_tree() and not leaving and area == "highland":
+			_ch2_dawn_world())
+
+
+## 第二夜过去、天亮（5.8）：塔顶的火亮不亮（Chapter2.dawn 已经定了 ch2_fire）、诺伯特上塔顶
+func _ch2_dawn_world() -> void:
+	set_daypart("dawn")
+	HighlandBeacon.apply_fire(world)
+	HighlandBeacon.dawn_norbert(world)
+	hud.toast("天亮了。山脊上，第十九烽的火还亮着。" if not Chapter2.fire_out() else "天亮了。山脊上，第十九烽的塔顶没有烟。", 4.5)
+	save_game("auto", true)                         # 读档回来是天亮以后（打完那一刻的自动存档还是夜里）
+
+
+## 白寂边缘 · 冬井（5.8b，world/winter_well.gd）：主线「冬井」——诺伯特从塔顶下去（对话关了以后），在山脊背后等你；圈、认得的脸、到了井边他说一句，过一会儿章末
+func _well_tick() -> void:
+	if area != "highland" or player == null or leaving:
+		return
+	var ww := world.get_node_or_null("WinterWell") as WinterWell
+	if ww == null:
+		return
+	if ww.player == null:
+		ww.player = player
+		ww.revealed.connect(func(): hud.toast("冰原上那口石井边，站着一圈人。光着脚，闭着眼，一动不动——脸都朝着井。", 6.0))
+		ww.recognized.connect(func(t: String): hud.toast(t, 5.5))
+		ww.reached.connect(_on_well_reached)
+	if not WinterWell.due() or dialogue.visible:
+		return
+	var left := false
+	for nm in ["Npc_norbert", "Npc_norbert_cold"]:
+		var n := world.find_child(nm, true, false)
+		if n:
+			n.get_parent().remove_child(n)
+			n.queue_free()
+			left = true
+	if left:
+		hud.toast("诺伯特从天窗下去了：「翻过山脊，往冰原那边。我在那儿等你。」", 5.0)
+	ww._build_ring()
+	ww.ensure_norbert()
+
+
+func _on_well_reached() -> void:
+	hud.say("（诺伯特在你身边站住了，很久没说话）……三十五年，我头一回走到这口井边。它们没往北走。它们在这儿站着，脸都朝着井——像在等一样东西。")
+	get_tree().create_timer(well_end_after).timeout.connect(func():
+		if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
+			GameState.set_flag("ch2_done")
+			if GameState.quest_active("ch2_main"):
+				GameState.set_stage("ch2_main", "ch2_end")
+			save_game("auto", true)
+			show_ending("ch2"))
+
+
+## 两手空空（5.6 empty_handed，5.8）：主线到这一步，这一夜就这么熬过去——天黑、柴省着烧、天亮时火熄了
+func _empty_night_tick() -> void:
+	if area != "highland" or player == null or leaving or empty_night or dialogue.visible:
+		return
+	if GameState.chapter != 2 or GameState.quest_stage("ch2_main") != "empty_handed":
+		return
+	empty_night = true
+	set_daypart("night", false)
+	hud.toast("天黑了。营里把最后几捆柴省着烧，火盆里的火压得很小。没有人说话。", 6.0)
+	print("IC_EMPTY night")
+	get_tree().create_timer(EMPTY_NIGHT_SEC).timeout.connect(func():
+		if not is_inside_tree() or leaving or area != "highland":
+			empty_night = false
+			return
+		Chapter2.dawn()
+		_ch2_dawn_world()
+		print("IC_EMPTY dawn fire=%s" % GameState.get_flag("ch2_fire", "")))
 
 
 ## 第二章主线（5.3c）：「上第十九烽」时走进烽燧那片（木栅外几米也算：盘山路走上来、旅行地图到烽燧门前）——天擦黑了（STORY.md 5.5 第 3 步「黄昏到烽燧」），主线推进到「找马蒂亚斯」
@@ -2071,6 +2280,10 @@ func _process(delta: float) -> void:
 	_cold_tick(delta)
 	_beacon_arrival()
 	_first_tide_tick()
+	_ambush_tick()
+	_escort_tick()
+	_empty_night_tick()
+	_well_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

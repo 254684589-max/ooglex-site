@@ -267,7 +267,8 @@ static func conds_ok(conds: Array) -> bool:
 			if GameState.has_flag(str(c.not_flag)):
 				return false
 		elif c.has("eq"):
-			if GameState.get_flag(str(c.flag)) != c.eq:
+			var v: Variant = GameState.get_flag(str(c.flag))
+			if typeof(v) != typeof(c.eq) or v != c.eq:            # 类型不同就是不相等（旗标被设成 false 时和字符串比会报错）
 				return false
 		elif not GameState.has_flag(str(c.get("flag", ""))):
 			return false

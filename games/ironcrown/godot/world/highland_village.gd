@@ -15,6 +15,8 @@ const BANNER_FIELD := Color("5e6062")       # 厄尔德家：灰底燃烧的烽�
 const BANNER_CHARGE := Color("c8642a")
 ## 只说一句的人（5.2b）
 const LINES := {
+	"convoy_guard": ["车上的粮是南边买主的。别靠太近。", "听说山上夜里有东西走过去？……押粮官说是风。", "五车，一车不能少。少了，扣的是我们的饷。"],
+	"carter": ["我赶了二十年车，没见过押粮官怕成这样。", "马不肯往北看。一往北看就打响鼻。"],
 	"shepherd": ["羊比人知道得早。长眠的人从村边走过去那晚，羊挤成一团，一夜没叫。", "妮尔她爹？好人。冻掉了两根指头，照样编得出全村最紧的草绳。屋檐下吊石头的绳子，一半是他编的。",
 		"明天洛蒙德家的粮车要从村里过。咱们只配站在路边看着它过去。"],
 	"bolted": ["门闩着，是怕自己睡着了往外走。……傻吧？长眠的人，门闩是自己拔开的。", "驿站的罗薇娜小姐是个好人。厄尔德家的人里头，就她肯下山跟我们说话。",
@@ -61,6 +63,8 @@ static func interactables(parent: Node3D) -> void:
 ## 村里的人（5.2b）：同步放（块没搭好时也得找得到、说得上话，同鹭沼）
 static func people(parent: Node3D) -> void:
 	for p in HighlandLayout.PEOPLE:
+		if str(p[0]) == "nell" and str(GameState.get_flag("ch2_nell", "")) == "left":
+			continue                                     # 支线「妮尔的父亲」随她去了（5.5b）：她踩着脚印往北走了
 		var pos: Vector2 = p[2]
 		var n := Npc.make(str(p[1]), LINES.get(str(p[0]), []), Color(str(p[4])))
 		n.name = "Npc_" + str(p[0])
@@ -498,3 +502,53 @@ static func read_stones() -> Dictionary:
 		GameState.add_clue("stones_seal")
 	return {"kind": "examine", "name": "石圈", "toast": text}
 
+
+## 洛蒙德家的粮车（5.6；STORY.md 5.5 第 6 步「粮车到了羊脊村歇脚」）：第二天主线到「粮车到村」以后、第二夜以前停在驿站门口的村路上。
+## 五辆车（满载麻袋）沿路排成一列，押粮官安塞尔姆在车尾（对话 highland.json anselm），四个押车兵、两个车夫只说一句（LINES）。
+const CONVOY_STAGES := ["convoy_day", "talk_anselm", "aid_refused", "empty_handed"]      # 「设伏」「护车」时天黑透，车已经出村上了盘山路（5.7a / 5.7b）
+const CONVOY_CARTS := 5
+
+
+static func convoy_here() -> bool:
+	return GameState.chapter == 2 and GameState.quest_stage("ch2_main") in CONVOY_STAGES
+
+
+static func convoy_carts() -> Array:
+	var out := []
+	for k in CONVOY_CARTS:
+		var z := 64.0 + k * 3.4
+		out.append(Vector2(10.0 - (z - 62.0) * 0.095 + 2.0, z))      # 村路东边（路从 (10, 62) 到 (6, 104)）
+	return out
+
+
+static func convoy(parent: Node3D, reduced_motion := false) -> void:
+	if not convoy_here():
+		return
+	var d := Decor.new()
+	var carts := convoy_carts()
+	for c in carts:
+		d.cart(Vector3(c.x, ground(c), c.y), 0.0, "sacks")
+	var root := Node3D.new()
+	root.name = "Convoy"
+	parent.add_child(root)
+	d.build(root, "ConvoyCarts", not reduced_motion)
+	var tail: Vector2 = carts[carts.size() - 1]
+	var list := [
+		["anselm", "安塞尔姆", tail + Vector2(-1.6, 2.4), PI * 0.5, "5a4a3a", "anselm"],          # 车尾，面朝西（村路上走过来的人）
+		["convoy_guard1", "押车兵", (carts[0] as Vector2) + Vector2(-1.4, -1.6), 0.0, "4a4038", ""],
+		["convoy_guard2", "押车兵", (carts[1] as Vector2) + Vector2(1.4, 0.4), -PI * 0.5, "4a4038", ""],
+		["convoy_guard3", "押车兵", (carts[3] as Vector2) + Vector2(-1.4, 0.2), PI * 0.5, "4a4038", ""],
+		["convoy_guard4", "押车兵", tail + Vector2(1.5, 1.8), PI, "4a4038", ""],
+		["carter1", "车夫", (carts[2] as Vector2) + Vector2(1.3, -0.6), -PI * 0.5, "5a5246", ""],
+		["carter2", "车夫", (carts[4] as Vector2) + Vector2(1.3, -0.8), -PI * 0.5, "5a5246", ""],
+	]
+	for p in list:
+		var at: Vector2 = p[2]
+		var n := Npc.make(str(p[1]), LINES.get(str(p[0]).rstrip("1234"), []), Color(str(p[4])))
+		n.name = "Npc_" + str(p[0])
+		if str(p[5]) != "":
+			n.dialogue_area = "highland"
+			n.dialogue_id = str(p[5])
+		n.position = Vector3(at.x, ground(at), at.y)
+		n.rotation.y = float(p[3])
+		root.add_child(n)

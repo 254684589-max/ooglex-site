@@ -796,6 +796,63 @@ godot/
 - **石圈**（`HighlandVillage.stone_words / read_stones`）：倒下的那块（`ring_stones()[6]`）上一个 `Examine`「看刻字」：`ch2_stones` = copied（线索 `stones_seal`）；有 `old_book` → matched。
 - 视角 20；调试 `?day2=1 / lit`。**测试**：`day2` 组 23 项。
 
+### 4.56 支线：妮尔的父亲、第十年（路线图 5.5b，2026-10-30）
+
+- **潮水里的脸**（`FirstTide`）：原来只有一张（`ch1_sleeper`）的改成一张表 `faces`（`_make_face(样子, 第几个人, 提示, 旗标)`、`_seen_tick` 每帧跟着那个人走、走近 9 米提示一次并记旗标）。`ch2_nell` = asked 时第 `FATHER_INDEX` 22 个人换成「妮尔的父亲」（looks.json），认出来记 `ch2_nell_father_seen`。`main._on_tide_ended`：支线 `ch2_nell` 还开着 → 推进到 `decide`。
+- **妮尔**（`highland.json` nell，整份是两格缩进的展开格式，按原格式写回）：`start_if` 先看 `ch2_nell` = stopped / seen → `stays`；`ch2_first_tide` + asked → `day2`（`told` 要 `ch2_nell_father_seen`；口才检定 12 → `stopped_talk` / `not_moved`；`stopped_pull`；`left`）。`left` 时 `HighlandVillage.people` 不放她。
+- **卡斯滕**（`beacon19.json` carsten）：第一夜过后 `HighlandBeacon.people` 把劈柴的老兵换成「卡斯滕」、对话 `carsten`（looks.json 同一身打扮）；`fled` 时不放。马蒂亚斯：`ch2_carsten_ask` 时多一个口才检定 14 的选项（`carsten_yes` → freed / `carsten_no` → `ch2_carsten_refused`，只能说一次）。声望：fled −10、stayed +5（`beacon_oath`）。
+- 新支线 `ch2_carsten`；`ch2_nell` 加阶段 `decide`；新旗标 `ch2_nell_father_seen`、`ch2_carsten`、`ch2_carsten_ask`、`ch2_carsten_refused`、`carsten_met`。调试 `?day2=1&nell=1`。
+- **测试**：`sidequests2` 组 21 项。
+
+### 4.57 抉择：粮车到村（路线图 5.6，2026-10-30）
+
+- **主线阶段**：`convoy_day` →（马蒂亚斯）`rob_ready`（劫，`ch2_ambush` head / tail）或 `talk_anselm` →（安塞尔姆）`escort_ready`（`ch2_aid` granted）或 `aid_refused` →（马蒂亚斯）`rob_ready` 或 `empty_handed`。`beacon_grain`：rob / lawful。
+- **粮车**（`HighlandVillage.convoy`，`highland.gd` 进场时同步搭）：主线在 `CONVOY_STAGES` 里时，驿站北边村路东侧五辆 `Decor.cart(…, "sacks")`（一份 Decor、有碰撞），安塞尔姆（`highland.json` anselm）、四个押车兵、两个车夫（`LINES`）。
+- **对话**：马蒂亚斯 `grain / go_talk / rob_plan / ambush_head / ambush_tail / after_refused / empty`（`beacon19.json`）；罗薇娜 `convoy_time / requisition`（`waystation.json`，`norbert_day2` 以后，空白征粮令 `requisition` 只给一次）；安塞尔姆 `ask` 六条路（征粮令三车 / 五车（口才 15）、`fur_ledger`、`valen_heir` = ivette（口才 10）、长眠的人（口才 16）、`silver` 30）→ `escort` / `refused`。`waystation.json`、`highland.json` 是两格缩进的展开格式：读进来、改、按原格式写回（先核对写回跟原文件一字不差）。
+- **对话条件**：`{"flag", "eq"}` 旗标值和要比的值类型不同就算不相等（原来 `false != "granted"` 会报脚本错误）。
+- 调试 `?day2=convoy`。**测试**：`convoy` 组 22 项。
+
+### 4.58 第二夜 · 劫粮（路线图 5.7a，2026-10-30）
+
+- **`world/convoy_ambush.gd`（ConvoyAmbush）**：`due()`（主线 `rob_ready`、还没有 `ch2_convoy`）时 main 在高地搭好以后调 `setup(world)`：两方 `beacon_oath`（灰布带）/ `lomond`（赭红布带），烽誓团 `SQUAD_KINDS` 十人（`ch2_carsten` = stayed 多一个「卡斯滕」）进小队、跟着你；押车队长、`GUARD_KINDS` 十四人、安塞尔姆（levy，meta `anselm`）。位置全用 `leg_point(t, off)`（伏击段 `HighlandLayout.AMBUSH_LEG` 上第 t 米、往下坡一侧偏 off 米）；车 `CART_T`、锯倒的枯松 `TREE_T`（有碰撞）、伏击点 `POST_T`、出生点 `SPAWN_T`（`HighlandLayout.spawn_points` 的 `ambush`）。
+- **流程**：`main._ambush_tick`：到期且没有战斗 → 夜里旅行到 `ambush` 出生点（带到达提示）；走到伏击点 `START_R` 以内 → `start_battle()`（先自动存档）。`_physics_process`：开打先发一次车夫逃跑的提示；`TIDE_AT` 秒后 `_start_tide`（`SleeperCrowd`，路线垂直穿过路面第 `TIDE_T` 米，`TIDE_COUNT` / 第十八烽点着了 `TIDE_COUNT_LIT18`），`crowd.victims = battle.roster`。
+- **踩踏**：`SleeperCrowd._hit_soldiers` 对 `victims` 里的兵调 `Soldier.trampled(dmg, fear)`（失衡、掉 `SOLDIER_TRAMPLE_DMG` 血但最少留 1、士气掉 `SOLDIER_FEAR`）。
+- **烧车**：`_check_carts`——亮着的插地火把离车 `CART_BURN_R` 以内，或者主角被推倒时手里的火把（`TorchHand.dropped_lit`）在车边 → `burn_cart(i)`（`CausewayBattle._flame` + 一盏 FireLight）。
+- **结束**：`result(winner)` → `finish(res)`：`ch2_convoy` taken / burned / repelled，`lomond` −20，不是 repelled 时 `beacon_oath` +10，主线 `dawn_after`；main 自动存档、`DAWN_DELAY` 后 `set_daypart("dawn")`。主角倒下：读开打前的自动存档。
+- **性能**：`SleeperCrowd.near_cap`（实例上限，默认 `NEAR_MAX`），伏击里 `NEAR_CAP` = 2：中档开打 + 潮水 423 → 304 次绘制调用。
+- **主线**：`HighlandVillage.CONVOY_STAGES` 去掉 `rob_ready`（天黑以后车队已经出村）。调试 `?rob=head|tail`（设好旗标、主线「设伏」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝车队，`&cwskip=秒` 开打并快进。**测试**：`ambush` 组 12 项。
+
+### 4.59 第二夜 · 护粮（路线图 5.7b，2026-10-30）
+
+- **`world/convoy_escort.gd`（ConvoyEscort）**：`due()`（主线 `escort_ready`、还没有 `ch2_convoy`）时 main 在高地搭好以后调 `setup(world)`。三辆车（每辆一个 Node3D：`Decor.cart` 一份、一个 `Examine`、车夫、`GUARDS` 个押车兵都是它的子节点，跟着车走），位置用 `ConvoyAmbush.leg_point(t, off)`，按前后高度差抬车头。举火把的兵各是一个 Node3D（亮着时进 `light_source` 组、`radius` 元数据 = `TorchHand.RADIUS`，长眠者绕开），`TorchHand.make_visual(1)` 举过头顶、在外侧（走路的动作手是垂着的，挂在手上看不见火），能对着按 E。
+- **流程**：`main._escort_tick`：到期且没有 ConvoyEscort → 夜里旅行到 `escort` 出生点（`HighlandLayout.spawn_points`）；到了 `START_DELAY` 秒 → 自动存档、`begin()`。`_tick`：风（`BLOW`、`RELIGHT_SELF`）→ 每辆车：车头前 `BLOCK_AHEAD` 米有长眠者就停、跟前面还在路上的车隔 `GAP_MIN` → 走 `SPEED` → 车夫慌不慌（`_panic`：`PANIC_R` 内有长眠者、`SAFE_R` 内没有亮着的火（`SleeperCrowd.fires`，你手里的也算）→ 涨，`PANIC_TIME` 秒涨满 → `_abandon`：车歪到路肩 `LOST_OFF`、两个兵撤走、车夫往山下跑）→ 过了 `END_T` 算送上山（`_gone`：你离开 `GONE_DIST` 或 `GONE_SEC` 秒以后不画了）。头车到 `TIDE_START_T` 起潮水（路线垂直穿过路面第 `ConvoyAmbush.TIDE_T` 米，从岩坎上头 `TIDE_FROM` 米下来），每步把三辆车写进 `crowd.obstacles`。一盏实时光源跟着离你最近、火还亮着的那辆车（`PlantedTorch.max_lights` 为 0 的低画质不开）。
+- **交互**：对着车：车夫慌了一半以上 → 「稳住车夫」（panic 清零）；否则「续火把」（`TorchHand.take_from_ground(FUEL)`：手里没有就拿一支点着的）。对着兵：你手里的火把亮着 → 点着他的。
+- **结束**：车都过去了或丢了（或 `TIME_MAX`）→ `finish_run` → `ended(result)`；main `_on_escort_ended` → `finish(res, 过去几车)`：`ch2_convoy` delivered / partial / lost，声望（delivered / partial：`lomond` +5、`beacon_oath` +10，delivered 且用了征粮令 `eld` +5；lost：`lomond` −5、用了征粮令 `eld` −5），主线 `dawn_after`；自动存档、`DAWN_DELAY` 后天亮。
+- **性能**：潮水里近处真人模型最多 `NEAR_CAP` = 2。中档实测：潮水横穿时 272–364 次绘制调用；天亮以后（车过去了不画）331；**夜转清晨那一下测到 427–479**（场景本身的时段过渡，同劫粮那一夜的结尾，记为待查）。
+- 调试 `?escort=1`（设好旗标、主线「护车」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝潮水横穿的地方，`&cwskip=秒` 动身并快进；`?perf=1&probewait=秒` 等到那一刻再测（非战斗区域）。**测试**：`escort` 组 19 项。
+
+### 4.60 天亮 · 火还在不在（路线图 5.8a，2026-10-30）
+
+- **`quest/chapter2.gd`（Chapter2）**：`dawn()`——`ch2_fire` = lit（`ch2_convoy` 在 `FED`：taken / burned / delivered / partial）或 out，主线 `dawn_after`；`ConvoyAmbush.finish`、`ConvoyEscort.finish`、两手空空那一夜都调它。`at_dawn()`（主线 `dawn_after` / `to_well`）、`fire_out()`。
+- **塔顶的火**（`HighlandBeacon._fire`）：火盆的石台和铁篮一份；炭和烧着的柴（`BeaconEmbers`）、火苗、`BeaconFire` 火光（`light_source` 组）、光晕、远处的暖光、火星、烟都放在 `BeaconFlames` 下；冷灰和几截黑柴头在 `BeaconAsh` 下。`apply_fire(root)` 按 `Chapter2.fire_out()` 切换（搭好时、天亮那一刻 main 调）。灭了的火不在 `SleeperCrowd.fires` 里（节点藏起来了）。
+- **诺伯特**：`HighlandBeacon.dawn_norbert(parent)`——`at_dawn()` 时在塔顶火盆边（火灭了节点名 `Npc_norbert_cold`，`looks.json` 的 `@norbert_cold` 蹲着）；`people()` 搭的时候、天亮那一刻（`main._ch2_dawn_world`）都调，已经在了不再放；`BeaconTower` 的小屋那个在 `at_dawn()` 时不放。
+- **对话**（`beacon19.json`）：诺伯特 `dawn_lit`（`beacon_grain` 劫 / 护两种开场）、`dawn_out`（被打退 / 一车也没上来 / 两手空空）→ `dawn_rest` / `dawn_rest_short` → `dawn_well`（`ch2_stones` 时先接「封于冬井」；设 `norbert_dawn`、主线 `to_well`）→ `well_wait`；马蒂亚斯 `dawn`（按 `ch2_convoy` 七种）。
+- **main**：劫粮 / 护粮打完 `DAWN_DELAY` 后 `_ch2_dawn_world()`：天亮、`apply_fire`、`dawn_norbert`、提示一句、自动存档（打完那一刻的自动存档还是夜里，读档回来要是天亮以后）。`_empty_night_tick`：主线 `empty_handed`、对话关了 → 天黑、`EMPTY_NIGHT_SEC` 秒后 `Chapter2.dawn()` + `_ch2_dawn_world()`。调试 `?dawn=lit|out`。**测试**：`dawn2` 组 26 项。
+
+### 4.61 白寂边缘 · 冬井 · 第二章章末（路线图 5.8b，2026-10-30）
+
+- **`world/winter_well.gd`（WinterWell）**：main 在高地搭好以后 `setup(world)`，井一直在（`_build_well`：两层石块的井栏、黑井口、裂开的石盖、冻住的铁链、一块碰撞）。`due()`（主线 `to_well` / `ch2_end`）时 `_build_ring()`：圈上 `RING_N` 个位置（`slot(k)`，离井 `RING_R` 米）每个都是 `CharacterModel`（生人用 `Looks.spec_of` 几种村民打扮 + `SleeperCrowd.LINEN_TINT`；认得的脸 `_face_specs()`：`ch1_sleeper`、`ch2_nell` 有值时妮尔的父亲、`left` 时妮尔（不换麻衣）、`ch2_beacon18` = lit 时三个守塔人），`hold("idle", …)` 定住、不投影、远处不画。原来用 SleeperCrowd 那种简化的人（一份多实例），白天像一排白石膏 → 全换真人模型，中档 188 → 328 次绘制调用。
+- **诺伯特**：`ensure_norbert()` 在 `RIDGE_WAIT` 放一个 `Npc_norbert_well`（`ch2_end` 时直接在井边）；你走到 `FOLLOW_R` 以内他往 `stop_point()` 走（`WALK_SPEED`，贴地），到了面朝井站住。`Chapter2.norbert_on_roof()`（只在 `dawn_after`）管塔顶那个：`main._well_tick` 在主线 `to_well`、对话关了以后拿掉塔顶的诺伯特（提示一句）、摆圈、放山脊上的诺伯特。
+- **信号**：`revealed`（`REVEAL_R` 以内，提示一次）、`recognized(text)`（认得的脸 `FACE_R` 以内各一次）、`reached`（他到了、你也在 `END_R` 以内）→ main `_on_well_reached`：他说一句，`WELL_END_AFTER` 秒后 `ch2_done`、主线 `ch2_end`、自动存档、`show_ending("ch2")`。
+- **章末画面**：`EndingPanel.open_chapter2`（「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，「在雪原上再站一会儿」，没有「继续」）；回顾 `Chapter2.recap()`、钩子 `Chapter2.hook()`。`Chapters.LIST[2]` 去掉 `wip` / `wip_note`。
+- 调试 `?well=1`（劫下了粮、火亮着、主线「冬井」）/ `=all`（圈里认得的脸都有）、`?ending=ch2`（只在高地）、机位 21。**测试**：`well` 组 16 项；`chapters` / `sleeper` 两处改成第二章不再标「制作中」。
+
+### 4.62 第二章全流程测试与性能复测（路线图 5.9，2026-10-31）
+
+- **`ch2flow` 组**（`tests/test_runner.gd` `_ch2_run`）：新游戏、设第一章的结局（`valen_heir`、`ch1_causeway`、`ch1_sleeper`）→ `show_ending("ch1")` → 点「继续」→ `reload_main` 到羊脊村 → 罗薇娜（伊薇特那条先交信）→ 走到第十九烽（天擦黑）→ 马蒂亚斯 → 诺伯特（失守那条先扛柴）→ 火把、插满木桩、潮水（`FirstTide.finish` 收尾）→ 第二天诺伯特 → 抉择：劫（换区域到伏击段、走到伏击点开打、`_on_battle_ended` 判赢）/ 求援（罗薇娜的征粮令、安塞尔姆、换区域、车直接推到头）/ 谈不成两手空空 → `_ch2_dawn_world` → 诺伯特说完 → 冬井（`main.well_end_after` 调短）→ 章末画面、回顾。九条加一项新局检查共 180 项，约 40 秒。只把最慢的几截快进（潮水收尾、仗判赢、车推到头、天亮的计时），对话、换区域、自动存档都是真的。
+- **`tools/bench_areas.js`**：区域表加上 `highland`（22 个机位）、`waystation`、`beacon_tower`；章节包里的区域（余火高地）包没到时先铺平地、下载完重新载入，只认 `IC_HIGHLAND … tex=true` 以后的那次 `IC_PERF`（原来测的是平地：49 次）。
+- **章节包缓存**：7.3 MB 写进 `user://` 以后浏览器还要十几秒才存进 IndexedDB；这期间刷新页面会再下载一次（本机：下载完 40 秒后刷新 `from=cache` 3 毫秒）。记为已知问题。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

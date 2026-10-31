@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8067,8 +8067,8 @@ func test_sleeper() -> void:
 	var hk: String = main.ending_panel.seal.text
 	check(rc.contains("印戒交给了阿尔里克") and rc.contains("堤道守住了") and rc.contains("奥弗") and hk.contains("老王自己交出去的") and hk.contains("双钥港") and hk.contains("没有醒来"),
 		"回顾按旗标写（印戒、堤道、奥弗），钩子带上双钥港和长眠者（%s / %s）" % [rc, hk])
-	check(main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("制作中") and main.ending_panel.back_btn.text == "在晨雾里再走走",
-		"第二章先放出来能逛（2026-10-24）：「%s」「在晨雾里再走走」「从头再来」" % main.ending_panel.continue_btn.text)
+	check(main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text == "继续：第二章 · 熄灭的烽燧" and main.ending_panel.back_btn.text == "在晨雾里再走走",
+		"第二章做到章末了（5.8b）：「%s」「在晨雾里再走走」「从头再来」" % main.ending_panel.continue_btn.text)
 	main.ending_panel.close()
 	await frames(2)
 	check(not get_tree().paused, "关掉画面接着走")
@@ -8337,8 +8337,8 @@ func test_looks() -> void:
 
 ## 5.1a 余火高地地图底座：高度场、碰撞、分块、天空、风雪、章节包与第二章的入口
 func test_highland() -> void:
-	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) != "",
-		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、标着「%s」（PLAYABLE = %d）" % [Chapters.wip_of(2), Chapters.PLAYABLE])
+	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) == "",
+		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、做到章末不再标「制作中」（PLAYABLE = %d）" % Chapters.PLAYABLE)
 	check(Highland.textures_ready() and ResourceLoader.exists(Highland.FIELD_PATH) and ResourceLoader.exists(Highland.PAINT_PATH), "第二章的贴图、天空照片、预先算好的高度场都在 chapters/ch2/")
 	# 预先算好的高度场和布局对得上（布局改了忘了重新生成会在这里报）
 	Highland._field = PackedFloat32Array()
@@ -8454,7 +8454,7 @@ func test_highland() -> void:
 	main.playable_chapter = 2
 	main.show_ending("ch1")
 	await frames(2)
-	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧") and main.ending_panel.continue_btn.text.contains("制作中"),
+	check(main.ending_panel.next_chapter == 2 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("熄灭的烽燧") and not main.ending_panel.continue_btn.text.contains("制作中"),
 		"第一章章末多一行「%s」" % main.ending_panel.continue_btn.text)
 	var reloaded := [false]
 	main.reload_requested.connect(func(): reloaded[0] = true)
@@ -9005,6 +9005,728 @@ func test_day2() -> void:
 	GameState.set_flag("norbert_day2", false)
 	r.start("beacon19", "norbert")
 	check(not r.text().contains("少了一个人"), "守住了营地：不提少了人")
+
+
+## 5.5b 支线：妮尔的父亲（第一夜潮水里认出他；第二天她要往北去：告诉她 / 劝住 / 拉住 / 随她去）、第十年（卡斯滕：替他说、帮他溜、劝他留）
+func test_sidequests2() -> void:
+	GameState.new_game(580)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	GameState.set_stage("ch2_main", "light_line")
+	GameState.start_quest("ch2_nell")
+	GameState.set_flag("ch2_nell", "asked")
+	var main := await make_area("highland")
+	await frames(3)
+	var ft: FirstTide = main.first_tide
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		(t as PlantedTorch).windy = false
+	ft.start_tide()
+	await physics(3)
+	var seen := []
+	ft.recognized.connect(func(t): seen.append(t))
+	check(ft.crowd.hidden.has(FirstTide.FATHER_INDEX) and ft.faces.size() == 1 and ft.faces[0].index == FirstTide.FATHER_INDEX,
+		"答应过妮尔：潮水里混着她父亲（换成他的样子）")
+	var a: Dictionary = ft.crowd.agents[FirstTide.FATHER_INDEX]
+	main.player.global_position = Vector3(a.p.x + 3.0, Highland.height_at(a.p.x + 3.0, a.p.y) + 0.3, a.p.y)
+	await physics(4)
+	check(GameState.has_flag("ch2_nell_father_seen") and seen.size() == 1 and str(seen[0]).contains("少了两根指头"), "走近了：认出来——左手少两根指头，是妮尔的父亲")
+	main._on_tide_ended("held")
+	check(GameState.quest_stage("ch2_nell") == "decide", "天亮：支线推进到「妮尔要往北去」")
+	await free_main(main)
+	# 妮尔：告诉她看见了 → seen
+	var r := DialogueRunner.new()
+	r.start("highland", "nell")
+	check(r.text().contains("包袱") and has_opt(r, "看见了。他在潮水里，往北走，走得很稳。") and has_opt(r, "（拉住她的胳膊）不行。") and has_opt(r, "要去就去吧。路上小心。"),
+		"第二天：妮尔背着包袱要走；能告诉她看见了、劝、拉住、随她去")
+	pick(r, "看见了。他在潮水里，往北走，走得很稳。")
+	check(str(GameState.get_flag("ch2_nell", "")) == "seen" and GameState.quest_done("ch2_nell") and r.text().contains("我不去了"), "告诉她看见了：她不去了（seen，支线完成）")
+	r.start("highland", "nell")
+	check(r.text().contains("羊鞭"), "之后她在石圈边攥着她爹的旧羊鞭")
+	# 没认出来的：选项里没有「看见了」；拉住 → stopped
+	GameState.set_flag("ch2_nell", "asked")
+	GameState.set_flag("ch2_nell_father_seen", false)
+	r.start("highland", "nell")
+	check(not has_opt(r, "看见了。他在潮水里，往北走，走得很稳。"), "潮水里没认出他：不能说看见了")
+	pick(r, "（拉住她的胳膊）不行。")
+	check(str(GameState.get_flag("ch2_nell", "")) == "stopped", "拉住她：她不去了（stopped）")
+	# 随她去 → 村里没有她了
+	GameState.set_flag("ch2_nell", "asked")
+	r.start("highland", "nell")
+	pick(r, "要去就去吧。路上小心。")
+	check(str(GameState.get_flag("ch2_nell", "")) == "left", "随她去：她踩着脚印往北走了（left）")
+	var m2 := await make_area("highland")
+	await frames(3)
+	check(m2.world.find_children("Npc_nell", "", true, false).is_empty(), "她走了以后，石圈边没有她了")
+	# 卡斯滕
+	var ch: Array = m2.world.find_children("Npc_chopper", "", true, false)
+	check(ch.size() == 1 and (ch[0] as Npc).display_name == "卡斯滕" and (ch[0] as Npc).dialogue_id == "carsten", "第二天：劈柴的老兵报了名字，卡斯滕，有话说")
+	await free_main(m2)
+	r.start("beacon19", "carsten")
+	check(r.text().contains("第十年") and GameState.quest_active("ch2_carsten"), "卡斯滕：今年是我第十年（支线「第十年」）")
+	pick(r, "守满十年，就能走？")
+	check(r.text().contains("一笔勾销") and r.text().contains("金穗平原"), "规矩：守十年罪和债一笔勾销；团长不放；南边有个姑娘等了十年")
+	pick(r, "我去替你跟马蒂亚斯说。")
+	GameState.set_flag("matthias_met")
+	r.start("beacon19", "matthias")
+	check(has_opt(r, "卡斯滕守满十年了。按规矩，你该放他走。"), "答应替他说：马蒂亚斯多一个选项（口才检定）")
+	var rep0 := int(GameState.rep.get("beacon_oath", 0))
+	r.start("beacon19", "carsten")
+	pick(r, "守满十年，就能走？")
+	pick(r, "今夜我替你看着门。你走。")
+	check(str(GameState.get_flag("ch2_carsten", "")) == "fled" and int(GameState.rep.get("beacon_oath", 0)) == rep0 - 10 and GameState.quest_done("ch2_carsten"), "帮他夜里溜走：fled，烽誓团 −10")
+	r.start("beacon19", "matthias")
+	check(not has_opt(r, "卡斯滕守满十年了。按规矩，你该放他走。"), "他走了：不用再替他说")
+	var m3 := await make_area("highland")
+	await frames(3)
+	check(m3.world.find_children("Npc_chopper", "", true, false).is_empty(), "柴棚前没有卡斯滕了")
+	await free_main(m3)
+	GameState.set_flag("ch2_carsten", false)
+	GameState.quests.erase("ch2_carsten")
+	var rep1 := int(GameState.rep.get("beacon_oath", 0))
+	r.start("beacon19", "carsten")
+	pick(r, "守满十年，就能走？")
+	pick(r, "再守一年吧。这个冬天，烽燧缺不得人。")
+	check(str(GameState.get_flag("ch2_carsten", "")) == "stayed" and int(GameState.rep.get("beacon_oath", 0)) == rep1 + 5, "劝他再守一年：stayed，烽誓团 +5")
+	r.start("beacon19", "carsten")
+	check(r.text().contains("再守一年"), "之后他说：再守一年，我自己答应的")
+
+
+## 5.6 抉择：粮车到村（驿站门口五辆车、安塞尔姆、押车兵）；马蒂亚斯：劫（先断车头 / 车尾）或去谈；罗薇娜：几时出村、空白征粮令；
+## 安塞尔姆：征粮令三车 / 账册 / 银币 → 分三车要你护车；谈不成回去：劫或者两手空空
+func test_convoy() -> void:
+	GameState.new_game(590)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	for f in ["matthias_met", "norbert_met", "norbert_day2", "rowena_met", "saw_requisition"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_stage("ch2_main", "after_tide")
+	var m0 := await make_area("highland")
+	await frames(3)
+	check(m0.world.find_children("Convoy", "", true, false).is_empty(), "粮车到村以前：驿站门口没有粮车")
+	await free_main(m0)
+	GameState.set_stage("ch2_main", "convoy_day")
+	var main := await make_area("highland")
+	await frames(3)
+	var cv: Array = main.world.find_children("Convoy", "", true, false)
+	check(cv.size() == 1 and cv[0].get_node_or_null("ConvoyCarts") != null and main.world.find_children("Npc_convoy_guard*", "", true, false).size() == 4
+		and main.world.find_children("Npc_carter*", "", true, false).size() == 2, "主线「粮车到村」：驿站门口五辆满载的粮车、四个押车兵、两个车夫")
+	var an: Array = main.world.find_children("Npc_anselm", "", true, false)
+	check(an.size() == 1 and (an[0] as Npc).dialogue_id == "anselm" and (an[0] as Npc).display_name == "安塞尔姆", "车尾站着押粮官安塞尔姆，有对话")
+	var space: PhysicsDirectSpaceState3D = main.player.get_world_3d().direct_space_state
+	var fl: Array = main.world.find_children("Npc_convoy_guard*", "", true, false).filter(func(n):
+		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(n.global_position + Vector3(0, 1, 0), n.global_position - Vector3(0, 1, 0), 1))
+		return hit.is_empty() or absf(float(hit.position.y) - n.global_position.y) > 0.3)
+	check(fl.is_empty(), "押车兵都站在地上")
+	await free_main(main)
+	# 马蒂亚斯：劫 → 先断车头
+	var r := DialogueRunner.new()
+	r.start("beacon19", "matthias")
+	check(has_opt(r, "粮车的事，你怎么打算？"), "马蒂亚斯：「粮车的事，你怎么打算？」")
+	pick(r, "粮车的事，你怎么打算？")
+	check(r.text().contains("十个人") and has_opt(r, "劫。") and has_opt(r, "我先去找押粮官谈。"), "他给你十个人，也听别的法子")
+	pick(r, "劫。")
+	check(has_opt(r, "先断车头：砍倒那棵枯松拦路。") and has_opt(r, "先断车尾：截住安塞尔姆。"), "劫：两处能下手——车头（枯松拦路）、车尾（截住安塞尔姆）")
+	pick(r, "先断车头：砍倒那棵枯松拦路。")
+	check(str(GameState.get_flag("beacon_grain", "")) == "rob" and str(GameState.get_flag("ch2_ambush", "")) == "head" and GameState.quest_stage("ch2_main") == "rob_ready",
+		"先断车头：beacon_grain = rob，主线「天黑透以后设伏」")
+	# 去谈：罗薇娜、安塞尔姆
+	GameState.set_flag("beacon_grain", false)
+	GameState.set_flag("ch2_ambush", false)
+	GameState.set_stage("ch2_main", "convoy_day")
+	r.start("beacon19", "matthias")
+	pick(r, "粮车的事，你怎么打算？")
+	pick(r, "我先去找押粮官谈。")
+	check(GameState.quest_stage("ch2_main") == "talk_anselm", "去谈：主线「找押粮官安塞尔姆」")
+	r.start("waystation", "rowena")
+	check(has_opt(r, "粮车几时出村？") and has_opt(r, "桌上那张盖了印的空白文书，现在用得着了。"), "罗薇娜：几时出村、那张空白文书")
+	pick(r, "粮车几时出村？")
+	check(r.text().contains("天黑透以后") and GameState.has_flag("heard_convoy_time"), "天黑透以后出村；安塞尔姆一夜没合眼盯着山脊")
+	pick(r, "……")
+	pick(r, "桌上那张盖了印的空白文书，现在用得着了。")
+	check(GameState.has_item("requisition") and r.text().contains("写多少"), "她把空白的征粮令推给你：写多少车你写")
+	r.start("highland", "anselm")
+	check(r.text().contains("押粮官") and GameState.has_flag("anselm_met"), "安塞尔姆：粮不卖，合同上写着日子")
+	pick(r, "烽燧上的人快断粮了。")
+	check(has_opt(r, "（摊开征粮令，写上「三车」）厄尔德家征三车粮，送上第十九烽。") and not has_opt(r, "（翻开皮毛税账册）这几笔「留北境」的账，洛蒙德家那边也有一份吧。"),
+		"有征粮令才有那两条；没有账册就没有账册那条")
+	pick(r, "（摊开征粮令，写上「三车」）厄尔德家征三车粮，送上第十九烽。")
+	check(not GameState.has_item("requisition") and str(GameState.get_flag("ch2_requisition", "")) == "three", "征粮令写三车：他认了（厄尔德家的印）")
+	pick(r, "……")
+	check(str(GameState.get_flag("beacon_grain", "")) == "lawful" and str(GameState.get_flag("ch2_aid", "")) == "granted" and GameState.quest_stage("ch2_main") == "escort_ready",
+		"分三车粮上山，要你护车过盘山路（ch2_aid = granted）")
+	# 账册
+	GameState.set_flag("ch2_aid", false)
+	GameState.set_stage("ch2_main", "talk_anselm")
+	GameState.add_item("fur_ledger")
+	var lom := int(GameState.rep.get("lomond", 0))
+	r.start("highland", "anselm")
+	pick(r, "烽燧上的人快断粮了。")
+	pick(r, "（翻开皮毛税账册）这几笔「留北境」的账，洛蒙德家那边也有一份吧。")
+	check(r.text().contains("脸白了") and int(GameState.rep.get("lomond", 0)) == lom - 10, "亮出皮毛税账册：他脸白了，三车（洛蒙德家 −10）")
+	pick(r, "……")
+	check(str(GameState.get_flag("ch2_aid", "")) == "granted", "账册：谈成")
+	# 银币
+	GameState.set_flag("ch2_aid", false)
+	GameState.set_stage("ch2_main", "talk_anselm")
+	GameState.silver = 40
+	r.start("highland", "anselm")
+	pick(r, "烽燧上的人快断粮了。")
+	pick(r, "（放下三十枚银币）就当是买三车粮上山的路钱。")
+	pick(r, "……")
+	check(GameState.silver == 10 and str(GameState.get_flag("ch2_aid", "")) == "granted", "三十银币：买三车的路钱（谈成）")
+	# 谈不成：回去跟马蒂亚斯说
+	GameState.set_flag("ch2_aid", "refused")
+	GameState.set_stage("ch2_main", "aid_refused")
+	r.start("beacon19", "matthias")
+	pick(r, "安塞尔姆不肯。")
+	check(has_opt(r, "那就劫。") and has_opt(r, "两手空空回去吧。"), "谈不成：马蒂亚斯——劫，或者两手空空")
+	pick(r, "两手空空回去吧。")
+	check(str(GameState.get_flag("beacon_grain", "")) == "lawful" and GameState.quest_stage("ch2_main") == "empty_handed", "两手空空：三夜变两夜（主线「两手空空」）")
+	var m2 := await make_area("highland")
+	await frames(3)
+	check(m2.world.find_children("Convoy", "", true, false).size() == 1, "第二夜以前粮车还停在驿站门口")
+	await free_main(m2)
+
+
+## 5.7a 第二夜 · 劫粮：伏击段上五辆车、两边的人、车头的枯松；走到伏击点开打（先存档）；第二次潮水横穿山路、踩倒兵；火把点着车；结果旗标和声望
+func _ambush_game(ambush: String, seed: int) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "rob")
+	GameState.set_flag("ch2_ambush", ambush)
+	GameState.set_stage("ch2_main", "rob_ready")
+
+
+func test_ambush() -> void:
+	_ambush_game("head", 600)
+	var main := await make_area("highland")
+	await frames(3)
+	var ca: ConvoyAmbush = main.world.get_node_or_null("ConvoyAmbush")
+	var b: Battle = main.battle
+	check(ca != null and b != null and not b.started and ca.get_node_or_null("AmbushCarts") != null and ca.get_node_or_null("FelledPine") != null
+		and main.world.find_children("Convoy", "", true, false).is_empty(),
+		"主线「设伏」：伏击段上五辆粮车、车头前锯倒的枯松（村里没有车了：出村了）")
+	var ours := b.roster.filter(func(s): return s.side == ConvoyAmbush.OURS).size() + b.reserve.filter(func(e): return e[0].side == ConvoyAmbush.OURS).size()
+	var foe := b.roster.filter(func(s): return s.side == ConvoyAmbush.FOE).size() + b.reserve.filter(func(e): return e[0].side == ConvoyAmbush.FOE).size()
+	check(ours == 10 and foe == 16 and b.squad.size() == 10, "烽誓团 10 个人（小队）对洛蒙德家 16 个（押车队长、14 个押车兵、安塞尔姆）")
+	var sp: Array = HighlandLayout.spawn_points().ambush
+	check(absf(ConvoyAmbush.t_of(sp[0]) - ConvoyAmbush.SPAWN_T.head) < 0.5 and absf((sp[0] as Vector3).y - Highland.height_at(sp[0].x, sp[0].z)) < 0.3 and not ConvoyAmbush.at_post(sp[0]),
+		"出生点在车头前的伏击段路上，离伏击点还有几步")
+	var p: FpController = main.player
+	p.global_position = ConvoyAmbush.leg_point(ConvoyAmbush.POST_T.head) + Vector3(0, 0.3, 0)
+	await frames(3)
+	check(b.started and not Saves.read_slot("auto").is_empty(), "走到伏击点：开打（先自动存档）")
+	await seconds(2.0)
+	b.elapsed = ConvoyAmbush.TIDE_AT + 0.1            # 跳到潮水那一刻（无头测试物理步数有上限，快进不了这么多）
+	await physics(3)
+	check(ca.tide_started and ca.crowd != null and ca.crowd.count == ConvoyAmbush.TIDE_COUNT and ca.crowd.victims.size() > 0,
+		"开打 %d 秒后第二次潮水横穿山路：%d 个长眠者，兵也会被踩" % [ConvoyAmbush.TIDE_AT, ConvoyAmbush.TIDE_COUNT])
+	var guard: Soldier = null
+	for s in b.roster:
+		if is_instance_valid(s) and s.side == ConvoyAmbush.FOE and s.fighting() and not s.is_captain:
+			guard = s
+			break
+	if guard:
+		var a: Dictionary = ca.crowd.agents[0]
+		var m0 := guard.morale
+		guard.global_position = Vector3(a.p.x, Highland.height_at(a.p.x, a.p.y) + 0.1, a.p.y)
+		await physics(4)
+		check(ca.crowd.trampled_soldiers > 0 and (guard.morale < m0 or not guard.fighting()), "挡在潮水前面的押车兵被推倒、踩过：士气 %.0f → %.0f" % [m0, guard.morale])
+	else:
+		check(false, "找得到一个押车兵")
+	var c := ConvoyAmbush.leg_point(ConvoyAmbush.CART_T[1], 1.2)
+	var pt := PlantedTorch.make(TorchHand.FUEL, false)
+	main.world.add_child(pt)
+	pt.global_position = c
+	await physics(3)
+	check(ca.carts_burning.has(1), "火把插在粮车边上：车上的麻袋着了")
+	var lom := int(GameState.rep.get("lomond", 0))
+	var oath := int(GameState.rep.get("beacon_oath", 0))
+	main._on_battle_ended(ConvoyAmbush.OURS)
+	check(str(GameState.get_flag("ch2_convoy", "")) == "burned" and GameState.quest_stage("ch2_main") == "dawn_after"
+		and int(GameState.rep.get("lomond", 0)) == lom - 20 and int(GameState.rep.get("beacon_oath", 0)) == oath + 10,
+		"赢了可烧了车：burned；洛蒙德家 −20、烽誓团 +10；主线「天亮以后」")
+	await free_main(main)
+	# 先断车尾：没有枯松；赢了车没烧 = taken；输了 = repelled
+	_ambush_game("tail", 601)
+	var m2 := await make_area("highland")
+	await frames(3)
+	var ca2: ConvoyAmbush = m2.world.get_node_or_null("ConvoyAmbush")
+	check(ca2 != null and ca2.get_node_or_null("FelledPine") == null and absf(ConvoyAmbush.t_of(HighlandLayout.spawn_points().ambush[0]) - ConvoyAmbush.SPAWN_T.tail) < 0.5,
+		"先断车尾：没有枯松，你在车尾后面")
+	check(ca2.result(ConvoyAmbush.OURS) == "taken" and ca2.result(ConvoyAmbush.FOE) == "repelled", "车没烧赢了 = taken；输了 = repelled")
+	await free_main(m2)
+	# 卡斯滕留下来：多一个人；第十八烽点着：潮水小
+	_ambush_game("head", 602)
+	GameState.set_flag("ch2_carsten", "stayed")
+	GameState.set_flag("ch2_beacon18", "lit")
+	var m3 := await make_area("highland")
+	await frames(3)
+	check(m3.battle.squad.size() == 11 and m3.battle.squad.any(func(s): return s.display_override == "卡斯滕"), "卡斯滕留下来了：身边多一个人")
+	var ca3: ConvoyAmbush = m3.world.get_node("ConvoyAmbush")
+	ca3.player = m3.player
+	m3.start_battle()
+	ca3._start_tide()
+	check(ca3.crowd.count == ConvoyAmbush.TIDE_COUNT_LIT18, "第十八烽点着了：第二夜的潮水小一些（%d 个）" % ConvoyAmbush.TIDE_COUNT_LIT18)
+	await free_main(m3)
+
+
+## 5.7b 第二夜 · 护粮：伏击段下头三辆车、举火把的兵、押车兵；动身前自动存档；车往上走；潮水；风吹灭火把、车夫慌了稳住 / 弃车；帮兵点火把；挡路就停；结果和声望
+func _escort_game(seed: int) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "lawful")
+	GameState.set_flag("ch2_aid", "granted")
+	GameState.set_stage("ch2_main", "escort_ready")
+
+
+func test_escort() -> void:
+	_escort_game(700)
+	GameState.set_flag("ch2_requisition", "three")
+	var main := await make_area("highland")
+	await frames(3)
+	var ce: ConvoyEscort = main.world.get_node_or_null("ConvoyEscort")
+	check(ce != null and ce.carts.size() == 3 and ce.bearers.size() == 6 and ce.state == ConvoyEscort.WAIT
+		and main.world.find_children("Convoy", "", true, false).is_empty() and main.world.get_node_or_null("ConvoyAmbush") == null,
+		"主线「护车」：伏击段下头三辆粮车、六个举火把的兵（村里没有车了；没有劫粮那场仗）")
+	check(ce.lit_bearers() == 6 and main.get_tree().get_nodes_in_group("light_source").filter(func(n): return ce.is_ancestor_of(n)).size() == 6,
+		"六支火把都亮着（长眠者会绕开）")
+	var sp: Array = HighlandLayout.spawn_points().escort
+	check(absf(ConvoyAmbush.t_of(sp[0]) - ConvoyEscort.SPAWN_T) < 0.5 and ConvoyAmbush.t_of(sp[0]) < float(ce.carts[2].t),
+		"出生点在车队后头的路上")
+	ce.windy = false
+	ce.wait_left = 0.0
+	await frames(3)
+	check(ce.state == ConvoyEscort.GO and not Saves.read_slot("auto").is_empty(), "到了几秒以后车队动身（先自动存档）")
+	var t0 := float(ce.carts[0].t)
+	await physics(30)
+	check(float(ce.carts[0].t) > t0 + 0.2 and ce.carts.all(func(c): return c.state == "go"), "车往山脊上走（%.1f → %.1f 米）" % [t0, float(ce.carts[0].t)])
+	ce.carts[0].t = ConvoyEscort.TIDE_START_T + 0.1
+	await physics(3)
+	check(ce.tide_started and ce.crowd != null and ce.crowd.count == ConvoyAmbush.TIDE_COUNT, "头车走到 %d 米：第二次潮水横穿山路（%d 个）" % [ConvoyEscort.TIDE_START_T, ConvoyAmbush.TIDE_COUNT])
+	# 挡路：车头前有长眠者就停
+	var a: Dictionary = ce.crowd.agents[0]
+	var front := ConvoyAmbush.leg_point(float(ce.carts[1].t) + ConvoyEscort.BLOCK_AHEAD, 0.4)
+	a.p = Vector2(front.x, front.z)
+	check(ce._blocked(1), "车头前有长眠者挡着：车停下等")
+	# 车夫慌：两边的火都灭了、长眠者在跟前
+	for b in ce.bearers:
+		if int(b.cart) == 0:
+			ce._set_lit(b, false)
+	var c0 := ce.cart_xz(0)
+	a.p = c0 + Vector2(1.5, 0.0)
+	main.player.global_position = ConvoyAmbush.leg_point(5.0) + Vector3(0, 0.3, 0)
+	ce._panic(0, ConvoyEscort.PANIC_TIME * 0.6, [])
+	var use0: Examine = ce.carts[0].use
+	check(float(ce.carts[0].panic) > 0.5 and use0.verb_now() == "稳住车夫", "两边的火都灭了、长眠者在跟前：车夫慌了（对着车按 E 是「稳住车夫」）")
+	var r := use0.interact(main.player)
+	check(float(ce.carts[0].panic) == 0.0 and str(r.get("speech", "")) != "", "稳住车夫：他咬着牙点了点头")
+	a.p = c0 + Vector2(1.5, 0.0)
+	ce._panic(0, ConvoyEscort.PANIC_TIME + 1.0, [])
+	check(ce.carts[0].state == "lost" and ce.lost() == 1, "慌满了：车夫扔下车跑了，这车粮丢了")
+	# 火把：车上的油罐续火把；帮兵点上
+	var k := ce.bearers.find(ce.bearers.filter(func(b): return int(b.cart) == 1)[0])
+	ce._set_lit(ce.bearers[k], false)
+	var hand: TorchHand = main.player.torch
+	var bu: Examine = ce.bearers[k].use
+	check(bu.verb_now() == "点着火把" and str(bu.interact(main.player).get("toast", "")).begins_with("得拿着") and not ce.bearers[k].lit, "手里没有点着的火把：帮不了他")
+	(ce.carts[1].use as Examine).interact(main.player)
+	check(hand.lit() and is_equal_approx(hand.fuel, TorchHand.FUEL), "对着车按 E：从油罐续火把（手里没有就拿一支点着的）")
+	bu.interact(main.player)
+	check(ce.bearers[k].lit, "举着点着的火把对着兵按 E：他的火把点着了")
+	ce._set_lit(ce.bearers[k], false)
+	ce.clock += ConvoyEscort.RELIGHT_SELF + 0.1
+	ce._wind(0.0)
+	check(ce.bearers[k].lit, "灭了没人管：过 %d 秒他自己从车上的油罐续上" % ConvoyEscort.RELIGHT_SELF)
+	# 走完：两车上山 = delivered
+	var lom := int(GameState.rep.get("lomond", 0))
+	var oath := int(GameState.rep.get("beacon_oath", 0))
+	var eld := int(GameState.rep.get("eld", 0))
+	ce.carts[1].t = ConvoyEscort.END_T + 0.1
+	ce.carts[2].t = ConvoyEscort.END_T + 0.1
+	await physics(3)
+	check(ce.state == ConvoyEscort.DONE and ce.through() == 2 and str(GameState.get_flag("ch2_convoy", "")) == "delivered" and GameState.quest_stage("ch2_main") == "dawn_after",
+		"两车过了潮水：delivered；主线「天亮以后」")
+	check(int(GameState.rep.get("lomond", 0)) == lom + 5 and int(GameState.rep.get("beacon_oath", 0)) == oath + 10 and int(GameState.rep.get("eld", 0)) == eld + 5,
+		"护粮：洛蒙德家 +5、烽誓团 +10；用了征粮令的厄尔德家 +5")
+	await free_main(main)
+	# 一车也没上来：lost；第十八烽点着：潮水小
+	_escort_game(701)
+	GameState.set_flag("ch2_requisition", "five")
+	GameState.set_flag("ch2_beacon18", "lit")
+	var lom2 := int(GameState.rep.get("lomond", 0))
+	var eld2 := int(GameState.rep.get("eld", 0))
+	check(ConvoyEscort.finish("lost").begins_with("×") and int(GameState.rep.get("lomond", 0)) == lom2 - 5 and int(GameState.rep.get("eld", 0)) == eld2 - 5,
+		"一车也没上来：lost（洛蒙德家 −5，用了征粮令的厄尔德家 −5）")
+	_escort_game(702)
+	GameState.set_flag("ch2_beacon18", "lit")
+	var m2 := await make_area("highland")
+	await frames(3)
+	var ce2: ConvoyEscort = m2.world.get_node("ConvoyEscort")
+	ce2._start_tide()
+	check(ce2.crowd.count == ConvoyAmbush.TIDE_COUNT_LIT18, "第十八烽点着了：护粮那一夜的潮水也小一些（%d 个）" % ConvoyAmbush.TIDE_COUNT_LIT18)
+	check(ConvoyEscort.finish("partial").begins_with("✓ 只有一车"), "一车上山：partial")
+	await free_main(m2)
+
+
+## 5.8a 天亮 · 火还在不在：粮上了山火亮着、没上来火熄了；诺伯特回到塔顶（亮着站着、灭了蹲在冷灰边），说完剩下的话、要带你去看冬井；马蒂亚斯按结果说一句；两手空空那一夜自己熬过去
+func _dawn2_game(seed: int, grain: String, convoy: String) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "dawn"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", grain)
+	if convoy != "":
+		GameState.set_flag("ch2_convoy", convoy)
+	GameState.set_stage("ch2_main", "rob_ready" if grain == "rob" else "escort_ready")
+	Chapter2.dawn()
+
+
+func test_dawn2() -> void:
+	for pair in [["taken", "lit"], ["burned", "lit"], ["repelled", "out"], ["delivered", "lit"], ["partial", "lit"], ["lost", "out"], ["", "out"]]:
+		_dawn2_game(800, "rob", str(pair[0]))
+		check(str(GameState.get_flag("ch2_fire", "")) == str(pair[1]) and GameState.quest_stage("ch2_main") == "dawn_after",
+			"第二夜 %s：天亮时火 %s，主线「天亮以后」" % [pair[0] if pair[0] != "" else "两手空空", pair[1]])
+	# 火亮着：塔顶的火、诺伯特站在火盆边；小屋里没有他
+	_dawn2_game(801, "rob", "taken")
+	var main := await make_area("highland")
+	(main.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var w: Node = main.world
+	var flames: Array = w.find_children("BeaconFlames", "Node3D", true, false)
+	var ash: Array = w.find_children("BeaconAsh", "Node3D", true, false)
+	var nb: Array = w.find_children("Npc_norbert*", "", true, false)
+	check(flames.size() == 1 and (flames[0] as Node3D).visible and ash.size() == 1 and not (ash[0] as Node3D).visible, "火亮着：塔顶火盆里的火在烧")
+	check(nb.size() == 1 and nb[0].name == "Npc_norbert" and (nb[0] as Node3D).global_position.y > HighlandLayout.tower_base_y() + HighlandLayout.TOWER_H - 0.5,
+		"诺伯特又上了塔顶，站在火盆边")
+	await free_main(main)
+	var tower := await make_area("beacon_tower")
+	await frames(3)
+	check(tower.world.find_children("Npc_norbert_room", "", true, false).is_empty(), "小屋里没有他了")
+	await free_main(tower)
+	var r := DialogueRunner.new()
+	r.start("beacon19", "norbert")
+	check(r.text().contains("劫来的") and r.text().contains("火还亮着"), "诺伯特（劫来的粮）：洛蒙德家会记着这一笔，可火还亮着")
+	pick(r, "你说过，等火还亮着的时候再说。")
+	check(r.text().contains("等了二十五年") and r.text().contains("来的是你"), "守满十年没走：等一个人上山来问那一夜")
+	pick(r, "你在等什么？")
+	check(r.text().contains("冬井") and GameState.quest_stage("ch2_main") == "to_well" and GameState.has_flag("norbert_dawn"),
+		"老规矩：封好的誓瓶送到冬井；那一夜瓶是空的，他没去过——要带你去看（主线「冬井」）")
+	r.start("beacon19", "norbert")
+	check(r.text().contains("趁天亮"), "再找他：走吧，趁天亮")
+	r.start("beacon19", "matthias")
+	check(r.text().contains("五车") and r.text().contains("诺伯特在塔顶"), "马蒂亚斯：劫下了五车")
+	# 刻过字的：他接上「封于冬井」
+	_dawn2_game(802, "lawful", "delivered")
+	GameState.set_flag("ch2_stones", "copied")
+	r.start("beacon19", "norbert")
+	check(r.text().contains("安塞尔姆送上来的"), "诺伯特（护粮）：洛蒙德家欠了北边一个人情")
+	pick(r, "你说过，等火还亮着的时候再说。")
+	pick(r, "你在等什么？")
+	check(r.text().begins_with("石圈上那句话"), "念过石圈上的字：他接上「封于冬井」")
+	# 火灭了：冷灰、诺伯特蹲在冷灰边，话短一些
+	_dawn2_game(803, "rob", "repelled")
+	var m2 := await make_area("highland")
+	(m2.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var f2: Array = m2.world.find_children("BeaconFlames", "Node3D", true, false)
+	var a2: Array = m2.world.find_children("BeaconAsh", "Node3D", true, false)
+	check(not (f2[0] as Node3D).visible and (a2[0] as Node3D).visible and m2.world.find_children("Npc_norbert_cold", "", true, false).size() == 1
+		and not SleeperCrowd.fires(m2.get_tree()).any(func(f): return (f[0] as Vector2).distance_to(HighlandLayout.TOWER[0]) < 3.0),
+		"火灭了：火盆里一层冷灰，诺伯特蹲在边上（火不再让长眠者绕开）")
+	await free_main(m2)
+	r.start("beacon19", "norbert")
+	check(r.text().contains("冷灰") and r.text().contains("抬着伤兵"), "诺伯特（被打退）：灭了，伤兵抬回来的时候只剩一点红")
+	pick(r, "……火灭了。")
+	check(r.text().contains("火却灭了"), "话短一些：来的是你，火却灭了")
+	pick(r, "……")
+	check(GameState.quest_stage("ch2_main") == "to_well", "照样要带你去看冬井")
+	r.start("beacon19", "matthias")
+	check(r.text().contains("没劫下来"), "马蒂亚斯：没劫下来，三个弟兄抬回来的")
+	# 两手空空：那一夜自己熬过去（天黑 → 天亮，火熄了；天亮那一刻诺伯特上塔顶）
+	GameState.new_game(804)
+	GameState.chapter = 2
+	GameState.daypart = "day"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "lawful")
+	GameState.set_flag("ch2_aid", "refused")
+	GameState.set_stage("ch2_main", "empty_handed")
+	var m3 := await make_area("highland")
+	(m3.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	check(m3.empty_night and GameState.daypart == "night", "两手空空：天黑了，柴省着烧")
+	check(m3.world.find_children("Npc_norbert*", "", true, false).is_empty(), "夜里诺伯特不在塔顶")
+	Chapter2.dawn()
+	m3._ch2_dawn_world()
+	await frames(2)
+	var f3: Array = m3.world.find_children("BeaconFlames", "Node3D", true, false)
+	check(GameState.daypart == "dawn" and str(GameState.get_flag("ch2_fire", "")) == "out" and not (f3[0] as Node3D).visible
+		and m3.world.find_children("Npc_norbert_cold", "", true, false).size() == 1 and not Saves.read_slot("auto").is_empty(),
+		"天亮：火熄了（冷灰），诺伯特上了塔顶，自动存档")
+	await free_main(m3)
+	r.start("beacon19", "matthias")
+	check(r.text().contains("两手空空"), "马蒂亚斯：两手空空，火天亮前就灭了")
+
+
+## 5.8b 白寂边缘 · 冬井：井一直在；主线「冬井」诺伯特从塔顶下去、在山脊背后等你，领你走到井边；一圈长眠的人、认得的脸；到了井边过一会儿章末（回顾、钩子、没有「继续」）
+func _well_game(seed: int, stage: String) -> void:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	GameState.daypart = "dawn"
+	for f in ["matthias_met", "norbert_met", "norbert_day2"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("beacon_grain", "rob")
+	GameState.set_flag("ch2_convoy", "taken")
+	GameState.set_stage("ch2_main", "rob_ready")
+	Chapter2.dawn()
+	GameState.set_stage("ch2_main", stage)
+
+
+func test_well() -> void:
+	# 天亮以后、还没说完：井在，圈和山脊上的诺伯特还没有；诺伯特在塔顶
+	_well_game(900, "dawn_after")
+	GameState.set_flag("ch1_sleeper", "tobin")
+	GameState.set_flag("ch2_nell", "left")
+	GameState.set_flag("ch2_beacon18", "lit")
+	var main := await make_area("highland")
+	(main.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var ww: WinterWell = main.world.get_node_or_null("WinterWell")
+	check(ww != null and ww.get_node_or_null("WinterWellStones") != null and ww.ring == null and ww.norbert == null
+		and main.world.find_children("Npc_norbert", "", true, false).size() == 1,
+		"冰原上的石井一直在；诺伯特还在塔顶，井边还没有人")
+	# 他说完了（主线「冬井」）：对话关了以后从塔顶下去，在山脊背后等你；圈摆上
+	GameState.set_stage("ch2_main", "to_well")
+	await frames(3)
+	check(main.world.find_children("Npc_norbert", "", true, false).is_empty() and ww.norbert != null and ww.norbert.name == "Npc_norbert_well"
+		and Vector2(ww.norbert.global_position.x, ww.norbert.global_position.z).distance_to(WinterWell.RIDGE_WAIT) < 0.5,
+		"主线「冬井」：诺伯特从天窗下去，在山脊背后等你")
+	check(ww.ring != null and ww.ring.get_child_count() == WinterWell.RING_N and ww.faces.size() == 6,
+		"井边站着一圈 %d 个人；认得的脸 6 张（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）" % WinterWell.RING_N)
+	var y_ok := true
+	for k in WinterWell.RING_N:
+		var q := WinterWell.slot(k)
+		y_ok = y_ok and absf(WinterWell.ground(q).y - Highland.height_at(q.x, q.y)) < 0.01 and q.distance_to(HighlandLayout.WELL) > 5.0
+	check(y_ok, "一圈人都站在冰原上、离井 %.1f 米" % WinterWell.RING_R)
+	var said: Array = []
+	ww.recognized.connect(func(t: String): said.append(t))
+	var p: FpController = main.player
+	var np := WinterWell.RIDGE_WAIT + Vector2(2.0, 2.0)
+	p.global_position = WinterWell.ground(np) + Vector3(0, 0.3, 0)
+	await physics(2)
+	check(ww.norbert_state == "walk", "走到他跟前：他往冰原下面走")
+	var goal := WinterWell.stop_point()
+	ww.norbert.global_position = WinterWell.ground(goal + (WinterWell.RIDGE_WAIT - goal).normalized() * 0.02)
+	await physics(3)
+	check(ww.norbert_state == "there" and Vector2(ww.norbert.global_position.x, ww.norbert.global_position.z).distance_to(HighlandLayout.WELL) < WinterWell.STOP_R + 0.1,
+		"他停在井边 %.1f 米" % WinterWell.STOP_R)
+	var a := WinterWell.slot(1) + (WinterWell.slot(1) - HighlandLayout.WELL).normalized() * 3.0
+	p.global_position = WinterWell.ground(a) + Vector3(0, 0.3, 0)
+	await physics(3)
+	check(ww.revealed_said and said.any(func(t): return str(t).contains("托宾")), "走近了：一圈人一动不动；认出芦栈村的托宾")
+	var b := WinterWell.slot(9) + (WinterWell.slot(9) - HighlandLayout.WELL).normalized() * 3.0
+	p.global_position = WinterWell.ground(b) + Vector3(0, 0.3, 0)
+	await physics(3)
+	check(said.any(func(t): return str(t).contains("妮尔")), "圈里站着妮尔（随她去了的）")
+	check(ww.reached_sent, "他到了、你也到了井边")
+	await seconds(main.well_end_after + 0.6)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch2_done") and GameState.quest_stage("ch2_main") == "ch2_end" and ep.visible and ep.title.text == "第三章 · 粮与铁"
+		and ep.header.text.contains("熄灭的烽燧") and not ep.continue_btn.visible and not Saves.read_slot("auto").is_empty(),
+		"过一会儿章末：「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，没有「继续」（第三章还没有），自动存档")
+	check(ep.recap.text.contains("劫下了洛蒙德家的五车粮") and ep.recap.text.contains("第十八烽") and ep.recap.text.contains("妮尔往北去了") and ep.recap.text.contains("火还亮着"),
+		"回顾按旗标写：第一夜、第十八烽、劫下五车、火、妮尔")
+	check(ep.seal.text.contains("冬井") and ep.seal.text.contains("芦栈村那个人") and ep.seal.text.contains("妮尔也在"), "钩子：封誓少做的一步、冬井边那一圈人、认得的脸")
+	ep.close()
+	await frames(2)
+	check(not main.get_tree().paused, "在雪原上再站一会儿：关掉接着走")
+	await free_main(main)
+	# 章末以后再来：诺伯特在井边，圈还在；小屋、塔顶都没有他
+	_well_game(901, "ch2_end")
+	var m2 := await make_area("highland")
+	(m2.streamer as ChunkStreamer).build_all()
+	await frames(3)
+	var w2: WinterWell = m2.world.get_node("WinterWell")
+	check(w2.norbert_state == "there" and w2.ring != null and w2.ring.get_child_count() == WinterWell.RING_N and w2.faces.is_empty() and m2.world.find_children("Npc_norbert", "", true, false).is_empty(),
+		"章末以后再来：诺伯特站在井边，那一圈人还在（没有认得的脸就都是生人）")
+	await free_main(m2)
+	# 回顾的另外几种
+	_well_game(902, "to_well")
+	GameState.set_flag("beacon_grain", "lawful")
+	GameState.set_flag("ch2_convoy", "delivered")
+	GameState.set_flag("ch2_requisition", "three")
+	GameState.set_flag("ch2_carsten", "freed")
+	check(Chapter2.recap().contains("护着粮车穿过了潮水") and Chapter2.recap().contains("征粮令") and Chapter2.recap().contains("卡斯滕守满了十年"), "回顾：护粮、征粮令、卡斯滕")
+	_well_game(903, "to_well")
+	GameState.set_flag("ch2_convoy", false)
+	GameState.set_flag("ch2_aid", "refused")
+	GameState.set_flag("ch2_fire", "out")
+	check(Chapter2.recap().contains("两手空空") and Chapter2.recap().contains("火熄了"), "回顾：两手空空、火熄了")
+
+
+## 5.9 第二章全流程：第一章两种继承人 × 堤道守住 / 失守 × 劫粮 / 求援，再加一条谈不成两手空空——
+## 从第一章章末「继续：第二章」开始，按真的对话选项、真的换区域走到第二章章末（第一夜潮水、第二夜那一仗 / 护车只把最慢的一截快进：潮水直接收尾、仗直接判赢、车直接推到头）
+func _ch2_go(main: Node3D) -> Node3D:
+	for i in 6:
+		await frames(1)
+		if GameState.pending_load.has("scene"):
+			return await reload_main(main)
+	return main
+
+
+func _ch2_at(main: Node3D, xz: Vector2) -> void:
+	main.player.global_position = Vector3(xz.x, Highland.height_at(xz.x, xz.y) + 0.3, xz.y)
+	await physics(3)
+
+
+func _ch2_run(heir: String, causeway: String, grain: String, seed: int) -> void:
+	var tag := "[%s · %s · %s]" % ["阿尔里克" if heir == "alric" else "伊薇特", "守住" if causeway == "held" else "失守", {"rob": "劫粮", "lawful": "求援", "empty": "两手空空"}[grain]]
+	GameState.new_game(seed)
+	GameState.pending_load = {}
+	GameState.chapter = 1
+	GameState.start_quest("ch1_main")
+	GameState.set_stage("ch1_main", "ch1_end")
+	for f in ["prologue_done", "ch1_started", "ch1_done", "ch1_sleeper"]:
+		GameState.set_flag(f)
+	GameState.set_flag("ch1_sleeper", "tobin")
+	GameState.set_flag("valen_heir", heir)
+	GameState.set_flag("ch1_causeway", causeway)
+	var main := await make_main(false)
+	main.show_ending("ch1")
+	await frames(2)
+	check(main.ending_panel.continue_btn.visible and main.ending_panel.next_chapter == 2, "%s 第一章章末：「继续：第二章」" % tag)
+	main.ending_panel.continue_btn.pressed.emit()
+	await frames(2)
+	main = await reload_main(main)
+	await frames(3)
+	check(main.area == "highland" and GameState.chapter == 2 and GameState.daypart == "day" and GameState.quest_stage("ch2_main") == "ask_yangji"
+		and GameState.has_item("ivette_letter") == (heir == "ivette"), "%s 到了羊脊村：第二章开始（白天，主线「问路」%s）" % [tag, "，带着伊薇特的信" if heir == "ivette" else ""])
+	# 驿站：罗薇娜指路
+	var picks := ["我从黑鹭堡来。老家主临终让我去烽燧线找一个人。", "当年老王加冕礼上的另一个侍从。", "明白了。", "告辞。"]
+	if heir == "ivette":
+		picks = ["（把伊薇特小姐的信递给她）", "我会的。"] + picks
+	check(await fl_say(main, "waystation", "rowena", picks) and GameState.quest_stage("ch2_main") == "to_beacon19", "%s 罗薇娜：诺伯特在第十九烽" % tag)
+	# 上第十九烽：天擦黑
+	await _ch2_at(main, HighlandLayout.BEACON19 + Vector2(-2.0, 7.0))
+	for i in 60:                                     # 整套跑的时候前面几组留下的东西多，几帧以后才轮到「到了烽燧」那一下（单跑这一组 3 帧就到）
+		if GameState.quest_stage("ch2_main") == "meet_matthias":
+			break
+		await physics(1)
+	check(GameState.quest_stage("ch2_main") == "meet_matthias" and GameState.daypart == "dusk", "%s 爬上山脊：天擦黑了（主线 %s，时段 %s）" % [tag, GameState.quest_stage("ch2_main"), GameState.daypart])
+	check(await fl_say(main, "beacon19", "matthias", ["我从黑鹭堡来，找诺伯特烽长。", "明白了。"]) and GameState.quest_stage("ch2_main") == "see_norbert", "%s 马蒂亚斯：诺伯特在塔顶" % tag)
+	if causeway == "lost":
+		check(await fl_say(main, "beacon19", "norbert", ["我这就去柴棚扛。"]) and GameState.quest_stage("ch2_main") == "carry_wood", "%s 堤道失守：诺伯特先要你扛一捆柴上来" % tag)
+		GameState.add_item("firewood")
+		picks = ["（把那捆柴放到火盆边）", "奥斯瑞克·瓦伦临终让我来找你。", "加冕礼上发生了什么？", "……好。先过了今夜。"]
+	else:
+		picks = ["奥斯瑞克·瓦伦临终让我来找你。", "加冕礼上发生了什么？", "……好。先过了今夜。"]
+	check(await fl_say(main, "beacon19", "norbert", picks) and GameState.quest_stage("ch2_main") == "first_night", "%s 诺伯特：先过了今夜" % tag)
+	# 第一夜：四支火把、插满木桩、潮水
+	check(await fl_say(main, "beacon19", "matthias", ["诺伯特说「先过了今夜」。入夜以后怎么守？", "我这就去。"]) and GameState.quest_stage("ch2_main") == "light_line"
+		and GameState.daypart == "night" and GameState.count_item("torch") >= 4, "%s 马蒂亚斯给四支火把，天黑透了" % tag)
+	await frames(3)
+	var ft: FirstTide = main.first_tide
+	var sp := FirstTide.spots()
+	for k in range(1, FirstTide.SPOT_N - 1):
+		var pt := PlantedTorch.make(TorchHand.FUEL, false)
+		ft.add_child(pt)
+		var q: Vector2 = sp[k]
+		pt.global_position = Vector3(q.x, Highland.height_at(q.x, q.y), q.y)
+	await physics(3)
+	check(ft.state == FirstTide.TIDE and GameState.quest_stage("ch2_main") == "tide", "%s 木桩插满：潮水上来了" % tag)
+	ft.finish()
+	await frames(3)
+	check(str(GameState.get_flag("ch2_first_tide", "")) == "held" and GameState.quest_stage("ch2_main") == "after_tide" and GameState.daypart == "dawn", "%s 第一夜守住了，天亮" % tag)
+	# 第二天：诺伯特的加冕礼
+	check(await fl_say(main, "beacon19", "norbert", ["加冕礼那一夜，发生了什么？", "为什么少做了？", "还有谁知道那一夜？", "我该做什么？", "……我下山去看看。"])
+		and GameState.quest_stage("ch2_main") == "convoy_day", "%s 诺伯特：封誓少做了一步；先保住烽燧（主线「粮车到村」）" % tag)
+	# 抉择
+	match grain:
+		"rob":
+			check(await fl_say(main, "beacon19", "matthias", ["粮车的事，你怎么打算？", "劫。", "先断车头：砍倒那棵枯松拦路。", "……"]) and GameState.quest_stage("ch2_main") == "rob_ready", "%s 劫：先断车头" % tag)
+			main = await _ch2_go(main)
+			var ca: ConvoyAmbush = main.world.get_node_or_null("ConvoyAmbush")
+			check(ca != null and main.battle != null and GameState.daypart == "night", "%s 天黑透了：伏击段上摆好了那一仗" % tag)
+			main.player.global_position = ConvoyAmbush.leg_point(ConvoyAmbush.POST_T.head) + Vector3(0, 0.3, 0)
+			await physics(3)
+			check(main.battle.started, "%s 走到伏击点：开打" % tag)
+			main._on_battle_ended(ConvoyAmbush.OURS)
+			check(str(GameState.get_flag("ch2_convoy", "")) == "taken", "%s 劫下了五车粮" % tag)
+		"lawful", "empty":
+			check(await fl_say(main, "beacon19", "matthias", ["粮车的事，你怎么打算？", "我先去找押粮官谈。", "……"]) and GameState.quest_stage("ch2_main") == "talk_anselm", "%s 去找安塞尔姆谈" % tag)
+			if grain == "lawful":
+				check(await fl_say(main, "waystation", "rowena", ["桌上那张盖了印的空白文书，现在用得着了。", "……", "告辞。"]) and GameState.has_item("requisition"), "%s 罗薇娜给了空白征粮令" % tag)
+				check(await fl_say(main, "highland", "anselm", ["烽燧上的人快断粮了。", "（摊开征粮令，写上「三车」）厄尔德家征三车粮，送上第十九烽。", "……"]) and GameState.quest_stage("ch2_main") == "escort_ready",
+					"%s 安塞尔姆认了征粮令：分三车粮上山，要你护车" % tag)
+				main = await _ch2_go(main)
+				var ce: ConvoyEscort = main.world.get_node_or_null("ConvoyEscort")
+				check(ce != null and GameState.daypart == "night", "%s 天黑透了：三辆车在盘山路上" % tag)
+				ce.windy = false
+				ce.wait_left = 0.0
+				await frames(3)
+				for c in ce.carts:
+					c.t = ConvoyEscort.END_T + 0.1
+				await physics(3)
+				check(str(GameState.get_flag("ch2_convoy", "")) == "delivered", "%s 三车粮翻过了山脊" % tag)
+			else:
+				check(await fl_say(main, "highland", "anselm", ["烽燧上的人快断粮了。", "……我再想想。"]), "%s 安塞尔姆：粮不卖" % tag)
+				GameState.set_flag("ch2_aid", "refused")
+				GameState.set_stage("ch2_main", "aid_refused")
+				check(await fl_say(main, "beacon19", "matthias", ["安塞尔姆不肯。", "两手空空回去吧。", "……"]) and GameState.quest_stage("ch2_main") == "empty_handed", "%s 两手空空" % tag)
+				await frames(3)
+				check(main.empty_night and GameState.daypart == "night", "%s 这一夜就这么熬过去" % tag)
+				Chapter2.dawn()
+	main._ch2_dawn_world()
+	await frames(2)
+	var lit := grain != "empty"
+	check(GameState.quest_stage("ch2_main") == "dawn_after" and GameState.daypart == "dawn" and Chapter2.fire_out() != lit, "%s 天亮：第十九烽的火%s" % [tag, "还亮着" if lit else "熄了"])
+	# 天亮：诺伯特说完，冬井
+	picks = ["你说过，等火还亮着的时候再说。", "你在等什么？", "……走吧。"] if lit else ["……火灭了。", "……", "……走吧。"]
+	check(await fl_say(main, "beacon19", "norbert", picks) and GameState.quest_stage("ch2_main") == "to_well", "%s 诺伯特说完剩下的话：去看冬井" % tag)
+	await frames(3)
+	var ww: WinterWell = main.world.get_node_or_null("WinterWell")
+	check(ww != null and ww.ring != null and ww.norbert != null, "%s 诺伯特在山脊背后等你，井边站着一圈人" % tag)
+	main.well_end_after = 0.2
+	await _ch2_at(main, WinterWell.RIDGE_WAIT + Vector2(1.5, 1.5))
+	var goal := WinterWell.stop_point()
+	ww.norbert.global_position = WinterWell.ground(goal + (WinterWell.RIDGE_WAIT - goal).normalized() * 0.02)
+	await physics(3)
+	await _ch2_at(main, HighlandLayout.WELL + (WinterWell.slot(1) - HighlandLayout.WELL).normalized() * 9.0)
+	await seconds(0.5)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch2_done") and ep.visible and ep.title.text == "第三章 · 粮与铁" and ep.seal.text.contains("芦栈村那个人"), "%s 冬井边：第二章章末" % tag)
+	var want: String = {"rob": "劫下了洛蒙德家的五车粮", "lawful": "护着粮车穿过了潮水", "empty": "两手空空"}[grain]
+	check(ep.recap.text.contains(want), "%s 回顾：%s" % [tag, want])
+	ep.close()
+	await frames(2)
+	await free_main(main)
+
+
+func test_ch2flow() -> void:
+	GameState.pending_daypart = "night"              # 前面的组留下的「对话关上以后换成夜」：新的一局不该带过来
+	GameState.new_game(949)
+	check(GameState.pending_daypart == "", "新的一局：上一局对话里没换完的时段清掉")
+	var seed := 950
+	for heir in ["alric", "ivette"]:
+		for causeway in ["held", "lost"]:
+			for grain in ["rob", "lawful"]:
+				await _ch2_run(heir, causeway, grain, seed)
+				seed += 1
+	await _ch2_run("ivette", "held", "empty", seed)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印
