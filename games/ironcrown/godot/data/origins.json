@@ -1,0 +1,9 @@
+{
+  "_说明": "出身三选一（路线图 O.1；WORLD.md 第七节）：新游戏在开场的标题卡上选（旧存档读进来时问一次）。选了就设旗标 origin = 编号，加上开局的技能、属性、声望；对话里用 {\"flag\": \"origin\", \"eq\": 编号} 判断（O.2 起各章的对话反应）。顺序就是选的时候的顺序。",
+  "order": ["knight", "deserter", "ferry"],
+  "origins": {
+    "knight": {"name": "落魄骑士之后", "short": "家传的剑术，在贵族面前说得上话", "desc": "你家曾有封地，三代以前丢了。父亲留给你一把剑、一套剑术，还有一个没人再叫的姓。", "skills": {"blade": 5, "intimidate": 2}, "attrs": {"strength": 1}, "rep": {}},
+    "deserter": {"name": "烽誓团逃兵", "short": "在北边的烽燧线上守过三年，然后逃了", "desc": "十七岁那年你在烽燧线上发了誓，守了三年。第四年冬天，你一个人下了山，没有回头。", "skills": {"survival": 8, "stealth": 3}, "attrs": {"constitution": 1}, "rep": {"beacon_oath": -5}},
+    "ferry": {"name": "渡工之子", "short": "在灰鲸河上长大，河上的人认得你", "desc": "你在灰鲸河的渡船上长大，认得每一处浅滩、每一条走私的水路。渡工行会的人还记得你父亲。", "skills": {"speech": 5, "insight": 3}, "attrs": {"wits": 1}, "rep": {"ferrymen": 10}}
+  }
+}

@@ -50,12 +50,23 @@ func start(c: TitleCard, touch: bool) -> void:
 	card.show()
 	stage = "card"
 	print("IC_OPENING card")
+	if Origins.current() == "" and main.origin_panel:          # 出身三选一（O.1）：先选出身；选的这一下就是开场的第一次操作
+		card.prompt.text = ""
+		main.origin_panel.chosen.connect(_on_origin, CONNECT_ONE_SHOT)
+		main.origin_panel.open(false)
+
+
+func _on_origin(id: String) -> void:
+	Origins.apply(id)
+	begin()
 
 
 ## 玩家第一次操作：钟声响起、标题卡淡出
 func begin() -> void:
 	if stage != "card":
 		return
+	if main and main.origin_panel and main.origin_panel.visible:
+		main.origin_panel.hide()               # 没选出身就开始了（自动化测试直接调 begin）：收起来，出身留空
 	stage = "bell"
 	t = 0.0
 	if bell.stream == null and Settings.sound:
@@ -70,7 +81,7 @@ func begin() -> void:
 ## 标题卡在等玩家第一次操作：点击、按键、触屏都算，而且不吞掉这次输入（点击照样锁定鼠标，按键照样生效）。
 ## 开场节点是主场景最后加进去的，比触屏按钮先收到输入（触屏按钮会把触摸标成已处理）
 func _input(event: InputEvent) -> void:
-	if stage != "card":
+	if stage != "card" or (main.origin_panel and main.origin_panel.visible):
 		return
 	if (event is InputEventKey and event.pressed and not event.echo) or (event is InputEventMouseButton and event.pressed) \
 			or (event is InputEventScreenTouch and event.pressed):

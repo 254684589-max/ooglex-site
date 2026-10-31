@@ -71,6 +71,7 @@ var opening: Opening             # 开场（3.8）：只在新游戏时有
 var heir_seen := ""               # 印戒交给谁了（4.8a）：对话关上时变了就提示另一位离堡
 var combat_music_check := 0.0    # 战斗配乐（M.1）：下次看在不在打还剩几秒
 var title_card: TitleCard        # 开场的标题卡（3.8）
+var origin_panel: OriginPanel    # 出身三选一（O.1）
 var tip_queue: Array = []        # 等着显示的教学提示编号（3.8；有界面开着、上一条还没消失时排队）
 var tip_now := ""                # 底部正在显示的教学提示（空 = 显示的是别的提示或什么都没有）
 var inventory_panel: InventoryPanel
@@ -481,6 +482,8 @@ func _ready() -> void:
 		pass                          # 换区域进来的：_arrive() 已经提示过区域名
 	elif loaded_from != "":
 		hud.toast("已读取：%s%s" % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
+		if Origins.current() == "" and not Engine.get_meta("ic_skip_opening", false):
+			ask_origin.call_deferred()            # 出身三选一以前的存档（O.1）：问一次
 		if GameState.chapter == 0 and GameState.has_flag("prologue_done") and playable_chapter >= 1:
 			hud.toast(CH1_LATER, 6.0)        # 序章打完以后的存档：告诉玩家怎么进第一章（4.3）
 	elif Saves.has_any():
@@ -790,6 +793,8 @@ func _build_ui() -> void:
 	title_card = TitleCard.new()         # 开场的标题卡（3.8）：压在 HUD 上、在各种面板下面，平时藏着
 	title_card.hide()
 	layer.add_child(title_card)
+	origin_panel = OriginPanel.new()     # 出身三选一（O.1）：压在标题卡上；旧存档读进来时也用它问一次
+	layer.add_child(origin_panel)
 	if use_arena:
 		hud.set_hint(HINT_ARENA_TOUCH if touch_mode else HINT_ARENA_DESKTOP)
 		hint_left = HINT_SECONDS * 1.5
@@ -2052,6 +2057,21 @@ func _ambush_tick() -> void:
 			Engine.time_scale = 8.0
 			Engine.max_physics_steps_per_frame = 64
 		hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
+
+
+## 出身三选一以前的存档（O.1）：读进来时问一次（暂停着），选了加上开局的那些，接着玩
+func ask_origin() -> void:
+	if Origins.current() != "" or origin_panel.visible:
+		return
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	origin_panel.open(true)
+	var id: String = await origin_panel.chosen
+	Origins.apply(id)
+	get_tree().paused = false
+	if not touch_mode:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	hud.toast("出身：%s（%s）" % [Origins.name_of(id), Origins.bonus_text(id)], 5.0)
 
 
 ## 第二夜 · 护粮（5.7b，world/convoy_escort.gd）：主线到「护车」时天黑透——把你放到伏击段下头的车队后面（重新载入高地）；到了几秒以后先自动存档、车队动身
