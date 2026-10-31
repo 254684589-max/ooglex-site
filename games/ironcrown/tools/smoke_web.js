@@ -75,6 +75,17 @@ try { pw = require('playwright'); } catch (e) { pw = require('/opt/node22/lib/no
 const outDir = process.argv[2] || '.';
 const url = process.argv[3] || 'http://localhost:8765/games/ironcrown/play/';
 
+// O.1：不带参数打开就是新游戏，标题卡上压着出身面板（挡住 HUD 按钮）：点第一个出身。没有出身面板就什么都不做
+async function pickOrigin(page, logs, mobile, dpr) {
+  const l = logs.find(x => x.startsWith('IC_ORIGIN_SCREEN'));
+  if (!l || logs.some(x => x.startsWith('IC_ORIGIN id='))) return;
+  const [, x, y] = l.match(/x=(-?\d+) y=(-?\d+)/).map(Number);
+  if (!mobile) await page.mouse.click(x / dpr, y / dpr); else await page.touchscreen.tap(x / dpr, y / dpr);
+  await waitLog(logs, 'IC_ORIGIN id=', 12);
+  await page.waitForTimeout(400);
+}
+
+
 async function waitLog(logs, prefix, tries = 40) {
   for (let i = 0; i < tries; i++) {
     const hit = logs.find(l => l.startsWith(prefix));
@@ -823,6 +834,8 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     let camMode = '', avatarLoad = '', avatarIdle = '', avatarArmed = 'n/a', avatarCharge = 'n/a', avatarBlock = 'n/a';
     if (await waitLog(logs, 'IC_CHAR_SCREEN', 240)) {
       await page.waitForTimeout(400);
+      await waitLog(logs, 'IC_ORIGIN_SCREEN', 20);
+      await pickOrigin(page, logs, mobile, dpr);
       // 第三人称（2.9）：电脑按 V、手机 / 平板点「视角」
       if (!mobile) {
         await page.keyboard.press('v');
@@ -885,6 +898,8 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     let saved = 'n/a', stored = 'n/a', loaded = 'n/a', savesOpen = 'n/a';
     if (await waitLog(logs, 'IC_MENU_SCREEN', 240)) {
       await page.waitForTimeout(400);
+      await waitLog(logs, 'IC_ORIGIN_SCREEN', 20);
+      await pickOrigin(page, logs, mobile, dpr);
       if (!mobile) {
         await page.keyboard.press('F8');
         saved = await waitLog(logs, 'IC_SAVE slot=quick', 12);
