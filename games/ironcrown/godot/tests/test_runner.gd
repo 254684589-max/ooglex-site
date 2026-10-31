@@ -9717,6 +9717,9 @@ func _ch2_run(heir: String, causeway: String, grain: String, seed: int) -> void:
 
 
 func test_ch2flow() -> void:
+	GameState.pending_daypart = "night"              # 前面的组留下的「对话关上以后换成夜」：新的一局不该带过来
+	GameState.new_game(949)
+	check(GameState.pending_daypart == "", "新的一局：上一局对话里没换完的时段清掉")
 	var seed := 950
 	for heir in ["alric", "ivette"]:
 		for causeway in ["held", "lost"]:
