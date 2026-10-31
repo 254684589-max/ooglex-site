@@ -9622,6 +9622,10 @@ func _ch2_run(heir: String, causeway: String, grain: String, seed: int) -> void:
 	check(await fl_say(main, "waystation", "rowena", picks) and GameState.quest_stage("ch2_main") == "to_beacon19", "%s 罗薇娜：诺伯特在第十九烽" % tag)
 	# 上第十九烽：天擦黑
 	await _ch2_at(main, HighlandLayout.BEACON19 + Vector2(-2.0, 7.0))
+	for i in 60:                                     # 整套跑的时候前面几组留下的东西多，几帧以后才轮到「到了烽燧」那一下（单跑这一组 3 帧就到）
+		if GameState.quest_stage("ch2_main") == "meet_matthias":
+			break
+		await physics(1)
 	check(GameState.quest_stage("ch2_main") == "meet_matthias" and GameState.daypart == "dusk", "%s 爬上山脊：天擦黑了" % tag)
 	check(await fl_say(main, "beacon19", "matthias", ["我从黑鹭堡来，找诺伯特烽长。", "明白了。"]) and GameState.quest_stage("ch2_main") == "see_norbert", "%s 马蒂亚斯：诺伯特在塔顶" % tag)
 	if causeway == "lost":
