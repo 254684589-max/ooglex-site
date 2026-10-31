@@ -49,6 +49,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 		return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 	ensure_field()
 	PlainFlora.warm(reduced_motion)                    # 树、篱笆、麦垛、木栅（6.1b）：材质、网格、摆放先备好
+	PlainVillage.mats()                                # 麦渡的材质先备好（6.2a：土坯、茅草贴图在分帧的活里第一次读，那一块要 70–80 毫秒）
 	pl._collision()
 	ground_material()
 	water_material()
