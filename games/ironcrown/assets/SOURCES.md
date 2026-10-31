@@ -63,6 +63,13 @@
 
 6.1b 金穗平原的树、柳条、篱笆用的枝条贴图 `chapters/ch3/trees/plain_twigs.png`（1536 × 512，三格：细枝、截头柳的黄枝条、整棵落叶树剪影）**由代码生成**（`godot/tests/gen_plain_twigs.gd`，固定种子画分叉的线），原创，不用外部素材；树、柳、麦垛、木栅的模型也都是代码搭的（`godot/world/plain_flora.gd`），树皮用主包里已有的 bark_brown_02。
 
+6.2a 麦渡村新增两套贴图（Poly Haven，CC0 1.0，放在第三章章节包 `godot/chapters/ch3/tex/`，只取颜色 diff 和 OpenGL 法线 nor_gl 两张 1K JPG，导入时生成 mipmap）：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 | 下载日期 |
+|---|---|---|---|---|
+| 麦渡长屋、谷仓的茅草顶 | thatch_roof_angled | https://polyhaven.com/a/thatch_roof_angled | Rob Tuytel、Dimitrios Savva | 2026-10-31 |
+| 长屋的土坯墙 | clay_plaster | https://polyhaven.com/a/clay_plaster | Amal Kumar | 2026-10-31 |
+
 看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
 
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）

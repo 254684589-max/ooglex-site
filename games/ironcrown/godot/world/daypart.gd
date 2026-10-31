@@ -63,12 +63,13 @@ const AREA_PRESETS := {
 	## 金穗平原（6.1a）：开阔的冬天平原，雾很远（砧山在地平线上还看得见轮廓）；天是起雾的、太阳隔着雾是一团白——暖一点、低一点，影子长；
 	## 黄昏的光是橙的（磨坊之战在黄昏到夜里）；夜里月光照着雪盖的田，偏冷蓝，人造光是暖的
 	"plain": {
-		"dawn": {"sky": Color("9a8f8e"), "horizon": Color("c6b6ad"), "ambient": Color("a9a2a6"), "ambient_energy": 0.5, "fog_begin": 60.0, "fog_end": 520.0, "fog_curve": 1.5,
-			"fog_height": 8.0, "fog_height_density": 0.03, "sun": Color("ffd9bf"), "sun_energy": 1.1, "sun_rot": Vector3(-12, 120, 0), "contrast": 1.08},
-		"day": {"sky": Color("a3a9b1"), "horizon": Color("c9cdd2"), "ambient": Color("b3b9c2"), "ambient_energy": 0.55, "fog_begin": 80.0, "fog_end": 700.0, "fog_curve": 1.6,
-			"fog_height": 6.0, "fog_height_density": 0.012, "sun": Color("fff1dc"), "sun_energy": 1.35, "sun_rot": Vector3(-22, 150, 0), "contrast": 1.1},
-		"dusk": {"sky": Color("8c7470"), "horizon": Color("c69a80"), "ambient": Color("a3909a"), "ambient_energy": 0.52, "fog_begin": 50.0, "fog_end": 420.0, "fog_curve": 1.4,
-			"fog_height": 8.0, "fog_height_density": 0.025, "sun": Color("ffc89e"), "sun_energy": 1.0, "sun_rot": Vector3(-8, 235, 0), "contrast": 1.08},
+		## 雾蒙蒙的阴天：日光弱、天光强（6.2a 截图：日光 1.35、环境光 0.55 时背阳的土坯墙、车、四坡顶的两头几乎全黑）——平原没有山挡，天光从四面来
+		"dawn": {"sky": Color("9a8f8e"), "horizon": Color("c6b6ad"), "ambient": Color("a9a2a6"), "ambient_energy": 1.1, "fog_begin": 60.0, "fog_end": 520.0, "fog_curve": 1.5,
+			"fog_height": 8.0, "fog_height_density": 0.03, "sun": Color("ffd9bf"), "sun_energy": 0.85, "sun_rot": Vector3(-12, 120, 0), "contrast": 1.08},
+		"day": {"sky": Color("a3a9b1"), "horizon": Color("c9cdd2"), "ambient": Color("b3b9c2"), "ambient_energy": 1.25, "fog_begin": 80.0, "fog_end": 700.0, "fog_curve": 1.6,
+			"fog_height": 6.0, "fog_height_density": 0.012, "sun": Color("fff1dc"), "sun_energy": 0.95, "sun_rot": Vector3(-22, 150, 0), "contrast": 1.1},
+		"dusk": {"sky": Color("8c7470"), "horizon": Color("c69a80"), "ambient": Color("a3909a"), "ambient_energy": 1.0, "fog_begin": 50.0, "fog_end": 420.0, "fog_curve": 1.4,
+			"fog_height": 8.0, "fog_height_density": 0.025, "sun": Color("ffc89e"), "sun_energy": 0.8, "sun_rot": Vector3(-8, 235, 0), "contrast": 1.08},
 		"night": {"sky": Color("3c4c64"), "horizon": Color("4e6180"), "ambient": Color("84a0c8"), "ambient_energy": 0.6, "fog_begin": 12.0, "fog_end": 180.0, "fog_curve": 1.1,
 			"fog_height": 6.0, "fog_height_density": 0.02, "sun": Color("aac4e8"), "sun_energy": 0.6, "sun_rot": Vector3(-36, 160, 0)},
 	},

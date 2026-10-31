@@ -8541,10 +8541,10 @@ func test_maidu() -> void:
 	var st: ChunkStreamer = main.streamer
 	st.build_all()
 	await frames(2)
-	var houses := main.world.find_children("Longhouse_*", "Node3D", true, false)
+	var houses: Array = main.world.find_children("Longhouse_*", "Node3D", true, false)
 	check(houses.size() == 6 and main.world.find_child("Barn", true, false) != null and main.world.find_child("Bridge", true, false) != null and main.world.find_child("Dock", true, false) != null and main.world.find_child("Well", true, false) != null,
 		"分块搭完：%d 栋长屋、谷仓、木桥、渡口、水井" % houses.size())
-	var doors := main.world.find_children("LonghouseDoor_*", "", true, false)
+	var doors: Array = main.world.find_children("LonghouseDoor_*", "", true, false)
 	check(doors.size() == 5 and (doors[0] as Door).locked, "5 扇门（空屋没门），都闩着")
 	# 走过木桥：从西头走到东头，一直踩在桥面上，没掉进河里
 	await physics(6)

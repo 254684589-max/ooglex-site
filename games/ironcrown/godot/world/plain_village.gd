@@ -70,11 +70,11 @@ static func _photo(key: String, path: String, meters: float, tint: Color, fallba
 
 
 static func cob() -> StandardMaterial3D:
-	return _photo("cob", COB_TEX, 2.6, Color(0.84, 0.76, 0.66), Color("8a7660"))
+	return _photo("cob", COB_TEX, 2.6, Color(1.0, 0.92, 0.8), Color("8a7660"))           # 土坯照片偏暗：颜色不压（背阳面阴天里一片黑，截图）
 
 
 static func thatch() -> StandardMaterial3D:
-	return _photo("thatch", THATCH_TEX, 2.2, Color(0.72, 0.66, 0.56), Color("7a6a4e"))
+	return _photo("thatch", THATCH_TEX, 2.2, Color(0.88, 0.8, 0.66), Color("7a6a4e"))
 
 
 static func dark() -> StandardMaterial3D:
