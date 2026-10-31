@@ -61,6 +61,8 @@
 | 麦河两岸的泥岸 | brown_mud_02 | https://polyhaven.com/a/brown_mud_02 | Rob Tuytel | 2026-10-31 |
 | 天空：雾蒙蒙的冬天（HDRI「Kloofendal 28d Misty (Pure Sky)」2K，只取上半球、色调映射成普通照片 `chapters/ch3/sky/misty_sky.jpg`） | kloofendal_28d_misty_puresky | https://polyhaven.com/a/kloofendal_28d_misty_puresky | Jenelle van Heerden（拍摄）、Greg Zaal（处理） | 2026-10-31 |
 
+6.1b 金穗平原的树、柳条、篱笆用的枝条贴图 `chapters/ch3/trees/plain_twigs.png`（1536 × 512，三格：细枝、截头柳的黄枝条、整棵落叶树剪影）**由代码生成**（`godot/tests/gen_plain_twigs.gd`，固定种子画分叉的线），原创，不用外部素材；树、柳、麦垛、木栅的模型也都是代码搭的（`godot/world/plain_flora.gd`），树皮用主包里已有的 bark_brown_02。
+
 看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
 
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）

@@ -48,11 +48,13 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 		print("IC_PLAIN placeholder (章节包没到)")
 		return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 	ensure_field()
+	PlainFlora.warm(reduced_motion)                    # 树、篱笆、麦垛、木栅（6.1b）：材质、网格、摆放先备好
 	pl._collision()
 	ground_material()
 	water_material()
 	pl._river()
 	pl._far()
+	PlainFlora.far_ring(p_parent)                    # 地平线上的树（6.1b）
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -182,6 +184,12 @@ func _collision() -> void:
 	cs.shape = hm
 	cs.position = Vector3(PlainLayout.BOUNDS.get_center().x, 0.0, PlainLayout.BOUNDS.get_center().y)
 	ground.add_child(cs)
+	var flora := StaticBody3D.new()                  # 树干、麦垛、篱笆、木栅挡人（6.1b）
+	flora.name = "PlainFlora"
+	flora.collision_layer = 1
+	flora.collision_mask = 0
+	parent.add_child(flora)
+	PlainFlora.add_collision(flora)
 	var wb := StaticBody3D.new()
 	wb.name = "PlainWalls"
 	wb.collision_layer = FpController.LAYER_BOUNDARY
@@ -229,6 +237,7 @@ static func water_material() -> ShaderMaterial:
 
 
 static func clear_cache() -> void:
+	PlainFlora.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -345,11 +354,16 @@ func _jobs(st: ChunkStreamer) -> void:
 		var z := b.position.y
 		while z < b.end.y - 0.01:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
-			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r)])
+			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r), _job_flora.bind(r)])
 			z += cs
 			cz += 1
 		x += cs
 		cx += 1
+
+
+## 一块里的树、柳、篱笆、麦垛、木栅（6.1b，PlainFlora）
+func _job_flora(root: Node3D, r: Rect2) -> void:
+	PlainFlora.build_chunk(root, r, reduced_motion)
 
 
 func _job_terrain(root: Node3D, r: Rect2) -> void:

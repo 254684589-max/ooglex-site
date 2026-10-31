@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8403,7 +8403,9 @@ func test_plain() -> void:
 	for k in 60:
 		var x := rng.randf_range(-140.0, 140.0)
 		var z := rng.randf_range(-120.0, 120.0)
-		var hit: Dictionary = space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1))
+		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
+		rq.exclude = [(main.world.find_child("PlainFlora", true, false) as StaticBody3D).get_rid()]     # 树干、麦垛、篱笆不算（6.1b）
+		var hit: Dictionary = space.intersect_ray(rq)
 		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - Plain.height_at(x, z)))
 	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
 	await physics(10)
@@ -8425,6 +8427,92 @@ func test_plain() -> void:
 	check(env.background_mode == Environment.BG_SKY and env.sky != null and Daypart.preset("plain", "day").fog_end > 0.0 and Cold.COLD_AREAS.get("plain", 0.0) < Cold.COLD_AREAS.highland,
 		"天空是雾蒙蒙的冬天照片；平原有自己的时段预设；没有高地冷")
 	await free_main(main)
+
+
+func test_plainflora() -> void:
+	PlainFlora.clear_cache()
+	check(ResourceLoader.exists(PlainFlora.TWIG_TEX), "枝条贴图（代码画的：细枝、柳条、整棵树剪影）在第三章章节包里")
+	var ws := PlainFlora.willows()
+	var on_bank := true
+	for w: Array in ws:
+		var p := Vector2((w[0] as Vector3).x, (w[0] as Vector3).z)
+		var d := PlainLayout.river_d(p)
+		if d < PlainLayout.RIVER_HALF + 3.0 or d > PlainLayout.RIVER_HALF + 8.6 or PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 2.0:
+			on_bank = false
+	check(ws.size() >= 20 and on_bank, "麦河两岸 %d 棵截头柳，都在岸坡上（不下水、不上路）" % ws.size())
+	var hs := PlainFlora.hedges()
+	var ts := PlainFlora.trees()
+	var clean := true
+	for it: Array in hs + ts:
+		var p := Vector2((it[0] as Vector3).x, (it[0] as Vector3).z)
+		if PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 1.5 or PlainLayout.river_d(p) < PlainLayout.RIVER_HALF + PlainLayout.RIVER_BANK or p.distance_to(PlainLayout.VILLAGE) < PlainLayout.VILLAGE_R or p.distance_to(PlainLayout.MANOR) < PlainLayout.MANOR_R:
+			clean = false
+	check(hs.size() >= 400 and ts.size() >= 25 and clean and PlainFlora.hedge_runs().size() > hs.size() / 40,
+		"田边 %d 丛篱笆（%d 段，段与段之间有豁口）、%d 棵落叶树；都不上路、不下河、不进村子和庄园" % [hs.size(), PlainFlora.hedge_runs().size(), ts.size()])
+	var big := 0
+	var small := 0
+	var small_max := 0.0
+	var big_min := 9.0
+	for rk: Array in PlainFlora.ricks():
+		var p := Vector2((rk[0] as Vector3).x, (rk[0] as Vector3).z)
+		if bool(rk[3]):
+			small += 1
+			small_max = maxf(small_max, float(rk[2]))
+		else:
+			big += 1
+			big_min = minf(big_min, float(rk[2]))
+		if PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 3.0:
+			clean = false
+	check(big >= 10 and small >= 1 and small <= 3 and small_max < big_min * 0.8 and clean,
+		"麦垛：洛蒙德家的田里 %d 个大的，佃农村边上 %d 个小的（最大 %.2f，比大垛最小的 %.2f 小一大截）——囤粮和挨饿" % [big, small, small_max, big_min])
+	var fs := PlainFlora.fences()
+	var fence_ok := fs.size() >= 30
+	for f: Array in fs:
+		var a: Vector3 = f[0]
+		var b: Vector3 = f[1]
+		var m := Vector2(a.x + b.x, a.z + b.z) * 0.5
+		if PlainLayout.road_d(m) < PlainLayout.ROAD_HALF + 1.0 or absf(Vector2(a.x, a.z).distance_to(Vector2(b.x, b.z)) - PlainFlora.FENCE_BAY) > 0.6:
+			fence_ok = false
+	check(fence_ok, "木栅 %d 跨：洛蒙德家的两处麦垛场四面围着、留门，路边一段；每跨约 %.1f 米、不压路" % [fs.size(), PlainFlora.FENCE_BAY])
+	var far := PlainFlora.far_trees()
+	var outside := true
+	for t: Array in far:
+		if PlainLayout.BOUNDS.has_point(Vector2((t[0] as Vector3).x, (t[0] as Vector3).z)):
+			outside = false
+	check(far.size() >= 500 and outside, "地平线上 %d 棵树（都在地图外面）" % far.size())
+	GameState.new_game(611)
+	GameState.daypart = "day"
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	var nodes := get_tree().get_nodes_in_group("plain_flora")
+	var inst := 0
+	for n: MultiMeshInstance3D in nodes:
+		inst += n.multimesh.instance_count
+	check(main.world.find_child("FarTrees", true, false) != null and inst >= hs.size() + ws.size() and float(st.stats.max_job_ms) < 60.0,
+		"分块搭完：%d 个多实例、%d 个实例；最慢一块 %.1f 毫秒" % [nodes.size(), inst, st.stats.max_job_ms])
+	var body := main.world.find_child("PlainFlora", true, false) as StaticBody3D
+	check(body != null and body.get_child_count() >= ts.size() + ws.size() + PlainFlora.ricks().size() + fs.size(), "树干、麦垛、篱笆、木栅有碰撞（%d 个）" % (body.get_child_count() if body else 0))
+	# 走过去撞上一个麦垛
+	await physics(6)
+	var p: FpController = main.player
+	var rk0: Array = PlainFlora.ricks()[0]
+	var rp: Vector3 = rk0[0]
+	var from := rp + Vector3(0, 0, 6.0 + 2.0 * float(rk0[2]))
+	p.global_position = Vector3(from.x, Plain.height_at(from.x, from.z) + 0.3, from.z)
+	p.rotation.y = 0.0                                # 面朝 -Z（朝麦垛）
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(2.5)
+	Input.action_release("move_forward")
+	var gap := Vector2(p.global_position.x - rp.x, p.global_position.z - rp.z).length()
+	check(gap > 1.9 * float(rk0[2]), "往麦垛走，被挡在外面（离中心 %.1f 米）" % gap)
+	check(is_equal_approx(float(PlainFlora.material("twig").get_shader_parameter("wind")), 1.0), "枝条风里轻轻摆")
+	await free_main(main)
+	var tw := PlainFlora.material("twig", true)
+	check(is_zero_approx(float(tw.get_shader_parameter("wind"))), "「减少动态效果」打开时不摆")
+	PlainFlora.material("twig", false)
 
 
 func test_highland() -> void:
