@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9807,6 +9807,105 @@ func test_origin() -> void:
 	check(not main.origin_panel.visible and not main.get_tree().paused, "有出身的存档：不再问")
 	await free_main(main)
 	Engine.set_meta("ic_skip_opening", true)
+
+
+## O.2 一路上的对话随出身变：渡工之子（灰手奥弗、芦栈村的渡工）、落魄骑士之后（赫尔曼、阿尔里克、安塞尔姆）、烽誓团逃兵（马蒂亚斯、卡斯滕、安塞尔姆）；别的出身看不到这些
+func _o2(origin: String) -> DialogueRunner:
+	GameState.new_game(1100)
+	if origin != "":
+		GameState.set_flag("origin", origin)
+	return DialogueRunner.new()
+
+
+func test_origin2() -> void:
+	# 渡工之子：灰手奥弗
+	var r := _o2("ferry")
+	r.start("ferry", "offer")
+	pick(r, "我来接瓦伦家的少爷。")
+	var ferry_opt := "灰鲸河上的人不卖河上的人。我爹在这渡口撑了二十年船——你手下那几个，有谁没坐过他的船？"
+	check(has_opt(r, ferry_opt), "渡工之子：跟灰手奥弗多一条路（河上的人不卖河上的人，口才 9）")
+	GameState.checks["offer_ferry_speech"] = true
+	pick(r, ferry_opt)
+	check(r.text().contains("老船头的儿子") and GameState.has_flag("offer_left"), "他认出你爹：收家伙走人")
+	r = _o2("knight")
+	r.start("ferry", "offer")
+	pick(r, "我来接瓦伦家的少爷。")
+	check(not has_opt(r, ferry_opt), "别的出身没有这条")
+	# 渡工之子：芦栈村的渡工
+	r = _o2("ferry")
+	r.start("reedwharf", "boatman")
+	check(r.text().contains("撑过船的手"), "芦栈村的渡工看你的手：撑过船的")
+	pick(r, "南边最近有人过来吗？")
+	pick(r, "我爹也是渡工行会的。规矩我懂——我不问你渡了谁，只问他往哪去了。")
+	check(GameState.has_flag("heard_envoy") and GameState.silver == GameState.START_SILVER, "行会里的人：不花钱、不用检定就说了信使的事")
+	r = _o2("")
+	r.start("reedwharf", "boatman")
+	check(not r.text().contains("撑过船的手"), "没出身：照旧")
+	# 落魄骑士之后：赫尔曼
+	r = _o2("knight")
+	GameState.set_flag("castle_entry", "gate")
+	r.start("blackheron", "herman")
+	check(r.text().contains("老派的握法"), "落魄骑士之后：赫尔曼看你握剑的样子")
+	GameState.set_flag("ledger_asked")
+	r.start("blackheron", "herman")
+	pick(r, "账房的钥匙……")
+	var key_opt := "我家祖上替领主守过账房。钥匙交出去是什么分量，我知道——账拿出来，只给家主一个人看。"
+	check(has_opt(r, key_opt), "要账房钥匙多一条路（口才 11，比原来的 15 容易）")
+	GameState.checks["herman_key_knight"] = true
+	pick(r, key_opt)
+	check(GameState.has_item("counting_key"), "他给了钥匙")
+	# 落魄骑士之后：阿尔里克
+	r = _o2("knight")
+	r.start("hall", "alric")
+	check(r.text().contains("行的是老礼"), "阿尔里克看你行礼：老礼")
+	var v0 := GameState.get_rep("valen")
+	pick(r, "我家也有过封地。")
+	check(r.text().contains("封地是守出来的") and GameState.get_rep("valen") == v0 + 3, "「封地是守出来的，不是传下来的」（瓦伦家 +3）")
+	# 安塞尔姆：骑士之后 / 逃兵各一条路
+	for pair in [["knight", "（报上你家的旧姓）", "anselm_knight"], ["deserter", "我在烽燧线上守过三年。", "anselm_deserter"]]:
+		r = _o2(str(pair[0]))
+		GameState.chapter = 2
+		GameState.set_stage("ch2_main", "talk_anselm")
+		r.start("highland", "anselm")
+		pick(r, "烽燧上的人快断粮了。")
+		var opt := ""
+		for o in r.options():
+			if str(o.text).begins_with(str(pair[1])):
+				opt = str(o.text)
+		check(opt != "", "%s：跟安塞尔姆多一条路" % Origins.name_of(str(pair[0])))
+		GameState.checks[str(pair[2])] = true
+		pick(r, opt)
+		check(str(GameState.get_flag("ch2_aid", "")) == "granted", "%s：说动了，分三车粮上山" % Origins.name_of(str(pair[0])))
+	r = _o2("ferry")
+	GameState.chapter = 2
+	GameState.set_stage("ch2_main", "talk_anselm")
+	r.start("highland", "anselm")
+	pick(r, "烽燧上的人快断粮了。")
+	check(not r.options().any(func(o): return str(o.text).begins_with("（报上你家的旧姓）") or str(o.text).begins_with("我在烽燧线上守过三年。")), "渡工之子没有这两条")
+	# 烽誓团逃兵：马蒂亚斯、卡斯滕
+	r = _o2("deserter")
+	GameState.chapter = 2
+	GameState.set_stage("ch2_main", "meet_matthias")
+	r.start("beacon19", "matthias")
+	pick(r, "……我守过烽燧。三年。")
+	check(r.text().contains("你看塔的样子就知道") and GameState.has_flag("matthias_knows_deserter"), "烽誓团逃兵：马蒂亚斯早看出来了（记下，O.3 名册用）")
+	GameState.set_flag("ch2_first_tide", "held")
+	r.start("beacon19", "carsten")
+	pick(r, "守满十年，就能走？")
+	pick(r, "我也下过山。第四年冬天，一个人。")
+	check(r.text().contains("号角") and r.node_id == "deserter", "卡斯滕：下了山以后夜里还听得见号角")
+	pick(r, "……")
+	check(r.node_id == "rule" and not has_opt(r, "我也下过山。第四年冬天，一个人。"), "说过一次就不再出现，回到原来的话")
+	# 对话里的字都在字体子集里（出身这一步加了不少新台词）
+	var font: FontFile = load("res://assets/fonts/NotoSansSC-IC.ttf")
+	var lack := ""
+	for darea in dialogue_areas():
+		var txt := FileAccess.get_file_as_string("res://data/dialogue/%s.json" % darea)
+		for i in txt.length():
+			var c := txt.unicode_at(i)
+			if c > 127 and not font.has_char(c) and not lack.contains(txt[i]):
+				lack += txt[i]
+	check(lack == "", "所有对话文件里的字都在字体子集里（缺：%s）" % lack)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

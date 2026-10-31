@@ -434,6 +434,7 @@
     "nodes": {
       "greet": {
         "text": "（他坐在码头边上补船，手里的麻绳一圈一圈缠着）要过河？今天不渡。南岸的路被雪封了。",
+        "text_if": [{"if": [{"flag": "origin", "eq": "ferry"}], "text": "（他坐在码头边上补船，抬头看了你一眼，又看了一眼你的手）撑过船的手。……要过河？今天不渡。南岸的路被雪封了。"}],
         "options": [
           {"text": "南边最近有人过来吗？", "if": [{"not_flag": "heard_envoy"}], "next": "envoy_ask"},
           {"text": "再说说那个信使。", "if": [{"flag": "heard_envoy"}], "next": "envoy_recap"},
@@ -463,6 +464,7 @@
         "text": "（他手上的活慢了一下）渡工行会的规矩：渡过谁，不往外说。",
         "options": [
           {"text": "我不是来找麻烦的，只想知道堡里在谈什么。", "if": [{"not_flag": "boatman_refused"}], "check": {"id": "boatman_envoy_speech", "skill": "speech", "dc": 12, "pass": "envoy", "fail": "refuse"}},
+          {"text": "我爹也是渡工行会的。规矩我懂——我不问你渡了谁，只问他往哪去了。", "if": [{"flag": "origin", "eq": "ferry"}], "next": "envoy"},
           {"text": "（把 3 枚银币放在船帮上）这够不够买一句规矩以外的话？", "if": [{"silver": 3}], "do": [{"pay": 3}], "next": "envoy"},
           {"text": "那算了。", "next": "menu"}
         ]
