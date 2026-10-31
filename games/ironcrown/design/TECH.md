@@ -873,6 +873,18 @@ godot/
 - `beacon19.json` matthias/again 多一条「那本名册……」（条件：出身 `deserter`、有 `ch2_first_tide`、还没有 `ch2_roll`）→ `roll`（接支线 `ch2_roll`）→ `roll_served`（`ch2_roll` = served、烽誓团 +10）/ 检定（口才 14）`roll_struck` 或 `roll_no`（`ch2_roll_refused`，只剩认或者否认）/ `roll_denied`（烽誓团 −5）；都 `quest_done`。
 - `ConvoyAmbush.setup`：served 时小队多 `ROLL_EXTRA` 两个人（「烽誓团 · 老守燧人」）；小队里有名字的人改用一张「第几个 → 名字」表（原来按下标认卡斯滕，多了人就认错）。`Chapter2.recap` 多一句。**测试**：`origin3` 组 13 项。
 
+### 4.66 金穗平原地图底座（路线图 6.1a，2026-10-31）
+
+- **布局** `world/plain_layout.gd`（`PlainLayout`）：`BOUNDS` 300 × 260 米、1 米一个点（301 × 261）。`RIVER` 折线（`RIVER_HALF` 7.5 米、泥岸 `RIVER_BANK` 10 米、深 2.2、水面 `WATER_Y` −1.9）；地方：麦渡村、渡口、磨坊、粮仓、庄园（缓坡高 5.5）、坠星院（矮丘高 7、半径 72，不压平）、塞弗林营地、木桥位置；`ROADS` 七条路。`height()` = 自然起伏 + 庄园坡 + 坠星院丘 + 河槽 + 压平的地方（`pads()`）；`masks()` → (路, 田, 遮蔽) 存成地面颜色图。
+- **高度场** 和高地一样预先算好存进章节包（`chapters/ch3/plain_field.res` / `plain_paint.res`，`tests/gen_plain_field.gd` 重新生成；读文件约 7–20 毫秒）；测试比对文件和布局。
+- **地形** `world/plain.gd`（`Plain`）：25 块（64 米），每块近处 1 米网格、远处 2 米网格（`LO_STEP` 2，4 时坡上接不上），80 米切换；远处网格四边有裙边，裙边顶点颜色 a = 0，着色器里只给平均的雪色（贴图竖着拉长远看是一排梳齿）。碰撞用高度图。地图外远景 `FarTerrain`：东北方向砧山一道山脊（`far_height`）。
+- **地面着色器** `shaders/plain_ground.gdshader`：雪田（snow_field_aerial，航拍照片颗粒粗，往白压 55%、两种尺度混）、麦茬土（snow_04）、泥雪路（snow_03，颜色和法线都只留三成细节、其余取模糊的 mip——黄昏太阳低时原图的法线照出一大片黑点）、泥岸（brown_mud_02，按坡度、三向投影）。田按 40 × 34 米分块，每块垄的方向不一样，垄沟露土、垄背积雪，用法线做出起伏，45 米外淡掉；大尺度噪声决定哪里雪薄露出整片麦茬地。
+- **河面** `shaders/plain_water.gdshader`：沿折线磨圆后铺一条带子，两边顶点色做岸边薄冰；深石板色、粗糙度 0.22、菲涅尔往天色混。
+- **天空** 复用 `highland_sky.gdshader`，照片 `misty_sky.jpg`（色调映射过的 HDRI 上半球）；`Plain.apply_sky` 按时段染色、转向，曝光 0.7。`Daypart.AREA_PRESETS.plain` 四个时段（黄昏压暗、偏暖的程度比高地轻）。`Cold.COLD_AREAS.plain` = 0.3。
+- **登记**：`Areas`（「金穗平原」、章节包第 3 章、出生点、机位）、`AreaMap`、`main.gd` 搭建分支、`Chapters.LIST[3]`（ch3、探针天空照片、起点渡口、标着制作中；`PLAYABLE` 还是 2）、`export_presets.cfg` 预设 Chapter3、`build_web.sh` 导出 ch3 包。新贴图导入照第二章：`compress/mode=4`、生成 mipmap（不生成远处满是噪点、包还更大）。
+- **性能**（容器里软件渲染，只看相对值）：7 个机位 55–72 次绘制、38k–82k 图元；同样条件下余火高地 267–415 次、183k–219k。`tools/bench_areas.js` 加了 plain（等 `IC_PLAIN … tex=true` 再测）。
+- **测试**：`plain` 组 12 项（登记、贴图、高度场 / 颜色图和布局一致、平原起伏、河床低于水面且两岸高于水面、出生点在岸上、碰撞、渡口出生、25 块搭完、河面 / 远景 / 远处网格、7 个机位、天空 / 时段 / 寒冷）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

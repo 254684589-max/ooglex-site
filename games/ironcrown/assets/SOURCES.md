@@ -50,6 +50,17 @@
 
 整棵树和石头的模型没有用：Poly Haven 的 fir_tree_01 / pine_tree_01 是照片扫描的整棵树（约 785 万面、模型文件 478 / 949 MB），boulder_01 等石头 2 万–18 万面，网页撑不住；树和石头都用代码搭（`world/highland_flora.gd`），树干用主包里已有的 bark_brown_02、石头用地形的灰岩贴图。
 
+2026-10-31 第三章「金穗平原」（路线图 6.1a，D12）新增四套地面贴图和一张天空照片，同样来自 Poly Haven（CC0 1.0），**放在第三章章节包里**（`godot/chapters/ch3/`，进第三章才下载，主包不变大）。
+贴图只取颜色（diff）和 OpenGL 法线（nor_gl）两张 1K JPG（snow_field_aerial 的颜色图在 Poly Haven 上叫「col」，存成 diff 的名字），导入时生成 mipmap；地形着色器按世界坐标贴（`shaders/plain_ground.gdshader`）：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 | 下载日期 |
+|---|---|---|---|---|
+| 平原上雪盖着的田（雪里透出土） | snow_field_aerial | https://polyhaven.com/a/snow_field_aerial | Rob Tuytel | 2026-10-31 |
+| 路和村里踩出来的泥雪 | snow_03 | https://polyhaven.com/a/snow_03 | Rob Tuytel | 2026-10-31 |
+| 收割后的麦茬地露出来的土（垄沟里） | snow_04 | https://polyhaven.com/a/snow_04 | Rob Tuytel | 2026-10-31 |
+| 麦河两岸的泥岸 | brown_mud_02 | https://polyhaven.com/a/brown_mud_02 | Rob Tuytel | 2026-10-31 |
+| 天空：雾蒙蒙的冬天（HDRI「Kloofendal 28d Misty (Pure Sky)」2K，只取上半球、色调映射成普通照片 `chapters/ch3/sky/misty_sky.jpg`） | kloofendal_28d_misty_puresky | https://polyhaven.com/a/kloofendal_28d_misty_puresky | Jenelle van Heerden（拍摄）、Greg Zaal（处理） | 2026-10-31 |
+
 看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
 
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）

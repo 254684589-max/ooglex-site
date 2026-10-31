@@ -20,7 +20,7 @@ uniform float track_m = 3.0;
 uniform float soil_m = 3.4;
 uniform float bank_m = 4.0;
 uniform vec3 snow_tint : source_color = vec3(0.8, 0.81, 0.83);
-uniform vec3 track_tint : source_color = vec3(0.8, 0.78, 0.76);
+uniform vec3 track_tint : source_color = vec3(0.86, 0.84, 0.81);
 uniform vec3 soil_tint : source_color = vec3(0.66, 0.58, 0.5);
 uniform vec3 bank_tint : source_color = vec3(0.72, 0.68, 0.62);
 uniform float bank_from = 0.12;      // 1 - 法线的 y：多陡开始是泥岸
@@ -53,8 +53,14 @@ void fragment() {
 	vec3 sn_n = mix(texture(snow_nrm, p / snow_m).rgb, vec3(0.5, 0.5, 1.0), far_k) * 2.0 - 1.0;
 	vec3 so = mix(texture(soil_alb, p / soil_m).rgb, texture(soil_alb, p / (soil_m * 3.7) + 0.6).rgb, far_k) * soil_tint;
 	vec3 so_n = texture(soil_nrm, p / soil_m).rgb * 2.0 - 1.0;
-	vec3 tr = texture(track_alb, p / track_m).rgb * track_tint;
-	vec3 tr_n = texture(track_nrm, p / track_m).rgb * 2.0 - 1.0;
+	// 踩出来的路：泥雪照片很花（站在坠星院的路上一大片黑点，截图）——细节只留三成（其余取模糊的那层 mip），再往雪色拉，一段一段地露出泥
+	float mud = smoothstep(0.35, 0.0, abs(texture(macro_noise, p / 23.0).g - 0.5));
+	vec2 tuv = p / track_m;
+	vec3 tr_raw = mix(textureLod(track_alb, tuv, 4.0).rgb, texture(track_alb, tuv).rgb, 0.3 + mud * 0.3);
+	vec3 tr = mix(tr_raw, vec3(0.8, 0.8, 0.8), 0.35 - mud * 0.25) * track_tint;
+	// 法线也一样：黄昏太阳低，泥雪照片的法线把整条路照成一片黑点（截图）——取模糊的 mip、再压一半
+	vec3 tr_n = mix(textureLod(track_nrm, tuv, 3.0).rgb, texture(track_nrm, tuv).rgb, 0.35) * 2.0 - 1.0;
+	tr_n.xy *= 0.5;
 	// 泥岸：两个竖直方向投影 + 从上往下投，按朝向混（只从上往下投在斜坡上拉成一道道，截图）
 	vec3 an = abs(wnrm);
 	float wx = an.x / max(an.x + an.z, 0.001);
@@ -98,6 +104,7 @@ void fragment() {
 	NORMAL = normalize((VIEW_MATRIX * vec4(nw, 0.0)).xyz);
 
 	float shade = COLOR.b * (0.9 + 0.2 * macro);
+	alb = mix(vec3(0.74, 0.75, 0.77), alb, COLOR.a);     // 远处网格的裙边（a = 0）：只给平均的雪色
 	ALBEDO = alb * shade;
 	ROUGHNESS = mix(0.84, 0.95, max(soil_w, max(track_w, bank_w)));
 	SPECULAR = mix(0.42, 0.28, max(soil_w, bank_w));

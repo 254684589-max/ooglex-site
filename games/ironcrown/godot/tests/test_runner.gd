@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8337,6 +8337,96 @@ func test_looks() -> void:
 
 
 ## 5.1a 余火高地地图底座：高度场、碰撞、分块、天空、风雪、章节包与第二章的入口
+func test_plain() -> void:
+	check(Areas.known("plain") and Areas.display_name("plain") == "金穗平原" and Areas.pack_chapter("plain") == 3 and Chapters.known(3) and Chapters.pack_of(3) == "ch3" and Chapters.PLAYABLE == 2 and Chapters.wip_of(3) != "",
+		"金穗平原登记了：内容在第三章章节包（ch3）里；第三章还没对玩家打开（PLAYABLE = %d、标着制作中）" % Chapters.PLAYABLE)
+	check(Plain.textures_ready() and ResourceLoader.exists(Plain.FIELD_PATH) and ResourceLoader.exists(Plain.PAINT_PATH), "第三章的贴图、天空照片、预先算好的高度场都在 chapters/ch3/")
+	var tex_ok := true
+	for layer: String in Plain.LAYERS.values():
+		for kind in ["diff", "nor_gl"]:
+			if not ResourceLoader.exists(Plain.TEX_DIR % [layer, kind]):
+				tex_ok = false
+	check(tex_ok, "地面四层贴图（雪田、泥雪路、麦茬土、泥岸）各有颜色和法线")
+	Plain._field = PackedFloat32Array()
+	Plain.ensure_field()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 61
+	var worst := 0.0
+	var paint_worst := 0.0
+	for k in 300:
+		var i := rng.randi_range(0, PlainLayout.NX - 1)
+		var j := rng.randi_range(0, PlainLayout.NZ - 1)
+		var x := PlainLayout.BOUNDS.position.x + i * PlainLayout.STEP
+		var z := PlainLayout.BOUNDS.position.y + j * PlainLayout.STEP
+		worst = maxf(worst, absf(Plain._field[j * PlainLayout.NX + i] - PlainLayout.height(x, z)))
+		var m := PlainLayout.masks(x, z)
+		var c := Plain._paint[j * PlainLayout.NX + i]
+		paint_worst = maxf(paint_worst, maxf(absf(c.r - m.x), maxf(absf(c.g - m.y), absf(c.b - m.z))))
+	check(worst < 0.01 and paint_worst < 0.01 and Plain.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_plain_field.gd）；读文件 %.0f 毫秒" % [worst, paint_worst, Plain.field_ms])
+	# 平原是平的（起伏不过十来米）；河：水面比河床高、比两岸低；庄园在坡上、坠星院在丘顶
+	var lo := INF
+	var hi := -INF
+	for v in Plain._field:
+		lo = minf(lo, v)
+		hi = maxf(hi, v)
+	var river_ok := true
+	var bed_max := -INF
+	for k in range(1, PlainLayout.RIVER.size() - 1):
+		var c: Vector2 = PlainLayout.RIVER[k]
+		if not PlainLayout.BOUNDS.grow(-10.0).has_point(c):
+			continue
+		var bed := PlainLayout.height(c.x, c.y)
+		bed_max = maxf(bed_max, bed)
+		var a: Vector2 = PlainLayout.RIVER[k - 1]
+		var b: Vector2 = PlainLayout.RIVER[k + 1]
+		var n := Vector2(-(b - a).y, (b - a).x).normalized()
+		for sgn in [-1.0, 1.0]:
+			var q: Vector2 = c + n * sgn * (PlainLayout.RIVER_HALF + PlainLayout.RIVER_BANK + 3.0)
+			if PlainLayout.height(q.x, q.y) < PlainLayout.WATER_Y + 1.0:
+				river_ok = false
+	var flat := PlainLayout.height(PlainLayout.VILLAGE.x, PlainLayout.VILLAGE.y)
+	var manor := PlainLayout.height(PlainLayout.MANOR.x, PlainLayout.MANOR.y)
+	var abbey := PlainLayout.height(PlainLayout.ABBEY.x, PlainLayout.ABBEY.y)
+	check(hi - lo < 16.0 and river_ok and bed_max < PlainLayout.WATER_Y and manor - flat > 4.0 and abbey - flat > 5.0,
+		"地形高差 %.1f 米（平原）；河床最高 %.2f 米低于水面 %.2f、两岸高出水面；庄园比村子高 %.1f 米、坠星院丘顶高 %.1f 米" % [hi - lo, bed_max, PlainLayout.WATER_Y, manor - flat, abbey - flat])
+	var sp_ok := true
+	for id: String in PlainLayout.SPAWN_XZ:
+		var xz: Vector2 = PlainLayout.SPAWN_XZ[id][0]
+		if PlainLayout.river_d(xz) < PlainLayout.RIVER_HALF + 1.5 or PlainLayout.height(xz.x, xz.y) < PlainLayout.WATER_Y + 0.5:
+			sp_ok = false
+	check(sp_ok and PlainLayout.SPAWN_XZ.has("dock") and Chapters.LIST[3].spawn == "dock", "%d 个出生点都在岸上、不在水里；第三章从渡口上岸" % PlainLayout.SPAWN_XZ.size())
+	GameState.new_game(610)
+	GameState.daypart = "day"
+	var main := await make_area("plain")
+	var space := main.get_world_3d().direct_space_state
+	var col_worst := 0.0
+	for k in 60:
+		var x := rng.randf_range(-140.0, 140.0)
+		var z := rng.randf_range(-120.0, 120.0)
+		var hit: Dictionary = space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1))
+		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - Plain.height_at(x, z)))
+	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
+	await physics(10)
+	var p: FpController = main.player
+	var sp: Vector3 = Plain.spawn_points().dock[0]
+	check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4, "新开进平原：站在渡口（%s）" % p.global_position)
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	check(st.chunks.size() == 25 and st.is_done() and float(st.stats.max_job_ms) < 60.0, "地形 %d 块全搭完，最慢一块 %.1f 毫秒" % [st.chunks.size(), st.stats.max_job_ms])
+	check(main.world.find_child("RiverWater", true, false) != null and main.world.find_child("FarTerrain", true, false) != null and main.world.find_children("TerrainFar", "MeshInstance3D", true, false).size() == 25,
+		"有河面、地图外的远景（砧山）、每块远处一份粗网格")
+	var views_ok := Areas.views("plain").size() == PlainLayout.VIEW_NAMES.size()
+	for v: Array in Areas.views("plain"):
+		var vp: Vector3 = v[0]
+		if absf(vp.y - 1.7 - Plain.height_at(vp.x, vp.z)) > 0.05 or PlainLayout.river_d(Vector2(vp.x, vp.z)) < PlainLayout.RIVER_HALF:
+			views_ok = false
+	check(views_ok, "%d 个固定机位都在岸上、地面上方 1.7 米" % PlainLayout.VIEW_NAMES.size())
+	var env: Environment = main.env
+	check(env.background_mode == Environment.BG_SKY and env.sky != null and Daypart.preset("plain", "day").fog_end > 0.0 and Cold.COLD_AREAS.get("plain", 0.0) < Cold.COLD_AREAS.highland,
+		"天空是雾蒙蒙的冬天照片；平原有自己的时段预设；没有高地冷")
+	await free_main(main)
+
+
 func test_highland() -> void:
 	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) == "",
 		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、做到章末不再标「制作中」（PLAYABLE = %d）" % Chapters.PLAYABLE)

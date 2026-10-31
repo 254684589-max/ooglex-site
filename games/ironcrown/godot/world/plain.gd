@@ -445,7 +445,9 @@ static func grid_mesh(i0: int, j0: int, i1: int, j1: int, step: int, skirt: floa
 			for k in e:
 				verts.append(verts[k] - Vector3(0, skirt, 0))
 				norms.append(norms[k])
-				colors.append(colors[k])
+				var ck := colors[k]
+				ck.a = 0.0                                   # 裙边：着色器里不贴图（竖着拉长的贴图远看是一排梳齿，截图）
+				colors.append(ck)
 			for n in e.size() - 1:
 				var a := e[n]
 				var b := e[n + 1]
