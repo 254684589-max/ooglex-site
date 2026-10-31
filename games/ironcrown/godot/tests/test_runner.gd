@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -3792,6 +3792,7 @@ func test_opening() -> void:
 	Settings.tips = true
 	Settings.sound = true
 	GameState.new_game(83)
+	GameState.set_flag("origin", "knight")            # 出身选过了（O.1 的选择画面在 origin 组测）：这里测的是标题卡上第一下操作
 	var main := await make_main(false)
 	var p: FpController = main.player
 	var op: Opening = main.opening
@@ -9727,6 +9728,85 @@ func test_ch2flow() -> void:
 				await _ch2_run(heir, causeway, grain, seed)
 				seed += 1
 	await _ch2_run("ivette", "held", "empty", seed)
+
+
+## O.1 出身三选一：数据、加成只加一次、新游戏在标题卡上选（选的这一下开始开场）、数字键、存档带着、旧存档读进来问一次、角色面板写着
+func test_origin() -> void:
+	check(Origins.ids() == ["knight", "deserter", "ferry"] and Origins.name_of("deserter") == "烽誓团逃兵" and Origins.bonus_text("ferry").contains("口才 +5") and Origins.bonus_text("deserter").contains("烽誓团 −5"),
+		"三种出身：落魄骑士之后 / 烽誓团逃兵 / 渡工之子，各有开局加成（%s）" % Origins.bonus_text("knight"))
+	GameState.new_game(1001)
+	var blade := int(GameState.skills.blade)
+	var st := GameState.strength
+	check(Origins.current() == "" and Origins.apply("knight") and Origins.current() == "knight" and int(GameState.skills.blade) == blade + 5 and GameState.strength == st + 1,
+		"选落魄骑士之后：旗标 origin、剑术 +5、力量 +1")
+	check(not Origins.apply("ferry") and Origins.current() == "knight" and int(GameState.skills.blade) == blade + 5, "选过了不能再选、加成不会加两次")
+	var font: FontFile = load("res://assets/fonts/NotoSansSC-IC.ttf")
+	var lack := ""
+	var all_text := "你是谁？这份存档还没有出身——"
+	for id in Origins.ids():
+		all_text += Origins.name_of(id) + str(Origins.spec(id).short) + str(Origins.spec(id).desc) + Origins.bonus_text(id)
+	for i in all_text.length():
+		if all_text.unicode_at(i) > 32 and not font.has_char(all_text.unicode_at(i)) and not lack.contains(all_text[i]):
+			lack += all_text[i]
+	check(lack == "", "出身画面的字都在字体子集里（缺：%s）" % lack)
+	var d := GameState.to_dict()
+	GameState.new_game(1002)
+	GameState.from_dict(d)
+	check(Origins.current() == "knight" and int(GameState.skills.blade) == blade + 5, "存档带着出身")
+	# 新游戏：标题卡上先选出身
+	Engine.set_meta("ic_skip_opening", false)
+	GameState.new_game(1003)
+	var surv := int(GameState.skills.survival)
+	var main := await make_main(false)
+	await frames(3)
+	var op: Opening = main.opening
+	var panel: OriginPanel = main.origin_panel
+	check(op != null and op.stage == "card" and panel.visible and panel.buttons.size() == 3 and main.title_card.prompt.text == "", "新游戏：标题卡上三个出身，选了才开始")
+	op._input(key_ev(KEY_SPACE))
+	await frames(1)
+	check(op.stage == "card", "没选出身：按键不开始开场")
+	(panel.buttons["deserter"] as Button).pressed.emit()
+	await frames(2)
+	check(not panel.visible and op.stage == "bell" and Origins.current() == "deserter" and int(GameState.skills.survival) == surv + 8 and GameState.get_rep("beacon_oath") == -5,
+		"选烽誓团逃兵：开场开始（钟声），生存 +8、烽誓团 −5")
+	main.char_panel.open()
+	await frames(1)
+	check(main.char_panel.header_text().begins_with("烽誓团逃兵"), "角色面板写着出身")
+	main.char_panel.close()
+	await free_main(main)
+	# 数字键选
+	GameState.new_game(1004)
+	main = await make_main(false)
+	await frames(3)
+	main.origin_panel._unhandled_key_input(key_ev(KEY_3))
+	await frames(2)
+	check(Origins.current() == "ferry" and main.opening.stage == "bell" and GameState.get_rep("ferrymen") == 10, "按 3：渡工之子（渡工行会 +10）")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
+	# 旧存档（没有出身）读进来：问一次
+	GameState.new_game(1005)
+	GameState.set_flag("opening_done")
+	var old := GameState.to_dict()
+	old.flags.erase("origin")
+	Engine.set_meta("ic_skip_opening", false)
+	GameState.from_dict(old)
+	GameState.pending_load = {"scene": "frostford", "slot": "slot1", "player": {}}
+	main = await make_main(false)
+	await frames(4)
+	check(main.origin_panel.visible and main.origin_panel.as_prompt and main.get_tree().paused and main.opening == null, "旧存档读进来：暂停着问一次出身（不播开场）")
+	(main.origin_panel.buttons["knight"] as Button).pressed.emit()
+	await frames(2)
+	check(Origins.current() == "knight" and not main.get_tree().paused and not main.origin_panel.visible, "选了：加上出身，接着玩")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
+	# 选过出身的存档不再问
+	GameState.pending_load = {"scene": "frostford", "slot": "slot1", "player": {}}
+	Engine.set_meta("ic_skip_opening", false)
+	main = await make_main(false)
+	await frames(4)
+	check(not main.origin_panel.visible and not main.get_tree().paused, "有出身的存档：不再问")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

@@ -853,6 +853,15 @@ godot/
 - **`tools/bench_areas.js`**：区域表加上 `highland`（22 个机位）、`waystation`、`beacon_tower`；章节包里的区域（余火高地）包没到时先铺平地、下载完重新载入，只认 `IC_HIGHLAND … tex=true` 以后的那次 `IC_PERF`（原来测的是平地：49 次）。
 - **章节包缓存**：7.3 MB 写进 `user://` 以后浏览器还要十几秒才存进 IndexedDB；这期间刷新页面会再下载一次（本机：下载完 40 秒后刷新 `from=cache` 3 毫秒）。记为已知问题。
 
+### 4.63 出身三选一（路线图 O.1，2026-10-31）
+
+- **数据** `data/origins.json`：`order`（选的时候的顺序）、`origins.<编号>`：`name`、`short`（按钮上一句）、`desc`（下面一行来历）、开局加成 `skills` / `attrs` / `rep`。
+- **`core/origins.gd`（Origins）**：`current()`（旗标 `origin`，没选是 ""）、`apply(id)`（设旗标、加技能（不超过上限）/ 属性 / 声望；选过了返回 false，不加第二次）、`bonus_text(id)`。出身只存旗标（跟着存档走，对话直接用旗标条件）。
+- **`ui/origin_panel.gd`（OriginPanel）**：三个大按钮竖排（宽度按窗口收，手机放得下）、焦点 / 悬停时下面一行写来历、数字键 1–3；`open(prompt)`：新游戏 / 旧存档补问两种标题；打开后打出 `IC_ORIGIN_SCREEN`（第一个按钮的窗口坐标，冒烟用）。
+- **开场**：`Opening.start` 时没出身 → 标题卡的字先收起来、开出身面板，`_input` 在面板开着时不开始；选了 → `Origins.apply`、标题卡的字露出来、`begin()`（这一下是用户操作，钟声能响）。直接调 `begin()`（测试）会收起面板、出身留空。
+- **旧存档**：`main` 读档进来（`loaded_from` 不空）且没出身 → `ask_origin()`：暂停、补问、加上、提示一句。网址带截图参数、换区域进来、自动化测试（`ic_skip_opening`）都不问。
+- 角色面板标题前写出身。**测试**：`origin` 组 13 项（含出身画面的字都在字体子集里）；`opening` 组先设好出身（测的是标题卡上第一下操作）。冒烟（`tools/smoke_web.js`）开场前先点 `IC_ORIGIN_SCREEN`。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
