@@ -25,7 +25,9 @@ const ONLY = process.argv[5] ? process.argv[5].split(',') : null;   // 第五个
       logs.length = 0;
       await p.goto(`http://localhost:8765/games/ironcrown/play/?perf=1&probe=3&area=${area}&view=${v}${q ? '&q=' + q : ''}`);
       let line;
-      for (let i = 0; i < 480 && !line; i++) { await p.waitForTimeout(250); line = logs.find(l => l.startsWith('IC_PERF')); }
+      // 章节包里的区域（第二章余火高地，5.9）：包没到时先铺一片平地、下载完重新载入——只认重新载入以后测的那次
+      const real = () => { const k = logs.findIndex(l => l.startsWith('IC_HIGHLAND') && l.includes('tex=true')); return area !== 'highland' ? logs : (k < 0 ? [] : logs.slice(k)); };
+      for (let i = 0; i < 960 && !line; i++) { await p.waitForTimeout(250); line = real().find(l => l.startsWith('IC_PERF')); }
       if (!line) { failed++; cells.push('没测到'); continue; }
       const g = k => Number((line.match(new RegExp(k + '=([0-9.]+)')) || [])[1]);
       cells.push(`${g('fps').toFixed(1)} 帧 · 最慢 ${g('worst_ms').toFixed(0)} 毫秒 · ${g('draw_calls').toFixed(0)} 次 · ${(g('primitives') / 1000).toFixed(0)}k 图元`);
