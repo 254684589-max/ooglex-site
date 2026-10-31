@@ -9626,7 +9626,7 @@ func _ch2_run(heir: String, causeway: String, grain: String, seed: int) -> void:
 		if GameState.quest_stage("ch2_main") == "meet_matthias":
 			break
 		await physics(1)
-	check(GameState.quest_stage("ch2_main") == "meet_matthias" and GameState.daypart == "dusk", "%s 爬上山脊：天擦黑了" % tag)
+	check(GameState.quest_stage("ch2_main") == "meet_matthias" and GameState.daypart == "dusk", "%s 爬上山脊：天擦黑了（主线 %s，时段 %s）" % [tag, GameState.quest_stage("ch2_main"), GameState.daypart])
 	check(await fl_say(main, "beacon19", "matthias", ["我从黑鹭堡来，找诺伯特烽长。", "明白了。"]) and GameState.quest_stage("ch2_main") == "see_norbert", "%s 马蒂亚斯：诺伯特在塔顶" % tag)
 	if causeway == "lost":
 		check(await fl_say(main, "beacon19", "norbert", ["我这就去柴棚扛。"]) and GameState.quest_stage("ch2_main") == "carry_wood", "%s 堤道失守：诺伯特先要你扛一捆柴上来" % tag)
