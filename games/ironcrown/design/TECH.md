@@ -868,6 +868,11 @@ godot/
 - **渡工之子**：`ferry.json` offer/why 多一条检定（口才 9 → `convinced_ferry`）；`reedwharf.json` boatman 开场白、`envoy_ask` 多一条直接到 `envoy`。**落魄骑士之后**：`blackheron.json` herman `greet_gate` 开场白、`ledger_key` 多一条检定（口才 11 → `key_given` / `key_no`）；`hall.json` alric 开场白、「我家也有过封地」→ `knight`（`alric_knight_said`，瓦伦家 +3）；`highland.json` anselm/ask 报旧姓（威吓 12）。**烽誓团逃兵**：`beacon19.json` matthias 开场多一条 → `deserter`（`matthias_knows_deserter`）、carsten/rule → `deserter`（`carsten_deserter_said`）；anselm/ask「车夫是第一个被踩倒的」（口才 10）。
 - **测试**：`origin2` 组 20 项；顺带一项「所有对话文件里的字都在字体子集里」（查出新台词里一个「崽」不在子集里 → 改成「儿子」，不重做字体）。
 
+### 4.65 支线「名册上的名字」（路线图 O.3，2026-10-31）
+
+- `beacon19.json` matthias/again 多一条「那本名册……」（条件：出身 `deserter`、有 `ch2_first_tide`、还没有 `ch2_roll`）→ `roll`（接支线 `ch2_roll`）→ `roll_served`（`ch2_roll` = served、烽誓团 +10）/ 检定（口才 14）`roll_struck` 或 `roll_no`（`ch2_roll_refused`，只剩认或者否认）/ `roll_denied`（烽誓团 −5）；都 `quest_done`。
+- `ConvoyAmbush.setup`：served 时小队多 `ROLL_EXTRA` 两个人（「烽誓团 · 老守燧人」）；小队里有名字的人改用一张「第几个 → 名字」表（原来按下标认卡斯滕，多了人就认错）。`Chapter2.recap` 多一句。**测试**：`origin3` 组 13 项。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
