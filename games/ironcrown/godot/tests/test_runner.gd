@@ -9705,7 +9705,7 @@ func _ch2_run(heir: String, causeway: String, grain: String, seed: int) -> void:
 	await seconds(0.5)
 	var ep: EndingPanel = main.ending_panel
 	check(GameState.has_flag("ch2_done") and ep.visible and ep.title.text == "第三章 · 粮与铁" and ep.seal.text.contains("芦栈村那个人"), "%s 冬井边：第二章章末" % tag)
-	var want := {"rob": "劫下了洛蒙德家的五车粮", "lawful": "护着粮车穿过了潮水", "empty": "两手空空"}[grain]
+	var want: String = {"rob": "劫下了洛蒙德家的五车粮", "lawful": "护着粮车穿过了潮水", "empty": "两手空空"}[grain]
 	check(ep.recap.text.contains(want), "%s 回顾：%s" % [tag, want])
 	ep.close()
 	await frames(2)
