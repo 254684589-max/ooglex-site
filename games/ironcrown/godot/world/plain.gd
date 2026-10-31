@@ -55,6 +55,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	pl._river()
 	pl._far()
 	PlainFlora.far_ring(p_parent)                    # 地平线上的树（6.1b）
+	PlainVillage.interactables(p_parent)             # 麦渡（6.2a）：长屋的门、村口的路牌（同步：一进场就推得开）
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -190,6 +191,18 @@ func _collision() -> void:
 	flora.collision_mask = 0
 	parent.add_child(flora)
 	PlainFlora.add_collision(flora)
+	var village := StaticBody3D.new()                # 麦渡：长屋、谷仓、水井、木桥、栈桥、零碎（6.2a）
+	village.name = "MaiduSolids"
+	village.collision_layer = 1
+	village.collision_mask = 0
+	parent.add_child(village)
+	for so: Array in PlainVillage.solids():
+		var vs := CollisionShape3D.new()
+		var vb := BoxShape3D.new()
+		vb.size = so[1]
+		vs.shape = vb
+		vs.transform = so[0]
+		village.add_child(vs)
 	var wb := StaticBody3D.new()
 	wb.name = "PlainWalls"
 	wb.collision_layer = FpController.LAYER_BOUNDARY
@@ -238,6 +251,7 @@ static func water_material() -> ShaderMaterial:
 
 static func clear_cache() -> void:
 	PlainFlora.clear_cache()
+	PlainVillage.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -354,7 +368,9 @@ func _jobs(st: ChunkStreamer) -> void:
 		var z := b.position.y
 		while z < b.end.y - 0.01:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
-			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r), _job_flora.bind(r)])
+			var jobs: Array = [_job_terrain.bind(r), _job_flora.bind(r)]
+			jobs.append_array(PlainVillage.jobs_for(r, reduced_motion))           # 麦渡的长屋、谷仓、水井、木桥、渡口、零碎（6.2a）
+			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
 		x += cs
@@ -575,8 +591,10 @@ static func map_spec() -> Dictionary:
 	for m in [[PlainLayout.VILLAGE, "麦渡"], [PlainLayout.DOCK, "渡口"], [PlainLayout.MILL, "水磨坊"], [PlainLayout.GRANARY, "粮仓"], [PlainLayout.MANOR, "洛蒙德庄园"],
 			[PlainLayout.ABBEY, "坠星院"], [PlainLayout.CAMP, "塞弗林营地"]]:
 		shapes.append({"k": "mark", "at": m[0], "label": m[1]})
+	shapes.append_array(PlainVillage.map_shapes())
+	shapes.append({"k": "road", "pts": _strip(PlainLayout.BRIDGE[0], PlainLayout.BRIDGE[1], PlainVillage.BRIDGE_W * 0.5), "label": "木桥"})
 	return {"bounds": PlainLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
-		{"name": "麦渡", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},
+		{"name": "麦渡", "place": "maidu", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},
 		{"name": "坠星院", "pts": _circle(PlainLayout.ABBEY, PlainLayout.ABBEY_HILL_R)},
 		{"name": "洛蒙德庄园", "pts": _circle(PlainLayout.MANOR, PlainLayout.MANOR_R + 14.0)},
 		{"name": "金穗平原", "pts": PackedVector2Array([Vector2(-150, -130), Vector2(150, -130), Vector2(150, 130), Vector2(-150, 130)])},

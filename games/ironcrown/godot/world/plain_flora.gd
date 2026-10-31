@@ -111,7 +111,8 @@ static func willows() -> Array:
 				if rng.randf() < 0.22:
 					s += rng.randf_range(8.0, 20.0)                 # 一段一段的，中间空着
 					continue
-				if PlainLayout.river_d(p) < PlainLayout.RIVER_HALF + 3.0 or _bridge_d(p) < 9.0 or p.distance_to(PlainLayout.DOCK) < 13.0:
+				if PlainLayout.river_d(p) < PlainLayout.RIVER_HALF + 3.0 or _bridge_d(p) < 9.0 or p.distance_to(PlainLayout.DOCK) < 13.0 \
+						or p.distance_to(Geometry2D.get_closest_point_to_segment(p, PlainVillage.DOCK_FROM, PlainVillage.DOCK_TO)) < 5.0:
 					continue
 				if not PlainLayout.BOUNDS.grow(-(PlainLayout.WALL_INSET + 2.0)).has_point(p) or PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 2.5:
 					continue

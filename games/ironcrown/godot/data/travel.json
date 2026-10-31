@@ -1,5 +1,5 @@
 {
-  "_说明": "旅行地图（路线图 4.2；STORY.md 4.2、4.5）。places：地点——名字、区域与出生点（area 为空 = 这个地方还没做好，地图上灰着、去不了；几个地点可以在同一个区域里——4.4 鹭沼连片地图上的芦栈村、黑鹭堡，按出生点分）、从第几章起出现在地图上、地图上的位置（0..1，左上角为原点）、图标（town / village / castle / beacon）、在哪一页（region：west 北境西部，第一章；north 北境北部，第二章起）、一句话介绍、在哪里出发（depart_at）、还没做好时的说明（pending）。routes：从哪到哪、路上怎么走、到了是什么时段（空 = 不变；Daypart）。本章路上没有随机遭遇。出发前自动存档（main.depart）。",
+  "_说明": "旅行地图（路线图 4.2；STORY.md 4.2、4.5）。places：地点——名字、区域与出生点（area 为空 = 这个地方还没做好，地图上灰着、去不了；几个地点可以在同一个区域里——4.4 鹭沼连片地图上的芦栈村、黑鹭堡，按出生点分）、从第几章起出现在地图上、地图上的位置（0..1，左上角为原点）、图标（town / village / castle / beacon / abbey / mill / camp）、在哪一页（region：west 北境西部，第一章；north 北境北部，第二章；south 南部，第三章起，6.2a）、一句话介绍、在哪里出发（depart_at）、还没做好时的说明（pending）。routes：从哪到哪、路上怎么走、到了是什么时段（空 = 不变；Daypart）。本章路上没有随机遭遇。出发前自动存档（main.depart）。",
   "places": {
     "frostford": {"name": "霜渡镇", "area": "frostford", "spawn": "manor", "chapter": 1, "pos": [0.8, 0.5], "icon": "town",
       "blurb": "灰鲸河上游的渡口小镇，霜渡镇领主维克托·瓦伦的地方。", "depart_at": "宅邸门口的路牌"},
@@ -10,7 +10,17 @@
     "yangji": {"name": "羊脊村", "area": "highland", "spawn": "village", "chapter": 2, "region": "north", "pos": [0.5, 0.72], "icon": "village",
       "blurb": "余火高地山谷里的牧羊村：矮石屋、羊圈、厄尔德家的驿站。上烽燧线的人都在这儿歇脚。", "depart_at": "村北的路牌"},
     "beacon19": {"name": "第十九烽", "area": "highland", "spawn": "beacon", "chapter": 2, "region": "north", "pos": [0.56, 0.3], "icon": "beacon",
-      "blurb": "山脊上的「断角烽」：石砌的烽燧塔、塔下烽誓团的木栅营地。往北翻过山脊就是白寂。", "depart_at": "烽燧门前的路牌"}
+      "blurb": "山脊上的「断角烽」：石砌的烽燧塔、塔下烽誓团的木栅营地。往北翻过山脊就是白寂。", "depart_at": "烽燧门前的路牌"},
+    "maidu": {"name": "麦渡", "area": "plain", "spawn": "village", "chapter": 3, "region": "south", "pos": [0.3, 0.56], "icon": "village",
+      "blurb": "麦河西岸洛蒙德家的佃农村：土坯墙、茅草顶的长屋，谷仓空了一半。村口一座木桥过河，渡口在村子东南。", "depart_at": "村口的路牌"},
+    "mill": {"name": "水磨坊与粮仓", "area": "", "chapter": 3, "region": "south", "pos": [0.55, 0.42], "icon": "mill",
+      "blurb": "麦河东岸洛蒙德家的水磨坊，上头三座高高的粮仓，满的。", "pending": "磨坊和粮仓还没做好（路线图 6.3）。"},
+    "manor": {"name": "洛蒙德庄园", "area": "", "chapter": 3, "region": "south", "pos": [0.72, 0.3], "icon": "castle",
+      "blurb": "东岸缓坡上的石砌庄园，门楼挂着绿底金麦束的旗。", "pending": "洛蒙德庄园还没做好（路线图 6.3）。"},
+    "abbey": {"name": "坠星院", "area": "", "chapter": 3, "region": "south", "pos": [0.6, 0.8], "icon": "abbey",
+      "blurb": "南边矮丘顶上星铁教会的修道院：钟楼、回廊、施粥的门房。", "pending": "坠星院还没做好（路线图 6.2b）。"},
+    "camp": {"name": "塞弗林营地", "area": "", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
+      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。", "pending": "塞弗林营地还没做好（路线图 6.3）。"}
   },
   "routes": [
     {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},
@@ -18,6 +28,16 @@
     {"from": "reedwharf", "to": "blackheron", "text": "沿栈道到堤道头，走石砌堤道过去，不远", "daypart": ""},
     {"from": "blackheron", "to": "reedwharf", "text": "沿堤道回芦栈村，不远", "daypart": ""},
     {"from": "yangji", "to": "beacon19", "text": "出村往北，顺着盘山路一弯一弯爬上山脊", "daypart": ""},
-    {"from": "beacon19", "to": "yangji", "text": "顺着盘山路下山回村", "daypart": ""}
+    {"from": "beacon19", "to": "yangji", "text": "顺着盘山路下山回村", "daypart": ""},
+    {"from": "maidu", "to": "mill", "text": "过木桥到东岸，磨坊就在桥头", "daypart": ""},
+    {"from": "mill", "to": "maidu", "text": "过木桥回西岸的麦渡", "daypart": ""},
+    {"from": "maidu", "to": "abbey", "text": "出村往东南，过河往矮丘上走", "daypart": ""},
+    {"from": "abbey", "to": "maidu", "text": "下丘过河回麦渡", "daypart": ""},
+    {"from": "mill", "to": "manor", "text": "顺着大车道上坡，路边一道木栅", "daypart": ""},
+    {"from": "manor", "to": "mill", "text": "下坡回磨坊", "daypart": ""},
+    {"from": "manor", "to": "camp", "text": "往东北，砧山下来的路口", "daypart": ""},
+    {"from": "camp", "to": "manor", "text": "沿大车道回庄园", "daypart": ""},
+    {"from": "abbey", "to": "mill", "text": "下丘往北，沿河到磨坊", "daypart": ""},
+    {"from": "mill", "to": "abbey", "text": "沿河往南，上矮丘", "daypart": ""}
   ]
 }

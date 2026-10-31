@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8513,6 +8513,84 @@ func test_plainflora() -> void:
 	var tw := PlainFlora.material("twig", true)
 	check(is_zero_approx(float(tw.get_shader_parameter("wind"))), "「减少动态效果」打开时不摆")
 	PlainFlora.material("twig", false)
+
+
+func test_maidu() -> void:
+	# 布局：长屋、谷仓不压路、不下河；木桥两头落在岸上、中间拱起来高过水面；栈桥伸到水上
+	var clear := true
+	for h: Array in PlainVillage.LONGHOUSES + [["barn", PlainVillage.BARN[0]]]:
+		var c: Vector2 = h[1]
+		if PlainLayout.road_d(c) < PlainLayout.ROAD_HALF + 3.0 or PlainLayout.river_d(c) < PlainLayout.RIVER_HALF + PlainLayout.RIVER_BANK:
+			clear = false
+	var smoke := PlainVillage.LONGHOUSES.filter(func(h: Array) -> bool: return bool(h[5])).size()
+	var holes := PlainVillage.LONGHOUSES.filter(func(h: Array) -> bool: return int(h[6]) >= 0).size()
+	check(PlainVillage.LONGHOUSES.size() == 6 and clear and smoke == 2 and holes == 2,
+		"麦渡：6 栋长屋（只有 %d 栋冒烟、%d 栋屋顶塌了一块）和谷仓，都不压路、不下河" % [smoke, holes])
+	var mid_y := PlainVillage.bridge_y(0.5)
+	var a: Vector2 = PlainLayout.BRIDGE[0]
+	var b: Vector2 = PlainLayout.BRIDGE[1]
+	check(PlainLayout.river_d(a) > PlainLayout.RIVER_HALF + 2.0 and PlainLayout.river_d(b) > PlainLayout.RIVER_HALF + 2.0 and mid_y > PlainLayout.WATER_Y + 1.5 and absf(PlainVillage.bridge_y(0.0) - PlainLayout.height(a.x, a.y)) < 0.3,
+		"木桥两头在岸上、桥面中间比水面高 %.1f 米" % (mid_y - PlainLayout.WATER_Y))
+	check(PlainLayout.river_d(PlainVillage.DOCK_TO) < PlainLayout.RIVER_HALF + 0.5 and PlainVillage.dock_y() > PlainLayout.WATER_Y + 0.8, "栈桥伸到水上（头上离河中线 %.1f 米）" % PlainLayout.river_d(PlainVillage.DOCK_TO))
+	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and not Travel.built("abbey") and Travel.region_of_chapter(2) == "north",
+		"旅行地图第三章是「南部」一页：麦渡（做好了）、磨坊、庄园、坠星院、营地（还没做好）；第二章还是北境北部 %s" % str(Travel.validate()))
+	GameState.new_game(620)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var houses := main.world.find_children("Longhouse_*", "Node3D", true, false)
+	check(houses.size() == 6 and main.world.find_child("Barn", true, false) != null and main.world.find_child("Bridge", true, false) != null and main.world.find_child("Dock", true, false) != null and main.world.find_child("Well", true, false) != null,
+		"分块搭完：%d 栋长屋、谷仓、木桥、渡口、水井" % houses.size())
+	var doors := main.world.find_children("LonghouseDoor_*", "", true, false)
+	check(doors.size() == 5 and (doors[0] as Door).locked, "5 扇门（空屋没门），都闩着")
+	# 走过木桥：从西头走到东头，一直踩在桥面上，没掉进河里
+	await physics(6)
+	var p: FpController = main.player
+	var dir := (b - a).normalized()
+	var start := a + dir * 1.0
+	p.global_position = Vector3(start.x, PlainVillage.bridge_y(1.0 / a.distance_to(b)) + 0.4, start.y)
+	p.rotation.y = atan2(-dir.x, -dir.y)
+	p.velocity = Vector3.ZERO
+	await physics(8)
+	var min_y := INF
+	Input.action_press("move_forward")
+	Input.action_press("sprint")
+	for k in 60:
+		await seconds(0.1)
+		min_y = minf(min_y, p.global_position.y)
+	Input.action_release("sprint")
+	Input.action_release("move_forward")
+	var gone := Vector2(p.global_position.x, p.global_position.z).distance_to(start)
+	check(gone > 20.0 and min_y > PlainLayout.WATER_Y + 0.5, "走过木桥：6 秒走了 %.1f 米，最低 %.2f 米（没掉进河）" % [gone, min_y])
+	# 谷仓：大门敞着，走得进去
+	var bo := PlainVillage.front_origin(PlainVillage.BARN[0], float(PlainVillage.BARN[1]), float(PlainVillage.BARN[3]))
+	var fwd := Vector3(sin(deg_to_rad(float(PlainVillage.BARN[1]))), 0, cos(deg_to_rad(float(PlainVillage.BARN[1]))))
+	var outside := bo + fwd * 4.0
+	p.global_position = outside + Vector3(0, 0.4, 0)
+	p.rotation.y = atan2(fwd.x, fwd.z)                  # 面朝谷仓（背对 fwd）
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(2.0)
+	Input.action_release("move_forward")
+	check((p.global_position - bo).dot(fwd) < -1.0, "谷仓的大门敞着，走得进去（进去了 %.1f 米）" % -(p.global_position - bo).dot(fwd))
+	# 村口的路牌：站在旁边打开地图是「南部」，在麦渡、能出发（但别处还没做好）
+	p.global_position = Vector3(PlainVillage.SIGN_AT.x + 1.5, PlainLayout.height(PlainVillage.SIGN_AT.x + 1.5, PlainVillage.SIGN_AT.y) + 0.3, PlainVillage.SIGN_AT.y)
+	await physics(4)
+	check(main.near_travel_point() and Travel.place_of_area("plain", main.player_xz()) == "maidu", "村口路牌旁边：在麦渡、站在出发的地方")
+	main.open_travel_map(true)
+	await frames(2)
+	check(main.travel_map.visible and main.travel_map.title.text.contains("南部") and main.travel_map.place_btns.size() == 5 and not Travel.check(3, "maidu", "abbey", true).ok,
+		"旅行地图是「南部」，五个地点；坠星院还没做好：%s" % Travel.check(3, "maidu", "abbey", true).why)
+	main.travel_map.close()
+	get_tree().paused = false
+	var spec := AreaMap.spec("plain")
+	check(spec.shapes.filter(func(sh: Dictionary) -> bool: return sh.k == "house").size() == 7, "本地地图上画了 6 栋长屋和谷仓")
+	await free_main(main)
+	GameState.chapter = 0
 
 
 func test_highland() -> void:

@@ -257,6 +257,9 @@ class MapCanvas extends Control:
 		if Travel.region_of_chapter(map.chapter) == "north":
 			_draw_north(s, font)
 			return
+		if Travel.region_of_chapter(map.chapter) == "south":
+			_draw_south(s, font)
+			return
 		# 鹭沼：一片淡绿，里面一行行短横线是芦苇
 		var poly := PackedVector2Array()
 		for p in MARSH_SHAPE:
@@ -396,6 +399,83 @@ class MapCanvas extends Control:
 					draw_rect(Rect2(c + Vector2(-6, -12), Vector2(12, 3)), col)
 					draw_circle(c + Vector2(0, -16), 4.0, Color("c8642a"))
 		var n := Vector2(s.x * 0.86, 30.0)
+		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
+		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+
+	## 南部（6.2a，第三章）：金穗平原——一格格的麦茬地（短斜线），麦河从北往南弯过去，东北角是砧山（一串黑的山尖），南边一道矮丘
+	func _draw_south(s: Vector2, font: Font) -> void:
+		var fs := maxi(int(s.x / 28.0), 13)
+		var field := Color(0.62, 0.52, 0.3, 0.35)
+		var step := maxf(s.x / 18.0, 16.0)
+		var y := step * 0.8
+		var row := 0
+		while y < s.y - 8.0:                              # 麦茬地：一格格斜线，方向一格一换
+			var x := step * 0.6
+			var col := 0
+			while x < s.x - 8.0:
+				var d := Vector2(step * 0.18, -step * 0.18) if (row + col) % 2 == 0 else Vector2(step * 0.22, 0)
+				draw_line(Vector2(x, y) - d, Vector2(x, y) + d, field, 1.2)
+				x += step
+				col += 1
+			y += step * 0.8
+			row += 1
+		var peaks := [Vector2(0.7, 0.12), Vector2(0.77, 0.07), Vector2(0.84, 0.1), Vector2(0.91, 0.05), Vector2(0.97, 0.09)]
+		for k in peaks.size():                            # 砧山：东北角一串黑山尖
+			var c := _to(peaks[k])
+			var w := s.x * 0.05
+			draw_colored_polygon(PackedVector2Array([c + Vector2(-w, s.y * 0.07), c, c + Vector2(w, s.y * 0.07)]), Color(0.2, 0.17, 0.14, 0.55))
+		draw_string(font, _to(Vector2(0.74, 0.25)), "砧 山", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 2, INK)
+		draw_arc(_to(Vector2(0.6, 0.86)), s.x * 0.12, PI * 1.05, PI * 1.95, 24, INK_SOFT, 2.0, true)     # 南边的矮丘
+		var river := PackedVector2Array()
+		for p in [Vector2(0.4, 0.0), Vector2(0.43, 0.18), Vector2(0.41, 0.36), Vector2(0.47, 0.52), Vector2(0.44, 0.7), Vector2(0.49, 0.86), Vector2(0.52, 1.0)]:
+			river.append(_to(p))
+		draw_polyline(river, WATER, maxf(s.x / 70.0, 5.0), true)
+		var ry := 0.6
+		for ch in "麦河":
+			draw_string(font, _to(Vector2(0.49, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
+			ry += 0.06
+		draw_string(font, _to(Vector2(0.06, 0.1)), "金穗平原", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		for r in Travel.data().get("routes", []):
+			var a := str(r.get("from", ""))
+			var b := str(r.get("to", ""))
+			if a > b or not a in map.place_btns or not b in map.place_btns:
+				continue
+			draw_dashed_line(_pos(a), _pos(b), ROAD, 2.5, 9.0)
+		for id in map.place_btns:
+			var c := _pos(id)
+			var col := INK if Travel.built(id) else Color(0.29, 0.23, 0.16, 0.45)
+			if id == map.selected:
+				draw_circle(c, 17.0, Color(0.72, 0.59, 0.31, 0.35))
+			if id == map.here:
+				draw_arc(c, 15.0, 0.0, TAU, 32, HERE, 3.0, true)
+			match str(Travel.place(id).get("icon", "")):
+				"village":
+					for dx in [-8.0, 3.0]:
+						draw_rect(Rect2(c + Vector2(dx - 3.5, -5), Vector2(8, 5)), col)
+						draw_colored_polygon(PackedVector2Array([c + Vector2(dx - 5, -5), c + Vector2(dx + 6, -5), c + Vector2(dx + 0.5, -10)]), col)
+				"castle":
+					draw_rect(Rect2(c + Vector2(-9, -8), Vector2(18, 12)), col)
+					draw_rect(Rect2(c + Vector2(-4, -16), Vector2(8, 10)), col)
+					for k in 3:
+						draw_rect(Rect2(c + Vector2(-9 + k * 7, -11), Vector2(4, 3)), col)
+				"mill":
+					draw_rect(Rect2(c + Vector2(-2, -9), Vector2(11, 12)), col)
+					draw_arc(c + Vector2(-5, -1), 6.0, 0.0, TAU, 16, col, 2.0, true)
+					for k in 4:
+						var a := TAU * k / 4.0
+						draw_line(c + Vector2(-5, -1), c + Vector2(-5, -1) + Vector2(cos(a), sin(a)) * 6.0, col, 1.2)
+				"abbey":
+					draw_rect(Rect2(c + Vector2(-9, -6), Vector2(14, 9)), col)
+					draw_rect(Rect2(c + Vector2(5, -14), Vector2(5, 17)), col)
+					draw_line(c + Vector2(7.5, -20), c + Vector2(7.5, -14), col, 1.5)
+					draw_line(c + Vector2(5.5, -18), c + Vector2(9.5, -18), col, 1.5)
+				"camp":
+					for dx in [-7.0, 5.0]:
+						draw_colored_polygon(PackedVector2Array([c + Vector2(dx - 6, 4), c + Vector2(dx + 6, 4), c + Vector2(dx, -7)]), col)
+					draw_line(c + Vector2(12, 4), c + Vector2(12, -12), col, 1.5)
+					draw_rect(Rect2(c + Vector2(12, -12), Vector2(7, 4)), Color("8a2a22"))
+		var n := Vector2(s.x * 0.62, 30.0)
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
 		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
