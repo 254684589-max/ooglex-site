@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9906,6 +9906,72 @@ func test_origin2() -> void:
 			if c > 127 and not font.has_char(c) and not lack.contains(txt[i]):
 				lack += txt[i]
 	check(lack == "", "所有对话文件里的字都在字体子集里（缺：%s）" % lack)
+
+
+## O.3 支线「名册上的名字」（只对出身烽誓团逃兵）：第一夜过后马蒂亚斯翻开名册——认下来补守（烽誓团 +10、劫粮多两个人）/ 说动他抹掉 / 否认；回顾里有一句
+func _o3(origin: String, seed: int) -> DialogueRunner:
+	GameState.new_game(seed)
+	GameState.chapter = 2
+	if origin != "":
+		GameState.set_flag("origin", origin)
+	GameState.set_flag("matthias_met")
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_stage("ch2_main", "after_tide")
+	return DialogueRunner.new()
+
+
+func test_origin3() -> void:
+	var ask := "那本名册……上面有我的名字吧？"
+	var r := _o3("deserter", 1200)
+	r.start("beacon19", "matthias")
+	check(has_opt(r, ask), "烽誓团逃兵、第一夜过后：马蒂亚斯那里多一条「那本名册」")
+	for o in ["knight", "ferry", ""]:
+		var r2 := _o3(o, 1201)
+		r2.start("beacon19", "matthias")
+		check(not has_opt(r2, ask), "%s：没有名册这条" % (Origins.name_of(o) if o != "" else "没出身"))
+	var r3 := _o3("deserter", 1202)
+	GameState.set_flag("ch2_first_tide", false)
+	GameState.set_stage("ch2_main", "first_night")
+	r3.start("beacon19", "matthias")
+	check(not has_opt(r3, ask), "第一夜以前还没有")
+	# 认下来补守
+	var oath := GameState.get_rep("beacon_oath")
+	r = _o3("deserter", 1203)
+	oath = GameState.get_rep("beacon_oath")
+	r.start("beacon19", "matthias")
+	pick(r, ask)
+	check(r.text().contains("逃") and GameState.quest_active("ch2_roll"), "他翻开名册：第二十一烽，三年，名字后面一个「逃」（支线开始）")
+	pick(r, "我认。剩下的年头，从这个冬天补起。")
+	check(str(GameState.get_flag("ch2_roll", "")) == "served" and GameState.get_rep("beacon_oath") == oath + 10 and GameState.quest_done("ch2_roll"), "认下来补守：「逃」旁边写个「补」，烽誓团 +10，支线完成")
+	r.start("beacon19", "matthias")
+	check(not has_opt(r, ask), "办完了不再出现")
+	check(Chapter2.recap().contains("补"), "回顾：认下了一个「补」字")
+	GameState.set_flag("beacon_grain", "rob")
+	GameState.set_flag("ch2_ambush", "head")
+	GameState.set_stage("ch2_main", "rob_ready")
+	GameState.daypart = "night"
+	var main := await make_area("highland")
+	await frames(3)
+	check(main.battle != null and main.battle.squad.size() == 12 and main.battle.squad.filter(func(x): return x.display_override == "烽誓团 · 老守燧人").size() == 2,
+		"劫粮那一夜：马蒂亚斯多给两个人（小队 12 人，两个老守燧人）")
+	await free_main(main)
+	# 说动他抹掉
+	r = _o3("deserter", 1204)
+	r.start("beacon19", "matthias")
+	pick(r, ask)
+	GameState.checks["roll_strike"] = true
+	pick(r, "划掉吧。那个逃兵死在第四年冬天了——站在你面前的，是瓦伦家的誓剑。")
+	check(str(GameState.get_flag("ch2_roll", "")) == "struck" and Chapter2.recap().contains("抹成了一团黑"), "说动了：名字抹成一团黑")
+	# 没说动 → 只剩认或者否认；否认
+	r = _o3("deserter", 1205)
+	oath = GameState.get_rep("beacon_oath")
+	r.start("beacon19", "matthias")
+	pick(r, ask)
+	GameState.checks["roll_strike"] = false
+	pick(r, "划掉吧。那个逃兵死在第四年冬天了——站在你面前的，是瓦伦家的誓剑。")
+	check(r.text().contains("划不掉") and not has_opt(r, "划掉吧。那个逃兵死在第四年冬天了——站在你面前的，是瓦伦家的誓剑。"), "没说动：「名册上的字，我划不掉」，只剩认或者否认")
+	pick(r, "认错人了。")
+	check(str(GameState.get_flag("ch2_roll", "")) == "denied" and GameState.get_rep("beacon_oath") == oath - 5 and GameState.quest_done("ch2_roll"), "否认：烽誓团 −5，支线完成")
 
 
 ## 5.3a 盘山路：深雪、倒树、废羊棚、雪杆、雪地上的脚印

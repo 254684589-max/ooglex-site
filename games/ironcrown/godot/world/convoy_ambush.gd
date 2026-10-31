@@ -25,6 +25,7 @@ const POST_T := {"head": 72.0, "tail": 32.0}            # 伏击点：车头前�
 const SPAWN_T := {"head": 84.0, "tail": 20.0}           # 天黑透以后你站在这里（走到伏击点开打）
 const START_R := 7.0
 const SQUAD_KINDS := ["shield", "spear", "soldier", "shield", "spear", "soldier", "levy", "soldier", "spear", "soldier"]
+const ROLL_EXTRA := ["shield", "spear"]               # 认下名册补守的（O.3）：多给的两个人
 const GUARD_KINDS := ["shield", "spear", "soldier", "shield", "spear", "soldier", "shield", "spear", "soldier", "soldier", "shield", "spear", "archer", "archer"]
 const COLS := 3
 const ROW_GAP := 1.5
@@ -127,12 +128,18 @@ static func setup(world: Node3D) -> Battle:
 	var post: float = POST_T[ambush()]
 	var face_foe := -ahead() if head else ahead()           # 我们朝车队那边
 	var kinds := SQUAD_KINDS.duplicate()
+	var names := {}                                          # 第几个 → 名字（不是「烽誓团 · 兵种」的）
 	if str(GameState.get_flag("ch2_carsten", "")) == "stayed":
+		names[kinds.size()] = "卡斯滕"
 		kinds.append("soldier")
+	if str(GameState.get_flag("ch2_roll", "")) == "served":  # 出身烽誓团逃兵、认下名册补守（O.3）：马蒂亚斯信你，多给两个人
+		for k in ROLL_EXTRA:
+			names[kinds.size()] = "烽誓团 · 老守燧人"
+			kinds.append(k)
 	for i in kinds.size():
 		var t: float = post + (1.0 if head else -1.0) * (2.0 + (i / COLS) * ROW_GAP)
 		var s := _soldier(kinds[i], "oath_%d" % i, OURS, t, i % COLS, face_foe)
-		s.display_override = "卡斯滕" if i == SQUAD_KINDS.size() else "烽誓团 · %s" % Enemy.types()[kinds[i]].name
+		s.display_override = str(names.get(i, "烽誓团 · %s" % Enemy.types()[kinds[i]].name))
 		b.add_to_squad(s)
 		b.enlist(s, world)
 	b.order("follow")

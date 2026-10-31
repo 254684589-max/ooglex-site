@@ -66,6 +66,13 @@ static func recap() -> String:
 			out.append("你告诉妮尔，她父亲走得很稳。她留在了村里。")
 		"left":
 			out.append("妮尔往北去了。")
+	match str(GameState.get_flag("ch2_roll", "")):
+		"served":
+			out.append("你在名册上那个「逃」字旁边，认下了一个「补」字。")
+		"struck":
+			out.append("烽誓团的名册上，你的名字被抹成了一团黑。")
+		"denied":
+			out.append("马蒂亚斯翻开名册，你说他认错了人。")
 	match str(GameState.get_flag("ch2_carsten", "")):
 		"freed":
 			out.append("卡斯滕守满了十年，下山去了。")
