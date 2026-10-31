@@ -52,12 +52,14 @@ func start(c: TitleCard, touch: bool) -> void:
 	print("IC_OPENING card")
 	if Origins.current() == "" and main.origin_panel:          # 出身三选一（O.1）：先选出身；选的这一下就是开场的第一次操作
 		card.prompt.text = ""
+		card.box.visible = false                                    # 标题卡的字先收起来（不然压在三个按钮底下透出来），选完再露出来、淡出
 		main.origin_panel.chosen.connect(_on_origin, CONNECT_ONE_SHOT)
 		main.origin_panel.open(false)
 
 
 func _on_origin(id: String) -> void:
 	Origins.apply(id)
+	card.box.visible = true
 	begin()
 
 

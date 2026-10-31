@@ -7,6 +7,7 @@ signal chosen(id: String)
 
 var box: VBoxContainer
 var title: Label
+var sub: Label                     # 新游戏：上面一行小字「序章 · 霜渡镇之夜」（标题卡的字这时收起来了）
 var desc: Label
 var buttons := {}                  # 编号 → Button
 var as_prompt := false             # 旧存档补问：背景压暗一些、写明「这份存档还没有出身」
@@ -26,6 +27,11 @@ func _ready() -> void:
 	box = VBoxContainer.new()
 	box.add_theme_constant_override("separation", 10)
 	center.add_child(box)
+	sub = Label.new()
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 16)
+	sub.add_theme_color_override("font_color", Color("9fb2c6"))
+	box.add_child(sub)
 	title = Label.new()
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22)
@@ -58,6 +64,8 @@ func _ready() -> void:
 func open(prompt := false) -> void:
 	as_prompt = prompt
 	title.text = "这份存档还没有出身——你是谁？" if prompt else "你是谁？"
+	sub.text = "" if prompt else "序章 · 霜渡镇之夜"
+	sub.visible = not prompt
 	(get_node("Dim") as ColorRect).color = Color(0.02, 0.03, 0.05, 0.72 if prompt else 0.35)
 	var w := clampf(get_viewport_rect().size.x - 40.0, 280.0, 520.0)
 	for id in buttons:
