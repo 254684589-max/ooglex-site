@@ -96,6 +96,13 @@ func banner(top: Vector3, n: Vector3, w: float, h: float, field: Color, charge: 
 			for k in 3:
 				var fx := (k - 1) * 0.17 * u
 				kit.box(ch, m + b.x * fx + Vector3(0, (0.45 + (0.12 if k == 1 else 0.0)) * u, 0), Vector3(0.1 * u, (0.4 + (0.18 if k == 1 else 0.0)) * u, 0.008), b * Basis(Vector3.BACK, -fx * 1.2 / u))
+		"wheat":                                      # 洛蒙德家的金麦束（6.3a）：七根麦秆从一道捆绳往上扇开，顶上麦穗
+			for k in 7:
+				var a := (k - 3) * 0.13
+				var stalk := b * Basis(Vector3.BACK, -a)
+				kit.box(ch, m + b.x * sin(a) * 0.3 * u + Vector3(0, -0.05 * u, 0), Vector3(0.035 * u, 1.05 * u, 0.008), stalk)
+				kit.box(ch, m + b.x * sin(a) * 0.62 * u + Vector3(0, 0.55 * u * cos(a), 0), Vector3(0.1 * u, 0.26 * u, 0.008), stalk)
+			kit.box(ch, m + Vector3(0, -0.12 * u, 0), Vector3(0.36 * u, 0.07 * u, 0.008), b)
 		"star":                                       # 星铁教会的八角星（坠星）
 			for k in 4:
 				kit.box(ch, m + n * 0.001 * k, Vector3(0.16 * u, 1.2 * u, 0.008), b * Basis(Vector3.BACK, PI * 0.25 * k))

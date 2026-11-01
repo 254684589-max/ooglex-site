@@ -277,6 +277,8 @@ func _ready() -> void:
 			t = BeaconTower.build(world, Settings.reduced_motion)
 		"scriptorium":
 			t = Scriptorium.build(world, Settings.reduced_motion)          # 坠星院的抄经室（6.2b）
+		"manor_hall":
+			t = ManorHall.build(world, Settings.reduced_motion)            # 洛蒙德庄园的大厅（6.3a）
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
@@ -1135,7 +1137,7 @@ func _story_progress() -> void:
 			hud.toast(Chapters.wip_note_of(2), 7.0)         # 第二章还在做（2026-10-24 先放出来能逛）：进来时说一句
 		if str(GameState.get_flag("valen_heir", "")) == "ivette" and not GameState.has_item("ivette_letter") and not GameState.has_flag("ch2_letter_given"):
 			GameState.add_item("ivette_letter")             # 选了伊薇特：她联合了厄尔德家，写了一封信让你带上山（STORY.md 5.4）
-	if GameState.chapter == 3 and area in ["plain", "scriptorium"] and not GameState.quest_active("ch3_main") and not GameState.quest_done("ch3_main"):
+	if GameState.chapter == 3 and area in ["plain", "scriptorium", "manor_hall"] and not GameState.quest_active("ch3_main") and not GameState.quest_done("ch3_main"):
 		GameState.start_quest("ch3_main")                    # 第三章开场（6.2c）：从麦渡的渡口上岸
 		if Chapters.wip_note_of(3) != "" and hud:
 			hud.toast(Chapters.wip_note_of(3), 7.0)

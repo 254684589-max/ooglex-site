@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8404,7 +8404,7 @@ func test_plain() -> void:
 		var x := rng.randf_range(-140.0, 140.0)
 		var z := rng.randf_range(-120.0, 120.0)
 		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
-		rq.exclude = [(main.world.find_child("PlainFlora", true, false) as StaticBody3D).get_rid()]     # 树干、麦垛、篱笆不算（6.1b）
+		rq.exclude = [(main.world.find_child("PlainFlora", true, false) as StaticBody3D).get_rid(), (main.world.find_child("MaiduSolids", true, false) as StaticBody3D).get_rid()]     # 树干、麦垛、篱笆、房子和围墙不算（6.1b / 6.2a）
 		var hit: Dictionary = space.intersect_ray(rq)
 		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - Plain.height_at(x, z)))
 	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
@@ -8716,6 +8716,68 @@ func test_ch3open() -> void:
 	main = await make_area("plain")
 	await frames(3)
 	check(main.world.find_children("Npc_queue*", "Npc", true, false).is_empty() and main.world.find_child("Npc_gregor", true, false) != null, "夜里排队的人散了，院长还在门洞里")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_manor() -> void:
+	# 布局：主楼、仓房、水井都在围墙里；出生点在门楼外；庄园那块是平的；旅行地图上庄园做好了
+	var r := PlainManor.WALL_RECT
+	var hall_fp := House.footprint(PlainManor.house_pos(PlainManor.HALL), float(PlainManor.HALL[1]), float(PlainManor.HALL[2]), float(PlainManor.HALL[3]))
+	var barn_fp := House.footprint(PlainManor.house_pos(PlainManor.BARN), float(PlainManor.BARN[1]), float(PlainManor.BARN[2]), float(PlainManor.BARN[3]))
+	var inside := r.has_point(PlainManor.WELL)
+	for p: Vector2 in Array(hall_fp) + Array(barn_fp):
+		if not r.grow(-0.3).has_point(p):
+			inside = false
+	var sp: Array = PlainLayout.SPAWN_XZ.manor
+	check(inside and not r.has_point(sp[0]) and absf((sp[0] as Vector2).y - PlainManor.GATE.y) < 1.0 and Travel.built("manor") and Travel.check(3, "maidu", "manor", true).why.contains("先到"),
+		"洛蒙德庄园：主楼、仓房、水井都在围墙里；出生点在门楼正前方；旅行地图上做好了（从麦渡要先到磨坊：%s）" % Travel.check(3, "maidu", "manor", true).why)
+	check(Areas.display_name("manor_hall") == "洛蒙德庄园 · 大厅" and Areas.is_indoor("manor_hall") and Areas.chapter_of("manor_hall") == 3, "大厅登记成第三章的室内区域")
+	GameState.new_game(631)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "manor", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	check(main.world.find_child("ManorWalls", true, false) != null and main.world.find_child("ManorBanners", true, false) != null and main.world.find_child("ManorWell", true, false) != null and main.world.find_child("ManorProps", true, false) != null,
+		"分块搭完：围墙和门楼、绿底金麦束的旗、水井、院子里装满麻袋的车和高柴垛")
+	var hd := main.world.find_child("ManorHallDoor", true, false) as Door
+	var bd := main.world.find_child("ManorBarnDoor", true, false) as Door
+	check(hd != null and hd.to_area == "manor_hall" and not hd.locked and bd != null and bd.locked, "主楼的门通往大厅；仓房的门上了锁（%s）" % (bd.locked_text if bd else ""))
+	await physics(8)
+	var p: FpController = main.player
+	check(p.is_on_floor() and Vector2(p.global_position.x, p.global_position.z).distance_to(sp[0]) < 0.5, "新开在庄园门楼外（%s）" % p.global_position)
+	p.rotation.y = deg_to_rad(-90.0)                     # 面朝东、对着门洞
+	p.velocity = Vector3.ZERO
+	Input.action_press("move_forward")
+	await seconds(4.0)
+	Input.action_release("move_forward")
+	check(p.global_position.x > PlainManor.GATE.x + 3.0, "穿过门楼走进院子（走到 x = %.1f）" % p.global_position.x)
+	var ex: Array = PlainLayout.SPAWN_XZ.manor_door
+	p.global_position = Vector3((ex[0] as Vector2).x, PlainManor.base_y() + 0.3, (ex[0] as Vector2).y)
+	p.rotation.y = deg_to_rad(float(ex[1]))
+	p.velocity = Vector3.ZERO
+	await physics(10)
+	var from := p.global_position
+	Input.action_press("move_forward")
+	await seconds(1.5)
+	Input.action_release("move_forward")
+	check(p.is_on_floor() and p.global_position.distance_to(from) > 2.0, "出了大厅站在主楼门外、走得动（%.1f 米）" % p.global_position.distance_to(from))
+	await free_main(main)
+	GameState.pending_load = {"scene": "manor_hall", "spawn": "front", "player": {}}
+	main = await make_area("manor_hall")
+	await physics(6)
+	p = main.player
+	var exit: Door = null
+	for d: Door in main.world.find_children("*", "Door", true, false):
+		if d.to_area == "plain":
+			exit = d
+	check(exit != null and exit.to_spawn == "manor_door" and p.is_on_floor() and main.world.find_child("Fire", true, false) != null and main.world.find_child("Decor", true, false) != null,
+		"大厅：站在门里、出口回到主楼门外；壁炉烧着、旗和挂毯挂着")
+	check(AreaMap.spec("manor_hall").shapes.size() >= 4 and Areas.views("manor_hall").size() == ManorHall.VIEW_NAMES.size(), "大厅的本地地图（壁炉、长桌、高桌）和固定机位")
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}

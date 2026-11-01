@@ -49,6 +49,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 		return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 	ensure_field()
 	PlainFlora.warm(reduced_motion)                    # 树、篱笆、麦垛、木栅（6.1b）：材质、网格、摆放先备好
+	PlainManor.base_y()
 	PlainVillage.mats()                                # 麦渡的材质先备好（6.2a：土坯、茅草贴图在分帧的活里第一次读，那一块要 70–80 毫秒）
 	pl._collision()
 	ground_material()
@@ -59,6 +60,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainVillage.interactables(p_parent)             # 麦渡（6.2a）：长屋的门、村口的路牌（同步：一进场就推得开）
 	PlainAbbey.interactables(p_parent)               # 坠星院（6.2b）：宿舍、抄经室的门、门房外的路牌
 	PlainAbbey.people(p_parent)                      # 坠星院门口的人（6.2c）：院长、门房的修士、排队领粥的佃农
+	PlainManor.interactables(p_parent)               # 洛蒙德庄园（6.3a）：大厅、仓房的门、门楼外的路牌
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -199,7 +201,7 @@ func _collision() -> void:
 	village.collision_layer = 1
 	village.collision_mask = 0
 	parent.add_child(village)
-	for so: Array in PlainVillage.solids() + PlainAbbey.solids():
+	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids():
 		var vs := CollisionShape3D.new()
 		var vb := BoxShape3D.new()
 		vb.size = so[1]
@@ -256,6 +258,7 @@ static func clear_cache() -> void:
 	PlainFlora.clear_cache()
 	PlainVillage.clear_cache()
 	PlainAbbey.clear_cache()
+	PlainManor.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -375,6 +378,7 @@ func _jobs(st: ChunkStreamer) -> void:
 			var jobs: Array = [_job_terrain.bind(r), _job_flora.bind(r)]
 			jobs.append_array(PlainVillage.jobs_for(r, reduced_motion))           # 麦渡的长屋、谷仓、水井、木桥、渡口、零碎（6.2a）
 			jobs.append_array(PlainAbbey.jobs_for(r, reduced_motion))             # 坠星院：围墙、门房、教堂和钟楼、回廊、菜园、宿舍、抄经室（6.2b）
+			jobs.append_array(PlainManor.jobs_for(r, reduced_motion))             # 洛蒙德庄园：围墙和门楼、主楼、仓房、水井、院子里的东西（6.3a）
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
@@ -598,11 +602,12 @@ static func map_spec() -> Dictionary:
 		shapes.append({"k": "mark", "at": m[0], "label": m[1]})
 	shapes.append_array(PlainVillage.map_shapes())
 	shapes.append_array(PlainAbbey.map_shapes())
+	shapes.append_array(PlainManor.map_shapes())
 	shapes.append({"k": "road", "pts": _strip(PlainLayout.BRIDGE[0], PlainLayout.BRIDGE[1], PlainVillage.BRIDGE_W * 0.5), "label": "木桥"})
 	return {"bounds": PlainLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
 		{"name": "麦渡", "place": "maidu", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},
 		{"name": "坠星院", "place": "abbey", "pts": _circle(PlainLayout.ABBEY_SITE, 34.0)},
-		{"name": "洛蒙德庄园", "pts": _circle(PlainLayout.MANOR, PlainLayout.MANOR_R + 14.0)},
+		{"name": "洛蒙德庄园", "place": "manor", "pts": _circle(PlainLayout.MANOR, PlainLayout.MANOR_R + 14.0)},
 		{"name": "金穗平原", "pts": PackedVector2Array([Vector2(-150, -130), Vector2(150, -130), Vector2(150, 130), Vector2(-150, 130)])},
 	]}
 
