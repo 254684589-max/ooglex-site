@@ -30,7 +30,7 @@ const SIGN_TEXT := "往麦渡 · 磨坊"
 const SCRIPTORIUM_DOOR_TEXT := "门从外面上了锁。门缝里有人在低声说话，一句一句，像在对着墙念什么。"
 const DORM_DOOR_TEXT := "修士的宿舍。门闩着。"
 ## 门口的人（6.2c）：[编号, 名字, 位置, 朝向（弧度，0 = 面朝北）, 衣服颜色, 对话编号（plain.json；空 = 只说一句）]
-const GREGOR := ["gregor", "格雷戈尔院长", Vector2(40.0, 80.6), 0.0, "6a6660", "gregor"]          # 挡在门洞里，面朝外
+const GREGOR := ["gregor", "格雷戈尔院长", Vector2(41.05, 80.4), 0.0, "6a6660", "gregor"]        # 站在门洞里靠东那边，面朝外（门洞 3.4 米，西边留 2.4 米走得过去）
 const PORTER := ["porter", "门房的修士", Vector2(47.45, 75.2), PI * 0.5, "7a756c", "porter"]      # 锅东边，面朝西对着排队的人（锅和围墙之间只有 0.6 米，站不下）
 ## 排队领粥的佃农：从锅前往西北排开（STORY.md 6.5 第 1 步「一路上看见麦茬地上排队领粥的佃农」）；夜里散了
 const QUEUE := [Vector2(45.6, 74.0), Vector2(44.9, 73.0), Vector2(44.3, 72.0), Vector2(43.9, 70.9), Vector2(43.6, 69.7), Vector2(43.1, 68.6), Vector2(42.4, 67.6), Vector2(41.6, 66.8)]
