@@ -40,7 +40,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_tables(kit)
 	var mi := kit.build({"stone": Look.mat("stone"), "floor": Look.mat("street"), "timber": Look.mat("timber"), "glass": Inn.glass(GameState.daypart),
 		"ember": Inn._unshaded(Color("ff7a28")), "soot": Inn._unshaded(Color("0e0b09")), "iron": Inn._iron_mat(), "bread": _food("b08048"), "roast": _food("6a3a1e"),
-		"apple": _food("9a3a26"), "cheese": _food("d8b860"), "wine": _food("4a1220"), "pewter": _pewter(), "cloth": _food("d8d0bc")})
+		"apple": _food("9a3a26"), "cheese": _food("d8b860"), "wine": _food("4a1220"), "pewter": _pewter(), "cloth": _food("9a9282"), "flame": Inn._unshaded(Color("ffb050"))})
 	mi.name = "ManorHall"
 	parent.add_child(mi)
 	_decor(parent, reduced_motion)
@@ -117,6 +117,10 @@ static func _hearth(kit: MeshKit) -> void:
 		var a := -0.9 + i * 0.3
 		kit.cylinder("timber", c + Vector3(a - 0.2, 0.38, 0.2), c + Vector3(a + 0.2, 0.5 + (i % 2) * 0.12, -0.3), 0.08, 0.08, 5, 0.5)
 	kit.cylinder("iron", c + Vector3(-1.2, 0.3, 0.55), c + Vector3(-1.2, 1.3, 0.55), 0.03, 0.03, 4)                    # 火钳架
+	for i in 6:                                                                                                          # 火舌（自发光，泛光里一团暖光）
+		var fx := -0.75 + i * 0.3
+		var fh := 0.45 + 0.35 * absf(sin(i * 1.7))
+		kit.box("flame", c + Vector3(fx, 0.55 + fh * 0.5, -0.1 + 0.08 * (i % 2)), Vector3(0.12, fh, 0.03), Basis(Vector3.BACK, (i - 2.5) * 0.08))
 
 
 ## 长桌（桌布、整只烤的、一摞摞面包、几碗苹果、奶酪、酒壶和杯子）、两条长凳；东头木台上的高桌和高背椅
