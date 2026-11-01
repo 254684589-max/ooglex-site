@@ -29,6 +29,16 @@ const SIGN_AT := Vector2(35.5, 74.0)
 const SIGN_TEXT := "往麦渡 · 磨坊"
 const SCRIPTORIUM_DOOR_TEXT := "门从外面上了锁。门缝里有人在低声说话，一句一句，像在对着墙念什么。"
 const DORM_DOOR_TEXT := "修士的宿舍。门闩着。"
+## 门口的人（6.2c）：[编号, 名字, 位置, 朝向（弧度，0 = 面朝北）, 衣服颜色, 对话编号（plain.json；空 = 只说一句）]
+const GREGOR := ["gregor", "格雷戈尔院长", Vector2(40.0, 80.6), 0.0, "6a6660", "gregor"]          # 挡在门洞里，面朝外
+const PORTER := ["porter", "门房的修士", Vector2(47.45, 75.2), PI * 0.5, "7a756c", "porter"]      # 锅东边，面朝西对着排队的人（锅和围墙之间只有 0.6 米，站不下）
+## 排队领粥的佃农：从锅前往西北排开（STORY.md 6.5 第 1 步「一路上看见麦茬地上排队领粥的佃农」）；夜里散了
+const QUEUE := [Vector2(45.6, 74.0), Vector2(44.9, 73.0), Vector2(44.3, 72.0), Vector2(43.9, 70.9), Vector2(43.6, 69.7), Vector2(43.1, 68.6), Vector2(42.4, 67.6), Vector2(41.6, 66.8)]
+const QUEUE_LINES := [
+	["一人一勺。昨天还能看见米粒。"], ["（她把碗揣在怀里捂着）……排到我就好了。"], ["洛蒙德家的仓是满的。修道院的锅是空的。"],
+	["别挤。前头那个天不亮就站在这儿了。"], ["（孩子盯着锅里冒出来的热气，一声不吭）"], ["从麦渡走过来两里地，走回去又是两里地。"],
+	["院长说主会看顾。主看顾的是坡上那座庄园。"], ["（他没抬头）你不是来收租的吧。"],
+]
 
 static var _y := NAN
 
@@ -116,6 +126,32 @@ static func interactables(parent: Node3D) -> void:
 	rs.position = Vector3(SIGN_AT.x, ground(SIGN_AT), SIGN_AT.y)
 	rs.rotation_degrees.y = 160.0
 	parent.add_child(rs)
+
+
+## 门口的人（6.2c）：院长、门房的修士（对话，plain.json）、排队领粥的佃农（只说一句；夜里散了）。同步放（块没搭好时也得找得到、说得上话）
+static func people(parent: Node3D) -> void:
+	for p: Array in [GREGOR, PORTER]:
+		var pos: Vector2 = p[2]
+		var n := Npc.make(str(p[1]), [], Color(str(p[4])))
+		n.name = "Npc_" + str(p[0])
+		n.dialogue_area = "plain"
+		n.dialogue_id = str(p[5])
+		n.position = Vector3(pos.x, ground(pos), pos.y)
+		n.rotation.y = float(p[3])
+		parent.add_child(n)
+	if GameState.daypart == "night":
+		return
+	for i in QUEUE.size():
+		var q: Vector2 = QUEUE[i]
+		var ahead: Vector2 = CAULDRON if i == 0 else QUEUE[i - 1]
+		var child := i == 4
+		var n := Npc.make("佃农的孩子" if child else "排队领粥的佃农", QUEUE_LINES[i], Color(["5a5046", "6a5a48", "4e4a44", "5e5248"][i % 4]))
+		n.name = "Npc_queue%d" % i
+		n.position = Vector3(q.x, ground(q), q.y)
+		n.rotation.y = atan2(-(ahead.x - q.x), -(ahead.y - q.y))
+		if child:
+			n.scale = Vector3.ONE * 0.72
+		parent.add_child(n)
 
 
 # ---------------- 画面（分帧的活） ----------------

@@ -58,6 +58,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainFlora.far_ring(p_parent)                    # 地平线上的树（6.1b）
 	PlainVillage.interactables(p_parent)             # 麦渡（6.2a）：长屋的门、村口的路牌（同步：一进场就推得开）
 	PlainAbbey.interactables(p_parent)               # 坠星院（6.2b）：宿舍、抄经室的门、门房外的路牌
+	PlainAbbey.people(p_parent)                      # 坠星院门口的人（6.2c）：院长、门房的修士、排队领粥的佃农
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent

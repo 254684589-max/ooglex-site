@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8663,6 +8663,62 @@ func test_abbey() -> void:
 	check(AreaMap.spec("scriptorium").shapes.size() >= 6 and Areas.views("scriptorium").size() == Scriptorium.VIEW_NAMES.size(), "抄经室的本地地图（书架、草铺、四张桌子）和固定机位")
 	await free_main(main)
 	GameState.chapter = 0
+
+
+func test_ch3open() -> void:
+	# 第二章章末：第三章开放以前没有「继续」；?preview=3 时有，点了去金穗平原的渡口、白天
+	GameState.new_game(630)
+	GameState.chapter = 2
+	var main := await make_area("highland")
+	main.playable_chapter = 2
+	main.show_ending("ch2")
+	await frames(2)
+	check(main.ending_panel.next_chapter == 0 and not main.ending_panel.continue_btn.visible, "第三章开放以前：第二章章末没有「继续」")
+	main.ending_panel.hide()
+	get_tree().paused = false
+	main.playable_chapter = 3
+	main.show_ending("ch2")
+	await frames(2)
+	check(main.ending_panel.next_chapter == 3 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("粮与铁") and main.ending_panel.continue_btn.text.contains("制作中"),
+		"预览第三章：第二章章末多一行「%s」" % main.ending_panel.continue_btn.text)
+	var reloaded := [false]
+	main.reload_requested.connect(func(): reloaded[0] = true)
+	main.start_chapter(3)
+	await frames(3)
+	check(reloaded[0] and GameState.chapter == 3 and GameState.has_flag("ch3_started") and GameState.daypart == "day" and str(GameState.pending_load.get("scene", "")) == "plain" and str(GameState.pending_load.get("spawn", "")) == "dock",
+		"点了：第三章、白天、去金穗平原的渡口（%s）" % str(GameState.pending_load))
+	get_tree().paused = false
+	await free_main(main)
+	# 到了：主线「粮与铁」开始，第一步去坠星院；坠星院门口有院长、门房的修士、八个排队领粥的人
+	main = await make_area("plain")
+	await frames(3)
+	check(GameState.quest_active("ch3_main") and GameState.quest_stage("ch3_main") == "to_abbey", "上了岸：主线「粮与铁」，第一步去坠星院（%s）" % GameState.quest_stage("ch3_main"))
+	var queue: Array = main.world.find_children("Npc_queue*", "Npc", true, false)
+	var gregor := main.world.find_child("Npc_gregor", true, false) as Npc
+	var porter := main.world.find_child("Npc_porter", true, false) as Npc
+	check(gregor != null and porter != null and gregor.dialogue_area == "plain" and queue.size() == PlainAbbey.QUEUE.size(),
+		"坠星院门口：院长挡在门洞里、门房的修士守着锅、%d 个人排队领粥" % queue.size())
+	var stuck := []
+	for n: Npc in queue + [gregor, porter]:
+		if not await stands_clear(n):
+			stuck.append(n.name)
+	check(stuck.is_empty(), "门口的人都站在地上、没卡进墙和锅里（卡住的：%s）" % str(stuck))
+	await free_main(main)
+	# 对话：先问门房什么都不说；问过院长（主线推进到 ask_porter），门房才说抄经室的事（to_manor）
+	check(say_runner("porter", ["粥一直这么稀？"], "plain") == "thin" and GameState.quest_stage("ch3_main") == "to_abbey", "没见院长以前：门房只说粥稀")
+	check(say_runner("gregor", ["我从北边来，找当年守灵夜跪在老王脚边的那个侍从。"], "plain") == "squire" and GameState.quest_stage("ch3_main") == "ask_porter" and GameState.has_flag("gregor_met"),
+		"院长：修道院里没有你要找的人（主线：去找门房）")
+	check(say_runner("porter", ["怎么才能见他？"], "plain") == "how" and GameState.quest_stage("ch3_main") == "to_manor" and GameState.has_flag("ch3_heard_monk"),
+		"门房的修士：抄经室里关着一个灰袍修士；要院长点头，或者洛蒙德家点头（主线：去洛蒙德庄园）")
+	check(say_runner("gregor", [], "plain") == "after" and say_runner("porter", [], "plain") == "again", "说过以后：院长、门房换了话")
+	# 夜里队散了
+	GameState.daypart = "night"
+	main = await make_area("plain")
+	await frames(3)
+	check(main.world.find_children("Npc_queue*", "Npc", true, false).is_empty() and main.world.find_child("Npc_gregor", true, false) != null, "夜里排队的人散了，院长还在门洞里")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
 
 
 func test_highland() -> void:

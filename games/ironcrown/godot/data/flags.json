@@ -136,5 +136,8 @@
   "ch2_extra_grain": {"desc": "征粮令写了五车、安塞尔姆认了：另外两车粮当夜卸在羊脊村驿站（5.6）", "set_in": "highland.json anselm/req5", "read_in": "5.8 章末回顾"},
   "heard_convoy_time": {"desc": "罗薇娜说粮车天黑透以后出村（5.6）", "set_in": "waystation.json rowena/convoy_time", "read_in": "5.7a 劫粮"},
   "anselm_met": {"desc": "见过押粮官安塞尔姆（5.6）", "set_in": "highland.json anselm/greet", "read_in": "highland.json anselm"},
-  "ch2_convoy": {"desc": "第二夜的结果（5.7）：劫粮 taken = 押车兵散了、车没烧，burned = 赢了可车烧了，repelled = 你们被打散了；护粮 delivered = 至少两车过了潮水、partial = 一车、lost = 一车也没上来（5.7b）", "set_in": "world/convoy_ambush.gd finish（main._on_battle_ended）、world/convoy_escort.gd finish（main._on_escort_ended）", "read_in": "5.8 天亮、章末回顾"}
+  "ch2_convoy": {"desc": "第二夜的结果（5.7）：劫粮 taken = 押车兵散了、车没烧，burned = 赢了可车烧了，repelled = 你们被打散了；护粮 delivered = 至少两车过了潮水、partial = 一车、lost = 一车也没上来（5.7b）", "set_in": "world/convoy_ambush.gd finish（main._on_battle_ended）、world/convoy_escort.gd finish（main._on_escort_ended）", "read_in": "5.8 天亮、章末回顾"},
+  "ch3_started": {"desc": "第三章开始了（main.start_chapter(3)：第二章章末「继续」，6.2c）", "set_in": "scenes/main.gd start_chapter", "read_in": "6.4 开场白"},
+  "gregor_met": {"desc": "在坠星院门洞里见过院长格雷戈尔（6.2c）", "set_in": "plain.json gregor", "read_in": "plain.json gregor"},
+  "ch3_heard_monk": {"desc": "门房的修士告诉你抄经室里关着一个灰袍修士（6.2c，主线第 2 步）", "set_in": "plain.json porter", "read_in": "plain.json porter、6.3 洛蒙德庄园"}
 }

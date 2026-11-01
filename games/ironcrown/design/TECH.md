@@ -925,6 +925,15 @@ godot/
 - **旅行地图**：坠星院 `area = plain`、出生点 `abbey`、出发点「门房外的路牌」。平原固定机位加到 9 个（4 改成门房里面、7 坡下望门房和钟楼、8 回廊院子里）；`bench_areas.js` 加抄经室。
 - **测试**：`abbey` 组 11 项（丘顶压平、房子都在围墙里、出生点在门洞前；旅行和区域登记；分块搭完；两扇门锁着；穿过门洞走进院子；抄经室门外站得住走得动；抄经室里面：出口、窗光、本地地图、机位）。
 
+### 4.70 第三章主线前两步（路线图 6.2c，2026-11-01）
+
+- **进第三章**：`main.show_ending("ch2")` 把 `playable_chapter >= 3` 时的下一章 3 传给 `EndingPanel.open_chapter2`（「继续：第三章 · 粮与铁（制作中）」）；`start_chapter(3)` 同第二章：章节包、`ch3_started`、白天、去 `plain` 的 `dock`。`Chapters.PLAYABLE` 仍是 2，玩家只能用 `?preview=3`。`main._story_progress`：第三章到了 `plain` / `scriptorium` 就接主线 `ch3_main`，说一句 `wip_note`（改成「能到麦渡、坠星院，主线做到第二步」）。
+- **主线 `ch3_main`「粮与铁」**（`quests.json`）：`to_abbey` → `ask_porter`（院长）→ `to_manor`（门房；6.3 接庄园）。
+- **对话 `data/dialogue/plain.json`**：`gregor`（门洞里；只在 `to_abbey` 时那句「守灵夜那个侍从」推进主线，别的时候走 `squire_off` 不改主线；`gregor_met`；听过门房以后换成 `after`）、`porter`（没见院长时只说粥稀；`ask_porter` 时 `secret` → `how`：`ch3_heard_monk`、主线 `to_manor`；以后 `again`）。6.4 再加前两章和出身的话。
+- **门口的人** `PlainAbbey.people()`（同步放，`Plain.build` 里）：院长 `GREGOR`（门洞里、面朝外）、门房的修士 `PORTER`（锅东边、面朝西——锅和围墙之间只有 0.6 米，站不下）、排队的 `QUEUE` 八个人（从锅前往西北排开、各自面朝前一个人、第五个是孩子缩到 0.72；`QUEUE_LINES` 各一句；夜里不放）。`looks.json` 按名字 / `@queue编号` 配打扮（修士、穷佃农：抱着胳膊、蹲着的老人、孩子）。
+- **机位**：平原第 10 个机位「门房外的粥锅」；`bench_areas.js` 平原 10 个机位。
+- **测试**：`ch3open` 组 11 项（第二章章末有没有「继续」、点了去哪；上岸接主线；门口的人数和对话设置；都站在地上没卡住；院长 / 门房的对话推进主线和旗标、说过以后换话；夜里队散了）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
