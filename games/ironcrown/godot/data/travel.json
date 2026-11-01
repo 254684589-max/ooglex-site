@@ -17,8 +17,8 @@
       "blurb": "麦河东岸洛蒙德家的水磨坊，上头三座高高的粮仓，满的。", "pending": "磨坊和粮仓还没做好（路线图 6.3）。"},
     "manor": {"name": "洛蒙德庄园", "area": "", "chapter": 3, "region": "south", "pos": [0.72, 0.3], "icon": "castle",
       "blurb": "东岸缓坡上的石砌庄园，门楼挂着绿底金麦束的旗。", "pending": "洛蒙德庄园还没做好（路线图 6.3）。"},
-    "abbey": {"name": "坠星院", "area": "", "chapter": 3, "region": "south", "pos": [0.6, 0.8], "icon": "abbey",
-      "blurb": "南边矮丘顶上星铁教会的修道院：钟楼、回廊、施粥的门房。", "pending": "坠星院还没做好（路线图 6.2b）。"},
+    "abbey": {"name": "坠星院", "area": "plain", "spawn": "abbey", "chapter": 3, "region": "south", "pos": [0.6, 0.8], "icon": "abbey",
+      "blurb": "南边矮丘顶上星铁教会的修道院：钟楼、回廊、施粥的门房。修道院吃的是洛蒙德家的粮。", "depart_at": "门房外的路牌"},
     "camp": {"name": "塞弗林营地", "area": "", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
       "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。", "pending": "塞弗林营地还没做好（路线图 6.3）。"}
   },

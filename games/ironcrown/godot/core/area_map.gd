@@ -73,6 +73,8 @@ static func spec(area: String) -> Dictionary:
 			return Waystation.map_spec()
 		"beacon_tower":
 			return BeaconTower.map_spec()
+		"scriptorium":
+			return Scriptorium.map_spec()
 	return {}
 
 

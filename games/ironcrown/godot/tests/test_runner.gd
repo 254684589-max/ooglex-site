@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8532,8 +8532,8 @@ func test_maidu() -> void:
 	check(PlainLayout.river_d(a) > PlainLayout.RIVER_HALF + 2.0 and PlainLayout.river_d(b) > PlainLayout.RIVER_HALF + 2.0 and mid_y > PlainLayout.WATER_Y + 1.5 and absf(PlainVillage.bridge_y(0.0) - PlainLayout.height(a.x, a.y)) < 0.3,
 		"木桥两头在岸上、桥面中间比水面高 %.1f 米" % (mid_y - PlainLayout.WATER_Y))
 	check(PlainLayout.river_d(PlainVillage.DOCK_TO) < PlainLayout.RIVER_HALF + 0.5 and PlainVillage.dock_y() > PlainLayout.WATER_Y + 0.8, "栈桥伸到水上（头上离河中线 %.1f 米）" % PlainLayout.river_d(PlainVillage.DOCK_TO))
-	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and not Travel.built("abbey") and Travel.region_of_chapter(2) == "north",
-		"旅行地图第三章是「南部」一页：麦渡（做好了）、磨坊、庄园、坠星院、营地（还没做好）；第二章还是北境北部 %s" % str(Travel.validate()))
+	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and not Travel.built("camp") and Travel.region_of_chapter(2) == "north",
+		"旅行地图第三章是「南部」一页：麦渡、坠星院（6.2b）做好了，磨坊、庄园、营地还没做好；第二章还是北境北部 %s" % str(Travel.validate()))
 	GameState.new_game(620)
 	GameState.chapter = 3
 	GameState.daypart = "day"
@@ -8583,12 +8583,84 @@ func test_maidu() -> void:
 	check(main.near_travel_point() and Travel.place_of_area("plain", main.player_xz()) == "maidu", "村口路牌旁边：在麦渡、站在出发的地方")
 	main.open_travel_map(true)
 	await frames(2)
-	check(main.travel_map.visible and main.travel_map.title.text.contains("南部") and main.travel_map.place_btns.size() == 5 and not Travel.check(3, "maidu", "abbey", true).ok,
-		"旅行地图是「南部」，五个地点；坠星院还没做好：%s" % Travel.check(3, "maidu", "abbey", true).why)
+	check(main.travel_map.visible and main.travel_map.title.text.contains("南部") and main.travel_map.place_btns.size() == 5 and not Travel.check(3, "maidu", "camp", true).ok,
+		"旅行地图是「南部」，五个地点；营地还没做好：%s" % Travel.check(3, "maidu", "camp", true).why)
 	main.travel_map.close()
 	get_tree().paused = false
 	var spec := AreaMap.spec("plain")
-	check(spec.shapes.filter(func(sh: Dictionary) -> bool: return sh.k == "house").size() == 7, "本地地图上画了 6 栋长屋和谷仓")
+	check(spec.shapes.filter(func(sh: Dictionary) -> bool: return sh.k == "house").size() >= 7 and spec.shapes.any(func(sh: Dictionary) -> bool: return str(sh.get("label", "")) == "谷仓"), "本地地图上画了 6 栋长屋和谷仓")
+	await free_main(main)
+	GameState.chapter = 0
+
+
+func test_abbey() -> void:
+	# 丘顶压平：围墙里高低差不到半米；门房外的出生点在墙外、门洞正前方；所有房子都在围墙里
+	var lo := INF
+	var hi := -INF
+	var inner := PlainAbbey.WALL_RECT.grow(-2.0)
+	for k in 200:
+		var p := inner.position + Vector2(fmod(k * 7.31, inner.size.x), fmod(k * 3.17, inner.size.y))
+		var y := PlainLayout.height(p.x, p.y)
+		lo = minf(lo, y)
+		hi = maxf(hi, y)
+	var sp: Array = PlainLayout.SPAWN_XZ.abbey
+	var inside := true
+	for r: Rect2 in [PlainAbbey.GATEHOUSE, PlainAbbey.TOWER, PlainAbbey.NAVE, PlainAbbey.CLOISTER, PlainAbbey.GARDEN]:
+		if not PlainAbbey.WALL_RECT.encloses(r):
+			inside = false
+	check(hi - lo < 0.5 and not PlainAbbey.WALL_RECT.has_point(sp[0]) and absf((sp[0] as Vector2).x - PlainAbbey.GATE_X) < 1.0 and inside,
+		"坠星院：丘顶压平（围墙里高低差 %.2f 米）；门房、教堂、钟楼、回廊、菜园都在围墙里；出生点在门洞正前方" % (hi - lo))
+	check(Travel.built("abbey") and Travel.check(3, "maidu", "abbey", true).ok and Areas.display_name("scriptorium") == "坠星院 · 抄经室" and Areas.is_indoor("scriptorium") and Areas.chapter_of("scriptorium") == 3,
+		"旅行地图上坠星院做好了、从麦渡能去；抄经室登记成第三章的室内区域")
+	GameState.new_game(621)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "abbey", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var names := ["AbbeyWalls", "Gatehouse", "Church", "Cloister", "Garden"]
+	var found := names.filter(func(n: String) -> bool: return main.world.find_child(n, true, false) != null)
+	var houses: int = get_tree().get_nodes_in_group("house").filter(func(h: Node) -> bool: return PlainAbbey.WALL_RECT.has_point(Vector2((h as Node3D).global_position.x, (h as Node3D).global_position.z))).size()
+	check(found.size() == names.size() and houses >= 2, "分块搭完：围墙、门房、教堂和钟楼、回廊、菜园，宿舍和抄经室（%s，房子 %d）" % [str(found), houses])
+	var sd := main.world.find_child("ScriptoriumDoor", true, false) as Door
+	check(sd != null and sd.locked and sd.locked_text.contains("锁") and (main.world.find_child("AbbeyDormDoor", true, false) as Door).locked, "抄经室的门从外面锁着（%s）；宿舍的门闩着" % (sd.locked_text if sd else ""))
+	# 从门房外走进去：穿过门洞到院子里
+	await physics(8)
+	var p: FpController = main.player
+	check(p.global_position.distance_to(Vector3((sp[0] as Vector2).x, p.global_position.y, (sp[0] as Vector2).y)) < 0.5 and p.is_on_floor(), "新开在坠星院门房外（%s）" % p.global_position)
+	p.rotation.y = PI                                   # 面朝南（+Z）、对着门洞
+	p.velocity = Vector3.ZERO
+	Input.action_press("move_forward")
+	await seconds(4.0)
+	Input.action_release("move_forward")
+	check(p.global_position.z > PlainAbbey.GATEHOUSE.end.y + 1.0, "穿过门洞走进院子（走到 z = %.1f）" % p.global_position.z)
+	# 出了抄经室站的地方：回廊上，站得住、走得动
+	var ex: Array = PlainLayout.SPAWN_XZ.scriptorium_door
+	var ep: Vector2 = ex[0]
+	p.global_position = Vector3(ep.x, PlainAbbey.base_y() + 0.3, ep.y)
+	p.rotation.y = deg_to_rad(float(ex[1]))
+	p.velocity = Vector3.ZERO
+	await physics(10)
+	var from := p.global_position
+	Input.action_press("move_forward")
+	await seconds(1.5)
+	Input.action_release("move_forward")
+	check(p.is_on_floor() and p.global_position.distance_to(from) > 2.0 and p.global_position.x < from.x, "抄经室门外的回廊上站得住、往院子里走得动（%.1f 米）" % p.global_position.distance_to(from))
+	await free_main(main)
+	# 抄经室里面
+	GameState.pending_load = {"scene": "scriptorium", "spawn": "front", "player": {}}
+	main = await make_area("scriptorium")
+	await physics(6)
+	p = main.player
+	var exit: Door = null
+	for d: Door in main.world.find_children("*", "Door", true, false):
+		if d.to_area == "plain":
+			exit = d
+	check(exit != null and exit.to_spawn == "scriptorium_door" and not exit.locked and p.is_on_floor() and main.world.find_child("WindowLight", true, false) != null,
+		"抄经室：站在门里、出口回到回廊（出生点 scriptorium_door）、北窗的冷光")
+	check(AreaMap.spec("scriptorium").shapes.size() >= 6 and Areas.views("scriptorium").size() == Scriptorium.VIEW_NAMES.size(), "抄经室的本地地图（书架、草铺、四张桌子）和固定机位")
 	await free_main(main)
 	GameState.chapter = 0
 

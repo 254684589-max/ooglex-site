@@ -68,6 +68,8 @@ static func _free(p: Vector2, road_margin: float, river_min: float) -> bool:
 		return false
 	if PlainLayout.river_d(p) < river_min:
 		return false
+	if PlainAbbey.WALL_RECT.grow(4.0).has_point(p):
+		return false                                     # 坠星院的围墙里外（6.2b）
 	for pad: Array in PlainLayout.pads() + [[PlainLayout.ABBEY, PlainLayout.ABBEY_R, 0.0], [PlainLayout.GRANARY, 14.0, 0.0]]:
 		if p.distance_to(pad[0]) < float(pad[1]) + 3.0:
 			return false

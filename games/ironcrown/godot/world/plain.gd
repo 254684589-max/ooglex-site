@@ -57,6 +57,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	pl._far()
 	PlainFlora.far_ring(p_parent)                    # 地平线上的树（6.1b）
 	PlainVillage.interactables(p_parent)             # 麦渡（6.2a）：长屋的门、村口的路牌（同步：一进场就推得开）
+	PlainAbbey.interactables(p_parent)               # 坠星院（6.2b）：宿舍、抄经室的门、门房外的路牌
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -197,7 +198,7 @@ func _collision() -> void:
 	village.collision_layer = 1
 	village.collision_mask = 0
 	parent.add_child(village)
-	for so: Array in PlainVillage.solids():
+	for so: Array in PlainVillage.solids() + PlainAbbey.solids():
 		var vs := CollisionShape3D.new()
 		var vb := BoxShape3D.new()
 		vb.size = so[1]
@@ -253,6 +254,7 @@ static func water_material() -> ShaderMaterial:
 static func clear_cache() -> void:
 	PlainFlora.clear_cache()
 	PlainVillage.clear_cache()
+	PlainAbbey.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -371,6 +373,7 @@ func _jobs(st: ChunkStreamer) -> void:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
 			var jobs: Array = [_job_terrain.bind(r), _job_flora.bind(r)]
 			jobs.append_array(PlainVillage.jobs_for(r, reduced_motion))           # 麦渡的长屋、谷仓、水井、木桥、渡口、零碎（6.2a）
+			jobs.append_array(PlainAbbey.jobs_for(r, reduced_motion))             # 坠星院：围墙、门房、教堂和钟楼、回廊、菜园、宿舍、抄经室（6.2b）
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
@@ -593,10 +596,11 @@ static func map_spec() -> Dictionary:
 			[PlainLayout.ABBEY, "坠星院"], [PlainLayout.CAMP, "塞弗林营地"]]:
 		shapes.append({"k": "mark", "at": m[0], "label": m[1]})
 	shapes.append_array(PlainVillage.map_shapes())
+	shapes.append_array(PlainAbbey.map_shapes())
 	shapes.append({"k": "road", "pts": _strip(PlainLayout.BRIDGE[0], PlainLayout.BRIDGE[1], PlainVillage.BRIDGE_W * 0.5), "label": "木桥"})
 	return {"bounds": PlainLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
 		{"name": "麦渡", "place": "maidu", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},
-		{"name": "坠星院", "pts": _circle(PlainLayout.ABBEY, PlainLayout.ABBEY_HILL_R)},
+		{"name": "坠星院", "place": "abbey", "pts": _circle(PlainLayout.ABBEY_SITE, 34.0)},
 		{"name": "洛蒙德庄园", "pts": _circle(PlainLayout.MANOR, PlainLayout.MANOR_R + 14.0)},
 		{"name": "金穗平原", "pts": PackedVector2Array([Vector2(-150, -130), Vector2(150, -130), Vector2(150, 130), Vector2(-150, 130)])},
 	]}

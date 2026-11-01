@@ -32,6 +32,7 @@
         "waystation": {"pos": [0.72, 0.3], "host": "highland"},
         "beacon_tower": {"pos": [0.55, 0.12], "host": "highland"}
       }
-    }
+    },
+    "plain": {"title": "金穗平原一带", "areas": {"plain": {"pos": [0.5, 0.55]}, "scriptorium": {"pos": [0.66, 0.82], "host": "plain"}}}
   }
 }

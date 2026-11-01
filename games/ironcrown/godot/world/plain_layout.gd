@@ -39,6 +39,7 @@ const ABBEY := Vector2(44.0, 92.0)      # 坠星院（6.2）：南边的矮丘�
 const ABBEY_R := 18.0
 const ABBEY_HILL := 7.0
 const ABBEY_HILL_R := 72.0             # 矮丘坡缓（46 米时四边陡、像一块台地，截图）
+const ABBEY_SITE := Vector2(47.0, 92.0)  # 围墙里那块压平的地的中心（6.2b，PlainAbbey.WALL_RECT）
 const CAMP := Vector2(108.0, -100.0)    # 塞弗林营地（6.3）：东北角，砧山来的路口
 const CAMP_R := 22.0
 const BRIDGE := [Vector2(-24.0, 10.0), Vector2(12.0, 4.0)]   # 木桥（6.2 搭）：村子过河到磨坊
@@ -62,7 +63,8 @@ const SPAWN_XZ := {
 	"village": [Vector2(-50.0, 22.0), 60.0],
 	"mill": [Vector2(26.0, -4.0), -30.0],
 	"manor": [Vector2(66.0, -38.0), 200.0],
-	"abbey": [Vector2(40.0, 80.0), 170.0],
+	"abbey": [Vector2(40.0, 72.0), 180.0],          # 坠星院门房外（6.2b）：面朝门洞
+	"scriptorium_door": [Vector2(59.9, 95.0), 90.0],   # 出了抄经室：门外回廊上，面朝西（PlainAbbey.scriptorium_exit）
 }
 
 ## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
@@ -71,11 +73,13 @@ const VIEW_SPEC := [
 	[Vector3(-30.0, 1.7, 6.0), -70.0, 0.0],         # 1 桥西头往东看：麦河、磨坊那片
 	[Vector3(4.0, 1.7, -50.0), 200.0, -2.0],        # 2 东岸河边往南：弯过去的河、两岸的麦茬地
 	[Vector3(84.0, 1.7, -42.0), 108.0, -6.0],       # 3 庄园坡上往西看整片平原
-	[Vector3(46.0, 1.7, 84.0), 175.0, -5.0],        # 4 坠星院的丘顶往北：平原、河、远处的砧山
+	[Vector3(41.0, 1.7, 85.0), 228.0, 8.0],         # 4 坠星院门房里面往院子：钟楼、教堂、回廊（6.2b 起丘顶围起来了）
 	[Vector3(-90.0, 1.7, -40.0), 60.0, 0.0],        # 5 西北的田里往东北：砧山的黑影
 	[Vector3(-56.0, 1.7, 40.0), 20.0, 0.0],         # 6 麦渡村南往北
+	[Vector3(30.0, 1.7, 54.0), 197.0, 8.0],         # 7 坠星院：从坡下望门房、钟楼（6.2b）
+	[Vector3(53.0, 1.7, 99.0), 12.0, 14.0],         # 8 回廊院子里往北：钟楼、教堂、两边的回廊
 ]
-const VIEW_NAMES := ["渡口", "桥西头", "东岸河边", "庄园坡上", "坠星院丘顶", "西北的田", "麦渡村南"]
+const VIEW_NAMES := ["渡口", "桥西头", "东岸河边", "庄园坡上", "坠星院门房里", "西北的田", "麦渡村南", "坠星院门外坡下", "坠星院回廊"]
 
 const ANVIL_DIR := Vector2(0.62, -0.78)         # 砧山在东北（远景，Plain._far）
 
@@ -151,13 +155,15 @@ static func road_d(p: Vector2) -> float:
 
 ## 压平的地方：[中心, 半径, 过渡宽]
 static func pads() -> Array:
-	return [[VILLAGE, VILLAGE_R, 14.0], [MILL, 12.0, 8.0], [MANOR, MANOR_R, 14.0], [CAMP, CAMP_R, 12.0], [DOCK, 8.0, 6.0]]   # 修道院不压：丘顶本来就圆（压平了四边一圈陡坎，截图）
+	return [[VILLAGE, VILLAGE_R, 14.0], [MILL, 12.0, 8.0], [MANOR, MANOR_R, 14.0], [CAMP, CAMP_R, 12.0], [DOCK, 8.0, 6.0],
+		[ABBEY_SITE, 25.0, 24.0]]   # 坠星院（6.2b）：丘顶压平一块放围墙里的房子（围墙角离中心 25 米）；过渡拖到 24 米（6.1a 时 12 米压出一圈陡坎，截图）
 
 
 ## 最终高度（地形网格、碰撞、出生点都用它；Plain 一次算好整张高度场）
 static func height(x: float, z: float) -> float:
 	var p := Vector2(x, z)
 	var y := natural(x, z)
+	var on_pad := 0.0
 	for pad in pads():
 		var c: Vector2 = pad[0]
 		var d := p.distance_to(c)
@@ -166,11 +172,12 @@ static func height(x: float, z: float) -> float:
 			var py := natural(c.x, c.y) + 0.15
 			var k := _smooth(clampf((outer - d) / float(pad[2]), 0.0, 1.0))
 			y = lerpf(y, py + 0.08 * _noise_small.get_noise_2d(x * 2.0, z * 2.0), k)
+			on_pad = maxf(on_pad, k)
 	var rd := road_d(p)
-	if rd < ROAD_HALF + ROAD_BLEND:                                  # 路面：抹平小起伏（大车道顺着地势走）
+	if rd < ROAD_HALF + ROAD_BLEND:                                  # 路面：抹平小起伏（大车道顺着地势走）；压平的地方路就是平的（坠星院的路一直通到院子里，6.2b）
 		var smooth_y := natural(x, z) - 0.18 * _noise_small.get_noise_2d(x, z)
 		var k := 1.0 if rd <= ROAD_HALF else _smooth(1.0 - (rd - ROAD_HALF) / ROAD_BLEND)
-		y = lerpf(y, smooth_y - 0.05, k * 0.8)
+		y = lerpf(y, smooth_y - 0.05, k * 0.8 * (1.0 - on_pad))
 	var dr := river_d(p)                                             # 麦河：刻下去，河床平、两岸是斜的泥岸
 	if dr < RIVER_HALF + RIVER_BANK:
 		var bed := WATER_Y - 0.7

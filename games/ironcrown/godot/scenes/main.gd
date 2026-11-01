@@ -275,6 +275,8 @@ func _ready() -> void:
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":
 			t = BeaconTower.build(world, Settings.reduced_motion)
+		"scriptorium":
+			t = Scriptorium.build(world, Settings.reduced_motion)          # 坠星院的抄经室（6.2b）
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
