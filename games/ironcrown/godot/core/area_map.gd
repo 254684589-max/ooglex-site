@@ -77,6 +77,8 @@ static func spec(area: String) -> Dictionary:
 			return Scriptorium.map_spec()
 		"manor_hall":
 			return ManorHall.map_spec()
+		"mill_inside":
+			return MillInside.map_spec()
 	return {}
 
 

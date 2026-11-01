@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8778,6 +8778,84 @@ func test_manor() -> void:
 	check(exit != null and exit.to_spawn == "manor_door" and p.is_on_floor() and main.world.find_child("Fire", true, false) != null and main.world.find_child("Decor", true, false) != null,
 		"大厅：站在门里、出口回到主楼门外；壁炉烧着、旗和挂毯挂着")
 	check(AreaMap.spec("manor_hall").shapes.size() >= 4 and Areas.views("manor_hall").size() == ManorHall.VIEW_NAMES.size(), "大厅的本地地图（壁炉、长桌、高桌）和固定机位")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_mill() -> void:
+	# 布局：磨坊、三座粮仓在院子里；西边是河；北墙一道缺口、南门东门对着大车道；水轮在磨坊西墙外、河岸上
+	var r := PlainMill.RECT
+	var inside := true
+	for fp: Vector2 in Array(House.footprint(PlainMill.mill_pos(), float(PlainMill.MILL[1]), float(PlainMill.MILL[2]), float(PlainMill.MILL[3]))):
+		if not r.grow(0.5).has_point(fp):
+			inside = false
+	for i in PlainMill.GRANARIES.size():
+		for fp: Vector2 in Array(House.footprint(PlainMill.granary_pos(i), float((PlainMill.GRANARIES[i] as Array)[1]), PlainMill.GRANARY_W, PlainMill.GRANARY_D)):
+			if not r.has_point(fp) or PlainLayout.road_d(fp) < PlainLayout.ROAD_HALF + 0.3:
+				inside = false
+	var segs := PlainMill.wall_segments()
+	check(inside and segs.size() == 6 and PlainLayout.road_d(PlainMill.SOUTH_GATE) < 1.0 and PlainLayout.road_d(PlainMill.EAST_GATE) < 1.5 and PlainLayout.river_d(PlainMill.WHEEL_C) < PlainLayout.RIVER_HALF + PlainLayout.RIVER_BANK + 1.0,
+		"磨坊和三座粮仓在院子里、不压路；院墙三面、北墙一道缺口、南门东门在大车道上；水轮在河岸上（%s，南门离路 %.1f、东门 %.1f、水轮离河 %.1f）" % [inside, PlainLayout.road_d(PlainMill.SOUTH_GATE), PlainLayout.road_d(PlainMill.EAST_GATE), PlainLayout.river_d(PlainMill.WHEEL_C)])
+	check(Travel.built("mill") and Travel.check(3, "maidu", "mill", true).ok and Areas.display_name("mill_inside") == "水磨坊 · 里面" and Areas.is_indoor("mill_inside"), "旅行地图上磨坊做好了、从麦渡能去；磨坊里面登记成室内区域")
+	GameState.new_game(632)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var wheel := main.world.find_child("MillWheel", true, false) as Node3D
+	check(main.world.find_child("MillWalls", true, false) != null and main.world.find_child("MillFlume", true, false) != null and wheel != null and main.world.find_child("MillProps", true, false) != null and float(st.stats.max_job_ms) < 60.0,
+		"分块搭完：院墙、木槽、水轮、院子里的东西；最慢一块 %.1f 毫秒" % st.stats.max_job_ms)
+	var a0 := wheel.rotation.x
+	await seconds(1.0)
+	check(absf(wheel.rotation.x - a0) > 0.05, "水轮在慢慢转（一秒转了 %.2f 弧度）" % absf(wheel.rotation.x - a0))
+	var md := main.world.find_child("MillDoor", true, false) as Door
+	var gd := main.world.find_child("GranaryDoor0", true, false) as Door
+	check(md != null and md.to_area == "mill_inside" and gd != null and gd.locked and main.world.find_children("GranaryDoor*", "", true, false).size() == 3, "磨坊的门通往里面；三座粮仓都锁着（%s）" % (gd.locked_text if gd else ""))
+	await physics(8)
+	var p: FpController = main.player
+	check(p.is_on_floor(), "新开在磨坊南门外（%s）" % p.global_position)
+	p.rotation.y = deg_to_rad(-15.0)
+	p.velocity = Vector3.ZERO
+	Input.action_press("move_forward")
+	await seconds(3.0)
+	Input.action_release("move_forward")
+	check(p.global_position.z < PlainMill.RECT.end.y - 2.0, "穿过南门走进院子（走到 z = %.1f）" % p.global_position.z)
+	# 北墙缺口走得过去（6.7 第二波从这儿进）
+	var bp := PlainMill.BREACH + Vector2(0, -4.0)
+	p.global_position = Vector3(bp.x, PlainLayout.height(bp.x, bp.y) + 0.3, bp.y)
+	p.rotation.y = PI                                   # 面朝南（+Z）
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(2.5)
+	Input.action_release("move_forward")
+	check(p.global_position.z > PlainMill.RECT.position.y + 1.5, "北墙的缺口走得过去（走到 z = %.1f）" % p.global_position.z)
+	var ex: Array = PlainLayout.SPAWN_XZ.mill_door
+	p.global_position = Vector3((ex[0] as Vector2).x, PlainMill.mill_y() + 0.3, (ex[0] as Vector2).y)
+	p.rotation.y = deg_to_rad(float(ex[1]))
+	p.velocity = Vector3.ZERO
+	await physics(10)
+	var from := p.global_position
+	Input.action_press("move_forward")
+	await seconds(1.5)
+	Input.action_release("move_forward")
+	check(p.is_on_floor() and p.global_position.distance_to(from) > 2.0, "出了磨坊站在门外、走得动（%.1f 米）" % p.global_position.distance_to(from))
+	await free_main(main)
+	GameState.pending_load = {"scene": "mill_inside", "spawn": "front", "player": {}}
+	main = await make_area("mill_inside")
+	await physics(6)
+	p = main.player
+	var exit: Door = null
+	for d: Door in main.world.find_children("*", "Door", true, false):
+		if d.to_area == "plain":
+			exit = d
+	check(exit != null and exit.to_spawn == "mill_door" and p.is_on_floor() and main.world.find_child("Gear", true, false) != null and main.world.find_child("LedgerLamp", true, false) != null,
+		"磨坊里面：站在门里、出口回到院子；木齿轮、账房桌上的油灯")
+	check(AreaMap.spec("mill_inside").shapes.size() >= 4 and Areas.views("mill_inside").size() == MillInside.VIEW_NAMES.size(), "磨坊里面的本地地图（账房、磨盘、粮袋）和固定机位")
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}

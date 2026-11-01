@@ -50,6 +50,8 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	ensure_field()
 	PlainFlora.warm(reduced_motion)                    # 树、篱笆、麦垛、木栅（6.1b）：材质、网格、摆放先备好
 	PlainManor.base_y()
+	for k in ["roof", "plaster", "castle"]:
+		Look.mat(k)                                    # 石板瓦、灰泥：第一栋 House 在分帧的活里才读这几张贴图，那一块要 70–80 毫秒（6.3b）
 	PlainVillage.mats()                                # 麦渡的材质先备好（6.2a：土坯、茅草贴图在分帧的活里第一次读，那一块要 70–80 毫秒）
 	pl._collision()
 	ground_material()
@@ -61,6 +63,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainAbbey.interactables(p_parent)               # 坠星院（6.2b）：宿舍、抄经室的门、门房外的路牌
 	PlainAbbey.people(p_parent)                      # 坠星院门口的人（6.2c）：院长、门房的修士、排队领粥的佃农
 	PlainManor.interactables(p_parent)               # 洛蒙德庄园（6.3a）：大厅、仓房的门、门楼外的路牌
+	PlainMill.interactables(p_parent)                # 水磨坊与粮仓（6.3b）：磨坊、粮仓的门、南门外的路牌
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -201,7 +204,7 @@ func _collision() -> void:
 	village.collision_layer = 1
 	village.collision_mask = 0
 	parent.add_child(village)
-	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids():
+	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids() + PlainMill.solids():
 		var vs := CollisionShape3D.new()
 		var vb := BoxShape3D.new()
 		vb.size = so[1]
@@ -379,6 +382,7 @@ func _jobs(st: ChunkStreamer) -> void:
 			jobs.append_array(PlainVillage.jobs_for(r, reduced_motion))           # 麦渡的长屋、谷仓、水井、木桥、渡口、零碎（6.2a）
 			jobs.append_array(PlainAbbey.jobs_for(r, reduced_motion))             # 坠星院：围墙、门房、教堂和钟楼、回廊、菜园、宿舍、抄经室（6.2b）
 			jobs.append_array(PlainManor.jobs_for(r, reduced_motion))             # 洛蒙德庄园：围墙和门楼、主楼、仓房、水井、院子里的东西（6.3a）
+			jobs.append_array(PlainMill.jobs_for(r, reduced_motion))              # 水磨坊与粮仓：院墙、磨坊、水轮和木槽、三座粮仓、院子里的东西（6.3b）
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
@@ -603,6 +607,7 @@ static func map_spec() -> Dictionary:
 	shapes.append_array(PlainVillage.map_shapes())
 	shapes.append_array(PlainAbbey.map_shapes())
 	shapes.append_array(PlainManor.map_shapes())
+	shapes.append_array(PlainMill.map_shapes())
 	shapes.append({"k": "road", "pts": _strip(PlainLayout.BRIDGE[0], PlainLayout.BRIDGE[1], PlainVillage.BRIDGE_W * 0.5), "label": "木桥"})
 	return {"bounds": PlainLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
 		{"name": "麦渡", "place": "maidu", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},

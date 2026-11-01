@@ -68,7 +68,7 @@ static func _free(p: Vector2, road_margin: float, river_min: float) -> bool:
 		return false
 	if PlainLayout.river_d(p) < river_min:
 		return false
-	if PlainAbbey.WALL_RECT.grow(4.0).has_point(p) or PlainManor.WALL_RECT.grow(4.0).has_point(p):
+	if PlainAbbey.WALL_RECT.grow(4.0).has_point(p) or PlainManor.WALL_RECT.grow(4.0).has_point(p) or PlainMill.RECT.grow(4.0).has_point(p):
 		return false                                     # 坠星院的围墙里外（6.2b）
 	for pad: Array in PlainLayout.pads() + [[PlainLayout.ABBEY, PlainLayout.ABBEY_R, 0.0], [PlainLayout.GRANARY, 14.0, 0.0]]:
 		if p.distance_to(pad[0]) < float(pad[1]) + 3.0:
@@ -113,7 +113,7 @@ static func willows() -> Array:
 				if rng.randf() < 0.22:
 					s += rng.randf_range(8.0, 20.0)                 # 一段一段的，中间空着
 					continue
-				if PlainLayout.river_d(p) < PlainLayout.RIVER_HALF + 3.0 or _bridge_d(p) < 9.0 or p.distance_to(PlainLayout.DOCK) < 13.0 \
+				if PlainLayout.river_d(p) < PlainLayout.RIVER_HALF + 3.0 or _bridge_d(p) < 9.0 or p.distance_to(PlainLayout.DOCK) < 13.0 or PlainMill.RECT.grow(2.0).has_point(p) \
 						or p.distance_to(Geometry2D.get_closest_point_to_segment(p, PlainVillage.DOCK_FROM, PlainVillage.DOCK_TO)) < 5.0:
 					continue
 				if not PlainLayout.BOUNDS.grow(-(PlainLayout.WALL_INSET + 2.0)).has_point(p) or PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 2.5:
@@ -294,7 +294,7 @@ static func _fence_line(out: Array, a: Vector2, b: Vector2, gate: bool) -> void:
 			continue
 		if mid.distance_to(PlainLayout.GRANARY) < 16.0 or mid.distance_to(PlainLayout.MANOR) < PlainLayout.MANOR_R + 2.0 or mid.distance_to(PlainLayout.MILL) < PlainLayout.MILL_R + 2.0:
 			continue
-		if PlainLayout.road_d(mid) < PlainLayout.ROAD_HALF + 1.2 or not PlainLayout.BOUNDS.grow(-(PlainLayout.WALL_INSET + 1.0)).has_point(mid):
+		if PlainLayout.road_d(mid) < PlainLayout.ROAD_HALF + 1.2 or not PlainLayout.BOUNDS.grow(-(PlainLayout.WALL_INSET + 1.0)).has_point(mid) or PlainMill.RECT.grow(2.0).has_point(mid):
 			continue
 		out.append([Vector3(p0.x, PlainLayout.height(p0.x, p0.y), p0.y), Vector3(p1.x, PlainLayout.height(p1.x, p1.y), p1.y)])
 
