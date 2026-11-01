@@ -1,0 +1,30 @@
+{
+  "_说明": "金穗平原的人（路线图 6.2c；STORY.md 6.5 第 2 步）。坠星院院长格雷戈尔挡在门洞里：「修道院里没有你要找的人。」（主线 ch3_main：to_abbey → ask_porter）；门房外熬粥的修士偷偷告诉你东边抄经室里关着一个灰袍修士，要见他得院长点头，或者洛蒙德家点头（ask_porter → to_manor，ch3_heard_monk）。6.4 再加前两章和出身留下的话。",
+  "gregor": {"speaker": "格雷戈尔院长", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch3_heard_monk"}], "node": "after"}, {"if": [{"flag": "gregor_met"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（灰袍，两手揣在袖子里，挡在门洞当中）外头熬着粥。要喝，跟他们一起排。要找人——修道院里没有你要找的人。", "do": [{"set": "gregor_met"}],
+        "options": [{"text": "我从北边来，找当年守灵夜跪在老王脚边的那个侍从。", "if": [{"quest_stage": "ch3_main", "eq": "to_abbey"}], "next": "squire"}, {"text": "我从北边来，找当年守灵夜跪在老王脚边的那个侍从。", "if": [{"not_quest": "ch3_main"}], "next": "squire_off"}, {"text": "我还没说找谁。", "next": "who"}, {"text": "告辞。", "end": true}]},
+      "who": {"text": "北边来的人，这个冬天都找同一件事。（他看了一眼你的靴子，靴底的雪还没化）三十五年了，问的人一年比一年多。", "options": [{"text": "那我也问一样的：守灵夜那个侍从。", "if": [{"quest_stage": "ch3_main", "eq": "to_abbey"}], "next": "squire"}, {"text": "那我也问一样的：守灵夜那个侍从。", "if": [{"not_quest": "ch3_main"}], "next": "squire_off"}, {"text": "告辞。", "end": true}]},
+      "squire": {"text": "这里只有修士，没有侍从。老王的事是王城的事，坠星院只管念经、只管这口锅。（他朝门房那边偏了偏头）喝一碗，暖暖身子，往北走吧。", "do": [{"quest": "ch3_main", "stage": "ask_porter"}],
+        "options": [{"text": "粥稀得照得见天。洛蒙德家的仓可是满的。", "next": "grain"}, {"text": "告辞。", "end": true}]},
+      "squire_off": {"text": "这里只有修士，没有侍从。老王的事是王城的事，坠星院只管念经、只管这口锅。（他朝门房那边偏了偏头）喝一碗，往北走吧。", "options": [{"text": "粥稀得照得见天。洛蒙德家的仓可是满的。", "next": "grain"}, {"text": "告辞。", "end": true}]},
+      "grain": {"text": "（他的手在袖子里动了一下）修道院吃谁的粮，就替谁念经。这话你别在院子里说。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他还站在门洞里，像根柱子）粥在外头。人，没有。", "options": [{"text": "守灵夜那个侍从……", "next": "squire_off"}, {"text": "告辞。", "end": true}]},
+      "after": {"text": "（他盯着你看了一会儿）门房跟你说了什么，我不问。抄经室的钥匙在我身上，没有人能替我点头。", "options": [{"text": "洛蒙德家也不能？", "next": "lomond"}, {"text": "告辞。", "end": true}]},
+      "lomond": {"text": "（他没回答，转身往院子里走了两步，又站住）……天黑以前出去。门房夜里要上闩。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "porter": {"speaker": "门房的修士", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch3_heard_monk"}], "node": "again"}, {"if": [{"quest_stage": "ch3_main", "eq": "ask_porter"}], "node": "secret"}],
+    "nodes": {
+      "greet": {"text": "（他用长柄勺搅着锅，锅里的粥稀得照得见天）一人一勺。排队。孩子先。", "options": [{"text": "粥一直这么稀？", "next": "thin"}, {"text": "告辞。", "end": true}]},
+      "thin": {"text": "入冬时还能立住勺子。庄园送来的麦子一回比一回少，排队的人一天比一天多。（他又往锅里添了一瓢水）院长说，主会看顾。", "options": [{"text": "告辞。", "end": true}]},
+      "secret": {"text": "（他舀粥的手停了一下，没抬头，压低声音）你问的那个人……别问院长。东边抄经室里关着一个灰袍修士，夜里一个人对着墙说话，说的都是那一年。院长不让人见他。", "do": [{"set": "ch3_heard_monk"}],
+        "options": [{"text": "怎么才能见他？", "next": "how"}, {"text": "他说些什么？", "next": "what"}]},
+      "what": {"text": "听不清。门锁着，送饭的从门缝里塞进去。有一夜我听见他喊了一声「冠」，然后就是哭。（他把勺子在锅沿上磕了磕）……你别说是我告诉你的。", "options": [{"text": "怎么才能见他？", "next": "how"}]},
+      "how": {"text": "院长点头。或者——（他朝东岸坡上那座石砌的庄园努了努嘴）洛蒙德家点头。修道院吃的是他们的粮，院长听他们的。", "do": [{"quest": "ch3_main", "stage": "to_manor"}],
+        "options": [{"text": "我去庄园。", "end": true}, {"text": "这锅粥，够排到天黑吗？", "next": "dusk"}]},
+      "dusk": {"text": "（他看了一眼队尾）不够。从来不够。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他没抬头，往你碗里多舀了半勺）去庄园。天黑以前回来，门房夜里上闩。", "options": [{"text": "告辞。", "end": true}]}
+    }}
+}

@@ -86,6 +86,16 @@
     "兵营门口的兵": {"preset": "veteran", "hair": ["Hair_Buzzed"], "hair_color": "#2a1e14", "pose": "idle_armed", "prop": "sword"},
     "掷骰子的兵": {"preset": "veteran", "hair": ["Hair_SimpleParted"], "hair_color": "#4a3020", "pose": "idle"},
     "磨刀的兵": {"preset": "veteran", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#2a1e14", "pose": "kneel_fix"},
-    "烤火的兵": {"preset": "veteran", "hair": ["Hair_Buzzed"], "hair_color": "#5a4030", "pose": "crouch_idle"}
+    "烤火的兵": {"preset": "veteran", "hair": ["Hair_Buzzed"], "hair_color": "#5a4030", "pose": "crouch_idle"},
+    "格雷戈尔院长": {"preset": "monk", "hair": ["Hair_Buzzed"], "hair_color": "#a8a49c", "pose": "fold_arms"},
+    "门房的修士": {"preset": "monk", "tint": {"MI_Peasant": "#8a857a"}, "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#5a4a3a", "pose": "talk"},
+    "排队领粥的佃农": {"preset": "commoner", "tint": {"MI_Peasant": "#6e6658"}, "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#4a3a2a", "pose": "fold_arms"},
+    "@queue1": {"preset": "woman", "tint": {"MI_Peasant": "#7a7064"}, "hair": ["Hair_Buns"], "hair_color": "#3a2a1a", "pose": "fold_arms"},
+    "@queue2": {"preset": "commoner_dark", "hair": ["Hair_Buzzed"], "hair_color": "#2a2018", "pose": "idle"},
+    "@queue3": {"preset": "woman", "tint": {"MI_Peasant": "#6a6458"}, "hair": ["Hair_Long"], "hair_color": "#5a4030", "pose": "fold_arms"},
+    "佃农的孩子": {"preset": "commoner", "tint": {"MI_Peasant": "#7a6e5e"}, "hair": ["Hair_Buzzed"], "hair_color": "#6a4a2a", "pose": "idle"},
+    "@queue5": {"preset": "commoner_dark", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#8a8478", "pose": "crouch_idle"},
+    "@queue6": {"preset": "woman", "tint": {"MI_Peasant": "#5e584e"}, "hair": ["Hair_Buns"], "hair_color": "#8a8478", "pose": "fold_arms"},
+    "@queue7": {"preset": "commoner", "tint": {"MI_Peasant": "#62584a"}, "hair": ["Hair_Buzzed"], "hair_color": "#3a2a1a", "pose": "idle"}
   }
 }

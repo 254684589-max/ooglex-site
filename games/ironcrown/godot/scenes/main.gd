@@ -269,10 +269,18 @@ func _ready() -> void:
 			t = Marsh.build(world, Settings.reduced_motion)
 		"highland":
 			t = Highland.build(world, Settings.reduced_motion)
+		"plain":
+			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":
 			t = BeaconTower.build(world, Settings.reduced_motion)
+		"scriptorium":
+			t = Scriptorium.build(world, Settings.reduced_motion)          # 坠星院的抄经室（6.2b）
+		"manor_hall":
+			t = ManorHall.build(world, Settings.reduced_motion)            # 洛蒙德庄园的大厅（6.3a）
+		"mill_inside":
+			t = MillInside.build(world, Settings.reduced_motion)           # 水磨坊里面（6.3b）
 		"inn":
 			t = Inn.build(world, Settings.reduced_motion)
 		"castle":
@@ -1131,6 +1139,10 @@ func _story_progress() -> void:
 			hud.toast(Chapters.wip_note_of(2), 7.0)         # 第二章还在做（2026-10-24 先放出来能逛）：进来时说一句
 		if str(GameState.get_flag("valen_heir", "")) == "ivette" and not GameState.has_item("ivette_letter") and not GameState.has_flag("ch2_letter_given"):
 			GameState.add_item("ivette_letter")             # 选了伊薇特：她联合了厄尔德家，写了一封信让你带上山（STORY.md 5.4）
+	if GameState.chapter == 3 and area in ["plain", "scriptorium", "manor_hall", "mill_inside"] and not GameState.quest_active("ch3_main") and not GameState.quest_done("ch3_main"):
+		GameState.start_quest("ch3_main")                    # 第三章开场（6.2c）：从麦渡的渡口上岸
+		if Chapters.wip_note_of(3) != "" and hud:
+			hud.toast(Chapters.wip_note_of(3), 7.0)
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
@@ -1559,7 +1571,7 @@ func show_ending(id: String, choice := "") -> void:
 	touch_was_visible = touch.visible
 	touch.visible = false
 	if id == "ch2":
-		ending_panel.open_chapter2(Settings.reduced_motion, 0)       # 第二章完（5.8b）：第三章还没有
+		ending_panel.open_chapter2(Settings.reduced_motion, 3 if playable_chapter >= 3 else 0)       # 第二章完（5.8b）；第三章开放以前只有 ?preview=3 能继续（6.2c）
 	elif id == "ch1":
 		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
 	else:
@@ -1615,6 +1627,7 @@ func _fetch_area_pack() -> void:
 		await get_tree().process_frame             # 界面搭好后等几帧再换场景（按钮位置那几行在下一帧才打，换得太快它们找不到场景树）
 	var ok := await ensure_chapter(n)
 	Highland.clear_cache()
+	Plain.clear_cache()
 	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
 	if ok:
 		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}

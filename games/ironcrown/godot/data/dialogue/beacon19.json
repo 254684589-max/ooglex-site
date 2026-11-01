@@ -9,6 +9,11 @@
       {"if": [{"flag": "matthias_met"}], "node": "again"}
     ],
     "nodes": {
+      "roll": {"text": "（他沉默了一会儿，从怀里掏出一本油布包着的册子，翻到中间，手指按在一行字上）……第二十一烽，守了三年。名字后面一个字：逃。（他把册子转过来给你看）我说过不问。可名册不是我的，是烽誓团的。按规矩，逃兵抓回来，补守十年。", "do": [{"quest": "ch2_roll"}], "options": [{"text": "我认。剩下的年头，从这个冬天补起。", "next": "roll_served"}, {"text": "划掉吧。那个逃兵死在第四年冬天了——站在你面前的，是瓦伦家的誓剑。", "if": [{"not_flag": "ch2_roll_refused"}], "check": {"id": "roll_strike", "skill": "speech", "dc": 14, "pass": "roll_struck", "fail": "roll_no"}}, {"text": "认错人了。", "next": "roll_denied"}]},
+      "roll_served": {"text": "（他看了你很久，从腰上解下一支烧黑了的铅笔，在那个「逃」字旁边写了个「补」）……十年太长，这个冬天能熬过去，就算你补上了。（他把册子包好）营里的人会知道的。今夜往后，你说话，他们听。", "do": [{"set": "ch2_roll", "value": "served"}, {"rep": "beacon_oath", "delta": 10}, {"quest_done": "ch2_roll"}], "options": [{"text": "……", "next": "again"}]},
+      "roll_struck": {"text": "（他盯着那行字，又盯着你）……死在第四年冬天。（他用拇指蘸了点唾沫，把那个名字抹成一团黑）烽誓团的名册上，从今天起没有这个人了。（他合上册子）别让我在别的册子上再看见你。", "do": [{"set": "ch2_roll", "value": "struck"}, {"quest_done": "ch2_roll"}], "options": [{"text": "……", "next": "again"}]},
+      "roll_no": {"text": "（他摇头，把册子按在胸口）名册上的字，我划不掉。划了这一个，下一个逃回来的人也要我划。……你认，还是不认？", "do": [{"set": "ch2_roll_refused"}], "options": [{"text": "我认。剩下的年头，从这个冬天补起。", "next": "roll_served"}, {"text": "认错人了。", "next": "roll_denied"}]},
+      "roll_denied": {"text": "（他看了你一眼，把册子合上，塞回怀里）……也许吧。北边长得像的人多。（他转过身接着数柴，没再看你）", "do": [{"set": "ch2_roll", "value": "denied"}, {"rep": "beacon_oath", "delta": -5}, {"quest_done": "ch2_roll"}], "options": [{"text": "……", "next": "again"}]},
       "deserter": {"text": "（他数柴的手停了，抬起头盯着你看了很久）……我知道。你看塔的样子就知道——守过的人，眼睛先找火盆，再找门。（他低下头接着数柴）哪一座，哪一年，我不问。这儿缺人，不缺问话的。", "do": [{"set": "matthias_knows_deserter"}], "options": [{"text": "……", "next": "again"}]},
       "dawn": {"text": "（他看着空荡荡的粮棚，没回头）……两手空空。柴省着烧，还是没撑到天亮——火盆天亮前就灭了。（他朝塔顶抬了抬下巴）诺伯特在上面。你去吧。", "text_if": [{"if": [{"flag": "ch2_convoy", "eq": "taken"}], "text": "（他坐在柴棚前的木墩上，靴子上全是泥和雪，看着粮棚里码起来的麻袋）……五车。洛蒙德家的。（他笑了一下，没什么笑意）够撑到开春了。洛蒙德家会记着这一笔——记在烽誓团头上。诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "burned"}], "text": "（他坐在柴棚前的木墩上，手上缠着烧焦的布）着了火的那车救不回来。剩下的推上来了，省着吃，能撑一阵子。……诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "repelled"}], "text": "（他胳膊上缠着布条，渗着血）没劫下来。三个弟兄是抬回来的。柴烧完了，天亮前火就灭了。（他朝塔顶抬了抬下巴）诺伯特在上面。你去吧。"}, {"if": [{"flag": "ch2_convoy", "eq": "delivered"}], "text": "（他拍了拍粮棚里新码起来的麻袋）安塞尔姆的押车兵卸完粮就下山了，一句话没说。够撑到开春了。……诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "partial"}], "text": "（粮棚里只码了一车的麻袋）一车。省着吃，撑一个月。火还亮着。……诺伯特在塔顶等你。"}, {"if": [{"flag": "ch2_convoy", "eq": "lost"}], "text": "（他看着空荡荡的粮棚）一车也没上来。车扔在半路上，雪已经盖了一层。柴烧完了，天亮前火灭了。诺伯特在塔顶，你去吧。"}], "options": [{"text": "……", "end": true}]},
       "greet": {
@@ -36,6 +41,7 @@
           {"text": "粮车的事，你怎么打算？", "if": [{"quest_stage": "ch2_main", "eq": "convoy_day"}], "next": "grain"},
           {"text": "安塞尔姆不肯。", "if": [{"quest_stage": "ch2_main", "eq": "aid_refused"}], "next": "after_refused"},
           {"text": "卡斯滕守满十年了。按规矩，你该放他走。", "if": [{"flag": "ch2_carsten_ask"}, {"not_flag": "ch2_carsten"}, {"not_flag": "ch2_carsten_refused"}], "check": {"id": "carsten_speech", "skill": "speech", "dc": 14, "pass": "carsten_yes", "fail": "carsten_no"}},
+          {"text": "那本名册……上面有我的名字吧？", "if": [{"flag": "origin", "eq": "deserter"}, {"flag": "ch2_first_tide"}, {"not_flag": "ch2_roll"}], "next": "roll"},
           {"text": "西边那座第十八烽，就这么灭着？", "if": [{"flag": "ch2_first_tide"}, {"not_flag": "ch2_beacon18_given"}], "next": "beacon18"},
           {"text": "火把用完了。", "if": [{"quest_stage": "ch2_main", "eq": "light_line"}, {"not_flag": "ch2_spare_torches"}], "next": "more_torches"},
           {"text": "只够三夜？", "next": "nights"},

@@ -116,6 +116,8 @@
   "alric_knight_said": {"desc": "出身落魄骑士之后（O.2）：跟阿尔里克说了「我家也有过封地」（瓦伦家 +3）", "set_in": "hall.json alric/knight", "read_in": "hall.json alric"},
   "matthias_knows_deserter": {"desc": "出身烽誓团逃兵（O.2）：跟马蒂亚斯说了守过三年烽燧，他早看出来了", "set_in": "beacon19.json matthias/deserter", "read_in": "beacon19.json matthias；O.3 名册上的名字"},
   "carsten_deserter_said": {"desc": "出身烽誓团逃兵（O.2）：跟卡斯滕说了自己也下过山", "set_in": "beacon19.json carsten/deserter", "read_in": "beacon19.json carsten"},
+  "ch2_roll": {"desc": "支线「名册上的名字」（O.3，只对出身烽誓团逃兵）：served = 认下来补守这个冬天（烽誓团 +10，劫粮时马蒂亚斯多给两个人），struck = 说动他把名字抹掉（口才 14），denied = 否认（烽誓团 −5）", "set_in": "beacon19.json matthias/roll_served、roll_struck、roll_denied", "read_in": "world/convoy_ambush.gd setup；quest/chapter2.gd recap；第五章「封誓」"},
+  "ch2_roll_refused": {"desc": "求马蒂亚斯划掉名字没说动（O.3）：不能再求，只剩认或者否认", "set_in": "beacon19.json matthias/roll_no", "read_in": "beacon19.json matthias/roll"},
   "origin": {"desc": "出身三选一（O.1，data/origins.json）：knight = 落魄骑士之后，deserter = 烽誓团逃兵，ferry = 渡工之子；新游戏在开场标题卡上选，旧存档读进来时问一次", "set_in": "core/origins.gd apply", "read_in": "对话里 {\"flag\": \"origin\", \"eq\": 编号}（O.2）；角色面板"},
   "ch2_done": {"desc": "第二章完（5.8b）：跟着诺伯特走到冬井边，看见那一圈长眠的人，章末画面", "set_in": "scenes/main.gd _on_well_reached", "read_in": "第三章"},
   "norbert_dawn": {"desc": "第二夜过去以后诺伯特在塔顶说完剩下的话：守满十年没走，等一个人上山来问那一夜；要带你去看冬井（5.8a，主线推进到「冬井」）", "set_in": "beacon19.json norbert/dawn_well", "read_in": "5.8b"},
@@ -134,5 +136,8 @@
   "ch2_extra_grain": {"desc": "征粮令写了五车、安塞尔姆认了：另外两车粮当夜卸在羊脊村驿站（5.6）", "set_in": "highland.json anselm/req5", "read_in": "5.8 章末回顾"},
   "heard_convoy_time": {"desc": "罗薇娜说粮车天黑透以后出村（5.6）", "set_in": "waystation.json rowena/convoy_time", "read_in": "5.7a 劫粮"},
   "anselm_met": {"desc": "见过押粮官安塞尔姆（5.6）", "set_in": "highland.json anselm/greet", "read_in": "highland.json anselm"},
-  "ch2_convoy": {"desc": "第二夜的结果（5.7）：劫粮 taken = 押车兵散了、车没烧，burned = 赢了可车烧了，repelled = 你们被打散了；护粮 delivered = 至少两车过了潮水、partial = 一车、lost = 一车也没上来（5.7b）", "set_in": "world/convoy_ambush.gd finish（main._on_battle_ended）、world/convoy_escort.gd finish（main._on_escort_ended）", "read_in": "5.8 天亮、章末回顾"}
+  "ch2_convoy": {"desc": "第二夜的结果（5.7）：劫粮 taken = 押车兵散了、车没烧，burned = 赢了可车烧了，repelled = 你们被打散了；护粮 delivered = 至少两车过了潮水、partial = 一车、lost = 一车也没上来（5.7b）", "set_in": "world/convoy_ambush.gd finish（main._on_battle_ended）、world/convoy_escort.gd finish（main._on_escort_ended）", "read_in": "5.8 天亮、章末回顾"},
+  "ch3_started": {"desc": "第三章开始了（main.start_chapter(3)：第二章章末「继续」，6.2c）", "set_in": "scenes/main.gd start_chapter", "read_in": "6.4 开场白"},
+  "gregor_met": {"desc": "在坠星院门洞里见过院长格雷戈尔（6.2c）", "set_in": "plain.json gregor", "read_in": "plain.json gregor"},
+  "ch3_heard_monk": {"desc": "门房的修士告诉你抄经室里关着一个灰袍修士（6.2c，主线第 2 步）", "set_in": "plain.json porter", "read_in": "plain.json porter、6.3 洛蒙德庄园"}
 }

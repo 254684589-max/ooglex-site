@@ -8,7 +8,7 @@ extends RefCounted
 ##   冻伤：涨满了冻伤——体力上限少三成（GameState.stamina_max），直到在火边连着歇 FIRE_CURE 秒才好；冻伤时寒冷值停在满格。
 ## 界面：不加新的条（GDD 第十一节 HUD 极简），冷的时候体力条边上一行字（hud.set_cold）；第一次冷到 30 弹教学提示 cold。
 
-const COLD_AREAS := {"highland": 1.0}
+const COLD_AREAS := {"highland": 1.0, "plain": 0.3}     # 金穗平原（6.1a）：没有高地那么冷，夜里慢慢冷
 const BASE_RATE := 100.0 / 420.0                  # 白天：约 7 分钟满格
 const DAYPART_MULT := {"day": 1.0, "dawn": 1.3, "dusk": 1.3, "night": 2.0}
 const HIGH_Y := 26.0                              # 高过这个高度（山脊、风口）涨得快

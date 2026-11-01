@@ -67,10 +67,18 @@ static func spec(area: String) -> Dictionary:
 			return Counting.map_spec()
 		"highland":
 			return Highland.map_spec()
+		"plain":
+			return Plain.map_spec()
 		"waystation":
 			return Waystation.map_spec()
 		"beacon_tower":
 			return BeaconTower.map_spec()
+		"scriptorium":
+			return Scriptorium.map_spec()
+		"manor_hall":
+			return ManorHall.map_spec()
+		"mill_inside":
+			return MillInside.map_spec()
 	return {}
 
 
