@@ -238,30 +238,69 @@ const server = http.createServer((req, res) => {
   res.end(body);
 });
 
+// 用 Chrome 的调试协议实时取结果，取到就关掉 Chrome（2026-11-01）。
+// 原来靠 --virtual-time-budget + --dump-dom：虚拟时间跑完 Chrome 才退出、吐出 DOM；可页面上的视频一直在播时虚拟时间不往前走，
+// Chrome 不退出，30 秒后判超时（部署连续三次「Chrome 1280 timed out」，360 / 768 却能过）。现在按真实时间等探针写好结果，
+// 检查的内容一项没变，只是换了取结果的办法。
 function runChrome(chrome, width) {
   return new Promise((resolve, reject) => {
     const height = width <= 480 ? 800 : width <= 800 ? 900 : 820;
+    const debugPort = 9300 + (width % 97);
     const args = [
       '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
-      '--hide-scrollbars','--virtual-time-budget=8000',
+      '--hide-scrollbars',
       '--user-data-dir=' + path.join(os.tmpdir(), 'gc-smoke-chrome-' + width + '-' + process.pid),
       '--window-size=' + width + ',' + height,
-      '--dump-dom',
+      '--remote-debugging-port=' + debugPort,
       'http://127.0.0.1:' + PORT + '/apps/global-cams/?smoke=' + width
     ];
-    const p = spawn(chrome, args, { stdio: ['ignore','pipe','pipe'] });
-    const timer = setTimeout(() => {
-      p.kill('SIGKILL');
-      reject(new Error('Chrome ' + width + ' timed out'));
-    }, 30000);
-    let out = '', err = '';
-    p.stdout.on('data', d => out += d);
-    p.stderr.on('data', d => err += d);
-    p.on('error', reject);
-    p.on('close', code => {
+    const p = spawn(chrome, args, { stdio: ['ignore','ignore','pipe'] });
+    let err = '';
+    let done = false;
+    p.stderr.on('data', d => { err = (err + d).slice(-2000); });
+    const finish = (fn, v) => {
+      if (done) return;
+      done = true;
       clearTimeout(timer);
-      code === 0 ? resolve(out) : reject(new Error('Chrome ' + width + ' exited ' + code + ': ' + err.slice(-500)));
-    });
+      try { p.kill('SIGKILL'); } catch {}
+      fn(v);
+    };
+    p.on('error', e => finish(reject, e));
+    p.on('close', code => finish(reject, new Error('Chrome ' + width + ' exited ' + code + ' before the probe finished: ' + err.slice(-500))));
+    const timer = setTimeout(() => finish(reject, new Error('Chrome ' + width + ' timed out')), 30000);
+    const poll = async () => {
+      while (!done) {
+        await new Promise(r => setTimeout(r, 400));
+        try {
+          const list = await (await fetch('http://127.0.0.1:' + debugPort + '/json/list')).json();
+          const page = list.find(t => t.type === 'page' && String(t.url).includes('/apps/global-cams/'));
+          if (!page) continue;
+          const text = await cdpEvaluate(page.webSocketDebuggerUrl, "(document.getElementById('gc-smoke-result') || {}).textContent || ''");
+          if (text) {
+            finish(resolve, '<pre id="gc-smoke-result">' + text + '</pre>');
+            return;
+          }
+        } catch {}
+      }
+    };
+    poll();
+  });
+}
+
+// 调试协议：连上页面、执行一句表达式、取回字符串结果
+function cdpEvaluate(wsUrl, expression) {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(wsUrl);
+    const t = setTimeout(() => { try { ws.close(); } catch {} reject(new Error('cdp timeout')); }, 3000);
+    ws.onopen = () => ws.send(JSON.stringify({ id: 1, method: 'Runtime.evaluate', params: { expression, returnByValue: true } }));
+    ws.onmessage = ev => {
+      const msg = JSON.parse(typeof ev.data === 'string' ? ev.data : Buffer.from(ev.data).toString('utf8'));
+      if (msg.id !== 1) return;
+      clearTimeout(t);
+      try { ws.close(); } catch {}
+      resolve(msg.result && msg.result.result ? String(msg.result.result.value || '') : '');
+    };
+    ws.onerror = () => { clearTimeout(t); reject(new Error('cdp error')); };
   });
 }
 
