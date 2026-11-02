@@ -5501,7 +5501,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-11-01T01:39:46Z",
+   "last_updated": "2026-11-02T01:10:40Z",
    "net": "2026-10-13T10:33:44Z",
    "net_precision": {
     "id": 0,
@@ -6736,8 +6736,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P293DT23H2M18S",
-       "time_docked": "P285DT13H31M35S",
+       "time_in_space": "P294DT22H35M13S",
+       "time_docked": "P286DT13H4M30S",
        "flights_count": 4,
        "mission_ends_count": 3,
        "status": {
@@ -7136,7 +7136,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P18DT15H6M2.394347S",
+      "duration": "P19DT14H36M56.658388S",
       "turn_around_time": "P228DT2H49M44S",
       "response_mode": "detailed",
       "launch_crew": [],
@@ -13518,7 +13518,7 @@
     "consecutive_successful_launches": 2,
     "successful_launches": 23,
     "failed_launches": 3,
-    "pending_launches": 0,
+    "pending_launches": 1,
     "consecutive_successful_landings": 0,
     "successful_landings": 0,
     "failed_landings": 0,
@@ -13622,7 +13622,7 @@
          "consecutive_successful_launches": 2,
          "successful_launches": 23,
          "failed_launches": 3,
-         "pending_launches": 0,
+         "pending_launches": 1,
          "consecutive_successful_landings": 0,
          "successful_landings": 0,
          "failed_landings": 0,
@@ -13733,7 +13733,7 @@
       "consecutive_successful_launches": 2,
       "successful_launches": 23,
       "failed_launches": 3,
-      "pending_launches": 0,
+      "pending_launches": 1,
       "consecutive_successful_landings": 0,
       "successful_landings": 0,
       "failed_landings": 0,
@@ -21162,14 +21162,14 @@
    "name": "GSLV Mk II | IRNSS-1L (NVS-03)",
    "response_mode": "detailed",
    "slug": "gslv-mk-ii-irnss-1l-nvs-03",
-   "launch_designator": null,
+   "launch_designator": "2026-245",
    "status": {
     "id": 3,
     "name": "Launch Successful",
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-30T23:48:30Z",
+   "last_updated": "2026-11-02T01:45:31Z",
    "net": "2026-10-30T18:21:00Z",
    "net_precision": {
     "id": 1,
