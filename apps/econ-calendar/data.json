@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-01T22:46:07Z",
-  "asOf": "2026-11-01",
+  "updatedAt": "2026-11-02T21:51:38Z",
+  "asOf": "2026-11-02",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-01 ~ 2026-11-07",
-  "count": 116,
+  "count": 115,
   "highCount": 19,
   "events": [
     {
@@ -67,18 +67,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-02T00:45:00Z",
-      "ccy": "AUD",
-      "country": "澳大利亚",
-      "flag": "🇦🇺",
-      "title": "ANZ Job Advertisements m/m",
-      "titleEn": "ANZ Job Advertisements m/m",
-      "impact": "low",
-      "forecast": null,
-      "previous": "2.2%",
-      "actual": null
-    },
-    {
       "ts": "2026-11-02T01:45:00Z",
       "ccy": "CNY",
       "country": "中国",
@@ -115,7 +103,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-02T07:30:00Z",
+      "ts": "2026-11-02T07:33:00Z",
       "ccy": "CHF",
       "country": "瑞士",
       "flag": "🇨🇭",
@@ -254,7 +242,7 @@
       "title": "ISM 制造业 PMI",
       "titleEn": "ISM Manufacturing PMI",
       "impact": "medium",
-      "forecast": "54.7",
+      "forecast": "54.5",
       "previous": "54.5",
       "actual": null
     },
@@ -266,7 +254,7 @@
       "title": "建筑支出 环比",
       "titleEn": "Construction Spending m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.4%",
       "previous": "0.9%",
       "actual": null
     },
@@ -283,7 +271,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-02T19:03:00Z",
+      "ts": "2026-11-02T19:00:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -410,7 +398,7 @@
       "title": "JOLTS 职位空缺",
       "titleEn": "JOLTS Job Openings",
       "impact": "medium",
-      "forecast": "7.11M",
+      "forecast": "7.15M",
       "previous": "7.08M",
       "actual": null
     },
@@ -446,7 +434,7 @@
       "title": "Omdia 汽车总销量",
       "titleEn": "Omdia Total Vehicle Sales",
       "impact": "low",
-      "forecast": "15.9M",
+      "forecast": "15.8M",
       "previous": "16.0M",
       "actual": null
     },
@@ -590,7 +578,7 @@
       "title": "服务业 PMI",
       "titleEn": "RatingDog Services PMI",
       "impact": "low",
-      "forecast": "51.5",
+      "forecast": "51.7",
       "previous": "51.6",
       "actual": null
     },
@@ -602,7 +590,7 @@
       "title": "就业人数变化",
       "titleEn": "Spanish Unemployment Change",
       "impact": "low",
-      "forecast": "25.3K",
+      "forecast": "18.7K",
       "previous": "23.6K",
       "actual": null
     },
@@ -614,7 +602,7 @@
       "title": "服务业 PMI",
       "titleEn": "Spanish Services PMI",
       "impact": "low",
-      "forecast": "57.5",
+      "forecast": "57.6",
       "previous": "58.3",
       "actual": null
     },
@@ -626,7 +614,7 @@
       "title": "服务业 PMI",
       "titleEn": "Italian Services PMI",
       "impact": "low",
-      "forecast": "51.0",
+      "forecast": "51.4",
       "previous": "51.7",
       "actual": null
     },
@@ -710,7 +698,7 @@
       "title": "非农就业人数变化",
       "titleEn": "ADP Non-Farm Employment Change",
       "impact": "low",
-      "forecast": "68K",
+      "forecast": "67K",
       "previous": "90K",
       "actual": null
     },
@@ -722,7 +710,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "3.8B",
+      "forecast": "4.8B",
       "previous": "4.2B",
       "actual": null
     },
@@ -758,7 +746,7 @@
       "title": "ISM 服务业 PMI",
       "titleEn": "ISM Services PMI",
       "impact": "medium",
-      "forecast": "54.9",
+      "forecast": "54.8",
       "previous": "54.9",
       "actual": null
     },
@@ -794,7 +782,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "0.96B",
+      "forecast": "0.94B",
       "previous": "0.50B",
       "actual": null
     },
@@ -830,7 +818,7 @@
       "title": "工厂订单 环比",
       "titleEn": "German Factory Orders m/m",
       "impact": "low",
-      "forecast": "4.9%",
+      "forecast": "4.6%",
       "previous": "-10.6%",
       "actual": null
     },
@@ -842,7 +830,7 @@
       "title": "工业产出 环比",
       "titleEn": "French Industrial Production m/m",
       "impact": "low",
-      "forecast": "0.4%",
+      "forecast": "0.3%",
       "previous": "-0.3%",
       "actual": null
     },
@@ -866,7 +854,7 @@
       "title": "零售销售 环比",
       "titleEn": "Italian Retail Sales m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "0.0%",
       "previous": "0.3%",
       "actual": null
     },
@@ -878,7 +866,7 @@
       "title": "采购经理人指数 PMI",
       "titleEn": "Construction PMI",
       "impact": "low",
-      "forecast": "46.5",
+      "forecast": "46.4",
       "previous": "46.1",
       "actual": null
     },
@@ -890,7 +878,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI m/m",
       "impact": "low",
-      "forecast": "2.6%",
+      "forecast": "2.5%",
       "previous": "1.9%",
       "actual": null
     },
@@ -1142,7 +1130,7 @@
       "title": "工业产出 环比",
       "titleEn": "German Industrial Production m/m",
       "impact": "low",
-      "forecast": "-0.2%",
+      "forecast": "0.0%",
       "previous": "2.0%",
       "actual": null
     },
@@ -1250,7 +1238,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "14.5K",
+      "forecast": "14.6K",
       "previous": "-68.3K",
       "actual": null
     },
@@ -1286,7 +1274,7 @@
       "title": "非农就业人数变化",
       "titleEn": "Non-Farm Employment Change",
       "impact": "high",
-      "forecast": "63K",
+      "forecast": "65K",
       "previous": "29K",
       "actual": null
     },
@@ -1334,7 +1322,7 @@
       "title": "消费者信心指数",
       "titleEn": "Prelim UoM Consumer Sentiment",
       "impact": "medium",
-      "forecast": "47.8",
+      "forecast": "48.1",
       "previous": "46.3",
       "actual": null
     },
@@ -1382,7 +1370,7 @@
       "title": "Consumer Credit m/m",
       "titleEn": "Consumer Credit m/m",
       "impact": "low",
-      "forecast": "12.0B",
+      "forecast": "13.4B",
       "previous": "8.3B",
       "actual": null
     },
