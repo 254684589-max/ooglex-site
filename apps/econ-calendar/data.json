@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-03T02:37:44Z",
+  "updatedAt": "2026-11-03T19:47:16Z",
   "asOf": "2026-11-03",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-01 ~ 2026-11-07",
@@ -379,7 +379,19 @@
       "actual": null
     },
     {
-      "ts": "2026-11-03T10:33:00Z",
+      "ts": "2026-11-03T09:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "RCM/TIPP Economic Optimism",
+      "titleEn": "RCM/TIPP Economic Optimism",
+      "impact": "low",
+      "forecast": "46.2",
+      "previous": "46.8",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-03T10:02:00Z",
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
@@ -415,18 +427,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-03T15:10:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "RCM/TIPP Economic Optimism",
-      "titleEn": "RCM/TIPP Economic Optimism",
-      "impact": "low",
-      "forecast": "46.2",
-      "previous": "46.8",
-      "actual": null
-    },
-    {
       "ts": "2026-11-03T15:15:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -451,7 +451,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-03T15:50:00Z",
+      "ts": "2026-11-03T15:27:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -475,7 +475,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-03T17:00:00Z",
+      "ts": "2026-11-03T18:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -758,7 +758,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-0.1M",
       "previous": "-1.9M",
       "actual": null
     },
