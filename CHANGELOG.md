@@ -13,6 +13,8 @@
 
 ### 数据
 
+- 2026-11-04：早更双模式终稿上站。市场要闻（`/apps/news-brief/`）整文件换为 Brief-11（自然日 2026-11-04，8 条：通过 6、有条件通过 2、硬伤 0）。投资雷达（`/apps/news-radar/`）整文件换为 Day-13（`asOf` 2026-11-04，正式入选 N=0 合格空报，二级存档 4 条，不计入 N）。仅替换这两处 `data.json`，sitemap 中两栏 lastmod 改为 2026-11-04。未改 whats-latest 自动管道、投研汇总、其他应用、Secrets、域名或生产配置。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**。
+
 - 2026-11-02：早更上站。市场要闻（`/apps/news-brief/`）整文件换为 Brief-10（自然日 2026-11-02，8 条：通过 7、有条件通过 1、硬伤 0）。投资雷达（`/apps/news-radar/`）整文件换为 Day-12（`asOf` 2026-11-02，正式入选 N=0 合格空报，二级存档 4 条，不计入 N）。`sitemap.xml` 这两条 `lastmod` 改为 2026-11-02。未改投研汇总、whats-latest 自动管道、利率页与其它 App。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
 
 ### 修复

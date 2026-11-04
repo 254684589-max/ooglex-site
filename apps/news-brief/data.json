@@ -1,18 +1,18 @@
 {
   "schemaVersion": "brief-site-v1",
-  "edition": "Brief-10",
+  "edition": "Brief-11",
   "demo": false,
-  "naturalDay": "2026-11-02",
+  "naturalDay": "2026-11-04",
   "timezone": "Asia/Shanghai",
   "mode": "A",
-  "modeLabel": "今日全球新闻｜跨周末早更",
-  "title": "Brief-10｜全球新闻简报（2026-11-02）",
-  "observationWindow": "约 2026-10-30 晚～2026-11-02 早晨 CST（跨周末）",
-  "relativeTo": "Brief-09／Day-11（2026-10-30）；未重复 GDP／PCE／Amazon／ECB／Lagarde 主条",
+  "modeLabel": "今日全球新闻｜跨日早更（覆盖 11-03 未落）",
+  "title": "Brief-11｜全球新闻简报（2026-11-04）",
+  "observationWindow": "约 2026-11-02 晚～2026-11-04 早晨 CST（覆盖 11-03 未落增量）",
+  "relativeTo": "Brief-10／Day-12（2026-11-02）；未重复 ECI／中国 PMI／欧区 GDP／OPEC+／H.4.1／PBoC／10-30 10Y；中间 11-03 早更失败未落",
   "counts": {
     "total": 8,
-    "pass": 7,
-    "conditional": 1,
+    "pass": 6,
+    "conditional": 2,
     "fail": 0,
     "hardError": 0
   },
@@ -26,91 +26,14 @@
     {
       "id": "01",
       "candidate": "C01",
-      "title": "BLS：2026 年第三季度就业成本指数（ECI）平民工人补偿成本季调环比 +0.8%、同比 +3.4%",
+      "title": "ISM：2026 年 10 月制造业 PMI 55.5（连续第 10 个月扩张）",
       "category": "美国经济",
-      "rubric": "美国经济／劳动力市场",
+      "rubric": "美国经济／制造业景气",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜BLS USDL-26-1620）",
+      "verificationDetail": "通过（05／07｜ISM／PR Newswire 2026-11-02）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "美国劳工统计局（BLS）于 2026-10-30 08:30 ET 发布截至 2026 年 9 月的就业成本指数。平民工人总补偿季调三个月变化 +0.8%（工资薪金 +0.7%、福利 +0.9%）；未季调十二个月变化 +3.4%（工资薪金 +3.1%、福利 +3.9%）。私人部门总补偿季调 +0.8%／同比 +3.4%；州与地方政府季调 +0.6%／同比 +3.5%。私人部门通胀调整实际工资薪金同比 −0.6%。下次发布：约 2027-01-29（2026Q4）。",
-        "dataTable": {
-          "columns": [
-            "指标",
-            "本期（至 2026-09）",
-            "上期（至 2026-06）",
-            "备注"
-          ],
-          "rows": [
-            [
-              "平民总补偿（季调 3 个月）",
-              "+0.8%",
-              "+0.9%",
-              "BLS ECI"
-            ],
-            [
-              "平民工资薪金（季调 3 个月）",
-              "+0.7%",
-              "+0.9%",
-              ""
-            ],
-            [
-              "平民福利（季调 3 个月）",
-              "+0.9%",
-              "+1.0%",
-              ""
-            ],
-            [
-              "平民总补偿（同比，未季调）",
-              "+3.4%",
-              "+3.4%",
-              ""
-            ],
-            [
-              "平民工资薪金（同比）",
-              "+3.1%",
-              "+3.2%",
-              ""
-            ],
-            [
-              "私人部门实际工资薪金（同比）",
-              "−0.6%",
-              "−0.4%",
-              "剔除通胀"
-            ]
-          ],
-          "note": "发布：BLS｜2026-10-30 08:30 ET"
-        },
-        "background": "ECI 为固定「劳动力篮子」雇主成本指标，常被政策层用作工资／通胀压力交叉核对。本窗相对 Brief-09 的月度 PCE／季度 GDP，为新增劳动力成本读数。",
-        "progress": "读数已出；与 10 月就业形势（约 11-06）及后续通胀数据交叉另窗。",
-        "importance": "美国劳动力成本主读数落地；Brief 不套雷达门槛。是否构成假设重评由雷达／华尔街另判。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "季调增速略缓于上季、同比仍约 3.4%，可能被读作「劳动力成本压力未明显加速」（推断）。",
-            "可能进入对 12 月 FOMC 路径讨论的输入变量集合（推断，非政策已定）。",
-            "不做交易或投资建议。"
-          ]
-        },
-        "sources": [
-          {
-            "label": "BLS ECI Summary",
-            "url": "https://www.bls.gov/news.release/eci.nr0.htm"
-          }
-        ]
-      }
-    },
-    {
-      "id": "02",
-      "candidate": "C02",
-      "title": "中国国家统计局：2026 年 10 月制造业 PMI 49.3、非制造业 PMI 49.7",
-      "category": "中国与亚太",
-      "rubric": "中国与亚太",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07｜新华转 NBS）",
-      "audience": "内部展示｜通过",
-      "sections": {
-        "whatHappened": "国家统计局公布 2026 年 10 月采购经理指数：制造业 PMI 49.3（较上月 −0.8 个百分点）；非制造业 PMI 49.7（−0.5）。生产 49.8、新订单 49.4。高技术制造业 51.3、装备制造业 50.6 仍在扩张区间。大型企业 50.2；中型 48.4、小型 47.5。服务业商务活动指数 50.0；建筑业 48.0。新华稿归因部分需求提前至国庆假期及复杂国际环境（官方统计师表述｜转述）。",
+        "whatHappened": "美国供应管理协会（ISM）于 2026-11-02 10:00 ET 发布 10 月制造业 PMI：55.5（9 月 54.5，+1.0）。新订单 55.5、生产 59.0、就业 52.4（−0.3）、供应商交货 59.1、库存 51.4（重回扩张）、价格 75.2（−2.7，仍处高位）。客户库存指数 41.6（「过低」）。制造业连续第 10 个月扩张。",
         "dataTable": {
           "columns": [
             "指标",
@@ -122,75 +45,203 @@
           "rows": [
             [
               "制造业 PMI",
-              "49.3",
-              "50.1",
-              "−0.8",
-              "NBS"
-            ],
-            [
-              "生产",
-              "49.8",
-              "—",
-              "−1.9",
-              "新华转述"
+              "55.5",
+              "54.5",
+              "+1.0",
+              "ISM"
             ],
             [
               "新订单",
-              "49.4",
-              "—",
-              "−1.1",
+              "55.5",
+              "55.3",
+              "+0.2",
               ""
             ],
             [
-              "高技术制造业",
-              "51.3",
-              "—",
-              "—",
-              "仍＞50"
+              "生产",
+              "59.0",
+              "56.7",
+              "+2.3",
+              "约 2021-11 以来最高"
             ],
             [
-              "非制造业 PMI",
-              "49.7",
-              "50.2",
-              "−0.5",
+              "就业",
+              "52.4",
+              "52.7",
+              "−0.3",
               ""
             ],
             [
-              "服务业商务活动",
-              "50.0",
-              "—",
-              "−0.2",
+              "供应商交货",
+              "59.1",
+              "59.0",
+              "+0.1",
+              "＞50＝变慢"
+            ],
+            [
+              "库存",
+              "51.4",
+              "48.6",
+              "+2.8",
+              "重回扩张"
+            ],
+            [
+              "价格",
+              "75.2",
+              "77.9",
+              "−2.7",
+              "仍高位"
+            ],
+            [
+              "积压订单",
+              "54.6",
+              "56.4",
+              "−1.8",
               ""
             ],
             [
-              "建筑业商务活动",
-              "48.0",
-              "—",
-              "−2.3",
+              "新出口订单",
+              "51.2",
+              "50.9",
+              "+0.3",
               ""
+            ],
+            [
+              "进口",
+              "52.9",
+              "51.0",
+              "+1.9",
+              ""
+            ],
+            [
+              "客户库存",
+              "41.6",
+              "41.6",
+              "0",
+              "「过低」"
             ]
           ],
-          "note": "发布：NBS｜2026-10-31（新华）"
+          "releaseNote": "发布：ISM｜2026-11-02 10:00 ET"
         },
-        "background": "制造业自扩张回落至收缩区间；与 Brief-09 无重复。触及中国增长／外需监测主题。",
-        "progress": "官方月度 PMI 已出；政策应对与后续数据另窗。",
-        "importance": "中国景气主读数跨周末更新；Brief 不自动升雷达三级。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "制造业再度落入收缩区间，可能强化「内需／外需偏弱」叙事（推断）。",
-            "高技术／装备仍扩张，可能支撑「结构分化」讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
+        "background": "Brief-10 日程条曾列 ISM 为未发布；本窗已落地。相对中国 NBS PMI（Brief-10），为美国制造业景气主读数更新。",
+        "progress": "读数已出；后续对照 11-04 ISM 服务业、11-06 就业形势另窗。",
+        "importance": "美国制造业景气与投入价格高位并存；Brief 不套雷达门槛。是否构成假设重评由雷达／华尔街另判。",
+        "marketImpact": "PMI 加速扩张＋生产走强，可能强化「制造业韧性」叙事（推断）。价格分项仍极高，可能维持对通胀粘性与利率路径的讨论热度（推断，非政策已定）。不做交易或投资建议。",
+        "marketImpactNone": false,
         "sources": [
           {
-            "label": "新华｜制造业 PMI",
-            "url": "https://english.news.cn/20261031/b8bbe3a5855e496882fa8cad79a57fe4/c.html"
+            "label": "PR Newswire／ISM",
+            "url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-55-5-october-2026-ism-manufacturing-pmi-report-302925617.html"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02",
+      "candidate": "C02",
+      "title": "Apple：财年 2026 第四财季营收 1144.77 亿美元、稀释 EPS 2.10 美元",
+      "category": "人工智能／科技",
+      "rubric": "人工智能／科技企业",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07｜Apple Newsroom＋FY26_Q4 PDF）",
+      "audience": "内部展示｜通过",
+      "sections": {
+        "whatHappened": "Apple 于 2026-11-02 公布截至 2026-09-26 的财年第四财季：净销售 1,144.77 亿美元（约 +12%）；稀释 EPS 2.10 美元（约 +14%）；净利 307.11 亿美元。服务 315.73 亿美元再创历史高。毛利率 47.9%（含关税退税约 1 个百分点有利影响）。iPhone 575.83、Mac 107.92、大中华区 175.39（百万美元口径见 PDF）。",
+        "dataTable": {
+          "columns": [
+            "指标",
+            "本期（FY26Q4）",
+            "上年同期（FY25Q4）",
+            "同比",
+            "备注"
+          ],
+          "rows": [
+            [
+              "净销售",
+              "1144.77 亿美元",
+              "1024.66",
+              "≈+12%",
+              "GAAP；PDF"
+            ],
+            [
+              "产品销售",
+              "829.04",
+              "737.16",
+              "≈+12%",
+              "亿美元"
+            ],
+            [
+              "服务销售",
+              "315.73",
+              "287.50",
+              "≈+10%",
+              "历史新高"
+            ],
+            [
+              "稀释 EPS",
+              "2.10 美元",
+              "1.85",
+              "≈+14%",
+              "含关税退税约 +0.05"
+            ],
+            [
+              "净利",
+              "307.11",
+              "274.66",
+              "—",
+              "亿美元"
+            ],
+            [
+              "iPhone",
+              "575.83",
+              "490.25",
+              "≈+17%",
+              "百万美元"
+            ],
+            [
+              "Mac",
+              "107.92",
+              "87.26",
+              "≈+24%",
+              "百万美元"
+            ],
+            [
+              "iPad",
+              "62.29",
+              "69.52",
+              "≈−10%",
+              "百万美元"
+            ],
+            [
+              "Wearables 等",
+              "83.00",
+              "90.13",
+              "≈−8%",
+              "百万美元"
+            ],
+            [
+              "大中华区",
+              "175.39",
+              "144.93",
+              "≈+21%",
+              "百万美元"
+            ]
+          ],
+          "releaseNote": "发布：Apple｜2026-11-02"
+        },
+        "background": "Brief-10 日程条曾列 Apple 为未发布；本窗财报与新闻稿已出。触及 AI／硬件盈利兑现监测主题，Brief 不自动升雷达三级。",
+        "progress": "财报与电话会已完成；12 月季毛利率指引等媒体转述不替代官方 PDF／新闻稿数字。",
+        "importance": "全球大型科技硬件＋服务主读数落地；关税退税与存储器成本叙事并存。",
+        "marketImpact": "营收／EPS／iPhone／服务走强，可能支撑消费电子需求韧性讨论（推断）。毛利率含一次性关税退税有利因素；后续成本或影响利润率路径讨论（推断）。不做交易或投资建议。",
+        "marketImpactNone": false,
+        "sources": [
+          {
+            "label": "Apple Newsroom",
+            "url": "https://www.apple.com/newsroom/2026/11/apple-reports-fourth-quarter-results/"
           },
           {
-            "label": "新华｜非制造业 PMI",
-            "url": "https://english.news.cn/20261031/aaf87e8543154dd3866af6cce7f9aa77/c.html"
+            "label": "FY26 Q4 PDF",
+            "url": "https://www.apple.com/newsroom/pdfs/fy2026q4/FY26_Q4_Consolidated_Financial_Statements.pdf"
           }
         ]
       }
@@ -198,81 +249,88 @@
     {
       "id": "03",
       "candidate": "C03",
-      "title": "Eurostat：2026 年第三季度欧元区 GDP 初值闪估环比 +0.4%、同比 +1.3%",
-      "category": "欧洲",
-      "rubric": "欧洲",
+      "title": "BLS：2026 年 9 月 JOLTS 职位空缺约 752.3 万、空缺率 4.5%",
+      "category": "美国经济",
+      "rubric": "美国经济／劳动力市场",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜Eurostat）",
+      "verificationDetail": "通过（05／07｜BLS USDL-26-1630）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "欧盟统计局于 2026-10-30 发布初步闪估：欧元区 2026Q3 季调实际 GDP 环比 +0.4%（Q2 为 +0.6%），同比 +1.3%；欧盟环比 +0.5%、同比 +1.5%。成员国样本中，法国环比 −0.1%，德国 +0.2%，意大利 0.0%，西班牙 +0.6%。下次估计约 2026-11-13。",
+        "whatHappened": "BLS 于 2026-11-03 10:00 ET 发布 9 月 JOLTS：职位空缺季调约 752.3 万、空缺率 4.5%；较 8 月修订后约 719.0 万增加约 33.3 万。招募约 540 万、总离职约 530 万；辞职升至约 340 万。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期（2026Q3）",
-            "上期（2026Q2）",
+            "本期（2026-09，初步）",
+            "上期（2026-08，修订）",
+            "变化",
             "备注"
           ],
           "rows": [
             [
-              "欧元区 GDP 环比",
-              "+0.4%",
-              "+0.6%",
-              "季调｜初值闪估"
+              "职位空缺（千）",
+              "7,523",
+              "7,190",
+              "+333",
+              "季调；Table 1"
             ],
             [
-              "欧元区 GDP 同比",
-              "+1.3%",
-              "+1.2%",
+              "空缺率",
+              "4.5%",
+              "4.3%",
+              "+0.2 pct",
               ""
             ],
             [
-              "欧盟 GDP 环比",
-              "+0.5%",
-              "+0.7%",
+              "私人部门空缺（千）",
+              "6,644",
+              "6,408",
+              "+236",
               ""
             ],
             [
-              "德国环比",
-              "+0.2%",
-              "+0.3%",
+              "招募（量级）",
+              "≈5.4 million",
+              "—",
+              "变化不大",
+              "摘要"
+            ],
+            [
+              "总离职",
+              "≈5.3 million",
+              "—",
+              "变化不大",
               ""
             ],
             [
-              "法国环比",
-              "−0.1%",
-              "0.0%",
+              "辞职",
+              "≈3.4 million",
+              "—",
+              "增加",
               ""
             ],
             [
-              "意大利环比",
-              "0.0%",
-              "+0.2%",
-              ""
-            ],
-            [
-              "西班牙环比",
-              "+0.6%",
-              "+0.7%",
+              "解雇与遣散",
+              "≈1.6 million",
+              "—",
+              "变化不大",
               ""
             ]
           ],
-          "note": "发布：Eurostat｜2026-10-30"
+          "releaseNote": "发布：BLS｜2026-11-03 10:00 ET｜USDL-26-1630"
         },
-        "background": "相对 Brief-09 的 ECB 利率决议，本条为增长读数增量；初值可修订。",
-        "progress": "初值闪估可开；11-13 再估。",
-        "importance": "欧元区增长主读数；与 ECB「维持利率」同窗背景交叉，Brief 不做政策归因断言。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "增速较上季放缓、法国转负，可能强化欧洲增长分化／偏弱叙事（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
+        "background": "相对 Brief-10 的 ECI 与待发就业形势，JOLTS 为劳动力需求／流动截面。",
+        "progress": "9 月读数已出；10 月就业形势约 11-06 另窗。",
+        "importance": "美国劳动力需求主读数更新；Brief 不套雷达门槛。",
+        "marketImpact": "空缺较上月明显回升，可能被读作劳动力需求仍具韧性（推断）。或进入对 11-06 非农与利率路径讨论的输入变量集合（推断，非政策已定）。不做交易或投资建议。",
+        "marketImpactNone": false,
         "sources": [
           {
-            "label": "Eurostat",
-            "url": "https://ec.europa.eu/eurostat/en/web/products-euro-indicators/w/2-30102026-ap"
+            "label": "BLS JOLTS Summary",
+            "url": "https://www.bls.gov/news.release/jolts.nr0.htm"
+          },
+          {
+            "label": "Table 1",
+            "url": "https://www.bls.gov/news.release/jolts.t01.htm"
           }
         ]
       }
@@ -280,64 +338,49 @@
     {
       "id": "04",
       "candidate": "C04",
-      "title": "OPEC+：维持 2026 年 12 月产量目标不变；11-29 将议 2027 框架",
-      "category": "能源",
-      "rubric": "能源／国际政治",
-      "verification": "有条件通过",
-      "verificationDetail": "有条件通过（05／07｜二手可核转述 OPEC 声明；本窗未开 OPEC 官网正文）",
-      "audience": "内部展示｜有条件通过",
+      "title": "标普全球：欧元区 2026 年 10 月制造业 PMI 终值 52.7",
+      "category": "欧洲",
+      "rubric": "欧洲",
+      "verification": "通过",
+      "verificationDetail": "通过（05／07｜新华财经转 S&P Global）",
+      "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "据路透／CNBC 等转述，OPEC+ 核心七国（沙特、俄罗斯、伊拉克、科威特、阿尔及利亚、哈萨克斯坦、阿曼）在 2026-10-31／11-01 在线会议后确认 12 月产量目标维持不变；全体成员约 11-29 讨论 2027 配额框架。稿件称多数成员仍低于目标产量，并提及伊朗冲突对海湾出口／霍尔木兹海峡流量的扰动（媒体转述｜地缘背景）。油价方面，稿件称 Brent 12 月合约周五收于约 $117.64／桶（期货结算转述｜非官方库存报告）。",
+        "whatHappened": "标普全球 2026-11-02 公布欧元区 10 月制造业 PMI 终值 52.7（初值 52.4；9 月 52.9）。产出指数终值 52.8。法、意据转述重回收缩；德西等仍扩张。",
         "dataTable": {
           "columns": [
             "指标",
-            "本期",
-            "对比",
+            "本期（2026-10 终值）",
+            "初值",
+            "上期（2026-09 终值）",
             "备注"
           ],
           "rows": [
             [
-              "OPEC+ 12 月产量目标",
-              "维持不变",
-              "相对 10／11 月目标",
-              "媒体转述 OPEC 声明"
+              "欧元区制造业 PMI",
+              "52.7",
+              "52.4",
+              "52.9",
+              "S&P Global｜新华财经"
             ],
             [
-              "下次重要会议",
-              "约 2026-11-29",
-              "—",
-              "2027 框架"
-            ],
-            [
-              "Brent（转述｜12 月约）",
-              "≈$117.64",
-              "周五收盘 +2.4% 量级",
-              "期货转述｜非 EIA"
-            ],
-            [
-              "WTI（转述）",
-              "≈$104.12",
-              "周五收盘",
-              "期货转述"
+              "产出指数",
+              "52.8",
+              "52.4",
+              "53.6",
+              ""
             ]
           ],
-          "note": "主源为可核二手转述；油价为期货结算转述"
+          "releaseNote": "发布：S&P Global｜2026-11-02（新华财经）"
         },
-        "background": "产量政策与地缘供应扰动并行；相对 Brief-09 无 OPEC 主条。",
-        "progress": "12 月目标已确认维持；产能评估与 2027 基线另待。",
-        "importance": "全球原油供给政策信号；Brief 不把油价涨跌归因写成已证实单一因果。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "「目标不变＋供应扰动叙事」可能维持能源风险溢价讨论（推断）。",
-            "高油价叙事可能交叉进入通胀预期讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
+        "background": "相对 Brief-10 欧区 Q3 GDP 闪估，本条为制造业景气月度更新。",
+        "progress": "终值已出；ECB 政策路径另窗。",
+        "importance": "欧元区制造业仍处扩张但动能略缓；Brief 不自动升雷达三级。",
+        "marketImpact": "终值上修但仍低于上月，可能强化「扩张放缓＋成本压力」叙事（推断）。不做交易或投资建议。",
+        "marketImpactNone": false,
         "sources": [
           {
-            "label": "CNBC 转述",
-            "url": "https://www.cnbc.com/2026/10/31/opec-oil-output-targets-december.html"
+            "label": "新华财经",
+            "url": "https://www.cnfin.com/hs-lb/detail/20261102/4489938_1.html"
           }
         ]
       }
@@ -345,64 +388,46 @@
     {
       "id": "05",
       "candidate": "C05",
-      "title": "美联储 H.4.1：2026-10-28（周三）并表总资产约 6.746 万亿美元",
-      "category": "金融市场",
-      "rubric": "金融市场／流动性",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07｜Fed H.4.1）",
-      "audience": "内部展示｜通过",
+      "title": "原油：2026-11-03 WTI 结算约 96.09 美元、Brent 约 103.60 美元（地缘／外交叙事并存）",
+      "category": "能源",
+      "rubric": "能源／地缘",
+      "verification": "有条件通过",
+      "verificationDetail": "有条件通过（05／07｜CNBC 期货结算转述）",
+      "audience": "内部展示｜有条件通过",
       "sections": {
-        "whatHappened": "美联储 2026-10-29 发布 H.4.1：截至 2026-10-28（周三），全部储备银行并表 Total assets 为 $6,745,635 million（约 6.746 万亿美元），较前周三 −$7,969 million。证券持仓（held outright）约 $6,462,451 million；存款机构准备金余额约 $2,895,236 million；财政部一般账户（TGA）约 $1,015,632 million。",
+        "whatHappened": "据 CNBC 2026-11-03，WTI 结算约 96.09 美元／桶（−0.37），Brent 约 103.60 美元／桶（−1.17）。稿件并置美伊外交斡旋与冲突叙事；军事细节为媒体转述，本条不核证。",
         "dataTable": {
           "columns": [
             "指标",
-            "Wed 2026-10-28",
-            "较前周三",
+            "本期（2026-11-03 结算）",
+            "对比",
             "备注"
           ],
           "rows": [
             [
-              "Total assets",
-              "$6,745,635 m",
-              "−$7,969 m",
-              "H.4.1 表 5"
+              "WTI",
+              "96.09 美元／桶",
+              "−0.37",
+              "CNBC 转述结算"
             ],
             [
-              "Securities held outright",
-              "$6,462,451 m",
-              "−$7,727 m",
-              ""
-            ],
-            [
-              "Reserve balances",
-              "$2,895,236 m",
-              "−$74,286 m",
-              ""
-            ],
-            [
-              "TGA",
-              "$1,015,632 m",
-              "+$70,479 m",
-              ""
+              "Brent",
+              "103.60 美元／桶",
+              "−1.17",
+              "同上"
             ]
           ],
-          "note": "发布：Federal Reserve｜H.4.1｜2026-10-29"
+          "releaseNote": "来源：CNBC｜2026-11-03"
         },
-        "background": "相对冻结基准 H3「流动性多指标」监测；本条只给官方存量，不直连股市危机叙事。",
-        "progress": "周度报表已出；后续周报另更新。",
-        "importance": "美联储资产负债表可核对点位；Brief 不做交易含义断言。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "总资产仍约 6.75T 量级，可能被纳入流动性／准备金讨论（推断）。",
-            "TGA 上升与准备金下降的会计对应可能进入技术讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
+        "background": "相对 Brief-10 OPEC+ 主条，本窗为价格点位＋地缘叙事更新。",
+        "progress": "价格已结算；外交／军事走向高度不确定。",
+        "importance": "油价仍处高位区间；事实与媒体归因须严格分列。",
+        "marketImpact": "油价高位回落若持续，可能缓和短期能源通胀预期讨论（推断）。若冲突再升级叙事占优，可能反向推升风险溢价（预测／情景）。不做交易或投资建议。",
+        "marketImpactNone": false,
         "sources": [
           {
-            "label": "Fed H.4.1 Current",
-            "url": "https://www.federalreserve.gov/releases/h41/current/"
+            "label": "CNBC",
+            "url": "https://www.cnbc.com/2026/11/03/oil-prices-climb-after-us-reportedly-strikes-irans-qeshm-island.html"
           }
         ]
       }
@@ -410,53 +435,56 @@
     {
       "id": "06",
       "candidate": "C06",
-      "title": "中国人民银行：自 2026-11-02 起以隔夜逆回购为主要政策利率操作品种",
-      "category": "中国与亚太",
-      "rubric": "中国与亚太／利率",
+      "title": "美国国债：2026-11-03 名义 10 年期日终收益率 4.95%",
+      "category": "金融市场",
+      "rubric": "金融市场／利率",
       "verification": "通过",
-      "verificationDetail": "通过（05／07｜新华转央行公告）",
+      "verificationDetail": "通过（05／07｜U.S. Treasury Daily）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "据新华社 2026-10-30 报道，中国人民银行公告：自 2026-11-02 起，每个工作日开展隔夜逆回购操作招标，采用固定利率、数量招标；目前操作利率为 1.25%。7 天期逆回购调整为固定数量、利率招标、多重价位中标，主要在税期、月末等时点开展；原在 7 天期利率基础上加减点的工具改在隔夜利率基础上加减点。",
+        "whatHappened": "美国财政部每日名义收益率曲线：2026-11-03 名义 10 年期＝4.95%（11-02＝4.91%，+4 bp）。同日 2 年 4.61%、30 年 5.32%。相对 Brief-10 所刊 2026-10-30＝4.94%，为跨日点位更新。",
         "dataTable": {
           "columns": [
             "指标",
-            "数值／安排",
+            "2026-11-03",
+            "2026-11-02",
+            "变化",
             "备注"
           ],
           "rows": [
             [
-              "隔夜逆回购操作利率",
-              "1.25%",
-              "新华转述"
+              "名义 10Y",
+              "4.95%",
+              "4.91%",
+              "+4 bp",
+              "Treasury CMT"
             ],
             [
-              "生效日",
-              "2026-11-02",
-              "每工作日招标"
+              "名义 2Y",
+              "4.61%",
+              "4.59%",
+              "+2 bp",
+              ""
             ],
             [
-              "7 天期逆回购",
-              "改为税期／月末等时点为主",
-              "框架调整"
+              "名义 30Y",
+              "5.32%",
+              "5.28%",
+              "+4 bp",
+              ""
             ]
           ],
-          "note": "来源：新华｜2026-10-30"
+          "releaseNote": "来源：U.S. Treasury Daily Par Yield Curve Rates"
         },
-        "background": "公开市场操作期限「换锚」至隔夜，旨在提高利率调控精准性（官方表述转述）。",
-        "progress": "公告已出；自 11-02 起按新框架操作。",
-        "importance": "中国政策利率操作框架制度更新；Brief 不改写美联储 H1。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "可能改变短端资金利率锚定与预期传导讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
+        "background": "长端收益率是 H2 监测输入；本条只报告官方曲线点位，不改写冻结基准。",
+        "progress": "日终点位已出；后续就业／通胀窗另核。",
+        "importance": "利率期限结构例行更新；Brief 不套雷达门槛。",
+        "marketImpact": "10Y 回升至约 4.95%，可能进入利率预期／期限溢价／供需讨论（推断）。不做交易或投资建议。",
+        "marketImpactNone": false,
         "sources": [
           {
-            "label": "新华",
-            "url": "https://www.news.cn/20261030/b8bd71fbd5e94d879e08b4303824955d/c.html"
+            "label": "Treasury daily",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=202611&type=daily_treasury_yield_curve"
           }
         ]
       }
@@ -464,48 +492,58 @@
     {
       "id": "07",
       "candidate": "C07",
-      "title": "美国国债：2026-10-30 名义 10 年期日终收益率 4.94%",
-      "category": "金融市场",
-      "rubric": "金融市场",
-      "verification": "通过",
-      "verificationDetail": "通过（05／07｜U.S. Treasury daily）",
-      "audience": "内部展示｜通过",
+      "title": "远景能源：乌兰察布 AI 数据中心据报完成 800V 直流供电商用部署",
+      "category": "中国与亚太／人工智能",
+      "rubric": "中国与亚太／人工智能基础设施",
+      "verification": "有条件通过",
+      "verificationDetail": "有条件通过（05／07｜Tom's Hardware 转公司稿）",
+      "audience": "内部展示｜有条件通过",
       "sections": {
-        "whatHappened": "据美国财政部每日国债收益率曲线，2026-10-30 名义 10 年期日终收益率为 4.94%（2026-10-29 为 4.98%）。本条仅记录官方日终点位，不做因果归因。周末无新交易日曲线；下一工作日为 11-02。",
+        "whatHappened": "据 Tom's Hardware 2026-11-03，远景能源称已在内蒙古乌兰察布 Galaxy AI 数据中心完成集成 800V DC 供电商用部署（「全球首个」为公司表述）。转述含 SST、电池备份与 AI 负载协同；园区规划约 3GW 等为规划表述。",
         "dataTable": {
           "columns": [
             "指标",
-            "数值",
-            "日期"
+            "本期披露",
+            "对比基准",
+            "备注"
           ],
           "rows": [
             [
-              "名义 10Y 日终",
-              "4.94%",
-              "2026-10-30"
+              "母线电压架构",
+              "800V DC",
+              "—",
+              "公司稿转述"
             ],
             [
-              "名义 10Y 日终（对比）",
-              "4.98%",
-              "2026-10-29"
+              "中压侧",
+              "10 kV → SST → 800V DC",
+              "—",
+              "同上"
+            ],
+            [
+              "园区规划容量",
+              "约 3GW（规划）",
+              "—",
+              "规划／非已建成断言"
+            ],
+            [
+              "加速器远期表述",
+              "「至多约 100 万」（公司）",
+              "—",
+              "目标表述"
             ]
           ],
-          "note": "来源：Treasury.gov daily treasury yield curve"
+          "releaseNote": "来源：Tom's Hardware｜2026-11-03 转公司稿"
         },
-        "background": "相对 Brief-09「10-29＝4.98%」为跨周末前最后一个交易日更新。",
-        "progress": "10-30 日终已出；11-02 起继续更新。",
-        "importance": "长端定价观测点；Brief 不分解期限溢价。",
-        "marketImpact": {
-          "hasImpact": true,
-          "bullets": [
-            "长端自约 5% 回落 4bp，可能进入利率预期／供需讨论（推断）。",
-            "不做交易或投资建议。"
-          ]
-        },
+        "background": "AI 算力扩张推高电力与配电架构需求；与 Apple 财报互补覆盖 AI／科技域。",
+        "progress": "媒体转述公司部署声明；独立第三方认证本窗未核。",
+        "importance": "中国 AI 数据中心供电架构商业化线索；Brief 不自动升雷达三级。",
+        "marketImpact": "可能强化「AI 资本开支向电力／电力电子延伸」叙事（推断）。公司「全球首个」表述须保持怀疑（推断）。不做交易或投资建议。",
+        "marketImpactNone": false,
         "sources": [
           {
-            "label": "Treasury daily",
-            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/"
+            "label": "Tom's Hardware",
+            "url": "https://www.tomshardware.com/tech-industry/data-centers/china-deploys-worlds-first-800-volt-dc-power-system-for-massive-ai-data-center-seeks-to-quench-power-needs-with-higher-conversion-and-efficiency-inside-a-smaller-footprint"
           }
         ]
       }
@@ -513,80 +551,35 @@
     {
       "id": "08",
       "candidate": "C08",
-      "title": "后续关注日程（Apple／ISM／就业／FOMC 纪要等｜未发布）",
+      "title": "后续关注日程（ADP／ISM 服务业／就业／FOMC 纪要等｜未发布）",
       "category": "日程",
       "rubric": "日程",
       "verification": "通过",
       "verificationDetail": "通过（仅为未发布日程索引｜非数据断言）",
       "audience": "内部展示｜通过",
       "sections": {
-        "whatHappened": "下列为后续常见日程索引（尚未发布，不作读数断言）：ISM 制造业 PMI（10 月）约 2026-11-02 10:00 ET；Apple 财年 2026Q4／电话会约 2026-11-02 14:00 PT／17:00 ET；美国就业形势（10 月）约 2026-11-06 08:30 ET；FOMC 10 月会议纪要约 2026-11-18；下次 FOMC（含 SEP）约 2026-12-08～09；BEA GDP 二次估计约 2026-11-25。",
-        "dataTable": {
-          "columns": [
-            "事项",
-            "预计时点",
-            "状态"
-          ],
-          "rows": [
-            [
-              "ISM 制造业 PMI（10 月）",
-              "2026-11-02 10:00 ET",
-              "未发布"
-            ],
-            [
-              "Apple FY26 Q4",
-              "2026-11-02 盘后",
-              "未发布"
-            ],
-            [
-              "美国就业形势（10 月）",
-              "2026-11-06 08:30 ET",
-              "未发布"
-            ],
-            [
-              "FOMC 10 月纪要",
-              "约 2026-11-18",
-              "未发布"
-            ],
-            [
-              "下次 FOMC（含 SEP）",
-              "约 2026-12-08～09",
-              "未召开"
-            ],
-            [
-              "BEA GDP 二次估计",
-              "约 2026-11-25",
-              "未发布"
-            ]
-          ],
-          "note": "本条无关键量化指标（仅为发布日程）"
-        },
+        "whatHappened": "后续常见日程索引（本观察窗 CST 早晨尚未作为已发布读数断言）：ADP 约 11-04 08:15 ET；ISM 服务业约 11-04 10:00 ET；就业形势约 11-06；FOMC 纪要约 11-18；下次 FOMC 约 12-08～09。10-28 FOMC 已维持 3.75%–4.00%（声明日在 Brief-10 窗前，本条不重复作新主条）。",
+        "dataTable": null,
+        "dataTableNote": "本条无关键量化指标（仅为发布日程）。",
         "background": "便于下一观察窗对照；避免把待发写成已出。",
         "progress": "等待官方发布。",
         "importance": "降低误把日程当数据的风险。",
-        "marketImpact": {
-          "hasImpact": false,
-          "bullets": [
-            "无（日程本身不构成市场影响断言）。"
-          ]
-        },
+        "marketImpact": "无（日程本身不构成市场影响断言）。",
+        "marketImpactNone": true,
         "sources": [
           {
             "label": "BLS 就业日程",
             "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
           },
           {
-            "label": "Apple IR",
-            "url": "https://investor.apple.com/investor-relations/event-details/2026/FY-26-Fourth-Quarter-Results/default.aspx"
-          },
-          {
-            "label": "Fed 日历",
-            "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+            "label": "Fed 10-28 声明",
+            "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm"
           }
         ]
       }
     }
   ],
-  "sha256FinalBrief": "018cfe6aa7e426feac58d189759486379185640d6ba2cfdfffd7ee1da59051e6",
-  "generatedAt": "2026-11-02T08:20:00+08:00"
+  "sha256FinalBrief": "f91496a7f0d3c776f9f7071266c33f481df4e57555b58cb61c7de8b27255ff09",
+  "version": "brief-b11.0-final",
+  "generatedAt": "2026-11-04T08:30:00+08:00"
 }
