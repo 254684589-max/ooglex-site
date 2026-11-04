@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-03T12:53:19Z",
+  "updatedAt": "2026-11-04T13:06:17Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -40,7 +40,7 @@
     },
     "celestrak/geo": {
       "ok": true,
-      "detail": "569 颗"
+      "detail": "568 颗"
     },
     "launches": {
       "ok": true,
