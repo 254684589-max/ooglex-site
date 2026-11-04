@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 数据
+
+- 2026-11-02：早更上站。市场要闻（`/apps/news-brief/`）整文件换为 Brief-10（自然日 2026-11-02，8 条：通过 7、有条件通过 1、硬伤 0）。投资雷达（`/apps/news-radar/`）整文件换为 Day-12（`asOf` 2026-11-02，正式入选 N=0 合格空报，二级存档 4 条，不计入 N）。`sitemap.xml` 这两条 `lastmod` 改为 2026-11-02。未改投研汇总、whats-latest 自动管道、利率页与其它 App。**经所有者要求 squash 合入 main，由既有「Deploy Protected Ooglex Pages」发布**（未改 Secrets、域名或生产配置）。
+
 ### 修复
 
 - 2026-11-01：环球实景三档浏览器冒烟（`scripts/smoke_global_cams.mjs`）在部署时卡死：电脑 1280 那一档连续三次「Chrome 1280 timed out」，整个网站的发布被拦下（当天《铁冠之争》的上线因此没发出去）。原因：脚本靠 `--virtual-time-budget` + `--dump-dom` 等 Chrome 自己退出，页面上的测试视频一直在播时虚拟时间不往前走，Chrome 不退出。改成用 Chrome 调试协议按真实时间轮询探针写好的结果、取到就关掉 Chrome；检查项一项没变（没有放宽任何标准、没有加自动播放开关）。本地用开源 Chromium 验证三档都能在约 9 秒内跑完并给出结果（开源 Chromium 不能解码测试视频的 H.264，本地「视频停着」那几项按预期不过；部署用的 Google Chrome 能解码）。随修复一起合并到 main。
