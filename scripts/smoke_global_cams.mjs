@@ -112,9 +112,29 @@ function __gcVideoState(video) {
     toggleW: tr ? Math.round(tr.width) : 0
   };
 }
-setTimeout(() => {
-  const viewer = document.querySelector('#viewer');
+function __gcReleaseVideo() {
+  const video = document.querySelector('#viewer video');
+  if (!video) return;
+  try { video.pause(); } catch (e) {}
+  video.removeAttribute('src');
+  try { video.load(); } catch (e) {}
+}
+function __gcPublish(result) {
+  const pre = document.createElement('pre');
+  pre.id = 'gc-smoke-result';
+  pre.textContent = btoa(unescape(encodeURIComponent(JSON.stringify(result))));
+  document.body.appendChild(pre);
+  __gcReleaseVideo();
+}
+(function __gcWaitRows(attempt) {
   const row = document.querySelector('.window-row');
+  if (!row) {
+    if (attempt < 80) {
+      setTimeout(() => __gcWaitRows(attempt + 1), 100);
+      return;
+    }
+  }
+  const viewer = document.querySelector('#viewer');
   if (row) row.click();
   const first = document.querySelector('#viewer video');
   const firstSrc = first ? (first.currentSrc || first.src || '') : '';
@@ -171,12 +191,9 @@ setTimeout(() => {
       chromeOn: viewer.classList.contains('is-chrome'),
       immersive: viewer.classList.contains('is-immersive')
     };
-    const pre = document.createElement('pre');
-    pre.id = 'gc-smoke-result';
-    pre.textContent = btoa(unescape(encodeURIComponent(JSON.stringify(result))));
-    document.body.appendChild(pre);
+    __gcPublish(result);
   }, 700);
-}, 1500);
+})(0);
 `;
 
 const SMOKE_VIDEO = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'gc-smoke-color.mp4');
@@ -238,76 +255,117 @@ const server = http.createServer((req, res) => {
   res.end(body);
 });
 
-// 用 Chrome 的调试协议实时取结果，取到就关掉 Chrome（2026-11-01）。
-// 原来靠 --virtual-time-budget + --dump-dom：虚拟时间跑完 Chrome 才退出、吐出 DOM；可页面上的视频一直在播时虚拟时间不往前走，
-// Chrome 不退出，30 秒后判超时（部署连续三次「Chrome 1280 timed out」，360 / 768 却能过）。现在按真实时间等探针写好结果，
-// 检查的内容一项没变，只是换了取结果的办法。
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function cdpValue(wsUrl) {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(wsUrl);
+    const timer = setTimeout(() => {
+      try { ws.close(); } catch {}
+      reject(new Error('cdp evaluate stalled'));
+    }, 4000);
+    ws.addEventListener('open', () => {
+      ws.send(JSON.stringify({
+        id: 1,
+        method: 'Runtime.evaluate',
+        params: {
+          expression: "document.getElementById('gc-smoke-result') && document.getElementById('gc-smoke-result').textContent",
+          returnByValue: true
+        }
+      }));
+    });
+    ws.addEventListener('message', event => {
+      let msg;
+      try { msg = JSON.parse(String(event.data)); } catch { return; }
+      if (msg.id !== 1) return;
+      clearTimeout(timer);
+      try { ws.close(); } catch {}
+      const value = msg.result && msg.result.result ? msg.result.result.value : '';
+      resolve(value || '');
+    });
+    ws.addEventListener('error', () => {
+      clearTimeout(timer);
+      reject(new Error('cdp websocket failed'));
+    });
+  });
+}
+
+async function readSmokeResult(port) {
+  const res = await fetch('http://127.0.0.1:' + port + '/json/list');
+  if (!res.ok) return '';
+  const pages = await res.json();
+  for (const page of pages) {
+    if (!page || page.type !== 'page' || !page.webSocketDebuggerUrl) continue;
+    const value = await cdpValue(page.webSocketDebuggerUrl);
+    if (value) return value;
+  }
+  return '';
+}
+
+// 不用 --virtual-time-budget / --dump-dom。视频一开始循环播放，
+// 部分 CI 上的 Chrome 会把虚拟时间停住，dump-dom 永远不返回，30 秒后被杀掉。
+// 这里用真实时间等页面写下结果，每档最多 45 秒。
 function runChrome(chrome, width) {
   return new Promise((resolve, reject) => {
     const height = width <= 480 ? 800 : width <= 800 ? 900 : 820;
-    const debugPort = 9300 + (width % 97);
+    const port = 36000 + width;
     const args = [
-      '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
-      '--hide-scrollbars',
+      '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+      '--hide-scrollbars', '--no-first-run', '--disable-background-networking',
+      '--autoplay-policy=no-user-gesture-required',
+      '--remote-debugging-address=127.0.0.1',
+      '--remote-debugging-port=' + port,
+      '--remote-allow-origins=*',
       '--user-data-dir=' + path.join(os.tmpdir(), 'gc-smoke-chrome-' + width + '-' + process.pid),
       '--window-size=' + width + ',' + height,
-      '--remote-debugging-port=' + debugPort,
       'http://127.0.0.1:' + PORT + '/apps/global-cams/?smoke=' + width
     ];
-    const p = spawn(chrome, args, { stdio: ['ignore','ignore','pipe'] });
+    const p = spawn(chrome, args, { stdio: ['ignore', 'ignore', 'pipe'], detached: true });
     let err = '';
     let done = false;
-    p.stderr.on('data', d => { err = (err + d).slice(-2000); });
-    const finish = (fn, v) => {
+    p.stderr.on('data', d => { err = (err + d).slice(-1500); });
+    const stop = () => {
+      try { process.kill(-p.pid, 'SIGKILL'); } catch { try { p.kill('SIGKILL'); } catch {} }
+    };
+    const finish = (error, value) => {
       if (done) return;
       done = true;
-      clearTimeout(timer);
-      try { p.kill('SIGKILL'); } catch {}
-      fn(v);
+      clearTimeout(wall);
+      stop();
+      if (error) reject(error);
+      else resolve(value);
     };
-    p.on('error', e => finish(reject, e));
-    p.on('close', code => finish(reject, new Error('Chrome ' + width + ' exited ' + code + ' before the probe finished: ' + err.slice(-500))));
-    const timer = setTimeout(() => finish(reject, new Error('Chrome ' + width + ' timed out')), 30000);
-    const poll = async () => {
-      while (!done) {
-        await new Promise(r => setTimeout(r, 400));
+    const wall = setTimeout(() => {
+      finish(new Error('Chrome ' + width + ' timed out waiting for smoke result. ' + err.trim().slice(-400)));
+    }, 45000);
+    p.on('error', error => finish(error));
+    p.on('exit', code => {
+      if (done) return;
+      setTimeout(() => {
+        if (!done) finish(new Error('Chrome ' + width + ' exited ' + code + ' before smoke result. ' + err.trim().slice(-400)));
+      }, 400);
+    });
+    (async () => {
+      const started = Date.now();
+      while (!done && Date.now() - started < 44000) {
         try {
-          const list = await (await fetch('http://127.0.0.1:' + debugPort + '/json/list')).json();
-          const page = list.find(t => t.type === 'page' && String(t.url).includes('/apps/global-cams/'));
-          if (!page) continue;
-          const text = await cdpEvaluate(page.webSocketDebuggerUrl, "(document.getElementById('gc-smoke-result') || {}).textContent || ''");
+          const text = await readSmokeResult(port);
           if (text) {
-            finish(resolve, '<pre id="gc-smoke-result">' + text + '</pre>');
+            finish(null, text);
             return;
           }
         } catch {}
+        await sleep(200);
       }
-    };
-    poll();
+    })().catch(error => finish(error));
   });
 }
 
-// 调试协议：连上页面、执行一句表达式、取回字符串结果
-function cdpEvaluate(wsUrl, expression) {
-  return new Promise((resolve, reject) => {
-    const ws = new WebSocket(wsUrl);
-    const t = setTimeout(() => { try { ws.close(); } catch {} reject(new Error('cdp timeout')); }, 3000);
-    ws.onopen = () => ws.send(JSON.stringify({ id: 1, method: 'Runtime.evaluate', params: { expression, returnByValue: true } }));
-    ws.onmessage = ev => {
-      const msg = JSON.parse(typeof ev.data === 'string' ? ev.data : Buffer.from(ev.data).toString('utf8'));
-      if (msg.id !== 1) return;
-      clearTimeout(t);
-      try { ws.close(); } catch {}
-      resolve(msg.result && msg.result.result ? String(msg.result.result.value || '') : '');
-    };
-    ws.onerror = () => { clearTimeout(t); reject(new Error('cdp error')); };
-  });
-}
-
-function parseResult(dom) {
-  const m = dom.match(/<pre id="gc-smoke-result">([^<]+)<\/pre>/);
-  if (!m) throw new Error('smoke probe result missing');
-  return JSON.parse(decodeURIComponent(escape(Buffer.from(m[1], 'base64').toString('binary'))));
+function parseResult(encoded) {
+  if (!encoded) throw new Error('smoke probe result missing');
+  return JSON.parse(decodeURIComponent(escape(Buffer.from(encoded, 'base64').toString('binary'))));
 }
 
 const chrome = findChrome();
